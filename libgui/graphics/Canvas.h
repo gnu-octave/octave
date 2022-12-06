@@ -41,8 +41,8 @@ class QWidget;
 
 class octave_value_list;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class Canvas : public QObject
@@ -163,6 +163,6 @@ namespace octave
     bool m_rectMode;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

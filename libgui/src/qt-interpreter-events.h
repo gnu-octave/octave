@@ -44,8 +44,8 @@ typedef QList<int> QIntList;
 
 class octave_value;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   // The functions in this class are not normally called directly, but
@@ -324,6 +324,7 @@ namespace octave
 
     QWaitCondition m_waitcondition;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

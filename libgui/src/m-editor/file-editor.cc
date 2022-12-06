@@ -64,8 +64,8 @@
 #include "pt-eval.h"
 #include "utils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Functions of the the reimplemented tab widget
 
   file_editor_tab_widget::file_editor_tab_widget (QWidget *p, file_editor *fe)
@@ -96,7 +96,6 @@ namespace octave
       retval.push_back (static_cast<file_editor_tab *> (widget (i)));
     return retval;
   }
-
 
   // File editor
 
@@ -2868,6 +2867,7 @@ namespace octave
 
     return menu;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

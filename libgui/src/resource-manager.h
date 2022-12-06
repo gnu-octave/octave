@@ -34,8 +34,8 @@
 #include <QTranslator>
 #include <QTemporaryFile>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class resource_manager : public QObject
   {
     Q_OBJECT
@@ -91,6 +91,7 @@ namespace octave
 
     QList<QTemporaryFile *> m_temporary_files;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

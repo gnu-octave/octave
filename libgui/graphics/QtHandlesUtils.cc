@@ -44,8 +44,7 @@
 #include "graphics.h"
 #include "ov.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   namespace Utils
   {
@@ -419,4 +418,4 @@ namespace octave
 
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

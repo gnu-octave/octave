@@ -30,8 +30,8 @@
 
 class QPushButton;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class ToggleButtonControl : public ButtonControl
@@ -49,6 +49,6 @@ namespace octave
     void update (int pId);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

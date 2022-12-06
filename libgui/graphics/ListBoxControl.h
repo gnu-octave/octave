@@ -32,8 +32,8 @@ class QListWidget;
 class QListWidgetItem;
 class QModelIndex;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class ListBoxControl : public BaseControl
@@ -64,6 +64,6 @@ namespace octave
     bool m_selectionChanged;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

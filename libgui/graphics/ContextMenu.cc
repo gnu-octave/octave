@@ -35,8 +35,7 @@
 
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   ContextMenu *
   ContextMenu::create (octave::interpreter& interp, const graphics_object& go)
@@ -144,4 +143,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

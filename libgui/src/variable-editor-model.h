@@ -35,8 +35,8 @@
 #include "ov.h"
 #include "pr-flt-fmt.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class base_ve_model
@@ -344,6 +344,7 @@ namespace octave
 
     void evaluation_error (const std::string& expr) const;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

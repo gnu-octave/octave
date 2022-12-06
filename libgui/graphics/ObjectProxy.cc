@@ -37,8 +37,7 @@
 #include "oct-mutex.h"
 #include "utils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   ObjectProxy::ObjectProxy (Object *obj)
     : QObject (), m_object (nullptr)
@@ -159,4 +158,4 @@ namespace octave
     return retval;
   }
 
-};
+OCTAVE_END_NAMESPACE(octave);

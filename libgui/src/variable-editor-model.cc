@@ -48,8 +48,8 @@
 #include "utils.h"
 #include "variables.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static bool
   cell_is_editable (const octave_value& val)
   {
@@ -1396,4 +1396,5 @@ namespace octave
                                    value_at (idx));
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

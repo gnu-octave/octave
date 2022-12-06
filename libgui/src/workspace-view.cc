@@ -47,8 +47,8 @@
 #include "octave-qtutils.h"
 #include "workspace-view.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   workspace_view::workspace_view (QWidget *p, base_qobject& oct_qobj)
     : octave_dock_widget ("WorkspaceView", p, oct_qobj),
       m_view (new QTableView (this)),
@@ -545,4 +545,5 @@ namespace octave
 
     return item_data[0].toString ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -73,7 +73,6 @@
 
 #include "ovl.h"
 
-
 // Bug #55940 (Disable App Nap on Mac)
 #if defined (Q_OS_MAC)
 static void disable_app_nap (void)
@@ -131,8 +130,8 @@ static void disable_app_nap (void)
 }
 #endif
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Disable all Qt messages by default.
 
   static void
@@ -335,7 +334,6 @@ namespace octave
     // FIXME: Why are dock widget settings and/or the main window
     // configuration not saved correctly if the main window is deleted
     // after the dock widgets?
-
 
     // Calling close will cause settings to be saved.
     // If m_main_window exists, the widgets are closed by the main window
@@ -1038,4 +1036,5 @@ namespace octave
     if (remove_file)
       QFile::remove (file);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

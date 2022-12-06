@@ -57,8 +57,8 @@
 
 #include "defaults.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   resource_manager::resource_manager (void)
     : m_temporary_files ()
   { }
@@ -430,7 +430,6 @@ namespace octave
     combo->setMaxVisibleItems (12);
   }
 
-
   QPointer<QTemporaryFile>
   resource_manager::create_tmp_file (const QString& extension,
                                      const QString& contents)
@@ -468,4 +467,5 @@ namespace octave
         m_temporary_files.removeAll (tmp_file);
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

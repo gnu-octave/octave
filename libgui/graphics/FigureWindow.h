@@ -30,8 +30,7 @@
 
 #include "GenericEventNotify.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   DECLARE_GENERICEVENTNOTIFY_SENDER(FigureWindowBase, QMainWindow);
 
@@ -53,6 +52,6 @@ namespace octave
 
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -36,8 +36,7 @@
 #include "Menu.h"
 #include "QtHandlesUtils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static QKeySequence
   accelSequence (const uimenu::properties& up)
@@ -335,4 +334,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

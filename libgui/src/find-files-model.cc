@@ -34,8 +34,8 @@
 
 #include "find-files-model.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class find_file_less_than
   {
   public:
@@ -212,4 +212,5 @@ namespace octave
 
     return p.isValid () ? icon_provider.icon (m_files[p.row ()]) : QIcon ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

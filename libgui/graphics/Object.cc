@@ -37,8 +37,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   Object::Object (octave::interpreter& interp,
                   const graphics_object& go, QObject *obj)
@@ -282,4 +281,4 @@ namespace octave
                                  bool, bool)));
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

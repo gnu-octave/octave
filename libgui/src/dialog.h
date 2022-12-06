@@ -42,8 +42,8 @@ typedef QList<int> QIntList;
 // Defined for purposes of sending QList<float> as part of signal.
 typedef QList<float> QFloatList;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class QUIWidgetCreator : public QObject
   {
     Q_OBJECT
@@ -273,6 +273,7 @@ namespace octave
 
     void rejectSelection (void);
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

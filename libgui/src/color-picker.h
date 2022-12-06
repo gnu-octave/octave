@@ -32,8 +32,8 @@
 #include <QColorDialog>
 #include <QPushButton>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class color_picker : public QPushButton
   {
     Q_OBJECT
@@ -56,6 +56,7 @@ namespace octave
 
     QColor m_color;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

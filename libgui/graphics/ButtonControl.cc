@@ -37,8 +37,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   ButtonControl::ButtonControl (octave::interpreter& interp,
                                 const graphics_object& go,
@@ -152,4 +151,4 @@ namespace octave
       emit gh_callback_event (m_handle, "callback");
   }
 
-};
+OCTAVE_END_NAMESPACE(octave);

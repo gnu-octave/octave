@@ -41,8 +41,7 @@
 #include "octave-qobject.h"
 #include "shortcut-manager.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   dw_main_window::dw_main_window (base_qobject& oct_qobj, QWidget *p)
     : QMainWindow (p), m_octave_qobj (oct_qobj)
@@ -80,7 +79,6 @@ namespace octave
     notice_settings ();
   }
 
-
   // Re-implementing the popup menu of the main window
   QMenu *dw_main_window::createPopupMenu ()
   {
@@ -102,7 +100,6 @@ namespace octave
 
     return menu;
   }
-
 
   // Adding an action to the main window
   QAction * dw_main_window::add_action (QMenu *menu, const QIcon& icon,
@@ -142,7 +139,6 @@ namespace octave
     scmgr.set_shortcut (m_switch_left_action, sc_edit_tabs_switch_left_tab);
     scmgr.set_shortcut (m_switch_right_action, sc_edit_tabs_switch_right_tab);
   }
-
 
   // Slots for handling actions
 
@@ -219,7 +215,6 @@ namespace octave
     m_dw_list.at (next)->setFocus ();
   }
 
-
   // Reimplemented Event
   bool dw_main_window::event (QEvent *ev)
   {
@@ -251,5 +246,5 @@ namespace octave
     return QMainWindow::event (ev);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)
 

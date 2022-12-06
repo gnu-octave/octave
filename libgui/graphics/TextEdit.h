@@ -28,8 +28,7 @@
 
 #include <QTextEdit>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   class TextEdit : public QTextEdit
   {
@@ -48,6 +47,6 @@ namespace octave
     void keyPressEvent (QKeyEvent *event);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -57,8 +57,8 @@
 
 #include "ovl.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   set_path_dialog::set_path_dialog (QWidget *parent)
     : QDialog (parent)
   {
@@ -310,4 +310,4 @@ namespace octave
     QWidget::closeEvent (e);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

@@ -30,8 +30,8 @@
 
 #include "qt-interpreter-events.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class base_qobject;
@@ -96,6 +96,7 @@ namespace octave
 
     interpreter *m_interpreter;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -38,8 +38,8 @@
 #include "syminfo.h"
 #include "utils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   workspace_model::workspace_model (QObject *p)
     : QAbstractTableModel (p)
   {
@@ -272,4 +272,5 @@ namespace octave
 
     emit model_changed ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

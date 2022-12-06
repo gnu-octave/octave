@@ -31,8 +31,7 @@
 
 #include "ToolBarButton.cc"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   PushTool *
   PushTool::create (octave::interpreter& interp, const graphics_object& go)
@@ -78,4 +77,4 @@ namespace octave
     emit gh_callback_event (m_handle, "clickedcallback");
   }
 
-};
+OCTAVE_END_NAMESPACE(octave);

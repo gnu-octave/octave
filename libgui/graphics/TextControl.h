@@ -30,8 +30,8 @@
 
 class QLabel;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class TextControl : public BaseControl
@@ -49,6 +49,6 @@ namespace octave
     void update (int pId);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

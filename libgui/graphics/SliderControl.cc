@@ -38,8 +38,7 @@
 
 #define RANGE_INT_MAX 1000000
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   SliderControl *
   SliderControl::create (octave::interpreter& interp,
@@ -167,4 +166,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

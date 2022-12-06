@@ -32,8 +32,7 @@
 #include "CheckBoxControl.h"
 #include "Container.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   CheckBoxControl *
   CheckBoxControl::create (octave::interpreter& interp,
@@ -90,4 +89,5 @@ namespace octave
         break;
       }
   }
-};
+
+OCTAVE_END_NAMESPACE(octave);

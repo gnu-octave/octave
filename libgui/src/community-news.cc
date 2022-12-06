@@ -38,8 +38,8 @@
 #include "gui-settings.h"
 #include "news-reader.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   community_news::community_news (int serial)
     : QWidget (nullptr), m_browser (nullptr)
   {
@@ -130,4 +130,4 @@ namespace octave
     activateWindow ();
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

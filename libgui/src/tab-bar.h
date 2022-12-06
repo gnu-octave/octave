@@ -36,8 +36,8 @@
 #include <QStylePainter>
 #include <QTabBar>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Subclassed QTabBar for usable tab-bar, rotated tabs and
   // reimplemented mouse event
 
@@ -84,6 +84,7 @@ namespace octave
     QList <QAction *> m_ctx_actions;
     int m_rotated;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

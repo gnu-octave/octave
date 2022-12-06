@@ -33,8 +33,8 @@ class QAction;
 class QMenu;
 class QWidget;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class Menu : public Object, public MenuContainer
@@ -69,6 +69,6 @@ namespace octave
     QAction *m_separator;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

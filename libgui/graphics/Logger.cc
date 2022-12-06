@@ -35,8 +35,7 @@
 
 #include "Logger.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   Logger *Logger::s_instance = nullptr;
   QMutex *Logger::s_mutex = nullptr;
@@ -87,4 +86,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

@@ -50,8 +50,8 @@
 #include "file-ops.h"
 #include "oct-env.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   documentation_bookmarks::documentation_bookmarks (documentation *doc,
                                                     documentation_browser *browser,
                                                     QWidget *p)
@@ -544,4 +544,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

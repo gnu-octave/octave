@@ -34,8 +34,7 @@
 #include "Container.h"
 #include "QtHandlesUtils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   PushButtonControl *
   PushButtonControl::create (octave::interpreter& interp,
@@ -98,4 +97,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

@@ -39,8 +39,8 @@ typedef QList<int> QIntList;
 // out of alignment.  The marker handle can be used to retrieve the editor
 // line.
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class marker : public QObject
   {
     Q_OBJECT
@@ -106,6 +106,7 @@ namespace octave
     int m_mhandle;
     QString m_condition;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

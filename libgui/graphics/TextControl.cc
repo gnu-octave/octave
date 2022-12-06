@@ -33,8 +33,7 @@
 #include "TextControl.h"
 #include "QtHandlesUtils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   TextControl *
   TextControl::create (octave::interpreter& interp, const graphics_object& go)
@@ -93,4 +92,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

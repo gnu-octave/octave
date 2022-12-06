@@ -32,8 +32,7 @@
 #include "FigureWindow.h"
 #include "gui-preferences-global.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   FigureWindow::FigureWindow (QWidget *xparent)
     : FigureWindowBase (xparent)
@@ -58,4 +57,4 @@ namespace octave
     emit figureWindowShown();
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

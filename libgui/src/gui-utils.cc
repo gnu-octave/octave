@@ -33,8 +33,8 @@
 
 #include "gui-utils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   OCTGUI_API QColor
   interpolate_color (const QColor& col1, const QColor& col2,
                      double fs, double fv)
@@ -55,7 +55,6 @@ namespace octave
     width = geom.width ();
     height = geom.height ();
   }
-
 
   OCTGUI_API void
   adjust_to_screen (QRect& actual_geometry, const QRect& default_geometry)
@@ -122,4 +121,4 @@ namespace octave
                             QRect (QPoint (isx1,isy1), QPoint (isx2,isy2)));
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

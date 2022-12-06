@@ -36,8 +36,8 @@
 #include "input.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   interpreter_qobject::interpreter_qobject (base_qobject& oct_qobj)
     : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
   { }
@@ -199,4 +199,5 @@ namespace octave
   {
     return m_octave_qobj.qt_link ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

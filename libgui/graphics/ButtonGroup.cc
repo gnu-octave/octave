@@ -50,8 +50,7 @@
 #include "interpreter.h"
 #include "oct-map.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static int
   frameStyleFromProperties (const uibuttongroup::properties& pp)
@@ -460,7 +459,6 @@ namespace octave
     m_hiddenbutton->setChecked (true);
   }
 
-
   void
   ButtonGroup::addButton (QAbstractButton *btn)
   {
@@ -527,4 +525,4 @@ namespace octave
       }
   }
 
-};
+OCTAVE_END_NAMESPACE(octave);

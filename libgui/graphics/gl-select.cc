@@ -29,8 +29,7 @@
 
 #include "gl-select.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   void
   opengl_selector::apply_pick_matrix (void)
@@ -249,4 +248,4 @@ namespace octave
     m_glfcns.glEnd ();
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

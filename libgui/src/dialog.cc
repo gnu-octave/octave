@@ -45,8 +45,8 @@
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   QUIWidgetCreator::QUIWidgetCreator ()
     : QObject (), m_dialog_result (-1), m_dialog_button (),
       m_string_list (), m_list_index (), m_path_name ()
@@ -705,4 +705,5 @@ namespace octave
     // Send the selected info.
     emit finish_input (string_result, path, idx);
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

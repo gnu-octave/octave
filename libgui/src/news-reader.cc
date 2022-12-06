@@ -39,8 +39,8 @@
 #include "url-transfer.h"
 #include "version.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void news_reader::process (void)
   {
     QString html_text;
@@ -142,4 +142,5 @@ namespace octave
 
     emit finished ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

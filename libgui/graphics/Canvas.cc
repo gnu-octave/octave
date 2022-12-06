@@ -51,8 +51,7 @@
 #include "interpreter.h"
 #include "oct-opengl.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   void
   Canvas::redraw (bool sync)
@@ -1094,4 +1093,4 @@ namespace octave
     return new GLCanvas (interp, handle, parent);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

@@ -39,8 +39,8 @@
 // Defined for purposes of sending QList<int> as part of signal.
 typedef QList<int> QIntList;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class workspace_model : public QAbstractTableModel
   {
     Q_OBJECT
@@ -108,6 +108,7 @@ namespace octave
     bool m_enable_colors;
 
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

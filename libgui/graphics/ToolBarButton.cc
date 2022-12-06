@@ -36,8 +36,8 @@
 #include "QtHandlesUtils.h"
 #include "gui-preferences-global.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   template <typename T>
   ToolBarButton<T>::ToolBarButton (octave::interpreter& interp,
                                    const graphics_object& go, QAction *action)
@@ -158,4 +158,4 @@ namespace octave
     return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + QString::fromStdString (name) + ".png");
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

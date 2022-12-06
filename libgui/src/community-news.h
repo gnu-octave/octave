@@ -31,8 +31,8 @@
 
 class QTextBrowser;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class community_news : public QWidget
   {
     Q_OBJECT
@@ -60,6 +60,7 @@ namespace octave
 
     QTextBrowser *m_browser;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

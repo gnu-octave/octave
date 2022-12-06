@@ -32,8 +32,8 @@
 
 #include "KeyMap.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   namespace KeyMap
   {
     QMap<int, std::string> makeKeyMapper (void)
@@ -257,4 +257,5 @@ namespace octave
       return keyMapper.value (key, "<unknown key>");
     }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

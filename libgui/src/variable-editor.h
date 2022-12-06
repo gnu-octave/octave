@@ -42,8 +42,8 @@ class QModelIndex;
 class QTextEdit;
 class QToolBar;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class variable_editor_model;
@@ -167,7 +167,6 @@ namespace octave
 
     QTextEdit *m_disp_view;
   };
-
 
   class variable_editor_view : public QTableView
   {
@@ -414,6 +413,7 @@ namespace octave
 
     variable_dock_widget *m_focus_widget_vdw;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

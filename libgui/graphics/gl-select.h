@@ -32,8 +32,7 @@
 #include "gl-render.h"
 #include "oct-opengl.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   enum select_flags
   {
@@ -85,6 +84,6 @@ namespace octave
     std::map<GLuint, graphics_object> object_map;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

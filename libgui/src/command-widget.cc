@@ -49,8 +49,8 @@
 #include "input.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   command_widget::command_widget (base_qobject& oct_qobj, QWidget *p)
     : QWidget (p), m_incomplete_parse (false),
       m_prompt (QString ()),
@@ -168,7 +168,6 @@ namespace octave
     m_console->setStyleSheet (QString ("color: %1; background-color:%2;")
                                      .arg (fgc.name ()).arg (bgc.name ()));
   }
-
 
   // The console itself using QScintilla.
   // This implementation is partly based on the basic concept of
@@ -304,6 +303,6 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

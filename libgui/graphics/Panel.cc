@@ -42,8 +42,7 @@
 #include "graphics.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static int
   frameStyleFromProperties (const uipanel::properties& pp)
@@ -425,4 +424,4 @@ namespace octave
     Object::do_connections (receiver, m_container->canvas (m_handle));
   }
 
-};
+OCTAVE_END_NAMESPACE(octave);

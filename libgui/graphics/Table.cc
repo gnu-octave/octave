@@ -55,8 +55,7 @@
 #include "oct-string.h"
 #include "oct-strstrm.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   static const int AUTO_WIDTH = 75;
 
@@ -481,7 +480,6 @@ namespace octave
     updateExtent ();
     m_tableWidget->installEventFilter (this);
 
-
     connect (m_tableWidget, &QTableWidget::itemChanged,
              this, &Table::itemChanged);
     connect (m_tableWidget, &QTableWidget::cellClicked,
@@ -799,7 +797,6 @@ namespace octave
       }
     m_blockUpdates = false;
   }
-
 
   void
   Table::itemChanged (QTableWidgetItem *item)
@@ -1729,4 +1726,5 @@ namespace octave
   }
 
 #undef AUTO_HEIGHT
-}
+
+OCTAVE_END_NAMESPACE(octave)

@@ -32,8 +32,8 @@
 
 #include "color-picker.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Constructor with initial color as parameter
   color_picker::color_picker (QColor old_color, QWidget *p)
     : QPushButton (p)
@@ -80,4 +80,5 @@ namespace octave
 
     repaint ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

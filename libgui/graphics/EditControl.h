@@ -31,8 +31,8 @@
 class QLineEdit;
 class QWidget;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class TextEdit;
@@ -74,6 +74,6 @@ namespace octave
     bool m_textChanged;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

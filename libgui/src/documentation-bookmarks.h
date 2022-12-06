@@ -34,8 +34,8 @@
 
 #include "documentation.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class documentation;
 
   class documentation_bookmarks : public QWidget
@@ -117,6 +117,6 @@ namespace octave
     QFile m_xbel_file;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

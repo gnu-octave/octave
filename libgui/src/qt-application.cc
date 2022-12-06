@@ -44,8 +44,8 @@
 #include "octave.h"
 #include "sysdep.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   qt_application::qt_application (const std::string& organization_name,
                                   const std::string& application_name,
                                   const std::string& application_version,
@@ -101,4 +101,5 @@ namespace octave
 
     return qt_interface.exec ();
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

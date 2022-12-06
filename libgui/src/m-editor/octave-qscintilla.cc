@@ -72,8 +72,8 @@
 // Used for testing the last word of an "if" etc. line,
 // or the first word of the following line.
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static bool
   is_end (const QString& candidate, const QString& opening)
   {
@@ -482,7 +482,6 @@ namespace octave
     return QStringList ("%");  // should never happen
   }
 
-
   // provide the style at a specific position
   int octave_qscintilla::get_style (int pos)
   {
@@ -747,7 +746,6 @@ namespace octave
           }
 
         setIndentation (line, indent_column);
-
 
         int bpos = begin_block_regexp.indexIn (line_text);
         if (bpos > -1)
@@ -1052,7 +1050,6 @@ namespace octave
            Fauto_repeat_debug_command (interp, ovl (auto_repeat));
        });
   }
-
 
   // wrappers for dbstop related context menu items
 
@@ -1369,6 +1366,6 @@ namespace octave
     m_debug_mode = false;
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

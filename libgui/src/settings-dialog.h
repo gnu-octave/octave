@@ -37,8 +37,8 @@
 
 class QsciLexer;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   // Ui::settings_dialog is a generated class.
@@ -112,6 +112,7 @@ namespace octave
     QCheckBox *m_ws_enable_colors;
     QCheckBox *m_ws_hide_tool_tips;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

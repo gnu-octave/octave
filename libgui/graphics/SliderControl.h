@@ -30,8 +30,8 @@
 
 class QAbstractSlider;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class SliderControl : public BaseControl
@@ -57,6 +57,6 @@ namespace octave
     bool m_blockUpdates;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

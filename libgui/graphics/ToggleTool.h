@@ -28,8 +28,8 @@
 
 #include "ToolBarButton.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class ToggleTool : public ToolBarButton<uitoggletool>
@@ -53,6 +53,6 @@ namespace octave
     void triggered (bool checked);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

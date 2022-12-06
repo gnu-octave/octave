@@ -35,8 +35,8 @@
 
 #include "octave-dock-widget.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class history_dock_widget : public octave_dock_widget
@@ -106,6 +106,7 @@ namespace octave
 
     enum { MaxFilterHistory = 10 };
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

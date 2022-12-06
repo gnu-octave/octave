@@ -31,8 +31,8 @@
 class QEvent;
 class QObject;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class BaseControl : public Object
@@ -56,6 +56,6 @@ namespace octave
     bool m_keyPressHandlerDefined;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

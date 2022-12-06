@@ -45,8 +45,8 @@
 
 #include "oct-env.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   QString gui_settings::file_name (void) const
   {
     return fileName ();
@@ -348,4 +348,5 @@ namespace octave
     else
       remove ("dummy");  // Remove test entry
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

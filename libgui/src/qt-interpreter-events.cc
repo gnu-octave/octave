@@ -63,8 +63,8 @@ Q_DECLARE_METATYPE (octave::symbol_info_list)
 Q_DECLARE_METATYPE (octave::fcn_callback)
 Q_DECLARE_METATYPE (octave::meth_callback)
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   static QStringList
   make_qstring_list (const std::list<std::string>& lst)
   {
@@ -749,4 +749,5 @@ namespace octave
 
     return adjusted_value;
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

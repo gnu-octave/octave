@@ -49,12 +49,8 @@
 #include "gl-render.h"
 #include "qopengl-functions.h"
 
-namespace octave
-{
-}
+OCTAVE_BEGIN_NAMESPACE(octave)
 
-namespace octave
-{
   class GLCanvas : public OCTAVE_QT_OPENGL_WIDGET, public Canvas
   {
   public:
@@ -99,6 +95,6 @@ namespace octave
 #  endif
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

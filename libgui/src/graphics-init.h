@@ -30,11 +30,12 @@
 
 #include "qt-interpreter-events.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   extern void graphics_init (interpreter& interp);
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -31,8 +31,8 @@
 class QFrame;
 class QLabel;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class Container;
@@ -69,6 +69,6 @@ namespace octave
     Matrix m_previous_bbox;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

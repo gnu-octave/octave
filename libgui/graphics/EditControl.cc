@@ -34,8 +34,7 @@
 #include "TextEdit.h"
 #include "QtHandlesUtils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   EditControl *
   EditControl::create (octave::interpreter& interp, const graphics_object& go)
@@ -306,4 +305,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

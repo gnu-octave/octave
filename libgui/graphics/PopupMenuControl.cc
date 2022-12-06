@@ -35,8 +35,7 @@
 
 #include "octave-qtutils.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   PopupMenuControl *
   PopupMenuControl::create (octave::interpreter& interp,
@@ -148,4 +147,4 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

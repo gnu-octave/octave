@@ -64,8 +64,8 @@
 #include "file-ops.h"
 #include "oct-env.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // The documentation splitter, which is the main widget
   // of the doc dock widget
   documentation::documentation (QWidget *p, base_qobject& oct_qobj)
@@ -1115,4 +1115,4 @@ namespace octave
       QTextEdit::wheelEvent (we);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)

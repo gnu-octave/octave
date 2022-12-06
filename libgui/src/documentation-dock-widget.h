@@ -29,8 +29,8 @@
 #include "documentation.h"
 #include "octave-dock-widget.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class documentation_dock_widget : public octave_dock_widget
@@ -60,6 +60,7 @@ namespace octave
 
     documentation *m_docs;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

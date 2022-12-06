@@ -29,8 +29,8 @@
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class octave_txt_lexer : public QsciLexer
   {
     Q_OBJECT
@@ -43,6 +43,7 @@ namespace octave
 
     virtual QString description (int style) const;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

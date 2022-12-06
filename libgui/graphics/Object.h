@@ -35,8 +35,8 @@ class QObject;
 class QString;
 class QWidget;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class Container;
@@ -153,6 +153,6 @@ namespace octave
     QObject *m_qobject;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

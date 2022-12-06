@@ -56,8 +56,8 @@
 
 #include "oct-env.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class FileTreeViewer : public QTreeView
   {
   public:
@@ -107,7 +107,6 @@ namespace octave
       auto parent_dir = QDir(filePath (parent (idx)));
 
       files_dock_widget *fdw = static_cast<files_dock_widget*>(parent());
-
 
       fdw->file_remove_signal(parent_dir.filePath(old_name), parent_dir.filePath(new_name));
 
@@ -1174,4 +1173,5 @@ namespace octave
           }
       }
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

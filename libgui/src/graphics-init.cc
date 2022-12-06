@@ -39,8 +39,8 @@
 #include "gtk-manager.h"
 #include "interpreter.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   void graphics_init (interpreter& interp)
   {
 #if defined (HAVE_QT_GRAPHICS)
@@ -74,4 +74,5 @@ namespace octave
 
 #endif
   }
-}
+
+OCTAVE_END_NAMESPACE(octave)

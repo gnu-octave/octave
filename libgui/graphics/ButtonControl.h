@@ -30,8 +30,8 @@
 
 class QAbstractButton;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class ButtonControl : public BaseControl
@@ -54,6 +54,6 @@ namespace octave
     bool m_blockCallback;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

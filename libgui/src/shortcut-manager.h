@@ -35,8 +35,8 @@
 
 #include "gui-preferences.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class enter_shortcut : public QLineEdit
   {
     Q_OBJECT
@@ -168,6 +168,7 @@ namespace octave
     QLabel *m_label_default;
     int m_handled_index;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

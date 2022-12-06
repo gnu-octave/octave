@@ -30,8 +30,8 @@
 
 #include "octave.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   // Programming Note: This file must not include any Qt headers.  Any
   // Qt header files required by the qt_application::execute function
   // must be included only in the corresponding .cc file.
@@ -75,6 +75,7 @@ namespace octave
     // If TRUE, the GUI should be started.
     bool m_gui_running = false;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

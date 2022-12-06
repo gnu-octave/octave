@@ -28,8 +28,8 @@
 
 #include "ToolBarButton.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class PushTool : public ToolBarButton<uipushtool>
@@ -52,6 +52,6 @@ namespace octave
     void clicked (void);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

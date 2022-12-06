@@ -36,8 +36,8 @@
 #include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class base_qobject;
 
   class octave_qscintilla : public QsciScintilla
@@ -155,6 +155,7 @@ namespace octave
     int m_selection_col;
     int m_indicator_id;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -38,8 +38,8 @@
 #include "resource-manager.h"
 #include "shortcut-manager.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class community_news;
   class main_window;
   class qt_application;
@@ -314,6 +314,7 @@ namespace octave
 
     main_window *m_main_window;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

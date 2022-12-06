@@ -77,8 +77,8 @@ class QLabel;
 class QLineEdit;
 class QPushButton;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class file_editor;
 
   class find_dialog : public QDialog
@@ -172,6 +172,7 @@ namespace octave
 
     const int m_mru_length = 10;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

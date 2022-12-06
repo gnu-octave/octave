@@ -31,8 +31,8 @@
 #include "event-manager.h"
 #include "graphics.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class Object;
@@ -118,6 +118,7 @@ namespace octave
 
     octave::interpreter& m_interpreter;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

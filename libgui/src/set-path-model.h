@@ -34,8 +34,8 @@
 
 #include "qt-interpreter-events.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class set_path_model : public QAbstractListModel
   {
     Q_OBJECT
@@ -101,6 +101,7 @@ namespace octave
 
     bool m_revertible;
   };
-}
+
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -33,8 +33,8 @@
 
 class QMenu;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class ContextMenu : public Object, public MenuContainer
@@ -65,6 +65,6 @@ namespace octave
     void aboutToHide (void);
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

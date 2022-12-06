@@ -85,8 +85,8 @@
 #include "gui-utils.h"
 #include "resource-manager.h"
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
     : QDialog (p), m_editor (ed), m_in_sel (false),
       m_sel_beg (-1), m_sel_end (-1)
@@ -664,5 +664,5 @@ namespace octave
       }
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)
 #endif

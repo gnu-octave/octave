@@ -30,8 +30,8 @@
 
 class QComboBox;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
+
   class interpreter;
 
   class PopupMenuControl : public BaseControl
@@ -57,6 +57,6 @@ namespace octave
     bool m_blockUpdate;
   };
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

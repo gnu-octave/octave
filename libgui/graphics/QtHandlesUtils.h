@@ -40,8 +40,7 @@ class QKeyEvent;
 class QMouseEvent;
 class QWheelEvent;
 
-namespace octave
-{
+OCTAVE_BEGIN_NAMESPACE(octave)
 
   namespace Utils
   {
@@ -80,6 +79,6 @@ namespace octave
     octave_scalar_map makeScrollEventStruct (QWheelEvent *event);
   }
 
-}
+OCTAVE_END_NAMESPACE(octave)
 
 #endif

@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <cstdio>
 #include <iostream>
 
 #if defined (OCTAVE_USE_WINDOWS_API)

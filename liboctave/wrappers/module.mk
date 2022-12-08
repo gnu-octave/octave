@@ -46,6 +46,7 @@ WRAPPERS_SRC = \
   %reldir%/async-system-wrapper.c \
   %reldir%/base64-wrappers.c \
   %reldir%/canonicalize-file-name-wrapper.c \
+  %reldir%/cxx-signal-helpers.cc \
   %reldir%/dirent-wrappers.c \
   %reldir%/fcntl-wrappers.c \
   %reldir%/filepos-wrappers.c \

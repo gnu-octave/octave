@@ -91,7 +91,28 @@ octave_classdef::subsref (const std::string& type,
           count++;
           args(0) = octave_value (this);
 
+          // Attempt to set up a proper value for nargout at least in the
+          // simple case where the cs-list-type expression - i.e., {} or
+          // ().x, is the leading one.
+          bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
+                                      || (type.length () > 1 && type[0] == '('
+                                          && type[1] == '.'));
+
+          if (maybe_cs_list_query)
+            {
+              // Set up a proper nargout for the subsref call by calling numel.
+              octave_value_list tmp;
+              if (type[0] != '.') tmp = idx.front ();
+              nargout = xnumel (tmp);
+            }
+
           retval = meth.execute (args, nargout, true, "subsref");
+
+          // Since we're handling subsref, if the list has more than one
+          // element, return it as a comma-separated list so that we can
+          // pass it to the evaluator
+          if (retval.length () > 1)
+            retval = octave_value (retval);
 
           return retval;
         }

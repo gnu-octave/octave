@@ -671,7 +671,7 @@ public:
 
   OCTARRAY_API T * fortran_vec (void);
 
-  OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared (void)
+  OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared (void) const
   { return m_rep->m_count > 1; }
 
   OCTARRAY_OVERRIDABLE_FUNC_API int ndims (void) const

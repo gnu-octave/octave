@@ -32,7 +32,6 @@
 #include <QApplication>
 #include <QFile>
 #include <QFileInfo>
-#include <QFontComboBox>
 #include <QFontDatabase>
 #include <QMessageBox>
 #include <QSettings>
@@ -205,15 +204,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   QString gui_settings::get_default_font_family (void)
   {
-    QString default_family;
+    // Get all available fixed width fonts from the Qt font database.
 
-    // Get all available fixed width fonts via a font combobox
-    QFontComboBox font_combo_box;
-    font_combo_box.setFontFilters (QFontComboBox::MonospacedFonts);
+    QFontDatabase font_database;
     QStringList fonts;
 
-    for (int index = 0; index < font_combo_box.count(); index++)
-      fonts << font_combo_box.itemText(index);
+    for (QString font : font_database.families ())
+      {
+        if (font_database.isFixedPitch (font))
+          fonts << font;
+      }
+
+    QString default_family;
 
 #if defined (Q_OS_MAC)
     // Use hard coded default on macOS, since selection of fixed width

@@ -54,7 +54,7 @@
 //!
 //! @code{.cc}
 //! // 3 D Array with 10 rows, 20 columns, and 5 pages, filled with 7.0
-//! Array<double> A Array<double (dim_vector (10, 20, 5), 7.0);
+//! Array<double> A (dim_vector (10, 20, 5), 7.0);
 //!
 //! // set value for row 0, column 10, and page 3
 //! A(0, 10, 3) = 2.5;
@@ -477,7 +477,7 @@ public:
   //! Get the third dimension of the array (number of pages)
   //@{
   OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type dim3 (void) const
-  { return m_dimensions(2); }
+  { return m_dimensions.ndims () >= 3 ? m_dimensions(2) : 1; }
   OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type pages (void) const
   { return dim3 (); }
   //@}

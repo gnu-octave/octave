@@ -44,6 +44,7 @@
 #include "environment.h"
 #include "error.h"
 #include "event-manager.h"
+#include "gh-manager.h"
 #include "graphics.h"
 #include "gtk-manager.h"
 #include "help.h"

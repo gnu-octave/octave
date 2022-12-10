@@ -47,6 +47,7 @@
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"
 
+#include "gh-manager.h"
 #include "gl-render.h"
 #include "interpreter-private.h"
 #include "oct-opengl.h"

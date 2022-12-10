@@ -40,6 +40,7 @@
 #include "oct-locbuf.h"
 
 #include "errwarn.h"
+#include "gh-manager.h"
 #include "gl-render.h"
 #include "interpreter-private.h"
 #include "oct-opengl.h"

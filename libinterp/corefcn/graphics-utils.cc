@@ -29,6 +29,7 @@
 
 #include "caseless-str.h"
 
+#include "gh-manager.h"
 #include "graphics-utils.h"
 #include "graphics.h"
 #include "input.h"

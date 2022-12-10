@@ -38,6 +38,7 @@ COREFCN_INC = \
   %reldir%/fcn-info.h \
   %reldir%/file-io.h \
   %reldir%/ft-text-renderer.h \
+  %reldir%/gh-manager.h \
   %reldir%/gl-render.h \
   %reldir%/gl2ps-print.h \
   %reldir%/graphics-handle.h \
@@ -177,6 +178,7 @@ COREFCN_SRC = \
   %reldir%/getgrent.cc \
   %reldir%/getpwent.cc \
   %reldir%/getrusage.cc \
+  %reldir%/gh-manager.cc \
   %reldir%/givens.cc \
   %reldir%/gl-render.cc \
   %reldir%/gl2ps-print.cc \

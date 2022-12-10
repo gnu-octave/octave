@@ -102,6 +102,7 @@ COREFCN_INC = \
   %reldir%/gzfstream.h
 
 NOINSTALL_COREFCN_INC = \
+  %reldir%/graphics-utils.h \
   %reldir%/interpreter-private.h \
   %reldir%/mex-private.h \
   %reldir%/oct-hdf5.h \
@@ -180,6 +181,7 @@ COREFCN_SRC = \
   %reldir%/gl-render.cc \
   %reldir%/gl2ps-print.cc \
   %reldir%/graphics-toolkit.cc \
+  %reldir%/graphics-utils.cc \
   %reldir%/graphics.cc \
   %reldir%/gsvd.cc \
   %reldir%/gtk-manager.cc \

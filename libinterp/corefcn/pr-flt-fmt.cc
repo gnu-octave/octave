@@ -60,7 +60,9 @@ significant figures to display for numeric output.
 
 Note that regardless of the value set for @code{output_precision}, the
 number of digits of precision displayed is limited to 16 for double
-precision values and 7 for single precision values.
+precision values and 7 for single precision values.  Also, calls to the
+@code{format} function that change numeric display can also change the set
+value for @code{output_precision}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

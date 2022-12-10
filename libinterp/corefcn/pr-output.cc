@@ -3819,10 +3819,12 @@ DEFUN (format, args, nargout,
 Reset or specify the format of the output produced by @code{disp} and Octave's
 normal echoing mechanism.
 
-This command only affects the display of numbers, but not how they are stored
+This command only affects the display of numbers, not how they are stored
 or computed.  To change the internal representation from the default double use
 one of the conversion functions such as @code{single}, @code{uint8},
-@code{int64}, etc.
+@code{int64}, etc.  Any @code{format} options that change the number of
+displayed significant digits will also be reflected by the
+@code{output_precision} function.
 
 By default, Octave displays 5 significant digits in a human readable form
 (option @samp{short}, option @samp{lowercase}, and option @samp{loose} format

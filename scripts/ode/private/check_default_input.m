@@ -23,6 +23,11 @@
 ##
 ########################################################################
 
+## -*- texinfo -*-
+## @deftypefn {} {@var{fcn} =} check_default_input (@var{fcn}, @var{trange}, @var{solver}, @var{y0}, @var{yp0})
+## Undocumented internal function.
+## @end deftypefn
+
 function fcn = check_default_input (fcn, trange, solver, y0, yp0)
 
   if (nargin < 4)

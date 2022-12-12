@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} record (@var{sec})
-## @deftypefnx {} {} record (@var{sec}, @var{fs})
+## @deftypefn  {} {@var{data} =} record (@var{sec})
+## @deftypefnx {} {@var{data} =} record (@var{sec}, @var{fs})
 ## Record @var{sec} seconds of audio from the system's default audio input at
 ## a sampling rate of 8000 samples per second.
 ##

@@ -23,10 +23,22 @@
 ##
 ########################################################################
 
-## This function does all the work of imread.  It exists here as private
-## function so that imread can use other functions if imformats is
-## configured to.  It is also needed so that imformats can create a
-## function handle for it.
+## -*- texinfo -*-
+## @deftypefn  {} {[@var{img}, @var{map}, @var{alpha}] =} __imread__ (@var{filename})
+## @deftypefnx {} {[@dots{}] =} __imread__ (@var{url})
+## @deftypefnx {} {[@dots{}] =} __imread__ (@dots{}, @var{ext})
+## @deftypefnx {} {[@dots{}] =} __imread__ (@dots{}, @var{idx})
+## @deftypefnx {} {[@dots{}] =} __imread__ (@dots{}, @var{param1}, @var{value1}, @dots{})
+## @deftypefnx {} {@var{info} =} __imread__ (@var{filename})
+##
+## This function does all the work of @code{imread}.
+##
+## It exists here as private function so that @code{imread} can use other
+## functions if @code{imformats} is configured to.  It is also needed so that
+## @code{imformats} can create a function handle for it.
+##
+## @seealso{imread}
+## @end deftypefn
 
 function varargout = __imread__ (filename, varargin)
 

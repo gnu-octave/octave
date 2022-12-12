@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __file_filter__ (@var{caller}, @var{file_filter})
+## @deftypefn {} {[retval, defname, defdir] =} __file_filter__ (@var{caller}, @var{file_filter})
 ## Undocumented internal function.
 ## @end deftypefn
 

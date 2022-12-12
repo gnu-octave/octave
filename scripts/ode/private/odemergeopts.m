@@ -23,6 +23,11 @@
 ##
 ########################################################################
 
+## -*- texinfo -*-
+## @deftypefn {} {@var{options} =} odemergeopts (@var{caller}, @var{useroptions}, @var{options}, @var{classes}, @var{attributes}, @var{solver})
+## Undocumented internal function.
+## @end deftypefn
+
 ## FIXME: there are some calls to odemergeopts with a "solver" argument
 ## but we don't use that here.  Should the calls be fixed or should we
 ## do something with the solver argument here?

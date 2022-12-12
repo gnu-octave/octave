@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} bin2dec (@var{str})
+## @deftypefn {} {@var{d} =} bin2dec (@var{str})
 ## Return the decimal number corresponding to the binary number represented
 ## by the string @var{str}.
 ##

@@ -24,8 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} ifftshift (@var{x})
-## @deftypefnx {} {} ifftshift (@var{x}, @var{dim})
+## @deftypefn  {} {@var{y} =} ifftshift (@var{x})
+## @deftypefnx {} {@var{y} =} ifftshift (@var{x}, @var{dim})
 ## Undo the action of the @code{fftshift} function.
 ##
 ## For even length @var{x}, @code{fftshift} is its own inverse, but odd lengths

@@ -23,11 +23,16 @@
 ##
 ########################################################################
 
-## Private function the functions that convert between color spaces, i.e.,
-## rgb2ntsc, rgb2hsv, hsv2rgb, and ntsc2rgb.  This reverts a colormap type
-## into the same shape and class as it was in the input.  The flags are meant
-## to come from complementary private function
-## colorspace_conversion_input_check()
+## -*- texinfo -*-
+## @deftypefn {} {@var{rv} =} colorspace_conversion_revert (@var{rv}, @var{sz}, @var{is_im}, @var{is_nd})
+##
+## Private function that converts between color spaces.
+##
+## This reverts a colormap type into the same shape and class as it was in the
+## input.  The flags are meant to come from complementary private function
+## @code{colorspace_conversion_input_check}.
+## @seealso{hsv2rgb, rgb2grap, rgb2hsv, colorspace_conversion_input_check}
+## @end deftypefn
 
 function rv = colorspace_conversion_revert (rv, sz, is_im, is_nd)
 

@@ -24,10 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} uipushtool ()
-## @deftypefnx {} {} uipushtool (@var{property}, @var{value}, @dots{})
-## @deftypefnx {} {} uipushtool (@var{parent})
-## @deftypefnx {} {} uipushtool (@var{parent}, @var{property}, @var{value}, @dots{})
+## @deftypefn  {} {@var{hui} =} uipushtool ()
+## @deftypefnx {} {@var{hui} =} uipushtool (@var{property}, @var{value}, @dots{})
+## @deftypefnx {} {@var{hui} =} uipushtool (@var{parent})
+## @deftypefnx {} {@var{hui} =} uipushtool (@var{parent}, @var{property}, @var{value}, @dots{})
 ##
 ## Create a uipushtool object.
 ##

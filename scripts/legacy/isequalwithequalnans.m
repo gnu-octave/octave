@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} isequalwithequalnans (@var{x1}, @var{x2}, @dots{})
+## @deftypefn {} {@var{tf} =} isequalwithequalnans (@var{x1}, @var{x2}, @dots{})
 ## This function is obsolete.  Use @code{isequaln} instead.
 ## @seealso{isequaln}
 ## @end deftypefn
@@ -33,7 +33,7 @@
 ## removed in some future version.  Now users are told that it should be
 ## avoided, but there is no mention of possible future removal.
 
-function retval = isequalwithequalnans (varargin)
+function tf = isequalwithequalnans (varargin)
 
   persistent warned = false;
   if (! warned)
@@ -42,6 +42,6 @@ function retval = isequalwithequalnans (varargin)
              "isequalwithequalnans is obsolete; please use isequaln instead");
   endif
 
-  retval = isequaln (varargin{:});
+  tf = isequaln (varargin{:});
 
 endfunction

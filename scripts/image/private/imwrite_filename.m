@@ -23,17 +23,23 @@
 ##
 ########################################################################
 
-## The input check for imwrite needs to be done twice, once when imwrite
-## is called the first time to find where the filename is, and a second
-## time by __imwrite__ after imformats decides what function to use.
-## Because a user can, and is encouraged to, get a function handle to
-## __imwrite__, the input check is also done there.
-## In addition, the input check for imwrite is not that straightforward
-## in order to support the multiple ways the function can be called,
-## and interpretations of Matlab documentation.
+## -*- texinfo -*-
+## @deftypefn {} {[filename, ext, cmap, options] =} imwrite_filename (@var{varargin})
+##
+## The input check for @code{imwrite} needs to be done twice, once when
+## @code{imwrite} is called the first time to find where the filename is, and a
+## second time by @code{__imwrite__} after imformats decides what function to
+## use.  Because a user can, and is encouraged to, get a function handle to
+## @code{__imwrite__}, the input check is also done there.
+##
+## In addition, the input check for @code{imwrite} is not that straightforward
+## in order to support the multiple ways the function can be called, and
+## interpretations of @sc{matlab} documentation.
 ##
 ## Anyway, this will only do the input check until it finds the filename
-## to be used, the only part that imwrite actually needs.
+## to be used, the only part that @code{imwrite} actually needs.
+## @seealso{imwrite}
+## @end deftypefn
 
 function [filename, ext, cmap, options] = imwrite_filename (varargin)
 

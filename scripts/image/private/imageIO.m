@@ -23,28 +23,44 @@
 ##
 ########################################################################
 
-## This function the image input functions imread() and imfinfo() to the
-## functions that will actually be used, based on their format.  See below
-## on the details on how it identifies the format, and to what it defaults.
+## -*- texinfo -*-
+## @deftypefn {} {@var{varargout} =} imageIO (@var{fcn}, @var{core_fcn}, @var{fieldname}, @var{filename}, @var{varargin})
 ##
-## It will change the input arguments that were passed to imread() and
-## imfinfo().  It will change the filename to provide the absolute filepath
-## for the file, it will extract the possible format name from the rest of
-## the input arguments (in case there was one), and will give an error if
-## the file can't be found.
+## This function bridges the image input functions @code{imread} and
+## @code{imfinfo} to the functions that will actually be used, based on their
+## format.  See below for the details on how it identifies the format, and what
+## the defaults are.
+##
+## It will change the input arguments that were passed to @code{imread} and
+## @code{imfinfo}.  It will change the filename to provide the absolute
+## filepath for the file, it will extract the possible format name from the
+## rest of the input arguments (in case there was one), and will give an error
+## if the file can't be found.
 ##
 ## Usage:
 ##
-## fcn       - Function name to use on error message.
-## core_fcn  - Function handle for the default function to use if we can't
-##             find the format in imformats.
-## fieldname - Name of the field in the struct returned by imformats that
-##             has the function to use.
-## filename  - Most likely the first input argument from the function that
-##             called this.  May be missing the file extension which can be
-##             on varargin.
-## varargin  - Followed by all the OTHER arguments passed to imread and
-##             imfinfo.
+## @table @var
+## @item fcn
+## Function name to use in error message.
+##
+## @item core_fcn
+## Function handle for the default function to use if we can't find the format
+## in imformats.
+##
+## @item fieldname
+## Name of the field in the struct returned by imformats that has the function
+## to use.
+##
+## @item filename
+## Most likely the first input argument from the function that called this.
+## May be missing the file extension which can be on varargin.
+##
+## @item varargin
+## Followed by all the OTHER arguments passed to imread and imfinfo.
+## @end table
+##
+## @seealso{imread, imwrite}
+## @end deftypefn
 
 function varargout = imageIO (fcn, core_fcn, fieldname, filename, varargin)
 

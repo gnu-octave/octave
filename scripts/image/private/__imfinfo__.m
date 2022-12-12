@@ -23,10 +23,17 @@
 ##
 ########################################################################
 
-## This function does all the work of imfinfo.  It exists here as private
-## function so that imfinfo can use other functions if imformats is
-## configured to.  It is also needed so that imformats can create a
-## function handle for it.
+## -*- texinfo -*-
+## @deftypefn {} {@var{info} =} __imfinfo__ (@var{filename})
+##
+## This function does all the work of @code{imfinfo}.
+##
+## It exists here as private function so that @code{imfinfo} can use other
+## functions if @code{imformats} is configured to.  It is also needed so that
+## @code{imformats} can create a function handle for it.
+##
+## @seealso{imfinfo}
+## @end deftypefn
 
 function info = __imfinfo__ (filename)
 

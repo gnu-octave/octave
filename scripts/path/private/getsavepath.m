@@ -23,6 +23,11 @@
 ##
 ########################################################################
 
+## -*- texinfo -*-
+## @deftypefn {} {[@var{filelines}, @var{startline}, @var{endline}] =} getsavepath (@var{file})
+## Undocumented internal function.
+## @end deftypefn
+
 function [filelines, startline, endline] = getsavepath (file)
 
   beginstring = "## Begin savepath auto-created section, do not edit";

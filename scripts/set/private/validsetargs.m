@@ -23,7 +23,12 @@
 ##
 ########################################################################
 
-## Validate arguments for binary set operation.
+## -*- texinfo -*-
+## @deftypefn {} {[x, y] =} validsetargs (@var{caller}, @var{x}, @var{y}, @var{varargin})
+## Internal function to validate arguments passed to functions operating on
+## sets.
+## @seealso{intersect, ismember, setdiff, setxor, union}
+## @end deftypefn
 
 function [x, y] = validsetargs (caller, x, y, varargin)
 

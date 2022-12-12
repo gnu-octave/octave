@@ -23,7 +23,12 @@
 ##
 ########################################################################
 
-## private function for the ind2XXX functions which have a lot of code in common
+## -*- texinfo -*-
+## @deftypefn {} {[x, map] =} ind2x (@var{caller}, @var{x}, @var{map})
+##
+## Private function for the ind2XXX functions which have a lot of code in
+## common.
+## @end deftypefn
 
 function [x, map] = ind2x (caller, x, map)
 

@@ -23,6 +23,11 @@
 ##
 ########################################################################
 
+## -*- texinfo -*-
+## @deftypefn {} {@var{u_interp} =} odemergeopts (@var{order}, @var{z}, @var{t}, @var{k_vals})
+## Undocumented internal function.
+## @end deftypefn
+
 function u_interp = runge_kutta_interpolate (order, z, u, t, k_vals)
 
   switch (order)

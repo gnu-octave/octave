@@ -24,8 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __axis_label__ (@var{caller}, @var{hax}, @var{txt}, @dots{})
-## Undocumented internal function.
+## @deftypefn  {} {} __axis_label__ (@var{hax}, @var{caller}, @var{txt}, @dots{})
+## @deftypefnx {} {@var{h} =} __axis_label__ (@dots{})
+## Internal function with common code for axis labeling functions.
+## @seealso{xlabel, ylabel, zlabel, title}
 ## @end deftypefn
 
 function retval = __axis_label__ (hax, caller, txt, varargin)

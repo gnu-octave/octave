@@ -23,6 +23,14 @@
 ##
 ########################################################################
 
+## -*- texinfo -*-
+## @deftypefn {} {} feval (@var{fobj}, @dots{})
+## Evaluate the inline function in @var{fobj}.
+##
+## Any arguments after the first are passed as inputs to the function.
+## @seealso{inline}
+## @end deftypefn
+
 function retval = feval (fobj, varargin)
 
   retval = fobj.fh (varargin{:});

@@ -24,8 +24,10 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __bar__ (@var{vertical}, @var{fcn}, @dots{})
-## Undocumented internal function.
+## @deftypefn {} {@var{varargout} =} __bar__ (@var{fcn}, @var{vertical}, @dots{})
+## Internal function with common code to implement @code{bar} and @code{barh}
+## plots.
+## @seealso{bar, barh}
 ## @end deftypefn
 
 function varargout = __bar__ (fcn, vertical, varargin)

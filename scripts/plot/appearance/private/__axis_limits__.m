@@ -24,8 +24,16 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} __axis_limits__ (@var{fcn}, @dots{})
-## Undocumented internal function.
+## @deftypefn  {} {@var{limits} =} __axis_limits__ (@var{fcn})
+## @deftypefnx {} {@var{xmode} =} __axis_limits__ (@var{fcn}, "mode")
+## @deftypefnx {} {} __axis_limits__ (@var{fcn}, [@var{x_lo} @var{x_hi}])
+## @deftypefnx {} {} __axis_limits__ (@var{fcn}, "auto")
+## @deftypefnx {} {} __axis_limits__ (@var{fcn}, "manual")
+## @deftypefnx {} {} __axis_limits__ (@var{fcn}, @var{hax}, @dots{})
+## @deftypefn {} {@var{old_limits} =} __axis_limits__ (@var{fcn}, @dots{})
+## Internal function that implements common code to query or set the axis
+## limits for a plot.
+## @seealso{xlim, ylim, zlim, title}
 ## @end deftypefn
 
 function retval = __axis_limits__ (fcn, varargin)

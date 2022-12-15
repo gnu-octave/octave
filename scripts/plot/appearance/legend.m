@@ -1244,9 +1244,11 @@ function update_displayname_cb (h, ~, hl)
     str = {str};
   endif
 
-  str{h == getappdata (hl, "__peer_objects__")} = get (h, "displayname");
-
-  set (hl ,"string", str);
+  idx = h == getappdata (hl, "__peer_objects__");
+  if (any (idx))
+    str{idx} = get (h, "displayname");
+    set (hl ,"string", str);
+  endif
 
 endfunction
 

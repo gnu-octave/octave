@@ -814,6 +814,11 @@ lexer, which usually prefers to break the input into tokens by
 preferring the longest possible match at any given point, it is more
 useful in this case.
 
+Note also that some combinations of binary operators and whitespace can
+create ambiguities with Octave's Command Syntax form of calling functions.
+See @ref{Command Syntax and Function Syntax} for more detail on avoiding
+such issues.
+
 @opindex @code{'}
 @DOCSTRING(ctranspose)
 

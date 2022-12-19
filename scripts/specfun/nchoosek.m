@@ -108,6 +108,7 @@ function C = nchoosek (v, k)
     endif
   endif
 
+  v = v(:).';  # convert to row vector
   n = numel (v);
 
   if (n == 1 && isnumeric (v))
@@ -158,7 +159,7 @@ function C = nchoosek (v, k)
   elseif (k == 1)
     C = v(:);
   elseif (k == n)
-    C = v(:).';
+    C = v;
   elseif (k > n)
     C = v(zeros (0, k));  # return 0xk object for Matlab compatibility
   elseif (k == 2)
@@ -167,7 +168,6 @@ function C = nchoosek (v, k)
     y = cat (1, cellslices (v(:), 2:n, n*ones (1, n-1)){:});
     C = [x, y];
   elseif (k < n)
-    v = v(:).';
     C = v(k:n);
     l = 1:n-k+1;
     for j = 2:k
@@ -282,6 +282,10 @@ endfunction
 %! x = nchoosek (uint8 (10), uint8 (5));
 %! assert (x, uint8 (252));
 %! assert (class (x), "uint8");
+
+%!test <*63538>
+%! x = nchoosek ([1:3]', 2);
+%! assert (x, [1 2; 1 3; 2 3]);
 
 ## Test input validation
 %!error <Invalid call> nchoosek ()

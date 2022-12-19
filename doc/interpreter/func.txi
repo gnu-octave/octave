@@ -1981,8 +1981,8 @@ assigned to a variable, or multiple output arguments of a function should be
 returned, the function syntax must be used.
 
 It should be noted that mixing command syntax and binary operators can
-create ambiguities with mathematical and logical expressions that would use
-function syntax.  For example, all three of the statements
+create apparent ambiguities with mathematical and logical expressions that
+use function syntax.  For example, all three of the statements
 
 @example
 arg1 - arg2
@@ -1991,10 +1991,10 @@ arg1-arg2
 @end example
 
 @noindent
-could be interpreted as a subtraction operation between
-@code{arg1} and @code{arg2}.  The first two, however, could also be taken
-as a command syntax call to function @code{arg1}, in the first case with
-options @code{-} and @code{arg2}, and in the second case with option
+could be intended by a user to be subtraction operations between
+@code{arg1} and @code{arg2}.  The first two, however, could also have been
+meant as a command syntax call to function @code{arg1}, in the first case
+with options @code{-} and @code{arg2}, and in the second case with option
 @code{-arg2}.
 
 Octave uses whitespace to interpret such expressions according to the

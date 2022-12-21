@@ -1175,8 +1175,12 @@ Display an error message and stop m-file execution.
 Format the optional arguments under the control of the template string
 @var{template} using the same rules as the @code{printf} family of
 functions (@pxref{Formatted Output}) and print the resulting message
-on the @code{stderr} stream.  The message is prefixed by the character
-string @samp{error: }.
+on the @code{stderr} stream.  This formatting is only done for
+single-quoted character vectors if there are additional arguments
+following the template string.  If there are no additional arguments, the
+template string is used literally (i.e., without interpreting any escape
+sequences in single-quoted character vectors).  The message is prefixed
+by @samp{error: }.
 
 Calling @code{error} also sets Octave's internal error state such that
 control will return to the top level without evaluating any further

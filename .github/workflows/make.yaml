@@ -68,21 +68,18 @@ jobs:
             texlive-latex-extra xvfb zlib1g-dev
 
       - name: prepare ccache
-        # create human readable timestamp
-        id: ccache_cache_timestamp
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         run: |
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        # uses: actions/cache@v3
-        # The original action doesn't upload on error. Use this fork instead.
-        # FIXME: Consider reverting to the original action when it allows uploading on error.
-        #        See: https://github.com/actions/cache/issues/92
-        uses: pat-s/always-upload-cache@v3
+        uses: actions/cache/restore@v3
         with:
           path: ~/.ccache
-          key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
@@ -128,6 +125,13 @@ jobs:
 
       - name: ccache status
         run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: ~/.ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: check
         timeout-minutes: 60
@@ -194,14 +198,14 @@ jobs:
         # Use a pretty long timeout (but still less than the default 6 hours).
         timeout-minutes: 75
 
-        # It looks like "gfortran" isn't working correctly unless "gcc" is
-        # re-installed.
-
         # Homebrew's Python conflicts with the Python that comes pre-installed
         # on the GitHub runners. Some of Octave's dependencies depend on
         # different versions of Homebrew's Python. Enforce using the ones from
         # Homebrew to avoid errors on updates.
         # See: https://github.com/orgs/Homebrew/discussions/3928
+
+        # It looks like "gfortran" isn't working correctly unless "gcc" is
+        # re-installed.
 
         # See also: https://formulae.brew.sh/formula/octave#default
         # The packages are listed in (alphabetically sorted) blocks:
@@ -210,8 +214,8 @@ jobs:
         # The third block is for additional dependencies needed when building from a repository checkout.
         run: |
           brew update
-          brew reinstall gcc
           brew install --overwrite python@3.10 python@3.11
+          brew reinstall gcc
           brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
             ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libsndfile \
             libtool openblas pcre2 portaudio pstoedit qhull qrupdate \
@@ -226,17 +230,19 @@ jobs:
           echo "/usr/local/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
 
       - name: prepare ccache
-        # create human readable timestamp
-        id: ccache_cache_timestamp
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         run: |
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
+        id: restore-ccache
         with:
           path: /Users/runner/Library/Caches/ccache
-          key: ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
             ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
@@ -296,6 +302,13 @@ jobs:
 
       - name: ccache status
         run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: /Users/runner/Library/Caches/ccache
+          key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: check
         # Continuing on error in this step means that jobs will be "green" even
@@ -454,18 +467,19 @@ jobs:
         uses: actions/checkout@v3
 
       - name: prepare ccache
-        # Create human readable timestamp
-        id: ccache_cache_timestamp
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         run: |
           echo "ccachedir=$(cygpath -m $(ccache -k cache_dir))" >> $GITHUB_OUTPUT
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
-          path: ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
-          key: ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           restore-keys: |
             ccache:${{ matrix.os }}:${{ matrix.msystem }}:${{ github.ref }}
             ccache:${{ matrix.os }}:${{ matrix.msystem }}:refs/heads/default
@@ -474,9 +488,9 @@ jobs:
         # Limit the maximum size and switch on compression to avoid exceeding the total disk or cache quota.
         run: |
           which ccache
-          test -d ${{ steps.ccache_cache_timestamp.outputs.ccachedir }} || mkdir -p ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
-          echo "max_size = 0.9G" > ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
-          echo "compression = true" >> ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
+          test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          echo "max_size = 0.9G" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
           ccache -p
           ccache -s
           # create ccache helper script for Fortran compiler
@@ -516,6 +530,13 @@ jobs:
       - name: ccache status
         continue-on-error: true
         run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: check
         # Continuing on error in this step means that jobs will be "green" even
@@ -578,7 +599,7 @@ jobs:
         continue-on-error: true
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.target-prefix }}-octave-${{ steps.ccache_cache_timestamp.outputs.timestamp }}
+          name: ${{ matrix.target-prefix }}-octave-${{ steps.ccache-prepare.outputs.timestamp }}
           path: C:\octave\pkg\octave.tar.gz
           retention-days: 7
 
@@ -693,18 +714,19 @@ jobs:
             zip
 
       - name: prepare ccache
-        # Create human readable timestamp
-        id: ccache_cache_timestamp
+        # create key with human readable timestamp
+        # used in action/cache/restore and action/cache/save steps
+        id: ccache-prepare
         run: |
           echo "ccachedir=$(cygpath -m ~/.ccache)" >> $GITHUB_OUTPUT
-          echo "timestamp=$(date +"%Y-%m-%d_%H-%M-%S")" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:cygwin:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # Setup a github cache used to maintain the ccache from one run to the next
-        uses: actions/cache@v3
+        uses: actions/cache/restore@v3
         with:
-          path: ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
-          key: ccache:${{ matrix.os }}:cygwin:${{ github.ref }}:${{ steps.ccache_cache_timestamp.outputs.timestamp }}:${{ github.sha }}
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
           restore-keys: |
             ccache:${{ matrix.os }}:cygwin:${{ github.ref }}
             ccache:${{ matrix.os }}:cygwin:refs/heads/default
@@ -716,9 +738,9 @@ jobs:
           which ccache
           ccache -V
           # ccache 3.1 doesn't read configuration files
-          # test -d ${{ steps.ccache_cache_timestamp.outputs.ccachedir }} || mkdir -p ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}
-          # echo "max_size = 0.9G" > ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
-          # echo "compression = true" >> ${{ steps.ccache_cache_timestamp.outputs.ccachedir }}/ccache.conf
+          # test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
+          # echo "max_size = 0.9G" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          # echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
           # limit maximum cache size to avoid exceeding the total disk or cache quota
           ccache -M 0.9G
           ccache -s
@@ -764,6 +786,13 @@ jobs:
       - name: ccache status
         continue-on-error: true
         run: ccache -s
+
+      - name: save ccache
+        # Save the cache after we are done (successfully) building
+        uses: actions/cache/save@v3
+        with:
+          path: ${{ steps.ccache-prepare.outputs.ccachedir }}
+          key: ${{ steps.ccache-prepare.outputs.key }}
 
       - name: check
         # Continuing on error in this step means that jobs will be "green" even

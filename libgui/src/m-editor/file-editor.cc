@@ -1652,8 +1652,11 @@ void file_editor::request_open_file (const QString& openFileName,
             }
           else
             {
-              delete fileEditorTab;
-              fileEditorTab = nullptr;
+              if (! reusing)
+                {
+                  delete fileEditorTab;
+                  fileEditorTab = nullptr;
+                }
 
               if (QFile::exists (openFileName))
                 {

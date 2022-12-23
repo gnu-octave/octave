@@ -1654,8 +1654,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               }
             else
               {
-                delete fileEditorTab;
-                fileEditorTab = nullptr;
+                if (! reusing)
+                  {
+                    delete fileEditorTab;
+                    fileEditorTab = nullptr;
+                  }
 
                 if (QFile::exists (openFileName))
                   {

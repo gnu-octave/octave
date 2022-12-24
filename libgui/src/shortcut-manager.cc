@@ -343,36 +343,26 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         return;
       }
 
-    // Enable: Is the given key known? If yes, get the value from the
-    //         settings file and set it to the action
-    int index;
+    gui_settings settings;
 
-    index = m_action_hash[scpref.key] - 1;
+    QString shortcut = settings.sc_value (scpref);
 
-    if (index > -1 && index < m_sc.count ())
-      {
-        gui_settings settings;
-
-        action->setShortcut (QKeySequence (settings.sc_value (scpref)));
-      }
+    if (! shortcut.isEmpty ())
+      action->setShortcut (QKeySequence (shortcut));
     else
-      qDebug () << "Key: " << scpref.key << " not found in m_action_hash";
+      qDebug () << "Key: " << scpref.key << " not found in settings";
   }
 
   void shortcut_manager::shortcut (QShortcut *sc, const sc_pref& scpref)
   {
-    int index;
+    gui_settings settings;
 
-    index = m_action_hash[scpref.key] - 1;
+    QString shortcut = settings.sc_value (scpref);
 
-    if (index > -1 && index < m_sc.count ())
-      {
-        gui_settings settings;
-
-        sc->setKey (QKeySequence (settings.sc_value (scpref)));
-      }
+    if (! shortcut.isEmpty ())
+      sc->setKey (QKeySequence (shortcut));
     else
-      qDebug () << "Key: " << scpref.key << " not found in m_action_hash";
+      qDebug () << "Key: " << scpref.key << " not found in settings";
   }
 
   void shortcut_manager::fill_treewidget (QTreeWidget *tree_view)
@@ -638,7 +628,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // insert shortcut in order to check for duplicates later
     if (! actual.isEmpty ())
       m_shortcut_hash[actual.toString ()] = m_sc.count ();
-    m_action_hash[sc.key] = m_sc.count ();
 
     // check whether ctrl+d is used from main window, i.e. is a global shortcut
     QString main_group_prefix

@@ -343,7 +343,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   retval(0) = octave_value (img);
 
   // Only bother reading the colormap if it was requested as output.
-  if (nargout > 1)
+  if (nargout >= 2)
     {
       // In theory, it should be possible for each frame of an image to
       // have different colormaps but for Matlab compatibility, we only
@@ -355,22 +355,31 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
 
       retval(1) = maps(0);
 
-      // only interpret alpha channel if it exists and was requested as output
-      if (imvec[def_elem].matte () && nargout >= 3)
+      // only interpret alpha channel if it was requested as output
+      if (nargout >= 3)
         {
-          const Matrix amap = maps(1).matrix_value ();
-          const double *amap_fvec = amap.data ();
+          if (imvec[def_elem].matte ())
+            {
+              // Alpha channel exists.
+              const Matrix amap = maps(1).matrix_value ();
+              const double *amap_fvec = amap.data ();
 
-          NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
-          double *alpha_fvec = alpha.fortran_vec ();
+              NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
+              double *alpha_fvec = alpha.fortran_vec ();
 
-          // GraphicsMagick stores the alpha values inverted, i.e.,
-          // 1 for transparent and 0 for opaque so we fix that here.
-          const octave_idx_type nPixels = alpha.numel ();
-          for (octave_idx_type pix = 0; pix < nPixels; pix++)
-            alpha_fvec[pix] = 1 - amap_fvec[static_cast<int> (img_fvec[3])];
+              // GraphicsMagick stores the alpha values inverted, i.e.,
+              // 1 for transparent and 0 for opaque so we fix that here.
+              const octave_idx_type nPixels = alpha.numel ();
+              for (octave_idx_type pix = 0; pix < nPixels; pix++)
+                alpha_fvec[pix] = 1 - amap_fvec[static_cast<int> (img_fvec[3])];
 
-          retval(2) = alpha;
+              retval(2) = alpha;
+            }
+          else
+            {
+              // No alpha channel.  Return empty matrix.
+              retval(2) = Matrix ();
+            }
         }
     }
 

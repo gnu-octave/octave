@@ -335,7 +335,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void shortcut_manager::fill_treewidget (QTreeWidget *tree_view)
   {
     m_dialog = nullptr;
-    m_level_hash.clear ();
+
+    QHash <QString, QTreeWidgetItem *> level_hash;
 
     tree_view->header ()->setSectionResizeMode (QHeaderView::ResizeToContents);
 
@@ -365,17 +366,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QTreeWidgetItem *main_zoom = new QTreeWidgetItem (main);
     main_zoom->setText (0, tr ("Zooming in Editor and Documentation"));
 
-    m_level_hash[sc_main_file]   = main_file;
-    m_level_hash[sc_main_edit]   = main_edit;
-    m_level_hash[sc_main_debug]   = main_debug;
-    m_level_hash[sc_main_tools]   = main_tools;
-    m_level_hash[sc_main_window]   = main_window;
-    m_level_hash[sc_main_help]   = main_help;
-    m_level_hash[sc_main_news]   = main_news;
-    m_level_hash[sc_dock_widget] = main_dock_widgets;
-    m_level_hash[sc_edit_tabs]   = main_tabs;
-    m_level_hash[sc_edit_find]   = main_find;
-    m_level_hash[sc_edit_zoom]   = main_zoom;
+    level_hash[sc_main_file] = main_file;
+    level_hash[sc_main_edit] = main_edit;
+    level_hash[sc_main_debug] = main_debug;
+    level_hash[sc_main_tools] = main_tools;
+    level_hash[sc_main_window] = main_window;
+    level_hash[sc_main_help] = main_help;
+    level_hash[sc_main_news] = main_news;
+    level_hash[sc_dock_widget] = main_dock_widgets;
+    level_hash[sc_edit_tabs] = main_tabs;
+    level_hash[sc_edit_find] = main_find;
+    level_hash[sc_edit_zoom] = main_zoom;
 
     QTreeWidgetItem *editor = new QTreeWidgetItem (tree_view);
     editor->setText (0, tr ("Editor"));
@@ -393,12 +394,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QTreeWidgetItem *editor_help = new QTreeWidgetItem (editor);
     editor_help->setText (0, tr ("Help Menu"));
 
-    m_level_hash[sc_edit_file] = editor_file;
-    m_level_hash[sc_edit_edit] = editor_edit;
-    m_level_hash[sc_edit_view] = editor_view;
-    m_level_hash[sc_edit_debug] = editor_debug;
-    m_level_hash[sc_edit_run] = editor_run;
-    m_level_hash[sc_edit_help] = editor_help;
+    level_hash[sc_edit_file] = editor_file;
+    level_hash[sc_edit_edit] = editor_edit;
+    level_hash[sc_edit_view] = editor_view;
+    level_hash[sc_edit_debug] = editor_debug;
+    level_hash[sc_edit_run] = editor_run;
+    level_hash[sc_edit_help] = editor_help;
 
     QTreeWidgetItem *doc = new QTreeWidgetItem (tree_view);
     doc->setText (0, tr ("Documentation Viewer"));
@@ -407,7 +408,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QTreeWidgetItem *doc_browser = new QTreeWidgetItem (doc);
     doc_browser->setText (0, tr ("Browser"));
 
-    m_level_hash[sc_doc] = doc_browser;
+    level_hash[sc_doc] = doc_browser;
 
     connect (tree_view, &QTreeWidget::itemDoubleClicked,
              this, &shortcut_manager::handle_double_clicked);
@@ -416,7 +417,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         shortcut_t sc = m_sc.at (i);
 
-        QTreeWidgetItem *section = m_level_hash[sc.m_settings_key.section (':', 0, 0)];
+        QTreeWidgetItem *section = level_hash[sc.m_settings_key.section (':', 0, 0)];
 
         // handle sections which have changed and do not correspond to the
         // previously defined keyname

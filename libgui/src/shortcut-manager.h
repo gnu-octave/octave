@@ -154,7 +154,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QList<shortcut_t> m_sc;
     QHash<QString, int> m_shortcut_hash;
-    QHash <QString, QTreeWidgetItem *> m_level_hash;
     QHash<int, QTreeWidgetItem *> m_index_item_hash;
     QHash<QTreeWidgetItem *, int> m_item_index_hash;
 

@@ -39,7 +39,6 @@
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
 #include "octave-qobject.h"
-#include "shortcut-manager.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -130,14 +129,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Update the settings
   void dw_main_window::notice_settings (void)
   {
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    gui_settings settings;
 
-    scmgr.set_shortcut (m_close_action, sc_edit_file_close);
-    scmgr.set_shortcut (m_close_all_action, sc_edit_file_close_all);
-    scmgr.set_shortcut (m_close_others_action, sc_edit_file_close_other);
+    settings.set_shortcut (m_close_action, sc_edit_file_close);
+    settings.set_shortcut (m_close_all_action, sc_edit_file_close_all);
+    settings.set_shortcut (m_close_others_action, sc_edit_file_close_other);
 
-    scmgr.set_shortcut (m_switch_left_action, sc_edit_tabs_switch_left_tab);
-    scmgr.set_shortcut (m_switch_right_action, sc_edit_tabs_switch_right_tab);
+    settings.set_shortcut (m_switch_left_action, sc_edit_tabs_switch_left_tab);
+    settings.set_shortcut (m_switch_right_action, sc_edit_tabs_switch_right_tab);
   }
 
   // Slots for handling actions

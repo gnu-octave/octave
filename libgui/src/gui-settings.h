@@ -28,7 +28,6 @@
 
 #include <QComboBox>
 #include <QIcon>
-#include <QString>
 #include <QSettings>
 #include <QShortcut>
 #include <QString>
@@ -138,6 +137,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QString sc_value (const sc_pref& pref) const;
 
     QKeySequence sc_def_value (const sc_pref& pref) const;
+
+    void set_shortcut (QAction *action, const sc_pref& scpref,
+                       bool enable = true);
+
+    void shortcut (QShortcut *sc, const sc_pref& scpref);
 
     // config_icon_theme, icon, get_default_font_family,
     // get_default_font, and possibly reload and check could be global

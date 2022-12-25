@@ -30,9 +30,10 @@
 #include <QCompleter>
 #include <QDir>
 #include <QFileInfo>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
-#include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -44,7 +45,6 @@
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
 #include "octave-qtutils.h"
-#include "shortcut-manager.h"
 
 #include "defaults.h"
 #include "file-ops.h"

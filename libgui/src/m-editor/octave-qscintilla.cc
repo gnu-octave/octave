@@ -35,7 +35,6 @@
 #include <QKeySequence>
 #include <QMessageBox>
 #include <QMimeData>
-#include <QShortcut>
 #include <QPointer>
 #include <QTemporaryFile>
 #include <QToolTip>
@@ -61,7 +60,6 @@
 #include "marker.h"
 #include "octave-qobject.h"
 #include "octave-qscintilla.h"
-#include "shortcut-manager.h"
 #include "workspace-model.h"
 
 #include "builtin-defun-decls.h"

@@ -60,7 +60,6 @@
 #include "octave-qtutils.h"
 #include "ovl.h"
 #include "qt-utils.h"
-#include "shortcut-manager.h"
 #include "variable-editor-model.h"
 #include "variable-editor.h"
 
@@ -1470,8 +1469,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
 
     // Shortcuts (same as file editor)
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-    scmgr.set_shortcut (m_save_action, sc_edit_file_save);
+    settings.set_shortcut (m_save_action, sc_edit_file_save);
   }
 
   void

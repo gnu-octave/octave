@@ -90,10 +90,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void write_shortcuts (gui_settings& settings, bool closing);
 
-    void set_shortcut (QAction *action, const sc_pref& scpref, bool enable = true);
-
-    void shortcut (QShortcut *sc, const sc_pref& scpref);
-
     void fill_treewidget (QTreeWidget *tree_view);
 
     bool import_export (int action);

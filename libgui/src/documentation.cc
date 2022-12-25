@@ -58,7 +58,6 @@
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
 #include "octave-qobject.h"
-#include "shortcut-manager.h"
 
 #include "defaults.h"
 #include "file-ops.h"
@@ -624,18 +623,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
     // Shortcuts
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-
-    scmgr.set_shortcut (m_action_find, sc_edit_edit_find_replace);
-    scmgr.shortcut (m_findnext_shortcut, sc_edit_edit_find_next);
-    scmgr.shortcut (m_findprev_shortcut, sc_edit_edit_find_previous);
-    scmgr.set_shortcut (m_action_zoom_in, sc_edit_view_zoom_in);
-    scmgr.set_shortcut (m_action_zoom_out, sc_edit_view_zoom_out);
-    scmgr.set_shortcut (m_action_zoom_original, sc_edit_view_zoom_normal);
-    scmgr.set_shortcut (m_action_go_home, sc_doc_go_home);
-    scmgr.set_shortcut (m_action_go_prev, sc_doc_go_back);
-    scmgr.set_shortcut (m_action_go_next, sc_doc_go_next);
-    scmgr.set_shortcut (m_action_bookmark, sc_doc_bookmark);
+    settings.set_shortcut (m_action_find, sc_edit_edit_find_replace);
+    settings.shortcut (m_findnext_shortcut, sc_edit_edit_find_next);
+    settings.shortcut (m_findprev_shortcut, sc_edit_edit_find_previous);
+    settings.set_shortcut (m_action_zoom_in, sc_edit_view_zoom_in);
+    settings.set_shortcut (m_action_zoom_out, sc_edit_view_zoom_out);
+    settings.set_shortcut (m_action_zoom_original, sc_edit_view_zoom_normal);
+    settings.set_shortcut (m_action_go_home, sc_doc_go_home);
+    settings.set_shortcut (m_action_go_prev, sc_doc_go_back);
+    settings.set_shortcut (m_action_go_next, sc_doc_go_next);
+    settings.set_shortcut (m_action_bookmark, sc_doc_bookmark);
 
     // Settings for the browser
     m_doc_browser->notice_settings ();

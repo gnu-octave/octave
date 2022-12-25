@@ -30,7 +30,6 @@
 #include <QAction>
 #include <QApplication>
 #include <QCheckBox>
-#include <QDebug>
 #include <QDialogButtonBox>
 #include <QFileDialog>
 #include <QGridLayout>
@@ -331,38 +330,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
 
     settings.sync ();      // sync the settings file
-  }
-
-  void shortcut_manager::set_shortcut (QAction *action, const sc_pref& scpref,
-                                       bool enable)
-  {
-    if (! enable)
-      {
-        // Disable => remove existing shortcut from the action
-        action->setShortcut (QKeySequence ());
-        return;
-      }
-
-    gui_settings settings;
-
-    QString shortcut = settings.sc_value (scpref);
-
-    if (! shortcut.isEmpty ())
-      action->setShortcut (QKeySequence (shortcut));
-    else
-      qDebug () << "Key: " << scpref.key << " not found in settings";
-  }
-
-  void shortcut_manager::shortcut (QShortcut *sc, const sc_pref& scpref)
-  {
-    gui_settings settings;
-
-    QString shortcut = settings.sc_value (scpref);
-
-    if (! shortcut.isEmpty ())
-      sc->setKey (QKeySequence (shortcut));
-    else
-      qDebug () << "Key: " << scpref.key << " not found in settings";
   }
 
   void shortcut_manager::fill_treewidget (QTreeWidget *tree_view)

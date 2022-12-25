@@ -219,14 +219,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (this, &octave_dock_widget::queue_make_widget,
              this, [=] () { make_widget (); }, Qt::QueuedConnection);
 
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-    scmgr.set_shortcut (m_dock_action, sc_dock_widget_dock);
+    gui_settings settings;
+
+    settings.set_shortcut (m_dock_action, sc_dock_widget_dock);
     m_dock_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     addAction (m_dock_action);
     connect (m_dock_action, &QAction::triggered,
              this, &octave_dock_widget::make_window);
 
-    scmgr.set_shortcut (m_close_action, sc_dock_widget_close);
+    settings.set_shortcut (m_close_action, sc_dock_widget_close);
     m_close_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
     addAction (m_close_action);
     connect (m_close_action, &QAction::triggered,

@@ -54,7 +54,6 @@
 #include "main-window.h"
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
-#include "shortcut-manager.h"
 
 #include "oct-env.h"
 
@@ -196,8 +195,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void file_editor::handle_exit_debug_mode (void)
   {
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-    scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
+    gui_settings settings;
+    settings.set_shortcut (m_run_action, sc_edit_run_run_file);
     m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
 
     emit exit_debug_mode_signal ();
@@ -1387,91 +1386,90 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Shortcuts also available in the main window, as well as the related
     // shortcuts, are defined in main_window and added to the editor
 
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    gui_settings settings;
 
     // File menu
-    scmgr.set_shortcut (m_edit_function_action, sc_edit_file_edit_function);
-    scmgr.set_shortcut (m_save_action, sc_edit_file_save);
-    scmgr.set_shortcut (m_save_as_action, sc_edit_file_save_as);
-    scmgr.set_shortcut (m_close_action, sc_edit_file_close);
-    scmgr.set_shortcut (m_close_all_action, sc_edit_file_close_all);
-    scmgr.set_shortcut (m_close_others_action, sc_edit_file_close_other);
-    scmgr.set_shortcut (m_print_action, sc_edit_file_print);
+    settings.set_shortcut (m_edit_function_action, sc_edit_file_edit_function);
+    settings.set_shortcut (m_save_action, sc_edit_file_save);
+    settings.set_shortcut (m_save_as_action, sc_edit_file_save_as);
+    settings.set_shortcut (m_close_action, sc_edit_file_close);
+    settings.set_shortcut (m_close_all_action, sc_edit_file_close_all);
+    settings.set_shortcut (m_close_others_action, sc_edit_file_close_other);
+    settings.set_shortcut (m_print_action, sc_edit_file_print);
 
     // Edit menu
-    scmgr.set_shortcut (m_redo_action, sc_edit_edit_redo);
-    scmgr.set_shortcut (m_cut_action, sc_edit_edit_cut);
-    scmgr.set_shortcut (m_find_action, sc_edit_edit_find_replace);
-    scmgr.set_shortcut (m_find_next_action, sc_edit_edit_find_next);
-    scmgr.set_shortcut (m_find_previous_action, sc_edit_edit_find_previous);
+    settings.set_shortcut (m_redo_action, sc_edit_edit_redo);
+    settings.set_shortcut (m_cut_action, sc_edit_edit_cut);
+    settings.set_shortcut (m_find_action, sc_edit_edit_find_replace);
+    settings.set_shortcut (m_find_next_action, sc_edit_edit_find_next);
+    settings.set_shortcut (m_find_previous_action, sc_edit_edit_find_previous);
 
-    scmgr.set_shortcut (m_delete_start_word_action, sc_edit_edit_delete_start_word);
-    scmgr.set_shortcut (m_delete_end_word_action, sc_edit_edit_delete_end_word);
-    scmgr.set_shortcut (m_delete_start_line_action, sc_edit_edit_delete_start_line);
-    scmgr.set_shortcut (m_delete_end_line_action, sc_edit_edit_delete_end_line);
-    scmgr.set_shortcut (m_delete_line_action, sc_edit_edit_delete_line);
-    scmgr.set_shortcut (m_copy_line_action, sc_edit_edit_copy_line);
-    scmgr.set_shortcut (m_cut_line_action, sc_edit_edit_cut_line);
-    scmgr.set_shortcut (m_duplicate_selection_action, sc_edit_edit_duplicate_selection);
-    scmgr.set_shortcut (m_transpose_line_action, sc_edit_edit_transpose_line);
-    scmgr.set_shortcut (m_comment_selection_action, sc_edit_edit_comment_selection);
-    scmgr.set_shortcut (m_uncomment_selection_action, sc_edit_edit_uncomment_selection);
-    scmgr.set_shortcut (m_comment_var_selection_action, sc_edit_edit_comment_var_selection);
+    settings.set_shortcut (m_delete_start_word_action, sc_edit_edit_delete_start_word);
+    settings.set_shortcut (m_delete_end_word_action, sc_edit_edit_delete_end_word);
+    settings.set_shortcut (m_delete_start_line_action, sc_edit_edit_delete_start_line);
+    settings.set_shortcut (m_delete_end_line_action, sc_edit_edit_delete_end_line);
+    settings.set_shortcut (m_delete_line_action, sc_edit_edit_delete_line);
+    settings.set_shortcut (m_copy_line_action, sc_edit_edit_copy_line);
+    settings.set_shortcut (m_cut_line_action, sc_edit_edit_cut_line);
+    settings.set_shortcut (m_duplicate_selection_action, sc_edit_edit_duplicate_selection);
+    settings.set_shortcut (m_transpose_line_action, sc_edit_edit_transpose_line);
+    settings.set_shortcut (m_comment_selection_action, sc_edit_edit_comment_selection);
+    settings.set_shortcut (m_uncomment_selection_action, sc_edit_edit_uncomment_selection);
+    settings.set_shortcut (m_comment_var_selection_action, sc_edit_edit_comment_var_selection);
 
-    scmgr.set_shortcut (m_upper_case_action, sc_edit_edit_upper_case);
-    scmgr.set_shortcut (m_lower_case_action, sc_edit_edit_lower_case);
-    scmgr.set_shortcut (m_indent_selection_action, sc_edit_edit_indent_selection);
-    scmgr.set_shortcut (m_unindent_selection_action, sc_edit_edit_unindent_selection);
-    scmgr.set_shortcut (m_smart_indent_line_or_selection_action, sc_edit_edit_smart_indent_line_or_selection);
-    scmgr.set_shortcut (m_completion_action, sc_edit_edit_completion_list);
-    scmgr.set_shortcut (m_goto_line_action, sc_edit_edit_goto_line);
-    scmgr.set_shortcut (m_move_to_matching_brace, sc_edit_edit_move_to_brace);
-    scmgr.set_shortcut (m_sel_to_matching_brace, sc_edit_edit_select_to_brace);
-    scmgr.set_shortcut (m_toggle_bookmark_action, sc_edit_edit_toggle_bookmark);
-    scmgr.set_shortcut (m_next_bookmark_action, sc_edit_edit_next_bookmark);
-    scmgr.set_shortcut (m_previous_bookmark_action, sc_edit_edit_previous_bookmark);
-    scmgr.set_shortcut (m_remove_bookmark_action, sc_edit_edit_remove_bookmark);
-    scmgr.set_shortcut (m_preferences_action, sc_edit_edit_preferences);
-    scmgr.set_shortcut (m_styles_preferences_action, sc_edit_edit_styles_preferences);
+    settings.set_shortcut (m_upper_case_action, sc_edit_edit_upper_case);
+    settings.set_shortcut (m_lower_case_action, sc_edit_edit_lower_case);
+    settings.set_shortcut (m_indent_selection_action, sc_edit_edit_indent_selection);
+    settings.set_shortcut (m_unindent_selection_action, sc_edit_edit_unindent_selection);
+    settings.set_shortcut (m_smart_indent_line_or_selection_action, sc_edit_edit_smart_indent_line_or_selection);
+    settings.set_shortcut (m_completion_action, sc_edit_edit_completion_list);
+    settings.set_shortcut (m_goto_line_action, sc_edit_edit_goto_line);
+    settings.set_shortcut (m_move_to_matching_brace, sc_edit_edit_move_to_brace);
+    settings.set_shortcut (m_sel_to_matching_brace, sc_edit_edit_select_to_brace);
+    settings.set_shortcut (m_toggle_bookmark_action, sc_edit_edit_toggle_bookmark);
+    settings.set_shortcut (m_next_bookmark_action, sc_edit_edit_next_bookmark);
+    settings.set_shortcut (m_previous_bookmark_action, sc_edit_edit_previous_bookmark);
+    settings.set_shortcut (m_remove_bookmark_action, sc_edit_edit_remove_bookmark);
+    settings.set_shortcut (m_preferences_action, sc_edit_edit_preferences);
+    settings.set_shortcut (m_styles_preferences_action, sc_edit_edit_styles_preferences);
 
-    scmgr.set_shortcut (m_conv_eol_windows_action, sc_edit_edit_conv_eol_winows);
-    scmgr.set_shortcut (m_conv_eol_unix_action,    sc_edit_edit_conv_eol_unix);
-    scmgr.set_shortcut (m_conv_eol_mac_action,     sc_edit_edit_conv_eol_mac);
+    settings.set_shortcut (m_conv_eol_windows_action, sc_edit_edit_conv_eol_winows);
+    settings.set_shortcut (m_conv_eol_unix_action,    sc_edit_edit_conv_eol_unix);
+    settings.set_shortcut (m_conv_eol_mac_action,     sc_edit_edit_conv_eol_mac);
 
     // View menu
-    scmgr.set_shortcut (m_show_linenum_action, sc_edit_view_show_line_numbers);
-    scmgr.set_shortcut (m_show_whitespace_action, sc_edit_view_show_white_spaces);
-    scmgr.set_shortcut (m_show_eol_action, sc_edit_view_show_eol_chars);
-    scmgr.set_shortcut (m_show_indguide_action, sc_edit_view_show_ind_guides);
-    scmgr.set_shortcut (m_show_longline_action, sc_edit_view_show_long_line);
-    scmgr.set_shortcut (m_show_toolbar_action, sc_edit_view_show_toolbar);
-    scmgr.set_shortcut (m_show_statusbar_action, sc_edit_view_show_statusbar);
-    scmgr.set_shortcut (m_show_hscrollbar_action, sc_edit_view_show_hscrollbar);
-    scmgr.set_shortcut (m_zoom_in_action, sc_edit_view_zoom_in);
-    scmgr.set_shortcut (m_zoom_out_action, sc_edit_view_zoom_out);
-    scmgr.set_shortcut (m_zoom_normal_action, sc_edit_view_zoom_normal);
-    scmgr.set_shortcut (m_sort_tabs_action, sc_edit_view_sort_tabs);
+    settings.set_shortcut (m_show_linenum_action, sc_edit_view_show_line_numbers);
+    settings.set_shortcut (m_show_whitespace_action, sc_edit_view_show_white_spaces);
+    settings.set_shortcut (m_show_eol_action, sc_edit_view_show_eol_chars);
+    settings.set_shortcut (m_show_indguide_action, sc_edit_view_show_ind_guides);
+    settings.set_shortcut (m_show_longline_action, sc_edit_view_show_long_line);
+    settings.set_shortcut (m_show_toolbar_action, sc_edit_view_show_toolbar);
+    settings.set_shortcut (m_show_statusbar_action, sc_edit_view_show_statusbar);
+    settings.set_shortcut (m_show_hscrollbar_action, sc_edit_view_show_hscrollbar);
+    settings.set_shortcut (m_zoom_in_action, sc_edit_view_zoom_in);
+    settings.set_shortcut (m_zoom_out_action, sc_edit_view_zoom_out);
+    settings.set_shortcut (m_zoom_normal_action, sc_edit_view_zoom_normal);
+    settings.set_shortcut (m_sort_tabs_action, sc_edit_view_sort_tabs);
 
     // Debug menu
-    scmgr.set_shortcut (m_toggle_breakpoint_action, sc_edit_debug_toggle_breakpoint);
-    scmgr.set_shortcut (m_next_breakpoint_action, sc_edit_debug_next_breakpoint);
-    scmgr.set_shortcut (m_previous_breakpoint_action, sc_edit_debug_previous_breakpoint);
-    scmgr.set_shortcut (m_remove_all_breakpoints_action, sc_edit_debug_remove_breakpoints);
+    settings.set_shortcut (m_toggle_breakpoint_action, sc_edit_debug_toggle_breakpoint);
+    settings.set_shortcut (m_next_breakpoint_action, sc_edit_debug_next_breakpoint);
+    settings.set_shortcut (m_previous_breakpoint_action, sc_edit_debug_previous_breakpoint);
+    settings.set_shortcut (m_remove_all_breakpoints_action, sc_edit_debug_remove_breakpoints);
 
     // Run menu
-    scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
-    scmgr.set_shortcut (m_run_selection_action, sc_edit_run_run_selection);
+    settings.set_shortcut (m_run_action, sc_edit_run_run_file);
+    settings.set_shortcut (m_run_selection_action, sc_edit_run_run_selection);
 
     // Help menu
-    scmgr.set_shortcut (m_context_help_action, sc_edit_help_help_keyword);
-    scmgr.set_shortcut (m_context_doc_action,  sc_edit_help_doc_keyword);
+    settings.set_shortcut (m_context_help_action, sc_edit_help_help_keyword);
+    settings.set_shortcut (m_context_doc_action,  sc_edit_help_doc_keyword);
 
     // Tab navigation without menu entries
-    scmgr.set_shortcut (m_switch_left_tab_action, sc_edit_tabs_switch_left_tab);
-    scmgr.set_shortcut (m_switch_right_tab_action, sc_edit_tabs_switch_right_tab);
-    scmgr.set_shortcut (m_move_tab_left_action, sc_edit_tabs_move_tab_left);
-    scmgr.set_shortcut (m_move_tab_right_action, sc_edit_tabs_move_tab_right);
-
+    settings.set_shortcut (m_switch_left_tab_action, sc_edit_tabs_switch_left_tab);
+    settings.set_shortcut (m_switch_right_tab_action, sc_edit_tabs_switch_right_tab);
+    settings.set_shortcut (m_move_tab_left_action, sc_edit_tabs_move_tab_left);
+    settings.set_shortcut (m_move_tab_right_action, sc_edit_tabs_move_tab_right);
   }
 
   // This slot is a reimplementation of the virtual slot in octave_dock_widget.

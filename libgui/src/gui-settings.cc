@@ -29,7 +29,9 @@
 
 #include <cmath>
 
+#include <QAction>
 #include <QApplication>
+#include <QDebug>
 #include <QFile>
 #include <QFileInfo>
 #include <QFontDatabase>
@@ -37,6 +39,7 @@
 #include <QMessageBox>
 #include <QNetworkProxy>
 #include <QSettings>
+#include <QShortcut>
 #include <QString>
 #include <QStringList>
 
@@ -135,6 +138,34 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       key_seq = QKeySequence (pref.def_std);
 
     return key_seq;
+  }
+
+  void gui_settings::set_shortcut (QAction *action, const sc_pref& scpref,
+                                   bool enable)
+  {
+    if (! enable)
+      {
+        // Disable => remove existing shortcut from the action
+        action->setShortcut (QKeySequence ());
+        return;
+      }
+
+    QString shortcut = sc_value (scpref);
+
+    if (! shortcut.isEmpty ())
+      action->setShortcut (QKeySequence (shortcut));
+    else
+      qDebug () << "Key: " << scpref.key << " not found in settings";
+  }
+
+  void gui_settings::shortcut (QShortcut *sc, const sc_pref& scpref)
+  {
+    QString shortcut = sc_value (scpref);
+
+    if (! shortcut.isEmpty ())
+      sc->setKey (QKeySequence (shortcut));
+    else
+      qDebug () << "Key: " << scpref.key << " not found in settings";
   }
 
   void gui_settings::config_icon_theme (void)

@@ -49,6 +49,7 @@
 #include <QMessageBox>
 #include <QTabWidget>
 #include <QTimer>
+#include <QWheelEvent>
 #include <QVBoxLayout>
 
 #include "documentation.h"
@@ -57,7 +58,6 @@
 #include "gui-preferences-dc.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 
 #include "defaults.h"
 #include "file-ops.h"
@@ -67,9 +67,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // The documentation splitter, which is the main widget
   // of the doc dock widget
-  documentation::documentation (QWidget *p, base_qobject& oct_qobj)
+  documentation::documentation (QWidget *p)
     : QSplitter (Qt::Horizontal, p),
-      m_octave_qobj (oct_qobj), m_doc_widget (this),
+      m_doc_widget (this),
       m_tool_bar (new QToolBar (this)),
       m_query_string (QString ()),
       m_indexed (false),

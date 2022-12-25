@@ -49,9 +49,9 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  label_dock_widget::label_dock_widget (QWidget *p, base_qobject& oct_qobj)
-    : QDockWidget (p), m_octave_qobj (oct_qobj),
-      m_default_float_button (nullptr), m_default_close_button (nullptr)
+  label_dock_widget::label_dock_widget (QWidget *p)
+    : QDockWidget (p), m_default_float_button (nullptr),
+      m_default_close_button (nullptr)
   {
     QStyle *st = style ();
     m_icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
@@ -191,7 +191,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
                                           base_qobject& oct_qobj)
-    : label_dock_widget (p, oct_qobj), m_adopted (false),
+    : label_dock_widget (p), m_octave_qobj (oct_qobj),
+      m_main_window (nullptr),  m_adopted (false),
       m_custom_style (false), m_focus_follows_mouse (false),
       m_recent_float_geom (), m_recent_dock_geom (),
       m_waiting_for_mouse_button_release (false)

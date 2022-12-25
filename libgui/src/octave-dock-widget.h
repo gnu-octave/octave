@@ -46,7 +46,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    label_dock_widget (QWidget *p, base_qobject& oct_qobj);
+    label_dock_widget (QWidget *p);
 
     ~label_dock_widget (void) = default;
 
@@ -68,8 +68,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     virtual void do_undo (void) { }
 
   protected:
-
-    base_qobject& m_octave_qobj;
 
     int m_icon_size;
     QWidget *m_title_widget;
@@ -162,6 +160,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void set_style (bool active);
     void set_focus_predecessor (void);
     void store_geometry (void);
+
+  protected:
+
+    base_qobject& m_octave_qobj;
+
+  private:
 
     //! Stores the parent, since we are reparenting to 0.
 

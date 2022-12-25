@@ -57,7 +57,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    variable_dock_widget (QWidget *p, base_qobject& oct_qobj);
+    variable_dock_widget (QWidget *p);
 
     ~variable_dock_widget (void) = default;
 
@@ -130,7 +130,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    variable_editor_stack (QWidget *p, base_qobject& oct_qobj);
+    variable_editor_stack (QWidget *p);
 
     ~variable_editor_stack (void) = default;
 
@@ -161,8 +161,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QTextEdit * make_disp_view (QWidget *parent);
 
-    base_qobject& m_octave_qobj;
-
     variable_editor_view *m_edit_view;
 
     QTextEdit *m_disp_view;
@@ -174,7 +172,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    variable_editor_view (QWidget *p, base_qobject& oct_qobj);
+    variable_editor_view (QWidget *p);
 
     ~variable_editor_view (void) = default;
 
@@ -219,8 +217,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   private:
 
     void add_edit_actions (QMenu *menu, const QString& qualifier_string);
-
-    base_qobject& m_octave_qobj;
 
     variable_editor_model *m_var_model;
   };

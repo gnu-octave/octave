@@ -30,15 +30,13 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-
   class dw_main_window : public QMainWindow
   {
     Q_OBJECT
 
   public:
 
-    dw_main_window (base_qobject& oct_qboj, QWidget *parent = nullptr);
+    dw_main_window (QWidget *parent = nullptr);
 
     ~dw_main_window (void) = default;
 
@@ -73,8 +71,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                           const char *member, QWidget *receiver);
-
-    base_qobject& m_octave_qobj;
 
     QList<QDockWidget *> m_dw_list;
 

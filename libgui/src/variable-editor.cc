@@ -84,9 +84,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Variable dock widget
 
-  variable_dock_widget::variable_dock_widget (QWidget *p,
-                                              base_qobject& oct_qobj)
-    : label_dock_widget (p, oct_qobj)
+  variable_dock_widget::variable_dock_widget (QWidget *p)
+    : label_dock_widget (p)
 // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
       , m_waiting_for_mouse_move (false)
@@ -365,10 +364,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Variable editor stack
 
-  variable_editor_stack::variable_editor_stack (QWidget *p,
-                                                base_qobject& oct_qobj)
-    : QStackedWidget (p), m_octave_qobj (oct_qobj),
-      m_edit_view (new variable_editor_view (this, m_octave_qobj))
+  variable_editor_stack::variable_editor_stack (QWidget *p)
+    : QStackedWidget (p), m_edit_view (new variable_editor_view (this))
   {
     setFocusPolicy (Qt::StrongFocus);
 
@@ -528,9 +525,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Custom editable variable table view
 
-  variable_editor_view::variable_editor_view (QWidget *p,
-                                              base_qobject& oct_qobj)
-    : QTableView (p), m_octave_qobj (oct_qobj), m_var_model (nullptr)
+variable_editor_view::variable_editor_view (QWidget *p)
+    : QTableView (p), m_var_model (nullptr)
   {
     setWordWrap (false);
     setContextMenuPolicy (Qt::CustomContextMenu);
@@ -1096,7 +1092,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   variable_editor::variable_editor (QWidget *p, base_qobject& oct_qobj)
     : octave_dock_widget ("VariableEditor", p, oct_qobj),
-      m_main (new dw_main_window (oct_qobj)),
+      m_main (new dw_main_window ()),
       m_tool_bar (new QToolBar (m_main)),
       m_default_width (30),
       m_default_height (100),
@@ -1228,8 +1224,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         return;
       }
 
-    variable_dock_widget *page
-      = new variable_dock_widget (this, m_octave_qobj);
+    variable_dock_widget *page = new variable_dock_widget (this);
 
     page->setObjectName (name);
     m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
@@ -1256,8 +1251,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              page, SLOT (refloat ()), Qt::QueuedConnection);
 #endif
 
-    variable_editor_stack *stack
-      = new variable_editor_stack (page, m_octave_qobj);
+    variable_editor_stack *stack = new variable_editor_stack (page);
 
     stack->setObjectName (name);
     page->setWidget (stack);

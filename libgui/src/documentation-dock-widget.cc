@@ -36,7 +36,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   documentation_dock_widget::documentation_dock_widget (QWidget *p,
                                                         base_qobject& oct_qobj)
     : octave_dock_widget ("DocumentationDockWidget", p, oct_qobj),
-      m_docs (new documentation (this, oct_qobj))
+      m_docs (new documentation (this))
   {
     set_title (tr ("Documentation"));
     setStatusTip (tr ("See the documentation for help."));

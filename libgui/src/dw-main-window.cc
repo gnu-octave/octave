@@ -33,17 +33,17 @@
 #endif
 
 #include <QDockWidget>
+#include <QEvent>
 #include <QMenu>
 
 #include "dw-main-window.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  dw_main_window::dw_main_window (base_qobject& oct_qobj, QWidget *p)
-    : QMainWindow (p), m_octave_qobj (oct_qobj)
+  dw_main_window::dw_main_window (QWidget *p)
+    : QMainWindow (p)
   {
     gui_settings settings;
 

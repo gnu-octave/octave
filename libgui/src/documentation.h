@@ -39,7 +39,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
   class documentation;
   class documentation_bookmarks;
 
@@ -99,7 +98,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    documentation (QWidget *parent, base_qobject& oct_qobj);
+    documentation (QWidget *parent);
     ~documentation (void);
 
     /*!
@@ -159,8 +158,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     //! Select all occurrences of a string in the doc browser
     void select_all_occurrences (const QString& text);
-
-    base_qobject& m_octave_qobj;
 
     QHelpEngine *m_help_engine;
     QString m_internal_search;

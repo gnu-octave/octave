@@ -588,7 +588,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // append the new shortcut to the list
     shortcut_t shortcut_info;
     shortcut_info.m_description = description;
-    shortcut_info.m_settings_key = sc.key;
+    shortcut_info.m_settings_key = sc.settings_key ();
     shortcut_info.m_actual_sc = actual;
     shortcut_info.m_default_sc = settings.sc_def_value (sc);
     m_sc << shortcut_info;
@@ -600,7 +600,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // check whether ctrl+d is used from main window, i.e. is a global shortcut
     QString main_group_prefix
       = sc_main_file.mid (0, sc_main_file.indexOf ('_') + 1);
-    if (sc.key.startsWith (main_group_prefix)
+    if (sc.settings_key ().startsWith (main_group_prefix)
         && actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
       settings.setValue (sc_main_ctrld.key, true);
   }

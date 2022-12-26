@@ -410,6 +410,8 @@ noinst_HEADERS += \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
   %reldir%/graphics-init.cc \
+  %reldir%/gui-preferences-sc.cc \
+  %reldir%/gui-preferences.cc \
   %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
   %reldir%/interpreter-qobject.cc \

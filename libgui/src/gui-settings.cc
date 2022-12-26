@@ -116,26 +116,27 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     setValue (pref.key + settings_color_modes_ext[m], QVariant (color));
   }
 
-  QString gui_settings::sc_value (const sc_pref& pref) const
+  QString gui_settings::sc_value (const sc_pref& scpref) const
   {
-    QKeySequence key_seq = sc_def_value (pref);
+    QKeySequence key_seq = sc_def_value (scpref);
 
     // Get the value from the settings where the key sequences are stored
     // as strings
-    return value (sc_group + pref.key, key_seq.toString ()).toString ();
+    return value (sc_group + scpref.settings_key (),
+                  key_seq.toString ()).toString ();
   }
 
-  QKeySequence gui_settings::sc_def_value (const sc_pref& pref) const
+  QKeySequence gui_settings::sc_def_value (const sc_pref& scpref) const
   {
     QKeySequence key_seq = QKeySequence ();
 
     // Check, which of the elements for the default value in the sc_pref
     // structure has a valid value and take this as default.  If both
     // elements are not valid, leave the key sequence empty
-    if (pref.def)
-      key_seq = QKeySequence (pref.def);
-    else if (pref.def_std != QKeySequence::UnknownKey)
-      key_seq = QKeySequence (pref.def_std);
+    if (scpref.def ())
+      key_seq = QKeySequence (scpref.def ());
+    else if (scpref.def_std () != QKeySequence::UnknownKey)
+      key_seq = QKeySequence (scpref.def_std ());
 
     return key_seq;
   }
@@ -155,7 +156,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (! shortcut.isEmpty ())
       action->setShortcut (QKeySequence (shortcut));
     else
-      qDebug () << "Key: " << scpref.key << " not found in settings";
+      qDebug () << "Key: " << scpref.settings_key ()
+                << " not found in settings";
   }
 
   void gui_settings::shortcut (QShortcut *sc, const sc_pref& scpref)
@@ -165,7 +167,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (! shortcut.isEmpty ())
       sc->setKey (QKeySequence (shortcut));
     else
-      qDebug () << "Key: " << scpref.key << " not found in settings";
+      qDebug () << "Key: " << scpref.settings_key ()
+                << " not found in settings";
   }
 
   void gui_settings::config_icon_theme (void)
@@ -257,8 +260,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Use hard coded default on macOS, since selection of fixed width
     // default font is unreliable (see bug #59128).
     // Test for macOS default fixed width font
-    if (fonts.contains (global_mono_font.def.toString ()))
-      default_family = global_mono_font.def.toString ();
+    if (fonts.contains (global_mono_font.def ().toString ()))
+      default_family = global_mono_font.def ().toString ();
 #endif
 
     // If default font is still empty (on all other platforms or

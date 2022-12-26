@@ -60,32 +60,85 @@ struct gui_pref
 
 const QString sc_group ("shortcuts/");  // group name is handled separately
 
-struct sc_pref
+class sc_pref
 {
-  sc_pref (const QString& key_arg, Qt::Key def_arg)
-    : key (key_arg), def (static_cast<unsigned int> (def_arg)),
-      def_std (QKeySequence::UnknownKey)
-  { }
+public:
 
-  sc_pref (const QString& key_arg, unsigned int def_arg)
-    : key (key_arg), def (def_arg), def_std (QKeySequence::UnknownKey)
-  { }
+  // Default constructed sc_pref objects are invalid, but we need this
+  // to create QHash objects that contain sc_pref objects.  No invalid
+  // sc_pref objects should acutally be used.
 
-  sc_pref (const QString& key_arg, QKeySequence::StandardKey def_std_arg)
-    : key (key_arg), def (0), def_std (def_std_arg)
-  { }
+  sc_pref (void) = default;
 
-  // No copying!
+  sc_pref (const QString& description, const QString& settings_key,
+           Qt::Key def);
 
-  sc_pref (const sc_pref&) = delete;
+  sc_pref (const QString& description_arg, const QString& settings_key,
+           unsigned int def);
 
-  sc_pref& operator = (const sc_pref&) = delete;
+  sc_pref (const QString& description_arg, const QString& settings_key,
+           QKeySequence::StandardKey def_std);
+
+  sc_pref (const sc_pref&) = default;
+
+  sc_pref& operator = (const sc_pref&) = default;
 
   ~sc_pref (void) = default;
 
-  const QString key;                        // the key name
-  const unsigned int def;                   // the default as key
-  const QKeySequence::StandardKey def_std;  // the default as standard key
+  QString description (void) const { return m_description; }
+
+  QString settings_key (void) const { return m_settings_key; }
+
+  unsigned int def (void) const { return m_def; }
+
+  QKeySequence::StandardKey def_std (void) const { return m_def_std; }
+
+private:
+
+  // Description of the shortcut.
+  QString m_description;
+
+  // The settings key name.
+  QString m_settings_key;
+
+  // The default as key.
+  unsigned int m_def;
+
+  // The default as standard key.
+  QKeySequence::StandardKey m_def_std;
+};
+
+// FIXME: Is there a better/more modern way to manage this data than to
+// have this style of singleton class?
+
+class all_shortcut_preferences
+{
+public:
+
+  all_shortcut_preferences (void) = default;
+
+  // No copying!
+
+  all_shortcut_preferences (const all_shortcut_preferences&) = delete;
+
+  all_shortcut_preferences&
+  operator = (const all_shortcut_preferences&) = delete;
+
+  ~all_shortcut_preferences (void) = default;
+
+  static void insert (const QString& settings_key, const sc_pref& scpref);
+
+private:
+
+  // Map from shortcut identifier (settings key) to sc_pref object.
+  QHash <QString, sc_pref> m_hash;
+
+  void do_insert (const QString& settings_key, const sc_pref& scpref);
+
+  static void ensure_instance (void);
+
+  // Map from shortcut identifier (settings key) to sc_pref object.
+  static all_shortcut_preferences *s_instance;
 };
 
 #endif

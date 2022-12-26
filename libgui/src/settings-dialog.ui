@@ -2681,7 +2681,7 @@ interference with readline key strokes.</string>
                 <number>0</number>
                </property>
                <item>
-                <widget class="QTreeWidget" name="shortcuts_treewidget">
+                <widget class="octave::shortcuts_tree_widget" name="shortcuts_treewidget">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
                    <horstretch>0</horstretch>
@@ -2959,6 +2959,13 @@ interference with readline key strokes.</string>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>octave::shortcuts_tree_widget</class>
+   <extends>QTreeWidget</extends>
+   <header>shortcuts-tree-widget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

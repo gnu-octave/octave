@@ -301,7 +301,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-color-picker.cc \
   %reldir%/moc-tab-bar.cc \
   %reldir%/moc-qt-interpreter-events.cc \
-  %reldir%/moc-shortcut-manager.cc \
+  %reldir%/moc-shortcuts-tree-widget.cc \
   %reldir%/moc-welcome-wizard.cc \
   %reldir%/moc-workspace-model.cc \
   %reldir%/moc-workspace-view.cc \
@@ -383,7 +383,7 @@ noinst_HEADERS += \
   %reldir%/qt-utils.h \
   %reldir%/release-notes.h \
   %reldir%/settings-dialog.h \
-  %reldir%/shortcut-manager.h \
+  %reldir%/shortcuts-tree-widget.h \
   %reldir%/tab-bar.h \
   %reldir%/terminal-dock-widget.h \
   %reldir%/color-picker.h \
@@ -430,7 +430,7 @@ noinst_HEADERS += \
   %reldir%/qt-application.cc \
   %reldir%/release-notes.cc \
   %reldir%/settings-dialog.cc \
-  %reldir%/shortcut-manager.cc \
+  %reldir%/shortcuts-tree-widget.cc \
   %reldir%/tab-bar.cc \
   %reldir%/terminal-dock-widget.cc \
   %reldir%/color-picker.cc \

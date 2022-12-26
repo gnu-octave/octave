@@ -216,3 +216,13 @@ sc_pref sc_doc_go_home (QCoreApplication::translate ("shortcuts", "Go to Homepag
 sc_pref sc_doc_go_back (QCoreApplication::translate ("shortcuts", "Go Back one Page"), sc_doc + ":go_back", QKeySequence::Back);
 sc_pref sc_doc_go_next (QCoreApplication::translate ("shortcuts", "Go Forward one Page"), sc_doc + ":go_next", QKeySequence::Forward);
 sc_pref sc_doc_bookmark (QCoreApplication::translate ("shortcuts", "Bookmark this Page"), sc_doc + ":bookmark", CTRL + Qt::Key_D);
+
+QString get_shortcut_section (const QString& key)
+{
+  QString section;
+
+  if (key.contains (':'))
+    section = key.section (':', 0, 0, QString::SectionSkipEmpty);
+
+  return section;
+}

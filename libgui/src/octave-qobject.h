@@ -36,7 +36,6 @@
 #include <QStringList>
 
 #include "interpreter-qobject.h"
-#include "shortcut-manager.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -134,11 +133,6 @@ public:
   main_window * get_main_window (void)
   {
     return m_main_window;
-  }
-
-  shortcut_manager& get_shortcut_manager (void)
-  {
-    return m_shortcut_manager;
   }
 
   std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
@@ -262,8 +256,6 @@ protected:
   char **m_argv;
 
   octave_qapplication *m_qapplication;
-
-  shortcut_manager m_shortcut_manager;
 
   QTranslator *m_qt_tr;
   QTranslator *m_gui_tr;

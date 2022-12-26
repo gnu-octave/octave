@@ -54,7 +54,6 @@
 #include "qt-application.h"
 #include "qt-interpreter-events.h"
 #include "release-notes.h"
-#include "shortcut-manager.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
 #include "workspace-model.h"
@@ -174,7 +173,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_argc (m_app_context.sys_argc ()),
       m_argv (m_app_context.sys_argv ()),
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
-      m_shortcut_manager (),
       m_qt_tr (new QTranslator ()),
       m_gui_tr (new QTranslator ()),
       m_qsci_tr (new QTranslator ()),
@@ -193,8 +191,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_variable_editor_widget (),
       m_main_window (nullptr)
   {
-    std::string show_gui_msgs =
-      sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+    std::string show_gui_msgs = sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
     // Installing our handler suppresses the messages.
 
@@ -210,11 +207,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     qRegisterMetaType<octave_value_list> ("octave_value_list");
 
-// Bug #55940 (Disable App Nap on Mac)
+    // Bug #55940 (Disable App Nap on Mac)
 #if defined (Q_OS_MAC)
     // Mac App Nap feature causes pause() and sleep() to misbehave.
     // Disable it for the entire program run.
     disable_app_nap ();
+
+    // Don't let Qt interpret CMD key ("Meta" in Qt terminology) as Ctrl.
+    QCoreApplication::setAttribute (Qt::AA_MacDontSwapCtrlAndMeta, true);
 #endif
 
     // Force left-to-right alignment (see bug #46204)
@@ -312,9 +312,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             config_translators ();
 
             settings.config_icon_theme ();
-
-            // Initilize the shortcut-manager
-            m_shortcut_manager.init_data ();
 
             m_qapplication->setQuitOnLastWindowClosed (false);
           }

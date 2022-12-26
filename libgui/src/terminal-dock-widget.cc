@@ -39,6 +39,8 @@
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-sc.h"
+#include "gui-settings.h"
 
 #include "octave-qobject.h"
 #include "terminal-dock-widget.h"
@@ -50,6 +52,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
       m_experimental_terminal_widget (oct_qobj.experimental_terminal_widget ())
   {
+    init_control_d_shortcut_behavior ();
+
     // FIXME: we could do this in a better way, but improving it doesn't
     // matter much if we will eventually be removing the old terminal.
     if (m_experimental_terminal_widget)
@@ -166,6 +170,41 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           cmd->init_command_prompt ();
 #endif
       }
+  }
+
+  void terminal_dock_widget::init_control_d_shortcut_behavior (void)
+  {
+    gui_settings settings;
+
+    // Reset use of Ctrl-D.  Do this before the call to beginGroup
+    // because sc_main_ctrld.key already begins with the sc_group
+    // prefix.
+    settings.setValue (sc_main_ctrld.key, false);
+
+    settings.beginGroup (sc_group);
+    const QStringList shortcut_settings_keys = settings.allKeys ();
+    settings.endGroup ();
+
+    for (const auto& settings_key : shortcut_settings_keys)
+      {
+        // Check whether Ctrl+D is used from main window, i.e. is a
+        // global shortcut.
+
+        QString section = get_shortcut_section (settings_key);
+
+        if (section.startsWith ("main_"))
+          {
+            sc_pref scpref = all_shortcut_preferences::value (settings_key);
+
+            QKeySequence actual = QKeySequence (settings.sc_value (scpref));
+
+            if (actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+              {
+                settings.setValue (sc_main_ctrld.key, true);
+                break;
+              }
+          }
+     }
   }
 
 OCTAVE_END_NAMESPACE(octave)

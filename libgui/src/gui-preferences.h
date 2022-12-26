@@ -58,8 +58,6 @@ struct gui_pref
 // combination of Qt:Keys (resutling in an unsigend int, when added)
 // or as one of the predefined standard key sequences.
 
-const QString sc_group ("shortcuts/");  // group name is handled separately
-
 class sc_pref
 {
 public:
@@ -92,6 +90,10 @@ public:
   unsigned int def (void) const { return m_def; }
 
   QKeySequence::StandardKey def_std (void) const { return m_def_std; }
+
+  QKeySequence def_value (void) const;
+
+  QString def_text (void) const;
 
 private:
 
@@ -128,12 +130,20 @@ public:
 
   static void insert (const QString& settings_key, const sc_pref& scpref);
 
+  static const sc_pref value (const QString& settings_key);
+
+  static QStringList keys (void);
+
 private:
 
   // Map from shortcut identifier (settings key) to sc_pref object.
   QHash <QString, sc_pref> m_hash;
 
   void do_insert (const QString& settings_key, const sc_pref& scpref);
+
+  const sc_pref do_value (const QString& settings_key) const;
+
+  QStringList do_keys (void) const;
 
   static void ensure_instance (void);
 

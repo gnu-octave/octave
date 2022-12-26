@@ -65,17 +65,16 @@
 
 #include "gui-preferences-all.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "settings-dialog.h"
+#include "shortcuts-tree-widget.h"
 #include "variable-editor.h"
 #include "workspace-model.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  settings_dialog::settings_dialog (QWidget *p, base_qobject& oct_qobj,
-                                    const QString& desired_tab)
-    : QDialog (p), Ui::settings_dialog (), m_octave_qobj (oct_qobj)
+  settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
+    : QDialog (p), Ui::settings_dialog ()
   {
     setupUi (this);
 
@@ -421,8 +420,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // shortcuts
 
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-
     cb_prevent_readline_conflicts->setChecked (
           settings.value (sc_prevent_rl_conflicts.key,
                            sc_prevent_rl_conflicts.def).toBool ());
@@ -430,10 +427,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           settings.value (sc_prevent_rl_conflicts_menu.key,
                            sc_prevent_rl_conflicts_menu.def).toBool ());
 
-    // initialize the tree view with all shortcut data
-    scmgr.fill_treewidget (shortcuts_treewidget);
-
     // connect the buttons for import/export of the shortcut sets
+    // FIXME: Should there also be a button to discard changes?
+
     connect (btn_import_shortcut_set, &QPushButton::clicked,
              this, &settings_dialog::import_shortcut_set);
 
@@ -553,7 +549,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (button_role == QDialogButtonBox::ApplyRole
         || button_role == QDialogButtonBox::AcceptRole)
       {
-        write_changed_settings (button_role == QDialogButtonBox::AcceptRole);
+        write_changed_settings ();
         emit apply_new_settings ();
       }
 
@@ -616,25 +612,58 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // slots for import/export of shortcut sets
 
+  // Prompt for file name and import shortcuts from it.  Importing will
+  // change values in tree view but does not apply values to
+  // gui_settings_object so that the user may choose to apply or cancel
+  // the action.
+
   void settings_dialog::import_shortcut_set (void)
   {
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    if (! overwrite_all_shortcuts ())
+      return;
 
-    scmgr.import_export (shortcut_manager::OSC_IMPORT);
+    QString file = get_shortcuts_file_name (OSC_IMPORT);
+
+    gui_settings osc_settings (file, QSettings::IniFormat);
+
+    if (osc_settings.status () ==  QSettings::NoError)
+      shortcuts_treewidget->import_shortcuts (osc_settings);
+    else
+      qWarning () << (tr ("Failed to open %1 as Octave shortcut file")
+                      .arg (file));
   }
+
+  // Prompt for file name and export shortcuts to it.
+
+  // FIXME: Should exported settings values come from the gui_settings
+  // object or the tree view?  If modified values in the tree view have
+  // not been applied, should we offer to apply them first?  Offer a
+  // choice to save current application settings or the modified values
+  // in the dialog?
 
   void settings_dialog::export_shortcut_set (void)
   {
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    QString file = get_shortcuts_file_name (OSC_EXPORT);
 
-    scmgr.import_export (shortcut_manager::OSC_EXPORT);
+    gui_settings osc_settings (file, QSettings::IniFormat);
+
+    if (osc_settings.status () ==  QSettings::NoError)
+      shortcuts_treewidget->export_shortcuts (osc_settings);
+    else
+      qWarning () << (tr ("Failed to open %1 as Octave shortcut file")
+                      .arg (file));
   }
+
+  // Reset the tree view to default values.  Does not apply values to
+  // gui_settings object so that the user may choose to apply or cancel
+  // the action.
 
   void settings_dialog::default_shortcut_set (void)
   {
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+    if (! overwrite_all_shortcuts ())
+      return;
 
-    scmgr.import_export (shortcut_manager::OSC_DEFAULT);
+    shortcuts_treewidget->set_default_shortcuts ();
   }
 
   void settings_dialog::update_editor_lexers (int def)
@@ -1017,7 +1046,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 #endif
 
-  void settings_dialog::write_changed_settings (bool closing)
+  void settings_dialog::write_changed_settings (void)
   {
     gui_settings settings;
 
@@ -1241,8 +1270,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.setValue (sc_prevent_rl_conflicts.key, cb_prevent_readline_conflicts->isChecked ());
     settings.setValue (sc_prevent_rl_conflicts_menu.key, cb_prevent_readline_conflicts_menu->isChecked ());
 
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-    scmgr.write_shortcuts (settings, closing);
+    shortcuts_treewidget->write_settings ();
 
     settings.sync ();
   }
@@ -1608,6 +1636,92 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.setValue (ve_color_mode.key, mode);
 
     settings.sync ();
+  }
+
+  QString settings_dialog::get_shortcuts_file_name (import_export_action action)
+  {
+    QString file;
+
+    // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+    int opts = 0;  // No options by default.
+
+    gui_settings settings;
+
+    if (! settings.value (global_use_native_dialogs).toBool ())
+      opts = QFileDialog::DontUseNativeDialog;
+
+    if (action == OSC_IMPORT)
+      file = QFileDialog::getOpenFileName
+        (this, tr ("Import shortcuts from file..."), QString (),
+         tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
+         nullptr, QFileDialog::Option (opts));
+
+    else
+      file = QFileDialog::getSaveFileName
+        (this, tr ("Export shortcuts to file..."), QString (),
+         tr ("Octave Shortcut Files (*.osc);;All Files (*)"),
+         nullptr, QFileDialog::Option (opts));
+
+    return file;
+  }
+
+  // Ask whether to overwrite current shortcuts with settings from an
+  // imported file.  Optionally allow current shortcuts to be saved to a
+  // file.
+
+  // FIXME: If the tree view contains changes that have not yet been
+  //        saved to the application settings object, should we
+  //
+  //   * allow the user to choose whether to
+  //     - cancel the operation (X)
+  //     - save the modified settings (X)
+  //     - save the current application settings (XX)
+  //
+  //   * unconditionally display an error dialog and cancel the
+  //     export operation
+  //
+  //   (X) - already an option, but not based on whether the tree view
+  //         contains unsaved changes
+  //   (XX) - already possible (cancel operation, cancel settings
+  //          dialog, re-open settings dialog and export changes).
+
+  bool settings_dialog::overwrite_all_shortcuts (void)
+  {
+    QMessageBox msg_box;
+
+    msg_box.setWindowTitle (tr ("Overwriting Shortcuts"));
+    msg_box.setIcon (QMessageBox::Warning);
+    msg_box.setText (tr ("You are about to overwrite all shortcuts.\n"
+                         "Would you like to save the current shortcut set or cancel the action?"));
+    msg_box.setStandardButtons (QMessageBox::Save | QMessageBox::Cancel);
+
+    QPushButton *discard
+      = msg_box.addButton (tr ("Don't save"), QMessageBox::DestructiveRole);
+
+    msg_box.setDefaultButton (QMessageBox::Save);
+
+    int ret = msg_box.exec ();
+
+    if (msg_box.clickedButton () == discard)
+      return true;
+
+    if (ret == QMessageBox::Save)
+      {
+        QString file = get_shortcuts_file_name (OSC_EXPORT);
+
+        gui_settings osc_settings (file, QSettings::IniFormat);
+
+        if (osc_settings.status () ==  QSettings::NoError)
+          {
+            shortcuts_treewidget->export_shortcuts (osc_settings);
+            return true;
+          }
+        else
+          qWarning () << (tr ("Failed to open %1 as Octave shortcut file")
+                          .arg (file));
+      }
+
+    return false;
   }
 
 OCTAVE_END_NAMESPACE(octave)

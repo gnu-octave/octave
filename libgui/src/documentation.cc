@@ -51,6 +51,7 @@
 #include <QTimer>
 #include <QWheelEvent>
 #include <QVBoxLayout>
+#include <QWheelEvent>
 
 #include "documentation.h"
 #include "documentation-bookmarks.h"

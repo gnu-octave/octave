@@ -51,6 +51,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void init_command_prompt ();
 
+    void init_control_d_shortcut_behavior ();
+
     // FIXME: The next two functions could be eliminated (or combined)
     // if we had a common interface for the old and new terminal
     // widgets.

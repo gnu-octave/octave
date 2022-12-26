@@ -27,6 +27,7 @@
 #define octave_gui_preferences_sc_h 1
 
 #include <QSet>
+#include <QString>
 
 #include "gui-preferences.h"
 
@@ -57,8 +58,10 @@ const int PRE = Qt::NoModifier;
 const Qt::KeyboardModifiers CTRL_SHIFT = CTRL | Qt::ShiftModifier;
 const Qt::KeyboardModifiers CTRL_ALT = CTRL | Qt::AltModifier;
 
+const QString sc_group ("shortcuts");
+
 // Shortcuts not related to specific Menus
- 
+
 // Dock widgets
 const QString sc_dock_widget ("dock_widget");
 extern sc_pref sc_dock_widget_dock;
@@ -269,5 +272,7 @@ const gui_pref
 sc_prevent_rl_conflicts ("shortcuts/prevent_readline_conflicts", QVariant (false));
 const gui_pref
 sc_prevent_rl_conflicts_menu ("shortcuts/prevent_readline_conflicts_menu", QVariant (false));
+
+extern QString get_shortcut_section (const QString& key);
 
 #endif

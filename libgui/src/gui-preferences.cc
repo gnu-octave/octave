@@ -54,6 +54,23 @@ sc_pref::sc_pref (const QString& description, const QString& settings_key,
   all_shortcut_preferences::insert (settings_key, *this);
 }
 
+QKeySequence sc_pref::def_value (void) const
+{
+  QKeySequence key_seq = QKeySequence ();
+
+  if (m_def)
+    key_seq = QKeySequence (m_def);
+  else if (m_def_std != QKeySequence::UnknownKey)
+    key_seq = QKeySequence (m_def_std);
+
+  return key_seq;
+}
+
+QString sc_pref::def_text (void) const
+{
+  return def_value ().toString ();
+}
+
 all_shortcut_preferences *all_shortcut_preferences::s_instance = nullptr;
 
 void all_shortcut_preferences::insert (const QString& settings_key,
@@ -64,10 +81,35 @@ void all_shortcut_preferences::insert (const QString& settings_key,
   s_instance->do_insert (settings_key, scpref);
 }
 
+const sc_pref all_shortcut_preferences::value (const QString& settings_key)
+{
+  ensure_instance ();
+
+  return s_instance->do_value (settings_key);
+}
+
+QStringList all_shortcut_preferences::keys (void)
+{
+  ensure_instance ();
+
+  return s_instance->do_keys ();
+}
+
 void all_shortcut_preferences::do_insert (const QString& settings_key,
                                           const sc_pref& scpref)
 {
   m_hash.insert (settings_key, scpref);
+}
+
+const sc_pref
+all_shortcut_preferences::do_value (const QString& settings_key) const
+{
+  return m_hash.value (settings_key);
+}
+
+QStringList all_shortcut_preferences::do_keys (void) const
+{
+  return m_hash.keys ();
 }
 
 void all_shortcut_preferences::ensure_instance (void)

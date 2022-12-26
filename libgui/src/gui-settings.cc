@@ -45,6 +45,7 @@
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
+#include "gui-preferences-sc.h"
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
 
@@ -122,23 +123,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Get the value from the settings where the key sequences are stored
     // as strings
-    return value (sc_group + scpref.settings_key (),
+    return value (sc_group + "/" + scpref.settings_key (),
                   key_seq.toString ()).toString ();
   }
 
   QKeySequence gui_settings::sc_def_value (const sc_pref& scpref) const
   {
-    QKeySequence key_seq = QKeySequence ();
-
-    // Check, which of the elements for the default value in the sc_pref
-    // structure has a valid value and take this as default.  If both
-    // elements are not valid, leave the key sequence empty
-    if (scpref.def ())
-      key_seq = QKeySequence (scpref.def ());
-    else if (scpref.def_std () != QKeySequence::UnknownKey)
-      key_seq = QKeySequence (scpref.def_std ());
-
-    return key_seq;
+    return scpref.def_value ();
   }
 
   void gui_settings::set_shortcut (QAction *action, const sc_pref& scpref,

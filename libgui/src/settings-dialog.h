@@ -39,15 +39,15 @@ class QsciLexer;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-
   // Ui::settings_dialog is a generated class.
 
   class settings_dialog : public QDialog, private Ui::settings_dialog
   {
-  Q_OBJECT public:
+    Q_OBJECT
 
-    explicit settings_dialog (QWidget *parent, base_qobject& octave_qobj,
+  public:
+
+    explicit settings_dialog (QWidget *parent,
                               const QString& desired_tab = QString ());
 
     ~settings_dialog (void) = default;
@@ -82,13 +82,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   private:
 
+    enum import_export_action
+    {
+      OSC_IMPORT,
+      OSC_EXPORT
+    };
+
 #if defined (HAVE_QSCINTILLA)
     void update_lexer (QsciLexer *lexer, int mode, int def = 0);
     void get_lexer_settings (QsciLexer *lexer);
     void write_lexer_settings (QsciLexer *lexer);
 #endif
 
-    void write_changed_settings (bool closing);
+    void write_changed_settings (void);
 
     void read_workspace_colors (void);
     void write_workspace_colors (void);
@@ -99,7 +105,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void read_varedit_colors (void);
     void write_varedit_colors (void);
 
-    base_qobject& m_octave_qobj;
+    QString get_shortcuts_file_name (import_export_action action);
+
+    bool overwrite_all_shortcuts (void);
 
     color_picker *m_widget_title_bg_color;
     color_picker *m_widget_title_bg_color_active;

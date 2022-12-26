@@ -75,7 +75,6 @@
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "settings-dialog.h"
-#include "shortcut-manager.h"
 #include "welcome-wizard.h"
 
 #include "cmd-edit.h"
@@ -149,13 +148,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #else
     sys::env::putenv ("TERM", "xterm");
 #endif
-
-    // FIXME: can we do this job when creating the shortcut manager?
-    // A quick look shows that it may require some coordination with the
-    // resource manager.  Startup is complicated, but maybe we can make
-    // it simpler?
-    shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-    scmgr.init_data ();
 
     construct_central_widget ();
 
@@ -875,7 +867,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         return;
       }
 
-    m_settings_dlg = new settings_dialog (this, m_octave_qobj, desired_tab);
+    m_settings_dlg = new settings_dialog (this, desired_tab);
 
     connect (m_settings_dlg, &settings_dialog::apply_new_settings,
              this, &main_window::request_reload_settings);

@@ -40,7 +40,6 @@ see <https://www.gnu.org/licenses/>.
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
 #include "octave-qobject.h"
-#include "resource-manager.h"
 
 #include "QTerminal.h"
 #if defined (Q_OS_WIN32)

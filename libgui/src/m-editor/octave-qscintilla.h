@@ -30,8 +30,9 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
-#include <Qsci/qsciscintilla.h>
+#include <QPointer>
 #include <QTemporaryFile>
+#include <Qsci/qsciscintilla.h>
 
 #include "gui-settings.h"
 #include "qt-interpreter-events.h"
@@ -96,8 +97,8 @@ signals:
   void show_doc_signal (const QString&);
   void context_menu_break_condition_signal (int);
   void context_menu_break_once (int);
-  void ctx_menu_run_finished_signal (bool, int, QTemporaryFile *,
-                                     QTemporaryFile *, bool, bool);
+  void ctx_menu_run_finished_signal (bool, int, QPointer<QTemporaryFile>,
+                                     QPointer<QTemporaryFile>, bool, bool);
   void focus_console_after_command_signal (void);
 
   void interpreter_event (const fcn_callback& fcn);
@@ -110,8 +111,8 @@ public slots:
 
 private slots:
 
-  void ctx_menu_run_finished (bool, int, QTemporaryFile *, QTemporaryFile *,
-                              bool, bool);
+  void ctx_menu_run_finished (bool, int, QPointer<QTemporaryFile>,
+                              QPointer<QTemporaryFile>, bool, bool);
 
   void contextmenu_help (bool);
   void contextmenu_doc (bool);
@@ -142,6 +143,9 @@ private:
 
   void auto_close (int auto_endif, int l,
                    const QString& line, QString& first_word);
+
+  QPointer<QTemporaryFile> create_tmp_file (const QString& extension,
+                                            const QString& contents);
 
   base_qobject& m_octave_qobj;
 

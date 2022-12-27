@@ -54,7 +54,6 @@
 #include "qt-application.h"
 #include "qt-interpreter-events.h"
 #include "release-notes.h"
-#include "resource-manager.h"
 #include "shortcut-manager.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
@@ -175,7 +174,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_argc (m_app_context.sys_argc ()),
       m_argv (m_app_context.sys_argv ()),
       m_qapplication (new octave_qapplication (m_argc, m_argv)),
-      m_resource_manager (),
       m_shortcut_manager (),
       m_qt_tr (new QTranslator ()),
       m_gui_tr (new QTranslator ()),
@@ -393,7 +391,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (m_translators_installed)
       return;
 
-    m_resource_manager.config_translators (m_qt_tr, m_qsci_tr, m_gui_tr);
+    gui_settings settings;
+
+    settings.config_translators (m_qt_tr, m_qsci_tr, m_gui_tr);
 
     m_qapplication->installTranslator (m_qt_tr);
     m_qapplication->installTranslator (m_gui_tr);

@@ -64,6 +64,7 @@
 #endif
 
 #include "gui-preferences-all.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "settings-dialog.h"
@@ -81,8 +82,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     // look for available language files and the actual settings
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    QString qm_dir_name = rmgr.get_gui_translation_dir ();
+    QString qm_dir_name = settings.get_gui_translation_dir ();
 
     QDir qm_dir (qm_dir_name);
     QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"),
@@ -233,7 +233,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     editor_showLineNumbers->setChecked (settings.value (ed_show_line_numbers).toBool ());
     editor_linenr_size->setValue (settings.value (ed_line_numbers_size).toInt ());
 
-    rmgr.combo_encoding (editor_combo_encoding);
+    settings.combo_encoding (editor_combo_encoding);
 
     editor_highlightCurrentLine->setChecked (settings.value (ed_highlight_current_line).toBool ());
     editor_long_line_marker->setChecked (settings.value (ed_long_line_marker).toBool ());
@@ -505,12 +505,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void settings_dialog::show_tab (const QString& tab)
   {
-    if (tab.isEmpty ())
-      {
-        gui_settings settings;
+    gui_settings settings;
 
-        tabWidget->setCurrentIndex (settings.value (sd_last_tab).toInt ());
-      }
+    if (tab.isEmpty ())
+      tabWidget->setCurrentIndex (settings.value (sd_last_tab).toInt ());
     else
       {
         QHash <QString, QWidget *> tab_hash;
@@ -643,8 +641,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
 #if defined (HAVE_QSCINTILLA)
 
-    gui_settings settings;
-
     QCheckBox *cb_color_mode
       = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.key);
 
@@ -655,6 +651,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     color_picker *c_picker = findChild <color_picker *> (ed_highlight_current_line_color.key);
     if (c_picker)
       {
+        gui_settings settings;
+
         if (def != settings_reload_default_colors_flag)
           {
             // Get current value from settings or the default
@@ -722,8 +720,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     // Get lexer settings and copy from default settings if not yet
     // available in normal settings file
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    rmgr.read_lexer_settings (lexer, mode, def);
+    gui_settings settings;
+    settings.read_lexer_settings (lexer, mode, def);
 
     // When reloading default styles, the style tabs do already exists.
     // Otherwise, check if they exist or not.
@@ -749,7 +747,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Update the styles elements in all styles
     int styles[ed_max_lexer_styles];  // array for saving valid styles
-    int max_style = rmgr.get_valid_lexer_styles (lexer, styles);
+    int max_style = settings.get_valid_lexer_styles (lexer, styles);
     QWidget *tab = tabs_editor_lexers->widget (index);
     int default_size = 0;
     QString default_family;
@@ -822,11 +820,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void settings_dialog::get_lexer_settings (QsciLexer *lexer)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+    gui_settings settings;
 
     int styles[ed_max_lexer_styles];  // array for saving valid styles
     // (enum is not continuous)
-    int max_style = rmgr.get_valid_lexer_styles (lexer, styles);
+    int max_style = settings.get_valid_lexer_styles (lexer, styles);
     QGridLayout *style_grid = new QGridLayout ();
     QVector<QLabel *> description (max_style);
     QVector<QFontComboBox *> select_font (max_style);
@@ -910,8 +908,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     scroll_area->setWidget (scroll_area_contents);
     tabs_editor_lexers->addTab (scroll_area, lexer->language ());
 
-    gui_settings settings;
-
     tabs_editor_lexers->setCurrentIndex (settings.value (sd_last_editor_styles_tab).toInt ());
   }
 
@@ -932,8 +928,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     int styles[ed_max_lexer_styles];  // array for saving valid styles
     // (enum is not continuous)
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    int max_style = rmgr.get_valid_lexer_styles (lexer, styles);
+    int max_style = settings.get_valid_lexer_styles (lexer, styles);
 
     QFontComboBox *select_font;
     QSpinBox *font_size;

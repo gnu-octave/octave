@@ -109,8 +109,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_suppress_dbg_location (true),
       m_closing (false), m_file_encoding (QString ())
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
     gui_settings settings;
 
     if (! settings.value (global_skip_welcome_wizard).toBool ())
@@ -141,7 +139,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     settings.config_icon_theme ();
 
-    rmgr.update_network_settings ();
+    settings.update_network_settings ();
 
     // We provide specific terminal capabilities, so ensure that
     // TERM is always set appropriately.
@@ -965,8 +963,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_suppress_dbg_location
       = ! settings.value (cs_dbg_location).toBool ();
 
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    rmgr.update_network_settings ();
+    settings.update_network_settings ();
 
     emit active_dock_changed (nullptr, m_active_dock); // update dock widget styles
 

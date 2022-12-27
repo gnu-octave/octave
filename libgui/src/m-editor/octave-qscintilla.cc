@@ -36,6 +36,8 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QShortcut>
+#include <QPointer>
+#include <QTemporaryFile>
 #include <QToolTip>
 #include <QVBoxLayout>
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
@@ -66,6 +68,7 @@
 #include "cmd-edit.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
+#include "oct-env.h"
 
 // Return true if CANDIDATE is a "closing" that matches OPENING,
 // such as "end" or "endif" for "if", or "catch" for "try".
@@ -825,8 +828,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void octave_qscintilla::contextmenu_run (bool)
   {
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
     // Take selected code and extend it by commands for echoing each
     // evaluated line and for adding the line to the history (use script)
     QString code = QString ();
@@ -867,32 +868,28 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     octave_stdout << hist.toStdString ();
 
     // Create tmp file with the code to be executed by the interpreter
-    QPointer<QTemporaryFile> tmp_file
-      = rmgr.create_tmp_file ("m", code);
+    QPointer<QTemporaryFile> tmp_file = create_tmp_file ("m", code);
 
-    bool tmp = (tmp_file && tmp_file->open ());
-    if (! tmp)
+    if (tmp_file && tmp_file->open ())
+      tmp_file->close ();
+    else
       {
         // tmp files not working: use old way to run selection
         contextmenu_run_temp_error ();
         return;
       }
-
-    tmp_file->close ();
 
     // Create tmp file required for adding command to history
-    QPointer<QTemporaryFile> tmp_hist
-      = rmgr.create_tmp_file ("", hist); // empty tmp file for history
+    QPointer<QTemporaryFile> tmp_hist = create_tmp_file ("", hist);
 
-    tmp = (tmp_hist && tmp_hist->open ());
-    if (! tmp)
+    if (tmp_hist && tmp_hist->open ())
+      tmp_hist->close ();
+    else
       {
         // tmp files not working: use old way to run selection
         contextmenu_run_temp_error ();
         return;
       }
-
-    tmp_hist->close ();
 
     // Add commands to the history
     emit interpreter_event
@@ -1024,9 +1021,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void octave_qscintilla::ctx_menu_run_finished (bool show_dbg_file, int,
-                      QTemporaryFile* tmp_file, QTemporaryFile* tmp_hist,
-                      bool dbg, bool auto_repeat)
+  void octave_qscintilla::ctx_menu_run_finished
+    (bool show_dbg_file, int, QPointer<QTemporaryFile> tmp_file,
+     QPointer<QTemporaryFile> tmp_hist, bool dbg, bool auto_repeat)
   {
     emit focus_console_after_command_signal ();
 
@@ -1034,13 +1031,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     //       lines from history that were never executed. For this,
     //       possible lines from commands at a debug prompt must be
     //       taken into consideration.
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
     gui_settings settings;
 
     settings.setValue (ed_show_dbg_file.key, show_dbg_file);
 
-    rmgr.remove_tmp_file (tmp_file);
-    rmgr.remove_tmp_file (tmp_hist);
+    if (tmp_file && tmp_file->exists ())
+      tmp_file->remove ();
+
+    if (tmp_hist && tmp_hist->exists ())
+      tmp_hist->remove ();
 
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1364,6 +1364,30 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void octave_qscintilla::handle_exit_debug_mode (void)
   {
     m_debug_mode = false;
+  }
+
+  QPointer<QTemporaryFile>
+  octave_qscintilla::create_tmp_file (const QString& extension,
+                                      const QString& contents)
+  {
+    QString ext = extension;
+    if ((! ext.isEmpty ()) && (! ext.startsWith ('.')))
+      ext = QString (".") + ext;
+
+    // Create octave dir within temp. dir
+    QString tmp_dir = QString::fromStdString (sys::env::get_temp_directory ());
+
+    QString tmp_name = tmp_dir + QDir::separator() + "octave_XXXXXX" + ext;
+
+    QPointer<QTemporaryFile> tmp_file (new QTemporaryFile (tmp_name, this));
+
+    if (! contents.isEmpty () && tmp_file && tmp_file->open ())
+      {
+        tmp_file->write (contents.toUtf8 ());
+        tmp_file->close ();
+      }
+
+    return tmp_file;
   }
 
 OCTAVE_END_NAMESPACE(octave)

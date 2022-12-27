@@ -881,8 +881,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return;   // We are done here
 
     int mode = settings.value (ed_color_mode).toInt ();
-    resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-    rmgr.read_lexer_settings (lexer, mode);
+    settings.read_lexer_settings (lexer, mode);
 
     m_edit_area->setCaretForegroundColor (lexer->color (0));
     m_edit_area->setIndentationGuidesForegroundColor (lexer->color (0));
@@ -1912,8 +1911,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                             "This does not change the default encoding.\n"));
 
         QComboBox *enc_combo = new QComboBox ();
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        rmgr.combo_encoding (enc_combo);
+        gui_settings settings;
+        settings.combo_encoding (enc_combo);
         m_new_encoding = enc_combo->currentText ();
         connect (enc_combo, &QComboBox::currentTextChanged,
                  this, &file_editor_tab::handle_current_enc_changed);

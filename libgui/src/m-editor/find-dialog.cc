@@ -83,7 +83,6 @@
 #include "find-dialog.h"
 #include "gui-preferences-ed.h"
 #include "gui-utils.h"
-#include "resource-manager.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

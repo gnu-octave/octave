@@ -26,9 +26,16 @@
 #if ! defined (octave_gui_settings_h)
 #define octave_gui_settings_h 1
 
+#include <QComboBox>
 #include <QIcon>
 #include <QString>
 #include <QSettings>
+#include <QShortcut>
+#include <QString>
+#include <QTranslator>
+#if defined (HAVE_QSCINTILLA)
+#  include <Qsci/qscilexer.h>
+#endif
 
 #include "gui-preferences.h"
 
@@ -150,6 +157,24 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QString get_default_font_family (void);
 
     QStringList get_default_font (void);
+
+    QString get_gui_translation_dir (void);
+
+    void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
+                             QTranslator *gui_tr);
+
+#if defined (HAVE_QSCINTILLA)
+    int get_valid_lexer_styles (QsciLexer *lexer, int *styles);
+    void read_lexer_settings (QsciLexer *lexer, int mode = 0, int def = 0);
+#endif
+
+    bool update_settings_key (const QString& new_key, const QString& old_key);
+
+    void update_network_settings (void);
+
+    void get_codecs (QStringList *codecs);
+
+    void combo_encoding (QComboBox *combo, const QString& current = QString ());
 
     void reload (void);
 

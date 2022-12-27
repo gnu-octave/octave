@@ -723,9 +723,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         adjusted_value = adjusted_value.toUpper ();
 
+        gui_settings settings;
         QStringList codecs;
-        resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-        rmgr.get_codecs (&codecs);
+        settings.get_codecs (&codecs);
 
         QRegExp re ("^CP(\\d+)$");
 

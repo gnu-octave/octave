@@ -31,11 +31,11 @@
 #include <QApplication>
 #include <QList>
 #include <QObject>
+#include <QPointer>
 #include <QString>
 #include <QStringList>
 
 #include "interpreter-qobject.h"
-#include "resource-manager.h"
 #include "shortcut-manager.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -134,11 +134,6 @@ public:
   main_window * get_main_window (void)
   {
     return m_main_window;
-  }
-
-  resource_manager& get_resource_manager (void)
-  {
-    return m_resource_manager;
   }
 
   shortcut_manager& get_shortcut_manager (void)
@@ -267,8 +262,6 @@ protected:
   char **m_argv;
 
   octave_qapplication *m_qapplication;
-
-  resource_manager m_resource_manager;
 
   shortcut_manager m_shortcut_manager;
 

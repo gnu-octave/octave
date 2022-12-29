@@ -606,7 +606,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Find the required lexer from file extensions
     if (m_file_name.endsWith (".m")
-        || m_file_name.endsWith ("octaverc"))
+        || m_file_name.endsWith ("octaverc")
+        || m_file_name.endsWith (".cc-tst"))
       {
 #if defined (HAVE_LEXER_OCTAVE)
         lexer = new QsciLexerOctave ();

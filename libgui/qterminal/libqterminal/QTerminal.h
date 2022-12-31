@@ -24,11 +24,15 @@ see <https://www.gnu.org/licenses/>.
 #ifndef QTERMINAL_H
 #define QTERMINAL_H
 
+#include "octave-config.h"
+
 #include <QColor>
 #include <QList>
 #include <QPoint>
 #include <QString>
 #include <QWidget>
+
+#include "qt-interpreter-events.h"
 
 namespace octave
 {
@@ -108,6 +112,9 @@ signals:
   void set_screen_size_signal (int, int);
 
   void clear_command_window_request (void);
+
+  void interpreter_event (const octave::fcn_callback& fcn);
+  void interpreter_event (const octave::meth_callback& meth);
 
 public slots:
 

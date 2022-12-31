@@ -489,6 +489,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             // Connect the interrupt signal (emitted by Ctrl-C)
             connect (cmd_widget, &QTerminal::interrupt_signal,
                      this, &base_qobject::interpreter_interrupt);
+
+            connect_interpreter_events (cmd_widget);
           }
       }
 

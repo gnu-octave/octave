@@ -80,6 +80,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void execute_command_signal (const QString&);
 
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     void notice_settings (void);

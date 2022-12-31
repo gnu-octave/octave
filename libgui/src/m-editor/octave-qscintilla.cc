@@ -336,7 +336,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void octave_qscintilla::contextmenu_help_doc (bool documentation)
   {
     if (documentation)
-      m_octave_qobj.show_documentation_window (m_word_at_cursor);
+      {
+        std::string name = m_word_at_cursor.toStdString ();
+
+        emit interpreter_event
+          ([=] (interpreter& interp)
+           {
+             // INTERPRETER THREAD
+
+             F__event_manager_show_documentation__ (interp, ovl (name));
+           });
+      }
     else
       emit execute_command_in_terminal_signal ("help " + m_word_at_cursor);
   }

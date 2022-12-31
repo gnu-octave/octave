@@ -41,6 +41,9 @@ see <https://www.gnu.org/licenses/>.
 #include "gui-settings.h"
 #include "octave-qobject.h"
 
+#include "builtin-defun-decls.h"
+#include "interpreter.h"
+
 #include "QTerminal.h"
 #if defined (Q_OS_WIN32)
 # include "win32/QWinTerminalImpl.h"
@@ -194,8 +197,15 @@ void QTerminal::help_on_expression ()
 // slot for showing documentation on selected epxression
 void QTerminal::doc_on_expression ()
 {
-  QString expr = m_doc_selected_action->data ().toString ();
-  m_octave_qobj.show_documentation_window (expr);
+  std::string expr = m_doc_selected_action->data ().toString ().toStdString ();
+
+  emit interpreter_event
+    ([=] (octave::interpreter& interp)
+     {
+       // INTERPRETER THREAD
+
+       octave::F__event_manager_show_documentation__ (interp, ovl (expr));
+     });
 }
 
 void

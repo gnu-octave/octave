@@ -51,6 +51,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     console (command_widget *p, base_qobject& oct_qobj);
 
+  signals:
+
+    void interpreter_event (const fcn_callback& fcn);
+    void interpreter_event (const meth_callback& meth);
+
   public slots:
 
     void cursor_position_changed (int line, int col);
@@ -103,10 +108,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void interpreter_resume (void);
     void interpreter_stop (void);
 
+    void new_command_line_signal (const QString& command = QString ());
+
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
-
-    void new_command_line_signal (const QString& command = QString ());
 
   public slots:
 

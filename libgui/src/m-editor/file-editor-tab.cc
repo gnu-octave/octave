@@ -74,7 +74,6 @@
 #include "gui-settings.h"
 #include "gui-utils.h"
 #include "marker.h"
-#include "octave-qobject.h"
 #include "octave-qtutils.h"
 #include "octave-txt-lexer.h"
 
@@ -107,7 +106,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // messages don't affect grandparents.
   file_editor_tab::file_editor_tab (base_qobject& oct_qobj,
                                     const QString& directory_arg)
-    : m_octave_qobj (oct_qobj)
   {
     m_lexer_apis = nullptr;
     m_is_octave_file = true;
@@ -119,7 +117,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_file_name = "";
     m_file_system_watcher.setObjectName ("_qt_autotest_force_engine_poller");
 
-    m_edit_area = new octave_qscintilla (this, m_octave_qobj);
+    m_edit_area = new octave_qscintilla (this, oct_qobj);
     m_line = 0;
     m_col  = 0;
 

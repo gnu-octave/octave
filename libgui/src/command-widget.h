@@ -40,7 +40,6 @@ class QsciScintilla;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
   class command_widget;
 
   class console : public QsciScintilla
@@ -49,7 +48,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    console (command_widget *p, base_qobject& oct_qobj);
+    console (command_widget *p);
 
   signals:
 
@@ -92,7 +91,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    command_widget (base_qobject& oct_qobj, QWidget *p);
+    command_widget (QWidget *p);
 
     console * get_console ( ) { return m_console; };
 

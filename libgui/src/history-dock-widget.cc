@@ -40,7 +40,6 @@
 #include "gui-preferences-hw.h"
 #include "gui-settings.h"
 #include "history-dock-widget.h"
-#include "octave-qobject.h"
 
 #include "cmd-hist.h"
 

@@ -1184,6 +1184,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     if (m_debug_mode && e->type() == QEvent::ToolTip)
       {
+        // FIXME: can we handle display of a tooltip using an
+        // interpreter event or a custom signal/slot connection?
+
         QHelpEvent *help_e = static_cast<QHelpEvent *>(e);
         QString variable = wordAtPoint (help_e->pos());
         QStringList symbol_names

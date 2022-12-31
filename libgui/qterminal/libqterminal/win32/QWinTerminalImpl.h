@@ -49,7 +49,7 @@ class QWinTerminalImpl : public QTerminal
   friend class QConsoleView;
 
 public:
-  QWinTerminalImpl (octave::base_qobject&, QWidget* parent);
+  QWinTerminalImpl (QWidget* parent);
   ~QWinTerminalImpl (void);
 
   void setTerminalFont (const QFont& font);

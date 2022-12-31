@@ -39,7 +39,6 @@ see <https://www.gnu.org/licenses/>.
 #include "gui-preferences-cs.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 
 #include "builtin-defun-decls.h"
 #include "interpreter.h"
@@ -52,21 +51,18 @@ see <https://www.gnu.org/licenses/>.
 #endif
 
 QTerminal *
-QTerminal::create (octave::base_qobject& oct_qobj, QWidget *p)
+QTerminal::create (QWidget *p)
 {
 #if defined (Q_OS_WIN32)
-  QTerminal *terminal = new QWinTerminalImpl (oct_qobj, p);
+  QTerminal *terminal = new QWinTerminalImpl (p);
 #else
-  QTerminal *terminal = new QUnixTerminalImpl (oct_qobj, p);
+  QTerminal *terminal = new QUnixTerminalImpl (p);
 #endif
 
   // FIXME: this function should probably be called from or part of the
-  // QTerminal constructor, but I think that would mean some major
-  // surgery because then the constructor for QTerminal and the derived
-  // Unix- and Windows-specific versions would need access to the
-  // base_qobject object, or the design would have to change significantly.
+  // QTerminal constructor?
 
-  terminal->construct (oct_qobj);
+  terminal->construct ();
 
   return terminal;
 }
@@ -283,7 +279,7 @@ QTerminal::notice_settings (void)
 }
 
 void
-QTerminal::construct (octave::base_qobject& oct_qobj)
+QTerminal::construct (void)
 {
   octave::gui_settings settings;
 

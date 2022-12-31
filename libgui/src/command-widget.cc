@@ -51,10 +51,10 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  command_widget::command_widget (base_qobject& oct_qobj, QWidget *p)
+  command_widget::command_widget (QWidget *p)
     : QWidget (p), m_incomplete_parse (false),
       m_prompt (QString ()),
-      m_console (new console (this, oct_qobj))
+      m_console (new console (this))
   {
     QPushButton *pause_button = new QPushButton (tr("Pause"), this);
     QPushButton *stop_button = new QPushButton (tr("Stop"), this);
@@ -180,7 +180,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // "qpconsole" as proposed by user "DerManu" in the Qt-forum thread
   // https://forum.qt.io/topic/28765/command-terminal-using-qtextedit
 
-  console::console (command_widget *p, base_qobject&)
+  console::console (command_widget *p)
     : QsciScintilla (p),
       m_command_position (-1),
       m_cursor_position (0),

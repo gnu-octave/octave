@@ -59,7 +59,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (m_experimental_terminal_widget)
       {
 #if defined (HAVE_QSCINTILLA)
-        command_widget *widget = new command_widget (oct_qobj, this);
+        command_widget *widget = new command_widget (this);
         console *con = widget->get_console ();
 
         connect (this, &terminal_dock_widget::settings_changed,
@@ -82,7 +82,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
     else
       {
-        QTerminal *widget = QTerminal::create (oct_qobj, this);
+        QTerminal *widget = QTerminal::create (this);
 
         connect (this, &terminal_dock_widget::settings_changed,
                  widget, &QTerminal::notice_settings);

@@ -52,7 +52,6 @@
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
 #include "main-window.h"
-#include "octave-qobject.h"
 #include "octave-qtutils.h"
 
 #include "oct-env.h"

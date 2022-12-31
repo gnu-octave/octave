@@ -34,11 +34,6 @@ see <https://www.gnu.org/licenses/>.
 
 #include "qt-interpreter-events.h"
 
-namespace octave
-{
-  class base_qobject;
-}
-
 class QMenu;
 class QAction;
 
@@ -48,8 +43,7 @@ class QTerminal : public QWidget
 
 public:
 
-  static QTerminal *
-  create (octave::base_qobject& oct_qobj, QWidget *xparent);
+  static QTerminal * create (QWidget *xparent);
 
   virtual ~QTerminal (void) = default;
 
@@ -146,14 +140,13 @@ public slots:
 
 protected:
 
-  QTerminal (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr)
-            : QWidget (xparent), m_octave_qobj (oct_qobj) { }
+  QTerminal (QWidget *xparent = nullptr)
+    : QWidget (xparent)
+  { }
 
-  void construct (octave::base_qobject& oct_qobj);
+  void construct ();
 
 private:
-
-  octave::base_qobject& m_octave_qobj;
 
   QMenu *_contextMenu;
   QAction * _copy_action;

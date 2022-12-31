@@ -259,8 +259,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   private:
 
-    base_qobject& m_octave_qobj;
-
     void add_breakpoint_event (int line, const QString& cond);
 
     bool valid_file_name (const QString& file = QString ());

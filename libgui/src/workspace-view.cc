@@ -48,8 +48,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  workspace_view::workspace_view (QWidget *p, base_qobject& oct_qobj)
-    : octave_dock_widget ("WorkspaceView", p, oct_qobj),
+  workspace_view::workspace_view (QWidget *p)
+    : octave_dock_widget ("WorkspaceView", p),
       m_view (new QTableView (this)),
       m_filter_checkbox (new QCheckBox ()),
       m_filter (new QComboBox (this)),

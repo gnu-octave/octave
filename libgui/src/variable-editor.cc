@@ -1089,8 +1089,8 @@ variable_editor_view::variable_editor_view (QWidget *p)
 
   // Variable editor.
 
-  variable_editor::variable_editor (QWidget *p, base_qobject& oct_qobj)
-    : octave_dock_widget ("VariableEditor", p, oct_qobj),
+  variable_editor::variable_editor (QWidget *p)
+    : octave_dock_widget ("VariableEditor", p),
       m_main (new dw_main_window ()),
       m_tool_bar (new QToolBar (m_main)),
       m_default_width (30),

@@ -96,7 +96,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       QString new_file_name;
     };
 
-    file_editor (QWidget *p, base_qobject& oct_qobj);
+    file_editor (QWidget *p);
 
     ~file_editor (void) = default;
 

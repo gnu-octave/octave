@@ -58,7 +58,6 @@
 #include "gui-settings.h"
 // FIXME: hardwired marker numbers?
 #include "marker.h"
-#include "octave-qobject.h"
 #include "octave-qscintilla.h"
 #include "workspace-model.h"
 
@@ -112,10 +111,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return retval;
   }
 
-  octave_qscintilla::octave_qscintilla (QWidget *p, base_qobject& oct_qobj)
-    : QsciScintilla (p), m_octave_qobj (oct_qobj), m_debug_mode (false),
-      m_word_at_cursor (), m_selection (), m_selection_replacement (),
-      m_selection_line (-1), m_selection_col (-1), m_indicator_id (1)
+  octave_qscintilla::octave_qscintilla (QWidget *p)
+    : QsciScintilla (p), m_debug_mode (false), m_word_at_cursor (),
+      m_selection (), m_selection_replacement (), m_selection_line (-1),
+      m_selection_col (-1), m_indicator_id (1)
   {
     connect (this, SIGNAL (textChanged (void)),
              this, SLOT (text_changed (void)));

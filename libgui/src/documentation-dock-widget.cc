@@ -33,9 +33,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  documentation_dock_widget::documentation_dock_widget (QWidget *p,
-                                                        base_qobject& oct_qobj)
-    : octave_dock_widget ("DocumentationDockWidget", p, oct_qobj),
+  documentation_dock_widget::documentation_dock_widget (QWidget *p)
+    : octave_dock_widget ("DocumentationDockWidget", p),
       m_docs (new documentation (this))
   {
     set_title (tr ("Documentation"));

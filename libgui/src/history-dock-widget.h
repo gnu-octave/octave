@@ -37,15 +37,13 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-
   class history_dock_widget : public octave_dock_widget
   {
     Q_OBJECT
 
   public:
 
-    history_dock_widget (QWidget *parent, base_qobject& oct_qobj);
+    history_dock_widget (QWidget *parent);
 
     ~history_dock_widget (void) = default;
 

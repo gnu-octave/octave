@@ -70,7 +70,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #else
 
     octave_unused_parameter (interp);
-    octave_unused_parameter (oct_qobj);
 
 #endif
   }

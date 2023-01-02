@@ -39,15 +39,13 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-
   class workspace_view : public octave_dock_widget
   {
     Q_OBJECT
 
   public:
 
-    workspace_view (QWidget *parent, base_qobject& oct_qobj);
+    workspace_view (QWidget *parent);
 
     ~workspace_view (void) = default;
 

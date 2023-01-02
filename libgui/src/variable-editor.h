@@ -44,8 +44,6 @@ class QToolBar;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-
   class variable_editor_model;
   class variable_editor_view;
 
@@ -291,7 +289,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    variable_editor (QWidget *parent, base_qobject& oct_qobj);
+    variable_editor (QWidget *parent);
 
     ~variable_editor (void);
 

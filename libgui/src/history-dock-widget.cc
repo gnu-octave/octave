@@ -47,8 +47,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  history_dock_widget::history_dock_widget (QWidget *p, base_qobject& oct_qobj)
-    : octave_dock_widget ("HistoryDockWidget", p, oct_qobj)
+  history_dock_widget::history_dock_widget (QWidget *p)
+    : octave_dock_widget ("HistoryDockWidget", p)
   {
     setStatusTip (tr ("Browse and search the command history."));
 

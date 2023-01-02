@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <QGuiApplication>
 #include <QScreen>
 
 // This header is only needed for the new terminal widget.
@@ -42,15 +43,14 @@
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
 
-#include "octave-qobject.h"
 #include "terminal-dock-widget.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
   terminal_dock_widget::terminal_dock_widget (QWidget *p,
-                                              base_qobject& oct_qobj)
-    : octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
-      m_experimental_terminal_widget (oct_qobj.experimental_terminal_widget ())
+                                              bool experimental_terminal_widget)
+    : octave_dock_widget ("TerminalDockWidget", p),
+      m_experimental_terminal_widget (experimental_terminal_widget)
   {
     init_control_d_shortcut_behavior ();
 

@@ -339,7 +339,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     qt_interpreter_events *qt_link = interp_qobj->qt_link ();
 
 #if defined (HAVE_QSCINTILLA)
-    file_editor *editor = new file_editor (this, m_octave_qobj);
+    file_editor *editor = new file_editor (this);
 
     make_dock_widget_connections (editor);
 

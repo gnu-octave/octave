@@ -35,7 +35,6 @@ class QTerminal;
 OCTAVE_BEGIN_NAMESPACE(octave)
 
   class command_widget;
-  class base_qobject;
 
   class terminal_dock_widget : public octave_dock_widget
   {
@@ -43,7 +42,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    terminal_dock_widget (QWidget *parent, base_qobject& oct_qobj);
+    terminal_dock_widget (QWidget *parent,
+                          bool experimental_terminal_widget = false);
 
     ~terminal_dock_widget (void) = default;
 

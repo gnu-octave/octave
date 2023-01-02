@@ -46,8 +46,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-
   //!  Dock widget to display files in the current directory.
 
   class files_dock_widget : public octave_dock_widget
@@ -56,7 +54,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    files_dock_widget (QWidget *parent, base_qobject& oct_qobj);
+    files_dock_widget (QWidget *parent);
 
     ~files_dock_widget (void) = default;
 

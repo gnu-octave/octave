@@ -454,7 +454,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     else if (! m_terminal_widget)
       {
         m_terminal_widget
-          = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw, *this));
+          = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw));
         if (experimental_terminal_widget ())
           {
 #if defined (HAVE_QSCINTILLA)
@@ -508,7 +508,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     else if (! m_documentation_widget)
       {
         m_documentation_widget
-          = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw, *this));
+          = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw));
 
         connect (qt_link (),
                  &qt_interpreter_events::register_documentation_signal,
@@ -534,7 +534,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
     else if (! m_file_browser_widget)
       m_file_browser_widget
-        = QPointer<files_dock_widget> (new files_dock_widget (mw, *this));
+        = QPointer<files_dock_widget> (new files_dock_widget (mw));
 
     connect (qt_link (), &qt_interpreter_events::directory_changed_signal,
              m_file_browser_widget, &files_dock_widget::update_octave_directory);
@@ -553,7 +553,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     else if (! m_history_widget)
       {
         m_history_widget
-          = QPointer<history_dock_widget> (new history_dock_widget (mw, *this));
+          = QPointer<history_dock_widget> (new history_dock_widget (mw));
 
         connect (qt_link (), &qt_interpreter_events::set_history_signal,
                  m_history_widget, &history_dock_widget::set_history);
@@ -588,7 +588,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     else if (! m_workspace_widget)
       {
         m_workspace_widget
-          = QPointer<workspace_view> (new workspace_view (mw, *this));
+          = QPointer<workspace_view> (new workspace_view (mw));
 
         m_workspace_widget->setModel (m_workspace_model);
 
@@ -688,7 +688,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         m_editor_widget->set_adopted (true);
       }
     else if (! m_editor_widget)
-      m_editor_widget = new file_editor (mw, *this);
+      m_editor_widget = new file_editor (mw);
 #endif
 
     return m_editor_widget;
@@ -705,7 +705,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     else if (! m_variable_editor_widget)
       {
         m_variable_editor_widget
-          = QPointer<variable_editor> (new variable_editor (mw, *this));
+          = QPointer<variable_editor> (new variable_editor (mw));
 
         connect (m_variable_editor_widget, &variable_editor::updated,
                  this, &base_qobject::handle_variable_editor_update);

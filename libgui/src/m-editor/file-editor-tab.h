@@ -44,7 +44,6 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
   class file_editor;
 
   class file_editor_tab : public QWidget
@@ -53,7 +52,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    file_editor_tab (base_qobject& oct_qobj, const QString& directory = "");
+    file_editor_tab (const QString& directory = "");
 
     ~file_editor_tab (void);
 

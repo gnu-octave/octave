@@ -34,16 +34,14 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
-
   class file_editor_interface : public octave_dock_widget
   {
     Q_OBJECT
 
   public:
 
-    file_editor_interface (QWidget *p, base_qobject& oct_qobj)
-      : octave_dock_widget ("FileEditor", p, oct_qobj)
+    file_editor_interface (QWidget *p)
+      : octave_dock_widget ("FileEditor", p)
     { }
 
     virtual ~file_editor_interface (void) = default;

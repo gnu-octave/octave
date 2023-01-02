@@ -39,15 +39,13 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class octave_qscintilla : public QsciScintilla
 {
   Q_OBJECT
 
 public:
 
-  octave_qscintilla (QWidget *p, base_qobject& oct_qobj);
+  octave_qscintilla (QWidget *p);
 
   ~octave_qscintilla (void) = default;
 
@@ -147,8 +145,6 @@ private:
 
   QPointer<QTemporaryFile> create_tmp_file (const QString& extension,
                                             const QString& contents);
-
-  base_qobject& m_octave_qobj;
 
   bool m_debug_mode;
 

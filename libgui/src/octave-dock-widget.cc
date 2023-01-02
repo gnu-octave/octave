@@ -45,7 +45,6 @@
 #include "gui-utils.h"
 #include "main-window.h"
 #include "octave-dock-widget.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -189,10 +188,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                      .arg ((icon_size*2)/3).arg((icon_size*7)/3);
   }
 
-  octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
-                                          base_qobject& oct_qobj)
-    : label_dock_widget (p), m_octave_qobj (oct_qobj),
-      m_main_window (nullptr),  m_adopted (false),
+  octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
+    : label_dock_widget (p), m_main_window (nullptr),  m_adopted (false),
       m_custom_style (false), m_focus_follows_mouse (false),
       m_recent_float_geom (), m_recent_dock_geom (),
       m_waiting_for_mouse_button_release (false)

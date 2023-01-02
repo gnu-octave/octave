@@ -97,8 +97,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // File editor
 
-  file_editor::file_editor (QWidget *p, base_qobject& oct_qobj)
-    : file_editor_interface (p, oct_qobj)
+  file_editor::file_editor (QWidget *p)
+    : file_editor_interface (p)
   {
     // Set current editing directory before construction because loaded
     // files will change ced accordingly.
@@ -2441,7 +2441,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   file_editor_tab *
   file_editor::make_file_editor_tab (const QString& directory)
   {
-    file_editor_tab *f = new file_editor_tab (m_octave_qobj, directory);
+    file_editor_tab *f = new file_editor_tab (directory);
 
     // signals from the qscintilla edit area
     connect (f->qsci_edit_area (), &octave_qscintilla::show_symbol_tooltip_signal,

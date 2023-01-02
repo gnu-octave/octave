@@ -35,7 +35,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class base_qobject;
   class main_window;
 
   // The few decoration items common to both main window and variable editor.
@@ -86,8 +85,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    octave_dock_widget (const QString& obj_name, QWidget *p,
-                        base_qobject& oct_qobj);
+    octave_dock_widget (const QString& obj_name, QWidget *p);
 
     ~octave_dock_widget (void) = default;
 
@@ -160,10 +158,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void set_style (bool active);
     void set_focus_predecessor (void);
     void store_geometry (void);
-
-  protected:
-
-    base_qobject& m_octave_qobj;
 
   private:
 

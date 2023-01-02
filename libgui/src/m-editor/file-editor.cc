@@ -2444,6 +2444,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     file_editor_tab *f = new file_editor_tab (m_octave_qobj, directory);
 
     // signals from the qscintilla edit area
+    connect (f->qsci_edit_area (), &octave_qscintilla::show_symbol_tooltip_signal,
+             this, &file_editor::show_symbol_tooltip_signal);
+
     connect (f->qsci_edit_area (), &octave_qscintilla::status_update,
              this, &file_editor::edit_status_update);
 

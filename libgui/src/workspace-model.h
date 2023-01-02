@@ -88,6 +88,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void notice_settings (void);
 
+    void show_symbol_tooltip (const QPoint& pos, const QString& symbol);
+
   private:
 
     void clear_data (void);

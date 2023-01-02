@@ -348,6 +348,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // connections here instead of in base_qobject::editor_widget.
     m_octave_qobj.connect_interpreter_events (editor);
 
+    connect (editor, &file_editor::show_symbol_tooltip_signal,
+             m_octave_qobj.get_workspace_model (),
+             &workspace_model::show_symbol_tooltip);
+
     connect (editor, &file_editor::request_settings_dialog,
              this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));
 

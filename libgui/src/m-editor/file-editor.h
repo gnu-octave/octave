@@ -192,6 +192,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void edit_mfile_request (const QString&, const QString&, const QString&, int);
     void debug_quit_signal (void);
 
+    void show_symbol_tooltip_signal (const QPoint&, const QString&);
+
   public slots:
 
     void activate (void);

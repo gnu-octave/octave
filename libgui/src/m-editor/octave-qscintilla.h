@@ -95,6 +95,7 @@ signals:
   void qsci_has_focus_signal (bool);
   void status_update (bool, bool);
   void show_doc_signal (const QString&);
+  void show_symbol_tooltip_signal (const QPoint&, const QString&);
   void context_menu_break_condition_signal (int);
   void context_menu_break_once (int);
   void ctx_menu_run_finished_signal (bool, int, QPointer<QTemporaryFile>,

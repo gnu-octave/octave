@@ -30,6 +30,7 @@
 #include <iostream>
 
 #include <QTreeWidget>
+#include <QToolTip>
 
 #include "gui-preferences-ws.h"
 #include "gui-settings.h"
@@ -216,6 +217,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         m_storage_class_colors.replace (i + ws_colors_count, fg_color);
 
       }
+  }
+
+  void
+  workspace_model::show_symbol_tooltip (const QPoint& pos,
+                                        const QString& symbol)
+  {
+    int symbol_idx = m_symbols.indexOf (symbol);
+
+    if (symbol_idx > -1)
+      QToolTip::showText (pos, symbol + " = " + m_values.at (symbol_idx));
+    else
+      QToolTip::hideText ();
   }
 
   void

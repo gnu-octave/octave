@@ -144,7 +144,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    settings.setValue (nr_allow_connection.key, m_allow_web_connect_state);
+    settings.setValue (nr_allow_connection.settings_key (), m_allow_web_connect_state);
 
     settings.sync ();
 
@@ -248,7 +248,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QHBoxLayout *checkbox_layout = new QHBoxLayout;
 
-    bool allow_connection = nr_allow_connection.def.toBool ();
+    bool allow_connection = nr_allow_connection.def ().toBool ();
     if (allow_connection)
       m_checkbox->setCheckState (Qt::Checked);
     else

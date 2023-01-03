@@ -23,17 +23,20 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_gui_preferences_hw_h)
-#define octave_gui_preferences_hw_h 1
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
+#endif
 
-#include "gui-preferences.h"
+#include "gui-preferences-nr.h"
+#include <QDateTime>
 
 // News Reader properties
 
-extern gui_pref hw_filter_active;
+gui_pref
+nr_last_time ("news/last_time_checked", QVariant (QDateTime ()));
 
-extern gui_pref hw_filter_shown;
+gui_pref
+nr_last_news ("news/last_news_item", QVariant (0));
 
-extern gui_pref hw_mru_list;
-
-#endif
+gui_pref
+nr_allow_connection ("news/allow_web_connection", QVariant (false));

@@ -214,7 +214,7 @@ QTerminal::notice_settings (void)
   term_font.setStyleHint (QFont::TypeWriter);
   QString default_font = settings.value (global_mono_font).toString ();
   term_font.setFamily
-    (settings.value (cs_font.key, default_font).toString ());
+    (settings.value (cs_font.settings_key (), default_font).toString ());
   term_font.setPointSize
     (settings.value (cs_font_size).toInt ());
   setTerminalFont (term_font);
@@ -226,7 +226,7 @@ QTerminal::notice_settings (void)
     = settings.value (cs_cursor).toString ();
 
   bool cursor_blinking;
-  if (settings.contains (global_cursor_blinking.key))
+  if (settings.contains (global_cursor_blinking.settings_key ()))
     cursor_blinking = settings.value (global_cursor_blinking).toBool ();
   else
     cursor_blinking = settings.value (cs_cursor_blinking).toBool ();

@@ -23,17 +23,13 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_gui_preferences_hw_h)
-#define octave_gui_preferences_hw_h 1
-
-#include "gui-preferences.h"
-
-// News Reader properties
-
-extern gui_pref hw_filter_active;
-
-extern gui_pref hw_filter_shown;
-
-extern gui_pref hw_mru_list;
-
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include "gui-preferences-gp.h"
+
+// Graphics utilities
+
+gui_pref
+gp_annotation_geometry ("annotation/geometry", QVariant ());

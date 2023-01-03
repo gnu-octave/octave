@@ -23,17 +23,44 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_gui_preferences_hw_h)
-#define octave_gui_preferences_hw_h 1
-
-#include "gui-preferences.h"
-
-// News Reader properties
-
-extern gui_pref hw_filter_active;
-
-extern gui_pref hw_filter_shown;
-
-extern gui_pref hw_mru_list;
-
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include "gui-preferences-ff.h"
+
+// Find files dialog preferences
+
+gui_pref
+ff_file_name ("findfiles/file_name", QVariant ("*"));
+
+gui_pref
+ff_start_dir ("findfiles/start_dir", QVariant (""));
+
+gui_pref
+ff_recurse_dirs ("findfiles/recurse_dirs", QVariant (false));
+
+gui_pref
+ff_include_dirs ("findfiles/include_dirs", QVariant (false));
+
+gui_pref
+ff_name_case ("findfiles/name_case", QVariant (false));
+
+gui_pref
+ff_check_text ("findfiles/check_text", QVariant (false));
+
+gui_pref
+ff_contains_text ("findfiles/contains_text", QVariant (""));
+
+gui_pref
+ff_content_case ("findfiles/content_case", QVariant (false));
+
+gui_pref
+ff_column_state ("findfiles/column_state", QVariant ());
+
+gui_pref
+ff_sort_files_by_column ("findfiles/sort_files_by_column", QVariant (0));
+
+gui_pref
+ff_sort_files_by_order ("findfiles/sort_files_by_order",
+                        QVariant (Qt::AscendingOrder));

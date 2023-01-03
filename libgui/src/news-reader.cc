@@ -70,7 +70,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               {
                 gui_settings settings;
 
-                settings.setValue (nr_last_time.key,
+                settings.setValue (nr_last_time.settings_key (),
                                    QDateTime::currentDateTime ());
 
                 settings.sync ();
@@ -91,7 +91,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
                     if (curr_page_serial > m_serial)
                       {
-                        settings.setValue (nr_last_news.key, curr_page_serial);
+                        settings.setValue (nr_last_news.settings_key (), curr_page_serial);
                         settings.sync ();
                       }
                     else

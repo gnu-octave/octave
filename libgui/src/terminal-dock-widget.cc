@@ -118,7 +118,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     font.setStyleHint (QFont::TypeWriter);
     QString default_font = settings.value (global_mono_font).toString ();
     font.setFamily
-      (settings.value (cs_font.key, default_font).toString ());
+      (settings.value (cs_font.settings_key (), default_font).toString ());
     font.setPointSize
       (settings.value (cs_font_size).toInt ());
 
@@ -185,7 +185,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Reset use of Ctrl-D.  Do this before the call to beginGroup
     // because sc_main_ctrld.key already begins with the sc_group
     // prefix.
-    settings.setValue (sc_main_ctrld.key, false);
+    settings.setValue (sc_main_ctrld.settings_key (), false);
 
     settings.beginGroup (sc_group);
     const QStringList shortcut_settings_keys = settings.allKeys ();
@@ -206,7 +206,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             if (actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
               {
-                settings.setValue (sc_main_ctrld.key, true);
+                settings.setValue (sc_main_ctrld.settings_key (), true);
                 break;
               }
           }

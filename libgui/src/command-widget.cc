@@ -160,7 +160,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     term_font.setStyleHint (QFont::TypeWriter);
     QString default_font = settings.value (global_mono_font).toString ();
     term_font.setFamily
-      (settings.value (cs_font.key, default_font).toString ());
+      (settings.value (cs_font.settings_key (), default_font).toString ());
     term_font.setPointSize
       (settings.value (cs_font_size).toInt ());
 

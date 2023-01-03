@@ -269,7 +269,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     // encoding, not updated with the settings
-    m_encoding = settings.value (ed_default_enc.key, "UTF-8").toString ();
+    m_encoding = settings.value (ed_default_enc.settings_key (), "UTF-8").toString ();
     m_enc_indicator->setText (m_encoding);
     // no changes in encoding yet
     m_new_encoding = m_encoding;
@@ -2840,7 +2840,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // handling is required
     bool cursor_blinking;
 
-    if (settings.contains (global_cursor_blinking.key))
+    if (settings.contains (global_cursor_blinking.settings_key ()))
       cursor_blinking = settings.value (global_cursor_blinking).toBool ();
     else
       cursor_blinking = settings.value (cs_cursor_blinking).toBool ();

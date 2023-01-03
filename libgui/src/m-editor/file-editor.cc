@@ -265,8 +265,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (settings.value (global_use_custom_editor.key,
-                        global_use_custom_editor.def).toBool ())
+    if (settings.value (global_use_custom_editor.settings_key (),
+                        global_use_custom_editor.def ()).toBool ())
       return;  // do not open an empty script in the external editor
 
     bool real_visible;
@@ -472,11 +472,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           }
       }
 
-    settings.setValue (ed_session_names.key, fetFileNames);
-    settings.setValue (ed_session_enc.key, fet_encodings);
-    settings.setValue (ed_session_ind.key, fet_index);
-    settings.setValue (ed_session_lines.key, fet_lines);
-    settings.setValue (ed_session_bookmarks.key, fet_bookmarks);
+    settings.setValue (ed_session_names.settings_key (), fetFileNames);
+    settings.setValue (ed_session_enc.settings_key (), fet_encodings);
+    settings.setValue (ed_session_ind.settings_key (), fet_index);
+    settings.setValue (ed_session_lines.settings_key (), fet_lines);
+    settings.setValue (ed_session_bookmarks.settings_key (), fet_bookmarks);
 
     settings.sync ();
   }
@@ -2684,8 +2684,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    settings.setValue (ed_mru_file_list.key,  m_mru_files);
-    settings.setValue (ed_mru_file_encodings.key,  m_mru_files_encodings);
+    settings.setValue (ed_mru_file_list.settings_key (),  m_mru_files);
+    settings.setValue (ed_mru_file_encodings.settings_key (),  m_mru_files_encodings);
 
     settings.sync ();
   }
@@ -2696,8 +2696,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (settings.value (global_use_custom_editor.key,
-                         global_use_custom_editor.def).toBool ())
+    if (settings.value (global_use_custom_editor.settings_key (),
+                         global_use_custom_editor.def ()).toBool ())
       {
         // use the external editor interface for handling the call
         emit request_open_file_external (file_name, line);
@@ -2717,7 +2717,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     bool old = settings.value (preference).toBool ();
-    settings.setValue (preference.key, ! old);
+    settings.setValue (preference.settings_key (), ! old);
     notice_settings ();
   }
 

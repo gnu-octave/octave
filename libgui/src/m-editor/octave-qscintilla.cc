@@ -448,13 +448,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           if (comment)
             {
               // The commenting string is requested
-              if (settings.contains (ed_comment_str.key))
+              if (settings.contains (ed_comment_str.settings_key ()))
                 // new version (radio buttons)
                 comment_string = settings.value (ed_comment_str).toInt ();
               else
                 // old version (combo box)
-                comment_string = settings.value (ed_comment_str_old.key,
-                                                 ed_comment_str.def).toInt ();
+                comment_string = settings.value (ed_comment_str_old.settings_key (),
+                                                 ed_comment_str.def ()).toInt ();
 
               return (QStringList (ed_comment_strings.at (comment_string)));
             }
@@ -914,7 +914,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
   bool show_dbg_file = settings.value (ed_show_dbg_file).toBool ();
-    settings.setValue (ed_show_dbg_file.key, false);
+    settings.setValue (ed_show_dbg_file.settings_key (), false);
 
     // Let the interpreter execute the tmp file
     emit interpreter_event
@@ -1041,7 +1041,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    settings.setValue (ed_show_dbg_file.key, show_dbg_file);
+    settings.setValue (ed_show_dbg_file.settings_key (), show_dbg_file);
 
     if (tmp_file && tmp_file->exists ())
       tmp_file->remove ();

@@ -28,28 +28,21 @@
 
 #include "gui-preferences.h"
 
-const gui_pref
-dw_focus_follows_mouse ("DockWidgets/focus_follows_mouse", QVariant (false));
+extern gui_pref dw_focus_follows_mouse;
 
-const gui_pref
-dw_title_custom_style ("DockWidgets/widget_title_custom_style",
-                       QVariant (true));
+extern gui_pref dw_title_custom_style;
 
-const gui_pref dw_title_3d ("DockWidgets/widget_title_3d", QVariant (20));
+extern gui_pref dw_title_3d;
 
-const gui_pref dw_title_fg_color ("DockWidgets/title_fg_color",
-                                  QVariant (QColor (0, 0, 0)));
+extern gui_pref dw_title_fg_color;
 
-const gui_pref dw_title_fg_color_active ("DockWidgets/title_fg_color_active",
-                                         QVariant (QColor (255, 255, 255)));
+extern gui_pref dw_title_fg_color_active;
 
-const gui_pref dw_title_bg_color ("DockWidgets/title_bg_color",
-                                  QVariant (QColor (192, 192, 192)));
+extern gui_pref dw_title_bg_color;
 
-const gui_pref dw_title_bg_color_active ("DockWidgets/title_bg_color_active",
-                                         QVariant (QColor (128, 128, 128)));
+extern gui_pref dw_title_bg_color_active;
 
-const gui_pref dw_icon_set ("DockWidgets/widget_icon_set", QVariant ("NONE"));
+extern gui_pref dw_icon_set;
 
 const QHash <QString, QString> dw_icon_set_names
   = {
@@ -61,16 +54,14 @@ const QHash <QString, QString> dw_icon_set_names
     };
 
 // The following keys have to be used with .arg (objectName ())
-const gui_pref dw_float_geometry ("DockWidgets/%1_floating_geometry",
-                                  QVariant (QRect (50, 50, 480, 640)));
+extern gui_pref dw_float_geometry;
 
-const gui_pref dw_dock_geometry ("DockWidgets/%1",
-                                 QVariant (QRect (10, 10, 240, 320)));
+extern gui_pref dw_dock_geometry;
 
-const gui_pref dw_is_visible ("DockWidgets/%1Visible", QVariant (true));
+extern gui_pref dw_is_visible;
 
-const gui_pref dw_is_floating ("DockWidgets/%1Floating", QVariant (false));
+extern gui_pref dw_is_floating;
 
-const gui_pref dw_is_minimized ("DockWidgets/%1_minimized", QVariant (false));
+extern gui_pref dw_is_minimized;
 
 #endif

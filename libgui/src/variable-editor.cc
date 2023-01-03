@@ -1424,12 +1424,12 @@ variable_editor_view::variable_editor_view (QWidget *p)
 
     if (m_use_terminal_font)
       {
-        font_name = settings.value (cs_font.key, default_font).toString ();
+        font_name = settings.value (cs_font.settings_key (), default_font).toString ();
         font_size = settings.value (cs_font_size).toInt ();
       }
     else
       {
-        font_name = settings.value (ve_font_name.key, default_font).toString ();
+        font_name = settings.value (ve_font_name.settings_key (), default_font).toString ();
         font_size = settings.value (ve_font_size).toInt ();
       }
 

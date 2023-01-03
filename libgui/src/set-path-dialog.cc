@@ -170,7 +170,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    restoreGeometry (settings.value(pd_geometry.key).toByteArray());
+    restoreGeometry (settings.value(pd_geometry.settings_key ()).toByteArray());
   }
 
   void set_path_dialog::update_model (void)
@@ -300,7 +300,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    settings.setValue (pd_geometry.key, saveGeometry ());
+    settings.setValue (pd_geometry.settings_key (), saveGeometry ());
   }
 
   void set_path_dialog::closeEvent (QCloseEvent *e)

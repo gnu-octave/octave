@@ -81,10 +81,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QVariant value (const gui_pref& pref) const
     {
-      if (pref.ignore)
-        return pref.def;  // ignore the current pref and always use default
+      if (pref.ignore ())
+        return pref.def ();  // ignore the current pref and always use default
 
-      return value (pref.key, pref.def);
+      return value (pref.settings_key (), pref.def ());
     }
 
     /*!

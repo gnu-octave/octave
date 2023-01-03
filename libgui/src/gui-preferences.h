@@ -32,26 +32,90 @@
 #include <QTextCodec>
 #include <QVariant>
 
+// FIXME: Would it be possible/make sense to merge gui_pref and sc_pref
+// into a single class or to at least have them derived from a common
+// base class so we could have one global hash table that contains all
+// of them?
+
 // Structure for the definition of pairs: key and default value
 
-struct gui_pref
+class gui_pref
 {
-  gui_pref (const QString& key_arg, const QVariant& def_arg,
-            const bool ignore_arg = false)
-    : key (key_arg), def (def_arg), ignore (ignore_arg)
-  { }
+public:
 
-  // No copying!
+  // Default constructed gui_pref objects are invalid, but we need this
+  // to create QHash objects that contain gui_pref objects.  No invalid
+  // gui_pref objects should acutally be used.
 
-  gui_pref (const gui_pref&) = delete;
+  gui_pref (void) = default;
 
-  gui_pref& operator = (const gui_pref&) = delete;
+  gui_pref (const QString& settings_key, const QVariant& def,
+            bool ignore = false);
+
+  gui_pref (const gui_pref&) = default;
+
+  gui_pref& operator = (const gui_pref&) = default;
 
   ~gui_pref (void) = default;
 
-  const QString key;   // the key name
-  const QVariant def;  // the default value
-  const bool ignore;   // when true, ignore, i.e. always take default
+  QString settings_key (void) const { return m_settings_key; }
+  QVariant def (void) const { return m_def; }
+  bool ignore (void) const { return m_ignore; }
+
+private:
+
+  // The settings key name.
+  QString m_settings_key;
+
+  // The default value.
+  QVariant m_def;
+
+  // TRUE means always take the default.
+  bool m_ignore;
+};
+
+// FIXME: Is there a better/more modern way to manage this data than to
+// have this style of singleton class?
+
+// Allow lookup of gui_pref objects when we don't know the name at
+// compile time.
+
+class all_gui_preferences
+{
+public:
+
+  all_gui_preferences (void) = default;
+
+  // No copying!
+
+  all_gui_preferences (const all_gui_preferences&) = delete;
+
+  all_gui_preferences&
+  operator = (const all_gui_preferences&) = delete;
+
+  ~all_gui_preferences (void) = default;
+
+  static void insert (const QString& settings_key, const gui_pref& pref);
+
+  static const gui_pref value (const QString& settings_key);
+
+  static QStringList keys (void);
+
+private:
+
+  // Map from shortcut identifier (settings key) to gui_pref object.
+  QHash <QString, gui_pref> m_hash;
+
+  void do_insert (const QString& settings_key, const gui_pref& pref);
+
+  const gui_pref do_value (const QString& settings_key) const;
+
+  QStringList do_keys (void) const;
+
+  static void ensure_instance (void);
+
+  // Map from shortcut identifier (settings key) to sc_pref object.
+  static all_gui_preferences *s_instance;
 };
 
 // The version for shortcuts, where the default value is stored as a
@@ -112,6 +176,9 @@ private:
 
 // FIXME: Is there a better/more modern way to manage this data than to
 // have this style of singleton class?
+
+// Allow lookup of sc_pref objects when we don't know the name at
+// compile time.
 
 class all_shortcut_preferences
 {

@@ -23,17 +23,23 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_gui_preferences_hw_h)
-#define octave_gui_preferences_hw_h 1
-
-#include "gui-preferences.h"
-
-// News Reader properties
-
-extern gui_pref hw_filter_active;
-
-extern gui_pref hw_filter_shown;
-
-extern gui_pref hw_mru_list;
-
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include "gui-preferences-dc.h"
+
+// documentation properties
+
+gui_pref
+dc_bookmark_filter_active ("documentation_widget/filter_active", QVariant (false));
+
+gui_pref
+dc_bookmark_filter_shown ("documentation_widget/filter_shown", QVariant (true));
+
+gui_pref
+dc_bookmark_filter_mru ("documentation_widget/bookmark_filter_mru", QVariant ());
+
+// Zoom level
+gui_pref
+dc_browser_zoom_level ("documentation_widget/browser_zoom_level", QVariant (0));

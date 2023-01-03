@@ -60,7 +60,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_filter->setToolTip (tr ("Enter text to filter the workspace"));
     m_filter->setEditable (true);
-    m_filter->setMaxCount (ws_max_filter_history.def.toInt ());
+    m_filter->setMaxCount (ws_max_filter_history.def ().toInt ());
     m_filter->setInsertPolicy (QComboBox::NoInsert);
     m_filter->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
     QSizePolicy sizePol (QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -110,7 +110,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_view->setSortingEnabled (true);
     // Initialize column order and width of the workspace
     m_view->horizontalHeader ()->restoreState
-      (settings.value (ws_column_state.key).toByteArray ());
+      (settings.value (ws_column_state.settings_key ()).toByteArray ());
 
     // Set header properties for sorting
     m_view->horizontalHeader ()->setSectionsClickable (true);
@@ -129,7 +129,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &workspace_view::header_contextmenu_requested);
 
     // Init state of the filter
-    m_filter->addItems (settings.value (ws_mru_list.key).toStringList ());
+    m_filter->addItems (settings.value (ws_mru_list.settings_key ()).toStringList ());
 
     bool filter_state = settings.value (ws_filter_active).toBool ();
     m_filter_checkbox->setChecked (filter_state);
@@ -211,21 +211,21 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    settings.setValue (ws_column_state.key,
+    settings.setValue (ws_column_state.settings_key (),
                        m_view->horizontalHeader ()->saveState ());
 
     int sort_column = m_view->horizontalHeader ()->sortIndicatorSection ();
     Qt::SortOrder sort_order = m_view->horizontalHeader ()->sortIndicatorOrder ();
-    settings.setValue (ws_sort_column.key, sort_column);
-    settings.setValue (ws_sort_order.key, sort_order);
+    settings.setValue (ws_sort_column.settings_key (), sort_column);
+    settings.setValue (ws_sort_order.settings_key (), sort_order);
 
-    settings.setValue (ws_filter_active.key, m_filter_checkbox->isChecked ());
-    settings.setValue (ws_filter_shown.key, m_filter_shown);
+    settings.setValue (ws_filter_active.settings_key (), m_filter_checkbox->isChecked ());
+    settings.setValue (ws_filter_shown.settings_key (), m_filter_shown);
 
     QStringList mru;
     for (int i = 0; i < m_filter->count (); i++)
       mru.append (m_filter->itemText (i));
-    settings.setValue (ws_mru_list.key, mru);
+    settings.setValue (ws_mru_list.settings_key (), mru);
 
     settings.sync ();
 

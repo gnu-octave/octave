@@ -55,7 +55,7 @@ annotation_dialog::init ()
   octave::gui_settings settings;
 
   // restore last geometry
-  if (settings.contains (gp_annotation_geometry.key))
+  if (settings.contains (gp_annotation_geometry.settings_key ()))
     restoreGeometry (settings.value (gp_annotation_geometry).toByteArray ());
 
   // connect signals
@@ -99,7 +99,7 @@ annotation_dialog::button_clicked (QAbstractButton *button)
   octave::gui_settings settings;
 
   // save position
-  settings.setValue (gp_annotation_geometry.key, saveGeometry ());
+  settings.setValue (gp_annotation_geometry.settings_key (), saveGeometry ());
 
   if (button_role == QDialogButtonBox::ApplyRole
       || button_role == QDialogButtonBox::AcceptRole)

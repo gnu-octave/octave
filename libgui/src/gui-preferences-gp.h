@@ -30,7 +30,6 @@
 
 // Graphics utilities
 
-const gui_pref
-gp_annotation_geometry ("annotation/geometry", QVariant ());
+extern gui_pref gp_annotation_geometry;
 
 #endif

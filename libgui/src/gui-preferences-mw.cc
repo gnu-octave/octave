@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2022 The Octave Project Developers
+// Copyright (C) 2018-2022 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,17 +23,21 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_gui_preferences_hw_h)
-#define octave_gui_preferences_hw_h 1
-
-#include "gui-preferences.h"
-
-// News Reader properties
-
-extern gui_pref hw_filter_active;
-
-extern gui_pref hw_filter_shown;
-
-extern gui_pref hw_mru_list;
-
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include "gui-preferences-mw.h"
+
+// Main window preferences
+
+// Geometry wihtout default since default layout is built programmatically
+gui_pref
+mw_geometry ("MainWindow/geometry", QVariant (QByteArray ()));
+
+// State wihtout default since default layout is built programmatically
+gui_pref
+mw_state ("MainWindow/windowState", QVariant (QByteArray ()));
+
+gui_pref
+mw_dir_list ("MainWindow/current_directory_list", QVariant (QStringList ()));

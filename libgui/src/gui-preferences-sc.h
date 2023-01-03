@@ -26,9 +26,6 @@
 #if ! defined (octave_gui_preferences_sc_h)
 #define octave_gui_preferences_sc_h 1
 
-#include <QSet>
-#include <QString>
-
 #include "gui-preferences.h"
 
 // Define shortcuts

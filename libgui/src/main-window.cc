@@ -120,7 +120,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (welcomeWizard.exec () == QDialog::Rejected)
           exit (1);
 
-        settings.setValue (global_skip_welcome_wizard.key, QVariant (true));
+        settings.setValue (global_skip_welcome_wizard.settings_key (), QVariant (true));
 
         // Install settings file.
         settings.reload ();
@@ -499,8 +499,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (settings.value (global_prompt_to_exit.key,
-                        global_prompt_to_exit.def).toBool ())
+    if (settings.value (global_prompt_to_exit.settings_key (),
+                        global_prompt_to_exit.def ()).toBool ())
       {
         int ans = QMessageBox::question (this, tr ("Octave"),
                                          tr ("Are you sure you want to exit Octave?"),
@@ -898,7 +898,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // the desired one is not found
     QString preferred_style = settings.value (global_style).toString ();
 
-    if (preferred_style == global_style.def.toString ())
+    if (preferred_style == global_style.def ().toString ())
       preferred_style = m_default_style;
 
     QApplication* qapp = m_octave_qobj.qapplication();
@@ -986,7 +986,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     //       getting the cursor blink preferences from all OS environments
     bool cursor_blinking;
 
-    if (settings.contains (global_cursor_blinking.key))
+    if (settings.contains (global_cursor_blinking.settings_key ()))
       cursor_blinking = settings.value (global_cursor_blinking).toBool ();
     else
       cursor_blinking = settings.value (cs_cursor_blinking).toBool ();
@@ -1326,8 +1326,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     bool is_internal = m_editor_window
-                       && ! settings.value (global_use_custom_editor.key,
-                                             global_use_custom_editor.def).toBool ();
+                       && ! settings.value (global_use_custom_editor.settings_key (),
+                                             global_use_custom_editor.def ()).toBool ();
 
     // Create a NonModal message.
     QWidget *p = this;
@@ -1370,8 +1370,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! p || settings.value (global_use_custom_editor.key,
-                                global_use_custom_editor.def).toBool ())
+    if (! p || settings.value (global_use_custom_editor.settings_key (),
+                                global_use_custom_editor.def ()).toBool ())
       p = this;
     QString new_name = QInputDialog::getText (p, tr ("New Function"),
                                               tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
@@ -1385,7 +1385,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (! settings.value (ed_create_new_file).toBool ())
           {
             // no, so enable this settings and wait for end of new file loading
-            settings.setValue (ed_create_new_file.key, true);
+            settings.setValue (ed_create_new_file.settings_key (), true);
             connect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                      this, SLOT (restore_create_file_setting (void)));
           }
@@ -1613,9 +1613,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             bool visible = true;
 
             floating = settings.value
-                (dw_is_floating.key.arg (name), dw_is_floating.def).toBool ();
+              (dw_is_floating.settings_key ().arg (name), dw_is_floating.def ()).toBool ();
             visible = settings.value
-                (dw_is_visible.key.arg (name), dw_is_visible.def).toBool ();
+              (dw_is_visible.settings_key ().arg (name), dw_is_visible.def ()).toBool ();
 
             // If floating, make window from widget.
             if (floating)
@@ -1624,8 +1624,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
                 if (visible)
                   {
-                    if (settings.value (dw_is_minimized.key.arg (name),
-                                        dw_is_minimized.def).toBool ())
+                    if (settings.value (dw_is_minimized.settings_key ().arg (name),
+                                        dw_is_minimized.def ()).toBool ())
                       widget->showMinimized ();
                     else
                       widget->setVisible (true);
@@ -1651,15 +1651,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    settings.setValue (mw_geometry.key, saveGeometry ());
-    settings.setValue (mw_state.key, saveState ());
+    settings.setValue (mw_geometry.settings_key (), saveGeometry ());
+    settings.setValue (mw_state.settings_key (), saveState ());
     // write the list of recently used directories
     QStringList curr_dirs;
     for (int i=0; i<m_current_directory_combo_box->count (); i++)
       {
         curr_dirs.append (m_current_directory_combo_box->itemText (i));
       }
-    settings.setValue (mw_dir_list.key, curr_dirs);
+    settings.setValue (mw_dir_list.settings_key (), curr_dirs);
     settings.sync ();
   }
 
@@ -1903,7 +1903,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    settings.setValue (ed_create_new_file.key, false);
+    settings.setValue (ed_create_new_file.settings_key (), false);
     disconnect (m_editor_window, SIGNAL (file_loaded_signal (void)),
                 this, SLOT (restore_create_file_setting (void)));
   }
@@ -2882,8 +2882,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           {
             gui_settings settings;
 
-            settings.setValue (mw_geometry.key, saveGeometry ());
-            settings.setValue (mw_state.key, saveState ());
+            settings.setValue (mw_geometry.settings_key (), saveGeometry ());
+            settings.setValue (mw_state.settings_key (), saveState ());
           }
 
         focus_command_window ();

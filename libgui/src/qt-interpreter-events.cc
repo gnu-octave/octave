@@ -719,7 +719,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Not all encodings are available.  Encodings are uppercase and do
     // not use CPxxx but IBMxxx or WINDOWS-xxx.
 
-    if (key == ed_default_enc.key)
+    if (key == ed_default_enc.settings_key ())
       {
         adjusted_value = adjusted_value.toUpper ();
 

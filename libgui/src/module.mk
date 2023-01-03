@@ -410,7 +410,22 @@ noinst_HEADERS += \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
   %reldir%/graphics-init.cc \
+  %reldir%/gui-preferences-cs.cc \
+  %reldir%/gui-preferences-dc.cc \
+  %reldir%/gui-preferences-dw.cc \
+  %reldir%/gui-preferences-ed.cc \
+  %reldir%/gui-preferences-fb.cc \
+  %reldir%/gui-preferences-ff.cc \
+  %reldir%/gui-preferences-global.cc \
+  %reldir%/gui-preferences-gp.cc \
+  %reldir%/gui-preferences-hw.cc \
+  %reldir%/gui-preferences-mw.cc \
+  %reldir%/gui-preferences-nr.cc \
+  %reldir%/gui-preferences-pd.cc \
   %reldir%/gui-preferences-sc.cc \
+  %reldir%/gui-preferences-sd.cc \
+  %reldir%/gui-preferences-ve.cc \
+  %reldir%/gui-preferences-ws.cc \
   %reldir%/gui-preferences.cc \
   %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \

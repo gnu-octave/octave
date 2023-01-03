@@ -26,6 +26,8 @@
 #if ! defined (octave_gui_preferences_global_h)
 #define octave_gui_preferences_global_h 1
 
+#include <QStyle>
+
 #include "gui-preferences.h"
 
 // Constants
@@ -34,8 +36,7 @@ const QString gui_obj_name_main_window = "MainWindow";
 
 // Global preferences
 
-const gui_pref
-global_skip_welcome_wizard ("global_skip_welcome_wizard", false);
+extern gui_pref global_skip_welcome_wizard;
 
 // Get the default monospaced font
 #if defined (Q_OS_WIN)
@@ -46,13 +47,11 @@ const QString global_font_family = "Monaco";
 const QString global_font_family = "Monospace";
 #endif
 
-const gui_pref
-global_mono_font ("monospace_font", global_font_family);
+extern gui_pref global_mono_font;
 
 // Style
 
-const gui_pref
-global_style ("style", QVariant ("default"));
+extern gui_pref global_style;
 
 const QString
 global_toolbar_style ("QToolBar {"
@@ -81,11 +80,9 @@ const QStyle::PixelMetric global_icon_sizes[3] =
   QStyle::PM_LargeIconSize
 };
 
-const gui_pref
-global_icon_size ("toolbar_icon_size", QVariant (0));
+extern gui_pref global_icon_size;
 
-const gui_pref
-global_icon_theme ("use_system_icon_theme", QVariant (true));
+extern gui_pref global_icon_theme;
 
 enum
 {
@@ -103,8 +100,8 @@ global_icon_paths = {
   ":/icons/cursors/"
 };
 
-const gui_pref
-global_icon_theme_index ("icon_theme", QVariant (ICON_THEME_SYSTEM));
+extern gui_pref global_icon_theme_index;
+
 const QStringList
 global_all_icon_themes = {
   "",
@@ -120,12 +117,9 @@ global_all_icon_theme_names = {
   "Tango"
 };
 
-const gui_pref
-global_icon_fallbacks ("icon_fallbacks", QVariant (QStringList ()));
+extern gui_pref global_icon_fallbacks;
 
-const gui_pref
-global_status_bar ("show_status_bar", QVariant (true));
-
+extern gui_pref global_status_bar;
 
 enum
 {
@@ -139,55 +133,44 @@ global_extra_styles = {
 #if defined (Q_OS_MAC)
 // prevent native file dialogs on MAC by setting the default "false" and
 // setting the flag for ignoring the pref to "true" (3rd argument)
-const gui_pref
-global_use_native_dialogs ("use_native_file_dialogs", QVariant (false), true);
+extern gui_pref global_use_native_dialogs;
 #elif defined (Q_OS_WIN32)
-const gui_pref
-global_use_native_dialogs ("use_native_file_dialogs", QVariant (false));
+extern gui_pref global_use_native_dialogs;
 #else
-const gui_pref
-global_use_native_dialogs ("use_native_file_dialogs", QVariant (true));
+extern gui_pref global_use_native_dialogs;
 #endif
 
-const gui_pref
-global_cursor_blinking ("cursor_blinking", QVariant (true));
+extern gui_pref global_cursor_blinking;
 
-const gui_pref
-global_language ("language", QVariant ("SYSTEM"));
+extern gui_pref global_language;
 
-const gui_pref
-global_ov_startup_dir ("octave_startup_dir", QVariant (QString ()));
-const gui_pref
-global_restore_ov_dir ("restore_octave_dir", QVariant (false));
+extern gui_pref global_ov_startup_dir;
 
-const gui_pref
-global_use_custom_editor ("useCustomFileEditor", QVariant (false));
+extern gui_pref global_restore_ov_dir;
+
+extern gui_pref global_use_custom_editor;
 
 #if defined (Q_OS_WIN32)
-const gui_pref
-global_custom_editor ("customFileEditor", QVariant ("notepad++ -n%l %f"));
+extern gui_pref global_custom_editor;
 #else
-const gui_pref
-global_custom_editor ("customFileEditor", QVariant ("emacs +%l %f"));
+extern gui_pref global_custom_editor;
 #endif
 
-const gui_pref
-global_prompt_to_exit ("prompt_to_exit", QVariant (false));
+extern gui_pref global_prompt_to_exit;
 
 // Proxy
 
-const gui_pref
-global_proxy_host ("proxyHostName", QVariant (QString ()));
-const gui_pref
-global_use_proxy ("useProxyServer", QVariant (false));
-const gui_pref
-global_proxy_type ("proxyType", QVariant (QString ()));
-const gui_pref
-global_proxy_port ("proxyPort", QVariant (80));
-const gui_pref
-global_proxy_user ("proxyUserName", QVariant (QString ()));
-const gui_pref
-global_proxy_pass ("proxyPassword", QVariant (QString ()));
+extern gui_pref global_proxy_host;
+
+extern gui_pref global_use_proxy;
+
+extern gui_pref global_proxy_type;
+
+extern gui_pref global_proxy_port;
+
+extern gui_pref global_proxy_user;
+
+extern gui_pref global_proxy_pass;
 
 const QStringList
 global_proxy_all_types = {

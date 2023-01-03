@@ -388,13 +388,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Store settings
     gui_settings settings;
 
-    settings.setValue (dc_bookmark_filter_active.key, m_filter_checkbox->isChecked ());
-    settings.setValue (dc_bookmark_filter_shown.key, m_filter_shown);
+    settings.setValue (dc_bookmark_filter_active.settings_key (), m_filter_checkbox->isChecked ());
+    settings.setValue (dc_bookmark_filter_shown.settings_key (), m_filter_shown);
 
     QStringList mru;
     for (int i = 0; i < m_filter->count (); i++)
       mru.append (m_filter->itemText (i));
-    settings.setValue (dc_bookmark_filter_mru.key, mru);
+    settings.setValue (dc_bookmark_filter_mru.settings_key (), mru);
 
     settings.sync ();
   }

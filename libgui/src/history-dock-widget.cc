@@ -89,13 +89,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    settings.setValue (hw_filter_active.key, m_filter_checkbox->isChecked ());
-    settings.setValue (hw_filter_shown.key, m_filter_shown);
+    settings.setValue (hw_filter_active.settings_key (), m_filter_checkbox->isChecked ());
+    settings.setValue (hw_filter_shown.settings_key (), m_filter_shown);
 
     QStringList mru;
     for (int i = 0; i < m_filter->count (); i++)
       mru.append (m_filter->itemText (i));
-    settings.setValue (hw_mru_list.key, mru);
+    settings.setValue (hw_mru_list.settings_key (), mru);
 
     settings.sync ();
 
@@ -362,7 +362,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     font.setStyleHint (QFont::TypeWriter);
     QString default_font = settings.value (global_mono_font).toString ();
 
-    font.setFamily (settings.value (cs_font.key, default_font).toString ());
+    font.setFamily (settings.value (cs_font.settings_key (), default_font).toString ());
     font.setPointSize (settings.value (cs_font_size).toInt ());
 
     m_history_list_view->setFont (font);

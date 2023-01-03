@@ -77,7 +77,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QLabel *start_dir_label = new QLabel (tr ("Start in:"));
 
     m_start_dir_edit = new QLineEdit;
-    m_start_dir_edit->setText (settings.value (ff_start_dir.key,
+    m_start_dir_edit->setText (settings.value (ff_start_dir.settings_key (),
                                                QDir::currentPath ()).toString ());
     m_start_dir_edit->setToolTip (tr ("Enter the start directory"));
     start_dir_label->setBuddy (m_start_dir_edit);
@@ -122,7 +122,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_file_list->setAlternatingRowColors (true);
     m_file_list->setToolTip (tr ("Search results"));
     m_file_list->setSortingEnabled (true);
-    m_file_list->horizontalHeader ()->restoreState (settings.value (ff_column_state.key).toByteArray ());
+    m_file_list->horizontalHeader ()->restoreState (settings.value (ff_column_state.settings_key ()).toByteArray ());
     m_file_list->horizontalHeader ()->setSortIndicatorShown (true);
     m_file_list->horizontalHeader ()->setSectionsClickable (true);
     m_file_list->horizontalHeader ()->setStretchLastSection (true);
@@ -212,21 +212,21 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     int sort_column = m_file_list->horizontalHeader ()->sortIndicatorSection ();
     Qt::SortOrder sort_order
       = m_file_list->horizontalHeader ()->sortIndicatorOrder ();
-    settings.setValue (ff_sort_files_by_column.key, sort_column);
-    settings.setValue (ff_sort_files_by_order.key, sort_order);
-    settings.setValue (ff_column_state.key, m_file_list->horizontalHeader ()->saveState ());
+    settings.setValue (ff_sort_files_by_column.settings_key (), sort_column);
+    settings.setValue (ff_sort_files_by_order.settings_key (), sort_order);
+    settings.setValue (ff_column_state.settings_key (), m_file_list->horizontalHeader ()->saveState ());
 
-    settings.setValue (ff_file_name.key, m_file_name_edit->text ());
+    settings.setValue (ff_file_name.settings_key (), m_file_name_edit->text ());
 
-    settings.setValue (ff_start_dir.key, m_start_dir_edit->text ());
+    settings.setValue (ff_start_dir.settings_key (), m_start_dir_edit->text ());
 
-    settings.setValue (ff_recurse_dirs.key, m_recurse_dirs_check->text ());
-    settings.setValue (ff_include_dirs.key, m_include_dirs_check->text ());
-    settings.setValue (ff_name_case.key, m_name_case_check->text ());
+    settings.setValue (ff_recurse_dirs.settings_key (), m_recurse_dirs_check->text ());
+    settings.setValue (ff_include_dirs.settings_key (), m_include_dirs_check->text ());
+    settings.setValue (ff_name_case.settings_key (), m_name_case_check->text ());
 
-    settings.setValue (ff_contains_text.key, m_contains_text_edit->text ());
-    settings.setValue (ff_check_text.key, m_contains_text_check->isChecked ());
-    settings.setValue (ff_content_case.key, m_content_case_check->isChecked ());
+    settings.setValue (ff_contains_text.settings_key (), m_contains_text_edit->text ());
+    settings.setValue (ff_check_text.settings_key (), m_contains_text_check->isChecked ());
+    settings.setValue (ff_content_case.settings_key (), m_content_case_check->isChecked ());
 
     settings.sync ();
   }

@@ -30,6 +30,60 @@
 #include "gui-preferences-sc.h"
 #include "gui-preferences.h"
 
+gui_pref::gui_pref (const QString& settings_key, const QVariant& def,
+                    bool ignore)
+  : m_settings_key (settings_key), m_def (def), m_ignore (ignore)
+{
+  all_gui_preferences::insert (settings_key, *this);
+}
+
+all_gui_preferences *all_gui_preferences::s_instance = nullptr;
+
+void all_gui_preferences::insert (const QString& settings_key,
+                                  const gui_pref& pref)
+{
+  ensure_instance ();
+
+  s_instance->do_insert (settings_key, pref);
+}
+
+const gui_pref all_gui_preferences::value (const QString& settings_key)
+{
+  ensure_instance ();
+
+  return s_instance->do_value (settings_key);
+}
+
+QStringList all_gui_preferences::keys (void)
+{
+  ensure_instance ();
+
+  return s_instance->do_keys ();
+}
+
+void all_gui_preferences::do_insert (const QString& settings_key,
+                                     const gui_pref& pref)
+{
+  m_hash.insert (settings_key, pref);
+}
+
+const gui_pref
+all_gui_preferences::do_value (const QString& settings_key) const
+{
+  return m_hash.value (settings_key);
+}
+
+QStringList all_gui_preferences::do_keys (void) const
+{
+  return m_hash.keys ();
+}
+
+void all_gui_preferences::ensure_instance (void)
+{
+  if (! s_instance)
+    s_instance = new all_gui_preferences ();
+}
+
 sc_pref::sc_pref (const QString& description, const QString& settings_key,
                   Qt::Key def)
   : m_description (description), m_settings_key (settings_key), m_def (def),

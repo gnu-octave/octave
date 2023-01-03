@@ -30,39 +30,27 @@
 
 // Find files dialog preferences
 
-const gui_pref
-ff_file_name ("findfiles/file_name", QVariant ("*"));
+extern gui_pref ff_file_name;
 
-const gui_pref
-ff_start_dir ("findfiles/start_dir", QVariant (""));
+extern gui_pref ff_start_dir;
 
-const gui_pref
-ff_recurse_dirs ("findfiles/recurse_dirs", QVariant (false));
+extern gui_pref ff_recurse_dirs;
 
-const gui_pref
-ff_include_dirs ("findfiles/include_dirs", QVariant (false));
+extern gui_pref ff_include_dirs;
 
-const gui_pref
-ff_name_case ("findfiles/name_case", QVariant (false));
+extern gui_pref ff_name_case;
 
-const gui_pref
-ff_check_text ("findfiles/check_text", QVariant (false));
+extern gui_pref ff_check_text;
 
-const gui_pref
-ff_contains_text ("findfiles/contains_text", QVariant (""));
+extern gui_pref ff_contains_text;
 
-const gui_pref
-ff_content_case ("findfiles/content_case", QVariant (false));
+extern gui_pref ff_content_case;
 
-const gui_pref
-ff_column_state ("findfiles/column_state", QVariant ());
+extern gui_pref ff_column_state;
 
-const gui_pref
-ff_sort_files_by_column ("findfiles/sort_files_by_column", QVariant (0));
+extern gui_pref ff_sort_files_by_column;
 
-const gui_pref
-ff_sort_files_by_order ("findfiles/sort_files_by_order",
-                        QVariant (Qt::AscendingOrder));
+extern gui_pref ff_sort_files_by_order;
 
 
 #endif

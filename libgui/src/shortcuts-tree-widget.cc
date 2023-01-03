@@ -601,7 +601,7 @@ void shortcuts_tree_widget::import_shortcuts (gui_settings& settings)
       it++;
     }
 
-  settings.setValue (sc_main_ctrld.key, sc_ctrld);
+  settings.setValue (sc_main_ctrld.settings_key (), sc_ctrld);
 
   settings.sync ();
 }
@@ -644,7 +644,7 @@ void shortcuts_tree_widget::export_shortcuts (gui_settings& settings)
 
   settings.endGroup ();
 
-  settings.setValue (sc_main_ctrld.key, sc_ctrld);
+  settings.setValue (sc_main_ctrld.settings_key (), sc_ctrld);
 
   settings.sync ();
 }
@@ -690,7 +690,7 @@ void shortcuts_tree_widget::set_default_shortcuts (void)
       it++;
     }
 
-  settings.setValue (sc_main_ctrld.key, sc_ctrld);
+  settings.setValue (sc_main_ctrld.settings_key (), sc_ctrld);
 
   settings.sync ();
 }

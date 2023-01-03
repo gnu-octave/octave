@@ -30,7 +30,6 @@
 
 // Path Dialog properties
 
-const gui_pref
-pd_geometry ("path_dlg_geometry", QVariant (QByteArray ()));
+extern gui_pref pd_geometry;
 
 #endif

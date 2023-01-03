@@ -42,6 +42,7 @@
 #include <QShortcut>
 #include <QString>
 #include <QStringList>
+#include <QTextCodec>
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
@@ -49,6 +50,7 @@
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
 
+#include "localcharset-wrapper.h"
 #include "oct-env.h"
 
 #include "defaults.h"
@@ -101,9 +103,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   QColor gui_settings::color_value (const gui_pref& pref, int mode) const
   {
-    QColor default_color = get_color_value (pref.def, mode);
+    QColor default_color = get_color_value (pref.def (), mode);
 
-    return value (pref.key + settings_color_modes_ext[mode],
+    return value (pref.settings_key () + settings_color_modes_ext[mode],
                   QVariant (default_color)).value<QColor> ();
   }
 
@@ -114,7 +116,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (m > 1)
       m = 1;
 
-    setValue (pref.key + settings_color_modes_ext[m], QVariant (color));
+    setValue (pref.settings_key () + settings_color_modes_ext[m],
+              QVariant (color));
   }
 
   QString gui_settings::sc_value (const sc_pref& scpref) const
@@ -166,7 +169,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     int theme_index;
 
-    if (contains (global_icon_theme_index.key))
+    if (contains (global_icon_theme_index.settings_key ()))
       theme_index = value (global_icon_theme_index).toInt ();
     else
       {
@@ -178,8 +181,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         else
           theme_index = ICON_THEME_OCTAVE;
 
-        setValue (global_icon_theme_index.key, theme_index);
-        remove (global_icon_theme.key);
+        setValue (global_icon_theme_index.settings_key (), theme_index);
+        remove (global_icon_theme.settings_key ());
       }
 
     QIcon::setThemeName (global_all_icon_themes.at (theme_index));
@@ -204,7 +207,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     icon_fallbacks << global_icon_paths.at (ICON_THEME_CURSORS);
 
-    setValue (global_icon_fallbacks.key, icon_fallbacks);
+    setValue (global_icon_fallbacks.settings_key (), icon_fallbacks);
   }
 
   QIcon gui_settings::icon (const QString& icon_name, bool octave_only,
@@ -219,7 +222,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return QIcon (QIcon::fromTheme (icon_alt_name));
 
     QStringList icon_fallbacks
-      = value (global_icon_fallbacks.key).toStringList ();
+      = value (global_icon_fallbacks.settings_key ()).toStringList ();
 
     for (int i = 0; i < icon_fallbacks.length (); i++ )
       {
@@ -334,7 +337,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // be initialize and valid?
 
     // get the locale from the settings if already available
-    language = value (global_language.key, global_language.def).toString ();
+    language = value (global_language).toString ();
 
     // load the translations depending on the settings
     if (language == "SYSTEM")
@@ -493,11 +496,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QString pass;
     QUrl proxy_url = QUrl ();
 
-    if (value (global_use_proxy.key, global_use_proxy.def).toBool ())
+    if (value (global_use_proxy).toBool ())
       {
         // Use a proxy, collect all required information
         QString proxy_type_string
-          = value (global_proxy_type.key, global_proxy_type.def).toString ();
+          = value (global_proxy_type).toString ();
 
         // The proxy type for the Qt proxy settings
         if (proxy_type_string == "Socks5Proxy")
@@ -509,14 +512,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (proxy_type_string == "HttpProxy"
             || proxy_type_string == "Socks5Proxy")
           {
-            host = value (global_proxy_host.key,
-                          global_proxy_host.def).toString ();
-            port = value (global_proxy_port.key,
-                          global_proxy_port.def).toInt ();
-            user = value (global_proxy_user.key,
-                          global_proxy_user.def).toString ();
-            pass = value (global_proxy_pass.key,
-                          global_proxy_pass.def).toString ();
+            host = value (global_proxy_host.settings_key (),
+                          global_proxy_host.def ()).toString ();
+            port = value (global_proxy_port.settings_key (),
+                          global_proxy_port.def ()).toInt ();
+            user = value (global_proxy_user.settings_key (),
+                          global_proxy_user.def ()).toString ();
+            pass = value (global_proxy_pass.settings_key (),
+                          global_proxy_pass.def ()).toString ();
             if (proxy_type_string == "HttpProxy")
               scheme = "http";
             else if (proxy_type_string == "Socks5Proxy")
@@ -621,9 +624,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // logic be removed completely?
     bool default_exists = false;
     bool show_system = false;
-    if (ed_default_enc.def.toString ().startsWith ("SYSTEM"))
+    if (ed_default_enc.def ().toString ().startsWith ("SYSTEM"))
       show_system = true;
-    else if (QTextCodec::codecForName (ed_default_enc.def.toString ().toLatin1 ()))
+    else if (QTextCodec::codecForName (ed_default_enc.def ().toString ().toLatin1 ()))
       default_exists = true;
 
     QString default_enc =
@@ -637,7 +640,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (enc.isEmpty ())  // still empty?
           {
             if (default_exists)
-              enc = ed_default_enc.def.toString ();
+              enc = ed_default_enc.def ().toString ();
             else
               enc = default_enc;
           }
@@ -652,7 +655,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (show_system || ! default_exists)
       combo->insertItem (0, default_enc);
     else
-      combo->insertItem (0, ed_default_enc.def.toString ());
+      combo->insertItem (0, ed_default_enc.def ().toString ());
 
     // select the default or the current one
     int idx = combo->findText (enc, Qt::MatchExactly);
@@ -691,18 +694,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Custom editor
     if (! custom_editor.isEmpty ())
-      setValue (global_custom_editor.key, custom_editor);
+      setValue (global_custom_editor.settings_key (), custom_editor);
 
     // Default monospace font for the terminal
     if (def_font.count () > 1)
       {
-        setValue (cs_font.key, def_font[0]);
-        setValue (cs_font_size.key, def_font[1].toInt ());
+        setValue (cs_font.settings_key (), def_font[0]);
+        setValue (cs_font_size.settings_key (), def_font[1].toInt ());
       }
 
     // Write the default monospace font into the settings for later use by
     // console and editor as fallbacks of their font preferences.
-    setValue (global_mono_font.key, get_default_font_family ());
+    setValue (global_mono_font.settings_key (), get_default_font_family ());
   }
 
   void gui_settings::check (void)

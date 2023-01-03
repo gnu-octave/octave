@@ -27,48 +27,29 @@
 #define octave_gui_preferences_ve_h 1
 
 #include "gui-preferences.h"
-
-#include <QApplication>
+#include "gui-settings.h"
 
 // Variable Editor preferences
 
-const gui_pref
-ve_use_terminal_font ("variable_editor/use_terminal_font", QVariant (true));
+extern gui_pref ve_use_terminal_font;
 
-const gui_pref
-ve_font_name ("variable_editor/font_name", QVariant ());
+extern gui_pref ve_font_name;
 
-const gui_pref
-ve_font_size ("variable_editor/font_size", QVariant (10));
+extern gui_pref ve_font_size;
 
-const gui_pref
-ve_column_width ("variable_editor/column_width", QVariant (100));
+extern gui_pref ve_column_width;
 
-const gui_pref
-ve_row_height ("variable_editor/row_height", QVariant (10));
+extern gui_pref ve_row_height;
 
-const gui_pref
-ve_alternate_rows ("variable_editor/alternate_rows", QVariant (false));
+extern gui_pref ve_alternate_rows;
 
-const gui_pref
-ve_color_mode ("variable_editor/color_mode", QVariant (0));
+extern gui_pref ve_color_mode;
 
 const QString ve_color_chars ("fbsha");
 
 const int ve_colors_count = 5;
-const gui_pref ve_colors[2*ve_colors_count] =
-{
-  {"variable_editor/color_f" + settings_color_modes_ext[0], QVariant (QPalette::WindowText)},
-  {"variable_editor/color_b" + settings_color_modes_ext[0], QVariant (QPalette::Base)},
-  {"variable_editor/color_s" + settings_color_modes_ext[0], QVariant (QPalette::HighlightedText)},
-  {"variable_editor/color_h" + settings_color_modes_ext[0], QVariant (QPalette::Highlight)},
-  {"variable_editor/color_a" + settings_color_modes_ext[0], QVariant (QPalette::AlternateBase)},
-  {"variable_editor/color_f" + settings_color_modes_ext[1], QVariant ()},
-  {"variable_editor/color_b" + settings_color_modes_ext[1], QVariant ()},
-  {"variable_editor/color_s" + settings_color_modes_ext[1], QVariant ()},
-  {"variable_editor/color_h" + settings_color_modes_ext[1], QVariant ()},
-  {"variable_editor/color_a" + settings_color_modes_ext[1], QVariant ()}
-};
+
+extern gui_pref ve_colors[];
 
 const QStringList ve_color_names = {
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Foreground"),

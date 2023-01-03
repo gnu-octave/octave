@@ -102,8 +102,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    QString editor = settings.value (global_custom_editor.key,
-                                     global_custom_editor.def).toString ();
+    QString editor = settings.value (global_custom_editor.settings_key (),
+                                     global_custom_editor.def ()).toString ();
 
     // check the settings (avoid an empty string)
     if (editor.trimmed ().isEmpty ())

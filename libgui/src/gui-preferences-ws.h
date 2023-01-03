@@ -27,33 +27,24 @@
 #define octave_gui_preferences_ws_h 1
 
 #include "gui-preferences.h"
-#include "gui-settings.h"
 
 // Workspace view
 
-const gui_pref
-ws_enable_colors ("workspaceview/enable_colors", QVariant (false));
+extern gui_pref ws_enable_colors;
 
-const gui_pref
-ws_hide_tool_tips ("workspaceview/hide_tools_tips", QVariant (false));
+extern gui_pref ws_hide_tool_tips;
 
-const gui_pref
-ws_filter_active ("workspaceview/filter_active", QVariant (false));
+extern gui_pref ws_filter_active;
 
-const gui_pref
-ws_filter_shown ("workspaceview/filter_shown", QVariant (true));
+extern gui_pref ws_filter_shown;
 
-const gui_pref
-ws_column_state ("workspaceview/column_state", QVariant ());
+extern gui_pref ws_column_state;
 
-const gui_pref
-ws_sort_column ("workspaceview/sort_by_column", QVariant (0));
+extern gui_pref ws_sort_column;
 
-const gui_pref
-ws_sort_order ("workspaceview/sort_order", QVariant (Qt::AscendingOrder));
+extern gui_pref ws_sort_order;
 
-const gui_pref
-ws_mru_list ("workspaceview/mru_list", QVariant ());
+extern gui_pref ws_mru_list;
 
 const QStringList ws_columns_shown = {
   QT_TRANSLATE_NOOP ("octave::workspace_view", "Class"),
@@ -69,22 +60,13 @@ const QStringList ws_columns_shown_keys = {
   "workspaceview/show_attribute"
 };
 
-const gui_pref
-ws_max_filter_history ("workspaceview/max_filter_history", QVariant (10));
+extern gui_pref ws_max_filter_history;
 
-const gui_pref
-ws_color_mode ("workspaceview/color_mode", QVariant (0));
+extern gui_pref ws_color_mode;
 
 const int ws_colors_count = 3;
-const gui_pref ws_colors[2*ws_colors_count] =
-{
-  {"workspaceview/color_a" + settings_color_modes_ext[0], QVariant (QPalette::Highlight)},
-  {"workspaceview/color_g" + settings_color_modes_ext[0], QVariant (QPalette::Midlight)},
-  {"workspaceview/color_p" + settings_color_modes_ext[0], QVariant (QPalette::Dark)},
-  {"workspaceview/color_a" + settings_color_modes_ext[1], QVariant ()},
-  {"workspaceview/color_g" + settings_color_modes_ext[1], QVariant ()},
-  {"workspaceview/color_p" + settings_color_modes_ext[1], QVariant ()}
-};
+
+extern gui_pref ws_colors[];
 
 const QString ws_class_chars ("agp");
 

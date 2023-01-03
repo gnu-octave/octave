@@ -30,34 +30,36 @@
 
 // Settings dialog
 
-const gui_pref
-sd_geometry ("settings/geometry", QVariant ());
+extern gui_pref sd_geometry;
 
-const gui_pref
-sd_last_tab ("settings/last_tab", QVariant (0));
+extern gui_pref sd_last_tab;
 
-const gui_pref
-sd_last_editor_styles_tab ("settings/last_editor_styles_tab", QVariant (0));
+extern gui_pref sd_last_editor_styles_tab;
 
 // Textstrings for second color schemes
 const QString settings_color_modes = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
     "Second color mode (light/dark)");
+
 const QString settings_color_modes_tooltip = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
     "Switches to another set of colors.\n"
     "Useful for defining a dark/light mode.\n"
     "Discards non-applied current changes!");
+
 const QString settings_reload_colors = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
     "&Reload default colors");
+
 const QString settings_reload_colors_tooltip = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
     "Reloads the default colors,\n"
     "depending on currently selected mode.");
+
 const QString settings_reload_styles = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
     "&Reload default styles");
+
 const QString settings_reload_styles_tooltip = QT_TRANSLATE_NOOP (
     "octave::settings_dialog",
     "Reloads the default values of the styles,\n"

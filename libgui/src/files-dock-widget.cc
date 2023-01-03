@@ -194,18 +194,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_columns_shown.append (tr ("Alternating row colors"));
 
     m_columns_shown_keys = QStringList ();
-    m_columns_shown_keys.append (fb_show_size.key);
-    m_columns_shown_keys.append (fb_show_type.key);
-    m_columns_shown_keys.append (fb_show_date.key);
-    m_columns_shown_keys.append (fb_show_hidden.key);
-    m_columns_shown_keys.append (fb_show_altcol.key);
+    m_columns_shown_keys.append (fb_show_size.settings_key ());
+    m_columns_shown_keys.append (fb_show_type.settings_key ());
+    m_columns_shown_keys.append (fb_show_date.settings_key ());
+    m_columns_shown_keys.append (fb_show_hidden.settings_key ());
+    m_columns_shown_keys.append (fb_show_altcol.settings_key ());
 
     m_columns_shown_defs = QList <QVariant> ();
-    m_columns_shown_defs.append (fb_show_size.def);
-    m_columns_shown_defs.append (fb_show_type.def);
-    m_columns_shown_defs.append (fb_show_date.def);
-    m_columns_shown_defs.append (fb_show_hidden.def);
-    m_columns_shown_defs.append (fb_show_altcol.def);
+    m_columns_shown_defs.append (fb_show_size.def ());
+    m_columns_shown_defs.append (fb_show_type.def ());
+    m_columns_shown_defs.append (fb_show_date.def ());
+    m_columns_shown_defs.append (fb_show_hidden.def ());
+    m_columns_shown_defs.append (fb_show_altcol.def ());
 
     QWidget *container = new QWidget (this);
 
@@ -293,14 +293,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         // restore last dir from previous session
         QStringList last_dirs
-          = settings.value (fb_mru_list.key).toStringList ();
+          = settings.value (fb_mru_list.settings_key ()).toStringList ();
         if (last_dirs.length () > 0)
           startup_dir = QDir (last_dirs.at (0));  // last dir in previous session
       }
     else if (! settings.value (fb_startup_dir).toString ().isEmpty ())
       {
         // do not restore but there is a startup dir configured
-        startup_dir = QDir (settings.value (fb_startup_dir.key).toString ());
+        startup_dir = QDir (settings.value (fb_startup_dir.settings_key ()).toString ());
       }
 
     if (! startup_dir.exists ())
@@ -352,9 +352,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        // FIXME: use value<Qt::SortOrder> instead of static cast after
        //        dropping support of Qt 5.4
 
-    if (settings.contains (fb_column_state.key))
+    if (settings.contains (fb_column_state.settings_key ()))
       m_file_tree_view->header ()->restoreState
-        (settings.value (fb_column_state.key).toByteArray ());
+        (settings.value (fb_column_state.settings_key ()).toByteArray ());
 
     // Set header properties for sorting
     m_file_tree_view->header ()->setSectionsClickable (true);
@@ -362,7 +362,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_file_tree_view->header ()->setSortIndicatorShown (true);
 
     QStringList mru_dirs =
-      settings.value (fb_mru_list.key).toStringList ();
+      settings.value (fb_mru_list.settings_key ()).toStringList ();
     m_current_directory->addItems (mru_dirs);
 
     m_current_directory->setEditText
@@ -432,9 +432,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     int sort_column = m_file_tree_view->header ()->sortIndicatorSection ();
     Qt::SortOrder sort_order = m_file_tree_view->header ()->sortIndicatorOrder ();
-    settings.setValue (fb_sort_column.key, sort_column);
-    settings.setValue (fb_sort_order.key, sort_order);
-    settings.setValue (fb_column_state.key,
+    settings.setValue (fb_sort_column.settings_key (), sort_column);
+    settings.setValue (fb_sort_order.settings_key (), sort_order);
+    settings.setValue (fb_column_state.settings_key (),
                        m_file_tree_view->header ()->saveState ());
 
     QStringList dirs;
@@ -442,7 +442,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         dirs.append (m_current_directory->itemText (i));
       }
-    settings.setValue (fb_mru_list.key, dirs);
+    settings.setValue (fb_mru_list.settings_key (), dirs);
 
     settings.sync ();
 

@@ -1065,7 +1065,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    settings.setValue (dc_browser_zoom_level.key, m_zoom_level);
+    settings.setValue (dc_browser_zoom_level.settings_key (), m_zoom_level);
 
     settings.sync ();
   }

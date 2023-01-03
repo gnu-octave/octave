@@ -23,17 +23,19 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_gui_preferences_hw_h)
-#define octave_gui_preferences_hw_h 1
-
-#include "gui-preferences.h"
-
-// News Reader properties
-
-extern gui_pref hw_filter_active;
-
-extern gui_pref hw_filter_shown;
-
-extern gui_pref hw_mru_list;
-
+#if defined (HAVE_CONFIG_H)
+#  include "config.h"
 #endif
+
+#include "gui-preferences-sd.h"
+
+// Settings dialog
+
+gui_pref
+sd_geometry ("settings/geometry", QVariant ());
+
+gui_pref
+sd_last_tab ("settings/last_tab", QVariant (0));
+
+gui_pref
+sd_last_editor_styles_tab ("settings/last_editor_styles_tab", QVariant (0));

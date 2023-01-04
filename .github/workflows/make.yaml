@@ -414,6 +414,7 @@ jobs:
             ${{ matrix.target-prefix }}-autotools
             ${{ matrix.target-prefix }}-cc
             ${{ matrix.target-prefix }}-gcc-fortran
+            ${{ matrix.target-prefix }}-gperf
             ${{ matrix.target-prefix }}-lapack
             ${{ matrix.target-prefix }}-openblas
             ${{ matrix.target-prefix }}-pcre2

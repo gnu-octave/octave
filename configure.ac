@@ -1539,11 +1539,11 @@ dnl Default to Fortran FFTPACK if it is not available.
 
 ## Check for FFTW header and library.
 OCTAVE_CHECK_LIB(fftw3, FFTW3,
-  [FFTW3 library not found.  The slower FFTPACK library will be used instead.],
+  [FFTW3 library not found.  Octave will not be able to perform fft calcuations.],
   [fftw3.h], [fftw_plan_dft_1d])
 
 OCTAVE_CHECK_LIB(fftw3f, FFTW3F,
-  [FFTW3F library not found.  The slower FFTPACK library will be used instead.],
+  [FFTW3F library not found.  Octave will not be able to perform fft calculations.],
   [fftw3.h], [fftwf_plan_dft_1d])
 
 ## Check command line for the option to disable multi-threaded FFTW.

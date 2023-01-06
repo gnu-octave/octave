@@ -326,7 +326,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    if (settings.value (ed_create_new_file).toBool ())
+    if (settings.bool_value (ed_create_new_file))
       return true;
 
     std::string abs_fname = sys::env::make_absolute (file);
@@ -687,6 +687,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
+    // We don't want to apply default value here.
     QString read_value = settings.value (key).toString ();
 
     // Some preferences need extra handling

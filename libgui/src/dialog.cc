@@ -631,7 +631,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       setOption(QFileDialog::DontUseNativeDialog);
 
     if (multimode == "on")         // uigetfile multiselect=on

@@ -77,7 +77,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     QString icon;
-    QString icon_set = settings.value (dw_icon_set).toString ();
+    QString icon_set = settings.string_value (dw_icon_set);
     if (icon_set != "NONE")
       // No extra icon for Community news, take the one of the release notes
       icon = dw_icon_set_names[icon_set] + "ReleaseWidget.png";
@@ -89,7 +89,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // FIXME: This is a news reader preference, so shouldn't it be used
     // in the news_reader object?
 
-    bool connect_to_web = settings.value (nr_allow_connection).toBool ();
+    bool connect_to_web = settings.bool_value (nr_allow_connection);
 
     QThread *worker_thread = new QThread;
 

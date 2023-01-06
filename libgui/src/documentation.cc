@@ -616,7 +616,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return;
 
     // Icon size in the toolbar.
-    int size_idx = settings.value (global_icon_size).toInt ();
+    int size_idx = settings.int_value (global_icon_size);
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -1048,7 +1048,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Zoom level only at startup, not when other settings have changed
     if (m_zoom_level > max_zoom_level)
       {
-        m_zoom_level = settings.value (dc_browser_zoom_level).toInt ();
+        m_zoom_level = settings.int_value (dc_browser_zoom_level);
         zoomIn (m_zoom_level);
       }
   }

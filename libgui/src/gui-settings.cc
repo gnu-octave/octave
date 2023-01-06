@@ -35,10 +35,14 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QByteArray>
+#include <QComboBox>
+#include <QDateTime>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
 #include <QFontDatabase>
+#include <QIcon>
 #include <QLibraryInfo>
 #include <QMessageBox>
 #include <QNetworkProxy>
@@ -47,6 +51,7 @@
 #include <QString>
 #include <QStringList>
 #include <QTextCodec>
+#include <QTranslator>
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
@@ -71,6 +76,46 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QFileInfo sfile (fileName ());
 
     return sfile.absolutePath ();
+  }
+
+  bool gui_settings::bool_value (const gui_pref& pref) const
+  {
+    return value (pref).toBool ();
+  }
+
+  QByteArray gui_settings::byte_array_value (const gui_pref& pref) const
+  {
+    return value (pref).toByteArray ();
+  }
+
+  QColor gui_settings::color_value (const gui_pref& pref) const
+  {
+    return value (pref).value<QColor> ();
+  }
+
+  QDateTime gui_settings::date_time_value (const gui_pref& pref) const
+  {
+    return value (pref).toDateTime ();
+  }
+
+  int gui_settings::int_value (const gui_pref& pref) const
+  {
+    return value (pref).toInt ();
+  }
+
+  QString gui_settings::string_value (const gui_pref& pref) const
+  {
+    return value (pref).toString ();
+  }
+
+  QStringList gui_settings::string_list_value (const gui_pref& pref) const
+  {
+    return value (pref).toStringList ();
+  }
+
+  uint gui_settings::uint_value (const gui_pref& pref) const
+  {
+    return value (pref).toUInt ();
   }
 
   QColor gui_settings::get_color_value (const QVariant& def, int mode) const
@@ -174,13 +219,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     int theme_index;
 
     if (contains (global_icon_theme_index.settings_key ()))
-      theme_index = value (global_icon_theme_index).toInt ();
+      theme_index = int_value (global_icon_theme_index);
     else
       {
         // New pref does not exist.  Use old if required.  Add new and
         // remove deprecated key.
 
-        if (value (global_icon_theme).toBool ())
+        if (bool_value (global_icon_theme))
           theme_index = ICON_THEME_SYSTEM;
         else
           theme_index = ICON_THEME_OCTAVE;
@@ -341,7 +386,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // be initialize and valid?
 
     // get the locale from the settings if already available
-    language = value (global_language).toString ();
+    language = string_value (global_language);
 
     // load the translations depending on the settings
     if (language == "SYSTEM")
@@ -500,11 +545,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QString pass;
     QUrl proxy_url = QUrl ();
 
-    if (value (global_use_proxy).toBool ())
+    if (bool_value (global_use_proxy))
       {
         // Use a proxy, collect all required information
-        QString proxy_type_string
-          = value (global_proxy_type).toString ();
+        QString proxy_type_string = string_value (global_proxy_type);
 
         // The proxy type for the Qt proxy settings
         if (proxy_type_string == "Socks5Proxy")
@@ -516,14 +560,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (proxy_type_string == "HttpProxy"
             || proxy_type_string == "Socks5Proxy")
           {
-            host = value (global_proxy_host.settings_key (),
-                          global_proxy_host.def ()).toString ();
-            port = value (global_proxy_port.settings_key (),
-                          global_proxy_port.def ()).toInt ();
-            user = value (global_proxy_user.settings_key (),
-                          global_proxy_user.def ()).toString ();
-            pass = value (global_proxy_pass.settings_key (),
-                          global_proxy_pass.def ()).toString ();
+            host = string_value (global_proxy_host);
+            port = int_value (global_proxy_port);
+            user = string_value (global_proxy_user);
+            pass = string_value (global_proxy_pass);
             if (proxy_type_string == "HttpProxy")
               scheme = "http";
             else if (proxy_type_string == "Socks5Proxy")
@@ -639,7 +679,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (enc.isEmpty ())
       {
-        enc = value (ed_default_enc).toString ();
+        enc = string_value (ed_default_enc);
 
         if (enc.isEmpty ())  // still empty?
           {

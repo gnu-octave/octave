@@ -492,7 +492,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts = QFileDialog::DontUseNativeDialog;
 
     QString name = objectName ();
@@ -1410,27 +1410,27 @@ variable_editor_view::variable_editor_view (QWidget *p)
 
     m_main->notice_settings (); // update settings in parent main win
 
-    m_default_width = settings.value (ve_column_width).toInt ();
+    m_default_width = settings.int_value (ve_column_width);
 
-    m_default_height = settings.value (ve_row_height).toInt ();
+    m_default_height = settings.int_value (ve_row_height);
 
-    m_alternate_rows = settings.value (ve_alternate_rows).toBool ();
+    m_alternate_rows = settings.bool_value (ve_alternate_rows);
 
-    m_use_terminal_font = settings.value (ve_use_terminal_font).toBool ();
+    m_use_terminal_font = settings.bool_value (ve_use_terminal_font);
 
     QString font_name;
     int font_size;
-    QString default_font = settings.value (global_mono_font).toString ();
+    QString default_font = settings.string_value (global_mono_font);
 
     if (m_use_terminal_font)
       {
         font_name = settings.value (cs_font.settings_key (), default_font).toString ();
-        font_size = settings.value (cs_font_size).toInt ();
+        font_size = settings.int_value (cs_font_size);
       }
     else
       {
         font_name = settings.value (ve_font_name.settings_key (), default_font).toString ();
-        font_size = settings.value (ve_font_size).toInt ();
+        font_size = settings.int_value (ve_font_size);
       }
 
     m_font = QFont (font_name, font_size);
@@ -1439,7 +1439,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
 
     m_add_font_height = fm.height ();
 
-    int mode = settings.value (ve_color_mode).toInt ();
+    int mode = settings.int_value (ve_color_mode);
 
     for (int i = 0; i < ve_colors_count; i++)
       {
@@ -1453,7 +1453,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
 
     if (m_tool_bar)
       {
-        int size_idx = settings.value (global_icon_size).toInt ();
+        int size_idx = settings.int_value (global_icon_size);
         size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
         QStyle *st = style ();

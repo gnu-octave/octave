@@ -26,15 +26,19 @@
 #if ! defined (octave_gui_settings_h)
 #define octave_gui_settings_h 1
 
-#include <QComboBox>
-#include <QIcon>
+#include <QColor>
 #include <QSettings>
-#include <QShortcut>
 #include <QString>
-#include <QTranslator>
 #if defined (HAVE_QSCINTILLA)
 #  include <Qsci/qscilexer.h>
 #endif
+
+class QByteArray;
+class QComboBox;
+class QDateTime;
+class QIcon;
+class QShortcut;
+class QTranslator;
 
 #include "gui-preferences.h"
 
@@ -87,6 +91,31 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return value (pref.settings_key (), pref.def ());
     }
 
+    // Convenience functions to (slightly) reduce clutter by allowing us
+    // to write
+    //
+    //   settings.bool_value (gui_pref_name)
+    //
+    // instead of
+    //
+    //   settings.value (gui_pref_name).toBool ()
+
+    bool bool_value (const gui_pref& pref) const;
+
+    QByteArray byte_array_value (const gui_pref& pref) const;
+
+    QColor color_value (const gui_pref& pref) const;
+
+    QDateTime date_time_value (const gui_pref& pref) const;
+
+    int int_value (const gui_pref& pref) const;
+
+    QString string_value (const gui_pref& pref) const;
+
+    QStringList string_list_value (const gui_pref& pref) const;
+
+    uint uint_value (const gui_pref& pref) const;
+
     /*!
       Reading a color from the given QVaraitn @p def taking different
       color modes into account. The default value for a second color mode
@@ -105,7 +134,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
       @return Color as QColor
     */
-    QColor get_color_value (const QVariant& def, int mode = 0) const;
+    QColor get_color_value (const QVariant& def, int mode) const;
 
     /*!
       Reading a color from the gui_settings taking possible color modes
@@ -119,7 +148,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
       @return Color as QColor
     */
-    QColor color_value (const gui_pref& pref, int mode = 0) const;
+    QColor color_value (const gui_pref& pref, int mode) const;
 
     /*!
       Writing a color to the gui_settings taking possible color modes
@@ -132,7 +161,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     */
     void set_color_value (const gui_pref& pref, const QColor& color,
-                          int mode = 0);
+                          int mode);
 
     QString sc_value (const sc_pref& pref) const;
 

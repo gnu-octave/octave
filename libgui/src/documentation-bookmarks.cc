@@ -121,7 +121,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_filter->setSizePolicy (size_pol);
     m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 
-    m_filter->addItems (settings.value (dc_bookmark_filter_mru).toStringList ());
+    m_filter->addItems (settings.string_list_value (dc_bookmark_filter_mru));
 
     connect (m_filter, &QComboBox::editTextChanged,
              this, &documentation_bookmarks::filter_bookmarks);
@@ -129,7 +129,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &documentation_bookmarks::update_filter_history);
 
     m_filter_checkbox = new QCheckBox (m_filter_widget);
-    bool filter_state = settings.value (dc_bookmark_filter_active).toBool ();
+    bool filter_state = settings.bool_value (dc_bookmark_filter_active);
     m_filter_checkbox->setChecked (filter_state);
     filter_activate (filter_state);
 
@@ -144,7 +144,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     h_box_bm->setMargin (2);
     m_filter_widget->setLayout (h_box_bm);
 
-    m_filter_shown = settings.value (dc_bookmark_filter_shown).toBool ();
+    m_filter_shown = settings.bool_value (dc_bookmark_filter_shown);
     m_filter_widget->setVisible (m_filter_shown);
 
     // Resulting Layout of this widget

@@ -566,6 +566,7 @@ void shortcuts_tree_widget::import_shortcuts (gui_settings& settings)
 
   for (const auto& settings_key : shortcut_settings_keys)
     {
+      // We don't want to apply default value here.
       QString sc_text = settings.value (settings_key).toString ();
 
       update_widget_value (settings_key, sc_text);

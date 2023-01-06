@@ -329,12 +329,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    m_filter_shown = settings.value (hw_filter_shown).toBool ();
+    m_filter_shown = settings.bool_value (hw_filter_shown);
     m_filter_widget->setVisible (m_filter_shown);
 
-    m_filter->addItems (settings.value (hw_mru_list).toStringList ());
+    m_filter->addItems (settings.string_list_value (hw_mru_list));
 
-    bool filter_state = settings.value (hw_filter_active).toBool ();
+    bool filter_state = settings.bool_value (hw_filter_active);
     m_filter_checkbox->setChecked (filter_state);
     filter_activate (filter_state);
 
@@ -360,10 +360,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QFont font = QFont ();
 
     font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings.value (global_mono_font).toString ();
+    QString default_font = settings.string_value (global_mono_font);
 
     font.setFamily (settings.value (cs_font.settings_key (), default_font).toString ());
-    font.setPointSize (settings.value (cs_font_size).toInt ());
+    font.setPointSize (settings.int_value (cs_font_size));
 
     m_history_list_view->setFont (font);
   }

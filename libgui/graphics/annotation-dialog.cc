@@ -56,7 +56,7 @@ annotation_dialog::init ()
 
   // restore last geometry
   if (settings.contains (gp_annotation_geometry.settings_key ()))
-    restoreGeometry (settings.value (gp_annotation_geometry).toByteArray ());
+    restoreGeometry (settings.byte_array_value (gp_annotation_geometry));
 
   // connect signals
   connect (ui->button_box, &QDialogButtonBox::clicked,

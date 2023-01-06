@@ -474,23 +474,20 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    m_focus_follows_mouse = settings.value (dw_focus_follows_mouse).toBool ();
+    m_focus_follows_mouse = settings.bool_value (dw_focus_follows_mouse);
 
     m_custom_style
-      = settings.value (dw_title_custom_style).toBool ();
+      = settings.bool_value (dw_title_custom_style);
 
-    m_title_3d = settings.value (dw_title_3d).toInt ();
+    m_title_3d = settings.int_value (dw_title_3d);
 
-    m_fg_color
-      = settings.value (dw_title_fg_color).value<QColor> ();
+    m_fg_color = settings.color_value (dw_title_fg_color);
 
-    m_fg_color_active
-      = settings.value (dw_title_fg_color_active).value<QColor> ();
+    m_fg_color_active = settings.color_value (dw_title_fg_color_active);
 
-    m_bg_color = settings.value (dw_title_bg_color).value<QColor> ();
+    m_bg_color = settings.color_value (dw_title_bg_color);
 
-    m_bg_color_active
-      = settings.value (dw_title_bg_color_active).value<QColor> ();
+    m_bg_color_active = settings.color_value (dw_title_bg_color_active);
 
     QColor bcol (m_bg_color);
     QColor bcola (m_bg_color_active);

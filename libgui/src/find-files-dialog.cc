@@ -71,7 +71,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_file_name_edit = new QLineEdit;
     m_file_name_edit->setToolTip (tr ("Enter the filename search expression"));
 
-    m_file_name_edit->setText (settings.value (ff_file_name).toString ());
+    m_file_name_edit->setText (settings.string_value (ff_file_name));
     file_name_label->setBuddy (m_file_name_edit);
 
     QLabel *start_dir_label = new QLabel (tr ("Start in:"));
@@ -88,27 +88,27 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &find_files_dialog::browse_folders);
 
     m_recurse_dirs_check = new QCheckBox (tr ("Search subdirectories"));
-    m_recurse_dirs_check->setChecked (settings.value (ff_recurse_dirs).toBool ());
+    m_recurse_dirs_check->setChecked (settings.bool_value (ff_recurse_dirs));
     m_recurse_dirs_check->setToolTip (tr ("Search recursively through directories for matching files"));
 
     m_include_dirs_check = new QCheckBox (tr ("Include directory names"));
-    m_include_dirs_check->setChecked (settings.value (ff_include_dirs).toBool ());
+    m_include_dirs_check->setChecked (settings.bool_value (ff_include_dirs));
     m_include_dirs_check->setToolTip (tr ("Include matching directories in search results"));
 
     m_name_case_check = new QCheckBox (tr ("Name case insensitive"));
-    m_name_case_check->setChecked (settings.value (ff_name_case).toBool ());
+    m_name_case_check->setChecked (settings.bool_value (ff_name_case));
     m_name_case_check->setToolTip (tr ("Set matching name is case insensitive"));
 
     m_contains_text_check = new QCheckBox (tr ("Contains text:"));
     m_contains_text_check->setToolTip (tr ("Enter the file content search expression"));
-    m_contains_text_check->setChecked (settings.value (ff_check_text).toBool ());
+    m_contains_text_check->setChecked (settings.bool_value (ff_check_text));
 
     m_contains_text_edit = new QLineEdit ();
     m_contains_text_edit->setToolTip (tr ("Text to match"));
-    m_contains_text_edit->setText (settings.value (ff_contains_text).toString ());
+    m_contains_text_edit->setText (settings.string_value (ff_contains_text));
 
     m_content_case_check = new QCheckBox (tr ("Text case insensitive"));
-    m_content_case_check->setChecked (settings.value (ff_content_case).toBool ());
+    m_content_case_check->setChecked (settings.bool_value (ff_content_case));
     m_content_case_check->setToolTip (tr ("Set text content is case insensitive"));
 
     find_files_model *model = new find_files_model (this);
@@ -126,9 +126,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_file_list->horizontalHeader ()->setSortIndicatorShown (true);
     m_file_list->horizontalHeader ()->setSectionsClickable (true);
     m_file_list->horizontalHeader ()->setStretchLastSection (true);
-    m_file_list->sortByColumn (settings.value (ff_sort_files_by_column).toInt (),
+    m_file_list->sortByColumn (settings.int_value (ff_sort_files_by_column),
                                static_cast<Qt::SortOrder>
-                               (settings.value (ff_sort_files_by_order).toUInt ()));
+                               (settings.uint_value (ff_sort_files_by_order)));
                 // FIXME: use value<Qt::SortOrder> instead of static cast after
                 //        dropping support of Qt 5.4
 
@@ -310,7 +310,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts = QFileDialog::DontUseNativeDialog;
 
     QString dir =

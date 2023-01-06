@@ -116,11 +116,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QFont font = QFont ();
     font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings.value (global_mono_font).toString ();
+    QString default_font = settings.string_value (global_mono_font);
     font.setFamily
       (settings.value (cs_font.settings_key (), default_font).toString ());
     font.setPointSize
-      (settings.value (cs_font_size).toInt ());
+      (settings.int_value (cs_font_size));
 
     QFontMetrics metrics(font);
 

@@ -202,9 +202,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    m_enable_colors = settings.value (ws_enable_colors).toBool ();
+    m_enable_colors = settings.bool_value (ws_enable_colors);
 
-    int mode = settings.value (ws_color_mode).toInt ();
+    int mode = settings.int_value (ws_color_mode);
 
     for (int i = 0; i < ws_colors_count; i++)
       {

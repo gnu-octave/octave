@@ -450,7 +450,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               // The commenting string is requested
               if (settings.contains (ed_comment_str.settings_key ()))
                 // new version (radio buttons)
-                comment_string = settings.value (ed_comment_str).toInt ();
+                comment_string = settings.int_value (ed_comment_str);
               else
                 // old version (combo box)
                 comment_string = settings.value (ed_comment_str_old.settings_key (),
@@ -463,7 +463,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               QStringList c_str;
 
               // The possible uncommenting string(s) are requested
-              comment_string = settings.value (ed_uncomment_str).toInt ();
+              comment_string = settings.int_value (ed_uncomment_str);
 
               for (int i = 0; i < ed_comment_strings_count; i++)
                 {
@@ -913,7 +913,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Disable opening a file at a breakpoint in case keyboard () is used
     gui_settings settings;
 
-  bool show_dbg_file = settings.value (ed_show_dbg_file).toBool ();
+  bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
     settings.setValue (ed_show_dbg_file.settings_key (), false);
 
     // Let the interpreter execute the tmp file

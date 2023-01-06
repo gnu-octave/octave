@@ -54,7 +54,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     // The icon
-    QString icon_set = settings.value (dw_icon_set).toString ();
+    QString icon_set = settings.string_value (dw_icon_set);
 
     if (icon_set != "NONE")
       m_release_notes_icon = dw_icon_set_names[icon_set]

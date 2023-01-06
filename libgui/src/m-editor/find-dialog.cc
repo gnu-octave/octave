@@ -276,7 +276,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_replace_line_edit->addItems (mru);
 
     // Get the dialog's options
-    int opts = settings.value (ed_fdlg_opts).toInt ();
+    int opts = settings.int_value (ed_fdlg_opts);
 
     m_extension->setVisible (FIND_DLG_MORE & opts);
     m_case_check_box->setChecked (FIND_DLG_CASE & opts);

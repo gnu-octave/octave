@@ -321,24 +321,24 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     //restore previous session
-    if (! settings.value (ed_restore_session).toBool ())
+    if (! settings.bool_value (ed_restore_session))
       return;
 
     // get the data from the settings file
     QStringList sessionFileNames
-      = settings.value (ed_session_names).toStringList ();
+      = settings.string_list_value (ed_session_names);
 
     QStringList session_encodings
-      = settings.value (ed_session_enc).toStringList ();
+      = settings.string_list_value (ed_session_enc);
 
     QStringList session_index
-      = settings.value (ed_session_ind).toStringList ();
+      = settings.string_list_value (ed_session_ind);
 
     QStringList session_lines
-      = settings.value (ed_session_lines).toStringList ();
+      = settings.string_list_value (ed_session_lines);
 
     QStringList session_bookmarks
-      = settings.value (ed_session_bookmarks).toStringList ();
+      = settings.string_list_value (ed_session_bookmarks);
 
     // fill a list of the struct and sort it (depending on index)
     QList<session_data> s_data;
@@ -1277,7 +1277,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    int size_idx = settings.value (global_icon_size).toInt ();
+    int size_idx = settings.int_value (global_icon_size);
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -1286,8 +1286,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Tab position and rotation
     QTabWidget::TabPosition pos
-      = static_cast<QTabWidget::TabPosition> (settings.value (ed_tab_position).toInt ());
-    bool rotated = settings.value (ed_tabs_rotated).toBool ();
+      = static_cast<QTabWidget::TabPosition> (settings.int_value (ed_tab_position));
+    bool rotated = settings.bool_value (ed_tabs_rotated);
 
     m_tab_widget->setTabPosition (pos);
 
@@ -1310,7 +1310,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       height = is;
 
     // Calculate possibly limited width and set the elide mode
-    int chars = settings.value (ed_tabs_max_width).toInt ();
+    int chars = settings.int_value (ed_tabs_max_width);
     int width = 9999;
     if (chars > 0)
       width = chars * QFontMetrics (m_tab_widget->font ()).averageCharWidth ();
@@ -1351,23 +1351,23 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_tab_widget->setStyleSheet (style_sheet);
 
     bool show_it;
-    show_it = settings.value (ed_show_line_numbers).toBool ();
+    show_it = settings.bool_value (ed_show_line_numbers);
     m_show_linenum_action->setChecked (show_it);
-    show_it = settings.value (ed_show_white_space).toBool ();
+    show_it = settings.bool_value (ed_show_white_space);
     m_show_whitespace_action->setChecked (show_it);
-    show_it = settings.value (ed_show_eol_chars).toBool ();
+    show_it = settings.bool_value (ed_show_eol_chars);
     m_show_eol_action->setChecked (show_it);
-    show_it = settings.value (ed_show_indent_guides).toBool ();
+    show_it = settings.bool_value (ed_show_indent_guides);
     m_show_indguide_action->setChecked (show_it);
-    show_it = settings.value (ed_long_line_marker).toBool ();
+    show_it = settings.bool_value (ed_long_line_marker);
     m_show_longline_action->setChecked (show_it);
 
-    show_it = settings.value (ed_show_toolbar).toBool ();
+    show_it = settings.bool_value (ed_show_toolbar);
     m_show_toolbar_action->setChecked (show_it);
     m_tool_bar->setVisible (show_it);
-    show_it = settings.value (ed_show_edit_status_bar).toBool ();
+    show_it = settings.bool_value (ed_show_edit_status_bar);
     m_show_statusbar_action->setChecked (show_it);
-    show_it = settings.value (ed_show_hscroll_bar).toBool ();
+    show_it = settings.bool_value (ed_show_hscroll_bar);
     m_show_hscrollbar_action->setChecked (show_it);
 
     set_shortcuts ();
@@ -1551,7 +1551,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    if (settings.value (global_use_custom_editor).toBool ())
+    if (settings.bool_value (global_use_custom_editor))
       {
         // Custom editor
         if (debug_pointer || breakpoint_marker)
@@ -1561,7 +1561,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           return;   // Custom editor called
       }
 
-    bool show_dbg_file = settings.value (ed_show_dbg_file).toBool ();
+    bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
 
     if (openFileName.isEmpty ())
       {
@@ -1678,7 +1678,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                     bool create_file = true;
                     QMessageBox *msgBox;
 
-                    if (! settings.value (ed_create_new_file).toBool ())
+                    if (! settings.bool_value (ed_create_new_file))
                       {
                         msgBox = new QMessageBox (QMessageBox::Question,
                                                   tr ("Octave Editor"),
@@ -1852,7 +1852,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    if (settings.value (ed_hiding_closes_files).toBool ())
+    if (settings.bool_value (ed_hiding_closes_files))
       {
         if (check_closing ())
           {
@@ -1936,9 +1936,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    m_mru_files = settings.value (ed_mru_file_list).toStringList ();
-    m_mru_files_encodings = settings.value (ed_mru_file_encodings)
-                            .toStringList ();
+    m_mru_files = settings.string_list_value (ed_mru_file_list);
+    m_mru_files_encodings = settings.string_list_value (ed_mru_file_encodings);
 
     if (m_mru_files_encodings.count () != m_mru_files.count ())
       {
@@ -2716,7 +2715,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    bool old = settings.value (preference).toBool ();
+    bool old = settings.bool_value (preference);
     settings.setValue (preference.settings_key (), ! old);
     notice_settings ();
   }

@@ -158,16 +158,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Set terminal font:
     QFont term_font = QFont ();
     term_font.setStyleHint (QFont::TypeWriter);
-    QString default_font = settings.value (global_mono_font).toString ();
+    QString default_font = settings.string_value (global_mono_font);
     term_font.setFamily
       (settings.value (cs_font.settings_key (), default_font).toString ());
     term_font.setPointSize
-      (settings.value (cs_font_size).toInt ());
+      (settings.int_value (cs_font_size));
 
     m_console->setFont (term_font);
 
     // Colors
-    int mode = settings.value (cs_color_mode).toInt ();
+    int mode = settings.int_value (cs_color_mode);
     QColor fgc = settings.color_value (cs_colors[0], mode);
     QColor bgc = settings.color_value (cs_colors[1], mode);
 

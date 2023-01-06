@@ -738,9 +738,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         // get settings which infos are used for octave
         bool octave_builtins
-          = settings.value (ed_code_completion_octave_builtins).toBool ();
+          = settings.bool_value (ed_code_completion_octave_builtins);
         bool octave_functions
-          = settings.value (ed_code_completion_octave_functions).toBool ();
+          = settings.bool_value (ed_code_completion_octave_functions);
 
         QCoreApplication::setApplicationName (tmp_app_name);  // Restore name
 
@@ -877,7 +877,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (update_apis_only)
       return;   // We are done here
 
-    int mode = settings.value (ed_color_mode).toInt ();
+    int mode = settings.int_value (ed_color_mode);
     settings.read_lexer_settings (lexer, mode);
 
     m_edit_area->setCaretForegroundColor (lexer->color (0));
@@ -917,7 +917,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // fix line number width with respect to the font size of the lexer and
     // set the line numbers font depending on the lexer's font
-    if (settings.value (ed_show_line_numbers).toBool ())
+    if (settings.bool_value (ed_show_line_numbers))
       {
         // Line numbers width
         auto_margin_width ();
@@ -926,7 +926,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         QFont line_numbers_font = lexer->defaultFont ();
         int font_size = line_numbers_font.pointSize ();
         font_size = font_size
-                    + settings.value (ed_line_numbers_size).toInt ();
+                    + settings.int_value (ed_line_numbers_size);
         if (font_size < 4)
           font_size = 4;
         line_numbers_font.setPointSize (font_size);
@@ -1819,7 +1819,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (settings.value (ed_force_newline).toBool ())
+    if (settings.bool_value (ed_force_newline))
       {
         const QByteArray eol_lf = QByteArray (1, 0x0a);
         const QByteArray eol_cr = QByteArray (1, 0x0d);
@@ -1963,7 +1963,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     QsciScintilla::EolMode eol_mode
-      = static_cast<QsciScintilla::EolMode> (settings.value (ed_default_eol_mode).toInt ());
+      = static_cast<QsciScintilla::EolMode> (settings.int_value (ed_default_eol_mode));
 
     int count_max = 0;
 
@@ -2048,7 +2048,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // set the eol mode from the settings or depending on the OS if the entry is
     // missing in the settings
-    m_edit_area->setEolMode (static_cast<QsciScintilla::EolMode> (settings.value (ed_default_eol_mode).toInt ()));
+    m_edit_area->setEolMode (static_cast<QsciScintilla::EolMode> (settings.int_value (ed_default_eol_mode)));
 
     update_eol_indicator ();
 
@@ -2223,7 +2223,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (settings.value (ed_rm_trailing_spaces).toBool ())
+    if (settings.bool_value (ed_rm_trailing_spaces))
       {
         // Replace trailing spaces, make sure edit area is writable,
         // which is not the case when saving at exit or when closing
@@ -2271,7 +2271,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QApplication::setOverrideCursor (Qt::WaitCursor);
 
     out << m_edit_area->text ();
-    if (settings.value (ed_force_newline).toBool ()
+    if (settings.bool_value (ed_force_newline)
         && m_edit_area->text ().length ())
       out << m_edit_area->eol_string ();   // Add newline if desired
 
@@ -2379,7 +2379,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       {
         // Qt file dialogs
         fileDialog->setOption(QFileDialog::DontUseNativeDialog);
@@ -2688,7 +2688,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       update_lexer_settings ();
 
     // code folding
-    if (settings.value (ed_code_folding).toBool ())
+    if (settings.bool_value (ed_code_folding))
       {
         m_edit_area->setMarginType (3, QsciScintilla::SymbolMargin);
         m_edit_area->setFolding (QsciScintilla::BoxedTreeFoldStyle, 3);
@@ -2699,20 +2699,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
 
     // status bar
-    if (settings.value (ed_show_edit_status_bar).toBool ())
+    if (settings.bool_value (ed_show_edit_status_bar))
       m_status_bar->show ();
     else
       m_status_bar->hide ();
 
     //highlight current line color
     m_edit_area->setCaretLineVisible
-      (settings.value (ed_highlight_current_line).toBool ());
+      (settings.bool_value (ed_highlight_current_line));
 
     // auto completion
-    bool match_keywords = settings.value
-                          (ed_code_completion_keywords).toBool ();
-    bool match_document = settings.value
-                          (ed_code_completion_document).toBool ();
+    bool match_keywords = settings.bool_value (ed_code_completion_keywords);
+    bool match_document = settings.bool_value (ed_code_completion_document);
 
     QsciScintilla::AutoCompletionSource source = QsciScintilla::AcsNone;
     if (match_keywords)
@@ -2725,30 +2723,30 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_edit_area->setAutoCompletionSource (source);
 
     m_edit_area->setAutoCompletionReplaceWord
-      (settings.value (ed_code_completion_replace).toBool ());
+      (settings.bool_value (ed_code_completion_replace));
     m_edit_area->setAutoCompletionCaseSensitivity
-      (settings.value (ed_code_completion_case).toBool ());
+      (settings.bool_value (ed_code_completion_case));
 
-    if (settings.value (ed_code_completion).toBool ())
+    if (settings.bool_value (ed_code_completion))
       m_edit_area->setAutoCompletionThreshold
-        (settings.value (ed_code_completion_threshold).toInt ());
+        (settings.int_value (ed_code_completion_threshold));
     else
       m_edit_area->setAutoCompletionThreshold (-1);
 
-    if (settings.value (ed_show_white_space).toBool ())
-      if (settings.value (ed_show_white_space_indent).toBool ())
+    if (settings.bool_value (ed_show_white_space))
+      if (settings.bool_value (ed_show_white_space_indent))
         m_edit_area->setWhitespaceVisibility (QsciScintilla::WsVisibleAfterIndent);
       else
         m_edit_area->setWhitespaceVisibility (QsciScintilla::WsVisible);
     else
       m_edit_area->setWhitespaceVisibility (QsciScintilla::WsInvisible);
 
-    m_edit_area->setEolVisibility (settings.value (ed_show_eol_chars).toBool ());
+    m_edit_area->setEolVisibility (settings.bool_value (ed_show_eol_chars));
 
     m_save_as_desired_eol = static_cast<QsciScintilla::EolMode>
-                              (settings.value (ed_default_eol_mode).toInt ());
+                              (settings.int_value (ed_default_eol_mode));
 
-    if (settings.value (ed_show_line_numbers).toBool ())
+    if (settings.bool_value (ed_show_line_numbers))
       {
         m_edit_area->setMarginLineNumbers (2, true);
         auto_margin_width ();
@@ -2761,47 +2759,46 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         disconnect (m_edit_area, SIGNAL (linesChanged ()), nullptr, nullptr);
       }
 
-    m_smart_indent = settings.value (ed_auto_indent).toBool ();
+    m_smart_indent = settings.bool_value (ed_auto_indent);
     m_edit_area->setAutoIndent (m_smart_indent);
     m_edit_area->setTabIndents
-      (settings.value (ed_tab_indents_line).toBool ());
+      (settings.bool_value (ed_tab_indents_line));
     m_edit_area->setBackspaceUnindents
-      (settings.value (ed_backspace_unindents_line).toBool ());
+      (settings.bool_value (ed_backspace_unindents_line));
     m_edit_area->setIndentationGuides
-      (settings.value (ed_show_indent_guides).toBool ());
+      (settings.bool_value (ed_show_indent_guides));
     m_edit_area->setIndentationsUseTabs
-      (settings.value (ed_indent_uses_tabs).toBool ());
+      (settings.bool_value (ed_indent_uses_tabs));
     m_edit_area->setIndentationWidth
-      (settings.value (ed_indent_width).toInt ());
+      (settings.int_value (ed_indent_width));
 
     m_edit_area->setTabWidth
-      (settings.value (ed_tab_width).toInt ());
+      (settings.int_value (ed_tab_width));
 
     m_ind_char_width = 1;
     if (m_edit_area->indentationsUseTabs ())
       m_ind_char_width = m_edit_area->tabWidth ();
 
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
-                                settings.value (ed_show_hscroll_bar).toBool ());
+                                settings.bool_value (ed_show_hscroll_bar));
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
     m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
 
     update_window_title (m_edit_area->isModified ());
 
-    m_auto_endif = settings.value (ed_auto_endif).toInt ();
+    m_auto_endif = settings.int_value (ed_auto_endif);
 
     // long line marker
-    int line_length = settings.value (ed_long_line_column).toInt ();
+    int line_length = settings.int_value (ed_long_line_column);
     m_edit_area->setEdgeColumn (line_length);
 
-    if (settings.value (ed_long_line_marker).toBool ())
+    if (settings.bool_value (ed_long_line_marker))
       {
-        if (settings.value (ed_long_line_marker_line).toBool ())
+        if (settings.bool_value (ed_long_line_marker_line))
           m_edit_area->setEdgeMode (QsciScintilla::EdgeLine);
         else
           {
-            if (settings.value (ed_long_line_marker_background)
-                .toBool ())
+            if (settings.bool_value (ed_long_line_marker_background))
               m_edit_area->setEdgeMode (QsciScintilla::EdgeBackground);
             else
               m_edit_area->setEdgeMode (QsciScintilla::EdgeLine);
@@ -2814,26 +2811,26 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_edit_area->setWrapVisualFlags (QsciScintilla::WrapFlagByBorder);
     m_edit_area->setWrapIndentMode (QsciScintilla::WrapIndentSame);
 
-    if (settings.value (ed_wrap_lines).toBool ())
+    if (settings.bool_value (ed_wrap_lines))
       m_edit_area->setWrapMode (QsciScintilla::WrapWord);
     else
       m_edit_area->setWrapMode (QsciScintilla::WrapNone);
 
-    if (settings.value (ed_break_lines).toBool ())
+    if (settings.bool_value (ed_break_lines))
       m_line_break = line_length;
     else
       m_line_break = 0;
 
     m_line_break_comments =
-      settings.value (ed_break_lines_comments).toBool ();
+      settings.bool_value (ed_break_lines_comments);
 
     // highlight all occurrences of a word selected by a double click
     m_highlight_all_occurrences =
-      settings.value (ed_highlight_all_occurrences).toBool ();
+      settings.bool_value (ed_highlight_all_occurrences);
 
     // reload changed files
     m_always_reload_changed_files =
-      settings.value (ed_always_reload_changed_files).toBool ();
+      settings.bool_value (ed_always_reload_changed_files);
 
     // Set cursor blinking depending on the settings.
     // QScintilla ignores the application global settings, so some special
@@ -2841,9 +2838,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     bool cursor_blinking;
 
     if (settings.contains (global_cursor_blinking.settings_key ()))
-      cursor_blinking = settings.value (global_cursor_blinking).toBool ();
+      cursor_blinking = settings.bool_value (global_cursor_blinking);
     else
-      cursor_blinking = settings.value (cs_cursor_blinking).toBool ();
+      cursor_blinking = settings.bool_value (cs_cursor_blinking);
 
     if (cursor_blinking)
       m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETCARETPERIOD, 500);

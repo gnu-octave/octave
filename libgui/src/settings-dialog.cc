@@ -108,7 +108,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     combo_styles->addItems (styles);
     combo_styles->insertItem (0, global_style.def ().toString ());
     combo_styles->insertSeparator (1);
-    QString current_style = settings.value (global_style).toString ();
+    QString current_style = settings.string_value (global_style);
     if (current_style == global_style.def ().toString ())
       current_style = global_style.def ().toString ();
     selected = combo_styles->findText (current_style);
@@ -122,7 +122,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     icon_size_group->addButton (icon_size_small);
     icon_size_group->addButton (icon_size_normal);
     icon_size_group->addButton (icon_size_large);
-    int icon_size = settings.value (global_icon_size).toInt ();
+    int icon_size = settings.int_value (global_icon_size);
     icon_size_normal->setChecked (true);  // the default
     icon_size_small->setChecked (icon_size < 0);
     icon_size_large->setChecked (icon_size > 0);
@@ -136,14 +136,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     icon_group->addButton (general_icon_graphic);
     icon_group->addButton (general_icon_letter);
     QString widget_icon_set =
-      settings.value (dw_icon_set).toString ();
+      settings.string_value (dw_icon_set);
     general_icon_octave->setChecked (true);  // the default (if invalid set)
     general_icon_octave->setChecked (widget_icon_set == "NONE");
     general_icon_graphic->setChecked (widget_icon_set == "GRAPHIC");
     general_icon_letter->setChecked (widget_icon_set == "LETTER");
 
     // custom title bar of dock widget
-    QColor bg_color = settings.value (dw_title_bg_color).value<QColor> ();
+    QColor bg_color = settings.color_value (dw_title_bg_color);
     m_widget_title_bg_color = new color_picker (bg_color);
     m_widget_title_bg_color->setEnabled (false);
     layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
@@ -151,7 +151,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (cb_widget_custom_style, &QCheckBox::toggled,
              m_widget_title_bg_color, &color_picker::setEnabled);
 
-    QColor bg_color_active = settings.value (dw_title_bg_color_active).value<QColor> ();
+    QColor bg_color_active = settings.color_value (dw_title_bg_color_active);
     m_widget_title_bg_color_active = new color_picker (bg_color_active);
     m_widget_title_bg_color_active->setEnabled (false);
     layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
@@ -159,7 +159,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (cb_widget_custom_style, &QCheckBox::toggled,
              m_widget_title_bg_color_active, &color_picker::setEnabled);
 
-    QColor fg_color = settings.value (dw_title_fg_color).value<QColor> ();
+    QColor fg_color = settings.color_value (dw_title_fg_color);
     m_widget_title_fg_color = new color_picker (fg_color);
     m_widget_title_fg_color->setEnabled (false);
     layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
@@ -167,7 +167,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (cb_widget_custom_style, &QCheckBox::toggled,
              m_widget_title_fg_color, &color_picker::setEnabled);
 
-    QColor fg_color_active = settings.value (dw_title_fg_color_active).value<QColor> ();
+    QColor fg_color_active = settings.color_value (dw_title_fg_color_active);
     m_widget_title_fg_color_active = new color_picker (fg_color_active);
     m_widget_title_fg_color_active->setEnabled (false);
     layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);
@@ -175,15 +175,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (cb_widget_custom_style, &QCheckBox::toggled,
              m_widget_title_fg_color_active, &color_picker::setEnabled);
 
-    sb_3d_title->setValue (settings.value (dw_title_3d.settings_key (),
-                                           dw_title_3d.def ()).toInt ());
-    cb_widget_custom_style->setChecked (settings.value (dw_title_custom_style).toBool ());
+    sb_3d_title->setValue (settings.int_value (dw_title_3d));
+    cb_widget_custom_style->setChecked (settings.bool_value (dw_title_custom_style));
 
     // Native file dialogs.
     // FIXME: This preference can be deprecated / removed if all display
     //       managers, especially KDE, run those dialogs without hangs or
     //       delays from the start (bug #54607).
-    cb_use_native_file_dialogs->setChecked (settings.value (global_use_native_dialogs).toBool ());
+    cb_use_native_file_dialogs->setChecked (settings.bool_value (global_use_native_dialogs));
 
     // Cursor blinking: consider old terminal related setting if not yet set
     // FIXME: This pref. can be deprecated / removed if Qt adds support for
@@ -191,33 +190,30 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (settings.contains (global_cursor_blinking.settings_key ()))
       {
         // Preference exists, read its value
-        cb_cursor_blinking->setChecked (settings.value
-                                        (global_cursor_blinking.settings_key (), global_cursor_blinking.def ()).toBool ());
+        cb_cursor_blinking->setChecked (settings.bool_value (global_cursor_blinking));
       }
     else
       {
         // Pref. does not exist, so take old terminal related pref.
-        cb_cursor_blinking->setChecked (settings.value
-                                        (cs_cursor_blinking.settings_key (), cs_cursor_blinking.def ()).toBool ());
+        cb_cursor_blinking->setChecked (settings.bool_value (cs_cursor_blinking));
       }
 
     // focus follows mouse
     cb_focus_follows_mouse->setChecked (
-      settings.value (dw_focus_follows_mouse).toBool ());
+      settings.bool_value (dw_focus_follows_mouse));
 
     // prompt on exit
     cb_prompt_to_exit->setChecked (
-                                   settings.value (global_prompt_to_exit).toBool ());
+                                   settings.bool_value (global_prompt_to_exit));
 
     // Main status bar
     cb_status_bar->setChecked (
-                               settings.value (global_status_bar).toBool ());
+                               settings.bool_value (global_status_bar));
 
     // Octave startup
     cb_restore_octave_dir->setChecked (
-                                       settings.value (global_restore_ov_dir).toBool ());
-    le_octave_dir->setText (settings.value (global_ov_startup_dir.settings_key (),
-                                            global_ov_startup_dir.def ()).toString ());
+                                       settings.bool_value (global_restore_ov_dir));
+    le_octave_dir->setText (settings.string_value (global_ov_startup_dir));
 
     connect (pb_octave_dir, &QPushButton::pressed,
              this, &settings_dialog::get_octave_dir);
@@ -226,66 +222,66 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // editor
     //
     useCustomFileEditor->setChecked (
-                                     settings.value (global_use_custom_editor).toBool ());
+                                     settings.bool_value (global_use_custom_editor));
     customFileEditor->setText (
-                               settings.value (global_custom_editor).toString ());
-    editor_showLineNumbers->setChecked (settings.value (ed_show_line_numbers).toBool ());
-    editor_linenr_size->setValue (settings.value (ed_line_numbers_size).toInt ());
+                               settings.string_value (global_custom_editor));
+    editor_showLineNumbers->setChecked (settings.bool_value (ed_show_line_numbers));
+    editor_linenr_size->setValue (settings.int_value (ed_line_numbers_size));
 
     settings.combo_encoding (editor_combo_encoding);
 
-    editor_highlightCurrentLine->setChecked (settings.value (ed_highlight_current_line).toBool ());
-    editor_long_line_marker->setChecked (settings.value (ed_long_line_marker).toBool ());
+    editor_highlightCurrentLine->setChecked (settings.bool_value (ed_highlight_current_line));
+    editor_long_line_marker->setChecked (settings.bool_value (ed_long_line_marker));
     bool long_line =
-      settings.value (ed_long_line_marker_line).toBool ();
+      settings.bool_value (ed_long_line_marker_line);
     editor_long_line_marker_line->setChecked (long_line);
     bool long_back =
-      settings.value (ed_long_line_marker_background).toBool ();
+      settings.bool_value (ed_long_line_marker_background);
     editor_long_line_marker_background->setChecked (long_back);
     if (! (long_line || long_back))
       editor_long_line_marker_line->setChecked (true);
-    editor_long_line_column->setValue (settings.value (ed_long_line_column).toInt ());
-    editor_break_checkbox->setChecked (settings.value (ed_break_lines).toBool ());
-    editor_break_comments_checkbox->setChecked (settings.value (ed_break_lines_comments).toBool ());
-    editor_wrap_checkbox->setChecked (settings.value (ed_wrap_lines).toBool ());
-    cb_edit_status_bar->setChecked (settings.value (ed_show_edit_status_bar).toBool ());
-    cb_edit_tool_bar->setChecked (settings.value (ed_show_toolbar).toBool ());
-    cb_code_folding->setChecked (settings.value (ed_code_folding).toBool ());
-    editor_highlight_all_occurrences->setChecked (settings.value (ed_highlight_all_occurrences).toBool ());
+    editor_long_line_column->setValue (settings.int_value (ed_long_line_column));
+    editor_break_checkbox->setChecked (settings.bool_value (ed_break_lines));
+    editor_break_comments_checkbox->setChecked (settings.bool_value (ed_break_lines_comments));
+    editor_wrap_checkbox->setChecked (settings.bool_value (ed_wrap_lines));
+    cb_edit_status_bar->setChecked (settings.bool_value (ed_show_edit_status_bar));
+    cb_edit_tool_bar->setChecked (settings.bool_value (ed_show_toolbar));
+    cb_code_folding->setChecked (settings.bool_value (ed_code_folding));
+    editor_highlight_all_occurrences->setChecked (settings.bool_value (ed_highlight_all_occurrences));
 
-    editor_auto_endif->setCurrentIndex (settings.value (ed_auto_endif).toInt () );
-    editor_codeCompletion->setChecked (settings.value (ed_code_completion).toBool ());
-    editor_spinbox_ac_threshold->setValue (settings.value (ed_code_completion_threshold).toInt ());
-    editor_checkbox_ac_keywords->setChecked (settings.value (ed_code_completion_keywords).toBool ());
+    editor_auto_endif->setCurrentIndex (settings.int_value (ed_auto_endif) );
+    editor_codeCompletion->setChecked (settings.bool_value (ed_code_completion));
+    editor_spinbox_ac_threshold->setValue (settings.int_value (ed_code_completion_threshold));
+    editor_checkbox_ac_keywords->setChecked (settings.bool_value (ed_code_completion_keywords));
     editor_checkbox_ac_builtins->setEnabled (editor_checkbox_ac_keywords->isChecked ());
     editor_checkbox_ac_functions->setEnabled (editor_checkbox_ac_keywords->isChecked ());
-    editor_checkbox_ac_builtins->setChecked (settings.value (ed_code_completion_octave_builtins).toBool ());
-    editor_checkbox_ac_functions->setChecked (settings.value (ed_code_completion_octave_functions).toBool ());
-    editor_checkbox_ac_document->setChecked (settings.value (ed_code_completion_document).toBool ());
-    editor_checkbox_ac_case->setChecked (settings.value (ed_code_completion_case).toBool ());
-    editor_checkbox_ac_replace->setChecked (settings.value (ed_code_completion_replace).toBool ());
-    editor_ws_checkbox->setChecked (settings.value (ed_show_white_space).toBool ());
-    editor_ws_indent_checkbox->setChecked (settings.value (ed_show_white_space_indent).toBool ());
-    cb_show_eol->setChecked (settings.value (ed_show_eol_chars).toBool ());
-    cb_show_hscrollbar->setChecked (settings.value (ed_show_hscroll_bar).toBool ());
+    editor_checkbox_ac_builtins->setChecked (settings.bool_value (ed_code_completion_octave_builtins));
+    editor_checkbox_ac_functions->setChecked (settings.bool_value (ed_code_completion_octave_functions));
+    editor_checkbox_ac_document->setChecked (settings.bool_value (ed_code_completion_document));
+    editor_checkbox_ac_case->setChecked (settings.bool_value (ed_code_completion_case));
+    editor_checkbox_ac_replace->setChecked (settings.bool_value (ed_code_completion_replace));
+    editor_ws_checkbox->setChecked (settings.bool_value (ed_show_white_space));
+    editor_ws_indent_checkbox->setChecked (settings.bool_value (ed_show_white_space_indent));
+    cb_show_eol->setChecked (settings.bool_value (ed_show_eol_chars));
+    cb_show_hscrollbar->setChecked (settings.bool_value (ed_show_hscroll_bar));
 
     for (int i = 0; i < ed_tab_position_names.length (); i++)
       editor_combox_tab_pos->insertItem (i,
               tr (ed_tab_position_names.at (i).toStdString ().data ()));
     editor_combox_tab_pos->setCurrentIndex
-      (settings.value (ed_tab_position).toInt ());
+      (settings.int_value (ed_tab_position));
 
-    editor_cb_tabs_rotated->setChecked (settings.value (ed_tabs_rotated).toBool ());
-    editor_sb_tabs_max_width->setValue (settings.value (ed_tabs_max_width).toInt ());
+    editor_cb_tabs_rotated->setChecked (settings.bool_value (ed_tabs_rotated));
+    editor_sb_tabs_max_width->setValue (settings.int_value (ed_tabs_max_width));
 
     int selected_comment_string, selected_uncomment_string;
 
     if (settings.contains (ed_comment_str.settings_key ()))   // new version (radio buttons)
-      selected_comment_string = settings.value (ed_comment_str).toInt ();
+      selected_comment_string = settings.int_value (ed_comment_str);
     else                                         // old version (combo box)
       selected_comment_string = settings.value (ed_comment_str_old.settings_key (),                                                 ed_comment_str.def ()).toInt ();
 
-    selected_uncomment_string = settings.value (ed_uncomment_str).toInt ();
+    selected_uncomment_string = settings.int_value (ed_uncomment_str);
 
     for (int i = 0; i < ed_comment_strings_count; i++)
       {
@@ -307,33 +303,33 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         layout_uncomment_strings->addWidget (m_rb_uncomment_strings[i]);
       }
 
-    combo_eol_mode->setCurrentIndex (settings.value (ed_default_eol_mode).toInt ());
-    editor_auto_ind_checkbox->setChecked (settings.value (ed_auto_indent).toBool ());
-    editor_tab_ind_checkbox->setChecked (settings.value (ed_tab_indents_line).toBool ());
-    editor_bs_unind_checkbox->setChecked (settings.value (ed_backspace_unindents_line).toBool ());
-    editor_ind_guides_checkbox->setChecked (settings.value (ed_show_indent_guides).toBool ());
-    editor_ind_width_spinbox->setValue (settings.value (ed_indent_width).toInt ());
-    editor_ind_uses_tabs_checkbox->setChecked (settings.value (ed_indent_uses_tabs).toBool ());
-    editor_tab_width_spinbox->setValue (settings.value (ed_tab_width).toInt ());
-    editor_restoreSession->setChecked (settings.value (ed_restore_session).toBool ());
-    editor_create_new_file->setChecked (settings.value (ed_create_new_file).toBool ());
-    editor_reload_changed_files->setChecked (settings.value (ed_always_reload_changed_files).toBool ());
-    editor_force_newline->setChecked (settings.value (ed_force_newline).toBool ());
-    editor_remove_trailing_spaces->setChecked (settings.value (ed_rm_trailing_spaces).toBool ());
-    editor_hiding_closes_files->setChecked (settings.value (ed_hiding_closes_files).toBool ());
-    editor_show_dbg_file->setChecked (settings.value (ed_show_dbg_file).toBool ());
+    combo_eol_mode->setCurrentIndex (settings.int_value (ed_default_eol_mode));
+    editor_auto_ind_checkbox->setChecked (settings.bool_value (ed_auto_indent));
+    editor_tab_ind_checkbox->setChecked (settings.bool_value (ed_tab_indents_line));
+    editor_bs_unind_checkbox->setChecked (settings.bool_value (ed_backspace_unindents_line));
+    editor_ind_guides_checkbox->setChecked (settings.bool_value (ed_show_indent_guides));
+    editor_ind_width_spinbox->setValue (settings.int_value (ed_indent_width));
+    editor_ind_uses_tabs_checkbox->setChecked (settings.bool_value (ed_indent_uses_tabs));
+    editor_tab_width_spinbox->setValue (settings.int_value (ed_tab_width));
+    editor_restoreSession->setChecked (settings.bool_value (ed_restore_session));
+    editor_create_new_file->setChecked (settings.bool_value (ed_create_new_file));
+    editor_reload_changed_files->setChecked (settings.bool_value (ed_always_reload_changed_files));
+    editor_force_newline->setChecked (settings.bool_value (ed_force_newline));
+    editor_remove_trailing_spaces->setChecked (settings.bool_value (ed_rm_trailing_spaces));
+    editor_hiding_closes_files->setChecked (settings.bool_value (ed_hiding_closes_files));
+    editor_show_dbg_file->setChecked (settings.bool_value (ed_show_dbg_file));
 
     // terminal
-    QString default_font = settings.value (global_mono_font).toString ();
+    QString default_font = settings.string_value (global_mono_font);
     terminal_fontName->setCurrentFont (QFont (settings.value (cs_font.settings_key (), default_font).toString ()));
-    terminal_fontSize->setValue (settings.value (cs_font_size).toInt ());
-    terminal_history_buffer->setValue (settings.value (cs_hist_buffer).toInt ());
-    terminal_cursorUseForegroundColor->setChecked (settings.value (cs_cursor_use_fgcol).toBool ());
-    terminal_focus_command->setChecked (settings.value (cs_focus_cmd).toBool ());
-    terminal_print_dbg_location->setChecked (settings.value (cs_dbg_location).toBool ());
+    terminal_fontSize->setValue (settings.int_value (cs_font_size));
+    terminal_history_buffer->setValue (settings.int_value (cs_hist_buffer));
+    terminal_cursorUseForegroundColor->setChecked (settings.bool_value (cs_cursor_use_fgcol));
+    terminal_focus_command->setChecked (settings.bool_value (cs_focus_cmd));
+    terminal_print_dbg_location->setChecked (settings.bool_value (cs_dbg_location));
 
     QString cursor_type
-      = settings.value (cs_cursor).toString ();
+      = settings.string_value (cs_cursor);
 
     QStringList items;
     items << QString ("0") << QString ("1") << QString ("2");
@@ -357,22 +353,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (sync_octave_directory, &QCheckBox::toggled,
              this, &settings_dialog::set_disabled_pref_file_browser_dir);
 
-    sync_octave_directory->setChecked (settings.value (fb_sync_octdir).toBool ());
-    cb_restore_file_browser_dir->setChecked (settings.value (fb_restore_last_dir).toBool ());
+    sync_octave_directory->setChecked (settings.bool_value (fb_sync_octdir));
+    cb_restore_file_browser_dir->setChecked (settings.bool_value (fb_restore_last_dir));
     le_file_browser_dir->setText (settings.value (fb_startup_dir.settings_key ()).toString ());
 
     connect (pb_file_browser_dir, &QPushButton::pressed,
              this, &settings_dialog::get_file_browser_dir);
 
-    le_file_browser_extensions->setText (settings.value (fb_txt_file_ext).toString ());
+    le_file_browser_extensions->setText (settings.string_value (fb_txt_file_ext));
 
-    checkbox_allow_web_connect->setChecked (settings.value (nr_allow_connection).toBool ());
+    checkbox_allow_web_connect->setChecked (settings.bool_value (nr_allow_connection));
 
     // Proxy
-    bool use_proxy = settings.value (global_use_proxy).toBool ();
+    bool use_proxy = settings.bool_value (global_use_proxy);
     use_proxy_server->setChecked (use_proxy);
     // Fill combo box and activate current one
-    QString proxy_type_string = settings.value (global_proxy_type).toString ();
+    QString proxy_type_string = settings.string_value (global_proxy_type);
     proxy_type->addItems (global_proxy_all_types);
     for (int i = 0; i < global_proxy_all_types.length (); i++)
       {
@@ -383,10 +379,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           }
       }
     // Fill all line edits
-    proxy_host_name->setText (settings.value (global_proxy_host).toString ());
-    proxy_port->setText (settings.value (global_proxy_port).toString ());
-    proxy_username->setText (settings.value (global_proxy_user).toString ());
-    proxy_password->setText (settings.value (global_proxy_pass).toString ());
+    proxy_host_name->setText (settings.string_value (global_proxy_host));
+    proxy_port->setText (settings.string_value (global_proxy_port));
+    proxy_username->setText (settings.string_value (global_proxy_user));
+    proxy_password->setText (settings.string_value (global_proxy_pass));
     // Connect relevant signals for dis-/enabling some elements
     connect (proxy_type, QOverload<int>::of (&QComboBox::currentIndexChanged),
              this, &settings_dialog::proxy_items_update);
@@ -399,21 +395,21 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     read_workspace_colors ();
 
     // variable editor
-    varedit_columnWidth->setValue (settings.value (ve_column_width).toInt ());
-    varedit_rowHeight->setValue (settings.value (ve_row_height).toInt ());
+    varedit_columnWidth->setValue (settings.int_value (ve_column_width));
+    varedit_rowHeight->setValue (settings.int_value (ve_row_height));
 
     varedit_font->setCurrentFont (QFont (settings.value (ve_font_name.settings_key (),
                                                           settings.value (cs_font.settings_key (), default_font)).toString ()));
-    varedit_fontSize->setValue (settings.value (ve_font_size).toInt ());
+    varedit_fontSize->setValue (settings.int_value (ve_font_size));
     connect (varedit_useTerminalFont, &QCheckBox::toggled,
              varedit_font, &QFontComboBox::setDisabled);
     connect (varedit_useTerminalFont, &QCheckBox::toggled,
              varedit_fontSize, &QSpinBox::setDisabled);
-    varedit_useTerminalFont->setChecked (settings.value (ve_use_terminal_font).toBool ());
+    varedit_useTerminalFont->setChecked (settings.bool_value (ve_use_terminal_font));
     varedit_font->setDisabled (varedit_useTerminalFont->isChecked ());
     varedit_fontSize->setDisabled (varedit_useTerminalFont->isChecked ());
 
-    varedit_alternate->setChecked (settings.value (ve_alternate_rows).toBool ());
+    varedit_alternate->setChecked (settings.bool_value (ve_alternate_rows));
 
     // variable editor colors
     read_varedit_colors ();
@@ -441,7 +437,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if defined (HAVE_QSCINTILLA)
 
-    int mode = settings.value (ed_color_mode).toInt ();
+    int mode = settings.int_value (ed_color_mode);
 
     QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()),
                                               group_box_editor_styles);
@@ -494,7 +490,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // restore last geometry
     if (settings.contains (sd_geometry.settings_key ()))
-      restoreGeometry (settings.value (sd_geometry).toByteArray ());
+      restoreGeometry (settings.byte_array_value (sd_geometry));
     else
       setGeometry (QRect (10, 50, 1000, 600));
   }
@@ -504,7 +500,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gui_settings settings;
 
     if (tab.isEmpty ())
-      tabWidget->setCurrentIndex (settings.value (sd_last_tab).toInt ());
+      tabWidget->setCurrentIndex (settings.int_value (sd_last_tab));
     else
       {
         QHash <QString, QWidget *> tab_hash;
@@ -533,7 +529,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory
@@ -937,7 +933,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     scroll_area->setWidget (scroll_area_contents);
     tabs_editor_lexers->addTab (scroll_area, lexer->language ());
 
-    tabs_editor_lexers->setCurrentIndex (settings.value (sd_last_editor_styles_tab).toInt ());
+    tabs_editor_lexers->setCurrentIndex (settings.int_value (sd_last_editor_styles_tab));
   }
 
   void settings_dialog::write_lexer_settings (QsciLexer *lexer)
@@ -972,7 +968,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                           + settings_color_modes_ext[mode], color->color ());
 
     QString default_font_name
-      = settings.value (global_mono_font).toString ();
+      = settings.string_value (global_mono_font);
     QFont default_font = QFont (default_font_name, 10, -1, 0);
     QColor default_color = QColor ();
 
@@ -1287,7 +1283,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     int column = 0;
     const int color_columns = 3;  // place colors in so many columns
     int row = 0;
-    int mode = settings.value (ws_color_mode).toInt ();
+    int mode = settings.int_value (ws_color_mode);
 
     m_ws_enable_colors = new QCheckBox (tr ("Enable attribute colors"));
     style_grid->addWidget (m_ws_enable_colors, row++, column, 1, 4);
@@ -1297,7 +1293,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (m_ws_enable_colors, &QCheckBox::toggled,
              m_ws_hide_tool_tips, &QCheckBox::setEnabled);
     m_ws_hide_tool_tips->setChecked
-      (settings.value (ws_hide_tool_tips).toBool ());
+      (settings.bool_value (ws_hide_tool_tips));
 
     QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()));
     cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
@@ -1313,7 +1309,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              pb_reload_default_colors, &QPushButton::setEnabled);
     style_grid->addWidget (pb_reload_default_colors, row+1, column++);
 
-    bool colors_enabled = settings.value (ws_enable_colors).toBool ();
+    bool colors_enabled = settings.bool_value (ws_enable_colors);
 
     for (int i = 0; i < ws_colors_count; i++)
       {
@@ -1427,7 +1423,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QVector<QLabel *> description (cs_colors_count);
     QVector<color_picker *> color (cs_colors_count);
 
-    int mode = settings.value (cs_color_mode).toInt ();
+    int mode = settings.int_value (cs_color_mode);
 
     QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()));
     cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
@@ -1536,7 +1532,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QVector<QLabel *> description (ve_colors_count);
     QVector<color_picker *> color (ve_colors_count);
 
-    int mode = settings.value (ve_color_mode).toInt ();
+    int mode = settings.int_value (ve_color_mode);
 
     QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()));
     cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
@@ -1647,7 +1643,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts = QFileDialog::DontUseNativeDialog;
 
     if (action == OSC_IMPORT)

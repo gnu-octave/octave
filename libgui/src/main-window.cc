@@ -110,7 +110,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    if (! settings.value (global_skip_welcome_wizard).toBool ())
+    if (! settings.bool_value (global_skip_welcome_wizard))
       {
         // Before wizard.
         m_octave_qobj.config_translators ();
@@ -173,10 +173,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     int serial = 0;
     m_active_dock = nullptr;
 
-    connect_to_web = settings.value (nr_allow_connection).toBool ();
-    last_checked = settings.value (nr_last_time).toDateTime ();
-    serial = settings.value (nr_last_news).toInt ();
-    m_default_encoding = settings.value (ed_default_enc).toString ();
+    connect_to_web = settings.bool_value (nr_allow_connection);
+    last_checked = settings.date_time_value (nr_last_time);
+    serial = settings.int_value (nr_last_news);
+    m_default_encoding = settings.string_value (ed_default_enc);
 
     QDateTime current = QDateTime::currentDateTime ();
     QDateTime one_day_ago = current.addDays (-1);
@@ -651,7 +651,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file
@@ -677,7 +677,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts = QFileDialog::DontUseNativeDialog;
 
     QString file = file_arg;
@@ -896,7 +896,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Get desired style from preferences or take the default one if
     // the desired one is not found
-    QString preferred_style = settings.value (global_style).toString ();
+    QString preferred_style = settings.string_value (global_style);
 
     if (preferred_style == global_style.def ().toString ())
       preferred_style = m_default_style;
@@ -922,7 +922,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
 
     // the widget's icons (when floating)
-    QString icon_set = settings.value (dw_icon_set).toString ();
+    QString icon_set = settings.string_value (dw_icon_set);
 
     QString icon;
     for (auto *widget : dock_widget_list ())
@@ -938,26 +938,26 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           }
       }
 
-    int size_idx = settings.value (global_icon_size).toInt ();
+    int size_idx = settings.int_value (global_icon_size);
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
     int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
     m_main_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-    if (settings.value (global_status_bar).toBool ())
+    if (settings.bool_value (global_status_bar))
       m_status_bar->show ();
     else
       m_status_bar->hide ();
 
     m_prevent_readline_conflicts
-      = settings.value (sc_prevent_rl_conflicts).toBool ();
+      = settings.bool_value (sc_prevent_rl_conflicts);
 
     m_prevent_readline_conflicts_menu
-      = settings.value (sc_prevent_rl_conflicts_menu).toBool ();
+      = settings.bool_value (sc_prevent_rl_conflicts_menu);
 
     m_suppress_dbg_location
-      = ! settings.value (cs_dbg_location).toBool ();
+      = ! settings.bool_value (cs_dbg_location);
 
     settings.update_network_settings ();
 
@@ -974,7 +974,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Check whether some octave internal preferences have to be updated
     QString new_default_encoding
-      = settings.value (ed_default_enc).toString ();
+      = settings.string_value (ed_default_enc);
     // Do not update internal pref only if a) this update was not initiated
     // by the worker and b) the pref has really changes
     if (! update_by_worker && (new_default_encoding != m_default_encoding))
@@ -987,9 +987,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     bool cursor_blinking;
 
     if (settings.contains (global_cursor_blinking.settings_key ()))
-      cursor_blinking = settings.value (global_cursor_blinking).toBool ();
+      cursor_blinking = settings.bool_value (global_cursor_blinking);
     else
-      cursor_blinking = settings.value (cs_cursor_blinking).toBool ();
+      cursor_blinking = settings.bool_value (cs_cursor_blinking);
 
     if (cursor_blinking)
       QApplication::setCursorFlashTime (1000);  // 1000 ms flash time
@@ -1070,7 +1070,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts = QFileDialog::DontUseNativeDialog;
 
     QString dir
@@ -1342,7 +1342,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
 
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
     connect (fileDialog, &QFileDialog::filesSelected,
@@ -1382,7 +1382,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (new_name.rightRef (2) != ".m")
           new_name.append (".m");
         // check whether new files are created without prompt
-        if (! settings.value (ed_create_new_file).toBool ())
+        if (! settings.bool_value (ed_create_new_file))
           {
             // no, so enable this settings and wait for end of new file loading
             settings.setValue (ed_create_new_file.settings_key (), true);
@@ -1536,7 +1536,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     set_window_layout ();
 
     // restore the list of the last directories
-    QStringList curr_dirs = settings.value (mw_dir_list).toStringList ();
+    QStringList curr_dirs = settings.string_list_value (mw_dir_list);
     for (int i=0; i < curr_dirs.size (); i++)
       {
         m_current_directory_combo_box->addItem (curr_dirs.at (i));
@@ -1560,7 +1560,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // Restore main window state and geometry from settings file or, in case
     // of an error (no pref values yet), from the default layout.
-    if (! restoreGeometry (settings.value (mw_geometry).toByteArray ()))
+    if (! restoreGeometry (settings.byte_array_value (mw_geometry)))
       {
         do_reset_windows (true);
         return;
@@ -1589,7 +1589,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                        | Qt::WindowCloseButtonHint);
       }
 
-    if (! restoreState (settings.value (mw_state).toByteArray ()))
+    if (! restoreState (settings.byte_array_value (mw_state)))
       {
         do_reset_windows (true);
         return;
@@ -1731,22 +1731,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QDir startup_dir = QDir ();    // current octave dir after startup
 
-    if (settings.value (global_restore_ov_dir).toBool ())
+    if (settings.bool_value (global_restore_ov_dir))
       {
         // restore last dir from previous session
         QStringList curr_dirs
-          = settings.value (mw_dir_list).toStringList ();
+          = settings.string_list_value (mw_dir_list);
         if (curr_dirs.length () > 0)
           startup_dir = QDir (curr_dirs.at (0));  // last dir prev. session
       }
-    else if (! settings.value (global_ov_startup_dir).toString ().isEmpty ())
+    else if (! settings.string_value (global_ov_startup_dir).isEmpty ())
       {
         // do not restore but there is a startup dir configured
         startup_dir
-          = QDir (settings.value (global_ov_startup_dir).toString ());
+          = QDir (settings.string_value (global_ov_startup_dir));
       }
 
-    update_default_encoding (settings.value (ed_default_enc).toString ());
+    update_default_encoding (settings.string_value (ed_default_enc));
 
     if (! startup_dir.exists ())
       {
@@ -2632,7 +2632,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     gui_settings settings;
 
-    if (settings.value (cs_focus_cmd).toBool ())
+    if (settings.bool_value (cs_focus_cmd))
       focus_command_window ();
   }
 

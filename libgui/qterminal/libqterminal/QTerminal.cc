@@ -212,24 +212,24 @@ QTerminal::notice_settings (void)
   // Set terminal font:
   QFont term_font = QFont ();
   term_font.setStyleHint (QFont::TypeWriter);
-  QString default_font = settings.value (global_mono_font).toString ();
+  QString default_font = settings.string_value (global_mono_font);
   term_font.setFamily
     (settings.value (cs_font.settings_key (), default_font).toString ());
   term_font.setPointSize
-    (settings.value (cs_font_size).toInt ());
+    (settings.int_value (cs_font_size));
   setTerminalFont (term_font);
 
   QFontMetrics metrics (term_font);
   setMinimumSize (metrics.maxWidth ()*16, metrics.height ()*3);
 
   QString cursor_type
-    = settings.value (cs_cursor).toString ();
+    = settings.string_value (cs_cursor);
 
   bool cursor_blinking;
   if (settings.contains (global_cursor_blinking.settings_key ()))
-    cursor_blinking = settings.value (global_cursor_blinking).toBool ();
+    cursor_blinking = settings.bool_value (global_cursor_blinking);
   else
-    cursor_blinking = settings.value (cs_cursor_blinking).toBool ();
+    cursor_blinking = settings.bool_value (cs_cursor_blinking);
 
   for (int ct = IBeamCursor; ct <= UnderlineCursor; ct++)
     {
@@ -241,9 +241,9 @@ QTerminal::notice_settings (void)
     }
 
   bool cursorUseForegroundColor
-    = settings.value (cs_cursor_use_fgcol).toBool ();
+    = settings.bool_value (cs_cursor_use_fgcol);
 
-  int mode = settings.value (cs_color_mode).toInt ();
+  int mode = settings.int_value (cs_color_mode);
 
   setForegroundColor (settings.color_value (cs_colors[0], mode));
 
@@ -254,7 +254,7 @@ QTerminal::notice_settings (void)
   setCursorColor (cursorUseForegroundColor,
                   settings.color_value (cs_colors[3], mode));
 
-  setScrollBufferSize (settings.value (cs_hist_buffer).toInt ());
+  setScrollBufferSize (settings.int_value (cs_hist_buffer));
 
   // If the Copy shortcut is Ctrl+C, then the Copy action also emits
   // a signal for interrupting the current code executed by the worker.
@@ -268,13 +268,13 @@ QTerminal::notice_settings (void)
   //  disabled.
   bool extra_ir_action
       = (sc != QKeySequence (Qt::ControlModifier | Qt::Key_C).toString ())
-        || settings.value (sc_prevent_rl_conflicts).toBool ();
+        || settings.bool_value (sc_prevent_rl_conflicts);
 
   _interrupt_action->setEnabled (extra_ir_action);
   has_extra_interrupt (extra_ir_action);
 
   // check whether shortcut Ctrl-D is in use by the main-window
-  bool ctrld = settings.value (sc_main_ctrld).toBool ();
+  bool ctrld = settings.bool_value (sc_main_ctrld);
   _nop_action->setEnabled (! ctrld);
 }
 

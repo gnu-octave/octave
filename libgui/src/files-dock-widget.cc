@@ -289,7 +289,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Create the QFileSystemModel starting in the desired directory
     QDir startup_dir;  // take current dir
 
-    if (settings.value (fb_restore_last_dir).toBool ())
+    if (settings.bool_value (fb_restore_last_dir))
       {
         // restore last dir from previous session
         QStringList last_dirs
@@ -297,7 +297,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (last_dirs.length () > 0)
           startup_dir = QDir (last_dirs.at (0));  // last dir in previous session
       }
-    else if (! settings.value (fb_startup_dir).toString ().isEmpty ())
+    else if (! settings.string_value (fb_startup_dir).isEmpty ())
       {
         // do not restore but there is a startup dir configured
         startup_dir = QDir (settings.value (fb_startup_dir.settings_key ()).toString ());
@@ -347,8 +347,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // get sort column and order as well as column state (order and width)
 
     m_file_tree_view->sortByColumn
-      (settings.value (fb_sort_column).toInt (),
-       static_cast<Qt::SortOrder> (settings.value (fb_sort_order).toUInt ()));
+      (settings.int_value (fb_sort_column),
+       static_cast<Qt::SortOrder> (settings.uint_value (fb_sort_order)));
        // FIXME: use value<Qt::SortOrder> instead of static cast after
        //        dropping support of Qt 5.4
 
@@ -531,7 +531,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             gui_settings settings;
 
-            QString ext = settings.value (fb_txt_file_ext).toString ();
+            QString ext = settings.string_value (fb_txt_file_ext);
 #if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
             QStringList extensions = ext.split (";", Qt::SkipEmptyParts);
 #else
@@ -1006,7 +1006,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // QSettings pointer is checked before emitting.
 
-    int size_idx = settings.value (global_icon_size).toInt ();
+    int size_idx = settings.int_value (global_icon_size);
     size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
     QStyle *st = style ();
@@ -1031,7 +1031,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // enable the buttons to sync octave/browser dir
     // only if this is not done by default
     m_sync_octave_dir
-      = settings.value (fb_sync_octdir).toBool ();
+      = settings.bool_value (fb_sync_octdir);
     m_sync_octave_directory_action->setEnabled (! m_sync_octave_dir);
     m_sync_browser_directory_action->setEnabled (! m_sync_octave_dir);
 
@@ -1062,7 +1062,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    if (! settings.value (global_use_native_dialogs).toBool ())
+    if (! settings.bool_value (global_use_native_dialogs))
       opts |= QFileDialog::DontUseNativeDialog;
 
     QString dir = QFileDialog::getExistingDirectory (this,

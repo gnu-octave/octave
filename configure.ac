@@ -1539,7 +1539,7 @@ dnl Default to Fortran FFTPACK if it is not available.
 
 ## Check for FFTW header and library.
 OCTAVE_CHECK_LIB(fftw3, FFTW3,
-  [FFTW3 library not found.  Octave will not be able to perform fft calcuations.],
+  [FFTW3 library not found.  Octave will not be able to perform fft calculations.],
   [fftw3.h], [fftw_plan_dft_1d])
 
 OCTAVE_CHECK_LIB(fftw3f, FFTW3F,

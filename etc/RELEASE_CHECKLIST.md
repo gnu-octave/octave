@@ -19,7 +19,7 @@ Please use `<strike> </strike>` to mark items below as done.
 Completion Date:
 
 * Merge default onto stable to become the current stable release (see
-  instructions in `etc/HACKING.md`). 
+  instructions in `etc/HACKING.md`).
 * Bump version numbers in `configure.ac` on stable branch (see
   `etc/HACKING.md`).
 * Bump version numbers in `configure.ac` on default branch (see

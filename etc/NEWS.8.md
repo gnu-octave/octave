@@ -113,7 +113,6 @@ option to the `print` function.
   `OutputFcn`, and `Refine`, along with corrected orientation of struct
   outputs.
 
-
 - *Early notice of future breaking changes*:  Due to many user requests that
   Octave should have a Matlab-compatible string class, there is work under way
   to implement a string class that will differ from a vector of characters.  In
@@ -142,8 +141,7 @@ option to the `print` function.
   (e.g., replace "foo" with 'foo'). Single-quoted strings are expected to
   retain current behavior.  Further, if your code relies on backslash escape
   sequence interpretation in double-quoted strings (except for special cases
-  like the `printf` family), that code may need to change as well.  
-
+  like the `printf` family), that code may need to change as well.
 
 ### Alphabetical list of new functions added in Octave 8
 

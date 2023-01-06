@@ -710,7 +710,7 @@ endfunction
 
 
 function res = cf_ub_lb (x, lbidx, ubidx, globals)
-  ## function returning constraint evaluated at x, and distance between ub/lb 
+  ## function returning constraint evaluated at x, and distance between ub/lb
   ## and x, when they are specified (otherwise return empty)
 
   ## inequality constraints

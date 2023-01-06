@@ -133,8 +133,7 @@ cdef_package::cdef_package_rep::meta_subsref
         if (idx.front ().length () != 1)
           error ("invalid meta.package indexing");
 
-        std::string nm = idx.front ()(
-                           0).xstring_value ("invalid meta.package indexing, expected a symbol name");
+        std::string nm = idx.front ()(0).xstring_value ("invalid meta.package indexing, expected a symbol name");
 
 #if DEBUG_TRACE
         std::cerr << "meta.package query: " << nm << std::endl;

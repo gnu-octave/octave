@@ -1219,8 +1219,7 @@ whos ans
   if (nargin < 1 || nargin > 3)
     print_usage ();
 
-  string_vector s = args(
-                      0).xstring_vector_value ("list_in_columns: ARG must be a cellstr or char array");
+  string_vector s = args(0).xstring_vector_value ("list_in_columns: ARG must be a cellstr or char array");
 
   int width = -1;
 

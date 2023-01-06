@@ -198,20 +198,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
 
     // focus follows mouse
-    cb_focus_follows_mouse->setChecked (
-      settings.bool_value (dw_focus_follows_mouse));
+    cb_focus_follows_mouse->setChecked (settings.bool_value (dw_focus_follows_mouse));
 
     // prompt on exit
-    cb_prompt_to_exit->setChecked (
-                                   settings.bool_value (global_prompt_to_exit));
+    cb_prompt_to_exit->setChecked (settings.bool_value (global_prompt_to_exit));
 
     // Main status bar
-    cb_status_bar->setChecked (
-                               settings.bool_value (global_status_bar));
+    cb_status_bar->setChecked (settings.bool_value (global_status_bar));
 
     // Octave startup
-    cb_restore_octave_dir->setChecked (
-                                       settings.bool_value (global_restore_ov_dir));
+    cb_restore_octave_dir->setChecked (settings.bool_value (global_restore_ov_dir));
     le_octave_dir->setText (settings.string_value (global_ov_startup_dir));
 
     connect (pb_octave_dir, &QPushButton::pressed,
@@ -220,10 +216,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     //
     // editor
     //
-    useCustomFileEditor->setChecked (
-                                     settings.bool_value (global_use_custom_editor));
-    customFileEditor->setText (
-                               settings.string_value (global_custom_editor));
+    useCustomFileEditor->setChecked (settings.bool_value (global_use_custom_editor));
+    customFileEditor->setText (settings.string_value (global_custom_editor));
     editor_showLineNumbers->setChecked (settings.bool_value (ed_show_line_numbers));
     editor_linenr_size->setValue (settings.int_value (ed_line_numbers_size));
 
@@ -443,14 +437,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QPushButton *pb_reload_default_colors = new QPushButton (tr (settings_reload_styles.toStdString ().data ()));
     pb_reload_default_colors->setToolTip (tr (settings_reload_styles_tooltip.toStdString ().data ()));
 
-    color_picker *current_line_color = new color_picker (
-      settings.value (ed_highlight_current_line_color.settings_key () +
-                       settings_color_modes_ext[mode],
-                       ed_highlight_current_line_color.def ()).value<QColor> (), this);
+    color_picker *current_line_color
+      = new color_picker
+      (settings.value (ed_highlight_current_line_color.settings_key ()
+                       + settings_color_modes_ext[mode],
+                       ed_highlight_current_line_color.def ()).value<QColor> (),
+       this);
     current_line_color->setObjectName (ed_highlight_current_line_color.settings_key ());
-    QLabel *current_line_color_label = new QLabel(
-      tr ("Color of highlighted current line (magenta (255,0,255) for automatic color)")
-    );
+
+    QLabel *current_line_color_label
+      = new QLabel(tr ("Color of highlighted current line (magenta (255,0,255) for automatic color)"));
 
     QHBoxLayout *color_mode = new QHBoxLayout ();
     color_mode->addWidget (cb_color_mode);

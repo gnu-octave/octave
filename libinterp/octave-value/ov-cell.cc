@@ -1336,8 +1336,7 @@ To convert back from a cellstr to a character array use @code{char}.
     return ovl (args(0));
   else
     {
-      string_vector s = args(
-                          0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
+      string_vector s = args(0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
 
       return ovl (s.isempty () ? Cell (octave_value (""))
                   : Cell (s, true));

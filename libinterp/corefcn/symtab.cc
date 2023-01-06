@@ -741,8 +741,7 @@ Return a structure with information from the symbol table.
     return symtab.dump ();
   else
     {
-      std::string fname = args(
-                            0).xstring_value ("__dump_symtab_info__: argument must be a function name");
+      std::string fname = args(0).xstring_value ("__dump_symtab_info__: argument must be a function name");
 
       fcn_info *finfo = symtab.get_fcn_info (fname);
 
@@ -762,8 +761,7 @@ Undocumented internal function.
   if (args.length () != 1)
     print_usage ();
 
-  std::string name = args(
-                       0).xstring_value ("__get_cmdline_fcn_txt__: first argument must be function name");
+  std::string name = args(0).xstring_value ("__get_cmdline_fcn_txt__: first argument must be function name");
 
   symbol_table& symtab = interp.get_symbol_table ();
 

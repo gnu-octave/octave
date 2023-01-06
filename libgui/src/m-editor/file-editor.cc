@@ -1255,8 +1255,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             if (m_tmp_closed_files.at (i).new_file_name.isEmpty ())
               m_tmp_closed_files.at (i).editor_tab->file_has_changed (QString (), true);
             else
-              m_tmp_closed_files.at (i).editor_tab->set_file_name (
-                                    m_tmp_closed_files.at (i).new_file_name);
+              m_tmp_closed_files.at (i).editor_tab->set_file_name (m_tmp_closed_files.at (i).new_file_name);
           }
         else
           {
@@ -1336,13 +1335,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         QString icon = global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png";
 
-        QString close_button_css_mac (
-            "QTabBar::close-button"
-            " { image: url(" + icon + ");"
-            " padding: 4px;"
-            "   subcontrol-position: bottom; }\n"
-            "QTabBar::close-button:hover"
-            "  { background-color: #cccccc; }");
+        QString close_button_css_mac
+          ("QTabBar::close-button"
+           " { image: url(" + icon + ");"
+           " padding: 4px;"
+           "   subcontrol-position: bottom; }\n"
+           "QTabBar::close-button:hover"
+           "  { background-color: #cccccc; }");
 
         style_sheet = style_sheet + close_button_css_mac;
       }

@@ -584,8 +584,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
         if (idx.front ().length () != 1)
           error ("invalid meta.class indexing");
 
-        std::string nm = idx.front ()(
-                           0).xstring_value ("invalid meta.class indexing, expected a method or property name");
+        std::string nm = idx.front ()(0).xstring_value ("invalid meta.class indexing, expected a method or property name");
 
         cdef_method meth = find_method (nm);
 

@@ -67,11 +67,10 @@ QString led_indicator::style_sheet (const QColor& col)
 {
   QColor col_light = interpolate_color (col, QColor (Qt::white), 0.25, 0.9);
 
-  const QString style = QString (
-                                 "border-radius: %1; background-color: "
-                                 "qlineargradient(spread:pad, x1:0.2, y1:0.2, x2:1, y2:1, stop:0 "
-                                 "%2, stop:1 %3);"
-                                 ).arg (width ()/2).arg (col_light.name ()).arg (col.name ());
+  const QString style
+    = QString ("border-radius: %1; background-color: "
+               "qlineargradient(spread:pad, x1:0.2, y1:0.2, x2:1, y2:1, stop:0 "
+               "%2, stop:1 %3);").arg (width ()/2).arg (col_light.name ()).arg (col.name ());
 
   return style;
 }

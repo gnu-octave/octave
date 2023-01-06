@@ -1794,8 +1794,7 @@ orderfields, isstruct, structfun}
     {
       if (nargin == 2)
         {
-          Array<std::string> cstr = args(
-                                      1).xcellstr_value ("struct: second argument should be a cell array of field names");
+          Array<std::string> cstr = args(1).xcellstr_value ("struct: second argument should be a cell array of field names");
 
           return ovl (octave_map (args(0).dims (), cstr));
         }
@@ -2091,8 +2090,7 @@ S(1)
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  const Cell vals
-    = args(0).xcell_value ("cell2struct: argument CELL must be of type cell");
+  const Cell vals = args(0).xcell_value ("cell2struct: argument CELL must be of type cell");
 
   const Array<std::string> fields = get_cell2struct_fields (args(1));
 

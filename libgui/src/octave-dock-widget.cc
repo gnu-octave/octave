@@ -233,17 +233,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_close_action->setToolTip (tr ("Hide widget"));
 
-    setStyleSheet (qdockwidget_css (
-      global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
-      QString ("Close widget"),
-      global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
-      QString ("Undock widget"),
-      m_icon_size,
-      QString (""),
-      QString ("")));
+    setStyleSheet (qdockwidget_css
+                   (global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
+                    QString ("Close widget"),
+                    global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
+                    QString ("Undock widget"), m_icon_size, "", ""));
 
     if (widget ())
-      widget ()->setToolTip (QString (""));
+      widget ()->setToolTip ("");
 
     m_icon_color = "";
     m_title_3d = 50;
@@ -787,8 +784,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
     else
       {
-        css_foreground = QString ("");
-        css_background = QString ("");
+        css_foreground = "";
+        css_background = "";
       }
 
     QString full_dock_icon = dock_icon + icon_col;

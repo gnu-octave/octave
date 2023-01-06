@@ -2192,9 +2192,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    m_open_action = add_action (
-                      file_menu, settings.icon ("document-open"), tr ("Open..."),
-                      SLOT (request_open_file (void)), this);
+    m_open_action
+      = add_action (file_menu, settings.icon ("document-open"), tr ("Open..."),
+                    SLOT (request_open_file (void)), this);
     m_open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #if defined (HAVE_QSCINTILLA)
@@ -2203,19 +2203,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     file_menu->addSeparator ();
 
-    m_load_workspace_action = add_action (
-              file_menu, QIcon (), tr ("Load Workspace..."),
-              SLOT (handle_load_workspace_request (void)), this);
+    m_load_workspace_action
+      = add_action (file_menu, QIcon (), tr ("Load Workspace..."),
+                    SLOT (handle_load_workspace_request (void)), this);
 
-    m_save_workspace_action = add_action (
-              file_menu, QIcon (), tr ("Save Workspace As..."),
-              SLOT (handle_save_workspace_request (void)), this);
+    m_save_workspace_action
+      = add_action (file_menu, QIcon (), tr ("Save Workspace As..."),
+                    SLOT (handle_save_workspace_request (void)), this);
 
     file_menu->addSeparator ();
 
-    m_exit_action = add_action (
-              file_menu, QIcon (), tr ("Exit"),
-              SLOT (close (void)), this);
+    m_exit_action
+      = add_action (file_menu, QIcon (), tr ("Exit"),
+                    SLOT (close (void)), this);
     m_exit_action->setMenuRole (QAction::QuitRole);
 
     // Connect signal related to opening or creating editor files
@@ -2237,17 +2237,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    m_new_script_action = add_action (
-          new_menu, settings.icon ("document-new"), tr ("New Script"),
-          SLOT (request_new_script (void)), this);
+    m_new_script_action
+      = add_action (new_menu, settings.icon ("document-new"), tr ("New Script"),
+                    SLOT (request_new_script (void)), this);
 
-    m_new_function_action = add_action (
-          new_menu, QIcon (), tr ("New Function..."),
-          SLOT (request_new_function (void)), this);
+    m_new_function_action
+      = add_action (new_menu, QIcon (), tr ("New Function..."),
+                    SLOT (request_new_function (void)), this);
 
-    m_new_figure_action = add_action (
-          new_menu, QIcon (), tr ("New Figure"),
-          SLOT (handle_new_figure_request (void)), this);
+    m_new_figure_action
+      = add_action (new_menu, QIcon (), tr ("New Figure"),
+                    SLOT (handle_new_figure_request (void)), this);
   }
 
   void main_window::construct_edit_menu (QMenuBar *p)
@@ -2286,7 +2286,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     edit_menu->addSeparator ();
 
     m_find_files_action
-      = edit_menu->addAction (settings.icon ("edit-find"), tr ("Find Files..."));
+      = edit_menu->addAction (settings.icon ("edit-find"),
+                              tr ("Find Files..."));
 
     edit_menu->addSeparator ();
 

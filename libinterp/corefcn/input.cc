@@ -1444,8 +1444,7 @@ for input.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string hook_fcn_id = args(
-                              0).xstring_value ("remove_input_event_hook: argument not valid as a hook function name or id");
+  std::string hook_fcn_id = args(0).xstring_value ("remove_input_event_hook: argument not valid as a hook function name or id");
 
   bool warn = (nargin < 2);
 

@@ -1183,8 +1183,7 @@ recompiled.
 
   if (nargin == 1)
     {
-      std::string sval = args(
-                           0).xstring_value ("ignore_function_time_stamp: first argument must be a string");
+      std::string sval = args(0).xstring_value ("ignore_function_time_stamp: first argument must be a string");
 
       if (sval == "all")
         Vignore_function_time_stamp = 2;

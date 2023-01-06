@@ -369,8 +369,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     for (auto it = items.begin () ; it != items.end (); it++)
       {
         if (*it)
-          m_tree->takeTopLevelItem (
-            m_tree->indexOfTopLevelItem (*it));
+          m_tree->takeTopLevelItem (m_tree->indexOfTopLevelItem (*it));
       }
   }
 

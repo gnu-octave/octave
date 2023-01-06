@@ -117,8 +117,9 @@ adjust_to_screen (QRect& actual_geometry, const QRect& default_geometry)
 
   // And compute again the intersection with the screen if this resizing
   // led to corners outside the screen
-  actual_geometry = actual_screen_geom.intersected (
-                                                    QRect (QPoint (isx1,isy1), QPoint (isx2,isy2)));
+  actual_geometry
+    = actual_screen_geom.intersected (QRect (QPoint (isx1, isy1),
+                                             QPoint (isx2, isy2)));
 }
 
 OCTAVE_END_NAMESPACE(octave)

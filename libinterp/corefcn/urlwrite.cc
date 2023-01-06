@@ -126,8 +126,7 @@ urlwrite ("http://www.google.com/search", "search.html",
       if (method != "get" && method != "post")
         error (R"(urlwrite: METHOD must be "get" or "post")");
 
-      param = args(
-                3).xcellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
+      param = args(3).xcellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
         error ("urlwrite: number of elements in PARAM must be even");
@@ -238,8 +237,7 @@ s = urlread ("http://www.google.com/search", "get",
       if (method != "get" && method != "post")
         error (R"(urlread: METHOD must be "get" or "post")");
 
-      param = args(
-                2).xcellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
+      param = args(2).xcellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
         error ("urlread: number of elements in PARAM must be even");

@@ -115,9 +115,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // Set header properties for sorting
     m_view->horizontalHeader ()->setSectionsClickable (true);
     m_view->horizontalHeader ()->setSectionsMovable (true);
-    m_view->horizontalHeader ()->setSortIndicator (
-                                                   settings.int_value (ws_sort_column),
-                                                   static_cast<Qt::SortOrder> (settings.uint_value (ws_sort_order)));
+    m_view->horizontalHeader ()->setSortIndicator
+      (settings.int_value (ws_sort_column),
+       static_cast<Qt::SortOrder> (settings.uint_value (ws_sort_order)));
     // FIXME: use value<Qt::SortOrder> instead of static cast after
     //        dropping support of Qt 5.4
 
@@ -165,9 +165,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings settings;
 
-    m_view->sortByColumn (
-      settings.int_value (ws_sort_column),
-      static_cast<Qt::SortOrder> (settings.uint_value (ws_sort_order)));
+    m_view->sortByColumn
+      (settings.int_value (ws_sort_column),
+       static_cast<Qt::SortOrder> (settings.uint_value (ws_sort_order)));
       // FIXME: use value<Qt::SortOrder> instead of static cast after
       //        dropping support of Qt 5.4
 

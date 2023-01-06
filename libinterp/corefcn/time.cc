@@ -267,8 +267,7 @@ datestr, datevec, calendar, weekday}
   if (args.length () != 1)
     print_usage ();
 
-  octave_scalar_map map = args(
-                            0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
+  octave_scalar_map map = args(0).xscalar_map_value ("mktime: TM_STRUCT argument must be a structure");
 
   sys::base_tm tm = extract_tm (map, "mktime");
 

@@ -3113,28 +3113,24 @@ public:
 
   mxArray_cell (bool interleaved, mwSize ndims, const mwSize *dims)
     : mxArray_matlab (interleaved, mxCELL_CLASS, ndims, dims),
-      m_data (static_cast<mxArray * *> (
-                mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
+      m_data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
   mxArray_cell (bool interleaved, const dim_vector& dv)
     : mxArray_matlab (interleaved, mxCELL_CLASS, dv),
-      m_data (static_cast<mxArray * *> (
-                mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
+      m_data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
   mxArray_cell (bool interleaved, mwSize m, mwSize n)
     : mxArray_matlab (interleaved, mxCELL_CLASS, m, n),
-      m_data (static_cast<mxArray * *> (
-                mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
+      m_data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
 private:
 
   mxArray_cell (const mxArray_cell& val)
     : mxArray_matlab (val),
-      m_data (static_cast<mxArray * *> (
-                mxArray::malloc (get_number_of_elements () * sizeof (mxArray *))))
+      m_data (static_cast<mxArray **> (mxArray::malloc (get_number_of_elements () * sizeof (mxArray *))))
   {
     mwSize nel = get_number_of_elements ();
 

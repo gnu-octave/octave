@@ -614,8 +614,7 @@ specified option.
 
   if (nargin == 1)
     {
-      std::string arg = args(
-                          0).xstring_value ("__octave_config_info__: OPTION argument must be a string");
+      std::string arg = args(0).xstring_value ("__octave_config_info__: OPTION argument must be a string");
 
       octave_value info = find_config_info (config, arg);
 

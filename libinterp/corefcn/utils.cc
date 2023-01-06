@@ -573,8 +573,7 @@ If no files are found, return an empty cell array.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  string_vector names = args(
-                          0).xstring_vector_value ("file_in_loadpath: FILE argument must be a string");
+  string_vector names = args(0).xstring_vector_value ("file_in_loadpath: FILE argument must be a string");
 
   if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
@@ -585,8 +584,7 @@ If no files are found, return an empty cell array.
     return ovl (sys::env::make_absolute (lp.find_first_of (names)));
   else
     {
-      std::string opt = args(
-                          1).xstring_value ("file_in_loadpath: optional second argument must be a string");
+      std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
 
       if (opt != "all")
         error (R"(file_in_loadpath: "all" is only valid second argument)");
@@ -940,8 +938,7 @@ Escape sequences begin with a leading backslash
   if (args.length () != 1)
     print_usage ();
 
-  std::string str = args(
-                      0).xstring_value ("do_string_escapes: STRING argument must be of type string");
+  std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
 
   return ovl (do_string_escapes (str));
 }

@@ -135,8 +135,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
           warned_jac_imaginary = true;
         }
 
-      retval = tmp(
-                 0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
+      retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
 
       if (retval.isempty ())
         err_user_supplied_eval ("lsode");

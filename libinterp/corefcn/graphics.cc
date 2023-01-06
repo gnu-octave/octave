@@ -2022,8 +2022,7 @@ property::create (const std::string& name, const graphics_handle& h,
       if (args.length () < 1)
         error ("addproperty: missing possible values for radio property");
 
-      std::string sv = args(
-                         0).xstring_value ("addproperty: argument for radio property must be a string");
+      std::string sv = args(0).xstring_value ("addproperty: argument for radio property must be a string");
 
       retval = property (new radio_property (name, h, sv));
 
@@ -12313,8 +12312,7 @@ lists respectively.
       caseless_str property;
 
       if (nargin > 1)
-        property = args(
-                     1).xstring_value ("get: second argument must be property name or cell array of property names");
+        property = args(1).xstring_value ("get: second argument must be property name or cell array of property names");
 
       vals.resize (dim_vector (hcv_len, 1));
 

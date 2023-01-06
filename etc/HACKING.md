@@ -312,16 +312,16 @@ Release Numbering
 Since version 5, Octave uses the following rules for release numbering:
 
     Version Dev. Phase      When
-  
-    5.0.0   (experimental)  active development of Octave 5 on default branch  
-    5.0.1   (pre-release)   stabilization period of Octave 5 on stable branch  
-    5.0.90  (pre-release)   first release candidate for 5.1.0  
-    5.0.91  (pre-release)   continued stabilization of Octave 5 on stable branch  
-    6.0.0   (experimental)  active development of Octave 6 on default branch  
-    5.1.0   (release)       first release of Octave 5 from stable branch  
-    5.1.1   (pre-release)   bug fixing on stable branch after 5.1.0 release  
-    5.2.0   (release)       second release of Octave 5 from stable branch  
-    5.2.1   (pre-release)   bug fixing on stable branch after 5.2.0 release  
+
+    5.0.0   (experimental)  active development of Octave 5 on default branch
+    5.0.1   (pre-release)   stabilization period of Octave 5 on stable branch
+    5.0.90  (pre-release)   first release candidate for 5.1.0
+    5.0.91  (pre-release)   continued stabilization of Octave 5 on stable branch
+    6.0.0   (experimental)  active development of Octave 6 on default branch
+    5.1.0   (release)       first release of Octave 5 from stable branch
+    5.1.1   (pre-release)   bug fixing on stable branch after 5.1.0 release
+    5.2.0   (release)       second release of Octave 5 from stable branch
+    5.2.1   (pre-release)   bug fixing on stable branch after 5.2.0 release
     ...     ...             ...
 
 To summarize, the first release of Octave 5 will be Octave 5.1.0 while

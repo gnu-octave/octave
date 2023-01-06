@@ -92,8 +92,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // System at beginning
     comboBox_language->insertItem (0, tr ("System setting"));
     comboBox_language->insertSeparator (1);    // separator after System
-    QString language = settings.value (global_language.settings_key (),
-                                       global_language.def ()).toString ();
+    QString language = settings.string_value (global_language);
     if (language == global_language.def ().toString ())
       language = tr ("System setting");
     int selected = comboBox_language->findText (language);
@@ -416,12 +415,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     // shortcuts
 
-    cb_prevent_readline_conflicts->setChecked (
-          settings.value (sc_prevent_rl_conflicts.settings_key (),
-                           sc_prevent_rl_conflicts.def ()).toBool ());
-    cb_prevent_readline_conflicts_menu->setChecked (
-          settings.value (sc_prevent_rl_conflicts_menu.settings_key (),
-                           sc_prevent_rl_conflicts_menu.def ()).toBool ());
+    cb_prevent_readline_conflicts->setChecked (settings.bool_value (sc_prevent_rl_conflicts));
+    cb_prevent_readline_conflicts_menu->setChecked (settings.bool_value (sc_prevent_rl_conflicts_menu));
 
     // connect the buttons for import/export of the shortcut sets
     // FIXME: Should there also be a button to discard changes?

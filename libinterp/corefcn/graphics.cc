@@ -8141,6 +8141,12 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
             {
               tmp_lims(0) = lo;
               tmp_lims(1) = hi;
+
+              // adjust min and max ticks to be within limits
+              if (i1*tick_sep < lo)
+                i1++;
+              if (i2*tick_sep > hi && i2 > i1)
+                i2--;
             }
 
           if (is_logscale)

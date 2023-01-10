@@ -370,6 +370,19 @@
 %! obs  = jsonencode (data);
 %! assert (isequal (obs, exp));
 
+%!testif HAVE_RAPIDJSON <*63622>
+%! data = struct ('z', {});
+%! exp  = '[]';
+%! obs  = jsonencode (data);
+%! assert (isequal (obs, exp));
+%
+%!testif HAVE_RAPIDJSON <*63622>
+%! data.a = struct ('z', {});
+%! data.b = 1;
+%! exp  = '{"a":[],"b":1}';
+%! obs  = jsonencode (data);
+%! assert (isequal (obs, exp));
+
 %% another big Test
 %!testif HAVE_RAPIDJSON
 %! var1 = struct ('id', {0; 1; 2}, 'name', {'Collins'; 'Hays'; 'Griffin'});

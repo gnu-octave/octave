@@ -218,7 +218,7 @@ encode_struct (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 {
   octave_map struct_array = obj.map_value ();
   octave_idx_type numel = struct_array.numel ();
-  bool is_array = (numel > 1);
+  bool is_array = (numel != 1);
   string_vector keys = struct_array.keys ();
 
   if (is_array)

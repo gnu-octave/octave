@@ -92,10 +92,22 @@ command_widget::command_widget (base_qobject& oct_qobj, QWidget *p)
 
 void command_widget::init_command_prompt ()
 {
+  // The interpreter_event callback function below emits a signal.
+  // Because we don't control when that happens, use a guarded pointer
+  // so that the callback can abort if this object is no longer valid.
+
+  QPointer<command_widget> this_cw (this);
+
   emit interpreter_event
     ([=] (interpreter& interp)
     {
       // INTERPRETER THREAD
+
+      // We can skip the entire callback function because it does not
+      // make any changes to the interpreter state.
+
+      if (this_cw.isNull ())
+        return;
 
       event_manager& evmgr = interp.get_event_manager ();
       input_system& input_sys = interp.get_input_system ();
@@ -123,13 +135,26 @@ void command_widget::insert_interpreter_output (const QString& msg)
 
 void command_widget::process_input_line (const QString& input_line)
 {
+  // The interpreter_event callback function below emits a signal.
+  // Because we don't control when that happens, use a guarded pointer
+  // so that the callback can abort if this object is no longer valid.
+
+  QPointer<command_widget> this_cw (this);
+
   emit interpreter_event
     ([=] (interpreter& interp)
     {
       // INTERPRETER THREAD
 
+      // If THIS_CW is no longer valid, we still want to parse and
+      // execute INPUT_LINE but we can't emit the signals associated
+      // with THIS_CW.
+
       interp.parse_and_execute (input_line.toStdString (),
                                 m_incomplete_parse);
+
+      if (this_cw.isNull ())
+        return;
 
       event_manager& evmgr = interp.get_event_manager ();
       input_system& input_sys = interp.get_input_system ();

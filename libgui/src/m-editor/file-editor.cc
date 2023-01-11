@@ -681,10 +681,24 @@ void file_editor::request_save_file_as (bool)
 
 void file_editor::request_run_file (bool)
 {
+  // The interpreter_event callback function below emits a signal.
+  // Because we don't control when that happens, use a guarded pointer
+  // so that the callback can abort if this object is no longer valid.
+
+  QPointer<file_editor> this_fe (this);
+
   emit interpreter_event
     ([=] (interpreter& interp)
     {
       // INTERPRETER THREAD
+
+      // If THIS_FE is no longer valid, skip the entire callback
+      // function.  With the way things are implemented now, we can't
+      // run the contents of a file unless the file editor and the
+      // corresponding file editor tab are still valid.
+
+      if (this_fe.isNull ())
+        return;
 
       // Act as though this action was entered at the command propmt
       // so that the interpreter will check for updated file time

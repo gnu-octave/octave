@@ -33,6 +33,7 @@
 #include <QLabel>
 #include <QMap>
 #include <QMessageBox>
+#include <QPointer>
 #include <QString>
 #include <QTableView>
 
@@ -1023,10 +1024,22 @@ variable_editor_model::setData (const QModelIndex& idx,
 
   std::string expr = os.str ();
 
+  // The interpreter_event callback function below emits a signal.
+  // Because we don't control when that happens, use a guarded pointer
+  // so that the callback can abort if this object is no longer valid.
+
+  QPointer<variable_editor_model> this_vem (this);
+
   emit interpreter_event
     ([=] (interpreter& interp)
     {
       // INTERPRETER THREAD
+
+      // We are intentionally skipping any side effects that may occur
+      // in the evaluation of EXPR if THIS_VEM is no longer valid.
+
+      if (this_vem.isNull ())
+        return;
 
       try
         {

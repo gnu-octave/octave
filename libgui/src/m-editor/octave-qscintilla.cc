@@ -899,6 +899,9 @@ emit interpreter_event
  {
    // INTERPRETER THREAD
 
+   if (tmp_hist.isNull ())
+     return;
+
    std::string opt = "-r";
    std::string  path = tmp_hist->fileName ().toStdString ();
 
@@ -910,11 +913,23 @@ gui_settings *settings = rmgr.get_settings ();
 bool show_dbg_file = settings->value (ed_show_dbg_file).toBool ();
 settings->setValue (ed_show_dbg_file.key, false);
 
+// The interpreter_event callback function below emits a signal.
+// Because we don't control when that happens, use a guarded pointer
+// so that the callback can abort if this object is no longer valid.
+
+QPointer<octave_qscintilla> this_oq (this);
+
 // Let the interpreter execute the tmp file
 emit interpreter_event
 ([=] (interpreter& interp)
  {
    // INTERPRETER THREAD
+
+   // FIXME: For now, just skip the entire callback if THIS_OQ is no
+   // longer valid.  Maybe there is a better way to do this job?
+
+   if (this_oq.isNull ())
+     return;
 
    std::string file = tmp_file->fileName ().toStdString ();
 

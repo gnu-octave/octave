@@ -32,6 +32,7 @@
 
 #include <QFileIconProvider>
 #include <QMessageBox>
+#include <QPointer>
 #include <QtAlgorithms>
 
 #include "qt-interpreter-events.h"
@@ -282,10 +283,22 @@ QVariant set_path_model::data (const QModelIndex& idx, int role) const
 
 void set_path_model::path_to_model (void)
 {
+  // The interpreter_event callback function below emits a signal.
+  // Because we don't control when that happens, use a guarded pointer
+  // so that the callback can abort if this object is no longer valid.
+
+  QPointer<set_path_model> this_spm (this);
+
   emit interpreter_event
     ([=] (interpreter& interp)
     {
       // INTERPRETER THREAD
+
+      // We can skip the entire callback function because it does not
+      // make any changes to the interpreter state.
+
+      if (this_spm.isNull ())
+        return;
 
       load_path& lp = interp.get_load_path ();
 

@@ -431,10 +431,24 @@ void file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
 
   if (ok && ! new_cond.isEmpty ())
     {
+      // The interpreter_event callback function below emits a signal.
+      // Because we don't control when that happens, use a guarded
+      // pointer so that the callback can abort if this object is no
+      // longer valid.
+
+      QPointer<file_editor_tab> this_fetab (this);
+
       emit interpreter_event
         ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
+
+          // We are intentionally skipping any side effects that may
+          // occur in the evaluation of NEW_COND if THIS_FETAB is no
+          // longer valid.
+
+          if (this_fetab.isNull ())
+            return;
 
           error_system& es = interp.get_error_system ();
 
@@ -816,10 +830,24 @@ void file_editor_tab::update_lexer_settings (bool update_apis_only)
 
           if (m_is_octave_file)
             {
+              // The interpreter_event callback function below emits a
+              // signal.  Because we don't control when that happens,
+              // use a guarded pointer so that the callback can abort if
+              // this object is no longer valid.
+
+              QPointer<file_editor_tab> this_fetab (this);
+
               emit interpreter_event
                 ([=] (interpreter& interp)
                 {
                   // INTERPRETER THREAD
+
+                  // We can skip the entire callback function because it
+                  // does not make any changes to the interpreter
+                  // state.
+
+                  if (this_fetab.isNull ())
+                    return;
 
                   QStringList api_entries;
 
@@ -1359,10 +1387,20 @@ void file_editor_tab::zoom_normal (const QWidget *ID)
 
 void file_editor_tab::add_breakpoint_event (int line, const QString& cond)
 {
+  // The interpreter_event callback function below emits a signal.
+  // Because we don't control when that happens, use a guarded pointer
+  // so that the callback can abort if this object is no longer valid.
+
+  QPointer<file_editor_tab> this_fetab (this);
+
   emit interpreter_event
     ([=] (interpreter& interp)
     {
       // INTERPRETER THREAD
+
+      // If THIS_FETAB is no longer valid, we still want to set the
+      // breakpoint in the interpreter but we can't emit the signal
+      // associated with THIS_FETAB.
 
       // FIXME: note duplication with the code in
       // handle_context_menu_break_condition.
@@ -1372,6 +1410,8 @@ void file_editor_tab::add_breakpoint_event (int line, const QString& cond)
 
       int lineno = bptab.add_breakpoint_in_file (m_file_name.toStdString (),
                                                  line, cond.toStdString ());
+      if (this_fetab.isNull ())
+        return;
 
       if (lineno)
         emit maybe_remove_next (lineno);
@@ -2013,10 +2053,22 @@ void file_editor_tab::update_breakpoints ()
 
   // Create and queue the command object.
 
+  // The interpreter_event callback function below emits a signal.
+  // Because we don't control when that happens, use a guarded pointer
+  // so that the callback can abort if this object is no longer valid.
+
+  QPointer<file_editor_tab> this_fetab (this);
+
   emit interpreter_event
     ([=] (interpreter& interp)
     {
       // INTERPRETER THREAD
+
+      // We can skip the entire callback function because it does not
+      // make any changes to the interpreter state.
+
+      if (this_fetab.isNull ())
+        return;
 
       octave_value_list argout = Fdbstatus (interp, ovl (), 1);
 
@@ -2076,10 +2128,21 @@ void file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
 
   if (ans == QMessageBox::Save)
     {
+      // The interpreter_event callback function below emits a signal.
+      // Because we don't control when that happens, use a guarded
+      // pointer so that the callback can abort if this object is no
+      // longer valid.
+
+      QPointer<file_editor_tab> this_fetab (this);
+
       emit interpreter_event
         ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
+
+          // If THIS_FETAB is no longer valid, we still want to perform
+          // the actions in the interpreter but we can't emit the signal
+          // associated with THIS_FETAB.
 
           tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2092,6 +2155,9 @@ void file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
           symbol_table& symtab = interp.get_symbol_table ();
 
           symtab.clear_user_function (std_base_name);
+
+          if (this_fetab.isNull ())
+            return;
 
           emit do_save_file_signal (file_to_save, remove_on_success,
                                     restore_breakpoints);
@@ -2131,10 +2197,26 @@ void file_editor_tab::save_file (const QString& saveFileName,
       file_to_save = file_info.canonicalFilePath ();
       QString base_name = file_info.baseName ();
 
+      // The interpreter_event callback function below emits a signal.
+      // Because we don't control when that happens, use a guarded
+      // pointer so that the callback can abort if this object is no
+      // longer valid.
+
+      QPointer<file_editor_tab> this_fetab (this);
+
       emit interpreter_event
         ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
+
+          // We are intentionally skipping any side effects that may
+          // occur in the callback function if THIS_FETAB is no longer
+          // valid.  If the editor tab has disappeared, there is not
+          // much point in reloading the function to restore breakpoint
+          // info in the GUI.
+
+          if (this_fetab.isNull ())
+            return;
 
           // Force reloading of a file after it is saved.
           // This is needed to get the right line numbers for

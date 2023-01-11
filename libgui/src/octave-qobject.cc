@@ -453,9 +453,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
     else if (! m_terminal_widget)
       {
+        bool etw = m_app_context.experimental_terminal_widget ();
+
         m_terminal_widget
-          = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw));
-        if (experimental_terminal_widget ())
+          = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw, etw));
+
+        if (etw)
           {
 #if defined (HAVE_QSCINTILLA)
             command_widget *cmd_widget

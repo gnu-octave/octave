@@ -904,6 +904,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         {
           // INTERPRETER THREAD
 
+          if (tmp_hist.isNull ())
+            return;
+
           std::string opt = "-r";
           std::string  path = tmp_hist->fileName ().toStdString ();
 
@@ -916,11 +919,24 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
     settings.setValue (ed_show_dbg_file.settings_key (), false);
 
+    // The interpreter_event callback function below emits a signal.
+    // Because we don't control when that happens, use a guarded pointer
+    // so that the callback can abort if this object is no longer valid.
+
+    QPointer<octave_qscintilla> this_oq (this);
+
     // Let the interpreter execute the tmp file
     emit interpreter_event
       ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
+
+         // FIXME: For now, just skip the entire callback if THIS_OQ is
+         // no longer valid.  Maybe there is a better way to do this
+         // job?
+
+         if (this_oq.isNull ())
+           return;
 
          std::string file = tmp_file->fileName ().toStdString ();
 

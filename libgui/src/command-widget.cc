@@ -99,10 +99,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void command_widget::init_command_prompt ()
   {
+    // The interpreter_event callback function below emits a signal.
+    // Because we don't control when that happens, use a guarded pointer
+    // so that the callback can abort if this object is no longer valid.
+
+    QPointer<command_widget> this_cw (this);
+
     emit interpreter_event
       ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
+
+         // We can skip the entire callback function because it does not
+         // make any changes to the interpreter state.
+
+         if (this_cw.isNull ())
+           return;
 
          event_manager& evmgr = interp.get_event_manager ();
          input_system& input_sys = interp.get_input_system ();
@@ -130,10 +142,20 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void command_widget::process_input_line (const QString& input_line)
   {
+    // The interpreter_event callback function below emits a signal.
+    // Because we don't control when that happens, use a guarded pointer
+    // so that the callback can abort if this object is no longer valid.
+
+    QPointer<command_widget> this_cw (this);
+
     emit interpreter_event
       ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
+
+         // If THIS_CW is no longer valid, we still want to parse and
+         // execute INPUT_LINE but we can't emit the signals associated
+         // with THIS_CW.
 
          interp.parse_and_execute (input_line.toStdString (),
                                    m_incomplete_parse);
@@ -145,6 +167,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
            = m_incomplete_parse ? input_sys.PS2 () : input_sys.PS1 ();
 
          evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+
+         if (this_cw.isNull ())
+           return;
 
          emit new_command_line_signal ();
        });

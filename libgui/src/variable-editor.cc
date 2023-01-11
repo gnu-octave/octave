@@ -38,6 +38,7 @@
 #include <QMdiArea>
 #include <QMenu>
 #include <QPalette>
+#include <QPointer>
 #include <QScreen>
 #include <QScrollBar>
 #include <QStackedWidget>
@@ -455,11 +456,23 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         return;
       }
 
+    // The interpreter_event callback function below emits a signal.
+    // Because we don't control when that happens, use a guarded pointer
+    // so that the callback can abort if this object is no longer valid.
+
+    QPointer<variable_editor_stack> this_ves (this);
+
     // No format given, test save default options
     emit interpreter_event
       ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
+
+          // We can skip the entire callback function because it does
+          // not make any changes to the interpreter state.
+
+          if (this_ves.isNull ())
+            return;
 
           octave_value_list argout
             = Fsave_default_options (interp, octave_value_list (), 1);
@@ -469,7 +482,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                    this, &variable_editor_stack::do_save);
 
           emit (do_save_signal (format_string, save_opts));
-
         });
   }
 

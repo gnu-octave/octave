@@ -1399,10 +1399,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                                                const QString& curr_dir,
                                                int line)
   {
+    // The interpreter_event callback function below emits a signal.
+    // Because we don't control when that happens, use a guarded pointer
+    // so that the callback can abort if this object is no longer valid.
+
+    QPointer<main_window> this_mw (this);
+
     emit interpreter_event
       ([=] (interpreter& interp)
        {
          // INTERPRETER THREAD
+
+         // We can skip the entire callback function because it does not
+         // make any changes to the interpreter state.
+
+         if (this_mw.isNull ())
+           return;
 
          // Split possible subfunctions
          QStringList fcn_list = fname.split ('>');
@@ -1466,7 +1478,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                    filename = file.canonicalFilePath ();  // private function exists
                  else
                    message = tr ("Can not find function %1");  // no file found
-
                }
            }
 

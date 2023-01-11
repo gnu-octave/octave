@@ -482,6 +482,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             connect (qt_link (), &qt_interpreter_events::new_command_line_signal,
                      m_terminal_widget, &terminal_dock_widget::new_command_line_signal);
 
+            connect (mw, &main_window::update_prompt_signal,
+                     m_terminal_widget, &terminal_dock_widget::update_prompt_signal);
+
             connect_interpreter_events (cmd_widget);
 #endif
           }

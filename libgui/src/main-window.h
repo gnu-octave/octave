@@ -131,6 +131,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void execute_command_signal (const QString& command);
 
+    void update_prompt_signal (const QString& prompt);
+
   public slots:
 
     void focus_changed (QWidget *w_old, QWidget *w_new);

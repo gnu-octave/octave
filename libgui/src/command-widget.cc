@@ -84,6 +84,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (stop_button, &QPushButton::clicked,
              this, &command_widget::interpreter_stop);
 
+    connect (this, &command_widget::update_prompt_signal,
+             this, &command_widget::update_prompt);
+
     connect (this, &command_widget::new_command_line_signal,
              m_console, &console::new_command_line);
 
@@ -116,10 +119,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
          if (this_cw.isNull ())
            return;
 
-         event_manager& evmgr = interp.get_event_manager ();
          input_system& input_sys = interp.get_input_system ();
          std::string prompt = input_sys.PS1 ();
-         evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+         std::string decoded_prompt
+           = command_editor::decode_prompt_string (prompt);
+
+         emit update_prompt_signal (QString::fromStdString (decoded_prompt));
 
          emit new_command_line_signal ();
        });
@@ -160,16 +165,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
          interp.parse_and_execute (input_line.toStdString (),
                                    m_incomplete_parse);
 
-         event_manager& evmgr = interp.get_event_manager ();
+         if (this_cw.isNull ())
+           return;
+
          input_system& input_sys = interp.get_input_system ();
 
          std::string prompt
            = m_incomplete_parse ? input_sys.PS2 () : input_sys.PS1 ();
 
-         evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+         std::string decoded_prompt
+           = command_editor::decode_prompt_string (prompt);
 
-         if (this_cw.isNull ())
-           return;
+         emit update_prompt_signal (QString::fromStdString (decoded_prompt));
 
          emit new_command_line_signal ();
        });

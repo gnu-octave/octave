@@ -107,6 +107,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void interpreter_resume (void);
     void interpreter_stop (void);
 
+    void update_prompt_signal (const QString& prompt);
     void new_command_line_signal (const QString& command = QString ());
 
     void interpreter_event (const fcn_callback& fcn);

@@ -1782,18 +1782,33 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         // Set initial prompt.
 
+        // The interpreter_event callback function below emits a
+        // signal.  Because we don't control when that happens, use a
+        // guarded pointer so that the callback can abort if this object
+        // is no longer valid.
+
+        QPointer<main_window> this_mw (this);
+
         emit interpreter_event
-          ([] (interpreter& interp)
+          ([=] (interpreter& interp)
           {
             // INTERPRETER_THREAD
 
-            event_manager& evmgr = interp.get_event_manager ();
+            // We can skip the entire callback function because it does
+            // not make any changes to the interpreter state.
+
+            if (this_mw.isNull ())
+              return;
+
             input_system& input_sys = interp.get_input_system ();
 
             input_sys.PS1 (">> ");
             std::string prompt = input_sys.PS1 ();
 
-            evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+            std::string decoded_prompt
+              = command_editor::decode_prompt_string (prompt);
+
+            emit update_prompt_signal (QString::fromStdString (decoded_prompt));
           });
       }
 

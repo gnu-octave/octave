@@ -481,7 +481,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           connect (this, &variable_editor_stack::do_save_signal,
                    this, &variable_editor_stack::do_save);
 
-          emit (do_save_signal (format_string, save_opts));
+          emit do_save_signal (format_string, save_opts);
         });
   }
 

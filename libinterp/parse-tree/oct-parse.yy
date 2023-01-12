@@ -5735,10 +5735,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     int exit_status = 0;
 
-    input_system&  input_sys = m_interpreter.get_input_system ();
-
     std::string prompt
-      = command_editor::decode_prompt_string (input_sys.PS1 ());
+      = command_editor::decode_prompt_string (m_interpreter.PS1 ());
 
     do
       {
@@ -5760,7 +5758,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         exit_status = run (input_line, false);
 
-        prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
+        prompt = command_editor::decode_prompt_string (m_interpreter.PS2 ());
       }
     while (exit_status < 0);
 

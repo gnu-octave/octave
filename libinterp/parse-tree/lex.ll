@@ -4010,10 +4010,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (m_input_buf.empty ())
       {
-        input_system& input_sys = m_interpreter.get_input_system ();
-
         std::string ps
-          = m_initial_input ? input_sys.PS1 () : input_sys.PS2 ();
+          = m_initial_input ? m_interpreter.PS1 () : m_interpreter.PS2 ();
 
         std::string prompt = command_editor::decode_prompt_string (ps);
 

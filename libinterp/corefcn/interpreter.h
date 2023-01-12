@@ -512,6 +512,21 @@ public:
   // Resume interpreter execution if paused.
   void resume (void);
 
+  octave_value PS1 (const octave_value_list& args, int nargout);
+  std::string PS1 (void) const;
+  std::string PS1 (const std::string& s);
+  void set_PS1 (const std::string& s);
+
+  octave_value PS2 (const octave_value_list& args, int nargout);
+  std::string PS2 (void) const;
+  std::string PS2 (const std::string& s);
+  void set_PS2 (const std::string& s);
+
+  octave_value PS4 (const octave_value_list& args, int nargout);
+  std::string PS4 (void) const;
+  std::string PS4 (const std::string& s);
+  void set_PS4 (const std::string& s);
+
   // Provided for convenience.  Will be removed once we eliminate the
   // old terminal widget.
   bool experimental_terminal_widget (void) const;

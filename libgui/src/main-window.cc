@@ -1800,10 +1800,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             if (this_mw.isNull ())
               return;
 
-            input_system& input_sys = interp.get_input_system ();
-
-            input_sys.PS1 (">> ");
-            std::string prompt = input_sys.PS1 ();
+            interp.PS1 (">> ");
+            std::string prompt = interp.PS1 ();
 
             std::string decoded_prompt
               = command_editor::decode_prompt_string (prompt);

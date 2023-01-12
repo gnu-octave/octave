@@ -67,10 +67,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (app_context.start_gui_p ()
             && ! m_octave_qobj.experimental_terminal_widget ())
           {
-            input_system& input_sys = interp.get_input_system ();
-
-            input_sys.PS1 (">> ");
-            input_sys.PS2 ("");
+            interp.PS1 (">> ");
+            interp.PS2 ("");
           }
 
         if (interp.initialized ())

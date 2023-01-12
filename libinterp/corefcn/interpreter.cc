@@ -1898,6 +1898,66 @@ void interpreter::resume (void)
     m_evaluator.dbcont ();
 }
 
+octave_value interpreter::PS1 (const octave_value_list& args, int nargout)
+{
+  return m_input_system.PS1 (args, nargout);
+}
+
+std::string interpreter::PS1 (void) const
+{
+  return m_input_system.PS1 ();
+}
+
+std::string interpreter::PS1 (const std::string& s)
+{
+  return m_input_system.PS1 (s);
+}
+
+void interpreter::set_PS1 (const std::string& s)
+{
+  m_input_system.set_PS1 (s);
+}
+
+octave_value interpreter::PS2 (const octave_value_list& args, int nargout)
+{
+  return m_input_system.PS2 (args, nargout);
+}
+
+std::string interpreter::PS2 (void) const
+{
+  return m_input_system.PS2 ();
+}
+
+std::string interpreter::PS2 (const std::string& s)
+{
+  return m_input_system.PS2 (s);
+}
+
+void interpreter::set_PS2 (const std::string& s)
+{
+  m_input_system.set_PS2 (s);
+}
+
+octave_value interpreter::PS4 (const octave_value_list& args, int nargout)
+{
+  return m_evaluator.PS4 (args, nargout);
+}
+
+std::string interpreter::PS4 (void) const
+{
+  return m_evaluator.PS4 ();
+}
+
+std::string interpreter::PS4 (const std::string& s)
+{
+  return m_evaluator.PS4 (s);
+}
+
+void interpreter::set_PS4 (const std::string& s)
+{
+  m_evaluator.set_PS4 (s);
+}
+
 // Provided for convenience.  Will be removed once we eliminate the
 // old terminal widget.
 bool interpreter::experimental_terminal_widget (void) const
@@ -2037,10 +2097,9 @@ bool interpreter::remove_atexit_fcn (const std::string& fname)
 
 void interpreter::maximum_braindamage (void)
 {
-  m_input_system.PS1 (">> ");
-  m_input_system.PS2 ("");
-
-  m_evaluator.PS4 ("");
+  PS1 (">> ");
+  PS2 ("");
+  PS4 ("");
 
   m_load_save_system.crash_dumps_octave_core (false);
   m_load_save_system.save_default_options ("-mat-binary");

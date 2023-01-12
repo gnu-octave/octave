@@ -712,6 +712,8 @@ public:
     return val;
   }
 
+  void set_PS4 (const std::string& s) { m_PS4 = s; }
+
   octave_value indexed_object (void) const
   {
     return m_indexed_object;

@@ -1496,9 +1496,7 @@ The original variable value is restored when exiting the function.
 @seealso{PS2, PS4}
 @end deftypefn */)
 {
-  input_system& input_sys = interp.get_input_system ();
-
-  return input_sys.PS1 (args, nargout);
+  return interp.PS1 (args, nargout);
 }
 
 DEFMETHOD (PS2, interp, args, nargout,
@@ -1520,9 +1518,7 @@ The original variable value is restored when exiting the function.
 @seealso{PS1, PS4}
 @end deftypefn */)
 {
-  input_system& input_sys = interp.get_input_system ();
-
-  return input_sys.PS2 (args, nargout);
+  return interp.PS2 (args, nargout);
 }
 
 DEFMETHOD (completion_append_char, interp, args, nargout,

@@ -119,8 +119,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
          if (this_cw.isNull ())
            return;
 
-         input_system& input_sys = interp.get_input_system ();
-         std::string prompt = input_sys.PS1 ();
+         std::string prompt = interp.PS1 ();
          std::string decoded_prompt
            = command_editor::decode_prompt_string (prompt);
 
@@ -168,10 +167,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
          if (this_cw.isNull ())
            return;
 
-         input_system& input_sys = interp.get_input_system ();
-
          std::string prompt
-           = m_incomplete_parse ? input_sys.PS2 () : input_sys.PS1 ();
+           = m_incomplete_parse ? interp.PS2 () : interp.PS1 ();
 
          std::string decoded_prompt
            = command_editor::decode_prompt_string (prompt);

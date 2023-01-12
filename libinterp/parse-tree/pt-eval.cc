@@ -365,8 +365,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (m_level > 0)
           tmp_prompt = "[" + std::to_string (m_level) + "]" + prompt_arg;
 
-        frame.add (&input_system::set_PS1, &input_sys, input_sys.PS1 ());
-        input_sys.PS1 (tmp_prompt);
+        frame.add (&interpreter::set_PS1, &m_interpreter, m_interpreter.PS1 ());
+        m_interpreter.PS1 (tmp_prompt);
 
         if (! m_interpreter.interactive ())
           {
@@ -439,7 +439,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
                     retval = debug_parser.run (input_line, false);
 
-                    prompt = command_editor::decode_prompt_string (input_sys.PS2 ());
+                    prompt = command_editor::decode_prompt_string (m_interpreter.PS2 ());
                   }
                 while (retval < 0);
 
@@ -645,7 +645,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     bool evaluation_pending = false;
     bool exiting = false;
 
-    input_system& input_sys = m_interpreter.get_input_system ();
     event_manager& evmgr = m_interpreter.get_event_manager ();
 
     while (true)
@@ -654,7 +653,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         // so, then we need to disable idle event loop hook function
         // execution.
 
-        std::string ps = incomplete_parse ? input_sys.PS2 () : input_sys.PS1 ();
+        std::string ps
+          = incomplete_parse ? m_interpreter.PS2 () : m_interpreter.PS1 ();
 
         std::cout << command_editor::decode_prompt_string (ps);
 
@@ -5470,9 +5470,7 @@ The original variable value is restored when exiting the function.
 @seealso{echo, PS1, PS2}
 @end deftypefn */)
 {
-  tree_evaluator& tw = interp.get_evaluator ();
-
-  return tw.PS4 (args, nargout);
+  return interp.PS4 (args, nargout);
 }
 
 DEFMETHOD (echo, interp, args, nargout,

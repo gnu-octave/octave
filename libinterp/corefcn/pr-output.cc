@@ -50,11 +50,11 @@
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "ovl.h"
 #include "oct-stream.h"
 #include "octave-preserve-stream-state.h"
 #include "pager.h"
-#include "parse.h"
 #include "pr-flt-fmt.h"
 #include "pr-output.h"
 #include "sysdep.h"
@@ -3448,8 +3448,8 @@ Note that the output from @code{fdisp} always ends with a newline.
 %! end_unwind_protect
 */
 
-DEFUN (display, args, ,
-       classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
+DEFMETHOD (display, interp, args, ,
+           classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
 @deftypefn {} {} display (@var{obj})
 Display the contents of the object @var{obj} prepended by its name.
@@ -3521,7 +3521,7 @@ of properly displaying the object's name.  This can be done by using the
 
   // Use feval so that dispatch will also work for disp.
 
-  feval ("disp", ovl (value));
+  interp.feval ("disp", ovl (value));
 
   if (print_newlines)
     octave_stdout << std::endl;

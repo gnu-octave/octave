@@ -44,11 +44,12 @@
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "ov-int32.h"
 #include "ov.h"
 #include "ovl.h"
-#include "parse.h"
 
 #if defined (HAVE_PORTAUDIO)
 #  include <portaudio.h>
@@ -604,9 +605,11 @@ octave_play_callback (const void *, void *output, unsigned long frames,
   if (! player)
     error ("audioplayer callback function called without player");
 
+  interpreter& interp = __get_interpreter__ ();
+
   octave_value_list retval
-    = feval (player->octave_callback_function,
-             ovl (static_cast<double> (frames)), 1);
+    = interp.feval (player->octave_callback_function,
+                    ovl (static_cast<double> (frames)), 1);
 
   if (retval.length () < 2)
     error ("audioplayer callback function failed");
@@ -1441,8 +1444,10 @@ octave_record_callback (const void *input, void *, unsigned long frames,
         }
     }
 
+  interpreter& interp = __get_interpreter__ ();
+
   octave_value_list retval
-    = feval (recorder->octave_callback_function, ovl (sound), 1);
+    = interp.feval (recorder->octave_callback_function, ovl (sound), 1);
 
   return retval(0).int_value ();
 }

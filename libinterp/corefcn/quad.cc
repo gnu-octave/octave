@@ -36,8 +36,8 @@
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "pager.h"
-#include "parse.h"
 #include "ov.h"
 #include "ovl.h"
 #include "unwind-prot.h"
@@ -71,7 +71,9 @@ quad_user_function (double x)
 
       try
         {
-          tmp = feval (quad_fcn, args, 1);
+          interpreter& interp = __get_interpreter__ ();
+
+          tmp = interp.feval (quad_fcn, args, 1);
         }
       catch (execution_exception& ee)
         {
@@ -107,7 +109,9 @@ quad_float_user_function (float x)
 
       try
         {
-          tmp = feval (quad_fcn, args, 1);
+          interpreter& interp = __get_interpreter__ ();
+
+          tmp = interp.feval (quad_fcn, args, 1);
         }
       catch (execution_exception& ee)
         {

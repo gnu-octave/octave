@@ -35,7 +35,6 @@
 #include "input.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "parse.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -447,9 +446,9 @@ gh_manager::execute_callback (const graphics_handle& h,
         try
           {
             if (ov_fcn.is_defined ())
-              octave::feval (ov_fcn, args);
+              m_interpreter.feval (ov_fcn, args);
             else
-              octave::feval (fcn, args);
+              m_interpreter.feval (fcn, args);
           }
         catch (const octave::execution_exception& ee)
           {

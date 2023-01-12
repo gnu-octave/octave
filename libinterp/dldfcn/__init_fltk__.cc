@@ -102,7 +102,6 @@ To initialize:
 #include "ov-fcn-handle.h"
 #include "ov.h"
 #include "ovl.h"
-#include "parse.h"
 #include "variables.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -1113,9 +1112,12 @@ private:
   // Window callback.
   static void window_close (Fl_Widget *, void *data)
   {
+    interpreter& interp = __get_interpreter__ ();
+
     octave_value_list args;
     args(0) = static_cast<plot_window *> (data)->number ();
-    octave::feval ("close", args);
+
+    interp.feval ("close", args);
   }
 
   // Button callbacks.
@@ -1171,20 +1173,27 @@ private:
     octave_value_list args;
     if (m_fp.get_currentaxes ().ok ())
       {
+        interpreter& interp = __get_interpreter__ ();
+
         args(0) = m_fp.get_currentaxes ().as_octave_value ();
         args(1) = "auto";
-        octave::feval ("axis", args);
+
+        interp.feval ("axis", args);
+
         mark_modified ();
       }
   }
 
   void toggle_grid (void)
   {
+    interpreter& interp = __get_interpreter__ ();
+
     octave_value_list args;
     if (m_fp.get_currentaxes ().ok ())
       args(0) = m_fp.get_currentaxes ().as_octave_value ();
 
-    octave::feval ("grid", args);
+    interp.feval ("grid", args);
+
     mark_modified ();
   }
 

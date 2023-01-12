@@ -63,7 +63,6 @@
 #include "oct-process.h"
 #include "oct-shlib.h"
 #include "ov-java.h"
-#include "parse.h"
 #include "variables.h"
 
 #if defined (HAVE_JAVA)
@@ -2038,12 +2037,14 @@ Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring fcnName,
   int nargout = env->GetArrayLength (argout);
   int nargin = env->GetArrayLength (argin);
 
-  octave_value_list varargin, varargout;
+  octave_value_list varargin;
 
   for (int i = 0; i < nargin; i++)
     varargin(i) = box (env, env->GetObjectArrayElement (argin, i), nullptr);
 
-  varargout = octave::feval (fname, varargin, nargout);
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave_value_list varargout = interp.feval (fname, varargin, nargout);
 
   jobjectArray_ref out_objs (env, argout), out_clss (env);
   out_objs.detach ();
@@ -2074,10 +2075,12 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           oct_args(i) = box (env, jobj, nullptr);
         }
 
+      octave::interpreter& interp = octave::__get_interpreter__ ();
+
       if (val.is_function_handle ())
         {
           octave_function *fcn = val.function_value ();
-          octave::feval (fcn, oct_args);
+          interp.feval (fcn, oct_args);
         }
       else if (val.iscell () && val.length () > 0
                && (val.rows () == 1 || val.columns () == 1)
@@ -2089,7 +2092,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           for (int i=1; i<c.numel (); i++)
             oct_args(len+i-1) = c(i);
 
-          octave::feval (fcn, oct_args);
+          interp.feval (fcn, oct_args);
         }
       else
         error ("trying to invoke non-invocable object");

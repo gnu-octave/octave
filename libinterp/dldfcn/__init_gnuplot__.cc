@@ -51,7 +51,6 @@ To initialize:
 #include "interpreter.h"
 #include "ov.h"
 #include "ovl.h"
-#include "parse.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -140,7 +139,7 @@ The qt toolkit is recommended instead.\n");
 
         octave_value_list args;
         args(0) = go.get_handle ().as_octave_value ();
-        octave::feval ("__gnuplot_drawnow__", args);
+        m_interpreter.feval ("__gnuplot_drawnow__", args);
       }
   }
 
@@ -154,7 +153,7 @@ The qt toolkit is recommended instead.\n");
     args(2) = file;
     args(1) = term;
     args(0) = go.get_handle ().as_octave_value ();
-    octave::feval ("__gnuplot_drawnow__", args);
+    m_interpreter.feval ("__gnuplot_drawnow__", args);
   }
 
   Matrix get_canvas_size (const graphics_handle&) const
@@ -203,7 +202,7 @@ private:
 };
 
 static bool
-have_gnuplot_binary (void)
+have_gnuplot_binary (interpreter& interp)
 {
   const std::string exeext = octave::build_env::EXEEXT;
   const std::string path = octave::sys::env::getenv ("PATH");
@@ -212,7 +211,7 @@ have_gnuplot_binary (void)
   try
     {
       octave_value_list tmp
-        = octave::feval ("gnuplot_binary", octave_value_list ());
+        = interp.feval ("gnuplot_binary", octave_value_list ());
 
       if (tmp(0).is_string () && ! tmp(0).isempty ())
         {
@@ -237,8 +236,6 @@ have_gnuplot_binary (void)
     }
   catch (const octave::execution_exception&)
     {
-      octave::interpreter& interp = octave::__get_interpreter__ ();
-
       interp.recover_from_exception ();
     }
 
@@ -253,7 +250,7 @@ DEFMETHOD_DLD (__init_gnuplot__, interp, , ,
 Undocumented internal function.
 @end deftypefn */)
 {
-  if (! have_gnuplot_binary ())
+  if (! have_gnuplot_binary (interp))
     error ("__init_gnuplot__: the gnuplot program is not available, see 'gnuplot_binary'");
   else if (! interp.mislocked ("__init_gnuplot__"))
     {
@@ -268,13 +265,13 @@ Undocumented internal function.
   return octave_value_list ();
 }
 
-DEFUN_DLD (__have_gnuplot__, , ,
-           doc: /* -*- texinfo -*-
+DEFMETHOD_DLD (__have_gnuplot__, interp, , ,
+               doc: /* -*- texinfo -*-
 @deftypefn {} {@var{gnuplot_available} =} __have_gnuplot__ ()
 Undocumented internal function.
 @end deftypefn */)
 {
-  return ovl (have_gnuplot_binary ());
+  return ovl (have_gnuplot_binary (interp));
 }
 
 /*

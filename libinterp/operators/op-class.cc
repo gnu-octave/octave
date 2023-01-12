@@ -34,6 +34,7 @@
 
 #include "errwarn.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "load-path.h"
 #include "ovl.h"
 #include "ov.h"
@@ -41,7 +42,6 @@
 #include "ov-typeinfo.h"
 #include "ops.h"
 #include "symtab.h"
-#include "parse.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -55,15 +55,17 @@ oct_unop_default (const octave_value& a, const std::string& opname)
 {
   std::string class_name = a.class_name ();
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value meth = symtab.find_method (opname, class_name);
 
   if (meth.is_defined ())
     {
       // Call overloaded unary class operator.
-      octave_value_list tmp = octave::feval (meth.function_value (),
-                                             ovl (a), 1);
+      octave_value_list tmp
+        = interp.feval (meth.function_value (), ovl (a), 1);
 
       // Return first element if present.
       if (tmp.length () > 0)
@@ -140,7 +142,9 @@ static octave_value
 oct_binop_default (const octave_value& a1, const octave_value& a2,
                    const std::string& opname)
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   // Dispatch to first (leftmost) operand by default.
   std::string dispatch_type = a1.class_name ();
@@ -157,8 +161,8 @@ oct_binop_default (const octave_value& a1, const octave_value& a2,
     error ("%s method not defined for %s class", opname.c_str (),
            dispatch_type.c_str ());
 
-  octave_value_list tmp = octave::feval (meth.function_value (),
-                                         ovl (a1, a2), 1);
+  octave_value_list tmp
+    = interp.feval (meth.function_value (), ovl (a1, a2), 1);
 
   if (tmp.length () > 0)
     return tmp(0);

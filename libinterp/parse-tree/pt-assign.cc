@@ -30,9 +30,9 @@
 #include <string>
 
 #include "error.h"
+#include "interpreter.h"
 #include "oct-lvalue.h"
 #include "ov.h"
-#include "parse.h"
 #include "pt-arg-list.h"
 #include "pt-assign.h"
 
@@ -134,7 +134,10 @@ tree_simple_assignment::evaluate (tree_evaluator& tw, int)
 
               octave_value_list args = ovl (lhs_val);
               args.stash_name_tags (string_vector (m_lhs->name ()));
-              feval ("display", args);
+
+              interpreter& interp = tw.get_interpreter ();
+
+              interp.feval ("display", args);
             }
         }
       catch (index_exception& ie)
@@ -339,7 +342,10 @@ tree_multi_assignment::evaluate_n (tree_evaluator& tw, int)
 
               octave_value_list args = ovl (lhs_val);
               args.stash_name_tags (string_vector (lhs_elt->name ()));
-              feval ("display", args);
+
+              interpreter& interp = tw.get_interpreter ();
+
+              interp.feval ("display", args);
             }
         }
 

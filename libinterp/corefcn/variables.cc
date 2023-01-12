@@ -60,7 +60,6 @@
 #include "ov-class.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "pt-eval.h"
 #include "syminfo.h"
 #include "symtab.h"
@@ -1430,7 +1429,7 @@ maybe_missing_function_hook (const std::string& name)
       Vmissing_function_hook.clear ();
 
       // Call.
-      octave_value_list tmp = octave::feval (fcn_name, octave_value (name), 1);
+      octave_value_list tmp = interp.feval (fcn_name, octave_value (name), 1);
 
       if (tmp.length () == 1 && tmp(0).is_string ())
         return tmp(0).string_value ();

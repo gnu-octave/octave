@@ -70,7 +70,6 @@
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "pt-eval.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
@@ -529,8 +528,8 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
     }
 
   // Synchronize the related gui preference for editor encoding
-  feval ("__event_manager_gui_preference__",
-         ovl ("editor/default_encoding", m_mfile_encoding));
+  m_interpreter.feval ("__event_manager_gui_preference__",
+                       ovl ("editor/default_encoding", m_mfile_encoding));
 
   return retval;
 }

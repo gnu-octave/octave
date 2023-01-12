@@ -134,7 +134,11 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
   check_method ();
 
   if (m_function.is_defined ())
-    retval = feval (m_function, args, nargout);
+    {
+      interpreter& interp = __get_interpreter__ ();
+
+      retval = interp.feval (m_function, args, nargout);
+    }
 
   return retval;
 }
@@ -166,7 +170,9 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
       for (int i = 0; i < args.length (); i++)
         new_args(i+1) = args(i);
 
-      retval = feval (m_function, new_args, nargout);
+      interpreter& interp = __get_interpreter__ ();
+
+      retval = interp.feval (m_function, new_args, nargout);
     }
 
   return retval;

@@ -473,7 +473,7 @@ interpreter::interpreter (application *app_context)
     m_child_list (),
     m_url_handle_manager (),
     m_cdef_manager (*this),
-    m_gtk_manager (),
+    m_gtk_manager (*this),
     m_event_manager (*this),
     m_gh_manager (nullptr),
     m_interactive (false),

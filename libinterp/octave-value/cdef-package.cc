@@ -41,7 +41,6 @@
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
-#include "parse.h"
 #include "pt-assign.h"
 #include "pt-classdef.h"
 #include "pt-idx.h"
@@ -160,7 +159,9 @@ cdef_package::cdef_package_rep::meta_subsref
               {
                 octave_value_list tmp_args;
 
-                retval = feval (o, tmp_args, nargout);
+                interpreter& interp = __get_interpreter__ ();
+
+                retval = interp.feval (o, tmp_args, nargout);
               }
             else
               retval(0) = o;

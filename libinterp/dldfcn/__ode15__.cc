@@ -37,11 +37,12 @@
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
-#include "parse.h"
 
 #if defined (HAVE_SUNDIALS)
 
@@ -811,9 +812,11 @@ IDA::event (const octave_value& event_fcn,
   // cont is the number of steps reached by the solver
   // temp is the number of events registered
 
+  interpreter& interp = __get_interpreter__ ();
+
   if (flag == "init")
     {
-      octave_value_list output = feval (event_fcn, args, 3);
+      octave_value_list output = interp.feval (event_fcn, args, 3);
       oldval = output(0).vector_value ();
       oldisterminal = output(1).vector_value ();
       olddir = output(2).vector_value ();
@@ -821,7 +824,7 @@ IDA::event (const octave_value& event_fcn,
   else if (flag == "")
     {
       ColumnVector index (0);
-      octave_value_list output = feval (event_fcn, args, 3);
+      octave_value_list output = interp.feval (event_fcn, args, 3);
       ColumnVector val = output(0).vector_value ();
       ColumnVector isterminal = output(1).vector_value ();
       ColumnVector dir = output(2).vector_value ();
@@ -994,6 +997,8 @@ IDA::outputfun (const octave_value& output_fcn, bool haveoutputsel,
   else
     output(1) = yout;
 
+  interpreter& interp = __get_interpreter__ ();
+
   if (flag == "init")
     {
       ColumnVector toutput (2);
@@ -1001,19 +1006,19 @@ IDA::outputfun (const octave_value& output_fcn, bool haveoutputsel,
       toutput(1) = tend;
       output(0) = toutput;
 
-      feval (output_fcn, output, 0);
+      interp.feval (output_fcn, output, 0);
     }
   else if (flag == "")
     {
       output(0) = tsol;
-      octave_value_list val = feval (output_fcn, output, 1);
+      octave_value_list val = interp.feval (output_fcn, output, 1);
       status = val(0).bool_value ();
     }
   else
     {
       // Cleanup plotter
       output(0) = tend;
-      feval (output_fcn, output, 0);
+      interp.feval (output_fcn, output, 0);
     }
 
   return status;
@@ -1070,7 +1075,9 @@ ida_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
   try
     {
-      tmp = feval (ida_fc, ovl (t, x, xdot), 1);
+      interpreter& interp = __get_interpreter__ ();
+
+      tmp = interp.feval (ida_fc, ovl (t, x, xdot), 1);
     }
   catch (execution_exception& ee)
     {
@@ -1088,7 +1095,9 @@ ida_dense_jac (const ColumnVector& x, const ColumnVector& xdot,
 
   try
     {
-      tmp = feval (ida_jc, ovl (t, x, xdot), 2);
+      interpreter& interp = __get_interpreter__ ();
+
+      tmp = interp.feval (ida_jc, ovl (t, x, xdot), 2);
     }
   catch (execution_exception& ee)
     {
@@ -1106,7 +1115,9 @@ ida_sparse_jac (const ColumnVector& x, const ColumnVector& xdot,
 
   try
     {
-      tmp = feval (ida_jc, ovl (t, x, xdot), 2);
+      interpreter& interp = __get_interpreter__ ();
+
+      tmp = interp.feval (ida_jc, ovl (t, x, xdot), 2);
     }
   catch (execution_exception& ee)
     {

@@ -62,7 +62,6 @@
 #include "oct-map.h"
 #include "ov-fcn-handle.h"
 #include "pager.h"
-#include "parse.h"
 #include "text-engine.h"
 #include "text-renderer.h"
 #include "unwind-prot.h"
@@ -13469,14 +13468,15 @@ set_property_in_handle (double handle, const std::string& property,
 }
 
 static bool
-compare_property_values (const octave_value& ov1, const octave_value& ov2)
+compare_property_values (octave::interpreter& interp,
+                         const octave_value& ov1, const octave_value& ov2)
 {
   octave_value_list args(2);
 
   args(0) = ov1;
   args(1) = ov2;
 
-  octave_value_list result = octave::feval ("isequal", args, 1);
+  octave_value_list result = interp.feval ("isequal", args, 1);
 
   if (result.length () > 0)
     return result(0).bool_value ();
@@ -13534,7 +13534,7 @@ static void
 cleanup_waitfor_predelete_listener (const octave_value& listener)
 { do_cleanup_waitfor_listener (listener, GCB_PREDELETE); }
 
-DECLARE_STATIC_FUNX (waitfor_listener, args, )
+DECLARE_STATIC_METHODX (waitfor_listener, interp, args, )
 {
   if (args.length () > 3)
     {
@@ -13557,7 +13557,7 @@ DECLARE_STATIC_FUNX (waitfor_listener, args, )
               graphics_object go = gh_mgr.get_object (gh);
               octave_value pvalue = go.get (pname);
 
-              if (compare_property_values (pvalue, args(5)))
+              if (compare_property_values (interp, pvalue, args(5)))
                 waitfor_results[id] = true;
             }
         }
@@ -13711,7 +13711,7 @@ In all cases, typing CTRL-C stops program execution immediately.
               graphics_object go = gh_mgr.get_object (gh);
 
               if (max_arg_index >= 2
-                  && compare_property_values (go.get (pname), args(2)))
+                  && compare_property_values (interp, go.get (pname), args(2)))
                 waitfor_results[id] = true;
               else
                 {

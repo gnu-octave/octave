@@ -49,6 +49,7 @@
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "ov-class.h"
 #include "ov-complex.h"
@@ -60,7 +61,6 @@
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
-#include "parse.h"
 #include "pt-mat.h"
 #include "utils.h"
 #include "variables.h"
@@ -1680,7 +1680,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  symbol_table& symtab = __get_symbol_table__ ();
+  interpreter& interp = __get_interpreter__ ();
+
+  symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value fcn = symtab.find_method (dtype, cname);
 
@@ -1690,7 +1692,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = feval (fcn, ovl (ov), 1);
+          result = interp.feval (fcn, ovl (ov), 1);
         }
       catch (execution_exception& ee)
         {
@@ -1718,7 +1720,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = feval (fcn, ovl (ov), 1);
+          result = interp.feval (fcn, ovl (ov), 1);
         }
       catch (execution_exception& ee)
         {
@@ -1746,7 +1748,9 @@ do_class_concat (const octave_value_list& ovl,
 
   std::string dtype = get_dispatch_type (ovl);
 
-  symbol_table& symtab = __get_symbol_table__ ();
+  interpreter& interp = __get_interpreter__ ();
+
+  symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value fcn = symtab.find_method (cattype, dtype);
 
@@ -1758,7 +1762,7 @@ do_class_concat (const octave_value_list& ovl,
 
       try
         {
-          tmp2 = feval (fcn, ovl, 1);
+          tmp2 = interp.feval (fcn, ovl, 1);
         }
       catch (execution_exception& ee)
         {

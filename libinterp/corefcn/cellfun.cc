@@ -41,7 +41,6 @@
 #include "defun.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "parse.h"
 #include "variables.h"
 #include "unwind-prot.h"
 #include "errwarn.h"
@@ -78,7 +77,7 @@ get_output_list (interpreter& interp, octave_idx_type count,
 
   try
     {
-      tmp = feval (fcn, inputlist, nargout);
+      tmp = interp.feval (fcn, inputlist, nargout);
     }
   catch (const execution_exception& ee)
     {
@@ -111,7 +110,7 @@ get_output_list (interpreter& interp, octave_idx_type count,
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
 
-          tmp = feval (error_handler, errlist, nargout);
+          tmp = interp.feval (error_handler, errlist, nargout);
         }
       else
         tmp.clear ();
@@ -1274,8 +1273,6 @@ arrayfun (@@str2num, [1234],
               break;
             }
         }
-
-      error_system& es = interp.get_error_system ();
 
       // Apply functions.
 

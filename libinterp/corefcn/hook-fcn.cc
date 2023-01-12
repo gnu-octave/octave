@@ -28,7 +28,8 @@
 #endif
 
 #include "hook-fcn.h"
-#include "parse.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -55,7 +56,9 @@ void named_hook_function::eval (const octave_value_list& initial_args)
   if (m_data.is_defined ())
     args.append (m_data);
 
-  feval (m_name, args, 0);
+  interpreter& interp = __get_interpreter__ ();
+
+  interp.feval (m_name, args, 0);
 }
 
 void fcn_handle_hook_function::eval (const octave_value_list& initial_args)
@@ -65,7 +68,9 @@ void fcn_handle_hook_function::eval (const octave_value_list& initial_args)
   if (m_data.is_defined ())
     args.append (m_data);
 
-  feval (m_fcn_handle, args, 0);
+  interpreter& interp = __get_interpreter__ ();
+
+  interp.feval (m_fcn_handle, args, 0);
 }
 
 OCTAVE_END_NAMESPACE(octave)

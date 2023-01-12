@@ -38,7 +38,6 @@
 #include "oct-map.h"
 #include "ov-colon.h"
 #include "ov-fcn-handle.h"
-#include "parse.h"
 #include "unwind-prot.h"
 #include "variables.h"
 
@@ -414,14 +413,14 @@ as the other array.
           octave_value_list inputs (2);
           inputs(0) = A;
           inputs(1) = B;
-          retval = feval (fcn, inputs, 1);
+          retval = interp.feval (fcn, inputs, 1);
         }
       else if (dvc.numel () < 1)
         {
           octave_value_list inputs (2);
           inputs(0) = A.resize (dvc);
           inputs(1) = B.resize (dvc);
-          retval = feval (fcn, inputs, 1);
+          retval = interp.feval (fcn, inputs, 1);
         }
       else
         {
@@ -463,7 +462,7 @@ as the other array.
               if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                 inputs(1) = Bc;
 
-              octave_value_list tmp = feval (fcn, inputs, 1);
+              octave_value_list tmp = interp.feval (fcn, inputs, 1);
 
 #define BSXINIT(T, CLS, EXTRACTOR)                                      \
               (result_type == CLS)                                      \

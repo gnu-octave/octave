@@ -33,7 +33,6 @@
 #include "ov-oncleanup.h"
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
-#include "parse.h"
 #include "pt-misc.h"
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_oncleanup, "onCleanup",
@@ -171,7 +170,7 @@ octave_oncleanup::call_object_destructor (void)
   try
     {
       // Run the actual code.
-      octave::feval (the_fcn);
+      interp.feval (the_fcn);
     }
   catch (const octave::interrupt_exception&)
     {

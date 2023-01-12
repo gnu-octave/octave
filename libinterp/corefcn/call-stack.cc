@@ -40,7 +40,6 @@
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "stack-frame.h"
 #include "syminfo.h"
 #include "symrec.h"
@@ -982,7 +981,9 @@ octave_value call_stack::do_who (int argc, const string_vector& argv,
 
       unwind_action restore_scope ([=] (void) { pop (); });
 
-      feval ("load", octave_value (file_name), 0);
+      interpreter& interp = m_evaluator.get_interpreter ();
+
+      interp.feval ("load", octave_value (file_name), 0);
 
       std::string newmsg = "Variables in the file " + file_name + ":\n\n";
 

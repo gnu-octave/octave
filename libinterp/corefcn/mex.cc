@@ -65,7 +65,6 @@
 #include "ov-mex-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -4913,7 +4912,7 @@ mexCallMATLAB (int nargout, mxArray *argout[], int nargin,
 
       tw.set_lvalue_list (nullptr);
 
-      retval = octave::feval (fname, args, nargout);
+      retval = interp.feval (fname, args, nargout);
     }
   catch (const octave::execution_exception&)
     {

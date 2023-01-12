@@ -4420,7 +4420,7 @@ Example:
 
                 octave_value_list args = ovl (varval (ans));
                 args.stash_name_tags (string_vector (ans));
-                feval ("display", args);
+                m_interpreter.feval ("display", args);
               }
           }
       }

@@ -68,11 +68,9 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static octave_value_list
-get_output_list (error_system& es,
-                 octave_idx_type count, octave_idx_type nargout,
-                 const octave_value_list& inputlist,
-                 octave_value& fcn,
-                 octave_value& error_handler)
+get_output_list (interpreter& interp, octave_idx_type count,
+                 octave_idx_type nargout, const octave_value_list& inputlist,
+                 octave_value& fcn, octave_value& error_handler)
 {
   octave_value_list tmp;
 
@@ -86,7 +84,7 @@ get_output_list (error_system& es,
     {
       if (error_handler.is_defined ())
         {
-          interpreter& interp = __get_interpreter__ ();
+          error_system& es = interp.get_error_system ();
 
           es.save_exception (ee);
           interp.recover_from_exception ();
@@ -101,6 +99,8 @@ get_output_list (error_system& es,
     {
       if (error_handler.is_defined ())
         {
+          error_system& es = interp.get_error_system ();
+
           octave_scalar_map msg;
           msg.assign ("identifier", es.last_error_id ());
           msg.assign ("message", es.last_error_message ());
@@ -537,8 +537,6 @@ nevermind:
         }
     }
 
-  error_system& es = interp.get_error_system ();
-
   // Apply functions.
 
   if (uniform_output)
@@ -559,7 +557,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, fcn,
+            = get_output_list (interp, count, nargout, inputlist, fcn,
                                error_handler);
 
           int tmp_numel = tmp.length ();
@@ -645,7 +643,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, fcn,
+            = get_output_list (interp, count, nargout, inputlist, fcn,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -1300,7 +1298,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, fcn,
+                = get_output_list (interp, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1392,7 +1390,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, fcn,
+                = get_output_list (interp, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)

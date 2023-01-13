@@ -6406,16 +6406,6 @@ builtin ("sin", 0)
   return retval;
 }
 
-  void
-  cleanup_statement_list (tree_statement_list **lst)
-  {
-    if (*lst)
-      {
-        delete *lst;
-        *lst = nullptr;
-      }
-  }
-
 DEFMETHOD (eval, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} eval (@var{try})

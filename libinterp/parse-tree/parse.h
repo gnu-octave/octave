@@ -950,9 +950,6 @@ feval (const octave_value& val,
 extern OCTINTERP_API octave_value_list
 feval (const octave_value_list& args, int nargout = 0);
 
-extern OCTINTERP_API void
-cleanup_statement_list (tree_statement_list **lst);
-
 OCTAVE_END_NAMESPACE(octave)
 
 #endif

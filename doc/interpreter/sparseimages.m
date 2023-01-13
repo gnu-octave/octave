@@ -71,7 +71,8 @@ function sparseimages (d, nm, typ)
     r1 = chol (a);
     spy (r1);
     axis ("ij");
-    print (outfile, d_typ);
+    ## Note: Disable -svgconvert option for quicker rendering (bug #63646)
+    print (outfile, d_typ, "-nosvgconvert");
   elseif (strcmp (nm, "spcholperm"))
     n = 200;
     a = 10*speye (n) + sparse (1:n,ceil ([1:n]/2),1,n,n) + ...

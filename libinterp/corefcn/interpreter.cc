@@ -339,38 +339,6 @@ void temporary_file_list::cleanup (void)
 // The time we last time we changed directories.
 sys::time Vlast_chdir_time = 0.0;
 
-// Execute commands from a file and catch potential exceptions in a consistent
-// way.  This function should be called anywhere we might parse and execute
-// commands from a file before we have entered the main loop in
-// toplev.cc.
-
-static int safe_source_file (const std::string& file_name,
-                             const std::string& context = "",
-                             bool verbose = false,
-                             bool require_file = true)
-{
-  interpreter& interp = __get_interpreter__ ();
-
-  try
-    {
-      source_file (file_name, context, verbose, require_file);
-    }
-  catch (const interrupt_exception&)
-    {
-      interp.recover_from_exception ();
-
-      return 1;
-    }
-  catch (const execution_exception& ee)
-    {
-      interp.handle_exception (ee);
-
-      return 1;
-    }
-
-  return 0;
-}
-
 static void initialize_version_info (void)
 {
   octave_value_list args;
@@ -2139,6 +2107,35 @@ void interpreter::execute_pkg_add (const std::string& dir)
     {
       handle_exception (ee);
     }
+}
+
+// Execute commands from a file and catch potential exceptions in a consistent
+// way.  This function should be called anywhere we might parse and execute
+// commands from a file before we have entered the main loop in
+// toplev.cc.
+
+int interpreter::safe_source_file (const std::string& file_name,
+                                   const std::string& context,
+                                   bool verbose, bool require_file)
+{
+  try
+    {
+      source_file (file_name, context, verbose, require_file);
+    }
+  catch (const interrupt_exception&)
+    {
+      recover_from_exception ();
+
+      return 1;
+    }
+  catch (const execution_exception& ee)
+    {
+      handle_exception (ee);
+
+      return 1;
+    }
+
+  return 0;
 }
 
 OCTAVE_END_NAMESPACE(octave)

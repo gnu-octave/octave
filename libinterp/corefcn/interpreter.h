@@ -576,6 +576,10 @@ private:
 
   void execute_pkg_add (const std::string& dir);
 
+  int safe_source_file (const std::string& file_name,
+                        const std::string& context = "",
+                        bool verbose = false, bool require_file = true);
+
   //--------
 
   // The interpreter instance;  Currently it is only possible to

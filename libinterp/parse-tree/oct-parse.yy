@@ -3006,7 +3006,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (base->is_constant () && limit->is_constant ()
         && (! incr || incr->is_constant ()))
       {
-        interpreter& interp = __get_interpreter__ ();
+        interpreter& interp = m_lexer.m_interpreter;
 
         try
           {
@@ -4880,7 +4880,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (local_fcns)
       {
-        symbol_table& symtab = __get_symbol_table__ ();
+        interpreter& interp = m_lexer.m_interpreter;
+
+        symbol_table& symtab = interp.get_symbol_table ();
 
         for (tree_statement *elt : *local_fcns)
           {
@@ -5170,7 +5172,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (e->is_constant ())
       {
-        tree_evaluator& tw = __get_evaluator__ ();
+        interpreter& interp = m_lexer.m_interpreter;
+
+        tree_evaluator& tw = interp.get_evaluator ();
 
         octave_value ov = e->evaluate (tw);
 
@@ -5233,7 +5237,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (array_list->all_elements_are_constant ())
       {
-        interpreter& interp = __get_interpreter__ ();
+        interpreter& interp = m_lexer.m_interpreter;
 
         try
           {

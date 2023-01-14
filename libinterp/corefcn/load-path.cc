@@ -147,45 +147,6 @@ strip_trailing_separators (const std::string& dir_arg)
   return dir;
 }
 
-// Should we cache all files in private directories, or is it OK to just
-// look them up each time as needed?
-
-static std::string
-find_private_file (const std::string& fname)
-{
-  std::string retval;
-
-  // Look in private directory corresponding to current function (if
-  // any).
-
-  symbol_scope scope = __get_current_scope__ ();
-
-  octave_user_code *curr_code = scope ? scope.user_code () : nullptr;
-
-  if (curr_code)
-    {
-      // Even for private functions, dir_name doesn't contain the
-      // "private" directory component so we append it here in all
-      // cases.
-
-      std::string dir_name = curr_code->dir_name ();
-
-      if (! dir_name.empty ())
-        {
-          std::string pfname = dir_name + sys::file_ops::dir_sep_str ()
-                               + "private" + sys::file_ops::dir_sep_str ()
-                               + fname;
-
-          sys::file_stat fs (pfname);
-
-          if (fs.exists () && fs.is_reg ())
-            retval = pfname;
-        }
-    }
-
-  return retval;
-}
-
 // True if a path is contained in a path list separated by path_sep_char
 
 static bool
@@ -1329,6 +1290,45 @@ load_path::get_file_list (const load_path::dir_info::fcn_file_map_type& lst) con
         nm += ".m";
 
       retval[count++] = nm;
+    }
+
+  return retval;
+}
+
+// Should we cache all files in private directories, or is it OK to just
+// look them up each time as needed?
+
+std::string
+load_path::find_private_file (const std::string& fname) const
+{
+  std::string retval;
+
+  // Look in private directory corresponding to current function (if
+  // any).
+
+  symbol_scope scope = m_interpreter.get_current_scope ();
+
+  octave_user_code *curr_code = scope ? scope.user_code () : nullptr;
+
+  if (curr_code)
+    {
+      // Even for private functions, dir_name doesn't contain the
+      // "private" directory component so we append it here in all
+      // cases.
+
+      std::string dir_name = curr_code->dir_name ();
+
+      if (! dir_name.empty ())
+        {
+          std::string pfname = dir_name + sys::file_ops::dir_sep_str ()
+                               + "private" + sys::file_ops::dir_sep_str ()
+                               + fname;
+
+          sys::file_stat fs (pfname);
+
+          if (fs.exists () && fs.is_reg ())
+            retval = pfname;
+        }
     }
 
   return retval;

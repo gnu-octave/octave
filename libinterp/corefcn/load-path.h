@@ -558,6 +558,8 @@ private:
 
   string_vector get_file_list (const dir_info::fcn_file_map_type& lst) const;
 
+  std::string find_private_file (const std::string& fname) const;
+
   friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
 
   //--------

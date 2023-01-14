@@ -168,24 +168,6 @@ in_path_list (const std::string& path_list, const std::string& path)
   return false;
 }
 
-static void
-rehash_internal (void)
-{
-  load_path& lp = __get_load_path__ ();
-
-  lp.update ();
-
-  // Signal the GUI allowing updating the load path dialog
-  event_manager& evmgr = __get_event_manager__ ();
-  evmgr.update_path_dialog ();
-
-  // FIXME: maybe we should rename this variable since it is being
-  // used for more than keeping track of the prompt time.
-
-  // This will force updated functions to be found.
-  Vlast_prompt_time.stamp ();
-}
-
 //! Check if directory contains modified subdirectories.
 //!
 //! @param d directory to check
@@ -980,6 +962,23 @@ void
 load_path::execute_pkg_del (const std::string& dir)
 {
   execute_pkg_add_or_del (dir, "PKG_DEL");
+}
+
+void load_path::rehash (void)
+{
+  update ();
+
+  // Signal the GUI allowing updating the load path dialog
+
+  event_manager& evmgr = m_interpreter.get_event_manager ();
+
+  evmgr.update_path_dialog ();
+
+  // FIXME: maybe we should rename this variable since it is being
+  // used for more than keeping track of the prompt time.
+
+  // This will force updated functions to be found.
+  Vlast_prompt_time.stamp ();
 }
 
 void load_path::execute_pkg_add_or_del (const std::string& dir,
@@ -2500,13 +2499,15 @@ directories with those names.
   return retval;
 }
 
-DEFUN (rehash, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (rehash, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} rehash ()
 Reinitialize Octave's load path directory cache.
 @end deftypefn */)
 {
-  rehash_internal ();
+  load_path& lp = interp.get_load_path ();
+
+  lp.rehash ();
 
   return ovl ();
 }
@@ -2599,7 +2600,7 @@ No checks are made for duplicate elements.
 
       lp.set (path, true);
 
-      rehash_internal ();
+      lp.rehash ();
     }
 
   if (nargout > 0)
@@ -2754,7 +2755,7 @@ For each directory that is added, and that was not already in the path,
     }
 
   if (need_to_update)
-    rehash_internal ();
+    lp.rehash ();
 
   return retval;
 }
@@ -2814,7 +2815,7 @@ and runs it if it exists.
     }
 
   if (need_to_update)
-    rehash_internal ();
+    lp.rehash ();
 
   return retval;
 }

@@ -211,6 +211,8 @@ public:
 
   std::string system_path (void) const { return s_sys_path; }
 
+  void rehash (void);
+
   static const int M_FILE = 1;
   static const int OCT_FILE = 2;
   static const int MEX_FILE = 4;

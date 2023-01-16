@@ -271,6 +271,8 @@ jobs:
         # https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/octave.rb
         # Amended with additional flags that seem to be needed.
         # Not all of those might be needed or be correct.
+        # SUNDIALS >= 6.5.0 doesn't compile with the default flags determined
+        # by the configure script. Set CXX manually to enable building with it.
         run: |
           echo $PATH
           echo which ccache
@@ -286,6 +288,7 @@ jobs:
           gfortran --version
           mkdir .build
           cd .build && ../configure \
+            CXX="$CXX -std=gnu++14" \
             F77="ccache gfortran" \
             CPPFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/icu4c/include -I/usr/local/opt/qt@5/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include $MY_CPPFLAGS" \
             CXXFLAGS="-O2 -g" \

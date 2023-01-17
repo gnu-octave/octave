@@ -389,16 +389,6 @@ if test "$GXX" = yes; then
 fi
 AC_SUBST(GXX_VERSION)
 
-## Workaround for broken STL algorithm library.
-OCTAVE_CHECK_BROKEN_STL_ALGO_H
-AM_CONDITIONAL([AMCOND_HAVE_BROKEN_STL_ALGO_H],
-  [test $octave_cv_broken_stl_algo_h = yes])
-
-if test $octave_cv_broken_stl_algo_h = yes; then
-  warn_stl_algo_h="Found nth_element broken in g++ $GXX_VERSION.  Attempting to repair by using local patched version of bits/stl_algo.h."
-  OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
-fi
-
 ### Check version number when using gcc.
 dnl It might be different from the g++ version number.
 

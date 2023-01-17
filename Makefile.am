@@ -302,12 +302,6 @@ BUILT_SOURCES += \
   run-octave \
   $(DIRSTAMP_FILES)
 
-if AMCOND_HAVE_BROKEN_STL_ALGO_H
-  BUILT_SOURCES += bits/stl_algo.h
-else
-  BUILT_SOURCES += nonexistent-file
-endif
-
 noinst_SCRIPTS = run-octave
 
 CLEANFILES += \
@@ -359,10 +353,6 @@ octave-config.h: config.h build-aux/mk-octave-config-h.sh
 	$(AM_V_GEN)$(SHELL) $(srcdir)/build-aux/mk-octave-config-h.sh $< > $@-t && \
 	$(simple_move_if_change_rule)
 
-bits/stl_algo.h: build-aux/stl_algo.h-fixed
-	$(AM_V_GEN)$(MKDIR_P) bits && \
-	$(INSTALL_HEADER) $< $@
-
 config-vars: $(GEN_CONFIG_SHELL)
 	$(AM_V_GEN)rm -f $@-t $@ && \
 	$(SED) -n 's/  *"$$/"/; s/^\([A-Za-z_][A-Za-z0-9_]*\)=" *\(.*\)" *$$/\1 \2/p' $^ | sort -u > $@-t && \
@@ -379,13 +369,6 @@ make-vars:
 check-subst-vars: build-aux/check-subst-vars.sh make-vars config-vars
 	@$(SHELL) -f build-aux/check-subst-vars.sh make-vars config-vars
 .PHONY: check-subst-vars
-
-## If we aren't trying to fix stl_algo.h, then try to ensure that
-## there isn't a stray copy sitting in the build tree.
-
-nonexistent-file:
-	$(AM_V_at)rm -f bits/stl_algo.h
-.PHONY: nonexistent-file
 
 .gdbinit: etc/gdbinit
 	$(AM_V_GEN)$(gdbinit-install-rule)

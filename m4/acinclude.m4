@@ -1888,12 +1888,18 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
       have_qt_version=$ver
       break
     elif test -n "$QT_MODULES_AVAILABLE"; then
-      ## If some modules were found for $ver, then warn about possible
-      ## incomplete or broken Qt installation instead of checking for
-      ## next version in the list.  Don't attempt a similar check for
-      ## tools here because Qt4 and Qt5 tools may be installed with
-      ## the same name so determining whether there is a mix of versions
-      ## will require more work than just looking which tools are installed.
+      ## We currently only support Qt5, but previously, when it was
+      ## possible to build Octave with either qt4 or Qt5 and we detected
+      ## only some modules available for a particular version $ver, then
+      ## we warned about a possible incomplete or broken Qt installation
+      ## instead of checking for next version in the list.  We did not
+      ## attempt a similar check for tools here because version-specific
+      ## Qt tools may be installed with the same name so determining
+      ## whether there is a mix of versions requires more work than just
+      ## looking which tools are installed.
+      ##
+      ## NOTE: Leave this logic in place because it may be needed again
+      ## if/when we begin supporting both Qt5 and Qt6
       warn_qt_modules="Your installation of Qt version $ver appears incomplete or broken in some way.  Fix that or use --with-qt=VER to use another version."
       break
     fi

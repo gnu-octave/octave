@@ -491,6 +491,8 @@ dnl
 dnl Check whether the Qt class QList has a constructor that accepts
 dnl a pair of iterators.  This constructor was introduced in Qt 5.14.
 dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.13 or older.
+dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QFONTMETRICS_HORIZONTAL_ADVANCE], [
   AC_CACHE_CHECK([for QFontMetrics::horizontalAdvance function],
     [octave_cv_func_qfontmetrics_horizontal_advance],
@@ -523,6 +525,8 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QFONTMETRICS_HORIZONTAL_ADVANCE], [
 dnl
 dnl Check whether the Qt class QHelpEngine has the documentsForIdentifier
 dnl function.  dnl This member function was introduced in Qt 5.15.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.14 or older.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER], [
   AC_CACHE_CHECK([for QHelpEngine::documentsForIdentifier in <QHelpEngine>],
@@ -591,6 +595,8 @@ dnl
 dnl Check whether the Qt class QList has a constructor that accepts
 dnl a pair of iterators.  This constructor was introduced in Qt 5.14.
 dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.13 or older.
+dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR], [
   AC_CACHE_CHECK([for QList<T>::QList (iterator, iterator) constructor],
     [octave_cv_func_qlist_iterator_constructor],
@@ -620,6 +626,8 @@ dnl
 dnl Check whether the Qt class QWheelEvent has the position member function.
 dnl This member function was introduced in Qt 5.14.
 dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.13 or older.
+dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION], [
   AC_CACHE_CHECK([for QWheelEvent::position in <QWheelEvent>],
     [octave_cv_func_qwheelevent_position],
@@ -648,7 +656,10 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION], [
 ])
 dnl
 dnl Check whether the Qt method QPainter::setRenderHint accepts the
-dnl QPainter::LosslessImageRendering flag.  This flag was introduced in Qt 5.13.
+dnl QPainter::LosslessImageRendering flag.  This flag was introduced in
+dnl Qt 5.13.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.12 or older.
 dnl
 AC_DEFUN([OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS], [
   AC_CACHE_CHECK([for QPainter::LosslessImageRendering flag],
@@ -1542,6 +1553,8 @@ dnl
 dnl Check whether the Qt class QRegion has the iterators and related
 dnl functions introduced in Qt 5.8.
 dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.7 or older.
+dnl
 AC_DEFUN([OCTAVE_CHECK_QREGION_ITERATORS], [
   AC_CACHE_CHECK([for QRegion iterators and related functions],
     [octave_cv_qregion_iterators],
@@ -1909,6 +1922,8 @@ dnl
 dnl Check whether the Qt::SplitBehavior enum exists and has
 dnl Qt::KeepEmptyParts and Qt::SkipEmptyParts members.  This enum
 dnl was introduced or modified in Qt 5.14.
+dnl
+dnl FIXME: Delete this entirely when we drop support for Qt 5.13 or older.
 dnl
 AC_DEFUN([OCTAVE_CHECK_QT_SPLITBEHAVIOR_ENUM], [
   AC_CACHE_CHECK([for Qt::SplitBehavior enum],

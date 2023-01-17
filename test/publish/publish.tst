@@ -29,8 +29,7 @@
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   if (! __have_feature__ ("QT_OFFSCREEN")
-%!       || ! strcmp (graphics_toolkit (), "qt"))
+%!   if (! strcmp (graphics_toolkit (), "qt"))
 %!     try
 %!       graphics_toolkit ("gnuplot");
 %!     catch
@@ -61,8 +60,7 @@
 %! visibility = get (0, "defaultfigurevisible");
 %! toolkit = graphics_toolkit ();
 %! unwind_protect
-%!   if (! __have_feature__ ("QT_OFFSCREEN")
-%!       || ! strcmp (graphics_toolkit (), "qt"))
+%!   if (! strcmp (graphics_toolkit (), "qt"))
 %!     try
 %!       graphics_toolkit ("gnuplot");
 %!     catch

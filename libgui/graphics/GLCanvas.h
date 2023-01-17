@@ -31,10 +31,8 @@
 #  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
 #  include <QOpenGLFramebufferObject>
 #  define OCTAVE_QT_OPENGL_FBO QOpenGLFramebufferObject
-#  if defined (HAVE_QT_OFFSCREEN)
-#    include <QOpenGLContext>
-#    include <QOffscreenSurface>
-#  endif
+#  include <QOpenGLContext>
+#  include <QOffscreenSurface>
 #elif defined (HAVE_QGLWIDGET)
 #  include <QGLWidget>
 #  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
@@ -89,10 +87,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     octave::qopengl_functions m_glfcns;
     octave::opengl_renderer m_renderer;
 
-#  if defined (HAVE_QT_OFFSCREEN)
     QOpenGLContext m_os_context;
     QOffscreenSurface m_os_surface;
-#  endif
   };
 
 OCTAVE_END_NAMESPACE(octave)

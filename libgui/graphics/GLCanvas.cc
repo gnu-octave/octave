@@ -290,7 +290,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (! isValid ())
       {
-#  if defined (HAVE_QT_OFFSCREEN)
         static bool os_ctx_ok = true;
         if (os_ctx_ok && ! m_os_context.isValid ())
           {
@@ -304,9 +303,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           }
 
         retval = m_os_context.makeCurrent (&m_os_surface);
-#  else
-        retval = false;
-#  endif
       }
     else
       makeCurrent ();

@@ -2662,7 +2662,7 @@ AC_ARG_ENABLE([docs],
    fi], [])
 
 if test $ENABLE_DOCS = yes; then
-  if test $opengl_graphics = no || test "$have_qt_opengl_offscreen" = no; then
+  if test $opengl_graphics = no; then
     if test -n "$warn_gnuplot"; then
       ENABLE_DOCS=no
       warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail."

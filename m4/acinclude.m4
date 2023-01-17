@@ -742,38 +742,6 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO], [
   fi
 ])
 dnl
-dnl Check whether the Qt class QWheelEvent has the angleDelta member function.
-dnl This member function was introduced in Qt 5.
-dnl
-dnl FIXME: Delete this entirely when we drop support for Qt 4.
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA], [
-  AC_CACHE_CHECK([for QWheelEvent::angleDelta in <QWheelEvent>],
-    [octave_cv_func_qwheelevent_angledelta],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QWheelEvent>
-        void foo (const QWheelEvent& ev)
-        {
-          ev.angleDelta ();
-        };
-        ]])],
-      octave_cv_func_qwheelevent_angledelta=yes,
-      octave_cv_func_qwheelevent_angledelta=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_func_qwheelevent_angledelta = yes; then
-    AC_DEFINE(HAVE_QWHEELEVENT_ANGLEDELTA, 1,
-      [Define to 1 if you have the `QWheelEvent::angleDelta' member function.])
-  fi
-])
-dnl
 dnl Check whether the Qt class QWheelEvent has the position member function.
 dnl This member function was introduced in Qt 5.14.
 dnl
@@ -2316,7 +2284,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QPRINTER_SETPAGESIZE
     OCTAVE_CHECK_FUNC_QSCREEN_DEVICEPIXELRATIO
     OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
-    OCTAVE_CHECK_FUNC_QWHEELEVENT_ANGLEDELTA
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
     OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS
 

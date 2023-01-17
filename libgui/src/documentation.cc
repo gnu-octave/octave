@@ -1098,11 +1098,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     if (we->modifiers () == Qt::ControlModifier)
       {
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
         if (we->angleDelta().y () > 0)
-#else
-        if (we->delta() > 0)
-#endif
           zoom_in ();
         else
           zoom_out ();

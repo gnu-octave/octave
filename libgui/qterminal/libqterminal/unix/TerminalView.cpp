@@ -2043,13 +2043,8 @@ void TerminalView::mouseDoubleClickEvent(QMouseEvent* ev)
 
 void TerminalView::wheelEvent( QWheelEvent* ev )
 {
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
   if (ev->angleDelta().y() == 0)
     return;
-#else
-  if (ev->orientation() != Qt::Vertical)
-    return;
-#endif
 
   if ( _mouseMarks )
     _scrollBar->event(ev);
@@ -2064,11 +2059,8 @@ void TerminalView::wheelEvent( QWheelEvent* ev )
 #endif
       getCharacterPosition( pos , charLine , charColumn );
 
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
       int delta = ev->angleDelta().y();
-#else
-      int delta = ev->delta();
-#endif
+
       emit mouseSignal( delta > 0 ? 4 : 5,
                         charColumn + 1,
                         charLine + 1 +_scrollBar->value() -_scrollBar->maximum() ,

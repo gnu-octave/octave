@@ -65,7 +65,6 @@
 
 #include "gui-preferences-all.h"
 #include "gui-settings.h"
-#include "octave-qtutils.h"
 #include "settings-dialog.h"
 #include "shortcuts-tree-widget.h"
 #include "variable-editor.h"

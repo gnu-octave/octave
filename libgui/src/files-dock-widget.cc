@@ -50,7 +50,6 @@
 #include "gui-preferences-fb.h"
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
-#include "octave-qtutils.h"
 #include "qt-interpreter-events.h"
 
 #include "oct-env.h"

@@ -33,8 +33,6 @@
 #include "PopupMenuControl.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qtutils.h"
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
   PopupMenuControl *

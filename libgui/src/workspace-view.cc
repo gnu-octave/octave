@@ -43,7 +43,6 @@
 
 #include "gui-preferences-ws.h"
 #include "gui-settings.h"
-#include "octave-qtutils.h"
 #include "workspace-view.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)

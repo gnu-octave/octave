@@ -73,7 +73,6 @@
 #include "main-window.h"
 #include "news-reader.h"
 #include "octave-qobject.h"
-#include "octave-qtutils.h"
 #include "settings-dialog.h"
 #include "welcome-wizard.h"
 

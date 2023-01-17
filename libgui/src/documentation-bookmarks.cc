@@ -44,7 +44,6 @@
 #include "gui-preferences-dc.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
-#include "octave-qtutils.h"
 
 #include "defaults.h"
 #include "file-ops.h"

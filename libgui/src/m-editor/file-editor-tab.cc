@@ -74,7 +74,6 @@
 #include "gui-settings.h"
 #include "gui-utils.h"
 #include "marker.h"
-#include "octave-qtutils.h"
 #include "octave-txt-lexer.h"
 
 #include "cmd-edit.h"

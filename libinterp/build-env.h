@@ -144,7 +144,6 @@ extern OCTINTERP_API const char *QRUPDATE_LIBS;
 extern OCTINTERP_API const char *QT_CPPFLAGS;
 extern OCTINTERP_API const char *QT_LDFLAGS;
 extern OCTINTERP_API const char *QT_LIBS;
-extern OCTINTERP_API const char *QT_OPENGL_LIBS;
 extern OCTINTERP_API const char *RANLIB;
 extern OCTINTERP_API const char *RDYNAMIC_FLAG;
 extern OCTINTERP_API const char *READLINE_LIBS;

@@ -26,21 +26,10 @@
 #if ! defined (octave_GLCanvas_h)
 #define octave_GLCanvas_h 1
 
-#if defined (HAVE_QOPENGLWIDGET)
-#  include <QOpenGLWidget>
-#  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
-#  include <QOpenGLFramebufferObject>
-#  define OCTAVE_QT_OPENGL_FBO QOpenGLFramebufferObject
-#  include <QOpenGLContext>
-#  include <QOffscreenSurface>
-#elif defined (HAVE_QGLWIDGET)
-#  include <QGLWidget>
-#  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
-#  include <QGLFramebufferObject>
-#  define OCTAVE_QT_OPENGL_FBO QGLFramebufferObject
-#else
-#  error "configuration error: must have <QOpenGLWidget> or <QGLWidget>."
-#endif
+#include <QOpenGLWidget>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLContext>
+#include <QOffscreenSurface>
 
 #include "Canvas.h"
 
@@ -49,7 +38,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class GLCanvas : public OCTAVE_QT_OPENGL_WIDGET, public Canvas
+  class GLCanvas : public QOpenGLWidget, public Canvas
   {
   public:
     GLCanvas (octave::interpreter& interp,

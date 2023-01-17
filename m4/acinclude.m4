@@ -1688,67 +1688,6 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
   AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 ])
 dnl
-dnl Check whether Qt works with full OpenGL support
-dnl
-AC_DEFUN([OCTAVE_CHECK_QT_OPENGL_OK], [
-  dnl Normally the language and compiler flags would be set and restored
-  dnl inside of the AC_CACHE_CHECK body.  Because we also need to check for
-  dnl Qt header files associated with the compilation test, set and restore
-  dnl these values outside of the AC_CACHE_CHECK for this macro only.
-  AC_LANG_PUSH(C++)
-  ac_octave_save_CPPFLAGS="$CPPFLAGS"
-  ac_octave_save_CXXFLAGS="$CXXFLAGS"
-  CPPFLAGS="$QT_OPENGL_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-  CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-  AC_CHECK_HEADERS([QOpenGLWidget QGLWidget QGLFunctions_1_1])
-  AC_CACHE_CHECK([whether Qt works with OpenGL and GLU],
-    [octave_cv_qt_opengl_ok],
-    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-         #if HAVE_WINDOWS_H
-         #  include <windows.h>
-         #endif
-         #if defined (HAVE_GL_GL_H)
-         #  include <GL/gl.h>
-         #elif defined (HAVE_OPENGL_GL_H)
-         #  include <OpenGL/gl.h>
-         #endif
-         #if defined (HAVE_GL_GLU_H)
-         #  include <GL/glu.h>
-         #elif defined HAVE_OPENGL_GLU_H || defined HAVE_FRAMEWORK_OPENGL
-         #  include <OpenGL/glu.h>
-         #endif
-         #if defined (HAVE_QOPENGLWIDGET)
-         #  include <QOpenGLWidget>
-         #  define OCTAVE_QT_OPENGL_WIDGET QOpenGLWidget
-         #elif defined (HAVE_QGLWIDGET)
-         #  include <QGLWidget>
-         #  define OCTAVE_QT_OPENGL_WIDGET QGLWidget
-         #endif
-         class gl_widget : public OCTAVE_QT_OPENGL_WIDGET
-         {
-         public:
-           gl_widget (QWidget *parent = 0)
-             : OCTAVE_QT_OPENGL_WIDGET (parent) { }
-           ~gl_widget () {}
-         };
-         ]], [[
-         gl_widget widget;
-       ]])],
-       octave_cv_qt_opengl_ok=yes,
-       octave_cv_qt_opengl_ok=no)
-  ])
-  CPPFLAGS="$ac_octave_save_CPPFLAGS"
-  CXXFLAGS="$ac_octave_save_CXXFLAGS"
-  AC_LANG_POP(C++)
-  if test $octave_cv_qt_opengl_ok = yes; then
-    $1
-    :
-  else
-    $2
-    :
-  fi
-])
-dnl
 dnl Check whether the Qt::ImCursorRectangle enum value exists.
 dnl It replaces the Qt::ImMicroFocus enum value that was deprecated
 dnl in Qt 5.14.
@@ -1830,8 +1769,8 @@ AC_DEFUN([OCTAVE_CHECK_QT_TOOL], [
   fi
 ])
 dnl
-dnl Check whether Qt VERSION is present, supports QtOpenGL and
-dnl QScintilla, and will work for Octave.
+dnl Check whether Qt VERSION is present, supports QScintilla,
+dnl and will work for Octave.
 dnl
 dnl OCTAVE_CHECK_QT_VERSION(VERSION)
 dnl
@@ -1857,8 +1796,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   ## Check for Qt libraries
   case "$qt_version" in
     5)
-      QT_OPENGL_MODULE="Qt5OpenGL"
-      QT_MODULES="Qt5Core Qt5Gui Qt5Help Qt5Network Qt5PrintSupport Qt5Xml"
+      QT_MODULES="Qt5Core Qt5Gui Qt5Help Qt5Network Qt5OpenGL Qt5PrintSupport Qt5Xml"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])
@@ -1888,9 +1826,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
     QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
     QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
-    QT_OPENGL_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_OPENGL_MODULE | $SED -e 's/^ *$//')"
-    QT_OPENGL_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_OPENGL_MODULE | $SED -e 's/^ *$//')"
-    QT_OPENGL_LIBS="$($PKG_CONFIG --libs-only-l $QT_OPENGL_MODULE | $SED -e 's/^ *$//')"
 
     case $host_os in
       *darwin*)
@@ -1898,8 +1833,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         if test -z "$QT_LIBS"; then
           QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
           QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
-          QT_OPENGL_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_OPENGL_MODULE | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
-          QT_OPENGL_LIBS="`$PKG_CONFIG --libs-only-other $QT_OPENGL_MODULE | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
           ## Enabling link_all_deps works around libtool's imperfect handling
           ## of the -F flag
           if test -n "$QT_LDFLAGS"; then
@@ -2002,15 +1935,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_QT_IMCURSORRECTANGLE_ENUM_VALUE
     OCTAVE_CHECK_QT_SPLITBEHAVIOR_ENUM
 
-    if test -n "$OPENGL_LIBS"; then
-      OCTAVE_CHECK_QT_OPENGL_OK([build_qt_graphics=yes],
-        [warn_qt_opengl="Qt does not work with the OpenGL libs (GL and GLU); disabling OpenGL graphics with Qt GUI"])
-
-      if test $build_qt_graphics = yes; then
-        AC_DEFINE(HAVE_QT_GRAPHICS, 1, [Define to 1 if Qt works with OpenGL libs (GL and GLU)])
-      fi
-    fi
-
     OCTAVE_CHECK_QSCINTILLA([$qt_version])
 
   fi
@@ -2023,9 +1947,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   AC_SUBST(QT_CPPFLAGS)
   AC_SUBST(QT_LDFLAGS)
   AC_SUBST(QT_LIBS)
-  AC_SUBST(QT_OPENGL_CPPFLAGS)
-  AC_SUBST(QT_OPENGL_LDFLAGS)
-  AC_SUBST(QT_OPENGL_LIBS)
 ])
 dnl
 dnl Check if the default Fortran INTEGER is 64 bits wide.

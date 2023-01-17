@@ -37,23 +37,10 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-#if defined (HAVE_QOPENGLWIDGET)
-#  define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS
-#else
-#  if defined (Q_OS_WIN32)
-#    define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS         \
-  QGLFormat (QGL::SampleBuffers | QGL::AlphaChannel     \
-             | QGL::IndirectRendering),
-#  else
-#    define OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS \
-  QGLFormat (QGL::SampleBuffers | QGL::AlphaChannel),
-#  endif
-#endif
-
   GLCanvas::GLCanvas (octave::interpreter& interp,
                       const graphics_handle& gh, QWidget *xparent)
-    : OCTAVE_QT_OPENGL_WIDGET (OCTAVE_QT_OPENGL_WIDGET_FORMAT_ARGS xparent),
-      Canvas (interp, gh), m_glfcns (), m_renderer (m_glfcns)
+    : QOpenGLWidget (xparent), Canvas (interp, gh), m_glfcns (),
+      m_renderer (m_glfcns)
   {
     setFocusPolicy (Qt::ClickFocus);
     setFocus ();
@@ -113,9 +100,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (go.get ("visible").string_value () == "off"
             || go.get ("__printing__").string_value () == "on")
           {
-            OCTAVE_QT_OPENGL_FBO
-            fbo (pos(2), pos(3),
-                 OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
+            QOpenGLFramebufferObject
+              fbo (pos(2), pos(3),
+                   QOpenGLFramebufferObject::Attachment::Depth);
 
             fbo.bind ();
 
@@ -172,9 +159,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                 pos(2) *= dpr;
                 pos(3) *= dpr;
 
-                OCTAVE_QT_OPENGL_FBO
+                QOpenGLFramebufferObject
                   fbo (pos(2), pos(3),
-                       OCTAVE_QT_OPENGL_FBO::Attachment::Depth);
+                       QOpenGLFramebufferObject::Attachment::Depth);
 
                 fbo.bind ();
 
@@ -273,14 +260,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   GLCanvas::keyPressEvent (QKeyEvent *xevent)
   {
     if (! canvasKeyPressEvent (xevent))
-      OCTAVE_QT_OPENGL_WIDGET::keyPressEvent (xevent);
+      QOpenGLWidget::keyPressEvent (xevent);
   }
 
   void
   GLCanvas::keyReleaseEvent (QKeyEvent *xevent)
   {
     if (! canvasKeyReleaseEvent (xevent))
-      OCTAVE_QT_OPENGL_WIDGET::keyReleaseEvent (xevent);
+      QOpenGLWidget::keyReleaseEvent (xevent);
   }
 
   bool

@@ -540,7 +540,6 @@ specified option.
         { "QT_CPPFLAGS", build_env::QT_CPPFLAGS },
         { "QT_LDFLAGS", build_env::QT_LDFLAGS },
         { "QT_LIBS", build_env::QT_LIBS },
-        { "QT_OPENGL_LIBS", build_env::QT_OPENGL_LIBS },
         { "RANLIB", build_env::RANLIB },
         { "RDYNAMIC_FLAG", build_env::RDYNAMIC_FLAG },
         { "READLINE_LIBS", build_env::READLINE_LIBS },

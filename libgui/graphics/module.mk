@@ -128,7 +128,6 @@ nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
   $(FONTCONFIG_CPPFLAGS) \
   $(HDF5_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
-  @QT_OPENGL_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -Ilibgui/src -I$(srcdir)/libgui/src \
   -Iliboctave \

@@ -3027,8 +3027,8 @@ OCTAVE_GUI_LINK_DEPS=""
 OCTAVE_GUI_LINK_OPTS=""
 
 if test $build_qt_gui = yes; then
-  LIBOCTGUI_LINK_DEPS="$QT_LIBS $QT_OPENGL_LIBS"
-  LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS $QT_OPENGL_LDFLAGS"
+  LIBOCTGUI_LINK_DEPS="$QT_LIBS"
+  LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS"
 
   if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
     LIBOCTGUI_LINK_DEPS="$LIBOCTGUI_LINK_DEPS $LIBOCTINTERP_LINK_DEPS"
@@ -3273,7 +3273,6 @@ Octave is now configured for $canonical_host_type
   Qt CPPFLAGS:                   $QT_CPPFLAGS
   Qt LDFLAGS:                    $QT_LDFLAGS
   Qt GUI libraries:              $QT_LIBS
-  Qt OpenGL libraries:           $QT_OPENGL_LIBS
   Qt moc:                        $MOC $MOCFLAGS
   Qt uic:                        $UIC $UICFLAGS
   Qt rcc:                        $RCC $RCCFLAGS

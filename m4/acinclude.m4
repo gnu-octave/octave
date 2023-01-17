@@ -647,40 +647,6 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR], [
   fi
 ])
 dnl
-dnl Check whether the Qt class QMainWindow has the resizeDocks member function.
-dnl This member function was introduced in Qt 5.6.
-dnl
-dnl FIXME: remove this test when we drop support for Qt older than 5.6
-dnl
-AC_DEFUN([OCTAVE_CHECK_FUNC_QMAINWINDOW_RESIZEDOCKS], [
-  AC_CACHE_CHECK([for QMainWindow::resizeDocks in <QMainWindow>],
-    [octave_cv_func_mainwindow_resizedocks],
-    [AC_LANG_PUSH(C++)
-    ac_octave_save_CPPFLAGS="$CPPFLAGS"
-    ac_octave_save_CXXFLAGS="$CXXFLAGS"
-    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
-    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
-    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
-        #include <QMainWindow>
-        #include <QDockWidget>
-        ]], [[
-        QMainWindow *mw = new QMainWindow ();
-        QDockWidget *dw = new QDockWidget (mw);
-        mw->addDockWidget (Qt::LeftDockWidgetArea, dw);
-        mw->resizeDocks ({dw},{20},Qt::Horizontal);
-        ]])],
-      octave_cv_func_mainwindow_resizedocks=yes,
-      octave_cv_func_mainwindow_resizedocks=no)
-    CPPFLAGS="$ac_octave_save_CPPFLAGS"
-    CXXFLAGS="$ac_octave_save_CXXFLAGS"
-    AC_LANG_POP(C++)
-  ])
-  if test $octave_cv_func_mainwindow_resizedocks = yes; then
-    AC_DEFINE(HAVE_QMAINWINDOW_RESIZEDOCKS, 1,
-      [Define to 1 if you have the 'QMainWindow::resizeDocks' member function.])
-  fi
-])
-dnl
 dnl Check whether the Qt class QWheelEvent has the position member function.
 dnl This member function was introduced in Qt 5.14.
 dnl
@@ -2219,7 +2185,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QHELPSEARCHQUERYWIDGET_SEARCHINPUT
     OCTAVE_CHECK_NEW_QHELPINDEXWIDGET_API
     OCTAVE_CHECK_FUNC_QLIST_ITERATOR_CONSTRUCTOR
-    OCTAVE_CHECK_FUNC_QMAINWINDOW_RESIZEDOCKS
     OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
     OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS

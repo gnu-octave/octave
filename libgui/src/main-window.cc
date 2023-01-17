@@ -2769,23 +2769,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void main_window::resize_dock (QDockWidget *dw, int width, int height)
   {
-#if defined (HAVE_QMAINWINDOW_RESIZEDOCKS)
     // resizeDockWidget was added to Qt in Qt 5.6
     if (width >= 0)
       resizeDocks ({dw}, {width}, Qt::Horizontal);
     if (height >= 0)
       resizeDocks ({dw}, {height}, Qt::Vertical);
-#else
-    // This replacement of resizeDockWidget is not very reliable.
-    // But even if Qt4 is not yet
-    QSize s = dw->widget ()->size ();
-    if (width >= 0)
-      s.setWidth (width);
-    if (height >= 0)
-      s.setHeight (height);
-    dw->widget ()->resize (s);
-    dw->adjustSize ();
-#endif
   }
 
   // The default main window size relative to the desktop size

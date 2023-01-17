@@ -43,8 +43,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   void graphics_init (interpreter& interp)
   {
-#if defined (HAVE_QT_GRAPHICS)
-
     gh_manager& gh_mgr = interp.get_gh_manager ();
 
     autolock guard (gh_mgr.graphics_lock ());
@@ -66,12 +64,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     gtk_mgr.register_toolkit ("qt");
 
     gtk_mgr.load_toolkit (tk);
-
-#else
-
-    octave_unused_parameter (interp);
-
-#endif
   }
 
 OCTAVE_END_NAMESPACE(octave)

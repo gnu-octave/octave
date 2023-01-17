@@ -158,9 +158,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     adopt_dock_widgets ();
 
-#if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
     QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
-#endif
 
     QApplication *qapp = m_octave_qobj.qapplication ();
 

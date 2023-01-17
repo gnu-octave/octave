@@ -43,10 +43,8 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QToolBar>
-#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
-#  include <QWindow>
-#  include <QScreen>
-#endif
+#include <QWindow>
+#include <QScreen>
 
 #include "Canvas.h"
 #include "Container.h"
@@ -854,7 +852,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void
   Figure::figureWindowShown ()
   {
-#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
     QWindow *window = qWidget<QMainWindow> ()->windowHandle ();
     QScreen *screen = window->screen ();
 
@@ -866,13 +863,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
 
     connect (window, &QWindow::screenChanged, this, &Figure::screenChanged);
-#endif
   }
 
   void
   Figure::screenChanged (QScreen *screen)
   {
-#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
     octave::autolock guard (gh_mgr.graphics_lock ());
@@ -888,9 +883,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         // from the GUI thread does not necessarily trigger a redraw.  Force it.
         redraw ();
       }
-#else
-    octave_unused_parameter (screen);
-#endif
   }
 
   void

@@ -61,13 +61,9 @@ public:
     m_printer.setFontEmbeddingEnabled (true);
     m_printer.setOutputFileName (fname);
     m_printer.setFullPage (true);
-#if defined (HAVE_QPRINTER_SETPAGESIZE)
     m_printer.setPageSize (QPageSize (sz.size (), QPageSize::Point,
                                       QString ("custom"),
                                       QPageSize::ExactMatch));
-#else
-    m_printer.setPaperSize (sz.size (), QPrinter::Point);
-#endif
 
     // Painter settings
     begin (&m_printer);

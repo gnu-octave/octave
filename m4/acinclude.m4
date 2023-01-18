@@ -1614,7 +1614,6 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
   octave_qt_versions="$1"
 
   build_qt_gui=no
-  build_qt_graphics=no
   use_qscintilla=no
   win32_terminal=no
 
@@ -1683,7 +1682,6 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
   fi
 
   AM_CONDITIONAL([AMCOND_BUILD_QT_GUI], [test $build_qt_gui = yes])
-  AM_CONDITIONAL([AMCOND_BUILD_QT_GRAPHICS], [test $build_qt_graphics = yes])
   AM_CONDITIONAL([AMCOND_HAVE_QSCINTILLA], [test $use_qscintilla = yes])
   AM_CONDITIONAL([WIN32_TERMINAL], [test $win32_terminal = yes])
 ])
@@ -1782,7 +1780,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   qt_version="$1";
 
   build_qt_gui=yes
-  build_qt_graphics=no
   win32_terminal=no
 
   warn_qt_libraries=""

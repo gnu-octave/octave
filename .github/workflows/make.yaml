@@ -727,7 +727,7 @@ jobs:
 
       - name: restore ccache
         # Setup a github cache used to maintain the ccache from one run to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v3.2.2
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -793,7 +793,7 @@ jobs:
 
       - name: save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v3.2.2
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}

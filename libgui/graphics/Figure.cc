@@ -160,7 +160,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     update (figure::properties::ID_NUMBERTITLE);
 
     // Decide what keyboard events we listen to
-    m_container->canvas (m_handle)->setEventMask (0);
+    Canvas *canvas = m_container->canvas (m_handle);
+    if (canvas)
+      canvas->setEventMask (0);
     update (figure::properties::ID_KEYPRESSFCN);
     update (figure::properties::ID_KEYRELEASEFCN);
 
@@ -440,54 +442,69 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
 
       case figure::properties::ID_KEYPRESSFCN:
-        if (fp.get_keypressfcn ().isempty ())
-          m_container->canvas (m_handle)->clearEventMask (Canvas::KeyPress);
-        else
-          m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
-        // Signal the change to uipanels as well
-        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
-          {
-            if (qobj->objectName () == "UIPanel")
-              {
-                Object *obj = Object::fromQObject (qobj);
+        {
+          Canvas *canvas = m_container->canvas (m_handle);
 
-                if (obj)
-                  {
-                    if (fp.get_keypressfcn ().isempty ())
-                      obj->innerContainer ()->canvas (m_handle)->
-                        clearEventMask (Canvas::KeyPress);
-                    else
-                      obj->innerContainer ()->canvas (m_handle)->
-                        addEventMask (Canvas::KeyPress);
-                  }
-              }
-          }
+          if (canvas)
+            {
+              if (fp.get_keypressfcn ().isempty ())
+                canvas->clearEventMask (Canvas::KeyPress);
+              else
+                canvas->addEventMask (Canvas::KeyPress);
+            }
+
+          // Signal the change to uipanels as well
+          for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
+            {
+              if (qobj->objectName () == "UIPanel")
+                {
+                  Object *obj = Object::fromQObject (qobj);
+
+                  if (obj)
+                    {
+                      if (fp.get_keypressfcn ().isempty ())
+                        obj->innerContainer ()->canvas (m_handle)->
+                          clearEventMask (Canvas::KeyPress);
+                      else
+                        obj->innerContainer ()->canvas (m_handle)->
+                          addEventMask (Canvas::KeyPress);
+                    }
+                }
+            }
+        }
         break;
 
       case figure::properties::ID_KEYRELEASEFCN:
-        if (fp.get_keyreleasefcn ().isempty ())
-          m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
-        else
-          m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
-        break;
-        // Signal the change to uipanels as well
-        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
-          {
-            if (qobj->objectName () == "UIPanel")
-              {
-                Object *obj = Object::fromQObject (qobj);
+        {
+          Canvas *canvas = m_container->canvas (m_handle);
 
-                if (obj)
-                  {
-                    if (fp.get_keypressfcn ().isempty ())
-                      obj->innerContainer ()->canvas (m_handle)->
-                        clearEventMask (Canvas::KeyRelease);
-                    else
-                      obj->innerContainer ()->canvas (m_handle)->
-                        addEventMask (Canvas::KeyRelease);
-                  }
-              }
-          }
+          if (canvas)
+            {
+              if (fp.get_keyreleasefcn ().isempty ())
+                canvas->clearEventMask (Canvas::KeyRelease);
+              else
+                canvas->addEventMask (Canvas::KeyRelease);
+            }
+          break;
+          // Signal the change to uipanels as well
+          for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
+            {
+              if (qobj->objectName () == "UIPanel")
+                {
+                  Object *obj = Object::fromQObject (qobj);
+
+                  if (obj)
+                    {
+                      if (fp.get_keypressfcn ().isempty ())
+                        obj->innerContainer ()->canvas (m_handle)->
+                          clearEventMask (Canvas::KeyRelease);
+                      else
+                        obj->innerContainer ()->canvas (m_handle)->
+                          addEventMask (Canvas::KeyRelease);
+                    }
+                }
+            }
+        }
         break;
 
       case figure::properties::ID_WINDOWSTYLE:
@@ -519,11 +536,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       case figure::properties::ID_POINTERSHAPEHOTSPOT:
       case figure::properties::ID___MOUSE_MODE__:
       case figure::properties::ID___ZOOM_MODE__:
-        m_container->canvas (m_handle)->setCursor (mouseMode (),
-                                                   fp.get_pointer (),
-                                                   m_pointer_cdata,
-                                                   fp.get_pointershapehotspot ()
-                                                   .matrix_value());
+        {
+          Canvas *canvas = m_container->canvas (m_handle);
+
+          if (canvas)
+            canvas->setCursor (mouseMode (), fp.get_pointer (),
+                               m_pointer_cdata,
+                               fp.get_pointershapehotspot ().matrix_value());
+        }
         break;
 
       default:
@@ -890,7 +910,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     // Enable mouse tracking on every widgets
     m_container->setMouseTracking (true);
-    m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
+
+    Canvas *canvas = m_container->canvas (m_handle);
+
+    if (canvas)
+      canvas->qWidget ()->setMouseTracking (true);
+
     for (auto *w : m_container->findChildren<QWidget *> ())
       w->setMouseTracking (true);
   }

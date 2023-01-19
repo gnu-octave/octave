@@ -2161,7 +2161,7 @@ DEFUN (mat2cell, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{dim1}, @var{dim2}, @dots{}, @var{dimi}, @dots{}, @var{dimn})
 @deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{rowdim})
-Convert the matrix @var{A} to a cell array.
+Convert the matrix @var{A} to a cell array @var{C}.
 
 Each dimension argument (@var{dim1}, @var{dim2}, etc.@:) is a vector of
 integers which specifies how to divide that dimension's elements amongst the
@@ -2253,15 +2253,23 @@ mat2cell (x, [3,1])
 
   octave_value retval;
 
+  octave_value a = args(0);
+  octave_idx_type num_dims = std::max (nargin-1, a.ndims ());
+
   // Prepare indices.
-  OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, d, nargin-1);
+  OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, d, num_dims);
 
   for (int i = 1; i < nargin; i++)
     d[i-1] = args(i).octave_idx_type_vector_value (true);
 
-  octave_value a = args(0);
+  // Omitted input for trailing dimensions means that the input array
+  // should not be split along those dimensions.
+  Array<octave_idx_type> a_dims = a.dims ().as_array ();
+  for (int i = nargin-1; i < a.ndims (); i++)
+    d[i] = a_dims.index (i);
+
   bool sparse = a.issparse ();
-  if (sparse && nargin > 3)
+  if (sparse && num_dims > 2)
     error ("mat2cell: sparse arguments only support 2-D indexing");
 
   switch (a.builtin_type ())
@@ -2269,9 +2277,9 @@ mat2cell (x, [3,1])
     case btyp_double:
       {
         if (sparse)
-          retval = do_mat2cell_2d (a.sparse_matrix_value (), d, nargin-1);
+          retval = do_mat2cell_2d (a.sparse_matrix_value (), d, num_dims);
         else
-          retval = do_mat2cell (a.array_value (), d, nargin - 1);
+          retval = do_mat2cell (a.array_value (), d, num_dims);
       }
       break;
 
@@ -2279,16 +2287,16 @@ mat2cell (x, [3,1])
       {
         if (sparse)
           retval = do_mat2cell_2d (a.sparse_complex_matrix_value (), d,
-                                   nargin-1);
+                                   num_dims);
         else
-          retval = do_mat2cell (a.complex_array_value (), d, nargin - 1);
+          retval = do_mat2cell (a.complex_array_value (), d, num_dims);
       }
       break;
 
-#define BTYP_BRANCH(X, Y)                                       \
-      case btyp_ ## X:                                          \
-        retval = do_mat2cell (a.Y ## _value (), d, nargin - 1); \
-        break
+#define BTYP_BRANCH(X, Y)                                   \
+    case btyp_ ## X:                                        \
+      retval = do_mat2cell (a.Y ## _value (), d, num_dims); \
+      break
 
       BTYP_BRANCH (float, float_array);
       BTYP_BRANCH (float_complex, float_complex_array);
@@ -2314,7 +2322,7 @@ mat2cell (x, [3,1])
       break;
 
     default:
-      retval = do_mat2cell (a, d, nargin-1);
+      retval = do_mat2cell (a, d, num_dims);
       break;
     }
 
@@ -2332,6 +2340,15 @@ mat2cell (x, [3,1])
 %! c = mat2cell (x, 1, [0,4,2,0,4,0]);
 %! empty1by0str = resize ("", 1, 0);
 %! assert (c, {empty1by0str,"abcd","ef",empty1by0str,"ghij",empty1by0str});
+
+## omitted input for trailing dimensions means no splitting for them
+%!test
+%! x = reshape (1:16, 4, 2, 2);
+%! c1 = mat2cell (x, [2, 2], 2, 2);
+%! c2 = mat2cell (x, [2, 2]);
+%! assert (c1, c2);
+%! assert (c1, {cat(3, [1,5;2,6], [9,13;10,14]); ...
+%!              cat(3, [3,7;4,8], [11,15;12,16])});
 */
 
 // FIXME: it would be nice to allow ranges being handled without a conversion.

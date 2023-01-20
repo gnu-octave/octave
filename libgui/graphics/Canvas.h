@@ -26,7 +26,7 @@
 #if ! defined (octave_Canvas_h)
 #define octave_Canvas_h 1
 
-#include <QObject>
+#include <QWidget>
 #include <QPoint>
 
 #include "event-manager.h"
@@ -45,7 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
 
-  class Canvas : public QObject
+  class Canvas : public QWidget
   {
     Q_OBJECT
 
@@ -112,16 +112,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                            const graphics_handle& handle) = 0;
 
   protected:
-    Canvas (octave::interpreter& interp, const graphics_handle& handle)
-      : m_interpreter (interp),
-        m_handle (handle),
-        m_redrawBlocked (false),
-        m_mouseMode (NoMode),
-        m_clickMode (false),
-        m_eventMask (0),
-        m_rectMode (false)
+
+    Canvas (octave::interpreter& interp, const graphics_handle& handle,
+            QWidget *parent)
+      : QWidget (parent), m_interpreter (interp), m_handle (handle),
+        m_redrawBlocked (false), m_mouseMode (NoMode), m_clickMode (false),
+        m_eventMask (0), m_rectMode (false)
     { }
 
+  public:
     void canvasToggleAxes (const graphics_handle& handle);
     void canvasToggleGrid (const graphics_handle& handle);
     void canvasAutoAxes (const graphics_handle& handle);

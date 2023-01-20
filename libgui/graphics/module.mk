@@ -7,6 +7,7 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-EditControl.cc \
   %reldir%/moc-Figure.cc \
   %reldir%/moc-FigureWindow.cc \
+  %reldir%/moc-GLCanvas.cc \
   %reldir%/moc-ListBoxControl.cc \
   %reldir%/moc-Menu.cc \
   %reldir%/moc-Object.cc \

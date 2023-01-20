@@ -26,10 +26,10 @@
 #if ! defined (octave_GLCanvas_h)
 #define octave_GLCanvas_h 1
 
-#include <QOpenGLWidget>
-#include <QOpenGLFramebufferObject>
-#include <QOpenGLContext>
 #include <QOffscreenSurface>
+#include <QOpenGLContext>
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLWidget>
 
 #include "Canvas.h"
 
@@ -38,27 +38,33 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class GLCanvas : public QOpenGLWidget, public Canvas
+  class GLWidget : public QOpenGLWidget
   {
+    Q_OBJECT
+
   public:
-    GLCanvas (octave::interpreter& interp,
-              const graphics_handle& handle, QWidget *parent);
-    ~GLCanvas (void);
+
+    GLWidget (Canvas& parent_canvas);
+
+    ~GLWidget (void);
 
     void initializeGL (void);
 
-    void draw (const graphics_handle& handle);
-    uint8NDArray  do_getPixels (const graphics_handle& handle);
+    void draw (graphics_object go);
+    uint8NDArray  do_getPixels (graphics_object go);
     void do_print (const QString& file_cmd, const QString& term,
-                   const graphics_handle& handle);
+                   graphics_object go);
     void drawZoomBox (const QPoint& p1, const QPoint& p2);
     void resize (int /* x */, int /* y */,
                  int /* width */, int /* height */) { }
     graphics_object selectFromAxes (const graphics_object& ax,
                                     const QPoint& pt);
-    QWidget * qWidget (void) { return this; }
+
+    bool begin_rendering (void);
+    void end_rendering (void);
 
   protected:
+
     void paintGL (void);
     void mouseDoubleClickEvent (QMouseEvent *event);
     void mouseMoveEvent (QMouseEvent *event);
@@ -70,14 +76,42 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   private:
 
-    bool begin_rendering (void);
-    void end_rendering (void);
+    Canvas& m_parent_canvas;
 
-    octave::qopengl_functions m_glfcns;
-    octave::opengl_renderer m_renderer;
+    qopengl_functions m_glfcns;
+    opengl_renderer m_renderer;
 
     QOpenGLContext m_os_context;
     QOffscreenSurface m_os_surface;
+  };
+
+  class GLCanvas : public Canvas
+  {
+  public:
+
+    GLCanvas (octave::interpreter& interp, const graphics_handle& handle,
+              QWidget *parent);
+
+    ~GLCanvas (void);
+
+    void draw (const graphics_handle& handle);
+    uint8NDArray  do_getPixels (const graphics_handle& handle);
+    void do_print (const QString& file_cmd, const QString& term,
+                   const graphics_handle& handle);
+    void drawZoomBox (const QPoint& p1, const QPoint& p2);
+    void resize (int /* x */, int /* y */,
+                 int /* width */, int /* height */) { }
+    graphics_object selectFromAxes (const graphics_object& ax,
+                                    const QPoint& pt);
+
+    QWidget * qWidget (void) { return m_glwidget; }
+
+  private:
+
+    GLWidget *m_glwidget;
+
+    bool begin_rendering (void);
+    void end_rendering (void);
   };
 
 OCTAVE_END_NAMESPACE(octave)

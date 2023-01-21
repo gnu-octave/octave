@@ -8068,6 +8068,20 @@ axes::properties::check_axis_limits (Matrix& limits, const Matrix kids,
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect
+
+## Check automatically determined axes ticks with "tickaligned" (default) and
+## "tight" xlimitmethod.
+%!test <*63624>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   plot (hax, [1, 201], [0, 1]);
+%!   assert (get (hax, "xtick"), 0:50:250);
+%!   axis (hax, "tight");
+%!   assert (get (hax, "xtick"), 50:50:200);
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
 */
 
 void

@@ -37,8 +37,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  GLWidget::GLWidget (Canvas &parent_canvas)
-    : QOpenGLWidget (&parent_canvas), m_parent_canvas (parent_canvas),
+  GLWidget::GLWidget (Canvas& parent_canvas, QWidget *parent)
+    : QOpenGLWidget (parent), m_parent_canvas (parent_canvas),
       m_glfcns (), m_renderer (m_glfcns)
   {
     setFocusPolicy (Qt::ClickFocus);
@@ -297,7 +297,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   GLCanvas::GLCanvas (octave::interpreter& interp,
                       const graphics_handle& gh, QWidget *parent)
-    : Canvas (interp, gh, parent), m_glwidget (new GLWidget (*this))
+    : Canvas (interp, gh), m_glwidget (new GLWidget (*this, parent))
   { }
 
   GLCanvas::~GLCanvas (void)

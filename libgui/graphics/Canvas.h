@@ -26,7 +26,7 @@
 #if ! defined (octave_Canvas_h)
 #define octave_Canvas_h 1
 
-#include <QWidget>
+#include <QObject>
 #include <QPoint>
 
 #include "event-manager.h"
@@ -45,7 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   class interpreter;
 
-  class Canvas : public QWidget
+  class Canvas : public QObject
   {
     Q_OBJECT
 
@@ -113,9 +113,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   protected:
 
-    Canvas (octave::interpreter& interp, const graphics_handle& handle,
-            QWidget *parent)
-      : QWidget (parent), m_interpreter (interp), m_handle (handle),
+    Canvas (octave::interpreter& interp, const graphics_handle& handle)
+      : QObject (), m_interpreter (interp), m_handle (handle),
         m_redrawBlocked (false), m_mouseMode (NoMode), m_clickMode (false),
         m_eventMask (0), m_rectMode (false)
     { }

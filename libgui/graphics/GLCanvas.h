@@ -44,7 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    GLWidget (Canvas& parent_canvas);
+    GLWidget (Canvas& parent_canvas, QWidget *parent);
 
     ~GLWidget (void);
 

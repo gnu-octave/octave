@@ -577,7 +577,7 @@ public:
     curl_easy_getinfo (m_curl, CURLINFO_FILETIME, &ft);
     filetime = ft;
     double fs;
-    curl_easy_getinfo (m_curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
+    curl_easy_getinfo (m_curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &fs);
     filesize = fs;
 
     SETOPT (CURLOPT_WRITEFUNCTION, write_data);
@@ -712,12 +712,12 @@ public:
   // path of the file as its value.
   void form_data_post (const Array<std::string>& param)
   {
-    struct curl_httppost *post = nullptr;
-    struct curl_httppost *last = nullptr;
+    curl_mime *mime = nullptr;
+    curl_mimepart *part = nullptr;
 
     SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
 
-    unwind_action cleanup_httppost ([=] () { curl_formfree (post); });
+    unwind_action cleanup_mime ([=] () { curl_mime_free (mime); });
 
     if (param.numel () >= 2)
       {
@@ -726,15 +726,15 @@ public:
             std::string name = param(i);
             std::string data = param(i+1);
 
+            part = curl_mime_addpart (mime);
+            curl_mime_name (part, name.c_str ());
             if (name == "file")
-              curl_formadd (&post, &last, CURLFORM_COPYNAME, name.c_str (),
-                            CURLFORM_FILE, data.c_str (), CURLFORM_END);
+              curl_mime_filedata (part, data.c_str ());
             else
-              curl_formadd(&post, &last, CURLFORM_COPYNAME, name.c_str (),
-                           CURLFORM_COPYCONTENTS, data.c_str (), CURLFORM_END);
+              curl_mime_data (part, data.c_str (), CURL_ZERO_TERMINATED);
           }
 
-        SETOPT (CURLOPT_HTTPPOST, post);
+        SETOPT (CURLOPT_HTTPPOST, mime);
       }
 
     perform ();

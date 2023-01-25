@@ -128,7 +128,7 @@ function assert (cond, varargin)
       if (ischar (expected))
         if (! ischar (cond))
           err.index{end+1} = ".";
-          err.expected{end+1} = expected;
+          err.expected{end+1} = ["'" expected "'"];
           if (isnumeric (cond))
             err.observed{end+1} = num2str (cond);
             err.reason{end+1} = "Expected string, but observed number";
@@ -138,8 +138,8 @@ function assert (cond, varargin)
           endif
         elseif (! strcmp (cond, expected))
           err.index{end+1} = "[]";
-          err.observed{end+1} = cond;
-          err.expected{end+1} = expected;
+          err.observed{end+1} = ["'" cond "'"];
+          err.expected{end+1} = ["'" expected "'"];
           err.reason{end+1} = "Strings don't match";
         endif
 

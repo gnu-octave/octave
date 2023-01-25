@@ -123,7 +123,7 @@ FloatRowVector::append (const FloatRowVector& a) const
 }
 
 FloatColumnVector
-FloatRowVector::transpose (void) const
+FloatRowVector::transpose () const
 {
   return MArray<float>::transpose ();
 }
@@ -204,7 +204,7 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
 // other operations
 
 float
-FloatRowVector::min (void) const
+FloatRowVector::min () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -220,7 +220,7 @@ FloatRowVector::min (void) const
 }
 
 float
-FloatRowVector::max (void) const
+FloatRowVector::max () const
 {
   octave_idx_type len = numel ();
   if (len == 0)

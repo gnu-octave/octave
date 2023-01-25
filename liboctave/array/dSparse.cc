@@ -128,7 +128,7 @@ SparseMatrix::operator != (const SparseMatrix& a) const
 }
 
 bool
-SparseMatrix::issymmetric (void) const
+SparseMatrix::issymmetric () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -600,7 +600,7 @@ imag (const SparseComplexMatrix& a)
 */
 
 SparseMatrix
-SparseMatrix::inverse (void) const
+SparseMatrix::inverse () const
 {
   octave_idx_type info;
   double rcond;
@@ -1009,7 +1009,7 @@ SparseMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
 }
 
 DET
-SparseMatrix::determinant (void) const
+SparseMatrix::determinant () const
 {
   octave_idx_type info;
   double rcond;
@@ -7216,7 +7216,7 @@ SparseMatrix::any_element_is_negative (bool neg_zero) const
 }
 
 bool
-SparseMatrix::any_element_is_nan (void) const
+SparseMatrix::any_element_is_nan () const
 {
   octave_idx_type nel = nnz ();
 
@@ -7231,7 +7231,7 @@ SparseMatrix::any_element_is_nan (void) const
 }
 
 bool
-SparseMatrix::any_element_is_inf_or_nan (void) const
+SparseMatrix::any_element_is_inf_or_nan () const
 {
   octave_idx_type nel = nnz ();
 
@@ -7246,7 +7246,7 @@ SparseMatrix::any_element_is_inf_or_nan (void) const
 }
 
 bool
-SparseMatrix::any_element_not_one_or_zero (void) const
+SparseMatrix::any_element_not_one_or_zero () const
 {
   octave_idx_type nel = nnz ();
 
@@ -7261,7 +7261,7 @@ SparseMatrix::any_element_not_one_or_zero (void) const
 }
 
 bool
-SparseMatrix::all_elements_are_zero (void) const
+SparseMatrix::all_elements_are_zero () const
 {
   octave_idx_type nel = nnz ();
 
@@ -7273,7 +7273,7 @@ SparseMatrix::all_elements_are_zero (void) const
 }
 
 bool
-SparseMatrix::all_elements_are_int_or_inf_or_nan (void) const
+SparseMatrix::all_elements_are_int_or_inf_or_nan () const
 {
   octave_idx_type nel = nnz ();
 
@@ -7321,13 +7321,13 @@ SparseMatrix::all_integers (double& max_val, double& min_val) const
 }
 
 bool
-SparseMatrix::too_large_for_float (void) const
+SparseMatrix::too_large_for_float () const
 {
   return test_any (octave::too_large_for_float);
 }
 
 SparseBoolMatrix
-SparseMatrix::operator ! (void) const
+SparseMatrix::operator ! () const
 {
   if (any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
@@ -7423,7 +7423,7 @@ SparseMatrix::sumsq (int dim) const
 }
 
 SparseMatrix
-SparseMatrix::abs (void) const
+SparseMatrix::abs () const
 {
   octave_idx_type nz = nnz ();
 
@@ -7442,7 +7442,7 @@ SparseMatrix::diag (octave_idx_type k) const
 }
 
 Matrix
-SparseMatrix::matrix_value (void) const
+SparseMatrix::matrix_value () const
 {
   return Sparse<double>::array_value ();
 }
@@ -7477,7 +7477,7 @@ operator >> (std::istream& is, SparseMatrix& a)
 }
 
 SparseMatrix
-SparseMatrix::squeeze (void) const
+SparseMatrix::squeeze () const
 {
   return MSparse<double>::squeeze ();
 }

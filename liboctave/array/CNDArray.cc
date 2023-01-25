@@ -117,7 +117,7 @@ ComplexNDArray::ifourier (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::fourier2d (void) const
+ComplexNDArray::fourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -137,7 +137,7 @@ ComplexNDArray::fourier2d (void) const
 }
 
 ComplexNDArray
-ComplexNDArray::ifourier2d (void) const
+ComplexNDArray::ifourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -157,7 +157,7 @@ ComplexNDArray::ifourier2d (void) const
 }
 
 ComplexNDArray
-ComplexNDArray::fourierNd (void) const
+ComplexNDArray::fourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -172,7 +172,7 @@ ComplexNDArray::fourierNd (void) const
 }
 
 ComplexNDArray
-ComplexNDArray::ifourierNd (void) const
+ComplexNDArray::ifourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -211,7 +211,7 @@ ComplexNDArray::ifourier (int dim) const
 }
 
 ComplexNDArray
-ComplexNDArray::fourier2d (void) const
+ComplexNDArray::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -220,7 +220,7 @@ ComplexNDArray::fourier2d (void) const
 }
 
 ComplexNDArray
-ComplexNDArray::ifourier2d (void) const
+ComplexNDArray::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -229,7 +229,7 @@ ComplexNDArray::ifourier2d (void) const
 }
 
 ComplexNDArray
-ComplexNDArray::fourierNd (void) const
+ComplexNDArray::fourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -238,7 +238,7 @@ ComplexNDArray::fourierNd (void) const
 }
 
 ComplexNDArray
-ComplexNDArray::ifourierNd (void) const
+ComplexNDArray::ifourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -251,7 +251,7 @@ ComplexNDArray::ifourierNd (void) const
 // unary operations
 
 boolNDArray
-ComplexNDArray::operator ! (void) const
+ComplexNDArray::operator ! () const
 {
   if (any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
@@ -262,13 +262,13 @@ ComplexNDArray::operator ! (void) const
 // FIXME: this is not quite the right thing.
 
 bool
-ComplexNDArray::any_element_is_nan (void) const
+ComplexNDArray::any_element_is_nan () const
 {
   return do_mx_check<Complex> (*this, mx_inline_any_nan);
 }
 
 bool
-ComplexNDArray::any_element_is_inf_or_nan (void) const
+ComplexNDArray::any_element_is_inf_or_nan () const
 {
   return ! do_mx_check<Complex> (*this, mx_inline_all_finite);
 }
@@ -276,7 +276,7 @@ ComplexNDArray::any_element_is_inf_or_nan (void) const
 // Return true if no elements have imaginary components.
 
 bool
-ComplexNDArray::all_elements_are_real (void) const
+ComplexNDArray::all_elements_are_real () const
 {
   return do_mx_check<Complex> (*this, mx_inline_all_real);
 }
@@ -337,7 +337,7 @@ ComplexNDArray::all_integers (double& max_val, double& min_val) const
 }
 
 bool
-ComplexNDArray::too_large_for_float (void) const
+ComplexNDArray::too_large_for_float () const
 {
   return test_any (octave::too_large_for_float);
 }
@@ -475,25 +475,25 @@ ComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 }
 
 NDArray
-ComplexNDArray::abs (void) const
+ComplexNDArray::abs () const
 {
   return do_mx_unary_map<double, Complex, std::abs> (*this);
 }
 
 boolNDArray
-ComplexNDArray::isnan (void) const
+ComplexNDArray::isnan () const
 {
   return do_mx_unary_map<bool, Complex, octave::math::isnan> (*this);
 }
 
 boolNDArray
-ComplexNDArray::isinf (void) const
+ComplexNDArray::isinf () const
 {
   return do_mx_unary_map<bool, Complex, octave::math::isinf> (*this);
 }
 
 boolNDArray
-ComplexNDArray::isfinite (void) const
+ComplexNDArray::isfinite () const
 {
   return do_mx_unary_map<bool, Complex, octave::math::isfinite> (*this);
 }

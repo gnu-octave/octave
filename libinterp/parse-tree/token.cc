@@ -83,7 +83,7 @@ token::token (int tv, const std::string& meth, const std::string& cls,
     m_tok_info (meth, cls), m_orig_text ()
 { }
 
-token::~token (void)
+token::~token ()
 {
   if (m_type_tag == string_token)
     delete m_tok_info.m_str;
@@ -94,48 +94,48 @@ token::~token (void)
 }
 
 std::string
-token::text (void) const
+token::text () const
 {
   panic_if (m_type_tag != string_token);
   return *m_tok_info.m_str;
 }
 
 octave_value
-token::number (void) const
+token::number () const
 {
   panic_if (m_type_tag != numeric_token);
   return *m_tok_info.m_num;
 }
 
 token::token_type
-token::ttype (void) const
+token::ttype () const
 {
   return m_type_tag;
 }
 
 token::end_tok_type
-token::ettype (void) const
+token::ettype () const
 {
   panic_if (m_type_tag != ettype_token);
   return m_tok_info.m_et;
 }
 
 std::string
-token::superclass_method_name (void) const
+token::superclass_method_name () const
 {
   panic_if (m_type_tag != scls_name_token);
   return m_tok_info.m_superclass_info->m_method_name;
 }
 
 std::string
-token::superclass_class_name (void) const
+token::superclass_class_name () const
 {
   panic_if (m_type_tag != scls_name_token);
   return m_tok_info.m_superclass_info->m_class_name;
 }
 
 std::string
-token::text_rep (void) const
+token::text_rep () const
 {
   return m_orig_text;
 }

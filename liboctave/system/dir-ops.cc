@@ -70,7 +70,7 @@ dir_entry::open (const std::string& n)
 }
 
 string_vector
-dir_entry::read (void)
+dir_entry::read ()
 {
   string_vector retval;
 
@@ -90,7 +90,7 @@ dir_entry::read (void)
 }
 
 bool
-dir_entry::close (void)
+dir_entry::close ()
 {
   bool retval = true;
 
@@ -105,7 +105,7 @@ dir_entry::close (void)
 }
 
 unsigned int
-dir_entry::max_name_length (void)
+dir_entry::max_name_length ()
 {
   return octave_name_max_wrapper ();
 }

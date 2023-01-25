@@ -42,7 +42,7 @@ class qopengl_functions : public opengl_functions
 {
 public:
 
-  qopengl_functions (void)
+  qopengl_functions ()
 #if defined (HAVE_QOPENGLFUNCTIONS_1_1)
     : m_glfcns ()
 #endif
@@ -52,9 +52,9 @@ public:
 
   qopengl_functions& operator = (const qopengl_functions&) = default;
 
-  ~qopengl_functions (void) = default;
+  ~qopengl_functions () = default;
 
-  void init (void)
+  void init ()
   {
 #if defined (HAVE_QOPENGLFUNCTIONS_1_1)
     m_glfcns.initializeOpenGLFunctions ();
@@ -176,17 +176,17 @@ public:
     m_glfcns.glEnable (cap);
   }
 
-  void glEndList (void)
+  void glEndList ()
   {
     m_glfcns.glEndList ();
   }
 
-  void glEnd (void)
+  void glEnd ()
   {
     m_glfcns.glEnd ();
   }
 
-  void glFinish (void)
+  void glFinish ()
   {
     m_glfcns.glFinish ();
   }
@@ -211,7 +211,7 @@ public:
     m_glfcns.glGetDoublev (pname, data);
   }
 
-  GLenum glGetError (void)
+  GLenum glGetError ()
   {
     return m_glfcns.glGetError ();
   }
@@ -236,7 +236,7 @@ public:
     m_glfcns.glHint (target, mode);
   }
 
-  void glInitNames (void)
+  void glInitNames ()
   {
     m_glfcns.glInitNames ();
   }
@@ -261,7 +261,7 @@ public:
     m_glfcns.glLineWidth (width);
   }
 
-  void glLoadIdentity (void)
+  void glLoadIdentity ()
   {
     m_glfcns.glLoadIdentity ();
   }
@@ -327,17 +327,17 @@ public:
     m_glfcns.glPolygonOffset (factor, units);
   }
 
-  void glPopAttrib (void)
+  void glPopAttrib ()
   {
     m_glfcns.glPopAttrib ();
   }
 
-  void glPopMatrix (void)
+  void glPopMatrix ()
   {
     m_glfcns.glPopMatrix ();
   }
 
-  void glPopName (void)
+  void glPopName ()
   {
     m_glfcns.glPopName ();
   }
@@ -347,7 +347,7 @@ public:
     m_glfcns.glPushAttrib (mask);
   }
 
-  void glPushMatrix (void)
+  void glPushMatrix ()
   {
     m_glfcns.glPushMatrix ();
   }

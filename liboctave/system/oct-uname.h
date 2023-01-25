@@ -40,7 +40,7 @@ uname
 {
 public:
 
-  uname (void)
+  uname ()
     : m_sysname ("unknown"), m_nodename ("unknown"),
       m_release ("unknown"), m_version ("unknown"),
       m_machine ("unknown"),
@@ -71,16 +71,16 @@ public:
     return *this;
   }
 
-  ~uname (void) = default;
+  ~uname () = default;
 
-  std::string sysname (void) const { return m_sysname; }
-  std::string nodename (void) const { return m_nodename; }
-  std::string release (void) const { return m_release; }
-  std::string version (void) const { return m_version; }
-  std::string machine (void) const { return m_machine; }
+  std::string sysname () const { return m_sysname; }
+  std::string nodename () const { return m_nodename; }
+  std::string release () const { return m_release; }
+  std::string version () const { return m_version; }
+  std::string machine () const { return m_machine; }
 
-  std::string message (void) const { return m_errmsg; }
-  int error (void) const { return m_errno; }
+  std::string message () const { return m_errmsg; }
+  int error () const { return m_errno; }
 
 private:
 
@@ -93,7 +93,7 @@ private:
   std::string m_errmsg;
   int m_errno;
 
-  void init (void);
+  void init ();
 };
 
 OCTAVE_END_NAMESPACE(sys)

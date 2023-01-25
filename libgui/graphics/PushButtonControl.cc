@@ -69,7 +69,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
   }
 
-  PushButtonControl::~PushButtonControl (void)
+  PushButtonControl::~PushButtonControl ()
   { }
 
   void

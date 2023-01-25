@@ -64,9 +64,9 @@ public:
 
   tree_array_list& operator = (const tree_array_list&) = delete;
 
-  ~tree_array_list (void);
+  ~tree_array_list ();
 
-  bool all_elements_are_constant (void) const;
+  bool all_elements_are_constant () const;
 
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't

@@ -48,22 +48,22 @@ void tab_bar::set_rotated (int rotated)
 }
 
 // slots for tab navigation
-void tab_bar::switch_left_tab (void)
+void tab_bar::switch_left_tab ()
 {
   switch_tab (-1);
 }
 
-void tab_bar::switch_right_tab (void)
+void tab_bar::switch_right_tab ()
 {
   switch_tab (1);
 }
 
-void tab_bar::move_tab_left (void)
+void tab_bar::move_tab_left ()
 {
   switch_tab (-1, true);
 }
 
-void tab_bar::move_tab_right (void)
+void tab_bar::move_tab_right ()
 {
   switch_tab (1, true);
 }
@@ -91,7 +91,7 @@ void tab_bar::switch_tab (int direction, bool movetab)
     setCurrentIndex (new_pos);
 }
 
-void tab_bar::sort_tabs_alph (void)
+void tab_bar::sort_tabs_alph ()
 {
   QString current_title = tabText (currentIndex ());
   int tab_with_focus = 0;

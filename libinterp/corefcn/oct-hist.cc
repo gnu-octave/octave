@@ -276,7 +276,7 @@ void history_system::initialize (bool read_history_file)
   evmgr.set_history (command_history::list ());
 }
 
-void history_system::write_timestamp (void)
+void history_system::write_timestamp ()
 {
   sys::localtime now;
 
@@ -524,7 +524,7 @@ void history_system::do_run_history (const octave_value_list& args)
   source_file (name);
 }
 
-std::string history_system::default_file (void)
+std::string history_system::default_file ()
 {
   std::string file;
 
@@ -550,7 +550,7 @@ std::string history_system::default_file (void)
   return file;
 }
 
-int history_system::default_size (void)
+int history_system::default_size ()
 {
   int size = 1000;
 
@@ -567,7 +567,7 @@ int history_system::default_size (void)
   return size;
 }
 
-std::string history_system::default_timestamp_format (void)
+std::string history_system::default_timestamp_format ()
 {
   return
     "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <"

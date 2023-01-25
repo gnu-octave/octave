@@ -44,14 +44,14 @@ default_numeric_conversion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_lazy_index::numeric_conversion_function (void) const
+octave_lazy_index::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
          octave_matrix::static_type_id ());
 }
 
 octave_base_value *
-octave_lazy_index::try_narrowing_conversion (void)
+octave_lazy_index::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -97,7 +97,7 @@ octave_lazy_index::permute (const Array<int>& vec, bool inv) const
 }
 
 octave_value
-octave_lazy_index::squeeze (void) const
+octave_lazy_index::squeeze () const
 {
   return octave::idx_vector (m_index.as_array ().squeeze (),
                              m_index.extent (0));
@@ -161,61 +161,61 @@ octave_lazy_index::is_sorted_rows (sortmode mode) const
 }
 
 octave_value
-octave_lazy_index::as_double (void) const
+octave_lazy_index::as_double () const
 {
   return array_value ();
 }
 
 octave_value
-octave_lazy_index::as_single (void) const
+octave_lazy_index::as_single () const
 {
   return float_array_value ();
 }
 
 octave_value
-octave_lazy_index::as_int8 (void) const
+octave_lazy_index::as_int8 () const
 {
   return int8_array_value  ();
 }
 
 octave_value
-octave_lazy_index::as_int16 (void) const
+octave_lazy_index::as_int16 () const
 {
   return int16_array_value ();
 }
 
 octave_value
-octave_lazy_index::as_int32 (void) const
+octave_lazy_index::as_int32 () const
 {
   return int32_array_value ();
 }
 
 octave_value
-octave_lazy_index::as_int64 (void) const
+octave_lazy_index::as_int64 () const
 {
   return int64_array_value ();
 }
 
 octave_value
-octave_lazy_index::as_uint8 (void) const
+octave_lazy_index::as_uint8 () const
 {
   return uint8_array_value ();
 }
 
 octave_value
-octave_lazy_index::as_uint16 (void) const
+octave_lazy_index::as_uint16 () const
 {
   return uint16_array_value ();
 }
 
 octave_value
-octave_lazy_index::as_uint32 (void) const
+octave_lazy_index::as_uint32 () const
 {
   return uint32_array_value ();
 }
 
 octave_value
-octave_lazy_index::as_uint64 (void) const
+octave_lazy_index::as_uint64 () const
 {
   return uint64_array_value ();
 }

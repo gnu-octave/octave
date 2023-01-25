@@ -96,12 +96,12 @@ public:
       m_ok = true;
   }
 
-  std::string file (void) const { return m_file; }
-  std::string dir (void) const { return m_fcn; }
-  std::string fcn (void) const { return m_fcn; }
-  std::string class_name (void) const { return m_class_name; }
+  std::string file () const { return m_file; }
+  std::string dir () const { return m_fcn; }
+  std::string fcn () const { return m_fcn; }
+  std::string class_name () const { return m_class_name; }
 
-  bool ok (void) const { return m_ok; }
+  bool ok () const { return m_ok; }
 
 private:
 
@@ -114,7 +114,7 @@ private:
 
 // Clear all reasons to stop, other than breakpoints.
 
-void bp_table::dbclear_all_signals (void)
+void bp_table::dbclear_all_signals ()
 {
   interpreter& interp = m_evaluator.get_interpreter ();
   error_system& es = interp.get_error_system ();
@@ -941,7 +941,7 @@ bp_table::remove_all_breakpoints_from_file (const std::string& file,
   return remove_all_breakpoints_from_function (info.fcn (), silent);
 }
 
-void bp_table::remove_all_breakpoints (void)
+void bp_table::remove_all_breakpoints ()
 {
   // Odd loop structure required because delete will invalidate
   // m_bp_set iterators.

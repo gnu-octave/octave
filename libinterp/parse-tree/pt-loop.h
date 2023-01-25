@@ -72,15 +72,15 @@ public:
 
   tree_while_command& operator = (const tree_while_command&) = delete;
 
-  ~tree_while_command (void);
+  ~tree_while_command ();
 
-  tree_expression * condition (void) { return m_expr; }
+  tree_expression * condition () { return m_expr; }
 
-  tree_statement_list * body (void) { return m_list; }
+  tree_statement_list * body () { return m_list; }
 
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -132,7 +132,7 @@ public:
 
   tree_do_until_command& operator = (const tree_do_until_command&) = delete;
 
-  ~tree_do_until_command (void) = default;
+  ~tree_do_until_command () = default;
 
   void accept (tree_walker& tw)
   {
@@ -170,21 +170,21 @@ public:
 
   tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
 
-  ~tree_simple_for_command (void);
+  ~tree_simple_for_command ();
 
-  bool in_parallel (void) { return m_parallel; }
+  bool in_parallel () { return m_parallel; }
 
-  tree_expression * left_hand_side (void) { return m_lhs; }
+  tree_expression * left_hand_side () { return m_lhs; }
 
-  tree_expression * control_expr (void) { return m_expr; }
+  tree_expression * control_expr () { return m_expr; }
 
-  tree_expression * maxproc_expr (void) { return m_maxproc; }
+  tree_expression * maxproc_expr () { return m_maxproc; }
 
-  tree_statement_list * body (void) { return m_list; }
+  tree_statement_list * body () { return m_list; }
 
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -240,17 +240,17 @@ public:
 
   tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
 
-  ~tree_complex_for_command (void);
+  ~tree_complex_for_command ();
 
-  tree_argument_list * left_hand_side (void) { return m_lhs; }
+  tree_argument_list * left_hand_side () { return m_lhs; }
 
-  tree_expression * control_expr (void) { return m_expr; }
+  tree_expression * control_expr () { return m_expr; }
 
-  tree_statement_list * body (void) { return m_list; }
+  tree_statement_list * body () { return m_list; }
 
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {

@@ -169,7 +169,7 @@ public:
                                     SparseMatrix *dfdyp, realtype cj);
 
   //Default
-  IDA (void)
+  IDA ()
     : m_t0 (0.0), m_y0 (), m_yp0 (), m_havejac (false), m_havejacfcn (false),
       m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fcn (),
       m_ida_jac (), m_dfdy (nullptr), m_dfdyp (nullptr), m_spdfdy (nullptr),
@@ -190,7 +190,7 @@ public:
   { }
 
 
-  ~IDA (void)
+  ~IDA ()
   {
     IDAFree (&m_mem);
     SUNLinSolFree (m_sunLinearSolver);
@@ -251,9 +251,9 @@ public:
     return *this;
   }
 
-  void set_userdata (void);
+  void set_userdata ();
 
-  void initialize (void);
+  void initialize ();
 
   static ColumnVector NVecToCol (N_Vector& v, octave_f77_int_type n);
 
@@ -351,7 +351,7 @@ public:
              const octave_value& event_fcn,
              const octave_idx_type num_event_args);
 
-  void print_stat (void);
+  void print_stat ();
 
 private:
 
@@ -572,7 +572,7 @@ IDA::ColToNVec (const ColumnVector& data, octave_f77_int_type n)
 }
 
 void
-IDA::set_userdata (void)
+IDA::set_userdata ()
 {
   void *userdata = this;
 
@@ -581,7 +581,7 @@ IDA::set_userdata (void)
 }
 
 void
-IDA::initialize (void)
+IDA::initialize ()
 {
   m_num = to_f77_int (m_y0.numel ());
 #  if defined (HAVE_SUNDIALS_SUNCONTEXT)
@@ -1046,7 +1046,7 @@ IDA::set_maxorder (int maxorder)
 }
 
 void
-IDA::print_stat (void)
+IDA::print_stat ()
 {
   long int nsteps = 0, netfails = 0, nrevals = 0;
 

@@ -32,7 +32,7 @@
 #include "liboctave-build-info.h"
 
 std::string
-liboctave_hg_id (void)
+liboctave_hg_id ()
 {
   return "%OCTAVE_HG_ID%";
 }

@@ -118,7 +118,7 @@ static bool Voptimize_range = true;
 // Octave's value type.
 
 octave_base_value *
-octave_value::nil_rep (void)
+octave_value::nil_rep ()
 {
   static octave_base_value nr;
   return &nr;
@@ -1226,7 +1226,7 @@ octave_value::octave_value (octave_base_value *new_rep, bool borrow)
 }
 
 octave_base_value *
-octave_value::clone (void) const
+octave_value::clone () const
 {
   return m_rep->clone ();
 }
@@ -1259,7 +1259,7 @@ octave_value::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& 
 }
 
 void
-octave_value::maybe_mutate (void)
+octave_value::maybe_mutate ()
 {
   octave_base_value *tmp = m_rep->try_narrowing_conversion ();
 
@@ -1694,7 +1694,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 // unresolved const issues that prevent that solution from working.
 
 std::string
-octave_value::get_dims_str (void) const
+octave_value::get_dims_str () const
 {
   octave_value tmp = *this;
 
@@ -1709,7 +1709,7 @@ octave_value::get_dims_str (void) const
 }
 
 octave_idx_type
-octave_value::length (void) const
+octave_value::length () const
 {
   octave_idx_type retval = 0;
 
@@ -1773,19 +1773,19 @@ octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 }
 
 Cell
-octave_value::cell_value (void) const
+octave_value::cell_value () const
 {
   return m_rep->cell_value ();
 }
 
 octave_map
-octave_value::map_value (void) const
+octave_value::map_value () const
 {
   return m_rep->map_value ();
 }
 
 octave_scalar_map
-octave_value::scalar_map_value (void) const
+octave_value::scalar_map_value () const
 {
   return m_rep->scalar_map_value ();
 }
@@ -1827,7 +1827,7 @@ octave_value::fcn_handle_value (bool silent) const
 }
 
 octave_value_list
-octave_value::list_value (void) const
+octave_value::list_value () const
 {
   return m_rep->list_value ();
 }
@@ -2267,7 +2267,7 @@ XVALUE_EXTRACTOR (octave_value_list, xlist_value, list_value)
 #undef XVALUE_EXTRACTOR
 
 octave_value
-octave_value::storable_value (void) const
+octave_value::storable_value () const
 {
   octave_value retval = *this;
   if (isnull ())
@@ -2283,7 +2283,7 @@ octave_value::storable_value (void) const
 }
 
 void
-octave_value::make_storable_value (void)
+octave_value::make_storable_value ()
 {
   if (isnull ())
     {
@@ -2306,7 +2306,7 @@ octave_value::make_storable_value (void)
 }
 
 float_display_format
-octave_value::get_edit_display_format (void) const
+octave_value::get_edit_display_format () const
 {
   return m_rep->get_edit_display_format ();
 }
@@ -2918,7 +2918,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   OCTAVE_NORETURN static void
-  err_cat_op_conv (void)
+  err_cat_op_conv ()
   {
     error ("type conversion failed for concatenation operator");
   }

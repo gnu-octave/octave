@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(sys)
 
 extern OCTAVE_API int system (const std::string& cmd_str);
 
-extern OCTAVE_API std::string getcwd (void);
+extern OCTAVE_API std::string getcwd ();
 
 extern OCTAVE_API int chdir (const std::string&);
 

@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // create a memory leak.
 
 std::string
-tree::str_print_code (void)
+tree::str_print_code ()
 {
   std::ostringstream buf;
 

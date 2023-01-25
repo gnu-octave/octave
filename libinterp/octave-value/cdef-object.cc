@@ -111,19 +111,19 @@ cdef_object_rep::release (const cdef_object& obj)
 }
 
 cdef_class
-cdef_object_rep::get_class (void) const
+cdef_object_rep::get_class () const
 {
   err_invalid_object ("get_class");
 }
 
 std::string
-cdef_object_rep::class_name (void) const
+cdef_object_rep::class_name () const
 {
   return get_class ().get_name ();
 }
 
 string_vector
-cdef_object_rep::map_keys (void) const
+cdef_object_rep::map_keys () const
 {
   cdef_class cls = get_class ();
 
@@ -134,7 +134,7 @@ cdef_object_rep::map_keys (void) const
 }
 
 octave_map
-cdef_object::map_value (void) const
+cdef_object::map_value () const
 {
   octave_map retval;
 
@@ -180,13 +180,13 @@ cdef_object::map_value (void) const
 }
 
 cdef_class
-cdef_object::get_class (void) const
+cdef_object::get_class () const
 {
   return m_rep->get_class ();
 }
 
 cdef_class
-cdef_object_base::get_class (void) const
+cdef_object_base::get_class () const
 {
   return cdef_class (m_klass);
 }
@@ -203,7 +203,7 @@ cdef_object_base::set_class (const cdef_class& cls)
 }
 
 cdef_object_rep *
-cdef_object_base::make_array (void) const
+cdef_object_base::make_array () const
 {
   cdef_object_rep *r = new cdef_object_array ();
 
@@ -735,7 +735,7 @@ cdef_object_scalar::mark_as_constructed (const cdef_class& cls)
   m_ctor_list.erase (cls);
 }
 
-handle_cdef_object::~handle_cdef_object (void)
+handle_cdef_object::~handle_cdef_object ()
 {
 #if DEBUG_TRACE
   std::cerr << "deleting " << get_class ().get_name ()
@@ -743,7 +743,7 @@ handle_cdef_object::~handle_cdef_object (void)
 #endif
 }
 
-value_cdef_object::~value_cdef_object (void)
+value_cdef_object::~value_cdef_object ()
 {
 #if DEBUG_TRACE
   std::cerr << "deleting " << get_class ().get_name ()

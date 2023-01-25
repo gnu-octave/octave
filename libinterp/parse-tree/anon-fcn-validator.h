@@ -51,7 +51,7 @@ public:
 
   anon_fcn_validator& operator = (const anon_fcn_validator&) = delete;
 
-  ~anon_fcn_validator (void) = default;
+  ~anon_fcn_validator () = default;
 
   void visit_postfix_expression (tree_postfix_expression&);
 
@@ -61,12 +61,12 @@ public:
 
   void visit_simple_assignment (tree_simple_assignment&);
 
-  bool ok (void) const { return m_ok; }
+  bool ok () const { return m_ok; }
 
-  int line (void) const { return m_line; }
-  int column (void) const { return m_column; }
+  int line () const { return m_line; }
+  int column () const { return m_column; }
 
-  std::string message (void) const { return m_message; }
+  std::string message () const { return m_message; }
 
 private:
 

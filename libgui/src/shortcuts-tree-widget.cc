@@ -117,12 +117,12 @@ tree_widget_shortcut_item::tree_widget_shortcut_item
   set_actual_text (actual_text);
 }
 
-QString tree_widget_shortcut_item::settings_key (void) const
+QString tree_widget_shortcut_item::settings_key () const
 {
   return m_settings_key;
 }
 
-QString tree_widget_shortcut_item::description (void) const
+QString tree_widget_shortcut_item::description () const
 {
   return text (DESCRIPTION_COLUMN);
 }
@@ -132,7 +132,7 @@ void tree_widget_shortcut_item::set_description (const QString& text)
   setText (DESCRIPTION_COLUMN, text);
 }
 
-QString tree_widget_shortcut_item::default_text (void) const
+QString tree_widget_shortcut_item::default_text () const
 {
   return text (DEFAULT_COLUMN);
 }
@@ -142,7 +142,7 @@ void tree_widget_shortcut_item::set_default_text (const QString& text)
   setText (DEFAULT_COLUMN, text);
 }
 
-QString tree_widget_shortcut_item::actual_text (void) const
+QString tree_widget_shortcut_item::actual_text () const
 {
   return text (ACTUAL_COLUMN);
 }
@@ -334,7 +334,7 @@ void shortcut_edit_dialog::finished (int result)
   m_shortcut_item->set_actual_text (actual_text);
 }
 
-void shortcut_edit_dialog::set_default_shortcut (void)
+void shortcut_edit_dialog::set_default_shortcut ()
 {
   // Just remove user-set value so that the default will be used.
   m_edit_actual->setText ("");
@@ -653,7 +653,7 @@ void shortcuts_tree_widget::export_shortcuts (gui_settings& settings)
 // Clear all user-defined settings from the tree widget and the
 // application settings.
 
-void shortcuts_tree_widget::set_default_shortcuts (void)
+void shortcuts_tree_widget::set_default_shortcuts ()
 {
   gui_settings settings;
 
@@ -699,7 +699,7 @@ void shortcuts_tree_widget::set_default_shortcuts (void)
 // For each key found in application settings object, transfer
 // corresponding setting to the application settings object.
 
-void shortcuts_tree_widget::write_settings (void)
+void shortcuts_tree_widget::write_settings ()
 {
   gui_settings settings;
 

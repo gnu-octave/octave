@@ -123,7 +123,7 @@ Cell::Cell (const dim_vector& dv, const string_vector& sv, bool trim)
 }
 
 bool
-Cell::iscellstr (void) const
+Cell::iscellstr () const
 {
   bool retval = true;
 
@@ -142,7 +142,7 @@ Cell::iscellstr (void) const
 }
 
 Array<std::string>
-Cell::cellstr_value (void) const
+Cell::cellstr_value () const
 {
   Array<std::string> retval (dims ());
 
@@ -155,7 +155,7 @@ Cell::cellstr_value (void) const
 }
 
 string_vector
-Cell::string_vector_value (void) const
+Cell::string_vector_value () const
 {
   octave_idx_type n = numel ();
 
@@ -288,7 +288,7 @@ Cell::delete_elements (const octave_value_list& idx_arg)
 }
 
 octave_idx_type
-Cell::nnz (void) const
+Cell::nnz () const
 {
   err_wrong_type_arg ("nnz", "cell array");
 }
@@ -355,7 +355,7 @@ Cell::map (ctype_mapper fcn) const
 }
 
 octave_value
-Cell::resize_fill_value (void) const
+Cell::resize_fill_value () const
 {
   static octave_value rfv = octave_value (Matrix ());
   return rfv;

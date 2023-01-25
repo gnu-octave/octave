@@ -45,15 +45,15 @@ class
 OCTINTERP_API
 octave_null_matrix : public octave_matrix
 {
-  octave_null_matrix (void) : octave_matrix () { }
+  octave_null_matrix () : octave_matrix () { }
 
 public:
 
   static const octave_value instance;
 
-  bool isnull (void) const { return true; }
+  bool isnull () const { return true; }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
 private:
 
@@ -66,17 +66,17 @@ class
 OCTINTERP_API
 octave_null_str : public octave_char_matrix_str
 {
-  octave_null_str (void) : octave_char_matrix_str () { }
+  octave_null_str () : octave_char_matrix_str () { }
 
 public:
 
   static const octave_value instance;
 
-  bool is_storable (void) const { return false; }
+  bool is_storable () const { return false; }
 
-  bool isnull (void) const { return true; }
+  bool isnull () const { return true; }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
 private:
 
@@ -89,17 +89,17 @@ class
 OCTINTERP_API
 octave_null_sq_str : public octave_char_matrix_sq_str
 {
-  octave_null_sq_str (void) : octave_char_matrix_sq_str () { }
+  octave_null_sq_str () : octave_char_matrix_sq_str () { }
 
 public:
 
   static const octave_value instance;
 
-  bool is_storable (void) const { return false; }
+  bool is_storable () const { return false; }
 
-  bool isnull (void) const { return true; }
+  bool isnull () const { return true; }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
 private:
 

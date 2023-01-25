@@ -863,7 +863,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
 
 template <typename lu_type>
 lu_type
-sparse_lu<lu_type>::Y (void) const
+sparse_lu<lu_type>::Y () const
 {
   octave_idx_type nr = m_L.rows ();
   octave_idx_type nz = m_L.cols ();
@@ -900,7 +900,7 @@ sparse_lu<lu_type>::Y (void) const
 
 template <typename lu_type>
 SparseMatrix
-sparse_lu<lu_type>::Pr (void) const
+sparse_lu<lu_type>::Pr () const
 {
   octave_idx_type nr = m_L.rows ();
 
@@ -920,7 +920,7 @@ sparse_lu<lu_type>::Pr (void) const
 
 template <typename lu_type>
 ColumnVector
-sparse_lu<lu_type>::Pr_vec (void) const
+sparse_lu<lu_type>::Pr_vec () const
 {
   octave_idx_type nr = m_L.rows ();
 
@@ -934,14 +934,14 @@ sparse_lu<lu_type>::Pr_vec (void) const
 
 template <typename lu_type>
 PermMatrix
-sparse_lu<lu_type>::Pr_mat (void) const
+sparse_lu<lu_type>::Pr_mat () const
 {
   return PermMatrix (m_P, false);
 }
 
 template <typename lu_type>
 SparseMatrix
-sparse_lu<lu_type>::Pc (void) const
+sparse_lu<lu_type>::Pc () const
 {
   octave_idx_type nc = m_U.cols ();
 
@@ -961,7 +961,7 @@ sparse_lu<lu_type>::Pc (void) const
 
 template <typename lu_type>
 ColumnVector
-sparse_lu<lu_type>::Pc_vec (void) const
+sparse_lu<lu_type>::Pc_vec () const
 {
   octave_idx_type nc = m_U.cols ();
 
@@ -975,7 +975,7 @@ sparse_lu<lu_type>::Pc_vec (void) const
 
 template <typename lu_type>
 PermMatrix
-sparse_lu<lu_type>::Pc_mat (void) const
+sparse_lu<lu_type>::Pc_mat () const
 {
   return PermMatrix (m_Q, true);
 }

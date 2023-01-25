@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     PopupMenuControl (octave::interpreter& interp, const graphics_object& go,
                       QComboBox *box);
-    ~PopupMenuControl (void);
+    ~PopupMenuControl ();
 
     static PopupMenuControl *
     create (octave::interpreter& interp,

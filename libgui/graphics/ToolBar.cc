@@ -45,7 +45,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  static QIcon makeEmptyIcon (void)
+  static QIcon makeEmptyIcon ()
   {
     QPixmap pix (16, 16);
 
@@ -108,7 +108,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     bar->installEventFilter (this);
   }
 
-  ToolBar::~ToolBar (void)
+  ToolBar::~ToolBar ()
   { }
 
   void
@@ -168,13 +168,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  ToolBar::hideEmpty (void)
+  ToolBar::hideEmpty ()
   {
     m_empty->setVisible (false);
   }
 
   void
-  ToolBar::beingDeleted (void)
+  ToolBar::beingDeleted ()
   {
     if (m_figure)
       {

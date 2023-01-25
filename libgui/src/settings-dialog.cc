@@ -502,12 +502,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void settings_dialog::get_octave_dir (void)
+  void settings_dialog::get_octave_dir ()
   {
     get_dir (le_octave_dir, tr ("Set Octave Startup Directory"));
   }
 
-  void settings_dialog::get_file_browser_dir (void)
+  void settings_dialog::get_file_browser_dir ()
   {
     get_dir (le_file_browser_dir, tr ("Set File Browser Startup Directory"));
   }
@@ -571,7 +571,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // slot for updating enabled state of proxy settings
-  void settings_dialog::proxy_items_update (void)
+  void settings_dialog::proxy_items_update ()
   {
     bool use_proxy = use_proxy_server->isChecked ();
 
@@ -603,7 +603,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // gui_settings_object so that the user may choose to apply or cancel
   // the action.
 
-  void settings_dialog::import_shortcut_set (void)
+  void settings_dialog::import_shortcut_set ()
   {
     if (! overwrite_all_shortcuts ())
       return;
@@ -627,7 +627,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // choice to save current application settings or the modified values
   // in the dialog?
 
-  void settings_dialog::export_shortcut_set (void)
+  void settings_dialog::export_shortcut_set ()
   {
     QString file = get_shortcuts_file_name (OSC_EXPORT);
 
@@ -644,7 +644,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // gui_settings object so that the user may choose to apply or cancel
   // the action.
 
-  void settings_dialog::default_shortcut_set (void)
+  void settings_dialog::default_shortcut_set ()
   {
     if (! overwrite_all_shortcuts ())
       return;
@@ -1032,7 +1032,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 #endif
 
-  void settings_dialog::write_changed_settings (void)
+  void settings_dialog::write_changed_settings ()
   {
     gui_settings settings;
 
@@ -1261,7 +1261,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.sync ();
   }
 
-  void settings_dialog::read_workspace_colors (void)
+  void settings_dialog::read_workspace_colors ()
   {
     gui_settings settings;
 
@@ -1377,7 +1377,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void settings_dialog::write_workspace_colors (void)
+  void settings_dialog::write_workspace_colors ()
   {
     gui_settings settings;
 
@@ -1405,7 +1405,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.sync ();
   }
 
-  void settings_dialog::read_terminal_colors (void)
+  void settings_dialog::read_terminal_colors ()
   {
     gui_settings settings;
 
@@ -1489,7 +1489,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void settings_dialog::write_terminal_colors (void)
+  void settings_dialog::write_terminal_colors ()
   {
     QCheckBox *cb_color_mode
       = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.settings_key ());
@@ -1514,7 +1514,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.sync ();
   }
 
-  void settings_dialog::read_varedit_colors (void)
+  void settings_dialog::read_varedit_colors ()
   {
     gui_settings settings;
 
@@ -1599,7 +1599,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void settings_dialog::write_varedit_colors (void)
+  void settings_dialog::write_varedit_colors ()
   {
     QCheckBox *cb_color_mode
       = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.settings_key ());
@@ -1671,7 +1671,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   //   (XX) - already possible (cancel operation, cancel settings
   //          dialog, re-open settings dialog and export changes).
 
-  bool settings_dialog::overwrite_all_shortcuts (void)
+  bool settings_dialog::overwrite_all_shortcuts ()
   {
     QMessageBox msg_box;
 

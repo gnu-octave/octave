@@ -91,7 +91,7 @@ fcn_info::fcn_info_rep::load_private_function (const std::string& dir_name)
 }
 
 octave_value
-fcn_info::fcn_info_rep::load_class_constructor (void)
+fcn_info::fcn_info_rep::load_class_constructor ()
 {
   octave_value retval;
 
@@ -241,7 +241,7 @@ fcn_info::fcn_info_rep::load_class_method (const std::string& dispatch_type)
 // to btyp_num_types (static constant).  Only the leftmost dimension can be
 // variable in C/C++.  Typedefs are boring.
 
-static builtin_type_t (* build_sup_table (void))[btyp_num_types]
+static builtin_type_t (* build_sup_table ())[btyp_num_types]
 {
   static builtin_type_t sup_table[btyp_num_types][btyp_num_types];
   for (int i = 0; i < btyp_num_types; i++)
@@ -999,7 +999,7 @@ fcn_info::fcn_info_rep::find_method (const std::string& dispatch_type)
 }
 
 octave_value
-fcn_info::fcn_info_rep::find_autoload (void)
+fcn_info::fcn_info_rep::find_autoload ()
 {
   // Autoloaded function.
 
@@ -1030,7 +1030,7 @@ fcn_info::fcn_info_rep::find_autoload (void)
 }
 
 octave_value
-fcn_info::fcn_info_rep::find_user_function (void)
+fcn_info::fcn_info_rep::find_user_function ()
 {
   // Function on the path.
 
@@ -1060,7 +1060,7 @@ fcn_info::fcn_info_rep::find_user_function (void)
 }
 
 octave_value
-fcn_info::fcn_info_rep::find_package (void)
+fcn_info::fcn_info_rep::find_package ()
 {
   // FIXME: implement correct way to check out of date package
   //if (package.is_defined ())
@@ -1098,7 +1098,7 @@ fcn_info::fcn_info_rep::install_built_in_dispatch (const std::string& klass)
 }
 
 octave_value
-fcn_info::fcn_info_rep::dump (void) const
+fcn_info::fcn_info_rep::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "name", full_name () },

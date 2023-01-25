@@ -47,15 +47,15 @@ pager_buf : public std::stringbuf
 {
 public:
 
-  pager_buf (void) : std::stringbuf (), m_diary_skip (0) { }
+  pager_buf () : std::stringbuf (), m_diary_skip (0) { }
 
-  void flush_current_contents_to_diary (void);
+  void flush_current_contents_to_diary ();
 
-  void set_diary_skip (void);
+  void set_diary_skip ();
 
 protected:
 
-  int sync (void);
+  int sync ();
 
 private:
 
@@ -68,7 +68,7 @@ pager_stream : public std::ostream
 {
 public:
 
-  pager_stream (void);
+  pager_stream ();
 
   // No copying!
 
@@ -76,15 +76,15 @@ public:
 
   pager_stream& operator = (const pager_stream&) = delete;
 
-  ~pager_stream (void);
+  ~pager_stream ();
 
-  void flush_current_contents_to_diary (void);
+  void flush_current_contents_to_diary ();
 
-  void set_diary_skip (void);
+  void set_diary_skip ();
 
-  std::ostream& stream (void);
+  std::ostream& stream ();
 
-  void reset (void);
+  void reset ();
 
 private:
 
@@ -97,11 +97,11 @@ diary_buf : public std::stringbuf
 {
 public:
 
-  diary_buf (void) : std::stringbuf () { }
+  diary_buf () : std::stringbuf () { }
 
 protected:
 
-  int sync (void);
+  int sync ();
 };
 
 class
@@ -110,7 +110,7 @@ diary_stream : public std::ostream
 {
 public:
 
-  diary_stream (void);
+  diary_stream ();
 
   // No copying!
 
@@ -118,18 +118,18 @@ public:
 
   diary_stream& operator = (const diary_stream&) = delete;
 
-  ~diary_stream (void);
+  ~diary_stream ();
 
-  std::ostream& stream (void);
+  std::ostream& stream ();
 
-  void reset (void);
+  void reset ();
 
 private:
 
   diary_buf *m_db;
 };
 
-extern OCTINTERP_API void flush_stdout (void);
+extern OCTINTERP_API void flush_stdout ();
 
 class output_system
 {
@@ -141,13 +141,13 @@ public:
 
   output_system& operator = (const output_system&) = delete;
 
-  ~output_system (void) = default;
+  ~output_system () = default;
 
-  pager_stream& pager (void) { return m_pager_stream; }
+  pager_stream& pager () { return m_pager_stream; }
 
-  diary_stream& diary (void) { return m_diary_stream; }
+  diary_stream& diary () { return m_diary_stream; }
 
-  std::string diary_file_name (void) const { return m_diary_file_name; }
+  std::string diary_file_name () const { return m_diary_file_name; }
 
   std::string diary_file_name (const std::string& nm)
   {
@@ -158,7 +158,7 @@ public:
 
   octave_value PAGER (const octave_value_list& args, int nargout);
 
-  std::string PAGER (void) const { return m_PAGER; }
+  std::string PAGER () const { return m_PAGER; }
 
   std::string PAGER (const std::string& s)
   {
@@ -169,7 +169,7 @@ public:
 
   octave_value PAGER_FLAGS (const octave_value_list& args, int nargout);
 
-  std::string PAGER_FLAGS (void) const { return m_PAGER_FLAGS; }
+  std::string PAGER_FLAGS () const { return m_PAGER_FLAGS; }
 
   std::string PAGER_FLAGS (const std::string& s)
   {
@@ -181,7 +181,7 @@ public:
   octave_value page_output_immediately (const octave_value_list& args,
                                         int nargout);
 
-  bool page_output_immediately (void) const
+  bool page_output_immediately () const
   {
     return m_page_output_immediately;
   }
@@ -196,7 +196,7 @@ public:
   octave_value page_screen_output (const octave_value_list& args,
                                    int nargout);
 
-  bool page_screen_output (void) const { return m_page_screen_output; }
+  bool page_screen_output () const { return m_page_screen_output; }
 
   bool page_screen_output (bool flag)
   {
@@ -205,7 +205,7 @@ public:
     return val;
   }
 
-  bool write_to_diary_file (void) const
+  bool write_to_diary_file () const
   {
     return m_write_to_diary_file;
   }
@@ -217,7 +217,7 @@ public:
     return val;
   }
 
-  bool really_flush_to_pager (void) const
+  bool really_flush_to_pager () const
   {
     return m_really_flush_to_pager;
   }
@@ -229,7 +229,7 @@ public:
     return val;
   }
 
-  bool flushing_output_to_pager (void) const
+  bool flushing_output_to_pager () const
   {
     return m_flushing_output_to_pager;
   }
@@ -241,25 +241,25 @@ public:
     return val;
   }
 
-  std::string pager_command (void) const;
+  std::string pager_command () const;
 
-  std::ofstream& external_diary_file (void) { return m_external_diary_file; }
+  std::ofstream& external_diary_file () { return m_external_diary_file; }
 
-  void reset (void);
+  void reset ();
 
-  void flush_stdout (void);
+  void flush_stdout ();
 
   bool sync (const char *msg, int len);
 
-  void clear_external_pager (void);
+  void clear_external_pager ();
 
-  void open_diary (void);
+  void open_diary ();
 
-  void close_diary (void);
+  void close_diary ();
 
-  std::ostream& __stdout__ (void) { return m_pager_stream.stream (); }
+  std::ostream& __stdout__ () { return m_pager_stream.stream (); }
 
-  std::ostream& __diary__ (void) { return m_diary_stream.stream (); }
+  std::ostream& __diary__ () { return m_diary_stream.stream (); }
 
 private:
 
@@ -300,14 +300,14 @@ private:
 
   bool m_flushing_output_to_pager;
 
-  void start_external_pager (void);
+  void start_external_pager ();
 
   void do_sync (const char *msg, int len, bool bypass_pager);
 };
 
-extern OCTINTERP_API std::ostream& __stdout__ (void);
+extern OCTINTERP_API std::ostream& __stdout__ ();
 
-extern OCTINTERP_API std::ostream& __diary__ (void);
+extern OCTINTERP_API std::ostream& __diary__ ();
 
 OCTAVE_END_NAMESPACE(octave)
 

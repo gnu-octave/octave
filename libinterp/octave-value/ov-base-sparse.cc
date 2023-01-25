@@ -242,7 +242,7 @@ octave_base_sparse<T>::resize (const dim_vector& dv, bool) const
 
 template <typename T>
 bool
-octave_base_sparse<T>::is_true (void) const
+octave_base_sparse<T>::is_true () const
 {
   bool retval = false;
   dim_vector dv = matrix.dims ();
@@ -272,7 +272,7 @@ octave_base_sparse<T>::is_true (void) const
 
 template <typename T>
 bool
-octave_base_sparse<T>::print_as_scalar (void) const
+octave_base_sparse<T>::print_as_scalar () const
 {
   dim_vector dv = dims ();
 
@@ -379,7 +379,7 @@ octave_base_sparse<T>::print_raw (std::ostream& os,
 
 template <typename MT>
 float_display_format
-octave_base_sparse<MT>::get_edit_display_format (void) const
+octave_base_sparse<MT>::get_edit_display_format () const
 {
   return float_display_format ();
   //  return make_format (this->matrix);

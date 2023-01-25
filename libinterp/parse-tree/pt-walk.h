@@ -111,9 +111,9 @@ class tree_walker
 {
 protected:
 
-  tree_walker (void) { }
+  tree_walker () { }
 
-  virtual ~tree_walker (void) = default;
+  virtual ~tree_walker () = default;
 
 public:
 

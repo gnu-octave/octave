@@ -36,7 +36,7 @@
 template <>
 OCTAVE_API
 bool
-Sparse<bool>::SparseRep::any_element_is_nan (void) const
+Sparse<bool>::SparseRep::any_element_is_nan () const
 {
   return false;
 }

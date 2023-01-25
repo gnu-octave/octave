@@ -45,17 +45,17 @@ class settings
 {
 public:
 
-  settings (void);
+  settings ();
 
   settings (const settings&) = delete;
 
   settings& operator = (const settings&) = delete;
 
-  ~settings (void) = default;
+  ~settings () = default;
 
   octave_value display_tokens (const octave_value_list& args, int nargout);
 
-  bool display_tokens (void) const { return m_display_tokens; }
+  bool display_tokens () const { return m_display_tokens; }
 
   bool display_tokens (bool flag)
   {
@@ -65,13 +65,13 @@ public:
   }
 
   // Read only.
-  std::size_t token_count (void) const { return m_token_count; }
+  std::size_t token_count () const { return m_token_count; }
 
-  void increment_token_count (void) { ++m_token_count; }
+  void increment_token_count () { ++m_token_count; }
 
   octave_value lexer_debug_flag (const octave_value_list& args, int nargout);
 
-  bool lexer_debug_flag (void) const { return m_lexer_debug_flag; }
+  bool lexer_debug_flag () const { return m_lexer_debug_flag; }
 
   bool lexer_debug_flag (bool flag)
   {

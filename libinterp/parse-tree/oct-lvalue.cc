@@ -37,12 +37,12 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-bool octave_lvalue::is_defined (void) const
+bool octave_lvalue::is_defined () const
 {
   return ! is_black_hole () && m_frame->is_defined (m_sym);
 }
 
-bool octave_lvalue::is_undefined (void) const
+bool octave_lvalue::is_undefined () const
 {
   return ! is_defined ();
 }
@@ -59,7 +59,7 @@ void octave_lvalue::assign (octave_value::assign_op op,
     m_frame->assign (op, m_sym, m_type, m_idx, rhs);
 }
 
-octave_idx_type octave_lvalue::numel (void) const
+octave_idx_type octave_lvalue::numel () const
 {
   // Return 1 if there is no index because without an index there
   // should be no way to have a cs-list here.  Cs-lists may be passed
@@ -178,7 +178,7 @@ void octave_lvalue::set_index (const std::string& t,
   m_idx = i;
 }
 
-bool octave_lvalue::index_is_empty (void) const
+bool octave_lvalue::index_is_empty () const
 {
   bool retval = false;
 
@@ -192,7 +192,7 @@ bool octave_lvalue::index_is_empty (void) const
   return retval;
 }
 
-bool octave_lvalue::index_is_colon (void) const
+bool octave_lvalue::index_is_colon () const
 {
   bool retval = false;
 
@@ -212,7 +212,7 @@ void octave_lvalue::unary_op (octave_value::unary_op op)
     m_frame->non_const_unary_op (op, m_sym, m_type, m_idx);
 }
 
-octave_value octave_lvalue::value (void) const
+octave_value octave_lvalue::value () const
 {
   return (is_black_hole ()
           ? octave_value () : m_frame->value (m_sym, m_type, m_idx));

@@ -47,7 +47,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  release_notes::release_notes (void)
+  release_notes::release_notes ()
     : QWidget (nullptr), m_browser (nullptr)
   {
 
@@ -106,7 +106,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     move (20, 20);  // move to the top left corner
   }
 
-  void release_notes::display (void)
+  void release_notes::display ()
   {
     if (! isVisible ())
       show ();

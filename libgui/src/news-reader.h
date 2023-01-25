@@ -47,11 +47,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void display_news_signal (const QString& news);
 
-    void finished (void);
+    void finished ();
 
   public slots:
 
-    void process (void);
+    void process ();
 
   private:
 

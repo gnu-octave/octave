@@ -42,7 +42,7 @@ procbuf : public c_file_ptr_buf
 {
 public:
 
-  procbuf (void)
+  procbuf ()
     : c_file_ptr_buf (nullptr), m_wstatus (-1), m_open_p (false),
       m_proc_pid (-1), m_next (nullptr)
   { }
@@ -58,17 +58,17 @@ public:
 
   procbuf& operator = (const procbuf&) = delete;
 
-  ~procbuf (void) { close (); }
+  ~procbuf () { close (); }
 
   procbuf * open (const char *command, int mode);
 
-  procbuf * close (void);
+  procbuf * close ();
 
-  int wait_status (void) const { return m_wstatus; }
+  int wait_status () const { return m_wstatus; }
 
-  bool is_open (void) const { return m_open_p; }
+  bool is_open () const { return m_open_p; }
 
-  pid_t pid (void) const { return m_proc_pid; }
+  pid_t pid () const { return m_proc_pid; }
 
 protected:
 

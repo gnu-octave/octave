@@ -67,7 +67,7 @@ default_numeric_conversion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_sparse_bool_matrix::numeric_conversion_function (void) const
+octave_sparse_bool_matrix::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
          octave_sparse_matrix::static_type_id ());
@@ -172,7 +172,7 @@ octave_sparse_bool_matrix::sparse_complex_matrix_value (bool) const
 }
 
 octave_value
-octave_sparse_bool_matrix::as_double (void) const
+octave_sparse_bool_matrix::as_double () const
 {
   return SparseMatrix (this->matrix);
 }

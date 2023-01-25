@@ -229,7 +229,7 @@ class JVMArgs
 {
 public:
 
-  JVMArgs (void)
+  JVMArgs ()
   {
     m_vm_args.version = JNI_VERSION_1_6;
     m_vm_args.nOptions = 0;
@@ -237,7 +237,7 @@ public:
     m_vm_args.ignoreUnrecognized = false;
   }
 
-  ~JVMArgs (void)
+  ~JVMArgs ()
   {
     clean ();
   }
@@ -275,7 +275,7 @@ public:
 
 private:
 
-  void clean (void)
+  void clean ()
   {
     if (m_vm_args.options != nullptr)
       {
@@ -289,7 +289,7 @@ private:
       }
   }
 
-  void update (void)
+  void update ()
   {
     clean ();
 
@@ -340,7 +340,7 @@ OCTAVE_END_NAMESPACE(octave)
 //! the options given by @c java.opts.
 
 static std::string
-initial_java_dir (void)
+initial_java_dir ()
 {
   static std::string java_dir;
 
@@ -419,7 +419,7 @@ read_classpath_txt (const std::string& filepath)
 //! @returns The initial classpath.
 
 static std::string
-initial_class_path (void)
+initial_class_path ()
 {
   std::string java_dir = initial_java_dir ();
 
@@ -667,7 +667,7 @@ get_jvm_lib_path_from_registry ()
 //! @see #terminate_jvm()
 
 static void
-initialize_jvm (void)
+initialize_jvm ()
 {
   // Most of the time JVM already exists and has been initialized.
   // Also it seems, as if jvm is set, the jvm is already attached.
@@ -829,7 +829,7 @@ initialize_jvm (void)
 //! @see #initialize_jvm()
 
 static void
-terminate_jvm (void)
+terminate_jvm ()
 {
   // There is nothing to do if jvm is not set (= nullptr).
   if (jvm)
@@ -893,7 +893,7 @@ jstring_to_string (JNIEnv *jni_env, jobject obj)
 //! @returns A reference to jni, if #jvm is present, otherwise @c nullptr.
 
 static inline JNIEnv *
-thread_jni_env (void)
+thread_jni_env ()
 {
   JNIEnv *env = nullptr;
 
@@ -906,7 +906,7 @@ thread_jni_env (void)
 #endif
 
 bool
-octave_java::is_java_string (void) const
+octave_java::is_java_string () const
 {
 #if defined (HAVE_JAVA)
 
@@ -1978,7 +1978,7 @@ get_current_thread_ID (JNIEnv *jni_env)
 //! @returns 0 in any case for good reason.
 
 static int
-java_event_hook (void)
+java_event_hook ()
 {
   JNIEnv *current_env = thread_jni_env ();
 
@@ -2005,7 +2005,7 @@ java_event_hook (void)
 //! @c __java_get__, @c __java_set__, and @c __java2mat__.
 
 static void
-initialize_java (void)
+initialize_java ()
 {
   if (! jvm)
     {
@@ -2119,7 +2119,7 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
 
 //! Ctor.
 
-octave_java::octave_java (void)
+octave_java::octave_java ()
   : octave_base_value (), m_java_object (nullptr), m_java_class (nullptr)
 {
 #if ! defined (HAVE_JAVA)
@@ -2166,7 +2166,7 @@ octave_java::register_type (octave::type_info& ti)
 }
 
 dim_vector
-octave_java::dims (void) const
+octave_java::dims () const
 {
 #if defined (HAVE_JAVA)
 
@@ -2343,7 +2343,7 @@ octave_java::subsasgn (const std::string& type,
 }
 
 string_vector
-octave_java::map_keys (void) const
+octave_java::map_keys () const
 {
 #if defined (HAVE_JAVA)
 
@@ -3007,7 +3007,7 @@ octave_java::init (void *jobj_arg, void *jcls_arg)
 }
 
 void
-octave_java::release (void)
+octave_java::release ()
 {
 #if defined (HAVE_JAVA)
 

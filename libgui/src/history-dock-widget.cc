@@ -80,12 +80,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_history_list_view->scrollToBottom ();
   }
 
-  void history_dock_widget::clear_history (void)
+  void history_dock_widget::clear_history ()
   {
     m_history_model->setStringList (QStringList ());
   }
 
-  void history_dock_widget::save_settings (void)
+  void history_dock_widget::save_settings ()
   {
     gui_settings settings;
 
@@ -102,7 +102,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     octave_dock_widget::save_settings ();
   }
 
-  void history_dock_widget::update_filter_history (void)
+  void history_dock_widget::update_filter_history ()
   {
     QString text = m_filter->currentText ();   // get current text
     int index = m_filter->findText (text);     // and its actual index
@@ -225,7 +225,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       emit command_create_script (text);
   }
 
-  void history_dock_widget::handle_contextmenu_filter (void)
+  void history_dock_widget::handle_contextmenu_filter ()
   {
     m_filter_shown = ! m_filter_shown;
     m_filter_widget->setVisible (m_filter_shown);
@@ -233,7 +233,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     set_filter_focus (m_filter_shown && m_filter_checkbox->isChecked ()) ;
   }
 
-  void history_dock_widget::copyClipboard (void)
+  void history_dock_widget::copyClipboard ()
   {
     if (m_history_list_view->hasFocus ())
       handle_contextmenu_copy (true);
@@ -245,7 +245,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void history_dock_widget::pasteClipboard (void)
+  void history_dock_widget::pasteClipboard ()
   {
     if (m_filter->lineEdit ()->hasFocus ())
       {
@@ -256,7 +256,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void history_dock_widget::selectAll (void)
+  void history_dock_widget::selectAll ()
   {
     if (m_filter->lineEdit ()->hasFocus ())
       m_filter->lineEdit ()->selectAll ();
@@ -276,7 +276,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void history_dock_widget::construct (void)
+  void history_dock_widget::construct ()
   {
     m_history_model = new QStringListModel ();
     m_sort_filter_proxy_model.setSourceModel (m_history_model);
@@ -353,7 +353,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_history_list_view->setTextElideMode (Qt::ElideRight);
   }
 
-  void history_dock_widget::notice_settings (void)
+  void history_dock_widget::notice_settings ()
   {
     gui_settings settings;
 

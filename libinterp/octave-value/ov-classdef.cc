@@ -228,7 +228,7 @@ octave_classdef::undef_subsasgn (const std::string& type,
 }
 
 Matrix
-octave_classdef::size (void)
+octave_classdef::size ()
 {
   octave::cdef_class cls = m_object.get_class ();
 
@@ -480,7 +480,7 @@ std::string octave_classdef_meta::doc_string (const std::string& meth_name) cons
   return "";
 }
 
-std::string octave_classdef_meta::file_name (void) const
+std::string octave_classdef_meta::file_name () const
 {
   if (m_object.is_class ())
     {

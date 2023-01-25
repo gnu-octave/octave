@@ -63,7 +63,7 @@ MArray : public Array<T>
 {
 public:
 
-  MArray (void) : Array<T> () { }
+  MArray () : Array<T> () { }
 
   explicit MArray (const dim_vector& dv)
     : Array<T> (dv) { }
@@ -76,7 +76,7 @@ public:
   template <typename U>
   MArray (const Array<U>& a) : Array<T> (a) { }
 
-  ~MArray (void) = default;
+  ~MArray () = default;
 
   MArray<T>& operator = (const MArray<T>& a)
   {
@@ -94,9 +94,9 @@ public:
   MArray<T> ipermute (const Array<octave_idx_type>& vec) const
   { return Array<T>::ipermute (vec); }
 
-  MArray squeeze (void) const { return Array<T>::squeeze (); }
+  MArray squeeze () const { return Array<T>::squeeze (); }
 
-  MArray<T> transpose (void) const
+  MArray<T> transpose () const
   { return Array<T>::transpose (); }
 
   MArray<T> hermitian (T (*fcn) (const T&) = nullptr) const
@@ -119,7 +119,7 @@ public:
   idx_add_nd (const octave::idx_vector& idx, const MArray<T>& vals,
               int dim = -1);
 
-  OCTARRAY_API void changesign (void);
+  OCTARRAY_API void changesign ();
 
 private:
   OCTARRAY_API static void instantiation_guard ();

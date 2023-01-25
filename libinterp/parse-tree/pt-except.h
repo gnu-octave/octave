@@ -65,19 +65,19 @@ public:
 
   tree_try_catch_command& operator = (const tree_try_catch_command&) = delete;
 
-  ~tree_try_catch_command (void);
+  ~tree_try_catch_command ();
 
-  tree_identifier * identifier (void) { return m_expr_id; }
+  tree_identifier * identifier () { return m_expr_id; }
 
-  tree_statement_list * body (void) { return m_try_code; }
+  tree_statement_list * body () { return m_try_code; }
 
-  tree_statement_list * cleanup (void) { return m_catch_code; }
+  tree_statement_list * cleanup () { return m_catch_code; }
 
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  comment_list * middle_comment (void) { return m_mid_comm; }
+  comment_list * middle_comment () { return m_mid_comm; }
 
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -134,17 +134,17 @@ public:
   tree_unwind_protect_command&
   operator = (const tree_unwind_protect_command&) = delete;
 
-  ~tree_unwind_protect_command (void);
+  ~tree_unwind_protect_command ();
 
-  tree_statement_list * body (void) { return m_unwind_protect_code; }
+  tree_statement_list * body () { return m_unwind_protect_code; }
 
-  tree_statement_list * cleanup (void) { return m_cleanup_code; }
+  tree_statement_list * cleanup () { return m_cleanup_code; }
 
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  comment_list * middle_comment (void) { return m_mid_comm; }
+  comment_list * middle_comment () { return m_mid_comm; }
 
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {

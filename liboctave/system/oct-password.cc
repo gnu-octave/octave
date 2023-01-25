@@ -41,7 +41,7 @@
 
 OCTAVE_NORETURN static
 void
-err_invalid (void)
+err_invalid ()
 {
   (*current_liboctave_error_handler) ("invalid password object");
 }
@@ -51,7 +51,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 std::string
-password::name (void) const
+password::name () const
 {
   if (! ok ())
     err_invalid ();
@@ -60,7 +60,7 @@ password::name (void) const
 }
 
 std::string
-password::passwd (void) const
+password::passwd () const
 {
   if (! ok ())
     err_invalid ();
@@ -69,7 +69,7 @@ password::passwd (void) const
 }
 
 uid_t
-password::uid (void) const
+password::uid () const
 {
   if (! ok ())
     err_invalid ();
@@ -78,7 +78,7 @@ password::uid (void) const
 }
 
 gid_t
-password::gid (void) const
+password::gid () const
 {
   if (! ok ())
     err_invalid ();
@@ -87,7 +87,7 @@ password::gid (void) const
 }
 
 std::string
-password::gecos (void) const
+password::gecos () const
 {
   if (! ok ())
     err_invalid ();
@@ -96,7 +96,7 @@ password::gecos (void) const
 }
 
 std::string
-password::dir (void) const
+password::dir () const
 {
   if (! ok ())
     err_invalid ();
@@ -105,7 +105,7 @@ password::dir (void) const
 }
 
 std::string
-password::shell (void) const
+password::shell () const
 {
   if (! ok ())
     err_invalid ();
@@ -114,7 +114,7 @@ password::shell (void) const
 }
 
 password
-password::getpwent (void)
+password::getpwent ()
 {
   std::string msg;
   return getpwent (msg);
@@ -175,7 +175,7 @@ password::getpwnam (const std::string& nm, std::string& msg)
 }
 
 int
-password::setpwent (void)
+password::setpwent ()
 {
   std::string msg;
   return setpwent (msg);
@@ -195,7 +195,7 @@ password::setpwent (std::string& msg)
 }
 
 int
-password::endpwent (void)
+password::endpwent ()
 {
   std::string msg;
   return endpwent (msg);

@@ -46,28 +46,28 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       make_window ();
   }
 
-  void documentation_dock_widget::notice_settings (void)
+  void documentation_dock_widget::notice_settings ()
   {
     m_docs->notice_settings ();
   }
 
-  void documentation_dock_widget::save_settings (void)
+  void documentation_dock_widget::save_settings ()
   {
     m_docs->save_settings ();
     octave_dock_widget::save_settings ();
   }
 
-  void documentation_dock_widget::copyClipboard (void)
+  void documentation_dock_widget::copyClipboard ()
   {
     m_docs->copyClipboard ();
   }
 
-  void documentation_dock_widget::pasteClipboard (void)
+  void documentation_dock_widget::pasteClipboard ()
   {
     m_docs->pasteClipboard ();
   }
 
-  void documentation_dock_widget::selectAll (void)
+  void documentation_dock_widget::selectAll ()
   {
     m_docs->selectAll ();
   }

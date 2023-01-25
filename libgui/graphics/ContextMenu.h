@@ -44,7 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     ContextMenu (octave::interpreter& interp,
                  const graphics_object& go, QMenu *menu);
-    ~ContextMenu (void);
+    ~ContextMenu ();
 
     static ContextMenu *
     create (octave::interpreter& interp,
@@ -53,16 +53,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     static void executeAt (octave::interpreter& interp,
                            const base_properties& props, const QPoint& pt);
 
-    Container * innerContainer (void) { return nullptr; }
+    Container * innerContainer () { return nullptr; }
 
-    QWidget * menu (void);
+    QWidget * menu ();
 
   protected:
     void update (int pId);
 
   private slots:
-    void aboutToShow (void);
-    void aboutToHide (void);
+    void aboutToShow ();
+    void aboutToHide ();
   };
 
 OCTAVE_END_NAMESPACE(octave)

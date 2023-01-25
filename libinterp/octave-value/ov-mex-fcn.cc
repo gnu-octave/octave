@@ -68,7 +68,7 @@ octave_mex_function::octave_mex_function
        && oct_file_dir == file_name.substr (0, oct_file_dir.length ()));
 }
 
-octave_mex_function::~octave_mex_function (void)
+octave_mex_function::~octave_mex_function ()
 {
   if (m_exit_fcn_ptr)
     (*m_exit_fcn_ptr) ();
@@ -79,13 +79,13 @@ octave_mex_function::~octave_mex_function (void)
 }
 
 std::string
-octave_mex_function::fcn_file_name (void) const
+octave_mex_function::fcn_file_name () const
 {
   return m_sh_lib.file_name ();
 }
 
 octave::sys::time
-octave_mex_function::time_parsed (void) const
+octave_mex_function::time_parsed () const
 {
   return m_sh_lib.time_loaded ();
 }

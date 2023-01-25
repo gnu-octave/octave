@@ -38,7 +38,7 @@ public:
   typedef std::string::iterator iterator;
   typedef std::string::const_iterator const_iterator;
 
-  caseless_str (void) = default;
+  caseless_str () = default;
 
   caseless_str (const std::string& s) : std::string (s) { }
   caseless_str (const char *s) : std::string (s) { }
@@ -47,7 +47,7 @@ public:
 
   caseless_str& operator = (const caseless_str&) = default;
 
-  ~caseless_str (void) = default;
+  ~caseless_str () = default;
 
   bool operator < (const std::string& s) const
   {

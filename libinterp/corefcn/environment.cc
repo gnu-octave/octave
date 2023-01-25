@@ -104,7 +104,7 @@ environment::image_path (const octave_value_list& args, int nargout)
                                 false);
 }
 
-std::string environment::init_editor (void)
+std::string environment::init_editor ()
 {
   std::string retval = "emacs";
 
@@ -116,7 +116,7 @@ std::string environment::init_editor (void)
   return retval;
 }
 
-std::string environment::init_exec_path (void)
+std::string environment::init_exec_path ()
 {
   std::string exec_path = sys::env::getenv ("OCTAVE_EXEC_PATH");
 
@@ -134,7 +134,7 @@ std::string environment::init_exec_path (void)
   return exec_path;
 }
 
-std::string environment::init_image_path (void)
+std::string environment::init_image_path ()
 {
   std::string image_path = ".";
 

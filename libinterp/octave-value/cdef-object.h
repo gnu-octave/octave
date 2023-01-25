@@ -53,48 +53,48 @@ public:
 
   friend class cdef_object;
 
-  cdef_object_rep (void) : m_count (1) { }
+  cdef_object_rep () : m_count (1) { }
 
   cdef_object_rep& operator = (const cdef_object_rep&) = delete;
 
-  virtual ~cdef_object_rep (void) = default;
+  virtual ~cdef_object_rep () = default;
 
-  virtual cdef_class get_class (void) const;
+  virtual cdef_class get_class () const;
 
   virtual void set_class (const cdef_class&)
   {
     err_invalid_object ("set_class");
   }
 
-  virtual cdef_object_rep * clone (void) const
+  virtual cdef_object_rep * clone () const
   {
     err_invalid_object ("clone");
   }
 
-  virtual cdef_object_rep * empty_clone (void) const
+  virtual cdef_object_rep * empty_clone () const
   {
     err_invalid_object ("empty_clone");
   }
 
-  virtual cdef_object_rep * copy (void) const
+  virtual cdef_object_rep * copy () const
   {
     err_invalid_object ("copy");
   }
 
-  virtual cdef_object_rep * make_array (void) const
+  virtual cdef_object_rep * make_array () const
   {
     err_invalid_object ("make_array");
   }
 
-  virtual bool is_array (void) const { return false; }
+  virtual bool is_array () const { return false; }
 
-  virtual bool is_value_object (void) const { return false; }
+  virtual bool is_value_object () const { return false; }
 
-  virtual bool is_handle_object (void) const { return false; }
+  virtual bool is_handle_object () const { return false; }
 
-  virtual bool is_meta_object (void) const { return false; }
+  virtual bool is_meta_object () const { return false; }
 
-  virtual Array<cdef_object> array_value (void) const
+  virtual Array<cdef_object> array_value () const
   {
     err_invalid_object ("array_value");
   }
@@ -137,11 +137,11 @@ public:
     err_invalid_object ("subsasgn");
   }
 
-  virtual string_vector map_keys (void) const;
+  virtual string_vector map_keys () const;
 
-  virtual bool is_valid (void) const { return false; }
+  virtual bool is_valid () const { return false; }
 
-  OCTINTERP_API std::string class_name (void) const;
+  OCTINTERP_API std::string class_name () const;
 
   virtual void mark_for_construction (const cdef_class&)
   {
@@ -158,7 +158,7 @@ public:
     err_invalid_object ("is_partially_constructed_for");
   }
 
-  virtual void mark_as_constructed (void)
+  virtual void mark_as_constructed ()
   {
     err_invalid_object ("mark_as_constructed");
   }
@@ -168,18 +168,18 @@ public:
     err_invalid_object ("mark_as_constructed");
   }
 
-  virtual bool is_constructed (void) const
+  virtual bool is_constructed () const
   {
     err_invalid_object ("is_constructed");
   }
 
-  virtual octave_idx_type static_count (void) const { return 0; }
+  virtual octave_idx_type static_count () const { return 0; }
 
-  virtual void destroy (void) { delete this; }
+  virtual void destroy () { delete this; }
 
   OCTINTERP_API void release (const cdef_object& obj);
 
-  virtual dim_vector dims (void) const { return dim_vector (); }
+  virtual dim_vector dims () const { return dim_vector (); }
 
 protected:
 
@@ -205,14 +205,14 @@ cdef_object
 public:
 
   // FIXME: use a null object?
-  cdef_object (void) : m_rep (new cdef_object_rep ()) { }
+  cdef_object () : m_rep (new cdef_object_rep ()) { }
 
   cdef_object (const cdef_object& obj) : m_rep (obj.m_rep)
   { m_rep->m_count++; }
 
   cdef_object (cdef_object_rep *r) : m_rep (r) { }
 
-  virtual ~cdef_object (void) { m_rep->release (*this); }
+  virtual ~cdef_object () { m_rep->release (*this); }
 
   cdef_object& operator = (const cdef_object& obj)
   {
@@ -227,37 +227,37 @@ public:
     return *this;
   }
 
-  OCTINTERP_API cdef_class get_class (void) const;
+  OCTINTERP_API cdef_class get_class () const;
 
   void set_class (const cdef_class& cls) { m_rep->set_class (cls); }
 
-  std::string class_name (void) const { return m_rep->class_name (); }
+  std::string class_name () const { return m_rep->class_name (); }
 
-  cdef_object clone (void) const { return cdef_object (m_rep->clone ()); }
+  cdef_object clone () const { return cdef_object (m_rep->clone ()); }
 
-  cdef_object empty_clone (void) const
+  cdef_object empty_clone () const
   {
     return cdef_object (m_rep->empty_clone ());
   }
 
-  dim_vector dims (void) const { return m_rep->dims (); }
+  dim_vector dims () const { return m_rep->dims (); }
 
-  cdef_object make_array (void) const
+  cdef_object make_array () const
   {
     return cdef_object (m_rep->make_array ());
   }
 
-  cdef_object copy (void) const { return cdef_object (m_rep->copy ()); }
+  cdef_object copy () const { return cdef_object (m_rep->copy ()); }
 
-  bool is_array (void) const { return m_rep->is_array (); }
+  bool is_array () const { return m_rep->is_array (); }
 
-  bool is_value_object (void) const { return m_rep->is_value_object (); }
+  bool is_value_object () const { return m_rep->is_value_object (); }
 
-  bool is_handle_object (void) const { return m_rep->is_handle_object (); }
+  bool is_handle_object () const { return m_rep->is_handle_object (); }
 
-  bool is_meta_object (void) const { return m_rep->is_meta_object (); }
+  bool is_meta_object () const { return m_rep->is_meta_object (); }
 
-  Array<cdef_object> array_value (void) const
+  Array<cdef_object> array_value () const
   { return m_rep->array_value (); }
 
   void put (const std::string& pname, const octave_value& val)
@@ -303,20 +303,20 @@ public:
     return m_rep->subsasgn (type, idx, rhs);
   }
 
-  string_vector map_keys (void) const { return m_rep->map_keys (); }
+  string_vector map_keys () const { return m_rep->map_keys (); }
 
-  OCTINTERP_API octave_map map_value (void) const;
+  OCTINTERP_API octave_map map_value () const;
 
-  const cdef_object_rep * get_rep (void) const { return m_rep; }
+  const cdef_object_rep * get_rep () const { return m_rep; }
 
-  bool ok (void) const { return m_rep->is_valid (); }
+  bool ok () const { return m_rep->is_valid (); }
 
   void mark_for_construction (const cdef_class& cls)
   {
     m_rep->mark_for_construction (cls);
   }
 
-  bool is_constructed (void) const { return m_rep->is_constructed (); }
+  bool is_constructed () const { return m_rep->is_constructed (); }
 
   bool is_constructed_for (const cdef_class& cls) const
   {
@@ -328,7 +328,7 @@ public:
     return m_rep->is_partially_constructed_for (cls);
   }
 
-  void mark_as_constructed (void) { m_rep->mark_as_constructed (); }
+  void mark_as_constructed () { m_rep->mark_as_constructed (); }
 
   void mark_as_constructed (const cdef_class& cls)
   { m_rep->mark_as_constructed (cls); }
@@ -337,7 +337,7 @@ public:
 
 protected:
 
-  cdef_object_rep * get_rep (void) { return m_rep; }
+  cdef_object_rep * get_rep () { return m_rep; }
 
   void make_unique (int ignore_copies)
   {
@@ -356,24 +356,24 @@ cdef_object_base : public cdef_object_rep
 {
 public:
 
-  cdef_object_base (void)
+  cdef_object_base ()
     : cdef_object_rep (), m_klass ()
   { }
 
   cdef_object_base& operator = (const cdef_object_base&) = delete;
 
-  ~cdef_object_base (void) { }
+  ~cdef_object_base () { }
 
-  OCTINTERP_API cdef_class get_class (void) const;
+  OCTINTERP_API cdef_class get_class () const;
 
   OCTINTERP_API void set_class (const cdef_class& cls);
 
-  cdef_object_rep * empty_clone (void) const
+  cdef_object_rep * empty_clone () const
   {
     return new cdef_object_base (*this);
   }
 
-  OCTINTERP_API cdef_object_rep * make_array (void) const;
+  OCTINTERP_API cdef_object_rep * make_array () const;
 
 protected:
 
@@ -394,7 +394,7 @@ cdef_object_array : public cdef_object_base
 {
 public:
 
-  cdef_object_array (void) : cdef_object_base () { }
+  cdef_object_array () : cdef_object_base () { }
 
   cdef_object_array (const Array<cdef_object>& a)
     : cdef_object_base (), m_array (a)
@@ -402,20 +402,20 @@ public:
 
   cdef_object_array& operator = (const cdef_object_array&) = delete;
 
-  ~cdef_object_array (void) = default;
+  ~cdef_object_array () = default;
 
-  cdef_object_rep * clone (void) const
+  cdef_object_rep * clone () const
   {
     return new cdef_object_array (*this);
   }
 
-  dim_vector dims (void) const { return m_array.dims (); }
+  dim_vector dims () const { return m_array.dims (); }
 
-  bool is_valid (void) const { return true; }
+  bool is_valid () const { return true; }
 
-  bool is_array (void) const { return true; }
+  bool is_array () const { return true; }
 
-  Array<cdef_object> array_value (void) const { return m_array; }
+  Array<cdef_object> array_value () const { return m_array; }
 
   OCTINTERP_API octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
@@ -446,7 +446,7 @@ private:
 
   Array<cdef_object> m_array;
 
-  void fill_empty_values (void) { fill_empty_values (m_array); }
+  void fill_empty_values () { fill_empty_values (m_array); }
 
   OCTINTERP_API void fill_empty_values (Array<cdef_object>& arr);
 
@@ -462,13 +462,13 @@ cdef_object_scalar : public cdef_object_base
 {
 public:
 
-  cdef_object_scalar (void) : cdef_object_base () { }
+  cdef_object_scalar () : cdef_object_base () { }
 
   cdef_object_scalar& operator = (const cdef_object_scalar&) = delete;
 
-  ~cdef_object_scalar (void) = default;
+  ~cdef_object_scalar () = default;
 
-  dim_vector dims (void) const { return dim_vector (1, 1); }
+  dim_vector dims () const { return dim_vector (1, 1); }
 
   void break_closure_cycles (const std::shared_ptr<stack_frame>& frame);
 
@@ -521,11 +521,11 @@ public:
   OCTINTERP_API bool
   is_partially_constructed_for (const cdef_class& cls) const;
 
-  void mark_as_constructed (void) { m_ctor_list.clear (); }
+  void mark_as_constructed () { m_ctor_list.clear (); }
 
   OCTINTERP_API void mark_as_constructed (const cdef_class& cls);
 
-  bool is_constructed (void) const { return m_ctor_list.empty (); }
+  bool is_constructed () const { return m_ctor_list.empty (); }
 
 protected:
 
@@ -549,27 +549,27 @@ handle_cdef_object : public cdef_object_scalar
 {
 public:
 
-  handle_cdef_object (void) : cdef_object_scalar () { }
+  handle_cdef_object () : cdef_object_scalar () { }
 
   handle_cdef_object& operator = (const handle_cdef_object&) = delete;
 
-  OCTINTERP_API ~handle_cdef_object (void);
+  OCTINTERP_API ~handle_cdef_object ();
 
-  cdef_object_rep * clone (void) const
+  cdef_object_rep * clone () const
   {
     handle_cdef_object *obj = const_cast<handle_cdef_object *> (this);
     obj->m_count++;
     return obj;
   }
 
-  cdef_object_rep * copy (void) const
+  cdef_object_rep * copy () const
   {
     return new handle_cdef_object (*this);
   }
 
-  bool is_valid (void) const { return true; }
+  bool is_valid () const { return true; }
 
-  bool is_handle_object (void) const { return true; }
+  bool is_handle_object () const { return true; }
 
 protected:
 
@@ -585,22 +585,22 @@ value_cdef_object : public cdef_object_scalar
 {
 public:
 
-  value_cdef_object (void) : cdef_object_scalar () { }
+  value_cdef_object () : cdef_object_scalar () { }
 
   value_cdef_object& operator = (const value_cdef_object&) = delete;
 
-  OCTINTERP_API ~value_cdef_object (void);
+  OCTINTERP_API ~value_cdef_object ();
 
-  cdef_object_rep * clone (void) const
+  cdef_object_rep * clone () const
   {
     return new value_cdef_object (*this);
   }
 
-  cdef_object_rep * copy (void) const { return clone (); }
+  cdef_object_rep * copy () const { return clone (); }
 
-  bool is_valid (void) const { return true; }
+  bool is_valid () const { return true; }
 
-  bool is_value_object (void) const { return true; }
+  bool is_value_object () const { return true; }
 
 private:
 
@@ -616,24 +616,24 @@ cdef_meta_object_rep : public handle_cdef_object
 {
 public:
 
-  cdef_meta_object_rep (void) : handle_cdef_object () { }
+  cdef_meta_object_rep () : handle_cdef_object () { }
 
   cdef_meta_object_rep& operator = (const cdef_meta_object_rep&) = delete;
 
-  ~cdef_meta_object_rep (void) = default;
+  ~cdef_meta_object_rep () = default;
 
-  cdef_object_rep * copy (void) const
+  cdef_object_rep * copy () const
   { return new cdef_meta_object_rep (*this); }
 
-  bool is_meta_object (void) const { return true; }
+  bool is_meta_object () const { return true; }
 
-  virtual bool is_class (void) const { return false; }
+  virtual bool is_class () const { return false; }
 
-  virtual bool is_property (void) const { return false; }
+  virtual bool is_property () const { return false; }
 
-  virtual bool is_method (void) const { return false; }
+  virtual bool is_method () const { return false; }
 
-  virtual bool is_package (void) const { return false; }
+  virtual bool is_package () const { return false; }
 
   virtual octave_value_list
   meta_subsref (const std::string& /* type */,
@@ -643,7 +643,7 @@ public:
     error ("subsref: invalid meta object");
   }
 
-  virtual void meta_release (void) { }
+  virtual void meta_release () { }
 
   virtual bool meta_accepts_postfix_index (char /* type */) const
   {
@@ -664,7 +664,7 @@ cdef_meta_object : public cdef_object
 {
 public:
 
-  cdef_meta_object (void) : cdef_object () { }
+  cdef_meta_object () : cdef_object () { }
 
   // Object consistency is checked in sub-classes.
   cdef_meta_object (const cdef_meta_object& obj) : cdef_object (obj) { }
@@ -675,15 +675,15 @@ public:
 
   cdef_meta_object& operator = (const cdef_object&) = delete;
 
-  ~cdef_meta_object (void) = default;
+  ~cdef_meta_object () = default;
 
-  bool is_class (void) const { return get_rep ()->is_class (); }
+  bool is_class () const { return get_rep ()->is_class (); }
 
-  bool is_property (void) const { return get_rep ()->is_property (); }
+  bool is_property () const { return get_rep ()->is_property (); }
 
-  bool is_method (void) const { return get_rep ()->is_method (); }
+  bool is_method () const { return get_rep ()->is_method (); }
 
-  bool is_package (void) const { return get_rep ()->is_package (); }
+  bool is_package () const { return get_rep ()->is_package (); }
 
   octave_value_list
   meta_subsref (const std::string& type,
@@ -692,7 +692,7 @@ public:
     return get_rep ()->meta_subsref (type, idx, nargout);
   }
 
-  void meta_release (void) { get_rep ()->meta_release (); }
+  void meta_release () { get_rep ()->meta_release (); }
 
   bool meta_accepts_postfix_index (char type) const
   {
@@ -701,12 +701,12 @@ public:
 
 private:
 
-  cdef_meta_object_rep * get_rep (void)
+  cdef_meta_object_rep * get_rep ()
   {
     return dynamic_cast<cdef_meta_object_rep *> (cdef_object::get_rep ());
   }
 
-  const cdef_meta_object_rep * get_rep (void) const
+  const cdef_meta_object_rep * get_rep () const
   {
     return dynamic_cast<const cdef_meta_object_rep *> (cdef_object::get_rep ());
   }

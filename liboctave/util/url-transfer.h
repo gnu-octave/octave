@@ -59,7 +59,7 @@ public:
 
   friend class url_transfer;
 
-  base_url_transfer (void);
+  base_url_transfer ();
 
   base_url_transfer (const std::string& host,
                      const std::string& /* user_arg */,
@@ -74,15 +74,15 @@ public:
 
   base_url_transfer& operator = (const base_url_transfer&) = delete;
 
-  virtual ~base_url_transfer (void) = default;
+  virtual ~base_url_transfer () = default;
 
-  bool is_valid (void) const { return m_valid; }
+  bool is_valid () const { return m_valid; }
 
-  bool good (void) const { return m_valid && m_ok; }
+  bool good () const { return m_valid && m_ok; }
 
-  virtual void perform (void) { }
+  virtual void perform () { }
 
-  virtual std::string lasterror (void) const { return m_errmsg; }
+  virtual std::string lasterror () const { return m_errmsg; }
 
   virtual std::ostream& set_ostream (std::ostream& /* os */)
   {
@@ -94,13 +94,13 @@ public:
     return *m_curr_istream;
   }
 
-  virtual void ascii (void) { }
+  virtual void ascii () { }
 
-  virtual void binary (void) { }
+  virtual void binary () { }
 
-  bool is_ascii (void) const { return m_ascii_mode; }
+  bool is_ascii () const { return m_ascii_mode; }
 
-  bool is_binary (void) const { return ! m_ascii_mode; }
+  bool is_binary () const { return ! m_ascii_mode; }
 
   virtual void cwd (const std::string& /* path */) { }
 
@@ -125,16 +125,16 @@ public:
   string_vector mput_directory (const std::string& base,
                                 const std::string& directory);
 
-  virtual void dir (void) { }
+  virtual void dir () { }
 
-  virtual string_vector list (void) { return string_vector (); }
+  virtual string_vector list () { return string_vector (); }
 
   virtual void get_fileinfo (const std::string& /* filename */,
                              double& /* filesize */,
                              OCTAVE_TIME_T& /* filetime */,
                              bool& /* fileisdir */) { }
 
-  virtual std::string pwd (void) { return ""; }
+  virtual std::string pwd () { return ""; }
 
   virtual void http_get (const Array<std::string>& /* param */) { }
 
@@ -170,7 +170,7 @@ url_transfer
 {
 public:
 
-  url_transfer (void);
+  url_transfer ();
 
   url_transfer (const std::string& host, const std::string& user,
                 const std::string& passwd, std::ostream& os);
@@ -181,13 +181,13 @@ public:
 
   url_transfer& operator = (const url_transfer&) = default;
 
-  ~url_transfer (void) = default;
+  ~url_transfer () = default;
 
-  bool is_valid (void) const { return m_rep->is_valid (); }
+  bool is_valid () const { return m_rep->is_valid (); }
 
-  bool good (void) const { return m_rep->good (); }
+  bool good () const { return m_rep->good (); }
 
-  std::string lasterror (void) const { return m_rep->lasterror (); }
+  std::string lasterror () const { return m_rep->lasterror (); }
 
   std::ostream& set_ostream (std::ostream& os)
   {
@@ -199,13 +199,13 @@ public:
     return m_rep->set_istream (is);
   }
 
-  void ascii (void) { m_rep->ascii (); }
+  void ascii () { m_rep->ascii (); }
 
-  void binary (void) { m_rep->binary (); }
+  void binary () { m_rep->binary (); }
 
-  bool is_ascii (void) const { return m_rep->is_ascii (); }
+  bool is_ascii () const { return m_rep->is_ascii (); }
 
-  bool is_binary (void) const { return m_rep->is_binary (); }
+  bool is_binary () const { return m_rep->is_binary (); }
 
   void cwd (const std::string& path) { m_rep->cwd (path); }
 
@@ -242,9 +242,9 @@ public:
     return m_rep->mput_directory (base, directory);
   }
 
-  void dir (void) { m_rep->dir (); }
+  void dir () { m_rep->dir (); }
 
-  string_vector list (void) { return m_rep->list (); }
+  string_vector list () { return m_rep->list (); }
 
   void get_fileinfo (const std::string& filename, double& filesize,
                      OCTAVE_TIME_T& filetime, bool& fileisdir)
@@ -252,7 +252,7 @@ public:
     m_rep->get_fileinfo (filename, filesize, filetime, fileisdir);
   }
 
-  std::string pwd (void) { return m_rep->pwd (); }
+  std::string pwd () { return m_rep->pwd (); }
 
   void http_get (const Array<std::string>& param)
   {

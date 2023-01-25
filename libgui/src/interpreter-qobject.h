@@ -44,25 +44,25 @@ public:
 
   interpreter_qobject (base_qobject& oct_qobj);
 
-  ~interpreter_qobject (void) = default;
+  ~interpreter_qobject () = default;
 
-  qt_interpreter_events * qt_link (void);
+  qt_interpreter_events * qt_link ();
 
   void interpreter_event (const fcn_callback& fcn);
 
   void interpreter_event (const meth_callback& meth);
 
-  void interrupt (void);
+  void interrupt ();
 
   // Note: PAUSE, STOP, and RESUME are currently only used by the new
   // experimental terminal widget.
-  void pause (void);
-  void stop (void);
-  void resume (void);
+  void pause ();
+  void stop ();
+  void resume ();
 
 signals:
 
-  void ready (void);
+  void ready ();
 
   void shutdown_finished (int);
 
@@ -88,7 +88,7 @@ public slots:
 
   //! Initialize and execute the octave interpreter.
 
-  void execute (void);
+  void execute ();
 
 private:
 

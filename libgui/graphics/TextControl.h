@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     TextControl (octave::interpreter& interp,
                  const graphics_object& go, QLabel *label);
-    ~TextControl (void);
+    ~TextControl ();
 
     static TextControl *
     create (octave::interpreter& interp,

@@ -56,7 +56,7 @@ MDiagArray2 : public DiagArray2<T>
 {
 public:
 
-  MDiagArray2 (void) : DiagArray2<T> () { }
+  MDiagArray2 () : DiagArray2<T> () { }
 
   MDiagArray2 (octave_idx_type r, octave_idx_type c) : DiagArray2<T> (r, c) { }
 
@@ -75,7 +75,7 @@ public:
   MDiagArray2 (const Array<T>& a, octave_idx_type r, octave_idx_type c)
     : DiagArray2<T> (a, r, c) { }
 
-  ~MDiagArray2 (void) = default;
+  ~MDiagArray2 () = default;
 
   MDiagArray2<T>& operator = (const MDiagArray2<T>& a)
   {
@@ -88,7 +88,7 @@ public:
     return DiagArray2<T>::array_value ();
   }
 
-  octave_idx_type nnz (void) const
+  octave_idx_type nnz () const
   {
     const T *d = this->data ();
 
@@ -103,7 +103,7 @@ public:
   MArray<T> diag (octave_idx_type k = 0) const
   { return DiagArray2<T>::extract_diag (k); }
 
-  MDiagArray2<T> transpose (void) const { return DiagArray2<T>::transpose (); }
+  MDiagArray2<T> transpose () const { return DiagArray2<T>::transpose (); }
   MDiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const
   { return DiagArray2<T>::hermitian (fcn); }
 

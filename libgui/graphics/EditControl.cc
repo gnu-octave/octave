@@ -133,7 +133,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &EditControl::returnPressed);
   }
 
-  EditControl::~EditControl (void)
+  EditControl::~EditControl ()
   { }
 
   void
@@ -257,13 +257,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  EditControl::textChanged (void)
+  EditControl::textChanged ()
   {
     m_textChanged = true;
   }
 
   void
-  EditControl::returnPressed (void)
+  EditControl::returnPressed ()
   {
     QString txt = (m_multiLine
                    ? qWidget<TextEdit> ()->toPlainText ()
@@ -286,7 +286,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  EditControl::editingFinished (void)
+  EditControl::editingFinished ()
   {
     if (m_textChanged)
       {

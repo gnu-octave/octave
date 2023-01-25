@@ -79,14 +79,14 @@ default_numeric_conversion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_bool_matrix::numeric_conversion_function (void) const
+octave_bool_matrix::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
          octave_matrix::static_type_id ());
 }
 
 octave_base_value *
-octave_bool_matrix::try_narrowing_conversion (void)
+octave_bool_matrix::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -167,61 +167,61 @@ octave_bool_matrix::convert_to_str_internal (bool pad, bool force,
 }
 
 octave_value
-octave_bool_matrix::as_double (void) const
+octave_bool_matrix::as_double () const
 {
   return NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_single (void) const
+octave_bool_matrix::as_single () const
 {
   return FloatNDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int8 (void) const
+octave_bool_matrix::as_int8 () const
 {
   return int8NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int16 (void) const
+octave_bool_matrix::as_int16 () const
 {
   return int16NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int32 (void) const
+octave_bool_matrix::as_int32 () const
 {
   return int32NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int64 (void) const
+octave_bool_matrix::as_int64 () const
 {
   return int64NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint8 (void) const
+octave_bool_matrix::as_uint8 () const
 {
   return uint8NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint16 (void) const
+octave_bool_matrix::as_uint16 () const
 {
   return uint16NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint32 (void) const
+octave_bool_matrix::as_uint32 () const
 {
   return uint32NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint64 (void) const
+octave_bool_matrix::as_uint64 () const
 {
   return uint64NDArray (m_matrix);
 }

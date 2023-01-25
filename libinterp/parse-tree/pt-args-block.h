@@ -55,12 +55,12 @@ public:
 
   tree_arg_size_spec& operator = (const tree_arg_size_spec&) = delete;
 
-  ~tree_arg_size_spec (void)
+  ~tree_arg_size_spec ()
   {
     delete m_size_args;
   }
 
-  tree_argument_list * size_args (void) { return m_size_args; }
+  tree_argument_list * size_args () { return m_size_args; }
 
   void accept (tree_walker& tw)
   {
@@ -86,12 +86,12 @@ public:
 
   tree_arg_validation_fcns& operator = (const tree_arg_validation_fcns&) = delete;
 
-  ~tree_arg_validation_fcns (void)
+  ~tree_arg_validation_fcns ()
   {
     delete m_fcn_args;
   }
 
-  tree_argument_list * fcn_args (void) { return m_fcn_args; }
+  tree_argument_list * fcn_args () { return m_fcn_args; }
 
   void accept (tree_walker& tw)
   {
@@ -122,7 +122,7 @@ public:
 
   tree_arg_validation& operator = (const tree_arg_validation&) = delete;
 
-  ~tree_arg_validation (void)
+  ~tree_arg_validation ()
   {
     delete m_arg_name;
     delete m_size_spec;
@@ -136,17 +136,17 @@ public:
     m_arg_name = name;
   }
 
-  tree_expression * identifier_expression (void) { return m_arg_name; }
+  tree_expression * identifier_expression () { return m_arg_name; }
 
-  tree_arg_size_spec * size_spec (void) { return m_size_spec; }
+  tree_arg_size_spec * size_spec () { return m_size_spec; }
 
-  tree_identifier * class_name (void) { return m_class_name; }
+  tree_identifier * class_name () { return m_class_name; }
 
   tree_arg_validation_fcns *
-  validation_fcns (void) { return m_validation_fcns; }
+  validation_fcns () { return m_validation_fcns; }
 
   tree_expression *
-  initializer_expression (void) { return m_default_value; }
+  initializer_expression () { return m_default_value; }
 
   void accept (tree_walker& tw)
   {
@@ -169,7 +169,7 @@ class tree_args_block_validation_list
 {
 public:
 
-  tree_args_block_validation_list (void) { }
+  tree_args_block_validation_list () { }
 
   tree_args_block_validation_list (tree_arg_validation *a) { append (a); }
 
@@ -183,7 +183,7 @@ public:
 
   tree_args_block_validation_list& operator = (const tree_args_block_validation_list&) = delete;
 
-  ~tree_args_block_validation_list (void);
+  ~tree_args_block_validation_list ();
 
   void accept (tree_walker& tw)
   {
@@ -208,12 +208,12 @@ public:
 
   tree_args_block_attribute_list& operator = (const tree_args_block_attribute_list&) = delete;
 
-  ~tree_args_block_attribute_list (void)
+  ~tree_args_block_attribute_list ()
   {
     delete m_attr;
   }
 
-  tree_identifier * attribute (void) { return m_attr; }
+  tree_identifier * attribute () { return m_attr; }
 
   void accept (tree_walker& tw)
   {
@@ -245,7 +245,7 @@ public:
 
   tree_arguments_block& operator = (const tree_arguments_block&) = delete;
 
-  ~tree_arguments_block (void)
+  ~tree_arguments_block ()
   {
     delete m_attr_list;
     delete m_validation_list;
@@ -254,19 +254,19 @@ public:
     delete m_trail_comm;
   }
 
-  tree_args_block_attribute_list * attribute_list (void)
+  tree_args_block_attribute_list * attribute_list ()
   {
     return m_attr_list;
   }
 
-  tree_args_block_validation_list * validation_list (void)
+  tree_args_block_validation_list * validation_list ()
   {
     return m_validation_list;
   }
 
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {

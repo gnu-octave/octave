@@ -47,7 +47,7 @@ public:
                                 const ColumnVector& xdot,
                                 double t, double cj);
 
-  DAEFunc (void)
+  DAEFunc ()
     : m_fcn (nullptr), m_jac (nullptr), m_reset (true) { }
 
   DAEFunc (DAERHSFunc f)
@@ -70,9 +70,9 @@ public:
     return *this;
   }
 
-  virtual ~DAEFunc (void) = default;
+  virtual ~DAEFunc () = default;
 
-  DAERHSFunc function (void) const { return m_fcn; }
+  DAERHSFunc function () const { return m_fcn; }
 
   DAEFunc& set_function (DAERHSFunc f)
   {
@@ -81,7 +81,7 @@ public:
     return *this;
   }
 
-  DAEJacFunc jacobian_function (void) const { return m_jac; }
+  DAEJacFunc jacobian_function () const { return m_jac; }
 
   DAEFunc& set_jacobian_function (DAEJacFunc j)
   {

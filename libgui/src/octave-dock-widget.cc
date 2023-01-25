@@ -257,7 +257,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  octave_dock_widget::init_window_menu_entry (void)
+  octave_dock_widget::init_window_menu_entry ()
   {
     emit active_changed (isVisible ());  // emit once for init of window menu
   }
@@ -438,7 +438,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // get focus widget
   QWidget *
-  octave_dock_widget::focusWidget (void)
+  octave_dock_widget::focusWidget ()
   {
     QWidget *w = QApplication::focusWidget ();
     if (w && w->focusProxy ()) w = w->focusProxy ();
@@ -467,7 +467,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  octave_dock_widget::handle_settings (void)
+  octave_dock_widget::handle_settings ()
   {
     gui_settings settings;
 
@@ -575,7 +575,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  octave_dock_widget::save_settings (void)
+  octave_dock_widget::save_settings ()
   {
     gui_settings settings;
 
@@ -616,7 +616,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  octave_dock_widget::store_geometry (void)
+  octave_dock_widget::store_geometry ()
   {
     if (isFloating ())
       {
@@ -653,7 +653,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit active_changed (false);
   }
 
-  void octave_dock_widget::activate (void)
+  void octave_dock_widget::activate ()
   {
     if (! isVisible ())
       setVisible (true);
@@ -815,7 +815,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // set focus to previously active widget in tabbed widget stack
   void
-  octave_dock_widget::set_focus_predecessor (void)
+  octave_dock_widget::set_focus_predecessor ()
   {
     // only != 0 if widget was tabbed
     if (m_predecessor_widget && m_predecessor_widget->isVisible ())

@@ -51,7 +51,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
 
     documentation_browser (QHelpEngine *help_engine, QWidget *parent = nullptr);
-    ~documentation_browser (void) = default;
+    ~documentation_browser () = default;
 
     virtual QVariant loadResource (int type, const QUrl& url);
 
@@ -59,14 +59,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void handle_index_clicked (const QUrl& url,
                                const QString& keyword = QString ());
-    void notice_settings (void);
-    void save_settings (void);
+    void notice_settings ();
+    void save_settings ();
 
     //! Zooming in and out while taking care of the zoom level
     //!@{
-    void zoom_in (void);
-    void zoom_out (void);
-    void zoom_original (void);
+    void zoom_in ();
+    void zoom_out ();
+    void zoom_original ();
     //!@}
 
   protected:
@@ -99,7 +99,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
 
     documentation (QWidget *parent);
-    ~documentation (void);
+    ~documentation ();
 
     /*!
         Generate a string with page name @p title and current anchor
@@ -118,39 +118,39 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public slots:
 
-    void notice_settings (void);
-    void save_settings (void);
+    void notice_settings ();
+    void save_settings ();
 
-    void copyClipboard (void);
-    void pasteClipboard (void);
-    void selectAll (void);
+    void copyClipboard ();
+    void pasteClipboard ();
+    void selectAll ();
 
-    void load_index (void);
+    void load_index ();
     void load_ref (const QString& name = QString ());
     void registerDoc (const QString& name);
     void unregisterDoc (const QString& name);
 
   private slots:
 
-    void activate_find (void);
-    void global_search (void);
-    void global_search_started (void);
+    void activate_find ();
+    void global_search ();
+    void global_search_started ();
     void global_search_finished (int hits);
     void filter_update (const QString& expression);
-    void filter_update_history (void);
+    void filter_update_history ();
     void find (bool backward = false);
-    void find_backward (void);
+    void find_backward ();
     void find_forward_from_anchor (const QString& text);
-    void record_anchor_position (void);
-    void handle_cursor_position_change (void);
+    void record_anchor_position ();
+    void handle_cursor_position_change ();
     void handle_search_result_clicked (const QUrl& url);
 
-    void update_history_menus (void);
+    void update_history_menus ();
     void open_hist_url (QAction *a);
 
   private:
 
-    void construct_tool_bar (void);
+    void construct_tool_bar ();
     QAction * add_action (const QIcon& icon, const QString& text,
                           const char *member, QWidget *receiver = nullptr,
                           QToolBar *tool_bar = nullptr);

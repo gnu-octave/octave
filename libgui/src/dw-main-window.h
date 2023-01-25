@@ -38,7 +38,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     dw_main_window (QWidget *parent = nullptr);
 
-    ~dw_main_window (void) = default;
+    ~dw_main_window () = default;
 
     // No copying!
 
@@ -48,7 +48,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public slots:
 
-    void notice_settings (void);
+    void notice_settings ();
 
   protected slots:
 

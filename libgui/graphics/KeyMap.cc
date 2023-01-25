@@ -36,7 +36,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 namespace KeyMap
 {
-  QMap<int, std::string> makeKeyMapper (void)
+  QMap<int, std::string> makeKeyMapper ()
   {
     QMap<int, std::string> keyMapper;
 

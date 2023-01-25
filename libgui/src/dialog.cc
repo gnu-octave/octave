@@ -484,7 +484,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &ListDialog::item_double_clicked);
   }
 
-  void ListDialog::buttonOk_clicked (void)
+  void ListDialog::buttonOk_clicked ()
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
@@ -500,7 +500,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     done (QDialog::Accepted);
   }
 
-  void ListDialog::buttonCancel_clicked (void)
+  void ListDialog::buttonCancel_clicked ()
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
@@ -512,7 +512,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     done (QDialog::Rejected);
   }
 
-  void ListDialog::reject (void)
+  void ListDialog::reject ()
   {
     buttonCancel_clicked ();
   }
@@ -589,7 +589,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &InputDialog::buttonCancel_clicked);
   }
 
-  void InputDialog::buttonOk_clicked (void)
+  void InputDialog::buttonOk_clicked ()
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
@@ -601,7 +601,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     done (QDialog::Accepted);
   }
 
-  void InputDialog::buttonCancel_clicked (void)
+  void InputDialog::buttonCancel_clicked ()
   {
     // Store information about what button was pressed so that builtin
     // functions can retrieve.
@@ -611,7 +611,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     done (QDialog::Rejected);
   }
 
-  void InputDialog::reject (void)
+  void InputDialog::reject ()
   {
     buttonCancel_clicked ();
   }
@@ -667,13 +667,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (this, &FileDialog::rejected, this, &FileDialog::rejectSelection);
   }
 
-  void FileDialog::rejectSelection (void)
+  void FileDialog::rejectSelection ()
   {
     QStringList empty;
     emit finish_input (empty, "", 0);
   }
 
-  void FileDialog::acceptSelection (void)
+  void FileDialog::acceptSelection ()
   {
     QStringList string_result;
     QString path;

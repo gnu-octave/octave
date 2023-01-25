@@ -57,7 +57,7 @@ public:
     GEJSV
   };
 
-  svd (void)
+  svd ()
     : m_type (), m_driver (), m_left_sm (), m_sigma (), m_right_sm ()
   { }
 
@@ -83,13 +83,13 @@ public:
     return *this;
   }
 
-  ~svd (void) = default;
+  ~svd () = default;
 
-  T left_singular_matrix (void) const;
+  T left_singular_matrix () const;
 
-  DM_T singular_values (void) const { return m_sigma; }
+  DM_T singular_values () const { return m_sigma; }
 
-  T right_singular_matrix (void) const;
+  T right_singular_matrix () const;
 
 private:
 

@@ -91,7 +91,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #endif
   }
 
-  void welcome_wizard::adjust_size (void)
+  void welcome_wizard::adjust_size ()
   {
     // Get adjusted size for the current page
     adjustSize ();
@@ -111,7 +111,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_allow_web_connect_state = state == Qt::Checked;
   }
 
-  void welcome_wizard::show_page (void)
+  void welcome_wizard::show_page ()
   {
     delete m_current_page;
     delete layout ();
@@ -124,21 +124,21 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     new_layout->addWidget (m_current_page);
   }
 
-  void welcome_wizard::previous_page (void)
+  void welcome_wizard::previous_page ()
   {
     --m_page_list_iterator;
 
     show_page ();
   }
 
-  void welcome_wizard::next_page (void)
+  void welcome_wizard::next_page ()
   {
     ++m_page_list_iterator;
 
     show_page ();
   }
 
-  void welcome_wizard::accept (void)
+  void welcome_wizard::accept ()
   {
     // Create default settings file.
 

@@ -47,7 +47,7 @@ public:
   // to create QHash objects that contain gui_pref objects.  No invalid
   // gui_pref objects should acutally be used.
 
-  gui_pref (void) = default;
+  gui_pref () = default;
 
   gui_pref (const QString& settings_key, const QVariant& def,
             bool ignore = false);
@@ -56,11 +56,11 @@ public:
 
   gui_pref& operator = (const gui_pref&) = default;
 
-  ~gui_pref (void) = default;
+  ~gui_pref () = default;
 
-  QString settings_key (void) const { return m_settings_key; }
-  QVariant def (void) const { return m_def; }
-  bool ignore (void) const { return m_ignore; }
+  QString settings_key () const { return m_settings_key; }
+  QVariant def () const { return m_def; }
+  bool ignore () const { return m_ignore; }
 
 private:
 
@@ -84,7 +84,7 @@ class all_gui_preferences
 {
 public:
 
-  all_gui_preferences (void) = default;
+  all_gui_preferences () = default;
 
   // No copying!
 
@@ -93,13 +93,13 @@ public:
   all_gui_preferences&
   operator = (const all_gui_preferences&) = delete;
 
-  ~all_gui_preferences (void) = default;
+  ~all_gui_preferences () = default;
 
   static void insert (const QString& settings_key, const gui_pref& pref);
 
   static const gui_pref value (const QString& settings_key);
 
-  static QStringList keys (void);
+  static QStringList keys ();
 
 private:
 
@@ -110,9 +110,9 @@ private:
 
   const gui_pref do_value (const QString& settings_key) const;
 
-  QStringList do_keys (void) const;
+  QStringList do_keys () const;
 
-  static void ensure_instance (void);
+  static void ensure_instance ();
 
   // Map from shortcut identifier (settings key) to sc_pref object.
   static all_gui_preferences *s_instance;
@@ -130,7 +130,7 @@ public:
   // to create QHash objects that contain sc_pref objects.  No invalid
   // sc_pref objects should acutally be used.
 
-  sc_pref (void) = default;
+  sc_pref () = default;
 
   sc_pref (const QString& description, const QString& settings_key,
            Qt::Key def);
@@ -145,19 +145,19 @@ public:
 
   sc_pref& operator = (const sc_pref&) = default;
 
-  ~sc_pref (void) = default;
+  ~sc_pref () = default;
 
-  QString description (void) const { return m_description; }
+  QString description () const { return m_description; }
 
-  QString settings_key (void) const { return m_settings_key; }
+  QString settings_key () const { return m_settings_key; }
 
-  unsigned int def (void) const { return m_def; }
+  unsigned int def () const { return m_def; }
 
-  QKeySequence::StandardKey def_std (void) const { return m_def_std; }
+  QKeySequence::StandardKey def_std () const { return m_def_std; }
 
-  QKeySequence def_value (void) const;
+  QKeySequence def_value () const;
 
-  QString def_text (void) const;
+  QString def_text () const;
 
 private:
 
@@ -184,7 +184,7 @@ class all_shortcut_preferences
 {
 public:
 
-  all_shortcut_preferences (void) = default;
+  all_shortcut_preferences () = default;
 
   // No copying!
 
@@ -193,13 +193,13 @@ public:
   all_shortcut_preferences&
   operator = (const all_shortcut_preferences&) = delete;
 
-  ~all_shortcut_preferences (void) = default;
+  ~all_shortcut_preferences () = default;
 
   static void insert (const QString& settings_key, const sc_pref& scpref);
 
   static const sc_pref value (const QString& settings_key);
 
-  static QStringList keys (void);
+  static QStringList keys ();
 
 private:
 
@@ -210,9 +210,9 @@ private:
 
   const sc_pref do_value (const QString& settings_key) const;
 
-  QStringList do_keys (void) const;
+  QStringList do_keys () const;
 
-  static void ensure_instance (void);
+  static void ensure_instance ();
 
   // Map from shortcut identifier (settings key) to sc_pref object.
   static all_shortcut_preferences *s_instance;

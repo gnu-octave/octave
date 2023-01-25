@@ -180,7 +180,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   }
 
-  void command_widget::notice_settings (void)
+  void command_widget::notice_settings ()
   {
     gui_settings settings;
 
@@ -223,11 +223,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (this, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (cursor_position_changed (int, int)));
 
-    connect (this, SIGNAL (textChanged (void)),
-             this, SLOT (text_changed (void)));
+    connect (this, SIGNAL (textChanged ()),
+             this, SLOT (text_changed ()));
 
-    connect (this, SIGNAL (modificationAttempted (void)),
-             this, SLOT (move_cursor_to_end (void)));
+    connect (this, SIGNAL (modificationAttempted ()),
+             this, SLOT (move_cursor_to_end ()));
   }
 
   // Prepare a new command line with the current prompt
@@ -308,7 +308,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // User attempted to type on read only mode: move cursor at end and allow
   // editing
-  void console::move_cursor_to_end (void)
+  void console::move_cursor_to_end ()
   {
     if ((! m_last_key_string.isEmpty ()) && (m_last_key_string.at (0).isPrint ()))
       {
@@ -319,7 +319,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Text has changed: is cursor still in "writable" area?
   // This signal seems to be emitted before cursor position changed.
-  void console::text_changed (void)
+  void console::text_changed ()
   {
     m_text_changed = true;
   }

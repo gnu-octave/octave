@@ -77,25 +77,25 @@ public:
       m_first_elem_is_struct (false), m_class_name ()
   { }
 
-  dim_vector dims (void) const { return m_dv; }
+  dim_vector dims () const { return m_dv; }
 
-  octave_idx_type rows (void) const { return m_dv(0); }
-  octave_idx_type cols (void) const { return m_dv(1); }
+  octave_idx_type rows () const { return m_dv(0); }
+  octave_idx_type cols () const { return m_dv(1); }
 
-  bool all_strings_p (void) const { return m_all_strings; }
-  bool all_sq_strings_p (void) const { return m_all_sq_strings; }
-  bool all_dq_strings_p (void) const { return m_all_dq_strings; }
-  bool some_strings_p (void) const { return m_some_strings; }
-  bool all_real_p (void) const { return m_all_real; }
-  bool all_complex_p (void) const { return m_all_complex; }
-  bool all_empty_p (void) const { return m_all_empty; }
-  bool any_cell_p (void) const { return m_any_cell; }
-  bool any_sparse_p (void) const { return m_any_sparse; }
-  bool any_class_p (void) const { return m_any_class; }
-  bool all_1x1_p (void) const { return m_all_1x1; }
-  bool first_elem_struct_p (void) const { return m_first_elem_is_struct; }
+  bool all_strings_p () const { return m_all_strings; }
+  bool all_sq_strings_p () const { return m_all_sq_strings; }
+  bool all_dq_strings_p () const { return m_all_dq_strings; }
+  bool some_strings_p () const { return m_some_strings; }
+  bool all_real_p () const { return m_all_real; }
+  bool all_complex_p () const { return m_all_complex; }
+  bool all_empty_p () const { return m_all_empty; }
+  bool any_cell_p () const { return m_any_cell; }
+  bool any_sparse_p () const { return m_any_sparse; }
+  bool any_class_p () const { return m_any_class; }
+  bool all_1x1_p () const { return m_all_1x1; }
+  bool first_elem_struct_p () const { return m_first_elem_is_struct; }
 
-  std::string class_name (void) const { return m_class_name; }
+  std::string class_name () const { return m_class_name; }
 
 protected:
 
@@ -149,7 +149,7 @@ public:
   typedef std::list<octave_value>::iterator iterator;
   typedef std::list<octave_value>::const_iterator const_iterator;
 
-  tm_row_const (void) = delete;
+  tm_row_const () = delete;
 
   tm_row_const (const tree_argument_list& row, tree_evaluator& tw)
     : tm_info (row.empty ()), m_values ()
@@ -161,19 +161,19 @@ public:
 
   tm_row_const& operator = (const tm_row_const&) = delete;
 
-  ~tm_row_const (void) = default;
+  ~tm_row_const () = default;
 
-  iterator begin (void) { return m_values.begin (); }
-  const_iterator begin (void) const { return m_values.begin (); }
+  iterator begin () { return m_values.begin (); }
+  const_iterator begin () const { return m_values.begin (); }
 
-  iterator end (void) { return m_values.end (); }
-  const_iterator end (void) const { return m_values.end (); }
+  iterator end () { return m_values.end (); }
+  const_iterator end () const { return m_values.end (); }
 
-  bool empty (void) const { return m_values.empty (); }
+  bool empty () const { return m_values.empty (); }
 
-  std::size_t length (void) const { return m_values.size (); }
+  std::size_t length () const { return m_values.size (); }
 
-  void cellify (void);
+  void cellify ();
 
 private:
 
@@ -191,7 +191,7 @@ public:
   typedef std::list<tm_row_const>::iterator iterator;
   typedef std::list<tm_row_const>::const_iterator const_iterator;
 
-  tm_const (void) = delete;
+  tm_const () = delete;
 
   tm_const (const tree_matrix& tm, tree_evaluator& tw)
     : tm_info (tm.empty ()), m_evaluator (tw), m_tm_rows ()
@@ -205,7 +205,7 @@ public:
 
   tm_const& operator = (const tm_const&) = delete;
 
-  ~tm_const (void) = default;
+  ~tm_const () = default;
 
   octave_value concat (char string_fill_char) const;
 
@@ -223,21 +223,21 @@ private:
 
   octave_value char_array_concat (char string_fill_char) const;
 
-  octave_value class_concat (void) const;
+  octave_value class_concat () const;
 
-  octave_value generic_concat (void) const;
+  octave_value generic_concat () const;
 
   template <typename TYPE>
   void array_concat_internal (TYPE& result) const;
 
   template <typename TYPE>
-  TYPE array_concat (void) const;
+  TYPE array_concat () const;
 
   template <typename TYPE>
-  TYPE sparse_array_concat (void) const;
+  TYPE sparse_array_concat () const;
 
   template <typename MAP>
-  octave_map map_concat (void) const;
+  octave_map map_concat () const;
 };
 
 OCTAVE_END_NAMESPACE(octave)

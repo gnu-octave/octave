@@ -172,7 +172,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     restoreGeometry (settings.value(pd_geometry.settings_key ()).toByteArray());
   }
 
-  void set_path_dialog::update_model (void)
+  void set_path_dialog::update_model ()
   {
     set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
     m->path_to_model ();
@@ -203,17 +203,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void set_path_dialog::add_dir(void)
+  void set_path_dialog::add_dir()
   {
     add_dir_common (false);
   }
 
-  void set_path_dialog::add_dir_subdirs (void)
+  void set_path_dialog::add_dir_subdirs ()
   {
     add_dir_common (true);
   }
 
-  void set_path_dialog::rm_dir (void)
+  void set_path_dialog::rm_dir ()
   {
     set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
     QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -223,7 +223,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     selmodel->clearSelection ();
   }
 
-  void set_path_dialog::move_dir_up (void)
+  void set_path_dialog::move_dir_up ()
   {
     set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
     QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -243,7 +243,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_path_list->scrollTo (m->index (min_row));
   }
 
-  void set_path_dialog::move_dir_down (void)
+  void set_path_dialog::move_dir_down ()
   {
     set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
     QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -263,7 +263,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_path_list->scrollTo (m->index (max_row));
   }
 
-  void set_path_dialog::move_dir_top (void)
+  void set_path_dialog::move_dir_top ()
   {
     set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
     QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -278,7 +278,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_path_list->scrollTo (m->index (0));
   }
 
-  void set_path_dialog::move_dir_bottom (void)
+  void set_path_dialog::move_dir_bottom ()
   {
     set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
     QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -295,7 +295,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_path_list->scrollTo (m->index (row_count - 1));
   }
 
-  void set_path_dialog::save_settings (void)
+  void set_path_dialog::save_settings ()
   {
     gui_settings settings;
 

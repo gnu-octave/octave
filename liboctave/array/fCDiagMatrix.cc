@@ -209,7 +209,7 @@ FloatComplexDiagMatrix::fill (const FloatComplexRowVector& a,
 }
 
 FloatDiagMatrix
-FloatComplexDiagMatrix::abs (void) const
+FloatComplexDiagMatrix::abs () const
 {
   return FloatDiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
@@ -305,7 +305,7 @@ FloatComplexDiagMatrix::column (char *s) const
 }
 
 FloatComplexDiagMatrix
-FloatComplexDiagMatrix::inverse (void) const
+FloatComplexDiagMatrix::inverse () const
 {
   octave_idx_type info;
   return inverse (info);
@@ -358,7 +358,7 @@ FloatComplexDiagMatrix::pseudo_inverse (float tol) const
 }
 
 bool
-FloatComplexDiagMatrix::all_elements_are_real (void) const
+FloatComplexDiagMatrix::all_elements_are_real () const
 {
   return mx_inline_all_real (length (), data ());
 }
@@ -474,7 +474,7 @@ operator * (const FloatComplexDiagMatrix& a, const FloatComplexDiagMatrix& b)
 // other operations
 
 FloatComplexDET
-FloatComplexDiagMatrix::determinant (void) const
+FloatComplexDiagMatrix::determinant () const
 {
   FloatComplexDET det (1.0f);
   if (rows () != cols ())
@@ -488,7 +488,7 @@ FloatComplexDiagMatrix::determinant (void) const
 }
 
 float
-FloatComplexDiagMatrix::rcond (void) const
+FloatComplexDiagMatrix::rcond () const
 {
   FloatColumnVector av = extract_diag (0).map<float> (std::abs);
   float amx = av.max ();

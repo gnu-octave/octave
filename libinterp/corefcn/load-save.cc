@@ -268,7 +268,7 @@ load_save_system::load_save_system (interpreter& interp)
 #endif
 }
 
-load_save_system::~load_save_system (void)
+load_save_system::~load_save_system ()
 {
 #if defined (HAVE_HDF5)
   H5close ();
@@ -732,7 +732,7 @@ void load_save_system::save_vars (const string_vector& argv, int argv_idx,
     }
 }
 
-void load_save_system::dump_octave_core (void)
+void load_save_system::dump_octave_core ()
 {
   if (m_crash_dumps_octave_core)
     {
@@ -1074,7 +1074,7 @@ void load_save_system::install_loaded_variable (const std::string& name,
   m_interpreter.install_variable (name, val, global);
 }
 
-std::string load_save_system::init_save_header_format (void)
+std::string load_save_system::init_save_header_format ()
 {
   return
     (std::string ("# Created by Octave " OCTAVE_VERSION

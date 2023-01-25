@@ -100,7 +100,7 @@ hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
 }
 
 void
-hdf5_fstreambase::close (void)
+hdf5_fstreambase::close ()
 {
 #if defined (HAVE_HDF5)
 

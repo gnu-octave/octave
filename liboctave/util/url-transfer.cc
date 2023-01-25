@@ -48,7 +48,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-base_url_transfer::base_url_transfer (void)
+base_url_transfer::base_url_transfer ()
   : m_host_or_url (), m_valid (false), m_ftp (false),
     m_ascii_mode (false), m_ok (true), m_errmsg (),
     m_curr_istream (&std::cin), m_curr_ostream (&std::cout)
@@ -289,7 +289,7 @@ class curl_transfer : public base_url_transfer
 {
 public:
 
-  curl_transfer (void)
+  curl_transfer ()
     : base_url_transfer (), m_curl (curl_easy_init ()), m_errnum (), m_url (),
       m_userpwd ()
   {
@@ -358,13 +358,13 @@ public:
 
   curl_transfer& operator = (const curl_transfer&) = delete;
 
-  ~curl_transfer (void)
+  ~curl_transfer ()
   {
     if (m_curl)
       curl_easy_cleanup (m_curl);
   }
 
-  void perform (void)
+  void perform ()
   {
     m_errnum = curl_easy_perform (m_curl);
 
@@ -375,7 +375,7 @@ public:
       }
   }
 
-  std::string lasterror (void) const
+  std::string lasterror () const
   {
     return std::string (curl_easy_strerror (m_errnum));
   }
@@ -396,13 +396,13 @@ public:
     return retval;
   }
 
-  void ascii (void)
+  void ascii ()
   {
     m_ascii_mode = true;
     SETOPT (CURLOPT_TRANSFERTEXT, 1);
   }
 
-  void binary (void)
+  void binary ()
   {
     m_ascii_mode = false;
     SETOPT (CURLOPT_TRANSFERTEXT, 0);
@@ -483,7 +483,7 @@ public:
     SETOPT (CURLOPT_URL, m_url.c_str ());
   }
 
-  void dir (void)
+  void dir ()
   {
     m_url = "ftp://" + m_host_or_url + '/';
     SETOPT (CURLOPT_URL, m_url.c_str ());
@@ -498,7 +498,7 @@ public:
     SETOPT (CURLOPT_URL, m_url.c_str ());
   }
 
-  string_vector list (void)
+  string_vector list ()
   {
     string_vector retval;
 
@@ -593,7 +593,7 @@ public:
     cwd ('/' + path);
   }
 
-  std::string pwd (void)
+  std::string pwd ()
   {
     std::string retval;
 
@@ -918,7 +918,7 @@ private:
 #  define REP_CLASS base_url_transfer
 #endif
 
-url_transfer::url_transfer (void) : m_rep (new REP_CLASS ())
+url_transfer::url_transfer () : m_rep (new REP_CLASS ())
 { }
 
 url_transfer::url_transfer (const std::string& host, const std::string& user,

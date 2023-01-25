@@ -76,7 +76,7 @@ octave_struct::break_closure_cycles (const std::shared_ptr<octave::stack_frame>&
 }
 
 octave_base_value *
-octave_struct::try_narrowing_conversion (void)
+octave_struct::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -109,7 +109,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 }
 
 static void
-err_invalid_index_for_assignment (void)
+err_invalid_index_for_assignment ()
 {
   error ("invalid index for structure array assignment");
 }
@@ -571,7 +571,7 @@ octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 }
 
 std::size_t
-octave_struct::byte_size (void) const
+octave_struct::byte_size () const
 {
   // Neglect the size of the fieldnames.
 
@@ -1292,7 +1292,7 @@ octave_scalar_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 }
 
 std::size_t
-octave_scalar_struct::byte_size (void) const
+octave_scalar_struct::byte_size () const
 {
   // Neglect the size of the fieldnames.
 
@@ -1694,7 +1694,7 @@ octave_scalar_struct::as_mxArray (bool interleaved) const
 }
 
 octave_value
-octave_scalar_struct::to_array (void)
+octave_scalar_struct::to_array ()
 {
   return new octave_struct (octave_map (m_map));
 }
@@ -2019,7 +2019,7 @@ Return the number of fields of the structure @var{s}.
 
 OCTAVE_NORETURN
 static void
-invalid_cell2struct_fields_error (void)
+invalid_cell2struct_fields_error ()
 {
   error ("cell2struct: FIELDS must be a cell array of strings or a scalar string");
 }

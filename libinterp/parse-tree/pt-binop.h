@@ -68,7 +68,7 @@ public:
 
   tree_binary_expression& operator = (const tree_binary_expression&) = delete;
 
-  ~tree_binary_expression (void)
+  ~tree_binary_expression ()
   {
     if (! m_preserve_operands)
       {
@@ -77,18 +77,18 @@ public:
       }
   }
 
-  void preserve_operands (void) { m_preserve_operands = true; }
+  void preserve_operands () { m_preserve_operands = true; }
 
-  bool is_binary_expression (void) const { return true; }
+  bool is_binary_expression () const { return true; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
-  std::string oper (void) const;
+  std::string oper () const;
 
-  octave_value::binary_op op_type (void) const { return m_etype; }
+  octave_value::binary_op op_type () const { return m_etype; }
 
-  tree_expression * lhs (void) { return m_lhs; }
-  tree_expression * rhs (void) { return m_rhs; }
+  tree_expression * lhs () { return m_lhs; }
+  tree_expression * rhs () { return m_rhs; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -104,7 +104,7 @@ public:
     tw.visit_binary_expression (*this);
   }
 
-  std::string profiler_name (void) const { return "binary " + oper (); }
+  std::string profiler_name () const { return "binary " + oper (); }
 
   void matlab_style_short_circuit_warning (const char *op);
 
@@ -143,7 +143,7 @@ public:
   tree_braindead_shortcircuit_binary_expression&
   operator = (const tree_braindead_shortcircuit_binary_expression&) = delete;
 
-  ~tree_braindead_shortcircuit_binary_expression (void) = default;
+  ~tree_braindead_shortcircuit_binary_expression () = default;
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -178,15 +178,15 @@ public:
 
   tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
 
-  ~tree_boolean_expression (void) = default;
+  ~tree_boolean_expression () = default;
 
-  bool is_boolean_expression (void) const { return true; }
+  bool is_boolean_expression () const { return true; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
-  std::string oper (void) const;
+  std::string oper () const;
 
-  type op_type (void) const { return m_etype; }
+  type op_type () const { return m_etype; }
 
   tree_expression * dup (symbol_scope& scope) const;
 

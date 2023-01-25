@@ -161,7 +161,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (action, &QAction::triggered, this, &Menu::actionTriggered);
   }
 
-  Menu::~Menu (void)
+  Menu::~Menu ()
   { }
 
   void
@@ -268,7 +268,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   QWidget *
-  Menu::menu (void)
+  Menu::menu ()
   {
     QAction *action = qWidget<QAction> ();
     QMenu *action_menu = action->menu ();
@@ -285,7 +285,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Menu::actionTriggered (void)
+  Menu::actionTriggered ()
   {
     QAction *action = qWidget<QAction> ();
 
@@ -295,13 +295,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Menu::actionHovered (void)
+  Menu::actionHovered ()
   {
     emit gh_callback_event (m_handle, "menuselectedfcn");
   }
 
   void
-  Menu::updateSiblingPositions (void)
+  Menu::updateSiblingPositions ()
   {
     if (m_parent)
       {

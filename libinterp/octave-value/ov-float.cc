@@ -106,61 +106,61 @@ octave_float_scalar::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
-octave_float_scalar::as_double (void) const
+octave_float_scalar::as_double () const
 {
   return static_cast<double> (scalar);
 }
 
 octave_value
-octave_float_scalar::as_single (void) const
+octave_float_scalar::as_single () const
 {
   return scalar;
 }
 
 octave_value
-octave_float_scalar::as_int8 (void) const
+octave_float_scalar::as_int8 () const
 {
   return octave_int8 (scalar);
 }
 
 octave_value
-octave_float_scalar::as_int16 (void) const
+octave_float_scalar::as_int16 () const
 {
   return octave_int16 (scalar);
 }
 
 octave_value
-octave_float_scalar::as_int32 (void) const
+octave_float_scalar::as_int32 () const
 {
   return octave_int32 (scalar);
 }
 
 octave_value
-octave_float_scalar::as_int64 (void) const
+octave_float_scalar::as_int64 () const
 {
   return octave_int64 (scalar);
 }
 
 octave_value
-octave_float_scalar::as_uint8 (void) const
+octave_float_scalar::as_uint8 () const
 {
   return octave_uint8 (scalar);
 }
 
 octave_value
-octave_float_scalar::as_uint16 (void) const
+octave_float_scalar::as_uint16 () const
 {
   return octave_uint16 (scalar);
 }
 
 octave_value
-octave_float_scalar::as_uint32 (void) const
+octave_float_scalar::as_uint32 () const
 {
   return octave_uint32 (scalar);
 }
 
 octave_value
-octave_float_scalar::as_uint64 (void) const
+octave_float_scalar::as_uint64 () const
 {
   return octave_uint64 (scalar);
 }

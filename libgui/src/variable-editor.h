@@ -57,7 +57,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     variable_dock_widget (QWidget *p);
 
-    ~variable_dock_widget (void) = default;
+    ~variable_dock_widget () = default;
 
   signals:
 
@@ -81,7 +81,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void toplevel_change (bool);
 
-    void change_fullscreen (void);
+    void change_fullscreen ();
 
   protected:
 
@@ -99,15 +99,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #define QTBUG_44813_FIX_VERSION 0x999999
   signals:
 
-    void queue_unfloat_float (void);
+    void queue_unfloat_float ();
 
-    void queue_float (void);
+    void queue_float ();
 
   protected slots:
 
-    void unfloat_float (void);
+    void unfloat_float ();
 
-    void refloat (void);
+    void refloat ();
 
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
   protected:
@@ -130,11 +130,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     variable_editor_stack (QWidget *p);
 
-    ~variable_editor_stack (void) = default;
+    ~variable_editor_stack () = default;
 
-    variable_editor_view * edit_view (void) {return m_edit_view;};
+    variable_editor_view * edit_view () {return m_edit_view;};
 
-    QTextEdit * disp_view (void) {return m_disp_view;};
+    QTextEdit * disp_view () {return m_disp_view;};
 
   signals:
 
@@ -149,7 +149,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void set_editable (bool editable);
 
-    void levelUp (void);
+    void levelUp ();
 
     void save (const QString& format = QString ());
 
@@ -172,7 +172,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     variable_editor_view (QWidget *p);
 
-    ~variable_editor_view (void) = default;
+    ~variable_editor_view () = default;
 
     void setModel (QAbstractItemModel *model);
 
@@ -184,21 +184,21 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public slots:
 
-    void createVariable (void);
+    void createVariable ();
 
-    void transposeContent (void);
+    void transposeContent ();
 
-    QList<int> range_selected (void);
+    QList<int> range_selected ();
 
-    void delete_selected (void);
+    void delete_selected ();
 
-    void clearContent (void);
+    void clearContent ();
 
-    void cutClipboard (void);
+    void cutClipboard ();
 
-    void copyClipboard (void);
+    void copyClipboard ();
 
-    void pasteClipboard (void);
+    void pasteClipboard ();
 
     void handle_horizontal_scroll_action (int action);
 
@@ -230,13 +230,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     HoverToolButton (QWidget *parent = nullptr);
 
-    ~HoverToolButton (void) = default;
+    ~HoverToolButton () = default;
 
   signals:
 
-    void hovered_signal (void);
+    void hovered_signal ();
 
-    void popup_shown_signal (void);
+    void popup_shown_signal ();
 
   protected:
 
@@ -251,11 +251,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     ReturnFocusToolButton (QWidget *parent = nullptr);
 
-    ~ReturnFocusToolButton (void) = default;
+    ~ReturnFocusToolButton () = default;
 
   signals:
 
-    void about_to_activate (void);
+    void about_to_activate ();
 
   protected:
 
@@ -270,11 +270,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     ReturnFocusMenu (QWidget *parent = nullptr);
 
-    ~ReturnFocusMenu (void) = default;
+    ~ReturnFocusMenu () = default;
 
   signals:
 
-    void about_to_activate (void);
+    void about_to_activate ();
 
   protected:
 
@@ -291,7 +291,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     variable_editor (QWidget *parent);
 
-    ~variable_editor (void);
+    ~variable_editor ();
 
     // No copying!
 
@@ -299,31 +299,31 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     variable_editor& operator = (const variable_editor&) = delete;
 
-    void refresh (void);
+    void refresh ();
 
-    void tab_to_front (void);
+    void tab_to_front ();
 
   signals:
 
-    void updated (void);
+    void updated ();
 
-    void finished (void);
+    void finished ();
 
     void command_signal (const QString& cmd);
 
-    void refresh_signal (void);
+    void refresh_signal ();
 
-    void clear_content_signal (void);
+    void clear_content_signal ();
 
-    void copy_clipboard_signal (void);
+    void copy_clipboard_signal ();
 
-    void paste_clipboard_signal (void);
+    void paste_clipboard_signal ();
 
-    void level_up_signal (void);
+    void level_up_signal ();
 
-    void save_signal (void);
+    void save_signal ();
 
-    void delete_selected_signal (void);
+    void delete_selected_signal ();
 
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
@@ -332,7 +332,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void callUpdate (const QModelIndex&, const QModelIndex&);
 
-    void notice_settings (void);
+    void notice_settings ();
 
     void edit_variable (const QString& name, const octave_value& val);
 
@@ -340,23 +340,23 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void variable_focused (const QString& name);
 
-    void record_hovered_focus_variable (void);
+    void record_hovered_focus_variable ();
 
-    void restore_hovered_focus_variable (void);
+    void restore_hovered_focus_variable ();
 
   protected slots:
 
     void closeEvent (QCloseEvent *);
 
-    void save (void);
+    void save ();
 
-    void cutClipboard (void);
+    void cutClipboard ();
 
-    void copyClipboard (void);
+    void copyClipboard ();
 
-    void pasteClipboard (void);
+    void pasteClipboard ();
 
-    void levelUp (void);
+    void levelUp ();
 
   protected:
 
@@ -389,12 +389,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QList<QColor> m_table_colors;
 
-    void update_colors (void);
+    void update_colors ();
 
     QAction * add_tool_bar_button (const QIcon& icon, const QString& text,
                                    const QObject *receiver, const char *member);
 
-    void construct_tool_bar (void);
+    void construct_tool_bar ();
 
     QString m_current_focus_vname;
 

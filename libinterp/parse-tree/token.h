@@ -95,43 +95,43 @@ public:
 
   token& operator = (const token&) = delete;
 
-  ~token (void);
+  ~token ();
 
-  void mark_may_be_command (void) { m_maybe_cmd = true; }
-  bool may_be_command (void) const { return m_maybe_cmd; }
+  void mark_may_be_command () { m_maybe_cmd = true; }
+  bool may_be_command () const { return m_maybe_cmd; }
 
-  void mark_trailing_space (void) { m_tspc = true; }
-  bool space_follows_token (void) const { return m_tspc; }
+  void mark_trailing_space () { m_tspc = true; }
+  bool space_follows_token () const { return m_tspc; }
 
-  int token_value (void) const { return m_tok_val; }
+  int token_value () const { return m_tok_val; }
   bool token_value_is (int tv) const { return tv == m_tok_val; }
 
-  filepos beg_pos (void) const { return m_beg_pos; }
-  filepos end_pos (void) const { return m_end_pos; }
+  filepos beg_pos () const { return m_beg_pos; }
+  filepos end_pos () const { return m_end_pos; }
 
   void beg_pos (const filepos& pos) { m_beg_pos = pos; }
   void end_pos (const filepos& pos) { m_end_pos = pos; }
 
   // These will probably be removed.
-  int line (void) const { return m_beg_pos.line (); }
-  int column (void) const { return m_beg_pos.column (); }
+  int line () const { return m_beg_pos.line (); }
+  int column () const { return m_beg_pos.column (); }
 
-  bool iskeyword (void) const
+  bool iskeyword () const
   {
     return m_type_tag == keyword_token || m_type_tag == ettype_token;
   }
 
-  bool isstring (void) const { return m_type_tag == string_token; }
+  bool isstring () const { return m_type_tag == string_token; }
 
-  std::string text (void) const;
-  octave_value number (void) const;
-  token_type ttype (void) const;
-  end_tok_type ettype (void) const;
+  std::string text () const;
+  octave_value number () const;
+  token_type ttype () const;
+  end_tok_type ettype () const;
 
-  std::string superclass_method_name (void) const;
-  std::string superclass_class_name (void) const;
+  std::string superclass_method_name () const;
+  std::string superclass_class_name () const;
 
-  std::string text_rep (void) const;
+  std::string text_rep () const;
 
 private:
 
@@ -148,7 +148,7 @@ private:
 
   union tok_info
   {
-    tok_info (void) { }
+    tok_info () { }
 
     tok_info (const char *s) : m_str (new std::string (s)) { }
 
@@ -166,7 +166,7 @@ private:
 
     tok_info& operator = (const tok_info&) = delete;
 
-    ~tok_info (void) { }
+    ~tok_info () { }
 
     std::string *m_str;
 
@@ -181,13 +181,13 @@ private:
         : m_method_name (meth), m_class_name (cls)
       { }
 
-      superclass_info (void) = delete;
+      superclass_info () = delete;
 
       superclass_info (const superclass_info&) = delete;
 
       superclass_info& operator = (const superclass_info&) = delete;
 
-      ~superclass_info (void) = default;
+      ~superclass_info () = default;
 
       //--------
 

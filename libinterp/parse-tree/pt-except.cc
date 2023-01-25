@@ -47,7 +47,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Simple exception handling.
 
-tree_try_catch_command::~tree_try_catch_command (void)
+tree_try_catch_command::~tree_try_catch_command ()
 {
   delete m_expr_id;
   delete m_try_code;
@@ -59,7 +59,7 @@ tree_try_catch_command::~tree_try_catch_command (void)
 
 // Simple exception handling.
 
-tree_unwind_protect_command::~tree_unwind_protect_command (void)
+tree_unwind_protect_command::~tree_unwind_protect_command ()
 {
   delete m_unwind_protect_code;
   delete m_cleanup_code;

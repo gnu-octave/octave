@@ -1201,7 +1201,7 @@ tree_print_code::print_fcn_handle_body (tree_expression *e)
 // Each print_code() function should call this before printing anything.
 
 void
-tree_print_code::indent (void)
+tree_print_code::indent ()
 {
   panic_unless (m_curr_print_indent_level >= 0);
 
@@ -1236,7 +1236,7 @@ tree_print_code::newline (const char *alt_txt)
 // For resetting print_code state.
 
 void
-tree_print_code::reset (void)
+tree_print_code::reset ()
 {
   m_beginning_of_line = true;
   m_curr_print_indent_level = 0;

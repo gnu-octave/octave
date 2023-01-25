@@ -47,7 +47,7 @@ base_iostream::seek (off_t, int)
 // Return current stream position.
 
 off_t
-base_iostream::tell (void)
+base_iostream::tell ()
 {
   invalid_operation ();
   return -1;
@@ -56,14 +56,14 @@ base_iostream::tell (void)
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-base_iostream::eof (void) const
+base_iostream::eof () const
 {
   invalid_operation ();
   return false;
 }
 
 void
-base_iostream::invalid_operation (void) const
+base_iostream::invalid_operation () const
 {
   // Note: use ::error to get error from error.h which halts operation.
   ::error ("%s: invalid operation", stream_type ());
@@ -72,7 +72,7 @@ base_iostream::invalid_operation (void) const
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-istream::eof (void) const
+istream::eof () const
 {
   return m_istream && m_istream->eof ();
 }
@@ -86,7 +86,7 @@ istream::create (std::istream *arg, const std::string& n)
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-ostream::eof (void) const
+ostream::eof () const
 {
   return m_ostream && m_ostream->eof ();
 }

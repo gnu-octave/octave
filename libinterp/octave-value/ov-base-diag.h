@@ -50,7 +50,7 @@ octave_base_diag : public octave_base_value
 
 public:
 
-  octave_base_diag (void)
+  octave_base_diag ()
     : octave_base_value (), m_matrix (), m_dense_cache () { }
 
   octave_base_diag (const DMT& m)
@@ -60,13 +60,13 @@ public:
   octave_base_diag (const octave_base_diag& m)
     : octave_base_value (), m_matrix (m.m_matrix), m_dense_cache () { }
 
-  ~octave_base_diag (void) = default;
+  ~octave_base_diag () = default;
 
-  std::size_t byte_size (void) const { return m_matrix.byte_size (); }
+  std::size_t byte_size () const { return m_matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return m_matrix; }
+  octave_value squeeze () const { return m_matrix; }
 
-  octave_value full_value (void) const { return to_dense (); }
+  octave_value full_value () const { return to_dense (); }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -87,9 +87,9 @@ public:
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
-  dim_vector dims (void) const { return m_matrix.dims (); }
+  dim_vector dims () const { return m_matrix.dims (); }
 
-  octave_idx_type nnz (void) const { return diag ().nnz (); }
+  octave_idx_type nnz () const { return diag ().nnz (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   { return to_dense ().reshape (new_dims); }
@@ -110,7 +110,7 @@ public:
   octave_value all (int dim = 0) const { return MT (m_matrix).all (dim); }
   octave_value any (int dim = 0) const { return MT (m_matrix).any (dim); }
 
-  MatrixType matrix_type (void) const { return MatrixType::Diagonal; }
+  MatrixType matrix_type () const { return MatrixType::Diagonal; }
   MatrixType matrix_type (const MatrixType&) const
   { return matrix_type (); }
 
@@ -136,17 +136,17 @@ public:
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
   { return to_dense ().is_sorted_rows (mode); }
 
-  bool is_matrix_type (void) const { return true; }
+  bool is_matrix_type () const { return true; }
 
-  bool isnumeric (void) const { return true; }
+  bool isnumeric () const { return true; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  OCTINTERP_API bool is_true (void) const;
+  OCTINTERP_API bool is_true () const;
 
-  bool is_diag_matrix (void) const { return true; }
+  bool is_diag_matrix () const { return true; }
 
   OCTINTERP_API double double_value (bool = false) const;
 
@@ -190,28 +190,28 @@ public:
   sparse_complex_matrix_value (bool = false) const;
 
   int8NDArray
-  int8_array_value (void) const { return to_dense ().int8_array_value (); }
+  int8_array_value () const { return to_dense ().int8_array_value (); }
 
   int16NDArray
-  int16_array_value (void) const { return to_dense ().int16_array_value (); }
+  int16_array_value () const { return to_dense ().int16_array_value (); }
 
   int32NDArray
-  int32_array_value (void) const { return to_dense ().int32_array_value (); }
+  int32_array_value () const { return to_dense ().int32_array_value (); }
 
   int64NDArray
-  int64_array_value (void) const { return to_dense ().int64_array_value (); }
+  int64_array_value () const { return to_dense ().int64_array_value (); }
 
   uint8NDArray
-  uint8_array_value (void) const { return to_dense ().uint8_array_value (); }
+  uint8_array_value () const { return to_dense ().uint8_array_value (); }
 
   uint16NDArray
-  uint16_array_value (void) const { return to_dense ().uint16_array_value (); }
+  uint16_array_value () const { return to_dense ().uint16_array_value (); }
 
   uint32NDArray
-  uint32_array_value (void) const { return to_dense ().uint32_array_value (); }
+  uint32_array_value () const { return to_dense ().uint32_array_value (); }
 
   uint64NDArray
-  uint64_array_value (void) const { return to_dense ().uint64_array_value (); }
+  uint64_array_value () const { return to_dense ().uint64_array_value (); }
 
   OCTINTERP_API octave_value
   convert_to_str_internal (bool pad, bool force, char type) const;
@@ -219,7 +219,7 @@ public:
   OCTINTERP_API void
   print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  OCTINTERP_API float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format () const;
 
   OCTINTERP_API std::string
   edit_display (const float_display_format& fmt,
@@ -236,7 +236,7 @@ public:
 
   OCTINTERP_API mxArray * as_mxArray (bool interleaved) const;
 
-  OCTINTERP_API bool print_as_scalar (void) const;
+  OCTINTERP_API bool print_as_scalar () const;
 
   OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -251,7 +251,7 @@ protected:
 
   DMT m_matrix;
 
-  OCTINTERP_API octave_value to_dense (void) const;
+  OCTINTERP_API octave_value to_dense () const;
 
   virtual bool chk_valid_scalar (const octave_value&,
                                  typename DMT::element_type&) const = 0;

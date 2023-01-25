@@ -40,7 +40,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 Logger *Logger::s_instance = nullptr;
 QMutex *Logger::s_mutex = nullptr;
 
-Logger::Logger (void)
+Logger::Logger ()
   : m_debugEnabled (false)
 {
   QProcessEnvironment pe (QProcessEnvironment::systemEnvironment ());
@@ -49,11 +49,11 @@ Logger::Logger (void)
     m_debugEnabled = true;
 }
 
-Logger::~Logger (void)
+Logger::~Logger ()
 { }
 
 Logger *
-Logger::instance (void)
+Logger::instance ()
 {
   if (! s_instance)
     {

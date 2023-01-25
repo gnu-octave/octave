@@ -64,7 +64,7 @@ public:
 
   virtual bool notify (QObject *receiver, QEvent *e) override;
 
-  ~octave_qapplication (void) { };
+  ~octave_qapplication () { };
 
 signals:
 
@@ -104,53 +104,53 @@ public:
   // experimental terminal widget.
   base_qobject (qt_application& app_context, bool gui_app = false);
 
-  ~base_qobject (void);
+  ~base_qobject ();
 
-  void config_translators (void);
+  void config_translators ();
 
-  void start_main_thread (void);
+  void start_main_thread ();
 
-  int exec (void);
+  int exec ();
 
   // The Octave application context.
-  qt_application& app_context (void) { return m_app_context; }
+  qt_application& app_context () { return m_app_context; }
 
   // The Qt QApplication.
-  QApplication * qapplication (void) { return m_qapplication; };
+  QApplication * qapplication () { return m_qapplication; };
 
   // Provided for convenience.  Will be removed once we eliminate the
   // old terminal widget.
-  bool experimental_terminal_widget (void) const;
+  bool experimental_terminal_widget () const;
 
   // Provided for convenience.
-  bool gui_running (void) const;
+  bool gui_running () const;
 
-  bool have_terminal_window (void) const
+  bool have_terminal_window () const
   {
     return ! m_terminal_widget.isNull ();
   }
 
-  main_window * get_main_window (void)
+  main_window * get_main_window ()
   {
     return m_main_window;
   }
 
-  std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events (void)
+  std::shared_ptr<qt_interpreter_events> get_qt_interpreter_events ()
   {
     return m_qt_interpreter_events;
   }
 
-  qt_interpreter_events * qt_link (void)
+  qt_interpreter_events * qt_link ()
   {
     return m_qt_interpreter_events.get ();
   }
 
-  interpreter_qobject * interpreter_qobj (void)
+  interpreter_qobject * interpreter_qobj ()
   {
     return m_interpreter_qobj;
   }
 
-  workspace_model * get_workspace_model (void)
+  workspace_model * get_workspace_model ()
   {
     return m_workspace_model;
   }
@@ -181,16 +181,16 @@ public:
 
   QPointer<community_news> community_news_widget (int serial = -1);
 
-  QPointer<release_notes> release_notes_widget (void);
+  QPointer<release_notes> release_notes_widget ();
 
-  QThread * main_thread (void) { return m_main_thread; }
+  QThread * main_thread () { return m_main_thread; }
 
   // Declared virtual so that a derived class may redefine this
   // method.
 
-  virtual bool confirm_shutdown (void);
+  virtual bool confirm_shutdown ();
 
-  bool is_gui_app (void) const { return m_gui_app; }
+  bool is_gui_app () const { return m_gui_app; }
 
   template <typename T> void connect_interpreter_events (T *widget)
   {
@@ -208,40 +208,40 @@ public slots:
   // Note: START_GUI and CLOSE_GUI don't currently perform any work
   // with the old terminal widget.
   void start_gui (bool gui_app);
-  void close_gui (void);
+  void close_gui ();
 
-  void show_terminal_window (void);
+  void show_terminal_window ();
 
   void show_documentation_window (const QString& file);
 
-  void show_file_browser_window (void);
+  void show_file_browser_window ();
 
-  void show_command_history_window (void);
+  void show_command_history_window ();
 
-  void show_workspace_window (void);
+  void show_workspace_window ();
 
   void show_variable_editor_window (const QString& name,
                                     const octave_value& value);
 
-  void handle_variable_editor_update (void);
+  void handle_variable_editor_update ();
 
   void show_community_news (int serial);
 
-  void show_release_notes (void);
+  void show_release_notes ();
 
-  void interpreter_ready (void);
+  void interpreter_ready ();
 
   void interpreter_event (const fcn_callback& fcn);
 
   void interpreter_event (const meth_callback& meth);
 
-  void interpreter_interrupt (void);
+  void interpreter_interrupt ();
 
   // Note: these currently only work with the new experimental
   // terminal widget.
-  void interpreter_pause (void);
-  void interpreter_stop (void);
-  void interpreter_resume (void);
+  void interpreter_pause ();
+  void interpreter_stop ();
+  void interpreter_resume ();
 
   void copy_image_to_clipboard (const QString& file, bool remove_file);
 

@@ -92,7 +92,7 @@
 unsigned int kpse_debug = 0;
 
 void
-kpse_path_iterator::set_end (void)
+kpse_path_iterator::set_end ()
 {
   m_e = m_b + 1;
 
@@ -111,7 +111,7 @@ kpse_path_iterator::set_end (void)
 }
 
 void
-kpse_path_iterator::next (void)
+kpse_path_iterator::next ()
 {
   m_b = m_e + 1;
 

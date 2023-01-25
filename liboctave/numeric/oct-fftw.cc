@@ -65,7 +65,7 @@ fftw_planner *fftw_planner::s_instance = nullptr;
 
 // Note that it is profitable to store the FFTW3 plans, for small FFTs.
 
-fftw_planner::fftw_planner (void)
+fftw_planner::fftw_planner ()
   : m_meth (ESTIMATE), m_rplan (nullptr), m_rd (0), m_rs (0), m_rr (0),
     m_rh (0), m_rn (), m_rsimd_align (false), m_nthreads (1)
 {
@@ -97,7 +97,7 @@ fftw_planner::fftw_planner (void)
   fftw_import_system_wisdom ();
 }
 
-fftw_planner::~fftw_planner (void)
+fftw_planner::~fftw_planner ()
 {
   fftw_plan *plan_p;
 
@@ -115,7 +115,7 @@ fftw_planner::~fftw_planner (void)
 }
 
 bool
-fftw_planner::instance_ok (void)
+fftw_planner::instance_ok ()
 {
   bool retval = true;
 
@@ -395,7 +395,7 @@ fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
 }
 
 fftw_planner::FftwMethod
-fftw_planner::do_method (void)
+fftw_planner::do_method ()
 {
   return m_meth;
 }
@@ -427,7 +427,7 @@ fftw_planner::do_method (FftwMethod _meth)
 
 float_fftw_planner *float_fftw_planner::s_instance = nullptr;
 
-float_fftw_planner::float_fftw_planner (void)
+float_fftw_planner::float_fftw_planner ()
   : m_meth (ESTIMATE), m_rplan (nullptr), m_rd (0), m_rs (0), m_rr (0),
     m_rh (0), m_rn (), m_rsimd_align (false), m_nthreads (1)
 {
@@ -454,7 +454,7 @@ float_fftw_planner::float_fftw_planner (void)
   fftwf_import_system_wisdom ();
 }
 
-float_fftw_planner::~float_fftw_planner (void)
+float_fftw_planner::~float_fftw_planner ()
 {
   fftwf_plan *plan_p;
 
@@ -472,7 +472,7 @@ float_fftw_planner::~float_fftw_planner (void)
 }
 
 bool
-float_fftw_planner::instance_ok (void)
+float_fftw_planner::instance_ok ()
 {
   bool retval = true;
 
@@ -750,7 +750,7 @@ float_fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
 }
 
 float_fftw_planner::FftwMethod
-float_fftw_planner::do_method (void)
+float_fftw_planner::do_method ()
 {
   return m_meth;
 }
@@ -1135,7 +1135,7 @@ fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
 #endif
 
 std::string
-fftw_version (void)
+fftw_version ()
 {
 #if defined (HAVE_FFTW)
   return ::fftw_version;
@@ -1145,7 +1145,7 @@ fftw_version (void)
 }
 
 std::string
-fftwf_version (void)
+fftwf_version ()
 {
 #if defined (HAVE_FFTW)
   return ::fftwf_version;

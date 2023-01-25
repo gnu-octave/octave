@@ -2425,18 +2425,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     parse_exception& operator = (const parse_exception&) = default;
 
-    ~parse_exception (void) = default;
+    ~parse_exception () = default;
 
-    std::string message (void) const { return m_message; }
+    std::string message () const { return m_message; }
 
     // Provided for std::exception interface.
-    const char * what (void) const noexcept { return m_message.c_str (); }
+    const char * what () const noexcept { return m_message.c_str (); }
 
-    std::string fcn_name (void) const { return m_fcn_name; }
-    std::string file_name (void) const { return m_file_name; }
+    std::string fcn_name () const { return m_fcn_name; }
+    std::string file_name () const { return m_file_name; }
 
-    int line (void) const { return m_line; }
-    int column (void) const { return m_column; }
+    int line () const { return m_line; }
+    int column () const { return m_column; }
 
     // virtual void display (std::ostream& os) const;
 
@@ -2454,7 +2454,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
   public:
 
-    parse_tree_validator (void)
+    parse_tree_validator ()
       : m_scope (), m_error_list ()
     { }
 
@@ -2462,13 +2462,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     parse_tree_validator& operator = (const parse_tree_validator&) = delete;
 
-    ~parse_tree_validator (void) = default;
+    ~parse_tree_validator () = default;
 
-    symbol_scope get_scope (void) const { return m_scope; }
+    symbol_scope get_scope () const { return m_scope; }
 
-    bool ok (void) const { return m_error_list.empty (); }
+    bool ok () const { return m_error_list.empty (); }
 
-    std::list<parse_exception> error_list (void) const
+    std::list<parse_exception> error_list () const
     {
       return m_error_list;
     }
@@ -2542,7 +2542,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   std::size_t
-  base_parser::parent_scope_info::size (void) const
+  base_parser::parent_scope_info::size () const
   {
     return m_info.size ();
   }
@@ -2560,7 +2560,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  base_parser::parent_scope_info::pop (void)
+  base_parser::parent_scope_info::pop ()
   {
     m_info.pop_back ();
   }
@@ -2616,18 +2616,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   symbol_scope
-  base_parser::parent_scope_info::parent_scope (void) const
+  base_parser::parent_scope_info::parent_scope () const
   {
     return size () > 1 ? m_info[size()-2].first : symbol_scope ();
   }
 
   std::string
-  base_parser::parent_scope_info::parent_name (void) const
+  base_parser::parent_scope_info::parent_name () const
   {
     return m_info[size()-2].second;
   }
 
-  void base_parser::parent_scope_info::clear (void)
+  void base_parser::parent_scope_info::clear ()
   {
     m_info.clear ();
     m_all_names.clear ();
@@ -2643,7 +2643,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_stmt_list (), m_lexer (lxr), m_parser_state (yypstate_new ())
   { }
 
-  base_parser::~base_parser (void)
+  base_parser::~base_parser ()
   {
     delete &m_lexer;
 
@@ -2659,7 +2659,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  base_parser::reset (void)
+  base_parser::reset ()
   {
     m_endfunction_found = false;
     m_autoloading = false;
@@ -2801,7 +2801,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   bool
-  base_parser::push_fcn_symtab (void)
+  base_parser::push_fcn_symtab ()
   {
     m_curr_fcn_depth++;
 
@@ -2893,7 +2893,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_black_hole *
-  base_parser::make_black_hole (void)
+  base_parser::make_black_hole ()
   {
     return new tree_black_hole ();
   }
@@ -4302,7 +4302,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  base_parser::recover_from_parsing_function (void)
+  base_parser::recover_from_parsing_function ()
   {
     m_lexer.m_symtab_context.pop ();
 
@@ -5494,7 +5494,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  base_parser::disallow_command_syntax (void)
+  base_parser::disallow_command_syntax ()
   {
     m_lexer.m_allow_command_syntax = false;
   }
@@ -5615,7 +5615,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   int
-  parser::run (void)
+  parser::run ()
   {
     int status = -1;
 
@@ -5732,7 +5732,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   int
-  push_parser::run (void)
+  push_parser::run ()
   {
     if (! m_reader)
       error ("push_parser::run requires valid input_reader");
@@ -5804,7 +5804,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         return octave_value ();
       }
 
-    unwind_action act ([=] (void) { ::fclose (ffile); });
+    unwind_action act ([=] () { ::fclose (ffile); });
 
     // get the encoding for this folder
     input_system& input_sys = interp.get_input_system ();
@@ -5898,7 +5898,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Check script or function for semantic errors.
   bool
-  base_parser::validate_primary_fcn (void)
+  base_parser::validate_primary_fcn ()
   {
     octave_user_code *code = m_primary_fcn.user_code_value ();
 
@@ -6636,7 +6636,7 @@ s = evalc ("t = 42"), t
   // the eval, then the message is stored in the exception object and we
   // will display it later, after the buffers have been restored.
 
-  unwind_action act ([=] (void)
+  unwind_action act ([=] ()
                              {
                                octave_stdout.rdbuf (old_out_buf);
                                std::cerr.rdbuf (old_err_buf);

@@ -57,11 +57,11 @@ public:
 
   tree_cell& operator = (const tree_cell&) = delete;
 
-  ~tree_cell (void) = default;
+  ~tree_cell () = default;
 
-  bool iscell (void) const { return true; }
+  bool iscell () const { return true; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 

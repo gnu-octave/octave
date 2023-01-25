@@ -57,7 +57,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     };
 
   public:
-    virtual ~Canvas (void) = default;
+    virtual ~Canvas () = default;
 
     void redraw (bool sync = false);
     void blockRedraw (bool block = true);
@@ -74,13 +74,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void setCursor (MouseMode mode, std::string fallback,
                     QImage cdata, Matrix hotspot);
 
-    virtual QWidget * qWidget (void) = 0;
+    virtual QWidget * qWidget () = 0;
 
     static Canvas *
     create (octave::interpreter& interp, const graphics_handle& handle,
             QWidget *parent, const std::string& name);
 
-    virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
+    virtual uint8NDArray getPixels () { return do_getPixels (m_handle); };
 
   signals:
 
@@ -123,7 +123,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void canvasToggleAxes (const graphics_handle& handle);
     void canvasToggleGrid (const graphics_handle& handle);
     void canvasAutoAxes (const graphics_handle& handle);
-    void canvasPaintEvent (void);
+    void canvasPaintEvent ();
     void canvasMouseDoubleClickEvent (QMouseEvent *event);
     void canvasMouseMoveEvent (QMouseEvent *event);
     void canvasMousePressEvent (QMouseEvent *event);

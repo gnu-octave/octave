@@ -39,7 +39,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-void display_info::initialize (void)
+void display_info::initialize ()
 {
   int avail = 0;
 

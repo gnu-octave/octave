@@ -173,7 +173,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         QTimer::singleShot (0, frame, &QFrame::show);
         // FIXME: What is the intent here?  QButtonGroup::show is not a
         // member of QButtonGroup.
-        QTimer::singleShot (0, buttongroup, SLOT (show (void)));
+        QTimer::singleShot (0, buttongroup, SLOT (show ()));
       }
     else
       frame->hide ();
@@ -183,7 +183,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &ButtonGroup::buttonClicked);
   }
 
-  ButtonGroup::~ButtonGroup (void)
+  ButtonGroup::~ButtonGroup ()
   { }
 
   bool
@@ -399,7 +399,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  ButtonGroup::redraw (void)
+  ButtonGroup::redraw ()
   {
     update (uibuttongroup::properties::ID_POSITION);
 
@@ -411,7 +411,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  ButtonGroup::updateLayout (void)
+  ButtonGroup::updateLayout ()
   {
     uibuttongroup::properties& pp = properties<uibuttongroup> ();
     QFrame *frame = qWidget<QFrame> ();
@@ -452,7 +452,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  ButtonGroup::selectNothing (void)
+  ButtonGroup::selectNothing ()
   {
     m_hiddenbutton->setChecked (true);
   }

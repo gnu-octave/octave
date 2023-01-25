@@ -50,7 +50,7 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcond);
 
-  SparseMatrix (void) : MSparse<double> () { }
+  SparseMatrix () : MSparse<double> () { }
 
   SparseMatrix (octave_idx_type r, octave_idx_type c)
     : MSparse<double> (r, c) { }
@@ -98,7 +98,7 @@ public:
   OCTAVE_API bool operator == (const SparseMatrix& a) const;
   OCTAVE_API bool operator != (const SparseMatrix& a) const;
 
-  OCTAVE_API bool issymmetric (void) const;
+  OCTAVE_API bool issymmetric () const;
 
   OCTAVE_API SparseMatrix max (int dim = -1) const;
   OCTAVE_API SparseMatrix max (Array<octave_idx_type>& index, int dim = -1) const;
@@ -121,11 +121,11 @@ public:
   friend OCTAVE_API SparseMatrix real (const SparseComplexMatrix& a);
   friend OCTAVE_API SparseMatrix imag (const SparseComplexMatrix& a);
 
-  SparseMatrix transpose (void) const
+  SparseMatrix transpose () const
   {
     return MSparse<double>::transpose ();
   }
-  SparseMatrix hermitian (void) const { return transpose (); }
+  SparseMatrix hermitian () const { return transpose (); }
 
   // extract row or column i.
 
@@ -143,7 +143,7 @@ private:
             const bool force = false, const bool calccond = true) const;
 
 public:
-  OCTAVE_API SparseMatrix inverse (void) const;
+  OCTAVE_API SparseMatrix inverse () const;
   OCTAVE_API SparseMatrix inverse (MatrixType& mattype) const;
   OCTAVE_API SparseMatrix
   inverse (MatrixType& mattype, octave_idx_type& info) const;
@@ -151,7 +151,7 @@ public:
   inverse (MatrixType& mattype, octave_idx_type& info, double& rcond,
            bool force = false, bool calc_cond = true) const;
 
-  OCTAVE_API DET determinant (void) const;
+  OCTAVE_API DET determinant () const;
   OCTAVE_API DET determinant (octave_idx_type& info) const;
   OCTAVE_API DET determinant (octave_idx_type& info, double& rcond,
                               bool calc_cond = true) const;
@@ -420,15 +420,15 @@ public:
   // other operations
 
   OCTAVE_API bool any_element_is_negative (bool = false) const;
-  OCTAVE_API bool any_element_is_nan (void) const;
-  OCTAVE_API bool any_element_is_inf_or_nan (void) const;
-  OCTAVE_API bool any_element_not_one_or_zero (void) const;
-  OCTAVE_API bool all_elements_are_zero (void) const;
-  OCTAVE_API bool all_elements_are_int_or_inf_or_nan (void) const;
+  OCTAVE_API bool any_element_is_nan () const;
+  OCTAVE_API bool any_element_is_inf_or_nan () const;
+  OCTAVE_API bool any_element_not_one_or_zero () const;
+  OCTAVE_API bool all_elements_are_zero () const;
+  OCTAVE_API bool all_elements_are_int_or_inf_or_nan () const;
   OCTAVE_API bool all_integers (double& max_val, double& min_val) const;
-  OCTAVE_API bool too_large_for_float (void) const;
+  OCTAVE_API bool too_large_for_float () const;
 
-  OCTAVE_API SparseBoolMatrix operator ! (void) const;
+  OCTAVE_API SparseBoolMatrix operator ! () const;
 
   OCTAVE_API SparseBoolMatrix all (int dim = -1) const;
   OCTAVE_API SparseBoolMatrix any (int dim = -1) const;
@@ -438,13 +438,13 @@ public:
   OCTAVE_API SparseMatrix prod (int dim = -1) const;
   OCTAVE_API SparseMatrix sum (int dim = -1) const;
   OCTAVE_API SparseMatrix sumsq (int dim = -1) const;
-  OCTAVE_API SparseMatrix abs (void) const;
+  OCTAVE_API SparseMatrix abs () const;
 
   OCTAVE_API SparseMatrix diag (octave_idx_type k = 0) const;
 
-  OCTAVE_API Matrix matrix_value (void) const;
+  OCTAVE_API Matrix matrix_value () const;
 
-  OCTAVE_API SparseMatrix squeeze (void) const;
+  OCTAVE_API SparseMatrix squeeze () const;
 
   OCTAVE_API SparseMatrix reshape (const dim_vector& new_dims) const;
 

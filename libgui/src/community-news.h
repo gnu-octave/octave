@@ -46,13 +46,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                     const QString& page = "community-news.html",
                     int serial = -1);
 
-    ~community_news (void) = default;
+    ~community_news () = default;
 
   public slots:
 
     void set_news (const QString& news);
 
-    void display (void);
+    void display ();
 
   private:
 

@@ -45,7 +45,7 @@ base_strstream::seek (off_t, int)
 // Return current stream position.
 
 off_t
-base_strstream::tell (void)
+base_strstream::tell ()
 {
   // Note: error is inherited from base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.

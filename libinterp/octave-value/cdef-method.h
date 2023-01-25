@@ -52,33 +52,33 @@ private:
   {
   public:
 
-    cdef_method_rep (void)
+    cdef_method_rep ()
       : cdef_meta_object_rep (), m_function (), m_dispatch_type ()
     { }
 
     cdef_method_rep& operator = (const cdef_method_rep& m) = delete;
 
-    ~cdef_method_rep (void) = default;
+    ~cdef_method_rep () = default;
 
-    cdef_object_rep * copy (void) const { return new cdef_method_rep(*this); }
+    cdef_object_rep * copy () const { return new cdef_method_rep(*this); }
 
-    bool is_method (void) const { return true; }
+    bool is_method () const { return true; }
 
-    std::string get_name (void) const { return get("Name").string_value (); }
+    std::string get_name () const { return get("Name").string_value (); }
 
     void set_name (const std::string& nm) { put ("Name", nm); }
 
-    bool is_static (void) const { return get("Static").bool_value (); }
+    bool is_static () const { return get("Static").bool_value (); }
 
-    octave_value get_function (void) const { return m_function; }
+    octave_value get_function () const { return m_function; }
 
     void set_function (const octave_value& fcn) { m_function = fcn; }
 
-    OCTINTERP_API std::string get_doc_string (void);
+    OCTINTERP_API std::string get_doc_string ();
 
-    OCTINTERP_API bool check_access (void) const;
+    OCTINTERP_API bool check_access () const;
 
-    bool is_external (void) const { return ! m_dispatch_type.empty (); }
+    bool is_external () const { return ! m_dispatch_type.empty (); }
 
     void mark_as_external (const std::string& dtype)
     {
@@ -94,7 +94,7 @@ private:
              const octave_value_list& args, int nargout,
              bool do_check_access = true, const std::string& who = "");
 
-    OCTINTERP_API bool is_constructor (void) const;
+    OCTINTERP_API bool is_constructor () const;
 
     OCTINTERP_API bool is_defined_in_class (const std::string& cname) const;
 
@@ -114,9 +114,9 @@ private:
         m_dispatch_type (m.m_dispatch_type)
     { }
 
-    OCTINTERP_API void check_method (void);
+    OCTINTERP_API void check_method ();
 
-    cdef_method wrap (void)
+    cdef_method wrap ()
     {
       m_count++;
       return cdef_method (this);
@@ -132,7 +132,7 @@ private:
 
 public:
 
-  cdef_method (void) : cdef_meta_object () { }
+  cdef_method () : cdef_meta_object () { }
 
   cdef_method (const std::string& nm)
     : cdef_meta_object (new cdef_method_rep ())
@@ -158,7 +158,7 @@ public:
     return *this;
   }
 
-  ~cdef_method (void) = default;
+  ~cdef_method () = default;
 
   // normal invocation
   octave_value_list execute (const octave_value_list& args, int nargout,
@@ -177,28 +177,28 @@ public:
     return get_rep ()->execute (obj, args, nargout, do_check_access, who);
   }
 
-  bool check_access (void) const { return get_rep ()->check_access (); }
+  bool check_access () const { return get_rep ()->check_access (); }
 
-  std::string get_name (void) const { return get_rep ()->get_name (); }
+  std::string get_name () const { return get_rep ()->get_name (); }
 
-  bool is_static (void) const { return get_rep ()->is_static (); }
+  bool is_static () const { return get_rep ()->is_static (); }
 
   void set_function (const octave_value& fcn)
   {
     get_rep ()->set_function (fcn);
   }
 
-  octave_value get_function (void) const
+  octave_value get_function () const
   {
     return get_rep ()->get_function ();
   }
 
-  std::string get_doc_string (void)
+  std::string get_doc_string ()
   {
     return get_rep ()->get_doc_string ();
   }
 
-  bool is_constructor (void) const
+  bool is_constructor () const
   {
     return get_rep ()->is_constructor ();
   }
@@ -208,7 +208,7 @@ public:
     return get_rep ()->is_defined_in_class (cname);
   }
 
-  bool is_external (void) const { return get_rep ()->is_external (); }
+  bool is_external () const { return get_rep ()->is_external (); }
 
   void mark_as_external (const std::string& dtype)
   {
@@ -217,12 +217,12 @@ public:
 
 private:
 
-  cdef_method_rep * get_rep (void)
+  cdef_method_rep * get_rep ()
   {
     return dynamic_cast<cdef_method_rep *> (cdef_object::get_rep ());
   }
 
-  const cdef_method_rep * get_rep (void) const
+  const cdef_method_rep * get_rep () const
   {
     return dynamic_cast<const cdef_method_rep *> (cdef_object::get_rep ());
   }

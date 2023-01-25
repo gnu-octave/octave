@@ -99,7 +99,7 @@ static std::string help_msg =
   "\n";
 
 static void
-initialize (void)
+initialize ()
 {
   set_octave_home ();
 

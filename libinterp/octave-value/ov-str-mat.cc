@@ -80,7 +80,7 @@ default_numeric_conversion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_char_matrix_str::numeric_conversion_function (void) const
+octave_char_matrix_str::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
          octave_matrix::static_type_id ());
@@ -252,7 +252,7 @@ octave_char_matrix_str::string_value (bool) const
 */
 
 Array<std::string>
-octave_char_matrix_str::cellstr_value (void) const
+octave_char_matrix_str::cellstr_value () const
 {
   Array<std::string> retval;
 

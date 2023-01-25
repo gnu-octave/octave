@@ -44,9 +44,9 @@ public:
 
   set_path_model (QObject *p = nullptr);
 
-  ~set_path_model (void) = default;
+  ~set_path_model () = default;
 
-  void clear (void);
+  void clear ();
 
   void add_dir (const QString& p);
 
@@ -60,11 +60,11 @@ public:
 
   void move_dir_bottom (const QModelIndexList& indices);
 
-  std::string to_string (void);
+  std::string to_string ();
 
   // Overloaded Qt methods
 
-  void model_to_path (void);
+  void model_to_path ();
 
   int rowCount (const QModelIndex& p = QModelIndex ()) const;
 
@@ -79,13 +79,13 @@ signals:
 
 public slots:
 
-  void path_to_model (void);
+  void path_to_model ();
 
-  void save (void);
+  void save ();
 
-  void revert (void);
+  void revert ();
 
-  void revert_last (void);
+  void revert_last ();
 
 private slots:
 

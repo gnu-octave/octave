@@ -81,9 +81,9 @@ public:
 
   sparse_qr_rep& operator = (const sparse_qr_rep&) = delete;
 
-  ~sparse_qr_rep (void);
+  ~sparse_qr_rep ();
 
-  bool ok (void) const
+  bool ok () const
   {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
     return (m_H && m_Htau && m_HPinv && m_R && m_E);
@@ -94,13 +94,13 @@ public:
 #endif
   }
 
-  SPARSE_T V (void) const;
+  SPARSE_T V () const;
 
-  ColumnVector Pinv (void) const;
+  ColumnVector Pinv () const;
 
-  ColumnVector P (void) const;
+  ColumnVector P () const;
 
-  ColumnVector E (void) const;
+  ColumnVector E () const;
 
   SPARSE_T R (bool econ) const;
 
@@ -149,7 +149,7 @@ private:
 
 template <typename SPARSE_T>
 ColumnVector
-sparse_qr<SPARSE_T>::sparse_qr_rep::Pinv (void) const
+sparse_qr<SPARSE_T>::sparse_qr_rep::Pinv () const
 {
 #if defined (HAVE_CXSPARSE)
 
@@ -169,7 +169,7 @@ sparse_qr<SPARSE_T>::sparse_qr_rep::Pinv (void) const
 
 template <typename SPARSE_T>
 ColumnVector
-sparse_qr<SPARSE_T>::sparse_qr_rep::P (void) const
+sparse_qr<SPARSE_T>::sparse_qr_rep::P () const
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
@@ -199,7 +199,7 @@ sparse_qr<SPARSE_T>::sparse_qr_rep::P (void) const
 
 template <typename SPARSE_T>
 ColumnVector
-sparse_qr<SPARSE_T>::sparse_qr_rep::E (void) const
+sparse_qr<SPARSE_T>::sparse_qr_rep::E () const
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
@@ -570,7 +570,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
 #endif
 
 template <>
-sparse_qr<SparseMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
+sparse_qr<SparseMatrix>::sparse_qr_rep::~sparse_qr_rep ()
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
@@ -591,7 +591,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
 
 template <>
 SparseMatrix
-sparse_qr<SparseMatrix>::sparse_qr_rep::V (void) const
+sparse_qr<SparseMatrix>::sparse_qr_rep::V () const
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
@@ -1507,7 +1507,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
 #endif
 
 template <>
-sparse_qr<SparseComplexMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
+sparse_qr<SparseComplexMatrix>::sparse_qr_rep::~sparse_qr_rep ()
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
@@ -1528,7 +1528,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::~sparse_qr_rep (void)
 
 template <>
 SparseComplexMatrix
-sparse_qr<SparseComplexMatrix>::sparse_qr_rep::V (void) const
+sparse_qr<SparseComplexMatrix>::sparse_qr_rep::V () const
 {
 #if defined (HAVE_CXSPARSE)
   // Drop zeros from V and sort
@@ -2675,7 +2675,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix,
 }
 
 template <typename SPARSE_T>
-sparse_qr<SPARSE_T>::sparse_qr (void)
+sparse_qr<SPARSE_T>::sparse_qr ()
   : m_rep (new sparse_qr_rep (SPARSE_T (), 0))
 { }
 
@@ -2686,35 +2686,35 @@ sparse_qr<SPARSE_T>::sparse_qr (const SPARSE_T& a, int order)
 
 template <typename SPARSE_T>
 bool
-sparse_qr<SPARSE_T>::ok (void) const
+sparse_qr<SPARSE_T>::ok () const
 {
   return m_rep->ok ();
 }
 
 template <typename SPARSE_T>
 SPARSE_T
-sparse_qr<SPARSE_T>::V (void) const
+sparse_qr<SPARSE_T>::V () const
 {
   return m_rep->V ();
 }
 
 template <typename SPARSE_T>
 ColumnVector
-sparse_qr<SPARSE_T>::Pinv (void) const
+sparse_qr<SPARSE_T>::Pinv () const
 {
   return m_rep->P ();
 }
 
 template <typename SPARSE_T>
 ColumnVector
-sparse_qr<SPARSE_T>::P (void) const
+sparse_qr<SPARSE_T>::P () const
 {
   return m_rep->P ();
 }
 
 template <typename SPARSE_T>
 ColumnVector
-sparse_qr<SPARSE_T>::E (void) const
+sparse_qr<SPARSE_T>::E () const
 {
   return m_rep->E();
 }
@@ -2722,7 +2722,7 @@ sparse_qr<SPARSE_T>::E (void) const
 
 template <typename SPARSE_T>
 SparseMatrix
-sparse_qr<SPARSE_T>::E_MAT (void) const
+sparse_qr<SPARSE_T>::E_MAT () const
 {
   ColumnVector perm = m_rep->E ();
   octave_idx_type nrows = perm.rows ();
@@ -3226,11 +3226,11 @@ sparse_qr<SparseComplexMatrix>::solve<SparseMatrix, SparseComplexMatrix>
 //explicit instantiations of member function E_MAT
 template
 OCTAVE_API SparseMatrix
-sparse_qr<SparseMatrix>::E_MAT (void) const;
+sparse_qr<SparseMatrix>::E_MAT () const;
 
 template
 OCTAVE_API SparseMatrix
-sparse_qr<SparseComplexMatrix>::E_MAT (void) const;
+sparse_qr<SparseComplexMatrix>::E_MAT () const;
 
 template <typename SPARSE_T>
 template <typename RHS_T, typename RET_T>
@@ -3250,33 +3250,33 @@ sparse_qr<SPARSE_T>::wide_solve (const RHS_T& b, octave_idx_type& info) const
 
 // Explicitly instantiate all member functions
 
-template OCTAVE_API sparse_qr<SparseMatrix>::sparse_qr (void);
+template OCTAVE_API sparse_qr<SparseMatrix>::sparse_qr ();
 template OCTAVE_API
 sparse_qr<SparseMatrix>::sparse_qr (const SparseMatrix& a, int order);
-template OCTAVE_API bool sparse_qr<SparseMatrix>::ok (void) const;
-template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::E (void) const;
-template OCTAVE_API SparseMatrix sparse_qr<SparseMatrix>::V (void) const;
-template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::Pinv (void) const;
-template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::P (void) const;
+template OCTAVE_API bool sparse_qr<SparseMatrix>::ok () const;
+template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::E () const;
+template OCTAVE_API SparseMatrix sparse_qr<SparseMatrix>::V () const;
+template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::Pinv () const;
+template OCTAVE_API ColumnVector sparse_qr<SparseMatrix>::P () const;
 template OCTAVE_API SparseMatrix
 sparse_qr<SparseMatrix>::R (bool econ) const;
 template OCTAVE_API Matrix
 sparse_qr<SparseMatrix>::C (const Matrix& b, bool econ) const;
 template OCTAVE_API Matrix sparse_qr<SparseMatrix>::Q (bool econ) const;
 
-template OCTAVE_API sparse_qr<SparseComplexMatrix>::sparse_qr (void);
+template OCTAVE_API sparse_qr<SparseComplexMatrix>::sparse_qr ();
 template OCTAVE_API
 sparse_qr<SparseComplexMatrix>::sparse_qr
 (const SparseComplexMatrix& a, int order);
-template OCTAVE_API bool sparse_qr<SparseComplexMatrix>::ok (void) const;
+template OCTAVE_API bool sparse_qr<SparseComplexMatrix>::ok () const;
 template OCTAVE_API ColumnVector
-sparse_qr<SparseComplexMatrix>::E (void) const;
+sparse_qr<SparseComplexMatrix>::E () const;
 template OCTAVE_API SparseComplexMatrix
-sparse_qr<SparseComplexMatrix>::V (void) const;
+sparse_qr<SparseComplexMatrix>::V () const;
 template OCTAVE_API ColumnVector
-sparse_qr<SparseComplexMatrix>::Pinv (void) const;
+sparse_qr<SparseComplexMatrix>::Pinv () const;
 template OCTAVE_API ColumnVector
-sparse_qr<SparseComplexMatrix>::P (void) const;
+sparse_qr<SparseComplexMatrix>::P () const;
 template OCTAVE_API SparseComplexMatrix
 sparse_qr<SparseComplexMatrix>::R (bool econ) const;
 template OCTAVE_API ComplexMatrix

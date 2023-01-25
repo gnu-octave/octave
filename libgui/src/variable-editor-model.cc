@@ -104,7 +104,7 @@ base_ve_model::base_ve_model (const QString& expr, const octave_value& val)
 { }
 
 std::string
-base_ve_model::name (void) const
+base_ve_model::name () const
 {
   return m_name;
 }
@@ -125,7 +125,7 @@ base_ve_model::index_ok (const QModelIndex& idx, int& row, int& col) const
 }
 
 int
-base_ve_model::column_width (void) const
+base_ve_model::column_width () const
 {
   int width = 0;
 
@@ -257,7 +257,7 @@ base_ve_model::update_pending_data (const QModelIndex& idx) const
 }
 
 void
-base_ve_model::clear_update_pending (void)
+base_ve_model::clear_update_pending ()
 {
   return m_update_pending.clear ();
 }
@@ -285,7 +285,7 @@ base_ve_model::subscript_expression (const QModelIndex&) const
 }
 
 QString
-base_ve_model::make_description_text (void) const
+base_ve_model::make_description_text () const
 {
   QString lbl_txt = QString::fromStdString (m_name);
 
@@ -330,7 +330,7 @@ public:
     maybe_resize_columns (m_data_cols + 16);
   }
 
-  ~numeric_model (void) = default;
+  ~numeric_model () = default;
 
   // No copying!
 
@@ -394,7 +394,7 @@ public:
     m_display_cols = 1;
   }
 
-  ~string_model (void) = default;
+  ~string_model () = default;
 
   // No copying!
 
@@ -431,7 +431,7 @@ public:
     maybe_resize_columns (m_data_cols + 16);
   }
 
-  ~cell_model (void) = default;
+  ~cell_model () = default;
 
   // No copying!
 
@@ -532,7 +532,7 @@ public:
     m_display_cols = 1;
   }
 
-  ~scalar_struct_model (void) = default;
+  ~scalar_struct_model () = default;
 
   // No copying!
 
@@ -655,7 +655,7 @@ public:
     m_display_cols = m_data_cols;
   }
 
-  ~display_only_model (void) = default;
+  ~display_only_model () = default;
 
   // No copying!
 
@@ -663,7 +663,7 @@ public:
 
   display_only_model& operator = (const display_only_model&) = delete;
 
-  bool is_editable (void) const { return false; }
+  bool is_editable () const { return false; }
 
   QVariant edit_display (const QModelIndex&, int) const
   {
@@ -679,7 +679,7 @@ public:
     return QString::fromStdString (buf.str ());
   }
 
-  QString make_description_text (void) const
+  QString make_description_text () const
   {
     return (QString ("unable to edit %1")
             .arg (base_ve_model::make_description_text ()));
@@ -706,7 +706,7 @@ public:
     m_display_cols = m_data_cols;
   }
 
-  ~vector_struct_model (void) = default;
+  ~vector_struct_model () = default;
 
   // No copying!
 
@@ -839,7 +839,7 @@ public:
     maybe_resize_columns (m_data_cols + 16);
   }
 
-  ~struct_model (void) = default;
+  ~struct_model () = default;
 
   // No copying!
 
@@ -1255,7 +1255,7 @@ variable_editor_model::user_error (const QString& title, const QString& msg)
 }
 
 void
-variable_editor_model::update_data_cache (void)
+variable_editor_model::update_data_cache ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1383,7 +1383,7 @@ variable_editor_model::reset (const octave_value& val)
 }
 
 void
-variable_editor_model::invalidate (void)
+variable_editor_model::invalidate ()
 {
   beginResetModel ();
 

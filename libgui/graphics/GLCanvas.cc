@@ -45,10 +45,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     setFocus ();
   }
 
-  GLWidget::~GLWidget (void) { }
+  GLWidget::~GLWidget () { }
 
   void
-  GLWidget::initializeGL (void)
+  GLWidget::initializeGL ()
   {
     // The qopengl_functions object (part of Octave, not Qt) is just
     // wrapper around QOpenGLFunctions_1_1.  Does initialization really
@@ -208,7 +208,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  GLWidget::paintGL (void)
+  GLWidget::paintGL ()
   {
     m_parent_canvas.canvasPaintEvent ();
   }
@@ -258,7 +258,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   bool
-  GLWidget::begin_rendering (void)
+  GLWidget::begin_rendering ()
   {
     bool retval = true;
 
@@ -290,7 +290,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  GLWidget::end_rendering (void)
+  GLWidget::end_rendering ()
   {
     doneCurrent ();
   }
@@ -300,7 +300,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     : Canvas (interp, gh), m_glwidget (new GLWidget (*this, parent))
   { }
 
-  GLCanvas::~GLCanvas (void)
+  GLCanvas::~GLCanvas ()
   {
     delete m_glwidget;
   }
@@ -346,7 +346,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     catch (octave::execution_exception& ee)
       {
         emit interpreter_event
-          ([=] (void)
+          ([=] ()
           {
             // INTERPRETER THREAD
             throw ee;
@@ -367,13 +367,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   bool
-  GLCanvas::begin_rendering (void)
+  GLCanvas::begin_rendering ()
   {
     return m_glwidget->begin_rendering ();
   }
 
   void
-  GLCanvas::end_rendering (void)
+  GLCanvas::end_rendering ()
   {
     m_glwidget->end_rendering ();
   }

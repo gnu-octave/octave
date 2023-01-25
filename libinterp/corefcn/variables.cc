@@ -557,7 +557,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
 }
 
 static octave::unwind_protect *
-curr_fcn_unwind_protect_frame (void)
+curr_fcn_unwind_protect_frame ()
 {
   octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 

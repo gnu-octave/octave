@@ -39,16 +39,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     documentation_dock_widget (QWidget *parent);
 
-    ~documentation_dock_widget (void) = default;
+    ~documentation_dock_widget () = default;
 
   public slots:
 
-    void notice_settings (void);
-    void save_settings (void);
+    void notice_settings ();
+    void save_settings ();
 
-    void copyClipboard (void);
-    void pasteClipboard (void);
-    void selectAll (void);
+    void copyClipboard ();
+    void pasteClipboard ();
+    void selectAll ();
 
     void showDoc (const QString& name);
     void registerDoc (const QString& name);

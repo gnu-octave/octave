@@ -65,31 +65,31 @@ public:
 
   tree_decl_elt& operator = (const tree_decl_elt&) = delete;
 
-  ~tree_decl_elt (void);
+  ~tree_decl_elt ();
 
-  void mark_as_formal_parameter (void)
+  void mark_as_formal_parameter ()
   {
     m_id->mark_as_formal_parameter ();
   }
 
-  bool lvalue_ok (void) { return m_id->lvalue_ok (); }
+  bool lvalue_ok () { return m_id->lvalue_ok (); }
 
   octave_lvalue lvalue (tree_evaluator& tw)
   {
     return m_id->lvalue (tw);
   }
 
-  void mark_global (void) { type = global; }
-  bool is_global (void) const { return type == global; }
+  void mark_global () { type = global; }
+  bool is_global () const { return type == global; }
 
-  void mark_persistent (void) { type = persistent; }
-  bool is_persistent (void) const { return type == persistent; }
+  void mark_persistent () { type = persistent; }
+  bool is_persistent () const { return type == persistent; }
 
-  tree_identifier * ident (void) { return m_id; }
+  tree_identifier * ident () { return m_id; }
 
-  std::string name (void) const { return m_id->name (); }
+  std::string name () const { return m_id->name (); }
 
-  tree_expression * expression (void) { return m_expr; }
+  tree_expression * expression () { return m_expr; }
 
   tree_decl_elt * dup (symbol_scope& scope) const;
 
@@ -113,7 +113,7 @@ class tree_decl_init_list : public base_list<tree_decl_elt *>
 {
 public:
 
-  tree_decl_init_list (void) { }
+  tree_decl_init_list () { }
 
   tree_decl_init_list (tree_decl_elt *t) { append (t); }
 
@@ -123,7 +123,7 @@ public:
 
   tree_decl_init_list& operator = (const tree_decl_init_list&) = delete;
 
-  ~tree_decl_init_list (void)
+  ~tree_decl_init_list ()
   {
     while (! empty ())
       {
@@ -133,19 +133,19 @@ public:
       }
   }
 
-  void mark_global (void)
+  void mark_global ()
   {
     for (tree_decl_elt *elt : *this)
       elt->mark_global ();
   }
 
-  void mark_persistent (void)
+  void mark_persistent ()
   {
     for (tree_decl_elt *elt : *this)
       elt->mark_persistent ();
   }
 
-  std::list<std::string> variable_names (void) const
+  std::list<std::string> variable_names () const
   {
     std::list<std::string> retval;
 
@@ -184,23 +184,23 @@ public:
 
   tree_decl_command& operator = (const tree_decl_command&) = delete;
 
-  ~tree_decl_command (void);
+  ~tree_decl_command ();
 
-  void mark_global (void)
+  void mark_global ()
   {
     if (m_init_list)
       m_init_list->mark_global ();
   }
 
-  void mark_persistent (void)
+  void mark_persistent ()
   {
     if (m_init_list)
       m_init_list->mark_persistent ();
   }
 
-  tree_decl_init_list * initializer_list (void) { return m_init_list; }
+  tree_decl_init_list * initializer_list () { return m_init_list; }
 
-  std::string name (void) const { return m_cmd_name; }
+  std::string name () const { return m_cmd_name; }
 
   void accept (tree_walker& tw)
   {

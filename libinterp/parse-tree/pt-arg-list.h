@@ -53,7 +53,7 @@ public:
 
   typedef tree_expression *element_type;
 
-  tree_argument_list (void)
+  tree_argument_list ()
     : m_list_includes_magic_tilde (false), m_simple_assign_lhs (false)
   { }
 
@@ -67,19 +67,19 @@ public:
 
   tree_argument_list& operator = (const tree_argument_list&) = delete;
 
-  ~tree_argument_list (void);
+  ~tree_argument_list ();
 
-  bool has_magic_tilde (void) const
+  bool has_magic_tilde () const
   {
     return m_list_includes_magic_tilde;
   }
 
-  bool includes_magic_tilde (void) const
+  bool includes_magic_tilde () const
   {
     return m_list_includes_magic_tilde;
   }
 
-  tree_expression * remove_front (void)
+  tree_expression * remove_front ()
   {
     auto p = begin ();
     tree_expression *retval = *p;
@@ -89,17 +89,17 @@ public:
 
   void append (const element_type& s);
 
-  void mark_as_simple_assign_lhs (void) { m_simple_assign_lhs = true; }
+  void mark_as_simple_assign_lhs () { m_simple_assign_lhs = true; }
 
-  bool is_simple_assign_lhs (void) { return m_simple_assign_lhs; }
+  bool is_simple_assign_lhs () { return m_simple_assign_lhs; }
 
-  bool all_elements_are_constant (void) const;
+  bool all_elements_are_constant () const;
 
-  bool is_valid_lvalue_list (void) const;
+  bool is_valid_lvalue_list () const;
 
-  string_vector get_arg_names (void) const;
+  string_vector get_arg_names () const;
 
-  std::list<std::string> variable_names (void) const;
+  std::list<std::string> variable_names () const;
 
   tree_argument_list * dup (symbol_scope& scope) const;
 

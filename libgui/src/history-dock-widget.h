@@ -45,7 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     history_dock_widget (QWidget *parent);
 
-    ~history_dock_widget (void) = default;
+    ~history_dock_widget () = default;
 
   signals:
 
@@ -63,13 +63,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void set_history (const QStringList& hist);
     void append_history (const QString& hist_entry);
-    void clear_history (void);
-    void save_settings (void);
-    void notice_settings (void);
+    void clear_history ();
+    void save_settings ();
+    void notice_settings ();
 
   private slots:
 
-    void update_filter_history (void);
+    void update_filter_history ();
     void filter_activate (bool enable);
 
     void ctxMenu (const QPoint& pos);
@@ -77,17 +77,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void handle_contextmenu_copy (bool flag);
     void handle_contextmenu_evaluate (bool flag);
     void handle_contextmenu_create_script (bool flag);
-    void handle_contextmenu_filter (void);
+    void handle_contextmenu_filter ();
 
-    void copyClipboard (void);
-    void pasteClipboard (void);
-    void selectAll (void);
+    void copyClipboard ();
+    void pasteClipboard ();
+    void selectAll ();
 
     virtual void handle_visibility (bool visible);
 
   private:
 
-    void construct (void);
+    void construct ();
     void set_filter_focus (bool focus);
 
     QListView *m_history_list_view;

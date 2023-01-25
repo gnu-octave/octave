@@ -114,7 +114,7 @@ private:
         m_tx (double(m_w)/m_tw), m_ty (double(m_h)/m_th), m_valid (true)
     { }
 
-    ~texture_rep (void)
+    ~texture_rep ()
     {
       if (m_valid)
         m_glfcns.glDeleteTextures (1, &m_id);
@@ -153,7 +153,7 @@ public:
 
   opengl_texture (const opengl_texture&) = default;
 
-  ~opengl_texture (void) = default;
+  ~opengl_texture () = default;
 
   opengl_texture& operator = (const opengl_texture&) = default;
 
@@ -164,7 +164,7 @@ public:
 
   void tex_coord (double q, double r) const { m_rep->tex_coord (q, r); }
 
-  bool is_valid (void) const { return m_rep->m_valid; }
+  bool is_valid () const { return m_rep->m_valid; }
 
 private:
 
@@ -346,12 +346,12 @@ public:
 #if defined (HAVE_FRAMEWORK_OPENGL) && defined (HAVE_GLUTESSCALLBACK_THREEDOTS)
   typedef GLvoid (CALLBACK *fcn) (...);
 #else
-  typedef void (CALLBACK *fcn) (void);
+  typedef void (CALLBACK *fcn) ();
 #endif
 
 public:
 
-  opengl_tessellator (void) : m_glu_tess (nullptr), m_fill () { init (); }
+  opengl_tessellator () : m_glu_tess (nullptr), m_fill () { init (); }
 
   // No copying!
 
@@ -359,7 +359,7 @@ public:
 
   opengl_tessellator operator = (const opengl_tessellator&) = delete;
 
-  virtual ~opengl_tessellator (void)
+  virtual ~opengl_tessellator ()
   { if (m_glu_tess) gluDeleteTess (m_glu_tess); }
 
   void begin_polygon (bool filled = true)
@@ -370,13 +370,13 @@ public:
     gluTessBeginPolygon (m_glu_tess, this);
   }
 
-  void end_polygon (void) const
+  void end_polygon () const
   { gluTessEndPolygon (m_glu_tess); }
 
-  void begin_contour (void) const
+  void begin_contour () const
   { gluTessBeginContour (m_glu_tess); }
 
-  void end_contour (void) const
+  void end_contour () const
   { gluTessEndContour (m_glu_tess); }
 
   void add_vertex (double *loc, void *data) const
@@ -385,7 +385,7 @@ public:
 protected:
   virtual void begin (GLenum /*type*/) { }
 
-  virtual void end (void) { }
+  virtual void end () { }
 
   virtual void vertex (void * /*data*/) { }
 
@@ -397,7 +397,7 @@ protected:
   virtual void error (GLenum err)
   { ::error ("OpenGL tessellation error (%d)", err); }
 
-  virtual void init (void)
+  virtual void init ()
   {
     m_glu_tess = gluNewTess ();
 
@@ -415,7 +415,7 @@ protected:
                      reinterpret_cast<fcn> (tess_error));
   }
 
-  bool is_filled (void) const { return m_fill; }
+  bool is_filled () const { return m_fill; }
 
 private:
   static void CALLBACK tess_begin (GLenum type, void *t)
@@ -451,7 +451,7 @@ public:
   {
   public:
 
-    vertex_data_rep (void)
+    vertex_data_rep ()
       : m_coords (), m_color (), m_vertex_normal (), m_face_normal (),
         m_alpha (), m_ambient (), m_diffuse (), m_specular (),
         m_specular_exp (), m_specular_color_refl ()
@@ -480,7 +480,7 @@ public:
 public:
 
   // Required to instantiate std::list<vertex_data> objects.
-  vertex_data (void) : m_rep (nil_rep ()) { }
+  vertex_data () : m_rep (nil_rep ()) { }
 
   vertex_data (const Matrix& c, const Matrix& col, const Matrix& vn,
                const Matrix& fn, double a, float as, float ds, float ss,
@@ -490,15 +490,15 @@ public:
 
   vertex_data (const vertex_data&) = default;
 
-  ~vertex_data (void) = default;
+  ~vertex_data () = default;
 
   vertex_data& operator = (const vertex_data&) = default;
 
-  vertex_data_rep * get_rep (void) const { return m_rep.get (); }
+  vertex_data_rep * get_rep () const { return m_rep.get (); }
 
 private:
 
-  static std::shared_ptr<vertex_data_rep> nil_rep (void)
+  static std::shared_ptr<vertex_data_rep> nil_rep ()
   {
     static std::shared_ptr<vertex_data_rep> nr (new vertex_data_rep ());
 
@@ -538,7 +538,7 @@ protected:
     glfcns.glBegin (type);
   }
 
-  void end (void)
+  void end ()
   {
     opengl_functions& glfcns = m_renderer->get_opengl_functions ();
 
@@ -1253,7 +1253,7 @@ opengl_renderer::get_pixels (int width, int height)
 }
 
 void
-opengl_renderer::finish (void)
+opengl_renderer::finish ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -3881,7 +3881,7 @@ opengl_renderer::draw_hggroup (const hggroup::properties& props)
 }
 
 void
-opengl_renderer::set_ortho_coordinates (void)
+opengl_renderer::set_ortho_coordinates ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -3906,7 +3906,7 @@ opengl_renderer::set_ortho_coordinates (void)
 }
 
 void
-opengl_renderer::restore_previous_coordinates (void)
+opengl_renderer::restore_previous_coordinates ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -4192,7 +4192,7 @@ opengl_renderer::set_viewport (int w, int h)
 }
 
 Matrix
-opengl_renderer::get_viewport_scaled (void) const
+opengl_renderer::get_viewport_scaled () const
 {
   Matrix retval (1, 4, 0.0);
 
@@ -4498,7 +4498,7 @@ opengl_renderer::change_marker (const std::string& m, double size)
 }
 
 void
-opengl_renderer::end_marker (void)
+opengl_renderer::end_marker ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -4574,7 +4574,7 @@ opengl_renderer::draw_marker (double x, double y, double z,
 }
 
 void
-opengl_renderer::init_maxlights (void)
+opengl_renderer::init_maxlights ()
 {
 #if defined (HAVE_OPENGL)
 

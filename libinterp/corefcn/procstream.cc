@@ -59,7 +59,7 @@ procstreambase::open (const char *command, int mode)
 }
 
 int
-procstreambase::close (void)
+procstreambase::close ()
 {
   int status = 0;
 

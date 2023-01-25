@@ -56,13 +56,13 @@ class opengl_functions
 {
 public:
 
-  opengl_functions (void) { }
+  opengl_functions () { }
 
   opengl_functions (const opengl_functions&) = default;
 
   opengl_functions& operator = (const opengl_functions&) = default;
 
-  virtual ~opengl_functions (void) = default;
+  virtual ~opengl_functions () = default;
 
 #if defined (HAVE_OPENGL)
 
@@ -186,17 +186,17 @@ public:
     ::glEnable (cap);
   }
 
-  virtual void glEndList (void)
+  virtual void glEndList ()
   {
     ::glEndList ();
   }
 
-  virtual void glEnd (void)
+  virtual void glEnd ()
   {
     ::glEnd ();
   }
 
-  virtual void glFinish (void)
+  virtual void glFinish ()
   {
     ::glFinish ();
   }
@@ -221,7 +221,7 @@ public:
     ::glGetDoublev (pname, data);
   }
 
-  virtual GLenum glGetError (void)
+  virtual GLenum glGetError ()
   {
     return ::glGetError ();
   }
@@ -246,7 +246,7 @@ public:
     ::glHint (target, mode);
   }
 
-  virtual void glInitNames (void)
+  virtual void glInitNames ()
   {
     ::glInitNames ();
   }
@@ -271,7 +271,7 @@ public:
     ::glLineWidth (width);
   }
 
-  virtual void glLoadIdentity (void)
+  virtual void glLoadIdentity ()
   {
     ::glLoadIdentity ();
   }
@@ -337,17 +337,17 @@ public:
     ::glPolygonOffset (factor, units);
   }
 
-  virtual void glPopAttrib (void)
+  virtual void glPopAttrib ()
   {
     ::glPopAttrib ();
   }
 
-  virtual void glPopMatrix (void)
+  virtual void glPopMatrix ()
   {
     ::glPopMatrix ();
   }
 
-  virtual void glPopName (void)
+  virtual void glPopName ()
   {
     ::glPopName ();
   }
@@ -357,7 +357,7 @@ public:
     ::glPushAttrib (mask);
   }
 
-  virtual void glPushMatrix (void)
+  virtual void glPushMatrix ()
   {
     ::glPushMatrix ();
   }

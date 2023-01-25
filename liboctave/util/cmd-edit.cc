@@ -81,9 +81,9 @@ public:
 
   typedef command_editor::completion_fcn completion_fcn;
 
-  gnu_readline (void);
+  gnu_readline ();
 
-  ~gnu_readline (void) = default;
+  ~gnu_readline () = default;
 
   void do_set_name (const std::string& n);
 
@@ -91,27 +91,27 @@ public:
 
   void do_set_input_stream (FILE *f);
 
-  FILE * do_get_input_stream (void);
+  FILE * do_get_input_stream ();
 
   void do_set_output_stream (FILE *f);
 
-  FILE * do_get_output_stream (void);
+  FILE * do_get_output_stream ();
 
-  void do_redisplay (void);
+  void do_redisplay ();
 
-  int do_terminal_rows (void);
+  int do_terminal_rows ();
 
-  int do_terminal_cols (void);
+  int do_terminal_cols ();
 
   void do_clear_screen (bool skip_redisplay);
 
-  void do_resize_terminal (void);
+  void do_resize_terminal ();
 
   void do_set_screen_size (int ht, int wd);
 
-  std::string newline_chars (void);
+  std::string newline_chars ();
 
-  void do_restore_terminal_state (void);
+  void do_restore_terminal_state ();
 
   void do_blink_matching_paren (bool flag);
 
@@ -139,56 +139,56 @@ public:
 
   void do_set_user_accept_line_function (user_accept_line_fcn f);
 
-  completion_fcn do_get_completion_function (void) const;
+  completion_fcn do_get_completion_function () const;
 
-  quoting_fcn do_get_quoting_function (void) const;
+  quoting_fcn do_get_quoting_function () const;
 
-  dequoting_fcn do_get_dequoting_function (void) const;
+  dequoting_fcn do_get_dequoting_function () const;
 
-  char_is_quoted_fcn do_get_char_is_quoted_function (void) const;
+  char_is_quoted_fcn do_get_char_is_quoted_function () const;
 
-  user_accept_line_fcn do_get_user_accept_line_function (void) const;
+  user_accept_line_fcn do_get_user_accept_line_function () const;
 
   string_vector
   do_generate_filename_completions (const std::string& text);
 
-  std::string do_get_line_buffer (void) const;
+  std::string do_get_line_buffer () const;
 
-  std::string do_get_current_line (void) const;
+  std::string do_get_current_line () const;
 
   char do_get_prev_char (int) const;
 
   void do_replace_line (const std::string& text, bool clear_undo);
 
-  void do_kill_full_line (void);
+  void do_kill_full_line ();
 
   void do_insert_text (const std::string& text);
 
-  void do_newline (void);
+  void do_newline ();
 
-  void do_accept_line (void);
+  void do_accept_line ();
 
-  bool do_undo (void);
+  bool do_undo ();
 
-  void do_clear_undo_list (void);
+  void do_clear_undo_list ();
 
   void set_startup_hook (startup_hook_fcn f);
 
-  void restore_startup_hook (void);
+  void restore_startup_hook ();
 
   void set_pre_input_hook (pre_input_hook_fcn f);
 
-  void restore_pre_input_hook (void);
+  void restore_pre_input_hook ();
 
   void set_event_hook (event_hook_fcn f);
 
-  void restore_event_hook (void);
+  void restore_event_hook ();
 
-  void do_restore_event_hook (void);
+  void do_restore_event_hook ();
 
   void do_read_init_file (const std::string& file);
 
-  void do_re_read_init_file (void);
+  void do_re_read_init_file ();
 
   bool do_filename_completion_desired (bool);
 
@@ -198,7 +198,7 @@ public:
 
   void do_interrupt (bool);
 
-  void do_handle_interrupt_signal (void);
+  void do_handle_interrupt_signal ();
 
   static int operate_and_get_next (int, int);
 
@@ -305,7 +305,7 @@ gnu_readline::do_set_input_stream (FILE *f)
 }
 
 FILE *
-gnu_readline::do_get_input_stream (void)
+gnu_readline::do_get_input_stream ()
 {
   return ::octave_rl_get_input_stream ();
 }
@@ -317,13 +317,13 @@ gnu_readline::do_set_output_stream (FILE *f)
 }
 
 FILE *
-gnu_readline::do_get_output_stream (void)
+gnu_readline::do_get_output_stream ()
 {
   return ::octave_rl_get_output_stream ();
 }
 
 void
-gnu_readline::do_redisplay (void)
+gnu_readline::do_redisplay ()
 {
   ::octave_rl_redisplay ();
 }
@@ -335,7 +335,7 @@ gnu_readline::do_redisplay (void)
 // us.
 
 int
-gnu_readline::do_terminal_rows (void)
+gnu_readline::do_terminal_rows ()
 {
   int sh = ::octave_rl_screen_height ();
 
@@ -343,7 +343,7 @@ gnu_readline::do_terminal_rows (void)
 }
 
 int
-gnu_readline::do_terminal_cols (void)
+gnu_readline::do_terminal_cols ()
 {
   int sw = ::octave_rl_screen_width ();
 
@@ -357,7 +357,7 @@ gnu_readline::do_clear_screen (bool skip_redisplay)
 }
 
 void
-gnu_readline::do_resize_terminal (void)
+gnu_readline::do_resize_terminal ()
 {
   ::octave_rl_resize_terminal ();
 }
@@ -369,13 +369,13 @@ gnu_readline::do_set_screen_size (int ht, int wd)
 }
 
 std::string
-gnu_readline::newline_chars (void)
+gnu_readline::newline_chars ()
 {
   return "\r\n";
 }
 
 void
-gnu_readline::do_restore_terminal_state (void)
+gnu_readline::do_restore_terminal_state ()
 {
   ::octave_rl_restore_terminal_state ();
 }
@@ -490,31 +490,31 @@ gnu_readline::do_set_user_accept_line_function (user_accept_line_fcn f)
 }
 
 gnu_readline::completion_fcn
-gnu_readline::do_get_completion_function (void) const
+gnu_readline::do_get_completion_function () const
 {
   return m_completion_function;
 }
 
 gnu_readline::quoting_fcn
-gnu_readline::do_get_quoting_function (void) const
+gnu_readline::do_get_quoting_function () const
 {
   return m_quoting_function;
 }
 
 gnu_readline::dequoting_fcn
-gnu_readline::do_get_dequoting_function (void) const
+gnu_readline::do_get_dequoting_function () const
 {
   return m_dequoting_function;
 }
 
 gnu_readline::char_is_quoted_fcn
-gnu_readline::do_get_char_is_quoted_function (void) const
+gnu_readline::do_get_char_is_quoted_function () const
 {
   return m_char_is_quoted_function;
 }
 
 gnu_readline::user_accept_line_fcn
-gnu_readline::do_get_user_accept_line_function (void) const
+gnu_readline::do_get_user_accept_line_function () const
 {
   return user_accept_line_function;
 }
@@ -634,13 +634,13 @@ gnu_readline::do_generate_filename_completions (const std::string& text)
 }
 
 std::string
-gnu_readline::do_get_line_buffer (void) const
+gnu_readline::do_get_line_buffer () const
 {
   return ::octave_rl_line_buffer ();
 }
 
 std::string
-gnu_readline::do_get_current_line (void) const
+gnu_readline::do_get_current_line () const
 {
   std::string retval;
   char *buf = ::octave_rl_copy_line ();
@@ -667,7 +667,7 @@ gnu_readline::do_replace_line (const std::string& text, bool clear_undo)
 }
 
 void
-gnu_readline::do_kill_full_line (void)
+gnu_readline::do_kill_full_line ()
 {
   ::octave_rl_kill_full_line ();
 }
@@ -679,19 +679,19 @@ gnu_readline::do_insert_text (const std::string& text)
 }
 
 void
-gnu_readline::do_newline (void)
+gnu_readline::do_newline ()
 {
   ::octave_rl_newline (1, '\n');
 }
 
 void
-gnu_readline::do_accept_line (void)
+gnu_readline::do_accept_line ()
 {
   command_accept_line (1, '\n');
 }
 
 bool
-gnu_readline::do_undo (void)
+gnu_readline::do_undo ()
 {
   return ::octave_rl_do_undo ();
 }
@@ -712,7 +712,7 @@ gnu_readline::set_startup_hook (startup_hook_fcn f)
 }
 
 void
-gnu_readline::restore_startup_hook (void)
+gnu_readline::restore_startup_hook ()
 {
   ::octave_rl_set_startup_hook (m_previous_startup_hook);
 }
@@ -727,7 +727,7 @@ gnu_readline::set_pre_input_hook (pre_input_hook_fcn f)
 }
 
 void
-gnu_readline::restore_pre_input_hook (void)
+gnu_readline::restore_pre_input_hook ()
 {
   ::octave_rl_set_pre_input_hook (m_previous_pre_input_hook);
 }
@@ -741,7 +741,7 @@ gnu_readline::set_event_hook (event_hook_fcn f)
 }
 
 void
-gnu_readline::restore_event_hook (void)
+gnu_readline::restore_event_hook ()
 {
   ::octave_rl_set_event_hook (m_previous_event_hook);
 }
@@ -753,7 +753,7 @@ gnu_readline::do_read_init_file (const std::string& file)
 }
 
 void
-gnu_readline::do_re_read_init_file (void)
+gnu_readline::do_re_read_init_file ()
 {
   ::octave_rl_re_read_init_file ();
 }
@@ -783,7 +783,7 @@ gnu_readline::do_interrupt (bool arg)
 }
 
 void
-gnu_readline::do_handle_interrupt_signal (void)
+gnu_readline::do_handle_interrupt_signal ()
 {
   octave_signal_caught = 0;
   octave_interrupt_state = 0;
@@ -933,7 +933,7 @@ default_command_editor : public command_editor
 {
 public:
 
-  default_command_editor (void)
+  default_command_editor ()
     : command_editor (), m_input_stream (stdin), m_output_stream (stdout) { }
 
   // No copying!
@@ -942,35 +942,35 @@ public:
 
   default_command_editor& operator = (const default_command_editor&) = delete;
 
-  ~default_command_editor (void) = default;
+  ~default_command_editor () = default;
 
   std::string do_readline (const std::string& prompt, bool& eof);
 
   void do_set_input_stream (FILE *f);
 
-  FILE * do_get_input_stream (void);
+  FILE * do_get_input_stream ();
 
   void do_set_output_stream (FILE *f);
 
-  FILE * do_get_output_stream (void);
+  FILE * do_get_output_stream ();
 
   string_vector do_generate_filename_completions (const std::string& text);
 
-  std::string do_get_line_buffer (void) const;
+  std::string do_get_line_buffer () const;
 
-  std::string do_get_current_line (void) const;
+  std::string do_get_current_line () const;
 
   char do_get_prev_char (int) const;
 
   void do_replace_line (const std::string& text, bool clear_undo);
 
-  void do_kill_full_line (void);
+  void do_kill_full_line ();
 
   void do_insert_text (const std::string& text);
 
-  void do_newline (void);
+  void do_newline ();
 
-  void do_accept_line (void);
+  void do_accept_line ();
 
 private:
 
@@ -995,7 +995,7 @@ default_command_editor::do_set_input_stream (FILE *f)
 }
 
 FILE *
-default_command_editor::do_get_input_stream (void)
+default_command_editor::do_get_input_stream ()
 {
   return m_input_stream;
 }
@@ -1007,7 +1007,7 @@ default_command_editor::do_set_output_stream (FILE *f)
 }
 
 FILE *
-default_command_editor::do_get_output_stream (void)
+default_command_editor::do_get_output_stream ()
 {
   return m_output_stream;
 }
@@ -1020,13 +1020,13 @@ default_command_editor::do_generate_filename_completions (const std::string&)
 }
 
 std::string
-default_command_editor::do_get_line_buffer (void) const
+default_command_editor::do_get_line_buffer () const
 {
   return "";
 }
 
 std::string
-default_command_editor::do_get_current_line (void) const
+default_command_editor::do_get_current_line () const
 {
   // FIXME
   return "";
@@ -1045,7 +1045,7 @@ default_command_editor::do_replace_line (const std::string&, bool)
 }
 
 void
-default_command_editor::do_kill_full_line (void)
+default_command_editor::do_kill_full_line ()
 {
   // FIXME
 }
@@ -1057,19 +1057,19 @@ default_command_editor::do_insert_text (const std::string&)
 }
 
 void
-default_command_editor::do_newline (void)
+default_command_editor::do_newline ()
 {
   // FIXME
 }
 
 void
-default_command_editor::do_accept_line (void)
+default_command_editor::do_accept_line ()
 {
   // FIXME
 }
 
 bool
-command_editor::instance_ok (void)
+command_editor::instance_ok ()
 {
   bool retval = true;
 
@@ -1093,7 +1093,7 @@ command_editor::instance_ok (void)
 }
 
 void
-command_editor::make_command_editor (void)
+command_editor::make_command_editor ()
 {
 #if defined (USE_READLINE)
   s_instance = new gnu_readline ();
@@ -1103,7 +1103,7 @@ command_editor::make_command_editor (void)
 }
 
 void
-command_editor::force_default_editor (void)
+command_editor::force_default_editor ()
 {
   delete s_instance;
   s_instance = new default_command_editor ();
@@ -1117,13 +1117,13 @@ command_editor::set_initial_input (const std::string& text)
 }
 
 int
-command_editor::insert_initial_input (void)
+command_editor::insert_initial_input ()
 {
   return instance_ok () ? s_instance->do_insert_initial_input () : 0;
 }
 
 int
-command_editor::startup_handler (void)
+command_editor::startup_handler ()
 {
   // Iterate over a copy of the set to avoid problems if a hook
   // function attempts to remove itself from the startup_hook_set.
@@ -1140,7 +1140,7 @@ command_editor::startup_handler (void)
 }
 
 int
-command_editor::pre_input_handler (void)
+command_editor::pre_input_handler ()
 {
   // Iterate over copy of the set to avoid problems if a hook function
   // attempts to remove itself from the pre_input_hook_set.
@@ -1157,7 +1157,7 @@ command_editor::pre_input_handler (void)
 }
 
 int
-command_editor::event_handler (void)
+command_editor::event_handler ()
 {
   if (octave_interrupt_state)
     handle_interrupt_signal ();
@@ -1216,7 +1216,7 @@ command_editor::set_input_stream (FILE *f)
 }
 
 FILE *
-command_editor::get_input_stream (void)
+command_editor::get_input_stream ()
 {
   return instance_ok () ? s_instance->do_get_input_stream () : nullptr;
 }
@@ -1229,26 +1229,26 @@ command_editor::set_output_stream (FILE *f)
 }
 
 FILE *
-command_editor::get_output_stream (void)
+command_editor::get_output_stream ()
 {
   return instance_ok () ? s_instance->do_get_output_stream () : nullptr;
 }
 
 void
-command_editor::redisplay (void)
+command_editor::redisplay ()
 {
   if (instance_ok ())
     s_instance->do_redisplay ();
 }
 
 int
-command_editor::terminal_rows (void)
+command_editor::terminal_rows ()
 {
   return instance_ok () ? s_instance->do_terminal_rows () : -1;
 }
 
 int
-command_editor::terminal_cols (void)
+command_editor::terminal_cols ()
 {
   return instance_ok () ? s_instance->do_terminal_cols () : -1;
 }
@@ -1261,7 +1261,7 @@ command_editor::clear_screen (bool skip_redisplay)
 }
 
 void
-command_editor::resize_terminal (void)
+command_editor::resize_terminal ()
 {
   if (instance_ok ())
     s_instance->do_resize_terminal ();
@@ -1281,7 +1281,7 @@ command_editor::decode_prompt_string (const std::string& s)
 }
 
 int
-command_editor::current_command_number (void)
+command_editor::current_command_number ()
 {
   return instance_ok () ? s_instance->m_command_number : 0;
 }
@@ -1294,14 +1294,14 @@ command_editor::reset_current_command_number (int n)
 }
 
 void
-command_editor::increment_current_command_number (void)
+command_editor::increment_current_command_number ()
 {
   if (instance_ok ())
     s_instance->m_command_number++;
 }
 
 void
-command_editor::restore_terminal_state (void)
+command_editor::restore_terminal_state ()
 {
   if (instance_ok ())
     s_instance->do_restore_terminal_state ();
@@ -1398,32 +1398,32 @@ command_editor::set_user_accept_line_function (user_accept_line_fcn f)
 }
 
 command_editor::completion_fcn
-command_editor::get_completion_function (void)
+command_editor::get_completion_function ()
 {
   return instance_ok () ? s_instance->do_get_completion_function () : nullptr;
 }
 
 command_editor::quoting_fcn
-command_editor::get_quoting_function (void)
+command_editor::get_quoting_function ()
 {
   return instance_ok () ? s_instance->do_get_quoting_function () : nullptr;
 }
 
 command_editor::dequoting_fcn
-command_editor::get_dequoting_function (void)
+command_editor::get_dequoting_function ()
 {
   return instance_ok () ? s_instance->do_get_dequoting_function () : nullptr;
 }
 
 command_editor::char_is_quoted_fcn
-command_editor::get_char_is_quoted_function (void)
+command_editor::get_char_is_quoted_function ()
 {
   return (instance_ok ()
           ? s_instance->do_get_char_is_quoted_function () : nullptr);
 }
 
 command_editor::user_accept_line_fcn
-command_editor::get_user_accept_line_function (void)
+command_editor::get_user_accept_line_function ()
 {
   return (instance_ok ()
           ? s_instance->do_get_user_accept_line_function () : nullptr);
@@ -1438,13 +1438,13 @@ command_editor::generate_filename_completions (const std::string& text)
 }
 
 std::string
-command_editor::get_line_buffer (void)
+command_editor::get_line_buffer ()
 {
   return instance_ok () ? s_instance->do_get_line_buffer () : "";
 }
 
 std::string
-command_editor::get_current_line (void)
+command_editor::get_current_line ()
 {
   return instance_ok () ? s_instance->do_get_current_line () : "";
 }
@@ -1465,7 +1465,7 @@ command_editor::replace_line (const std::string& text, bool clear_undo)
 }
 
 void
-command_editor::kill_full_line (void)
+command_editor::kill_full_line ()
 {
   if (instance_ok ())
     s_instance->do_kill_full_line ();
@@ -1479,27 +1479,27 @@ command_editor::insert_text (const std::string& text)
 }
 
 void
-command_editor::newline (void)
+command_editor::newline ()
 {
   if (instance_ok ())
     s_instance->do_newline ();
 }
 
 void
-command_editor::accept_line (void)
+command_editor::accept_line ()
 {
   if (instance_ok ())
     s_instance->do_accept_line ();
 }
 
 bool
-command_editor::undo (void)
+command_editor::undo ()
 {
   return instance_ok () ? s_instance->do_undo () : false;
 }
 
 void
-command_editor::clear_undo_list (void)
+command_editor::clear_undo_list ()
 {
   if (instance_ok ())
     s_instance->do_clear_undo_list ();
@@ -1578,7 +1578,7 @@ command_editor::remove_event_hook (event_hook_fcn f)
 }
 
 void
-command_editor::run_event_hooks (void)
+command_editor::run_event_hooks ()
 {
   event_handler ();
 }
@@ -1595,7 +1595,7 @@ command_editor::read_init_file (const std::string& file_arg)
 }
 
 void
-command_editor::re_read_init_file (void)
+command_editor::re_read_init_file ()
 {
   if (instance_ok ())
     s_instance->do_re_read_init_file ();
@@ -1649,13 +1649,13 @@ command_editor::interrupt_event_loop (bool arg)
 }
 
 bool
-command_editor::event_loop_interrupted (void)
+command_editor::event_loop_interrupted ()
 {
   return instance_ok () ? s_instance->do_event_loop_interrupted  () : false;
 }
 
 void
-command_editor::handle_interrupt_signal (void)
+command_editor::handle_interrupt_signal ()
 {
   if (instance_ok ())
     s_instance->do_handle_interrupt_signal ();
@@ -1915,7 +1915,7 @@ command_editor::do_decode_prompt_string (const std::string& s)
 }
 
 int
-command_editor::do_insert_initial_input (void)
+command_editor::do_insert_initial_input ()
 {
   std::string input = m_initial_input;
 

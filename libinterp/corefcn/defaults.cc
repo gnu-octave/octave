@@ -74,7 +74,7 @@ prepend_home_dir (const std::string& hd, const std::string& s)
   return retval;
 }
 
-static std::string get_octave_home (void)
+static std::string get_octave_home ()
 {
   std::string op = OCTAVE_PREFIX;
 
@@ -86,7 +86,7 @@ static std::string get_octave_home (void)
   return oh.empty () ? op : oh;
 }
 
-static std::string get_octave_exec_home (void)
+static std::string get_octave_exec_home ()
 {
   std::string op = OCTAVE_PREFIX;
   std::string oep = OCTAVE_EXEC_PREFIX;
@@ -108,14 +108,14 @@ static std::string get_octave_exec_home (void)
   return oep;
 }
 
-static std::string get_local_site_defaults_file (void)
+static std::string get_local_site_defaults_file ()
 {
   std::string lsf = sys::env::getenv ("OCTAVE_SITE_INITFILE");
 
   return lsf.empty () ? local_startupfile_dir () + "/octaverc" : lsf;
 }
 
-static std::string get_site_defaults_file (void)
+static std::string get_site_defaults_file ()
 {
   std::string sf = sys::env::getenv ("OCTAVE_VERSION_INITFILE");
 
@@ -132,7 +132,7 @@ std::string prepend_octave_exec_home (const std::string& s)
   return prepend_home_dir (octave_exec_home (), s);
 }
 
-std::string canonical_host_type (void)
+std::string canonical_host_type ()
 {
   static const std::string s_canonical_host_type
     = OCTAVE_CANONICAL_HOST_TYPE;
@@ -140,35 +140,35 @@ std::string canonical_host_type (void)
   return s_canonical_host_type;
 }
 
-std::string release (void)
+std::string release ()
 {
   static const std::string s_octave_release = OCTAVE_RELEASE;
 
   return s_octave_release;
 }
 
-std::string default_pager (void)
+std::string default_pager ()
 {
   static const std::string s_default_pager = OCTAVE_DEFAULT_PAGER;
 
   return s_default_pager;
 }
 
-std::string octave_home (void)
+std::string octave_home ()
 {
   static const std::string s_octave_home = get_octave_home ();
 
   return s_octave_home;
 }
 
-std::string octave_exec_home (void)
+std::string octave_exec_home ()
 {
   static const std::string s_octave_exec_home = get_octave_exec_home ();
 
   return s_octave_exec_home;
 }
 
-std::string bin_dir (void)
+std::string bin_dir ()
 {
   static const std::string s_bin_dir
     = prepend_octave_exec_home (OCTAVE_BINDIR);
@@ -176,7 +176,7 @@ std::string bin_dir (void)
   return s_bin_dir;
 }
 
-std::string data_dir (void)
+std::string data_dir ()
 {
   static const std::string s_data_dir
     = prepend_octave_home (OCTAVE_DATADIR);
@@ -184,7 +184,7 @@ std::string data_dir (void)
   return s_data_dir;
 }
 
-std::string dataroot_dir (void)
+std::string dataroot_dir ()
 {
   static const std::string s_dataroot_dir
     = prepend_octave_home (OCTAVE_DATAROOTDIR);
@@ -192,7 +192,7 @@ std::string dataroot_dir (void)
   return s_dataroot_dir;
 }
 
-std::string include_dir (void)
+std::string include_dir ()
 {
   static const std::string s_include_dir
     = prepend_octave_home (OCTAVE_INCLUDEDIR);
@@ -200,7 +200,7 @@ std::string include_dir (void)
   return s_include_dir;
 }
 
-std::string lib_dir (void)
+std::string lib_dir ()
 {
   static const std::string s_lib_dir
     = prepend_octave_exec_home (OCTAVE_LIBDIR);
@@ -208,7 +208,7 @@ std::string lib_dir (void)
   return s_lib_dir;
 }
 
-std::string libexec_dir (void)
+std::string libexec_dir ()
 {
   static const std::string s_libexec_dir
     = prepend_octave_exec_home (OCTAVE_LIBEXECDIR);
@@ -216,7 +216,7 @@ std::string libexec_dir (void)
   return s_libexec_dir;
 }
 
-std::string arch_lib_dir (void)
+std::string arch_lib_dir ()
 {
   static const std::string s_arch_lib_dir
     = prepend_octave_exec_home (OCTAVE_ARCHLIBDIR);
@@ -224,7 +224,7 @@ std::string arch_lib_dir (void)
   return s_arch_lib_dir;
 }
 
-std::string info_dir (void)
+std::string info_dir ()
 {
   static const std::string s_info_dir
     = prepend_octave_exec_home (OCTAVE_INFODIR);
@@ -232,7 +232,7 @@ std::string info_dir (void)
   return s_info_dir;
 }
 
-std::string local_ver_arch_lib_dir (void)
+std::string local_ver_arch_lib_dir ()
 {
   static const std::string s_local_ver_arch_lib_dir
     = prepend_octave_exec_home (OCTAVE_LOCALVERARCHLIBDIR);
@@ -240,7 +240,7 @@ std::string local_ver_arch_lib_dir (void)
   return s_local_ver_arch_lib_dir;
 }
 
-std::string local_api_arch_lib_dir (void)
+std::string local_api_arch_lib_dir ()
 {
   static const std::string s_local_api_arch_lib_dir
     = prepend_octave_exec_home (OCTAVE_LOCALAPIARCHLIBDIR);
@@ -248,7 +248,7 @@ std::string local_api_arch_lib_dir (void)
   return s_local_api_arch_lib_dir;
 }
 
-std::string local_arch_lib_dir (void)
+std::string local_arch_lib_dir ()
 {
   static const std::string s_local_arch_lib_dir
     = prepend_octave_exec_home (OCTAVE_LOCALARCHLIBDIR);
@@ -256,7 +256,7 @@ std::string local_arch_lib_dir (void)
   return s_local_arch_lib_dir;
 }
 
-std::string local_ver_oct_file_dir (void)
+std::string local_ver_oct_file_dir ()
 {
   static const std::string s_local_ver_oct_file_dir
     = prepend_octave_exec_home (OCTAVE_LOCALVEROCTFILEDIR);
@@ -264,7 +264,7 @@ std::string local_ver_oct_file_dir (void)
   return s_local_ver_oct_file_dir;
 }
 
-std::string local_api_oct_file_dir (void)
+std::string local_api_oct_file_dir ()
 {
   static const std::string s_local_api_oct_file_dir
     = prepend_octave_exec_home (OCTAVE_LOCALAPIOCTFILEDIR);
@@ -272,7 +272,7 @@ std::string local_api_oct_file_dir (void)
   return s_local_api_oct_file_dir;
 }
 
-std::string local_oct_file_dir (void)
+std::string local_oct_file_dir ()
 {
   static const std::string s_local_oct_file_dir
     = prepend_octave_exec_home (OCTAVE_LOCALOCTFILEDIR);
@@ -280,7 +280,7 @@ std::string local_oct_file_dir (void)
   return s_local_oct_file_dir;
 }
 
-std::string oct_file_dir (void)
+std::string oct_file_dir ()
 {
   static const std::string s_oct_file_dir
     = prepend_octave_exec_home (OCTAVE_OCTFILEDIR);
@@ -288,7 +288,7 @@ std::string oct_file_dir (void)
   return s_oct_file_dir;
 }
 
-std::string local_ver_fcn_file_dir (void)
+std::string local_ver_fcn_file_dir ()
 {
   static const std::string s_local_ver_fcn_file_dir
     = prepend_octave_home (OCTAVE_LOCALVERFCNFILEDIR);
@@ -296,7 +296,7 @@ std::string local_ver_fcn_file_dir (void)
   return s_local_ver_fcn_file_dir;
 }
 
-std::string local_api_fcn_file_dir (void)
+std::string local_api_fcn_file_dir ()
 {
   static const std::string s_local_api_fcn_file_dir
     = prepend_octave_home (OCTAVE_LOCALAPIFCNFILEDIR);
@@ -304,7 +304,7 @@ std::string local_api_fcn_file_dir (void)
   return s_local_api_fcn_file_dir;
 }
 
-std::string local_fcn_file_dir (void)
+std::string local_fcn_file_dir ()
 {
   static const std::string s_local_fcn_file_dir
     = prepend_octave_home (OCTAVE_LOCALFCNFILEDIR);
@@ -312,7 +312,7 @@ std::string local_fcn_file_dir (void)
   return s_local_fcn_file_dir;
 }
 
-std::string fcn_file_dir (void)
+std::string fcn_file_dir ()
 {
   static const std::string s_fcn_file_dir
     = prepend_octave_home (OCTAVE_FCNFILEDIR);
@@ -320,7 +320,7 @@ std::string fcn_file_dir (void)
   return s_fcn_file_dir;
 }
 
-std::string oct_data_dir (void)
+std::string oct_data_dir ()
 {
   static const std::string s_oct_data_dir
     = prepend_octave_home (OCTAVE_OCTDATADIR);
@@ -328,7 +328,7 @@ std::string oct_data_dir (void)
   return s_oct_data_dir;
 }
 
-std::string oct_doc_dir (void)
+std::string oct_doc_dir ()
 {
   static const std::string s_oct_doc_dir
     = prepend_octave_home (OCTAVE_OCTDOCDIR);
@@ -336,7 +336,7 @@ std::string oct_doc_dir (void)
   return s_oct_doc_dir;
 }
 
-std::string oct_etc_dir (void)
+std::string oct_etc_dir ()
 {
   static const std::string s_oct_etc_dir
     = prepend_octave_home (OCTAVE_OCTETCDIR);
@@ -344,7 +344,7 @@ std::string oct_etc_dir (void)
   return s_oct_etc_dir;
 }
 
-std::string oct_fonts_dir (void)
+std::string oct_fonts_dir ()
 {
   static const std::string s_oct_fonts_dir
     = prepend_octave_home (OCTAVE_OCTFONTSDIR);
@@ -352,7 +352,7 @@ std::string oct_fonts_dir (void)
   return s_oct_fonts_dir;
 }
 
-std::string oct_include_dir (void)
+std::string oct_include_dir ()
 {
   static const std::string s_oct_include_dir
     = prepend_octave_home (OCTAVE_OCTINCLUDEDIR);
@@ -360,7 +360,7 @@ std::string oct_include_dir (void)
   return s_oct_include_dir;
 }
 
-std::string oct_lib_dir (void)
+std::string oct_lib_dir ()
 {
   static const std::string s_oct_lib_dir
     = prepend_octave_exec_home (OCTAVE_OCTLIBDIR);
@@ -368,7 +368,7 @@ std::string oct_lib_dir (void)
   return s_oct_lib_dir;
 }
 
-std::string oct_locale_dir (void)
+std::string oct_locale_dir ()
 {
   static const std::string s_oct_locale_dir
     = prepend_octave_home (OCTAVE_OCTLOCALEDIR);
@@ -376,7 +376,7 @@ std::string oct_locale_dir (void)
   return s_oct_locale_dir;
 }
 
-std::string oct_tests_dir (void)
+std::string oct_tests_dir ()
 {
   static const std::string s_oct_tests_dir
     = prepend_octave_home (OCTAVE_OCTTESTSDIR);
@@ -384,7 +384,7 @@ std::string oct_tests_dir (void)
   return s_oct_tests_dir;
 }
 
-std::string man_dir (void)
+std::string man_dir ()
 {
   static const std::string s_man_dir
     = prepend_octave_home (OCTAVE_MANDIR);
@@ -392,7 +392,7 @@ std::string man_dir (void)
   return s_man_dir;
 }
 
-std::string man1_dir (void)
+std::string man1_dir ()
 {
   static const std::string s_man1_dir
     = prepend_octave_home (OCTAVE_MAN1DIR);
@@ -400,14 +400,14 @@ std::string man1_dir (void)
   return s_man1_dir;
 }
 
-std::string man1_ext (void)
+std::string man1_ext ()
 {
   static const std::string s_man1_ext = OCTAVE_MAN1EXT;
 
   return s_man1_ext;
 }
 
-std::string image_dir (void)
+std::string image_dir ()
 {
   static const std::string s_image_dir
     = prepend_octave_home (OCTAVE_IMAGEDIR);
@@ -415,7 +415,7 @@ std::string image_dir (void)
   return s_image_dir;
 }
 
-std::string local_startupfile_dir (void)
+std::string local_startupfile_dir ()
 {
   static const std::string s_local_startupfile_dir
     = prepend_octave_home (OCTAVE_LOCALSTARTUPFILEDIR);
@@ -423,7 +423,7 @@ std::string local_startupfile_dir (void)
   return s_local_startupfile_dir;
 }
 
-std::string startupfile_dir (void)
+std::string startupfile_dir ()
 {
   static const std::string s_startupfile_dir
     = prepend_octave_home (OCTAVE_STARTUPFILEDIR);
@@ -431,7 +431,7 @@ std::string startupfile_dir (void)
   return s_startupfile_dir;
 }
 
-std::string local_site_defaults_file (void)
+std::string local_site_defaults_file ()
 {
   static const std::string s_local_site_defaults_file
     = get_local_site_defaults_file ();
@@ -439,7 +439,7 @@ std::string local_site_defaults_file (void)
   return s_local_site_defaults_file;
 }
 
-std::string site_defaults_file (void)
+std::string site_defaults_file ()
 {
   static const std::string s_site_defaults_file
     = get_site_defaults_file ();

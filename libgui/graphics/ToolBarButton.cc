@@ -79,7 +79,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   template <typename T>
-  ToolBarButton<T>::~ToolBarButton (void)
+  ToolBarButton<T>::~ToolBarButton ()
   { }
 
   template <typename T>

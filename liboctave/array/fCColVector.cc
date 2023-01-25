@@ -198,19 +198,19 @@ FloatComplexColumnVector::stack (const FloatComplexColumnVector& a) const
 }
 
 FloatComplexRowVector
-FloatComplexColumnVector::hermitian (void) const
+FloatComplexColumnVector::hermitian () const
 {
   return MArray<FloatComplex>::hermitian (std::conj);
 }
 
 FloatComplexRowVector
-FloatComplexColumnVector::transpose (void) const
+FloatComplexColumnVector::transpose () const
 {
   return MArray<FloatComplex>::transpose ();
 }
 
 FloatColumnVector
-FloatComplexColumnVector::abs (void) const
+FloatComplexColumnVector::abs () const
 {
   return do_mx_unary_map<float, FloatComplex, std::abs> (*this);
 }
@@ -421,7 +421,7 @@ operator * (const FloatComplexDiagMatrix& m, const FloatComplexColumnVector& a)
 // other operations
 
 FloatComplex
-FloatComplexColumnVector::min (void) const
+FloatComplexColumnVector::min () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -441,7 +441,7 @@ FloatComplexColumnVector::min (void) const
 }
 
 FloatComplex
-FloatComplexColumnVector::max (void) const
+FloatComplexColumnVector::max () const
 {
   octave_idx_type len = numel ();
   if (len == 0)

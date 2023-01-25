@@ -150,11 +150,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_normalizedFont = up.fontunits_is ("normalized");
   }
 
-  BaseControl::~BaseControl (void)
+  BaseControl::~BaseControl ()
   { }
 
   void
-  BaseControl::redraw (void)
+  BaseControl::redraw ()
   {
     update (uicontrol::properties::ID_POSITION);
   }

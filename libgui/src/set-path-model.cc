@@ -54,7 +54,7 @@ set_path_model::set_path_model (QObject *p)
   m_revertible = false;
 }
 
-std::string set_path_model::to_string (void)
+std::string set_path_model::to_string ()
 {
   std::string path_sep = directory_path::path_sep_str ();
 
@@ -73,7 +73,7 @@ std::string set_path_model::to_string (void)
   return path_str;
 }
 
-void set_path_model::model_to_path (void)
+void set_path_model::model_to_path ()
 {
   std::string path_str = to_string ();
 
@@ -88,7 +88,7 @@ void set_path_model::model_to_path (void)
     });
 }
 
-void set_path_model::clear (void)
+void set_path_model::clear ()
 {
   beginResetModel ();
 
@@ -97,7 +97,7 @@ void set_path_model::clear (void)
   endResetModel ();
 }
 
-void set_path_model::save (void)
+void set_path_model::save ()
 {
   model_to_path ();
 
@@ -110,7 +110,7 @@ void set_path_model::save (void)
     });
 }
 
-void set_path_model::revert (void)
+void set_path_model::revert ()
 {
   clear ();
 
@@ -121,7 +121,7 @@ void set_path_model::revert (void)
   model_to_path ();
 }
 
-void set_path_model::revert_last (void)
+void set_path_model::revert_last ()
 {
   clear ();
 
@@ -281,7 +281,7 @@ QVariant set_path_model::data (const QModelIndex& idx, int role) const
   return retval;
 }
 
-void set_path_model::path_to_model (void)
+void set_path_model::path_to_model ()
 {
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer

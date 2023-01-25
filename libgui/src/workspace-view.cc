@@ -174,7 +174,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::notice_settings (void)
+  workspace_view::notice_settings ()
   {
     gui_settings settings;
 
@@ -206,7 +206,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::save_settings (void)
+  workspace_view::save_settings ()
   {
     gui_settings settings;
 
@@ -267,7 +267,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::update_filter_history (void)
+  workspace_view::update_filter_history ()
   {
     QString text = m_filter->currentText ();   // get current text
     int index = m_filter->findText (text);     // and its actual index
@@ -395,7 +395,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::handle_contextmenu_copy (void)
+  workspace_view::handle_contextmenu_copy ()
   {
     QModelIndex index = m_view->currentIndex ();
 
@@ -410,7 +410,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::handle_contextmenu_copy_value (void)
+  workspace_view::handle_contextmenu_copy_value ()
   {
     QModelIndex index = m_view->currentIndex ();
 
@@ -419,7 +419,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::handle_contextmenu_rename (void)
+  workspace_view::handle_contextmenu_rename ()
   {
     QModelIndex index = m_view->currentIndex ();
 
@@ -443,7 +443,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::handle_contextmenu_edit (void)
+  workspace_view::handle_contextmenu_edit ()
   {
     QModelIndex index = m_view->currentIndex ();
 
@@ -452,31 +452,31 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::handle_contextmenu_clear (void)
+  workspace_view::handle_contextmenu_clear ()
   {
     relay_contextmenu_command ("clear", true);
   }
 
   void
-  workspace_view::handle_contextmenu_disp (void)
+  workspace_view::handle_contextmenu_disp ()
   {
     relay_contextmenu_command ("disp");
   }
 
   void
-  workspace_view::handle_contextmenu_plot (void)
+  workspace_view::handle_contextmenu_plot ()
   {
     relay_contextmenu_command ("figure (); plot");
   }
 
   void
-  workspace_view::handle_contextmenu_stem (void)
+  workspace_view::handle_contextmenu_stem ()
   {
     relay_contextmenu_command ("figure (); stem");
   }
 
   void
-  workspace_view::handle_contextmenu_filter (void)
+  workspace_view::handle_contextmenu_filter ()
   {
     m_filter_shown = ! m_filter_shown;
     m_filter_widget->setVisible (m_filter_shown);
@@ -485,7 +485,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_view::handle_model_changed (void)
+  workspace_view::handle_model_changed ()
   {
     // m_view->resizeRowsToContents ();
     // Just modify those rows that have been added rather than go through

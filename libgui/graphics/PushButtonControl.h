@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     PushButtonControl (octave::interpreter& interp, const graphics_object& go,
                        QPushButton *btn);
-    ~PushButtonControl (void);
+    ~PushButtonControl ();
 
     static PushButtonControl *
     create (octave::interpreter& interp,

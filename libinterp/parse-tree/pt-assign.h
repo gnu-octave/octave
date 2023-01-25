@@ -66,17 +66,17 @@ public:
 
   tree_simple_assignment& operator = (const tree_simple_assignment&) = delete;
 
-  ~tree_simple_assignment (void);
+  ~tree_simple_assignment ();
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
-  bool is_assignment_expression (void) const { return true; }
+  bool is_assignment_expression () const { return true; }
 
-  std::string oper (void) const;
+  std::string oper () const;
 
-  tree_expression * left_hand_side (void) { return m_lhs; }
+  tree_expression * left_hand_side () { return m_lhs; }
 
-  tree_expression * right_hand_side (void) { return m_rhs; }
+  tree_expression * right_hand_side () { return m_rhs; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -92,7 +92,7 @@ public:
     tw.visit_simple_assignment (*this);
   }
 
-  octave_value::assign_op op_type (void) const { return m_etype; }
+  octave_value::assign_op op_type () const { return m_etype; }
 
 private:
 
@@ -137,17 +137,17 @@ public:
 
   tree_multi_assignment& operator = (const tree_multi_assignment&) = delete;
 
-  ~tree_multi_assignment (void);
+  ~tree_multi_assignment ();
 
-  bool is_assignment_expression (void) const { return true; }
+  bool is_assignment_expression () const { return true; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
-  std::string oper (void) const;
+  std::string oper () const;
 
-  tree_argument_list * left_hand_side (void) { return m_lhs; }
+  tree_argument_list * left_hand_side () { return m_lhs; }
 
-  tree_expression * right_hand_side (void) { return m_rhs; }
+  tree_expression * right_hand_side () { return m_rhs; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -165,7 +165,7 @@ public:
     tw.visit_multi_assignment (*this);
   }
 
-  octave_value::assign_op op_type (void) const
+  octave_value::assign_op op_type () const
   {
     return octave_value::op_asn_eq;
   }

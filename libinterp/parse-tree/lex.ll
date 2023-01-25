@@ -2114,14 +2114,14 @@ If @var{name} is omitted, return a list of keywords.
 */
 
   void
-  lexical_feedback::symbol_table_context::clear (void)
+  lexical_feedback::symbol_table_context::clear ()
   {
     while (! m_frame_stack.empty ())
       m_frame_stack.pop_front ();
   }
 
   void
-  lexical_feedback::symbol_table_context::pop (void)
+  lexical_feedback::symbol_table_context::pop ()
   {
     if (empty ())
       panic_impossible ();
@@ -2130,7 +2130,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   symbol_scope
-  lexical_feedback::symbol_table_context::curr_scope (void) const
+  lexical_feedback::symbol_table_context::curr_scope () const
   {
     if (empty ())
       return m_interpreter.get_current_scope ();
@@ -2139,7 +2139,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   symbol_scope
-  lexical_feedback::symbol_table_context::parent_scope (void) const
+  lexical_feedback::symbol_table_context::parent_scope () const
   {
     std::size_t sz = size ();
 
@@ -2148,13 +2148,13 @@ If @var{name} is omitted, return a list of keywords.
             : (sz == 1 ? m_frame_stack[0] : symbol_scope ()));
   }
 
-  lexical_feedback::~lexical_feedback (void)
+  lexical_feedback::~lexical_feedback ()
   {
     m_tokens.clear ();
   }
 
   void
-  lexical_feedback::init (void)
+  lexical_feedback::init ()
   {
     // The closest paren, brace, or bracket nesting is not an object
     // index.
@@ -2162,7 +2162,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   void
-  lexical_feedback::reset (void)
+  lexical_feedback::reset ()
   {
     m_end_of_input = false;
     m_allow_command_syntax = true;
@@ -2222,7 +2222,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   int
-  lexical_feedback::previous_token_value (void) const
+  lexical_feedback::previous_token_value () const
   {
     const token *tok = m_tokens.front ();
     return tok ? tok->token_value () : 0;
@@ -2236,7 +2236,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   void
-  lexical_feedback::mark_previous_token_trailing_space (void)
+  lexical_feedback::mark_previous_token_trailing_space ()
   {
     token *tok = m_tokens.front ();
     if (tok && ! previous_token_value_is ('\n'))
@@ -2244,14 +2244,14 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   bool
-  lexical_feedback::space_follows_previous_token (void) const
+  lexical_feedback::space_follows_previous_token () const
   {
     const token *tok = m_tokens.front ();
     return tok ? tok->space_follows_token () : false;
   }
 
   bool
-  lexical_feedback::previous_token_is_binop (void) const
+  lexical_feedback::previous_token_is_binop () const
   {
     int tok = previous_token_value ();
 
@@ -2271,7 +2271,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   bool
-  lexical_feedback::previous_token_is_keyword (void) const
+  lexical_feedback::previous_token_is_keyword () const
   {
     const token *tok = m_tokens.front ();
     return tok ? tok->iskeyword () : false;
@@ -2296,7 +2296,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   bool
-  lexical_feedback::previous_token_may_be_command (void) const
+  lexical_feedback::previous_token_may_be_command () const
   {
     if (! m_allow_command_syntax)
       return false;
@@ -2392,13 +2392,13 @@ looks_like_shebang (const std::string& s)
     return len;
   }
 
-  base_lexer::~base_lexer (void)
+  base_lexer::~base_lexer ()
   {
     yylex_destroy (m_scanner);
   }
 
   void
-  base_lexer::init (void)
+  base_lexer::init ()
   {
     yylex_init (&m_scanner);
 
@@ -2419,7 +2419,7 @@ looks_like_shebang (const std::string& s)
   struct yyguts_t *yyg = static_cast<struct yyguts_t*> (m_scanner)
 
   void
-  base_lexer::reset (void)
+  base_lexer::reset ()
   {
     // Start off on the right foot.
     clear_start_state ();
@@ -2442,7 +2442,7 @@ looks_like_shebang (const std::string& s)
   }
 
   void
-  base_lexer::prep_for_file (void)
+  base_lexer::prep_for_file ()
   {
     m_reading_script_file = true;
 
@@ -2458,7 +2458,7 @@ looks_like_shebang (const std::string& s)
   }
 
   int
-  base_lexer::handle_end_of_input (void)
+  base_lexer::handle_end_of_input ()
   {
     lexer_debug ("<<EOF>>");
 
@@ -2483,19 +2483,19 @@ looks_like_shebang (const std::string& s)
   }
 
   char *
-  base_lexer::flex_yytext (void)
+  base_lexer::flex_yytext ()
   {
     return yyget_text (m_scanner);
   }
 
   int
-  base_lexer::flex_yyleng (void)
+  base_lexer::flex_yyleng ()
   {
     return yyget_leng (m_scanner);
   }
 
   int
-  base_lexer::text_yyinput (void)
+  base_lexer::text_yyinput ()
   {
     int c = yyinput (m_scanner);
 
@@ -2566,7 +2566,7 @@ looks_like_shebang (const std::string& s)
   }
 
   bool
-  base_lexer::looking_at_space (void)
+  base_lexer::looking_at_space ()
   {
     int c = text_yyinput ();
     xunput (c);
@@ -2574,7 +2574,7 @@ looks_like_shebang (const std::string& s)
   }
 
   bool
-  base_lexer::inside_any_object_index (void)
+  base_lexer::inside_any_object_index ()
   {
     bool retval = false;
 
@@ -2901,7 +2901,7 @@ looks_like_shebang (const std::string& s)
   }
 
   bool
-  base_lexer::whitespace_is_significant (void)
+  base_lexer::whitespace_is_significant ()
   {
     return (m_nesting_level.is_bracket ()
             || (m_nesting_level.is_brace ()
@@ -2972,7 +2972,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
   template <>
   int
-  base_lexer::handle_number<2> (void)
+  base_lexer::handle_number<2> ()
   {
     // Skip 0[bB] prefix.
     std::string yytxt (flex_yytext () + 2);
@@ -3058,14 +3058,14 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   static uint64_t
-  flintmax (void)
+  flintmax ()
   {
     return (static_cast<uint64_t> (1) << std::numeric_limits<double>::digits);
   }
 
   template <>
   int
-  base_lexer::handle_number<10> (void)
+  base_lexer::handle_number<10> ()
   {
     bool imag = false;
     bool digits_only = true;
@@ -3180,7 +3180,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
   template <>
   int
-  base_lexer::handle_number<16> (void)
+  base_lexer::handle_number<16> ()
   {
     // Skip 0[xX] prefix.
     std::string yytxt (flex_yytext () + 2);
@@ -3256,7 +3256,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::handle_continuation (void)
+  base_lexer::handle_continuation ()
   {
     char *yytxt = flex_yytext ();
     int yylng = flex_yyleng ();
@@ -3359,7 +3359,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   bool
-  base_lexer::looks_like_command_arg (void)
+  base_lexer::looks_like_command_arg ()
   {
     if (! m_allow_command_syntax)
       return false;
@@ -3372,7 +3372,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_superclass_identifier (void)
+  base_lexer::handle_superclass_identifier ()
   {
     update_token_positions (flex_yyleng ());
 
@@ -3406,7 +3406,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_meta_identifier (void)
+  base_lexer::handle_meta_identifier ()
   {
     std::string txt = flex_yytext ();
 
@@ -3437,7 +3437,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_fq_identifier (void)
+  base_lexer::handle_fq_identifier ()
   {
     std::string txt = flex_yytext ();
 
@@ -3471,7 +3471,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   // should be ignored.
 
   int
-  base_lexer::handle_identifier (void)
+  base_lexer::handle_identifier ()
   {
     update_token_positions (flex_yyleng ());
 
@@ -3577,7 +3577,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::warn_language_extension_continuation (void)
+  base_lexer::warn_language_extension_continuation ()
   {
     warn_language_extension ("\\ used as line continuation marker");
   }
@@ -3612,14 +3612,14 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   token *
-  base_lexer::current_token (void)
+  base_lexer::current_token ()
   {
     YYSTYPE *lval = yyget_lval (m_scanner);
     return lval->tok_val;
   }
 
   std::size_t
-  base_lexer::pending_token_count (void) const
+  base_lexer::pending_token_count () const
   {
     return m_tokens.size ();
   }
@@ -3759,21 +3759,21 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   bool
-  base_lexer::debug_flag (void) const
+  base_lexer::debug_flag () const
   {
     settings& stgs = m_interpreter.get_settings ();
     return stgs.lexer_debug_flag ();
   }
 
   bool
-  base_lexer::display_tokens (void) const
+  base_lexer::display_tokens () const
   {
     settings& stgs = m_interpreter.get_settings ();
     return stgs.display_tokens ();
   }
 
   void
-  base_lexer::increment_token_count (void)
+  base_lexer::increment_token_count ()
   {
     settings& stgs = m_interpreter.get_settings ();
     stgs.increment_token_count ();
@@ -3796,7 +3796,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   bool
-  base_lexer::input_from_tmp_history_file (void)
+  base_lexer::input_from_tmp_history_file ()
   {
     history_system& history_sys = m_interpreter.get_history_system ();
 
@@ -3814,7 +3814,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::pop_start_state (void)
+  base_lexer::pop_start_state ()
   {
     OCTAVE_YYG;
 
@@ -3824,7 +3824,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::clear_start_state (void)
+  base_lexer::clear_start_state ()
   {
     while (! start_state_stack.empty ())
       start_state_stack.pop ();
@@ -3833,7 +3833,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::display_start_state (void) const
+  base_lexer::display_start_state () const
   {
     std::cerr << "S: ";
 
@@ -3944,7 +3944,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   // function call.
 
   int
-  base_lexer::finish_command_arg (void)
+  base_lexer::finish_command_arg ()
   {
     int tok = SQ_STRING;
 

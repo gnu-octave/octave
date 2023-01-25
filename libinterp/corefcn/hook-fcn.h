@@ -42,15 +42,15 @@ class base_hook_function
 {
 public:
 
-  base_hook_function (void) = default;
+  base_hook_function () = default;
 
   base_hook_function (const base_hook_function&) = default;
 
-  virtual ~base_hook_function (void) = default;
+  virtual ~base_hook_function () = default;
 
-  virtual std::string id (void) const { return ""; }
+  virtual std::string id () const { return ""; }
 
-  virtual bool is_valid (void) const { return false; }
+  virtual bool is_valid () const { return false; }
 
   virtual void eval (const octave_value_list&) { }
 };
@@ -59,7 +59,7 @@ class hook_function
 {
 public:
 
-  hook_function (void)
+  hook_function ()
   {
     static std::shared_ptr<base_hook_function>
     nil_rep (new base_hook_function ());
@@ -70,15 +70,15 @@ public:
   hook_function (const octave_value& f,
                  const octave_value& d = octave_value ());
 
-  ~hook_function (void) = default;
+  ~hook_function () = default;
 
   hook_function (const hook_function& hf) = default;
 
   hook_function& operator = (const hook_function& hf) = default;
 
-  std::string id (void) const { return m_rep->id (); }
+  std::string id () const { return m_rep->id (); }
 
-  bool is_valid (void) const { return m_rep->is_valid (); }
+  bool is_valid () const { return m_rep->is_valid (); }
 
   void eval (const octave_value_list& initial_args)
   {
@@ -100,9 +100,9 @@ public:
 
   void eval (const octave_value_list& initial_args);
 
-  std::string id (void) const { return m_name; }
+  std::string id () const { return m_name; }
 
-  bool is_valid (void) const { return is_valid_function (m_name); }
+  bool is_valid () const { return is_valid_function (m_name); }
 
 private:
 
@@ -132,9 +132,9 @@ public:
 
   void eval (const octave_value_list& initial_args);
 
-  std::string id (void) const { return m_ident; }
+  std::string id () const { return m_ident; }
 
-  bool is_valid (void) const { return m_valid; }
+  bool is_valid () const { return m_valid; }
 
 private:
 
@@ -156,17 +156,17 @@ public:
   typedef map_type::iterator iterator;
   typedef map_type::const_iterator const_iterator;
 
-  hook_function_list (void) = default;
+  hook_function_list () = default;
 
-  ~hook_function_list (void) = default;
+  ~hook_function_list () = default;
 
   hook_function_list (const hook_function_list& lst) = default;
 
   hook_function_list& operator = (const hook_function_list& lst) = default;
 
-  bool empty (void) const { return m_fcn_map.empty (); }
+  bool empty () const { return m_fcn_map.empty (); }
 
-  void clear (void) { m_fcn_map.clear (); }
+  void clear () { m_fcn_map.clear (); }
 
   void insert (const std::string& id, const hook_function& f)
   {
@@ -183,9 +183,9 @@ public:
     return m_fcn_map.find (id);
   }
 
-  iterator end (void) { return m_fcn_map.end (); }
+  iterator end () { return m_fcn_map.end (); }
 
-  const_iterator end (void) const { return m_fcn_map.end (); }
+  const_iterator end () const { return m_fcn_map.end (); }
 
   void erase (iterator p) { m_fcn_map.erase (p); }
 

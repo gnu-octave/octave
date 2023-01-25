@@ -46,7 +46,7 @@ tree_expression::lvalue (tree_evaluator&)
 }
 
 std::string
-tree_expression::original_text (void) const
+tree_expression::original_text () const
 {
   return "";
 }

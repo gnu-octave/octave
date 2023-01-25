@@ -47,7 +47,7 @@ public:
     : opengl_renderer (glfcns), size (5)
   { }
 
-  virtual ~opengl_selector (void) = default;
+  virtual ~opengl_selector () = default;
 
   graphics_object select (const graphics_object& ax, int x, int y,
                           int flags = 0);
@@ -68,7 +68,7 @@ protected:
                               int halign, int valign, double rotation = 0.0);
 
 private:
-  void apply_pick_matrix (void);
+  void apply_pick_matrix ();
 
   void fake_text (double x, double y, double z, const Matrix& bbox,
                   bool use_scale = true);

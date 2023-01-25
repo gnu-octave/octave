@@ -191,14 +191,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_model::clear_workspace (void)
+  workspace_model::clear_workspace ()
   {
     clear_data ();
     update_table ();
   }
 
   void
-  workspace_model::notice_settings (void)
+  workspace_model::notice_settings ()
   {
     gui_settings settings;
 
@@ -232,7 +232,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_model::clear_data (void)
+  workspace_model::clear_data ()
   {
     m_top_level = false;
     m_syminfo_list = symbol_info_list ();
@@ -245,7 +245,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  workspace_model::update_table (void)
+  workspace_model::update_table ()
   {
     beginResetModel ();
 

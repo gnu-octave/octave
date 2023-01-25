@@ -65,13 +65,13 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
     }
 }
 
-octave_oncleanup::~octave_oncleanup (void)
+octave_oncleanup::~octave_oncleanup ()
 {
   call_object_destructor ();
 }
 
 octave_scalar_map
-octave_oncleanup::scalar_map_value (void) const
+octave_oncleanup::scalar_map_value () const
 {
   octave_scalar_map retval;
   retval.setfield ("task", m_fcn);
@@ -145,7 +145,7 @@ octave_oncleanup::print_raw (std::ostream& os, bool pr_as_read_syntax) const
 }
 
 void
-octave_oncleanup::call_object_destructor (void)
+octave_oncleanup::call_object_destructor ()
 {
   if (m_fcn.is_undefined ())
     return;

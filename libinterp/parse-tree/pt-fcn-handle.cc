@@ -66,7 +66,7 @@ tree_fcn_handle::evaluate (tree_evaluator& tw, int)
   return tw.make_fcn_handle (m_name);
 }
 
-tree_anon_fcn_handle::~tree_anon_fcn_handle (void)
+tree_anon_fcn_handle::~tree_anon_fcn_handle ()
 {
   delete m_parameter_list;
   delete m_expression;

@@ -697,7 +697,7 @@ octave_scalar_map error_system::warning_query (const std::string& id_arg)
   return retval;
 }
 
-std::string error_system::default_warning_state (void)
+std::string error_system::default_warning_state ()
 {
   std::string retval = "on";
 
@@ -829,7 +829,7 @@ void error_system::disable_warning (const std::string& id)
   set_warning_option ("off", id);
 }
 
-void error_system::initialize_default_warning_state (void)
+void error_system::initialize_default_warning_state ()
 {
   warning_options (init_warning_options ("on"));
 

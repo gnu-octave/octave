@@ -36,7 +36,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // While.
 
-tree_while_command::~tree_while_command (void)
+tree_while_command::~tree_while_command ()
 {
   delete m_expr;
   delete m_list;
@@ -46,7 +46,7 @@ tree_while_command::~tree_while_command (void)
 
 // For.
 
-tree_simple_for_command::~tree_simple_for_command (void)
+tree_simple_for_command::~tree_simple_for_command ()
 {
   delete m_lhs;
   delete m_expr;
@@ -56,7 +56,7 @@ tree_simple_for_command::~tree_simple_for_command (void)
   delete m_trail_comm;
 }
 
-tree_complex_for_command::~tree_complex_for_command (void)
+tree_complex_for_command::~tree_complex_for_command ()
 {
   delete m_lhs;
   delete m_expr;

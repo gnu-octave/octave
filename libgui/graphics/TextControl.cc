@@ -65,7 +65,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
   }
 
-  TextControl::~TextControl (void)
+  TextControl::~TextControl ()
   { }
 
   void

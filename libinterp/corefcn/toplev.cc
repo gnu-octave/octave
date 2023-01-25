@@ -158,7 +158,7 @@ run_command_and_return_output (const std::string& cmd_str)
 // Combine alloc+get in one action.
 
 static void *
-get_signal_mask (void)
+get_signal_mask ()
 {
   void *mask = octave_alloc_signal_mask ();
 
@@ -652,7 +652,7 @@ OCTAVE_END_NAMESPACE(octave)
 
 int debug_new_delete = 0;
 
-typedef void (*vfp)(void);
+typedef void (*vfp)();
 extern vfp __new_handler;
 
 void *

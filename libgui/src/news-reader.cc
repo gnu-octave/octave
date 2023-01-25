@@ -41,7 +41,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void news_reader::process (void)
+  void news_reader::process ()
   {
     QString html_text;
 

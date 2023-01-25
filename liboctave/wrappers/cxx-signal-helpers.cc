@@ -45,7 +45,7 @@
 // The following pattern often used in C code to initialize a static
 // variable could possibly cause trouble in multi-threaded code:
 //
-//   TYPE * get_var (void) {
+//   TYPE * get_var () {
 //     static bool initialized = false;
 //     static TYPE *var;
 //     if (! initialized) {
@@ -57,14 +57,14 @@
 //
 // Changing this code to
 //
-//   static TYPE *var = init_var (void);
+//   static TYPE *var = init_var ();
 //
 // doesn't work in C because the static variable can't be initialized by
 // a function call.  So we have to do this job in C++.  To avoid calling
 // new, initialize sigset_t rather than a pointer to allocated storage.
 
 static const sigset_t
-init_async_signals (void)
+init_async_signals ()
 {
   sigset_t sigmask;
 
@@ -148,7 +148,7 @@ static const sigset_t async_signals = init_async_signals ();
 #endif
 
 void
-octave_block_async_signals (void)
+octave_block_async_signals ()
 {
 #if ! defined (__WIN32__) || defined (__CYGWIN__)
   pthread_sigmask (SIG_BLOCK, &async_signals, 0);
@@ -156,7 +156,7 @@ octave_block_async_signals (void)
 }
 
 void
-octave_unblock_async_signals (void)
+octave_unblock_async_signals ()
 {
 #if ! defined (__WIN32__) || defined (__CYGWIN__)
   pthread_sigmask (SIG_UNBLOCK, &async_signals, 0);

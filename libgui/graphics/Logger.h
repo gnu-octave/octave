@@ -44,10 +44,10 @@ private:
   static QMutex *s_mutex;
 
 private:
-  Logger (void);
-  ~Logger (void);
+  Logger ();
+  ~Logger ();
 
-  static Logger * instance (void);
+  static Logger * instance ();
 
   void debugV (const char *fmt, va_list arg);
 };

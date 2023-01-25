@@ -171,7 +171,7 @@ ComplexMatrix::operator != (const ComplexMatrix& a) const
 }
 
 bool
-ComplexMatrix::ishermitian (void) const
+ComplexMatrix::ishermitian () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -734,7 +734,7 @@ norm1 (const ComplexMatrix& a)
 }
 
 ComplexMatrix
-ComplexMatrix::inverse (void) const
+ComplexMatrix::inverse () const
 {
   octave_idx_type info;
   double rcon;
@@ -1042,7 +1042,7 @@ ComplexMatrix::pseudo_inverse (double tol) const
 #if defined (HAVE_FFTW)
 
 ComplexMatrix
-ComplexMatrix::fourier (void) const
+ComplexMatrix::fourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -1071,7 +1071,7 @@ ComplexMatrix::fourier (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::ifourier (void) const
+ComplexMatrix::ifourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -1100,7 +1100,7 @@ ComplexMatrix::ifourier (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::fourier2d (void) const
+ComplexMatrix::fourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -1114,7 +1114,7 @@ ComplexMatrix::fourier2d (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::ifourier2d (void) const
+ComplexMatrix::ifourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -1130,7 +1130,7 @@ ComplexMatrix::ifourier2d (void) const
 #else
 
 ComplexMatrix
-ComplexMatrix::fourier (void) const
+ComplexMatrix::fourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1139,7 +1139,7 @@ ComplexMatrix::fourier (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::ifourier (void) const
+ComplexMatrix::ifourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1148,7 +1148,7 @@ ComplexMatrix::ifourier (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::fourier2d (void) const
+ComplexMatrix::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1157,7 +1157,7 @@ ComplexMatrix::fourier2d (void) const
 }
 
 ComplexMatrix
-ComplexMatrix::ifourier2d (void) const
+ComplexMatrix::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1168,7 +1168,7 @@ ComplexMatrix::ifourier2d (void) const
 #endif
 
 ComplexDET
-ComplexMatrix::determinant (void) const
+ComplexMatrix::determinant () const
 {
   octave_idx_type info;
   double rcon;
@@ -1347,7 +1347,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
 }
 
 double
-ComplexMatrix::rcond (void) const
+ComplexMatrix::rcond () const
 {
   MatrixType mattype (*this);
   return rcond (mattype);
@@ -2821,7 +2821,7 @@ ComplexMatrix::sumsq (int dim) const
 }
 
 Matrix
-ComplexMatrix::abs (void) const
+ComplexMatrix::abs () const
 {
   return ComplexNDArray::abs ();
 }
@@ -2883,7 +2883,7 @@ ComplexMatrix::column_is_real_only (octave_idx_type j) const
 }
 
 ComplexColumnVector
-ComplexMatrix::row_min (void) const
+ComplexMatrix::row_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_min (dummy_idx);
@@ -2958,7 +2958,7 @@ ComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 }
 
 ComplexColumnVector
-ComplexMatrix::row_max (void) const
+ComplexMatrix::row_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_max (dummy_idx);
@@ -3033,7 +3033,7 @@ ComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 }
 
 ComplexRowVector
-ComplexMatrix::column_min (void) const
+ComplexMatrix::column_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_min (dummy_idx);
@@ -3108,7 +3108,7 @@ ComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 }
 
 ComplexRowVector
-ComplexMatrix::column_max (void) const
+ComplexMatrix::column_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_max (dummy_idx);

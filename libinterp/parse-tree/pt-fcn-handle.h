@@ -61,7 +61,7 @@ public:
 
   tree_fcn_handle& operator = (const tree_fcn_handle&) = delete;
 
-  ~tree_fcn_handle (void) = default;
+  ~tree_fcn_handle () = default;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false,
               bool pr_orig_txt = true);
@@ -69,9 +69,9 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false,
                   bool pr_orig_txt = true);
 
-  std::string name (void) const { return m_name; }
+  std::string name () const { return m_name; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -117,22 +117,22 @@ public:
 
   tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
 
-  ~tree_anon_fcn_handle (void);
+  ~tree_anon_fcn_handle ();
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
-  tree_parameter_list * parameter_list (void) const
+  tree_parameter_list * parameter_list () const
   {
     return m_parameter_list;
   }
 
-  tree_expression * expression (void) const { return m_expression; }
+  tree_expression * expression () const { return m_expression; }
 
-  symbol_scope scope (void) const { return m_scope; }
+  symbol_scope scope () const { return m_scope; }
 
-  symbol_scope parent_scope (void) const { return m_parent_scope; }
+  symbol_scope parent_scope () const { return m_parent_scope; }
 
-  bool has_parent_scope (void) const { return m_parent_scope.is_valid (); }
+  bool has_parent_scope () const { return m_parent_scope.is_valid (); }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -147,7 +147,7 @@ public:
 
   void stash_file_name (const std::string& file) { m_file_name = file; }
 
-  std::string file_name (void) const { return m_file_name; }
+  std::string file_name () const { return m_file_name; }
 
 private:
 

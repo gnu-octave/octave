@@ -302,28 +302,28 @@ xis_storable (T base, T limit, octave_idx_type nel)
 
 template <>
 bool
-range<double>::all_elements_are_ints (void) const
+range<double>::all_elements_are_ints () const
 {
   return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
 }
 
 template <>
 bool
-range<float>::all_elements_are_ints (void) const
+range<float>::all_elements_are_ints () const
 {
   return xall_elements_are_ints (m_base, m_increment, m_final, m_numel);
 }
 
 template <>
 void
-range<double>::init (void)
+range<double>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<float>::init (void)
+range<float>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
@@ -334,56 +334,56 @@ range<float>::init (void)
 
 template <>
 void
-range<octave_int8>::init (void)
+range<octave_int8>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<octave_int16>::init (void)
+range<octave_int16>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<octave_int32>::init (void)
+range<octave_int32>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<octave_int64>::init (void)
+range<octave_int64>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<octave_uint8>::init (void)
+range<octave_uint8>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<octave_uint16>::init (void)
+range<octave_uint16>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<octave_uint32>::init (void)
+range<octave_uint32>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
 
 template <>
 void
-range<octave_uint64>::init (void)
+range<octave_uint64>::init ()
 {
   xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
 }
@@ -392,14 +392,14 @@ range<octave_uint64>::init (void)
 
 template <>
 bool
-range<double>::is_storable (void) const
+range<double>::is_storable () const
 {
   return xis_storable (m_base, m_limit, m_numel);
 }
 
 template <>
 bool
-range<float>::is_storable (void) const
+range<float>::is_storable () const
 {
   return xis_storable (m_base, m_limit, m_numel);
 }
@@ -440,14 +440,14 @@ xnnz (T base, T limit, T inc, T final_val, octave_idx_type nel)
 
 template <>
 octave_idx_type
-range<double>::nnz (void) const
+range<double>::nnz () const
 {
   return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
 }
 
 template <>
 octave_idx_type
-range<float>::nnz (void) const
+range<float>::nnz () const
 {
   return xnnz (m_base, m_limit, m_increment, m_final, m_numel);
 }

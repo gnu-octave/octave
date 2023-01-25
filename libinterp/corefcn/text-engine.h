@@ -56,9 +56,9 @@ OCTINTERP_API
 text_element
 {
 public:
-  text_element (void) { }
+  text_element () { }
 
-  virtual ~text_element (void) = default;
+  virtual ~text_element () = default;
 
   virtual void accept (text_processor& p) = 0;
 
@@ -74,9 +74,9 @@ public:
   text_element_string (const std::string& s = "")
     : text_element (), m_str (s) { }
 
-  ~text_element_string (void) = default;
+  ~text_element_string () = default;
 
-  std::string string_value (void) const { return m_str; }
+  std::string string_value () const { return m_str; }
 
   void accept (text_processor& p);
 
@@ -98,11 +98,11 @@ public:
   text_element_symbol (int sym)
     : text_element (), m_symbol (sym) { }
 
-  ~text_element_symbol (void) = default;
+  ~text_element_symbol () = default;
 
-  int get_symbol (void) const { return m_symbol; }
+  int get_symbol () const { return m_symbol; }
 
-  uint32_t get_symbol_code (void) const;
+  uint32_t get_symbol_code () const;
 
   void accept (text_processor& p);
 
@@ -116,7 +116,7 @@ text_element_list
   : public text_element, public base_list<text_element *>
 {
 public:
-  text_element_list (void)
+  text_element_list ()
     : text_element (), base_list<text_element*> () { }
 
   text_element_list (text_element *e)
@@ -125,7 +125,7 @@ public:
     push_back (e);
   }
 
-  ~text_element_list (void)
+  ~text_element_list ()
   {
     while (! empty ())
       {
@@ -150,15 +150,15 @@ public:
     : text_element ()
   { m_elem = new text_element_string (std::string (1, c)); }
 
-  ~text_element_subscript (void)
+  ~text_element_subscript ()
   { delete m_elem; }
 
   void accept (text_processor& p);
 
-  text_element * get_element (void) { return m_elem; }
+  text_element * get_element () { return m_elem; }
 
 private:
-  text_element_subscript (void);
+  text_element_subscript ();
 
   //--------
 
@@ -178,15 +178,15 @@ public:
     : text_element ()
   { m_elem = new text_element_string (std::string (1, c)); }
 
-  ~text_element_superscript (void)
+  ~text_element_superscript ()
   { delete m_elem; }
 
   void accept (text_processor& p);
 
-  text_element * get_element (void) { return m_elem; }
+  text_element * get_element () { return m_elem; }
 
 private:
-  text_element_superscript (void);
+  text_element_superscript ();
 
   //--------
 
@@ -225,14 +225,14 @@ public:
   text_element_fontstyle (fontstyle st)
     : text_element (), m_style (st) { }
 
-  ~text_element_fontstyle (void) = default;
+  ~text_element_fontstyle () = default;
 
-  fontstyle get_fontstyle (void) const { return m_style; }
+  fontstyle get_fontstyle () const { return m_style; }
 
   void accept (text_processor& p);
 
 private:
-  text_element_fontstyle (void);
+  text_element_fontstyle ();
 
   //--------
 
@@ -248,14 +248,14 @@ public:
   text_element_fontname (const std::string& fname)
     : text_element (), m_name (fname) { }
 
-  ~text_element_fontname (void) = default;
+  ~text_element_fontname () = default;
 
-  const std::string& get_fontname (void) const { return m_name; }
+  const std::string& get_fontname () const { return m_name; }
 
   void accept (text_processor& p);
 
 private:
-  text_element_fontname (void);
+  text_element_fontname ();
 
   //--------
 
@@ -271,14 +271,14 @@ public:
   text_element_fontsize (double fsize)
     : text_element (), m_size (fsize) { }
 
-  ~text_element_fontsize (void) = default;
+  ~text_element_fontsize () = default;
 
-  double get_fontsize (void) const { return m_size; }
+  double get_fontsize () const { return m_size; }
 
   void accept (text_processor& p);
 
 private:
-  text_element_fontsize (void);
+  text_element_fontsize ();
 
   //--------
 
@@ -317,9 +317,9 @@ public:
 #undef ASSIGN_COLOR
                         }
 
-  ~text_element_color (void) = default;
+  ~text_element_color () = default;
 
-  Matrix get_color (void) { return m_rgb; }
+  Matrix get_color () { return m_rgb; }
 
   void accept (text_processor& p);
 
@@ -360,12 +360,12 @@ public:
 
   virtual void visit (text_element_color&) { }
 
-  virtual void reset (void) { }
+  virtual void reset () { }
 
 protected:
-  text_processor (void) { }
+  text_processor () { }
 
-  virtual ~text_processor (void) = default;
+  virtual ~text_processor () = default;
 };
 
 #define TEXT_ELEMENT_ACCEPT(cls)                \
@@ -391,9 +391,9 @@ OCTINTERP_API
 text_parser
 {
 public:
-  text_parser (void) { }
+  text_parser () { }
 
-  virtual ~text_parser (void) = default;
+  virtual ~text_parser () = default;
 
   virtual text_element * parse (const std::string& s) = 0;
 
@@ -407,9 +407,9 @@ OCTINTERP_API
 text_parser_none : public text_parser
 {
 public:
-  text_parser_none (void) : text_parser () { }
+  text_parser_none () : text_parser () { }
 
-  ~text_parser_none (void) = default;
+  ~text_parser_none () = default;
 
   // FIXME: is it possible to use reference counting to manage the
   // memory for the object returned by the text parser?  That would be
@@ -427,26 +427,26 @@ OCTINTERP_API
 text_parser_tex : public text_parser
 {
 public:
-  text_parser_tex (void)
+  text_parser_tex ()
     : text_parser (), m_scanner (nullptr), m_buffer_state (nullptr),
       m_result (nullptr)
   { }
 
-  ~text_parser_tex (void)
+  ~text_parser_tex ()
   { destroy_lexer (); }
 
   text_element * parse (const std::string& s);
 
-  void * get_scanner (void) { return m_scanner; }
+  void * get_scanner () { return m_scanner; }
 
   void set_parse_result (text_element *e) { m_result = e; }
 
-  text_element * get_parse_result (void) { return m_result; }
+  text_element * get_parse_result () { return m_result; }
 
 private:
   bool init_lexer (const std::string& s);
 
-  void destroy_lexer (void);
+  void destroy_lexer ();
 
   //--------
 

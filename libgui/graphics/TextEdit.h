@@ -36,11 +36,11 @@ class TextEdit : public QTextEdit
 
 public:
   TextEdit (QWidget *xparent) : QTextEdit (xparent) { }
-  ~TextEdit (void) = default;
+  ~TextEdit () = default;
 
 signals:
-  void editingFinished (void);
-  void returnPressed (void);
+  void editingFinished ();
+  void returnPressed ();
 
 protected:
   void focusOutEvent (QFocusEvent *event);

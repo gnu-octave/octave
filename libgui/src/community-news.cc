@@ -119,7 +119,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_browser->setHtml (news);
   }
 
-  void community_news::display (void)
+  void community_news::display ()
   {
     if (! isVisible ())
       show ();

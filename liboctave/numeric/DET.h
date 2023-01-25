@@ -66,8 +66,8 @@ public:
     return *this;
   }
 
-  T coef (void) const { return m_c2; }
-  int exp (void) const { return m_e2; }
+  T coef () const { return m_c2; }
+  int exp () const { return m_e2; }
 
   T value () const { return m_c2 * static_cast<T> (std::ldexp (1.0, m_e2)); }
   operator T () const { return value (); }

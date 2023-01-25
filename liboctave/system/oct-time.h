@@ -52,7 +52,7 @@ time
 {
 public:
 
-  time (void)
+  time ()
     : m_ot_unix_time (0), m_ot_usec (0) { stamp (); }
 
   time (OCTAVE_TIME_T t)
@@ -98,20 +98,20 @@ public:
     return *this;
   }
 
-  ~time (void) = default;
+  ~time () = default;
 
-  OCTAVE_API void stamp (void);
+  OCTAVE_API void stamp ();
 
-  double double_value (void) const
+  double double_value () const
   {
     return as_double (m_ot_unix_time, m_ot_usec);
   }
 
-  OCTAVE_TIME_T unix_time (void) const { return m_ot_unix_time; }
+  OCTAVE_TIME_T unix_time () const { return m_ot_unix_time; }
 
-  long usec (void) const { return m_ot_usec; }
+  long usec () const { return m_ot_usec; }
 
-  OCTAVE_API std::string ctime (void) const;
+  OCTAVE_API std::string ctime () const;
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const time& ot);
 
@@ -186,7 +186,7 @@ base_tm
 {
 public:
 
-  base_tm (void)
+  base_tm ()
     : m_usec (0), m_sec (0), m_min (0), m_hour (0),
       m_mday (0), m_mon (0), m_year (0), m_wday (0),
       m_yday (0), m_isdst (0), m_gmtoff (0), m_zone ("unknown")
@@ -220,20 +220,20 @@ public:
     return *this;
   }
 
-  virtual ~base_tm (void) = default;
+  virtual ~base_tm () = default;
 
-  int usec (void) const { return m_usec; }
-  int sec (void) const { return m_sec; }
-  int min (void) const { return m_min; }
-  int hour (void) const { return m_hour; }
-  int mday (void) const { return m_mday; }
-  int mon (void) const { return m_mon; }
-  int year (void) const { return m_year; }
-  int wday (void) const { return m_wday; }
-  int yday (void) const { return m_yday; }
-  int isdst (void) const { return m_isdst; }
-  long gmtoff (void) const { return m_gmtoff; }
-  std::string zone (void) const { return m_zone; }
+  int usec () const { return m_usec; }
+  int sec () const { return m_sec; }
+  int min () const { return m_min; }
+  int hour () const { return m_hour; }
+  int mday () const { return m_mday; }
+  int mon () const { return m_mon; }
+  int year () const { return m_year; }
+  int wday () const { return m_wday; }
+  int yday () const { return m_yday; }
+  int isdst () const { return m_isdst; }
+  long gmtoff () const { return m_gmtoff; }
+  std::string zone () const { return m_zone; }
 
   OCTAVE_API base_tm& usec (int v);
   OCTAVE_API base_tm& sec (int v);
@@ -250,7 +250,7 @@ public:
 
   OCTAVE_API std::string strftime (const std::string& fmt) const;
 
-  std::string asctime (void) const
+  std::string asctime () const
   { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
 
 protected:
@@ -299,7 +299,7 @@ localtime : public base_tm
 {
 public:
 
-  localtime (void)
+  localtime ()
     : base_tm () { init (time ()); }
 
   localtime (const time& ot)
@@ -314,7 +314,7 @@ public:
     return *this;
   }
 
-  ~localtime (void) = default;
+  ~localtime () = default;
 
 private:
 
@@ -326,7 +326,7 @@ gmtime : public base_tm
 {
 public:
 
-  gmtime (void)
+  gmtime ()
     : base_tm () { init (time ()); }
 
   gmtime (const time& ot)
@@ -338,7 +338,7 @@ public:
     return *this;
   }
 
-  ~gmtime (void) = default;
+  ~gmtime () = default;
 
 private:
 
@@ -366,9 +366,9 @@ public:
     return *this;
   }
 
-  int characters_converted (void) const { return m_nchars; }
+  int characters_converted () const { return m_nchars; }
 
-  ~strptime (void) = default;
+  ~strptime () = default;
 
 private:
 
@@ -384,7 +384,7 @@ public:
 
   friend class resource_usage;
 
-  cpu_time (void)
+  cpu_time ()
     : m_usr_sec (0), m_sys_sec (0), m_usr_usec (0), m_sys_usec (0)
   {
     stamp ();
@@ -408,23 +408,23 @@ public:
     return *this;
   }
 
-  OCTAVE_API void stamp (void);
+  OCTAVE_API void stamp ();
 
-  double user (void) const
+  double user () const
   {
     return as_double (m_usr_sec, m_usr_usec);
   }
 
-  double system (void) const
+  double system () const
   {
     return as_double (m_sys_sec, m_sys_usec);
   }
 
-  OCTAVE_TIME_T user_sec (void) const { return m_usr_sec; }
-  long user_usec (void) const { return m_usr_usec; }
+  OCTAVE_TIME_T user_sec () const { return m_usr_sec; }
+  long user_usec () const { return m_usr_usec; }
 
-  OCTAVE_TIME_T system_sec (void) const { return m_sys_sec; }
-  long system_usec (void) const { return m_sys_usec; }
+  OCTAVE_TIME_T system_sec () const { return m_sys_sec; }
+  long system_usec () const { return m_sys_usec; }
 
 private:
 
@@ -445,7 +445,7 @@ resource_usage
 {
 public:
 
-  resource_usage (void)
+  resource_usage ()
     : m_cpu (), m_maxrss (0), m_ixrss (0), m_idrss (0),
       m_isrss (0), m_minflt (0), m_majflt (0), m_nswap (0),
       m_inblock (0), m_oublock (0), m_msgsnd (0), m_msgrcv (0),
@@ -490,24 +490,24 @@ public:
     return *this;
   }
 
-  OCTAVE_API void stamp (void);
+  OCTAVE_API void stamp ();
 
-  cpu_time cpu (void) const { return m_cpu; }
+  cpu_time cpu () const { return m_cpu; }
 
-  long maxrss (void) const { return m_maxrss; }
-  long ixrss (void) const { return m_ixrss; }
-  long idrss (void) const { return m_idrss; }
-  long isrss (void) const { return m_isrss; }
-  long minflt (void) const { return m_minflt; }
-  long majflt (void) const { return m_majflt; }
-  long nswap (void) const { return m_nswap; }
-  long inblock (void) const { return m_inblock; }
-  long oublock (void) const { return m_oublock; }
-  long msgsnd (void) const { return m_msgsnd; }
-  long msgrcv (void) const { return m_msgrcv; }
-  long nsignals (void) const { return m_nsignals; }
-  long nvcsw (void) const { return m_nvcsw; }
-  long nivcsw (void) const { return m_nivcsw; }
+  long maxrss () const { return m_maxrss; }
+  long ixrss () const { return m_ixrss; }
+  long idrss () const { return m_idrss; }
+  long isrss () const { return m_isrss; }
+  long minflt () const { return m_minflt; }
+  long majflt () const { return m_majflt; }
+  long nswap () const { return m_nswap; }
+  long inblock () const { return m_inblock; }
+  long oublock () const { return m_oublock; }
+  long msgsnd () const { return m_msgsnd; }
+  long msgrcv () const { return m_msgrcv; }
+  long nsignals () const { return m_nsignals; }
+  long nvcsw () const { return m_nvcsw; }
+  long nivcsw () const { return m_nivcsw; }
 
 private:
 

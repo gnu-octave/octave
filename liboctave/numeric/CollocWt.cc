@@ -402,7 +402,7 @@ CollocWt& CollocWt::set_right (double val)
   return *this;
 }
 
-void CollocWt::init (void)
+void CollocWt::init ()
 {
   // Check for possible errors.
 

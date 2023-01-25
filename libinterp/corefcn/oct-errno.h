@@ -39,22 +39,22 @@ octave_errno
 {
 protected:
 
-  octave_errno (void);
+  octave_errno ();
 
 public:
 
-  ~octave_errno (void) = default;
+  ~octave_errno () = default;
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   { delete s_instance; s_instance = nullptr; }
 
   static int lookup (const std::string& name);
 
-  static octave_scalar_map list (void);
+  static octave_scalar_map list ();
 
-  static int get (void) { return errno; }
+  static int get () { return errno; }
 
   static int set (int val)
   {
@@ -67,7 +67,7 @@ private:
 
   int do_lookup (const std::string& name);
 
-  octave_scalar_map do_list (void);
+  octave_scalar_map do_list ();
 
   //--------
 

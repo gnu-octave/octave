@@ -69,7 +69,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-env::env (void)
+env::env ()
   : m_follow_symbolic_links (true), m_verbatim_pwd (true),
     m_current_directory (), m_prog_name (), m_prog_invocation_name (),
     m_user_name (), m_host_name ()
@@ -86,7 +86,7 @@ env::env (void)
 env *env::m_instance = nullptr;
 
 bool
-env::instance_ok (void)
+env::instance_ok ()
 {
   bool retval = true;
 
@@ -170,14 +170,14 @@ env::get_user_data_directory ()
 }
 
 std::string
-env::get_program_name (void)
+env::get_program_name ()
 {
   return (instance_ok ())
          ? m_instance->m_prog_name : "";
 }
 
 std::string
-env::get_program_invocation_name (void)
+env::get_program_invocation_name ()
 {
   return (instance_ok ())
          ? m_instance->m_prog_invocation_name : "";
@@ -191,21 +191,21 @@ env::set_program_name (const std::string& s)
 }
 
 std::string
-env::get_user_name (void)
+env::get_user_name ()
 {
   return (instance_ok ())
          ? m_instance->do_get_user_name () : "";
 }
 
 std::string
-env::get_host_name (void)
+env::get_host_name ()
 {
   return (instance_ok ())
          ? m_instance->do_get_host_name () : "";
 }
 
 std::string
-env::do_get_temp_directory (void) const
+env::do_get_temp_directory () const
 {
   std::string tempd = do_getenv ("TMPDIR");
 
@@ -246,7 +246,7 @@ env::do_get_temp_directory (void) const
 }
 
 std::string
-env::do_get_user_config_directory (void)
+env::do_get_user_config_directory ()
 {
   std::string cfg_dir;
 
@@ -267,7 +267,7 @@ env::do_get_user_config_directory (void)
 }
 
 std::string
-env::do_get_user_data_directory (void)
+env::do_get_user_data_directory ()
 {
   std::string data_dir;
 
@@ -306,7 +306,7 @@ env::putenv (const std::string& name, const std::string& value)
 }
 
 bool
-env::have_x11_display (void)
+env::have_x11_display ()
 {
   std::string display = getenv ("DISPLAY");
 
@@ -518,7 +518,7 @@ env::do_make_absolute (const std::string& s,
 // Return a string which is the current working directory.
 
 std::string
-env::do_getcwd (void)
+env::do_getcwd ()
 {
   if (! m_follow_symbolic_links)
     m_current_directory = "";
@@ -533,7 +533,7 @@ env::do_getcwd (void)
 // running.
 
 std::string
-env::do_get_home_directory (void)
+env::do_get_home_directory ()
 {
   std::string hd = do_getenv ("HOME");
 
@@ -560,7 +560,7 @@ env::do_get_home_directory (void)
 }
 
 std::string
-env::do_get_user_name (void)
+env::do_get_user_name ()
 {
   if (m_user_name.empty ())
     {
@@ -573,7 +573,7 @@ env::do_get_user_name (void)
 }
 
 std::string
-env::do_get_host_name (void)
+env::do_get_host_name ()
 {
   if (m_host_name.empty ())
     {

@@ -47,7 +47,7 @@ text_renderer
 {
 public:
 
-  text_renderer (void);
+  text_renderer ();
 
   // No copying!
 
@@ -55,9 +55,9 @@ public:
 
   text_renderer& operator = (const text_renderer&) = delete;
 
-  ~text_renderer (void);
+  ~text_renderer ();
 
-  bool ok (void) const;
+  bool ok () const;
 
   Matrix get_extent (text_element *elt, double rotation = 0.0);
 
@@ -69,7 +69,7 @@ public:
   void set_font (const std::string& name, const std::string& weight,
                  const std::string& angle, double size);
 
-  octave_map get_system_fonts (void);
+  octave_map get_system_fonts ();
 
   void set_color (const Matrix& c);
 
@@ -83,7 +83,7 @@ public:
   {
   public:
 
-    font (void)
+    font ()
       : m_name (), m_weight (), m_angle (), m_size (0)
     { }
 
@@ -97,7 +97,7 @@ public:
         m_size (ft.m_size)
     { }
 
-    ~font (void) = default;
+    ~font () = default;
 
     font& operator = (const font& ft)
     {
@@ -112,13 +112,13 @@ public:
       return *this;
     }
 
-    std::string get_name (void) const { return m_name; }
+    std::string get_name () const { return m_name; }
 
-    std::string get_weight (void) const { return m_weight; }
+    std::string get_weight () const { return m_weight; }
 
-    std::string get_angle (void) const { return m_angle; }
+    std::string get_angle () const { return m_angle; }
 
-    double get_size (void) const { return m_size; }
+    double get_size () const { return m_size; }
 
   protected:
 
@@ -146,7 +146,7 @@ public:
         m_color (s.m_color), m_svg_element (s.m_svg_element)
     { }
 
-    ~string (void) = default;
+    ~string () = default;
 
     string& operator = (const string& s)
     {
@@ -168,43 +168,43 @@ public:
 
     void set_string (const std::string& s) { m_str = s; }
 
-    std::string get_string (void) const { return m_str; }
+    std::string get_string () const { return m_str; }
 
-    std::string get_name (void) const { return m_fnt.get_name (); }
+    std::string get_name () const { return m_fnt.get_name (); }
 
-    std::string get_family (void) const { return m_family; }
+    std::string get_family () const { return m_family; }
 
     void set_family (const std::string& nm) { m_family = nm; }
 
-    std::string get_weight (void) const { return m_fnt.get_weight (); }
+    std::string get_weight () const { return m_fnt.get_weight (); }
 
-    std::string get_angle (void) const { return m_fnt.get_angle (); }
+    std::string get_angle () const { return m_fnt.get_angle (); }
 
-    double get_size (void) const { return m_fnt.get_size (); }
+    double get_size () const { return m_fnt.get_size (); }
 
     void set_x (const double x) { m_x = x; }
 
-    double get_x (void) const { return m_x; }
+    double get_x () const { return m_x; }
 
     void set_xdata (const std::vector<double>& x) { m_xdata = x; }
 
-    std::vector<double> get_xdata (void) const { return m_xdata; }
+    std::vector<double> get_xdata () const { return m_xdata; }
 
     void set_y (const double y) { m_y = y; }
 
-    double get_y (void) const { return m_y; }
+    double get_y () const { return m_y; }
 
     void set_z (const double z) { m_z = z; }
 
-    double get_z (void) const { return m_z; }
+    double get_z () const { return m_z; }
 
     void set_code (const uint32_t code) { m_code = code; }
 
-    uint32_t get_code (void) const { return m_code; }
+    uint32_t get_code () const { return m_code; }
 
     void set_svg_element (const std::string& svg) { m_svg_element = svg; }
 
-    std::string get_svg_element (void) const { return m_svg_element; }
+    std::string get_svg_element () const { return m_svg_element; }
 
     void set_color (const uint8NDArray& c)
     {
@@ -213,7 +213,7 @@ public:
       m_color(2) = static_cast<double> (c(2)) / 255;
     }
 
-    Matrix get_color (void) const { return m_color; }
+    Matrix get_color () const { return m_color; }
 
   private:
 

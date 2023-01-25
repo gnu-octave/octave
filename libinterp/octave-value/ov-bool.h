@@ -54,7 +54,7 @@ octave_bool : public octave_base_scalar<bool>
 {
 public:
 
-  octave_bool (void)
+  octave_bool ()
     : octave_base_scalar<bool> (false) { }
 
   octave_bool (bool b)
@@ -63,13 +63,13 @@ public:
   octave_bool (const octave_bool& s)
     : octave_base_scalar<bool> (s) { }
 
-  ~octave_bool (void) = default;
+  ~octave_bool () = default;
 
-  octave_base_value * clone (void) const { return new octave_bool (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * clone () const { return new octave_bool (*this); }
+  octave_base_value * empty_clone () const
   { return new octave_bool_matrix (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -77,75 +77,75 @@ public:
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   { return octave::idx_vector (scalar); }
 
-  builtin_type_t builtin_type (void) const { return btyp_bool; }
+  builtin_type_t builtin_type () const { return btyp_bool; }
 
-  bool is_real_scalar (void) const { return true; }
+  bool is_real_scalar () const { return true; }
 
-  bool is_bool_scalar (void) const { return true; }
+  bool is_bool_scalar () const { return true; }
 
-  bool islogical (void) const { return true; }
+  bool islogical () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool isnumeric (void) const { return false; }
+  bool isnumeric () const { return false; }
 
-  bool is_true (void) const { return scalar; }
+  bool is_true () const { return scalar; }
 
   int8NDArray
-  int8_array_value (void) const
+  int8_array_value () const
   { return int8NDArray (dim_vector (1, 1), scalar); }
 
   int16NDArray
-  int16_array_value (void) const
+  int16_array_value () const
   { return int16NDArray (dim_vector (1, 1), scalar); }
 
   int32NDArray
-  int32_array_value (void) const
+  int32_array_value () const
   { return int32NDArray (dim_vector (1, 1), scalar); }
 
   int64NDArray
-  int64_array_value (void) const
+  int64_array_value () const
   { return int64NDArray (dim_vector (1, 1), scalar); }
 
   uint8NDArray
-  uint8_array_value (void) const
+  uint8_array_value () const
   { return uint8NDArray (dim_vector (1, 1), scalar); }
 
   uint16NDArray
-  uint16_array_value (void) const
+  uint16_array_value () const
   { return uint16NDArray (dim_vector (1, 1), scalar); }
 
   uint32NDArray
-  uint32_array_value (void) const
+  uint32_array_value () const
   { return uint32NDArray (dim_vector (1, 1), scalar); }
 
   uint64NDArray
-  uint64_array_value (void) const
+  uint64_array_value () const
   { return uint64NDArray (dim_vector (1, 1), scalar); }
 
   octave_int8
-  int8_scalar_value (void) const { return octave_int8 (scalar); }
+  int8_scalar_value () const { return octave_int8 (scalar); }
 
   octave_int16
-  int16_scalar_value (void) const { return octave_int16 (scalar); }
+  int16_scalar_value () const { return octave_int16 (scalar); }
 
   octave_int32
-  int32_scalar_value (void) const { return octave_int32 (scalar); }
+  int32_scalar_value () const { return octave_int32 (scalar); }
 
   octave_int64
-  int64_scalar_value (void) const { return octave_int64 (scalar); }
+  int64_scalar_value () const { return octave_int64 (scalar); }
 
   octave_uint8
-  uint8_scalar_value (void) const { return octave_uint8 (scalar); }
+  uint8_scalar_value () const { return octave_uint8 (scalar); }
 
   octave_uint16
-  uint16_scalar_value (void) const { return octave_uint16 (scalar); }
+  uint16_scalar_value () const { return octave_uint16 (scalar); }
 
   octave_uint32
-  uint32_scalar_value (void) const { return octave_uint32 (scalar); }
+  uint32_scalar_value () const { return octave_uint32 (scalar); }
 
   octave_uint64
-  uint64_scalar_value (void) const { return octave_uint64 (scalar); }
+  uint64_scalar_value () const { return octave_uint64 (scalar); }
 
   double double_value (bool = false) const { return scalar; }
 
@@ -209,18 +209,18 @@ public:
   boolNDArray bool_array_value (bool = false) const
   { return boolNDArray (dim_vector (1, 1), scalar); }
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   octave_value resize (const dim_vector& dv, bool fill = false) const;
 

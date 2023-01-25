@@ -66,13 +66,13 @@ extern OCTINTERP_API sig_handler *
 set_signal_handler (const char *signame, sig_handler *h,
                     bool restart_syscalls = true);
 
-extern OCTINTERP_API void install_signal_handlers (void);
+extern OCTINTERP_API void install_signal_handlers ();
 
-extern OCTINTERP_API void respond_to_pending_signals (void);
+extern OCTINTERP_API void respond_to_pending_signals ();
 
-extern OCTINTERP_API interrupt_handler catch_interrupts (void);
+extern OCTINTERP_API interrupt_handler catch_interrupts ();
 
-extern OCTINTERP_API interrupt_handler ignore_interrupts (void);
+extern OCTINTERP_API interrupt_handler ignore_interrupts ();
 
 extern OCTINTERP_API interrupt_handler
 set_interrupt_handler (const volatile interrupt_handler& h,

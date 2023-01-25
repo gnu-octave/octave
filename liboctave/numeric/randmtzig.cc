@@ -121,7 +121,7 @@
 
    === Mersenne Twister ===
    random initial state:
-   void init_mersenne_twister (void)
+   void init_mersenne_twister ()
 
    // 32-bit initial state:
    void init_mersenne_twister (uint32_t s)
@@ -135,18 +135,18 @@
    // restores state from array
    void set_mersenne_twister_state (uint32_t save[MT_N+1])
 
-   static uint32_t randmt (void)               returns 32-bit unsigned int
+   static uint32_t randmt ()               returns 32-bit unsigned int
 
    === inline generators ===
-   static uint32_t randi32 (void)   returns 32-bit unsigned int
-   static uint64_t randi53 (void)   returns 53-bit unsigned int
-   static uint64_t randi54 (void)   returns 54-bit unsigned int
-   static float randu24 (void)      returns 24-bit uniform in (0,1)
-   static double randu53 (void)     returns 53-bit uniform in (0,1)
+   static uint32_t randi32 ()   returns 32-bit unsigned int
+   static uint64_t randi53 ()   returns 53-bit unsigned int
+   static uint64_t randi54 ()   returns 54-bit unsigned int
+   static float randu24 ()      returns 24-bit uniform in (0,1)
+   static double randu53 ()     returns 53-bit uniform in (0,1)
 
-   double rand_uniform (void)       returns M-bit uniform in (0,1)
-   double rand_normal (void)        returns M-bit standard normal
-   double rand_exponential (void)   returns N-bit standard exponential
+   double rand_uniform ()       returns M-bit uniform in (0,1)
+   double rand_normal ()        returns M-bit standard normal
+   double rand_exponential ()   returns N-bit standard exponential
 
    === Array generators ===
    void rand_uniform (octave_idx_type, double [])
@@ -257,7 +257,7 @@ void init_mersenne_twister (const uint32_t *init_key, const int key_length)
   initf = 1;
 }
 
-void init_mersenne_twister (void)
+void init_mersenne_twister ()
 {
   uint32_t entropy[MT_N];
   int n = 0;
@@ -321,7 +321,7 @@ void get_mersenne_twister_state (uint32_t *save)
   save[MT_N] = left;
 }
 
-static void next_state (void)
+static void next_state ()
 {
   uint32_t *p = state;
   int j;
@@ -346,7 +346,7 @@ static void next_state (void)
 }
 
 /* generates a random number on [0,0xffffffff]-interval */
-static uint32_t randmt (void)
+static uint32_t randmt ()
 {
   uint32_t y;
 
@@ -366,7 +366,7 @@ static uint32_t randmt (void)
 /* Select which 32 bit generator to use */
 #define randi32 randmt
 
-static uint64_t randi53 (void)
+static uint64_t randi53 ()
 {
   const uint32_t lo = randi32 ();
   const uint32_t hi = randi32 () & 0x1FFFFF;
@@ -381,7 +381,7 @@ static uint64_t randi53 (void)
 #endif
 }
 
-static uint64_t randi54 (void)
+static uint64_t randi54 ()
 {
   const uint32_t lo = randi32 ();
   const uint32_t hi = randi32 () & 0x3FFFFF;
@@ -397,7 +397,7 @@ static uint64_t randi54 (void)
 }
 
 /* generates a random number on (0,1)-real-interval */
-static float randu24 (void)
+static float randu24 ()
 {
   uint32_t i;
 
@@ -411,7 +411,7 @@ static float randu24 (void)
 }
 
 /* generates a random number on (0,1) with 53-bit resolution */
-static double randu53 (void)
+static double randu53 ()
 {
   int32_t a, b;
 
@@ -428,7 +428,7 @@ static double randu53 (void)
 /* Determine mantissa for uniform doubles */
 template <>
 OCTAVE_API double
-rand_uniform<double> (void)
+rand_uniform<double> ()
 {
   return randu53 ();
 }
@@ -436,7 +436,7 @@ rand_uniform<double> (void)
 /* Determine mantissa for uniform floats */
 template <>
 OCTAVE_API float
-rand_uniform<float> (void)
+rand_uniform<float> ()
 {
   return randu24 ();
 }
@@ -503,7 +503,7 @@ static double we[ZIGGURAT_TABLE_SIZE], fe[ZIGGURAT_TABLE_SIZE];
   so I'm not going to try and optimize further.
 */
 
-void create_ziggurat_tables (void)
+void create_ziggurat_tables ()
 {
   int i;
   double x, x1;
@@ -582,7 +582,7 @@ void create_ziggurat_tables (void)
  */
 
 
-template <> OCTAVE_API double rand_normal<double> (void)
+template <> OCTAVE_API double rand_normal<double> ()
 {
                                                    if (initt)
                                                    create_ziggurat_tables ();
@@ -646,7 +646,7 @@ template <> OCTAVE_API double rand_normal<double> (void)
     }
 }
 
-template <> OCTAVE_API double rand_exponential<double> (void)
+template <> OCTAVE_API double rand_exponential<double> ()
 {
                                                         if (initt)
                                                         create_ziggurat_tables ();
@@ -674,17 +674,17 @@ template <> OCTAVE_API double rand_exponential<double> (void)
 
 template <> OCTAVE_API void rand_uniform<double> (octave_idx_type n, double *p)
 {
-                                                  std::generate_n (p, n, [](void) { return rand_uniform<double> (); });
+                                                  std::generate_n (p, n, []() { return rand_uniform<double> (); });
 }
 
 template <> OCTAVE_API void rand_normal (octave_idx_type n, double *p)
 {
-                                         std::generate_n (p, n, [](void) { return rand_normal<double> (); });
+                                         std::generate_n (p, n, []() { return rand_normal<double> (); });
 }
 
 template <> OCTAVE_API void rand_exponential (octave_idx_type n, double *p)
 {
-                                              std::generate_n (p, n, [](void) { return rand_exponential<double> (); });
+                                              std::generate_n (p, n, []() { return rand_exponential<double> (); });
 }
 
 #undef ZIGINT
@@ -706,7 +706,7 @@ static float fwi[ZIGGURAT_TABLE_SIZE], ffi[ZIGGURAT_TABLE_SIZE];
 static ZIGINT fke[ZIGGURAT_TABLE_SIZE];
 static float fwe[ZIGGURAT_TABLE_SIZE], ffe[ZIGGURAT_TABLE_SIZE];
 
-static void create_ziggurat_float_tables (void)
+static void create_ziggurat_float_tables ()
 {
   int i;
   float x, x1;
@@ -784,7 +784,7 @@ static void create_ziggurat_float_tables (void)
  * distribution is exp(-0.5*x*x)
  */
 
-template <> OCTAVE_API float rand_normal<float> (void)
+template <> OCTAVE_API float rand_normal<float> ()
 {
                                                  if (inittf)
                                                  create_ziggurat_float_tables ();
@@ -824,7 +824,7 @@ template <> OCTAVE_API float rand_normal<float> (void)
     }
 }
 
-template <> OCTAVE_API float rand_exponential<float> (void)
+template <> OCTAVE_API float rand_exponential<float> ()
 {
                                                       if (inittf)
                                                       create_ziggurat_float_tables ();
@@ -852,17 +852,17 @@ template <> OCTAVE_API float rand_exponential<float> (void)
 
 template <> OCTAVE_API void rand_uniform (octave_idx_type n, float *p)
 {
-                                          std::generate_n (p, n, [](void) { return rand_uniform<float> (); });
+                                          std::generate_n (p, n, []() { return rand_uniform<float> (); });
 }
 
 template <> OCTAVE_API void rand_normal (octave_idx_type n, float *p)
 {
-                                         std::generate_n (p, n, [](void) { return rand_normal<float> (); });
+                                         std::generate_n (p, n, []() { return rand_normal<float> (); });
 }
 
 template <> OCTAVE_API void rand_exponential (octave_idx_type n, float *p)
 {
-                                              std::generate_n (p, n, [](void) { return rand_exponential<float> (); });
+                                              std::generate_n (p, n, []() { return rand_exponential<float> (); });
 }
 
 OCTAVE_END_NAMESPACE(octave)

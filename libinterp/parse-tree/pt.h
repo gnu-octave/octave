@@ -55,11 +55,11 @@ public:
 
   tree& operator = (const tree&) = delete;
 
-  virtual ~tree (void) = default;
+  virtual ~tree () = default;
 
-  virtual int line (void) const { return m_line_num; }
+  virtual int line () const { return m_line_num; }
 
-  virtual int column (void) const { return m_column_num; }
+  virtual int column () const { return m_column_num; }
 
   void line (int l) { m_line_num = l; }
 
@@ -79,7 +79,7 @@ public:
       m_bp_cond = new std::string (condition);
   }
 
-  virtual void delete_breakpoint (void)
+  virtual void delete_breakpoint ()
   {
     if (m_bp_cond)
       {
@@ -91,7 +91,7 @@ public:
 
   bool meets_bp_condition (tree_evaluator& tw) const;
 
-  bool is_breakpoint (void) const
+  bool is_breakpoint () const
   {
     return m_bp_cond;
   }
@@ -103,12 +103,12 @@ public:
 
   // breakpoint condition, or "0" (i.e., "false") if no breakpoint.
   // To distinguish "0" from a disabled breakpoint, test "is_breakpoint" too.
-  const std::string bp_cond (void) const
+  const std::string bp_cond () const
   {
     return m_bp_cond ? *m_bp_cond : "0";
   }
 
-  std::string str_print_code (void);
+  std::string str_print_code ();
 
   virtual void accept (tree_walker& tw) = 0;
 

@@ -36,19 +36,19 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-text_renderer::text_renderer (void)
+text_renderer::text_renderer ()
   : m_rep (make_ft_text_renderer ()),
     m_latex_rep (make_latex_text_renderer ())
 { }
 
-text_renderer::~text_renderer (void)
+text_renderer::~text_renderer ()
 {
   delete m_rep;
   delete m_latex_rep;
 }
 
 bool
-text_renderer::ok (void) const
+text_renderer::ok () const
 {
   static bool warned = false;
 
@@ -96,7 +96,7 @@ text_renderer::set_anti_aliasing (bool val)
 }
 
 octave_map
-text_renderer::get_system_fonts (void)
+text_renderer::get_system_fonts ()
 {
   octave_map retval;
 

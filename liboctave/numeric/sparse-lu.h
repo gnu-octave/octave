@@ -52,7 +52,7 @@ public:
 
   typedef typename lu_type::element_type lu_elt_type;
 
-  sparse_lu (void)
+  sparse_lu ()
     : m_L (), m_U (), m_R (), m_cond (0), m_P (), m_Q () { }
 
   OCTAVE_API
@@ -84,33 +84,33 @@ public:
     return *this;
   }
 
-  virtual ~sparse_lu (void) = default;
+  virtual ~sparse_lu () = default;
 
-  lu_type L (void) const { return m_L; }
+  lu_type L () const { return m_L; }
 
-  lu_type U (void) const { return m_U; }
+  lu_type U () const { return m_U; }
 
-  SparseMatrix R (void) const { return m_R; }
+  SparseMatrix R () const { return m_R; }
 
-  OCTAVE_API lu_type Y (void) const;
+  OCTAVE_API lu_type Y () const;
 
-  OCTAVE_API SparseMatrix Pc (void) const;
+  OCTAVE_API SparseMatrix Pc () const;
 
-  OCTAVE_API SparseMatrix Pr (void) const;
+  OCTAVE_API SparseMatrix Pr () const;
 
-  OCTAVE_API ColumnVector Pc_vec (void) const;
+  OCTAVE_API ColumnVector Pc_vec () const;
 
-  OCTAVE_API ColumnVector Pr_vec (void) const;
+  OCTAVE_API ColumnVector Pr_vec () const;
 
-  OCTAVE_API PermMatrix Pc_mat (void) const;
+  OCTAVE_API PermMatrix Pc_mat () const;
 
-  OCTAVE_API PermMatrix Pr_mat (void) const;
+  OCTAVE_API PermMatrix Pr_mat () const;
 
-  const octave_idx_type * row_perm (void) const { return m_P.data (); }
+  const octave_idx_type * row_perm () const { return m_P.data (); }
 
-  const octave_idx_type * col_perm (void) const { return m_Q.data (); }
+  const octave_idx_type * col_perm () const { return m_Q.data (); }
 
-  double rcond (void) const { return m_cond; }
+  double rcond () const { return m_cond; }
 
 protected:
 

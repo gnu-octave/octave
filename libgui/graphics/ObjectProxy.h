@@ -44,19 +44,19 @@ public:
   ObjectProxy (Object *obj = nullptr);
 
   void update (int pId);
-  void finalize (void);
-  void redraw (void);
-  void show (void);
+  void finalize ();
+  void redraw ();
+  void show ();
   void print (const QString& file_cmd, const QString& term);
-  uint8NDArray get_pixels (void);
+  uint8NDArray get_pixels ();
 
-  Object * object (void) { return m_object; }
+  Object * object () { return m_object; }
   void setObject (Object *obj);
 
 signals:
   void sendUpdate (int pId);
-  void sendRedraw (void);
-  void sendShow (void);
+  void sendRedraw ();
+  void sendShow ();
 
 private:
   void init (Object *obj);

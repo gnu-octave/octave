@@ -46,7 +46,7 @@ static const char *usage_string =
 // Usage message with extra help.
 
 static void
-octave_print_verbose_usage_and_exit (void)
+octave_print_verbose_usage_and_exit ()
 {
   std::cout << octave_name_version_copyright_copying_and_warranty ()
             << "\n\
@@ -103,7 +103,7 @@ Options:\n\
 // Terse usage message.
 
 static void
-octave_print_terse_usage_and_exit (void)
+octave_print_terse_usage_and_exit ()
 {
   std::cerr << "\nusage: " << usage_string << "\n\n";
 
@@ -111,7 +111,7 @@ octave_print_terse_usage_and_exit (void)
 }
 
 static void
-octave_print_version_and_exit (void)
+octave_print_version_and_exit ()
 {
   std::cout << octave_name_version_copyright_copying_warranty_and_bugs ()
             << "\n";

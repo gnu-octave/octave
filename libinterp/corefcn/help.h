@@ -59,7 +59,7 @@ public:
   built_in_docstrings_file (const octave_value_list& args, int nargout);
 
   std::string
-  built_in_docstrings_file (void) const { return m_built_in_docstrings_file; }
+  built_in_docstrings_file () const { return m_built_in_docstrings_file; }
 
   std::string built_in_docstrings_file (const std::string& file)
   {
@@ -68,7 +68,7 @@ public:
 
   octave_value doc_cache_file (const octave_value_list& args, int nargout);
 
-  std::string doc_cache_file (void) const { return m_doc_cache_file; }
+  std::string doc_cache_file () const { return m_doc_cache_file; }
 
   std::string doc_cache_file (const std::string& file)
   {
@@ -77,7 +77,7 @@ public:
 
   octave_value info_file (const octave_value_list& args, int nargout);
 
-  std::string info_file (void) const { return m_info_file; }
+  std::string info_file () const { return m_info_file; }
 
   std::string info_file (const std::string& file)
   {
@@ -86,7 +86,7 @@ public:
 
   octave_value info_program (const octave_value_list& args, int nargout);
 
-  std::string info_program (void) const { return m_info_program; }
+  std::string info_program () const { return m_info_program; }
 
   std::string info_program (const std::string& file)
   {
@@ -95,7 +95,7 @@ public:
 
   octave_value makeinfo_program (const octave_value_list& args, int nargout);
 
-  std::string makeinfo_program (void) const { return m_makeinfo_program; }
+  std::string makeinfo_program () const { return m_makeinfo_program; }
 
   std::string makeinfo_program (const std::string& file)
   {
@@ -105,7 +105,7 @@ public:
   octave_value
   suppress_verbose_help_message (const octave_value_list& args, int nargout);
 
-  bool suppress_verbose_help_message (void) const
+  bool suppress_verbose_help_message () const
   {
     return m_suppress_verbose_help_message;
   }
@@ -117,7 +117,7 @@ public:
 
   octave_value texi_macros_file (const octave_value_list& args, int nargout);
 
-  std::string texi_macros_file (void) const { return m_texi_macros_file; }
+  std::string texi_macros_file () const { return m_texi_macros_file; }
 
   std::string texi_macros_file (const std::string& file)
   {
@@ -129,7 +129,7 @@ public:
   std::string which (const std::string& name) const;
   std::string which (const std::string& name, std::string& type) const;
 
-  string_vector make_name_list (void) const;
+  string_vector make_name_list () const;
 
   void get_help_text (const std::string& name, std::string& text,
                       std::string& format) const;
@@ -169,15 +169,15 @@ private:
   // (--texi-macros-file)
   std::string m_texi_macros_file;
 
-  static std::string init_built_in_docstrings_file (void);
+  static std::string init_built_in_docstrings_file ();
 
-  static std::string init_doc_cache_file (void);
+  static std::string init_doc_cache_file ();
 
-  static std::string init_info_file (void);
+  static std::string init_info_file ();
 
-  static std::string init_info_program (void);
+  static std::string init_info_program ();
 
-  static std::string init_texi_macros_file (void);
+  static std::string init_texi_macros_file ();
 
   template <typename T>
   T set (T& var, const T& new_val)
@@ -187,7 +187,7 @@ private:
     return old_val;
   }
 
-  string_vector local_functions (void) const;
+  string_vector local_functions () const;
 
   bool raw_help_from_symbol_table (const std::string& nm,
                                    std::string& h, std::string& w,
@@ -201,7 +201,7 @@ private:
                                       bool& symbol_found) const;
 };
 
-extern string_vector make_name_list (void);
+extern string_vector make_name_list ();
 
 OCTAVE_END_NAMESPACE(octave)
 

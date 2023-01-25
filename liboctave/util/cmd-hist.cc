@@ -61,40 +61,40 @@ gnu_history : public command_history
 {
 public:
 
-  gnu_history (void)
+  gnu_history ()
     : command_history (), mark (0) { }
 
-  ~gnu_history (void) = default;
+  ~gnu_history () = default;
 
   void do_process_histcontrol (const std::string&);
 
-  std::string do_histcontrol (void) const;
+  std::string do_histcontrol () const;
 
   bool do_add (const std::string&);
 
   void do_remove (int);
 
-  void do_clear (void);
+  void do_clear ();
 
-  int do_where (void) const;
+  int do_where () const;
 
-  int do_length (void) const;
+  int do_length () const;
 
-  int do_max_input_history (void) const;
+  int do_max_input_history () const;
 
-  int do_base (void) const;
+  int do_base () const;
 
-  int do_current_number (void) const;
+  int do_current_number () const;
 
   void do_stifle (int);
 
-  int do_unstifle (void);
+  int do_unstifle ();
 
-  int do_is_stifled (void) const;
+  int do_is_stifled () const;
 
   void do_set_mark (int);
 
-  int do_goto_mark (void);
+  int do_goto_mark ();
 
   void do_read (const std::string&, bool);
 
@@ -160,7 +160,7 @@ gnu_history::do_process_histcontrol (const std::string& control_arg)
 }
 
 std::string
-gnu_history::do_histcontrol (void) const
+gnu_history::do_histcontrol () const
 {
   // FIXME: instead of reconstructing this value, should we just save
   // the string we were given when constructing the command_history object?
@@ -217,37 +217,37 @@ gnu_history::do_remove (int n)
 }
 
 void
-gnu_history::do_clear (void)
+gnu_history::do_clear ()
 {
   ::octave_clear_history ();
 }
 
 int
-gnu_history::do_where (void) const
+gnu_history::do_where () const
 {
   return ::octave_where_history ();
 }
 
 int
-gnu_history::do_length (void) const
+gnu_history::do_length () const
 {
   return ::octave_history_length ();
 }
 
 int
-gnu_history::do_max_input_history (void) const
+gnu_history::do_max_input_history () const
 {
   return ::octave_max_input_history ();
 }
 
 int
-gnu_history::do_base (void) const
+gnu_history::do_base () const
 {
   return ::octave_history_base ();
 }
 
 int
-gnu_history::do_current_number (void) const
+gnu_history::do_current_number () const
 {
   return m_size > 0 ? do_base () + do_where () : -1;
 }
@@ -259,13 +259,13 @@ gnu_history::do_stifle (int n)
 }
 
 int
-gnu_history::do_unstifle (void)
+gnu_history::do_unstifle ()
 {
   return ::octave_unstifle_history ();
 }
 
 int
-gnu_history::do_is_stifled (void) const
+gnu_history::do_is_stifled () const
 {
   return ::octave_history_is_stifled ();
 }
@@ -277,7 +277,7 @@ gnu_history::do_set_mark (int n)
 }
 
 int
-gnu_history::do_goto_mark (void)
+gnu_history::do_goto_mark ()
 {
   if (mark)
     {
@@ -512,7 +512,7 @@ gnu_history::do_clean_up_and_save (const std::string& f_arg, int n)
 #endif
 
 bool
-command_history::instance_ok (void)
+command_history::instance_ok ()
 {
   bool retval = true;
 
@@ -532,7 +532,7 @@ command_history::instance_ok (void)
 }
 
 void
-command_history::make_command_history (void)
+command_history::make_command_history ()
 {
 #if defined (USE_READLINE)
   s_instance = new gnu_history ();
@@ -551,7 +551,7 @@ command_history::initialize (bool read_history_file,
 }
 
 bool
-command_history::is_initialized (void)
+command_history::is_initialized ()
 {
   // We just want to check the status of an existing instance, not
   // create one.
@@ -570,7 +570,7 @@ command_history::set_file (const std::string& f_arg)
 }
 
 std::string
-command_history::file (void)
+command_history::file ()
 {
   return instance_ok () ? s_instance->do_file () : "";
 }
@@ -583,7 +583,7 @@ command_history::process_histcontrol (const std::string& control_arg)
 }
 
 std::string
-command_history::histcontrol (void)
+command_history::histcontrol ()
 {
   return instance_ok () ? s_instance->do_histcontrol () : "";
 }
@@ -596,7 +596,7 @@ command_history::set_size (int n)
 }
 
 int
-command_history::size (void)
+command_history::size ()
 {
   return instance_ok () ? s_instance->do_size () : 0;
 }
@@ -609,7 +609,7 @@ command_history::ignore_entries (bool flag)
 }
 
 bool
-command_history::ignoring_entries (void)
+command_history::ignoring_entries ()
 {
   return instance_ok () ? s_instance->do_ignoring_entries () : false;
 }
@@ -630,38 +630,38 @@ command_history::remove (int n)
 }
 
 void
-command_history::clear (void)
+command_history::clear ()
 {
   if (instance_ok ())
     s_instance->do_clear ();
 }
 
 int
-command_history::where (void)
+command_history::where ()
 {
   return instance_ok () ? s_instance->do_where () : 0;
 }
 
 int
-command_history::length (void)
+command_history::length ()
 {
   return instance_ok () ? s_instance->do_length () : 0;
 }
 
 int
-command_history::max_input_history (void)
+command_history::max_input_history ()
 {
   return instance_ok () ? s_instance->do_max_input_history () : 0;
 }
 
 int
-command_history::base (void)
+command_history::base ()
 {
   return instance_ok () ? s_instance->do_base () : 0;
 }
 
 int
-command_history::current_number (void)
+command_history::current_number ()
 {
   return instance_ok () ? s_instance->do_current_number () : 0;
 }
@@ -674,13 +674,13 @@ command_history::stifle (int n)
 }
 
 int
-command_history::unstifle (void)
+command_history::unstifle ()
 {
   return instance_ok () ? s_instance->do_unstifle () : 0;
 }
 
 int
-command_history::is_stifled (void)
+command_history::is_stifled ()
 {
   return instance_ok () ? s_instance->do_is_stifled () : 0;
 }
@@ -693,7 +693,7 @@ command_history::set_mark (int n)
 }
 
 int
-command_history::goto_mark (void)
+command_history::goto_mark ()
 {
   return instance_ok () ? s_instance->do_goto_mark () : 0;
 }
@@ -793,7 +793,7 @@ command_history::do_initialize (bool read_history_file,
 }
 
 bool
-command_history::do_is_initialized (void) const
+command_history::do_is_initialized () const
 {
   return m_initialized;
 }
@@ -805,7 +805,7 @@ command_history::do_set_file (const std::string& f)
 }
 
 std::string
-command_history::do_file (void)
+command_history::do_file ()
 {
   return m_file;
 }
@@ -817,7 +817,7 @@ command_history::do_set_size (int n)
 }
 
 int
-command_history::do_size (void) const
+command_history::do_size () const
 {
   return m_size;
 }
@@ -829,7 +829,7 @@ command_history::do_ignore_entries (bool flag)
 }
 
 bool
-command_history::do_ignoring_entries (void) const
+command_history::do_ignoring_entries () const
 {
   return m_ignoring_additions;
 }
@@ -845,35 +845,35 @@ command_history::do_remove (int)
 { }
 
 void
-command_history::do_clear (void)
+command_history::do_clear ()
 { }
 
 int
-command_history::do_where (void) const
+command_history::do_where () const
 {
   return 0;
 }
 
 int
-command_history::do_length (void) const
+command_history::do_length () const
 {
   return 0;
 }
 
 int
-command_history::do_max_input_history (void) const
+command_history::do_max_input_history () const
 {
   return 0;
 }
 
 int
-command_history::do_base (void) const
+command_history::do_base () const
 {
   return 0;
 }
 
 int
-command_history::do_current_number (void) const
+command_history::do_current_number () const
 {
   return m_size > 0 ? do_base () + do_where () : -1;
 }
@@ -883,13 +883,13 @@ command_history::do_stifle (int)
 { }
 
 int
-command_history::do_unstifle (void)
+command_history::do_unstifle ()
 {
   return -1;
 }
 
 int
-command_history::do_is_stifled (void) const
+command_history::do_is_stifled () const
 {
   return 0;
 }
@@ -899,7 +899,7 @@ command_history::do_set_mark (int)
 { }
 
 int
-command_history::do_goto_mark (void)
+command_history::do_goto_mark ()
 {
   return 0;
 }

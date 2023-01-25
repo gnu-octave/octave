@@ -2232,7 +2232,7 @@ AC_DEFUN([OCTAVE_CXX_COMPLEX_REFERENCE_ACCESSORS], [
   ])
   if test $octave_cv_cxx_complex_reference_accessors = yes; then
     AC_DEFINE(HAVE_CXX_COMPLEX_REFERENCE_ACCESSORS, 1,
-      [Define to 1 if C++ complex class has T& real (void) and T& imag (void) methods.])
+      [Define to 1 if C++ complex class has T& real () and T& imag () methods.])
   fi
 ])
 dnl

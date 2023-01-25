@@ -144,7 +144,7 @@ public:
 #endif
   }
 
-  ~OpenGL_fltk (void) = default;
+  ~OpenGL_fltk () = default;
 
   void zoom (bool z)
   {
@@ -153,7 +153,7 @@ public:
       hide_overlay ();
   }
 
-  bool zoom (void) { return m_in_zoom; }
+  bool zoom () { return m_in_zoom; }
   void set_zoom_box (const Matrix& zb) { m_zoom_box = zb; }
 
   void print (const std::string& cmd, const std::string& term)
@@ -163,7 +163,7 @@ public:
     octave::gl2ps_print (m_glfcns, gh_mgr.get_object (m_number), cmd, term);
   }
 
-  uint8NDArray get_pixels (void)
+  uint8NDArray get_pixels ()
   {
     gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -218,7 +218,7 @@ private:
   // (x1,y1,x2,y2)
   Matrix m_zoom_box;
 
-  void draw (void)
+  void draw ()
   {
 #if defined (HAVE_OPENGL)
 
@@ -246,7 +246,7 @@ private:
 #endif
   }
 
-  void overlay (void)
+  void overlay ()
   {
     Matrix overlaycolor (3, 1);
     overlaycolor(0) = 0.45;
@@ -307,7 +307,7 @@ public:
     : m_menubar (new Fl_Menu_Bar (xx, yy, ww, hh))
   { }
 
-  int items_to_show (void)
+  int items_to_show ()
   {
     //returns the number of visible menu items
     int len = m_menubar->size ();
@@ -324,19 +324,19 @@ public:
     return n;
   }
 
-  void show (void)
+  void show ()
   {
     m_menubar->show ();
     m_menubar->redraw ();
   }
 
-  void hide (void)
+  void hide ()
   {
     m_menubar->hide ();
     m_menubar->redraw ();
   }
 
-  bool is_visible (void)
+  bool is_visible ()
   {
     return m_menubar->visible ();
   }
@@ -757,7 +757,7 @@ public:
 
   fltk_uimenu operator = (const fltk_uimenu&) = delete;
 
-  ~fltk_uimenu (void)
+  ~fltk_uimenu ()
   {
     // FLTK is supposed to manage memory for widgets.
   }
@@ -888,7 +888,7 @@ public:
 
   plot_window& operator = (const plot_window&) = delete;
 
-  ~plot_window (void)
+  ~plot_window ()
   {
     this->hide ();
     Fl::check ();
@@ -898,7 +898,7 @@ public:
     // FLTK is supposed to manage memory for widgets.
   }
 
-  double number (void) { return m_fp.get___myhandle__ ().value (); }
+  double number () { return m_fp.get___myhandle__ ().value (); }
 
   void renumber (double new_number)
   {
@@ -919,13 +919,13 @@ public:
     return m_canvas->get_pixels ();
   }
 
-  void show_menubar (void)
+  void show_menubar ()
   {
     m_uimenu->show ();
     update_toolbar_position ();
   }
 
-  void hide_menubar (void)
+  void hide_menubar ()
   {
     m_uimenu->hide ();
     update_toolbar_position ();
@@ -996,7 +996,7 @@ public:
       }
   }
 
-  void show_canvas (void)
+  void show_canvas ()
   {
     if (! m_canvas->can_do ())
       error ("unable to plot due to insufficient OpenGL support");
@@ -1007,7 +1007,7 @@ public:
       }
   }
 
-  void hide_canvas (void)
+  void hide_canvas ()
   {
     m_canvas->hide ();
   }
@@ -1065,12 +1065,12 @@ public:
     resize (bb(0), bb(1), bb(2), bb(3));
   }
 
-  void mark_modified (void)
+  void mark_modified ()
   {
     m_canvas->redraw ();
   }
 
-  void set_name (void)
+  void set_name ()
   {
     m_window_label = m_fp.get_title ();
     label (m_window_label.c_str ());
@@ -1168,7 +1168,7 @@ private:
       }
   }
 
-  void axis_auto (void)
+  void axis_auto ()
   {
     octave_value_list args;
     if (m_fp.get_currentaxes ().ok ())
@@ -1184,7 +1184,7 @@ private:
       }
   }
 
-  void toggle_grid (void)
+  void toggle_grid ()
   {
     interpreter& interp = __get_interpreter__ ();
 
@@ -1475,7 +1475,7 @@ private:
     m_fp.set_boundingbox (outerposition2position (bb), true, false);
   }
 
-  bool pan_enabled (void)
+  bool pan_enabled ()
   {
     // Getting pan mode property:
     octave_value ov_pm = m_fp.get___pan_mode__ ();
@@ -1485,7 +1485,7 @@ private:
     return pm.contents ("Enable").string_value () == "on";
   }
 
-  std::string pan_mode (void)
+  std::string pan_mode ()
   {
     // Getting pan mode property:
     octave_value ov_pm = m_fp.get___pan_mode__ ();
@@ -1495,7 +1495,7 @@ private:
     return pm.contents ("Motion").string_value ();
   }
 
-  bool rotate_enabled (void)
+  bool rotate_enabled ()
   {
     // Getting rotate mode property:
     octave_value ov_rm = m_fp.get___rotate_mode__ ();
@@ -1880,7 +1880,7 @@ class figure_manager
 {
 private:
 
-  figure_manager (void) = default;
+  figure_manager () = default;
 
 public:
 
@@ -1890,12 +1890,12 @@ public:
 
   figure_manager& operator = (const figure_manager&) = delete;
 
-  ~figure_manager (void)
+  ~figure_manager ()
   {
     close_all ();
   }
 
-  static bool instance_ok (void)
+  static bool instance_ok ()
   {
     bool retval = true;
 
@@ -1905,7 +1905,7 @@ public:
     return retval;
   }
 
-  static void close_all (void)
+  static void close_all ()
   {
     if (instance_ok ())
       instance->do_close_all ();
@@ -2039,7 +2039,7 @@ private:
 
   static std::string fltk_idx_header;
 
-  void do_close_all (void)
+  void do_close_all ()
   {
     wm_iterator win;
     for (win = windows.begin (); win != windows.end (); win++)
@@ -2280,9 +2280,9 @@ public:
     Fl::visual (FL_RGB);
   }
 
-  ~fltk_graphics_toolkit (void) = default;
+  ~fltk_graphics_toolkit () = default;
 
-  bool is_valid (void) const { return true; }
+  bool is_valid () const { return true; }
 
   bool initialize (const graphics_object& go)
   {
@@ -2449,7 +2449,7 @@ public:
   }
 
   /*
-    double get_screen_resolution (void) const
+    double get_screen_resolution () const
     {
       // FLTK doesn't give this info.
       return 72.0;
@@ -2459,7 +2459,7 @@ public:
     }
   */
 
-  Matrix get_screen_size (void) const
+  Matrix get_screen_size () const
   {
     Matrix sz (1, 2, 0.0);
     sz(0) = Fl::w ();
@@ -2467,7 +2467,7 @@ public:
     return sz;
   }
 
-  void close (void)
+  void close ()
   {
     if (toolkit_loaded)
       {

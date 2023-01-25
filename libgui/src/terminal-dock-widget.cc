@@ -141,27 +141,27 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       make_window ();
   }
 
-  bool terminal_dock_widget::has_focus (void) const
+  bool terminal_dock_widget::has_focus () const
   {
     QWidget *w = widget ();
     return w->hasFocus ();
   }
 
-  QTerminal * terminal_dock_widget::get_qterminal (void)
+  QTerminal * terminal_dock_widget::get_qterminal ()
   {
     return (m_experimental_terminal_widget
             ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
   }
 
 #if defined (HAVE_QSCINTILLA)
-  command_widget * terminal_dock_widget::get_command_widget (void)
+  command_widget * terminal_dock_widget::get_command_widget ()
   {
     return (m_experimental_terminal_widget
             ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
   }
 #endif
 
-  void terminal_dock_widget::notice_settings (void)
+  void terminal_dock_widget::notice_settings ()
   {
     emit settings_changed ();
   }
@@ -178,7 +178,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void terminal_dock_widget::init_control_d_shortcut_behavior (void)
+  void terminal_dock_widget::init_control_d_shortcut_behavior ()
   {
     gui_settings settings;
 

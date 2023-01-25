@@ -36,7 +36,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 graphics_toolkit
-gtk_manager::get_toolkit (void) const
+gtk_manager::get_toolkit () const
 {
   graphics_toolkit retval;
 

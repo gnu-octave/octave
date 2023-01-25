@@ -54,7 +54,7 @@ class compiled_fcn_stack_frame : public stack_frame
 {
 public:
 
-  compiled_fcn_stack_frame (void) = delete;
+  compiled_fcn_stack_frame () = delete;
 
   compiled_fcn_stack_frame (tree_evaluator& tw, octave_function *fcn,
                             std::size_t index,
@@ -70,16 +70,16 @@ public:
   compiled_fcn_stack_frame&
   operator = (const compiled_fcn_stack_frame& elt) = delete;
 
-  ~compiled_fcn_stack_frame (void) = default;
+  ~compiled_fcn_stack_frame () = default;
 
-  bool is_compiled_fcn_frame (void) const { return true; }
+  bool is_compiled_fcn_frame () const { return true; }
 
-  symbol_scope get_scope (void) const
+  symbol_scope get_scope () const
   {
     return m_static_link->get_scope ();
   }
 
-  octave_function * function (void) const { return m_fcn; }
+  octave_function * function () const { return m_fcn; }
 
   symbol_record lookup_symbol (const std::string& name) const
   {
@@ -175,7 +175,7 @@ class script_stack_frame : public stack_frame
 {
 public:
 
-  script_stack_frame (void) = delete;
+  script_stack_frame () = delete;
 
   script_stack_frame (tree_evaluator& tw, octave_user_script *script,
                       std::size_t index,
@@ -186,36 +186,36 @@ public:
 
   script_stack_frame& operator = (const script_stack_frame& elt) = delete;
 
-  ~script_stack_frame (void)
+  ~script_stack_frame ()
   {
     delete m_unwind_protect_frame;
   }
 
-  bool is_user_script_frame (void) const { return true; }
+  bool is_user_script_frame () const { return true; }
 
   static std::shared_ptr<stack_frame>
   get_access_link (const std::shared_ptr<stack_frame>& static_link);
 
   static std::size_t get_num_symbols (octave_user_script *script);
 
-  void set_script_offsets (void);
+  void set_script_offsets ();
 
   void set_script_offsets_internal (const std::map<std::string,
                                     symbol_record>& symbols);
 
   void resize_and_update_script_offsets (const symbol_record& sym);
 
-  symbol_scope get_scope (void) const { return m_script->scope (); }
+  symbol_scope get_scope () const { return m_script->scope (); }
 
-  octave_function * function (void) const { return m_script; }
+  octave_function * function () const { return m_script; }
 
-  unwind_protect * unwind_protect_frame (void);
+  unwind_protect * unwind_protect_frame ();
 
   symbol_record lookup_symbol (const std::string& name) const;
 
   symbol_record insert_symbol (const std::string&);
 
-  std::size_t size (void) const { return m_lexical_frame_offsets.size (); }
+  std::size_t size () const { return m_lexical_frame_offsets.size (); }
 
   void resize (std::size_t size)
   {
@@ -288,7 +288,7 @@ class base_value_stack_frame : public stack_frame
 {
 public:
 
-  base_value_stack_frame (void) = delete;
+  base_value_stack_frame () = delete;
 
   base_value_stack_frame (tree_evaluator& tw, std::size_t num_symbols,
                           std::size_t index,
@@ -306,9 +306,9 @@ public:
   base_value_stack_frame&
   operator = (const base_value_stack_frame& elt) = delete;
 
-  ~base_value_stack_frame (void) = default;
+  ~base_value_stack_frame () = default;
 
-  std::size_t size (void) const
+  std::size_t size () const
   {
     return m_values.size ();
   }
@@ -394,7 +394,7 @@ class user_fcn_stack_frame : public base_value_stack_frame
 {
 public:
 
-  user_fcn_stack_frame (void) = delete;
+  user_fcn_stack_frame () = delete;
 
   user_fcn_stack_frame (tree_evaluator& tw, octave_user_function *fcn,
                         std::size_t index,
@@ -433,12 +433,12 @@ public:
   user_fcn_stack_frame&
   operator = (const user_fcn_stack_frame& elt) = delete;
 
-  ~user_fcn_stack_frame (void)
+  ~user_fcn_stack_frame ()
   {
     delete m_unwind_protect_frame;
   }
 
-  bool is_user_fcn_frame (void) const { return true; }
+  bool is_user_fcn_frame () const { return true; }
 
   static std::shared_ptr<stack_frame>
   get_access_link (octave_user_function *fcn,
@@ -451,13 +451,13 @@ public:
     return fcn_scope.num_symbols ();
   }
 
-  void clear_values (void);
+  void clear_values ();
 
-  symbol_scope get_scope (void) const { return m_fcn->scope (); }
+  symbol_scope get_scope () const { return m_fcn->scope (); }
 
-  octave_function * function (void) const { return m_fcn; }
+  octave_function * function () const { return m_fcn; }
 
-  unwind_protect * unwind_protect_frame (void);
+  unwind_protect * unwind_protect_frame ();
 
   symbol_record lookup_symbol (const std::string& name) const;
 
@@ -505,7 +505,7 @@ class scope_stack_frame : public base_value_stack_frame
 {
 public:
 
-  scope_stack_frame (void) = delete;
+  scope_stack_frame () = delete;
 
   scope_stack_frame (tree_evaluator& tw, const symbol_scope& scope,
                      std::size_t index,
@@ -520,11 +520,11 @@ public:
 
   scope_stack_frame& operator = (const scope_stack_frame& elt) = delete;
 
-  ~scope_stack_frame (void) = default;
+  ~scope_stack_frame () = default;
 
-  bool is_scope_frame (void) const { return true; }
+  bool is_scope_frame () const { return true; }
 
-  symbol_scope get_scope (void) const { return m_scope; }
+  symbol_scope get_scope () const { return m_scope; }
 
   symbol_record lookup_symbol (const std::string& name) const
   {
@@ -588,9 +588,9 @@ class stack_frame_walker
 {
 protected:
 
-  stack_frame_walker (void) { }
+  stack_frame_walker () { }
 
-  virtual ~stack_frame_walker (void) = default;
+  virtual ~stack_frame_walker () = default;
 
 public:
 
@@ -639,7 +639,7 @@ public:
 
   symbol_cleaner& operator = (const symbol_cleaner&) = delete;
 
-  ~symbol_cleaner (void) = default;
+  ~symbol_cleaner () = default;
 
   void visit_compiled_fcn_stack_frame (compiled_fcn_stack_frame& frame)
   {
@@ -800,9 +800,9 @@ public:
 
   symbol_info_accumulator& operator = (const symbol_info_accumulator&) = delete;
 
-  ~symbol_info_accumulator (void) = default;
+  ~symbol_info_accumulator () = default;
 
-  bool is_empty  (void) const
+  bool is_empty  () const
   {
     for (const auto& nm_sil : m_sym_inf_list)
       {
@@ -815,7 +815,7 @@ public:
     return true;
   }
 
-  std::list<std::string> names (void) const
+  std::list<std::string> names () const
   {
     std::list<std::string> retval;
 
@@ -832,7 +832,7 @@ public:
     return retval;
   }
 
-  symbol_info_list symbol_info (void) const
+  symbol_info_list symbol_info () const
   {
     symbol_info_list retval;
 
@@ -847,7 +847,7 @@ public:
     return retval;
   }
 
-  octave_map map_value (void) const
+  octave_map map_value () const
   {
     octave_map retval;
 
@@ -1089,7 +1089,7 @@ stack_frame *stack_frame::create (tree_evaluator& tw,
 // user_fcn stack frames.  Anything else indicates an error in the
 // implementation, but we'll simply warn if that happens.
 
-void stack_frame::clear_values (void)
+void stack_frame::clear_values ()
 {
   warning ("invalid call to stack_frame::clear_values; please report");
 }
@@ -1158,7 +1158,7 @@ octave_value stack_frame::who (const string_vector& patterns,
 // Return first occurrence of variables in current stack frame and any
 // parent frames reachable through access links.
 
-symbol_info_list stack_frame::all_variables (void)
+symbol_info_list stack_frame::all_variables ()
 {
   symbol_info_accumulator sia (true, true);
 
@@ -1167,7 +1167,7 @@ symbol_info_list stack_frame::all_variables (void)
   return sia.symbol_info ();
 }
 
-octave_value stack_frame::workspace (void)
+octave_value stack_frame::workspace ()
 {
   std::list<octave_scalar_map> ws_list;
 
@@ -1205,7 +1205,7 @@ octave_value stack_frame::workspace (void)
 // FIXME: Should this function also find any variables in parent
 // scopes accessible through access_links?
 
-std::list<std::string> stack_frame::variable_names (void) const
+std::list<std::string> stack_frame::variable_names () const
 {
   std::list<std::string> retval;
 
@@ -1242,7 +1242,7 @@ symbol_info_list stack_frame::regexp_symbol_info (const std::string& pattern)
   return sia.symbol_info ();
 }
 
-std::size_t stack_frame::size (void) const
+std::size_t stack_frame::size () const
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -1342,7 +1342,7 @@ octave_value& stack_frame::varref (std::size_t)
   panic_impossible ();
 }
 
-void stack_frame::clear_objects (void)
+void stack_frame::clear_objects ()
 {
   symbol_cleaner sc (true, true);
 
@@ -1384,7 +1384,7 @@ void stack_frame::clear_variable_regexp (const string_vector& patterns)
   accept (sc);
 }
 
-void stack_frame::clear_variables (void)
+void stack_frame::clear_variables ()
 {
   symbol_cleaner sc;
 
@@ -1491,7 +1491,7 @@ std::size_t script_stack_frame::get_num_symbols (octave_user_script *script)
   return script_scope.num_symbols ();
 }
 
-void script_stack_frame::set_script_offsets (void)
+void script_stack_frame::set_script_offsets ()
 {
   // Set frame and data offsets inside stack frame based on enclosing
   // scope(s).
@@ -1639,7 +1639,7 @@ script_stack_frame::get_access_link (const std::shared_ptr<stack_frame>& static_
   return alink;
 }
 
-unwind_protect *script_stack_frame::unwind_protect_frame (void)
+unwind_protect *script_stack_frame::unwind_protect_frame ()
 {
   if (! m_unwind_protect_frame)
     m_unwind_protect_frame = new unwind_protect ();
@@ -2131,7 +2131,7 @@ user_fcn_stack_frame::get_access_link (octave_user_function *fcn,
   return alink;
 }
 
-void user_fcn_stack_frame::clear_values (void)
+void user_fcn_stack_frame::clear_values ()
 {
   symbol_scope fcn_scope = m_fcn->scope ();
 
@@ -2165,7 +2165,7 @@ void user_fcn_stack_frame::clear_values (void)
     }
 }
 
-unwind_protect *user_fcn_stack_frame::unwind_protect_frame (void)
+unwind_protect *user_fcn_stack_frame::unwind_protect_frame ()
 {
   if (! m_unwind_protect_frame)
     m_unwind_protect_frame = new unwind_protect ();

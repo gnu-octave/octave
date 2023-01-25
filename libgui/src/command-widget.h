@@ -59,9 +59,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void cursor_position_changed (int line, int col);
 
-    void text_changed (void);
+    void text_changed ();
 
-    void move_cursor_to_end (void);
+    void move_cursor_to_end ();
 
     void new_command_line (const QString& command = QString ());
 
@@ -75,7 +75,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void append_string (const QString& string);
 
-    void accept_command_line (void);
+    void accept_command_line ();
 
     int m_command_position;
     int m_cursor_position;
@@ -97,15 +97,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void init_command_prompt ();
 
-    QString prompt (void);
+    QString prompt ();
 
   signals:
 
-    void clear_line_edit (void);
+    void clear_line_edit ();
 
-    void interpreter_pause (void);
-    void interpreter_resume (void);
-    void interpreter_stop (void);
+    void interpreter_pause ();
+    void interpreter_resume ();
+    void interpreter_stop ();
 
     void update_prompt_signal (const QString& prompt);
     void new_command_line_signal (const QString& command = QString ());
@@ -121,7 +121,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void insert_interpreter_output (const QString& msg);
 
-    void notice_settings (void);
+    void notice_settings ();
 
   private:
 

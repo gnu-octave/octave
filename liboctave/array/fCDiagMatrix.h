@@ -48,13 +48,13 @@ public:
   typedef FloatComplex complex_elt_type;
   typedef FloatComplex element_type;
 
-  FloatComplexDiagMatrix (void) = default;
+  FloatComplexDiagMatrix () = default;
 
   FloatComplexDiagMatrix (const FloatComplexDiagMatrix& a) = default;
 
   FloatComplexDiagMatrix& operator = (const FloatComplexDiagMatrix& a) = default;
 
-  ~FloatComplexDiagMatrix (void) = default;
+  ~FloatComplexDiagMatrix () = default;
 
   FloatComplexDiagMatrix (octave_idx_type r,
                           octave_idx_type c)
@@ -105,11 +105,11 @@ public:
   OCTAVE_API FloatComplexDiagMatrix&
   fill (const FloatComplexRowVector& a, octave_idx_type beg);
 
-  FloatComplexDiagMatrix hermitian (void) const
+  FloatComplexDiagMatrix hermitian () const
   { return MDiagArray2<FloatComplex>::hermitian (std::conj); }
-  FloatComplexDiagMatrix transpose (void) const
+  FloatComplexDiagMatrix transpose () const
   { return MDiagArray2<FloatComplex>::transpose (); }
-  OCTAVE_API FloatDiagMatrix abs (void) const;
+  OCTAVE_API FloatDiagMatrix abs () const;
 
   friend OCTAVE_API FloatComplexDiagMatrix
   conj (const FloatComplexDiagMatrix& a);
@@ -129,10 +129,10 @@ public:
   OCTAVE_API FloatComplexColumnVector column (char *s) const;
 
   OCTAVE_API FloatComplexDiagMatrix inverse (octave_idx_type& info) const;
-  OCTAVE_API FloatComplexDiagMatrix inverse (void) const;
+  OCTAVE_API FloatComplexDiagMatrix inverse () const;
   OCTAVE_API FloatComplexDiagMatrix pseudo_inverse (float tol = 0.0f) const;
 
-  OCTAVE_API bool all_elements_are_real (void) const;
+  OCTAVE_API bool all_elements_are_real () const;
 
   // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
@@ -144,8 +144,8 @@ public:
   FloatComplexColumnVector extract_diag (octave_idx_type k = 0) const
   { return MDiagArray2<FloatComplex>::extract_diag (k); }
 
-  OCTAVE_API FloatComplexDET determinant (void) const;
-  OCTAVE_API float rcond (void) const;
+  OCTAVE_API FloatComplexDET determinant () const;
+  OCTAVE_API float rcond () const;
 
   // i/o
 

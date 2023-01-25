@@ -50,7 +50,7 @@ octave_struct : public octave_base_value
 {
 public:
 
-  octave_struct (void)
+  octave_struct ()
     : octave_base_value (), m_map () { }
 
   octave_struct (const octave_map& m)
@@ -59,14 +59,14 @@ public:
   octave_struct (const octave_struct& s)
     : octave_base_value (), m_map (s.m_map) { }
 
-  ~octave_struct (void) = default;
+  ~octave_struct () = default;
 
-  octave_base_value * clone (void) const { return new octave_struct (*this); }
-  octave_base_value * empty_clone (void) const { return new octave_struct (); }
+  octave_base_value * clone () const { return new octave_struct (*this); }
+  octave_base_value * empty_clone () const { return new octave_struct (); }
 
   void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
   Cell dotref (const octave_value_list& idx, bool auto_add = false);
 
@@ -91,7 +91,7 @@ public:
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
-  octave_value squeeze (void) const { return m_map.squeeze (); }
+  octave_value squeeze () const { return m_map.squeeze (); }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
   { return m_map.permute (vec, inv); }
@@ -99,18 +99,18 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  dim_vector dims (void) const { return m_map.dims (); }
+  dim_vector dims () const { return m_map.dims (); }
 
-  std::size_t byte_size (void) const;
+  std::size_t byte_size () const;
 
   // This is the number of elements in each field.  The total number
   // of elements is numel () * nfields ().
-  octave_idx_type numel (void) const
+  octave_idx_type numel () const
   {
     return m_map.numel ();
   }
 
-  octave_idx_type nfields (void) const { return m_map.nfields (); }
+  octave_idx_type nfields () const { return m_map.nfields (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   { return m_map.reshape (new_dims); }
@@ -118,17 +118,17 @@ public:
   octave_value resize (const dim_vector& dv, bool fill = false) const
   { octave_map tmap = m_map; tmap.resize (dv, fill); return tmap; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool isstruct (void) const { return true; }
+  bool isstruct () const { return true; }
 
-  builtin_type_t builtin_type (void) const { return btyp_struct; }
+  builtin_type_t builtin_type () const { return btyp_struct; }
 
-  octave_map map_value (void) const { return m_map; }
+  octave_map map_value () const { return m_map; }
 
-  string_vector map_keys (void) const { return m_map.fieldnames (); }
+  string_vector map_keys () const { return m_map.fieldnames (); }
 
   bool isfield (const std::string& field_name) const
   { return m_map.isfield (field_name); }
@@ -178,7 +178,7 @@ octave_scalar_struct : public octave_base_value
 {
 public:
 
-  octave_scalar_struct (void)
+  octave_scalar_struct ()
     : octave_base_value (), m_map () { }
 
   octave_scalar_struct (const octave_scalar_map& m)
@@ -190,11 +190,11 @@ public:
   octave_scalar_struct (const octave_scalar_struct& s)
     : octave_base_value (), m_map (s.m_map) { }
 
-  ~octave_scalar_struct (void) = default;
+  ~octave_scalar_struct () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_scalar_struct (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_scalar_struct (); }
 
   void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
@@ -218,7 +218,7 @@ public:
                          const std::list<octave_value_list>& idx,
                          const octave_value& rhs);
 
-  octave_value squeeze (void) const { return m_map; }
+  octave_value squeeze () const { return m_map; }
 
   octave_value permute (const Array<int>& vec, bool inv = false) const
   { return octave_map (m_map).permute (vec, inv); }
@@ -226,18 +226,18 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  dim_vector dims (void) const { static dim_vector dv (1, 1); return dv; }
+  dim_vector dims () const { static dim_vector dv (1, 1); return dv; }
 
-  std::size_t byte_size (void) const;
+  std::size_t byte_size () const;
 
   // This is the number of elements in each field.  The total number
   // of elements is numel () * nfields ().
-  octave_idx_type numel (void) const
+  octave_idx_type numel () const
   {
     return 1;
   }
 
-  octave_idx_type nfields (void) const { return m_map.nfields (); }
+  octave_idx_type nfields () const { return m_map.nfields (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   { return octave_map (m_map).reshape (new_dims); }
@@ -245,19 +245,19 @@ public:
   octave_value resize (const dim_vector& dv, bool fill = false) const
   { octave_map tmap = m_map; tmap.resize (dv, fill); return tmap; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool isstruct (void) const { return true; }
+  bool isstruct () const { return true; }
 
-  builtin_type_t builtin_type (void) const { return btyp_struct; }
+  builtin_type_t builtin_type () const { return btyp_struct; }
 
-  octave_map map_value (void) const { return m_map; }
+  octave_map map_value () const { return m_map; }
 
-  octave_scalar_map scalar_map_value (void) const { return m_map; }
+  octave_scalar_map scalar_map_value () const { return m_map; }
 
-  string_vector map_keys (void) const { return m_map.fieldnames (); }
+  string_vector map_keys () const { return m_map.fieldnames (); }
 
   bool isfield (const std::string& field_name) const
   { return m_map.isfield (field_name); }
@@ -295,7 +295,7 @@ protected:
 
 private:
 
-  octave_value to_array (void);
+  octave_value to_array ();
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

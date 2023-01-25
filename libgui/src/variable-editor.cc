@@ -204,7 +204,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  variable_dock_widget::change_fullscreen (void)
+  variable_dock_widget::change_fullscreen ()
   {
     gui_settings settings;
 
@@ -328,7 +328,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  variable_dock_widget::unfloat_float (void)
+  variable_dock_widget::unfloat_float ()
   {
     hide ();
     setFloating (false);
@@ -339,7 +339,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  variable_dock_widget::refloat (void)
+  variable_dock_widget::refloat ()
   {
     setFloating (true);
     m_waiting_for_mouse_move = false;
@@ -352,11 +352,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #else
 
   void
-  variable_dock_widget::unfloat_float (void)
+  variable_dock_widget::unfloat_float ()
   { }
 
   void
-  variable_dock_widget::refloat (void)
+  variable_dock_widget::refloat ()
   { }
 
 #endif
@@ -423,7 +423,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  variable_editor_stack::levelUp (void)
+  variable_editor_stack::levelUp ()
   {
     if (! hasFocus ())
       return;
@@ -573,7 +573,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   QList<int>
-  variable_editor_view::range_selected (void)
+  variable_editor_view::range_selected ()
   {
     QItemSelectionModel *sel = selectionModel ();
 
@@ -813,7 +813,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor_view::createVariable (void)
+  variable_editor_view::createVariable ()
   {
     // FIXME: Create unnamed1..n if exist ('unnamed', 'var') is true.
 
@@ -821,7 +821,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor_view::transposeContent (void)
+  variable_editor_view::transposeContent ()
   {
     if (! hasFocus ())
       return;
@@ -830,7 +830,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor_view::delete_selected (void)
+  variable_editor_view::delete_selected ()
   {
     if (! hasFocus ())
       return;
@@ -860,7 +860,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor_view::clearContent (void)
+  variable_editor_view::clearContent ()
   {
     if (! hasFocus ())
       return;
@@ -878,7 +878,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor_view::cutClipboard (void)
+  variable_editor_view::cutClipboard ()
   {
     copyClipboard ();
 
@@ -886,7 +886,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor_view::copyClipboard (void)
+  variable_editor_view::copyClipboard ()
   {
     if (! hasFocus ())
       return;
@@ -917,7 +917,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor_view::pasteClipboard (void)
+  variable_editor_view::pasteClipboard ()
   {
     if (! hasFocus ())
       return;
@@ -1193,7 +1193,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
       }
   }
 
-  variable_editor::~variable_editor (void)
+  variable_editor::~variable_editor ()
   {
     // FIXME: Maybe toolbar actions could be handled with signals and
     // slots so that deleting the toolbar here would disconnect all
@@ -1378,7 +1378,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::tab_to_front (void)
+  variable_editor::tab_to_front ()
   {
     QWidget *parent = parentWidget ();
 
@@ -1403,7 +1403,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::refresh (void)
+  variable_editor::refresh ()
   {
     emit refresh_signal ();
   }
@@ -1415,7 +1415,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::notice_settings (void)
+  variable_editor::notice_settings ()
   {
     gui_settings settings;
 
@@ -1534,13 +1534,13 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::record_hovered_focus_variable (void)
+  variable_editor::record_hovered_focus_variable ()
   {
     m_hovered_focus_vname = m_current_focus_vname;
   }
 
   void
-  variable_editor::restore_hovered_focus_variable (void)
+  variable_editor::restore_hovered_focus_variable ()
   {
     variable_dock_widget *tofocus = findChild<variable_dock_widget *> (m_hovered_focus_vname);
     if (tofocus != nullptr)
@@ -1557,13 +1557,13 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::save (void)
+  variable_editor::save ()
   {
     emit save_signal ();
   }
 
   void
-  variable_editor::cutClipboard (void)
+  variable_editor::cutClipboard ()
   {
     copyClipboard ();
 
@@ -1571,13 +1571,13 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::copyClipboard (void)
+  variable_editor::copyClipboard ()
   {
     emit copy_clipboard_signal ();
   }
 
   void
-  variable_editor::pasteClipboard (void)
+  variable_editor::pasteClipboard ()
   {
     emit paste_clipboard_signal ();
 
@@ -1585,14 +1585,14 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::levelUp (void)
+  variable_editor::levelUp ()
   {
     emit level_up_signal ();
   }
 
   // Also updates the font.
 
-  void variable_editor::update_colors (void)
+  void variable_editor::update_colors ()
   {
     m_stylesheet = "";
 
@@ -1655,7 +1655,7 @@ variable_editor_view::variable_editor_view (QWidget *p)
   }
 
   void
-  variable_editor::construct_tool_bar (void)
+  variable_editor::construct_tool_bar ()
   {
     m_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
 

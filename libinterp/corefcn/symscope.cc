@@ -92,7 +92,7 @@ symbol_record symbol_scope_rep::insert (const std::string& name)
     return p->second;
 }
 
-std::list<octave_value> symbol_scope_rep::localfunctions (void) const
+std::list<octave_value> symbol_scope_rep::localfunctions () const
 {
   std::list<octave_value> retval;
 
@@ -130,7 +130,7 @@ std::list<octave_value> symbol_scope_rep::localfunctions (void) const
 }
 
 octave_value
-symbol_scope_rep::dump (void) const
+symbol_scope_rep::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "name", m_name },
@@ -145,7 +145,7 @@ symbol_scope_rep::dump (void) const
 }
 
 octave_value
-symbol_scope_rep::dump_symbols_map (void) const
+symbol_scope_rep::dump_symbols_map () const
 {
   std::map<std::string, octave_value> info_map;
 
@@ -159,7 +159,7 @@ symbol_scope_rep::dump_symbols_map (void) const
   return octave_value (info_map);
 }
 
-std::list<symbol_record> symbol_scope_rep::symbol_list (void) const
+std::list<symbol_record> symbol_scope_rep::symbol_list () const
 {
   std::list<symbol_record> retval;
 
@@ -198,7 +198,7 @@ symbol_scope_rep::mark_subfunctions_in_scope_as_private (const std::string& clas
 }
 
 std::list<std::string>
-symbol_scope_rep::parent_fcn_names (void) const
+symbol_scope_rep::parent_fcn_names () const
 {
   std::list<std::string> retval;
 
@@ -304,7 +304,7 @@ bool symbol_scope_rep::is_variable (const std::string& nm) const
   return false;
 }
 
-void symbol_scope_rep::update_nest (void)
+void symbol_scope_rep::update_nest ()
 {
   auto t_parent = m_parent.lock ();
 
@@ -370,7 +370,7 @@ bool symbol_scope_rep::look_nonlocal (const std::string& name,
   return false;
 }
 
-std::list<octave_value> symbol_scope::localfunctions (void) const
+std::list<octave_value> symbol_scope::localfunctions () const
 {
   if (! m_rep)
     return std::list<octave_value> ();

@@ -50,7 +50,7 @@ class sparse_chol<chol_type>::sparse_chol_rep
 {
 public:
 
-  sparse_chol_rep (void)
+  sparse_chol_rep ()
     : m_is_pd (false), m_minor_p (0), m_perm (), m_rcond (0)
 #if defined (HAVE_CHOLMOD)
     , m_L (nullptr), m_common ()
@@ -82,7 +82,7 @@ public:
 
   sparse_chol_rep& operator = (const sparse_chol_rep&) = delete;
 
-  ~sparse_chol_rep (void)
+  ~sparse_chol_rep ()
   {
 #if defined (HAVE_CHOLMOD)
     if (m_L)
@@ -93,13 +93,13 @@ public:
   }
 
 #if defined (HAVE_CHOLMOD)
-  cholmod_sparse * L (void) const
+  cholmod_sparse * L () const
   {
     return m_L;
   }
 #endif
 
-  octave_idx_type P (void) const
+  octave_idx_type P () const
   {
 #if defined (HAVE_CHOLMOD)
     return (m_minor_p == static_cast<octave_idx_type> (m_L->ncol) ?
@@ -109,13 +109,13 @@ public:
 #endif
   }
 
-  RowVector perm (void) const { return m_perm + 1; }
+  RowVector perm () const { return m_perm + 1; }
 
-  SparseMatrix Q (void) const;
+  SparseMatrix Q () const;
 
-  bool is_positive_definite (void) const { return m_is_pd; }
+  bool is_positive_definite () const { return m_is_pd; }
 
-  double rcond (void) const { return m_rcond; }
+  double rcond () const { return m_rcond; }
 
 private:
 
@@ -186,18 +186,18 @@ sparse_chol<chol_type>::sparse_chol_rep::drop_zeros (const cholmod_sparse *S)
 // Must provide a specialization for this function.
 template <typename T>
 int
-get_xtype (void);
+get_xtype ();
 
 template <>
 inline int
-get_xtype<double> (void)
+get_xtype<double> ()
 {
   return CHOLMOD_REAL;
 }
 
 template <>
 inline int
-get_xtype<Complex> (void)
+get_xtype<Complex> ()
 {
   return CHOLMOD_COMPLEX;
 }
@@ -352,7 +352,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
 
 template <typename chol_type>
 SparseMatrix
-sparse_chol<chol_type>::sparse_chol_rep::Q (void) const
+sparse_chol<chol_type>::sparse_chol_rep::Q () const
 {
 #if defined (HAVE_CHOLMOD)
 
@@ -378,7 +378,7 @@ sparse_chol<chol_type>::sparse_chol_rep::Q (void) const
 }
 
 template <typename chol_type>
-sparse_chol<chol_type>::sparse_chol (void)
+sparse_chol<chol_type>::sparse_chol ()
   : m_rep (new typename sparse_chol<chol_type>::sparse_chol_rep ())
 { }
 
@@ -414,7 +414,7 @@ sparse_chol<chol_type>::sparse_chol (const chol_type& a,
 
 template <typename chol_type>
 chol_type
-sparse_chol<chol_type>::L (void) const
+sparse_chol<chol_type>::L () const
 {
 #if defined (HAVE_CHOLMOD)
 
@@ -445,42 +445,42 @@ sparse_chol<chol_type>::L (void) const
 
 template <typename chol_type>
 octave_idx_type
-sparse_chol<chol_type>::P (void) const
+sparse_chol<chol_type>::P () const
 {
   return m_rep->P ();
 }
 
 template <typename chol_type>
 RowVector
-sparse_chol<chol_type>::perm (void) const
+sparse_chol<chol_type>::perm () const
 {
   return m_rep->perm ();
 }
 
 template <typename chol_type>
 SparseMatrix
-sparse_chol<chol_type>::Q (void) const
+sparse_chol<chol_type>::Q () const
 {
   return m_rep->Q ();
 }
 
 template <typename chol_type>
 bool
-sparse_chol<chol_type>::is_positive_definite (void) const
+sparse_chol<chol_type>::is_positive_definite () const
 {
   return m_rep->is_positive_definite ();
 }
 
 template <typename chol_type>
 double
-sparse_chol<chol_type>::rcond (void) const
+sparse_chol<chol_type>::rcond () const
 {
   return m_rep->rcond ();
 }
 
 template <typename chol_type>
 chol_type
-sparse_chol<chol_type>::inverse (void) const
+sparse_chol<chol_type>::inverse () const
 {
   chol_type retval;
 

@@ -42,9 +42,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     welcome_wizard (QWidget *parent = nullptr);
 
-    ~welcome_wizard (void) = default;
+    ~welcome_wizard () = default;
 
-    void adjust_size (void);
+    void adjust_size ();
 
   private:
 
@@ -59,11 +59,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void handle_web_connect_option (int state);
 
-    void show_page (void);
-    void previous_page (void);
-    void next_page (void);
+    void show_page ();
+    void previous_page ();
+    void next_page ();
 
-    void accept (void);
+    void accept ();
   };
 
   class initial_page : public QWidget
@@ -74,7 +74,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     initial_page (welcome_wizard *wizard);
 
-    ~initial_page (void) = default;
+    ~initial_page () = default;
 
     static QWidget *
     create (welcome_wizard *wizard)
@@ -99,7 +99,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     setup_community_news (welcome_wizard *wizard);
 
-    ~setup_community_news (void) = default;
+    ~setup_community_news () = default;
 
     static QWidget *
     create (welcome_wizard *wizard)
@@ -127,7 +127,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     final_page (welcome_wizard *wizard);
 
-    ~final_page (void) = default;
+    ~final_page () = default;
 
     static QWidget *
     create (welcome_wizard *wizard)

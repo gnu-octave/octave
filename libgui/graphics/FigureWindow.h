@@ -40,9 +40,9 @@ class FigureWindow : public FigureWindowBase
 
 public:
   explicit FigureWindow (QWidget *parent = nullptr);
-  ~FigureWindow (void);
+  ~FigureWindow ();
 
-  QMenu * createPopupMenu (void);
+  QMenu * createPopupMenu ();
 
 protected:
   void showEvent(QShowEvent *ev);

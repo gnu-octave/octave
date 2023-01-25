@@ -82,14 +82,14 @@ public:
 
     enter& operator = (const enter&) = delete;
 
-    ~enter (void)
+    ~enter ()
     {
       if (m_enabled)
         m_profiler.exit_function (m_fcn);
     }
   };
 
-  profiler (void);
+  profiler ();
 
   // No copying!
 
@@ -97,15 +97,15 @@ public:
 
   profiler& operator = (const profiler&) = delete;
 
-  virtual ~profiler (void);
+  virtual ~profiler ();
 
-  bool enabled (void) const { return m_enabled; }
+  bool enabled () const { return m_enabled; }
   void set_active (bool);
 
-  void reset (void);
+  void reset ();
 
-  octave_value get_flat (void) const;
-  octave_value get_hierarchical (void) const;
+  octave_value get_flat () const;
+  octave_value get_hierarchical () const;
 
 private:
 
@@ -115,7 +115,7 @@ private:
   struct stats
   {
   public:
-    stats (void);
+    stats ();
 
     typedef std::set<octave_idx_type> function_set;
 
@@ -143,7 +143,7 @@ private:
 
     tree_node (tree_node *, octave_idx_type);
 
-    virtual ~tree_node (void);
+    virtual ~tree_node ();
 
     // No copying!
 
@@ -212,12 +212,12 @@ private:
   // This is not static because in the future, maybe we want a flag
   // in the profiler or something to choose between cputime, wall-time,
   // user-time, system-time, ...
-  double query_time (void) const;
+  double query_time () const;
 
   // Add the time elapsed since last_time to the function we're currently in.
   // This is called from two different positions, thus it is useful to have
   // it as a separate function.
-  void add_current_time (void);
+  void add_current_time ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

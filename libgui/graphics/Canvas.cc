@@ -272,7 +272,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Canvas::canvasPaintEvent (void)
+  Canvas::canvasPaintEvent ()
   {
     if (! m_redrawBlocked)
       {

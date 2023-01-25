@@ -146,37 +146,37 @@ getpgrp (std::string& msg)
 }
 
 pid_t
-getpid (void)
+getpid ()
 {
   return octave_getpid_wrapper ();
 }
 
 pid_t
-getppid (void)
+getppid ()
 {
   return octave_getppid_wrapper ();
 }
 
 gid_t
-getgid (void)
+getgid ()
 {
   return octave_getgid_wrapper ();
 }
 
 gid_t
-getegid (void)
+getegid ()
 {
   return octave_getegid_wrapper ();
 }
 
 uid_t
-getuid (void)
+getuid ()
 {
   return octave_getuid_wrapper ();
 }
 
 uid_t
-geteuid (void)
+geteuid ()
 {
   return octave_geteuid_wrapper ();
 }
@@ -226,7 +226,7 @@ waitpid (pid_t pid, int *status, int options,
 }
 
 int
-wcontinue (void)
+wcontinue ()
 {
   return octave_wcontinue_wrapper ();
 }
@@ -268,7 +268,7 @@ wexitstatus (int status)
 }
 
 int
-wnohang (void)
+wnohang ()
 {
   return octave_wnohang_wrapper ();
 }
@@ -286,7 +286,7 @@ wtermsig (int status)
 }
 
 int
-wuntraced (void)
+wuntraced ()
 {
   return octave_wuntraced_wrapper ();
 }

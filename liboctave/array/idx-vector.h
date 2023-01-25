@@ -78,7 +78,7 @@ private:
   {
   public:
 
-    idx_base_rep (void) : m_count (1) { }
+    idx_base_rep () : m_count (1) { }
 
     // No copying!
 
@@ -86,7 +86,7 @@ private:
 
     idx_base_rep& operator = (const idx_base_rep&) = delete;
 
-    virtual ~idx_base_rep (void) = default;
+    virtual ~idx_base_rep () = default;
 
     // Non-range-checking element query.
     virtual octave_idx_type xelem (octave_idx_type i) const = 0;
@@ -101,7 +101,7 @@ private:
     virtual octave_idx_type extent (octave_idx_type n) const = 0;
 
     // Index class.
-    virtual idx_class_type idx_class (void) const { return class_invalid; }
+    virtual idx_class_type idx_class () const { return class_invalid; }
 
     // Sorts, maybe uniqifies, and returns a clone object pointer.
     virtual idx_base_rep * sort_uniq_clone (bool uniq = false) = 0;
@@ -112,12 +112,12 @@ private:
     virtual bool is_colon_equiv (octave_idx_type) const { return false; }
 
     // The original dimensions of object (used when subscribing by matrices).
-    virtual dim_vector orig_dimensions (void) const { return dim_vector (); }
+    virtual dim_vector orig_dimensions () const { return dim_vector (); }
 
     // i/o
     virtual std::ostream& print (std::ostream& os) const = 0;
 
-    virtual Array<octave_idx_type> as_array (void);
+    virtual Array<octave_idx_type> as_array ();
 
     refcount<octave_idx_type> m_count;
   };
@@ -127,7 +127,7 @@ private:
   {
   public:
 
-    idx_colon_rep (void) = default;
+    idx_colon_rep () = default;
 
     OCTAVE_API idx_colon_rep (char c);
 
@@ -145,7 +145,7 @@ private:
 
     octave_idx_type extent (octave_idx_type n) const { return n; }
 
-    idx_class_type idx_class (void) const { return class_colon; }
+    idx_class_type idx_class () const { return class_colon; }
 
     idx_base_rep * sort_uniq_clone (bool = false)
     { m_count++; return this; }
@@ -165,7 +165,7 @@ private:
   {
   public:
 
-    idx_range_rep (void) = delete;
+    idx_range_rep () = delete;
 
     idx_range_rep (octave_idx_type start, octave_idx_type len,
                    octave_idx_type step, direct)
@@ -196,7 +196,7 @@ private:
       return m_len ? std::max (n, m_start + 1 + (m_step < 0 ? 0 : m_step * (m_len - 1))) : n;
     }
 
-    idx_class_type idx_class (void) const { return class_range; }
+    idx_class_type idx_class () const { return class_range; }
 
     OCTAVE_API idx_base_rep * sort_uniq_clone (bool uniq = false);
 
@@ -205,18 +205,18 @@ private:
     bool is_colon_equiv (octave_idx_type n) const
     { return m_start == 0 && m_step == 1 && m_len == n; }
 
-    dim_vector orig_dimensions (void) const
+    dim_vector orig_dimensions () const
     { return dim_vector (1, m_len); }
 
-    octave_idx_type get_start (void) const { return m_start; }
+    octave_idx_type get_start () const { return m_start; }
 
-    octave_idx_type get_step (void) const { return m_step; }
+    octave_idx_type get_step () const { return m_step; }
 
     OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-    OCTAVE_API range<double> unconvert (void) const;
+    OCTAVE_API range<double> unconvert () const;
 
-    OCTAVE_API Array<octave_idx_type> as_array (void);
+    OCTAVE_API Array<octave_idx_type> as_array ();
 
   private:
 
@@ -228,7 +228,7 @@ private:
   {
   public:
 
-    idx_scalar_rep (void) = delete;
+    idx_scalar_rep () = delete;
 
     idx_scalar_rep (octave_idx_type i, direct) : idx_base_rep (), m_data (i) { }
 
@@ -253,7 +253,7 @@ private:
     octave_idx_type extent (octave_idx_type n) const
     { return std::max (n, m_data + 1); }
 
-    idx_class_type idx_class (void) const { return class_scalar; }
+    idx_class_type idx_class () const { return class_scalar; }
 
     idx_base_rep * sort_uniq_clone (bool = false)
     { m_count++; return this; }
@@ -263,15 +263,15 @@ private:
     bool is_colon_equiv (octave_idx_type n) const
     { return n == 1 && m_data == 0; }
 
-    dim_vector orig_dimensions (void) const { return dim_vector (1, 1); }
+    dim_vector orig_dimensions () const { return dim_vector (1, 1); }
 
-    octave_idx_type get_data (void) const { return m_data; }
+    octave_idx_type get_data () const { return m_data; }
 
     OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-    OCTAVE_API double unconvert (void) const;
+    OCTAVE_API double unconvert () const;
 
-    OCTAVE_API Array<octave_idx_type> as_array (void);
+    OCTAVE_API Array<octave_idx_type> as_array ();
 
   private:
 
@@ -283,7 +283,7 @@ private:
   {
   public:
 
-    idx_vector_rep (void)
+    idx_vector_rep ()
       : m_data (nullptr), m_len (0), m_ext (0), m_aowner (nullptr), m_orig_dims () { }
 
     // Direct constructor.
@@ -314,7 +314,7 @@ private:
 
     idx_vector_rep& operator = (const idx_vector_rep& idx) = delete;
 
-    ~idx_vector_rep (void);
+    ~idx_vector_rep ();
 
     octave_idx_type xelem (octave_idx_type i) const { return m_data[i]; }
 
@@ -325,21 +325,21 @@ private:
     octave_idx_type extent (octave_idx_type n) const
     { return std::max (n, m_ext); }
 
-    idx_class_type idx_class (void) const { return class_vector; }
+    idx_class_type idx_class () const { return class_vector; }
 
     idx_base_rep * sort_uniq_clone (bool uniq = false);
 
     OCTAVE_API idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
-    dim_vector orig_dimensions (void) const { return m_orig_dims; }
+    dim_vector orig_dimensions () const { return m_orig_dims; }
 
-    const octave_idx_type * get_data (void) const { return m_data; }
+    const octave_idx_type * get_data () const { return m_data; }
 
     OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-    OCTAVE_API Array<double> unconvert (void) const;
+    OCTAVE_API Array<double> unconvert () const;
 
-    OCTAVE_API Array<octave_idx_type> as_array (void);
+    OCTAVE_API Array<octave_idx_type> as_array ();
 
   private:
 
@@ -364,7 +364,7 @@ private:
   {
   public:
 
-    idx_mask_rep (void) = delete;
+    idx_mask_rep () = delete;
 
     // Direct constructor.
     idx_mask_rep (bool *data, octave_idx_type len,
@@ -383,7 +383,7 @@ private:
 
     idx_mask_rep& operator = (const idx_mask_rep& idx) = delete;
 
-    OCTAVE_API ~idx_mask_rep (void);
+    OCTAVE_API ~idx_mask_rep ();
 
     octave_idx_type xelem (octave_idx_type i) const;
 
@@ -394,25 +394,25 @@ private:
     octave_idx_type extent (octave_idx_type n) const
     { return std::max (n, m_ext); }
 
-    idx_class_type idx_class (void) const { return class_mask; }
+    idx_class_type idx_class () const { return class_mask; }
 
     idx_base_rep * sort_uniq_clone (bool = false)
     { m_count++; return this; }
 
     OCTAVE_API idx_base_rep * sort_idx (Array<octave_idx_type>&);
 
-    dim_vector orig_dimensions (void) const { return m_orig_dims; }
+    dim_vector orig_dimensions () const { return m_orig_dims; }
 
     bool is_colon_equiv (octave_idx_type n) const
     { return m_len == n && m_ext == n; }
 
-    const bool * get_data (void) const { return m_data; }
+    const bool * get_data () const { return m_data; }
 
     OCTAVE_API std::ostream& print (std::ostream& os) const;
 
-    OCTAVE_API Array<bool> unconvert (void) const;
+    OCTAVE_API Array<bool> unconvert () const;
 
-    OCTAVE_API Array<octave_idx_type> as_array (void);
+    OCTAVE_API Array<octave_idx_type> as_array ();
 
   private:
 
@@ -441,12 +441,12 @@ private:
 
   // The shared empty vector representation (for fast default
   // constructor).
-  static OCTAVE_API idx_vector_rep * nil_rep (void);
+  static OCTAVE_API idx_vector_rep * nil_rep ();
 
 public:
 
   // Fast empty constructor.
-  idx_vector (void) : m_rep (nil_rep ()) { m_rep->m_count++; }
+  idx_vector () : m_rep (nil_rep ()) { m_rep->m_count++; }
 
   // Zero-based constructors (for use from C++).
   idx_vector (octave_idx_type i) : m_rep (new idx_scalar_rep (i)) { }
@@ -514,7 +514,7 @@ public:
 
   idx_vector (const idx_vector& a) : m_rep (a.m_rep) { m_rep->m_count++; }
 
-  ~idx_vector (void)
+  ~idx_vector ()
   {
     if (--m_rep->m_count == 0 && m_rep != nil_rep ())
       delete m_rep;
@@ -533,7 +533,7 @@ public:
     return *this;
   }
 
-  idx_class_type idx_class (void) const { return m_rep->idx_class (); }
+  idx_class_type idx_class () const { return m_rep->idx_class (); }
 
   octave_idx_type length (octave_idx_type n = 0) const
   { return m_rep->length (n); }
@@ -552,15 +552,15 @@ public:
 
   // FIXME: idx_vector objects are either created successfully or an
   // error is thrown, so this method no longer makes sense.
-  operator bool (void) const { return true; }
+  operator bool () const { return true; }
 
-  bool is_colon (void) const
+  bool is_colon () const
   { return m_rep->idx_class () == class_colon; }
 
-  bool is_scalar (void) const
+  bool is_scalar () const
   { return m_rep->idx_class () == class_scalar; }
 
-  bool is_range (void) const
+  bool is_range () const
   { return m_rep->idx_class () == class_range; }
 
   bool is_colon_equiv (octave_idx_type n) const
@@ -572,15 +572,15 @@ public:
   idx_vector sorted (Array<octave_idx_type>& sidx) const
   { return idx_vector (m_rep->sort_idx (sidx)); }
 
-  dim_vector orig_dimensions (void) const { return m_rep->orig_dimensions (); }
+  dim_vector orig_dimensions () const { return m_rep->orig_dimensions (); }
 
-  octave_idx_type orig_rows (void) const
+  octave_idx_type orig_rows () const
   { return orig_dimensions () (0); }
 
-  octave_idx_type orig_columns (void) const
+  octave_idx_type orig_columns () const
   { return orig_dimensions () (1); }
 
-  int orig_empty (void) const
+  int orig_empty () const
   { return (! is_colon () && orig_dimensions ().any_zero ()); }
 
   // i/o
@@ -976,7 +976,7 @@ public:
 
   // Returns the increment for ranges and colon, 0 for scalars and empty
   // vectors, 1st difference otherwise.
-  OCTAVE_API octave_idx_type increment (void) const;
+  OCTAVE_API octave_idx_type increment () const;
 
   OCTAVE_API idx_vector
   complement (octave_idx_type n) const;
@@ -991,20 +991,20 @@ public:
   OCTAVE_API void copy_data (octave_idx_type *data) const;
 
   // If the index is a mask, convert it to index vector.
-  OCTAVE_API idx_vector unmask (void) const;
+  OCTAVE_API idx_vector unmask () const;
 
   // Unconverts the index to a scalar, Range, double array or a mask.
   OCTAVE_API void
   unconvert (idx_class_type& iclass, double& scalar, range<double>& range,
              Array<double>& array, Array<bool>& mask) const;
 
-  OCTAVE_API Array<octave_idx_type> as_array (void) const;
+  OCTAVE_API Array<octave_idx_type> as_array () const;
 
   // Raw pointer to index array.  This is non-const because it may be
   // necessary to mutate the index.
-  const OCTAVE_API octave_idx_type * raw (void);
+  const OCTAVE_API octave_idx_type * raw ();
 
-  OCTAVE_API bool isvector (void) const;
+  OCTAVE_API bool isvector () const;
 
   // FIXME: these are here for compatibility.  They should be removed
   // when no longer in use.
@@ -1021,9 +1021,9 @@ public:
   void sort (bool uniq = false)
   { *this = sorted (uniq); }
 
-  OCTAVE_API octave_idx_type ones_count (void) const;
+  OCTAVE_API octave_idx_type ones_count () const;
 
-  octave_idx_type max (void) const { return extent (1) - 1; }
+  octave_idx_type max () const { return extent (1) - 1; }
 
 private:
 

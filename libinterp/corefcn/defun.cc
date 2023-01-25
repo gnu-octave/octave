@@ -51,7 +51,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Print the usage part of the doc string of FCN (user-defined or DEFUN).
 void
-print_usage (void)
+print_usage ()
 {
   tree_evaluator& tw = __get_evaluator__ ();
 
@@ -137,7 +137,7 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 }
 
 dynamic_library
-get_current_shlib (void)
+get_current_shlib ()
 {
   dynamic_library retval;
 

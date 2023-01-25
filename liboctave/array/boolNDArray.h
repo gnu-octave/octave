@@ -41,7 +41,7 @@ public:
 
   typedef boolMatrix matrix_type;
 
-  boolNDArray (void) : Array<bool> () { }
+  boolNDArray () : Array<bool> () { }
 
   boolNDArray (const dim_vector& dv) : Array<bool> (dv) { }
 
@@ -60,11 +60,11 @@ public:
 
   // unary operations
 
-  OCTAVE_API boolNDArray operator ! (void) const;
+  OCTAVE_API boolNDArray operator ! () const;
 
-  OCTAVE_API boolNDArray& invert (void);
+  OCTAVE_API boolNDArray& invert ();
 
-  bool any_element_is_nan (void) const { return false; }
+  bool any_element_is_nan () const { return false; }
 
   // FIXME: this is not quite the right thing.
 
@@ -79,7 +79,7 @@ public:
   OCTAVE_API boolNDArray&
   insert (const boolNDArray& a, const Array<octave_idx_type>& ra_idx);
 
-  boolNDArray squeeze (void) const { return Array<bool>::squeeze (); }
+  boolNDArray squeeze () const { return Array<bool>::squeeze (); }
 
   static OCTAVE_API void
   increment_index (Array<octave_idx_type>& ra_idx,
@@ -94,7 +94,7 @@ public:
   // friend std::ostream& operator << (std::ostream& os, const NDArray& a);
   // friend std::istream& operator >> (std::istream& is, NDArray& a);
 
-  //  bool all_elements_are_real (void) const;
+  //  bool all_elements_are_real () const;
   //  bool all_integers (double& max_val, double& min_val) const;
 
   OCTAVE_API boolNDArray diag (octave_idx_type k = 0) const;

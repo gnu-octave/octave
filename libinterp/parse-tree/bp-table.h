@@ -62,7 +62,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         m_caught_that_stop (), m_warnings_that_stop ()
     { }
 
-    ~bp_table (void) = default;
+    ~bp_table () = default;
 
     // Set of breakpoint lines.
     typedef std::set<int> bp_lines;
@@ -129,13 +129,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                                                bool silent = false);
 
     // Remove all the breakpoints registered with octave.
-    void remove_all_breakpoints (void);
+    void remove_all_breakpoints ();
 
     // Return all breakpoints.  Each element of the map is a vector
     // containing the breakpoints corresponding to a given function name.
     fname_bp_map get_breakpoint_list (const octave_value_list& fname_list);
 
-    bool have_breakpoints (void) { return (! m_bp_set.empty ()); }
+    bool have_breakpoints () { return (! m_bp_set.empty ()); }
 
     // Should we enter debugging for this particular error identifier?
     bool debug_on_err (const std::string& id)
@@ -159,7 +159,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void dbstop_process_map_args (const octave_map& mv);
 
-    void dbclear_all_signals (void);
+    void dbclear_all_signals ();
 
     bool condition_valid (const std::string& cond);
 

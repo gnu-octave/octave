@@ -307,7 +307,7 @@ void QPrintDialog::setVisible(bool visible)
     if (!warnIfNotNative(d->printer))
         return;
 
-    (void)d->openWindowsPrintDialogModally();
+    ()d->openWindowsPrintDialogModally();
     return;
 }
 

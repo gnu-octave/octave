@@ -194,13 +194,13 @@ FloatComplexRowVector::append (const FloatComplexRowVector& a) const
 }
 
 FloatComplexColumnVector
-FloatComplexRowVector::hermitian (void) const
+FloatComplexRowVector::hermitian () const
 {
   return MArray<FloatComplex>::hermitian (std::conj);
 }
 
 FloatComplexColumnVector
-FloatComplexRowVector::transpose (void) const
+FloatComplexRowVector::transpose () const
 {
   return MArray<FloatComplex>::transpose ();
 }
@@ -324,7 +324,7 @@ operator * (const FloatRowVector& v, const FloatComplexMatrix& a)
 // other operations
 
 FloatComplex
-FloatComplexRowVector::min (void) const
+FloatComplexRowVector::min () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -344,7 +344,7 @@ FloatComplexRowVector::min (void) const
 }
 
 FloatComplex
-FloatComplexRowVector::max (void) const
+FloatComplexRowVector::max () const
 {
   octave_idx_type len = numel ();
   if (len == 0)

@@ -43,7 +43,7 @@ class OCTAVE_API sparse_params
 {
 protected:
 
-  sparse_params (void)
+  sparse_params ()
     : m_params (OCTAVE_SPARSE_CONTROLS_SIZE),
       m_keys (OCTAVE_SPARSE_CONTROLS_SIZE)
   {
@@ -57,17 +57,17 @@ public:
 
   sparse_params& operator = (const sparse_params&) = default;
 
-  ~sparse_params (void) = default;
+  ~sparse_params () = default;
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
-  static void defaults (void);
+  static void defaults ();
 
-  static void tight (void);
+  static void tight ();
 
-  static string_vector get_keys (void);
+  static string_vector get_keys ();
 
-  static ColumnVector get_vals (void);
+  static ColumnVector get_vals ();
 
   static bool set_vals (const Array<double>& vals);
 
@@ -75,7 +75,7 @@ public:
 
   static double get_key (const std::string& key);
 
-  static double get_bandden (void);
+  static double get_bandden ();
 
   static void print_info (std::ostream& os, const std::string& prefix);
 
@@ -87,19 +87,19 @@ private:
 
   static sparse_params *s_instance;
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   {
     delete s_instance;
     s_instance = nullptr;
   }
 
-  void do_defaults (void);
+  void do_defaults ();
 
-  void do_tight (void);
+  void do_tight ();
 
-  string_vector do_get_keys (void) const { return m_keys; }
+  string_vector do_get_keys () const { return m_keys; }
 
-  ColumnVector do_get_vals (void) const { return m_params; }
+  ColumnVector do_get_vals () const { return m_params; }
 
   bool do_set_vals (const Array<double>& vals);
 
@@ -107,11 +107,11 @@ private:
 
   double do_get_key (const std::string& key);
 
-  double do_get_bandden (void);
+  double do_get_bandden ();
 
   void do_print_info (std::ostream& os, const std::string& prefix) const;
 
-  void init_keys (void);
+  void init_keys ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

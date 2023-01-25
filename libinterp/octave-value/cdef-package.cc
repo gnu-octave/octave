@@ -91,19 +91,19 @@ map2Cell (const std::map<T1, T2>& m)
 }
 
 Cell
-cdef_package::cdef_package_rep::get_classes (void) const
+cdef_package::cdef_package_rep::get_classes () const
 {
   return map2Cell (m_class_map);
 }
 
 Cell
-cdef_package::cdef_package_rep::get_functions (void) const
+cdef_package::cdef_package_rep::get_functions () const
 {
   return map2Cell (m_function_map);
 }
 
 Cell
-cdef_package::cdef_package_rep::get_packages (void) const
+cdef_package::cdef_package_rep::get_packages () const
 {
   return map2Cell (m_package_map);
 }
@@ -186,7 +186,7 @@ cdef_package::cdef_package_rep::meta_subsref
 }
 
 void
-cdef_package::cdef_package_rep::meta_release (void)
+cdef_package::cdef_package_rep::meta_release ()
 {
   // FIXME: Do we really want to unregister the package, as it
   //        could still be referenced by classes or sub-packages?

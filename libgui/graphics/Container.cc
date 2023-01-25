@@ -46,7 +46,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     setFocusPolicy (Qt::ClickFocus);
   }
 
-  Container::~Container (void)
+  Container::~Container ()
   { }
 
   Canvas *

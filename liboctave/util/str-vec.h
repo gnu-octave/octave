@@ -40,7 +40,7 @@ string_vector
 {
 public:
 
-  string_vector (void) = default;
+  string_vector () = default;
 
   explicit string_vector (octave_idx_type n) : m_data (dim_vector (n, 1)) { }
 
@@ -72,11 +72,11 @@ public:
 
   string_vector& operator = (string_vector&&) = default;
 
-  ~string_vector (void) = default;
+  ~string_vector () = default;
 
-  bool empty (void) const { return numel () == 0; }
+  bool empty () const { return numel () == 0; }
 
-  octave_idx_type max_length (void) const
+  octave_idx_type max_length () const
   {
     octave_idx_type n = numel ();
     octave_idx_type longest = 0;
@@ -97,9 +97,9 @@ public:
     m_data.resize (dim_vector (n, 1), rfv);
   }
 
-  octave_idx_type numel (void) const { return m_data.numel (); }
+  octave_idx_type numel () const { return m_data.numel (); }
 
-  bool isempty (void) const { return m_data.isempty (); }
+  bool isempty () const { return m_data.isempty (); }
 
   std::string& elem (octave_idx_type i) { return m_data.elem (i); }
 
@@ -119,7 +119,7 @@ public:
 
   string_vector& sort (bool make_uniq = false);
 
-  string_vector& uniq (void);
+  string_vector& uniq ();
 
   string_vector& append (const std::string& s);
 
@@ -127,9 +127,9 @@ public:
 
   std::string join (const std::string& sep = "") const;
 
-  char ** c_str_vec (void) const;
+  char ** c_str_vec () const;
 
-  std::list<std::string> std_list (void) const;
+  std::list<std::string> std_list () const;
 
   static void delete_c_str_vec (const char * const*);
 

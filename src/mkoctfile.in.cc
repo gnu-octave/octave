@@ -603,7 +603,7 @@ is_true (const std::string& s)
 }
 
 static std::string
-get_temp_directory (void)
+get_temp_directory ()
 {
   std::string tempd;
 
@@ -643,7 +643,7 @@ get_temp_directory (void)
 }
 
 static std::string
-create_interleaved_complex_file (void)
+create_interleaved_complex_file ()
 {
   std::string tmpl = get_temp_directory () + "/oct-XXXXXX.c";
 
@@ -669,7 +669,7 @@ create_interleaved_complex_file (void)
 }
 
 static std::string
-tmp_objfile_name (void)
+tmp_objfile_name ()
 {
   std::string tmpl = get_temp_directory () + "/oct-XXXXXX.o";
 

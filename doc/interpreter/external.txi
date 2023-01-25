@@ -312,19 +312,19 @@ Note that these functions do significant error checking and so in some
 circumstances the user might prefer to access the data of the array or matrix
 directly through the @code{fortran_vec} method discussed below.
 
-@deftypefn {Method} {octave_idx_type} numel (void) const
+@deftypefn {Method} {octave_idx_type} numel () const
 The total number of elements in the matrix or array.
 @end deftypefn
 
-@deftypefn {Method} {size_t} byte_size (void) const
+@deftypefn {Method} {size_t} byte_size () const
 The number of bytes used to store the matrix or array.
 @end deftypefn
 
-@deftypefn {Method} {dim_vector} dims (void) const
+@deftypefn {Method} {dim_vector} dims () const
 The dimensions of the matrix or array in value of type @code{dim_vector}.
 @end deftypefn
 
-@deftypefn {Method} {int} ndims (void) const
+@deftypefn {Method} {int} ndims () const
 The number of dimensions of the matrix or array.  Matrices are always 2-D, but
 arrays can be N-dimensional.
 @end deftypefn
@@ -336,7 +336,7 @@ of a matrix, two arguments of type @code{octave_idx_type} defining the number
 of rows and columns in the matrix.
 @end deftypefn
 
-@deftypefn {Method} {T*} fortran_vec (void)
+@deftypefn {Method} {T*} fortran_vec ()
 This method returns a pointer to the underlying data of the matrix or array so
 that it can be manipulated directly, either within Octave or by an external
 library.

@@ -517,9 +517,9 @@ public:
 
   T m_val;
 
-  int exponent (void) const;
+  int exponent () const;
 
-  T mantissa (void) const;
+  T mantissa () const;
 
   pr_engineering_float (const float_format& ff, T val)
     : m_ff (ff), m_val (val) { }

@@ -127,7 +127,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // Update the settings
-  void dw_main_window::notice_settings (void)
+  void dw_main_window::notice_settings ()
   {
     gui_settings settings;
 

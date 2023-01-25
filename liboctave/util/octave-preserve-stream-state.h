@@ -42,7 +42,7 @@ public:
       m_owidth (s.width ()), m_ofill (s.fill ())
   { }
 
-  ~preserve_stream_state (void)
+  ~preserve_stream_state ()
   {
     m_stream.flags (m_oflags);
     m_stream.precision (m_oprecision);

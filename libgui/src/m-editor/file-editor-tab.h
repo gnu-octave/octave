@@ -54,23 +54,23 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     file_editor_tab (const QString& directory = "");
 
-    ~file_editor_tab (void);
+    ~file_editor_tab ();
 
-    octave_qscintilla * qsci_edit_area (void) { return m_edit_area; }
+    octave_qscintilla * qsci_edit_area () { return m_edit_area; }
 
     // Will initiate close if associated with the identifier tag.
-    bool conditional_close (void);
+    bool conditional_close ();
 
     void update_breakpoints ();
     void set_file_name (const QString& fileName);
     void enable_file_watcher (bool do_enable);
 
-    QString file_name (void) const { return m_file_name; }
-    QString encoding (void) const { return m_encoding; }
+    QString file_name () const { return m_file_name; }
+    QString encoding () const { return m_encoding; }
 
   signals:
 
-    void tab_ready_to_close (void);
+    void tab_ready_to_close ();
     void file_name_changed (const QString& fileName,
                             const QString& toolTip,
                             bool modified);
@@ -78,7 +78,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                                bool is_modified);
     void set_focus_editor_signal (QWidget *);
     void edit_area_changed (octave_qscintilla *edit_area);
-    void tab_remove_request (void);
+    void tab_remove_request ();
     void mru_add_file (const QString& file_name, const QString& encoding);
     void editor_check_conflict_save (const QString& saveFileName,
                                      bool remove_on_success);
@@ -87,22 +87,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void edit_mfile_request (const QString&, const QString&,
                              const QString&, int);
 
-    void autoc_closed (void);
+    void autoc_closed ();
 
     void update_breakpoints_signal (const octave_value_list& args);
 
     void remove_breakpoint_via_debugger_linenr (int debugger_linenr);
     void request_remove_breakpoint_via_editor_linenr (int editor_linenr);
-    void remove_all_breakpoints_signal (void);
+    void remove_all_breakpoints_signal ();
     void find_translated_line_number (int original_linenr,
                                       int& translated_linenr, marker*&);
     void find_linenr_just_before (int linenr, int& original_linenr,
                                   int& editor_linenr);
     void report_marker_linenr (QIntList& lines, QStringList& conditions);
     void remove_position_via_debugger_linenr (int debugger_linenr);
-    void remove_all_positions (void);
+    void remove_all_positions ();
 
-    void debug_quit_signal (void);
+    void debug_quit_signal ();
 
     void interpreter_event (const fcn_callback& fcn);
     void interpreter_event (const meth_callback& meth);
@@ -112,7 +112,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void dbstop_if (const QString& prompt, int line, const QString& cond);
     void request_add_breakpoint (int line, const QString& cond);
     void request_add_octave_apis (const QStringList&);
-    void api_entries_added (void);
+    void api_entries_added ();
 
     void do_save_file_signal (const QString& file_to_save,
                               bool remove_on_success, bool restore_breakpoints);
@@ -186,7 +186,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void do_breakpoint_marker (bool insert, const QWidget *ID, int line = -1,
                                const QString& cond = "");
 
-    void recover_from_exit (void);
+    void recover_from_exit ();
     void set_modified (bool modified = true);
 
     void set_encoding (const QString& new_encoding);
@@ -221,28 +221,28 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // When user closes QFileDialog box.
     void handle_save_file_as_answer (const QString& fileName);
     void handle_save_file_as_answer_close (const QString& fileName);
-    void handle_save_file_as_answer_cancel (void);
+    void handle_save_file_as_answer_cancel ();
     void handle_save_as_filter_selected (const QString& filter);
 
     // When user changes encoding after decoding errors were found
     void handle_current_enc_changed (const QString& enc);
 
     // When apis preparation has finished and is ready to save
-    void save_apis_info (void);
+    void save_apis_info ();
 
     // When the numer of lines changes -> adapt width of margin
-    void auto_margin_width (void);
+    void auto_margin_width ();
 
     void handle_cursor_moved (int line, int col);
     void handle_char_added (int character);
     void handle_double_click (int p, int l, int modifier);
-    void handle_lines_changed (void);
+    void handle_lines_changed ();
 
     void handle_remove_next (int remove_line);
     void handle_dbstop_if (const QString& prompt, int line,
                            const QString& cond);
     void handle_add_octave_apis (const QStringList& api_entries);
-    void handle_api_entries_added (void);
+    void handle_api_entries_added ();
 
     void do_save_file (const QString& file_to_save, bool remove_on_success,
                        bool restore_breakpoints);
@@ -265,31 +265,31 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                     bool restore_breakpoints = true);
     void save_file_as (bool remove_on_success = false);
     bool check_valid_identifier (QString file_name);
-    QTextCodec * check_valid_codec (void);
+    QTextCodec * check_valid_codec ();
 
-    bool unchanged_or_saved (void);
+    bool unchanged_or_saved ();
 
-    void update_lexer (void);
+    void update_lexer ();
 
     void show_dialog (QDialog *dlg, bool modal);
 
   public:
 
     int check_file_modified (bool remove = false);
-    QString get_all_bookmarks (void);
+    QString get_all_bookmarks ();
 
   private:
     void do_comment_selected_text (bool comment, bool input_str = false);
     void do_indent_selected_text (bool indent);
-    void do_smart_indent_line_or_selected_text (void);
+    void do_smart_indent_line_or_selected_text ();
 
-    void check_restore_breakpoints (void);
+    void check_restore_breakpoints ();
     void center_current_line (bool always=true);
 
-    QString get_function_name (void);
+    QString get_function_name ();
 
-    QsciScintilla::EolMode detect_eol_mode (void);
-    void update_eol_indicator (void);
+    QsciScintilla::EolMode detect_eol_mode ();
+    void update_eol_indicator ();
 
     octave_qscintilla *m_edit_area;
 

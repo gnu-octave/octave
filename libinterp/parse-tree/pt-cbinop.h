@@ -54,12 +54,12 @@ public:
       m_etype (ct)
   { }
 
-  octave_value::compound_binary_op cop_type (void) const { return m_etype; }
+  octave_value::compound_binary_op cop_type () const { return m_etype; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
-  tree_expression * clhs (void) { return m_lhs; }
-  tree_expression * crhs (void) { return m_rhs; }
+  tree_expression * clhs () { return m_lhs; }
+  tree_expression * crhs () { return m_rhs; }
 
   octave_value evaluate (tree_evaluator&, int nargout = 1);
 

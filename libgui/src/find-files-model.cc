@@ -95,7 +95,7 @@ find_files_model::find_files_model (QObject *p)
   m_sortorder = 0;
 }
 
-void find_files_model::clear (void)
+void find_files_model::clear ()
 {
   beginResetModel ();
 

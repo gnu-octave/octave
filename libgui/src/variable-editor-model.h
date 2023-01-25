@@ -45,7 +45,7 @@ public:
 
   base_ve_model (const QString& expr, const octave_value& val);
 
-  virtual ~base_ve_model (void) = default;
+  virtual ~base_ve_model () = default;
 
   // No copying!
 
@@ -57,15 +57,15 @@ public:
 
   virtual void maybe_resize_columns (int) { }
 
-  std::string name (void) const;
+  std::string name () const;
 
   bool index_ok (const QModelIndex& idx, int& row, int& col) const;
 
-  virtual bool is_editable (void) const { return true; }
+  virtual bool is_editable () const { return true; }
 
   virtual octave_value value_at (const QModelIndex& idx) const;
 
-  int column_width (void) const;
+  int column_width () const;
 
   int rowCount (const QModelIndex& = QModelIndex ()) const;
 
@@ -85,7 +85,7 @@ public:
 
   QString update_pending_data (const QModelIndex& idx) const;
 
-  void clear_update_pending (void);
+  void clear_update_pending ();
 
   virtual char quote_char (const QModelIndex& idx) const;
 
@@ -98,17 +98,17 @@ public:
 
   virtual QString subscript_expression (const QModelIndex& idx) const;
 
-  bool is_valid (void) const { return m_valid; }
+  bool is_valid () const { return m_valid; }
 
-  octave_idx_type data_rows (void) const { return m_data_rows; }
+  octave_idx_type data_rows () const { return m_data_rows; }
 
-  octave_idx_type data_columns (void) const { return m_data_cols; }
+  octave_idx_type data_columns () const { return m_data_cols; }
 
-  int display_rows (void) const { return m_display_rows; }
+  int display_rows () const { return m_display_rows; }
 
-  int display_columns (void) const { return m_display_cols; }
+  int display_columns () const { return m_display_cols; }
 
-  virtual QString make_description_text (void) const;
+  virtual QString make_description_text () const;
 
   void reset (const octave_value& val);
 
@@ -145,7 +145,7 @@ public:
   variable_editor_model (const QString& expr, const octave_value& val,
                          QObject *parent = nullptr);
 
-  ~variable_editor_model (void)
+  ~variable_editor_model ()
   {
     delete rep;
   }
@@ -156,12 +156,12 @@ public:
 
   variable_editor_model& operator = (const variable_editor_model&) = delete;
 
-  std::string name (void) const
+  std::string name () const
   {
     return rep->name ();
   }
 
-  bool is_editable (void) const
+  bool is_editable () const
   {
     return rep->is_editable ();
   }
@@ -171,7 +171,7 @@ public:
     return rep->value_at (idx);
   }
 
-  int column_width (void) const
+  int column_width () const
   {
     return rep->column_width ();
   }
@@ -233,7 +233,7 @@ public:
     return rep->update_pending_data (idx);
   }
 
-  void clear_update_pending (void)
+  void clear_update_pending ()
   {
     rep->clear_update_pending ();
   }
@@ -258,22 +258,22 @@ public:
     return rep->subscript_expression (idx);
   }
 
-  int display_rows (void) const
+  int display_rows () const
   {
     return rep->display_rows ();
   }
 
-  octave_idx_type data_rows (void) const
+  octave_idx_type data_rows () const
   {
     return rep->data_rows ();
   }
 
-  int display_columns (void) const
+  int display_columns () const
   {
     return rep->display_columns ();
   }
 
-  octave_idx_type data_columns (void) const
+  octave_idx_type data_columns () const
   {
     return rep->data_columns ();
   }
@@ -303,7 +303,7 @@ public slots:
 
   void update_data (const octave_value& val);
 
-  void update_data_cache (void);
+  void update_data_cache ();
 
   void double_click (const QModelIndex& idx);
 
@@ -323,7 +323,7 @@ private:
 
   octave_value retrieve_variable (interpreter&, const std::string& name);
 
-  bool is_valid (void) const
+  bool is_valid () const
   {
     return rep->is_valid ();
   }
@@ -331,14 +331,14 @@ private:
   void change_display_size (int old_rows, int old_cols,
                             int new_rows, int new_cols);
 
-  QString make_description_text (void) const
+  QString make_description_text () const
   {
     return rep->make_description_text ();
   }
 
   void reset (const octave_value& val);
 
-  void invalidate (void);
+  void invalidate ();
 
   void update_description (const QString& description = QString ());
 

@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     SliderControl (octave::interpreter& interp,
                    const graphics_object& go, QAbstractSlider *slider);
-    ~SliderControl (void);
+    ~SliderControl ();
 
     static SliderControl *
     create (octave::interpreter& interp,

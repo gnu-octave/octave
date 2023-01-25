@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Symbols from the symbol table.
 
 void
-tree_identifier::eval_undefined_error (void)
+tree_identifier::eval_undefined_error ()
 {
   int l = line ();
   int c = column ();

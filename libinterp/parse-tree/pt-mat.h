@@ -60,11 +60,11 @@ public:
 
   tree_matrix& operator = (const tree_matrix&) = delete;
 
-  ~tree_matrix (void) = default;
+  ~tree_matrix () = default;
 
-  bool is_matrix (void) const { return true; }
+  bool is_matrix () const { return true; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 

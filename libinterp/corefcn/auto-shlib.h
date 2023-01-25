@@ -43,9 +43,9 @@ auto_shlib : public dynamic_library
 {
 public:
 
-  auto_shlib (void);
+  auto_shlib ();
 
-  ~auto_shlib (void) = default;
+  ~auto_shlib () = default;
 
   auto_shlib (const auto_shlib&) = default;
 

@@ -62,23 +62,23 @@ public:
     symbol_table_context (interpreter& interp)
       : m_interpreter (interp), m_frame_stack () { }
 
-    ~symbol_table_context (void) { clear (); }
+    ~symbol_table_context () { clear (); }
 
-    void clear (void);
+    void clear ();
 
-    bool empty (void) const { return m_frame_stack.empty (); }
+    bool empty () const { return m_frame_stack.empty (); }
 
-    std::size_t size (void) const { return m_frame_stack.size (); }
+    std::size_t size () const { return m_frame_stack.size (); }
 
-    void pop (void);
+    void pop ();
 
     void push (const symbol_scope& scope)
     {
       m_frame_stack.push_front (scope);
     }
 
-    symbol_scope curr_scope (void) const;
-    symbol_scope parent_scope (void) const;
+    symbol_scope curr_scope () const;
+    symbol_scope parent_scope () const;
 
   private:
 
@@ -103,7 +103,7 @@ public:
 
   public:
 
-    bbp_nesting_level (void) : m_context () { }
+    bbp_nesting_level () : m_context () { }
 
     bbp_nesting_level (const bbp_nesting_level& nl)
       : m_context (nl.m_context)
@@ -117,54 +117,54 @@ public:
       return *this;
     }
 
-    ~bbp_nesting_level (void) = default;
+    ~bbp_nesting_level () = default;
 
     // Alias for clear function.
-    void reset (void) { clear (); }
+    void reset () { clear (); }
 
-    void bracket (void) { m_context.push (BRACKET); }
+    void bracket () { m_context.push (BRACKET); }
 
-    bool is_bracket (void)
+    bool is_bracket ()
     {
       return ! m_context.empty () && m_context.top () == BRACKET;
     }
 
-    void brace (void) { m_context.push (BRACE); }
+    void brace () { m_context.push (BRACE); }
 
-    bool is_brace (void)
+    bool is_brace ()
     {
       return ! m_context.empty () && m_context.top () == BRACE;
     }
 
-    void paren (void) { m_context.push (PAREN); }
+    void paren () { m_context.push (PAREN); }
 
-    bool is_paren (void)
+    bool is_paren ()
     {
       return ! m_context.empty () && m_context.top () == PAREN;
     }
 
-    void anon_fcn_body (void) { m_context.push (ANON_FCN_BODY); }
+    void anon_fcn_body () { m_context.push (ANON_FCN_BODY); }
 
-    bool is_anon_fcn_body (void)
+    bool is_anon_fcn_body ()
     {
       return ! m_context.empty () && m_context.top () == ANON_FCN_BODY;
     }
 
-    bool is_bracket_or_brace (void)
+    bool is_bracket_or_brace ()
     {
       return (! m_context.empty ()
               && (m_context.top () == BRACKET || m_context.top () == BRACE));
     }
 
-    bool none (void) { return m_context.empty (); }
+    bool none () { return m_context.empty (); }
 
-    void remove (void)
+    void remove ()
     {
       if (! m_context.empty ())
         m_context.pop ();
     }
 
-    void clear (void)
+    void clear ()
     {
       while (! m_context.empty ())
         m_context.pop ();
@@ -191,7 +191,7 @@ public:
     // elements that it stores.  Another reason is that it makes it
     // easier to change the implementation later if needed.
 
-    token_cache (void) : m_buffer () { }
+    token_cache () : m_buffer () { }
 
     // No copying!
 
@@ -199,14 +199,14 @@ public:
 
     token_cache& operator = (const token_cache&) = delete;
 
-    ~token_cache (void) { clear (); }
+    ~token_cache () { clear (); }
 
     void push (token *tok)
     {
       m_buffer.push_front (tok);
     }
 
-    void pop (void)
+    void pop ()
     {
       if (! empty ())
         {
@@ -227,32 +227,32 @@ public:
     }
 
     // Most recently pushed.
-    token * front (void)
+    token * front ()
     {
       return empty () ? nullptr : m_buffer.front ();
     }
 
-    const token * front (void) const
+    const token * front () const
     {
       return empty () ? nullptr : m_buffer.front ();
     }
 
-    token * back (void)
+    token * back ()
     {
       return empty () ? nullptr : m_buffer.back ();
     }
 
-    const token * back (void) const
+    const token * back () const
     {
       return empty () ? nullptr : m_buffer.back ();
     }
 
     // Number of elements currently in the buffer.
-    std::size_t size (void) const { return m_buffer.size (); }
+    std::size_t size () const { return m_buffer.size (); }
 
-    bool empty (void) const { return m_buffer.empty (); }
+    bool empty () const { return m_buffer.empty (); }
 
-    void clear (void)
+    void clear ()
     {
       while (! empty ())
         pop ();
@@ -326,25 +326,25 @@ public:
 
   lexical_feedback& operator = (const lexical_feedback&) = delete;
 
-  ~lexical_feedback (void);
+  ~lexical_feedback ();
 
-  void init (void);
+  void init ();
 
-  void reset (void);
+  void reset ();
 
-  int previous_token_value (void) const;
+  int previous_token_value () const;
 
   bool previous_token_value_is (int tok_val) const;
 
-  void mark_previous_token_trailing_space (void);
+  void mark_previous_token_trailing_space ();
 
-  bool space_follows_previous_token (void) const;
+  bool space_follows_previous_token () const;
 
-  bool previous_token_is_binop (void) const;
+  bool previous_token_is_binop () const;
 
-  bool previous_token_is_keyword (void) const;
+  bool previous_token_is_keyword () const;
 
-  bool previous_token_may_be_command (void) const;
+  bool previous_token_may_be_command () const;
 
   void mark_as_variable (const std::string& nm);
   void mark_as_variables (const std::list<std::string>& lst);
@@ -539,7 +539,7 @@ public:
   {
   public:
 
-    input_buffer (void)
+    input_buffer ()
       : m_buffer (), m_offset (0), m_chars_left (0), m_eof (false)
     { }
 
@@ -548,9 +548,9 @@ public:
     // Copy at most max_size characters to buf.
     int copy_chunk (char *buf, std::size_t max_size, bool by_lines = false);
 
-    bool empty (void) const { return m_chars_left == 0; }
+    bool empty () const { return m_chars_left == 0; }
 
-    bool at_eof (void) const { return m_eof; }
+    bool at_eof () const { return m_eof; }
 
   private:
 
@@ -567,9 +567,9 @@ public:
   {
   public:
 
-    comment_buffer (void) : m_comment_list (nullptr) { }
+    comment_buffer () : m_comment_list (nullptr) { }
 
-    ~comment_buffer (void) { delete m_comment_list; }
+    ~comment_buffer () { delete m_comment_list; }
 
     void append (const std::string& s, comment_elt::comment_type t)
     {
@@ -581,7 +581,7 @@ public:
 
     // Caller is expected to delete the returned value.
 
-    comment_list * get_comment (void)
+    comment_list * get_comment ()
     {
       comment_list *retval = m_comment_list;
 
@@ -590,7 +590,7 @@ public:
       return retval;
     }
 
-    void reset (void)
+    void reset ()
     {
       delete m_comment_list;
 
@@ -615,31 +615,31 @@ public:
 
   base_lexer& operator = (const base_lexer&) = delete;
 
-  virtual ~base_lexer (void);
+  virtual ~base_lexer ();
 
-  void init (void);
+  void init ();
 
-  virtual bool is_push_lexer (void) const { return false; }
+  virtual bool is_push_lexer () const { return false; }
 
-  virtual void reset (void);
+  virtual void reset ();
 
-  void prep_for_file (void);
+  void prep_for_file ();
 
   void begin_string (int state);
 
   virtual int fill_flex_buffer (char *buf, unsigned int max_size) = 0;
 
-  bool at_end_of_buffer (void) const { return m_input_buf.empty (); }
+  bool at_end_of_buffer () const { return m_input_buf.empty (); }
 
-  bool at_end_of_file (void) const { return m_input_buf.at_eof (); }
+  bool at_end_of_file () const { return m_input_buf.at_eof (); }
 
-  int handle_end_of_input (void);
+  int handle_end_of_input ();
 
-  char * flex_yytext (void);
+  char * flex_yytext ();
 
-  int flex_yyleng (void);
+  int flex_yyleng ();
 
-  int text_yyinput (void);
+  int text_yyinput ();
 
   void xunput (char c, char *buf);
 
@@ -647,37 +647,37 @@ public:
 
   void update_token_positions (int tok_len);
 
-  bool looking_at_space (void);
+  bool looking_at_space ();
 
-  bool inside_any_object_index (void);
+  bool inside_any_object_index ();
 
   int make_keyword_token (const std::string& s);
 
   bool fq_identifier_contains_keyword (const std::string& s);
 
-  bool whitespace_is_significant (void);
+  bool whitespace_is_significant ();
 
   // We only provide specializations with base equal to 2, 10, or 16.
   template <int base>
-  int handle_number (void);
+  int handle_number ();
 
-  void handle_continuation (void);
+  void handle_continuation ();
 
   void finish_comment (comment_elt::comment_type typ);
 
-  comment_list * get_comment (void) { return m_comment_buf.get_comment (); }
+  comment_list * get_comment () { return m_comment_buf.get_comment (); }
 
   int handle_close_bracket (int bracket_type);
 
-  bool looks_like_command_arg (void);
+  bool looks_like_command_arg ();
 
-  int handle_superclass_identifier (void);
+  int handle_superclass_identifier ();
 
-  int handle_meta_identifier (void);
+  int handle_meta_identifier ();
 
-  int handle_fq_identifier (void);
+  int handle_fq_identifier ();
 
-  int handle_identifier (void);
+  int handle_identifier ();
 
   void maybe_warn_separator_insert (char sep);
 
@@ -685,7 +685,7 @@ public:
 
   void maybe_warn_language_extension_comment (char c);
 
-  void warn_language_extension_continuation (void);
+  void warn_language_extension_continuation ();
 
   void warn_language_extension_operator (const std::string& op);
 
@@ -693,19 +693,19 @@ public:
 
   void push_token (token *);
 
-  token * current_token (void);
+  token * current_token ();
 
-  std::size_t pending_token_count (void) const;
+  std::size_t pending_token_count () const;
 
   void display_token (int tok);
 
   void fatal_error (const char *msg);
 
-  bool debug_flag (void) const;
+  bool debug_flag () const;
 
-  bool display_tokens (void) const;
+  bool display_tokens () const;
 
-  void increment_token_count (void);
+  void increment_token_count ();
 
   void lexer_debug (const char *pattern);
 
@@ -718,31 +718,31 @@ public:
   // Object that collects comment text.
   comment_buffer m_comment_buf;
 
-  virtual std::string input_source (void) const { return "unknown"; }
+  virtual std::string input_source () const { return "unknown"; }
 
-  virtual bool input_from_terminal (void) const { return false; }
+  virtual bool input_from_terminal () const { return false; }
 
-  virtual bool input_from_file (void) const { return false; }
+  virtual bool input_from_file () const { return false; }
 
-  virtual bool input_from_eval_string (void) const { return false; }
+  virtual bool input_from_eval_string () const { return false; }
 
-  bool input_from_tmp_history_file (void);
+  bool input_from_tmp_history_file ();
 
   void push_start_state (int state);
 
-  void pop_start_state (void);
+  void pop_start_state ();
 
-  void clear_start_state (void);
+  void clear_start_state ();
 
-  int start_state (void) const { return start_state_stack.top (); }
+  int start_state () const { return start_state_stack.top (); }
 
-  void display_start_state (void) const;
+  void display_start_state () const;
 
   bool maybe_unput_comma_before_unary_op (int tok);
 
   int handle_op (int tok, bool bos = false, bool compat = true);
 
-  int finish_command_arg (void);
+  int finish_command_arg ();
 
   int handle_token (int tok, token *tok_val = nullptr);
 
@@ -786,29 +786,29 @@ public:
 
   lexer& operator = (const lexer&) = delete;
 
-  void reset (void)
+  void reset ()
   {
     m_initial_input = true;
 
     base_lexer::reset ();
   }
 
-  std::string input_source (void) const
+  std::string input_source () const
   {
     return m_reader.input_source ();
   }
 
-  bool input_from_terminal (void) const
+  bool input_from_terminal () const
   {
     return m_reader.input_from_terminal ();
   }
 
-  bool input_from_file (void) const
+  bool input_from_file () const
   {
     return m_reader.input_from_file ();
   }
 
-  bool input_from_eval_string (void) const
+  bool input_from_eval_string () const
   {
     return m_reader.input_from_eval_string ();
   }
@@ -864,11 +864,11 @@ public:
 
   push_lexer& operator = (const push_lexer&) = delete;
 
-  bool is_push_lexer (void) const { return true; }
+  bool is_push_lexer () const { return true; }
 
   void append_input (const std::string& input, bool eof);
 
-  std::string input_source (void) const { return "push buffer"; }
+  std::string input_source () const { return "push buffer"; }
 
   int fill_flex_buffer (char *buf, unsigned int max_size);
 };

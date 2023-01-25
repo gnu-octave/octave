@@ -93,7 +93,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void set_visible (bool visible);
 
     //! Init the search text with the selected text in the editor tab
-    void init_search_text (void);
+    void init_search_text ();
 
     //! Restore position and the search options from the given settings
     //! where def_pos is the default position suitable for the current
@@ -102,8 +102,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public slots:
 
-    void find_next (void);
-    void find_prev (void);
+    void find_next ();
+    void find_prev ();
 
     //! Slot for updating the edit area when the active tab has changed
     void update_edit_area (octave_qscintilla *);
@@ -116,8 +116,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void handle_backward_search_changed (int);
 
     void find (bool forward = true);
-    void replace (void);
-    void replace_all (void);
+    void replace ();
+    void replace_all ();
 
   private:
 
@@ -133,11 +133,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     //! Update mru lists with new entry
     void mru_update (QComboBox *mru);
 
-    void no_matches_message (void);
-    void do_replace (void);
+    void no_matches_message ();
+    void do_replace ();
 
-    void handle_search_text_changed (void);
-    void handle_replace_text_changed (void);
+    void handle_search_text_changed ();
+    void handle_replace_text_changed ();
 
     octave_dock_widget *m_editor;
 

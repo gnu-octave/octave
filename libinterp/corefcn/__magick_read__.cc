@@ -216,28 +216,28 @@ public:
   image_region& operator = (const image_region&) = default;
   image_region& operator = (image_region&&) = default;
 
-  ~image_region (void) = default;
+  ~image_region () = default;
 
-  octave_idx_type row_start (void) const { return m_row_start; }
-  octave_idx_type col_start (void) const { return m_col_start; }
-  octave_idx_type row_end (void) const { return m_row_end; }
-  octave_idx_type col_end (void) const { return m_col_end; }
+  octave_idx_type row_start () const { return m_row_start; }
+  octave_idx_type col_start () const { return m_col_start; }
+  octave_idx_type row_end () const { return m_row_end; }
+  octave_idx_type col_end () const { return m_col_end; }
 
   // Length of the area to load into the Image Pixel Cache.  We use max and
   // min to account for cases where last element of range is the range limit.
 
-  octave_idx_type row_cache (void) const { return m_row_cache; }
-  octave_idx_type col_cache (void) const { return m_col_cache; }
+  octave_idx_type row_cache () const { return m_row_cache; }
+  octave_idx_type col_cache () const { return m_col_cache; }
 
   // How much we have to shift in the memory when doing the loops.
 
-  octave_idx_type row_shift (void) const { return m_row_shift; }
-  octave_idx_type col_shift (void) const { return m_col_shift; }
+  octave_idx_type row_shift () const { return m_row_shift; }
+  octave_idx_type col_shift () const { return m_col_shift; }
 
   // The actual height and width of the output image
 
-  octave_idx_type row_out (void) const { return m_row_out; }
-  octave_idx_type col_out (void) const { return m_col_out; }
+  octave_idx_type row_out () const { return m_row_out; }
+  octave_idx_type col_out () const { return m_col_out; }
 
 private:
 
@@ -794,7 +794,7 @@ read_file (const std::string& filename, std::vector<Magick::Image>& imvec)
 }
 
 static void
-maybe_initialize_magick (void)
+maybe_initialize_magick ()
 {
   static bool initialized = false;
 

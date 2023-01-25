@@ -154,7 +154,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // Slot for adding the current page as a bookmark
-  void documentation_bookmarks::add_bookmark (void)
+  void documentation_bookmarks::add_bookmark ()
   {
     QUrl url = m_browser->historyUrl (0);
 
@@ -282,7 +282,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     filter_bookmarks (pattern);
   }
 
-  void documentation_bookmarks::update_filter_history (void)
+  void documentation_bookmarks::update_filter_history ()
   {
     QString text = m_filter->currentText ();   // get current text
     int index = m_filter->findText (text);     // and its actual index
@@ -378,7 +378,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_filter_widget->setVisible (m_filter_shown);
   }
 
-  void documentation_bookmarks::save_settings (void)
+  void documentation_bookmarks::save_settings ()
   {
     // Write the bookmarks to the xbel-file
     write_bookmarks ();
@@ -397,7 +397,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.sync ();
   }
 
-  void documentation_bookmarks::write_bookmarks (void)
+  void documentation_bookmarks::write_bookmarks ()
   {
     if (! m_xbel_file.open (QFile::WriteOnly | QFile::Text))
       {
@@ -450,7 +450,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  QString documentation_bookmarks::read_bookmarks (void)
+  QString documentation_bookmarks::read_bookmarks ()
   {
     QString error_message;
 

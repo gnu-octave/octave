@@ -68,7 +68,7 @@ err_method_access (const std::string& from, const cdef_method& meth)
 }
 
 void
-cdef_method::cdef_method_rep::check_method (void)
+cdef_method::cdef_method_rep::check_method ()
 {
   if (is_external ())
     {
@@ -179,7 +179,7 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
 }
 
 bool
-cdef_method::cdef_method_rep::is_constructor (void) const
+cdef_method::cdef_method_rep::is_constructor () const
 {
   if (m_function.is_function())
     return m_function.function_value ()->is_classdef_constructor ();
@@ -196,7 +196,7 @@ cdef_method::cdef_method_rep::is_defined_in_class (const std::string& cname) con
 }
 
 std::string
-cdef_method::cdef_method_rep::get_doc_string (void)
+cdef_method::cdef_method_rep::get_doc_string ()
 {
   check_method ();
 
@@ -206,7 +206,7 @@ cdef_method::cdef_method_rep::get_doc_string (void)
 }
 
 bool
-cdef_method::cdef_method_rep::check_access (void) const
+cdef_method::cdef_method_rep::check_access () const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 

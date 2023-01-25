@@ -42,7 +42,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-std::string blas_version (void)
+std::string blas_version ()
 {
   dynamic_library dyn_libs ("");
 
@@ -73,7 +73,7 @@ std::string blas_version (void)
     }
 
   // OpenBLAS
-  typedef char *(*open_fcn_type) (void);
+  typedef char *(*open_fcn_type) ();
   open_fcn_type open_f_ptr = reinterpret_cast<open_fcn_type>
                              (dyn_libs.search ("openblas_get_config"));
 
@@ -160,7 +160,7 @@ std::string blas_version (void)
   return retval;
 }
 
-std::string lapack_version (void)
+std::string lapack_version ()
 {
   std::string retval = "unknown LAPACK";
 

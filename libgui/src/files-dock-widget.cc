@@ -62,7 +62,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     FileTreeViewer (QWidget *p) : QTreeView (p) { }
 
-    ~FileTreeViewer (void) = default;
+    ~FileTreeViewer () = default;
 
     void mousePressEvent (QMouseEvent *e)
     {
@@ -425,7 +425,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       make_window ();
   }
 
-  void files_dock_widget::save_settings (void)
+  void files_dock_widget::save_settings ()
   {
     gui_settings settings;
 
@@ -463,12 +463,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     display_directory (dir);
   }
 
-  void files_dock_widget::accept_directory_line_edit (void)
+  void files_dock_widget::accept_directory_line_edit ()
   {
     display_directory (m_current_directory->currentText ());
   }
 
-  void files_dock_widget::change_directory_up (void)
+  void files_dock_widget::change_directory_up ()
   {
     QDir dir
       = QDir (m_file_system_model->filePath (m_file_tree_view->rootIndex ()));
@@ -477,7 +477,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     display_directory (dir.absolutePath ());
   }
 
-  void files_dock_widget::do_sync_octave_directory (void)
+  void files_dock_widget::do_sync_octave_directory ()
   {
     QDir dir
       = QDir (m_file_system_model->filePath (m_file_tree_view->rootIndex ()));
@@ -485,7 +485,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit displayed_directory_changed (dir.absolutePath ());
   }
 
-  void files_dock_widget::do_sync_browser_directory (void)
+  void files_dock_widget::do_sync_browser_directory ()
   {
     display_directory (m_octave_dir, false); // false: no sync of octave dir
   }
@@ -999,7 +999,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void files_dock_widget::notice_settings (void)
+  void files_dock_widget::notice_settings ()
   {
     gui_settings settings;
 

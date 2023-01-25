@@ -55,7 +55,7 @@ Range
 {
 public:
 
-  Range (void)
+  Range ()
     : m_base (0), m_limit (0), m_inc (0), m_numel (0)
   { }
 
@@ -73,7 +73,7 @@ public:
 
   Range& operator = (const Range& r) = default;
 
-  ~Range (void) = default;
+  ~Range () = default;
 
   Range (double b, double l)
     : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ())
@@ -90,24 +90,24 @@ public:
   }
 
   // The range has a finite number of elements.
-  bool ok (void) const
+  bool ok () const
   {
     return (octave::math::isfinite (m_limit)
             && (m_numel >= 0 || m_numel == -2));
   }
 
-  double base (void) const { return m_base; }
-  double limit (void) const { return m_limit; }
-  double increment (void) const { return m_inc; }
+  double base () const { return m_base; }
+  double limit () const { return m_limit; }
+  double increment () const { return m_inc; }
 
-  octave_idx_type numel (void) const { return m_numel; }
+  octave_idx_type numel () const { return m_numel; }
 
-  bool all_elements_are_ints (void) const;
+  bool all_elements_are_ints () const;
 
-  Matrix matrix_value (void) const;
+  Matrix matrix_value () const;
 
-  double min (void) const;
-  double max (void) const;
+  double min () const;
+  double max () const;
 
 private:
 
@@ -117,15 +117,15 @@ private:
 
   octave_idx_type m_numel;
 
-  octave_idx_type numel_internal (void) const;
+  octave_idx_type numel_internal () const;
 
-  double limit_internal (void) const;
+  double limit_internal () const;
 
-  void init (void);
+  void init ();
 };
 
 bool
-Range::all_elements_are_ints (void) const
+Range::all_elements_are_ints () const
 {
   // If the base and increment are ints, the final value in the range will also
   // be an integer, even if the limit is not.  If there is one or fewer
@@ -137,7 +137,7 @@ Range::all_elements_are_ints (void) const
 }
 
 Matrix
-Range::matrix_value (void) const
+Range::matrix_value () const
 {
   Matrix retval (1, m_numel);
 
@@ -162,7 +162,7 @@ Range::matrix_value (void) const
 //       do_minmax_body() in max.cc avoids calling Range::min/max if numel == 0.
 
 double
-Range::min (void) const
+Range::min () const
 {
   double retval = 0.0;
   if (m_numel > 0)
@@ -183,7 +183,7 @@ Range::min (void) const
 }
 
 double
-Range::max (void) const
+Range::max () const
 {
   double retval = 0.0;
   if (m_numel > 0)
@@ -281,7 +281,7 @@ teq (double u, double v,
 }
 
 octave_idx_type
-Range::numel_internal (void) const
+Range::numel_internal () const
 {
   octave_idx_type retval = -1;
 
@@ -332,7 +332,7 @@ Range::numel_internal (void) const
 }
 
 double
-Range::limit_internal (void) const
+Range::limit_internal () const
 {
   double new_limit = m_inc > 0 ? max () : min ();
 
@@ -344,7 +344,7 @@ Range::limit_internal (void) const
 }
 
 void
-Range::init (void)
+Range::init ()
 {
   m_numel = numel_internal ();
 
@@ -354,7 +354,7 @@ Range::init (void)
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_legacy_range, "range", "double");
 
-octave_legacy_range::octave_legacy_range (void)
+octave_legacy_range::octave_legacy_range ()
   : octave_base_value (), m_range (new Range ()) { }
 
 octave_legacy_range::octave_legacy_range (const Range& r)
@@ -379,14 +379,14 @@ default_numeric_conversion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_legacy_range::numeric_conversion_function (void) const
+octave_legacy_range::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
                                             octave_matrix::static_type_id ());
 }
 
 octave_base_value *
-octave_legacy_range::try_narrowing_conversion (void)
+octave_legacy_range::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 

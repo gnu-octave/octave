@@ -258,7 +258,7 @@ generate_possible_completions (const std::string& text, std::string& prefix,
 }
 
 static bool
-is_completing_dirfns (void)
+is_completing_dirfns ()
 {
   static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
   static const std::size_t dirfns_commands_length = 4;
@@ -385,7 +385,7 @@ generate_completion (const std::string& text, int state)
   return retval;
 }
 
-static int internal_input_event_hook_fcn (void)
+static int internal_input_event_hook_fcn ()
 {
   octave_quit ();
 
@@ -746,7 +746,7 @@ input_system::get_user_input (const octave_value_list& args, int nargout)
   return retval;
 }
 
-bool input_system::have_input_event_hooks (void) const
+bool input_system::have_input_event_hooks () const
 {
   return ! m_input_event_hook_functions.empty ();
 }
@@ -768,12 +768,12 @@ bool input_system::remove_input_event_hook (const std::string& hook_fcn_id)
   return true;
 }
 
-void input_system::clear_input_event_hooks (void)
+void input_system::clear_input_event_hooks ()
 {
   m_input_event_hook_functions.clear ();
 }
 
-void input_system::run_input_event_hooks (void)
+void input_system::run_input_event_hooks ()
 {
   m_input_event_hook_functions.run ();
 }
@@ -888,9 +888,9 @@ public:
 
   std::string get_input (const std::string& prompt, bool& eof);
 
-  std::string input_source (void) const { return s_in_src; }
+  std::string input_source () const { return s_in_src; }
 
-  bool input_from_terminal (void) const { return true; }
+  bool input_from_terminal () const { return true; }
 
 private:
 
@@ -917,9 +917,9 @@ public:
 
   std::string get_input (const std::string& prompt, bool& eof);
 
-  std::string input_source (void) const { return s_in_src; }
+  std::string input_source () const { return s_in_src; }
 
-  bool input_from_file (void) const { return true; }
+  bool input_from_file () const { return true; }
 
 private:
 
@@ -941,9 +941,9 @@ public:
 
   std::string get_input (const std::string& prompt, bool& eof);
 
-  std::string input_source (void) const { return s_in_src; }
+  std::string input_source () const { return s_in_src; }
 
-  bool input_from_eval_string (void) const { return true; }
+  bool input_from_eval_string () const { return true; }
 
 private:
 

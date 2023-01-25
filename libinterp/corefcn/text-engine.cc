@@ -33,7 +33,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 uint32_t
-text_element_symbol::get_symbol_code (void) const
+text_element_symbol::get_symbol_code () const
 {
   uint32_t code = invalid_code;
 

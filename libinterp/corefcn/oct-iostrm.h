@@ -52,7 +52,7 @@ public:
 
 protected:
 
-  ~base_iostream (void) = default;
+  ~base_iostream () = default;
 
 public:
 
@@ -62,25 +62,25 @@ public:
 
   // Return current stream position.
 
-  off_t tell (void);
+  off_t tell ();
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const;
+  bool eof () const;
 
   // The name of the file.
 
-  std::string name (void) const { return m_name; }
+  std::string name () const { return m_name; }
 
 protected:
 
-  void invalid_operation (void) const;
+  void invalid_operation () const;
 
 private:
 
   std::string m_name;
 
-  virtual const char * stream_type (void) const = 0;
+  virtual const char * stream_type () const = 0;
 };
 
 class
@@ -98,21 +98,21 @@ public:
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const;
+  bool eof () const;
 
-  std::istream * input_stream (void) { return m_istream; }
+  std::istream * input_stream () { return m_istream; }
 
-  std::ostream * output_stream (void) { return nullptr; }
+  std::ostream * output_stream () { return nullptr; }
 
 protected:
 
-  ~istream (void) = default;
+  ~istream () = default;
 
 private:
 
   std::istream *m_istream;
 
-  const char * stream_type (void) const { return "istream"; }
+  const char * stream_type () const { return "istream"; }
 
   // No copying!
 
@@ -136,21 +136,21 @@ public:
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const;
+  bool eof () const;
 
-  std::istream * input_stream (void) { return nullptr; }
+  std::istream * input_stream () { return nullptr; }
 
-  std::ostream * output_stream (void) { return m_ostream; }
+  std::ostream * output_stream () { return m_ostream; }
 
 protected:
 
-  ~ostream (void) = default;
+  ~ostream () = default;
 
 private:
 
   std::ostream *m_ostream;
 
-  const char * stream_type (void) const { return "ostream"; }
+  const char * stream_type () const { return "ostream"; }
 
   // No copying!
 

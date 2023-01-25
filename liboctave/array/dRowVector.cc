@@ -123,7 +123,7 @@ RowVector::append (const RowVector& a) const
 }
 
 ColumnVector
-RowVector::transpose (void) const
+RowVector::transpose () const
 {
   return MArray<double>::transpose ();
 }
@@ -204,7 +204,7 @@ operator * (const RowVector& v, const Matrix& a)
 // other operations
 
 double
-RowVector::min (void) const
+RowVector::min () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -220,7 +220,7 @@ RowVector::min (void) const
 }
 
 double
-RowVector::max (void) const
+RowVector::max () const
 {
   octave_idx_type len = numel ();
   if (len == 0)

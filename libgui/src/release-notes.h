@@ -39,13 +39,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
 
-    release_notes (void);
+    release_notes ();
 
-    ~release_notes (void) = default;
+    ~release_notes () = default;
 
   public slots:
 
-    void display (void);
+    void display ();
 
   private:
 

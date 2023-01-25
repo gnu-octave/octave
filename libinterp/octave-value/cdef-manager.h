@@ -53,7 +53,7 @@ public:
 
   cdef_manager& operator = (const cdef_manager&) = delete;
 
-  ~cdef_manager (void) = default;
+  ~cdef_manager () = default;
 
   OCTINTERP_API cdef_class
   find_class (const std::string& name, bool error_if_not_found = true,
@@ -90,12 +90,12 @@ public:
     m_all_packages.erase (pkg.get_name ());
   }
 
-  const cdef_class& meta_class (void) const { return m_meta_class; }
-  const cdef_class& meta_property (void) const { return m_meta_property; }
-  const cdef_class& meta_method (void) const { return m_meta_method; }
-  const cdef_class& meta_package (void) const { return m_meta_package; }
+  const cdef_class& meta_class () const { return m_meta_class; }
+  const cdef_class& meta_property () const { return m_meta_property; }
+  const cdef_class& meta_method () const { return m_meta_method; }
+  const cdef_class& meta_package () const { return m_meta_package; }
 
-  const cdef_package& meta (void) const { return m_meta; }
+  const cdef_package& meta () const { return m_meta; }
 
   OCTINTERP_API cdef_class
   make_class (const std::string& name,

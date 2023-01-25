@@ -42,13 +42,13 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 std::shared_ptr<symbol_record::symbol_record_rep>
-symbol_record::symbol_record_rep::dup (void) const
+symbol_record::symbol_record_rep::dup () const
 {
   return std::shared_ptr<symbol_record::symbol_record_rep> (new symbol_record_rep (*this));
 }
 
 octave_value
-symbol_record::symbol_record_rep::dump (void) const
+symbol_record::symbol_record_rep::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "frame_offset", m_frame_offset },

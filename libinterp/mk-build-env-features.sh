@@ -48,7 +48,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(build_env)
 
     octave_scalar_map
-    features (void)
+    features ()
     {
       static bool initialized = false;
 

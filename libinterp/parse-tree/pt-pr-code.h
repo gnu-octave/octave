@@ -64,7 +64,7 @@ public:
 
   tree_print_code& operator = (const tree_print_code&) = delete;
 
-  ~tree_print_code (void) = default;
+  ~tree_print_code () = default;
 
   void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 
@@ -185,17 +185,17 @@ private:
   // Nonzero means we are not printing newlines and indenting.
   int m_suppress_newlines;
 
-  void reset_indent_level (void) { m_curr_print_indent_level = 0; }
+  void reset_indent_level () { m_curr_print_indent_level = 0; }
 
-  void increment_indent_level (void) { m_curr_print_indent_level += 2; }
+  void increment_indent_level () { m_curr_print_indent_level += 2; }
 
-  void decrement_indent_level (void) { m_curr_print_indent_level -= 2; }
+  void decrement_indent_level () { m_curr_print_indent_level -= 2; }
 
   void newline (const char *alt_txt = ", ");
 
-  void indent (void);
+  void indent ();
 
-  void reset (void);
+  void reset ();
 
   void print_parens (const tree_expression& expr, const char *txt);
 
@@ -207,7 +207,7 @@ private:
 
   // Must create with an output stream!
 
-  tree_print_code (void);
+  tree_print_code ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

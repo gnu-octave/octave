@@ -66,7 +66,7 @@ public:
 
   octave_value PS1 (const octave_value_list& args, int nargout);
 
-  std::string PS1 (void) const { return m_PS1; }
+  std::string PS1 () const { return m_PS1; }
 
   std::string PS1 (const std::string& s)
   {
@@ -79,7 +79,7 @@ public:
 
   octave_value PS2 (const octave_value_list& args, int nargout);
 
-  std::string PS2 (void) const { return m_PS2; }
+  std::string PS2 () const { return m_PS2; }
 
   std::string PS2 (const std::string& s)
   {
@@ -90,7 +90,7 @@ public:
 
   void set_PS2 (const std::string& s) { m_PS2 = s; }
 
-  std::string last_debugging_command (void) const
+  std::string last_debugging_command () const
   {
     return m_last_debugging_command;
   }
@@ -105,7 +105,7 @@ public:
   octave_value
   completion_append_char (const octave_value_list& args, int nargout);
 
-  char completion_append_char (void) const
+  char completion_append_char () const
   {
     return m_completion_append_char;
   }
@@ -121,7 +121,7 @@ public:
 
   octave_value gud_mode (const octave_value_list& args, int nargout);
 
-  bool gud_mode (void) const { return m_gud_mode; }
+  bool gud_mode () const { return m_gud_mode; }
 
   bool gud_mode (bool flag)
   {
@@ -134,7 +134,7 @@ public:
 
   octave_value mfile_encoding (const octave_value_list& args, int nargout);
 
-  std::string mfile_encoding (void) const { return m_mfile_encoding; }
+  std::string mfile_encoding () const { return m_mfile_encoding; }
 
   std::string mfile_encoding (const std::string& s)
   {
@@ -152,7 +152,7 @@ public:
   octave_value
   auto_repeat_debug_command (const octave_value_list& args, int nargout);
 
-  bool auto_repeat_debug_command (void) const
+  bool auto_repeat_debug_command () const
   {
     return m_auto_repeat_debug_command;
   }
@@ -171,15 +171,15 @@ public:
   octave_value_list
   get_user_input (const octave_value_list& args, int nargout);
 
-  bool have_input_event_hooks (void) const;
+  bool have_input_event_hooks () const;
 
   void add_input_event_hook (const hook_function& hook_fcn);
 
   bool remove_input_event_hook (const std::string& hook_fcn_id);
 
-  void clear_input_event_hooks (void);
+  void clear_input_event_hooks ();
 
-  void run_input_event_hooks (void);
+  void run_input_event_hooks ();
 
 private:
 
@@ -233,19 +233,19 @@ public:
     : m_interpreter (x.m_interpreter)
   { }
 
-  virtual ~base_reader (void) = default;
+  virtual ~base_reader () = default;
 
   virtual std::string get_input (const std::string& prompt, bool& eof) = 0;
 
-  virtual std::string input_source (void) const { return s_in_src; }
+  virtual std::string input_source () const { return s_in_src; }
 
   std::string octave_gets (const std::string& prompt, bool& eof);
 
-  virtual bool input_from_terminal (void) const { return false; }
+  virtual bool input_from_terminal () const { return false; }
 
-  virtual bool input_from_file (void) const { return false; }
+  virtual bool input_from_file () const { return false; }
 
-  virtual bool input_from_eval_string (void) const { return false; }
+  virtual bool input_from_eval_string () const { return false; }
 
 protected:
 
@@ -272,29 +272,29 @@ public:
 
   input_reader& operator = (const input_reader& ir) = default;
 
-  ~input_reader (void) = default;
+  ~input_reader () = default;
 
   std::string get_input (const std::string& prompt, bool& eof)
   {
     return m_rep->get_input (prompt, eof);
   }
 
-  std::string input_source (void) const
+  std::string input_source () const
   {
     return m_rep->input_source ();
   }
 
-  bool input_from_terminal (void) const
+  bool input_from_terminal () const
   {
     return m_rep->input_from_terminal ();
   }
 
-  bool input_from_file (void) const
+  bool input_from_file () const
   {
     return m_rep->input_from_file ();
   }
 
-  bool input_from_eval_string (void) const
+  bool input_from_eval_string () const
   {
     return m_rep->input_from_eval_string ();
   }

@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     ToggleButtonControl (octave::interpreter& interp,
                          const graphics_object& go, QPushButton *box);
-    ~ToggleButtonControl (void);
+    ~ToggleButtonControl ();
 
     static ToggleButtonControl *
     create (octave::interpreter& interp,

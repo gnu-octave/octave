@@ -40,7 +40,7 @@ ComplexColumnVector : public MArray<Complex>
 
 public:
 
-  ComplexColumnVector (void) : MArray<Complex> (dim_vector (0, 1)) { }
+  ComplexColumnVector () : MArray<Complex> (dim_vector (0, 1)) { }
 
   explicit ComplexColumnVector (octave_idx_type n)
     : MArray<Complex> (dim_vector (n, 1)) { }
@@ -87,8 +87,8 @@ public:
   OCTAVE_API ComplexColumnVector stack (const ColumnVector& a) const;
   OCTAVE_API ComplexColumnVector stack (const ComplexColumnVector& a) const;
 
-  OCTAVE_API ComplexRowVector hermitian (void) const;
-  OCTAVE_API ComplexRowVector transpose (void) const;
+  OCTAVE_API ComplexRowVector hermitian () const;
+  OCTAVE_API ComplexRowVector transpose () const;
 
   friend OCTAVE_API ComplexColumnVector conj (const ComplexColumnVector& a);
 
@@ -131,10 +131,10 @@ public:
 
   // other operations
 
-  OCTAVE_API Complex min (void) const;
-  OCTAVE_API Complex max (void) const;
+  OCTAVE_API Complex min () const;
+  OCTAVE_API Complex max () const;
 
-  OCTAVE_API ColumnVector abs (void) const;
+  OCTAVE_API ColumnVector abs () const;
 
   // i/o
 

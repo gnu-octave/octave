@@ -138,7 +138,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       emit start_gui_signal (gui_app);
   }
 
-  void qt_interpreter_events::close_gui (void)
+  void qt_interpreter_events::close_gui ()
   {
     if (m_octave_qobj.experimental_terminal_widget ())
       emit close_gui_signal ();
@@ -245,22 +245,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return answer.toStdString ();
   }
 
-  void qt_interpreter_events::update_path_dialog (void)
+  void qt_interpreter_events::update_path_dialog ()
   {
     emit update_path_dialog_signal ();
   }
 
-  void qt_interpreter_events::show_preferences (void)
+  void qt_interpreter_events::show_preferences ()
   {
     emit show_preferences_signal ();
   }
 
-  void qt_interpreter_events::apply_preferences (void)
+  void qt_interpreter_events::apply_preferences ()
   {
     emit apply_new_settings ();
   }
 
-  void qt_interpreter_events::show_terminal_window (void)
+  void qt_interpreter_events::show_terminal_window ()
   {
     emit show_terminal_window_signal ();
   }
@@ -272,17 +272,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return true;
   }
 
-  void qt_interpreter_events::show_file_browser (void)
+  void qt_interpreter_events::show_file_browser ()
   {
     emit show_file_browser_signal ();
   }
 
-  void qt_interpreter_events::show_command_history (void)
+  void qt_interpreter_events::show_command_history ()
   {
     emit show_command_history_signal ();
   }
 
-  void qt_interpreter_events::show_workspace (void)
+  void qt_interpreter_events::show_workspace ()
   {
     emit show_workspace_signal ();
   }
@@ -292,7 +292,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit show_community_news_signal (serial);
   }
 
-  void qt_interpreter_events::show_release_notes (void)
+  void qt_interpreter_events::show_release_notes ()
   {
     emit show_release_notes_signal ();
   }
@@ -310,7 +310,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit edit_variable_signal (QString::fromStdString (expr), val);
   }
 
-  bool qt_interpreter_events::confirm_shutdown (void)
+  bool qt_interpreter_events::confirm_shutdown ()
   {
     QMutexLocker autolock (&m_mutex);
 
@@ -534,7 +534,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                                    QString::fromStdString (status));
   }
 
-  void qt_interpreter_events::update_gui_lexer (void)
+  void qt_interpreter_events::update_gui_lexer ()
   {
     emit update_gui_lexer_signal (true);
   }
@@ -575,7 +575,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       emit refresh_variable_editor_signal ();
   }
 
-  void qt_interpreter_events::clear_workspace (void)
+  void qt_interpreter_events::clear_workspace ()
   {
     emit clear_workspace_signal ();
   }
@@ -600,15 +600,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit append_history_signal (QString::fromStdString (hist_entry));
   }
 
-  void qt_interpreter_events::clear_history (void)
+  void qt_interpreter_events::clear_history ()
   {
     emit clear_history_signal ();
   }
 
-  void qt_interpreter_events::pre_input_event (void)
+  void qt_interpreter_events::pre_input_event ()
   { }
 
-  void qt_interpreter_events::post_input_event (void)
+  void qt_interpreter_events::post_input_event ()
   { }
 
   void qt_interpreter_events::enter_debugger_event (const std::string& /*fcn_name*/,
@@ -630,7 +630,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     delete_debugger_pointer (file, line);
   }
 
-  void qt_interpreter_events::exit_debugger_event (void)
+  void qt_interpreter_events::exit_debugger_event ()
   {
     emit exit_debugger_signal ();
   }
@@ -661,7 +661,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  qt_interpreter_events::confirm_shutdown_octave (void)
+  qt_interpreter_events::confirm_shutdown_octave ()
   {
     QMutexLocker autolock (&m_mutex);
 

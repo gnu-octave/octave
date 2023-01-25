@@ -692,7 +692,7 @@ DASPK::integrate (const ColumnVector& tout, Matrix& xdot_out,
 }
 
 std::string
-DASPK::error_message (void) const
+DASPK::error_message () const
 {
   std::string retval;
 

@@ -62,7 +62,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (action, &QAction::toggled, this, &ToggleTool::triggered);
   }
 
-  ToggleTool::~ToggleTool (void)
+  ToggleTool::~ToggleTool ()
   { }
 
   void

@@ -52,7 +52,7 @@ octave_mex_function : public octave_function
 {
 public:
 
-  octave_mex_function (void)
+  octave_mex_function ()
     : m_mex_fcn_ptr (nullptr), m_exit_fcn_ptr (nullptr), m_sh_lib (),
       m_time_checked (), m_interleaved (false), m_is_fmex (false),
       m_is_system_fcn_file (false)
@@ -68,7 +68,7 @@ public:
 
   octave_mex_function& operator = (const octave_mex_function& fcn) = delete;
 
-  ~octave_mex_function (void);
+  ~octave_mex_function ();
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -79,37 +79,37 @@ public:
     m_time_checked = t;
   }
 
-  std::string fcn_file_name (void) const;
+  std::string fcn_file_name () const;
 
-  octave::sys::time time_parsed (void) const;
+  octave::sys::time time_parsed () const;
 
-  octave::sys::time time_checked (void) const { return m_time_checked; }
+  octave::sys::time time_checked () const { return m_time_checked; }
 
-  bool is_system_fcn_file (void) const { return m_is_system_fcn_file; }
+  bool is_system_fcn_file () const { return m_is_system_fcn_file; }
 
-  bool is_builtin_function (void) const { return false; }
+  bool is_builtin_function () const { return false; }
 
-  bool is_mex_function (void) const { return true; }
+  bool is_mex_function () const { return true; }
 
-  bool use_interleaved_complex (void) const { return m_interleaved; }
+  bool use_interleaved_complex () const { return m_interleaved; }
 
   octave_value_list
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ());
 
-  void atexit (void (*fcn) (void)) { m_exit_fcn_ptr = fcn; }
+  void atexit (void (*fcn) ()) { m_exit_fcn_ptr = fcn; }
 
-  octave::dynamic_library get_shlib (void) const { return m_sh_lib; }
+  octave::dynamic_library get_shlib () const { return m_sh_lib; }
 
-  void * mex_fcn_ptr (void) const { return m_mex_fcn_ptr; }
+  void * mex_fcn_ptr () const { return m_mex_fcn_ptr; }
 
-  bool is_fmex (void) const { return m_is_fmex; }
+  bool is_fmex () const { return m_is_fmex; }
 
 private:
 
   void *m_mex_fcn_ptr;
 
-  void (*m_exit_fcn_ptr) (void);
+  void (*m_exit_fcn_ptr) ();
 
   octave::dynamic_library m_sh_lib;
 

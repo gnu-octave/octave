@@ -48,7 +48,7 @@ tree_binary_expression::matlab_style_short_circuit_warning (const char *op)
 }
 
 std::string
-tree_binary_expression::oper (void) const
+tree_binary_expression::oper () const
 {
   return octave_value::binary_op_as_string (m_etype);
 }
@@ -164,7 +164,7 @@ tree_braindead_shortcircuit_binary_expression::evaluate (tree_evaluator& tw,
 // Boolean expressions.
 
 std::string
-tree_boolean_expression::oper (void) const
+tree_boolean_expression::oper () const
 {
   std::string retval = "<unknown>";
 

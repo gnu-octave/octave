@@ -60,7 +60,7 @@ eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-void tm_row_const::cellify (void)
+void tm_row_const::cellify ()
 {
   bool elt_changed = false;
 
@@ -421,7 +421,7 @@ octave_value tm_const::char_array_concat (char string_fill_char) const
   return octave_value (result, type);
 }
 
-octave_value tm_const::class_concat (void) const
+octave_value tm_const::class_concat () const
 {
   octave_value retval;
 
@@ -454,7 +454,7 @@ octave_value tm_const::class_concat (void) const
   return retval;
 }
 
-octave_value tm_const::generic_concat (void) const
+octave_value tm_const::generic_concat () const
 {
   // The line below might seem crazy, since we take a copy of the
   // first argument, resize it to be empty and then resize it to be
@@ -590,7 +590,7 @@ void tm_const::array_concat_internal (TYPE& result) const
 }
 
 template <typename TYPE>
-TYPE tm_const::array_concat (void) const
+TYPE tm_const::array_concat () const
 {
   typedef typename TYPE::element_type ELT_T;
 
@@ -639,7 +639,7 @@ TYPE tm_const::array_concat (void) const
 }
 
 template <typename TYPE>
-TYPE tm_const::sparse_array_concat (void) const
+TYPE tm_const::sparse_array_concat () const
 {
   if (m_dv.any_zero ())
     return TYPE (m_dv);
@@ -673,7 +673,7 @@ TYPE tm_const::sparse_array_concat (void) const
 }
 
 template <typename MAP>
-octave_map tm_const::map_concat (void) const
+octave_map tm_const::map_concat () const
 {
   if (m_dv.any_zero ())
     return octave_map (m_dv);

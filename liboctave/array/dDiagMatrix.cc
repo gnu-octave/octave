@@ -125,7 +125,7 @@ DiagMatrix::fill (const RowVector& a, octave_idx_type beg)
 }
 
 DiagMatrix
-DiagMatrix::abs (void) const
+DiagMatrix::abs () const
 {
   return DiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
@@ -224,7 +224,7 @@ DiagMatrix::column (char *s) const
 }
 
 DiagMatrix
-DiagMatrix::inverse (void) const
+DiagMatrix::inverse () const
 {
   octave_idx_type info;
   return inverse (info);
@@ -328,7 +328,7 @@ operator * (const DiagMatrix& a, const DiagMatrix& b)
 // other operations
 
 DET
-DiagMatrix::determinant (void) const
+DiagMatrix::determinant () const
 {
   DET det (1.0);
   if (rows () != cols ())
@@ -342,7 +342,7 @@ DiagMatrix::determinant (void) const
 }
 
 double
-DiagMatrix::rcond (void) const
+DiagMatrix::rcond () const
 {
   ColumnVector av = extract_diag (0).map<double> (fabs);
   double amx = av.max ();

@@ -116,8 +116,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_selection (), m_selection_replacement (), m_selection_line (-1),
       m_selection_col (-1), m_indicator_id (1)
   {
-    connect (this, SIGNAL (textChanged (void)),
-             this, SLOT (text_changed (void)));
+    connect (this, SIGNAL (textChanged ()),
+             this, SLOT (text_changed ()));
 
     connect (this, SIGNAL (cursorPositionChanged (int, int)),
              this, SLOT (cursor_position_changed (int, int)));
@@ -351,14 +351,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // call edit the function related to the current word
-  void octave_qscintilla::context_edit (void)
+  void octave_qscintilla::context_edit ()
   {
     if (get_actual_word ())
       contextmenu_edit (true);
   }
 
   // call edit the function related to the current word
-  void octave_qscintilla::context_run (void)
+  void octave_qscintilla::context_run ()
   {
     if (hasSelectedText ())
       {
@@ -381,7 +381,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // determine the actual word and whether we are in an octave or matlab script
-  bool octave_qscintilla::get_actual_word (void)
+  bool octave_qscintilla::get_actual_word ()
   {
     QPoint global_pos, local_pos;
     get_global_textcursor_pos (&global_pos, &local_pos);
@@ -392,7 +392,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // helper function for clearing all indicators of a specific style
-  void octave_qscintilla::clear_selection_markers (void)
+  void octave_qscintilla::clear_selection_markers ()
   {
     int end_pos = text ().length ();
     int end_line, end_col;
@@ -402,7 +402,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     markerDeleteAll (marker::selection);
   }
 
-  QString octave_qscintilla::eol_string (void)
+  QString octave_qscintilla::eol_string ()
   {
     switch (eolMode ())
       {
@@ -824,7 +824,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit context_menu_edit_signal (m_word_at_cursor);
   }
 
-  void octave_qscintilla::contextmenu_run_temp_error (void)
+  void octave_qscintilla::contextmenu_run_temp_error ()
   {
     QMessageBox::critical (this, tr ("Octave Editor"),
                            tr ("Creating temporary files failed.\n"
@@ -1100,7 +1100,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #endif
   }
 
-  void octave_qscintilla::text_changed (void)
+  void octave_qscintilla::text_changed ()
   {
     emit status_update (isUndoAvailable (), isRedoAvailable ());
   }
@@ -1125,7 +1125,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QsciScintilla::focusInEvent (focusEvent);
   }
 
-  void octave_qscintilla::show_replace_action_tooltip (void)
+  void octave_qscintilla::show_replace_action_tooltip ()
   {
     int pos;
     get_current_position (&pos, &m_selection_line, &m_selection_col);
@@ -1369,12 +1369,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void octave_qscintilla::handle_enter_debug_mode (void)
+  void octave_qscintilla::handle_enter_debug_mode ()
   {
     m_debug_mode = true;
   }
 
-  void octave_qscintilla::handle_exit_debug_mode (void)
+  void octave_qscintilla::handle_exit_debug_mode ()
   {
     m_debug_mode = false;
   }

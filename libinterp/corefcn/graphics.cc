@@ -136,7 +136,7 @@ validate_property_name (const std::string& who, const std::string& what,
 }
 
 static Matrix
-viridis_colormap (void)
+viridis_colormap ()
 {
   // The values below have been produced by viridis (64)(:)
   // It would be nice to be able to feval the
@@ -220,7 +220,7 @@ viridis_colormap (void)
 }
 
 static double
-default_screendepth (void)
+default_screendepth ()
 {
   octave::display_info& dpy_info = octave::__get_display_info__ ();
 
@@ -228,7 +228,7 @@ default_screendepth (void)
 }
 
 static Matrix
-default_screensize (void)
+default_screensize ()
 {
   Matrix retval (1, 4);
 
@@ -243,7 +243,7 @@ default_screensize (void)
 }
 
 static double
-default_screenpixelsperinch (void)
+default_screenpixelsperinch ()
 {
   octave::display_info& dpy_info = octave::__get_display_info__ ();
 
@@ -251,7 +251,7 @@ default_screenpixelsperinch (void)
 }
 
 static Matrix
-default_colororder (void)
+default_colororder ()
 {
   Matrix retval (7, 3, 0.0);
 
@@ -305,7 +305,7 @@ default_lim (bool logscale = false)
 }
 
 static Matrix
-default_data (void)
+default_data ()
 {
   Matrix retval (1, 2);
 
@@ -316,7 +316,7 @@ default_data (void)
 }
 
 static Matrix
-default_data_lim (void)
+default_data_lim ()
 {
   Matrix retval (1, 4);
 
@@ -329,7 +329,7 @@ default_data_lim (void)
 }
 
 static Matrix
-default_image_cdata (void)
+default_image_cdata ()
 {
   Matrix m (64, 64);
 
@@ -345,7 +345,7 @@ default_image_cdata (void)
 }
 
 static Matrix
-default_surface_xdata (void)
+default_surface_xdata ()
 {
   Matrix m (3, 3);
 
@@ -357,7 +357,7 @@ default_surface_xdata (void)
 }
 
 static Matrix
-default_surface_ydata (void)
+default_surface_ydata ()
 {
   Matrix m (3, 3);
 
@@ -369,7 +369,7 @@ default_surface_ydata (void)
 }
 
 static Matrix
-default_surface_zdata (void)
+default_surface_zdata ()
 {
   Matrix m (3, 3, 0.0);
 
@@ -380,13 +380,13 @@ default_surface_zdata (void)
 }
 
 static Matrix
-default_surface_cdata (void)
+default_surface_cdata ()
 {
   return default_surface_zdata ();
 }
 
 static Matrix
-default_patch_faces (void)
+default_patch_faces ()
 {
   Matrix m (1, 3);
 
@@ -398,7 +398,7 @@ default_patch_faces (void)
 }
 
 static Matrix
-default_patch_vertices (void)
+default_patch_vertices ()
 {
   Matrix m (3, 2, 0.0);
 
@@ -410,7 +410,7 @@ default_patch_vertices (void)
 }
 
 static Matrix
-default_patch_xdata (void)
+default_patch_xdata ()
 {
   Matrix m (3, 1, 0.0);
 
@@ -420,7 +420,7 @@ default_patch_xdata (void)
 }
 
 static Matrix
-default_patch_ydata (void)
+default_patch_ydata ()
 {
   Matrix m (3, 1, 1.0);
 
@@ -430,7 +430,7 @@ default_patch_ydata (void)
 }
 
 static Matrix
-default_axes_position (void)
+default_axes_position ()
 {
   Matrix m (1, 4);
 
@@ -443,7 +443,7 @@ default_axes_position (void)
 }
 
 static Matrix
-default_axes_outerposition (void)
+default_axes_outerposition ()
 {
   Matrix m (1, 4);
 
@@ -456,7 +456,7 @@ default_axes_outerposition (void)
 }
 
 static Matrix
-default_axes_view (void)
+default_axes_view ()
 {
   Matrix m (1, 2);
 
@@ -467,7 +467,7 @@ default_axes_view (void)
 }
 
 static Matrix
-default_axes_tick (void)
+default_axes_tick ()
 {
   Matrix m (1, 6);
 
@@ -482,7 +482,7 @@ default_axes_tick (void)
 }
 
 static Matrix
-default_axes_ticklength (void)
+default_axes_ticklength ()
 {
   Matrix m (1, 2);
 
@@ -493,7 +493,7 @@ default_axes_ticklength (void)
 }
 
 static Matrix
-default_figure_position (void)
+default_figure_position ()
 {
   Matrix m (1, 4);
 
@@ -506,7 +506,7 @@ default_figure_position (void)
 }
 
 static Matrix
-default_figure_papersize (void)
+default_figure_papersize ()
 {
   Matrix m (1, 2);
 
@@ -517,7 +517,7 @@ default_figure_papersize (void)
 }
 
 static Matrix
-default_figure_paperposition (void)
+default_figure_paperposition ()
 {
   Matrix m (1, 4);
 
@@ -531,7 +531,7 @@ default_figure_paperposition (void)
 }
 
 static std::string
-default_graphics_toolkit (void)
+default_graphics_toolkit ()
 {
   octave::gtk_manager& gtk_mgr = octave::__get_gtk_manager__ ();
 
@@ -539,7 +539,7 @@ default_graphics_toolkit (void)
 }
 
 static Matrix
-default_control_position (void)
+default_control_position ()
 {
   Matrix retval (1, 4);
 
@@ -552,7 +552,7 @@ default_control_position (void)
 }
 
 static Matrix
-default_control_sliderstep (void)
+default_control_sliderstep ()
 {
   Matrix retval (1, 2);
 
@@ -563,7 +563,7 @@ default_control_sliderstep (void)
 }
 
 static Matrix
-default_panel_position (void)
+default_panel_position ()
 {
   Matrix retval (1, 4);
 
@@ -576,7 +576,7 @@ default_panel_position (void)
 }
 
 static Matrix
-default_light_position (void)
+default_light_position ()
 {
   Matrix m (1, 3);
 
@@ -588,7 +588,7 @@ default_light_position (void)
 }
 
 static Matrix
-default_table_position (void)
+default_table_position ()
 {
   Matrix retval (1, 4);
 
@@ -601,7 +601,7 @@ default_table_position (void)
 }
 
 static Matrix
-default_table_backgroundcolor (void)
+default_table_backgroundcolor ()
 {
   Matrix retval (2, 3);
   retval(0, 0) = 1;
@@ -920,7 +920,7 @@ convert_text_position (const Matrix& pos, const text::properties& props,
 
 // This function always returns the screensize in pixels
 static Matrix
-screen_size_pixels (void)
+screen_size_pixels ()
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -1328,7 +1328,7 @@ radio_values::radio_values (const std::string& opt_string)
 }
 
 std::string
-radio_values::values_as_string (void) const
+radio_values::values_as_string () const
 {
   std::string retval;
 
@@ -1357,7 +1357,7 @@ radio_values::values_as_string (void) const
 }
 
 Cell
-radio_values::values_as_cell (void) const
+radio_values::values_as_cell () const
 {
   octave_idx_type i = 0;
   Cell retval (nelem (), 1);
@@ -1723,7 +1723,7 @@ array_property::is_equal (const octave_value& v) const
 }
 
 void
-array_property::get_data_limits (void)
+array_property::get_data_limits ()
 {
   m_min_val = m_min_pos = octave::numeric_limits<double>::Inf ();
   m_max_val = m_max_neg = -octave::numeric_limits<double>::Inf ();
@@ -1935,15 +1935,15 @@ class callback_props
 {
 public:
 
-  callback_props (void) : m_set () { }
+  callback_props () : m_set () { }
 
   callback_props (const callback_props&) = delete;
 
   callback_props& operator = (const callback_props&) = delete;
 
-  ~callback_props (void) = default;
+  ~callback_props () = default;
 
-  bool empty (void) const { return m_set.empty (); }
+  bool empty () const { return m_set.empty (); }
 
   void insert (const callback_property *ptr)
   {
@@ -2232,7 +2232,7 @@ figure::properties::set___mouse_mode__ (const octave_value& val_arg)
 }
 
 void
-figure::properties::update_handlevisibility (void)
+figure::properties::update_handlevisibility ()
 {
   if (! is_handle_visible ())
     {
@@ -2291,7 +2291,7 @@ update_text_pos (graphics_handle h)
 }
 
 void
-figure::properties::update___device_pixel_ratio__ (void)
+figure::properties::update___device_pixel_ratio__ ()
 {
   update_text_pos (get___myhandle__ ());
 }
@@ -2817,7 +2817,7 @@ graphics_object::set_value_or_default (const caseless_str& pname,
 
 // This function is NOT equivalent to the scripting language function gcf.
 graphics_handle
-gcf (void)
+gcf ()
 {
   octave_value val = xget (0, "currentfigure");
 
@@ -2827,7 +2827,7 @@ gcf (void)
 
 // This function is NOT equivalent to the scripting language function gca.
 graphics_handle
-gca (void)
+gca ()
 {
   octave_value val = xget (gcf (), "currentaxes");
 
@@ -3040,7 +3040,7 @@ base_properties::get_dynamic (bool all) const
 }
 
 std::set<std::string>
-base_properties::dynamic_property_names (void) const
+base_properties::dynamic_property_names () const
 {
   return m_dynamic_properties;
 }
@@ -3133,7 +3133,7 @@ base_properties::set_parent (const octave_value& val)
 */
 
 void
-base_properties::mark_modified (void)
+base_properties::mark_modified ()
 {
   // Mark existing object as modified
   m___modified__ = "on";
@@ -3183,7 +3183,7 @@ base_properties::update_axis_limits (const std::string& axis_type,
 }
 
 void
-base_properties::update_contextmenu (void) const
+base_properties::update_contextmenu () const
 {
   if (m_contextmenu.get ().isempty ())
     return;
@@ -3201,14 +3201,14 @@ base_properties::update_contextmenu (void) const
 }
 
 bool
-base_properties::is_handle_visible (void) const
+base_properties::is_handle_visible () const
 {
   return (m_handlevisibility.is ("on")
           || (! executing_callbacks.empty () && ! m_handlevisibility.is ("off")));
 }
 
 octave::graphics_toolkit
-base_properties::get_toolkit (void) const
+base_properties::get_toolkit () const
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -3221,7 +3221,7 @@ base_properties::get_toolkit (void) const
 }
 
 void
-base_properties::update_boundingbox (void)
+base_properties::update_boundingbox ()
 {
   Matrix kids = get_children ();
 
@@ -3248,7 +3248,7 @@ base_properties::update_autopos (const std::string& elem_type)
 }
 
 void
-base_properties::update_handlevisibility (void)
+base_properties::update_handlevisibility ()
 {
   if (is_handle_visible ())
     return;
@@ -3397,7 +3397,7 @@ base_graphics_object::update_axis_limits (const std::string& axis_type,
 }
 
 void
-base_graphics_object::remove_all_listeners (void)
+base_graphics_object::remove_all_listeners ()
 {
   int state = toggle_warn ("Octave:deprecated-property", false);
   octave_map m = get (true).map_value ();
@@ -3456,7 +3456,7 @@ base_graphics_object::build_user_defaults_map (property_list::pval_map_type& def
 }
 
 void
-base_graphics_object::reset_default_properties (void)
+base_graphics_object::reset_default_properties ()
 {
   if (valid_object ())
     {
@@ -3471,7 +3471,7 @@ base_graphics_object::reset_default_properties (void)
 }
 
 std::string
-base_graphics_object::values_as_string (void)
+base_graphics_object::values_as_string ()
 {
   if (! valid_object ())
     error ("base_graphics_object::values_as_string: invalid graphics object");
@@ -3535,7 +3535,7 @@ base_graphics_object::value_as_string (const std::string& prop)
 }
 
 octave_scalar_map
-base_graphics_object::values_as_struct (void)
+base_graphics_object::values_as_struct ()
 {
   octave_scalar_map retval;
 
@@ -3691,7 +3691,7 @@ figure::properties::set_integerhandle (const octave_value& val)
 // FIXME: This should update monitorpositions and pointerlocation, but as these
 // properties aren't yet used, it doesn't matter that they aren't set either.
 void
-root_figure::properties::update_units (void)
+root_figure::properties::update_units ()
 {
   std::string xunits = get_units ();
 
@@ -3796,7 +3796,7 @@ root_figure::properties::remove_child (const graphics_handle& h, bool)
 }
 
 void
-root_figure::reset_default_properties (void)
+root_figure::reset_default_properties ()
 {
   // empty list of local defaults
   m_default_properties = property_list ();
@@ -3850,7 +3850,7 @@ figure::properties::remove_child (const graphics_handle& h, bool from_root)
 }
 
 octave_value
-figure::properties::get_number (void) const
+figure::properties::get_number () const
 {
   if (m_integerhandle.is_on ())
     return m___myhandle__.value ();
@@ -3859,7 +3859,7 @@ figure::properties::get_number (void) const
 }
 
 octave::graphics_toolkit
-figure::properties::get_toolkit (void) const
+figure::properties::get_toolkit () const
 {
   return m_toolkit;
 }
@@ -4243,7 +4243,7 @@ papersize_from_type (const caseless_str punits, const caseless_str ptype)
 }
 
 Matrix
-figure::properties::get_auto_paperposition (void)
+figure::properties::get_auto_paperposition ()
 {
   Matrix pos = get_position ().matrix_value ();
   Matrix sz;
@@ -4413,7 +4413,7 @@ figure::properties::update_paperunits (const caseless_str& old_paperunits)
 }
 
 void
-figure::properties::update_papertype (void)
+figure::properties::update_papertype ()
 {
   std::string typ = get_papertype ();
   if (typ != "<custom>")
@@ -4431,7 +4431,7 @@ figure::properties::update_papertype (void)
 }
 
 void
-figure::properties::update_papersize (void)
+figure::properties::update_papersize ()
 {
   Matrix sz = get_papersize ().matrix_value ();
   if (sz(0) > sz(1))
@@ -4599,7 +4599,7 @@ figure::properties::update_papersize (void)
 */
 
 void
-figure::properties::update_paperorientation (void)
+figure::properties::update_paperorientation ()
 {
   std::string porient = get_paperorientation ();
   Matrix sz = get_papersize ().matrix_value ();
@@ -4682,7 +4682,7 @@ figure::properties::update_units (const caseless_str& old_units)
 */
 
 std::string
-figure::properties::get_title (void) const
+figure::properties::get_title () const
 {
   std::string title;
   if (! get_number ().isempty () && is_numbertitle ())
@@ -4727,7 +4727,7 @@ figure::get_default (const caseless_str& name) const
 }
 
 void
-figure::reset_default_properties (void)
+figure::reset_default_properties ()
 {
   // empty list of local defaults
   m_default_properties = property_list ();
@@ -4747,7 +4747,7 @@ figure::reset_default_properties (void)
 // ---------------------------------------------------------------------
 
 void
-axes::properties::init (void)
+axes::properties::init ()
 {
   m_position.add_constraint (dim_vector (1, 4));
   m_outerposition.add_constraint (dim_vector (1, 4));
@@ -4945,7 +4945,7 @@ axes::properties::calc_tightbox (const Matrix& init_pos)
 }
 
 void
-axes::properties::sync_positions (void)
+axes::properties::sync_positions ()
 {
   // First part is equivalent to 'update_tightinset ()'
   if (m_positionconstraint.is ("innerposition"))
@@ -5337,7 +5337,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
 }
 
 octave_value
-axes::properties::get_colormap (void) const
+axes::properties::get_colormap () const
 {
   if (m___colormap__.get ().isempty ())
     {
@@ -5454,7 +5454,7 @@ axes::properties::adopt (const graphics_handle& h)
 }
 
 inline Matrix
-xform_matrix (void)
+xform_matrix ()
 {
   Matrix m (4, 4, 0.0);
 
@@ -5465,7 +5465,7 @@ xform_matrix (void)
 }
 
 inline ColumnVector
-xform_vector (void)
+xform_vector ()
 {
   ColumnVector v (4, 0.0);
 
@@ -5584,7 +5584,7 @@ cross (const ColumnVector& v1, const ColumnVector& v2)
 }
 
 inline Matrix
-unit_cube (void)
+unit_cube ()
 {
   static double data[32] =
   {
@@ -5621,7 +5621,7 @@ xform2cam (const ColumnVector& v)
 }
 
 void
-axes::properties::update_camera (void)
+axes::properties::update_camera ()
 {
   double xd = (xdir_is ("normal") ? 1 : -1);
   double yd = (ydir_is ("normal") ? 1 : -1);
@@ -5837,7 +5837,7 @@ axes::properties::update_camera (void)
 static bool updating_axes_layout = false;
 
 void
-axes::properties::update_axes_layout (void)
+axes::properties::update_axes_layout ()
 {
   if (updating_axes_layout)
     return;
@@ -6000,7 +6000,7 @@ axes::properties::update_axes_layout (void)
 }
 
 void
-axes::properties::update_ticklength (void)
+axes::properties::update_ticklength ()
 {
   bool mode2D = (((m_xstate > AXE_DEPTH_DIR ? 1 : 0) +
                   (m_ystate > AXE_DEPTH_DIR ? 1 : 0) +
@@ -6087,7 +6087,7 @@ convert_label_position (const ColumnVector& p,
 static bool updating_xlabel_position = false;
 
 void
-axes::properties::update_xlabel_position (void)
+axes::properties::update_xlabel_position ()
 {
   if (updating_xlabel_position)
     return;
@@ -6191,7 +6191,7 @@ axes::properties::update_xlabel_position (void)
 static bool updating_ylabel_position = false;
 
 void
-axes::properties::update_ylabel_position (void)
+axes::properties::update_ylabel_position ()
 {
   if (updating_ylabel_position)
     return;
@@ -6295,7 +6295,7 @@ axes::properties::update_ylabel_position (void)
 static bool updating_zlabel_position = false;
 
 void
-axes::properties::update_zlabel_position (void)
+axes::properties::update_zlabel_position ()
 {
   if (updating_zlabel_position)
     return;
@@ -6421,7 +6421,7 @@ axes::properties::update_zlabel_position (void)
 static bool updating_title_position = false;
 
 void
-axes::properties::update_title_position (void)
+axes::properties::update_title_position ()
 {
   if (updating_title_position)
     return;
@@ -6522,7 +6522,7 @@ max_axes_scale (double& s, Matrix& limits, const Matrix& kids,
 static std::set<double> updating_aspectratios;
 
 void
-axes::properties::update_aspectratios (void)
+axes::properties::update_aspectratios ()
 {
   if (updating_aspectratios.find (get___myhandle__ ().value ())
       != updating_aspectratios.end ())
@@ -7031,7 +7031,7 @@ graphics_xform::xform_vector (double x, double y, double z)
 }
 
 Matrix
-graphics_xform::xform_eye (void)
+graphics_xform::xform_eye ()
 {
   return octave::xform_matrix ();
 }
@@ -7162,7 +7162,7 @@ magform (double x, double& a, int& b)
 }
 
 void
-axes::properties::update_outerposition (void)
+axes::properties::update_outerposition ()
 {
   set_positionconstraint ("outerposition");
   caseless_str old_units = get_units ();
@@ -7221,7 +7221,7 @@ axes::properties::update_outerposition (void)
 }
 
 void
-axes::properties::update_position (void)
+axes::properties::update_position ()
 {
   set_positionconstraint ("innerposition");
   caseless_str old_units = get_units ();
@@ -7269,7 +7269,7 @@ axes::properties::update_position (void)
 }
 
 void
-axes::properties::update_looseinset (void)
+axes::properties::update_looseinset ()
 {
   caseless_str old_units = get_units ();
   set_units ("normalized");
@@ -8715,7 +8715,7 @@ axes::properties::zoom (const std::string& mode, double factor,
 }
 
 void
-axes::properties::push_zoom_stack (void)
+axes::properties::push_zoom_stack ()
 {
   if (m_zoom_stack.empty ())
     {
@@ -8941,7 +8941,7 @@ axes::properties::rotate_view (double delta_el, double delta_az,
 }
 
 void
-axes::properties::unzoom (void)
+axes::properties::unzoom ()
 {
   if (m_zoom_stack.size () >= 7)
     {
@@ -8977,7 +8977,7 @@ axes::properties::unzoom (void)
 }
 
 void
-axes::properties::update_handlevisibility (void)
+axes::properties::update_handlevisibility ()
 {
   if (! is_handle_visible ())
     {
@@ -9006,7 +9006,7 @@ axes::properties::update_handlevisibility (void)
 }
 
 void
-figure::properties::init_toolkit (void)
+figure::properties::init_toolkit ()
 {
   octave::gtk_manager& gtk_mgr = octave::__get_gtk_manager__ ();
 
@@ -9026,7 +9026,7 @@ axes::properties::clear_zoom_stack (bool do_unzoom)
 }
 
 void
-axes::properties::trigger_normals_calc (void)
+axes::properties::trigger_normals_calc ()
 {
   // Find all patch (and surface) objects within axes
   std::list<graphics_object> children_list;
@@ -9055,7 +9055,7 @@ axes::properties::trigger_normals_calc (void)
 }
 
 void
-axes::reset_default_properties (void)
+axes::reset_default_properties ()
 {
   // empty list of local defaults
   m_default_properties = property_list ();
@@ -9086,7 +9086,7 @@ axes::initialize (const graphics_object& go)
 // ---------------------------------------------------------------------
 
 Matrix
-line::properties::compute_xlim (void) const
+line::properties::compute_xlim () const
 {
   Matrix m (1, 4);
 
@@ -9099,7 +9099,7 @@ line::properties::compute_xlim (void) const
 }
 
 Matrix
-line::properties::compute_ylim (void) const
+line::properties::compute_ylim () const
 {
   Matrix m (1, 4);
 
@@ -9114,7 +9114,7 @@ line::properties::compute_ylim (void) const
 // ---------------------------------------------------------------------
 
 Matrix
-text::properties::get_data_position (void) const
+text::properties::get_data_position () const
 {
   Matrix pos = get_position ().matrix_value ();
 
@@ -9169,7 +9169,7 @@ text::properties::get_extent_matrix (bool rotated) const
 }
 
 octave_value
-text::properties::get_extent (void) const
+text::properties::get_extent () const
 {
   // FIXME: This doesn't work right for 3D plots.
   // (It doesn't in Matlab either, at least not in version 6.5.)
@@ -9226,7 +9226,7 @@ text::properties::update_fontunits (const caseless_str& old_units)
 }
 
 void
-text::properties::update_font (void)
+text::properties::update_font ()
 {
   double dpr = device_pixel_ratio (get___myhandle__ ());
 
@@ -9248,7 +9248,7 @@ text::properties::update_font (void)
 }
 
 void
-text::properties::update_text_extent (void)
+text::properties::update_text_extent ()
 {
   int halign = 0;
   int valign = 0;
@@ -9293,7 +9293,7 @@ text::properties::update_text_extent (void)
 }
 
 void
-text::properties::request_autopos (void)
+text::properties::request_autopos ()
 {
   if (__autopos_tag___is ("xlabel") || __autopos_tag___is ("ylabel")
       || __autopos_tag___is ("zlabel") || __autopos_tag___is ("title"))
@@ -9301,7 +9301,7 @@ text::properties::request_autopos (void)
 }
 
 void
-text::properties::update_units (void)
+text::properties::update_units ()
 {
   if (! units_is ("data"))
     {
@@ -9358,7 +9358,7 @@ text::properties::get___fontsize_points__ (double box_pix_height) const
 // ---------------------------------------------------------------------
 
 octave_value
-image::properties::get_color_data (void) const
+image::properties::get_color_data () const
 {
   return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
 }
@@ -9377,7 +9377,7 @@ light::initialize (const graphics_object& go)
 }
 
 void
-light::properties::update_visible (void)
+light::properties::update_visible ()
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -9394,7 +9394,7 @@ light::properties::update_visible (void)
 // ---------------------------------------------------------------------
 
 bool
-patch::properties::get_do_lighting (void) const
+patch::properties::get_do_lighting () const
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -9407,7 +9407,7 @@ patch::properties::get_do_lighting (void) const
 }
 
 octave_value
-patch::properties::get_color_data (void) const
+patch::properties::get_color_data () const
 {
   octave_value fvc = get_facevertexcdata ();
   if (fvc.is_undefined () || fvc.isempty ())
@@ -9419,7 +9419,7 @@ patch::properties::get_color_data (void) const
 static bool updating_patch_data = false;
 
 void
-patch::properties::update_fvc (void)
+patch::properties::update_fvc ()
 {
   if (updating_patch_data)
     return;
@@ -9598,7 +9598,7 @@ coplanar_partition (const Matrix& vert, const Matrix& idx,
 }
 
 void
-patch::properties::update_data (void)
+patch::properties::update_data ()
 {
   if (updating_patch_data)
     return;
@@ -9979,7 +9979,7 @@ patch::initialize (const graphics_object& go)
 
 
 void
-patch::reset_default_properties (void)
+patch::reset_default_properties ()
 {
   // empty list of local defaults
   m_default_properties = property_list ();
@@ -9994,7 +9994,7 @@ patch::reset_default_properties (void)
 // ---------------------------------------------------------------------
 
 octave_value
-scatter::properties::get_color_data (void) const
+scatter::properties::get_color_data () const
 {
   octave_value c = get_cdata ();
   if (c.is_undefined () || c.isempty ())
@@ -10004,7 +10004,7 @@ scatter::properties::get_color_data (void) const
 }
 
 void
-scatter::properties::update_data (void)
+scatter::properties::update_data ()
 {
   Matrix xd = get_xdata ().matrix_value ();
   Matrix yd = get_ydata ().matrix_value ();
@@ -10044,7 +10044,7 @@ scatter::properties::update_data (void)
 static bool updating_scatter_cdata = false;
 
 void
-scatter::properties::update_color (void)
+scatter::properties::update_color ()
 {
   if (updating_scatter_cdata)
     return;
@@ -10107,13 +10107,13 @@ scatter::initialize (const graphics_object& go)
 // ---------------------------------------------------------------------
 
 octave_value
-surface::properties::get_color_data (void) const
+surface::properties::get_color_data () const
 {
   return convert_cdata (*this, get_cdata (), cdatamapping_is ("scaled"), 3);
 }
 
 bool
-surface::properties::get_do_lighting (void) const
+surface::properties::get_do_lighting () const
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -10439,7 +10439,7 @@ hggroup::properties::adopt (const graphics_handle& h)
 }
 
 void
-hggroup::properties::update_limits (void) const
+hggroup::properties::update_limits () const
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -10673,7 +10673,7 @@ hggroup::update_axis_limits (const std::string& axis_type)
 // ---------------------------------------------------------------------
 
 void
-uicontextmenu::properties::update_beingdeleted (void)
+uicontextmenu::properties::update_beingdeleted ()
 {
   // Clear the uicontextmenu property of dependent objects
   if (m_beingdeleted.is ("on"))
@@ -10723,7 +10723,7 @@ uicontextmenu::properties::update_beingdeleted (void)
 // ---------------------------------------------------------------------
 
 octave_value
-uicontrol::properties::get_extent (void) const
+uicontrol::properties::get_extent () const
 {
   Matrix m = m_extent.get ().matrix_value ();
 
@@ -10738,7 +10738,7 @@ uicontrol::properties::get_extent (void) const
 }
 
 void
-uicontrol::properties::update_text_extent (void)
+uicontrol::properties::update_text_extent ()
 {
   // FIXME: support multiline text
 
@@ -10750,7 +10750,7 @@ uicontrol::properties::update_text_extent (void)
 }
 
 void
-uicontrol::properties::update_units (void)
+uicontrol::properties::update_units ()
 {
   Matrix pos = get_position ().matrix_value ();
 
@@ -11488,14 +11488,14 @@ uitable::properties::get_fontsize_pixels (double box_pix_height) const
 }
 
 Matrix
-uitable::properties::get_backgroundcolor_rgb (void)
+uitable::properties::get_backgroundcolor_rgb ()
 {
   Matrix bg = m_backgroundcolor.get ().matrix_value ();
   return bg.row (0);
 }
 
 Matrix
-uitable::properties::get_alternatebackgroundcolor_rgb (void)
+uitable::properties::get_alternatebackgroundcolor_rgb ()
 {
   int i = 0;
   Matrix bg = m_backgroundcolor.get ().matrix_value ();
@@ -11506,13 +11506,13 @@ uitable::properties::get_alternatebackgroundcolor_rgb (void)
 }
 
 Matrix
-uitable::properties::get_extent_matrix (void) const
+uitable::properties::get_extent_matrix () const
 {
   return m_extent.get ().matrix_value ();
 }
 
 octave_value
-uitable::properties::get_extent (void) const
+uitable::properties::get_extent () const
 {
   // FIXME: Is it really acceptable to just let the toolkit update the extent?
   Matrix m = m_extent.get ().matrix_value ();
@@ -11554,7 +11554,7 @@ uitoolbar::get_default (const caseless_str& pname) const
 }
 
 void
-uitoolbar::reset_default_properties (void)
+uitoolbar::reset_default_properties ()
 {
   // empty list of local defaults
   m_default_properties = property_list ();
@@ -11603,7 +11603,7 @@ public:
     : base_graphics_event (busyaction), m_handle (h), m_callback_name (),
       m_callback (cb), m_callback_data (data) { }
 
-  void execute (void)
+  void execute ()
   {
     gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -11614,7 +11614,7 @@ public:
   }
 
 private:
-  callback_event (void)
+  callback_event ()
     : base_graphics_event (), m_handle (), m_callback_name (),
       m_callback_data ()
   { }
@@ -11635,7 +11635,7 @@ public:
     : base_graphics_event (busyaction), m_handle (h), m_mcode (cmd)
   { }
 
-  void execute (void)
+  void execute ()
   {
     if (! m_mcode.empty ())
       {
@@ -11652,7 +11652,7 @@ public:
   }
 
 private:
-  mcode_event (void)
+  mcode_event ()
     : base_graphics_event (), m_handle (), m_mcode ()
   { }
 
@@ -11668,7 +11668,7 @@ public:
 
   // function_event objects must be created with at least a function.
 
-  function_event (void) = delete;
+  function_event () = delete;
 
   function_event (graphics_event::event_fcn fcn, void *data = nullptr)
     : base_graphics_event (), m_function (fcn), m_function_data (data)
@@ -11680,7 +11680,7 @@ public:
 
   function_event& operator = (const function_event&) = delete;
 
-  void execute (void)
+  void execute ()
   {
     m_function (m_function_data);
   }
@@ -11704,7 +11704,7 @@ public:
       m_redraw_figure (redraw_figure)
   { }
 
-  void execute (void)
+  void execute ()
   {
     gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -11756,7 +11756,7 @@ public:
   }
 
 private:
-  set_event (void)
+  set_event ()
     : base_graphics_event (), m_handle (), m_property_name (), m_property_value ()
   { }
 
@@ -11812,7 +11812,7 @@ graphics_event::create_set_event (const graphics_handle& h,
 }
 
 property_list::plist_map_type
-root_figure::init_factory_properties (void)
+root_figure::init_factory_properties ()
 {
   property_list::plist_map_type plist_map;
 

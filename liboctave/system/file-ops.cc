@@ -219,7 +219,7 @@ OCTAVE_BEGIN_NAMESPACE(sys)
 
 OCTAVE_BEGIN_NAMESPACE(file_ops)
 
-char dev_sep_char (void)
+char dev_sep_char ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return ':';
@@ -228,7 +228,7 @@ char dev_sep_char (void)
 #endif
 }
 
-char dir_sep_char (void)
+char dir_sep_char ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return '\\';
@@ -237,7 +237,7 @@ char dir_sep_char (void)
 #endif
 }
 
-std::string dir_sep_str (void)
+std::string dir_sep_str ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return R"(\)";
@@ -246,7 +246,7 @@ std::string dir_sep_str (void)
 #endif
 }
 
-std::string dir_sep_chars (void)
+std::string dir_sep_chars ()
 {
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
   return R"(/\)";

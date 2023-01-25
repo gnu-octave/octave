@@ -44,11 +44,11 @@ enum float_format
   flt_fmt_ieee_big_endian = 2,
 };
 
-OCTAVE_API float_format native_float_format (void);
+OCTAVE_API float_format native_float_format ();
 
-OCTAVE_API bool words_big_endian (void);
+OCTAVE_API bool words_big_endian ();
 
-OCTAVE_API bool words_little_endian (void);
+OCTAVE_API bool words_little_endian ();
 
 OCTAVE_API float_format string_to_float_format (const std::string&);
 

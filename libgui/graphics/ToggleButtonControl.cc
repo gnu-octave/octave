@@ -75,7 +75,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
   }
 
-  ToggleButtonControl::~ToggleButtonControl (void)
+  ToggleButtonControl::~ToggleButtonControl ()
   { }
 
   void

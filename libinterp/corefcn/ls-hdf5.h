@@ -56,7 +56,7 @@ public:
   OCTINTERP_API hdf5_fstreambase (const char *name, int mode,
                                   int /* prot */ = 0);
 
-  OCTINTERP_API void close (void);
+  OCTINTERP_API void close ();
 
   OCTINTERP_API void open (const char *name, int mode, int);
 
@@ -101,7 +101,7 @@ public:
 struct hdf5_callback_data
 {
 public:
-  hdf5_callback_data (void)
+  hdf5_callback_data ()
     : name (), global (false), tc (), doc () { }
 
   // the following fields are set by hdf5_read_data on successful return:

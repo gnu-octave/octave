@@ -48,7 +48,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     EditControl (octave::interpreter& interp,
                  const graphics_object& go, TextEdit *edit);
 
-    ~EditControl (void);
+    ~EditControl ();
 
     static EditControl *
     create (octave::interpreter& interp,
@@ -65,9 +65,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     bool updateMultiLine (int pId);
 
   private slots:
-    void textChanged (void);
-    void editingFinished (void);
-    void returnPressed (void);
+    void textChanged ();
+    void editingFinished ();
+    void returnPressed ();
 
   private:
     bool m_multiLine;

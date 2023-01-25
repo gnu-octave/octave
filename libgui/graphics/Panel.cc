@@ -166,7 +166,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       frame->hide ();
   }
 
-  Panel::~Panel (void)
+  Panel::~Panel ()
   { }
 
   bool
@@ -366,7 +366,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Panel::redraw (void)
+  Panel::redraw ()
   {
     update (uipanel::properties::ID_POSITION);
 
@@ -377,7 +377,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Panel::updateLayout (void)
+  Panel::updateLayout ()
   {
     uipanel::properties& pp = properties<uipanel> ();
     QFrame *frame = qWidget<QFrame> ();

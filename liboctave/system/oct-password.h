@@ -42,7 +42,7 @@ password
 {
 public:
 
-  password (void)
+  password ()
     : m_name (), m_passwd (), m_uid (0), m_gid (0), m_gecos (),
       m_dir (), m_shell (), m_valid (false)
   { }
@@ -70,27 +70,27 @@ public:
     return *this;
   }
 
-  ~password (void) = default;
+  ~password () = default;
 
-  std::string name (void) const;
+  std::string name () const;
 
-  std::string passwd (void) const;
+  std::string passwd () const;
 
-  uid_t uid (void) const;
+  uid_t uid () const;
 
-  gid_t gid (void) const;
+  gid_t gid () const;
 
-  std::string gecos (void) const;
+  std::string gecos () const;
 
-  std::string dir (void) const;
+  std::string dir () const;
 
-  std::string shell (void) const;
+  std::string shell () const;
 
-  bool ok (void) const { return m_valid; }
+  bool ok () const { return m_valid; }
 
   operator bool () const { return ok (); }
 
-  static password getpwent (void);
+  static password getpwent ();
   static password getpwent (std::string& msg);
 
   static password getpwuid (uid_t uid);
@@ -99,10 +99,10 @@ public:
   static password getpwnam (const std::string& nm);
   static password getpwnam (const std::string& nm, std::string& msg);
 
-  static int setpwent (void);
+  static int setpwent ();
   static int setpwent (std::string& msg);
 
-  static int endpwent (void);
+  static int endpwent ();
   static int endpwent (std::string& msg);
 
 private:

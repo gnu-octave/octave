@@ -51,25 +51,25 @@ octave_base_int_matrix : public octave_base_matrix<T>
 {
 public:
 
-  octave_base_int_matrix (void) : octave_base_matrix<T> () { }
+  octave_base_int_matrix () : octave_base_matrix<T> () { }
 
   octave_base_int_matrix (const T& nda) : octave_base_matrix<T> (nda) { }
 
-  ~octave_base_int_matrix (void) = default;
+  ~octave_base_int_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_base_int_matrix (*this); }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_base_int_matrix (); }
 
-  OCTINTERP_API octave_base_value * try_narrowing_conversion (void);
+  OCTINTERP_API octave_base_value * try_narrowing_conversion ();
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  //  void increment (void) { matrix += 1; }
+  //  void increment () { matrix += 1; }
 
-  //  void decrement (void) { matrix -= 1; }
+  //  void decrement () { matrix -= 1; }
 
   OCTINTERP_API void
   print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
@@ -77,18 +77,18 @@ public:
   OCTINTERP_API octave_value
   convert_to_str_internal (bool, bool, char type) const;
 
-  OCTINTERP_API octave_value as_double (void) const;
-  OCTINTERP_API octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double () const;
+  OCTINTERP_API octave_value as_single () const;
 
-  OCTINTERP_API octave_value as_int8 (void) const;
-  OCTINTERP_API octave_value as_int16 (void) const;
-  OCTINTERP_API octave_value as_int32 (void) const;
-  OCTINTERP_API octave_value as_int64 (void) const;
+  OCTINTERP_API octave_value as_int8 () const;
+  OCTINTERP_API octave_value as_int16 () const;
+  OCTINTERP_API octave_value as_int32 () const;
+  OCTINTERP_API octave_value as_int64 () const;
 
-  OCTINTERP_API octave_value as_uint8 (void) const;
-  OCTINTERP_API octave_value as_uint16 (void) const;
-  OCTINTERP_API octave_value as_uint32 (void) const;
-  OCTINTERP_API octave_value as_uint64 (void) const;
+  OCTINTERP_API octave_value as_uint8 () const;
+  OCTINTERP_API octave_value as_uint16 () const;
+  OCTINTERP_API octave_value as_uint32 () const;
+  OCTINTERP_API octave_value as_uint64 () const;
 
   OCTINTERP_API std::string
   edit_display (const float_display_format& fmt,
@@ -123,42 +123,42 @@ octave_base_int_scalar : public octave_base_scalar<T>
 {
 public:
 
-  octave_base_int_scalar (void) : octave_base_scalar<T> () { }
+  octave_base_int_scalar () : octave_base_scalar<T> () { }
 
   octave_base_int_scalar (const T& s) : octave_base_scalar<T> (s) { }
 
-  ~octave_base_int_scalar (void) = default;
+  ~octave_base_int_scalar () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_base_int_scalar (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_base_int_scalar (); }
 
-  octave_base_value * try_narrowing_conversion (void) { return nullptr; }
+  octave_base_value * try_narrowing_conversion () { return nullptr; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_real_scalar (void) const { return true; }
+  bool is_real_scalar () const { return true; }
 
-  //  void increment (void) { scalar += 1; }
+  //  void increment () { scalar += 1; }
 
-  //  void decrement (void) { scalar -= 1; }
+  //  void decrement () { scalar -= 1; }
 
   OCTINTERP_API octave_value
   convert_to_str_internal (bool, bool, char type) const;
 
-  OCTINTERP_API octave_value as_double (void) const;
-  OCTINTERP_API octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double () const;
+  OCTINTERP_API octave_value as_single () const;
 
-  OCTINTERP_API octave_value as_int8 (void) const;
-  OCTINTERP_API octave_value as_int16 (void) const;
-  OCTINTERP_API octave_value as_int32 (void) const;
-  OCTINTERP_API octave_value as_int64 (void) const;
+  OCTINTERP_API octave_value as_int8 () const;
+  OCTINTERP_API octave_value as_int16 () const;
+  OCTINTERP_API octave_value as_int32 () const;
+  OCTINTERP_API octave_value as_int64 () const;
 
-  OCTINTERP_API octave_value as_uint8 (void) const;
-  OCTINTERP_API octave_value as_uint16 (void) const;
-  OCTINTERP_API octave_value as_uint32 (void) const;
-  OCTINTERP_API octave_value as_uint64 (void) const;
+  OCTINTERP_API octave_value as_uint8 () const;
+  OCTINTERP_API octave_value as_uint16 () const;
+  OCTINTERP_API octave_value as_uint32 () const;
+  OCTINTERP_API octave_value as_uint64 () const;
 
   OCTINTERP_API std::string
   edit_display (const float_display_format& fmt,

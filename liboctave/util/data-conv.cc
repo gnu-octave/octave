@@ -616,7 +616,7 @@ oct_data_conv::data_type_as_string (oct_data_conv::data_type dt)
 
 OCTAVE_NORETURN static
 void
-err_unrecognized_float_fmt (void)
+err_unrecognized_float_fmt ()
 {
   (*current_liboctave_error_handler)
     ("unrecognized floating point format requested");

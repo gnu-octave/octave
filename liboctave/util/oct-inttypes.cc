@@ -42,7 +42,7 @@ const octave_int<T> octave_int<T>::s_one (static_cast<T> (1));
 #define DEFINE_OCTAVE_INT_TYPENAME(TYPE, TYPENAME)              \
   template <>                                                   \
   OCTAVE_API const char *                                       \
-  octave_int<TYPE>::type_name (void) { return TYPENAME; }
+  octave_int<TYPE>::type_name () { return TYPENAME; }
 
 DEFINE_OCTAVE_INT_TYPENAME (int8_t, "int8")
 DEFINE_OCTAVE_INT_TYPENAME (int16_t, "int16")

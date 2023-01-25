@@ -64,7 +64,7 @@
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
 
-octave_user_code::~octave_user_code (void)
+octave_user_code::~octave_user_code ()
 {
   // This function is no longer valid, so remove the pointer to it from
   // the corresponding scope.
@@ -85,7 +85,7 @@ octave_user_code::~octave_user_code (void)
 }
 
 void
-octave_user_code::get_file_info (void)
+octave_user_code::get_file_info ()
 {
   m_file_info = new octave::file_info (m_file_name);
 
@@ -128,13 +128,13 @@ octave_user_code::cache_function_text (const std::string& text,
 }
 
 std::map<std::string, octave_value>
-octave_user_code::subfunctions (void) const
+octave_user_code::subfunctions () const
 {
   return std::map<std::string, octave_value> ();
 }
 
 octave_value
-octave_user_code::dump (void) const
+octave_user_code::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "scope_info", m_scope ? m_scope.dump () : "0x0" },
@@ -153,7 +153,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_user_script,
                                      "user-defined script",
                                      "user-defined script");
 
-octave_user_script::octave_user_script (void)
+octave_user_script::octave_user_script ()
   : octave_user_code ()
 { }
 
@@ -228,7 +228,7 @@ octave_user_function::octave_user_function
     m_cmd_list->mark_as_function_body ();
 }
 
-octave_user_function::~octave_user_function (void)
+octave_user_function::~octave_user_function ()
 {
   delete m_param_list;
   delete m_ret_list;
@@ -253,7 +253,7 @@ octave_user_function::define_ret_list (octave::tree_parameter_list *t)
 // information (yet).
 
 void
-octave_user_function::maybe_relocate_end_internal (void)
+octave_user_function::maybe_relocate_end_internal ()
 {
   if (m_cmd_list && ! m_cmd_list->empty ())
     {
@@ -289,7 +289,7 @@ octave_user_function::maybe_relocate_end_internal (void)
 }
 
 void
-octave_user_function::maybe_relocate_end (void)
+octave_user_function::maybe_relocate_end ()
 {
   std::map<std::string, octave_value> fcns = subfunctions ();
 
@@ -314,7 +314,7 @@ octave_user_function::stash_parent_fcn_scope (const octave::symbol_scope& ps)
 }
 
 std::string
-octave_user_function::profiler_name (void) const
+octave_user_function::profiler_name () const
 {
   std::ostringstream result;
 
@@ -337,7 +337,7 @@ octave_user_function::profiler_name (void) const
 }
 
 void
-octave_user_function::mark_as_system_fcn_file (void)
+octave_user_function::mark_as_system_fcn_file ()
 {
   if (! m_file_name.empty ())
     {
@@ -367,19 +367,19 @@ octave_user_function::mark_as_system_fcn_file (void)
 }
 
 void
-octave_user_function::erase_subfunctions (void)
+octave_user_function::erase_subfunctions ()
 {
   m_scope.erase_subfunctions ();
 }
 
 bool
-octave_user_function::takes_varargs (void) const
+octave_user_function::takes_varargs () const
 {
   return (m_param_list && m_param_list->takes_varargs ());
 }
 
 bool
-octave_user_function::takes_var_return (void) const
+octave_user_function::takes_var_return () const
 {
   return (m_ret_list && m_ret_list->takes_varargs ());
 }
@@ -393,19 +393,19 @@ octave_user_function::mark_as_private_function (const std::string& cname)
 }
 
 void
-octave_user_function::lock_subfunctions (void)
+octave_user_function::lock_subfunctions ()
 {
   m_scope.lock_subfunctions ();
 }
 
 void
-octave_user_function::unlock_subfunctions (void)
+octave_user_function::unlock_subfunctions ()
 {
   m_scope.unlock_subfunctions ();
 }
 
 std::map<std::string, octave_value>
-octave_user_function::subfunctions (void) const
+octave_user_function::subfunctions () const
 {
   return m_scope.subfunctions ();
 }
@@ -442,7 +442,7 @@ octave_user_function::find_subfunction (const std::string& subfcns_arg) const
 }
 
 bool
-octave_user_function::has_subfunctions (void) const
+octave_user_function::has_subfunctions () const
 {
   return m_scope.has_subfunctions ();
 }
@@ -454,7 +454,7 @@ octave_user_function::stash_subfunction_names (const std::list<std::string>& nam
 }
 
 std::list<std::string>
-octave_user_function::subfunction_names (void) const
+octave_user_function::subfunction_names () const
 {
   return m_scope.subfunction_names ();
 }
@@ -502,7 +502,7 @@ octave_user_function::accept (octave::tree_walker& tw)
 }
 
 octave::tree_expression *
-octave_user_function::special_expr (void)
+octave_user_function::special_expr ()
 {
   panic_unless (is_special_expr ());
   panic_if (m_cmd_list->length () != 1);
@@ -512,7 +512,7 @@ octave_user_function::special_expr (void)
 }
 
 bool
-octave_user_function::subsasgn_optimization_ok (void)
+octave_user_function::subsasgn_optimization_ok ()
 {
   bool retval = false;
   if (Voptimize_subsasgn_calls
@@ -529,7 +529,7 @@ octave_user_function::subsasgn_optimization_ok (void)
 }
 
 std::string
-octave_user_function::ctor_type_str (void) const
+octave_user_function::ctor_type_str () const
 {
   std::string retval;
 
@@ -556,7 +556,7 @@ octave_user_function::ctor_type_str (void) const
 }
 
 std::string
-octave_user_function::method_type_str (void) const
+octave_user_function::method_type_str () const
 {
   std::string retval;
 
@@ -583,7 +583,7 @@ octave_user_function::method_type_str (void) const
 }
 
 octave_value
-octave_user_function::dump (void) const
+octave_user_function::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "user_code", octave_user_code::dump () },
@@ -621,7 +621,7 @@ octave_user_function::print_code_function_trailer (const std::string& prefix)
 }
 
 void
-octave_user_function::restore_warning_states (void)
+octave_user_function::restore_warning_states ()
 {
   octave::interpreter& interp = octave::__get_interpreter__ ();
 

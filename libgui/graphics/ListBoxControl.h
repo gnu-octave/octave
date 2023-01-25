@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     ListBoxControl (octave::interpreter& interp, const graphics_object& go,
                     QListWidget *list);
-    ~ListBoxControl (void);
+    ~ListBoxControl ();
 
     static ListBoxControl *
     create (octave::interpreter& interp,
@@ -55,7 +55,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void sendSelectionChange ();
 
   private slots:
-    void itemSelectionChanged (void);
+    void itemSelectionChanged ();
     void itemActivated (const QModelIndex&);
     void itemPressed (QListWidgetItem *);
 

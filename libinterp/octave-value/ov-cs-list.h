@@ -48,7 +48,7 @@ octave_cs_list : public octave_base_value
 {
 public:
 
-  octave_cs_list (void)
+  octave_cs_list ()
     : octave_base_value (), m_list () { }
 
   octave_cs_list (const octave_value_list& l)
@@ -59,20 +59,20 @@ public:
   octave_cs_list (const octave_cs_list& l)
     : octave_base_value (), m_list (l.m_list) { }
 
-  ~octave_cs_list (void) = default;
+  ~octave_cs_list () = default;
 
-  octave_base_value * clone (void) const { return new octave_cs_list (*this); }
-  octave_base_value * empty_clone (void) const { return new octave_cs_list (); }
+  octave_base_value * clone () const { return new octave_cs_list (*this); }
+  octave_base_value * empty_clone () const { return new octave_cs_list (); }
 
-  dim_vector dims (void) const { return dim_vector (1, m_list.length ()); }
+  dim_vector dims () const { return dim_vector (1, m_list.length ()); }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool is_cs_list (void) const { return true; }
+  bool is_cs_list () const { return true; }
 
-  octave_value_list list_value (void) const { return m_list; }
+  octave_value_list list_value () const { return m_list; }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual

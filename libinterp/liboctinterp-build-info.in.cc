@@ -32,7 +32,7 @@
 #include "liboctinterp-build-info.h"
 
 std::string
-liboctinterp_hg_id (void)
+liboctinterp_hg_id ()
 {
   return "%OCTAVE_HG_ID%";
 }

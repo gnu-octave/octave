@@ -68,7 +68,7 @@ system (const std::string& cmd_str)
 }
 
 std::string
-getcwd (void)
+getcwd ()
 {
   std::string retval;
 

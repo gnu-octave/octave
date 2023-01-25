@@ -171,7 +171,7 @@ FloatComplexMatrix::operator != (const FloatComplexMatrix& a) const
 }
 
 bool
-FloatComplexMatrix::ishermitian (void) const
+FloatComplexMatrix::ishermitian () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -737,7 +737,7 @@ norm1 (const FloatComplexMatrix& a)
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::inverse (void) const
+FloatComplexMatrix::inverse () const
 {
   octave_idx_type info;
   float rcon;
@@ -1045,7 +1045,7 @@ FloatComplexMatrix::pseudo_inverse (float tol) const
 #if defined (HAVE_FFTW)
 
 FloatComplexMatrix
-FloatComplexMatrix::fourier (void) const
+FloatComplexMatrix::fourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -1074,7 +1074,7 @@ FloatComplexMatrix::fourier (void) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::ifourier (void) const
+FloatComplexMatrix::ifourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -1103,7 +1103,7 @@ FloatComplexMatrix::ifourier (void) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::fourier2d (void) const
+FloatComplexMatrix::fourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -1117,7 +1117,7 @@ FloatComplexMatrix::fourier2d (void) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::ifourier2d (void) const
+FloatComplexMatrix::ifourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -1133,7 +1133,7 @@ FloatComplexMatrix::ifourier2d (void) const
 #else
 
 FloatComplexMatrix
-FloatComplexMatrix::fourier (void) const
+FloatComplexMatrix::fourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1142,7 +1142,7 @@ FloatComplexMatrix::fourier (void) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::ifourier (void) const
+FloatComplexMatrix::ifourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1151,7 +1151,7 @@ FloatComplexMatrix::ifourier (void) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::fourier2d (void) const
+FloatComplexMatrix::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1160,7 +1160,7 @@ FloatComplexMatrix::fourier2d (void) const
 }
 
 FloatComplexMatrix
-FloatComplexMatrix::ifourier2d (void) const
+FloatComplexMatrix::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -1171,7 +1171,7 @@ FloatComplexMatrix::ifourier2d (void) const
 #endif
 
 FloatComplexDET
-FloatComplexMatrix::determinant (void) const
+FloatComplexMatrix::determinant () const
 {
   octave_idx_type info;
   float rcon;
@@ -1350,7 +1350,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
 }
 
 float
-FloatComplexMatrix::rcond (void) const
+FloatComplexMatrix::rcond () const
 {
   MatrixType mattype (*this);
   return rcond (mattype);
@@ -2849,7 +2849,7 @@ FloatComplexMatrix::sumsq (int dim) const
   return FloatComplexNDArray::sumsq (dim);
 }
 
-FloatMatrix FloatComplexMatrix::abs (void) const
+FloatMatrix FloatComplexMatrix::abs () const
 {
   return FloatComplexNDArray::abs ();
 }
@@ -2915,7 +2915,7 @@ FloatComplexMatrix::column_is_real_only (octave_idx_type j) const
 }
 
 FloatComplexColumnVector
-FloatComplexMatrix::row_min (void) const
+FloatComplexMatrix::row_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_min (dummy_idx);
@@ -2990,7 +2990,7 @@ FloatComplexMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 }
 
 FloatComplexColumnVector
-FloatComplexMatrix::row_max (void) const
+FloatComplexMatrix::row_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_max (dummy_idx);
@@ -3065,7 +3065,7 @@ FloatComplexMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 }
 
 FloatComplexRowVector
-FloatComplexMatrix::column_min (void) const
+FloatComplexMatrix::column_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_min (dummy_idx);
@@ -3140,7 +3140,7 @@ FloatComplexMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 }
 
 FloatComplexRowVector
-FloatComplexMatrix::column_max (void) const
+FloatComplexMatrix::column_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_max (dummy_idx);

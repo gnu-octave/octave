@@ -41,7 +41,7 @@ DASSL : public DAE, public DASSL_options
 {
 public:
 
-  DASSL (void)
+  DASSL ()
     : DAE (), DASSL_options (), m_initialized (false), m_liw (0), m_lrw (0),
       m_info (), m_iwork (), m_rwork (), m_abs_tol (), m_rel_tol () { }
 
@@ -56,7 +56,7 @@ public:
       m_liw (0), m_lrw (0), m_info (), m_iwork (), m_rwork (), m_abs_tol (),
       m_rel_tol () { }
 
-  ~DASSL (void) = default;
+  ~DASSL () = default;
 
   ColumnVector do_integrate (double t);
 
@@ -69,7 +69,7 @@ public:
   Matrix integrate (const ColumnVector& tout, Matrix& xdot_out,
                     const ColumnVector& tcrit);
 
-  std::string error_message (void) const;
+  std::string error_message () const;
 
 private:
 

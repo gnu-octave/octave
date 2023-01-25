@@ -42,7 +42,7 @@ public:
 
   typedef typename MT::real_column_vector_type VT;
 
-  aepbalance (void) : m_balanced_mat (), m_scale (), m_ilo (), m_ihi (), m_job () { }
+  aepbalance () : m_balanced_mat (), m_scale (), m_ilo (), m_ihi (), m_job () { }
 
   OCTAVE_API aepbalance (const MT& a, bool noperm = false, bool noscal = false);
 
@@ -65,16 +65,16 @@ public:
     return *this;
   }
 
-  virtual ~aepbalance (void) = default;
+  virtual ~aepbalance () = default;
 
-  OCTAVE_API MT balancing_matrix (void) const;
+  OCTAVE_API MT balancing_matrix () const;
 
-  MT balanced_matrix (void) const
+  MT balanced_matrix () const
   {
     return m_balanced_mat;
   }
 
-  VT permuting_vector (void) const
+  VT permuting_vector () const
   {
     octave_idx_type n = m_balanced_mat.rows ();
 
@@ -98,7 +98,7 @@ public:
     return pv;
   }
 
-  VT scaling_vector (void) const
+  VT scaling_vector () const
   {
     octave_idx_type n = m_balanced_mat.rows ();
 

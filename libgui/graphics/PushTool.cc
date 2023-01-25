@@ -57,7 +57,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (action, &QAction::triggered, this, &PushTool::clicked);
   }
 
-  PushTool::~PushTool (void)
+  PushTool::~PushTool ()
   { }
 
   void
@@ -72,7 +72,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  PushTool::clicked (void)
+  PushTool::clicked ()
   {
     emit gh_callback_event (m_handle, "clickedcallback");
   }

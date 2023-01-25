@@ -74,13 +74,13 @@ private:
 
     fcn_info_rep& operator = (const fcn_info_rep&) = delete;
 
-    ~fcn_info_rep (void) = default;
+    ~fcn_info_rep () = default;
 
     octave_value install_local_function (const std::string& file_name);
 
     octave_value load_private_function (const std::string& dir_name);
 
-    octave_value load_class_constructor (void);
+    octave_value load_class_constructor ();
 
     octave_value load_class_method (const std::string& dispatch_type);
 
@@ -97,13 +97,13 @@ private:
 
     octave_value find_method (const octave_value_list& args);
 
-    octave_value find_autoload (void);
+    octave_value find_autoload ();
 
-    octave_value find_package (void);
+    octave_value find_package ();
 
-    octave_value find_user_function (void);
+    octave_value find_user_function ();
 
-    bool is_user_function_defined (void) const
+    bool is_user_function_defined () const
     {
       return function_on_path.is_defined ();
     }
@@ -171,13 +171,13 @@ private:
         cmdline_function = octave_value ();
     }
 
-    void clear_mex_function (void)
+    void clear_mex_function ()
     {
       if (function_on_path.is_mex_function ())
         clear_user_function ();
     }
 
-    void clear_package (void)
+    void clear_package ()
     {
       package = octave_value ();
     }
@@ -194,9 +194,9 @@ private:
       clear_package ();
     }
 
-    octave_value dump (void) const;
+    octave_value dump () const;
 
-    std::string full_name (void) const
+    std::string full_name () const
     {
       if (package_name.empty ())
         return name;
@@ -247,7 +247,7 @@ public:
 
   fcn_info& operator = (const fcn_info&) = default;
 
-  ~fcn_info (void) = default;
+  ~fcn_info () = default;
 
   octave_value find (const symbol_scope& search_scope,
                      const octave_value_list& args = octave_value_list ())
@@ -276,28 +276,28 @@ public:
     return m_rep->find_method (dispatch_type);
   }
 
-  octave_value find_built_in_function (void) const
+  octave_value find_built_in_function () const
   {
     return m_rep->built_in_function;
   }
 
-  octave_value find_cmdline_function (void) const
+  octave_value find_cmdline_function () const
   {
     return m_rep->cmdline_function;
   }
 
-  octave_value find_autoload (void)
+  octave_value find_autoload ()
   {
     return m_rep->find_autoload ();
   }
 
   // FIXME: find_function_on_path might be a better name?
-  octave_value find_user_function (void)
+  octave_value find_user_function ()
   {
     return m_rep->find_user_function ();
   }
 
-  bool is_user_function_defined (void) const
+  bool is_user_function_defined () const
   {
     return m_rep->is_user_function_defined ();
   }
@@ -347,9 +347,9 @@ public:
     m_rep->clear_autoload_function (force);
   }
 
-  void clear_mex_function (void) { m_rep->clear_mex_function (); }
+  void clear_mex_function () { m_rep->clear_mex_function (); }
 
-  octave_value dump (void) const { return m_rep->dump (); }
+  octave_value dump () const { return m_rep->dump (); }
 
 private:
 

@@ -62,7 +62,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (xmenu, &QMenu::aboutToHide, this, &ContextMenu::aboutToHide);
   }
 
-  ContextMenu::~ContextMenu (void)
+  ContextMenu::~ContextMenu ()
   { }
 
   void
@@ -96,20 +96,20 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  ContextMenu::aboutToShow (void)
+  ContextMenu::aboutToShow ()
   {
     emit gh_callback_event (m_handle, "callback");
     emit gh_set_event (m_handle, "visible", "on", false);
   }
 
   void
-  ContextMenu::aboutToHide (void)
+  ContextMenu::aboutToHide ()
   {
     emit gh_set_event (m_handle, "visible", "off", false);
   }
 
   QWidget *
-  ContextMenu::menu (void)
+  ContextMenu::menu ()
   {
     return qWidget<QWidget> ();
   }

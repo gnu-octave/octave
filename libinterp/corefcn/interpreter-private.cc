@@ -51,7 +51,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-interpreter& __get_interpreter__ (void)
+interpreter& __get_interpreter__ ()
 {
   interpreter *interp = interpreter::the_interpreter ();
 
@@ -64,91 +64,91 @@ interpreter& __get_interpreter__ (void)
   return *interp;
 }
 
-dynamic_loader& __get_dynamic_loader__ (void)
+dynamic_loader& __get_dynamic_loader__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_dynamic_loader ();
 }
 
-error_system& __get_error_system__ (void)
+error_system& __get_error_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_error_system ();
 }
 
-gh_manager& __get_gh_manager__ (void)
+gh_manager& __get_gh_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_gh_manager ();
 }
 
-help_system& __get_help_system__ (void)
+help_system& __get_help_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_help_system ();
 }
 
-input_system& __get_input_system__ (void)
+input_system& __get_input_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_input_system ();
 }
 
-output_system& __get_output_system__ (void)
+output_system& __get_output_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_output_system ();
 }
 
-load_path& __get_load_path__ (void)
+load_path& __get_load_path__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_load_path ();
 }
 
-load_save_system& __get_load_save_system__ (void)
+load_save_system& __get_load_save_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_load_save_system ();
 }
 
-event_manager& __get_event_manager__ (void)
+event_manager& __get_event_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_event_manager ();
 }
 
-type_info& __get_type_info__ (void)
+type_info& __get_type_info__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_type_info ();
 }
 
-symbol_table& __get_symbol_table__ (void)
+symbol_table& __get_symbol_table__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_symbol_table ();
 }
 
-symbol_scope __get_current_scope__ (void)
+symbol_scope __get_current_scope__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_current_scope ();
 }
 
-symbol_scope __require_current_scope__ (void)
+symbol_scope __require_current_scope__ ()
 {
   symbol_scope scope = __get_current_scope__ ();
 
@@ -158,42 +158,42 @@ symbol_scope __require_current_scope__ (void)
   return scope;
 }
 
-tree_evaluator& __get_evaluator__ (void)
+tree_evaluator& __get_evaluator__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_evaluator ();
 }
 
-bp_table& __get_bp_table__ (void)
+bp_table& __get_bp_table__ ()
 {
   tree_evaluator& tw = __get_evaluator__ ();
 
   return tw.get_bp_table ();
 }
 
-child_list& __get_child_list__ (void)
+child_list& __get_child_list__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_child_list ();
 }
 
-cdef_manager& __get_cdef_manager__ (void)
+cdef_manager& __get_cdef_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_cdef_manager ();
 }
 
-display_info& __get_display_info__ (void)
+display_info& __get_display_info__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_display_info ();
 }
 
-gtk_manager& __get_gtk_manager__ (void)
+gtk_manager& __get_gtk_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 

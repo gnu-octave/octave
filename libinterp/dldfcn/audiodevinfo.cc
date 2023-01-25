@@ -522,55 +522,55 @@ enum audio_type { TYPE_INT8, TYPE_UINT8, TYPE_UINT16, TYPE_DOUBLE };
 class audioplayer : public octave_base_dld_value
 {
 public:
-  audioplayer (void);
-  ~audioplayer (void);
+  audioplayer ();
+  ~audioplayer ();
 
   // Overloaded base functions
-  double player_value (void) const { return 0; }
+  double player_value () const { return 0; }
   virtual double scalar_value (bool = false) const { return 0; }
   void print (std::ostream& os, bool pr_as_read_syntax = false);
   void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
   // Properties
-  bool is_constant (void) const { return true; }
-  bool is_defined (void) const { return true; }
-  bool print_as_scalar (void) const { return true; }
+  bool is_constant () const { return true; }
+  bool is_defined () const { return true; }
+  bool print_as_scalar () const { return true; }
 
-  void init (void);
-  void init_fn (void);
+  void init ();
+  void init_fn ();
   void set_y (const octave_value& y);
   void set_y (octave_function *fcn);
   void set_y (std::string fcn);
-  Matrix& get_y (void);
-  RowVector get_left (void) const;
-  RowVector get_right (void) const;
+  Matrix& get_y ();
+  RowVector get_left () const;
+  RowVector get_right () const;
   void set_fs (int fs);
-  int get_fs (void);
+  int get_fs ();
   void set_nbits (int nbits);
-  int get_nbits (void);
+  int get_nbits ();
   void set_id (int id);
-  int get_id (void);
-  int get_channels (void);
-  audio_type get_type (void);
+  int get_id ();
+  int get_channels ();
+  audio_type get_type ();
 
   void set_sample_number (unsigned int sample);
-  unsigned int get_sample_number (void);
-  unsigned int get_total_samples (void);
+  unsigned int get_sample_number ();
+  unsigned int get_total_samples ();
   void set_end_sample (unsigned int sample);
-  unsigned int get_end_sample (void);
-  void reset_end_sample (void);
+  unsigned int get_end_sample ();
+  void reset_end_sample ();
   void set_tag (const charMatrix& tag);
-  charMatrix get_tag (void);
+  charMatrix get_tag ();
   void set_userdata (const octave_value& userdata);
-  octave_value get_userdata (void);
-  PaStream * get_stream (void);
+  octave_value get_userdata ();
+  PaStream * get_stream ();
 
-  void play (void);
-  void playblocking (void);
-  void pause (void);
-  void resume (void);
-  void stop (void);
-  bool isplaying (void);
+  void play ();
+  void playblocking ();
+  void pause ();
+  void resume ();
+  void stop ();
+  bool isplaying ();
 
   octave_function *octave_callback_function;
 
@@ -876,14 +876,14 @@ portaudio_play_callback (const void *, void *output, unsigned long frames,
   return paContinue;
 }
 
-audioplayer::audioplayer (void)
+audioplayer::audioplayer ()
   : octave_callback_function (nullptr),
     id (-1), fs (0), nbits (16), channels (0), sample_number (0),
     end_sample (-1), tag (""), y (), userdata (Matrix ()),
     left (), right (), stream (nullptr), output_parameters (), type ()
 { }
 
-audioplayer::~audioplayer (void)
+audioplayer::~audioplayer ()
 {
   if (isplaying ())
     {
@@ -907,7 +907,7 @@ audioplayer::print_raw (std::ostream& os, bool) const
 }
 
 void
-audioplayer::init_fn (void)
+audioplayer::init_fn ()
 {
   if (Pa_Initialize () != paNoError)
     error ("audioplayer: initialization error");
@@ -937,7 +937,7 @@ audioplayer::init_fn (void)
 }
 
 void
-audioplayer::init (void)
+audioplayer::init ()
 {
   // FIXME: Both of these variables are unused.
   // Should they be eliminated or is something not yet implemented?
@@ -1015,19 +1015,19 @@ audioplayer::set_y (octave_function *fcn)
 }
 
 Matrix&
-audioplayer::get_y (void)
+audioplayer::get_y ()
 {
   return y;
 }
 
 RowVector
-audioplayer::get_left (void) const
+audioplayer::get_left () const
 {
   return left;
 }
 
 RowVector
-audioplayer::get_right (void) const
+audioplayer::get_right () const
 {
   return channels == 1 ? left : right;
 }
@@ -1039,7 +1039,7 @@ audioplayer::set_fs (int fs_arg)
 }
 
 int
-audioplayer::get_fs (void)
+audioplayer::get_fs ()
 {
   return fs;
 }
@@ -1051,7 +1051,7 @@ audioplayer::set_nbits (int nbits_arg)
 }
 
 int
-audioplayer::get_nbits (void)
+audioplayer::get_nbits ()
 {
   return nbits;
 }
@@ -1063,19 +1063,19 @@ audioplayer::set_id (int id_arg)
 }
 
 int
-audioplayer::get_id (void)
+audioplayer::get_id ()
 {
   return id;
 }
 
 int
-audioplayer::get_channels (void)
+audioplayer::get_channels ()
 {
   return channels;
 }
 
 audio_type
-audioplayer::get_type (void)
+audioplayer::get_type ()
 {
   return type;
 }
@@ -1087,13 +1087,13 @@ audioplayer::set_sample_number (unsigned int sample_number_arg)
 }
 
 unsigned int
-audioplayer::get_sample_number (void)
+audioplayer::get_sample_number ()
 {
   return sample_number;
 }
 
 unsigned int
-audioplayer::get_total_samples (void)
+audioplayer::get_total_samples ()
 {
   return left.numel ();
 }
@@ -1105,13 +1105,13 @@ audioplayer::set_end_sample (unsigned int end_sample_arg)
 }
 
 unsigned int
-audioplayer::get_end_sample (void)
+audioplayer::get_end_sample ()
 {
   return end_sample;
 }
 
 void
-audioplayer::reset_end_sample (void)
+audioplayer::reset_end_sample ()
 {
   set_end_sample (left.numel ());
 }
@@ -1123,7 +1123,7 @@ audioplayer::set_tag (const charMatrix& tag_arg)
 }
 
 charMatrix
-audioplayer::get_tag (void)
+audioplayer::get_tag ()
 {
   return tag;
 }
@@ -1135,13 +1135,13 @@ audioplayer::set_userdata (const octave_value& userdata_arg)
 }
 
 octave_value
-audioplayer::get_userdata (void)
+audioplayer::get_userdata ()
 {
   return userdata;
 }
 
 void
-audioplayer::playblocking (void)
+audioplayer::playblocking ()
 {
   if (get_stream ())
     stop ();
@@ -1179,7 +1179,7 @@ audioplayer::playblocking (void)
 }
 
 void
-audioplayer::play (void)
+audioplayer::play ()
 {
   if (get_stream ())
     stop ();
@@ -1205,7 +1205,7 @@ audioplayer::play (void)
 }
 
 void
-audioplayer::pause (void)
+audioplayer::pause ()
 {
   if (get_stream () == nullptr)
     return;
@@ -1217,7 +1217,7 @@ audioplayer::pause (void)
 }
 
 void
-audioplayer::resume (void)
+audioplayer::resume ()
 {
   if (get_stream () == nullptr)
     return;
@@ -1229,13 +1229,13 @@ audioplayer::resume (void)
 }
 
 PaStream *
-audioplayer::get_stream (void)
+audioplayer::get_stream ()
 {
   return stream;
 }
 
 void
-audioplayer::stop (void)
+audioplayer::stop ()
 {
   if (get_stream () == nullptr)
     return;
@@ -1258,7 +1258,7 @@ audioplayer::stop (void)
 }
 
 bool
-audioplayer::isplaying (void)
+audioplayer::isplaying ()
 {
   if (get_stream () == nullptr)
     return false;
@@ -1274,53 +1274,53 @@ audioplayer::isplaying (void)
 class audiorecorder : public octave_base_dld_value
 {
 public:
-  audiorecorder (void);
-  ~audiorecorder (void);
+  audiorecorder ();
+  ~audiorecorder ();
 
   // Overloaded base functions
-  double player_value (void) const { return 0; }
+  double player_value () const { return 0; }
   virtual double scalar_value (bool = false) const { return 0; }
   void print (std::ostream& os, bool pr_as_read_syntax = false);
   void print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
   // Properties
-  bool is_constant (void) const { return true; }
-  bool is_defined (void) const { return true; }
-  bool print_as_scalar (void) const { return true; }
+  bool is_constant () const { return true; }
+  bool is_defined () const { return true; }
+  bool print_as_scalar () const { return true; }
 
-  void init (void);
+  void init ();
   void set_fs (int fs);
-  int get_fs (void);
+  int get_fs ();
   void set_nbits (int nbits);
-  int get_nbits (void);
-  PaSampleFormat get_sampleFormat (void);
+  int get_nbits ();
+  PaSampleFormat get_sampleFormat ();
   void set_id (int id);
-  int get_id (void);
+  int get_id ();
   void set_channels (int channels);
-  int get_channels (void);
-  audio_type get_type (void);
+  int get_channels ();
+  audio_type get_type ();
 
   void set_sample_number (unsigned int sample);
-  unsigned int get_sample_number (void);
-  unsigned int get_total_samples (void);
+  unsigned int get_sample_number ();
+  unsigned int get_total_samples ();
   void set_end_sample (unsigned int sample);
-  unsigned int get_end_sample (void);
-  void reset_end_sample (void);
+  unsigned int get_end_sample ();
+  void reset_end_sample ();
   void set_tag (const charMatrix& tag);
-  charMatrix get_tag (void);
+  charMatrix get_tag ();
   void set_userdata (const octave_value& userdata);
-  octave_value get_userdata (void);
-  PaStream * get_stream (void);
+  octave_value get_userdata ();
+  PaStream * get_stream ();
 
-  octave_value getaudiodata (void);
-  audioplayer * getplayer (void);
-  bool isrecording (void);
-  audioplayer play (void);
-  void record (void);
+  octave_value getaudiodata ();
+  audioplayer * getplayer ();
+  bool isrecording ();
+  audioplayer play ();
+  void record ();
   void recordblocking (float seconds);
-  void pause (void);
-  void resume (void);
-  void stop (void);
+  void pause ();
+  void resume ();
+  void stop ();
   void append (float sample_l, float sample_r);
 
   octave_function *octave_callback_function;
@@ -1550,14 +1550,14 @@ portaudio_record_callback (const void *input, void *, unsigned long frames,
   return paContinue;
 }
 
-audiorecorder::audiorecorder (void)
+audiorecorder::audiorecorder ()
   : octave_callback_function (nullptr),
     id (-1), fs (8000), nbits (8), channels (1), sample_number (0),
     end_sample (-1), tag (""), y (), userdata (Matrix ()),
     left (), right (), stream (nullptr), input_parameters (), type ()
 { }
 
-audiorecorder::~audiorecorder (void)
+audiorecorder::~audiorecorder ()
 {
   if (isrecording ())
     {
@@ -1581,7 +1581,7 @@ audiorecorder::print_raw (std::ostream& os, bool) const
 }
 
 void
-audiorecorder::init (void)
+audiorecorder::init ()
 {
   if (Pa_Initialize () != paNoError)
     error ("audiorecorder: initialization error");
@@ -1623,7 +1623,7 @@ audiorecorder::set_fs (int fs_arg)
 }
 
 int
-audiorecorder::get_fs (void)
+audiorecorder::get_fs ()
 {
   return fs;
 }
@@ -1635,13 +1635,13 @@ audiorecorder::set_nbits (int nbits_arg)
 }
 
 int
-audiorecorder::get_nbits (void)
+audiorecorder::get_nbits ()
 {
   return nbits;
 }
 
 PaSampleFormat
-audiorecorder::get_sampleFormat (void)
+audiorecorder::get_sampleFormat ()
 {
   return input_parameters.sampleFormat;
 }
@@ -1653,7 +1653,7 @@ audiorecorder::set_id (int id_arg)
 }
 
 int
-audiorecorder::get_id (void)
+audiorecorder::get_id ()
 {
   return id;
 }
@@ -1668,13 +1668,13 @@ audiorecorder::set_channels (int channels_arg)
 }
 
 int
-audiorecorder::get_channels (void)
+audiorecorder::get_channels ()
 {
   return channels;
 }
 
 audio_type
-audiorecorder::get_type (void)
+audiorecorder::get_type ()
 {
   return type;
 }
@@ -1686,13 +1686,13 @@ audiorecorder::set_sample_number (unsigned int sample_number_arg)
 }
 
 unsigned int
-audiorecorder::get_sample_number (void)
+audiorecorder::get_sample_number ()
 {
   return sample_number;
 }
 
 unsigned int
-audiorecorder::get_total_samples (void)
+audiorecorder::get_total_samples ()
 {
   return left.size ();
 }
@@ -1704,13 +1704,13 @@ audiorecorder::set_end_sample (unsigned int end_sample_arg)
 }
 
 unsigned int
-audiorecorder::get_end_sample (void)
+audiorecorder::get_end_sample ()
 {
   return end_sample;
 }
 
 void
-audiorecorder::reset_end_sample (void)
+audiorecorder::reset_end_sample ()
 {
   set_end_sample (left.size ());
 }
@@ -1722,7 +1722,7 @@ audiorecorder::set_tag (const charMatrix& tag_arg)
 }
 
 charMatrix
-audiorecorder::get_tag (void)
+audiorecorder::get_tag ()
 {
   return tag;
 }
@@ -1734,13 +1734,13 @@ audiorecorder::set_userdata (const octave_value& userdata_arg)
 }
 
 octave_value
-audiorecorder::get_userdata (void)
+audiorecorder::get_userdata ()
 {
   return userdata;
 }
 
 octave_value
-audiorecorder::getaudiodata (void)
+audiorecorder::getaudiodata ()
 {
   // Must get size before entering loop as the value of left.size() may change
   // during loop with simultaneous recording and playback (bug #50674).
@@ -1757,7 +1757,7 @@ audiorecorder::getaudiodata (void)
 }
 
 audioplayer *
-audiorecorder::getplayer (void)
+audiorecorder::getplayer ()
 {
   audioplayer *player = new audioplayer ();
 
@@ -1770,7 +1770,7 @@ audiorecorder::getplayer (void)
 }
 
 bool
-audiorecorder::isrecording (void)
+audiorecorder::isrecording ()
 {
   if (get_stream () == nullptr)
     return false;
@@ -1784,7 +1784,7 @@ audiorecorder::isrecording (void)
 }
 
 void
-audiorecorder::record (void)
+audiorecorder::record ()
 {
   if (get_stream ())
     stop ();
@@ -1855,7 +1855,7 @@ audiorecorder::recordblocking (float seconds)
 }
 
 void
-audiorecorder::pause (void)
+audiorecorder::pause ()
 {
   if (get_stream () == nullptr)
     return;
@@ -1867,7 +1867,7 @@ audiorecorder::pause (void)
 }
 
 void
-audiorecorder::resume (void)
+audiorecorder::resume ()
 {
   if (get_stream () == nullptr)
     return;
@@ -1879,7 +1879,7 @@ audiorecorder::resume (void)
 }
 
 void
-audiorecorder::stop (void)
+audiorecorder::stop ()
 {
   if (get_stream () == nullptr)
     return;
@@ -1910,7 +1910,7 @@ audiorecorder::append (float sample_l, float sample_r)
 }
 
 PaStream *
-audiorecorder::get_stream (void)
+audiorecorder::get_stream ()
 {
   return stream;
 }

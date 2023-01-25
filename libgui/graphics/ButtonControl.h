@@ -41,13 +41,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     ButtonControl (octave::interpreter& interp,
                    const graphics_object& go, QAbstractButton *btn);
-    ~ButtonControl (void);
+    ~ButtonControl ();
 
   protected:
     void update (int pId);
 
   private slots:
-    void clicked (void);
+    void clicked ();
     void toggled (bool checked);
 
   private:

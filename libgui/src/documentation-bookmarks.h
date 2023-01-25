@@ -48,19 +48,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                              documentation_browser *browser,
                              QWidget *p = nullptr);
 
-    ~documentation_bookmarks (void) = default;
+    ~documentation_bookmarks () = default;
 
   public slots:
 
-    void add_bookmark (void);
+    void add_bookmark ();
     void add_folder (bool);
-    void save_settings (void);
+    void save_settings ();
 
   private slots:
 
     void filter_bookmarks (const QString& pattern);
     void filter_activate (bool state);
-    void update_filter_history (void);
+    void update_filter_history ();
     void handle_double_click (QTreeWidgetItem *item, int col = 0);
     void ctx_menu (const QPoint& xpos);
     void open (bool);
@@ -92,10 +92,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         proposed in the qt example
         [QXmlStream Bookmarks Example](https://doc.qt.io/qt-5/qtxml-streambookmarks-example.html)
     */
-    void write_bookmarks (void);
+    void write_bookmarks ();
     void write_tree_item (QXmlStreamWriter *xml_writer,
                           const QTreeWidgetItem *item);
-    QString read_bookmarks (void);
+    QString read_bookmarks ();
     void read_next_item (QXmlStreamReader *xml_writer, item_tag tag,
                          QTreeWidgetItem *item = nullptr);
 

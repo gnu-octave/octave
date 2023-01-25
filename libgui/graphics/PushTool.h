@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     PushTool (octave::interpreter& interp,
               const graphics_object& go, QAction *action);
-    ~PushTool (void);
+    ~PushTool ();
 
     static PushTool *
     create (octave::interpreter& interp,
@@ -49,7 +49,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void update (int pId);
 
   private slots:
-    void clicked (void);
+    void clicked ();
   };
 
 OCTAVE_END_NAMESPACE(octave)

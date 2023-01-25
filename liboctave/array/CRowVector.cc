@@ -193,13 +193,13 @@ ComplexRowVector::append (const ComplexRowVector& a) const
 }
 
 ComplexColumnVector
-ComplexRowVector::hermitian (void) const
+ComplexRowVector::hermitian () const
 {
   return MArray<Complex>::hermitian (std::conj);
 }
 
 ComplexColumnVector
-ComplexRowVector::transpose (void) const
+ComplexRowVector::transpose () const
 {
   return MArray<Complex>::transpose ();
 }
@@ -323,7 +323,7 @@ operator * (const RowVector& v, const ComplexMatrix& a)
 // other operations
 
 Complex
-ComplexRowVector::min (void) const
+ComplexRowVector::min () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -343,7 +343,7 @@ ComplexRowVector::min (void) const
 }
 
 Complex
-ComplexRowVector::max (void) const
+ComplexRowVector::max () const
 {
   octave_idx_type len = numel ();
   if (len == 0)

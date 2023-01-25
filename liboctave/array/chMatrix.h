@@ -44,13 +44,13 @@ charMatrix : public charNDArray
 
 public:
 
-  charMatrix (void) = default;
+  charMatrix () = default;
 
   charMatrix (const charMatrix& a) = default;
 
   charMatrix& operator = (const charMatrix& a) = default;
 
-  ~charMatrix (void) = default;
+  ~charMatrix () = default;
 
   charMatrix (octave_idx_type r, octave_idx_type c)
     : charNDArray (dim_vector (r, c)) { }
@@ -77,7 +77,7 @@ public:
   OCTAVE_API bool operator == (const charMatrix& a) const;
   OCTAVE_API bool operator != (const charMatrix& a) const;
 
-  charMatrix transpose (void) const { return Array<char>::transpose (); }
+  charMatrix transpose () const { return Array<char>::transpose (); }
 
   // destructive insert/delete/reorder operations
 

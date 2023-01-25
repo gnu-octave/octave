@@ -196,19 +196,19 @@ ComplexColumnVector::stack (const ComplexColumnVector& a) const
 }
 
 ComplexRowVector
-ComplexColumnVector::hermitian (void) const
+ComplexColumnVector::hermitian () const
 {
   return MArray<Complex>::hermitian (std::conj);
 }
 
 ComplexRowVector
-ComplexColumnVector::transpose (void) const
+ComplexColumnVector::transpose () const
 {
   return MArray<Complex>::transpose ();
 }
 
 ColumnVector
-ComplexColumnVector::abs (void) const
+ComplexColumnVector::abs () const
 {
   return do_mx_unary_map<double, Complex, std::abs> (*this);
 }
@@ -420,7 +420,7 @@ operator * (const ComplexDiagMatrix& m, const ComplexColumnVector& a)
 // other operations
 
 Complex
-ComplexColumnVector::min (void) const
+ComplexColumnVector::min () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -440,7 +440,7 @@ ComplexColumnVector::min (void) const
 }
 
 Complex
-ComplexColumnVector::max (void) const
+ComplexColumnVector::max () const
 {
   octave_idx_type len = numel ();
   if (len == 0)

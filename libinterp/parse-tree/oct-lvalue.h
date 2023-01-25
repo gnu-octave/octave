@@ -50,38 +50,38 @@ public:
 
   octave_lvalue& operator = (const octave_lvalue&) = delete;
 
-  ~octave_lvalue (void) = default;
+  ~octave_lvalue () = default;
 
-  bool is_black_hole (void) const { return m_black_hole; }
+  bool is_black_hole () const { return m_black_hole; }
 
-  void mark_black_hole (void) { m_black_hole = true; }
+  void mark_black_hole () { m_black_hole = true; }
 
-  bool is_defined (void) const;
+  bool is_defined () const;
 
-  bool is_undefined (void) const;
+  bool is_undefined () const;
 
-  bool isstruct (void) const { return value().isstruct (); }
+  bool isstruct () const { return value().isstruct (); }
 
   void define (const octave_value& v);
 
   void assign (octave_value::assign_op, const octave_value&);
 
-  octave_idx_type numel (void) const;
+  octave_idx_type numel () const;
 
   void set_index (const std::string& t,
                   const std::list<octave_value_list>& i);
 
-  void clear_index (void) { m_type = ""; m_idx.clear (); }
+  void clear_index () { m_type = ""; m_idx.clear (); }
 
-  std::string index_type (void) const { return m_type; }
+  std::string index_type () const { return m_type; }
 
-  bool index_is_empty (void) const;
+  bool index_is_empty () const;
 
-  bool index_is_colon (void) const;
+  bool index_is_colon () const;
 
   void unary_op (octave_value::unary_op op);
 
-  octave_value value (void) const;
+  octave_value value () const;
 
 private:
 

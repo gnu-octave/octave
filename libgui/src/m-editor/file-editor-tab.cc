@@ -274,7 +274,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_new_encoding = m_encoding;
   }
 
-  file_editor_tab::~file_editor_tab (void)
+  file_editor_tab::~file_editor_tab ()
   {
     // Tell all connected markers to self-destruct.
     emit remove_all_breakpoints_signal ();
@@ -558,7 +558,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // not match what Octave core is interpreting in the
   // file on disk.  This function gives the user the option
   // to save before creating the breakpoint.
-  bool file_editor_tab::unchanged_or_saved (void)
+  bool file_editor_tab::unchanged_or_saved ()
   {
     bool retval = true;
     if (m_edit_area->isModified () || ! valid_file_name ())
@@ -607,7 +607,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void file_editor_tab::update_lexer (void)
+  void file_editor_tab::update_lexer ()
   {
     // Create a new lexer
     QsciLexer *lexer = nullptr;
@@ -973,7 +973,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit api_entries_added ();
   }
 
-  void file_editor_tab::handle_api_entries_added (void)
+  void file_editor_tab::handle_api_entries_added ()
   {
     // disconnect slot for saving prepared info if already connected
     disconnect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
@@ -990,7 +990,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_lexer_apis->prepare ();  // prepare apis info
   }
 
-  void file_editor_tab::save_apis_info (void)
+  void file_editor_tab::save_apis_info ()
   {
     m_lexer_apis->savePrepared (m_prep_apis_file);
   }
@@ -1529,7 +1529,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_edit_area->endUndoAction ();
   }
 
-  void file_editor_tab::do_smart_indent_line_or_selected_text (void)
+  void file_editor_tab::do_smart_indent_line_or_selected_text ()
   {
     m_edit_area->beginUndoAction ();
 
@@ -1797,7 +1797,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_edit_area->setModified (modified);
   }
 
-  void file_editor_tab::recover_from_exit (void)
+  void file_editor_tab::recover_from_exit ()
   {
     // reset the possibly still existing read only state
     m_edit_area->setReadOnly (false);
@@ -1809,7 +1809,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     check_restore_breakpoints ();
   }
 
-  void file_editor_tab::check_restore_breakpoints (void)
+  void file_editor_tab::check_restore_breakpoints ()
   {
     if (! m_bp_lines.isEmpty ())
       {
@@ -1987,7 +1987,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_new_encoding = enc;
   }
 
-  QsciScintilla::EolMode file_editor_tab::detect_eol_mode (void)
+  QsciScintilla::EolMode file_editor_tab::detect_eol_mode ()
   {
     QByteArray text = m_edit_area->text ().toLatin1 ();
 
@@ -2025,7 +2025,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return eol_mode;
   }
 
-  void file_editor_tab::update_eol_indicator (void)
+  void file_editor_tab::update_eol_indicator ()
   {
     switch (m_edit_area->eolMode ())
       {
@@ -2661,7 +2661,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       emit editor_check_conflict_save (saveFileName, true);
   }
 
-  void file_editor_tab::handle_save_file_as_answer_cancel (void)
+  void file_editor_tab::handle_save_file_as_answer_cancel ()
   {
     // User canceled, allow editing again.
     m_edit_area->setReadOnly (false);
@@ -2931,7 +2931,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   }
 
-  void file_editor_tab::auto_margin_width (void)
+  void file_editor_tab::auto_margin_width ()
   {
     m_edit_area->setMarginWidth (2, "1" + QString::number (m_edit_area->lines ()));
   }
@@ -2941,7 +2941,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // the tab really was closed (for canceling exiting octave).
   // When emitting a signal, only the return value from the last slot
   // goes back to the sender
-  bool file_editor_tab::conditional_close (void)
+  bool file_editor_tab::conditional_close ()
   {
     return close ();
   }
@@ -3154,7 +3154,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void file_editor_tab::handle_lines_changed (void)
+  void file_editor_tab::handle_lines_changed ()
   {
     // the related signal is emitted before cursor-move-signal!
     m_lines_changed = true;
@@ -3341,7 +3341,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  QString file_editor_tab::get_function_name (void)
+  QString file_editor_tab::get_function_name ()
   {
     QRegExp rxfun1 ("^[\t ]*function[^=]+=([^\\(]+)\\([^\\)]*\\)[\t ]*$");
     QRegExp rxfun2 ("^[\t ]*function[\t ]+([^\\(]+)\\([^\\)]*\\)[\t ]*$");

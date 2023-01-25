@@ -302,7 +302,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  documentation::~documentation (void)
+  documentation::~documentation ()
   {
     // Cleanup temporary file and directory
     QFile file (m_collection);
@@ -347,18 +347,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return a;
   }
 
-  void documentation::construct_tool_bar (void)
+  void documentation::construct_tool_bar ()
   {
     // Home, Previous, Next
     gui_settings settings;
 
     m_action_go_home
-      = add_action (settings.icon ("go-home"), tr ("Go home"), SLOT (home (void)),
+      = add_action (settings.icon ("go-home"), tr ("Go home"), SLOT (home ()),
                     m_doc_browser, m_tool_bar);
 
     m_action_go_prev
       = add_action (settings.icon ("go-previous"), tr ("Go back"),
-                    SLOT (backward (void)), m_doc_browser, m_tool_bar);
+                    SLOT (backward ()), m_doc_browser, m_tool_bar);
     m_action_go_prev->setEnabled (false);
 
     // popdown menu with prev pages files
@@ -373,7 +373,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_action_go_next
       = add_action (settings.icon ("go-next"), tr ("Go forward"),
-                    SLOT (forward (void)), m_doc_browser, m_tool_bar);
+                    SLOT (forward ()), m_doc_browser, m_tool_bar);
     m_action_go_next->setEnabled (false);
 
     // popdown menu with prev pages files
@@ -416,19 +416,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_tool_bar->addSeparator ();
     m_action_find
       = add_action (settings.icon ("edit-find"), tr ("Find"),
-                    SLOT (activate_find (void)), this, m_tool_bar);
+                    SLOT (activate_find ()), this, m_tool_bar);
 
     // Zoom
     m_tool_bar->addSeparator ();
     m_action_zoom_in
       = add_action (settings.icon ("view-zoom-in"), tr ("Zoom in"),
-                    SLOT (zoom_in (void)), m_doc_browser, m_tool_bar);
+                    SLOT (zoom_in ()), m_doc_browser, m_tool_bar);
     m_action_zoom_out
       = add_action (settings.icon ("view-zoom-out"), tr ("Zoom out"),
-                    SLOT (zoom_out (void)), m_doc_browser, m_tool_bar);
+                    SLOT (zoom_out ()), m_doc_browser, m_tool_bar);
     m_action_zoom_original
       = add_action (settings.icon ("view-zoom-original"), tr ("Zoom original"),
-                    SLOT (zoom_original (void)), m_doc_browser, m_tool_bar);
+                    SLOT (zoom_original ()), m_doc_browser, m_tool_bar);
 
     // Bookmarks (connect slots later)
     m_tool_bar->addSeparator ();
@@ -437,7 +437,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                     tr ("Bookmark current page"), nullptr, nullptr, m_tool_bar);
   }
 
-  void documentation::global_search (void)
+  void documentation::global_search ()
   {
     if (! m_help_engine)
       return;
@@ -474,7 +474,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_help_engine->searchEngine ()->search (queries);
   }
 
-  void documentation::global_search_started (void)
+  void documentation::global_search_started ()
   {
     qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
   }
@@ -606,7 +606,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_doc_browser->moveCursor (QTextCursor::Start);
   }
 
-  void documentation::notice_settings (void)
+  void documentation::notice_settings ()
   {
     gui_settings settings;
 
@@ -639,7 +639,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_doc_browser->notice_settings ();
   }
 
-  void documentation::save_settings (void)
+  void documentation::save_settings ()
   {
     gui_settings settings;
 
@@ -647,7 +647,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_bookmarks->save_settings ();
   }
 
-  void documentation::copyClipboard (void)
+  void documentation::copyClipboard ()
   {
     if (m_doc_browser->hasFocus ())
       {
@@ -655,11 +655,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void documentation::pasteClipboard (void) { }
+  void documentation::pasteClipboard () { }
 
-  void documentation::selectAll (void) { }
+  void documentation::selectAll () { }
 
-  void documentation::load_index (void)
+  void documentation::load_index ()
   {
     m_indexed = true;
 
@@ -739,7 +739,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void documentation::activate_find (void)
+  void documentation::activate_find ()
   {
     if (m_find_line_edit->parentWidget ()->isVisible ())
       {
@@ -766,7 +766,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_help_engine->indexWidget ()->filterIndices(expression, wildcard);
   }
 
-  void documentation::filter_update_history (void)
+  void documentation::filter_update_history ()
   {
     QString text = m_filter->currentText ();   // get current text
     int index = m_filter->findText (text);     // and its actual index
@@ -778,7 +778,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_filter->setCurrentIndex (0);
   }
 
-  void documentation::find_backward (void)
+  void documentation::find_backward ()
   {
     find (true);
   }
@@ -826,7 +826,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void documentation::record_anchor_position (void)
+  void documentation::record_anchor_position ()
   {
     if (! m_help_engine)
       return;
@@ -834,7 +834,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_search_anchor_position = m_doc_browser->textCursor ().position ();
   }
 
-  void documentation::handle_cursor_position_change (void)
+  void documentation::handle_cursor_position_change ()
   {
     if (! m_help_engine)
       return;
@@ -887,7 +887,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void documentation::update_history_menus (void)
+  void documentation::update_history_menus ()
   {
     if (m_prev_pages_count != m_doc_browser->backwardHistoryCount ())
       {
@@ -1041,7 +1041,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       QDesktopServices::openUrl (url);
   }
 
-  void documentation_browser::notice_settings (void)
+  void documentation_browser::notice_settings ()
   {
     gui_settings settings;
 
@@ -1061,7 +1061,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return QTextBrowser::loadResource(type, url);
   }
 
-  void documentation_browser::save_settings (void)
+  void documentation_browser::save_settings ()
   {
     gui_settings settings;
 
@@ -1070,7 +1070,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.sync ();
   }
 
-  void documentation_browser::zoom_in (void)
+  void documentation_browser::zoom_in ()
   {
     if (m_zoom_level < max_zoom_level)
       {
@@ -1079,7 +1079,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void documentation_browser::zoom_out (void)
+  void documentation_browser::zoom_out ()
   {
     if (m_zoom_level > min_zoom_level)
       {
@@ -1088,7 +1088,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void documentation_browser::zoom_original (void)
+  void documentation_browser::zoom_original ()
   {
     zoomIn (- m_zoom_level);
     m_zoom_level = 0;

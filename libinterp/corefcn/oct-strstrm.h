@@ -54,7 +54,7 @@ public:
 
 protected:
 
-  ~base_strstream (void) = default;
+  ~base_strstream () = default;
 
 public:
 
@@ -64,17 +64,17 @@ public:
 
   // Return current stream position.
 
-  virtual off_t tell (void);
+  virtual off_t tell ();
 
   // The name of the file.
 
-  std::string name (void) const { return ""; }
+  std::string name () const { return ""; }
 
-  virtual std::streambuf * rdbuf (void) = 0;
+  virtual std::streambuf * rdbuf () = 0;
 
-  virtual bool bad (void) const = 0;
+  virtual bool bad () const = 0;
 
-  virtual void clear (void) = 0;
+  virtual void clear () = 0;
 };
 
 class
@@ -102,7 +102,7 @@ public:
 
 protected:
 
-  ~istrstream (void) = default;
+  ~istrstream () = default;
 
 public:
 
@@ -119,22 +119,22 @@ public:
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const { return m_istream.eof (); }
+  bool eof () const { return m_istream.eof (); }
 
-  std::istream * input_stream (void) { return &m_istream; }
+  std::istream * input_stream () { return &m_istream; }
 
-  std::ostream * output_stream (void) { return nullptr; }
+  std::ostream * output_stream () { return nullptr; }
 
-  off_t tell (void) { return m_istream.tellg (); }
+  off_t tell () { return m_istream.tellg (); }
 
-  std::streambuf * rdbuf (void)
+  std::streambuf * rdbuf ()
   {
     return m_istream ? m_istream.rdbuf () : nullptr;
   }
 
-  bool bad (void) const { return m_istream.bad (); }
+  bool bad () const { return m_istream.bad (); }
 
-  void clear (void) { m_istream.clear (); }
+  void clear () { m_istream.clear (); }
 
 private:
 
@@ -159,7 +159,7 @@ public:
 
 protected:
 
-  ~ostrstream (void) = default;
+  ~ostrstream () = default;
 
 public:
 
@@ -170,22 +170,22 @@ public:
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const { return m_ostream.eof (); }
+  bool eof () const { return m_ostream.eof (); }
 
-  std::istream * input_stream (void) { return nullptr; }
+  std::istream * input_stream () { return nullptr; }
 
-  std::ostream * output_stream (void) { return &m_ostream; }
+  std::ostream * output_stream () { return &m_ostream; }
 
-  std::string str (void) { return m_ostream.str (); }
+  std::string str () { return m_ostream.str (); }
 
-  std::streambuf * rdbuf (void)
+  std::streambuf * rdbuf ()
   {
     return m_ostream ? m_ostream.rdbuf () : nullptr;
   }
 
-  bool bad (void) const { return m_ostream.bad (); }
+  bool bad () const { return m_ostream.bad (); }
 
-  void clear (void) { m_ostream.clear (); }
+  void clear () { m_ostream.clear (); }
 
 private:
 

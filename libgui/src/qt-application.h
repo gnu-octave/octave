@@ -60,14 +60,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     qt_application& operator = (const qt_application&) = delete;
 
-    ~qt_application (void) = default;
+    ~qt_application () = default;
 
     // Should we start the GUI or fall back to the CLI?
-    bool start_gui_p (void) const;
+    bool start_gui_p () const;
 
-    int execute (void);
+    int execute ();
 
-    bool gui_running (void) const { return m_gui_running; }
+    bool gui_running () const { return m_gui_running; }
     void gui_running (bool arg) { m_gui_running = arg; }
 
   private:

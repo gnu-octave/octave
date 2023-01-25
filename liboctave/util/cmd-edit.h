@@ -43,18 +43,18 @@ command_editor
 {
 protected:
 
-  command_editor (void)
+  command_editor ()
     : m_command_number (1), m_rows (24), m_cols (80), m_interrupted (false),
       m_interrupt_event_loop (false), m_initial_input ()
   { }
 
 public:
 
-  typedef int (*startup_hook_fcn) (void);
+  typedef int (*startup_hook_fcn) ();
 
-  typedef int (*pre_input_hook_fcn) (void);
+  typedef int (*pre_input_hook_fcn) ();
 
-  typedef int (*event_hook_fcn) (void);
+  typedef int (*event_hook_fcn) ();
 
   typedef std::string (*completion_fcn) (const std::string&, int);
 
@@ -74,7 +74,7 @@ public:
 
   command_editor& operator = (const command_editor&) = delete;
 
-  virtual ~command_editor (void) = default;
+  virtual ~command_editor () = default;
 
   static void set_name (const std::string& n);
 
@@ -84,27 +84,27 @@ public:
 
   static void set_input_stream (FILE *f);
 
-  static FILE * get_input_stream (void);
+  static FILE * get_input_stream ();
 
   static void set_output_stream (FILE *f);
 
-  static FILE * get_output_stream (void);
+  static FILE * get_output_stream ();
 
-  static void redisplay (void);
+  static void redisplay ();
 
-  static int terminal_rows (void);
+  static int terminal_rows ();
 
-  static int terminal_cols (void);
+  static int terminal_cols ();
 
   static void clear_screen (bool skip_redisplay = false);
 
-  static void resize_terminal (void);
+  static void resize_terminal ();
 
   static void set_screen_size (int ht, int wd);
 
   static std::string decode_prompt_string (const std::string& s);
 
-  static void restore_terminal_state (void);
+  static void restore_terminal_state ();
 
   static void blink_matching_paren (bool flag);
 
@@ -132,38 +132,38 @@ public:
 
   static void set_user_accept_line_function (user_accept_line_fcn f);
 
-  static completion_fcn get_completion_function (void);
+  static completion_fcn get_completion_function ();
 
-  static quoting_fcn get_quoting_function (void);
+  static quoting_fcn get_quoting_function ();
 
-  static dequoting_fcn get_dequoting_function (void);
+  static dequoting_fcn get_dequoting_function ();
 
-  static char_is_quoted_fcn get_char_is_quoted_function (void);
+  static char_is_quoted_fcn get_char_is_quoted_function ();
 
-  static user_accept_line_fcn get_user_accept_line_function (void);
+  static user_accept_line_fcn get_user_accept_line_function ();
 
   static string_vector
   generate_filename_completions (const std::string& text);
 
-  static std::string get_line_buffer (void);
+  static std::string get_line_buffer ();
 
-  static std::string get_current_line (void);
+  static std::string get_current_line ();
 
   static char get_prev_char (int);
 
   static void replace_line (const std::string& text, bool clear_undo = true);
 
-  static void kill_full_line (void);
+  static void kill_full_line ();
 
   static void insert_text (const std::string& text);
 
-  static void newline (void);
+  static void newline ();
 
-  static void accept_line (void);
+  static void accept_line ();
 
-  static bool undo (void);
+  static bool undo ();
 
-  static void clear_undo_list (void);
+  static void clear_undo_list ();
 
   static void add_startup_hook (startup_hook_fcn f);
 
@@ -177,11 +177,11 @@ public:
 
   static void remove_event_hook (event_hook_fcn f);
 
-  static void run_event_hooks (void);
+  static void run_event_hooks ();
 
   static void read_init_file (const std::string& file = "");
 
-  static void re_read_init_file (void);
+  static void re_read_init_file ();
 
   static bool filename_completion_desired (bool);
 
@@ -193,39 +193,39 @@ public:
 
   static void interrupt_event_loop (bool flag = true);
 
-  static bool event_loop_interrupted (void);
+  static bool event_loop_interrupted ();
 
-  static int current_command_number (void);
+  static int current_command_number ();
 
   static void reset_current_command_number (int n);
 
-  static void increment_current_command_number (void);
+  static void increment_current_command_number ();
 
-  static void force_default_editor (void);
+  static void force_default_editor ();
 
   static void set_initial_input (const std::string& text);
 
-  static int insert_initial_input (void);
+  static int insert_initial_input ();
 
 private:
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
-  static void make_command_editor (void);
+  static void make_command_editor ();
 
-  static int startup_handler (void);
+  static int startup_handler ();
 
-  static int pre_input_handler (void);
+  static int pre_input_handler ();
 
-  static int event_handler (void);
+  static int event_handler ();
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   {
     delete s_instance;
     s_instance = nullptr;
   }
 
-  static void handle_interrupt_signal (void);
+  static void handle_interrupt_signal ();
 
   //--------
 
@@ -254,21 +254,21 @@ protected:
 
   virtual void do_set_input_stream (FILE *) = 0;
 
-  virtual FILE * do_get_input_stream (void) = 0;
+  virtual FILE * do_get_input_stream () = 0;
 
   virtual void do_set_output_stream (FILE *) = 0;
 
-  virtual FILE * do_get_output_stream (void) = 0;
+  virtual FILE * do_get_output_stream () = 0;
 
-  virtual void do_redisplay (void) { }
+  virtual void do_redisplay () { }
 
-  virtual int do_terminal_rows (void) { return m_rows; }
+  virtual int do_terminal_rows () { return m_rows; }
 
-  virtual int do_terminal_cols (void) { return m_cols; }
+  virtual int do_terminal_cols () { return m_cols; }
 
   virtual void do_clear_screen (bool) { }
 
-  virtual void do_resize_terminal (void) { }
+  virtual void do_resize_terminal () { }
 
   virtual void do_set_screen_size (int ht, int wd)
   {
@@ -278,9 +278,9 @@ protected:
 
   virtual std::string do_decode_prompt_string (const std::string&);
 
-  virtual std::string newline_chars (void) { return "\n"; }
+  virtual std::string newline_chars () { return "\n"; }
 
-  virtual void do_restore_terminal_state (void) { }
+  virtual void do_restore_terminal_state () { }
 
   virtual void do_blink_matching_paren (bool) { }
 
@@ -310,60 +310,60 @@ protected:
 
   virtual void do_set_user_accept_line_function (user_accept_line_fcn) { }
 
-  virtual completion_fcn do_get_completion_function (void) const
+  virtual completion_fcn do_get_completion_function () const
   { return nullptr; }
 
-  virtual quoting_fcn do_get_quoting_function (void) const
+  virtual quoting_fcn do_get_quoting_function () const
   { return nullptr; }
 
-  virtual dequoting_fcn do_get_dequoting_function (void) const
+  virtual dequoting_fcn do_get_dequoting_function () const
   { return nullptr; }
 
-  virtual char_is_quoted_fcn do_get_char_is_quoted_function (void) const
+  virtual char_is_quoted_fcn do_get_char_is_quoted_function () const
   { return nullptr; }
 
-  virtual user_accept_line_fcn do_get_user_accept_line_function (void) const
+  virtual user_accept_line_fcn do_get_user_accept_line_function () const
   { return nullptr; }
 
   virtual string_vector
   do_generate_filename_completions (const std::string& text) = 0;
 
-  virtual std::string do_get_line_buffer (void) const = 0;
+  virtual std::string do_get_line_buffer () const = 0;
 
-  virtual std::string do_get_current_line (void) const = 0;
+  virtual std::string do_get_current_line () const = 0;
 
   virtual char do_get_prev_char (int) const = 0;
 
   virtual void
   do_replace_line (const std::string& text, bool clear_undo) = 0;
 
-  virtual void do_kill_full_line (void) = 0;
+  virtual void do_kill_full_line () = 0;
 
   virtual void do_insert_text (const std::string& text) = 0;
 
-  virtual void do_newline (void) = 0;
+  virtual void do_newline () = 0;
 
-  virtual void do_accept_line (void) = 0;
+  virtual void do_accept_line () = 0;
 
-  virtual bool do_undo (void) { return false; }
+  virtual bool do_undo () { return false; }
 
-  virtual void do_clear_undo_list (void) { }
+  virtual void do_clear_undo_list () { }
 
   virtual void set_startup_hook (startup_hook_fcn) { }
 
-  virtual void restore_startup_hook (void) { }
+  virtual void restore_startup_hook () { }
 
   virtual void set_pre_input_hook (pre_input_hook_fcn) { }
 
-  virtual void restore_pre_input_hook (void) { }
+  virtual void restore_pre_input_hook () { }
 
   virtual void set_event_hook (event_hook_fcn) { }
 
-  virtual void restore_event_hook (void) { }
+  virtual void restore_event_hook () { }
 
   virtual void do_read_init_file (const std::string&) { }
 
-  virtual void do_re_read_init_file (void) { }
+  virtual void do_re_read_init_file () { }
 
   virtual bool do_filename_completion_desired (bool) { return false; }
 
@@ -373,14 +373,14 @@ protected:
 
   virtual void do_interrupt (bool) { }
 
-  virtual void do_handle_interrupt_signal (void) { }
+  virtual void do_handle_interrupt_signal () { }
 
   void do_interrupt_event_loop (bool arg) { m_interrupt_event_loop = arg; }
 
-  bool do_event_loop_interrupted (void) const
+  bool do_event_loop_interrupted () const
   { return m_interrupt_event_loop; }
 
-  int do_insert_initial_input (void);
+  int do_insert_initial_input ();
 
   int read_octal (const std::string& s);
 

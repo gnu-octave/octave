@@ -42,13 +42,13 @@ public:
 
   typedef FloatMatrix full_matrix_type;
 
-  FloatDiagMatrix (void) = default;
+  FloatDiagMatrix () = default;
 
   FloatDiagMatrix (const FloatDiagMatrix& a) = default;
 
   FloatDiagMatrix& operator = (const FloatDiagMatrix& a) = default;
 
-  ~FloatDiagMatrix (void) = default;
+  ~FloatDiagMatrix () = default;
 
   FloatDiagMatrix (octave_idx_type r, octave_idx_type c)
     : MDiagArray2<float> (r, c) { }
@@ -79,10 +79,10 @@ public:
   OCTAVE_API FloatDiagMatrix&
   fill (const FloatRowVector& a, octave_idx_type beg);
 
-  FloatDiagMatrix transpose (void) const
+  FloatDiagMatrix transpose () const
   { return MDiagArray2<float>::transpose (); }
 
-  OCTAVE_API FloatDiagMatrix abs (void) const;
+  OCTAVE_API FloatDiagMatrix abs () const;
 
   friend OCTAVE_API FloatDiagMatrix real (const FloatComplexDiagMatrix& a);
   friend OCTAVE_API FloatDiagMatrix imag (const FloatComplexDiagMatrix& a);
@@ -101,7 +101,7 @@ public:
   OCTAVE_API FloatColumnVector column (octave_idx_type i) const;
   OCTAVE_API FloatColumnVector column (char *s) const;
 
-  OCTAVE_API FloatDiagMatrix inverse (void) const;
+  OCTAVE_API FloatDiagMatrix inverse () const;
   OCTAVE_API FloatDiagMatrix inverse (octave_idx_type& info) const;
   OCTAVE_API FloatDiagMatrix pseudo_inverse (float tol = 0.0f) const;
 
@@ -110,8 +110,8 @@ public:
   FloatColumnVector extract_diag (octave_idx_type k = 0) const
   { return MDiagArray2<float>::extract_diag (k); }
 
-  OCTAVE_API FloatDET determinant (void) const;
-  OCTAVE_API float rcond (void) const;
+  OCTAVE_API FloatDET determinant () const;
+  OCTAVE_API float rcond () const;
 
   // i/o
 

@@ -89,7 +89,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &SliderControl::valueChanged);
   }
 
-  SliderControl::~SliderControl (void)
+  SliderControl::~SliderControl ()
   { }
 
   void

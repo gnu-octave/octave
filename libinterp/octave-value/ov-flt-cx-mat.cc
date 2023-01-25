@@ -75,7 +75,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex_matrix,
                                      "float complex matrix", "single");
 
 octave_base_value *
-octave_float_complex_matrix::try_narrowing_conversion (void)
+octave_float_complex_matrix::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -255,13 +255,13 @@ octave_float_complex_matrix::sparse_complex_matrix_value (bool) const
 }
 
 octave_value
-octave_float_complex_matrix::as_double (void) const
+octave_float_complex_matrix::as_double () const
 {
   return ComplexNDArray (m_matrix);
 }
 
 octave_value
-octave_float_complex_matrix::as_single (void) const
+octave_float_complex_matrix::as_single () const
 {
   return m_matrix;
 }

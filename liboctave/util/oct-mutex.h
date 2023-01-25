@@ -41,15 +41,15 @@ base_mutex
 public:
   friend class mutex;
 
-  base_mutex (void) = default;
+  base_mutex () = default;
 
-  virtual ~base_mutex (void) = default;
+  virtual ~base_mutex () = default;
 
-  virtual void lock (void);
+  virtual void lock ();
 
-  virtual void unlock (void);
+  virtual void unlock ();
 
-  virtual bool try_lock (void);
+  virtual bool try_lock ();
 };
 
 class
@@ -57,25 +57,25 @@ OCTAVE_API
 mutex
 {
 public:
-  mutex (void);
+  mutex ();
 
   mutex (const mutex& m) = default;
 
-  ~mutex (void) = default;
+  ~mutex () = default;
 
   mutex& operator = (const mutex& m) = default;
 
-  void lock (void)
+  void lock ()
   {
     m_rep->lock ();
   }
 
-  void unlock (void)
+  void unlock ()
   {
     m_rep->unlock ();
   }
 
-  bool try_lock (void)
+  bool try_lock ()
   {
     return m_rep->try_lock ();
   }
@@ -107,15 +107,15 @@ public:
 
   autolock& operator = (const autolock&) = delete;
 
-  ~autolock (void)
+  ~autolock ()
   {
     if (m_lock_result)
       m_mutex.unlock ();
   }
 
-  bool ok (void) const { return m_lock_result; }
+  bool ok () const { return m_lock_result; }
 
-  operator bool (void) const { return ok (); }
+  operator bool () const { return ok (); }
 
 private:
 
@@ -131,9 +131,9 @@ thread
 {
 public:
 
-  static void init (void);
+  static void init ();
 
-  static bool is_thread (void);
+  static bool is_thread ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

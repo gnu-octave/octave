@@ -36,7 +36,7 @@
 
 template <typename T>
 boolNDArray
-intNDArray<T>::operator ! (void) const
+intNDArray<T>::operator ! () const
 {
   boolNDArray b (this->dims ());
 
@@ -48,7 +48,7 @@ intNDArray<T>::operator ! (void) const
 
 template <typename T>
 bool
-intNDArray<T>::any_element_not_one_or_zero (void) const
+intNDArray<T>::any_element_not_one_or_zero () const
 {
   octave_idx_type nel = this->numel ();
 
@@ -180,7 +180,7 @@ operator >> (std::istream& is, intNDArray<T>& a)
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::abs (void) const
+intNDArray<T>::abs () const
 {
   octave_idx_type nel = this->numel ();
   intNDArray<T> ret (this->dims ());
@@ -196,7 +196,7 @@ intNDArray<T>::abs (void) const
 
 template <typename T>
 intNDArray<T>
-intNDArray<T>::signum (void) const
+intNDArray<T>::signum () const
 {
   octave_idx_type nel = this->numel ();
   intNDArray<T> ret (this->dims ());

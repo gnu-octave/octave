@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     CheckBoxControl (octave::interpreter& interp, const graphics_object& go,
                      QCheckBox *box);
-    ~CheckBoxControl (void);
+    ~CheckBoxControl ();
 
     static CheckBoxControl *
     create (octave::interpreter& interp,

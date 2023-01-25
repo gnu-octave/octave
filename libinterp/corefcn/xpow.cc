@@ -59,13 +59,13 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static void
-err_failed_diagonalization (void)
+err_failed_diagonalization ()
 {
   error ("Failed to diagonalize matrix while calculating matrix exponential");
 }
 
 static void
-err_nonsquare_matrix (void)
+err_nonsquare_matrix ()
 {
   error ("for x^y, only square matrix arguments are permitted and one " \
          "argument must be scalar.  Use .^ for elementwise power.");

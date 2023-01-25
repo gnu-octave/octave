@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     external_editor_interface (QWidget *main_win);
 
-    ~external_editor_interface (void) = default;
+    ~external_editor_interface () = default;
 
   signals:
 
@@ -61,7 +61,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   private:
 
-    QString external_editor (void);
+    QString external_editor ();
   };
 
 OCTAVE_END_NAMESPACE(octave)

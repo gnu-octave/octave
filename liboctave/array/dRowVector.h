@@ -37,7 +37,7 @@ RowVector : public MArray<double>
 {
 public:
 
-  RowVector (void) : MArray<double> (dim_vector (1, 0)) { }
+  RowVector () : MArray<double> (dim_vector (1, 0)) { }
 
   explicit RowVector (octave_idx_type n)
     : MArray<double> (dim_vector (1, n)) { }
@@ -71,7 +71,7 @@ public:
 
   OCTAVE_API RowVector append (const RowVector& a) const;
 
-  OCTAVE_API ColumnVector transpose (void) const;
+  OCTAVE_API ColumnVector transpose () const;
 
   friend OCTAVE_API RowVector real (const ComplexRowVector& a);
   friend OCTAVE_API RowVector imag (const ComplexRowVector& a);
@@ -88,8 +88,8 @@ public:
 
   // other operations
 
-  OCTAVE_API double min (void) const;
-  OCTAVE_API double max (void) const;
+  OCTAVE_API double min () const;
+  OCTAVE_API double max () const;
 
   // i/o
 

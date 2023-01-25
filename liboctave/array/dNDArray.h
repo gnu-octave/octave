@@ -40,7 +40,7 @@ NDArray : public MArray<double>
 {
 public:
 
-  NDArray (void) : MArray<double> () { }
+  NDArray () : MArray<double> () { }
 
   NDArray (const dim_vector& dv) : MArray<double> (dv) { }
 
@@ -71,18 +71,18 @@ public:
 
   // unary operations
 
-  OCTAVE_API boolNDArray operator ! (void) const;
+  OCTAVE_API boolNDArray operator ! () const;
 
   OCTAVE_API bool any_element_is_negative (bool = false) const;
   OCTAVE_API bool any_element_is_positive (bool = false) const;
-  OCTAVE_API bool any_element_is_nan (void) const;
-  OCTAVE_API bool any_element_is_inf_or_nan (void) const;
-  OCTAVE_API bool any_element_not_one_or_zero (void) const;
-  OCTAVE_API bool all_elements_are_zero (void) const;
-  OCTAVE_API bool all_elements_are_int_or_inf_or_nan (void) const;
+  OCTAVE_API bool any_element_is_nan () const;
+  OCTAVE_API bool any_element_is_inf_or_nan () const;
+  OCTAVE_API bool any_element_not_one_or_zero () const;
+  OCTAVE_API bool all_elements_are_zero () const;
+  OCTAVE_API bool all_elements_are_int_or_inf_or_nan () const;
   OCTAVE_API bool all_integers (double& max_val, double& min_val) const;
-  OCTAVE_API bool all_integers (void) const;
-  OCTAVE_API bool too_large_for_float (void) const;
+  OCTAVE_API bool all_integers () const;
+  OCTAVE_API bool too_large_for_float () const;
 
   // FIXME: this is not quite the right thing.
 
@@ -121,26 +121,26 @@ public:
   OCTAVE_API NDArray&
   insert (const NDArray& a, const Array<octave_idx_type>& ra_idx);
 
-  OCTAVE_API NDArray abs (void) const;
-  OCTAVE_API boolNDArray isnan (void) const;
-  OCTAVE_API boolNDArray isinf (void) const;
-  OCTAVE_API boolNDArray isfinite (void) const;
+  OCTAVE_API NDArray abs () const;
+  OCTAVE_API boolNDArray isnan () const;
+  OCTAVE_API boolNDArray isinf () const;
+  OCTAVE_API boolNDArray isfinite () const;
 
   OCTAVE_API ComplexNDArray fourier (int dim = 1) const;
   OCTAVE_API ComplexNDArray ifourier (int dim = 1) const;
 
-  OCTAVE_API ComplexNDArray fourier2d (void) const;
-  OCTAVE_API ComplexNDArray ifourier2d (void) const;
+  OCTAVE_API ComplexNDArray fourier2d () const;
+  OCTAVE_API ComplexNDArray ifourier2d () const;
 
-  OCTAVE_API ComplexNDArray fourierNd (void) const;
-  OCTAVE_API ComplexNDArray ifourierNd (void) const;
+  OCTAVE_API ComplexNDArray fourierNd () const;
+  OCTAVE_API ComplexNDArray ifourierNd () const;
 
   friend OCTAVE_API NDArray real (const ComplexNDArray& a);
   friend OCTAVE_API NDArray imag (const ComplexNDArray& a);
 
   friend class ComplexNDArray;
 
-  NDArray squeeze (void) const { return MArray<double>::squeeze (); }
+  NDArray squeeze () const { return MArray<double>::squeeze (); }
 
   static OCTAVE_API void
   increment_index (Array<octave_idx_type>& ra_idx,
@@ -159,7 +159,7 @@ public:
 
   OCTAVE_API NDArray diag (octave_idx_type m, octave_idx_type n) const;
 
-  NDArray& changesign (void)
+  NDArray& changesign ()
   {
     MArray<double>::changesign ();
     return *this;

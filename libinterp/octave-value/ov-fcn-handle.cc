@@ -90,18 +90,18 @@ class invalid_fcn_handle : public base_fcn_handle
 {
 public:
 
-  invalid_fcn_handle (void) : base_fcn_handle ("<invalid>") { }
+  invalid_fcn_handle () : base_fcn_handle ("<invalid>") { }
 
   invalid_fcn_handle (const invalid_fcn_handle&) = default;
 
-  ~invalid_fcn_handle (void) = default;
+  ~invalid_fcn_handle () = default;
 
-  invalid_fcn_handle * clone (void) const
+  invalid_fcn_handle * clone () const
   {
     return new invalid_fcn_handle (*this);
   }
 
-  std::string type (void) const { return "<invalid>"; }
+  std::string type () const { return "<invalid>"; }
 
   octave_value_list call (int nargout, const octave_value_list& args);
 };
@@ -120,16 +120,16 @@ public:
 
   internal_fcn_handle (const internal_fcn_handle&) = default;
 
-  ~internal_fcn_handle (void) = default;
+  ~internal_fcn_handle () = default;
 
-  internal_fcn_handle * clone (void) const
+  internal_fcn_handle * clone () const
   {
     return new internal_fcn_handle (*this);
   }
 
-  std::string type (void) const { return "<internal>"; }
+  std::string type () const { return "<internal>"; }
 
-  bool is_internal (void) const { return true; }
+  bool is_internal () const { return true; }
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
@@ -145,10 +145,10 @@ public:
     return m_fcn.user_function_value ();
   }
 
-  octave_value fcn_val (void) { return m_fcn; }
+  octave_value fcn_val () { return m_fcn; }
 
   // Should be const.
-  octave_scalar_map info (void);
+  octave_scalar_map info ();
 
   friend bool is_equal_to (const internal_fcn_handle& fh1,
                            const internal_fcn_handle& fh2);
@@ -185,16 +185,16 @@ public:
 
   simple_fcn_handle (const simple_fcn_handle&) = default;
 
-  ~simple_fcn_handle (void) = default;
+  ~simple_fcn_handle () = default;
 
-  simple_fcn_handle * clone (void) const
+  simple_fcn_handle * clone () const
   {
     return new simple_fcn_handle (*this);
   }
 
-  std::string type (void) const { return "simple"; }
+  std::string type () const { return "simple"; }
 
-  bool is_simple (void) const { return true; }
+  bool is_simple () const { return true; }
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
@@ -204,10 +204,10 @@ public:
 
   octave_user_function * user_function_value (bool);
 
-  octave_value fcn_val (void);
+  octave_value fcn_val ();
 
   // Should be const.
-  octave_scalar_map info (void);
+  octave_scalar_map info ();
 
   bool save_ascii (std::ostream& os);
 
@@ -252,16 +252,16 @@ public:
 
   scoped_fcn_handle (const scoped_fcn_handle&) = default;
 
-  ~scoped_fcn_handle (void) = default;
+  ~scoped_fcn_handle () = default;
 
-  scoped_fcn_handle * clone (void) const
+  scoped_fcn_handle * clone () const
   {
     return new scoped_fcn_handle (*this);
   }
 
-  std::string type (void) const { return "scopedfunction"; }
+  std::string type () const { return "scopedfunction"; }
 
-  bool is_scoped (void) const { return true; }
+  bool is_scoped () const { return true; }
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
@@ -277,10 +277,10 @@ public:
     return m_fcn.user_function_value ();
   }
 
-  octave_value fcn_val (void) { return m_fcn; }
+  octave_value fcn_val () { return m_fcn; }
 
   // Should be const.
-  octave_scalar_map info (void);
+  octave_scalar_map info ();
 
   bool save_ascii (std::ostream& os);
 
@@ -304,7 +304,7 @@ public:
 
 protected:
 
-  void find_function (void);
+  void find_function ();
 
   // The function we are handling.
   octave_value m_fcn;
@@ -331,11 +331,11 @@ public:
     : base_fcn_handle (name), m_fcn (fcn)
   { }
 
-  std::string type (void) const { return "nested"; }
+  std::string type () const { return "nested"; }
 
   using base_fcn_handle::is_nested;
 
-  bool is_nested (void) const { return true; }
+  bool is_nested () const { return true; }
 
   // FIXME: These must go away.  They don't do the right thing for
   // scoping or overloads.
@@ -349,12 +349,12 @@ public:
     return m_fcn.user_function_value ();
   }
 
-  octave_value fcn_val (void) { return m_fcn; }
+  octave_value fcn_val () { return m_fcn; }
 
-  virtual octave_value workspace (void) const = 0;
+  virtual octave_value workspace () const = 0;
 
   // Should be const.
-  octave_scalar_map info (void);
+  octave_scalar_map info ();
 
   bool save_ascii (std::ostream& os);
 
@@ -402,7 +402,7 @@ public:
 
   nested_fcn_handle (const nested_fcn_handle&) = default;
 
-  ~nested_fcn_handle (void) = default;
+  ~nested_fcn_handle () = default;
 
   using base_nested_fcn_handle::is_nested;
 
@@ -411,21 +411,21 @@ public:
     return frame == m_stack_context;
   }
 
-  nested_fcn_handle * clone (void) const
+  nested_fcn_handle * clone () const
   {
     return new nested_fcn_handle (*this);
   }
 
-  octave_value make_weak_nested_handle (void) const;
+  octave_value make_weak_nested_handle () const;
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
-  octave_value workspace (void) const;
+  octave_value workspace () const;
 
   friend bool is_equal_to (const nested_fcn_handle& fh1,
                            const nested_fcn_handle& fh2);
 
-  std::shared_ptr<stack_frame> stack_context (void) const
+  std::shared_ptr<stack_frame> stack_context () const
   {
     return m_stack_context;
   }
@@ -446,18 +446,18 @@ public:
 
   weak_nested_fcn_handle (const weak_nested_fcn_handle&) = default;
 
-  ~weak_nested_fcn_handle (void) = default;
+  ~weak_nested_fcn_handle () = default;
 
-  weak_nested_fcn_handle * clone (void) const
+  weak_nested_fcn_handle * clone () const
   {
     return new weak_nested_fcn_handle (*this);
   }
 
-  bool is_weak_nested (void) const { return true; }
+  bool is_weak_nested () const { return true; }
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
-  octave_value workspace (void) const;
+  octave_value workspace () const;
 
   friend bool is_equal_to (const weak_nested_fcn_handle& fh1,
                            const weak_nested_fcn_handle& fh2);
@@ -497,16 +497,16 @@ public:
 
   class_simple_fcn_handle (const class_simple_fcn_handle&) = default;
 
-  ~class_simple_fcn_handle (void) = default;
+  ~class_simple_fcn_handle () = default;
 
-  class_simple_fcn_handle * clone (void) const
+  class_simple_fcn_handle * clone () const
   {
     return new class_simple_fcn_handle (*this);
   }
 
-  std::string type (void) const { return "classsimple"; }
+  std::string type () const { return "classsimple"; }
 
-  bool is_class_simple (void) const { return true; }
+  bool is_class_simple () const { return true; }
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
@@ -540,12 +540,12 @@ public:
     return m_fcn.user_function_value ();
   }
 
-  octave_value fcn_val (void) { return m_fcn; }
+  octave_value fcn_val () { return m_fcn; }
 
   // Should be const.
-  octave_scalar_map info (void);
+  octave_scalar_map info ();
 
-  std::string dispatch_class (void) const { return m_dispatch_class; }
+  std::string dispatch_class () const { return m_dispatch_class; }
 
   bool save_ascii (std::ostream& os);
 
@@ -627,11 +627,11 @@ public:
 
   base_anonymous_fcn_handle (const base_anonymous_fcn_handle&) = default;
 
-  ~base_anonymous_fcn_handle (void) = default;
+  ~base_anonymous_fcn_handle () = default;
 
-  std::string type (void) const { return "anonymous"; }
+  std::string type () const { return "anonymous"; }
 
-  bool is_anonymous (void) const { return true; }
+  bool is_anonymous () const { return true; }
 
   // FIXME: These must go away.  They don't do the right thing for
   // scoping or overloads.
@@ -645,12 +645,12 @@ public:
     return m_fcn.user_function_value ();
   }
 
-  octave_value fcn_val (void) { return m_fcn; }
+  octave_value fcn_val () { return m_fcn; }
 
-  virtual octave_value workspace (void) const = 0;
+  virtual octave_value workspace () const = 0;
 
   // Should be const.
-  octave_scalar_map info (void);
+  octave_scalar_map info ();
 
   bool save_ascii (std::ostream& os);
 
@@ -670,7 +670,7 @@ public:
                   int current_print_indent_level) const;
 
   // Anonymous function handles are printed without a newline.
-  bool print_as_scalar (void) const { return false; }
+  bool print_as_scalar () const { return false; }
 
   bool parse (const std::string& fcn_text);
 
@@ -704,23 +704,23 @@ public:
 
   anonymous_fcn_handle (const anonymous_fcn_handle&) = default;
 
-  ~anonymous_fcn_handle (void) = default;
+  ~anonymous_fcn_handle () = default;
 
-  anonymous_fcn_handle * clone (void) const
+  anonymous_fcn_handle * clone () const
   {
     return new anonymous_fcn_handle (*this);
   }
 
-  octave_value make_weak_anonymous_handle (void) const;
+  octave_value make_weak_anonymous_handle () const;
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
-  octave_value workspace (void) const;
+  octave_value workspace () const;
 
   friend bool is_equal_to (const anonymous_fcn_handle& fh1,
                            const anonymous_fcn_handle& fh2);
 
-  std::shared_ptr<stack_frame> stack_context (void) const
+  std::shared_ptr<stack_frame> stack_context () const
   {
     return m_stack_context;
   }
@@ -743,18 +743,18 @@ public:
 
   weak_anonymous_fcn_handle (const weak_anonymous_fcn_handle&) = default;
 
-  ~weak_anonymous_fcn_handle (void) = default;
+  ~weak_anonymous_fcn_handle () = default;
 
-  weak_anonymous_fcn_handle * clone (void) const
+  weak_anonymous_fcn_handle * clone () const
   {
     return new weak_anonymous_fcn_handle (*this);
   }
 
-  bool is_weak_anonymous (void) const { return true; }
+  bool is_weak_anonymous () const { return true; }
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
-  octave_value workspace (void) const;
+  octave_value workspace () const;
 
   friend bool is_equal_to (const weak_anonymous_fcn_handle& fh1,
                            const weak_anonymous_fcn_handle& fh2);
@@ -774,14 +774,14 @@ static void err_invalid_fcn_handle (const std::string& name)
          name.c_str ());
 }
 
-octave_value base_fcn_handle::make_weak_nested_handle (void) const
+octave_value base_fcn_handle::make_weak_nested_handle () const
 {
   std::string type_str = type ();
   error ("invalid conversion from %s handle to weak nestead handle",
          type_str.c_str ());
 }
 
-octave_value base_fcn_handle::make_weak_anonymous_handle (void) const
+octave_value base_fcn_handle::make_weak_anonymous_handle () const
 {
   std::string type_str = type ();
   error ("invalid conversion from %s handle to weak anonymous handle",
@@ -921,7 +921,7 @@ internal_fcn_handle::call (int nargout, const octave_value_list& args)
   return interp.feval (m_fcn, args, nargout);
 }
 
-octave_scalar_map internal_fcn_handle::info (void)
+octave_scalar_map internal_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -1166,7 +1166,7 @@ octave_user_function *simple_fcn_handle::user_function_value (bool)
   return m_fcn.is_defined () ? m_fcn.user_function_value () : nullptr;
 }
 
-octave_value simple_fcn_handle::fcn_val (void)
+octave_value simple_fcn_handle::fcn_val ()
 {
   if (m_fcn.is_defined ())
     return m_fcn;
@@ -1182,7 +1182,7 @@ octave_value simple_fcn_handle::fcn_val (void)
   return m_fcn;
 }
 
-octave_scalar_map simple_fcn_handle::info (void)
+octave_scalar_map simple_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -1476,7 +1476,7 @@ scoped_fcn_handle::call (int nargout, const octave_value_list& args)
   return interp.feval (m_fcn, args, nargout);
 }
 
-octave_scalar_map scoped_fcn_handle::info (void)
+octave_scalar_map scoped_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -1631,7 +1631,7 @@ bool is_equal_to (const scoped_fcn_handle& fh1, const scoped_fcn_handle& fh2)
     return false;
 }
 
-void scoped_fcn_handle::find_function (void)
+void scoped_fcn_handle::find_function ()
 {
   // Since a scoped function is not visible by itself, try to load the
   // file named in m_file then find and define the scoped function.
@@ -1688,7 +1688,7 @@ void scoped_fcn_handle::find_function (void)
     }
 }
 
-octave_scalar_map base_nested_fcn_handle::info (void)
+octave_scalar_map base_nested_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -1807,7 +1807,7 @@ void base_nested_fcn_handle::print_raw (std::ostream& os,
                          current_print_indent_level);
 }
 
-octave_value nested_fcn_handle::make_weak_nested_handle (void) const
+octave_value nested_fcn_handle::make_weak_nested_handle () const
 {
   return octave_value (new octave_fcn_handle
                        (new weak_nested_fcn_handle (*this)));
@@ -1827,7 +1827,7 @@ nested_fcn_handle::call (int nargout, const octave_value_list& args)
   return oct_usr_fcn->execute (tw, nargout, args);
 }
 
-octave_value nested_fcn_handle::workspace (void) const
+octave_value nested_fcn_handle::workspace () const
 {
   return m_stack_context->workspace ();
 }
@@ -1857,7 +1857,7 @@ weak_nested_fcn_handle::call (int nargout, const octave_value_list& args)
   return oct_usr_fcn->execute (tw, nargout, args);
 }
 
-octave_value weak_nested_fcn_handle::workspace (void) const
+octave_value weak_nested_fcn_handle::workspace () const
 {
   std::shared_ptr<stack_frame> frames = m_stack_context.lock ();
 
@@ -1925,7 +1925,7 @@ class_simple_fcn_handle::call (int nargout, const octave_value_list& args)
   return interp.feval (fcn_name (), args, nargout);
 }
 
-octave_scalar_map class_simple_fcn_handle::info (void)
+octave_scalar_map class_simple_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -2054,7 +2054,7 @@ bool is_equal_to (const class_simple_fcn_handle& fh1,
 
 const std::string base_anonymous_fcn_handle::anonymous ("@<anonymous>");
 
-octave_scalar_map base_anonymous_fcn_handle::info (void)
+octave_scalar_map base_anonymous_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -2694,7 +2694,7 @@ anonymous_fcn_handle::anonymous_fcn_handle (const octave_value& fcn,
     m_stack_context->mark_closure_context ();
 }
 
-octave_value anonymous_fcn_handle::make_weak_anonymous_handle (void) const
+octave_value anonymous_fcn_handle::make_weak_anonymous_handle () const
 {
   return octave_value (new octave_fcn_handle
                        (new weak_anonymous_fcn_handle (*this)));
@@ -2714,7 +2714,7 @@ anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
   return oct_usr_fcn->execute (tw, nargout, args);
 }
 
-octave_value anonymous_fcn_handle::workspace (void) const
+octave_value anonymous_fcn_handle::workspace () const
 {
   octave_scalar_map local_vars_map;
 
@@ -2768,7 +2768,7 @@ weak_anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
   return oct_usr_fcn->execute (tw, nargout, args);
 }
 
-octave_value weak_anonymous_fcn_handle::workspace (void) const
+octave_value weak_anonymous_fcn_handle::workspace () const
 {
   octave_scalar_map local_vars_map;
 
@@ -2813,7 +2813,7 @@ bool is_equal_to (const weak_anonymous_fcn_handle& fh1,
 
 OCTAVE_END_NAMESPACE(octave)
 
-octave_fcn_handle::octave_fcn_handle (void)
+octave_fcn_handle::octave_fcn_handle ()
   : octave_base_value (), m_rep (new octave::invalid_fcn_handle ())
 { }
 
@@ -2883,7 +2883,7 @@ octave_fcn_handle::octave_fcn_handle (const octave_fcn_handle& fh)
 }
 
 dim_vector
-octave_fcn_handle::dims (void) const
+octave_fcn_handle::dims () const
 {
   static dim_vector dv (1, 1);
   return dv;

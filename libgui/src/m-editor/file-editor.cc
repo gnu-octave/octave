@@ -80,13 +80,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     setMovable (true);
   }
 
-  tab_bar *file_editor_tab_widget::get_tab_bar (void) const
+  tab_bar *file_editor_tab_widget::get_tab_bar () const
   {
     return qobject_cast<tab_bar *> (tabBar ());
   }
 
   std::list<file_editor_tab *>
-  file_editor_tab_widget::tab_list (void) const
+  file_editor_tab_widget::tab_list () const
   {
     std::list<file_editor_tab *> retval;
     for (int i = 0; i < count (); i++)
@@ -176,7 +176,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_edit_menu->insertAction (m_find_action, m_find_files_action);
   }
 
-  void file_editor::handle_enter_debug_mode (void)
+  void file_editor::handle_enter_debug_mode ()
   {
     gui_settings settings;
 
@@ -191,7 +191,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit enter_debug_mode_signal ();
   }
 
-  void file_editor::handle_exit_debug_mode (void)
+  void file_editor::handle_exit_debug_mode ()
   {
     gui_settings settings;
     settings.set_shortcut (m_run_action, sc_edit_run_run_file);
@@ -200,7 +200,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit exit_debug_mode_signal ();
   }
 
-  void file_editor::check_actions (void)
+  void file_editor::check_actions ()
   {
     // Do not include shared actions not only related to the editor
     bool have_tabs = m_tab_widget->count () > 0;
@@ -315,7 +315,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     request_new_file ("");
   }
 
-  void file_editor::restore_session (void)
+  void file_editor::restore_session ()
   {
     gui_settings settings;
 
@@ -376,7 +376,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                          s_data.at (n).bookmarks);
   }
 
-  void file_editor::activate (void)
+  void file_editor::activate ()
   {
     if (m_no_focus)
       return;  // No focus for the editor if external open/close request
@@ -437,7 +437,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Save open files for restoring in next session
   // (even if last session will not be restored next time)
   // together with encoding and the tab index
-  void file_editor::save_session (void)
+  void file_editor::save_session ()
   {
     gui_settings settings;
 
@@ -480,7 +480,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.sync ();
   }
 
-  bool file_editor::check_closing (void)
+  bool file_editor::check_closing ()
   {
     // When the application or the editor is closing and the user wants to
     // close all files, in the latter case all editor tabs are checked whether
@@ -530,7 +530,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return true;
   }
 
-  void file_editor::handle_tab_ready_to_close (void)
+  void file_editor::handle_tab_ready_to_close ()
   {
     if (m_closing_canceled)
       return;
@@ -1016,7 +1016,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  file_editor::handle_tab_remove_request (void)
+  file_editor::handle_tab_remove_request ()
   {
     QObject *fileEditorTab = sender ();
     if (fileEditorTab)
@@ -1285,7 +1285,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_tmp_closed_files.clear ();
   }
 
-  void file_editor::notice_settings (void)
+  void file_editor::notice_settings ()
   {
     gui_settings settings;
 
@@ -1392,7 +1392,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit fetab_settings_changed ();
   }
 
-  void file_editor::set_shortcuts (void)
+  void file_editor::set_shortcuts ()
   {
     // Shortcuts also available in the main window, as well as the related
     // shortcuts, are defined in main_window and added to the editor
@@ -1524,28 +1524,28 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit fetab_set_directory (m_ced);  // for save dialog
   }
 
-  void file_editor::copyClipboard (void)
+  void file_editor::copyClipboard ()
   {
     if (editor_tab_has_focus ())
       emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                     QsciScintillaBase::SCI_COPY);
   }
 
-  void file_editor::pasteClipboard (void)
+  void file_editor::pasteClipboard ()
   {
     if (editor_tab_has_focus ())
       emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                     QsciScintillaBase::SCI_PASTE);
   }
 
-  void file_editor::selectAll (void)
+  void file_editor::selectAll ()
   {
     if (editor_tab_has_focus ())
       emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                     QsciScintillaBase::SCI_SELECTALL);
   }
 
-  void file_editor::do_undo (void)
+  void file_editor::do_undo ()
   {
     if (editor_tab_has_focus ())
       emit fetab_scintilla_command (m_tab_widget->currentWidget (),
@@ -1903,7 +1903,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  bool file_editor::is_editor_console_tabbed (void)
+  bool file_editor::is_editor_console_tabbed ()
   {
     // FIXME: is there a way to do this job that doesn't require casting
     // the parent to a main_window object?
@@ -1926,7 +1926,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return false;
   }
 
-  void file_editor::construct (void)
+  void file_editor::construct ()
   {
     QWidget *editor_widget = new QWidget (this);
 
@@ -2130,7 +2130,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_smart_indent_line_or_selection_action
       = add_action (m_edit_fmt_menu, tr ("Indent Code"),
-                    SLOT (request_smart_indent_line_or_selected_text (void)));
+                    SLOT (request_smart_indent_line_or_selected_text ()));
 
     m_edit_fmt_menu->addSeparator ();
 
@@ -2260,7 +2260,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_sort_tabs_action
       = add_action (view_menu, tr ("&Sort Tabs Alphabetically"),
-                    SLOT (sort_tabs_alph (void)),
+                    SLOT (sort_tabs_alph ()),
                     m_tab_widget->get_tab_bar ());
 
     m_menu_bar->addMenu (view_menu);
@@ -2326,19 +2326,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // tab navigation (no menu, only actions; slots in tab_bar)
 
     m_switch_left_tab_action
-      = add_action (nullptr, "", SLOT (switch_left_tab (void)),
+      = add_action (nullptr, "", SLOT (switch_left_tab ()),
                     m_tab_widget->get_tab_bar ());
 
     m_switch_right_tab_action
-      = add_action (nullptr, "", SLOT (switch_right_tab (void)),
+      = add_action (nullptr, "", SLOT (switch_right_tab ()),
                     m_tab_widget->get_tab_bar ());
 
     m_move_tab_left_action
-      = add_action (nullptr, "", SLOT (move_tab_left (void)),
+      = add_action (nullptr, "", SLOT (move_tab_left ()),
                     m_tab_widget->get_tab_bar ());
 
     m_move_tab_right_action
-      = add_action (nullptr, "", SLOT (move_tab_right (void)),
+      = add_action (nullptr, "", SLOT (move_tab_right ()),
                     m_tab_widget->get_tab_bar ());
 
     // toolbar
@@ -2416,7 +2416,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // Slot when autocompletion list was cancelled
-  void file_editor::handle_autoc_cancelled (void)
+  void file_editor::handle_autoc_cancelled ()
   {
     // List was cancelled but somehow still active and blocking the
     // edit area from accepting shortcuts. Only after another keypress
@@ -2440,7 +2440,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       qsci->undo ();
   }
 
-  file_editor_tab *file_editor::reset_focus (void)
+  file_editor_tab *file_editor::reset_focus ()
   {
     // Reset the focus of the tab and the related edit area
     file_editor_tab *f
@@ -2466,10 +2466,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     connect (f->qsci_edit_area (),
              SIGNAL (SCN_AUTOCCOMPLETED (const char *, int, int, int)),
-             this, SLOT (reset_focus (void)));
+             this, SLOT (reset_focus ()));
 
-    connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED (void)),
-             this, SLOT (handle_autoc_cancelled (void)));
+    connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED ()),
+             this, SLOT (handle_autoc_cancelled ()));
 
     // signals from the qscintilla edit area
     connect (this, &file_editor::enter_debug_mode_signal,
@@ -2662,7 +2662,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     check_actions ();
   }
 
-  void file_editor::mru_menu_update (void)
+  void file_editor::mru_menu_update ()
   {
     int num_files = qMin (m_mru_files.size (), int (MaxMRUFiles));
 
@@ -2801,7 +2801,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  bool file_editor::editor_tab_has_focus (void)
+  bool file_editor::editor_tab_has_focus ()
   {
     QWidget *foc_w = focusWidget ();
     if (foc_w && foc_w->inherits ("octave::octave_qscintilla"))

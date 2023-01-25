@@ -42,7 +42,7 @@ void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
   m_list.append (child (pid, f));
 }
 
-void child_list::reap (void)
+void child_list::reap ()
 {
   // Mark the record for PID invalid.
 
@@ -70,7 +70,7 @@ void child_list::reap (void)
 
 // Wait on our children and record any changes in their status.
 
-bool child_list::wait (void)
+bool child_list::wait ()
 {
   bool retval = false;
 

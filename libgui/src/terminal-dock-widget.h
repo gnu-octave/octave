@@ -45,9 +45,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     terminal_dock_widget (QWidget *parent,
                           bool experimental_terminal_widget = false);
 
-    ~terminal_dock_widget (void) = default;
+    ~terminal_dock_widget () = default;
 
-    bool has_focus (void) const;
+    bool has_focus () const;
 
     void init_command_prompt ();
 
@@ -58,16 +58,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // widgets.
 
     // Only valid if using the old terminal widget.
-    QTerminal * get_qterminal (void);
+    QTerminal * get_qterminal ();
 
 #if defined (HAVE_QSCINTILLA)
     // Only valid if using the new terminal widget.
-    command_widget * get_command_widget (void);
+    command_widget * get_command_widget ();
 #endif
 
   signals:
 
-    void settings_changed (void);
+    void settings_changed ();
 
     // Note: the following four signals are
     // currently only used by the new experimental terminal widget.
@@ -85,7 +85,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public slots:
 
-    void notice_settings (void);
+    void notice_settings ();
 
   private:
 

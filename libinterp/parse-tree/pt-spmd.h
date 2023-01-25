@@ -54,13 +54,13 @@ public:
 
   tree_spmd_command& operator = (const tree_spmd_command&) = delete;
 
-  ~tree_spmd_command (void);
+  ~tree_spmd_command ();
 
-  tree_statement_list * body (void) { return m_body; }
+  tree_statement_list * body () { return m_body; }
 
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {

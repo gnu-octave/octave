@@ -71,7 +71,7 @@ add_point (double x, double y)
 // Add contents of current contour to contourc.
 // this_contour.cols () - 1;
 static void
-end_contour (void)
+end_contour ()
 {
   if (elem > 2)
     {

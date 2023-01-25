@@ -189,11 +189,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_container->addReceiver (this);
   }
 
-  Figure::~Figure (void)
+  Figure::~Figure ()
   { }
 
   QString
-  Figure::fileName (void)
+  Figure::fileName ()
   {
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -219,7 +219,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   MouseMode
-  Figure::mouseMode (void)
+  Figure::mouseMode ()
   {
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -278,13 +278,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   Container *
-  Figure::innerContainer (void)
+  Figure::innerContainer ()
   {
     return m_container;
   }
 
   void
-  Figure::redraw (void)
+  Figure::redraw ()
   {
     Canvas *canvas = m_container->canvas (m_handle);
 
@@ -307,7 +307,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Figure::show (void)
+  Figure::show ()
   {
     QWidget *win = qWidget<QWidget> ();
 
@@ -325,7 +325,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   uint8NDArray
-  Figure::slotGetPixels (void)
+  Figure::slotGetPixels ()
   {
     uint8NDArray retval;
     Canvas *canvas = m_container->canvas (m_handle);
@@ -343,7 +343,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Figure::beingDeleted (void)
+  Figure::beingDeleted ()
   {
     Canvas *canvas = m_container->canvas (m_handle.value (), false);
 
@@ -615,7 +615,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   QWidget *
-  Figure::menu (void)
+  Figure::menu ()
   {
     return qWidget<QMainWindow> ()->menuBar ();
   }
@@ -864,7 +864,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Figure::updateContainer (void)
+  Figure::updateContainer ()
   {
     redraw ();
   }
@@ -906,7 +906,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Figure::enableMouseTracking (void)
+  Figure::enableMouseTracking ()
   {
     // Enable mouse tracking on every widgets
     m_container->setMouseTracking (true);

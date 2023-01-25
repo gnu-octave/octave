@@ -36,11 +36,11 @@ singleton_cleanup_list
 {
 protected:
 
-  singleton_cleanup_list (void) : m_fcn_list () { }
+  singleton_cleanup_list () : m_fcn_list () { }
 
 public:
 
-  typedef void (*fptr) (void);
+  typedef void (*fptr) ();
 
   // No copying!
 
@@ -48,7 +48,7 @@ public:
 
   singleton_cleanup_list& operator = (const singleton_cleanup_list&) = delete;
 
-  ~singleton_cleanup_list (void);
+  ~singleton_cleanup_list ();
 
   static void add (fptr f)
   {
@@ -56,7 +56,7 @@ public:
       s_instance->do_add (f);
   }
 
-  static void cleanup (void)
+  static void cleanup ()
   {
     delete s_instance;
     s_instance = nullptr;
@@ -66,9 +66,9 @@ private:
 
   static singleton_cleanup_list *s_instance;
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   {
     delete s_instance;
     s_instance = nullptr;

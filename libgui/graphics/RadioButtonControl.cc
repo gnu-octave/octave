@@ -72,7 +72,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       radio->setCheckable (false);
   }
 
-  RadioButtonControl::~RadioButtonControl (void)
+  RadioButtonControl::~RadioButtonControl ()
   { }
 
   void

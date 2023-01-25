@@ -53,7 +53,7 @@ octave_sparse_complex_matrix : public octave_base_sparse<SparseComplexMatrix>
 {
 public:
 
-  octave_sparse_complex_matrix (void)
+  octave_sparse_complex_matrix ()
     : octave_base_sparse<SparseComplexMatrix> () { }
 
   octave_sparse_complex_matrix (const ComplexNDArray& m)
@@ -86,24 +86,24 @@ public:
   octave_sparse_complex_matrix (const octave_sparse_complex_matrix& cm)
     : octave_base_sparse<SparseComplexMatrix> (cm) { }
 
-  ~octave_sparse_complex_matrix (void) = default;
+  ~octave_sparse_complex_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_sparse_complex_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_sparse_complex_matrix (); }
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
-  builtin_type_t builtin_type (void) const { return btyp_complex; }
+  builtin_type_t builtin_type () const { return btyp_complex; }
 
-  bool is_complex_matrix (void) const { return true; }
+  bool is_complex_matrix () const { return true; }
 
-  bool iscomplex (void) const { return true; }
+  bool iscomplex () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   double double_value (bool = false) const;
 
@@ -127,7 +127,7 @@ public:
 
   SparseBoolMatrix sparse_bool_matrix_value (bool warn = false) const;
 
-  octave_value as_double (void) const;
+  octave_value as_double () const;
 
 #if 0
   int write (octave::stream& os, int block_size,

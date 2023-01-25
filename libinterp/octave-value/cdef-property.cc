@@ -233,7 +233,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 }
 
 bool
-cdef_property::cdef_property_rep::check_get_access (void) const
+cdef_property::cdef_property_rep::check_get_access () const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
@@ -243,7 +243,7 @@ cdef_property::cdef_property_rep::check_get_access (void) const
 }
 
 bool
-cdef_property::cdef_property_rep::check_set_access (void) const
+cdef_property::cdef_property_rep::check_set_access () const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 

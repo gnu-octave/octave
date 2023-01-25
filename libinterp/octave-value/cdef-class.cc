@@ -131,7 +131,7 @@ class ctor_analyzer : public tree_walker
 {
 public:
 
-  ctor_analyzer (void) = delete;
+  ctor_analyzer () = delete;
 
   ctor_analyzer (const std::string& ctor, const std::string& obj)
     : tree_walker (), m_who (ctor), m_obj_name (obj) { }
@@ -140,7 +140,7 @@ public:
 
   ctor_analyzer& operator = (const ctor_analyzer&) = delete;
 
-  ~ctor_analyzer (void) = default;
+  ~ctor_analyzer () = default;
 
   void visit_statement (tree_statement& t)
   {
@@ -163,7 +163,7 @@ public:
     t.expression ()->accept (*this);
   }
 
-  std::list<cdef_class> get_constructor_list (void) const
+  std::list<cdef_class> get_constructor_list () const
   { return m_ctor_list; }
 
   // NO-OP
@@ -278,7 +278,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 }
 
 void
-cdef_class::cdef_class_rep::load_all_methods (void)
+cdef_class::cdef_class_rep::load_all_methods ()
 {
   // FIXME: re-scan class directory
 }
@@ -515,7 +515,7 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 }
 
 string_vector
-cdef_class::cdef_class_rep::get_names (void)
+cdef_class::cdef_class_rep::get_names ()
 {
   std::set<std::string> names;
 
@@ -632,7 +632,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 }
 
 void
-cdef_class::cdef_class_rep::meta_release (void)
+cdef_class::cdef_class_rep::meta_release ()
 {
   cdef_manager& cdm = __get_cdef_manager__ ();
 

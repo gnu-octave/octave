@@ -94,17 +94,17 @@ protected:
 
 public:
 
-  virtual mxArray_base * dup (void) const = 0;
+  virtual mxArray_base * dup () const = 0;
 
-  virtual mxArray * as_mxArray (void) const { return nullptr; }
+  virtual mxArray * as_mxArray () const { return nullptr; }
 
-  virtual ~mxArray_base (void) = default;
+  virtual ~mxArray_base () = default;
 
-  virtual bool is_octave_value (void) const { return false; }
+  virtual bool is_octave_value () const { return false; }
 
-  virtual int iscell (void) const = 0;
+  virtual int iscell () const = 0;
 
-  virtual int is_char (void) const = 0;
+  virtual int is_char () const = 0;
 
   virtual int is_class (const char *name_arg) const
   {
@@ -118,52 +118,52 @@ public:
     return retval;
   }
 
-  virtual int is_complex (void) const = 0;
+  virtual int is_complex () const = 0;
 
-  virtual int is_double (void) const = 0;
+  virtual int is_double () const = 0;
 
-  virtual int is_function_handle (void) const = 0;
+  virtual int is_function_handle () const = 0;
 
-  virtual int is_int16 (void) const = 0;
+  virtual int is_int16 () const = 0;
 
-  virtual int is_int32 (void) const = 0;
+  virtual int is_int32 () const = 0;
 
-  virtual int is_int64 (void) const = 0;
+  virtual int is_int64 () const = 0;
 
-  virtual int is_int8 (void) const = 0;
+  virtual int is_int8 () const = 0;
 
-  virtual int is_logical (void) const = 0;
+  virtual int is_logical () const = 0;
 
-  virtual int is_numeric (void) const = 0;
+  virtual int is_numeric () const = 0;
 
-  virtual int is_single (void) const = 0;
+  virtual int is_single () const = 0;
 
-  virtual int is_sparse (void) const = 0;
+  virtual int is_sparse () const = 0;
 
-  virtual int is_struct (void) const = 0;
+  virtual int is_struct () const = 0;
 
-  virtual int is_uint16 (void) const = 0;
+  virtual int is_uint16 () const = 0;
 
-  virtual int is_uint32 (void) const = 0;
+  virtual int is_uint32 () const = 0;
 
-  virtual int is_uint64 (void) const = 0;
+  virtual int is_uint64 () const = 0;
 
-  virtual int is_uint8 (void) const = 0;
+  virtual int is_uint8 () const = 0;
 
-  virtual int is_logical_scalar (void) const
+  virtual int is_logical_scalar () const
   {
     return is_logical () && get_number_of_elements () == 1;
   }
 
-  virtual int is_logical_scalar_true (void) const = 0;
+  virtual int is_logical_scalar_true () const = 0;
 
-  virtual mwSize get_m (void) const = 0;
+  virtual mwSize get_m () const = 0;
 
-  virtual mwSize get_n (void) const = 0;
+  virtual mwSize get_n () const = 0;
 
-  virtual mwSize * get_dimensions (void) const = 0;
+  virtual mwSize * get_dimensions () const = 0;
 
-  virtual mwSize get_number_of_dimensions (void) const = 0;
+  virtual mwSize get_number_of_dimensions () const = 0;
 
   virtual void set_m (mwSize m) = 0;
 
@@ -171,15 +171,15 @@ public:
 
   virtual int set_dimensions (mwSize *dims_arg, mwSize ndims_arg) = 0;
 
-  virtual mwSize get_number_of_elements (void) const = 0;
+  virtual mwSize get_number_of_elements () const = 0;
 
-  virtual int isempty (void) const = 0;
+  virtual int isempty () const = 0;
 
-  virtual bool is_scalar (void) const = 0;
+  virtual bool is_scalar () const = 0;
 
-  virtual mxClassID get_class_id (void) const = 0;
+  virtual mxClassID get_class_id () const = 0;
 
-  virtual const char * get_class_name (void) const = 0;
+  virtual const char * get_class_name () const = 0;
 
   virtual void set_class_name (const char *name_arg) = 0;
 
@@ -207,36 +207,36 @@ public:
 
   virtual void set_cell (mwIndex idx, mxArray *val) = 0;
 
-  virtual double get_scalar (void) const = 0;
+  virtual double get_scalar () const = 0;
 
-  virtual void * get_data (void) const = 0;
+  virtual void * get_data () const = 0;
 
-  virtual mxDouble * get_doubles (void) const = 0;
-  virtual mxSingle * get_singles (void) const = 0;
-  virtual mxInt8 * get_int8s (void) const = 0;
-  virtual mxInt16 * get_int16s (void) const = 0;
-  virtual mxInt32 * get_int32s (void) const = 0;
-  virtual mxInt64 * get_int64s (void) const = 0;
-  virtual mxUint8 * get_uint8s (void) const = 0;
-  virtual mxUint16 * get_uint16s (void) const = 0;
-  virtual mxUint32 * get_uint32s (void) const = 0;
-  virtual mxUint64 * get_uint64s (void) const = 0;
+  virtual mxDouble * get_doubles () const = 0;
+  virtual mxSingle * get_singles () const = 0;
+  virtual mxInt8 * get_int8s () const = 0;
+  virtual mxInt16 * get_int16s () const = 0;
+  virtual mxInt32 * get_int32s () const = 0;
+  virtual mxInt64 * get_int64s () const = 0;
+  virtual mxUint8 * get_uint8s () const = 0;
+  virtual mxUint16 * get_uint16s () const = 0;
+  virtual mxUint32 * get_uint32s () const = 0;
+  virtual mxUint64 * get_uint64s () const = 0;
 
-  virtual mxComplexDouble * get_complex_doubles (void) const = 0;
-  virtual mxComplexSingle * get_complex_singles (void) const = 0;
+  virtual mxComplexDouble * get_complex_doubles () const = 0;
+  virtual mxComplexSingle * get_complex_singles () const = 0;
 #if 0
   /* We don't have these yet. */
-  virtual mxComplexInt8 * get_complex_int8s (void) const = 0;
-  virtual mxComplexInt16 * get_complex_int16s (void) const = 0;
-  virtual mxComplexInt32 * get_complex_int32s (void) const = 0;
-  virtual mxComplexInt64 * get_complex_int64s (void) const = 0;
-  virtual mxComplexUint8 * get_complex_uint8s (void) const = 0;
-  virtual mxComplexUint16 * get_complex_uint16s (void) const = 0;
-  virtual mxComplexUint32 * get_complex_uint32s (void) const = 0;
-  virtual mxComplexUint64 * get_complex_uint64s (void) const = 0;
+  virtual mxComplexInt8 * get_complex_int8s () const = 0;
+  virtual mxComplexInt16 * get_complex_int16s () const = 0;
+  virtual mxComplexInt32 * get_complex_int32s () const = 0;
+  virtual mxComplexInt64 * get_complex_int64s () const = 0;
+  virtual mxComplexUint8 * get_complex_uint8s () const = 0;
+  virtual mxComplexUint16 * get_complex_uint16s () const = 0;
+  virtual mxComplexUint32 * get_complex_uint32s () const = 0;
+  virtual mxComplexUint64 * get_complex_uint64s () const = 0;
 #endif
 
-  virtual void * get_imag_data (void) const = 0;
+  virtual void * get_imag_data () const = 0;
 
   virtual void set_data (void *pr) = 0;
 
@@ -267,11 +267,11 @@ public:
 
   virtual void set_imag_data (void *pi) = 0;
 
-  virtual mwIndex * get_ir (void) const = 0;
+  virtual mwIndex * get_ir () const = 0;
 
-  virtual mwIndex * get_jc (void) const = 0;
+  virtual mwIndex * get_jc () const = 0;
 
-  virtual mwSize get_nzmax (void) const = 0;
+  virtual mwSize get_nzmax () const = 0;
 
   virtual void set_ir (mwIndex *ir) = 0;
 
@@ -288,7 +288,7 @@ public:
   virtual void
   set_field_by_number (mwIndex index, int key_num, mxArray *val) = 0;
 
-  virtual int get_number_of_fields (void) const = 0;
+  virtual int get_number_of_fields () const = 0;
 
   virtual const char * get_field_name_by_number (int key_num) const = 0;
 
@@ -296,17 +296,17 @@ public:
 
   virtual int get_string (char *buf, mwSize buflen) const = 0;
 
-  virtual char * array_to_string (void) const = 0;
+  virtual char * array_to_string () const = 0;
 
   virtual mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const = 0;
 
-  virtual std::size_t get_element_size (void) const = 0;
+  virtual std::size_t get_element_size () const = 0;
 
-  virtual bool mutation_needed (void) const { return false; }
+  virtual bool mutation_needed () const { return false; }
 
-  virtual mxArray * mutate (void) const { return nullptr; }
+  virtual mxArray * mutate () const { return nullptr; }
 
-  virtual octave_value as_octave_value (void) const = 0;
+  virtual octave_value as_octave_value () const = 0;
 
 protected:
 
@@ -377,7 +377,7 @@ public:
 
   OCTINTERP_API mxArray (bool interleaved, mwSize m, mwSize n);
 
-  mxArray * dup (void) const
+  mxArray * dup () const
   {
     mxArray *retval = m_rep->as_mxArray ();
 
@@ -399,60 +399,60 @@ public:
 
   mxArray& operator = (const mxArray&) = delete;
 
-  OCTINTERP_API ~mxArray (void);
+  OCTINTERP_API ~mxArray ();
 
-  bool is_octave_value (void) const { return m_rep->is_octave_value (); }
+  bool is_octave_value () const { return m_rep->is_octave_value (); }
 
-  int iscell (void) const { return m_rep->iscell (); }
+  int iscell () const { return m_rep->iscell (); }
 
-  int is_char (void) const { return m_rep->is_char (); }
+  int is_char () const { return m_rep->is_char (); }
 
   int is_class (const char *name_arg) const { return m_rep->is_class (name_arg); }
 
-  int is_complex (void) const { return m_rep->is_complex (); }
+  int is_complex () const { return m_rep->is_complex (); }
 
-  int is_double (void) const { return m_rep->is_double (); }
+  int is_double () const { return m_rep->is_double (); }
 
-  int is_function_handle (void) const { return m_rep->is_function_handle (); }
+  int is_function_handle () const { return m_rep->is_function_handle (); }
 
-  int is_int16 (void) const { return m_rep->is_int16 (); }
+  int is_int16 () const { return m_rep->is_int16 (); }
 
-  int is_int32 (void) const { return m_rep->is_int32 (); }
+  int is_int32 () const { return m_rep->is_int32 (); }
 
-  int is_int64 (void) const { return m_rep->is_int64 (); }
+  int is_int64 () const { return m_rep->is_int64 (); }
 
-  int is_int8 (void) const { return m_rep->is_int8 (); }
+  int is_int8 () const { return m_rep->is_int8 (); }
 
-  int is_logical (void) const { return m_rep->is_logical (); }
+  int is_logical () const { return m_rep->is_logical (); }
 
-  int is_numeric (void) const { return m_rep->is_numeric (); }
+  int is_numeric () const { return m_rep->is_numeric (); }
 
-  int is_single (void) const { return m_rep->is_single (); }
+  int is_single () const { return m_rep->is_single (); }
 
-  int is_sparse (void) const { return m_rep->is_sparse (); }
+  int is_sparse () const { return m_rep->is_sparse (); }
 
-  int is_struct (void) const { return m_rep->is_struct (); }
+  int is_struct () const { return m_rep->is_struct (); }
 
-  int is_uint16 (void) const { return m_rep->is_uint16 (); }
+  int is_uint16 () const { return m_rep->is_uint16 (); }
 
-  int is_uint32 (void) const { return m_rep->is_uint32 (); }
+  int is_uint32 () const { return m_rep->is_uint32 (); }
 
-  int is_uint64 (void) const { return m_rep->is_uint64 (); }
+  int is_uint64 () const { return m_rep->is_uint64 (); }
 
-  int is_uint8 (void) const { return m_rep->is_uint8 (); }
+  int is_uint8 () const { return m_rep->is_uint8 (); }
 
-  int is_logical_scalar (void) const { return m_rep->is_logical_scalar (); }
+  int is_logical_scalar () const { return m_rep->is_logical_scalar (); }
 
-  int is_logical_scalar_true (void) const
+  int is_logical_scalar_true () const
   { return m_rep->is_logical_scalar_true (); }
 
-  mwSize get_m (void) const { return m_rep->get_m (); }
+  mwSize get_m () const { return m_rep->get_m (); }
 
-  mwSize get_n (void) const { return m_rep->get_n (); }
+  mwSize get_n () const { return m_rep->get_n (); }
 
-  mwSize * get_dimensions (void) const { return m_rep->get_dimensions (); }
+  mwSize * get_dimensions () const { return m_rep->get_dimensions (); }
 
-  mwSize get_number_of_dimensions (void) const
+  mwSize get_number_of_dimensions () const
   { return m_rep->get_number_of_dimensions (); }
 
   void set_m (mwSize m) { DO_VOID_MUTABLE_METHOD (set_m (m)); }
@@ -462,20 +462,20 @@ public:
   int set_dimensions (mwSize *dims_arg, mwSize ndims_arg)
   { DO_MUTABLE_METHOD (int, set_dimensions (dims_arg, ndims_arg)); }
 
-  mwSize get_number_of_elements (void) const
+  mwSize get_number_of_elements () const
   { return m_rep->get_number_of_elements (); }
 
-  int isempty (void) const { return get_number_of_elements () == 0; }
+  int isempty () const { return get_number_of_elements () == 0; }
 
-  bool is_scalar (void) const { return m_rep->is_scalar (); }
+  bool is_scalar () const { return m_rep->is_scalar (); }
 
-  const char * get_name (void) const { return m_name; }
+  const char * get_name () const { return m_name; }
 
   OCTINTERP_API void set_name (const char *name);
 
-  mxClassID get_class_id (void) const { return m_rep->get_class_id (); }
+  mxClassID get_class_id () const { return m_rep->get_class_id (); }
 
-  const char * get_class_name (void) const { return m_rep->get_class_name (); }
+  const char * get_class_name () const { return m_rep->get_class_name (); }
 
   mxArray * get_property (mwIndex idx, const char *pname) const
   { return m_rep->get_property (idx, pname); }
@@ -492,74 +492,74 @@ public:
   void set_cell (mwIndex idx, mxArray *val)
   { DO_VOID_MUTABLE_METHOD (set_cell (idx, val)); }
 
-  double get_scalar (void) const { return m_rep->get_scalar (); }
+  double get_scalar () const { return m_rep->get_scalar (); }
 
-  void * get_data (void) const { DO_MUTABLE_METHOD (void *, get_data ()); }
+  void * get_data () const { DO_MUTABLE_METHOD (void *, get_data ()); }
 
-  mxDouble * get_doubles (void) const
+  mxDouble * get_doubles () const
   { DO_MUTABLE_METHOD (mxDouble *, get_doubles ()); }
 
-  mxSingle * get_singles (void) const
+  mxSingle * get_singles () const
   { DO_MUTABLE_METHOD (mxSingle *, get_singles ()); }
 
-  mxInt8 * get_int8s (void) const
+  mxInt8 * get_int8s () const
   { DO_MUTABLE_METHOD (mxInt8 *, get_int8s ()); }
 
-  mxInt16 * get_int16s (void) const
+  mxInt16 * get_int16s () const
   { DO_MUTABLE_METHOD (mxInt16 *, get_int16s ()); }
 
-  mxInt32 * get_int32s (void) const
+  mxInt32 * get_int32s () const
   { DO_MUTABLE_METHOD (mxInt32 *, get_int32s ()); }
 
-  mxInt64 * get_int64s (void) const
+  mxInt64 * get_int64s () const
   { DO_MUTABLE_METHOD (mxInt64 *, get_int64s ()); }
 
-  mxUint8 * get_uint8s (void) const
+  mxUint8 * get_uint8s () const
   { DO_MUTABLE_METHOD (mxUint8 *, get_uint8s ()); }
 
-  mxUint16 * get_uint16s (void) const
+  mxUint16 * get_uint16s () const
   { DO_MUTABLE_METHOD (mxUint16 *, get_uint16s ()); }
 
-  mxUint32 * get_uint32s (void) const
+  mxUint32 * get_uint32s () const
   { DO_MUTABLE_METHOD (mxUint32 *, get_uint32s ()); }
 
-  mxUint64 * get_uint64s (void) const
+  mxUint64 * get_uint64s () const
   { DO_MUTABLE_METHOD (mxUint64 *, get_uint64s ()); }
 
-  mxComplexDouble * get_complex_doubles (void) const
+  mxComplexDouble * get_complex_doubles () const
   { DO_MUTABLE_METHOD (mxComplexDouble *, get_complex_doubles ()); }
 
-  mxComplexSingle * get_complex_singles (void) const
+  mxComplexSingle * get_complex_singles () const
   { DO_MUTABLE_METHOD (mxComplexSingle *, get_complex_singles ()); }
 
 #if 0
   /* We don't have these yet. */
-  mxComplexInt8 * get_complex_int8s (void) const
+  mxComplexInt8 * get_complex_int8s () const
   { DO_MUTABLE_METHOD (mxComplexInt8 *, get_complex_int8s ()); }
 
-  mxComplexInt16 * get_complex_int16s (void) const
+  mxComplexInt16 * get_complex_int16s () const
   { DO_MUTABLE_METHOD (mxComplexInt16 *, get_complex_int16s ()); }
 
-  mxComplexInt32 * get_complex_int32s (void) const
+  mxComplexInt32 * get_complex_int32s () const
   { DO_MUTABLE_METHOD (mxComplexInt32 *, get_complex_int32s ()); }
 
-  mxComplexInt64 * get_complex_int64s (void) const
+  mxComplexInt64 * get_complex_int64s () const
   { DO_MUTABLE_METHOD (mxComplexInt64 *, get_complex_int64s ()); }
 
-  mxComplexUint8 * get_complex_uint8s (void) const
+  mxComplexUint8 * get_complex_uint8s () const
   { DO_MUTABLE_METHOD (mxComplexUint8 *, get_complex_uint8s ()); }
 
-  mxComplexUint16 * get_complex_uint16s (void) const
+  mxComplexUint16 * get_complex_uint16s () const
   { DO_MUTABLE_METHOD (mxComplexUint16 *, get_complex_uint16s ()); }
 
-  mxComplexUint32 * get_complex_uint32s (void) const
+  mxComplexUint32 * get_complex_uint32s () const
   { DO_MUTABLE_METHOD (mxComplexUint32 *, get_complex_uint32s ()); }
 
-  mxComplexUint64 * get_complex_uint64s (void) const
+  mxComplexUint64 * get_complex_uint64s () const
   { DO_MUTABLE_METHOD (mxComplexUint64 *, get_complex_uint64s ()); }
 #endif
 
-  void * get_imag_data (void) const
+  void * get_imag_data () const
   { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
 
   void set_data (void *pr) { DO_VOID_MUTABLE_METHOD (set_data (pr)); }
@@ -629,11 +629,11 @@ public:
 
   void set_imag_data (void *pi) { DO_VOID_MUTABLE_METHOD (set_imag_data (pi)); }
 
-  mwIndex * get_ir (void) const { DO_MUTABLE_METHOD (mwIndex *, get_ir ()); }
+  mwIndex * get_ir () const { DO_MUTABLE_METHOD (mwIndex *, get_ir ()); }
 
-  mwIndex * get_jc (void) const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
+  mwIndex * get_jc () const { DO_MUTABLE_METHOD (mwIndex *, get_jc ()); }
 
-  mwSize get_nzmax (void) const { return m_rep->get_nzmax (); }
+  mwSize get_nzmax () const { return m_rep->get_nzmax (); }
 
   void set_ir (mwIndex *ir) { DO_VOID_MUTABLE_METHOD (set_ir (ir)); }
 
@@ -652,7 +652,7 @@ public:
   void set_field_by_number (mwIndex index, int key_num, mxArray *val)
   { DO_VOID_MUTABLE_METHOD (set_field_by_number (index, key_num, val)); }
 
-  int get_number_of_fields (void) const
+  int get_number_of_fields () const
   { return m_rep->get_number_of_fields (); }
 
   const char * get_field_name_by_number (int key_num) const
@@ -664,17 +664,17 @@ public:
   int get_string (char *buf, mwSize buflen) const
   { return m_rep->get_string (buf, buflen); }
 
-  char * array_to_string (void) const { return m_rep->array_to_string (); }
+  char * array_to_string () const { return m_rep->array_to_string (); }
 
   mwIndex calc_single_subscript (mwSize nsubs, mwIndex *subs) const
   { return m_rep->calc_single_subscript (nsubs, subs); }
 
-  std::size_t get_element_size (void) const
+  std::size_t get_element_size () const
   { return m_rep->get_element_size (); }
 
-  bool mutation_needed (void) const { return m_rep->mutation_needed (); }
+  bool mutation_needed () const { return m_rep->mutation_needed (); }
 
-  mxArray * mutate (void) const { return m_rep->mutate (); }
+  mxArray * mutate () const { return m_rep->mutate (); }
 
   static OCTINTERP_API void * malloc (std::size_t n);
 
@@ -702,7 +702,7 @@ public:
   static OCTINTERP_API octave_value
   as_octave_value (const mxArray *ptr, bool null_is_empty = true);
 
-  OCTINTERP_API octave_value as_octave_value (void) const;
+  OCTINTERP_API octave_value as_octave_value () const;
 
 private:
 
@@ -740,7 +740,7 @@ private:
   create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
               mwSize nzmax, mxComplexity flag);
 
-  OCTINTERP_API void maybe_mutate (void) const;
+  OCTINTERP_API void maybe_mutate () const;
 
   //--------
 

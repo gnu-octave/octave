@@ -53,7 +53,7 @@ public:
     ROTATION_270 = 3
   };
 
-  base_text_renderer (void) : text_processor () { }
+  base_text_renderer () : text_processor () { }
 
   // No copying!
 
@@ -61,7 +61,7 @@ public:
 
   base_text_renderer& operator = (const base_text_renderer&) = delete;
 
-  virtual ~base_text_renderer (void) = default;
+  virtual ~base_text_renderer () = default;
 
   virtual void
   set_anti_aliasing (bool val) = 0;
@@ -78,10 +78,10 @@ public:
             const std::string& angle, double size) = 0;
 
   virtual bool
-  ok (void) { return true; };
+  ok () { return true; };
 
   virtual octave_map
-  get_system_fonts (void) = 0;
+  get_system_fonts () = 0;
 
   virtual void set_color (const Matrix& c) = 0;
 

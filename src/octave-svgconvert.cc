@@ -70,7 +70,7 @@ public:
     setWindow (sz.toRect ());
   }
 
-  ~pdfpainter (void) { end (); }
+  ~pdfpainter () { end (); }
 
 private:
   QPrinter m_printer;
@@ -147,21 +147,21 @@ QString get_field (QString str, QString field)
 class octave_polygon
 {
 public:
-  octave_polygon (void)
+  octave_polygon ()
   { }
 
   octave_polygon (QPolygonF p)
   { m_polygons.push_back (p); }
 
-  ~octave_polygon (void) { }
+  ~octave_polygon () { }
 
-  int count (void) const
+  int count () const
   { return m_polygons.count (); }
 
-  void reset (void)
+  void reset ()
   { m_polygons.clear (); }
 
-  QList<QPolygonF> reconstruct (void)
+  QList<QPolygonF> reconstruct ()
   {
     if (m_polygons.isEmpty ())
       return QList<QPolygonF> ();

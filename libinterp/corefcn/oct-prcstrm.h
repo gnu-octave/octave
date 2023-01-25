@@ -65,7 +65,7 @@ public:
 
 protected:
 
-  ~octave_iprocstream (void);
+  ~octave_iprocstream ();
 };
 
 class
@@ -93,7 +93,7 @@ public:
 
 protected:
 
-  ~octave_oprocstream (void);
+  ~octave_oprocstream ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

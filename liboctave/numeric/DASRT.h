@@ -39,7 +39,7 @@ DASRT_result
 {
 public:
 
-  DASRT_result (void)
+  DASRT_result ()
     : m_x (), m_xdot (), m_t () { }
 
   DASRT_result (const Matrix& x, const Matrix& xdot, const ColumnVector& t)
@@ -59,11 +59,11 @@ public:
     return *this;
   }
 
-  ~DASRT_result (void) = default;
+  ~DASRT_result () = default;
 
-  Matrix state (void) const { return m_x; }
-  Matrix deriv (void) const { return m_xdot; }
-  ColumnVector times (void) const { return m_t; }
+  Matrix state () const { return m_x; }
+  Matrix deriv () const { return m_xdot; }
+  ColumnVector times () const { return m_t; }
 
 private:
 
@@ -78,7 +78,7 @@ DASRT : public DAERT, public DASRT_options
 {
 public:
 
-  DASRT (void)
+  DASRT ()
     : DAERT (), DASRT_options (), m_initialized (false),
       m_liw (0), m_lrw (0), m_ng (0), m_info (), m_iwork (), m_jroot (),
       m_rwork (), m_abs_tol (), m_rel_tol ()
@@ -97,14 +97,14 @@ public:
       m_rwork (), m_abs_tol (), m_rel_tol ()
   { }
 
-  ~DASRT (void) = default;
+  ~DASRT () = default;
 
   DASRT_result integrate (const ColumnVector& tout);
 
   DASRT_result integrate (const ColumnVector& tout,
                           const ColumnVector& tcrit);
 
-  std::string error_message (void) const;
+  std::string error_message () const;
 
 private:
 

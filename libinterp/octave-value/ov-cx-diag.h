@@ -41,7 +41,7 @@ octave_complex_diag_matrix
 {
 public:
 
-  octave_complex_diag_matrix (void)
+  octave_complex_diag_matrix ()
     : octave_base_diag<ComplexDiagMatrix, ComplexMatrix> () { }
 
   octave_complex_diag_matrix (const ComplexDiagMatrix& m)
@@ -50,28 +50,28 @@ public:
   octave_complex_diag_matrix (const octave_complex_diag_matrix& m)
     : octave_base_diag<ComplexDiagMatrix, ComplexMatrix> (m) { }
 
-  ~octave_complex_diag_matrix (void) = default;
+  ~octave_complex_diag_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_complex_diag_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_complex_diag_matrix (); }
 
-  OCTINTERP_API type_conv_info numeric_conversion_function (void) const;
+  OCTINTERP_API type_conv_info numeric_conversion_function () const;
 
-  OCTINTERP_API type_conv_info numeric_demotion_function (void) const;
+  OCTINTERP_API type_conv_info numeric_demotion_function () const;
 
-  OCTINTERP_API octave_base_value * try_narrowing_conversion (void);
+  OCTINTERP_API octave_base_value * try_narrowing_conversion ();
 
-  builtin_type_t builtin_type (void) const { return btyp_complex; }
+  builtin_type_t builtin_type () const { return btyp_complex; }
 
-  bool is_complex_matrix (void) const { return true; }
+  bool is_complex_matrix () const { return true; }
 
-  bool iscomplex (void) const { return true; }
+  bool iscomplex () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   OCTINTERP_API DiagMatrix diag_matrix_value (bool = false) const;
 
@@ -83,8 +83,8 @@ public:
   OCTINTERP_API FloatComplexDiagMatrix
   float_complex_diag_matrix_value (bool = false) const;
 
-  OCTINTERP_API octave_value as_double (void) const;
-  OCTINTERP_API octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double () const;
+  OCTINTERP_API octave_value as_single () const;
 
   OCTINTERP_API bool save_binary (std::ostream& os, bool save_as_floats);
 

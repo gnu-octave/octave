@@ -54,7 +54,7 @@ octave_sparse_matrix : public octave_base_sparse<SparseMatrix>
 {
 public:
 
-  octave_sparse_matrix (void)
+  octave_sparse_matrix ()
     : octave_base_sparse<SparseMatrix> () { }
 
   octave_sparse_matrix (const Matrix& m)
@@ -84,24 +84,24 @@ public:
   octave_sparse_matrix (const octave_sparse_matrix& m)
     : octave_base_sparse<SparseMatrix> (m) { }
 
-  ~octave_sparse_matrix (void) = default;
+  ~octave_sparse_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_sparse_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_sparse_matrix (); }
 
   octave::idx_vector index_vector (bool require_integers = false) const;
 
-  builtin_type_t builtin_type (void) const { return btyp_double; }
+  builtin_type_t builtin_type () const { return btyp_double; }
 
-  bool is_real_matrix (void) const { return true; }
+  bool is_real_matrix () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   double double_value (bool = false) const;
 
@@ -132,7 +132,7 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  octave_value as_double (void) const;
+  octave_value as_double () const;
 
 #if 0
   int write (octave::stream& os, int block_size,

@@ -125,7 +125,7 @@ FloatDiagMatrix::fill (const FloatRowVector& a, octave_idx_type beg)
 }
 
 FloatDiagMatrix
-FloatDiagMatrix::abs (void) const
+FloatDiagMatrix::abs () const
 {
   return FloatDiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
@@ -224,7 +224,7 @@ FloatDiagMatrix::column (char *s) const
 }
 
 FloatDiagMatrix
-FloatDiagMatrix::inverse (void) const
+FloatDiagMatrix::inverse () const
 {
   octave_idx_type info;
   return inverse (info);
@@ -306,7 +306,7 @@ operator * (const FloatDiagMatrix& a, const FloatDiagMatrix& b)
 // other operations
 
 FloatDET
-FloatDiagMatrix::determinant (void) const
+FloatDiagMatrix::determinant () const
 {
   FloatDET det (1.0f);
   if (rows () != cols ())
@@ -320,7 +320,7 @@ FloatDiagMatrix::determinant (void) const
 }
 
 float
-FloatDiagMatrix::rcond (void) const
+FloatDiagMatrix::rcond () const
 {
   FloatColumnVector av = extract_diag (0).map<float> (fabsf);
   float amx = av.max ();

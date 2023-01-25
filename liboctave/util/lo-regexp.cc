@@ -112,13 +112,13 @@ static bool lookbehind_warned = false;
 //        the user doesn't want.
 
 void
-regexp::free (void)
+regexp::free ()
 {
   octave_pcre_code_free (static_cast<octave_pcre_code *> (m_code));
 }
 
 void
-regexp::compile_internal (void)
+regexp::compile_internal ()
 {
   // If we had a previously compiled pattern, release it.
   free ();

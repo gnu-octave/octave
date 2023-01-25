@@ -50,7 +50,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
   public:
 
-    range (void)
+    range ()
       : m_base (0), m_increment (0), m_limit (0), m_final (0), m_numel (0),
         m_reverse (false)
     { }
@@ -127,16 +127,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return *this;
     }
 
-    ~range (void) = default;
+    ~range () = default;
 
-    T base (void) const { return m_base; }
-    T increment (void) const { return m_increment; }
-    T limit (void) const { return m_limit; }
-    bool reverse (void) const { return m_reverse; }
+    T base () const { return m_base; }
+    T increment () const { return m_increment; }
+    T limit () const { return m_limit; }
+    bool reverse () const { return m_reverse; }
 
-    T final_value (void) const { return m_final; }
+    T final_value () const { return m_final; }
 
-    T min (void) const
+    T min () const
     {
       return (m_numel > 0
               ? ((m_reverse ? m_increment > T (0)
@@ -144,7 +144,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               : T (0));
     }
 
-    T max (void) const
+    T max () const
     {
       return (m_numel > 0
               ? ((m_reverse ? m_increment < T (0)
@@ -152,7 +152,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               : T (0));
     }
 
-    octave_idx_type numel (void) const { return m_numel; }
+    octave_idx_type numel () const { return m_numel; }
 
     // To support things like "for i = 1:Inf; ...; end" that are
     // required for Matlab compatibility, creation of a range object
@@ -162,18 +162,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // us to easily distinguish ranges with an infinite number of
     // elements.  There are specializations for double and float.
 
-    bool is_storable (void) const { return true; }
+    bool is_storable () const { return true; }
 
-    dim_vector dims (void) const { return dim_vector (1, m_numel); }
+    dim_vector dims () const { return dim_vector (1, m_numel); }
 
-    octave_idx_type rows (void) const { return 1; }
+    octave_idx_type rows () const { return 1; }
 
-    octave_idx_type cols (void) const { return numel (); }
-    octave_idx_type columns (void) const { return numel (); }
+    octave_idx_type cols () const { return numel (); }
+    octave_idx_type columns () const { return numel (); }
 
-    bool isempty (void) const { return numel () == 0; }
+    bool isempty () const { return numel () == 0; }
 
-    bool all_elements_are_ints (void) const { return true; }
+    bool all_elements_are_ints () const { return true; }
 
     sortmode issorted (sortmode mode = ASCENDING) const
     {
@@ -189,7 +189,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return mode;
     }
 
-    OCTAVE_API octave_idx_type nnz (void) const;
+    OCTAVE_API octave_idx_type nnz () const;
 
     // Support for single-index subscripting, without generating matrix cache.
 
@@ -294,7 +294,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return array_value ().diag (k);
     }
 
-    Array<T> array_value (void) const
+    Array<T> array_value () const
     {
       octave_idx_type nel = numel ();
 
@@ -338,7 +338,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // These calculations are appropriate for integer ranges.  There are
     // specializations for double and float.
 
-    void init (void)
+    void init ()
     {
       if (m_reverse)
         {
@@ -365,11 +365,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   // Specializations defined externally.
 
-  template <> OCTAVE_API bool range<double>::all_elements_are_ints (void) const;
-  template <> OCTAVE_API bool range<float>::all_elements_are_ints (void) const;
+  template <> OCTAVE_API bool range<double>::all_elements_are_ints () const;
+  template <> OCTAVE_API bool range<float>::all_elements_are_ints () const;
 
-  template <> OCTAVE_API void range<double>::init (void);
-  template <> OCTAVE_API void range<float>::init (void);
+  template <> OCTAVE_API void range<double>::init ();
+  template <> OCTAVE_API void range<float>::init ();
 
   // For now, only define for floating point types.  However, we only
   // need range<float> as a temporary local variable in make_float_range
@@ -377,22 +377,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 #if 0
 
-  template <> OCTAVE_API void range<octave_int8>::init (void);
-  template <> OCTAVE_API void range<octave_int16>::init (void);
-  template <> OCTAVE_API void range<octave_int32>::init (void);
-  template <> OCTAVE_API void range<octave_int64>::init (void);
-  template <> OCTAVE_API void range<octave_uint8>::init (void);
-  template <> OCTAVE_API void range<octave_uint16>::init (void);
-  template <> OCTAVE_API void range<octave_uint32>::init (void);
-  template <> OCTAVE_API void range<octave_uint64>::init (void);
+  template <> OCTAVE_API void range<octave_int8>::init ();
+  template <> OCTAVE_API void range<octave_int16>::init ();
+  template <> OCTAVE_API void range<octave_int32>::init ();
+  template <> OCTAVE_API void range<octave_int64>::init ();
+  template <> OCTAVE_API void range<octave_uint8>::init ();
+  template <> OCTAVE_API void range<octave_uint16>::init ();
+  template <> OCTAVE_API void range<octave_uint32>::init ();
+  template <> OCTAVE_API void range<octave_uint64>::init ();
 
 #endif
 
-  template <> OCTAVE_API bool range<double>::is_storable (void) const;
-  template <> OCTAVE_API bool range<float>::is_storable (void) const;
+  template <> OCTAVE_API bool range<double>::is_storable () const;
+  template <> OCTAVE_API bool range<float>::is_storable () const;
 
-  template <> OCTAVE_API octave_idx_type range<double>::nnz (void) const;
-  template <> OCTAVE_API octave_idx_type range<float>::nnz (void) const;
+  template <> OCTAVE_API octave_idx_type range<double>::nnz () const;
+  template <> OCTAVE_API octave_idx_type range<float>::nnz () const;
 
 OCTAVE_END_NAMESPACE(octave)
 

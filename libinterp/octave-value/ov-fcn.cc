@@ -35,13 +35,13 @@
 #include "pt-eval.h"
 
 octave_base_value *
-octave_function::clone (void) const
+octave_function::clone () const
 {
   panic_impossible ();
 }
 
 octave_base_value *
-octave_function::empty_clone (void) const
+octave_function::empty_clone () const
 {
   panic_impossible ();
 }

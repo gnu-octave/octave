@@ -42,7 +42,7 @@ public:
 
   typedef typename T::real_matrix_type RT;
 
-  gepbalance (void)
+  gepbalance ()
     : m_balanced_mat (), m_balanced_mat2 (), m_balancing_mat (),
       m_balancing_mat2 ()
   { }
@@ -74,15 +74,15 @@ public:
     return *this;
   }
 
-  ~gepbalance (void) = default;
+  ~gepbalance () = default;
 
-  T balanced_matrix (void) const { return m_balanced_mat; }
+  T balanced_matrix () const { return m_balanced_mat; }
 
-  T balanced_matrix2 (void) const { return m_balanced_mat2; }
+  T balanced_matrix2 () const { return m_balanced_mat2; }
 
-  RT balancing_matrix (void) const { return m_balancing_mat; }
+  RT balancing_matrix () const { return m_balancing_mat; }
 
-  RT balancing_matrix2 (void) const { return m_balancing_mat2; }
+  RT balancing_matrix2 () const { return m_balancing_mat2; }
 
 private:
 

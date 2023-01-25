@@ -45,7 +45,7 @@
 #  endif
 
 static std::string
-w32_get_octave_home (void)
+w32_get_octave_home ()
 {
   std::string retval;
 
@@ -108,7 +108,7 @@ static std::string Voctave_home;
 static std::string Voctave_exec_home;
 
 static void
-set_octave_home (void)
+set_octave_home ()
 {
   std::string op = OCTAVE_PREFIX;
   std::string oep = OCTAVE_EXEC_PREFIX;

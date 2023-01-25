@@ -205,7 +205,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 }
 
 octave_base_value *
-octave_class::unique_clone (void)
+octave_class::unique_clone ()
 {
   if (count == m_obsolete_copies)
     {
@@ -224,7 +224,7 @@ octave_class::unique_clone (void)
 }
 
 std::string
-octave_class::get_current_method_class (void)
+octave_class::get_current_method_class ()
 {
   std::string retval = class_name ();
 
@@ -245,14 +245,14 @@ octave_class::get_current_method_class (void)
 
 OCTAVE_NORETURN static
 void
-err_invalid_index1 (void)
+err_invalid_index1 ()
 {
   error ("invalid index for class");
 }
 
 OCTAVE_NORETURN static
 void
-err_invalid_index_for_assignment (void)
+err_invalid_index_for_assignment ()
 {
   error ("invalid index for class assignment");
 }
@@ -304,7 +304,7 @@ octave_class::dotref (const octave_value_list& idx)
 }
 
 Matrix
-octave_class::size (void)
+octave_class::size ()
 {
   if (in_class_method () || called_from_builtin ())
     return octave_base_value::size ();
@@ -857,7 +857,7 @@ octave_class::index_vector (bool require_integers) const
 }
 
 std::size_t
-octave_class::byte_size (void) const
+octave_class::byte_size () const
 {
   // Neglect the size of the fieldnames.
 
@@ -876,7 +876,7 @@ octave_class::byte_size (void) const
 }
 
 bool
-octave_class::is_true (void) const
+octave_class::is_true () const
 {
   bool retval = false;
 
@@ -898,7 +898,7 @@ octave_class::is_true (void) const
 }
 
 string_vector
-octave_class::map_keys (void) const
+octave_class::map_keys () const
 {
   err_wrong_type_arg ("octave_class::map_keys()", type_name ());
 }
@@ -1043,7 +1043,7 @@ octave_class::print_raw (std::ostream& os, bool) const
 // If we don't have one, we attempt to create one by calling the constructor
 // with no arguments.
 bool
-octave_class::reconstruct_exemplar (void)
+octave_class::reconstruct_exemplar ()
 {
   bool retval = false;
 
@@ -1109,7 +1109,7 @@ octave_class::reconstruct_exemplar (void)
 }
 
 void
-octave_class::clear_exemplar_map (void)
+octave_class::clear_exemplar_map ()
 {
   exemplar_map.clear ();
 }
@@ -1122,7 +1122,7 @@ octave_class::clear_exemplar_map (void)
 //  class structure here so the user's loadobj method has a chance
 //  to do its magic.
 bool
-octave_class::reconstruct_parents (void)
+octave_class::reconstruct_parents ()
 {
   bool retval = true;
   bool might_have_inheritance = false;
@@ -1670,7 +1670,7 @@ octave_class::as_mxArray (bool) const
 }
 
 bool
-octave_class::in_class_method (void)
+octave_class::in_class_method ()
 {
   octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
@@ -2090,7 +2090,7 @@ public:
 
   octave_inline_fcn& operator = (const octave_inline_fcn& ob) = delete;
 
-  ~octave_inline_fcn (void) = default;
+  ~octave_inline_fcn () = default;
 
   // Override default call method because we ultimately use feval to
   // execute the inline function and that will push a stack frame.
@@ -2115,7 +2115,7 @@ private:
 // to eliminate the octave_inline class below and replace the
 // octave_value::is_inline_function method with
 //
-// bool octave_value::is_inline_function (void) const
+// bool octave_value::is_inline_function () const
 // {
 //   return class_name () == "inline";
 // }
@@ -2131,16 +2131,16 @@ public:
 
   octave_inline (const octave_inline&) = default;
 
-  ~octave_inline (void) = default;
+  ~octave_inline () = default;
 
-  octave_base_value * clone (void) const { return new octave_inline (*this); }
+  octave_base_value * clone () const { return new octave_inline (*this); }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   {
     return new octave_inline (octave_map (map_keys ()));
   }
 
-  bool is_inline_function (void) const { return true; }
+  bool is_inline_function () const { return true; }
 
   octave_function * function_value (bool)
   {

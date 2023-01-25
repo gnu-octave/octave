@@ -135,7 +135,7 @@ FloatMatrix::operator != (const FloatMatrix& a) const
 }
 
 bool
-FloatMatrix::issymmetric (void) const
+FloatMatrix::issymmetric () const
 {
   if (issquare () && rows () > 0)
     {
@@ -454,7 +454,7 @@ norm1 (const FloatMatrix& a)
 }
 
 FloatMatrix
-FloatMatrix::inverse (void) const
+FloatMatrix::inverse () const
 {
   octave_idx_type info;
   float rcon;
@@ -737,7 +737,7 @@ FloatMatrix::pseudo_inverse (float tol) const
 #if defined (HAVE_FFTW)
 
 FloatComplexMatrix
-FloatMatrix::fourier (void) const
+FloatMatrix::fourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -766,7 +766,7 @@ FloatMatrix::fourier (void) const
 }
 
 FloatComplexMatrix
-FloatMatrix::ifourier (void) const
+FloatMatrix::ifourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -796,7 +796,7 @@ FloatMatrix::ifourier (void) const
 }
 
 FloatComplexMatrix
-FloatMatrix::fourier2d (void) const
+FloatMatrix::fourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -808,7 +808,7 @@ FloatMatrix::fourier2d (void) const
 }
 
 FloatComplexMatrix
-FloatMatrix::ifourier2d (void) const
+FloatMatrix::ifourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -823,7 +823,7 @@ FloatMatrix::ifourier2d (void) const
 #else
 
 FloatComplexMatrix
-FloatMatrix::fourier (void) const
+FloatMatrix::fourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -832,7 +832,7 @@ FloatMatrix::fourier (void) const
 }
 
 FloatComplexMatrix
-FloatMatrix::ifourier (void) const
+FloatMatrix::ifourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -841,7 +841,7 @@ FloatMatrix::ifourier (void) const
 }
 
 FloatComplexMatrix
-FloatMatrix::fourier2d (void) const
+FloatMatrix::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -850,7 +850,7 @@ FloatMatrix::fourier2d (void) const
 }
 
 FloatComplexMatrix
-FloatMatrix::ifourier2d (void) const
+FloatMatrix::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -861,7 +861,7 @@ FloatMatrix::ifourier2d (void) const
 #endif
 
 FloatDET
-FloatMatrix::determinant (void) const
+FloatMatrix::determinant () const
 {
   octave_idx_type info;
   float rcon;
@@ -1035,7 +1035,7 @@ FloatMatrix::determinant (MatrixType& mattype,
 }
 
 float
-FloatMatrix::rcond (void) const
+FloatMatrix::rcond () const
 {
   MatrixType mattype (*this);
   return rcond (mattype);
@@ -2408,7 +2408,7 @@ FloatMatrix::sumsq (int dim) const
 }
 
 FloatMatrix
-FloatMatrix::abs (void) const
+FloatMatrix::abs () const
 {
   return FloatNDArray::abs ();
 }
@@ -2436,7 +2436,7 @@ FloatMatrix::diag (octave_idx_type m, octave_idx_type n) const
 }
 
 FloatColumnVector
-FloatMatrix::row_min (void) const
+FloatMatrix::row_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_min (dummy_idx);
@@ -2491,7 +2491,7 @@ FloatMatrix::row_min (Array<octave_idx_type>& idx_arg) const
 }
 
 FloatColumnVector
-FloatMatrix::row_max (void) const
+FloatMatrix::row_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_max (dummy_idx);
@@ -2546,7 +2546,7 @@ FloatMatrix::row_max (Array<octave_idx_type>& idx_arg) const
 }
 
 FloatRowVector
-FloatMatrix::column_min (void) const
+FloatMatrix::column_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_min (dummy_idx);
@@ -2601,7 +2601,7 @@ FloatMatrix::column_min (Array<octave_idx_type>& idx_arg) const
 }
 
 FloatRowVector
-FloatMatrix::column_max (void) const
+FloatMatrix::column_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_max (dummy_idx);

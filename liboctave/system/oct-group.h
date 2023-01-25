@@ -44,7 +44,7 @@ group
 {
 public:
 
-  group (void)
+  group ()
     : m_name (), m_passwd (), m_gid (0), m_mem (), m_valid (false)
   { }
 
@@ -67,19 +67,19 @@ public:
     return *this;
   }
 
-  std::string name (void) const;
+  std::string name () const;
 
-  std::string passwd (void) const;
+  std::string passwd () const;
 
-  gid_t gid (void) const;
+  gid_t gid () const;
 
-  string_vector mem (void) const;
+  string_vector mem () const;
 
-  bool ok (void) const { return m_valid; }
+  bool ok () const { return m_valid; }
 
   operator bool () const { return ok (); }
 
-  static group getgrent (void);
+  static group getgrent ();
   static group getgrent (std::string& msg);
 
   static group getgrgid (gid_t gid);
@@ -88,10 +88,10 @@ public:
   static group getgrnam (const std::string& nm);
   static group getgrnam (const std::string& nm, std::string& msg);
 
-  static int setgrent (void);
+  static int setgrent ();
   static int setgrent (std::string& msg);
 
-  static int endgrent (void);
+  static int endgrent ();
   static int endgrent (std::string& msg);
 
 private:

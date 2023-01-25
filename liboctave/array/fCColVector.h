@@ -40,7 +40,7 @@ FloatComplexColumnVector : public MArray<FloatComplex>
 
 public:
 
-  FloatComplexColumnVector (void)
+  FloatComplexColumnVector ()
     : MArray<FloatComplex> (dim_vector (0, 1)) { }
 
   explicit FloatComplexColumnVector (octave_idx_type n)
@@ -90,8 +90,8 @@ public:
   OCTAVE_API FloatComplexColumnVector
   stack (const FloatComplexColumnVector& a) const;
 
-  OCTAVE_API FloatComplexRowVector hermitian (void) const;
-  OCTAVE_API FloatComplexRowVector transpose (void) const;
+  OCTAVE_API FloatComplexRowVector hermitian () const;
+  OCTAVE_API FloatComplexRowVector transpose () const;
 
   friend OCTAVE_API FloatComplexColumnVector
   OCTAVE_API conj (const FloatComplexColumnVector& a);
@@ -137,10 +137,10 @@ public:
 
   // other operations
 
-  OCTAVE_API FloatComplex min (void) const;
-  OCTAVE_API FloatComplex max (void) const;
+  OCTAVE_API FloatComplex min () const;
+  OCTAVE_API FloatComplex max () const;
 
-  OCTAVE_API FloatColumnVector abs (void) const;
+  OCTAVE_API FloatColumnVector abs () const;
 
   // i/o
 

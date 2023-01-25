@@ -54,7 +54,7 @@ octave_complex : public octave_base_scalar<Complex>
 {
 public:
 
-  octave_complex (void)
+  octave_complex ()
     : octave_base_scalar<Complex> () { }
 
   octave_complex (const Complex& c)
@@ -63,20 +63,20 @@ public:
   octave_complex (const octave_complex& c)
     : octave_base_scalar<Complex> (c) { }
 
-  ~octave_complex (void) = default;
+  ~octave_complex () = default;
 
-  octave_base_value * clone (void) const { return new octave_complex (*this); }
+  octave_base_value * clone () const { return new octave_complex (*this); }
 
   // We return an octave_complex_matrix object here instead of an
   // octave_complex object so that in expressions like A(2,2,2) = 2
   // (for A previously undefined), A will be empty instead of a 1x1
   // object.
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_complex_matrix (); }
 
-  type_conv_info numeric_demotion_function (void) const;
+  type_conv_info numeric_demotion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -91,15 +91,15 @@ public:
                   || lo_ieee_isnan (scalar.imag ())));
   }
 
-  builtin_type_t builtin_type (void) const { return btyp_complex; }
+  builtin_type_t builtin_type () const { return btyp_complex; }
 
-  bool is_complex_scalar (void) const { return true; }
+  bool is_complex_scalar () const { return true; }
 
-  bool iscomplex (void) const { return true; }
+  bool iscomplex () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   OCTINTERP_API double double_value (bool = false) const;
 
@@ -162,8 +162,8 @@ public:
     return boolNDArray (dim_vector (1, 1), scalar != 0.0);
   }
 
-  OCTINTERP_API octave_value as_double (void) const;
-  OCTINTERP_API octave_value as_single (void) const;
+  OCTINTERP_API octave_value as_double () const;
+  OCTINTERP_API octave_value as_single () const;
 
   // We don't need to override both forms of the diag method.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -172,9 +172,9 @@ public:
 
   OCTINTERP_API octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
-  void increment (void) { scalar += 1.0; }
+  void increment () { scalar += 1.0; }
 
-  void decrement (void) { scalar -= 1.0; }
+  void decrement () { scalar -= 1.0; }
 
   OCTINTERP_API bool save_ascii (std::ostream& os);
 

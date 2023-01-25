@@ -68,7 +68,7 @@ octave_bugs_statement (bool html)
 }
 
 std::string
-octave_name_version_and_copyright (void)
+octave_name_version_and_copyright ()
 {
   // The GNU coding standards say that on the first line printed by
   // --version, the version number should follow the last space on the

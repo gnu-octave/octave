@@ -48,9 +48,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     ButtonGroup (octave::interpreter& interp,
                  const graphics_object& go, QButtonGroup *buttongroup,
                  QFrame *frame);
-    ~ButtonGroup (void);
+    ~ButtonGroup ();
 
-    Container * innerContainer (void) { return m_container; }
+    Container * innerContainer () { return m_container; }
 
     bool eventFilter (QObject *watched, QEvent *event);
 
@@ -60,18 +60,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void addButton (QAbstractButton *btn);
 
-    void selectNothing (void);
+    void selectNothing ();
 
   protected:
     void update (int pId);
-    void redraw (void);
+    void redraw ();
 
   private slots:
     void buttonToggled (bool toggled);
     void buttonClicked (QAbstractButton *btn);
 
   private:
-    void updateLayout (void);
+    void updateLayout ();
 
   private:
     QButtonGroup *m_buttongroup;

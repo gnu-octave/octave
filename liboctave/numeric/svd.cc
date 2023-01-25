@@ -307,7 +307,7 @@ OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename T>
 T
-svd<T>::left_singular_matrix (void) const
+svd<T>::left_singular_matrix () const
 {
   if (m_type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)
@@ -318,7 +318,7 @@ svd<T>::left_singular_matrix (void) const
 
 template <typename T>
 T
-svd<T>::right_singular_matrix (void) const
+svd<T>::right_singular_matrix () const
 {
   if (m_type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)

@@ -61,25 +61,25 @@ public:
 
   // Return current stream position.
 
-  off_t tell (void);
+  off_t tell ();
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const;
+  bool eof () const;
 
-  void do_close (void);
+  void do_close ();
 
   // The name of the file.
 
-  std::string name (void) const { return m_name; }
+  std::string name () const { return m_name; }
 
-  std::istream * input_stream (void);
+  std::istream * input_stream ();
 
-  std::ostream * output_stream (void);
+  std::ostream * output_stream ();
 
 protected:
 
-  ~fstream (void) = default;
+  ~fstream () = default;
 
 private:
 

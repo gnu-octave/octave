@@ -52,7 +52,7 @@
 #if defined (HAVE_ARPACK)
 
 static void
-warn_convergence (void)
+warn_convergence ()
 {
   (*current_liboctave_warning_with_id_handler)
     ("Octave:convergence",

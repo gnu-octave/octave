@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     RadioButtonControl (octave::interpreter& interp, const graphics_object& go,
                         QRadioButton *box);
-    ~RadioButtonControl (void);
+    ~RadioButtonControl ();
 
     static RadioButtonControl * create (octave::interpreter& interp,
                                         const graphics_object& go);

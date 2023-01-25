@@ -488,7 +488,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &Table::itemSelectionChanged);
   }
 
-  Table::~Table (void) { }
+  Table::~Table () { }
 
   void
   Table::itemSelectionChanged ()
@@ -880,7 +880,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::redraw (void)
+  Table::redraw ()
   {
     update (uitable::properties::ID_POSITION);
   }
@@ -983,7 +983,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::updateColumnname (void)
+  Table::updateColumnname ()
   {
     uitable::properties& tp = properties<uitable> ();
 
@@ -1079,7 +1079,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::updateColumnwidth (void)
+  Table::updateColumnwidth ()
   {
     uitable::properties& tp = properties<uitable> ();
 
@@ -1307,7 +1307,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::updateEnable (void)
+  Table::updateEnable ()
   {
     uitable::properties& tp = properties<uitable> ();
     bool enabled = tp.is_enable ();
@@ -1365,7 +1365,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::updateExtent (void)
+  Table::updateExtent ()
   {
     QSize s = realQSizeForTable (m_tableWidget);
     Matrix extent = Matrix (1, 4);
@@ -1378,7 +1378,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::updatePalette (void)
+  Table::updatePalette ()
   {
     uitable::properties& tp = properties<uitable> ();
 
@@ -1395,7 +1395,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::updateRowname (void)
+  Table::updateRowname ()
   {
     uitable::properties& tp = properties<uitable> ();
 
@@ -1493,7 +1493,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Table::updateRearrangeableColumns (void)
+  Table::updateRearrangeableColumns ()
   {
     uitable::properties& tp = properties<uitable> ();
 

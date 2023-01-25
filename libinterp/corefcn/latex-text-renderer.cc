@@ -56,7 +56,7 @@ latex_renderer : public base_text_renderer
 
 public:
 
-  latex_renderer (void)
+  latex_renderer ()
     : m_fontsize (10.0), m_fontname ("cmr"), m_tmp_dir (),
       m_color (dim_vector (1, 3), 0), m_latex_binary ("latex"),
       m_dvipng_binary ("dvipng"), m_dvisvg_binary ("dvisvgm"),
@@ -77,7 +77,7 @@ public:
     m_debug = ! sys::env::getenv ("OCTAVE_LATEX_DEBUG_FLAG").empty ();
   }
 
-  ~latex_renderer (void)
+  ~latex_renderer ()
   {
     if (! m_tmp_dir.empty () && ! m_debug)
       sys::recursive_rmdir (m_tmp_dir);
@@ -144,9 +144,9 @@ public:
 
   void set_anti_aliasing (bool /*val*/) { }
 
-  octave_map get_system_fonts (void) { return octave_map (); }
+  octave_map get_system_fonts () { return octave_map (); }
 
-  bool ok (void);
+  bool ok ();
 
 private:
 
@@ -183,7 +183,7 @@ private:
 };
 
 bool
-latex_renderer::ok (void)
+latex_renderer::ok ()
 {
   // Only run the test once in a session
   static bool tested = false;
@@ -522,7 +522,7 @@ latex_renderer::text_to_pixels (const std::string& txt, uint8NDArray& pixels,
 }
 
 base_text_renderer *
-make_latex_text_renderer (void)
+make_latex_text_renderer ()
 {
   latex_renderer *renderer = new latex_renderer ();
 

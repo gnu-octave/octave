@@ -49,7 +49,7 @@ public: // FIXME: make this class private?
   {
   public:
 
-    dynlib_rep (void)
+    dynlib_rep ()
       : m_count (1), m_fcn_names (), m_file (), m_time_loaded (OCTAVE_TIME_T ()),
         m_search_all_loaded (false)
     { }
@@ -61,40 +61,40 @@ public: // FIXME: make this class private?
 
   public:
 
-    virtual ~dynlib_rep (void)
+    virtual ~dynlib_rep ()
     {
       s_instances.erase (m_file);
     }
 
-    virtual bool is_open (void) const
+    virtual bool is_open () const
     { return false; }
 
     virtual void * search (const std::string&,
                           const name_mangler& = name_mangler ())
     { return nullptr; }
 
-    OCTAVE_API bool is_out_of_date (void) const;
+    OCTAVE_API bool is_out_of_date () const;
 
     // This method will be overridden conditionally.
     static OCTAVE_API dynlib_rep * new_instance (const std::string& f);
 
     static OCTAVE_API dynlib_rep * get_instance (const std::string& f, bool fake);
 
-    sys::time time_loaded (void) const
+    sys::time time_loaded () const
     { return m_time_loaded; }
 
-    std::string file_name (void) const
+    std::string file_name () const
     { return m_file; }
 
-    std::size_t num_fcn_names (void) const { return m_fcn_names.size (); }
+    std::size_t num_fcn_names () const { return m_fcn_names.size (); }
 
-    OCTAVE_API std::list<std::string> function_names (void) const;
+    OCTAVE_API std::list<std::string> function_names () const;
 
     OCTAVE_API void add_fcn_name (const std::string&);
 
     OCTAVE_API bool remove_fcn_name (const std::string&);
 
-    void clear_fcn_names (void) { m_fcn_names.clear (); }
+    void clear_fcn_names () { m_fcn_names.clear (); }
 
   public:
 
@@ -102,7 +102,7 @@ public: // FIXME: make this class private?
 
   protected:
 
-    OCTAVE_API void fake_reload (void);
+    OCTAVE_API void fake_reload ();
 
     static OCTAVE_API std::map<std::string, dynlib_rep *> s_instances;
 
@@ -122,18 +122,18 @@ private:
 
 public:
 
-  dynamic_library (void) : m_rep (&s_nil_rep) { m_rep->m_count++; }
+  dynamic_library () : m_rep (&s_nil_rep) { m_rep->m_count++; }
 
   dynamic_library (const std::string& f, bool fake = true)
     : m_rep (dynlib_rep::get_instance (f, fake)) { }
 
-  ~dynamic_library (void)
+  ~dynamic_library ()
   {
     if (--m_rep->m_count == 0 && m_rep != &s_nil_rep)
       delete m_rep;
   }
 
-  OCTAVE_API void delete_later (void);
+  OCTAVE_API void delete_later ();
 
   dynamic_library (const dynamic_library& sl)
     : m_rep (sl.m_rep)
@@ -163,7 +163,7 @@ public:
   void open (const std::string& f)
   { *this = dynamic_library (f); }
 
-  std::list<std::string> close (void)
+  std::list<std::string> close ()
   {
     std::list<std::string> removed_fcns = m_rep->function_names ();
 
@@ -190,16 +190,16 @@ public:
   bool remove (const std::string& name)
   { return m_rep->remove_fcn_name (name); }
 
-  std::size_t number_of_functions_loaded (void) const
+  std::size_t number_of_functions_loaded () const
   { return m_rep->num_fcn_names (); }
 
-  bool is_out_of_date (void) const
+  bool is_out_of_date () const
   { return m_rep->is_out_of_date (); }
 
-  std::string file_name (void) const
+  std::string file_name () const
   { return m_rep->file_name (); }
 
-  sys::time time_loaded (void) const
+  sys::time time_loaded () const
   { return m_rep->time_loaded (); }
 
 private:
@@ -210,7 +210,7 @@ private:
 // FIXME: Currently must return int so that it may be used as an
 // event_hook function.
 
-OCTAVE_API int release_unreferenced_dynamic_libraries (void);
+OCTAVE_API int release_unreferenced_dynamic_libraries ();
 
 OCTAVE_END_NAMESPACE(octave)
 

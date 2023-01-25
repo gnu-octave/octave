@@ -75,11 +75,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     gui_settings& operator = (const gui_settings&) = delete;
 
-    ~gui_settings (void) = default;
+    ~gui_settings () = default;
 
-    QString file_name (void) const;
+    QString file_name () const;
 
-    QString directory_name (void) const;
+    QString directory_name () const;
 
     using QSettings::value;
 
@@ -182,16 +182,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // QSettings object is supposed to be fast, so that may not matter.
     // Hmm.
 
-    void config_icon_theme (void);
+    void config_icon_theme ();
 
     QIcon icon (const QString& icon_name, bool octave_only = false,
                 const QString& icon_alt_name = QString ());
 
-    QString get_default_font_family (void);
+    QString get_default_font_family ();
 
-    QStringList get_default_font (void);
+    QStringList get_default_font ();
 
-    QString get_gui_translation_dir (void);
+    QString get_gui_translation_dir ();
 
     void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                              QTranslator *gui_tr);
@@ -203,17 +203,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     bool update_settings_key (const QString& new_key, const QString& old_key);
 
-    void update_network_settings (void);
+    void update_network_settings ();
 
     void get_codecs (QStringList *codecs);
 
     void combo_encoding (QComboBox *combo, const QString& current = QString ());
 
-    void reload (void);
+    void reload ();
 
   private:
 
-    void check (void);
+    void check ();
   };
 
 OCTAVE_END_NAMESPACE(octave)

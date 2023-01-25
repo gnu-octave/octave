@@ -42,7 +42,7 @@ class tree_checker : public tree_walker
 {
 public:
 
-  tree_checker (void)
+  tree_checker ()
     : m_do_lvalue_check (false), m_file_name () { }
 
   // No copying!
@@ -51,7 +51,7 @@ public:
 
   tree_checker& operator = (const tree_checker&) = delete;
 
-  ~tree_checker (void) = default;
+  ~tree_checker () = default;
 
   void visit_argument_list (tree_argument_list&);
 

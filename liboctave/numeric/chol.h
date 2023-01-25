@@ -41,7 +41,7 @@ public:
   typedef typename T::column_vector_type VT;
   typedef typename T::real_elt_type COND_T;
 
-  chol (void) : m_chol_mat (), m_rcond (0), m_is_upper (true) { }
+  chol () : m_chol_mat (), m_rcond (0), m_is_upper (true) { }
 
   chol (const T& a, bool upper = true, bool calc_cond = false)
     : m_chol_mat (), m_rcond (0)
@@ -71,12 +71,12 @@ public:
     return *this;
   }
 
-  T chol_matrix (void) const { return m_chol_mat; }
+  T chol_matrix () const { return m_chol_mat; }
 
-  COND_T rcond (void) const { return m_rcond; }
+  COND_T rcond () const { return m_rcond; }
 
   // Compute the inverse of a matrix using the Cholesky factorization.
-  OCTAVE_API T inverse (void) const;
+  OCTAVE_API T inverse () const;
 
   OCTAVE_API void set (const T& R);
 

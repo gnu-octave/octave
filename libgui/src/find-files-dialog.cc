@@ -200,12 +200,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &find_files_dialog::handle_done);
   }
 
-  find_files_dialog::~find_files_dialog (void)
+  find_files_dialog::~find_files_dialog ()
   {
     delete m_dir_iterator;
   }
 
-  void find_files_dialog::save_settings (void)
+  void find_files_dialog::save_settings ()
   {
     gui_settings settings;
 
@@ -237,7 +237,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_start_dir_edit->setText (dir);
   }
 
-  void find_files_dialog::start_find (void)
+  void find_files_dialog::start_find ()
   {
     stop_find ();
 
@@ -279,7 +279,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_timer->start (0);
   }
 
-  void find_files_dialog::stop_find (void)
+  void find_files_dialog::stop_find ()
   {
     m_timer->stop ();
 
@@ -302,7 +302,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_status_bar->showMessage (res_str);
   }
 
-  void find_files_dialog::browse_folders (void)
+  void find_files_dialog::browse_folders ()
   {
     int opts = 0;  // No options by default.
 
@@ -343,7 +343,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void find_files_dialog::look_for_files (void)
+  void find_files_dialog::look_for_files ()
   {
     if (m_dir_iterator && m_dir_iterator->hasNext ())
       {

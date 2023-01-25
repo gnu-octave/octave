@@ -3,7 +3,7 @@
 #include <octave/builtin-defun-decls.h>
 
 int
-main (void)
+main ()
 {
   int n = 2;
   Matrix a_matrix = Matrix (n, n);

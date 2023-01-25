@@ -94,7 +94,7 @@ time::time (const base_tm& tm)
 }
 
 std::string
-time::ctime (void) const
+time::ctime () const
 {
   return localtime (*this).asctime ();
 }
@@ -111,7 +111,7 @@ operator << (std::ostream& os, const time& ot)
 }
 
 void
-time::stamp (void)
+time::stamp ()
 {
   time_t ot_unix_time;
   octave_gettimeofday_wrapper (&ot_unix_time, &m_ot_usec);
@@ -346,7 +346,7 @@ strptime::init (const std::string& str, const std::string& fmt)
 }
 
 void
-cpu_time::stamp (void)
+cpu_time::stamp ()
 {
   time_t usr_sec, sys_sec;
   octave_cpu_time (&usr_sec, &sys_sec, &m_usr_usec, &m_sys_usec);
@@ -355,7 +355,7 @@ cpu_time::stamp (void)
 }
 
 void
-resource_usage::stamp (void)
+resource_usage::stamp ()
 {
   time_t usr_sec, sys_sec;
   long usr_usec, sys_usec;

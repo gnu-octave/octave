@@ -44,22 +44,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     ToolBar (octave::interpreter& interp,
              const graphics_object& go, QToolBar *bar);
-    ~ToolBar (void);
+    ~ToolBar ();
 
     static ToolBar *
     create (octave::interpreter& interp,
             const graphics_object& go);
 
-    Container * innerContainer (void) { return nullptr; }
+    Container * innerContainer () { return nullptr; }
 
     bool eventFilter (QObject *watched, QEvent *event);
 
   protected:
     void update (int pId);
-    void beingDeleted (void);
+    void beingDeleted ();
 
   private slots:
-    void hideEmpty (void);
+    void hideEmpty ();
 
   private:
     QAction *m_empty;

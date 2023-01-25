@@ -46,7 +46,7 @@ MSparse : public Sparse<T>
 {
 public:
 
-  MSparse (void) : Sparse<T> () { }
+  MSparse () : Sparse<T> () { }
 
   MSparse (octave_idx_type n, octave_idx_type m) : Sparse<T> (n, m) { }
 
@@ -75,7 +75,7 @@ public:
   MSparse (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz)
     : Sparse<T> (r, c, num_nz) { }
 
-  ~MSparse (void) = default;
+  ~MSparse () = default;
 
   MSparse<T>& operator = (const MSparse<T>& a)
   {
@@ -95,9 +95,9 @@ public:
     return *this;
   }
 
-  MSparse<T> transpose (void) const { return Sparse<T>::transpose (); }
+  MSparse<T> transpose () const { return Sparse<T>::transpose (); }
 
-  MSparse<T> squeeze (void) const { return Sparse<T>::squeeze (); }
+  MSparse<T> squeeze () const { return Sparse<T>::squeeze (); }
 
   MSparse<T> reshape (const dim_vector& new_dims) const
   { return Sparse<T>::reshape (new_dims); }

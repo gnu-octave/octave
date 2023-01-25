@@ -91,7 +91,7 @@ class temporary_file_list
 {
 public:
 
-  temporary_file_list (void) : m_files () { }
+  temporary_file_list () : m_files () { }
 
   // No copying!
 
@@ -99,11 +99,11 @@ public:
 
   temporary_file_list& operator = (const temporary_file_list&) = delete;
 
-  ~temporary_file_list (void);
+  ~temporary_file_list ();
 
   void insert (const std::string& file);
 
-  void cleanup (void);
+  void cleanup ();
 
 private:
 
@@ -128,7 +128,7 @@ public:
 
   // Clean up the interpreter object.
 
-  ~interpreter (void);
+  ~interpreter ();
 
   void intern_nargin (octave_idx_type nargs);
 
@@ -148,12 +148,12 @@ public:
 
   // Load command line history, set the load path.
 
-  void initialize (void);
+  void initialize ();
 
   // Note: GET_LINE_AND_EVAL is only used by new experimental terminal
   // widget.
 
-  void get_line_and_eval (void);
+  void get_line_and_eval ();
 
   // Parse a line of input.  If input ends at a complete statement
   // boundary, execute the resulting parse tree.  Useful to handle
@@ -165,11 +165,11 @@ public:
   // call to initialize), execute startup files, --eval option code,
   // script files, and/or interactive commands.
 
-  int execute (void);
+  int execute ();
 
-  bool server_mode (void) const { return m_evaluator.server_mode (); }
+  bool server_mode () const { return m_evaluator.server_mode (); }
 
-  bool interactive (void) const
+  bool interactive () const
   {
     return m_interactive;
   }
@@ -199,7 +199,7 @@ public:
     m_traditional = flag;
   }
 
-  bool traditional (void) const
+  bool traditional () const
   {
     return m_traditional;
   }
@@ -209,12 +209,12 @@ public:
     m_inhibit_startup_message = flag;
   }
 
-  bool in_top_level_repl (void) const
+  bool in_top_level_repl () const
   {
     return m_evaluator.in_top_level_repl ();
   }
 
-  bool initialized (void) const
+  bool initialized () const
   {
     return m_initialized;
   }
@@ -224,114 +224,114 @@ public:
     m_interrupt_all_in_process_group = b;
   }
 
-  bool interrupt_all_in_process_group (void) const
+  bool interrupt_all_in_process_group () const
   {
     return m_interrupt_all_in_process_group;
   }
 
-  application * get_app_context (void)
+  application * get_app_context ()
   {
     return m_app_context;
   }
 
-  display_info& get_display_info (void)
+  display_info& get_display_info ()
   {
     return m_display_info;
   }
 
-  environment& get_environment (void)
+  environment& get_environment ()
   {
     return m_environment;
   }
 
-  settings& get_settings (void)
+  settings& get_settings ()
   {
     return m_settings;
   }
 
-  error_system& get_error_system (void)
+  error_system& get_error_system ()
   {
     return m_error_system;
   }
 
-  tree_evaluator& get_evaluator (void);
+  tree_evaluator& get_evaluator ();
 
-  help_system& get_help_system (void)
+  help_system& get_help_system ()
   {
     return m_help_system;
   }
 
-  input_system& get_input_system (void)
+  input_system& get_input_system ()
   {
     return m_input_system;
   }
 
-  output_system& get_output_system (void)
+  output_system& get_output_system ()
   {
     return m_output_system;
   }
 
-  history_system& get_history_system (void)
+  history_system& get_history_system ()
   {
     return m_history_system;
   }
 
-  dynamic_loader& get_dynamic_loader (void)
+  dynamic_loader& get_dynamic_loader ()
   {
     return m_dynamic_loader;
   }
 
-  load_path& get_load_path (void)
+  load_path& get_load_path ()
   {
     return m_load_path;
   }
 
-  load_save_system& get_load_save_system (void)
+  load_save_system& get_load_save_system ()
   {
     return m_load_save_system;
   }
 
-  type_info& get_type_info (void)
+  type_info& get_type_info ()
   {
     return m_type_info;
   }
 
-  symbol_table& get_symbol_table (void)
+  symbol_table& get_symbol_table ()
   {
     return m_symbol_table;
   }
 
-  symbol_scope get_top_scope (void) const;
-  symbol_scope get_current_scope (void) const;
+  symbol_scope get_top_scope () const;
+  symbol_scope get_current_scope () const;
   symbol_scope require_current_scope (const std::string& who) const;
 
-  profiler& get_profiler (void);
+  profiler& get_profiler ();
 
-  stream_list& get_stream_list (void);
+  stream_list& get_stream_list ();
 
-  child_list& get_child_list (void)
+  child_list& get_child_list ()
   {
     return m_child_list;
   }
 
-  url_handle_manager& get_url_handle_manager (void);
+  url_handle_manager& get_url_handle_manager ();
 
-  cdef_manager& get_cdef_manager (void)
+  cdef_manager& get_cdef_manager ()
   {
     return m_cdef_manager;
   }
 
-  gtk_manager& get_gtk_manager (void)
+  gtk_manager& get_gtk_manager ()
   {
     return m_gtk_manager;
   }
 
-  event_manager& get_event_manager (void)
+  event_manager& get_event_manager ()
   {
     return m_event_manager;
   }
 
-  gh_manager& get_gh_manager (void)
+  gh_manager& get_gh_manager ()
   {
     return *m_gh_manager;
   }
@@ -433,7 +433,7 @@ public:
                     const std::string& context = "",
                     bool verbose = false, bool require_file = true);
 
-  bool at_top_level (void) const;
+  bool at_top_level () const;
 
   bool isglobal (const std::string& name) const;
 
@@ -441,7 +441,7 @@ public:
 
   void clear_all (bool force = false);
 
-  void clear_objects (void);
+  void clear_objects ();
 
   void clear_variable (const std::string& name);
 
@@ -449,7 +449,7 @@ public:
 
   void clear_variable_regexp (const std::string& pattern);
 
-  void clear_variables (void);
+  void clear_variables ();
 
   void clear_global_variable (const std::string& name);
 
@@ -457,7 +457,7 @@ public:
 
   void clear_global_variable_regexp (const std::string& pattern);
 
-  void clear_global_variables (void);
+  void clear_global_variables ();
 
   void clear_functions (bool force = false);
 
@@ -473,25 +473,25 @@ public:
 
   void clear_symbol_regexp (const std::string& pat);
 
-  std::list<std::string> variable_names (void);
+  std::list<std::string> variable_names ();
 
-  std::list<std::string> top_level_variable_names (void);
+  std::list<std::string> top_level_variable_names ();
 
-  std::list<std::string> global_variable_names (void);
+  std::list<std::string> global_variable_names ();
 
-  std::list<std::string> user_function_names (void);
+  std::list<std::string> user_function_names ();
 
-  std::list<std::string> autoloaded_functions (void) const;
+  std::list<std::string> autoloaded_functions () const;
 
-  void interrupt (void);
+  void interrupt ();
 
   // Pause interpreter execution at the next available statement and
   // enter the debugger.
-  void pause (void);
+  void pause ();
 
   // Exit debugger or stop execution and return to the top-level REPL
   // or server loop.
-  void stop (void);
+  void stop ();
 
   // Add EXPR to the set of expressions that may be evaluated when the
   // debugger stops at a breakpoint.
@@ -503,47 +503,47 @@ public:
 
   // Clear the set of expressions that may be evaluated when the
   // debugger stops at a breakpoint.
-  void clear_debug_watch_expressions (void);
+  void clear_debug_watch_expressions ();
 
   // Return the set of expressions that may be evaluated when the
   // debugger stops at a breakpoint.
-  std::set<std::string> debug_watch_expressions (void) const;
+  std::set<std::string> debug_watch_expressions () const;
 
   // Resume interpreter execution if paused.
-  void resume (void);
+  void resume ();
 
   octave_value PS1 (const octave_value_list& args, int nargout);
-  std::string PS1 (void) const;
+  std::string PS1 () const;
   std::string PS1 (const std::string& s);
   void set_PS1 (const std::string& s);
 
   octave_value PS2 (const octave_value_list& args, int nargout);
-  std::string PS2 (void) const;
+  std::string PS2 () const;
   std::string PS2 (const std::string& s);
   void set_PS2 (const std::string& s);
 
   octave_value PS4 (const octave_value_list& args, int nargout);
-  std::string PS4 (void) const;
+  std::string PS4 () const;
   std::string PS4 (const std::string& s);
   void set_PS4 (const std::string& s);
 
   // Provided for convenience.  Will be removed once we eliminate the
   // old terminal widget.
-  bool experimental_terminal_widget (void) const;
+  bool experimental_terminal_widget () const;
 
   void handle_exception (const execution_exception& ee);
 
-  void recover_from_exception (void);
+  void recover_from_exception ();
 
   void mark_for_deletion (const std::string& file);
 
-  void cleanup_tmp_files (void);
+  void cleanup_tmp_files ();
 
   void quit (int exit_status, bool force = false, bool confirm = true);
 
   void cancel_quit (bool flag) { m_cancel_quit = flag; }
 
-  bool executing_finish_script (void) const
+  bool executing_finish_script () const
   {
     return m_executing_finish_script;
   }
@@ -552,27 +552,27 @@ public:
 
   bool remove_atexit_fcn (const std::string& fname);
 
-  static interpreter * the_interpreter (void) { return m_instance; }
+  static interpreter * the_interpreter () { return m_instance; }
 
 private:
 
-  void display_startup_message (void) const;
+  void display_startup_message () const;
 
-  int execute_startup_files (void);
+  int execute_startup_files ();
 
-  int execute_eval_option_code (void);
+  int execute_eval_option_code ();
 
-  int execute_command_line_file (void);
+  int execute_command_line_file ();
 
-  int main_loop (void);
+  int main_loop ();
 
-  int server_loop (void);
+  int server_loop ();
 
-  void shutdown (void);
+  void shutdown ();
 
-  void execute_atexit_fcns (void);
+  void execute_atexit_fcns ();
 
-  void maximum_braindamage (void);
+  void maximum_braindamage ();
 
   void execute_pkg_add (const std::string& dir);
 

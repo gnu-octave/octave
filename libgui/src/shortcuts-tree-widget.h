@@ -47,7 +47,7 @@ public:
 
   enter_shortcut (QWidget *p = nullptr);
 
-  ~enter_shortcut (void) = default;
+  ~enter_shortcut () = default;
 
   virtual void keyPressEvent (QKeyEvent *e);
 
@@ -76,15 +76,15 @@ public:
   tree_widget_shortcut_item (QTreeWidgetItem *parent, const sc_pref& scpref,
                              const QString& actual_text);
 
-  QString settings_key (void) const;
+  QString settings_key () const;
 
-  QString description (void) const;
+  QString description () const;
   void set_description (const QString& text);
 
-  QString default_text (void) const;
+  QString default_text () const;
   void set_default_text (const QString& text);
 
-  QString actual_text (void) const;
+  QString actual_text () const;
   void set_actual_text (const QString& text);
 
 private:
@@ -105,7 +105,7 @@ public slots:
 
   void finished (int result);
 
-  void set_default_shortcut (void);
+  void set_default_shortcut ();
 
 signals:
 
@@ -134,9 +134,9 @@ public:
 
   void export_shortcuts (gui_settings& settings);
 
-  void set_default_shortcuts (void);
+  void set_default_shortcuts ();
 
-  void write_settings (void);
+  void write_settings ();
 
 public slots:
 

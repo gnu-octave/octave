@@ -170,14 +170,14 @@ num_digits (T x)
 
 template <typename T>
 int
-pr_engineering_float<T>::exponent (void) const
+pr_engineering_float<T>::exponent () const
 {
   return engineering_exponent (m_val);
 }
 
 template <typename T>
 T
-pr_engineering_float<T>::mantissa (void) const
+pr_engineering_float<T>::mantissa () const
 {
   return m_val / std::pow (static_cast<T> (10), exponent ());
 }
@@ -3558,7 +3558,7 @@ of properly displaying the object's name.  This can be done by using the
 */
 
 static inline void
-init_format_state (void)
+init_format_state ()
 {
   free_format = false;
   plus_format = false;
@@ -3606,7 +3606,7 @@ set_format_style (int argc, const string_vector& argv)
   frame.protect_var (Vcompact_format);
   frame.protect_var (uppercase_format);
   int prec = output_precision ();
-  frame.add ([=] (void) { set_output_prec (prec); });
+  frame.add ([=] () { set_output_prec (prec); });
 
   format = format_string;   // Initialize with existing value
   while (argc-- > 0)

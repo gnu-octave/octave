@@ -69,7 +69,7 @@ public:
       m_fontname (), m_buffer_overflow (false), m_svg_def_index (0)
   { }
 
-  ~gl2ps_renderer (void) = default;
+  ~gl2ps_renderer () = default;
 
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't

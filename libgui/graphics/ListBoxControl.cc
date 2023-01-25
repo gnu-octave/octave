@@ -127,7 +127,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &ListBoxControl::itemPressed);
   }
 
-  ListBoxControl::~ListBoxControl (void)
+  ListBoxControl::~ListBoxControl ()
   { }
 
   void
@@ -197,7 +197,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  ListBoxControl::itemSelectionChanged (void)
+  ListBoxControl::itemSelectionChanged ()
   {
     if (! m_blockCallback)
       m_selectionChanged = true;

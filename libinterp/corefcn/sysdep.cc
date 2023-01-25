@@ -108,7 +108,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
 
 static void
-BSD_init (void)
+BSD_init ()
 {
 #  if defined (HAVE_FLOATINGPOINT_H)
   // Disable trapping on common exceptions.
@@ -124,7 +124,7 @@ BSD_init (void)
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
 static void
-w32_set_octave_home (void)
+w32_set_octave_home ()
 {
   std::string bin_dir;
 
@@ -171,7 +171,7 @@ w32_set_octave_home (void)
 }
 
 static void
-w32_init (void)
+w32_init ()
 {
   w32_set_octave_home ();
 
@@ -180,7 +180,7 @@ w32_init (void)
 
 #endif
 
-void set_application_id (void)
+void set_application_id ()
 {
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
@@ -363,7 +363,7 @@ On non-Windows platforms, this function fails with an error.
 #if defined (__MINGW32__)
 
 static void
-MINGW_init (void)
+MINGW_init ()
 {
   w32_init ();
 }
@@ -373,7 +373,7 @@ MINGW_init (void)
 #if defined (_MSC_VER)
 
 static void
-MSVC_init (void)
+MSVC_init ()
 {
   w32_init ();
 }
@@ -506,7 +506,7 @@ bool drive_or_unc_share (const std::string& name)
 #endif
 }
 
-void sysdep_init (void)
+void sysdep_init ()
 {
   // Use a function from libgomp to force loading of OpenMP library.
   // Otherwise, a dynamically loaded library making use of OpenMP such
@@ -524,7 +524,7 @@ void sysdep_init (void)
 #endif
 }
 
-void sysdep_cleanup (void)
+void sysdep_cleanup ()
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
   // Let us fail immediately without displaying any dialog.
@@ -763,7 +763,7 @@ int kbhit (bool wait)
   return c;
 }
 
-std::string get_P_tmpdir (void)
+std::string get_P_tmpdir ()
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
 

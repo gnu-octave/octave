@@ -47,7 +47,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     label_dock_widget (QWidget *p);
 
-    ~label_dock_widget (void) = default;
+    ~label_dock_widget () = default;
 
     // set_title() uses the custom title bar while setWindowTitle() uses
     // the default title bar (with style sheets)
@@ -57,14 +57,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     //! Slots to handle copy & paste.
     //!@{
-    virtual void copyClipboard (void) { }
-    virtual void pasteClipboard (void) { }
-    virtual void selectAll (void) { }
+    virtual void copyClipboard () { }
+    virtual void pasteClipboard () { }
+    virtual void selectAll () { }
     //!@}
 
     //! Slot to handle undo.
 
-    virtual void do_undo (void) { }
+    virtual void do_undo () { }
 
   protected:
 
@@ -87,14 +87,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     octave_dock_widget (const QString& obj_name, QWidget *p);
 
-    ~octave_dock_widget (void) = default;
+    ~octave_dock_widget () = default;
 
     void set_predecessor_widget (octave_dock_widget *prev_widget);
 
     void set_main_window (main_window *mw);
 
     void set_adopted (bool adopted = true) { m_adopted = adopted; }
-    bool adopted (void) const { return m_adopted; }
+    bool adopted () const { return m_adopted; }
 
   signals:
 
@@ -105,29 +105,29 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     void queue_make_window (bool widget_was_dragged);
 
-    void queue_make_widget (void);
+    void queue_make_widget ();
 
   protected:
 
     virtual void closeEvent (QCloseEvent *e);
 
-    QWidget * focusWidget (void);
+    QWidget * focusWidget ();
 
     bool event (QEvent *event);
 
   public slots:
 
-    virtual void activate (void);
+    virtual void activate ();
 
     virtual void handle_visibility (bool visible);
 
-    virtual void notice_settings (void) { }
+    virtual void notice_settings () { }
 
-    virtual void save_settings (void);
+    virtual void save_settings ();
 
-    void init_window_menu_entry (void);
+    void init_window_menu_entry ();
 
-    void handle_settings (void);
+    void handle_settings ();
 
     void handle_active_dock_changed (octave_dock_widget *, octave_dock_widget *);
 
@@ -156,8 +156,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   private:
 
     void set_style (bool active);
-    void set_focus_predecessor (void);
-    void store_geometry (void);
+    void set_focus_predecessor ();
+    void store_geometry ();
 
   private:
 

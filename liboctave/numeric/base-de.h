@@ -37,7 +37,7 @@ base_diff_eqn
 {
 public:
 
-  base_diff_eqn (void)
+  base_diff_eqn ()
     : m_x (), m_t (0.0), m_stop_time (0.0), m_stop_time_set (false),
       m_restart (true), m_integration_error (false), m_istate (0) { }
 
@@ -49,7 +49,7 @@ public:
     : m_x (a.m_x), m_t (a.m_t), m_stop_time (0.0), m_stop_time_set (false),
       m_restart (true), m_integration_error (false), m_istate (0) { }
 
-  virtual ~base_diff_eqn (void) = default;
+  virtual ~base_diff_eqn () = default;
 
   base_diff_eqn& operator = (const base_diff_eqn& a)
   {
@@ -76,11 +76,11 @@ public:
     force_restart ();
   }
 
-  octave_idx_type size (void) const { return m_x.numel (); }
+  octave_idx_type size () const { return m_x.numel (); }
 
-  ColumnVector state (void) const { return m_x; }
+  ColumnVector state () const { return m_x; }
 
-  double time (void) const { return m_t; }
+  double time () const { return m_t; }
 
   void set_stop_time (double tt)
   {
@@ -89,19 +89,19 @@ public:
     force_restart ();
   }
 
-  void clear_stop_time (void)
+  void clear_stop_time ()
   {
     m_stop_time_set = false;
     force_restart ();
   }
 
-  virtual void force_restart (void) { m_restart = true; }
+  virtual void force_restart () { m_restart = true; }
 
-  bool integration_ok (void) const { return ! m_integration_error; }
+  bool integration_ok () const { return ! m_integration_error; }
 
-  octave_idx_type integration_state (void) const { return m_istate; }
+  octave_idx_type integration_state () const { return m_istate; }
 
-  virtual std::string error_message (void) const = 0;
+  virtual std::string error_message () const = 0;
 
 protected:
 

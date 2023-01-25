@@ -44,25 +44,25 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     Menu (octave::interpreter& interp,
           const graphics_object& go, QAction *action, Object *parent);
-    ~Menu (void);
+    ~Menu ();
 
     static Menu *
     create (octave::interpreter& interp,
             const graphics_object& go);
 
-    Container * innerContainer (void) { return nullptr; }
+    Container * innerContainer () { return nullptr; }
 
-    QWidget * menu (void);
+    QWidget * menu ();
 
   protected:
     void update (int pId);
 
   private slots:
-    void actionTriggered (void);
-    void actionHovered (void);
+    void actionTriggered ();
+    void actionHovered ();
 
   private:
-    void updateSiblingPositions (void);
+    void updateSiblingPositions ();
 
   private:
     QWidget *m_parent;

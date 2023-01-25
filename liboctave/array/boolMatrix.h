@@ -39,13 +39,13 @@ boolMatrix : public boolNDArray
 {
 public:
 
-  boolMatrix (void) = default;
+  boolMatrix () = default;
 
   boolMatrix (const boolMatrix& a) = default;
 
   boolMatrix& operator = (const boolMatrix& a) = default;
 
-  ~boolMatrix (void) = default;
+  ~boolMatrix () = default;
 
   boolMatrix (octave_idx_type r, octave_idx_type c)
     : boolNDArray (dim_vector (r, c)) { }
@@ -63,7 +63,7 @@ public:
   OCTAVE_API bool operator == (const boolMatrix& a) const;
   OCTAVE_API bool operator != (const boolMatrix& a) const;
 
-  boolMatrix transpose (void) const { return Array<bool>::transpose (); }
+  boolMatrix transpose () const { return Array<bool>::transpose (); }
 
   // destructive insert/delete/reorder operations
 
@@ -72,7 +72,7 @@ public:
 
   // unary operations
 
-  OCTAVE_API boolMatrix operator ! (void) const;
+  OCTAVE_API boolMatrix operator ! () const;
 
   // other operations
 

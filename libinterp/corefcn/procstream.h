@@ -43,13 +43,13 @@ procstreambase : virtual public std::ios
 {
 public:
 
-  procstreambase (void) : m_pb () { pb_init (); }
+  procstreambase () : m_pb () { pb_init (); }
 
   procstreambase (const std::string& name, int mode);
 
   procstreambase (const char *name, int mode);
 
-  ~procstreambase (void) { close (); }
+  ~procstreambase () { close (); }
 
   void open (const std::string& name, int mode)
   {
@@ -58,19 +58,19 @@ public:
 
   void open (const char *name, int mode);
 
-  int is_open (void) const { return m_pb.is_open (); }
+  int is_open () const { return m_pb.is_open (); }
 
-  int close (void);
+  int close ();
 
-  pid_t pid (void) const { return m_pb.pid (); }
+  pid_t pid () const { return m_pb.pid (); }
 
-  int file_number (void) const { return m_pb.file_number (); }
+  int file_number () const { return m_pb.file_number (); }
 
 private:
 
   procbuf m_pb;
 
-  void pb_init (void)
+  void pb_init ()
   {
     // Explicit initialization of the std::ios object is needed.
     // FIXME: is there a better way to organize these classes?
@@ -88,7 +88,7 @@ iprocstream : public std::istream, public procstreambase
 {
 public:
 
-  iprocstream (void) : std::istream (nullptr), procstreambase () { }
+  iprocstream () : std::istream (nullptr), procstreambase () { }
 
   iprocstream (const std::string& name, int mode = std::ios::in)
     : std::istream (nullptr), procstreambase (name, mode)
@@ -98,7 +98,7 @@ public:
     : std::istream (nullptr), procstreambase (name, mode)
   { }
 
-  ~iprocstream (void) = default;
+  ~iprocstream () = default;
 
   void open (const std::string& name, int mode = std::ios::in)
   {
@@ -123,7 +123,7 @@ oprocstream : public std::ostream, public procstreambase
 {
 public:
 
-  oprocstream (void) : std::ostream (nullptr), procstreambase () { }
+  oprocstream () : std::ostream (nullptr), procstreambase () { }
 
   oprocstream (const std::string& name, int mode = std::ios::out)
     : std::ostream (nullptr), procstreambase (name, mode) { }
@@ -131,7 +131,7 @@ public:
   oprocstream (const char *name, int mode = std::ios::out)
     : std::ostream (nullptr), procstreambase (name, mode) { }
 
-  ~oprocstream (void) = default;
+  ~oprocstream () = default;
 
   void open (const std::string& name, int mode = std::ios::out)
   {
@@ -156,7 +156,7 @@ procstream : public std::iostream, public procstreambase
 {
 public:
 
-  procstream (void) : std::iostream (nullptr), procstreambase () { }
+  procstream () : std::iostream (nullptr), procstreambase () { }
 
   procstream (const std::string& name, int mode)
     : std::iostream (nullptr), procstreambase (name, mode)
@@ -166,7 +166,7 @@ public:
     : std::iostream (nullptr), procstreambase (name, mode)
   { }
 
-  ~procstream (void) = default;
+  ~procstream () = default;
 
   void open (const std::string& name, int mode)
   {

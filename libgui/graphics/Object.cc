@@ -74,11 +74,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  Object::~Object (void)
+  Object::~Object ()
   { }
 
   graphics_object
-  Object::object (void) const
+  Object::object () const
   {
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -116,7 +116,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Object::slotFinalize (void)
+  Object::slotFinalize ()
   {
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -126,7 +126,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Object::slotRedraw (void)
+  Object::slotRedraw ()
   {
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -137,7 +137,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Object::slotShow (void)
+  Object::slotShow ()
   {
     gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -163,7 +163,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   { }
 
   void
-  Object::finalize (void)
+  Object::finalize ()
   {
     if (m_qobject)
       {
@@ -174,11 +174,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  Object::redraw (void)
+  Object::redraw ()
   { }
 
   void
-  Object::show (void)
+  Object::show ()
   { }
 
   void
@@ -186,7 +186,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   { }
 
   void
-  Object::beingDeleted (void)
+  Object::beingDeleted ()
   { }
 
   void Object::objectDestroyed (QObject *obj)

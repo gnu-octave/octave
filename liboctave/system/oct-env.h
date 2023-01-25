@@ -40,7 +40,7 @@ env
 {
 protected:
 
-  env (void);
+  env ();
 
 public:
 
@@ -62,29 +62,29 @@ public:
   make_absolute (const std::string& s,
                  const std::string& dot_path = get_current_directory ());
 
-  static std::string get_current_directory (void);
+  static std::string get_current_directory ();
 
-  static std::string get_home_directory (void);
+  static std::string get_home_directory ();
 
-  static std::string get_temp_directory (void);
+  static std::string get_temp_directory ();
 
-  static std::string get_user_config_directory (void);
+  static std::string get_user_config_directory ();
 
-  static std::string get_user_data_directory (void);
+  static std::string get_user_data_directory ();
 
-  static std::string get_program_name (void);
+  static std::string get_program_name ();
 
-  static std::string get_program_invocation_name (void);
+  static std::string get_program_invocation_name ();
 
-  static std::string get_user_name (void);
+  static std::string get_user_name ();
 
-  static std::string get_host_name (void);
+  static std::string get_host_name ();
 
   static std::string getenv (const std::string& name);
 
   static void putenv (const std::string& name, const std::string& value);
 
-  static bool have_x11_display (void);
+  static bool have_x11_display ();
 
   static bool chdir (const std::string& newdir);
 
@@ -92,7 +92,7 @@ public:
 
 private:
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
   std::string do_polite_directory_format (const std::string& name);
 
@@ -105,19 +105,19 @@ private:
   std::string do_make_absolute (const std::string& s,
                                 const std::string& dot_path) const;
 
-  std::string do_getcwd (void);
+  std::string do_getcwd ();
 
-  std::string do_get_home_directory (void);
+  std::string do_get_home_directory ();
 
-  std::string do_get_temp_directory (void) const;
+  std::string do_get_temp_directory () const;
 
-  std::string do_get_user_config_directory (void);
+  std::string do_get_user_config_directory ();
 
-  std::string do_get_user_data_directory (void);
+  std::string do_get_user_data_directory ();
 
-  std::string do_get_user_name (void);
+  std::string do_get_user_name ();
 
-  std::string do_get_host_name (void);
+  std::string do_get_host_name ();
 
   std::string do_getenv (const std::string& name) const;
 
@@ -136,7 +136,7 @@ private:
   // The real thing.
   static env *m_instance;
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   { delete m_instance; m_instance = nullptr; }
 
   // TRUE means follow symbolic links that point to directories just

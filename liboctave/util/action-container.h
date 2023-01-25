@@ -52,7 +52,7 @@ public:
 
     friend class action_container;
 
-    elem (void) { }
+    elem () { }
 
     // No copying!
 
@@ -60,12 +60,12 @@ public:
 
     elem& operator = (const elem&) = delete;
 
-    virtual ~elem (void) = default;
+    virtual ~elem () = default;
 
-    virtual void run (void) { }
+    virtual void run () { }
   };
 
-  // An element that merely runs a void (*)(void) function.
+  // An element that merely runs a void (*)() function.
 
   class fcn_elem : public elem
   {
@@ -79,11 +79,11 @@ public:
       : m_fcn (std::bind (fcn, args...))
     { }
 
-    void run (void) { m_fcn (); }
+    void run () { m_fcn (); }
 
   private:
 
-    std::function<void (void)> m_fcn;
+    std::function<void ()> m_fcn;
   };
 
   // An element that stores arbitrary variable, and restores it.
@@ -102,7 +102,7 @@ public:
 
     restore_var_elem& operator = (const restore_var_elem&) = delete;
 
-    void run (void) { *m_ptr = m_val; }
+    void run () { *m_ptr = m_val; }
 
   private:
 
@@ -125,14 +125,14 @@ public:
 
     delete_ptr_elem operator = (const delete_ptr_elem&) = delete;
 
-    void run (void) { delete m_ptr; }
+    void run () { delete m_ptr; }
 
   private:
 
     T *m_ptr;
   };
 
-  action_container (void) { }
+  action_container () { }
 
   // No copying!
 
@@ -140,7 +140,7 @@ public:
 
   action_container& operator = (const action_container&) = delete;
 
-  virtual ~action_container (void) = default;
+  virtual ~action_container () = default;
 
   template <typename F, typename... Args>
   void add (F&& fcn, Args&& ... args)
@@ -193,15 +193,15 @@ public:
     add_action (new restore_var_elem<T> (var, val));
   }
 
-  operator bool (void) const { return ! empty (); }
+  operator bool () const { return ! empty (); }
 
-  virtual void run_first (void) = 0;
+  virtual void run_first () = 0;
 
   OCTAVE_API void run (std::size_t num);
 
-  void run (void) { run (size ()); }
+  void run () { run (size ()); }
 
-  virtual void discard_first (void) = 0;
+  virtual void discard_first () = 0;
 
   void discard (std::size_t num)
   {
@@ -212,11 +212,11 @@ public:
       discard_first ();
   }
 
-  void discard (void) { discard (size ()); }
+  void discard () { discard (size ()); }
 
-  virtual std::size_t size (void) const = 0;
+  virtual std::size_t size () const = 0;
 
-  bool empty (void) const { return size () == 0; }
+  bool empty () const { return size () == 0; }
 
 protected:
 

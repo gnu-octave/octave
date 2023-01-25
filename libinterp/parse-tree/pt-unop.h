@@ -65,15 +65,15 @@ public:
 
   tree_unary_expression& operator = (const tree_unary_expression&) = delete;
 
-  ~tree_unary_expression (void) { delete m_op; }
+  ~tree_unary_expression () { delete m_op; }
 
-  bool is_unary_expression (void) const { return true; }
+  bool is_unary_expression () const { return true; }
 
-  tree_expression * operand (void) { return m_op; }
+  tree_expression * operand () { return m_op; }
 
-  std::string oper (void) const;
+  std::string oper () const;
 
-  octave_value::unary_op op_type (void) const { return m_etype; }
+  octave_value::unary_op op_type () const { return m_etype; }
 
 protected:
 
@@ -104,9 +104,9 @@ public:
 
   tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
 
-  ~tree_prefix_expression (void) = default;
+  ~tree_prefix_expression () = default;
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -122,7 +122,7 @@ public:
     tw.visit_prefix_expression (*this);
   }
 
-  std::string profiler_name (void) const { return "prefix " + oper (); }
+  std::string profiler_name () const { return "prefix " + oper (); }
 };
 
 // Postfix expressions.
@@ -145,9 +145,9 @@ public:
 
   tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
 
-  ~tree_postfix_expression (void) = default;
+  ~tree_postfix_expression () = default;
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -163,7 +163,7 @@ public:
     tw.visit_postfix_expression (*this);
   }
 
-  std::string profiler_name (void) const { return "postfix " + oper (); }
+  std::string profiler_name () const { return "postfix " + oper (); }
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -63,7 +63,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       box->setCheckable (false);
   }
 
-  CheckBoxControl::~CheckBoxControl (void)
+  CheckBoxControl::~CheckBoxControl ()
   { }
 
   void

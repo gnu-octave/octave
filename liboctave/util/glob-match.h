@@ -60,7 +60,7 @@ public:
 
   glob_match& operator = (const glob_match& gm) = default;
 
-  ~glob_match (void) = default;
+  ~glob_match () = default;
 
   void set_pattern (const std::string& p) { m_pat = p; }
 
@@ -83,7 +83,7 @@ public:
   // We forward to glob_internal here to avoid problems with gnulib's
   // glob.h defining glob to be rpl_glob.
 
-  string_vector glob (void) const;
+  string_vector glob () const;
 
 private:
 

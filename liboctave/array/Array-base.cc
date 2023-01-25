@@ -43,7 +43,7 @@
 
 template <typename T, typename Alloc>
 typename Array<T, Alloc>::ArrayRep *
-Array<T, Alloc>::nil_rep (void)
+Array<T, Alloc>::nil_rep ()
 {
   static ArrayRep nr;
   return &nr;
@@ -106,7 +106,7 @@ Array<T, Alloc>::fill (const T& val)
 
 template <typename T, typename Alloc>
 void
-Array<T, Alloc>::clear (void)
+Array<T, Alloc>::clear ()
 {
   if (--m_rep->m_count == 0)
     delete m_rep;
@@ -136,7 +136,7 @@ Array<T, Alloc>::clear (const dim_vector& dv)
 
 template <typename T, typename Alloc>
 Array<T, Alloc>
-Array<T, Alloc>::squeeze (void) const
+Array<T, Alloc>::squeeze () const
 {
   Array<T, Alloc> retval = *this;
 
@@ -356,7 +356,7 @@ public:
 
   rec_permute_helper& operator = (const rec_permute_helper&) = delete;
 
-  ~rec_permute_helper (void) { delete [] m_dim; }
+  ~rec_permute_helper () { delete [] m_dim; }
 
   template <typename T>
   void permute (const T *src, T *dest) const { do_permute (src, dest, m_top); }
@@ -561,7 +561,7 @@ public:
 
   rec_index_helper& operator = (const rec_index_helper&) = delete;
 
-  ~rec_index_helper (void) { delete [] m_idx; delete [] m_dim; }
+  ~rec_index_helper () { delete [] m_idx; delete [] m_dim; }
 
   template <typename T>
   void index (const T *src, T *dest) const { do_index (src, dest, m_top); }
@@ -677,7 +677,7 @@ public:
 
   rec_resize_helper& operator = (const rec_resize_helper&) = delete;
 
-  ~rec_resize_helper (void) { delete [] m_cext; }
+  ~rec_resize_helper () { delete [] m_cext; }
 
   template <typename T>
   void resize_fill (const T *src, T *dest, const T& rfv) const
@@ -905,7 +905,7 @@ Array<T, Alloc>::index (const Array<octave::idx_vector>& ia) const
 
 template <typename T, typename Alloc>
 T
-Array<T, Alloc>::resize_fill_value (void) const
+Array<T, Alloc>::resize_fill_value () const
 {
   static T zero = T ();
   return zero;
@@ -1622,7 +1622,7 @@ Array<T, Alloc>::insert (const Array<T, Alloc>& a, const Array<octave_idx_type>&
 
 template <typename T, typename Alloc>
 Array<T, Alloc>
-Array<T, Alloc>::transpose (void) const
+Array<T, Alloc>::transpose () const
 {
   assert (ndims () == 2);
 
@@ -1763,7 +1763,7 @@ Array<T, Alloc>::hermitian (T (*fcn) (const T&)) const
 
 template <typename T, typename Alloc>
 T *
-Array<T, Alloc>::fortran_vec (void)
+Array<T, Alloc>::fortran_vec ()
 {
   make_unique ();
 
@@ -2222,7 +2222,7 @@ Array<T, Alloc>::lookup (const Array<T, Alloc>& values, sortmode mode) const
 
 template <typename T, typename Alloc>
 octave_idx_type
-Array<T, Alloc>::nnz (void) const
+Array<T, Alloc>::nnz () const
 {
   const T *src = data ();
   octave_idx_type nel = numel ();
@@ -2522,7 +2522,7 @@ Array<T, Alloc>::nth_element (const octave::idx_vector& n, int dim) const
     return Array<octave_idx_type> ();                                   \
   }                                                                     \
   template <> API octave_idx_type                                       \
-  Array<T>::nnz (void) const                                            \
+  Array<T>::nnz () const                                            \
   {                                                                     \
     return 0;                                                           \
   }                                                                     \

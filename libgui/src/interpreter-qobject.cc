@@ -42,7 +42,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
   { }
 
-  void interpreter_qobject::execute (void)
+  void interpreter_qobject::execute ()
   {
     // The Octave application context owns the interpreter.
 
@@ -128,7 +128,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     evmgr.post_event (meth);
   }
 
-  void interpreter_qobject::interrupt (void)
+  void interpreter_qobject::interrupt ()
   {
     if (! m_interpreter)
       return;
@@ -139,7 +139,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_interpreter->interrupt ();
   }
 
-  void interpreter_qobject::pause (void)
+  void interpreter_qobject::pause ()
   {
     // FIXME: Should we make this action work with the old terminal
     // widget?
@@ -156,7 +156,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void interpreter_qobject::stop (void)
+  void interpreter_qobject::stop ()
   {
     // FIXME: Should we make this action work with the old terminal
     // widget?
@@ -173,7 +173,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void interpreter_qobject::resume (void)
+  void interpreter_qobject::resume ()
   {
     // FIXME: Should we make this action work with the old terminal
     // widget?
@@ -193,7 +193,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  qt_interpreter_events *interpreter_qobject::qt_link (void)
+  qt_interpreter_events *interpreter_qobject::qt_link ()
   {
     return m_octave_qobj.qt_link ();
   }

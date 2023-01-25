@@ -297,7 +297,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   print "
   void
-  symbol_table::install_builtins (void)
+  symbol_table::install_builtins ()
   {
 ";
 

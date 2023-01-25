@@ -39,7 +39,7 @@
 
 octave_errno *octave_errno::s_instance = nullptr;
 
-octave_errno::octave_errno (void)
+octave_errno::octave_errno ()
 {
   struct errno_struct
   {
@@ -293,7 +293,7 @@ octave_errno::octave_errno (void)
 }
 
 bool
-octave_errno::instance_ok (void)
+octave_errno::instance_ok ()
 {
   bool retval = true;
 
@@ -313,7 +313,7 @@ octave_errno::lookup (const std::string& name)
 }
 
 octave_scalar_map
-octave_errno::list (void)
+octave_errno::list ()
 {
   return (instance_ok ()) ? s_instance->do_list () : octave_scalar_map ();
 }
@@ -326,7 +326,7 @@ octave_errno::do_lookup (const std::string& name)
 }
 
 octave_scalar_map
-octave_errno::do_list (void)
+octave_errno::do_list ()
 {
   octave_scalar_map retval;
 

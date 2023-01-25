@@ -63,7 +63,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     connect (btn, &QAbstractButton::toggled, this, &ButtonControl::toggled);
   }
 
-  ButtonControl::~ButtonControl (void)
+  ButtonControl::~ButtonControl ()
   { }
 
   void
@@ -143,7 +143,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  ButtonControl::clicked (void)
+  ButtonControl::clicked ()
   {
     QAbstractButton *btn = qWidget<QAbstractButton> ();
 

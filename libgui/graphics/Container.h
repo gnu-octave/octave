@@ -45,7 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public:
     Container (QWidget *parent, octave::interpreter& interp);
-    ~Container (void);
+    ~Container ();
 
     Canvas * canvas (const graphics_handle& handle, bool create = true);
 

@@ -53,9 +53,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     set_path_dialog (QWidget *parent);
 
-    virtual ~set_path_dialog (void) = default;
+    virtual ~set_path_dialog () = default;
 
-    void save_settings (void);
+    void save_settings ();
 
   signals:
 
@@ -69,7 +69,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   public slots:
 
-    void update_model (void);
+    void update_model ();
 
   protected:
 
@@ -77,18 +77,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   private slots:
 
-    void add_dir (void);
-    void add_dir_subdirs (void);
+    void add_dir ();
+    void add_dir_subdirs ();
 
-    void rm_dir (void);
+    void rm_dir ();
 
-    void move_dir_up (void);
+    void move_dir_up ();
 
-    void move_dir_down (void);
+    void move_dir_down ();
 
-    void move_dir_top (void);
+    void move_dir_top ();
 
-    void move_dir_bottom (void);
+    void move_dir_bottom ();
 
   private:
 

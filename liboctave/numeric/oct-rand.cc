@@ -50,7 +50,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 rand *rand::m_instance = nullptr;
 
-rand::rand (void)
+rand::rand ()
   : m_current_distribution (uniform_dist), m_use_old_generators (false),
     m_rand_states ()
 {
@@ -59,7 +59,7 @@ rand::rand (void)
   initialize_mersenne_twister ();
 }
 
-bool rand::instance_ok (void)
+bool rand::instance_ok ()
 {
   bool retval = true;
 
@@ -72,7 +72,7 @@ bool rand::instance_ok (void)
   return retval;
 }
 
-double rand::do_seed (void)
+double rand::do_seed ()
 {
   union d2i { double d; int32_t i[2]; };
   union d2i u;
@@ -135,7 +135,7 @@ void rand::do_seed (double s)
   F77_FUNC (setsd, SETSD) (i0, i1);
 }
 
-void rand::do_reset (void)
+void rand::do_reset ()
 {
   m_use_old_generators = true;
   initialize_ranlib_generators ();
@@ -187,7 +187,7 @@ void rand::do_reset (const std::string& d)
     m_rand_states[old_dist] = saved_state;
 }
 
-std::string rand::do_distribution (void)
+std::string rand::do_distribution ()
 {
   std::string retval;
 
@@ -255,35 +255,35 @@ void rand::do_distribution (const std::string& d)
     }
 }
 
-void rand::do_uniform_distribution (void)
+void rand::do_uniform_distribution ()
 {
   switch_to_generator (uniform_dist);
 
   F77_FUNC (setcgn, SETCGN) (uniform_dist);
 }
 
-void rand::do_normal_distribution (void)
+void rand::do_normal_distribution ()
 {
   switch_to_generator (normal_dist);
 
   F77_FUNC (setcgn, SETCGN) (normal_dist);
 }
 
-void rand::do_exponential_distribution (void)
+void rand::do_exponential_distribution ()
 {
   switch_to_generator (expon_dist);
 
   F77_FUNC (setcgn, SETCGN) (expon_dist);
 }
 
-void rand::do_poisson_distribution (void)
+void rand::do_poisson_distribution ()
 {
   switch_to_generator (poisson_dist);
 
   F77_FUNC (setcgn, SETCGN) (poisson_dist);
 }
 
-void rand::do_gamma_distribution (void)
+void rand::do_gamma_distribution ()
 {
   switch_to_generator (gamma_dist);
 
@@ -291,7 +291,7 @@ void rand::do_gamma_distribution (void)
 }
 
 template <>
-OCTAVE_API double rand::uniform<double> (void)
+OCTAVE_API double rand::uniform<double> ()
 {
   double retval;
 
@@ -304,7 +304,7 @@ OCTAVE_API double rand::uniform<double> (void)
 }
 
 template <>
-OCTAVE_API double rand::normal<double> (void)
+OCTAVE_API double rand::normal<double> ()
 {
   double retval;
 
@@ -317,7 +317,7 @@ OCTAVE_API double rand::normal<double> (void)
 }
 
 template <>
-OCTAVE_API double rand::exponential<double> (void)
+OCTAVE_API double rand::exponential<double> ()
 {
   double retval;
 
@@ -370,7 +370,7 @@ OCTAVE_API double rand::gamma<double> (double a)
 }
 
 template <>
-OCTAVE_API float rand::uniform<float> (void)
+OCTAVE_API float rand::uniform<float> ()
 {
   float retval;
 
@@ -383,7 +383,7 @@ OCTAVE_API float rand::uniform<float> (void)
 }
 
 template <>
-OCTAVE_API float rand::normal<float> (void)
+OCTAVE_API float rand::normal<float> ()
 {
   float retval;
 
@@ -396,7 +396,7 @@ OCTAVE_API float rand::normal<float> (void)
 }
 
 template <>
-OCTAVE_API float rand::exponential<float> (void)
+OCTAVE_API float rand::exponential<float> ()
 {
   float retval;
 
@@ -549,7 +549,7 @@ FloatNDArray rand::do_float_nd_array (const dim_vector& dims, float a)
 // technique used below will cycle monthly, but it does seem to
 // work ok to give fairly different seeds each time Octave starts.
 
-void rand::initialize_ranlib_generators (void)
+void rand::initialize_ranlib_generators ()
 {
   sys::localtime tm;
   int stored_distribution = m_current_distribution;
@@ -569,7 +569,7 @@ void rand::initialize_ranlib_generators (void)
   F77_FUNC (setcgn, SETCGN) (stored_distribution);
 }
 
-void rand::initialize_mersenne_twister (void)
+void rand::initialize_mersenne_twister ()
 {
   uint32NDArray s;
 
@@ -598,7 +598,7 @@ void rand::initialize_mersenne_twister (void)
   set_internal_state (m_rand_states[m_current_distribution]);
 }
 
-uint32NDArray rand::get_internal_state (void)
+uint32NDArray rand::get_internal_state ()
 {
   uint32NDArray s (dim_vector (MT_N + 1, 1));
 
@@ -607,7 +607,7 @@ uint32NDArray rand::get_internal_state (void)
   return s;
 }
 
-void rand::save_state (void)
+void rand::save_state ()
 {
   m_rand_states[m_current_distribution] = get_internal_state ();;
 }
@@ -664,21 +664,21 @@ void rand::fill (octave_idx_type len, double *v, double a)
     {
     case uniform_dist:
       if (m_use_old_generators)
-        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x); return x; });
+        std::generate_n (v, len, []() { double x; F77_FUNC (dgenunf, DGENUNF) (0.0, 1.0, x); return x; });
       else
         rand_uniform<double> (len, v);
       break;
 
     case normal_dist:
       if (m_use_old_generators)
-        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x); return x; });
+        std::generate_n (v, len, []() { double x; F77_FUNC (dgennor, DGENNOR) (0.0, 1.0, x); return x; });
       else
         rand_normal<double> (len, v);
       break;
 
     case expon_dist:
       if (m_use_old_generators)
-        std::generate_n (v, len, [](void) { double x; F77_FUNC (dgenexp, DGENEXP) (1.0, x); return x; });
+        std::generate_n (v, len, []() { double x; F77_FUNC (dgenexp, DGENEXP) (1.0, x); return x; });
       else
         rand_exponential<double> (len, v);
       break;
@@ -693,7 +693,7 @@ void rand::fill (octave_idx_type len, double *v, double a)
               // workaround bug in ignpoi, by calling with different Mu
               double tmp;
               F77_FUNC (dignpoi, DIGNPOI) (a + 1, tmp);
-              std::generate_n (v, len, [a](void) { double x; F77_FUNC (dignpoi, DIGNPOI) (a, x); return x; });
+              std::generate_n (v, len, [a]() { double x; F77_FUNC (dignpoi, DIGNPOI) (a, x); return x; });
             }
         }
       else
@@ -706,7 +706,7 @@ void rand::fill (octave_idx_type len, double *v, double a)
           if (a <= 0.0 || ! math::isfinite (a))
             std::fill_n (v, len, numeric_limits<double>::NaN ());
           else
-            std::generate_n (v, len, [a](void) { double x; F77_FUNC (dgengam, DGENGAM) (1.0, a, x); return x; });
+            std::generate_n (v, len, [a]() { double x; F77_FUNC (dgengam, DGENGAM) (1.0, a, x); return x; });
         }
       else
         rand_gamma<double> (a, len, v);
@@ -732,21 +732,21 @@ void rand::fill (octave_idx_type len, float *v, float a)
     {
     case uniform_dist:
       if (m_use_old_generators)
-        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, x); return x; });
+        std::generate_n (v, len, []() { float x; F77_FUNC (fgenunf, FGENUNF) (0.0f, 1.0f, x); return x; });
       else
         rand_uniform<float> (len, v);
       break;
 
     case normal_dist:
       if (m_use_old_generators)
-        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, x); return x; });
+        std::generate_n (v, len, []() { float x; F77_FUNC (fgennor, FGENNOR) (0.0f, 1.0f, x); return x; });
       else
         rand_normal<float> (len, v);
       break;
 
     case expon_dist:
       if (m_use_old_generators)
-        std::generate_n (v, len, [](void) { float x; F77_FUNC (fgenexp, FGENEXP) (1.0f, x); return x; });
+        std::generate_n (v, len, []() { float x; F77_FUNC (fgenexp, FGENEXP) (1.0f, x); return x; });
       else
         rand_exponential<float> (len, v);
       break;
@@ -761,7 +761,7 @@ void rand::fill (octave_idx_type len, float *v, float a)
               // workaround bug in ignpoi, by calling with different Mu
               float tmp;
               F77_FUNC (fignpoi, FIGNPOI) (a + 1, tmp);
-              std::generate_n (v, len, [a](void) { float x; F77_FUNC (fignpoi, FIGNPOI) (a, x); return x; });
+              std::generate_n (v, len, [a]() { float x; F77_FUNC (fignpoi, FIGNPOI) (a, x); return x; });
             }
         }
       else
@@ -774,7 +774,7 @@ void rand::fill (octave_idx_type len, float *v, float a)
           if (a <= 0.0f || ! math::isfinite (a))
             std::fill_n (v, len, numeric_limits<float>::NaN ());
           else
-            std::generate_n (v, len, [a](void) { float x; F77_FUNC (fgengam, FGENGAM) (1.0f, a, x); return x; });
+            std::generate_n (v, len, [a]() { float x; F77_FUNC (fgengam, FGENGAM) (1.0f, a, x); return x; });
         }
       else
         rand_gamma<float> (a, len, v);

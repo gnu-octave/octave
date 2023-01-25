@@ -69,19 +69,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     Figure (octave::interpreter& interp,
             const graphics_object& go, FigureWindow *win);
-    ~Figure (void);
+    ~Figure ();
 
     static Figure *
     create (octave::interpreter& interp,
             const graphics_object& go);
 
-    QString fileName (void);
+    QString fileName ();
     void setFileName (const QString& name);
 
-    MouseMode mouseMode (void);
+    MouseMode mouseMode ();
 
-    Container * innerContainer (void);
-    QWidget * menu (void);
+    Container * innerContainer ();
+    QWidget * menu ();
     void updateStatusBar (ColumnVector pt);
 
     void do_connections (const QObject *receiver,
@@ -99,12 +99,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     };
 
   protected:
-    void redraw (void);
-    void show (void);
+    void redraw ();
+    void show ();
     void print (const QString& file_cmd, const QString& term);
     void update (int pId);
     void updateBoundingBox (bool internal = false, int flags = 0);
-    void beingDeleted (void);
+    void beingDeleted ();
 
   private:
     void showFigureStatusBar (bool visible);
@@ -112,19 +112,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void showCustomToolBar (QToolBar *bar, bool visible);
     void set_geometry (QRect r);
 
-    void enableMouseTracking (void);
+    void enableMouseTracking ();
 
   private slots:
     void updateFigureHeight (int delta_h);
-    void updateContainer (void);
+    void updateContainer ();
     void figureWindowShown ();
     void screenChanged (QScreen *);
 
   public slots:
-    uint8NDArray slotGetPixels (void);
+    uint8NDArray slotGetPixels ();
 
   signals:
-    void asyncUpdate (void);
+    void asyncUpdate ();
     void interpreter_event (const octave::fcn_callback& fcn);
     void interpreter_event (const octave::meth_callback& meth);
 

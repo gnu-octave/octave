@@ -68,7 +68,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &PopupMenuControl::currentIndexChanged);
   }
 
-  PopupMenuControl::~PopupMenuControl (void)
+  PopupMenuControl::~PopupMenuControl ()
   { }
 
   void PopupMenuControl::update (int pId)

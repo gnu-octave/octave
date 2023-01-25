@@ -144,7 +144,7 @@ struct octave_base_int_helper_traits<unsigned char>
 
 template <typename T>
 octave_base_value *
-octave_base_int_matrix<T>::try_narrowing_conversion (void)
+octave_base_int_matrix<T>::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -205,70 +205,70 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_double (void) const
+octave_base_int_matrix<MT>::as_double () const
 {
   return NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_single (void) const
+octave_base_int_matrix<MT>::as_single () const
 {
   return FloatNDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_int8 (void) const
+octave_base_int_matrix<MT>::as_int8 () const
 {
   return int8NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_int16 (void) const
+octave_base_int_matrix<MT>::as_int16 () const
 {
   return int16NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_int32 (void) const
+octave_base_int_matrix<MT>::as_int32 () const
 {
   return int32NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_int64 (void) const
+octave_base_int_matrix<MT>::as_int64 () const
 {
   return int64NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_uint8 (void) const
+octave_base_int_matrix<MT>::as_uint8 () const
 {
   return uint8NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_uint16 (void) const
+octave_base_int_matrix<MT>::as_uint16 () const
 {
   return uint16NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_uint32 (void) const
+octave_base_int_matrix<MT>::as_uint32 () const
 {
   return uint32NDArray (this->m_matrix);
 }
 
 template <typename MT>
 octave_value
-octave_base_int_matrix<MT>::as_uint64 (void) const
+octave_base_int_matrix<MT>::as_uint64 () const
 {
   return uint64NDArray (this->m_matrix);
 }
@@ -599,70 +599,70 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_double (void) const
+octave_base_int_scalar<T>::as_double () const
 {
   return static_cast<double> (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_single (void) const
+octave_base_int_scalar<T>::as_single () const
 {
   return static_cast<float> (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_int8 (void) const
+octave_base_int_scalar<T>::as_int8 () const
 {
   return octave_int8 (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_int16 (void) const
+octave_base_int_scalar<T>::as_int16 () const
 {
   return octave_int16 (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_int32 (void) const
+octave_base_int_scalar<T>::as_int32 () const
 {
   return octave_int32 (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_int64 (void) const
+octave_base_int_scalar<T>::as_int64 () const
 {
   return octave_int64 (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_uint8 (void) const
+octave_base_int_scalar<T>::as_uint8 () const
 {
   return octave_uint8 (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_uint16 (void) const
+octave_base_int_scalar<T>::as_uint16 () const
 {
   return octave_uint16 (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_uint32 (void) const
+octave_base_int_scalar<T>::as_uint32 () const
 {
   return octave_uint32 (this->scalar);
 }
 
 template <typename T>
 octave_value
-octave_base_int_scalar<T>::as_uint64 (void) const
+octave_base_int_scalar<T>::as_uint64 () const
 {
   return octave_uint64 (this->scalar);
 }

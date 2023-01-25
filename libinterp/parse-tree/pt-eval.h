@@ -81,44 +81,44 @@ public:
   {
   public:
 
-    value_stack (void) = default;
+    value_stack () = default;
 
     value_stack (const value_stack&) = default;
 
     value_stack& operator = (const value_stack&) = default;
 
-    ~value_stack (void) = default;
+    ~value_stack () = default;
 
     void push (const T& val) { m_stack.push (val); }
 
-    void pop (void)
+    void pop ()
     {
       m_stack.pop ();
     }
 
-    T val_pop (void)
+    T val_pop ()
     {
       T retval = m_stack.top ();
       m_stack.pop ();
       return retval;
     }
 
-    T top (void) const
+    T top () const
     {
       return m_stack.top ();
     }
 
-    std::size_t size (void) const
+    std::size_t size () const
     {
       return m_stack.size ();
     }
 
-    bool empty (void) const
+    bool empty () const
     {
       return m_stack.empty ();
     }
 
-    void clear (void)
+    void clear ()
     {
       while (! m_stack.empty ())
         m_stack.pop ();
@@ -154,9 +154,9 @@ public:
 
   tree_evaluator& operator = (const tree_evaluator&) = delete;
 
-  ~tree_evaluator (void) = default;
+  ~tree_evaluator () = default;
 
-  std::shared_ptr<push_parser> get_parser (void)
+  std::shared_ptr<push_parser> get_parser ()
   {
     return m_parser;
   }
@@ -166,7 +166,7 @@ public:
     m_parser = parser;
   }
 
-  bool at_top_level (void) const;
+  bool at_top_level () const;
 
   std::string mfilename (const std::string& opt = "") const;
 
@@ -176,15 +176,15 @@ public:
 
   void parse_and_execute (const std::string& input, bool& incomplete_parse);
 
-  void get_line_and_eval (void);
+  void get_line_and_eval ();
 
-  int repl (void);
+  int repl ();
 
-  bool in_top_level_repl (void) const { return m_in_top_level_repl; }
+  bool in_top_level_repl () const { return m_in_top_level_repl; }
 
-  int server_loop (void);
+  int server_loop ();
 
-  bool server_mode (void) const { return m_server_mode; }
+  bool server_mode () const { return m_server_mode; }
 
   void server_mode (bool arg) { m_server_mode = arg; }
 
@@ -333,9 +333,9 @@ public:
 
   void bind_ans (const octave_value& val, bool print);
 
-  bool statement_printing_enabled (void);
+  bool statement_printing_enabled ();
 
-  void reset_debug_state (void);
+  void reset_debug_state ();
 
   void reset_debug_state (bool mode);
 
@@ -353,7 +353,7 @@ public:
     SC_OTHER      // command-line input or eval string
   };
 
-  Matrix ignored_fcn_outputs (void) const;
+  Matrix ignored_fcn_outputs () const;
 
   octave_value make_fcn_handle (const std::string& nm);
 
@@ -424,11 +424,11 @@ public:
   bool switch_case_label_matches (tree_switch_case *expr,
                                   const octave_value& val);
 
-  interpreter& get_interpreter (void) { return m_interpreter; }
+  interpreter& get_interpreter () { return m_interpreter; }
 
-  bp_table& get_bp_table (void) { return m_bp_table; }
+  bp_table& get_bp_table () { return m_bp_table; }
 
-  profiler& get_profiler (void) { return m_profiler; }
+  profiler& get_profiler () { return m_profiler; }
 
   void push_stack_frame (const symbol_scope& scope);
 
@@ -443,52 +443,52 @@ public:
 
   void push_stack_frame (octave_function *fcn);
 
-  void pop_stack_frame (void);
+  void pop_stack_frame ();
 
-  std::shared_ptr<stack_frame> get_current_stack_frame (void) const
+  std::shared_ptr<stack_frame> get_current_stack_frame () const
   {
     return m_call_stack.get_current_stack_frame ();
   }
 
-  std::shared_ptr<stack_frame> current_user_frame (void) const
+  std::shared_ptr<stack_frame> current_user_frame () const
   {
     return m_call_stack.current_user_frame ();
   }
 
   // Current line in current function.
-  int current_line (void) const;
+  int current_line () const;
 
   // Current column in current function.
-  int current_column (void) const;
+  int current_column () const;
 
   // Line number in current function that we are debugging.
-  int debug_user_code_line (void) const;
+  int debug_user_code_line () const;
 
   // Column number in current function that we are debugging.
-  int debug_user_code_column (void) const;
+  int debug_user_code_column () const;
 
   void debug_where (std::ostream& os) const;
 
-  octave_user_code * current_user_code (void) const;
+  octave_user_code * current_user_code () const;
 
-  unwind_protect * curr_fcn_unwind_protect_frame (void);
+  unwind_protect * curr_fcn_unwind_protect_frame ();
 
   // Current function that we are debugging.
-  octave_user_code * debug_user_code (void) const;
+  octave_user_code * debug_user_code () const;
 
   octave_function * current_function (bool skip_first = false) const;
 
-  octave_function * caller_function (void) const;
+  octave_function * caller_function () const;
 
   bool goto_frame (std::size_t n = 0, bool verbose = false);
 
-  void goto_caller_frame (void);
+  void goto_caller_frame ();
 
-  void goto_base_frame (void);
+  void goto_base_frame ();
 
   void restore_frame (std::size_t n);
 
-  std::string get_dispatch_class (void) const;
+  std::string get_dispatch_class () const;
 
   void set_dispatch_class (const std::string& class_name);
 
@@ -504,22 +504,22 @@ public:
   std::list<frame_info> backtrace_info (octave_idx_type& curr_user_frame,
                                         bool print_subfn = true) const;
 
-  std::list<frame_info> backtrace_info (void) const;
+  std::list<frame_info> backtrace_info () const;
 
   octave_map backtrace (octave_idx_type& curr_user_frame,
                         bool print_subfn = true) const;
 
-  octave_map backtrace (void) const;
+  octave_map backtrace () const;
 
-  octave_map empty_backtrace (void) const;
+  octave_map empty_backtrace () const;
 
-  std::string backtrace_message (void) const;
+  std::string backtrace_message () const;
 
   void push_dummy_scope (const std::string& name);
-  void pop_scope (void);
+  void pop_scope ();
 
-  symbol_scope get_top_scope (void) const;
-  symbol_scope get_current_scope (void) const;
+  symbol_scope get_top_scope () const;
+  symbol_scope get_current_scope () const;
 
   void mlock (bool skip_first = false) const;
 
@@ -530,11 +530,11 @@ public:
   octave_value max_stack_depth (const octave_value_list& args, int nargout);
 
   // Useful for debugging
-  void display_call_stack (void) const;
+  void display_call_stack () const;
 
   octave_value find (const std::string& name);
 
-  void clear_objects (void);
+  void clear_objects ();
 
   void clear_variable (const std::string& name);
 
@@ -542,7 +542,7 @@ public:
 
   void clear_variable_regexp (const std::string& pattern);
 
-  void clear_variables (void);
+  void clear_variables ();
 
   void clear_global_variable (const std::string& name);
 
@@ -550,7 +550,7 @@ public:
 
   void clear_global_variable_regexp (const std::string& pattern);
 
-  void clear_global_variables (void);
+  void clear_global_variables ();
 
   void clear_all (bool force = false);
 
@@ -560,32 +560,32 @@ public:
 
   void clear_symbol_regexp (const std::string& pattern);
 
-  std::list<std::string> global_variable_names (void) const;
+  std::list<std::string> global_variable_names () const;
 
-  std::list<std::string> top_level_variable_names (void) const;
+  std::list<std::string> top_level_variable_names () const;
 
-  std::list<std::string> variable_names (void) const;
+  std::list<std::string> variable_names () const;
 
   octave_user_code * get_user_code (const std::string& fname = "",
                                    const std::string& class_name = "");
 
   std::string current_function_name (bool skip_first = false) const;
 
-  bool in_user_code (void) const;
+  bool in_user_code () const;
 
   symbol_info_list glob_symbol_info (const std::string& pattern) const;
 
   symbol_info_list regexp_symbol_info (const std::string& pattern) const;
 
-  symbol_info_list get_symbol_info (void);
+  symbol_info_list get_symbol_info ();
 
-  symbol_info_list top_scope_symbol_info (void) const;
+  symbol_info_list top_scope_symbol_info () const;
 
-  octave_map get_autoload_map (void) const;
+  octave_map get_autoload_map () const;
 
   std::string lookup_autoload (const std::string& nm) const;
 
-  std::list<std::string> autoloaded_functions (void) const;
+  std::list<std::string> autoloaded_functions () const;
 
   std::list<std::string> reverse_lookup_autoload (const std::string& nm) const;
 
@@ -593,7 +593,7 @@ public:
 
   void remove_autoload (const std::string& fcn, const std::string& nm);
 
-  int max_recursion_depth (void) const { return m_max_recursion_depth; }
+  int max_recursion_depth () const { return m_max_recursion_depth; }
 
   int max_recursion_depth (int n)
   {
@@ -605,7 +605,7 @@ public:
   octave_value
   max_recursion_depth (const octave_value_list& args, int nargout);
 
-  bool silent_functions (void) const { return m_silent_functions; }
+  bool silent_functions () const { return m_silent_functions; }
 
   bool silent_functions (bool b)
   {
@@ -616,7 +616,7 @@ public:
 
   octave_value whos_line_format (const octave_value_list& args, int nargout);
 
-  std::string whos_line_format (void) const { return m_whos_line_format; }
+  std::string whos_line_format () const { return m_whos_line_format; }
 
   std::string whos_line_format (const std::string& s)
   {
@@ -628,7 +628,7 @@ public:
   octave_value
   silent_functions (const octave_value_list& args, int nargout);
 
-  std::size_t debug_frame (void) const { return m_debug_frame; }
+  std::size_t debug_frame () const { return m_debug_frame; }
 
   std::size_t debug_frame (std::size_t n)
   {
@@ -637,12 +637,12 @@ public:
     return val;
   }
 
-  std::size_t current_call_stack_frame_number (void) const
+  std::size_t current_call_stack_frame_number () const
   {
     return m_call_stack.current_frame ();
   }
 
-  bool quiet_breakpoint_flag (void) const { return m_quiet_breakpoint_flag; }
+  bool quiet_breakpoint_flag () const { return m_quiet_breakpoint_flag; }
 
   bool quiet_breakpoint_flag (bool flag)
   {
@@ -651,7 +651,7 @@ public:
     return val;
   }
 
-  char string_fill_char (void) const { return m_string_fill_char; }
+  char string_fill_char () const { return m_string_fill_char; }
 
   char string_fill_char (char c)
   {
@@ -664,9 +664,9 @@ public:
   // call the corresponding functions in the debugger class for the
   // current debugger (if any).
 
-  bool in_debug_repl (void) const;
+  bool in_debug_repl () const;
 
-  void dbcont (void);
+  void dbcont ();
 
   // Return true if we are in the debug repl and m_execution_mode is
   // set to exit the debugger.  Otherwise, do nothing.
@@ -689,21 +689,21 @@ public:
 
   // Clear the set of expressions that may be evaluated when the
   // debugger stops at a breakpoint.
-  void clear_debug_watch_expressions (void)
+  void clear_debug_watch_expressions ()
   {
     m_debug_watch_expressions.clear ();
   }
 
   // Return the set of expressions that may be evaluated when the
   // debugger stops at a breakpoint.
-  std::set<std::string> debug_watch_expressions (void) const
+  std::set<std::string> debug_watch_expressions () const
   {
     return m_debug_watch_expressions;
   }
 
   octave_value PS4 (const octave_value_list& args, int nargout);
 
-  std::string PS4 (void) const { return m_PS4; }
+  std::string PS4 () const { return m_PS4; }
 
   std::string PS4 (const std::string& s)
   {
@@ -714,7 +714,7 @@ public:
 
   void set_PS4 (const std::string& s) { m_PS4 = s; }
 
-  octave_value indexed_object (void) const
+  octave_value indexed_object () const
   {
     return m_indexed_object;
   }
@@ -724,7 +724,7 @@ public:
     m_indexed_object = obj;
   }
 
-  const std::list<octave_value_list>& index_list (void) const
+  const std::list<octave_value_list>& index_list () const
   {
     return m_index_list;
   }
@@ -736,7 +736,7 @@ public:
     m_index_list = index_list;
   }
 
-  void clear_index_list (void)
+  void clear_index_list ()
   {
     m_index_type = "";
     m_index_list.clear ();
@@ -748,18 +748,18 @@ public:
     m_index_list.push_back (idx);
   }
 
-  const std::string& index_type (void) const
+  const std::string& index_type () const
   {
     return m_index_type;
   }
 
-  int index_position (void) const { return m_index_position; }
+  int index_position () const { return m_index_position; }
 
-  int num_indices (void) const { return m_num_indices; }
+  int num_indices () const { return m_num_indices; }
 
   octave_value_list evaluate_end_expression (const octave_value_list& args);
 
-  const std::list<octave_lvalue> * lvalue_list (void) const
+  const std::list<octave_lvalue> * lvalue_list () const
   {
     return m_lvalue_list;
   }
@@ -769,7 +769,7 @@ public:
     m_lvalue_list = lst;
   }
 
-  int breaking (void) const { return m_breaking; }
+  int breaking () const { return m_breaking; }
 
   int breaking (int n)
   {
@@ -778,7 +778,7 @@ public:
     return val;
   }
 
-  int continuing (void) const { return m_continuing; }
+  int continuing () const { return m_continuing; }
 
   int continuing (int n)
   {
@@ -787,7 +787,7 @@ public:
     return val;
   }
 
-  int returning (void) const { return m_returning; }
+  int returning () const { return m_returning; }
 
   int returning (int n)
   {
@@ -796,7 +796,7 @@ public:
     return val;
   }
 
-  int dbstep_flag (void) const { return m_dbstep_flag; }
+  int dbstep_flag () const { return m_dbstep_flag; }
 
   int dbstep_flag (int val)
   {
@@ -807,7 +807,7 @@ public:
 
   void set_dbstep_flag (int step) { m_dbstep_flag = step; }
 
-  bool break_on_next_statement (void) const
+  bool break_on_next_statement () const
   {
     return m_break_on_next_stmt;
   }
@@ -826,7 +826,7 @@ public:
 
   octave_value echo (const octave_value_list& args, int nargout);
 
-  int echo (void) const { return m_echo; }
+  int echo () const { return m_echo; }
 
   int echo (int val)
   {
@@ -859,11 +859,11 @@ private:
 
   void set_echo_state (int type, const std::string& file_name, int pos);
 
-  void maybe_set_echo_state (void);
+  void maybe_set_echo_state ();
 
   void push_echo_state_cleanup (unwind_protect& frame);
 
-  bool maybe_push_echo_state_cleanup (void);
+  bool maybe_push_echo_state_cleanup ();
 
   void do_breakpoint (tree_statement& stmt);
 
@@ -879,7 +879,7 @@ private:
 
   void echo_code (int line);
 
-  bool quit_loop_now (void);
+  bool quit_loop_now ();
 
   void bind_auto_fcn_vars (const string_vector& arg_names,
                            const Matrix& ignored_outputs, int nargin,

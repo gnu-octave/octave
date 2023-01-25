@@ -42,7 +42,7 @@ public:
 
   typedef charMatrix matrix_type;
 
-  charNDArray (void) : Array<char> () { }
+  charNDArray () : Array<char> () { }
 
   charNDArray (const dim_vector& dv) : Array<char> (dv) { }
 
@@ -66,7 +66,7 @@ public:
     return *this;
   }
 
-  bool any_element_is_nan (void) const { return false; }
+  bool any_element_is_nan () const { return false; }
 
   // FIXME: this is not quite the right thing.
 
@@ -89,7 +89,7 @@ public:
   OCTAVE_API charNDArray&
   insert (const charNDArray& a, const Array<octave_idx_type>& ra_idx);
 
-  charNDArray squeeze (void) const { return Array<char>::squeeze (); }
+  charNDArray squeeze () const { return Array<char>::squeeze (); }
 
   static OCTAVE_API void
   increment_index (Array<octave_idx_type>& ra_idx,

@@ -75,7 +75,7 @@ public:
 
   OCTINTERP_API load_save_system (interpreter& interp);
 
-  OCTINTERP_API ~load_save_system (void);
+  OCTINTERP_API ~load_save_system ();
 
   load_save_system (const load_save_system&) = delete;
 
@@ -84,7 +84,7 @@ public:
   OCTINTERP_API octave_value
   crash_dumps_octave_core (const octave_value_list& args, int nargout);
 
-  bool crash_dumps_octave_core (void) const
+  bool crash_dumps_octave_core () const
   {
     return m_crash_dumps_octave_core;
   }
@@ -97,7 +97,7 @@ public:
   octave_value octave_core_file_limit (const octave_value_list& args,
                                        int nargout);
 
-  double octave_core_file_limit (void) const
+  double octave_core_file_limit () const
   {
     return m_octave_core_file_limit;
   }
@@ -110,7 +110,7 @@ public:
   OCTINTERP_API octave_value
   octave_core_file_name (const octave_value_list& args, int nargout);
 
-  std::string octave_core_file_name (void) const
+  std::string octave_core_file_name () const
   {
     return m_octave_core_file_name;
   }
@@ -123,7 +123,7 @@ public:
   OCTINTERP_API octave_value
   save_default_options (const octave_value_list& args, int nargout);
 
-  std::string save_default_options (void) const
+  std::string save_default_options () const
   {
     return m_save_default_options;
   }
@@ -136,7 +136,7 @@ public:
   OCTINTERP_API octave_value
   octave_core_file_options (const octave_value_list& args, int nargout);
 
-  std::string octave_core_file_options (void) const
+  std::string octave_core_file_options () const
   {
     return m_octave_core_file_options;
   }
@@ -149,7 +149,7 @@ public:
   OCTINTERP_API octave_value
   save_header_format_string (const octave_value_list& args, int nargout);
 
-  std::string save_header_format_string (void) const
+  std::string save_header_format_string () const
   {
     return m_save_header_format_string;
   }
@@ -186,7 +186,7 @@ public:
              std::ostream& os, const load_save_format& fmt,
              bool save_as_floats, bool write_header_info);
 
-  OCTINTERP_API void dump_octave_core (void);
+  OCTINTERP_API void dump_octave_core ();
 
   OCTINTERP_API octave_value_list
   load (const octave_value_list& args = octave_value_list (),
@@ -252,7 +252,7 @@ private:
   install_loaded_variable (const std::string& name, const octave_value& val,
                            bool global, const std::string& /*doc*/);
 
-  static OCTINTERP_API std::string init_save_header_format (void);
+  static OCTINTERP_API std::string init_save_header_format ();
 
   static OCTINTERP_API load_save_format
   get_file_format (std::istream& file, const std::string& filename);
@@ -277,14 +277,14 @@ public:
 
   void set_type (load_save_system::format_type type) { m_type = type; }
 
-  load_save_system::format_type type (void) const { return m_type; }
+  load_save_system::format_type type () const { return m_type; }
 
   void set_option (load_save_system::format_options option)
   {
     m_options |= option;
   }
 
-  int options (void) const { return m_options; }
+  int options () const { return m_options; }
 
 private:
 

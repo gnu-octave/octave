@@ -50,7 +50,7 @@ public:
 
   kpse_path_iterator& operator = (const kpse_path_iterator&) = delete;
 
-  ~kpse_path_iterator (void) = default;
+  ~kpse_path_iterator () = default;
 
   kpse_path_iterator operator ++ (int)
   {
@@ -59,7 +59,7 @@ public:
     return retval;
   }
 
-  std::string operator * (void) { return m_path.substr (m_b, m_e-m_b); }
+  std::string operator * () { return m_path.substr (m_b, m_e-m_b); }
 
   bool operator != (const std::size_t sz) { return m_b != sz; }
 
@@ -70,8 +70,8 @@ private:
   std::size_t m_e;
   std::size_t m_len;
 
-  void set_end (void);
-  void next (void);
+  void set_end ();
+  void next ();
 };
 
 extern unsigned int kpse_debug;

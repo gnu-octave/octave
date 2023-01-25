@@ -35,7 +35,7 @@ base_diff_alg_eqn : public base_diff_eqn
 {
 public:
 
-  base_diff_alg_eqn (void)
+  base_diff_alg_eqn ()
     : base_diff_eqn (), m_xdot () { }
 
   base_diff_alg_eqn (const ColumnVector& xx, double tt)
@@ -48,7 +48,7 @@ public:
   base_diff_alg_eqn (const base_diff_alg_eqn& a)
     : base_diff_eqn (a), m_xdot (a.m_xdot) { }
 
-  virtual ~base_diff_alg_eqn (void) = default;
+  virtual ~base_diff_alg_eqn () = default;
 
   base_diff_alg_eqn& operator = (const base_diff_alg_eqn& a)
   {
@@ -73,7 +73,7 @@ public:
     m_xdot = xdot0;
   }
 
-  ColumnVector state_derivative (void) { return m_xdot; }
+  ColumnVector state_derivative () { return m_xdot; }
 
 protected:
 

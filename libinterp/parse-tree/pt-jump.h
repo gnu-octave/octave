@@ -48,7 +48,7 @@ public:
 
   tree_break_command& operator = (const tree_break_command&) = delete;
 
-  ~tree_break_command (void) = default;
+  ~tree_break_command () = default;
 
   void accept (tree_walker& tw)
   {
@@ -71,7 +71,7 @@ public:
 
   tree_continue_command& operator = (const tree_continue_command&) = delete;
 
-  ~tree_continue_command (void) = default;
+  ~tree_continue_command () = default;
 
   void accept (tree_walker& tw)
   {
@@ -94,7 +94,7 @@ public:
 
   tree_return_command& operator = (const tree_return_command&) = delete;
 
-  ~tree_return_command (void) = default;
+  ~tree_return_command () = default;
 
   void accept (tree_walker& tw)
   {

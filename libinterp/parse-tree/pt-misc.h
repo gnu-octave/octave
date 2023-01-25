@@ -74,25 +74,25 @@ public:
 
   tree_parameter_list& operator = (const tree_parameter_list&) = delete;
 
-  ~tree_parameter_list (void);
+  ~tree_parameter_list ();
 
-  void mark_as_formal_parameters (void);
+  void mark_as_formal_parameters ();
 
-  void mark_varargs (void) { m_marked_for_varargs = 1; }
+  void mark_varargs () { m_marked_for_varargs = 1; }
 
-  void mark_varargs_only (void) { m_marked_for_varargs = -1; }
+  void mark_varargs_only () { m_marked_for_varargs = -1; }
 
-  bool takes_varargs (void) const { return m_marked_for_varargs != 0; }
+  bool takes_varargs () const { return m_marked_for_varargs != 0; }
 
-  bool varargs_only (void) { return (m_marked_for_varargs < 0); }
+  bool varargs_only () { return (m_marked_for_varargs < 0); }
 
-  bool is_input_list (void) const { return m_in_or_out == in; }
+  bool is_input_list () const { return m_in_or_out == in; }
 
-  bool is_output_list (void) const { return m_in_or_out == out; }
+  bool is_output_list () const { return m_in_or_out == out; }
 
-  std::list<std::string> variable_names (void) const;
+  std::list<std::string> variable_names () const;
 
-  std::string varargs_symbol_name (void) const
+  std::string varargs_symbol_name () const
   {
     return m_in_or_out == in ? "varargin" : "varargout";
   }

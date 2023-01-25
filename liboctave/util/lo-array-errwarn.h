@@ -52,13 +52,13 @@ public:
     set_message (expression ());
   }
 
-  ~index_exception (void) = default;
+  ~index_exception () = default;
 
   // ID of error to throw.
-  virtual const char * err_id (void) const = 0;
+  virtual const char * err_id () const = 0;
 
   // By default, update message to show the erroneous index expression.
-  virtual void update_message (void) { set_message (expression ()); }
+  virtual void update_message () { set_message (expression ()); }
 
   // Position of error: dimension in error, and number of dimensions.
   void set_pos (octave_idx_type nd_arg, octave_idx_type dim_arg)
@@ -96,7 +96,7 @@ private:
 protected:
 
   // Show what's wrong, e.g.,  A(-1,_), A(0+1i).
-  OCTAVE_API std::string expression (void) const;
+  OCTAVE_API std::string expression () const;
 
   // Number of dimensions of indexed object.
   octave_idx_type m_nd;
@@ -109,10 +109,10 @@ protected:
 };
 
 OCTAVE_NORETURN extern OCTAVE_API void
-err_nan_to_logical_conversion (void);
+err_nan_to_logical_conversion ();
 
 OCTAVE_NORETURN extern OCTAVE_API void
-err_nan_to_character_conversion (void);
+err_nan_to_character_conversion ();
 
 OCTAVE_NORETURN extern OCTAVE_API void
 err_nonconformant (const char *op, octave_idx_type op1_len,
@@ -151,7 +151,7 @@ err_invalid_index (const std::string& idx, octave_idx_type nd = 0,
                    const std::string& var = "");
 
 OCTAVE_NORETURN extern OCTAVE_API void
-err_invalid_resize (void);
+err_invalid_resize ();
 
 extern OCTAVE_API void
 warn_singular_matrix (double rcond = 0.0);

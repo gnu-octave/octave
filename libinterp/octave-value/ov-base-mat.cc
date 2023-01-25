@@ -420,7 +420,7 @@ octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
 // Return true if this matrix has all true elements (non-zero, not NA/NaN).
 template <typename MT>
 bool
-octave_base_matrix<MT>::is_true (void) const
+octave_base_matrix<MT>::is_true () const
 {
   bool retval = false;
   dim_vector dv = m_matrix.dims ();
@@ -446,7 +446,7 @@ octave_base_matrix<MT>::is_true (void) const
 
 template <typename MT>
 bool
-octave_base_matrix<MT>::print_as_scalar (void) const
+octave_base_matrix<MT>::print_as_scalar () const
 {
   dim_vector dv = dims ();
 
@@ -523,7 +523,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
 
 template <typename MT>
 float_display_format
-octave_base_matrix<MT>::get_edit_display_format (void) const
+octave_base_matrix<MT>::get_edit_display_format () const
 {
   return make_format (m_matrix);
 }

@@ -43,9 +43,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     ToolBarButton (octave::interpreter& interp,
                    const graphics_object& go, QAction *action);
-    ~ToolBarButton (void);
+    ~ToolBarButton ();
 
-    Container * innerContainer (void) { return nullptr; }
+    Container * innerContainer () { return nullptr; }
 
   protected:
     void update (int pId);

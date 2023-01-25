@@ -42,9 +42,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
     Panel (octave::interpreter& interp,
            const graphics_object& go, QFrame *frame);
-    ~Panel (void);
+    ~Panel ();
 
-    Container * innerContainer (void) { return m_container; }
+    Container * innerContainer () { return m_container; }
 
     bool eventFilter (QObject *watched, QEvent *event);
 
@@ -57,10 +57,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   protected:
     void update (int pId);
-    void redraw (void);
+    void redraw ();
 
   private:
-    void updateLayout (void);
+    void updateLayout ();
 
   private:
     Container *m_container;

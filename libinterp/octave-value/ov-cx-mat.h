@@ -54,7 +54,7 @@ octave_complex_matrix : public octave_base_matrix<ComplexNDArray>
 {
 public:
 
-  octave_complex_matrix (void)
+  octave_complex_matrix ()
     : octave_base_matrix<ComplexNDArray> () { }
 
   octave_complex_matrix (const ComplexNDArray& m)
@@ -81,26 +81,26 @@ public:
   octave_complex_matrix (const octave_complex_matrix& cm)
     : octave_base_matrix<ComplexNDArray> (cm) { }
 
-  ~octave_complex_matrix (void) = default;
+  ~octave_complex_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_complex_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_complex_matrix (); }
 
-  type_conv_info numeric_demotion_function (void) const;
+  type_conv_info numeric_demotion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
-  builtin_type_t builtin_type (void) const { return btyp_complex; }
+  builtin_type_t builtin_type () const { return btyp_complex; }
 
-  bool is_complex_matrix (void) const { return true; }
+  bool is_complex_matrix () const { return true; }
 
-  bool iscomplex (void) const { return true; }
+  bool iscomplex () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   double double_value (bool = false) const;
 
@@ -138,18 +138,18 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
   octave_value diag (octave_idx_type k = 0) const;
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
-  void increment (void) { m_matrix += Complex (1.0); }
+  void increment () { m_matrix += Complex (1.0); }
 
-  void decrement (void) { m_matrix -= Complex (1.0); }
+  void decrement () { m_matrix -= Complex (1.0); }
 
-  void changesign (void) { m_matrix.changesign (); }
+  void changesign () { m_matrix.changesign (); }
 
   bool save_ascii (std::ostream& os);
 

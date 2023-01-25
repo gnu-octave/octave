@@ -191,7 +191,7 @@ default_numeric_conversion_function (const octave_base_value& a)
 
 template <typename T>
 octave_base_value::type_conv_info
-ov_range<T>::numeric_conversion_function (void) const
+ov_range<T>::numeric_conversion_function () const
 {
   typedef typename octave_value_range_traits<T>::matrix_type ov_mx_type;
 
@@ -201,7 +201,7 @@ ov_range<T>::numeric_conversion_function (void) const
 
 template <typename T>
 octave_base_value *
-ov_range<T>::try_narrowing_conversion (void)
+ov_range<T>::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -414,7 +414,7 @@ ov_range<T>::resize (const dim_vector& dv, bool fill) const
 
 template <typename T>
 octave::range<double>
-ov_range<T>::range_value (void) const
+ov_range<T>::range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::range_value()", type_name ());
 }
@@ -425,63 +425,63 @@ ov_range<T>::range_value (void) const
 
 template <typename T>
 octave::range<float>
-ov_range<T>::float_range_value (void) const
+ov_range<T>::float_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::float_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_int8>
-ov_range<T>::int8_range_value (void) const
+ov_range<T>::int8_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::int8_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_int16>
-ov_range<T>::int16_range_value (void) const
+ov_range<T>::int16_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::int16_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_int32>
-ov_range<T>::int32_range_value (void) const
+ov_range<T>::int32_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::int32_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_int64>
-ov_range<T>::int64_range_value (void) const
+ov_range<T>::int64_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::int64_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_uint8>
-ov_range<T>::uint8_range_value (void) const
+ov_range<T>::uint8_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::uint8_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_uint16>
-ov_range<T>::uint16_range_value (void) const
+ov_range<T>::uint16_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::uint16_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_uint32>
-ov_range<T>::uint32_range_value (void) const
+ov_range<T>::uint32_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::uint32_range_value ()", type_name ());
 }
 
 template <typename T>
 octave::range<octave_uint64>
-ov_range<T>::uint64_range_value (void) const
+ov_range<T>::uint64_range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::uint64_range_value ()", type_name ());
 }
@@ -500,70 +500,70 @@ ov_range<T>::convert_to_str_internal (bool pad, bool force, char type) const
 
 template <typename T>
 octave_value
-ov_range<T>::as_double (void) const
+ov_range<T>::as_double () const
 {
   return NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_single (void) const
+ov_range<T>::as_single () const
 {
   return FloatMatrix (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int8 (void) const
+ov_range<T>::as_int8 () const
 {
   return int8NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int16 (void) const
+ov_range<T>::as_int16 () const
 {
   return int16NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int32 (void) const
+ov_range<T>::as_int32 () const
 {
   return int32NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int64 (void) const
+ov_range<T>::as_int64 () const
 {
   return int64NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint8 (void) const
+ov_range<T>::as_uint8 () const
 {
   return uint8NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint16 (void) const
+ov_range<T>::as_uint16 () const
 {
   return uint16NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint32 (void) const
+ov_range<T>::as_uint32 () const
 {
   return uint32NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint64 (void) const
+ov_range<T>::as_uint64 () const
 {
   return uint64NDArray (raw_array_value ());
 }
@@ -655,7 +655,7 @@ skip_comments (std::istream& is)
 
 template <typename T>
 float_display_format
-ov_range<T>::get_edit_display_format (void) const
+ov_range<T>::get_edit_display_format () const
 {
   return make_format (m_range);
 }
@@ -1428,7 +1428,7 @@ ov_range<T>::fast_elem_extract (octave_idx_type n) const
 
 template <>
 octave::range<double>
-ov_range<double>::range_value (void) const
+ov_range<double>::range_value () const
 {
   return m_range;
 }
@@ -1439,63 +1439,63 @@ ov_range<double>::range_value (void) const
 
 template <>
 octave::range<float>
-ov_range<float>::float_range_value (void) const
+ov_range<float>::float_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_int8>
-ov_range<octave_int8>::int8_range_value (void) const
+ov_range<octave_int8>::int8_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_int16>
-ov_range<octave_int16>::int16_range_value (void) const
+ov_range<octave_int16>::int16_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_int32>
-ov_range<octave_int32>::int32_range_value (void) const
+ov_range<octave_int32>::int32_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_int64>
-ov_range<octave_int64>::int64_range_value (void) const
+ov_range<octave_int64>::int64_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_uint8>
-ov_range<octave_uint8>::uint8_range_value (void) const
+ov_range<octave_uint8>::uint8_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_uint16>
-ov_range<octave_uint16>::uint16_range_value (void) const
+ov_range<octave_uint16>::uint16_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_uint32>
-ov_range<octave_uint32>::uint32_range_value (void) const
+ov_range<octave_uint32>::uint32_range_value () const
 {
   return m_range;
 }
 
 template <>
 octave::range<octave_uint64>
-ov_range<octave_uint64>::uint64_range_value (void) const
+ov_range<octave_uint64>::uint64_range_value () const
 {
   return m_range;
 }
@@ -1520,7 +1520,7 @@ ov_range<double>::index_vector (bool require_integers) const
 
 template <>
 octave_idx_type
-ov_range<double>::nnz (void) const
+ov_range<double>::nnz () const
 {
   return m_range.nnz ();
 }

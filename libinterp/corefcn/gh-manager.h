@@ -91,7 +91,7 @@ public:
 
   OCTINTERP_API void pop_figure (const graphics_handle& h);
 
-  graphics_handle current_figure (void) const
+  graphics_handle current_figure () const
   {
     graphics_handle retval;
 
@@ -122,11 +122,11 @@ public:
     return retval;
   }
 
-  void lock (void) { m_graphics_lock.lock (); }
+  void lock () { m_graphics_lock.lock (); }
 
-  bool try_lock (void) { return m_graphics_lock.try_lock (); }
+  bool try_lock () { return m_graphics_lock.try_lock (); }
 
-  void unlock (void) { m_graphics_lock.unlock (); }
+  void unlock () { m_graphics_lock.unlock (); }
 
   Matrix figure_handle_list (bool show_hidden = false)
   {
@@ -198,13 +198,13 @@ public:
     return retval;
   }
 
-  OCTINTERP_API void close_all_figures (void);
+  OCTINTERP_API void close_all_figures ();
 
-  OCTINTERP_API void restore_gcbo (void);
+  OCTINTERP_API void restore_gcbo ();
 
   OCTINTERP_API void post_event (const graphics_event& e);
 
-  octave::mutex graphics_lock (void)
+  octave::mutex graphics_lock ()
   {
     return m_graphics_lock;
   }

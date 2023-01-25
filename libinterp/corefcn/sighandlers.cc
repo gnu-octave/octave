@@ -107,7 +107,7 @@ my_friendly_exit (int sig, bool save_vars = true)
 // we have caught.
 
 void
-respond_to_pending_signals (void)
+respond_to_pending_signals ()
 {
   // The list of signals is relatively short, so we will just go
   // linearly through the list.
@@ -323,7 +323,7 @@ fpe_sig_handler (int)
 }
 
 interrupt_handler
-catch_interrupts (void)
+catch_interrupts ()
 {
   interrupt_handler retval;
 
@@ -334,7 +334,7 @@ catch_interrupts (void)
 }
 
 interrupt_handler
-ignore_interrupts (void)
+ignore_interrupts ()
 {
   interrupt_handler retval;
 
@@ -362,7 +362,7 @@ set_interrupt_handler (const volatile interrupt_handler& h,
 // Install all the handlers for the signals we might care about.
 
 void
-install_signal_handlers (void)
+install_signal_handlers ()
 {
   if (! signals_caught)
     signals_caught = new bool [octave_num_signals ()];
@@ -445,7 +445,7 @@ set_sig_struct_field (octave_scalar_map& m, const char *signame)
 }
 
 static octave_scalar_map
-make_sig_struct (void)
+make_sig_struct ()
 {
   octave_scalar_map m;
 

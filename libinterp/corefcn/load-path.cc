@@ -278,7 +278,7 @@ load_path::initialize (bool set_initial_path)
 }
 
 void
-load_path::clear (void)
+load_path::clear ()
 {
   m_dir_info_list.clear ();
 
@@ -397,7 +397,7 @@ load_path::remove (const std::string& dir_arg)
 }
 
 void
-load_path::update (void)
+load_path::update ()
 {
   // I don't see a better way to do this because we need to
   // preserve the correct directory ordering for new files that
@@ -836,7 +836,7 @@ load_path::find_all_first_of (const string_vector& flist) const
 }
 
 string_vector
-load_path::dirs (void) const
+load_path::dirs () const
 {
   std::size_t len = m_dir_info_list.size ();
 
@@ -851,7 +851,7 @@ load_path::dirs (void) const
 }
 
 std::list<std::string>
-load_path::dir_list (void) const
+load_path::dir_list () const
 {
   std::list<std::string> retval;
 
@@ -890,13 +890,13 @@ load_path::files (const std::string& dir, bool omit_exts) const
 }
 
 string_vector
-load_path::fcn_names (void) const
+load_path::fcn_names () const
 {
   return m_top_level_package.fcn_names ();
 }
 
 std::string
-load_path::path (void) const
+load_path::path () const
 {
   std::string xpath;
 
@@ -964,7 +964,7 @@ load_path::execute_pkg_del (const std::string& dir)
   execute_pkg_add_or_del (dir, "PKG_DEL");
 }
 
-void load_path::rehash (void)
+void load_path::rehash ()
 {
   update ();
 
@@ -1183,7 +1183,7 @@ load_path::read_dir_config (const std::string& dir) const
       return;
     }
 
-  unwind_action close_file ([cfile] (void) { fclose (cfile); });
+  unwind_action close_file ([cfile] () { fclose (cfile); });
 
   // find line with character encoding and read it
   bool eof = false;
@@ -1388,7 +1388,7 @@ get_fcn_files (const std::string& d)
 }
 
 bool
-load_path::dir_info::update (void)
+load_path::dir_info::update ()
 {
   sys::file_stat fs (dir_name);
 
@@ -1482,7 +1482,7 @@ load_path::dir_info::is_package (const std::string& name) const
 }
 
 void
-load_path::dir_info::initialize (void)
+load_path::dir_info::initialize ()
 {
   is_relative = ! sys::env::absolute_pathname (dir_name);
 
@@ -1896,7 +1896,7 @@ load_path::package_info::overloads (const std::string& meth,
 }
 
 string_vector
-load_path::package_info::fcn_names (void) const
+load_path::package_info::fcn_names () const
 {
   std::size_t len = m_fcn_map.size ();
 

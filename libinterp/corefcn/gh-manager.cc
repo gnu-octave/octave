@@ -39,7 +39,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static double
-make_handle_fraction (void)
+make_handle_fraction ()
 {
   static double maxrand = RAND_MAX + 2.0;
 
@@ -180,7 +180,7 @@ gh_manager::renumber_figure (const graphics_handle& old_gh,
 }
 
 void
-gh_manager::close_all_figures (void)
+gh_manager::close_all_figures ()
 {
   // FIXME: should we process or discard pending events?
 
@@ -349,7 +349,7 @@ xset_gcbo (const graphics_handle& h)
 }
 
 void
-gh_manager::restore_gcbo (void)
+gh_manager::restore_gcbo ()
 {
   octave::autolock guard (m_graphics_lock);
 
@@ -475,7 +475,7 @@ gh_manager::execute_callback (const graphics_handle& h,
 }
 
 static int
-process_graphics_events (void)
+process_graphics_events ()
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 

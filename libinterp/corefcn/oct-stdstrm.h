@@ -65,43 +65,43 @@ public:
 
   // Return current stream position.
 
-  off_t tell (void) { return m_stream ? m_stream->tell () : -1; }
+  off_t tell () { return m_stream ? m_stream->tell () : -1; }
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const { return m_stream ? m_stream->eof () : true; }
+  bool eof () const { return m_stream ? m_stream->eof () : true; }
 
   // The name of the file.
 
-  std::string name (void) const { return m_name; }
+  std::string name () const { return m_name; }
 
-  std::istream * input_stream (void)
+  std::istream * input_stream ()
   {
     return (m_mode & std::ios::in) ? m_stream : nullptr;
   }
 
-  std::ostream * output_stream (void)
+  std::ostream * output_stream ()
   {
     return (m_mode & std::ios::out) ? m_stream : nullptr;
   }
 
   // FIXME: should not have to cast away const here.
-  BUF_T * rdbuf (void) const
+  BUF_T * rdbuf () const
   {
     return m_stream ? (const_cast<STREAM_T *> (m_stream))->rdbuf () : nullptr;
   }
 
-  int file_number (void) const { return m_fnum; }
+  int file_number () const { return m_fnum; }
 
-  bool bad (void) const { return m_stream ? m_stream->bad () : true; }
+  bool bad () const { return m_stream ? m_stream->bad () : true; }
 
-  void clear (void)
+  void clear ()
   {
     if (m_stream)
       m_stream->clear ();
   }
 
-  void do_close (void)
+  void do_close ()
   {
     if (m_stream)
       m_stream->stream_close ();
@@ -109,7 +109,7 @@ public:
 
 protected:
 
-  ~tstdiostream (void) { delete m_stream; }
+  ~tstdiostream () { delete m_stream; }
 
   //--------
 
@@ -155,7 +155,7 @@ public:
 
 protected:
 
-  ~stdiostream (void) = default;
+  ~stdiostream () = default;
 };
 
 #if defined (HAVE_ZLIB)
@@ -192,7 +192,7 @@ public:
 
 protected:
 
-  ~zstdiostream (void) = default;
+  ~zstdiostream () = default;
 };
 
 #endif

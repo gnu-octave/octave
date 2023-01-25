@@ -34,7 +34,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(build_env)
 
-extern OCTINTERP_API octave_scalar_map features (void);
+extern OCTINTERP_API octave_scalar_map features ();
 
 extern OCTINTERP_API const char *AMD_CPPFLAGS;
 extern OCTINTERP_API const char *AMD_LDFLAGS;

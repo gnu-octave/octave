@@ -66,12 +66,12 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  QString gui_settings::file_name (void) const
+  QString gui_settings::file_name () const
   {
     return fileName ();
   }
 
-  QString gui_settings::directory_name (void) const
+  QString gui_settings::directory_name () const
   {
     QFileInfo sfile (fileName ());
 
@@ -214,7 +214,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                 << " not found in settings";
   }
 
-  void gui_settings::config_icon_theme (void)
+  void gui_settings::config_icon_theme ()
   {
     int theme_index;
 
@@ -284,7 +284,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       return QIcon ();
   }
 
-  QString gui_settings::get_default_font_family (void)
+  QString gui_settings::get_default_font_family ()
   {
     // Get all available fixed width fonts from the Qt font database.
 
@@ -332,7 +332,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return default_family;
   }
 
-  QStringList gui_settings::get_default_font (void)
+  QStringList gui_settings::get_default_font ()
   {
     QString default_family = get_default_font_family ();
 
@@ -362,7 +362,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return result;
   }
 
-  QString gui_settings::get_gui_translation_dir (void)
+  QString gui_settings::get_gui_translation_dir ()
   {
     // get environment variable for the locale dir (e.g. from run-octave)
     std::string dldir = sys::env::getenv ("OCTAVE_LOCALE_DIR");
@@ -532,7 +532,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return false;
   }
 
-  void gui_settings::update_network_settings (void)
+  void gui_settings::update_network_settings ()
   {
     QNetworkProxy proxy;
 
@@ -711,7 +711,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     combo->setMaxVisibleItems (12);
   }
 
-  void gui_settings::reload (void)
+  void gui_settings::reload ()
   {
     // Declare some empty options, which may be set at first startup for
     // writing them into the newly created settings file
@@ -752,7 +752,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     setValue (global_mono_font.settings_key (), get_default_font_family ());
   }
 
-  void gui_settings::check (void)
+  void gui_settings::check ()
   {
     if (status () == QSettings::NoError)
       {

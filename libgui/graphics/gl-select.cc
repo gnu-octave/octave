@@ -32,7 +32,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 void
-opengl_selector::apply_pick_matrix (void)
+opengl_selector::apply_pick_matrix ()
 {
   GLdouble p_matrix[16];
 

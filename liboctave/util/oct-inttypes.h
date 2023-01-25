@@ -346,8 +346,8 @@ class octave_int_base
 {
 public:
 
-  static T min_val (void) { return std::numeric_limits<T>::min (); }
-  static T max_val (void) { return std::numeric_limits<T>::max (); }
+  static T min_val () { return std::numeric_limits<T>::min (); }
+  static T max_val () { return std::numeric_limits<T>::max (); }
 
   // Convert integer value.
 
@@ -787,7 +787,7 @@ public:
 
   typedef T val_type;
 
-  octave_int (void) : m_ival () { }
+  octave_int () : m_ival () { }
 
   octave_int (T i) : m_ival (i) { }
 
@@ -827,26 +827,26 @@ public:
 
   octave_int& operator = (const octave_int<T>&) = default;
 
-  ~octave_int (void) = default;
+  ~octave_int () = default;
 
-  T value (void) const { return m_ival; }
+  T value () const { return m_ival; }
 
-  const unsigned char * iptr (void) const
+  const unsigned char * iptr () const
   {
     return reinterpret_cast<const unsigned char *> (& m_ival);
   }
 
-  bool operator ! (void) const { return ! m_ival; }
+  bool operator ! () const { return ! m_ival; }
 
-  bool bool_value (void) const { return static_cast<bool> (value ()); }
+  bool bool_value () const { return static_cast<bool> (value ()); }
 
-  char char_value (void) const { return static_cast<char> (value ()); }
+  char char_value () const { return static_cast<char> (value ()); }
 
-  double double_value (void) const { return static_cast<double> (value ()); }
+  double double_value () const { return static_cast<double> (value ()); }
 
-  float float_value (void) const { return static_cast<float> (value ()); }
+  float float_value () const { return static_cast<float> (value ()); }
 
-  operator T (void) const { return value (); }
+  operator T () const { return value (); }
 
   octave_int<T> operator + () const { return *this; }
 
@@ -864,7 +864,7 @@ public:
 
 #undef OCTAVE_INT_UN_OP
 
-  octave_int<T> operator ~ (void) const
+  octave_int<T> operator ~ () const
   {
     T bitinv = ~ m_ival;
     return bitinv;
@@ -895,12 +895,12 @@ public:
 
 #undef OCTAVE_INT_BIN_OP
 
-  static octave_int<T> min (void) { return std::numeric_limits<T>::min (); }
-  static octave_int<T> max (void) { return std::numeric_limits<T>::max (); }
+  static octave_int<T> min () { return std::numeric_limits<T>::min (); }
+  static octave_int<T> max () { return std::numeric_limits<T>::max (); }
 
-  static int nbits (void) { return std::numeric_limits<T>::digits; }
+  static int nbits () { return std::numeric_limits<T>::digits; }
 
-  static int byte_size (void) { return sizeof (T); }
+  static int byte_size () { return sizeof (T); }
 
   static const OCTAVE_API char * type_name ();
 

@@ -37,7 +37,7 @@ process_execution_result
 {
 public:
 
-  process_execution_result (void)
+  process_execution_result ()
     : m_status (-1), m_err_msg (), m_exit_status (-1), m_stdout_output ()
   { }
 
@@ -54,13 +54,13 @@ public:
   static OCTINTERP_API process_execution_result
   of_error (int status, const std::string& err_msg);
 
-  int status (void) const { return m_status; }
+  int status () const { return m_status; }
 
-  int exit_status (void) const { return m_exit_status; }
+  int exit_status () const { return m_exit_status; }
 
-  std::string err_msg (void) const { return m_err_msg; }
+  std::string err_msg () const { return m_err_msg; }
 
-  std::string stdout_output (void) const { return m_stdout_output; }
+  std::string stdout_output () const { return m_stdout_output; }
 
 private:
 

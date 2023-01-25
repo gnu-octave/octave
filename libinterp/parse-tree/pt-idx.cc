@@ -113,7 +113,7 @@ tree_index_expression::append (tree_expression *df)
   return this;
 }
 
-tree_index_expression::~tree_index_expression (void)
+tree_index_expression::~tree_index_expression ()
 {
   delete m_expr;
 
@@ -136,7 +136,7 @@ tree_index_expression::~tree_index_expression (void)
 // assignment.
 
 std::string
-tree_index_expression::name (void) const
+tree_index_expression::name () const
 {
   return m_expr->name ();
 }

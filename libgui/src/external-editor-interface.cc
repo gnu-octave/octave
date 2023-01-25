@@ -98,7 +98,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // Get and verify the settings of the external editor program
-  QString external_editor_interface::external_editor (void)
+  QString external_editor_interface::external_editor ()
   {
     gui_settings settings;
 

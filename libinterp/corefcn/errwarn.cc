@@ -38,7 +38,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 void
-err_2_or_3_dim_plot (void)
+err_2_or_3_dim_plot ()
 {
   error ("plot: can only plot in 2 or 3 dimensions");
 }
@@ -62,7 +62,7 @@ err_disabled_feature (const std::string& fcn, const std::string& feature,
 }
 
 void
-err_indexed_cs_list (void)
+err_indexed_cs_list ()
 {
   error ("a cs-list cannot be further indexed");
 }
@@ -74,25 +74,25 @@ err_invalid_conversion (const std::string& from, const std::string& to)
 }
 
 void
-err_invalid_inquiry_subscript (void)
+err_invalid_inquiry_subscript ()
 {
   error ("invalid dimension inquiry of a non-existent value");
 }
 
 void
-err_invalid_structure_assignment (void)
+err_invalid_structure_assignment ()
 {
   error ("invalid dot name structure assignment because the structure array is empty.  Specify a subscript on the structure array to resolve.");
 }
 
 void
-err_nonbraced_cs_list_assignment (void)
+err_nonbraced_cs_list_assignment ()
 {
   error ("invalid assignment to cs-list outside multiple assignment");
 }
 
 void
-err_nonconformant (void)
+err_nonconformant ()
 {
   error ("nonconformant matrices");
 }
@@ -113,7 +113,7 @@ err_not_implemented (const char *fcn)
 }
 
 void
-err_range_invalid (void)
+err_range_invalid ()
 {
   error ("range constant used in invalid context");
 }
@@ -125,7 +125,7 @@ err_square_matrix_required (const char *fcn, const char *name)
 }
 
 void
-err_string_invalid (void)
+err_string_invalid ()
 {
   error ("std::string constant used in invalid context");
 }
@@ -137,7 +137,7 @@ err_unrecognized_data_fmt (const char *name)
 }
 
 void
-err_unrecognized_float_fmt (void)
+err_unrecognized_float_fmt ()
 {
   error ("unrecognized floating point format requested");
 }
@@ -300,7 +300,7 @@ warn_array_as_logical (const dim_vector& dv)
 */
 
 void
-warn_complex_cmp (void)
+warn_complex_cmp ()
 {
   warning_with_id ("Octave:language-extension",
                    "comparing complex numbers is not supported in Matlab");
@@ -362,7 +362,7 @@ warn_invalid_value_specified (const char *name)
 }
 
 void
-warn_logical_conversion (void)
+warn_logical_conversion ()
 {
   warning_with_id ("Octave:logical-conversion",
                    "value not equal to 1 or 0 converted to logical 1");

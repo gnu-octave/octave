@@ -54,7 +54,7 @@ octave_matrix : public octave_base_matrix<NDArray>
 {
 public:
 
-  octave_matrix (void)
+  octave_matrix ()
     : octave_base_matrix<NDArray> () { }
 
   octave_matrix (const Matrix& m)
@@ -96,14 +96,14 @@ public:
     set_idx_cache (cache);
   }
 
-  ~octave_matrix (void) = default;
+  ~octave_matrix () = default;
 
-  octave_base_value * clone (void) const { return new octave_matrix (*this); }
-  octave_base_value * empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value * clone () const { return new octave_matrix (*this); }
+  octave_base_value * empty_clone () const { return new octave_matrix (); }
 
-  type_conv_info numeric_demotion_function (void) const;
+  type_conv_info numeric_demotion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
@@ -111,39 +111,39 @@ public:
            : set_idx_cache (octave::idx_vector (m_matrix));
   }
 
-  builtin_type_t builtin_type (void) const { return btyp_double; }
+  builtin_type_t builtin_type () const { return btyp_double; }
 
-  bool is_real_matrix (void) const { return true; }
+  bool is_real_matrix () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   int8NDArray
-  int8_array_value (void) const { return int8NDArray (m_matrix); }
+  int8_array_value () const { return int8NDArray (m_matrix); }
 
   int16NDArray
-  int16_array_value (void) const { return int16NDArray (m_matrix); }
+  int16_array_value () const { return int16NDArray (m_matrix); }
 
   int32NDArray
-  int32_array_value (void) const { return int32NDArray (m_matrix); }
+  int32_array_value () const { return int32NDArray (m_matrix); }
 
   int64NDArray
-  int64_array_value (void) const { return int64NDArray (m_matrix); }
+  int64_array_value () const { return int64NDArray (m_matrix); }
 
   uint8NDArray
-  uint8_array_value (void) const { return uint8NDArray (m_matrix); }
+  uint8_array_value () const { return uint8NDArray (m_matrix); }
 
   uint16NDArray
-  uint16_array_value (void) const { return uint16NDArray (m_matrix); }
+  uint16_array_value () const { return uint16NDArray (m_matrix); }
 
   uint32NDArray
-  uint32_array_value (void) const { return uint32NDArray (m_matrix); }
+  uint32_array_value () const { return uint32NDArray (m_matrix); }
 
   uint64NDArray
-  uint64_array_value (void) const { return uint64NDArray (m_matrix); }
+  uint64_array_value () const { return uint64NDArray (m_matrix); }
 
   double double_value (bool = false) const;
 
@@ -180,18 +180,18 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   octave_value diag (octave_idx_type k = 0) const;
 
@@ -199,7 +199,7 @@ public:
 
   octave_value reshape (const dim_vector& new_dims) const;
 
-  octave_value squeeze (void) const;
+  octave_value squeeze () const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
   octave_value sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
@@ -212,11 +212,11 @@ public:
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
   // Use matrix_ref here to clear index cache.
-  void increment (void) { matrix_ref () += 1.0; }
+  void increment () { matrix_ref () += 1.0; }
 
-  void decrement (void) { matrix_ref () -= 1.0; }
+  void decrement () { matrix_ref () -= 1.0; }
 
-  void changesign (void) { matrix_ref ().changesign (); }
+  void changesign () { matrix_ref ().changesign (); }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 

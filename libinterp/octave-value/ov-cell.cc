@@ -428,7 +428,7 @@ octave_cell::subsasgn (const std::string& type,
 }
 
 bool
-octave_cell::iscellstr (void) const
+octave_cell::iscellstr () const
 {
   bool retval;
   if (m_cellstr_cache.get ())
@@ -466,7 +466,7 @@ octave_cell::delete_elements (const octave_value_list& idx)
 }
 
 std::size_t
-octave_cell::byte_size (void) const
+octave_cell::byte_size () const
 {
   std::size_t retval = 0;
 
@@ -559,13 +559,13 @@ octave_cell::is_sorted_rows (sortmode mode) const
 }
 
 bool
-octave_cell::is_true (void) const
+octave_cell::is_true () const
 {
   error ("invalid conversion from cell array to logical value");
 }
 
 octave_value_list
-octave_cell::list_value (void) const
+octave_cell::list_value () const
 {
   return octave_value_list (m_matrix);
 }
@@ -633,7 +633,7 @@ octave_cell::string_vector_value (bool pad) const
 }
 
 Array<std::string>
-octave_cell::cellstr_value (void) const
+octave_cell::cellstr_value () const
 {
   if (! iscellstr ())
     error ("invalid conversion from cell array to array of strings");
@@ -645,7 +645,7 @@ octave_cell::cellstr_value (void) const
 }
 
 bool
-octave_cell::print_as_scalar (void) const
+octave_cell::print_as_scalar () const
 {
   return true;
 }
@@ -995,7 +995,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
 }
 
 const void *
-octave_cell::mex_get_data (void) const
+octave_cell::mex_get_data () const
 {
   clear_cellstr_cache ();
   return m_matrix.data ();

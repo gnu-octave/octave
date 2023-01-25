@@ -314,7 +314,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // search text has changed: reset the search
-  void find_dialog::handle_search_text_changed (void)
+  void find_dialog::handle_search_text_changed ()
   {
     // Return if nothing has changed
     if (m_search_line_edit->currentText () == m_search_line_edit->itemText (0))
@@ -327,7 +327,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // replaced text has changed: reset the search
-  void find_dialog::handle_replace_text_changed (void)
+  void find_dialog::handle_replace_text_changed ()
   {
     // Return if nothing has changed
     if (m_replace_line_edit->currentText () == m_replace_line_edit->itemText (0))
@@ -379,7 +379,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   // initialize search text with selected text if this is in one single line
-  void find_dialog::init_search_text (void)
+  void find_dialog::init_search_text ()
   {
     if (m_edit_area && m_edit_area->hasSelectedText ())
       {
@@ -398,12 +398,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_find_next_button->setDefault (true);
   }
 
-  void find_dialog::find_next (void)
+  void find_dialog::find_next ()
   {
     find (! m_backward_check_box->isChecked ());
   }
 
-  void find_dialog::find_prev (void)
+  void find_dialog::find_prev ()
   {
     find (m_backward_check_box->isChecked ());
   }
@@ -561,7 +561,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   }
 
-  void find_dialog::do_replace (void)
+  void find_dialog::do_replace ()
   {
     if (m_edit_area)
       {
@@ -580,7 +580,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void find_dialog::replace (void)
+  void find_dialog::replace ()
   {
     if (m_edit_area)
       {
@@ -594,7 +594,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void find_dialog::replace_all (void)
+  void find_dialog::replace_all ()
   {
     int line, col;
 
@@ -629,7 +629,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void find_dialog::no_matches_message (void)
+  void find_dialog::no_matches_message ()
   {
     QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
                          tr ("No more matches found"), QMessageBox::Ok, this);

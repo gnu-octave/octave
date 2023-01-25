@@ -83,7 +83,7 @@ octave_dld_function::octave_dld_function
        && oct_file_dir == file_name.substr (0, oct_file_dir.length ()));
 }
 
-octave_dld_function::~octave_dld_function (void)
+octave_dld_function::~octave_dld_function ()
 {
   octave::dynamic_loader& dyn_loader = octave::__get_dynamic_loader__ ();
 
@@ -91,13 +91,13 @@ octave_dld_function::~octave_dld_function (void)
 }
 
 std::string
-octave_dld_function::fcn_file_name (void) const
+octave_dld_function::fcn_file_name () const
 {
   return m_sh_lib.file_name ();
 }
 
 octave::sys::time
-octave_dld_function::time_parsed (void) const
+octave_dld_function::time_parsed () const
 {
   return m_sh_lib.time_loaded ();
 }

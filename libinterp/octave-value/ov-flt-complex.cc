@@ -64,7 +64,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_complex,
                                      "float complex scalar", "single");
 
 octave_base_value *
-octave_float_complex::try_narrowing_conversion (void)
+octave_float_complex::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -230,13 +230,13 @@ octave_float_complex::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
-octave_float_complex::as_double (void) const
+octave_float_complex::as_double () const
 {
   return Complex (scalar);
 }
 
 octave_value
-octave_float_complex::as_single (void) const
+octave_float_complex::as_single () const
 {
   return scalar;
 }

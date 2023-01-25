@@ -55,18 +55,18 @@ private:
   {
   public:
 
-    cdef_package_rep (void) : cdef_meta_object_rep (), m_member_count (0) { }
+    cdef_package_rep () : cdef_meta_object_rep (), m_member_count (0) { }
 
     cdef_package_rep& operator = (const cdef_package_rep&) = delete;
 
-    ~cdef_package_rep (void) = default;
+    ~cdef_package_rep () = default;
 
-    cdef_object_rep * copy (void) const
+    cdef_object_rep * copy () const
     { return new cdef_package_rep (*this); }
 
-    bool is_package (void) const { return true; }
+    bool is_package () const { return true; }
 
-    std::string get_name (void) const { return get("Name").string_value (); }
+    std::string get_name () const { return get("Name").string_value (); }
 
     void set_name (const std::string& nm) { put ("Name", nm); }
 
@@ -79,15 +79,15 @@ private:
     OCTINTERP_API void
     install_package (const cdef_package& pack, const std::string& nm);
 
-    OCTINTERP_API Cell get_classes (void) const;
+    OCTINTERP_API Cell get_classes () const;
 
-    OCTINTERP_API Cell get_functions (void) const;
+    OCTINTERP_API Cell get_functions () const;
 
-    OCTINTERP_API Cell get_packages (void) const;
+    OCTINTERP_API Cell get_packages () const;
 
-    octave_idx_type static_count (void) const { return m_member_count; }
+    octave_idx_type static_count () const { return m_member_count; }
 
-    void destroy (void)
+    void destroy ()
     {
       if (m_member_count)
         {
@@ -106,7 +106,7 @@ private:
     meta_subsref (const std::string& type,
                   const std::list<octave_value_list>& idx, int nargout);
 
-    OCTINTERP_API void meta_release (void);
+    OCTINTERP_API void meta_release ();
 
     bool meta_accepts_postfix_index (char type) const
     {
@@ -141,7 +141,7 @@ private:
         m_package_map (p.m_package_map), m_member_count (p.m_member_count)
     { }
 
-    cdef_package wrap (void)
+    cdef_package wrap ()
     {
       m_count++;
       return cdef_package (this);
@@ -150,7 +150,7 @@ private:
 
 public:
 
-  cdef_package (void) : cdef_meta_object () { }
+  cdef_package () : cdef_meta_object () { }
 
   cdef_package (const std::string& nm)
     : cdef_meta_object (new cdef_package_rep ())
@@ -176,7 +176,7 @@ public:
     return *this;
   }
 
-  ~cdef_package (void) = default;
+  ~cdef_package () = default;
 
   void install_class (const cdef_class& cls, const std::string& nm)
   {
@@ -193,22 +193,22 @@ public:
     get_rep ()->install_package (pack, nm);
   }
 
-  Cell get_classes (void) const
+  Cell get_classes () const
   {
     return get_rep ()->get_classes ();
   }
 
-  Cell get_functions (void) const
+  Cell get_functions () const
   {
     return get_rep ()->get_functions ();
   }
 
-  Cell get_packages (void) const
+  Cell get_packages () const
   {
     return get_rep ()->get_packages ();
   }
 
-  std::string get_name (void) const { return get_rep ()->get_name (); }
+  std::string get_name () const { return get_rep ()->get_name (); }
 
   octave_value find (const std::string& nm)
   {
@@ -217,12 +217,12 @@ public:
 
 private:
 
-  cdef_package_rep * get_rep (void)
+  cdef_package_rep * get_rep ()
   {
     return dynamic_cast<cdef_package_rep *> (cdef_object::get_rep ());
   }
 
-  const cdef_package_rep * get_rep (void) const
+  const cdef_package_rep * get_rep () const
   {
     return dynamic_cast<const cdef_package_rep *> (cdef_object::get_rep ());
   }

@@ -40,7 +40,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     ToggleTool (octave::interpreter& interp,
                 const graphics_object& go,
                 QAction *action);
-    ~ToggleTool (void);
+    ~ToggleTool ();
 
     static ToggleTool *
     create (octave::interpreter& interp,

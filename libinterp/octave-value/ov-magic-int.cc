@@ -104,70 +104,70 @@ octave_base_magic_int<T>::resize (const dim_vector& dv, bool fill) const
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_double (void) const
+octave_base_magic_int<T>::as_double () const
 {
   return static_cast<double> (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_single (void) const
+octave_base_magic_int<T>::as_single () const
 {
   return static_cast<float> (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_int8 (void) const
+octave_base_magic_int<T>::as_int8 () const
 {
   return octave_int8 (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_int16 (void) const
+octave_base_magic_int<T>::as_int16 () const
 {
   return octave_int16 (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_int32 (void) const
+octave_base_magic_int<T>::as_int32 () const
 {
   return octave_int32 (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_int64 (void) const
+octave_base_magic_int<T>::as_int64 () const
 {
   return octave_int64 (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_uint8 (void) const
+octave_base_magic_int<T>::as_uint8 () const
 {
   return octave_uint8 (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_uint16 (void) const
+octave_base_magic_int<T>::as_uint16 () const
 {
   return octave_uint16 (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_uint32 (void) const
+octave_base_magic_int<T>::as_uint32 () const
 {
   return octave_uint32 (scalar_ref ());
 }
 
 template <typename T>
 octave_value
-octave_base_magic_int<T>::as_uint64 (void) const
+octave_base_magic_int<T>::as_uint64 () const
 {
   return octave_uint64 (scalar_ref ());
 }
@@ -306,7 +306,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_uint, "magic_uint",
                                      "double");
 
 octave_base_value::type_conv_info
-octave_magic_uint::numeric_conversion_function (void) const
+octave_magic_uint::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conv_fcn,
          octave_scalar::static_type_id ());
@@ -316,7 +316,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_magic_int, "magic_int",
                                      "double");
 
 octave_base_value::type_conv_info
-octave_magic_int::numeric_conversion_function (void) const
+octave_magic_int::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conv_fcn,
          octave_scalar::static_type_id ());

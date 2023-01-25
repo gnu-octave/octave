@@ -114,7 +114,7 @@ more_than_a_screenful (const char *s, int len)
   return false;
 }
 
-static std::string default_pager (void)
+static std::string default_pager ()
 {
   std::string pager_binary = sys::env::getenv ("PAGER");
 
@@ -125,7 +125,7 @@ static std::string default_pager (void)
 }
 
 int
-pager_buf::sync (void)
+pager_buf::sync ()
 {
   output_system& output_sys = __get_output_system__ ();
 
@@ -144,7 +144,7 @@ pager_buf::sync (void)
 }
 
 void
-pager_buf::flush_current_contents_to_diary (void)
+pager_buf::flush_current_contents_to_diary ()
 {
   char *buf = pbase () + m_diary_skip;
 
@@ -156,13 +156,13 @@ pager_buf::flush_current_contents_to_diary (void)
 }
 
 void
-pager_buf::set_diary_skip (void)
+pager_buf::set_diary_skip ()
 {
   m_diary_skip = pptr () - pbase ();
 }
 
 int
-diary_buf::sync (void)
+diary_buf::sync ()
 {
   output_system& output_sys = __get_output_system__ ();
 
@@ -183,31 +183,31 @@ diary_buf::sync (void)
   return 0;
 }
 
-pager_stream::pager_stream (void) : std::ostream (nullptr), m_pb (nullptr)
+pager_stream::pager_stream () : std::ostream (nullptr), m_pb (nullptr)
 {
   m_pb = new pager_buf ();
   rdbuf (m_pb);
   setf (unitbuf);
 }
 
-pager_stream::~pager_stream (void)
+pager_stream::~pager_stream ()
 {
   flush ();
   delete m_pb;
 }
 
-std::ostream& pager_stream::stream (void)
+std::ostream& pager_stream::stream ()
 {
   return *this;
 }
 
-void pager_stream::flush_current_contents_to_diary (void)
+void pager_stream::flush_current_contents_to_diary ()
 {
   if (m_pb)
     m_pb->flush_current_contents_to_diary ();
 }
 
-void pager_stream::set_diary_skip (void)
+void pager_stream::set_diary_skip ()
 {
   if (m_pb)
     m_pb->set_diary_skip ();
@@ -218,7 +218,7 @@ void pager_stream::set_diary_skip (void)
 // called when the pager is not in use.  For example, just before
 // getting command-line input.
 
-void pager_stream::reset (void)
+void pager_stream::reset ()
 {
   delete m_pb;
   m_pb = new pager_buf ();
@@ -226,20 +226,20 @@ void pager_stream::reset (void)
   setf (unitbuf);
 }
 
-diary_stream::diary_stream (void) : std::ostream (nullptr), m_db (nullptr)
+diary_stream::diary_stream () : std::ostream (nullptr), m_db (nullptr)
 {
   m_db = new diary_buf ();
   rdbuf (m_db);
   setf (unitbuf);
 }
 
-diary_stream::~diary_stream (void)
+diary_stream::~diary_stream ()
 {
   flush ();
   delete m_db;
 }
 
-std::ostream& diary_stream::stream (void)
+std::ostream& diary_stream::stream ()
 {
   return *this;
 }
@@ -249,7 +249,7 @@ std::ostream& diary_stream::stream (void)
 // called when the pager is not in use.  For example, just before
 // getting command-line input.
 
-void diary_stream::reset (void)
+void diary_stream::reset ()
 {
   delete m_db;
   m_db = new diary_buf ();
@@ -257,7 +257,7 @@ void diary_stream::reset (void)
   setf (unitbuf);
 }
 
-void flush_stdout (void)
+void flush_stdout ()
 {
   output_system& output_sys = __get_output_system__ ();
 
@@ -302,7 +302,7 @@ output_system::page_screen_output (const octave_value_list& args,
                                 "page_screen_output");
 }
 
-std::string output_system::pager_command (void) const
+std::string output_system::pager_command () const
 {
   std::string cmd = m_PAGER;
 
@@ -312,7 +312,7 @@ std::string output_system::pager_command (void) const
   return cmd;
 }
 
-void output_system::reset (void)
+void output_system::reset ()
 {
   flush_stdout ();
 
@@ -320,7 +320,7 @@ void output_system::reset (void)
   m_diary_stream.reset ();
 }
 
-void output_system::flush_stdout (void)
+void output_system::flush_stdout ()
 {
   if (! m_flushing_output_to_pager)
     {
@@ -338,7 +338,7 @@ void output_system::flush_stdout (void)
     }
 }
 
-void output_system::close_diary (void)
+void output_system::close_diary ()
 {
   // Try to flush the current buffer to the diary now, so that things
   // like
@@ -360,7 +360,7 @@ void output_system::close_diary (void)
     }
 }
 
-void output_system::open_diary (void)
+void output_system::open_diary ()
 {
   close_diary ();
 
@@ -406,7 +406,7 @@ bool output_system::sync (const char *buf, int len)
   return false;
 }
 
-void output_system::clear_external_pager (void)
+void output_system::clear_external_pager ()
 {
   if (m_external_pager)
     {
@@ -419,7 +419,7 @@ void output_system::clear_external_pager (void)
     }
 }
 
-void output_system::start_external_pager (void)
+void output_system::start_external_pager ()
 {
   if (m_external_pager)
     return;
@@ -489,14 +489,14 @@ void output_system::do_sync (const char *msg, int len, bool bypass_pager)
     }
 }
 
-std::ostream& __stdout__ (void)
+std::ostream& __stdout__ ()
 {
   output_system& output_sys = __get_output_system__ ();
 
   return output_sys.__stdout__ ();
 }
 
-std::ostream& __diary__ (void)
+std::ostream& __diary__ ()
 {
   output_system& output_sys = __get_output_system__ ();
 

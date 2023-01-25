@@ -551,7 +551,7 @@ DASRT::integrate (const ColumnVector& tout, const ColumnVector& tcrit)
 }
 
 std::string
-DASRT::error_message (void) const
+DASRT::error_message () const
 {
   std::string retval;
 

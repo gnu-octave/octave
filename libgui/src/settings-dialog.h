@@ -50,21 +50,21 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     explicit settings_dialog (QWidget *parent,
                               const QString& desired_tab = QString ());
 
-    ~settings_dialog (void) = default;
+    ~settings_dialog () = default;
 
     void show_tab (const QString&);
 
   signals:
 
-    void apply_new_settings (void);
+    void apply_new_settings ();
 
   private slots:
 
-    void get_octave_dir (void);
-    void get_file_browser_dir (void);
+    void get_octave_dir ();
+    void get_file_browser_dir ();
     void get_dir (QLineEdit *, const QString&);
     void set_disabled_pref_file_browser_dir (bool disable);
-    void proxy_items_update (void);
+    void proxy_items_update ();
 
     // slots updating colors depending on theme
     void update_terminal_colors (int def = 0);
@@ -76,9 +76,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void button_clicked (QAbstractButton *button);
 
     // slots for import/export-buttons of shortcut sets
-    void import_shortcut_set (void);
-    void export_shortcut_set (void);
-    void default_shortcut_set (void);
+    void import_shortcut_set ();
+    void export_shortcut_set ();
+    void default_shortcut_set ();
 
   private:
 
@@ -94,20 +94,20 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     void write_lexer_settings (QsciLexer *lexer);
 #endif
 
-    void write_changed_settings (void);
+    void write_changed_settings ();
 
-    void read_workspace_colors (void);
-    void write_workspace_colors (void);
+    void read_workspace_colors ();
+    void write_workspace_colors ();
 
-    void read_terminal_colors (void);
-    void write_terminal_colors (void);
+    void read_terminal_colors ();
+    void write_terminal_colors ();
 
-    void read_varedit_colors (void);
-    void write_varedit_colors (void);
+    void read_varedit_colors ();
+    void write_varedit_colors ();
 
     QString get_shortcuts_file_name (import_export_action action);
 
-    bool overwrite_all_shortcuts (void);
+    bool overwrite_all_shortcuts ();
 
     color_picker *m_widget_title_bg_color;
     color_picker *m_widget_title_bg_color_active;

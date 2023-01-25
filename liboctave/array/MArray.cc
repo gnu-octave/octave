@@ -213,7 +213,7 @@ void MArray<T>::idx_add_nd (const octave::idx_vector& idx,
 // N-dimensional array with math ops.
 template <typename T>
 void
-MArray<T>::changesign (void)
+MArray<T>::changesign ()
 {
   if (Array<T>::is_shared ())
     *this = - *this;

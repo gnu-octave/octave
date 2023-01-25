@@ -198,9 +198,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     focus_command_window ();
   }
 
-  main_window::~main_window (void) { }
+  main_window::~main_window () { }
 
-  void main_window::adopt_dock_widgets (void)
+  void main_window::adopt_dock_widgets ()
   {
     adopt_terminal_widget ();
     adopt_documentation_widget ();
@@ -213,7 +213,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_previous_dock = m_command_window;
   }
 
-  void main_window::adopt_terminal_widget (void)
+  void main_window::adopt_terminal_widget ()
   {
     m_command_window = m_octave_qobj.terminal_widget (this);
 
@@ -271,14 +271,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::adopt_documentation_widget (void)
+  void main_window::adopt_documentation_widget ()
   {
     m_doc_browser_window = m_octave_qobj.documentation_widget (this);
 
     make_dock_widget_connections (m_doc_browser_window);
   }
 
-  void main_window::adopt_file_browser_widget (void)
+  void main_window::adopt_file_browser_widget ()
   {
     m_file_browser_window = m_octave_qobj.file_browser_widget (this);
 
@@ -306,7 +306,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &main_window::find_files);
   }
 
-  void main_window::adopt_history_widget (void)
+  void main_window::adopt_history_widget ()
   {
     m_history_window = m_octave_qobj.history_widget (this);
 
@@ -319,7 +319,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &main_window::execute_command_in_terminal);
   }
 
-  void main_window::adopt_workspace_widget (void)
+  void main_window::adopt_workspace_widget ()
   {
     m_workspace_window = m_octave_qobj.workspace_widget (this);
 
@@ -329,7 +329,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &main_window::execute_command_in_terminal);
   }
 
-  void main_window::adopt_editor_widget (void)
+  void main_window::adopt_editor_widget ()
   {
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
@@ -437,7 +437,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              m_active_editor, SLOT (handle_edit_file_request (const QString&)));
   }
 
-  void main_window::adopt_variable_editor_widget (void)
+  void main_window::adopt_variable_editor_widget ()
   {
     m_variable_editor_window = m_octave_qobj.variable_editor_widget (this);
 
@@ -468,12 +468,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              dw, &octave_dock_widget::save_settings);
   }
 
-  bool main_window::command_window_has_focus (void) const
+  bool main_window::command_window_has_focus () const
   {
     return m_command_window->has_focus ();
   }
 
-  void main_window::focus_command_window (void)
+  void main_window::focus_command_window ()
   {
     m_command_window->activate ();
   }
@@ -490,7 +490,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_file_browser_window->activate ();
   }
 
-  bool main_window::confirm_shutdown (void)
+  bool main_window::confirm_shutdown ()
   {
     bool closenow = true;
 
@@ -631,7 +631,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::request_reload_settings (void)
+  void main_window::request_reload_settings ()
   {
     emit settings_changed ();
   }
@@ -641,7 +641,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_status_bar->showMessage (statusMessage, 1000);
   }
 
-  void main_window::handle_save_workspace_request (void)
+  void main_window::handle_save_workspace_request ()
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = 0;  // No options by default.
@@ -725,7 +725,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::handle_clear_workspace_request (void)
+  void main_window::handle_clear_workspace_request ()
   {
     emit interpreter_event
       ([] (interpreter& interp)
@@ -736,10 +736,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::handle_clear_command_window_request (void)
+  void main_window::handle_clear_command_window_request ()
   {
     emit interpreter_event
-      ([] (void)
+      ([] ()
        {
          // INTERPRETER THREAD
 
@@ -748,7 +748,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::handle_clear_history_request (void)
+  void main_window::handle_clear_history_request ()
   {
     emit interpreter_event
       ([] (interpreter& interp)
@@ -761,12 +761,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::handle_undo_request (void)
+  void main_window::handle_undo_request ()
   {
     if (command_window_has_focus ())
       {
         emit interpreter_event
-          ([] (void)
+          ([] ()
            {
              // INTERPRETER THREAD
 
@@ -832,28 +832,28 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     qt_link->wake_all ();
   }
 
-  void main_window::open_online_documentation_page (void)
+  void main_window::open_online_documentation_page ()
   {
     QDesktopServices::openUrl
       (QUrl ("https://octave.org/doc/interpreter/index.html"));
   }
 
-  void main_window::open_bug_tracker_page (void)
+  void main_window::open_bug_tracker_page ()
   {
     QDesktopServices::openUrl (QUrl ("https://octave.org/bugs.html"));
   }
 
-  void main_window::open_octave_packages_page (void)
+  void main_window::open_octave_packages_page ()
   {
     QDesktopServices::openUrl (QUrl ("https://packages.octave.org/index.html"));
   }
 
-  void main_window::open_contribute_page (void)
+  void main_window::open_contribute_page ()
   {
     QDesktopServices::openUrl (QUrl ("https://octave.org/contribute.html"));
   }
 
-  void main_window::open_donate_page (void)
+  void main_window::open_donate_page ()
   {
     QDesktopServices::openUrl (QUrl ("https://octave.org/donate.html"));
   }
@@ -878,7 +878,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_settings_dlg->show ();
   }
 
-  void main_window::show_about_octave (void)
+  void main_window::show_about_octave ()
   {
     std::string message
       = octave_name_version_copyright_copying_warranty_and_bugs (true);
@@ -1022,7 +1022,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return darkPalette;
   }
 
-  void main_window::prepare_to_exit (void)
+  void main_window::prepare_to_exit ()
   {
     // Find files dialog is constructed dynamically, not at time of main_window
     // construction.  Connecting it to qApp aboutToQuit signal would have
@@ -1040,7 +1040,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_active_dock = nullptr;
   }
 
-  void main_window::go_to_previous_widget (void)
+  void main_window::go_to_previous_widget ()
   {
     m_previous_dock->activate ();
   }
@@ -1060,7 +1060,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_current_directory_combo_box->setCurrentIndex (0);
   }
 
-  void main_window::browse_for_directory (void)
+  void main_window::browse_for_directory ()
   {
     // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
     int opts = QFileDialog::ShowDirsOnly;
@@ -1102,7 +1102,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::change_directory_up (void)
+  void main_window::change_directory_up ()
   {
     set_current_working_directory ("..");
   }
@@ -1111,7 +1111,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // combobox to change to a new directory or a directory that is already
   // in the drop down list.
 
-  void main_window::accept_directory_line_edit (void)
+  void main_window::accept_directory_line_edit ()
   {
     // Get new directory name, and change to it if it is new.  Otherwise,
     // the combo box will trigger the "activated" signal to change to the
@@ -1134,7 +1134,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     else
       {
         emit interpreter_event
-          ([=] (void)
+          ([=] ()
            {
              // INTERPRETER THREAD
 
@@ -1195,7 +1195,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     focus_console_after_command ();
   }
 
-  void main_window::handle_new_figure_request (void)
+  void main_window::handle_new_figure_request ()
   {
     emit interpreter_event
       ([] (interpreter& interp)
@@ -1207,7 +1207,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::handle_enter_debugger (void)
+  void main_window::handle_enter_debugger ()
   {
     setWindowTitle ("Octave (Debugging)");
 
@@ -1218,7 +1218,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_debug_quit->setEnabled (true);
   }
 
-  void main_window::handle_exit_debugger (void)
+  void main_window::handle_exit_debugger ()
   {
     setWindowTitle ("Octave");
 
@@ -1229,7 +1229,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_debug_quit->setEnabled (false);
   }
 
-  void main_window::debug_continue (void)
+  void main_window::debug_continue ()
   {
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1243,7 +1243,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::debug_step_into (void)
+  void main_window::debug_step_into ()
   {
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1257,7 +1257,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::debug_step_over (void)
+  void main_window::debug_step_over ()
   {
     if (m_debug_quit->isEnabled ())
       {
@@ -1282,7 +1282,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::debug_step_out (void)
+  void main_window::debug_step_out ()
   {
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1296,7 +1296,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::debug_quit (void)
+  void main_window::debug_quit ()
   {
     emit interpreter_event
       ([] (interpreter& interp)
@@ -1315,7 +1315,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // These are moved from editor to here for also using them when octave
   // is built without qscintilla
   //
-  void main_window::request_open_file (void)
+  void main_window::request_open_file ()
   {
     // Open file isn't a file_editor_tab or editor function since the file
     // might be opened in an external editor.  Hence, functionality is here.
@@ -1383,8 +1383,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           {
             // no, so enable this settings and wait for end of new file loading
             settings.setValue (ed_create_new_file.settings_key (), true);
-            connect (m_editor_window, SIGNAL (file_loaded_signal (void)),
-                     this, SLOT (restore_create_file_setting (void)));
+            connect (m_editor_window, SIGNAL (file_loaded_signal ()),
+                     this, SLOT (restore_create_file_setting ()));
           }
         // start the edit command
         execute_command_in_terminal ("edit " + new_name);
@@ -1537,7 +1537,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       focus_command_window ();
   }
 
-  void main_window::read_settings (void)
+  void main_window::read_settings ()
   {
     gui_settings settings;
 
@@ -1553,12 +1553,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     emit settings_changed ();
   }
 
-  void main_window::init_terminal_size (void)
+  void main_window::init_terminal_size ()
   {
     emit init_terminal_size_signal ();
   }
 
-  void main_window::set_window_layout (void)
+  void main_window::set_window_layout ()
   {
     gui_settings settings;
 
@@ -1655,7 +1655,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     show ();
   }
 
-  void main_window::write_settings (void)
+  void main_window::write_settings ()
   {
     gui_settings settings;
 
@@ -1671,7 +1671,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.sync ();
   }
 
-  void main_window::copyClipboard (void)
+  void main_window::copyClipboard ()
   {
     if (m_current_directory_combo_box->hasFocus ())
       {
@@ -1686,7 +1686,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       emit copyClipboard_signal ();
   }
 
-  void main_window::pasteClipboard (void)
+  void main_window::pasteClipboard ()
   {
     if (m_current_directory_combo_box->hasFocus ())
       {
@@ -1702,7 +1702,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       emit pasteClipboard_signal ();
   }
 
-  void main_window::selectAll (void)
+  void main_window::selectAll ()
   {
     if (m_current_directory_combo_box->hasFocus ())
       {
@@ -1731,7 +1731,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::handle_octave_ready (void)
+  void main_window::handle_octave_ready ()
   {
     // actions after the startup files are executed
 
@@ -1811,7 +1811,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     focus_command_window ();  // make sure that the command window has focus
   }
 
-  void main_window::handle_set_path_dialog_request (void)
+  void main_window::handle_set_path_dialog_request ()
   {
     if (m_set_path_dlg)  // m_set_path_dlg is a guarded pointer!
       return;
@@ -1880,7 +1880,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void main_window::set_screen_size (int ht, int wd)
   {
     emit interpreter_event
-      ([=] (void)
+      ([=] ()
        {
          // INTERPRETER THREAD
 
@@ -1888,7 +1888,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
        });
   }
 
-  void main_window::clipboard_has_changed (void)
+  void main_window::clipboard_has_changed ()
   {
     if (m_clipboard->text ().isEmpty ())
       {
@@ -1902,7 +1902,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::clear_clipboard (void)
+  void main_window::clear_clipboard ()
   {
     m_clipboard->clear (QClipboard::Clipboard);
   }
@@ -1918,15 +1918,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  void main_window::restore_create_file_setting (void)
+  void main_window::restore_create_file_setting ()
   {
     // restore the new files creation setting
 
     gui_settings settings;
 
     settings.setValue (ed_create_new_file.settings_key (), false);
-    disconnect (m_editor_window, SIGNAL (file_loaded_signal (void)),
-                this, SLOT (restore_create_file_setting (void)));
+    disconnect (m_editor_window, SIGNAL (file_loaded_signal ()),
+                this, SLOT (restore_create_file_setting ()));
   }
 
   void main_window::set_file_encoding (const QString& new_encoding)
@@ -1943,7 +1943,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
   }
 
-  void main_window::profiler_session (void)
+  void main_window::profiler_session ()
   {
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1954,7 +1954,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         });
   }
 
-  void main_window::profiler_session_resume (void)
+  void main_window::profiler_session_resume ()
   {
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1965,7 +1965,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         });
   }
 
-  void main_window::profiler_stop (void)
+  void main_window::profiler_stop ()
   {
     emit interpreter_event
       ([=] (interpreter& interp)
@@ -1988,7 +1988,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_profiler_status_indicator->set_state (state);
   }
 
-  void main_window::profiler_show (void)
+  void main_window::profiler_show ()
   {
     // Do not use a separate interpreter event as in the other
     // profiler slots since the output of the command "profshow"
@@ -2030,7 +2030,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       e->ignore ();
   }
 
-  void main_window::construct_central_widget (void)
+  void main_window::construct_central_widget ()
   {
     // Create and set the central widget.  QMainWindow takes ownership of
     // the widget (pointer) so there is no need to delete the object upon
@@ -2046,7 +2046,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Main subroutine of the constructor
 
-  void main_window::construct (void)
+  void main_window::construct ()
   {
     setWindowIcon (QIcon (dw_icon_set_names["NONE"]));
 
@@ -2093,7 +2093,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     configure_shortcuts ();
   }
 
-  void main_window::construct_octave_qt_link (void)
+  void main_window::construct_octave_qt_link ()
   {
     interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
@@ -2170,7 +2170,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return menu;
   }
 
-  void main_window::construct_menu_bar (void)
+  void main_window::construct_menu_bar ()
   {
     QMenuBar *menu_bar = menuBar ();
 
@@ -2215,7 +2215,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_open_action
       = add_action (file_menu, settings.icon ("document-open"), tr ("Open..."),
-                    SLOT (request_open_file (void)), this);
+                    SLOT (request_open_file ()), this);
     m_open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #if defined (HAVE_QSCINTILLA)
@@ -2226,17 +2226,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_load_workspace_action
       = add_action (file_menu, QIcon (), tr ("Load Workspace..."),
-                    SLOT (handle_load_workspace_request (void)), this);
+                    SLOT (handle_load_workspace_request ()), this);
 
     m_save_workspace_action
       = add_action (file_menu, QIcon (), tr ("Save Workspace As..."),
-                    SLOT (handle_save_workspace_request (void)), this);
+                    SLOT (handle_save_workspace_request ()), this);
 
     file_menu->addSeparator ();
 
     m_exit_action
       = add_action (file_menu, QIcon (), tr ("Exit"),
-                    SLOT (close (void)), this);
+                    SLOT (close ()), this);
     m_exit_action->setMenuRole (QAction::QuitRole);
 
     // Connect signal related to opening or creating editor files
@@ -2260,15 +2260,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_new_script_action
       = add_action (new_menu, settings.icon ("document-new"), tr ("New Script"),
-                    SLOT (request_new_script (void)), this);
+                    SLOT (request_new_script ()), this);
 
     m_new_function_action
       = add_action (new_menu, QIcon (), tr ("New Function..."),
-                    SLOT (request_new_function (void)), this);
+                    SLOT (request_new_function ()), this);
 
     m_new_figure_action
       = add_action (new_menu, QIcon (), tr ("New Figure"),
-                    SLOT (handle_new_figure_request (void)), this);
+                    SLOT (handle_new_figure_request ()), this);
   }
 
   void main_window::construct_edit_menu (QMenuBar *p)
@@ -2386,19 +2386,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_debug_step_over
       = construct_debug_menu_item ("db-step", tr ("Step"),
-                                   SLOT (debug_step_over (void)));
+                                   SLOT (debug_step_over ()));
 
     m_debug_step_into
       = construct_debug_menu_item ("db-step-in", tr ("Step In"),
-                                   SLOT (debug_step_into (void)));
+                                   SLOT (debug_step_into ()));
 
     m_debug_step_out
       = construct_debug_menu_item ("db-step-out", tr ("Step Out"),
-                                   SLOT (debug_step_out (void)));
+                                   SLOT (debug_step_out ()));
 
     m_debug_continue
       = construct_debug_menu_item ("db-cont", tr ("Continue"),
-                                   SLOT (debug_continue (void)));
+                                   SLOT (debug_continue ()));
 
     m_debug_menu->addSeparator ();
 #if defined (HAVE_QSCINTILLA)
@@ -2407,7 +2407,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_debug_quit
       = construct_debug_menu_item ("db-stop", tr ("Quit Debug Mode"),
-                                   SLOT (debug_quit (void)));
+                                   SLOT (debug_quit ()));
   }
 
   void main_window::construct_tools_menu (QMenuBar *p)
@@ -2461,8 +2461,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         else
           {
             // action for focus of dock widget
-            connect (action, SIGNAL (triggered (void)),
-                     widget, SLOT (activate (void)));
+            connect (action, SIGNAL (triggered ()),
+                     widget, SLOT (activate ()));
           }
       }
     else
@@ -2524,12 +2524,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     window_menu->addSeparator ();
 
     m_previous_dock_action = add_action (window_menu, QIcon (),
-                                           tr ("Previous Widget"), SLOT (go_to_previous_widget (void)));
+                                           tr ("Previous Widget"), SLOT (go_to_previous_widget ()));
 
     window_menu->addSeparator ();
 
     m_reset_windows_action = add_action (window_menu, QIcon (),
-                                         tr ("Reset Default Window Layout"), SLOT (reset_windows (void)));
+                                         tr ("Reset Default Window Layout"), SLOT (reset_windows ()));
   }
 
   void main_window::construct_help_menu (QMenuBar *p)
@@ -2590,7 +2590,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_current_news_action->setShortcutContext (Qt::ApplicationShortcut);
   }
 
-  void main_window::construct_tool_bar (void)
+  void main_window::construct_tool_bar ()
   {
     m_main_tool_bar = addToolBar (tr ("Toolbar"));
     m_main_tool_bar->setStyleSheet (m_main_tool_bar->styleSheet ()
@@ -2650,7 +2650,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
              this, &main_window::handle_undo_request);
   }
 
-  void main_window::focus_console_after_command (void)
+  void main_window::focus_console_after_command ()
   {
     gui_settings settings;
 
@@ -2658,7 +2658,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       focus_command_window ();
   }
 
-  void main_window::configure_shortcuts (void)
+  void main_window::configure_shortcuts ()
   {
     gui_settings settings;
 
@@ -2733,7 +2733,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     settings.set_shortcut (m_current_news_action, sc_main_news_community_news, enable);
   }
 
-  QList<octave_dock_widget *> main_window::dock_widget_list (void)
+  QList<octave_dock_widget *> main_window::dock_widget_list ()
   {
     QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
     list.append (static_cast<octave_dock_widget *> (m_command_window));
@@ -2783,7 +2783,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     resize (2*win_x/3, 7*win_y/8);
   }
 
-  void main_window::reset_windows (void)
+  void main_window::reset_windows ()
   {
     // Slot for resetting the window layout to the default one
     hide ();

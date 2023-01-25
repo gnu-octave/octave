@@ -37,7 +37,7 @@ octave_integer : public octave_base_dld_value
 {
 public:
 
-  octave_integer (void)
+  octave_integer ()
     : octave_base_dld_value (), scalar (0) { }
 
   octave_integer (int i)
@@ -46,9 +46,9 @@ public:
   octave_integer (const octave_integer& s)
     : octave_base_dld_value (), scalar (s.scalar) { }
 
-  ~octave_integer (void) = default;
+  ~octave_integer () = default;
 
-  octave_base_value * clone (void) { return new octave_integer (*this); }
+  octave_base_value * clone () { return new octave_integer (*this); }
 
 #if 0
   void *operator new (std::size_t size);
@@ -58,28 +58,28 @@ public:
   octave::idx_vector index_vector (bool) const
   { return octave::idx_vector ((double) scalar); }
 
-  int rows (void) const { return 1; }
-  int columns (void) const { return 1; }
+  int rows () const { return 1; }
+  int columns () const { return 1; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool is_defined (void) const { return true; }
-  bool is_real_scalar (void) const { return true; }
+  bool is_defined () const { return true; }
+  bool is_real_scalar () const { return true; }
 
-  octave_value all (void) const { return (double) (scalar != 0); }
-  octave_value any (void) const { return (double) (scalar != 0); }
+  octave_value all () const { return (double) (scalar != 0); }
+  octave_value any () const { return (double) (scalar != 0); }
 
-  bool is_real_type (void) const { return true; }
-  bool is_scalar_type (void) const { return true; }
-  bool isnumeric (void) const { return true; }
+  bool is_real_type () const { return true; }
+  bool is_scalar_type () const { return true; }
+  bool isnumeric () const { return true; }
 
-  bool valid_as_scalar_index (void) const
+  bool valid_as_scalar_index () const
   { return scalar == 1; }
 
-  bool valid_as_zero_index (void) const
+  bool valid_as_zero_index () const
   { return scalar == 0; }
 
-  bool is_true (void) const { return (scalar != 0); }
+  bool is_true () const { return (scalar != 0); }
 
   double double_value (bool = false) const { return (double) scalar; }
 
@@ -92,17 +92,17 @@ public:
   ComplexMatrix complex_matrix_value (bool = false) const
   { return ComplexMatrix (1, 1, Complex (scalar)); }
 
-  octave_value gnot (void) const { return octave_value ((double) ! scalar); }
+  octave_value gnot () const { return octave_value ((double) ! scalar); }
 
-  octave_value uminus (void) const { return new octave_integer (- scalar); }
+  octave_value uminus () const { return new octave_integer (- scalar); }
 
-  octave_value transpose (void) const { return new octave_integer (scalar); }
+  octave_value transpose () const { return new octave_integer (scalar); }
 
-  octave_value hermitian (void) const { return new octave_integer (scalar); }
+  octave_value hermitian () const { return new octave_integer (scalar); }
 
-  void increment (void) { ++scalar; }
+  void increment () { ++scalar; }
 
-  void decrement (void) { --scalar; }
+  void decrement () { --scalar; }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 

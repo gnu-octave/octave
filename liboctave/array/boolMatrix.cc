@@ -63,7 +63,7 @@ boolMatrix::insert (const boolMatrix& a, octave_idx_type r, octave_idx_type c)
 // unary operations
 
 boolMatrix
-boolMatrix::operator ! (void) const
+boolMatrix::operator ! () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();

@@ -36,7 +36,7 @@ ODES : public base_diff_eqn, public ODESFunc
 {
 public:
 
-  ODES (void)
+  ODES ()
     : base_diff_eqn (), ODESFunc (), m_xdot (), m_theta () { }
 
   ODES (const ColumnVector& s, double tm, ODESFunc& f)
@@ -65,9 +65,9 @@ public:
     return *this;
   }
 
-  ~ODES (void) = default;
+  ~ODES () = default;
 
-  ColumnVector parameter_vector (void) { return m_theta; }
+  ColumnVector parameter_vector () { return m_theta; }
 
   OCTAVE_API void initialize (const ColumnVector& x, double t);
 

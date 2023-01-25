@@ -30,6 +30,6 @@
 
 #include <string>
 
-extern OCTAVE_API std::string liboctave_hg_id (void);
+extern OCTAVE_API std::string liboctave_hg_id ();
 
 #endif

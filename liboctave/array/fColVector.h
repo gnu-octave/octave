@@ -37,7 +37,7 @@ FloatColumnVector : public MArray<float>
 {
 public:
 
-  FloatColumnVector (void) : MArray<float> (dim_vector (0, 1)) { }
+  FloatColumnVector () : MArray<float> (dim_vector (0, 1)) { }
 
   explicit FloatColumnVector (octave_idx_type n)
     : MArray<float> (dim_vector (n, 1)) { }
@@ -76,7 +76,7 @@ public:
 
   OCTAVE_API FloatColumnVector stack (const FloatColumnVector& a) const;
 
-  OCTAVE_API FloatRowVector transpose (void) const;
+  OCTAVE_API FloatRowVector transpose () const;
 
   friend OCTAVE_API FloatColumnVector real (const FloatComplexColumnVector& a);
   friend OCTAVE_API FloatColumnVector imag (const FloatComplexColumnVector& a);
@@ -101,10 +101,10 @@ public:
 
   // other operations
 
-  OCTAVE_API float min (void) const;
-  OCTAVE_API float max (void) const;
+  OCTAVE_API float min () const;
+  OCTAVE_API float max () const;
 
-  OCTAVE_API FloatColumnVector abs (void) const;
+  OCTAVE_API FloatColumnVector abs () const;
 
   // i/o
 

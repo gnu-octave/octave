@@ -55,7 +55,7 @@ class type_info;
 // object is required to load a user-defined octave_value object,
 // maybe this function should be declared in a public header file?
 
-extern OCTINTERP_API type_info& __get_type_info__ (void);
+extern OCTINTERP_API type_info& __get_type_info__ ();
 
 // For now just preserve the old interface and don't mark it as deprecated.
 // This function is currently an internal, private function.  Additional
@@ -186,13 +186,13 @@ DEF_BTYP_TRAITS (btyp_char, char);
 
 #define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(VIRTUAL)                  \
   public:                                                               \
-    VIRTUAL int type_id (void) const { return t_id; }                   \
-    VIRTUAL std::string type_name (void) const { return t_name; }       \
-    VIRTUAL std::string class_name (void) const { return c_name; }      \
-    static int static_type_id (void) { return t_id; }                   \
-    static std::string static_type_name (void) { return t_name; }       \
-    static std::string static_class_name (void) { return c_name; }      \
-    static void register_type (void);                                   \
+    VIRTUAL int type_id () const { return t_id; }                   \
+    VIRTUAL std::string type_name () const { return t_name; }       \
+    VIRTUAL std::string class_name () const { return c_name; }      \
+    static int static_type_id () { return t_id; }                   \
+    static std::string static_type_name () { return t_name; }       \
+    static std::string static_class_name () { return c_name; }      \
+    static void register_type ();                                   \
     static void register_type (octave::type_info&);                     \
                                                                         \
   private:                                                              \
@@ -201,7 +201,7 @@ DEF_BTYP_TRAITS (btyp_char, char);
     static const std::string c_name;
 
 #define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS(cls, type)           \
-  template <> void cls<type>::register_type (void);                     \
+  template <> void cls<type>::register_type ();                     \
   template <> void cls<type>::register_type (octave::type_info&);       \
   template <> int cls<type>::t_id;                                      \
   template <> const std::string cls<type>::t_name;                      \
@@ -211,7 +211,7 @@ DEF_BTYP_TRAITS (btyp_char, char);
   tspec int t::t_id (-1);                                               \
   tspec const std::string t::t_name (n);                                \
   tspec const std::string t::c_name (c);                                \
-  tspec void t::register_type (void)                                    \
+  tspec void t::register_type ()                                    \
   {                                                                     \
     octave::type_info& type_info = octave::__get_type_info__ ();        \
                                                                         \
@@ -248,12 +248,12 @@ public:
     type_conv_info (type_conv_fcn f = nullptr, int t = -1)
       : m_fcn (f), m_type_id (t) { }
 
-    operator type_conv_fcn (void) const { return m_fcn; }
+    operator type_conv_fcn () const { return m_fcn; }
 
     octave_base_value * operator () (const octave_base_value& v) const
     { return (*m_fcn) (v); }
 
-    int type_id (void) const { return m_type_id; }
+    int type_id () const { return m_type_id; }
 
   private:
     type_conv_fcn m_fcn;
@@ -262,59 +262,59 @@ public:
 
   friend class octave_value;
 
-  octave_base_value (void) : count (1) { }
+  octave_base_value () : count (1) { }
 
   octave_base_value (const octave_base_value&) : count (1) { }
 
-  virtual ~octave_base_value (void) = default;
+  virtual ~octave_base_value () = default;
 
   // Unconditional clone.  Always clones.
   virtual octave_base_value *
-  clone (void) const { return new octave_base_value (*this); }
+  clone () const { return new octave_base_value (*this); }
 
   // Empty clone.
   virtual octave_base_value *
-  empty_clone (void) const;
+  empty_clone () const;
 
   // Unique clone.  Usually clones, but may be overridden to fake the
   // cloning when sharing copies is to be controlled from within an
   // instance (see octave_class).
   virtual octave_base_value *
-  unique_clone (void) { return clone (); }
+  unique_clone () { return clone (); }
 
   virtual void break_closure_cycles (const std::shared_ptr<octave::stack_frame>&) { }
 
   virtual type_conv_info
-  numeric_conversion_function (void) const
+  numeric_conversion_function () const
   { return type_conv_info (); }
 
   virtual type_conv_info
-  numeric_demotion_function (void) const
+  numeric_demotion_function () const
   { return type_conv_info (); }
 
-  virtual octave_value squeeze (void) const;
+  virtual octave_value squeeze () const;
 
-  virtual octave_value full_value (void) const;
+  virtual octave_value full_value () const;
 
-  virtual octave_value as_double (void) const;
-  virtual octave_value as_single (void) const;
+  virtual octave_value as_double () const;
+  virtual octave_value as_single () const;
 
-  virtual octave_value as_int8 (void) const;
-  virtual octave_value as_int16 (void) const;
-  virtual octave_value as_int32 (void) const;
-  virtual octave_value as_int64 (void) const;
+  virtual octave_value as_int8 () const;
+  virtual octave_value as_int16 () const;
+  virtual octave_value as_int32 () const;
+  virtual octave_value as_int64 () const;
 
-  virtual octave_value as_uint8 (void) const;
-  virtual octave_value as_uint16 (void) const;
-  virtual octave_value as_uint32 (void) const;
-  virtual octave_value as_uint64 (void) const;
+  virtual octave_value as_uint8 () const;
+  virtual octave_value as_uint16 () const;
+  virtual octave_value as_uint32 () const;
+  virtual octave_value as_uint64 () const;
 
-  virtual octave_base_value * try_narrowing_conversion (void)
+  virtual octave_base_value * try_narrowing_conversion ()
   { return nullptr; }
 
-  virtual void maybe_economize (void) { }
+  virtual void maybe_economize () { }
 
-  virtual Matrix size (void);
+  virtual Matrix size ();
 
   virtual octave_idx_type xnumel (const octave_value_list&);
 
@@ -351,34 +351,34 @@ public:
 
   virtual octave::idx_vector index_vector (bool require_integers = false) const;
 
-  virtual dim_vector dims (void) const { return dim_vector (); }
+  virtual dim_vector dims () const { return dim_vector (); }
 
-  octave_idx_type rows (void) const
+  octave_idx_type rows () const
   {
     const dim_vector dv = dims ();
 
     return dv(0);
   }
 
-  octave_idx_type columns (void) const
+  octave_idx_type columns () const
   {
     const dim_vector dv = dims ();
 
     return dv(1);
   }
 
-  virtual int ndims (void) const
+  virtual int ndims () const
   { return dims ().ndims (); }
 
-  virtual octave_idx_type numel (void) const { return dims ().numel (); }
+  virtual octave_idx_type numel () const { return dims ().numel (); }
 
-  virtual std::size_t byte_size (void) const { return 0; }
+  virtual std::size_t byte_size () const { return 0; }
 
-  virtual octave_idx_type nnz (void) const;
+  virtual octave_idx_type nnz () const;
 
-  virtual octave_idx_type nzmax (void) const;
+  virtual octave_idx_type nzmax () const;
 
-  virtual octave_idx_type nfields (void) const;
+  virtual octave_idx_type nfields () const;
 
   virtual octave_value reshape (const dim_vector&) const;
 
@@ -386,143 +386,143 @@ public:
 
   virtual octave_value resize (const dim_vector&, bool fill = false) const;
 
-  virtual MatrixType matrix_type (void) const;
+  virtual MatrixType matrix_type () const;
 
   virtual MatrixType matrix_type (const MatrixType& typ) const;
 
-  virtual bool is_defined (void) const { return false; }
+  virtual bool is_defined () const { return false; }
 
-  virtual bool is_storable (void) const { return true; }
+  virtual bool is_storable () const { return true; }
 
-  virtual bool is_legacy_object (void) const { return false; }
+  virtual bool is_legacy_object () const { return false; }
 
-  bool isempty (void) const { return (dims ().any_zero ()); }
+  bool isempty () const { return (dims ().any_zero ()); }
 
-  bool is_zero_by_zero (void) const { return dims().zero_by_zero (); }
+  bool is_zero_by_zero () const { return dims().zero_by_zero (); }
 
-  virtual bool iscell (void) const { return false; }
+  virtual bool iscell () const { return false; }
 
-  virtual bool iscellstr (void) const { return false; }
+  virtual bool iscellstr () const { return false; }
 
-  virtual bool is_real_scalar (void) const { return false; }
+  virtual bool is_real_scalar () const { return false; }
 
-  virtual bool is_real_matrix (void) const { return false; }
+  virtual bool is_real_matrix () const { return false; }
 
-  virtual bool is_complex_scalar (void) const { return false; }
+  virtual bool is_complex_scalar () const { return false; }
 
-  virtual bool is_complex_matrix (void) const { return false; }
+  virtual bool is_complex_matrix () const { return false; }
 
-  virtual bool is_bool_scalar (void) const { return false; }
+  virtual bool is_bool_scalar () const { return false; }
 
-  virtual bool is_bool_matrix (void) const { return false; }
+  virtual bool is_bool_matrix () const { return false; }
 
-  virtual bool is_char_matrix (void) const { return false; }
+  virtual bool is_char_matrix () const { return false; }
 
-  virtual bool is_diag_matrix (void) const { return false; }
+  virtual bool is_diag_matrix () const { return false; }
 
-  virtual bool is_perm_matrix (void) const { return false; }
+  virtual bool is_perm_matrix () const { return false; }
 
-  virtual bool is_string (void) const { return false; }
+  virtual bool is_string () const { return false; }
 
-  virtual bool is_sq_string (void) const { return false; }
+  virtual bool is_sq_string () const { return false; }
 
-  virtual bool is_range (void) const { return false; }
+  virtual bool is_range () const { return false; }
 
-  virtual bool isstruct (void) const { return false; }
+  virtual bool isstruct () const { return false; }
 
-  virtual bool isobject (void) const { return false; }
+  virtual bool isobject () const { return false; }
 
-  virtual bool is_classdef_meta (void) const { return false; }
+  virtual bool is_classdef_meta () const { return false; }
 
-  virtual bool is_classdef_superclass_ref (void) const { return false; }
+  virtual bool is_classdef_superclass_ref () const { return false; }
 
-  virtual bool is_classdef_object (void) const { return false; }
+  virtual bool is_classdef_object () const { return false; }
 
-  virtual bool is_package (void) const { return false; }
+  virtual bool is_package () const { return false; }
 
-  virtual bool isjava (void) const { return false; }
+  virtual bool isjava () const { return false; }
 
-  virtual bool is_cs_list (void) const { return false; }
+  virtual bool is_cs_list () const { return false; }
 
-  virtual bool is_magic_colon (void) const { return false; }
+  virtual bool is_magic_colon () const { return false; }
 
-  virtual bool is_all_va_args (void) const { return false; }
+  virtual bool is_all_va_args () const { return false; }
 
   virtual octave_value all (int = 0) const;
 
   virtual octave_value any (int = 0) const;
 
-  virtual builtin_type_t builtin_type (void) const { return btyp_unknown; }
+  virtual builtin_type_t builtin_type () const { return btyp_unknown; }
 
-  virtual bool is_double_type (void) const { return false; }
+  virtual bool is_double_type () const { return false; }
 
-  virtual bool is_single_type (void) const { return false; }
+  virtual bool is_single_type () const { return false; }
 
-  virtual bool isfloat (void) const { return false; }
+  virtual bool isfloat () const { return false; }
 
-  virtual bool is_int8_type (void) const { return false; }
+  virtual bool is_int8_type () const { return false; }
 
-  virtual bool is_int16_type (void) const { return false; }
+  virtual bool is_int16_type () const { return false; }
 
-  virtual bool is_int32_type (void) const { return false; }
+  virtual bool is_int32_type () const { return false; }
 
-  virtual bool is_int64_type (void) const { return false; }
+  virtual bool is_int64_type () const { return false; }
 
-  virtual bool is_uint8_type (void) const { return false; }
+  virtual bool is_uint8_type () const { return false; }
 
-  virtual bool is_uint16_type (void) const { return false; }
+  virtual bool is_uint16_type () const { return false; }
 
-  virtual bool is_uint32_type (void) const { return false; }
+  virtual bool is_uint32_type () const { return false; }
 
-  virtual bool is_uint64_type (void) const { return false; }
+  virtual bool is_uint64_type () const { return false; }
 
-  virtual bool islogical (void) const { return false; }
+  virtual bool islogical () const { return false; }
 
-  virtual bool isinteger (void) const { return false; }
+  virtual bool isinteger () const { return false; }
 
-  virtual bool isreal (void) const { return false; }
+  virtual bool isreal () const { return false; }
 
-  virtual bool iscomplex (void) const { return false; }
+  virtual bool iscomplex () const { return false; }
 
   // Would be nice to get rid of the next four functions:
 
-  virtual bool is_scalar_type (void) const { return false; }
+  virtual bool is_scalar_type () const { return false; }
 
-  virtual bool is_matrix_type (void) const { return false; }
+  virtual bool is_matrix_type () const { return false; }
 
-  virtual bool isnumeric (void) const { return false; }
+  virtual bool isnumeric () const { return false; }
 
-  virtual bool issparse (void) const { return false; }
+  virtual bool issparse () const { return false; }
 
-  virtual bool is_true (void) const { return false; }
+  virtual bool is_true () const { return false; }
 
-  virtual bool is_magic_int (void) const { return false; }
+  virtual bool is_magic_int () const { return false; }
 
-  virtual bool isnull (void) const { return false; }
+  virtual bool isnull () const { return false; }
 
-  virtual bool is_constant (void) const { return false; }
+  virtual bool is_constant () const { return false; }
 
-  virtual bool is_function_handle (void) const { return false; }
+  virtual bool is_function_handle () const { return false; }
 
-  virtual bool is_anonymous_function (void) const { return false; }
+  virtual bool is_anonymous_function () const { return false; }
 
-  virtual bool is_inline_function (void) const { return false; }
+  virtual bool is_inline_function () const { return false; }
 
-  virtual bool is_function (void) const { return false; }
+  virtual bool is_function () const { return false; }
 
-  virtual bool is_user_script (void) const { return false; }
+  virtual bool is_user_script () const { return false; }
 
-  virtual bool is_user_function (void) const { return false; }
+  virtual bool is_user_function () const { return false; }
 
-  virtual bool is_user_code (void) const { return false; }
+  virtual bool is_user_code () const { return false; }
 
-  virtual bool is_builtin_function (void) const { return false; }
+  virtual bool is_builtin_function () const { return false; }
 
-  virtual bool is_dld_function (void) const { return false; }
+  virtual bool is_dld_function () const { return false; }
 
-  virtual bool is_mex_function (void) const { return false; }
+  virtual bool is_mex_function () const { return false; }
 
-  virtual void erase_subfunctions (void) { }
+  virtual void erase_subfunctions () { }
 
   virtual short int short_value (bool = false, bool = false) const;
 
@@ -552,7 +552,7 @@ public:
   virtual float float_scalar_value (bool frc_str_conv = false) const
   { return float_value (frc_str_conv); }
 
-  virtual Cell cell_value (void) const;
+  virtual Cell cell_value () const;
 
   virtual Matrix matrix_value (bool = false) const;
 
@@ -599,85 +599,85 @@ public:
   virtual FloatComplexDiagMatrix
   float_complex_diag_matrix_value (bool = false) const;
 
-  virtual PermMatrix perm_matrix_value (void) const;
+  virtual PermMatrix perm_matrix_value () const;
 
-  virtual octave_int8 int8_scalar_value (void) const;
+  virtual octave_int8 int8_scalar_value () const;
 
-  virtual octave_int16 int16_scalar_value (void) const;
+  virtual octave_int16 int16_scalar_value () const;
 
-  virtual octave_int32 int32_scalar_value (void) const;
+  virtual octave_int32 int32_scalar_value () const;
 
-  virtual octave_int64 int64_scalar_value (void) const;
+  virtual octave_int64 int64_scalar_value () const;
 
-  virtual octave_uint8 uint8_scalar_value (void) const;
+  virtual octave_uint8 uint8_scalar_value () const;
 
-  virtual octave_uint16 uint16_scalar_value (void) const;
+  virtual octave_uint16 uint16_scalar_value () const;
 
-  virtual octave_uint32 uint32_scalar_value (void) const;
+  virtual octave_uint32 uint32_scalar_value () const;
 
-  virtual octave_uint64 uint64_scalar_value (void) const;
+  virtual octave_uint64 uint64_scalar_value () const;
 
-  virtual int8NDArray int8_array_value (void) const;
+  virtual int8NDArray int8_array_value () const;
 
-  virtual int16NDArray int16_array_value (void) const;
+  virtual int16NDArray int16_array_value () const;
 
-  virtual int32NDArray int32_array_value (void) const;
+  virtual int32NDArray int32_array_value () const;
 
-  virtual int64NDArray int64_array_value (void) const;
+  virtual int64NDArray int64_array_value () const;
 
-  virtual uint8NDArray uint8_array_value (void) const;
+  virtual uint8NDArray uint8_array_value () const;
 
-  virtual uint16NDArray uint16_array_value (void) const;
+  virtual uint16NDArray uint16_array_value () const;
 
-  virtual uint32NDArray uint32_array_value (void) const;
+  virtual uint32NDArray uint32_array_value () const;
 
-  virtual uint64NDArray uint64_array_value (void) const;
+  virtual uint64NDArray uint64_array_value () const;
 
   virtual string_vector string_vector_value (bool pad = false) const;
 
   virtual std::string string_value (bool force = false) const;
 
-  virtual Array<std::string> cellstr_value (void) const;
+  virtual Array<std::string> cellstr_value () const;
 
-  virtual octave::range<double> range_value (void) const;
+  virtual octave::range<double> range_value () const;
 
   // For now, disable all but range<double>.
 
 #if 0
 
-  virtual octave::range<float> float_range_value (void) const;
+  virtual octave::range<float> float_range_value () const;
 
-  virtual octave::range<octave_int8> int8_range_value (void) const;
+  virtual octave::range<octave_int8> int8_range_value () const;
 
-  virtual octave::range<octave_int16> int16_range_value (void) const;
+  virtual octave::range<octave_int16> int16_range_value () const;
 
-  virtual octave::range<octave_int32> int32_range_value (void) const;
+  virtual octave::range<octave_int32> int32_range_value () const;
 
-  virtual octave::range<octave_int64> int64_range_value (void) const;
+  virtual octave::range<octave_int64> int64_range_value () const;
 
-  virtual octave::range<octave_uint8> uint8_range_value (void) const;
+  virtual octave::range<octave_uint8> uint8_range_value () const;
 
-  virtual octave::range<octave_uint16> uint16_range_value (void) const;
+  virtual octave::range<octave_uint16> uint16_range_value () const;
 
-  virtual octave::range<octave_uint32> uint32_range_value (void) const;
+  virtual octave::range<octave_uint32> uint32_range_value () const;
 
-  virtual octave::range<octave_uint64> uint64_range_value (void) const;
+  virtual octave::range<octave_uint64> uint64_range_value () const;
 
 #endif
 
-  virtual octave_map map_value (void) const;
+  virtual octave_map map_value () const;
 
-  virtual octave_scalar_map scalar_map_value (void) const;
+  virtual octave_scalar_map scalar_map_value () const;
 
-  virtual string_vector map_keys (void) const;
+  virtual string_vector map_keys () const;
 
   virtual bool isfield (const std::string&) const;
 
-  virtual std::size_t nparents (void) const;
+  virtual std::size_t nparents () const;
 
-  virtual std::list<std::string> parent_class_name_list (void) const;
+  virtual std::list<std::string> parent_class_name_list () const;
 
-  virtual string_vector parent_class_names (void) const;
+  virtual string_vector parent_class_names () const;
 
   virtual octave_base_value * find_parent_class (const std::string&)
   { return nullptr; }
@@ -700,21 +700,21 @@ public:
 
   virtual octave_fcn_handle * fcn_handle_value (bool silent = false);
 
-  virtual octave_value_list list_value (void) const;
+  virtual octave_value_list list_value () const;
 
   virtual octave_value convert_to_str (bool pad = false, bool force = false,
                                        char type = '\'') const;
   virtual octave_value
   convert_to_str_internal (bool pad, bool force, char type) const;
 
-  virtual void convert_to_row_or_column_vector (void);
+  virtual void convert_to_row_or_column_vector ();
 
   // The following extractor functions don't perform any implicit type
   // conversions.
 
   virtual std::string xstring_value () const;
 
-  virtual bool print_as_scalar (void) const { return false; }
+  virtual bool print_as_scalar () const { return false; }
 
   virtual void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -730,7 +730,7 @@ public:
 
   virtual void short_disp (std::ostream& os) const { os << "..."; }
 
-  virtual float_display_format get_edit_display_format (void) const;
+  virtual float_display_format get_edit_display_format () const;
 
   virtual std::string edit_display (const float_display_format&,
                                     octave_idx_type, octave_idx_type) const
@@ -758,11 +758,11 @@ public:
          oct_data_conv::data_type output_type, int skip,
          octave::mach_info::float_format flt_fmt) const;
 
-  virtual const void * mex_get_data (void) const { return nullptr; }
+  virtual const void * mex_get_data () const { return nullptr; }
 
-  virtual const octave_idx_type * mex_get_ir (void) const { return nullptr; }
+  virtual const octave_idx_type * mex_get_ir () const { return nullptr; }
 
-  virtual const octave_idx_type * mex_get_jc (void) const { return nullptr; }
+  virtual const octave_idx_type * mex_get_jc () const { return nullptr; }
 
   virtual mxArray * as_mxArray (bool interleaved) const;
 
@@ -783,15 +783,15 @@ public:
 
   virtual sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
-  virtual void lock (void);
+  virtual void lock ();
 
-  virtual void unlock (void);
+  virtual void unlock ();
 
-  virtual bool islocked (void) const { return false; }
+  virtual bool islocked () const { return false; }
 
-  virtual void call_object_destructor (void) { }
+  virtual void call_object_destructor () { }
 
-  virtual octave_value dump (void) const;
+  virtual octave_value dump () const;
 
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t
@@ -891,23 +891,23 @@ protected:
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  void reset_indent_level (void) const
+  void reset_indent_level () const
   { s_curr_print_indent_level = 0; }
 
-  void increment_indent_level (void) const
+  void increment_indent_level () const
   { s_curr_print_indent_level += 2; }
 
-  void decrement_indent_level (void) const
+  void decrement_indent_level () const
   { s_curr_print_indent_level -= 2; }
 
-  int current_print_indent_level (void) const
+  int current_print_indent_level () const
   { return s_curr_print_indent_level; }
 
   OCTINTERP_API void indent (std::ostream& os) const;
 
   OCTINTERP_API void newline (std::ostream& os) const;
 
-  OCTINTERP_API void reset (void) const;
+  OCTINTERP_API void reset () const;
 
   // A reference count.
   // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
@@ -922,7 +922,7 @@ protected:
 
 private:
 
-  OCTINTERP_API void wrong_type_arg_error (void) const;
+  OCTINTERP_API void wrong_type_arg_error () const;
 
   //--------
 
@@ -938,9 +938,9 @@ octave_base_dld_value : public octave_base_value
 {
 public:
 
-  octave_base_dld_value (void) = default;
+  octave_base_dld_value () = default;
 
-  ~octave_base_dld_value (void)
+  ~octave_base_dld_value ()
   {
     m_containing_dynamic_library.delete_later ();
   }
@@ -965,6 +965,6 @@ make_idx_args (const std::string& type,
 
 // Tells whether some regular octave_value_base methods are being called from
 // within the "builtin" function.
-extern OCTINTERP_API bool called_from_builtin (void);
+extern OCTINTERP_API bool called_from_builtin ();
 
 #endif

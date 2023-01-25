@@ -46,9 +46,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     GLWidget (Canvas& parent_canvas, QWidget *parent);
 
-    ~GLWidget (void);
+    ~GLWidget ();
 
-    void initializeGL (void);
+    void initializeGL ();
 
     void draw (graphics_object go);
     uint8NDArray  do_getPixels (graphics_object go);
@@ -60,12 +60,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     graphics_object selectFromAxes (const graphics_object& ax,
                                     const QPoint& pt);
 
-    bool begin_rendering (void);
-    void end_rendering (void);
+    bool begin_rendering ();
+    void end_rendering ();
 
   protected:
 
-    void paintGL (void);
+    void paintGL ();
     void mouseDoubleClickEvent (QMouseEvent *event);
     void mouseMoveEvent (QMouseEvent *event);
     void mousePressEvent (QMouseEvent *event);
@@ -92,7 +92,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     GLCanvas (octave::interpreter& interp, const graphics_handle& handle,
               QWidget *parent);
 
-    ~GLCanvas (void);
+    ~GLCanvas ();
 
     void draw (const graphics_handle& handle);
     uint8NDArray  do_getPixels (const graphics_handle& handle);
@@ -104,14 +104,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     graphics_object selectFromAxes (const graphics_object& ax,
                                     const QPoint& pt);
 
-    QWidget * qWidget (void) { return m_glwidget; }
+    QWidget * qWidget () { return m_glwidget; }
 
   private:
 
     GLWidget *m_glwidget;
 
-    bool begin_rendering (void);
-    void end_rendering (void);
+    bool begin_rendering ();
+    void end_rendering ();
   };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -99,7 +99,7 @@ extern OCTINTERP_API cdef_class
 get_class_context (std::string& name, bool& in_constructor);
 
 extern OCTINTERP_API cdef_class
-get_class_context (void);
+get_class_context ();
 
 extern OCTINTERP_API bool
 check_access (const cdef_class& cls, const octave_value& acc,

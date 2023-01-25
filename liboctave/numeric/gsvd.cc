@@ -53,7 +53,7 @@ static bool gsvd_initialized = false;
 #define xSTRINGIZE(x) #x
 #define STRINGIZE(x) xSTRINGIZE(x)
 
-static void initialize_gsvd (void)
+static void initialize_gsvd ()
 {
   if (gsvd_initialized)
     return;
@@ -436,7 +436,7 @@ gsvd<FloatComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
 
 template <typename T>
 T
-gsvd<T>::left_singular_matrix_A (void) const
+gsvd<T>::left_singular_matrix_A () const
 {
   if (m_type == gsvd::Type::sigma_only)
     (*current_liboctave_error_handler)
@@ -447,7 +447,7 @@ gsvd<T>::left_singular_matrix_A (void) const
 
 template <typename T>
 T
-gsvd<T>::left_singular_matrix_B (void) const
+gsvd<T>::left_singular_matrix_B () const
 {
   if (m_type == gsvd::Type::sigma_only)
     (*current_liboctave_error_handler)
@@ -458,7 +458,7 @@ gsvd<T>::left_singular_matrix_B (void) const
 
 template <typename T>
 T
-gsvd<T>::right_singular_matrix (void) const
+gsvd<T>::right_singular_matrix () const
 {
   if (m_type == gsvd::Type::sigma_only)
     (*current_liboctave_error_handler)

@@ -44,7 +44,7 @@ OCTAVE_END_NAMESPACE(octave)
 ////////////////////////////////////////////////////////////////////////////////
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_2_or_3_dim_plot (void);
+err_2_or_3_dim_plot ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
 err_data_conversion (const char *from, const char *to);
@@ -54,22 +54,22 @@ err_disabled_feature (const std::string& fcn, const std::string& feature,
                       const std::string& pkg = "Octave");
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_indexed_cs_list (void);
+err_indexed_cs_list ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
 err_invalid_conversion (const std::string& from, const std::string& to);
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_invalid_inquiry_subscript (void);
+err_invalid_inquiry_subscript ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_invalid_structure_assignment (void);
+err_invalid_structure_assignment ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_nonbraced_cs_list_assignment (void);
+err_nonbraced_cs_list_assignment ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_nonconformant (void);
+err_nonconformant ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
 err_nonconformant (octave_idx_type r1, octave_idx_type c1,
@@ -79,19 +79,19 @@ OCTAVE_NORETURN extern OCTINTERP_API void
 err_not_implemented (const char *);
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_range_invalid (void);
+err_range_invalid ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
 err_square_matrix_required (const char *fcn, const char *name);
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_string_invalid (void);
+err_string_invalid ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
 err_unrecognized_data_fmt (const char *name);
 
 OCTAVE_NORETURN extern OCTINTERP_API void
-err_unrecognized_float_fmt (void);
+err_unrecognized_float_fmt ();
 
 OCTAVE_NORETURN extern OCTINTERP_API void
 err_user_returned_invalid (const char *name);
@@ -158,7 +158,7 @@ extern OCTINTERP_API void
 warn_array_as_logical (const dim_vector& dv);
 
 extern OCTINTERP_API void
-warn_complex_cmp (void);
+warn_complex_cmp ();
 
 extern OCTINTERP_API void
 warn_data_file_in_path (const std::string& fcn, const std::string& file);
@@ -184,7 +184,7 @@ extern OCTINTERP_API void
 warn_invalid_value_specified (const char *name);
 
 extern OCTINTERP_API void
-warn_logical_conversion (void);
+warn_logical_conversion ();
 
 extern OCTINTERP_API void
 warn_wrong_type_arg (const char *name, const octave_value& tc);

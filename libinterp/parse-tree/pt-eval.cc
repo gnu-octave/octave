@@ -87,9 +87,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     quit_debug_exception& operator = (const quit_debug_exception&) = default;
 
-    ~quit_debug_exception (void) = default;
+    ~quit_debug_exception () = default;
 
-    bool all (void) const { return m_all; }
+    bool all () const { return m_all; }
 
   private:
 
@@ -113,13 +113,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         m_execution_mode (EX_NORMAL), m_in_debug_repl (false)
     { }
 
-    int server_loop (void);
+    int server_loop ();
 
     void repl (const std::string& prompt = "debug> ");
 
-    bool in_debug_repl (void) const { return m_in_debug_repl; }
+    bool in_debug_repl () const { return m_in_debug_repl; }
 
-    void dbcont (void) { m_execution_mode = EX_CONTINUE; }
+    void dbcont () { m_execution_mode = EX_CONTINUE; }
 
     void dbquit (bool all = false)
     {
@@ -129,7 +129,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         m_execution_mode = EX_QUIT;
     }
 
-    bool quitting_debugger (void) const;
+    bool quitting_debugger () const;
 
   private:
 
@@ -144,7 +144,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // with the corresponding tree_evaluator functions or do they need to
   // remain separate?  They perform nearly the same functions.
 
-  int debugger::server_loop (void)
+  int debugger::server_loop ()
   {
     // Process events from the event queue.
 
@@ -503,7 +503,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  bool debugger::quitting_debugger (void) const
+  bool debugger::quitting_debugger () const
   {
     if (m_execution_mode == EX_QUIT)
       {
@@ -531,7 +531,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return false;
   }
 
-  bool tree_evaluator::at_top_level (void) const
+  bool tree_evaluator::at_top_level () const
   {
     return m_call_stack.at_top_level ();
   }
@@ -636,7 +636,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     evmgr.pre_input_event ();
   }
 
-  void tree_evaluator::get_line_and_eval (void)
+  void tree_evaluator::get_line_and_eval ()
   {
     std::mutex mtx;
     std::unique_lock<std::mutex> lock (mtx);
@@ -728,7 +728,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
   }
 
-  int tree_evaluator::repl (void)
+  int tree_evaluator::repl ()
   {
     // The big loop.  Read, Eval, Print, Loop.  Normally user
     // interaction at the command line in a terminal session, but we may
@@ -869,7 +869,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return exit_status;
   }
 
-  int tree_evaluator::server_loop (void)
+  int tree_evaluator::server_loop ()
   {
     // Process events from the event queue.
 
@@ -1353,14 +1353,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   bool
-  tree_evaluator::statement_printing_enabled (void)
+  tree_evaluator::statement_printing_enabled ()
   {
     return ! (m_silent_functions && (m_statement_context == SC_FUNCTION
                                      || m_statement_context == SC_SCRIPT));
   }
 
   void
-  tree_evaluator::reset_debug_state (void)
+  tree_evaluator::reset_debug_state ()
   {
     m_debug_mode = (m_bp_table.have_breakpoints ()
                     || m_dbstep_flag != 0
@@ -1414,7 +1414,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_debugger_stack.push (dbgr);
 
-    frame.add ([=] (void)
+    frame.add ([=] ()
                {
                  delete m_debugger_stack.top ();
                  m_debugger_stack.pop ();
@@ -1437,7 +1437,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   Matrix
-  tree_evaluator::ignored_fcn_outputs (void) const
+  tree_evaluator::ignored_fcn_outputs () const
   {
     Matrix retval;
 
@@ -2448,27 +2448,27 @@ Example:
     m_call_stack.push (fcn);
   }
 
-  void tree_evaluator::pop_stack_frame (void)
+  void tree_evaluator::pop_stack_frame ()
   {
     m_call_stack.pop ();
   }
 
-  int tree_evaluator::current_line (void) const
+  int tree_evaluator::current_line () const
   {
     return m_call_stack.current_line ();
   }
 
-  int tree_evaluator::current_column (void) const
+  int tree_evaluator::current_column () const
   {
     return m_call_stack.current_column ();
   }
 
-  int tree_evaluator::debug_user_code_line (void) const
+  int tree_evaluator::debug_user_code_line () const
   {
     return m_call_stack.debug_user_code_line ();
   }
 
-  int tree_evaluator::debug_user_code_column (void) const
+  int tree_evaluator::debug_user_code_column () const
   {
     return m_call_stack.debug_user_code_column ();
   }
@@ -2480,17 +2480,17 @@ Example:
     frm->display_stopped_in_message (os);
   }
 
-  octave_user_code * tree_evaluator::current_user_code (void) const
+  octave_user_code * tree_evaluator::current_user_code () const
   {
     return m_call_stack.current_user_code ();
   }
 
-  unwind_protect * tree_evaluator::curr_fcn_unwind_protect_frame (void)
+  unwind_protect * tree_evaluator::curr_fcn_unwind_protect_frame ()
   {
     return m_call_stack.curr_fcn_unwind_protect_frame ();
   }
 
-  octave_user_code * tree_evaluator::debug_user_code (void) const
+  octave_user_code * tree_evaluator::debug_user_code () const
   {
     return m_call_stack.debug_user_code ();
   }
@@ -2500,7 +2500,7 @@ Example:
     return m_call_stack.current_function (skip_first);
   }
 
-  octave_function * tree_evaluator::caller_function (void) const
+  octave_function * tree_evaluator::caller_function () const
   {
     return m_call_stack.current_function (true);
   }
@@ -2510,12 +2510,12 @@ Example:
     return m_call_stack.goto_frame (n, verbose);
   }
 
-  void tree_evaluator::goto_caller_frame (void)
+  void tree_evaluator::goto_caller_frame ()
   {
     m_call_stack.goto_caller_frame ();
   }
 
-  void tree_evaluator::goto_base_frame (void)
+  void tree_evaluator::goto_base_frame ()
   {
     m_call_stack.goto_base_frame ();
   }
@@ -2525,7 +2525,7 @@ Example:
     return m_call_stack.restore_frame (n);
   }
 
-  std::string tree_evaluator::get_dispatch_class (void) const
+  std::string tree_evaluator::get_dispatch_class () const
   {
     return m_call_stack.get_dispatch_class ();
   }
@@ -2554,7 +2554,7 @@ Example:
   }
 
   std::list<std::shared_ptr<stack_frame>>
-  tree_evaluator::backtrace_frames (void) const
+  tree_evaluator::backtrace_frames () const
   {
     return m_call_stack.backtrace_frames ();
   }
@@ -2566,7 +2566,7 @@ Example:
     return m_call_stack.backtrace_info (curr_user_frame, print_subfn);
   }
 
-  std::list<frame_info> tree_evaluator::backtrace_info (void) const
+  std::list<frame_info> tree_evaluator::backtrace_info () const
   {
     return m_call_stack.backtrace_info ();
   }
@@ -2578,17 +2578,17 @@ Example:
     return m_call_stack.backtrace (curr_user_frame, print_subfn);
   }
 
-  octave_map tree_evaluator::backtrace (void) const
+  octave_map tree_evaluator::backtrace () const
   {
     return m_call_stack.backtrace ();
   }
 
-  octave_map tree_evaluator::empty_backtrace (void) const
+  octave_map tree_evaluator::empty_backtrace () const
   {
     return m_call_stack.empty_backtrace ();
   }
 
-  std::string tree_evaluator::backtrace_message (void) const
+  std::string tree_evaluator::backtrace_message () const
   {
     std::list<frame_info> frames = backtrace_info ();
 
@@ -2623,17 +2623,17 @@ Example:
     m_call_stack.push (dummy_scope);
   }
 
-  void tree_evaluator::pop_scope (void)
+  void tree_evaluator::pop_scope ()
   {
     m_call_stack.pop ();
   }
 
-  symbol_scope tree_evaluator::get_top_scope (void) const
+  symbol_scope tree_evaluator::get_top_scope () const
   {
     return m_call_stack.top_scope ();
   }
 
-  symbol_scope tree_evaluator::get_current_scope (void) const
+  symbol_scope tree_evaluator::get_current_scope () const
   {
     return m_call_stack.current_scope ();
   }
@@ -2686,7 +2686,7 @@ Example:
     return m_call_stack.max_stack_depth (args, nargout);
   }
 
-  void tree_evaluator::display_call_stack (void) const
+  void tree_evaluator::display_call_stack () const
   {
     m_call_stack.display ();
   }
@@ -2715,7 +2715,7 @@ Example:
     return symtab.fcn_table_find (name, ovl ());
   }
 
-  void tree_evaluator::clear_objects (void)
+  void tree_evaluator::clear_objects ()
   {
     std::shared_ptr<stack_frame> frame
       = m_call_stack.get_current_stack_frame ();
@@ -2747,7 +2747,7 @@ Example:
     frame->clear_variable_regexp (pattern);
   }
 
-  void tree_evaluator::clear_variables (void)
+  void tree_evaluator::clear_variables ()
   {
     std::shared_ptr<stack_frame> frame
       = m_call_stack.get_current_stack_frame ();
@@ -2771,7 +2771,7 @@ Example:
     m_call_stack.clear_global_variable_regexp (pattern);
   }
 
-  void tree_evaluator::clear_global_variables (void)
+  void tree_evaluator::clear_global_variables ()
   {
     m_call_stack.clear_global_variables ();
   }
@@ -2821,17 +2821,17 @@ Example:
     symtab.clear_function_regexp (pattern);
   }
 
-  std::list<std::string> tree_evaluator::global_variable_names (void) const
+  std::list<std::string> tree_evaluator::global_variable_names () const
   {
     return m_call_stack.global_variable_names ();
   }
 
-  std::list<std::string> tree_evaluator::top_level_variable_names (void) const
+  std::list<std::string> tree_evaluator::top_level_variable_names () const
   {
     return m_call_stack.top_level_variable_names ();
   }
 
-  std::list<std::string> tree_evaluator::variable_names (void) const
+  std::list<std::string> tree_evaluator::variable_names () const
   {
     return m_call_stack.variable_names ();
   }
@@ -2941,7 +2941,7 @@ Example:
   }
 
   bool
-  tree_evaluator::in_user_code (void) const
+  tree_evaluator::in_user_code () const
   {
     return m_call_stack.current_user_code () != nullptr;
   }
@@ -4546,18 +4546,18 @@ Example:
   }
 
   symbol_info_list
-  tree_evaluator::get_symbol_info (void)
+  tree_evaluator::get_symbol_info ()
   {
     return m_call_stack.get_symbol_info ();
   }
 
   symbol_info_list
-  tree_evaluator::top_scope_symbol_info (void) const
+  tree_evaluator::top_scope_symbol_info () const
   {
     return m_call_stack.top_scope_symbol_info ();
   }
 
-  octave_map tree_evaluator::get_autoload_map (void) const
+  octave_map tree_evaluator::get_autoload_map () const
   {
     Cell fcn_names (dim_vector (m_autoload_map.size (), 1));
     Cell file_names (dim_vector (m_autoload_map.size (), 1));
@@ -4595,7 +4595,7 @@ Example:
     return retval;
   }
 
-  std::list<std::string> tree_evaluator::autoloaded_functions (void) const
+  std::list<std::string> tree_evaluator::autoloaded_functions () const
   {
     std::list<std::string> names;
 
@@ -4799,7 +4799,7 @@ Example:
   }
 
   void
-  tree_evaluator::maybe_set_echo_state (void)
+  tree_evaluator::maybe_set_echo_state ()
   {
     octave_function *caller = caller_function ();
 
@@ -4831,7 +4831,7 @@ Example:
                m_echo_state, m_echo_file_name, m_echo_file_pos);
   }
 
-  bool tree_evaluator::maybe_push_echo_state_cleanup (void)
+  bool tree_evaluator::maybe_push_echo_state_cleanup ()
   {
     // This function is expected to be called from ECHO, which would be
     // the top of the call stack.  If the caller of ECHO is a
@@ -4978,13 +4978,13 @@ Example:
     return octave_value ();
   }
 
-  bool tree_evaluator::in_debug_repl (void) const
+  bool tree_evaluator::in_debug_repl () const
   {
     return (m_debugger_stack.empty ()
             ? false : m_debugger_stack.top()->in_debug_repl ());
   }
 
-  void tree_evaluator::dbcont (void)
+  void tree_evaluator::dbcont ()
   {
     if (! m_debugger_stack.empty ())
       m_debugger_stack.top()->dbcont ();
@@ -5182,7 +5182,7 @@ Example:
   }
 
   // Decide if it's time to quit a for or while loop.
-  bool tree_evaluator::quit_loop_now (void)
+  bool tree_evaluator::quit_loop_now ()
   {
     octave_quit ();
 

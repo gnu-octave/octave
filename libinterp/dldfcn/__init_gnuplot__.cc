@@ -85,9 +85,9 @@ The qt toolkit is recommended instead.\n");
       }
   }
 
-  ~gnuplot_graphics_toolkit (void) = default;
+  ~gnuplot_graphics_toolkit () = default;
 
-  bool is_valid (void) const { return true; }
+  bool is_valid () const { return true; }
 
   bool initialize (const graphics_object& go)
   {
@@ -162,13 +162,13 @@ The qt toolkit is recommended instead.\n");
     return sz;
   }
 
-  double get_screen_resolution (void) const
+  double get_screen_resolution () const
   { return 72.0; }
 
-  Matrix get_screen_size (void) const
+  Matrix get_screen_size () const
   { return Matrix (1, 2, 0.0); }
 
-  void close (void)
+  void close ()
   {
     if (m_interpreter.mislocked ("__init_gnuplot__"))
       m_interpreter.munlock ("__init_gnuplot__");

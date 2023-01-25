@@ -44,24 +44,24 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-OCTAVE_NORETURN static void err_invalid_range (void)
+OCTAVE_NORETURN static void err_invalid_range ()
 {
   (*current_liboctave_error_handler) ("invalid range used as index");
 }
 
-OCTAVE_NORETURN static void err_index_out_of_range (void)
+OCTAVE_NORETURN static void err_index_out_of_range ()
 {
   (*current_liboctave_error_handler)
     ("internal error: idx_vector index out of range");
 }
 
-idx_vector::idx_vector_rep *idx_vector::nil_rep (void)
+idx_vector::idx_vector_rep *idx_vector::nil_rep ()
 {
   static idx_vector_rep ivr;
   return &ivr;
 }
 
-Array<octave_idx_type> idx_vector::idx_base_rep::as_array (void)
+Array<octave_idx_type> idx_vector::idx_base_rep::as_array ()
 {
   (*current_liboctave_error_handler)
     ("internal error: as_array not allowed for this index class");
@@ -191,13 +191,13 @@ std::ostream& idx_vector::idx_range_rep::print (std::ostream& os) const
   return os;
 }
 
-range<double> idx_vector::idx_range_rep::unconvert (void) const
+range<double> idx_vector::idx_range_rep::unconvert () const
 {
   return range<double>::make_n_element_range
          (static_cast<double> (m_start+1), static_cast<double> (m_step), m_len);
 }
 
-Array<octave_idx_type> idx_vector::idx_range_rep::as_array (void)
+Array<octave_idx_type> idx_vector::idx_range_rep::as_array ()
 {
   Array<octave_idx_type> retval (dim_vector (1, m_len));
   for (octave_idx_type i = 0; i < m_len; i++)
@@ -279,12 +279,12 @@ std::ostream& idx_vector::idx_scalar_rep::print (std::ostream& os) const
   return os << m_data;
 }
 
-double idx_vector::idx_scalar_rep::unconvert (void) const
+double idx_vector::idx_scalar_rep::unconvert () const
 {
   return m_data + 1;
 }
 
-Array<octave_idx_type> idx_vector::idx_scalar_rep::as_array (void)
+Array<octave_idx_type> idx_vector::idx_scalar_rep::as_array ()
 {
   return Array<octave_idx_type> (dim_vector (1, 1), m_data);
 }
@@ -414,7 +414,7 @@ idx_vector::idx_vector_rep::idx_vector_rep (const Sparse<bool>& bnda)
     }
 }
 
-idx_vector::idx_vector_rep::~idx_vector_rep (void)
+idx_vector::idx_vector_rep::~idx_vector_rep ()
 {
   if (m_aowner)
     delete m_aowner;
@@ -581,7 +581,7 @@ std::ostream& idx_vector::idx_vector_rep::print (std::ostream& os) const
   return os;
 }
 
-Array<double> idx_vector::idx_vector_rep::unconvert (void) const
+Array<double> idx_vector::idx_vector_rep::unconvert () const
 {
   Array<double> retval (m_orig_dims);
   for (octave_idx_type i = 0; i < m_len; i++)
@@ -589,7 +589,7 @@ Array<double> idx_vector::idx_vector_rep::unconvert (void) const
   return retval;
 }
 
-Array<octave_idx_type> idx_vector::idx_vector_rep::as_array (void)
+Array<octave_idx_type> idx_vector::idx_vector_rep::as_array ()
 {
   if (m_aowner)
     return *m_aowner;
@@ -645,7 +645,7 @@ idx_vector::idx_mask_rep::idx_mask_rep (const Array<bool>& bnda,
   m_data = bnda.data ();
 }
 
-idx_vector::idx_mask_rep::~idx_mask_rep (void)
+idx_vector::idx_mask_rep::~idx_mask_rep ()
 {
   if (m_aowner)
     delete m_aowner;
@@ -693,7 +693,7 @@ std::ostream& idx_vector::idx_mask_rep::print (std::ostream& os) const
   return os;
 }
 
-Array<bool> idx_vector::idx_mask_rep::unconvert (void) const
+Array<bool> idx_vector::idx_mask_rep::unconvert () const
 {
   if (m_aowner)
     return *m_aowner;
@@ -706,7 +706,7 @@ Array<bool> idx_vector::idx_mask_rep::unconvert (void) const
     }
 }
 
-Array<octave_idx_type> idx_vector::idx_mask_rep::as_array (void)
+Array<octave_idx_type> idx_vector::idx_mask_rep::as_array ()
 {
   if (m_aowner)
     return m_aowner->find ().reshape (m_orig_dims);
@@ -967,7 +967,7 @@ bool idx_vector::is_cont_range (octave_idx_type n, octave_idx_type& l,
   return res;
 }
 
-octave_idx_type idx_vector::increment (void) const
+octave_idx_type idx_vector::increment () const
 {
   octave_idx_type retval = 0;
 
@@ -996,7 +996,7 @@ octave_idx_type idx_vector::increment (void) const
   return retval;
 }
 
-const octave_idx_type *idx_vector::raw (void)
+const octave_idx_type *idx_vector::raw ()
 {
   if (m_rep->idx_class () != class_vector)
     *this = idx_vector (as_array (), extent (0));
@@ -1157,7 +1157,7 @@ idx_vector idx_vector::inverse_permutation (octave_idx_type n) const
   return retval;
 }
 
-idx_vector idx_vector::unmask (void) const
+idx_vector idx_vector::unmask () const
 {
   if (idx_class () == class_mask)
     {
@@ -1224,12 +1224,12 @@ void idx_vector::unconvert (idx_class_type& iclass,
     }
 }
 
-Array<octave_idx_type> idx_vector::as_array (void) const
+Array<octave_idx_type> idx_vector::as_array () const
 {
   return m_rep->as_array ();
 }
 
-bool idx_vector::isvector (void) const
+bool idx_vector::isvector () const
 {
   return idx_class () != class_vector || orig_dimensions ().isvector ();
 }

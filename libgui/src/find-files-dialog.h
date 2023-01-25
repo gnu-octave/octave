@@ -47,9 +47,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     find_files_dialog (QWidget *parent);
 
-    virtual ~find_files_dialog (void);
+    virtual ~find_files_dialog ();
 
-    void save_settings (void);
+    void save_settings ();
 
   signals:
 
@@ -62,10 +62,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   private slots:
 
-    void start_find (void);
-    void stop_find (void);
-    void browse_folders (void);
-    void look_for_files (void);
+    void start_find ();
+    void stop_find ();
+    void browse_folders ();
+    void look_for_files ();
     void item_double_clicked (const QModelIndex&);
     void handle_done (int);
 

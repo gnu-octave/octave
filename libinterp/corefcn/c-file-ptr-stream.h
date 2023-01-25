@@ -46,7 +46,7 @@ public:
 
   typedef int (*close_fcn) (FILE *);
 
-  FILE * stdiofile (void) { return m_f; }
+  FILE * stdiofile () { return m_f; }
 
   c_file_ptr_buf (FILE *f, close_fcn cf = file_close)
     : std::streambuf (), m_f (f), m_cf (cf)
@@ -58,13 +58,13 @@ public:
 
   c_file_ptr_buf& operator = (const c_file_ptr_buf&) = delete;
 
-  ~c_file_ptr_buf (void);
+  ~c_file_ptr_buf ();
 
   int_type overflow (int_type);
 
-  int_type underflow (void) { return underflow_common (false); }
+  int_type underflow () { return underflow_common (false); }
 
-  int_type uflow (void) { return underflow_common (true); }
+  int_type uflow () { return underflow_common (true); }
 
   int_type pbackfail (int_type);
 
@@ -78,19 +78,19 @@ public:
   std::streampos seekpos (std::streampos,
                           std::ios::openmode = std::ios::in | std::ios::out);
 
-  int sync (void);
+  int sync ();
 
-  int flush (void);
+  int flush ();
 
-  int buf_close (void);
+  int buf_close ();
 
   int file_number () const { return m_f ? fileno (m_f) : -1; }
 
   int seek (off_t offset, int origin);
 
-  off_t tell (void);
+  off_t tell ();
 
-  void clear (void) { if (m_f) clearerr (m_f); }
+  void clear () { if (m_f) clearerr (m_f); }
 
   static int file_close (FILE *m_f);
 
@@ -124,18 +124,18 @@ public:
 
   c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
 
-  ~c_file_ptr_stream (void) { delete m_buf; m_buf = nullptr; }
+  ~c_file_ptr_stream () { delete m_buf; m_buf = nullptr; }
 
-  BUF_T * rdbuf (void) { return m_buf; }
+  BUF_T * rdbuf () { return m_buf; }
 
-  void stream_close (void) { if (m_buf) m_buf->buf_close (); }
+  void stream_close () { if (m_buf) m_buf->buf_close (); }
 
   int seek (off_t offset, int origin)
   { return m_buf ? m_buf->seek (offset, origin) : -1; }
 
-  off_t tell (void) { return m_buf ? m_buf->tell () : -1; }
+  off_t tell () { return m_buf ? m_buf->tell () : -1; }
 
-  void clear (void) { if (m_buf) m_buf->clear (); STREAM_T::clear (); }
+  void clear () { if (m_buf) m_buf->clear (); STREAM_T::clear (); }
 
 private:
 
@@ -161,7 +161,7 @@ public:
 
   typedef int (*close_fcn) (gzFile);
 
-  gzFile stdiofile (void) { return m_f; }
+  gzFile stdiofile () { return m_f; }
 
   c_zfile_ptr_buf (gzFile f, close_fcn cf = file_close)
     : std::streambuf (), m_f (f), m_cf (cf)
@@ -173,13 +173,13 @@ public:
 
   c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&) = delete;
 
-  ~c_zfile_ptr_buf (void);
+  ~c_zfile_ptr_buf ();
 
   int_type overflow (int_type);
 
-  int_type underflow (void) { return underflow_common (false); }
+  int_type underflow () { return underflow_common (false); }
 
-  int_type uflow (void) { return underflow_common (true); }
+  int_type uflow () { return underflow_common (true); }
 
   int_type pbackfail (int_type);
 
@@ -193,20 +193,20 @@ public:
   std::streampos seekpos (std::streampos,
                           std::ios::openmode = std::ios::in | std::ios::out);
 
-  int sync (void);
+  int sync ();
 
-  int flush (void);
+  int flush ();
 
-  int buf_close (void);
+  int buf_close ();
 
   int file_number () const { return -1; }
 
   int seek (off_t offset, int origin)
   { return m_f ? gzseek (m_f, offset, origin) >= 0 : -1; }
 
-  off_t tell (void) { return m_f ? gztell (m_f) : -1; }
+  off_t tell () { return m_f ? gztell (m_f) : -1; }
 
-  void clear (void) { if (m_f) gzclearerr (m_f); }
+  void clear () { if (m_f) gzclearerr (m_f); }
 
   static int file_close (gzFile m_f) { return ::gzclose (m_f); }
 

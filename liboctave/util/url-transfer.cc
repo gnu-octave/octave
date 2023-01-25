@@ -734,7 +734,7 @@ public:
               curl_mime_data (part, data.c_str (), CURL_ZERO_TERMINATED);
           }
 
-        SETOPT (CURLOPT_HTTPPOST, mime);
+        SETOPT (CURLOPT_MIMEPOST, mime);
       }
 
     perform ();

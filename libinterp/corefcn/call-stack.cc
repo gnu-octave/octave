@@ -30,14 +30,15 @@
 #include "lo-regexp.h"
 #include "str-vec.h"
 
+#include "builtin-defun-decls.h"
 #include "call-stack.h"
 #include "defun.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
 #include "ov.h"
-#include "ov-fcn.h"
 #include "ov-fcn-handle.h"
+#include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
 #include "stack-frame.h"
@@ -983,7 +984,7 @@ octave_value call_stack::do_who (int argc, const string_vector& argv,
 
       interpreter& interp = m_evaluator.get_interpreter ();
 
-      interp.feval ("load", octave_value (file_name), 0);
+      Fload (interp, ovl (octave_value (file_name)));
 
       std::string newmsg = "Variables in the file " + file_name + ":\n\n";
 

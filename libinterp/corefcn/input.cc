@@ -528,8 +528,7 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
     }
 
   // Synchronize the related gui preference for editor encoding
-  m_interpreter.feval ("__event_manager_gui_preference__",
-                       ovl ("editor/default_encoding", m_mfile_encoding));
+  F__event_manager_gui_preference__ (m_interpreter, ovl ("editor/default_encoding", m_mfile_encoding));
 
   return retval;
 }

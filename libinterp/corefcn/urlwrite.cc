@@ -67,7 +67,7 @@ For example:
 
 @example
 @group
-urlwrite ("ftp://ftp.octave.org/pub/README",
+urlwrite ("http://ftp.octave.org/pub/README",
           "README.txt");
 @end group
 @end example
@@ -80,9 +80,9 @@ otherwise it is 0 in which case @var{message} contains an error message.
 If no output argument is specified and an error occurs, then the error is
 signaled through Octave's error handling mechanism.
 
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and
-FILE protocols.  Username and password may be specified in the URL, for
-example:
+This function uses libcurl.  The curl library supports, among others, the HTTP,
+FTP, and FILE protocols.  Username and password may be specified in the URL,
+for example:
 
 @example
 @group
@@ -188,7 +188,7 @@ in string @var{s}.
 For example:
 
 @example
-s = urlread ("ftp://ftp.octave.org/pub/README");
+s = urlread ("http://ftp.octave.org/pub/README");
 @end example
 
 The variable @var{success} is 1 if the download was successful,
@@ -198,9 +198,9 @@ message.
 If no output argument is specified and an error occurs, then the error is
 signaled through Octave's error handling mechanism.
 
-This function uses libcurl.  Curl supports, among others, the HTTP, FTP, and
-FILE protocols.  Username and password may be specified in the URL@.  For
-example:
+This function uses libcurl.  The curl library supports, among others, the HTTP,
+FTP, and FILE protocols.  Username and password may be specified in the URL@.
+For example:
 
 @example
 s = urlread ("http://user:password@@example.com/file.txt");
@@ -213,8 +213,8 @@ For example:
 
 @example
 @group
-s = urlread ("http://www.google.com/search", "get",
-            @{"query", "octave"@});
+s = urlread ("http://www.google.com/search",
+             "get", @{"query", "octave"@});
 @end group
 @end example
 @seealso{urlwrite}

@@ -3164,6 +3164,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         maybe_convert_to_braindead_shortcircuit (lhs);
         maybe_convert_to_braindead_shortcircuit (rhs);
 
+        // Operands may have changed.
+        binexp->lhs (lhs);
+        binexp->rhs (rhs);
+
         octave_value::binary_op op_type = binexp->op_type ();
         if (op_type == octave_value::op_el_and
             || op_type == octave_value::op_el_or)

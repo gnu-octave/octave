@@ -90,6 +90,9 @@ public:
   tree_expression * lhs () { return m_lhs; }
   tree_expression * rhs () { return m_rhs; }
 
+  void lhs (tree_expression *expr) { m_lhs = expr; }
+  void rhs (tree_expression *expr) { m_rhs = expr; }
+
   tree_expression * dup (symbol_scope& scope) const;
 
   octave_value evaluate (tree_evaluator&, int nargout = 1);

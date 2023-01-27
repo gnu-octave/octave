@@ -1949,8 +1949,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
-
-          Ffeval (interp, ovl ("profile","on"));
+          interp.feval (ovl ("profile", "on"));
         });
   }
 
@@ -1960,8 +1959,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
-
-          Ffeval (interp, ovl ("profile","resume"));
+          interp.feval (ovl ("profile", "resume"));
         });
   }
 
@@ -1971,8 +1969,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
-
-          Ffeval (interp, ovl ("profile","off"));
+          interp.feval (ovl ("profile", "off"));
         });
   }
 

@@ -12086,7 +12086,7 @@ each individual object will be reset.
 DEFMETHOD (set, interp, args, nargout,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} set (@var{h}, @var{property}, @var{value}, @dots{})
-@deftypefnx {} {} set (@var{h}, @var{properties}, @var{values})
+@deftypefnx {} {} set (@var{h}, @{@var{properties}@}, @{@var{values}@})
 @deftypefnx {} {} set (@var{h}, @var{pv})
 @deftypefnx {} {@var{value_list} =} set (@var{h}, @var{property})
 @deftypefnx {} {@var{all_value_list} =} set (@var{h})

@@ -1100,7 +1100,7 @@ endfunction
 ## %!invalid                   # unknown block type
 ## %!error  toeplitz ([1,2,3]); # correct usage
 ## %!test   syntax errors)     # syntax errors fail properly
-## %!shared garbage in         # variables must be comma separated
+## %!shared garbage in         # variables must be comma-separated
 ## %!error  syntax++error      # error test fails on syntax errors
 ## %!error  "succeeds.";       # error test fails if code succeeds
 ## %!error <wrong pattern> error ("message")  # error pattern must match

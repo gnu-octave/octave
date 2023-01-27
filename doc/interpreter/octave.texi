@@ -326,7 +326,7 @@ Data Containers
 * Structures::
 * containers.Map::
 * Cell Arrays::
-* Comma Separated Lists::
+* Comma-Separated Lists::
 
 Structures
 
@@ -344,10 +344,10 @@ Cell Arrays
 * Cell Arrays of Strings::
 * Processing Data in Cell Arrays::
 
-Comma Separated Lists
+Comma-Separated Lists
 
-* Comma Separated Lists Generated from Cell Arrays::
-* Comma Separated Lists Generated from Structure Arrays::
+* Comma-Separated Lists Generated from Cell Arrays::
+* Comma-Separated Lists Generated from Structure Arrays::
 
 Variables
 

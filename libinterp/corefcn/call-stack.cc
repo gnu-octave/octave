@@ -976,7 +976,7 @@ octave_value call_stack::do_who (int argc, const string_vector& argv,
 
       // Set up temporary scope.
 
-      symbol_scope tmp_scope ("$dummy_scope$");
+      symbol_scope tmp_scope (file_name);
 
       push (tmp_scope);
 
@@ -986,7 +986,7 @@ octave_value call_stack::do_who (int argc, const string_vector& argv,
 
       Fload (interp, ovl (octave_value (file_name)));
 
-      std::string newmsg = "Variables in the file " + file_name + ":\n\n";
+      std::string newmsg = "Variables in the file " + file_name + ":\n";
 
       if (global_only)
         return do_global_who_two (patterns, have_regexp, return_list,

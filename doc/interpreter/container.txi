@@ -25,13 +25,13 @@ data types in the same variable: Structures, which are C-like, and are indexed
 with named fields; containers.Map objects, which store data in key/value pairs;
 and cell arrays, where each element of the array can have a different data type
 and or shape.  Multiple input arguments and return values of functions are
-organized as another data container, the comma separated list.
+organized as another data container, the comma-separated list.
 
 @menu
 * Structures::
 * containers.Map::
 * Cell Arrays::
-* Comma Separated Lists::
+* Comma-Separated Lists::
 @end menu
 
 @node Structures
@@ -300,8 +300,8 @@ x(1)
 @end group
 @end example
 
-Furthermore, the structure array can return a comma separated list of
-field values (@pxref{Comma Separated Lists}), if indexed by one of its
+Furthermore, the structure array can return a comma-separated list of
+field values (@pxref{Comma-Separated Lists}), if indexed by one of its
 own field names.  For example:
 
 @example
@@ -313,7 +313,7 @@ x.a
 @end group
 @end example
 
-Here is another example, using this comma separated list on the
+Here is another example, using this comma-separated list on the
 left-hand side of an assignment:
 
 @example
@@ -806,7 +806,7 @@ c([1, 2], :) = c([2, 1], :)
 
 Accessing multiple elements of a cell array with the @samp{@{} and
 @samp{@}} operators will result in a comma-separated list of all the
-requested elements (@pxref{Comma Separated Lists}).  Using the
+requested elements (@pxref{Comma-Separated Lists}).  Using the
 @samp{@{} and @samp{@}} operators the first two rows in the above
 example can be swapped back like this:
 
@@ -943,12 +943,12 @@ using the @code{cell2mat} and @code{cell2struct} functions.
 
 @DOCSTRING(cell2struct)
 
-@node Comma Separated Lists
-@section Comma Separated Lists
-@cindex comma separated lists
+@node Comma-Separated Lists
+@section Comma-Separated Lists
+@cindex comma-separated lists
 @cindex cs-lists
 
-Comma separated lists @footnote{Comma-separated lists are also sometimes
+Comma-separated lists @footnote{Comma-separated lists are also sometimes
 informally referred to as @dfn{cs-lists}.} are the basic argument type
 to all Octave functions - both for input and return arguments.  In the
 example
@@ -958,7 +958,7 @@ max (@var{a}, @var{b})
 @end example
 
 @noindent
-@samp{@var{a}, @var{b}} is a comma separated list.  Comma separated lists
+@samp{@var{a}, @var{b}} is a comma-separated list.  Comma-separated lists
 can appear on both the right and left hand side of an assignment.  For
 example
 
@@ -970,12 +970,12 @@ x = [1 0 1 0 0 1 1; 0 0 0 0 0 0 7];
 @end example
 
 @noindent
-Here, @samp{@var{x}, 2, "last"} is a comma separated list constituting
+Here, @samp{@var{x}, 2, "last"} is a comma-separated list constituting
 the input arguments of @code{find}.  @code{find} returns a comma
 separated list of output arguments which is assigned element by
-element to the comma separated list @samp{@var{i}, @var{j}}.
+element to the comma-separated list @samp{@var{i}, @var{j}}.
 
-Another example of where comma separated lists are used is in the
+Another example of where comma-separated lists are used is in the
 creation of a new array with @code{[]} (@pxref{Matrices}) or the
 creation of a cell array with @code{@{@}} (@pxref{Basic Usage of Cell
 Arrays}).  In the expressions
@@ -988,24 +988,24 @@ c = @{4, 5, 6, 7@};
 @end example
 
 @noindent
-both @samp{1, 2, 3, 4} and @samp{4, 5, 6, 7} are comma separated lists.
+both @samp{1, 2, 3, 4} and @samp{4, 5, 6, 7} are comma-separated lists.
 
-Comma separated lists cannot be directly manipulated by the
+Comma-separated lists cannot be directly manipulated by the
 user.  However, both structure arrays and cell arrays can be converted
-into comma separated lists, and thus used in place of explicitly
-written comma separated lists.  This feature is useful in many ways,
+into comma-separated lists, and thus used in place of explicitly
+written comma-separated lists.  This feature is useful in many ways,
 as will be shown in the following subsections.
 
 @menu
-* Comma Separated Lists Generated from Cell Arrays::
-* Comma Separated Lists Generated from Structure Arrays::
+* Comma-Separated Lists Generated from Cell Arrays::
+* Comma-Separated Lists Generated from Structure Arrays::
 @end menu
 
-@node Comma Separated Lists Generated from Cell Arrays
-@subsection Comma Separated Lists Generated from Cell Arrays
+@node Comma-Separated Lists Generated from Cell Arrays
+@subsection Comma-Separated Lists Generated from Cell Arrays
 
 As has been mentioned above (@pxref{Indexing Cell Arrays}), elements
-of a cell array can be extracted into a comma separated list with the
+of a cell array can be extracted into a comma-separated list with the
 @code{@{} and @code{@}} operators.  By surrounding this list with
 @code{[} and @code{]}, it can be concatenated into an array.  For example:
 
@@ -1052,7 +1052,7 @@ printf ("%s ", c@{:@});
 @end group
 @end example
 
-If used on the left-hand side of an assignment, a comma separated list
+If used on the left-hand side of an assignment, a comma-separated list
 generated with @code{@{@}} can be assigned to.  An example is
 
 @example
@@ -1081,9 +1081,9 @@ out = cell (4, 1);
 @end example
 
 
-@node Comma Separated Lists Generated from Structure Arrays
-@subsection Comma Separated Lists Generated from Structure Arrays
-Structure arrays can equally be used to create comma separated
+@node Comma-Separated Lists Generated from Structure Arrays
+@subsection Comma-Separated Lists Generated from Structure Arrays
+Structure arrays can equally be used to create comma-separated
 lists.  This is done by addressing one of the fields of a structure
 array.  For example:
 

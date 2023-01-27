@@ -63,7 +63,7 @@
 ## a = b = c = x;
 ## @end example
 ##
-## Programming Note: @code{deal} is often used with comma separated lists
+## Programming Note: @code{deal} is often used with comma-separated lists
 ## derived from cell arrays or structures.  This is unnecessary as the
 ## interpreter can perform the same action without the overhead of a function
 ## call.  For example:

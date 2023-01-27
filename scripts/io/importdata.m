@@ -358,7 +358,7 @@ endfunction
 
 
 %!test
-%! ## Comma separated values
+%! ## Comma-separated values
 %! A = [3.1 -7.2 0; 0.012 6.5 128];
 %! fn  = tempname ();
 %! fid = fopen (fn, "w");

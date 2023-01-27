@@ -12096,7 +12096,7 @@ handles) @var{h}.
 There are three ways to give the property names and values:
 
 @itemize
-@item as a comma separated list of @var{property}, @var{value} pairs
+@item as a comma-separated list of @var{property}, @var{value} pairs
 
 Each @var{property} is a string containing the property name, each @var{value}
 is a value of the appropriate type for the property.  When there are multiple

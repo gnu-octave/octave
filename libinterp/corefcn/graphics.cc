@@ -12098,8 +12098,16 @@ There are three ways to give the property names and values:
 @itemize
 @item as a comma separated list of @var{property}, @var{value} pairs
 
-Here, each @var{property} is a string containing the property name, each
-@var{value} is a value of the appropriate type for the property.
+Each @var{property} is a string containing the property name, each @var{value}
+is a value of the appropriate type for the property.  When there are multiple
+handles in @var{h}, each one is assigned the same @var{value}.  For example:
+
+@example
+@group
+h = plot ([0, 1]);
+set (h, 'color', 'green');
+@end group
+@end example
 
 @item as a cell array of strings @var{properties} containing property names
 and a cell array @var{values} containing property values.
@@ -12109,15 +12117,30 @@ elements in @var{properties}.  The first column of @var{values} contains
 values for the first entry in @var{properties}, etc.  The number of rows of
 @var{values} must be 1 or match the number of elements of @var{h}.  In the
 first case, each handle in @var{h} will be assigned the same values.  In the
-latter case, the first handle in @var{h} will be assigned the values from
-the first row of @var{values} and so on.
+second case, the first handle in @var{h} will be assigned the values from
+the first row of @var{values} and so on.  For example:
 
-@item as a structure array @var{pv}
+@example
+@group
+h = plot ([0, 1; 1, 0]);
+set (h, @{'color'@}, @{'green'; 'red'@});
+@end group
+@end example
 
-Here, the field names of @var{pv} represent the property names, and the
-field values give the property values.  In contrast to the previous case,
-all elements of @var{pv} will be set in all handles in @var{h} independent
-of the dimensions of @var{pv}.
+@item as a structure @var{pv}
+
+This is the same as the first case where the field names of @var{pv} represent
+the property names, and the field values give the property values.  As with
+the first case, it is only possible to set one value for a property which will
+be applied to all handles in @var{h}.  For example:
+
+@example
+@group
+h = plot ([0, 1]);
+props.color = 'green';
+set (h, props);
+@end group
+@end example
 @end itemize
 
 @code{set} is also used to query the list of values a named property will

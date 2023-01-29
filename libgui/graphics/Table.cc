@@ -317,11 +317,8 @@ qStringValueFor (octave_value val, std::string format = "")
     }
   else
     {
-      std::stringstream warn_string;
-      warn_string << "Unknown conversion for datatype " << val.class_name ()
-                  << " to " << format
-                  << " for value " << val.string_value (true);
-      warning ("%s", warn_string.str ().c_str ());
+      // FIXME: Should we warn about the unknown conversion?  If so,
+      // how?  We can't just call Octave's warning function here.
 
       text = Utils::fromStdString (val.string_value (true));
     }
@@ -560,8 +557,6 @@ Table::sendCellEditCallback (int row,
       emit gh_callback_event (m_handle, "celleditcallback",
                               cellEditCallbackEventObject);
     }
-  else if (error.string_value ().length () > 0)
-    warning ("%s", error.string_value ().c_str ());
 }
 
 void

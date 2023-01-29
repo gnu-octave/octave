@@ -315,11 +315,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
     else
       {
-        std::stringstream warn_string;
-        warn_string << "Unknown conversion for datatype " << val.class_name ()
-                    << " to " << format
-                    << " for value " << val.string_value (true);
-        warning ("%s", warn_string.str ().c_str ());
+        // FIXME: Should we warn about the unknown conversion?  If so,
+        // how?  We can't just call Octave's warning function here.
 
         text = Utils::fromStdString (val.string_value (true));
       }
@@ -539,7 +536,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                                octave_value edit_data,
                                octave_value error)
   {
-
     if (!(properties<uitable> ().get_celleditcallback ().isempty ()))
       {
         Matrix indices = Matrix (1, 2);
@@ -558,8 +554,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         emit gh_callback_event (m_handle, "celleditcallback",
                                 cellEditCallbackEventObject);
       }
-    else if (error.string_value ().length () > 0)
-      warning ("%s", error.string_value ().c_str ());
   }
 
   void

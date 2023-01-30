@@ -59,7 +59,7 @@ jobs:
             icoutils libarpack2-dev libblas-dev libcurl4-gnutls-dev \
             libfftw3-dev libfltk1.3-dev libfontconfig1-dev libfreetype6-dev \
             libgl1-mesa-dev libgl2ps-dev libglpk-dev libgraphicsmagick++1-dev \
-            libhdf5-dev liblapack-dev libosmesa6-dev libpcre3-dev \
+            libhdf5-dev liblapack-dev libosmesa6-dev libpcre2-dev \
             libqhull-dev libqscintilla2-qt5-dev libqrupdate-dev \
             libreadline-dev librsvg2-bin libsndfile1-dev libsuitesparse-dev \
             libsundials-dev libtool libxft-dev make openjdk-8-jdk \

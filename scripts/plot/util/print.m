@@ -157,6 +157,20 @@
 ## Caution: If Octave was built against Qt version earlier than 5.13,
 ## @option{-svgconvert} may lead to inaccurate rendering of image objects.
 ##
+## @item -polymerge
+## @itemx -nopolymerge
+## @itemx -polymerge-all
+##   When using the SVG based backend @option{-svgconvert}, faces are rendered
+## as triangles.  In some cases, some viewers might display fine lines where
+## those triangles share an edge.  These options control whether all triangles
+## that share edges are merged into polygons (@option{-polymerge-all} which
+## might take some time for graphics consisting of many triangles -- including
+## line markers), only consecutive polygons are merged (@option{-polymerge}),
+## or no triangles are merged at all (@option{-no-polymerge}).  By default,
+## only consecutive triangles sharing an edge are merged, unless the printed
+## figure contains patch or surface graphics objects in which case all
+## triangles that are sharing an edge are merged.
+##
 ## @item  -portrait
 ## @itemx -landscape
 ##   Specify the orientation of the plot for printed output.
@@ -1160,7 +1174,8 @@ function cmd = svgconvert (opts, devopt)
     cmd = sprintf ('%s - %%s %3.2f "%s" %d "%%s"', ...
                    undo_string_escapes (opts.svgconvert_binary), ...
                    get (0, "screenpixelsperinch"), ...
-                   undo_string_escapes (fullfile (fontdir, "FreeSans.otf")), 1);
+                   undo_string_escapes (fullfile (fontdir, "FreeSans.otf")),
+                   opts.polymerge);
 
     if (opts.debug)
       fprintf ("svgconvert command: '%s'\n", cmd);

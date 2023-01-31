@@ -59,6 +59,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.ghostscript.antialiasing_textalphabits = 4;
   arg_st.ghostscript.antialiasing_graphicsalphabits = 1;
   arg_st.lpr_binary = __quote_path__ (__find_binary__ ("lpr"));
+  arg_st.polymerge = 1;
   arg_st.name = "";
   arg_st.orientation = "";
   arg_st.pstoedit_binary = __quote_path__ (__find_binary__ ("pstoedit"));
@@ -86,6 +87,11 @@ function arg_st = __print_parse_opts__ (varargin)
   if (nargin > 0 && isfigure (varargin{1}))
     arg_st.figure = varargin{1};
     varargin(1) = [];
+  endif
+
+  if (! isempty (findall (arg_st.figure, "type", "patch", ...
+                          "-or", "type", "surface")))
+    arg_st.polymerge = 2;
   endif
 
   for i = 1:numel (varargin)
@@ -127,6 +133,12 @@ function arg_st = __print_parse_opts__ (varargin)
         arg_st.svgconvert = true;
       elseif (strcmp (arg, "-nosvgconvert"))
         arg_st.svgconvert = false;
+      elseif (strcmp (arg, "-polymerge"))
+        arg_st.polymerge = 1;
+      elseif (strcmp (arg, "-nopolymerge"))
+        arg_st.polymerge = 0;
+      elseif (strcmp (arg, "-polymerge-all"))
+        arg_st.polymerge = 2;
       elseif (strcmp (arg, "-textspecial"))
         arg_st.special_flag = "textspecial";
       elseif (strcmp (arg, "-fillpage"))

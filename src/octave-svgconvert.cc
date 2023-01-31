@@ -165,10 +165,12 @@ public:
   void reset (void)
   { m_polygons.clear (); }
 
-  QList<QPolygonF> reconstruct (void)
+  QList<QPolygonF> reconstruct (int reconstruct_level)
   {
     if (m_polygons.isEmpty ())
       return QList<QPolygonF> ();
+    else if (reconstruct_level < 2)
+      return m_polygons;
 
     // Once a polygon has been merged to another, it is marked unsuded
     QVector<bool> unused;
@@ -753,7 +755,7 @@ void replace_polygons (QDomElement& parent_elt, QList<QDomNode> orig,
     parent_elt.removeChild (orig.at (ii));
 }
 
-void reconstruct_polygons (QDomElement& parent_elt)
+void reconstruct_polygons (QDomElement& parent_elt, int reconstruct_level)
 {
   QDomNodeList nodes = parent_elt.childNodes ();
   QColor current_color;
@@ -791,7 +793,8 @@ void reconstruct_polygons (QDomElement& parent_elt)
               if (color != current_color)
                 {
                   // Reconstruct the previous series of triangles
-                  QList<QPolygonF> polygons = current_polygon.reconstruct ();
+                  QList<QPolygonF> polygons
+                    = current_polygon.reconstruct (reconstruct_level);
                   collection.push_back (QPair<QList<QDomNode>,QList<QPolygonF> >
                                         (replaced_nodes, polygons));
 
@@ -810,19 +813,20 @@ void reconstruct_polygons (QDomElement& parent_elt)
         {
           if (current_polygon.count ())
             {
-              QList<QPolygonF> polygons = current_polygon.reconstruct ();
+              QList<QPolygonF> polygons = current_polygon.reconstruct (reconstruct_level);
               collection.push_back (QPair<QList<QDomNode>,QList<QPolygonF> >
                                     (replaced_nodes, polygons));
               replaced_nodes.clear ();
               current_polygon.reset ();
             }
-          reconstruct_polygons (elt);
+          reconstruct_polygons (elt, reconstruct_level);
         }
     }
 
   // Finish
   collection.push_back (QPair<QList<QDomNode>,QList<QPolygonF> >
-                        (replaced_nodes, current_polygon.reconstruct ()));
+                          (replaced_nodes,
+                           current_polygon.reconstruct (reconstruct_level)));
 
   for (int ii = 0; ii < collection.count (); ii++)
     replace_polygons (parent_elt, collection[ii].first, collection[ii].second);
@@ -880,7 +884,10 @@ read from stdin\n\
 * fmt: format of the output file. May be one of pdf or svg\n\
 * dpi: device dependent resolution in screen pixel per inch\n\
 * font: specify a file name for the default FreeSans font\n\
-* reconstruct: specify whether to reconstruct triangle to polygons (0 or 1)\n\
+* reconstruct: specify whether to reconstruct triangle to polygons\n\
+  0: no reconstruction (merging) of polygons\n\
+  1: merge consecutive triangles if they share an edge\n\
+  2: merge all triangles that share edges (might take a long time)\n\
 * outfile: output file name\n";
 
   if (strcmp (argv[1], "-h") == 0)
@@ -981,8 +988,9 @@ read from stdin\n\
     }
 
   // Do basic polygons reconstruction
-  if (QString (argv[5]).toInt ())
-    reconstruct_polygons (root);
+  int reconstruct_level = QString (argv[5]).toInt ();
+  if (reconstruct_level)
+    reconstruct_polygons (root, reconstruct_level);
 
   // Add custom properties to SVG
   add_custom_properties (root);

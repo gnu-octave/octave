@@ -405,10 +405,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       view->setSelectionMode (QAbstractItemView::NoSelection);
 
     selector = view->selectionModel ();
-    int i = 0;
-    for (auto it = initial.begin (); it != initial.end (); it++)
+    for (int i = 0; i < initial.count(); i++)
       {
-        QModelIndex idx = m_model->index (initial.value (i++) - 1, 0,
+        QModelIndex idx = m_model->index (initial.value (i) - 1, 0,
                                           QModelIndex ());
         selector->select (idx, QItemSelectionModel::Select);
       }
@@ -425,26 +424,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QVBoxLayout *listLayout = new QVBoxLayout;
     if (! prompt.isEmpty ())
       {
-        // For now, assume html-like Rich Text.  May be incompatible
-        // with something down the road, but just testing capability.
+        // Note: Assume html-like Rich Text.
+        // Check for future incompatibilities if any.
         QString prompt_string;
-        for (int j = 0; j < prompt.length (); j++)
+        prompt_string.append (prompt.at (0));
+        for (int j = 1; j < prompt.length (); j++)
           {
-            if (j > 0)
-              // FIXME: Why define and then immediately test value?
-#define RICH_TEXT 1
-#if RICH_TEXT
-              prompt_string.append ("<br>");
-#else
-              prompt_string.append ("\n");
-#endif
+            prompt_string.append ("<br>");
             prompt_string.append (prompt.at (j));
           }
         QLabel *plabel = new QLabel (prompt_string);
-#if RICH_TEXT
         plabel->setTextFormat (Qt::RichText);
-#endif
-#undef RICH_TEXT
         listLayout->addWidget (plabel);
       }
     listLayout->addWidget (view);

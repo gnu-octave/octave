@@ -1134,10 +1134,9 @@ On non-Windows platforms this function fails with an error.
         error ("winqueryreg: error %ld reading names from registry", retval);
 
       Cell fieldnames (dim_vector (1, fields.size ()));
-      std::size_t i;
-      std::list<std::string>::const_iterator it;
-      for (i = 0, it = fields.begin (); it != fields.end (); ++it, ++i)
-        fieldnames(i) = *it;
+      std::size_t i = 0;
+      for (const auto& it : fields)
+        fieldnames(i++) = it;
 
       return ovl (fieldnames);
     }

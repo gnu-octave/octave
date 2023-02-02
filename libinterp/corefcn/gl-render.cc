@@ -2273,10 +2273,8 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 
   m_glfcns.glDisable (GL_DEPTH_TEST);
 
-  for (it = obj_list.begin (); it != obj_list.end (); it++)
+  for (const graphics_object& go : obj_list)
     {
-      graphics_object go = (*it);
-
       set_clipping (go.get_properties ().is_clipping ());
       draw (go);
     }

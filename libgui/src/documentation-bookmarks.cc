@@ -365,11 +365,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     QList<QTreeWidgetItem *> items = m_tree->selectedItems ();
 
-    for (auto it = items.begin () ; it != items.end (); it++)
-      {
-        if (*it)
-          m_tree->takeTopLevelItem (m_tree->indexOfTopLevelItem (*it));
-      }
+    for (const auto& it : items)
+      if (it)
+        m_tree->takeTopLevelItem (m_tree->indexOfTopLevelItem (it));
   }
 
   void documentation_bookmarks::show_filter (bool)

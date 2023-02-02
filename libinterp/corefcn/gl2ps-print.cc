@@ -1010,8 +1010,8 @@ gl2ps_renderer::strlist_to_svg (double x, double y, double z,
       // provide an x coordinate for each character in the string
       os << "x=\"";
       std::vector<double> xdata = p->get_xdata ();
-      for (auto q = xdata.begin (); q != xdata.end (); q++)
-        os << (*q) << " ";
+      for (const auto& q : xdata)
+        os << q << " ";
       os << '"';
 
       os << '>';
@@ -1022,10 +1022,10 @@ gl2ps_renderer::strlist_to_svg (double x, double y, double z,
       else
         {
           const std::string str = p->get_string ();
-          for (auto q = str.begin (); q != str.end (); q++)
+          for (const auto& q : str)
             {
               std::stringstream chr;
-              chr << *q;
+              chr << q;
               if (chr.str () == "\"")
                 os << "&quot;";
               else if (chr.str () == "'")

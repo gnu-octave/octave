@@ -319,26 +319,24 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string,
 {
   load_all_methods ();
 
-  method_const_iterator it;
-
-  for (it = m_method_map.begin (); it != m_method_map.end (); ++it)
+  for (const auto& it : m_method_map)
     {
-      if (include_ctor || ! it->second.is_constructor ())
+      if (include_ctor || ! it.second.is_constructor ())
         {
-          std::string nm = it->second.get_name ();
+          std::string nm = it.second.get_name ();
 
           if (meths.find (nm) == meths.end ())
             {
               if (only_inherited)
                 {
-                  octave_value acc = it->second.get ("Access");
+                  octave_value acc = it.second.get ("Access");
 
                   if (! acc.is_string ()
                       || acc.string_value () == "private")
                     continue;
                 }
 
-              meths[nm] = it->second;
+              meths[nm] = it.second;
             }
         }
     }
@@ -425,24 +423,22 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
     cdef_property>& props,
     int mode)
 {
-  property_const_iterator it;
-
-  for (it = m_property_map.begin (); it != m_property_map.end (); ++it)
+  for (const auto& it : m_property_map)
     {
-      std::string nm = it->second.get_name ();
+      std::string nm = it.second.get_name ();
 
       if (props.find (nm) == props.end ())
         {
           if (mode == property_inherited)
             {
-              octave_value acc = it->second.get ("GetAccess");
+              octave_value acc = it.second.get ("GetAccess");
 
               if (! acc.is_string ()
                   || acc.string_value () == "private")
                 continue;
             }
 
-          props[nm] = it->second;
+          props[nm] = it.second;
         }
     }
 

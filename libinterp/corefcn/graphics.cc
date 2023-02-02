@@ -2541,11 +2541,11 @@ property_list::as_struct (const std::string& prefix_arg) const
 {
   octave_scalar_map m;
 
-  for (auto p = begin (); p != end (); p++)
+  for (const auto& p : *this)
     {
-      std::string prefix = prefix_arg + p->first;
+      std::string prefix = prefix_arg + p.first;
 
-      for (const auto& prop_val : p->second)
+      for (const auto& prop_val : p.second)
         m.assign (prefix + prop_val.first, prop_val.second);
     }
 
@@ -3031,10 +3031,9 @@ base_properties::get_dynamic (bool all) const
 {
   octave_scalar_map m;
 
-  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator
-       it = m_all_props.begin (); it != m_all_props.end (); ++it)
-    if (all || ! it->second.is_hidden ())
-      m.assign (it->second.get_name (), it->second.get ());
+  for (const auto& it : m_all_props)
+    if (all || ! it.second.is_hidden ())
+      m.assign (it.second.get_name (), it.second.get ());
 
   return m;
 }

@@ -726,9 +726,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
-    for (auto it = rows.begin (); it != rows.end (); it++)
+    for (const auto& it : rows)
       {
-        QFileInfo file = m_file_system_model->fileInfo (*it);
+        QFileInfo file = m_file_system_model->fileInfo (it);
         if (file.exists ())
           display_directory (file.absoluteFilePath ());
       }
@@ -740,9 +740,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
-    for (auto it = rows.begin (); it != rows.end (); it++)
+    for (const auto& it : rows)
       {
-        QFileInfo file = m_file_system_model->fileInfo (*it);
+        QFileInfo file = m_file_system_model->fileInfo (it);
         if (file.exists ())
           emit open_file (file.absoluteFilePath ());
       }
@@ -753,8 +753,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QItemSelectionModel *m = m_file_tree_view->selectionModel ();
     QModelIndexList rows = m->selectedRows ();
 
-    for (auto it = rows.begin (); it != rows.end (); it++)
-      open_item_in_app (*it);
+    for (const auto& it : rows)
+      open_item_in_app (it);
   }
 
   void files_dock_widget::contextmenu_copy_selection (bool)
@@ -764,10 +764,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QStringList selection;
 
-    for (auto it = rows.begin (); it != rows.end (); it++)
+    for (const auto& it : rows)
       {
-        QFileInfo info = m_file_system_model->fileInfo (*it);
-
+        QFileInfo info = m_file_system_model->fileInfo (it);
         selection << info.fileName ();
       }
 
@@ -899,11 +898,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     QList<QFileInfo> infos;
 
-    for (auto it = rows.begin (); it != rows.end (); it++)
+    for (const auto& idx : rows)
       {
-        QModelIndex index = *it;
-
-        QFileInfo info = m_file_system_model->fileInfo (index);
+        QFileInfo info = m_file_system_model->fileInfo (idx);
 
         if (info.exists () &&
             ((dir & info.isDir ()) || (! dir && info.isFile ())))

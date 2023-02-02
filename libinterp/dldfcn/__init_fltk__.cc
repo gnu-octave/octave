@@ -2041,9 +2041,8 @@ private:
 
   void do_close_all ()
   {
-    wm_iterator win;
-    for (win = windows.begin (); win != windows.end (); win++)
-      delete win->second;
+    for (auto& win : windows)
+      delete win.second;
     windows.clear ();
   }
 

@@ -179,13 +179,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
     QModelIndexList rows = selectionModel->selectedRows ();
     bool prev_valid_row = false;
-    for (auto it = rows.begin (); it != rows.end (); it++)
+    for (const auto& it : rows)
       {
-        if ((*it).isValid ())
+        if (it.isValid ())
           {
             if (prev_valid_row)
               text += '\n';
-            text += (*it).data ().toString ();
+            text += it.data ().toString ();
             prev_valid_row = true;
           }
       }
@@ -196,11 +196,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
     QModelIndexList rows = selectionModel->selectedRows ();
-    for (auto it = rows.begin () ; it != rows.end (); it++)
-      {
-        if ((*it).isValid ())
-          emit command_double_clicked ((*it).data ().toString ());
-      }
+    for (const auto& it : rows)
+      if (it.isValid ())
+        emit command_double_clicked (it.data ().toString ());
   }
 
   void history_dock_widget::handle_contextmenu_create_script (bool)
@@ -210,13 +208,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     QModelIndexList rows = selectionModel->selectedRows ();
 
     bool prev_valid_row = false;
-    for (auto it = rows.begin (); it != rows.end (); it++)
+    for (const auto& it : rows)
       {
-        if ((*it).isValid ())
+        if (it.isValid ())
           {
             if (prev_valid_row)
               text += '\n';
-            text += (*it).data ().toString ();
+            text += it.data ().toString ();
             prev_valid_row = true;
           }
       }

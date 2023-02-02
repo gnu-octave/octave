@@ -514,14 +514,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                     // Remove the quotes we added
                     QString search_string = m_internal_search;
 
-                    for (auto r = res.begin (); r != res.end (); r++)
+                    for (const auto& r : res)
                       {
 #if defined (HAVE_QHELPSEARCHQUERYWIDGET_SEARCHINPUT)
-                        QString title = r->title ().toLower ();
-                        QUrl tmpurl = r->url ();
+                        QString title = r.title ().toLower ();
+                        QUrl tmpurl = r.url ();
 #else
-                        QString title = r->second.toLower ();
-                        QUrl tmpurl = r->first;
+                        QString title = r.second.toLower ();
+                        QUrl tmpurl = r.first;
 #endif
                         if (title.contains (search_string.toLower ()))
                           {

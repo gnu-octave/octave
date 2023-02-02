@@ -81,23 +81,20 @@ QVector<double> qstr2vectorf (QString str)
 {
   QVector<double> pts;
   QStringList coords = str.split (",");
-  for (QStringList::iterator p = coords.begin (); p != coords.end (); p += 1)
-    {
-      double pt = (*p).toDouble ();
-      pts.append (pt);
-    }
+  for (auto& p : coords)
+    pts.append (p.toDouble ());
+
   return pts;
 }
 
+// FIXME: What's the difference between qstr2vectorf and qstr2vectord?
+// Can one be called from the other to avoid code duplication, or deleted?
 QVector<double> qstr2vectord (QString str)
 {
   QVector<double> pts;
   QStringList coords = str.split (",");
-  for (QStringList::iterator p = coords.begin (); p != coords.end (); p += 1)
-    {
-      double pt = (*p).toDouble ();
-      pts.append (pt);
-    }
+  for (auto& p : coords)
+    pts.append (p.toDouble ());
 
   return pts;
 }
@@ -116,6 +113,8 @@ QVector<QPointF> qstr2ptsvector (QString str)
   return pts;
 }
 
+// FIXME: What's the difference between qstr2ptsvector and qstr2ptsvectord?
+// Can one be called from the other to avoid code duplication, or deleted?
 QVector<QPoint> qstr2ptsvectord (QString str)
 {
   QVector<QPoint> pts;
@@ -169,9 +168,7 @@ public:
       return m_polygons;
 
     // Once a polygon has been merged to another, it is marked unsuded
-    QVector<bool> unused;
-    for (auto it = m_polygons.begin (); it != m_polygons.end (); it++)
-      unused.push_back (false);
+    QVector<bool> unused (m_polygons.count (), false);
 
     bool tryagain = (m_polygons.count () > 1);
 

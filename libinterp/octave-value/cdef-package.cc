@@ -84,8 +84,8 @@ map2Cell (const std::map<T1, T2>& m)
   Cell retval (1, m.size ());
   int i = 0;
 
-  for (auto it = m.begin (); it != m.end (); ++it, ++i)
-    retval(i) = to_ov (it->second);
+  for (const auto& it : m)
+    retval(i++) = to_ov (it.second);
 
   return retval;
 }

@@ -984,6 +984,7 @@ esac
 
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
+AC_SUBST(XTRA_LDFLAGS)
 
 ### Defaults for cross compiling.
 dnl BUILD_CC and BUILD_CXX are the compilers that we use for building tools
@@ -2867,19 +2868,19 @@ if test $try_address_sanitizer_flags = yes; then
   ADDRESS_SANITIZER_ENABLED=yes
   for flag in $GCC_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
-      WARN_CFLAGS="$WARN_CFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
+      XTRA_CFLAGS="$XTRA_CFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to XTRA_CFLAGS])])
   done
   for flag in $GXX_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CXX_FLAG([$flag], [
-      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to XTRA_CXXFLAGS])])
   done
   dnl FIXME: do we really need an LD-specific test, or is this good enough?
   for flag in $LD_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
-      WARN_LDFLAGS="$WARN_LDFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_LDFLAGS])])
+      XTRA_LDFLAGS="$XTRA_LDFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to XTRA_LDFLAGS])])
   done
 fi
 AC_SUBST(ADDRESS_SANITIZER_ENABLED)
@@ -3193,7 +3194,7 @@ Octave is now configured for $canonical_host_type
   Lex libraries:                 $LEXLIB
   LIBS:                          $LIBS
   LDFLAGS:                       $LDFLAGS
-  Extra LDFLAGS:                 $WARN_LDFLAGS
+  Extra LDFLAGS:                 $XTRA_LDFLAGS $WARN_LDFLAGS
 
   AMD CPPFLAGS:                  $AMD_CPPFLAGS
   AMD LDFLAGS:                   $AMD_LDFLAGS

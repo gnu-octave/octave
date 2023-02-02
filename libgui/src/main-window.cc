@@ -1949,7 +1949,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
-          interp.feval (ovl ("profile", "on"));
+          F__profiler_enable__ (interp, ovl (true));
         });
   }
 
@@ -1959,7 +1959,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
-          interp.feval (ovl ("profile", "resume"));
+          F__profiler_enable__ (interp, ovl (true));
         });
   }
 
@@ -1969,7 +1969,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       ([=] (interpreter& interp)
         {
           // INTERPRETER THREAD
-          interp.feval (ovl ("profile", "off"));
+          F__profiler_enable__ (interp, ovl (false));
         });
   }
 

@@ -32,21 +32,21 @@ class QRadioButton;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class RadioButtonControl : public ButtonControl
-  {
-  public:
-    RadioButtonControl (octave::interpreter& interp, const graphics_object& go,
-                        QRadioButton *box);
-    ~RadioButtonControl ();
+class RadioButtonControl : public ButtonControl
+{
+public:
+  RadioButtonControl (octave::interpreter& interp, const graphics_object& go,
+                      QRadioButton *box);
+  ~RadioButtonControl ();
 
-    static RadioButtonControl * create (octave::interpreter& interp,
-                                        const graphics_object& go);
+  static RadioButtonControl * create (octave::interpreter& interp,
+                                      const graphics_object& go);
 
-  protected:
-    void update (int pId);
-  };
+protected:
+  void update (int pId);
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

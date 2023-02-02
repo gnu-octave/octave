@@ -32,9 +32,9 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  extern void graphics_init (interpreter& interp);
+extern void graphics_init (interpreter& interp);
 
 OCTAVE_END_NAMESPACE(octave)
 

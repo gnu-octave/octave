@@ -35,114 +35,114 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  PopupMenuControl *
-  PopupMenuControl::create (octave::interpreter& interp,
-                            const graphics_object& go)
-  {
-    Object *parent = parentObject (interp, go);
+PopupMenuControl *
+PopupMenuControl::create (octave::interpreter& interp,
+                          const graphics_object& go)
+{
+  Object *parent = parentObject (interp, go);
 
-    if (parent)
+  if (parent)
+    {
+      Container *container = parent->innerContainer ();
+
+      if (container)
+        return new PopupMenuControl (interp, go,
+                                     new QComboBox (container));
+    }
+
+  return nullptr;
+}
+
+PopupMenuControl::PopupMenuControl (octave::interpreter& interp,
+                                    const graphics_object& go,
+                                    QComboBox *box)
+  : BaseControl (interp, go, box), m_blockUpdate (false)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
+
+  box->addItems (Utils::fromStdString (up.get_string_string ()).split ('|'));
+
+  update (uicontrol::properties::ID_VALUE);
+
+  connect (box, QOverload<int>::of (&QComboBox::activated),
+           this, &PopupMenuControl::currentIndexChanged);
+}
+
+PopupMenuControl::~PopupMenuControl ()
+{ }
+
+void PopupMenuControl::update (int pId)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
+  QComboBox *box = qWidget<QComboBox> ();
+
+  switch (pId)
+    {
+    case uicontrol::properties::ID_STRING:
+      m_blockUpdate = true;
       {
-        Container *container = parent->innerContainer ();
+        int oldCurrent = box->currentIndex ();
 
-        if (container)
-          return new PopupMenuControl (interp, go,
-                                       new QComboBox (container));
+        box->clear ();
+        box->addItems (Utils::fromStdString
+                       (up.get_string_string ()).split ('|'));
+        if (box->count () > 0
+            && oldCurrent >= 0
+            && oldCurrent < box->count ())
+          {
+            box->setCurrentIndex (oldCurrent);
+          }
+        else
+          {
+            emit gh_set_event (m_handle, "value",
+                               octave_value (box->count () > 0 ? 1.0 : 0.0),
+                               false);
+          }
       }
+      m_blockUpdate = false;
+      break;
 
-    return nullptr;
-  }
-
-  PopupMenuControl::PopupMenuControl (octave::interpreter& interp,
-                                      const graphics_object& go,
-                                      QComboBox *box)
-    : BaseControl (interp, go, box), m_blockUpdate (false)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
-
-    box->addItems (Utils::fromStdString (up.get_string_string ()).split ('|'));
-
-    update (uicontrol::properties::ID_VALUE);
-
-    connect (box, QOverload<int>::of (&QComboBox::activated),
-             this, &PopupMenuControl::currentIndexChanged);
-  }
-
-  PopupMenuControl::~PopupMenuControl ()
-  { }
-
-  void PopupMenuControl::update (int pId)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
-    QComboBox *box = qWidget<QComboBox> ();
-
-    switch (pId)
+    case uicontrol::properties::ID_VALUE:
+      m_blockUpdate = true;
       {
-      case uicontrol::properties::ID_STRING:
-        m_blockUpdate = true;
-        {
-          int oldCurrent = box->currentIndex ();
+        Matrix value = up.get_value ().matrix_value ();
 
-          box->clear ();
-          box->addItems (Utils::fromStdString
-                         (up.get_string_string ()).split ('|'));
-          if (box->count () > 0
-              && oldCurrent >= 0
-              && oldCurrent < box->count ())
-            {
-              box->setCurrentIndex (oldCurrent);
-            }
-          else
-            {
-              emit gh_set_event (m_handle, "value",
-                                 octave_value (box->count () > 0 ? 1.0 : 0.0),
-                                 false);
-            }
-        }
-        m_blockUpdate = false;
-        break;
+        if (value.numel () > 0)
+          {
+            if (value(0) != static_cast<int> (value(0)))
+              warning ("popupmenu value should be integer");
+            else
+              {
+                int newIndex = int (value(0)) - 1;
 
-      case uicontrol::properties::ID_VALUE:
-        m_blockUpdate = true;
-        {
-          Matrix value = up.get_value ().matrix_value ();
-
-          if (value.numel () > 0)
-            {
-              if (value(0) != static_cast<int> (value(0)))
-                warning ("popupmenu value should be integer");
-              else
-                {
-                  int newIndex = int (value(0)) - 1;
-
-                  if (newIndex >= 0 && newIndex < box->count ())
-                    {
-                      if (newIndex != box->currentIndex ())
-                        box->setCurrentIndex (newIndex);
-                    }
-                  else
-                    warning ("popupmenu value not within valid display range");
-                }
-            }
-        }
-        m_blockUpdate = false;
-        break;
-
-      default:
-        BaseControl::update (pId);
-        break;
+                if (newIndex >= 0 && newIndex < box->count ())
+                  {
+                    if (newIndex != box->currentIndex ())
+                      box->setCurrentIndex (newIndex);
+                  }
+                else
+                  warning ("popupmenu value not within valid display range");
+              }
+          }
       }
-  }
+      m_blockUpdate = false;
+      break;
 
-  void
-  PopupMenuControl::currentIndexChanged (int index)
-  {
-    if (! m_blockUpdate)
-      {
-        emit gh_set_event (m_handle, "value", octave_value (double (index + 1)),
-                           false);
-        emit gh_callback_event (m_handle, "callback");
-      }
-  }
+    default:
+      BaseControl::update (pId);
+      break;
+    }
+}
+
+void
+PopupMenuControl::currentIndexChanged (int index)
+{
+  if (! m_blockUpdate)
+    {
+      emit gh_set_event (m_handle, "value", octave_value (double (index + 1)),
+                         false);
+      emit gh_callback_event (m_handle, "callback");
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave)

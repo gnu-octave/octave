@@ -33,38 +33,38 @@ class QToolBar;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class Figure;
+class Figure;
 
-  class ToolBar : public Object
-  {
-    Q_OBJECT
+class ToolBar : public Object
+{
+  Q_OBJECT
 
-  public:
-    ToolBar (octave::interpreter& interp,
-             const graphics_object& go, QToolBar *bar);
-    ~ToolBar ();
+public:
+  ToolBar (octave::interpreter& interp,
+           const graphics_object& go, QToolBar *bar);
+  ~ToolBar ();
 
-    static ToolBar *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static ToolBar *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-    Container * innerContainer () { return nullptr; }
+  Container * innerContainer () { return nullptr; }
 
-    bool eventFilter (QObject *watched, QEvent *event);
+  bool eventFilter (QObject *watched, QEvent *event);
 
-  protected:
-    void update (int pId);
-    void beingDeleted ();
+protected:
+  void update (int pId);
+  void beingDeleted ();
 
-  private slots:
-    void hideEmpty ();
+private slots:
+  void hideEmpty ();
 
-  private:
-    QAction *m_empty;
-    Figure *m_figure;
-  };
+private:
+  QAction *m_empty;
+  Figure *m_figure;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

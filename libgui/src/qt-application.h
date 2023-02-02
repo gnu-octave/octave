@@ -32,49 +32,49 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  // Programming Note: This file must not include any Qt headers.  Any
-  // Qt header files required by the qt_application::execute function
-  // must be included only in the corresponding .cc file.
+// Programming Note: This file must not include any Qt headers.  Any
+// Qt header files required by the qt_application::execute function
+// must be included only in the corresponding .cc file.
 
-  //! This class inherits from the pure-virtual base class
-  //! application and provides an implementation of the
-  //! application::execute method that starts an interface to Octave
-  //! that is based on Qt.  It may start a command-line interface that
-  //! allows Qt graphics to be used or it may start an interface that
-  //! provides the full GUI experience.
+//! This class inherits from the pure-virtual base class
+//! application and provides an implementation of the
+//! application::execute method that starts an interface to Octave
+//! that is based on Qt.  It may start a command-line interface that
+//! allows Qt graphics to be used or it may start an interface that
+//! provides the full GUI experience.
 
-  class OCTGUI_API qt_application  : public application
-  {
-  public:
+class OCTGUI_API qt_application  : public application
+{
+public:
 
-    qt_application (const std::string& organization_name,
-                    const std::string& application_name,
-                    const std::string& application_version,
-                    int argc, char **argv);
+  qt_application (const std::string& organization_name,
+                  const std::string& application_name,
+                  const std::string& application_version,
+                  int argc, char **argv);
 
-    qt_application (int argc, char **argv);
+  qt_application (int argc, char **argv);
 
-    // No copying, at least not yet.
+  // No copying, at least not yet.
 
-    qt_application (const qt_application&) = delete;
+  qt_application (const qt_application&) = delete;
 
-    qt_application& operator = (const qt_application&) = delete;
+  qt_application& operator = (const qt_application&) = delete;
 
-    ~qt_application () = default;
+  ~qt_application () = default;
 
-    // Should we start the GUI or fall back to the CLI?
-    bool start_gui_p () const;
+  // Should we start the GUI or fall back to the CLI?
+  bool start_gui_p () const;
 
-    int execute ();
+  int execute ();
 
-    bool gui_running () const { return m_gui_running; }
-    void gui_running (bool arg) { m_gui_running = arg; }
+  bool gui_running () const { return m_gui_running; }
+  void gui_running (bool arg) { m_gui_running = arg; }
 
-  private:
+private:
 
-    // If TRUE, the GUI should be started.
-    bool m_gui_running = false;
-  };
+  // If TRUE, the GUI should be started.
+  bool m_gui_running = false;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

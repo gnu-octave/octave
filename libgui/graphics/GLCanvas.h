@@ -38,81 +38,81 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class GLWidget : public QOpenGLWidget
-  {
-    Q_OBJECT
+class GLWidget : public QOpenGLWidget
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    GLWidget (Canvas& parent_canvas, QWidget *parent);
+  GLWidget (Canvas& parent_canvas, QWidget *parent);
 
-    ~GLWidget ();
+  ~GLWidget ();
 
-    void initializeGL ();
+  void initializeGL ();
 
-    void draw (graphics_object go);
-    uint8NDArray  do_getPixels (graphics_object go);
-    void do_print (const QString& file_cmd, const QString& term,
-                   graphics_object go);
-    void drawZoomBox (const QPoint& p1, const QPoint& p2);
-    void resize (int /* x */, int /* y */,
-                 int /* width */, int /* height */) { }
-    graphics_object selectFromAxes (const graphics_object& ax,
-                                    const QPoint& pt);
+  void draw (graphics_object go);
+  uint8NDArray  do_getPixels (graphics_object go);
+  void do_print (const QString& file_cmd, const QString& term,
+                 graphics_object go);
+  void drawZoomBox (const QPoint& p1, const QPoint& p2);
+  void resize (int /* x */, int /* y */,
+               int /* width */, int /* height */) { }
+  graphics_object selectFromAxes (const graphics_object& ax,
+                                  const QPoint& pt);
 
-    bool begin_rendering ();
-    void end_rendering ();
+  bool begin_rendering ();
+  void end_rendering ();
 
-  protected:
+protected:
 
-    void paintGL ();
-    void mouseDoubleClickEvent (QMouseEvent *event);
-    void mouseMoveEvent (QMouseEvent *event);
-    void mousePressEvent (QMouseEvent *event);
-    void mouseReleaseEvent (QMouseEvent *event);
-    void wheelEvent (QWheelEvent *event);
-    void keyPressEvent (QKeyEvent *event);
-    void keyReleaseEvent (QKeyEvent *event);
+  void paintGL ();
+  void mouseDoubleClickEvent (QMouseEvent *event);
+  void mouseMoveEvent (QMouseEvent *event);
+  void mousePressEvent (QMouseEvent *event);
+  void mouseReleaseEvent (QMouseEvent *event);
+  void wheelEvent (QWheelEvent *event);
+  void keyPressEvent (QKeyEvent *event);
+  void keyReleaseEvent (QKeyEvent *event);
 
-  private:
+private:
 
-    Canvas& m_parent_canvas;
+  Canvas& m_parent_canvas;
 
-    qopengl_functions m_glfcns;
-    opengl_renderer m_renderer;
+  qopengl_functions m_glfcns;
+  opengl_renderer m_renderer;
 
-    QOpenGLContext m_os_context;
-    QOffscreenSurface m_os_surface;
-  };
+  QOpenGLContext m_os_context;
+  QOffscreenSurface m_os_surface;
+};
 
-  class GLCanvas : public Canvas
-  {
-  public:
+class GLCanvas : public Canvas
+{
+public:
 
-    GLCanvas (octave::interpreter& interp, const graphics_handle& handle,
-              QWidget *parent);
+  GLCanvas (octave::interpreter& interp, const graphics_handle& handle,
+            QWidget *parent);
 
-    ~GLCanvas ();
+  ~GLCanvas ();
 
-    void draw (const graphics_handle& handle);
-    uint8NDArray  do_getPixels (const graphics_handle& handle);
-    void do_print (const QString& file_cmd, const QString& term,
-                   const graphics_handle& handle);
-    void drawZoomBox (const QPoint& p1, const QPoint& p2);
-    void resize (int /* x */, int /* y */,
-                 int /* width */, int /* height */) { }
-    graphics_object selectFromAxes (const graphics_object& ax,
-                                    const QPoint& pt);
+  void draw (const graphics_handle& handle);
+  uint8NDArray  do_getPixels (const graphics_handle& handle);
+  void do_print (const QString& file_cmd, const QString& term,
+                 const graphics_handle& handle);
+  void drawZoomBox (const QPoint& p1, const QPoint& p2);
+  void resize (int /* x */, int /* y */,
+               int /* width */, int /* height */) { }
+  graphics_object selectFromAxes (const graphics_object& ax,
+                                  const QPoint& pt);
 
-    QWidget * qWidget () { return m_glwidget; }
+  QWidget * qWidget () { return m_glwidget; }
 
-  private:
+private:
 
-    GLWidget *m_glwidget;
+  GLWidget *m_glwidget;
 
-    bool begin_rendering ();
-    void end_rendering ();
-  };
+  bool begin_rendering ();
+  void end_rendering ();
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

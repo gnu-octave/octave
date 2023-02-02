@@ -30,27 +30,27 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class PushTool : public ToolBarButton<uipushtool>
-  {
-    Q_OBJECT
+class PushTool : public ToolBarButton<uipushtool>
+{
+  Q_OBJECT
 
-  public:
-    PushTool (octave::interpreter& interp,
-              const graphics_object& go, QAction *action);
-    ~PushTool ();
+public:
+  PushTool (octave::interpreter& interp,
+            const graphics_object& go, QAction *action);
+  ~PushTool ();
 
-    static PushTool *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static PushTool *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private slots:
-    void clicked ();
-  };
+private slots:
+  void clicked ();
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

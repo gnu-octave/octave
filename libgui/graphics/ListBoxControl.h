@@ -34,35 +34,35 @@ class QModelIndex;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class ListBoxControl : public BaseControl
-  {
-    Q_OBJECT
+class ListBoxControl : public BaseControl
+{
+  Q_OBJECT
 
-  public:
-    ListBoxControl (octave::interpreter& interp, const graphics_object& go,
-                    QListWidget *list);
-    ~ListBoxControl ();
+public:
+  ListBoxControl (octave::interpreter& interp, const graphics_object& go,
+                  QListWidget *list);
+  ~ListBoxControl ();
 
-    static ListBoxControl *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static ListBoxControl *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
-    bool eventFilter (QObject *watched, QEvent *e);
-    void sendSelectionChange ();
+protected:
+  void update (int pId);
+  bool eventFilter (QObject *watched, QEvent *e);
+  void sendSelectionChange ();
 
-  private slots:
-    void itemSelectionChanged ();
-    void itemActivated (const QModelIndex&);
-    void itemPressed (QListWidgetItem *);
+private slots:
+  void itemSelectionChanged ();
+  void itemActivated (const QModelIndex&);
+  void itemPressed (QListWidgetItem *);
 
-  private:
-    bool m_blockCallback;
-    bool m_selectionChanged;
-  };
+private:
+  bool m_blockCallback;
+  bool m_selectionChanged;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

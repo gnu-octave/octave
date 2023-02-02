@@ -33,28 +33,28 @@ class QObject;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class BaseControl : public Object
-  {
-  public:
-    BaseControl (octave::interpreter& interp,
-                 const graphics_object& go, QWidget *w);
-    ~BaseControl ();
+class BaseControl : public Object
+{
+public:
+  BaseControl (octave::interpreter& interp,
+               const graphics_object& go, QWidget *w);
+  ~BaseControl ();
 
-    Container * innerContainer () { return nullptr; }
+  Container * innerContainer () { return nullptr; }
 
-    bool eventFilter (QObject *watched, QEvent *e);
+  bool eventFilter (QObject *watched, QEvent *e);
 
-  protected:
-    void init (QWidget *w, bool callBase = false);
-    void redraw ();
-    void update (int pId);
+protected:
+  void init (QWidget *w, bool callBase = false);
+  void redraw ();
+  void update (int pId);
 
-  private:
-    bool m_normalizedFont;
-    bool m_keyPressHandlerDefined;
-  };
+private:
+  bool m_normalizedFont;
+  bool m_keyPressHandlerDefined;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

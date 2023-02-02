@@ -41,75 +41,75 @@ class QHBoxLayout;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class set_path_dialog : public QDialog
-  {
-    Q_OBJECT
+class set_path_dialog : public QDialog
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    // You must call update_model to fully initialize the path displayed
-    // in the dialog.  That may only be done after the intepreter_event
-    // signal connections are made to the Octave interpreter.
+  // You must call update_model to fully initialize the path displayed
+  // in the dialog.  That may only be done after the intepreter_event
+  // signal connections are made to the Octave interpreter.
 
-    set_path_dialog (QWidget *parent);
+  set_path_dialog (QWidget *parent);
 
-    virtual ~set_path_dialog () = default;
+  virtual ~set_path_dialog () = default;
 
-    void save_settings ();
+  void save_settings ();
 
-  signals:
+signals:
 
-    //! Emitted, when the path has to be modified
+  //! Emitted, when the path has to be modified
 
-    void modify_path_signal (const QStringList& dir_list, bool rm,
-                             bool subdirs);
+  void modify_path_signal (const QStringList& dir_list, bool rm,
+                           bool subdirs);
 
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
 
-  public slots:
+public slots:
 
-    void update_model ();
+  void update_model ();
 
-  protected:
+protected:
 
-    void closeEvent (QCloseEvent *e);
+  void closeEvent (QCloseEvent *e);
 
-  private slots:
+private slots:
 
-    void add_dir ();
-    void add_dir_subdirs ();
+  void add_dir ();
+  void add_dir_subdirs ();
 
-    void rm_dir ();
+  void rm_dir ();
 
-    void move_dir_up ();
+  void move_dir_up ();
 
-    void move_dir_down ();
+  void move_dir_down ();
 
-    void move_dir_top ();
+  void move_dir_top ();
 
-    void move_dir_bottom ();
+  void move_dir_bottom ();
 
-  private:
+private:
 
-    void add_dir_common (bool subdirs);
+  void add_dir_common (bool subdirs);
 
-    QLabel *m_info_label;
-    QPushButton *m_reload_button;
-    QPushButton *m_save_button;
-    QPushButton *m_close_button;
-    QPushButton *m_revert_button;
-    QPushButton *m_revert_last_button;
+  QLabel *m_info_label;
+  QPushButton *m_reload_button;
+  QPushButton *m_save_button;
+  QPushButton *m_close_button;
+  QPushButton *m_revert_button;
+  QPushButton *m_revert_last_button;
 
-    QListView *m_path_list;
+  QListView *m_path_list;
 
-    QPushButton *m_add_folder_button;
-    QPushButton *m_move_to_top_button;
-    QPushButton *m_move_to_bottom_button;
-    QPushButton *m_move_up_button;
-    QPushButton *m_move_down_button;
-    QPushButton *m_remove_button;
-  };
+  QPushButton *m_add_folder_button;
+  QPushButton *m_move_to_top_button;
+  QPushButton *m_move_to_bottom_button;
+  QPushButton *m_move_up_button;
+  QPushButton *m_move_down_button;
+  QPushButton *m_remove_button;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

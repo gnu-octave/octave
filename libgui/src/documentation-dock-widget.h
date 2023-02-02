@@ -31,33 +31,33 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class documentation_dock_widget : public octave_dock_widget
-  {
-    Q_OBJECT
+class documentation_dock_widget : public octave_dock_widget
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    documentation_dock_widget (QWidget *parent);
+  documentation_dock_widget (QWidget *parent);
 
-    ~documentation_dock_widget () = default;
+  ~documentation_dock_widget () = default;
 
-  public slots:
+public slots:
 
-    void notice_settings ();
-    void save_settings ();
+  void notice_settings ();
+  void save_settings ();
 
-    void copyClipboard ();
-    void pasteClipboard ();
-    void selectAll ();
+  void copyClipboard ();
+  void pasteClipboard ();
+  void selectAll ();
 
-    void showDoc (const QString& name);
-    void registerDoc (const QString& name);
-    void unregisterDoc (const QString& name);
+  void showDoc (const QString& name);
+  void registerDoc (const QString& name);
+  void unregisterDoc (const QString& name);
 
-  private:
+private:
 
-    documentation *m_docs;
-  };
+  documentation *m_docs;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

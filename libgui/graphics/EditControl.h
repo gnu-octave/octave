@@ -33,46 +33,46 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class TextEdit;
+class TextEdit;
 
-  class EditControl : public BaseControl
-  {
-    Q_OBJECT
+class EditControl : public BaseControl
+{
+  Q_OBJECT
 
-  public:
-    EditControl (octave::interpreter& interp,
-                 const graphics_object& go, QLineEdit *edit);
+public:
+  EditControl (octave::interpreter& interp,
+               const graphics_object& go, QLineEdit *edit);
 
-    EditControl (octave::interpreter& interp,
-                 const graphics_object& go, TextEdit *edit);
+  EditControl (octave::interpreter& interp,
+               const graphics_object& go, TextEdit *edit);
 
-    ~EditControl ();
+  ~EditControl ();
 
-    static EditControl *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static EditControl *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private:
-    void init (QLineEdit *edit, bool callBase = false);
-    void init (TextEdit *edit, bool callBase = false);
-    void initCommon (QWidget *widget);
-    bool updateSingleLine (int pId);
-    bool updateMultiLine (int pId);
+private:
+  void init (QLineEdit *edit, bool callBase = false);
+  void init (TextEdit *edit, bool callBase = false);
+  void initCommon (QWidget *widget);
+  bool updateSingleLine (int pId);
+  bool updateMultiLine (int pId);
 
-  private slots:
-    void textChanged ();
-    void editingFinished ();
-    void returnPressed ();
+private slots:
+  void textChanged ();
+  void editingFinished ();
+  void returnPressed ();
 
-  private:
-    bool m_multiLine;
-    bool m_textChanged;
-  };
+private:
+  bool m_multiLine;
+  bool m_textChanged;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -39,116 +39,116 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  ButtonControl::ButtonControl (octave::interpreter& interp,
-                                const graphics_object& go,
-                                QAbstractButton *btn)
-    : BaseControl (interp, go, btn), m_blockCallback (false)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
+ButtonControl::ButtonControl (octave::interpreter& interp,
+                              const graphics_object& go,
+                              QAbstractButton *btn)
+  : BaseControl (interp, go, btn), m_blockCallback (false)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
 
-    QString str = Utils::fromStdString (up.get_string_string ());
-    str.replace ("&", "&&");
-    btn->setText (str);
-    if (btn->isCheckable () || up.style_is ("togglebutton"))
+  QString str = Utils::fromStdString (up.get_string_string ());
+  str.replace ("&", "&&");
+  btn->setText (str);
+  if (btn->isCheckable () || up.style_is ("togglebutton"))
+    {
+      btn->setCheckable (true);
+
+      Matrix value = up.get_value ().matrix_value ();
+
+      if (value.numel () > 0 && value(0) == up.get_max ())
+        btn->setChecked (true);
+    }
+
+  connect (btn, &QAbstractButton::clicked, this, &ButtonControl::clicked);
+  connect (btn, &QAbstractButton::toggled, this, &ButtonControl::toggled);
+}
+
+ButtonControl::~ButtonControl ()
+{ }
+
+void
+ButtonControl::update (int pId)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
+  QAbstractButton *btn = qWidget<QAbstractButton> ();
+
+  switch (pId)
+    {
+    case uicontrol::properties::ID_STRING:
       {
-        btn->setCheckable (true);
-
-        Matrix value = up.get_value ().matrix_value ();
-
-        if (value.numel () > 0 && value(0) == up.get_max ())
-          btn->setChecked (true);
+        QString str = Utils::fromStdString (up.get_string_string ());
+        str.replace ("&", "&&");
+        btn->setText (str);
+        break;
       }
 
-    connect (btn, &QAbstractButton::clicked, this, &ButtonControl::clicked);
-    connect (btn, &QAbstractButton::toggled, this, &ButtonControl::toggled);
-  }
-
-  ButtonControl::~ButtonControl ()
-  { }
-
-  void
-  ButtonControl::update (int pId)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
-    QAbstractButton *btn = qWidget<QAbstractButton> ();
-
-    switch (pId)
-      {
-      case uicontrol::properties::ID_STRING:
+    case uicontrol::properties::ID_VALUE:
+      m_blockCallback = true;
+      if (btn->isCheckable ())
         {
-          QString str = Utils::fromStdString (up.get_string_string ());
-          str.replace ("&", "&&");
-          btn->setText (str);
-          break;
+          Matrix value = up.get_value ().matrix_value ();
+
+          if (value.numel () > 0)
+            {
+              double dValue = value(0);
+
+              if (dValue != 0.0 && dValue != 1.0)
+                warning ("button value not within valid display range");
+              else if (dValue == up.get_min () && btn->isChecked ())
+                {
+                  btn->setChecked (false);
+                  if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
+                    {
+                      gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+
+                      Object *parent = Object::parentObject (m_interpreter, gh_mgr.get_object (up.get___myhandle__ ()));
+                      ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
+                      if (btnGroup)
+                        btnGroup->selectNothing ();
+                    }
+                }
+              else if (dValue == up.get_max () && ! btn->isChecked ())
+                btn->setChecked (true);
+            }
         }
+      m_blockCallback = false;
+      break;
 
-      case uicontrol::properties::ID_VALUE:
-        m_blockCallback = true;
-        if (btn->isCheckable ())
-          {
-            Matrix value = up.get_value ().matrix_value ();
+    default:
+      BaseControl::update (pId);
+      break;
+    }
+}
 
-            if (value.numel () > 0)
-              {
-                double dValue = value(0);
+void
+ButtonControl::toggled (bool checked)
+{
+  QAbstractButton *btn = qWidget<QAbstractButton> ();
 
-                if (dValue != 0.0 && dValue != 1.0)
-                  warning ("button value not within valid display range");
-                else if (dValue == up.get_min () && btn->isChecked ())
-                  {
-                    btn->setChecked (false);
-                    if (up.style_is ("radiobutton") || up.style_is ("togglebutton"))
-                      {
-                        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
+  if (! m_blockCallback && btn->isCheckable ())
+    {
+      gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
-                        Object *parent = Object::parentObject (m_interpreter, gh_mgr.get_object (up.get___myhandle__ ()));
-                        ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
-                        if (btnGroup)
-                          btnGroup->selectNothing ();
-                      }
-                  }
-                else if (dValue == up.get_max () && ! btn->isChecked ())
-                  btn->setChecked (true);
-              }
-          }
-        m_blockCallback = false;
-        break;
+      octave::autolock guard (gh_mgr.graphics_lock ());
 
-      default:
-        BaseControl::update (pId);
-        break;
-      }
-  }
+      uicontrol::properties& up = properties<uicontrol> ();
 
-  void
-  ButtonControl::toggled (bool checked)
-  {
-    QAbstractButton *btn = qWidget<QAbstractButton> ();
+      Matrix oldValue = up.get_value ().matrix_value ();
+      double newValue = (checked ? up.get_max () : up.get_min ());
 
-    if (! m_blockCallback && btn->isCheckable ())
-      {
-        gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
-
-        octave::autolock guard (gh_mgr.graphics_lock ());
-
-        uicontrol::properties& up = properties<uicontrol> ();
-
-        Matrix oldValue = up.get_value ().matrix_value ();
-        double newValue = (checked ? up.get_max () : up.get_min ());
-
-        if (oldValue.numel () != 1 || (newValue != oldValue(0)))
-          emit gh_set_event (m_handle, "value", newValue, false);
-        emit gh_callback_event (m_handle, "callback");
-      }
-  }
-
-  void
-  ButtonControl::clicked ()
-  {
-    QAbstractButton *btn = qWidget<QAbstractButton> ();
-
-    if (! btn->isCheckable ())
+      if (oldValue.numel () != 1 || (newValue != oldValue(0)))
+        emit gh_set_event (m_handle, "value", newValue, false);
       emit gh_callback_event (m_handle, "callback");
-  }
+    }
+}
+
+void
+ButtonControl::clicked ()
+{
+  QAbstractButton *btn = qWidget<QAbstractButton> ();
+
+  if (! btn->isCheckable ())
+    emit gh_callback_event (m_handle, "callback");
+}
 
 OCTAVE_END_NAMESPACE(octave);

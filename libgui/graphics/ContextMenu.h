@@ -35,35 +35,35 @@ class QMenu;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class ContextMenu : public Object, public MenuContainer
-  {
-    Q_OBJECT
+class ContextMenu : public Object, public MenuContainer
+{
+  Q_OBJECT
 
-  public:
-    ContextMenu (octave::interpreter& interp,
-                 const graphics_object& go, QMenu *menu);
-    ~ContextMenu ();
+public:
+  ContextMenu (octave::interpreter& interp,
+               const graphics_object& go, QMenu *menu);
+  ~ContextMenu ();
 
-    static ContextMenu *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static ContextMenu *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-    static void executeAt (octave::interpreter& interp,
-                           const base_properties& props, const QPoint& pt);
+  static void executeAt (octave::interpreter& interp,
+                         const base_properties& props, const QPoint& pt);
 
-    Container * innerContainer () { return nullptr; }
+  Container * innerContainer () { return nullptr; }
 
-    QWidget * menu ();
+  QWidget * menu ();
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private slots:
-    void aboutToShow ();
-    void aboutToHide ();
-  };
+private slots:
+  void aboutToShow ();
+  void aboutToHide ();
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

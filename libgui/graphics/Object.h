@@ -37,121 +37,121 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class Container;
-  class ObjectProxy;
+class Container;
+class ObjectProxy;
 
-  class Object : public QObject
+class Object : public QObject
+{
+  Q_OBJECT
+
+public:
+  Object (octave::interpreter& interp, const graphics_object& go,
+          QObject *obj = nullptr);
+
+  virtual ~Object ();
+
+  base_properties& properties ()
+  { return object ().get_properties (); }
+
+  const base_properties& properties () const
+  { return object ().get_properties (); }
+
+  template <typename T>
+  typename T::properties& properties ()
   {
-    Q_OBJECT
+    return dynamic_cast<typename T::properties&>
+           (object ().get_properties ());
+  }
 
-  public:
-    Object (octave::interpreter& interp, const graphics_object& go,
-            QObject *obj = nullptr);
+  template <typename T>
+  const typename T::properties& properties () const
+  {
+    return dynamic_cast<const typename T::properties&>
+           (object ().get_properties ());
+  }
 
-    virtual ~Object ();
+  graphics_object object () const;
 
-    base_properties& properties ()
-    { return object ().get_properties (); }
+  virtual QObject * qObject () { return m_qobject; }
 
-    const base_properties& properties () const
-    { return object ().get_properties (); }
+  template <typename T>
+  T * qWidget () { return qobject_cast<T *>(qObject ()); }
 
-    template <typename T>
-    typename T::properties& properties ()
-    {
-      return dynamic_cast<typename T::properties&>
-             (object ().get_properties ());
-    }
+  virtual Container * innerContainer () = 0;
 
-    template <typename T>
-    const typename T::properties& properties () const
-    {
-      return dynamic_cast<const typename T::properties&>
-             (object ().get_properties ());
-    }
+  static Object * fromQObject (QObject *obj);
 
-    graphics_object object () const;
+  virtual void do_connections (const QObject *receiver,
+                               const QObject *emitter = nullptr);
 
-    virtual QObject * qObject () { return m_qobject; }
+signals:
 
-    template <typename T>
-    T * qWidget () { return qobject_cast<T *>(qObject ()); }
+  void interpreter_event (const octave::fcn_callback& fcn);
+  void interpreter_event (const octave::meth_callback& meth);
 
-    virtual Container * innerContainer () = 0;
+  void gh_callback_event (const graphics_handle& h, const std::string& name);
 
-    static Object * fromQObject (QObject *obj);
+  void gh_callback_event (const graphics_handle& h, const std::string& name,
+                          const octave_value& data);
 
-    virtual void do_connections (const QObject *receiver,
-                                 const QObject *emitter = nullptr);
+  void gh_set_event (const graphics_handle& h, const std::string& name,
+                     const octave_value& value);
 
-  signals:
+  void gh_set_event (const graphics_handle& h, const std::string& name,
+                     const octave_value& value, bool notify_toolkit);
 
-    void interpreter_event (const octave::fcn_callback& fcn);
-    void interpreter_event (const octave::meth_callback& meth);
+  void gh_set_event (const graphics_handle& h, const std::string& name,
+                     const octave_value& value, bool notify_toolkit,
+                     bool redraw_figure);
 
-    void gh_callback_event (const graphics_handle& h, const std::string& name);
+public slots:
+  void slotUpdate (int pId);
+  void slotFinalize ();
+  void slotRedraw ();
+  void slotShow ();
+  void slotPrint (const QString& file_cmd, const QString& term);
 
-    void gh_callback_event (const graphics_handle& h, const std::string& name,
-                            const octave_value& data);
+  void objectDestroyed (QObject *obj = nullptr);
 
-    void gh_set_event (const graphics_handle& h, const std::string& name,
-                       const octave_value& value);
+protected:
+  static Object *
+  parentObject (octave::interpreter& interp, const graphics_object& go);
 
-    void gh_set_event (const graphics_handle& h, const std::string& name,
-                       const octave_value& value, bool notify_toolkit);
+  void init (QObject *obj, bool callBase = false);
 
-    void gh_set_event (const graphics_handle& h, const std::string& name,
-                       const octave_value& value, bool notify_toolkit,
-                       bool redraw_figure);
+  virtual void update (int pId);
+  virtual void finalize ();
+  virtual void redraw ();
+  virtual void show ();
+  virtual void print (const QString& file_cmd, const QString& term);
 
-  public slots:
-    void slotUpdate (int pId);
-    void slotFinalize ();
-    void slotRedraw ();
-    void slotShow ();
-    void slotPrint (const QString& file_cmd, const QString& term);
+  virtual void beingDeleted ();
 
-    void objectDestroyed (QObject *obj = nullptr);
+protected:
 
-  protected:
-    static Object *
-    parentObject (octave::interpreter& interp, const graphics_object& go);
+  octave::interpreter& m_interpreter;
 
-    void init (QObject *obj, bool callBase = false);
+  // Store the graphics object directly so that it will exist when
+  // we need it.  Previously, it was possible for the graphics
+  // toolkit to get a handle to a figure, then have the interpreter
+  // thread delete the corresponding object before the graphics
+  // toolkit (GUI) thread had a chance to display it.  It should be OK
+  // to store this object and use it in both threads (graphics_object
+  // uses a std::shared_ptr) provided that we protect access with
+  // mutex locks.
+  graphics_object m_go;
 
-    virtual void update (int pId);
-    virtual void finalize ();
-    virtual void redraw ();
-    virtual void show ();
-    virtual void print (const QString& file_cmd, const QString& term);
+  // Handle to the graphics object.  This may be redundant now.
+  // Also, the whole ObjectProxy thing may not need to store a
+  // pointer now?  Maybe we can just have a lookup table from figure
+  // handle to Object?  What does the FLTK toolkit do?  Why does
+  // this seem to be so complicated?
+  graphics_handle m_handle;
 
-    virtual void beingDeleted ();
-
-  protected:
-
-    octave::interpreter& m_interpreter;
-
-    // Store the graphics object directly so that it will exist when
-    // we need it.  Previously, it was possible for the graphics
-    // toolkit to get a handle to a figure, then have the interpreter
-    // thread delete the corresponding object before the graphics
-    // toolkit (GUI) thread had a chance to display it.  It should be OK
-    // to store this object and use it in both threads (graphics_object
-    // uses a std::shared_ptr) provided that we protect access with
-    // mutex locks.
-    graphics_object m_go;
-
-    // Handle to the graphics object.  This may be redundant now.
-    // Also, the whole ObjectProxy thing may not need to store a
-    // pointer now?  Maybe we can just have a lookup table from figure
-    // handle to Object?  What does the FLTK toolkit do?  Why does
-    // this seem to be so complicated?
-    graphics_handle m_handle;
-
-    QObject *m_qobject;
-  };
+  QObject *m_qobject;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

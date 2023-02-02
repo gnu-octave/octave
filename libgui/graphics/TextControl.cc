@@ -35,61 +35,61 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  TextControl *
-  TextControl::create (octave::interpreter& interp, const graphics_object& go)
-  {
-    Object *parent = parentObject (interp, go);
+TextControl *
+TextControl::create (octave::interpreter& interp, const graphics_object& go)
+{
+  Object *parent = parentObject (interp, go);
 
-    if (parent)
-      {
-        Container *container = parent->innerContainer ();
+  if (parent)
+    {
+      Container *container = parent->innerContainer ();
 
-        if (container)
-          return new TextControl (interp, go, new QLabel (container));
-      }
+      if (container)
+        return new TextControl (interp, go, new QLabel (container));
+    }
 
-    return nullptr;
-  }
+  return nullptr;
+}
 
-  TextControl::TextControl (octave::interpreter& interp,
-                            const graphics_object& go, QLabel *label)
-    : BaseControl (interp, go, label)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
+TextControl::TextControl (octave::interpreter& interp,
+                          const graphics_object& go, QLabel *label)
+  : BaseControl (interp, go, label)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
 
-    label->setAutoFillBackground (true);
-    label->setTextFormat (Qt::PlainText);
-    label->setWordWrap (false);
-    label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-                         up.get_verticalalignment ()));
-    label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
-  }
+  label->setAutoFillBackground (true);
+  label->setTextFormat (Qt::PlainText);
+  label->setWordWrap (false);
+  label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                       up.get_verticalalignment ()));
+  label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
+}
 
-  TextControl::~TextControl ()
-  { }
+TextControl::~TextControl ()
+{ }
 
-  void
-  TextControl::update (int pId)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
-    QLabel *label = qWidget<QLabel> ();
+void
+TextControl::update (int pId)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
+  QLabel *label = qWidget<QLabel> ();
 
-    switch (pId)
-      {
-      case uicontrol::properties::ID_STRING:
-        label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
-        break;
+  switch (pId)
+    {
+    case uicontrol::properties::ID_STRING:
+      label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
+      break;
 
-      case uicontrol::properties::ID_HORIZONTALALIGNMENT:
-      case uicontrol::properties::ID_VERTICALALIGNMENT:
-        label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-                             up.get_verticalalignment ()));
-        break;
+    case uicontrol::properties::ID_HORIZONTALALIGNMENT:
+    case uicontrol::properties::ID_VERTICALALIGNMENT:
+      label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
+                           up.get_verticalalignment ()));
+      break;
 
-      default:
-        BaseControl::update (pId);
-        break;
-      }
-  }
+    default:
+      BaseControl::update (pId);
+      break;
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave)

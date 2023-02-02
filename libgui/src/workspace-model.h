@@ -41,75 +41,75 @@ typedef QList<int> QIntList;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class workspace_model : public QAbstractTableModel
+class workspace_model : public QAbstractTableModel
+{
+  Q_OBJECT
+
+public:
+
+  workspace_model (QObject *parent = nullptr);
+
+  ~workspace_model () = default;
+
+  int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+
+  int columnCount (const QModelIndex& parent = QModelIndex ()) const;
+
+  Qt::ItemFlags flags (const QModelIndex& index) const;
+
+  QVariant headerData (int section, Qt::Orientation orientation,
+                       int role = Qt::DisplayRole) const;
+
+  QVariant data (const QModelIndex& index, int role) const;
+
+  bool is_top_level () const { return m_top_level; }
+
+  QColor storage_class_color (int s_class)
   {
-    Q_OBJECT
+    return m_storage_class_colors.at (s_class);
+  }
 
-  public:
+  symbol_info_list get_symbol_info () const { return m_syminfo_list; }
 
-    workspace_model (QObject *parent = nullptr);
+  QStringList get_symbol_names () const { return m_symbols; }
+  QStringList get_symbol_values () const { return m_values; }
 
-    ~workspace_model () = default;
+signals:
 
-    int rowCount (const QModelIndex& parent = QModelIndex ()) const;
+  void model_changed ();
+  void prompt_variable_editor();
 
-    int columnCount (const QModelIndex& parent = QModelIndex ()) const;
+public slots:
 
-    Qt::ItemFlags flags (const QModelIndex& index) const;
+  void set_workspace (bool top_level, bool debug,
+                      const symbol_info_list& syminfo);
 
-    QVariant headerData (int section, Qt::Orientation orientation,
-                         int role = Qt::DisplayRole) const;
+  void clear_workspace ();
 
-    QVariant data (const QModelIndex& index, int role) const;
+  void notice_settings ();
 
-    bool is_top_level () const { return m_top_level; }
+  void show_symbol_tooltip (const QPoint& pos, const QString& symbol);
 
-    QColor storage_class_color (int s_class)
-    {
-      return m_storage_class_colors.at (s_class);
-    }
+private:
 
-    symbol_info_list get_symbol_info () const { return m_syminfo_list; }
+  void clear_data ();
+  void update_table ();
 
-    QStringList get_symbol_names () const { return m_symbols; }
-    QStringList get_symbol_values () const { return m_values; }
+  bool m_top_level;
+  symbol_info_list m_syminfo_list;
+  QString m_scopes;
+  QStringList m_symbols;
+  QStringList m_class_names;
+  QStringList m_dimensions;
+  QStringList m_values;
+  QIntList m_complex_flags;
 
-  signals:
+  QStringList m_columnNames;
 
-    void model_changed ();
-    void prompt_variable_editor();
+  QList<QColor>  m_storage_class_colors;
+  bool m_enable_colors;
 
-  public slots:
-
-    void set_workspace (bool top_level, bool debug,
-                        const symbol_info_list& syminfo);
-
-    void clear_workspace ();
-
-    void notice_settings ();
-
-    void show_symbol_tooltip (const QPoint& pos, const QString& symbol);
-
-  private:
-
-    void clear_data ();
-    void update_table ();
-
-    bool m_top_level;
-    symbol_info_list m_syminfo_list;
-    QString m_scopes;
-    QStringList m_symbols;
-    QStringList m_class_names;
-    QStringList m_dimensions;
-    QStringList m_values;
-    QIntList m_complex_flags;
-
-    QStringList m_columnNames;
-
-    QList<QColor>  m_storage_class_colors;
-    bool m_enable_colors;
-
-  };
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

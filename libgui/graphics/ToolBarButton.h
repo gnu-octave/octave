@@ -33,28 +33,28 @@ class QIcon;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class Container;
+class Container;
 
-  template <typename T>
-  class ToolBarButton : public Object
-  {
-  public:
-    ToolBarButton (octave::interpreter& interp,
-                   const graphics_object& go, QAction *action);
-    ~ToolBarButton ();
+template <typename T>
+class ToolBarButton : public Object
+{
+public:
+  ToolBarButton (octave::interpreter& interp,
+                 const graphics_object& go, QAction *action);
+  ~ToolBarButton ();
 
-    Container * innerContainer () { return nullptr; }
+  Container * innerContainer () { return nullptr; }
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private:
-    QAction *m_separator;
+private:
+  QAction *m_separator;
 
-    QIcon get_icon (const std::string& name);
-  };
+  QIcon get_icon (const std::string& name);
+};
 
 OCTAVE_END_NAMESPACE(octave);
 

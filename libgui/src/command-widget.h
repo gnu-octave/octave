@@ -40,95 +40,95 @@ class QsciScintilla;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class command_widget;
+class command_widget;
 
-  class console : public QsciScintilla
-  {
-    Q_OBJECT
+class console : public QsciScintilla
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    console (command_widget *p);
+  console (command_widget *p);
 
-  signals:
+signals:
 
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
 
-  public slots:
+public slots:
 
-    void cursor_position_changed (int line, int col);
+  void cursor_position_changed (int line, int col);
 
-    void text_changed ();
+  void text_changed ();
 
-    void move_cursor_to_end ();
+  void move_cursor_to_end ();
 
-    void new_command_line (const QString& command = QString ());
+  void new_command_line (const QString& command = QString ());
 
-    void execute_command (const QString& command);
+  void execute_command (const QString& command);
 
-  protected:
+protected:
 
-    void keyPressEvent (QKeyEvent *e);
+  void keyPressEvent (QKeyEvent *e);
 
-  private:
+private:
 
-    void append_string (const QString& string);
+  void append_string (const QString& string);
 
-    void accept_command_line ();
+  void accept_command_line ();
 
-    int m_command_position;
-    int m_cursor_position;
-    bool m_text_changed;
-    command_widget *m_command_widget;
-    QString m_last_key_string;
+  int m_command_position;
+  int m_cursor_position;
+  bool m_text_changed;
+  command_widget *m_command_widget;
+  QString m_last_key_string;
 
-  };
+};
 
-  class command_widget : public QWidget
-  {
-    Q_OBJECT
+class command_widget : public QWidget
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    command_widget (QWidget *p);
+  command_widget (QWidget *p);
 
-    console * get_console ( ) { return m_console; };
+  console * get_console ( ) { return m_console; };
 
-    void init_command_prompt ();
+  void init_command_prompt ();
 
-    QString prompt ();
+  QString prompt ();
 
-  signals:
+signals:
 
-    void clear_line_edit ();
+  void clear_line_edit ();
 
-    void interpreter_pause ();
-    void interpreter_resume ();
-    void interpreter_stop ();
+  void interpreter_pause ();
+  void interpreter_resume ();
+  void interpreter_stop ();
 
-    void update_prompt_signal (const QString& prompt);
-    void new_command_line_signal (const QString& command = QString ());
+  void update_prompt_signal (const QString& prompt);
+  void new_command_line_signal (const QString& command = QString ());
 
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
 
-  public slots:
+public slots:
 
-    void process_input_line (const QString& input_line);
+  void process_input_line (const QString& input_line);
 
-    void update_prompt (const QString& prompt);
+  void update_prompt (const QString& prompt);
 
-    void insert_interpreter_output (const QString& msg);
+  void insert_interpreter_output (const QString& msg);
 
-    void notice_settings ();
+  void notice_settings ();
 
-  private:
+private:
 
-    bool m_incomplete_parse;
-    QString m_prompt;
-    console *m_console;
-  };
+  bool m_incomplete_parse;
+  QString m_prompt;
+  console *m_console;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

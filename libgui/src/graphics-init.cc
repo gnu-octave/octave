@@ -41,29 +41,29 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  void graphics_init (interpreter& interp)
-  {
-    gh_manager& gh_mgr = interp.get_gh_manager ();
+void graphics_init (interpreter& interp)
+{
+  gh_manager& gh_mgr = interp.get_gh_manager ();
 
-    autolock guard (gh_mgr.graphics_lock ());
+  autolock guard (gh_mgr.graphics_lock ());
 
-    qRegisterMetaType<graphics_object> ("graphics_object");
+  qRegisterMetaType<graphics_object> ("graphics_object");
 
-    gh_mgr.enable_event_processing (true);
+  gh_mgr.enable_event_processing (true);
 
-    qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp);
+  qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp);
 
-    if (QThread::currentThread ()
-        != QApplication::instance ()->thread ())
-      qt_gtk->moveToThread (QApplication::instance ()->thread ());
+  if (QThread::currentThread ()
+      != QApplication::instance ()->thread ())
+    qt_gtk->moveToThread (QApplication::instance ()->thread ());
 
-    graphics_toolkit tk (qt_gtk);
+  graphics_toolkit tk (qt_gtk);
 
-    gtk_manager& gtk_mgr = interp.get_gtk_manager ();
+  gtk_manager& gtk_mgr = interp.get_gtk_manager ();
 
-    gtk_mgr.register_toolkit ("qt");
+  gtk_mgr.register_toolkit ("qt");
 
-    gtk_mgr.load_toolkit (tk);
-  }
+  gtk_mgr.load_toolkit (tk);
+}
 
 OCTAVE_END_NAMESPACE(octave)

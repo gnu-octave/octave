@@ -40,94 +40,94 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  community_news::community_news (int serial)
-    : QWidget (nullptr), m_browser (nullptr)
-  {
-    construct ("https://octave.org", "community-news.html", serial);
-  }
+community_news::community_news (int serial)
+  : QWidget (nullptr), m_browser (nullptr)
+{
+  construct ("https://octave.org", "community-news.html", serial);
+}
 
-  community_news::community_news (QWidget *parent, const QString& base_url,
-                                  const QString& page, int serial)
-    : QWidget (parent), m_browser (nullptr)
-  {
-    construct (base_url, page, serial);
-  }
+community_news::community_news (QWidget *parent, const QString& base_url,
+                                const QString& page, int serial)
+  : QWidget (parent), m_browser (nullptr)
+{
+  construct (base_url, page, serial);
+}
 
-  void community_news::construct (const QString& base_url, const QString& page,
-                                  int serial)
-  {
-    m_browser = new QTextBrowser (this);
+void community_news::construct (const QString& base_url, const QString& page,
+                                int serial)
+{
+  m_browser = new QTextBrowser (this);
 
-    m_browser->setObjectName ("OctaveNews");
-    m_browser->setOpenExternalLinks (true);
+  m_browser->setObjectName ("OctaveNews");
+  m_browser->setOpenExternalLinks (true);
 
-    QVBoxLayout *vlayout = new QVBoxLayout;
+  QVBoxLayout *vlayout = new QVBoxLayout;
 
-    vlayout->addWidget (m_browser);
+  vlayout->addWidget (m_browser);
 
-    setLayout (vlayout);
-    setWindowTitle (tr ("Octave Community News"));
+  setLayout (vlayout);
+  setWindowTitle (tr ("Octave Community News"));
 
-    int win_x, win_y;
-    get_screen_geometry (win_x, win_y);
+  int win_x, win_y;
+  get_screen_geometry (win_x, win_y);
 
-    resize (win_x/2, win_y/2);
-    move ((win_x - width ())/2, (win_y - height ())/2);
+  resize (win_x/2, win_y/2);
+  move ((win_x - width ())/2, (win_y - height ())/2);
 
-    gui_settings settings;
+  gui_settings settings;
 
-    QString icon;
-    QString icon_set = settings.string_value (dw_icon_set);
-    if (icon_set != "NONE")
-      // No extra icon for Community news, take the one of the release notes
-      icon = dw_icon_set_names[icon_set] + "ReleaseWidget.png";
-    else
-      icon = dw_icon_set_names[icon_set];
+  QString icon;
+  QString icon_set = settings.string_value (dw_icon_set);
+  if (icon_set != "NONE")
+    // No extra icon for Community news, take the one of the release notes
+    icon = dw_icon_set_names[icon_set] + "ReleaseWidget.png";
+  else
+    icon = dw_icon_set_names[icon_set];
 
-    setWindowIcon (QIcon (icon));
+  setWindowIcon (QIcon (icon));
 
-    // FIXME: This is a news reader preference, so shouldn't it be used
-    // in the news_reader object?
+  // FIXME: This is a news reader preference, so shouldn't it be used
+  // in the news_reader object?
 
-    bool connect_to_web = settings.bool_value (nr_allow_connection);
+  bool connect_to_web = settings.bool_value (nr_allow_connection);
 
-    QThread *worker_thread = new QThread;
+  QThread *worker_thread = new QThread;
 
-    news_reader *reader
-      = new news_reader (base_url, page, serial, connect_to_web);
+  news_reader *reader
+    = new news_reader (base_url, page, serial, connect_to_web);
 
-    reader->moveToThread (worker_thread);
+  reader->moveToThread (worker_thread);
 
-    connect (reader, &news_reader::display_news_signal,
-             this, &community_news::set_news);
+  connect (reader, &news_reader::display_news_signal,
+           this, &community_news::set_news);
 
-    connect (worker_thread, &QThread::started,
-             reader, &news_reader::process);
+  connect (worker_thread, &QThread::started,
+           reader, &news_reader::process);
 
-    connect (reader, &news_reader::finished, worker_thread, &QThread::quit);
+  connect (reader, &news_reader::finished, worker_thread, &QThread::quit);
 
-    connect (reader, &news_reader::finished, reader, &news_reader::deleteLater);
+  connect (reader, &news_reader::finished, reader, &news_reader::deleteLater);
 
-    connect (worker_thread, &QThread::finished,
-             worker_thread, &QThread::deleteLater);
+  connect (worker_thread, &QThread::finished,
+           worker_thread, &QThread::deleteLater);
 
-    worker_thread->start ();
-  }
+  worker_thread->start ();
+}
 
-  void community_news::set_news (const QString& news)
-  {
-    m_browser->setHtml (news);
-  }
+void community_news::set_news (const QString& news)
+{
+  m_browser->setHtml (news);
+}
 
-  void community_news::display ()
-  {
-    if (! isVisible ())
-      show ();
-    else if (isMinimized ())
-      showNormal ();
+void community_news::display ()
+{
+  if (! isVisible ())
+    show ();
+  else if (isMinimized ())
+    showNormal ();
 
-    raise ();
-    activateWindow ();
-  }
+  raise ();
+  activateWindow ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

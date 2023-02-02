@@ -33,41 +33,41 @@ class QLabel;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class Container;
+class Container;
 
-  class Panel : public Object
-  {
-  public:
-    Panel (octave::interpreter& interp,
-           const graphics_object& go, QFrame *frame);
-    ~Panel ();
+class Panel : public Object
+{
+public:
+  Panel (octave::interpreter& interp,
+         const graphics_object& go, QFrame *frame);
+  ~Panel ();
 
-    Container * innerContainer () { return m_container; }
+  Container * innerContainer () { return m_container; }
 
-    bool eventFilter (QObject *watched, QEvent *event);
+  bool eventFilter (QObject *watched, QEvent *event);
 
-    static Panel *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static Panel *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-    void do_connections (const QObject *receiver,
-                         const QObject *emitter = nullptr);
+  void do_connections (const QObject *receiver,
+                       const QObject *emitter = nullptr);
 
-  protected:
-    void update (int pId);
-    void redraw ();
+protected:
+  void update (int pId);
+  void redraw ();
 
-  private:
-    void updateLayout ();
+private:
+  void updateLayout ();
 
-  private:
-    Container *m_container;
-    QLabel *m_title;
-    bool m_blockUpdates;
-    Matrix m_previous_bbox;
-  };
+private:
+  Container *m_container;
+  QLabel *m_title;
+  bool m_blockUpdates;
+  Matrix m_previous_bbox;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

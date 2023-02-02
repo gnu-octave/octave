@@ -36,67 +36,67 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  RadioButtonControl *
-  RadioButtonControl::create (octave::interpreter& interp,
-                              const graphics_object& go)
-  {
-    Object *parent = parentObject (interp, go);
+RadioButtonControl *
+RadioButtonControl::create (octave::interpreter& interp,
+                            const graphics_object& go)
+{
+  Object *parent = parentObject (interp, go);
 
-    if (parent)
+  if (parent)
+    {
+      Container *container = parent->innerContainer ();
+
+      if (container)
+        return new RadioButtonControl (interp, go,
+                                       new QRadioButton (container));
+    }
+
+  return nullptr;
+}
+
+RadioButtonControl::RadioButtonControl (octave::interpreter& interp,
+                                        const graphics_object& go,
+                                        QRadioButton *radio)
+  : ButtonControl (interp, go, radio)
+{
+  Object *parent = parentObject (interp, go);
+  ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
+  if (btnGroup)
+    btnGroup->addButton (radio);
+
+  uicontrol::properties& up = properties<uicontrol> ();
+
+  radio->setAutoFillBackground (true);
+  radio->setAutoExclusive (false);
+  if (up.enable_is ("inactive"))
+    radio->setCheckable (false);
+}
+
+RadioButtonControl::~RadioButtonControl ()
+{ }
+
+void
+RadioButtonControl::update (int pId)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
+  QRadioButton *btn = qWidget<QRadioButton> ();
+
+  switch (pId)
+    {
+    case uicontrol::properties::ID_ENABLE:
       {
-        Container *container = parent->innerContainer ();
-
-        if (container)
-          return new RadioButtonControl (interp, go,
-                                         new QRadioButton (container));
-      }
-
-    return nullptr;
-  }
-
-  RadioButtonControl::RadioButtonControl (octave::interpreter& interp,
-                                          const graphics_object& go,
-                                          QRadioButton *radio)
-    : ButtonControl (interp, go, radio)
-  {
-    Object *parent = parentObject (interp, go);
-    ButtonGroup *btnGroup = dynamic_cast<ButtonGroup *>(parent);
-    if (btnGroup)
-      btnGroup->addButton (radio);
-
-    uicontrol::properties& up = properties<uicontrol> ();
-
-    radio->setAutoFillBackground (true);
-    radio->setAutoExclusive (false);
-    if (up.enable_is ("inactive"))
-      radio->setCheckable (false);
-  }
-
-  RadioButtonControl::~RadioButtonControl ()
-  { }
-
-  void
-  RadioButtonControl::update (int pId)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
-    QRadioButton *btn = qWidget<QRadioButton> ();
-
-    switch (pId)
-      {
-      case uicontrol::properties::ID_ENABLE:
-        {
-          if (up.enable_is ("inactive"))
-            btn->setCheckable (false);
-          else
-            btn->setCheckable (true);
-          ButtonControl::update (pId);
-        }
-        break;
-
-      default:
+        if (up.enable_is ("inactive"))
+          btn->setCheckable (false);
+        else
+          btn->setCheckable (true);
         ButtonControl::update (pId);
-        break;
       }
-  }
+      break;
+
+    default:
+      ButtonControl::update (pId);
+      break;
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave);

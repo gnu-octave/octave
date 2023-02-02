@@ -33,48 +33,48 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  PushTool *
-  PushTool::create (octave::interpreter& interp, const graphics_object& go)
-  {
-    Object *parent = parentObject (interp, go);
+PushTool *
+PushTool::create (octave::interpreter& interp, const graphics_object& go)
+{
+  Object *parent = parentObject (interp, go);
 
-    if (parent)
-      {
-        QWidget *parentWidget = parent->qWidget<QWidget> ();
+  if (parent)
+    {
+      QWidget *parentWidget = parent->qWidget<QWidget> ();
 
-        if (parentWidget)
-          return new PushTool (interp, go,
-                               new QAction (parentWidget));
-      }
+      if (parentWidget)
+        return new PushTool (interp, go,
+                             new QAction (parentWidget));
+    }
 
-    return nullptr;
-  }
+  return nullptr;
+}
 
-  PushTool::PushTool (octave::interpreter& interp,
-                      const graphics_object& go, QAction *action)
-    : ToolBarButton<uipushtool> (interp, go, action)
-  {
-    connect (action, &QAction::triggered, this, &PushTool::clicked);
-  }
+PushTool::PushTool (octave::interpreter& interp,
+                    const graphics_object& go, QAction *action)
+  : ToolBarButton<uipushtool> (interp, go, action)
+{
+  connect (action, &QAction::triggered, this, &PushTool::clicked);
+}
 
-  PushTool::~PushTool ()
-  { }
+PushTool::~PushTool ()
+{ }
 
-  void
-  PushTool::update (int pId)
-  {
-    switch (pId)
-      {
-      default:
-        ToolBarButton<uipushtool>::update (pId);
-        break;
-      }
-  }
+void
+PushTool::update (int pId)
+{
+  switch (pId)
+    {
+    default:
+      ToolBarButton<uipushtool>::update (pId);
+      break;
+    }
+}
 
-  void
-  PushTool::clicked ()
-  {
-    emit gh_callback_event (m_handle, "clickedcallback");
-  }
+void
+PushTool::clicked ()
+{
+  emit gh_callback_event (m_handle, "clickedcallback");
+}
 
 OCTAVE_END_NAMESPACE(octave);

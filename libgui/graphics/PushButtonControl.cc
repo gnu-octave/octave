@@ -36,65 +36,65 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  PushButtonControl *
-  PushButtonControl::create (octave::interpreter& interp,
-                             const graphics_object& go)
-  {
-    Object *parent = parentObject (interp, go);
+PushButtonControl *
+PushButtonControl::create (octave::interpreter& interp,
+                           const graphics_object& go)
+{
+  Object *parent = parentObject (interp, go);
 
-    if (parent)
+  if (parent)
+    {
+      Container *container = parent->innerContainer ();
+
+      if (container)
+        return new PushButtonControl (interp, go,
+                                      new QPushButton (container));
+    }
+
+  return nullptr;
+}
+
+PushButtonControl::PushButtonControl (octave::interpreter& interp,
+                                      const graphics_object& go,
+                                      QPushButton *btn)
+  : ButtonControl (interp, go, btn)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
+
+  btn->setAutoFillBackground (true);
+  octave_value cdat = up.get_cdata ();
+  QImage img = Utils::makeImageFromCData (cdat,
+                                          cdat.columns (), cdat.rows ());
+  btn->setIcon (QIcon (QPixmap::fromImage (img)));
+  btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
+}
+
+PushButtonControl::~PushButtonControl ()
+{ }
+
+void
+PushButtonControl::update (int pId)
+{
+  uicontrol::properties& up = properties<uicontrol> ();
+  QPushButton *btn = qWidget<QPushButton> ();
+
+  switch (pId)
+    {
+    case uicontrol::properties::ID_CDATA:
       {
-        Container *container = parent->innerContainer ();
-
-        if (container)
-          return new PushButtonControl (interp, go,
-                                        new QPushButton (container));
+        octave_value cdat = up.get_cdata ();
+        QImage img = Utils::makeImageFromCData (cdat,
+                                                cdat.rows (),
+                                                cdat.columns ());
+        btn->setIcon (QIcon (QPixmap::fromImage (img)));
+        btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
       }
+      break;
 
-    return nullptr;
-  }
-
-  PushButtonControl::PushButtonControl (octave::interpreter& interp,
-                                        const graphics_object& go,
-                                        QPushButton *btn)
-    : ButtonControl (interp, go, btn)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
-
-    btn->setAutoFillBackground (true);
-    octave_value cdat = up.get_cdata ();
-    QImage img = Utils::makeImageFromCData (cdat,
-                                            cdat.columns (), cdat.rows ());
-    btn->setIcon (QIcon (QPixmap::fromImage (img)));
-    btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
-  }
-
-  PushButtonControl::~PushButtonControl ()
-  { }
-
-  void
-  PushButtonControl::update (int pId)
-  {
-    uicontrol::properties& up = properties<uicontrol> ();
-    QPushButton *btn = qWidget<QPushButton> ();
-
-    switch (pId)
-      {
-      case uicontrol::properties::ID_CDATA:
-        {
-          octave_value cdat = up.get_cdata ();
-          QImage img = Utils::makeImageFromCData (cdat,
-                                                  cdat.rows (),
-                                                  cdat.columns ());
-          btn->setIcon (QIcon (QPixmap::fromImage (img)));
-          btn->setIconSize (QSize (cdat.columns (), cdat.rows ()));
-        }
-        break;
-
-      default:
-        ButtonControl::update (pId);
-        break;
-      }
-  }
+    default:
+      ButtonControl::update (pId);
+      break;
+    }
+}
 
 OCTAVE_END_NAMESPACE(octave)

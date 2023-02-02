@@ -30,59 +30,59 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class dw_main_window : public QMainWindow
-  {
-    Q_OBJECT
+class dw_main_window : public QMainWindow
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    dw_main_window (QWidget *parent = nullptr);
+  dw_main_window (QWidget *parent = nullptr);
 
-    ~dw_main_window () = default;
+  ~dw_main_window () = default;
 
-    // No copying!
+  // No copying!
 
-    dw_main_window (const dw_main_window&) = delete;
+  dw_main_window (const dw_main_window&) = delete;
 
-    dw_main_window& operator = (const dw_main_window&) = delete;
+  dw_main_window& operator = (const dw_main_window&) = delete;
 
-  public slots:
+public slots:
 
-    void notice_settings ();
+  void notice_settings ();
 
-  protected slots:
+protected slots:
 
-    virtual QMenu * createPopupMenu ();
+  virtual QMenu * createPopupMenu ();
 
-    virtual bool event (QEvent *ev);
+  virtual bool event (QEvent *ev);
 
-  private slots:
+private slots:
 
-    void request_close ();
-    void request_close_all ();
-    void request_close_other ();
+  void request_close ();
+  void request_close_all ();
+  void request_close_other ();
 
-    void request_switch_left ();
-    void request_switch_right ();
+  void request_switch_left ();
+  void request_switch_right ();
 
-  private:
+private:
 
-    void request_switch (int direction);
+  void request_switch (int direction);
 
-    QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
-                          const char *member, QWidget *receiver);
+  QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
+                        const char *member, QWidget *receiver);
 
-    QList<QDockWidget *> m_dw_list;
+  QList<QDockWidget *> m_dw_list;
 
-    QAction *m_close_action;
-    QAction *m_close_all_action;
-    QAction *m_close_others_action;
+  QAction *m_close_action;
+  QAction *m_close_all_action;
+  QAction *m_close_others_action;
 
-    QAction *m_switch_left_action;
-    QAction *m_switch_right_action;
+  QAction *m_switch_left_action;
+  QAction *m_switch_right_action;
 
-    QList<QAction *> m_actions_list;
-  };
+  QList<QAction *> m_actions_list;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

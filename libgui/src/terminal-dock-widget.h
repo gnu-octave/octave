@@ -34,66 +34,66 @@ class QTerminal;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class command_widget;
+class command_widget;
 
-  class terminal_dock_widget : public octave_dock_widget
-  {
-    Q_OBJECT
+class terminal_dock_widget : public octave_dock_widget
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    terminal_dock_widget (QWidget *parent,
-                          bool experimental_terminal_widget = false);
+  terminal_dock_widget (QWidget *parent,
+                        bool experimental_terminal_widget = false);
 
-    ~terminal_dock_widget () = default;
+  ~terminal_dock_widget () = default;
 
-    bool has_focus () const;
+  bool has_focus () const;
 
-    void init_command_prompt ();
+  void init_command_prompt ();
 
-    void init_control_d_shortcut_behavior ();
+  void init_control_d_shortcut_behavior ();
 
-    // FIXME: The next two functions could be eliminated (or combined)
-    // if we had a common interface for the old and new terminal
-    // widgets.
+  // FIXME: The next two functions could be eliminated (or combined)
+  // if we had a common interface for the old and new terminal
+  // widgets.
 
-    // Only valid if using the old terminal widget.
-    QTerminal * get_qterminal ();
+  // Only valid if using the old terminal widget.
+  QTerminal * get_qterminal ();
 
 #if defined (HAVE_QSCINTILLA)
-    // Only valid if using the new terminal widget.
-    command_widget * get_command_widget ();
+  // Only valid if using the new terminal widget.
+  command_widget * get_command_widget ();
 #endif
 
-  signals:
+signals:
 
-    void settings_changed ();
+  void settings_changed ();
 
-    // Note: the following four signals are
-    // currently only used by the new experimental terminal widget.
+  // Note: the following four signals are
+  // currently only used by the new experimental terminal widget.
 
-    void update_prompt_signal (const QString&);
+  void update_prompt_signal (const QString&);
 
-    void interpreter_output_signal (const QString&);
+  void interpreter_output_signal (const QString&);
 
-    void new_command_line_signal (const QString& = QString ());
+  void new_command_line_signal (const QString& = QString ());
 
-    void execute_command_signal (const QString&);
+  void execute_command_signal (const QString&);
 
-    void interpreter_event (const fcn_callback& fcn);
-    void interpreter_event (const meth_callback& meth);
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
 
-  public slots:
+public slots:
 
-    void notice_settings ();
+  void notice_settings ();
 
-  private:
+private:
 
-    bool m_experimental_terminal_widget;
+  bool m_experimental_terminal_widget;
 
-    // FIXME!!!  Maybe my_term should just be derived from QTerminal?
-    QWidget *m_terminal;
-  };
+  // FIXME!!!  Maybe my_term should just be derived from QTerminal?
+  QWidget *m_terminal;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -36,50 +36,50 @@ class QRadioButton;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class Container;
+class Container;
 
-  class ButtonGroup : public Object
-  {
-    Q_OBJECT
+class ButtonGroup : public Object
+{
+  Q_OBJECT
 
-  public:
-    ButtonGroup (octave::interpreter& interp,
-                 const graphics_object& go, QButtonGroup *buttongroup,
-                 QFrame *frame);
-    ~ButtonGroup ();
+public:
+  ButtonGroup (octave::interpreter& interp,
+               const graphics_object& go, QButtonGroup *buttongroup,
+               QFrame *frame);
+  ~ButtonGroup ();
 
-    Container * innerContainer () { return m_container; }
+  Container * innerContainer () { return m_container; }
 
-    bool eventFilter (QObject *watched, QEvent *event);
+  bool eventFilter (QObject *watched, QEvent *event);
 
-    static ButtonGroup *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static ButtonGroup *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-    void addButton (QAbstractButton *btn);
+  void addButton (QAbstractButton *btn);
 
-    void selectNothing ();
+  void selectNothing ();
 
-  protected:
-    void update (int pId);
-    void redraw ();
+protected:
+  void update (int pId);
+  void redraw ();
 
-  private slots:
-    void buttonToggled (bool toggled);
-    void buttonClicked (QAbstractButton *btn);
+private slots:
+  void buttonToggled (bool toggled);
+  void buttonClicked (QAbstractButton *btn);
 
-  private:
-    void updateLayout ();
+private:
+  void updateLayout ();
 
-  private:
-    QButtonGroup *m_buttongroup;
-    QRadioButton *m_hiddenbutton;
-    Container *m_container;
-    QLabel *m_title;
-    bool m_blockUpdates;
-  };
+private:
+  QButtonGroup *m_buttongroup;
+  QRadioButton *m_hiddenbutton;
+  Container *m_container;
+  QLabel *m_title;
+  bool m_blockUpdates;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

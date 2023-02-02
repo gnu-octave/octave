@@ -46,60 +46,60 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  qt_application::qt_application (const std::string& organization_name,
-                                  const std::string& application_name,
-                                  const std::string& application_version,
-                                  int argc, char **argv)
-    : application (argc, argv)
-  {
-    if (! organization_name.empty ())
-      QCoreApplication::setOrganizationName
-        (QString::fromStdString (organization_name));
+qt_application::qt_application (const std::string& organization_name,
+                                const std::string& application_name,
+                                const std::string& application_version,
+                                int argc, char **argv)
+  : application (argc, argv)
+{
+  if (! organization_name.empty ())
+    QCoreApplication::setOrganizationName
+      (QString::fromStdString (organization_name));
 
-    if (! application_name.empty ())
-      QCoreApplication::setApplicationName
-        (QString::fromStdString (application_name));
+  if (! application_name.empty ())
+    QCoreApplication::setApplicationName
+      (QString::fromStdString (application_name));
 
-    if (! application_version.empty ())
-      QCoreApplication::setApplicationVersion
-        (QString::fromStdString (application_version));
+  if (! application_version.empty ())
+    QCoreApplication::setApplicationVersion
+      (QString::fromStdString (application_version));
 
-    // FIXME: Is there a better place for this?
-    QSettings::setDefaultFormat (QSettings::IniFormat);
+  // FIXME: Is there a better place for this?
+  QSettings::setDefaultFormat (QSettings::IniFormat);
 
-    // This should probably happen early.
-    sysdep_init ();
-  }
+  // This should probably happen early.
+  sysdep_init ();
+}
 
-  qt_application::qt_application (int argc, char **argv)
-    : application (argc, argv)
-  {
-    // This should probably happen early.
-    sysdep_init ();
-  }
+qt_application::qt_application (int argc, char **argv)
+  : application (argc, argv)
+{
+  // This should probably happen early.
+  sysdep_init ();
+}
 
-  bool qt_application::start_gui_p () const
-  {
-    // Note: this function is not needed if using the experimental
-    // terminal widget, so return a dummy value of false in that case.
+bool qt_application::start_gui_p () const
+{
+  // Note: this function is not needed if using the experimental
+  // terminal widget, so return a dummy value of false in that case.
 
-    return experimental_terminal_widget () ? false : m_options.gui ();
-  }
+  return experimental_terminal_widget () ? false : m_options.gui ();
+}
 
-  int qt_application::execute ()
-  {
-    octave_block_interrupt_signal ();
+int qt_application::execute ()
+{
+  octave_block_interrupt_signal ();
 
-    set_application_id ();
+  set_application_id ();
 
-    // Create and show main window.
+  // Create and show main window.
 
-    // Note: the second argument is ignored if using the new terminal
-    // widget.
+  // Note: the second argument is ignored if using the new terminal
+  // widget.
 
-    base_qobject qt_interface (*this, start_gui_p ());
+  base_qobject qt_interface (*this, start_gui_p ());
 
-    return qt_interface.exec ();
-  }
+  return qt_interface.exec ();
+}
 
 OCTAVE_END_NAMESPACE(octave)

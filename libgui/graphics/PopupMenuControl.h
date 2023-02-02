@@ -32,30 +32,30 @@ class QComboBox;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class PopupMenuControl : public BaseControl
-  {
-    Q_OBJECT
+class PopupMenuControl : public BaseControl
+{
+  Q_OBJECT
 
-  public:
-    PopupMenuControl (octave::interpreter& interp, const graphics_object& go,
-                      QComboBox *box);
-    ~PopupMenuControl ();
+public:
+  PopupMenuControl (octave::interpreter& interp, const graphics_object& go,
+                    QComboBox *box);
+  ~PopupMenuControl ();
 
-    static PopupMenuControl *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static PopupMenuControl *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
+protected:
+  void update (int pId);
 
-  private slots:
-    void currentIndexChanged (int index);
+private slots:
+  void currentIndexChanged (int index);
 
-  private:
-    bool m_blockUpdate;
-  };
+private:
+  bool m_blockUpdate;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

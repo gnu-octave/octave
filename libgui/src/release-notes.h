@@ -33,25 +33,25 @@ class QTextBrowser;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class release_notes : public QWidget
-  {
-    Q_OBJECT
+class release_notes : public QWidget
+{
+  Q_OBJECT
 
-  public:
+public:
 
-    release_notes ();
+  release_notes ();
 
-    ~release_notes () = default;
+  ~release_notes () = default;
 
-  public slots:
+public slots:
 
-    void display ();
+  void display ();
 
-  private:
+private:
 
-    QTextBrowser *m_browser;
-    QString m_release_notes_icon;
-  };
+  QTextBrowser *m_browser;
+  QString m_release_notes_icon;
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

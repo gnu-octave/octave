@@ -34,64 +34,64 @@ class QTableWidgetItem;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  class interpreter;
+class interpreter;
 
-  class Container;
+class Container;
 
-  class Table : public Object
-  {
-    Q_OBJECT
+class Table : public Object
+{
+  Q_OBJECT
 
-  public:
-    Table (octave::interpreter& interp,
-           const graphics_object& go, QTableWidget *tableWidget);
-    ~Table ();
+public:
+  Table (octave::interpreter& interp,
+         const graphics_object& go, QTableWidget *tableWidget);
+  ~Table ();
 
-    Container * innerContainer () { return m_container; }
+  Container * innerContainer () { return m_container; }
 
-    bool eventFilter (QObject *watched, QEvent *event);
+  bool eventFilter (QObject *watched, QEvent *event);
 
-    static Table *
-    create (octave::interpreter& interp,
-            const graphics_object& go);
+  static Table *
+  create (octave::interpreter& interp,
+          const graphics_object& go);
 
-  protected:
-    void update (int pId);
-    void redraw ();
-    void updateColumnname ();
-    void updateColumnwidth ();
-    void updateData ();
-    void updateEnable ();
-    void updateExtent ();
-    void updatePalette ();
-    void updateRearrangeableColumns ();
-    void updateRowname ();
+protected:
+  void update (int pId);
+  void redraw ();
+  void updateColumnname ();
+  void updateColumnwidth ();
+  void updateData ();
+  void updateEnable ();
+  void updateExtent ();
+  void updatePalette ();
+  void updateRearrangeableColumns ();
+  void updateRowname ();
 
-  private slots:
-    void itemChanged (QTableWidgetItem *item);
-    void comboBoxCurrentIndexChanged (const QString& value);
-    void cellClicked (int row, int col);
-    void itemSelectionChanged ();
+private slots:
+  void itemChanged (QTableWidgetItem *item);
+  void comboBoxCurrentIndexChanged (const QString& value);
+  void cellClicked (int row, int col);
+  void itemSelectionChanged ();
 
-  private:
-    Container *m_container;
-    QTableWidget *m_tableWidget;
-    octave_value m_curData;
-    bool m_blockUpdates;
-    bool m_keyPressHandlerDefined;
-    bool m_keyReleaseHandlerDefined;
-    QWidget * checkBoxForLogical(octave_value cal, bool enabled);
-    void updateData (int row, int col, octave_value value, std::string format,
-                     bool enabled);
-    void updateData (int row, int col);
-    void updateDataColumn (int col);
-    std::string columnformat (int column);
-    bool columneditable (int column);
-    void sendCellEditCallback (int row, int col, octave_value old_value,
-                               octave_value new_value, octave_value edit_data, octave_value error);
-    void checkBoxClicked (int row, int col, QCheckBox* checkBox);
+private:
+  Container *m_container;
+  QTableWidget *m_tableWidget;
+  octave_value m_curData;
+  bool m_blockUpdates;
+  bool m_keyPressHandlerDefined;
+  bool m_keyReleaseHandlerDefined;
+  QWidget * checkBoxForLogical(octave_value cal, bool enabled);
+  void updateData (int row, int col, octave_value value, std::string format,
+                   bool enabled);
+  void updateData (int row, int col);
+  void updateDataColumn (int col);
+  std::string columnformat (int column);
+  bool columneditable (int column);
+  void sendCellEditCallback (int row, int col, octave_value old_value,
+                             octave_value new_value, octave_value edit_data, octave_value error);
+  void checkBoxClicked (int row, int col, QCheckBox* checkBox);
 
-  };
+};
 
 OCTAVE_END_NAMESPACE(octave)
 

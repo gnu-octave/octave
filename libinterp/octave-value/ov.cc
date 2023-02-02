@@ -2658,950 +2658,950 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-  OCTAVE_NORETURN static void
-  err_binary_op (const std::string& on, const std::string& tn1,
-                 const std::string& tn2)
-  {
-    error ("binary operator '%s' not implemented for '%s' by '%s' operations",
-           on.c_str (), tn1.c_str (), tn2.c_str ());
-  }
+OCTAVE_NORETURN static void
+err_binary_op (const std::string& on, const std::string& tn1,
+               const std::string& tn2)
+{
+  error ("binary operator '%s' not implemented for '%s' by '%s' operations",
+         on.c_str (), tn1.c_str (), tn2.c_str ());
+}
 
-  OCTAVE_NORETURN static void
-  err_binary_op_conv (const std::string& on)
-  {
-    error ("type conversion failed for binary operator '%s'", on.c_str ());
-  }
+OCTAVE_NORETURN static void
+err_binary_op_conv (const std::string& on)
+{
+  error ("type conversion failed for binary operator '%s'", on.c_str ());
+}
 
-  octave_value
-  binary_op (type_info& ti, octave_value::binary_op op,
-             const octave_value& v1, const octave_value& v2)
-  {
-    octave_value retval;
+octave_value
+binary_op (type_info& ti, octave_value::binary_op op,
+           const octave_value& v1, const octave_value& v2)
+{
+  octave_value retval;
 
-    int t1 = v1.type_id ();
-    int t2 = v2.type_id ();
+  int t1 = v1.type_id ();
+  int t2 = v2.type_id ();
 
-    if (t1 == octave_class::static_type_id ()
-        || t2 == octave_class::static_type_id ()
-        || t1 == octave_classdef::static_type_id ()
-        || t2 == octave_classdef::static_type_id ())
-      {
-        type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
+  if (t1 == octave_class::static_type_id ()
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
+    {
+      type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
 
-        if (! f)
-          err_binary_op (octave_value::binary_op_as_string (op),
-                         v1.class_name (), v2.class_name ());
+      if (! f)
+        err_binary_op (octave_value::binary_op_as_string (op),
+                       v1.class_name (), v2.class_name ());
 
+      retval = f (v1, v2);
+    }
+  else
+    {
+      // FIXME: we need to handle overloading operators for built-in
+      // classes (double, char, int8, etc.)
+
+      type_info::binary_op_fcn f
+        = ti.lookup_binary_op (op, t1, t2);
+
+      if (f)
+        retval = f (v1.get_rep (), v2.get_rep ());
+      else
+        {
+          octave_value tv1;
+          octave_base_value::type_conv_info cf1
+            = v1.numeric_conversion_function ();
+
+          octave_value tv2;
+          octave_base_value::type_conv_info cf2
+            = v2.numeric_conversion_function ();
+
+          // Try biased (one-sided) conversions first.
+          if (cf2.type_id () >= 0
+              && ti.lookup_binary_op (op, t1, cf2.type_id ()))
+            cf1 = nullptr;
+          else if (cf1.type_id () >= 0
+                   && ti.lookup_binary_op (op, cf1.type_id (), t2))
+            cf2 = nullptr;
+
+          if (cf1)
+            {
+              octave_base_value *tmp = cf1 (v1.get_rep ());
+
+              if (! tmp)
+                err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+              tv1 = octave_value (tmp);
+              t1 = tv1.type_id ();
+            }
+          else
+            tv1 = v1;
+
+          if (cf2)
+            {
+              octave_base_value *tmp = cf2 (v2.get_rep ());
+
+              if (! tmp)
+                err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+              tv2 = octave_value (tmp);
+              t2 = tv2.type_id ();
+            }
+          else
+            tv2 = v2;
+
+          if (cf1 || cf2)
+            {
+              retval = binary_op (op, tv1, tv2);
+            }
+          else
+            {
+              //demote double -> single and try again
+              cf1 = tv1.numeric_demotion_function ();
+
+              cf2 = tv2.numeric_demotion_function ();
+
+              // Try biased (one-sided) conversions first.
+              if (cf2.type_id () >= 0
+                  && ti.lookup_binary_op (op, t1, cf2.type_id ()))
+                cf1 = nullptr;
+              else if (cf1.type_id () >= 0
+                       && ti.lookup_binary_op (op, cf1.type_id (), t2))
+                cf2 = nullptr;
+
+              if (cf1)
+                {
+                  octave_base_value *tmp = cf1 (tv1.get_rep ());
+
+                  if (! tmp)
+                    err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                  tv1 = octave_value (tmp);
+                  t1 = tv1.type_id ();
+                }
+
+              if (cf2)
+                {
+                  octave_base_value *tmp = cf2 (tv2.get_rep ());
+
+                  if (! tmp)
+                    err_binary_op_conv (octave_value::binary_op_as_string (op));
+
+                  tv2 = octave_value (tmp);
+                  t2 = tv2.type_id ();
+                }
+
+              if (! cf1 && ! cf2)
+                err_binary_op (octave_value::binary_op_as_string (op),
+                               v1.type_name (), v2.type_name ());
+
+              f = ti.lookup_binary_op (op, t1, t2);
+
+              if (! f)
+                err_binary_op (octave_value::binary_op_as_string (op),
+                               v1.type_name (), v2.type_name ());
+
+              retval = f (tv1.get_rep (), tv2.get_rep ());
+            }
+        }
+    }
+
+  return retval;
+}
+
+octave_value
+binary_op (octave_value::binary_op op, const octave_value& v1,
+           const octave_value& v2)
+{
+  type_info& ti = __get_type_info__ ();
+
+  return binary_op (ti, op, v1, v2);
+}
+
+static octave_value
+decompose_binary_op (type_info& ti, octave_value::compound_binary_op op,
+                     const octave_value& v1, const octave_value& v2)
+{
+  switch (op)
+    {
+    case octave_value::op_trans_mul:
+      return binary_op (octave_value::op_mul,
+                        unary_op (octave_value::op_transpose, v1), v2);
+
+    case octave_value::op_mul_trans:
+      return binary_op (ti, octave_value::op_mul,
+                        v1, unary_op (octave_value::op_transpose, v2));
+
+    case octave_value::op_herm_mul:
+      return binary_op (ti, octave_value::op_mul,
+                        unary_op (octave_value::op_hermitian, v1), v2);
+
+    case octave_value::op_mul_herm:
+      return binary_op (ti, octave_value::op_mul,
+                        v1, unary_op (octave_value::op_hermitian, v2));
+
+    case octave_value::op_trans_ldiv:
+      return binary_op (ti, octave_value::op_ldiv,
+                        unary_op (octave_value::op_transpose, v1), v2);
+
+    case octave_value::op_herm_ldiv:
+      return binary_op (ti, octave_value::op_ldiv,
+                        unary_op (octave_value::op_hermitian, v1), v2);
+
+    case octave_value::op_el_not_and:
+      return binary_op (ti, octave_value::op_el_and,
+                        unary_op (octave_value::op_not, v1), v2);
+
+    case octave_value::op_el_not_or:
+      return binary_op (ti, octave_value::op_el_or,
+                        unary_op (octave_value::op_not, v1), v2);
+
+    case octave_value::op_el_and_not:
+      return binary_op (ti, octave_value::op_el_and,
+                        v1, unary_op (octave_value::op_not, v2));
+
+    case octave_value::op_el_or_not:
+      return binary_op (ti, octave_value::op_el_or,
+                        v1, unary_op (octave_value::op_not, v2));
+
+    default:
+      error ("invalid compound operator");
+    }
+}
+
+octave_value
+binary_op (type_info& ti, octave_value::compound_binary_op op,
+           const octave_value& v1, const octave_value& v2)
+{
+  octave_value retval;
+
+  int t1 = v1.type_id ();
+  int t2 = v2.type_id ();
+
+  if (t1 == octave_class::static_type_id ()
+      || t2 == octave_class::static_type_id ()
+      || t1 == octave_classdef::static_type_id ()
+      || t2 == octave_classdef::static_type_id ())
+    {
+      type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
+
+      if (f)
         retval = f (v1, v2);
-      }
-    else
-      {
-        // FIXME: we need to handle overloading operators for built-in
-        // classes (double, char, int8, etc.)
-
-        type_info::binary_op_fcn f
-          = ti.lookup_binary_op (op, t1, t2);
-
-        if (f)
-          retval = f (v1.get_rep (), v2.get_rep ());
-        else
-          {
-            octave_value tv1;
-            octave_base_value::type_conv_info cf1
-              = v1.numeric_conversion_function ();
-
-            octave_value tv2;
-            octave_base_value::type_conv_info cf2
-              = v2.numeric_conversion_function ();
-
-            // Try biased (one-sided) conversions first.
-            if (cf2.type_id () >= 0
-                && ti.lookup_binary_op (op, t1, cf2.type_id ()))
-              cf1 = nullptr;
-            else if (cf1.type_id () >= 0
-                     && ti.lookup_binary_op (op, cf1.type_id (), t2))
-              cf2 = nullptr;
-
-            if (cf1)
-              {
-                octave_base_value *tmp = cf1 (v1.get_rep ());
-
-                if (! tmp)
-                  err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-                tv1 = octave_value (tmp);
-                t1 = tv1.type_id ();
-              }
-            else
-              tv1 = v1;
-
-            if (cf2)
-              {
-                octave_base_value *tmp = cf2 (v2.get_rep ());
-
-                if (! tmp)
-                  err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-                tv2 = octave_value (tmp);
-                t2 = tv2.type_id ();
-              }
-            else
-              tv2 = v2;
-
-            if (cf1 || cf2)
-              {
-                retval = binary_op (op, tv1, tv2);
-              }
-            else
-              {
-                //demote double -> single and try again
-                cf1 = tv1.numeric_demotion_function ();
-
-                cf2 = tv2.numeric_demotion_function ();
-
-                // Try biased (one-sided) conversions first.
-                if (cf2.type_id () >= 0
-                    && ti.lookup_binary_op (op, t1, cf2.type_id ()))
-                  cf1 = nullptr;
-                else if (cf1.type_id () >= 0
-                         && ti.lookup_binary_op (op, cf1.type_id (), t2))
-                  cf2 = nullptr;
-
-                if (cf1)
-                  {
-                    octave_base_value *tmp = cf1 (tv1.get_rep ());
-
-                    if (! tmp)
-                      err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-                    tv1 = octave_value (tmp);
-                    t1 = tv1.type_id ();
-                  }
-
-                if (cf2)
-                  {
-                    octave_base_value *tmp = cf2 (tv2.get_rep ());
-
-                    if (! tmp)
-                      err_binary_op_conv (octave_value::binary_op_as_string (op));
-
-                    tv2 = octave_value (tmp);
-                    t2 = tv2.type_id ();
-                  }
-
-                if (! cf1 && ! cf2)
-                  err_binary_op (octave_value::binary_op_as_string (op),
-                                 v1.type_name (), v2.type_name ());
-
-                f = ti.lookup_binary_op (op, t1, t2);
-
-                if (! f)
-                  err_binary_op (octave_value::binary_op_as_string (op),
-                                 v1.type_name (), v2.type_name ());
-
-                retval = f (tv1.get_rep (), tv2.get_rep ());
-              }
-          }
-      }
-
-    return retval;
-  }
-
-  octave_value
-  binary_op (octave_value::binary_op op, const octave_value& v1,
-             const octave_value& v2)
-  {
-    type_info& ti = __get_type_info__ ();
-
-    return binary_op (ti, op, v1, v2);
-  }
-
-  static octave_value
-  decompose_binary_op (type_info& ti, octave_value::compound_binary_op op,
-                       const octave_value& v1, const octave_value& v2)
-  {
-    switch (op)
-      {
-      case octave_value::op_trans_mul:
-        return binary_op (octave_value::op_mul,
-                          unary_op (octave_value::op_transpose, v1), v2);
-
-      case octave_value::op_mul_trans:
-        return binary_op (ti, octave_value::op_mul,
-                          v1, unary_op (octave_value::op_transpose, v2));
-
-      case octave_value::op_herm_mul:
-        return binary_op (ti, octave_value::op_mul,
-                          unary_op (octave_value::op_hermitian, v1), v2);
-
-      case octave_value::op_mul_herm:
-        return binary_op (ti, octave_value::op_mul,
-                          v1, unary_op (octave_value::op_hermitian, v2));
-
-      case octave_value::op_trans_ldiv:
-        return binary_op (ti, octave_value::op_ldiv,
-                          unary_op (octave_value::op_transpose, v1), v2);
-
-      case octave_value::op_herm_ldiv:
-        return binary_op (ti, octave_value::op_ldiv,
-                          unary_op (octave_value::op_hermitian, v1), v2);
-
-      case octave_value::op_el_not_and:
-        return binary_op (ti, octave_value::op_el_and,
-                          unary_op (octave_value::op_not, v1), v2);
-
-      case octave_value::op_el_not_or:
-        return binary_op (ti, octave_value::op_el_or,
-                          unary_op (octave_value::op_not, v1), v2);
-
-      case octave_value::op_el_and_not:
-        return binary_op (ti, octave_value::op_el_and,
-                          v1, unary_op (octave_value::op_not, v2));
-
-      case octave_value::op_el_or_not:
-        return binary_op (ti, octave_value::op_el_or,
-                          v1, unary_op (octave_value::op_not, v2));
-
-      default:
-        error ("invalid compound operator");
-      }
-  }
-
-  octave_value
-  binary_op (type_info& ti, octave_value::compound_binary_op op,
-             const octave_value& v1, const octave_value& v2)
-  {
-    octave_value retval;
-
-    int t1 = v1.type_id ();
-    int t2 = v2.type_id ();
-
-    if (t1 == octave_class::static_type_id ()
-        || t2 == octave_class::static_type_id ()
-        || t1 == octave_classdef::static_type_id ()
-        || t2 == octave_classdef::static_type_id ())
-      {
-        type_info::binary_class_op_fcn f = ti.lookup_binary_class_op (op);
-
-        if (f)
-          retval = f (v1, v2);
-        else
-          retval = decompose_binary_op (ti, op, v1, v2);
-      }
-    else
-      {
-        type_info::binary_op_fcn f = ti.lookup_binary_op (op, t1, t2);
-
-        if (f)
-          retval = f (v1.get_rep (), v2.get_rep ());
-        else
-          retval = decompose_binary_op (ti, op, v1, v2);
-      }
-
-    return retval;
-  }
-
-  octave_value
-  binary_op (octave_value::compound_binary_op op,
-             const octave_value& v1, const octave_value& v2)
-  {
-    type_info& ti = __get_type_info__ ();
-
-    return binary_op (ti, op, v1, v2);
-  }
-
-  OCTAVE_NORETURN static void
-  err_cat_op (const std::string& tn1, const std::string& tn2)
-  {
-    error ("concatenation operator not implemented for '%s' by '%s' operations",
-           tn1.c_str (), tn2.c_str ());
-  }
-
-  OCTAVE_NORETURN static void
-  err_cat_op_conv ()
-  {
-    error ("type conversion failed for concatenation operator");
-  }
-
-  octave_value
-  cat_op (type_info& ti, const octave_value& v1,
-          const octave_value& v2, const Array<octave_idx_type>& ra_idx)
-  {
-    octave_value retval;
-
-    // Can't rapid return for concatenation with an empty object here as
-    // something like cat(1,[],single([]) must return the correct type.
-
-    int t1 = v1.type_id ();
-    int t2 = v2.type_id ();
-
-    type_info::cat_op_fcn f = ti.lookup_cat_op (t1, t2);
-
-    if (f)
-      retval = f (v1.get_rep (), v2.get_rep (), ra_idx);
-    else
-      {
-        octave_value tv1;
-        octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
-
-        octave_value tv2;
-        octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
-
-        // Try biased (one-sided) conversions first.
-        if (cf2.type_id () >= 0 && ti.lookup_cat_op (t1, cf2.type_id ()))
-          cf1 = nullptr;
-        else if (cf1.type_id () >= 0 && ti.lookup_cat_op (cf1.type_id (), t2))
-          cf2 = nullptr;
-
-        if (cf1)
-          {
-            octave_base_value *tmp = cf1 (v1.get_rep ());
-
-            if (! tmp)
-              err_cat_op_conv ();
-
-            tv1 = octave_value (tmp);
-            t1 = tv1.type_id ();
-          }
-        else
-          tv1 = v1;
-
-        if (cf2)
-          {
-            octave_base_value *tmp = cf2 (v2.get_rep ());
-
-            if (! tmp)
-              err_cat_op_conv ();
-
-            tv2 = octave_value (tmp);
-            t2 = tv2.type_id ();
-          }
-        else
-          tv2 = v2;
-
-        if (! cf1 && ! cf2)
-          err_cat_op (v1.type_name (), v2.type_name ());
-
-        retval = cat_op (ti, tv1, tv2, ra_idx);
-      }
-
-    return retval;
-  }
-
-  octave_value
-  cat_op (const octave_value& v1, const octave_value& v2,
-          const Array<octave_idx_type>& ra_idx)
-  {
-    type_info& ti = __get_type_info__ ();
-
-    return cat_op (ti, v1, v2, ra_idx);
-  }
-
-  // Unless the colon operator is used with a class or classdef object,
-  // then all arguments must be the same type or mixed with double
-  // values.
-
-  static builtin_type_t
-  get_colon_op_type (builtin_type_t op1_type, builtin_type_t op2_type)
-  {
-    if (op1_type == op2_type)
-      return op1_type;
-
-    if (op1_type == btyp_double)
-      return op2_type;
-
-    if (op2_type == btyp_double)
-      return op1_type;
-
-    return btyp_unknown;
-  }
-
-  static builtin_type_t
-  get_colon_op_type (const octave_value& base, const octave_value& increment,
-                     const octave_value& limit)
-  {
-    builtin_type_t typ
-      = get_colon_op_type (base.builtin_type (), increment.builtin_type ());
-
-    if (typ == btyp_unknown)
-      return typ;
-
-    return get_colon_op_type (typ, limit.builtin_type ());
-  }
-
-  // This check depends on the type of VAL either being the expected
-  // integer type or a double value.
-
-  template <typename T>
-  static void
-  check_colon_operand (const octave_value& val, const char *op_str)
-  {
-    if (! val.is_double_type ())
-      return;
-
-    double dval = val.double_value ();
-    double intpart;
-    static const double out_of_range_top
-      = static_cast<double> (std::numeric_limits<typename T::val_type>::max ())
-        + 1.;
-
-    if (dval >= out_of_range_top
-        || dval < std::numeric_limits<typename T::val_type>::min ()
-        || std::modf (dval, &intpart) != 0.0)
-      error ("colon operator %s invalid (not an integer or out of range for given integer type)", op_str);
-  }
-
-  // Return the difference between two unsigned integers as an unsigned
-  // integer of the same type.
-
-  template <typename UT,
-            typename std::enable_if<(std::is_integral<UT>::value
-                                     && std::is_unsigned<UT>::value),
-                                    bool>::type = true>
-  UT
-  integer_difference (UT a, UT b)
-  {
-    return a > b ? a - b : b - a;
-  }
-
-  // Return the difference between two signed integers as an unsigned
-  // integer corresponding to the signed type.
-
-  template <typename ST,
-            typename UT = typename std::make_unsigned<ST>::type,
-            typename std::enable_if<(std::is_integral<ST>::value
-                                     && std::is_signed<ST>::value),
-                                    bool>::type = true>
-  UT
-  integer_difference (ST a, ST b)
-  {
-    // Map to unsigned.
-    // Idea from https://stackoverflow.com/questions/10589559
-
-    static const UT offset
-      = UT (0) - static_cast<UT> (std::numeric_limits<ST>::min ());
-
-    UT au = static_cast<UT> (a) + offset;
-    UT bu = static_cast<UT> (b) + offset;
-
-    return integer_difference (au, bu);
-  }
-
-  // Number of elements in an integer range taking care to avoid
-  // overflow.  Base and limit are of the same type.  If they are
-  // unsigned, then increment is also of the same type.  If they are
-  // signed, then the type of increment is the unsigned type
-  // corresponding to T.  Assumes that the base and limit values are
-  // consistent with the sign of the original increment (not an empty
-  // range) so we can calculate numel with the absolute value of the
-  // increment and the absolute difference between the base and limit
-  // values.
-
-  template <typename T,
-            typename UT = typename std::make_unsigned<T>::type,
-            typename std::enable_if<std::is_integral<T>::value,
-                                    bool>::type = true>
-  octave_idx_type
-  range_numel_aux (T base, UT unsigned_increment, T limit)
-  {
-    // Adding one to DIFF/INCREMENT may overflow, so check whether it is
-    // out of range before adding.
-
-    UT nel_m1 = integer_difference (limit, base) / unsigned_increment;
-
-    // FIXME: fix error message.
-    if (nel_m1 > std::numeric_limits<octave_idx_type>::max () - 1)
-      error ("too many elements for range!");
-
-    return static_cast<octave_idx_type> (nel_m1) + 1;
-  }
-
-  // Convert signed range increment to unsigned.
-
-  template <typename ST,
-            typename UT = typename std::make_unsigned<ST>::type,
-            typename std::enable_if<(std::is_integral<ST>::value
-                                     && std::is_signed<ST>::value),
-                                    bool>::type = true>
-  UT
-  range_increment (ST increment)
-  {
-    return (increment < 0
-            ? UT (0) - static_cast<UT> (increment)
-            : static_cast<UT> (increment));
-  }
-
-  // "Convert" unsigned range increment to unsigned.  A no-op, but
-  // needed to provide a consistent interface for other template
-  // functions.
-
-  template <typename T,
-            typename UT = typename std::make_unsigned<T>::type,
-            typename std::enable_if<(std::is_integral<UT>::value
-                                     && std::is_unsigned<UT>::value),
-                                    bool>::type = true>
-  UT
-  range_increment (UT increment)
-  {
-    return increment;
-  }
-
-  // Convert double range increment to unsigned.  Enable by return type.
-
-  template <typename T,
-            typename UT = typename std::make_unsigned<T>::type>
-  typename std::enable_if<(std::is_integral<UT>::value
-                           && std::is_unsigned<UT>::value), UT>::type
-  range_increment (double increment)
-  {
-    double abs_increment = std::abs (increment);
-
-    return static_cast<UT> (abs_increment);
-  }
-
-  // Number of elements in an integer range base:increment:limit.  Base,
-  // increment, and limit are of the same signed type.
-
-  template <typename ST,
-            typename std::enable_if<(std::is_integral<ST>::value
-                                     && std::is_signed<ST>::value),
-                                    bool>::type = true>
-  octave_idx_type
-  range_numel (ST base, ST increment, ST limit)
-  {
-    typedef typename std::make_unsigned<ST>::type UT;
-
-    if (increment == 0
-        || (increment > 0 && base > limit)
-        || (increment < 0 && base < limit))
-      return 0;
-
-    UT unsigned_increment = range_increment<ST> (increment);
-
-    return range_numel_aux (base, unsigned_increment, limit);
-  }
-
-  // Number of elements in an integer range base:increment:limit.  Base,
-  // increment, and limit are unsigned and of the same type.
-
-  template <typename UT,
-            typename std::enable_if<(std::is_integral<UT>::value
-                                     && std::is_unsigned<UT>::value),
-                                    bool>::type = true>
-  octave_idx_type
-  range_numel (UT base, UT increment, UT limit)
-  {
-    // Unsigned, INCREMENT is always >= 0.
-    if (increment == 0 || base > limit)
-      return 0;
-
-    return range_numel_aux (base, increment, limit);
-  }
-
-  // Number of elements in an integer range base:increment:limit.  Base
-  // and limit are of the same type and increment is a double value.
-
-  template <typename T,
-            typename UT = typename std::make_unsigned<T>::type,
-            typename std::enable_if<std::is_integral<T>::value,
-                                    bool>::type = true>
-  octave_idx_type
-  range_numel (T base, double increment, T limit)
-  {
-    double intpart;
-    if (math::isnan (increment) || std::modf (increment, &intpart) != 0.0)
-      error ("colon operator increment invalid (not an integer)");
-
-    if (increment == 0
-        || (increment > 0 && base > limit)
-        || (increment < 0 && base < limit))
-      return 0;
-
-    static const double out_of_range_top
-      = static_cast<double> (std::numeric_limits<UT>::max ()) + 1.;
-
-    double abs_increment = std::abs (increment);
-
-    // Technically, this condition should be
-    // `abs_increment > std::numeric_limits<UT>::max ()`.
-    // But intmax('uint64') is not representable exactly as floating point
-    // number.  Instead, it "rounds" up by 1 to 2^64.  To account for
-    // this, use the following expression which works for all unsigned
-    // integer types.
-    if (abs_increment >= out_of_range_top)
-      return 1;
-
-    UT unsigned_increment = range_increment<T> (increment);
-
-    return range_numel_aux (base, unsigned_increment, limit);
-  }
-
-  // Make a range from integer values.  Increment may be integer or double.
-
-  template <typename T,
-            typename IT,
-            typename std::enable_if<(std::is_integral<T>::value
-                                     && std::is_arithmetic<IT>::value),
-                                    bool>::type = true>
-  octave_value
-  make_int_range (T base, IT increment, T limit)
-  {
-    octave_idx_type nel = range_numel (base, increment, limit);
-
-    // For now, we create arrays instead of range<T> for all types
-    // except double.
-
-    Array<octave_int<T>> result (dim_vector (1, nel));
-
-    if (nel > 0)
-      {
-        typedef typename std::make_unsigned<T>::type UT;
-
-        UT unsigned_increment = range_increment<T> (increment);
-
-        T val = base;
-        result.xelem (0) = val;
-
-        if (limit > base)
-          {
-            for (octave_idx_type i = 1; i < nel; i++)
-              {
-                val += unsigned_increment;
-                result.xelem (i) = val;
-              }
-          }
-        else
-          {
-            for (octave_idx_type i = 1; i < nel; i++)
-              {
-                val -= unsigned_increment;
-                result.xelem (i) = val;
-              }
-          }
-      }
-
-    return octave_value (result);
-  }
-
-  // Make a range from floating point values.
-
-  // FIXME: Try again to define memory efficient range classes for
-  // integer and floating point values?  Maybe with the templates
-  // defined in this file we could do that in a reasonable way?
-  // Regardless of that, it might be good to provide special treatment
-  // of colon expressions in FOR loops so that we can eliminate the
-  // "is_for_cmd_expr / force_range" flag from the parser and the
-  // octave_value constructors for range objects.
-
-  // NOTE: We define this function separately for float and double so
-  // that we can avoid having to instantiate ov_range<float>.  We DO
-  // instantiate range<float> but only so we can take advantage of the
-  // range<T> class to generate the corresponding array of float values
-  // and not have to duplicate that code here.
-
-  template <typename T,
-            typename std::enable_if<std::is_same<T, double>::value,
-                                    bool>::type = true>
-  octave_value
-  make_float_range (T base, T increment, T limit, bool is_for_cmd_expr)
-  {
-    if (math::isnan (base)
-        || math::isnan (increment)
-        || math::isnan (limit))
-      return octave_value (numeric_limits<T>::NaN ());
-
-    if (increment == 0
-        || (increment > 0 && base > limit)
-        || (increment < 0 && base < limit))
-      return octave_value (Array<T> (dim_vector (1, 0)));
-
-    // At this point, we know that the base and limit values are
-    // consistent with the sign of the increment (not an empty range).
-
-    range<T> r (base, increment, limit);
-
-    if (! is_for_cmd_expr && ! r.is_storable ())
-      error ("range with infinite number of elements cannot be stored");
-
-    return octave_value (r, is_for_cmd_expr);
-  }
-
-  template <typename T,
-            typename std::enable_if<std::is_same<T, float>::value,
-                                    bool>::type = true>
-  octave_value
-  make_float_range (T base, T increment, T limit, bool is_for_cmd_expr)
-  {
-    if (math::isnan (base)
-        || math::isnan (increment)
-        || math::isnan (limit))
-      return octave_value (numeric_limits<T>::NaN ());
-
-    if (increment == 0
-        || (increment > 0 && base > limit)
-        || (increment < 0 && base < limit))
-      return octave_value (Array<T> (dim_vector (1, 0)));
-
-    // At this point, we know that the base and limit values are
-    // consistent with the sign of the increment (not an empty range).
-
-    range<T> r (base, increment, limit);
-
-    if (! is_for_cmd_expr && ! r.is_storable ())
-      error ("range with infinite number of elements cannot be stored");
-
-    return octave_value (r.array_value ());
-  }
-
-  template <typename T,
-            typename std::enable_if<(std::is_same<T, octave_int8>::value
-                                     || std::is_same<T, octave_uint8>::value
-                                     || std::is_same<T, octave_int16>::value
-                                     || std::is_same<T, octave_uint16>::value
-                                     || std::is_same<T, octave_int32>::value
-                                     || std::is_same<T, octave_uint32>::value
-                                     || std::is_same<T, octave_int64>::value
-                                     || std::is_same<T, octave_uint64>::value),
-                                    bool>::type = true>
-  octave_value
-  make_int_range (const octave_value& base, const octave_value& increment,
-                  const octave_value& limit)
-  {
-    if (base.isempty () || increment.isempty () || limit.isempty ())
-      return octave_value (Array<T> (dim_vector (1, 0)));
-
-    check_colon_operand<T> (base, "lower bound");
-    check_colon_operand<T> (limit, "upper bound");
-
-    typename T::val_type base_val = octave_value_extract<T> (base).value ();
-    typename T::val_type limit_val = octave_value_extract<T> (limit).value ();
-
-    if (increment.is_double_type ())
-      {
-        double increment_val = increment.double_value ();
-
-        return make_int_range (base_val, increment_val, limit_val);
-      }
-
-    check_colon_operand<T> (increment, "increment");
-
-    typename T::val_type increment_val
-      = octave_value_extract<T> (increment).value ();
-
-    return make_int_range (base_val, increment_val, limit_val);
-  }
-
-  template <typename T,
-            typename std::enable_if<std::is_floating_point<T>::value,
-                                    bool>::type = true>
-  octave_value
-  make_float_range (const octave_value& base, const octave_value& increment,
-                    const octave_value& limit, bool is_for_cmd_expr)
-  {
-    if (base.isempty () || increment.isempty () || limit.isempty ())
-      return octave_value (Array<T> (dim_vector (1, 0)));
-
-    T base_val = octave_value_extract<T> (base);
-    T increment_val = octave_value_extract<T> (increment);
-    T limit_val = octave_value_extract<T> (limit);
-
-    return make_float_range (base_val, increment_val, limit_val,
-                             is_for_cmd_expr);
-  }
-
-
-  octave_value
-  make_char_range (const octave_value& base, const octave_value& increment,
+      else
+        retval = decompose_binary_op (ti, op, v1, v2);
+    }
+  else
+    {
+      type_info::binary_op_fcn f = ti.lookup_binary_op (op, t1, t2);
+
+      if (f)
+        retval = f (v1.get_rep (), v2.get_rep ());
+      else
+        retval = decompose_binary_op (ti, op, v1, v2);
+    }
+
+  return retval;
+}
+
+octave_value
+binary_op (octave_value::compound_binary_op op,
+           const octave_value& v1, const octave_value& v2)
+{
+  type_info& ti = __get_type_info__ ();
+
+  return binary_op (ti, op, v1, v2);
+}
+
+OCTAVE_NORETURN static void
+err_cat_op (const std::string& tn1, const std::string& tn2)
+{
+  error ("concatenation operator not implemented for '%s' by '%s' operations",
+         tn1.c_str (), tn2.c_str ());
+}
+
+OCTAVE_NORETURN static void
+err_cat_op_conv ()
+{
+  error ("type conversion failed for concatenation operator");
+}
+
+octave_value
+cat_op (type_info& ti, const octave_value& v1,
+        const octave_value& v2, const Array<octave_idx_type>& ra_idx)
+{
+  octave_value retval;
+
+  // Can't rapid return for concatenation with an empty object here as
+  // something like cat(1,[],single([]) must return the correct type.
+
+  int t1 = v1.type_id ();
+  int t2 = v2.type_id ();
+
+  type_info::cat_op_fcn f = ti.lookup_cat_op (t1, t2);
+
+  if (f)
+    retval = f (v1.get_rep (), v2.get_rep (), ra_idx);
+  else
+    {
+      octave_value tv1;
+      octave_base_value::type_conv_info cf1 = v1.numeric_conversion_function ();
+
+      octave_value tv2;
+      octave_base_value::type_conv_info cf2 = v2.numeric_conversion_function ();
+
+      // Try biased (one-sided) conversions first.
+      if (cf2.type_id () >= 0 && ti.lookup_cat_op (t1, cf2.type_id ()))
+        cf1 = nullptr;
+      else if (cf1.type_id () >= 0 && ti.lookup_cat_op (cf1.type_id (), t2))
+        cf2 = nullptr;
+
+      if (cf1)
+        {
+          octave_base_value *tmp = cf1 (v1.get_rep ());
+
+          if (! tmp)
+            err_cat_op_conv ();
+
+          tv1 = octave_value (tmp);
+          t1 = tv1.type_id ();
+        }
+      else
+        tv1 = v1;
+
+      if (cf2)
+        {
+          octave_base_value *tmp = cf2 (v2.get_rep ());
+
+          if (! tmp)
+            err_cat_op_conv ();
+
+          tv2 = octave_value (tmp);
+          t2 = tv2.type_id ();
+        }
+      else
+        tv2 = v2;
+
+      if (! cf1 && ! cf2)
+        err_cat_op (v1.type_name (), v2.type_name ());
+
+      retval = cat_op (ti, tv1, tv2, ra_idx);
+    }
+
+  return retval;
+}
+
+octave_value
+cat_op (const octave_value& v1, const octave_value& v2,
+        const Array<octave_idx_type>& ra_idx)
+{
+  type_info& ti = __get_type_info__ ();
+
+  return cat_op (ti, v1, v2, ra_idx);
+}
+
+// Unless the colon operator is used with a class or classdef object,
+// then all arguments must be the same type or mixed with double
+// values.
+
+static builtin_type_t
+get_colon_op_type (builtin_type_t op1_type, builtin_type_t op2_type)
+{
+  if (op1_type == op2_type)
+    return op1_type;
+
+  if (op1_type == btyp_double)
+    return op2_type;
+
+  if (op2_type == btyp_double)
+    return op1_type;
+
+  return btyp_unknown;
+}
+
+static builtin_type_t
+get_colon_op_type (const octave_value& base, const octave_value& increment,
                    const octave_value& limit)
-  {
-    octave_value retval;
+{
+  builtin_type_t typ
+    = get_colon_op_type (base.builtin_type (), increment.builtin_type ());
 
-    bool dq_str = (base.is_dq_string () || increment.is_dq_string ()
-                   || limit.is_dq_string ());
+  if (typ == btyp_unknown)
+    return typ;
 
-    char type = dq_str ? '"' : '\'';
+  return get_colon_op_type (typ, limit.builtin_type ());
+}
 
-    if (base.isempty () || increment.isempty () || limit.isempty ())
-      retval = octave_value ("", type);
-    else
-      {
-        Matrix mtx_base = base.matrix_value (true);
-        Matrix mtx_increment = increment.matrix_value (true);
-        Matrix mtx_limit = limit.matrix_value (true);
+// This check depends on the type of VAL either being the expected
+// integer type or a double value.
 
-        range<double> tmp (mtx_base(0), mtx_increment(0), mtx_limit(0));
+template <typename T>
+static void
+check_colon_operand (const octave_value& val, const char *op_str)
+{
+  if (! val.is_double_type ())
+    return;
 
-        retval = octave_value (tmp);
-      }
+  double dval = val.double_value ();
+  double intpart;
+  static const double out_of_range_top
+    = static_cast<double> (std::numeric_limits<typename T::val_type>::max ())
+      + 1.;
 
-    return retval.convert_to_str (false, true, type);
-  }
+  if (dval >= out_of_range_top
+      || dval < std::numeric_limits<typename T::val_type>::min ()
+      || std::modf (dval, &intpart) != 0.0)
+    error ("colon operator %s invalid (not an integer or out of range for given integer type)", op_str);
+}
 
-  octave_value
-  colon_op (const octave_value& base, const octave_value& increment_arg,
-            const octave_value& limit, bool is_for_cmd_expr)
-  {
-    if (base.isobject () || increment_arg.isobject () || limit.isobject ())
-      {
-        octave_value_list tmp1;
+// Return the difference between two unsigned integers as an unsigned
+// integer of the same type.
 
-        if (increment_arg.is_defined ())
-          {
-            tmp1(2) = limit;
-            tmp1(1) = increment_arg;
-            tmp1(0) = base;
-          }
-        else
-          {
-            tmp1(1) = limit;
-            tmp1(0) = base;
-          }
+template <typename UT,
+          typename std::enable_if<(std::is_integral<UT>::value
+                                   && std::is_unsigned<UT>::value),
+                                  bool>::type = true>
+UT
+integer_difference (UT a, UT b)
+{
+  return a > b ? a - b : b - a;
+}
 
-        interpreter& interp = __get_interpreter__ ();
+// Return the difference between two signed integers as an unsigned
+// integer corresponding to the signed type.
 
-        symbol_table& symtab = interp.get_symbol_table ();
+template <typename ST,
+          typename UT = typename std::make_unsigned<ST>::type,
+          typename std::enable_if<(std::is_integral<ST>::value
+                                   && std::is_signed<ST>::value),
+                                  bool>::type = true>
+UT
+integer_difference (ST a, ST b)
+{
+  // Map to unsigned.
+  // Idea from https://stackoverflow.com/questions/10589559
 
-        octave_value fcn = symtab.find_function ("colon", tmp1);
+  static const UT offset
+    = UT (0) - static_cast<UT> (std::numeric_limits<ST>::min ());
 
-        if (fcn.is_defined ())
-          {
-            octave_value_list tmp2 = interp.feval (fcn, tmp1, 1);
+  UT au = static_cast<UT> (a) + offset;
+  UT bu = static_cast<UT> (b) + offset;
 
-            return tmp2(0);
-          }
-      }
+  return integer_difference (au, bu);
+}
 
-    octave_value increment
-      = increment_arg.is_defined () ? increment_arg : octave_value (1.0);
+// Number of elements in an integer range taking care to avoid
+// overflow.  Base and limit are of the same type.  If they are
+// unsigned, then increment is also of the same type.  If they are
+// signed, then the type of increment is the unsigned type
+// corresponding to T.  Assumes that the base and limit values are
+// consistent with the sign of the original increment (not an empty
+// range) so we can calculate numel with the absolute value of the
+// increment and the absolute difference between the base and limit
+// values.
 
-    if (base.numel () > 1 || limit.numel () > 1 || increment.numel () > 1)
-      warning_with_id ("Octave:colon-nonscalar-argument",
-                       "colon arguments should be scalars");
+template <typename T,
+          typename UT = typename std::make_unsigned<T>::type,
+          typename std::enable_if<std::is_integral<T>::value,
+                                  bool>::type = true>
+octave_idx_type
+range_numel_aux (T base, UT unsigned_increment, T limit)
+{
+  // Adding one to DIFF/INCREMENT may overflow, so check whether it is
+  // out of range before adding.
 
-    if (base.iscomplex () || limit.iscomplex () || increment.iscomplex ())
-      warning_with_id ("Octave:colon-complex-argument",
-                       "imaginary part of complex colon arguments is ignored");
+  UT nel_m1 = integer_difference (limit, base) / unsigned_increment;
 
-    // FIXME: is there a better way to do this job, maybe using type traits?
+  // FIXME: fix error message.
+  if (nel_m1 > std::numeric_limits<octave_idx_type>::max () - 1)
+    error ("too many elements for range!");
 
-    builtin_type_t type_id = get_colon_op_type (base, increment, limit);
+  return static_cast<octave_idx_type> (nel_m1) + 1;
+}
 
-    // For compatibility with Matlab, don't allow the range used in
-    // a FOR loop expression to be converted to a Matrix.
+// Convert signed range increment to unsigned.
 
-    // For now, these functions create arrays instead of range<T> for
-    // all types except double.
+template <typename ST,
+          typename UT = typename std::make_unsigned<ST>::type,
+          typename std::enable_if<(std::is_integral<ST>::value
+                                   && std::is_signed<ST>::value),
+                                  bool>::type = true>
+UT
+range_increment (ST increment)
+{
+  return (increment < 0
+          ? UT (0) - static_cast<UT> (increment)
+          : static_cast<UT> (increment));
+}
 
-    switch (type_id)
-      {
-      case btyp_double:
-      case btyp_complex:
-        return make_float_range<double> (base, increment, limit, is_for_cmd_expr);
+// "Convert" unsigned range increment to unsigned.  A no-op, but
+// needed to provide a consistent interface for other template
+// functions.
 
-      case btyp_float:
-      case btyp_float_complex:
-        return make_float_range<float> (base, increment, limit, is_for_cmd_expr);
+template <typename T,
+          typename UT = typename std::make_unsigned<T>::type,
+          typename std::enable_if<(std::is_integral<UT>::value
+                                   && std::is_unsigned<UT>::value),
+                                  bool>::type = true>
+UT
+range_increment (UT increment)
+{
+  return increment;
+}
 
-      case btyp_int8:
-        return make_int_range<octave_int8> (base, increment, limit);
+// Convert double range increment to unsigned.  Enable by return type.
 
-      case btyp_int16:
-        return make_int_range<octave_int16> (base, increment, limit);
+template <typename T,
+          typename UT = typename std::make_unsigned<T>::type>
+typename std::enable_if<(std::is_integral<UT>::value
+                         && std::is_unsigned<UT>::value), UT>::type
+range_increment (double increment)
+{
+  double abs_increment = std::abs (increment);
 
-      case btyp_int32:
-        return make_int_range<octave_int32> (base, increment, limit);
+  return static_cast<UT> (abs_increment);
+}
 
-      case btyp_int64:
-        return make_int_range<octave_int64> (base, increment, limit);
+// Number of elements in an integer range base:increment:limit.  Base,
+// increment, and limit are of the same signed type.
 
-      case btyp_uint8:
-        return make_int_range<octave_uint8> (base, increment, limit);
+template <typename ST,
+          typename std::enable_if<(std::is_integral<ST>::value
+                                   && std::is_signed<ST>::value),
+                                  bool>::type = true>
+octave_idx_type
+range_numel (ST base, ST increment, ST limit)
+{
+  typedef typename std::make_unsigned<ST>::type UT;
 
-      case btyp_uint16:
-        return make_int_range<octave_uint16> (base, increment, limit);
+  if (increment == 0
+      || (increment > 0 && base > limit)
+      || (increment < 0 && base < limit))
+    return 0;
 
-      case btyp_uint32:
-        return make_int_range<octave_uint32> (base, increment, limit);
+  UT unsigned_increment = range_increment<ST> (increment);
 
-      case btyp_uint64:
-        return make_int_range<octave_uint64> (base, increment, limit);
+  return range_numel_aux (base, unsigned_increment, limit);
+}
 
-      case btyp_char:
-        return make_char_range (base, increment, limit);
+// Number of elements in an integer range base:increment:limit.  Base,
+// increment, and limit are unsigned and of the same type.
 
-      case btyp_unknown:
-        error ("incompatible types found in range expression");
+template <typename UT,
+          typename std::enable_if<(std::is_integral<UT>::value
+                                   && std::is_unsigned<UT>::value),
+                                  bool>::type = true>
+octave_idx_type
+range_numel (UT base, UT increment, UT limit)
+{
+  // Unsigned, INCREMENT is always >= 0.
+  if (increment == 0 || base > limit)
+    return 0;
 
-      default:
-        error ("invalid types found in range expression");
-      }
+  return range_numel_aux (base, increment, limit);
+}
 
-    return octave_value ();
-  }
+// Number of elements in an integer range base:increment:limit.  Base
+// and limit are of the same type and increment is a double value.
 
-  OCTAVE_NORETURN static void
-  err_unary_op_conv (const std::string& on)
-  {
-    error ("type conversion failed for unary operator '%s'", on.c_str ());
-  }
+template <typename T,
+          typename UT = typename std::make_unsigned<T>::type,
+          typename std::enable_if<std::is_integral<T>::value,
+                                  bool>::type = true>
+octave_idx_type
+range_numel (T base, double increment, T limit)
+{
+  double intpart;
+  if (math::isnan (increment) || std::modf (increment, &intpart) != 0.0)
+    error ("colon operator increment invalid (not an integer)");
 
-  octave_value
-  unary_op (type_info& ti, octave_value::unary_op op,
-            const octave_value& v)
-  {
-    octave_value retval;
+  if (increment == 0
+      || (increment > 0 && base > limit)
+      || (increment < 0 && base < limit))
+    return 0;
 
-    int t = v.type_id ();
+  static const double out_of_range_top
+    = static_cast<double> (std::numeric_limits<UT>::max ()) + 1.;
 
-    if (t == octave_class::static_type_id ()
-        || t == octave_classdef::static_type_id ())
-      {
-        type_info::unary_class_op_fcn f = ti.lookup_unary_class_op (op);
+  double abs_increment = std::abs (increment);
 
-        if (! f)
-          err_unary_op (octave_value::unary_op_as_string (op), v.class_name ());
+  // Technically, this condition should be
+  // `abs_increment > std::numeric_limits<UT>::max ()`.
+  // But intmax('uint64') is not representable exactly as floating point
+  // number.  Instead, it "rounds" up by 1 to 2^64.  To account for
+  // this, use the following expression which works for all unsigned
+  // integer types.
+  if (abs_increment >= out_of_range_top)
+    return 1;
 
-        retval = f (v);
-      }
-    else
-      {
-        // FIXME: we need to handle overloading operators for built-in
-        // classes (double, char, int8, etc.)
+  UT unsigned_increment = range_increment<T> (increment);
 
-        type_info::unary_op_fcn f = ti.lookup_unary_op (op, t);
+  return range_numel_aux (base, unsigned_increment, limit);
+}
 
-        if (f)
-          retval = f (v.get_rep ());
-        else
-          {
-            octave_value tv;
-            octave_base_value::type_conv_fcn cf
-              = v.numeric_conversion_function ();
+// Make a range from integer values.  Increment may be integer or double.
 
-            if (! cf)
-              err_unary_op (octave_value::unary_op_as_string (op),
-                            v.type_name ());
+template <typename T,
+          typename IT,
+          typename std::enable_if<(std::is_integral<T>::value
+                                   && std::is_arithmetic<IT>::value),
+                                  bool>::type = true>
+octave_value
+make_int_range (T base, IT increment, T limit)
+{
+  octave_idx_type nel = range_numel (base, increment, limit);
 
-            octave_base_value *tmp = cf (v.get_rep ());
+  // For now, we create arrays instead of range<T> for all types
+  // except double.
 
-            if (! tmp)
-              err_unary_op_conv (octave_value::unary_op_as_string (op));
+  Array<octave_int<T>> result (dim_vector (1, nel));
 
-            tv = octave_value (tmp);
-            retval = unary_op (op, tv);
-          }
-      }
+  if (nel > 0)
+    {
+      typedef typename std::make_unsigned<T>::type UT;
 
-    return retval;
-  }
+      UT unsigned_increment = range_increment<T> (increment);
 
-  octave_value
-  unary_op (octave_value::unary_op op, const octave_value& v)
-  {
-    type_info& ti = __get_type_info__ ();
+      T val = base;
+      result.xelem (0) = val;
 
-    return unary_op (ti, op, v);
-  }
+      if (limit > base)
+        {
+          for (octave_idx_type i = 1; i < nel; i++)
+            {
+              val += unsigned_increment;
+              result.xelem (i) = val;
+            }
+        }
+      else
+        {
+          for (octave_idx_type i = 1; i < nel; i++)
+            {
+              val -= unsigned_increment;
+              result.xelem (i) = val;
+            }
+        }
+    }
+
+  return octave_value (result);
+}
+
+// Make a range from floating point values.
+
+// FIXME: Try again to define memory efficient range classes for
+// integer and floating point values?  Maybe with the templates
+// defined in this file we could do that in a reasonable way?
+// Regardless of that, it might be good to provide special treatment
+// of colon expressions in FOR loops so that we can eliminate the
+// "is_for_cmd_expr / force_range" flag from the parser and the
+// octave_value constructors for range objects.
+
+// NOTE: We define this function separately for float and double so
+// that we can avoid having to instantiate ov_range<float>.  We DO
+// instantiate range<float> but only so we can take advantage of the
+// range<T> class to generate the corresponding array of float values
+// and not have to duplicate that code here.
+
+template <typename T,
+          typename std::enable_if<std::is_same<T, double>::value,
+                                  bool>::type = true>
+octave_value
+make_float_range (T base, T increment, T limit, bool is_for_cmd_expr)
+{
+  if (math::isnan (base)
+      || math::isnan (increment)
+      || math::isnan (limit))
+    return octave_value (numeric_limits<T>::NaN ());
+
+  if (increment == 0
+      || (increment > 0 && base > limit)
+      || (increment < 0 && base < limit))
+    return octave_value (Array<T> (dim_vector (1, 0)));
+
+  // At this point, we know that the base and limit values are
+  // consistent with the sign of the increment (not an empty range).
+
+  range<T> r (base, increment, limit);
+
+  if (! is_for_cmd_expr && ! r.is_storable ())
+    error ("range with infinite number of elements cannot be stored");
+
+  return octave_value (r, is_for_cmd_expr);
+}
+
+template <typename T,
+          typename std::enable_if<std::is_same<T, float>::value,
+                                  bool>::type = true>
+octave_value
+make_float_range (T base, T increment, T limit, bool is_for_cmd_expr)
+{
+  if (math::isnan (base)
+      || math::isnan (increment)
+      || math::isnan (limit))
+    return octave_value (numeric_limits<T>::NaN ());
+
+  if (increment == 0
+      || (increment > 0 && base > limit)
+      || (increment < 0 && base < limit))
+    return octave_value (Array<T> (dim_vector (1, 0)));
+
+  // At this point, we know that the base and limit values are
+  // consistent with the sign of the increment (not an empty range).
+
+  range<T> r (base, increment, limit);
+
+  if (! is_for_cmd_expr && ! r.is_storable ())
+    error ("range with infinite number of elements cannot be stored");
+
+  return octave_value (r.array_value ());
+}
+
+template <typename T,
+          typename std::enable_if<(std::is_same<T, octave_int8>::value
+                                   || std::is_same<T, octave_uint8>::value
+                                   || std::is_same<T, octave_int16>::value
+                                   || std::is_same<T, octave_uint16>::value
+                                   || std::is_same<T, octave_int32>::value
+                                   || std::is_same<T, octave_uint32>::value
+                                   || std::is_same<T, octave_int64>::value
+                                   || std::is_same<T, octave_uint64>::value),
+                                  bool>::type = true>
+octave_value
+make_int_range (const octave_value& base, const octave_value& increment,
+                const octave_value& limit)
+{
+  if (base.isempty () || increment.isempty () || limit.isempty ())
+    return octave_value (Array<T> (dim_vector (1, 0)));
+
+  check_colon_operand<T> (base, "lower bound");
+  check_colon_operand<T> (limit, "upper bound");
+
+  typename T::val_type base_val = octave_value_extract<T> (base).value ();
+  typename T::val_type limit_val = octave_value_extract<T> (limit).value ();
+
+  if (increment.is_double_type ())
+    {
+      double increment_val = increment.double_value ();
+
+      return make_int_range (base_val, increment_val, limit_val);
+    }
+
+  check_colon_operand<T> (increment, "increment");
+
+  typename T::val_type increment_val
+    = octave_value_extract<T> (increment).value ();
+
+  return make_int_range (base_val, increment_val, limit_val);
+}
+
+template <typename T,
+          typename std::enable_if<std::is_floating_point<T>::value,
+                                  bool>::type = true>
+octave_value
+make_float_range (const octave_value& base, const octave_value& increment,
+                  const octave_value& limit, bool is_for_cmd_expr)
+{
+  if (base.isempty () || increment.isempty () || limit.isempty ())
+    return octave_value (Array<T> (dim_vector (1, 0)));
+
+  T base_val = octave_value_extract<T> (base);
+  T increment_val = octave_value_extract<T> (increment);
+  T limit_val = octave_value_extract<T> (limit);
+
+  return make_float_range (base_val, increment_val, limit_val,
+                           is_for_cmd_expr);
+}
+
+
+octave_value
+make_char_range (const octave_value& base, const octave_value& increment,
+                 const octave_value& limit)
+{
+  octave_value retval;
+
+  bool dq_str = (base.is_dq_string () || increment.is_dq_string ()
+                 || limit.is_dq_string ());
+
+  char type = dq_str ? '"' : '\'';
+
+  if (base.isempty () || increment.isempty () || limit.isempty ())
+    retval = octave_value ("", type);
+  else
+    {
+      Matrix mtx_base = base.matrix_value (true);
+      Matrix mtx_increment = increment.matrix_value (true);
+      Matrix mtx_limit = limit.matrix_value (true);
+
+      range<double> tmp (mtx_base(0), mtx_increment(0), mtx_limit(0));
+
+      retval = octave_value (tmp);
+    }
+
+  return retval.convert_to_str (false, true, type);
+}
+
+octave_value
+colon_op (const octave_value& base, const octave_value& increment_arg,
+          const octave_value& limit, bool is_for_cmd_expr)
+{
+  if (base.isobject () || increment_arg.isobject () || limit.isobject ())
+    {
+      octave_value_list tmp1;
+
+      if (increment_arg.is_defined ())
+        {
+          tmp1(2) = limit;
+          tmp1(1) = increment_arg;
+          tmp1(0) = base;
+        }
+      else
+        {
+          tmp1(1) = limit;
+          tmp1(0) = base;
+        }
+
+      interpreter& interp = __get_interpreter__ ();
+
+      symbol_table& symtab = interp.get_symbol_table ();
+
+      octave_value fcn = symtab.find_function ("colon", tmp1);
+
+      if (fcn.is_defined ())
+        {
+          octave_value_list tmp2 = interp.feval (fcn, tmp1, 1);
+
+          return tmp2(0);
+        }
+    }
+
+  octave_value increment
+    = increment_arg.is_defined () ? increment_arg : octave_value (1.0);
+
+  if (base.numel () > 1 || limit.numel () > 1 || increment.numel () > 1)
+    warning_with_id ("Octave:colon-nonscalar-argument",
+                     "colon arguments should be scalars");
+
+  if (base.iscomplex () || limit.iscomplex () || increment.iscomplex ())
+    warning_with_id ("Octave:colon-complex-argument",
+                     "imaginary part of complex colon arguments is ignored");
+
+  // FIXME: is there a better way to do this job, maybe using type traits?
+
+  builtin_type_t type_id = get_colon_op_type (base, increment, limit);
+
+  // For compatibility with Matlab, don't allow the range used in
+  // a FOR loop expression to be converted to a Matrix.
+
+  // For now, these functions create arrays instead of range<T> for
+  // all types except double.
+
+  switch (type_id)
+    {
+    case btyp_double:
+    case btyp_complex:
+      return make_float_range<double> (base, increment, limit, is_for_cmd_expr);
+
+    case btyp_float:
+    case btyp_float_complex:
+      return make_float_range<float> (base, increment, limit, is_for_cmd_expr);
+
+    case btyp_int8:
+      return make_int_range<octave_int8> (base, increment, limit);
+
+    case btyp_int16:
+      return make_int_range<octave_int16> (base, increment, limit);
+
+    case btyp_int32:
+      return make_int_range<octave_int32> (base, increment, limit);
+
+    case btyp_int64:
+      return make_int_range<octave_int64> (base, increment, limit);
+
+    case btyp_uint8:
+      return make_int_range<octave_uint8> (base, increment, limit);
+
+    case btyp_uint16:
+      return make_int_range<octave_uint16> (base, increment, limit);
+
+    case btyp_uint32:
+      return make_int_range<octave_uint32> (base, increment, limit);
+
+    case btyp_uint64:
+      return make_int_range<octave_uint64> (base, increment, limit);
+
+    case btyp_char:
+      return make_char_range (base, increment, limit);
+
+    case btyp_unknown:
+      error ("incompatible types found in range expression");
+
+    default:
+      error ("invalid types found in range expression");
+    }
+
+  return octave_value ();
+}
+
+OCTAVE_NORETURN static void
+err_unary_op_conv (const std::string& on)
+{
+  error ("type conversion failed for unary operator '%s'", on.c_str ());
+}
+
+octave_value
+unary_op (type_info& ti, octave_value::unary_op op,
+          const octave_value& v)
+{
+  octave_value retval;
+
+  int t = v.type_id ();
+
+  if (t == octave_class::static_type_id ()
+      || t == octave_classdef::static_type_id ())
+    {
+      type_info::unary_class_op_fcn f = ti.lookup_unary_class_op (op);
+
+      if (! f)
+        err_unary_op (octave_value::unary_op_as_string (op), v.class_name ());
+
+      retval = f (v);
+    }
+  else
+    {
+      // FIXME: we need to handle overloading operators for built-in
+      // classes (double, char, int8, etc.)
+
+      type_info::unary_op_fcn f = ti.lookup_unary_op (op, t);
+
+      if (f)
+        retval = f (v.get_rep ());
+      else
+        {
+          octave_value tv;
+          octave_base_value::type_conv_fcn cf
+            = v.numeric_conversion_function ();
+
+          if (! cf)
+            err_unary_op (octave_value::unary_op_as_string (op),
+                          v.type_name ());
+
+          octave_base_value *tmp = cf (v.get_rep ());
+
+          if (! tmp)
+            err_unary_op_conv (octave_value::unary_op_as_string (op));
+
+          tv = octave_value (tmp);
+          retval = unary_op (op, tv);
+        }
+    }
+
+  return retval;
+}
+
+octave_value
+unary_op (octave_value::unary_op op, const octave_value& v)
+{
+  type_info& ti = __get_type_info__ ();
+
+  return unary_op (ti, op, v);
+}
 
 OCTAVE_END_NAMESPACE(octave)
 

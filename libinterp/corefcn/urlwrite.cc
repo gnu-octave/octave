@@ -252,17 +252,16 @@ s = urlread ("http://www.google.com/search",
 
   url_xfer.http_action (param, method);
 
-  octave_value_list retval;
-
-  if (nargout > 0)
-    {
-      // Return empty string if no error occurred.
-      retval = ovl (buf.str (), url_xfer.good (),
-                    url_xfer.good () ? "" : url_xfer.lasterror ());
-    }
-
   if (nargout < 2 && ! url_xfer.good ())
     error ("urlread: %s", url_xfer.lasterror ().c_str ());
+
+  octave_value_list retval (std::max (1, std::min (nargout, 3)));
+
+  retval(0) = buf.str ();
+  if (nargout > 1)
+    retval(1) = url_xfer.good ();
+  if (nargout > 2)
+    retval(2) = url_xfer.good () ? "" : url_xfer.lasterror ();
 
   return retval;
 }

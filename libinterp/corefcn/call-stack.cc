@@ -984,7 +984,7 @@ octave_value call_stack::do_who (int argc, const string_vector& argv,
 
       interpreter& interp = m_evaluator.get_interpreter ();
 
-      Fload (interp, ovl (octave_value (file_name)));
+      Fload (interp, ovl (file_name));
 
       std::string newmsg = "Variables in the file " + file_name + ":\n";
 

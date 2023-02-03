@@ -201,7 +201,7 @@ Undocumented internal function.
   // matrix is used to build the output matrix due to that fact.
   if (! args(0).iscomplex ())
     {
-      SparseMatrix sm = Ftril (args(0))(0).sparse_matrix_value ();
+      SparseMatrix sm = Ftril (ovl (args(0)))(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
               ichol_checkpivot_real> (sm, michol);
       return ovl (sm);
@@ -209,7 +209,7 @@ Undocumented internal function.
   else
     {
       SparseComplexMatrix sm
-        = Ftril (args(0))(0).sparse_complex_matrix_value ();
+        = Ftril (ovl (args(0)))(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
               ichol_checkpivot_complex> (sm, michol);
       return ovl (sm);
@@ -434,7 +434,7 @@ Undocumented internal function.
   if (! args(0).iscomplex ())
     {
       SparseMatrix L;
-      SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
+      SparseMatrix sm_l = Ftril (ovl (args(0)))(0).sparse_matrix_value ();
       RowVector sm_col_norms = xcolnorms (sm_l, 1);
       ichol_t <SparseMatrix,
               double, ichol_mult_real, ichol_checkpivot_real>
@@ -446,7 +446,7 @@ Undocumented internal function.
     {
       SparseComplexMatrix L;
       SparseComplexMatrix sm_l
-        = Ftril (args(0))(0).sparse_complex_matrix_value ();
+        = Ftril (ovl (args(0)))(0).sparse_complex_matrix_value ();
       Array <Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
               Complex, ichol_mult_complex, ichol_checkpivot_complex>

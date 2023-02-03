@@ -2203,10 +2203,10 @@ octave_java::subsref (const std::string& type,
     case '.':
       if (type.length () > 1 && type[1] == '(')
         {
-          octave_value_list ovl;
+          octave_value_list ovl (2);
           count++;
-          ovl(1) = octave_value (this);
           ovl(0) = (idx.front ())(0);
+          ovl(1) = octave_value (this);
           auto it = idx.begin ();
           ovl.append (*++it);
           retval = octave::FjavaMethod (ovl, 1);
@@ -2214,7 +2214,7 @@ octave_java::subsref (const std::string& type,
         }
       else
         {
-          octave_value_list ovl;
+          octave_value_list ovl (2);
           count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
@@ -2269,7 +2269,7 @@ octave_java::subsasgn (const std::string& type,
       if (type.length () == 1)
         {
           // field assignment
-          octave_value_list ovl;
+          octave_value_list ovl (3);
           count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);

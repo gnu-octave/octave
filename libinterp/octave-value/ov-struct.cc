@@ -2181,7 +2181,7 @@ the named fields.
 
   octave_map m = args(0).xmap_value ("rmfield: first argument must be a struct");
 
-  octave_value_list fval = Fcellstr (args(1), 1);
+  octave_value_list fval = Fcellstr (ovl (args(1)), 1);
 
   Cell fcell = fval(0).cell_value ();
 

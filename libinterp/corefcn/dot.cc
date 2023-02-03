@@ -193,9 +193,9 @@ due to the limited range of integer objects.
       // of calculating possibly garbage results.
       // Think of the dot product of two int8 vectors where the multiplications
       // exceed intmax.
-      octave_value_list tmp;
-      tmp(1) = dim + 1;
+      octave_value_list tmp (2);
       tmp(0) = binary_op (octave_value::op_el_mul, argx, argy);
+      tmp(1) = dim + 1;
 
       tmp = Fsum (tmp, 1);
       if (! tmp.empty ())

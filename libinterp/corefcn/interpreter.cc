@@ -341,14 +341,14 @@ sys::time Vlast_chdir_time = 0.0;
 
 static void initialize_version_info ()
 {
-  octave_value_list args;
+  octave_value_list args (4);
 
-  args(3) = OCTAVE_RELEASE_DATE;
-  args(2) = config::release ();
-  args(1) = OCTAVE_VERSION;
   args(0) = "GNU Octave";
+  args(1) = OCTAVE_VERSION;
+  args(2) = config::release ();
+  args(3) = OCTAVE_RELEASE_DATE;
 
-  F__version_info__ (args, 0);
+  F__version_info__ (args);
 }
 
 static void xerbla_abort ()
@@ -575,23 +575,23 @@ interpreter::interpreter (application *app_context)
 
       std::string docstrings_file = options.docstrings_file ();
       if (! docstrings_file.empty ())
-        Fbuilt_in_docstrings_file (*this, octave_value (docstrings_file));
+        Fbuilt_in_docstrings_file (*this, ovl (docstrings_file));
 
       std::string doc_cache_file = options.doc_cache_file ();
       if (! doc_cache_file.empty ())
-        Fdoc_cache_file (*this, octave_value (doc_cache_file));
+        Fdoc_cache_file (*this, ovl (doc_cache_file));
 
       std::string info_file = options.info_file ();
       if (! info_file.empty ())
-        Finfo_file (*this, octave_value (info_file));
+        Finfo_file (*this, ovl (info_file));
 
       std::string info_program = options.info_program ();
       if (! info_program.empty ())
-        Finfo_program (*this, octave_value (info_program));
+        Finfo_program (*this, ovl (info_program));
 
       std::string texi_macros_file = options.texi_macros_file ();
       if (! texi_macros_file.empty ())
-        Ftexi_macros_file (*this, octave_value (texi_macros_file));
+        Ftexi_macros_file (*this, ovl (texi_macros_file));
     }
 
   // FIXME: we defer creation of the gh_manager object because it
@@ -2076,14 +2076,14 @@ void interpreter::maximum_braindamage ()
 
   m_error_system.beep_on_error (true);
 
-  Fconfirm_recursive_rmdir (octave_value (false));
-  Foptimize_diagonal_matrix (octave_value (false));
-  Foptimize_permutation_matrix (octave_value (false));
-  Foptimize_range (octave_value (false));
-  Ffixed_point_format (octave_value (true));
-  Fprint_empty_dimensions (octave_value (false));
-  Fprint_struct_array_contents (octave_value (true));
-  Fstruct_levels_to_print (octave_value (0));
+  Fconfirm_recursive_rmdir (ovl (false));
+  Foptimize_diagonal_matrix (ovl (false));
+  Foptimize_permutation_matrix (ovl (false));
+  Foptimize_range (ovl (false));
+  Ffixed_point_format (ovl (true));
+  Fprint_empty_dimensions (ovl (false));
+  Fprint_struct_array_contents (ovl (true));
+  Fstruct_levels_to_print (ovl (0));
 
   m_error_system.disable_warning ("Octave:abbreviated-property-match");
   m_error_system.disable_warning ("Octave:colon-nonscalar-argument");

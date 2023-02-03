@@ -1802,10 +1802,10 @@ expansion use a second backslash before the sequence (e.g.,
 octave_value_list
 set_warning_state (const std::string& id, const std::string& state)
 {
-  octave_value_list args;
+  octave_value_list args (2);
 
-  args(1) = id;
   args(0) = state;
+  args(1) = id;
 
   interpreter& interp = __get_interpreter__ ();
 

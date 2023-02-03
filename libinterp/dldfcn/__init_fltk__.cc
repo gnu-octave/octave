@@ -2474,7 +2474,7 @@ public:
 
         octave_value_list args = input_event_hook_fcn_id;
         args.append (false);
-        Fremove_input_event_hook (m_interpreter, args, 0);
+        Fremove_input_event_hook (m_interpreter, args);
         input_event_hook_fcn_id = octave_value_list ();
 
         figure_manager::close_all ();
@@ -2542,7 +2542,8 @@ Undocumented internal function.
       octave_value fcn (new octave_builtin (F__fltk_check__));
       octave_value fcn_handle (new octave_fcn_handle (fcn));
 
-      octave_value_list id = Fadd_input_event_hook (interp, fcn_handle, 1);
+      octave_value_list id = Fadd_input_event_hook (interp,
+                                                    ovl (fcn_handle), 1);
 
       fltk->set_input_event_hook_id (id);
     }

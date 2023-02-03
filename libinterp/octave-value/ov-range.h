@@ -486,7 +486,7 @@ protected:
   octave::idx_vector set_idx_cache (const octave::idx_vector& idx) const
   {
     delete m_idx_cache;
-    m_idx_cache = (idx ? new octave::idx_vector (idx) : nullptr);
+    m_idx_cache = new octave::idx_vector (idx);
     return idx;
   }
 

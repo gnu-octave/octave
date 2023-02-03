@@ -552,6 +552,7 @@ public:
 
   // FIXME: idx_vector objects are either created successfully or an
   // error is thrown, so this method no longer makes sense.
+  OCTAVE_DEPRECATED (9, "idx_vector::bool () is obsolete and always returns true")
   operator bool () const { return true; }
 
   bool is_colon () const

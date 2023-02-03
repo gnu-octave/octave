@@ -38,6 +38,15 @@ major release after 9):
         Object           | Property    | Replacement
         -----------------|-------------|------------
 
+- Core
+
+    * The `idx_vector::bool()` function is obsolete and always returns true.
+Any uses can simply be removed from existing code with no loss of function.
+
+    * The `all_ok(const Array<octave::idx_vector>&)` function in `Array-util.h`
+is obsolete and always returns true.  Any uses can simply be removed from
+existing code with no loss of function.
+
 The following features were deprecated in Octave 7 and have been removed
 from Octave 9.
 

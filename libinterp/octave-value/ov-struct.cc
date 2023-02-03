@@ -465,7 +465,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 m_map.assign (idxf, key, tmp_cell);
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
             else
@@ -478,7 +478,7 @@ octave_struct::subsasgn (const std::string& type,
                     m_map.assign (idxf,
                                   key, Cell (t_rhs.storable_value ()));
 
-                    count++;
+                    m_count++;
                     retval = octave_value (this);
                   }
                 else
@@ -493,7 +493,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 m_map.assign (idx.front (), rhs_map);
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
             else
@@ -503,7 +503,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 m_map.delete_elements (idx.front ());
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
           }
@@ -540,7 +540,7 @@ octave_struct::subsasgn (const std::string& type,
             m_map.setfield (key, tmp_cell);
           }
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;
@@ -1271,7 +1271,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       m_map.setfield (key, t_rhs.storable_value ());
 
-      count++;
+      m_count++;
       retval = this;
     }
   else

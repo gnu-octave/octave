@@ -207,16 +207,16 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 octave_base_value *
 octave_class::unique_clone ()
 {
-  if (count == m_obsolete_copies)
+  if (m_count == m_obsolete_copies)
     {
       // All remaining copies are obsolete.  We don't actually need to clone.
-      count++;
+      m_count++;
       return this;
     }
   else
     {
       // In theory, this shouldn't be happening, but it's here just in case.
-      if (count < m_obsolete_copies)
+      if (m_count < m_obsolete_copies)
         m_obsolete_copies = 0;
 
       return clone ();
@@ -319,7 +319,7 @@ octave_class::size ()
 
   if (meth.is_defined ())
     {
-      count++;
+      m_count++;
       octave_value_list args (1, octave_value (this));
 
       octave_value_list lv = interp.feval (meth.function_value (), args, 1);
@@ -363,7 +363,7 @@ octave_class::xnumel (const octave_value_list& idx)
     {
       octave_value_list args (idx.length () + 1, octave_value ());
 
-      count++;
+      m_count++;
       args(0) = octave_value (this);
 
       for (octave_idx_type i = 0; i < idx.length (); i++)
@@ -462,7 +462,7 @@ octave_class::subsref (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsref");
 
-          count++;
+          m_count++;
           args(0) = octave_value (this);
 
           // FIXME: for Matlab compatibility, let us attempt to set up a proper
@@ -526,7 +526,7 @@ octave_class::subsasgn (const std::string& type,
                         const std::list<octave_value_list>& idx,
                         const octave_value& rhs)
 {
-  count++;
+  m_count++;
   return subsasgn_common (octave_value (this), type, idx, rhs);
 }
 
@@ -629,7 +629,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
       obvp->subsasgn (type, idx, rhs);
 
-      count++;
+      m_count++;
       retval = octave_value (this);
 
       return retval;
@@ -755,7 +755,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
             m_map.assign (idx.front (), key, t_rhs);
 
-            count++;
+            m_count++;
             retval = octave_value (this);
           }
         else
@@ -766,7 +766,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 m_map.assign (idx.front (), rhs_map);
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
             else
@@ -776,7 +776,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 m_map.delete_elements (idx.front ());
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
           }
@@ -811,7 +811,7 @@ octave_class::subsasgn_common (const octave_value& obj,
             m_map.setfield (key, tmp_cell);
           }
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;

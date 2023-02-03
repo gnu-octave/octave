@@ -364,7 +364,7 @@ octave_cell::subsasgn (const std::string& type,
         else
           octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;
@@ -396,7 +396,7 @@ octave_cell::subsasgn (const std::string& type,
         else
           err_nonbraced_cs_list_assignment ();
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;

@@ -88,7 +88,7 @@ octave_classdef::subsref (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsref");
 
-          count++;
+          m_count++;
           args(0) = octave_value (this);
 
           // Attempt to set up a proper value for nargout at least in the
@@ -152,7 +152,7 @@ octave_classdef::subsref (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsref");
 
-          count++;
+          m_count++;
           args(0) = octave_value (this);
 
           retval = meth.execute (args, 1, true, "subsref");
@@ -189,7 +189,7 @@ octave_classdef::subsasgn (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsasgn");
 
-          count++;
+          m_count++;
           args(0) = octave_value (this);
           args(2) = rhs;
 
@@ -238,7 +238,7 @@ octave_classdef::size ()
 
       if (meth.ok ())
         {
-          count++;
+          m_count++;
           octave_value_list args (1, octave_value (this));
 
           octave_value_list lv = meth.execute (args, 1, true, "size");
@@ -268,7 +268,7 @@ octave_classdef::xnumel (const octave_value_list& idx)
         {
           octave_value_list args (idx.length () + 1, octave_value ());
 
-          count++;
+          m_count++;
           args(0) = octave_value (this);
 
           for (octave_idx_type i = 0; i < idx.length (); i++)

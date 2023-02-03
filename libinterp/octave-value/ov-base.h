@@ -262,9 +262,9 @@ public:
 
   friend class octave_value;
 
-  octave_base_value () : count (1) { }
+  octave_base_value () : m_count (1) { }
 
-  octave_base_value (const octave_base_value&) : count (1) { }
+  octave_base_value (const octave_base_value&) : m_count (1) { }
 
   virtual ~octave_base_value () = default;
 
@@ -913,7 +913,7 @@ protected:
   // NOTE: the declaration is octave_idx_type because with 64-bit indexing,
   // it is well possible to have more than MAX_INT copies of a single value
   // (think of an empty cell array with >2G elements).
-  octave::refcount<octave_idx_type> count;
+  octave::refcount<octave_idx_type> m_count;
 
   OCTINTERP_API static const char * get_umap_name (unary_mapper_t);
 

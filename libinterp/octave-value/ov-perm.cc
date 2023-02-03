@@ -118,7 +118,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
           else
             {
               retval = this;
-              this->count++;
+              this->m_count++;
             }
         }
     }

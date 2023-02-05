@@ -2061,6 +2061,8 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
       idxtot += nidx[i];
     }
 
+  if (nd == 1)
+    rdv(1) = 1;
   retval.clear (rdv);
 
   OCTAVE_LOCAL_BUFFER (idx_vector, xidx, idxtot);
@@ -2161,7 +2163,7 @@ DEFUN (mat2cell, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{dim1}, @var{dim2}, @dots{}, @var{dimi}, @dots{}, @var{dimn})
 @deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{rowdim})
-Convert the matrix @var{A} to a cell array.
+Convert the matrix @var{A} to a cell array @var{C}.
 
 Each dimension argument (@var{dim1}, @var{dim2}, etc.@:) is a vector of
 integers which specifies how to divide that dimension's elements amongst the
@@ -2332,6 +2334,15 @@ mat2cell (x, [3,1])
 %! c = mat2cell (x, 1, [0,4,2,0,4,0]);
 %! empty1by0str = resize ("", 1, 0);
 %! assert (c, {empty1by0str,"abcd","ef",empty1by0str,"ghij",empty1by0str});
+
+## Omitted input for trailing dimensions means not splitting on them.
+%!test <*63682>
+%! x = reshape (1:16, 4, 2, 2);
+%! c1 = mat2cell (x, [2, 2], 2, 2);
+%! c2 = mat2cell (x, [2, 2]);
+%! assert (c1, c2);
+%! assert (c1, {cat(3, [1,5;2,6], [9,13;10,14]); ...
+%!              cat(3, [3,7;4,8], [11,15;12,16])});
 */
 
 // FIXME: it would be nice to allow ranges being handled without a conversion.

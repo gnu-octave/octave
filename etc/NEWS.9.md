@@ -47,6 +47,8 @@ Any uses can simply be removed from existing code with no loss of function.
 is obsolete and always returns true.  Any uses can simply be removed from
 existing code with no loss of function.
 
+    * The member variable `octave_base_value::count` is deprecated and will be removed from Octave 11.  Replace all instances with the new name `m_count`.
+
 The following features were deprecated in Octave 7 and have been removed
 from Octave 9.
 

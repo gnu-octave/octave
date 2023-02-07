@@ -262,9 +262,21 @@ public:
 
   friend class octave_value;
 
-  octave_base_value () : m_count (1) { }
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+   // Disable this warning for the use of the "count" member variable in
+   // the default constructor.  Push the current state so we can restore
+   // the warning state.
+#  pragma GCC diagnostic push
+#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
-  octave_base_value (const octave_base_value&) : m_count (1) { }
+  octave_base_value () : m_count (1), count (m_count) { }
+
+#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
+#  pragma GCC diagnostic pop
+#endif
+
+  octave_base_value (const octave_base_value&) : octave_base_value () { }
 
   virtual ~octave_base_value () = default;
 
@@ -914,6 +926,11 @@ protected:
   // it is well possible to have more than MAX_INT copies of a single value
   // (think of an empty cell array with >2G elements).
   octave::refcount<octave_idx_type> m_count;
+
+  // FIXME: Create an alias "count" to the real member variable m_count.
+  // This name is deprecated in Octave 9 and will be removed in Octave 11.
+  OCTAVE_DEPRECATED (9, "use octave_base_value::m_count instead")
+  octave::refcount<octave_idx_type>& count;
 
   OCTINTERP_API static const char * get_umap_name (unary_mapper_t);
 

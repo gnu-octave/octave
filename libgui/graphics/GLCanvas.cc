@@ -180,10 +180,8 @@ GLWidget::selectFromAxes (const graphics_object& ax, const QPoint& pt)
 
       s.set_viewport (width (), height ());
 
-      graphics_object go = s.select (ax, pt.x (), height () - pt.y (),
-                                     octave::select_ignore_hittest);
-
-      doneCurrent ();
+      return s.select (ax, pt.x (), height () - pt.y (),
+                       octave::select_ignore_hittest);
     }
 
   return graphics_object ();

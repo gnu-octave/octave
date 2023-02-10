@@ -13,6 +13,10 @@ respective directory is taken into account for the tests.
 
 ### Graphics backend
 
+* the `set` function now accepts any combination of name/value pairs,
+cell array of names / cell array of values, or property structures.
+This change is Matlab-compatible.
+
 ### Matlab compatibility
 
 ### Alphabetical list of new functions added in Octave 9

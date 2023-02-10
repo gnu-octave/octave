@@ -12142,6 +12142,8 @@ set (h, props);
 @end example
 @end itemize
 
+The three syntaxes for setting properties may appear in any combination.
+
 @code{set} is also used to query the list of values a named property will
 take.  @code{@var{clist} = set (@var{h}, "property")} will return the list
 of possible values for @qcode{"property"} in the cell list @var{clist}.
@@ -12170,58 +12172,67 @@ being @qcode{"portrait"}.
 @seealso{get}
 @end deftypefn */)
 {
-  gh_manager& gh_mgr = interp.get_gh_manager ();
-
-  octave::autolock guard (gh_mgr.graphics_lock ());
-
   int nargin = args.length ();
 
   if (nargin == 0)
     print_usage ();
 
-  octave_value retval;
-
   // get vector of graphics handles
   ColumnVector hcv = args(0).xvector_value ("set: H must be a graphics handle");
 
-  bool request_drawnow = false;
+  gh_manager& gh_mgr = interp.get_gh_manager ();
 
-  // loop over graphics objects
-  for (octave_idx_type n = 0; n < hcv.numel (); n++)
+  octave::autolock guard (gh_mgr.graphics_lock ());
+
+  octave_value retval;
+
+  // Process requests for default value(s)
+  if (nargin == 1)
     {
-      graphics_object go = gh_mgr.get_object (hcv(n));
-
-      if (! go)
-        error ("set: invalid handle (= %g)", hcv(n));
-
-      if (nargin == 3 && args(1).iscellstr () && args(2).iscell ())
+      // Loop over graphics objects
+      for (octave_idx_type n = 0; n < hcv.numel (); n++)
         {
-          if (args(2).cell_value ().rows () == 1)
-            go.set (args(1).cellstr_value (), args(2).cell_value (), 0);
-          else if (hcv.numel () == args(2).cell_value ().rows ())
-            go.set (args(1).cellstr_value (), args(2).cell_value (), n);
+          graphics_object go = gh_mgr.get_object (hcv(n));
+
+          if (! go)
+            error ("set: invalid handle (= %g)", hcv(n));
+
+          if (nargout > 0)
+            retval = go.values_as_struct ();
           else
-            error ("set: number of graphics handles must match number of "
-                   "value rows (%" OCTAVE_IDX_TYPE_FORMAT " != "
-                   "%" OCTAVE_IDX_TYPE_FORMAT ")",
-                   hcv.numel (), args(2).cell_value ().rows ());
+            {
+              std::string s = go.values_as_string ();
+
+              octave_stdout << s;
+            }
         }
-      else if (nargin == 2 && args(1).isstruct ())
-        go.set (args(1).map_value ());
-      else if (nargin == 2 && args(1).is_string ())
+
+      return retval;
+    }
+  else if (nargin == 2 && args(1).is_string ())
+    {
+      std::string property = args(1).string_value ();
+      std::transform (property.begin (), property.end (),
+                      property.begin (), tolower);
+
+      // Loop over graphics objects
+      for (octave_idx_type n = 0; n < hcv.numel (); n++)
         {
-          std::string property = args(1).string_value ();
-          std::transform (property.begin (), property.end (),
-                          property.begin (), tolower);
+          graphics_object go = gh_mgr.get_object (hcv(n));
+
+          if (! go)
+            error ("set: invalid handle (= %g)", hcv(n));
 
           octave_map pmap = go.values_as_struct ();
 
           if (go.has_readonly_property (property))
-            if (nargout != 0)
-              retval = Matrix ();
-            else
-              octave_stdout << "set: " << property
-                            <<" is read-only" << std::endl;
+            {
+              if (nargout > 0)
+                retval = Matrix ();
+              else
+                octave_stdout << "set: " << property << " is read-only"
+                              << std::endl;
+            }
           else if (pmap.isfield (property))
             {
               if (nargout != 0)
@@ -12236,20 +12247,48 @@ being @qcode{"portrait"}.
           else
             error (R"(set: unknown property "%s")", property.c_str ());
         }
-      else if (nargin == 1)
-        {
-          if (nargout != 0)
-            retval = go.values_as_struct ();
-          else
-            {
-              std::string s = go.values_as_string ();
 
-              octave_stdout << s;
-            }
-        }
-      else
+      return retval;
+    }
+
+  bool request_drawnow = false;
+
+  // Loop over graphics objects
+  for (octave_idx_type n = 0; n < hcv.numel (); n++)
+    {
+      graphics_object go = gh_mgr.get_object (hcv(n));
+
+      if (! go)
+        error ("set: invalid handle (= %g)", hcv(n));
+
+      // Loop over input arguments
+      for (octave_idx_type i = 1; i < args.length (); )
         {
-          go.set (args.splice (0, 1));
+          if (i < nargin && args(i).iscellstr () && args(i+1).iscell ())
+            {
+              if (args(i+1).cell_value ().rows () == 1)
+                go.set (args(i).cellstr_value (), args(i+1).cell_value (), 0);
+              else if (hcv.numel () == args(i+1).cell_value ().rows ())
+                go.set (args(i).cellstr_value (), args(i+1).cell_value (), n);
+              else
+                error ("set: number of graphics handles must match number of "
+                       "value rows (%" OCTAVE_IDX_TYPE_FORMAT " != "
+                       "%" OCTAVE_IDX_TYPE_FORMAT ")",
+                       hcv.numel (), args(i+1).cell_value ().rows ());
+              i += 2;
+            }
+          else if (args(i).isstruct ())
+          {
+            go.set (args(i).map_value ());
+            i += 1;
+          }
+          else if (i < nargin)
+          {
+            go.set (args.slice (i, 2));
+            i += 2;
+          }
+          else
+            error ("set: invalid syntax at input #%" OCTAVE_IDX_TYPE_FORMAT, i);
         }
 
       request_drawnow = true;

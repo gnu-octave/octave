@@ -12156,7 +12156,10 @@ the object @var{h} and the fields are the list of possible values for each
 property.  If no output variable is used then the list is formatted and
 printed to the screen.
 
-For example,
+When querying properties only a single graphics handle @var{h} for a single
+graphics object is permitted.
+
+Example Query
 
 @example
 @group
@@ -12189,64 +12192,61 @@ being @qcode{"portrait"}.
   // Process requests for default value(s)
   if (nargin == 1)
     {
-      // Loop over graphics objects
-      for (octave_idx_type n = 0; n < hcv.numel (); n++)
+      if (hcv.numel () > 1)
+        error ("set: H must be a single graphics handle when querying properties");
+
+      graphics_object go = gh_mgr.get_object (hcv(0));
+      if (! go)
+        error ("set: invalid handle (= %g)", hcv(0));
+
+      if (nargout > 0)
+        retval = go.values_as_struct ();
+      else
         {
-          graphics_object go = gh_mgr.get_object (hcv(n));
+          std::string s = go.values_as_string ();
 
-          if (! go)
-            error ("set: invalid handle (= %g)", hcv(n));
-
-          if (nargout > 0)
-            retval = go.values_as_struct ();
-          else
-            {
-              std::string s = go.values_as_string ();
-
-              octave_stdout << s;
-            }
+          octave_stdout << s;
         }
 
       return retval;
     }
   else if (nargin == 2 && args(1).is_string ())
     {
+      if (hcv.numel () > 1)
+        error ("set: H must be a single graphics handle when querying properties");
+
       std::string property = args(1).string_value ();
       std::transform (property.begin (), property.end (),
                       property.begin (), tolower);
 
-      // Loop over graphics objects
-      for (octave_idx_type n = 0; n < hcv.numel (); n++)
+      graphics_object go = gh_mgr.get_object (hcv(0));
+
+      if (! go)
+        error ("set: invalid handle (= %g)", hcv(0));
+
+      octave_map pmap = go.values_as_struct ();
+
+      if (go.has_readonly_property (property))
         {
-          graphics_object go = gh_mgr.get_object (hcv(n));
-
-          if (! go)
-            error ("set: invalid handle (= %g)", hcv(n));
-
-          octave_map pmap = go.values_as_struct ();
-
-          if (go.has_readonly_property (property))
-            {
-              if (nargout > 0)
-                retval = Matrix ();
-              else
-                octave_stdout << "set: " << property << " is read-only"
-                              << std::endl;
-            }
-          else if (pmap.isfield (property))
-            {
-              if (nargout != 0)
-                retval = pmap.getfield (property)(0);
-              else
-                {
-                  std::string s = go.value_as_string (property);
-
-                  octave_stdout << s;
-                }
-            }
+          if (nargout > 0)
+            retval = Matrix ();
           else
-            error (R"(set: unknown property "%s")", property.c_str ());
+            octave_stdout << "set: " << property << " is read-only"
+                          << std::endl;
         }
+      else if (pmap.isfield (property))
+        {
+          if (nargout != 0)
+            retval = pmap.getfield (property)(0);
+          else
+            {
+              std::string s = go.value_as_string (property);
+
+              octave_stdout << s;
+            }
+        }
+      else
+        error (R"(set: unknown property "%s")", property.c_str ());
 
       return retval;
     }

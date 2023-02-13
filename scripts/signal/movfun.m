@@ -296,7 +296,23 @@ function y = movfun_oncol (fcn, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, win, odim
   y = NA (N, odim);
 
   ## Process center part
-  y(C,:) = fcn (x(slcidx));
+  try
+    y(C,:) = fcn (x(slcidx));
+  catch err
+    ## Operation failed, likely because of out-of-memory error for "x(slcidx)".
+    if (! strcmp (err.identifier, "Octave:bad-alloc"))
+      rethrow (err);
+    endif
+
+    ## Try divide and conquer approach with smaller slices of data.
+    ## For loops are slow, so don't try too hard with this approach.
+    Nslices = 8;  # configurable
+    idx1 = fix (linspace (1, numel (C), Nslices));
+    idx2 = fix (linspace (1, columns (slcidx), Nslices));
+    for i = 1 : Nslices-1
+      y(C(idx1(i):idx1(i+1)),:) = fcn (x(slcidx(:, idx2(i):idx2(i+1))));
+    endfor
+  end_try_catch
 
   ## Process boundaries
   if (! isempty (Cpre))

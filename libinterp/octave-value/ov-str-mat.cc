@@ -486,7 +486,7 @@ octave_char_matrix_str::save_binary (std::ostream& os,
     }
 
   charNDArray m = char_array_value ();
-  os.write (m.fortran_vec (), dv.numel ());
+  os.write (m.data (), dv.numel ());
   return true;
 }
 

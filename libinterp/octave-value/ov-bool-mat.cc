@@ -362,14 +362,9 @@ octave_bool_matrix::save_binary (std::ostream& os, bool /* save_as_floats */)
     }
 
   boolNDArray m = bool_array_value ();
-  bool *mtmp = m.fortran_vec ();
+  const bool *mtmp = m.data ();
   octave_idx_type nel = m.numel ();
-  OCTAVE_LOCAL_BUFFER (char, htmp, nel);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    htmp[i] = (mtmp[i] ? 1 : 0);
-
-  os.write (htmp, nel);
+  os.write (reinterpret_cast<const char*> (mtmp), nel);
 
   return true;
 }

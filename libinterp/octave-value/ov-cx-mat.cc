@@ -613,7 +613,7 @@ octave_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   if (retval)
     {
-      Complex *mtmp = m.fortran_vec ();
+      const Complex *mtmp = m.data ();
       if (H5Dwrite (data_hid, complex_type_hid, octave_H5S_ALL, octave_H5S_ALL,
                     octave_H5P_DEFAULT, mtmp)
           < 0)

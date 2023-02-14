@@ -328,7 +328,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
       for (int i=0; i < dv.ndims (); i++)
         os << ' ' << dv(i);
       os << "\n";
-      os.write (tmp.fortran_vec (), dv.numel ());
+      os.write (tmp.data (), dv.numel ());
       os << "\n";
     }
   else
@@ -486,7 +486,7 @@ octave_char_matrix_str::save_binary (std::ostream& os,
     }
 
   charNDArray m = char_array_value ();
-  os.write (m.fortran_vec (), dv.numel ());
+  os.write (m.data (), dv.numel ());
   return true;
 }
 

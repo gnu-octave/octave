@@ -463,15 +463,11 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  octave_idx_type nel = m.numel ();
-  bool *mtmp = m.fortran_vec ();
-  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    htmp[i] = mtmp[i];
+  const bool *mtmp = m.data ();
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
-                     octave_H5P_DEFAULT, htmp) >= 0;
+                     octave_H5P_DEFAULT,
+                     reinterpret_cast<const char*> (mtmp)) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);

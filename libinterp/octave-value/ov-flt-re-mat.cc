@@ -631,7 +631,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
       return false;
     }
 
-  float *mtmp = m.fortran_vec ();
+  const float *mtmp = m.data ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_FLOAT, octave_H5S_ALL, octave_H5S_ALL,
                      octave_H5P_DEFAULT, mtmp) >= 0;
 

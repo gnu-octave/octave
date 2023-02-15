@@ -29,6 +29,7 @@
 
 #include <cstring>
 
+#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -1465,7 +1466,14 @@ load_save_system::save (const octave_value_list& args, int nargout)
     print_usage ();
   else
     {
-      std::string fname = sys::file_ops::tilde_expand (argv[i]);
+      // We make a new temporary filename, write to that instead of the
+      // file specified, then try renaming it at the end.
+      // That way, if something goes wrong during the save like OOM,
+      // we won't overwrite already-saved data in a file.
+      // See bug #63803 for context.
+
+      std::string desiredname = sys::file_ops::tilde_expand (argv[i]);
+      std::string fname = desiredname + ".saving_in_progress";
 
       i++;
 
@@ -1542,6 +1550,20 @@ load_save_system::save (const octave_value_list& args, int nargout)
               file.close ();
             }
         }
+
+        // If we are all the way here without Octave crashing or running out of
+        // memory etc, then we can say that writing to the temporary file
+        // was successful. So now we try to rename it to the actual file
+        // that was specified.
+        try
+          {
+            std::filesystem::rename (fname, desiredname);
+          }
+        catch (std::filesystem::filesystem_error& e)
+          {
+            error ("save: unable to save to %s  %s",
+                   desiredname.c_str (), e.what ());
+          }
     }
 
   return retval;

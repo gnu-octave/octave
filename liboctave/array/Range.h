@@ -375,19 +375,6 @@ template <> OCTAVE_API void range<float>::init ();
 // need range<float> as a temporary local variable in make_float_range
 // in ov.cc.
 
-#if 0
-
-template <> OCTAVE_API void range<octave_int8>::init ();
-template <> OCTAVE_API void range<octave_int16>::init ();
-template <> OCTAVE_API void range<octave_int32>::init ();
-template <> OCTAVE_API void range<octave_int64>::init ();
-template <> OCTAVE_API void range<octave_uint8>::init ();
-template <> OCTAVE_API void range<octave_uint16>::init ();
-template <> OCTAVE_API void range<octave_uint32>::init ();
-template <> OCTAVE_API void range<octave_uint64>::init ();
-
-#endif
-
 template <> OCTAVE_API bool range<double>::is_storable () const;
 template <> OCTAVE_API bool range<float>::is_storable () const;
 

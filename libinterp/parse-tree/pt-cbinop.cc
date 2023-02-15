@@ -89,32 +89,6 @@ strip_trans_herm (tree_expression_ptr_t& exp)
     return octave_value::unknown_unary_op;
 }
 
-#if 0
-// Restore this code if short-circuit behavior can be preserved when needed.
-// See bug #54465.
-
-static octave_value::unary_op
-strip_not (tree_expression_ptr_t& exp)
-{
-  if (exp->is_unary_expression ())
-    {
-      tree_unary_expression *uexp
-        = dynamic_cast<tree_unary_expression *> (exp);
-
-      octave_value::unary_op op = uexp->op_type ();
-
-      if (op == octave_value::op_not)
-        exp = uexp->operand ();
-      else
-        op = octave_value::unknown_unary_op;
-
-      return op;
-    }
-  else
-    return octave_value::unknown_unary_op;
-}
-#endif
-
 // Possibly convert multiplication to trans_mul, mul_trans, herm_mul,
 // or mul_herm.
 
@@ -163,42 +137,6 @@ simplify_ldiv_op (tree_expression_ptr_t& a, tree_expression_ptr_t&)
 
 // Possibly contract and/or with negation.
 
-#if 0
-// Restore this code if short-circuit behavior can be preserved when needed.
-// See bug #54465.
-static octave_value::compound_binary_op
-simplify_and_or_op (tree_expression_ptr_t& a, tree_expression_ptr_t& b,
-                    octave_value::binary_op op)
-{
-  octave_value::compound_binary_op retop
-    = octave_value::unknown_compound_binary_op;
-
-  octave_value::unary_op opa = strip_not (a);
-
-  if (opa == octave_value::op_not)
-    {
-      if (op == octave_value::op_el_and)
-        retop = octave_value::op_el_not_and;
-      else if (op == octave_value::op_el_or)
-        retop = octave_value::op_el_not_or;
-    }
-  else
-    {
-      octave_value::unary_op opb = strip_not (b);
-
-      if (opb == octave_value::op_not)
-        {
-          if (op == octave_value::op_el_and)
-            retop = octave_value::op_el_and_not;
-          else if (op == octave_value::op_el_or)
-            retop = octave_value::op_el_or_not;
-        }
-    }
-
-  return retop;
-}
-#endif
-
 tree_binary_expression *
 maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
                                   int l, int c, octave_value::binary_op t)
@@ -216,15 +154,6 @@ maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
     case octave_value::op_ldiv:
       ct = simplify_ldiv_op (ca, cb);
       break;
-
-#if 0
-    // Restore this case if short-circuit behavior can be preserved
-    // when needed.  See bug #54465.
-    case octave_value::op_el_and:
-    case octave_value::op_el_or:
-      ct = simplify_and_or_op (ca, cb, t);
-      break;
-#endif
 
     default:
       ct = octave_value::unknown_compound_binary_op;

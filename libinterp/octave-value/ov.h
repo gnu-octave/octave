@@ -290,40 +290,7 @@ public:
   OCTINTERP_API octave_value (const octave::range<double>& r,
                               bool force_range = false);
 
-  // For now, disable all but range<double>.
-
-#if 0
-
-  OCTINTERP_API octave_value (const octave::range<float>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_int8>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_int16>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_int32>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_int64>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_uint8>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_uint16>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_uint32>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<octave_uint64>& r,
-                              bool force_range = false);
-
-  OCTINTERP_API octave_value (const octave::range<char>& r, char type,
-                              bool force_range = false);
-#endif
+  // For now, enable only range<double>.
 
   OCTINTERP_API octave_value (const octave_map& m);
   OCTINTERP_API octave_value (const octave_scalar_map& m);
@@ -992,38 +959,7 @@ public:
   octave::range<double> range_value () const
   { return m_rep->range_value (); }
 
-  // For now, disable all but range<double>.
-
-#if 0
-
-  octave::range<float> float_range_value () const
-  { return m_rep->float_range_value (); }
-
-  octave::range<octave_int8> int8_range_value () const
-  { return m_rep->int8_range_value (); }
-
-  octave::range<octave_int16> int16_range_value () const
-  { return m_rep->int16_range_value (); }
-
-  octave::range<octave_int32> int32_range_value () const
-  { return m_rep->int32_range_value (); }
-
-  octave::range<octave_int64> int64_range_value () const
-  { return m_rep->int64_range_value (); }
-
-  octave::range<octave_uint8> uint8_range_value () const
-  { return m_rep->uint8_range_value (); }
-
-  octave::range<octave_uint16> uint16_range_value () const
-  { return m_rep->uint16_range_value (); }
-
-  octave::range<octave_uint32> uint32_range_value () const
-  { return m_rep->uint32_range_value (); }
-
-  octave::range<octave_uint64> uint64_range_value () const
-  { return m_rep->uint64_range_value (); }
-
-#endif
+  // For now, enable only range<double>.
 
   OCTINTERP_API octave_map map_value () const;
 
@@ -1262,38 +1198,7 @@ public:
   OCTINTERP_API octave::range<double>
   xrange_value (const char *fmt, ...) const;
 
-  // For now, disable all but range<double>.
-
-#if 0
-
-  OCTINTERP_API octave::range<float>
-  xfloat_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_int8>
-  xint8_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_int16>
-  xint16_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_int32>
-  xint32_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_int64>
-  xint64_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_uint8>
-  xuint8_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_uint16>
-  xuint16_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_uint32>
-  xuint32_range_value (const char *fmt, ...) const;
-
-  OCTINTERP_API octave::range<octave_uint64>
-  xuint64_range_value (const char *fmt, ...) const;
-
-#endif
+  // For now, enable only range<double>.
 
   OCTINTERP_API octave_map xmap_value (const char *fmt, ...) const;
 

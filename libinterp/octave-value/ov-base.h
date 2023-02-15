@@ -653,29 +653,7 @@ public:
 
   virtual octave::range<double> range_value () const;
 
-  // For now, disable all but range<double>.
-
-#if 0
-
-  virtual octave::range<float> float_range_value () const;
-
-  virtual octave::range<octave_int8> int8_range_value () const;
-
-  virtual octave::range<octave_int16> int16_range_value () const;
-
-  virtual octave::range<octave_int32> int32_range_value () const;
-
-  virtual octave::range<octave_int64> int64_range_value () const;
-
-  virtual octave::range<octave_uint8> uint8_range_value () const;
-
-  virtual octave::range<octave_uint16> uint16_range_value () const;
-
-  virtual octave::range<octave_uint32> uint32_range_value () const;
-
-  virtual octave::range<octave_uint64> uint64_range_value () const;
-
-#endif
+  // For now, enable only range<double>.
 
   virtual octave_map map_value () const;
 

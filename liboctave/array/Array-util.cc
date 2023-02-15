@@ -401,18 +401,6 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
 
   // FIXME: the solution using increment_index is not efficient.
 
-#if 0
-  octave_idx_type var = 1;
-  for (int i = 0; i < n_dims; i++)
-    {
-      std::cout << "idx: " << idx << ", var: " << var
-                << ", dims(" << i << "): " << dims(i) <<"\n";
-      retval(i) = ((int)floor(((idx) / (double)var))) % dims(i);
-      idx -= var * retval(i);
-      var = dims(i);
-    }
-#endif
-
   return retval;
 }
 

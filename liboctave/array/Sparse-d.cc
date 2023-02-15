@@ -52,6 +52,3 @@ sparse_descending_compare<double> (double a, double b)
 
 INSTANTIATE_SPARSE (double);
 
-#if 0
-template std::ostream& operator << (std::ostream&, const Sparse<double>&);
-#endif

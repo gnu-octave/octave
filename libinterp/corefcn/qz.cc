@@ -366,44 +366,6 @@ compatibility with @sc{matlab}.
 
   // Only permutation balance above is done.  Skip scaling balance.
 
-#if 0
-  // Since we just want the balancing matrices, we can use dggbal
-  // for both the real and complex cases; left first
-
-  if (comp_q == 'V')
-    {
-      F77_XFCN (dggbak, DGGBAK,
-                (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                 F77_CONST_CHAR_ARG2 ("L", 1),
-                 nn, ilo, ihi, lscale.data (), rscale.data (),
-                 nn, QQ.fortran_vec (), nn, info
-                 F77_CHAR_ARG_LEN (1)
-                 F77_CHAR_ARG_LEN (1)));
-
-#if defined (DEBUG)
-      if (comp_q == 'V')
-        octave_stdout << "qz: balancing done; QQ =\n" << QQ << std::endl;
-#endif
-    }
-
-  // then right
-  if (comp_z == 'V')
-    {
-      F77_XFCN (dggbak, DGGBAK,
-                (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                 F77_CONST_CHAR_ARG2 ("R", 1),
-                 nn, ilo, ihi, lscale.data (), rscale.data (),
-                 nn, ZZ.fortran_vec (), nn, info
-                 F77_CHAR_ARG_LEN (1)
-                 F77_CHAR_ARG_LEN (1)));
-
-#if defined (DEBUG)
-      if (comp_z == 'V')
-        octave_stdout << "qz: balancing done; ZZ=\n" << ZZ << std::endl;
-#endif
-    }
-#endif
-
   char qz_job = (nargout < 2 ? 'E' : 'S');
 
   if (complex_case)

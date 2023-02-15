@@ -687,16 +687,6 @@ base_qobject::workspace_widget (main_window *mw)
 QPointer<file_editor_interface>
 base_qobject::editor_widget (main_window */*mw*/)
 {
-#if 0
-  if (m_editor_widget && mw)
-    {
-      m_editor_widget->set_main_window (mw);
-      m_editor_widget->set_adopted (true);
-    }
-  else if (! m_editor_widget)
-    m_editor_widget = new file_editor (mw);
-#endif
-
   return m_editor_widget;
 }
 

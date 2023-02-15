@@ -282,30 +282,6 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
     }
 }
 
-#if 0
-// FIXME: this function is not used; is it OK to delete it?
-static void
-update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
-{
-  octave_idx_type nd = dv.ndims ();
-
-  if (i == 0)
-    {
-      for (octave_idx_type j = nd - 1; j > 0; j--)
-        idx(j) = octave_value (1.0);
-      idx(0) = octave_value (':');
-    }
-  else
-    {
-      for (octave_idx_type j = 1; j < nd; j++)
-        {
-          idx (j) = octave_value (i % dv(j) + 1);
-          i /= dv(j);
-        }
-    }
-}
-#endif
-
 static void
 update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 {

@@ -224,17 +224,6 @@ public:
 
   virtual mxComplexDouble * get_complex_doubles () const = 0;
   virtual mxComplexSingle * get_complex_singles () const = 0;
-#if 0
-  /* We don't have these yet. */
-  virtual mxComplexInt8 * get_complex_int8s () const = 0;
-  virtual mxComplexInt16 * get_complex_int16s () const = 0;
-  virtual mxComplexInt32 * get_complex_int32s () const = 0;
-  virtual mxComplexInt64 * get_complex_int64s () const = 0;
-  virtual mxComplexUint8 * get_complex_uint8s () const = 0;
-  virtual mxComplexUint16 * get_complex_uint16s () const = 0;
-  virtual mxComplexUint32 * get_complex_uint32s () const = 0;
-  virtual mxComplexUint64 * get_complex_uint64s () const = 0;
-#endif
 
   virtual void * get_imag_data () const = 0;
 
@@ -253,17 +242,6 @@ public:
 
   virtual int set_complex_doubles (mxComplexDouble *data) = 0;
   virtual int set_complex_singles (mxComplexSingle *data) = 0;
-#if 0
-  /* We don't have these yet. */
-  virtual int set_complex_int8s (mxComplexInt8 *data) = 0;
-  virtual int set_complex_int16s (mxComplexInt16 *data) = 0;
-  virtual int set_complex_int32s (mxComplexInt32 *data) = 0;
-  virtual int set_complex_int64s (mxComplexInt64 *data) = 0;
-  virtual int set_complex_uint8s (mxComplexUint8 *data) = 0;
-  virtual int set_complex_uint16s (mxComplexUint16 *data) = 0;
-  virtual int set_complex_uint32s (mxComplexUint32 *data) = 0;
-  virtual int set_complex_uint64s (mxComplexUint64 *data) = 0;
-#endif
 
   virtual void set_imag_data (void *pi) = 0;
 
@@ -532,33 +510,6 @@ public:
   mxComplexSingle * get_complex_singles () const
   { DO_MUTABLE_METHOD (mxComplexSingle *, get_complex_singles ()); }
 
-#if 0
-  /* We don't have these yet. */
-  mxComplexInt8 * get_complex_int8s () const
-  { DO_MUTABLE_METHOD (mxComplexInt8 *, get_complex_int8s ()); }
-
-  mxComplexInt16 * get_complex_int16s () const
-  { DO_MUTABLE_METHOD (mxComplexInt16 *, get_complex_int16s ()); }
-
-  mxComplexInt32 * get_complex_int32s () const
-  { DO_MUTABLE_METHOD (mxComplexInt32 *, get_complex_int32s ()); }
-
-  mxComplexInt64 * get_complex_int64s () const
-  { DO_MUTABLE_METHOD (mxComplexInt64 *, get_complex_int64s ()); }
-
-  mxComplexUint8 * get_complex_uint8s () const
-  { DO_MUTABLE_METHOD (mxComplexUint8 *, get_complex_uint8s ()); }
-
-  mxComplexUint16 * get_complex_uint16s () const
-  { DO_MUTABLE_METHOD (mxComplexUint16 *, get_complex_uint16s ()); }
-
-  mxComplexUint32 * get_complex_uint32s () const
-  { DO_MUTABLE_METHOD (mxComplexUint32 *, get_complex_uint32s ()); }
-
-  mxComplexUint64 * get_complex_uint64s () const
-  { DO_MUTABLE_METHOD (mxComplexUint64 *, get_complex_uint64s ()); }
-#endif
-
   void * get_imag_data () const
   { DO_MUTABLE_METHOD (void *, get_imag_data ()); }
 
@@ -599,33 +550,6 @@ public:
 
   int set_complex_singles (mxComplexSingle *data)
   { DO_MUTABLE_METHOD (int, set_complex_singles (data)); }
-
-#if 0
-  /* We don't have these yet. */
-  int set_complex_int8s (mxComplexInt8 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_int8s (data)); }
-
-  int set_complex_int16s (mxComplexInt16 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_int16s (data)); }
-
-  int set_complex_int32s (mxComplexInt32 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_int32s (data)); }
-
-  int set_complex_int64s (mxComplexInt64 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_int64s (data)); }
-
-  int set_complex_uint8s (mxComplexUint8 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_uint8s (data)); }
-
-  int set_complex_uint16s (mxComplexUint16 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_uint16s (data)); }
-
-  int set_complex_uint32s (mxComplexUint32 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_uint32s (data)); }
-
-  int set_complex_uint64s (mxComplexUint64 *data)
-  { DO_MUTABLE_METHOD (int, set_complex_uint64s (data)); }
-#endif
 
   void set_imag_data (void *pi) { DO_VOID_MUTABLE_METHOD (set_imag_data (pi)); }
 

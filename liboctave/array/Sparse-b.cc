@@ -43,6 +43,3 @@ Sparse<bool>::SparseRep::any_element_is_nan () const
 
 INSTANTIATE_SPARSE (bool);
 
-#if 0
-template std::ostream& operator << (std::ostream&, const Sparse<bool>&);
-#endif

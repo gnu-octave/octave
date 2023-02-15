@@ -78,14 +78,6 @@ public:
 
   OCTAVE_API boolMatrix diag (octave_idx_type k = 0) const;
 
-#if 0
-  // i/o
-
-  friend OCTAVE_API std::ostream&
-  operator << (std::ostream& os, const Matrix& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, Matrix& a);
-#endif
-
   void resize (octave_idx_type nr, octave_idx_type nc, bool rfv = false)
   {
     Array<bool>::resize (dim_vector (nr, nc), rfv);

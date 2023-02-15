@@ -64,6 +64,3 @@ sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 
 INSTANTIATE_SPARSE (Complex);
 
-#if 0
-template std::ostream& operator << (std::ostream&, const Sparse<Complex>&);
-#endif

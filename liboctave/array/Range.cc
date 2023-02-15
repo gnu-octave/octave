@@ -330,66 +330,6 @@ range<float>::init ()
 
 // For now, only define for float and double.
 
-#if 0
-
-template <>
-void
-range<octave_int8>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-template <>
-void
-range<octave_int16>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-template <>
-void
-range<octave_int32>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-template <>
-void
-range<octave_int64>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-template <>
-void
-range<octave_uint8>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-template <>
-void
-range<octave_uint16>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-template <>
-void
-range<octave_uint32>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-template <>
-void
-range<octave_uint64>::init ()
-{
-  xinit (m_base, m_limit, m_increment, m_reverse, m_final, m_numel);
-}
-
-#endif
-
 template <>
 bool
 range<double>::is_storable () const

@@ -71,10 +71,6 @@ public:
 
   void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
 
-#if 0
-  octave_base_value * try_narrowing_conversion ();
-#endif
-
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
   {

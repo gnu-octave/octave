@@ -234,18 +234,6 @@ QExtendedInformation QFileInfoGatherer::getInfo(const QFileInfo &fileInfo) const
     info.displayType = m_iconProvider->type(fileInfo);
 #ifndef QT_NO_FILESYSTEMWATCHER
     // ### Not ready to listen all modifications
-    #if 0
-        // Enable the next two commented out lines to get updates when the file sizes change...
-        if (!fileInfo.exists() && !fileInfo.isSymLink()) {
-            info.size = -1;
-            //watcher->removePath(fileInfo.absoluteFilePath());
-        } else {
-            if (!fileInfo.absoluteFilePath().isEmpty() && fileInfo.exists() && fileInfo.isReadable()
-                && !watcher->files().contains(fileInfo.absoluteFilePath())) {
-                //watcher->addPath(fileInfo.absoluteFilePath());
-            }
-        }
-    #endif
 #endif
 
     if (m_resolveSymlinks && info.isSymLink(/* ignoreNtfsSymLinks = */ true)) {

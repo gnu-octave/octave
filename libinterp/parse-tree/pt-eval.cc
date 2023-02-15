@@ -3076,63 +3076,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
           return;
         }
 
-      // For now, disable all but range<double>.
-
-#if 0
-      if (rhs.is_int64_type ())
-        {
-          execute_range_loop (rhs.int64_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_uint64_type ())
-        {
-          execute_range_loop (rhs.uint64_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_int32_type ())
-        {
-          execute_range_loop (rhs.int32_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_uint32_type ())
-        {
-          execute_range_loop (rhs.uint32_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_int16_type ())
-        {
-          execute_range_loop (rhs.int16_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_uint16_type ())
-        {
-          execute_range_loop (rhs.uint16_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_int8_type ())
-        {
-          execute_range_loop (rhs.int8_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_uint8_type ())
-        {
-          execute_range_loop (rhs.uint8_range_value (), line, ult, loop_body);
-          return;
-        }
-
-      if (rhs.is_single_type ())
-        {
-          execute_range_loop (rhs.float_range_value (), line, ult, loop_body);
-          return;
-        }
-#endif
+      // For now, enable only range<double>.
     }
 
   if (rhs.is_scalar_type ())

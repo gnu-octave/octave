@@ -388,29 +388,7 @@ public:
 
   OCTINTERP_API octave::range<double> range_value () const;
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-  OCTINTERP_API octave::range<float> float_range_value () const;
-
-  OCTINTERP_API octave::range<octave_int8> int8_range_value () const;
-
-  OCTINTERP_API octave::range<octave_int16> int16_range_value () const;
-
-  OCTINTERP_API octave::range<octave_int32> int32_range_value () const;
-
-  OCTINTERP_API octave::range<octave_int64> int64_range_value () const;
-
-  OCTINTERP_API octave::range<octave_uint8> uint8_range_value () const;
-
-  OCTINTERP_API octave::range<octave_uint16> uint16_range_value () const;
-
-  OCTINTERP_API octave::range<octave_uint32> uint32_range_value () const;
-
-  OCTINTERP_API octave::range<octave_uint64> uint64_range_value () const;
-
-#endif
+// For now, enable only ov_range<double>.
 
   OCTINTERP_API octave_value
   convert_to_str_internal (bool pad, bool force, char type) const;
@@ -504,21 +482,7 @@ protected:
 
 DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, double)
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, float)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_int8)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_int16)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_int32)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_int64)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_uint8)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_uint16)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_uint32)
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, octave_uint64)
-
-#endif
+// For now, enable only ov_range<double>.
 
 // Specializations.
 
@@ -526,47 +490,7 @@ template <>
 OCTINTERP_API octave::range<double>
 ov_range<double>::range_value () const;
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-OCTINTERP_API octave::range<float>
-ov_range<float>::float_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_int8>
-ov_range<octave_int8>::int8_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_int16>
-ov_range<octave_int16>::int16_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_int32>
-ov_range<octave_int32>::int32_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_int64>
-ov_range<octave_int64>::int64_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_uint8>
-ov_range<octave_uint8>::uint8_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_uint16>
-ov_range<octave_uint16>::uint16_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_uint32>
-ov_range<octave_uint32>::uint32_range_value () const;
-
-template <>
-OCTINTERP_API octave::range<octave_uint64>
-ov_range<octave_uint64>::uint64_range_value () const;
-
-#endif
+// For now, enable only ov_range<double>.
 
 // The following specializations are here to preserve previous Range
 // performance until solutions can be generalized for other types.
@@ -596,26 +520,9 @@ template <>
 OCTINTERP_API void
 ov_range<double>::print_raw (std::ostream& os, bool pr_as_read_syntax) const;
 
-
 typedef ov_range<double> octave_double_range;
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-typedef ov_range<float> octave_float_range;
-
-typedef ov_range<octave_int8> octave_int8_range;
-typedef ov_range<octave_int16> octave_int16_range;
-typedef ov_range<octave_int32> octave_int32_range;
-typedef ov_range<octave_int64> octave_int64_range;
-
-typedef ov_range<octave_uint8> octave_uint8_range;
-typedef ov_range<octave_uint16> octave_uint16_range;
-typedef ov_range<octave_uint32> octave_uint32_range;
-typedef ov_range<octave_uint64> octave_uint64_range;
-
-#endif
+// For now, enable only ov_range<double>.
 
 typedef octave_double_range octave_range;
 

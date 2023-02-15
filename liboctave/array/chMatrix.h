@@ -100,13 +100,6 @@ public:
     Array<char>::resize (dim_vector (nr, nc), rfv);
   }
 
-#if 0
-  // i/o
-
-  friend OCTAVE_API std::ostream&
-  operator << (std::ostream& os, const Matrix& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, Matrix& a);
-#endif
 };
 
 MS_CMP_OP_DECLS (charMatrix, char, OCTAVE_API)

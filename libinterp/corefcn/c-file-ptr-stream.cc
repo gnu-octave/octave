@@ -253,34 +253,12 @@ c_zfile_ptr_buf::seekoff (std::streamoff /* offset */,
                           std::ios::seekdir /* dir */,
                           std::ios::openmode)
 {
-  // FIXME
-#if 0
-  if (m_f)
-    {
-      gzseek (m_f, offset, seekdir_to_whence (dir));
-
-      return gztell (m_f);
-    }
-  else
-    return 0;
-#endif
   return -1;
 }
 
 std::streampos
 c_zfile_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
 {
-  // FIXME
-#if 0
-  if (m_f)
-    {
-      gzseek (m_f, offset, SEEK_SET);
-
-      return gztell (m_f);
-    }
-  else
-    return 0;
-#endif
   return -1;
 }
 

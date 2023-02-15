@@ -2056,26 +2056,6 @@ public:
   property clone () const
   { return property (m_rep->clone ()); }
 
-#if 0
-  const string_property& as_string_property () const
-  { return *(dynamic_cast<string_property *> (m_rep)); }
-
-  const radio_property& as_radio_property () const
-  { return *(dynamic_cast<radio_property *> (m_rep)); }
-
-  const color_property& as_color_property () const
-  { return *(dynamic_cast<color_property *> (m_rep)); }
-
-  const double_property& as_double_property () const
-  { return *(dynamic_cast<double_property *> (m_rep)); }
-
-  const bool_property& as_bool_property () const
-  { return *(dynamic_cast<bool_property *> (m_rep)); }
-
-  const handle_property& as_handle_property () const
-  { return *(dynamic_cast<handle_property *> (m_rep)); }
-#endif
-
 private:
   base_property *m_rep;
 };

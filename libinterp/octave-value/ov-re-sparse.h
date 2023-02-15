@@ -134,13 +134,6 @@ public:
 
   octave_value as_double () const;
 
-#if 0
-  int write (octave::stream& os, int block_size,
-             oct_data_conv::data_type output_type, int skip,
-             octave::mach_info::float_format flt_fmt) const
-  { return os.write (matrix, block_size, output_type, skip, flt_fmt); }
-#endif
-
   bool save_binary (std::ostream& os, bool save_as_floats);
 
   bool load_binary (std::istream& is, bool swap,

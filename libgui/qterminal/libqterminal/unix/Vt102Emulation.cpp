@@ -402,38 +402,6 @@ void Vt102Emulation::updateTitle()
 
 void Vt102Emulation::tau( int token, int p, int q )
 {
-#if 0
-int N = (token>>0)&0xff;
-int A = (token>>8)&0xff;
-switch( N )
-{
-   case 0: printf("%c", (p < 128) ? p : '?');
-           break;
-   case 1: if (A == 'J') printf("\r");
-           else if (A == 'M') printf("\n");
-           else printf("CTL-%c ", (token>>8)&0xff);
-           break;
-   case 2: printf("ESC-%c ", (token>>8)&0xff);
-           break;
-   case 3: printf("ESC_CS-%c-%c ", (token>>8)&0xff, (token>>16)&0xff);
-           break;
-   case 4: printf("ESC_DE-%c ", (token>>8)&0xff);
-           break;
-   case 5: printf("CSI-PS-%c-%d", (token>>8)&0xff, (token>>16)&0xff );
-           break;
-   case 6: printf("CSI-PN-%c [%d]", (token>>8)&0xff, p);
-           break;
-   case 7: printf("CSI-PR-%c-%d", (token>>8)&0xff, (token>>16)&0xff );
-           break;
-   case 8: printf("VT52-%c", (token>>8)&0xff);
-           break;
-   case 9: printf("CSI-PG-%c", (token>>8)&0xff);
-           break;
-   case 10: printf("CSI-PE-%c", (token>>8)&0xff);
-           break;
-}
-#endif
-
   switch (token)
   {
 

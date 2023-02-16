@@ -47,12 +47,12 @@ opengl_selector::apply_pick_matrix ()
 
   Matrix viewport = get_viewport_scaled ();
 
-  if (size > 0)
+  if (m_size > 0)
     {
-      m_glfcns.glTranslatef ((viewport(2) - 2 * (xp - viewport(0))) / size,
-                             (viewport(3) - 2 * (yp - viewport(1))) / size, 0);
+      m_glfcns.glTranslatef ((viewport(2) - 2 * (m_xp - viewport(0))) / m_size,
+                             (viewport(3) - 2 * (m_yp - viewport(1))) / m_size, 0);
 
-      m_glfcns.glScalef (viewport(2) / size, viewport(3) / size, 1.0);
+      m_glfcns.glScalef (viewport(2) / m_size, viewport(3) / m_size, 1.0);
     }
 
   m_glfcns.glMultMatrixd (p_matrix);
@@ -81,8 +81,8 @@ opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
   m_glfcns.glEnable (GL_DEPTH_TEST);
   m_glfcns.glDepthFunc (GL_LEQUAL);
 
-  xp = x;
-  yp = y;
+  m_xp = x;
+  m_yp = y;
 
   GLuint select_buffer[BUFFER_SIZE];
 
@@ -90,7 +90,7 @@ opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
   m_glfcns.glRenderMode (GL_SELECT);
   m_glfcns.glInitNames ();
 
-  object_map.clear ();
+  m_object_map.clear ();
 
   draw (ax);
 
@@ -117,7 +117,7 @@ opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
 
               if ((flags & select_ignore_hittest) == 0)
                 {
-                  graphics_object go = object_map[name];
+                  graphics_object go = m_object_map[name];
 
                   if (! go.get_properties ().is_hittest ())
                     candidate = false;
@@ -136,12 +136,12 @@ opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
         }
 
       if (current_name != 0xffffffff)
-        obj = object_map[current_name];
+        obj = m_object_map[current_name];
     }
   else if (hits < 0)
     warning ("opengl_selector::select: selection buffer overflow");
 
-  object_map.clear ();
+  m_object_map.clear ();
 
   return obj;
 }
@@ -149,9 +149,9 @@ opengl_selector::select (const graphics_object& ax, int x, int y, int flags)
 void
 opengl_selector::draw (const graphics_object& go, bool toplevel)
 {
-  GLuint name = object_map.size ();
+  GLuint name = m_object_map.size ();
 
-  object_map[name] = go;
+  m_object_map[name] = go;
   m_glfcns.glPushName (name);
   set_selecting (true);
   opengl_renderer::draw (go, toplevel);

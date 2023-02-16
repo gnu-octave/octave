@@ -107,8 +107,8 @@ private:
 
   QTreeWidgetItem *m_ctx_menu_item;
 
-  QIcon icon_folder;
-  QIcon icon_bookmark;
+  QIcon m_icon_folder;
+  QIcon m_icon_bookmark;
 
   QWidget *m_filter_widget;
   QCheckBox *m_filter_checkbox;

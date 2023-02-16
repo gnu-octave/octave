@@ -233,8 +233,8 @@ std::string load_path::s_sys_path;
 load_path::abs_dir_cache_type load_path::s_abs_dir_cache;
 
 load_path::load_path (interpreter& interp)
-  : add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
-remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); }),
+  : m_add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
+m_remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); }),
 m_interpreter (interp), m_package_map (), m_top_level_package (),
 m_dir_info_list (), m_init_dirs (), m_command_line_path ()
 { }
@@ -317,9 +317,9 @@ load_path::set (const std::string& p, bool warn, bool is_init)
   // Temporarily disable add hook.
 
   unwind_protect frame;
-  frame.protect_var (add_hook);
+  frame.protect_var (m_add_hook);
 
-  add_hook = nullptr;
+  m_add_hook = nullptr;
 
   clear ();
 
@@ -333,8 +333,8 @@ load_path::set (const std::string& p, bool warn, bool is_init)
   //        Why not use const here?  Does add_hook change dir_info_list?
   for (auto& di : m_dir_info_list)
     {
-      if (add_hook)
-        add_hook (di.dir_name);
+      if (m_add_hook)
+        m_add_hook (di.dir_name);
     }
 
   // Always prepend current directory.
@@ -381,8 +381,8 @@ load_path::remove (const std::string& dir_arg)
             {
               retval = true;
 
-              if (remove_hook)
-                remove_hook (dir);
+              if (m_remove_hook)
+                m_remove_hook (dir);
 
               dir_info& di = *i;
 
@@ -1120,8 +1120,8 @@ load_path::add (const std::string& dir_arg, bool at_end, bool warn)
 
               add (di, at_end);
 
-              if (add_hook)
-                add_hook (dir);
+              if (m_add_hook)
+                m_add_hook (dir);
             }
           else if (warn)
             warning ("addpath: %s: not a directory", dir_arg.c_str ());

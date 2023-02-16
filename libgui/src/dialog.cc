@@ -404,12 +404,12 @@ ListDialog::ListDialog (const QStringList& list,
   else
     view->setSelectionMode (QAbstractItemView::NoSelection);
 
-  selector = view->selectionModel ();
+  m_selector = view->selectionModel ();
   for (int i = 0; i < initial.count(); i++)
     {
       QModelIndex idx = m_model->index (initial.value (i) - 1, 0,
                                         QModelIndex ());
-      selector->select (idx, QItemSelectionModel::Select);
+      m_selector->select (idx, QItemSelectionModel::Select);
     }
 
   bool fixed_layout = false;
@@ -479,7 +479,7 @@ void ListDialog::buttonOk_clicked ()
   // Store information about what button was pressed so that builtin
   // functions can retrieve.
 
-  QModelIndexList selected_index = selector->selectedIndexes ();
+  QModelIndexList selected_index = m_selector->selectedIndexes ();
   QIntList selected_int;
 
   for (int i = 0; i < selected_index.size (); i++)
@@ -545,7 +545,7 @@ InputDialog::InputDialog (const QStringList& prompt,
               line_edit->setFixedWidth (intval);
             }
         }
-      input_line << line_edit;
+      m_input_line << line_edit;
 #if LINE_EDIT_FOLLOWS_PROMPT
       promptInputLayout->addWidget (label, i + 1, 0);
       promptInputLayout->addWidget (line_edit, i + 1, 1);
@@ -585,8 +585,8 @@ void InputDialog::buttonOk_clicked ()
   // functions can retrieve.
 
   QStringList string_result;
-  for (int i = 0; i < input_line.size (); i++)
-    string_result << input_line.at (i)->text ();
+  for (int i = 0; i < m_input_line.size (); i++)
+    string_result << m_input_line.at (i)->text ();
   emit finish_input (string_result, 1);
   done (QDialog::Accepted);
 }

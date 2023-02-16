@@ -45,7 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Declarations (global, static, etc.).
 
 tree_decl_elt::tree_decl_elt (tree_identifier *i, tree_expression *e)
-  : type (unknown), m_id (i), m_expr (e)
+  : m_type (unknown), m_id (i), m_expr (e)
 {
   if (! m_id)
     error ("tree_decl_elt: invalid ID");

@@ -44,7 +44,7 @@ class opengl_selector : public opengl_renderer
 {
 public:
   opengl_selector (opengl_functions& glfcns)
-    : opengl_renderer (glfcns), size (5)
+    : opengl_renderer (glfcns), m_size (5)
   { }
 
   virtual ~opengl_selector () = default;
@@ -61,7 +61,7 @@ protected:
 
   virtual void setup_opengl_transformation (const axes::properties& props);
 
-  virtual void init_marker (const std::string& m, double size, float width);
+  virtual void init_marker (const std::string& m, double m_size, float width);
 
   virtual Matrix render_text (const std::string& txt,
                               double x, double y, double z,
@@ -75,13 +75,13 @@ private:
 
 private:
   // The mouse coordinate of the selection/picking point
-  int xp, yp;
+  int m_xp, m_yp;
 
   // The size (in pixels) of the picking window
-  int size;
+  int m_size;
 
   // The OpenGL name mapping
-  std::map<GLuint, graphics_object> object_map;
+  std::map<GLuint, graphics_object> m_object_map;
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -56,18 +56,18 @@ octave_class : public octave_base_value
 public:
 
   octave_class ()
-    : octave_base_value (), m_map (), c_name (),
+    : octave_base_value (), m_map (), m_c_name (),
       m_parent_list (), m_obsolete_copies (0)
   { }
 
   octave_class (const octave_map& m, const std::string& id)
-    : octave_base_value (), m_map (m), c_name (id),
+    : octave_base_value (), m_map (m), m_c_name (id),
       m_parent_list (), m_obsolete_copies (0)
   { }
 
   octave_class (const octave_map& m, const std::string& id,
                 const std::list<std::string>& plist)
-    : octave_base_value (), m_map (m), c_name (id),
+    : octave_base_value (), m_map (m), m_c_name (id),
       m_parent_list (plist), m_obsolete_copies (0)
   { }
 
@@ -75,7 +75,7 @@ public:
                 const octave_value_list& parents);
 
   octave_class (const octave_class& s)
-    : octave_base_value (s), m_map (s.m_map), c_name (s.c_name),
+    : octave_base_value (s), m_map (s.m_map), m_c_name (s.m_c_name),
       m_parent_list (s.m_parent_list), m_obsolete_copies (0)  { }
 
   ~octave_class () = default;
@@ -86,7 +86,7 @@ public:
 
   octave_base_value * empty_clone () const
   {
-    return new octave_class (octave_map (m_map.keys ()), c_name, m_parent_list);
+    return new octave_class (octave_map (m_map.keys ()), m_c_name, m_parent_list);
   }
 
   void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
@@ -222,7 +222,7 @@ private:
 public:
   int type_id () const { return t_id; }
   std::string type_name () const { return t_name; }
-  std::string class_name () const { return c_name; }
+  std::string class_name () const { return m_c_name; }
 
   static int static_type_id () { return t_id; }
   static std::string static_type_name () { return t_name; }
@@ -233,7 +233,7 @@ private:
   static int t_id;
 
   static const std::string t_name;
-  std::string c_name;
+  std::string m_c_name;
   std::list<std::string> m_parent_list;
 
   OCTINTERP_API bool in_class_method ();

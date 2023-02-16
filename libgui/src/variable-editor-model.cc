@@ -923,7 +923,7 @@ variable_editor_model::create (const QString& expr, const octave_value& val)
 variable_editor_model::variable_editor_model (const QString& expr,
                                               const octave_value& val,
                                               QObject *parent)
-  : QAbstractTableModel (parent), rep (create (expr, val))
+  : QAbstractTableModel (parent), m_rep (create (expr, val))
 {
   update_description ();
 
@@ -1308,7 +1308,7 @@ variable_editor_model::maybe_resize_rows (int rows)
   int old_rows = display_rows ();
   int old_cols = display_columns ();
 
-  rep->maybe_resize_rows (rows);
+  m_rep->maybe_resize_rows (rows);
 
   int new_rows = display_rows ();
   int new_cols = display_columns ();
@@ -1323,7 +1323,7 @@ variable_editor_model::maybe_resize_columns (int cols)
   int old_rows = display_rows ();
   int old_cols = display_columns ();
 
-  rep->maybe_resize_columns (cols);
+  m_rep->maybe_resize_columns (cols);
 
   int new_rows = display_rows ();
   int new_cols = display_columns ();
@@ -1343,9 +1343,9 @@ variable_editor_model::data_error (const QString& msg)
 void
 variable_editor_model::reset (const octave_value& val)
 {
-  base_ve_model *old_rep = rep;
+  base_ve_model *old_rep = m_rep;
 
-  rep = create (QString::fromStdString (name ()), val);
+  m_rep = create (QString::fromStdString (name ()), val);
 
   delete old_rep;
 
@@ -1376,7 +1376,7 @@ variable_editor_model::double_click (const QModelIndex& idx)
 {
   if (requires_sub_editor (idx))
     {
-      QString name = QString::fromStdString(rep->name ());
+      QString name = QString::fromStdString(m_rep->name ());
       emit edit_variable_signal (name + subscript_expression (idx),
                                  value_at (idx));
     }

@@ -465,11 +465,11 @@ public:
 private:
   // Underlying manipulator function
   gzofstream&
-  (*fcn)(gzofstream&, T1, T2);
+  (*m_fcn)(gzofstream&, T1, T2);
 
   // Arguments for manipulator function
-  T1 val1;
-  T2 val2;
+  T1 m_val1;
+  T2 m_val2;
 };
 
 // Manipulator function thunks through to stream buffer
@@ -486,14 +486,14 @@ inline
 gzomanip2<T1, T2>::gzomanip2 (gzofstream &(*f)(gzofstream&, T1, T2),
                               T1 v1,
                               T2 v2)
-  : fcn(f), val1(v1), val2(v2)
+  : m_fcn(f), m_val1(v1), m_val2(v2)
 { }
 
 // Insertor applies underlying manipulator function to stream
 template <typename T1, typename T2>
 inline gzofstream&
 operator<<(gzofstream& s, const gzomanip2<T1, T2>& m)
-{ return (*m.fcn)(s, m.val1, m.val2); }
+{ return (*m.m_fcn)(s, m.m_val1, m.m_val2); }
 
 // Insert this onto stream to simplify setting of compression level
 inline gzomanip2<int, int>

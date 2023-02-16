@@ -171,22 +171,22 @@ public:
 
   std::function<void (const std::string&)> get_add_hook ()
   {
-    return add_hook;
+    return m_add_hook;
   }
 
   std::function<void (const std::string&)> get_remove_hook ()
   {
-    return remove_hook;
+    return m_remove_hook;
   }
 
   void set_add_hook (const std::function<void (const std::string&)>& f)
   {
-    add_hook = f;
+    m_add_hook = f;
   }
 
   void set_remove_hook (const std::function<void (const std::string&)>& f)
   {
-    remove_hook = f;
+    m_remove_hook = f;
   }
 
   void read_dir_config (const std::string& dir) const;
@@ -515,9 +515,9 @@ private:
   typedef package_map_type::const_iterator const_package_map_iterator;
   typedef package_map_type::iterator package_map_iterator;
 
-  std::function<void (const std::string&)> add_hook;
+  std::function<void (const std::string&)> m_add_hook;
 
-  std::function<void (const std::string&)> remove_hook;
+  std::function<void (const std::string&)> m_remove_hook;
 
   void execute_pkg_add_or_del (const std::string& dir,
                                const std::string& script_file);

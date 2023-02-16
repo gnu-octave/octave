@@ -74,7 +74,7 @@ octave_class::register_type (octave::type_info& ti)
 
 octave_class::octave_class (const octave_map& m, const std::string& id,
                             const octave_value_list& parents)
-  : octave_base_value (), m_map (m), c_name (id), m_obsolete_copies (0)
+  : octave_base_value (), m_map (m), m_c_name (id), m_obsolete_copies (0)
 {
   octave_idx_type n = parents.length ();
 
@@ -418,7 +418,7 @@ octave_class::subsref (const std::string& type,
               }
             else
               retval(0) = octave_value (m_map.index (idx.front ()),
-                                        c_name, m_parent_list);
+                                        m_c_name, m_parent_list);
           }
           break;
 
@@ -495,7 +495,7 @@ octave_class::subsref (const std::string& type,
       else
         {
           if (type.length () == 1 && type[0] == '(')
-            retval(0) = octave_value (m_map.index (idx.front ()), c_name,
+            retval(0) = octave_value (m_map.index (idx.front ()), m_c_name,
                                       m_parent_list);
           else
             err_invalid_index1 ();
@@ -841,7 +841,7 @@ octave_class::index_vector (bool require_integers) const
            class_name ().c_str ());
 
   octave_value_list args;
-  args(0) = octave_value (new octave_class (m_map, c_name, m_parent_list));
+  args(0) = octave_value (new octave_class (m_map, m_c_name, m_parent_list));
 
   octave_value_list tmp = interp.feval (meth.function_value (), args, 1);
 
@@ -1010,7 +1010,7 @@ octave_class::string_vector_value (bool pad) const
     error ("no char method defined for class %s", class_name ().c_str ());
 
   octave_value_list args;
-  args(0) = octave_value (new octave_class (m_map, c_name, m_parent_list));
+  args(0) = octave_value (new octave_class (m_map, m_c_name, m_parent_list));
 
   octave_value_list tmp = interp.feval (meth.function_value (), args, 1);
 
@@ -1048,7 +1048,7 @@ octave_class::reconstruct_exemplar ()
   bool retval = false;
 
   octave_class::exemplar_const_iterator it
-    = octave_class::exemplar_map.find (c_name);
+    = octave_class::exemplar_map.find (m_c_name);
 
   if (it != octave_class::exemplar_map.end ())
     retval = true;
@@ -1058,7 +1058,7 @@ octave_class::reconstruct_exemplar ()
 
       octave::symbol_table& symtab = interp.get_symbol_table ();
 
-      octave_value ctor = symtab.find_method (c_name, c_name);
+      octave_value ctor = symtab.find_method (m_c_name, m_c_name);
 
       bool have_ctor = false;
 
@@ -1066,7 +1066,7 @@ octave_class::reconstruct_exemplar ()
         {
           octave_function *fcn = ctor.function_value ();
 
-          if (fcn && fcn->is_class_constructor (c_name))
+          if (fcn && fcn->is_class_constructor (m_c_name))
             have_ctor = true;
 
           // Something has gone terribly wrong if
@@ -1102,7 +1102,7 @@ octave_class::reconstruct_exemplar ()
             retval = true;
         }
       else
-        warning ("no constructor for class %s", c_name.c_str ());
+        warning ("no constructor for class %s", m_c_name.c_str ());
     }
 
   return retval;
@@ -1148,7 +1148,7 @@ octave_class::reconstruct_parents ()
   if (might_have_inheritance)
     {
       octave_class::exemplar_const_iterator it
-        = octave_class::exemplar_map.find (c_name);
+        = octave_class::exemplar_map.find (m_c_name);
 
       if (it == octave_class::exemplar_map.end ())
         retval = false;
@@ -1247,7 +1247,7 @@ octave_class::load_ascii (std::istream& is)
       if (! is)
         error ("load: failed to load class");
 
-      c_name = classname;
+      m_c_name = classname;
       reconstruct_exemplar ();
 
       m_map = m;
@@ -1270,7 +1270,7 @@ octave_class::load_ascii (std::istream& is)
   else if (len == 0)
     {
       m_map = octave_map (dim_vector (1, 1));
-      c_name = classname;
+      m_c_name = classname;
     }
   else
     panic_impossible ();
@@ -1340,7 +1340,7 @@ octave_class::load_binary (std::istream& is, bool swap,
     classname[classname_len] = '\0';
     if (! is.read (reinterpret_cast<char *> (classname), classname_len))
       return false;
-    c_name = classname;
+    m_c_name = classname;
   }
   reconstruct_exemplar ();
 
@@ -1383,7 +1383,7 @@ octave_class::load_binary (std::istream& is, bool swap,
 
           octave::load_path& lp = interp.get_load_path ();
 
-          if (lp.find_method (c_name, "loadobj") != "")
+          if (lp.find_method (m_c_name, "loadobj") != "")
             {
               octave_value in = new octave_class (*this);
               octave_value_list tmp = interp.feval ("loadobj", in, 1);
@@ -1434,7 +1434,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     goto error_cleanup;
 
   // Add the class name to the group
-  type_hid = H5Tcopy (H5T_C_S1); H5Tset_size (type_hid, c_name.length () + 1);
+  type_hid = H5Tcopy (H5T_C_S1); H5Tset_size (type_hid, m_c_name.length () + 1);
   if (type_hid < 0)
     goto error_cleanup;
 
@@ -1452,7 +1452,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #endif
   if (class_hid < 0 || H5Dwrite (class_hid, type_hid, octave_H5S_ALL,
                                  octave_H5S_ALL, octave_H5P_DEFAULT,
-                                 c_name.c_str ()) < 0)
+                                 m_c_name.c_str ()) < 0)
     goto error_cleanup;
 
 #if defined (HAVE_HDF5_18)
@@ -1600,7 +1600,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       H5Dclose (data_hid);
       data_hid = -1;
 
-      c_name = classname;
+      m_c_name = classname;
     }
   while (0);
   reconstruct_exemplar ();
@@ -1636,7 +1636,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 
       octave::load_path& lp = interp.get_load_path ();
 
-      if (lp.find_method (c_name, "loadobj") != "")
+      if (lp.find_method (m_c_name, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
           octave_value_list tmp = interp.feval ("loadobj", in, 1);

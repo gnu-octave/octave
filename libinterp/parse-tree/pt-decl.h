@@ -75,11 +75,11 @@ public:
     return m_id->lvalue (tw);
   }
 
-  void mark_global () { type = global; }
-  bool is_global () const { return type == global; }
+  void mark_global () { m_type = global; }
+  bool is_global () const { return m_type == global; }
 
-  void mark_persistent () { type = persistent; }
-  bool is_persistent () const { return type == persistent; }
+  void mark_persistent () { m_type = persistent; }
+  bool is_persistent () const { return m_type == persistent; }
 
   tree_identifier * ident () { return m_id; }
 
@@ -96,7 +96,7 @@ public:
 
 private:
 
-  decl_type type;
+  decl_type m_type;
 
   // An identifier to tag with the declared property.
   tree_identifier *m_id;

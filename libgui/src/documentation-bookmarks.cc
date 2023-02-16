@@ -81,11 +81,11 @@ documentation_bookmarks::documentation_bookmarks (documentation *doc,
            this, &documentation_bookmarks::handle_double_click);
 
   // Define the icons for the tree view
-  icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirClosedIcon),
+  m_icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirClosedIcon),
                          QIcon::Normal, QIcon::Off);
-  icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirOpenIcon),
+  m_icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirOpenIcon),
                          QIcon::Normal, QIcon::On);
-  icon_bookmark.addPixmap (style ()->standardPixmap(QStyle::SP_FileIcon));
+  m_icon_bookmark.addPixmap (style ()->standardPixmap(QStyle::SP_FileIcon));
 
   // Setup and read the bookmarkfile
   QFileInfo f (settings.fileName ());
@@ -190,7 +190,7 @@ void documentation_bookmarks::add_bookmark (const QString& title,
   new_item->setFlags ((new_item->flags () & (~Qt::ItemIsDropEnabled))
                                           | Qt::ItemIsEditable
                                           | Qt::ItemIsDragEnabled);
-  new_item->setIcon (0, icon_bookmark);
+  new_item->setIcon (0, m_icon_bookmark);
 
   // Insert as top level or child item
   // TODO: Open dialog allowing to select a target folder if this
@@ -234,7 +234,7 @@ QTreeWidgetItem* documentation_bookmarks::add_folder (const QString& folder,
                                             | Qt::ItemIsDragEnabled
                                             | Qt::ItemIsDropEnabled);
   new_folder->setChildIndicatorPolicy (QTreeWidgetItem::DontShowIndicatorWhenChildless);
-  new_folder->setIcon (0, icon_folder);
+  new_folder->setIcon (0, m_icon_folder);
   new_folder->setExpanded (expanded);
 
   // Insert as top level or child item

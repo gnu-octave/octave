@@ -1962,7 +1962,7 @@ private:
   short m_return_on_error;
 
   bool m_collect_output;
-  bool multiple_delims_as_one;
+  bool m_multiple_delims_as_one;
   bool m_default_exp;
 
   octave_idx_type m_lines;
@@ -2570,7 +2570,7 @@ textscan::textscan (const std::string& who_arg, const std::string& encoding)
     m_exp_chars ("edED"), m_header_lines (0), m_treat_as_empty (),
     m_treat_as_empty_len (0), m_whitespace (" \b\t"), m_eol1 ('\r'),
     m_eol2 ('\n'), m_return_on_error (1), m_collect_output (false),
-    multiple_delims_as_one (false), m_default_exp (true), m_lines (0)
+    m_multiple_delims_as_one (false), m_default_exp (true), m_lines (0)
 { }
 
 octave_value
@@ -2644,7 +2644,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   int err = 0;
   octave_idx_type row = 0;
 
-  if (multiple_delims_as_one)           // bug #44750?
+  if (m_multiple_delims_as_one)           // bug #44750?
     skip_delim (is);
 
   int done_after;  // Number of columns read when EOF seen.
@@ -3728,7 +3728,7 @@ textscan::parse_options (const octave_value_list& args,
         }
       else if (param == "multipledelimsasone")
         {
-          multiple_delims_as_one = args(i
+          m_multiple_delims_as_one = args(i
                                         +1).xbool_value ("%s: MultipleDelimsAsOne must be logical or numeric", m_who.c_str ());
         }
       else if (param == "returnonerror")
@@ -3963,7 +3963,7 @@ textscan::skip_delim (delimited_stream& is)
           if (c1 == m_eol1 && is.peek_undelim () == m_eol2)
             is.get ();          // if \r\n, skip the \n too.
 
-          if (multiple_delims_as_one)
+          if (m_multiple_delims_as_one)
             {
               int prev = -1;
               // skip multiple delims.
@@ -4001,7 +4001,7 @@ textscan::skip_delim (delimited_stream& is)
               is.get_undelim ();
             }
 
-          if (multiple_delims_as_one)
+          if (m_multiple_delims_as_one)
             {
               int prev = -1;
               // skip multiple delims.

@@ -62,7 +62,7 @@ gnu_history : public command_history
 public:
 
   gnu_history ()
-    : command_history (), mark (0) { }
+    : command_history (), m_mark (0) { }
 
   ~gnu_history () = default;
 
@@ -116,7 +116,7 @@ public:
 
 private:
 
-  int mark;
+  int m_mark;
 };
 
 void
@@ -273,15 +273,15 @@ gnu_history::do_is_stifled () const
 void
 gnu_history::do_set_mark (int n)
 {
-  mark = n;
+  m_mark = n;
 }
 
 int
 gnu_history::do_goto_mark ()
 {
-  if (mark)
+  if (m_mark)
     {
-      char *line = ::octave_history_goto_mark (mark);
+      char *line = ::octave_history_goto_mark (m_mark);
 
       if (line)
         {
@@ -291,7 +291,7 @@ gnu_history::do_goto_mark ()
         }
     }
 
-  mark = 0;
+  m_mark = 0;
 
   // FIXME: for operate_and_get_next.
   command_editor::remove_startup_hook (command_history::goto_mark);

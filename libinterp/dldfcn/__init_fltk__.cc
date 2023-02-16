@@ -2021,24 +2021,24 @@ private:
 
   typedef std::map<int, plot_window *> window_map;
 
-  typedef window_map::iterator wm_iterator;;
+  typedef window_map::iterator wm_iterator;
 
-  window_map windows;
+  window_map m_windows;
 
   static std::string fltk_idx_header;
 
   void do_close_all ()
   {
-    for (auto& win : windows)
+    for (auto& win : m_windows)
       delete win.second;
-    windows.clear ();
+    m_windows.clear ();
   }
 
   void do_new_window (figure::properties& fp)
   {
     int idx = figprops2idx (fp);
 
-    if (idx >= 0 && windows.find (idx) == windows.end ())
+    if (idx >= 0 && m_windows.find (idx) == m_windows.end ())
       {
         Matrix pos = fp.get_outerposition ().matrix_value ();
         bool internal = false;
@@ -2056,35 +2056,35 @@ private:
 
         idx2figprops (curr_index, fp);
 
-        windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
+        m_windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
             fp, internal);
       }
   }
 
   void do_delete_window (int idx)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         delete win->second;
-        windows.erase (win);
+        m_windows.erase (win);
       }
   }
 
   void do_renumber_figure (int idx, double new_number)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->renumber (new_number);
   }
 
   void do_toggle_window_visibility (int idx, bool is_visible)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         if (is_visible)
           {
@@ -2099,9 +2099,9 @@ private:
 
   void do_toggle_menubar_visibility (int fig_idx, bool menubar_is_figure)
   {
-    wm_iterator win = windows.find (fig_idx);
+    wm_iterator win = m_windows.find (fig_idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         if (menubar_is_figure)
           win->second->show_menubar ();
@@ -2114,9 +2114,9 @@ private:
 
   void do_mark_modified (int idx)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         win->second->mark_modified ();
       }
@@ -2124,9 +2124,9 @@ private:
 
   void do_set_name (int idx)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->set_name ();
   }
 
@@ -2134,9 +2134,9 @@ private:
   {
     Matrix sz (1, 2, 0.0);
 
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         sz(0) = win->second->w ();
         sz(1) = win->second->h ();
@@ -2147,18 +2147,18 @@ private:
 
   void do_print (int idx, const std::string& cmd, const std::string& term)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->print (cmd, term);
   }
 
   uint8NDArray do_get_pixels (int idx)
   {
     uint8NDArray retval;
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       retval = win->second->get_pixels ();
 
     return retval;
@@ -2166,17 +2166,17 @@ private:
 
   void do_uimenu_update (int idx, const graphics_handle& gh, int id)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->uimenu_update (gh, id);
   }
 
   void do_update_canvas (int idx, const graphics_handle& ca)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         if (ca.ok ())
           win->second->show_canvas ();
@@ -2187,9 +2187,9 @@ private:
 
   void do_update_boundingbox (int idx, bool internal)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->update_boundingbox (internal);
   }
 
@@ -2262,7 +2262,7 @@ public:
 
   fltk_graphics_toolkit (octave::interpreter& interp)
     : octave::base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
-      m_interpreter (interp), input_event_hook_fcn_id ()
+      m_interpreter (interp), m_input_event_hook_fcn_id ()
   {
     Fl::visual (FL_RGB);
   }
@@ -2460,10 +2460,10 @@ public:
       {
         m_interpreter.munlock ("__init_fltk__");
 
-        octave_value_list args = input_event_hook_fcn_id;
+        octave_value_list args = m_input_event_hook_fcn_id;
         args.append (false);
         Fremove_input_event_hook (m_interpreter, args);
-        input_event_hook_fcn_id = octave_value_list ();
+        m_input_event_hook_fcn_id = octave_value_list ();
 
         figure_manager::close_all ();
       }
@@ -2471,14 +2471,14 @@ public:
 
   void set_input_event_hook_id (const octave_value_list& id)
   {
-    input_event_hook_fcn_id = id;
+    m_input_event_hook_fcn_id = id;
   }
 
 private:
 
   octave::interpreter& m_interpreter;
 
-  octave_value_list input_event_hook_fcn_id;
+  octave_value_list m_input_event_hook_fcn_id;
 };
 
 #endif

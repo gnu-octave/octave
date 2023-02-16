@@ -193,8 +193,6 @@ class ListDialog : public QDialog
 {
   Q_OBJECT
 
-  QItemSelectionModel *selector;
-
 public:
 
   ListDialog (const QStringList& list,
@@ -222,13 +220,12 @@ public slots:
 private:
 
   QAbstractItemModel *m_model;
+  QItemSelectionModel *m_selector;
 };
 
 class InputDialog : public QDialog
 {
   Q_OBJECT
-
-  QList<QLineEdit *> input_line;
 
 public:
 
@@ -249,6 +246,10 @@ public slots:
   void buttonCancel_clicked ();
 
   void reject ();
+
+private:
+
+  QList<QLineEdit *> m_input_line;
 };
 
 class FileDialog : public QFileDialog

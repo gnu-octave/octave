@@ -237,7 +237,7 @@ private:
 
   char_is_quoted_fcn m_char_is_quoted_function;
 
-  user_accept_line_fcn user_accept_line_function;
+  user_accept_line_fcn m_user_accept_line_function;
 
   static std::string s_completer_quote_characters;
 };
@@ -249,7 +249,7 @@ gnu_readline::gnu_readline ()
     m_previous_pre_input_hook (nullptr),
     m_previous_event_hook (nullptr), m_completion_function (nullptr),
     m_quoting_function (nullptr), m_dequoting_function (nullptr),
-    m_char_is_quoted_function (nullptr), user_accept_line_function (nullptr)
+    m_char_is_quoted_function (nullptr), m_user_accept_line_function (nullptr)
 {
   // FIXME: need interface to rl_add_defun, rl_initialize, and
   // a function to set rl_terminal_name
@@ -479,7 +479,7 @@ gnu_readline::do_set_char_is_quoted_function (char_is_quoted_fcn f)
 void
 gnu_readline::do_set_user_accept_line_function (user_accept_line_fcn f)
 {
-  user_accept_line_function = f;
+  m_user_accept_line_function = f;
 
   if (f)
     octave_rl_add_defun ("accept-line", gnu_readline::command_accept_line,
@@ -516,7 +516,7 @@ gnu_readline::do_get_char_is_quoted_function () const
 gnu_readline::user_accept_line_fcn
 gnu_readline::do_get_user_accept_line_function () const
 {
-  return user_accept_line_function;
+  return m_user_accept_line_function;
 }
 
 // True if the last "word" of the string line (delimited by delim) is

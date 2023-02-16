@@ -28,8 +28,8 @@
 #endif
 
 #include <cstring>
+#include <cstdio>
 
-#include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
@@ -1557,9 +1557,9 @@ load_save_system::save (const octave_value_list& args, int nargout)
         // that was specified.
         try
           {
-            std::filesystem::rename (fname, desiredname);
+            rename (fname.c_str (), desiredname.c_str ());
           }
-        catch (std::filesystem::filesystem_error& e)
+        catch (std::exception& e)
           {
             error ("save: unable to save to %s  %s",
                    desiredname.c_str (), e.what ());

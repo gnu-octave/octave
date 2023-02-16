@@ -320,6 +320,20 @@ octave_unused_parameter (const T&)
 #  define OCTAVE_THREAD_LOCAL
 #endif
 
+#if defined (__cplusplus)
+#  define OCTAVE_DISABLE_COPY(X)                \
+  X (const X&) = delete;                        \
+  X& operator = (const X&) = delete;
+
+#  define OCTAVE_DISABLE_MOVE(X)                \
+  X (const X&&) = delete;                       \
+  X& operator = (const X&&) = delete;
+
+#  define OCTAVE_DISABLE_COPY_MOVE(X)           \
+  OCTAVE_DISABLE_COPY (X)                       \
+  OCTAVE_DISABLE_MOVE (X)
+#endif
+
 typedef OCTAVE_IDX_TYPE octave_idx_type;
 typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 

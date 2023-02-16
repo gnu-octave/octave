@@ -44,11 +44,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  env (const env&) = delete;
-
-  env& operator = (const env&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (env)
 
   static std::string polite_directory_format (const std::string& name);
 

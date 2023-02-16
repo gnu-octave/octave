@@ -51,11 +51,7 @@ public:
                       = octave::mach_info::native_float_format (),
                       const std::string& encoding = "utf-8");
 
-  // No copying!
-
-  octave_iprocstream (const octave_iprocstream&) = delete;
-
-  octave_iprocstream& operator = (const octave_iprocstream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_iprocstream)
 
   static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
@@ -79,11 +75,7 @@ public:
                       = octave::mach_info::native_float_format (),
                       const std::string& encoding = "utf-8");
 
-  // No copying!
-
-  octave_oprocstream (const octave_oprocstream&) = delete;
-
-  octave_oprocstream& operator = (const octave_oprocstream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_oprocstream)
 
   static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,

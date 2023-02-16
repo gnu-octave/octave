@@ -51,9 +51,7 @@ public:
 
   typedef void (*hook_fcn_ptr) (const std::string& dir);
 
-  load_path (const load_path&) = delete;
-
-  load_path& operator = (const load_path&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (load_path)
 
   ~load_path () = default;
 

@@ -55,11 +55,7 @@ public:
   tree_fcn_handle (const std::string& n, int l = -1, int c = -1)
     : tree_expression (l, c), m_name (n) { }
 
-  // No copying!
-
-  tree_fcn_handle (const tree_fcn_handle&) = delete;
-
-  tree_fcn_handle& operator = (const tree_fcn_handle&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_fcn_handle)
 
   ~tree_fcn_handle () = default;
 
@@ -111,11 +107,7 @@ public:
       m_scope (scope), m_parent_scope (parent_scope), m_file_name ()
   { }
 
-  // No copying!
-
-  tree_anon_fcn_handle (const tree_anon_fcn_handle&) = delete;
-
-  tree_anon_fcn_handle& operator = (const tree_anon_fcn_handle&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_anon_fcn_handle)
 
   ~tree_anon_fcn_handle ();
 

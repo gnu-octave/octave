@@ -55,11 +55,7 @@ public:
 
   base_text_renderer () : text_processor () { }
 
-  // No copying!
-
-  base_text_renderer (const base_text_renderer&) = delete;
-
-  base_text_renderer& operator = (const base_text_renderer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_text_renderer)
 
   virtual ~base_text_renderer () = default;
 

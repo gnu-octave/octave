@@ -77,11 +77,7 @@ public:
     insert_local ("ans");
   }
 
-  // No copying!
-
-  symbol_scope_rep (const symbol_scope&) = delete;
-
-  symbol_scope_rep& operator = (const symbol_scope&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (symbol_scope_rep)
 
   ~symbol_scope_rep () = default;
 

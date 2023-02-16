@@ -57,11 +57,7 @@ public:
     : tree_expression (l, c), m_method_name (meth), m_class_name (cls)
   { }
 
-  // No copying!
-
-  tree_superclass_ref (const tree_superclass_ref&) = delete;
-
-  tree_superclass_ref& operator = (const tree_superclass_ref&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_superclass_ref)
 
   std::string method_name () const
   {
@@ -107,11 +103,7 @@ public:
     : tree_expression (l, c), m_class_name (cls)
   { }
 
-  // No copying!
-
-  tree_metaclass_query (const tree_metaclass_query&) = delete;
-
-  tree_metaclass_query& operator = (const tree_metaclass_query&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_metaclass_query)
 
   std::string class_name () const { return m_class_name; }
 
@@ -147,11 +139,7 @@ public:
     : m_id (i), m_expr (nullptr), m_neg (b)
   { }
 
-  // No copying!
-
-  tree_classdef_attribute (const tree_classdef_attribute&) = delete;
-
-  tree_classdef_attribute& operator = (const tree_classdef_attribute&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_attribute)
 
   ~tree_classdef_attribute ()
   {
@@ -189,12 +177,7 @@ public:
     : base_list<tree_classdef_attribute *> (a)
   { }
 
-  // No copying!
-
-  tree_classdef_attribute_list (const tree_classdef_attribute_list&) = delete;
-
-  tree_classdef_attribute_list&
-  operator = (const tree_classdef_attribute_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_attribute_list)
 
   ~tree_classdef_attribute_list ();
 
@@ -212,12 +195,7 @@ public:
     : m_cls_name (cname)
   { }
 
-  // No copying!
-
-  tree_classdef_superclass (const tree_classdef_superclass&) = delete;
-
-  tree_classdef_superclass&
-  operator = (const tree_classdef_superclass&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_superclass)
 
   ~tree_classdef_superclass () = default;
 
@@ -249,12 +227,7 @@ public:
     : base_list<tree_classdef_superclass *> (a)
   { }
 
-  // No copying!
-
-  tree_classdef_superclass_list (const tree_classdef_superclass_list&) = delete;
-
-  tree_classdef_superclass_list&
-  operator = (const tree_classdef_superclass_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_superclass_list)
 
   ~tree_classdef_superclass_list ();
 
@@ -276,11 +249,7 @@ public:
       m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
-
-  tree_classdef_element (const tree_classdef_element&) = delete;
-
-  tree_classdef_element& operator = (const tree_classdef_element&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_element)
 
   ~tree_classdef_element ()
   {
@@ -322,11 +291,7 @@ public:
   tree_classdef_property (tree_arg_validation *av,
                           comment_list *comments = nullptr);
 
-  // No copying!
-
-  tree_classdef_property (const tree_classdef_property&) = delete;
-
-  tree_classdef_property& operator = (const tree_classdef_property&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_property)
 
   ~tree_classdef_property ();
 
@@ -365,12 +330,7 @@ public:
   tree_classdef_property_list (const base_list<tree_classdef_property *>& a)
     : base_list<tree_classdef_property *> (a) { }
 
-  // No copying!
-
-  tree_classdef_property_list (const tree_classdef_property_list&) = delete;
-
-  tree_classdef_property_list&
-  operator = (const tree_classdef_property_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_property_list)
 
   ~tree_classdef_property_list ();
 
@@ -392,12 +352,7 @@ public:
     : tree_classdef_element<tree_classdef_property_list> (a, plist, lc, tc, l, c)
   { }
 
-  // No copying!
-
-  tree_classdef_properties_block (const tree_classdef_properties_block&) = delete;
-
-  tree_classdef_properties_block&
-  operator = (const tree_classdef_properties_block&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_properties_block)
 
   ~tree_classdef_properties_block () = default;
 
@@ -418,12 +373,7 @@ public:
   tree_classdef_methods_list (const base_list<octave_value>& a)
     : base_list<octave_value> (a) { }
 
-  // No copying!
-
-  tree_classdef_methods_list (const tree_classdef_methods_list&) = delete;
-
-  tree_classdef_methods_list&
-  operator = (const tree_classdef_methods_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_methods_list)
 
   ~tree_classdef_methods_list () = default;
 
@@ -445,12 +395,7 @@ public:
     : tree_classdef_element<tree_classdef_methods_list> (a, mlist, lc, tc, l, c)
   { }
 
-  // No copying!
-
-  tree_classdef_methods_block (const tree_classdef_methods_block&) = delete;
-
-  tree_classdef_methods_block&
-  operator = (const tree_classdef_methods_block&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_methods_block)
 
   ~tree_classdef_methods_block () = default;
 
@@ -467,11 +412,7 @@ public:
   tree_classdef_event (tree_identifier *i = nullptr,
                        comment_list *comments = nullptr);
 
-  // No copying!
-
-  tree_classdef_event (const tree_classdef_event&) = delete;
-
-  tree_classdef_event& operator = (const tree_classdef_event&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_event)
 
   ~tree_classdef_event ()
   {
@@ -512,12 +453,7 @@ public:
     : base_list<tree_classdef_event *> (a)
   { }
 
-  // No copying!
-
-  tree_classdef_events_list (const tree_classdef_events_list&) = delete;
-
-  tree_classdef_events_list&
-  operator = (const tree_classdef_events_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_events_list)
 
   ~tree_classdef_events_list ();
 
@@ -539,12 +475,7 @@ public:
     : tree_classdef_element<tree_classdef_events_list> (a, elist, lc, tc, l, c)
   { }
 
-  // No copying!
-
-  tree_classdef_events_block (const tree_classdef_events_block&) = delete;
-
-  tree_classdef_events_block&
-  operator = (const tree_classdef_events_block&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_events_block)
 
   ~tree_classdef_events_block () = default;
 
@@ -561,11 +492,7 @@ public:
   tree_classdef_enum (tree_identifier *i, tree_expression *e,
                       comment_list *comments);
 
-  // No copying!
-
-  tree_classdef_enum (const tree_classdef_enum&) = delete;
-
-  tree_classdef_enum& operator = (const tree_classdef_enum&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_enum)
 
   ~tree_classdef_enum ()
   {
@@ -610,11 +537,7 @@ public:
     : base_list<tree_classdef_enum *> (a)
   { }
 
-  // No copying!
-
-  tree_classdef_enum_list (const tree_classdef_enum_list&) = delete;
-
-  tree_classdef_enum_list& operator = (const tree_classdef_enum_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_enum_list)
 
   ~tree_classdef_enum_list ();
 
@@ -636,12 +559,7 @@ public:
     : tree_classdef_element<tree_classdef_enum_list> (a, elist, lc, tc, l, c)
   { }
 
-  // No copying!
-
-  tree_classdef_enum_block (const tree_classdef_enum_block&) = delete;
-
-  tree_classdef_enum_block&
-  operator = (const tree_classdef_enum_block&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_enum_block)
 
   ~tree_classdef_enum_block () = default;
 
@@ -683,11 +601,7 @@ public:
 
   tree_classdef_body (tree_classdef_enum_block *enb);
 
-  // No copying!
-
-  tree_classdef_body (const tree_classdef_body&) = delete;
-
-  tree_classdef_body& operator = (const tree_classdef_body&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_body)
 
   ~tree_classdef_body ();
 
@@ -774,11 +688,7 @@ public:
       m_trail_comm (tc), m_pack_name (pn), m_file_name (fn)
   { }
 
-  // No copying!
-
-  tree_classdef (const tree_classdef&) = delete;
-
-  tree_classdef& operator = (const tree_classdef&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_classdef)
 
   ~tree_classdef ()
   {

@@ -57,11 +57,7 @@ public:
                   int l = -1, int c = -1)
     : tree (l, c), m_expr (e), m_list (sl), m_lead_comm (lc) { }
 
-  // No copying!
-
-  tree_if_clause (const tree_if_clause&) = delete;
-
-  tree_if_clause& operator = (const tree_if_clause&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_if_clause)
 
   ~tree_if_clause ();
 
@@ -98,11 +94,7 @@ public:
 
   tree_if_command_list (tree_if_clause *t) { append (t); }
 
-  // No copying!
-
-  tree_if_command_list (const tree_if_command_list&) = delete;
-
-  tree_if_command_list& operator = (const tree_if_command_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_if_command_list)
 
   ~tree_if_command_list ()
   {
@@ -134,11 +126,7 @@ public:
     : tree_command (l, c), m_list (lst), m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
-
-  tree_if_command (const tree_if_command&) = delete;
-
-  tree_if_command& operator = (const tree_if_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_if_command)
 
   ~tree_if_command ();
 
@@ -184,11 +172,7 @@ public:
                     int l = -1, int c = -1)
     : tree (l, c), m_label (e), m_list (sl), m_lead_comm (lc) { }
 
-  // No copying!
-
-  tree_switch_case (const tree_switch_case&) = delete;
-
-  tree_switch_case& operator = (const tree_switch_case&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_switch_case)
 
   ~tree_switch_case ();
 
@@ -225,11 +209,7 @@ public:
 
   tree_switch_case_list (tree_switch_case *t) { append (t); }
 
-  // No copying!
-
-  tree_switch_case_list (const tree_switch_case_list&) = delete;
-
-  tree_switch_case_list& operator = (const tree_switch_case_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_switch_case_list)
 
   ~tree_switch_case_list ()
   {
@@ -261,11 +241,7 @@ public:
     : tree_command (l, c), m_expr (e), m_list (lst), m_lead_comm (lc),
       m_trail_comm (tc) { }
 
-  // No copying!
-
-  tree_switch_command (const tree_switch_command&) = delete;
-
-  tree_switch_command& operator = (const tree_switch_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_switch_command)
 
   ~tree_switch_command ();
 

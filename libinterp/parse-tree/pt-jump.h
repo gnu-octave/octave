@@ -42,11 +42,7 @@ public:
   tree_break_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
-  // No copying!
-
-  tree_break_command (const tree_break_command&) = delete;
-
-  tree_break_command& operator = (const tree_break_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_break_command)
 
   ~tree_break_command () = default;
 
@@ -65,11 +61,7 @@ public:
   tree_continue_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
-  // No copying!
-
-  tree_continue_command (const tree_continue_command&) = delete;
-
-  tree_continue_command& operator = (const tree_continue_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_continue_command)
 
   ~tree_continue_command () = default;
 
@@ -88,11 +80,7 @@ public:
   tree_return_command (int l = -1, int c = -1)
     : tree_command (l, c) { }
 
-  // No copying!
-
-  tree_return_command (const tree_return_command&) = delete;
-
-  tree_return_command& operator = (const tree_return_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_return_command)
 
   ~tree_return_command () = default;
 

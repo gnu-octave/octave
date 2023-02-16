@@ -47,11 +47,7 @@ public:
 
   OCTINTERP_API cdef_manager (interpreter& interp);
 
-  // No copying!
-
-  cdef_manager (const cdef_manager&) = delete;
-
-  cdef_manager& operator = (const cdef_manager&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (cdef_manager)
 
   ~cdef_manager () = default;
 

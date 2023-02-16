@@ -178,11 +178,7 @@ codecvt_u8 : public std::codecvt<char, char, std::mbstate_t>
 {
 public:
 
-  // No copying!
-
-  codecvt_u8 (codecvt_u8&) = delete;
-
-  codecvt_u8& operator = (codecvt_u8&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (codecvt_u8)
 
   codecvt_u8 (const std::string& enc)
     : m_enc (enc)

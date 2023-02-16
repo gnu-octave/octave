@@ -89,11 +89,7 @@ public:
   token (int tv, const std::string& mth, const std::string& cls,
          const filepos& beg_pos, const filepos& end_pos);
 
-  // No copying!
-
-  token (const token&) = delete;
-
-  token& operator = (const token&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (token)
 
   ~token ();
 
@@ -162,9 +158,7 @@ private:
       : m_superclass_info (new superclass_info (meth, cls))
     { }
 
-    tok_info (const tok_info&) = delete;
-
-    tok_info& operator = (const tok_info&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (tok_info)
 
     ~tok_info () { }
 
@@ -183,9 +177,7 @@ private:
 
       superclass_info () = delete;
 
-      superclass_info (const superclass_info&) = delete;
-
-      superclass_info& operator = (const superclass_info&) = delete;
+      OCTAVE_DISABLE_COPY_MOVE (superclass_info)
 
       ~superclass_info () = default;
 

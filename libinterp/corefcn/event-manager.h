@@ -296,12 +296,7 @@ public:
 
   OCTINTERP_API event_manager (interpreter& interp);
 
-  // No copying!
-
-  event_manager (const event_manager&) = delete;
-
-  event_manager&
-  operator = (const event_manager&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (event_manager)
 
   virtual ~event_manager ();
 

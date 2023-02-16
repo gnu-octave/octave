@@ -59,11 +59,7 @@ public:
       m_dispatch_class (), m_package_name (), m_name (), m_dir_name (),
       m_doc () { }
 
-  // No copying!
-
-  octave_function (const octave_function& f) = delete;
-
-  octave_function& operator = (const octave_function& f) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_function)
 
   ~octave_function () = default;
 

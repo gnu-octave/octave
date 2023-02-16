@@ -79,11 +79,7 @@ public:
       m_errmsg ()
   { }
 
-  // No copying!
-
-  base_stream (const base_stream&) = delete;
-
-  base_stream& operator = (const base_stream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_stream)
 
   virtual ~base_stream () = default;
 
@@ -505,8 +501,7 @@ public:
 
   OCTINTERP_API stream_list (interpreter& interp);
 
-  stream_list (const stream_list&) = delete;
-  stream_list& operator = (const stream_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (stream_list)
 
   OCTINTERP_API ~stream_list ();
 

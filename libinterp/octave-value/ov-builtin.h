@@ -82,11 +82,7 @@ public:
     : octave_function (nm, ds), m_fcn (nullptr), m_meth (mm), m_file (fnm)
   { }
 
-  // No copying!
-
-  octave_builtin (const octave_builtin& ob) = delete;
-
-  octave_builtin& operator = (const octave_builtin& ob) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_builtin)
 
   ~octave_builtin () = default;
 

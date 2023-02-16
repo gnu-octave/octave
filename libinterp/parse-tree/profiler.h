@@ -76,11 +76,7 @@ public:
         }
     }
 
-    // No copying!
-
-    enter (const enter&) = delete;
-
-    enter& operator = (const enter&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (enter)
 
     ~enter ()
     {
@@ -91,11 +87,7 @@ public:
 
   profiler ();
 
-  // No copying!
-
-  profiler (const profiler&) = delete;
-
-  profiler& operator = (const profiler&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (profiler)
 
   virtual ~profiler ();
 
@@ -145,11 +137,7 @@ private:
 
     virtual ~tree_node ();
 
-    // No copying!
-
-    tree_node (const tree_node&) = delete;
-
-    tree_node& operator = (const tree_node&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (tree_node)
 
     void add_time (double dt) { m_time += dt; }
 

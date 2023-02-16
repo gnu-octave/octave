@@ -52,11 +52,7 @@ public:
     : std::streambuf (), m_f (f), m_cf (cf)
   { }
 
-  // No copying!
-
-  c_file_ptr_buf (const c_file_ptr_buf&) = delete;
-
-  c_file_ptr_buf& operator = (const c_file_ptr_buf&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (c_file_ptr_buf)
 
   ~c_file_ptr_buf ();
 
@@ -118,11 +114,7 @@ public:
     : STREAM_T (nullptr), m_buf (new BUF_T (m_f, m_cf))
   { STREAM_T::init (m_buf); }
 
-  // No copying!
-
-  c_file_ptr_stream (const c_file_ptr_stream&) = delete;
-
-  c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (c_file_ptr_stream)
 
   ~c_file_ptr_stream () { delete m_buf; m_buf = nullptr; }
 
@@ -167,11 +159,7 @@ public:
     : std::streambuf (), m_f (f), m_cf (cf)
   { }
 
-  // No copying!
-
-  c_zfile_ptr_buf (const c_zfile_ptr_buf&) = delete;
-
-  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (c_zfile_ptr_buf)
 
   ~c_zfile_ptr_buf ();
 

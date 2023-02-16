@@ -45,11 +45,7 @@ public:
 
   unwind_protect () : m_lifo () { }
 
-  // No copying!
-
-  unwind_protect (const unwind_protect&) = delete;
-
-  unwind_protect& operator = (const unwind_protect&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (unwind_protect)
 
   // Destructor should not raise an exception, so all actions
   // registered should be exception-safe.  If you're not sure, see
@@ -108,11 +104,7 @@ public:
 
   unwind_protect_safe () : unwind_protect () { }
 
-  // No copying!
-
-  unwind_protect_safe (const unwind_protect_safe&) = delete;
-
-  unwind_protect_safe& operator = (const unwind_protect_safe&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (unwind_protect_safe)
 
   ~unwind_protect_safe ()
   {
@@ -176,11 +168,7 @@ public:
     : m_fcn (std::bind (fcn, args...))
   { }
 
-  // No copying!
-
-  unwind_action (const unwind_action&) = delete;
-
-  unwind_action& operator = (const unwind_action&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (unwind_action)
 
   ~unwind_action () { run (); }
 
@@ -234,11 +222,7 @@ public:
     : m_fcn (std::bind (fcn, args...))
   { }
 
-  // No copying!
-
-  unwind_action_safe (const unwind_action_safe&) = delete;
-
-  unwind_action_safe& operator = (const unwind_action_safe&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (unwind_action_safe)
 
   ~unwind_action_safe () { run (); }
 
@@ -333,11 +317,7 @@ public:
     m_ref = new_val;
   }
 
-  // No copying!
-
-  unwind_protect_var (const unwind_protect_var&) = delete;
-
-  unwind_protect_var& operator = (const unwind_protect_var&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (unwind_protect_var)
 
   ~unwind_protect_var ()
   {

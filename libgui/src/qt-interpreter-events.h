@@ -26,6 +26,8 @@
 #if ! defined (octave_qt_interpreter_events_h)
 #define octave_qt_interpreter_events_h 1
 
+#include "octave-config.h"
+
 #include <list>
 #include <string>
 
@@ -72,11 +74,7 @@ public:
 
   qt_interpreter_events (base_qobject& oct_qobj);
 
-  // No copying!
-
-  qt_interpreter_events (const qt_interpreter_events&) = delete;
-
-  qt_interpreter_events& operator = (const qt_interpreter_events&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (qt_interpreter_events)
 
   ~qt_interpreter_events () = default;
 

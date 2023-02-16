@@ -60,11 +60,7 @@ public:
                    int l = -1, int c = -1)
     : tree_expression (l, c), m_sym (s) { }
 
-  // No copying!
-
-  tree_identifier (const tree_identifier&) = delete;
-
-  tree_identifier& operator = (const tree_identifier&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_identifier)
 
   ~tree_identifier () = default;
 

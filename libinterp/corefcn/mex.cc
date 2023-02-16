@@ -3156,11 +3156,7 @@ public:
   mex (octave_mex_function& f)
     : m_curr_mex_fcn (f), m_memlist (), m_arraylist (), m_fname (nullptr) { }
 
-  // No copying!
-
-  mex (const mex&) = delete;
-
-  mex& operator = (const mex&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (mex)
 
   ~mex (void)
   {

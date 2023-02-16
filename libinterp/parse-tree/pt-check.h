@@ -45,11 +45,7 @@ public:
   tree_checker ()
     : m_do_lvalue_check (false), m_file_name () { }
 
-  // No copying!
-
-  tree_checker (const tree_checker&) = delete;
-
-  tree_checker& operator = (const tree_checker&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_checker)
 
   ~tree_checker () = default;
 

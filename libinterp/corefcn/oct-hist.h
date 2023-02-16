@@ -44,9 +44,7 @@ public:
 
   history_system (interpreter& interp);
 
-  history_system (const history_system&) = delete;
-
-  history_system& operator = (const history_system&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (history_system)
 
   ~history_system () = default;
 

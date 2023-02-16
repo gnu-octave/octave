@@ -199,11 +199,7 @@ public:
     init (tm);
   }
 
-  // No copying!
-
-  tm_const (const tm_const&) = delete;
-
-  tm_const& operator = (const tm_const&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tm_const)
 
   ~tm_const () = default;
 

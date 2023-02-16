@@ -51,11 +51,7 @@ public:
     : tree (l, c), m_num_parens (0), m_postfix_index_type ('\0'),
       m_for_cmd_expr (false), m_print_flag (false) { }
 
-  // No copying!
-
-  tree_expression (const tree_expression&) = delete;
-
-  tree_expression& operator = (const tree_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_expression)
 
   virtual ~tree_expression () = default;
 

@@ -47,9 +47,7 @@ public:
 
   settings ();
 
-  settings (const settings&) = delete;
-
-  settings& operator = (const settings&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (settings)
 
   ~settings () = default;
 

@@ -26,6 +26,8 @@
 #if ! defined (octave_gui_preferences_h)
 #define octave_gui_preferences_h 1
 
+#include "octave-config.h"
+
 #include <QStringList>
 #include <QStyle>
 #include <QTabWidget>
@@ -86,12 +88,7 @@ public:
 
   all_gui_preferences () = default;
 
-  // No copying!
-
-  all_gui_preferences (const all_gui_preferences&) = delete;
-
-  all_gui_preferences&
-  operator = (const all_gui_preferences&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (all_gui_preferences)
 
   ~all_gui_preferences () = default;
 
@@ -186,12 +183,7 @@ public:
 
   all_shortcut_preferences () = default;
 
-  // No copying!
-
-  all_shortcut_preferences (const all_shortcut_preferences&) = delete;
-
-  all_shortcut_preferences&
-  operator = (const all_shortcut_preferences&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (all_shortcut_preferences)
 
   ~all_shortcut_preferences () = default;
 

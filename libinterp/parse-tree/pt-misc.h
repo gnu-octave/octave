@@ -68,11 +68,7 @@ public:
     append (new tree_decl_elt (id));
   }
 
-  // No copying!
-
-  tree_parameter_list (const tree_parameter_list&) = delete;
-
-  tree_parameter_list& operator = (const tree_parameter_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_parameter_list)
 
   ~tree_parameter_list ();
 

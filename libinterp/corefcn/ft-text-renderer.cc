@@ -121,11 +121,7 @@ private:
 
 public:
 
-  // No copying!
-
-  ft_manager (const ft_manager&) = delete;
-
-  ft_manager& operator = (const ft_manager&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (ft_manager)
 
 private:
 
@@ -476,11 +472,7 @@ public:
       m_max_fontsize (0), m_antialias (true)
   { }
 
-  // No copying!
-
-  ft_text_renderer (const ft_text_renderer&) = delete;
-
-  ft_text_renderer& operator = (const ft_text_renderer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (ft_text_renderer)
 
   ~ft_text_renderer () = default;
 

@@ -2084,11 +2084,7 @@ public:
 
   octave_inline_fcn (octave_inline *obj) : m_inline_obj (obj) { }
 
-  // No copying!
-
-  octave_inline_fcn (const octave_inline_fcn& ob) = delete;
-
-  octave_inline_fcn& operator = (const octave_inline_fcn& ob) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_inline_fcn)
 
   ~octave_inline_fcn () = default;
 

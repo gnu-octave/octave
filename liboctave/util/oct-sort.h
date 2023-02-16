@@ -110,11 +110,7 @@ public:
 
   octave_sort (const compare_fcn_type&);
 
-  // No copying!
-
-  octave_sort (const octave_sort&) = delete;
-
-  octave_sort& operator = (const octave_sort&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_sort)
 
   ~octave_sort ();
 
@@ -203,11 +199,7 @@ private:
       : m_min_gallop (), m_a (nullptr), m_ia (nullptr), m_alloced (0), m_n (0)
     { reset (); }
 
-    // No copying!
-
-    MergeState (const MergeState&) = delete;
-
-    MergeState& operator = (const MergeState&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (MergeState)
 
     ~MergeState ()
     { delete [] m_a; delete [] m_ia; }

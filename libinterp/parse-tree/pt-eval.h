@@ -148,11 +148,7 @@ public:
       m_index_position (0), m_num_indices (0)
   { }
 
-  // No copying!
-
-  tree_evaluator (const tree_evaluator&) = delete;
-
-  tree_evaluator& operator = (const tree_evaluator&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_evaluator)
 
   ~tree_evaluator () = default;
 

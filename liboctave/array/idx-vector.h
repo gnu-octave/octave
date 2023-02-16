@@ -80,11 +80,7 @@ private:
 
     idx_base_rep () : m_count (1) { }
 
-    // No copying!
-
-    idx_base_rep (const idx_base_rep&) = delete;
-
-    idx_base_rep& operator = (const idx_base_rep&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (idx_base_rep)
 
     virtual ~idx_base_rep () = default;
 
@@ -131,11 +127,7 @@ private:
 
     OCTAVE_API idx_colon_rep (char c);
 
-    // No copying!
-
-    idx_colon_rep (const idx_colon_rep& idx) = delete;
-
-    idx_colon_rep& operator = (const idx_colon_rep& idx) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (idx_colon_rep)
 
     octave_idx_type xelem (octave_idx_type i) const { return i; }
 
@@ -178,11 +170,7 @@ private:
 
     OCTAVE_API idx_range_rep (const range<double>&);
 
-    // No copying!
-
-    idx_range_rep (const idx_range_rep& idx) = delete;
-
-    idx_range_rep& operator = (const idx_range_rep& idx) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (idx_range_rep)
 
     octave_idx_type xelem (octave_idx_type i) const
     { return m_start + i * m_step; }
@@ -232,11 +220,7 @@ private:
 
     idx_scalar_rep (octave_idx_type i, direct) : idx_base_rep (), m_data (i) { }
 
-    // No copying!
-
-    idx_scalar_rep (const idx_scalar_rep& idx) = delete;
-
-    idx_scalar_rep& operator = (const idx_scalar_rep& idx) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (idx_scalar_rep)
 
     // Zero-based constructor.
     OCTAVE_API idx_scalar_rep (octave_idx_type i);
@@ -308,11 +292,7 @@ private:
 
     OCTAVE_API idx_vector_rep (const Sparse<bool>&);
 
-    // No copying!
-
-    idx_vector_rep (const idx_vector_rep& idx) = delete;
-
-    idx_vector_rep& operator = (const idx_vector_rep& idx) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (idx_vector_rep)
 
     ~idx_vector_rep ();
 
@@ -377,11 +357,7 @@ private:
 
     OCTAVE_API idx_mask_rep (const Array<bool>&, octave_idx_type = -1);
 
-    // No copying!
-
-    idx_mask_rep (const idx_mask_rep& idx) = delete;
-
-    idx_mask_rep& operator = (const idx_mask_rep& idx) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (idx_mask_rep)
 
     OCTAVE_API ~idx_mask_rep ();
 

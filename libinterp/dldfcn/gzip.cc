@@ -107,9 +107,7 @@ public:
       throw std::runtime_error ("unable to open file");
   }
 
-  CFile (const CFile&) = delete;
-
-  CFile& operator = (const CFile&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (CFile)
 
   ~CFile ()
   {
@@ -161,9 +159,7 @@ private:
         throw std::runtime_error ("failed to open bzip2 stream");
     }
 
-    zipper (const zipper&) = delete;
-
-    zipper& operator = (const zipper&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (zipper)
 
     ~zipper ()
     {
@@ -273,9 +269,7 @@ private:
       std::strcpy (reinterpret_cast<char *> (p), str.c_str ());
     }
 
-    uchar_array (const uchar_array&) = delete;
-
-    uchar_array& operator = (const uchar_array&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (uchar_array)
 
     ~uchar_array () { delete[] p; }
   };
@@ -353,9 +347,7 @@ private:
 #endif
     }
 
-    gzip_header (const gzip_header&) = delete;
-
-    gzip_header& operator = (const gzip_header&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (gzip_header)
 
     ~gzip_header () = default;
 
@@ -380,9 +372,7 @@ private:
       m_strm->opaque = Z_NULL;
     }
 
-    zipper (const zipper&) = delete;
-
-    zipper& operator = (const zipper&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (zipper)
 
     ~zipper ()
     {

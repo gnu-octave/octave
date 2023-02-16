@@ -49,11 +49,7 @@ public:
 
   text_renderer ();
 
-  // No copying!
-
-  text_renderer (const text_renderer&) = delete;
-
-  text_renderer& operator = (const text_renderer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (text_renderer)
 
   ~text_renderer ();
 

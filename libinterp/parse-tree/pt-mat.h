@@ -54,11 +54,7 @@ public:
     : tree_array_list (row, l, c)
   { }
 
-  // No copying!
-
-  tree_matrix (const tree_matrix&) = delete;
-
-  tree_matrix& operator = (const tree_matrix&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_matrix)
 
   ~tree_matrix () = default;
 

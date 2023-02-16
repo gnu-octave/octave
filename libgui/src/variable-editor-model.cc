@@ -332,11 +332,7 @@ public:
 
   ~numeric_model () = default;
 
-  // No copying!
-
-  numeric_model (const numeric_model&) = delete;
-
-  numeric_model& operator = (const numeric_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (numeric_model)
 
   void maybe_resize_rows (int rows)
   {
@@ -396,11 +392,7 @@ public:
 
   ~string_model () = default;
 
-  // No copying!
-
-  string_model (const string_model&) = delete;
-
-  string_model& operator = (const string_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (string_model)
 
   QVariant edit_display (const QModelIndex&, int) const
   {
@@ -433,11 +425,7 @@ public:
 
   ~cell_model () = default;
 
-  // No copying!
-
-  cell_model (const cell_model&) = delete;
-
-  cell_model& operator = (const cell_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (cell_model)
 
   void maybe_resize_rows (int rows)
   {
@@ -534,11 +522,7 @@ public:
 
   ~scalar_struct_model () = default;
 
-  // No copying!
-
-  scalar_struct_model (const scalar_struct_model&) = delete;
-
-  scalar_struct_model& operator = (const scalar_struct_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (scalar_struct_model)
 
   QVariant edit_display (const QModelIndex& idx, int role) const
   {
@@ -657,11 +641,7 @@ public:
 
   ~display_only_model () = default;
 
-  // No copying!
-
-  display_only_model (const display_only_model&) = delete;
-
-  display_only_model& operator = (const display_only_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (display_only_model)
 
   bool is_editable () const { return false; }
 
@@ -708,11 +688,7 @@ public:
 
   ~vector_struct_model () = default;
 
-  // No copying!
-
-  vector_struct_model (const vector_struct_model&) = delete;
-
-  vector_struct_model& operator = (const vector_struct_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (vector_struct_model)
 
   void maybe_resize_rows (int rows)
   {
@@ -841,11 +817,7 @@ public:
 
   ~struct_model () = default;
 
-  // No copying!
-
-  struct_model (const struct_model&) = delete;
-
-  struct_model& operator = (const struct_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (struct_model)
 
   void maybe_resize_rows (int rows)
   {

@@ -54,9 +54,7 @@ public:
   octave_classdef (const octave::cdef_object& obj)
     : octave_base_value (), m_object (obj) { }
 
-  octave_classdef (const octave_classdef&) = delete;
-
-  octave_classdef& operator = (const octave_classdef&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_classdef)
 
   ~octave_classdef () = default;
 
@@ -177,9 +175,7 @@ public:
     : m_object (obj)
   { }
 
-  octave_classdef_meta (const octave_classdef_meta&) = delete;
-
-  octave_classdef_meta& operator = (const octave_classdef_meta&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_classdef_meta)
 
   ~octave_classdef_meta () { m_object.meta_release (); }
 
@@ -249,9 +245,7 @@ public:
     : octave_function (), m_method_name (meth), m_class_name (cls)
   { }
 
-  octave_classdef_superclass_ref (const octave_classdef_superclass_ref&) = delete;
-
-  octave_classdef_superclass_ref& operator = (const octave_classdef_superclass_ref&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_classdef_superclass_ref)
 
   ~octave_classdef_superclass_ref () = default;
 

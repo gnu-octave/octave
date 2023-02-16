@@ -59,11 +59,7 @@ public:
       m_expr_id (id), m_lead_comm (cl), m_mid_comm (cm), m_trail_comm (ct)
   { }
 
-  // No copying!
-
-  tree_try_catch_command (const tree_try_catch_command&) = delete;
-
-  tree_try_catch_command& operator = (const tree_try_catch_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_try_catch_command)
 
   ~tree_try_catch_command ();
 
@@ -127,12 +123,7 @@ public:
       m_lead_comm (cl), m_mid_comm (cm), m_trail_comm (ct)
   { }
 
-  // No copying!
-
-  tree_unwind_protect_command (const tree_unwind_protect_command&) = delete;
-
-  tree_unwind_protect_command&
-  operator = (const tree_unwind_protect_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_unwind_protect_command)
 
   ~tree_unwind_protect_command ();
 

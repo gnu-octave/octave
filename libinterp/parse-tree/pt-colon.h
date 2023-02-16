@@ -60,11 +60,7 @@ public:
     : tree_expression (l, c), m_base (bas), m_limit (lim),
       m_increment (inc), m_save_base (false) { }
 
-  // No copying!
-
-  tree_colon_expression (const tree_colon_expression&) = delete;
-
-  tree_colon_expression& operator = (const tree_colon_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_colon_expression)
 
   ~tree_colon_expression ()
   {

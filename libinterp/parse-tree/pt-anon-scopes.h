@@ -45,11 +45,7 @@ public:
 
   tree_anon_scopes (tree_anon_fcn_handle& anon_fh);
 
-  // No copying!
-
-  tree_anon_scopes (const tree_anon_scopes&) = delete;
-
-  tree_anon_scopes& operator = (const tree_anon_scopes&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_anon_scopes)
 
   ~tree_anon_scopes () = default;
 

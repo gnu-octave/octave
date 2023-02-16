@@ -48,11 +48,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  command_history (const command_history&) = delete;
-
-  command_history& operator = (const command_history&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (command_history)
 
   virtual ~command_history () = default;
 

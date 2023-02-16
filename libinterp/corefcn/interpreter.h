@@ -93,11 +93,7 @@ public:
 
   temporary_file_list () : m_files () { }
 
-  // No copying!
-
-  temporary_file_list (const temporary_file_list&) = delete;
-
-  temporary_file_list& operator = (const temporary_file_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (temporary_file_list)
 
   ~temporary_file_list ();
 
@@ -120,11 +116,7 @@ public:
 
   interpreter (application *app_context = nullptr);
 
-  // No copying, at least not yet...
-
-  interpreter (const interpreter&) = delete;
-
-  interpreter& operator = (const interpreter&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (interpreter)
 
   // Clean up the interpreter object.
 

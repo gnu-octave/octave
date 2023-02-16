@@ -1937,9 +1937,7 @@ public:
 
   callback_props () : m_set () { }
 
-  callback_props (const callback_props&) = delete;
-
-  callback_props& operator = (const callback_props&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (callback_props)
 
   ~callback_props () = default;
 
@@ -11673,11 +11671,7 @@ public:
     : base_graphics_event (), m_function (fcn), m_function_data (data)
   { }
 
-  // No copying!
-
-  function_event (const function_event&) = delete;
-
-  function_event& operator = (const function_event&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (function_event)
 
   void execute ()
   {

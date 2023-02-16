@@ -68,11 +68,7 @@ private:
         }
     }
 
-    // No copying!
-
-    fcn_info_rep (const fcn_info_rep&) = delete;
-
-    fcn_info_rep& operator = (const fcn_info_rep&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (fcn_info_rep)
 
     ~fcn_info_rep () = default;
 

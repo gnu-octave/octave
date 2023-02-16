@@ -47,11 +47,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  fftw_planner (const fftw_planner&) = delete;
-
-  fftw_planner& operator = (const fftw_planner&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (fftw_planner)
 
   ~fftw_planner ();
 
@@ -193,12 +189,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  float_fftw_planner (const float_fftw_planner&) = delete;
-
-  float_fftw_planner&
-  operator = (const float_fftw_planner&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (float_fftw_planner)
 
   ~float_fftw_planner ();
 
@@ -338,11 +329,7 @@ public:
 
   fftw () = delete;
 
-  // No copying.
-
-  fftw (const fftw&) = delete;
-
-  fftw& operator = (const fftw&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (fftw)
 
   static int fft (const double *in, Complex *out, std::size_t npts,
                   std::size_t nsamples = 1, octave_idx_type stride = 1,

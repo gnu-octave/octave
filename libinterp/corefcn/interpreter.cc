@@ -772,9 +772,7 @@ public:
   cli_input_reader (interpreter& interp)
     : m_interpreter (interp), m_thread () { }
 
-  cli_input_reader (const cli_input_reader&) = delete;
-
-  cli_input_reader& operator = (const cli_input_reader&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (cli_input_reader)
 
   ~cli_input_reader ()
   {

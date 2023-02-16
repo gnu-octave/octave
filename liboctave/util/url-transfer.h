@@ -68,11 +68,7 @@ public:
 
   base_url_transfer (const std::string& url, std::ostream& os);
 
-  // No copying!
-
-  base_url_transfer (const base_url_transfer&) = delete;
-
-  base_url_transfer& operator = (const base_url_transfer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_url_transfer)
 
   virtual ~base_url_transfer () = default;
 

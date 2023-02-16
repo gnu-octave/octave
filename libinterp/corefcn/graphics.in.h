@@ -2449,11 +2449,7 @@ public:
 
   base_graphics_object () : m_toolkit_flag (false) { }
 
-  // No copying!
-
-  base_graphics_object (const base_graphics_object&) = delete;
-
-  base_graphics_object& operator = (const base_graphics_object&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_graphics_object)
 
   virtual ~base_graphics_object () = default;
 
@@ -2990,9 +2986,7 @@ public:
 
   ~root_figure () = default;
 
-  root_figure (const root_figure&) = delete;
-
-  root_figure& operator = (const root_figure&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (root_figure)
 
   void mark_modified () { }
 

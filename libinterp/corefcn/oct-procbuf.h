@@ -52,11 +52,7 @@ public:
       m_proc_pid (-1), m_next (nullptr)
   { open (command, mode); }
 
-  // No copying!
-
-  procbuf (const procbuf&) = delete;
-
-  procbuf& operator = (const procbuf&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (procbuf)
 
   ~procbuf () { close (); }
 

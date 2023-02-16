@@ -371,11 +371,7 @@ public:
     return retval;
   }
 
-  // No copying!
-
-  mxArray (const mxArray&) = delete;
-
-  mxArray& operator = (const mxArray&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (mxArray)
 
   OCTINTERP_API ~mxArray ();
 

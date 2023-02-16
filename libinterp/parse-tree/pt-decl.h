@@ -59,11 +59,7 @@ public:
 
   tree_decl_elt (tree_identifier *i, tree_expression *e = nullptr);
 
-  // No copying!
-
-  tree_decl_elt (const tree_decl_elt&) = delete;
-
-  tree_decl_elt& operator = (const tree_decl_elt&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_decl_elt)
 
   ~tree_decl_elt ();
 
@@ -117,11 +113,7 @@ public:
 
   tree_decl_init_list (tree_decl_elt *t) { append (t); }
 
-  // No copying!
-
-  tree_decl_init_list (const tree_decl_init_list&) = delete;
-
-  tree_decl_init_list& operator = (const tree_decl_init_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_decl_init_list)
 
   ~tree_decl_init_list ()
   {
@@ -178,11 +170,7 @@ public:
   tree_decl_command (const std::string& n, tree_decl_init_list *t,
                      int l = -1, int c = -1);
 
-  // No copying!
-
-  tree_decl_command (const tree_decl_command&) = delete;
-
-  tree_decl_command& operator = (const tree_decl_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_decl_command)
 
   ~tree_decl_command ();
 

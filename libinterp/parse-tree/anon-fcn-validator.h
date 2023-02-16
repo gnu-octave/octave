@@ -45,11 +45,7 @@ public:
 
   anon_fcn_validator (tree_parameter_list *, tree_expression *expr);
 
-  // No copying!
-
-  anon_fcn_validator (const anon_fcn_validator&) = delete;
-
-  anon_fcn_validator& operator = (const anon_fcn_validator&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (anon_fcn_validator)
 
   ~anon_fcn_validator () = default;
 

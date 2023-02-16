@@ -73,11 +73,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  octave_user_code (const octave_user_code& f) = delete;
-
-  octave_user_code& operator = (const octave_user_code& f) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_user_code)
 
   ~octave_user_code ();
 
@@ -164,11 +160,7 @@ public:
                       const octave::symbol_scope& scope = octave::symbol_scope (),
                       const std::string& ds = "");
 
-  // No copying!
-
-  octave_user_script (const octave_user_script& f) = delete;
-
-  octave_user_script& operator = (const octave_user_script& f) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_user_script)
 
   ~octave_user_script () = default;
 
@@ -215,11 +207,7 @@ public:
                         octave::tree_parameter_list *rl = nullptr,
                         octave::tree_statement_list *cl = nullptr);
 
-  // No copying!
-
-  octave_user_function (const octave_user_function& fcn) = delete;
-
-  octave_user_function& operator = (const octave_user_function& fcn) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_user_function)
 
   ~octave_user_function ();
 

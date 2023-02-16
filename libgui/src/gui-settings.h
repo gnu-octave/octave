@@ -26,6 +26,8 @@
 #if ! defined (octave_gui_settings_h)
 #define octave_gui_settings_h 1
 
+#include "octave-config.h"
+
 #include <QColor>
 #include <QSettings>
 #include <QString>
@@ -69,11 +71,7 @@ public:
     : QSettings (format, scope, organization, application, parent)
   { }
 
-  // No copying!
-
-  gui_settings (const gui_settings&) = delete;
-
-  gui_settings& operator = (const gui_settings&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (gui_settings)
 
   ~gui_settings () = default;
 

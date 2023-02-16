@@ -48,11 +48,7 @@ public:
     : tree_command (l, c), m_body (body), m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
-
-  tree_spmd_command (const tree_spmd_command&) = delete;
-
-  tree_spmd_command& operator = (const tree_spmd_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_spmd_command)
 
   ~tree_spmd_command ();
 

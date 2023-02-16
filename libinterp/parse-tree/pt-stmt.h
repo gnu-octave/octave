@@ -63,11 +63,7 @@ public:
   tree_statement (tree_expression *e, comment_list *cl)
     : m_command (nullptr), m_expression (e), m_comment_list (cl) { }
 
-  // No copying!
-
-  tree_statement (const tree_statement&) = delete;
-
-  tree_statement& operator = (const tree_statement&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_statement)
 
   ~tree_statement ();
 
@@ -152,11 +148,7 @@ public:
     : m_function_body (false), m_anon_function_body (false),
       m_script_body (false) { append (s); }
 
-  // No copying!
-
-  tree_statement_list (const tree_statement_list&) = delete;
-
-  tree_statement_list& operator = (const tree_statement_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_statement_list)
 
   ~tree_statement_list ()
   {

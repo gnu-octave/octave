@@ -594,11 +594,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  stack_frame_walker (const stack_frame_walker&) = delete;
-
-  stack_frame_walker& operator = (const stack_frame_walker&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (stack_frame_walker)
 
   virtual void
   visit_compiled_fcn_stack_frame (compiled_fcn_stack_frame&) = 0;
@@ -635,9 +631,7 @@ public:
       m_have_regexp (false), m_cleared_names ()
   { }
 
-  symbol_cleaner (const symbol_cleaner&) = delete;
-
-  symbol_cleaner& operator = (const symbol_cleaner&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (symbol_cleaner)
 
   ~symbol_cleaner () = default;
 
@@ -796,9 +790,7 @@ public:
       m_sym_inf_list (), m_found_names ()
   { }
 
-  symbol_info_accumulator (const symbol_info_accumulator&) = delete;
-
-  symbol_info_accumulator& operator = (const symbol_info_accumulator&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (symbol_info_accumulator)
 
   ~symbol_info_accumulator () = default;
 

@@ -54,11 +54,7 @@ private:
 
     shlibs_list () : m_lib_list () { }
 
-    // No copying!
-
-    shlibs_list (const shlibs_list&) = delete;
-
-    shlibs_list& operator = (const shlibs_list&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (shlibs_list)
 
     ~shlibs_list () = default;
 
@@ -83,11 +79,7 @@ public:
     : m_interpreter (interp), m_loaded_shlibs (), m_doing_load (false)
   { }
 
-  // No copying!
-
-  dynamic_loader (const dynamic_loader&) = delete;
-
-  dynamic_loader& operator = (const dynamic_loader&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (dynamic_loader)
 
   virtual ~dynamic_loader () = default;
 

@@ -61,11 +61,7 @@ public:
     : m_list_includes_magic_tilde (false), m_simple_assign_lhs (false)
   { append (t); }
 
-  // No copying!
-
-  tree_argument_list (const tree_argument_list&) = delete;
-
-  tree_argument_list& operator = (const tree_argument_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_argument_list)
 
   ~tree_argument_list ();
 

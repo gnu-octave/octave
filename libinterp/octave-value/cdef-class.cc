@@ -136,9 +136,7 @@ public:
   ctor_analyzer (const std::string& ctor, const std::string& obj)
     : tree_walker (), m_who (ctor), m_obj_name (obj) { }
 
-  ctor_analyzer (const ctor_analyzer&) = delete;
-
-  ctor_analyzer& operator = (const ctor_analyzer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (ctor_analyzer)
 
   ~ctor_analyzer () = default;
 

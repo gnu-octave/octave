@@ -54,11 +54,7 @@ public:
 
     elem () { }
 
-    // No copying!
-
-    elem (const elem&) = delete;
-
-    elem& operator = (const elem&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (elem)
 
     virtual ~elem () = default;
 
@@ -96,11 +92,7 @@ public:
     restore_var_elem (T& ref, const T& val)
       : m_ptr (&ref), m_val (val) { }
 
-    // No copying!
-
-    restore_var_elem (const restore_var_elem&) = delete;
-
-    restore_var_elem& operator = (const restore_var_elem&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (restore_var_elem)
 
     void run () { *m_ptr = m_val; }
 
@@ -119,11 +111,7 @@ public:
     delete_ptr_elem (T *ptr)
       : m_ptr (ptr) { }
 
-    // No copying!
-
-    delete_ptr_elem (const delete_ptr_elem&) = delete;
-
-    delete_ptr_elem operator = (const delete_ptr_elem&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (delete_ptr_elem)
 
     void run () { delete m_ptr; }
 
@@ -134,11 +122,7 @@ public:
 
   action_container () { }
 
-  // No copying!
-
-  action_container (const action_container&) = delete;
-
-  action_container& operator = (const action_container&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (action_container)
 
   virtual ~action_container () = default;
 

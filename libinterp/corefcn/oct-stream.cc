@@ -291,11 +291,7 @@ public:
 
   scanf_format_list (const std::string& fmt = "");
 
-  // No copying!
-
-  scanf_format_list (const scanf_format_list&) = delete;
-
-  scanf_format_list& operator = (const scanf_format_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (scanf_format_list)
 
   ~scanf_format_list ();
 
@@ -799,11 +795,7 @@ public:
 
   printf_format_list (const std::string& fmt = "");
 
-  // No copying!
-
-  printf_format_list (const printf_format_list&) = delete;
-
-  printf_format_list& operator = (const printf_format_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (printf_format_list)
 
   ~printf_format_list ();
 
@@ -1231,11 +1223,7 @@ public:
 
   delimited_stream (std::istream& is, const delimited_stream& ds);
 
-  // No copying!
-
-  delimited_stream (const delimited_stream&) = delete;
-
-  delimited_stream& operator = (const delimited_stream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (delimited_stream)
 
   ~delimited_stream ();
 
@@ -1729,11 +1717,7 @@ public:
 
   textscan_format_list (const std::string& fmt = std::string (),
                         const std::string& who = "textscan");
-  // No copying!
-
-  textscan_format_list (const textscan_format_list&) = delete;
-
-  textscan_format_list& operator = (const textscan_format_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (textscan_format_list)
 
   ~textscan_format_list ();
 
@@ -1846,11 +1830,7 @@ public:
   textscan (const std::string& who_arg = "textscan",
             const std::string& encoding = "utf-8");
 
-  // No copying!
-
-  textscan (const textscan&) = delete;
-
-  textscan& operator = (const textscan&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (textscan)
 
   ~textscan () = default;
 
@@ -5540,11 +5520,7 @@ public:
       }
   }
 
-  // No copying!
-
-  printf_value_cache (const printf_value_cache&) = delete;
-
-  printf_value_cache& operator = (const printf_value_cache&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (printf_value_cache)
 
   ~printf_value_cache () = default;
 

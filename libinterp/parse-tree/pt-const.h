@@ -61,11 +61,7 @@ public:
     : tree_expression (l, c), m_value (v), m_orig_text (ot)
   { }
 
-  // No copying!
-
-  tree_constant (const tree_constant&) = delete;
-
-  tree_constant& operator = (const tree_constant&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_constant)
 
   ~tree_constant () = default;
 

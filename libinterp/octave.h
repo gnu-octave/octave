@@ -249,11 +249,7 @@ public:
 
   application (int argc, char **argv);
 
-  // No copying, at least not yet...
-
-  application (const application&) = delete;
-
-  application& operator = (const application&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (application)
 
   virtual ~application ();
 
@@ -374,11 +370,7 @@ public:
     : application (argc, argv)
   { }
 
-  // No copying, at least not yet...
-
-  cli_application (const cli_application&) = delete;
-
-  cli_application& operator = (const cli_application&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (cli_application)
 
   ~cli_application () = default;
 

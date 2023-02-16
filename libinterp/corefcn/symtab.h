@@ -60,11 +60,7 @@ public:
 
   symbol_table (interpreter& interp);
 
-  // No copying!
-
-  symbol_table (const symbol_table&) = delete;
-
-  symbol_table& operator = (const symbol_table&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (symbol_table)
 
   ~symbol_table () = default;
 

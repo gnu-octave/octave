@@ -350,11 +350,7 @@ public:
 
   }
 
-  // No copying!
-
-  rec_permute_helper (const rec_permute_helper&) = delete;
-
-  rec_permute_helper& operator = (const rec_permute_helper&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (rec_permute_helper)
 
   ~rec_permute_helper () { delete [] m_dim; }
 
@@ -555,11 +551,7 @@ public:
       }
   }
 
-  // No copying!
-
-  rec_index_helper (const rec_index_helper&) = delete;
-
-  rec_index_helper& operator = (const rec_index_helper&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (rec_index_helper)
 
   ~rec_index_helper () { delete [] m_idx; delete [] m_dim; }
 
@@ -671,11 +663,7 @@ public:
     m_cext[0] *= ld;
   }
 
-  // No copying!
-
-  rec_resize_helper (const rec_resize_helper&) = delete;
-
-  rec_resize_helper& operator = (const rec_resize_helper&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (rec_resize_helper)
 
   ~rec_resize_helper () { delete [] m_cext; }
 

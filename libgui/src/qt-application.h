@@ -26,6 +26,8 @@
 #if ! defined (octave_qt_application_h)
 #define octave_qt_application_h 1
 
+#include "octave-config.h"
+
 #include <string>
 
 #include "octave.h"
@@ -54,11 +56,7 @@ public:
 
   qt_application (int argc, char **argv);
 
-  // No copying, at least not yet.
-
-  qt_application (const qt_application&) = delete;
-
-  qt_application& operator = (const qt_application&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (qt_application)
 
   ~qt_application () = default;
 

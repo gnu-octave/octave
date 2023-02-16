@@ -58,11 +58,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  tree_array_list (const tree_array_list&) = delete;
-
-  tree_array_list& operator = (const tree_array_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_array_list)
 
   ~tree_array_list ();
 

@@ -52,9 +52,7 @@ public:
     : m_handle_map (), m_handle_free_list (),
       m_next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)) { }
 
-  url_handle_manager (const url_handle_manager&) = delete;
-
-  url_handle_manager& operator = (const url_handle_manager&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (url_handle_manager)
 
   ~url_handle_manager () = default;
 

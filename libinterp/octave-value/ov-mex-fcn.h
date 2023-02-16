@@ -62,11 +62,7 @@ public:
                        const octave::dynamic_library& shl,
                        const std::string& nm = "");
 
-  // No copying!
-
-  octave_mex_function (const octave_mex_function& fcn) = delete;
-
-  octave_mex_function& operator = (const octave_mex_function& fcn) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_mex_function)
 
   ~octave_mex_function ();
 

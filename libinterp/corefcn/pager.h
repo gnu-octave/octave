@@ -70,11 +70,7 @@ public:
 
   pager_stream ();
 
-  // No copying!
-
-  pager_stream (const pager_stream&) = delete;
-
-  pager_stream& operator = (const pager_stream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (pager_stream)
 
   ~pager_stream ();
 
@@ -112,11 +108,7 @@ public:
 
   diary_stream ();
 
-  // No copying!
-
-  diary_stream (const diary_stream&) = delete;
-
-  diary_stream& operator = (const diary_stream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (diary_stream)
 
   ~diary_stream ();
 
@@ -137,9 +129,7 @@ public:
 
   output_system (interpreter& interp);
 
-  output_system (const output_system&) = delete;
-
-  output_system& operator = (const output_system&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (output_system)
 
   ~output_system () = default;
 

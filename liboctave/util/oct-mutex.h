@@ -101,11 +101,7 @@ public:
       m_lock_result = m_mutex.try_lock ();
   }
 
-  // No copying.
-
-  autolock (const autolock&) = delete;
-
-  autolock& operator = (const autolock&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (autolock)
 
   ~autolock ()
   {

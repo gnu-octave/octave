@@ -61,11 +61,7 @@ public:
                        const std::string& nm = "",
                        const std::string& ds = "");
 
-  // No copying!
-
-  octave_dld_function (const octave_dld_function& fcn) = delete;
-
-  octave_dld_function& operator = (const octave_dld_function& fcn) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_dld_function)
 
   ~octave_dld_function ();
 

@@ -46,11 +46,7 @@ public:
   tree_command (int l = -1, int c = -1)
     : tree (l, c) { }
 
-  // No copying!
-
-  tree_command (const tree_command&) = delete;
-
-  tree_command& operator = (const tree_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_command)
 
   virtual ~tree_command () = default;
 };
@@ -65,11 +61,7 @@ public:
                       int l = -1, int c = -1)
     : tree_command (l, c), m_eof (e), m_orig_cmd (cmd) { }
 
-  // No copying!
-
-  tree_no_op_command (const tree_no_op_command&) = delete;
-
-  tree_no_op_command& operator = (const tree_no_op_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_no_op_command)
 
   ~tree_no_op_command () = default;
 
@@ -103,11 +95,7 @@ public:
   tree_function_def (octave_function *f, int l = -1, int c = -1)
     : tree_command (l, c), m_fcn (f) { }
 
-  // No copying!
-
-  tree_function_def (const tree_function_def&) = delete;
-
-  tree_function_def& operator = (const tree_function_def&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_function_def)
 
   ~tree_function_def () = default;
 

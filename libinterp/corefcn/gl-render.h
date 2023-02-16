@@ -43,11 +43,7 @@ public:
 
   opengl_renderer (opengl_functions& glfcns);
 
-  // No copying!
-
-  opengl_renderer (const opengl_renderer&) = delete;
-
-  opengl_renderer& operator = (const opengl_renderer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (opengl_renderer)
 
   virtual ~opengl_renderer () = default;
 

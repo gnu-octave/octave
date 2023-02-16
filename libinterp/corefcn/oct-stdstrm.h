@@ -50,11 +50,7 @@ public:
       m_stream (f ? new STREAM_T (f, cf) : nullptr), m_fnum (fid)
   { }
 
-  // No copying!
-
-  tstdiostream (const tstdiostream&) = delete;
-
-  tstdiostream& operator = (const tstdiostream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tstdiostream)
 
   // Position a stream at OFFSET relative to ORIGIN.
 
@@ -147,11 +143,7 @@ public:
     return stream (new stdiostream (n, f, m, ff, encoding, cf));
   }
 
-  // No copying!
-
-  stdiostream (const stdiostream&) = delete;
-
-  stdiostream& operator = (const stdiostream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (stdiostream)
 
 protected:
 
@@ -184,11 +176,7 @@ public:
     return stream (new zstdiostream (n, f, fid, m, ff, encoding, cf));
   }
 
-  // No copying!
-
-  zstdiostream (const zstdiostream&) = delete;
-
-  zstdiostream& operator = (const zstdiostream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (zstdiostream)
 
 protected:
 

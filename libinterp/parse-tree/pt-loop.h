@@ -66,11 +66,7 @@ public:
       m_trail_comm (tc)
   { }
 
-  // No copying!
-
-  tree_while_command (const tree_while_command&) = delete;
-
-  tree_while_command& operator = (const tree_while_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_while_command)
 
   ~tree_while_command ();
 
@@ -126,11 +122,7 @@ public:
     : tree_while_command (e, lst, lc, tc, l, c)
   { }
 
-  // No copying!
-
-  tree_do_until_command (const tree_do_until_command&) = delete;
-
-  tree_do_until_command& operator = (const tree_do_until_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_do_until_command)
 
   ~tree_do_until_command () = default;
 
@@ -164,11 +156,7 @@ public:
       m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
-
-  tree_simple_for_command (const tree_simple_for_command&) = delete;
-
-  tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_simple_for_command)
 
   ~tree_simple_for_command ();
 
@@ -234,11 +222,7 @@ public:
       m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
-
-  tree_complex_for_command (const tree_complex_for_command&) = delete;
-
-  tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_complex_for_command)
 
   ~tree_complex_for_command ();
 

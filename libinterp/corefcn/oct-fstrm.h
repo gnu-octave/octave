@@ -44,11 +44,7 @@ public:
            std::ios::openmode arg_md = std::ios::in | std::ios::out,
            mach_info::float_format flt_fmt = mach_info::native_float_format ());
 
-  // No copying!
-
-  fstream (const fstream&) = delete;
-
-  fstream& operator = (const fstream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (fstream)
 
   static stream
   create (const std::string& nm_arg,

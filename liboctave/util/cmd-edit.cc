@@ -936,11 +936,7 @@ public:
   default_command_editor ()
     : command_editor (), m_input_stream (stdin), m_output_stream (stdout) { }
 
-  // No copying!
-
-  default_command_editor (const default_command_editor&) = delete;
-
-  default_command_editor& operator = (const default_command_editor&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (default_command_editor)
 
   ~default_command_editor () = default;
 

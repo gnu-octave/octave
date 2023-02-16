@@ -69,11 +69,7 @@ public:
 
   explicit type_info (int init_tab_sz = 16);
 
-  // No copying!
-
-  type_info (const type_info&) = delete;
-
-  type_info& operator = (const type_info&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (type_info)
 
   ~type_info () = default;
 

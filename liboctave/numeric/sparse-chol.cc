@@ -76,11 +76,7 @@ public:
     info = init (a, natural, force);
   }
 
-  // No copying!
-
-  sparse_chol_rep (const sparse_chol_rep&) = delete;
-
-  sparse_chol_rep& operator = (const sparse_chol_rep&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (sparse_chol_rep)
 
   ~sparse_chol_rep ()
   {

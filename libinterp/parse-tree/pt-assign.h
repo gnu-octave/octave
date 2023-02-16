@@ -60,11 +60,7 @@ public:
                           bool plhs = false, int l = -1, int c = -1,
                           octave_value::assign_op t = octave_value::op_asn_eq);
 
-  // No copying!
-
-  tree_simple_assignment (const tree_simple_assignment&) = delete;
-
-  tree_simple_assignment& operator = (const tree_simple_assignment&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_simple_assignment)
 
   ~tree_simple_assignment ();
 
@@ -131,11 +127,7 @@ public:
   tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
                          bool plhs = false, int l = -1, int c = -1);
 
-  // No copying!
-
-  tree_multi_assignment (const tree_multi_assignment&) = delete;
-
-  tree_multi_assignment& operator = (const tree_multi_assignment&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_multi_assignment)
 
   ~tree_multi_assignment ();
 

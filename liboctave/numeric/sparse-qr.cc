@@ -75,11 +75,7 @@ public:
 
   sparse_qr_rep (const SPARSE_T& a, int order);
 
-  // No copying!
-
-  sparse_qr_rep (const sparse_qr_rep&) = delete;
-
-  sparse_qr_rep& operator = (const sparse_qr_rep&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (sparse_qr_rep)
 
   ~sparse_qr_rep ();
 

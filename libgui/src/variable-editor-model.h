@@ -26,6 +26,8 @@
 #if ! defined (octave_variable_editor_model_h)
 #define octave_variable_editor_model_h 1
 
+#include "octave-config.h"
+
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QString>
@@ -47,11 +49,7 @@ public:
 
   virtual ~base_ve_model () = default;
 
-  // No copying!
-
-  base_ve_model (const base_ve_model&) = delete;
-
-  base_ve_model& operator = (const base_ve_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_ve_model)
 
   virtual void maybe_resize_rows (int) { }
 
@@ -150,11 +148,7 @@ public:
     delete rep;
   }
 
-  // No copying!
-
-  variable_editor_model (const variable_editor_model&) = delete;
-
-  variable_editor_model& operator = (const variable_editor_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (variable_editor_model)
 
   std::string name () const
   {

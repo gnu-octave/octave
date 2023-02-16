@@ -128,11 +128,7 @@ private:
       : m_parser (parser), m_info (), m_all_names ()
     { }
 
-    // No copying!
-
-    parent_scope_info (const parent_scope_info&) = delete;
-
-    parent_scope_info& operator = (const parent_scope_info&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (parent_scope_info)
 
     ~parent_scope_info () = default;
 
@@ -165,11 +161,7 @@ public:
 
   OCTINTERP_API base_parser (base_lexer& lxr);
 
-  // No copying!
-
-  base_parser (const base_parser&) = delete;
-
-  base_parser& operator = (const base_parser&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_parser)
 
   virtual ~base_parser ();
 
@@ -853,11 +845,7 @@ public:
     : base_parser (*lxr)
   { }
 
-  // No copying!
-
-  parser (const parser&) = delete;
-
-  parser& operator = (const parser&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (parser)
 
   ~parser () = default;
 
@@ -881,11 +869,7 @@ public:
       m_interpreter (interp), m_reader (reader)
   { }
 
-  // No copying!
-
-  push_parser (const push_parser&) = delete;
-
-  push_parser& operator = (const push_parser&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (push_parser)
 
   ~push_parser () = default;
 

@@ -26,6 +26,8 @@
 #if ! defined (octave_dw_main_window_h)
 #define octave_dw_main_window_h 1
 
+#include "octave-config.h"
+
 #include <QMainWindow>
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -40,11 +42,7 @@ public:
 
   ~dw_main_window () = default;
 
-  // No copying!
-
-  dw_main_window (const dw_main_window&) = delete;
-
-  dw_main_window& operator = (const dw_main_window&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (dw_main_window)
 
 public slots:
 

@@ -352,11 +352,7 @@ public:
     SETOPT (CURLOPT_HTTPGET, 1);
   }
 
-  // No copying!
-
-  curl_transfer (const curl_transfer&) = delete;
-
-  curl_transfer& operator = (const curl_transfer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (curl_transfer);
 
   ~curl_transfer ()
   {

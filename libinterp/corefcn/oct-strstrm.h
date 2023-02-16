@@ -46,11 +46,7 @@ public:
                   const std::string& encoding = "utf-8")
     : base_stream (m, ff, encoding) { }
 
-  // No copying!
-
-  base_strstream (const base_strstream&) = delete;
-
-  base_strstream& operator = (const base_strstream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_strstream)
 
 protected:
 
@@ -94,11 +90,7 @@ public:
               const std::string& encoding = "utf-8")
     : base_strstream (arg_md, ff, encoding), m_istream (data) { }
 
-  // No copying!
-
-  istrstream (const istrstream&) = delete;
-
-  istrstream& operator = (const istrstream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (istrstream)
 
 protected:
 
@@ -151,11 +143,7 @@ public:
               const std::string& encoding = "utf-8")
     : base_strstream (arg_md, ff, encoding), m_ostream () { }
 
-  // No copying!
-
-  ostrstream (const ostrstream&) = delete;
-
-  ostrstream& operator = (const ostrstream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (ostrstream)
 
 protected:
 

@@ -62,11 +62,7 @@ public:
       m_preserve_operands (false)
   { }
 
-  // No copying!
-
-  tree_binary_expression (const tree_binary_expression&) = delete;
-
-  tree_binary_expression& operator = (const tree_binary_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_binary_expression)
 
   ~tree_binary_expression ()
   {
@@ -138,13 +134,7 @@ public:
     : tree_binary_expression (a, b, l, c, t)
   { }
 
-  // No copying!
-
-  tree_braindead_shortcircuit_binary_expression
-  (const tree_braindead_shortcircuit_binary_expression&) = delete;
-
-  tree_braindead_shortcircuit_binary_expression&
-  operator = (const tree_braindead_shortcircuit_binary_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_braindead_shortcircuit_binary_expression)
 
   ~tree_braindead_shortcircuit_binary_expression () = default;
 
@@ -175,11 +165,7 @@ public:
                            int l = -1, int c = -1, type t = unknown)
     : tree_binary_expression (a, b, l, c), m_etype (t) { }
 
-  // No copying!
-
-  tree_boolean_expression (const tree_boolean_expression&) = delete;
-
-  tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_boolean_expression)
 
   ~tree_boolean_expression () = default;
 

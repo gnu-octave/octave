@@ -26,6 +26,8 @@
 #if ! defined (octave_variable_editor_h)
 #define octave_variable_editor_h 1
 
+#include "octave-config.h"
+
 #include <QHeaderView>
 #include <QSignalMapper>
 #include <QStackedWidget>
@@ -293,11 +295,7 @@ public:
 
   ~variable_editor ();
 
-  // No copying!
-
-  variable_editor (const variable_editor&) = delete;
-
-  variable_editor& operator = (const variable_editor&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (variable_editor)
 
   void refresh ();
 

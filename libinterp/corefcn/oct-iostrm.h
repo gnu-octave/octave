@@ -44,11 +44,7 @@ public:
                  mach_info::float_format ff = mach_info::native_float_format ())
     : base_stream (m, ff), m_name (n) { }
 
-  // No copying!
-
-  base_iostream (const base_iostream&) = delete;
-
-  base_iostream& operator = (const base_iostream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_iostream)
 
 protected:
 
@@ -93,6 +89,8 @@ public:
       m_istream (arg)
   { }
 
+  OCTAVE_DISABLE_COPY_MOVE (istream)
+
   static stream
   create (std::istream *arg = nullptr, const std::string& n = "");
 
@@ -113,12 +111,6 @@ private:
   std::istream *m_istream;
 
   const char * stream_type () const { return "istream"; }
-
-  // No copying!
-
-  istream (const istream&) = delete;
-
-  istream& operator = (const istream&) = delete;
 };
 
 class
@@ -130,6 +122,8 @@ public:
     : base_iostream (n, std::ios::out, mach_info::native_float_format ()),
       m_ostream (arg)
   { }
+
+  OCTAVE_DISABLE_COPY_MOVE (ostream)
 
   static stream
   create (std::ostream *arg, const std::string& n = "");
@@ -151,12 +145,6 @@ private:
   std::ostream *m_ostream;
 
   const char * stream_type () const { return "ostream"; }
-
-  // No copying!
-
-  ostream (const ostream&) = delete;
-
-  ostream& operator = (const ostream&) = delete;
 };
 
 OCTAVE_END_NAMESPACE(octave)

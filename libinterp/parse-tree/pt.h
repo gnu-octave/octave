@@ -49,11 +49,7 @@ public:
     : m_line_num (l), m_column_num (c), m_bp_cond (nullptr)
   { }
 
-  // No copying!
-
-  tree (const tree&) = delete;
-
-  tree& operator = (const tree&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree)
 
   virtual ~tree () = default;
 

@@ -68,11 +68,7 @@ public:
 
   typedef void (*user_accept_line_fcn) (const std::string&);
 
-  // No copying!
-
-  command_editor (const command_editor&) = delete;
-
-  command_editor& operator = (const command_editor&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (command_editor)
 
   virtual ~command_editor () = default;
 

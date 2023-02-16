@@ -751,11 +751,7 @@ public:
       m_menubar->clear ();
   }
 
-  // No copying!
-
-  fltk_uimenu (const fltk_uimenu&) = delete;
-
-  fltk_uimenu operator = (const fltk_uimenu&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (fltk_uimenu)
 
   ~fltk_uimenu ()
   {
@@ -882,11 +878,7 @@ public:
       }
   }
 
-  // No copying!
-
-  plot_window (const plot_window&) = delete;
-
-  plot_window& operator = (const plot_window&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (plot_window)
 
   ~plot_window ()
   {
@@ -1884,11 +1876,7 @@ private:
 
 public:
 
-  // No copying!
-
-  figure_manager (const figure_manager&) = delete;
-
-  figure_manager& operator = (const figure_manager&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (figure_manager)
 
   ~figure_manager ()
   {

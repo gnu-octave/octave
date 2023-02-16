@@ -2458,9 +2458,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       : m_scope (), m_error_list ()
     { }
 
-    parse_tree_validator (const parse_tree_validator&) = delete;
-
-    parse_tree_validator& operator = (const parse_tree_validator&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (parse_tree_validator)
 
     ~parse_tree_validator () = default;
 

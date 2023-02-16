@@ -54,6 +54,8 @@ public:
       m_etype (ct)
   { }
 
+  OCTAVE_DISABLE_COPY_MOVE (tree_compound_binary_expression)
+
   octave_value::compound_binary_op cop_type () const { return m_etype; }
 
   bool rvalue_ok () const { return true; }
@@ -79,13 +81,6 @@ private:
   tree_expression *m_rhs;
 
   octave_value::compound_binary_op m_etype;
-
-  // No copying!
-
-  tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
-
-  tree_compound_binary_expression&
-  operator = (const tree_compound_binary_expression&) = delete;
 };
 
 // a "virtual constructor"

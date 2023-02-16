@@ -178,11 +178,7 @@ public:
 
   octave_dlopen_shlib (const std::string& f);
 
-  // No copying!
-
-  octave_dlopen_shlib (const octave_dlopen_shlib&) = delete;
-
-  octave_dlopen_shlib& operator = (const octave_dlopen_shlib&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_dlopen_shlib)
 
   ~octave_dlopen_shlib ();
 
@@ -284,11 +280,7 @@ public:
 
   octave_w32_shlib (const std::string& f);
 
-  // No copying!
-
-  octave_w32_shlib (const octave_w32_shlib&) = delete;
-
-  octave_w32_shlib& operator = (const octave_w32_shlib&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_w32_shlib)
 
   ~octave_w32_shlib ();
 

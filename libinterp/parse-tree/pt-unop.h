@@ -59,11 +59,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  tree_unary_expression (const tree_unary_expression&) = delete;
-
-  tree_unary_expression& operator = (const tree_unary_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_unary_expression)
 
   ~tree_unary_expression () { delete m_op; }
 
@@ -98,11 +94,7 @@ public:
                           = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
-  // No copying!
-
-  tree_prefix_expression (const tree_prefix_expression&) = delete;
-
-  tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_prefix_expression)
 
   ~tree_prefix_expression () = default;
 
@@ -139,11 +131,7 @@ public:
                            = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
-  // No copying!
-
-  tree_postfix_expression (const tree_postfix_expression&) = delete;
-
-  tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_postfix_expression)
 
   ~tree_postfix_expression () = default;
 

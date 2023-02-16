@@ -193,11 +193,7 @@ public:
 
     token_cache () : m_buffer () { }
 
-    // No copying!
-
-    token_cache (const token_cache&) = delete;
-
-    token_cache& operator = (const token_cache&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (token_cache)
 
     ~token_cache () { clear (); }
 
@@ -320,11 +316,7 @@ public:
     init ();
   }
 
-  // No copying!
-
-  lexical_feedback (const lexical_feedback&) = delete;
-
-  lexical_feedback& operator = (const lexical_feedback&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (lexical_feedback)
 
   ~lexical_feedback ();
 
@@ -609,11 +601,7 @@ public:
     init ();
   }
 
-  // No copying!
-
-  base_lexer (const base_lexer&) = delete;
-
-  base_lexer& operator = (const base_lexer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_lexer)
 
   virtual ~base_lexer ();
 
@@ -780,11 +768,7 @@ public:
       m_initial_input (true)
   { }
 
-  // No copying!
-
-  lexer (const lexer&) = delete;
-
-  lexer& operator = (const lexer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (lexer)
 
   void reset ()
   {
@@ -858,11 +842,7 @@ public:
     append_input (input, eof);
   }
 
-  // No copying!
-
-  push_lexer (const push_lexer&) = delete;
-
-  push_lexer& operator = (const push_lexer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (push_lexer)
 
   bool is_push_lexer () const { return true; }
 

@@ -117,11 +117,7 @@ protected:
 
 public:
 
-  // No copying!
-
-  tree_walker (const tree_walker&) = delete;
-
-  tree_walker& operator = (const tree_walker&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_walker)
 
   virtual void visit_anon_fcn_handle (tree_anon_fcn_handle&);
 

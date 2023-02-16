@@ -45,9 +45,7 @@ public:
     : m_count (initial_count)
   { }
 
-  refcount (const refcount&) = delete;
-
-  refcount& operator = (const refcount&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (refcount)
 
   ~refcount () = default;
 

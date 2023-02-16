@@ -353,11 +353,7 @@ public:
 
   opengl_tessellator () : m_glu_tess (nullptr), m_fill () { init (); }
 
-  // No copying!
-
-  opengl_tessellator (const opengl_tessellator&) = delete;
-
-  opengl_tessellator operator = (const opengl_tessellator&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (opengl_tessellator)
 
   virtual ~opengl_tessellator ()
   { if (m_glu_tess) gluDeleteTess (m_glu_tess); }
@@ -512,12 +508,15 @@ class
 opengl_renderer::patch_tessellator : public opengl_tessellator
 {
 public:
+
   patch_tessellator (opengl_renderer *r, int cmode, int lmode, bool fl,
                      float idx = 0.0)
     : opengl_tessellator (), m_renderer (r),
       m_color_mode (cmode), m_light_mode (lmode), m_face_lighting (fl),
       m_index (idx), m_first (true), m_tmp_vdata ()
   { }
+
+  OCTAVE_DISABLE_COPY_MOVE (patch_tessellator)
 
 protected:
   void begin (GLenum type)
@@ -656,12 +655,6 @@ protected:
   }
 
 private:
-
-  // No copying!
-
-  patch_tessellator (const patch_tessellator&) = delete;
-
-  patch_tessellator& operator = (const patch_tessellator&) = delete;
 
   opengl_renderer *m_renderer;
   int m_color_mode;

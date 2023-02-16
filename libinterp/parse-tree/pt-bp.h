@@ -50,11 +50,7 @@ public:
       m_bp_list (), m_bp_cond_list ()
   { }
 
-  // No copying!
-
-  tree_breakpoint (const tree_breakpoint&) = delete;
-
-  tree_breakpoint& operator = (const tree_breakpoint&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_breakpoint)
 
   ~tree_breakpoint () = default;
 

@@ -49,11 +49,7 @@ public:
     : m_size_args (size_args)
   { }
 
-  // No copying!
-
-  tree_arg_size_spec (const tree_arg_size_spec&) = delete;
-
-  tree_arg_size_spec& operator = (const tree_arg_size_spec&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_arg_size_spec)
 
   ~tree_arg_size_spec ()
   {
@@ -80,11 +76,7 @@ public:
     : m_fcn_args (fcn_args)
   { }
 
-  // No copying!
-
-  tree_arg_validation_fcns (const tree_arg_validation_fcns&) = delete;
-
-  tree_arg_validation_fcns& operator = (const tree_arg_validation_fcns&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_arg_validation_fcns)
 
   ~tree_arg_validation_fcns ()
   {
@@ -116,11 +108,7 @@ public:
       m_default_value (default_value)
   { }
 
-  // No copying!
-
-  tree_arg_validation (const tree_arg_validation&) = delete;
-
-  tree_arg_validation& operator = (const tree_arg_validation&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_arg_validation)
 
   ~tree_arg_validation ()
   {
@@ -177,11 +165,7 @@ public:
     : base_list<tree_arg_validation *> (a)
   { }
 
-  // No copying!
-
-  tree_args_block_validation_list (const tree_args_block_validation_list&) = delete;
-
-  tree_args_block_validation_list& operator = (const tree_args_block_validation_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_args_block_validation_list)
 
   ~tree_args_block_validation_list ();
 
@@ -202,11 +186,7 @@ public:
     : m_attr (attr)
   { }
 
-  // No copying!
-
-  tree_args_block_attribute_list (const tree_args_block_attribute_list&) = delete;
-
-  tree_args_block_attribute_list& operator = (const tree_args_block_attribute_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_args_block_attribute_list)
 
   ~tree_args_block_attribute_list ()
   {
@@ -239,11 +219,7 @@ public:
       m_lead_comm (nullptr), m_trail_comm (nullptr)
   { }
 
-  // No copying!
-
-  tree_arguments_block (const tree_arguments_block&) = delete;
-
-  tree_arguments_block& operator = (const tree_arguments_block&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_arguments_block)
 
   ~tree_arguments_block ()
   {

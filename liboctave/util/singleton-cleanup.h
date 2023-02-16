@@ -42,11 +42,7 @@ public:
 
   typedef void (*fptr) ();
 
-  // No copying!
-
-  singleton_cleanup_list (const singleton_cleanup_list&) = delete;
-
-  singleton_cleanup_list& operator = (const singleton_cleanup_list&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (singleton_cleanup_list)
 
   ~singleton_cleanup_list ();
 

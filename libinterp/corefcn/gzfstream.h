@@ -58,11 +58,7 @@ public:
   //  Default constructor.
   gzfilebuf ();
 
-  // No copying!
-
-  gzfilebuf (const gzfilebuf&) = delete;
-
-  gzfilebuf& operator = (const gzfilebuf&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (gzfilebuf)
 
   //  Destructor.
   virtual ~gzfilebuf ();

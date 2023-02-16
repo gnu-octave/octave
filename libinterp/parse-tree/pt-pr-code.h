@@ -58,11 +58,7 @@ public:
     m_nesting.push ('n');
   }
 
-  // No copying!
-
-  tree_print_code (const tree_print_code&) = delete;
-
-  tree_print_code& operator = (const tree_print_code&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (tree_print_code)
 
   ~tree_print_code () = default;
 

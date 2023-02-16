@@ -28,7 +28,6 @@
 #endif
 
 #include <cstring>
-#include <cstdio>
 
 #include <fstream>
 #include <iomanip>
@@ -1551,19 +1550,16 @@ load_save_system::save (const octave_value_list& args, int nargout)
             }
         }
 
-        // If we are all the way here without Octave crashing or running out of
-        // memory etc, then we can say that writing to the temporary file
-        // was successful. So now we try to rename it to the actual file
-        // that was specified.
-        try
-          {
-            rename (fname.c_str (), desiredname.c_str ());
-          }
-        catch (std::exception& e)
-          {
-            error ("save: unable to save to %s  %s",
-                   desiredname.c_str (), e.what ());
-          }
+      // If we are all the way here without Octave crashing or running
+      // out of memory etc, then we can say that writing to the
+      // temporary file was successful. So now we try to rename it to
+      // the actual file that was specified.
+
+      std::string msg;
+
+      if (octave::sys::rename (fname, desiredname, msg) < 0)
+        error ("save: unable to save to %s  %s",
+               desiredname.c_str (), msg.c_str ());
     }
 
   return retval;

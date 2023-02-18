@@ -524,7 +524,8 @@ jobs:
           mkdir .build
           cd .build && ../configure \
             JAVA_HOME="" \
-            --disable-docs
+            --disable-docs \
+            gl_cv_have_weak=no
 
       - name: build
         # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.

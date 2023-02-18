@@ -326,7 +326,9 @@ octave_unused_parameter (const T&)
   X& operator = (const X&) = delete;
 
 #  define OCTAVE_DISABLE_MOVE(X)                \
+  X (X&&) = delete;                             \
   X (const X&&) = delete;                       \
+  X& operator = (X&&) = delete;                 \
   X& operator = (const X&&) = delete;
 
 #  define OCTAVE_DISABLE_COPY_MOVE(X)           \

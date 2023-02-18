@@ -283,7 +283,9 @@ function emit_common_declarations ()
 {
   printf ("public:\n");
   printf ("  properties (const graphics_handle& mh, const graphics_handle& p);\n\n");
-  printf ("  ~properties () { }\n\n");
+  printf ("  properties () = delete;\n\n");
+  printf ("  OCTAVE_DEFAULT_COPY_MOVE (properties)\n\n");
+  printf ("  ~properties () = default;\n\n");
   printf ("  void set (const caseless_str& pname, const octave_value& val);\n\n");
   printf ("  octave_value get (bool all = false) const;\n\n");
   printf ("  octave_value get (const caseless_str& pname) const;\n\n");

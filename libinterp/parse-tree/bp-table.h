@@ -62,6 +62,8 @@ public:
       m_caught_that_stop (), m_warnings_that_stop ()
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (bp_table)
+
   ~bp_table () = default;
 
   // Set of breakpoint lines.

@@ -68,7 +68,7 @@ public:
     append (new tree_decl_elt (id));
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_parameter_list)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_parameter_list)
 
   ~tree_parameter_list ();
 

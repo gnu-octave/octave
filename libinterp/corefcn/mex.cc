@@ -448,6 +448,8 @@ class mxArray_octave_value : public mxArray_base
 {
 public:
 
+  mxArray_octave_value () = delete;
+
   mxArray_octave_value (bool interleaved, const octave_value& ov)
     : mxArray_base (interleaved), m_val (ov), m_mutate_flag (false),
       m_id (mxUNKNOWN_CLASS), m_class_name (nullptr), m_ndims (-1),
@@ -999,11 +1001,13 @@ class mxArray_matlab : public mxArray_base
 {
 public:
 
+  mxArray_matlab () = delete;
+
   // No assignment!
   // FIXME: should this be implemented?
   //        Note that we *do* have a copy constructor.
 
-  mxArray_matlab& operator = (const mxArray_matlab&);
+  mxArray_matlab& operator = (const mxArray_matlab&) = delete;
 
   ~mxArray_matlab (void)
   {
@@ -1522,6 +1526,8 @@ class mxArray_base_full : public mxArray_matlab
 {
 public:
 
+  mxArray_base_full () = delete;
+
   mxArray_base_full (bool interleaved, mxClassID id, mwSize ndims,
                      const mwSize *dims, bool init = true)
     : mxArray_matlab (interleaved, id, ndims, dims),
@@ -1595,7 +1601,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_base_full& operator = (const mxArray_base_full&);
+  mxArray_base_full& operator = (const mxArray_base_full&) = delete;
 
   mxArray_base * dup (void) const
   {
@@ -1996,6 +2002,8 @@ class mxArray_interleaved_full : public mxArray_base_full
 {
 public:
 
+  mxArray_interleaved_full () = delete;
+
   mxArray_interleaved_full (mxClassID id, mwSize ndims, const mwSize *dims,
                             mxComplexity flag = mxREAL, bool init = true)
     : mxArray_base_full (true, id, ndims, dims, init),
@@ -2034,7 +2042,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_interleaved_full& operator = (const mxArray_interleaved_full&);
+  mxArray_interleaved_full& operator = (const mxArray_interleaved_full&) = delete;
 
   mxArray_base * dup (void) const
   {
@@ -2062,6 +2070,8 @@ protected:
 class mxArray_separate_full : public mxArray_base_full
 {
 public:
+
+  mxArray_separate_full () = delete;
 
   mxArray_separate_full (mxClassID id, mwSize ndims, const mwSize *dims,
                          mxComplexity flag = mxREAL, bool init = true)
@@ -2107,7 +2117,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_separate_full& operator = (const mxArray_separate_full&);
+  mxArray_separate_full& operator = (const mxArray_separate_full&) = delete;
 
   mxArray_base * dup (void) const
   {
@@ -2257,6 +2267,8 @@ class mxArray_base_sparse : public mxArray_matlab
 {
 public:
 
+  mxArray_base_sparse () = delete;
+
   mxArray_base_sparse (bool interleaved, mxClassID id, mwSize m, mwSize n,
                        mwSize nzmax)
     : mxArray_matlab (interleaved, id, m, n),
@@ -2290,7 +2302,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_base_sparse& operator = (const mxArray_base_sparse&);
+  mxArray_base_sparse& operator = (const mxArray_base_sparse&) = delete;
 
   mxArray_base * dup (void) const
   {
@@ -2440,6 +2452,8 @@ class mxArray_interleaved_sparse : public mxArray_base_sparse
 {
 public:
 
+  mxArray_interleaved_sparse () = delete;
+
   mxArray_interleaved_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
                               mxComplexity flag = mxREAL)
     : mxArray_base_sparse (true, id, m, n, nzmax),
@@ -2457,7 +2471,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_interleaved_sparse& operator = (const mxArray_interleaved_sparse&);
+  mxArray_interleaved_sparse& operator = (const mxArray_interleaved_sparse&) = delete;
 
   mxArray_base * dup (void) const
   {
@@ -2482,6 +2496,8 @@ private:
 class mxArray_separate_sparse : public mxArray_base_sparse
 {
 public:
+
+  mxArray_separate_sparse () = delete;
 
   mxArray_separate_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
                            mxComplexity flag = mxREAL)
@@ -2508,7 +2524,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_separate_sparse& operator = (const mxArray_separate_sparse&);
+  mxArray_separate_sparse& operator = (const mxArray_separate_sparse&) = delete;
 
   mxArray_base * dup (void) const
   {
@@ -2589,6 +2605,8 @@ class mxArray_struct : public mxArray_matlab
 {
 public:
 
+  mxArray_struct () = delete;
+
   mxArray_struct (bool interleaved, mwSize ndims, const mwSize *dims,
                   int num_keys, const char **keys)
     : mxArray_matlab (interleaved, mxSTRUCT_CLASS, ndims, dims),
@@ -2655,7 +2673,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_struct& operator = (const mxArray_struct& val);
+  mxArray_struct& operator = (const mxArray_struct& val) = delete;
 
   void init (const char **keys)
   {
@@ -2856,6 +2874,8 @@ class mxArray_cell : public mxArray_matlab
 {
 public:
 
+  mxArray_cell () = delete;
+
   mxArray_cell (bool interleaved, mwSize ndims, const mwSize *dims)
     : mxArray_matlab (interleaved, mxCELL_CLASS, ndims, dims),
       m_data (static_cast<mxArray **> (mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
@@ -2891,7 +2911,7 @@ public:
   // No assignment!  FIXME: should this be implemented?  Note that we
   // do have a copy constructor.
 
-  mxArray_cell& operator = (const mxArray_cell&);
+  mxArray_cell& operator = (const mxArray_cell&) = delete;
 
   mxArray_base * dup (void) const { return new mxArray_cell (*this); }
 
@@ -3156,7 +3176,7 @@ public:
   mex (octave_mex_function& f)
     : m_curr_mex_fcn (f), m_memlist (), m_arraylist (), m_fname (nullptr) { }
 
-  OCTAVE_DISABLE_COPY_MOVE (mex)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (mex)
 
   ~mex (void)
   {

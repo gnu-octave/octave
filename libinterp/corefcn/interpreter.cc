@@ -772,7 +772,7 @@ public:
   cli_input_reader (interpreter& interp)
     : m_interpreter (interp), m_thread () { }
 
-  OCTAVE_DISABLE_COPY_MOVE (cli_input_reader)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (cli_input_reader)
 
   ~cli_input_reader ()
   {

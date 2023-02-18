@@ -77,7 +77,7 @@ public:
 
   OCTINTERP_API ~load_save_system ();
 
-  OCTAVE_DISABLE_COPY_MOVE (load_save_system)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (load_save_system)
 
   OCTINTERP_API octave_value
   crash_dumps_octave_core (const octave_value_list& args, int nargout);

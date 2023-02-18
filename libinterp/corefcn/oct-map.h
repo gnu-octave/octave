@@ -40,19 +40,22 @@ class string_vector;
 
 // A class holding a map field->index.  Supports reference-counting.
 class OCTINTERP_API
-  octave_fields
+octave_fields
 {
   class fields_rep : public std::map<std::string, octave_idx_type>
   {
   public:
+
     fields_rep () : std::map<std::string, octave_idx_type> (), m_count (1) { }
+
     fields_rep (const fields_rep& other)
       : std::map<std::string, octave_idx_type> (other), m_count (1) { }
 
-    octave::refcount<octave_idx_type> m_count;
+    fields_rep& operator = (const fields_rep&) = delete;
 
-  private:
-    fields_rep& operator = (const fields_rep&); // no assignment!
+    ~fields_rep () = default;
+
+    octave::refcount<octave_idx_type> m_count;
   };
 
   fields_rep *m_rep;
@@ -158,30 +161,19 @@ public:
 };
 
 class OCTINTERP_API
-  octave_scalar_map
+octave_scalar_map
 {
 public:
 
   octave_scalar_map (const octave_fields& k)
     : m_keys (k), m_vals (k.nfields ()) { }
 
-  octave_scalar_map () : m_keys (), m_vals () { }
-
   octave_scalar_map (const string_vector& k)
     : m_keys (k), m_vals (k.numel ()) { }
 
-  octave_scalar_map (const octave_scalar_map& m)
-    : m_keys (m.m_keys), m_vals (m.m_vals) { }
-
   octave_scalar_map (const std::map<std::string, octave_value>& m);
 
-  octave_scalar_map& operator = (const octave_scalar_map& m)
-  {
-    m_keys = m.m_keys;
-    m_vals = m.m_vals;
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (octave_scalar_map)
 
   // iteration support.
   // note that both const and non-const iterators are the same.
@@ -264,7 +256,6 @@ private:
 
   octave_fields m_keys;
   std::vector<octave_value> m_vals;
-
 };
 
 template <>
@@ -273,7 +264,7 @@ octave_value_extract<octave_scalar_map> (const octave_value& v)
 { return v.scalar_map_value (); }
 
 class OCTINTERP_API
-  octave_map
+octave_map
 {
 public:
 
@@ -285,8 +276,6 @@ public:
 
   typedef octave_scalar_map element_type;
 
-  octave_map () : m_keys (), m_vals (), m_dimensions () { }
-
   octave_map (const dim_vector& dv) : m_keys (), m_vals (), m_dimensions (dv) { }
 
   octave_map (const string_vector& k)
@@ -295,19 +284,9 @@ public:
   octave_map (const dim_vector& dv, const string_vector& k)
     : m_keys (k), m_vals (k.numel (), Cell (dv)), m_dimensions (dv) { }
 
-  octave_map (const octave_map& m)
-    : m_keys (m.m_keys), m_vals (m.m_vals), m_dimensions (m.m_dimensions) { }
-
   octave_map (const octave_scalar_map& m);
 
-  octave_map& operator = (const octave_map& m)
-  {
-    m_keys = m.m_keys;
-    m_vals = m.m_vals;
-    m_dimensions = m.m_dimensions;
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (octave_map)
 
   // iteration support.
   // note that both const and non-const iterators are the same.

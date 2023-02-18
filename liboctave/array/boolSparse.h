@@ -83,6 +83,8 @@ public:
     return *this;
   }
 
+  ~SparseBoolMatrix () = default;
+
   OCTAVE_API bool operator == (const SparseBoolMatrix& a) const;
   OCTAVE_API bool operator != (const SparseBoolMatrix& a) const;
 

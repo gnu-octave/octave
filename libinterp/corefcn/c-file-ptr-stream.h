@@ -48,6 +48,8 @@ public:
 
   FILE * stdiofile () { return m_f; }
 
+  c_file_ptr_buf () = delete;
+
   c_file_ptr_buf (FILE *f, close_fcn cf = file_close)
     : std::streambuf (), m_f (f), m_cf (cf)
   { }
@@ -109,6 +111,8 @@ c_file_ptr_stream : public STREAM_T
 {
 public:
 
+  c_file_ptr_stream () = delete;
+
   c_file_ptr_stream (FILE_T m_f,
                      typename BUF_T::close_fcn m_cf = BUF_T::file_close)
     : STREAM_T (nullptr), m_buf (new BUF_T (m_f, m_cf))
@@ -154,6 +158,8 @@ public:
   typedef int (*close_fcn) (gzFile);
 
   gzFile stdiofile () { return m_f; }
+
+  c_zfile_ptr_buf () = delete;
 
   c_zfile_ptr_buf (gzFile f, close_fcn cf = file_close)
     : std::streambuf (), m_f (f), m_cf (cf)

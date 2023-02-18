@@ -129,6 +129,8 @@ private:
 
     OCTAVE_DISABLE_COPY_MOVE (idx_colon_rep)
 
+    ~idx_colon_rep () = default;
+
     octave_idx_type xelem (octave_idx_type i) const { return i; }
 
     OCTAVE_API octave_idx_type checkelem (octave_idx_type i) const;
@@ -171,6 +173,8 @@ private:
     OCTAVE_API idx_range_rep (const range<double>&);
 
     OCTAVE_DISABLE_COPY_MOVE (idx_range_rep)
+
+    ~idx_range_rep () = default;
 
     octave_idx_type xelem (octave_idx_type i) const
     { return m_start + i * m_step; }
@@ -221,6 +225,8 @@ private:
     idx_scalar_rep (octave_idx_type i, direct) : idx_base_rep (), m_data (i) { }
 
     OCTAVE_DISABLE_COPY_MOVE (idx_scalar_rep)
+
+    ~idx_scalar_rep () = default;
 
     // Zero-based constructor.
     OCTAVE_API idx_scalar_rep (octave_idx_type i);

@@ -160,16 +160,16 @@ u8_validate (const std::string& who, std::string& in_string,
 
 
 template<class Facet>
-struct
-  deletable_facet : Facet
+struct deletable_facet : Facet
 {
+  deletable_facet () = delete;
+
   template<class ...Args>
   deletable_facet (Args&& ...args)
     : Facet (std::forward<Args> (args)...)
   { }
 
-  // destructor needs to be public
-  ~deletable_facet () { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (deletable_facet)
 };
 
 class
@@ -178,11 +178,11 @@ codecvt_u8 : public std::codecvt<char, char, std::mbstate_t>
 {
 public:
 
-  OCTAVE_DISABLE_COPY_MOVE (codecvt_u8)
-
   codecvt_u8 (const std::string& enc)
     : m_enc (enc)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (codecvt_u8)
 
   virtual ~codecvt_u8 () { }
 

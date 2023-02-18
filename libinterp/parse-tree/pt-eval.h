@@ -81,13 +81,7 @@ public:
   {
   public:
 
-    value_stack () = default;
-
-    value_stack (const value_stack&) = default;
-
-    value_stack& operator = (const value_stack&) = default;
-
-    ~value_stack () = default;
+    OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (value_stack)
 
     void push (const T& val) { m_stack.push (val); }
 
@@ -148,7 +142,7 @@ public:
       m_index_position (0), m_num_indices (0)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_evaluator)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_evaluator)
 
   ~tree_evaluator () = default;
 

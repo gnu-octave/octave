@@ -48,7 +48,7 @@ public:
     : tree_command (l, c), m_body (body), m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_spmd_command)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_spmd_command)
 
   ~tree_spmd_command ();
 

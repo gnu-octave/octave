@@ -49,7 +49,7 @@ public:
       m_method_flag (0), m_itask (0), m_iopt (0), m_itol (0), m_liw (0),
       m_lrw (0), m_iwork (), m_rwork (), m_rel_tol (0.0), m_abs_tol () { }
 
-  ~LSODE () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (LSODE)
 
   ColumnVector do_integrate (double t);
 

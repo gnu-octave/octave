@@ -2412,6 +2412,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
   public:
 
+    parse_exception () = delete;
+
     parse_exception (const std::string& message,
                      const std::string& fcn_name = "",
                      const std::string& file_name = "",
@@ -2421,11 +2423,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         m_line (line), m_column (column)
     { }
 
-    parse_exception (const parse_exception&) = default;
-
-    parse_exception& operator = (const parse_exception&) = default;
-
-    ~parse_exception () = default;
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (parse_exception)
 
     std::string message () const { return m_message; }
 

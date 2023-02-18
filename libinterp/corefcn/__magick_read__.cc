@@ -181,6 +181,8 @@ image_region
 {
 public:
 
+  image_region () = delete;
+
   image_region (const octave_scalar_map& options)
   {
     // FIXME: should we have better checking on the input map and values
@@ -208,15 +210,7 @@ public:
     m_col_out = cols.numel ();
   }
 
-  // Default copy, move, and delete methods are all OK for this class.
-
-  image_region (const image_region&) = default;
-  image_region (image_region&&) = default;
-
-  image_region& operator = (const image_region&) = default;
-  image_region& operator = (image_region&&) = default;
-
-  ~image_region () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (image_region)
 
   octave_idx_type row_start () const { return m_row_start; }
   octave_idx_type col_start () const { return m_col_start; }

@@ -98,7 +98,7 @@ comment_list : public base_list<comment_elt>
 {
 public:
 
-  comment_list () { }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (comment_list)
 
   void append (const comment_elt& elt)
   { base_list<comment_elt>::append (elt); }

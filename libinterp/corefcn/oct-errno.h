@@ -43,6 +43,8 @@ protected:
 
 public:
 
+  OCTAVE_DISABLE_COPY_MOVE (octave_errno)
+
   ~octave_errno () = default;
 
   static bool instance_ok ();
@@ -74,7 +76,6 @@ private:
   std::map<std::string, int> m_errno_tbl;
 
   static octave_errno *s_instance;
-
 };
 
 #endif

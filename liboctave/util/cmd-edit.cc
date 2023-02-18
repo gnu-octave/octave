@@ -83,6 +83,8 @@ public:
 
   gnu_readline ();
 
+  OCTAVE_DISABLE_COPY_MOVE (gnu_readline)
+
   ~gnu_readline () = default;
 
   void do_set_name (const std::string& n);

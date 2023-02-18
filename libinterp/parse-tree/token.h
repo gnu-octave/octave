@@ -89,7 +89,7 @@ public:
   token (int tv, const std::string& mth, const std::string& cls,
          const filepos& beg_pos, const filepos& end_pos);
 
-  OCTAVE_DISABLE_COPY_MOVE (token)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (token)
 
   ~token ();
 

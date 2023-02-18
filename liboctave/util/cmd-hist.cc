@@ -64,6 +64,8 @@ public:
   gnu_history ()
     : command_history (), m_mark (0) { }
 
+  OCTAVE_DISABLE_COPY_MOVE (gnu_history)
+
   ~gnu_history () = default;
 
   void do_process_histcontrol (const std::string&);

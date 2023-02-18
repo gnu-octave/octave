@@ -522,7 +522,11 @@ enum audio_type { TYPE_INT8, TYPE_UINT8, TYPE_UINT16, TYPE_DOUBLE };
 class audioplayer : public octave_base_dld_value
 {
 public:
+
   audioplayer ();
+
+  OCTAVE_DISABLE_COPY_MOVE (audioplayer)
+
   ~audioplayer ();
 
   // Overloaded base functions
@@ -1274,7 +1278,11 @@ audioplayer::isplaying ()
 class audiorecorder : public octave_base_dld_value
 {
 public:
+
   audiorecorder ();
+
+  OCTAVE_DISABLE_COPY_MOVE (audiorecorder)
+
   ~audiorecorder ();
 
   // Overloaded base functions

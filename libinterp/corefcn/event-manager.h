@@ -296,7 +296,7 @@ public:
 
   OCTINTERP_API event_manager (interpreter& interp);
 
-  OCTAVE_DISABLE_COPY_MOVE (event_manager)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (event_manager)
 
   virtual ~event_manager ();
 

@@ -56,7 +56,7 @@ public:
       m_liw (0), m_lrw (0), m_info (), m_iwork (), m_rwork (), m_abs_tol (),
       m_rel_tol () { }
 
-  ~DASPK () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (DASPK)
 
   ColumnVector do_integrate (double t);
 

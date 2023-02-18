@@ -66,7 +66,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class OCTINTERP_API base_scaler
 {
 public:
-  base_scaler () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (base_scaler)
 
   virtual ~base_scaler () = default;
 
@@ -100,7 +101,8 @@ public:
 class lin_scaler : public base_scaler
 {
 public:
-  lin_scaler () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (lin_scaler)
 
   Matrix scale (const Matrix& m) const { return m; }
 
@@ -118,7 +120,8 @@ public:
 class log_scaler : public base_scaler
 {
 public:
-  log_scaler () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (log_scaler)
 
   Matrix scale (const Matrix& m) const
   {
@@ -158,7 +161,8 @@ private:
 class OCTINTERP_API neg_log_scaler : public base_scaler
 {
 public:
-  neg_log_scaler () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (neg_log_scaler)
 
   Matrix scale (const Matrix& m) const
   {
@@ -198,6 +202,7 @@ private:
 class OCTINTERP_API scaler
 {
 public:
+
   scaler () : m_rep (new base_scaler ()) { }
 
   scaler (const scaler& s) : m_rep (s.m_rep->clone ()) { }
@@ -300,6 +305,9 @@ public:
     : m_id (-1), m_count (1), m_name (p.m_name), m_parent (p.m_parent),
       m_hidden (p.m_hidden), m_listeners ()
   { }
+
+  // FIXME: should we define assignment?
+  base_property& operator = (const base_property&) = delete;
 
   virtual ~base_property () = default;
 
@@ -438,12 +446,19 @@ private:
 class OCTINTERP_API string_property : public base_property
 {
 public:
+
+  string_property () = delete;
+
   string_property (const std::string& s, const graphics_handle& h,
                    const std::string& val = "")
     : base_property (s, h), m_str (val) { }
 
-  string_property (const string_property& p)
-    : base_property (p), m_str (p.m_str) { }
+  string_property (const string_property&) = default;
+
+  // FIXME: should we define assignment?
+  string_property& operator = (const string_property&) = delete;
+
+  ~string_property () = default;
 
   octave_value get () const
   { return octave_value (m_str); }
@@ -486,6 +501,8 @@ class OCTINTERP_API string_array_property : public base_property
 public:
   enum desired_enum { string_t, cell_t };
 
+  string_array_property () = delete;
+
   string_array_property (const std::string& s, const graphics_handle& h,
                          const std::string& val = "", const char& sep = '|',
                          const desired_enum& typ = string_t)
@@ -526,9 +543,12 @@ public:
     m_str = strings;
   }
 
-  string_array_property (const string_array_property& p)
-    : base_property (p), m_desired_type (p.m_desired_type),
-      m_separator (p.m_separator), m_str (p.m_str) { }
+  string_array_property (const string_array_property&) = default;
+
+  // FIXME: should we define assignment?
+  string_array_property& operator = (const string_array_property&) = delete;
+
+  ~string_array_property () = default;
 
   octave_value get () const
   {
@@ -686,6 +706,8 @@ class OCTINTERP_API text_label_property : public base_property
 public:
   enum type { char_t, cellstr_t };
 
+  text_label_property () = delete;
+
   text_label_property (const std::string& s, const graphics_handle& h,
                        const std::string& val = "")
     : base_property (s, h), m_value (val), m_stored_type (char_t)
@@ -732,9 +754,12 @@ public:
       }
   }
 
-  text_label_property (const text_label_property& p)
-    : base_property (p), m_value (p.m_value), m_stored_type (p.m_stored_type)
-  { }
+  text_label_property (const text_label_property&) = default;
+
+  // FIXME: should we define assignment?
+  text_label_property& operator = (const text_label_property&) = delete;
+
+  ~text_label_property () = default;
 
   bool empty () const
   {
@@ -848,19 +873,7 @@ class OCTINTERP_API radio_values
 public:
   OCTINTERP_API radio_values (const std::string& opt_string = "");
 
-  radio_values (const radio_values& a)
-    : m_default_val (a.m_default_val), m_possible_vals (a.m_possible_vals) { }
-
-  radio_values& operator = (const radio_values& a)
-  {
-    if (&a != this)
-      {
-        m_default_val = a.m_default_val;
-        m_possible_vals = a.m_possible_vals;
-      }
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (radio_values)
 
   std::string default_value () const { return m_default_val; }
 
@@ -928,6 +941,9 @@ private:
 class OCTINTERP_API radio_property : public base_property
 {
 public:
+
+  radio_property () = delete;
+
   radio_property (const std::string& nm, const graphics_handle& h,
                   const radio_values& v = radio_values ())
     : base_property (nm, h),
@@ -943,8 +959,7 @@ public:
     : base_property (nm, h),
       m_vals (v), m_current_val (def) { }
 
-  radio_property (const radio_property& p)
-    : base_property (p), m_vals (p.m_vals), m_current_val (p.m_current_val) { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (radio_property)
 
   octave_value get () const { return octave_value (m_current_val); }
 
@@ -1023,17 +1038,7 @@ public:
       error ("invalid color specification: %s", str.c_str ());
   }
 
-  color_values (const color_values& c)
-    : m_rgb (c.m_rgb)
-  { }
-
-  color_values& operator = (const color_values& c)
-  {
-    if (&c != this)
-      m_rgb = c.m_rgb;
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (color_values)
 
   bool operator == (const color_values& c) const
   {
@@ -1067,6 +1072,9 @@ private:
 class OCTINTERP_API color_property : public base_property
 {
 public:
+
+  color_property () = delete;
+
   color_property (const color_values& c, const radio_values& v)
     : base_property ("", graphics_handle ()),
       m_current_type (color_t), m_color_val (c), m_radio_val (v),
@@ -1108,10 +1116,7 @@ public:
       m_radio_val (v.m_radio_val), m_current_val (v.m_current_val)
   { }
 
-  color_property (const color_property& p)
-    : base_property (p), m_current_type (p.m_current_type),
-      m_color_val (p.m_color_val), m_radio_val (p.m_radio_val),
-      m_current_val (p.m_current_val) { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (color_property)
 
   octave_value get () const
   {
@@ -1182,6 +1187,9 @@ enum finite_type
 class OCTINTERP_API double_property : public base_property
 {
 public:
+
+  double_property () = delete;
+
   double_property (const std::string& nm, const graphics_handle& h,
                    double d = 0)
     : base_property (nm, h),
@@ -1194,6 +1202,11 @@ public:
       m_finite_constraint (NO_CHECK),
       m_minval (std::pair<double, bool> (octave_NaN, true)),
       m_maxval (std::pair<double, bool> (octave_NaN, true)) { }
+
+  // FIXME: should we define assignment?
+  double_property& operator = (const double_property&) = delete;
+
+  ~double_property () = default;
 
   octave_value get () const { return octave_value (m_current_val); }
 
@@ -1294,6 +1307,9 @@ private:
 class OCTINTERP_API double_radio_property : public base_property
 {
 public:
+
+  double_radio_property () = delete;
+
   double_radio_property (double d, const radio_values& v)
     : base_property ("", graphics_handle ()),
       m_current_type (double_t), m_dval (d), m_radio_val (v),
@@ -1314,10 +1330,7 @@ public:
       m_radio_val (v.m_radio_val), m_current_val (v.m_current_val)
   { }
 
-  double_radio_property (const double_radio_property& p)
-    : base_property (p), m_current_type (p.m_current_type),
-      m_dval (p.m_dval), m_radio_val (p.m_radio_val),
-      m_current_val (p.m_current_val) { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (double_radio_property)
 
   octave_value get () const
   {
@@ -1411,6 +1424,11 @@ public:
       m_minval (std::pair<double, bool> (octave_NaN, true)),
       m_maxval (std::pair<double, bool> (octave_NaN, true))
   { }
+
+  // FIXME: Should we define assignment?
+  array_property& operator = (const array_property&) = delete;
+
+  ~array_property () = default;
 
   octave_value get () const { return m_data; }
 
@@ -1511,6 +1529,9 @@ protected:
 class OCTINTERP_API row_vector_property : public array_property
 {
 public:
+
+  row_vector_property () = delete;
+
   row_vector_property (const std::string& nm, const graphics_handle& h,
                        const octave_value& m)
     : array_property (nm, h, m)
@@ -1527,6 +1548,11 @@ public:
     add_constraint (dim_vector (1, -1));
     add_constraint (dim_vector (0, 0));
   }
+
+  // FIXME: should we define assignment?
+  row_vector_property& operator = (const row_vector_property&) = delete;
+
+  ~row_vector_property () = default;
 
   void add_constraint (const std::string& type)
   {
@@ -1605,6 +1631,9 @@ private:
 class OCTINTERP_API bool_property : public radio_property
 {
 public:
+
+  bool_property () = delete;
+
   bool_property (const std::string& nm, const graphics_handle& h,
                  bool val)
     : radio_property (nm, h, radio_values (val ? "{on}|off" : "on|{off}"))
@@ -1616,8 +1645,7 @@ public:
                                            "{on}|off" : "on|{off}"), val)
   { }
 
-  bool_property (const bool_property& p)
-    : radio_property (p) { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (bool_property)
 
   bool is_on () const { return is ("on"); }
 
@@ -1644,13 +1672,20 @@ protected:
 class OCTINTERP_API handle_property : public base_property
 {
 public:
+
+  handle_property () = delete;
+
   handle_property (const std::string& nm, const graphics_handle& h,
                    const graphics_handle& val = graphics_handle ())
     : base_property (nm, h),
       m_current_val (val) { }
 
-  handle_property (const handle_property& p)
-    : base_property (p), m_current_val (p.m_current_val) { }
+  handle_property (const handle_property&) = default;
+
+  // FIXME: should we define assignment?
+  handle_property& operator = (const handle_property&) = delete;
+
+  ~handle_property () = default;
 
   octave_value get () const { return m_current_val.as_octave_value (); }
 
@@ -1689,12 +1724,19 @@ private:
 class OCTINTERP_API any_property : public base_property
 {
 public:
+
+  any_property () = delete;
+
   any_property (const std::string& nm, const graphics_handle& h,
                 const octave_value& m = Matrix ())
     : base_property (nm, h), m_data (m) { }
 
-  any_property (const any_property& p)
-    : base_property (p), m_data (p.m_data) { }
+  any_property (const any_property&) = default;
+
+  // FIXME: should we define assignment?
+  any_property& operator = (const any_property&) = default;
+
+  ~any_property () = default;
 
   octave_value get () const { return m_data; }
 
@@ -1746,6 +1788,11 @@ public:
     set (val);
     return *this;
   }
+
+  // FIXME: should we define assignment?
+  children_property& operator = (const children_property&) = delete;
+
+  ~children_property () = default;
 
   base_property * clone () const { return new children_property (*this); }
 
@@ -1914,12 +1961,19 @@ private:
 class OCTINTERP_API callback_property : public base_property
 {
 public:
+
+  callback_property () = delete;
+
   callback_property (const std::string& nm, const graphics_handle& h,
                      const octave_value& m)
     : base_property (nm, h), m_callback (m) { }
 
-  callback_property (const callback_property& p)
-    : base_property (p), m_callback (p.m_callback) { }
+  callback_property (const callback_property&) = default;
+
+  // FIXME: should we define assignment?
+  callback_property& operator = (const callback_property&) = delete;
+
+  ~callback_property () = default;
 
   octave_value get () const { return m_callback; }
 
@@ -2143,7 +2197,7 @@ public:
   property_list (const plist_map_type& m = plist_map_type ())
     : m_plist_map (m) { }
 
-  ~property_list () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (property_list)
 
   OCTINTERP_API void set (const caseless_str& name, const octave_value& val);
 
@@ -2183,6 +2237,8 @@ public:
   base_properties (const std::string& ty = "unknown",
                    const graphics_handle& mh = graphics_handle (),
                    const graphics_handle& p = graphics_handle ());
+
+  OCTAVE_DEFAULT_COPY_MOVE (base_properties)
 
   virtual ~base_properties () = default;
 
@@ -2984,9 +3040,9 @@ protected:
 
 public:
 
-  ~root_figure () = default;
-
   OCTAVE_DISABLE_COPY_MOVE (root_figure)
+
+  ~root_figure () = default;
 
   void mark_modified () { }
 
@@ -3285,9 +3341,12 @@ private:
   properties m_properties;
 
 public:
+
   figure (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), m_properties (mh, p), m_default_properties ()
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (figure)
 
   ~figure () = default;
 
@@ -4324,6 +4383,8 @@ public:
     m_properties.update_transform ();
   }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (axes)
+
   ~axes () = default;
 
   void override_defaults (base_graphics_object& obj)
@@ -4474,6 +4535,8 @@ public:
   line (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), m_properties (mh, p)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (line)
 
   ~line () = default;
 
@@ -4669,6 +4732,8 @@ public:
   {
     m_properties.set_clipping ("off");
   }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (text)
 
   ~text () = default;
 
@@ -4885,6 +4950,8 @@ public:
     m_properties.initialize_data ();
   }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (image)
+
   ~image () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -4937,6 +5004,8 @@ public:
   light (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), m_properties (mh, p)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (light)
 
   ~light () = default;
 
@@ -5208,6 +5277,8 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (patch)
+
   ~patch () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -5444,6 +5515,8 @@ public:
     // object is added to the axes.
   }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (scatter)
+
   ~scatter () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -5658,6 +5731,8 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (surface)
+
   ~surface () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -5728,6 +5803,8 @@ public:
   hggroup (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), m_properties (mh, p)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (hggroup)
 
   ~hggroup () = default;
 
@@ -5834,6 +5911,8 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uimenu)
+
   ~uimenu () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -5906,6 +5985,8 @@ public:
   uicontextmenu (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), m_properties (mh, p)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uicontextmenu)
 
   ~uicontextmenu () = default;
 
@@ -6020,6 +6101,8 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uicontrol)
+
   ~uicontrol () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -6120,6 +6203,8 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uibuttongroup)
+
   ~uibuttongroup () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -6204,6 +6289,8 @@ public:
   uipanel (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), m_properties (mh, p)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uipanel)
 
   ~uipanel () = default;
 
@@ -6314,7 +6401,9 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
-  ~uitable () { }
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uitable)
+
+  ~uitable () = default;
 
   base_properties& get_properties () { return m_properties; }
 
@@ -6362,6 +6451,8 @@ public:
   uitoolbar (const graphics_handle& mh, const graphics_handle& p)
     : base_graphics_object (), m_properties (mh, p), m_default_properties ()
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uitoolbar)
 
   ~uitoolbar () = default;
 
@@ -6479,6 +6570,8 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uipushtool)
+
   ~uipushtool () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -6545,6 +6638,8 @@ public:
     : base_graphics_object (), m_properties (mh, p)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (uitoggletool)
+
   ~uitoggletool () = default;
 
   base_properties& get_properties () { return m_properties; }
@@ -6592,6 +6687,8 @@ public:
   base_graphics_event (int busyaction)
     : m_busyaction (busyaction)
   { };
+
+  OCTAVE_DEFAULT_COPY_MOVE (base_graphics_event)
 
   virtual ~base_graphics_event () = default;
 

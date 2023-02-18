@@ -37,10 +37,14 @@ preserve_stream_state
 {
 public:
 
+  preserve_stream_state () = delete;
+
   preserve_stream_state (std::ios& s)
     : m_stream (s), m_oflags (s.flags ()), m_oprecision (s.precision ()),
       m_owidth (s.width ()), m_ofill (s.fill ())
   { }
+
+  OCTAVE_DEFAULT_COPY_MOVE (preserve_stream_state)
 
   ~preserve_stream_state ()
   {

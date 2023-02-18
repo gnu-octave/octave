@@ -178,7 +178,7 @@ public:
 
   octave_dlopen_shlib (const std::string& f);
 
-  OCTAVE_DISABLE_COPY_MOVE (octave_dlopen_shlib)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (octave_dlopen_shlib)
 
   ~octave_dlopen_shlib ();
 

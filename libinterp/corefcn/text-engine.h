@@ -56,14 +56,12 @@ OCTINTERP_API
 text_element
 {
 public:
-  text_element () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (text_element)
 
   virtual ~text_element () = default;
 
   virtual void accept (text_processor& p) = 0;
-
-private:
-  text_element (const text_element&);
 };
 
 class
@@ -71,19 +69,17 @@ OCTINTERP_API
 text_element_string : public text_element
 {
 public:
+
   text_element_string (const std::string& s = "")
     : text_element (), m_str (s) { }
 
-  ~text_element_string () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (text_element_string)
 
   std::string string_value () const { return m_str; }
 
   void accept (text_processor& p);
 
 private:
-  text_element_string (const text_element_string&);
-
-  //--------
 
   std::string m_str;
 };
@@ -93,12 +89,15 @@ OCTINTERP_API
 text_element_symbol : public text_element
 {
 public:
+
   enum { invalid_code = 0xFFFFFFFFU };
+
+  text_element_symbol () = delete;
 
   text_element_symbol (int sym)
     : text_element (), m_symbol (sym) { }
 
-  ~text_element_symbol () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (text_element_symbol)
 
   int get_symbol () const { return m_symbol; }
 
@@ -116,8 +115,8 @@ text_element_list
   : public text_element, public base_list<text_element *>
 {
 public:
-  text_element_list ()
-    : text_element (), base_list<text_element*> () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (text_element_list)
 
   text_element_list (text_element *e)
     : text_element (), base_list<text_element*> ()
@@ -143,6 +142,9 @@ OCTINTERP_API
 text_element_subscript : public text_element
 {
 public:
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (text_element_subscript)
+
   text_element_subscript (text_element *e)
     : text_element (), m_elem (e) { }
 
@@ -158,12 +160,8 @@ public:
   text_element * get_element () { return m_elem; }
 
 private:
-  text_element_subscript ();
-
-  //--------
 
   text_element *m_elem;
-
 };
 
 class
@@ -171,6 +169,9 @@ OCTINTERP_API
 text_element_superscript : public text_element
 {
 public:
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (text_element_superscript)
+
   text_element_superscript (text_element *e)
     : text_element (), m_elem (e) { }
 
@@ -186,12 +187,8 @@ public:
   text_element * get_element () { return m_elem; }
 
 private:
-  text_element_superscript ();
-
-  //--------
 
   text_element *m_elem;
-
 };
 
 class
@@ -199,6 +196,9 @@ OCTINTERP_API
 text_element_combined : public text_element_list
 {
 public:
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (text_element_combined)
+
   text_element_combined (text_element *e)
     : text_element_list (e) { }
 
@@ -214,6 +214,7 @@ OCTINTERP_API
 text_element_fontstyle : public text_element
 {
 public:
+
   enum fontstyle
   {
     normal,
@@ -222,22 +223,20 @@ public:
     oblique
   };
 
+  text_element_fontstyle () = delete;
+
   text_element_fontstyle (fontstyle st)
     : text_element (), m_style (st) { }
 
-  ~text_element_fontstyle () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (text_element_fontstyle)
 
   fontstyle get_fontstyle () const { return m_style; }
 
   void accept (text_processor& p);
 
 private:
-  text_element_fontstyle ();
-
-  //--------
 
   fontstyle m_style;
-
 };
 
 class
@@ -245,22 +244,21 @@ OCTINTERP_API
 text_element_fontname : public text_element
 {
 public:
+
+  text_element_fontname () = delete;
+
   text_element_fontname (const std::string& fname)
     : text_element (), m_name (fname) { }
 
-  ~text_element_fontname () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (text_element_fontname)
 
   const std::string& get_fontname () const { return m_name; }
 
   void accept (text_processor& p);
 
 private:
-  text_element_fontname ();
-
-  //--------
 
   std::string m_name;
-
 };
 
 class
@@ -268,22 +266,21 @@ OCTINTERP_API
 text_element_fontsize : public text_element
 {
 public:
+
+  text_element_fontsize () = delete;
+
   text_element_fontsize (double fsize)
     : text_element (), m_size (fsize) { }
 
-  ~text_element_fontsize () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (text_element_fontsize)
 
   double get_fontsize () const { return m_size; }
 
   void accept (text_processor& p);
 
 private:
-  text_element_fontsize ();
-
-  //--------
 
   double m_size;
-
 };
 
 class
@@ -291,6 +288,9 @@ OCTINTERP_API
 text_element_color : public text_element
 {
 public:
+
+  text_element_color () = delete;
+
   text_element_color (double r, double g, double b)
     : text_element (), m_rgb (1, 3, 0.0)
   {
@@ -317,13 +317,14 @@ public:
 #undef ASSIGN_COLOR
                         }
 
-  ~text_element_color () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (text_element_color)
 
   Matrix get_color () { return m_rgb; }
 
   void accept (text_processor& p);
 
 private:
+
   Matrix m_rgb;
 };
 
@@ -332,6 +333,7 @@ OCTINTERP_API
 text_processor
 {
 public:
+
   virtual void visit (text_element_string&) { }
 
   virtual void visit (text_element_symbol&) { }
@@ -363,7 +365,8 @@ public:
   virtual void reset () { }
 
 protected:
-  text_processor () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (text_processor)
 
   virtual ~text_processor () = default;
 };
@@ -391,7 +394,8 @@ OCTINTERP_API
 text_parser
 {
 public:
-  text_parser () { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (text_parser)
 
   virtual ~text_parser () = default;
 
@@ -407,9 +411,8 @@ OCTINTERP_API
 text_parser_none : public text_parser
 {
 public:
-  text_parser_none () : text_parser () { }
 
-  ~text_parser_none () = default;
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (text_parser_none)
 
   // FIXME: is it possible to use reference counting to manage the
   // memory for the object returned by the text parser?  That would be
@@ -427,10 +430,13 @@ OCTINTERP_API
 text_parser_tex : public text_parser
 {
 public:
+
   text_parser_tex ()
     : text_parser (), m_scanner (nullptr), m_buffer_state (nullptr),
       m_result (nullptr)
   { }
+
+  OCTAVE_DISABLE_COPY_MOVE (text_parser_tex)
 
   ~text_parser_tex ()
   { destroy_lexer (); }

@@ -59,7 +59,7 @@ public:
 
   tree_decl_elt (tree_identifier *i, tree_expression *e = nullptr);
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_decl_elt)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_decl_elt)
 
   ~tree_decl_elt ();
 
@@ -170,7 +170,7 @@ public:
   tree_decl_command (const std::string& n, tree_decl_init_list *t,
                      int l = -1, int c = -1);
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_decl_command)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_decl_command)
 
   ~tree_decl_command ();
 

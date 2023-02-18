@@ -75,8 +75,10 @@ template <typename R>
 class norm_accumulator_p
 {
 public:
-  norm_accumulator_p () { } // we need this one for Array
+
   norm_accumulator_p (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_p)
 
   template <typename U>
   void accum (U val)
@@ -106,8 +108,10 @@ template <typename R>
 class norm_accumulator_mp
 {
 public:
-  norm_accumulator_mp () { } // we need this one for Array
+
   norm_accumulator_mp (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_mp)
 
   template <typename U>
   void accum (U val)
@@ -137,7 +141,10 @@ template <typename R>
 class norm_accumulator_2
 {
 public:
+
   norm_accumulator_2 () : m_scl(0), m_sum(1) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_2)
 
   void accum (R val)
   {
@@ -175,7 +182,11 @@ template <typename R>
 class norm_accumulator_1
 {
 public:
+
   norm_accumulator_1 () : m_sum (0) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_1)
+
   template <typename U>
   void accum (U val)
   {
@@ -193,7 +204,11 @@ template <typename R>
 class norm_accumulator_inf
 {
 public:
+
   norm_accumulator_inf () : m_max (0) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_inf)
+
   template <typename U>
   void accum (U val)
   {
@@ -214,7 +229,11 @@ template <typename R>
 class norm_accumulator_minf
 {
 public:
+
   norm_accumulator_minf () : m_min (numeric_limits<R>::Inf ()) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_minf)
+
   template <typename U>
   void accum (U val)
   {
@@ -235,7 +254,11 @@ template <typename R>
 class norm_accumulator_0
 {
 public:
+
   norm_accumulator_0 () : m_num (0) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_0)
+
   template <typename U>
   void accum (U val)
   {

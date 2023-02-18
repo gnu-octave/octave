@@ -161,7 +161,7 @@ public:
 
   OCTINTERP_API base_parser (base_lexer& lxr);
 
-  OCTAVE_DISABLE_COPY_MOVE (base_parser)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (base_parser)
 
   virtual ~base_parser ();
 
@@ -845,7 +845,7 @@ public:
     : base_parser (*lxr)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (parser)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (parser)
 
   ~parser () = default;
 
@@ -869,7 +869,7 @@ public:
       m_interpreter (interp), m_reader (reader)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (push_parser)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (push_parser)
 
   ~push_parser () = default;
 

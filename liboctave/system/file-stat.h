@@ -275,27 +275,14 @@ file_fstat : public base_file_stat
 {
 public:
 
+  file_fstat () = delete;
+
   file_fstat (int n) : base_file_stat (), m_fid (n)
   {
     update_internal ();
   }
 
-  file_fstat (const file_fstat& fs)
-    : base_file_stat (fs), m_fid (fs.m_fid) { }
-
-  file_fstat& operator = (const file_fstat& fs)
-  {
-    if (this != &fs)
-      {
-        base_file_stat::operator = (fs);
-
-        m_fid = fs.m_fid;
-      }
-
-    return *this;
-  }
-
-  ~file_fstat () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (file_fstat)
 
   void get_stats (bool force = false)
   {

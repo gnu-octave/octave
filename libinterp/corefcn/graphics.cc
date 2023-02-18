@@ -11600,6 +11600,10 @@ public:
     : base_graphics_event (busyaction), m_handle (h), m_callback_name (),
       m_callback (cb), m_callback_data (data) { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (callback_event)
+
+  ~callback_event () = default;
+
   void execute ()
   {
     gh_manager& gh_mgr = octave::__get_gh_manager__ ();
@@ -11609,12 +11613,6 @@ public:
     else
       gh_mgr.execute_callback (m_handle, m_callback_name, m_callback_data);
   }
-
-private:
-  callback_event ()
-    : base_graphics_event (), m_handle (), m_callback_name (),
-      m_callback_data ()
-  { }
 
 private:
   graphics_handle m_handle;
@@ -11631,6 +11629,10 @@ public:
                int busyaction = base_graphics_event::QUEUE)
     : base_graphics_event (busyaction), m_handle (h), m_mcode (cmd)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (mcode_event)
+
+  ~mcode_event () = default;
 
   void execute ()
   {
@@ -11649,11 +11651,6 @@ public:
   }
 
 private:
-  mcode_event ()
-    : base_graphics_event (), m_handle (), m_mcode ()
-  { }
-
-private:
   graphics_handle m_handle;
   std::string m_mcode;
 };
@@ -11663,15 +11660,13 @@ function_event : public base_graphics_event
 {
 public:
 
-  // function_event objects must be created with at least a function.
-
-  function_event () = delete;
-
   function_event (graphics_event::event_fcn fcn, void *data = nullptr)
     : base_graphics_event (), m_function (fcn), m_function_data (data)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (function_event)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (function_event)
+
+  ~function_event () = default;
 
   void execute ()
   {
@@ -11696,6 +11691,10 @@ public:
       m_property_value (value), m_notify_toolkit (do_notify_toolkit),
       m_redraw_figure (redraw_figure)
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (set_event)
+
+  ~set_event () = default;
 
   void execute ()
   {
@@ -11747,11 +11746,6 @@ public:
           }
       }
   }
-
-private:
-  set_event ()
-    : base_graphics_event (), m_handle (), m_property_name (), m_property_value ()
-  { }
 
 private:
   graphics_handle m_handle;

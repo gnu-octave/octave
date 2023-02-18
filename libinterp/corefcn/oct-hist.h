@@ -44,7 +44,7 @@ public:
 
   history_system (interpreter& interp);
 
-  OCTAVE_DISABLE_COPY_MOVE (history_system)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (history_system)
 
   ~history_system () = default;
 

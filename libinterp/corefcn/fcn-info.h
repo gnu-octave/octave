@@ -68,7 +68,7 @@ private:
         }
     }
 
-    OCTAVE_DISABLE_COPY_MOVE (fcn_info_rep)
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (fcn_info_rep)
 
     ~fcn_info_rep () = default;
 

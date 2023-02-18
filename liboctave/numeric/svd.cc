@@ -48,7 +48,8 @@ class
 gejsv_lwork
 {
 public:
-  gejsv_lwork () = delete;
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE_DELETE (gejsv_lwork)
 
   // Unfortunately, dgejsv and sgejsv do not provide estimation of 'lwork'.
   // Thus, we have to estimate it according to corresponding LAPACK

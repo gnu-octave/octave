@@ -56,20 +56,7 @@ public:
     info = init (a, upper, calc_cond);
   }
 
-  chol (const chol& a)
-    : m_chol_mat (a.m_chol_mat), m_rcond (a.m_rcond), m_is_upper (a.m_is_upper) { }
-
-  chol& operator = (const chol& a)
-  {
-    if (this != &a)
-      {
-        m_chol_mat = a.m_chol_mat;
-        m_rcond = a.m_rcond;
-        m_is_upper = a.m_is_upper;
-      }
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (chol)
 
   T chol_matrix () const { return m_chol_mat; }
 

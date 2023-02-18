@@ -38,19 +38,15 @@ class kpse_path_iterator
 {
 public:
 
+  kpse_path_iterator () = delete;
+
   kpse_path_iterator (const std::string& p)
     : m_path (p), m_b (0), m_e (0), m_len (m_path.length ())
   {
     set_end ();
   }
 
-  kpse_path_iterator (const kpse_path_iterator&) = default;
-
-  // No assignment!
-
-  kpse_path_iterator& operator = (const kpse_path_iterator&) = delete;
-
-  ~kpse_path_iterator () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (kpse_path_iterator)
 
   kpse_path_iterator operator ++ (int)
   {

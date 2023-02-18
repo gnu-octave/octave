@@ -49,6 +49,8 @@ public:
 
   procstreambase (const char *name, int mode);
 
+  OCTAVE_DISABLE_COPY_MOVE (procstreambase)
+
   ~procstreambase () { close (); }
 
   void open (const std::string& name, int mode)
@@ -76,10 +78,6 @@ private:
     // FIXME: is there a better way to organize these classes?
     init (&m_pb);
   }
-
-  procstreambase (const procstreambase&);
-
-  procstreambase& operator = (const procstreambase&);
 };
 
 class
@@ -98,6 +96,8 @@ public:
     : std::istream (nullptr), procstreambase (name, mode)
   { }
 
+  OCTAVE_DISABLE_COPY_MOVE (iprocstream)
+
   ~iprocstream () = default;
 
   void open (const std::string& name, int mode = std::ios::in)
@@ -109,12 +109,6 @@ public:
   {
     procstreambase::open (name, mode);
   }
-
-private:
-
-  iprocstream (const iprocstream&);
-
-  iprocstream& operator = (const iprocstream&);
 };
 
 class
@@ -131,6 +125,8 @@ public:
   oprocstream (const char *name, int mode = std::ios::out)
     : std::ostream (nullptr), procstreambase (name, mode) { }
 
+  OCTAVE_DISABLE_COPY_MOVE (oprocstream)
+
   ~oprocstream () = default;
 
   void open (const std::string& name, int mode = std::ios::out)
@@ -142,12 +138,6 @@ public:
   {
     procstreambase::open (name, mode);
   }
-
-private:
-
-  oprocstream (const oprocstream&);
-
-  oprocstream& operator = (const oprocstream&);
 };
 
 class
@@ -166,6 +156,8 @@ public:
     : std::iostream (nullptr), procstreambase (name, mode)
   { }
 
+  OCTAVE_DISABLE_COPY_MOVE (procstream)
+
   ~procstream () = default;
 
   void open (const std::string& name, int mode)
@@ -177,12 +169,6 @@ public:
   {
     procstreambase::open (name, mode);
   }
-
-private:
-
-  procstream (const procstream&);
-
-  procstream& operator = (const procstream&);
 };
 
 OCTAVE_END_NAMESPACE(octave)

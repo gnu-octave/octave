@@ -75,6 +75,8 @@ private:
 
 public:
 
+  dynamic_loader () = delete;
+
   dynamic_loader (interpreter& interp)
     : m_interpreter (interp), m_loaded_shlibs (), m_doing_load (false)
   { }

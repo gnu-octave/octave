@@ -168,11 +168,7 @@ public:
       m_safe_to_return (safe_to_return)
   { }
 
-  exit_exception (const exit_exception&) = default;
-
-  exit_exception& operator = (exit_exception&) = default;
-
-  ~exit_exception (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (exit_exception)
 
   const char * what (void) const noexcept { return "exit exception"; }
 

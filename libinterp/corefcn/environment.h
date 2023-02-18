@@ -45,6 +45,8 @@ public:
       m_image_path (init_image_path ())
   { }
 
+  OCTAVE_DEFAULT_COPY_DELETE (environment)
+
   octave_value editor (const octave_value_list& args, int nargout);
 
   std::string editor () const { return m_editor; }

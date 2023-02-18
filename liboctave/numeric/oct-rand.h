@@ -49,6 +49,8 @@ protected:
 
 public:
 
+  OCTAVE_DISABLE_COPY_MOVE (rand)
+
   ~rand () = default;
 
   static bool instance_ok ();

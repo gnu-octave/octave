@@ -53,8 +53,11 @@
 class pdfpainter : public QPainter
 {
 public:
+
+  pdfpainter () = delete;
+
   pdfpainter (QString fname, QRectF sz)
-      :  m_printer ()
+    : m_printer ()
   {
     // Printer settings
     m_printer.setOutputFormat (QPrinter::PdfFormat);
@@ -70,9 +73,12 @@ public:
     setWindow (sz.toRect ());
   }
 
+  OCTAVE_DEFAULT_COPY_MOVE (pdfpainter)
+
   ~pdfpainter () { end (); }
 
 private:
+
   QPrinter m_printer;
 };
 
@@ -146,13 +152,11 @@ QString get_field (QString str, QString field)
 class octave_polygon
 {
 public:
-  octave_polygon ()
-  { }
 
   octave_polygon (QPolygonF p)
   { m_polygons.push_back (p); }
 
-  ~octave_polygon () { }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (octave_polygon)
 
   int count () const
   { return m_polygons.count (); }

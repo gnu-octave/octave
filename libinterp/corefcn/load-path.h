@@ -51,7 +51,7 @@ public:
 
   typedef void (*hook_fcn_ptr) (const std::string& dir);
 
-  OCTAVE_DISABLE_COPY_MOVE (load_path)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (load_path)
 
   ~load_path () = default;
 
@@ -319,6 +319,8 @@ private:
   class file_info
   {
   public:
+
+    file_info () = delete;
 
     file_info (const std::string& d, int t) : dir_name (d), types (t) { }
 

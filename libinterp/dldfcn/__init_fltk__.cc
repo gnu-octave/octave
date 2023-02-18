@@ -144,6 +144,8 @@ public:
 #endif
   }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (OpenGL_fltk)
+
   ~OpenGL_fltk () = default;
 
   void zoom (bool z)
@@ -306,6 +308,10 @@ public:
   fltk_uimenu (int xx, int yy, int ww, int hh)
     : m_menubar (new Fl_Menu_Bar (xx, yy, ww, hh))
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (fltk_uimenu)
+
+  ~fltk_uimenu () = default;
 
   int items_to_show ()
   {
@@ -751,13 +757,6 @@ public:
       m_menubar->clear ();
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (fltk_uimenu)
-
-  ~fltk_uimenu ()
-  {
-    // FLTK is supposed to manage memory for widgets.
-  }
-
 private:
 
   Fl_Menu_Bar *m_menubar;
@@ -878,7 +877,7 @@ public:
       }
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (plot_window)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (plot_window)
 
   ~plot_window ()
   {
@@ -2266,6 +2265,8 @@ public:
   {
     Fl::visual (FL_RGB);
   }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (fltk_graphics_toolkit)
 
   ~fltk_graphics_toolkit () = default;
 

@@ -45,12 +45,16 @@ class OCTAVE_EXCEPTION_API index_exception : public execution_exception
 {
 public:
 
+  index_exception () = delete;
+
   index_exception (const std::string& index, octave_idx_type nd = 0,
                    octave_idx_type dim = -1, const char *var = "")
     : m_index (index), m_nd (nd), m_dim (dim), m_var (var)
   {
     set_message (expression ());
   }
+
+  OCTAVE_DEFAULT_COPY_MOVE (index_exception)
 
   ~index_exception () = default;
 

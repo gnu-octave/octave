@@ -114,6 +114,7 @@ class
 pthread_mutex : public base_mutex
 {
 public:
+
   pthread_mutex ()
     : base_mutex (), m_pm ()
   {
@@ -124,6 +125,8 @@ public:
     pthread_mutex_init (&m_pm, &attr);
     pthread_mutexattr_destroy (&attr);
   }
+
+  OCTAVE_DISABLE_COPY_MOVE (pthread_mutex)
 
   ~pthread_mutex ()
   {

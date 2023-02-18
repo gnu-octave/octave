@@ -54,6 +54,8 @@ public: // FIXME: make this class private?
         m_search_all_loaded (false)
     { }
 
+    OCTAVE_DISABLE_COPY_MOVE (dynlib_rep)
+
   protected:
 
     OCTAVE_API

@@ -128,13 +128,13 @@ class tree_braindead_shortcircuit_binary_expression
 public:
 
   tree_braindead_shortcircuit_binary_expression (tree_expression *a,
-      tree_expression *b,
-      int l, int c,
-      octave_value::binary_op t)
+                                                 tree_expression *b,
+                                                 int l, int c,
+                                                 octave_value::binary_op t)
     : tree_binary_expression (a, b, l, c, t)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_braindead_shortcircuit_binary_expression)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_braindead_shortcircuit_binary_expression)
 
   ~tree_braindead_shortcircuit_binary_expression () = default;
 

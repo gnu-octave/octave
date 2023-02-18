@@ -60,6 +60,8 @@ public:
     return *this;
   }
 
+  ~FloatRowVector () = default;
+
   OCTAVE_API bool operator == (const FloatRowVector& a) const;
   OCTAVE_API bool operator != (const FloatRowVector& a) const;
 

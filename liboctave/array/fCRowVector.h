@@ -70,6 +70,8 @@ public:
     return *this;
   }
 
+  ~FloatComplexRowVector () = default;
+
   OCTAVE_API bool operator == (const FloatComplexRowVector& a) const;
   OCTAVE_API bool operator != (const FloatComplexRowVector& a) const;
 

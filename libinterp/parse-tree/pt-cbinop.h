@@ -54,7 +54,10 @@ public:
       m_etype (ct)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_compound_binary_expression)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_compound_binary_expression)
+
+  // FIXME: who is responsibile for deleting M_LHS and M_RHS?
+  ~tree_compound_binary_expression () = default;
 
   octave_value::compound_binary_op cop_type () const { return m_etype; }
 

@@ -130,37 +130,15 @@ public:
   {
   public:
 
-    string (const std::string& s, font& f, const double x, const double y)
+    string () = delete;
+
+    string (const std::string& s, const font& f, double x, double y)
       : m_str (s), m_family (f.get_name ()), m_fnt (f), m_x (x), m_y (y),
         m_z (0.0), m_xdata (), m_code (0), m_color (Matrix (1, 3, 0.0)),
         m_svg_element ()
     { }
 
-    string (const string& s)
-      : m_str (s.m_str), m_family (s.m_family), m_fnt (s.m_fnt), m_x (s.m_x),
-        m_y (s.m_y), m_z (s.m_z), m_xdata (s.m_xdata), m_code (s.m_code),
-        m_color (s.m_color), m_svg_element (s.m_svg_element)
-    { }
-
-    ~string () = default;
-
-    string& operator = (const string& s)
-    {
-      if (&s != this)
-        {
-          m_str = s.m_str;
-          m_family = s.m_family;
-          m_fnt = s.m_fnt;
-          m_x = s.m_x;
-          m_y = s.m_y;
-          m_z = s.m_z;
-          m_xdata = s.m_xdata;
-          m_code = s.m_code;
-          m_color = s.m_color;
-        }
-
-      return *this;
-    }
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (string)
 
     void set_string (const std::string& s) { m_str = s; }
 

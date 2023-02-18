@@ -49,6 +49,10 @@ public:
 
   pager_buf () : std::stringbuf (), m_diary_skip (0) { }
 
+  OCTAVE_DISABLE_COPY_MOVE (pager_buf)
+
+  ~pager_buf () = default;
+
   void flush_current_contents_to_diary ();
 
   void set_diary_skip ();
@@ -93,7 +97,7 @@ diary_buf : public std::stringbuf
 {
 public:
 
-  diary_buf () : std::stringbuf () { }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (diary_buf)
 
 protected:
 
@@ -129,7 +133,7 @@ public:
 
   output_system (interpreter& interp);
 
-  OCTAVE_DISABLE_COPY_MOVE (output_system)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (output_system)
 
   ~output_system () = default;
 

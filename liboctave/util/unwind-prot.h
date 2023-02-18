@@ -317,7 +317,7 @@ public:
     m_ref = new_val;
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (unwind_protect_var)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (unwind_protect_var)
 
   ~unwind_protect_var ()
   {

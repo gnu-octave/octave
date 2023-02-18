@@ -1223,7 +1223,7 @@ public:
 
   delimited_stream (std::istream& is, const delimited_stream& ds);
 
-  OCTAVE_DISABLE_COPY_MOVE (delimited_stream)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (delimited_stream)
 
   ~delimited_stream ();
 
@@ -1647,6 +1647,8 @@ public:
     literal_conversion = 2
   };
 
+  textscan_format_elt () = delete;
+
   textscan_format_elt (const std::string& txt, int w = 0, int p = -1,
                        int bw = 0, bool dis = false, char typ = '\0',
                        const std::string& ch_class = std::string ())
@@ -1655,28 +1657,7 @@ public:
       numeric (typ == 'd' || typ == 'u' || type == 'f' || type == 'n')
   { }
 
-  textscan_format_elt (const textscan_format_elt& e)
-    : text (e.text), width (e.width), prec (e.prec),
-      bitwidth (e.bitwidth), char_class (e.char_class), type (e.type),
-      discard (e.discard), numeric (e.numeric)
-  { }
-
-  textscan_format_elt& operator = (const textscan_format_elt& e)
-  {
-    if (this != &e)
-      {
-        text = e.text;
-        width = e.width;
-        prec = e.prec;
-        bitwidth = e.bitwidth;
-        discard = e.discard;
-        type = e.type;
-        numeric = e.numeric;
-        char_class = e.char_class;
-      }
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (textscan_format_elt)
 
   // The C-style format string.
   std::string text;

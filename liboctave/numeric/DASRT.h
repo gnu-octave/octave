@@ -97,7 +97,7 @@ public:
       m_rwork (), m_abs_tol (), m_rel_tol ()
   { }
 
-  ~DASRT () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (DASRT)
 
   DASRT_result integrate (const ColumnVector& tout);
 

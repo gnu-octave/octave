@@ -114,6 +114,8 @@ private:
         m_tx (double(m_w)/m_tw), m_ty (double(m_h)/m_th), m_valid (true)
     { }
 
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (texture_rep)
+
     ~texture_rep ()
     {
       if (m_valid)
@@ -142,6 +144,8 @@ private:
 
 public:
 
+  opengl_texture () = delete;
+
   opengl_texture (opengl_functions& glfcns)
     : m_rep (new texture_rep (glfcns))
   { }
@@ -151,11 +155,7 @@ public:
     : m_rep (new texture_rep (glfcns, id, w, h, tw, th))
   { }
 
-  opengl_texture (const opengl_texture&) = default;
-
-  ~opengl_texture () = default;
-
-  opengl_texture& operator = (const opengl_texture&) = default;
+  OCTAVE_DEFAULT_COPY_DELETE (opengl_texture)
 
   static opengl_texture create (opengl_functions& glfcns,
                                 const octave_value& data);
@@ -461,6 +461,10 @@ public:
         m_specular (ss), m_specular_exp (se), m_specular_color_refl (scr)
     { }
 
+    OCTAVE_DEFAULT_COPY (vertex_data_rep)
+
+    ~vertex_data_rep () = default;
+
     Matrix m_coords;
     Matrix m_color;
     Matrix m_vertex_normal;
@@ -516,7 +520,9 @@ public:
       m_index (idx), m_first (true), m_tmp_vdata ()
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (patch_tessellator)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (patch_tessellator)
+
+  ~patch_tessellator () = default;
 
 protected:
   void begin (GLenum type)
@@ -656,6 +662,8 @@ protected:
 
 private:
 
+  // FIXME: We don't own this object; should it be a shared/weak/unique
+  // pointer?  Managed some other way?
   opengl_renderer *m_renderer;
   int m_color_mode;
   int m_light_mode;

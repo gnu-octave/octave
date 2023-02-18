@@ -164,6 +164,8 @@ public:
   {
   public:
 
+    match_element () = delete;
+
     match_element (const string_vector& nt, const string_vector& t,
                    const std::string& ms, const Matrix& te,
                    double s, double e)
@@ -171,9 +173,7 @@ public:
         m_token_extents (te), m_start (s), m_end (e)
     { }
 
-    match_element (const match_element&) = default;
-
-    match_element& operator = (const match_element&) = default;
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (match_element)
 
     std::string match_string () const { return m_match_string; }
     string_vector named_tokens () const { return m_named_tokens; }
@@ -208,11 +208,7 @@ public:
       : base_list<match_element> (l), m_named_pats (np)
     { }
 
-    match_data (const match_data&) = default;
-
-    match_data& operator = (const match_data&) = default;
-
-    ~match_data () = default;
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (match_data)
 
     string_vector named_patterns () const { return m_named_pats; }
 

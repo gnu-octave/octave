@@ -45,7 +45,7 @@ public:
     : m_count (initial_count)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (refcount)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (refcount)
 
   ~refcount () = default;
 

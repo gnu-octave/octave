@@ -49,7 +49,7 @@ public:
     : m_size_args (size_args)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_arg_size_spec)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_arg_size_spec)
 
   ~tree_arg_size_spec ()
   {
@@ -76,7 +76,7 @@ public:
     : m_fcn_args (fcn_args)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_arg_validation_fcns)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_arg_validation_fcns)
 
   ~tree_arg_validation_fcns ()
   {
@@ -108,7 +108,7 @@ public:
       m_default_value (default_value)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_arg_validation)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_arg_validation)
 
   ~tree_arg_validation ()
   {
@@ -219,7 +219,7 @@ public:
       m_lead_comm (nullptr), m_trail_comm (nullptr)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_arguments_block)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_arguments_block)
 
   ~tree_arguments_block ()
   {

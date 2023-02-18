@@ -312,6 +312,7 @@ Array<T, Alloc>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 class rec_permute_helper
 {
 public:
+
   rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
 
     : m_n (dv.ndims ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
@@ -350,7 +351,7 @@ public:
 
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (rec_permute_helper)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (rec_permute_helper)
 
   ~rec_permute_helper () { delete [] m_dim; }
 
@@ -522,6 +523,7 @@ Array<T, Alloc>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) 
 class rec_index_helper
 {
 public:
+
   rec_index_helper (const dim_vector& dv, const Array<octave::idx_vector>& ia)
     : m_n (ia.numel ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
       m_cdim (m_dim + m_n), m_idx (new octave::idx_vector [m_n])
@@ -551,7 +553,7 @@ public:
       }
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (rec_index_helper)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (rec_index_helper)
 
   ~rec_index_helper () { delete [] m_idx; delete [] m_dim; }
 
@@ -638,6 +640,7 @@ private:
 class rec_resize_helper
 {
 public:
+
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
     : m_cext (nullptr), m_sext (nullptr), m_dext (nullptr), m_n (0)
   {
@@ -663,7 +666,7 @@ public:
     m_cext[0] *= ld;
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (rec_resize_helper)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (rec_resize_helper)
 
   ~rec_resize_helper () { delete [] m_cext; }
 

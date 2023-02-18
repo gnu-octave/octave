@@ -118,6 +118,10 @@ public:
   tree_black_hole (int l = -1, int c = -1)
     : tree_identifier (l, c) { }
 
+  OCTAVE_DISABLE_COPY_MOVE (tree_black_hole)
+
+  ~tree_black_hole () = default;
+
   std::string name () const { return "~"; }
 
   bool is_black_hole () const { return true; }

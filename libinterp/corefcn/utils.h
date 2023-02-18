@@ -68,6 +68,8 @@ public:
 
   make_valid_name_options () = default;
 
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (make_valid_name_options)
+
   //! Extract attribute-value-pairs from an octave_value_list of strings.
   //!
   //! If attributes occur multiple times, the rightmost pair is chosen.

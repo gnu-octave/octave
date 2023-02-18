@@ -67,16 +67,14 @@ private:
   {
   public:
 
+    symbol_record_rep () = delete;
+
     symbol_record_rep (const std::string& nm, symrec_t sc)
       : m_frame_offset (0), m_data_offset (0), m_storage_class (sc),
         m_name (nm)
     { }
 
-    symbol_record_rep (const symbol_record_rep&) = default;
-
-    symbol_record_rep& operator = (const symbol_record_rep&) = default;
-
-    ~symbol_record_rep () = default;
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (symbol_record_rep)
 
     // FIXME: use special storage class instead?
     bool is_valid () const { return ! m_name.empty (); }

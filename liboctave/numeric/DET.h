@@ -57,14 +57,7 @@ public:
     m_e2 += f;
   }
 
-  base_det (const base_det& a) : m_c2 (a.m_c2), m_e2 (a.m_e2) { }
-
-  base_det& operator = (const base_det& a)
-  {
-    m_c2 = a.m_c2;
-    m_e2 = a.m_e2;
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (base_det)
 
   T coef () const { return m_c2; }
   int exp () const { return m_e2; }

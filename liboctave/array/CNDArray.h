@@ -62,6 +62,8 @@ public:
     return *this;
   }
 
+  ~ComplexNDArray () = default;
+
   // unary operations
 
   OCTAVE_API boolNDArray operator ! () const;

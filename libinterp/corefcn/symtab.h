@@ -60,7 +60,7 @@ public:
 
   symbol_table (interpreter& interp);
 
-  OCTAVE_DISABLE_COPY_MOVE (symbol_table)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (symbol_table)
 
   ~symbol_table () = default;
 

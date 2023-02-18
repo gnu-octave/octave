@@ -75,7 +75,7 @@ public:
 
   sparse_qr_rep (const SPARSE_T& a, int order);
 
-  OCTAVE_DISABLE_COPY_MOVE (sparse_qr_rep)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (sparse_qr_rep)
 
   ~sparse_qr_rep ();
 

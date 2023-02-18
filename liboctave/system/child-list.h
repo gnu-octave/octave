@@ -76,7 +76,7 @@ class OCTAVE_API child_list
 {
 public:
 
-  child_list () { }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (child_list)
 
   void insert (pid_t pid, child::child_event_handler f);
 

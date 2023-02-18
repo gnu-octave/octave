@@ -327,9 +327,7 @@ fftw
 {
 public:
 
-  fftw () = delete;
-
-  OCTAVE_DISABLE_COPY_MOVE (fftw)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE_DELETE (fftw)
 
   static int fft (const double *in, Complex *out, std::size_t npts,
                   std::size_t nsamples = 1, octave_idx_type stride = 1,

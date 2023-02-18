@@ -45,7 +45,7 @@ public:
 
   anon_fcn_validator (tree_parameter_list *, tree_expression *expr);
 
-  OCTAVE_DISABLE_COPY_MOVE (anon_fcn_validator)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (anon_fcn_validator)
 
   ~anon_fcn_validator () = default;
 

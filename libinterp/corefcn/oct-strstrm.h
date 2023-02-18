@@ -90,7 +90,7 @@ public:
               const std::string& encoding = "utf-8")
     : base_strstream (arg_md, ff, encoding), m_istream (data) { }
 
-  OCTAVE_DISABLE_COPY_MOVE (istrstream)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (istrstream)
 
 protected:
 

@@ -48,6 +48,8 @@ public:
       m_stdout_output (stdout_output)
   { }
 
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (process_execution_result)
+
   static OCTINTERP_API process_execution_result
   of_success (int exit_status, const std::string& stdout_output);
 

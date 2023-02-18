@@ -66,6 +66,8 @@ public:
     return *this;
   }
 
+  ~charNDArray () = default;
+
   bool any_element_is_nan () const { return false; }
 
   // FIXME: this is not quite the right thing.

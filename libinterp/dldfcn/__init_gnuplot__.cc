@@ -61,6 +61,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class gnuplot_graphics_toolkit : public octave::base_graphics_toolkit
 {
 public:
+
   gnuplot_graphics_toolkit (octave::interpreter& interp)
     : octave::base_graphics_toolkit ("gnuplot"), m_interpreter (interp)
   {
@@ -84,6 +85,8 @@ The qt toolkit is recommended instead.\n");
         warned = true;
       }
   }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (gnuplot_graphics_toolkit)
 
   ~gnuplot_graphics_toolkit () = default;
 

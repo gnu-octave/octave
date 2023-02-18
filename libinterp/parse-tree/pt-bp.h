@@ -50,7 +50,7 @@ public:
       m_bp_list (), m_bp_cond_list ()
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_breakpoint)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_breakpoint)
 
   ~tree_breakpoint () = default;
 

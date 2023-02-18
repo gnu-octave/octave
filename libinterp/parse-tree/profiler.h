@@ -76,7 +76,7 @@ public:
         }
     }
 
-    OCTAVE_DISABLE_COPY_MOVE (enter)
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (enter)
 
     ~enter ()
     {
@@ -107,7 +107,10 @@ private:
   struct stats
   {
   public:
+
     stats ();
+
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (stats)
 
     typedef std::set<octave_idx_type> function_set;
 
@@ -137,7 +140,7 @@ private:
 
     virtual ~tree_node ();
 
-    OCTAVE_DISABLE_COPY_MOVE (tree_node)
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_node)
 
     void add_time (double dt) { m_time += dt; }
 

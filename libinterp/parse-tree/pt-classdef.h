@@ -50,14 +50,14 @@ class tree_superclass_ref : public tree_expression
 {
 public:
 
-  tree_superclass_ref () = delete;
-
   tree_superclass_ref (const std::string& meth, const std::string& cls,
                        int l = -1, int c = -1)
     : tree_expression (l, c), m_method_name (meth), m_class_name (cls)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_superclass_ref)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_superclass_ref)
+
+  ~tree_superclass_ref () = default;
 
   std::string method_name () const
   {
@@ -97,13 +97,13 @@ class tree_metaclass_query : public tree_expression
 {
 public:
 
-  tree_metaclass_query () = delete;
-
   tree_metaclass_query (const std::string& cls, int l = -1, int c = -1)
     : tree_expression (l, c), m_class_name (cls)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_metaclass_query)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_metaclass_query)
+
+  ~tree_metaclass_query () = default;
 
   std::string class_name () const { return m_class_name; }
 
@@ -195,7 +195,7 @@ public:
     : m_cls_name (cname)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_superclass)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_superclass)
 
   ~tree_classdef_superclass () = default;
 
@@ -249,7 +249,7 @@ public:
       m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_element)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_element)
 
   ~tree_classdef_element ()
   {
@@ -291,7 +291,7 @@ public:
   tree_classdef_property (tree_arg_validation *av,
                           comment_list *comments = nullptr);
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_property)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_property)
 
   ~tree_classdef_property ();
 
@@ -352,7 +352,7 @@ public:
     : tree_classdef_element<tree_classdef_property_list> (a, plist, lc, tc, l, c)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_properties_block)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_properties_block)
 
   ~tree_classdef_properties_block () = default;
 
@@ -395,7 +395,7 @@ public:
     : tree_classdef_element<tree_classdef_methods_list> (a, mlist, lc, tc, l, c)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_methods_block)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_methods_block)
 
   ~tree_classdef_methods_block () = default;
 
@@ -475,7 +475,7 @@ public:
     : tree_classdef_element<tree_classdef_events_list> (a, elist, lc, tc, l, c)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_events_block)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_events_block)
 
   ~tree_classdef_events_block () = default;
 
@@ -492,7 +492,7 @@ public:
   tree_classdef_enum (tree_identifier *i, tree_expression *e,
                       comment_list *comments);
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_enum)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_enum)
 
   ~tree_classdef_enum ()
   {
@@ -559,7 +559,7 @@ public:
     : tree_classdef_element<tree_classdef_enum_list> (a, elist, lc, tc, l, c)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef_enum_block)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_enum_block)
 
   ~tree_classdef_enum_block () = default;
 
@@ -688,7 +688,7 @@ public:
       m_trail_comm (tc), m_pack_name (pn), m_file_name (fn)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_classdef)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef)
 
   ~tree_classdef ()
   {

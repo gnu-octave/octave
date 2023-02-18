@@ -109,7 +109,9 @@ public:
     restore_var_elem (T& ref, const T& val)
       : m_ptr (&ref), m_val (val) { }
 
-    OCTAVE_DISABLE_COPY_MOVE (restore_var_elem)
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (restore_var_elem)
+
+    ~restore_var_elem () = default;
 
     void run () { *m_ptr = m_val; }
 
@@ -129,7 +131,9 @@ public:
     delete_ptr_elem (T *ptr)
       : m_ptr (ptr) { }
 
-    OCTAVE_DISABLE_COPY_MOVE (delete_ptr_elem)
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (delete_ptr_elem)
+
+    ~delete_ptr_elem () = default;
 
     void run () { delete m_ptr; }
 

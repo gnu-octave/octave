@@ -62,6 +62,8 @@ public:
     return *this;
   }
 
+  ~FloatColumnVector () = default;
+
   OCTAVE_API bool operator == (const FloatColumnVector& a) const;
   OCTAVE_API bool operator != (const FloatColumnVector& a) const;
 

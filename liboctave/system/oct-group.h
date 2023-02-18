@@ -48,24 +48,7 @@ public:
     : m_name (), m_passwd (), m_gid (0), m_mem (), m_valid (false)
   { }
 
-  group (const group& gr)
-    : m_name (gr.m_name), m_passwd (gr.m_passwd),
-      m_gid (gr.m_gid), m_mem (gr.m_mem), m_valid (gr.m_valid)
-  { }
-
-  group& operator = (const group& gr)
-  {
-    if (this != &gr)
-      {
-        m_name = gr.m_name;
-        m_passwd = gr.m_passwd;
-        m_gid = gr.m_gid;
-        m_mem = gr.m_mem;
-        m_valid = gr.m_valid;
-      }
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (group)
 
   std::string name () const;
 

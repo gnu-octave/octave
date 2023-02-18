@@ -229,9 +229,7 @@ public:
     : m_interpreter (interp)
   { }
 
-  base_reader (const base_reader& x)
-    : m_interpreter (x.m_interpreter)
-  { }
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (base_reader)
 
   virtual ~base_reader () = default;
 
@@ -260,6 +258,8 @@ class input_reader
 {
 public:
 
+  input_reader () = delete;
+
   input_reader (interpreter& interp);
 
   input_reader (interpreter& interp, FILE *file);
@@ -268,11 +268,7 @@ public:
 
   input_reader (interpreter& interp, const std::string& str);
 
-  input_reader (const input_reader& ir) = default;
-
-  input_reader& operator = (const input_reader& ir) = default;
-
-  ~input_reader () = default;
+  OCTAVE_DEFAULT_COPY_DELETE (input_reader)
 
   std::string get_input (const std::string& prompt, bool& eof)
   {

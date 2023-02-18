@@ -46,11 +46,7 @@ public:
       m_type (), m_idx ()
   { }
 
-  octave_lvalue (const octave_lvalue&) = default;
-
-  octave_lvalue& operator = (const octave_lvalue&) = delete;
-
-  ~octave_lvalue () = default;
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (octave_lvalue)
 
   bool is_black_hole () const { return m_black_hole; }
 

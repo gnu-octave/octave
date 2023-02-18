@@ -43,7 +43,7 @@ public:
 
   opengl_renderer (opengl_functions& glfcns);
 
-  OCTAVE_DISABLE_COPY_MOVE (opengl_renderer)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (opengl_renderer)
 
   virtual ~opengl_renderer () = default;
 

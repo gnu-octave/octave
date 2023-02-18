@@ -48,9 +48,7 @@ public:
 
   cmdline_options (int argc, char **argv);
 
-  cmdline_options (const cmdline_options&) = default;
-
-  cmdline_options& operator = (const cmdline_options&) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (cmdline_options)
 
   int sys_argc () const { return m_all_args.numel (); }
   char ** sys_argv () const { return m_all_args.c_str_vec (); }

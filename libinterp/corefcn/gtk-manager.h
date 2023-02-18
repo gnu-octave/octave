@@ -45,6 +45,8 @@ public:
 
   gtk_manager (interpreter& interp) : m_interpreter (interp) { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (gtk_manager)
+
   ~gtk_manager ()
   {
     unload_all_toolkits ();

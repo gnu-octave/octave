@@ -94,6 +94,10 @@ protected:
 
 public:
 
+  mxArray_base () = delete;
+
+  OCTAVE_DEFAULT_COPY_MOVE (mxArray_base)
+
   virtual mxArray_base * dup () const = 0;
 
   virtual mxArray * as_mxArray () const { return nullptr; }
@@ -288,8 +292,6 @@ public:
 
 protected:
 
-  mxArray_base (const mxArray_base&) = default;
-
   std::size_t get_numeric_element_size (std::size_t size) const
   {
     return (m_interleaved
@@ -371,7 +373,7 @@ public:
     return retval;
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (mxArray)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (mxArray)
 
   OCTINTERP_API ~mxArray ();
 

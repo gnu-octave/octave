@@ -55,6 +55,8 @@ public:
     : m_name (nm)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (base_graphics_toolkit)
+
   virtual ~base_graphics_toolkit () = default;
 
   std::string get_name () const

@@ -53,7 +53,6 @@ class
 OCTINTERP_API
 latex_renderer : public base_text_renderer
 {
-
 public:
 
   latex_renderer ()
@@ -76,6 +75,8 @@ public:
 
     m_debug = ! sys::env::getenv ("OCTAVE_LATEX_DEBUG_FLAG").empty ();
   }
+
+  OCTAVE_DISABLE_COPY_MOVE (latex_renderer)
 
   ~latex_renderer ()
   {

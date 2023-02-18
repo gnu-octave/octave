@@ -95,7 +95,7 @@ public:
   tree_function_def (octave_function *f, int l = -1, int c = -1)
     : tree_command (l, c), m_fcn (f) { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_function_def)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_function_def)
 
   ~tree_function_def () = default;
 

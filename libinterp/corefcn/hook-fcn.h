@@ -42,9 +42,7 @@ class base_hook_function
 {
 public:
 
-  base_hook_function () = default;
-
-  base_hook_function (const base_hook_function&) = default;
+  OCTAVE_DEFAULT_CONSTRUCT_COPY (base_hook_function)
 
   virtual ~base_hook_function () = default;
 
@@ -70,11 +68,9 @@ public:
   hook_function (const octave_value& f,
                  const octave_value& d = octave_value ());
 
+  OCTAVE_DEFAULT_COPY (hook_function)
+
   ~hook_function () = default;
-
-  hook_function (const hook_function& hf) = default;
-
-  hook_function& operator = (const hook_function& hf) = default;
 
   std::string id () const { return m_rep->id (); }
 
@@ -94,9 +90,13 @@ class named_hook_function : public base_hook_function
 {
 public:
 
+  named_hook_function () = delete;
+
   named_hook_function (const std::string& n, const octave_value& d)
     : m_name (n), m_data (d)
   { }
+
+  OCTAVE_DEFAULT_COPY_DELETE (named_hook_function)
 
   void eval (const octave_value_list& initial_args);
 
@@ -115,6 +115,8 @@ class fcn_handle_hook_function : public base_hook_function
 {
 public:
 
+  fcn_handle_hook_function () = delete;
+
   fcn_handle_hook_function (const octave_value& fh_arg, const octave_value& d)
     : m_ident (), m_valid (false), m_fcn_handle (fh_arg), m_data (d)
   {
@@ -129,6 +131,8 @@ public:
         m_ident = fh->fcn_name () + ':' + buf.str ();
       }
   }
+
+  OCTAVE_DEFAULT_COPY_DELETE (fcn_handle_hook_function)
 
   void eval (const octave_value_list& initial_args);
 
@@ -156,13 +160,7 @@ public:
   typedef map_type::iterator iterator;
   typedef map_type::const_iterator const_iterator;
 
-  hook_function_list () = default;
-
-  ~hook_function_list () = default;
-
-  hook_function_list (const hook_function_list& lst) = default;
-
-  hook_function_list& operator = (const hook_function_list& lst) = default;
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_DELETE (hook_function_list)
 
   bool empty () const { return m_fcn_map.empty (); }
 

@@ -123,7 +123,7 @@ public:
       m_ostream (arg)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (ostream)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (ostream)
 
   static stream
   create (std::ostream *arg, const std::string& n = "");

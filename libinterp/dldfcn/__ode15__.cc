@@ -189,6 +189,7 @@ public:
       m_sunJacMatrix (nullptr), m_sunLinearSolver (nullptr)
   { }
 
+  OCTAVE_DISABLE_COPY_MOVE (IDA)
 
   ~IDA ()
   {

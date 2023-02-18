@@ -106,28 +106,7 @@ public:
     return range<T> (base, increment, final_val, numel, reverse);
   }
 
-  range (const range<T>& r)
-    : m_base (r.m_base), m_increment (r.m_increment),
-      m_limit (r.m_limit), m_final (r.m_final),
-      m_numel (r.m_numel), m_reverse (r.m_reverse)
-  { }
-
-  range<T>& operator = (const range<T>& r)
-  {
-    if (this != &r)
-      {
-        m_base = r.m_base;
-        m_increment = r.m_increment;
-        m_limit = r.m_limit;
-        m_final = r.m_final;
-        m_numel = r.m_numel;
-        m_reverse = r.m_reverse;
-      }
-
-    return *this;
-  }
-
-  ~range () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (range)
 
   T base () const { return m_base; }
   T increment () const { return m_increment; }

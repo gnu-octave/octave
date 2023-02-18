@@ -501,7 +501,7 @@ public:
 
   OCTINTERP_API stream_list (interpreter& interp);
 
-  OCTAVE_DISABLE_COPY_MOVE (stream_list)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (stream_list)
 
   OCTINTERP_API ~stream_list ();
 

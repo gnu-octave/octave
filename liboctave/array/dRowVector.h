@@ -59,6 +59,8 @@ public:
     return *this;
   }
 
+  ~RowVector () = default;
+
   OCTAVE_API bool operator == (const RowVector& a) const;
   OCTAVE_API bool operator != (const RowVector& a) const;
 

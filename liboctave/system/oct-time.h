@@ -332,13 +332,7 @@ public:
   gmtime (const time& ot)
     : base_tm () { init (ot); }
 
-  gmtime& operator = (const gmtime& t)
-  {
-    base_tm::operator = (t);
-    return *this;
-  }
-
-  ~gmtime () = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (gmtime)
 
 private:
 
@@ -350,25 +344,17 @@ strptime : public base_tm
 {
 public:
 
+  strptime () = delete;
+
   strptime (const std::string& str, const std::string& fmt)
     : base_tm (), m_nchars (0)
   {
     init (str, fmt);
   }
 
-  strptime (const strptime& s)
-    : base_tm (s), m_nchars (s.m_nchars) { }
-
-  strptime& operator = (const strptime& s)
-  {
-    base_tm::operator = (s);
-    m_nchars = s.m_nchars;
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (strptime)
 
   int characters_converted () const { return m_nchars; }
-
-  ~strptime () = default;
 
 private:
 
@@ -390,23 +376,7 @@ public:
     stamp ();
   }
 
-  cpu_time (const cpu_time& tm)
-    : m_usr_sec (tm.m_usr_sec), m_sys_sec (tm.m_sys_sec),
-      m_usr_usec (tm.m_usr_usec), m_sys_usec (tm.m_sys_usec)
-  { }
-
-  cpu_time& operator = (const cpu_time& tm)
-  {
-    if (&tm != this)
-      {
-        m_usr_sec = tm.m_usr_sec;
-        m_sys_sec = tm.m_sys_sec;
-        m_usr_usec = tm.m_usr_usec;
-        m_sys_usec = tm.m_sys_usec;
-      }
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (cpu_time)
 
   OCTAVE_API void stamp ();
 
@@ -454,41 +424,7 @@ public:
     stamp ();
   }
 
-  resource_usage (const resource_usage& ru)
-    : m_cpu (ru.m_cpu), m_maxrss (ru.m_maxrss),
-      m_ixrss (ru.m_ixrss), m_idrss (ru.m_idrss),
-      m_isrss (ru.m_isrss), m_minflt (ru.m_minflt),
-      m_majflt (ru.m_majflt), m_nswap (ru.m_nswap),
-      m_inblock (ru.m_inblock), m_oublock (ru.m_oublock),
-      m_msgsnd (ru.m_msgsnd), m_msgrcv (ru.m_msgrcv),
-      m_nsignals (ru.m_nsignals), m_nvcsw (ru.m_nvcsw),
-      m_nivcsw (ru.m_nivcsw)
-  { }
-
-  resource_usage& operator = (const resource_usage& ru)
-  {
-    if (&ru != this)
-      {
-        m_cpu = ru.m_cpu;
-
-        m_maxrss = ru.m_maxrss;
-        m_ixrss = ru.m_ixrss;
-        m_idrss = ru.m_idrss;
-        m_isrss = ru.m_isrss;
-        m_minflt = ru.m_minflt;
-        m_majflt = ru.m_majflt;
-        m_nswap = ru.m_nswap;
-        m_inblock = ru.m_inblock;
-        m_oublock = ru.m_oublock;
-        m_msgsnd = ru.m_msgsnd;
-        m_msgrcv = ru.m_msgrcv;
-        m_nsignals = ru.m_nsignals;
-        m_nvcsw = ru.m_nvcsw;
-        m_nivcsw = ru.m_nivcsw;
-      }
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (resource_usage)
 
   OCTAVE_API void stamp ();
 

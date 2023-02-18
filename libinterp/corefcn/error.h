@@ -48,7 +48,7 @@ public:
 
   OCTINTERP_API error_system (interpreter& interp);
 
-  OCTAVE_DISABLE_COPY_MOVE (error_system)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (error_system)
 
   ~error_system () = default;
 

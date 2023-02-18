@@ -41,7 +41,7 @@ base_mutex
 public:
   friend class mutex;
 
-  base_mutex () = default;
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (base_mutex)
 
   virtual ~base_mutex () = default;
 
@@ -59,11 +59,7 @@ mutex
 public:
   mutex ();
 
-  mutex (const mutex& m) = default;
-
-  ~mutex () = default;
-
-  mutex& operator = (const mutex& m) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (mutex)
 
   void lock ()
   {
@@ -101,7 +97,7 @@ public:
       m_lock_result = m_mutex.try_lock ();
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (autolock)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (autolock)
 
   ~autolock ()
   {

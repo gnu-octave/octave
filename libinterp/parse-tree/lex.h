@@ -62,6 +62,8 @@ public:
     symbol_table_context (interpreter& interp)
       : m_interpreter (interp), m_frame_stack () { }
 
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (symbol_table_context)
+
     ~symbol_table_context () { clear (); }
 
     void clear ();
@@ -316,7 +318,7 @@ public:
     init ();
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (lexical_feedback)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (lexical_feedback)
 
   ~lexical_feedback ();
 
@@ -535,6 +537,8 @@ public:
       : m_buffer (), m_offset (0), m_chars_left (0), m_eof (false)
     { }
 
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (input_buffer)
+
     void fill (const std::string& input, bool eof_arg);
 
     // Copy at most max_size characters to buf.
@@ -560,6 +564,8 @@ public:
   public:
 
     comment_buffer () : m_comment_list (nullptr) { }
+
+    OCTAVE_DISABLE_COPY_MOVE (comment_buffer)
 
     ~comment_buffer () { delete m_comment_list; }
 
@@ -601,7 +607,7 @@ public:
     init ();
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (base_lexer)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (base_lexer)
 
   virtual ~base_lexer ();
 
@@ -768,7 +774,9 @@ public:
       m_initial_input (true)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (lexer)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (lexer)
+
+  ~lexer () = default;
 
   void reset ()
   {
@@ -842,7 +850,9 @@ public:
     append_input (input, eof);
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (push_lexer)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (push_lexer)
+
+  ~push_lexer () = default;
 
   bool is_push_lexer () const { return true; }
 

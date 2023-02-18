@@ -46,6 +46,8 @@ public:
 
   OCTAVE_DISABLE_COPY_MOVE (env)
 
+  ~env () = default;
+
   static std::string polite_directory_format (const std::string& name);
 
   static bool absolute_pathname (const std::string& s);

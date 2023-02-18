@@ -69,6 +69,8 @@ public:
       m_fontname (), m_buffer_overflow (false), m_svg_def_index (0)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (gl2ps_renderer)
+
   ~gl2ps_renderer () = default;
 
   // FIXME: should we import the functions from the base class and

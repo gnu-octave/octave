@@ -334,6 +334,55 @@ octave_unused_parameter (const T&)
 #  define OCTAVE_DISABLE_COPY_MOVE(X)           \
   OCTAVE_DISABLE_COPY (X)                       \
   OCTAVE_DISABLE_MOVE (X)
+
+#  define OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE(X) \
+  X () = delete;                                \
+  OCTAVE_DISABLE_COPY (X)                       \
+  OCTAVE_DISABLE_MOVE (X)
+
+#  define OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE_DELETE(X)  \
+  X () = delete;                                        \
+  OCTAVE_DISABLE_COPY (X)                               \
+  OCTAVE_DISABLE_MOVE (X)                               \
+  ~X () = delete;
+
+#  define OCTAVE_DEFAULT_COPY(X)                \
+  X (const X&) = default;                       \
+  X& operator = (const X&) = default;
+
+#  define OCTAVE_DEFAULT_MOVE(X)                \
+  X (X&&) = default;                            \
+  X& operator = (X&&) = default;
+
+#  define OCTAVE_DEFAULT_COPY_MOVE(X)           \
+  OCTAVE_DEFAULT_COPY (X)                       \
+  OCTAVE_DEFAULT_MOVE (X)
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY(X)      \
+  X () = default;                               \
+  OCTAVE_DEFAULT_COPY (X)
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE(X) \
+  X () = default;                               \
+  OCTAVE_DEFAULT_COPY_MOVE (X)
+
+#  define OCTAVE_DEFAULT_COPY_DELETE(X)         \
+  OCTAVE_DEFAULT_COPY (X)                       \
+  ~X () = default;
+
+#  define OCTAVE_DEFAULT_COPY_MOVE_DELETE(X)    \
+  OCTAVE_DEFAULT_COPY_MOVE (X)                  \
+  ~X () = default;
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY_DELETE(X)       \
+  X () = default;                                       \
+  OCTAVE_DEFAULT_COPY (X)                               \
+  ~X () = default;
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE(X)  \
+  X () = default;                                       \
+  OCTAVE_DEFAULT_COPY_MOVE (X)                          \
+  ~X () = default;
 #endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;

@@ -2052,57 +2052,35 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
 
-  bool is_1d = false;
-  if (nd < 2)
-    {
-      // work with 2d matrix
-      is_1d = true;
-      nd = 2;
-    }
-
-  // vector with number of splits in respective dimension
   dim_vector rdv = dim_vector::alloc (nd);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, nidx, nd);
   octave_idx_type idxtot = 0;
-  for (int i = 0; i < (is_1d ? 1 : nd); i++)
+  for (int i = 0; i < nd; i++)
     {
       rdv(i) = nidx[i] = d[i].numel ();
       idxtot += nidx[i];
     }
 
-  if (is_1d)
-    {
-      // If input was 1d, don't split 2nd dimension.
-      rdv(1) = nidx[1] = 1;
-      idxtot++;
-    }
+  if (nd == 1)
+    rdv(1) = 1;
   retval.clear (rdv);
 
-  // buffer for "linearized" number of dimensions
   OCTAVE_LOCAL_BUFFER (idx_vector, xidx, idxtot);
-  // buffer with size of respective dimensions after split
   OCTAVE_LOCAL_BUFFER (idx_vector *, idx, nd);
 
   idxtot = 0;
-  for (int i = 0; i < (is_1d ? 1 : nd); i++)
+  for (int i = 0; i < nd; i++)
     {
       idx[i] = xidx + idxtot;
       prepare_idx (idx[i], i, nd, d);
       idxtot += nidx[i];
     }
 
-  if (is_1d)
-    {
-      // If input was 1d, take complete second dimension.
-      idx[1] = xidx + idxtot;
-      idx[1][0] = idx_vector::colon;
-    }
-
-  OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
+  OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, rdv.numel (), 0);
   Array<idx_vector> ra_idx
   (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
 
-  for (octave_idx_type j = 0; j < nd; j++)
+  for (octave_idx_type j = 0; j < retval.numel (); j++)
     {
       octave_quit ();
 

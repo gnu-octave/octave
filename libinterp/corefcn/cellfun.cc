@@ -2052,22 +2052,29 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
 
-  dim_vector rdv = dim_vector::alloc (nd);
+  // For each dimension, count the number of partitions specified.
+  // For example, "mat2cell (A, [1 1 1], [2 2])" has 3 partitions on dim1
+  // and 2 partitions on dim2.  Number of dimension (nd) is 2 for this example.
+  dim_vector retdv = dim_vector::alloc (nd);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, nidx, nd);
-  octave_idx_type idxtot = 0;
+  octave_idx_type idxtot = 0;   // Number of idx operations.  5 in example.
   for (int i = 0; i < nd; i++)
     {
-      rdv(i) = nidx[i] = d[i].numel ();
+      retdv(i) = nidx[i] = d[i].numel ();
       idxtot += nidx[i];
     }
 
   if (nd == 1)
-    rdv(1) = 1;
-  retval.clear (rdv);
+    retdv(1) = 1;        // All Octave arrays have at least two dimensions.
+  retval.clear (retdv);  // Resize retval based on calculated partitions.
 
   OCTAVE_LOCAL_BUFFER (idx_vector, xidx, idxtot);
   OCTAVE_LOCAL_BUFFER (idx_vector *, idx, nd);
 
+  // Loop over all dimensions (specified partitions) and prepare an idx_vector
+  // to retrieve the requested elements.  The partitions are specified in
+  // input parameter 'd' which is an Array of octave_idx_type.  In the example,
+  // d[0] = [1 1 1].
   idxtot = 0;
   for (int i = 0; i < nd; i++)
     {
@@ -2076,20 +2083,29 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
       idxtot += nidx[i];
     }
 
-  OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, rdv.numel (), 0);
-  Array<idx_vector> ra_idx
-  (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
+  OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
+  // Declare array of index vectors which will perform indexing.
+  // Initialize to magic colon (':') so that dimensions that are not actually
+  // specified will be collapsed.
+  Array<idx_vector> ra_idx (dim_vector (1, std::max (nd, a.ndims ())),
+                                        idx_vector::colon);
 
-  for (octave_idx_type j = 0; j < retval.numel (); j++)
+  const octave_idx_type retnumel = retval.numel ();
+  for (octave_idx_type j = 0; j < retnumel; j++)
     {
       octave_quit ();
 
+      // Copy prepared indices for this iteration to ra_idx.
       for (int i = 0; i < nd; i++)
         ra_idx.xelem (i) = idx[i][ridx[i]];
 
+      // Perform indexing operation and store in output retval.
       retval.xelem (j) = a.index (ra_idx);
 
-      rdv.increment_index (ridx);
+      // DO NOT increment on last loop because it will overflow past
+      // declared size of ridx (bug #63682).
+      if (j < (retnumel - 1))
+        retdv.increment_index (ridx);
     }
 
   return retval;

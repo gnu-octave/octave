@@ -48,7 +48,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-rand *rand::m_instance = nullptr;
+rand *rand::s_instance = nullptr;
 
 rand::rand ()
   : m_current_distribution (uniform_dist), m_use_old_generators (false),
@@ -63,9 +63,9 @@ bool rand::instance_ok ()
 {
   bool retval = true;
 
-  if (! m_instance)
+  if (! s_instance)
     {
-      m_instance = new rand ();
+      s_instance = new rand ();
       singleton_cleanup_list::add (cleanup_instance);
     }
 

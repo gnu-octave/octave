@@ -227,9 +227,9 @@ private:
 
   static command_editor *s_instance;  // the real thing.
 
-  static std::set<startup_hook_fcn> m_startup_hook_set;
-  static std::set<pre_input_hook_fcn> m_pre_input_hook_set;
-  static std::set<event_hook_fcn> m_event_hook_set;
+  static std::set<startup_hook_fcn> s_startup_hook_set;
+  static std::set<pre_input_hook_fcn> s_pre_input_hook_set;
+  static std::set<event_hook_fcn> s_event_hook_set;
 
 protected:
 

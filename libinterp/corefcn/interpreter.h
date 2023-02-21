@@ -544,7 +544,7 @@ public:
 
   bool remove_atexit_fcn (const std::string& fname);
 
-  static interpreter * the_interpreter () { return m_instance; }
+  static interpreter * the_interpreter () { return s_instance; }
 
 private:
 
@@ -582,7 +582,7 @@ private:
   // replaced by the C++ thread_local keyword.  For now, use a macro
   // to allow experimenting with thread_local storage.
 
-  OCTAVE_THREAD_LOCAL static interpreter *m_instance;
+  OCTAVE_THREAD_LOCAL static interpreter *s_instance;
 
   application *m_app_context;
 

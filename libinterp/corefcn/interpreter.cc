@@ -463,11 +463,11 @@ interpreter::interpreter (application *app_context)
   //
   //   only one Octave interpreter may be active in any given thread
 
-  if (m_instance)
+  if (s_instance)
     throw std::runtime_error
     ("only one Octave interpreter may be active");
 
-  m_instance = this;
+  s_instance = this;
 
 #if defined (OCTAVE_HAVE_WINDOWS_UTF8_LOCALE)
   // Force a UTF-8 locale on Windows if possible
@@ -623,7 +623,7 @@ interpreter::interpreter (application *app_context)
   octave_interpreter_ready = true;
 }
 
-OCTAVE_THREAD_LOCAL interpreter *interpreter::m_instance = nullptr;
+OCTAVE_THREAD_LOCAL interpreter *interpreter::s_instance = nullptr;
 
 interpreter::~interpreter ()
 {

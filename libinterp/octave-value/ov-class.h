@@ -220,19 +220,19 @@ private:
   octave_map m_map;
 
 public:
-  int type_id () const { return t_id; }
-  std::string type_name () const { return t_name; }
+  int type_id () const { return s_t_id; }
+  std::string type_name () const { return s_t_name; }
   std::string class_name () const { return m_c_name; }
 
-  static int static_type_id () { return t_id; }
-  static std::string static_type_name () { return t_name; }
+  static int static_type_id () { return s_t_id; }
+  static std::string static_type_name () { return s_t_name; }
   static std::string static_class_name () { return "<unknown>"; }
   static OCTINTERP_API void register_type (octave::type_info&);
 
 private:
-  static int t_id;
+  static int s_t_id;
 
-  static const std::string t_name;
+  static const std::string s_t_name;
   std::string m_c_name;
   std::list<std::string> m_parent_list;
 

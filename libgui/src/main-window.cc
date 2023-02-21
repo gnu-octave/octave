@@ -2611,8 +2611,8 @@ void main_window::construct_tool_bar ()
   m_current_directory_combo_box->setEditable (true);
   m_current_directory_combo_box->setInsertPolicy (QComboBox::NoInsert);
   m_current_directory_combo_box->setToolTip (tr ("Enter directory name"));
-  m_current_directory_combo_box->setMaxVisibleItems (current_directory_max_visible);
-  m_current_directory_combo_box->setMaxCount (current_directory_max_count);
+  m_current_directory_combo_box->setMaxVisibleItems (CURRENT_DIRECTORY_MAX_VISIBLE);
+  m_current_directory_combo_box->setMaxCount (CURRENT_DIRECTORY_MAX_COUNT);
   QSizePolicy sizePol (QSizePolicy::Preferred, QSizePolicy::Preferred);
   m_current_directory_combo_box->setSizePolicy (sizePol);
 

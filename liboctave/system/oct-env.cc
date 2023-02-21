@@ -83,16 +83,16 @@ env::env ()
   do_get_host_name ();
 }
 
-env *env::m_instance = nullptr;
+env *env::s_instance = nullptr;
 
 bool
 env::instance_ok ()
 {
   bool retval = true;
 
-  if (! m_instance)
+  if (! s_instance)
     {
-      m_instance = new env ();
+      s_instance = new env ();
       singleton_cleanup_list::add (cleanup_instance);
     }
 
@@ -103,105 +103,105 @@ std::string
 env::polite_directory_format (const std::string& name)
 {
   return (instance_ok ())
-         ? m_instance->do_polite_directory_format (name) : "";
+         ? s_instance->do_polite_directory_format (name) : "";
 }
 
 bool
 env::absolute_pathname (const std::string& s)
 {
   return (instance_ok ())
-         ? m_instance->do_absolute_pathname (s) : false;
+         ? s_instance->do_absolute_pathname (s) : false;
 }
 
 bool
 env::rooted_relative_pathname (const std::string& s)
 {
   return (instance_ok ())
-         ? m_instance->do_rooted_relative_pathname (s) : false;
+         ? s_instance->do_rooted_relative_pathname (s) : false;
 }
 
 std::string
 env::base_pathname (const std::string& s)
 {
   return (instance_ok ())
-         ? m_instance->do_base_pathname (s) : "";
+         ? s_instance->do_base_pathname (s) : "";
 }
 
 std::string
 env::make_absolute (const std::string& s, const std::string& dot_path)
 {
   return (instance_ok ())
-         ? m_instance->do_make_absolute (s, dot_path) : "";
+         ? s_instance->do_make_absolute (s, dot_path) : "";
 }
 
 std::string
 env::get_current_directory ()
 {
   return (instance_ok ())
-         ? m_instance->do_getcwd () : "";
+         ? s_instance->do_getcwd () : "";
 }
 
 std::string
 env::get_home_directory ()
 {
   return (instance_ok ())
-         ? m_instance->do_get_home_directory () : "";
+         ? s_instance->do_get_home_directory () : "";
 }
 
 std::string
 env::get_temp_directory ()
 {
   return (instance_ok ())
-         ? m_instance->do_get_temp_directory () : "";
+         ? s_instance->do_get_temp_directory () : "";
 }
 
 std::string
 env::get_user_config_directory ()
 {
   return (instance_ok ())
-         ? m_instance->do_get_user_config_directory () : "";
+         ? s_instance->do_get_user_config_directory () : "";
 }
 
 std::string
 env::get_user_data_directory ()
 {
   return (instance_ok ())
-         ? m_instance->do_get_user_data_directory () : "";
+         ? s_instance->do_get_user_data_directory () : "";
 }
 
 std::string
 env::get_program_name ()
 {
   return (instance_ok ())
-         ? m_instance->m_prog_name : "";
+         ? s_instance->m_prog_name : "";
 }
 
 std::string
 env::get_program_invocation_name ()
 {
   return (instance_ok ())
-         ? m_instance->m_prog_invocation_name : "";
+         ? s_instance->m_prog_invocation_name : "";
 }
 
 void
 env::set_program_name (const std::string& s)
 {
   if (instance_ok ())
-    m_instance->do_set_program_name (s);
+    s_instance->do_set_program_name (s);
 }
 
 std::string
 env::get_user_name ()
 {
   return (instance_ok ())
-         ? m_instance->do_get_user_name () : "";
+         ? s_instance->do_get_user_name () : "";
 }
 
 std::string
 env::get_host_name ()
 {
   return (instance_ok ())
-         ? m_instance->do_get_host_name () : "";
+         ? s_instance->do_get_host_name () : "";
 }
 
 std::string
@@ -296,7 +296,7 @@ std::string
 env::getenv (const std::string& name)
 {
   return (instance_ok ())
-         ? m_instance->do_getenv (name) : "";
+         ? s_instance->do_getenv (name) : "";
 }
 
 void
@@ -317,7 +317,7 @@ bool
 env::chdir (const std::string& newdir)
 {
   return (instance_ok ())
-         ? m_instance->do_chdir (newdir) : false;
+         ? s_instance->do_chdir (newdir) : false;
 }
 
 void

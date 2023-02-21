@@ -130,10 +130,10 @@ private:
   void error (const std::string&) const;
 
   // The real thing.
-  static env *m_instance;
+  static env *s_instance;
 
   static void cleanup_instance ()
-  { delete m_instance; m_instance = nullptr; }
+  { delete s_instance; s_instance = nullptr; }
 
   // TRUE means follow symbolic links that point to directories just
   // as if they are real directories.

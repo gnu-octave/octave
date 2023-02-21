@@ -1101,7 +1101,7 @@ octave_base_value::warn_load (const char *type) const
   warning_with_id
   ("Octave:load-save-unavailable",
    "%s: loading %s files not available in this version of Octave",
-   t_name.c_str (), type);
+   s_t_name.c_str (), type);
 }
 
 void
@@ -1110,7 +1110,7 @@ octave_base_value::warn_save (const char *type) const
   warning_with_id
   ("Octave:load-save-unavailable",
    "%s: saving %s files not available in this version of Octave",
-   t_name.c_str (), type);
+   s_t_name.c_str (), type);
 }
 
 void

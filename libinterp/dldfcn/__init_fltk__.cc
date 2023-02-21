@@ -779,7 +779,7 @@ public:
 
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp,
                bool internal)
-    : Fl_Window (xx, yy, ww, hh + m_menu_h + m_status_h + 2, "octave"),
+    : Fl_Window (xx, yy, ww, hh + MENU_H + STATUS_H + 2, "octave"),
       m_window_label (), m_fp (xfp), m_uimenu (nullptr), m_canvas (nullptr),
       m_autoscale (nullptr), m_togglegrid (nullptr), m_panzoom (nullptr),
       m_rotate (nullptr), m_help (nullptr), m_status (nullptr),
@@ -789,8 +789,8 @@ public:
 
     // The size of the resize_dummy box also determines the minimum
     // window size.
-    m_resize_dummy = new Fl_Box (5 * m_status_h, m_menu_h,
-                                 ww - 5 * m_status_h, hh);
+    m_resize_dummy = new Fl_Box (5 * STATUS_H, MENU_H,
+                                 ww - 5 * STATUS_H, hh);
 
     // See http://fltk.org/articles.php?L415+I0+T+M1000+P1
                 // for how resizable works
@@ -804,16 +804,16 @@ public:
     // windows.  Otherwise, the class is just "FLTK"
     //default_xclass ("Octave");
 
-    m_uimenu = new fltk_uimenu (0, 0, ww, m_menu_h);
-    m_canvas = new OpenGL_fltk (0, m_menu_h, ww, hh, number ());
+    m_uimenu = new fltk_uimenu (0, 0, ww, MENU_H);
+    m_canvas = new OpenGL_fltk (0, MENU_H, ww, hh, number ());
 
     // The bottom toolbar is a composite of "autoscale", "togglegrid",
     // "panzoom", "rotate", "help", and "status".
     // Only "status" should be resized.
 
-    int toolbar_y = m_menu_h + hh + 1;
-    m_status = new Fl_Output (5 * m_status_h, toolbar_y,
-                              ww - 5 * m_status_h, m_status_h, "");
+    int toolbar_y = MENU_H + hh + 1;
+    m_status = new Fl_Output (5 * STATUS_H, toolbar_y,
+                              ww - 5 * STATUS_H, STATUS_H, "");
 
     m_status->textcolor (FL_BLACK);
     m_status->color (FL_GRAY);
@@ -821,23 +821,23 @@ public:
     m_status->textsize (10);
     m_status->box (FL_ENGRAVED_BOX);
 
-    m_autoscale = new Fl_Button (0, toolbar_y, m_status_h, m_status_h, "A");
+    m_autoscale = new Fl_Button (0, toolbar_y, STATUS_H, STATUS_H, "A");
     m_autoscale->callback (button_callback, static_cast<void *> (this));
     m_autoscale->tooltip ("Autoscale");
 
-    m_togglegrid = new Fl_Button (m_status_h, toolbar_y, m_status_h, m_status_h, "G");
+    m_togglegrid = new Fl_Button (STATUS_H, toolbar_y, STATUS_H, STATUS_H, "G");
     m_togglegrid->callback (button_callback, static_cast<void *> (this));
     m_togglegrid->tooltip ("Toggle Grid");
 
-    m_panzoom = new Fl_Button (2* m_status_h, toolbar_y, m_status_h, m_status_h, "P");
+    m_panzoom = new Fl_Button (2* STATUS_H, toolbar_y, STATUS_H, STATUS_H, "P");
     m_panzoom->callback (button_callback, static_cast<void *> (this));
     m_panzoom->tooltip ("Mouse Pan/Zoom");
 
-    m_rotate = new Fl_Button (3 * m_status_h, toolbar_y, m_status_h, m_status_h, "R");
+    m_rotate = new Fl_Button (3 * STATUS_H, toolbar_y, STATUS_H, STATUS_H, "R");
     m_rotate->callback (button_callback, static_cast<void *> (this));
     m_rotate->tooltip ("Mouse Rotate");
 
-    m_help = new Fl_Button (4 * m_status_h, toolbar_y, m_status_h, m_status_h, "?");
+    m_help = new Fl_Button (4 * STATUS_H, toolbar_y, STATUS_H, STATUS_H, "?");
     m_help->callback (button_callback, static_cast<void *> (this));
     m_help->tooltip ("Help");
 
@@ -1018,12 +1018,12 @@ public:
 
     int toolbar_y = m_canvas->h () + menu_dy () + 1;
     m_autoscale->position (0, toolbar_y);
-    m_togglegrid->position (m_status_h, toolbar_y);
-    m_panzoom->position (2 * m_status_h, toolbar_y);
-    m_rotate->position (3 * m_status_h, toolbar_y);
-    m_help->position (4 * m_status_h, toolbar_y);
-    m_status->resize (5 * m_status_h, toolbar_y,
-                      w () - 5 * m_status_h, m_status_h);
+    m_togglegrid->position (STATUS_H, toolbar_y);
+    m_panzoom->position (2 * STATUS_H, toolbar_y);
+    m_rotate->position (3 * STATUS_H, toolbar_y);
+    m_help->position (4 * STATUS_H, toolbar_y);
+    m_status->resize (5 * STATUS_H, toolbar_y,
+                      w () - 5 * STATUS_H, STATUS_H);
     init_sizes ();
     redraw ();
   }
@@ -1032,7 +1032,7 @@ public:
   {
     Matrix pos = outerpos;
     pos(1) += menu_dy ();
-    pos(3) -= menu_dy () + m_status_h + 2;
+    pos(3) -= menu_dy () + STATUS_H + 2;
     return pos;
   }
 
@@ -1040,7 +1040,7 @@ public:
   {
     Matrix outerpos = pos;
     outerpos(1) -= menu_dy ();
-    outerpos(3) += menu_dy () + m_status_h + 2;
+    outerpos(3) += menu_dy () + STATUS_H + 2;
     return outerpos;
   }
 
@@ -1078,10 +1078,10 @@ private:
   figure::properties& m_fp;
 
   // Status area height.
-  static const int m_status_h = 20;
+  static const int STATUS_H = 20;
 
   // Menu height
-  static const int m_menu_h = 25;
+  static const int MENU_H = 25;
 
   fltk_uimenu *m_uimenu;
 
@@ -1333,7 +1333,7 @@ private:
   int menu_dy ()
   {
     if (m_uimenu->is_visible ())
-      return m_menu_h;
+      return MENU_H;
     else
       return 0;
   }
@@ -1887,8 +1887,8 @@ public:
   {
     bool retval = true;
 
-    if (! instance)
-      instance = new figure_manager ();
+    if (! s_instance)
+      s_instance = new figure_manager ();
 
     return retval;
   }
@@ -1896,19 +1896,19 @@ public:
   static void close_all ()
   {
     if (instance_ok ())
-      instance->do_close_all ();
+      s_instance->do_close_all ();
   }
 
   static void new_window (figure::properties& fp)
   {
     if (instance_ok ())
-      instance->do_new_window (fp);
+      s_instance->do_new_window (fp);
   }
 
   static void delete_window (int idx)
   {
     if (instance_ok ())
-      instance->do_delete_window (idx);
+      s_instance->do_delete_window (idx);
   }
 
   static void delete_window (const std::string& idx_str)
@@ -1919,13 +1919,13 @@ public:
   static void renumber_figure (const std::string& idx_str, double new_number)
   {
     if (instance_ok ())
-      instance->do_renumber_figure (str2idx (idx_str), new_number);
+      s_instance->do_renumber_figure (str2idx (idx_str), new_number);
   }
 
   static void toggle_window_visibility (int idx, bool is_visible)
   {
     if (instance_ok ())
-      instance->do_toggle_window_visibility (idx, is_visible);
+      s_instance->do_toggle_window_visibility (idx, is_visible);
   }
 
   static void toggle_window_visibility (const std::string& idx_str,
@@ -1937,7 +1937,7 @@ public:
   static void mark_modified (int idx)
   {
     if (instance_ok ())
-      instance->do_mark_modified (idx);
+      s_instance->do_mark_modified (idx);
   }
 
   static void mark_modified (const graphics_handle& gh)
@@ -1948,7 +1948,7 @@ public:
   static void set_name (int idx)
   {
     if (instance_ok ())
-      instance->do_set_name (idx);
+      s_instance->do_set_name (idx);
   }
 
   static void set_name (const std::string& idx_str)
@@ -1958,7 +1958,7 @@ public:
 
   static Matrix get_size (int idx)
   {
-    return instance_ok () ? instance->do_get_size (idx) : Matrix ();
+    return instance_ok () ? s_instance->do_get_size (idx) : Matrix ();
   }
 
   static Matrix get_size (const graphics_handle& gh)
@@ -1970,14 +1970,14 @@ public:
                      const std::string& term)
   {
     if (instance_ok ())
-      instance->do_print (hnd2idx (gh), cmd, term);
+      s_instance->do_print (hnd2idx (gh), cmd, term);
   }
 
   static uint8NDArray get_pixels (const graphics_handle& gh)
   {
     uint8NDArray retval;
     if (instance_ok ())
-      retval = instance->do_get_pixels (hnd2idx (gh));
+      retval = s_instance->do_get_pixels (hnd2idx (gh));
 
     return retval;
   }
@@ -1986,38 +1986,38 @@ public:
                              const graphics_handle& uimenuh, int id)
   {
     if (instance_ok ())
-      instance->do_uimenu_update (hnd2idx (figh), uimenuh, id);
+      s_instance->do_uimenu_update (hnd2idx (figh), uimenuh, id);
   }
 
   static void update_canvas (const graphics_handle& gh,
                              const graphics_handle& ca)
   {
     if (instance_ok ())
-      instance->do_update_canvas (hnd2idx (gh), ca);
+      s_instance->do_update_canvas (hnd2idx (gh), ca);
   }
 
   static void update_boundingbox (const std::string& fig_idx_str,
                                   bool internal)
   {
     if (instance_ok ())
-      instance->do_update_boundingbox (str2idx (fig_idx_str), internal);
+      s_instance->do_update_boundingbox (str2idx (fig_idx_str), internal);
   }
 
   static void toggle_menubar_visibility (const std::string& fig_idx_str,
                                          bool menubar_is_figure)
   {
     if (instance_ok ())
-      instance->do_toggle_menubar_visibility (str2idx (fig_idx_str),
+      s_instance->do_toggle_menubar_visibility (str2idx (fig_idx_str),
                                               menubar_is_figure);
   }
 
 private:
 
-  static figure_manager *instance;
+  static figure_manager *s_instance;
 
   // Singleton -- hide all of the above.
 
-  static int curr_index;
+  static int s_curr_index;
 
   typedef std::map<int, plot_window *> window_map;
 
@@ -2025,7 +2025,7 @@ private:
 
   window_map m_windows;
 
-  static std::string fltk_idx_header;
+  static std::string s_fltk_idx_header;
 
   void do_close_all ()
   {
@@ -2054,9 +2054,9 @@ private:
             pos = fp.get_boundingbox (internal);
           }
 
-        idx2figprops (curr_index, fp);
+        idx2figprops (s_curr_index, fp);
 
-        m_windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
+        m_windows[s_curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
             fp, internal);
       }
   }
@@ -2196,9 +2196,9 @@ private:
   static int str2idx (const caseless_str& clstr)
   {
     int ind;
-    if (clstr.find (fltk_idx_header, 0) == 0)
+    if (clstr.find (s_fltk_idx_header, 0) == 0)
       {
-        std::istringstream istr (clstr.substr (fltk_idx_header.size ()));
+        std::istringstream istr (clstr.substr (s_fltk_idx_header.size ()));
         if (istr >> ind)
           return ind;
       }
@@ -2209,7 +2209,7 @@ private:
   void idx2figprops (int idx, figure::properties& fp)
   {
     std::ostringstream ind_str;
-    ind_str << fltk_idx_header << idx;
+    ind_str << s_fltk_idx_header << idx;
     fp.set___plot_stream__ (ind_str.str ());
   }
 
@@ -2249,10 +2249,10 @@ private:
   }
 };
 
-figure_manager *figure_manager::instance = nullptr;
+figure_manager *figure_manager::s_instance = nullptr;
 
-std::string figure_manager::fltk_idx_header="fltk index=";
-int figure_manager::curr_index = 1;
+std::string figure_manager::s_fltk_idx_header="fltk index=";
+int figure_manager::s_curr_index = 1;
 
 static bool toolkit_loaded = false;
 

@@ -146,9 +146,9 @@ public:
   {
     bool retval = true;
 
-    if (! m_instance)
+    if (! s_instance)
       {
-        m_instance = new ft_manager ();
+        s_instance = new ft_manager ();
         singleton_cleanup_list::add (cleanup_instance);
       }
 
@@ -156,28 +156,28 @@ public:
   }
 
   static void cleanup_instance ()
-  { delete m_instance; m_instance = nullptr; }
+  { delete s_instance; s_instance = nullptr; }
 
   static FT_Face get_font (const std::string& name, const std::string& weight,
                            const std::string& angle, double size,
                            FT_ULong c = 0)
   {
     return (instance_ok ()
-            ? m_instance->do_get_font (name, weight, angle, size, c)
+            ? s_instance->do_get_font (name, weight, angle, size, c)
             : nullptr);
   }
 
   static octave_map get_system_fonts ()
   {
     return (instance_ok ()
-            ? m_instance->do_get_system_fonts ()
+            ? s_instance->do_get_system_fonts ()
             : octave_map ());
   }
 
   static void font_destroyed (FT_Face face)
   {
     if (instance_ok ())
-      m_instance->do_font_destroyed (face);
+      s_instance->do_font_destroyed (face);
   }
 
 private:
@@ -430,7 +430,7 @@ private:
 
   //--------
 
-  static ft_manager *m_instance;
+  static ft_manager *s_instance;
 
   // Cache the fonts loaded by FreeType.  This cache only contains
   // weak references to the fonts, strong references are only present
@@ -442,7 +442,7 @@ private:
   bool m_fontconfig_initialized;
 };
 
-ft_manager *ft_manager::m_instance = nullptr;
+ft_manager *ft_manager::s_instance = nullptr;
 
 static void
 ft_face_destroyed (void *object)

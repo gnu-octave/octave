@@ -58,11 +58,11 @@ char * do_completer_word_break_hook ();
 
 command_editor *command_editor::s_instance = nullptr;
 
-std::set<command_editor::startup_hook_fcn> command_editor::m_startup_hook_set;
+std::set<command_editor::startup_hook_fcn> command_editor::s_startup_hook_set;
 
-std::set<command_editor::pre_input_hook_fcn> command_editor::m_pre_input_hook_set;
+std::set<command_editor::pre_input_hook_fcn> command_editor::s_pre_input_hook_set;
 
-std::set<command_editor::event_hook_fcn> command_editor::m_event_hook_set;
+std::set<command_editor::event_hook_fcn> command_editor::s_event_hook_set;
 
 static mutex event_hook_lock;
 
@@ -1124,7 +1124,7 @@ command_editor::startup_handler ()
   // Iterate over a copy of the set to avoid problems if a hook
   // function attempts to remove itself from the startup_hook_set.
 
-  std::set<startup_hook_fcn> hook_set = m_startup_hook_set;
+  std::set<startup_hook_fcn> hook_set = s_startup_hook_set;
 
   for (startup_hook_fcn f : hook_set)
     {
@@ -1141,7 +1141,7 @@ command_editor::pre_input_handler ()
   // Iterate over copy of the set to avoid problems if a hook function
   // attempts to remove itself from the pre_input_hook_set.
 
-  std::set<pre_input_hook_fcn> hook_set = m_pre_input_hook_set;
+  std::set<pre_input_hook_fcn> hook_set = s_pre_input_hook_set;
 
   for (pre_input_hook_fcn f : hook_set)
     {
@@ -1160,7 +1160,7 @@ command_editor::event_handler ()
 
   event_hook_lock.lock ();
 
-  std::set<event_hook_fcn> hook_set (m_event_hook_set);
+  std::set<event_hook_fcn> hook_set (s_event_hook_set);
 
   event_hook_lock.unlock ();
 
@@ -1506,7 +1506,7 @@ command_editor::add_startup_hook (startup_hook_fcn f)
 {
   if (instance_ok ())
     {
-      m_startup_hook_set.insert (f);
+      s_startup_hook_set.insert (f);
 
       s_instance->set_startup_hook (startup_handler);
     }
@@ -1517,12 +1517,12 @@ command_editor::remove_startup_hook (startup_hook_fcn f)
 {
   if (instance_ok ())
     {
-      auto p = m_startup_hook_set.find (f);
+      auto p = s_startup_hook_set.find (f);
 
-      if (p != m_startup_hook_set.end ())
-        m_startup_hook_set.erase (p);
+      if (p != s_startup_hook_set.end ())
+        s_startup_hook_set.erase (p);
 
-      if (m_startup_hook_set.empty ())
+      if (s_startup_hook_set.empty ())
         s_instance->restore_startup_hook ();
     }
 }
@@ -1532,7 +1532,7 @@ command_editor::add_pre_input_hook (pre_input_hook_fcn f)
 {
   if (instance_ok ())
     {
-      m_pre_input_hook_set.insert (f);
+      s_pre_input_hook_set.insert (f);
 
       s_instance->set_pre_input_hook (pre_input_handler);
     }
@@ -1543,12 +1543,12 @@ command_editor::remove_pre_input_hook (pre_input_hook_fcn f)
 {
   if (instance_ok ())
     {
-      auto p = m_pre_input_hook_set.find (f);
+      auto p = s_pre_input_hook_set.find (f);
 
-      if (p != m_pre_input_hook_set.end ())
-        m_pre_input_hook_set.erase (p);
+      if (p != s_pre_input_hook_set.end ())
+        s_pre_input_hook_set.erase (p);
 
-      if (m_pre_input_hook_set.empty ())
+      if (s_pre_input_hook_set.empty ())
         s_instance->restore_pre_input_hook ();
     }
 }
@@ -1558,7 +1558,7 @@ command_editor::add_event_hook (event_hook_fcn f)
 {
   autolock guard (event_hook_lock);
 
-  m_event_hook_set.insert (f);
+  s_event_hook_set.insert (f);
 }
 
 void
@@ -1566,10 +1566,10 @@ command_editor::remove_event_hook (event_hook_fcn f)
 {
   autolock guard (event_hook_lock);
 
-  auto p = m_event_hook_set.find (f);
+  auto p = s_event_hook_set.find (f);
 
-  if (p != m_event_hook_set.end ())
-    m_event_hook_set.erase (p);
+  if (p != s_event_hook_set.end ())
+    s_event_hook_set.erase (p);
 
 }
 

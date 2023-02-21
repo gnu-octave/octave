@@ -57,14 +57,14 @@ in_class_method (const octave::cdef_class& cls)
   return (ctx.ok () && octave::is_superclass (ctx, cls));
 }
 
-int octave_classdef::t_id (-1);
+int octave_classdef::s_t_id (-1);
 
-const std::string octave_classdef::t_name ("object");
+const std::string octave_classdef::s_t_name ("object");
 
 void
 octave_classdef::register_type (octave::type_info& ti)
 {
-  t_id = ti.register_type (octave_classdef::t_name, "<unknown>",
+  s_t_id = ti.register_type (octave_classdef::s_t_name, "<unknown>",
                            octave_value (new octave_classdef ()));
 }
 

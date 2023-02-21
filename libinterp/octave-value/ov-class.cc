@@ -61,14 +61,14 @@
 #include "variables.h"
 
 
-int octave_class::t_id (-1);
+int octave_class::s_t_id (-1);
 
-const std::string octave_class::t_name ("class");
+const std::string octave_class::s_t_name ("class");
 
 void
 octave_class::register_type (octave::type_info& ti)
 {
-  t_id = ti.register_type (octave_class::t_name, "<unknown>",
+  s_t_id = ti.register_type (octave_class::s_t_name, "<unknown>",
                            octave_value (new octave_class ()));
 }
 

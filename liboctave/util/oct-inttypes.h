@@ -109,8 +109,7 @@ OCTAVE_REGISTER_INT_TYPE (uint64_t);
 
 #undef OCTAVE_REGISTER_INT_TYPE
 
-// Handles non-homogeneous integer comparisons.  Avoids doing useless
-// tests.
+// Handles non-homogeneous integer comparisons.  Avoids doing useless tests.
 
 class octave_int_cmp_op
 {
@@ -124,22 +123,22 @@ class octave_int_cmp_op
   class prom
   {
     // Promote to int?
-    static const bool pint = (sizeof (T1) < sizeof (int)
+    static const bool s_pint = (sizeof (T1) < sizeof (int)
                               && sizeof (T2) < sizeof (int));
 
-    static const bool t1sig = std::numeric_limits<T1>::is_signed;
-    static const bool t2sig = std::numeric_limits<T2>::is_signed;
+    static const bool s_t1sig = std::numeric_limits<T1>::is_signed;
+    static const bool s_t2sig = std::numeric_limits<T2>::is_signed;
 
-    static const bool psig
-      = (pint || (sizeof (T2) > sizeof (T1) && t2sig) || t1sig);
+    static const bool s_psig
+      = (s_pint || (sizeof (T2) > sizeof (T1) && s_t2sig) || s_t1sig);
 
-    static const int psize
-      = (pint
+    static const int s_psize
+      = (s_pint
          ? sizeof (int)
          : (sizeof (T2) > sizeof (T1) ? sizeof (T2) : sizeof (T1)));
   public:
 
-    typedef typename query_integer_type<psize, psig>::type type;
+    typedef typename query_integer_type<s_psize, s_psig>::type type;
   };
 
   // Implements comparisons between two types of equal size but

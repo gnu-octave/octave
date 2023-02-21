@@ -404,8 +404,8 @@ private:
   //! For Toolbars.
   //!@{
   QComboBox *m_current_directory_combo_box;
-  static const int current_directory_max_visible = 16;
-  static const int current_directory_max_count = 16;
+  static const int CURRENT_DIRECTORY_MAX_VISIBLE = 16;
+  static const int CURRENT_DIRECTORY_MAX_COUNT = 16;
   QLineEdit *m_current_directory_line_edit;
   //!@}
 

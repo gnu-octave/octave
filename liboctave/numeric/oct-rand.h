@@ -57,27 +57,27 @@ public:
   static double seed ()
   {
     return (instance_ok ()
-            ? m_instance->do_seed () : numeric_limits<double>::NaN ());
+            ? s_instance->do_seed () : numeric_limits<double>::NaN ());
   }
 
   // Set the seed.
   static void seed (double s)
   {
     if (instance_ok ())
-      m_instance->do_seed (s);
+      s_instance->do_seed (s);
   }
 
   // Reset the seed.
   static void reset ()
   {
     if (instance_ok ())
-      m_instance->do_reset ();
+      s_instance->do_reset ();
   }
 
   // Return the current state.
   static uint32NDArray state (const std::string& d = "")
   {
-    return instance_ok () ? m_instance->do_state (d) : uint32NDArray ();
+    return instance_ok () ? s_instance->do_state (d) : uint32NDArray ();
   }
 
   // Set the current state/
@@ -85,20 +85,20 @@ public:
                      const std::string& d = "")
   {
     if (instance_ok ())
-      m_instance->do_state (s, d);
+      s_instance->do_state (s, d);
   }
 
   // Reset the current state/
   static void reset (const std::string& d)
   {
     if (instance_ok ())
-      m_instance->do_reset (d);
+      s_instance->do_reset (d);
   }
 
   // Return the current distribution.
   static std::string distribution ()
   {
-    return instance_ok () ? m_instance->do_distribution () : "";
+    return instance_ok () ? s_instance->do_distribution () : "";
   }
 
   // Set the current distribution.  May be either "uniform" (the
@@ -106,70 +106,70 @@ public:
   static void distribution (const std::string& d)
   {
     if (instance_ok ())
-      m_instance->do_distribution (d);
+      s_instance->do_distribution (d);
   }
 
   static void uniform_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_uniform_distribution ();
+      s_instance->do_uniform_distribution ();
   }
 
   static void normal_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_normal_distribution ();
+      s_instance->do_normal_distribution ();
   }
 
   static void exponential_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_exponential_distribution ();
+      s_instance->do_exponential_distribution ();
   }
 
   static void poisson_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_poisson_distribution ();
+      s_instance->do_poisson_distribution ();
   }
 
   static void gamma_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_gamma_distribution ();
+      s_instance->do_gamma_distribution ();
   }
 
   // Return the next number from the sequence.
   static double scalar (double a = 1.0)
   {
     return (instance_ok ()
-            ? m_instance->do_scalar (a) : numeric_limits<double>::NaN ());
+            ? s_instance->do_scalar (a) : numeric_limits<double>::NaN ());
   }
 
   // Return the next number from the sequence.
   static float float_scalar (float a = 1.0)
   {
     return (instance_ok ()
-            ? m_instance->do_scalar (a) : numeric_limits<float>::NaN ());
+            ? s_instance->do_scalar (a) : numeric_limits<float>::NaN ());
   }
 
   // Return an array of numbers from the sequence.
   static Array<double> vector (octave_idx_type n, double a = 1.0)
   {
-    return instance_ok () ? m_instance->do_vector (n, a) : Array<double> ();
+    return instance_ok () ? s_instance->do_vector (n, a) : Array<double> ();
   }
 
   // Return an array of numbers from the sequence.
   static Array<float> float_vector (octave_idx_type n, float a = 1.0)
   {
-    return instance_ok () ? m_instance->do_vector (n, a) : Array<float> ();
+    return instance_ok () ? s_instance->do_vector (n, a) : Array<float> ();
   }
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
   static NDArray nd_array (const dim_vector& dims, double a = 1.0)
   {
-    return instance_ok () ? m_instance->do_nd_array (dims, a) : NDArray ();
+    return instance_ok () ? s_instance->do_nd_array (dims, a) : NDArray ();
   }
 
   // Return an N-dimensional array of numbers from the sequence,
@@ -177,15 +177,15 @@ public:
   static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
   {
     return (instance_ok ()
-            ? m_instance->do_float_nd_array (dims, a) : FloatNDArray ());
+            ? s_instance->do_float_nd_array (dims, a) : FloatNDArray ());
   }
 
 private:
 
-  static rand *m_instance;
+  static rand *s_instance;
 
   static void cleanup_instance ()
-  { delete m_instance; m_instance = nullptr; }
+  { delete s_instance; s_instance = nullptr; }
 
   enum
   {

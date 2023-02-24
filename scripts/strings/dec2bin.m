@@ -39,9 +39,7 @@
 ## For negative elements of @var{d}, return the binary value of the two's
 ## complement.  The result is padded with leading ones to 8, 16, 32, or 64
 ## bits as appropriate for the magnitude of the input.  Positive input
-## elements are padded with leading zeros to the same width.  If the second
-## argument @var{len} exceeds that calculated width, the result is further
-## padded with leading zeros, for compatibility with @sc{matlab}.
+## elements are padded with leading zeros to the same width.
 ##
 ## Examples:
 ##
@@ -55,12 +53,11 @@
 ## @end group
 ## @end example
 ##
-## Known @sc{matlab} Incompatibility: @sc{matlab}'s @code{dec2bin} allows
-## non-integer values for @var{d} as of Release 2022b, but is inconsistent
-## with truncation versus rounding and is also inconsistent with its own
-## @code{dec2hex} function.  For self-consistency, Octave gives an error for
-## non-integer inputs.  Users requiring compatible code for non-integer inputs
-## should make use of @code{fix} or @code{round} as appropriate.
+## Programming tip: @code{dec2bin} discards any fractional part of the input.
+## If you need the fractional part to be converted too, call @code{dec2base}
+## with a non-zero number of decimal places.  You can also use @code{fix} or
+## @code{round} on fractional inputs to ensure predictable rounding behavior.
+##
 ## @seealso{bin2dec, dec2base, dec2hex}
 ## @end deftypefn
 
@@ -73,48 +70,42 @@ function bstr = dec2bin (d, len)
   if (iscell (d))
     d = cell2mat (d);
   endif
-
-  if (! isnumeric (d) || iscomplex (d) || any (d(:) != round (d(:))))
-    error ("dec2bin: input must be integers");
-  endif
-
-  ## Create column vector for algorithm (output is always col. vector anyways)
   d = d(:);
 
-  neg = (d < 0);  # keep track of which elements are negative
-  if (any (neg))  # must be a signed type
-    ## Cast to a suitable signed integer type, then to unsigned.
-    ## Ensure that the left-most bit of the unsigned number is 1,
-    ## to signify negative input.
-    tmp = int64 (d);
-    if (all (tmp >= -128 & tmp <= 127))
-      d = int8 (d);
-      d(neg) = (d(neg) + intmax (d)) + 1;
-      d = uint8 (d);
-      d(neg) += uint8 (128);
-    elseif (all (tmp >= -32768 & tmp <= 32767))
-      d = int16 (d);
-      d(neg) = (d(neg) + intmax (d)) + 1;
-      d = uint16 (d);
-      d(neg) += uint16 (32768);
-    elseif (all (tmp >= -2147483648 & tmp <= 2147483647))
-      d = int32 (d);
-      d(neg) = (d(neg) + intmax (d)) + 1;
-      d = uint32 (d);
-      d(neg) += uint32 (2147483648);
-    else
-      d = int64 (d);
-      d(neg) = (d(neg) + intmax (d)) + 1;
-      d = uint64 (d);
-      d(neg) += uint64 (9223372036854775808);
-    endif
-  endif
-
   if (nargin == 1)
-    bstr = dec2base (d, 2);
-  else
+    bstr = dec2base (d, 2);  # this will use a default len picked by dec2base
+  else  # nargin == 2
     bstr = dec2base (d, 2, len);
   endif
+
+  if (all (d >= 0))
+    return
+  endif
+
+  ## If we are here, there are negative inputs, so we need to
+  ## left-pad those outputs with ones to Matlab-compatible lengths.
+  len = columns (bstr);
+  if (all (d >= -128 & d <= 127))
+    len = max (len, 8);  # pad to 8 bits
+  elseif (all (d >= -32768 & d <= 32767))
+    len = max (len, 16);  # pad to 16 bits
+  elseif (all (d >= -2147483648 & d <= 2147483647))
+    len = max (len, 32);  # pad to 32 bits
+  else
+    len = max (len, 64);  # pad to 64 bits
+  endif
+
+  tmp = repmat (' ', rows (bstr), len);
+  tmp(:, (end+1-columns(bstr)):end) = bstr;  # left-pad with spaces
+  bstr = tmp;
+
+  ## Change spaces to "1" for negative inputs
+  tmp = bstr(d < 0, :);
+  tmp(tmp == ' ') = '1';
+  bstr(d < 0, :) = tmp;
+
+  ## Change all other spaces to "0".
+  bstr(bstr == ' ') = '0';
 
 endfunction
 
@@ -129,7 +120,7 @@ endfunction
 ## Test negative inputs
 %!assert (dec2bin (-3), "11111101")
 %!assert (dec2bin (-3, 3), "11111101")
-%!assert (dec2bin (-3, 9), "011111101")
+%!assert (dec2bin (-3, 9), "111111101")
 %!assert (dec2bin (-2^7 - 1), "1111111101111111")
 %!assert (dec2bin (-2^15 - 1), "11111111111111110111111111111111")
 %!assert (dec2bin (-2^31 - 1),
@@ -151,11 +142,13 @@ endfunction
 %!assert (dec2bin ({1, 2; 3, -4}),
 %!        ["00000001"; "00000011"; "00000010"; "11111100"])
 
+## Test fractional inputs
+%!assert (dec2bin (+2.1), "10")
+%!assert (dec2bin (-2.1), "11111110")
+%!assert (dec2bin (+2.9), "10")
+%!assert (dec2bin (-2.9), "11111110")
+
 ## Test input validation
 %!error <Invalid call> dec2bin ()
-%!error <input must be integer> dec2bin (+2.1)
-%!error <input must be integer> dec2bin (-2.1)
-%!error <input must be integer> dec2bin (+2.9)
-%!error <input must be integer> dec2bin (-2.9)
-%!error <input must be integer> dec2bin (1+i)
+%!error <input must be real> dec2bin (1+i);
 

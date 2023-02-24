@@ -9,6 +9,16 @@ aligns the behavior of this function with Octave's test suite.  This also
 means that the file encoding specified in the `.oct-config` file for the
 respective directory is taken into account for the tests.
 
+- `dec2base`, `dec2bin`, and `dec2hex` have all been overhauled.  All three
+functions now accommodate negative inputs and fractional inputs, and repeated
+code between the functions has been reduced or eliminated.  Previously only
+`dec2bin` and `dec2hex` accepted negative inputs but `dec2base` did not, and
+none of the three accepted fractional inputs.  But now,
+`dec2base (100*pi, 16, 4, 6)` for exampele returns a base-16 string with four
+places for the integer part and six places for the fractional part.  Omitting
+the number of decimal places (the fourth input) retains old behavior for
+backward compatibility, except that non-integer inputs will no longer error.
+
 ### Graphical User Interface
 
 ### Graphics backend

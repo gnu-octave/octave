@@ -110,9 +110,9 @@ function str = dec2base (d, base, len, decimals = 0)
 
   ## Note which elements are negative for processing later.
   ## This also needs special processing for the corresponding intmax.
-  belowlim = false(size(d));
+  belowlim = false (size (d));
   if (isinteger (d))
-    belowlim = (d <= intmin(class(d)));
+    belowlim = (d <= intmin (class (d)));
   endif
   neg = (d < 0);
   d(neg) = -d(neg);
@@ -145,30 +145,28 @@ function str = dec2base (d, base, len, decimals = 0)
     max_len = max (max_len, len);
   endif
 
-  ## determine digits for each number
+  ## Determine digits for each number
   digits = zeros (numel (d), max_len);
   for k = max_len:-1:1
-    digits(:,k) = mod (d, base);
-    d = round ((d - digits(:,k)) / base);
+    digits(:, k) = mod (d, base);
+    d = round ((d - digits(:, k)) / base);
   endfor
 
   ## Compute any fractional part and append
+  digits2 = zeros (rows (digits), decimals);
   if (nargin == 4 && decimals > 0)
-    digits2 = zeros (numel (d), decimals);
     for k = 1:decimals
       fracpart *= base;
-      digits2(:,k) = floor (fracpart);
+      digits2(:, k) = floor (fracpart);
       fracpart -= floor (fracpart);
     endfor
-  else
-    digits2 = zeros (rows (digits), 0);
   endif
 
   ## Handle negative inputs now
   for k = find (neg)(:)'
     digits(k, :) = (base-1) - digits(k, :);
     if (! isempty (digits2))
-      digits2 (k, :) = (base-1) - digits2 (k, :);
+      digits2(k, :) = (base - 1) - digits2(k, :);
     endif
 
     if (! isempty (digits2))

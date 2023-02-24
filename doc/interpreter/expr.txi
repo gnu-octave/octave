@@ -144,6 +144,18 @@ A([1; 2])  # result is a column vector: ans = [1; 2]
 @end group
 @end example
 
+The shape rules for @var{A}(@var{P}) are:
+@itemize @bullet
+@item When at least one of @var{A} or @var{P} has two or more dimensions, then
+@var{A}(@var{P}) takes the shape of @var{P}.  This happens when at least one
+of the variables is a 2-D matrix or an N-D array.
+
+@item When both @var{A} and @var{P} are 1-D vectors, then @var{A}(@var{P}) takes
+the shape of @var{A} itself.  In particular, when @var{A} is a row vector, then
+@var{A}(@var{P}) is also a row vector irrespective of @var{P}'s shape.  The
+case when @var{A} is a column vector is analogous.
+@end itemize
+
 Note that it is permissible to use a 1-D index with a multi-dimensional
 object (also called linear indexing).  In this case, the elements of the
 multi-dimensional array are taken in column-first order like Fortran.  That is,

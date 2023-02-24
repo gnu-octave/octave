@@ -88,16 +88,14 @@ function hstr = dec2hex (d, len)
   d = d(:, 1:4:end) * 8 + d(:, 2:4:end) * 4 + d(:, 3:4:end) * 2 + d(:, 4:4:end);
   ## Elements of d are now in the range 0 to 15.
 
-  ## Convert to char matrix and return.
-  ## We used to return this in a single line:
-  ##    hstr = ("0123456789ABCDEF")(d+1);
-  ## But there are edge cases governing the sizes of row and column vectors
-  ## that cause problems with output size, so we use a loop instead.
-  hstr = repmat (' ', size (d));
-  v = "0123456789ABCDEF";
-  for t = 0:15
-    hstr(d == t) = v(t + 1);
-  endfor
+  hstr = "0123456789ABCDEF"(d+1);
+  if (rows (hstr) < rows (d))  # this edge case happens when
+    hstr = hstr(:);            # passing multiple inputs in the range 0 to 15.
+    ## If we don't manually convert it to column, we'd get all those
+    ## hex digits on the same line as one big string instead of one per line.
+    ## Good test for this:    dec2hex (0:15)
+    ## compared with:         dec2hex (uint64 (81985529216486895), 16)
+  endif
 
 endfunction
 
@@ -124,7 +122,7 @@ endfunction
 %!assert (dec2hex ([1, 2; 3, -4]), ["01"; "03"; "02"; "FC"])
 %!assert (dec2hex ({1, 2; 3, -4}), ["01"; "03"; "02"; "FC"])
 
-## Test that the output is of the correct size.
+## Test that the output is of the correct shape.
 ## Next line should return a column vector:
 %!assert (dec2hex (0:15), "0123456789ABCDEF"(:))
 ## Next line should return a row vector:

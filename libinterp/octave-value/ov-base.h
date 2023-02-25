@@ -262,19 +262,7 @@ public:
 
   friend class octave_value;
 
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-   // Disable this warning for the use of the "count" member variable in
-   // the default constructor.  Push the current state so we can restore
-   // the warning state.
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-
-  octave_base_value () : m_count (1), count (m_count) { }
-
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#  pragma GCC diagnostic pop
-#endif
+  octave_base_value ();
 
   octave_base_value (const octave_base_value&) : octave_base_value () { }
 

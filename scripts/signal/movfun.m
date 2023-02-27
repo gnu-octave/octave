@@ -197,20 +197,20 @@ function y = movfun (fcn, x, wlen, varargin)
   clear parser
   ## End parse input arguments
 
+  if (isempty (x))
+    ## Nothing to do.  Return immediately with empty output same shape as input.
+    ## Technically, it would be best to return the correct class, rather than
+    ## always "double", but this seems like a lot of work for little gain.
+    y = zeros (size (x));
+    return;
+  endif
+
   ## If dim was not provided find the first non-singleton dimension.
   szx = size (x);
   if (isempty (dim))
     (dim = find (szx > 1, 1)) || (dim = 1);
   endif
-
   N = szx(dim);
-  if (N == 0)
-    ## Nothing to do.  Return immediately with empty output same shape as input.
-    ## Technically, it would be best to return the correct class, rather than
-    ## always "double", but this seems like a lot of work for little gain.
-    y = zeros (szx);
-    return;
-  endif
 
   ## Calculate slicing indices.  This call also validates WLEN input.
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
@@ -306,7 +306,10 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, w
 
   ## Process center of data
   try
-    y(C,:) = fcn (x(slcidx));
+    slcidx2 = int64 (slcidx);
+    tmp = x(slcidx2);
+    y(C,:) = fcn (tmp);
+    #y(C,:) = fcn (x(slcidx));
   catch err
     ## Operation failed, likely because of out-of-memory error for "x(slcidx)".
     if (! strcmp (err.identifier, "Octave:bad-alloc"))

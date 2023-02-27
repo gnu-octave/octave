@@ -29,6 +29,7 @@
 #include <QCheckBox>
 #include <QDialog>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QRadioButton>
 
 #include "color-picker.h"
@@ -94,6 +95,8 @@ private:
   void write_lexer_settings (QsciLexer *lexer);
 #endif
 
+  void read_settings (bool first);
+
   void write_changed_settings ();
 
   void read_workspace_colors ();
@@ -106,6 +109,9 @@ private:
   void write_varedit_colors ();
 
   QString get_shortcuts_file_name (import_export_action action);
+
+  QMessageBox* wait_message_box (const QString& test, QWidget *p);
+  void close_wait_message_box (QMessageBox *mbox);
 
   bool overwrite_all_shortcuts ();
 

@@ -872,10 +872,6 @@ void main_window::process_settings_dialog_request (const QString& desired_tab)
 
   connect (m_settings_dlg, &settings_dialog::apply_new_settings,
            this, &main_window::request_reload_settings);
-
-  m_settings_dlg->setModal (false);
-  m_settings_dlg->setAttribute (Qt::WA_DeleteOnClose);
-  m_settings_dlg->show ();
 }
 
 void main_window::show_about_octave ()

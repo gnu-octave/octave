@@ -306,10 +306,7 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, w
 
   ## Process center of data
   try
-    slcidx2 = int64 (slcidx);
-    tmp = x(slcidx2);
-    y(C,:) = fcn (tmp);
-    #y(C,:) = fcn (x(slcidx));
+    y(C,:) = fcn (x(slcidx));
   catch err
     ## Operation failed, likely because of out-of-memory error for "x(slcidx)".
     if (! strcmp (err.identifier, "Octave:bad-alloc"))

@@ -40,6 +40,7 @@
 #include <QScrollBar>
 #include <QStyleFactory>
 #include <QTextCodec>
+#include <QThread>
 #include <QVector>
 
 #if defined (HAVE_QSCINTILLA)
@@ -77,20 +78,54 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
 {
   setupUi (this);
 
+  QMessageBox *info = wait_message_box (
+                      tr ("Loading current preferences ... "), this);
+
+  read_settings (true);  // it's the first read, prepare everything
+
+  close_wait_message_box (info);
+
+  // which tab is the desired one?
+  show_tab (desired_tab);
+
+  // connect button box signal
+  connect (button_box, &QDialogButtonBox::clicked,
+           this, &settings_dialog::button_clicked);
+
+  // restore last geometry
   gui_settings settings;
 
-  // look for available language files and the actual settings
-  QString qm_dir_name = settings.get_gui_translation_dir ();
+  if (settings.contains (sd_geometry.settings_key ()))
+    restoreGeometry (settings.byte_array_value (sd_geometry));
+  else
+    setGeometry (QRect (10, 50, 1000, 600));
 
-  QDir qm_dir (qm_dir_name);
-  QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"),
-                           QDir::Files | QDir::Readable, QDir::Name);
+  // show as non-modal dialog
+  setModal (false);
+  setAttribute (Qt::WA_DeleteOnClose);
+  show ();
+}
 
-  for (int i = 0; i < qm_files.length (); i++)   // insert available languages
-    comboBox_language->addItem (qm_files.at (i).baseName ());
-  // System at beginning
-  comboBox_language->insertItem (0, tr ("System setting"));
-  comboBox_language->insertSeparator (1);    // separator after System
+void settings_dialog::read_settings (bool first)
+{
+  gui_settings settings;
+
+  if (first)
+    {
+      // look for available language files and the actual settings
+      QString qm_dir_name = settings.get_gui_translation_dir ();
+
+      QDir qm_dir (qm_dir_name);
+      QFileInfoList qm_files = qm_dir.entryInfoList (QStringList ("*.qm"),
+                               QDir::Files | QDir::Readable, QDir::Name);
+
+      for (int i = 0; i < qm_files.length (); i++)   // insert available languages
+        comboBox_language->addItem (qm_files.at (i).baseName ());
+      // System at beginning
+      comboBox_language->insertItem (0, tr ("System setting"));
+      comboBox_language->insertSeparator (1);    // separator after System
+    }
+
   QString language = settings.string_value (global_language);
   if (language == global_language.def ().toString ())
     language = tr ("System setting");
@@ -100,12 +135,16 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   else
     comboBox_language->setCurrentIndex (0);  // System is default
 
-  // Global style
-  QStringList styles = QStyleFactory::keys();
-  styles.append (global_extra_styles);
-  combo_styles->addItems (styles);
-  combo_styles->insertItem (0, global_style.def ().toString ());
-  combo_styles->insertSeparator (1);
+  if (first)
+    {
+      // Global style
+      QStringList styles = QStyleFactory::keys();
+      styles.append (global_extra_styles);
+      combo_styles->addItems (styles);
+      combo_styles->insertItem (0, global_style.def ().toString ());
+      combo_styles->insertSeparator (1);
+    }
+
   QString current_style = settings.string_value (global_style);
   if (current_style == global_style.def ().toString ())
     current_style = global_style.def ().toString ();
@@ -115,24 +154,32 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   else
     combo_styles->setCurrentIndex (0);
 
-  // icon size and theme
-  QButtonGroup *icon_size_group = new QButtonGroup (this);
-  icon_size_group->addButton (icon_size_small);
-  icon_size_group->addButton (icon_size_normal);
-  icon_size_group->addButton (icon_size_large);
+  if (first)
+    {
+      // icon size and theme
+      QButtonGroup *icon_size_group = new QButtonGroup (this);
+      icon_size_group->addButton (icon_size_small);
+      icon_size_group->addButton (icon_size_normal);
+      icon_size_group->addButton (icon_size_large);
+    }
   int icon_size = settings.int_value (global_icon_size);
   icon_size_normal->setChecked (true);  // the default
   icon_size_small->setChecked (icon_size < 0);
   icon_size_large->setChecked (icon_size > 0);
-  combo_box_icon_theme->addItems (global_all_icon_theme_names);
+
+  if (first)
+    combo_box_icon_theme->addItems (global_all_icon_theme_names);
   int theme = settings.value (global_icon_theme_index.settings_key ()).toInt ();
   combo_box_icon_theme->setCurrentIndex (theme);
 
-  // which icon has to be selected
-  QButtonGroup *icon_group = new QButtonGroup (this);
-  icon_group->addButton (general_icon_octave);
-  icon_group->addButton (general_icon_graphic);
-  icon_group->addButton (general_icon_letter);
+  if (first)
+    {
+      // which icon has to be selected
+      QButtonGroup *icon_group = new QButtonGroup (this);
+      icon_group->addButton (general_icon_octave);
+      icon_group->addButton (general_icon_graphic);
+      icon_group->addButton (general_icon_letter);
+    }
   QString widget_icon_set =
     settings.string_value (dw_icon_set);
   general_icon_octave->setChecked (true);  // the default (if invalid set)
@@ -140,38 +187,42 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   general_icon_graphic->setChecked (widget_icon_set == "GRAPHIC");
   general_icon_letter->setChecked (widget_icon_set == "LETTER");
 
-  // custom title bar of dock widget
-  QColor bg_color = settings.color_value (dw_title_bg_color);
-  m_widget_title_bg_color = new color_picker (bg_color);
-  m_widget_title_bg_color->setEnabled (false);
-  layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
+  if (first)
+    {
+      // custom title bar of dock widget
+      m_widget_title_bg_color = new color_picker ();
+      m_widget_title_bg_color->setEnabled (false);
+      layout_widget_bgtitle->addWidget (m_widget_title_bg_color, 0);
 
-  connect (cb_widget_custom_style, &QCheckBox::toggled,
-           m_widget_title_bg_color, &color_picker::setEnabled);
+      connect (cb_widget_custom_style, &QCheckBox::toggled,
+               m_widget_title_bg_color, &color_picker::setEnabled);
 
-  QColor bg_color_active = settings.color_value (dw_title_bg_color_active);
-  m_widget_title_bg_color_active = new color_picker (bg_color_active);
-  m_widget_title_bg_color_active->setEnabled (false);
-  layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
+      m_widget_title_bg_color_active = new color_picker ();
+      m_widget_title_bg_color_active->setEnabled (false);
+      layout_widget_bgtitle_active->addWidget (m_widget_title_bg_color_active, 0);
 
-  connect (cb_widget_custom_style, &QCheckBox::toggled,
-           m_widget_title_bg_color_active, &color_picker::setEnabled);
+      connect (cb_widget_custom_style, &QCheckBox::toggled,
+               m_widget_title_bg_color_active, &color_picker::setEnabled);
 
-  QColor fg_color = settings.color_value (dw_title_fg_color);
-  m_widget_title_fg_color = new color_picker (fg_color);
-  m_widget_title_fg_color->setEnabled (false);
-  layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
+      m_widget_title_fg_color = new color_picker ();
+      m_widget_title_fg_color->setEnabled (false);
+      layout_widget_fgtitle->addWidget (m_widget_title_fg_color, 0);
 
-  connect (cb_widget_custom_style, &QCheckBox::toggled,
-           m_widget_title_fg_color, &color_picker::setEnabled);
+      connect (cb_widget_custom_style, &QCheckBox::toggled,
+               m_widget_title_fg_color, &color_picker::setEnabled);
 
-  QColor fg_color_active = settings.color_value (dw_title_fg_color_active);
-  m_widget_title_fg_color_active = new color_picker (fg_color_active);
-  m_widget_title_fg_color_active->setEnabled (false);
-  layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);
+      m_widget_title_fg_color_active = new color_picker ();
+      m_widget_title_fg_color_active->setEnabled (false);
+      layout_widget_fgtitle_active->addWidget (m_widget_title_fg_color_active, 0);
 
-  connect (cb_widget_custom_style, &QCheckBox::toggled,
-           m_widget_title_fg_color_active, &color_picker::setEnabled);
+      connect (cb_widget_custom_style, &QCheckBox::toggled,
+               m_widget_title_fg_color_active, &color_picker::setEnabled);
+    }
+
+  m_widget_title_bg_color->set_color (settings.color_value (dw_title_bg_color));
+  m_widget_title_bg_color_active->set_color (settings.color_value (dw_title_bg_color_active));
+  m_widget_title_fg_color->set_color (settings.color_value (dw_title_fg_color));
+  m_widget_title_fg_color_active->set_color (settings.color_value (dw_title_fg_color_active));
 
   sb_3d_title->setValue (settings.int_value (dw_title_3d));
   cb_widget_custom_style->setChecked (settings.bool_value (dw_title_custom_style));
@@ -209,8 +260,9 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   cb_restore_octave_dir->setChecked (settings.bool_value (global_restore_ov_dir));
   le_octave_dir->setText (settings.string_value (global_ov_startup_dir));
 
-  connect (pb_octave_dir, &QPushButton::pressed,
-           this, &settings_dialog::get_octave_dir);
+  if (first)
+    connect (pb_octave_dir, &QPushButton::pressed,
+             this, &settings_dialog::get_octave_dir);
 
   //
   // editor
@@ -257,11 +309,13 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   cb_show_eol->setChecked (settings.bool_value (ed_show_eol_chars));
   cb_show_hscrollbar->setChecked (settings.bool_value (ed_show_hscroll_bar));
 
-  for (int i = 0; i < ed_tab_position_names.length (); i++)
-    editor_combox_tab_pos->insertItem (i,
-            tr (ed_tab_position_names.at (i).toStdString ().data ()));
-  editor_combox_tab_pos->setCurrentIndex
-    (settings.int_value (ed_tab_position));
+  if (first)
+    {
+      for (int i = 0; i < ed_tab_position_names.length (); i++)
+        editor_combox_tab_pos->insertItem (i,
+                tr (ed_tab_position_names.at (i).toStdString ().data ()));
+    }
+  editor_combox_tab_pos->setCurrentIndex (settings.int_value (ed_tab_position));
 
   editor_cb_tabs_rotated->setChecked (settings.bool_value (ed_tabs_rotated));
   editor_sb_tabs_max_width->setValue (settings.int_value (ed_tabs_max_width));
@@ -277,22 +331,25 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
 
   for (int i = 0; i < ed_comment_strings_count; i++)
     {
-      m_rb_comment_strings[i] = new QRadioButton ();
-      m_rb_uncomment_strings[i] = new QCheckBox ();
+      if (first)
+        {
+          m_rb_comment_strings[i] = new QRadioButton ();
+          m_rb_uncomment_strings[i] = new QCheckBox ();
+          layout_comment_strings->addWidget (m_rb_comment_strings[i]);
+          layout_uncomment_strings->addWidget (m_rb_uncomment_strings[i]);
 
-      connect (m_rb_comment_strings[i], &QRadioButton::clicked,
-               m_rb_uncomment_strings[i], &QCheckBox::setChecked);
-      connect (m_rb_comment_strings[i], &QRadioButton::toggled,
-               m_rb_uncomment_strings[i], &QCheckBox::setDisabled);
+          connect (m_rb_comment_strings[i], &QRadioButton::clicked,
+                   m_rb_uncomment_strings[i], &QCheckBox::setChecked);
+          connect (m_rb_comment_strings[i], &QRadioButton::toggled,
+                   m_rb_uncomment_strings[i], &QCheckBox::setDisabled);
+        }
 
       m_rb_comment_strings[i]->setText (ed_comment_strings.at(i));
       m_rb_comment_strings[i]->setChecked (i == selected_comment_string);
-      layout_comment_strings->addWidget (m_rb_comment_strings[i]);
 
       m_rb_uncomment_strings[i]->setText (ed_comment_strings.at(i));
       m_rb_uncomment_strings[i]->setAutoExclusive (false);
       m_rb_uncomment_strings[i]->setChecked ( 1 << i & selected_uncomment_string);
-      layout_uncomment_strings->addWidget (m_rb_uncomment_strings[i]);
     }
 
   combo_eol_mode->setCurrentIndex (settings.int_value (ed_default_eol_mode));
@@ -320,8 +377,7 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   terminal_focus_command->setChecked (settings.bool_value (cs_focus_cmd));
   terminal_print_dbg_location->setChecked (settings.bool_value (cs_dbg_location));
 
-  QString cursor_type
-    = settings.string_value (cs_cursor);
+  QString cursor_type = settings.string_value (cs_cursor);
 
   QStringList items;
   items << QString ("0") << QString ("1") << QString ("2");
@@ -339,29 +395,54 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
         }
     }
 
-  read_terminal_colors ();
+  if (first)
+    read_terminal_colors ();
+  else
+    {
+      QCheckBox *cb_color_mode
+        = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.settings_key ());
+      bool sec_color_mode  = settings.bool_value (cs_color_mode);
+      if (cb_color_mode->isChecked () == sec_color_mode)
+        {
+          // color mode does not change, update colors manually
+          update_terminal_colors ();
+        }
+      else
+        {
+          // toggling check-state calls related slot updating colors
+          cb_color_mode->setChecked (sec_color_mode);
+        }
+    }
 
   // file browser
-  connect (sync_octave_directory, &QCheckBox::toggled,
-           this, &settings_dialog::set_disabled_pref_file_browser_dir);
+  if (first)
+    {
+      connect (sync_octave_directory, &QCheckBox::toggled,
+               this, &settings_dialog::set_disabled_pref_file_browser_dir);
+      connect (pb_file_browser_dir, &QPushButton::pressed,
+               this, &settings_dialog::get_file_browser_dir);
+    }
 
   sync_octave_directory->setChecked (settings.bool_value (fb_sync_octdir));
   cb_restore_file_browser_dir->setChecked (settings.bool_value (fb_restore_last_dir));
   le_file_browser_dir->setText (settings.value (fb_startup_dir.settings_key ()).toString ());
-
-  connect (pb_file_browser_dir, &QPushButton::pressed,
-           this, &settings_dialog::get_file_browser_dir);
-
   le_file_browser_extensions->setText (settings.string_value (fb_txt_file_ext));
-
   checkbox_allow_web_connect->setChecked (settings.bool_value (nr_allow_connection));
 
   // Proxy
   bool use_proxy = settings.bool_value (global_use_proxy);
   use_proxy_server->setChecked (use_proxy);
   // Fill combo box and activate current one
+  if (first)
+    {
+      proxy_type->addItems (global_proxy_all_types);
+      // Connect relevant signals for dis-/enabling some elements
+      connect (proxy_type, QOverload<int>::of (&QComboBox::currentIndexChanged),
+               this, &settings_dialog::proxy_items_update);
+      connect (use_proxy_server, &QCheckBox::toggled,
+               this, &settings_dialog::proxy_items_update);
+    }
   QString proxy_type_string = settings.string_value (global_proxy_type);
-  proxy_type->addItems (global_proxy_all_types);
   for (int i = 0; i < global_proxy_all_types.length (); i++)
     {
       if (proxy_type->itemText (i) == proxy_type_string)
@@ -375,36 +456,67 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   proxy_port->setText (settings.string_value (global_proxy_port));
   proxy_username->setText (settings.string_value (global_proxy_user));
   proxy_password->setText (settings.string_value (global_proxy_pass));
-  // Connect relevant signals for dis-/enabling some elements
-  connect (proxy_type, QOverload<int>::of (&QComboBox::currentIndexChanged),
-           this, &settings_dialog::proxy_items_update);
-  connect (use_proxy_server, &QCheckBox::toggled,
-           this, &settings_dialog::proxy_items_update);
   // Check whehter line edits have to be enabled
   proxy_items_update ();
 
   // Workspace
-  read_workspace_colors ();
+  if (first)
+    read_workspace_colors ();
+  else
+    {
+      m_ws_enable_colors->setChecked (settings.bool_value (ws_enable_colors));
+      QCheckBox *cb_color_mode
+        = workspace_colors_box->findChild <QCheckBox *> (ws_color_mode.settings_key ());
+      bool sec_color_mode  = settings.bool_value (ws_color_mode);
+      if (cb_color_mode->isChecked () == sec_color_mode)
+        {
+          // color mode does not change, update colors manually
+          update_workspace_colors ();
+        }
+      else
+        {
+          // toggling check-state calls related slot updating colors
+          cb_color_mode->setChecked (sec_color_mode);
+        }
+    }
 
   // variable editor
+  if (first)
+    {
+      connect (varedit_useTerminalFont, &QCheckBox::toggled,
+               varedit_font, &QFontComboBox::setDisabled);
+      connect (varedit_useTerminalFont, &QCheckBox::toggled,
+               varedit_fontSize, &QSpinBox::setDisabled);
+    }
   varedit_columnWidth->setValue (settings.int_value (ve_column_width));
   varedit_rowHeight->setValue (settings.int_value (ve_row_height));
-
   varedit_font->setCurrentFont (QFont (settings.value (ve_font_name.settings_key (),
                                                         settings.value (cs_font.settings_key (), default_font)).toString ()));
   varedit_fontSize->setValue (settings.int_value (ve_font_size));
-  connect (varedit_useTerminalFont, &QCheckBox::toggled,
-           varedit_font, &QFontComboBox::setDisabled);
-  connect (varedit_useTerminalFont, &QCheckBox::toggled,
-           varedit_fontSize, &QSpinBox::setDisabled);
   varedit_useTerminalFont->setChecked (settings.bool_value (ve_use_terminal_font));
   varedit_font->setDisabled (varedit_useTerminalFont->isChecked ());
   varedit_fontSize->setDisabled (varedit_useTerminalFont->isChecked ());
-
   varedit_alternate->setChecked (settings.bool_value (ve_alternate_rows));
 
   // variable editor colors
-  read_varedit_colors ();
+  if (first)
+    read_varedit_colors ();
+  else
+    {
+      QCheckBox *cb_color_mode
+        = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.settings_key ());
+      bool sec_color_mode  = settings.bool_value (ve_color_mode);
+      if (cb_color_mode->isChecked () == sec_color_mode)
+        {
+          // color mode does not change, update colors manually
+          update_varedit_colors ();
+        }
+      else
+        {
+          // toggling check-state calls related slot updating colors
+          cb_color_mode->setChecked (sec_color_mode);
+        }
+    }
 
   // shortcuts
 
@@ -414,75 +526,82 @@ settings_dialog::settings_dialog (QWidget *p, const QString& desired_tab)
   // connect the buttons for import/export of the shortcut sets
   // FIXME: Should there also be a button to discard changes?
 
-  connect (btn_import_shortcut_set, &QPushButton::clicked,
-           this, &settings_dialog::import_shortcut_set);
+  if (first)
+    {
+      connect (btn_import_shortcut_set, &QPushButton::clicked,
+               this, &settings_dialog::import_shortcut_set);
 
-  connect (btn_export_shortcut_set, &QPushButton::clicked,
-           this, &settings_dialog::export_shortcut_set);
+      connect (btn_export_shortcut_set, &QPushButton::clicked,
+               this, &settings_dialog::export_shortcut_set);
 
-  connect (btn_default_shortcut_set, &QPushButton::clicked,
-           this, &settings_dialog::default_shortcut_set);
+      connect (btn_default_shortcut_set, &QPushButton::clicked,
+               this, &settings_dialog::default_shortcut_set);
+    }
 
 #if defined (HAVE_QSCINTILLA)
 
-  int mode = settings.int_value (ed_color_mode);
+  if (first)
+    {
+      int mode = settings.int_value (ed_color_mode);
 
-  QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()),
-                                            group_box_editor_styles);
-  cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
-  cb_color_mode->setChecked (mode > 0);
-  cb_color_mode->setObjectName (ed_color_mode.settings_key ());
+      QCheckBox *cb_color_mode = new QCheckBox (tr (settings_color_modes.toStdString ().data ()),
+                                                group_box_editor_styles);
+      cb_color_mode->setToolTip (tr (settings_color_modes_tooltip.toStdString ().data ()));
+      cb_color_mode->setChecked (mode > 0);
+      cb_color_mode->setObjectName (ed_color_mode.settings_key ());
 
-  QPushButton *pb_reload_default_colors = new QPushButton (tr (settings_reload_styles.toStdString ().data ()));
-  pb_reload_default_colors->setToolTip (tr (settings_reload_styles_tooltip.toStdString ().data ()));
+      QPushButton *pb_reload_default_colors = new QPushButton (tr (settings_reload_styles.toStdString ().data ()));
+      pb_reload_default_colors->setToolTip (tr (settings_reload_styles_tooltip.toStdString ().data ()));
 
-  color_picker *current_line_color
-    = new color_picker
-    (settings.value (ed_highlight_current_line_color.settings_key ()
-                     + settings_color_modes_ext[mode],
-                     ed_highlight_current_line_color.def ()).value<QColor> (),
-     this);
-  current_line_color->setObjectName (ed_highlight_current_line_color.settings_key ());
+      color_picker *current_line_color = new color_picker (
+        settings.value (ed_highlight_current_line_color.settings_key ()
+                        + settings_color_modes_ext[mode],
+                        ed_highlight_current_line_color.def ()).value<QColor> ());
+      current_line_color->setObjectName (ed_highlight_current_line_color.settings_key ());
 
-  QLabel *current_line_color_label
-    = new QLabel(tr ("Color of highlighted current line (magenta (255,0,255) for automatic color)"));
+      QLabel *current_line_color_label
+        = new QLabel(tr ("Color of highlighted current line (magenta (255,0,255) for automatic color)"));
 
-  QHBoxLayout *color_mode = new QHBoxLayout ();
-  color_mode->addWidget (cb_color_mode);
-  color_mode->addItem (new QSpacerItem (5, 5, QSizePolicy::Expanding));
-  color_mode->addWidget (pb_reload_default_colors);
+      QHBoxLayout *color_mode = new QHBoxLayout ();
+      color_mode->addWidget (cb_color_mode);
+      color_mode->addItem (new QSpacerItem (5, 5, QSizePolicy::Expanding));
+      color_mode->addWidget (pb_reload_default_colors);
 
-  QHBoxLayout *current_line = new QHBoxLayout ();
-  current_line->addWidget (current_line_color_label);
-  current_line->addWidget (current_line_color);
-  current_line->addItem (new QSpacerItem (5, 5, QSizePolicy::Expanding));
+      QHBoxLayout *current_line = new QHBoxLayout ();
+      current_line->addWidget (current_line_color_label);
+      current_line->addWidget (current_line_color);
+      current_line->addItem (new QSpacerItem (5, 5, QSizePolicy::Expanding));
 
-  editor_styles_layout->addLayout (color_mode);
-  editor_styles_layout->addLayout (current_line);
+      editor_styles_layout->addLayout (color_mode);
+      editor_styles_layout->addLayout (current_line);
 
-  // update colors depending on second theme selection
-  connect (cb_color_mode, &QCheckBox::stateChanged,
-           this, &settings_dialog::update_editor_lexers);
-  connect (pb_reload_default_colors, &QPushButton::clicked,
-           [=] () { update_editor_lexers (settings_reload_default_colors_flag); });
+      // update colors depending on second theme selection
+      connect (cb_color_mode, &QCheckBox::stateChanged,
+               this, &settings_dialog::update_editor_lexers);
+      connect (pb_reload_default_colors, &QPushButton::clicked,
+               [=] () { update_editor_lexers (settings_reload_default_colors_flag); });
 
-  // finally read the lexer colors using the update slot
-  update_editor_lexers ();
+      // finally read the lexer colors using the update slot
+      update_editor_lexers ();
+    }
+  else
+    {
+      QCheckBox *cb_color_mode
+        = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.settings_key ());
+      bool sec_color_mode  = settings.bool_value (ed_color_mode);
+      if (cb_color_mode->isChecked () == sec_color_mode)
+        {
+          // color mode does not change, update colors manually
+          update_editor_lexers ();
+        }
+      else
+        {
+          // toggling check-state calls related slot updating colors
+          cb_color_mode->setChecked (sec_color_mode);
+        }
+    }
 
 #endif
-
-  // which tab is the desired one?
-  show_tab (desired_tab);
-
-  // connect button box signal
-  connect (button_box, &QDialogButtonBox::clicked,
-           this, &settings_dialog::button_clicked);
-
-  // restore last geometry
-  if (settings.contains (sd_geometry.settings_key ()))
-    restoreGeometry (settings.byte_array_value (sd_geometry));
-  else
-    setGeometry (QRect (10, 50, 1000, 600));
 }
 
 void settings_dialog::show_tab (const QString& tab)
@@ -536,7 +655,12 @@ void settings_dialog::button_clicked (QAbstractButton *button)
       || button_role == QDialogButtonBox::AcceptRole)
     {
       write_changed_settings ();
+      if (button_role == QDialogButtonBox::AcceptRole)
+        hide ();  // already hide here, reloading settings takes some time
+
+      QMessageBox *info = wait_message_box (tr ("Applying preferences ... "), this);
       emit apply_new_settings ();
+      close_wait_message_box (info);
     }
 
   if (button_role == QDialogButtonBox::RejectRole
@@ -551,6 +675,11 @@ void settings_dialog::button_clicked (QAbstractButton *button)
       settings.sync ();
 
       close ();
+    }
+
+  if (button_role == QDialogButtonBox::ResetRole)
+    {
+      read_settings (false);  // not the first read, only update existing items
     }
 }
 
@@ -1034,6 +1163,7 @@ void settings_dialog::write_lexer_settings (QsciLexer *lexer)
 
 void settings_dialog::write_changed_settings ()
 {
+
   gui_settings settings;
 
   // the icon set
@@ -1708,6 +1838,32 @@ bool settings_dialog::overwrite_all_shortcuts ()
     }
 
   return false;
+}
+
+QMessageBox* settings_dialog::wait_message_box (const QString& text, QWidget *p)
+{
+  QMessageBox *info = new QMessageBox (p);
+
+  info->setIcon (QMessageBox::Information);
+  info->setWindowTitle (tr ("Octave GUI preferences"));
+  info->setText (text);
+  info->setStandardButtons (QMessageBox::Ok);
+  info->setAttribute (Qt::WA_DeleteOnClose);
+  info->setWindowModality (Qt::NonModal);
+
+  info->show ();
+  QThread::msleep (100);
+  QCoreApplication::processEvents ();
+
+  QApplication::setOverrideCursor (Qt::WaitCursor);
+
+  return info;
+}
+
+void settings_dialog::close_wait_message_box (QMessageBox *mbox)
+{
+  QApplication::restoreOverrideCursor ();
+  mbox->close ();
 }
 
 OCTAVE_END_NAMESPACE(octave)

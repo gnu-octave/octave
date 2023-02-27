@@ -204,6 +204,13 @@ function y = movfun (fcn, x, wlen, varargin)
   endif
 
   N = szx(dim);
+  if (N == 0)
+    ## Nothing to do.  Return immediately with empty output same shape as input.
+    ## Technically, it would be best to return the correct class, rather than
+    ## always "double", but this seems like a lot of work for little gain.
+    y = zeros (szx);
+    return;
+  endif
 
   ## Calculate slicing indices.  This call also validates WLEN input.
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
@@ -256,8 +263,9 @@ function y = movfun (fcn, x, wlen, varargin)
 
   ## FIXME: Validation doesn't seem to work correctly (noted 12/16/2018).
   ## Validate that outdim makes sense
-  tmp     = fcn (zeros (length (win), 1));  # output for window
-  noutdim = length (tmp);                   # number of output dimensions
+  fout = fcn (zeros (length (win), 1, class (x)));  # output for window
+  yclass = class (fout);                    # record class of fcn output
+  noutdim = length (fout);                  # number of output dimensions
   if (! isempty (outdim))
     if (max (outdim) > noutdim)
       error ("Octave:invalid-input-arg", ...
@@ -275,11 +283,12 @@ function y = movfun (fcn, x, wlen, varargin)
     fcn_ = fcn;
   endif
 
+  ## Initialize output array of appropriate size and class.
+  y = zeros (N, ncols, soutdim, yclass);
   ## Apply processing to each column
   ## FIXME: Is it faster with cellfun?  Don't think so, but needs testing.
-  y = zeros (N, ncols, soutdim);
   parfor i = 1:ncols
-    y(:,i,:) = movfun_oncol (fcn_, x(:,i), wlen, bcfcn,
+    y(:,i,:) = movfun_oncol (fcn_, yclass, x(:,i), wlen, bcfcn,
                              slc, C, Cpre, Cpos, win, soutdim);
   endparfor
 
@@ -290,12 +299,12 @@ function y = movfun (fcn, x, wlen, varargin)
 
 endfunction
 
-function y = movfun_oncol (fcn, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, win, odim)
+function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, win, odim)
 
   N = length (Cpre) + length (C) + length (Cpos);
-  y = NA (N, odim);
+  y = zeros (N, odim, yclass);
 
-  ## Process center part
+  ## Process center of data
   y(C,:) = fcn (x(slcidx));
 
   ## Process boundaries
@@ -601,12 +610,24 @@ endfunction
 %!assert (movfun (@min, UNO, wlen02, "Endpoints", "same"), UNO)
 %!assert (movfun (@min, UNO, wlen20, "Endpoints", "same"), UNO)
 
-## Multidimensional output
+## Multi-dimensional output
 %!assert (size( movfun (@(x) [min(x), max(x)], (1:10).', 3)), [10 2])
 %!assert (size( movfun (@(x) [min(x), max(x)], cumsum (ones (10,5),2), 3)),
 %!        [10 5 2])
 ## outdim > dim
 %!error movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3)
+
+## Test for correct return class based on output of function. 
+%!test <*63802>
+%! x = single (1:10);
+%! y = movfun (@mean, x, 3);
+%! assert (class (y), 'single');
+%! y = movfun (@mean, uint8 (x), 3);
+%! assert (class (y), 'double');
+
+## Test calculation along empty dimension
+%!assert <*63802> (movfun (@mean, zeros (2,0,3, 'uint8'), 3, 'dim', 2),
+%!                 zeros (2,0,3, 'double'))
 
 ## Test input validation
 %!error <Invalid call> movfun ()

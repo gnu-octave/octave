@@ -926,6 +926,20 @@ if test $ENABLE_FLOAT_TRUNCATE = yes; then
     [Define to 1 to truncate intermediate FP results.])
 fi
 
+### Enable internal checks
+
+## The checks slow down the execution and are redundant,
+## but useful for debugging or verifying GNU Octave.
+ENABLE_INTERNAL_CHECKS=no
+AC_ARG_ENABLE([internal-checks],
+  [AS_HELP_STRING([--enable-internal-checks],
+    [Enable internal checks that are redundant but useful to debug or verify GNU Octave])],
+  [if test "$enableval" = yes; then ENABLE_INTERNAL_CHECKS=yes; fi], [])
+if test $ENABLE_INTERNAL_CHECKS = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_INTERNAL_CHECKS, 1,
+    [Define to 1 to enable internal checks.])
+fi
+
 ### Determine extra CFLAGS, CXXFLAGS that may be necessary for Octave.
 
 ## On Intel systems with gcc, we need to compile with -mieee-fp to get full

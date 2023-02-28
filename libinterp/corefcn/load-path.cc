@@ -1745,11 +1745,10 @@ load_path::package_info::find_fcn (const std::string& fcn,
 
           retval = find_method (class_name, meth, dir_name);
         }
-      else
-        retval = "";
     }
   else
     {
+      // Ensure that dir_name is empty if function is not found.
       dir_name = "";
 
       const_fcn_map_iterator p = m_fcn_map.find (fcn);
@@ -1819,6 +1818,7 @@ load_path::package_info::find_method (const std::string& class_name,
 
   //  update ();
 
+  // Ensure that dir_name is empty if method is not found.
   dir_name = "";
 
   const_method_map_iterator q = m_method_map.find (class_name);

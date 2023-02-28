@@ -46,9 +46,9 @@ DEFNDBINOP_OP (mul, complex, complex_matrix, complex, complex_array, *)
 
 DEFBINOP (div, complex, complex_matrix)
 {
-  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
   const octave_complex_matrix& v2
-    = dynamic_cast<const octave_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_complex_matrix&> (a2);
 
   ComplexMatrix m1 = v1.complex_matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
@@ -64,9 +64,9 @@ DEFBINOP_FN (pow, complex, complex_matrix, xpow)
 
 DEFBINOP (ldiv, complex, complex_matrix)
 {
-  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
   const octave_complex_matrix& v2
-    = dynamic_cast<const octave_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_complex_matrix&> (a2);
 
   return octave_value (v2.complex_array_value () / v1.complex_value ());
 }
@@ -92,9 +92,9 @@ DEFNDBINOP_FN (el_pow, complex, complex_matrix, complex, complex_array,
 
 DEFBINOP (el_ldiv, complex, complex_matrix)
 {
-  const octave_complex& v1 = dynamic_cast<const octave_complex&> (a1);
+  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
   const octave_complex_matrix& v2
-    = dynamic_cast<const octave_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_complex_matrix&> (a2);
 
   return octave_value (v2.complex_array_value () / v1.complex_value ());
 }
@@ -109,7 +109,7 @@ DEFNDCATOP_FN (cs_cm, complex, complex_matrix, complex_array, complex_array,
 
 DEFCONV (complex_matrix_conv, complex, complex_matrix)
 {
-  const octave_complex& v = dynamic_cast<const octave_complex&> (a);
+  const octave_complex& v = DYNORSTAT_CAST<const octave_complex&> (a);
 
   return new octave_complex_matrix (v.complex_matrix_value ());
 }

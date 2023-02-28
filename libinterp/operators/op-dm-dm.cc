@@ -47,7 +47,7 @@ DEFUNOP_OP (uminus, diag_matrix, -)
 
 DEFUNOP (transpose, diag_matrix)
 {
-  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
+  const octave_diag_matrix& v = DYNORSTAT_CAST<const octave_diag_matrix&> (a);
   return octave_value (v.diag_matrix_value ().transpose ());
 }
 
@@ -59,8 +59,8 @@ DEFBINOP_OP (mul, diag_matrix, diag_matrix, *)
 
 DEFBINOP (div, diag_matrix, diag_matrix)
 {
-  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
-  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
+  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
+  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
 
   return xdiv (v1.diag_matrix_value (),
                v2.diag_matrix_value ());
@@ -68,8 +68,8 @@ DEFBINOP (div, diag_matrix, diag_matrix)
 
 DEFBINOP (ldiv, diag_matrix, diag_matrix)
 {
-  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
-  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
+  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
+  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
 
   return xleftdiv (v1.diag_matrix_value (),
                    v2.diag_matrix_value ());
@@ -77,7 +77,7 @@ DEFBINOP (ldiv, diag_matrix, diag_matrix)
 
 CONVDECL (diag_matrix_to_matrix)
 {
-  const octave_diag_matrix& v = dynamic_cast<const octave_diag_matrix&> (a);
+  const octave_diag_matrix& v = DYNORSTAT_CAST<const octave_diag_matrix&> (a);
 
   return new octave_matrix (v.matrix_value ());
 }

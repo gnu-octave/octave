@@ -52,9 +52,9 @@ DEFNDBINOP_OP (mul, float_complex, float_complex_matrix, float_complex,
 DEFBINOP (div, float_complex, float_complex_matrix)
 {
   const octave_float_complex& v1
-    = dynamic_cast<const octave_float_complex&> (a1);
+    = DYNORSTAT_CAST<const octave_float_complex&> (a1);
   const octave_float_complex_matrix& v2
-    = dynamic_cast<const octave_float_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
 
   FloatComplexMatrix m1 = v1.float_complex_matrix_value ();
   FloatComplexMatrix m2 = v2.float_complex_matrix_value ();
@@ -71,9 +71,9 @@ DEFBINOP_FN (pow, float_complex, float_complex_matrix, xpow)
 DEFBINOP (ldiv, float_complex, float_complex_matrix)
 {
   const octave_float_complex& v1
-    = dynamic_cast<const octave_float_complex&> (a1);
+    = DYNORSTAT_CAST<const octave_float_complex&> (a1);
   const octave_float_complex_matrix& v2
-    = dynamic_cast<const octave_float_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
 
   return octave_value (v2.float_complex_array_value () / v1.float_complex_value ());
 }
@@ -101,9 +101,9 @@ DEFNDBINOP_FN (el_pow, float_complex, float_complex_matrix, float_complex,
 DEFBINOP (el_ldiv, float_complex, float_complex_matrix)
 {
   const octave_float_complex& v1
-    = dynamic_cast<const octave_float_complex&> (a1);
+    = DYNORSTAT_CAST<const octave_float_complex&> (a1);
   const octave_float_complex_matrix& v2
-    = dynamic_cast<const octave_float_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
 
   return octave_value (v2.float_complex_array_value () / v1.float_complex_value ());
 }
@@ -125,7 +125,7 @@ DEFNDCATOP_FN (fcs_cm, float_complex, complex_matrix, float_complex_array,
 DEFCONV (float_complex_matrix_conv, float_complex, float_complex_matrix)
 {
   const octave_float_complex& v
-    = dynamic_cast<const octave_float_complex&> (a);
+    = DYNORSTAT_CAST<const octave_float_complex&> (a);
 
   return new octave_float_complex_matrix (v.float_complex_matrix_value ());
 }

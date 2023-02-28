@@ -63,7 +63,7 @@ DEFNCUNOP_METHOD (invert, bool_matrix, invert)
 
 DEFUNOP (transpose, bool_matrix)
 {
-  const octave_bool_matrix& v = dynamic_cast<const octave_bool_matrix&> (a);
+  const octave_bool_matrix& v = DYNORSTAT_CAST<const octave_bool_matrix&> (a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");
@@ -115,7 +115,7 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
                               const octave_value_list& idx,
                               const octave_base_value& a2)
 {
-  octave_bool_matrix& v1 = dynamic_cast<octave_bool_matrix&> (a1);
+  octave_bool_matrix& v1 = DYNORSTAT_CAST<octave_bool_matrix&> (a1);
 
   // FIXME: perhaps add a warning for this conversion
   //        if the values are not all 0 or 1?

@@ -43,8 +43,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFBINOP (mul_dm_sm, diag_matrix, sparse_matrix)
 {
-  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
+  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -67,8 +67,8 @@ DEFBINOP (mul_dm_sm, diag_matrix, sparse_matrix)
 
 DEFBINOP (ldiv_dm_sm, diag_matrix, sparse_matrix)
 {
-  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
+  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
 
   MatrixType typ = v2.matrix_type ();
   return xleftdiv (v1.diag_matrix_value (), v2.sparse_matrix_value (), typ);
@@ -76,8 +76,8 @@ DEFBINOP (ldiv_dm_sm, diag_matrix, sparse_matrix)
 
 DEFBINOP (add_dm_sm, diag_matrix, sparse_matrix)
 {
-  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
+  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -93,8 +93,8 @@ DEFBINOP (add_dm_sm, diag_matrix, sparse_matrix)
 
 DEFBINOP (sub_dm_sm, diag_matrix, sparse_matrix)
 {
-  const octave_diag_matrix& v1 = dynamic_cast<const octave_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
+  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -112,8 +112,8 @@ DEFBINOP (sub_dm_sm, diag_matrix, sparse_matrix)
 
 DEFBINOP (mul_sm_dm, sparse_matrix, diag_matrix)
 {
-  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
+  const octave_sparse_matrix& v1 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
+  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
@@ -136,8 +136,8 @@ DEFBINOP (mul_sm_dm, sparse_matrix, diag_matrix)
 
 DEFBINOP (div_sm_dm, sparse_matrix, diag_matrix)
 {
-  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
+  const octave_sparse_matrix& v1 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
+  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_matrix_value () / v2.scalar_value ());
@@ -150,8 +150,8 @@ DEFBINOP (div_sm_dm, sparse_matrix, diag_matrix)
 
 DEFBINOP (add_sm_dm, sparse_matrix, diag_matrix)
 {
-  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
+  const octave_sparse_matrix& v1 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
+  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
@@ -167,8 +167,8 @@ DEFBINOP (add_sm_dm, sparse_matrix, diag_matrix)
 
 DEFBINOP (sub_sm_dm, sparse_matrix, diag_matrix)
 {
-  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_diag_matrix& v2 = dynamic_cast<const octave_diag_matrix&> (a2);
+  const octave_sparse_matrix& v1 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
+  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than

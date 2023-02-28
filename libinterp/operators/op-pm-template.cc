@@ -57,8 +57,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFBINOP (mul, LMATRIX, RMATRIX)
 {
-  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
-  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
+  const OCTAVE_LMATRIX& v1 = DYNORSTAT_CAST<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = DYNORSTAT_CAST<const OCTAVE_RMATRIX&> (a2);
 
   return v1.LMATRIX_VALUE () * v2.RMATRIX_VALUE ();
 }
@@ -66,16 +66,16 @@ DEFBINOP (mul, LMATRIX, RMATRIX)
 #if defined (LEFT)
 DEFBINOP (ldiv, LMATRIX, RMATRIX)
 {
-  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
-  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
+  const OCTAVE_LMATRIX& v1 = DYNORSTAT_CAST<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = DYNORSTAT_CAST<const OCTAVE_RMATRIX&> (a2);
 
   return v1.perm_matrix_value ().inverse () * v2.RMATRIX_VALUE ();
 }
 #else
 DEFBINOP (div, LMATRIX, RMATRIX)
 {
-  const OCTAVE_LMATRIX& v1 = dynamic_cast<const OCTAVE_LMATRIX&> (a1);
-  const OCTAVE_RMATRIX& v2 = dynamic_cast<const OCTAVE_RMATRIX&> (a2);
+  const OCTAVE_LMATRIX& v1 = DYNORSTAT_CAST<const OCTAVE_LMATRIX&> (a1);
+  const OCTAVE_RMATRIX& v2 = DYNORSTAT_CAST<const OCTAVE_RMATRIX&> (a2);
 
   return v1.LMATRIX_VALUE () * v2.perm_matrix_value ().inverse ();
 }

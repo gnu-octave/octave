@@ -44,7 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (not, float_complex)
 {
-  const octave_float_complex& v = dynamic_cast<const octave_float_complex&> (a);
+  const octave_float_complex& v = DYNORSTAT_CAST<const octave_float_complex&> (a);
   FloatComplex x = v.float_complex_value ();
   if (octave::math::isnan (x))
     octave::err_nan_to_logical_conversion ();
@@ -58,7 +58,7 @@ DEFUNOP_OP (transpose, float_complex, /* no-op */)
 
 DEFUNOP (hermitian, float_complex)
 {
-  const octave_float_complex& v = dynamic_cast<const octave_float_complex&> (a);
+  const octave_float_complex& v = DYNORSTAT_CAST<const octave_float_complex&> (a);
 
   return octave_value (conj (v.float_complex_value ()));
 }
@@ -74,8 +74,8 @@ DEFBINOP_OP (mul, float_complex, float_complex, *)
 
 DEFBINOP (div, float_complex, float_complex)
 {
-  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return octave_value (v1.float_complex_value () / v2.float_complex_value ());
 }
@@ -84,8 +84,8 @@ DEFBINOP_FN (pow, float_complex, float_complex, xpow)
 
 DEFBINOP (ldiv, float_complex, float_complex)
 {
-  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return octave_value (v2.float_complex_value () / v1.float_complex_value ());
 }
@@ -101,8 +101,8 @@ DEFBINOP_OP (el_mul, float_complex, float_complex, *)
 
 DEFBINOP (el_div, float_complex, float_complex)
 {
-  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return octave_value (v1.float_complex_value () / v2.float_complex_value ());
 }
@@ -111,16 +111,16 @@ DEFBINOP_FN (el_pow, float_complex, float_complex, xpow)
 
 DEFBINOP (el_ldiv, float_complex, float_complex)
 {
-  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return octave_value (v2.float_complex_value () / v1.float_complex_value ());
 }
 
 DEFBINOP (el_and, float_complex, float_complex)
 {
-  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return (v1.float_complex_value () != 0.0f
           && v2.float_complex_value () != 0.0f);
@@ -128,8 +128,8 @@ DEFBINOP (el_and, float_complex, float_complex)
 
 DEFBINOP (el_or, float_complex, float_complex)
 {
-  const octave_float_complex& v1 = dynamic_cast<const octave_float_complex&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return (v1.float_complex_value () != 0.0f
           || v2.float_complex_value () != 0.0f);

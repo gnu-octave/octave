@@ -46,7 +46,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (not, float_scalar)
 {
-  const octave_float_scalar& v = dynamic_cast<const octave_float_scalar&> (a);
+  const octave_float_scalar& v = DYNORSTAT_CAST<const octave_float_scalar&> (a);
   float x = v.float_value ();
   if (octave::math::isnan (x))
     octave::err_nan_to_logical_conversion ();
@@ -70,8 +70,8 @@ DEFBINOP_OP (mul, float_scalar, float_scalar, *)
 
 DEFBINOP (div, float_scalar, float_scalar)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
+  const octave_float_scalar& v1 = DYNORSTAT_CAST<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = DYNORSTAT_CAST<const octave_float_scalar&> (a2);
 
   return octave_value (v1.float_value () / v2.float_value ());
 }
@@ -80,8 +80,8 @@ DEFBINOP_FN (pow, float_scalar, float_scalar, xpow)
 
 DEFBINOP (ldiv, float_scalar, float_scalar)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
+  const octave_float_scalar& v1 = DYNORSTAT_CAST<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = DYNORSTAT_CAST<const octave_float_scalar&> (a2);
 
   return octave_value (v2.float_value () / v1.float_value ());
 }
@@ -97,8 +97,8 @@ DEFBINOP_OP (el_mul, float_scalar, float_scalar, *)
 
 DEFBINOP (el_div, float_scalar, float_scalar)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
+  const octave_float_scalar& v1 = DYNORSTAT_CAST<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = DYNORSTAT_CAST<const octave_float_scalar&> (a2);
 
   return octave_value (v1.float_value () / v2.float_value ());
 }
@@ -107,8 +107,8 @@ DEFBINOP_FN (el_pow, float_scalar, float_scalar, xpow)
 
 DEFBINOP (el_ldiv, float_scalar, float_scalar)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_scalar& v2 = dynamic_cast<const octave_float_scalar&> (a2);
+  const octave_float_scalar& v1 = DYNORSTAT_CAST<const octave_float_scalar&> (a1);
+  const octave_float_scalar& v2 = DYNORSTAT_CAST<const octave_float_scalar&> (a2);
 
   return octave_value (v2.float_value () / v1.float_value ());
 }

@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (transpose, cell)
 {
-  const octave_cell& v = dynamic_cast<const octave_cell&> (a);
+  const octave_cell& v = DYNORSTAT_CAST<const octave_cell&> (a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");

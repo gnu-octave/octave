@@ -36,8 +36,8 @@
   CONCAT2 (oct_binop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2)              \
   {                                                                     \
-    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1);  \
-    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2);  \
+    const octave_ ## t1& v1 = DYNORSTAT_CAST<const octave_ ## t1&> (a1);  \
+    const octave_ ## t2& v2 = DYNORSTAT_CAST<const octave_ ## t2&> (a2);  \
     octave_value retval = octave_value                                  \
       (v1.t1 ## _value () op v2.t2 ## _value ());                       \
     return retval;                                                      \
@@ -48,8 +48,8 @@
   CONCAT2 (oct_binop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2)              \
   {                                                                     \
-    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1);  \
-    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2);  \
+    const octave_ ## t1& v1 = DYNORSTAT_CAST<const octave_ ## t1&> (a1);  \
+    const octave_ ## t2& v2 = DYNORSTAT_CAST<const octave_ ## t2&> (a2);  \
     octave_value retval = octave_value                                  \
       (v1.e1 ## _value () op v2.e2 ## _value ());                       \
     return retval;                                                      \
@@ -60,8 +60,8 @@
   CONCAT2 (oct_binop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2)              \
   {                                                                     \
-    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1);  \
-    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2);  \
+    const octave_ ## t1& v1 = DYNORSTAT_CAST<const octave_ ## t1&> (a1);  \
+    const octave_ ## t2& v2 = DYNORSTAT_CAST<const octave_ ## t2&> (a2);  \
     octave_value retval = octave_value (f (v1.t1 ## _value (), v2.t2 ## _value ())); \
     return retval;                                                      \
   }
@@ -71,8 +71,8 @@
   CONCAT2 (oct_binop_, name) (const octave_base_value& a1,              \
                               const octave_base_value& a2)              \
   {                                                                     \
-    const octave_ ## t1& v1 = dynamic_cast<const octave_ ## t1&> (a1);  \
-    const octave_ ## t2& v2 = dynamic_cast<const octave_ ## t2&> (a2);  \
+    const octave_ ## t1& v1 = DYNORSTAT_CAST<const octave_ ## t1&> (a1);  \
+    const octave_ ## t2& v2 = DYNORSTAT_CAST<const octave_ ## t2&> (a2);  \
     octave_value retval = octave_value (f (v1.e1 ## _value (), v2.e2 ## _value ())); \
     return retval;                                                      \
   }
@@ -179,7 +179,7 @@
   DEFUNOP_OP (s_uplus, TYPE ## _scalar, /* no-op */)                    \
   DEFUNOP (s_uminus, TYPE ## _scalar)                                   \
   {                                                                     \
-    const octave_ ## TYPE ## _scalar & v = dynamic_cast<const octave_ ## TYPE ## _scalar &> (a); \
+    const octave_ ## TYPE ## _scalar & v = DYNORSTAT_CAST<const octave_ ## TYPE ## _scalar &> (a); \
     octave_value retval = octave_value (- v. TYPE ## _scalar_value ()); \
     return retval;                                                      \
   }                                                                     \
@@ -198,8 +198,8 @@
                                                                         \
   DEFBINOP (PFX ## _div, T1 ## scalar, T2 ## scalar)                    \
   {                                                                     \
-    const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
-    const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
+    const octave_ ## T1 ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## T1 ## scalar&> (a1); \
+    const octave_ ## T2 ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
     return octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
   }                                                                     \
@@ -208,8 +208,8 @@
                                                                         \
   DEFBINOP (PFX ## _ldiv, T1 ## scalar, T2 ## scalar)                   \
   {                                                                     \
-    const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
-    const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
+    const octave_ ## T1 ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## T1 ## scalar&> (a1); \
+    const octave_ ## T2 ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
     return octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
   }                                                                     \
@@ -218,8 +218,8 @@
                                                                         \
   DEFBINOP (PFX ## _el_div, T1 ## scalar, T2 ## scalar)                 \
   {                                                                     \
-    const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
-    const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
+    const octave_ ## T1 ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## T1 ## scalar&> (a1); \
+    const octave_ ## T2 ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
     return octave_value (v1.T1 ## scalar_value () / v2.T2 ## scalar_value ()); \
   }                                                                     \
@@ -228,8 +228,8 @@
                                                                         \
   DEFBINOP (PFX ## _el_ldiv, T1 ## scalar, T2 ## scalar)                \
   {                                                                     \
-    const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
-    const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
+    const octave_ ## T1 ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## T1 ## scalar&> (a1); \
+    const octave_ ## T2 ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
     return octave_value (v2.T2 ## scalar_value () / v1.T1 ## scalar_value ()); \
   }
@@ -237,16 +237,16 @@
 #define OCTAVE_SS_INT_BOOL_OPS(PFX, T1, T2, Z1, Z2)                     \
   DEFBINOP (PFX ## _el_and, T2, T2)                                     \
   {                                                                     \
-    const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
-    const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
+    const octave_ ## T1 ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## T1 ## scalar&> (a1); \
+    const octave_ ## T2 ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
     return v1.T1 ## scalar_value () != Z1 && v2.T2 ## scalar_value () != Z2; \
   }                                                                     \
                                                                         \
   DEFBINOP (PFX ## _el_or, T1, T2)                                      \
   {                                                                     \
-    const octave_ ## T1 ## scalar& v1 = dynamic_cast<const octave_ ## T1 ## scalar&> (a1); \
-    const octave_ ## T2 ## scalar& v2 = dynamic_cast<const octave_ ## T2 ## scalar&> (a2); \
+    const octave_ ## T1 ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## T1 ## scalar&> (a1); \
+    const octave_ ## T2 ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## T2 ## scalar&> (a2); \
                                                                         \
     return v1.T1 ## scalar_value () != Z1 || v2.T2 ## scalar_value () != Z2; \
   }
@@ -318,8 +318,8 @@
                                                                         \
   /* DEFBINOP (PFX ## _div, TS ## scalar, TM ## matrix) */              \
   /* { */                                                               \
-  /* const octave_ ## TS ## scalar& v1 = dynamic_cast<const octave_ ## TS ## scalar&> (a1); */ \
-  /* const octave_ ## TM ## matrix& v2 = dynamic_cast<const octave_ ## TM ## matrix&> (a2); */ \
+  /* const octave_ ## TS ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a1); */ \
+  /* const octave_ ## TM ## matrix& v2 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a2); */ \
   /* */                                                                 \
   /* Matrix m1 = v1.TM ## matrix_value (); */                           \
   /* Matrix m2 = v2.TM ## matrix_value (); */                           \
@@ -331,8 +331,8 @@
                                                                         \
   DEFBINOP (PFX ## _ldiv, TS ## scalar, TM ## matrix)                   \
   {                                                                     \
-   const octave_ ## TS ## scalar& v1 = dynamic_cast<const octave_ ## TS ## scalar&> (a1); \
-   const octave_ ## TM ## matrix& v2 = dynamic_cast<const octave_ ## TM ## matrix&> (a2); \
+   const octave_ ## TS ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a1); \
+   const octave_ ## TM ## matrix& v2 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a2); \
                                                                         \
    return octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
    }                                                                    \
@@ -340,8 +340,8 @@
   DEFINTNDBINOP_OP (PFX ## _el_mul, TS ## scalar, TM ## matrix, TS ## scalar, TM ## array, *, TI) \
   DEFBINOP (PFX ## _el_div, TS ## scalar, TM ## matrix)                 \
   {                                                                     \
-   const octave_ ## TS ## scalar& v1 = dynamic_cast<const octave_ ## TS ## scalar&> (a1); \
-   const octave_ ## TM ## matrix& v2 = dynamic_cast<const octave_ ## TM ## matrix&> (a2); \
+   const octave_ ## TS ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a1); \
+   const octave_ ## TM ## matrix& v2 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a2); \
                                                                         \
    octave_value retval = octave_value (v1.TS ## scalar_value () / v2.TM ## array_value ()); \
    return retval;                                                       \
@@ -351,8 +351,8 @@
                                                                         \
   DEFBINOP (PFX ## _el_ldiv, TS ## scalar, TM ## matrix)                \
   {                                                                     \
-   const octave_ ## TS ## scalar& v1 = dynamic_cast<const octave_ ## TS ## scalar&> (a1); \
-   const octave_ ## TM ## matrix& v2 = dynamic_cast<const octave_ ## TM ## matrix&> (a2); \
+   const octave_ ## TS ## scalar& v1 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a1); \
+   const octave_ ## TM ## matrix& v2 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a2); \
                                                                         \
    return octave_value (v2.TM ## array_value () / v1.TS ## scalar_value ()); \
    }
@@ -435,7 +435,7 @@
 #define OCTAVE_SM_CONV(TS, TM)                                          \
   DEFCONV (TS ## s_ ## TM ## m_conv, TM ## scalar, TM ## matrix)        \
   {                                                                     \
-    const octave_ ## TS ## scalar& v = dynamic_cast<const octave_ ## TS ## scalar&> (a); \
+    const octave_ ## TS ## scalar& v = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a); \
                                                                         \
     return new octave_ ## TM ## matrix (v.TM ## array_value ());        \
   }
@@ -470,8 +470,8 @@
                                                                         \
   DEFBINOP (PFX ## _div, TM ## matrix, TS ## scalar)                    \
   {                                                                     \
-    const octave_ ## TM ## matrix& v1 = dynamic_cast<const octave_ ## TM ## matrix&> (a1); \
-    const octave_ ## TS ## scalar& v2 = dynamic_cast<const octave_ ## TS ## scalar&> (a2); \
+    const octave_ ## TM ## matrix& v1 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a1); \
+    const octave_ ## TS ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a2); \
                                                                         \
     return octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
   }                                                                     \
@@ -480,8 +480,8 @@
                                                                         \
   /* DEFBINOP (PFX ## _ldiv, TM ## matrix, TS ## scalar) */             \
   /* { */                                                               \
-  /* const octave_ ## TM ## matrix& v1 = dynamic_cast<const octave_ ## TM ## matrix&> (a1); */ \
-  /* const octave_ ## TS ## scalar& v2 = dynamic_cast<const octave_ ## TS ## scalar&> (a2); */ \
+  /* const octave_ ## TM ## matrix& v1 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a1); */ \
+  /* const octave_ ## TS ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a2); */ \
   /* */                                                                 \
   /* Matrix m1 = v1.TM ## matrix_value (); */                           \
   /* Matrix m2 = v2.TM ## matrix_value (); */                           \
@@ -493,8 +493,8 @@
                                                                         \
   DEFBINOP (PFX ## _el_div, TM ## matrix, TS ## scalar)                 \
   {                                                                     \
-    const octave_ ## TM ## matrix& v1 = dynamic_cast<const octave_ ## TM ## matrix&> (a1); \
-    const octave_ ## TS ## scalar& v2 = dynamic_cast<const octave_ ## TS ## scalar&> (a2); \
+    const octave_ ## TM ## matrix& v1 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a1); \
+    const octave_ ## TS ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a2); \
                                                                         \
     return octave_value (v1.TM ## array_value () / v2.TS ## scalar_value ()); \
   }                                                                     \
@@ -503,8 +503,8 @@
                                                                         \
   DEFBINOP (PFX ## _el_ldiv, TM ## matrix, TS ## scalar)                \
   {                                                                     \
-    const octave_ ## TM ## matrix& v1 = dynamic_cast<const octave_ ## TM ## matrix&> (a1); \
-    const octave_ ## TS ## scalar& v2 = dynamic_cast<const octave_ ## TS ## scalar&> (a2); \
+    const octave_ ## TM ## matrix& v1 = DYNORSTAT_CAST<const octave_ ## TM ## matrix&> (a1); \
+    const octave_ ## TS ## scalar& v2 = DYNORSTAT_CAST<const octave_ ## TS ## scalar&> (a2); \
                                                                         \
     octave_value retval = v2.TS ## scalar_value () / v1.TM ## array_value (); \
     return retval;                                                      \
@@ -623,14 +623,14 @@
   DEFNDUNOP_OP (m_uplus, TYPE ## _matrix, TYPE ## _array, /* no-op */)  \
   DEFUNOP (m_uminus, TYPE ## _matrix)                                   \
   {                                                                     \
-    const octave_ ## TYPE ## _matrix & v = dynamic_cast<const octave_ ## TYPE ## _matrix &> (a); \
+    const octave_ ## TYPE ## _matrix & v = DYNORSTAT_CAST<const octave_ ## TYPE ## _matrix &> (a); \
     octave_value retval = octave_value (- v. TYPE ## _array_value ());  \
     return retval;                                                      \
   }                                                                     \
                                                                         \
   DEFUNOP (m_transpose, TYPE ## _matrix)                                \
   {                                                                     \
-    const octave_ ## TYPE ## _matrix& v = dynamic_cast<const octave_ ## TYPE ## _matrix&> (a); \
+    const octave_ ## TYPE ## _matrix& v = DYNORSTAT_CAST<const octave_ ## TYPE ## _matrix&> (a); \
                                                                         \
     if (v.ndims () > 2)                                                 \
       error ("transpose not defined for N-D objects");                  \
@@ -666,8 +666,8 @@
                                                                         \
   DEFBINOP (PFX ## _el_ldiv, T1 ## matrix, T2 ## matrix)                \
   {                                                                     \
-    const octave_ ## T1 ## matrix& v1 = dynamic_cast<const octave_ ## T1 ## matrix&> (a1); \
-    const octave_ ## T2 ## matrix& v2 = dynamic_cast<const octave_ ## T2 ## matrix&> (a2); \
+    const octave_ ## T1 ## matrix& v1 = DYNORSTAT_CAST<const octave_ ## T1 ## matrix&> (a1); \
+    const octave_ ## T2 ## matrix& v2 = DYNORSTAT_CAST<const octave_ ## T2 ## matrix&> (a2); \
                                                                         \
     octave_value retval = octave_value (quotient (v2.T2 ## array_value (), v1.T1 ## array_value ())); \
     return retval;                                                      \
@@ -807,7 +807,7 @@
 #define OCTAVE_MM_CONV(T1, T2)                                          \
   DEFCONV (T1 ## m_ ## T2 ## m_conv, T1 ## matrix, T2 ## matrix)        \
   {                                                                     \
-    const octave_ ## T1 ## matrix& v = dynamic_cast<const octave_ ## T1 ## matrix&> (a); \
+    const octave_ ## T1 ## matrix& v = DYNORSTAT_CAST<const octave_ ## T1 ## matrix&> (a); \
                                                                         \
     return new octave_ ## T2 ## matrix (v.T2 ## array_value ());        \
   }

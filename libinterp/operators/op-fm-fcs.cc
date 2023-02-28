@@ -55,8 +55,8 @@ DEFNDBINOP_OP (mul, float_matrix, float_complex, float_array, float_complex, *)
 
 DEFBINOP (div, float_matrix, float_complex)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return octave_value (v1.float_array_value () / v2.float_complex_value ());
 }
@@ -65,8 +65,8 @@ DEFBINOP_FN (pow, float_matrix, float_complex, xpow)
 
 DEFBINOP (ldiv, float_matrix, float_complex)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   FloatMatrix m1 = v1.float_matrix_value ();
   FloatComplexMatrix m2 = v2.float_complex_matrix_value ();
@@ -96,8 +96,8 @@ DEFNDBINOP_OP (el_mul, float_matrix, float_complex, float_array,
 
 DEFBINOP (el_div, float_matrix, float_complex)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return octave_value (v1.float_array_value () / v2.float_complex_value ());
 }
@@ -107,8 +107,8 @@ DEFNDBINOP_FN (el_pow, float_matrix, float_complex, float_array,
 
 DEFBINOP (el_ldiv, float_matrix, flaot_complex)
 {
-  const octave_float_matrix& v1 = dynamic_cast<const octave_float_matrix&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
+  const octave_float_complex& v2 = DYNORSTAT_CAST<const octave_float_complex&> (a2);
 
   return elem_xdiv (v2.float_complex_value (), v1.float_array_value ());
 }

@@ -51,9 +51,9 @@ DEFBINOP_OP (mul, sparse_complex_matrix, sparse_matrix, *)
 DEFBINOP (div, sparse_complex_matrix, sparse_matrix)
 {
   const octave_sparse_complex_matrix& v1
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
   const octave_sparse_matrix& v2
-    = dynamic_cast<const octave_sparse_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_complex_matrix_value () / v2.scalar_value ());
@@ -76,9 +76,9 @@ DEFBINOPX (pow, sparse_complex_matrix, sparse_matrix)
 DEFBINOP (ldiv, sparse_complex_matrix, sparse_matrix)
 {
   const octave_sparse_complex_matrix& v1
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
   const octave_sparse_matrix& v2
-    = dynamic_cast<const octave_sparse_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     return octave_value (v2.sparse_matrix_value () / v1.complex_value ());
@@ -108,9 +108,9 @@ DEFBINOP_FN (el_pow, sparse_complex_matrix, sparse_matrix, elem_xpow)
 DEFBINOP (el_ldiv, sparse_complex_matrix, sparse_matrix)
 {
   const octave_sparse_complex_matrix& v1
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a1);
+    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
   const octave_sparse_matrix& v2
-    = dynamic_cast<const octave_sparse_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
 
   return octave_value (quotient (v2.sparse_matrix_value (),
                                  v1.sparse_complex_matrix_value ()));

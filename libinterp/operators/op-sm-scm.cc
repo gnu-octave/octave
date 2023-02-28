@@ -51,9 +51,9 @@ DEFBINOP_OP (mul, sparse_matrix, sparse_complex_matrix, *)
 DEFBINOP (div, sparse_matrix, sparse_complex_matrix)
 {
   const octave_sparse_matrix& v1
-    = dynamic_cast<const octave_sparse_matrix&> (a1);
+    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
   const octave_sparse_complex_matrix& v2
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_matrix_value () / v2.complex_value ());
@@ -76,9 +76,9 @@ DEFBINOPX (pow, sparse_matrix, sparse_complex_matrix)
 DEFBINOP (ldiv, sparse_matrix, sparse_complex_matrix)
 {
   const octave_sparse_matrix& v1
-    = dynamic_cast<const octave_sparse_matrix&> (a1);
+    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
   const octave_sparse_complex_matrix& v2
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     return octave_value (v2.sparse_complex_matrix_value () / v1.scalar_value ());
@@ -109,9 +109,9 @@ DEFBINOP_FN (el_pow, sparse_matrix, sparse_complex_matrix, elem_xpow)
 DEFBINOP (el_ldiv, sparse_matrix, sparse_complex_matrix)
 {
   const octave_sparse_matrix& v1
-    = dynamic_cast<const octave_sparse_matrix&> (a1);
+    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
   const octave_sparse_complex_matrix& v2
-    = dynamic_cast<const octave_sparse_complex_matrix&> (a2);
+    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
 
   return octave_value (quotient (v2.sparse_complex_matrix_value (),
                                  v1.sparse_matrix_value ()));
@@ -125,7 +125,7 @@ DEFCATOP_FN (sm_scm, sparse_matrix, sparse_complex_matrix, concat)
 DEFCONV (sparse_complex_matrix_conv, sparse_matrix, sparse_complex_matrix)
 {
   const octave_sparse_matrix& v
-    = dynamic_cast<const octave_sparse_matrix&> (a);
+    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a);
   return new octave_sparse_complex_matrix (v.sparse_complex_matrix_value ());
 }
 

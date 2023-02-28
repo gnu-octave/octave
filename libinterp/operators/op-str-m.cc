@@ -39,8 +39,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFASSIGNOP (assign, char_matrix_str, octave_matrix)
 {
-  octave_char_matrix_str& v1 = DYNORSTAT_CAST<octave_char_matrix_str&> (a1);
-  const octave_matrix& v2 = DYNORSTAT_CAST<const octave_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (octave_char_matrix_str&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v2, a2);
 
   octave_value tmp
     = v2.convert_to_str_internal (false, false,

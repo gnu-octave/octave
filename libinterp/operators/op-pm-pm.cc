@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (transpose, perm_matrix)
 {
-  const octave_perm_matrix& v = DYNORSTAT_CAST<const octave_perm_matrix&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_perm_matrix&, v, a);
   return octave_value (v.perm_matrix_value ().transpose ());
 }
 
@@ -49,31 +49,31 @@ DEFBINOP_OP (mul, perm_matrix, perm_matrix, *)
 
 DEFBINOP (div, perm_matrix, perm_matrix)
 {
-  const octave_perm_matrix& v1 = DYNORSTAT_CAST<const octave_perm_matrix&> (a1);
-  const octave_perm_matrix& v2 = DYNORSTAT_CAST<const octave_perm_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_perm_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_perm_matrix&, v2, a2);
 
   return (v1.perm_matrix_value () * v2.perm_matrix_value ().inverse ());
 }
 
 DEFBINOP (ldiv, perm_matrix, perm_matrix)
 {
-  const octave_perm_matrix& v1 = DYNORSTAT_CAST<const octave_perm_matrix&> (a1);
-  const octave_perm_matrix& v2 = DYNORSTAT_CAST<const octave_perm_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_perm_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_perm_matrix&, v2, a2);
 
   return (v1.perm_matrix_value ().inverse () * v2.perm_matrix_value ());
 }
 
 DEFBINOP (pow, perm_matrix, scalar)
 {
-  const octave_perm_matrix& v1 = DYNORSTAT_CAST<const octave_perm_matrix&> (a1);
-  const octave_scalar& v2 = DYNORSTAT_CAST<const octave_scalar&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_perm_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v2, a2);
 
   return xpow (v1.perm_matrix_value (), v2.scalar_value ());
 }
 
 CONVDECL (perm_matrix_to_matrix)
 {
-  const octave_perm_matrix& v = DYNORSTAT_CAST<const octave_perm_matrix&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_perm_matrix&, v, a);
 
   return new octave_matrix (v.matrix_value ());
 }

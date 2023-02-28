@@ -93,8 +93,7 @@ oct_unop_default (const octave_value& a, const std::string& opname)
         }
       else
         {
-          const octave_class& v
-            = DYNORSTAT_CAST<const octave_class&> (a.get_rep ());
+          OCTAVE_CAST_BASE_VALUE (const octave_class&, v, a.get_rep ());
 
           return octave_value (v.map_value ().transpose (),
                                v.class_name (),

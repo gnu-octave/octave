@@ -47,7 +47,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 static octave_value
 oct_unop_unsigned_uplus (const octave_base_value& a)
 {
-  const octave_magic_uint& v = DYNORSTAT_CAST<const octave_magic_uint&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_magic_uint&, v, a);
   // no-op.
   // FIXME: but can we do this just by incrementing the reference count?
   return octave_value (v.clone ());
@@ -56,7 +56,7 @@ oct_unop_unsigned_uplus (const octave_base_value& a)
 static octave_value
 oct_unop_unsigned_uminus (const octave_base_value& a)
 {
-  const octave_magic_uint& v = DYNORSTAT_CAST<const octave_magic_uint&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_magic_uint&, v, a);
 
   // We are storing a uint64 value, so some fakery is needed here.
   // Is there a better way?
@@ -96,7 +96,7 @@ oct_unop_unsigned_uminus (const octave_base_value& a)
 static octave_value
 oct_unop_signed_uplus (const octave_base_value& a)
 {
-  const octave_magic_int& v = DYNORSTAT_CAST<const octave_magic_int&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_magic_int&, v, a);
   // no-op.
   // FIXME: but can we do this just by incrementing the reference count?
   return octave_value (v.clone ());
@@ -105,7 +105,7 @@ oct_unop_signed_uplus (const octave_base_value& a)
 static octave_value
 oct_unop_signed_uminus (const octave_base_value& a)
 {
-  const octave_magic_int& v = DYNORSTAT_CAST<const octave_magic_int&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_magic_int&, v, a);
 
   // FIXME: Maybe there should also be octave_magic_int::as_TYPE_value
   // functions?

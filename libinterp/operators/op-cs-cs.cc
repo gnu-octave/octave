@@ -46,7 +46,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (not, complex)
 {
-  const octave_complex& v = DYNORSTAT_CAST<const octave_complex&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v, a);
   Complex x = v.complex_value ();
   if (octave::math::isnan (x))
     octave::err_nan_to_logical_conversion ();
@@ -60,7 +60,7 @@ DEFUNOP_OP (transpose, complex, /* no-op */)
 
 DEFUNOP (hermitian, complex)
 {
-  const octave_complex& v = DYNORSTAT_CAST<const octave_complex&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v, a);
 
   return octave_value (conj (v.complex_value ()));
 }
@@ -76,8 +76,8 @@ DEFBINOP_OP (mul, complex, complex, *)
 
 DEFBINOP (div, complex, complex)
 {
-  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.complex_value () / v2.complex_value ());
 }
@@ -86,8 +86,8 @@ DEFBINOP_FN (pow, complex, complex, xpow)
 
 DEFBINOP (ldiv, complex, complex)
 {
-  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v2.complex_value () / v1.complex_value ());
 }
@@ -103,8 +103,8 @@ DEFBINOP_OP (el_mul, complex, complex, *)
 
 DEFBINOP (el_div, complex, complex)
 {
-  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.complex_value () / v2.complex_value ());
 }
@@ -113,24 +113,24 @@ DEFBINOP_FN (el_pow, complex, complex, xpow)
 
 DEFBINOP (el_ldiv, complex, complex)
 {
-  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v2.complex_value () / v1.complex_value ());
 }
 
 DEFBINOP (el_and, complex, complex)
 {
-  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return v1.complex_value () != 0.0 && v2.complex_value () != 0.0;
 }
 
 DEFBINOP (el_or, complex, complex)
 {
-  const octave_complex& v1 = DYNORSTAT_CAST<const octave_complex&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return v1.complex_value () != 0.0 || v2.complex_value () != 0.0;
 }

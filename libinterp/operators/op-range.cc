@@ -43,7 +43,7 @@ DEFUNOP_OP (uplus, range, /* no-op */)
 
 CONVDECL (range_to_matrix)
 {
-  const octave_range& v = DYNORSTAT_CAST<const octave_range&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_range&, v, a);
 
   return new octave_matrix (v.array_value ());
 }

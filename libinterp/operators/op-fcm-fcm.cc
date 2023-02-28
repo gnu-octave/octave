@@ -48,8 +48,7 @@ DEFNDUNOP_OP (uminus, float_complex_matrix, float_complex_array, -)
 
 DEFUNOP (transpose, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v, a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");
@@ -59,8 +58,7 @@ DEFUNOP (transpose, float_complex_matrix)
 
 DEFUNOP (hermitian, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v, a);
 
   if (v.ndims () > 2)
     error ("complex-conjugate transpose not defined for N-D objects");
@@ -83,10 +81,8 @@ DEFBINOP_OP (mul, float_complex_matrix, float_complex_matrix, *)
 
 DEFBINOP (div, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   MatrixType typ = v2.matrix_type ();
 
   FloatComplexMatrix ret = xdiv (v1.float_complex_matrix_value (),
@@ -103,10 +99,8 @@ DEFBINOPX (pow, float_complex_matrix, float_complex_matrix)
 
 DEFBINOP (ldiv, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   MatrixType typ = v1.matrix_type ();
 
   FloatComplexMatrix ret = xleftdiv (v1.float_complex_matrix_value (),
@@ -118,10 +112,8 @@ DEFBINOP (ldiv, float_complex_matrix, float_complex_matrix)
 
 DEFBINOP (trans_mul, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   return octave_value(xgemm (v1.float_complex_matrix_value (),
                              v2.float_complex_matrix_value (),
                              blas_trans, blas_no_trans));
@@ -129,10 +121,8 @@ DEFBINOP (trans_mul, float_complex_matrix, float_complex_matrix)
 
 DEFBINOP (mul_trans, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   return octave_value(xgemm (v1.float_complex_matrix_value (),
                              v2.float_complex_matrix_value (),
                              blas_no_trans, blas_trans));
@@ -140,10 +130,8 @@ DEFBINOP (mul_trans, float_complex_matrix, float_complex_matrix)
 
 DEFBINOP (herm_mul, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   return octave_value(xgemm (v1.float_complex_matrix_value (),
                              v2.float_complex_matrix_value (),
                              blas_conj_trans, blas_no_trans));
@@ -151,10 +139,8 @@ DEFBINOP (herm_mul, float_complex_matrix, float_complex_matrix)
 
 DEFBINOP (mul_herm, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   return octave_value(xgemm (v1.float_complex_matrix_value (),
                              v2.float_complex_matrix_value (),
                              blas_no_trans, blas_conj_trans));
@@ -162,10 +148,8 @@ DEFBINOP (mul_herm, float_complex_matrix, float_complex_matrix)
 
 DEFBINOP (trans_ldiv, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   MatrixType typ = v1.matrix_type ();
 
   FloatComplexMatrix ret = xleftdiv (v1.float_complex_matrix_value (),
@@ -178,10 +162,8 @@ DEFBINOP (trans_ldiv, float_complex_matrix, float_complex_matrix)
 
 DEFBINOP (herm_ldiv, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
   MatrixType typ = v1.matrix_type ();
 
   FloatComplexMatrix ret = xleftdiv (v1.float_complex_matrix_value (),
@@ -214,10 +196,8 @@ DEFNDBINOP_FN (el_pow, float_complex_matrix, float_complex_matrix,
 
 DEFBINOP (el_ldiv, float_complex_matrix, float_complex_matrix)
 {
-  const octave_float_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a1);
-  const octave_float_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_float_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex_matrix&, v2, a2);
 
   return octave_value (quotient (v2.float_complex_array_value (),
                                  v1.float_complex_array_value ()));

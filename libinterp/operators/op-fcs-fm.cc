@@ -53,8 +53,8 @@ DEFNDBINOP_OP (mul, float_complex, float_matrix, float_complex, float_array, *)
 
 DEFBINOP (div, float_complex, float_matrix)
 {
-  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
 
   FloatComplexMatrix m1 = v1.float_complex_matrix_value ();
   FloatMatrix m2 = v2.float_matrix_value ();
@@ -70,8 +70,8 @@ DEFBINOP_FN (pow, float_complex, float_matrix, xpow)
 
 DEFBINOP (ldiv, float_complex, float_matrix)
 {
-  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
 
   return octave_value (v2.float_array_value () / v1.float_complex_value ());
 }
@@ -98,8 +98,8 @@ DEFNDBINOP_FN (el_pow, float_complex, float_matrix, float_complex,
 
 DEFBINOP (el_ldiv, float_complex, float_matrix)
 {
-  const octave_float_complex& v1 = DYNORSTAT_CAST<const octave_float_complex&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
 
   return octave_value (v2.float_array_value () / v1.float_complex_value ());
 }

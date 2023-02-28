@@ -48,8 +48,8 @@ DEFNDBINOP_OP (mul, scalar, matrix, scalar, array, *)
 
 DEFBINOP (div, scalar, matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_matrix& v2 = DYNORSTAT_CAST<const octave_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v2, a2);
 
   Matrix m1 = v1.matrix_value ();
   Matrix m2 = v2.matrix_value ();
@@ -65,8 +65,8 @@ DEFBINOP_FN (pow, scalar, matrix, xpow)
 
 DEFBINOP (ldiv, scalar, matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_matrix& v2 = DYNORSTAT_CAST<const octave_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v2, a2);
 
   return octave_value (v2.array_value () / v1.double_value ());
 }
@@ -84,8 +84,8 @@ DEFNDBINOP_FN (el_pow, scalar, matrix, scalar, array, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_matrix& v2 = DYNORSTAT_CAST<const octave_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v2, a2);
 
   return octave_value (v2.array_value () / v1.double_value ());
 }
@@ -97,7 +97,7 @@ DEFNDCATOP_FN (s_m, scalar, matrix, array, array, concat)
 
 DEFCONV (matrix_conv, scalar, matrix)
 {
-  const octave_scalar& v = DYNORSTAT_CAST<const octave_scalar&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v, a);
 
   return new octave_matrix (v.matrix_value ());
 }

@@ -48,7 +48,7 @@ DEFNDUNOP_OP (uminus, float_matrix, float_array, -)
 
 DEFUNOP (transpose, float_matrix)
 {
-  const octave_float_matrix& v = DYNORSTAT_CAST<const octave_float_matrix&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v, a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");
@@ -69,8 +69,8 @@ DEFBINOP_OP (mul, float_matrix, float_matrix, *)
 
 DEFBINOP (div, float_matrix, float_matrix)
 {
-  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
   MatrixType typ = v2.matrix_type ();
 
   FloatMatrix ret = xdiv (v1.float_matrix_value (),
@@ -87,8 +87,8 @@ DEFBINOPX (pow, float_matrix, float_matrix)
 
 DEFBINOP (ldiv, float_matrix, float_matrix)
 {
-  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
   MatrixType typ = v1.matrix_type ();
 
   FloatMatrix ret = xleftdiv (v1.float_matrix_value (),
@@ -100,8 +100,8 @@ DEFBINOP (ldiv, float_matrix, float_matrix)
 
 DEFBINOP (trans_mul, float_matrix, float_matrix)
 {
-  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
   return octave_value(xgemm (v1.float_matrix_value (),
                              v2.float_matrix_value (),
                              blas_trans, blas_no_trans));
@@ -109,8 +109,8 @@ DEFBINOP (trans_mul, float_matrix, float_matrix)
 
 DEFBINOP (mul_trans, float_matrix, float_matrix)
 {
-  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
   return octave_value(xgemm (v1.float_matrix_value (),
                              v2.float_matrix_value (),
                              blas_no_trans, blas_trans));
@@ -118,8 +118,8 @@ DEFBINOP (mul_trans, float_matrix, float_matrix)
 
 DEFBINOP (trans_ldiv, float_matrix, float_matrix)
 {
-  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
   MatrixType typ = v1.matrix_type ();
 
   FloatMatrix ret = xleftdiv (v1.float_matrix_value (),
@@ -151,8 +151,8 @@ DEFNDBINOP_FN (el_pow, float_matrix, float_matrix, float_array,
 
 DEFBINOP (el_ldiv, float_matrix, float_matrix)
 {
-  const octave_float_matrix& v1 = DYNORSTAT_CAST<const octave_float_matrix&> (a1);
-  const octave_float_matrix& v2 = DYNORSTAT_CAST<const octave_float_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_matrix&, v2, a2);
 
   return octave_value (quotient (v2.float_array_value (),
                                  v1.float_array_value ()));

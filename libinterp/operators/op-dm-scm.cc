@@ -54,9 +54,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFBINOP (mul_dm_scm, diag_matrix, sparse_complex_matrix)
 {
-  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -80,10 +79,8 @@ DEFBINOP (mul_dm_scm, diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (mul_cdm_sm, complex_diag_matrix, sparse_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -107,10 +104,8 @@ DEFBINOP (mul_cdm_sm, complex_diag_matrix, sparse_matrix)
 
 DEFBINOP (mul_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -134,9 +129,8 @@ DEFBINOP (mul_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (ldiv_dm_scm, diag_matrix, sparse_complex_matrix)
 {
-  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   MatrixType typ = v2.matrix_type ();
   return xleftdiv (v1.diag_matrix_value (), v2.sparse_complex_matrix_value (),
@@ -145,10 +139,8 @@ DEFBINOP (ldiv_dm_scm, diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (ldiv_cdm_sm, complex_diag_matrix, sparse_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   MatrixType typ = v2.matrix_type ();
   return xleftdiv (v1.complex_diag_matrix_value (), v2.sparse_matrix_value (),
@@ -157,10 +149,8 @@ DEFBINOP (ldiv_cdm_sm, complex_diag_matrix, sparse_matrix)
 
 DEFBINOP (ldiv_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   MatrixType typ = v2.matrix_type ();
   return xleftdiv (v1.complex_diag_matrix_value (),
@@ -170,9 +160,8 @@ DEFBINOP (ldiv_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (add_dm_scm, diag_matrix, sparse_complex_matrix)
 {
-  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -188,10 +177,8 @@ DEFBINOP (add_dm_scm, diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (add_cdm_sm, complex_diag_matrix, sparse_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -207,10 +194,8 @@ DEFBINOP (add_cdm_sm, complex_diag_matrix, sparse_matrix)
 
 DEFBINOP (add_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -226,9 +211,8 @@ DEFBINOP (add_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (sub_dm_scm, diag_matrix, sparse_complex_matrix)
 {
-  const octave_diag_matrix& v1 = DYNORSTAT_CAST<const octave_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -244,10 +228,8 @@ DEFBINOP (sub_dm_scm, diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (sub_cdm_sm, complex_diag_matrix, sparse_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -263,10 +245,8 @@ DEFBINOP (sub_cdm_sm, complex_diag_matrix, sparse_matrix)
 
 DEFBINOP (sub_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 {
-  const octave_complex_diag_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a1);
-  const octave_sparse_complex_matrix& v2
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -284,9 +264,8 @@ DEFBINOP (sub_cdm_scm, complex_diag_matrix, sparse_complex_matrix)
 
 DEFBINOP (mul_scm_dm, sparse_complex_matrix, diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v2, a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
@@ -310,10 +289,8 @@ DEFBINOP (mul_scm_dm, sparse_complex_matrix, diag_matrix)
 
 DEFBINOP (mul_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
-  const octave_sparse_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
@@ -337,10 +314,8 @@ DEFBINOP (mul_sm_cdm, sparse_matrix, complex_diag_matrix)
 
 DEFBINOP (mul_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     // If v1 is a scalar in disguise, return a diagonal matrix rather than
@@ -371,9 +346,8 @@ DEFBINOP (mul_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 
 DEFBINOP (div_scm_dm, sparse_complex_matrix, diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_complex_matrix_value () / v2.scalar_value ());
@@ -387,10 +361,8 @@ DEFBINOP (div_scm_dm, sparse_complex_matrix, diag_matrix)
 
 DEFBINOP (div_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
-  const octave_sparse_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_matrix_value () / v2.complex_value ());
@@ -404,10 +376,8 @@ DEFBINOP (div_sm_cdm, sparse_matrix, complex_diag_matrix)
 
 DEFBINOP (div_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_complex_matrix_value () / v2.complex_value ());
@@ -421,10 +391,8 @@ DEFBINOP (div_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 
 DEFBINOP (add_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
-  const octave_sparse_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -440,9 +408,8 @@ DEFBINOP (add_sm_cdm, sparse_matrix, complex_diag_matrix)
 
 DEFBINOP (add_scm_dm, sparse_complex_matrix, diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -458,10 +425,8 @@ DEFBINOP (add_scm_dm, sparse_complex_matrix, diag_matrix)
 
 DEFBINOP (add_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -477,10 +442,8 @@ DEFBINOP (add_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 
 DEFBINOP (sub_sm_cdm, sparse_matrix, complex_diag_matrix)
 {
-  const octave_sparse_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -496,9 +459,8 @@ DEFBINOP (sub_sm_cdm, sparse_matrix, complex_diag_matrix)
 
 DEFBINOP (sub_scm_dm, sparse_complex_matrix, diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_diag_matrix& v2 = DYNORSTAT_CAST<const octave_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than
@@ -514,10 +476,8 @@ DEFBINOP (sub_scm_dm, sparse_complex_matrix, diag_matrix)
 
 DEFBINOP (sub_scm_cdm, sparse_complex_matrix, complex_diag_matrix)
 {
-  const octave_sparse_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_sparse_complex_matrix&> (a1);
-  const octave_complex_diag_matrix& v2
-    = DYNORSTAT_CAST<const octave_complex_diag_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_diag_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     // If v2 is a scalar in disguise, return a diagonal matrix rather than

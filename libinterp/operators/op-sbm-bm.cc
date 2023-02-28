@@ -63,8 +63,8 @@ DEFBINOP_FN (el_or,  sparse_bool_matrix, bool_matrix, mx_el_or)
 
 DEFCATOP (sbm_bm, sparse_bool_matrix, bool_matrix)
 {
-  const octave_sparse_bool_matrix& v1 = DYNORSTAT_CAST<const octave_sparse_bool_matrix&> (a1);
-  const octave_bool_matrix& v2 = DYNORSTAT_CAST<const octave_bool_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_bool_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_bool_matrix&, v2, a2);
 
   SparseBoolMatrix tmp (v2.bool_matrix_value ());
   return octave_value (v1.sparse_bool_matrix_value (). concat (tmp, ra_idx));
@@ -72,8 +72,8 @@ DEFCATOP (sbm_bm, sparse_bool_matrix, bool_matrix)
 
 DEFCATOP (sbm_m, sparse_bool_matrix, matrix)
 {
-  const octave_sparse_bool_matrix& v1 = DYNORSTAT_CAST<const octave_sparse_bool_matrix&> (a1);
-  const octave_matrix& v2 = DYNORSTAT_CAST<const octave_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_bool_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v2, a2);
 
   SparseMatrix tmp (v2.matrix_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
@@ -81,8 +81,8 @@ DEFCATOP (sbm_m, sparse_bool_matrix, matrix)
 
 DEFCATOP (sm_bm, sparse_matrix, bool_matrix)
 {
-  const octave_sparse_matrix& v1 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a1);
-  const octave_bool_matrix& v2 = DYNORSTAT_CAST<const octave_bool_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_bool_matrix&, v2, a2);
 
   SparseMatrix tmp (v2.matrix_value ());
   return octave_value (v1.sparse_matrix_value (). concat (tmp, ra_idx));
@@ -90,8 +90,8 @@ DEFCATOP (sm_bm, sparse_matrix, bool_matrix)
 
 DEFASSIGNOP (assign, sparse_bool_matrix, bool_matrix)
 {
-  octave_sparse_bool_matrix& v1 = DYNORSTAT_CAST<octave_sparse_bool_matrix&> (a1);
-  const octave_bool_matrix& v2 = DYNORSTAT_CAST<const octave_bool_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (octave_sparse_bool_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_bool_matrix&, v2, a2);
 
   v1.assign (idx, SparseBoolMatrix (v2.bool_matrix_value ()));
   return octave_value ();
@@ -104,7 +104,7 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
                               const octave_value_list& idx,
                               const octave_base_value& a2)
 {
-  octave_sparse_bool_matrix& v1 = DYNORSTAT_CAST<octave_sparse_bool_matrix&> (a1);
+  OCTAVE_CAST_BASE_VALUE (octave_sparse_bool_matrix&, v1, a1);
 
   // FIXME: perhaps add a warning for this conversion if the values
   // are not all 0 or 1?

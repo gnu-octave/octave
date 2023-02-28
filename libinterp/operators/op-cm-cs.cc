@@ -47,9 +47,8 @@ DEFNDBINOP_OP (mul, complex_matrix, complex, complex_array, complex, *)
 
 DEFBINOP (div, complex_matrix, complex)
 {
-  const octave_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_matrix&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.complex_array_value () / v2.complex_value ());
 }
@@ -58,9 +57,8 @@ DEFBINOP_FN (pow, complex_matrix, complex, xpow)
 
 DEFBINOP (ldiv, complex_matrix, complex)
 {
-  const octave_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_matrix&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   ComplexMatrix m1 = v1.complex_matrix_value ();
   ComplexMatrix m2 = v2.complex_matrix_value ();
@@ -88,9 +86,8 @@ DEFNDBINOP_OP (el_mul, complex_matrix, complex, complex_array, complex, *)
 
 DEFBINOP (el_div, complex_matrix, complex)
 {
-  const octave_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_matrix&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.complex_array_value () / v2.complex_value ());
 }
@@ -100,9 +97,8 @@ DEFNDBINOP_FN (el_pow, complex_matrix, complex, complex_array, complex,
 
 DEFBINOP (el_ldiv, complex_matrix, complex)
 {
-  const octave_complex_matrix& v1
-    = DYNORSTAT_CAST<const octave_complex_matrix&> (a1);
-  const octave_complex& v2 = DYNORSTAT_CAST<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return elem_xdiv (v2.complex_value (), v1.complex_array_value ());
 }

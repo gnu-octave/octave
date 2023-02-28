@@ -48,8 +48,8 @@ DEFBINOP_OP (mul, scalar, sparse_matrix, *)
 
 DEFBINOP (div, scalar, sparse_matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (SparseMatrix (1, 1, v1.scalar_value () / v2.scalar_value ()));
@@ -66,15 +66,15 @@ DEFBINOP (div, scalar, sparse_matrix)
 
 DEFBINOP (pow, scalar, sparse_matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
   return xpow (v1.scalar_value (), v2.matrix_value ());
 }
 
 DEFBINOP (ldiv, scalar, sparse_matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   return octave_value (v2.sparse_matrix_value () / v1.double_value ());
 }
@@ -92,8 +92,8 @@ DEFBINOP_FN (el_pow, scalar, sparse_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, scalar, sparse_matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   return octave_value (v2.sparse_matrix_value () / v1.double_value ());
 }
@@ -103,15 +103,15 @@ DEFBINOP_FN (el_or,  scalar, sparse_matrix, mx_el_or)
 
 DEFCATOP (s_sm, scalar, sparse_matrix)
 {
-  const octave_scalar& v1 = DYNORSTAT_CAST<const octave_scalar&> (a1);
-  const octave_sparse_matrix& v2 = DYNORSTAT_CAST<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
   return octave_value (tmp.concat (v2.sparse_matrix_value (), ra_idx));
 }
 
 DEFCONV (sparse_matrix_conv, scalar, sparse_matrix)
 {
-  const octave_scalar& v = DYNORSTAT_CAST<const octave_scalar&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v, a);
 
   return new octave_sparse_matrix (SparseMatrix (v.matrix_value ()));
 }

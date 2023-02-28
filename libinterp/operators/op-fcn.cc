@@ -39,16 +39,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFBINOP (eq, fcn_handle, fcn_handle)
 {
-  const octave_fcn_handle& v1 = DYNORSTAT_CAST<const octave_fcn_handle&> (a1);
-  const octave_fcn_handle& v2 = DYNORSTAT_CAST<const octave_fcn_handle&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_fcn_handle&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_fcn_handle&, v2, a2);
 
   return is_equal_to (v1, v2);
 }
 
 DEFBINOP (ne, fcn_handle, fcn_handle)
 {
-  const octave_fcn_handle& v1 = DYNORSTAT_CAST<const octave_fcn_handle&> (a1);
-  const octave_fcn_handle& v2 = DYNORSTAT_CAST<const octave_fcn_handle&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_fcn_handle&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_fcn_handle&, v2, a2);
 
   return ! is_equal_to (v1, v2);
 }

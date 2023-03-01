@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1995-2023 The Octave Project Developers
+## Copyright (C) 1996-2023 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -27,214 +27,542 @@
 ## @deftypefn  {} {@var{v} =} var (@var{x})
 ## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w})
 ## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w}, @var{dim})
+## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w}, @var{vecdim})
 ## @deftypefnx {} {@var{v} =} var (@var{x}, @var{w}, @qcode{"ALL"})
+## @deftypefnx {} {@var{v} =} var (@dots{}, @var{nanflag})
 ## @deftypefnx {} {[@var{v}, @var{m}] =} var (@dots{})
 ## Compute the variance of the elements of the vector @var{x}.
 ##
 ## The variance is defined as
 ## @tex
-## $$
-## {\rm var} (x) = \sigma^2 = {\sum_{i=1}^N (x_i - \bar{x})^2 \over N - 1}
-## $$
+## $$ {\rm var}(x) = {1\over N-1} \sum_{i=1}^N (x_i - \bar x )^2 $$
 ## where $\bar{x}$ is the mean value of @var{x} and $N$ is the number of
 ## elements of @var{x}.
-##
 ## @end tex
 ## @ifnottex
 ##
 ## @example
 ## @group
-## var (@var{x}) = 1/(N-1) SUM_i (@var{x}(i) - mean(@var{x}))^2
+## var (@var{x}) = (1 / (N-1)) * SUM_i ((@var{x}(i) - mean(@var{x}))^2)
 ## @end group
 ## @end example
 ##
 ## @noindent
-## where @math{N} is the length of the @var{x} vector.
-##
+## where @math{N} is the number of elements of @var{x}.
 ## @end ifnottex
-## If @var{x} is an array, compute the variance for each column and return them
-## in a row vector (or for an n-D array, the result is returned as an array of
-## dimension 1 x n x m x @dots{}).
+##
+## If @var{x} is an array, compute the variance along the first non-singleton
+## dimensions of @var{x}.
 ##
 ## The optional argument @var{w} determines the weighting scheme to use.  Valid
-## values are
+## values are:
 ##
 ## @table @asis
 ## @item 0 [default]:
-## Normalize with @math{N-1}.  This provides the square root of the best
-## unbiased estimator of the variance.
+## Normalize with @math{N-1} (population variance).  This provides the square
+## root of the best unbiased estimator of the variance.
 ##
 ## @item 1:
-## Normalize with @math{N}@.  This provides the square root of the second
-## moment around the mean.
+## Normalize with @math{N} (sample variance).  This provides the square root of
+## the second moment around the mean.
 ##
 ## @item a vector:
-## Compute the weighted variance with non-negative scalar weights.  The length
-## of @var{w} must equal the size of @var{x} along dimension @var{dim}.
+## Compute the weighted variance with non-negative weights.  The length of
+## @var{w} must equal the size of @var{x} in the operating dimension.  NaN
+## values are permitted in @var{w}, will be multiplied with the associated
+## values in @var{x}, and can be excluded by the @var{nanflag} option.
+##
+## @item an array:
+## Similar to vector weights, but @var{w} must be the same size as @var{x}.  If
+## the operating dimension is supplied as @var{vecdim} or "all" and @var{w} is
+## not a scalar, @var{w} must be an same-sized array.
 ## @end table
 ##
-## If @math{N} is equal to 1 the value of @var{W} is ignored and normalization
-## by @math{N} is used.
+## Note: @var{w} must always be specified before specifying any of the following
+## dimension options. To use the default value for @var{w} you may pass an empty
+## input argument [].
 ##
 ## The optional variable @var{dim} forces @code{var} to operate over the
-## specified dimension(s).  @var{dim} can either be a scalar dimension or a
-## vector of non-repeating dimensions.  Dimensions must be positive integers,
-## and the variance is calculated over the array slice defined by @var{dim}.
+## specified dimension, which must be a positive integer-valued number.
+## Specifying any singleton dimension in @var{x}, including any dimension
+## exceeding @code{ndims (@var{x})}, will result in a variance of 0.
 ##
-## Specifying dimension @qcode{"all"} will force @code{var} to operate on all
-## elements of @var{x}, and is equivalent to @code{var (@var{x}(:))}.
+## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
+## dimensions, will return the variance calculated over the array slice defined
+## by @var{vecdim}. If @var{vecdim} indexes all dimensions of @var{x}, then it
+## is equivalent to the option @qcode{"all"}. Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
 ##
-## When @var{dim} is a vector or @qcode{"all"}, @var{w} must be either 0 or 1.
+## Specifying the dimension as @qcode{"all"} will force @code{var} to operate on
+## all elements of @var{x}, and is equivalent to @code{var (@var{x}(:))}.
 ##
-## The optional second output variable @var{mu} contains the mean or weighted
-## mean used to calculate @var{v}, and will be the same size as @var{v}.
-## @seealso{cov, std, skewness, kurtosis, moment}
+## The optional variable @var{nanflag} specifies whether to include or exclude
+## NaN values from the calculation using any of the previously specified input
+## argument combinations.  The default value for @var{nanflag} is "includenan"
+## which keeps NaN values in the calculation. To exclude NaN values set the
+## value of @var{nanflag} to "omitnan".  The output will still contain NaN
+## values if @var{x} consists of all NaN values in the operating dimension.
+##
+## The optional second output variable @var{mu} contains the mean of the
+## elements of @var{x} used to calculate the variance.  If @var{v} is the
+## weighted variance, then @var{m} is also the weighted mean.
+##
+## @seealso{std, mean, cov, skewness, kurtosis, moment}
 ## @end deftypefn
 
-function [v, mu] = var (x, w = 0, dim = [])
+function [v, m] = var (x, varargin)
 
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
-  if (! (isnumeric (x) || islogical (x)))
-    error ("var: X must be a numeric vector or matrix");
+  ## initialize variables
+  all_flag = false;
+  omitnan = false;
+  nvarg = numel (varargin);
+  varg_chars = cellfun ('ischar', varargin);
+
+  ## Check all char arguments.
+  if (nvarg == 3 && ! varg_chars(3))
+    print_usage ();
   endif
 
-  if (isempty (w))
-    w = 0;
+  if (any (varg_chars))
+    for i = varargin(varg_chars)
+      switch (lower (i{:}))
+        case "all"
+          all_flag = true;
+        case "omitnan"
+          omitnan = true;
+        case "includenan"
+          omitnan = false;
+        otherwise
+          print_usage ();
+      endswitch
+    endfor
+    varargin(varg_chars) = [];
+    nvarg = numel (varargin);
   endif
 
-  nd = ndims (x);
-  sz = size (x);
-  emptydimflag = false;
+  # FIXME: when sparse can use broadcast ops, remove sparse checks and hacks
+  sprs_x = issparse (x);
+  w = 0;
+  weighted = false; # true if weight vector/array used
+  vecdim = [];
+  vecempty = true;
+  vecdim_scalar_vector = [false, false]; # [false, false] for empty vecdim
+  szx = size (x);
+  ndx = ndims (x);
 
-  if (isempty (dim))
-    emptydimflag = true;  # Compatibility hack for empty x, ndims==2
-
-    ## Find the first non-singleton dimension.
-    (dim = find (sz != 1, 1)) || (dim = 1);
-
+  ## Check numeric arguments
+  if (! (isnumeric (x)))
+    error ("var: X must be a numeric vector or matrix.");
+  endif
+  if (isa (x, "single"))
+    outtype = "single";
   else
-    if (isscalar (dim))
-      if (dim < 1 || dim != fix (dim))
-        error ("var: DIM must be a positive integer scalar, vector, or 'all'");
+    outtype = "double";
+  endif
+
+  if (nvarg > 0)
+    if (nvarg > 2 || any (! cellfun ('isnumeric', varargin)))
+      print_usage ();
+    endif
+    ## Process weight input
+    if (any (varargin{1} < 0))
+      error ("var: weights must not contain any negative values.");
+    endif
+    if (isscalar (varargin{1}))
+      w = varargin{1};
+      if (! (w == 0 || w == 1) && ! isscalar (x))
+        error ("var: normalization scalar must be either 0 or 1.");
       endif
-    elseif (isnumeric (dim))
-      if (! isvector (dim) && all (dim > 0) && all (rem (dim, 1) == 0))
-        error ("var: DIM must be a positive integer scalar, vector, or 'all'");
+    elseif (numel (varargin{1}) > 1)
+      weights = varargin{1};
+      weighted = true;
+    endif
+    if (nvarg > 1)
+    ## Process dimension input
+      vecdim = varargin{2};
+      if (! (vecempty = isempty (vecdim)))
+        ## Check for empty vecdim, won't change vsv if nonzero size empty
+        vecdim_scalar_vector = [isscalar(vecdim), isvector(vecdim)];
       endif
-      if (dim != unique (dim, "stable"))
-        error ("var: vector DIM must contain non-repeating positive integers");
+      if (! (vecdim_scalar_vector(2) && all (vecdim > 0)) ...
+             || any (rem (vecdim, 1)))
+        error ("var: DIM must be a positive integer scalar or vector.");
       endif
-      if (! isscalar (w))
-        error ("var: W must be either 0 or 1 when DIM is a vector");
+      if (vecdim_scalar_vector(1) && vecdim > ndx && ! isempty (x))
+        ## Scalar dimension larger than ndims(x), variance of any single number
+        ## is zero, except for inf, NaN, and empty values of x.
+        v = zeros (szx, outtype);
+        vn = ! isfinite (x);
+        v(vn) = NaN;
+        m = x;
+        return;
       endif
-
-      ## Reshape X to compute the variance over an array slice
-      if (iscolumn (dim))
-        dim = dim.';
+      if (vecdim_scalar_vector == [0 1] && (! all (diff (sort (vecdim)))))
+        error ("var: VECDIM must contain non-repeating positive integers.");
       endif
-
-      collapsed_dims = dim;
-      dim = dim(end);
-
-      ## Permute X to cluster the dimensions to collapse
-      max_dim = max ([nd, collapsed_dims]);
-      perm_start = perm_end = [1:max_dim];
-      perm_start(dim:end) = [];
-      perm_start(ismember (perm_start, collapsed_dims)) = [];
-      perm_end(1:dim) = [];
-      perm_end(ismember (perm_end, collapsed_dims)) = [];
-      perm = [perm_start, collapsed_dims, perm_end];
-
-      x = permute (x, perm);
-
-      ## Collapse the given dimensions
-      newshape = ones (1, max_dim);
-      newshape(1:nd) = sz;
-      newshape(collapsed_dims(1:(end-1))) = 1;
-      newshape(dim) = prod (sz(collapsed_dims));
-
-      ## New X with collapsed dimensions
-      x = reshape (x, newshape);
-
-    elseif (ischar (dim) && strcmpi (dim, "all"))
-      if (! isscalar (w))
-        error ("var: W must be either 0 or 1 when using 'all' as dimension");
-      endif
-
-      ## "all" equates to collapsing all elements to a single vector
-      x = x(:);
-      dim = 1;
-      sz = size (x);
-    else
-      error ("var: DIM must be a positive integer scalar, vector, or 'all'");
     endif
   endif
 
-  n = size (x, dim);
-  if (! isvector (w) || ! isnumeric (w)
-      || (isvector (w) && any (w < 0)) ||
-          (isscalar (w) && ((w != 0 && w != 1) && (n != 1))))
-    error ("var: W must be 0, 1, or a vector of positive integers");
+  ## Check for conflicting input arguments
+  if (all_flag && ! vecempty)
+    error ("var: 'all' flag cannot be used with DIM or VECDIM options.");
+  endif
+  if (weighted)
+    if (all_flag)
+      if (isvector (weights))
+        if (numel (weights) != numel (x))
+          error ("var: weight vector element count does not match X.");
+        endif
+      elseif (! (isequal (size (weights), szx)))
+        error ("var: weight matrix or array does not match X in size.");
+      endif
+
+    elseif (vecempty)
+      dim = find (szx > 1, 1);
+      if length (dim) == 0
+        dim = 1;
+      endif
+      if (isvector (weights))
+        if (numel (weights) != szx(dim))
+          error (["var: weight vector length does not match operating ", ...
+                  "dimension."]);
+        endif
+      elseif (! isequal (size (weights), szx))
+          error ("var: weight matrix or array does not match X in size.");
+      endif
+    elseif (vecdim_scalar_vector(1))
+      if (isvector (weights))
+        if (numel (weights) != szx(vecdim))
+          error (["var: weight vector length does not match operating ", ...
+                  "dimension."]);
+        endif
+      elseif (! isequal (size (weights), szx))
+          error ("var: weight matrix or array does not match X in size.");
+      endif
+
+    elseif (vecdim_scalar_vector(2) && ! (isequal (size (weights), szx)))
+      error ("var: weight matrix or array does not match X in size.");
+    endif
   endif
 
+  ## Force output for X being empty or scalar
   if (isempty (x))
-    ## Empty matrix special case
-    if (emptydimflag && nd == 2 && all (sz == [0, 0]))
-      v = NaN;
-      mu = NaN;
-    else
-      sz(dim) = 1;
-      v = NaN (sz);
-      mu = NaN (sz);
-    endif
-  elseif (n == 1)
-    ## Scalar special case
-    if (! isscalar (w))
-      error (["var: the length of W must be equal to the size of X " ...
-              "in the dimension along which variance is calculated"]);
-    endif
-    if (isa (x, "single"))
-      v = zeros (sz, "single");
-      mu = x;
-    else
-      v = zeros (sz);
-      mu = x;
-    endif
-    v(isnan (x) | isinf (x)) = NaN;
-  else
-    ## Regular algorithm
-    if (isscalar (w))
-      v = sumsq (center (x, dim), dim) / (n - 1 + w);
-      if (nargout == 2)
-        mu = mean (x, dim);
+    if (vecempty && (ndx == 2 || all ((szx) == 0)))
+      v = NaN (outtype);
+      if (nargout > 1)
+        m = NaN (outtype);
       endif
-    else
-      ## Weighted variance
-      if (numel (w) != n)
-        error (["var: the length of W must be equal to the size of X " ...
-                "in the dimension along which variance is calculated"]);
+      return;
+    endif
+    if (vecdim_scalar_vector(1))
+      szx(vecdim) = 1;
+      v = NaN (szx, outtype);
+      if (nargout > 1)
+        m = NaN (szx, outtype);
       endif
-      if ((dim == 1 && isrow (w)) || (dim == 2 && iscolumn (w)))
-        w = w.';
-      elseif (dim > 2)
-        newdims = [ones(1, dim - 1), numel(w)];
-        w = reshape (w, newdims);
-      endif
-      den = sum (w);
-
-      ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
-      ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
-      mu = sum (bsxfun (@times, w , x), dim) ./ den;
-      v = sum (bsxfun (@times, w, ...
-                            bsxfun (@minus, x, mu) .^ 2), dim) ./ den;
-      ## mu = sum (w .* x, dim) ./ den; # automatic broadcasting
-      ## v = sum (w .* ((x - mu) .^ 2), dim) ./ den;
+      return;
     endif
   endif
 
+  if (isscalar (x))
+    if (isfinite (x))
+      v = zeros (outtype);
+    else
+      v = NaN (outtype);
+    endif
+    if (nargout > 1)
+      m = x;
+    endif
+    return;
+  endif
+
+  if (nvarg == 0)
+    ## Only numeric input argument, no dimensions or weights.
+    if (all_flag)
+      x = x(:);
+      if (omitnan)
+        x = x(! isnan (x));
+      endif
+      n = length (x);
+      m = sum (x) ./ n;
+      v = sum (abs (x - m) .^ 2) ./ (n - 1 + w);
+      if (n == 1)
+        v = 0;
+      endif
+    else
+      dim = find (szx > 1, 1);
+      if length (dim) == 0
+        dim = 1;
+      endif
+      n = szx(dim);
+      if (omitnan)
+        n = sum (! isnan (x), dim);
+        xn = isnan (x);
+        x(xn) = 0;
+      endif
+      m = sum (x, dim) ./ n;
+      dims = ones (1, ndx);
+      dims(dim) = szx(dim);
+      if (sprs_x)
+        m_exp = repmat (m, dims);
+      else
+        m_exp = m .* ones (dims);
+      endif
+      if (omitnan)
+        x(xn) = m_exp(xn);
+      endif
+      v = sumsq (x - m_exp, dim) ./ (n - 1 + w);
+      if (numel (n) == 1)
+        divby0 = n .* ones (size (v)) == 1;
+      else
+        divby0 = n == 1;
+      endif
+      v(divby0) = 0;
+    endif
+
+  elseif (nvarg == 1)
+    ## Two numeric input arguments, w or weights given.
+    if (all_flag)
+      x = x(:);
+      if (weighted)
+        weights = weights(:);
+        wx = weights .* x;
+      else
+        weights = ones (length (x), 1);
+        wx = x;
+      endif
+
+      if (omitnan)
+        xn = isnan (wx);
+        wx = wx(! xn);
+        weights = weights(! xn);
+        x = x(! xn);
+      endif
+      n = length (wx);
+      m = sum (wx) ./ sum (weights);
+      if (weighted)
+        v = sum (weights .* (abs (x - m) .^ 2)) ./ sum (weights);
+      else
+        v = sum (weights .* (abs (x - m) .^ 2)) ./ (n - 1 + w);
+        if (n == 1)
+          v = 0;
+        endif
+      endif
+
+    else
+      dim = find (szx > 1, 1);
+      if length (dim) == 0
+        dim = 1;
+      endif
+      if (! weighted)
+        weights = ones (szx);
+        wx = x;
+      else
+        if (isvector (weights))
+          dims = 1:ndx;
+          dims([1, dim]) = [dim, 1];
+          weights = zeros (szx) + permute (weights(:), dims);
+        endif
+        wx = weights .* x;
+      endif
+      n = size (wx, dim);
+      if (omitnan)
+        xn = isnan (wx);
+        n = sum (! xn, dim);
+        wx(xn) = 0;
+        weights(xn) = 0;
+      endif
+      m = sum (wx, dim) ./ sum (weights, dim);
+      dims = ones (1, ndims (wx));
+      dims(dim) = size (wx, dim);
+      if (sprs_x)
+        m_exp = repmat (m, dims);
+      else
+        m_exp = m .* ones (dims);
+      endif
+      if (omitnan)
+        x(xn) = m_exp(xn);
+      endif
+      if (weighted)
+        v = sum (weights .* ((x - m_exp) .^ 2), dim) ./ sum (weights, dim);
+      else
+        v = sumsq (x - m_exp, dim) ./ (n - 1 + w);
+        if (numel (n) == 1)
+          divby0 = n .* ones (size (v)) == 1;
+        else
+          divby0 = n == 1;
+        endif
+        v(divby0) = 0;
+      endif
+    endif
+
+  elseif (nvarg == 2)
+    ## Three numeric input arguments, both w or weights and dim or vecdim given.
+    if (vecdim_scalar_vector(1))
+      if (!weighted)
+        weights = ones (szx);
+        wx = x;
+      else
+        if (isvector (weights))
+          dims = 1:ndx;
+          dims([1, vecdim]) = [vecdim, 1];
+          weights = zeros (szx) + permute (weights(:), dims);
+        endif
+        wx = weights .* x;
+      endif
+      n = size (wx, vecdim);
+      if (omitnan)
+        n = sum (! isnan (wx), vecdim);
+        xn = isnan (wx);
+        wx(xn) = 0;
+        weights(xn) = 0;
+      endif
+      m = sum (wx, vecdim) ./ sum (weights, vecdim);
+      dims = ones (1, ndims (wx));
+      dims(vecdim) = size (wx, vecdim);
+      if (sprs_x)
+        m_exp = repmat (m, dims);
+      else
+        m_exp = m .* ones (dims);
+      endif
+      if (omitnan)
+        x(xn) = m_exp(xn);
+      endif
+      if (weighted)
+        v = sum (weights .* ((x - m_exp) .^ 2), vecdim) ...
+              ./ sum (weights, vecdim);
+      else
+        v = sumsq (x - m_exp, vecdim);
+        vn = isnan (v);
+        v = v ./ (n - 1 + w);
+        if (numel (n) == 1)
+          divby0 = n .* ones (size (v)) == 1;
+        else
+          divby0 = n == 1;
+        endif
+        v(divby0) = 0;
+        v(vn) = NaN;
+      endif
+
+    else
+      ## Weights and nonscalar vecdim specified
+
+      ## Ignore exceeding dimensions in VECDIM
+      remdims = 1 : ndx;    # all dimensions
+      vecdim(find (vecdim > ndx)) = [];
+      ## Calculate permutation vector
+      remdims(vecdim) = [];     # delete dimensions specified by vecdim
+      nremd = numel (remdims);
+
+      ## If all dimensions are given, it is similar to all flag
+      if (nremd == 0)
+        x = x(:);
+        if (weighted)
+          weights = weights(:);
+          wx = weights .* x;
+        else
+          weights = ones (length (x), 1);
+          wx = x;
+        endif
+
+        if (omitnan)
+          xn = isnan (wx);
+          wx = wx(! xn);
+          weights = weights(! xn);
+          x = x(! xn);
+        endif
+        n = length (wx);
+        m = sum (wx) ./ sum (weights);
+        if (weighted)
+          v = sum (weights .* (abs (x - m) .^ 2)) ./ sum (weights);
+        else
+          v = sum (weights .* (abs (x - m) .^ 2)) ./ (n - 1 + w);
+          if (n == 1)
+            v = 0;
+          endif
+        endif
+
+      else
+
+        ## FIXME: much of the reshaping can be skipped once octave's sum can
+        ##        take a vecdim argument.
+
+        ## Apply weights
+        if (weighted)
+          wx = weights .* x;
+        else
+          weights = ones (szx);
+          wx = x;
+        endif
+
+        ## Permute to bring remaining dims forward
+        perm = [remdims, vecdim];
+        wx = permute (wx, perm);
+        weights = permute (weights, perm);
+        x = permute (x, perm);
+
+        ## Reshape to put all vecdims in final dimension
+        szwx = size (wx);
+        sznew = [szwx(1:nremd), prod(szwx(nremd+1:end))];
+        wx = reshape (wx, sznew);
+        weights = reshape (weights, sznew);
+        x = reshape (x, sznew);
+
+        ## Calculate var on single, squashed dimension
+        dim = nremd + 1;
+        n = size (wx, dim);
+        if (omitnan)
+          xn = isnan (wx);
+          n = sum (! xn, dim);
+          wx(xn) = 0;
+          weights(xn) = 0;
+        endif
+        m = sum (wx, dim) ./ sum (weights, dim);
+        m_exp = zeros (sznew) + m;
+        if (omitnan)
+          x(xn) = m_exp(xn);
+        endif
+        if (weighted)
+          v = sum (weights .* ((x - m_exp) .^ 2), dim) ./ sum (weights, dim);
+        else
+          v = sumsq (x - m_exp, dim) ./ (n - 1 + w);
+          if (numel (n) == 1)
+            divby0 = n .* ones (size (v)) == 1;
+          else
+            divby0 = n == 1;
+          endif
+          v(divby0) = 0;
+        endif
+
+        ## Inverse permute back to correct dimensions
+        v = ipermute (v, perm);
+        if (nargout > 1)
+          m = ipermute (m, perm);
+        endif
+      endif
+    endif
+  endif
+
+  ## Preserve class type
+  if (nargout < 2)
+    if strcmp (outtype, "single")
+      v = single (v);
+    else
+      v = double (v);
+    endif
+  else
+    if strcmp (outtype, "single")
+      v = single (v);
+      m = single (m);
+    else
+      v = double (v);
+      m = double (m);
+    endif
+  endif
 endfunction
 
 
@@ -247,6 +575,7 @@ endfunction
 %!assert (var (5, 99), 0)
 %!assert (var (5, 99, 1), 0)
 %!assert (var (5, 99, 2), 0)
+%!assert (var ([5 3], [99 99], 2), 1)
 %!assert (var ([1:7], [1:7]), 3)
 %!assert (var ([eye(3)], [1:3]), [5/36, 2/9, 1/4], eps)
 %!assert (var (ones (2,2,2), [1:2], 3), [(zeros (2,2))])
@@ -254,16 +583,127 @@ endfunction
 %!assert (var (reshape ([1:8], 2, 2, 2), 0, [1 3]), [17/3 17/3], eps)
 %!assert (var ([1 2 3;1 2 3], [], [1 2]), 0.8, eps)
 
+## Test single input and optional arguments "all", DIM, "omitnan")
+%!test
+%! x = [-10:10];
+%! y = [x;x+5;x-5];
+%! assert (var (x), 38.5);
+%! assert (var (y, [], 2), [38.5; 38.5; 38.5]);
+%! assert (var (y, 0, 2), [38.5; 38.5; 38.5]);
+%! assert (var (y, 1, 2), ones (3,1) * 36.66666666666666, 1e-14);
+%! assert (var (y, "all"), 54.19354838709678, 1e-14);
+%! y(2,4) = NaN;
+%! assert (var (y, "all"), NaN);
+%! assert (var (y, "all", "includenan"), NaN);
+%! assert (var (y, "all", "omitnan"), 55.01533580116342, 1e-14);
+%! assert (var (y, 0, 2, "includenan"), [38.5; NaN; 38.5]);
+%! assert (var (y, [], 2), [38.5; NaN; 38.5]);
+%! assert (var (y, [], 2, "omitnan"), [38.5; 37.81842105263158; 38.5], 1e-14);
+
+## Tests for different weight and omitnan code paths
+%!assert (var ([1 NaN 3], [1 2 3], "omitnan"), 0.75, eps)
+%!assert (var ([1 2 3], [1 NaN 3], "omitnan"), 0.75, eps)
+%!assert (var (magic(3), [1 NaN 3], "omitnan"), [3 12 3], eps)
+%!assert (var ([1 NaN 3], [1 2 3], "omitnan", "all"), 0.75, eps)
+%!assert (var ([1 NaN 3], [1 2 3], "all", "omitnan"), 0.75, eps)
+%!assert (var ([1 2 3], [1 NaN 3], "omitnan", "all"), 0.75, eps)
+%!assert (var ([1 NaN 3], [1 2 3], 2, "omitnan"), 0.75, eps)
+%!assert (var ([1 2 3], [1 NaN 3], 2, "omitnan"), 0.75, eps)
+%!assert (var (magic(3), [1 NaN 3], 1, "omitnan"), [3 12 3], eps)
+%!assert (var (magic(3), [1 NaN 3], 2, "omitnan"), [0.75;3;0.75], eps)
+%!assert (var ([4 4; 4 6; 6 6], [1 3], 2, 'omitnan'), [0;0.75;0], eps)
+%!assert (var ([4 NaN; 4 6; 6 6], [1 2 3], 1, 'omitnan'), [1 0])
+%!assert (var ([4 NaN; 4 6; 6 6], [1 3], 2, 'omitnan'), [0;0.75;0], eps)
+%!assert (var (3*reshape(1:18, [3 3 2]), [1 2 3], 1, 'omitnan'), ones(1,3,2)*5)
+%!assert (var (reshape(1:18, [3 3 2]), [1 2 3], 2, 'omitnan'), 5*ones(3,1,2))
+%!assert (var (3*reshape(1:18, [3 3 2]), ones (3,3,2), [1 2], 'omitnan'), ...
+%!         60 * ones(1,1,2))
+%!assert (var (3*reshape(1:18, [3 3 2]), ones (3,3,2), [1 4], 'omitnan'), ...
+%!         6 * ones(1,3,2))
+%!assert (var (6*reshape(1:18, [3 3 2]), ones (3,3,2), [1:3], 'omitnan'), 969)
+%!test
+%! x = reshape(1:18, [3 3 2]);
+%! x([2, 14]) = NaN;
+%! w = ones (3,3,2);
+%! assert (var (16*x, w, [1:3], 'omitnan'), 6519);
+%!test
+%! x = reshape(1:18, [3 3 2]);
+%! w = ones (3,3,2);
+%! w([2, 14]) = NaN;
+%! assert (var (16*x, w, [1:3], 'omitnan'), 6519);
+
+## Test input case insensitivity
+%!assert (var ([1 2 3], "aLl"), 1);
+%!assert (var ([1 2 3], "OmitNan"), 1);
+%!assert (var ([1 2 3], "IncludeNan"), 1);
+
+## Test dimension indexing with vecdim in n-dimensional arrays
+%!test
+%! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
+%! assert (size (var (x, 0, [3 2])), [10, 1, 1, 3]);
+%! assert (size (var (x, 1, [1 2])), [1, 1, 6, 3]);
+%! assert (size (var (x, [], [1 2 4])), [1, 1, 6]);
+%! assert (size (var (x, 0, [1 4 3])), [1, 40]);
+%! assert (size (var (x, [], [1 2 3 4])), [1, 1]);
+
+## Test matrix with vecdim, weighted, matrix weights, omitnan
+%!assert (var (3*magic(3)), [63 144 63])
+%!assert (var (3*magic(3), 'omitnan'), [63 144 63])
+%!assert (var (3*magic(3), 1), [42 96 42])
+%!assert (var (3*magic(3), 1, 'omitnan'), [42 96 42])
+%!assert (var (3*magic(3), ones(1,3), 1), [42 96 42])
+%!assert (var (3*magic(3), ones(1,3), 1, 'omitnan'), [42 96 42])
+%!assert (var (2*magic(3), [1 1 NaN], 1, 'omitnan'), [25 16 1])
+%!assert (var (3*magic(3), ones(3,3)), [42 96 42])
+%!assert (var (3*magic(3), ones(3,3), 'omitnan'), [42 96 42])
+%!assert (var (3*magic(3), [1 1 1; 1 1 1; 1 NaN 1], 'omitnan'), [42 36 42])
+%!assert (var (3*magic(3), ones(3,3), 1), [42 96 42])
+%!assert (var (3*magic(3), ones(3,3), 1, 'omitnan'), [42 96 42])
+%!assert (var (3*magic(3), [1 1 1; 1 1 1; 1 NaN 1], 1, 'omitnan'), [42 36 42])
+%!assert (var (3*magic(3), ones(3,3), [1 4]), [42 96 42])
+%!assert (var (3*magic(3), ones(3,3), [1 4], 'omitnan'), [42 96 42])
+%!assert (var (3*magic(3), [1 1 1; 1 1 1; 1 NaN 1],[1 4],'omitnan'), [42 36 42])
+
+## Test results with vecdim in n-dimensional arrays and "omitnan"
+%!test
+%! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
+%! v = repmat (33.38912133891213, [10, 1, 1, 3]);
+%! assert (var (x, 0, [3, 2]), v, 1e-14);
+%! v = repmat (33.250, [10, 1, 1, 3]);
+%! assert (var (x, 1, [3, 2]), v, 1e-14);
+%! x(2,5,6,3) = NaN;
+%! v(2,1,1,3) = NaN;
+%! assert (var (x, 1, [3, 2]), v, 4e-14);
+%! v = repmat (33.38912133891213, [10 1 1 3]);
+%! v(2,1,1,3) = NaN;
+%! assert (var (x, [], [3, 2]), v, 4e-14);
+%! v(2,1,1,3) = 33.40177912169048;
+%! assert (var (x, [], [3, 2], "omitnan"), v, 4e-14);
+
+## Testing weights vector & arrays
+%!assert (var (ones (2,2,2), [1:2], 3), [(zeros (2, 2))]);
+%!assert (var (magic (3), [1:9], "all"), 6.666666666666667, 1e-14);
+
+## Test exceeding dimensions
+%!assert (var (ones (2,2), [], 3), zeros (2,2));
+%!assert (var (ones (2,2,2), [], 99), zeros (2,2,2));
+%!assert (var (magic (3), [], 3), zeros (3,3));
+%!assert (var (magic (3), [], 1), [7, 16, 7]);
+%!assert (var (magic (3), [], [1 3]), [7, 16, 7]);
+%!assert (var (magic (3), [], [1 99]), [7, 16, 7]);
+
 ## Test empty inputs
 %!assert (var ([]), NaN)
+%!assert (class (var (single ([]))), "single")
 %!assert (var ([],[],1), NaN(1,0))
 %!assert (var ([],[],2), NaN(0,1))
 %!assert (var ([],[],3), [])
-%!assert (var (ones (0,1)), NaN)
+%!assert (class (var (single ([]), [], 1)), "single")
 %!assert (var (ones (1,0)), NaN)
 %!assert (var (ones (1,0), [], 1), NaN(1,0))
 %!assert (var (ones (1,0), [], 2), NaN)
 %!assert (var (ones (1,0), [], 3), NaN(1,0))
+%!assert (class (var (ones (1, 0, "single"), [], 1)), "single")
 %!assert (var (ones (0,1)), NaN)
 %!assert (var (ones (0,1), [], 1), NaN)
 %!assert (var (ones (0,1), [], 2), NaN(0,1))
@@ -273,8 +713,11 @@ endfunction
 %!assert (var (ones (1,3,0,2), [], 2), NaN(1,1,0,2))
 %!assert (var (ones (1,3,0,2), [], 3), NaN(1,3,1,2))
 %!assert (var (ones (1,3,0,2), [], 4), NaN(1,3,0))
+%!test
+%! [~, m] = var ([]);
+%! assert (m, NaN);
 
-## Test second output
+## Test optional mean output
 %!test <*62395>
 %! [~, m] = var (13);
 %! assert (m, 13);
@@ -289,9 +732,9 @@ endfunction
 %! [~, m] = var ([1, 2, 3; 3 2 1], [], 3);
 %! assert (m, [1 2 3; 3 2 1]);
 
-## 2nd output, weighted inputs, vector dims
+## Test mean output, weighted inputs, vector dims
 %!test <*62395>
-%! [~, m] = var(5,99);
+%! [~, m] = var (5,99);
 %! assert (m, 5);
 %! [~, m] = var ([1:7], [1:7]);
 %! assert (m, 5);
@@ -303,19 +746,38 @@ endfunction
 %! assert (m, 2.5, eps);
 %! [~, m] = var (reshape ([1:8], 2, 2, 2), 0, [1 3]);
 %! assert (m, [3.5, 5.5], eps);
+%!test
+%! [v, m] = var (4 * eye (2), [1, 3]);
+%! assert (v, [3, 3]);
+%! assert (m, [1, 3]);
 
-## 2nd output, empty inputs
+## Test mean output, empty inputs, omitnan
 %!test <*62395>
 %! [~, m] = var ([]);
 %! assert (m, NaN);
-%! [~, m] = var ([],[],1);
-%! assert (m, NaN(1,0));
-%! [~, m] = var ([],[],2);
-%! assert (m, NaN(0,1));
-%! [~, m] = var ([],[],3);
-%! assert (m, []);
-%! [~, m] = var (ones (1,3,0,2));
-%! assert (m, NaN(1,1,0,2));
+#%! [~, m] = var ([],[],1);
+#%! assert (m, NaN(1,0));
+#%! [~, m] = var ([],[],2);
+#%! assert (m, NaN(0,1));
+#%! [~, m] = var ([],[],3);
+#%! assert (m, []);
+#%! [~, m] = var (ones (1,3,0,2));
+#%! assert (m, NaN(1,1,0,2));
+
+## Test mean output, nD array
+%!test <*62395>
+%! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
+%! [~, m] = var (x, 0, [3 2]);
+%! assert (m, mean (x, [3 2]));
+%! [~, m] = var (x, 0, [1 2]);
+%! assert (m, mean (x, [1 2]));
+%! [~, m] = var (x, 0, [1 3 4]);
+%! assert (m, mean (x, [1 3 4]));
+%!test
+%! x = repmat ([1:20;6:25], [5, 2, 6, 3]);
+%! x(2,5,6,3) = NaN;
+%! [~, m] = var (x, 0, [3 2], "omitnan");
+%! assert (m, mean (x, [3 2], "omitnan"));
 
 ## Test Inf and NaN inputs
 %!test <*63203>
@@ -440,27 +902,64 @@ endfunction
 %! [v, m] = var (sparse (4 * eye (2)), [1, 3]);
 %! assert (full (v), [3, 3]);
 %! assert (full (m), [1, 3]);
-
-%!test <63291>
+%!test<*63291>
 %! [v, m] = var (sparse (eye (2)));
 %! assert (issparse (v));
 %! assert (issparse (m));
-%!test <63291>
+%!test<*63291>
 %! [v, m] = var (sparse (eye (2)), [1, 3]);
 %! assert (issparse (v));
 %! assert (issparse (m));
 
+
 ## Test input validation
 %!error <Invalid call> var ()
-%!error <X must be a numeric> var (['A'; 'B'])
-%!error <W must be 0> var ([1 2 3], 2)
-%!error <W must be .* a vector of positive integers> var ([1 2], [-1 0])
-%!error <W must be .* a vector of positive integers> var ([1 2], eye (2))
-%!error <W must be either 0 or 1> var (ones (2, 2), [1 2], [1 2])
-%!error <W must be either 0 or 1> var ([1 2], [1 2], 'all')
-%!error <the length of W must be> var ([1 2], [1 2 3])
-%!error <the length of W must be> var (1, [1 2])
-%!error <the length of W must be> var ([1 2], [1 2], 1)
+%!error <Invalid call> var (1, 2, "omitnan", 3)
+%!error <Invalid call> var (1, 2, 3, 4)
+%!error <Invalid call> var (1, 2, 3, 4, 5)
+%!error <Invalid call> var (1, "foo")
+%!error <Invalid call> var (1, [], "foo")
+%!error <normalization scalar must be either 0 or 1> var ([1 2 3], 2)
+%!error <normalization scalar must be either 0 or 1> var ([1 2], 2, "all")
+%!error <normalization scalar must be either 0 or 1> var ([1 2],0.5, "all")
+%!error <weights must not contain any negative values> var (1, -1)
+%!error <weights must not contain any negative values> var (1, [1 -1])
+%!error <weights must not contain any negative values> ...
+%! var ([1 2 3], [1 -1 0])
+%!error <X must be a numeric vector or matrix> var ({1:5})
+%!error <X must be a numeric vector or matrix> var ("char")
+%!error <X must be a numeric vector or matrix> var (['A'; 'B'])
 %!error <DIM must be a positive integer> var (1, [], ones (2,2))
-%!error <DIM must be a positive integer> var (1, [], 1.5)
+%!error <DIM must be a positive integer> var (1, 0, 1.5)
 %!error <DIM must be a positive integer> var (1, [], 0)
+%!error <DIM must be a positive integer> var (1, [], 1.5)
+%!error <DIM must be a positive integer> var ([1 2 3], [], [-1 1])
+%!error <VECDIM must contain non-repeating positive integers> ...
+%! var (repmat ([1:20;6:25], [5 2 6 3]), 0, [1 2 2 2])
+%!error <weight matrix or array does not match X in size> ...
+%! var ([1 2], eye (2))
+%!error <weight matrix or array does not match X in size> ...
+%! var ([1 2 3 4], [1 2; 3 4])
+%!error <weight matrix or array does not match X in size> ...
+%! var ([1 2 3 4], [1 2; 3 4], 1)
+%!error <weight matrix or array does not match X in size> ...
+%! var ([1 2 3 4], [1 2; 3 4], [2 3])
+%!error <weight matrix or array does not match X in size> ...
+%! var (ones (2, 2), [1 2], [1 2])
+%!error <weight matrix or array does not match X in size> ...
+%! var ([1 2 3 4; 5 6 7 8], [1 2 1 2 1; 1 2 1 2 1], 1)
+%!error <weight matrix or array does not match X in size> ...
+%! var (repmat ([1:20;6:25], [5 2 6 3]), repmat ([1:20;6:25], [5 2 3]), [2 3])
+%!error <weight vector length does not match> var ([1 2 3; 2 3 4], [1 3 4])
+%!error <weight vector length does not match> var ([1 2], [1 2 3])
+%!error <weight vector length does not match> var (1, [1 2])
+%!error <weight vector length does not match> var ([1 2 3; 2 3 4], [1 3 4], 1)
+%!error <weight vector length does not match> var ([1 2 3; 2 3 4], [1 3], 2)
+%!error <weight vector length does not match> var ([1 2], [1 2], 1)
+%!error <'all' flag cannot be used with DIM or VECDIM options> ...
+%! var (1, [], 1, "all")
+%!error <weight vector element count does not match X> ...
+%! var ([1 2 3; 2 3 4], [1 3], "all")
+%!error <weight matrix or array does not match X in size> ...
+%! var (repmat ([1:20;6:25], [5 2 6 3]), repmat ([1:20;6:25], [5 2 3]), "all")
+

@@ -71,37 +71,6 @@ octave_hdf5_id ov_range<double>::hdf5_save_type = H5T_NATIVE_DOUBLE;
 
 // For now, enable only ov_range<double>.
 
-#  if 0
-
-template <>
-octave_hdf5_id ov_range<float>::hdf5_save_type = H5T_NATIVE_FLOAT;
-
-template <>
-octave_hdf5_id ov_range<octave_int8>::hdf5_save_type = H5T_NATIVE_INT8;
-
-template <>
-octave_hdf5_id ov_range<octave_int16>::hdf5_save_type = H5T_NATIVE_INT16;
-
-template <>
-octave_hdf5_id ov_range<octave_int32>::hdf5_save_type = H5T_NATIVE_INT32;
-
-template <>
-octave_hdf5_id ov_range<octave_int64>::hdf5_save_type = H5T_NATIVE_INT64;
-
-template <>
-octave_hdf5_id ov_range<octave_uint8>::hdf5_save_type = H5T_NATIVE_UINT8;
-
-template <>
-octave_hdf5_id ov_range<octave_uint16>::hdf5_save_type = H5T_NATIVE_UINT16;
-
-template <>
-octave_hdf5_id ov_range<octave_uint32>::hdf5_save_type = H5T_NATIVE_UINT32;
-
-template <>
-octave_hdf5_id ov_range<octave_uint64>::hdf5_save_type = H5T_NATIVE_UINT64;
-
-#  endif
-
 #else
 
 template <>

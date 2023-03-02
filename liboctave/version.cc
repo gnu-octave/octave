@@ -48,21 +48,21 @@ format_url (bool html, const std::string& url)
 std::string
 octave_www_statement (bool html)
 {
-  return "Home page:         "
+  return "Home page:            "
          + format_url (html, "https://octave.org");
 }
 
 std::string
 octave_contrib_statement (bool html)
 {
-  return "Improve Octave:    "
+  return "Improve Octave:       "
          + format_url (html, "https://octave.org/get-involved");
 }
 
 std::string
 octave_bugs_statement (bool html)
 {
-  return "Tech support:      "
+  return "Support resources:    "
          + format_url (html, "https://octave.org/support");
 }
 

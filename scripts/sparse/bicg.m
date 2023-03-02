@@ -546,3 +546,16 @@ endfunction
 %! ## b has two columns!
 %! [y, flag]  = bicg (M1 \ A / M2, [M1 \ b, M2' \ b], [], 1);
 %! assert (x, M2 \ y, 8 * eps);
+
+%!test <*63860>
+%! ## additional input argument
+%! n = 10;
+%! s = 1e-3;
+%! tol = 1e-6;
+%! a = ones (n, 1);
+%! a = a / norm (a);
+%! y = zeros (n, 1);
+%! y(1:2:n) = 1;
+%! Amat = @(x, type, s) x + (s * a) * (a' * x);
+%! [x, flag] = bicg (Amat, y, tol, [], [], [], y, s);
+%! assert (y, Amat (x, [], s), tol * norm (y));

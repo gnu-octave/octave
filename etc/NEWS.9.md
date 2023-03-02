@@ -115,6 +115,20 @@ from Octave 9.
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6
   and has been removed.
 
+Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
+----------------------------------------------------
+
+- Bugfixes to `whos -file`, `urlread`, `mat2cell`, `set`.
+
+- Memory usage reduced for `movfun` by eliminating temporary copies.
+
+- Memory usage reduced when saving to file, preventing OOM and data loss.
+
+- Several race conditions removed in signal handler.
+
+- Performance improvements: avoid unnecessary string construction, use
+  static casts instead of dynamic casts where possible.
+
 ### Old release news
 
 - [Octave 8.x](etc/NEWS.8)

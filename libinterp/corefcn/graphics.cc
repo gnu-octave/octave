@@ -7937,7 +7937,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
 {
   Matrix values = ticks.get ().matrix_value ();
   Matrix lims = axis_lims.get ().matrix_value ();
-  Cell c (values.dims ());
+  Cell c (dim_vector (values.numel (), 1));  // column vector for ML compat.
   std::ostringstream os;
 
   // omit tick labels depending on location of other axis

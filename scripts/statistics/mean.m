@@ -194,7 +194,7 @@ function m = mean (x, varargin)
       if (any (isa (x, {"int64", "uint64"})))
         m = int64_mean (x, 1, numel (x), outtype);
       else
-        m = sum (x) ./ numel (x);
+        m = sum (x, "double") ./ numel (x);
       endif
 
     else
@@ -210,7 +210,7 @@ function m = mean (x, varargin)
       if (any (isa (x, {"int64", "uint64"})))
         m = int64_mean (x, dim, n, outtype);
       else
-        m = sum (x, dim) ./ n;
+        m = sum (x, dim, "double") ./ n;
       endif
 
     endif
@@ -246,7 +246,7 @@ function m = mean (x, varargin)
           if (any (isa (x, {"int64", "uint64"})))
             m = int64_mean (x, vecdim, n, outtype);
           else
-            m = sum (x, vecdim) ./ n;
+            m = sum (x, vecdim, "double") ./ n;
           endif
 
         endif
@@ -278,7 +278,7 @@ function m = mean (x, varargin)
             if (any (isa (x, {"int64", "uint64"})))
               m = int64_mean (x, 1, numel (x), outtype);
             else
-              m = sum (x) ./ numel (x);
+              m = sum (x, "double") ./ numel (x);
             endif
 
           else
@@ -303,7 +303,7 @@ function m = mean (x, varargin)
             if (any (isa (x, {"int64", "uint64"})))
               m = int64_mean (x, dim, n, outtype);
             else
-              m = sum (x, dim) ./ n;
+              m = sum (x, dim, "double") ./ n;
             endif
 
             ## Inverse permute back to correct dimensions
@@ -604,6 +604,18 @@ endfunction
 %!assert (mean ([1 2 3], "aLL"), 2)
 %!assert (mean ([1 2 3], "OmitNan"), 2)
 %!assert (mean ([1 2 3], "DOUBle"), 2)
+
+## Test limits of single precision summation limits on each code path
+%!assert <*63848> (mean (ones (80e6, 1, "single")), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), "all"), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), 1), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), [1 2]), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), [1 3]), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single")), 1, eps)
+
+## Test limits of double precision summation
+%!assert <63848> (mean ([flintmax("double"), ones(1, 2^8-1, "double")]), ...
+%!                               35184372088833-1/(2^8), eps(35184372088833))
 
 ## Test input validation
 %!error <Invalid call to mean.  Correct usage is> mean ()

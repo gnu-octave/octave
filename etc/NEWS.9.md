@@ -34,8 +34,9 @@ from statistics package v1.5.4 to compatibly implement 'nanflag' (bug #50571),
 'all' (bug #58116), and 'vecdim' (bug #58089) options, preserve output class,
 and match expected output behavior for empty (bug #50583) and sparse inputs
 (bug #63291).  Both `median` and `mean` can handle large int values without
-overflow or precision concerns (bug #54567).  `median` also adopts the
-'outtype' option from `mean`.
+overflow or precision concerns (bug #54567), and `mean` avoids errors due to
+limits of single precision by processing as doubles (bug #63848).  `median`
+has also adopted the 'outtype' option from `mean`.
 
 ### Alphabetical list of new functions added in Octave 9
 

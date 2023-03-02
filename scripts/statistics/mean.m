@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 1996-2023 The Octave Project Developers
+## Copyright (C) 1995-2023 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -32,8 +32,8 @@
 ## @deftypefnx {} {@var{m} =} mean (@dots{}, @var{outtype})
 ## Compute the mean of the elements of @var{x}.
 ##
-## If @var{x} is a vector, then @code{mean (@var{x})} returns the
-## mean of the elements in @var{x} defined as
+## If @var{x} is a vector, then @code{mean (@var{x})} returns the mean of the
+## elements in @var{x} defined as
 ## @tex
 ## $$ {\rm mean}(x) = \bar{x} = {1\over N} \sum_{i=1}^N x_i $$
 ## where $N$ is the number of elements of @var{x}.
@@ -49,8 +49,8 @@
 ##
 ## @end ifnottex
 ##
-## If @var{x} is an array, then @code{mean(@var{x})} computes the mean along the
-## first nonsingleton dimension of @var{x}.
+## If @var{x} is an array, then @code{mean(@var{x})} computes the mean along
+## the first nonsingleton dimension of @var{x}.
 ##
 ## The optional variable @var{dim} forces @code{mean} to operate over the
 ## specified dimension, which must be a positive integer-valued number.
@@ -59,9 +59,9 @@
 ##
 ## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
 ## dimensions, will return the mean over the array slice defined by
-## @var{vecdim}. If @var{vecdim} indexes all dimensions of @var{x}, then it is
-## equivalent to the option @qcode{"all"}. Any dimension in @var{vecdim} greater
-## than @code{ndims (@var{x})} is ignored.
+## @var{vecdim}.  If @var{vecdim} indexes all dimensions of @var{x}, then it is
+## equivalent to the option @qcode{"all"}.  Any dimension in @var{vecdim}
+## greater than @code{ndims (@var{x})} is ignored.
 ##
 ## Specifying the dimension as @qcode{"all"} will force @code{mean} to operate
 ## on all elements of @var{x}, and is equivalent to @code{mean (@var{x}(:))}.
@@ -82,10 +82,11 @@
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude
 ## NaN values from the calculation using any of the previously specified input
-## argument combinations.  The default value for @var{nanflag} is "includenan"
-## which keeps NaN values in the calculation. To exclude NaN values set the
-## value of @var{nanflag} to "omitnan".  The output will still contain NaN
-## values if @var{x} consists of all NaN values in the operating dimension.
+## argument combinations.  The default value for @var{nanflag} is
+## @qcode{"includenan"} which keeps NaN values in the calculation.  To exclude
+## NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.  The output
+## will still contain NaN values if @var{x} consists of all NaN values in the
+## operating dimension.
 ##
 ## @seealso{median, mode, movmean}
 ## @end deftypefn
@@ -97,9 +98,9 @@ function m = mean (x, varargin)
   endif
 
   ## Set initial conditions
-  all_flag = 0;
-  omitnan = 0;
-  out_flag = 0;
+  all_flag = false;
+  omitnan  = false;
+  out_flag = false;
 
   nvarg = numel (varargin);
   varg_chars = cellfun ("ischar", varargin);
@@ -114,8 +115,8 @@ function m = mean (x, varargin)
 
   ## Process any other char arguments.
   if (any (varg_chars))
-    for i = varargin(varg_chars)
-      switch (lower (i{:}))
+    for argin = varargin(varg_chars)
+      switch (lower (argin{:}))
         case "all"
           all_flag = true;
 
@@ -127,32 +128,32 @@ function m = mean (x, varargin)
 
         case "default"
           if (out_flag)
-            error ("mean: only one OUTTYPE can be specified.")
+            error ("mean: only one OUTTYPE can be specified");
           endif
           if (isa (x, "single"))
             outtype = "single";
           else
             outtype = "double";
           endif
-          out_flag = 1;
+          out_flag = true;
 
         case "native"
           outtype = class (x);
           if (out_flag)
-            error ("mean: only one OUTTYPE can be specified.")
+            error ("mean: only one OUTTYPE can be specified");
           elseif (strcmp (outtype, "logical"))
             outtype = "double";
           elseif (strcmp (outtype, "char"))
-            error ("mean: OUTTYPE 'native' cannot be used with char inputs.");
+            error ("mean: OUTTYPE 'native' cannot be used with char inputs");
           endif
-          out_flag = 1;
+          out_flag = true;
 
         case "double"
           if (out_flag)
-            error ("mean: only one OUTTYPE can be specified.")
+            error ("mean: only one OUTTYPE can be specified");
           endif
           outtype = "double";
-          out_flag = 1;
+          out_flag = true;
 
         otherwise
           print_usage ();
@@ -162,7 +163,7 @@ function m = mean (x, varargin)
     nvarg = numel (varargin);
   endif
 
-  if strcmp (outtype, "default")
+  if (strcmp (outtype, "default"))
     if (isa (x, "single"))
       outtype = "single";
     else
@@ -170,16 +171,16 @@ function m = mean (x, varargin)
     endif
   endif
 
-  if ((nvarg > 1) || ((nvarg == 1) && ! (isnumeric (varargin{1}))))
+  if (nvarg > 1 || (nvarg == 1 && ! isnumeric (varargin{1})))
     ## After trimming char inputs can only be one varargin left, must be numeric
     print_usage ();
   endif
 
   if (! (isnumeric (x) || islogical (x) || ischar (x)))
-    error ("mean: X must be either a numeric, boolean, or character array.");
+    error ("mean: X must be either a numeric, boolean, or character array");
   endif
 
-  ## Process special cases for in/out size
+  ## Process special cases of input/output sizes.
   if (nvarg == 0)
     ## Single numeric input argument, no dimensions given.
 
@@ -218,14 +219,14 @@ function m = mean (x, varargin)
 
     ## Two numeric input arguments, dimensions given.  Note scalar is vector!
     vecdim = varargin{1};
-    if (isempty (vecdim) || ! (isvector (vecdim) && all (vecdim > 0)) ...
-          || any (rem (vecdim, 1)))
-      error ("mean: DIM must be a positive integer scalar or vector.");
+    if (isempty (vecdim) || ! (isvector (vecdim) && all (vecdim > 0))
+        || any (rem (vecdim, 1)))
+      error ("mean: DIM must be a positive integer scalar or vector");
     endif
 
     if (ndx == 2 && isempty (x) && szx == [0,0])
-      ## FIXME: this special case handling could be removed once sum
-      ##        compatably handles all sizes of empty inputs
+      ## FIXME: This special case handling could be removed once sum
+      ##        compatibly handles all sizes of empty inputs.
       sz_out = szx;
       sz_out (vecdim(vecdim <= ndx)) = 1;
       m = NaN (sz_out);
@@ -253,22 +254,21 @@ function m = mean (x, varargin)
       else
         vecdim = sort (vecdim);
         if (! all (diff (vecdim)))
-           error ("mean: VECDIM must contain non-repeating positive integers.");
+           error ("mean: VECDIM must contain non-repeating positive integers");
         endif
-        ## Ignore exceeding dimensions in VECDIM
-        vecdim(find (vecdim > ndims (x))) = [];
+        ## Ignore dimensions in VECDIM larger than actual array.
+        vecdim(vecdim > ndims (x)) = [];
 
         if (isempty (vecdim))
           m = x;
         else
-          ## Move vecdims to dim 1.
 
           ## Calculate permutation vector
-          remdims = 1 : ndx;    # All dimensions
-          remdims(vecdim) = [];     # Delete dimensions specified by vecdim
+          remdims = 1 : ndx;     # All dimensions
+          remdims(vecdim) = [];  # Delete dimensions specified by vecdim
           nremd = numel (remdims);
 
-          ## If all dimensions are given, it is similar to all flag
+          ## If all dimensions are given, it is equivalent to 'all' flag
           if (nremd == 0)
             x = x(:);
             if (omitnan)
@@ -282,30 +282,28 @@ function m = mean (x, varargin)
             endif
 
           else
-            ## Permute to bring vecdims to front
-            perm = [vecdim, remdims];
+            ## Permute to push vecdims to back
+            perm = [remdims, vecdim];
             x = permute (x, perm);
 
-            ## Reshape to squash all vecdims in dim1
-            num_dim = prod (szx(vecdim));
-            szx(vecdim) = [];
-            szx = [ones(1, numel(vecdim)), szx];
-            szx(1) = num_dim;
-            x = reshape (x, szx);
+            ## Reshape to squash all vecdims in final dimension
+            sznew = [szx(remdims), prod(szx(vecdim))];
+            x = reshape (x, sznew);
 
-            ## Calculate mean on dim1
+            ## Calculate mean on final dimension
+            dim = nremd + 1;
             if (omitnan)
               nanx = isnan (x);
               x(nanx) = 0;
-              n = sum (! nanx, 1);
+              n = sum (! nanx, dim);
             else
-              n = szx(1);
+              n = sznew(dim);
             endif
 
             if (any (isa (x, {"int64", "uint64"})))
-              m = int64_mean (x, 1, n, outtype);
+              m = int64_mean (x, dim, n, outtype);
             else
-              m = sum (x, 1) ./ n;
+              m = sum (x, dim) ./ n;
             endif
 
             ## Inverse permute back to correct dimensions
@@ -316,19 +314,13 @@ function m = mean (x, varargin)
     endif
   endif
 
-  ## Convert output as requested
+  ## Convert output if necessary
   if (! strcmp (class (m), outtype))
-    switch (outtype)
-      case "double"
-        m = double (m);
-      case "single"
-        m = single (m);
-      otherwise
-        if (! islogical (x))
-          m = cast (m, outtype);
-        endif
-    endswitch
+    if (! islogical (x))
+      m = feval (outtype, m);
+    endif
   endif
+
 endfunction
 
 function m = int64_mean (x, dim, n, outtype)
@@ -354,10 +346,10 @@ function m = int64_mean (x, dim, n, outtype)
 
       if (any (abs (m(:)) >= flintmax))
         ## Avoid float errors when combining for large m.
-        ## FIXME - may also need to include checking rmdir for large numel (x),
-        ## as its value could be on the order of numel (x).
+        ## FIXME: may also need to include checking rmdr for large numel (x),
+        ##        as its value could be on the order of numel (x).
         if (any (strcmp (outtype, {"int64", "uint64"})))
-          m = m + rmdr;
+          m += rmdr;
         else
           m = double (m) + rmdr;
         endif
@@ -374,7 +366,9 @@ function m = int64_mean (x, dim, n, outtype)
     else
       m = double (sum (x, dim, "native")) ./ n;
     endif
+
 endfunction
+
 
 %!test
 %! x = -10:10;
@@ -390,7 +384,7 @@ endfunction
 %!assert (mean (single ([1 0 1 1])), single (0.75))
 %!assert (mean ([1 2], 3), [1 2])
 
-#### Test outtype option
+## Test outtype option
 %!test
 %! in = [1 2 3];
 %! out = 2;
@@ -440,7 +434,7 @@ endfunction
 %! assert (mean (in, "native"), uint8 (out_u8));
 %! assert (class (mean (in, "native")), "uint8");
 
-%!test ## internal sum exceeding intmax
+%!test # internal sum exceeding intmax
 %! in = uint8 ([3 141 141 255]);
 %! out = 135;
 %! assert (mean (in, "default"), mean (in));
@@ -449,7 +443,7 @@ endfunction
 %! assert (mean (in, "native"), uint8 (out));
 %! assert (class (mean (in, "native")), "uint8");
 
-%!test ## fractional answer with interal sum exceeding intmax
+%!test # fractional answer with internal sum exceeding intmax
 %! in = uint8 ([1 141 141 255]);
 %! out = 134.5;
 %! out_u8 = 135;
@@ -459,7 +453,7 @@ endfunction
 %! assert (mean (in, "native"), uint8 (out_u8));
 %! assert (class (mean (in, "native")), "uint8");
 
-%!test <54567> ## large int64 sum exceeding intmax and double precision limit
+%!test <54567> # large int64 sum exceeding intmax and double precision limit
 %! in_same = uint64 ([intmax("uint64") intmax("uint64")-2]);
 %! out_same = intmax ("uint64")-1;
 %! in_opp = int64 ([intmin("int64"), intmax("int64")-1]);
@@ -504,7 +498,7 @@ endfunction
 %! assert (mean ([intmin("int64"), in, intmax("int64")]), double(-0.5))
 %! assert (mean ([in; int64([1 3])], 2, "native"), int64([-1; 2]));
 
-## Test input and optional arguments "all", DIM, "omitnan")
+## Test input and optional arguments "all", DIM, "omitnan".
 %!test
 %! x = [-10:10];
 %! y = [x;x+5;x-5];
@@ -526,7 +520,7 @@ endfunction
 %! assert (mean (z, 2, "native", "omitnan"), m');
 %! assert (mean (z, 2, "omitnan", "native"), m');
 
-# Test boolean input
+## Test boolean input
 %!test
 %! assert (mean (true, "all"), 1);
 %! assert (mean (false), 0);
@@ -579,7 +573,7 @@ endfunction
 %!assert (mean (ones(0,0,1,0), 2), NaN(0,1,1,0))
 %!assert (mean (ones(0,0,1,0), 3), NaN(0,0,1,0))
 
-## Test dimension indexing with vecdim in n-dimensional arrays
+## Test dimension indexing with vecdim in N-dimensional arrays
 %!test
 %! x = repmat ([1:20;6:25], [5 2 6 3]);
 %! assert (size (mean (x, [3 2])), [10 1 1 3]);
@@ -589,11 +583,11 @@ endfunction
 %! assert (size (mean (x, [1 2 3 4])), [1 1]);
 
 ## Test exceeding dimensions
-%!assert (mean (ones (2,2), 3), ones (2,2));
-%!assert (mean (ones (2,2,2), 99), ones (2,2,2));
-%!assert (mean (magic (3), 3), magic (3));
-%!assert (mean (magic (3), [1 3]), [5, 5, 5]);
-%!assert (mean (magic (3), [1 99]), [5, 5, 5]);
+%!assert (mean (ones (2,2), 3), ones (2,2))
+%!assert (mean (ones (2,2,2), 99), ones (2,2,2))
+%!assert (mean (magic (3), 3), magic (3))
+%!assert (mean (magic (3), [1 3]), [5, 5, 5])
+%!assert (mean (magic (3), [1 99]), [5, 5, 5])
 
 ## Test results with vecdim in n-dimensional arrays and "omitnan"
 %!test
@@ -607,9 +601,9 @@ endfunction
 %! assert (mean (x, [3 2], "omitnan"), m, 4e-14);
 
 ## Test input case insensitivity
-%!assert (mean ([1 2 3], "aLL"), 2);
-%!assert (mean ([1 2 3], "OmitNan"), 2);
-%!assert (mean ([1 2 3], "DOUBle"), 2);
+%!assert (mean ([1 2 3], "aLL"), 2)
+%!assert (mean ([1 2 3], "OmitNan"), 2)
+%!assert (mean ([1 2 3], "DOUBle"), 2)
 
 ## Test input validation
 %!error <Invalid call to mean.  Correct usage is> mean ()

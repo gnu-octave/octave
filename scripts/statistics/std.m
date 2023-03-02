@@ -59,8 +59,8 @@
 ##
 ## @table @asis
 ## @item 0 [default]:
-## Normalize with @math{N-1} (population standard deviation).  This provides the
-## square root of the best unbiased estimator of the standard deviation.
+## Normalize with @math{N-1} (population standard deviation).  This provides
+## the square root of the best unbiased estimator of the standard deviation.
 ##
 ## @item 1:
 ## Normalize with @math{N} (sample standard deviation).  This provides the
@@ -75,13 +75,13 @@
 ##
 ## @item an array:
 ## Similar to vector weights, but @var{w} must be the same size as @var{x}.  If
-## the operating dimension is supplied as @var{vecdim} or "all" and @var{w} is
-## not a scalar, @var{w} must be an same-sized array.
+## the operating dimension is supplied as @var{vecdim} or @qcode{"all"} and
+## @var{w} is not a scalar, @var{w} must be an same-sized array.
 ## @end table
 ##
-## Note: @var{w} must always be specified before specifying any of the following
-## dimension options. To use the default value for @var{w} you may pass an empty
-## input argument [].
+## Note: @var{w} must always be specified before specifying any of the
+## following dimension options.  To use the default value for @var{w} you
+## may pass an empty input argument [].
 ##
 ## The optional variable @var{dim} forces @code{std} to operate over the
 ## specified dimension, which must be a positive integer-valued number.
@@ -90,21 +90,23 @@
 ##
 ## Specifying the dimensions as  @var{vecdim}, a vector of non-repeating
 ## dimensions, will return the standard deviation calculated over the array
-## slice defined by @var{vecdim}. If @var{vecdim} indexes all dimensions of
-## @var{x}, then it is equivalent to the option @qcode{"all"}. Any dimension in
-## @var{vecdim} greater than @code{ndims (@var{x})} is ignored.
+## slice defined by @var{vecdim}.  If @var{vecdim} indexes all dimensions of
+## @var{x}, then it is equivalent to the option @qcode{"all"}.  Any
+## dimension in @var{vecdim} greater than @code{ndims (@var{x})} is ignored.
 ##
-## Specifying the dimension as @qcode{"all"} will force @code{std} to operate on
-## all elements of @var{x}, and is equivalent to @code{std (@var{x}(:))}.
+## Specifying the dimension as @qcode{"all"} will force @code{std} to
+## operate on all elements of @var{x}, and is equivalent to
+## @code{std (@var{x}(:))}.
 ##
 ## The optional variable @var{nanflag} specifies whether to include or exclude
 ## NaN values from the calculation using any of the previously specified input
-## argument combinations.  The default value for @var{nanflag} is "includenan"
-## which keeps NaN values in the calculation. To exclude NaN values set the
-## value of @var{nanflag} to "omitnan".  The output will still contain NaN
-## values if @var{x} consists of all NaN values in the operating dimension.
+## argument combinations.  The default value for @var{nanflag} is
+## @qcode{"includenan"} which keeps NaN values in the calculation.  To
+## exclude NaN values set the value of @var{nanflag} to @qcode{"omitnan"}. 
+## The output will still contain NaN values if @var{x} consists of all NaN
+## values in the operating dimension.
 ##
-## The optional second output variable @var{mu} contains the mean of the
+## The optional second output variable @var{m} contains the mean of the
 ## elements of @var{x} used to calculate the standard deviation.  If @var{v} is
 ## the weighted standard deviation, then @var{m} is also the weighted mean.
 ##

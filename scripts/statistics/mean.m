@@ -139,7 +139,7 @@ function y = mean (x, varargin)
         n -= sum (idx(:));
         x(idx) = 0;
       endif
-      y = sum (x(:), 1) ./ n;
+      y = sum (x(:), 1, "double") ./ n;
     else
       sz = size (x);
       ## Find the first non-singleton dimension.
@@ -150,7 +150,7 @@ function y = mean (x, varargin)
         n = sum (! idx, dim);
         x(idx) = 0;
       endif
-      y = sum (x, dim) ./ n;
+      y = sum (x, dim, "double") ./ n;
     endif
 
   else
@@ -169,7 +169,7 @@ function y = mean (x, varargin)
         n = sum (! idx, dim);
         x(idx) = 0;
       endif
-      y = sum (x, dim) ./ n;
+      y = sum (x, dim, "double") ./ n;
 
     else
 
@@ -189,7 +189,7 @@ function y = mean (x, varargin)
             n -= sum (idx(:));
             x(idx) = 0;
           endif
-          y = sum (x(:), 1) ./ n;
+          y = sum (x(:), 1, "double") ./ n;
 
         ## for 1 dimension left, return column vector
         case 1
@@ -200,7 +200,7 @@ function y = mean (x, varargin)
             if (omitnan)
               x_vec = x_vec(! isnan (x_vec));
             endif
-            y(i) = sum (x_vec, 1) ./ numel (x_vec);
+            y(i) = sum (x_vec, 1, "double") ./ numel (x_vec);
           endfor
           y = ipermute (y, [misdim, dim]);
 
@@ -214,7 +214,7 @@ function y = mean (x, varargin)
               if (omitnan)
                 x_vec = x_vec(! isnan (x_vec));
               endif
-              y(i,j) = sum (x_vec, 1) ./ numel (x_vec);
+              y(i,j) = sum (x_vec, 1, "double") ./ numel (x_vec);
             endfor
           endfor
           y = ipermute (y, [misdim, dim]);
@@ -230,17 +230,15 @@ function y = mean (x, varargin)
   ## Convert output if requested
   switch (outtype)
     case "default"
-      ## do nothing, the operators already do the right thing.
+      if isa(x, "single")
+        y = single (y);
+      endif
     case "double"
       y = double (y);
     case "native"
       if (! islogical (x))
-        y = cast (y, class (x));
+        y = feval (class (x), y);
       endif
-    otherwise
-      ## FIXME: This is unreachable code.  Valid values already
-      ##        checked in input validation.
-      error ("mean: OUTTYPE '%s' not recognized", outtype);
   endswitch
 
 endfunction
@@ -337,6 +335,17 @@ endfunction
 %! assert (mean (x, [3 2]), m, 4e-14);
 %! m(2,3) = 15.52301255230125;
 %! assert (mean (x, [3 2], "omitnan"), m, 4e-14);
+
+## Test limits of single precision summation limits on each code path
+%!assert <*63848> (mean (ones (80e6, 1, "single")), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), "all"), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), 1), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), [1 2]), 1, eps)
+%!assert <*63848> (mean (ones (80e6, 1, "single"), [1 3]), 1, eps)
+
+## Test limits of double precision summation
+%!assert <63848> (mean ([flintmax("double"), ones(1, 2^8-1, "double")]), ...
+%!                               35184372088833-1/(2^8), eps(35184372088833))
 
 ## Test input validation
 %!error <Invalid call> mean ()

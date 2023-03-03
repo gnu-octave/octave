@@ -959,7 +959,10 @@ public:
     : base_property (nm, h),
       m_vals (v), m_current_val (def) { }
 
-  OCTAVE_DEFAULT_COPY_MOVE_DELETE (radio_property)
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (radio_property)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (radio_property)
+
+  ~radio_property () = default;
 
   octave_value get () const { return octave_value (m_current_val); }
 
@@ -1116,7 +1119,10 @@ public:
       m_radio_val (v.m_radio_val), m_current_val (v.m_current_val)
   { }
 
-  OCTAVE_DEFAULT_COPY_MOVE_DELETE (color_property)
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (color_property)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (color_property)
+
+  ~color_property () = default;
 
   octave_value get () const
   {
@@ -1330,7 +1336,10 @@ public:
       m_radio_val (v.m_radio_val), m_current_val (v.m_current_val)
   { }
 
-  OCTAVE_DEFAULT_COPY_MOVE_DELETE (double_radio_property)
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (double_radio_property)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (double_radio_property)
+
+  ~double_radio_property () = default;
 
   octave_value get () const
   {
@@ -1645,7 +1654,10 @@ public:
                                            "{on}|off" : "on|{off}"), val)
   { }
 
-  OCTAVE_DEFAULT_COPY_MOVE_DELETE (bool_property)
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (bool_property)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (bool_property)
+
+  ~bool_property () = default;
 
   bool is_on () const { return is ("on"); }
 
@@ -1731,10 +1743,8 @@ public:
                 const octave_value& m = Matrix ())
     : base_property (nm, h), m_data (m) { }
 
-  any_property (const any_property&) = default;
-
-  // FIXME: should we define assignment?
-  any_property& operator = (const any_property&) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (any_property)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (any_property)
 
   ~any_property () = default;
 
@@ -2238,7 +2248,7 @@ public:
                    const graphics_handle& mh = graphics_handle (),
                    const graphics_handle& p = graphics_handle ());
 
-  OCTAVE_DEFAULT_COPY_MOVE (base_properties)
+  OCTAVE_DISABLE_COPY_MOVE (base_properties)
 
   virtual ~base_properties () = default;
 

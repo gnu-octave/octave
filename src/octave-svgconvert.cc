@@ -73,7 +73,7 @@ public:
     setWindow (sz.toRect ());
   }
 
-  OCTAVE_DEFAULT_COPY_MOVE (pdfpainter)
+  OCTAVE_DISABLE_COPY_MOVE (pdfpainter)
 
   ~pdfpainter () { end (); }
 

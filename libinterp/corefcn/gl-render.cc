@@ -2174,7 +2174,7 @@ opengl_renderer::draw_all_lights (const base_properties& props,
     {
       graphics_object go = gh_mgr.get_object (children(i));
 
-      base_properties p = go.get_properties ();
+      base_properties& p = go.get_properties ();
 
       if (p.is_visible ()
           || (m_selecting && p.pickableparts_is ("all")))

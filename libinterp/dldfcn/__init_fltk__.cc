@@ -653,8 +653,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
 
             // if no pos yet, delay adding menu until after other menus
             int pos = kprop.get_position ();
@@ -674,8 +674,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
             add_to_menu (kprop);
             update_position (kprop, ++count);
           }
@@ -699,8 +699,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
 
             // if no pos yet, delay adding menu until after other menus
             int pos = kprop.get_position ();
@@ -721,8 +721,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
             add_to_menu (kprop);
             update_position (kprop, ++count);
           }
@@ -745,8 +745,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties kprop = dynamic_cast<uimenu::properties&>
-                                       (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
             remove_from_menu (kprop);
           }
       }

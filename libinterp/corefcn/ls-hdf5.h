@@ -51,7 +51,7 @@ public:
 
   hdf5_fstreambase () : file_id (-1), current_item () { }
 
-  OCTAVE_DEFAULT_COPY_MOVE (hdf5_fstreambase)
+  OCTAVE_DISABLE_COPY_MOVE (hdf5_fstreambase)
 
   ~hdf5_fstreambase () { close (); }
 

@@ -44,7 +44,8 @@ public:
       m_owidth (s.width ()), m_ofill (s.fill ())
   { }
 
-  OCTAVE_DEFAULT_COPY_MOVE (preserve_stream_state)
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (preserve_stream_state)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (preserve_stream_state)
 
   ~preserve_stream_state ()
   {

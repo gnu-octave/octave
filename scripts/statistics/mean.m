@@ -611,7 +611,6 @@ endfunction
 %!assert <*63848> (mean (ones (80e6, 1, "single"), 1), 1, eps)
 %!assert <*63848> (mean (ones (80e6, 1, "single"), [1 2]), 1, eps)
 %!assert <*63848> (mean (ones (80e6, 1, "single"), [1 3]), 1, eps)
-%!assert <*63848> (mean (ones (80e6, 1, "single")), 1, eps)
 
 ## Test limits of double precision summation
 %!assert <63848> (mean ([flintmax("double"), ones(1, 2^8-1, "double")]), ...

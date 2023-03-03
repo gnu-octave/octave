@@ -97,7 +97,8 @@ diary_buf : public std::stringbuf
 {
 public:
 
-  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (diary_buf)
+  OCTAVE_DEFAULT_CONSTRUCT_DELETE (diary_buf)
+  OCTAVE_DISABLE_COPY_MOVE (diary_buf)
 
 protected:
 

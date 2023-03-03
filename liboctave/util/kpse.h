@@ -46,7 +46,10 @@ public:
     set_end ();
   }
 
-  OCTAVE_DEFAULT_COPY_MOVE_DELETE (kpse_path_iterator)
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (kpse_path_iterator)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (kpse_path_iterator)
+
+  ~kpse_path_iterator () = default;
 
   kpse_path_iterator operator ++ (int)
   {

@@ -80,8 +80,8 @@ function [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, solver_name)
         ## methods which do not require the transpose
         M1fcn = @(x) x;
       case {"bicg"}
-        ## methods which do require the transpose
-        M1fcn = @(x, ~) x;
+        ## methods allow a variable number of arguments
+        M1fcn = @(x, varargin) x;
       otherwise
         error (["__alltohandles__: unknown method: ", solver_name]);
     endswitch
@@ -103,8 +103,8 @@ function [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, solver_name)
         ## methods which do not require the transpose
         M2fcn = @(x) x;
       case {"bicg"}
-        ## methods which do require the transpose
-        M2fcn = @(x, ~) x;
+        ## methods allow a variable number of arguments
+        M2fcn = @(x, varargin) x;
       otherwise
         error (["__alltohandles__: unknown method: ", solver_name]);
     endswitch
@@ -133,15 +133,16 @@ function [Afcn, M1fcn, M2fcn] = __alltohandles__ (A, b, M1, M2, solver_name)
         M2fcn = @(x) M2 \ x;
       endif
     case {"bicg"}
-      ## methods which do require the transpose
+      ## methods which require the transpose and allow a variable number of
+      ## arguments
       if (A_is_numeric)
-        Afcn = @(x, trans) A_sub (A, x, trans);
+        Afcn = @(x, trans, varargin) A_sub (A, x, trans);
       endif
       if (M1_is_numeric)
-        M1fcn = @(x, trans) M_sub (M1, x, trans);
+        M1fcn = @(x, trans, varargin) M_sub (M1, x, trans);
       endif
       if (M2_is_numeric)
-        M2fcn = @(x, trans) M_sub (M2, x, trans);
+        M2fcn = @(x, trans, varargin) M_sub (M2, x, trans);
       endif
     otherwise
       error (["__alltohandles__: unknown method: ", solver_name]);

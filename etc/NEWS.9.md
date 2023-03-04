@@ -38,6 +38,8 @@ overflow or precision concerns (bug #54567), and `mean` avoids errors due to
 limits of single precision by processing as doubles (bug #63848).  `median`
 has also adopted the 'outtype' option from `mean`.
 
+- `mode` now produces Matlab compatible outputs for empty inputs.
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `tensorprod`

@@ -1,4 +1,4 @@
-Summary of important user-visible changes for version 8 (2023-01-22):
+Summary of important user-visible changes for version 8 (2023-03-07):
 --------------------------------------------------------------------
 
 ### General improvements

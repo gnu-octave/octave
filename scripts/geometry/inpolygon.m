@@ -39,9 +39,9 @@
 ## @end deftypefn
 
 ## Algorithm: The method for determining if a point is in a polygon is based on
-## the algorithm shown on
-## http://local.wasp.uwa.edu.au/~pbourke/geometry/insidepoly/
-## and is credited to Randolph Franklin.
+## the PnPoly algorithm from Prof W. Randolph Franklin,
+## (Rensselaer Polytechnic Institute, Troy NY), originally written in 1970.
+## URL: http://wrfranklin.org/pnpoly
 
 function [in, on] = inpolygon (x, y, xv, yv)
 

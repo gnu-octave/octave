@@ -34,23 +34,24 @@
 ## The dimensions of @var{A} and @var{B} that are contracted are defined by
 ## @var{dimA} and @var{dimB}, respectively.  @var{dimA} and @var{dimB} are
 ## scalars or equal length vectors that define the dimensions to match up.
-## The matched dimensions of @var{A} and @var{B} must have equal lengths.
+## The matched dimensions of @var{A} and @var{B} must have the same number of
+## elements.
 ##
-## When @var{dim} is used, it is equivalent to @var{dimA} = @var{dimB} =
-## @var{dim}.
+## When @var{dim} is used, it is equivalent to
+## @code{@var{dimA} = @var{dimB} = @var{dim}}.
 ##
-## When no dimensions are specified, @var{dimA} = @var{dimB} = [].  This
+## When no dimensions are specified, @code{@var{dimA} = @var{dimB} = []}.  This
 ## computes the outer product between @var{A} and @var{B}.
 ##
-## Using the "all" option results in the inner product between @var{A} and
-## @var{B}.  This requires size(@var{A}) == size(@var{B}).
+## Using the @qcode{"all"} option results in the inner product between @var{A}
+## and @var{B}.  This requires @code{size (@var{A}) == size (@var{B})}.
 ##
 ## Use the property-value pair with the property name "NumDimensionsA" when
-## @var{A} has trailing singleton dimensions that should be transfered to
-## @var{C}.  The specified @var{value} should be the total number of
-## dimensions of @var{A}.
+## @var{A} has trailing singleton dimensions that should be transferred to
+## @var{C}.  The specified @var{value} should be the total number of dimensions
+## of @var{A}.
 ##
-## Matlab Compatibility:  Octave does not currently support the "name=value"
+## Matlab Compatibility: Octave does not currently support the "name=value"
 ## syntax for the "NumDimensionsA" parameter.
 ##
 ## @seealso{kron, dot, mtimes}
@@ -75,34 +76,39 @@ function C = tensorprod (A, B, varargin)
   endif
 
   ## Check for misplaced NumDimensionsA property
+  NumDimensionsA = 0;
   if (nargin > 2)
     if (strcmpi (varargin{end}, "NumDimensionsA"))
       error (["tensorprod: a value for the NumDimensionsA property must ", ...
               "be provided"]);
-    elseif (strcmpi ( strtok (inputname (nargin, false)), "NumDimensionsA"))
-      ## FIXME: Add support for keyword=value syntax
-      error (["tensorprod: NumDimensionsA=ndimsA syntax is not yet ", ...
-              "supported in Octave - provide the value as a ", ...
-              "property-value pair"]);
+    elseif (strncmpi (arg = inputname (nargin, false), "NumDimensionsA", 13))
+      NumDimensionsA = regexpi (arg, '^NumDimensionsA = (\d+)', 'tokens');
+      if (isempty (NumDimensionsA))
+        error ("tensorprod: NumDimensionsA must be a positive integer");
+      endif
+      NumDimensionsA = str2double (NumDimensionsA{1}{1});
+      if (isnan (NumDimensionsA) || ! isindex (NumDimensionsA))
+        error ("tensorprod: NumDimensionsA must be a positive integer");
+      endif
+      nargin = nargin - 1;
     endif
   endif
-
   ## Check for NumDimensionsA property
   if (nargin > 3)
-    if (strcmpi (varargin{end - 1}, "NumDimensionsA"))
+    if (strcmpi (varargin{end-1}, "NumDimensionsA"))
       if (! (isnumeric (varargin{end}) && isscalar (varargin{end})))
         error (["tensorprod: value for NumDimensionsA must be a ", ...
                 "numeric scalar"]);
-      elseif (varargin{end} < 1 || rem (varargin{end}, 1) != 0)
+      elseif (! isindex (varargin{end}))
         error (["tensorprod: value for NumDimensionsA must be a ", ...
                 "positive integer"]);
       endif
       NumDimensionsA = varargin{end};
+      nargin = nargin - 2;
     endif
   endif
 
-  existNumDimensionsA = exist ("NumDimensionsA");
-  ndimargs = nargin - 2 - 2 * existNumDimensionsA;
+  ndimargs = nargin - 2;
 
   ## Set dimA and dimB
   if (ndimargs == 0)
@@ -116,7 +122,7 @@ function C = tensorprod (A, B, varargin)
         error ("tensorprod: dim must be a numeric vector of integers or []");
       endif
       ## Calling with dim
-      dimA = transpose ([varargin{1}(:)]);
+      dimA = varargin{1}(:).';  # Reshape to row vector
     elseif (ischar (varargin{1}))
       if (strcmpi (varargin{1}, "all"))
         if (! size_equal (A, B))
@@ -145,12 +151,12 @@ function C = tensorprod (A, B, varargin)
       error ("tensorprod: dimB must be a numeric vector of integers or []");
     endif
 
-    if (length (varargin{1}) != length (varargin{2}))
+    if (numel (varargin{1}) != numel (varargin{2}))
       error (["tensorprod: an equal number of dimensions must be ", ...
               "matched for A and B"]);
     endif
-    dimA = transpose ([varargin{1}(:)]);
-    dimB = transpose ([varargin{2}(:)]);
+    dimA = varargin{1}(:).';  # Reshape to row vector
+    dimB = varargin{2}(:).';
   else
     ## Something is wrong - try to find the error
     for i = 1:ndimargs
@@ -171,14 +177,14 @@ function C = tensorprod (A, B, varargin)
   endif
 
   ## Check that dimensions are positive integers ([] will also pass)
-  if (any ([dimA < 1, dimB < 1, (rem (dimA, 1) != 0), (rem (dimB, 1) != 0)]))
-    error ("tensorprod: dimension(s) must be positive integer(s)");
+  if (! isindex (dimA) || ! isindex (dimB))
+    error ("tensorprod: dimensions must be positive integers");
   endif
 
   ## Check that the length of matched dimensions are equal
   if (any (size (A, dimA) != size (B, dimB)))
-    error (["tensorprod: matched dimension(s) of A and B must have the ", ...
-            "same length(s)"]);
+    error (["tensorprod: matched dimensions of A and B must have the ", ...
+            "same lengths"]);
   endif
 
   ## Find size and ndims of A and B
@@ -188,7 +194,7 @@ function C = tensorprod (A, B, varargin)
   sizeB = size (B, 1:ndimsB);
 
   ## Take NumDimensionsA property into account
-  if (existNumDimensionsA)
+  if (NumDimensionsA)
     if (NumDimensionsA < ndimsA)
       if (ndimargs == 1)
         error (["tensorprod: highest dimension of dim must be less than ", ...
@@ -208,28 +214,31 @@ function C = tensorprod (A, B, varargin)
 
   ## Interchange the dimension to sum over the end of A and the front of B
   ## Prepare for A
-  remainDimA = setdiff (1:ndimsA, dimA); # Dimensions of A to keep
-  newDimOrderA =  [remainDimA, dimA]; # New dim order [to_keep, to_contract]
+  remainDimA = [1:ndimsA];
+  remainDimA(dimA) = [];   # Dimensions of A to keep
+  newDimOrderA = [remainDimA, dimA]; # New dim order [to_keep, to_contract]
   newSizeA = [prod(sizeA(remainDimA)), prod(sizeA(dimA))]; # Temp. 2D size for A
-  remainSizeA = sizeA(remainDimA); # Contrib. to size of C from remaining A dims
 
   ## Prepare for B (See comments for A.  Note that in principle,
   ## prod (sizeB (dimB)) should always be equal to prod (sizeA (dimA)).  May
   ## be able to optimize further here.
-  remainDimB = setdiff (1:ndimsB, dimB);
-  newDimOrderB =  [remainDimB, dimB];
+  remainDimB = [1:ndimsB];
+  remainDimB(dimB) = [];   # Dimensions of B to keep
+  newDimOrderB = [remainDimB, dimB];
   newSizeB = [prod(sizeB(remainDimB)), prod(sizeB(dimB))];
-  remainSizeB = sizeB(remainDimB);
 
   ## Do reshaping into 2D array
   newA = reshape (permute (A, newDimOrderA), newSizeA);
   newB = reshape (permute (B, newDimOrderB), newSizeB);
 
   ## Compute
-  C = newA * transpose (newB);
+  C = newA * newB.';
 
   ## If not an inner product, reshape back to tensor
   if (! isscalar (C))
+    ## Contribution to size of C from remaining A dims
+    remainSizeA = sizeA(remainDimA);
+    remainSizeB = sizeB(remainDimB);
     C = reshape (C, [remainSizeA, remainSizeB]);
   endif
 
@@ -252,14 +261,14 @@ endfunction
 %! M2 = [1, 2; 3, 4; 5, 6];
 %! T = cat (3, M2, M2);
 
-%!assert (tensorprod (3, v1), reshape ([3, 6], [1, 1, 1, 2]));
-%!assert (tensorprod (v1, 3), [3, 6]);
-%!assert (tensorprod (v1, v1, "all"), 5);
-%!assert (tensorprod (v1, v1), reshape ([1, 2, 2, 4], [1, 2, 1, 2]));
-%!assert (tensorprod (v1, v1, 1), [1, 2; 2, 4]);
-%!assert (tensorprod (v1, v1, 2), 5);
-%!assert (tensorprod (v1, v1, 3), reshape ([1, 2, 2, 4], [1, 2, 1, 2]));
-%!assert (tensorprod (v1, v1, 5), reshape ([1, 2, 2, 4], [1, 2, 1, 1, 1, 2]));
+%!assert (tensorprod (3, v1), reshape ([3, 6], [1, 1, 1, 2]))
+%!assert (tensorprod (v1, 3), [3, 6])
+%!assert (tensorprod (v1, v1, "all"), 5)
+%!assert (tensorprod (v1, v1), reshape ([1, 2, 2, 4], [1, 2, 1, 2]))
+%!assert (tensorprod (v1, v1, 1), [1, 2; 2, 4])
+%!assert (tensorprod (v1, v1, 2), 5)
+%!assert (tensorprod (v1, v1, 3), reshape ([1, 2, 2, 4], [1, 2, 1, 2]))
+%!assert (tensorprod (v1, v1, 5), reshape ([1, 2, 2, 4], [1, 2, 1, 1, 1, 2]))
 
 %!assert (tensorprod (M1, v1), cat (4, [1,2;3,4], [2,4;6,8]))
 %!assert (tensorprod (M1, v1'), cat (3, [1,2;3,4], [2,4;6,8]))
@@ -398,40 +407,43 @@ endfunction
 %!error <B must be a single or double precision array> tensorprod (1, "bar")
 %!error <A must be a single or double precision array> tensorprod (int32(1), 1)
 %!error <B must be a single or double precision array> tensorprod (1, int32(1))
-%!error <unknown option 'foo'> tensorprod (1, 1, "foo")
-%!error <unknown option 'foo'> tensorprod (1, 1, 1, "foo", 1)
-%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, "foo", 1)
-%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, "bar")
-%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros(0,0,0), [])
-%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, [], zeros(0,0,0))
-%!error <dim must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros(0,0,0))
-%!error <misplaced 'all' option> tensorprod (1, 1, 1, "all", 1)
-%!error <misplaced 'NumDimensionsA' option> tensorprod (1, 1, "NumDimensionsA", 1, 1)
-%!error <optional arguments must be numeric vectors of integers, \[\], 'all', or 'NumDimensionsA'> tensorprod (1, 1, 1, {}, 1)
-%!error <matched dimension\(s\) of A and B must have the same length\(s\)> tensorprod (ones (3, 4), ones (4, 3), 1)
-%!error <matched dimension\(s\) of A and B must have the same length\(s\)> tensorprod (ones (3, 4), ones (4, 3), 1, 1)
-%!error <dimension\(s\) must be positive integer\(s\)> tensorprod (1, 1, 0)
-%!error <dimension\(s\) must be positive integer\(s\)> tensorprod (1, 1, -1)
-%!error <dimension\(s\) must be positive integer\(s\)> tensorprod (1, 1, 1.5)
-%!error <dimension\(s\) must be positive integer\(s\)> tensorprod (1, 1, NaN)
-%!error <dimension\(s\) must be positive integer\(s\)> tensorprod (1, 1, Inf)
-%!error <third argument must be a numeric vector of integers, \[\], or 'all'> tensorprod (1, 1, {})
-%!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), 1, [1, 2])
-%!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), 1, [])
-%!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), [], [1, 2])
-%!error <size of A and B must be identical when using the 'all' option> tensorprod (ones (3, 4), ones (4, 3), "all")
-%!error <a value for the NumDimensionsA property must be provided> tensorprod (1, 1, "NumDimensionsA")
-%!error <NumDimensionsA cannot be smaller than the number of dimensions of A> tensorprod (ones (2, 2, 2), 1, "NumDimensionsA", 2)
-%!error <highest dimension of dim must be less than or equal to NumDimensionsA> tensorprod (1, 1, 5, "NumDimensionsA", 4)
-%!error <highest dimension of dimA must be less than or equal to NumDimensionsA> tensorprod (1, 1, 5, 5, "NumDimensionsA", 4)
-%!error <NumDimensionsA=ndimsA syntax is not yet supported in Octave> tensorprod (1, 1, NumDimensionsA=4)
-%!error <NumDimensionsA=ndimsA syntax is not yet supported in Octave> tensorprod (1, 1, numdimensionsa=4)
-%!error <too many dimension inputs given> tensorprod (1, 1, 2, 1, 1)
-%!error <too many dimension inputs given> tensorprod (1, 1, 2, 1, 1, 1)
+%!error <value for the NumDimensionsA property must be provided> tensorprod (1, 1, "NumDimensionsA")
+%!error <NumDimensionsA must be a positive integer> tensorprod (1, 1, NumDimensionsA='1')
+%!error <NumDimensionsA must be a positive integer> tensorprod (1, 1, NumDimensionsA=0)
 %!error <value for NumDimensionsA must be a numeric scalar> tensorprod (1, 1, 2, 1, "NumDimensionsA", "foo")
-%!error <value for NumDimensionsA must be a numeric scalar> tensorprod (1, 1, 2, 1, "NumDimensionsA", {})
+%!error <value for NumDimensionsA must be a numeric scalar> tensorprod (1, 1, 2, 1, "NumDimensionsA", [1 2])
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", -1)
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", 0)
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", 1.5)
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", NaN)
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", Inf)
+%!error <dim must be a numeric vector of integers or \[\]> tensorprod (1, 1, ones (2,2))
+%!error <dim must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros (0,0,0))
+%!error <size of A and B must be identical when using the 'all' option> tensorprod (ones (3, 4), ones (4, 3), "all")
+%!error <unknown option 'foo'> tensorprod (1, 1, "foo")
+%!error <third argument must be a numeric vector of integers, \[\], or 'all'> tensorprod (1, 1, {})
+%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, "foo", 1)
+%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, ones (2,2), 1)
+%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros (0,0,0), 1)
+%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, "bar")
+%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, ones (2,2))
+%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, zeros (0,0,0))
+%!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), 1, [1, 2])
+%!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), 1, [])
+%!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), [], [1, 2])
+%!error <misplaced 'NumDimensionsA' option> tensorprod (1, 1, "NumDimensionsA", 1, 1)
+%!error <misplaced 'all' option> tensorprod (1, 1, 1, "all", 1)
+%!error <unknown option 'foo'> tensorprod (1, 1, 1, "foo", 1)
+%!error <optional arguments must be numeric vectors of integers, \[\], 'all', or 'NumDimensionsA'> tensorprod (1, 1, 1, {}, 1)
+%!error <too many dimension inputs given> tensorprod (1, 1, 2, 1, 1)
+%!error <too many dimension inputs given> tensorprod (1, 1, 2, 1, 1, 1)
+%!error <dimensions must be positive integers> tensorprod (1, 1, 0)
+%!error <dimensions must be positive integers> tensorprod (1, 1, -1)
+%!error <dimensions must be positive integers> tensorprod (1, 1, 1.5)
+%!error <dimensions must be positive integers> tensorprod (1, 1, NaN)
+%!error <dimensions must be positive integers> tensorprod (1, 1, Inf)
+%!error <matched dimensions of A and B must have the same lengths> tensorprod (ones (3, 4), ones (4, 3), 1)
+%!error <matched dimensions of A and B must have the same lengths> tensorprod (ones (3, 4), ones (4, 3), 1, 1)
+%!error <highest dimension of dim must be less than or equal to NumDimensionsA> tensorprod (1, 1, 5, "NumDimensionsA", 4)
+%!error <highest dimension of dimA must be less than or equal to NumDimensionsA> tensorprod (1, 1, 5, 2, "NumDimensionsA", 4)
+%!error <NumDimensionsA cannot be smaller than the number of dimensions of A> tensorprod (ones (2, 2, 2), 1, "NumDimensionsA", 2)

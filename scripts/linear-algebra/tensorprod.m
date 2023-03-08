@@ -37,7 +37,7 @@
 ## The matched dimensions of @var{A} and @var{B} must have the same number of
 ## elements.
 ##
-## When @var{dim} is used, it is equivalent to
+## When only @var{dim} is used, it is equivalent to
 ## @code{@var{dimA} = @var{dimB} = @var{dim}}.
 ##
 ## When no dimensions are specified, @code{@var{dimA} = @var{dimB} = []}.  This
@@ -46,13 +46,14 @@
 ## Using the @qcode{"all"} option results in the inner product between @var{A}
 ## and @var{B}.  This requires @code{size (@var{A}) == size (@var{B})}.
 ##
-## Use the property-value pair with the property name "NumDimensionsA" when
-## @var{A} has trailing singleton dimensions that should be transferred to
+## Use the property-value pair with the property name @qcode{"NumDimensionsA"}
+## when @var{A} has trailing singleton dimensions that should be transferred to
 ## @var{C}.  The specified @var{value} should be the total number of dimensions
 ## of @var{A}.
 ##
-## Matlab Compatibility: Octave does not currently support the "name=value"
-## syntax for the "NumDimensionsA" parameter.
+## Matlab Compatibility: Octave does not currently support the
+## @qcode{"@var{property_name}=@var{value}"} syntax for the
+## @qcode{"NumDimensionsA"} parameter.
 ##
 ## @seealso{kron, dot, mtimes}
 ## @end deftypefn
@@ -82,15 +83,7 @@ function C = tensorprod (A, B, varargin)
       error (["tensorprod: a value for the NumDimensionsA property must ", ...
               "be provided"]);
     elseif (strncmpi (arg = inputname (nargin, false), "NumDimensionsA", 13))
-      NumDimensionsA = regexpi (arg, '^NumDimensionsA = (\d+)', 'tokens');
-      if (isempty (NumDimensionsA))
-        error ("tensorprod: NumDimensionsA must be a positive integer");
-      endif
-      NumDimensionsA = str2double (NumDimensionsA{1}{1});
-      if (isnan (NumDimensionsA) || ! isindex (NumDimensionsA))
-        error ("tensorprod: NumDimensionsA must be a positive integer");
-      endif
-      nargin = nargin - 1;
+      error ("tensorprod: NumDimensionsA=VALUE syntax is unsupported.  Use syntax 'NumDimensionsA', VALUE");
     endif
   endif
   ## Check for NumDimensionsA property
@@ -408,8 +401,7 @@ endfunction
 %!error <A must be a single or double precision array> tensorprod (int32(1), 1)
 %!error <B must be a single or double precision array> tensorprod (1, int32(1))
 %!error <value for the NumDimensionsA property must be provided> tensorprod (1, 1, "NumDimensionsA")
-%!error <NumDimensionsA must be a positive integer> tensorprod (1, 1, NumDimensionsA='1')
-%!error <NumDimensionsA must be a positive integer> tensorprod (1, 1, NumDimensionsA=0)
+%!error <NumDimensionsA=VALUE syntax is unsupported> tensorprod (1, 1, NumDimensionsA=1)
 %!error <value for NumDimensionsA must be a numeric scalar> tensorprod (1, 1, 2, 1, "NumDimensionsA", "foo")
 %!error <value for NumDimensionsA must be a numeric scalar> tensorprod (1, 1, 2, 1, "NumDimensionsA", [1 2])
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", -1)

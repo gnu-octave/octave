@@ -4325,7 +4325,7 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
         if (value != T ())
           {
             // If conversion produces an integer that overflows, failbit is set
-            // but value is non-zero.  We want to treat this case as success,
+            // but value is nonzero.  We want to treat this case as success,
             // so clear  failbit from the stream state to keep going.
             // FIXME: Maybe set error state on octave stream?  Matlab does
             // *not* indicate an error message on overflow.

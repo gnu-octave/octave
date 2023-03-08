@@ -350,7 +350,7 @@ xnnz (T base, T limit, T inc, T final_val, octave_idx_type nel)
 {
   // Note that the order of the following checks matters.
 
-  // If there are no elements, there can be no non-zero elements.
+  // If there are no elements, there can be no nonzero elements.
   if (nel == 0)
     return 0;
 

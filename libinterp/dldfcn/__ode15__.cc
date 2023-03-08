@@ -523,7 +523,7 @@ IDA::jacsparse_impl (realtype t, realtype cj, N_Vector& yy, N_Vector& yyp,
     {
       // Allocate memory for sparse Jacobian defined in user function.
       // This will always be required at least once since we set the number
-      // of non-zero elements to zero initially.
+      // of nonzero elements to zero initially.
       if (SUNSparseMatrix_Reallocate (Jac, nnz))
         error ("Unable to allocate sufficient memory for IDA sparse matrix");
     }

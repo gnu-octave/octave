@@ -52,7 +52,7 @@
 ##
 ## Programming tip: @code{dec2hex} discards any fractional part of the input.
 ## If you need the fractional part to be converted too, call @code{dec2base}
-## with a non-zero number of decimal places.  You can also use @code{fix} or
+## with a nonzero number of decimal places.  You can also use @code{fix} or
 ## @code{round} on fractional inputs to ensure predictable rounding behavior.
 ##
 ## @seealso{hex2dec, dec2base, dec2bin}

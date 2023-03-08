@@ -707,7 +707,7 @@ public:
   {
     if (m_val.issparse ())
       {
-        // For sparse arrays, return the first non-zero value.
+        // For sparse arrays, return the first nonzero value.
         const void *m_data = m_val.mex_get_data ();
         if (m_data == nullptr)
           return 0.0;

@@ -417,7 +417,7 @@ octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
-// Return true if this matrix has all true elements (non-zero, not NA/NaN).
+// Return true if this matrix has all true elements (nonzero, not NA/NaN).
 template <typename MT>
 bool
 octave_base_matrix<MT>::is_true () const

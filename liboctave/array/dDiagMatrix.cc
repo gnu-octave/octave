@@ -243,7 +243,7 @@ DiagMatrix::inverse (octave_idx_type& info) const
   info = 0;
   octave_idx_type len = r;        // alias for readability
   octave_idx_type z_count  = 0;   // zeros
-  octave_idx_type nz_count = 0;   // non-zeros
+  octave_idx_type nz_count = 0;   // nonzeros
   for (octave_idx_type i = 0; i < len; i++)
     {
       if (xelem (i, i) == 0.0)

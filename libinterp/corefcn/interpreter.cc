@@ -1073,7 +1073,7 @@ void interpreter::display_startup_message () const
     std::cout << octave_startup_message () << "\n" << std::endl;
 }
 
-// Initialize by reading startup files.  Return non-zero if an exception
+// Initialize by reading startup files.  Return nonzero if an exception
 // occurs when reading any of them, but don't exit early because of an
 // exception.
 

@@ -726,7 +726,7 @@ public:
 
 protected:
 
-  // Contains error message if Bison-generated parser returns non-zero
+  // Contains error message if Bison-generated parser returns nonzero
   // status.
   std::string m_parse_error_msg;
 

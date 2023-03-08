@@ -134,7 +134,7 @@ octave_perm_matrix::do_index_op (const octave_value_list& idx,
   return retval;
 }
 
-// Return true if this matrix has all true elements (non-zero, not NaN/NA).
+// Return true if this matrix has all true elements (nonzero, not NaN/NA).
 // A permutation cannot have NaN/NA.
 bool
 octave_perm_matrix::is_true () const

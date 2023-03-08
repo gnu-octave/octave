@@ -3085,7 +3085,7 @@ void file_editor_tab::do_breakpoint_marker (bool insert,
           int editor_linenr = -1;
           marker *bp = nullptr;
 
-          // If comes back indicating a non-zero breakpoint marker,
+          // If comes back indicating a nonzero breakpoint marker,
           // reuse it if possible
           emit find_translated_line_number (line, editor_linenr, bp);
           if (bp != nullptr)

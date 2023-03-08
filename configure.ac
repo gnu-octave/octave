@@ -3162,6 +3162,8 @@ AC_SUBST(ac_config_headers)
 AC_CONFIG_FILES([
   Makefile
   build-aux/check-subst-vars.sh:build-aux/check-subst-vars.in.sh
+  build-aux/find-defun-files.sh:build-aux/find-defun-files.in.sh
+  build-aux/find-files-with-tests.sh:build-aux/find-files-with-tests.in.sh
   doc/doxyhtml/Doxyfile
   libgnu/Makefile
   test/Makefile

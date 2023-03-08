@@ -2,7 +2,7 @@
 
 ########################################################################
 ##
-## Copyright (C) 2009-2023 The Octave Project Developers
+## Copyright (C) 2013-2023 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -27,14 +27,8 @@
 
 set -e
 
-SED=${SED:-sed}
-EGREP=${EGREP:-egrep}
-
-# Some stupid egreps don't like empty elements in alternation patterns,
-# so we have to repeat ourselves because some stupid egreps don't like
-# empty elements in alternation patterns.
-
-DEFUN_PATTERN="^[ \t]*DEF(CONSTFUN|CONSTMETHOD|METHOD|METHOD(_|_STATIC_)DLD|METHODX|METHODX(_|_STATIC_)DLD|UN|UN(_|_STATIC_)DLD|UNX|UNX(_|_STATIC_)DLD)[ \t]*\\("
+: ${GREP=@GREP@}
+: ${SED=@SED@}
 
 srcdir="$1"
 if [ "$1" ]; then
@@ -49,7 +43,7 @@ do
     file="$srcdir/$arg"
   fi
   if [ -f "$file" ]; then
-    if [ "`$EGREP -l "$DEFUN_PATTERN" $file`" ]; then
+    if [ "`$GREP -l '^%!' $file`" ]; then
       echo "$file" | $SED "s,\\$srcdir/,,"
     fi
   fi

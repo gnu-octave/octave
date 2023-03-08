@@ -169,7 +169,7 @@ ULT_DIST_SRC := \
   $(ULT_PARSER_SRC)
 
 LIBINTERP_FOUND_DEFUN_FILES := \
-  $(shell $(SHELL) $(srcdir)/build-aux/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
+  $(shell $(SHELL) build-aux/find-defun-files.sh "$(srcdir)" $(ULT_DIST_SRC))
 
 BUILT_IN_DEFUN_FILES := $(OPT_HANDLERS) $(LIBINTERP_FOUND_DEFUN_FILES)
 
@@ -178,7 +178,7 @@ LIBINTERP_DEFUN_FILES += \
 
 ## Rules to build test files
 
-LIBINTERP_TST_FILES_SRC := $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))
+LIBINTERP_TST_FILES_SRC := $(shell $(SHELL) build-aux/find-files-with-tests.sh "$(srcdir)" $(ULT_DIST_SRC) $(DLDFCN_SRC))
 
 LIBINTERP_TST_FILES := $(addsuffix -tst,$(LIBINTERP_TST_FILES_SRC))
 

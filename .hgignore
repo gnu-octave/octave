@@ -42,6 +42,8 @@ syntax: regexp
 (^|/)build-aux/check-subst-vars\.sh$
 ^build-aux/compile$
 ^build-aux/depcomp$
+(^|/)build-aux/find-defun-files\.sh$
+(^|/)build-aux/find-files-with-tests\.sh$
 ^build-aux/install-sh$
 ^build-aux/ltmain\.sh$
 ^build-aux/mdate-sh$

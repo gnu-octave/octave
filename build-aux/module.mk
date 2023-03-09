@@ -18,9 +18,6 @@ EXTRA_DIST += \
   %reldir%/update-bug-status.sh
 
 GEN_CONFIG_SHELL += \
-  %reldir%/check-subst-vars.in.sh \
-  %reldir%/find-defun-files.in.sh \
-  %reldir%/find-files-with-tests.in.sh \
   %reldir%/subst-config-vals.sh \
   %reldir%/subst-cross-config-vals.sh \
   %reldir%/subst-script-vals.sh

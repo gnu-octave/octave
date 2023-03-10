@@ -865,6 +865,7 @@ void settings_dialog::get_lexer_settings (QsciLexer *lexer,
       select_font[i]->setObjectName (actual_name + "_font");
       select_font[i]->setMaximumSize (label_width, QWIDGETSIZE_MAX);
       select_font[i]->setMinimumSize (label_width, 1);
+      select_font[i]->setSizeAdjustPolicy (QComboBox::AdjustToMinimumContentsLengthWithIcon);
       font_size[i] = new QSpinBox ();
       font_size[i]->setObjectName (actual_name + "_size");
       if (styles[i] == 0) // the default

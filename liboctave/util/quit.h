@@ -36,7 +36,6 @@
 #  include <list>
 #  include <stdexcept>
 #  include <string>
-extern "C" {
 #else
 #  include <signal.h>
 #endif
@@ -199,6 +198,8 @@ public:
 };
 
 OCTAVE_END_NAMESPACE(octave)
+
+extern "C" {
 
 #endif
 

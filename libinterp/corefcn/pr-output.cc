@@ -1452,7 +1452,7 @@ pr_any_float (std::ostream& os, const float_format& fmt, T val)
           if (bit_format > 1)
             {
               for (std::size_t i = 0; i < sizeof (T); i++)
-                PRINT_CHAR_BITS_SWAPPED (os, tmp.i[i]);
+                PRINT_CHAR_BITS (os, tmp.i[i]);
             }
           else
             {
@@ -3927,34 +3927,59 @@ Print variable in a format appropriate for a currency (fixed format with two
 digits to the right of the decimal point).  Only the real part of a variable is
 displayed, as the imaginary part makes no sense for a currency.
 
-@item native-hex
-Print the hexadecimal representation of numbers as they are stored in memory.
-For example, on a workstation which stores 8 byte real values in IEEE format
-with the least significant byte first, the value of @code{pi} when printed in
-@code{native-hex} format is @code{400921fb54442d18}.
-
-@item hex
-The same as @code{native-hex}, but always print the most significant byte
-first.
-
-@item native-bit
-Print the bit representation of numbers as stored in memory.  For example, the
-value of @code{pi} is
+@item bit
+Print the bit representation of numbers in memory, always with the
+most significant bit first.  For example, @code{pi} is printed like this:
 
 @example
 @group
-01000000000010010010000111111011
-01010100010001000010110100011000
+0 10000000000 1001001000011111101101010100010001000010110100011000
 @end group
 @end example
 
-(shown here in two 32 bit sections for typesetting purposes) when printed in
-native-bit format on a workstation which stores 8 byte real values in IEEE
-format with the least significant byte first.
+where spaces have been added for clarity to show the sign bit, the 11-bit
+exponent, and the 52-bit mantissa, in that order.  Together they represent
+@code{pi} as an IEEE 754 double precision floating point number in the normal
+form.  Single precision floating point numbers are analogous.
 
-@item bit
-The same as @code{native-bit}, but always print the most significant bits
-first.
+@item native-bit
+Print the bit representation of numbers as stored in memory.  For big-endian
+machines, this is identical to the @code{format bit} layout seen above.
+For little-endian machines, it will print the bytes in the opposite order,
+though bits within a byte will still be presented with the most significant
+bit on the left.
+
+For example, the value of @code{pi} in this format on x86-64 is:
+
+@example
+@group
+00011000 00101101 01000100 01010100 11111011 00100001 00001001 01000000
+@end group
+@end example
+
+shown here with spaces added for clarity.  Compare with the previous bit string
+from @code{format bit} to see the grouping into bytes and their ordering.
+
+@item hex
+The same as @code{format bit} above, except that bits are grouped four at a
+time into hexadecimal digits for brevity.  Thus @code{pi} is represented as:
+
+@example
+@group
+400921fb54442d18
+@end group
+@end example
+
+@item native-hex
+The same as @code{format native-bit} above, except that bits are grouped four
+at a time into hexadecimal digits for brevity.  Thus @code{pi} is represented
+on an x86-64 as:
+
+@example
+@group
+182d4454fb210940
+@end group
+@end example
 
 @item rat
 Print a rational approximation, i.e., values are approximated as the ratio of

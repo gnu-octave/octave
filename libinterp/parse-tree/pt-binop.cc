@@ -156,6 +156,8 @@ tree_braindead_shortcircuit_binary_expression::evaluate (tree_evaluator& tw,
 
           return octave_value (result);
         }
+      else
+        return tree_binary_expression::evaluate (tw);
     }
 
   return octave_value ();

@@ -794,7 +794,7 @@ void Vt102Emulation::sendString(const char* s , int length)
 */
 
 void Vt102Emulation::reportCursorPosition()
-{ char tmp[20];
+{ char tmp[32];
   sprintf(tmp,"\033[%d;%dR",_currentScreen->getCursorY()+1,_currentScreen->getCursorX()+1);
   sendString(tmp);
 }

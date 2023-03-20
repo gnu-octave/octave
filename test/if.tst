@@ -48,6 +48,14 @@
 %! endif
 %! assert (__prog_output_assert__ ("pass"));
 
+%!test <63935>
+%! if (true (4, 1) & true (4, 1))
+%!   __printf_assert__ ("pass\n");
+%! elseif (x)
+%!   __printf_assert__ ("fail\n");
+%! endif
+%! assert (__prog_output_assert__ ("pass"));
+
 %!test
 %! x = 0;
 %! y = -2;

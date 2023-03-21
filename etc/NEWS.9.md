@@ -38,12 +38,7 @@ overflow or precision concerns (bug #54567), and `mean` avoids errors due to
 limits of single precision by processing as doubles (bug #63848).  `median`
 has also adopted the 'outtype' option from `mean`.
 
-- `mode` now produces Matlab compatible output for empty inputs (bug #50583).
- 
-- `cov` now processes the input form cov(x,y) with two separate data arrays
-x and y, as cov (x(:), y(:)) to maintain Matlab compatibility.  It also
-accepts a NANFLAG option to allow ignoring NaN entries in input data (bug 
-#50571) and produces Matlab compatible outputs for empty inputs (bug #50583).
+- `mode` now produces Matlab compatible outputs for empty inputs.
 
 ### Alphabetical list of new functions added in Octave 9
 

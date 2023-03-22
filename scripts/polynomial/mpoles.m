@@ -29,13 +29,21 @@
 ## @deftypefnx {} {[@var{multp}, @var{idxp}] =} mpoles (@var{p}, @var{tol}, @var{reorder})
 ## Identify unique poles in @var{p} and their associated multiplicity.
 ##
-## The output is ordered from pole with largest magnitude to smallest
-## magnitude.
+## By default, the output is ordered from the pole with the largest magnitude
+## to the smallest magnitude.
 ##
-## If the relative difference of two poles is less than @var{tol} then they are
-## considered to be multiples.  The default value for @var{tol} is 0.001.
+## Two poles are considered to be multiples if the difference between them
+## is less than the relative tolerance @var{tol}.
 ##
-## If the optional parameter @var{reorder} is zero, poles are not sorted.
+## @example
+## abs (@var{p1} - @var{p0}) / abs (@var{p0}) < @var{tol}
+## @end example
+##
+## If the pole is 0 then no scaling is done and @var{tol} is interpreted as an
+## absolute tolerance.  The default value for @var{tol} is 0.001.
+##
+## If the optional parameter @var{reorder} is false/zero, poles are not
+## sorted.
 ##
 ## The output @var{multp} is a vector specifying the multiplicity of the poles.
 ## @code{@var{multp}(n)} refers to the multiplicity of the Nth pole
@@ -56,71 +64,101 @@
 ## @seealso{residue, poly, roots, conv, deconv}
 ## @end deftypefn
 
-function [multp, indx] = mpoles (p, tol, reorder)
+function [multp, idxp] = mpoles (p, tol, reorder)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-   if (nargin < 2 || isempty (tol))
-     tol = 0.001;
-   endif
+  if (! isfloat (p))
+    error ("mpoles: P must be a single or double floating point vector");
+  endif
 
-   if (nargin < 3 || isempty (reorder))
-     reorder = true;
-   endif
+  if (nargin < 2 || isempty (tol))
+    tol = 0.001;
+  elseif (! (isscalar (tol) && isreal (tol) && tol > 0))
+    error ("mpoles: TOL must be a real scalar greater than 0");
+  endif
+
+  if (nargin < 3 || isempty (reorder))
+    reorder = true;
+  elseif (! (isscalar (reorder) && isreal (reorder)))
+    error ("mpoles: REORDER must be a numeric or logical scalar");
+  endif
 
   Np = numel (p);
-
-  ## force poles to be a column vector
-
-  p = p(:);
+  p = p(:);  # force poles to be a column vector
 
   if (reorder)
     ## sort with largest magnitude first
-    [~, ordr] = sort (abs (p), "descend");
-    p = p(ordr);
+    [~, order] = sort (abs (p), "descend");
+    p = p(order);
   else
-    ordr = (1:Np).';
+    order = (1:Np).';
   endif
 
-  ## find pole multiplicity by comparing relative difference of poles
+  ## Create vector of tolerances for use in algorithm.
+  vtol = zeros (Np, 1, class (p));
+  p_nz = (p != 0);     # non-zero poles
+  vtol(! p_nz) = tol;  # use absolute tolerance for zero poles
 
-  multp = zeros (Np, 1);
-  indx = [];
+  ## Find pole multiplicity by comparing relative difference of poles.
+  multp = zeros (Np, 1, class (p));
+  idxp = [];
   n = find (multp == 0, 1);
   while (n)
-    dp = abs (p-p(n));
-    if (p(n) == 0.0)
-      if (any (abs (p) > 0 & isfinite (p)))
-        p0 = mean (abs (p(abs (p) > 0 & isfinite (p))));
-      else
-        p0 = 1;
-      endif
-    else
-      p0 = abs (p(n));
-    endif
-    k = find (dp < tol * p0);
+    dp = abs (p - p(n));
+    vtol(p_nz) = tol * abs (p(n));
+    k = find (dp < vtol);
     ## Poles can only be members of one multiplicity group.
-    if (numel (indx))
-      k = k(! ismember (k, indx));
+    if (numel (idxp))
+      k = k(! ismember (k, idxp));
     endif
     m = 1:numel (k);
     multp(k) = m;
-    indx = [indx; k];
+    idxp = [idxp; k];
     n = find (multp == 0, 1);
   endwhile
-  multp = multp(indx);
-  indx = ordr(indx);
+  multp = multp(idxp);
+  idxp = order(idxp);
 
 endfunction
 
 
 %!test
-%! [mp, n] = mpoles ([0 0], 0.01);
+%! [mp, ip] = mpoles ([0 0], 0.01);
 %! assert (mp, [1; 2]);
 
 %!test
-%! [mp, n] = mpoles ([-1e4, -0.1, 0]);
-%! assert (mp, ones (3, 1));
-%! assert (n, [1; 2; 3]);
+%! [mp, ip] = mpoles ([-1e4, -0.1, 0]);
+%! assert (mp, [1; 1; 1]);
+%! assert (ip, [1; 2; 3]);
+
+## Test single inputs
+%!test
+%! [mp, ip] = mpoles (single ([-1e4, -0.1, 0]));
+%! assert (mp, single ([1; 1; 1]));
+%! assert (ip, [1; 2; 3]);
+
+## Test relative tolerance criteria
+%!test
+%! [mp, ip] = mpoles ([1, 1.1, 1.3], .1/1.1);
+%! assert (mp, [1; 1; 1]);
+%! [mp, ip] = mpoles ([1, 1.1, 1.3], .1/1.1 + eps);
+%! assert (mp, [1; 1; 2]);
+
+## Test absolute tolerance criteria with a zero pole
+%!test
+%! [mp, ip] = mpoles ([0, -0.1, 0.3], .1);
+%! assert (mp, [1; 1; 1]);
+%! [mp, ip] = mpoles ([0, -0.1, 0.3], .1 + eps);
+%! assert (mp, [1; 1; 2]);
+
+## Test input validation
+%!error <Invalid call> mpoles ()
+%!error <P must be a single or double floating point vector> mpoles (uint8 (1))
+%!error <TOL must be a real scalar greater than 0> mpoles (1, [1, 2])
+%!error <TOL must be a real scalar greater than 0> mpoles (1, 1i)
+%!error <TOL must be a real scalar greater than 0> mpoles (1, 0)
+%!error <REORDER must be a numeric or logical scalar> mpoles (1, 1, [1, 2])
+%!error <REORDER must be a numeric or logical scalar> mpoles (1, 1, {1})

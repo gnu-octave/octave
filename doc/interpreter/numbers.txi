@@ -871,6 +871,8 @@ variable.
 
 @DOCSTRING(isprime)
 
+@DOCSTRING(isuniform)
+
 If instead of knowing properties of variables, you wish to know which
 variables are defined and to gather other information about the
 workspace itself, @pxref{Status of Variables}.

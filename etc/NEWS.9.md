@@ -42,6 +42,7 @@ has also adopted the 'outtype' option from `mean`.
 
 ### Alphabetical list of new functions added in Octave 9
 
+* `isuniform`
 * `tensorprod`
 
 ### Deprecated functions, properties, and operators
@@ -111,7 +112,7 @@ from Octave 9.
     removed.  Delete unnecessary trailing whitespace.
 
 - For plot functions, the use of numbers to select line colors in
-  shorthand formats was an undocumented feature was removed from Octave 9.
+  shorthand formats was an undocumented feature that was removed in Octave 9.
 
 - The environment variable used by `mkoctfile` for linker flags is now
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6

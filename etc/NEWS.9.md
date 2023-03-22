@@ -38,7 +38,19 @@ overflow or precision concerns (bug #54567), and `mean` avoids errors due to
 limits of single precision by processing as doubles (bug #63848).  `median`
 has also adopted the 'outtype' option from `mean`.
 
-- `mode` now produces Matlab compatible outputs for empty inputs.
+- `mode` now produces Matlab compatible output for empty inputs (bug #50583).
+
+- `cov` now processes the input form cov(x,y) with two separate data arrays
+x and y, as cov(x(:),y(:)) to maintain Matlab compatibility.  It also accepts
+a NANFLAG option to allow ignoring NaN entries in input data (bug #50571)
+and produces Matlab compatible outputs for empty inputs (bug #50583).  `corr`
+and `corrcoef` internal code has been adapted to the new `cov` behavior with
+no change to user interface.  Packages using the octave core's `cov` that rely
+on the previous calling form may need to make similar adaptations.  Calls for
+cov(x) with a vector x expecting a scalar return can get the previous results
+from `cov(x)(2)`, and calls to cov(x,y) with x and y matrices expecting
+columnwise covariance calculation can obtain the previous results using
+`cov([x,y])(1:nx, nx+1:end)`, where nx = columns(x).
 
 ### Alphabetical list of new functions added in Octave 9
 

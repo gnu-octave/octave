@@ -70,7 +70,20 @@ function r = corr (x, y = [])
   ## No check for division by zero error, which happens only when
   ## there is a constant vector and should be rare.
   if (nargin == 2)
-    c = cov (x, y);
+    ## Adjust for Octave 9.1.0 compatability behavior change in two-input cov.
+    ## cov now treats cov(x,y) as cov(x(:),y(:)), returning a 2x2 covariance
+    ## of the two univariate distributions x and y.  corr will now pass [x,y]
+    ## as cov([x,y]), which for m x n inputs will return 2n x 2n outputs, with
+    ##  the off diagonal matrix quarters containing what was previously
+    ## returned by cov(x,y).
+
+    ## FIXME: Returning a larger than needed arary and discarding 3/4 of the
+    ##        information is nonideal.  Consider implementing a more
+    ##        efficient cov here as a subfunction to corr.
+
+    nx = columns(x);
+    c = cov ([x, y]);
+    c = c(1:nx, nx+1:end);
     s = std (x)' * std (y);
     r = c ./ s;
   else

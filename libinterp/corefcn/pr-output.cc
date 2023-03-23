@@ -2851,7 +2851,7 @@ pr_int (std::ostream& os, const T& d, int fw = 0)
           if (bit_format > 1)
             {
               for (std::size_t i = 0; i < sz; i++)
-                PRINT_CHAR_BITS_SWAPPED (os, tmpi[i]);
+                PRINT_CHAR_BITS (os, tmpi[i]);
             }
           else
             {

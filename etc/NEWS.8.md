@@ -213,6 +213,15 @@ from Octave 8.
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
   and will be removed in a future version of Octave.
 
+Summary of bugs fixed for version 8.2.0 (2023-??-??):
+----------------------------------------------------
+
+- Loading and saving preferences dialog now faster (bug #63909).
+- The `&` and `|` operators now work correctly in if-statements (bug #63835).
+- `mpoles` now handles poles at zero correctly, and the function has been
+  overhauled. (bug #63937).
+- `format native-bit` now consistent with `format native-hex` (bug #63940).
+
 Summary of bugs fixed for version 8.1.0 (2023-01-22):
 ----------------------------------------------------
 

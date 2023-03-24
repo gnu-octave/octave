@@ -119,7 +119,7 @@ public:
 
   std::ostream * preferred_output_stream ()
   {
-    if (! m_encoding.compare ("utf-8"))
+    if (! m_encoding.compare ("utf-8") || (m_mode & std::ios::binary))
       return output_stream ();
 
     if (m_conv_ostream)

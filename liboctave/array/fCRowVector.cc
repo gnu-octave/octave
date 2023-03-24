@@ -438,6 +438,11 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n_in)
       retval.resize (1, x2);
       return retval;
     }
+  else if (x1 == x2)
+    {
+      retval.resize (n_in, x2);
+      return retval;
+    }
 
   // Use unsigned type (guaranteed n_in > 1 at this point) so that divisions
   // by 2 can be replaced by compiler with shift right instructions.
@@ -451,7 +456,17 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n_in)
   retval.xelem (n-1) = x2;
 
   // Construct linspace symmetrically from both ends.
+  bool isnan_delta = false;
   FloatComplex delta = (x2 - x1) / (n - 1.0f);
+  if (octave::math::isinf (delta))
+    {
+      if (octave::math::isinf (delta.real ()))
+        delta.real (octave::numeric_limits<float>::NaN ());
+      if (octave::math::isinf (delta.imag ()))
+        delta.imag (octave::numeric_limits<float>::NaN ());
+      isnan_delta = true;
+    }
+
   unsigned_octave_idx_type n2 = n/2;
   for (unsigned_octave_idx_type i = 1; i < n2; i++)
     {
@@ -459,7 +474,22 @@ linspace (const FloatComplex& x1, const FloatComplex& x2, octave_idx_type n_in)
       retval.xelem (n-1-i) = x2 - static_cast<float> (i)*delta;
     }
   if (n % 2 == 1)  // Middle element if number of elements is odd.
-    retval.xelem (n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2.0f);
+    {
+      if (x1 == -x2)
+        retval.xelem (n2) = 0;
+      else
+        {
+          FloatComplex c = (x1 + x2) / 2.0f;
+          if (isnan_delta)
+            {
+              if (octave::math::isnan (delta.real ()))
+                c.real (octave::numeric_limits<float>::NaN ());
+              if (octave::math::isnan (delta.imag ()))
+                c.imag (octave::numeric_limits<float>::NaN ());
+            }
+          retval.xelem (n2) = c;
+        }
+    }
 
   return retval;
 }

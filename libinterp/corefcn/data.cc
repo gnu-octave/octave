@@ -5745,27 +5745,41 @@ is returned.
 %!assert (numel (linspace (0, 1, 2-eps)), 1)
 %!assert (linspace (10, 20, 2.1), [10 20])
 %!assert (linspace (10, 20, 2.9), [10 20])
-%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 %!assert (linspace (Inf, Inf, 3), [Inf, Inf, Inf])
 %!assert (linspace (-Inf, -Inf, 3), [-Inf, -Inf, -Inf])
 %!assert (linspace (-Inf, Inf, 3), [-Inf, 0, Inf])
+## Octave prefers to return NaN which indicates failure of algorithm.
+%!assert (linspace (-Inf, Inf, 4), [-Inf, NaN, NaN, Inf])
+%!assert (linspace (-Inf, 0, 3), [-Inf, NaN, 0])
+%!assert (linspace (-Inf, 0, 4), [-Inf, NaN, NaN, 0])
 %!assert (linspace (Inf + 1i, Inf + 1i, 3), [Inf + 1i, Inf + 1i, Inf + 1i])
-%!assert (linspace (-Inf + 1i, Inf + 1i, 3), [-Inf + 1i, NaN + 1i, Inf + 1i])
+%!assert (linspace (-Inf - 1i, Inf + 1i, 3), [-Inf - 1i, 0 + 0i, Inf + 1i])
+%!assert (linspace (-Inf - 1i, Inf + 2i, 3), [-Inf - 1i, NaN + 0.5i, Inf + 2i])
+%!assert (linspace (-Inf - 3i, Inf + 0i, 4),
+%!        [-Inf - 3i, NaN - 2i, NaN - 1i, Inf + 0i])
+%!assert (linspace (complex (-1, -Inf), complex (1, Inf), 3),
+%!          [complex(-1, -Inf), 0 + 0i, complex(1, Inf)])
+%!assert (linspace (complex (-1, -Inf), complex (2, Inf), 3),
+%!          [complex(-1, -Inf), complex(0.5, NaN), complex(2, Inf)])
+%!assert (linspace (complex (-3, -Inf), complex (0, Inf), 4),
+%!        [complex(-3, -Inf), complex(-2, NaN), complex(-1, NaN), complex(0, Inf)])
 
 ## FIXME: Octave is not fully Matlab-compatible for some combinations of
 ##        Inf/-Inf endpoints.  See bug #56933.  This was dubbed "Won't Fix"
-##        so these tests have been removed from the test suite by commenting
-##        them out.  If the behavior in the future is made compatible these
-##        tests can be re-instated.
+##        as Octave prefers to return NaN for some of these conditions to
+##        better reflect that the algorithm has failed.  If the behavior in
+##        the future is made compatible these tests can be re-instated.
 ##%!assert <56933> (linspace (-Inf, Inf, 4), [-Inf, -Inf, Inf, Inf])
 ##%!assert <56933> (linspace (-Inf, Inf, 5), [-Inf, -Inf, 0, Inf, Inf])
 ##%!assert <56933> (linspace (0, Inf, 4), [0, Inf, Inf, Inf])
 ##%!assert <56933> (linspace (0, -Inf, 4), [0, -Inf, -Inf, -Inf])
 ##%!assert <56933> (linspace (-Inf, 0, 4), [-Inf, NaN, NaN, 0])
 ##%!assert <56933> (linspace (Inf, 0, 4), [Inf, NaN, NaN, 0])
+##%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 
-%!error linspace ()
-%!error linspace (1, 2, 3, 4)
+## Test input validation
+%!error <Invalid call> linspace ()
+%!error <Invalid call> linspace (1, 2, 3, 4)
 %!error <N must be a scalar> linspace (1, 2, [3, 4])
 %!error <START, END must be scalars or vectors> linspace (ones (2,2), 2, 3)
 %!error <START, END must be scalars or vectors> linspace (2, ones (2,2), 3)

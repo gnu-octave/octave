@@ -2306,7 +2306,7 @@ as the name of the function when reporting errors.
 ## file stream with encoding
 %!test
 %! f = tempname ();
-%! fid = fopen (f, "w+", "n", "iso-8859-1");
+%! fid = fopen (f, "wt+", "n", "iso-8859-1");
 %! unwind_protect
 %!   fprintf (fid, "abc,äöü\n");
 %!   fflush (fid);

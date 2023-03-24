@@ -3645,19 +3645,7 @@ ComplexMatrix linspace (const ComplexColumnVector& x1,
 
   retval.clear (m, n);
   for (octave_idx_type i = 0; i < m; i++)
-    retval.xelem (i, 0) = x1(i);
-
-  // The last column is unused so temporarily store delta there
-  Complex *delta = &retval.xelem (0, n-1);
-  for (octave_idx_type i = 0; i < m; i++)
-    delta[i] = (x1(i) == x2(i)) ? 0 : (x2(i) - x1(i)) / (n - 1.0);
-
-  for (octave_idx_type j = 1; j < n-1; j++)
-    for (octave_idx_type i = 0; i < m; i++)
-      retval.xelem (i, j) = x1(i) + static_cast<double> (j)*delta[i];
-
-  for (octave_idx_type i = 0; i < m; i++)
-    retval.xelem (i, n-1) = x2(i);
+    retval.insert (linspace (x1(i), x2(i), n), i, 0);
 
   return retval;
 }

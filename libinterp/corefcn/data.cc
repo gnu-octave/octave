@@ -5598,10 +5598,10 @@ DEFUN (linspace, args, ,
 Return a row vector with @var{n} linearly spaced elements between @var{start}
 and @var{end}.
 
-If the number of elements is greater than one, then the endpoints @var{start}
-and @var{end} are always included in the range.  If @var{start} is greater than
-@var{end}, the elements are stored in decreasing order.  If the number of
-points is not specified, a value of 100 is used.
+If the number of elements @var{n} is greater than one, then the endpoints
+@var{start} and @var{end} are always included in the range.  If @var{start} is
+greater than @var{end}, the elements are stored in decreasing order.  If the
+number of points @var{n} is not specified, a value of 100 is used.
 
 The @code{linspace} function returns a row vector when both @var{start} and
 @var{end} are scalars.  If one, or both, inputs are vectors, then
@@ -5609,8 +5609,11 @@ The @code{linspace} function returns a row vector when both @var{start} and
 each row is an independent sequence between
 @w{@code{@var{start}(@var{row_n}), @var{end}(@var{row_n})}}.
 
-For compatibility with @sc{matlab}, return the second argument (@var{end}) when
-only a single value (@var{n} = 1) is requested.
+Programming Notes: For compatibility with @sc{matlab}, return the second
+argument (@var{end}) when a single value (@var{n} = 1) is requested.  If
+@var{n} is not an integer then @code{floor (@var{n})} is used to round the
+number of elements.  If @var{n} is zero or negative then an empty 1x0 matrix
+is returned.
 @seealso{colon, logspace}
 @end deftypefn */)
 {

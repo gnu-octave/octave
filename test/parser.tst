@@ -105,7 +105,7 @@
 %! assert (a, 3);
 %! assert (a' ^2, 9);
 %! assert (2 ^sin (0), 1);
-%! assert (-2 ^2, -4);;
+%! assert (-2 ^2, -4);
 %! assert (2 ^+1 ^3, 8);
 %! assert (2 ^-1 ^3, 0.125);
 %! assert (2 ^~0 ^2, 4);

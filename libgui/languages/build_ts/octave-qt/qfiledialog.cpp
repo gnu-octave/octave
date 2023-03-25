@@ -2390,7 +2390,7 @@ void QFileDialogPrivate::createWidgets()
     QActionGroup *showActionGroup = new QActionGroup(q);
     showActionGroup->setExclusive(false);
     QObject::connect(showActionGroup, SIGNAL(triggered(QAction*)),
-                     q, SLOT(_q_showHeader(QAction*)));;
+                     q, SLOT(_q_showHeader(QAction*)));
 
     QAbstractItemModel *abstractModel = model;
 #ifndef QT_NO_PROXYMODEL

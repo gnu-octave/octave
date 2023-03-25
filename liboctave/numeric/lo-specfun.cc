@@ -1073,7 +1073,7 @@ cbesh2 (const FloatComplex& z, float alpha, int kode, octave_idx_type& ierr)
 
   if (alpha >= 0.0)
     {
-      FloatComplex y = 0.0;;
+      FloatComplex y = 0.0;
 
       F77_INT nz, t_ierr;
 

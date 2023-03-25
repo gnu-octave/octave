@@ -427,7 +427,7 @@ public:
 
   virtual void set_auto_fcn_var (auto_var_type, const octave_value&) = 0;
 
-  virtual octave_value varval (const symbol_record& sym) const = 0;;
+  virtual octave_value varval (const symbol_record& sym) const = 0;
 
   virtual octave_value varval (std::size_t data_offset) const;
 

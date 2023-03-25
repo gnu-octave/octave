@@ -134,7 +134,7 @@ cmdline_options::cmdline_options (int argc, char **argv)
 
         case BUILT_IN_DOCSTRINGS_FILE_OPTION:
           if (octave_optarg_wrapper ())
-            m_docstrings_file = octave_optarg_wrapper ();;
+            m_docstrings_file = octave_optarg_wrapper ();
           break;
 
         case DOC_CACHE_FILE_OPTION:

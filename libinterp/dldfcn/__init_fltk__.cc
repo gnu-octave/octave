@@ -2024,7 +2024,7 @@ private:
 
   typedef std::map<int, plot_window *> window_map;
 
-  typedef window_map::iterator wm_iterator;;
+  typedef window_map::iterator wm_iterator;
 
   window_map windows;
 

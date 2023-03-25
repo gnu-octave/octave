@@ -641,7 +641,7 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
 
   int ascent = p.fontMetrics ().ascent ();
   int stride = m_consoleRect.width ();
-  int y = ascent + cy1 * ch;;
+  int y = ascent + cy1 * ch;
 
   for (int j = cy1; j <= cy2; j++, y += ch)
     {
@@ -797,7 +797,7 @@ void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
   int ascent = p.fontMetrics ().ascent ();
   int stride = m_consoleRect.width ();
 
-  int y = ascent + cy1 * ch;;
+  int y = ascent + cy1 * ch;
   for (int j = cy1; j <= cy2; j++, y += ch)
     {
       int charsThisLine = 0;
@@ -904,7 +904,7 @@ void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
   int ascent = p.fontMetrics ().ascent ();
   int stride = m_consoleRect.width ();
 
-  int y = ascent + cy1 * ch;;
+  int y = ascent + cy1 * ch;
   for (int j = cy1; j <= cy2; j++, y += ch)
     {
       // Reset string buffer and starting X coordinate

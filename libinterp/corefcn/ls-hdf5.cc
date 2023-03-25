@@ -663,7 +663,7 @@ hdf5_read_next_data_internal (hid_t group_id, const char *name, void *dv)
   hid_t type_class_id = -1;
   hid_t data_id = -1;
   hid_t subgroup_id = -1;
-  hid_t space_id = -1;;
+  hid_t space_id = -1;
 
   H5G_stat_t info;
   herr_t retval = 0;

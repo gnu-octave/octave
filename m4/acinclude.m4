@@ -1539,7 +1539,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_PCRE2_OK], [
     [AC_LANG_PUSH(C++)
     AC_RUN_IFELSE([AC_LANG_PROGRAM([[
         #include <stdio.h>
-        #define PCRE2_CODE-uNIT_WIDTH 8
+        #define PCRE2_CODE_UNIT_WIDTH 8
         #if defined (HAVE_PCRE2_H)
         #  include <pcre2.h>
         #elif defined (HAVE_PCRE2_PCRE2_H)

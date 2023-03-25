@@ -1163,7 +1163,7 @@ size) with successive @code{regexp} searches.
 %! assert (b, {"foo bar foo"});
 %!test
 %! [a, b] = regexp (str, "fx.", "match", "split", "once");
-%! assert (a, "");;
+%! assert (a, "");
 %! assert (b, "foo bar foo");
 
 %!shared str

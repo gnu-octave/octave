@@ -117,8 +117,8 @@ int QPageSetupDialog::exec()
     QRect marginRect = ep->getPageMargins();
     psd.rtMargin.left   = marginRect.left()   / multiplier;
     psd.rtMargin.top    = marginRect.top()    / multiplier;
-    psd.rtMargin.right  = marginRect.width()  / multiplier;;
-    psd.rtMargin.bottom = marginRect.height() / multiplier;;
+    psd.rtMargin.right  = marginRect.width()  / multiplier;
+    psd.rtMargin.bottom = marginRect.height() / multiplier;
 
     bool result = PageSetupDlg(&psd);
     if (result) {

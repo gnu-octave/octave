@@ -1005,7 +1005,7 @@ octave_map::assign (const octave::idx_vector& i, const octave_map& rhs)
         {
           // Use dummy array.  FIXME: Need(?) a better solution.
           Array<char> dummy (m_dimensions), rhs_dummy (rhs.m_dimensions);
-          dummy.assign (i, rhs_dummy);;
+          dummy.assign (i, rhs_dummy);
           m_dimensions = dummy.dims ();
         }
 
@@ -1053,7 +1053,7 @@ octave_map::assign (const octave::idx_vector& i, const octave::idx_vector& j,
         {
           // Use dummy array.  FIXME: Need(?) a better solution.
           Array<char> dummy (m_dimensions), rhs_dummy (rhs.m_dimensions);
-          dummy.assign (i, j, rhs_dummy);;
+          dummy.assign (i, j, rhs_dummy);
           m_dimensions = dummy.dims ();
         }
 
@@ -1101,7 +1101,7 @@ octave_map::assign (const Array<octave::idx_vector>& ia,
         {
           // Use dummy array.  FIXME: Need(?) a better solution.
           Array<char> dummy (m_dimensions), rhs_dummy (rhs.m_dimensions);
-          dummy.assign (ia, rhs_dummy);;
+          dummy.assign (ia, rhs_dummy);
           m_dimensions = dummy.dims ();
         }
 

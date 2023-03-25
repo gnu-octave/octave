@@ -111,7 +111,7 @@ endfunction
 
 %!demo
 %! clf;
-%! x = 0:0.01:4;;
+%! x = 0:0.01:4;
 %! plot (x,cos (x), x,sin (x));
 %! pbaspect ([2 1 1]);
 %! title ("plot box aspect ratio is 2x1");

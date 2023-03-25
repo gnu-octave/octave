@@ -609,7 +609,7 @@ uint32NDArray rand::get_internal_state ()
 
 void rand::save_state ()
 {
-  m_rand_states[m_current_distribution] = get_internal_state ();;
+  m_rand_states[m_current_distribution] = get_internal_state ();
 }
 
 int rand::get_dist_id (const std::string& d)

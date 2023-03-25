@@ -399,7 +399,7 @@ save_mat_binary_data (std::ostream& os, const octave_value& tc,
   mopt += tc.issparse () ? 2 : tc.is_string () ? 1 : 0;
 
   octave::mach_info::float_format flt_fmt
-    = octave::mach_info::native_float_format ();;
+    = octave::mach_info::native_float_format ();
 
   mopt += 1000 * float_format_to_mopt_digit (flt_fmt);
 

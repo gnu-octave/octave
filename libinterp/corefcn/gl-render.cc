@@ -573,7 +573,7 @@ protected:
             if (m_light_mode > 0)
               {
                 // edge lighting only uses ambient light
-                float buf[4] = { 0.0f, 0.0f, 0.0f, 1.0f };;
+                float buf[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
                 if (m_face_lighting)
                   for (int k = 0; k < 3; k++)
@@ -3381,7 +3381,7 @@ opengl_renderer::draw_patch (const patch::properties& props)
               m_glfcns.glColor4d (fcolor(0), fcolor(1), fcolor(2), fa);
               if (fl_mode > 0)
                 {
-                  float cb[4] = { 0.0f, 0.0f, 0.0f, 1.0f };;
+                  float cb[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 
                   for (int i = 0; i < 3; i++)
                     cb[i] = as * fcolor(i);

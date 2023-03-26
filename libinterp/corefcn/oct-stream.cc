@@ -39,6 +39,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "Array.h"
 #include "Cell.h"
@@ -2651,7 +2652,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   // after reading in data.
   // If the format was "", that conversion may already have happened,
   // so force all to be merged (as all are %f).
-  bool merge_with_prev[fmt_list.numel ()];
+  std::vector<bool> merge_with_prev (fmt_list.numel ());
   int conv = 0;
   if (m_collect_output)
     {

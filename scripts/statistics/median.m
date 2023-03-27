@@ -94,7 +94,7 @@
 ## NaN values from the calculation using any of the previously specified input
 ## argument combinations.  The default value for @var{nanflag} is
 ## @qcode{"includenan"} which keeps NaN values in the calculation.  To
-## exclude NaN values set the value of @var{nanflag} to @qcode{"omitnan"}. 
+## exclude NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.
 ## The output will still contain NaN values if @var{x} consists of all NaN
 ## values in the operating dimension.
 ##
@@ -346,7 +346,7 @@ function m = median (x, varargin)
 
       ## Grab kth value, k possibly different for each column
       if (any (m_idx_odd(:)))
-        x_idx_odd = sub2ind (szx, k(m_idx_odd), find (m_idx_odd));
+        x_idx_odd = sub2ind (szx, k(m_idx_odd)(:), find (m_idx_odd));
         m(m_idx_odd) = x(x_idx_odd);
       endif
       if (any (m_idx_even(:)))
@@ -617,6 +617,12 @@ endfunction
 %!assert <*35679> (median (a, 4), x(:, :, :, 3))
 %!assert <*35679> (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
 %!shared   ## Clear shared to prevent variable echo for any later test failures
+
+## Test n-dimensional arrays with odd non-NaN data points
+%!test
+%! x = ones(15,1,4);
+%! x([13,15],1,:) = NaN;
+%! assert (median (x, 1, "omitnan"), ones (1,1,4))
 
 ## Test non-floating point types
 %!assert (median ([true, false]), true)

@@ -57,12 +57,12 @@
 ## @group
 ## perms ([1, 1, 2, 2], "unique")
 ## @result{}
-##   1   1   2   2
-##   1   2   1   2
-##   1   2   2   1
-##   2   1   1   2
-##   2   1   2   1
 ##   2   2   1   1
+##   2   1   2   1
+##   2   1   1   2
+##   1   2   2   1
+##   1   2   1   2
+##   1   1   2   2
 ## @end group
 ## @end example
 ##
@@ -147,7 +147,7 @@ function P = perms (v, opt)
     [v, ~, j] = unique (v);
     h = accumarray (j, 1)';
     idx = m_perms (h);
-    P = v(sortrows (idx'));
+    P = v(sortrows (idx', -(1:rows(idx))));
   endif
 
 endfunction

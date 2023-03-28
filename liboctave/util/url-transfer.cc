@@ -535,7 +535,12 @@ public:
         if (newpos == std::string::npos)
           break;
 
-        retval(i) = str.substr(pos, newpos - pos);
+        std::string name = str.substr (pos, newpos - pos);
+        // remove trailing \r if there is one
+        if (name.length () > 0 && name.back () == '\r')
+          name.pop_back ();
+
+        retval(i) = name;
         pos = newpos + 1;
       }
 

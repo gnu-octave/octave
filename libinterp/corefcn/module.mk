@@ -235,6 +235,7 @@ COREFCN_SRC = \
   %reldir%/ordqz.cc \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
+  %reldir%/perms.cc \
   %reldir%/pinv.cc \
   %reldir%/pow2.cc \
   %reldir%/pr-flt-fmt.cc \

@@ -50,7 +50,7 @@ Factorial (octave_idx_type n)
 //
 template <typename T>
 static inline Array<T>
-GetPerms (const Array<T> &ar_in, bool uniq_v, bool do_sort = true)
+GetPerms (const Array<T> &ar_in, bool uniq_v, bool do_sort = false)
 {
   octave_idx_type m = ar_in.numel ();
   double nr = Factorial (m);
@@ -125,7 +125,6 @@ template <typename T>
 static inline Array<T>
 GetPermsNoSort (const Array<T> &ar_in, bool uniq_v = false)
 {
-
   octave_idx_type m = ar_in.numel ();
   double nr = Factorial (m);
 
@@ -186,13 +185,16 @@ DEFUN (perms, args, ,
 @deftypefnx {} {@var{P} =} perms (@var{v}, "unique")
 Generate all permutations of vector @var{v} with one row per permutation.
 
-Results are returned in inverse lexicographic order.  The result has size
-@code{factorial (@var{n}) * @var{n}}, where @var{n} is the length of
-@var{v}.  Any repeated elements are included in the output.
+Results are returned in reverse lexicographic order if @var{v} is in ascending
+order.  If @var{v} is in a different permutation, then the result is permuted
+that way too.  Consequently, an input in descending order yields a result in
+normal lexicographic order.  The result has size
+@code{factorial (@var{n}) * @var{n}}, where @var{n} is the length of @var{v}.
+Any repeated elements are included in the output.
 
 If the optional argument @qcode{"unique"} is given then only unique
-permutations are returned, using less memory and generally taking less time
-than calling @code{unique (perms (@var{v}), "rows")}.
+permutations are returned, using less memory and taking less time than calling
+@code{unique (perms (@var{v}), "rows")}.
 
 Example 1
 
@@ -268,12 +270,7 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
   else if (clname == "single")
     retval = GetPerms<float> (args (0).float_array_value (), uniq_v);
   else if (clname == "logical")
-    retval = GetPerms<bool> (args (0).bool_array_value (), uniq_v, false);
-    // Do not sort logicals by value as the other numerical data types.
-    // This reflects past design decisions using the order positioning
-    // for logicals.  See the discussion in
-    // https://savannah.gnu.org/bugs/?50426 and 
-    // https://savannah.gnu.org/bugs/?63962 for context.
+    retval = GetPerms<bool> (args (0).bool_array_value (), uniq_v);
   else if (clname == "char")
     retval = GetPerms<char> (args (0).char_array_value (), uniq_v);
   else if (clname == "int8")
@@ -333,11 +330,12 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
 
 %!assert (rows (perms (1:6)), factorial (6))
 %!assert (perms (pi), pi)
-%!assert (perms ([pi, e]), [pi, e; e, pi])
-%!assert (perms ([1,2,3]), [3,2,1;3,1,2;2,3,1;2,1,3;1,3,2;1,2,3])
-%!assert (perms (1:5), perms ([2 5 4 1 3]'))
+%!assert (perms ([e, pi]), [pi, e; e, pi])
+%!assert (perms ([pi, e]), [e, pi; pi, e])
+%!assert (perms ([1 2 3]), [3 2 1; 3 1 2; 2 3 1; 2 1 3; 1 3 2; 1 2 3])
+%!assert (sortrows (perms (1:5)), sortrows (perms ([2 5 4 1 3]')))
 %!assert (perms ("abc"), char ("cba", "cab", "bca", "bac", "acb", "abc"))
-%!assert (perms ("fobar"), sortrows (unique (perms ("fobar"), "rows"), -(1:5)))
+%!assert (sortrows (perms ("fobar")), unique (perms ("fobar"), "rows"))
 %!assert (unique (perms (1:5)(:))', 1:5)
 %!assert (perms (int8 (1:4)), int8 (perms (1:4)))
 

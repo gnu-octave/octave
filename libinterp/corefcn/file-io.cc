@@ -622,7 +622,6 @@ fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
 
   octave_value arch = (nargin > 2) ? args(2) : octave_value ("native");
 
-  input_system& input_sys = interp.get_input_system ();
   octave_value encoding = (nargin > 3) ? args(3) : octave_value ("utf-8");
   if (encoding.string_value () == "system")
     encoding = octave_value (octave_locale_charset_wrapper ());

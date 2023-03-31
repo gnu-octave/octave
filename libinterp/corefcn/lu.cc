@@ -539,6 +539,16 @@ permutation information.
 %! assert (u, single ([5, 6; 0, 4/5]), sqrt (eps ("single")));
 %! assert (p(:,:), single ([0, 0, 1; 1, 0, 0; 0 1 0]), sqrt (eps ("single")));
 
+# complex matrix input
+%!test
+%! C = [1, 0, 1, 0;
+%!      1i, 1/3, -1i, 1/3;
+%!      1, 2i/3, 1, -2i/3;
+%!      1i, -1/3, -1i, -1/3];
+%! [L, U, P] = lu (C);
+%! assert (rcond (C), 1/8, eps);
+%! assert (norm (P'*L*U - C, Inf) < eps);
+
 %!testif HAVE_UMFPACK
 %! Bi = [1 2 3 4 5 2 3 6 7 8 4 5 7 8 9];
 %! Bj = [1 3 4 5 6 7 8 9 11 12 13 14 15 16 17];

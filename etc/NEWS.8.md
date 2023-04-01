@@ -10,7 +10,6 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Avoid clang warning about very unlikely buffer overflow.
 - `mpoles.m`: Overhaul function and use absolute tolerance for zero poles
   (bug #63937).
-- `pr-output.cc`: Fix integer output for `format native-bit` (bug #63940).
 - `perms.m`: Change `"unique"` output order to reverse lexicographic to
   match non-unique order (bug #63962).
 - Remove trailing `'\r'` from curl dir list (bug #63851).

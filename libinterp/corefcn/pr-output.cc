@@ -3397,7 +3397,7 @@ Note that the output from @code{fdisp} always ends with a newline.
 
   stream os = streams.lookup (fid, "fdisp");
 
-  std::ostream *osp = os.output_stream ();
+  std::ostream *osp = os.preferred_output_stream ();
 
   if (! osp)
     error ("fdisp: stream FID not open for writing");

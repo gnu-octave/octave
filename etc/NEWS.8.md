@@ -4,12 +4,30 @@ Summary of bugs fixed for version 8.2.0 (yyyy-mm-dd):
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
+- `pr-output.cc`: Fix output for `format native-bit` (bug #63940).
+- Fix evaluation of `&` and `|` expressions in conditional contexts (bug
+  #63935).
+- Avoid clang warning about very unlikely buffer overflow.
+- `mpoles.m`: Overhaul function and use absolute tolerance for zero poles
+  (bug #63937).
+- `pr-output.cc`: Fix integer output for `format native-bit` (bug #63940).
+- `perms.m`: Change `"unique"` output order to reverse lexicographic to
+  match non-unique order (bug #63962).
+- Remove trailing `'\r'` from curl dir list (bug #63851).
+- `fopen`: Use "UTF-8" as default encoding for `fopen` (bug #63930).
 
 ### GUI
+- Speedup loading and saving preferences dialog (bug #63909).
 
 ### Build system / Tests
+- `inpolygon.m`: Fix demo code (bug #63865).
+- `if.tst`: New test for bug #63935.
+- `acinclude.m4`: Correct typo in `#define PCRE2_CODE_UNIT_WIDTH`.
+- `lu`: Add self-test with complex valued input.
+- Disable visibility flags by default (bug #61855, bug #63916).
 
 ### Documentation
+- Improve documentation for `linspace` and `logspace` functions.
 
 
 Summary of important user-visible changes for version 8 (2023-03-07):
@@ -212,15 +230,6 @@ from Octave 8.
 - The environment variable used by `mkoctfile` for linker flags is now
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6,
   and will be removed in a future version of Octave.
-
-Summary of bugs fixed for version 8.2.0 (2023-??-??):
-----------------------------------------------------
-
-- Loading and saving preferences dialog now faster (bug #63909).
-- The `&` and `|` operators now work correctly in if-statements (bug #63835).
-- `mpoles` now handles poles at zero correctly, and the function has been
-  overhauled. (bug #63937).
-- `format native-bit` now consistent with `format native-hex` (bug #63940).
 
 Summary of bugs fixed for version 8.1.0 (2023-01-22):
 ----------------------------------------------------

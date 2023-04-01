@@ -2726,10 +2726,10 @@ AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
 
 ### Determine whether libraries should be linked with visibility attributes.
 
-ENABLE_LIB_VISIBILITY_FLAGS=yes
+ENABLE_LIB_VISIBILITY_FLAGS=no
 AC_ARG_ENABLE(lib-visibility-flags,
-  [AS_HELP_STRING([--disable-lib-visibility-flags],
-    [don't build libraries with visibility flags (export all symbols)])],
+  [AS_HELP_STRING([--enable-lib-visibility-flags],
+    [build libraries with visibility flags (export only symbols from API)])],
   [case $enableval in
      yes) ENABLE_LIB_VISIBILITY_FLAGS=yes ;;
      no) ENABLE_LIB_VISIBILITY_FLAGS=no ;;

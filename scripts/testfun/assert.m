@@ -138,8 +138,10 @@ function assert (cond, varargin)
           endif
         elseif (! strcmp (cond, expected))
           err.index{end+1} = "[]";
-          err.observed{end+1} = ["'" cond "'"];
-          err.expected{end+1} = ["'" expected "'"];
+          rr = repmat ("'", rows (cond), 1);
+          err.observed{end+1} = [rr cond rr];
+          rr = repmat ("'", rows (expected), 1);
+          err.expected{end+1} = [rr expected rr];
           err.reason{end+1} = "Strings don't match";
         endif
 

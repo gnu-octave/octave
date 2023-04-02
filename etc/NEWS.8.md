@@ -14,6 +14,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   match non-unique order (bug #63962).
 - Remove trailing `'\r'` from curl dir list (bug #63851).
 - `fopen`: Use "UTF-8" as default encoding for `fopen` (bug #63930).
+- Don't use encoding facet when writing bytes to stream (bug #63931).
 
 ### GUI
 - Speedup loading and saving preferences dialog (bug #63909).

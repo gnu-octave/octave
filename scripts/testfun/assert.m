@@ -138,10 +138,8 @@ function assert (cond, varargin)
           endif
         elseif (! strcmp (cond, expected))
           err.index{end+1} = "[]";
-          rr = repmat ("'", rows (cond), 1);
-          err.observed{end+1} = [rr cond rr];
-          rr = repmat ("'", rows (expected), 1);
-          err.expected{end+1} = [rr expected rr];
+          err.observed{end+1} = ["'" cond(:).' "'"];
+          err.expected{end+1} = ["'" expected(:).' "'"];
           err.reason{end+1} = "Strings don't match";
         endif
 
@@ -745,6 +743,18 @@ endfunction
 %! catch
 %!   errmsg = lasterr ();
 %!   assert (isempty (strfind (errmsg, "sprintf: invalid field width")));
+%! end_try_catch
+
+%!test <*63988>
+%! A = ["ab"; "cd"];
+%! B = ["ad"; "cb"];
+%! try
+%!   assert (A, B);
+%! catch
+%!   errmsg = lasterr ();
+%!   if (regexp (errmsg, 'horizontal dimensions mismatch'))
+%!     error ("assert failed for char arrays with multiple rows");
+%!   endif
 %! end_try_catch
 
 ## test input validation

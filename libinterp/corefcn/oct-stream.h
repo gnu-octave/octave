@@ -452,6 +452,12 @@ public:
 
   std::ostream * output_stream ()
   {
+    return (m_rep ? m_rep->output_stream () : nullptr);
+  }
+
+  std::ostream * preferred_output_stream ()
+  {
+    // return output stream with encoding facet if applicable
     return (m_rep ? m_rep->preferred_output_stream () : nullptr);
   }
 

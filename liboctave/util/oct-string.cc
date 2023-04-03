@@ -617,29 +617,70 @@ octave::string::codecvt_u8::do_out
    const InternT* from, const InternT* from_end, const InternT*& from_next,
    ExternT* to, ExternT* to_end, ExternT*& to_next) const
 {
-  if (from_end < from)
+  if (from_end <= from)
     return std::codecvt<InternT, ExternT, StateT>::noconv;
 
+  // Check if buffer ends in a complete UTF-8 surrogate.
+  // FIXME: If this is the last call before a stream is closed, we should
+  //        convert trailing bytes even if they look incomplete.
+  //        How can we detect that?
+  std::size_t pop_end = 0;
+  if ((*(from_end-1) & 0b10000000) == 0b10000000)
+    {
+      // The last byte is part of a surrogate. Check if it is complete.
+
+      // number of bytes of the surrogate in the buffer
+      std::size_t num_bytes_in_buf = 1;
+      // Find initial byte of surrogate
+      while (((*(from_end-num_bytes_in_buf) & 0b11000000) != 0b11000000)
+             && (num_bytes_in_buf < 4)
+             && (from_end-num_bytes_in_buf > from))
+        num_bytes_in_buf++;
+
+      // If the start of the surrogate is not in the buffer, we need to
+      // continue with the invalid UTF-8 sequence to avoid an infinite loop.
+      // Check if we found an initial byte and if there are enough bytes in the
+      // buffer to complete the surrogate.
+      if ((((*(from_end-num_bytes_in_buf) & 0b11100000) == 0b11000000)
+           && (num_bytes_in_buf < 2))  // incomplete 2-byte surrogate
+          || (((*(from_end-num_bytes_in_buf) & 0b11110000) == 0b11100000)
+              && (num_bytes_in_buf < 3))  // incomplete 3-byte surrogate
+          || (((*(from_end-num_bytes_in_buf) & 0b11111000) == 0b11110000)
+              && (num_bytes_in_buf < 4)))  // incomplete 4-byte surrogate
+        pop_end = num_bytes_in_buf;
+    }
+
+  std::size_t srclen = (from_end-from-pop_end) * sizeof (InternT);
+  std::size_t length = (to_end-to) * sizeof (ExternT);
+  if (srclen < 1 || length < 1)
+    return std::codecvt<InternT, ExternT, StateT>::partial;
+
   // Convert from UTF-8 to output encoding
-  std::size_t srclen = (from_end-from) * sizeof (InternT);
-  std::size_t lengthp = (to_end-to) * sizeof (ExternT);
   const uint8_t *u8_str = reinterpret_cast<const uint8_t *> (from);
   char *enc_str = octave_u8_conv_to_encoding (m_enc.c_str (), u8_str, srclen,
-                                              &lengthp);
+                                              &length);
 
-  size_t max = to_end - to;
-  if (lengthp < max)
-    max = lengthp;
+  if (length < 1)
+    return std::codecvt<InternT, ExternT, StateT>::partial;
+
+  size_t max = (to_end - to) * sizeof (ExternT);
+  // FIXME: If the output encoding is a multibyte or variable byte encoding,
+  //        we should ensure that we don't cut off a "partial" surrogate from
+  //        the output.
+  //        Can this ever happen?
+  if (length < max)
+    max = length;
 
   // copy conversion result to output
-  // FIXME: Handle incomplete UTF-8 characters at end of buffer.
   std::copy_n (enc_str, max, to);
   ::free (enc_str);
 
   from_next = from + srclen;
   to_next = to + max;
 
-  return std::codecvt<InternT, ExternT, StateT>::ok;
+  return ((pop_end > 0 || max < length)
+          ? std::codecvt<InternT, ExternT, StateT>::partial
+          : std::codecvt<InternT, ExternT, StateT>::ok);
 }
 
 typename std::codecvt<InternT, ExternT, StateT>::result

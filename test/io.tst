@@ -960,3 +960,33 @@
 %!      endfor
 %!    endfor
 %!  endfor
+
+# stream with transcoding
+%!test <*63930>
+%! w_modes = {"wb", "wt"};
+%! # 64 non-ASCII characters that can be represented in 'windows-1252'
+%! f_texts{1} = repmat ('ÀÂÈÊÌàäéèêìîöòùû', 1, 4);
+%! # prepend space to misalign surrogate border from a multiple of 2.
+%! f_texts{2} = [' ', f_texts{1}];
+%! # byte values of character sequence in 'windows-1252'
+%! native_bytes{1} = repmat (...
+%!   [192 194 200 202 204 224 228 233 232 234 236 238 246 242 249 251], ...
+%!   1, 4).';
+%! native_bytes{2} = [double(' '); native_bytes{1}];
+%! for i_mode = 1:numel (w_modes)
+%!   for i_text = 1:numel (f_texts)
+%!     fname = tempname ();
+%!     fid = fopen (fname, w_modes{i_mode}, 'n', 'windows-1252');
+%!     unwind_protect
+%!       fprintf (fid, f_texts{i_text});
+%!       fclose (fid);
+%!       # open without encoding facet and read bytes
+%!       fid = fopen (fname, 'rb');
+%!       buf = fread (fid);
+%!       assert (buf, native_bytes{i_text});
+%!     unwind_protect_cleanup
+%!       fclose (fid);
+%!       unlink (fname);
+%!     end_unwind_protect
+%!   endfor
+%! endfor

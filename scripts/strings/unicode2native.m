@@ -79,6 +79,16 @@ endfunction
 %!         uint8 ([164:166 0 167:170]));
 %!assert <*60480> (unicode2native (''), uint8 ([]))
 
+# short character arrays with invalid UTF-8
+%!testif HAVE_ICONV <*63930>
+%! assert (unicode2native (char (230), 'windows-1252'), uint8 (63));
+%! assert (unicode2native (char (249), 'windows-1252'), uint8 (63));
+%! assert (unicode2native (char (230:231), 'windows-1252'), uint8 ([63, 63]));
+%! assert (unicode2native (char (230:234), 'windows-1252'),
+%!         uint8 ([63, 63, 63, 63, 63]));
+%! assert (unicode2native (char ([230, 10]), 'windows-1252'),
+%!         uint8 ([63, 10]));
+
 %!error <Invalid call> unicode2native ()
 %!error <called with too many inputs> unicode2native ('a', 'ISO-8859-1', 'test')
 %!error <UTF8_STR must be a character vector> unicode2native (['ab'; 'cd'])

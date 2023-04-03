@@ -43,8 +43,8 @@ Summary of important user-visible changes for version 8 (2023-03-07):
 - `filter` is now 5X faster, which also speeds up `deconv`, `fftfilt`
   and `arma_rnd` by the same amount.
 
-- `integral` can now output a second argument passing the error
-  measurement used by the underlying integrator.
+- `integral` can now return a second argument containing the error
+  estimate from the underlying integrator.
 
 - `perms` now accepts a second argument "unique" to return only unique
   permutations for inputs with repeated elements.  It is faster and

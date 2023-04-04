@@ -56,6 +56,16 @@ from `cov(x)(2)`, and calls to cov(x,y) with x and y matrices expecting
 columnwise covariance calculation can obtain the previous results using
 `cov([x,y])(1:nx, nx+1:end)`, where nx = columns(x).
 
+- `qz` now handles input and output arguments in a Matlab compatible
+way. It always computes the complex QZ decomposition if there are only
+two input arguments, and it accepts an optional third input argument
+'real' or 'complex' to select the type of decomposition. The output
+arguments are always in the same order independently of the input
+arguments, and the generalized eigenvalues are no longer returned (one
+can use the `ordeig` function for that purpose). The optional reordering
+of the generalized eigenvalues has been removed (one can use the `ordqz`
+function for that purpose).
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isuniform`

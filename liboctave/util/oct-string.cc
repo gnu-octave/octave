@@ -617,8 +617,12 @@ octave::string::codecvt_u8::do_out
    const InternT* from, const InternT* from_end, const InternT*& from_next,
    ExternT* to, ExternT* to_end, ExternT*& to_next) const
 {
+  to_next = to;
   if (from_end <= from)
-    return std::codecvt<InternT, ExternT, StateT>::noconv;
+    {
+      from_next = from_end;
+      return std::codecvt<InternT, ExternT, StateT>::noconv;
+    }
 
   // Check if buffer ends in a complete UTF-8 surrogate.
   // FIXME: If this is the last call before a stream is closed, we should
@@ -649,6 +653,7 @@ octave::string::codecvt_u8::do_out
               && (num_bytes_in_buf < 4)))  // incomplete 4-byte surrogate
         pop_end = num_bytes_in_buf;
     }
+  from_next = from_end - pop_end;
 
   std::size_t srclen = (from_end-from-pop_end) * sizeof (InternT);
   std::size_t length = (to_end-to) * sizeof (ExternT);

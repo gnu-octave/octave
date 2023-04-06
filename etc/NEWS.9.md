@@ -23,9 +23,13 @@ backward compatibility, except that non-integer inputs will no longer error.
 
 ### Graphics backend
 
-* the `set` function now accepts any combination of name/value pairs,
+* The `set` function now accepts any combination of name/value pairs,
 cell array of names / cell array of values, or property structures.
 This change is Matlab-compatible.
+
+* When the `hold` function is used without arguments to toggle the current
+state the resulting value is now displayed in the Command Window for
+informational purposes.
 
 ### Matlab compatibility
 

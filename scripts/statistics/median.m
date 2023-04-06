@@ -333,7 +333,11 @@ function m = median (x, varargin)
       endif
 
     else
-      n = sum (! isnan (x), 1);
+      ## Each column may have a different n and k.  Force index column vector
+      ## for consistent orientation for 2D and nD inputs, then use sub2ind to
+      ## get correct element(s) for each column.
+
+      n = sum (! isnan (x), 1)(:);
       k = floor ((n + 1) / 2);
       m_idx_odd = mod (n, 2) & n;
       m_idx_even = (! m_idx_odd) & n;
@@ -345,12 +349,12 @@ function m = median (x, varargin)
       endif
 
       ## Grab kth value, k possibly different for each column
-      if (any (m_idx_odd(:)))
-        x_idx_odd = sub2ind (szx, k(m_idx_odd)(:), find (m_idx_odd));
+      if (any (m_idx_odd))
+        x_idx_odd = sub2ind (szx, k(m_idx_odd), find (m_idx_odd));
         m(m_idx_odd) = x(x_idx_odd);
       endif
-      if (any (m_idx_even(:)))
-        k_even = k(m_idx_even)(:);
+      if (any (m_idx_even))
+        k_even = k(m_idx_even);
         x_idx_even = sub2ind (szx, [k_even, k_even + 1], ...
                                 (find (m_idx_even))(:, [1, 1]));
         m(m_idx_even) = sum (x(x_idx_even), 2) / 2;
@@ -556,6 +560,7 @@ endfunction
 %!assert (median ([1 2 NaN 3]), NaN)
 %!assert (median ([1 2 NaN 3], "omitnan"), 2)
 %!assert (median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN])
+%!assert <*64011> (median ([1,2,NaN;4,5,6;NaN,8,9], "omitnan"), [2.5, 5, 7.5], eps)
 %!assert (median ([1 2 ; NaN 4]), [NaN 3])
 %!assert (median ([1 2 ; NaN 4], "omitnan"), [1 3])
 %!assert (median ([1 2 ; NaN 4], 1, "omitnan"), [1 3])
@@ -575,6 +580,17 @@ endfunction
 %!assert (median (single([NaN 2 ; NaN 4]), "double"), double([NaN 3]))
 %!assert (median (single([NaN 2 ; NaN 4]), "omitnan"), single([NaN 3]))
 %!assert (median (single([NaN 2 ; NaN 4]), "omitnan", "double"), double([NaN 3]))
+
+## Test omitnan with 2D & 3D inputs to confirm correct sub2ind orientation
+%!test <*64011>
+%! x = [magic(3), magic(3)];
+%! x([3, 7, 11, 12, 16, 17]) = NaN;
+%! ynan = [NaN, 5, NaN, NaN, 5, NaN];
+%! yomitnan = [5.5, 5, 4.5, 8, 5, 2];
+%! assert (median (x), ynan);
+%! assert (median (x, "omitnan"), yomitnan, eps);
+%! assert (median (cat (3, x, x)), cat (3, ynan, ynan));
+%! assert (median (cat (3, x, x), "omitnan"), cat (3, yomitnan, yomitnan), eps);
 
 %!assert (median (Inf), Inf)
 %!assert (median (-Inf), -Inf)

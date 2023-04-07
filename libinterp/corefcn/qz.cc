@@ -145,9 +145,6 @@ compatibility with @sc{matlab}.
     {
       std::string opt = args(2).xstring_value ("qz: OPT must be a string");
 
-      if (opt.empty ())
-        error ("qz: OPT must be a non-empty string");
-
       if (opt == "real")
         {
           if (args(0).iscomplex () || args(1).iscomplex ())
@@ -161,7 +158,7 @@ compatibility with @sc{matlab}.
       else if (opt == "complex")
         complex_case = true;
       else
-        error ("qz: OPT must be real or complex");
+        error ("qz: OPT must be 'real' or 'complex'");
     }
 
 #if defined (DEBUG)
@@ -567,19 +564,19 @@ compatibility with @sc{matlab}.
       }
       break;
 
-    default:
-      error ("qz: too many return arguments");
-      break;
     }
 
+  // FIXME: The API for qz changed in version 9.
+  // These warnings can be removed in Octave version 11.
   if (nargout == 1)
     {
       warning_with_id ("Octave:qz:single-arg-out",
-                       "qz: requesting a single output argument no longer gives eigenvalues since version 9");
+                       "qz: requesting a single output argument no longer returns eigenvalues since version 9");
       disable_warning ("Octave:qz:single-arg-out");
     }
 
-  if (nargin == 2 && args(0).isreal () && args(1).isreal () && retval(0).iscomplex ())
+  if (nargin == 2 && args(0).isreal () && args(1).isreal ()
+      && retval(0).iscomplex ())
     {
       warning_with_id ("Octave:qz:complex-default",
                        "qz: returns the complex QZ by default on real matrices since version 9");
@@ -641,6 +638,17 @@ compatibility with @sc{matlab}.
 %! assert (Z * Z', eye(4), 1e-14);
 %! assert (Q * A * Z, AA, norm (AA) * 1e-14);
 %! assert (Q * B * Z, BB, norm (BB) * 1e-14);
+
+## Test input validation
+%!error <Invalid call> qz ()
+%!error <Invalid call> qz (1)
+%!error <Invalid call> qz (1,2,3,4)
+%!error <Invalid call> [r1,r2,r3,r4,r5,r6,r7] = qz (1,2)
+%!error <OPT must be a string> qz (1,2, 3)
+%!error <OPT must be 'real' or 'complex'> qz (1,2, 'foobar')
+%!warning <ignoring 'real' option with complex matrices> qz (2i, 3, 'real');
+%!warning <ignoring 'real' option with complex matrices> qz (2, 3i, 'real');
+
 */
 
 OCTAVE_END_NAMESPACE(octave)

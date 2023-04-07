@@ -896,10 +896,12 @@ make_complex_scalar_format (const std::complex<T>& c)
   T rp = c.real ();
   T ip = c.imag ();
 
-  bool inf_or_nan = (octave::math::isinf (c) || octave::math::isnan (c));
+  bool r_inf_or_nan = (octave::math::isinf (rp) || octave::math::isnan (rp));
+  bool i_inf_or_nan = (octave::math::isinf (ip) || octave::math::isnan (ip));
+  bool inf_or_nan = r_inf_or_nan || i_inf_or_nan;
 
-  bool int_only = (octave::math::x_nint (rp) == rp
-                   && octave::math::x_nint (ip) == ip);
+  bool int_only = ((r_inf_or_nan || octave::math::x_nint (rp) == rp)
+                   && (i_inf_or_nan || octave::math::x_nint (ip) == ip));
 
   T r_abs = (rp < 0 ? -rp : rp);
   T i_abs = (ip < 0 ? -ip : ip);

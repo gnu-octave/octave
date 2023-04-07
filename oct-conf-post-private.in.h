@@ -91,6 +91,14 @@ typedef unsigned long ino_t;
 #  endif
 #endif
 
+#if defined (HAVE_LLVM_LIBCXX)
+/* The stream encoding facet from libc++ is stricter than libstdc++ when
+   it comes to reverting the stream.  Disable encoding conversion for file
+   streams with libc++.
+   FIXME: Maybe use a more specific test.  */
+#  define OCTAVE_HAVE_STRICT_ENCODING_FACET 1
+#endif
+
 /* Make all .oct file interpreter functions and methods static.  */
 #define OCTAVE_USE_STATIC_DEFUN
 

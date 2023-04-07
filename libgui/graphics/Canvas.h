@@ -148,7 +148,7 @@ protected:
 
 private:
 
-  QCursor make_cursor (const QString& name, int hot_x  = -1, int hot_y = -1);
+  QCursor make_cursor (const QString& name, int hot_x = -1, int hot_y = -1);
 
   graphics_handle m_handle;
   bool m_redrawBlocked;

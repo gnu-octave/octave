@@ -4100,7 +4100,7 @@ opengl_renderer::draw_texture_image (const octave_value cdata, Matrix x,
   // Expect RGB data
   if (dv.ndims () == 3 && (dv(2) == 3 || dv(2) == 4))
     {
-      opengl_texture tex  = opengl_texture::create (m_glfcns, cdata);
+      opengl_texture tex = opengl_texture::create (m_glfcns, cdata);
       if (tex.is_valid ())
         {
           m_glfcns.glColor4d (1.0, 1.0, 1.0, 1.0);

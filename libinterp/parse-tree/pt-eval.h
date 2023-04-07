@@ -943,8 +943,8 @@ private:
 
   // Echo commands as they are executed?
   //
-  //   1  ==>  echo commands read from script files
-  //   2  ==>  echo commands from functions
+  //   1 => echo commands read from script files
+  //   2 => echo commands from functions
   //
   // more than one state can be active at once.
   int m_echo;

@@ -401,7 +401,7 @@ void settings_dialog::read_settings (bool first)
     {
       QCheckBox *cb_color_mode
         = terminal_colors_box->findChild <QCheckBox *> (cs_color_mode.settings_key ());
-      bool sec_color_mode  = settings.bool_value (cs_color_mode);
+      bool sec_color_mode = settings.bool_value (cs_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
           // color mode does not change, update colors manually
@@ -467,7 +467,7 @@ void settings_dialog::read_settings (bool first)
       m_ws_enable_colors->setChecked (settings.bool_value (ws_enable_colors));
       QCheckBox *cb_color_mode
         = workspace_colors_box->findChild <QCheckBox *> (ws_color_mode.settings_key ());
-      bool sec_color_mode  = settings.bool_value (ws_color_mode);
+      bool sec_color_mode = settings.bool_value (ws_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
           // color mode does not change, update colors manually
@@ -505,7 +505,7 @@ void settings_dialog::read_settings (bool first)
     {
       QCheckBox *cb_color_mode
         = varedit_colors_box->findChild <QCheckBox *> (ve_color_mode.settings_key ());
-      bool sec_color_mode  = settings.bool_value (ve_color_mode);
+      bool sec_color_mode = settings.bool_value (ve_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
           // color mode does not change, update colors manually
@@ -588,7 +588,7 @@ void settings_dialog::read_settings (bool first)
     {
       QCheckBox *cb_color_mode
         = group_box_editor_styles->findChild <QCheckBox *> (ed_color_mode.settings_key ());
-      bool sec_color_mode  = settings.bool_value (ed_color_mode);
+      bool sec_color_mode = settings.bool_value (ed_color_mode);
       if (cb_color_mode->isChecked () == sec_color_mode)
         {
           // color mode does not change, update colors manually

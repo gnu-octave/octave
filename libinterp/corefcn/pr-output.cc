@@ -755,7 +755,7 @@ make_complex_format (int x_max, int x_min, int r_x,
       i_fw = 8 * sizeof (T);
       rd = 0;
     }
-  else if (inf_or_nan || int_only)
+  else if (int_only)
     {
       int digits = (x_max > x_min ? x_max : x_min);
       i_fw = (digits <= 0 ? 1 : digits);
@@ -765,14 +765,9 @@ make_complex_format (int x_max, int x_min, int r_x,
           i_fw = 3;
           r_fw = 4;
         }
-
-      if (int_only)
-        {
-          ld = digits;
-          rd = 0;
-        }
+      ld = r_fw;
     }
-  else
+  else  // ordinary case of floating point numeric values
     {
       int ld_max, rd_max;
       if (x_max > 0)
@@ -819,6 +814,11 @@ make_complex_format (int x_max, int x_min, int r_x,
 
       i_fw = ld + 1 + rd;
       r_fw = i_fw + 1;
+      if (inf_or_nan && i_fw < 3)
+        {
+          i_fw = 3;
+          r_fw = 4;
+        }
     }
 
   if (! (rat_format || bank_format || hex_format || bit_format)
@@ -872,7 +872,7 @@ make_complex_format (int x_max, int x_min, int r_x,
           i_fmt.uppercase ();
         }
     }
-  else if (! bank_format && (inf_or_nan || int_only))
+  else if (! bank_format && int_only)
     {
       r_fmt = float_format (r_fw, ld);
       i_fmt = float_format (i_fw, ld);
@@ -904,11 +904,8 @@ make_complex_scalar_format (const std::complex<T>& c)
   T r_abs = (rp < 0 ? -rp : rp);
   T i_abs = (ip < 0 ? -ip : ip);
 
-  int r_x = (! octave::math::isfinite (rp)
-             || r_abs == 0) ? 0 : num_digits (r_abs);
-
-  int i_x = (! octave::math::isfinite (ip)
-             || i_abs == 0) ? 0 : num_digits (i_abs);
+  int r_x = (r_abs == 0 ? 0 : num_digits (r_abs));
+  int i_x = (i_abs == 0 ? 0 : num_digits (i_abs));
 
   int x_max, x_min;
 

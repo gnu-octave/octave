@@ -15,6 +15,14 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Remove trailing `'\r'` from curl dir list (bug #63851).
 - `fopen`: Use "UTF-8" as default encoding for `fopen` (bug #63930).
 - Don't use encoding facet when writing bytes to stream (bug #63931).
+- `fopen`, `unicode2native`: Fix converting the encoding of short char
+  arrays with invalid UTF-8 (bug #63930).
+- `fopen`: Try to gather complete UTF-8 surrogates when converting
+  encoding (bug #63930).
+- Fix display of scalar complex variables with mixed `Inf`/`NaN` and
+  floating point values (bug #63961).
+- `fopen`: Do not convert encoding for file streams with libc++
+  (bug #63930).
 
 ### GUI
 - Speedup loading and saving preferences dialog (bug #63909).
@@ -25,9 +33,11 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `acinclude.m4`: Correct typo in `#define PCRE2_CODE_UNIT_WIDTH`.
 - `lu`: Add self-test with complex valued input.
 - Disable visibility flags by default (bug #61855, bug #63916).
+- Check whether using STL from LLVM or Apple (bug #63930).
 
 ### Documentation
 - Improve documentation for `linspace` and `logspace` functions.
+- Correct and improve documentation for `sparse()` function.
 
 
 Summary of important user-visible changes for version 8 (2023-03-07):

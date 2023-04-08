@@ -522,7 +522,7 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! ## Complex numbers
 %! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
 %! fn  = tempname ();
@@ -535,9 +535,8 @@ endfunction
 %! assert (d, "\t");
 %! assert (h, 0);
 
-%!test <47413>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! if (! ismac ()), return; endif
+%!testif HAVE_LLVM_LIBCXX  <47413>
+%! ## Same test code as above, intended only for test statistics with libc++.
 %! ## Complex numbers
 %! A = [3.1 -7.2 0-3.4i; 0.012 -6.5+7.2i 128];
 %! fn  = tempname ();

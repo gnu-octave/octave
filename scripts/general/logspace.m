@@ -118,16 +118,16 @@ endfunction
 ## Edge cases
 %!assert (logspace (Inf, Inf, 3), [Inf, Inf, Inf])
 %!assert (logspace (-Inf, Inf, 3), [0, 1, Inf])
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! assert (logspace (Inf + 1i, Inf + 1i, 3),
 %!         repmat (complex (-Inf,Inf), [1, 3]))
-%!testif ; ismac () <55538>
+%!testif HAVE_LLVM_LIBCXX  <55538>
 %! assert (logspace (Inf + 1i, Inf + 1i, 3),
 %!         repmat (complex (-Inf,Inf), [1, 3]))
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! assert (logspace (-Inf + 1i, Inf + 1i, 3),
 %!         [0, NaN + NaN * 1i, complex(-Inf, Inf)])
-%!testif ; ismac () <55538>
+%!testif HAVE_LLVM_LIBCXX  <55538>
 %! assert (logspace (-Inf + 1i, Inf + 1i, 3),
 %!         [0, NaN + NaN * 1i, complex(-Inf, Inf)])
 ## Octave prefers to return NaN which indicates failure of algorithm.

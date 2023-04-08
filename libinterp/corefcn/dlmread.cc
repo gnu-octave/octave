@@ -601,7 +601,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");
@@ -622,9 +622,8 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!test <47413>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! if (! ismac ()), return; endif
+%!testif HAVE_LLVM_LIBCXX  <47413>
+%! ## Same test code as above, intended only for test statistics with libc++.
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");
@@ -661,7 +660,7 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!testif ; ! ismac ()   <*50589>
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")  <*50589>
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");
@@ -679,9 +678,8 @@ such as text, are also replaced by the @qcode{"emptyvalue"}.
 %!   unlink (file);
 %! end_unwind_protect
 
-%!test <47413>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! if (! ismac ()), return; endif
+%!testif HAVE_LLVM_LIBCXX  <47413>
+%! ## Same test code as above, intended only for test statistics with libc++.
 %! file = tempname ();
 %! unwind_protect
 %!   fid = fopen (file, "wt");

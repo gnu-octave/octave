@@ -451,48 +451,45 @@
 %!assert (sscanf ('7777777777777777', '%lo', 'C'), 281474976710655)
 %!assert (sscanf ('ffffffffffff', '%lx', 'C'), 281474976710655)
 
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
-%!test <47413>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! if (! ismac ()), return; endif
+%!testif HAVE_LLVM_LIBCXX  <47413>
+%! ## Same test code as above, intended only for test statistics with libc++.
 %! [val, count, msg, pos] = sscanf ("3I2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "sscanf: format failed to match");
 %! assert (pos, 2);
 
-%!test <47413>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! if (! ismac ()), return; endif
+%!testif HAVE_LLVM_LIBCXX  <47413>
+%! ## Same test code as above, intended only for test statistics with libc++.
 %! [val, count, msg, pos] = sscanf ("3In2", "%f");
 %! assert (val, 3);
 %! assert (count, 1);
 %! assert (msg, "");
 %! assert (pos, 2);
 
-%!testif ; ! ismac ()
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
 %! assert (val, [3; Inf; 2]);
 %! assert (count, 3);
 %! assert (msg, "");
 %! assert (pos, 6);
 
-%!test <47413>
-%! ## Same test code as above, but intended only for test statistics on Mac.
-%! if (! ismac ()), return; endif
+%!testif HAVE_LLVM_LIBCXX  <47413>
+%! ## Same test code as above, intended only for test statistics with libc++.
 %! [val, count, msg, pos] = sscanf ("3Inf2", "%f");
 %! assert (val, [3; Inf; 2]);
 %! assert (count, 3);

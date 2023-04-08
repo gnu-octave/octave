@@ -21,10 +21,12 @@ jobs:
             compiler-pkgs: "g++ gcc"
             cc: "gcc"
             cxx: "g++"
+            extra-config-flags: ""
           - compiler: clang
-            compiler-pkgs: "clang"
+            compiler-pkgs: "clang libc++-dev libc++abi-dev"
             cc: "clang"
-            cxx: "clang++"
+            cxx: "clang++ -stdlib=libc++"
+            extra-config-flags: "--without-spqr --without-magick"
           # "ccache" on Ubuntu 20.04 doesn't compress the cache.
           # Clang seems to generally require less cache size (smaller object files?).
           - ccache-max: 1.2G
@@ -40,6 +42,8 @@ jobs:
           - os: ubuntu-22.04
             compiler: clang
             ccache-max: 400M
+
+    name: ${{ matrix.os }} ${{ matrix.compiler }}
 
     env:
       CC: ${{ matrix.cc }}
@@ -105,16 +109,17 @@ jobs:
           which $CC
           echo $CC --version
           $CC --version
-          which $CXX
-          echo $CXX --version
-          $CXX --version
+          which ${CXX% *}
+          echo ${CXX% *} --version
+          ${CXX% *} --version
           which gfortran
           echo gfortran --version
           gfortran --version
           mkdir .build
           cd .build && ../configure \
             CPPFLAGS="-I/usr/include/hdf5/serial -I/usr/include/suitesparse" \
-            LDFLAGS="-L/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/hdf5/serial"
+            LDFLAGS="-L/usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)/hdf5/serial" \
+            ${{ matrix.extra-config-flags }}
 
       - name: build
         # Parallel make seems to fail intermittently when creating the figures

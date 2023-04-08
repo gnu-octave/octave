@@ -393,9 +393,6 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
   fid = -1;
 
-  // Valid names for encodings consist of ASCII characters only.
-  std::transform (encoding.begin (), encoding.end (), encoding.begin (),
-                  ::tolower);
   if (encoding.compare ("utf-8"))
     {
       // check if encoding is valid
@@ -474,6 +471,22 @@ do_stream_open (const octave_value& tc_name, const octave_value& tc_mode,
   std::string mode = tc_mode.xstring_value ("%s: file mode must be a string", fcn);
   std::string arch = tc_arch.xstring_value ("%s: architecture type must be a string", fcn);
   std::string encoding = tc_encoding.xstring_value ("%s: ENCODING must be a string", fcn);
+
+  // Valid names for encodings consist of ASCII characters only.
+  std::transform (encoding.begin (), encoding.end (), encoding.begin (),
+                  ::tolower);
+
+  if (encoding == "system")
+    encoding = octave_locale_charset_wrapper ();
+
+#if defined (OCTAVE_HAVE_STRICT_ENCODING_FACET)
+  if (encoding != "utf-8")
+    {
+      warning_with_id ("Octave:fopen:encoding-unsupported",
+                       "fopen: encoding must be 'UTF-8' for this version");
+      encoding = "utf-8";
+    }
+#endif
 
   retval = do_stream_open (name, mode, arch, encoding, fid);
 
@@ -623,8 +636,6 @@ fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
   octave_value arch = (nargin > 2) ? args(2) : octave_value ("native");
 
   octave_value encoding = (nargin > 3) ? args(3) : octave_value ("utf-8");
-  if (encoding.string_value () == "system")
-    encoding = octave_value (octave_locale_charset_wrapper ());
 
   int fid = -1;
 
@@ -656,6 +667,21 @@ fskipl, fseek, frewind, ftell, feof, ferror, fclear, fflush, freport, umask}
 %! assert (name, "");
 %! assert (mode, "");
 %! assert (arch, "");
+
+## FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
+%!testif HAVE_LLVM_LIBCXX
+%! fname = tempname ();
+%! unwind_protect
+%!   fail ("fid = fopen (fname, 'wb', 'n', 'Windows-1252')", ...
+%!         "warning", "encoding must be 'UTF-8'");
+%!   [name, mode, arch, encoding] = fopen (fid);
+%!   assert (name, fname);
+%!   assert (mode, "wb");
+%!   assert (encoding, "utf-8");  # fallback after warning
+%! unwind_protect_cleanup
+%!   fclose (fid);
+%!   unlink (fname);
+%! end_unwind_protect
 */
 
 DEFMETHOD (freport, interp, args, ,
@@ -907,7 +933,8 @@ encountered.
 
 /*
 ## Check if text is correctly converted to output encoding
-%!test <*61839>
+# FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")  <*61839>
 %! str = "aäöu";  # string with non-ASCII characters
 %! fname = tempname ();
 %! fid = fopen (fname, "wt", "n", "ISO-8859-1");
@@ -2301,7 +2328,8 @@ as the name of the function when reporting errors.
 %! assert (obs, { [0; 1; NaN; 2; 3] });
 
 ## file stream with encoding
-%!test
+## FIXME: should be conditional on OCTAVE_HAVE_STRICT_ENCODING_FACET
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
 %! f = tempname ();
 %! fid = fopen (f, "wt+", "n", "iso-8859-1");
 %! unwind_protect

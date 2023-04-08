@@ -167,6 +167,33 @@ static void * threadfunc(void *arg)
   fi
 ])
 dnl
+dnl Check for LLVM or Apple libc++ library.
+dnl
+AC_DEFUN([OCTAVE_LLVM_LIBCXX], [
+  AC_CACHE_CHECK([whether using STL from LLVM or Apple],
+    [octave_cv_llvm_libcxx],
+    [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+        // Include any header from the STL
+        #include <iostream>
+        ]], [[
+        #if defined (_LIBCPP_VERSION)
+          return (0);
+        #else
+          return (1);
+        #endif
+      ]])],
+      octave_cv_llvm_libcxx=yes,
+      octave_cv_llvm_libcxx=no,
+      octave_cv_llvm_libcxx=no)
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_llvm_libcxx = yes; then
+    AC_DEFINE(HAVE_LLVM_LIBCXX, 1,
+      [Define to 1 if linking to LLVM or Apple libc++.])
+  fi
+])
+dnl
 dnl Check whether std::pmr::polymorphic_allocator is available.
 dnl
 AC_DEFUN([OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR], [

@@ -195,8 +195,8 @@ endfunction
 %! A = [0.2510, 1.2808, -1.2252; ...
 %!      0.2015, 1.0766, 0.5630; ...
 %!      -1.9769, -1.0922, -0.5831];
-%! if (ismac ())
-%!   ## The math libraries on macOS seem to require larger tolerances
+%! if (__have_feature__ ("LLVM_LIBCXX"))
+%!   ## The math libraries in libc++ seem to require larger tolerances
 %!   tol = 60*eps;
 %! else
 %!   tol = 40*eps;

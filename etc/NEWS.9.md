@@ -42,6 +42,11 @@ overflow or precision concerns (bug #54567), and `mean` avoids errors due to
 limits of single precision by processing as doubles (bug #63848).  `median`
 has also adopted the 'outtype' option from `mean`.
 
+- `mad` function now produces Matlab compatible output using improved `mean`
+and `median` functions.  'vecdim' and 'all' options are now supported.  `mad`
+ignores all NaN values (using 'omitnan' mean/median option) and produces
+expected output behavior for empty inputs.
+
 - `mode` now produces Matlab compatible output for empty inputs (bug #50583).
 
 - `cov` now processes the input form cov(x,y) with two separate data arrays

@@ -140,7 +140,7 @@ documentation_bookmarks::documentation_bookmarks (documentation *doc,
   h_box_bm->addWidget (filter_label);
   h_box_bm->addWidget (m_filter_checkbox);
   h_box_bm->addWidget (m_filter);
-  h_box_bm->setMargin (2);
+  h_box_bm->setContentsMargins (2, 2, 2, 2);
   m_filter_widget->setLayout (h_box_bm);
 
   m_filter_shown = settings.bool_value (dc_bookmark_filter_shown);

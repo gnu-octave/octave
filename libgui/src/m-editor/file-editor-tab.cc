@@ -222,7 +222,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   QVBoxLayout *edit_area_layout = new QVBoxLayout ();
   edit_area_layout->addWidget (m_edit_area);
   edit_area_layout->addWidget (m_status_bar);
-  edit_area_layout->setMargin (0);
+  edit_area_layout->setContentsMargins (0, 0, 0, 0);
   edit_area_layout->setSpacing (0);
   setLayout (edit_area_layout);
 

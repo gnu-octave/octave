@@ -312,14 +312,14 @@ void history_dock_widget::construct ()
   filter_layout->addWidget (filter_label);
   filter_layout->addWidget (m_filter_checkbox);
   filter_layout->addWidget (m_filter);
-  filter_layout->setMargin(0);
+  filter_layout->setContentsMargins (0, 0, 0, 0);
   m_filter_widget->setLayout (filter_layout);
 
   QVBoxLayout *hist_layout = new QVBoxLayout ();
   hist_layout->addWidget (m_filter_widget);
   hist_layout->addWidget (m_history_list_view);
 
-  hist_layout->setMargin (2);
+  hist_layout->setContentsMargins (2, 2, 2, 2);
   hist_layout->setSpacing (0);
   widget ()->setLayout (hist_layout);
 

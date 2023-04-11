@@ -2379,7 +2379,7 @@ void file_editor::construct ()
   vbox_layout->addWidget (m_menu_bar);
   vbox_layout->addWidget (m_tool_bar);
   vbox_layout->addWidget (m_tab_widget);
-  vbox_layout->setMargin (0);
+  vbox_layout->setContentsMargins (0, 0, 0, 0);
   vbox_layout->setSpacing (0);
   editor_widget->setLayout (vbox_layout);
   setWidget (editor_widget);

@@ -385,7 +385,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   vbox_layout->setSpacing (0);
   vbox_layout->addWidget (m_navigation_tool_bar);
   vbox_layout->addWidget (m_file_tree_view);
-  vbox_layout->setMargin (1);
+  vbox_layout->setContentsMargins (1, 1, 1, 1);
 
   container->setLayout (vbox_layout);
 

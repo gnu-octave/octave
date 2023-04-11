@@ -159,7 +159,7 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
            this, &find_dialog::handle_sel_search_changed);
 
   QVBoxLayout *extension_layout = new QVBoxLayout ();
-  extension_layout->setMargin (0);
+  extension_layout->setContentsMargins (0, 0, 0, 0);
   extension_layout->addWidget (m_whole_words_check_box);
   extension_layout->addWidget (m_backward_check_box);
   extension_layout->addWidget (m_search_selection_check_box);

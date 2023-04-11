@@ -84,7 +84,7 @@ workspace_view::workspace_view (QWidget *p)
   filter_layout->addWidget (filter_label);
   filter_layout->addWidget (m_filter_checkbox);
   filter_layout->addWidget (m_filter);
-  filter_layout->setMargin (0);
+  filter_layout->setContentsMargins (0, 0, 0, 0);
 
   m_filter_widget->setLayout (filter_layout);
 
@@ -98,7 +98,7 @@ workspace_view::workspace_view (QWidget *p)
   m_filter_shown = settings.bool_value (ws_filter_shown);
   m_filter_widget->setVisible (m_filter_shown);
 
-  ws_layout->setMargin (2);
+  ws_layout->setContentsMargins (2, 2, 2, 2);
 
   // Set the empty widget to have our layout.
   widget ()->setLayout (ws_layout);

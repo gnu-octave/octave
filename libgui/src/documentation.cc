@@ -174,7 +174,7 @@ documentation::documentation (QWidget *p)
   h_box_find_footer->addWidget (m_find_line_edit);
   h_box_find_footer->addWidget (forward_button);
   h_box_find_footer->addWidget (backward_button);
-  h_box_find_footer->setMargin (2);
+  h_box_find_footer->setContentsMargins (2, 2, 2, 2);
   find_footer->setLayout (h_box_find_footer);
 
   QVBoxLayout *v_box_browser_find = new QVBoxLayout (browser_find);
@@ -235,7 +235,7 @@ documentation::documentation (QWidget *p)
       QHBoxLayout *h_box_index = new QHBoxLayout (filter_all);
       h_box_index->addWidget (filter_label);
       h_box_index->addWidget (m_filter);
-      h_box_index->setMargin (2);
+      h_box_index->setContentsMargins (2, 2, 2, 2);
       filter_all->setLayout (h_box_index);
 
       QWidget *index_all = new QWidget (navi);

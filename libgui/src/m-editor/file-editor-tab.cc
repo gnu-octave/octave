@@ -44,8 +44,10 @@
 #include <QMessageBox>
 #include <QPrintDialog>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QScrollBar>
 #include <QSaveFile>
+#include <QStandardPaths>
 #include <QStyle>
 #include <QTextBlock>
 #include <QTextCodec>
@@ -326,38 +328,42 @@ void file_editor_tab::set_current_directory (const QString& dir)
 
 void file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
 {
-  // Search for a subfunction in actual file (this is done first because
-  // Octave finds this function before others with the same name in the
-  // search path.
-  QRegExp rxfun1 ("^[\t ]*function[^=]+=[\t ]*"
-                  + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
-  QRegExp rxfun2 ("^[\t ]*function[\t ]+"
-                  + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$");
-  QRegExp rxfun3 ("^[\t ]*function[\t ]+"
-                  + word_at_cursor + "[\t ]*$");
-  QRegExp rxfun4 ("^[\t ]*function[^=]+=[\t ]*"
-                  + word_at_cursor + "[\t ]*$");
+  // Search for a function with that name in the current file
+  // This is done first because local functions and subfunctions have priority
+  // over other functions with the same name in the load path.
+  QRegularExpression rxfun1 {"^[\t ]*function[^=]+=[\t ]*"
+                             + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$"};
+  QRegularExpression rxfun2 {"^[\t ]*function[\t ]+"
+                             + word_at_cursor + "[\t ]*\\([^\\)]*\\)[\t ]*$"};
+  QRegularExpression rxfun3 {"^[\t ]*function[\t ]+"
+                             + word_at_cursor + "[\t ]*$"};
+  QRegularExpression rxfun4 {"^[\t ]*function[^=]+=[\t ]*"
+                             + word_at_cursor + "[\t ]*$"};
 
-  int pos_fct = -1;
+  QRegularExpressionMatch match;
   QStringList lines = m_edit_area->text ().split ("\n");
 
   int line;
   for (line = 0; line < lines.count (); line++)
     {
-      if ((pos_fct = rxfun1.indexIn (lines.at (line))) != -1)
+      match = rxfun1.match (lines.at (line));
+      if (match.hasMatch ())
         break;
-      if ((pos_fct = rxfun2.indexIn (lines.at (line))) != -1)
+      match = rxfun2.match (lines.at (line));
+      if (match.hasMatch ())
         break;
-      if ((pos_fct = rxfun3.indexIn (lines.at (line))) != -1)
+      match = rxfun3.match (lines.at (line));
+      if (match.hasMatch ())
         break;
-      if ((pos_fct = rxfun4.indexIn (lines.at (line))) != -1)
+      match = rxfun4.match (lines.at (line));
+      if (match.hasMatch ())
         break;
     }
 
-  if (pos_fct > -1)
+  if (match.hasMatch ())
     {
       // reg expr. found: it is an internal function
-      m_edit_area->setCursorPosition (line, pos_fct);
+      m_edit_area->setCursorPosition (line, match.capturedStart ());
       m_edit_area->SendScintilla (2232, line);     // SCI_ENSUREVISIBLE
       // SCI_VISIBLEFROMDOCLINE
       int vis_line = m_edit_area->SendScintilla (2220, line);
@@ -890,7 +896,7 @@ void file_editor_tab::update_lexer_settings (bool update_apis_only)
                   QString keyword = QString (lexer->keywords (i));
 
                   QStringList keyword_list
-                    = keyword.split (QRegExp (R"(\s+)"));
+                    = keyword.split (QRegularExpression {R"(\s+)"});
 
                   for (int j = 0; j < keyword_list.size (); j++)
                     m_lexer_apis->add (keyword_list.at (j));
@@ -1558,7 +1564,7 @@ void file_editor_tab::do_smart_indent_line_or_selected_text ()
 
 void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
 {
-  QRegExp rxc;
+  QRegularExpression rxc;
   QString ws = "^(?:[ \\t]*)";
   QStringList comment_str = m_edit_area->comment_string (comment);
   QString used_comment_str = comment_str.at (0);
@@ -1615,7 +1621,7 @@ void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
             regexp = regexp + QString ("|");
           regexp = regexp + comment_str_sorted.at (i);
         }
-      rxc = QRegExp (ws + "(" + regexp + ")");
+      rxc = QRegularExpression {ws + "(" + regexp + ")"};
     }
 
   // Do the commenting/uncommenting
@@ -1627,7 +1633,7 @@ void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
       int lineFrom, lineTo, colFrom, colTo;
       int change_col_from = 1;
       int change_col_to = 1;
-      bool removed;
+      bool removed = false;
 
       m_edit_area->getSelection (&lineFrom, &colFrom, &lineTo, &colTo);
 
@@ -1643,11 +1649,13 @@ void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
           else
             {
               QString line (m_edit_area->text (i));
-              if ((removed = line.contains (rxc)))
+              QRegularExpressionMatch match = rxc.match (line);
+              
+              if (match.hasMatch ())
                 {
-                  len = rxc.matchedLength ();   // complete length
-                  QString matched_text = rxc.capturedTexts ().at (0);
-                  lenc = matched_text.remove (QRegExp (ws)).length ();  // only comment string
+                  len = match.capturedLength ();   // complete length
+                  QString matched_text = match.captured (0);
+                  lenc = matched_text.remove (QRegularExpression {ws}).length ();  // only comment string
                   m_edit_area->setSelection (i, len-lenc, i, len);
                   m_edit_area->removeSelectedText ();
                 }
@@ -1689,11 +1697,12 @@ void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
       else
         {
           QString line (m_edit_area->text (cpline));
-          if (line.contains (rxc))
+          QRegularExpressionMatch match = rxc.match (line);
+          if (match.hasMatch ())
             {
-              len = rxc.matchedLength ();   // complete length
-              QString matched_text = rxc.capturedTexts ().at (0);
-              lenc = matched_text.remove (QRegExp (ws)).length ();  // only comment string
+              len = match.capturedLength ();  // complete length
+              QString matched_text = match.captured (0);
+              lenc = matched_text.remove (QRegularExpression {ws}).length ();  // only comment string
               m_edit_area->setSelection (cpline, len-lenc, cpline, len);
               m_edit_area->removeSelectedText ();
             }
@@ -2504,13 +2513,14 @@ void file_editor_tab::handle_save_as_filter_selected (const QString& filter)
 
   QFileDialog *file_dialog = qobject_cast<QFileDialog *> (sender ());
 
-  QRegExp rx ("\\*\\.([^ ^\\)]*)[ \\)]");   // regexp for suffix in filter
-  int index = rx.indexIn (filter, 0);       // get first suffix in filter
+  // regexp for suffix in filter
+  QRegularExpression rx {"\\*\\.([^ ^\\)]*)[ \\)]"};
+  QRegularExpressionMatch match = rx.match (filter);
 
-  if (index > -1)
-    file_dialog->setDefaultSuffix (rx.cap (1)); // found a suffix, set default
+  if (match.hasMatch ())
+    file_dialog->setDefaultSuffix (match.captured (1)); // found a suffix, set default
   else
-    file_dialog->setDefaultSuffix ("");         // not found, clear default
+    file_dialog->setDefaultSuffix ("");  // not found, clear default
 }
 
 bool file_editor_tab::check_valid_identifier (QString file_name)
@@ -3343,26 +3353,31 @@ void file_editor_tab::handle_double_click (int, int, int modifier)
 
 QString file_editor_tab::get_function_name ()
 {
-  QRegExp rxfun1 ("^[\t ]*function[^=]+=([^\\(]+)\\([^\\)]*\\)[\t ]*$");
-  QRegExp rxfun2 ("^[\t ]*function[\t ]+([^\\(]+)\\([^\\)]*\\)[\t ]*$");
-  QRegExp rxfun3 ("^[\t ]*function[^=]+=[\t ]*([^\\s]+)[\t ]*$");
-  QRegExp rxfun4 ("^[\t ]*function[\t ]+([^\\s]+)[\t ]*$");
-  QRegExp rxfun5 ("^[\t ]*classdef[\t ]+([^\\s]+)[\t ]*$");
+  QRegularExpression rxfun1 {"^[\t ]*function[^=]+=([^\\(]+)\\([^\\)]*\\)[\t ]*$"};
+  QRegularExpression rxfun2 {"^[\t ]*function[\t ]+([^\\(]+)\\([^\\)]*\\)[\t ]*$"};
+  QRegularExpression rxfun3 {"^[\t ]*function[^=]+=[\t ]*([^\\s]+)[\t ]*$"};
+  QRegularExpression rxfun4 {"^[\t ]*function[\t ]+([^\\s]+)[\t ]*$"};
+  QRegularExpression rxfun5 {"^[\t ]*classdef[\t ]+([^\\s]+)[\t ]*$"};
 
   QStringList lines = m_edit_area->text ().split ("\n");
 
   for (int i = 0; i < lines.count (); i++)
     {
-      if (rxfun1.indexIn (lines.at (i)) != -1)
-        return rxfun1.cap (1).remove (QRegExp ("[ \t]*"));
-      else if (rxfun2.indexIn (lines.at (i)) != -1)
-        return rxfun2.cap (1).remove (QRegExp ("[ \t]*"));
-      else if (rxfun3.indexIn (lines.at (i)) != -1)
-        return rxfun3.cap (1).remove (QRegExp ("[ \t]*"));
-      else if (rxfun4.indexIn (lines.at (i)) != -1)
-        return rxfun4.cap (1).remove (QRegExp ("[ \t]*"));
-      else if (rxfun5.indexIn (lines.at (i)) != -1)
-        return rxfun5.cap (1).remove (QRegExp ("[ \t]*"));
+      QRegularExpressionMatch match = rxfun1.match (lines.at (i));
+      if (match.hasMatch ())
+        return match.captured (1).remove (QRegularExpression {"[ \t]*"});
+      match = rxfun2.match (lines.at (i));
+      if (match.hasMatch ())
+        return match.captured (1).remove (QRegularExpression {"[ \t]*"});
+      match = rxfun3.match (lines.at (i));
+      if (match.hasMatch ())
+        return match.captured (1).remove (QRegularExpression {"[ \t]*"});
+      match = rxfun4.match (lines.at (i));
+      if (match.hasMatch ())
+        return match.captured (1).remove (QRegularExpression {"[ \t]*"});
+      match = rxfun5.match (lines.at (i));
+      if (match.hasMatch ())
+        return match.captured (1).remove (QRegularExpression {"[ \t]*"});
     }
 
   return QString ();

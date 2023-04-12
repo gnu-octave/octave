@@ -36,6 +36,7 @@
 #include <QMessageBox>
 #include <QMimeData>
 #include <QPointer>
+#include <QRegularExpression>
 #include <QTemporaryFile>
 #include <QToolTip>
 #include <QVBoxLayout>
@@ -553,31 +554,32 @@ void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
 {
   QString prevline = text (line);
 
-  QRegExp bkey = QRegExp ("^[\t ]*(if|for|while|switch"
-                          "|do|function|properties|events|classdef"
-                          "|unwind_protect|try"
-                          "|parfor|methods)"
-                          "[\r]?[\n\t #%]");
+  QRegularExpression bkey {"^[\t ]*(if|for|while|switch"
+                           "|do|function|properties|events|classdef"
+                           "|unwind_protect|try"
+                           "|parfor|methods)"
+                           "[\r]?[\n\t #%]"};
   // last word except for comments, assuming no ' or " in comment.
   // rx_end = QRegExp ("(\\w+)[ \t;\r\n]*([%#][^\"']*)?$");
 
   // last word except for comments,
   // allowing % and # in single or double quoted strings
   // FIXME: This will get confused by transpose.
-  QRegExp ekey = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
-                          "(\\w+)[ \t;\r\n]*(?:[%#].*)?$");
+  QRegularExpression ekey {"(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
+                           "(\\w+)[ \t;\r\n]*(?:[%#].*)?$"};
 
-  int bpos = bkey.indexIn (prevline, 0);
-  int epos;
+  QRegularExpressionMatch bmatch = bkey.match (prevline);
 
-  if (bpos > -1)
+  if (bmatch.hasMatch ())
     {
       // Found keyword after that indentation should be added
 
       // Check for existing end statement in the same line
-      epos = ekey.indexIn (prevline, bpos);
-      QString first_word = bkey.cap(1);
-      bool inline_end = (epos > -1) && is_end (ekey.cap(1), first_word);
+      QRegularExpressionMatch ematch = ekey.match (prevline,
+                                                   bmatch.capturedStart ());
+      QString first_word = bmatch.captured (1);
+      bool inline_end = ematch.hasMatch ()
+                        && is_end (ematch.captured (1), first_word);
 
       if (do_smart_indent && ! inline_end)
         {
@@ -588,7 +590,9 @@ void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
 
       if (do_auto_close
           && ! inline_end
-          && ! first_word.contains (QRegExp ("(?:case|otherwise|unwind_protect_cleanup)")))
+          && ! first_word.contains
+                            (QRegularExpression
+                             {"(?:case|otherwise|unwind_protect_cleanup)"}))
         {
           // Do auto close
           auto_close (do_auto_close, line, prevline, first_word);
@@ -597,8 +601,8 @@ void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
       return;
     }
 
-  QRegExp mkey = QRegExp ("^[\t ]*(?:else|elseif|catch|unwind_protect_cleanup)"
-                          "[\r]?[\t #%\n]");
+  QRegularExpression mkey {"^[\t ]*(?:else|elseif|catch|unwind_protect_cleanup)"
+                           "[\r]?[\t #%\n]"};
   if (prevline.contains (mkey))
     {
       int prev_ind = indentation (line-1);
@@ -614,14 +618,14 @@ void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
       return;
     }
 
-  QRegExp case_key = QRegExp ("^[\t ]*(?:case|otherwise)[\r]?[\t #%\n]");
+  QRegularExpression case_key {"^[\t ]*(?:case|otherwise)[\r]?[\t #%\n]"};
   if (prevline.contains (case_key) && do_smart_indent)
     {
       QString last_line = text (line-1);
       int prev_ind = indentation (line-1);
       int act_ind = indentation (line);
 
-      if (last_line.contains (QRegExp ("^[\t ]*switch")))
+      if (last_line.contains (QRegularExpression {"^[\t ]*switch"}))
         {
           indent (line+1);
           act_ind = indentation (line+1);
@@ -638,8 +642,9 @@ void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
       setCursorPosition (line+1, act_ind);
     }
 
-  ekey = QRegExp ("^[\t ]*(?:end|endif|endfor|endwhile|until|endfunction"
-                  "|endswitch|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]");
+  ekey = QRegularExpression
+           {"^[\t ]*(?:end|endif|endfor|endwhile|until|endfunction"
+            "|endswitch|end_try_catch|end_unwind_protect)[\r]?[\t #%\n(;]"};
   if (prevline.contains (ekey))
     {
       if (indentation (line-1) <= indentation (line))
@@ -663,38 +668,40 @@ void octave_qscintilla::smart_indent (bool do_smart_indent, int do_auto_close,
 void octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom,
                                                             int lineTo)
 {
-  QRegExp blank_line_regexp = QRegExp ("^[\t ]*$");
+  QRegularExpression blank_line_regexp {"^[\t ]*$"};
 
   // end[xxxxx] [# comment] at end of a line
-  QRegExp end_word_regexp
-    = QRegExp ("(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
-               "(?:end\\w*)[\r\n\t ;]*(?:[%#].*)?$");
+  QRegularExpression
+  end_word_regexp {"(?:(?:['\"][^'\"]*['\"])?[^%#]*)*"
+                   "(?:end\\w*)[\r\n\t ;]*(?:[%#].*)?$"};
 
-  QRegExp begin_block_regexp
-    = QRegExp ("^[\t ]*(?:if|elseif|else"
-               "|for|while|do|parfor"
-               "|switch|case|otherwise"
-               "|function"
-               "|classdef|properties|events|enumeration|methods"
-               "|unwind_protect|unwind_protect_cleanup|try|catch)"
-               "[\r\n\t #%]");
+  QRegularExpression
+  begin_block_regexp {"^[\t ]*(?:if|elseif|else"
+                      "|for|while|do|parfor"
+                      "|switch|case|otherwise"
+                      "|function"
+                      "|classdef|properties|events|enumeration|methods"
+                      "|unwind_protect|unwind_protect_cleanup|try|catch)"
+                      "[\r\n\t #%]"};
 
-  QRegExp mid_block_regexp
-    = QRegExp ("^[\t ]*(?:elseif|else"
-               "|unwind_protect_cleanup|catch)"
-               "[\r\n\t #%]");
+  QRegularExpression
+  mid_block_regexp {"^[\t ]*(?:elseif|else"
+                    "|unwind_protect_cleanup|catch)"
+                    "[\r\n\t #%]"};
 
-  QRegExp end_block_regexp
-    = QRegExp ("^[\t ]*(?:end"
-               "|end(for|function|if|parfor|switch|while"
-               "|classdef|enumeration|events|methods|properties)"
-               "|end_(try_catch|unwind_protect)"
-               "|until)"
-               "[\r\n\t #%]");
+  QRegularExpression
+  end_block_regexp {"^[\t ]*(?:end"
+                    "|end(for|function|if|parfor|switch|while"
+                    "|classdef|enumeration|events|methods|properties)"
+                    "|end_(try_catch|unwind_protect)"
+                    "|until)"
+                    "[\r\n\t #%]"};
 
-  QRegExp case_block_regexp
-    = QRegExp ("^[\t ]*(?:case|otherwise)"
-               "[\r\n\t #%]");
+  QRegularExpression
+  case_block_regexp {"^[\t ]*(?:case|otherwise)"
+                     "[\r\n\t #%]"};
+
+  QRegularExpressionMatch match;
 
   int indent_column = -1;
   int indent_increment = indentationWidth ();
@@ -704,7 +711,8 @@ void octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom,
     {
       QString line_text = text (line);
 
-      if (blank_line_regexp.indexIn (line_text) < 0)
+      match = blank_line_regexp.match (line_text);
+      if (! match.hasMatch ())
         {
           // Found first non-blank line above beginning of region or
           // current line.  Base indentation from this line, increasing
@@ -713,7 +721,8 @@ void octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom,
 
           indent_column = indentation (line);
 
-          if (begin_block_regexp.indexIn (line_text) > -1)
+          match = begin_block_regexp.match (line_text);
+          if (match.hasMatch ())
             {
               indent_column += indent_increment;
               if (line_text.contains ("switch"))
@@ -732,7 +741,8 @@ void octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom,
     {
       QString line_text = text (line);
 
-      if (end_block_regexp.indexIn (line_text) > -1)
+      match = end_block_regexp.match (line_text);
+      if (match.hasMatch ())
         {
           indent_column -= indent_increment;
           if (line_text.contains ("endswitch"))
@@ -744,31 +754,35 @@ void octave_qscintilla::smart_indent_line_or_selected_text (int lineFrom,
             }
         }
 
-      if (mid_block_regexp.indexIn (line_text) > -1)
+      match = mid_block_regexp.match (line_text);
+      if (match.hasMatch ())
         indent_column -= indent_increment;
 
-      if (case_block_regexp.indexIn (line_text) > -1)
+      match = case_block_regexp.match (line_text);
+      if (match.hasMatch ())
         {
-          if (case_block_regexp.indexIn (prev_line) < 0
-              && !prev_line.contains("switch"))
+          match = case_block_regexp.match (prev_line);
+          if (! match.hasMatch ()
+              && ! prev_line.contains ("switch"))
             indent_column -= indent_increment;
           in_switch = true;
         }
 
       setIndentation (line, indent_column);
 
-      int bpos = begin_block_regexp.indexIn (line_text);
-      if (bpos > -1)
+      match = begin_block_regexp.match (line_text);
+      if (match.hasMatch ())
         {
           // Check for existing end statement in the same line
-          int epos = end_word_regexp.indexIn (line_text, bpos);
-          if (epos == -1)
+          match = end_word_regexp.match (line_text, match.capturedStart ());
+          if (! match.hasMatch ())
             indent_column += indent_increment;
           if (line_text.contains ("switch"))
             in_switch = true;
         }
 
-      if (blank_line_regexp.indexIn (line_text) < 0)
+      match = blank_line_regexp.match (line_text);
+      if (! match.hasMatch ())
         prev_line = line_text;
     }
 }
@@ -841,7 +855,7 @@ void octave_qscintilla::contextmenu_run (bool)
   QString hist = QString ();
 
   // Split contents into single lines and complete commands
-  QStringList lines = selectedText ().split (QRegExp ("[\r\n]"),
+  QStringList lines = selectedText ().split (QRegularExpression {"[\r\n]"},
 #if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
                                              Qt::SkipEmptyParts);
 #else
@@ -916,7 +930,7 @@ void octave_qscintilla::contextmenu_run (bool)
   // Disable opening a file at a breakpoint in case keyboard () is used
   gui_settings settings;
 
-bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
+  bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
   settings.setValue (ed_show_dbg_file.settings_key (), false);
 
   // The interpreter_event callback function below emits a signal.
@@ -974,7 +988,7 @@ bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
              max_stack_size = 2;
            if (stack.size () <= max_stack_size)
              {
-               QRegExp rx ("source: error sourcing file [^\n]*$");
+               QRegularExpression rx {"source: error sourcing file [^\n]*$"};
                if (new_msg.contains (rx))
                  {
                    // Selected code has syntax errors
@@ -995,12 +1009,11 @@ bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
 
                    for (int i = 0; i < rx_list.length (); i++)
                      {
-                       int pos = 0;
-                       rx = QRegExp (rx_list.at (i));
-                       pos = rx.indexIn (new_msg, pos);
-                       if (pos != -1)
+                       rx = QRegularExpression {rx_list.at (i)};
+                       QRegularExpressionMatch match = rx.match(new_msg);
+                       if (match.hasMatch ())
                          {
-                           err_line = rx.cap (1).toInt ();
+                           err_line = match.captured (1).toInt ();
                            new_msg = new_msg.replace (rx, replace_list.at (i));
                          }
                      }
@@ -1308,9 +1321,9 @@ void octave_qscintilla::auto_close (int auto_endif, int linenr,
         return;
       if (next_start == start)      // same => check if already is "end"
         {
-          QRegExp rx_start = QRegExp (R"((\w+))");
-          int tmp = rx_start.indexIn (next_line, start);
-          if (tmp != -1 && is_end (rx_start.cap(1), first_word))
+          QRegularExpression rx_start {R"((\w+))"};
+          QRegularExpressionMatch match = rx_start.match (next_line, start);
+          if (match.hasMatch () && is_end (match.captured (1), first_word))
             return;
         }
     }

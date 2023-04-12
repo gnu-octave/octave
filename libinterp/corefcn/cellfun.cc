@@ -358,7 +358,7 @@ into a cell array (or cell arrays).  For example:
 
 @example
 @group
-cellfun ("tolower", @{"Foo", "Bar", "FooBar"@},
+cellfun ("lower", @{"Foo", "Bar", "FooBar"@},
          "UniformOutput", false)
 @result{} @{"foo", "bar", "foobar"@}
 @end group

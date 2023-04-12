@@ -155,7 +155,7 @@ function arg_st = __print_parse_opts__ (varargin)
           arg_st.debug_file = arg(8:end);
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-d")
-        arg_st.devopt = tolower (arg(3:end));
+        arg_st.devopt = lower (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-P")
         arg_st.printer = arg;
       elseif (strncmp (arg, "-EPSTOOL:", 9))
@@ -236,7 +236,7 @@ function arg_st = __print_parse_opts__ (varargin)
     elseif (dot == 0)
       arg_st.devopt = "psc";
     else
-      arg_st.devopt = tolower (arg_st.name(dot+1:end));
+      arg_st.devopt = lower (arg_st.name(dot+1:end));
     endif
   endif
 

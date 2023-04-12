@@ -391,7 +391,7 @@ return true.
 %!testif ; ! ispc ()
 %! assert (is_same_file ("~", tilde_expand ("~")));
 %!testif ; ispc ()
-%! assert (is_same_file (tolower (tempdir ()), toupper (tempdir ())), true);
+%! assert (is_same_file (lower (tempdir ()), upper (tempdir ())), true);
 %!assert (is_same_file ({pwd(), ".", tempdir()}, canonicalize_file_name (".")),
 %!        [true, true, false])
 

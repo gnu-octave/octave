@@ -216,7 +216,7 @@ function [z, c, s] = normalize (x, varargin)
         print_usage ();
       endif
 
-      prop = tolower (varargin{vararg_idx});
+      prop = lower (varargin{vararg_idx});
 
       if (strcmp (prop, "datavariables"))
         ## FIXME: Remove error on next line and undo block comment when support
@@ -268,7 +268,7 @@ function [z, c, s] = normalize (x, varargin)
           case "zscore"
             method = "zscore";
             if (vararg_idx < n_varargin)
-              nextprop = tolower (varargin{vararg_idx+1});
+              nextprop = lower (varargin{vararg_idx+1});
               if (strcmp (nextprop, "std") || strcmp (nextprop, "robust"))
                 methodoption = nextprop;
                 vararg_idx++;
@@ -312,7 +312,7 @@ function [z, c, s] = normalize (x, varargin)
           case "scale"
             method = "scale";
             if (vararg_idx < n_varargin)
-              nextprop = tolower (varargin{vararg_idx+1});
+              nextprop = lower (varargin{vararg_idx+1});
               if (isnumeric (nextprop))
                 if (! isscalar (nextprop))
                   error ("normalize: scale value must be a scalar");
@@ -333,7 +333,7 @@ function [z, c, s] = normalize (x, varargin)
           case "center"
             method = "center";
             if (vararg_idx < n_varargin)
-              nextprop = tolower (varargin{vararg_idx+1});
+              nextprop = lower (varargin{vararg_idx+1});
               if (isscalar (nextprop)
                   || any (strcmp (nextprop, {"mean", "median"})))
                 methodoption = nextprop;

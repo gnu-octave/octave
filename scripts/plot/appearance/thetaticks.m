@@ -96,7 +96,7 @@ function tickval = thetaticks (varargin)
     error ("thetaticks: MODE is not yet implemented for the ttick property");
 
     ## FIXME: Enable mode args if/when they are available in polar/polarplot
-    ##    arg = tolower (arg);
+    ##    arg = lower (arg);
     ## switch (arg)
     ##   case "mode"
     ##     tickval = get (hax, "ttickmode");

@@ -217,7 +217,7 @@ classdef Map < handle
         this.map = cell2struct (vals, keys);
       elseif (nargin == 4)
         for i = [1, 3]
-          switch (tolower (varargin{i}))
+          switch (lower (varargin{i}))
             case "keytype"
               this.KeyType = varargin{i+1};
             case "valuetype"

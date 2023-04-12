@@ -31,7 +31,7 @@
 
 function retval = __tickangle__ (caller, hax, angle)
 
-  ax = tolower (caller(1));
+  ax = lower (caller(1));
   switch (nargin)
     case 1
       retval = get (gca (), [ax, "ticklabelrotation"]);

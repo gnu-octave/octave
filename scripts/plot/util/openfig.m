@@ -85,7 +85,7 @@ function h = openfig (filename = "Untitled.fig", varargin)
     if (! ischar (varargin{i}))
       error ("openfig: input argument %d must be a string", i+1);
     endif
-    switch (tolower (varargin{i}))
+    switch (lower (varargin{i}))
       case "reuse"
         copies = false;
       case "new"

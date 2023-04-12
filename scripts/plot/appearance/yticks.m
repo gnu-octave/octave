@@ -96,7 +96,7 @@ function tickval = yticks (varargin)
     endif
 
   elseif (ischar (arg))
-    arg = tolower (arg);
+    arg = lower (arg);
     switch (arg)
       case "mode"
         tickval = get (hax, "ytickmode");

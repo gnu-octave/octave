@@ -115,7 +115,7 @@ function [sel, ok] = listdlg (varargin)
     if (strcmpi (varargin{i}, "ListString"))
       listcell = varargin{i+1};
     elseif (strcmpi (varargin{i}, "SelectionMode"))
-      selmode = tolower (varargin{i+1});
+      selmode = lower (varargin{i+1});
     elseif (strcmpi (varargin{i}, "ListSize"))
       listsize = varargin{i+1};
     elseif (strcmpi (varargin{i}, "InitialValue"))

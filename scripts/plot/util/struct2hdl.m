@@ -106,7 +106,7 @@ function [h, pout] = struct2hdl (s, p=[], hilev = false)
 
   ## Use lowercase for all properties
   s.properties = cell2struct (struct2cell (s.properties), ...
-                              tolower (fieldnames (s.properties)));
+                              lower (fieldnames (s.properties)));
 
   ## Place the "*mode" properties at the end to avoid having the updaters
   ## change the mode to "manual" when the value is "auto".

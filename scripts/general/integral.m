@@ -171,7 +171,7 @@ function [q, err] = integral (f, a, b, varargin)
         error ("integral: property PROP must be a string");
       endif
 
-      switch (tolower (prop))
+      switch (lower (prop))
         case "reltol"
           reltol = varargin{idx++};
         case "abstol"

@@ -127,7 +127,7 @@ function saveas (h, filename, fmt)
     endif
   endif
 
-  fmt = tolower (fmt);
+  fmt = lower (fmt);
 
   if (any (strcmp (fmt, {"ofig", "fig"})))
     savefig (fig, filename);

@@ -2163,10 +2163,10 @@ Compute hyperbolic tangent for each element of @var{x}.
 %!error tanh (1, 2)
 */
 
-DEFUNX ("tolower", Ftolower, args, ,
-        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{y} =} tolower (@var{s})
-@deftypefnx {} {@var{y} =} lower (@var{s})
+DEFUN (lower, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{y} =} lower (@var{s})
+@deftypefnx {} {@var{y} =} tolower (@var{s})
 Return a copy of the string or cell string @var{s}, with each uppercase
 character replaced by the corresponding lowercase one; non-alphabetic
 characters are left unchanged.
@@ -2175,15 +2175,15 @@ For example:
 
 @example
 @group
-tolower ("MiXeD cAsE 123")
-      @result{} "mixed case 123"
+lower ("MiXeD cAsE 123")
+    @result{} "mixed case 123"
 @end group
 @end example
 
-Programming Note: @code{lower} is an alias for @code{tolower} and either name
+Programming Note: @code{tolower} is an alias for @code{lower} and either name
 can be used in Octave.
 
-@seealso{toupper}
+@seealso{upper}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -2192,24 +2192,24 @@ can be used in Octave.
   return ovl (args(0).xtolower ());
 }
 
-DEFALIAS (lower, tolower);
+DEFALIAS (tolower, lower);
 
 /*
-%!assert (tolower ("OCTAVE"), "octave")
-%!assert (tolower ("123OCTave! _&"), "123octave! _&")
-%!assert (tolower ({"ABC", "DEF", {"GHI", {"JKL"}}}),
+%!assert (lower ("OCTAVE"), "octave")
+%!assert (lower ("123OCTave! _&"), "123octave! _&")
+%!assert (lower ({"ABC", "DEF", {"GHI", {"JKL"}}}),
 %!        {"abc", "def", {"ghi", {"jkl"}}})
-%!assert (tolower (["ABC"; "DEF"]), ["abc"; "def"])
-%!assert (tolower ({["ABC"; "DEF"]}), {["abc";"def"]})
-%!assert (tolower (["ABCÄÖÜSS"; "abcäöüß"]),
+%!assert (lower (["ABC"; "DEF"]), ["abc"; "def"])
+%!assert (lower ({["ABC"; "DEF"]}), {["abc";"def"]})
+%!assert (lower (["ABCÄÖÜSS"; "abcäöüß"]),
 %!        ["abcäöüss"; "abcäöüß"])
-%!assert (tolower (repmat ("ÄÖÜ", 2, 1, 3)), repmat ("äöü", 2, 1, 3))
-%!assert (tolower (68), 68)
-%!assert (tolower ({[68, 68; 68, 68]}), {[68, 68; 68, 68]})
-%!assert (tolower (68i), 68i)
-%!assert (tolower ({[68i, 68; 68, 68i]}), {[68i, 68; 68, 68i]})
-%!assert (tolower (single (68i)), single (68i))
-%!assert (tolower ({single([68i, 68; 68, 68i])}), {single([68i, 68; 68, 68i])})
+%!assert (lower (repmat ("ÄÖÜ", 2, 1, 3)), repmat ("äöü", 2, 1, 3))
+%!assert (lower (68), 68)
+%!assert (lower ({[68, 68; 68, 68]}), {[68, 68; 68, 68]})
+%!assert (lower (68i), 68i)
+%!assert (lower ({[68i, 68; 68, 68i]}), {[68i, 68; 68, 68i]})
+%!assert (lower (single (68i)), single (68i))
+%!assert (lower ({single([68i, 68; 68, 68i])}), {single([68i, 68; 68, 68i])})
 
 %!test
 %! classes = {@char, @double, @single, ...
@@ -2217,28 +2217,28 @@ DEFALIAS (lower, tolower);
 %!            @uint8, @uint16, @uint32, @uint64};
 %! for i = 1:numel (classes)
 %!   cls = classes{i};
-%!   assert (class (tolower (cls (97))), class (cls (97)));
-%!   assert (class (tolower (cls ([98, 99]))), class (cls ([98, 99])));
+%!   assert (class (lower (cls (97))), class (cls (97)));
+%!   assert (class (lower (cls ([98, 99]))), class (cls ([98, 99])));
 %! endfor
 %!test
 %! a(3,3,3,3) = "D";
-%! assert (tolower (a)(3,3,3,3), "d");
+%! assert (lower (a)(3,3,3,3), "d");
 
 %!test
 %! charset = char (0:127);
 %! result = charset;
 %! result (double ("A":"Z") + 1) = result (double ("a":"z") + 1);
-%! assert (tolower (charset), result);
+%! assert (lower (charset), result);
 
-%!error <Invalid call to tolower> lower ()
-%!error <Invalid call to tolower> tolower ()
-%!error tolower (1, 2)
+%!error <Invalid call to lower> lower ()
+%!error <Invalid call to lower> tolower ()
+%!error lower (1, 2)
 */
 
-DEFUNX ("toupper", Ftoupper, args, ,
-        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{y} =} toupper (@var{s})
-@deftypefnx {} {@var{y} =} upper (@var{s})
+DEFUN (upper, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{y} =} upper (@var{s})
+@deftypefnx {} {@var{y} =} toupper (@var{s})
 Return a copy of the string or cell string @var{s}, with each lowercase
 character replaced by the corresponding uppercase one; non-alphabetic
 characters are left unchanged.
@@ -2247,15 +2247,15 @@ For example:
 
 @example
 @group
-toupper ("MiXeD cAsE 123")
-      @result{} "MIXED CASE 123"
+upper ("MiXeD cAsE 123")
+    @result{} "MIXED CASE 123"
 @end group
 @end example
 
-Programming Note: @code{upper} is an alias for @code{toupper} and either name
+Programming Note: @code{toupper} is an alias for @code{upper} and either name
 can be used in Octave.
 
-@seealso{tolower}
+@seealso{lower}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -2264,25 +2264,25 @@ can be used in Octave.
   return ovl (args(0).xtoupper ());
 }
 
-DEFALIAS (upper, toupper);
+DEFALIAS (toupper, upper);
 
 /*
-%!assert (toupper ("octave"), "OCTAVE")
-%!assert (toupper ("123OCTave! _&"), "123OCTAVE! _&")
-%!assert (toupper ({"abc", "def", {"ghi", {"jkl"}}}),
+%!assert (upper ("octave"), "OCTAVE")
+%!assert (upper ("123OCTave! _&"), "123OCTAVE! _&")
+%!assert (upper ({"abc", "def", {"ghi", {"jkl"}}}),
 %!        {"ABC", "DEF", {"GHI", {"JKL"}}})
-%!assert (toupper (["abc"; "def"]), ["ABC"; "DEF"])
-%!assert (toupper ({["abc"; "def"]}), {["ABC";"DEF"]})
-%!assert (toupper (["ABCÄÖÜSS"; "abcäöüß"]),
+%!assert (upper (["abc"; "def"]), ["ABC"; "DEF"])
+%!assert (upper ({["abc"; "def"]}), {["ABC";"DEF"]})
+%!assert (upper (["ABCÄÖÜSS"; "abcäöüß"]),
 %!        ["ABCÄÖÜSS"; "ABCÄÖÜSS"])
-%!assert (toupper (repmat ("äöü", 2, 1, 3)), repmat ("ÄÖÜ", 2, 1, 3))
-%!assert (toupper (100), 100)
-%!assert (toupper ({[100, 100; 100, 100]}), {[100, 100; 100, 100]})
-%!assert (toupper (100i), 100i)
-%!assert (toupper ({[100i, 100; 100, 100i]}), {[100i, 100; 100, 100i]})
-%!assert (toupper (single (100i)), single (100i))
-%!assert (toupper ({single([100i, 100; 100, 100i])}),
-%!                 {single([100i, 100; 100, 100i])})
+%!assert (upper (repmat ("äöü", 2, 1, 3)), repmat ("ÄÖÜ", 2, 1, 3))
+%!assert (upper (100), 100)
+%!assert (upper ({[100, 100; 100, 100]}), {[100, 100; 100, 100]})
+%!assert (upper (100i), 100i)
+%!assert (upper ({[100i, 100; 100, 100i]}), {[100i, 100; 100, 100i]})
+%!assert (upper (single (100i)), single (100i))
+%!assert (upper ({single([100i, 100; 100, 100i])}),
+%!        {single([100i, 100; 100, 100i])})
 
 %!test
 %! classes = {@char, @double, @single, ...
@@ -2290,21 +2290,21 @@ DEFALIAS (upper, toupper);
 %!            @uint8, @uint16, @uint32, @uint64};
 %! for i = 1:numel (classes)
 %!   cls = classes{i};
-%!   assert (class (toupper (cls (97))), class (cls (97)));
-%!   assert (class (toupper (cls ([98, 99]))), class (cls ([98, 99])));
+%!   assert (class (upper (cls (97))), class (cls (97)));
+%!   assert (class (upper (cls ([98, 99]))), class (cls ([98, 99])));
 %! endfor
 %!test
 %! a(3,3,3,3) = "d";
-%! assert (toupper (a)(3,3,3,3), "D");
+%! assert (upper (a)(3,3,3,3), "D");
 %!test
 %! charset = char (0:127);
 %! result = charset;
 %! result (double  ("a":"z") + 1) = result (double  ("A":"Z") + 1);
-%! assert (toupper (charset), result);
+%! assert (upper (charset), result);
 
-%!error <Invalid call to toupper> toupper ()
-%!error <Invalid call to toupper> upper ()
-%!error toupper (1, 2)
+%!error <Invalid call to upper> upper ()
+%!error <Invalid call to upper> toupper ()
+%!error upper (1, 2)
 */
 
 DEFALIAS (gammaln, lgamma);

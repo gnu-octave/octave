@@ -168,7 +168,7 @@ function [q, err] = integral2 (f, xa, xb, ya, yb, varargin)
       error ("integral2: property PROP must be a string");
     endif
 
-    switch (tolower (prop))
+    switch (lower (prop))
       case "abstol"
         abstol = varargin{idx++};
         if (! (isnumeric (abstol) && isscalar (abstol) && abstol >= 0))
@@ -182,7 +182,7 @@ function [q, err] = integral2 (f, xa, xb, ya, yb, varargin)
         endif
 
       case "method"
-        method = tolower (varargin{idx++});
+        method = lower (varargin{idx++});
         if (! any (strcmp (method, {"auto", "iterated", "tiled"})))
           error ("integral2 : unrecognized method '%s'", method);
         endif

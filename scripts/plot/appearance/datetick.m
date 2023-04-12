@@ -133,7 +133,7 @@ function __datetick__ (varargin)
   if (nargin != 0)
     arg = varargin{1};
     if (ischar (arg) && any (strcmpi (arg, {"x", "y", "z"})))
-      ax = tolower (arg);
+      ax = lower (arg);
       if (nargin > 1)
         form = varargin{2};
         varargin(1:2) = [];

@@ -54,7 +54,7 @@ function desc = get_description (filename)
         warning ("pkg: skipping invalid line in DESCRIPTION file");
       else
         colon = colon(1);
-        keyword = tolower (strtrim (line(1:colon-1)));
+        keyword = lower (strtrim (line(1:colon-1)));
         value = strtrim (line (colon+1:end));
         if (length (value) == 0)
             fclose (fid);
@@ -91,7 +91,7 @@ function desc = get_description (filename)
   else
     desc.depends = "";
   endif
-  desc.name = tolower (desc.name);
+  desc.name = lower (desc.name);
 
 endfunction
 
@@ -101,7 +101,7 @@ endfunction
 ##   package, version, operator
 function deps_cell = fix_depends (depends)
 
-  deps = strtrim (ostrsplit (tolower (depends), ","));
+  deps = strtrim (ostrsplit (lower (depends), ","));
   deps_cell = cell (1, length (deps));
   dep_pat = ...
   '\s*(?<name>[-\w]+)\s*(\(\s*(?<op>[<>=]+)\s*(?<ver>\d+\.\d+(\.\d+)*)\s*\))*\s*';
@@ -113,7 +113,7 @@ function deps_cell = fix_depends (depends)
     ## Is the dependency specified
     ## in the correct format?
     if (! isempty (start))
-      package = tolower (strtrim (nm.name));
+      package = lower (strtrim (nm.name));
       ## Does the dependency specify a version
       ## Example: package(>= version).
       if (! isempty (nm.ver))
@@ -128,7 +128,7 @@ function deps_cell = fix_depends (depends)
         ## If no version is specified for the dependency
         ## we say that the version should be greater than
         ## or equal to "0.0.0".
-        package = tolower (strtrim (dep));
+        package = lower (strtrim (dep));
         operator = ">=";
         nm.ver  = "0.0.0";
       endif

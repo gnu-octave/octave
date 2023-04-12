@@ -1955,7 +1955,7 @@ For example:
 
 @example
 @group
-toupper lower_case_arg
+upper lower_case_arg
    @result{} ans = LOWER_CASE_ARG
 @end group
 @end example
@@ -1967,9 +1967,9 @@ case, a command must be called using the function syntax.  For example:
 @example
 @group
 strvar = "hello world";
-toupper strvar
+upper strvar
    @result{} ans = STRVAR
-toupper (strvar)
+upper (strvar)
    @result{} ans = HELLO WORLD
 @end group
 @end example

@@ -168,7 +168,7 @@ function h = camlight (varargin)
   endif
 
   if (! isempty (where))
-    switch (tolower (where))
+    switch (lower (where))
       case "left"
         az = -30;
         el = 30;

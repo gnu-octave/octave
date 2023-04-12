@@ -173,7 +173,7 @@ function [retfile, retpath, retindex] = uigetfile (varargin)
         if (! ischar (val))
           error ('uigetfile: MultiSelect value must be a string ("on"/"off")');
         endif
-        outargs{4} = tolower (val);
+        outargs{4} = lower (val);
       else
         error ("uigetfile: unknown argument '%s'", prop);
       endif

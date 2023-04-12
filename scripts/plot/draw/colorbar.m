@@ -117,19 +117,19 @@ function h = colorbar (varargin)
       error ("colorbar: expected string argument at position %d", i-1);
     endif
 
-    switch (tolower (arg))
+    switch (lower (arg))
       case {"north", "south", "east", "west", ...
             "northoutside", "southoutside", "eastoutside", "westoutside"}
         if (i <= nargin)
           error ("colorbar: LOC specification must occur as final argument");
         endif
-        loc = tolower (arg);
+        loc = lower (arg);
 
       case "location"
         if (i > nargin)
           error ('colorbar: missing value after "location"');
         endif
-        loc = tolower (varargin{i++});
+        loc = lower (varargin{i++});
 
       case {"delete", "hide", "off"}
         delete_cbar = true;

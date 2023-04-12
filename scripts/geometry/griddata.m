@@ -131,7 +131,7 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       elseif (! ischar (method))
         error ("griddata: METHOD must be a string");
       else
-        method = tolower (method);
+        method = lower (method);
       endif
 
       if (any (strcmp (method, {"linear", "nearest", "v4"})))

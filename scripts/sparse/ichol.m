@@ -182,7 +182,7 @@ function L = ichol (A, opts = struct ())
   if (! isfield (opts, "type"))
     opts.type = "nofill";  # set default
   else
-    type = tolower (getfield (opts, "type"));
+    type = lower (getfield (opts, "type"));
     if (! strcmp (type, "nofill") && ! strcmp (type, "ict"))
       error ('ichol: TYPE must be "nofill" or "ict"');
     endif
@@ -202,7 +202,7 @@ function L = ichol (A, opts = struct ())
   if (! isfield (opts, "michol"))
     opts.michol = "off";   # set default
   else
-    michol = tolower (getfield (opts, "michol"));
+    michol = lower (getfield (opts, "michol"));
     if (! strcmp (michol, "off") && ! strcmp (michol, "on"))
       error ('ichol: MICHOL must be "on" or "off"');
     endif
@@ -221,7 +221,7 @@ function L = ichol (A, opts = struct ())
   if (! isfield (opts, "shape"))
     opts.shape = "lower";  # set default
   else
-    shape = tolower (getfield (opts, "shape"));
+    shape = lower (getfield (opts, "shape"));
     if (! strcmp (shape, "lower") && ! strcmp (shape, "upper"))
       error ('ichol: SHAPE must be "lower" or "upper"');
     endif

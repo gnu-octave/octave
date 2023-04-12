@@ -97,7 +97,7 @@ function h = surfl (varargin)
   ## Check for lighting type.
   use_cdata = true;
   if (ischar (varargin{end}))
-    switch (tolower (varargin{end}))
+    switch (lower (varargin{end}))
       case "light"
         use_cdata = false;
       case "cdata"

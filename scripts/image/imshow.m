@@ -134,7 +134,7 @@ function h = imshow (im, varargin)
         error ("imshow: argument number %d is invalid", narg);
       endif
     elseif (ischar (arg))
-      switch (tolower (arg))
+      switch (lower (arg))
         case "border"
           warning ("imshow: border argument is not implemented");
           narg += 1;

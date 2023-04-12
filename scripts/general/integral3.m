@@ -179,7 +179,7 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
       error ("integral3: property PROP must be a string");
     endif
 
-    switch (tolower (prop))
+    switch (lower (prop))
       case "abstol"
         abstol = varargin{idx++};
         if (! (isnumeric (abstol) && isscalar (abstol) && abstol >= 0))
@@ -193,7 +193,7 @@ function q = integral3 (f, xa, xb, ya, yb, za, zb, varargin)
         endif
 
       case "method"
-        method = tolower (varargin{idx++});
+        method = lower (varargin{idx++});
         if (! any (strcmp (method, {"auto", "iterated", "tiled"})))
           error ("integral3 : unrecognized method '%s'", method);
         endif

@@ -103,7 +103,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
       endif
       value = varargin{i+1};
 
-      switch (tolower (parameter))
+      switch (lower (parameter))
         case "alpha"
           if (isnumeric (value) && isscalar (value)
               && value >= 0 && value <= 1)
@@ -116,7 +116,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
           if (! ischar (value))
             error ('corrcoef: "rows" value must be a string');
           endif
-          value = tolower (value);
+          value = lower (value);
           switch (value)
             case {"all", "complete", "pairwise"}
               rows = value;

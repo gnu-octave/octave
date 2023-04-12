@@ -80,7 +80,7 @@ function hold (varargin)
     axes_str = ifelse (have_axes_arg, "specified", "current");
     printf ("hold is now %s for %s axes\n", state_str, axes_str);
   elseif (nargs == 1)
-    state = tolower (varargin{1});
+    state = lower (varargin{1});
     switch (state)
       case "off"
         turn_hold_off = true;

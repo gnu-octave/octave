@@ -455,7 +455,7 @@ classdef inputParser < handle
           else
             this.error (sprintf (["failed validation of %s\n", ...
                                   "Validation function: %s"],
-                                 toupper (opt.name), disp (opt.val)));
+                                 upper (opt.name), disp (opt.val)));
           endif
         endif
         this.Results.(opt.name) = in;
@@ -491,7 +491,7 @@ classdef inputParser < handle
         if (this.is_argname ("Parameter", name))
           if (vidx++ > pnargin)
             this.error (sprintf ("no matching value for option '%s'",
-                                 toupper (name)));
+                                 upper (name)));
           endif
           this.validate_arg (this.last_name,
                              this.Parameter.(this.last_name).val,
@@ -503,7 +503,7 @@ classdef inputParser < handle
             this.Unmatched.(name) = varargin{vidx};
           else
             this.error (sprintf ("argument '%s' is not a valid parameter",
-                                 toupper (name)));
+                                 upper (name)));
           endif
         endif
       endwhile
@@ -573,7 +573,7 @@ classdef inputParser < handle
       end_try_catch
       if (! ok)
         this.error (sprintf ("failed validation of %s. %s",
-                             toupper (name), err));
+                             upper (name), err));
       endif
       this.Results.(name) = in;
 

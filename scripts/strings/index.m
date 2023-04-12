@@ -67,7 +67,7 @@ function n = index (s, t, direction = "first")
     f(cellfun ("isempty", f)) = {0};
   endif
 
-  direction = tolower (direction);
+  direction = lower (direction);
 
   if (strcmp (direction, "first"))
     if (iscell (f))

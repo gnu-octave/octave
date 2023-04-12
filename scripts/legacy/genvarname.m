@@ -149,7 +149,7 @@ function varname = genvarname (str, exclusions = {})
     str{i}(! (isalnum (str{i}) | str{i} == "_")) = "_";
     ## do not use keywords
     if (iskeyword (str{i}))
-      firstcharacter = toupper (str{i}(1));
+      firstcharacter = upper (str{i}(1));
       str{i} = ["x", firstcharacter, str{i}(2:end)];
     endif
     ## The variable cannot be empty

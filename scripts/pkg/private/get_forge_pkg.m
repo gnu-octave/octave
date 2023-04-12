@@ -40,7 +40,7 @@ function [ver, url] = get_forge_pkg (name)
     error ("get_forge_pkg: invalid package NAME: %s", name);
   endif
 
-  name = tolower (name);
+  name = lower (name);
 
   ## Try to download package's index page.
   [html, succ] = urlread (sprintf ("https://packages.octave.org/%s/index.html", ...
@@ -81,10 +81,10 @@ function [ver, url] = get_forge_pkg (name)
       len1 = length (name);
       len2 = length (x);
       if (len1 <= len2)
-        d = sum (abs (tolower (name(1:len1)) - tolower (x(1:len1)))) ...
+        d = sum (abs (lower (name(1:len1)) - lower (x(1:len1)))) ...
             + (len2 - len1)*23;
       else
-        d = sum (abs (tolower (name(1:len2)) - tolower (x(1:len2)))) ...
+        d = sum (abs (lower (name(1:len2)) - lower (x(1:len2)))) ...
             + (len1 - len2)*23;
       endif
 

@@ -237,7 +237,7 @@ function y = movfun (fcn, x, wlen, varargin)
     bcfcn = @replaceval_bc;
     bcfcn (true, bc);  # initialize replaceval function with value
   else
-    switch (tolower (bc))
+    switch (lower (bc))
       case "shrink"
         bcfcn = @shrink_bc;
 

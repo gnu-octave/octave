@@ -85,7 +85,7 @@ function [reg, varargout] = parseparams (params, varargin)
     if (! size_equal (names, defaults))
       error ("parseparams: needs odd number of arguments");
     endif
-    [names, sidx] = sort (toupper (names));
+    [names, sidx] = sort (upper (names));
 
     varargout = defaults;
     if (i)
@@ -95,7 +95,7 @@ function [reg, varargout] = parseparams (params, varargin)
       if (! size_equal (pnames, values) || ! all (strs(i:2:end)))
         error_as_caller ("options must be given as name-value pairs");
       endif
-      idx = lookup (names, toupper (pnames), "m");
+      idx = lookup (names, upper (pnames), "m");
       if (! all (idx))
         error_as_caller ("unrecognized option: %s", pnames{find (idx == 0, 1)});
       else

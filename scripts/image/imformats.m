@@ -89,7 +89,7 @@ function varargout = imformats (arg1, arg2, arg3)
       formats = arg1;
 
     elseif (ischar (arg1))
-      switch (tolower (arg1))
+      switch (lower (arg1))
         case "add",
           if (! isstruct (arg2))
             error ("imformats: FORMAT to %s must be a structure", arg1);

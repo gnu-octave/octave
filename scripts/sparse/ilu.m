@@ -190,7 +190,7 @@ function [L, U, P] = ilu (A, opts = struct ())
   if (! isfield (opts, "type"))
     opts.type = "nofill";  # set default
   else
-    type = tolower (getfield (opts, "type"));
+    type = lower (getfield (opts, "type"));
     if (! any (strcmp (type, {"nofill", "crout", "ilutp"})))
       error ("ilu: invalid TYPE specified");
     endif
@@ -209,7 +209,7 @@ function [L, U, P] = ilu (A, opts = struct ())
   if (! isfield (opts, "milu"))
     opts.milu = "off";     # set default
   else
-    milu = tolower (getfield (opts, "milu"));
+    milu = lower (getfield (opts, "milu"));
     if (! any (strcmp (milu, {"off", "col", "row"})))
       error ('ilu: MILU must be one of "off", "col", or "row"');
     endif

@@ -437,7 +437,7 @@ function varargout = gallery (name, varargin)
     n_out = 1;
   endif
 
-  switch (tolower (name))
+  switch (lower (name))
     case "binomial"
       error ("gallery: matrix %s not implemented", name);
     case "cauchy"      , [varargout{1:n_out}] = cauchy      (varargin{:});

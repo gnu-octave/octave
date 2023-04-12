@@ -94,7 +94,7 @@ function name = __default_filtername__ (filterext)
   if (isempty (name))
     extlist = ostrsplit (filterext, ";");
     extlist = strrep (extlist, "*.", "");
-    extlist = toupper (extlist);
+    extlist = upper (extlist);
     extlist(end+1, :) = repmat ({","}, 1, length (extlist));
     extlist = strcat (extlist{:});
     extlist = extlist(1:end-1);

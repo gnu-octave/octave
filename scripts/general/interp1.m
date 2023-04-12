@@ -133,7 +133,7 @@ function yi = interp1 (x, y, varargin)
     for i_arg = 1:length (varargin)
       arg = varargin{i_arg};
       if (ischar (arg))
-        arg = tolower (arg);
+        arg = lower (arg);
         switch (arg)
           case "extrap"
             extrap = "extrap";

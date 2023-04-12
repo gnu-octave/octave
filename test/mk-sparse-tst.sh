@@ -513,8 +513,8 @@ print_real_mapper_test isxdigit 0
 %! wn2s = warning ("query", "Octave:num-to-str");
 %! warning ("off", "Octave:num-to-str");
 %! if (isreal (af))
-%!   assert (tolower (as), as);
-%!   assert (toupper (as), as);
+%!   assert (lower (as), as);
+%!   assert (upper (as), as);
 %! endif
 %! warning (wn2s.state, "Octave:num-to-str");
 

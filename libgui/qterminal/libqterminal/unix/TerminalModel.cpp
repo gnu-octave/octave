@@ -32,11 +32,10 @@
 
 // Qt
 #include <QApplication>
-#include <QtCore/QByteRef>
-#include <QtCore/QDir>
-#include <QtCore/QFile>
-#include <QtCore/QRegExp>
-#include <QtCore/QStringList>
+#include <QByteRef>
+#include <QDir>
+#include <QFile>
+#include <QStringList>
 #include <QtCore>
 
 #include "unix/TerminalView.h"

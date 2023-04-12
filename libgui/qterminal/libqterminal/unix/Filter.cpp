@@ -28,9 +28,9 @@
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
-#include <QtCore/QString>
+#include <QString>
 
-#include <QtCore/QSharedData>
+#include <QSharedData>
 #include <QtCore>
 
 // Konsole
@@ -349,11 +349,11 @@ QStringList RegExpFilter::HotSpot::capturedTexts() const
     return _capturedTexts;
 }
 
-void RegExpFilter::setRegExp(const QRegExp& regExp)
+void RegExpFilter::setRegExp (const QRegularExpression& regExp)
 {
     _searchText = regExp;
 }
-QRegExp RegExpFilter::regExp() const
+QRegularExpression RegExpFilter::regExp () const
 {
     return _searchText;
 }
@@ -361,7 +361,7 @@ QRegExp RegExpFilter::regExp() const
 {
     _buffer = QString();
 }*/
-void RegExpFilter::process()
+void RegExpFilter::process ()
 {
     int pos = 0;
     const QString* text = buffer();
@@ -371,37 +371,35 @@ void RegExpFilter::process()
     // ignore any regular expressions which match an empty string.
     // otherwise the while loop below will run indefinitely
     static const QString emptyString("");
-    if ( _searchText.exactMatch(emptyString) )
+    QRegularExpressionMatch match = _searchText.match (emptyString);
+    if ( match.hasMatch () )
         return;
 
-    while(pos >= 0)
+    match = _searchText.match (*text, pos);
+    while (match.hasMatch ())
     {
-        pos = _searchText.indexIn(*text,pos);
+        pos = match.capturedStart ();
+        int startLine = 0;
+        int endLine = 0;
+        int startColumn = 0;
+        int endColumn = 0;
 
-        if ( pos >= 0 )
-        {
+        //kDebug() << "pos from " << pos << " to " << pos + _searchText.matchedLength();
 
-            int startLine = 0;
-            int endLine = 0;
-            int startColumn = 0;
-            int endColumn = 0;
+        getLineColumn (match.capturedStart (), startLine, startColumn);
+        getLineColumn (match.capturedEnd (), endLine, endColumn);
 
+        RegExpFilter::HotSpot* spot = newHotSpot(startLine,startColumn,
+                                       endLine,endColumn,_type);
+        spot->setCapturedTexts (match.capturedTexts ());
 
-            //kDebug() << "pos from " << pos << " to " << pos + _searchText.matchedLength();
+        addHotSpot( spot );
+        pos += match.capturedLength ();
 
-            getLineColumn(pos,startLine,startColumn);
-            getLineColumn(pos + _searchText.matchedLength(),endLine,endColumn);
+        // if matchedLength == 0, the program will get stuck in an infinite loop
+        Q_ASSERT( match.capturedLength () > 0 );
 
-            RegExpFilter::HotSpot* spot = newHotSpot(startLine,startColumn,
-                                           endLine,endColumn,_type);
-            spot->setCapturedTexts(_searchText.capturedTexts());
-
-            addHotSpot( spot );
-            pos += _searchText.matchedLength();
-
-            // if matchedLength == 0, the program will get stuck in an infinite loop
-            Q_ASSERT( _searchText.matchedLength() > 0 );
-        }
+        match = _searchText.match (*text, pos);
     }
 }
 
@@ -419,7 +417,7 @@ UrlFilter::HotSpot* UrlFilter::newHotSpot(int startLine,int startColumn,int endL
                                                endLine,endColumn,t);
 }
 
-void UrlFilter::process()
+void UrlFilter::process ()
 {
     int pos = 0;
     const QString* text = buffer();
@@ -429,43 +427,40 @@ void UrlFilter::process()
     // ignore any regular expressions which match an empty string.
     // otherwise the while loop below will run indefinitely
     static const QString emptyString("");
-    if ( _searchText.exactMatch(emptyString) )
+    QRegularExpressionMatch match = _searchText.match (emptyString);
+    if ( match.hasMatch () )
         return;
 
-    while(pos >= 0)
+    match = _searchText.match (*text, pos);
+    while (match.hasMatch ())
     {
-        pos = _searchText.indexIn(*text,pos);
+        int startLine = 0;
+        int endLine = 0;
+        int startColumn = 0;
+        int endColumn = 0;
 
-        if ( pos >= 0 )
-        {
+        //kDebug() << "pos from " << pos << " to " << pos + _searchText.matchedLength();
 
-            int startLine = 0;
-            int endLine = 0;
-            int startColumn = 0;
-            int endColumn = 0;
+        getLineColumn (match.capturedStart (), startLine, startColumn);
+        getLineColumn (match.capturedEnd (), endLine, endColumn);
 
+        UrlFilter::HotSpot* spot = newHotSpot(startLine,startColumn,
+                                              endLine,endColumn,_type);
+        spot->setCapturedTexts(match.capturedTexts ());
 
-            //kDebug() << "pos from " << pos << " to " << pos + _searchText.matchedLength();
+        // Connect the signal of the urlobject to the slot of the filter;
+        // the filter is then signaling to the main window
+        connect (spot->get_urlObject (),
+                 SIGNAL (request_open_file_signal (const QString&, int)),
+                 this, SLOT (request_open_file (const QString&, int)));
 
-            getLineColumn(pos,startLine,startColumn);
-            getLineColumn(pos + _searchText.matchedLength(),endLine,endColumn);
+        addHotSpot( spot );
+        pos += match.capturedLength();
 
-            UrlFilter::HotSpot* spot = newHotSpot(startLine,startColumn,
-                                           endLine,endColumn,_type);
-            spot->setCapturedTexts(_searchText.capturedTexts());
+        // if matchedLength == 0, the program will get stuck in an infinite loop
+        Q_ASSERT( match.capturedLength () > 0 );
 
-            // Connect the signal of the urlobject to the slot of the filter;
-            // the filter is then signaling to the main window
-            connect (spot->get_urlObject (),
-                     SIGNAL (request_open_file_signal (const QString&, int)),
-                     this, SLOT (request_open_file (const QString&, int)));
-
-            addHotSpot( spot );
-            pos += _searchText.matchedLength();
-
-            // if matchedLength == 0, the program will get stuck in an infinite loop
-            Q_ASSERT( _searchText.matchedLength() > 0 );
-        }
+        match = _searchText.match (*text, pos);
     }
 }
 
@@ -489,23 +484,27 @@ QString UrlFilter::HotSpot::tooltip() const
     else
         return QString();
 }
-UrlFilter::HotSpot::UrlType UrlFilter::HotSpot::urlType() const
+UrlFilter::HotSpot::UrlType UrlFilter::HotSpot::urlType () const
 {
     QString url = capturedTexts().first();
 
-    if ( FullUrlRegExp.exactMatch(url) )
+    QRegularExpressionMatch match = FullUrlRegExp.match (url);
+    if ( match.hasMatch () )
         return StandardUrl;
-    else if ( EmailAddressRegExp.exactMatch(url) )
+    match = EmailAddressRegExp.match (url);
+    if ( match.hasMatch () )
         return Email;
-    else if ( ErrorLinkRegExp.exactMatch(url) )
+    match = ErrorLinkRegExp.match (url);
+    if ( match.hasMatch () )
         return ErrorLink;
-    else if ( ParseErrorLinkRegExp.exactMatch(url) )
+    match = ParseErrorLinkRegExp.match (url);
+    if ( match.hasMatch () )
         return ParseErrorLink;
-    else
-        return Unknown;
+
+    return Unknown;
 }
 
-void UrlFilter::HotSpot::activate(QObject* object)
+void UrlFilter::HotSpot::activate (QObject* object)
 {
     QString url = capturedTexts().first();
 
@@ -538,11 +537,11 @@ void UrlFilter::HotSpot::activate(QObject* object)
           }
         else if (kind == ErrorLink)
           {
-            int pos = ErrorLinkRegExp.indexIn (url);
-            if (pos > -1)
+            QRegularExpressionMatch match = ErrorLinkRegExp.match (url);
+            if (match.hasMatch ())
               {
-                QString file_name = ErrorLinkRegExp.cap (1);
-                QString line = ErrorLinkRegExp.cap (2);
+                QString file_name = match.captured (1);
+                QString line = match.captured (2);
                 // call the urlobject's method for opening a file; this
                 // method then signals to the filter
                 _urlObject->request_open_file (file_name, line.toInt ());
@@ -550,11 +549,11 @@ void UrlFilter::HotSpot::activate(QObject* object)
           }
         else if (kind == ParseErrorLink)
           {
-            int pos = ParseErrorLinkRegExp.indexIn (url);
-            if (pos > -1)
+            QRegularExpressionMatch match = ParseErrorLinkRegExp.match (url);
+            if (match.hasMatch ())
               {
-                QString line = ParseErrorLinkRegExp.cap (1);
-                QString file_name = ParseErrorLinkRegExp.cap (2);
+                QString line = match.captured (1);
+                QString file_name = match.captured (2);
                 // call the urlobject's method for opening a file; this
                 // method then signals to the filter
                 _urlObject->request_open_file (file_name, line.toInt ());
@@ -574,21 +573,27 @@ void UrlFilter::HotSpot::activate(QObject* object)
 //regexp matches:
 // full url:
 // protocolname:// or www. followed by anything other than whitespaces, <, >, ' or ", and ends before whitespaces, <, >, ', ", ], !, comma and dot
-const QRegExp UrlFilter::FullUrlRegExp("(www\\.(?!\\.)|[a-z][a-z0-9+.-]*://)[^\\s<>'\"]+[^!,\\.\\s<>'\"\\]]");
+const QRegularExpression
+UrlFilter::FullUrlRegExp {"(www\\.(?!\\.)|[a-z][a-z0-9+.-]*://)[^\\s<>'\"]+[^!,\\.\\s<>'\"\\]]"};
 // email address:
 // [word chars, dots or dashes]@[word chars, dots or dashes].[word chars]
-const QRegExp UrlFilter::EmailAddressRegExp("\\b(\\w|\\.|-)+@(\\w|\\.|-)+\\.\\w+\\b");
+const QRegularExpression
+UrlFilter::EmailAddressRegExp {"\\b(\\w|\\.|-)+@(\\w|\\.|-)+\\.\\w+\\b"};
 // matches full url or email address
-const QRegExp UrlFilter::CompleteUrlRegExp('('+FullUrlRegExp.pattern()+'|'+
-                                            EmailAddressRegExp.pattern()+')');
+const QRegularExpression
+UrlFilter::CompleteUrlRegExp {'(' + FullUrlRegExp.pattern() + '|' +
+                              EmailAddressRegExp.pattern() + ')'};
 // error link:
 //   normal error
-const QRegExp UrlFilter::ErrorLinkRegExp ("(\\S+) at line (\\d+) column (?:\\d+)");
+const QRegularExpression
+UrlFilter::ErrorLinkRegExp {"(\\S+) at line (\\d+) column (?:\\d+)"};
 //   parse error
-const QRegExp UrlFilter::ParseErrorLinkRegExp ("parse error near line (\\d+) of file (\\S+)");
+const QRegularExpression
+UrlFilter::ParseErrorLinkRegExp {"parse error near line (\\d+) of file (\\S+)"};
 //   complete regexp
-const QRegExp UrlFilter::CompleteErrorLinkRegExp ('('+ErrorLinkRegExp.pattern ()+'|'+
-                                                     ParseErrorLinkRegExp.pattern ()+')');
+const QRegularExpression
+UrlFilter::CompleteErrorLinkRegExp {'('+ErrorLinkRegExp.pattern ()+'|'+
+                                    ParseErrorLinkRegExp.pattern ()+')'};
 
 
 UrlFilter::UrlFilter (Type t)
@@ -607,7 +612,7 @@ void FilterObject::activated()
 {
     _filter->activate(sender());
 }
-QList<QAction*> UrlFilter::HotSpot::actions()
+QList<QAction*> UrlFilter::HotSpot::actions ()
 {
     QList<QAction*> list;
 
@@ -633,11 +638,11 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     else if ( kind == ErrorLink )
     {
       QString url = capturedTexts().first();
-      int pos = ErrorLinkRegExp.indexIn (url);
-      if (pos >= 0)
+      QRegularExpressionMatch match = ErrorLinkRegExp.match (url);
+      if (match.hasMatch ())
         {
-          QString file_name = ErrorLinkRegExp.cap (1);
-          QString line = ErrorLinkRegExp.cap (2);
+          QString file_name = match.captured (1);
+          QString line = match.captured (2);
           openAction->setText(tr ("Edit %1 at line %2")
                               .arg (file_name).arg (line));
         }
@@ -645,11 +650,11 @@ QList<QAction*> UrlFilter::HotSpot::actions()
     else if ( kind == ParseErrorLink )
     {
       QString url = capturedTexts().first();
-      int pos = ParseErrorLinkRegExp.indexIn (url);
-      if (pos >= 0)
+      QRegularExpressionMatch match = ParseErrorLinkRegExp.match (url);
+      if (match.hasMatch ())
         {
-          QString line = ParseErrorLinkRegExp.cap (1);
-          QString file_name = ParseErrorLinkRegExp.cap (2);
+          QString line = match.captured (1);
+          QString file_name = match.captured (2);
           openAction->setText(tr ("Edit %1 at line %2")
                               .arg (file_name).arg (line));
         }

@@ -29,9 +29,10 @@
 #include <stdio.h>
 
 // Qt
-#include <QtCore/QBuffer>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
+#include <QBuffer>
+#include <QFile>
+#include <QFileInfo>
+#include <QRegularExpression>
 #include <QtCore>
 #include <QtGui>
 
@@ -509,49 +510,52 @@ bool KeyboardTranslatorReader::parseError()
 {
     return false;
 }
-QList<KeyboardTranslatorReader::Token> KeyboardTranslatorReader::tokenize(const QString& line)
+QList<KeyboardTranslatorReader::Token>
+KeyboardTranslatorReader::tokenize (const QString& line)
 {
     QString text = line.simplified();
 
     // comment line: # comment
-    static QRegExp comment("\\#.*");
+    static QRegularExpression comment {"\\#.*"};
     // title line: keyboard "title"
-    static QRegExp title("keyboard\\s+\"(.*)\"");
+    static QRegularExpression title {"keyboard\\s+\"(.*)\""};
     // key line: key KeySequence : "output"
     // key line: key KeySequence : command
-    static QRegExp key("key\\s+([\\w\\+\\s\\-]+)\\s*:\\s*(\"(.*)\"|\\w+)");
+    static QRegularExpression key {"key\\s+([\\w\\+\\s\\-]+)\\s*:\\s*(\"(.*)\"|\\w+)"};
 
     QList<Token> list;
 
-    if ( text.isEmpty() || comment.exactMatch(text) )
+    if ( text.isEmpty() || comment.match (text).hasMatch () )
     {
         return list;
     }
 
-    if ( title.exactMatch(text) )
+    QRegularExpressionMatch match;
+    if ((match = title.match (text)).hasMatch ())
     {
         Token titleToken = { Token::TitleKeyword , QString() };
-        Token textToken = { Token::TitleText , title.capturedTexts()[1] };
+        Token textToken = { Token::TitleText , match.captured (1) };
 
         list << titleToken << textToken;
     }
-    else if  ( key.exactMatch(text) )
+    else if  ((match = key.match (text)).hasMatch ())
     {
         Token keyToken = { Token::KeyKeyword , QString() };
-        Token sequenceToken = { Token::KeySequence , key.capturedTexts()[1].remove(' ') };
+        Token sequenceToken = { Token::KeySequence,
+                                match.captured (1).remove (' ') };
 
         list << keyToken << sequenceToken;
 
-        if ( key.capturedTexts()[3].isEmpty() )
+        if ( match.captured (3).isEmpty () )
         {
             // capturedTexts()[2] is a command
-            Token commandToken = { Token::Command , key.capturedTexts()[2] };
+            Token commandToken = { Token::Command , match.captured (2) };
             list << commandToken;
         }
         else
         {
             // capturedTexts()[3] is the output string
-            Token outputToken = { Token::OutputText , key.capturedTexts()[3] };
+            Token outputToken = { Token::OutputText , match.captured (3) };
             list << outputToken;
         }
     }

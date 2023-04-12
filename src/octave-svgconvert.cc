@@ -44,7 +44,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QPrinter>
-#include <QRegExp>
+#include <QRegularExpression>
 
 // Include a set of path rendering functions extracted from Qt-5.12 source
 #include "octave-qsvghandler.h"
@@ -138,12 +138,9 @@ QVector<QPoint> qstr2ptsvectord (QString str)
 // Extract field arguments in a style-like string, e.g. "bla field(1,34,56) bla"
 QString get_field (QString str, QString field)
 {
-  QString retval;
-  QRegExp rx (field + "\\(([^\\)]*)\\)");
-  int pos = 0;
-  pos = rx.indexIn (str, pos);
-  if (pos > -1)
-    retval = rx.cap (1);
+  QRegularExpression rx (field + "\\(([^\\)]*)\\)");
+  QRegularExpressionMatch match = rx.match (str);
+  QString retval = match.captured ();
 
   return retval;
 }

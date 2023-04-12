@@ -25,15 +25,16 @@ see <https://www.gnu.org/licenses/>.
 #  include "config.h"
 #endif
 
-#include <QKeySequence>
-#include <QWidget>
-#include <QStringList>
+#include <QAction>
+#include <QApplication>
+#include <QClipboard>
 #include <QColor>
+#include <QKeySequence>
 #include <QList>
 #include <QMenu>
-#include <QClipboard>
-#include <QApplication>
-#include <QAction>
+#include <QRegularExpression>
+#include <QStringList>
+#include <QWidget>
 
 #include "gui-preferences-global.h"
 #include "gui-preferences-cs.h"
@@ -85,14 +86,13 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
     // detecting links and error messages yet
     if (has_selected_text)
       {
-        QRegExp file ("(?:[ \\t]+)(\\S+) at line (\\d+) column (?:\\d+)");
+        QRegularExpression file {"(?:[ \\t]+)(\\S+) at line (\\d+) column (?:\\d+)"};
+        QRegularExpressionMatch match = file.match (selected_text);
 
-        int pos = file.indexIn (selected_text);
-
-        if (pos > -1)
+        if (match.hasMatch ())
           {
-            QString file_name = file.cap (1);
-            QString line = file.cap (2);
+            QString file_name = match.captured (1);
+            QString line = match.captured (2);
 
             _edit_action->setVisible (true);
             _edit_action->setText (tr ("Edit %1 at line %2")
@@ -107,13 +107,12 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
 
     if (has_selected_text)
       {
-        QRegExp expr (".*\b*(\\w+)\b*.*");
+        QRegularExpression expr {".*\b*(\\w+)\b*.*"};
+        QRegularExpressionMatch match = expr.match (selected_text);
 
-        int pos = expr.indexIn (selected_text);
-
-        if (pos > -1)
+        if (match.hasMatch ())
           {
-            QString expr_found = expr.cap (1);
+            QString expr_found = match.captured (1);
 
             m_edit_selected_action->setVisible (true);
             m_edit_selected_action->setText (tr ("Edit %1").arg (expr_found));
@@ -153,7 +152,7 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
 void
 QTerminal::run_selection ()
 {
-  QStringList commands = selectedText ().split (QRegExp ("[\r\n]"),
+  QStringList commands = selectedText ().split (QRegularExpression {"[\r\n]"},
 #if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
                                                 Qt::SkipEmptyParts);
 #else

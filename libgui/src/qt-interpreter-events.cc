@@ -35,6 +35,7 @@
 #include <QIcon>
 #include <QMetaType>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QStringList>
 
 #include "dialog.h"
@@ -93,7 +94,7 @@ make_filter_list (const event_manager::filter_list& lst)
 
       // Strip out extensions from name and replace ';' with spaces in list.
 
-      name.replace (QRegExp (R"(\(.*\))"), "");
+      name.replace (QRegularExpression {R"(\(.*\))"}, "");
       ext.replace (";", " ");
 
       if (name.isEmpty ())
@@ -728,19 +729,20 @@ qt_interpreter_events::gui_preference_adjust (const QString& key,
       QStringList codecs;
       settings.get_codecs (&codecs);
 
-      QRegExp re ("^CP(\\d+)$");
+      QRegularExpression re {"^CP(\\d+)$"};
+      QRegularExpressionMatch match = re.match (adjusted_value);
 
       if (adjusted_value == "SYSTEM")
         adjusted_value =
           QString ("SYSTEM (") +
           QString (octave_locale_charset_wrapper ()).toUpper () +
           QString (")");
-      else if (re.indexIn (adjusted_value) > -1)
+      else if (match.hasMatch ())
         {
-          if (codecs.contains ("IBM" + re.cap (1)))
-            adjusted_value = "IBM" + re.cap (1);
-          else if (codecs.contains ("WINDOWS-" + re.cap (1)))
-            adjusted_value = "WINDOWS-" + re.cap (1);
+          if (codecs.contains ("IBM" + match.captured (1)))
+            adjusted_value = "IBM" + match.captured (1);
+          else if (codecs.contains ("WINDOWS-" + match.captured (1)))
+            adjusted_value = "WINDOWS-" + match.captured (1);
           else
             adjusted_value.clear ();
         }

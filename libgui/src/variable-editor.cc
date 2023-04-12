@@ -39,6 +39,7 @@
 #include <QMenu>
 #include <QPalette>
 #include <QPointer>
+#include <QRegularExpression>
 #include <QScreen>
 #include <QScrollBar>
 #include <QStackedWidget>
@@ -434,7 +435,7 @@ variable_editor_stack::levelUp ()
 
   if (name.endsWith (')') || name.endsWith ('}'))
     {
-      name.remove ( QRegExp ("[({][^({]*[)}]$)") );
+      name.remove (QRegularExpression {"[({][^({]*[)}]$)"});
       emit edit_variable_signal (name, octave_value ());
     }
 }

@@ -47,6 +47,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QRegularExpression>
 #include <QTabWidget>
 #include <QTimer>
 #include <QWheelEvent>
@@ -461,9 +462,10 @@ void documentation::global_search ()
     return;
 
   // Get quoted search strings first, then take first string as fall back
-  QRegExp rx ("\"([^\"]*)\"");
-  if (rx.indexIn (query_string, 0) != -1)
-    m_internal_search = rx.cap (1);
+  QRegularExpression rx {"\"([^\"]*)\""};
+  QRegularExpressionMatch match = rx.match (query_string);
+  if (match.hasMatch ())
+    m_internal_search = match.captured (1);
   else
 #if defined (HAVE_QT_SPLITBEHAVIOR_ENUM)
     m_internal_search = query_string.split (" ", Qt::SkipEmptyParts).first ();
@@ -954,7 +956,7 @@ QString documentation::title_and_anchor (const QString& title, const QUrl& url)
   QString retval = title;
   QString u = url.toString ();
 
-  retval.remove (QRegExp ("\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"));
+  retval.remove (QRegularExpression {"\\s*\\(*GNU Octave \\(version [^\\)]*\\)[: \\)]*"});
 
   // Since the title only contains the section name and not the
   // specific anchor, extract the latter from the url and append
@@ -964,19 +966,22 @@ QString documentation::title_and_anchor (const QString& title, const QUrl& url)
       // Get the anchor from the url
       QString anchor = u.split ('#').last ();
       // Remove internal string parts
-      anchor.remove (QRegExp ("^index-"));
-      anchor.remove (QRegExp ("^SEC_"));
-      anchor.remove (QRegExp ("^XREF"));
+      anchor.remove (QRegularExpression {"^index-"});
+      anchor.remove (QRegularExpression {"^SEC_"});
+      anchor.remove (QRegularExpression {"^XREF"});
       anchor.remove ("Concept-Index_cp_letter-");
       anchor.replace ("-", " ");
 
       // replace encoded special chars by their unencoded versions
-      QRegExp rx = QRegExp ("_00([0-7][0-9a-f])");
+      QRegularExpression rx {"_00([0-7][0-9a-f])"};
+      QRegularExpressionMatch match = rx.match (anchor, 0);
       int pos = 0;
-      while ((pos = rx.indexIn(anchor, pos)) != -1)
+      while (match.hasMatch ())
         {
-          anchor.replace ("_00"+rx.cap (1), QChar (rx.cap (1).toInt (nullptr, 16)));
-          pos += rx.matchedLength();
+          anchor.replace ("_00" + match.captured (1),
+                          QChar (match.captured (1).toInt (nullptr, 16)));
+          pos += match.capturedLength ();
+          match = rx.match (anchor, pos);
         }
 
       if (retval != anchor)

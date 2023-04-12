@@ -2013,8 +2013,11 @@ AC_SUBST(FLTK_CPPFLAGS)
 AC_SUBST(FLTK_LDFLAGS)
 AC_SUBST(FLTK_LIBS)
 
-### Final determination of whether OpenGL graphics can be built.
-if test $build_qt_graphics = no && test $build_fltk_graphics = no; then
+### Final determination of whether OpenGL graphics features should
+### be built.  Note that there is no longer a way to build the Qt GUI
+### without also building a Qt widget that uses OpenGL graphics so we
+### check $build_qt_gui instead of $build_qt_graphics here.
+if test $build_qt_gui = no && test $build_fltk_graphics = no; then
   opengl_graphics=no
 else
   opengl_graphics=yes

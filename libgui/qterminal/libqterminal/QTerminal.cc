@@ -330,7 +330,7 @@ QTerminal::construct (void)
   addAction (_interrupt_action);
 
   _interrupt_action->setShortcut
-    (QKeySequence (Qt::ControlModifier + Qt::Key_C));
+    (QKeySequence (Qt::ControlModifier | Qt::Key_C));
   _interrupt_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 
   bool ok = connect (_interrupt_action, SIGNAL (triggered ()),
@@ -340,6 +340,6 @@ QTerminal::construct (void)
   _nop_action = new QAction (this);
   addAction (_nop_action);
 
-  _nop_action->setShortcut (QKeySequence (Qt::ControlModifier + Qt::Key_D));
+  _nop_action->setShortcut (QKeySequence (Qt::ControlModifier | Qt::Key_D));
   _nop_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
 }

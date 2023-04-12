@@ -204,7 +204,7 @@ void terminal_dock_widget::init_control_d_shortcut_behavior ()
 
           QKeySequence actual = QKeySequence (settings.sc_value (scpref));
 
-          if (actual == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+          if (actual == QKeySequence (Qt::ControlModifier | Qt::Key_D))
             {
               settings.setValue (sc_main_ctrld.settings_key (), true);
               break;

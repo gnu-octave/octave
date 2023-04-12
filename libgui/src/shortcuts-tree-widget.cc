@@ -72,13 +72,13 @@ void enter_shortcut::keyPressEvent (QKeyEvent *e)
       Qt::KeyboardModifiers modifiers = QGuiApplication::keyboardModifiers (); //e->modifiers ();
 
       if (m_shift_modifier || (modifiers & Qt::ShiftModifier))
-        key += Qt::SHIFT;
+        key |= Qt::SHIFT;
       if (modifiers & Qt::ControlModifier)
-        key += Qt::CTRL;
+        key |= Qt::CTRL;
       if (modifiers & Qt::AltModifier)
-        key += Qt::ALT;
+        key |= Qt::ALT;
       if (modifiers & Qt::MetaModifier)
-        key += Qt::META;
+        key |= Qt::META;
 
       setText (QKeySequence (key).toString ());
     }
@@ -595,7 +595,8 @@ void shortcuts_tree_widget::import_shortcuts (gui_settings& settings)
 
       // special: check main-window for Ctrl-D (Terminal)
       if (section.startsWith ("main_")
-          && QKeySequence (sc_text) == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+          && QKeySequence (sc_text)
+             == QKeySequence (Qt::ControlModifier | Qt::Key_D))
 
         sc_ctrld = true;
 
@@ -636,7 +637,8 @@ void shortcuts_tree_widget::export_shortcuts (gui_settings& settings)
 
       // special: check main-window for Ctrl-D (Terminal)
       if (section.startsWith ("main_")
-          && QKeySequence (sc_text) == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+          && QKeySequence (sc_text)
+             == QKeySequence (Qt::ControlModifier | Qt::Key_D))
 
         sc_ctrld = true;
 
@@ -684,7 +686,8 @@ void shortcuts_tree_widget::set_default_shortcuts ()
 
       // special: check main-window for Ctrl-D (Terminal)
       if (section.startsWith ("main_")
-          && QKeySequence (sc_text) == QKeySequence (Qt::ControlModifier+Qt::Key_D))
+          && QKeySequence (sc_text)
+             == QKeySequence (Qt::ControlModifier | Qt::Key_D))
 
         sc_ctrld = true;
 

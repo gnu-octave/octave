@@ -130,7 +130,7 @@ static qreal toDouble(const QChar *&str)
     } else {
         val = QByteArray::fromRawData(temp, pos).toDouble();
         // Do not tolerate values too wild to be represented normally by floats
-        if (std::fpclassify (float {val}) != FP_NORMAL)
+        if (std::fpclassify (static_cast<float> (val)) != FP_NORMAL)
             val = 0;
     }
     return val;

@@ -45,6 +45,7 @@
 // --------------------------------------------------------------------------
 
 #include <QPainterPath>
+#include <QStringRef>
 
 static inline bool isDigit(ushort ch)
 {
@@ -435,7 +436,7 @@ static bool parsePathDataFast(const QStringRef &dataStr, QPainterPath &path)
         QChar pathElem = *str;
         ++str;
         QChar endc = *end;
-        *const_cast<QChar *>(end) = 0; // parseNumbersArray requires 0-termination that QStringRef cannot guarantee
+        *const_cast<QChar *>(end) = QChar{0}; // parseNumbersArray requires 0-termination that QStringRef cannot guarantee
         QVarLengthArray<qreal, 8> arg;
         parseNumbersArray(str, arg);
         *const_cast<QChar *>(end) = endc;

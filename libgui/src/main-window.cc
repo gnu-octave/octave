@@ -1372,7 +1372,7 @@ void main_window::request_new_function (bool)
   if (ok && new_name.length () > 0)
     {
       // append suffix if it does not already exist
-      if (new_name.rightRef (2) != ".m")
+      if (new_name.right (2) != ".m")
         new_name.append (".m");
       // check whether new files are created without prompt
       if (! settings.bool_value (ed_create_new_file))
@@ -2267,8 +2267,6 @@ void main_window::construct_new_menu (QMenu *p)
 void main_window::construct_edit_menu (QMenuBar *p)
 {
   QMenu *edit_menu = m_add_menu (p, tr ("&Edit"));
-
-  QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
 
   gui_settings settings;
 

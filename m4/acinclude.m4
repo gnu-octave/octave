@@ -1542,6 +1542,9 @@ AC_DEFUN([OCTAVE_CHECK_QSCINTILLA], [
     5)
       octave_qscintilla_libnames="qscintilla2-qt5 qscintilla2_qt5 qt5scintilla2"
     ;;
+    6)
+      octave_qscintilla_libnames="qscintilla2-qt6 qscintilla2_qt6 qt6scintilla2"
+    ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])
     ;;
@@ -1650,18 +1653,12 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
       have_qt_version=$ver
       break
     elif test -n "$QT_MODULES_AVAILABLE"; then
-      ## We currently only support Qt5, but previously, when it was
-      ## possible to build Octave with either qt4 or Qt5 and we detected
-      ## only some modules available for a particular version $ver, then
-      ## we warned about a possible incomplete or broken Qt installation
-      ## instead of checking for next version in the list.  We did not
-      ## attempt a similar check for tools here because version-specific
-      ## Qt tools may be installed with the same name so determining
-      ## whether there is a mix of versions requires more work than just
-      ## looking which tools are installed.
-      ##
-      ## NOTE: Leave this logic in place because it may be needed again
-      ## if/when we begin supporting both Qt5 and Qt6
+      ## If some modules were found for $ver, then warn about possible
+      ## incomplete or broken Qt installation instead of checking for
+      ## next version in the list.  Don't attempt a similar check for
+      ## tools here because Qt5 and Qt6 tools may be installed with
+      ## the same name so determining whether there is a mix of versions
+      ## will require more work than just looking which tools are installed.
       warn_qt_modules="Your installation of Qt version $ver appears incomplete or broken in some way.  Fix that or use --with-qt=VER to use another version."
       break
     fi
@@ -1671,6 +1668,9 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     BUILD_QT_SUMMARY_MSG="yes (version: $have_qt_version)"
     if test x"$have_qt_version" = x5; then
       AC_DEFINE(HAVE_QT5, 1, [Define to 1 if using Qt version 5.])
+    fi
+    if test x"$have_qt_version" = x6; then
+      AC_DEFINE(HAVE_QT6, 1, [Define to 1 if using Qt version 6.])
     fi
   else
     if test -n "$QT_MODULES_MISSING" || test -n "$QT_TOOLS_MISSING"; then
@@ -1821,6 +1821,12 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   case "$qt_version" in
     5)
       QT_MODULES="Qt5Core Qt5Gui Qt5Help Qt5Network Qt5OpenGL Qt5PrintSupport Qt5Xml"
+    ;;
+    6)
+      # FIXME: Remove Qt6Core5Compat when we no longer rely on classes that
+      #        have been removed in Qt6:
+      #        https://www.qt.io/blog/porting-from-qt-5-to-qt-6-using-qt5compat-library
+      QT_MODULES="Qt6Core Qt6Core5Compat Qt6Gui Qt6Help Qt6Network Qt6OpenGL Qt6OpenGLWidgets Qt6PrintSupport Qt6Xml"
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])

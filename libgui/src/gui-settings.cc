@@ -139,7 +139,11 @@ QColor gui_settings::get_color_value (const QVariant& def, int mode) const
   if ((mode == 1) && (default_color != settings_color_no_change))
     {
       // In second mode, determine the default color from the first mode
+#if HAVE_QCOLOR_FLOAT_TYPE
+      float h, s, l, a;
+#else
       qreal h, s, l, a;
+#endif
       default_color.getHslF (&h, &s, &l, &a);
       qreal l_new = 1.0-l*0.85;
       if (l < 0.3)

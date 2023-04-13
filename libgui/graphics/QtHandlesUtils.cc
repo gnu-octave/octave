@@ -161,9 +161,13 @@ namespace Utils
     Matrix rgb (1, 3);
     double *rgbData = rgb.fortran_vec ();
 
+#if HAVE_QCOLOR_FLOAT_TYPE
+    float tmp[3];
+#else
     // qreal is a typedef for double except for ARM CPU architectures
     // where it is a typedef for float (Bug #44970).
     qreal tmp[3];
+#endif
     c.getRgbF (tmp, tmp+1, tmp+2);
     rgbData[0] = tmp[0]; rgbData[1] = tmp[1]; rgbData[2] = tmp[2];
 

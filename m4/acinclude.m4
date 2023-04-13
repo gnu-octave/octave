@@ -627,6 +627,40 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS], [
   fi
 ])
 dnl
+dnl Check whether the Qt methods QColor::getRgbF and QColor::getHslF
+dnl use float types as their arguments.  The type of the arguments
+dnl changed from qreal to float in Qt6.
+dnl
+dnl FIXME: Delete this check when we drop support for any version of Qt5.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QCOLOR_FLOAT_TYPE], [
+  AC_CACHE_CHECK([for QColor::getRgbF and QColor::getHslF with float arguments],
+    [octave_cv_func_qcolor_float_type],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QColor>
+        ]], [[
+        QColor color;
+        float r, g, b, h, s, l, a;
+        color.getRgbF (&r, &g, &b);
+        color.getHslF (&h, &s, &l, &a);
+        ]])],
+      octave_cv_func_qcolor_float_type=yes,
+      octave_cv_func_qcolor_float_type=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qcolor_float_type = yes; then
+    AC_DEFINE(HAVE_QCOLOR_FLOAT_TYPE, 1,
+      [Define to 1 if QColor::getRgbF and QColor::getHslF use float type arguments.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -1960,6 +1994,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QHELPENGINE_DOCUMENTSFORIDENTIFIER
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
     OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS
+    OCTAVE_CHECK_FUNC_QCOLOR_FLOAT_TYPE
 
     OCTAVE_CHECK_QREGION_ITERATORS
     OCTAVE_CHECK_QT_IMCURSORRECTANGLE_ENUM_VALUE

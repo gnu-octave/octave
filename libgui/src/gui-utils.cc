@@ -39,7 +39,11 @@ OCTGUI_API QColor
 interpolate_color (const QColor& col1, const QColor& col2,
                    double fs, double fv)
 {
+#if HAVE_QCOLOR_FLOAT_TYPE
+  float h1, s1, v1, h2, s2, v2;
+#else
   qreal h1, s1, v1, h2, s2, v2;
+#endif
 
   col1.getHsvF (&h1, &s1, &v1);
   col2.getHsvF (&h2, &s2, &v2);

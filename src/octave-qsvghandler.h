@@ -47,6 +47,8 @@
 // https://github.com/qt/qtsvg/blob/6.5.0/src/svg/qsvghandler.cpp
 // --------------------------------------------------------------------------
 
+#include <cmath>
+
 #include <QPainterPath>
 
 static inline bool isDigit(ushort ch)
@@ -128,7 +130,7 @@ static qreal toDouble(const QChar *&str)
     } else {
         val = QByteArray::fromRawData(temp, pos).toDouble();
         // Do not tolerate values too wild to be represented normally by floats
-        if (qFpClassify(float(val)) != FP_NORMAL)
+        if (std::fpclassify (float {val}) != FP_NORMAL)
             val = 0;
     }
     return val;

@@ -1009,7 +1009,11 @@ read from stdin\n\
     {
       // Return modified svg document
       QTextStream out (&fout);
+#if HAVE_QTEXTSTREAM_SETENCODING
+      out.setEncoding (QStringConverter::Utf8);
+#else
       out.setCodec ("UTF-8");
+#endif
       out << document.toByteArray ();
     }
 

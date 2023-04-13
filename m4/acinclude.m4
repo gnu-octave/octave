@@ -464,7 +464,7 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QFONTMETRICS_HORIZONTAL_ADVANCE], [
 ])
 dnl
 dnl Check whether the Qt class QHelpEngine has the documentsForIdentifier
-dnl function.  dnl This member function was introduced in Qt 5.15.
+dnl function.  This member function was introduced in Qt 5.15.
 dnl
 dnl FIXME: Delete this entirely when we drop support for Qt 5.14 or older.
 dnl
@@ -688,6 +688,38 @@ AC_DEFUN([OCTAVE_CHECK_CLASS_QSTRINGVIEW], [
   if test $octave_cv_class_qstringview = yes; then
     AC_DEFINE(HAVE_QSTRINGVIEW, 1,
       [Define to 1 if Qt provides the class QStringView.])
+  fi
+])
+dnl
+dnl Check whether the Qt class QTextStream has the setEncoding function.
+dnl This function was introduced replacing QTextStream::setCodec in Qt6.
+dnl
+dnl FIXME: Delete this check when we drop support for any version of Qt5.
+dnl
+AC_DEFUN([OCTAVE_CHECK_FUNC_QTEXTSTREAM_SETENCODING], [
+  AC_CACHE_CHECK([for QTextStream::setEncoding],
+    [octave_cv_func_qtextstream_setencoding],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QStringConverter>
+        #include <QTextStream>
+        ]], [[
+        QTextStream textstream;
+        textstream.setEncoding (QStringConverter::Utf8);
+        ]])],
+      octave_cv_func_qtextstream_setencoding=yes,
+      octave_cv_func_qtextstream_setencoding=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_func_qtextstream_setencoding = yes; then
+    AC_DEFINE(HAVE_QTEXTSTREAM_SETENCODING, 1,
+      [Define to 1 if you have the `QTextStream::setEncoding' member function.])
   fi
 ])
 dnl
@@ -2026,6 +2058,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS
     OCTAVE_CHECK_FUNC_QCOLOR_FLOAT_TYPE
     OCTAVE_CHECK_CLASS_QSTRINGVIEW
+    OCTAVE_CHECK_FUNC_QTEXTSTREAM_SETENCODING
 
     OCTAVE_CHECK_QREGION_ITERATORS
     OCTAVE_CHECK_QT_IMCURSORRECTANGLE_ENUM_VALUE

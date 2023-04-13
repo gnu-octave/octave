@@ -50,9 +50,9 @@
 #include <QStandardPaths>
 #include <QStyle>
 #include <QTextBlock>
-#include <QTextCodec>
 #include <QTextStream>
 #include <QVBoxLayout>
+
 #if defined (HAVE_QSCI_QSCILEXEROCTAVE_H)
 #  define HAVE_LEXER_OCTAVE 1
 #  include <Qsci/qscilexeroctave.h>
@@ -2351,6 +2351,9 @@ void file_editor_tab::do_save_file (const QString& file_to_save,
   // write the file
   QTextStream out (&file);
 
+#if HAVE_QTEXTSTREAM_SETENCODING
+  // FIXME: Check and set encoding!
+#else
   // set the desired codec (if suitable for contents)
   QTextCodec *codec = check_valid_codec ();
   if (! codec)
@@ -2358,6 +2361,7 @@ void file_editor_tab::do_save_file (const QString& file_to_save,
 
   // Save the file
   out.setCodec (codec);
+#endif
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
 

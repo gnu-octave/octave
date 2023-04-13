@@ -445,7 +445,11 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
               painter.save ();
               if (! str.isEmpty ())
                 {
-                  QStringRef tf (&str);
+#if HAVE_QSTRINGVIEW
+                  QStringView tf {str};
+#else
+                  QStringRef tf {&str};
+#endif
                   QTransform  tform =
                     parseTransformationMatrix (tf) * painter.transform ();
                   painter.setTransform (tform);
@@ -475,7 +479,11 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
 
               if (! d.isEmpty ())
                 {
-                  QStringRef data (&d);
+#if HAVE_QSTRINGVIEW
+                  QStringView data {d};
+#else
+                  QStringRef data {&d};
+#endif
                   QPainterPath path;
                   if (! parsePathDataFast (data, path))
                     continue; // Something went wrong, pass

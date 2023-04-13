@@ -661,6 +661,36 @@ AC_DEFUN([OCTAVE_CHECK_FUNC_QCOLOR_FLOAT_TYPE], [
   fi
 ])
 dnl
+dnl Check whether Qt provides a QStringView class.  This class was first
+dnl introduced in Qt 5.10 and finally replaced QStringRef in Qt6.
+dnl
+dnl FIXME: Delete this check when we drop support for Qt 5.9 or older.
+dnl
+AC_DEFUN([OCTAVE_CHECK_CLASS_QSTRINGVIEW], [
+  AC_CACHE_CHECK([for class QStringView],
+    [octave_cv_class_qstringview],
+    [AC_LANG_PUSH(C++)
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_CXXFLAGS="$CXXFLAGS"
+    CPPFLAGS="$QT_CPPFLAGS $CXXPICFLAG $CPPFLAGS"
+    CXXFLAGS="$CXXPICFLAG $CXXFLAGS"
+    AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <QStringView>
+        ]], [[
+        QStringView qstrv {};
+        ]])],
+      octave_cv_class_qstringview=yes,
+      octave_cv_class_qstringview=no)
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    CXXFLAGS="$ac_octave_save_CXXFLAGS"
+    AC_LANG_POP(C++)
+  ])
+  if test $octave_cv_class_qstringview = yes; then
+    AC_DEFINE(HAVE_QSTRINGVIEW, 1,
+      [Define to 1 if Qt provides the class QStringView.])
+  fi
+])
+dnl
 dnl Check whether HDF5 library has version 1.6 API functions.
 dnl
 AC_DEFUN([OCTAVE_CHECK_HDF5_HAS_VER_16_API], [
@@ -1995,6 +2025,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_FUNC_QWHEELEVENT_POSITION
     OCTAVE_CHECK_FUNC_QPAINTER_SETRENDERHINT_LOSSLESS
     OCTAVE_CHECK_FUNC_QCOLOR_FLOAT_TYPE
+    OCTAVE_CHECK_CLASS_QSTRINGVIEW
 
     OCTAVE_CHECK_QREGION_ITERATORS
     OCTAVE_CHECK_QT_IMCURSORRECTANGLE_ENUM_VALUE

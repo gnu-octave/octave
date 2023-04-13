@@ -321,10 +321,11 @@ static QTransform parseTransformationMatrix(const QStringRef &value)
         return QTransform();
 
     QTransform matrix;
-    const QChar *str = value.constData();
 #if HAVE_QSTRINGVIEW
+    const QChar *str = value.data();
     const QChar *end = str + value.size();
 #else
+    const QChar *str = value.constData();
     const QChar *end = str + value.length();
 #endif
 
@@ -462,7 +463,11 @@ static bool parsePathDataFast(const QStringRef &dataStr, QPainterPath &path)
     qreal x = 0, y = 0;                // current point
     char lastMode = 0;
     QPointF ctrlPt;
+#if HAVE_QSTRINGVIEW
+    const QChar *str = dataStr.data();
+#else
     const QChar *str = dataStr.constData();
+#endif
     const QChar *end = str + dataStr.size();
 
     bool ok = true;

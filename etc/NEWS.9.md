@@ -49,6 +49,9 @@ expected output behavior for empty inputs.
 
 - `mode` now produces Matlab compatible output for empty inputs (bug #50583).
 
+- `normalize` now produces Matlab compatible output for inputs containing NaN
+values (bug #50571).
+
 - `cov` now processes the input form cov(x,y) with two separate data arrays
 x and y, as cov(x(:),y(:)) to maintain Matlab compatibility.  It also accepts
 a NANFLAG option to allow ignoring NaN entries in input data (bug #50571)

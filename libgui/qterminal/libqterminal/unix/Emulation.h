@@ -30,10 +30,9 @@
 
 // Qt
 #include <QKeyEvent>
-
-#include <QtCore/QTextCodec>
-#include <QtCore/QTextStream>
-#include <QtCore/QTimer>
+#include <QTextCodec>
+#include <QTextStream>
+#include <QTimer>
 
 class KeyboardTranslator;
 class HistoryType;

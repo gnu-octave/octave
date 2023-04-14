@@ -31,12 +31,12 @@
 #include <stdlib.h>
 
 // Qt
+#include <QtCore>
+
 #include <QApplication>
-#include <QByteRef>
 #include <QDir>
 #include <QFile>
 #include <QStringList>
-#include <QtCore>
 
 #include "unix/TerminalView.h"
 #include "unix/Vt102Emulation.h"

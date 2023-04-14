@@ -26,9 +26,9 @@
 #define SCREEN_H
 
 // Qt
-#include <QtCore/QRect>
-#include <QtCore/QTextStream>
-#include <QtCore/QVarLengthArray>
+#include <QRect>
+#include <QTextStream>
+#include <QVarLengthArray>
 
 // Konsole
 #include "unix/Character.h"

@@ -24,14 +24,14 @@
 #include "unix/Filter.h"
 
 // Qt
-#include <QDesktopServices>
+#include <QtCore>
+
 #include <QAction>
 #include <QApplication>
 #include <QClipboard>
-#include <QString>
-
+#include <QDesktopServices>
 #include <QSharedData>
-#include <QtCore>
+#include <QString>
 
 // Konsole
 #include "unix/TerminalCharacterDecoder.h"

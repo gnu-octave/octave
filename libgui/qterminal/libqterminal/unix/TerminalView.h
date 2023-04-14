@@ -26,7 +26,7 @@
 
 // Qt
 #include <QColor>
-#include <QtCore/QPointer>
+#include <QPointer>
 #include <QWidget>
 
 // Konsole

@@ -33,23 +33,24 @@
 #include "unix/TerminalView.h"
 
 // Qt
+#include <QtCore>
+#include <QtGui>
+
 #include <QApplication>
 #include <QBoxLayout>
 #include <QClipboard>
-#include <QKeyEvent>
-#include <QtCore/QEvent>
-#include <QtCore/QTime>
-#include <QtCore/QFile>
+#include <QEvent>
+#include <QFile>
 #include <QGridLayout>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QLayout>
 #include <QPainter>
 #include <QPixmap>
 #include <QScrollBar>
 #include <QStyle>
+#include <QTime>
 #include <QToolTip>
-#include <QtCore>
-#include <QtGui>
 
 #include "unix/Filter.h"
 #include "unix/konsole_wcwidth.h"
@@ -331,7 +332,7 @@ TerminalView::TerminalView(QWidget *parent)
   setAttribute(Qt::WA_OpaquePaintEvent);
 
   _gridLayout = new QGridLayout(this);
-  _gridLayout->setMargin(0);
+  _gridLayout->setContentsMargins (0, 0, 0, 0);
 
   setLayout( _gridLayout );
 }

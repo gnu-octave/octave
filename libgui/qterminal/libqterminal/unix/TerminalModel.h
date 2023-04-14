@@ -27,8 +27,10 @@
 #define TERMINALMODEL_H
 
 // Qt
-#include <QtCore/QStringList>
 #include <QtCore>
+
+#include <QStringList>
+#include <QTextCodec>
 #include <QWidget>
 
 #include "unix/SelfListener.h"

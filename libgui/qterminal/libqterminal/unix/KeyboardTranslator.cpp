@@ -29,12 +29,13 @@
 #include <stdio.h>
 
 // Qt
+#include <QtCore>
+#include <QtGui>
+
 #include <QBuffer>
 #include <QFile>
 #include <QFileInfo>
 #include <QRegularExpression>
-#include <QtCore>
-#include <QtGui>
 
 // FIXME: We should not have a special case for Mac here.  Instead, we
 // should be loading .keytab files at run time, and ideally, allowing
@@ -675,7 +676,7 @@ QByteArray KeyboardTranslator::Entry::unescape(const QByteArray& input) const
     for ( int i = 0 ; i < result.count()-1 ; i++ )
     {
 
-        QByteRef ch = result[i];
+        char ch = result[i];
         if ( ch == '\\' )
         {
             char replacement[2] = {0,0};

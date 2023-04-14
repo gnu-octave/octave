@@ -32,8 +32,8 @@
 #include <ctype.h>
 
 // Qt
-#include <QtCore/QTextStream>
-#include <QtCore/QDate>
+#include <QDate>
+#include <QTextStream>
 
 // Konsole
 #include "unix/konsole_wcwidth.h"

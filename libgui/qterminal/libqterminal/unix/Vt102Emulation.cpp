@@ -39,9 +39,8 @@
 #include <assert.h>
 
 // Qt
-#include <QtCore/QEvent>
+#include <QEvent>
 #include <QKeyEvent>
-#include <QtCore/QByteRef>
 
 // Konsole
 #include "unix/KeyboardTranslator.h"
@@ -359,7 +358,7 @@ void Vt102Emulation::XtermHack()
     arg = 10*arg + (pbuf[i]-'0');
   if (pbuf[i] != ';') { ReportErrorToken(); return; }
   QChar *str = new QChar[ppos-i-2];
-  for (int j = 0; j < ppos-i-2; j++) str[j] = pbuf[i+1+j];
+  for (int j = 0; j < ppos-i-2; j++) str[j] = QChar {pbuf[i+1+j]};
   QString unistr(str,ppos-i-2);
 
   // arg == 1 doesn't change the title. In XTerm it only changes the icon name

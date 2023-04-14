@@ -287,7 +287,7 @@ endfunction
 ## %!error <Possible fields found: InitialSlope, InitialStep> odeset ("Initial", 1)
 
 ## Test input validation
-%!error <argument 'OPT1' is not a valid parameter> odeset ("opt1")
+%!error <argument 'opt1' is not a valid parameter> odeset ("opt1")
 %!error odeset (1, 1)
-%!error <argument 'OPT1' is not a valid parameter> odeset (odeset (), "opt1")
+%!error <argument 'opt1' is not a valid parameter> odeset (odeset (), "opt1")
 %!error odeset (odeset (), 1, 1)

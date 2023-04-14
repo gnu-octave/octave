@@ -453,7 +453,7 @@ classdef inputParser < handle
             vidx -= 1;
             break;
           else
-            this.error (sprintf (["failed validation of %s\n", ...
+            this.error (sprintf (["failed validation of '%s'\n", ...
                                   "Validation function: %s"],
                                  opt.name, disp (opt.val)));
           endif
@@ -575,7 +575,7 @@ classdef inputParser < handle
         endif
       end_try_catch
       if (! ok)
-        this.error (sprintf ("failed validation of %s.  %s", name, err));
+        this.error (sprintf ("failed validation of '%s'.  %s", name, err));
       endif
       this.Results.(name) = in;
 
@@ -845,7 +845,7 @@ endclassdef
 %! p.addOptional ("op1", "val1", @ischar);
 %! p.addOptional ("op2", "val2", @isnumeric);
 %! p.addParameter ("line", "circle", @ischar);
-%! fail ('p.parse ("line", 89)', "failed validation of LINE")
+%! fail ('p.parse ("line", 89)', "failed validation of 'line'")
 %!
 %! p = inputParser ();
 %! p.addOptional ("op1", "val1");
@@ -889,7 +889,7 @@ endclassdef
 %! assert (p.Unmatched, struct ());
 
 ## Test for patch #9241
-%!error <failed validation of A.*ischar>
+%!error <failed validation of 'a'.*ischar>
 %! p = inputParser ();
 %! p.addParameter ("a", [], @ischar);
 %! p.parse ("a", 1);

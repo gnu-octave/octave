@@ -511,6 +511,9 @@ classdef inputParser < handle
       this.add_missing ("Parameter");
       this.add_missing ("Switch");
 
+      ## Sort fields for Matlab compatibility (bug #64003)
+      this.Results = orderfields (this.Results);
+
     endfunction
 
     function disp (this)
@@ -546,6 +549,8 @@ classdef inputParser < handle
                type, name);
       endif
       this.Parameters{end+1} = name;
+      ## Sort Parameters for Matlab compatibility (bug #64003)
+      this.Parameters = sort (this.Parameters);
 
     endfunction
 

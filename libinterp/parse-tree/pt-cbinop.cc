@@ -42,11 +42,13 @@ tree_compound_binary_expression::evaluate (tree_evaluator& tw, int)
 
   if (m_lhs)
     {
-      octave_value a = m_lhs->evaluate (tw);
+      // Evaluate with unknown number of output arguments
+      octave_value a = m_lhs->evaluate (tw, -1);
 
       if (a.is_defined () && m_rhs)
         {
-          octave_value b = m_rhs->evaluate (tw);
+          // Evaluate with unknown number of output arguments
+          octave_value b = m_rhs->evaluate (tw, -1);
 
           if (b.is_defined ())
             {

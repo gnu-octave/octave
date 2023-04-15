@@ -182,7 +182,8 @@ void tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
     {
       octave_quit ();
 
-      octave_value tmp = elt->evaluate (tw);
+      // Evaluate with unknown number of output arguments
+      octave_value tmp = elt->evaluate (tw, -1);
 
       if (tmp.is_undefined ())
         error ("undefined element in matrix list");

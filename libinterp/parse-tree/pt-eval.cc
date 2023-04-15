@@ -2306,7 +2306,8 @@ tree_evaluator::convert_to_const_vector (tree_argument_list *args)
       if (! elt)
         break;
 
-      octave_value tmp = elt->evaluate (*this);
+      // Evaluate with unknown number of output arguments
+      octave_value tmp = elt->evaluate (*this, -1);
 
       if (tmp.is_cs_list ())
         {
@@ -3412,6 +3413,11 @@ tree_evaluator::execute_builtin_function (octave_builtin& builtin_function,
 
   octave_builtin::fcn fcn = builtin_function.function ();
 
+  // If number of outputs unknown (and this is not a complete statement),
+  // pass nargout=1 to the function being called
+  if (nargout < 0)
+    nargout = 1;
+
   if (fcn)
     retval = (*fcn) (args, nargout);
   else
@@ -3454,6 +3460,11 @@ tree_evaluator::execute_mex_function (octave_mex_function& mex_function,
     error ("invalid use of colon in function argument list");
 
   profiler::enter<octave_mex_function> block (m_profiler, mex_function);
+
+  // If number of outputs unknown (and this is not a complete statement),
+  // pass nargout=1 to the function being called
+  if (nargout < 0)
+    nargout = 1;
 
   retval = call_mex (mex_function, args, nargout);
 
@@ -3529,6 +3540,11 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
 
   int nargin = args.length ();
 
+  // If number of outputs unknown (and this is not a complete statement),
+  // pass nargout=1 to the function being called
+  if (nargout < 0)
+    nargout = 1;
+  
   if (user_function.is_classdef_constructor ())
     {
       if (nargin > 0)

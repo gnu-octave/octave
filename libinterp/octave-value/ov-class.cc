@@ -465,32 +465,44 @@ octave_class::subsref (const std::string& type,
           m_count++;
           args(0) = octave_value (this);
 
-          // FIXME: for Matlab compatibility, let us attempt to set up a proper
-          // value for nargout at least in the simple case where the
+          // If the number of output arguments is unknown, attempt to set up
+          // a proper value for nargout at least in the simple case where the
           // cs-list-type expression - i.e., {} or ().x, is the leading one.
-          // Note that Octave does not actually need this, since it will
-          // be able to properly react to varargout a posteriori.
-          bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
-                                      || (type.length () > 1 && type[0] == '('
-                                          && type[1] == '.'));
-
-          int true_nargout = nargout;
-
-          if (maybe_cs_list_query)
+          if (nargout <= 0)
             {
-              // Set up a proper nargout for the subsref call by calling numel.
-              octave_value_list tmp;
-              if (type[0] != '.') tmp = idx.front ();
-              true_nargout = xnumel (tmp);
+              bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
+                                          || (type.length () > 1 && type[0] == '('
+                                              && type[1] == '.'));
+
+              if (maybe_cs_list_query)
+                {
+                  // Set up a proper nargout for the subsref call by calling numel.
+                  octave_value_list tmp;
+                  int nout;
+                  if (type[0] != '.') tmp = idx.front ();
+                  nout = xnumel (tmp);
+                  if (nargout != 0 || nout > 1)
+                    nargout = nout;
+                }
+              else if (nargout < 0)
+                nargout = 1;
             }
 
-          retval = interp.feval (meth.function_value (), args, true_nargout);
+          retval = interp.feval (meth.function_value (), args, nargout);
 
-          // Since we're handling subsref, if the list has more than one
-          // element, return it as a comma-separated list so that we can
-          // pass it to the evaluator
-          if (retval.length () > 1)
-            retval = octave_value (retval);
+          // Since we're handling subsref, if the list has more than one element
+          // and the caller to subsref accepts more that one output, return
+          // the elements as a comma-separated list so that we can pass it to the
+          // evaluator
+          if (retval.length () > 1 && (nargout < 0 || nargout >1))
+            {
+              if (nargout <= 0 || nargout>=retval.length())
+                // Take the whole list
+                retval = octave_value (retval);
+              else
+                // Take nargout elements of the list
+                retval = octave_value(retval.slice(0,nargout));
+            }
         }
       else
         {

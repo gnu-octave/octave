@@ -442,19 +442,15 @@ classdef inputParser < handle
           vidx -= 1;
           break;
         endif
-        try
-          valid_option = opt.val (in);
-        catch
-          valid_option = false;
-        end_try_catch
+        valid_option = this.validate_arg ("", opt.val, in);
         if (! valid_option)
-          ## If it does not match there's two options:
-          ##    1) input is actually wrong and we should error;
-          ##    2) it's a Parameter or Switch name and we should use
+          ## If it does not match there are two options:
+          ##   1a) it's a Parameter or Switch name and we should use
           ##       the default for the rest;
-          ##    3) it's a struct with the Parameter pairs.
-          if (ischar (in) || (this.StructExpand && isstruct (in)
-                              && isscalar (in)))
+          ##   1b) it's a struct with the Parameter pairs.
+          ##   2) input is actually wrong and we should error;
+          if (ischar (in)
+              || (this.StructExpand && isstruct (in) && isscalar (in)))
             idx -= 1;
             vidx -= 1;
             break;
@@ -560,32 +556,31 @@ classdef inputParser < handle
 
     endfunction
 
-    function validate_arg (this, name, val, in)
+    function r = validate_arg (this, name, val, in)
 
-      ## Checking "nargout (val)" doesn't work for builtin functions.
-      ## So, we need to use this nested try-catch construct.
+      ## Validation function can either produce a true/false result or have
+      ## no outputs but throw an error when failing.  Tricky code here
+      ## relies on side effect, but calls validation function only once
+      ## which is a performance win and may also be necessary if validation
+      ## function maintains state.  See bug #49793.
       err = sprintf ('Checked with "%s"', func2str (val));
+      ans = true;
       try
-        ok = val (in);
+        val (in);  # call function with no arguments in case nargout == 0
+        ok = ans;  # use side effect of assignment to 'ans' when nargout == 1
       catch exception
-        if (strcmp (exception.identifier, "Octave:invalid-fun-call"))
-          ## check if function also fails when called without output argument
-          try
-            val (in);
-            ok = true;
-          catch exception
-            ok = false;
-            err = exception.message;
-          end_try_catch
-        else
-          ok = false;
-          err = exception.message;
-        endif
+        ok = false;
+        err = exception.message;
       end_try_catch
-      if (! ok)
-        this.error (sprintf ("failed validation of '%s'.  %s", name, err));
+
+      if (nargout > 0)
+        r = ok;
+      else
+        if (! ok)
+          this.error (sprintf ("failed validation of '%s'.  %s", name, err));
+        endif
+        this.Results.(name) = in;
       endif
-      this.Results.(name) = in;
 
     endfunction
 
@@ -938,3 +933,15 @@ endclassdef
 %! p.addParameter ('a',1);
 %! p.parse (30, 'b', 20, 'a',10);
 %! assert (fieldnames (p.Results), {'a'; 'b'; 'c'; 'z'});
+
+%!test <*49793>
+%! p = inputParser ();
+%! p.addRequired ("name", @(x) validateattributes (x, {'char'}, {'nonempty'}));
+%! p.addOptional ("year", 0001, @(x) validateattributes (x, {'numeric'}, ...
+%!                                     {'nonempty','integer','positive'}));
+%! p.addParameter ("color", '-', @(x) validateattributes (x, {'char'}, ...
+%!                                                           {'nonempty'}));
+%! p.parse ('Jim', 1980, 'color', 'black');
+%! assert (p.Results.name, 'Jim');
+%! assert (p.Results.year, 1980);
+%! #assert (p.Results.color, 'black');

@@ -1881,20 +1881,49 @@ QString file_editor_tab::load_file (const QString& fileName)
         text_data.chop (1);
     }
 
-  // decode
-  QTextCodec::ConverterState st;
-  QTextCodec *codec = QTextCodec::codecForName (m_encoding.toLatin1 ());
-  if (codec == nullptr)
-    codec = QTextCodec::codecForLocale ();
+  // expected file encoding
+  std::string encoding = m_encoding.toStdString ();
+  if (encoding.compare (0, 6, "SYSTEM") == 0)
+    encoding = octave_locale_charset_wrapper ();
 
-  const QString text = codec->toUnicode(text_data.constData(),
-                                        text_data.size(), &st);
+  // check if the selected encoding can be used to decode the file
 
-  // Decoding with invalid characters?
-  if (st.invalidChars > 0)
+  const char *src = text_data.constData ();
+  std::size_t srclen = text_data.length ();
+
+  std::size_t length;
+  uint16_t *u16_str;
+
+  // try to convert encoding in strict mode
+  u16_str = octave_u16_conv_from_encoding_strict (encoding.c_str (),
+                                                  src, srclen, &length);
+
+  // check for invalid characters in input file
+  if (! u16_str)
     {
       // Set read only
       m_edit_area->setReadOnly (true);
+
+      // convert encoding allowing replacements
+      u16_str = octave_u16_conv_from_encoding (encoding.c_str (),
+                                               src, srclen, &length);
+
+      if (! u16_str)
+        {
+          // FIXME: Can this ever happen?
+
+          // non-modal error message box
+          QMessageBox *msgBox
+            = new QMessageBox (QMessageBox::Critical,
+                               tr ("Octave Editor"),
+                               tr ("Unable to read file '%1'\n"
+                                   "with selected encoding '%2': %3")
+                                  .arg (file_to_load).arg (m_encoding)
+                                  .arg (std::strerror (errno)),
+                               QMessageBox::Ok, nullptr);
+          show_dialog (msgBox, false);
+          return QString ();
+        }
 
       // Message box for user decision
       QString msg = tr ("There were problems reading the file\n"
@@ -1919,13 +1948,18 @@ QString file_editor_tab::load_file (const QString& fileName)
       msg_box->show ();
     }
 
+  unwind_action free_u16_str ([=] () { ::free (u16_str); });
+
+  QString text
+    = QString::fromUtf16 (reinterpret_cast<char16_t *> (u16_str), length);
+
   m_edit_area->setText (text);
   m_edit_area->setEolMode (detect_eol_mode ());
 
   QApplication::restoreOverrideCursor ();
 
-  m_copy_available = false;     // no selection yet available
-  m_edit_area->setModified (false); // loaded file is not modified yet
+  m_copy_available = false;  // no selection yet available
+  m_edit_area->setModified (false);  // loaded file is not modified yet
   set_file_name (file_to_load);
 
   update_eol_indicator ();

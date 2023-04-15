@@ -33,7 +33,6 @@
 #include <QFileSystemWatcher>
 #include <QLabel>
 #include <QStatusBar>
-#include <QTextCodec>
 #include <QWidget>
 #include <Qsci/qsciapis.h>
 

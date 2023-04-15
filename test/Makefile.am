@@ -107,6 +107,7 @@ include bug-60237/module.mk
 include bug-60882/module.mk
 include bug-61105/module.mk
 include bug-61191/module.mk
+include bug-63841/module.mk
 include class-concat/module.mk
 include classdef/module.mk
 include classdef-debug/module.mk

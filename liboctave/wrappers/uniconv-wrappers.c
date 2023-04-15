@@ -93,6 +93,22 @@ octave_u8_conv_to_encoding_strict (const char *tocode, const uint8_t *src,
 }
 
 char *
+octave_u16_conv_to_encoding (const char *tocode, const uint16_t *src,
+                             size_t srclen, size_t *lengthp)
+{
+  return u16_conv_to_encoding (tocode, iconveh_question_mark,
+                               src, srclen, NULL, NULL, lengthp);
+}
+
+char *
+octave_u16_conv_to_encoding_strict (const char *tocode, const uint16_t *src,
+                                    size_t srclen, size_t *lengthp)
+{
+  return u16_conv_to_encoding (tocode, iconveh_error,
+                               src, srclen, NULL, NULL, lengthp);
+}
+
+char *
 octave_u32_conv_to_encoding_strict (const char *tocode, const uint32_t *src,
                                     size_t srclen, size_t *lengthp)
 {

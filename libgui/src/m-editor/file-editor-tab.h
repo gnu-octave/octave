@@ -266,7 +266,7 @@ private:
                   bool restore_breakpoints = true);
   void save_file_as (bool remove_on_success = false);
   bool check_valid_identifier (QString file_name);
-  QTextCodec * check_valid_codec ();
+  bool check_valid_codec ();
 
   bool unchanged_or_saved ();
 

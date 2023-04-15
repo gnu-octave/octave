@@ -607,6 +607,38 @@ octave::string::u8_validate (const std::string& who,
   return num_replacements;
 }
 
+std::string
+octave::string::u16_to_encoding (const std::string& who,
+                                 const std::u16string& u16_string,
+                                 const std::string& encoding)
+{
+  const uint16_t *src = reinterpret_cast<const uint16_t *>
+                        (u16_string.c_str ());
+  std::size_t srclen = u16_string.length ();
+
+  std::size_t length;
+  char *native_str = octave_u16_conv_to_encoding (encoding.c_str (), src,
+                                                  srclen, &length);
+
+  if (! native_str)
+    {
+      if (errno == ENOSYS)
+        (*current_liboctave_error_handler)
+          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+           "re-compiling Octave could fix this.", who.c_str ());
+      else
+        (*current_liboctave_error_handler)
+          ("%s: converting from UTF-16 to codepage '%s' failed: %s",
+           who.c_str (), encoding.c_str (), std::strerror (errno));
+    }
+
+  octave::unwind_action free_native_str ([=] () { ::free (native_str); });
+
+  std::string retval = std::string (native_str, length);
+
+  return retval;
+}
+
 typedef octave::string::codecvt_u8::InternT InternT;
 typedef octave::string::codecvt_u8::ExternT ExternT;
 typedef octave::string::codecvt_u8::StateT StateT;

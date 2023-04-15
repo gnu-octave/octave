@@ -158,6 +158,9 @@ extern OCTAVE_API unsigned int
 u8_validate (const std::string& who, std::string& in_string,
              const u8_fallback_type type = U8_REPLACEMENT_CHAR);
 
+extern OCTAVE_API std::string
+u16_to_encoding (const std::string& who, const std::u16string& u16_string,
+                 const std::string& encoding);
 
 template<class Facet>
 struct deletable_facet : Facet

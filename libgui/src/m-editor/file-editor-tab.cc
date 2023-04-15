@@ -80,6 +80,7 @@
 
 #include "cmd-edit.h"
 #include "file-ops.h"
+#include "iconv-wrappers.h"
 #include "localcharset-wrapper.h"
 #include "uniconv-wrappers.h"
 
@@ -2182,9 +2183,8 @@ void file_editor_tab::save_file (const QString& saveFileName,
 
   m_encoding = m_new_encoding;    // consider a possible new encoding
 
-  // set the desired codec (if suitable for contents)
-  QTextCodec *codec = check_valid_codec ();
-  if (! codec)
+  // check if the selected encoding is suitable for the content
+  if (! check_valid_codec ())
     return;   // No valid codec
 
   // Get a list of breakpoint line numbers, before exiting debug mode
@@ -2346,31 +2346,72 @@ void file_editor_tab::do_save_file (const QString& file_to_save,
       return;
     }
 
-  // save the contents into the file
+  // target encoding
+  std::string encoding = m_encoding.toStdString ();
+  if (encoding.compare (0, 6, "SYSTEM") == 0)
+    encoding = octave_locale_charset_wrapper ();
 
-  // write the file
-  QTextStream out (&file);
+  // check if selected encoding is suitable for contents
+  if (! check_valid_codec ())
+    {
+      // begin watching file again if it was being watched previously
+      if (trackedFiles.contains (file_to_save))
+        m_file_system_watcher.addPath (file_to_save);
 
-#if HAVE_QTEXTSTREAM_SETENCODING
-  // FIXME: Check and set encoding!
-#else
-  // set the desired codec (if suitable for contents)
-  QTextCodec *codec = check_valid_codec ();
-  if (! codec)
-    return;   // No valid codec
+      return;  // no valid codec
+    }
 
-  // Save the file
-  out.setCodec (codec);
-#endif
+  // save contents of editor in file
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
 
-  out << m_edit_area->text ();
-  if (settings.bool_value (ed_force_newline)
-      && m_edit_area->text ().length ())
-    out << m_edit_area->eol_string ();   // Add newline if desired
+  if (encoding == "utf-8" || encoding == "UTF-8")
+    {
+      // use Qt encoding conversion for UTF-8
+      QTextStream out (&file);
 
-  out.flush ();
+#if HAVE_QTEXTSTREAM_SETENCODING
+      out.setEncoding (QStringConverter::Utf8);
+#else
+      out.setCodec ("UTF-8");
+#endif
+
+      out << m_edit_area->text ();
+
+      // add newline if desired
+      if (settings.bool_value (ed_force_newline)
+          && m_edit_area->text ().length ())
+        out << m_edit_area->eol_string ();
+
+      out.flush ();
+    }
+  else
+    {
+      // use iconv/gnulib for all other output encodings
+      QDataStream out (&file);
+
+      // get natively UTF-16 encoded content of the QString as STL type
+      std::u16string u16_string = m_edit_area->text ().toStdU16String ();
+
+      // convert to output encoding
+      std::string native_string
+        = string::u16_to_encoding ("file editor", u16_string, encoding);
+
+      // save file
+      out.writeRawData (native_string.c_str (), native_string.size ());
+
+      // add newline if desired
+      if (settings.bool_value (ed_force_newline)
+          && m_edit_area->text ().length ())
+        {
+          std::u16string u16_newline
+            = m_edit_area->eol_string ().toStdU16String ();
+          std::string newline
+            = string::u16_to_encoding ("file editor", u16_newline, encoding);
+          out.writeRawData (newline.c_str (), newline.size ());
+        }
+    }
+
   QApplication::restoreOverrideCursor ();
 
   // Finish writing by committing the changes to disk,
@@ -2550,50 +2591,45 @@ bool file_editor_tab::check_valid_identifier (QString file_name)
   return false;
 }
 
-QTextCodec* file_editor_tab::check_valid_codec ()
+bool file_editor_tab::check_valid_codec ()
 {
-  QTextCodec *codec = QTextCodec::codecForName (m_encoding.toLatin1 ());
-
-  // "SYSTEM" is used as alias for the locale encoding.
-  if ((! codec) && m_encoding.startsWith("SYSTEM"))
-    codec = QTextCodec::codecForLocale ();
-
-  if (! codec)
-    {
-      QMessageBox::critical (nullptr,
-                             tr ("Octave Editor"),
-                             tr ("The current encoding %1\n"
-                                 "can not be applied.\n\n"
-                                 "Please select another one!").arg (m_encoding));
-
-      return nullptr;
-    }
-
   QString editor_text = m_edit_area->text ();
-  bool can_encode = codec->canEncode (editor_text);
 
-  // We cannot rely on QTextCodec::canEncode because it uses the
-  // ConverterState of convertFromUnicode which isn't updated by some
-  // implementations.
-  if (can_encode)
+  // target encoding
+  std::string encoding = m_encoding.toStdString ();
+  if (encoding.compare (0, 6, "SYSTEM") == 0)
+    encoding = octave_locale_charset_wrapper ();
+
+  if (encoding == "UTF-8" || encoding == "utf-8")
+    return true;
+
+  // check if encoding is valid
+  void *codec = octave_iconv_open_wrapper (encoding.c_str (), "utf-8");
+  if (codec == reinterpret_cast<void *> (-1))
     {
-      QVector<uint> u32_str = editor_text.toUcs4 ();
-      const uint32_t *src = reinterpret_cast<const uint32_t *>
-                            (u32_str.data ());
-
-      std::size_t length;
-      const std::string encoding = m_encoding.toStdString ();
-      char *res_str =
-        octave_u32_conv_to_encoding_strict (encoding.c_str (), src,
-                                            u32_str.size (), &length);
-      if (! res_str)
-        {
-          if (errno == EILSEQ)
-            can_encode = false;
-        }
-      else
-        ::free (static_cast<void *> (res_str));
+      if (errno == EINVAL)
+        return false;
     }
+  else
+    octave_iconv_close_wrapper (codec);
+
+  // check if all characters in the editor can be encoded in the target encoding
+  bool can_encode = true;
+  std::u16string u16_str = editor_text.toStdU16String ();
+  const uint16_t *src = reinterpret_cast<const uint16_t *>
+                        (u16_str.c_str ());
+
+  std::size_t length;
+  char *res_str =
+    octave_u16_conv_to_encoding_strict (encoding.c_str (), src,
+                                        u16_str.size (), &length);
+  if (! res_str)
+    {
+      if (errno == EILSEQ)
+        can_encode = false;
+    }
+  else
+    ::free (static_cast<void *> (res_str));
 
   if (! can_encode)
     {
@@ -2608,12 +2644,10 @@ QTextCodec* file_editor_tab::check_valid_codec ()
                                  QMessageBox::Cancel);
 
       if (pressed_button == QMessageBox::Ignore)
-        return codec;
-      else
-        return nullptr;
+        can_encode = true;
     }
 
-  return codec;
+  return can_encode;
 }
 
 void file_editor_tab::handle_save_file_as_answer (const QString& save_file_name)

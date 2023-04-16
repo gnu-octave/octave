@@ -42,19 +42,3 @@ octave_iconv_close_wrapper (void *cd)
 {
   return iconv_close ((iconv_t) cd);
 }
-
-void
-octave_iconvlist_wrapper (int (*do_one) (unsigned int namescount,
-                                         const char * const *names,
-                                         void *data),
-                          void *data)
-{
-  iconvlist (do_one, data);
-  return;
-}
-
-const char *
-octave_iconv_canonicalize_wrapper (const char *name)
-{
-  return iconv_canonicalize (name);
-}

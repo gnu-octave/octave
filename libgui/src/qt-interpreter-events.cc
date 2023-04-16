@@ -718,15 +718,36 @@ qt_interpreter_events::gui_preference_adjust (const QString& key,
 
   QString adjusted_value = value;
 
+  // Not all encodings are available.  Encodings are uppercase and do
+  // not use CPxxx but IBMxxx or WINDOWS-xxx.
+
   if (key == ed_default_enc.settings_key ())
     {
       adjusted_value = adjusted_value.toUpper ();
+
+      gui_settings settings;
+      QStringList codecs;
+      settings.get_codecs (&codecs);
+
+      QRegularExpression re {"^CP(\\d+)$"};
+      QRegularExpressionMatch match = re.match (adjusted_value);
 
       if (adjusted_value == "SYSTEM")
         adjusted_value =
           QString ("SYSTEM (") +
           QString (octave_locale_charset_wrapper ()).toUpper () +
           QString (")");
+      else if (match.hasMatch ())
+        {
+          if (codecs.contains ("IBM" + match.captured (1)))
+            adjusted_value = "IBM" + match.captured (1);
+          else if (codecs.contains ("WINDOWS-" + match.captured (1)))
+            adjusted_value = "WINDOWS-" + match.captured (1);
+          else
+            adjusted_value.clear ();
+        }
+      else if (! codecs.contains (adjusted_value))
+        adjusted_value.clear ();
     }
 
   return adjusted_value;

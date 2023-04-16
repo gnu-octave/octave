@@ -35,15 +35,6 @@ octave_iconv_open_wrapper (const char *tocode, const char *fromcode);
 
 extern OCTAVE_API int octave_iconv_close_wrapper (void *cd);
 
-extern OCTAVE_API void
-octave_iconvlist_wrapper (int (*do_one) (unsigned int namescount,
-                                         const char * const *names,
-                                         void *data),
-                          void *data);
-
-extern OCTAVE_API const char *
-octave_iconv_canonicalize_wrapper (const char *name);
-
 #if defined __cplusplus
 }
 #endif

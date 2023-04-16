@@ -29,7 +29,6 @@
 #include "octave-config.h"
 
 #include <locale>
-#include <vector>
 
 #include "oct-cmplx.h"
 
@@ -162,9 +161,6 @@ u8_validate (const std::string& who, std::string& in_string,
 extern OCTAVE_API std::string
 u16_to_encoding (const std::string& who, const std::u16string& u16_string,
                  const std::string& encoding);
-
-extern OCTAVE_API std::vector<std::string>
-get_encoding_list ();
 
 template<class Facet>
 struct deletable_facet : Facet

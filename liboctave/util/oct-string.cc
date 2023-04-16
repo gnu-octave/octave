@@ -34,10 +34,8 @@
 #include <cstring>
 #include <iomanip>
 #include <string>
-#include <unordered_set>
 
 #include "Array.h"
-#include "iconv-wrappers.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "uniconv-wrappers.h"
@@ -639,60 +637,6 @@ octave::string::u16_to_encoding (const std::string& who,
   std::string retval = std::string (native_str, length);
 
   return retval;
-}
-
-std::vector<std::string>
-octave::string::get_encoding_list ()
-{
-  static std::vector<std::string> encoding_list;
-
-  if (encoding_list.empty ())
-    {
-#if defined (HAVE_ICONV)
-      // get number of supported encodings
-      std::size_t count = 0;
-      octave_iconvlist_wrapper (
-        [] (unsigned int nm_count, const char * const *, void *data) -> int
-          {
-            std::size_t *count_ptr = static_cast<std::size_t *> (data);
-            *count_ptr = nm_count;
-            return 0;
-          },
-        &count);
-
-      if (count == static_cast<size_t>(-1))
-        {
-          encoding_list.push_back ("UTF-8");
-          return encoding_list;
-        }
-
-      // use unordered_set to skip canonicalized aliases
-      std::unordered_set<std::string> encoding_set;
-      encoding_set.reserve (count);
-
-      // populate vector with name of encodings
-      octave_iconvlist_wrapper (
-        [] (unsigned int nm_count, const char * const *names, void *data) -> int
-          {
-            std::unordered_set<std::string> *encoding_set_ptr
-              = static_cast<std::unordered_set<std::string> *> (data);
-            for (std::size_t i = 0; i < nm_count; i++)
-              encoding_set_ptr
-                ->insert (octave_iconv_canonicalize_wrapper (names[i]));
-            return 0;
-          },
-        &encoding_set);
-
-      // sort list of encodings
-      encoding_list.assign (encoding_set.begin (), encoding_set.end ());
-      std::sort (encoding_list.begin (), encoding_list.end ());
-
-#else
-      encoding_list.push_back ("UTF-8");
-#endif
-    }
-
-  return encoding_list;
 }
 
 typedef octave::string::codecvt_u8::InternT InternT;

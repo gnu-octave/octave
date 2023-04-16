@@ -39,6 +39,7 @@
 #include <QMessageBox>
 #include <QScrollBar>
 #include <QStyleFactory>
+#include <QTextCodec>
 #include <QThread>
 #include <QVector>
 

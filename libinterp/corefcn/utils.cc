@@ -982,15 +982,12 @@ Escape sequences begin with a leading backslash
 
 const char * undo_string_escape (char c)
 {
-  if (! c)
-    return "";
-
   switch (c)
     {
-    case '\0':
+    case '\0': // NUL byte
       return R"(\0)";
 
-    case '\a':
+    case '\a': // alarm
       return R"(\a)";
 
     case '\b': // backspace
@@ -1081,10 +1078,10 @@ replaces the unprintable alert character with its printable representation.
 %!assert (undo_string_escapes ("foo\nbar"), "foo\\nbar")
 %!assert (undo_string_escapes (["foo", char(10), "bar"]), "foo\\nbar")
 
-%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), '\a\b\f\n\r\t\v')
-%!assert (undo_string_escapes ("\a\b\f\n\r\t\v"), "\\a\\b\\f\\n\\r\\t\\v")
-%!assert (undo_string_escapes (char ([7, 8, 12, 10, 13, 9, 11])),
-%!        "\\a\\b\\f\\n\\r\\t\\v")
+%!assert (undo_string_escapes ("\0\a\b\f\n\r\t\v"), '\0\a\b\f\n\r\t\v')
+%!assert (undo_string_escapes ("\0\a\b\f\n\r\t\v"), "\\0\\a\\b\\f\\n\\r\\t\\v")
+%!assert (undo_string_escapes (char ([0, 7, 8, 12, 10, 13, 9, 11])),
+%!        "\\0\\a\\b\\f\\n\\r\\t\\v")
 
 %!assert (undo_string_escapes ("\\"), '\\')
 %!assert (undo_string_escapes ("\\"), "\\\\")
@@ -1093,9 +1090,9 @@ replaces the unprintable alert character with its printable representation.
 %!assert (undo_string_escapes ("\"double-quoted\""), '\"double-quoted\"')
 %!assert (undo_string_escapes ("\"double-quoted\""), "\\\"double-quoted\\\"")
 
-%!error undo_string_escapes ()
-%!error undo_string_escapes ("foo", "bar")
-%!error undo_string_escapes (3)
+%!error <Invalid call> undo_string_escapes ()
+%!error <Invalid call> undo_string_escapes ("foo", "bar")
+%!error <STRING argument> undo_string_escapes (3)
 */
 
 DEFUN (is_absolute_filename, args, ,

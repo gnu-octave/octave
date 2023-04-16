@@ -50,7 +50,6 @@
 #include <QShortcut>
 #include <QString>
 #include <QStringList>
-#include <QTextCodec>
 #include <QTranslator>
 
 #include "gui-preferences-cs.h"
@@ -61,6 +60,7 @@
 
 #include "localcharset-wrapper.h"
 #include "oct-env.h"
+#include "oct-string.h"
 
 #include "defaults.h"
 
@@ -636,35 +636,20 @@ void gui_settings::update_network_settings ()
   sys::env::putenv ("HTTPS_PROXY", proxy_url_str);
 }
 
-// get a list of all available encodings
-void gui_settings::get_codecs (QStringList *codecs)
-{
-  // get the codec name for each mib
-  QList<int> all_mibs = QTextCodec::availableMibs ();
-  for (auto mib : all_mibs)
-    {
-      QTextCodec *c = QTextCodec::codecForMib (mib);
-      codecs->append (c->name ().toUpper ());
-    }
-
-  // Append SYSTEM
-  codecs->append (QString ("SYSTEM (") +
-                  QString (octave_locale_charset_wrapper ()).toUpper () +
-                  QString (")"));
-
-  // Clean up and sort list of codecs
-  codecs->removeDuplicates ();
-  std::sort (codecs->begin (), codecs->end ());
-}
-
 // initialize a given combo box with available text encodings
 void gui_settings::combo_encoding (QComboBox *combo, const QString& current)
 {
-  QStringList all_codecs;
-  get_codecs (&all_codecs);
+  std::vector<std::string> encoding_list {string::get_encoding_list ()};
+
+  // prepend SYSTEM
+  std::string locale_charset {octave_locale_charset_wrapper ()};
+  std::transform (locale_charset.begin (), locale_charset.end (),
+                  locale_charset.begin (), ::toupper);
+  locale_charset = "SYSTEM (" + locale_charset + ")";
+  encoding_list.insert (encoding_list.begin (), locale_charset);
 
   // get the value from the settings file if no current encoding is given
-  QString enc = current;
+  QString enc {current};
 
   // Check for valid codec for the default.  If this fails, "SYSTEM" (i.e.
   // locale_charset) will be chosen.
@@ -674,12 +659,12 @@ void gui_settings::combo_encoding (QComboBox *combo, const QString& current)
   bool show_system = false;
   if (ed_default_enc.def ().toString ().startsWith ("SYSTEM"))
     show_system = true;
-  else if (QTextCodec::codecForName (ed_default_enc.def ().toString ().toLatin1 ()))
+  else if (std::find (encoding_list.begin (), encoding_list.end (),
+                      ed_default_enc.def ().toString ().toStdString ())
+           != encoding_list.end ())
     default_exists = true;
 
-  QString default_enc =
-    QString ("SYSTEM (") +
-    QString (octave_locale_charset_wrapper ()).toUpper () + QString (")");
+  QString default_enc = QString::fromStdString (locale_charset);
 
   if (enc.isEmpty ())
     {
@@ -695,8 +680,8 @@ void gui_settings::combo_encoding (QComboBox *combo, const QString& current)
     }
 
   // fill the combo box
-  for (const auto& c : all_codecs)
-    combo->addItem (c);
+  for (const auto& c : encoding_list)
+    combo->addItem (QString::fromStdString (c));
 
   // prepend the default item
   combo->insertSeparator (0);

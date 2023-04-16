@@ -203,8 +203,6 @@ public:
 
   void update_network_settings ();
 
-  void get_codecs (QStringList *codecs);
-
   void combo_encoding (QComboBox *combo, const QString& current = QString ());
 
   void reload ();

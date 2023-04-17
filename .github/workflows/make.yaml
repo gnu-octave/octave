@@ -356,6 +356,8 @@ jobs:
   mingw:
     runs-on: ${{ matrix.os }}
 
+    name: mingw-w64 ${{ matrix.msystem }}
+
     defaults:
       run:
         # Use MSYS2 as default shell
@@ -368,29 +370,35 @@ jobs:
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         os: [windows-latest]
-        msystem: [MINGW64, MINGW32]
+        msystem: [MINGW64, CLANG64]
         include:
           - msystem: MINGW64
             mingw-prefix: mingw64
-            target-triplet: x86_64-w64-mingw32
             target-prefix: mingw-w64-x86_64
             cc: gcc
             cxx: g++
             f77: gfortran
-          - msystem: MINGW32
-            mingw-prefix: mingw32
-            target-triplet: i686-w64-mingw32
-            target-prefix: mingw-w64-i686
-            cc: gcc
-            cxx: g++
-            f77: gfortran
+            extra-config-flags: ""
+          - msystem: CLANG64
+            mingw-prefix: clang64
+            target-prefix: mingw-w64-clang-x86_64
+            cc: clang
+            # It looks like we and graphicsmagick++ aren't ready for C++17 yet.
+            cxx: "clang++ -std=gnu++14"
+            f77: flang
+            # Clang seems to require a different set of dllexport attributes than GCC.
+            # autoconf and libtool still need help to correctly invoke flang.
+            extra-config-flags:
+              --disable-lib-visibility-flags
+              --enable-fortran-calling-convention=gfortran
+              ac_cv_f77_compiler_gnu=yes
+              lt_cv_prog_gnu_ld=yes
 
     env:
       CHERE_INVOKING: 1
       CC:  ${{ matrix.cc }}
       CXX:  ${{ matrix.cxx }}
       F77:  ${{ matrix.f77 }}
-      TARGET_TRIPLET:  ${{ matrix.target-triplet }}
       # perl uses cmd shell by default
       PERL5SHELL: bash -l -c
 
@@ -421,9 +429,8 @@ jobs:
             base-devel
             ${{ matrix.target-prefix }}-autotools
             ${{ matrix.target-prefix }}-cc
-            ${{ matrix.target-prefix }}-gcc-fortran
+            ${{ matrix.target-prefix }}-fc
             ${{ matrix.target-prefix }}-gperf
-            ${{ matrix.target-prefix }}-lapack
             ${{ matrix.target-prefix }}-openblas
             ${{ matrix.target-prefix }}-pcre2
 
@@ -521,9 +528,9 @@ jobs:
           which $CC
           echo $CC --version
           $CC --version
-          which $CXX
-          echo $CXX --version
-          $CXX --version
+          which ${CXX% *}
+          echo ${CXX% *} --version
+          ${CXX% *} --version
           which $F77
           echo $F77 --version
           $F77 --version
@@ -531,6 +538,7 @@ jobs:
           cd .build && ../configure \
             JAVA_HOME="" \
             --disable-docs \
+            ${{ matrix.extra-config-flags }} \
             gl_cv_have_weak=no
 
       - name: build

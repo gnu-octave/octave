@@ -33,6 +33,11 @@ informational purposes.
 
 ### Matlab compatibility
 
+- The `inputParser` function now implements the `PartialMatching` property
+for `Parameter` and `Switch` names.  For Matlab compatibility,
+`PartialMatching` is now set to true by default which may change the behavior
+of existing code.
+
 - Overhauled `mean`, `median`, `var`, and `std` functions have been imported
 from statistics package v1.5.4 to compatibly implement 'nanflag' (bug #50571),
 'all' (bug #58116), and 'vecdim' (bug #58089) options, preserve output class,

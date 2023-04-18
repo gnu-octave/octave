@@ -86,9 +86,16 @@ classdef inputParser < handle
   ## be followed by a value.
   ## @end deftypefn
   ##
+  ## @deftypefn {} {} inputParser.PartialMatching = @var{boolean}
+  ## Set whether argument names for @code{Parameter} and @code{Switch} options
+  ## may be given in shortened form as long as the name uniquely identifies
+  ## an option; Defaults to true.  For example, the argument @qcode{'opt'} will
+  ## match a parameter @qcode{'opt_color'}, but will fail if there is also a
+  ## parameter @qcode{'opt_case'}.
+  ## 
   ## @deftypefn {} {} inputParser.StructExpand = @var{boolean}
   ## Set whether a structure can be passed to the function instead of
-  ## parameter/value pairs.  Defaults to true.
+  ## parameter/value pairs; Defaults to true.
   ##
   ## The following example shows how to use this class:
   ##
@@ -144,7 +151,7 @@ classdef inputParser < handle
   ## they must appear in a specific order.  @code{Required} arguments must be
   ## first and can be followed by any @code{Optional} arguments.  Only
   ## the @code{Parameter} and @code{Switch} arguments may be mixed
-  ## together and they must appear at the end.
+  ## together and they must appear following the first two types.
   ##
   ## @emph{Note 2}: If both @code{Optional} and @code{Parameter} arguments
   ## are mixed in a function API then once a string Optional argument fails to
@@ -157,10 +164,10 @@ classdef inputParser < handle
 
   properties
     ## FIXME: set input checking for these properties
-    CaseSensitive = false;
-    FunctionName  = "";
-    KeepUnmatched = false;
-    PartialMatching = false; # FIXME: unimplemented (and default should be true)
+    CaseSensitive   = false;
+    FunctionName    = "";
+    KeepUnmatched   = false;
+    PartialMatching = true;
     StructExpand    = true;
   endproperties
 
@@ -197,12 +204,6 @@ classdef inputParser < handle
   endproperties
 
   methods
-
-    function set.PartialMatching (this, val)
-      if (val)
-        error ("inputParser: PartialMatching is not yet implemented");
-      endif
-    endfunction
 
     function addRequired (this, name, val = inputParser.def_val)
 
@@ -295,7 +296,8 @@ classdef inputParser < handle
       ## to implement a name/value pair type of API.
       ##
       ## This is an alias for @code{addParameter} method without the
-      ## @qcode{"PartialMatchPriority"} option.  See it for the help text.
+      ## @qcode{"PartialMatchPriority"} option.  See @code{addParameter} for
+      ## the help text.
       ##
       ## @end deftypefn
 
@@ -311,8 +313,8 @@ classdef inputParser < handle
       ## -*- texinfo -*-
       ## @deftypefn  {} {} addParameter (@var{argname}, @var{default})
       ## @deftypefnx {} {} addParameter (@var{argname}, @var{default}, @var{validator})
-      ## Add new parameter to the object @var{parser} of the class inputParser
-      ## to implement a name/value pair type of API.
+      ## Add new parameter argument to the object @var{parser} of the class
+      ## inputParser to implement a name/value pair type of API.
       ##
       ## @var{argname} must be a string with the name of the new parameter.
       ##
@@ -361,17 +363,17 @@ classdef inputParser < handle
 
       ## -*- texinfo -*-
       ## @deftypefn {} {} addSwitch (@var{argname})
-      ## Add new switch type of argument to the object @var{parser} of
-      ## inputParser class.
-      ##
-      ## This method belongs to the inputParser class and implements a switch
-      ## arguments type of API.
+      ## Add new switch argument to the object @var{parser} of the class
+      ## inputParser to implement a name/boolean type of API.
       ##
       ## @var{argname} must be a string with the name of the new argument.
-      ## Arguments of this type can be specified at the end, after
-      ## @code{Required} and @code{Optional}, and mixed between the
-      ## @code{Parameter}.  They default to false.  If one of the arguments
-      ## supplied is a string like @var{argname}, then after parsing the value
+      ##
+      ## Arguments of this type must be specified after @code{Required} and
+      ## @code{Optional} arguments, but can be mixed with any @code{Parameter}
+      ## definitions.  The default for switch arguments is false.  During
+      ## parsing, If one of the arguments supplied is a string such as
+      ## @var{argname} that matches a defined switch such as
+      ## @code{addSwitch{@var{argname}}}, then after parsing the value
       ## of @var{parse}.Results.@var{argname} will be true.
       ##
       ## See @code{help inputParser} for examples.
@@ -413,7 +415,6 @@ classdef inputParser < handle
         endif
       endif
       pnargin = numel (varargin);
-
       this.ParameterNames = fieldnames (this.Parameter);
       this.SwitchNames    = fieldnames (this.Switch);
 
@@ -588,19 +589,40 @@ classdef inputParser < handle
 
       r = ischar (name) && isrow (name);
       if (r)
-        if (this.CaseSensitive)
-          r = isfield (this.(type), name);
-          if (r)
-            this.last_name = name;
+        fnames = this.([type "Names"]);
+        if (this.PartialMatching)
+          if (this.CaseSensitive)
+            idx = strncmp (name, fnames, numel (name));
+            r = sum (idx);
+            if (r > 1)
+              matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
+              matches(end) = '.';
+              this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+            endif
+            r = logical (r);
+          else
+            idx = strncmpi (name, fnames, numel (name));
+            r = sum (idx);
+            if (r > 1)
+              matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
+              matches(end) = '.';
+              this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+            endif
+            r = logical (r);
           endif
         else
-          fnames = this.([type "Names"]);
-          l = strcmpi (name, fnames);
-          r = any (l(:));
-          if (r)
-            this.last_name = fnames{l};
+          if (this.CaseSensitive)
+            idx = strcmp (name, fnames);
+            r = any (idx(:));
+          else
+            idx = strcmpi (name, fnames);
+            r = any (idx(:));
           endif
         endif
+      endif
+
+      if (r)
+        this.last_name = fnames{idx};
       endif
 
     endfunction
@@ -634,6 +656,7 @@ endclassdef
 %!function p = create_p ()
 %!  p = inputParser ();
 %!  p.CaseSensitive = true;
+%!  p.PartialMatching = false;
 %!  p.addRequired ("req1", @(x) ischar (x));
 %!  p.addOptional ("op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  p.addOptional ("op2", 78, @(x) x > 50);
@@ -676,6 +699,15 @@ endclassdef
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
 
+## check PartialMatching (default true state)
+%!test
+%! p = create_p ();
+%! p.PartialMatching = true;
+%! p.parse ("file", "foo", 80, "l", "circle", "verb");
+%! r = p.Results;
+%! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
+%!         {"file", "foo", 80,    true,      "circle"});
+
 ## check KeepUnmatched
 %!test
 %! p = create_p ();
@@ -702,6 +734,23 @@ endclassdef
 %!error <failed validation of >
 %! p = create_p ();
 %! p.parse ("file", "foo", 51, "line", "round");
+
+## check PartialMatching errors
+%!error <'arg' matches more than one Parameter: 'arg123', 'arg456'>
+%! p = inputParser ();
+%! p.addParameter ('arg123', 123);
+%! p.addParameter ('arg456', 456);
+%! p.addSwitch ('arg789');
+%! p.addSwitch ('arg790');
+%! p.parse ('arg', 'bad');
+
+%!error <'arg7' matches more than one Switch: 'arg789', 'arg790'>
+%! p = inputParser ();
+%! p.addParameter ('arg123', 123);
+%! p.addParameter ('arg456', 456);
+%! p.addSwitch ('arg789');
+%! p.addSwitch ('arg790');
+%! p.parse ('arg7', 'bad');
 
 ## check alternative method (obj, ...) API
 %!function p2 = create_p2 ();
@@ -730,7 +779,7 @@ endclassdef
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
 
-## We must not perform validation of default values
+## Octave must not perform validation of default values
 %!test <*45837>
 %! p = inputParser ();
 %! p.addParameter ("Dir", [], @ischar);
@@ -944,4 +993,6 @@ endclassdef
 %! p.parse ('Jim', 1980, 'color', 'black');
 %! assert (p.Results.name, 'Jim');
 %! assert (p.Results.year, 1980);
-%! #assert (p.Results.color, 'black');
+%! assert (p.Results.color, 'black');
+
+

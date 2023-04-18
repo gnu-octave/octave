@@ -29,6 +29,9 @@
 
 #include "Array-oct.cc"
 
+#include "ov.h"
+#include "cdef-fwd.h"
+
 // "Protect" Array<T> instantiations that are exported by liboctinterp from
 // being implicitly instantiated in compilation units including this file.
 

@@ -32,6 +32,11 @@
 // FIXME: Including "Array.h" will have implicitly instantiated
 // Array<octave_idx_type>.  Could that be an issue?
 
+#include <string>
+#include "idx-vector.h"
+#include "oct-cmplx.h"
+#include "oct-inttypes-fwd.h"
+
 // "Protect" Array<T> instantiations that are exported by liboctave from
 // being implicitly instantiated in compilation units including this file.
 

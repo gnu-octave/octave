@@ -92,6 +92,7 @@ classdef inputParser < handle
   ## an option; Defaults to true.  For example, the argument @qcode{'opt'} will
   ## match a parameter @qcode{'opt_color'}, but will fail if there is also a
   ## parameter @qcode{'opt_case'}.
+  ## @end deftypefn
   ## 
   ## @deftypefn {} {} inputParser.StructExpand = @var{boolean}
   ## Set whether a structure can be passed to the function instead of

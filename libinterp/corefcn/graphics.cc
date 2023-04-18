@@ -8215,6 +8215,7 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
     return;
 
   // minor ticks between, above, and below min and max ticks
+  const int MAX_MINOR_TICKS = 1000;
   int n = (is_logscale ? 8 : 4);
   double mult_below = (is_logscale ? tmp_ticks(1) / tmp_ticks(0) : 1);
   double mult_above = (is_logscale ? tmp_ticks(n_ticks-1) / tmp_ticks(n_ticks-2)
@@ -8224,6 +8225,9 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
   int n_below = static_cast<int> (std::floor ((tmp_ticks(0)-lo_lim) / d_below));
   if (n_below < 0)
     n_below = 0;
+  else if (n_below > MAX_MINOR_TICKS)
+    n_below = MAX_MINOR_TICKS;
+
   int n_between = n * (n_ticks - 1);
   double d_above = (tmp_ticks(n_ticks-1) - tmp_ticks(n_ticks-2)) * mult_above
                    / (n+1);
@@ -8231,6 +8235,8 @@ axes::properties::calc_ticks_and_lims (array_property& lims,
                                   / d_above));
   if (n_above < 0)
     n_above = 0;
+  else if (n_above > MAX_MINOR_TICKS)
+    n_above = MAX_MINOR_TICKS;
 
   Matrix tmp_mticks (1, n_below + n_between + n_above);
   for (int i = 0; i < n_below; i++)

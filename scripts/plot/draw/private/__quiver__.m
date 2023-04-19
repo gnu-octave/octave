@@ -149,7 +149,7 @@ function hg = __quiver__ (varargin)
   else
     len = max (sqrt (u(:).^2 + v(:).^2));
   endif
-  if (len > 0 && autoscale && numel (u) > 1)
+  if (len > 0 && autoscale && numel (u) >= 1)
     if (isvector (x))
       nx = ny = sqrt (length (x));
     else

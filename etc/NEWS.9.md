@@ -19,6 +19,9 @@ places for the integer part and six places for the fractional part.  Omitting
 the number of decimal places (the fourth input) retains old behavior for
 backward compatibility, except that non-integer inputs will no longer error.
 
+- `quiver` now honors the scaling factor input when there is only a single
+arrow, whereas the factor was previously ignored in that case.
+
 ### Graphical User Interface
 
 ### Graphics backend

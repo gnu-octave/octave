@@ -284,5 +284,5 @@ endfunction
 %!error odeset (1, 1)
 %!error <argument 'opt1' is not a declared parameter> odeset (odeset (), "opt1")
 %!error odeset (odeset (), 1, 1)
-%error <'Re' matches mor than one Parameter: 'Refine', 'RelTol'>
+%!error <'Re' matches more than one Parameter: 'Refine', 'RelTol'>
 %! odeset ('Re', 1);

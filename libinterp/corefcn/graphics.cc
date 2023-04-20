@@ -2562,7 +2562,10 @@ graphics_object::set (const octave_value_list& args)
 
   for (int i = 0; i < nargin; )
     {
-      if (args(i).isstruct () )
+      // FIXME: Should this if branch be eliminated and determination of
+      // struct input be determined earlier such that the correct set(...)
+      // function is invoked by the compiler?
+      if (args(i).isstruct ())
         {
           set (args(i).map_value ());
           i++;
@@ -12258,7 +12261,7 @@ being @qcode{"portrait"}.
       // Loop over input arguments
       for (octave_idx_type i = 1; i < args.length (); )
         {
-          if (i < nargin && args(i).iscellstr () && args(i+1).iscell ())
+          if ((i < nargin - 1) && args(i).iscellstr () && args(i+1).iscell ())
             {
               if (args(i+1).cell_value ().rows () == 1)
                 go.set (args(i).cellstr_value (), args(i+1).cell_value (), 0);
@@ -12276,13 +12279,13 @@ being @qcode{"portrait"}.
             go.set (args(i).map_value ());
             i += 1;
           }
-          else if (i < nargin)
+          else if (i < nargin - 1)
           {
             go.set (args.slice (i, 2));
             i += 2;
           }
           else
-            error ("set: invalid syntax at input #%" OCTAVE_IDX_TYPE_FORMAT, i);
+            error ("set: invalid syntax at input #%" OCTAVE_IDX_TYPE_FORMAT, i+1);
         }
 
       request_drawnow = true;

@@ -599,22 +599,35 @@ classdef inputParser < handle
             idx = strncmp (name, fnames, numel (name));
             r = sum (idx);
             if (r > 1)
-              matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
-              matches(end) = '.';
-              this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+              ## Check for exact match and prefer it over a partial match
+              idx2 = strcmp (name, {fnames{idx}});
+              if (any (idx2))
+                idx = (find (idx))(idx2);
+                r = 1;
+              else
+                matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
+                matches(end) = '.';
+                this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+              endif
             endif
             r = logical (r);
-          else
+          else  # not CaseSensitive
             idx = strncmpi (name, fnames, numel (name));
             r = sum (idx);
             if (r > 1)
-              matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
-              matches(end) = '.';
-              this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+              idx2 = strcmpi (name, {fnames{idx}});
+              if (any (idx2))
+                idx = (find (idx))(idx2);
+                r = 1;
+              else
+                matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
+                matches(end) = '.';
+                this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+              endif
             endif
             r = logical (r);
           endif
-        else
+        else  # no PartialMatching
           if (this.CaseSensitive)
             idx = strcmp (name, fnames);
             r = any (idx(:));
@@ -711,6 +724,15 @@ endclassdef
 %! r = p.Results;
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
+
+## Check PartialMatching selects an exact match if it exists
+%!test
+%! p = inputParser ();
+%! p.addParameter ('Mass', []);
+%! p.addParameter ('MassSingular', []);
+%! p.parse ("Mass", pi);
+%! r = p.Results;
+%! assert ({r.Mass, r.MassSingular}, {pi, []});
 
 ## check KeepUnmatched
 %!test

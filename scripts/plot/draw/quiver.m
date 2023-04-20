@@ -138,3 +138,67 @@ endfunction
 %! axis equal tight;
 %! hold on; plot (x,y,"r"); hold off;
 %! title ("quiver() with scaled arrows");
+
+
+%!test <*39552> # Check arrow length, scale factor adjustment, one arrow.
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   [x,y] = meshgrid (1:2);
+%!   u = [0 1; 2 3];
+%!   v = [1 2; 3 4];
+%!   numpts = numel (x);
+%!   sf = 0.5;
+%!
+%!   ## Check single arrow.
+%!   h = quiver (hax, x(4), y(4), u(4), v(4), 1);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   xendpoint = childxdata{stemchild}(2);
+%!   assert (xendpoint, x(4) + u(4), eps);
+%!
+%!   h = quiver (hax, x(4), y(4), u(4), v(4), sf);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   xendpoint = childxdata{stemchild}(2);
+%!   assert (xendpoint, x(4) + sf*u(4), eps);
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*39552> # Check arrow length, scale factor adjustment, multiple arrows.
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   [x,y] = meshgrid (1:2);
+%!   u = [0 1; 2 3];
+%!   v = [1 2; 3 4];
+%!   numpts = numel (x);
+%!   sf = 0.5;
+%!
+%!   ## Check multiple arrows.
+%!   h = quiver (hax, x, y, u, v, 1);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
+%!   xendpoint1 = childxdata{stemchild}(5);
+%!   xendpoint2 = childxdata{stemchild}(11);
+%!   assert (xendpoint1, x(2) + (sqrt(2)/10)*u(2), eps);
+%!   assert (xendpoint2, x(4) + (sqrt(2)/10)*u(4), eps);
+%!
+%!   h = quiver (hax, x, y, u, v, sf);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
+%!   xendpoint1 = childxdata{stemchild}(5);
+%!   xendpoint2 = childxdata{stemchild}(11);
+%!   assert (xendpoint1, x(2) + sf*(sqrt(2)/10)*u(2), eps);
+%!   assert (xendpoint2, x(4) + sf*(sqrt(2)/10)*u(4), eps);
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test input validation
+%!error <Invalid call> quiver()
+%!error <Invalid call> quiver(1)
+

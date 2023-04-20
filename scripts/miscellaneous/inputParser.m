@@ -874,14 +874,14 @@ endclassdef
 ## addParameter but they use the same codepath.
 %!test
 %! p = inputParser ();
-%! addParameter (p, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
-%! addParameter (p, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
+%! addParamValue (p, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
+%! addParamValue (p, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
 %! p.parse ("line", "circle");
 %! assert ({p.Results.line, p.Results.color}, {"circle", "red"});
 
 %!test
 %! p = inputParser ();
-%! p.addParameter ("foo", "bar", @ischar);
+%! p.addParamValue ("foo", "bar", @ischar);
 %! p.parse ();
 %! assert (p.Results, struct ("foo", "bar"));
 %! p.parse ("foo", "qux");

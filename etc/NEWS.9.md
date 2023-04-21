@@ -22,6 +22,9 @@ backward compatibility, except that non-integer inputs will no longer error.
 - `quiver` now honors the scaling factor input when there is only a single
 arrow, whereas the factor was previously ignored in that case.
 
+- The `inputParser` function has been re-architected for a 60% performance
+improvement.
+
 ### Graphical User Interface
 
 ### Graphics backend

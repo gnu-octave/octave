@@ -184,19 +184,19 @@ classdef inputParser < handle
     ## structs with the fields "name", "def" (default), and "val" (validator).
     Required = cell ();
     Optional = cell ();
-    ## Parameter and Switch are unordered so we have a struct whose fieldnames
-    ## are the argname, and values are a struct with fields "def" and "val"
-    Parameter = struct ();
-    Switch    = struct ();
+    ## Parameter and Switch are unordered so we use a struct array with
+    ## fields "name", "def" (default", and "val" (validator).
+    Parameter = struct ([]);  # create 0x0 struct array, not scalar struct
+    Switch    = struct ([]);
 
     ## List of Parameter and Switch names to simplify searches
     ParameterNames = cell ();
     SwitchNames    = cell ();
 
-    ## When checking for fieldnames in a Case Insensitive way, this variable
-    ## holds the correct identifier for the last searched named using the
-    ## is_argname method.
+    ## Simplify searches by cacheing the last name and last index of a
+    ## match from is_argname() into the Parameter or Switch struct arrays.
     last_name = "";
+    last_idx = 1;
   endproperties
 
   properties (Access = protected, Constant = true)
@@ -232,8 +232,8 @@ classdef inputParser < handle
 
       if (nargin < 2)
         print_usage ();
-      elseif (numel (this.Optional) || numfields (this.Parameter)
-              || numfields (this.Switch))
+      elseif (numel (this.Optional)
+              || numel (this.Parameter) || numel (this.Switch))
         error (["inputParser.addRequired: can't have a Required argument " ...
                 "after Optional, Parameter, or Switch"]);
       endif
@@ -277,7 +277,7 @@ classdef inputParser < handle
 
       if (nargin < 3)
         print_usage ();
-      elseif (numfields (this.Parameter) || numfields (this.Switch))
+      elseif (numel (this.Parameter) || numel (this.Switch))
         error (["inputParser.Optional: can't have Optional arguments " ...
                 "after Parameter or Switch"]);
       endif
@@ -358,8 +358,7 @@ classdef inputParser < handle
       endif
 
       this.validate_name ("Parameter", name);
-      this.Parameter.(name).def = def;
-      this.Parameter.(name).val = val;
+      this.Parameter(end+1) = struct ("name", name, "def", def, "val", val);
 
     endfunction
 
@@ -391,7 +390,7 @@ classdef inputParser < handle
         print_usage ();
       endif
       this.validate_name ("Switch", name);
-      this.Switch.(name).def = false;
+      this.Switch(end+1) = struct ("name", name, "def", false);
 
     endfunction
 
@@ -419,8 +418,14 @@ classdef inputParser < handle
         endif
       endif
       pnargin = numel (varargin);
-      this.ParameterNames = fieldnames (this.Parameter);
-      this.SwitchNames    = fieldnames (this.Switch);
+      this.ParameterNames = {};
+      if (numel (this.Parameter))
+        this.ParameterNames = {this.Parameter.name};
+      endif
+      this.SwitchNames = {};
+      if (numel (this.Switch))
+        this.SwitchNames = {this.Switch.name};
+      endif
 
       ## Evaluate the Required arguments first
       nReq = numel (this.Required);
@@ -500,7 +505,7 @@ classdef inputParser < handle
             this.error (sprintf ("no value for parameter '%s'", name));
           endif
           this.validate_arg (this.last_name,
-                             this.Parameter.(this.last_name).val,
+                             this.Parameter(this.last_idx).val,
                              varargin{vidx});
         elseif (this.is_argname ("Switch", name))
           this.Results.(this.last_name) = true;
@@ -568,20 +573,19 @@ classdef inputParser < handle
       ## relies on side effect, but calls validation function only once
       ## which is a performance win and may also be necessary if validation
       ## function maintains state.  See bug #49793.
-      err = sprintf ('Checked with "%s"', func2str (val));
       ans = true;
       try
         val (in);  # call function with no arguments in case nargout == 0
         ok = ans;  # use side effect of assignment to 'ans' when nargout == 1
-      catch exception
+      catch
         ok = false;
-        err = exception.message;
       end_try_catch
 
       if (nargout > 0)
         r = ok;
       else
         if (! ok)
+          err = sprintf ('Checked with "%s"', func2str (val));
           this.error (sprintf ("failed validation of '%s'.  %s", name, err));
         endif
         this.Results.(name) = in;
@@ -639,19 +643,34 @@ classdef inputParser < handle
       endif
 
       if (r)
+        ## Cache values to simplify and speed up later code.
         this.last_name = fnames{idx};
+        this.last_idx = find (idx);
       endif
 
     endfunction
 
     function add_missing (this, type)
 
-      unmatched = setdiff (fieldnames (this.(type)), fieldnames (this.Results));
-      for namec = unmatched(:)'
-        name = namec{1};
-        this.UsingDefaults{end+1} = name;
-        this.Results.(name) = this.(type).(name).def;
-      endfor
+      if (isempty (this.(type)))
+        return;
+      endif
+
+      ## Implement setdiff() without calling out to function for performance.
+      typenames = {this.(type).name}(:); 
+      Resultnames = fieldnames (this.Results);
+      [sorted, sidx] = sort ([typenames; Resultnames]);
+      dups = strcmp (sorted(1:end-1), sorted(2:end));
+      idx = true (size (typenames));
+      idx(sidx(dups)) = false;
+      if (any (idx))
+        unmatched_names = typenames(idx);
+        unmatched_def = {this.(type)(idx).def}(:);
+        this.Results = ...
+          cell2struct (vertcat (struct2cell (this.Results), unmatched_def),
+                       [Resultnames; unmatched_names]);
+        this.UsingDefaults = [this.UsingDefaults, unmatched_names];
+      endif
 
     endfunction
 

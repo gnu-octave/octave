@@ -873,6 +873,9 @@ Sparse<T, Alloc>::reshape (const dim_vector& new_dims) const
           octave_idx_type old_nr = rows ();
           octave_idx_type old_nc = cols ();
           retval = Sparse<T, Alloc> (new_nr, new_nc, new_nnz);
+          // Special case for empty matrices (bug #64080)
+          if (new_nr == 0 || new_nc == 0)
+            return retval;
 
           octave_idx_type kk = 0;
           retval.xcidx (0) = 0;

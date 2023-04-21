@@ -5999,6 +5999,8 @@ the unspecified dimension.
 %!assert (size (reshape (ones (15, 4, "single"), 1, 60)), [1, 60])
 %!assert (size (reshape (ones (15, 4, "single"), 60, 1)), [60, 1])
 
+%!assert <*64080> (size (reshape (sparse (0, 1), 0, 0)), [0, 0])
+
 %!test
 %! s.a = 1;
 %! fail ("reshape (s, 2, 3)", "can't reshape 1x1 array to 2x3 array");

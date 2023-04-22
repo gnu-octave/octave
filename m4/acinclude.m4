@@ -1256,6 +1256,68 @@ AC_DEFUN([OCTAVE_CHECK_LIB_GLPK_OK], [
   fi
 ])
 dnl
+dnl Check whether iconv provides the function iconvlist.
+dnl
+AC_DEFUN([OCTAVE_CHECK_ICONVLIST], [
+  AC_CACHE_CHECK([whether the function iconvlist is available],
+    [octave_cv_iconvlist],
+    [ac_octave_save_LIBS="$LIBS"
+    LIBS="$LIBICONV $LIBS"
+    AC_LANG_PUSH(C++)
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #if HAVE_ICONV
+        extern "C"
+        {
+        #  include <iconv.h>
+        }
+        #endif
+        ]], [[
+        iconvlist (
+           [] (unsigned int, const char * const *, void *) -> int
+             {
+               return 0;
+             },
+           nullptr);
+        ]])],
+      octave_cv_iconvlist=yes,
+      octave_cv_iconvlist=no)
+    AC_LANG_POP(C++)
+    LIBS="$ac_octave_save_LIBS"
+  ])
+  if test $octave_cv_iconvlist = yes; then
+    AC_DEFINE(HAVE_ICONVLIST, 1, [Define to 1 if iconvlist is available.])
+  fi
+])
+dnl
+dnl Check whether iconv provides the function iconv_canonicalize.
+dnl
+AC_DEFUN([OCTAVE_CHECK_ICONV_CANONICALIZE], [
+  AC_CACHE_CHECK([whether the function iconv_canonicalize is available],
+    [octave_cv_iconv_canonicalize],
+    [ac_octave_save_LIBS="$LIBS"
+    LIBS="$LIBICONV $LIBS"
+    AC_LANG_PUSH(C++)
+    AC_LINK_IFELSE([AC_LANG_PROGRAM([[
+        #if HAVE_ICONV
+        extern "C"
+        {
+        #  include <iconv.h>
+        }
+        #endif
+        ]], [[
+        iconv_canonicalize ("UTF-8");
+        ]])],
+      octave_cv_iconv_canonicalize=yes,
+      octave_cv_iconv_canonicalize=no)
+    AC_LANG_POP(C++)
+    LIBS="$ac_octave_save_LIBS"
+  ])
+  if test $octave_cv_iconv_canonicalize = yes; then
+    AC_DEFINE(HAVE_ICONV_CANONICALIZE, 1,
+      [Define to 1 if iconv_canonicalize is available.])
+  fi
+])
+dnl
 dnl Check whether using HDF5 DLL under Windows.  This is done by
 dnl testing for a data symbol in the HDF5 library, which would
 dnl require the definition of _HDF5USEDL_ under MSVC compiler.

@@ -1497,6 +1497,12 @@ fi
 
 OCTAVE_ENABLE_READLINE
 
+### Check whether functions from libiconv are available.
+
+OCTAVE_CHECK_ICONVLIST
+
+OCTAVE_CHECK_ICONV_CANONICALIZE
+
 ### Check for ZLIB library.
 
 OCTAVE_CHECK_LIB(z, ZLIB,

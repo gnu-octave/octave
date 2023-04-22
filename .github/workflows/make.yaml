@@ -379,6 +379,7 @@ jobs:
             cxx: g++
             f77: gfortran
             extra-config-flags: ""
+            ccache-max: 0.9G
           - msystem: CLANG64
             mingw-prefix: clang64
             target-prefix: mingw-w64-clang-x86_64
@@ -393,6 +394,7 @@ jobs:
               --enable-fortran-calling-convention=gfortran
               ac_cv_f77_compiler_gnu=yes
               lt_cv_prog_gnu_ld=yes
+            ccache-max: 400M
 
     env:
       CHERE_INVOKING: 1
@@ -506,7 +508,7 @@ jobs:
         run: |
           which ccache
           test -d ${{ steps.ccache-prepare.outputs.ccachedir }} || mkdir -p ${{ steps.ccache-prepare.outputs.ccachedir }}
-          echo "max_size = 0.9G" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
+          echo "max_size = ${{ matrix.ccache-max }}" > ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
           echo "compression = true" >> ${{ steps.ccache-prepare.outputs.ccachedir }}/ccache.conf
           ccache -p
           ccache -s

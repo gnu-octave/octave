@@ -31,7 +31,6 @@
 #include <QStringList>
 #include <QStyle>
 #include <QTabWidget>
-#include <QTextCodec>
 #include <QVariant>
 
 // FIXME: Would it be possible/make sense to merge gui_pref and sc_pref

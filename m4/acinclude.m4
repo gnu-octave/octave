@@ -1981,10 +1981,19 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       QT_MODULES="Qt5Core Qt5Gui Qt5Help Qt5Network Qt5OpenGL Qt5PrintSupport Qt5Xml"
     ;;
     6)
-      # FIXME: Remove Qt6Core5Compat when we no longer rely on classes that
-      #        have been removed in Qt6:
-      #        https://www.qt.io/blog/porting-from-qt-5-to-qt-6-using-qt5compat-library
-      QT_MODULES="Qt6Core Qt6Core5Compat Qt6Gui Qt6Help Qt6Network Qt6OpenGL Qt6OpenGLWidgets Qt6PrintSupport Qt6Xml"
+      QT_MODULES="Qt6Core Qt6Gui Qt6Help Qt6Network Qt6OpenGL Qt6OpenGLWidgets Qt6PrintSupport Qt6Xml"
+      case $host_os in
+        mingw* | msdosmsvc*)
+        ;;
+        *)
+          # FIXME: Remove Qt6Core5Compat when we no longer rely on classes that
+          #        have been removed in Qt6:
+          #        https://www.qt.io/blog/porting-from-qt-5-to-qt-6-using-qt5compat-library
+          #        It is still needed for the terminal implementation in
+          #        libgui/qterminal/libqterminal/unix
+          QT_MODULES="$QT_MODULES Qt6Core5Compat"
+        ;;
+      esac
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])

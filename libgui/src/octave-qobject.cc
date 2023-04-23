@@ -32,7 +32,9 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFile>
-#include <QTextCodec>
+#if ! defined (Q_OS_WIN32)
+#  include <QTextCodec>
+#endif
 #include <QThread>
 #include <QTimer>
 #include <QTranslator>
@@ -198,8 +200,8 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
   if (show_gui_msgs.empty ())
     qInstallMessageHandler (message_handler);
 
-  // Set the codec for all strings (before wizard or any GUI object)
 #if ! defined (Q_OS_WIN32)
+  // Set the codec for all strings (before wizard or any GUI object)
   QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
 #endif
 

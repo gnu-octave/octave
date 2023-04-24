@@ -34,9 +34,14 @@
 #include "ov-fcn.h"
 #include "pt-eval.h"
 
+#include "error.h"
 #include "interpreter-private.h"
 #include "symtab.h"
 #include "interpreter.h"
+#include "lo-array-errwarn.h"
+
+#include "pt-bytecode-walk.h"
+
 octave_base_value *
 octave_function::clone () const
 {
@@ -53,7 +58,31 @@ octave_value_list
 octave_function::call (octave::tree_evaluator& tw, int nargout,
                        const octave_value_list& args)
 {
-  tw.push_stack_frame (this);
+  octave_user_function *usr = this->user_function_value(true);
+
+  bool is_compiled = false;
+  if (usr)
+    {
+      is_compiled = usr->is_compiled ();
+      if (octave::V__enable_vm_eval__ && !is_compiled && !usr->m_compilation_failed)
+      {
+        try
+          {
+            octave::compile_user_function (*usr, false);
+            is_compiled = true;
+          }
+        catch (std::exception &e)
+          {
+            warning ("Compilation failed with message %s", e.what ());
+            usr->m_compilation_failed = true;
+          }
+      }
+    }
+
+  // Bytecode functions push their own stack frames in the vm
+
+  if (! usr || ! is_compiled)
+    tw.push_stack_frame (this);
 
   octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
 

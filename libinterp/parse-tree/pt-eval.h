@@ -61,12 +61,15 @@ class debugger;
 class interpreter;
 class push_parser;
 class unwind_protect;
+class vm;
 
 // How to evaluate the code that the parse trees represent.
 
 class OCTINTERP_API tree_evaluator : public tree_walker
 {
 public:
+
+  friend class vm;
 
   enum echo_state
   {
@@ -400,6 +403,8 @@ public:
 
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
+  void set_active_bytecode_ip (int ip);
+
   void define_parameter_list_from_arg_vector
   (tree_parameter_list *param_list, const octave_value_list& args);
 
@@ -435,6 +440,8 @@ public:
   void push_stack_frame (octave_user_script *script);
 
   void push_stack_frame (octave_function *fcn);
+
+  void push_stack_frame (vm &vm, octave_user_function *fcn, int nargout, int nargin);
 
   void pop_stack_frame ();
 

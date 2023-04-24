@@ -175,6 +175,10 @@ public:
   OCTINTERP_API bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
+  bool vm_need_dispatch_assign_rhs (void) { return false; }
+  bool vm_need_dispatch_assign_lhs (void) { return false; }
+  bool vm_need_dispatch_push (void) { return false; }
+
 protected:
 
   // The value of this scalar.

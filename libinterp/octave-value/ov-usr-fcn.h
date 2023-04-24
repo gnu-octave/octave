@@ -36,6 +36,7 @@
 #include "ov-typeinfo.h"
 #include "symscope.h"
 #include "unwind-prot.h"
+#include "pt-bytecode.h"
 
 class string_vector;
 
@@ -399,7 +400,33 @@ public:
 
   octave_value dump () const;
 
+  void set_bytecode (octave::bytecode &bytecode)
+  {
+    m_bytecode = bytecode;
+  }
+
+  void clear_bytecode ()
+  {
+    m_bytecode = octave::bytecode {};
+
+    auto subs = subfunctions ();
+    for (auto kv : subs)
+      {
+        octave_user_function *sub = kv.second.user_function_value ();
+        if (sub)
+          sub->clear_bytecode ();
+      }
+  }
+
+  bool is_compiled () const { return m_bytecode.m_code.size (); }
+
+  octave::bytecode &get_bytecode () { return m_bytecode; }
+
+  bool m_compilation_failed = false;
+
 private:
+
+  octave::bytecode m_bytecode;
 
   enum class_method_type
   {

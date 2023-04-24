@@ -72,6 +72,7 @@
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
+#include "pt-bytecode-vm.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -2198,6 +2199,12 @@ tree_evaluator::get_auto_fcn_var (stack_frame::auto_var_type avt) const
   return m_call_stack.get_auto_fcn_var (avt);
 }
 
+void 
+tree_evaluator::set_active_bytecode_ip (int ip)
+{
+  m_call_stack.set_active_bytecode_ip (ip);
+}
+
 void
 tree_evaluator::define_parameter_list_from_arg_vector
   (tree_parameter_list *param_list, const octave_value_list& args)
@@ -2458,6 +2465,11 @@ void tree_evaluator::push_stack_frame (octave_user_script *script)
 void tree_evaluator::push_stack_frame (octave_function *fcn)
 {
   m_call_stack.push (fcn);
+}
+
+void tree_evaluator::push_stack_frame (vm &vm, octave_user_function *fcn, int nargout, int nargin)
+{
+  m_call_stack.push (vm, fcn, nargout, nargin);
 }
 
 void tree_evaluator::pop_stack_frame ()
@@ -3485,6 +3497,48 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
   // argument, which must be the partially constructed object instance.
 
   octave_value_list args (xargs);
+
+  // FIXME: this probably shouldn't be a double-precision matrix.
+  Matrix ignored_outputs = ignored_fcn_outputs ();
+
+  // Check if it has been compiled and execute the bytecode if so
+  if (user_function.is_compiled ())
+    {
+      bytecode &bc = user_function.get_bytecode ();
+
+      vm vm (this, bc);
+
+      bool caller_is_bytecode = get_current_stack_frame ()->is_bytecode_fcn_frame ();
+
+      // Pushes a bytecode stackframe. nargin is set inside the VM.
+      push_stack_frame (vm, &user_function, nargout, 0);
+
+      // The arg names of root stackframe in VM need to be set here, unless the caller is bytecode.
+      // The caller can be bytecode if evalin("caller", ...) is used in some uncompiled function.
+      if (!caller_is_bytecode)
+        set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (xargs.name_tags ()));
+      set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
+
+      octave_value_list ret;
+      
+      try {
+        ret = vm.execute_code (args, nargout);
+      } catch (std::exception &e) {
+        if (vm.m_dbg_proper_return == false)
+          {
+            std::cout << e.what () << std::endl;
+            // TODO: Replace with panic when the VM almost works
+            
+            // Some test code eats errors messages, so we print to stderr too.
+            fprintf (stderr, "VM error %d: " "Exception in function %s escaped the VM\n", __LINE__, user_function.name ().c_str());
+            error("VM error %d: " "Exception in function %s escaped the VM\n", __LINE__, user_function.name ().c_str());
+          }
+        throw;
+      }
+
+      return ret;
+    }
+
   octave_value_list ret_args;
 
   int nargin = args.length ();
@@ -3500,9 +3554,6 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
       else
         panic_impossible ();
     }
-
-  // FIXME: this probably shouldn't be a double-precision matrix.
-  Matrix ignored_outputs = ignored_fcn_outputs ();
 
   tree_parameter_list *param_list = user_function.parameter_list ();
 

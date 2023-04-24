@@ -49,6 +49,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class tree_evaluator;
 class symbol_info_list;
 class unwind_protect;
+class vm;
 
 class
 OCTINTERP_API
@@ -165,6 +166,8 @@ public:
   void push (octave_user_script *script);
 
   void push (octave_function *fcn);
+
+  void push (vm &vm, octave_user_function *fcn, int nargout, int nargin);
 
   void set_location (int l, int c)
   {
@@ -305,6 +308,8 @@ public:
   void set_nargout (int nargout);
 
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
+
+  void set_active_bytecode_ip (int ip);
 
 private:
 

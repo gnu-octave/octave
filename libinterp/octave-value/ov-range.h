@@ -210,6 +210,7 @@ public:
   bool is_constant () const { return true; }
 
   bool is_range () const { return true; }
+  bool vm_need_storable_call (void) const { return true; }
 
   bool is_double_type () const { return builtin_type () == btyp_double; }
 

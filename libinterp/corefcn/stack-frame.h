@@ -104,6 +104,7 @@ class symbol_info_list;
 class unwind_protect;
 
 class stack_frame_walker;
+class vm;
 
 class stack_frame
 {
@@ -182,6 +183,16 @@ public:
           const std::shared_ptr<stack_frame>& parent_link,
           const std::shared_ptr<stack_frame>& static_link);
 
+  // Bytecode function stackframe
+  static std::shared_ptr<stack_frame>
+  create_bytecode (tree_evaluator& tw,
+                   octave_user_function *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   int nargout, int nargin);
+
   stack_frame (const stack_frame& elt) = default;
 
   stack_frame& operator = (const stack_frame& elt) = delete;
@@ -196,6 +207,7 @@ public:
   virtual bool is_user_script_frame () const { return false; }
   virtual bool is_user_fcn_frame () const { return false; }
   virtual bool is_scope_frame () const { return false; }
+  virtual bool is_bytecode_fcn_frame (void) const { return false; }
 
   virtual void clear_values ();
 
@@ -426,6 +438,16 @@ public:
     install_variable (sym, value, global);
   }
 
+  virtual octave_value get_active_bytecode_call_arg_names ()
+  {
+    panic_impossible (); // Only bytecode frame need to implement this
+  }
+
+  virtual void set_active_bytecode_ip (int)
+  {
+    panic_impossible (); // Only bytecode frame need to implement this
+  }
+
   virtual octave_value get_auto_fcn_var (auto_var_type) const = 0;
 
   virtual void set_auto_fcn_var (auto_var_type, const octave_value&) = 0;
@@ -562,6 +584,12 @@ public:
 
   void mark_closure_context () { m_is_closure_context = true; }
   bool is_closure_context () const { return m_is_closure_context; }
+
+  // The VM needs to tell the bytecode stackframe that it unwinds so
+  // that it can check whether to save the stack.
+  virtual void vm_unwinds () {}
+  virtual void vm_dbg_check_scope () {}
+  virtual void vm_clear_for_cache () {}
 
 protected:
 

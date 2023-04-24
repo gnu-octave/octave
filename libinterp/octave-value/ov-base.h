@@ -808,6 +808,12 @@ public:
 
   virtual octave_base_value * make_storable_value (void);
 
+  virtual bool vm_need_storable_call (void) const { return false; }
+
+  virtual bool vm_need_dispatch_assign_rhs (void) { return true; }
+  virtual bool vm_need_dispatch_assign_lhs (void) { return true; }
+  virtual bool vm_need_dispatch_push (void) { return true; }
+
   virtual bool is_ref () const { return false; }
 
   virtual octave_value_ref * ref_rep ();

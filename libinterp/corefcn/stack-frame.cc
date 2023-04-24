@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <iostream>
+
 #include "lo-regexp.h"
 #include "str-vec.h"
 
@@ -47,8 +49,877 @@
 #include "symrec.h"
 #include "symscope.h"
 #include "variables.h"
+#include <array>
+#include "ov-ref.h"
+
+#include "pt-bytecode-vm.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+
+// bytecode_fcn_stack_frame is for the VM.
+//
+// The VM stack does not directly translate to the tree walker's stack,
+// so there is a translation table to make accessing the VM stack opaque
+// for non-VM use.
+//
+// The octave_values are not acctually stored in the bytecode_fcn_stack_frame
+// object, but on the VM stack. Extra values created by eg. 'eval ("e = 3;")'
+// are stored in this frame object though.
+class bytecode_fcn_stack_frame : public stack_frame
+{
+public:
+
+  enum class bytecode_offsets
+  {
+    DATA_NLOCALS = 2,
+  };
+
+  bytecode_fcn_stack_frame (void) = delete;
+
+  bytecode_fcn_stack_frame (tree_evaluator& tw,
+                            octave_user_function *fcn,
+                            std::size_t index,
+                            const std::shared_ptr<stack_frame>& parent_link,
+                            const std::shared_ptr<stack_frame>& static_link,
+                            vm &vm,
+                            int nargout, int nargin)
+    : stack_frame (tw, index, parent_link, static_link,
+                   nullptr),
+      m_fcn (fcn),
+      m_unwind_data (vm.m_unwind_data),
+      m_name_data (vm.m_name_data),
+      m_stack_start (vm.m_sp),
+      m_code (vm.m_code),
+      m_size (vm.m_name_data_size),
+      // The above fields in vm change during execution so we need to store them in the frame
+      m_vm (&vm),
+      m_nargin (nargin),
+      m_nargout (nargout)
+  {
+    // If the function scope has more variables now due to something adding e.g. 
+    // a global too it after the compilation of the function was done we need
+    // to resize the bytecode frame size.
+    std::size_t n_syms =  fcn->scope_num_symbols ();
+
+    m_orig_size = m_unwind_data->m_external_frame_offset_to_internal.size ();
+
+    if (n_syms > m_orig_size)
+      {
+        int n_to_add = m_orig_size - n_syms;
+        internal_resize (m_size + n_to_add);
+      }
+  }
+
+  bytecode_fcn_stack_frame (const bytecode_fcn_stack_frame& elt)
+    : stack_frame(elt.m_evaluator, elt.m_index, elt.m_parent_link,
+                  elt.m_static_link, elt.m_access_link)
+  {
+    // A copy of a bytecode frame has no pointers to the actual VM stack or VM itself.
+    m_nargin = elt.m_nargin;
+    m_nargout = elt.m_nargout;
+    m_name_data = elt.m_name_data;
+    m_size = elt.m_size;
+    m_orig_size = elt.m_orig_size;
+    m_ip = elt.m_ip;
+    m_unwind_data = elt.m_unwind_data; // TODO: Ownership?
+
+    if (elt.m_lazy_data)
+      {
+        auto &lazy = lazy_data ();
+
+        lazy.m_extra_slots = elt.m_lazy_data->m_extra_slots;
+        lazy.m_extra_flags = elt.m_lazy_data->m_extra_flags;
+        lazy.m_extra_names = elt.m_lazy_data->m_extra_names;
+      }
+  }
+
+  bytecode_fcn_stack_frame&
+  operator = (const bytecode_fcn_stack_frame& elt) = delete;
+
+  bytecode_fcn_stack_frame&
+  operator = (bytecode_fcn_stack_frame&& elt)
+  {
+    if (m_stack_cpy)
+      {
+        // Note: int nargout at offset 0
+        for (unsigned i = 1; i < m_size; i++)
+          m_stack_cpy[i].ov.~octave_value ();
+        delete m_stack_cpy;
+      }
+
+    if (m_lazy_data)
+      {
+        delete m_lazy_data->m_unwind_protect_frame;
+        delete m_lazy_data;
+      }
+
+    *this = std::move (elt);
+    elt.m_stack_cpy = nullptr;
+    elt.m_lazy_data = nullptr;
+
+    return *this;
+  }
+
+  // vm_clear_for_cache () and the dtor need to mirror eachother
+  // so they both call dispose()
+  void dispose ()
+  {
+     if (m_stack_cpy)
+      {
+        // Note: int nargout at offset 0
+        for (unsigned i = 1; i < m_size; i++)
+          m_stack_cpy[i].ov.~octave_value ();
+        delete m_stack_cpy;
+      }
+
+    if (m_lazy_data)
+      {
+        delete m_lazy_data->m_unwind_protect_frame;
+        delete m_lazy_data;
+      }   
+  }
+
+  ~bytecode_fcn_stack_frame ()
+  {
+    // vm_clear_for_cache () need to mirror the dtor
+    dispose ();
+  }
+
+
+  size_t local_to_external_offset (size_t local_offset) const
+  {   
+    for (auto it : m_unwind_data->m_external_frame_offset_to_internal)
+      {
+        size_t local_tmp = it.second;
+        if (local_tmp != local_offset)
+          continue;
+
+        return it.first; // external offset
+      }
+
+    if (local_offset < m_size)
+      error ("VM internal error: Invalid internal offset. Smaller than original size and not in table");
+
+    return local_offset - m_size + m_orig_size;
+  }
+
+  std::size_t external_to_local_offset (std::size_t external_offset) const
+  {
+    auto it = m_unwind_data->m_external_frame_offset_to_internal.find (external_offset);
+    if (it == m_unwind_data->m_external_frame_offset_to_internal.end ())
+    {
+      if (external_offset < m_orig_size)
+        error ("VM internal error: Invalid external offset. Smaller than original size and not in table");
+      // The offsets that are not in the original translation table are in the extra slots added dynamically
+      return m_size + (external_offset - m_orig_size);
+    }
+    
+    return it->second;
+  }
+
+  // Do an expensive check if the stack is in order. Call only during debugging.
+  void vm_dbg_check_scope () 
+  {
+    symbol_scope scope = __get_interpreter__().get_current_scope ();
+    auto symbols = scope.symbol_list ();
+
+    for (symbol_record sym_scope : symbols)
+      {
+        if (sym_scope.frame_offset ()) // Don't check nested function stuff becouse it aint working anyways
+          continue;
+
+        std::size_t scope_offset = sym_scope.data_offset ();
+        std::string scope_name = sym_scope.name ();
+
+        std::size_t internal_offset = external_to_local_offset (scope_offset);
+        if (internal_offset >= m_size)
+          continue; // We don't check the "extra" slots since these can change with eval and evalin:s etc
+
+        symbol_record sym_frame = lookup_symbol (scope_name);
+
+        std::size_t frame_offset = sym_frame.data_offset ();
+        std::string frame_name = sym_frame.name ();
+
+        if (scope_name != frame_name && frame_name != "")
+          error ("VM stack check failed: %s != %s\n", scope_name.c_str (), frame_name.c_str ());
+        if (scope_offset != frame_offset && frame_name != "")
+          error ("VM stack check failed: %zu != %zu\n", scope_offset, frame_offset);
+        
+        if (internal_offset >= internal_size ())
+          internal_resize (internal_offset + 1);
+
+        auto flag = get_scope_flag (scope_offset);
+        if (flag == PERSISTENT || flag == GLOBAL)
+          continue;
+        
+        octave_value ov1 = varval (sym_scope);
+        octave_value ov2 = varval (scope_name);
+        octave_value ov3 = varval (scope_offset);
+        octave_value ov4 = varref (sym_scope);
+        octave_value ov5 = varref (scope_offset);
+
+        if (!ov1.same_rep (ov2))
+          error ("VM stack check failed: Same object differs 2\n");
+        if (!ov1.same_rep (ov3))
+          error ("VM stack check failed: Same object differs 3\n");
+        if (!ov1.same_rep (ov4))
+          error ("VM stack check failed: Same object differs 4\n");
+        if (!ov1.same_rep (ov5))
+          error ("VM stack check failed: Same object differs 5\n");
+      }
+
+  }
+
+  void vm_clear_for_cache ()
+  {
+    m_parent_link = nullptr;
+    m_static_link = nullptr;
+    m_access_link = nullptr;
+    m_dispatch_class.clear ();
+
+    dispose ();
+  }
+
+  // Since a reference to the stackframe can be saved somewhere
+  // we need to check at stack unwind in the VM if that is the case
+  // and save the variables on the VM stack in this frame object so
+  // they can be accessed.
+  void vm_unwinds ()
+  {
+    //vm_dbg_check_scope ();
+    bool is_alone = m_weak_ptr_to_self.use_count () <= 2; // Two seems about right
+
+    if (m_lazy_data)
+      {
+        delete m_lazy_data->m_unwind_protect_frame;
+        m_lazy_data->m_unwind_protect_frame = nullptr;
+      }
+
+    if (is_alone)
+      {
+        if (m_lazy_data)
+          delete m_lazy_data;
+
+        // Zero these so it is easier to find a "use-after-unwind"
+        // error
+        m_lazy_data = nullptr;
+        m_stack_start = nullptr;
+        m_code = nullptr;
+        m_name_data = nullptr;
+        m_unwind_data = nullptr;
+        m_vm = nullptr;
+
+        return;
+      }
+
+    // These pointers might become invalid
+    m_vm = nullptr;
+    m_unwind_data = nullptr;
+
+    // Copy the stack to the frame
+    size_t stack_slots = m_size;
+
+    m_stack_cpy = new octave::stack_element[stack_slots];
+    for (unsigned i = 1; i < m_size; i++)
+      new (&m_stack_cpy[i].ov) octave_value {};
+
+    // Note: int nargout at offset 0
+    m_stack_cpy[0].i = m_stack_start[0].i;
+    for (unsigned i = 1; i < m_size; i++)
+      m_stack_cpy[i].ov = m_stack_start[i].ov;
+
+    m_stack_start = m_stack_cpy;
+  }
+
+  std::size_t size (void) const
+  {
+    return m_orig_size +
+      (m_lazy_data ? m_lazy_data->m_extra_slots.size () : 0);
+  }
+
+  std::size_t internal_size (void) const
+  {
+    return m_size +
+      (m_lazy_data ? m_lazy_data->m_extra_slots.size () : 0);
+  }
+
+  void resize (std::size_t arg)
+  {
+    int diff = static_cast<int> (arg) - static_cast<int>(size ());
+
+    if (diff > 0)
+      internal_resize (internal_size () + diff);
+  }
+
+  void internal_resize (std::size_t arg)
+  {
+    int diff = static_cast<int> (arg) - static_cast<int>(internal_size ());
+
+    if (diff > 0)
+      {
+        auto &lazy = lazy_data ();
+        lazy.m_extra_slots.resize (lazy.m_extra_slots.size () + diff);
+
+        lazy.m_extra_flags.resize (lazy.m_extra_flags.size () + diff);
+
+        lazy.m_extra_names.resize (lazy.m_extra_names.size () + diff);
+      }
+  }
+
+  bool slot_is_global (std::size_t local_offset) const
+  {
+    if (local_offset >= m_size)
+      {
+        if (!m_lazy_data)
+          panic ("bytecode_fcn_stack_frame::slot_is_global(%zu): Bad request", local_offset);
+        scope_flags flag = m_lazy_data->m_extra_flags.at (local_offset - m_size);
+        return flag == GLOBAL;
+      }
+
+    octave_value &ov = m_stack_start [local_offset].ov;
+    if (!ov.is_ref ())
+      return false;
+    if (ov.ref_rep ()->is_global_ref ())
+      return true;
+
+    return false;
+  }
+
+  bool slot_is_persistent (std::size_t local_offset) const
+  {
+    if (local_offset >= m_size)
+      {
+        if (!m_lazy_data)
+          panic ("bytecode_fcn_stack_frame::slot_is_global(%zu): Bad request", local_offset);
+        scope_flags flag = m_lazy_data->m_extra_flags.at (local_offset - m_size);
+        return flag == PERSISTENT;
+      }
+
+    octave_value &ov = m_stack_start [local_offset].ov;
+    if (!ov.is_ref ())
+      return false;
+    if (ov.ref_rep ()->is_persistent_ref ())
+      return true;
+    return false;
+  }
+
+  stack_frame::scope_flags get_scope_flag (std::size_t external_offset) const
+  {
+    std::size_t local_offset = external_to_local_offset (external_offset);
+    // Is the slot on the original bytecode stack frame?
+    if (local_offset < m_size)
+      {
+        octave_value &ov = m_stack_start [local_offset].ov;
+        if (!ov.is_ref ())
+          return LOCAL;
+        if (ov.ref_rep ()->is_global_ref ())
+          return GLOBAL;
+        if (ov.ref_rep ()->is_persistent_ref ())
+          return PERSISTENT;
+        return LOCAL;
+      }
+
+    size_t extra_offset = local_offset - m_size;
+    if (m_lazy_data && extra_offset < m_lazy_data->m_extra_flags.size ())
+      return m_lazy_data->m_extra_flags.at (local_offset - m_size);
+
+    return LOCAL;
+  }
+
+  void set_scope_flag (std::size_t external_offset, scope_flags flag)
+  {
+    std::size_t local_offset = external_to_local_offset (external_offset);
+    if (local_offset >= m_size)
+      {
+        if (!m_lazy_data)
+          error ("VM internal error: Trying to set scope flag on invalid offset");
+        m_lazy_data->m_extra_flags.at (local_offset - m_size) = flag;
+        return;
+      }
+
+    scope_flags current_flag = get_scope_flag (external_offset);
+
+    bool is_global = current_flag == GLOBAL;
+    bool is_pers = current_flag == PERSISTENT;
+
+    if (flag == GLOBAL)
+      {
+        if (is_global)
+          return;
+        if (is_pers)
+          error ("VM internal error: Trying to make persistent variable global");
+
+        octave_value &ov = m_stack_start [local_offset].ov;
+        ov = octave_value {new octave_value_ref_global {m_name_data [local_offset]}};
+
+        return;
+      }
+
+    if (flag == PERSISTENT)
+      {
+        if (is_pers)
+          return;
+        if (is_global)
+          error ("VM internal error: Trying to make global variable persistent");
+
+        octave_value &ov = m_stack_start [local_offset].ov;
+        ov = octave_value {new octave_value_ref_persistent {get_scope (), static_cast<int> (external_offset)}};
+
+        return;
+      }
+
+    if (flag == LOCAL)
+      {
+        if (!is_global && !is_pers)
+          return;
+
+        // Clear the global or persistent ref on the stack
+        if (is_global || is_pers)
+          {
+            // Clear the ref in its slot
+            octave_value& ov_ref = m_stack_start [local_offset].ov;
+            ov_ref = octave_value {};
+          }
+
+        return;
+      }
+
+    panic ("VM internal error: Strange state: %d", flag);
+  }
+
+  stack_frame::scope_flags scope_flag (const symbol_record& sym) const
+  {
+    std::size_t external_offset = sym.data_offset ();
+
+    if (sym.frame_offset())
+      error ("TODO: Frame offset %d", __LINE__);
+
+    return get_scope_flag (external_offset);
+  }
+
+  virtual octave_value get_active_bytecode_call_arg_names ()
+  {
+    
+    // Handle ARG_NAMES
+    if (!m_unwind_data || !m_vm)
+      return Cell {};
+
+    int best_match = -1;
+    int best_start = -1;
+
+    auto &entries = m_unwind_data->m_argname_entries;
+    for (unsigned i = 0; i < entries.size (); i++)
+      {
+        int start = entries[i].m_ip_start;
+        int end = entries[i].m_ip_end;
+
+        if (start > m_ip || end < m_ip)
+          continue;
+
+        if (best_match != -1)
+          {
+            if (best_start > start)
+              continue;
+          }
+
+        best_match = i;
+        best_start = start;
+      }
+
+    if (best_match == -1)
+      return Cell {};
+
+    Cell c = entries[best_match].m_arg_names;
+    return c;
+  }
+
+  virtual void set_active_bytecode_ip (int ip)
+  {
+    m_ip = ip;
+  }
+
+  octave_value get_auto_fcn_var (auto_var_type avt) const
+  {
+    switch (avt)
+      {
+        case stack_frame::NARGIN:
+          return octave_value {m_nargin};
+        case stack_frame::NARGOUT:
+          return octave_value {m_nargout};
+        case stack_frame::SAVED_WARNING_STATES:
+          if (!m_lazy_data)
+            return {};
+          else
+            return m_lazy_data->m_saved_warnings_states;
+        case stack_frame::IGNORED:
+          if (!m_lazy_data)
+            return {};
+          else 
+            return m_lazy_data->m_ignored;
+        case stack_frame::ARG_NAMES:
+        {
+          // If the current bytecode stack frame is the root one in the VM, the caller
+          // sets ARG_NAMES in the root bytecode stack frame
+          if (m_lazy_data)
+            {
+              octave_value ov = m_lazy_data->m_arg_names;
+              if (ov.is_defined ())
+                return ov;
+            }
+          // In bytecode stack frames, the arg names are stored in the caller frame.
+          return m_parent_link->get_active_bytecode_call_arg_names ();
+        }
+        default:
+          panic ("bytecode_fcn_stack_frame::get_auto_fcn_var() : Invalid call idx=%d", static_cast<int> (avt));
+      }
+  }
+
+  void set_nargin (int nargin) { m_nargin = nargin; }
+  void set_nargout (int nargout) { m_nargout = nargout; }
+
+  void set_auto_fcn_var (auto_var_type avt, const octave_value& val)
+  {
+    switch (avt)
+      {
+        case stack_frame::NARGIN:
+          m_nargin = val.int_value ();
+          return;
+        case stack_frame::NARGOUT:
+          m_nargout = val.int_value ();
+          return;
+        case stack_frame::SAVED_WARNING_STATES:
+          lazy_data ().m_saved_warnings_states = val;
+          return;
+        case stack_frame::IGNORED:
+          lazy_data ().m_ignored = val;
+          return;
+        case stack_frame::ARG_NAMES:
+          lazy_data ().m_arg_names = val;
+          return;
+        default:
+          panic ("bytecode_fcn_stack_frame::set_auto_fcn_var() : Invalid call idx=%d", static_cast<int> (avt));
+      }
+  }
+
+  // We only need to override one of each of these functions.  The
+  // using declaration will avoid warnings about partially-overloaded
+  // virtual functions.
+  using stack_frame::varval;
+  using stack_frame::varref;
+
+  octave_value varval (std::size_t external_offset) const
+  {
+    size_t extra_size = (m_lazy_data ? m_lazy_data->m_extra_slots.size () : 0);
+    size_t stack_slots = m_size;
+
+    std::size_t local_offset = external_to_local_offset (external_offset);
+
+    if (local_offset == 0) // Handle native int %nargout specially
+      return octave_value {m_stack_start [0].i};
+    if (local_offset < stack_slots)
+      {
+        octave_value ov = m_stack_start [local_offset].ov;
+        if (ov.is_ref ())
+          return ov.ref_rep ()->deref ();
+        return ov;
+      }
+    else
+      {
+        std::size_t extra_offset = local_offset - stack_slots;
+        if (!m_lazy_data || extra_offset >= extra_size)
+          error ("VM internal error: Trying to access extra slot out of range, %zu", extra_offset);
+        return m_lazy_data->m_extra_slots.at (extra_offset);
+      }
+  }
+
+  octave_value varval (const symbol_record& sym) const
+  {
+    // We don't use frame offsets. Just return nil
+    if (sym.frame_offset())
+      return octave_value {};
+
+    std::size_t external_offset = sym.data_offset ();
+    std::size_t local_offset = external_to_local_offset (external_offset);
+
+    // If the offset is out of range we return a nil ov
+    if (local_offset >= internal_size ())
+      return {};
+    if (local_offset >= m_size)
+      {
+        std::string nm_src = sym.name ();
+        if (!m_lazy_data)
+          panic ("bytecode_fcn_stack_frame::varval() Invalid request");
+        std::string &nm = m_lazy_data->m_extra_names.at (local_offset - m_size);
+        if (nm == "")
+          nm = nm_src;
+        else if (nm != nm_src && nm_src != "")
+          error ("VM internal error: Trying to access extra slot with the wrong name. Current: %s, New: %s\n",
+            nm.c_str (), nm_src.c_str ());
+      }
+
+    bool is_global = slot_is_global (local_offset);
+    bool is_pers = slot_is_persistent (local_offset);
+
+    if (is_global)
+      return m_evaluator.global_varval (sym.name ());
+    if (is_pers)
+      return get_scope ().persistent_varval (external_offset);
+
+    return varval (external_offset);
+  }
+
+  octave_value& varref (std::size_t external_offset)
+  {
+    static octave_value fake_dummy_nargout{0};
+
+    std::size_t extra_size = (m_lazy_data ? m_lazy_data->m_extra_slots.size () : 0);
+    std::size_t stack_slots = m_size;
+
+    std::size_t local_offset = external_to_local_offset (external_offset);
+
+    // Handle native int %nargout specially. Note that changing
+    // the value of %nargout via the this ref wont work.
+    if (local_offset == 0) 
+      return fake_dummy_nargout = octave_value {m_stack_start [0].i};
+    if (local_offset < stack_slots)
+      {
+        octave_value &ov = m_stack_start [local_offset].ov;
+        if (ov.is_ref ())
+          return ov.ref_rep ()->ref ();
+        return ov;
+      }
+    else
+      {
+        std::size_t extra_offset = local_offset - stack_slots;
+        if (!m_lazy_data || extra_offset >= extra_size)
+          error ("VM internal error: Trying to access extra slot out of range, %zu", extra_offset);
+        return m_lazy_data->m_extra_slots.at (extra_offset);
+      }
+  }
+
+  octave_value& varref (const symbol_record& sym)
+  {
+    std::size_t external_offset = sym.data_offset ();
+    std::size_t local_offset = external_to_local_offset (external_offset);
+
+    if (sym.frame_offset())
+      error ("TODO: Frame offset");
+
+    // If the offset is out of range we make room for it
+    if (local_offset >= internal_size ())
+      internal_resize (local_offset + 1);
+    if (local_offset >= m_size)
+      {
+        std::string nm_src = sym.name ();
+        if (!m_lazy_data)
+          panic ("bytecode_fcn_stack_frame::varval() Invalid request");
+        std::string &nm = m_lazy_data->m_extra_names.at (local_offset - m_size);
+        if (nm == "")
+          nm = nm_src;
+        else if (nm != nm_src && nm_src != "")
+          error ("VM internal error: Trying to access extra slot with wrong name. Current: %s, New: %s\n",
+            nm.c_str (), nm_src.c_str ());
+      }
+
+    bool is_global = slot_is_global (local_offset);
+    bool is_pers = slot_is_persistent (local_offset);
+
+    if (is_global)
+      return m_evaluator.global_varref (sym.name ());
+    if (is_pers)
+      return get_scope ().persistent_varref(external_offset);
+
+    return varref (external_offset);
+  }
+
+  void mark_scope (const symbol_record& sym,
+                   scope_flags flag)
+  {
+    std::size_t external_offset = sym.data_offset ();
+    std::size_t local_offset = external_to_local_offset (external_offset);
+
+    if (local_offset >= internal_size ())
+      internal_resize (local_offset + 1);
+
+    set_scope_flag (external_offset, flag);
+  }
+
+  bool is_bytecode_fcn_frame (void) const { return true; }
+
+  symbol_record lookup_symbol (const std::string& name) const
+  {
+    int local_offset = -1;
+    scope_flags flag = LOCAL;
+
+    for (int i = 0; i < static_cast<int> (m_size); i++)
+      {
+        if (m_name_data [i] == name)
+          {
+            local_offset = i;
+
+            bool is_global = slot_is_global (local_offset);
+            bool is_pers = slot_is_persistent (local_offset);
+
+            if (is_global)
+              flag = GLOBAL;
+            else if (is_pers)
+              flag = PERSISTENT;
+
+            break;
+          }
+      }
+
+    if (local_offset >= 0)
+      {
+        symbol_record ret (name, flag);
+        ret.set_data_offset (local_to_external_offset (static_cast<std::size_t> (local_offset)));
+        // Check if the symbol is an argument or return symbol. Note: Negative count for vararg and varargin
+        int n_returns = abs (static_cast<signed char> (m_code[0]));
+        int n_args = abs (static_cast<signed char> (m_code[1]));
+        if (local_offset < n_returns + n_args)
+          ret.mark_formal ();
+
+        return ret;
+      }
+
+    if (m_lazy_data)
+      {
+        for (unsigned i = 0; i < m_lazy_data->m_extra_slots.size (); i++)
+          {
+            if (m_lazy_data->m_extra_names.at (i) == name)
+              {
+                symbol_record ret (name, m_lazy_data->m_extra_flags.at (i));
+                ret.set_data_offset (m_orig_size + i);
+                return ret;
+              }
+          }
+      }
+
+    // Search the "scope" object of this and any nested frame
+    // The scope object will have e.g. variables added by scripts
+    const stack_frame *frame = this;
+    while (frame)
+      {
+        symbol_scope scope = frame->get_scope ();
+
+        symbol_record sym = scope.lookup_symbol (name);
+
+        if (sym)
+          return sym;
+
+        std::shared_ptr<stack_frame> nxt = frame->access_link ();
+        frame = nxt.get ();
+      }
+
+    return symbol_record ();
+  }
+
+  symbol_record insert_symbol (const std::string& name)
+  {
+    // If the symbols is already in the immediate scope, there is
+    // nothing more to do.
+
+    symbol_scope scope = get_scope ();
+
+    symbol_record sym = scope.lookup_symbol (name);
+
+    if (sym)
+      return sym;
+
+    // If we have not created the extra slots, now is the time
+    auto &lazy = lazy_data ();
+    lazy.m_extra_names.push_back (name);
+    lazy.m_extra_slots.push_back ({});
+    lazy.m_extra_flags.push_back (LOCAL);
+
+    sym = scope.find_symbol (name);
+
+    panic_unless (sym.is_valid ());
+
+    return sym;
+  }
+
+  symbol_scope get_scope (void) const
+  {
+    return m_fcn->scope ();
+  }
+
+  octave_function * function () const { return m_fcn; }
+
+  void accept (stack_frame_walker& sfw);
+
+  void display (bool follow = true) const;
+
+  int line () const 
+  { 
+    if (! m_vm)
+      return -1;
+
+    loc_entry loc = vm::find_loc (m_ip, m_vm->m_unwind_data->m_loc_entry); // TODO: Does not work in nested bytecode stack frames
+    return loc.m_line;
+  }
+
+  int column () const
+  { 
+    if (! m_vm)
+      return -1;
+
+    loc_entry loc = m_vm->find_loc (m_ip, m_vm->m_unwind_data->m_loc_entry);
+    return loc.m_col;
+  }
+
+  unwind_protect *unwind_protect_frame ()
+  {
+    if (! lazy_data ().m_unwind_protect_frame)
+      lazy_data ().m_unwind_protect_frame = new unwind_protect ();
+
+    return lazy_data ().m_unwind_protect_frame;
+  }
+
+  std::weak_ptr<stack_frame> m_weak_ptr_to_self;
+
+private:
+  // To keep down the footprint of the frame some seldom used
+  // variables are lazy initialized and stored in *m_lazy_data
+  struct lazy_data_struct
+  {
+    octave_value m_ignored;
+    octave_value m_arg_names;
+    octave_value m_saved_warnings_states;
+
+    std::vector<octave_value> m_extra_slots;
+    std::vector<std::string> m_extra_names;
+    std::vector<scope_flags> m_extra_flags;
+
+    unwind_protect *m_unwind_protect_frame = nullptr;
+  };
+
+  lazy_data_struct & lazy_data ()
+  {
+    if (!m_lazy_data)
+      m_lazy_data = new lazy_data_struct {};
+    return *m_lazy_data;
+  }
+
+  lazy_data_struct *m_lazy_data = nullptr;
+
+  octave_function *m_fcn;
+
+  unwind_data *m_unwind_data;
+
+  std::string *m_name_data;
+  stack_element *m_stack_start;
+  stack_element *m_stack_cpy = nullptr;
+  unsigned char *m_code;
+  std::size_t m_size;
+  std::size_t m_orig_size;
+  vm *m_vm;
+  int m_ip;
+
+  int m_nargin;
+  int m_nargout;
+};
 
 class compiled_fcn_stack_frame : public stack_frame
 {
@@ -331,6 +1202,10 @@ public:
 
   octave_value get_auto_fcn_var (auto_var_type avt) const
   {
+    if (avt != stack_frame::auto_var_type::ARG_NAMES)
+      return m_auto_vars.at (avt);
+    if (m_parent_link->is_bytecode_fcn_frame ())
+      return m_parent_link->get_active_bytecode_call_arg_names ();
     return m_auto_vars.at (avt);
   }
 
@@ -607,6 +1482,9 @@ public:
 
   virtual void
   visit_scope_stack_frame (scope_stack_frame&) = 0;
+
+  virtual void
+  visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame&) = 0;
 };
 
 class symbol_cleaner : public stack_frame_walker
@@ -666,6 +1544,16 @@ public:
   }
 
   void visit_scope_stack_frame (scope_stack_frame& frame)
+  {
+    clean_frame (frame);
+
+    std::shared_ptr<stack_frame> alink = frame.access_link ();
+
+    if (alink)
+      alink->accept (*this);
+  }
+
+  void visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame& frame)
   {
     clean_frame (frame);
 
@@ -915,6 +1803,16 @@ public:
       alink->accept (*this);
   }
 
+  void visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame& frame)
+  {
+    append_list (frame);
+
+    std::shared_ptr<stack_frame> alink = frame.access_link ();
+
+    if (alink)
+      alink->accept (*this);
+  }
+
 private:
 
   typedef std::pair<std::string, symbol_info_list> syminf_list_elt;
@@ -1075,6 +1973,45 @@ stack_frame *stack_frame::create (tree_evaluator& tw,
                                   const std::shared_ptr<stack_frame>& static_link)
 {
   return new scope_stack_frame (tw, scope, index, parent_link, static_link);
+}
+
+std::shared_ptr<stack_frame>
+stack_frame::create_bytecode (tree_evaluator& tw, octave_user_function *fcn,
+                              vm &vm, std::size_t index,
+                              const std::shared_ptr<stack_frame>& parent_link,
+                              const std::shared_ptr<stack_frame>& static_link, 
+                              int nargout, int nargin)
+{
+  // If we have any cached shared_ptr to empty bytecode_fcn_stack_frame objects
+  // we use on of those
+  if (vm.m_frame_ptr_cache.size ())
+    {
+      std::shared_ptr<stack_frame> sp = std::move (vm.m_frame_ptr_cache.back ());
+      vm.m_frame_ptr_cache.pop_back ();
+
+      bytecode_fcn_stack_frame *p = static_cast<bytecode_fcn_stack_frame*> (sp.get ());
+      // Most objects where cleared when the shared_ptr was put into the cache but call the
+      // dtor anyways to be sure.
+      p->~bytecode_fcn_stack_frame ();
+      // Placement new into the storage managed by the shared_ptr
+      new (p) bytecode_fcn_stack_frame (tw, fcn, index, parent_link, static_link, vm, nargout, nargin);
+
+      p->m_weak_ptr_to_self = sp;
+
+      return sp;
+    }
+
+  bytecode_fcn_stack_frame *new_frame_raw
+    = new bytecode_fcn_stack_frame (tw, fcn, index, parent_link, static_link,
+                                    vm, nargout, nargin);
+  std::shared_ptr<stack_frame> new_frame (new_frame_raw);
+
+  // The bytecode stackframe needs to know if it needs to save away
+  // all the stack variables. So it need to keep track of if it is saved
+  // somewhere outsite the VM
+  new_frame_raw->m_weak_ptr_to_self = new_frame;
+
+  return new_frame;
 }
 
 // This function is only implemented and should only be called for
@@ -2343,6 +3280,18 @@ void user_fcn_stack_frame::mark_scope (const symbol_record& sym, scope_flags fla
   set_scope_flag (data_offset, flag);
 }
 
+void bytecode_fcn_stack_frame::display (bool) const
+{
+  std::ostream& os = octave_stdout;
+
+  os << "-- [bytecode_fcn_stack_frame] (" << this << ") --" << std::endl;
+
+  os << "fcn: " << m_fcn->name ()
+     << " (" << m_fcn->type_name () << ")" << std::endl;
+
+  display_scope (os, get_scope ());
+}
+
 void user_fcn_stack_frame::display (bool follow) const
 {
   std::ostream& os = octave_stdout;
@@ -2482,5 +3431,11 @@ void scope_stack_frame::accept (stack_frame_walker& sfw)
 {
   sfw.visit_scope_stack_frame (*this);
 }
+
+void bytecode_fcn_stack_frame::accept (stack_frame_walker& sfw)
+{
+  sfw.visit_bytecode_fcn_stack_frame (*this);
+}
+
 
 OCTAVE_END_NAMESPACE(octave)

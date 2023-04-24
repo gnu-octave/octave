@@ -60,6 +60,7 @@
 #include "profiler.h"
 #include "variables.h"
 #include "ov-fcn-handle.h"
+#include "pt-bytecode-walk.h"
 
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
@@ -481,7 +482,26 @@ octave_value_list
 octave_user_function::call (octave::tree_evaluator& tw, int nargout,
                             const octave_value_list& args)
 {
-  tw.push_stack_frame (this);
+  bool is_compiled = false;
+
+  is_compiled = this->is_compiled ();
+  if (octave::V__enable_vm_eval__ && !is_compiled && !m_compilation_failed)
+  {
+    try
+      {
+        octave::compile_user_function (*this, false);
+        is_compiled = true;
+      }
+    catch (std::exception &e)
+      {
+        warning ("Auto-compilation of %s failed with message %s", name().c_str (), e.what ());
+        this->m_compilation_failed = true;
+      }
+  }
+
+  // Bytecode functions push their own stack frames in the vm
+  if (!is_compiled)
+    tw.push_stack_frame (this);
 
   octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
 

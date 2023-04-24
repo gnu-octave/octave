@@ -48,6 +48,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class stack_frame;
 class type_info;
+class vm;
+class bytecode_fcn_stack_frame;
 
 OCTAVE_END_NAMESPACE(octave)
 
@@ -1542,6 +1544,8 @@ protected:
   // Functions for use by the VM.
   friend class octave_value_ref;
   friend class octave_value_vm;
+  friend class octave::vm;
+  friend class octave::bytecode_fcn_stack_frame;
 
   bool is_ref () const { return m_rep->is_ref (); }
 
@@ -1573,6 +1577,28 @@ protected:
   {
     return m_rep->fcn_cache_value ();
   }
+
+  bool vm_need_storable_call () const
+  {
+    return m_rep->vm_need_storable_call ();
+  };
+
+  bool vm_need_dispatch_assign_rhs ()
+  {
+    return m_rep->vm_need_dispatch_assign_rhs ();
+  }
+
+  bool vm_need_dispatch_assign_lhs ()
+  {
+    return m_rep->vm_need_dispatch_assign_lhs ();
+  }
+
+  bool vm_need_dispatch_push ()
+  {
+    return m_rep->vm_need_dispatch_push ();
+  }
+
+  bool same_rep (octave_value &ov) const { return m_rep == ov.m_rep; }
 
   void maybe_call_dtor () { m_rep->maybe_call_dtor (); }
 

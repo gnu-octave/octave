@@ -2550,7 +2550,7 @@ property_list::as_struct (const std::string& prefix_arg) const
   return m;
 }
 
-// Set properties given as a cs-list of name, value pairs.
+// Set property given as either cs-list of name/value pairs or a struct.
 
 void
 graphics_object::set (const octave_value_list& args)
@@ -2562,9 +2562,6 @@ graphics_object::set (const octave_value_list& args)
 
   for (int i = 0; i < nargin; )
     {
-      // FIXME: Should this if branch be eliminated and determination of
-      // struct input be determined earlier such that the correct set(...)
-      // function is invoked by the compiler?
       if (args(i).isstruct ())
         {
           set (args(i).map_value ());
@@ -2677,41 +2674,6 @@ graphics_object::set (const octave_map& m)
       set_value_or_default (pname, val);
     }
 }
-
-/*
-## test set ticklabels for compatibility
-%!test
-%! hf = figure ("visible", "off");
-%! set (gca (), "xticklabel", [0, 0.2, 0.4, 0.6, 0.8, 1]);
-%! xticklabel = get (gca (), "xticklabel");
-%! close (hf);
-%! assert (class (xticklabel), "char");
-%! assert (size (xticklabel), [6, 3]);
-
-%!test
-%! hf = figure ("visible", "off");
-%! set (gca (), "xticklabel", "0|0.2|0.4|0.6|0.8|1");
-%! xticklabel = get (gca (), "xticklabel");
-%! close (hf);
-%! assert (class (xticklabel), "char");
-%! assert (size (xticklabel), [6, 3]);
-
-%!test
-%! hf = figure ("visible", "off");
-%! set (gca (), "xticklabel", ["0 "; "0.2"; "0.4"; "0.6"; "0.8"; "1 "]);
-%! xticklabel = get (gca (), "xticklabel");
-%! close (hf);
-%! assert (class (xticklabel), "char");
-%! assert (size (xticklabel), [6, 3]);
-
-%!test
-%! hf = figure ("visible", "off");
-%! set (gca (), "xticklabel", {"0", "0.2", "0.4", "0.6", "0.8", "1"});
-%! xticklabel = get (gca (), "xticklabel");
-%! close (hf);
-%! assert (class (xticklabel), "cell");
-%! assert (size (xticklabel), [6, 1]);
-*/
 
 /*
 ## test set with struct arguments
@@ -12261,8 +12223,19 @@ being @qcode{"portrait"}.
       // Loop over input arguments
       for (octave_idx_type i = 1; i < args.length (); )
         {
-          if ((i < nargin - 1) && args(i).iscellstr () && args(i+1).iscell ())
+          if (args(i).is_string ())
             {
+              if (i == nargin - 1)
+                error ("set: PROPERTY name must be followed by a VALUE");
+              const caseless_str pname = args(i).string_value ();
+              const octave_value val = args(i+1);
+              go.set_value_or_default (pname, val);
+              i += 2;
+            }
+          else if (args(i).iscellstr ())
+            {
+              if ((i == nargin - 1) || ! args(i+1).iscell ())
+                error ("set: cell array of PROPERTIES must be followed by cell array of VALUES");
               if (args(i+1).cell_value ().rows () == 1)
                 go.set (args(i).cellstr_value (), args(i+1).cell_value (), 0);
               else if (hcv.numel () == args(i+1).cell_value ().rows ())
@@ -12275,17 +12248,12 @@ being @qcode{"portrait"}.
               i += 2;
             }
           else if (args(i).isstruct ())
-          {
-            go.set (args(i).map_value ());
-            i += 1;
-          }
-          else if (i < nargin - 1)
-          {
-            go.set (args.slice (i, 2));
-            i += 2;
-          }
+            {
+              go.set (args(i).map_value ());
+              i += 1;
+            }
           else
-            error ("set: invalid syntax at input #%" OCTAVE_IDX_TYPE_FORMAT, i+1);
+            error ("set: invalid syntax");
         }
 
       request_drawnow = true;
@@ -12296,6 +12264,41 @@ being @qcode{"portrait"}.
 
   return retval;
 }
+
+/*
+## test setting ticklabels for compatibility
+%!test
+%! hf = figure ("visible", "off");
+%! set (gca (), "xticklabel", [0, 0.2, 0.4, 0.6, 0.8, 1]);
+%! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
+%! assert (class (xticklabel), "char");
+%! assert (size (xticklabel), [6, 3]);
+
+%!test
+%! hf = figure ("visible", "off");
+%! set (gca (), "xticklabel", "0|0.2|0.4|0.6|0.8|1");
+%! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
+%! assert (class (xticklabel), "char");
+%! assert (size (xticklabel), [6, 3]);
+
+%!test
+%! hf = figure ("visible", "off");
+%! set (gca (), "xticklabel", ["0 "; "0.2"; "0.4"; "0.6"; "0.8"; "1 "]);
+%! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
+%! assert (class (xticklabel), "char");
+%! assert (size (xticklabel), [6, 3]);
+
+%!test
+%! hf = figure ("visible", "off");
+%! set (gca (), "xticklabel", {"0", "0.2", "0.4", "0.6", "0.8", "1"});
+%! xticklabel = get (gca (), "xticklabel");
+%! close (hf);
+%! assert (class (xticklabel), "cell");
+%! assert (size (xticklabel), [6, 1]);
+*/
 
 static std::string
 get_graphics_object_type (double val)

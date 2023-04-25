@@ -698,12 +698,13 @@ endif
 @end deftypefn
 @c ## FIXME: Can't have duplicate DOCSTRING entries.  The function methods()
 @c ##        already has a docstring which overrides this keyword definition.
-@c #methods
-@c #@c libinterp/parse-tree/oct-parse.yy
-@c #-*- texinfo -*-
-@c #@deftypefn {} {} methods
-@c #Begin a methods block in a classdef definition.
-@c #@end deftypefn
+@c ##        If this is fixed, place \x1d char before keyword "methods".
+@c ## methods
+@c ## @c libinterp/parse-tree/oct-parse.yy
+@c ## -*- texinfo -*-
+@c ## @deftypefn {} {} methods
+@c ## Begin a methods block in a classdef definition.
+@c ## @end deftypefn
 otherwise
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-
@@ -755,8 +756,9 @@ elsewhere.
 @end deftypefn
 @c ## FIXME: Can't have duplicate DOCSTRING entries.  The function properties()
 @c ##        already has a docstring which overrides this keyword definition.
-@c ## properties
-@c ##  libinterp/parse-tree/oct-parse.yy
+@c ##        If this is fixed, place \x1d char before keyword "properties".
+@c ## properties
+@c ## @c libinterp/parse-tree/oct-parse.yy
 @c ## -*- texinfo -*-
 @c ## @deftypefn {} {} properties
 @c ## Begin a properties block in a classdef definition.

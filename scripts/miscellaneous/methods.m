@@ -115,10 +115,23 @@ function mtds = methods (obj, fullopt)
 endfunction
 
 
+## test classdef object
+%!test
+%! ip = inputParser ();
+%! assert (methods (ip),
+%!         {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
+%!          "addSwitch"; "delete"; "disp"; "parse"; });
+
+## test classdef classname
+%!assert (methods ("inputParser"),
+%!        {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
+%!         "addSwitch"; "delete"; "disp"; "parse"; });
+
 ## test old-style @classname
 %!test
 %! mtds = methods ("ftp");
 %! assert (mtds{1}, "ascii");
+%! assert (numel (mtds), 15);
 
 ## test Java classname
 %!testif HAVE_JAVA; usejava ("jvm")
@@ -132,20 +145,17 @@ endfunction
 %! search = strfind (mtds, "java.lang.Double valueOf");
 %! assert (! isempty ([search{:}]));
 
-## test that methods does the right thing when passed a String object
-%!testif HAVE_JAVA; usejava ("jvm") <*48758>
-%! object = javaObject ("java.lang.String", "java.lang.Integer");
-%! assert (methods (object), methods ("java.lang.String"));
+## test Java object
+%!testif HAVE_JAVA; usejava ("jvm")
+%! jobject = javaObject ("java.lang.Double", pi);
+%! assert (methods (jobject), methods ("java.lang.Double"));
 
-## test classdef classname
-%!assert (methods ("inputParser"),
-%!        {"addOptional"; "addParamValue"; "addParameter";
-%!         "addRequired"; "addSwitch"; "add_missing"; "delete";
-%!         "disp"; "error"; "is_argname"; "parse"; "validate_arg";
-%!         "validate_name"});
+## test exceptional case of Java String object
+%!testif HAVE_JAVA; usejava ("jvm") <*48758>
+%! jobject = javaObject ("java.lang.String", "java.lang.Integer");
+%! assert (methods (jobject), methods ("java.lang.String"));
 
 ## Test input validation
 %!error <Invalid call> methods ()
-%!error methods ("a", "b", "c")
 %!error <invalid option> methods ("ftp", "option1")
 %!error <invalid input argument> methods (1)

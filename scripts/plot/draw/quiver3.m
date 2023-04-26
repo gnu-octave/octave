@@ -46,7 +46,7 @@
 ## The optional input @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 1.0 will
 ## result in the longest vector exactly filling one grid cube.  A value of 0
-## disables all scaling.  The default value is 0.9.
+## or "off" disables all scaling.  The default value is 0.9.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.  If a marker is specified
@@ -80,7 +80,7 @@ function h = quiver3 (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("quiver3", varargin{:});
 
-  if (nargin < 2)
+  if (nargin < 4)
     print_usage ();
   endif
 
@@ -134,3 +134,10 @@ endfunction
 %! shading interp;
 %! title ({"quiver3() of surface normals to peaks() function"; ...
 %!         'shading "interp"'});
+
+##Test input validation
+%!error <Invalid call> quiver3 ()
+%!error <Invalid call> quiver3 (1.1)
+%!error <Invalid call> quiver3 (1.1, 2)
+%!error <Invalid call> quiver3 (1.1, 2, 3)
+

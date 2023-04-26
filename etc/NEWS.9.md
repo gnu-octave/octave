@@ -19,8 +19,11 @@ places for the integer part and six places for the fractional part.  Omitting
 the number of decimal places (the fourth input) retains old behavior for
 backward compatibility, except that non-integer inputs will no longer error.
 
-- `quiver` now honors the scaling factor input when there is only a single
-arrow, whereas the factor was previously ignored in that case.
+- `quiver` and `quiver3` now properly plots non-float numeric inputs by
+internally recasting them to 'double'.  They honor the scaling factor input
+when there is only a single arrow, whereas the factor was previously ignored
+in that case. They also accept a scale factor of "off" which is equivalent to
+setting it to 0.
 
 - The `inputParser` function has been re-architected for a 60% performance
 improvement.

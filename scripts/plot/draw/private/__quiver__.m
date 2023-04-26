@@ -40,12 +40,30 @@ function hg = __quiver__ (varargin)
   ## in order to get equivalent visual results while keeping equivalent
   ## property values.
   arrowsize = 0.20;
-
-  firstnonnumeric = find (! cellfun ("isnumeric", varargin(3:nargin)), 1);
+  firstnonnumeric = find (cellfun ("ischar", varargin(3:nargin)), 1);
   if (isempty (firstnonnumeric))
     firstnonnumeric = Inf;
+
+    ## Recast non-float inputs as doubles to avoid erroneous plots.
+    varargin(3:end) = cellfun ('double', varargin(3:end), ...
+                                  "UniformOutput", false);
   else
     firstnonnumeric += 2;
+
+    ## Recast non-float inputs as doubles.
+    varargin(3:firstnonnumeric-1) = cellfun ('double',
+                    varargin(3:firstnonnumeric-1), "UniformOutput", false);
+
+    ## Check for scaling factor "off" and set it to 0.
+    if (strcmpi (varargin{firstnonnumeric}, "off"))
+      varargin(firstnonnumeric) = 0;
+
+      if ((firstnonnumeric) == nargin)
+        firstnonnumeric = Inf;
+      else
+        firstnonnumeric++;
+      endif
+    endif
   endif
 
   ioff = 3;

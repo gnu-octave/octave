@@ -46,7 +46,7 @@
 ## The optional input @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 1.0 will
 ## result in the longest vector exactly filling one grid square.  A value of 0
-## disables all scaling.  The default value is 0.9.
+## or "off" disables all scaling.  The default value is 0.9.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.  If a marker is specified
@@ -198,7 +198,52 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+%!test <*59695> # Check for proper plotting with non-float inputs.
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   h = quiver (int32(1), int32(1), int32(1), int32(1), double(0.5));
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   childydata = get (get (h, "children"), "ydata");
+%!   assert (all (strcmp (cellfun (...
+%!                 'class', childxdata, 'UniformOutput', false), "double")));
+%!   assert (all (strcmp (cellfun (...
+%!                 'class', childydata, 'UniformOutput', false), "double")));
+%!   assert (childxdata{2}(2) , 1.5, eps);
+%!   assert (childxdata{3}(2) , 1.5, eps);
+%!   assert (childydata{2}(2) , 1.5, eps);
+%!   assert (childydata{3}(2) , 1.5, eps);
+%!
+%!   h = quiver (0.5, 0.5, 0.5, 0.5, int32(1));
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   childydata = get (get (h, "children"), "ydata");
+%!   assert (all (strcmp (cellfun (...
+%!                 'class', childxdata, 'UniformOutput', false), "double")));
+%!   assert (all (strcmp (cellfun (...
+%!                 'class', childydata, 'UniformOutput', false), "double")));
+%!   assert (childxdata{2}(2) , 1, eps);
+%!   assert (childxdata{3}(2) , 1, eps);
+%!   assert (childydata{2}(2) , 1, eps);
+%!   assert (childydata{3}(2) , 1, eps);
+%!
+%!   h = quiver (false, true, false, true, true);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   childydata = get (get (h, "children"), "ydata");
+%!   assert (all (strcmp (cellfun (...
+%!                 'class', childxdata, 'UniformOutput', false), "double")));
+%!   assert (all (strcmp (cellfun (...
+%!                 'class', childydata, 'UniformOutput', false), "double")));
+%!   assert (childxdata{2}(2) , 0, eps);
+%!   assert (childxdata{3}(2) , 0, eps);
+%!   assert (childydata{2}(2) , 2, eps);
+%!   assert (childydata{3}(2) , 2, eps);
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## Test input validation
 %!error <Invalid call> quiver()
-%!error <Invalid call> quiver(1)
+%!error <Invalid call> quiver(1.1)
+
 

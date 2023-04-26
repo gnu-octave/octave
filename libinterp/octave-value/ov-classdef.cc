@@ -701,10 +701,7 @@ is public and if the @code{Hidden} attribute is false.
     {
       // FIXME: this loop duplicates a significant portion of the loops
       // in octave_classdef::print_raw.
-
       const cdef_property& prop = pname_prop.second;
-
-      std::string nm = prop.get_name ();
 
       octave_value acc = prop.get ("GetAccess");
 
@@ -716,7 +713,7 @@ is public and if the @code{Hidden} attribute is false.
       if (hid.bool_value ())
         continue;
 
-      property_names.push_back (nm);
+      property_names.push_back (pname_prop.first);
     }
 
   if (nargout > 0)
@@ -743,8 +740,8 @@ is public and if the @code{Hidden} attribute is false.
 
 DEFMETHOD (__methods__, interp, args, ,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{mtds} =} __methods__ (@var{obj})
-@deftypefnx {} {@var{mtds} =} __methods__ ("classname")
+@deftypefn  {} {[@var{mtds}, @var{found}] =} __methods__ (@var{obj})
+@deftypefnx {} {[@var{mtds}, @var{found}] =} __methods__ ("classname")
 Implement @code{methods} for Octave class objects and classnames.
 @seealso{methods}
 @end deftypefn */)
@@ -762,6 +759,7 @@ Implement @code{methods} for Octave class objects and classnames.
     err_wrong_type_arg ("__methods__", arg);
 
   string_vector sv;
+  bool found = false;
 
   cdef_class cls = lookup_class (class_name, false, true);
 
@@ -775,12 +773,23 @@ Implement @code{methods} for Octave class objects and classnames.
 
       for (const auto& nm_mthd : method_map)
         {
-          std::string nm = nm_mthd.first;
+          const cdef_method& method = nm_mthd.second;
 
-          method_names.push_back (nm);
+          octave_value acc = method.get ("Access");
+
+          if (! acc.is_string () || acc.string_value () != "public")
+            continue;
+
+          octave_value hid = method.get ("Hidden");
+
+          if (hid.bool_value ())
+            continue;
+
+          method_names.push_back (nm_mthd.first);
         }
 
       sv = string_vector (method_names);
+      found = true;
     }
   else
     {
@@ -788,10 +797,17 @@ Implement @code{methods} for Octave class objects and classnames.
       load_path& lp = interp.get_load_path ();
 
       sv = string_vector (lp.methods (class_name));
+      found = ! sv.empty ();
     }
 
-  return ovl (Cell (sv));
+  return ovl (Cell (sv), found);
 }
+
+/*
+%!assert (__methods__ ("inputParser"),
+%!        {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
+%!         "addSwitch"; "delete"; "disp"; "parse"; })
+*/
 
 OCTAVE_END_NAMESPACE(octave)
 

@@ -65,8 +65,8 @@ function mtds = methods (obj, fullopt)
   elseif (ischar (obj))
     ## Could be a classname for an Octave class or Java class.
     ## Try Octave class first.
-    mtds_list = __methods__ (obj);
-    if (isempty (mtds_list))
+    [mtds_list, valid] = __methods__ (obj);
+    if (! valid)
       mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
       mtds_list = ostrsplit (mtds_str, ';');
       mtds_list = mtds_list(:);  # return a column vector for compatibility

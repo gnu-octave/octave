@@ -4639,6 +4639,7 @@ val = ones (m,n, "uint8")
 %!assert (ones (2, "like", speye (2)), sparse ([1, 1; 1, 1]))
 %!assert (ones (2, "like", sparse (1i)), sparse (complex ([1, 1; 1, 1])))
 
+## Note: Matlab compatibility requires using 0 for negative dimensions.
 %!assert (size (ones (1, -2, 2)), [1, 0, 2])
 
 ## Test input validation
@@ -4793,6 +4794,9 @@ DEFALIAS (inf, Inf);
 %!assert (Inf (2, 3, "single"), single ([Inf, Inf, Inf; Inf, Inf, Inf]))
 %!assert (Inf (3, 2, "single"), single ([Inf, Inf; Inf, Inf; Inf, Inf]))
 %!assert (size (inf (3, 4, 5, "single")), [3, 4, 5])
+
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (Inf (2, -3, 2)), [2, 0, 2])
 
 %!assert (Inf (2, 2, "like", speye (2)), sparse ([Inf, Inf; Inf, Inf]))
 %!assert (Inf (2, 2, "like", complex (ones (2, 2))), [Inf, Inf; Inf, Inf])
@@ -5049,6 +5053,10 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 %!assert (eps (single (NaN)), single (NaN))
 %!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])),
 %!        single ([2^-24 2^-23 2^-22 2^104 2^-149 2^-149 2^-149 NaN NaN]))
+
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (eps (2, -3, 2)), [2, 0, 2])
+
 %!error <X must be of a floating point type> eps (uint8 ([0 1 2]))
 %!error <must be scalar> eps (1:3, 1)
 %!error <must be scalar> eps (1, 1:3)
@@ -5538,11 +5546,14 @@ definitions are for compatibility with @sc{matlab}.
 %!assert (full (eye (3)), [1, 0, 0; 0, 1, 0; 0, 0, 1])
 %!assert (full (eye (2, 3)), [1, 0, 0; 0, 1, 0])
 
-%!assert (full (eye (3,"single")), single ([1, 0, 0; 0, 1, 0; 0, 0, 1]))
-%!assert (full (eye (2, 3,"single")), single ([1, 0, 0; 0, 1, 0]))
+%!assert (full (eye (3, "single")), single ([1, 0, 0; 0, 1, 0; 0, 0, 1]))
+%!assert (full (eye (2, 3, "single")), single ([1, 0, 0; 0, 1, 0]))
 
 %!assert (eye (3, "int8"), int8 ([1, 0, 0; 0, 1, 0; 0, 0, 1]))
 %!assert (eye (2, 3, "int8"), int8 ([1, 0, 0; 0, 1, 0]))
+
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (eye (2, -3)), [2, 0])
 
 ## Test input validation
 %!error eye (1, 2, 3)

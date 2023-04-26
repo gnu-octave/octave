@@ -1286,6 +1286,8 @@ dimensions.
 }
 
 /*
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (cell (2, -3)), [2, 0])
 
 %!test <*63132>
 %! x = {1, 3};

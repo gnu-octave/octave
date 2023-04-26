@@ -538,7 +538,7 @@ classes.
 */
 
 /*
-## Check that negative dimensions are treated as zero for Matlab compatibility
+## Note: Matlab compatibility requires using 0 for negative dimensions.
 %!assert (size (rand (1, -1, 2)), [1, 0, 2])
 
 ## Test input validation

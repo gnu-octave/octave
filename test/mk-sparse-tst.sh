@@ -174,6 +174,33 @@ EOF
 gen_specific() {
 cat <<EOF
 
+%% error handling in constructor
+%!error <Invalid call> sparse ()
+%!error <Invalid call> sparse (1,2,3,4,5,6,7)
+%!warning <input array cast to double>
+%! warning ("on", "Octave:sparse:double-conversion", "local");
+%! s = sparse (single ([1 2]));
+%!error <wrong type argument 'uint8 matrix'>
+%! s = sparse (uint8 ([1 2]));
+%% FIXME: negative dimensions are allowed and replaced with 0.
+%%        If this is fixed, re-instate these tests.
+%!#error <dimensions must be non-negative> sparse (-1, 2)
+%!#error <dimensions must be non-negative> sparse (1, -2)
+%!error <dimension mismatch> sparse (1,[2,3],[1,2,3])
+%!error <invalid option: foobar> sparse ([1,1],[1,1],[1,2],"foobar")
+%% negative subscripts are disallowed
+%!error <subscripts must be> sparse ([1,3],[1,-4],[3,5],2,2)
+%!error <subscripts must be> sparse ([1,3],[1,-4],[3,5i],2,2)
+%% FIXME: negative dimensions are allowed and replaced with 0.
+%%        If this is fixed, re-instate these tests.
+%!#error <dimensions must be non-negative> sparse ([1,1],[1,1],[1,2], -1, 2)
+%!#error <dimensions must be non-negative> sparse ([1,1],[1,1],[1,2], 1, -2)
+%!warning <input array cast to double>
+%! warning ("on", "Octave:sparse:double-conversion", "local");
+%! s = sparse ([1,1],[1,1], single ([1,2]), 2, 2);
+%!error <wrong type argument 'uint8 matrix'>
+%! s = sparse ([1,1],[1,1], uint8 ([1,2]), 2, 2);
+
 %!test # segfault test from edd@debian.org
 %! n = 510;
 %! sparse (kron ((1:n)', ones (n,1)), kron (ones (n,1), (1:n)'), ones (n));
@@ -189,12 +216,6 @@ cat <<EOF
 %#!error inv ( sparse ([0,0;0,1+i]) );
 %#!error inv ( sparse ([0,0;0,0]  ) );
 
-%% error handling in constructor
-%!error sparse (1,[2,3],[1,2,3])
-%!error sparse ([1,1],[1,1],[1,2],3,3,"invalid")
-%!error sparse ([1,3],[1,-4],[3,5],2,2)
-%!error sparse ([1,3],[1,-4],[3,5i],2,2)
-%!error sparse (-1,-1,1)
 EOF
 }
 

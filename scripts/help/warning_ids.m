@@ -410,6 +410,12 @@
 ## string constant.
 ## By default, the @code{Octave:single-quote-string} warning is disabled.
 ##
+## @item Octave:sparse:double-conversion
+## If the @code{Octave:sparse:double-conversion} warning is enabled, a warning
+## is printed when an implicit conversion from a full, single array occurs
+## during the creation of a sparse array.
+## By default, the @code{Octave:sparse:double-conversion} warning is enabled.
+##
 ## @item Octave:sqrtm:SingularMatrix
 ## If the @code{Octave:sqrtm:SingularMatrix} warning is enabled, a warning is
 ## printed if the matrix square root function @code{sqrtm} is called with an
@@ -459,5 +465,5 @@ function warning_ids ()
 endfunction
 
 
-## Mark file as tested.  No test needed for a documentation m-file.
+## Mark file as tested.  No tests needed for a documentation m-file.
 %!assert (1)

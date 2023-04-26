@@ -199,15 +199,11 @@ sprandsym, spconvert, spfun}
     }
   else if (nargin == 2)
     {
-      octave_idx_type m = 0;
-      octave_idx_type n = 0;
+      octave_idx_type m = args(0).xidx_type_value ("sparse: M must be a non-negative integer");
+      octave_idx_type n = args(1).xidx_type_value ("sparse: N must be a non-negative integer");
 
-      get_dimensions (args(0), args(1), "sparse", m, n);
-
-      // FIXME: this code is never active because get_dimensions()
-      //        replaces negative dimensions with 0.
       if (m < 0 || n < 0)
-        error ("sparse: dimensions must be non-negative");
+        error ("sparse: dimensions M and N must be non-negative");
 
       retval = SparseMatrix (m, n);
     }
@@ -237,15 +233,14 @@ sprandsym, spconvert, spfun}
 
       if (nargin == 5)
         {
-          get_dimensions (args(3), args(4), "sparse", m, n);
+          m = args(3).xidx_type_value ("sparse: M must be a non-negative integer");
+          n = args(4).xidx_type_value ("sparse: N must be a non-negative integer");
 
-          // FIXME: this code is never active because get_dimensions()
-          //        replaces negative dimensions with 0.
           if (m < 0 || n < 0)
-            error ("sparse: dimensions must be non-negative");
+            error ("sparse: dimensions M and N must be non-negative");
         }
 
-      int argidx = 0;    // index we're checking when index_vector throws
+      int argidx = 0;    // index being checked when index_vector throws
       try
         {
           idx_vector i = args(0).index_vector ();

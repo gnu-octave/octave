@@ -804,9 +804,8 @@ Implement @code{methods} for Octave class objects and classnames.
 }
 
 /*
-%!assert (__methods__ ("inputParser"),
-%!        {"addOptional"; "addParamValue"; "addParameter"; "addRequired";
-%!         "addSwitch"; "delete"; "disp"; "parse"; })
+// BIST tests are in file methods.m
+%!assert (1)
 */
 
 OCTAVE_END_NAMESPACE(octave)

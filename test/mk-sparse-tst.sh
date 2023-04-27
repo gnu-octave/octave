@@ -28,15 +28,15 @@
 # Some tests are commented out because they are known to be broken!
 # Search for "# fails"
 
-# ./build-sparse-tests.sh preset
+# ./mk-sparse-tst.sh preset
 #    creates sparse.tst with preset tests.
 #    Use "test sparse.tst" from octave to run the tests.
 #
-# ./build-sparse-tests.sh random
+# ./mk-sparse-tst.sh random
 #    Creates sprandom.tst with randomly generated matrices.
 #    Use "test sprandom.tst" from octave to run the tests.
 
-# build-sparse-tests.sh generates tests for real and complex sparse matrices.
+# mk-sparse-tst.sh generates tests for real and complex sparse matrices.
 # Also, we want to run both fixed tests with known outputs (quick tests)
 # and longer tests with unknown outputs (thorough tests).  This requires
 # two sets of tests -- one which uses preset matrices and another which
@@ -117,14 +117,14 @@ case $1 in
     random) preset=false ;;
     preset) preset=true ;;
     '') preset=true ;;
-    *) echo "build-sparse-tests.sh random|preset" && exit 1 ;;
+    *) echo "mk-sparse-tst.sh random|preset" && exit 1 ;;
 esac
 
 # create initial file
 cat <<EOF
 ## !!! DO NOT EDIT !!!
 ## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify build-sparse-tests.sh to generate the tests you need.
+## modify mk-sparse-tst.sh to generate the tests you need.
 EOF
 
 
@@ -272,7 +272,7 @@ EOF
 ##  end
 ##  The test log is appended to sprandomtest.log
 function [passes,total] = test_sprandom
-  warning ("untested --- fix the source in build-sparse-tests.sh");
+  warning ("untested --- fix the source in mk-sparse-tst.sh");
   disp ("appending test output to sprandomtest.log");
   fid = fopen ("sprandomtest.log", "at");
   test ("sprandom.tst", "normal", fid);

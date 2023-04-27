@@ -653,19 +653,35 @@ gen_square_tests() {
 %! assert(det(bs+speye(size(bs))), det(bf+eye(size(bf))), 100*eps*abs(det(bf+eye(size(bf)))));
 
 %!testif HAVE_UMFPACK
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) insetead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [l,u] = lu (sparse ([1,1;1,1]));
 %! assert (l*u, [1,1;1,1], 10*eps);
 
 %!testif HAVE_UMFPACK
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) insetead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [l,u] = lu (sparse ([1,1;1,1+i]));
 %! assert (l, sparse ([1,2,2],[1,1,2],1), 10*eps);
 %! assert (u, sparse ([1,1,2],[1,2,2],[1,1,1i]), 10*eps);
 
 %!testif HAVE_UMFPACK   # permuted LU
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) insetead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U] = lu (bs);
 %! assert (L*U, bs, 1e-10);
 
 %!testif HAVE_UMFPACK   # simple LU + row permutations
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) insetead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
 %! ## triangularity
@@ -766,10 +782,18 @@ gen_rectangular_tests() {
     gen_matrixreshape_tests
     cat <<EOF
 %!testif HAVE_UMFPACK   # permuted LU
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) insetead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U] = lu (bs);
 %! assert (L*U, bs, 1e-10);
 
 %!testif HAVE_UMFPACK   # simple LU + row permutations
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) insetead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
 %! ## triangularity

@@ -247,6 +247,7 @@
 %! y = x;
 %! assert (! isempty (y));
 %! assert (y, x);
+%! warning ('off', 'Octave:empty-index', 'local');
 %! z = x();
 %! assert (! isempty (z));
 %! assert (z, x);

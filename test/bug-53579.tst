@@ -13,6 +13,7 @@
 %! assert (isglobal ("bb"));
 %! aa = 3;
 %! xx = 5;
+%! warning ('off', 'Octave:global-local-conflict', 'local');
 %! [raa, rbb, igaa, igbb] = sub1 (aa, xx);
 %! assert (raa, 1);
 %! assert (rbb, []);

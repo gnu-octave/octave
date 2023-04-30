@@ -30,8 +30,15 @@
 %#!assert (0 \ i, Inf)
 %#!assert (0 \ single (i), single (Inf))
 
-%!assert ([Inf, 0; 0, 0] \ [1; 1], zeros (2,1))
-%!assert ([Inf, 0; 0, 0] \ single ([1; 1]), zeros (2,1, "single"))
-%!assert ([Inf, 0; 0, 0] \ [i; 1], zeros (2,1))
-%!assert ([Inf, 0; 0, 0] \ single ([i; 1]), zeros (2,1, "single"))
-
+%!warning <matrix singular to machine precision>
+%! warning ('on', 'Octave:singular-matrix', 'local');
+%! assert ([Inf, 0; 0, 0] \ [1; 1], zeros (2,1));
+%!warning <matrix singular to machine precision>
+%! warning ('on', 'Octave:singular-matrix', 'local');
+%! assert ([Inf, 0; 0, 0] \ single ([1; 1]), zeros (2,1, "single"));
+%!warning <matrix singular to machine precision>
+%! warning ('on', 'Octave:singular-matrix', 'local');
+%! assert ([Inf, 0; 0, 0] \ [i; 1], zeros (2,1));
+%!warning <matrix singular to machine precision>
+%! warning ('on', 'Octave:singular-matrix', 'local');
+%! assert ([Inf, 0; 0, 0] \ single ([i; 1]), zeros (2,1, "single"));

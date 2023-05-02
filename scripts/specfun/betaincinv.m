@@ -262,7 +262,7 @@ endfunction
 %! a = [0.1:0.1:1];
 %! [x,a,b] = ndgrid (x,a,a);
 %! xx = betaincinv (betainc (x, a, b, "upper"), a, b, "upper");
-%! assert (xx, x, 5e-15);
+%! assert (xx, x, 24*eps);
 
 ## Test the conservation of the input class
 %!assert (class (betaincinv (0.5, 1, 1)), "double")

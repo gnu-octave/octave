@@ -123,14 +123,14 @@
 %! end_unwind_protect
 
 ## oruntests with file in different folder (not in load path) with
-## "__mfile_encoding__"
+## "mfile_encoding"
 %!test <*62780>
-%! old_mfile_encoding = __mfile_encoding__ ("windows-1251");
+%! old_mfile_encoding = mfile_encoding ("windows-1251");
 %! unwind_protect
 %!   ## use "evalc" to suppress output to the log
 %!   evalc ('oruntests ("CP1251");');
 %! unwind_protect_cleanup
-%!   __mfile_encoding__ (old_mfile_encoding);
+%!   mfile_encoding (old_mfile_encoding);
 %! end_unwind_protect
 
 ## oruntests with file in different folder with .oct-config file (in load path)

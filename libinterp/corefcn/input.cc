@@ -488,7 +488,7 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
 
   octave_value retval
     = set_internal_variable (m_mfile_encoding, args, nargout,
-                             "__mfile_encoding__");
+                             "mfile_encoding");
 
   // Additional validation if the encoding has changed.
 
@@ -515,10 +515,10 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
             {
               m_mfile_encoding = saved_encoding;
               if (errno == EINVAL)
-                error ("__mfile_encoding__: conversion from encoding '%s' "
+                error ("mfile_encoding: conversion from encoding '%s' "
                        "not supported", encoding.c_str ());
               else
-                error ("__mfile_encoding__: error %d opening encoding '%s'",
+                error ("mfile_encoding: error %d opening encoding '%s'",
                        errno, encoding.c_str ());
             }
           else
@@ -1570,20 +1570,39 @@ Undocumented internal function.
   return input_sys.gud_mode (args, nargout);
 }
 
-DEFMETHOD (__mfile_encoding__, interp, args, nargout,
+DEFMETHOD (mfile_encoding, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{current_encoding} =} __mfile_encoding__ ()
-@deftypefnx {} {} __mfile_encoding__ (@var{new_encoding})
-@deftypefnx {} {@var{old_encoding} =} __mfile_encoding__ (@var{new_encoding})
-Query or set the codepage that is used for reading m-files.
+@deftypefn  {} {@var{current_encoding} =} mfile_encoding ()
+@deftypefnx {} {} mfile_encoding (@var{new_encoding})
+@deftypefnx {} {@var{old_encoding} =} mfile_encoding (@var{new_encoding})
+Query or set the encoding that is used for reading m-files.
 
-The input and output are strings naming a particular codepage, e.g., "utf-8".
+The input and output are strings naming an encoding, e.g., "utf-8".
+
+This encoding is used by Octave's parser when reading m-files unless a
+different encoding was set for a specific directory containing m-files using
+the function @code{dir_encoding} or in a file @file{.oct-config} in that
+directory.
+
+The special value @qcode{"system"} selects the encoding that matches the system
+locale.
+
+If the m-file encoding is changed after the m-files have already been parsed,
+the files have to be parsed again for that change to take effect.  That can be
+triggered with the command @code{clear all}.
+
+Additionally, this encoding is used to load and save files with the built-in
+editor in Octave's GUI.
+
+@seealso{dir_encoding}
 @end deftypefn */)
 {
   input_system& input_sys = interp.get_input_system ();
 
   return input_sys.mfile_encoding (args, nargout);
 }
+
+DEFALIAS (__mfile_encoding__, mfile_encoding);
 
 DEFMETHOD (dir_encoding, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -1593,7 +1612,8 @@ DEFMETHOD (dir_encoding, interp, args, nargout,
 @deftypefnx {} {@var{old_encoding} =} dir_encoding (@var{dir}, @var{new_encoding})
 Query or set the @var{encoding} that is used for reading m-files in @var{dir}.
 
-The per-directory encoding overrides the (globally set) m-file encoding.
+The per-directory encoding overrides the (globally set) m-file encoding,
+@pxref{XREFmfile_encoding,,@code{mfile_encoding}}.
 
 The string @var{DIR} must match how the directory would appear in the load
 path.
@@ -1622,7 +1642,7 @@ If the file encoding is changed after the files have already been parsed, the
 files have to be parsed again for that change to take effect.  That can be done
 with the command @code{clear all}.
 
-@seealso{addpath, path}
+@seealso{addpath, path, mfile_encoding}
 @end deftypefn */)
 {
   int nargin = args.length ();

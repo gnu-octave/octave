@@ -329,11 +329,7 @@ endfunction
 
 function pkg = extract_pkg (nm, pat)
 
-  mfile_encoding = __mfile_encoding__ ();
-  if (strcmp (mfile_encoding, "system"))
-    mfile_encoding = __locale_charset__ ();
-  endif
-  fid = fopen (nm, "rt", "n", mfile_encoding);
+  fid = fopen (nm, "rt", "n", mfile_encoding ());
   pkg = "";
   if (fid >= 0)
     while (! feof (fid))

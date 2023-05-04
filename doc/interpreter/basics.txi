@@ -391,11 +391,11 @@ The startup files are always processed in the system's locale charset
 properties).  In other words, the system's locale charset is in effect until a
 user manually sets the m-file encoding (e.g., in one of the startup files) and
 triggers re-parsing of any relevant m-files.  Octave can be forced to use a
-new encoding with the undocumented function @code{__mfile_encoding__}:
+new encoding with the function @code{mfile_encoding}:
 
 @example
 @group
-__mfile_encoding__ ("utf-8");  # set new encoding
+mfile_encoding ("utf-8");  # set new encoding
 clear ("functions");  # re-parse all .m files in the new encoding
 @end group
 @end example

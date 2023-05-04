@@ -2751,7 +2751,7 @@ void main_window::update_default_encoding (const QString& default_encoding)
      {
        // INTERPRETER THREAD
 
-       F__mfile_encoding__ (interp, ovl (mfile_encoding));
+       Fmfile_encoding (interp, ovl (mfile_encoding));
      });
 }
 

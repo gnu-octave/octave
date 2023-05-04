@@ -36,8 +36,8 @@
 ##
 ## Plot the (@var{u}, @var{v}) components of a vector field at the grid points
 ## defined by (@var{x}, @var{y}).  If the grid is uniform then @var{x} and
-## @var{y} can be specified as vectors and @code{meshgrid} is used to create
-## the 2-D grid.
+## @var{y} can be specified as grid vectors and @code{meshgrid} is used to
+## create the 2-D grid.
 ##
 ## If @var{x} and @var{y} are not given they are assumed to be
 ## @code{(1:@var{m}, 1:@var{n})} where
@@ -48,12 +48,13 @@
 ## result in the longest vector exactly filling one grid square.  A value of 0
 ## or "off" disables all scaling.  The default value is 0.9.
 ##
-## The style to use for the plot can be defined with a line style @var{style}
+## The style to use for the plot can be defined with a line style, @var{style},
 ## of the same format as the @code{plot} command.  If a marker is specified
 ## then the markers are drawn at the origin of the vectors (which are the grid
 ## points defined by @var{x} and @var{y}).  When a marker is specified, the
 ## arrowhead is not drawn.  If the argument @qcode{"filled"} is given then the
-## markers are filled.
+## markers are filled.  If name-value plot style properties are used, they must
+## appear in pairs and follow any other plot style arguments.
 ##
 ## If the first argument @var{hax} is an axes handle, then plot into this axes,
 ## rather than the current axes returned by @code{gca}.
@@ -88,8 +89,7 @@ function h = quiver (varargin)
     oldfig = get (0, "currentfigure");
   endif
   unwind_protect
-    hax = newplot (hax);
-    htmp = __quiver__ (hax, false, varargin{:});
+    [hax, htmp] = __quiver__ (hax, false, varargin{:});
 
     ## FIXME: This should be moved into __quiver__ when problem with
     ##        re-initialization of title object is fixed.
@@ -139,8 +139,321 @@ endfunction
 %! hold on; plot (x,y,"r"); hold off;
 %! title ("quiver() with scaled arrows");
 
+## Check standard inputs, single arrow.
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   h = quiver (hax, 1, 2);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{stemchild}(1), 1, eps);
+%!   assert (childxdata{stemchild}(2), 1 + 1*0.9, eps);
+%!   assert (isnan (childxdata{stemchild}(3)));
+%!   assert (childxdata{arrowheadchild}(2), 1 + 1*0.9, eps);
+%!   assert (isnan (childxdata{arrowheadchild}(4)));
+%!
+%!   h = quiver (hax, 1, 2, 0.5);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{stemchild}(1), 1, eps);
+%!   assert (childxdata{stemchild}(2), 1 + 1*0.5, eps);
+%!   assert (isnan (childxdata{stemchild}(3)));
+%!   assert (childxdata{arrowheadchild}(2), 1 + 1*0.5, eps);
+%!   assert (isnan (childxdata{arrowheadchild}(4)));
+%!
+%!   h = quiver (hax, 0, 1, 2, 3);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{stemchild}(1), 0, eps);
+%!   assert (childxdata{stemchild}(2), 0 + 2*0.9, eps);
+%!   assert (isnan (childxdata{stemchild}(3)));
+%!   assert (childxdata{arrowheadchild}(2), 0 + 2*0.9, eps);
+%!   assert (isnan (childxdata{arrowheadchild}(4)));
+%!
+%!   h = quiver (hax, 0, 1, 2, 3, 0.5);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   stemchild = find (cellfun (@numel, childxdata) == 3);
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{stemchild}(1), 0, eps);
+%!   assert (childxdata{stemchild}(2), 0 + 2*0.5, eps);
+%!   assert (isnan (childxdata{stemchild}(3)));
+%!   assert (childxdata{arrowheadchild}(2), 0 + 2*0.5, eps);
+%!   assert (isnan (childxdata{arrowheadchild}(4)));
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
-%!test <*39552> # Check arrow length, scale factor adjustment, one arrow.
+## Check arrowhead size
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   h = quiver (hax, 0, 0, 0, 1, 1); # up
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{arrowheadchild}, [1/9 0 -1/9 NaN], eps);
+%!   assert (childydata{arrowheadchild}, [2/3 1 2/3 NaN], eps);
+%!
+%!   h = quiver (hax, 0, 0, 0, -1, 1); # down
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{arrowheadchild}, [-1/9 0 1/9 NaN], eps);
+%!   assert (childydata{arrowheadchild}, [-2/3 -1 -2/3 NaN], eps);
+%!
+%!   h = quiver (hax, 0, 0, -1, 0, 1); # left
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{arrowheadchild}, [-2/3 -1 -2/3 NaN], eps);
+%!   assert (childydata{arrowheadchild}, [1/9 0 -1/9 NaN], eps);
+%!
+%!   h = quiver (hax, 0, 0, 1, 0, 1); # right
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{arrowheadchild}, [2/3 1 2/3 NaN], eps);
+%!   assert (childydata{arrowheadchild}, [-1/9 0 1/9 NaN], eps);
+%!
+%!   h = quiver (hax, 0, 0, 1, 1, 1); # 45 deg - symmetric
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{arrowheadchild}, [7/9 1 5/9 NaN], eps);
+%!   assert (childydata{arrowheadchild}, [5/9 1 7/9 NaN], eps);
+%!
+%!   h = quiver (hax, 0, 0, sqrt(3), 1, 1); # 30 deg
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4);
+%!   assert (childxdata{arrowheadchild}, [(6*sqrt(3)+1)/9, sqrt(3), (6*sqrt(3)-1)/9, NaN], eps);
+%!   assert (childydata{arrowheadchild}, [(6-sqrt(3))/9, 1, (6+sqrt(3))/9, NaN], eps);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Check standard inputs, multiple arrows.
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   [x,y] = meshgrid (0:1);
+%!   u = [0 1; 1 -2];
+%!   v = [1 0; 1 -2];
+%!   numpts = 4;
+%!   h = quiver (hax, u, v, 1);  # assumes [x,y] = meshgrid (1:2)
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   basechild = find (cellfun (@numel, childxdata) == 1*numpts);
+%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4*numpts);
+%!   assert (childxdata{basechild}, [1 1 2 2]);
+%!   assert (childxdata{stemchild}, [1,1,NaN,1,1.25,NaN,2,2.25,NaN,2,1.5,NaN], eps);
+%!   assert (childxdata{arrowheadchild}([2, 6, 10, 14]), [1, 1.25, 2.25, 1.5], eps);
+%!   assert (childxdata{arrowheadchild}([4, 8, 12, 16]), NaN(1,4), eps);
+%!
+%!   h = quiver (hax, x, y, u, v, 1);
+%!   childxdata = get (get (h, "children"), "xdata");
+%!   basechild = find (cellfun (@numel, childxdata) == 1*numpts);
+%!   stemchild = find (cellfun (@numel, childxdata) == 3*numpts);
+%!   arrowheadchild = find (cellfun (@numel, childxdata) == 4*numpts);
+%!   assert (childxdata{basechild}, [0 0 1 1]);
+%!   assert (childxdata{stemchild}, [0,0,NaN,0,0.25,NaN,1,1.25,NaN,1,0.5,NaN], eps);
+%!   assert (childxdata{arrowheadchild}([2, 6, 10, 14]), [0, 0.25, 1.25, 0.5], eps);
+%!   assert (childxdata{arrowheadchild}([4, 8, 12, 16]), NaN(1,4), eps);
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Check multiple arrows, vector inputs identical to array inputs.
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   [x,y] = meshgrid (0:1);
+%!   u = [0 1; 1 -2];
+%!   v = [1 0; 1 -2];
+%!   h = quiver (hax, x, y, u, v, 1);  # arrayinput
+%!   haxarray = get(hax);
+%!   haxarray.children = [];
+%!   haxarray.xlabel = [];
+%!   haxarray.ylabel = [];
+%!   haxarray.zlabel = [];
+%!   haxarray.title = [];
+%!   parentarray = get(h);
+%!   parentarray.children = [];
+%!   childrenarray = get (get (h, "children"));
+%!   [childrenarray.parent] = deal ([]);
+%!   h = quiver (hax, [0:1], [0:1], u, v, 1);
+%!   haxvect1 = get(hax);
+%!   haxvect1.children = [];
+%!   haxvect1.xlabel= [];
+%!   haxvect1.ylabel= [];
+%!   haxvect1.zlabel= [];
+%!   haxvect1.title= [];
+%!   parentvect1 = get(h);
+%!   parentvect1.children = [];
+%!   childrenvect1 = get (get (h, "children"));
+%!   [childrenvect1.parent] = deal ([]);
+%!   assert (isequaln (haxarray, haxvect1));
+%!   assert (isequaln (parentarray, parentvect1));
+%!   assert (isequaln (childrenarray, childrenvect1));
+%!   h = quiver (hax, [0:1], [0:1]', u, v, 1);
+%!   haxvect2 = get(hax);
+%!   haxvect2.children = [];
+%!   haxvect2.xlabel= [];
+%!   haxvect2.ylabel= [];
+%!   haxvect2.zlabel= [];
+%!   haxvect2.title= [];
+%!   parentvect2 = get(h);
+%!   parentvect2.children = [];
+%!   childrenvect2 = get (get (h, "children"));
+%!   [childrenvect2.parent] = deal ([]);
+%!   assert (isequaln (haxvect1, haxvect2));
+%!   assert (isequaln (parentvect1, parentvect2));
+%!   assert (isequaln (childrenvect1, childrenvect2));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Check scale factor "off" is identical to scale factor = 0.
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   h = quiver (hax, 1, 2, 0);
+%!   haxzero = get(hax);
+%!   haxzero.children = [];
+%!   haxzero.xlabel = [];
+%!   haxzero.ylabel = [];
+%!   haxzero.zlabel = [];
+%!   haxzero.title = [];
+%!   parentzero = get(h);
+%!   parentzero.children = [];
+%!   childrenzero = get (get (h, "children"));
+%!   [childrenzero.parent] = deal ([]);
+%!   h = quiver (hax, 1, 2, "off");
+%!   haxoff = get(hax);
+%!   haxoff.children = [];
+%!   haxoff.xlabel= [];
+%!   haxoff.ylabel= [];
+%!   haxoff.zlabel= [];
+%!   haxoff.title= [];
+%!   parentoff = get(h);
+%!   parentoff.children = [];
+%!   childrenoff = get (get (h, "children"));
+%!   [childrenoff.parent] = deal ([]);
+%!   assert (isequaln (haxzero, haxoff));
+%!   assert (isequaln (parentzero, parentoff));
+%!   assert (isequaln (childrenzero, childrenoff));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Check input styles.
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   h = quiver (hax, 0, 1, 2, 3, "-o"); # Linestyle
+%!   parent = get (h);
+%!   assert (strcmp (parent.marker, "o"));
+%!   assert (strcmp (parent.markerfacecolor, "none"));
+%!   childdata = get (parent.children);
+%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
+%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   assert (strcmp (childdata(basechild).marker, "o"));
+%!   assert (strcmp (childdata(basechild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(basechild).linestyle, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).linestyle, "none"));
+%!
+%!   h = quiver (hax, 0, 1, 2, 3, "-o", "filled");  # Linestyle + filled.
+%!   parent = get (h);
+%!   assert (strcmp (parent.marker, "o"));
+%!   assert (numel (parent.markerfacecolor), 3);
+%!   childdata = get (parent.children);
+%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
+%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   assert (strcmp (childdata(basechild).marker, "o"));
+%!   assert (numel (childdata(basechild).markerfacecolor), 3);
+%!   assert (strcmp (childdata(basechild).linestyle, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).linestyle, "none"));
+%!
+%!   h = quiver (hax, 0, 1, 2, 3, "linewidth", 10); # Name/value pair.
+%!   parent = get (h);
+%!   assert (strcmp (parent.marker, "none"));
+%!   assert (strcmp (parent.markerfacecolor, "none"));
+%!   assert (strcmp (parent.linestyle, "-"));
+%!   assert (parent.linewidth, 10);
+%!   childdata = get (parent.children);
+%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
+%!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
+%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   assert (strcmp (childdata(basechild).marker, "none"));
+%!   assert (strcmp (childdata(basechild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(basechild).linestyle, "none"));
+%!   assert (strcmp (childdata(stemchild).marker, "none"));
+%!   assert (strcmp (childdata(stemchild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(stemchild).linestyle, "-"));
+%!   assert (childdata(stemchild).linewidth, 10);
+%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).linestyle, "-"));
+%!   assert (childdata(arrowheadchild).linewidth, 10);
+%!
+%!  unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test both Linestyle + name/value pair
+%!test <64143>
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   h = quiver (hax, 0, 1, 2, 3, "-o", "linewidth", 10);
+%!   parent = get (h);
+%!   assert (strcmp (parent.marker, "o"));
+%!   assert (strcmp (parent.markerfacecolor, "none"));
+%!   assert (strcmp (parent.linestyle, "-"));
+%!   assert (parent.linewidth, 10);
+%!   childdata = get (parent.children);
+%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
+%!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
+%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   assert (strcmp (childdata(basechild).marker, "o"));
+%!   assert (strcmp (childdata(basechild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(basechild).linestyle, "none"));
+%!   assert (strcmp (childdata(stemchild).marker, "none"));
+%!   assert (strcmp (childdata(stemchild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(stemchild).linestyle, "-"));
+%!   assert (childdata(stemchild).linewidth, 10);
+%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
+%!   assert (strcmp (childdata(arrowheadchild).linestyle, "none"));
+%!   assert (childdata(arrowheadchild).linewidth, 10);
+%!
+%!  unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Check arrow length, scale factor adjustment, one arrow.
+%!test <*39552>
 %! hf = figure ("visible", "off");
 %! hax = gca ();
 %! unwind_protect
@@ -167,7 +480,8 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <*39552> # Check arrow length, scale factor adjustment, multiple arrows.
+## Check arrow length, scale factor adjustment, multiple arrows.
+%!test <*39552>
 %! hf = figure ("visible", "off");
 %! hax = gca ();
 %! unwind_protect
@@ -198,13 +512,15 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <*59695> # Check for proper plotting with non-float inputs.
+## Check for proper plotting with non-float inputs.
+%!test <*59695>
 %! hf = figure ("visible", "off");
 %! hax = gca ();
 %! unwind_protect
 %!   h = quiver (int32(1), int32(1), int32(1), int32(1), double(0.5));
-%!   childxdata = get (get (h, "children"), "xdata");
-%!   childydata = get (get (h, "children"), "ydata");
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
 %!   assert (all (strcmp (cellfun (...
 %!                 'class', childxdata, 'UniformOutput', false), "double")));
 %!   assert (all (strcmp (cellfun (...
@@ -215,8 +531,9 @@ endfunction
 %!   assert (childydata{3}(2) , 1.5, eps);
 %!
 %!   h = quiver (0.5, 0.5, 0.5, 0.5, int32(1));
-%!   childxdata = get (get (h, "children"), "xdata");
-%!   childydata = get (get (h, "children"), "ydata");
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
 %!   assert (all (strcmp (cellfun (...
 %!                 'class', childxdata, 'UniformOutput', false), "double")));
 %!   assert (all (strcmp (cellfun (...
@@ -227,8 +544,9 @@ endfunction
 %!   assert (childydata{3}(2) , 1, eps);
 %!
 %!   h = quiver (false, true, false, true, true);
-%!   childxdata = get (get (h, "children"), "xdata");
-%!   childydata = get (get (h, "children"), "ydata");
+%!   children = get (h, "children");
+%!   childxdata = get (children, "xdata");
+%!   childydata = get (children, "ydata");
 %!   assert (all (strcmp (cellfun (...
 %!                 'class', childxdata, 'UniformOutput', false), "double")));
 %!   assert (all (strcmp (cellfun (...
@@ -245,5 +563,20 @@ endfunction
 ## Test input validation
 %!error <Invalid call> quiver()
 %!error <Invalid call> quiver(1.1)
-
+%!error <Invalid call> quiver(1.1, "foo")
+%!error <Invalid call> quiver(1.1, 2, 3, 4, 5, 6, "foo")
+%!error <U and V must be the same size> quiver ([1, 2], 3)
+%!error <U and V must be the same size> quiver (1.1, [2, 3])
+%!error <U and V must be the same size> quiver (1.1, 2, eye(2), 4)
+%!error <U and V must be the same size> quiver (1.1, 2, 3, eye(2))
+%!error <X vector length must equal> quiver (1.1, [2 3], eye(2), eye(2))
+%!error <Y vector length must equal> quiver ([1, 2], 3, eye(2), eye(2))
+%!error <X, Y, U, and V must be the same size> quiver (eye(3), eye(2), eye(2), eye(2))
+%!error <X, Y, U, and V must be the same size> quiver (eye(2), eye(3), eye(2), eye(2))
+%!error <X, Y, U, and V must be the same size> quiver (eye(2), eye(2), eye(3), eye(2))
+%!error <X, Y, U, and V must be the same size> quiver (eye(2), eye(2), eye(2), eye(3))
+%!error <scaling factor must be> quiver (10, 20, -5)
+%!error <scaling factor must be> quiver (10, 20, [1 2])
+%!error <scaling factor must be> quiver (10, 20, 30, 40, -5)
+%!error <scaling factor must be> quiver (10, 20, 30, 40, [1 2])
 

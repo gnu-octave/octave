@@ -51,6 +51,17 @@ extern OCTAVE_API bool
 get_dirlist (const std::string& dirname, string_vector& dirlist,
              std::string& msg);
 
+extern OCTAVE_API bool
+file_exists (const std::string& filename, bool is_dir = true);
+
+extern OCTAVE_API bool
+file_exists (const std::string& filename, bool is_dir, std::string& msg);
+
+extern OCTAVE_API bool dir_exists (const std::string& dirname);
+
+extern OCTAVE_API bool
+dir_exists (const std::string& dirname, std::string& msg);
+
 extern OCTAVE_API std::FILE *
 fopen (const std::string& name, const std::string& mode);
 

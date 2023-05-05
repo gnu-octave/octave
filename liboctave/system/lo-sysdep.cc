@@ -33,6 +33,7 @@
 
 #include "dir-ops.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
 #include "localcharset-wrapper.h"
@@ -308,7 +309,126 @@ static bool check_fseek_ftell_workaround_needed (bool set_nonbuffered_mode)
   return strcmp (buf1, buf2);
 }
 
+static std::string
+get_formatted_last_error ()
+{
+  std::string msg = "";
+
+  DWORD last_error = GetLastError ();
+
+  wchar_t *error_text = nullptr;
+  FormatMessageW (FORMAT_MESSAGE_FROM_SYSTEM |
+                  FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                  FORMAT_MESSAGE_IGNORE_INSERTS,
+                  nullptr, last_error,
+                  MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+                  reinterpret_cast <wchar_t *> (&error_text), 0, nullptr);
+
+  if (error_text != nullptr)
+    {
+      msg = u8_from_wstring (error_text);
+      LocalFree (error_text);
+    }
+  else
+    msg = "Unknown error.";
+
+  return msg;
+}
 #endif
+
+bool
+file_exists (const std::string& filename, bool is_dir)
+{
+  // Check if a file with the given name exists on the file system.  If is_dir
+  // is true (the default), also return true if filename refers to a directory.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_fn = u8_to_wstring (filename);
+
+  DWORD f_attr = GetFileAttributesW (w_fn.c_str ());
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (is_dir || ! (f_attr & FILE_ATTRIBUTE_DIRECTORY)));
+
+#else
+  file_stat fs (filename);
+
+  return (fs && (fs.is_reg () || (is_dir && fs.is_dir ())));
+
+#endif
+}
+
+bool
+file_exists (const std::string& filename, bool is_dir, std::string& msg)
+{
+  // Check if a file with the given name exists on the file system.  If is_dir
+  // is true (the default), also return true if filename refers to a directory.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_fn = u8_to_wstring (filename);
+
+  DWORD f_attr = GetFileAttributesW (w_fn.c_str ());
+
+  if (f_attr == INVALID_FILE_ATTRIBUTES)
+    msg = get_formatted_last_error ();
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (is_dir || ! (f_attr & FILE_ATTRIBUTE_DIRECTORY)));
+
+#else
+  file_stat fs (filename);
+
+  if (! fs)
+    msg = fs.error ();
+
+  return (fs && (fs.is_reg () || (is_dir && fs.is_dir ())));
+
+#endif
+}
+
+bool
+dir_exists (const std::string& dirname)
+{
+  // Check if a directory with the given name exists on the file system.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_dn = u8_to_wstring (dirname);
+
+  DWORD f_attr = GetFileAttributesW (w_dn.c_str ());
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (f_attr & FILE_ATTRIBUTE_DIRECTORY));
+
+#else
+  file_stat fs (dirname);
+
+  return (fs && fs.is_dir ());
+
+#endif
+}
+
+bool
+dir_exists (const std::string& dirname, std::string& msg)
+{
+  // Check if a directory with the given name exists on the file system.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_dn = u8_to_wstring (dirname);
+
+  DWORD f_attr = GetFileAttributesW (w_dn.c_str ());
+
+  if (f_attr == INVALID_FILE_ATTRIBUTES)
+    msg = get_formatted_last_error ();
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (f_attr & FILE_ATTRIBUTE_DIRECTORY));
+
+#else
+  file_stat fs (dirname);
+
+  if (! fs)
+    msg = fs.error ();
+
+  return (fs && fs.is_dir ());
+
+#endif
+}
 
 std::FILE *
 fopen (const std::string& filename, const std::string& mode)

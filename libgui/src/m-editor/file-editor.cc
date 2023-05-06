@@ -53,6 +53,7 @@
 #include "gui-settings.h"
 #include "main-window.h"
 
+#include "lo-sysdep.h"
 #include "oct-env.h"
 
 #include "event-manager.h"
@@ -2826,7 +2827,8 @@ file_editor_tab *file_editor::find_tab_widget (const QString& file)
       //
       // is false
 
-      if (same_file (std_file, tab_file.toStdString ()) || file == tab_file)
+      if (sys::same_file (std_file, tab_file.toStdString ())
+          || file == tab_file)
         return fe_tab;
     }
 

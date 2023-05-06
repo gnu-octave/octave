@@ -29,6 +29,7 @@
 
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 
 #include "defun.h"
@@ -573,7 +574,7 @@ out_of_date_check (octave_value& function,
                         }
 
                       if (! file.empty ())
-                        is_same_file = same_file (file, ff);
+                        is_same_file = sys::same_file (file, ff);
                     }
                   else
                     {

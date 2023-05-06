@@ -363,7 +363,7 @@ load_path::remove (const std::string& dir_arg)
 
   if (! dir_arg.empty ())
     {
-      if (same_file (dir_arg, "."))
+      if (sys::same_file (dir_arg, "."))
         {
           warning (R"(rmpath: can't remove "." from path)");
 
@@ -429,7 +429,7 @@ load_path::contains_canonical (const std::string& dir) const
 
   for (const auto& d : m_dir_info_list)
     {
-      if (same_file (dir, d.dir_name))
+      if (sys::same_file (dir, d.dir_name))
         {
           retval = true;
           break;
@@ -448,7 +448,7 @@ load_path::contains_file_in_dir (const std::string& file,
 
   std::string curr_dir = sys::env::get_current_directory ();
 
-  if (same_file (curr_dir, dir))
+  if (sys::same_file (curr_dir, dir))
     ok = true;
   else
     {
@@ -463,7 +463,7 @@ load_path::contains_file_in_dir (const std::string& file,
 
       if (dir_in_load_path)
         {
-          if (same_file (lp_file, file))
+          if (sys::same_file (lp_file, file))
             ok = true;
         }
       else
@@ -474,9 +474,9 @@ load_path::contains_file_in_dir (const std::string& file,
           // not enough because the file in the current directory would
           // still be found.
 
-          if (same_file (lp_file, base_file))
+          if (sys::same_file (lp_file, base_file))
             {
-              if (same_file (curr_dir, dir))
+              if (sys::same_file (curr_dir, dir))
                 ok = true;
               else
                 addpath_option = false;

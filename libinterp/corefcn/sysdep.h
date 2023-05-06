@@ -53,9 +53,6 @@ extern OCTINTERP_API int kbhit (bool wait = true);
 
 extern OCTINTERP_API std::string get_P_tmpdir ();
 
-extern OCTINTERP_API bool same_file_internal (const std::string&,
-                                              const std::string&);
-
 extern OCTINTERP_API bool drive_or_unc_share (const std::string&);
 
 OCTAVE_END_NAMESPACE(octave)

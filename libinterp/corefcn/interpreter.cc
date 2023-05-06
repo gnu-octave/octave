@@ -1201,7 +1201,7 @@ int interpreter::execute_startup_files ()
 
               local_rc = sys::env::make_absolute (initfile);
 
-              home_rc_already_executed = same_file (home_rc, local_rc);
+              home_rc_already_executed = sys::same_file (home_rc, local_rc);
             }
         }
 

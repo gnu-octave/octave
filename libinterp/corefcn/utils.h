@@ -105,6 +105,7 @@ private:
 extern OCTINTERP_API bool
 make_valid_name (std::string& str, const make_valid_name_options& options);
 
+OCTAVE_DEPRECATED (9, "octave::same_file is obsolete, use octave::sys::same_file")
 extern OCTINTERP_API bool
 same_file (const std::string& f, const std::string& g);
 

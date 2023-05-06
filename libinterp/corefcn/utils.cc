@@ -294,7 +294,7 @@ For more documentation, see @code{matlab.lang.makeValidName}.
 
 bool same_file (const std::string& f, const std::string& g)
 {
-  return same_file_internal (f, g);
+  return sys::same_file (f, g);
 }
 
 DEFUN (is_same_file, args, ,
@@ -337,7 +337,7 @@ return true.
       std::string file1 = args(0).string_value ();
       std::string file2 = args(1).string_value ();
 
-      retval = same_file (file1, file2);
+      retval = sys::same_file (file1, file2);
     }
   else if ((s1_string && s2_cellstr) || (s1_cellstr && s2_string))
     {
@@ -360,7 +360,7 @@ return true.
       boolNDArray output (cellstr.dims (), false);
 
       for (octave_idx_type idx = 0; idx < cellstr.numel (); idx++)
-        output(idx) = same_file (str, cellstr(idx));
+        output(idx) = sys::same_file (str, cellstr(idx));
 
       retval = output;
     }
@@ -378,7 +378,7 @@ return true.
       boolNDArray output (size1, false);
 
       for (octave_idx_type idx = 0; idx < cellstr1.numel (); idx++)
-        output(idx) = same_file (cellstr1(idx), cellstr2(idx));
+        output(idx) = sys::same_file (cellstr1(idx), cellstr2(idx));
 
       retval = output;
     }

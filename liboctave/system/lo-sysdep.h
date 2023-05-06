@@ -62,6 +62,9 @@ extern OCTAVE_API bool dir_exists (const std::string& dirname);
 extern OCTAVE_API bool
 dir_exists (const std::string& dirname, std::string& msg);
 
+extern OCTAVE_API bool
+same_file (const std::string& f, const std::string& g);
+
 extern OCTAVE_API std::FILE *
 fopen (const std::string& name, const std::string& mode);
 

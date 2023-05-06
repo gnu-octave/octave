@@ -44,6 +44,7 @@
 #include "cmd-edit.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-locbuf.h"
 #include "oct-time.h"
 
@@ -13248,9 +13249,7 @@ undocumented.
                 {
                   std::string dirname = file.substr (0, pos+1);
 
-                  octave::sys::file_stat fs (dirname);
-
-                  if (! fs || ! fs.is_dir ())
+                  if (! octave::sys::dir_exists (dirname))
                     error ("drawnow: nonexistent directory '%s'",
                            dirname.c_str ());
 

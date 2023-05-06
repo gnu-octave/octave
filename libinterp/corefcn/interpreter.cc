@@ -43,6 +43,7 @@
 #include "fpucw-wrappers.h"
 #include "lo-blas-proto.h"
 #include "lo-error.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "quit.h"
 #include "str-vec.h"
@@ -1193,9 +1194,7 @@ int interpreter::execute_startup_files ()
 
           // Names alone are not enough.
 
-          sys::file_stat fs_home_rc (home_rc);
-
-          if (fs_home_rc)
+          if (sys::file_exists (home_rc))
             {
               // We want to check for curr_dir after executing home_rc
               // because doing that may change the working directory.

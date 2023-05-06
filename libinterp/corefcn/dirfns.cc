@@ -39,6 +39,7 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "glob-match.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-glob.h"
 #include "pathsearch.h"
@@ -207,9 +208,7 @@ Internal function called by mkdir.m.
 
   dirname = sys::file_ops::tilde_expand (dirname);
 
-  sys::file_stat fs (dirname);
-
-  if (fs && fs.is_dir ())
+  if (sys::dir_exists (dirname))
     {
       // For Matlab compatibility, return true when directory already exists.
       return ovl (true, "directory exists", "mkdir");

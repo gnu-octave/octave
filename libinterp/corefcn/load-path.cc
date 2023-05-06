@@ -33,6 +33,7 @@
 #include "dir-ops.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "pathsearch.h"
 
@@ -548,11 +549,7 @@ load_path::find_file (const std::string& file) const
 
   if (sys::env::absolute_pathname (file)
       || sys::env::rooted_relative_pathname (file))
-    {
-      sys::file_stat fs (file);
-
-      return fs.exists () ? file : retval;
-    }
+    return sys::file_exists (file) ? file : retval;
   else
     {
       std::string tfile = find_private_file (file);
@@ -570,9 +567,7 @@ load_path::find_file (const std::string& file) const
         {
           std::string tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
-          sys::file_stat fs (tfile);
-
-          if (fs.exists ())
+          if (sys::file_exists (tfile))
             return tfile;
         }
     }
@@ -605,9 +600,7 @@ load_path::find_dir (const std::string& dir) const
       && (sys::env::absolute_pathname (dir)
           || sys::env::rooted_relative_pathname (dir)))
     {
-      sys::file_stat fs (dir);
-
-      if (fs.exists () && fs.is_dir ())
+      if (sys::dir_exists (dir))
         return dir;
     }
   else
@@ -630,13 +623,9 @@ load_path::find_dir (const std::string& dir) const
 
           if (dname_len > dir_len
               && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && canon_dir == dname.substr (dname_len - dir_len))
-            {
-              sys::file_stat fs (di.dir_name);
-
-              if (fs.exists () && fs.is_dir ())
-                return di.abs_dir_name;
-            }
+              && canon_dir == dname.substr (dname_len - dir_len)
+              && sys::dir_exists (di.dir_name))
+            return di.abs_dir_name;
         }
     }
 
@@ -652,9 +641,7 @@ load_path::find_matching_dirs (const std::string& dir) const
       && (sys::env::absolute_pathname (dir)
           || sys::env::rooted_relative_pathname (dir)))
     {
-      sys::file_stat fs (dir);
-
-      if (fs.exists () && fs.is_dir ())
+      if (sys::dir_exists (dir))
         retlist.push_back (dir);
     }
   else
@@ -677,13 +664,9 @@ load_path::find_matching_dirs (const std::string& dir) const
 
           if (dname_len > dir_len
               && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && canon_dir == dname.substr (dname_len - dir_len))
-            {
-              sys::file_stat fs (di.dir_name);
-
-              if (fs.exists () && fs.is_dir ())
-                retlist.push_back (di.abs_dir_name);
-            }
+              && canon_dir == dname.substr (dname_len - dir_len)
+              && sys::dir_exists (di.dir_name))
+            retlist.push_back (di.abs_dir_name);
         }
     }
 
@@ -713,9 +696,7 @@ load_path::find_first_of (const string_vector& flist) const
           if (sys::env::absolute_pathname (file)
               || sys::env::rooted_relative_pathname (file))
             {
-              sys::file_stat fs (file);
-
-              if (fs.exists ())
+              if (sys::file_exists (file))
                 return file;
             }
           else
@@ -725,9 +706,7 @@ load_path::find_first_of (const string_vector& flist) const
                   std::string tfile;
                   tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
-                  sys::file_stat fs (tfile);
-
-                  if (fs.exists ())
+                  if (sys::file_exists (tfile))
                     return tfile;
                 }
             }
@@ -790,9 +769,7 @@ load_path::find_all_first_of (const string_vector& flist) const
           if (sys::env::absolute_pathname (file)
               || sys::env::rooted_relative_pathname (file))
             {
-              sys::file_stat fs (file);
-
-              if (fs.exists ())
+              if (sys::file_exists (file))
                 retlist.push_back (file);
             }
           else
@@ -802,9 +779,7 @@ load_path::find_all_first_of (const string_vector& flist) const
                   std::string tfile;
                   tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
-                  sys::file_stat fs (tfile);
-
-                  if (fs.exists ())
+                  if (sys::file_exists (tfile))
                     retlist.push_back (tfile);
                 }
             }
@@ -989,9 +964,7 @@ void load_path::execute_pkg_add_or_del (const std::string& dir,
 
   std::string file = sys::file_ops::concat (dir, script_file);
 
-  sys::file_stat fs (file);
-
-  if (fs.exists ())
+  if (sys::file_exists (file))
     source_file (file, "base");
 }
 
@@ -1103,34 +1076,27 @@ load_path::add (const std::string& dir_arg, bool at_end, bool warn)
     move (i, at_end);
   else
     {
-      sys::file_stat fs (dir);
+      std::string msg;
 
-      if (fs)
+      if (sys::dir_exists (dir, msg))
         {
-          if (fs.is_dir ())
-            {
-              read_dir_config (dir);
+          read_dir_config (dir);
 
-              dir_info di (dir);
+          dir_info di (dir);
 
-              if (at_end)
-                m_dir_info_list.push_back (di);
-              else
-                m_dir_info_list.push_front (di);
+          if (at_end)
+            m_dir_info_list.push_back (di);
+          else
+            m_dir_info_list.push_front (di);
 
-              add (di, at_end);
+          add (di, at_end);
 
-              if (m_add_hook)
-                m_add_hook (dir);
-            }
-          else if (warn)
-            warning ("addpath: %s: not a directory", dir_arg.c_str ());
+          if (m_add_hook)
+            m_add_hook (dir);
         }
-      else if (warn)
-        {
-          std::string msg = fs.error ();
-          warning ("addpath: %s: %s", dir_arg.c_str (), msg.c_str ());
-        }
+
+      if (warn && ! msg.empty ())
+        warning ("addpath: %s: %s", dir_arg.c_str (), msg.c_str ());
     }
 
   // FIXME: is there a better way to do this?
@@ -1323,9 +1289,7 @@ load_path::find_private_file (const std::string& fname) const
                                + "private" + sys::file_ops::dir_sep_str ()
                                + fname;
 
-          sys::file_stat fs (pfname);
-
-          if (fs.exists () && fs.is_reg ())
+          if (sys::file_exists (pfname, false))
             retval = pfname;
         }
     }
@@ -1553,36 +1517,31 @@ load_path::dir_info::get_file_list (const std::string& d)
 
       std::string full_name = sys::file_ops::concat (d, fname);
 
-      sys::file_stat fs (full_name);
-
-      if (fs)
+      if (sys::dir_exists (full_name))
         {
-          if (fs.is_dir ())
-            {
-              if (fname == "private")
-                get_private_file_map (full_name);
-              else if (fname[0] == '@')
-                get_method_file_map (full_name, fname.substr (1));
-              else if (fname[0] == '+')
-                get_package_dir (full_name, fname.substr (1));
-            }
-          else
-            {
-              all_files[all_files_count++] = fname;
+          if (fname == "private")
+            get_private_file_map (full_name);
+          else if (fname[0] == '@')
+            get_method_file_map (full_name, fname.substr (1));
+          else if (fname[0] == '+')
+            get_package_dir (full_name, fname.substr (1));
+        }
+      else if (sys::file_exists (full_name))
+        {
+          all_files[all_files_count++] = fname;
 
-              std::size_t pos = fname.rfind ('.');
+          std::size_t pos = fname.rfind ('.');
 
-              if (pos != std::string::npos)
+          if (pos != std::string::npos)
+            {
+              std::string ext = fname.substr (pos);
+
+              if (ext == ".m" || ext == ".oct" || ext == ".mex")
                 {
-                  std::string ext = fname.substr (pos);
+                  std::string base = fname.substr (0, pos);
 
-                  if (ext == ".m" || ext == ".oct" || ext == ".mex")
-                    {
-                      std::string base = fname.substr (0, pos);
-
-                      if (valid_identifier (base))
-                        fcn_files[fcn_files_count++] = fname;
-                    }
+                  if (valid_identifier (base))
+                    fcn_files[fcn_files_count++] = fname;
                 }
             }
         }
@@ -1606,9 +1565,7 @@ load_path::dir_info::get_method_file_map (const std::string& d,
 
   std::string pd = sys::file_ops::concat (d, "private");
 
-  sys::file_stat fs (pd);
-
-  if (fs && fs.is_dir ())
+  if (sys::dir_exists (pd))
     method_file_map[class_name].private_file_map = get_fcn_files (pd);
 }
 
@@ -2444,9 +2401,7 @@ genpath (const std::string& dirname, const string_vector& skip)
             {
               std::string nm = sys::file_ops::concat (dirname, elt);
 
-              sys::file_stat fs (nm);
-
-              if (fs && fs.is_dir ())
+              if (sys::dir_exists (nm))
                 retval += (directory_path::path_sep_str ()
                            + genpath (nm, skip));
             }

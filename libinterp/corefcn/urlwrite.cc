@@ -136,8 +136,6 @@ urlwrite ("http://www.google.com/search", "search.html",
   // create it, and the download fails.  We use unwind_protect to do
   // it so that the deletion happens no matter how we exit the function.
 
-  sys::file_stat fs (filename);
-
   std::ofstream ofile =
     sys::ofstream (filename.c_str (), std::ios::out | std::ios::binary);
 

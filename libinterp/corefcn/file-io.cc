@@ -418,12 +418,12 @@ do_stream_open (const std::string& name, const std::string& mode_arg,
 
   std::string fname = sys::file_ops::tilde_expand (name);
 
-  sys::file_stat fs (fname);
+  bool is_dir = sys::dir_exists (fname);
 
   if (! (md & std::ios::out))
     fname = find_data_file_in_load_path ("fopen", fname);
 
-  if (! fs.is_dir ())
+  if (! is_dir)
     {
 #if defined (HAVE_ZLIB)
       if (use_zlib)

@@ -43,6 +43,7 @@
 #include "file-stat.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
+#include "lo-sysdep.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
@@ -193,16 +194,12 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
       // Either no '.' in name or no '.' appears after last directory
       // separator.
 
-      sys::file_stat fs (fname);
-
-      if (! (fs.exists () && fs.is_reg ()))
+      if (! (sys::file_exists (fname, false)))
         fname = find_file_to_load (fname + ".mat", orig_name);
     }
   else
     {
-      sys::file_stat fs (fname);
-
-      if (! (fs.exists () && fs.is_reg ()))
+      if (! (sys::file_exists (fname, false)))
         {
           fname = "";
 

@@ -39,6 +39,7 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-mappers.h"
+#include "lo-sysdep.h"
 #include "lo-utils.h"
 #include "nanosleep-wrapper.h"
 #include "oct-cmplx.h"
@@ -710,10 +711,8 @@ std::string find_data_file_in_load_path  (const std::string& fcn,
       // Load path will also search "." first, but we don't want to
       // issue a warning if the file is found in the current directory,
       // so do an explicit check for that.
-      sys::file_stat fs (fname);
-
       bool local_file_ok
-        = fs.exists () && (fs.is_reg () || ! require_regular_file);
+        = sys::file_exists (fname, ! require_regular_file);
 
       if (! local_file_ok)
         {
@@ -734,7 +733,7 @@ std::string find_data_file_in_load_path  (const std::string& fcn,
   return fname;
 }
 
-// See if there is an function file in the path.
+// See if there is a function file in the path.
 // If so, return the full path to the file.
 
 std::string fcn_file_in_path (const std::string& name)
@@ -747,9 +746,7 @@ std::string fcn_file_in_path (const std::string& name)
     {
       if (sys::env::absolute_pathname (name))
         {
-          sys::file_stat fs (name);
-
-          if (fs.exists () && ! fs.is_dir ())
+          if (sys::file_exists (name, false))
             retval = name;
         }
       else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
@@ -788,9 +785,7 @@ std::string contents_file_in_path (const std::string& dir)
       std::string tcontents
         = sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
 
-      sys::file_stat fs (tcontents);
-
-      if (fs.exists ())
+      if (sys::file_exists (tcontents))
         retval = sys::env::make_absolute (tcontents);
     }
 

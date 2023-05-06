@@ -367,12 +367,10 @@ Undocumented internal function
     {
       std::string file = files(i);
 
-      sys::file_stat fs (file);
-
-      if (! fs.exists ())
+      if (! sys::file_exists (file))
         error ("__ftp__mput: file does not exist");
 
-      if (fs.is_dir ())
+      if (sys::dir_exists (file))
         {
           file_list.append (url_xfer.mput_directory ("", file));
 

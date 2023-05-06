@@ -1592,7 +1592,7 @@ Use @code{imwrite} instead.
   // If writemode is set to append, read the image and append to it.  Even
   // if set to append, make sure that something was read at all.
   const std::string writemode = options.getfield ("writemode").string_value ();
-  if (writemode == "append" && sys::file_stat (filename).exists ())
+  if (writemode == "append" && sys::file_exists (filename))
     {
       std::vector<Magick::Image> ini_imvec;
       read_file (filename, ini_imvec);

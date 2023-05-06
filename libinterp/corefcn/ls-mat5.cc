@@ -44,6 +44,7 @@
 #include "file-stat.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
+#include "lo-sysdep.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
@@ -897,9 +898,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string str
                       = (octave::config::octave_exec_home ()
                          + fpath.substr (mroot.length ()));
-                    octave::sys::file_stat fs (str);
 
-                    if (fs.exists ())
+                    if (octave::sys::file_exists (str))
                       {
                         std::size_t xpos
                           = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());

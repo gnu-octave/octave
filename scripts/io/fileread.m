@@ -105,5 +105,8 @@ endfunction
 %!error <parameter "Encoding" missing value> fileread ("filename", "Encoding")
 %!error <Unknown option "UnknownParam">
 %! fileread ("filename", "UnknownParam", "UnknownValue")
-%!error <conversion from codepage 'unknownvalue' not supported>
-%! fileread ("filename", "Encoding", "UnknownValue")
+## FIXME: The following test should be skipped if
+##        OCTAVE_HAVE_STRICT_ENCODING_FACET is defined.
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
+%! fail ('fileread ("filename", "Encoding", "UnknownValue")', ...
+%!       "conversion from codepage 'unknownvalue' not supported");

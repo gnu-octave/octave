@@ -35,14 +35,13 @@
 #include "oct-glob.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "unwind-prot.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
 #  include <shlwapi.h>
 #  include <wchar.h>
-
-#  include "lo-sysdep.h"
 #endif
 
 // These functions are defined here and not in glob_match.cc so that we

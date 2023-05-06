@@ -371,8 +371,7 @@ gnu_history::do_write (const std::string& f_arg) const
           std::string hist_dir = sys::file_ops::dirname (f);
           if (! hist_dir.empty ())
             {
-              sys::file_stat fs (hist_dir);
-              if (! fs.is_dir ()
+              if (! sys::dir_exists (hist_dir)
                   && (sys::recursive_mkdir (hist_dir, 0777) < 0))
                 (*current_liboctave_error_handler)
                   ("%s: Could not create directory \"%s\" for history",
@@ -411,9 +410,7 @@ gnu_history::do_append (const std::string& f_arg)
 
               if (! f.empty ())
                 {
-                  sys::file_stat fs (f);
-
-                  if (! fs)
+                  if (! sys::file_exists (f))
                     {
                       std::ofstream tmp = sys::ofstream (f, std::ios::out);
                       tmp.close ();

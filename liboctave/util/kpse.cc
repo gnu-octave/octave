@@ -45,6 +45,7 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "kpse.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "oct-password.h"
 #include "oct-time.h"
@@ -54,8 +55,6 @@
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  define WIN32_LEAN_AND_MEAN 1
 #  include <windows.h>
-
-#  include "lo-sysdep.h"
 #endif
 
 // Define the characters which separate components of filenames and
@@ -1015,17 +1014,6 @@ brace_gobbler (const std::string& text, int& indx, int satisfy)
   return c;
 }
 
-/* Return true if FN is a directory or a symlink to a directory,
-   false if not. */
-
-static bool
-dir_p (const std::string& fn)
-{
-  octave::sys::file_stat fs (fn);
-
-  return (fs && fs.is_dir ());
-}
-
 /* Given a path element ELT, return a the element with a trailing slash
    or an empty string if the element is not a directory.
 
@@ -1042,7 +1030,7 @@ kpse_element_dir (const std::string& elt)
   if (elt.empty ())
     return ret;
 
-  if (dir_p (elt))
+  if (octave::sys::dir_exists (elt))
     {
       ret = elt;
 

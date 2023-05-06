@@ -37,6 +37,7 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-error.h"
+#include "lo-sysdep.h"
 #include "lo-utils.h"
 #include "oct-env.h"
 #include "oct-mutex.h"
@@ -550,9 +551,7 @@ looks_like_filename (const char *line, char delim)
             candidate_filename
               = sys::file_ops::tilde_expand (candidate_filename);
 
-          sys::file_stat fs (candidate_filename);
-
-          retval = fs.is_dir ();
+          retval = sys::dir_exists (candidate_filename);
         }
     }
 

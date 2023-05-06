@@ -53,14 +53,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-static bool
-single_match_exists (const std::string& file)
-{
-  sys::file_stat s (file);
-
-  return s.exists ();
-}
-
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 bool
@@ -121,7 +113,7 @@ glob (const string_vector& pat)
 
               if (n > 1
                   || (n == 1
-                      && single_match_exists (std::string (matches[0]))))
+                      && sys::file_exists (std::string (matches[0]))))
                 {
                   retval.resize (k+n);
 
@@ -371,7 +363,7 @@ windows_glob (const string_vector& pat)
 
               if (n > 1
                   || (n == 1
-                      && single_match_exists (std::string (matches[0]))))
+                      && sys::file_exists (std::string (matches[0]))))
                 {
                   retval.resize (k + n);
 

@@ -75,9 +75,8 @@ base_url_transfer::mget_directory (const std::string& directory,
                                    const std::string& target)
 {
   std::string sep = sys::file_ops::dir_sep_str ();
-  sys::file_stat fs (directory);
 
-  if (! fs || ! fs.is_dir ())
+  if (! sys::dir_exists (directory))
     {
       std::string msg;
       int status = sys::mkdir (directory, 0777, msg);
@@ -175,9 +174,7 @@ base_url_transfer::mput_directory (const std::string& base,
             std::string realfile
               = realdir + sys::file_ops::dir_sep_str () + file;
 
-            sys::file_stat fs (realfile);
-
-            if (! fs.exists ())
+            if (! sys::file_exists (realfile))
               {
                 m_ok = false;
                 m_errmsg = "__ftp__mput: file '" + realfile
@@ -185,7 +182,7 @@ base_url_transfer::mput_directory (const std::string& base,
                 break;
               }
 
-            if (fs.is_dir ())
+            if (sys::dir_exists (realfile))
               {
                 file_list.append (mput_directory (realdir, file));
 

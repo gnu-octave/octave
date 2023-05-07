@@ -183,7 +183,13 @@ function [userdata, systemdata] = memory ()
     else
       ## On kernels from before 2014 MemAvailable is not present.
       ## This is a rough estimate that can be used instead.
-      available_ram = (meminfo.MemFree + meminfo.Cached) * kiB;
+      available_ram = meminfo.MemFree * kiB;
+      if (isfield (meminfo, "Cached"))
+        ## Some platforms don't support "Cached" (e.g., Cygwin).
+        ## That makes the result even more unreliable. But it might be better
+        ## than nothing.
+        available_ram += meminfo.Cached * kiB;
+      endif
     endif
     free_swap = meminfo.SwapFree * kiB;
     used_ram = status.VmRSS * kiB;

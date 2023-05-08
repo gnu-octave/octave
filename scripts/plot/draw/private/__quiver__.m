@@ -379,6 +379,10 @@ function [hax, hg]= __quiver__ (varargin)
 
     if (! isempty (args))
       set (hg, args{:});
+      if (have_line_spec && ! isempty (linespec.marker) && ...
+            ! strcmp (linespec.marker, "none"))
+        set (h2, "linestyle", "none");
+      endif
     endif
 
   unwind_protect_cleanup
@@ -497,7 +501,8 @@ function update_props (h, ~)
   set (kids([3 2]), {"color", "linestyle", "linewidth"},
             get (h, {"color", "linestyle", "linewidth"}));
   set (kids(2), "visible", get (h, "showarrowhead"));
-  set (kids(1), {"color", "marker", "markerfacecolor", "markersize"},
-        get (h, {"color", "marker", "markerfacecolor", "markersize"}));
+  set (kids(1), {"color", "marker", "markerfacecolor", "markersize", ...
+            "linewidth"}, get (h, {"color", "marker", "markerfacecolor", ...
+            "markersize", "linewidth"}));
 
 endfunction

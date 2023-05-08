@@ -20,12 +20,15 @@ the number of decimal places (the fourth input) retains old behavior for
 backward compatibility, except that non-integer inputs will no longer error.
 
 - `quiver` and `quiver3` now properly plot non-float numeric inputs by
-internally recasting them to 'double' (bug #59695).  Scaling factor input
-processing is improved, with both functions honoring a previously ignored
-scaling factor input when there is only a single arrow (bug #39552), and
-`quiver3` no longer producing an error when a scaling factor is input
-without x and y inputs. Both functions now also accept a scale factor of
-"off" which is equivalent to setting it to 0.
+internally recasting them to 'double' (bug #59695).  Both functions now
+honor a previously ignored scaling factor input when there is only a
+single arrow (bug #39552), and `quiver3` no longer produces an error when a
+scaling factor is input without x and y inputs. Both functions now also
+accept a scale factor of "off" which is equivalent to setting it to 0.
+When a linestyle with a base marker is set suppressing arrowhead display,
+subsequent name-value property pairs in the quiver/quiver3 function call
+will no longer turn arrowhead display back on (bug #64143).  The linewdith
+property now also affect the line width of the base marker.
 
 - The `inputParser` function has been re-architected for a 60% performance
 improvement.

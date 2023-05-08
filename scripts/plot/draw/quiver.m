@@ -369,84 +369,119 @@ endfunction
 %! unwind_protect
 %!   h = quiver (hax, 0, 1, 2, 3, "-o"); # Linestyle
 %!   parent = get (h);
-%!   assert (strcmp (parent.marker, "o"));
-%!   assert (strcmp (parent.markerfacecolor, "none"));
+%!   assert (parent.marker, "o");
+%!   assert (parent.markerfacecolor, "none");
 %!   childdata = get (parent.children);
 %!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
 %!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
-%!   assert (strcmp (childdata(basechild).marker, "o"));
-%!   assert (strcmp (childdata(basechild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(basechild).linestyle, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).linestyle, "none"));
+%!   assert (childdata(basechild).marker, "o");
+%!   assert (childdata(basechild).markerfacecolor, "none");
+%!   assert (childdata(basechild).linestyle, "none");
+%!   assert (childdata(arrowheadchild).marker, "none");
+%!   assert (childdata(arrowheadchild).markerfacecolor, "none");
+%!   assert (childdata(arrowheadchild).linestyle, "none");
 %!
 %!   h = quiver (hax, 0, 1, 2, 3, "-o", "filled");  # Linestyle + filled.
 %!   parent = get (h);
-%!   assert (strcmp (parent.marker, "o"));
+%!   assert (parent.marker, "o");
 %!   assert (numel (parent.markerfacecolor), 3);
 %!   childdata = get (parent.children);
 %!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
 %!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
-%!   assert (strcmp (childdata(basechild).marker, "o"));
+%!   assert (childdata(basechild).marker, "o");
 %!   assert (numel (childdata(basechild).markerfacecolor), 3);
-%!   assert (strcmp (childdata(basechild).linestyle, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).linestyle, "none"));
+%!   assert (childdata(basechild).linestyle, "none");
+%!   assert (childdata(arrowheadchild).marker, "none");
+%!   assert (childdata(arrowheadchild).markerfacecolor, "none");
+%!   assert (childdata(arrowheadchild).linestyle, "none");
 %!
 %!   h = quiver (hax, 0, 1, 2, 3, "linewidth", 10); # Name/value pair.
 %!   parent = get (h);
-%!   assert (strcmp (parent.marker, "none"));
-%!   assert (strcmp (parent.markerfacecolor, "none"));
-%!   assert (strcmp (parent.linestyle, "-"));
+%!   assert (parent.marker, "none");
+%!   assert (parent.markerfacecolor, "none");
+%!   assert (parent.linestyle, "-");
 %!   assert (parent.linewidth, 10);
 %!   childdata = get (parent.children);
 %!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
 %!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
 %!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
-%!   assert (strcmp (childdata(basechild).marker, "none"));
-%!   assert (strcmp (childdata(basechild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(basechild).linestyle, "none"));
-%!   assert (strcmp (childdata(stemchild).marker, "none"));
-%!   assert (strcmp (childdata(stemchild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(stemchild).linestyle, "-"));
+%!   assert (childdata(basechild).marker, "none");
+%!   assert (childdata(basechild).markerfacecolor, "none");
+%!   assert (childdata(basechild).linestyle, "none");
+%!   assert (childdata(stemchild).marker, "none");
+%!   assert (childdata(stemchild).markerfacecolor, "none");
+%!   assert (childdata(stemchild).linestyle, "-");
 %!   assert (childdata(stemchild).linewidth, 10);
-%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).linestyle, "-"));
+%!   assert (childdata(arrowheadchild).marker, "none");
+%!   assert (childdata(arrowheadchild).markerfacecolor, "none");
+%!   assert (childdata(arrowheadchild).linestyle, "-");
 %!   assert (childdata(arrowheadchild).linewidth, 10);
 %!
 %!  unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
-## Test both Linestyle + name/value pair
-%!test <64143>
+## Test both Linestyle with marker + name/value pair suppress arrowhead
+%!test <*64143>
 %! hf = figure ("visible", "off");
 %! hax = gca();
 %! unwind_protect
 %!   h = quiver (hax, 0, 1, 2, 3, "-o", "linewidth", 10);
 %!   parent = get (h);
-%!   assert (strcmp (parent.marker, "o"));
-%!   assert (strcmp (parent.markerfacecolor, "none"));
-%!   assert (strcmp (parent.linestyle, "-"));
+%!   assert (parent.marker, "o");
+%!   assert (parent.markerfacecolor, "none");
+%!   assert (parent.linestyle, "-");
 %!   assert (parent.linewidth, 10);
 %!   childdata = get (parent.children);
 %!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
 %!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
 %!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
-%!   assert (strcmp (childdata(basechild).marker, "o"));
-%!   assert (strcmp (childdata(basechild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(basechild).linestyle, "none"));
-%!   assert (strcmp (childdata(stemchild).marker, "none"));
-%!   assert (strcmp (childdata(stemchild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(stemchild).linestyle, "-"));
+%!   assert (childdata(basechild).marker, "o");
+%!   assert (childdata(basechild).markerfacecolor, "none");
+%!   assert (childdata(basechild).linestyle, "none");
+%!   assert (childdata(stemchild).marker, "none");
+%!   assert (childdata(stemchild).markerfacecolor, "none");
+%!   assert (childdata(stemchild).linestyle, "-");
 %!   assert (childdata(stemchild).linewidth, 10);
-%!   assert (strcmp (childdata(arrowheadchild).marker, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).markerfacecolor, "none"));
-%!   assert (strcmp (childdata(arrowheadchild).linestyle, "none"));
+%!   assert (childdata(arrowheadchild).marker, "none");
+%!   assert (childdata(arrowheadchild).markerfacecolor, "none");
+%!   assert (childdata(arrowheadchild).linestyle, "none");
 %!   assert (childdata(arrowheadchild).linewidth, 10);
+%!
+%!  unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test that linewidth and color but not linestyle are passed to base marker
+%!test <*64143>
+%! hf = figure ("visible", "off");
+%! hax = gca();
+%! unwind_protect
+%!   h = quiver (hax, 0, 1, 2, 3, "--o", "linewidth", 10, "color", [1 0 0]);
+%!   parent = get (h);
+%!   assert (parent.marker, "o");
+%!   assert (parent.markerfacecolor, "none");
+%!   assert (parent.linestyle, "--");
+%!   assert (parent.linewidth, 10);
+%!   childdata = get (parent.children);
+%!   basechild = find (cellfun (@numel, {childdata.xdata}) == 1);
+%!   stemchild = find (cellfun (@numel, {childdata.xdata}) == 3);
+%!   arrowheadchild = find (cellfun (@numel, {childdata.xdata}) == 4);
+%!   assert (childdata(basechild).marker, "o");
+%!   assert (childdata(basechild).markerfacecolor, "none");
+%!   assert (childdata(basechild).linestyle, "none");
+%!   assert (childdata(basechild).color, [1 0 0]);
+%!   assert (childdata(basechild).linewidth, 10);
+%!   assert (childdata(stemchild).marker, "none");
+%!   assert (childdata(stemchild).markerfacecolor, "none");
+%!   assert (childdata(stemchild).linestyle, "--");
+%!   assert (childdata(stemchild).linewidth, 10);
+%!   assert (childdata(stemchild).color, [1 0 0]);
+%!   assert (childdata(arrowheadchild).marker, "none");
+%!   assert (childdata(arrowheadchild).markerfacecolor, "none");
+%!   assert (childdata(arrowheadchild).linestyle, "none");
+%!   assert (childdata(arrowheadchild).linewidth, 10);
+%!   assert (childdata(arrowheadchild).color, [1 0 0]);
 %!
 %!  unwind_protect_cleanup
 %!   close (hf);

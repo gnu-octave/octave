@@ -140,7 +140,7 @@ QString get_field (QString str, QString field)
 {
   QRegularExpression rx (field + "\\(([^\\)]*)\\)");
   QRegularExpressionMatch match = rx.match (str);
-  QString retval = match.captured ();
+  QString retval = match.captured (1);
 
   return retval;
 }

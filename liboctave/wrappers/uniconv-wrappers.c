@@ -67,7 +67,7 @@ octave_u8_conv_to_encoding_intern (const char *tocode,
       || (tocode[2] != 'f' && tocode[2] != 'F'))
     padlen++;
 
-  uint8_t *u8_str;
+  uint8_t *u8_str = NULL;
   const uint8_t *cu8_str;
   if (srclen < padlen)
     {

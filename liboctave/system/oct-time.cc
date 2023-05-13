@@ -36,6 +36,8 @@
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
+#else
+#  include "file-stat.h"
 #endif
 
 #include "lo-error.h"
@@ -368,6 +370,43 @@ resource_usage::stamp ()
                             &m_nsignals, &m_nvcsw, &m_nivcsw);
 
   m_cpu = cpu_time (usr_sec, sys_sec, usr_usec, sys_usec);
+}
+
+file_time::file_time ()
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  FILETIME curr_file_time;
+  GetSystemTimeAsFileTime (&curr_file_time);
+  m_time
+    = (static_cast<OCTAVE_TIME_T> (curr_file_time.dwHighDateTime)) >> 32
+      | curr_file_time.dwLowDateTime;
+#else
+  time_t ot_unix_time;
+  time_t ot_usec;
+  octave_gettimeofday_wrapper (&ot_unix_time, &ot_usec);
+  // Discard usec.  We are assuming a 1 second resolution anyway.
+  m_time = ot_unix_time;
+#endif
+}
+
+file_time::file_time (const std::string& filename)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring wfull_name = sys::u8_to_wstring (filename);
+  HANDLE h_file
+    = CreateFile (wfull_name.c_str (), GENERIC_READ,
+                  FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0,
+                  nullptr);
+  FILETIME last_access_time;
+  GetFileTime (h_file, nullptr, &last_access_time, nullptr);
+
+  m_time
+    = (static_cast<OCTAVE_TIME_T> (last_access_time.dwHighDateTime)) >> 32
+      | last_access_time.dwLowDateTime;
+#else
+  file_stat fs = file_stat (filename);
+  m_time = fs.mtime ().unix_time ();
+#endif
 }
 
 OCTAVE_END_NAMESPACE(sys)

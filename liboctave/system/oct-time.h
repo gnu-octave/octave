@@ -31,6 +31,18 @@
 #include <iosfwd>
 #include <string>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+// Some Windows headers must be included in a certain order.
+// Don't include "windows.h" here to avoid potential issues due to that.
+// Instead just define the one type we need for the interface of one function.
+struct OCTAVE_WIN_FILETIME
+{
+  uint32_t dwLowDateTime;
+  uint32_t dwHighDateTime;
+};
+#endif
+
+
 static inline double
 as_double (OCTAVE_TIME_T sec, long usec)
 {
@@ -463,6 +475,113 @@ private:
   long m_nsignals;
   long m_nvcsw;
   long m_nivcsw;
+};
+
+// class to handle file time efficiently on different platforms
+
+class OCTAVE_API file_time
+{
+public:
+
+  file_time ();
+
+  file_time (OCTAVE_TIME_T t)
+    : m_time (t)
+  { }
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+  file_time (OCTAVE_WIN_FILETIME& t)
+  {
+    m_time = (static_cast<OCTAVE_TIME_T> (t.dwHighDateTime)) >> 32
+             | t.dwLowDateTime;
+  }
+#endif
+
+  file_time (const std::string& filename);
+
+  file_time (const file_time& ot)
+  {
+    m_time = ot.time ();
+  }
+
+  file_time& operator = (const file_time& ot)
+  {
+    if (this != &ot)
+      m_time = ot.time ();
+
+    return *this;
+  }
+
+  ~file_time () = default;
+
+  inline static file_time time_resolution ()
+  {
+#if defined (OCTAVE_USE_WINDOWS_API)
+    // FAT file systems have 2 seconds resolution for the modification time.
+    static OCTAVE_TIME_T time_resolution = 20000;
+#else
+    // Assume 1 second (see file_stat)
+    static OCTAVE_TIME_T time_resolution = 1;
+#endif
+    return time_resolution;
+  }
+
+  inline bool
+  operator == (const file_time& t2) const
+  {
+    return time () == t2.time ();
+  }
+
+  inline bool
+  operator != (const file_time& t2) const
+  {
+    return ! (*this == t2);
+  }
+
+  inline bool
+  operator < (const file_time& t2) const
+  {
+    return time () < t2.time ();
+  }
+
+  inline bool
+  operator <= (const file_time& t2) const
+  {
+    return (*this < t2 || *this == t2);
+  }
+
+  inline bool
+  operator > (const file_time& t2) const
+  {
+    return time () > t2.time ();
+  }
+
+  inline bool
+  operator >= (const file_time& t2) const
+  {
+    return (*this > t2 || *this == t2);
+  }
+
+  inline file_time
+  operator + (const file_time& t2) const
+  {
+    return file_time (time () + t2.time ());
+  }
+
+  inline file_time
+  operator + (const OCTAVE_TIME_T t2) const
+  {
+    return file_time (time () + t2);
+  }
+
+  OCTAVE_TIME_T time () const { return m_time; }
+
+private:
+
+  // The native file time type differs per platform.
+  // On POSIX, this is the number of 1 second intervals since the epoch.
+  // On Windows, this is the number of 0.1 ms intervals since a different epoch.
+  OCTAVE_TIME_T m_time;
 };
 
 OCTAVE_END_NAMESPACE(sys)

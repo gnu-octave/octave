@@ -32,10 +32,12 @@
 
 #include "dir-ops.h"
 #include "file-ops.h"
-#include "file-stat.h"
 #include "lo-sysdep.h"
 #include "oct-env.h"
 #include "pathsearch.h"
+#if ! defined (OCTAVE_USE_WINDOWS_API)
+#  include "file-stat.h"
+#endif
 
 #include "defaults.h"
 #include "defun.h"
@@ -193,7 +195,7 @@ in_path_list (const std::string& path_list, const std::string& path)
 //! @return true if directory contains modified subdirectories
 
 static bool
-subdirs_modified (const std::string& d, const sys::time& last_checked)
+subdirs_modified (const std::string& d, const sys::file_time& last_checked)
 {
   sys::dir_entry dir (d);
 
@@ -209,13 +211,22 @@ subdirs_modified (const std::string& d, const sys::time& last_checked)
 
           std::string full_name = sys::file_ops::concat (d, fname);
 
-          sys::file_stat fs (full_name);
-
           // Check if directory AND if relevant (@,+,private)
           // AND (if modified OR recursion into (@,+) sub-directories)
+#if defined (OCTAVE_USE_WINDOWS_API)
+          if (sys::dir_exists (full_name)
+#else
+          sys::file_stat fs (full_name);
+
           if (fs && fs.is_dir ()
+#endif
               && (fname[0] == '@' || fname[0] == '+' || fname == "private")
-              && ((fs.mtime () + fs.time_resolution () > last_checked)
+#if defined (OCTAVE_USE_WINDOWS_API)
+              && ((sys::file_time (full_name)
+#else
+              && ((sys::file_time (fs.mtime ().unix_time ())
+#endif
+                   + sys::file_time::time_resolution () > last_checked)
                   || ((fname[0] == '@' || fname[0] == '+')
                       && subdirs_modified (full_name, last_checked))))
             return true;
@@ -1354,11 +1365,18 @@ get_fcn_files (const std::string& d)
 bool
 load_path::dir_info::update ()
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::string msg;
+
+  if (! sys::dir_exists (dir_name, msg))
+    {
+#else
   sys::file_stat fs (dir_name);
 
   if (! fs)
     {
       std::string msg = fs.error ();
+#endif
       warning_with_id ("Octave:load-path:dir-info:update-failed",
                        "load_path: %s: %s", dir_name.c_str (), msg.c_str ());
 
@@ -1382,7 +1400,12 @@ load_path::dir_info::update ()
               // slow things down tremendously for large directories.
               const dir_info& di = p->second;
 
-              if ((fs.mtime () + fs.time_resolution ()
+#if defined (OCTAVE_USE_WINDOWS_API)
+              if ((sys::file_time (dir_name)
+#else
+              if ((sys::file_time (fs.mtime ().unix_time ())
+#endif
+                   + sys::file_time::time_resolution ()
                    > di.dir_time_last_checked)
                   || subdirs_modified (dir_name, dir_time_last_checked))
                 initialize ();
@@ -1417,7 +1440,12 @@ load_path::dir_info::update ()
         }
     }
   // Absolute path, check timestamp to see whether it requires re-caching
-  else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked
+#if defined (OCTAVE_USE_WINDOWS_API)
+  else if (sys::file_time (dir_name)
+#else
+  else if (sys::file_time (fs.mtime ().unix_time ())
+#endif
+           + sys::file_time::time_resolution () > dir_time_last_checked
            || subdirs_modified (dir_name, dir_time_last_checked))
     initialize ();
 
@@ -1450,17 +1478,28 @@ load_path::dir_info::initialize ()
 {
   is_relative = ! sys::env::absolute_pathname (dir_name);
 
-  dir_time_last_checked = sys::time (static_cast<OCTAVE_TIME_T> (0));
+  dir_time_last_checked = sys::file_time (static_cast<OCTAVE_TIME_T> (0));
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::string msg;
+
+  if (sys::dir_exists (dir_name, msg))
+#else
   sys::file_stat fs (dir_name);
 
   if (fs)
+#endif
     {
       method_file_map.clear ();
       package_dir_map.clear ();
 
-      dir_mtime = fs.mtime ();
-      dir_time_last_checked = sys::time ();
+#if defined (OCTAVE_USE_WINDOWS_API)
+      dir_mtime = sys::file_time (dir_name);
+#else
+      dir_mtime = fs.mtime ().unix_time ();
+#endif
+
+      dir_time_last_checked = sys::file_time ();
 
       get_file_list (dir_name);
 
@@ -1486,7 +1525,9 @@ load_path::dir_info::initialize ()
     }
   else
     {
+#if ! defined (OCTAVE_USE_WINDOWS_API)
       std::string msg = fs.error ();
+#endif
       warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
     }
 }

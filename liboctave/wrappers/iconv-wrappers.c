@@ -51,6 +51,9 @@ octave_iconvlist_wrapper (int (*do_one) (unsigned int namescount,
 {
 #if defined (HAVE_ICONVLIST)
   iconvlist (do_one, data);
+#else
+  octave_unused_parameter (do_one);
+  octave_unused_parameter (data);
 #endif
 
   return;

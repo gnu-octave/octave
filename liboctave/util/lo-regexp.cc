@@ -488,7 +488,9 @@ regexp::match (const std::string& buffer) const
 
           string_vector tokens (pos_match);
           string_vector named_tokens (m_names);
+#if ! defined (HAVE_PCRE2)
           int pos_offset = 0;
+#endif
           pos_match = 0;
 
           for (int i = 1; i < matches; i++)
@@ -532,8 +534,10 @@ regexp::match (const std::string& buffer) const
                       tokens(pos_match++) = std::string (*(listptr+i), len);
 #endif
                     }
+#if ! defined (HAVE_PCRE2)
                   else
                     pos_offset++;
+#endif
                 }
             }
 

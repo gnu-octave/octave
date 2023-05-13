@@ -32,14 +32,14 @@
 #include <string>
 #include <vector>
 
-#if defined (HAVE_PCRE2_H) || defined (HAVE_PCRE2_PCRE2_H)
+#if defined (HAVE_PCRE2)
 #  define PCRE2_CODE_UNIT_WIDTH 8
 #  if defined (HAVE_PCRE2_H)
 #    include <pcre2.h>
 #  elif defined (HAVE_PCRE2_PCRE2_H)
 #    include <pcre2/pcre2.h>
 #  endif
-#elif defined (HAVE_PCRE_H) || defined (HAVE_PCRE_PCRE_H)
+#elif defined (HAVE_PCRE)
 #  if defined (HAVE_PCRE_H)
 #    include <pcre.h>
 #  elif defined (HAVE_PCRE_PCRE_H)

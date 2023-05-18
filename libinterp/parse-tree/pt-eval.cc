@@ -3010,7 +3010,7 @@ tree_evaluator::execute_range_loop (const range<T>& rng, int line,
 {
   octave_idx_type steps = rng.numel ();
 
-  if (math::isinf (rng.limit ()))
+  if (math::isinf (rng.limit ()) || math::isinf (rng.base ()))
     warning_with_id ("Octave:infinite-loop",
                      "FOR loop limit is infinite, will stop after %"
                      OCTAVE_IDX_TYPE_FORMAT " steps", steps);

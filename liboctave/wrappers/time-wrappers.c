@@ -43,7 +43,7 @@ octave_gettimeofday_wrapper (time_t *sec, long *usec)
 {
   struct timeval tv;
 
-  int status = gettimeofday (&tv, 0);
+  int status = gettimeofday (&tv, NULL);
 
   if (status < 0)
     {

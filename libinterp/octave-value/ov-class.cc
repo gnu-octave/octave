@@ -1198,7 +1198,7 @@ octave_class::save_ascii (std::ostream& os)
   auto i = m.begin ();
   while (i != m.end ())
     {
-      octave_value val = m_map.contents (i);
+      octave_value val = m.contents (i);
 
       bool b = save_text_data (os, val, m.key (i), false, 0);
 
@@ -1308,7 +1308,7 @@ octave_class::save_binary (std::ostream& os, bool save_as_floats)
   auto i = m.begin ();
   while (i != m.end ())
     {
-      octave_value val = m_map.contents (i);
+      octave_value val = m.contents (i);
 
       bool b = save_binary_data (os, val, m.key (i), "", 0, save_as_floats);
 
@@ -1478,7 +1478,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   i = m.begin ();
   while (i != m.end ())
     {
-      octave_value val = m_map.contents (i);
+      octave_value val = m.contents (i);
 
       bool retval2 = add_hdf5_data (data_hid, val, m.key (i), "", false,
                                     save_as_floats);

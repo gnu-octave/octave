@@ -393,16 +393,20 @@ file_time::file_time (const std::string& filename)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::wstring wfull_name = sys::u8_to_wstring (filename);
-  HANDLE h_file
-    = CreateFile (wfull_name.c_str (), GENERIC_READ,
-                  FILE_SHARE_READ, nullptr, OPEN_EXISTING, 0,
-                  nullptr);
-  FILETIME last_access_time;
-  GetFileTime (h_file, nullptr, &last_access_time, nullptr);
+  WIN32_FILE_ATTRIBUTE_DATA file_attributes;
+
+  if (! GetFileAttributesExW (wfull_name.c_str (), GetFileExInfoStandard,
+                              &file_attributes))
+    {
+      m_time = 0;
+      return;
+    }
+
+  FILETIME last_write_time = file_attributes.ftLastWriteTime;
 
   m_time
-    = (static_cast<OCTAVE_TIME_T> (last_access_time.dwHighDateTime)) >> 32
-      | last_access_time.dwLowDateTime;
+    = (static_cast<OCTAVE_TIME_T> (last_write_time.dwHighDateTime)) >> 32
+      | last_write_time.dwLowDateTime;
 #else
   file_stat fs = file_stat (filename);
   m_time = fs.mtime ().unix_time ();

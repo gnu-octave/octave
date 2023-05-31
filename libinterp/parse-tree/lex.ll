@@ -3319,7 +3319,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   {
     bool copyright = looks_like_copyright (m_comment_text);
 
-    if (m_nesting_level.none () && m_help_text.empty () && ! m_comment_text.empty ()
+    if (typ != octave::comment_elt::end_of_line
+        && m_nesting_level.none ()
+        && m_help_text.empty () && ! m_comment_text.empty ()
         && ! copyright && ! looks_like_shebang (m_comment_text))
       m_help_text = m_comment_text;
 

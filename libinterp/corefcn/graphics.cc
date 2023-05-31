@@ -6789,6 +6789,13 @@ convert_ticklabel_string (const octave_value& val)
           for (octave_idx_type i = 0; i < val.numel (); i++)
             {
               oss.str ("");
+              // FIXME: Code should probably call out to display routines
+              // within Octave, rather than hack things up with C++ library.
+              // See FIXME in calc_ticklabels().
+              if (std::abs (data(i)) < 1.0)
+                oss.precision (4);
+              else
+                oss.precision (5);
               oss << data(i);
               sv.append (oss.str ());
             }
@@ -7964,6 +7971,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
             exponent = std::floor (std::log10 (values(i)));
           significand = values(i) * std::pow (10., -exponent);
 
+          os.precision (5);
           os.str ("");
           if ((std::abs (significand) - 1) >
               10*std::numeric_limits<double>::epsilon())
@@ -8001,6 +8009,15 @@ axes::properties::calc_ticklabels (const array_property& ticks,
           else
             {
               os.str ("");
+              // FIXME: Code should probably call out to display routines
+              // within Octave, rather than hack things up with C++ library.
+              // In particular, this fails for values much less than 1 where
+              // 4 significant digits will be preceded by zeros making the
+              // overall field length large.  For example, pi/1000.
+              if (std::abs (values(i)) < 1.0)
+                os.precision (4);
+              else
+                os.precision (5);
               os << values(i);
               c(i) = os.str ();
             }

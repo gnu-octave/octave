@@ -7943,14 +7943,16 @@ axes::properties::calc_ticklabels (const array_property& ticks,
     {
       double significand;
       double exponent;
-      double exp_max = 0.0;
-      double exp_min = 0.0;
+      bool is_2digit_exp = false;
 
       for (int i = 0; i < values.numel (); i++)
         {
-          double exp = std::log10 (values(i));
-          exp_min = std::min (exp_min, exp);
-          exp_max = std::max (exp_max, exp);
+          double exp = std::abs (std::log10 (values(i)));
+          if (exp >= 10.0)
+            {
+              is_2digit_exp = true;
+              break;
+            }
         }
 
       for (int i = 0; i < values.numel (); i++)
@@ -7969,7 +7971,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
             exponent = std::floor (std::log10 (-values(i)));
           else
             exponent = std::floor (std::log10 (values(i)));
-          significand = values(i) * std::pow (10., -exponent);
+          significand = values(i) * std::pow (10.0, -exponent);
 
           os.precision (5);
           os.str ("");
@@ -7986,7 +7988,7 @@ axes::properties::calc_ticklabels (const array_property& ticks,
               os << '-';
               exponent = -exponent;
             }
-          if (exponent < 10. && (exp_max > 9 || exp_min < -9))
+          if (exponent < 10.0 && is_2digit_exp)
             os << '0';
           os << exponent << '}';
 

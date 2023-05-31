@@ -122,6 +122,7 @@ method which is one of "tickaligned", "tight", or "padded".
 
 ### Alphabetical list of new functions added in Octave 9
 
+* `isenv`
 * `isuniform`
 * `tensorprod`
 

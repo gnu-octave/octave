@@ -88,6 +88,8 @@ putenv_wrapper (const std::string& name, const std::string& value);
 
 extern OCTAVE_API std::string getenv_wrapper (const std::string&);
 
+extern OCTAVE_API bool isenv_wrapper (const std::string&);
+
 extern OCTAVE_API int unsetenv_wrapper (const std::string&);
 
 extern OCTAVE_API std::wstring u8_to_wstring (const std::string&);

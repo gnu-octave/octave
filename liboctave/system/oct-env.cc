@@ -299,6 +299,12 @@ env::getenv (const std::string& name)
          ? s_instance->do_getenv (name) : "";
 }
 
+bool
+env::isenv (const std::string& name)
+{
+  return isenv_wrapper (name);
+}
+
 void
 env::putenv (const std::string& name, const std::string& value)
 {

@@ -80,6 +80,8 @@ public:
 
   static std::string getenv (const std::string& name);
 
+  static bool isenv (const std::string& name);
+
   static void putenv (const std::string& name, const std::string& value);
 
   static bool have_x11_display ();

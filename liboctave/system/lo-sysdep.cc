@@ -705,6 +705,18 @@ unsetenv_wrapper (const std::string& name)
 #endif
 }
 
+bool
+isenv_wrapper (const std::string& name)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring wname = u8_to_wstring (name);
+  wchar_t *env = _wgetenv (wname.c_str ());
+#else
+  char *env = ::getenv (name.c_str ());
+#endif
+  return env != 0;
+}
+
 std::wstring
 u8_to_wstring (const std::string& utf8_string)
 {

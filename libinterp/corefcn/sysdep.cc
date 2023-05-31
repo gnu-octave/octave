@@ -755,7 +755,7 @@ getenv ("PATH")
 
 @noindent
 returns a string containing the value of your path.
-@seealso{setenv, unsetenv}
+@seealso{setenv, unsetenv, isenv}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -770,6 +770,43 @@ returns a string containing the value of your path.
 %!assert (ischar (getenv ("OCTAVE_HOME")))
 */
 
+DEFUN (isenv, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{val} =} isenv (@var{var})
+Check if the environment variable @var{var} exists.
+
+This function returns true if an environment variable with the name @var{var}
+exists.  Otherwise, it returns false.
+
+For example,
+
+@example
+tf = isenv ("PATH")
+@end example
+
+@noindent
+returns true if an environment variable with the name @qcode{"PATH"} exists.
+@seealso{getenv, setenv, unsetenv}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  std::string name = args(0).xstring_value ("isenv: VAR must be a string");
+
+  return ovl (sys::env::isenv (name));
+}
+
+/*
+%!test
+%! setenv ("dummy_variable_that_cannot_matter", "foobar");
+%! assert (isenv ("dummy_variable_that_cannot_matter"), true);
+%! unsetenv ("dummy_variable_that_cannot_matter");
+%! assert (isenv ("dummy_variable_that_cannot_matter"), false);
+
+%!error <VAR must be a string> isenv (struct ())
+*/
+
 DEFUN (setenv, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} setenv ("@var{var}", @var{value})
@@ -782,7 +819,7 @@ string.
 
 Programming Note: @code{putenv} is an alias for @code{setenv} and can be used
 interchangeably.
-@seealso{unsetenv, getenv}
+@seealso{unsetenv, getenv, isenv}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -818,7 +855,7 @@ Delete the environment variable @var{var}.
 
 Return 0 if the variable was deleted, or did not exist, and -1 if an error
 occurred.
-@seealso{setenv, getenv}
+@seealso{setenv, getenv, isenv}
 @end deftypefn */)
 {
   if (args.length () != 1)

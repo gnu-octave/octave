@@ -93,6 +93,9 @@ can use the `ordeig` function for that purpose). The optional reordering
 of the generalized eigenvalues has been removed (one can use the `ordqz`
 function for that purpose).
 
+- `pcolor` now sets the axes limits to be just large enough to display the
+plotted data (equivalent of `axis tight`).
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isuniform`

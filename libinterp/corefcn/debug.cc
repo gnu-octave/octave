@@ -236,6 +236,10 @@ debug_on_interrupt}
           std::string unconditional = "";
           for (octave_idx_type i = 0; i < line.numel (); i++)
             {
+              // FIXME: This isn't very clear, but add_breakpoints_in_function
+              // requires this argument to be of type bp_table::bp_lines type
+              // which is std::set<int>.
+              lines.clear ();
               lines.insert (line(i).int_value ());
               bptab.add_breakpoints_in_function (name(i).string_value (),
                                                  "", lines,

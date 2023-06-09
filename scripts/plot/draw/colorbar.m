@@ -488,7 +488,7 @@ function cb_colormap (h, ~, hax, hcb, hi, init_sz)
       endif
       sz = clen;
       ## Also update limits on colorbar axes or there will be white gaps
-      cb_clim (hax, d, hcb, hi);
+      cb_clim (hax, [], hcb, hi);
     endif
   endif
 

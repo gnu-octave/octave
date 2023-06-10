@@ -26,9 +26,13 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{limits} =} __axis_limits__ (@var{fcn})
 ## @deftypefnx {} {@var{xmode} =} __axis_limits__ (@var{fcn}, "mode")
+## @deftypefnx {} {@var{xmethod} =} __axis_limits__ (@var{fcn}, "method")
 ## @deftypefnx {} {} __axis_limits__ (@var{fcn}, [@var{x_lo} @var{x_hi}])
 ## @deftypefnx {} {} __axis_limits__ (@var{fcn}, "auto")
 ## @deftypefnx {} {} __axis_limits__ (@var{fcn}, "manual")
+## @deftypefnx {} {} __axis_limits__ (@var{fcn}, "tickaligned")
+## @deftypefnx {} {} __axis_limits__ (@var{fcn}, "tight")
+## @deftypefnx {} {} __axis_limits__ (@var{fcn}, "padded")
 ## @deftypefnx {} {} __axis_limits__ (@var{fcn}, @var{hax}, @dots{})
 ## @deftypefn {} {@var{old_limits} =} __axis_limits__ (@var{fcn}, @dots{})
 ## Internal function that implements common code to query or set the axis
@@ -48,13 +52,18 @@ function retval = __axis_limits__ (fcn, varargin)
     retval = get (hax, fcn);
   else
     retval = [];
-    fcnmode = [fcn "mode"];
     arg = varargin{1};
     if (ischar (arg))
       if (strcmpi (arg, "mode"))
-        retval = get (hax, fcnmode);
+        retval = get (hax, [fcn "mode"]);
+      elseif (strcmpi (arg, "method"))
+        retval = get (hax, [fcn "itmethod"]);
       elseif (any (strcmpi (arg, {"auto", "manual"})))
-        set (hax, fcnmode, arg);
+        set (hax, [fcn "mode"], arg);
+      elseif (any (strcmpi (arg, {"tickaligned", "tight", "padded"})))
+        set (hax, [fcn "itmethod"], arg);
+      else
+        error ('%s: unrecognized argument "%s"', fcn, arg);
       endif
     else
       if (! isnumeric (arg) || any (size (arg(:)) != [2, 1]))

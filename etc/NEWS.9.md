@@ -96,6 +96,9 @@ function for that purpose).
 - `pcolor` now sets the axes limits to be just large enough to display the
 plotted data (equivalent of `axis tight`).
 
+- `xlim`, `ylim`, `zlim` functions can now query or set the limit calculation
+method which is one of "tickaligned", "tight", or "padded".
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isuniform`

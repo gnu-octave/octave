@@ -906,6 +906,19 @@ endfunction
 
 ## FIXME: need many BIST tests for colorbar
 
+%!test
+%! unwind_protect
+%!   hf = figure ("visible", "off");
+%!   h = subplot (1, 1, 1);
+%!   imagesc (reshape (1:100, 10, 10));
+%!   colorbar;
+%!   lasterror ("reset");
+%!   colormap (h, flip (gray (10)));
+%!   assert (isempty (lasterr));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## Test input validation
 %!error <expected string argument at position 1> colorbar (-pi)
 %!error <LOC specification must occur as final arg> colorbar ("east", "p", "v")

@@ -109,6 +109,7 @@ include bug-61105/module.mk
 include bug-61191/module.mk
 include class-concat/module.mk
 include classdef/module.mk
+include classdef-debug/module.mk
 include classdef-multiple-inheritance/module.mk
 include classes/module.mk
 include colon-op/module.mk

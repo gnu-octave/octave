@@ -708,6 +708,39 @@ cdef_class::cdef_class_rep::get_method (const std::string& name) const
   return p->second.get_function ();
 }
 
+octave_value
+cdef_class::cdef_class_rep::get_method (int line) const
+{
+  octave_value closest_match;
+  int closest_match_end_line = std::numeric_limits<int>::max ();
+  // Since we have a dynamic cast, performance could be an issue if this is
+  // called from a critical path.  If performance is an issue, we can cache
+  // an ordered version of the method map
+  for (auto i = m_method_map.cbegin (); i != m_method_map.cend (); ++i)
+    {
+      const octave_value& fcn = i->second.get_function ();
+      octave_user_code *user_code = fcn.user_code_value ();
+
+      if (user_code == nullptr)
+        continue;
+
+      octave_user_function* pfcn
+        = dynamic_cast<octave_user_function*> (user_code);
+
+      if (pfcn == nullptr)
+        continue;
+
+      const int e = pfcn->ending_line ();
+      if (line <= e && e <= closest_match_end_line && pfcn->is_defined ()
+          && pfcn->is_user_code ())
+        {
+          closest_match = fcn;
+          closest_match_end_line = e;
+        }
+    }
+
+  return closest_match;
+}
 
 octave_value
 cdef_class::cdef_class_rep::construct (const octave_value_list& args)

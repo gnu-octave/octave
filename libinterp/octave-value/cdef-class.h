@@ -124,6 +124,8 @@ private:
 
     OCTINTERP_API octave_value get_method (const std::string& name) const;
 
+    OCTINTERP_API octave_value get_method (int line) const;
+
     OCTINTERP_API octave_value construct (const octave_value_list& args);
 
     OCTINTERP_API cdef_object
@@ -355,6 +357,11 @@ public:
   octave_value get_method (const std::string& nm) const
   {
     return get_rep ()->get_method (nm);
+  }
+
+  octave_value get_method (int ln) const
+  {
+    return get_rep ()->get_method (ln);
   }
 
   OCTINTERP_API octave_value get_method_function (const std::string& nm);

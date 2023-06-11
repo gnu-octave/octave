@@ -906,7 +906,7 @@ endfunction
 
 ## FIXME: need many BIST tests for colorbar
 
-%!test
+%!test <*64287>
 %! unwind_protect
 %!   hf = figure ("visible", "off");
 %!   h = subplot (1, 1, 1);

@@ -5978,7 +5978,16 @@ axes::properties::update_ticklength ()
   if (tickdirmode_is ("auto"))
     m_tickdir.set (mode2D ? "in" : "out", true);
 
-  double ticksign = (tickdir_is ("in") ? -1 : 1);
+  double ticksign;
+  std::string tickdir = get_tickdir ();
+  if (tickdir == "in")
+    ticksign = -1;
+  else if (tickdir == "out")
+    ticksign = 1;
+  else if (tickdir == "both")
+    ticksign = 2;
+  else  // tickdir == "none"
+    ticksign = 0;
 
   Matrix bbox = get_boundingbox (true);
   Matrix ticklen = get_ticklength ().matrix_value ();

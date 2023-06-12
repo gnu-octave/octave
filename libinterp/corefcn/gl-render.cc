@@ -1586,7 +1586,8 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       // X ticks and grid properties
       Matrix xticks = m_xform.xscale (props.get_xtick ().matrix_value ());
       Matrix xmticks = m_xform.xscale (props.get_xminortickvalues ().matrix_value ());
-      bool do_xminortick = props.is_xminortick () && ! xticks.isempty ();
+      bool do_xtick = ! props.tickdir_is ("none") && ! xticks.isempty ();
+      bool do_xminortick = do_xtick && props.is_xminortick ();
       string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
@@ -1687,20 +1688,23 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
         }
 
       // tick marks
-      if (tick_along_z)
-        render_tickmarks (xticks, x_min, x_max,
-                          is_origin ? y_axis_pos : ypTick, ypTick,
-                          zpTick, zpTickN, 0., 0.,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (zpTick-zpTickN)*fz*xticklen,
-                          0, ! is_origin && mirror);
-      else
-        render_tickmarks (xticks, x_min, x_max,
-                          is_origin ? y_axis_pos : ypTick, ypTickN,
-                          zpTick, zpTick, 0.,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (ypTick-ypTickN)*fy*xticklen,
-                          0., 0, ! is_origin && mirror);
+      if (do_xtick)
+        {
+          if (tick_along_z)
+            render_tickmarks (xticks, x_min, x_max,
+                              is_origin ? y_axis_pos : ypTick, ypTick,
+                              zpTick, zpTickN, 0., 0.,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (zpTick-zpTickN)*fz*xticklen,
+                              0, ! is_origin && mirror);
+          else
+            render_tickmarks (xticks, x_min, x_max,
+                              is_origin ? y_axis_pos : ypTick, ypTickN,
+                              zpTick, zpTick, 0.,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (ypTick-ypTickN)*fy*xticklen,
+                              0., 0, ! is_origin && mirror);
+        }
 
       // tick texts
       if (xticklabels.numel () > 0)
@@ -1782,7 +1786,8 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       // Y ticks and grid properties
       Matrix yticks = m_xform.yscale (props.get_ytick ().matrix_value ());
       Matrix ymticks = m_xform.yscale (props.get_yminortickvalues ().matrix_value ());
-      bool do_yminortick = props.is_yminortick () && ! yticks.isempty ();
+      bool do_ytick = ! props.tickdir_is ("none") && ! yticks.isempty ();
+      bool do_yminortick = do_ytick && props.is_yminortick ();
       string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
@@ -1884,20 +1889,23 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
         }
 
       // tick marks
-      if (tick_along_z)
-        render_tickmarks (yticks, y_min, y_max,
-                          is_origin ? x_axis_pos : xpTick, xpTick,
-                          zpTick, zpTickN, 0., 0.,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (zpTick-zpTickN)*fz*yticklen,
-                          1, ! is_origin && mirror);
-      else
-        render_tickmarks (yticks, y_min, y_max,
-                          is_origin ? x_axis_pos : xpTick, xpTickN,
-                          zpTick, zpTick,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (xPlaneN-xPlane)*fx*yticklen,
-                          0., 0., 1, ! is_origin && mirror);
+      if (do_ytick)
+        {
+          if (tick_along_z)
+            render_tickmarks (yticks, y_min, y_max,
+                              is_origin ? x_axis_pos : xpTick, xpTick,
+                              zpTick, zpTickN, 0., 0.,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (zpTick-zpTickN)*fz*yticklen,
+                              1, ! is_origin && mirror);
+          else
+            render_tickmarks (yticks, y_min, y_max,
+                              is_origin ? x_axis_pos : xpTick, xpTickN,
+                              zpTick, zpTick,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (xPlaneN-xPlane)*fx*yticklen,
+                              0., 0., 1, ! is_origin && mirror);
+        }
 
       // tick texts
       if (yticklabels.numel () > 0)
@@ -1968,7 +1976,8 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       // Z ticks and grid properties
       Matrix zticks = m_xform.zscale (props.get_ztick ().matrix_value ());
       Matrix zmticks = m_xform.zscale (props.get_zminortickvalues ().matrix_value ());
-      bool do_zminortick = props.is_zminortick () && ! zticks.isempty ();
+      bool do_ztick = ! props.tickdir_is ("none") && ! zticks.isempty ();
+      bool do_zminortick = do_ztick && props.is_zminortick ();
       string_vector zticklabels = props.get_zticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
@@ -2063,31 +2072,34 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
         }
 
       // tick marks
-      if (xySym)
+      if (do_ztick)
         {
-          if (math::isinf (fy))
-            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
-                              yPlane, yPlane,
-                              math::signum (xPlaneN-xPlane)*fx*zticklen,
-                              0., 0., 2, mirror);
+          if (xySym)
+            {
+              if (math::isinf (fy))
+                render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                                  yPlane, yPlane,
+                                  math::signum (xPlaneN-xPlane)*fx*zticklen,
+                                  0., 0., 2, mirror);
+              else
+                render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
+                                  yPlane, yPlane, 0.,
+                                  math::signum (yPlane-yPlaneN)*fy*zticklen,
+                                  0., 2, false);
+            }
           else
-            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
-                              yPlane, yPlane, 0.,
-                              math::signum (yPlane-yPlaneN)*fy*zticklen,
-                              0., 2, false);
-        }
-      else
-        {
-          if (math::isinf (fx))
-            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
-                              yPlaneN, yPlane, 0.,
-                              math::signum (yPlaneN-yPlane)*fy*zticklen,
-                              0., 2, mirror);
-          else
-            render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
-                              yPlaneN, yPlane,
-                              math::signum (xPlane-xPlaneN)*fx*zticklen,
-                              0., 0., 2, false);
+            {
+              if (math::isinf (fx))
+                render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                                  yPlaneN, yPlane, 0.,
+                                  math::signum (yPlaneN-yPlane)*fy*zticklen,
+                                  0., 2, mirror);
+              else
+                render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
+                                  yPlaneN, yPlane,
+                                  math::signum (xPlane-xPlaneN)*fx*zticklen,
+                                  0., 0., 2, false);
+            }
         }
 
       // tick texts

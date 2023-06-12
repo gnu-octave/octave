@@ -45,6 +45,9 @@ This change is Matlab-compatible.
 state the resulting value is now displayed in the Command Window for
 informational purposes.
 
+* The axes graphics property "TickDir" now accepts the option "none" which
+will not draw tick marks, but will still draw tick labels.
+
 ### Matlab compatibility
 
 - The `inputParser` function now implements the `PartialMatching` property

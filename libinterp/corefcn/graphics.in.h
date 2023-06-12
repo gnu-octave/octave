@@ -3863,7 +3863,7 @@ public:
       radio_property positionconstraint , "{outerposition}|innerposition"
       radio_property projection , "{orthographic}|perspective"
       radio_property sortmethod , "{depth}|childorder"
-      radio_property tickdir mu , "{in}|out"
+      radio_property tickdir mu , "{in}|out|both|none"
       radio_property tickdirmode u , "{auto}|manual"
       // FIXME: Added recently to Matlab, should replace interpreter property.
       radio_property ticklabelinterpreter u , "{tex}|latex|none"

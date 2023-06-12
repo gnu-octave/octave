@@ -638,6 +638,7 @@ endfunction
 %!   plot (1:10)
 %!   axis tight;
 %!   assert (axis (), [1 10 1 10]);
+%!   hold on;
 %!   plot (1:11)
 %!   assert (axis (), [1 11 1 11]);
 %! unwind_protect_cleanup

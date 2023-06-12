@@ -5105,6 +5105,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;
   m_alim = tlim;
+  m_clim = tlim;
   m_xlim = tlim;
   m_ylim = tlim;
   m_zlim = tlim;
@@ -5114,6 +5115,9 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_xlimmode = "auto";
   m_ylimmode = "auto";
   m_zlimmode = "auto";
+
+  m_alphamap = Matrix ();
+  m_alphascale = "linear";
 
   m_ambientlightcolor = Matrix (1, 3, 1.0);
 
@@ -5126,15 +5130,13 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_cameraupvectormode = "auto";
   m_cameraviewanglemode = "auto";
 
-  Matrix cl (1, 2, 0.0);
-  cl(1) = 1;
-  m_clim = cl;
-
   m_clippingstyle = "3dbox";
 
   m_color = color_values ("white");
+  m_colormap = Matrix ();
   m_colororder = default_colororder ();
   m_colororderindex = 1.0;
+  m_colorscale = "linear";
 
   // Note: dataspectratio (not mode) will be set through update_aspectratios
   m_dataaspectratiomode = "auto";
@@ -5142,8 +5144,9 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_fontangle = "normal";
   m_fontname = OCTAVE_DEFAULT_FONTNAME;
   m_fontsize = 10;
-  m_fontunits = "points";
+  m_fontsizemode = "auto";
   m_fontsmoothing = "on";
+  m_fontunits = "points";
   m_fontweight = "normal";
 
   m_gridalpha = 0.15;
@@ -5195,6 +5198,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_xcolormode = "auto";
   m_xdir = "normal";
   m_xgrid = "off";
+  m_xlimitmethod = "tickaligned";
   m_xminorgrid = "off";
   m_xminortick = "off";
   m_xscale = "linear";
@@ -5210,6 +5214,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_ycolormode = "auto";
   m_ydir = "normal";
   m_ygrid = "off";
+  m_ylimitmethod = "tickaligned";
   m_yminorgrid = "off";
   m_yminortick = "off";
   m_yscale = "linear";
@@ -5223,6 +5228,7 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   m_zcolormode = "auto";
   m_zdir = "normal";
   m_zgrid = "off";
+  m_zlimitmethod = "tickaligned";
   m_zminorgrid = "off";
   m_zminortick = "off";
   m_zscale = "linear";

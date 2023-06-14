@@ -155,3 +155,12 @@ octave_mktime_wrapper (struct tm *tp)
 {
   return mktime (tp);
 }
+
+// Avoid the risk of gnulib overriding anything above by placing this underneath the above fns
+#include "gethrxtime.h"
+
+long long
+octave_gettime_ns_wrapper ()
+{
+  return gethrxtime ();
+}

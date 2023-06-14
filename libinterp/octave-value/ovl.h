@@ -172,6 +172,14 @@ public:
 
   void clear () { m_data.clear (); }
 
+  octave_value first_or_nil_ov () const
+  {
+    if (length ())
+      return m_data.front ();
+
+    return octave_value ();
+  }
+
 private:
 
   std::vector<octave_value> m_data;

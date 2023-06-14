@@ -107,6 +107,7 @@ public:
 
   void matlab_style_short_circuit_warning (const char *op);
 
+  virtual bool is_braindead () const { return false; }
 protected:
 
   // The operands for the expression.
@@ -143,6 +144,8 @@ public:
   octave_value evaluate (tree_evaluator&, int nargout = 1);
 
   using tree_binary_expression::evaluate_n;
+
+  bool is_braindead () const { return true; }
 };
 
 // Boolean expressions.

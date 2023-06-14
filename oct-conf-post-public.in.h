@@ -66,6 +66,16 @@
 /* #  undef HAVE_OCTAVE_UNUSED_ATTR */
 #endif
 
+/* Branch hint macros for use in if condititions.
+   Returns logical value of x. */
+#if defined (__GNUC__)
+#  define OCTAVE_LIKELY(x) __builtin_expect (!!(x), 1)
+#  define OCTAVE_UNLIKELY(x) __builtin_expect (!!(x), 0)
+#else
+#  define OCTAVE_LIKELY(x) !!(x)
+#  define OCTAVE_UNLIKELY(x) !!(x)
+#endif
+
 #if defined (__MINGW32__)
   /* MinGW requires special handling due to different format specifiers
    * on different platforms.  The macro __MINGW_PRINTF_FORMAT maps to

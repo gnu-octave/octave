@@ -65,16 +65,16 @@ public:
   typedef std::map<std::string, octave_value>::iterator
     subfunctions_iterator;
 
-  symbol_scope_rep (const std::string& name = "")
+  symbol_scope_rep (const std::string& name = "", bool add_ans = true)
     : m_name (name), m_symbols (), m_subfunctions (),
       m_persistent_values (), m_code (nullptr), m_fcn_name (),
       m_fcn_file_name (), m_dir_name (), m_parent (),
       m_primary_parent (), m_children (), m_nesting_depth (0),
       m_is_static (false), m_is_primary_fcn_scope (false)
   {
-    // All scopes have ans as the first symbol, initially undefined.
-
-    insert_local ("ans");
+    // Most scopes have ans as the first symbol, initially undefined.
+    if (add_ans)
+      insert_local ("ans");
   }
 
   OCTAVE_DISABLE_COPY_MOVE (symbol_scope_rep)

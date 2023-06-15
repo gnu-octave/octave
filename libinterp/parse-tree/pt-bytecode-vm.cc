@@ -1104,14 +1104,23 @@ ret:
       {
         CHECK (m_output_ignore_data == nullptr); // This can't be active
 
+        // Collect return values in octave_value_list.
+        // Skip %nargout, the first value, which is an integer.
+        // n_returns_callee includes %nargout, but root_nargout doesn't.
+
         octave_value_list ret;
 
-        // Skip nargout, the first value, which is an integer
-        for (int i = 1; i < n_returns_callee; i++)
-        {
-          ret.append(std::move (bsp[i].ov));
-          bsp[i].ov.~octave_value ();
-        }
+        int j;
+        // nargout 0 should still give one return value, if there is one
+        int n_root_wanted = std::max (root_nargout, 1);
+        for (j = 1; j < n_returns_callee && j < (n_root_wanted + 1); j++)
+          {
+            ret.append (std::move (bsp[j].ov));
+            bsp[j].ov.~octave_value ();
+          }
+        // Destroy rest of return values, if any
+        for (; j < n_returns_callee; j++)
+          bsp[j].ov.~octave_value ();
 
         //Note: Stack frame object popped by caller
         CHECK_STACK (0);
@@ -1576,7 +1585,11 @@ disp:
 
             for (int i = 0; i < ovl.length (); i++)
               {
-                octave_value_list el_ovl = octave_value_list {ovl(i)};
+                octave_value el_ov = ovl(i);
+                // We are not printing undefined elements
+                if (el_ov.is_undefined ())
+                  continue;
+                octave_value_list el_ovl {el_ov};
                 el_ovl.stash_name_tags (string_vector ("ans"));
                 m_tw->set_active_bytecode_ip (ip - code); // Needed if display calls inputname()
 

@@ -92,6 +92,9 @@ public:
     update_message ();
   }
 
+  // Return a newly allocated copy of the index_exception object.
+  virtual index_exception * dup () = 0;
+
 private:
 
   // Value of invalid index.

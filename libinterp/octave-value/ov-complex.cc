@@ -80,6 +80,8 @@ public:
     update_message ();
   }
 
+  OCTAVE_DEFAULT_COPY_MOVE (complex_index_exception)
+
   ~complex_index_exception () = default;
 
   void update_message ()
@@ -92,6 +94,13 @@ public:
   const char * err_id () const
   {
     return "Octave:invalid-index";
+  }
+
+  index_exception * dup ()
+  {
+    complex_index_exception *retval = new complex_index_exception {*this};
+    retval->set_identifier (retval->err_id ());
+    return retval;
   }
 };
 

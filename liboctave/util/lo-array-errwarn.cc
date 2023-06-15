@@ -179,6 +179,8 @@ public:
     update_message ();
   }
 
+  OCTAVE_DEFAULT_COPY_MOVE (invalid_index)
+
   void update_message ()
   {
     static std::string exp
@@ -193,6 +195,13 @@ public:
   const char * err_id () const
   {
     return error_id_invalid_index;
+  }
+
+  index_exception * dup ()
+  {
+    invalid_index *retval = new invalid_index {*this};
+    retval->set_identifier (retval->err_id ());
+    return retval;
   }
 };
 
@@ -247,6 +256,8 @@ public:
     update_message ();
   }
 
+  OCTAVE_DEFAULT_COPY_MOVE (out_of_range)
+
   void update_message ()
   {
     set_message (expression () + ": out of bound "
@@ -258,6 +269,13 @@ public:
   const char * err_id () const
   {
     return error_id_index_out_of_bounds;
+  }
+
+  index_exception * dup ()
+  {
+    out_of_range *retval = new out_of_range {*this};
+    retval->set_identifier (retval->err_id ());
+    return retval;
   }
 
 private:

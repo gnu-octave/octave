@@ -4112,7 +4112,8 @@ varargin_call:
           {
             cs_args = arg.list_value ();
             cs_args_idx = 0;
-            for (int j = 0; j < cs_args.length () && n_args_on_callee_stack < n_args_before_varargin; j++)
+            for (int j = 0; j < cs_args.length ()
+                            && n_args_on_callee_stack < n_args_callee - 1; j++)
               {
                 PUSH_OV (cs_args (j));
                 n_args_on_callee_stack++;

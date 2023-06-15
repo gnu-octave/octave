@@ -12,6 +12,14 @@ function bytecode_varargin (b, varargin)
   cslist = {1,2,3,4};
   varg2 (cslist{:});
 
+  varg3 (cslist{:});
+  cslist = {1, 2};
+  varg3 (cslist{:});
+  cslist = {1};
+  varg3 (cslist{:});
+  cslist = {};
+  varg3 (cslist{:});
+
   justnamenotpos (1, 2);
 
   out = inout (1,2,3,4);
@@ -39,6 +47,21 @@ function varg2 (a, varargin)
 
   varg1 (varargin{:})
   varg1 (2, varargin{:})
+end
+
+function varg3 (a, b, varargin)
+  if exist ("a")
+    __printf_assert__ ("%d ", a);
+  else
+    __printf_assert__ ("noa ");
+  end
+  if exist ("b")
+    __printf_assert__ ("%d ", b);
+  else
+    __printf_assert__ ("nob ");
+  end
+  __printf_assert__ ("%d ", size (varargin));
+  __printf_assert__ ("%d ", nargin);
 end
 
 function justnamenotpos (varargin, a)

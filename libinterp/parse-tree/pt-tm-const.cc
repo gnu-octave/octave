@@ -160,6 +160,13 @@ void tm_row_const::init_element (const octave_value& val, bool& first_elem)
   m_all_1x1 = m_all_1x1 && ! val.issparse () && val.numel () == 1;
 }
 
+// FIXME: This function is mostly a duplicate of
+//
+//   void tm_row_const::init (const octave_value *, const octave_value *)
+//
+// The common parts should be factored out into a single function that
+// is used by the others.
+
 void tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
 {
   bool first_elem = true;
@@ -213,6 +220,68 @@ void tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
         }
     }
 }
+
+// FIXME: This function is mostly a duplicate of
+//
+//   void tm_row_const::init (const tree_argument_list&, tree_evaluator&)
+//
+// The common parts should be factored out into a single function that
+// is used by the others.
+
+void tm_row_const::init (const octave_value *beg, const octave_value *end)
+{
+  bool first_elem = true;
+
+  for (; beg != end; beg++)
+    {
+      octave_quit ();
+
+      octave_value tmp = *beg;
+
+      if (tmp.is_undefined ())
+        error ("undefined element in matrix list");
+
+      if (tmp.is_cs_list ())
+        {
+          octave_value_list tlst = tmp.list_value ();
+
+          for (octave_idx_type i = 0; i < tlst.length (); i++)
+            {
+              octave_quit ();
+
+              init_element (tlst(i), first_elem);
+            }
+        }
+      else
+        init_element (tmp, first_elem);
+    }
+
+  if (m_any_cell && ! m_any_class && ! m_first_elem_is_struct)
+    cellify ();
+
+  first_elem = true;
+
+  for (const auto& val : m_values)
+    {
+      octave_quit ();
+
+      dim_vector this_elt_dv = val.dims ();
+
+      if (! this_elt_dv.zero_by_zero ())
+        {
+          m_all_empty = false;
+
+          if (first_elem)
+            {
+              first_elem = false;
+              m_dv = this_elt_dv;
+            }
+          else if ((! m_any_class) && (! m_dv.hvcat (this_elt_dv, 1)))
+            eval_error ("horizontal dimensions mismatch", m_dv, this_elt_dv);
+        }
+    }
+}
+
 
 octave_value tm_const::concat (char string_fill_char) const
 {
@@ -295,6 +364,16 @@ octave_value tm_const::concat (char string_fill_char) const
     return generic_concat ();
 }
 
+// FIXME: This function is mostly a duplicate of both of the functions
+//
+//   void tm_const::init (const octave_value *, const octave_value *,
+//                        const std::vector<int>&)
+//   void tm_const::init (const octave_value *, const octave_value *,
+//                        octave_idx_type)
+//
+// The common parts should be factored out into a single function that
+// is used by the others.
+
 void tm_const::init (const tree_matrix& tm)
 {
   bool first_elem = true;
@@ -309,6 +388,261 @@ void tm_const::init (const tree_matrix& tm)
       octave_quit ();
 
       tm_row_const row (*elt, m_evaluator);
+
+      if (first_elem)
+        {
+          first_elem_is_struct = row.first_elem_struct_p ();
+
+          first_elem = false;
+        }
+
+      if (row.empty ())
+        continue;
+
+      if (m_all_strings && ! row.all_strings_p ())
+        m_all_strings = false;
+
+      if (m_all_sq_strings && ! row.all_sq_strings_p ())
+        m_all_sq_strings = false;
+
+      if (m_all_dq_strings && ! row.all_dq_strings_p ())
+        m_all_dq_strings = false;
+
+      if (! m_some_strings && row.some_strings_p ())
+        m_some_strings = true;
+
+      if (m_all_real && ! row.all_real_p ())
+        m_all_real = false;
+
+      if (m_all_complex && ! row.all_complex_p ())
+        m_all_complex = false;
+
+      if (m_all_empty && ! row.all_empty_p ())
+        m_all_empty = false;
+
+      if (! m_any_cell && row.any_cell_p ())
+        m_any_cell = true;
+
+      if (! m_any_sparse && row.any_sparse_p ())
+        m_any_sparse = true;
+
+      if (! m_any_class && row.any_class_p ())
+        m_any_class = true;
+
+      m_all_1x1 = m_all_1x1 && row.all_1x1_p ();
+
+      m_tm_rows.push_back (row);
+    }
+
+  if (m_any_cell && ! m_any_class && ! first_elem_is_struct)
+    {
+      for (auto& elt : m_tm_rows)
+        {
+          octave_quit ();
+
+          elt.cellify ();
+        }
+    }
+
+  first_elem = true;
+
+  for (const auto& elt : m_tm_rows)
+    {
+      octave_quit ();
+
+      octave_idx_type this_elt_nr = elt.rows ();
+      octave_idx_type this_elt_nc = elt.cols ();
+
+      std::string this_elt_class_name = elt.class_name ();
+      m_class_name = get_concat_class (m_class_name, this_elt_class_name);
+
+      dim_vector this_elt_dv = elt.dims ();
+
+      m_all_empty = false;
+
+      if (first_elem)
+        {
+          first_elem = false;
+
+          m_dv = this_elt_dv;
+        }
+      else if (m_all_strings && m_dv.ndims () == 2
+               && this_elt_dv.ndims () == 2)
+        {
+          // This is Octave's specialty.
+          // Character matrices support rows of unequal length.
+          if (m_dv.any_zero ())
+            {
+              // Empty existing element (bug #52542).
+              // Replace empty element with non-empty one.
+              m_dv = this_elt_dv;
+            }
+          else
+            {
+              if (this_elt_nc > cols ())
+                m_dv(1) = this_elt_nc;
+              m_dv(0) += this_elt_nr;
+            }
+        }
+      else if ((! m_any_class) && (! m_dv.hvcat (this_elt_dv, 0)))
+        eval_error ("vertical dimensions mismatch", m_dv, this_elt_dv);
+    }
+}
+
+// FIXME: This function is mostly a duplicate of both of the functions
+//
+//   void tm_const::init (const tree_matrix&)
+//   void tm_const::init (const octave_value *, const octave_value *,
+//                        octave_idx_type)
+//
+// The common parts should be factored out into a single function that
+// is used by the others.
+
+// For variable length rows
+void tm_const::init (const octave_value *beg, const octave_value *end,
+                     const std::vector<int>& row_lengths)
+{
+  bool first_elem = true;
+  bool first_elem_is_struct = false;
+
+  // Just eval and figure out if what we have is complex or all strings.
+  // We can't check columns until we know that this is a numeric matrix --
+  // collections of strings can have elements of different lengths.
+
+  for (int i = 0; beg != end; beg += row_lengths[i++])
+    {
+      octave_quit ();
+
+      if (beg + row_lengths[i] > end)
+        error ("invalid call to tm_const::init");
+
+      tm_row_const row (beg, beg + row_lengths[i]);
+
+      if (first_elem)
+        {
+          first_elem_is_struct = row.first_elem_struct_p ();
+
+          first_elem = false;
+        }
+
+      if (row.empty ())
+        continue;
+
+      if (m_all_strings && ! row.all_strings_p ())
+        m_all_strings = false;
+
+      if (m_all_sq_strings && ! row.all_sq_strings_p ())
+        m_all_sq_strings = false;
+
+      if (m_all_dq_strings && ! row.all_dq_strings_p ())
+        m_all_dq_strings = false;
+
+      if (! m_some_strings && row.some_strings_p ())
+        m_some_strings = true;
+
+      if (m_all_real && ! row.all_real_p ())
+        m_all_real = false;
+
+      if (m_all_complex && ! row.all_complex_p ())
+        m_all_complex = false;
+
+      if (m_all_empty && ! row.all_empty_p ())
+        m_all_empty = false;
+
+      if (! m_any_cell && row.any_cell_p ())
+        m_any_cell = true;
+
+      if (! m_any_sparse && row.any_sparse_p ())
+        m_any_sparse = true;
+
+      if (! m_any_class && row.any_class_p ())
+        m_any_class = true;
+
+      m_all_1x1 = m_all_1x1 && row.all_1x1_p ();
+
+      m_tm_rows.push_back (row);
+    }
+
+  if (m_any_cell && ! m_any_class && ! first_elem_is_struct)
+    {
+      for (auto& elt : m_tm_rows)
+        {
+          octave_quit ();
+
+          elt.cellify ();
+        }
+    }
+
+  first_elem = true;
+
+  for (const auto& elt : m_tm_rows)
+    {
+      octave_quit ();
+
+      octave_idx_type this_elt_nr = elt.rows ();
+      octave_idx_type this_elt_nc = elt.cols ();
+
+      std::string this_elt_class_name = elt.class_name ();
+      m_class_name = get_concat_class (m_class_name, this_elt_class_name);
+
+      dim_vector this_elt_dv = elt.dims ();
+
+      m_all_empty = false;
+
+      if (first_elem)
+        {
+          first_elem = false;
+
+          m_dv = this_elt_dv;
+        }
+      else if (m_all_strings && m_dv.ndims () == 2
+               && this_elt_dv.ndims () == 2)
+        {
+          // This is Octave's specialty.
+          // Character matrices support rows of unequal length.
+          if (m_dv.any_zero ())
+            {
+              // Empty existing element (bug #52542).
+              // Replace empty element with non-empty one.
+              m_dv = this_elt_dv;
+            }
+          else
+            {
+              if (this_elt_nc > cols ())
+                m_dv(1) = this_elt_nc;
+              m_dv(0) += this_elt_nr;
+            }
+        }
+      else if ((! m_any_class) && (! m_dv.hvcat (this_elt_dv, 0)))
+        eval_error ("vertical dimensions mismatch", m_dv, this_elt_dv);
+    }
+}
+
+// FIXME: This function is mostly a duplicate of both of the functions
+//
+//   void tm_const::init (const tree_matrix&)
+//   void tm_const::init (const octave_value *, const octave_value *,
+//                        const std::vector<int>&)
+//
+// The common parts should be factored out into a single function that
+// is used by the others.
+
+// Fixed row size
+void tm_const::init (const octave_value *beg, const octave_value *end,
+                     octave_idx_type row_length)
+{
+  bool first_elem = true;
+  bool first_elem_is_struct = false;
+
+  // Just eval and figure out if what we have is complex or all strings.
+  // We can't check columns until we know that this is a numeric matrix --
+  // collections of strings can have elements of different lengths.
+
+  for (;beg != end; beg += row_length)
+    {
+      octave_quit ();
+
+      tm_row_const row (beg, beg + row_length);
 
       if (first_elem)
         {

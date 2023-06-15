@@ -157,6 +157,12 @@ public:
     init (row, tw);
   }
 
+  tm_row_const (const octave_value *beg, const octave_value *end)
+    : tm_info (beg == end), m_values ()
+  {
+    init (beg, end);
+  }
+
   tm_row_const (const tm_row_const&) = default;
 
   tm_row_const& operator = (const tm_row_const&) = delete;
@@ -182,6 +188,7 @@ private:
   void init_element (const octave_value&, bool&);
 
   void init (const tree_argument_list&, tree_evaluator& tw);
+  void init (const octave_value *beg, const octave_value *end);
 };
 
 class tm_const : public tm_info
@@ -197,6 +204,20 @@ public:
     : tm_info (tm.empty ()), m_evaluator (tw), m_tm_rows ()
   {
     init (tm);
+  }
+
+  tm_const (const octave_value *beg, const octave_value *end,
+            octave_idx_type n_rows, tree_evaluator& tw)
+    : tm_info (beg == end), m_evaluator (tw), m_tm_rows ()
+  {
+     init (beg, end, n_rows);
+  }
+
+  tm_const (const octave_value *beg, const octave_value *end,
+            const std::vector<int>& row_lengths, tree_evaluator& tw)
+    : tm_info (beg == end), m_evaluator (tw), m_tm_rows ()
+  {
+     init (beg, end, row_lengths);
   }
 
   OCTAVE_DISABLE_COPY_MOVE (tm_const)
@@ -216,6 +237,12 @@ private:
   std::list<tm_row_const> m_tm_rows;
 
   void init (const tree_matrix& tm);
+
+  void init (const octave_value *beg, const octave_value *end,
+             octave_idx_type row_length);
+
+  void init (const octave_value *beg, const octave_value *end,
+             const std::vector<int>& row_lengths);
 
   octave_value char_array_concat (char string_fill_char) const;
 

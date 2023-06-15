@@ -413,7 +413,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
               {
                 if (p + 3 >= code + n)
                   error ("Invalid bytecode\n");
-                int i = chars_to_uint (p);
+                int i = chars_to_uint (p + 1);
                 s += " ROWS"; PINT ();
                 s += " COLS";
                 for (int j = 0; j < i; j++)

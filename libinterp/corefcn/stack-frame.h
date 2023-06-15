@@ -202,10 +202,10 @@ public:
   std::size_t index () const { return m_index; }
 
   void line (int l) { m_line = l; }
-  int line () const { return m_line; }
+  virtual int line () const { return m_line; }
 
   void column (int c) { m_column = c; }
-  int column () const { return m_column; }
+  virtual int column () const { return m_column; }
 
   std::string fcn_file_name () const
   {

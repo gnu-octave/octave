@@ -1208,6 +1208,128 @@ err_no_conversion (const std::string& on, const std::string& tn1,
 }
 
 octave_value
+octave_base_value::simple_numeric_assign (char type, octave_value_list& idx,
+                                          const octave_value& rhs)
+{
+  octave_value retval;
+
+  if (idx.empty ())
+    error ("missing index in indexed assignment");
+
+  int t_lhs = type_id ();
+  int t_rhs = rhs.type_id ();
+
+  octave::type_info& ti = octave::__get_type_info__ ();
+
+  octave::type_info::assign_op_fcn f
+    = ti.lookup_assign_op (octave_value::op_asn_eq, t_lhs, t_rhs);
+
+  bool done = false;
+
+  if (f)
+    {
+      f (*this, idx, rhs.get_rep ());
+
+      done = true;
+    }
+
+  if (done)
+    {
+      m_count++;
+      retval = octave_value (this);
+    }
+  else
+    {
+      int t_result = ti.lookup_pref_assign_conv (t_lhs, t_rhs);
+
+      if (t_result >= 0)
+        {
+          octave_base_value::type_conv_fcn cf
+            = ti.lookup_widening_op (t_lhs, t_result);
+
+          if (! cf)
+            err_indexed_assignment (type_name (), rhs.type_name ());
+
+          octave_base_value *tmp = cf (*this);
+
+          if (! tmp)
+            err_assign_conversion_failed (type_name (), rhs.type_name ());
+
+          octave_value val (tmp);
+
+          retval = val.simple_subsasgn (type, idx, rhs);
+
+          done = true;
+        }
+
+      if (! done)
+        {
+          octave_value tmp_rhs;
+
+          octave_base_value::type_conv_info cf_rhs
+            = rhs.numeric_conversion_function ();
+
+          octave_base_value::type_conv_info cf_this
+            = numeric_conversion_function ();
+
+          // Try biased (one-sided) conversions first.
+          if (cf_rhs.type_id () >= 0
+              && (ti.lookup_assign_op (octave_value::op_asn_eq,
+                                       t_lhs, cf_rhs.type_id ())
+                  || ti.lookup_pref_assign_conv (t_lhs,
+                                                 cf_rhs.type_id ()) >= 0))
+            cf_this = nullptr;
+          else if (cf_this.type_id () >= 0
+                   && (ti.lookup_assign_op (octave_value::op_asn_eq,
+                                            cf_this.type_id (), t_rhs)
+                       || ti.lookup_pref_assign_conv (cf_this.type_id (),
+                                                      t_rhs) >= 0))
+            cf_rhs = nullptr;
+
+          if (cf_rhs)
+            {
+              octave_base_value *tmp = cf_rhs (rhs.get_rep ());
+
+              if (! tmp)
+                err_assign_conversion_failed (type_name (), rhs.type_name ());
+
+              tmp_rhs = octave_value (tmp);
+            }
+          else
+            tmp_rhs = rhs;
+
+          m_count++;
+          octave_value tmp_lhs = octave_value (this);
+
+          if (cf_this)
+            {
+              octave_base_value *tmp = cf_this (*this);
+
+              if (! tmp)
+                err_assign_conversion_failed (type_name (), rhs.type_name ());
+
+              tmp_lhs = octave_value (tmp);
+            }
+
+          if (! cf_this && ! cf_rhs)
+            err_no_conversion (octave_value::assign_op_as_string
+                               (octave_value::op_asn_eq),
+                               type_name (), rhs.type_name ());
+
+          retval = tmp_lhs.simple_subsasgn (type, idx, tmp_rhs);
+
+          done = true;
+        }
+    }
+
+  // The assignment may have converted to a type that is wider than necessary.
+
+  retval.maybe_mutate ();
+
+  return retval;
+}
+
+octave_value
 octave_base_value::numeric_assign (const std::string& type,
                                    const std::list<octave_value_list>& idx,
                                    const octave_value& rhs)

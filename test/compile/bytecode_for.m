@@ -11,10 +11,35 @@ function bytecode_for()
   end
   __printf_assert__ ("%d ", i);
 
+  for i = 1:3:5
+    __printf_assert__ ("%d ", i);
+  end
+  __printf_assert__ ("%d ", i);
+
   for i = 4:-1:1
     __printf_assert__ ("%d ", i);
   end
   __printf_assert__ ("%d ", i);
+
+  for i = 0.2:0.1:0.4
+    __printf_assert__ ("%3.3f ", i);
+  end
+  __printf_assert__ ("%3.3f ", i);
+
+  for i = 0.3:-0.1:0
+    __printf_assert__ ("%3.3f ", i);
+  end
+  __printf_assert__ ("%3.3f ", i);
+
+  for i = 0:NaN:2
+    __printf_assert__ ("%3.3f ", i);
+  end
+  for i = 0:1:NaN
+    __printf_assert__ ("%3.3f ", i);
+  end
+  for i = NaN:1:2
+    __printf_assert__ ("%3.3f ", i);
+  end
 
   for j = 1:4
     break

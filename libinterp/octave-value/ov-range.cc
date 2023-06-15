@@ -995,11 +995,38 @@ ov_range<double>::could_be_trivial_range ()
   if (n <= 1)
     return false;
 
-  double f = m_range.final_value ();
-  if (f > std::numeric_limits<int>::max()
-      || f < std::numeric_limits<int>::min())
+  if (m_range.final_value () > std::numeric_limits<int>::max() ||
+      m_range.final_value () < std::numeric_limits<int>::min())
     return false;
-  if (std::isnan (f))
+  if (m_range.increment () > std::numeric_limits<int>::max() ||
+      m_range.increment () < std::numeric_limits<int>::min())
+    return false;
+  if (m_range.base () > std::numeric_limits<int>::max() ||
+      m_range.base () < std::numeric_limits<int>::min())
+    return false;
+  if (m_range.limit () > std::numeric_limits<int>::max() ||
+      m_range.limit () < std::numeric_limits<int>::min())
+    return false;
+
+  if (std::isnan (m_range.final_value ()))
+    return false;
+  if (std::isnan (m_range.increment ()))
+    return false;
+  if (std::isnan (m_range.base ()))
+    return false;
+  if (std::isnan (m_range.limit ()))
+    return false;
+
+  if (static_cast<int> (m_range.final_value ()) != m_range.final_value ())
+    return false;
+  if (static_cast<int> (m_range.increment ()) != m_range.increment ())
+    return false;
+  if (static_cast<int> (m_range.base ()) != m_range.base ())
+    return false;
+  if (static_cast<int> (m_range.limit ()) != m_range.limit ())
+    return false;
+
+  if (m_range.reverse ())
     return false;
 
   return true;

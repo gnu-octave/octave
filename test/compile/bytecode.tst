@@ -87,7 +87,7 @@
 %!test
 %! __enable_vm_eval__ (0, "local");
 %! clear all
-%! key = "1 2 3 4 4 1 3 5 5 4 3 2 1 1 1 4 2 2 16 4 3 3 256 3 2 1  double 1 3 size 2 size 1 2 4 size 2 size 1  double q size 1 size 1 w size 1 size 1 e size 1 size 1 char single single 5 1 11 2 12 key:a val:1 1val:1 key:b val:1 3val:2 4val:2 2key:c val:string ";
+%! key = "1 2 3 4 4 1 3 5 5 1 4 4 4 3 2 1 1 0.200 0.300 0.400 0.400 0.300 0.200 0.100 0.000 0.000 NaN NaN NaN 1 4 2 2 16 4 3 3 256 3 2 1  double 1 3 size 2 size 1 2 4 size 2 size 1  double q size 1 size 1 w size 1 size 1 e size 1 size 1 char single single 5 1 11 2 12 key:a val:1 1val:1 key:b val:1 3val:2 4val:2 2key:c val:string ";
 %!
 %! __compile bytecode_for clear;
 %! bytecode_for ();

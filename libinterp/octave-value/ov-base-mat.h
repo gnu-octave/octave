@@ -89,6 +89,9 @@ public:
   OCTINTERP_API octave_value
   subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
+  octave_value_list
+  simple_subsref (char type, octave_value_list& idx, int nargout);
+
   octave_value_list subsref (const std::string& type,
                              const std::list<octave_value_list>& idx, int)
   { return subsref (type, idx); }

@@ -210,6 +210,15 @@ octave_base_value::xnumel (const octave_value_list& idx)
   return octave::dims_to_numel (dims (), idx);
 }
 
+octave_value_list
+octave_base_value::
+simple_subsref (char type, octave_value_list& idx, int nargout)
+{
+  std::list<octave_value_list> idx_list;
+  idx_list.push_back (idx);
+  return subsref (std::string {type}, idx_list, nargout);
+}
+
 octave_value
 octave_base_value::subsref (const std::string&,
                             const std::list<octave_value_list>&)
@@ -247,6 +256,16 @@ octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = '<' + type_name () + '>';
   octave::err_invalid_index (nm.c_str ());
+}
+
+octave_value
+octave_base_value::simple_subsasgn (char type, octave_value_list& idx,
+                                    const octave_value& rhs)
+{
+  std::list<octave_value_list> idx_list;
+  idx_list.push_back (idx);
+
+  return subsasgn (std::string {type}, idx_list, rhs);
 }
 
 octave_value

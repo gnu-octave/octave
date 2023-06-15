@@ -42,6 +42,29 @@
 #include "pr-output.h"
 
 template <typename MT>
+octave_value_list
+octave_base_matrix<MT>::simple_subsref (char type, octave_value_list& idx, int)
+{
+  switch (type)
+    {
+    case '(':
+      return do_index_op (idx);
+      break;
+
+    case '{':
+    case '.':
+      {
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+}
+
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::subsref (const std::string& type,
                                  const std::list<octave_value_list>& idx)

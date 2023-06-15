@@ -334,6 +334,9 @@ public:
            const std::list<octave_value_list>& idx,
            bool auto_add);
 
+  virtual octave_value_list
+  simple_subsref (char type, octave_value_list& idx, int nargout);
+
   virtual octave_value
   do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
@@ -343,6 +346,10 @@ public:
   subsasgn (const std::string& type,
             const std::list<octave_value_list>& idx,
             const octave_value& rhs);
+
+  virtual octave_value
+  simple_subsasgn (char type, octave_value_list& idx,
+                   const octave_value& rhs);
 
   virtual octave_value
   undef_subsasgn (const std::string& type,

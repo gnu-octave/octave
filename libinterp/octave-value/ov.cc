@@ -1448,6 +1448,13 @@ octave_value::single_subsref (const std::string& type,
 }
 
 octave_value_list
+octave_value::
+simple_subsref (char type, octave_value_list& idx, int nargout)
+{
+  return m_rep->simple_subsref (type, idx, nargout);
+}
+
+octave_value_list
 octave_value::subsref (const std::string& type,
                        const std::list<octave_value_list>& idx, int nargout)
 {

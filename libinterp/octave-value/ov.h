@@ -473,6 +473,9 @@ public:
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
            int nargout);
 
+  octave_value_list
+  simple_subsref (char type, octave_value_list& idx, int nargout);
+
   OCTINTERP_API octave_value
   next_subsref (const std::string& type,
                 const std::list<octave_value_list>& idx, std::size_t skip = 1);
@@ -493,6 +496,12 @@ public:
   OCTINTERP_API octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
+
+  octave_value
+  simple_subsasgn (char type, octave_value_list& idx, const octave_value& rhs)
+  {
+    return m_rep->simple_subsasgn (type, idx, rhs);
+  }
 
   OCTINTERP_API octave_value
   undef_subsasgn (const std::string& type,

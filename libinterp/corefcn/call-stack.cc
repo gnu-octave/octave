@@ -1131,6 +1131,18 @@ void call_stack::set_auto_fcn_var (stack_frame::auto_var_type avt,
   m_cs[m_curr_frame]->set_auto_fcn_var (avt, val);
 }
 
+void 
+call_stack::set_nargin (int nargin)
+{
+  m_cs[m_curr_frame]->set_nargin (nargin);
+}
+
+void 
+call_stack::set_nargout (int nargout)
+{
+  m_cs[m_curr_frame]->set_nargout (nargout);
+}
+
 octave_value call_stack::get_auto_fcn_var (stack_frame::auto_var_type avt) const
 {
   return m_cs[m_curr_frame]->get_auto_fcn_var (avt);

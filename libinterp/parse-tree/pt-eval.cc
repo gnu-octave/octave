@@ -2180,6 +2180,18 @@ tree_evaluator::set_auto_fcn_var (stack_frame::auto_var_type avt,
   m_call_stack.set_auto_fcn_var (avt, val);
 }
 
+void 
+tree_evaluator::set_nargin (int nargin)
+{
+  m_call_stack.set_nargin (nargin);
+}
+
+void 
+tree_evaluator::set_nargout (int nargout)
+{
+  m_call_stack.set_nargout (nargout);
+}
+
 octave_value
 tree_evaluator::get_auto_fcn_var (stack_frame::auto_var_type avt) const
 {

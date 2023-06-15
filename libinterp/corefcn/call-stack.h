@@ -299,6 +299,9 @@ public:
   void set_auto_fcn_var (stack_frame::auto_var_type avt,
                          const octave_value& val);
 
+  void set_nargin (int nargin);
+  void set_nargout (int nargout);
+
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
 private:

@@ -306,7 +306,12 @@ public:
 
   OCTINTERP_API octave_value (octave_value::magic_colon);
 
-  OCTINTERP_API octave_value (octave_base_value *new_rep, bool borrow = false);
+  octave_value (octave_base_value *new_rep, bool borrow = false)
+    : m_rep (new_rep)
+  {
+    if (borrow)
+      m_rep->m_count++;
+  }
 
   // Copy constructor.
 

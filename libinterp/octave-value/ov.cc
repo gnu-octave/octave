@@ -1117,13 +1117,6 @@ octave_value::octave_value (octave_value::magic_colon)
   : m_rep (new octave_magic_colon ())
 { }
 
-octave_value::octave_value (octave_base_value *new_rep, bool borrow)
-  : m_rep (new_rep)
-{
-  if (borrow)
-    m_rep->m_count++;
-}
-
 octave_base_value *
 octave_value::clone () const
 {

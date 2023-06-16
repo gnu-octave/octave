@@ -46,88 +46,93 @@ class octave_value_factory
 
   static octave_value make (double d)
   {
-    return octave_value (0, new octave_scalar (d));
+    return octave_value (new octave_scalar (d));
   }
 
   static octave_value make (float d)
   {
-    return octave_value (0, new octave_float_scalar (d));
+    return octave_value (new octave_float_scalar (d));
   }
 
   static octave_value make (short int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 
   static octave_value make (unsigned short int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 
   static octave_value make (int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 
   static octave_value make (unsigned int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 
   static octave_value make (long int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 
   static octave_value make (unsigned long int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
   static octave_value make (long long int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 #endif
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
   static octave_value make (unsigned long long int i)
   {
-    return octave_value (0, new octave_scalar (i));
+    return octave_value (new octave_scalar (i));
   }
 #endif
 
   static octave_value make (octave::sys::time t)
   {
-    return octave_value (0, new octave_scalar (t.double_value ()));
+    return octave_value (new octave_scalar (t.double_value ()));
   }
 
   static octave_value make (const Complex& C)
   {
-    octave_value ov(0, new octave_complex (C));
+    octave_value ov (new octave_complex (C));
     ov.maybe_mutate (); // Fold e.g. 1+0i to 1
     return ov;
   }
 
   static octave_value make (const FloatComplex& C)
   {
-    octave_value ov(0, new octave_float_complex (C));
+    octave_value ov (new octave_float_complex (C));
     ov.maybe_mutate ();
     return ov;
   }
 
   static octave_value make (bool b)
   {
-    return octave_value (0, new octave_bool (b));
+    return octave_value (new octave_bool (b));
   }
+
+  // FIXME: The octave_value (octave_base_value *rep, bool) constructor
+  // is already defined in the ov.h header file so is the
+  // octave_value_factory::make_copy function really necessary?
 
   static octave_value make_copy (octave_base_value *rep)
   {
-    return octave_value (0, 0, rep);
+    return octave_value (rep, true);
   }
 
-  private:
+private:
+
   ~octave_value_factory () = delete;
   octave_value_factory () = delete;
 };

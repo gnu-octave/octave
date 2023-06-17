@@ -78,6 +78,7 @@ class octave_user_script;
 class octave_user_code;
 class octave_fcn_handle;
 class octave_value_list;
+class octave_fcn_cache;
 
 enum builtin_type_t
 {
@@ -528,6 +529,19 @@ public:
   virtual bool is_dld_function () const { return false; }
 
   virtual bool is_mex_function () const { return false; }
+
+  virtual bool is_function_cache (void) const { return false; }
+
+  // Checks if the ov could be a function. If it is undefined,
+  // the name associated with the ov could be a function to call.
+  virtual bool is_maybe_function (void) const
+  { return !is_defined () || is_function (); }
+
+  virtual bool has_function_cache (void) const { return false; }
+
+  virtual octave_function * get_cached_fcn (const octave_value_list&) { return nullptr; }
+
+  virtual octave_fcn_cache * fcn_cache_value (void) { return nullptr; }
 
   virtual void erase_subfunctions () { }
 

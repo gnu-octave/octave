@@ -48,6 +48,78 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Functions.
 
+// Class that holds a cached reference to a octave function
+// for use in the bytecode VM.
+class
+OCTINTERP_API
+octave_fcn_cache : public octave_base_value
+{
+public:
+  octave_fcn_cache (const std::string &name) :m_fcn_name (name) { }
+  octave_fcn_cache () {}
+
+  bool is_function_cache (void) const { return true; }
+
+  bool has_function_cache (void) const { return true; }
+
+  octave_function *
+  get_cached_fcn (const octave_value_list& args);
+
+  octave_function *
+  get_cached_fcn () { return m_cached_function.function_value (); }
+
+  octave_value
+  get_cached_obj (const octave_value_list& args);
+
+  octave_fcn_cache * fcn_cache_value (void)
+  {
+    return this;
+  }
+
+  octave_value_list
+  call (octave::tree_evaluator& tw,
+        octave_function *fcn,
+        const octave_value_list& args,
+        int nargout);
+
+  void set_cached_function (octave_value ov, const octave_value_list &args, octave_idx_type current_n_updated);
+
+  bool has_cached_function (const octave_value_list &args) const
+  {
+    auto vec_n = static_cast <octave_idx_type> (m_cached_args.size ());
+
+    if (args.length () != vec_n)
+      return false;
+
+    for (int i = 0; i < args.length (); i++)
+      {
+        if (args (i).type_id () != m_cached_args [i])
+          return false;
+      }
+
+    return m_cached_function.is_defined ();
+  }
+
+private:
+
+  void clear_cached_function ()
+  {
+    m_cached_object = octave_value {};
+    m_cached_function = octave_value {};
+    m_n_updated = 0;
+    m_cached_args.clear ();
+  }
+
+  //std::weak_ptr<int> get_lp_n_updated () const { return m_n_updated; }
+
+  octave_value m_cached_object;
+  octave_value m_cached_function;
+  std::vector<int> m_cached_args;
+  octave_idx_type m_n_updated = 0;
+  std::string m_fcn_name;
+};
+
+
 class
 OCTINTERP_API
 octave_function : public octave_base_value
@@ -104,6 +176,8 @@ public:
   virtual bool is_parent_function () const { return false; }
 
   virtual bool is_subfunction () const { return false; }
+
+  virtual bool is_compiled () const { return false; }
 
   bool is_class_constructor (const std::string& cname = "") const
   {

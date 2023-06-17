@@ -154,6 +154,11 @@ public:
     return false;
   }
 
+  virtual octave_function *
+  get_cached_fcn (const octave_value_list&) { return nullptr; }
+  virtual bool 
+  has_function_cache (void) const { return false; }
+
 protected:
 
   void warn_load (const char *file_type) const;
@@ -220,6 +225,11 @@ public:
                      const octave::stack_frame::local_vars_map& local_vars,
                      const std::shared_ptr<octave::stack_frame>& closure_frames
                      = std::shared_ptr<octave::stack_frame> ());
+
+  // Create a simple function handle that is not bound to a function.
+  // Lookup happens when a function call is attempted and the function
+  // lookup is cached in a octave_fcn_cache.
+  octave_fcn_handle (const std::string& name, octave_value cache);
 
   octave_fcn_handle (octave::base_fcn_handle *rep);
 
@@ -360,6 +370,10 @@ public:
 
   friend bool
   is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2);
+
+  octave_function *
+  get_cached_fcn (const octave_value_list& args) { return m_rep->get_cached_fcn (args); }
+  bool has_function_cache (void) const { return m_rep->has_function_cache (); }
 
 private:
 

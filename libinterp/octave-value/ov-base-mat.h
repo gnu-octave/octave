@@ -80,6 +80,7 @@ public:
   octave_value full_value () const { return m_matrix; }
 
   void maybe_economize () { m_matrix.maybe_economize (); }
+  bool is_maybe_function (void) const { return false; }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual

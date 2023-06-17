@@ -215,7 +215,15 @@ public:
   static const int OCT_FILE = 2;
   static const int MEX_FILE = 4;
 
+  static octave_idx_type get_weak_n_updated () { return s_n_updated; }
+
+  static void signal_clear_fcn_cache ()
+  {
+    s_n_updated++;
+  }
+
 private:
+  static std::atomic<octave_idx_type> s_n_updated;
 
   class dir_info
   {

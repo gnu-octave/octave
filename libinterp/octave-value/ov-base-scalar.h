@@ -135,6 +135,8 @@ public:
   MatrixType matrix_type (const MatrixType&) const
   { return matrix_type (); }
 
+  bool is_maybe_function (void) const { return false; }
+
   bool is_scalar_type () const { return true; }
 
   bool isnumeric () const { return true; }

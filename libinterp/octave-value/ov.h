@@ -60,6 +60,7 @@ class octave_function;
 class octave_user_function;
 class octave_fcn_handle;
 class octave_value_list;
+class octave_fcn_cache;
 
 #include "mxtypes.h"
 
@@ -1528,6 +1529,27 @@ public:
   }
 
 protected:
+
+  bool is_function_cache (void) const
+  { return m_rep->is_function_cache (); }
+
+  // function handles might have a function cache embedded
+  bool has_function_cache (void) const
+  { return m_rep->has_function_cache (); }
+
+  octave_function * get_cached_fcn (const octave_value_list& args)
+  { return m_rep->get_cached_fcn (args); }
+
+  // Returns true if the octave_value is either undefined or
+  // or a function.
+  bool is_maybe_function (void) const
+  { return m_rep->is_maybe_function (); }
+
+  octave_fcn_cache *
+  fcn_cache_value () const
+  {
+    return m_rep->fcn_cache_value ();
+  }
 
   //! The real representation.
   octave_base_value *m_rep;

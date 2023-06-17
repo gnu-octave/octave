@@ -4578,6 +4578,9 @@ void tree_evaluator::add_autoload (const std::string& fcn,
 {
   std::string file_name = check_autoload_file (nm);
 
+  // Signal to load path that the function cache is invalid
+  octave::load_path::signal_clear_fcn_cache ();
+
   m_autoload_map[fcn] = file_name;
 }
 
@@ -4585,6 +4588,9 @@ void tree_evaluator::remove_autoload (const std::string& fcn,
                                       const std::string& nm)
 {
   check_autoload_file (nm);
+
+  // Signal to load path that the function cache is invalid
+  octave::load_path::signal_clear_fcn_cache ();
 
   // Remove function from symbol table and autoload map.
   symbol_table& symtab = m_interpreter.get_symbol_table ();

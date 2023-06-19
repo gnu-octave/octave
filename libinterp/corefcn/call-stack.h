@@ -242,6 +242,8 @@ public:
 
   void pop ();
 
+  std::shared_ptr<stack_frame> pop_return ();
+
   void clear ();
 
   symbol_info_list all_variables ();

@@ -2465,6 +2465,12 @@ void tree_evaluator::pop_stack_frame ()
   m_call_stack.pop ();
 }
 
+std::shared_ptr<stack_frame>
+tree_evaluator::pop_return_stack_frame ()
+{
+  return m_call_stack.pop_return ();
+}
+
 int tree_evaluator::current_line () const
 {
   return m_call_stack.current_line ();

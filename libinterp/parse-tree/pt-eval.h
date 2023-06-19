@@ -438,6 +438,8 @@ public:
 
   void pop_stack_frame ();
 
+  std::shared_ptr<stack_frame> pop_return_stack_frame ();
+
   std::shared_ptr<stack_frame> get_current_stack_frame () const
   {
     return m_call_stack.get_current_stack_frame ();

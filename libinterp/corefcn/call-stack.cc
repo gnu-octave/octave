@@ -772,6 +772,24 @@ void call_stack::pop ()
     }
 }
 
+std::shared_ptr<stack_frame> call_stack::pop_return ()
+{
+  if (!m_cs.empty ())
+    {
+      std::shared_ptr<stack_frame> elt = std::move (m_cs.back ());
+      m_cs.pop_back ();
+
+      m_curr_frame = elt->parent_frame_index ();
+
+      if (elt->is_closure_context ())
+        elt->break_closure_cycles (elt);
+
+      return elt;
+    }
+
+  return nullptr;
+}
+
 void call_stack::clear ()
 {
   while (! m_cs.empty ())

@@ -1537,6 +1537,7 @@ protected:
 
   // Functions for use by the VM.
   friend class octave_value_ref;
+  friend class octave_value_vm;
 
   bool is_ref () const { return m_rep->is_ref (); }
 

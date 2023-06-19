@@ -71,6 +71,7 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-typeinfo.h \
   %reldir%/ov-usr-fcn.h \
   %reldir%/ov.h \
+  %reldir%/ov-vm.h \
   %reldir%/ovl.h \
   $(OV_INTTYPE_INC) \
   $(OV_SPARSE_INC)

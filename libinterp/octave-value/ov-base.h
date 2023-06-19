@@ -80,6 +80,7 @@ class octave_fcn_handle;
 class octave_value_list;
 class octave_value_ref;
 class octave_fcn_cache;
+class octave_value_vm;
 
 enum builtin_type_t
 {
@@ -263,6 +264,7 @@ public:
   };
 
   friend class octave_value;
+  friend class octave_value_vm;
 
   octave_base_value ();
 

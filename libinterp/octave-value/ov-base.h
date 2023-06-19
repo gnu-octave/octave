@@ -78,6 +78,7 @@ class octave_user_script;
 class octave_user_code;
 class octave_fcn_handle;
 class octave_value_list;
+class octave_value_ref;
 class octave_fcn_cache;
 
 enum builtin_type_t

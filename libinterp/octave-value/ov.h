@@ -1542,6 +1542,8 @@ protected:
 
   octave_value_ref * ref_rep () { return m_rep->ref_rep (); }
 
+  bool is_nil (void) const { return m_rep == nil_rep (); }
+
   // True for the types based on ov-base-mat
   bool is_full_num_matrix () const
   { return m_rep->is_full_num_matrix (); }
@@ -1592,9 +1594,9 @@ protected:
 //! The real representation.
   octave_base_value *m_rep;
 
-private:
-
   static OCTINTERP_API octave_base_value * nil_rep ();
+
+private:
 
   OCTINTERP_API assign_op unary_op_to_assign_op (unary_op op);
 

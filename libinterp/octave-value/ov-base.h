@@ -805,6 +805,10 @@ public:
 
   virtual octave_base_value * make_storable_value (void);
 
+  virtual bool is_ref () const { return false; }
+
+  virtual octave_value_ref * ref_rep ();
+
   virtual bool maybe_update_double (double d);
 
   virtual bool is_trivial_range () const { return false; };

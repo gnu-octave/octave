@@ -62,6 +62,7 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-perm.h \
   %reldir%/ov-range-traits.h \
   %reldir%/ov-range.h \
+  %reldir%/ov-ref.h \
   %reldir%/ov-re-diag.h \
   %reldir%/ov-re-mat.h \
   %reldir%/ov-scalar.h \
@@ -128,6 +129,7 @@ OCTAVE_VALUE_SRC = \
   %reldir%/ov-oncleanup.cc \
   %reldir%/ov-perm.cc \
   %reldir%/ov-range.cc \
+  %reldir%/ov-ref.cc \
   %reldir%/ov-re-diag.cc \
   %reldir%/ov-re-mat.cc \
   %reldir%/ov-scalar.cc \

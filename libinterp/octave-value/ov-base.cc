@@ -950,6 +950,14 @@ octave_base_value::function_value (bool silent)
   return nullptr;
 }
 
+octave_value_ref *
+octave_base_value::ref_rep ()
+{
+  err_wrong_type_arg ("octave_base_value::ref_value()", type_name ());
+
+  return nullptr;
+}
+
 octave_user_function *
 octave_base_value::user_function_value (bool silent)
 {

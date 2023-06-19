@@ -1535,6 +1535,13 @@ public:
 
 protected:
 
+  // Functions for use by the VM.
+  friend class octave_value_ref;
+
+  bool is_ref () const { return m_rep->is_ref (); }
+
+  octave_value_ref * ref_rep () { return m_rep->ref_rep (); }
+
   // True for the types based on ov-base-mat
   bool is_full_num_matrix () const
   { return m_rep->is_full_num_matrix (); }

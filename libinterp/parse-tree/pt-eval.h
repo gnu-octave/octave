@@ -843,6 +843,8 @@ public:
 
   void push_echo_state (int type, const std::string& file_name, int pos = 1);
 
+  bool debug_mode () const { return m_debug_mode; }
+
 private:
 
   template <typename T>

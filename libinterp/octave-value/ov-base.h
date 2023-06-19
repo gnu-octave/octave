@@ -807,6 +807,8 @@ public:
 
   virtual bool maybe_update_double (double d);
 
+  virtual bool is_trivial_range () const { return false; };
+
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t
   {

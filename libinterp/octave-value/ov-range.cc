@@ -53,6 +53,7 @@
 #include "ops.h"
 #include "ovl.h"
 #include "oct-hdf5.h"
+#include "ov-inline.h"
 #include "ov-range-traits.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
@@ -975,6 +976,47 @@ ov_range<T>::as_mxArray (bool interleaved) const
     pd[i] = pdata[i];
 
   return retval;
+}
+
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA  (octave_trivial_range,
+                                     "trivial range", "double");
+
+template <typename T>
+bool 
+ov_range<T>::could_be_trivial_range () { return false; }
+
+template <>
+bool 
+ov_range<double>::could_be_trivial_range ()
+{
+  octave_idx_type n = m_range.numel ();
+  if (n > std::numeric_limits<int>::max())
+    return false;
+  if (n <= 1)
+    return false;
+
+  double f = m_range.final_value ();
+  if (f > std::numeric_limits<int>::max()
+      || f < std::numeric_limits<int>::min())
+    return false;
+  if (std::isnan (f))
+    return false;
+
+  return true;
+}
+
+template <typename T>
+octave_value
+ov_range<T>::as_trivial_range ()
+{
+  error ("Type error returning trivial range");
+}
+
+template <>
+octave_value
+ov_range<double>::as_trivial_range ()
+{
+  return octave_value (new octave_trivial_range (m_range.numel (), m_range.base (), m_range.increment ()));
 }
 
 template <typename T>

@@ -1576,7 +1576,13 @@ protected:
     return m_rep->maybe_update_double (d);
   }
 
-  //! The real representation.
+  octave_value
+  maybe_as_trivial_range ();
+
+  bool
+  is_trivial_range () { return m_rep->is_trivial_range (); }
+
+//! The real representation.
   octave_base_value *m_rep;
 
 private:

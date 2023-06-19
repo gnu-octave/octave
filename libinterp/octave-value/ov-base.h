@@ -498,6 +498,8 @@ public:
 
   virtual bool is_matrix_type () const { return false; }
 
+  virtual bool is_full_num_matrix () const { return false; }
+
   virtual bool isnumeric () const { return false; }
 
   virtual bool issparse () const { return false; }
@@ -880,6 +882,12 @@ public:
   // calls, which is basically the theoretical minimum.
   virtual bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
+
+  virtual octave_value
+  checked_full_matrix_elem (octave_idx_type i) const;
+
+  virtual octave_value
+  checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
 
 protected:
 

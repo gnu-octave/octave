@@ -132,6 +132,8 @@ public:
 
   bool is_true () const;
 
+  bool is_full_num_matrix () const { return false; }
+
   Cell cell_value () const { return m_matrix; }
 
   octave_value_list list_value () const;

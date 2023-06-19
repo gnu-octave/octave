@@ -1530,6 +1530,10 @@ public:
 
 protected:
 
+  // True for the types based on ov-base-mat
+  bool is_full_num_matrix () const
+  { return m_rep->is_full_num_matrix (); }
+
   bool is_function_cache (void) const
   { return m_rep->is_function_cache (); }
 
@@ -1550,6 +1554,14 @@ protected:
   {
     return m_rep->fcn_cache_value ();
   }
+
+  octave_value
+  checked_full_matrix_elem (octave_idx_type n) const
+  { return m_rep->checked_full_matrix_elem (n); }
+
+  octave_value
+  checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const
+  { return m_rep->checked_full_matrix_elem (i, j); }
 
   //! The real representation.
   octave_base_value *m_rep;

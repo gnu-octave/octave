@@ -573,6 +573,20 @@ octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 }
 
 template <typename MT>
+octave_value
+octave_base_matrix<MT>::checked_full_matrix_elem (octave_idx_type i) const
+{
+  return m_matrix.checkelem (i);
+}
+
+template <typename MT>
+octave_value
+octave_base_matrix<MT>::checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const
+{
+  return m_matrix.checkelem (i, j);
+}
+
+template <typename MT>
 bool
 octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
     const octave_value& x)

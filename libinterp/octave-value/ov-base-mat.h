@@ -163,6 +163,8 @@ public:
 
   bool is_matrix_type () const { return true; }
 
+  bool is_full_num_matrix () const { return true; }
+
   bool isnumeric () const { return true; }
 
   bool is_defined () const { return true; }
@@ -206,6 +208,12 @@ public:
   // This function exists to support the MEX interface.
   // You should not use it anywhere else.
   const void * mex_get_data () const { return m_matrix.data (); }
+
+  octave_value
+  checked_full_matrix_elem (octave_idx_type i) const;
+
+  octave_value
+  checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
 
 protected:
 

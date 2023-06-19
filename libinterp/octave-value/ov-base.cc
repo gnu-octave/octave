@@ -1504,6 +1504,18 @@ octave_base_value::fast_elem_extract (octave_idx_type) const
   return octave_value ();
 }
 
+octave_value
+octave_base_value::checked_full_matrix_elem (octave_idx_type) const
+{
+  err_wrong_type_arg ("octave_base_value::checked_full_matrix_elem (octave_idx_type)", type_name ());
+}
+
+octave_value
+octave_base_value::checked_full_matrix_elem (octave_idx_type, octave_idx_type) const
+{
+  err_wrong_type_arg ("octave_base_value::checked_full_matrix_elem (octave_idx_type, octave_idx_type)", type_name ());
+}
+
 bool
 octave_base_value::fast_elem_insert (octave_idx_type, const octave_value&)
 {

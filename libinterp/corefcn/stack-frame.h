@@ -307,6 +307,9 @@ public:
     mark_global (sym);
   }
 
+  std::size_t
+  parent_frame_index () const { return m_parent_link->index (); }
+
   std::shared_ptr<stack_frame>
   parent_link () const {return m_parent_link; }
 

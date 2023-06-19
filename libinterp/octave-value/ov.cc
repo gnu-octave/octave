@@ -1517,6 +1517,34 @@ octave_value::next_subsref (bool auto_add, const std::string& type,
     return *this;
 }
 
+octave_idx_type
+octave_value::end_index (octave_idx_type index_position,
+                         octave_idx_type num_indices) const
+{
+  dim_vector dv = dims ();
+  int ndims = dv.ndims ();
+
+  if (num_indices < ndims)
+    {
+      for (int i = num_indices; i < ndims; i++)
+        dv(num_indices-1) *= dv(i);
+
+      if (num_indices == 1)
+        {
+          ndims = 2;
+          dv.resize (ndims);
+          dv(1) = 1;
+        }
+      else
+        {
+          ndims = num_indices;
+          dv.resize (ndims);
+        }
+    }
+
+  return (index_position < ndims ? dv(index_position) : 1);
+}
+
 octave_value
 octave_value::subsasgn (const std::string& type,
                         const std::list<octave_value_list>& idx,

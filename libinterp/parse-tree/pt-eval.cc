@@ -4964,35 +4964,6 @@ void tree_evaluator::dbquit (bool all)
     m_debugger_stack.top()->dbquit (all);
 }
 
-static octave_value end_value (const octave_value& value,
-                               octave_idx_type index_position,
-                               octave_idx_type num_indices)
-{
-  dim_vector dv = value.dims ();
-  int ndims = dv.ndims ();
-
-  if (num_indices < ndims)
-    {
-      for (int i = num_indices; i < ndims; i++)
-        dv(num_indices-1) *= dv(i);
-
-      if (num_indices == 1)
-        {
-          ndims = 2;
-          dv.resize (ndims);
-          dv(1) = 1;
-        }
-      else
-        {
-          ndims = num_indices;
-          dv.resize (ndims);
-        }
-    }
-
-  return (index_position < ndims
-          ? octave_value (dv(index_position)) : octave_value (1.0));
-}
-
 octave_value_list
 tree_evaluator::evaluate_end_expression (const octave_value_list& args)
 {
@@ -5015,7 +4986,7 @@ tree_evaluator::evaluate_end_expression (const octave_value_list& args)
       if (num_indices < 1)
         error ("end: N must be greater than zero");
 
-      return end_value (args(0), index_position-1, num_indices);
+      return octave_value (args(0).end_index (index_position-1, num_indices));
     }
 
   // If m_indexed_object is undefined, then this use of 'end' is
@@ -5087,7 +5058,7 @@ tree_evaluator::evaluate_end_expression (const octave_value_list& args)
           (meth, ovl (expr_result, m_index_position+1, m_num_indices), 1);
     }
 
-  return end_value (expr_result, m_index_position, m_num_indices);
+  return octave_value (expr_result.end_index (m_index_position, m_num_indices));
 }
 
 octave_value

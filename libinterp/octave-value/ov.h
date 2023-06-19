@@ -504,6 +504,10 @@ public:
     return m_rep->do_index_op (idx, resize_ok);
   }
 
+  OCTINTERP_API octave_idx_type
+  end_index (octave_idx_type index_position,
+             octave_idx_type num_indices) const;
+
   OCTINTERP_API octave_value
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);

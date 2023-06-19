@@ -89,6 +89,8 @@ public:
 
   octave::symbol_scope scope () { return m_scope; }
 
+  std::size_t scope_num_symbols () { return m_scope.num_symbols (); }
+
   void stash_fcn_file_name (const std::string& nm) { m_file_name = nm; }
 
   void mark_fcn_file_up_to_date (const octave::sys::time& t)

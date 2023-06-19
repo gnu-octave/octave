@@ -792,6 +792,8 @@ public:
 
   virtual void call_object_destructor () { }
 
+  virtual void maybe_call_dtor () { }
+
   virtual octave_value dump () const;
 
   virtual octave_value storable_value (void);

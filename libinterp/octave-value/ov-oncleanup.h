@@ -91,6 +91,12 @@ public:
 
   void call_object_destructor ();
 
+  void maybe_call_dtor () 
+  { 
+    if (m_count == 1)
+      call_object_destructor ();  
+  }
+
 private:
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA

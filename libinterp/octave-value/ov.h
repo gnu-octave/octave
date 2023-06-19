@@ -1555,6 +1555,8 @@ protected:
     return m_rep->fcn_cache_value ();
   }
 
+  void maybe_call_dtor () { m_rep->maybe_call_dtor (); }
+
   octave_value
   checked_full_matrix_elem (octave_idx_type n) const
   { return m_rep->checked_full_matrix_elem (n); }

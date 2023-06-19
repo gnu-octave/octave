@@ -69,6 +69,14 @@ octave_base_scalar<ST>::subsref (const std::string& type,
 
 template <typename ST>
 octave_value
+octave_base_scalar<ST>::vm_extract_forloop_value (octave_idx_type)
+{
+  return octave_value (scalar);
+}
+
+
+template <typename ST>
+octave_value
 octave_base_scalar<ST>::subsasgn (const std::string& type,
                                   const std::list<octave_value_list>& idx,
                                   const octave_value& rhs)

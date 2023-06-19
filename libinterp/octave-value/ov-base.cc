@@ -282,6 +282,18 @@ octave_base_value::index_vector (bool /* require_integers */) const
   octave::err_invalid_index (nm.c_str ());
 }
 
+octave_value
+octave_base_value::vm_extract_forloop_value (octave_idx_type idx)
+{
+  return fast_elem_extract (idx).as_double_or_copy ();
+}
+
+double
+octave_base_value::vm_extract_forloop_double (octave_idx_type)
+{
+  error ("Type error extracting for loop iterator double value for VM");
+}
+
 bool 
 octave_base_value::maybe_update_double (double)
 {

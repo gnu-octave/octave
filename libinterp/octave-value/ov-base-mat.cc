@@ -39,6 +39,7 @@
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-base-scalar.h"
+#include "ov-inline.h"
 #include "pr-output.h"
 
 template <typename MT>
@@ -584,6 +585,40 @@ octave_value
 octave_base_matrix<MT>::checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const
 {
   return m_matrix.checkelem (i, j);
+}
+
+template <typename MT>
+octave_value
+octave_base_matrix<MT>::vm_extract_forloop_value (octave_idx_type counter)
+{
+  // TODO: Maybe this is slow? Should preferably be done once per loop
+  octave_value_list idx;
+  octave_value arg = octave_value_factory::make_copy (this);
+
+  dim_vector dv = arg.dims ().redim (2);
+  octave_idx_type nrows = dv(0);
+
+  if (arg.ndims () > 2)
+    arg = arg.reshape (dv);
+
+  octave_idx_type iidx;
+
+  // for row vectors, use single index to speed things up.
+  if (nrows == 1)
+    {
+      idx.resize (1);
+      iidx = 0;
+    }
+  else
+    {
+      idx.resize (2);
+      idx(0) = octave_value::magic_colon_t;
+      iidx = 1;
+    }
+
+  // One based indexing
+  idx(iidx) = counter + 1;
+  return arg.index_op (idx).storable_value ();
 }
 
 template <typename MT>

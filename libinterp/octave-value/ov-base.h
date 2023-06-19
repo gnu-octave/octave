@@ -812,6 +812,12 @@ public:
 
   virtual octave_value_ref * ref_rep ();
 
+  virtual octave_value
+  vm_extract_forloop_value (octave_idx_type idx);
+
+  virtual double
+  vm_extract_forloop_double (octave_idx_type idx);
+
   virtual bool maybe_update_double (double d);
 
   virtual bool is_trivial_range () const { return false; };

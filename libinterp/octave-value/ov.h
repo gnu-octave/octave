@@ -1580,6 +1580,18 @@ protected:
   checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const
   { return m_rep->checked_full_matrix_elem (i, j); }
 
+  octave_value
+  vm_extract_forloop_value (octave_idx_type idx)
+  {
+    return m_rep->vm_extract_forloop_value (idx);
+  }
+
+  double
+  vm_extract_forloop_double (octave_idx_type idx)
+  {
+    return m_rep->vm_extract_forloop_double (idx);
+  }
+
   bool
   maybe_update_double (double d)
   {

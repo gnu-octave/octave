@@ -52,6 +52,7 @@
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 #include "pr-output.h"
+#include "ov-inline.h"
 
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
@@ -1093,6 +1094,39 @@ octave_struct::fast_elem_insert (octave_idx_type n,
     }
 
   return retval;
+}
+
+octave_value 
+octave_struct::vm_extract_forloop_value (octave_idx_type counter)
+{
+  // TODO: Maybe this is slow? Should preferably be done once per loop
+  octave_value_list idx;
+  octave_value arg = octave_value_factory::make_copy (this);
+
+  dim_vector dv = arg.dims ().redim (2);
+  octave_idx_type nrows = dv(0);
+
+  if (arg.ndims () > 2)
+    arg = arg.reshape (dv);
+
+  octave_idx_type iidx;
+
+  // for row vectors, use single index to speed things up.
+  if (nrows == 1)
+    {
+      idx.resize (1);
+      iidx = 0;
+    }
+  else
+    {
+      idx.resize (2);
+      idx(0) = octave_value::magic_colon_t;
+      iidx = 1;
+    }
+
+  // One based indexing
+  idx(iidx) = counter + 1;
+  return arg.index_op (idx).storable_value (); 
 }
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",

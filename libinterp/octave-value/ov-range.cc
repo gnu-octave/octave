@@ -1035,6 +1035,24 @@ ov_range<double>::range_value () const
   return m_range;
 }
 
+template <typename T>
+octave_value
+ov_range<T>::vm_extract_forloop_value (octave_idx_type n)
+{
+  octave_value ov = octave_value_factory::make (m_range.elem (n));
+
+  return ov.as_double_or_copy ();
+}
+
+template <>
+octave_value
+ov_range<double>::vm_extract_forloop_value (octave_idx_type n)
+{
+  octave_value ov = octave_value_factory::make (m_range.elem (n));
+
+  return ov;
+}
+
 // For now, enable only ov_range<double>.
 
 template <>

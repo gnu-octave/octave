@@ -63,6 +63,22 @@ public:
 
   octave_trivial_range (const octave_trivial_range&) = default;
 
+  OCTINTERP_API octave_value
+  vm_extract_forloop_value (octave_idx_type i)
+  {
+    if (i < m_numel - 1)
+      return m_base + static_cast<int> (i) * m_increment;
+    return m_base + (m_numel - 1) * m_increment;
+  }
+
+  double
+  vm_extract_forloop_double (octave_idx_type i)
+  {
+    if (i < m_numel - 1)
+      return m_base + static_cast<int> (i) * m_increment;
+    return m_base + (m_numel - 1) * m_increment;    
+  }
+
   bool is_trivial_range () const { return true; };
 
 private:
@@ -154,6 +170,9 @@ public:
 
   OCTINTERP_API octave_value as_trivial_range ();
   OCTINTERP_API bool could_be_trivial_range ();
+
+  OCTINTERP_API octave_value
+  vm_extract_forloop_value (octave_idx_type idx);
 
   octave_idx_type numel () const { return m_range.numel (); }
 

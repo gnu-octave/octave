@@ -101,6 +101,8 @@ public:
 
   dim_vector dims () const { return m_map.dims (); }
 
+  octave_value vm_extract_forloop_value (octave_idx_type idx);
+
   std::size_t byte_size () const;
 
   // This is the number of elements in each field.  The total number

@@ -209,6 +209,9 @@ public:
   // You should not use it anywhere else.
   const void * mex_get_data () const { return m_matrix.data (); }
 
+  OCTINTERP_API octave_value
+  vm_extract_forloop_value (octave_idx_type idx);
+
   octave_value
   checked_full_matrix_elem (octave_idx_type i) const;
 

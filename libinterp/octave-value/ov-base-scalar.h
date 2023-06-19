@@ -169,6 +169,9 @@ public:
 
   OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 
+  OCTINTERP_API octave_value
+  vm_extract_forloop_value (octave_idx_type idx);
+
   OCTINTERP_API bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 

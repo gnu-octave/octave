@@ -794,6 +794,10 @@ public:
 
   virtual octave_value dump () const;
 
+  virtual octave_value storable_value (void);
+
+  virtual octave_base_value * make_storable_value (void);
+
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t
   {

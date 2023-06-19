@@ -61,6 +61,7 @@
 #include "pr-output.h"
 #include "utils.h"
 #include "variables.h"
+#include "ov-inline.h"
 
 builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
 {
@@ -119,6 +120,22 @@ octave_base_value *
 octave_base_value::empty_clone () const
 {
   return resize (dim_vector ()).clone ();
+}
+
+// FIXME: Unlike other virtual functions in the octave_base_value
+// class, the storable_value and make_storable_value functions defined
+// here are not used by the corresponding octave_value functions.  This
+// inconsistency is likely to cause some confusion.
+octave_value
+octave_base_value::storable_value (void)
+{
+  return octave_value_factory::make_copy (this);
+}
+
+octave_base_value *
+octave_base_value::make_storable_value (void)
+{
+  return this;
 }
 
 octave_value

@@ -112,6 +112,8 @@ include classdef/module.mk
 include classdef-multiple-inheritance/module.mk
 include classes/module.mk
 include colon-op/module.mk
+include compile-bench/module.mk
+include compile/module.mk
 include ctor-vs-method/module.mk
 include fcn-handle/module.mk
 include file-encoding/module.mk

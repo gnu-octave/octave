@@ -297,6 +297,11 @@ public:
 
   virtual octave_value full_value () const;
 
+  // Will return a copy of it-self when the representation
+  // allready is a scalar (.i.e. double). The const variant
+  // as_double () would allocate a new octave value.
+  virtual octave_value as_double_or_copy (void);
+
   virtual octave_value as_double () const;
   virtual octave_value as_single () const;
 
@@ -799,6 +804,8 @@ public:
   virtual octave_value storable_value (void);
 
   virtual octave_base_value * make_storable_value (void);
+
+  virtual bool maybe_update_double (double d);
 
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t

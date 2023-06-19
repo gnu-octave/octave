@@ -435,6 +435,11 @@ public:
 
   // Type conversions.
 
+  // Returns a copy of a scalar (double), or makes a scalar
+  // for other types.
+  octave_value as_double_or_copy (void) const
+  { return m_rep->as_double_or_copy (); }
+
   octave_value as_double () const { return m_rep->as_double (); }
   octave_value as_single () const { return m_rep->as_single (); }
 
@@ -1564,6 +1569,12 @@ protected:
   octave_value
   checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const
   { return m_rep->checked_full_matrix_elem (i, j); }
+
+  bool
+  maybe_update_double (double d)
+  {
+    return m_rep->maybe_update_double (d);
+  }
 
   //! The real representation.
   octave_base_value *m_rep;

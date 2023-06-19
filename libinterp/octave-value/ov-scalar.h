@@ -223,6 +223,16 @@ public:
     return boolNDArray (dim_vector (1, 1), scalar);
   }
 
+  octave_value as_double_or_copy (void);
+
+  bool maybe_update_double (double d) 
+  { 
+    if (m_count != 1)
+      return false;
+    scalar = d;
+    return true;
+  }
+
   octave_value as_double () const;
   octave_value as_single () const;
 

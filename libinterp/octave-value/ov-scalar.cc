@@ -54,6 +54,7 @@
 #include "xdiv.h"
 #include "xpow.h"
 #include "ops.h"
+#include "ov-inline.h"
 
 #include "ls-oct-text.h"
 #include "ls-hdf5.h"
@@ -125,7 +126,13 @@ octave_scalar::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
-octave_scalar::as_double () const
+octave_scalar::as_double_or_copy (void)
+{
+  return octave_value_factory::make_copy (this);
+}
+
+octave_value
+octave_scalar::as_double (void) const
 {
   return scalar;
 }

@@ -158,6 +158,13 @@ octave_base_value::as_double () const
 }
 
 octave_value
+octave_base_value::as_double_or_copy (void)
+{
+  const octave_base_value * cthis = this;
+  return cthis->as_double ();
+}
+
+octave_value
 octave_base_value::as_single () const
 {
   err_invalid_conversion (type_name (), "single");
@@ -273,6 +280,12 @@ octave_base_value::index_vector (bool /* require_integers */) const
 {
   std::string nm = '<' + type_name () + '>';
   octave::err_invalid_index (nm.c_str ());
+}
+
+bool 
+octave_base_value::maybe_update_double (double)
+{
+  return false;
 }
 
 octave_value

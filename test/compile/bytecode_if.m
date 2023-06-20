@@ -37,7 +37,7 @@ function bytecode_if()
     __printf_assert__ ("booo ");
   else
     __printf_assert__ ("%d ", ctr++);
-  end  
+  end
 
   if b
     __printf_assert__ ("booo ");
@@ -139,4 +139,4 @@ function a = falsy (b)
   __printf_assert__ ("%d ", b);
   a = 0;
 end
-    
+

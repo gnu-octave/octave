@@ -23,7 +23,7 @@
 ##
 ########################################################################
 
-## Just clear the cached string in __prog_output_assert__() and clear 
+## Just clear the cached string in __prog_output_assert__() and clear
 ## classes method lookups due to maybe bug
 %!test
 %! __prog_output_assert__ ("");
@@ -55,7 +55,7 @@
 %! clear all
 %! key = "2 2 2 11 30 10 30 5  0 0 double 1 2 1 2 double 30 11 5  0 0 double 1 2 1 2 double 11 11 12 13 1 1 double 14 1 1 double 11 11 5 13 1 1 double 14 1 1 double 11 3 3 3 2 2 2 313 ret32:1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 ret32:1 ret32:ret32:1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 take32:1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 1 18 59 64 ";
 %! a = 313;
-%! % Gets called to ensure anonymous functions calls with 
+%! % Gets called to ensure anonymous functions calls with
 %! % externally scoped variables work
 %! h = @() __printf_assert__ ("%d ", a);
 %!
@@ -600,7 +600,7 @@
 %! __compile bytecode_cdef_use clear;
 %! bytecode_cdef_use ();
 %! assert (__prog_output_assert__ (key));
-%! global cdef_foo_ctor_cnt; global cdef_foo_dtor_cnt; 
+%! global cdef_foo_ctor_cnt; global cdef_foo_dtor_cnt;
 %! assert (cdef_foo_ctor_cnt == cdef_foo_dtor_cnt); % Check, as many ctor and dtor executions
 %!
 %! __enable_vm_eval__ (1, "local");
@@ -609,7 +609,7 @@
 %! assert (__compile ("bytecode_cdef_use"));
 %! bytecode_cdef_use ();
 %! assert (__prog_output_assert__ (key));
-%! global cdef_foo_ctor_cnt; global cdef_foo_dtor_cnt; 
+%! global cdef_foo_ctor_cnt; global cdef_foo_dtor_cnt;
 %! assert (cdef_foo_ctor_cnt == cdef_foo_dtor_cnt);
 %!
 %! global cdef_foo_ctor_cnt; clear global cdef_foo_ctor_cnt;

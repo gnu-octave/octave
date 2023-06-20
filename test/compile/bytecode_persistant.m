@@ -1,7 +1,7 @@
 function bytecode_persistant ()
   q = 3;
   l = 4;
-  
+
   persistent a = 3;
   __printf_assert__ ("a:%d ", a++);
 

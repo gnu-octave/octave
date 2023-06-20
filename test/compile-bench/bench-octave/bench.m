@@ -1,7 +1,7 @@
 function bench (varargin)
 
   % The tests to run
-  % 
+  %
   % {name, {arg_type, n}, ...}
   tests = {
     {"for_loop_empty", {"n", 206824596}, 1, {}},

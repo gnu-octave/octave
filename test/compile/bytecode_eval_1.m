@@ -52,7 +52,7 @@ function bytecode_eval_1 ()
 
   % Just test the same thing in a subfunction
   sub1 ();
-  
+
   % Change the value of arguments and returns in an eval
   % Also do nargin and nargout in a subfunction
   [aa bb] = suby2 (11, 22, 33);
@@ -117,7 +117,7 @@ function [c d] = suby2 (a, b, c)
   __printf_assert__ ("5:%f ", b);
   __printf_assert__ ("6:%f ", c);
   __printf_assert__ ("7:%f ", d);
-  
+
   __printf_assert__ ("%d ", nargin);
   __printf_assert__ ("%d ", eval ("nargin"));
 

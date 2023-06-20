@@ -60,9 +60,9 @@ function bytecode_for()
       if j == 2
         continue
       end
-      
+
       ctr++;
-      
+
       if j == 3
         break
       end
@@ -130,7 +130,7 @@ function bytecode_for()
   __printf_assert__ ("%d ", i);
   __printf_assert__ ("%s ", class (i));
 
-  
+
   n = 'qwe';
   for i = n
     __printf_assert__ ("%s ", i);
@@ -146,7 +146,7 @@ function bytecode_for()
     end
   end
 
-  % ... unless rhs is a scalar ... 
+  % ... unless rhs is a scalar ...
   for i = single (1)
   end
   __printf_assert__ ("%s ", class (i));
@@ -177,7 +177,7 @@ function bytecode_for()
     __printf_assert__ ("boo");
   end
 end
-  
+
 
 function i = foo ()
   for i = 1:10

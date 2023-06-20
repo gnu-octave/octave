@@ -982,11 +982,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA  (octave_trivial_range,
                                      "trivial range", "double");
 
 template <typename T>
-bool 
+bool
 ov_range<T>::could_be_trivial_range () { return false; }
 
 template <>
-bool 
+bool
 ov_range<double>::could_be_trivial_range ()
 {
   octave_idx_type n = m_range.numel ();

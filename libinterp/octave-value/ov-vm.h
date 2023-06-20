@@ -36,7 +36,7 @@
 // and need to have the same bit representation as
 // an octave_value.
 //
-// A octave_value_vm object might not be assigned 
+// A octave_value_vm object might not be assigned
 // to itself or have a nullptr m_rep when being
 // assigned to.
 

@@ -108,7 +108,7 @@ function tf = isstrprop (str, prop, opt, flag)
     elseif (! (isscalar (flag) && isreal (flag)))
       error ("isstrprop: FLAG must be a real scalar");
     endif
-    force_cell_output = flag; 
+    force_cell_output = flag;
   endif
 
   switch (prop)

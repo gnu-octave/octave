@@ -2181,13 +2181,13 @@ tree_evaluator::set_auto_fcn_var (stack_frame::auto_var_type avt,
   m_call_stack.set_auto_fcn_var (avt, val);
 }
 
-void 
+void
 tree_evaluator::set_nargin (int nargin)
 {
   m_call_stack.set_nargin (nargin);
 }
 
-void 
+void
 tree_evaluator::set_nargout (int nargout)
 {
   m_call_stack.set_nargout (nargout);
@@ -2199,7 +2199,7 @@ tree_evaluator::get_auto_fcn_var (stack_frame::auto_var_type avt) const
   return m_call_stack.get_auto_fcn_var (avt);
 }
 
-void 
+void
 tree_evaluator::set_active_bytecode_ip (int ip)
 {
   m_call_stack.set_active_bytecode_ip (ip);
@@ -3520,7 +3520,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
       set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
 
       octave_value_list ret;
-      
+
       try {
         ret = vm.execute_code (args, nargout);
       } catch (std::exception &e) {
@@ -3528,7 +3528,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
           {
             std::cout << e.what () << std::endl;
             // TODO: Replace with panic when the VM almost works
-            
+
             // Some test code eats errors messages, so we print to stderr too.
             fprintf (stderr, "VM error %d: " "Exception in function %s escaped the VM\n", __LINE__, user_function.name ().c_str());
             error("VM error %d: " "Exception in function %s escaped the VM\n", __LINE__, user_function.name ().c_str());

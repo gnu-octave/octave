@@ -203,7 +203,7 @@ catch (interrupt_exception& e)                                          \
     (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);            \
     goto unwind;                                                        \
   }                                                                     \
- 
+
 #define CATCH_EXECUTION_EXCEPTION \
 catch (execution_exception& e)                                          \
   {                                                                     \

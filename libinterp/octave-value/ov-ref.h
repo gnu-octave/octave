@@ -83,7 +83,7 @@ public:
     octave_value deref ();
     octave_value & ref ();
     void set_value (octave_value val);
-    
+
     bool is_global_ref () { return true; }
 
 private:
@@ -104,7 +104,7 @@ public:
     octave_value deref ();
     octave_value & ref ();
     void set_value (octave_value val);
-    
+
     bool is_persistent_ref () { return true; }
 
 private:

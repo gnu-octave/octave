@@ -76,7 +76,7 @@ public:
   {
     if (i < m_numel - 1)
       return m_base + static_cast<int> (i) * m_increment;
-    return m_base + (m_numel - 1) * m_increment;    
+    return m_base + (m_numel - 1) * m_increment;
   }
 
   bool is_trivial_range () const { return true; };

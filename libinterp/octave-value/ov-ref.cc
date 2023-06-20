@@ -59,12 +59,12 @@ octave_value_ref::is_maybe_function () const
 }
 
 octave_base_value *
-octave_value_ref::unique_clone () 
+octave_value_ref::unique_clone ()
 {
   return ref ().m_rep->unique_clone ();
 }
 
-octave_value 
+octave_value
 octave_value_ref::simple_subsasgn (char type, octave_value_list& idx, const octave_value& rhs)
 {
   octave_value ans = ref ().m_rep->simple_subsasgn (type, idx, rhs);

@@ -46,16 +46,16 @@ function bytecode_matrix ()
   % Matrix div
   A = [a b c d] / [a b c d];
   __printf_assert__ ("%g ", A);
-  __printf_assert__ ("%g ", size (A));  
+  __printf_assert__ ("%g ", size (A));
 
   A = [a b c d] \ [a b c d];
   __printf_assert__ ("%g ", A);
   __printf_assert__ ("%g ", size (A));
-  
+
   A = [a b; c d] / [a b; c d];
   __printf_assert__ ("%g ", A);
-  __printf_assert__ ("%g ", size (A)); 
-  
+  __printf_assert__ ("%g ", size (A));
+
   % Compound mul herm
   A = [a b c d] * [a b c d]';
   __printf_assert__ ("%g ", A);
@@ -64,7 +64,7 @@ function bytecode_matrix ()
   % Compound herm mul
   A = [a b; c d]' * [a b; c d];
   __printf_assert__ ("%g ", A);
-  __printf_assert__ ("%g ", size (A));  
+  __printf_assert__ ("%g ", size (A));
 
   % Compound trans ldiv
   A = [a; b; c; d].' \ [a b c d];
@@ -213,7 +213,7 @@ function bytecode_matrix ()
         251; 252; 253; 254; 255; 256; 257];
   __printf_assert__ ("%d ", size (b));
   __printf_assert__ ("%d ", sum (b));
-  
+
 end
 
 function i = hi (s)

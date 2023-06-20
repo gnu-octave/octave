@@ -68,12 +68,12 @@ function [tf, delta] = isuniform (v)
   endif
 
   ## Compare mean delta to individual deltas with a tolerance
-  d = diff (v, 1); 
+  d = diff (v, 1);
   delta = mean (d);
   if (isnan (delta))
     tf = false;
   else
-    tol = 4 * eps (max (abs (v))); 
+    tol = 4 * eps (max (abs (v)));
     if (delta < tol)
       ## Switch to absolute tolerance for very small delta
       tol = eps (class (v));

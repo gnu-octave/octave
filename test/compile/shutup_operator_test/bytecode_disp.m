@@ -11,13 +11,13 @@ function bytecode_disp()
   print_dot;
   2^3             % "ans = 8"
   print_dot       %
-  
+
   if 2
     3             % "ans = 3"
   end
   print_dot;
   x = 4 - 1       % "x = 3"
- 
+
   print_dot;
   [x, y] = deal (1,2) % "x = 1" "y = 2"
   print_dot;

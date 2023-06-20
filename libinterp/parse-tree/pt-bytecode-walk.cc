@@ -146,7 +146,7 @@ private:
       }
 
     op->accept (*this);
-  }   
+  }
 
   void visit_prefix_expression (tree_prefix_expression& e)
   {
@@ -2061,7 +2061,7 @@ visit_octave_user_function (octave_user_function& fcn)
 
   // Does the function output varargout?
   m_varargout = returns->takes_varargs ();
-  // "varargout" is not in the 'returns' list (if in the proper last position) 
+  // "varargout" is not in the 'returns' list (if in the proper last position)
   // so add one to size if 'm_varargout' is true
   int n_returns = returns ? returns->size () + m_varargout: 0;
 
@@ -2133,7 +2133,7 @@ visit_octave_user_function (octave_user_function& fcn)
           MAYBE_PUSH_WIDE_OPEXT (slot_dummy);
           PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
           PUSH_SLOT (slot_dummy);
-          int slot = SLOT (name); 
+          int slot = SLOT (name);
           MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::FORCE_ASSIGN); // Accepts undefined rhs
           PUSH_SLOT (slot);
@@ -3750,7 +3750,7 @@ add_id_to_table (std::string name)
 
       return m_n_locals - 1;
     }
-  
+
   return it->second;
 }
 
@@ -4694,7 +4694,7 @@ visit_simple_for_command (tree_simple_for_command& cmd)
   PUSH_SLOT (slot); // The for loop variable
   int need_after = CODE_SIZE ();
   PUSH_CODE_SHORT (-1); // Placeholder for after address
- 
+
   LOC (loc_id).m_ip_end = CODE_SIZE ();
   LOC (loc_id).m_col = cmd.column ();
   LOC (loc_id).m_line = cmd.line ();

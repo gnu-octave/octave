@@ -1096,7 +1096,7 @@ octave_struct::fast_elem_insert (octave_idx_type n,
   return retval;
 }
 
-octave_value 
+octave_value
 octave_struct::vm_extract_forloop_value (octave_idx_type counter)
 {
   // TODO: Maybe this is slow? Should preferably be done once per loop
@@ -1126,7 +1126,7 @@ octave_struct::vm_extract_forloop_value (octave_idx_type counter)
 
   // One based indexing
   idx(iidx) = counter + 1;
-  return arg.index_op (idx).storable_value (); 
+  return arg.index_op (idx).storable_value ();
 }
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",

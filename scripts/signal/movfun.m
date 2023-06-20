@@ -633,7 +633,7 @@ endfunction
 ## outdim > dim
 %!error movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3)
 
-## Test for correct return class based on output of function. 
+## Test for correct return class based on output of function.
 %!test <*63802>
 %! x = single (1:10);
 %! y = movfun (@mean, x, 3);

@@ -2,7 +2,7 @@ function bytecode_range ()
 
   % The should be range constants, but I think
   % negative limits are not folded to range constants
-  
+
   a = 1:3;
   __printf_assert__ ("%d ", a);
 

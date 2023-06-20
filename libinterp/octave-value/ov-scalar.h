@@ -225,8 +225,8 @@ public:
 
   octave_value as_double_or_copy (void);
 
-  bool maybe_update_double (double d) 
-  { 
+  bool maybe_update_double (double d)
+  {
     if (m_count != 1)
       return false;
     scalar = d;

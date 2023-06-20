@@ -156,7 +156,7 @@ public:
 
   virtual octave_function *
   get_cached_fcn (const octave_value_list&) { return nullptr; }
-  virtual bool 
+  virtual bool
   has_function_cache (void) const { return false; }
 
 protected:

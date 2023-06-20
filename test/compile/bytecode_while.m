@@ -96,7 +96,7 @@ function bytecode_while ()
   while i++ < 2
     continue
   end
-  __printf_assert__ ("%d ", i); 
+  __printf_assert__ ("%d ", i);
 
   i = 0;
   while i++ < 2

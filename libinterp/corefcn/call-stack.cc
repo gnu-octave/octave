@@ -1170,13 +1170,13 @@ void call_stack::set_auto_fcn_var (stack_frame::auto_var_type avt,
   m_cs[m_curr_frame]->set_auto_fcn_var (avt, val);
 }
 
-void 
+void
 call_stack::set_nargin (int nargin)
 {
   m_cs[m_curr_frame]->set_nargin (nargin);
 }
 
-void 
+void
 call_stack::set_nargout (int nargout)
 {
   m_cs[m_curr_frame]->set_nargout (nargout);

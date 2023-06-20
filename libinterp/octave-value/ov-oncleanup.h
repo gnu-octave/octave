@@ -91,10 +91,10 @@ public:
 
   void call_object_destructor ();
 
-  void maybe_call_dtor () 
-  { 
+  void maybe_call_dtor ()
+  {
     if (m_count == 1)
-      call_object_destructor ();  
+      call_object_destructor ();
   }
 
 private:

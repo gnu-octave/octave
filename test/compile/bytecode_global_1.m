@@ -6,7 +6,7 @@
 function bytecode_global_1 ()
   % General test. a and b are also read and verified in test .tst file
   global a b
-  __printf_assert__ ("%s ", class (a)); 
+  __printf_assert__ ("%s ", class (a));
   __printf_assert__ ("%d ", size (a));
 
   __printf_assert__ ("%d ", length (who ('global','a')));
@@ -145,7 +145,7 @@ end
 
 
 function sub1(make_global)
-  % Already defined local, later declared global  
+  % Already defined local, later declared global
   d = 3;
   __printf_assert__ ("%d ", length(who('global','d')));
   global d
@@ -171,7 +171,7 @@ function sub1(make_global)
   __printf_assert__ ("%d ", e);
   __printf_assert__ ("%s ", class(e));
   __printf_assert__ ("%d ", size (e));
-  
+
 
   % Conditionally global a and b
   if make_global

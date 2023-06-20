@@ -12,7 +12,7 @@ function bytecode_multi_assign ()
 
   % Non ids in lhs
   % Eval is used as a cheat since
-  % rhs need to know how many lhs values 
+  % rhs need to know how many lhs values
   % there are.
 
   [e, f.a, g, h.b] = foo ();
@@ -41,7 +41,7 @@ function bytecode_multi_assign ()
   __printf_assert__ ("%d ", g{end});
   __printf_assert__ ("%d ", h.b);
 
-  
+
   [C{1:2}, D] = {1,2,3}{:};
   __printf_assert__ ("%d ", C{1});
   __printf_assert__ ("%d ", C{2});

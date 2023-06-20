@@ -39,9 +39,9 @@ function bytecode_end ()
 
   % Nested index expressions
   M = [1 2 3 4];
-  __printf_assert__ ("%d ", M (min (2, end))); % End of M 
-  __printf_assert__ ("%d ", M (max (3, min (2, end)))); % End of M 
-  
+  __printf_assert__ ("%d ", M (min (2, end))); % End of M
+  __printf_assert__ ("%d ", M (max (3, min (2, end)))); % End of M
+
   min_h = @min;
   __printf_assert__ ("%d ", M (min_h (2, end))); % End of min_h
 

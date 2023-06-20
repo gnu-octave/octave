@@ -657,7 +657,7 @@ classdef inputParser < handle
       endif
 
       ## Implement setdiff() without calling out to function for performance.
-      typenames = {this.(type).name}(:); 
+      typenames = {this.(type).name}(:);
       Resultnames = fieldnames (this.Results);
       [sorted, sidx] = sort ([typenames; Resultnames]);
       dups = strcmp (sorted(1:end-1), sorted(2:end));

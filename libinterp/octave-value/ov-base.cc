@@ -294,7 +294,7 @@ octave_base_value::vm_extract_forloop_double (octave_idx_type)
   error ("Type error extracting for loop iterator double value for VM");
 }
 
-bool 
+bool
 octave_base_value::maybe_update_double (double)
 {
   return false;

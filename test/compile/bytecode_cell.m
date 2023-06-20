@@ -46,7 +46,7 @@ function bytecode_cell ()
   __printf_assert__ ("%d ", a{:});
   __printf_assert__ ("%d ", a{:, 1});
   __printf_assert__ ("%d ", a{1, :});
-  __printf_assert__ ("%d ", a{:, :});  
+  __printf_assert__ ("%d ", a{:, :});
   __printf_assert__ ("%d ", size (a));
   __printf_assert__ ("%s ", class (a{1}));
 

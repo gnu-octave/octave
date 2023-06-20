@@ -1,6 +1,6 @@
 function bytecode_errors (idx)
   % We put test dispatch last, so that we don't have
-  % to update all columns and rows each time we 
+  % to update all columns and rows each time we
   % add a test ...
   run_test (idx);
 end

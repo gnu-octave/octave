@@ -1651,7 +1651,7 @@ void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
             {
               QString line (m_edit_area->text (i));
               QRegularExpressionMatch match = rxc.match (line);
-              
+
               if (match.hasMatch ())
                 {
                   len = match.capturedLength ();   // complete length

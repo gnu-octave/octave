@@ -101,7 +101,7 @@
 ## NaN values from the calculation using any of the previously specified input
 ## argument combinations.  The default value for @var{nanflag} is
 ## @qcode{"includenan"} which keeps NaN values in the calculation.  To
-## exclude NaN values set the value of @var{nanflag} to @qcode{"omitnan"}. 
+## exclude NaN values set the value of @var{nanflag} to @qcode{"omitnan"}.
 ## The output will still contain NaN values if @var{x} consists of all NaN
 ## values in the operating dimension.
 ##

@@ -54,7 +54,7 @@
 ## @item @qcode{"auto"} (default)
 ## Automatically calculate limits based on the plot data and the currently
 ## specified limit calculation method.
-## 
+##
 ## @item @qcode{"manual"}
 ## Fix axis limits at current values.
 ## @end table
@@ -65,7 +65,7 @@
 ## @item @qcode{"tickaligned"} (default)
 ## Calculate limits that encompass all of the data and extend outwards to the
 ## nearest tick mark.
-## 
+##
 ## @item @qcode{"tight"}
 ## Calculate limits that exactly fit the data range.
 ##

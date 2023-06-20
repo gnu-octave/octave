@@ -97,7 +97,7 @@ public:
       m_nargin (nargin),
       m_nargout (nargout)
   {
-    // If the function scope has more variables now due to something adding e.g. 
+    // If the function scope has more variables now due to something adding e.g.
     // a global too it after the compilation of the function was done we need
     // to resize the bytecode frame size.
     std::size_t n_syms =  fcn->scope_num_symbols ();
@@ -176,7 +176,7 @@ public:
         delete m_lazy_data->m_unwind_protect_frame;
         delete m_lazy_data;
         m_lazy_data = nullptr;
-      }   
+      }
   }
 
   ~bytecode_fcn_stack_frame ()
@@ -187,7 +187,7 @@ public:
 
 
   size_t local_to_external_offset (size_t local_offset) const
-  {   
+  {
     for (auto it : m_unwind_data->m_external_frame_offset_to_internal)
       {
         size_t local_tmp = it.second;
@@ -213,12 +213,12 @@ public:
       // The offsets that are not in the original translation table are in the extra slots added dynamically
       return m_size + (external_offset - m_orig_size);
     }
-    
+
     return it->second;
   }
 
   // Do an expensive check if the stack is in order. Call only during debugging.
-  void vm_dbg_check_scope () 
+  void vm_dbg_check_scope ()
   {
     symbol_scope scope = __get_interpreter__().get_current_scope ();
     auto symbols = scope.symbol_list ();
@@ -244,14 +244,14 @@ public:
           error ("VM stack check failed: %s != %s\n", scope_name.c_str (), frame_name.c_str ());
         if (scope_offset != frame_offset && frame_name != "")
           error ("VM stack check failed: %zu != %zu\n", scope_offset, frame_offset);
-        
+
         if (internal_offset >= internal_size ())
           internal_resize (internal_offset + 1);
 
         auto flag = get_scope_flag (scope_offset);
         if (flag == PERSISTENT || flag == GLOBAL)
           continue;
-        
+
         octave_value ov1 = varval (sym_scope);
         octave_value ov2 = varval (scope_name);
         octave_value ov3 = varval (scope_offset);
@@ -509,7 +509,7 @@ public:
 
   virtual octave_value get_active_bytecode_call_arg_names ()
   {
-    
+
     // Handle ARG_NAMES
     if (!m_unwind_data || !m_vm)
       return Cell {};
@@ -564,7 +564,7 @@ public:
         case stack_frame::IGNORED:
           if (!m_lazy_data)
             return {};
-          else 
+          else
             return m_lazy_data->m_ignored;
         case stack_frame::ARG_NAMES:
         {
@@ -689,7 +689,7 @@ public:
 
     // Handle native int %nargout specially. Note that changing
     // the value of %nargout via the this ref wont work.
-    if (local_offset == 0) 
+    if (local_offset == 0)
       return fake_dummy_nargout = octave_value {m_stack_start [0].i};
     if (local_offset < stack_slots)
       {
@@ -860,8 +860,8 @@ public:
 
   void display (bool follow = true) const;
 
-  int line () const 
-  { 
+  int line () const
+  {
     if (! m_vm)
       return -1;
 
@@ -870,7 +870,7 @@ public:
   }
 
   int column () const
-  { 
+  {
     if (! m_vm)
       return -1;
 
@@ -1989,7 +1989,7 @@ std::shared_ptr<stack_frame>
 stack_frame::create_bytecode (tree_evaluator& tw, octave_user_function *fcn,
                               vm &vm, std::size_t index,
                               const std::shared_ptr<stack_frame>& parent_link,
-                              const std::shared_ptr<stack_frame>& static_link, 
+                              const std::shared_ptr<stack_frame>& static_link,
                               int nargout, int nargin)
 {
   // If we have any cached shared_ptr to empty bytecode_fcn_stack_frame objects

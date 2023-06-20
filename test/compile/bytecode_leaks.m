@@ -105,7 +105,7 @@ function [a b] = bytecode_leaks (c, d)
   catch
   end
   assert (refs_e, __ref_count (e))
-  
+
   % eval dynamic stack
   suby8 (e);
   assert (refs_e, __ref_count (e))

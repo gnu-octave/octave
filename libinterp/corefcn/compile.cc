@@ -189,15 +189,15 @@ Not that output to a variable is not implemented yet.
 {
   int nargin = args.length ();
 
-  // Unless a "profiler enabled" flag is added to the evaluator 
+  // Unless a "profiler enabled" flag is added to the evaluator
   // the vm profiler need the debugger to be active for it to actually
   // be able to profile.
   if (!interp.get_evaluator ().debug_mode ())
-    warning ("As a workaround atleast one breakpoint has to be set" 
+    warning ("As a workaround atleast one breakpoint has to be set"
     " in any file (preferably not being profiled) for the profiler to actually profile anything.");
 
   std::string arg0;
-  
+
   if (nargin >= 1)
    arg0 = args (0).string_value ();
 

@@ -117,7 +117,7 @@ def randn (rows, cols):
         for i in range(cols):
             arr.append(random.gauss (0, 1))
         return arr
-    
+
     arr = array()
     for i in range (rows):
         arr_row = array('d')
@@ -146,4 +146,4 @@ def main():
         print (t[0].__name__ + " in %g s" % dt)
 
 if __name__ == "__main__":
-    main ()    
+    main ()

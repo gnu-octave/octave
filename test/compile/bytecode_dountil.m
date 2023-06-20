@@ -100,7 +100,7 @@ function bytecode_dountil ()
     end
     continue;
   until i == 3
-  __printf_assert__ ("%d ", i); 
+  __printf_assert__ ("%d ", i);
 
   i = 0;
   do

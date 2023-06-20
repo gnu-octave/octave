@@ -1,7 +1,7 @@
 ## Test display due to no ";" at eol
 ##
 ## We are overloading display for double so we place this test
-## in its own folder to not mess double up for the other 
+## in its own folder to not mess double up for the other
 ## tests.
 
 %!test

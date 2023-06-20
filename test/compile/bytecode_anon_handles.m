@@ -17,7 +17,7 @@ function bytecode_anon_handles ()
   __printf_assert__ ("%d %d %d ", a, b, c);
   [a b] = h4();
   __printf_assert__ ("%d %d ", a, b);
-  
+
   h5 = @(x) @(y) __printf_assert__ ("%d %d ", x, y);
   h5(11)(12)
 

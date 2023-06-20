@@ -35,7 +35,7 @@ function bytecode_trycatch ()
     error("foo");
   catch
   end
-  
+
   % Error object
   try
     __printf_assert__ ("yay2 ");
@@ -135,7 +135,7 @@ function bytecode_trycatch ()
       switch m
         case 2
       end
- 
+
       for i = 1:3
         try
           qwe = '1';
@@ -151,7 +151,7 @@ function bytecode_trycatch ()
                 for k = 1:3
                 end
               end
-          end      
+          end
         catch
           __printf_assert__ ("yay13 ");
           __printf_assert__ ("%s ", getfield (lasterror (), 'message'));

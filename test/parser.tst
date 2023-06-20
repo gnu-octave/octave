@@ -61,7 +61,7 @@
 %! assert (!a .b, logical ([1 0]));
 %! assert (3*a .b, [0 3]);
 %! assert (a. b-1, [-1 0]);
-%! warning ('off', 'Octave:colon-nonscalar-argument', 'local'); 
+%! warning ('off', 'Octave:colon-nonscalar-argument', 'local');
 %! assert (a. b:3, 0:3);
 %! assert (a. b>0.5, logical ([0 1]));
 %! assert (a. b&0, logical ([0 0]));

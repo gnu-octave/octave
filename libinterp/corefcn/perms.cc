@@ -321,7 +321,7 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
   else  // none of the above class criteria were met
     {
       warning ("perms: unable to permute for class %s", clname.c_str ());
-      // retval stays empty 
+      // retval stays empty
     }
   return ovl (retval);
 }

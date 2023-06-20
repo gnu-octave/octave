@@ -480,7 +480,7 @@ class vm
   type_info::binary_op_fcn m_fn_dbl_gr_eq = nullptr;
   type_info::binary_op_fcn m_fn_dbl_eq = nullptr;
   type_info::binary_op_fcn m_fn_dbl_neq = nullptr;
-  
+
   type_info::unary_op_fcn m_fn_dbl_usub = nullptr;
   type_info::unary_op_fcn m_fn_dbl_not = nullptr;
   type_info::unary_op_fcn m_fn_bool_not = nullptr;
@@ -535,7 +535,7 @@ class vm
   error_data
   handle_error (error_type et);
 
-  static 
+  static
   loc_entry find_loc (int ip, std::vector<octave::loc_entry> &loc_entries);
 
   octave_value_list execute_code (const octave_value_list &args, int root_nargout)

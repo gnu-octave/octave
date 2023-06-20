@@ -509,7 +509,7 @@ octave::print_bytecode(bytecode &bc)
   auto v_ls = opcodes_to_strings (bc);
   for (auto ls : v_ls)
     {
-      printf ("\t%5d: %s\n", ls.first, ls.second.c_str ()); 
+      printf ("\t%5d: %s\n", ls.first, ls.second.c_str ());
     }
 }
 
@@ -851,7 +851,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
     }
 
 #if defined (__GNUC__) && defined (__x86_64__)
-  // We strongly suggest to GCC to put sp, ip and bsp in actual registers with 
+  // We strongly suggest to GCC to put sp, ip and bsp in actual registers with
   // the "local register variable" extension.
   //
   // If GCC is not nudged to put these in registers, its register allocator
@@ -1498,7 +1498,7 @@ push_folded_cst:
     int slot = arg0;
     unsigned char b0 = *ip++;
     unsigned char b1 = *ip++;
-  
+
     octave_cached_value *ovb = static_cast<octave_cached_value*> (bsp[slot].ovb);
     if (ovb->is_defined () && ovb->cache_is_valid ())
       {
@@ -1642,7 +1642,7 @@ push_slot_disp:
     if (ov.is_maybe_function ())
       {
         if (ov.is_undefined ()) // class objects are defined
-          ov_was_cmd = true; 
+          ov_was_cmd = true;
         ip -= 2; // Rewind to slot so the state matches 'push_slot_nargoutn' and 'push_slot_dispatch'.
         goto cmd_fcn_or_undef_error;
       }
@@ -2054,7 +2054,7 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
           {
             ip -= 1;
             int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
-            
+
             CHECK (ip[-2 + wide_opcode_offset] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
             ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_1D);
 
@@ -2684,7 +2684,7 @@ for_cond:
 
     // Increase counter
     TOP ().i++; // Wraps to zero first iteration
-    
+
     // Check if we done all iterations
     // n is second element on the stack
     if (TOP ().i == SEC ().i)
@@ -3868,7 +3868,7 @@ index_cell_id0:
         slot = arg0;
         nargout = 0;
       }
-    
+
     int n_args_on_stack = *ip++;
 
     // The object to index is before the args on the stack
@@ -5545,7 +5545,7 @@ load_2_cst:
   else if (0)
     debug_check_1b:
     onebyte_op = true;
-  
+
   {
     int tmp_ip = ip - code;
     if (onebyte_op)
@@ -5560,7 +5560,7 @@ load_2_cst:
       {
         int64_t t1 = vm_profiler::unow ();
 
-        auto p = m_vm_profiler;     
+        auto p = m_vm_profiler;
         if (!p) // Only happens as a race between m_profiler_enabled and m_vm_profiler
           goto debug_check_end;
 
@@ -5920,7 +5920,7 @@ static void copy_many_args_to_caller (octave::stack_element *sp,
 static octave_value xeval_for_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx);
 
 // This function reimplements octave_lvalue::numel()
-// TODO: octave_lvalue::numel() could be broken out or made static and used instead. But don't mess with that code 
+// TODO: octave_lvalue::numel() could be broken out or made static and used instead. But don't mess with that code
 //       to keep the VM somewhat independent of other code.
 static int lhs_assign_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx)
 {
@@ -6430,7 +6430,7 @@ vm_profiler::print_to_stdout ()
       auto v_ip_s = map_fn_to_opcodes_stringrows[fn_name];
 
       map<int, int> map_op_offset_to_src_line;
-      
+
       for (auto ip_s : v_ip_s)
         {
           int ip = ip_s.first;
@@ -6677,7 +6677,7 @@ vm_profiler::exit_fn (std::string fn_name)
             break;
           }
       }
-    
+
     vm_profiler_call call = m_shadow_call_stack.back ();
     m_shadow_call_stack.pop_back ();
 

@@ -152,7 +152,7 @@ get_cached_obj (const octave_value_list& args)
           set_cached_function (val, args, current_n_updated);
           return val;
         }
-      
+
       val = symtab.find_function (m_fcn_name);
       if (val.is_function ())
         {
@@ -184,7 +184,7 @@ get_cached_fcn_internal (const octave_value_list& args)
       set_cached_function (val, args, current_n_updated);
       return fcn;
     }
-  
+
   val = symtab.find_function (m_fcn_name);
   if (val.is_function ())
     {

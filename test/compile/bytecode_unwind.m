@@ -23,7 +23,7 @@ function bytecode_unwind ()
     suby (3);
   catch
   end
-  
+
   suby (4);
   suby (5);
   suby (6);
@@ -31,7 +31,7 @@ function bytecode_unwind ()
   % Break and returns that are not executed
   %
   % The combination "break and return", "break" and "return"
-  % takes different codepaths in the walker so we test all 
+  % takes different codepaths in the walker so we test all
   % combinations here.
 
   unwind_protect
@@ -76,7 +76,7 @@ function suby (a)
       return
       __printf_assert__ ("boo ");
     unwind_protect_cleanup
-      __printf_assert__ ("subyyay2 "); 
+      __printf_assert__ ("subyyay2 ");
     end
     __printf_assert__ ("boo ");
   elseif a == 2
@@ -87,11 +87,11 @@ function suby (a)
         return
         __printf_assert__ ("boo ");
       unwind_protect_cleanup
-        __printf_assert__ ("subyyay4 "); 
+        __printf_assert__ ("subyyay4 ");
       end
       __printf_assert__ ("boo ");
     unwind_protect_cleanup
-      __printf_assert__ ("subyyay5 "); 
+      __printf_assert__ ("subyyay5 ");
     end
     __printf_assert__ ("boo ");
   elseif a == 3
@@ -102,11 +102,11 @@ function suby (a)
         error foooo
         __printf_assert__ ("boo ");
       unwind_protect_cleanup
-        __printf_assert__ ("subyyay7 "); 
+        __printf_assert__ ("subyyay7 ");
       end
       __printf_assert__ ("boo ");
     unwind_protect_cleanup
-      __printf_assert__ ("subyyay8 "); 
+      __printf_assert__ ("subyyay8 ");
     end
     __printf_assert__ ("boo ");
   elseif a == 4
@@ -116,7 +116,7 @@ function suby (a)
         break;
         __printf_assert__ ("boo ");
       unwind_protect_cleanup
-        __printf_assert__ ("subyyay10 "); 
+        __printf_assert__ ("subyyay10 ");
       end
       __printf_assert__ ("boo ");
     end
@@ -130,14 +130,14 @@ function suby (a)
             break;
             __printf_assert__ ("boo ");
           unwind_protect_cleanup
-            __printf_assert__ ("subyyay13 "); 
+            __printf_assert__ ("subyyay13 ");
           end
           __printf_assert__ ("boo ");
         end
         break;
         __printf_assert__ ("boo ");
       unwind_protect_cleanup
-        __printf_assert__ ("subyyay14 "); 
+        __printf_assert__ ("subyyay14 ");
       end
       __printf_assert__ ("boo ");
     end
@@ -153,7 +153,7 @@ function suby (a)
               error ('qwe');
               __printf_assert__ ("boo ");
             unwind_protect_cleanup
-              __printf_assert__ ("subyyay17 "); 
+              __printf_assert__ ("subyyay17 ");
             end
             __printf_assert__ ("boo ");
           end
@@ -162,7 +162,7 @@ function suby (a)
         end
         __printf_assert__ ("boo ");
       unwind_protect_cleanup
-        __printf_assert__ ("subyyay18 "); 
+        __printf_assert__ ("subyyay18 ");
       end
       __printf_assert__ ("boo ");
     end

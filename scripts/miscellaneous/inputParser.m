@@ -358,7 +358,16 @@ classdef inputParser < handle
       endif
 
       this.validate_name ("Parameter", name);
-      this.Parameter(end+1) = struct ("name", name, "def", def, "val", val);
+      if iscell(def)
+        ## Allow constructs like these (bug #64305)
+        ##    p = inputParser;
+        ##    p.addParameter('p3', {});
+        tmp = struct ("name", name, "def", [], "val", val);
+        tmp.def = def;
+        this.Parameter(end+1) = tmp;
+      else
+        this.Parameter(end+1) = struct ("name", name, "def", def, "val", val);
+      endif
 
     endfunction
 
@@ -1027,6 +1036,13 @@ endclassdef
 %! p.addParameter ('a',1);
 %! p.parse (30, 'b', 20, 'a',10);
 %! assert (fieldnames (p.Results), {'a'; 'b'; 'c'; 'z'});
+
+%!test <*64305>
+%! p = inputParser ();
+%! p.addParameter ('a',{});
+%! p.parse ('a', 20);
+%! assert (fieldnames (p.Results), {'a'});
+%! assert (p.Results.a, 20);
 
 %!test <*49793>
 %! p = inputParser ();

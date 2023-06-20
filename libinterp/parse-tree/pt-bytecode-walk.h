@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2022 The Octave Project Developers
+// Copyright (C) 2022-2023 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -169,6 +169,7 @@ namespace octave
     int m_depth = 0;
     int m_offset_n_locals = -1;
     int m_n_locals = 0;
+    int m_n_nested_loops = 0;
 
     // Counter to choose different alternative op-codes in a try to help branch prediction
     int m_cnt_alts_cst = 0;
@@ -184,6 +185,11 @@ namespace octave
     int m_ignored_of_total = 0;
     std::vector<int> m_v_ignored;
 
+    //
+    bool m_is_folding = false;
+    std::vector<tree*> m_v_trees_to_fold;
+    std::vector<int> m_v_offset_of_folds;
+    int m_n_folds = 0;
 
     std::map<std::string, int> m_map_locals_to_slot;
 
@@ -192,7 +198,7 @@ namespace octave
 
     static std::map<std::string, octave_base_value::unary_mapper_t> m_name_to_unary_func;
 
-    void add_id_to_table (std::string name);
+    int add_id_to_table (std::string name);
 
     int n_on_stack_due_to_stmt ();
 

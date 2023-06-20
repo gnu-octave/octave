@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2022 The Octave Project Developers
+// Copyright (C) 2022-2023 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -89,6 +89,7 @@ else /* TODO: Should be function call to keep code shorter. */\
       STACK_DESTROY (2);                \
       PUSH_OV (std::move (ans));        \
     }                                   \
+  CATCH_INTERRUPT_EXCEPTION             \
   CATCH_INDEX_EXCEPTION                 \
   CATCH_EXECUTION_EXCEPTION             \
   CATCH_BAD_ALLOC                       \
@@ -104,7 +105,7 @@ else /* TODO: Should be function call to keep code shorter. */\
   int t_type = target_type;                                                              \
   if (OCTAVE_UNLIKELY (rhs_type != lhs_type || rhs_type != t_type))                      \
     {                                                                                    \
-      ip[-1] = static_cast<unsigned char> (INSTR::op_target);                            \
+      ip[-2] = static_cast<unsigned char> (INSTR::op_target);                            \
       goto jmp_target;                                                                   \
     }                                                                                    \
                                                                                          \
@@ -114,6 +115,7 @@ else /* TODO: Should be function call to keep code shorter. */\
       rhs.~octave_value ();                                                              \
       STACK_SHRINK (1);                                                                  \
     }                                                                                    \
+  CATCH_INTERRUPT_EXCEPTION                                                              \
   CATCH_INDEX_EXCEPTION                                                                  \
   CATCH_EXECUTION_EXCEPTION                                                              \
   CATCH_BAD_ALLOC                                                                        \
@@ -126,7 +128,7 @@ else /* TODO: Should be function call to keep code shorter. */\
   if (OCTAVE_UNLIKELY (ov.type_id () != target_type))                                    \
     {                                                                                    \
       /* Change the specialized opcode to the generic one */                             \
-      ip[-1] = static_cast<unsigned char> (INSTR::op_target);                            \
+      ip[-2] = static_cast<unsigned char> (INSTR::op_target);                            \
       goto jmp_target;                                                                   \
     }                                                                                    \
                                                                                          \
@@ -134,6 +136,7 @@ else /* TODO: Should be function call to keep code shorter. */\
     {                                                                                    \
       ov = op_fn (ov.get_rep ());                                          \
     }                                                                                    \
+  CATCH_INTERRUPT_EXCEPTION                                                              \
   CATCH_INDEX_EXCEPTION                                                                  \
   CATCH_EXECUTION_EXCEPTION                                                              \
   CATCH_BAD_ALLOC                                                                        \
@@ -148,7 +151,7 @@ else /* TODO: Should be function call to keep code shorter. */\
   int lhs_type = lhs.type_id ();                                                           \
   if (rhs_type == lhs_type && rhs_type == m_scalar_typeid)                                 \
     {                                                                                      \
-      ip[-1] = static_cast<unsigned char> (INSTR::op_target);                              \
+      ip[-2] = static_cast<unsigned char> (INSTR::op_target);                              \
       goto jmp_target;                                                                     \
     }                                                                                      \
                                                                                            \
@@ -161,6 +164,7 @@ else /* TODO: Should be function call to keep code shorter. */\
       STACK_DESTROY (2);                                                                   \
       PUSH_OV (std::move (ans));                                                           \
     }                                                                                      \
+  CATCH_INTERRUPT_EXCEPTION                                                                \
   CATCH_INDEX_EXCEPTION                                                                    \
   CATCH_EXECUTION_EXCEPTION                                                                \
   CATCH_BAD_ALLOC                                                                          \
@@ -193,7 +197,13 @@ catch (index_exception& ie)                              \
   goto unwind;                                           \
 }                                                        \
 
-
+#define CATCH_INTERRUPT_EXCEPTION \
+catch (interrupt_exception& e)                                          \
+  {                                                                     \
+    (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);            \
+    goto unwind;                                                        \
+  }                                                                     \
+ 
 #define CATCH_EXECUTION_EXCEPTION \
 catch (execution_exception& e)                                          \
   {                                                                     \
@@ -204,6 +214,35 @@ catch (execution_exception& e)                                          \
     goto unwind;                                                        \
   }                                                                     \
 
+#define CATCH_STACKPUSH_EXECUTION_EXCEPTION \
+catch (execution_exception& e)                                          \
+  {                                                                     \
+    m_could_not_push_frame = true;                                      \
+    (*sp++).pee = new execution_exception {e};                          \
+    (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);           \
+                                                                        \
+    goto unwind;                                                        \
+  }                                                                     \
+
+#define CATCH_STACKPUSH_BAD_ALLOC \
+catch (const std::bad_alloc&)                                           \
+{                                                                       \
+  m_could_not_push_frame = true;                                        \
+  (*sp++).i = static_cast<int> (error_type::BAD_ALLOC);                 \
+                                                                        \
+  goto unwind;                                                          \
+}
+
+#define CATCH_EXIT_EXCEPTION \
+catch (const exit_exception& e)                                         \
+{                                                                       \
+  (*sp++).i = e.exit_status ();                                         \
+  (*sp++).i = e.safe_to_return ();                                      \
+  (*sp++).i = static_cast<int> (error_type::EXIT_EXCEPTION);            \
+                                                                        \
+  goto unwind;                                                          \
+}
+
 #define CATCH_BAD_ALLOC \
 catch (const std::bad_alloc&)                                           \
 {                                                                       \
@@ -213,11 +252,16 @@ catch (const std::bad_alloc&)                                           \
 }
 
 #define MAKE_BYTECODE_CALL \
-CHECK_STACK_N (stack_min_for_new_call);                                                           \
+if (sp + stack_min_for_new_call >= m_stack + stack_size)                                          \
+  {                                                                                               \
+    (*sp++).pee = new execution_exception {"error","","VM is running out of stack space"};        \
+    (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);                                     \
+    goto unwind;                                                                                  \
+  }                                                                                               \
 /* We are now going to call another function */                                                   \
 /* compiled to bytecode */                                                                        \
                                                                                                   \
-m_tw->set_active_bytecode_ip (ip - code);                                                                \
+m_tw->set_active_bytecode_ip (ip - code);                                                         \
 stack_element *first_arg = sp - n_args_on_stack;                                                  \
                                                                                                   \
 /* Push address to first arg (or would one would have been */                                     \
@@ -263,7 +307,6 @@ if (OCTAVE_UNLIKELY (m_profiler_enabled))                                       
 m_data = data = bc.m_data.data ();                                                                \
 m_code = code = bc.m_code.data ();                                                                \
 m_name_data = name_data = bc.m_ids.data ();                                                       \
-m_name_data_size = bc.m_ids.size ();                                                              \
 m_unwind_data = unwind_data = &bc.m_unwind_data;                                                  \
                                                                                                   \
                                                                                                   \
@@ -272,7 +315,7 @@ ip = code;                                                                      
 int n_returns_callee = static_cast<signed char> (*ip++); /* Negative for varargout */             \
 n_returns_callee = n_returns_callee >= 0 ? n_returns_callee : -n_returns_callee;                  \
 int n_args_callee = static_cast<signed char> (*ip++); /* Negative for varargin */                 \
-int n_locals_callee = *ip++;                                                                      \
+int n_locals_callee = POP_CODE_USHORT ();                                                         \
                                                                                                   \
 if (n_args_callee < 0)                                                                            \
 {                                                                                                 \
@@ -333,7 +376,14 @@ int n_locals_to_ctor =                                                          
 for (int i = 0; i < n_locals_to_ctor; i++)                                                        \
   PUSH_OV ();                                                                                     \
                                                                                                   \
-m_tw->push_stack_frame(*this, usr_fcn, nargout, n_args_on_callee_stack);                          \
+                                                                                                  \
+try                                                                                               \
+  {                                                                                               \
+    m_tw->push_stack_frame(*this, usr_fcn, nargout, n_args_on_callee_stack);                      \
+  }                                                                                               \
+CATCH_STACKPUSH_EXECUTION_EXCEPTION /* Sets m_could_not_push_frame to true */                     \
+CATCH_STACKPUSH_BAD_ALLOC                                                                         \
+                                                                                                  \
 /* "auto var" in the frame object. This is needed if nargout() etc are called */                  \
 set_nargout (nargout);                                                                            \
 /* Called fn needs to know about ignored outputs .e.g. [~, a] = foo() */                          \

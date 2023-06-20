@@ -3,6 +3,7 @@ compile_bench_TEST_FILES = \
   %reldir%/compile-bench/bench-octave/bench_cov.m\
   %reldir%/compile-bench/bench-octave/bench_median.m\
   %reldir%/compile-bench/bench-octave/do_until_loop_empty.m\
+  %reldir%/compile-bench/bench-octave/fib.m\
   %reldir%/compile-bench/bench-octave/for_loop_binop_1.m\
   %reldir%/compile-bench/bench-octave/for_loop_empty.m\
   %reldir%/compile-bench/bench-octave/for_loop_fncall.m\

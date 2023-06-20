@@ -7,7 +7,7 @@ function bytecode_eval_1 ()
   assert (v == 11);
 
   % ans
-  eval ("12");
+  eval ("12;");
   assert (ans == 12);
 
   % Change variable value
@@ -62,14 +62,14 @@ end
 
 function sub1()
   % Simple
-  assert (2 == eval ("2"));
+  assert (2 == eval ("2;"));
   assert (2 == eval ("2;"));
 
-  v = eval("11");
+  v = eval("11;");
   assert (v == 11);
 
   % ans
-  eval ("12");
+  eval ("12;");
   assert (ans == 12);
 
   % Change variable value

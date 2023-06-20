@@ -5,6 +5,12 @@ from array import *
 import random
 import math
 
+def fib (n):
+    if n <= 1:
+        return 1
+
+    return fib (n - 1) + fib (n - 2)
+
 def for_loop_empty (n):
     for i in range (1, n + 1):
         continue
@@ -128,6 +134,7 @@ tests = \
     [for_loop_ifs, 5874007],
     [while_loop_empty, 24237997],
     [for_loop_subfun_1, 11930390],
+    [fib, 31],
     [qsort_iterative, "rowvec", 344418]]
 
 def main():

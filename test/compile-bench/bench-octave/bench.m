@@ -21,6 +21,7 @@ function bench (varargin)
     {"bench_median", {"rand rowvec", 1927}, 1, {}},
     {"bench_cov", {"rand rowvec", 15261}, 1, {}},
     {"str_mod", {"n", 2335290}, 1, {}},
+    {"fib", {"n", 31}, 1, {}},
   };
 
   reg = '';

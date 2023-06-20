@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2017-2022 The Octave Project Developers
+// Copyright (C) 2022-2023 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -99,6 +99,92 @@ public:
   }
 };
 
+class is_foldable_walker : tree_walker
+{
+public:
+  static bool is_foldable (tree_binary_expression &e)
+  {
+    return is_foldable_internal (e);
+  }
+
+  static bool is_foldable (tree_prefix_expression &e)
+  {
+    return is_foldable_internal (e);
+  }
+
+  static bool is_foldable (tree_postfix_expression &e)
+  {
+    return is_foldable_internal (e);
+  }
+
+private:
+  static bool is_foldable_internal (tree &e)
+  {
+    is_foldable_walker walker;
+
+    e.accept (walker);
+
+    return walker.m_is_foldable;
+  }
+
+  bool is_foldable_expr (tree_expression *e)
+  {
+    return e->is_binary_expression () || e->is_unary_expression () || e->is_constant ();
+  }
+
+  void visit_postfix_expression (tree_postfix_expression& e)
+  {
+    if (!m_is_foldable)
+      return;
+
+    tree_expression *op = e.operand ();
+
+    if (!is_foldable_expr (op))
+      {
+        m_is_foldable = false;
+        return;
+      }
+
+    op->accept (*this);
+  }   
+
+  void visit_prefix_expression (tree_prefix_expression& e)
+  {
+    if (!m_is_foldable)
+      return;
+
+    tree_expression *op = e.operand ();
+
+    if (!is_foldable_expr (op))
+      {
+        m_is_foldable = false;
+        return;
+      }
+
+    op->accept (*this);
+  }
+
+  void visit_binary_expression (tree_binary_expression &e)
+  {
+    if (!m_is_foldable)
+      return;
+
+    tree_expression *rhs = e.rhs ();
+    tree_expression *lhs = e.lhs ();
+    if (!is_foldable_expr (rhs) || !is_foldable_expr (lhs))
+      {
+        m_is_foldable = false;
+        return;
+      }
+
+    lhs->accept (*this);
+    if (m_is_foldable)
+      rhs->accept (*this);
+  }
+
+  bool m_is_foldable = true;
+};
+
 class collect_idnames_walker : tree_walker
 {
 public:
@@ -160,26 +246,49 @@ typename T::value_type vector_pop (T &v)
   } while ((0))
 
 #define PUSH_CODE(code_) do {\
-    unsigned char code_s_ = static_cast<unsigned char> (code_);     \
     int code_check_s_ = static_cast<int> (code_); \
+    unsigned char code_s_ = static_cast<unsigned char> (code_check_s_);     \
     CHECK (code_check_s_ < 256 && code_check_s_ >= -128); \
     m_code.m_code.push_back(code_s_);        \
   } while ((0))
 
 #define PUSH_CODE_LOAD_CST(offset) do {\
-  if ((offset) < 256)\
+  unsigned offset_ = offset; \
+  if (offset_ < 65536)\
     {\
+      if (offset_ >= 256) \
+        PUSH_CODE (INSTR::WIDE); \
       emit_alt (m_cnt_alts_cst, {INSTR::LOAD_CST, INSTR::LOAD_CST_ALT2, \
         INSTR::LOAD_CST_ALT3, INSTR::LOAD_CST_ALT4});\
-      PUSH_CODE (offset);\
+      if (offset_ >= 256) \
+        PUSH_CODE_SHORT (offset_);\
+      else\
+        PUSH_CODE (offset_);\
     }\
   else\
     {\
       PUSH_CODE (INSTR::LOAD_FAR_CST);\
-      PUSH_CODE_INT (offset);\
+      PUSH_CODE_INT (offset_);\
     }\
 } while (0)
 
+#define PUSH_SSLOT(sslot) PUSH_CODE(sslot)
+#define PUSH_WSLOT(wslot) PUSH_CODE_SHORT(wslot)
+#define NEED_WIDE_SLOTS() (m_map_locals_to_slot.size () >= 256)
+
+#define MAYBE_PUSH_WIDE_OPEXT(slot) \
+do {\
+  if (slot >= 256)\
+    PUSH_CODE (INSTR::WIDE);\
+} while ((0))
+
+#define PUSH_SLOT(slot) \
+do {\
+  if (slot >= 256)\
+    PUSH_WSLOT (slot);\
+  else\
+    PUSH_SSLOT (slot);\
+} while ((0))
 
 #define CODE_SIZE() m_code.m_code.size()
 #define CODE(x) m_code.m_code[x]
@@ -187,6 +296,8 @@ typename T::value_type vector_pop (T &v)
   unsigned u = code_;                 \
   unsigned char b0 = u & 0xFF;        \
   unsigned char b1 = (u >> 8) & 0xFF; \
+  int code_check_ss_ = static_cast<int> (u);                  \
+  CHECK (code_check_ss_ < 65536 && code_check_ss_ >= -32768); \
   PUSH_CODE (b0);                     \
   PUSH_CODE (b1);                     \
   } while ((0))
@@ -207,6 +318,8 @@ typename T::value_type vector_pop (T &v)
   unsigned u = value;                       \
   unsigned char b0 = u & 0xFF;              \
   unsigned char b1 = (u >> 8) & 0xFF;       \
+  int code_check_s_ = static_cast<int> (u); \
+  CHECK (code_check_s_ < 65536 && code_check_s_ >= -32768); \
   CODE (tmp) = b0;                          \
   CODE (tmp + 1) = b1;                      \
   } while ((0))
@@ -995,9 +1108,10 @@ visit_try_catch_command (tree_try_catch_command& cmd)
     {
       // ... so assign it to the identifiers in its slot.
       std::string name = expr_id->name ();
-      add_id_to_table (name);
+      int slot = add_id_to_table (name);
+      MAYBE_PUSH_WIDE_OPEXT (slot);
       PUSH_CODE (INSTR::ASSIGN);
-      PUSH_CODE (SLOT (name));
+      PUSH_SLOT (slot);
     }
   else
     {
@@ -1061,7 +1175,7 @@ visit_decl_command (tree_decl_command& cmd)
 
       std::string name = el->name ();
 
-      add_id_to_table (name);
+      int slot = add_id_to_table (name);
 
       if (el->is_global () || el->is_persistent())
         {
@@ -1088,7 +1202,7 @@ visit_decl_command (tree_decl_command& cmd)
           else
             prefix = "+";
 
-          add_id_to_table (prefix + name);
+          int prefix_slot = add_id_to_table (prefix + name);
 
           PUSH_CODE (INSTR::GLOBAL_INIT);
           if (el->is_global ())
@@ -1107,10 +1221,10 @@ visit_decl_command (tree_decl_command& cmd)
               // The VM need to know the special persistent variable offset
               // so we store it in the unwind data
               m_code.m_unwind_data.
-                m_slot_to_persistent_slot[SLOT (name)] = offset;
+                m_slot_to_persistent_slot[slot] = offset;
             }
-          PUSH_CODE (SLOT (name));
-          PUSH_CODE (SLOT (prefix + name));
+          PUSH_WSLOT (slot);
+          PUSH_WSLOT (prefix_slot);
 
           tree_expression *expr = el->expression ();
           bool has_init = expr;
@@ -1137,8 +1251,9 @@ visit_decl_command (tree_decl_command& cmd)
               // The value of rhs is on the operand stack now.
               // So we need to write it to its local slot and then
               // write that to its global value.
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::ASSIGN); // Write operand stack top ...
-              PUSH_CODE (SLOT (name));   // to the local slot of the global
+              PUSH_SLOT (slot);   // to the local slot of the global
 
               // I think only this makes sense
               CHECK (DEPTH () == 1);
@@ -1166,6 +1281,26 @@ visit_postfix_expression (tree_postfix_expression& expr)
 
   octave_value::unary_op op = expr.op_type ();
 
+  int folded_need_after = -1;
+  int fold_slot = -1;
+  // Check if we should to a constant fold. It only makes sense in loops since the expression is folded at runtime.
+  // Essentially there is a PUSH_FOLDED_CST opcode that is tied to a cache. If the cache is valid, push it and jump
+  // past the initialization code, otherwise run the initialization code and set the cache with SET_FOLDED_CST
+  if (m_n_nested_loops && !m_is_folding && is_foldable_walker::is_foldable (expr))
+    {
+      m_is_folding = true;
+
+      std::string fold_name = "#cst_fold_" + std::to_string (m_n_folds++);
+      fold_slot = add_id_to_table (fold_name);
+
+      MAYBE_PUSH_WIDE_OPEXT (fold_slot);
+      PUSH_CODE (INSTR::PUSH_FOLDED_CST);
+      PUSH_SLOT (fold_slot);
+      folded_need_after = CODE_SIZE ();
+      PUSH_CODE_SHORT (-1);
+    }
+
+  int slot = -1;
   // For ++ and -- we don't want a local pushed to the stack, but operate
   // directly in the slot, and then pushing the slot.
   if (e->is_identifier() && (op == octave_value::unary_op::op_decr ||
@@ -1174,7 +1309,7 @@ visit_postfix_expression (tree_postfix_expression& expr)
       // Just add the symbol to the table
       // TODO: Could there be command function calls messing this up?
       //       I.e. foo++ could be a foo()++?
-      add_id_to_table (e->name ());
+      slot = add_id_to_table (e->name ());
     }
   // We handle e.g. m("qwe")++ with eval
   else if (op != octave_value::unary_op::op_incr && op != octave_value::unary_op::op_decr)
@@ -1215,10 +1350,9 @@ visit_postfix_expression (tree_postfix_expression& expr)
           }
         else
           {
-            std::string name = e->name ();
-
+            MAYBE_PUSH_WIDE_OPEXT (slot);
             PUSH_CODE (INSTR::INCR_ID_POSTFIX);
-            PUSH_CODE (SLOT (name));
+            PUSH_SLOT (slot);
           }
       }
       break;
@@ -1236,15 +1370,26 @@ visit_postfix_expression (tree_postfix_expression& expr)
           }
         else
           {
-            std::string name = e->name ();
-
+            MAYBE_PUSH_WIDE_OPEXT (slot);
             PUSH_CODE (INSTR::DECR_ID_POSTFIX);
-            PUSH_CODE (SLOT (name));
+            PUSH_SLOT (slot);
           }
       }
       break;
     default:
       TODO ("not covered");
+    }
+
+  if (fold_slot != -1)
+    {
+      m_is_folding = false;
+
+      PUSH_CODE (INSTR::DUP);
+      MAYBE_PUSH_WIDE_OPEXT (fold_slot);
+      PUSH_CODE (INSTR::SET_FOLDED_CST);
+      PUSH_SLOT (fold_slot);
+
+      SET_CODE_SHORT (folded_need_after, CODE_SIZE ());
     }
 
   maybe_emit_bind_ans_and_disp (expr);
@@ -1263,6 +1408,26 @@ visit_prefix_expression (tree_prefix_expression& expr)
 
   octave_value::unary_op op = expr.op_type ();
 
+  int folded_need_after = -1;
+  int fold_slot = -1;
+  // Check if we should to a constant fold. It only makes sense in loops since the expression is folded at runtime.
+  // Essentially there is a PUSH_FOLDED_CST opcode that is tied to a cache. If the cache is valid, push it and jump
+  // past the initialization code, otherwise run the initialization code and set the cache with SET_FOLDED_CST
+  if (m_n_nested_loops && !m_is_folding && is_foldable_walker::is_foldable (expr))
+    {
+      m_is_folding = true;
+
+      std::string fold_name = "#cst_fold_" + std::to_string (m_n_folds++);
+      fold_slot = add_id_to_table (fold_name);
+
+      MAYBE_PUSH_WIDE_OPEXT (fold_slot);
+      PUSH_CODE (INSTR::PUSH_FOLDED_CST);
+      PUSH_SLOT (fold_slot);
+      folded_need_after = CODE_SIZE ();
+      PUSH_CODE_SHORT (-1);
+    }
+
+  int slot = -1;
   // For ++ and -- we don't want a local pushed to the stack, but operate
   // directly in the slot, and then pushing the slot.
   if (e->is_identifier() && (op == octave_value::unary_op::op_decr ||
@@ -1271,7 +1436,7 @@ visit_prefix_expression (tree_prefix_expression& expr)
       // Just add the symbol to the table
       // TODO: Could there be command function calls messing this up?
       //       I.e. foo++ could be a foo()++?
-      add_id_to_table (e->name ());
+      slot = add_id_to_table (e->name ());
     }
   // We handle e.g. m("qwe")++ with eval
   else if (op != octave_value::unary_op::op_incr && op != octave_value::unary_op::op_decr)
@@ -1312,10 +1477,9 @@ visit_prefix_expression (tree_prefix_expression& expr)
           }
         else
           {
-            std::string name = e->name ();
-
+            MAYBE_PUSH_WIDE_OPEXT (slot);
             PUSH_CODE (INSTR::INCR_ID_PREFIX);
-            PUSH_CODE (SLOT (name));
+            PUSH_SLOT (slot);
           }
       }
       break;
@@ -1333,14 +1497,26 @@ visit_prefix_expression (tree_prefix_expression& expr)
           }
         else
           {
-            std::string name = e->name ();
+            MAYBE_PUSH_WIDE_OPEXT (slot);
             PUSH_CODE (INSTR::DECR_ID_PREFIX);
-            PUSH_CODE (SLOT (name));
+            PUSH_SLOT (slot);
           }
       }
       break;
     default:
       TODO ("not covered");
+    }
+
+  if (fold_slot != -1)
+    {
+      m_is_folding = false;
+
+      PUSH_CODE (INSTR::DUP);
+      MAYBE_PUSH_WIDE_OPEXT (fold_slot);
+      PUSH_CODE (INSTR::SET_FOLDED_CST);
+      PUSH_SLOT (fold_slot);
+
+      SET_CODE_SHORT (folded_need_after, CODE_SIZE ());
     }
 
   maybe_emit_bind_ans_and_disp (expr);
@@ -1511,6 +1687,7 @@ visit_binary_expression (tree_binary_expression& expr)
   PUSH_NARGOUT (1);
 
   std::vector<int> need_after;
+  int fold_slot = -1;
 
   // "&" and "|" have a braindead short circuit behavoiur when
   // in if or while conditions, so we need special handling of those.
@@ -1522,7 +1699,7 @@ visit_binary_expression (tree_binary_expression& expr)
           // or not
           std::string id_warning = "%braindead_warning_" +
             std::to_string(CODE_SIZE ());
-          add_id_to_table(id_warning);
+          int slot = add_id_to_table(id_warning);
 
           // The left most expression is always evaled
           tree_expression *op1 = expr.lhs ();
@@ -1551,8 +1728,9 @@ visit_binary_expression (tree_binary_expression& expr)
 
           // The lhs was false which means we need to issue a warning
           // and push a false
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::BRAINDEAD_WARNING);
-          PUSH_CODE (SLOT (id_warning));
+          PUSH_SLOT (slot);
           PUSH_CODE ('&'); // The operand type to print in the warning
           PUSH_CODE (INSTR::PUSH_FALSE);
           PUSH_CODE (INSTR::JMP);
@@ -1597,7 +1775,7 @@ visit_binary_expression (tree_binary_expression& expr)
           // or not
           std::string id_warning = "%braindead_warning_" +
             std::to_string(CODE_SIZE ());
-          add_id_to_table(id_warning);
+          int slot = add_id_to_table(id_warning);
 
           // The left most expression is always evaled
           tree_expression *op1 = expr.lhs ();
@@ -1626,8 +1804,9 @@ visit_binary_expression (tree_binary_expression& expr)
           int need_target_check_rhs = CODE_SIZE ();
           PUSH_CODE_SHORT (-1);
 
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::BRAINDEAD_WARNING);
-          PUSH_CODE (SLOT (id_warning));
+          PUSH_SLOT (slot);
           PUSH_CODE ('|'); // The operand type to print in the warning
           PUSH_CODE (INSTR::PUSH_TRUE);
           PUSH_CODE (INSTR::JMP);
@@ -1669,15 +1848,32 @@ visit_binary_expression (tree_binary_expression& expr)
       else
         panic_impossible ();
     }
+  // Check if we should to a constant fold. It only makes sense in loops since the expression is folded at runtime.
+  // Essentially there is a PUSH_FOLDED_CST opcode that is tied to a cache. If the cache is valid, push it and jump
+  // past the initialization code, otherwise run the initialization code and set the cache with SET_FOLDED_CST
+  else if (m_n_nested_loops && !m_is_folding && is_foldable_walker::is_foldable (expr))
+    {
+      m_is_folding = true;
+
+      std::string fold_name = "#cst_fold_" + std::to_string (m_n_folds++);
+      fold_slot = add_id_to_table (fold_name);
+
+      MAYBE_PUSH_WIDE_OPEXT (fold_slot);
+      PUSH_CODE (INSTR::PUSH_FOLDED_CST);
+      PUSH_SLOT (fold_slot);
+      need_after.push_back (CODE_SIZE ());
+      PUSH_CODE_SHORT (-1);
+    }
 
   tree_expression *op1 = expr.lhs ();
   tree_expression *op2 = expr.rhs ();
   CHECK_NONNULL (op1);
   CHECK_NONNULL (op2);
 
-  if (op1->is_constant () && op2->is_constant ())
+  if (op1->is_constant () && op2->is_constant () && DATA_SIZE () < 255)
     {
       // If both rhs and lhs are constants we want to emit a super op-code
+      // aslong as the WIDE op is not going to be used (<255)
       emit_load_2_cst (op1, op2);
     }
   else
@@ -1747,6 +1943,16 @@ visit_binary_expression (tree_binary_expression& expr)
       TODO ("not covered");
     }
 
+  if (fold_slot != -1)
+    {
+      m_is_folding = false;
+
+      PUSH_CODE (INSTR::DUP);
+      MAYBE_PUSH_WIDE_OPEXT (fold_slot);
+      PUSH_CODE (INSTR::SET_FOLDED_CST);
+      PUSH_SLOT (fold_slot);
+    }
+
   for (int offset : need_after)
     SET_CODE_SHORT (offset, CODE_SIZE ());
 
@@ -1780,19 +1986,10 @@ emit_load_2_cst (tree_expression *lhs, tree_expression *rhs)
   PUSH_DATA (ov_rhs);
 
   unsigned cst_offset = DATA_SIZE () - 1;
+  CHECK (cst_offset < 256);
 
-    if (cst_offset < 256)
-    {
-      PUSH_CODE (INSTR::LOAD_2_CST);
-      PUSH_CODE (cst_offset - 1); // Offset of lhs
-    }
-  else
-    {
-      PUSH_CODE (INSTR::LOAD_FAR_CST);
-      PUSH_CODE_INT (cst_offset - 1);
-      PUSH_CODE (INSTR::LOAD_FAR_CST);
-      PUSH_CODE_INT (cst_offset);
-    }
+  PUSH_CODE (INSTR::LOAD_2_CST);
+  PUSH_CODE (cst_offset - 1); // Offset of lhs
 
   DEC_DEPTH();
 }
@@ -1892,6 +2089,7 @@ visit_octave_user_function (octave_user_function& fcn)
   // to it for later
   m_offset_n_locals = CODE_SIZE ();
   PUSH_CODE (-1); // Placeholder
+  PUSH_CODE (-1);
 
   // The first slot is a native int represenation nargout
   // so we add a dummy slot object for it
@@ -1928,17 +2126,21 @@ visit_octave_user_function (octave_user_function& fcn)
           // slot.
 
           std::string dummy_name = "!" + name;
-          add_id_to_table (dummy_name);
+          int slot_dummy = add_id_to_table (dummy_name);
 
           // PUSH_SLOT_INDEXED just pushes and does not check
           // for doing a cmd function call.
+          MAYBE_PUSH_WIDE_OPEXT (slot_dummy);
           PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-          PUSH_CODE (SLOT (dummy_name));
+          PUSH_SLOT (slot_dummy);
+          int slot = SLOT (name); 
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::FORCE_ASSIGN); // Accepts undefined rhs
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
           PUSH_CODE (INSTR::PUSH_FALSE); // False will do
+          MAYBE_PUSH_WIDE_OPEXT (slot_dummy);
           PUSH_CODE (INSTR::ASSIGN);
-          PUSH_CODE (SLOT (dummy_name));
+          PUSH_SLOT (slot_dummy);
 
           continue;
         }
@@ -2043,8 +2245,8 @@ visit_octave_user_function (octave_user_function& fcn)
             {
               // Add the function name id to the table and add the correct external offset.
               // (The name might not be the call-name of the function.)
-              add_id_to_table (name);
-              m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT (name);
+              int slot = add_id_to_table (name);
+              m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = slot;
             }
           else
             continue;
@@ -2072,10 +2274,12 @@ visit_octave_user_function (octave_user_function& fcn)
               // There is a default arg.
 
               std::string name = (*it)->name ();
+              int slot = SLOT (name);
 
               // Push the arg to the operand stack from its slot
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-              PUSH_CODE (SLOT (name));
+              PUSH_SLOT (slot);
               // If it is undefined or "Magic colon", execute the init code
               // otherwise jump past it.
               PUSH_CODE (INSTR::JMP_IFDEF);
@@ -2090,8 +2294,9 @@ visit_octave_user_function (octave_user_function& fcn)
 
               // The value of rhs is now on the operand stack. Assign it
               // to the arg.
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::ASSIGN);
-              PUSH_CODE (SLOT (name));
+              PUSH_SLOT (slot);
 
               POP_NARGOUT ();
               DEC_DEPTH();
@@ -2107,7 +2312,7 @@ visit_octave_user_function (octave_user_function& fcn)
   cmd_list->accept (*this);
 
   // Set the amount of locals that has a placeholder since earlier
-  m_code.m_code[m_offset_n_locals] = m_n_locals;
+  SET_CODE_SHORT (m_offset_n_locals, m_n_locals);
 
   // We want to add the locals to the scope in slot order
   // so we push all the locals' names to a vector by their slot
@@ -2269,7 +2474,7 @@ visit_multi_assignment (tree_multi_assignment& expr)
 
   // Push the slots
   for (std::string &name : v_arg_names)
-    PUSH_CODE (SLOT (name));
+    PUSH_WSLOT (SLOT (name));
 
   // Emit code to disp if no ;
   for (std::string &name : v_arg_names)
@@ -2288,7 +2493,7 @@ visit_multi_assignment (tree_multi_assignment& expr)
       for (unsigned j = 0; j < n_args; j++)
         {
           if (v_is_blackhole.at (j))
-            PUSH_CODE (SLOT (v_arg_names.at (j)));
+            PUSH_WSLOT (SLOT (v_arg_names.at (j)));
         }
 
       emit_unwind_protect_code_end (D);
@@ -2378,8 +2583,8 @@ emit_disp_obj (tree_expression &expr)
   // Magic slot number 0 (%nargout that is a native int) that
   // will never be printed corrensponds to "" name tag stashing of
   // the ovl before calling display.
-  PUSH_CODE (0);
-  PUSH_CODE (0); // never a command function call
+  PUSH_SLOT (0);
+  PUSH_WSLOT (0); // never a command function call
 }
 
 void
@@ -2393,8 +2598,10 @@ maybe_emit_push_and_disp_id (tree_expression &expr, const std::string &name, con
     return;
 
   CHECK (DEPTH () == 1);
+  int slot = SLOT (name);
+  MAYBE_PUSH_WIDE_OPEXT (slot);
   PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-  PUSH_CODE (SLOT (name));
+  PUSH_SLOT (slot);
   maybe_emit_disp_id (expr, name, maybe_cmd_name); // Always, not maybe
 }
 
@@ -2417,8 +2624,10 @@ maybe_emit_disp_id (tree_expression &expr, const std::string &name, const std::s
   arg_name_entry.m_ip_start = CODE_SIZE ();
 
   CHECK (DEPTH () == 1);
+  int slot = SLOT (name);
+  MAYBE_PUSH_WIDE_OPEXT (slot);
   PUSH_CODE (INSTR::DISP);
-  PUSH_CODE (SLOT (name));
+  PUSH_SLOT (slot);
   // E.g. "x" might either be a command call x() that should print
   // "ans = ..." or a variable that should print "x = ..." so we
   // store the information on whether a certain symbol
@@ -2426,9 +2635,9 @@ maybe_emit_disp_id (tree_expression &expr, const std::string &name, const std::s
   // Some expressions like "1+1" are never command calls
   // ans have maybe_cmd_name as ""
   if (maybe_cmd_name != "")
-    PUSH_CODE (SLOT (maybe_cmd_name));
+    PUSH_WSLOT (SLOT (maybe_cmd_name));
   else
-    PUSH_CODE (0);
+    PUSH_WSLOT (0);
 
   arg_name_entry.m_ip_end = CODE_SIZE ();
   PUSH_ARGNAMES_ENTRY (arg_name_entry);
@@ -2446,8 +2655,10 @@ maybe_emit_bind_ans_and_disp (tree_expression &expr, const std::string maybe_cmd
     {
       if (print_result)
         PUSH_CODE (INSTR::DUP);
+      int slot = SLOT ("ans");
+      MAYBE_PUSH_WIDE_OPEXT (slot);
       PUSH_CODE (INSTR::BIND_ANS);
-      PUSH_CODE (SLOT ("ans"));
+      PUSH_SLOT (slot);
     }
 
   if (expr.is_identifier ())
@@ -2604,10 +2815,11 @@ visit_simple_assignment (tree_simple_assignment& expr)
           // Name of the identifier
           std::string name = e->name ();
 
-          add_id_to_table (name);
+          int slot = add_id_to_table (name);
 
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
         }
       else
         {
@@ -2641,8 +2853,9 @@ visit_simple_assignment (tree_simple_assignment& expr)
           // Write the root value to the slot
           // i.e. root(2:end)(3,end)
           PUSH_CODE (INSTR::DUP);
+          MAYBE_PUSH_WIDE_OPEXT (active_idx_slot);
           PUSH_CODE (INSTR::FORCE_ASSIGN);
-          PUSH_CODE (active_idx_slot);
+          PUSH_SLOT (active_idx_slot);
         }
 
       std::vector<int> n_args_per_part;
@@ -2701,8 +2914,9 @@ visit_simple_assignment (tree_simple_assignment& expr)
           if (idx_has_ends && i + 1 != n_chained)
             {
               // Push the prior active index subexpression
+              MAYBE_PUSH_WIDE_OPEXT (active_idx_slot);
               PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-              PUSH_CODE (active_idx_slot);
+              PUSH_SLOT (active_idx_slot);
               // Duplicate the args
               PUSH_CODE (INSTR::DUPN);
               PUSH_CODE (1); // offset, under the object being indexed
@@ -2711,12 +2925,13 @@ visit_simple_assignment (tree_simple_assignment& expr)
               PUSH_CODE (INSTR::INDEX_OBJ);
               PUSH_CODE (1); // nargout
               PUSH_CODE (0); // "has slot"
-              PUSH_CODE (0); // The w/e slot
+              PUSH_WSLOT (0); // The w/e slot
               PUSH_CODE (n_args_in_part);
               PUSH_CODE (type);
               // Write the new active subexpression back to the slot
+              MAYBE_PUSH_WIDE_OPEXT (active_idx_slot);
               PUSH_CODE (INSTR::FORCE_ASSIGN);
-              PUSH_CODE (active_idx_slot);
+              PUSH_SLOT (active_idx_slot);
             }
 
           n_args_per_part.push_back (n_args_in_part);
@@ -2745,8 +2960,10 @@ visit_simple_assignment (tree_simple_assignment& expr)
             PUSH_CODE (INSTR::DUP);
 
           // Write the subassigned value back to the slot
+          int slot = SLOT (e->name ());
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::FORCE_ASSIGN);
-          PUSH_CODE (SLOT (e->name ()));
+          PUSH_SLOT (slot);
 
           maybe_emit_push_and_disp_id (expr, e->name ());
         }
@@ -2834,11 +3051,11 @@ visit_simple_assignment (tree_simple_assignment& expr)
               if (obj_has_end)
                 {
                   std::string obj_stack_depth_name = "%objsd_" + std::to_string (CODE_SIZE ());
-                  add_id_to_table (obj_stack_depth_name);
+                  obj_stack_depth_slot = add_id_to_table (obj_stack_depth_name);
 
+                  MAYBE_PUSH_WIDE_OPEXT (obj_stack_depth_slot);
                   PUSH_CODE (INSTR::SET_SLOT_TO_STACK_DEPTH);
-                  obj_stack_depth_slot = SLOT (obj_stack_depth_name);
-                  PUSH_CODE (obj_stack_depth_slot);
+                  PUSH_SLOT (obj_stack_depth_slot);
                 }
 
               nargs = arg->size ();
@@ -2908,22 +3125,27 @@ visit_simple_assignment (tree_simple_assignment& expr)
           //   Gives: a == 3
           // We use a slot to store the rhs in.
           std::string rhs_copy_nm = "%rhs_" + std::to_string (CODE_SIZE ());
+          int slot_cpy = -1;
           if (DEPTH () != 1)
             {
-              add_id_to_table (rhs_copy_nm);
+              slot_cpy = add_id_to_table (rhs_copy_nm);
               PUSH_CODE (INSTR::DUP);
+              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
               PUSH_CODE (INSTR::FORCE_ASSIGN);
-              PUSH_CODE (SLOT (rhs_copy_nm));
+              PUSH_SLOT (slot_cpy);
             }
 
+          int slot = SLOT (name);
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::SUBASSIGN_ID);
+          PUSH_SLOT (slot);
           PUSH_CODE (nargs);
-          PUSH_CODE (SLOT (name));
 
           if (DEPTH () != 1)
             {
+              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
               PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-              PUSH_CODE (SLOT (rhs_copy_nm));
+              PUSH_SLOT (slot_cpy);
             }
 
           maybe_emit_push_and_disp_id (expr, name);
@@ -2948,7 +3170,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
               std::string field_name = pv_nms->elem (0);
 
               // We just need the field's name in the VM
-              add_id_to_table (field_name);
+              int slot_field = add_id_to_table (field_name);
 
               tree_expression *rhs = expr.right_hand_side ();
 
@@ -2957,22 +3179,27 @@ visit_simple_assignment (tree_simple_assignment& expr)
               // The value of rhs is on the operand stack now
 
               std::string rhs_copy_nm = "%rhs_" + std::to_string (CODE_SIZE ());
+              int slot_cpy = -1;
               if (DEPTH () != 1) // Chained assignments?
                 {
-                  add_id_to_table (rhs_copy_nm);
+                  slot_cpy = add_id_to_table (rhs_copy_nm);
                   PUSH_CODE (INSTR::DUP);
+                  MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
                   PUSH_CODE (INSTR::FORCE_ASSIGN);
-                  PUSH_CODE (SLOT (rhs_copy_nm));
+                  PUSH_SLOT (slot_cpy);
                 }
 
+              int slot = SLOT (name);
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::SUBASSIGN_STRUCT);
-              PUSH_CODE (SLOT (name));
-              PUSH_CODE (SLOT (field_name));
+              PUSH_SLOT (slot);
+              PUSH_WSLOT (slot_field);
 
               if (DEPTH () != 1)
                 {
+                  MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
                   PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-                  PUSH_CODE (SLOT (rhs_copy_nm));
+                  PUSH_SLOT (slot_cpy);
                 }
 
               maybe_emit_push_and_disp_id (expr, name);
@@ -2990,8 +3217,10 @@ visit_simple_assignment (tree_simple_assignment& expr)
               // The value of rhs is on the stack now
 
               // We want lhs on the stack
+              int slot = SLOT (name);
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-              PUSH_CODE (SLOT (name));
+              PUSH_SLOT (slot);
 
               // The argument, foo.(arg) = bar
               tree_expression *dyn_expr = dyn_fields.front ();
@@ -3013,8 +3242,9 @@ visit_simple_assignment (tree_simple_assignment& expr)
 
               // Assign the assigned to value back to the slot
               // TODO: Neccessary?
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::FORCE_ASSIGN);
-              PUSH_CODE (SLOT (name));
+              PUSH_SLOT (slot);
 
               maybe_emit_push_and_disp_id (expr, name);
             }
@@ -3137,22 +3367,27 @@ visit_simple_assignment (tree_simple_assignment& expr)
           // Gives: a == 3
           // We use a slot to store the rhs in.
           std::string rhs_copy_nm = "%rhs_" + std::to_string (CODE_SIZE ());
+          int slot_cpy = -1;
           if (DEPTH () != 1)
             {
-              add_id_to_table (rhs_copy_nm);
+              slot_cpy = add_id_to_table (rhs_copy_nm);
               PUSH_CODE (INSTR::DUP);
+              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
               PUSH_CODE (INSTR::FORCE_ASSIGN);
-              PUSH_CODE (SLOT (rhs_copy_nm));
+              PUSH_SLOT (slot_cpy);
             }
 
+          int slot = SLOT (name);
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::SUBASSIGN_CELL_ID);
+          PUSH_SLOT (slot);
           PUSH_CODE (nargs);
-          PUSH_CODE (SLOT (name));
 
           if (DEPTH () != 1)
             {
+              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
               PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-              PUSH_CODE (SLOT (rhs_copy_nm));
+              PUSH_SLOT (slot_cpy);
             }
 
           maybe_emit_push_and_disp_id (expr, name);
@@ -3164,7 +3399,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
     {
       std::string name = lhs->name ();
 
-      add_id_to_table (name);
+      int slot = add_id_to_table (name);
 
       tree_expression *rhs = expr.right_hand_side ();
 
@@ -3175,15 +3410,17 @@ visit_simple_assignment (tree_simple_assignment& expr)
       if (op != octave_value::assign_op::op_asn_eq)
         {
           // Compound assignment have the type of operation in the code
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::ASSIGN_COMPOUND);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
           PUSH_CODE (op);
         }
       else
         {
           // Ordinary assignment has its own opcode.
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::ASSIGN);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
         }
 
       // If the assignment is not at root we want to keep the
@@ -3191,8 +3428,9 @@ visit_simple_assignment (tree_simple_assignment& expr)
       // a = (b = 3);
       if (DEPTH () != 1)
         {
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
         }
 
       maybe_emit_push_and_disp_id (expr, name);
@@ -3372,18 +3610,20 @@ visit_identifier (tree_identifier& id)
           if (obj.type == 0)
             {
               /* TODO: Is this op-code with slots really needed? */
+              MAYBE_PUSH_WIDE_OPEXT (obj.slot);
               PUSH_CODE (INSTR::END_ID);
+              PUSH_SLOT (obj.slot); // The slot variable being indexed
               PUSH_CODE (obj.nargs); // The amount of dimensions being indexed
               PUSH_CODE (obj.idx); // The offset of the index being indexed right now
-              PUSH_CODE (obj.slot); // The slot variable being indexed
             }
           else if (obj.type == 1)
             {
+              MAYBE_PUSH_WIDE_OPEXT (obj.slot);
               PUSH_CODE (INSTR::END_OBJ);
+              // Slot for keeping the stack depth of the object being indexed
+              PUSH_SLOT (obj.slot);
               PUSH_CODE (obj.nargs); // The amount of dimensions being indexed
               PUSH_CODE (obj.idx); // The offset of the index being indexed right now
-              // Slot for keeping the stack depth of the object being indexed
-              PUSH_CODE (obj.slot);
             }
           else
             panic_impossible ();
@@ -3401,13 +3641,13 @@ visit_identifier (tree_identifier& id)
               PUSH_CODE (obj.nargs);
               PUSH_CODE (obj.idx);
               PUSH_CODE (obj.type);
-              PUSH_CODE (obj.slot);
+              PUSH_WSLOT (obj.slot);
             }
         }
     }
   else
     {
-      add_id_to_table (name);
+      int slot = add_id_to_table (name);
 
       int loc_id = N_LOC ();
       PUSH_LOC ();
@@ -3427,11 +3667,12 @@ visit_identifier (tree_identifier& id)
           // "foo.a" and "foo{1}" might be command function calls
           // which is checked for in PUSH_SLOT_NARGOUT1_SPECIAL
           // Also foo might be a classdef meta object.
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           if (id.postfix_index () != '(')
             PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT1_SPECIAL);
           else
             PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
         }
       else if (DEPTH () == 1)
         {
@@ -3443,17 +3684,19 @@ visit_identifier (tree_identifier& id)
               // or not for display since "x" will print "x = 3"
               // for e.g. variables but "ans = 3" for command calls.
               std::string maybe_cmd_name = "%maybe_command";
-              add_id_to_table (maybe_cmd_name);
+              int slot_cmd = add_id_to_table (maybe_cmd_name);
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::PUSH_SLOT_DISP);
-              PUSH_CODE (SLOT (name));
-              PUSH_CODE (SLOT (maybe_cmd_name));
+              PUSH_SLOT (slot);
+              PUSH_WSLOT (slot_cmd);
 
               maybe_emit_bind_ans_and_disp (id, maybe_cmd_name);
             }
           else
             {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT0);
-              PUSH_CODE (SLOT (name));
+              PUSH_SLOT (slot);
 
               // Write the return value to ans. It is either the variables
               // value straight off, or e.g. a cmd function call return value.
@@ -3463,23 +3706,26 @@ visit_identifier (tree_identifier& id)
       else if (NARGOUT () == 1)
         {
           // Push the local at its slot number to the stack
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           if (name == "pi")
             PUSH_CODE (INSTR::PUSH_PI);
           else
             PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT1);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
         }
       else if (NARGOUT() > 1)
         {
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::PUSH_SLOT_NARGOUTN);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
           PUSH_CODE (NARGOUT ());
         }
       else
         {
           // Push the local at its slot number to the stack
+          MAYBE_PUSH_WIDE_OPEXT (slot);
           PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT0);
-          PUSH_CODE (SLOT (name));
+          PUSH_SLOT (slot);
         }
 
       LOC (loc_id).m_ip_end = CODE_SIZE ();
@@ -3489,7 +3735,7 @@ visit_identifier (tree_identifier& id)
   DEC_DEPTH();
 }
 
-void
+int
 bytecode_walker::
 add_id_to_table (std::string name)
 {
@@ -3501,7 +3747,11 @@ add_id_to_table (std::string name)
       // Push local
       m_code.m_ids.push_back(name);
       m_map_locals_to_slot[name] = m_n_locals++;
+
+      return m_n_locals - 1;
     }
+  
+  return it->second;
 }
 
 void
@@ -3542,8 +3792,10 @@ visit_do_until_command (tree_do_until_command& cmd)
   PUSH_CODE (INSTR::HANDLE_SIGNALS);
 
   // A empty body will yield a null list pointer
+  m_n_nested_loops++;
   if (list)
     list->accept (*this);
+  m_n_nested_loops--;
 
   // Any continue jumps to here (before the condition)
   for (int offset : POP_CONTINUE_TARGET())
@@ -3603,8 +3855,10 @@ visit_while_command (tree_while_command& cmd)
   PUSH_CODE (INSTR::HANDLE_SIGNALS);
 
   // nullptr if body is empty
+  m_n_nested_loops++;
   if (list)
     list->accept (*this);
+  m_n_nested_loops--;
 
   // The continue targets can now be set, to jump back
   // to the condition.
@@ -3847,67 +4101,6 @@ visit_if_command (tree_if_command& cmd)
     SET_CODE_SHORT (offset, CODE_SIZE ());
 }
 
-#if 0
-void
-bytecode_walker::
-visit_simple_index_expression (tree_simple_index_expression& expr)
-{
-  INC_DEPTH ();
-  tree_expression *e = expr.expression ();
-  CHECK_NONNULL(e);
-
-  if (! e->is_identifier ())
-    TODO ("non id:s need a special opcode to not have a name opcode");
-  std::string id_name = e->name ();
-
-  // Should push the object to index to the stack
-  INC_DEPTH ();
-  e->accept (*this);
-  DEC_DEPTH ();
-
-  tree_argument_list *arg = expr.arg ();
-
-  if (arg)
-    {
-      int nargs = arg->size ();
-      int idx = 0;
-      // We want to push the args to the stack
-      for (auto it = arg->begin (); it != arg->end (); it++, idx++)
-        {
-          INC_DEPTH ();
-          PUSH_ID_BEGIN_INDEXED (SLOT (id_name), idx, nargs);
-          (*it)->accept (*this);
-          POP_ID_BEING_INDEXED ();
-          DEC_DEPTH ();
-        }
-    }
-
-  int loc_id = N_LOC ();
-  PUSH_LOC ();
-  LOC (loc_id).m_ip_start = CODE_SIZE ();
-
-  if (NARGOUT () == 0)
-    PUSH_CODE (INSTR::INDEX_ID_NARGOUT0);
-  else if (NARGOUT () == 1)
-    PUSH_CODE (INSTR::INDEX_ID_NARGOUT1);
-  else
-    {
-      PUSH_CODE (INSTR::INDEX_IDN);
-      PUSH_CODE (NARGOUT ());
-    }
-
-  PUSH_CODE (arg ? arg->size () : 0);
-  // The vm need the name of the identifier for function lookups
-  PUSH_CODE (SLOT (id_name));
-
-  LOC (loc_id).m_ip_end = CODE_SIZE ();
-  LOC (loc_id).m_col = expr.column ();
-  LOC (loc_id).m_line = expr.line ();
-
-  DEC_DEPTH ();
-}
-#endif
-
 void
 bytecode_walker::
 visit_anon_fcn_handle (tree_anon_fcn_handle &expr)
@@ -3952,11 +4145,11 @@ emit_args_for_visit_index_expression (tree_argument_list *arg_list,
   if (obj_has_end)
     {
       std::string obj_stack_depth_name = "%objsd_" + std::to_string (CODE_SIZE ());
-      add_id_to_table (obj_stack_depth_name);
+      obj_stack_depth_slot = add_id_to_table (obj_stack_depth_name);
 
+      MAYBE_PUSH_WIDE_OPEXT (obj_stack_depth_slot);
       PUSH_CODE (INSTR::SET_SLOT_TO_STACK_DEPTH);
-      obj_stack_depth_slot = SLOT (obj_stack_depth_name);
-      PUSH_CODE (obj_stack_depth_slot);
+      PUSH_SLOT (obj_stack_depth_slot);
     }
 
   // We want to push the args to the stack
@@ -4121,66 +4314,87 @@ simple_visit_index_expression (tree_index_expression& expr)
       CHECK (e->is_identifier ());
 
       std::string id_name = e->name ();
-
+      int slot = SLOT (id_name);
+      MAYBE_PUSH_WIDE_OPEXT (slot);
       PUSH_CODE (INSTR::WORDCMD);
-      PUSH_CODE (nargout);
-
-      // Push nargin
-
-      PUSH_CODE (args ? args->size () : 0);
       // The vm need the name of the identifier for function lookups
-      PUSH_CODE (SLOT (id_name));
+      PUSH_SLOT (slot);
+      PUSH_CODE (nargout);
+      // Push nargin
+      PUSH_CODE (args ? args->size () : 0);
     }
   else if (e->is_identifier () && !(type == '.' && !struct_is_id_dot_id))
     {
       std::string id_name = e->name ();
+      int slot = SLOT (id_name);
+
       if (type == '(')
         {
           if (nargout == 0)
-            PUSH_CODE (INSTR::INDEX_ID_NARGOUT0);
+            {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
+              PUSH_CODE (INSTR::INDEX_ID_NARGOUT0);
+              // The vm need the name of the identifier for function lookups
+              PUSH_SLOT (slot);
+            }
           else if (nargout == 1)
             {
               // If the id is "sin", "cos", "round" etc, and there is one argument,
               // in the end map(unary_mapper_t) will be called while executing,
               // unless the user have overriden those.
               // We do a special opcode for those to speed them up.
+              // Don't do the special opcode if it would need wide slots, i.e. slot nr > 256.
               auto umaped_fn_it = m_name_to_unary_func.find (id_name);
-              if (!args || args->size () != 1 || umaped_fn_it == m_name_to_unary_func.end ())
-                PUSH_CODE (INSTR::INDEX_ID_NARGOUT1);
+              if (!args || args->size () != 1 || umaped_fn_it == m_name_to_unary_func.end () || slot > 256)
+                {
+                  MAYBE_PUSH_WIDE_OPEXT (slot);
+                  PUSH_CODE (INSTR::INDEX_ID_NARGOUT1);
+                }
               else
                 {
                   octave_base_value::unary_mapper_t idx = umaped_fn_it->second;
                   PUSH_CODE (INSTR::INDEX_ID1_MATHY_UFUN);
                   PUSH_CODE (static_cast<int> (idx));
                 }
+
+              PUSH_SLOT (slot);
             }
           else
             {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::INDEX_IDN);
+              PUSH_SLOT (slot);
               PUSH_CODE (nargout);
             }
 
           // Push nargin
           PUSH_CODE (args ? args->size () : 0);
-          // The vm need the name of the identifier for function lookups
-          PUSH_CODE (SLOT (id_name));
         }
       else if (type == '{')
         {
           if (nargout == 0)
-            PUSH_CODE (INSTR::INDEX_CELL_ID_NARGOUT0);
+            {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
+              PUSH_CODE (INSTR::INDEX_CELL_ID_NARGOUT0);
+              // The vm need the name of the identifier for function lookups
+              PUSH_SLOT (slot);
+            }
           else if (nargout == 1)
-            PUSH_CODE (INSTR::INDEX_CELL_ID_NARGOUT1);
+            {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
+              PUSH_CODE (INSTR::INDEX_CELL_ID_NARGOUT1);
+              PUSH_SLOT (slot);
+            }
           else
             {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
               PUSH_CODE (INSTR::INDEX_CELL_ID_NARGOUTN);
+              PUSH_SLOT (slot);
               PUSH_CODE (nargout);
             }
 
           // Push nargin
           PUSH_CODE (args ? args->size () : 0);
-          // The vm need the name of the identifier for function lookups
-          PUSH_CODE (SLOT (id_name));
         }
       else if (type == '.')
         {
@@ -4191,8 +4405,8 @@ simple_visit_index_expression (tree_index_expression& expr)
           CHECK (field_names.numel ());
           std::string field_name = field_names.elem (0);
 
-          PUSH_CODE (SLOT (id_name));    // id to index
-          PUSH_CODE (SLOT (field_name)); // VM need name of the field
+          PUSH_WSLOT (slot);   // id to index
+          PUSH_WSLOT (SLOT (field_name)); // VM need name of the field
         }
       else
         TODO ("Not implemeted typetag");
@@ -4205,7 +4419,7 @@ simple_visit_index_expression (tree_index_expression& expr)
       PUSH_CODE (INSTR::INDEX_OBJ);
       PUSH_CODE (nargout);
       PUSH_CODE (0); // "has slot"
-      PUSH_CODE (0); // The w/e slot
+      PUSH_WSLOT (0); // The w/e slot TODO: Remove?
       // Push nargin
       if (type == '.')
         PUSH_CODE (1); // Nargin always one for struct indexing
@@ -4357,17 +4571,21 @@ visit_index_expression (tree_index_expression& expr)
 
   arg_name_entry.m_ip_start = CODE_SIZE ();
 
-  PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-  PUSH_CODE (nargout);
   if (first_expression && first_expression->is_identifier ())
     {
+      int slot = SLOT (first_expression->name ());
+      MAYBE_PUSH_WIDE_OPEXT (slot);
+      PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
+      PUSH_SLOT (slot); // the slot
       PUSH_CODE (1); // has slot
-      PUSH_CODE (SLOT (first_expression->name ())); // the slot
+      PUSH_CODE (nargout);
     }
   else
     {
+      PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
+      PUSH_SLOT (0); // slot
       PUSH_CODE (0); // has slot
-      PUSH_CODE (0); // slot
+      PUSH_CODE (nargout);
     }
 
   PUSH_CODE (v_n_args.size ());
@@ -4379,7 +4597,7 @@ visit_index_expression (tree_index_expression& expr)
 
   arg_name_entry.m_ip_end = CODE_SIZE ();
   PUSH_ARGNAMES_ENTRY (arg_name_entry);
-  arg_name_entry = {}; // Reset it for next iteration of the loop
+  arg_name_entry = {}; // TODO: Remove?
 
   LOC (loc_id).m_ip_end = CODE_SIZE ();
   LOC (loc_id).m_col = expr.column ();
@@ -4432,7 +4650,7 @@ visit_simple_for_command (tree_simple_for_command& cmd)
   std::string id_name = lhs->name ();
   // We don't want the id pushed to the stack so we
   // don't walk it.
-  add_id_to_table (id_name);
+  int slot = add_id_to_table (id_name);
 
   tree_expression *expr = cmd.control_expr ();
   CHECK_NONNULL (expr);
@@ -4471,11 +4689,12 @@ visit_simple_for_command (tree_simple_for_command& cmd)
   // FOR_SETUP uses FOR_COND's operands the first loop iteration
   PUSH_TREE_FOR_DBG (&cmd); // Debug hit at condition
   int cond_offset = CODE_SIZE ();
+  MAYBE_PUSH_WIDE_OPEXT (slot);
   PUSH_CODE (INSTR::FOR_COND);
+  PUSH_SLOT (slot); // The for loop variable
   int need_after = CODE_SIZE ();
   PUSH_CODE_SHORT (-1); // Placeholder for after address
-  PUSH_CODE (SLOT (id_name)); // The for loop variable
-
+ 
   LOC (loc_id).m_ip_end = CODE_SIZE ();
   LOC (loc_id).m_col = cmd.column ();
   LOC (loc_id).m_line = cmd.line ();
@@ -4486,6 +4705,7 @@ visit_simple_for_command (tree_simple_for_command& cmd)
   // The body can be empty
   if (list)
     {
+      m_n_nested_loops++;
       PUSH_NESTING_STATEMENT (nesting_statement::FOR_LOOP);
       PUSH_BREAKS ();
       PUSH_CONTINUE_TARGET ();
@@ -4493,6 +4713,7 @@ visit_simple_for_command (tree_simple_for_command& cmd)
       for (int offset : POP_CONTINUE_TARGET())
         SET_CODE_SHORT (offset, cond_offset);
       POP_NESTING_STATEMENT ();
+      m_n_nested_loops--;
     }
 
   // A new loc for the for loop suffix code, so that any time
@@ -4594,14 +4815,15 @@ visit_complex_for_command (tree_complex_for_command& cmd)
   PUSH_CODE (INSTR::FOR_COMPLEX_COND);
   int need_after1 = CODE_SIZE ();
   PUSH_CODE_SHORT (-1); // Placeholder for after address
-  PUSH_CODE (SLOT (key_name));
-  PUSH_CODE (SLOT (val_name));
+  PUSH_WSLOT (SLOT (key_name));
+  PUSH_WSLOT (SLOT (val_name));
 
   // Walk body
   tree_statement_list *list = cmd.body ();
     // The body can be empty
   if (list)
     {
+      m_n_nested_loops++;
       PUSH_NESTING_STATEMENT (nesting_statement::FOR_LOOP);
       PUSH_BREAKS ();
       PUSH_CONTINUE_TARGET ();
@@ -4609,6 +4831,7 @@ visit_complex_for_command (tree_complex_for_command& cmd)
       for (int offset : POP_CONTINUE_TARGET())
         SET_CODE_SHORT (offset, cond_offset);
       POP_NESTING_STATEMENT ();
+      m_n_nested_loops--;
     }
 
   // Jump to condition block, TODO: unless all paths terminated
@@ -4652,10 +4875,11 @@ visit_fcn_handle (tree_fcn_handle &handle)
     TODO ("No support for method fcn handles yet");
 
   // slot for the handle function cache
-  add_id_to_table(aname);
+  int slot = add_id_to_table(aname);
 
+  MAYBE_PUSH_WIDE_OPEXT (slot);
   PUSH_CODE (INSTR::PUSH_FCN_HANDLE);
-  PUSH_CODE (SLOT (aname));
+  PUSH_SLOT (slot);
 
   maybe_emit_bind_ans_and_disp (handle);
 

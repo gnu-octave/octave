@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2022 The Octave Project Developers
+// Copyright (C) 2022-2023 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -381,33 +381,46 @@ struct vm_profiler
     std::string m_caller;
     std::string m_callee;
     int64_t m_entry_time;
-    int64_t m_t_cum;
+    int64_t m_t_self_cum; // Time spent in callee it-self
+    int64_t m_t_call_cum; // Time spent in bytecode calls, called from callee
   };
 
   struct vm_profiler_fn_stats
   {
     // Cumulative ns time at op-code at offset
     std::vector<int64_t> m_v_cum_t;
-    // Cumulative his at op-code at offset
+    // Cumulative hits at op-code at offset
     std::vector<int64_t> m_v_n_cum;
-    // The start of op-code timestamp. One level per recursive call
-    std::vector<int64_t> m_v_t0;
-    // The ip of the t0 timestamp. One level per recursive call
+    // Cumulative time spent in nested calls to a bytecode function at op-code at offset
+    std::vector<int64_t> m_v_cum_call_t;
+
+    void maybe_resize (unsigned ip)
+    {
+      if (ip >= m_v_cum_t.size ())
+        m_v_cum_t.resize (ip + 1);
+      if (ip >= m_v_n_cum.size ())
+        m_v_n_cum.resize (ip + 1);
+      if (ip >= m_v_cum_call_t.size ())
+        m_v_cum_call_t.resize (ip + 1);
+    }
+
+    // The last bytecode timestamp, i.e. the start of the currently running opcode. One level per call
+    std::vector<int64_t> m_v_t;
+    // The last ip, i.e. the ip being executed. One level per call
     std::vector<int> m_v_ip;
-    // One entry for each caller
+    // Set of callers. One entry for each caller
     std::set<std::string> m_set_callers;
+    // Amount of calls to this function
     int64_t m_n_calls;
 
-    // Data structures to keep track of calls
-    std::vector<std::string> m_v_callers; // Used in callee
+    // Data structures to keep track of calls. One level per call
+    std::vector<std::string> m_v_callers; // Used in callee to change the last timestamp of caller
 
     std::string m_fn_name;
     std::string m_fn_file;
     std::vector<unsigned char> m_code; // Copy of the actual opcodes executed
-    std::vector<std::string> m_ids; // Copy of the name date
+    std::vector<std::string> m_ids; // Copy of the name data
     std::vector<loc_entry> m_loc_entries; // Copy of source code location data
-
-    int64_t m_cum_t;
 
     void add_t (int64_t dt);
   };
@@ -442,6 +455,8 @@ class vm
   ~vm ();
 
   bool m_dbg_proper_return = false;
+  bool m_could_not_push_frame = false;
+  bool m_unwinding_interrupt = false;
   stack_element *m_stack0 = nullptr;
 
   std::vector<std::shared_ptr<stack_frame>> m_frame_ptr_cache;
@@ -506,11 +521,18 @@ class vm
   octave_value *m_data;
   std::string *m_name_data;
   unwind_data *m_unwind_data;
-  unsigned m_name_data_size;
 
   int m_ip;
 
-  void
+  // Generic data container to recreate exceptions
+  struct error_data
+  {
+    // Execution exception
+    int m_exit_status;
+    bool m_safe_to_return;
+  };
+
+  error_data
   handle_error (error_type et);
 
   static 
@@ -526,11 +548,12 @@ class vm
 
   void set_nargout (int nargout);
 
-  unwind_entry* find_unwind_entry_for_current_state ();
+  unwind_entry* find_unwind_entry_for_current_state (bool only_find_unwind_protect);
   int find_unwind_entry_for_forloop (int current_stack_depth);
 
   static std::shared_ptr<vm_profiler> m_vm_profiler;
   static bool m_profiler_enabled;
+  static bool m_trace_enabled;
 };
 
 OCTINTERP_API

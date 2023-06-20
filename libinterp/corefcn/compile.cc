@@ -89,6 +89,26 @@ Internal function.
   return octave_value {true};
 }
 
+DEFUN (__vm_print_trace, , ,
+  doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{prints_trace} =} __vm_print_trace ())
+
+Internal function.
+
+Print a debug trace from the VM. Toggles on or off each call.
+
+There has to be a breakpoint set in some file for the trace
+to actually print anything.
+
+Returns true if a trace will be printed from now on, false otherwise.
+
+@end deftypefn */)
+{
+  vm::m_trace_enabled = !vm::m_trace_enabled;
+
+  return octave_value {vm::m_trace_enabled};
+}
+
 DEFUN (__ref_count, args, ,
   doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{count} =} __ref_count (@var{obj}))
@@ -107,6 +127,23 @@ Returns reference count for an object.
   octave_value ov = args (0);
 
   return octave_value {ov.get_count ()};
+}
+
+DEFMETHOD (__vm_is_executing, interp, , ,
+  doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{is_executing} =} __vm_is_executing ())
+
+Internal function.
+
+Returns true if the VM is executing the function calling __vm_is_executing ().
+
+False otherwise.
+
+@end deftypefn */)
+{
+  bool bytecode_running = interp.get_evaluator ().get_current_stack_frame ()->is_bytecode_fcn_frame ();
+
+  return octave_value {bytecode_running};
 }
 
 DEFMETHOD (__vm_profile, interp, args, ,
@@ -140,6 +177,11 @@ statistics are added to the existing ones.
 @item profile
 Toggles between profiling and printing the result of the profiler.
 Clears the profiler on each print.
+
+@item info
+Prints the profiler data.
+
+Not that output to a variable is not implemented yet.
 
 @end table
 
@@ -218,7 +260,7 @@ Clears the profiler on each print.
 
 DEFMETHOD (__print_bytecode, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{count} =} __rep_count (@var{fn_name}))
+@deftypefn  {} {@var{success} =} __print_bytecode (@var{fn_name}))
 
 Internal function.
 
@@ -265,9 +307,9 @@ Prints the bytecode of a function, if any.
 
 DEFMETHOD (__compile, interp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} compile (@var{fn_name})
-@deftypefnx  {} {@var{success} =} compile (@var{fn_name}, "clear")
-@deftypefnx  {} {@var{success} =} compile (@var{fn_name}, "print")
+@deftypefn  {} {@var{success} =} __compile (@var{fn_name})
+@deftypefnx  {} {@var{success} =} __compile (@var{fn_name}, "clear")
+@deftypefnx  {} {@var{success} =} __compile (@var{fn_name}, "print")
 
 Compile the specified function to bytecode.
 
@@ -367,7 +409,8 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
 }
 
 // If TRUE, use VM evaluator rather than tree walker.
-
+// FIXME: Use OCTAVE_ENABLE_VM_EVALUATOR define to set it to true when
+// the VM has been tested properly.
 bool V__enable_vm_eval__ = false;
 
 DEFUN (__enable_vm_eval__, args, nargout,
@@ -380,8 +423,10 @@ and executes them in a virtual machine (VM).
 
 Note that the virtual machine feature is experimental.
 
-The default value is set when building Octave by the OCTAVE_ENABLE_VM_EVALUATOR
-flag.
+The default value is currently false, while the VM is still experimental.
+Users need to explicitly call @code{__enable_vm_eval__ (1)} to enable it.
+In future, this will be set to the value of  the OCTAVE_ENABLE_VM_EVALUATOR
+flag that was set when building Octave.
 
 When false, Octave uses a traditional tree walker
 to evaluate statements parsed from m-code.  When true, Octave translates parsed

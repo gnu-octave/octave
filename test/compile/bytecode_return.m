@@ -4,6 +4,7 @@ function bytecode_return ()
 
   bar (1);
   bar (0);
+
   baz (0);
   baz (1);
   baz (2);
@@ -24,7 +25,6 @@ function bytecode_return ()
 
   % Drop all output variables
   return_2 ();
-
 
   % Command form call
   a = return_1;
@@ -74,7 +74,7 @@ function out = baz (i)
   if i == 0
     __printf_assert__ ("baaaaz ");
     return
-  else i == 1
+  elseif i == 1
     __printf_assert__ ("bääääz ");
     return
   end

@@ -86,21 +86,27 @@ public:
 
   bool has_cached_function (const octave_value_list &args) const
   {
-    auto vec_n = static_cast <octave_idx_type> (m_cached_args.size ());
-
-    if (args.length () != vec_n)
+    if (m_n_updated == 0)
       return false;
 
-    for (int i = 0; i < args.length (); i++)
+    unsigned vec_n = m_cached_args.size ();
+
+    unsigned n_args = args.length ();
+    if (n_args != vec_n)
+      return false;
+
+    for (unsigned i = 0; i < n_args; i++)
       {
         if (args (i).type_id () != m_cached_args [i])
           return false;
       }
 
-    return m_cached_function.is_defined ();
+    return true;
   }
 
 private:
+
+  octave_function * get_cached_fcn_internal (const octave_value_list& args);
 
   void clear_cached_function ()
   {
@@ -109,8 +115,6 @@ private:
     m_n_updated = 0;
     m_cached_args.clear ();
   }
-
-  //std::weak_ptr<int> get_lp_n_updated () const { return m_n_updated; }
 
   octave_value m_cached_object;
   octave_value m_cached_function;

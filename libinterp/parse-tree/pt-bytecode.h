@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2001-2022 The Octave Project Developers
+// Copyright (C) 2022-2023 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -178,6 +178,9 @@ enum class INSTR
   USUB_DBL,
   NOT_DBL,
   NOT_BOOL,
+  PUSH_FOLDED_CST,
+  SET_FOLDED_CST,
+  WIDE,
 };
 
 enum class unwind_entry_type
@@ -272,6 +275,7 @@ enum class error_type
   INVALID_N_EL_RHS_IN_ASSIGNMENT,
   RHS_UNDEF_IN_ASSIGNMENT,
   BAD_ALLOC,
+  EXIT_EXCEPTION,
 };
 
 enum class global_type

@@ -91,7 +91,7 @@ public:
       m_name_data (vm.m_name_data),
       m_stack_start (vm.m_sp),
       m_code (vm.m_code),
-      m_size (vm.m_name_data_size),
+      m_size (m_unwind_data->m_ids_size),
       // The above fields in vm change during execution so we need to store them in the frame
       m_vm (&vm),
       m_nargin (nargin),
@@ -123,6 +123,7 @@ public:
     m_orig_size = elt.m_orig_size;
     m_ip = elt.m_ip;
     m_unwind_data = elt.m_unwind_data; // TODO: Ownership?
+    m_size = m_unwind_data->m_ids_size;
 
     if (elt.m_lazy_data)
       {
@@ -140,22 +141,20 @@ public:
   bytecode_fcn_stack_frame&
   operator = (bytecode_fcn_stack_frame&& elt)
   {
-    if (m_stack_cpy)
-      {
-        // Note: int nargout at offset 0
-        for (unsigned i = 1; i < m_size; i++)
-          m_stack_cpy[i].ov.~octave_value ();
-        delete m_stack_cpy;
-      }
-
     if (m_lazy_data)
       {
+        if (m_lazy_data->m_stack_cpy)
+          {
+            // Note: int nargout at offset 0
+            for (unsigned i = 1; i < m_size; i++)
+              m_lazy_data->m_stack_cpy[i].ov.~octave_value ();
+            delete m_lazy_data->m_stack_cpy;
+          }
         delete m_lazy_data->m_unwind_protect_frame;
         delete m_lazy_data;
       }
 
     *this = std::move (elt);
-    elt.m_stack_cpy = nullptr;
     elt.m_lazy_data = nullptr;
 
     return *this;
@@ -165,18 +164,18 @@ public:
   // so they both call dispose()
   void dispose ()
   {
-     if (m_stack_cpy)
-      {
-        // Note: int nargout at offset 0
-        for (unsigned i = 1; i < m_size; i++)
-          m_stack_cpy[i].ov.~octave_value ();
-        delete m_stack_cpy;
-      }
-
     if (m_lazy_data)
       {
+        if (m_lazy_data->m_stack_cpy)
+          {
+            // Note: int nargout at offset 0
+            for (unsigned i = 1; i < m_size; i++)
+              m_lazy_data->m_stack_cpy[i].ov.~octave_value ();
+            delete m_lazy_data->m_stack_cpy;
+          }
         delete m_lazy_data->m_unwind_protect_frame;
         delete m_lazy_data;
+        m_lazy_data = nullptr;
       }   
   }
 
@@ -294,6 +293,14 @@ public:
       {
         delete m_lazy_data->m_unwind_protect_frame;
         m_lazy_data->m_unwind_protect_frame = nullptr;
+
+        // Restore warningstates
+        if (m_fcn)
+          {
+            auto usr_fn_p = m_fcn->user_function_value ();
+            if (usr_fn_p)
+              usr_fn_p->restore_warning_states (); // TODO: octave_user_function::restore_warning_states() could be static.
+          }
       }
 
     if (is_alone)
@@ -320,16 +327,18 @@ public:
     // Copy the stack to the frame
     size_t stack_slots = m_size;
 
-    m_stack_cpy = new octave::stack_element[stack_slots];
+    lazy_data ();
+
+    m_lazy_data->m_stack_cpy = new octave::stack_element[stack_slots];
     for (unsigned i = 1; i < m_size; i++)
-      new (&m_stack_cpy[i].ov) octave_value {};
+      new (&m_lazy_data->m_stack_cpy[i].ov) octave_value {};
 
     // Note: int nargout at offset 0
-    m_stack_cpy[0].i = m_stack_start[0].i;
+    m_lazy_data->m_stack_cpy[0].i = m_stack_start[0].i;
     for (unsigned i = 1; i < m_size; i++)
-      m_stack_cpy[i].ov = m_stack_start[i].ov;
+      m_lazy_data->m_stack_cpy[i].ov = m_stack_start[i].ov;
 
-    m_stack_start = m_stack_cpy;
+    m_stack_start = m_lazy_data->m_stack_cpy;
   }
 
   std::size_t size (void) const
@@ -893,6 +902,7 @@ private:
     std::vector<scope_flags> m_extra_flags;
 
     unwind_protect *m_unwind_protect_frame = nullptr;
+    stack_element *m_stack_cpy = nullptr;
   };
 
   lazy_data_struct & lazy_data ()
@@ -910,10 +920,10 @@ private:
 
   std::string *m_name_data;
   stack_element *m_stack_start;
-  stack_element *m_stack_cpy = nullptr;
+
   unsigned char *m_code;
-  std::size_t m_size;
-  std::size_t m_orig_size;
+  unsigned m_size;
+  unsigned m_orig_size;
   vm *m_vm;
   int m_ip;
 

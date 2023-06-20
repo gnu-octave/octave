@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2006-2022 The Octave Project Developers
+## Copyright (C) 2022-2023 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -31,7 +31,7 @@
 %! % double's display. Is this a bug ???
 %! clear classes
 
-## licenses binary expression
+## Test binary expressions
 %!test
 %! __enable_vm_eval__ (0, "local"); % Disable the vm for the tree_walker run
 %!
@@ -223,7 +223,7 @@
 %!test
 %! __enable_vm_eval__ (0, "local");
 %! clear all
-%! key = "2 baaar bääär baaaaz bääääz bääääz booz 1 1 2 1 1 1 2 1 silly silly ";
+%! key = "2 baaar bääär baaaaz bääääz bååååz booz 1 1 2 1 1 1 2 1 silly silly ";
 %!
 %! __compile bytecode_return clear;
 %! bytecode_return ();
@@ -504,7 +504,7 @@
 %! key = "a:3 b: double 0 0 0 c:3 c:4 a:4 b:1 double 1 1 0 c:5 c:6 ";
 %! assert (__compile ("bytecode_persistant"));
 %! bytecode_persistant;
-%! disp ("\n");
+%!
 %! bytecode_persistant;
 %! assert (__prog_output_assert__ (key));
 %!
@@ -515,7 +515,7 @@
 %! bytecode_persistant;
 %! __enable_vm_eval__ (1, "local");
 %! assert (__compile ("bytecode_persistant"));
-%! disp ("\n");
+%!
 %! bytecode_persistant;
 %! assert (__prog_output_assert__ (key));
 

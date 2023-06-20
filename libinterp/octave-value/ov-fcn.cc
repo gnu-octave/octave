@@ -97,6 +97,9 @@ octave_fcn_cache::set_cached_function (octave_value ov,
 {
   clear_cached_function ();
 
+  if (!ov.is_defined ())
+    return;
+
   // We need to keep a reference to the metaobject for as long as the function is alive
   if (ov.is_classdef_meta ())
     m_cached_object = ov;
@@ -162,42 +165,45 @@ get_cached_obj (const octave_value_list& args)
 
 octave_function *
 octave_fcn_cache::
-get_cached_fcn (const octave_value_list& args)
+get_cached_fcn_internal (const octave_value_list& args)
 {
+  clear_cached_function ();
+
   octave_function *fcn = nullptr;
-
   octave_idx_type current_n_updated = octave::load_path::get_weak_n_updated ();
-  if (has_cached_function (args))
+
+  octave::interpreter& interp =
+    octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
+  octave_value val = symtab.find_function (m_fcn_name, args);
+
+  if (val.is_function ())
     {
-      if (m_n_updated == current_n_updated)
-        return m_cached_function.function_value (true);
-      else
-        clear_cached_function ();
+      fcn = val.function_value (true);
+      set_cached_function (val, args, current_n_updated);
+      return fcn;
     }
-
-  if (! fcn)
+  
+  val = symtab.find_function (m_fcn_name);
+  if (val.is_function ())
     {
-      octave::interpreter& interp =
-        octave::__get_interpreter__ ();
-
-      octave::symbol_table& symtab = interp.get_symbol_table ();
-      octave_value val = symtab.find_function (m_fcn_name, args);
-
-      if (val.is_function ())
-        {
-          fcn = val.function_value (true);
-          set_cached_function (val, args, current_n_updated);
-          return fcn;
-        }
-      
-      val = symtab.find_function (m_fcn_name);
-      if (val.is_function ())
-        {
-          return val.function_value (true);
-        }
+      return val.function_value (true);
     }
 
   return fcn;
+}
+
+octave_function *
+octave_fcn_cache::
+get_cached_fcn (const octave_value_list& args)
+{
+  octave_idx_type current_n_updated = octave::load_path::get_weak_n_updated ();
+  if (OCTAVE_LIKELY (has_cached_function (args)))
+    if (OCTAVE_LIKELY (m_n_updated == current_n_updated))
+      return m_cached_function.function_value (true);
+
+  return get_cached_fcn_internal (args);
 }
 
 octave_value_list

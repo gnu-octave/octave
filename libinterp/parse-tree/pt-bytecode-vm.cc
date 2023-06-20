@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2022 The Octave Project Developers
+// Copyright (C) 2022-2023 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -55,6 +55,7 @@ extern "C" void vm_debug_print_ov (void *p);
 static bool ov_need_stepwise_subsrefs (octave_value &ov);
 static void copy_many_args_to_caller (octave::stack_element *sp, octave::stack_element *caller_stack_end,
                                       int n_args_to_move, int n_args_caller_expects);
+static int lhs_assign_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx);
 
 #define TODO(msg) error("Not done yet %d: " msg, __LINE__)
 #define ERR(msg) error("VM error %d: " msg, __LINE__)
@@ -91,9 +92,10 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
   unsigned char *p = v_code.data ();
   unsigned char *code = p;
   int n = v_code.size ();
+  bool wide_opext_active = false;
 
   // Skip some framedata
-  p += 3;
+  p += 4;
 
   std::vector<std::pair<int, std::string>> v_pair_row_str;
 
@@ -141,12 +143,32 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
     unsigned u = b0 | (b1 << 8);    \
     s += " " + std::to_string (u);}
 
-#define PSLOT() \
-    {p++;                                                               \
-    CHECK_END ();                                                       \
-    s += " " + std::to_string (*p);                                     \
+#define PSSLOT() \
+    {p++;                                                            \
+    CHECK_END ();                                                    \
+    s += " " + std::to_string (*p);                                  \
     v_ids.push_back (std::string {*p < names.size() ?                \
                                       names[*p].c_str() :            \
+                                      "INVALID SLOT"});}
+
+#define PSLOT() \
+    {if (wide_opext_active)                                         \
+      PWSLOT ()                                                     \
+    else                                                            \
+      PSSLOT ()                                                     \
+    wide_opext_active = false;}
+
+#define PWSLOT() \
+    {p++;                                                           \
+    CHECK_END ();                                                   \
+    unsigned char b0 = *p;                                          \
+    p++;                                                            \
+    CHECK_END ();                                                   \
+    unsigned char b1 = *p;                                          \
+    unsigned u = b0 | (b1 << 8);                                    \
+    s += " " + std::to_string (u);                                  \
+    v_ids.push_back (std::string {u < names.size() ?                \
+                                      names[u].c_str() :            \
                                       "INVALID SLOT"});}
 
 #define CHECK_END() \
@@ -164,13 +186,14 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
     u |= *p++ << 16;\
     CHECK_END ();\
     u |= *p << 24;\
-    s += std::to_string (u) + " ";\
+    s += " " + std::to_string (u);\
   } while (0);
 
   while (p < code + n)
     {
       switch (static_cast<INSTR> (*p))
         {
+
           PRINT_OP (POP)
           PRINT_OP (DUP)
           PRINT_OP (MUL)
@@ -238,6 +261,13 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           PRINT_OP (PUSH_DBL_1);
           PRINT_OP (PUSH_DBL_2);
 
+          CASE_START (WIDE)
+            wide_opext_active = true;
+          CASE_END ()
+
+          CASE_START (PUSH_FOLDED_CST) PSLOT () PSHORT () CASE_END ()
+          CASE_START (SET_FOLDED_CST) PSLOT () CASE_END ()
+
           CASE_START (LOAD_CST)       PCHAR () CASE_END ()
           CASE_START (LOAD_CST_ALT2)  PCHAR () CASE_END ()
           CASE_START (LOAD_CST_ALT3)  PCHAR () CASE_END ()
@@ -264,8 +294,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (PUSH_SLOT_NARGOUT0)         PSLOT() CASE_END ()
           CASE_START (SET_SLOT_TO_STACK_DEPTH)    PSLOT() CASE_END ()
 
-          CASE_START (DISP)           PSLOT() PSLOT() CASE_END ()
-          CASE_START (PUSH_SLOT_DISP) PSLOT() PSLOT() CASE_END ()
+          CASE_START (DISP)           PSLOT() PWSLOT() CASE_END ()
+          CASE_START (PUSH_SLOT_DISP) PSLOT() PWSLOT() CASE_END ()
 
           CASE_START (JMP_IFDEF)                PSHORT() CASE_END ()
           CASE_START (JMP_IFNCASEMATCH)         PSHORT() CASE_END ()
@@ -278,39 +308,39 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (ASSIGN_COMPOUND)        PSLOT () PCHAR () CASE_END ()
 
-          CASE_START (INDEX_ID_NARGOUT0)      PCHAR () PSLOT () CASE_END ()
-          CASE_START (INDEX_ID_NARGOUT1)      PCHAR () PSLOT () CASE_END ()
-          CASE_START (INDEX_ID1_MAT_2D)       PCHAR () PSLOT () CASE_END ()
-          CASE_START (INDEX_ID1_MAT_1D)       PCHAR () PSLOT () CASE_END ()
+          CASE_START (INDEX_ID_NARGOUT0)      PSLOT () PCHAR () CASE_END ()
+          CASE_START (INDEX_ID_NARGOUT1)      PSLOT () PCHAR () CASE_END ()
+          CASE_START (INDEX_ID1_MAT_2D)       PSLOT () PCHAR () CASE_END ()
+          CASE_START (INDEX_ID1_MAT_1D)       PSLOT () PCHAR () CASE_END ()
 
-          CASE_START (INDEX_CELL_ID_NARGOUT0) PCHAR () PSLOT () CASE_END ()
-          CASE_START (INDEX_CELL_ID_NARGOUT1) PCHAR () PSLOT () CASE_END ()
+          CASE_START (INDEX_CELL_ID_NARGOUT0) PSLOT () PCHAR () CASE_END ()
+          CASE_START (INDEX_CELL_ID_NARGOUT1) PSLOT () PCHAR () CASE_END ()
 
-          CASE_START (INDEX_CELL_ID_NARGOUTN) PCHAR () PCHAR () PSLOT () CASE_END ()
-          CASE_START (INDEX_IDN)              PCHAR () PCHAR () PSLOT () CASE_END ()
+          CASE_START (INDEX_CELL_ID_NARGOUTN) PSLOT () PCHAR () PCHAR () CASE_END ()
+          CASE_START (INDEX_IDN)              PSLOT () PCHAR () PCHAR () CASE_END ()
 
           CASE_START (SUBASSIGN_OBJ)          PCHAR () PCHAR () CASE_END ()
           CASE_START (MATRIX)                 PCHAR () PCHAR () CASE_END ()
           CASE_START (DUPN)                   PCHAR () PCHAR () CASE_END ()
 
-          CASE_START (INDEX_ID1_MATHY_UFUN)   PCHAR () PCHAR () PSLOT () CASE_END ()
+          CASE_START (INDEX_ID1_MATHY_UFUN)   PCHAR () PSLOT () PCHAR () CASE_END ()
 
-          CASE_START (INDEX_OBJ)              PCHAR () PCHAR () PCHAR () PCHAR () PCHAR () CASE_END ()
+          CASE_START (INDEX_OBJ)              PCHAR () PCHAR () PWSLOT () PCHAR () PCHAR () CASE_END ()
 
-          CASE_START (FOR_COND) PSHORT () PSLOT () CASE_END ()
+          CASE_START (FOR_COND) PSLOT () PSHORT () CASE_END ()
 
-          CASE_START (FOR_COMPLEX_COND) PSHORT () PSLOT () PSLOT () CASE_END ()
+          CASE_START (FOR_COMPLEX_COND) PSHORT () PWSLOT () PWSLOT () CASE_END ()
 
-          CASE_START (INDEX_STRUCT_NARGOUTN)  PCHAR () PCHAR () PSLOT () CASE_END ()
-          CASE_START (END_ID)                 PCHAR () PCHAR () PSLOT () CASE_END ()
+          CASE_START (INDEX_STRUCT_NARGOUTN)  PCHAR () PWSLOT () PWSLOT () CASE_END ()
+          CASE_START (END_ID)                 PSLOT () PCHAR () PCHAR () CASE_END ()
 
           CASE_START (PUSH_SLOT_NARGOUTN)     PSLOT () PCHAR () CASE_END ()
           CASE_START (BRAINDEAD_WARNING)      PSLOT () PCHAR () CASE_END ()
-          CASE_START (SUBASSIGN_STRUCT)       PSLOT () PCHAR () CASE_END ()
+          CASE_START (SUBASSIGN_STRUCT)       PSLOT () PWSLOT () CASE_END ()
 
-          CASE_START (SUBASSIGN_ID)         PCHAR () PSLOT () CASE_END ()
-          CASE_START (SUBASSIGN_ID_MAT_1D)  PCHAR () PSLOT () CASE_END ()
-          CASE_START (SUBASSIGN_CELL_ID)    PCHAR () PSLOT () CASE_END ()
+          CASE_START (SUBASSIGN_ID)         PSLOT () PCHAR () CASE_END ()
+          CASE_START (SUBASSIGN_ID_MAT_1D)  PSLOT () PCHAR () CASE_END ()
+          CASE_START (SUBASSIGN_CELL_ID)    PSLOT () PCHAR () CASE_END ()
 
           CASE_START (EVAL) PCHAR () PINT () CASE_END ()
 
@@ -335,9 +365,9 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (LOAD_FAR_CST) PINT () CASE_END ()
 
-          CASE_START (END_OBJ) PCHAR () PCHAR () PSLOT () CASE_END ()
+          CASE_START (END_OBJ) PSLOT () PCHAR () PCHAR () CASE_END ()
 
-          CASE_START (WORDCMD) PCHAR () PCHAR () PSLOT () CASE_END ()
+          CASE_START (WORDCMD) PSLOT () PCHAR () PCHAR () CASE_END ()
 
           CASE_START (SET_IGNORE_OUTPUTS)
             PCHAR ()
@@ -352,7 +382,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
             int nn = *p;
             for (int i = 0; i < nn; i++)
               {
-                PSLOT ()
+                PWSLOT ()
               }
           CASE_END ()
 
@@ -365,7 +395,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
                 PCHAR ()
                 PCHAR ()
                 PCHAR ()
-                PSLOT ()
+                PWSLOT ()
               }
           CASE_END ()
 
@@ -376,16 +406,16 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
             if (type == 1)
               {
-                s += "ROWS "; PINT ();
-                s += "COLS "; PINT ();
+                s += " ROWS"; PINT ();
+                s += " COLS"; PINT ();
               }
             else
               {
                 if (p + 3 >= code + n)
                   error ("Invalid bytecode\n");
                 int i = chars_to_uint (p);
-                s += "ROWS "; PINT ();
-                s += "COLS ";
+                s += " ROWS"; PINT ();
+                s += " COLS";
                 for (int j = 0; j < i; j++)
                   PINT ();
               }
@@ -410,8 +440,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
               else if (static_cast<global_type> (*p) == global_type::PERSISTENT)
                 s += " 'PERSISTENT'";
 
-              PSLOT ()
-              PSLOT ()
+              PWSLOT ()
+              PWSLOT ()
 
               s += " HAS-TARGET";
               PCHAR ()
@@ -427,7 +457,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
             PCHAR ()
             int n_slots = *p;
             for (int i = 0; i < n_slots; i++)
-              PSLOT ()
+              PWSLOT ()
           CASE_END ()
 
           default:
@@ -494,12 +524,26 @@ static int pop_code_int (unsigned char *ip)
 
   return ans;
 }
+
+static int pop_code_ushort (unsigned char *ip)
+{
+  unsigned int ans;
+  ip -= 2;
+  ans = *ip++;
+  ans |= *ip++ << 8;
+
+  return ans;
+}
+
+
+
 // Debug functions easy to break out into in gdb. Called by __dummy_mark_1() in Octave
 extern "C" void dummy_mark_1 (void);
 extern "C" void dummy_mark_2 (void);
 
 #define POP_CODE() *ip++
 #define POP_CODE_INT() (ip++,ip++,ip++,ip++,pop_code_int (ip))
+#define POP_CODE_USHORT() (ip++, ip++, pop_code_ushort (ip))
 
 #define PUSH_OV(ov) \
   do {                           \
@@ -599,18 +643,31 @@ static void stack_lift (stack_element *start, int n_elem, int n_lift)
 \
   if (OCTAVE_UNLIKELY (m_tw->debug_mode ())) /* Do we need to check for breakpoints? */\
     goto debug_check;\
-  goto *instr [*ip++]; /* Dispatch to next instruction */\
+  int opcode = ip[0];\
+  arg0 = ip[1];\
+  ip += 2;\
+  goto *instr [opcode]; /* Dispatch to next instruction */\
 } while ((0))
 
-#define DISPATCH_NO_DEBUG() do { \
+#define DISPATCH_1BYTEOP() do { \
+  /*if (!m_tw->get_current_stack_frame ()->is_bytecode_fcn_frame ()) \
+    { \
+      printf ("Why oh why\n"); \
+      dummy_mark_1 (); \
+    } */ \
   /* PRINT_VM_STATE ("%d" COMMA __LINE__); */ \
-  /*CHECK_STACK (0);*/ \
+  /* CHECK_STACK (0); */ \
 \
-  goto *instr [*ip++]; /* Dispatch to next instruction */\
+  if (OCTAVE_UNLIKELY (m_tw->debug_mode ())) /* Do we need to check for breakpoints? */\
+    goto debug_check_1b;\
+  int opcode = arg0;\
+  arg0 = *ip++;\
+  goto *instr [opcode]; /* Dispatch to next instruction */\
 } while ((0))
 
 std::shared_ptr<vm_profiler> vm::m_vm_profiler;
 bool vm::m_profiler_enabled;
+bool vm::m_trace_enabled;
 
 // These two are used for pushing true and false ov:s to the
 // operand stack.
@@ -640,144 +697,147 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
   // the array. "&&" is label address, not rvalue reference.
   static const void* instr[] =
     {
-      &&pop,
-      &&dup,
-      &&load_cst,
-      &&mul,
-      &&div,
-      &&add,
-      &&sub,
-      &&ret,
-      &&assign,
-      &&jmp_if,
-      &&jmp,
-      &&jmp_ifn,
-      &&push_slot_nargout0,
-      &&le,
-      &&le_eq,
-      &&gr,
-      &&gr_eq,
-      &&eq,
-      &&neq,
-      &&index_id_nargout0,
-      &&push_slot_indexed,
-      &&pow,
-      &&ldiv,
-      &&el_mul,
-      &&el_div,
-      &&el_pow,
-      &&el_and,
-      &&el_or,
-      &&el_ldiv,
-      &&op_not,
-      &&uadd,
-      &&usub,
-      &&trans,
-      &&herm,
-      &&incr_id_prefix,
-      &&decr_id_prefix,
-      &&incr_id_postfix,
-      &&decr_id_postfix,
-      &&for_setup,
-      &&for_cond,
-      &&pop_n_ints,
-      &&push_slot_nargout1,
-      &&index_id1, // INDEX_ID_NARGOUT1
-      &&push_fcn_handle,
-      &&colon,
-      &&colon,
-      &&colon_cmd,
-      &&colon_cmd,
-      &&push_true,
-      &&push_false,
-      &&unary_true,
-      &&index_idn,
-      &&assign_n,
-      &&push_slot_nargoutn,
-      &&subassign_id,
-      &&end_id,
-      &&matrix,
-      &&trans_mul,
-      &&mul_trans,
-      &&herm_mul,
-      &&mul_herm,
-      &&trans_ldiv,
-      &&herm_ldiv,
-      &&wordcmd,
-      &&handle_signals,
-      &&push_cell,
-      &&push_ov_u64,
-      &&expand_cs_list,
-      &&index_cell_id0,
-      &&index_cell_id1,
-      &&index_cell_idn,
-      &&incr_prefix,
-      &&rot,
-      &&init_global,
-      &&assign_compound,
-      &&jmp_ifdef,
-      &&switch_cmp,
-      &&braindead_precond,
-      &&braindead_warning,
-      &&force_assign,
-      &&push_nil,
-      &&throw_iferrorobj,
-      &&index_struct_n,
-      &&subasgn_struct,
-      &&subasgn_cell_id,
-      &&index_obj,
-      &&subassign_obj,
-      &&matrix_big,
-      &&load_far_cst,
-      &&end_obj,
-      &&set_ignore_outputs,
-      &&clear_ignore_outputs,
-      &&subassign_chained,
-      &&set_slot_to_stack_depth,
-      &&dupn,
-      &&debug,
-      &&index_struct_call,
-      &&end_x_n,
-      &&eval,
-      &&bind_ans,
-      &&push_anon_fcn_handle,
-      &&for_complex_setup,
-      &&for_complex_cond,
-      &&push_slot1_special,
-      &&disp,
-      &&push_slot_disp,
-      &&load_cst_alt2,
-      &&load_cst_alt3,
-      &&load_cst_alt4,
-      &&load_2_cst,
-      &&mul_dbl,
-      &&add_dbl,
-      &&sub_dbl,
-      &&div_dbl,
-      &&pow_dbl,
-      &&le_dbl,
-      &&le_eq_dbl,
-      &&gr_dbl,
-      &&gr_eq_dbl,
-      &&eq_dbl,
-      &&neq_dbl,
-      &&index_id1_mat_1d,
-      &&index_id1_mat_2d,
-      &&push_pi,
-      &&index_math_ufun_id1,
-      &&subassign_id_mat_1d,
-      &&incr_id_prefix_dbl,
-      &&decr_id_prefix_dbl,
-      &&incr_id_postfix_dbl,
-      &&decr_id_postfix_dbl,
-      &&push_cst_dbl_0,
-      &&push_cst_dbl_1,
-      &&push_cst_dbl_2,
-      &&jmp_if_bool,
-      &&jmp_ifn_bool,
-      &&usub_dbl,
-      &&not_dbl,
-      &&not_bool,
+      &&pop,                                               // POP,
+      &&dup,                                               // DUP,
+      &&load_cst,                                          // LOAD_CST,
+      &&mul,                                               // MUL,
+      &&div,                                               // DIV,
+      &&add,                                               // ADD,
+      &&sub,                                               // SUB,
+      &&ret,                                               // RET,
+      &&assign,                                            // ASSIGN,
+      &&jmp_if,                                            // JMP_IF,
+      &&jmp,                                               // JMP,
+      &&jmp_ifn,                                           // JMP_IFN,
+      &&push_slot_nargout0,                                // PUSH_SLOT_NARGOUT0,
+      &&le,                                                // LE,
+      &&le_eq,                                             // LE_EQ,
+      &&gr,                                                // GR,
+      &&gr_eq,                                             // GR_EQ,
+      &&eq,                                                // EQ,
+      &&neq,                                               // NEQ,
+      &&index_id_nargout0,                                 // INDEX_ID_NARGOUT0,
+      &&push_slot_indexed,                                 // PUSH_SLOT_INDEXED,
+      &&pow,                                               // POW,
+      &&ldiv,                                              // LDIV,
+      &&el_mul,                                            // EL_MUL,
+      &&el_div,                                            // EL_DIV,
+      &&el_pow,                                            // EL_POW,
+      &&el_and,                                            // EL_AND,
+      &&el_or,                                             // EL_OR,
+      &&el_ldiv,                                           // EL_LDIV,
+      &&op_not,                                            // NOT,
+      &&uadd,                                              // UADD,
+      &&usub,                                              // USUB,
+      &&trans,                                             // TRANS,
+      &&herm,                                              // HERM,
+      &&incr_id_prefix,                                    // INCR_ID_PREFIX,
+      &&decr_id_prefix,                                    // DECR_ID_PREFIX,
+      &&incr_id_postfix,                                   // INCR_ID_POSTFIX,
+      &&decr_id_postfix,                                   // DECR_ID_POSTFIX,
+      &&for_setup,                                         // FOR_SETUP,
+      &&for_cond,                                          // FOR_COND,
+      &&pop_n_ints,                                        // POP_N_INTS,
+      &&push_slot_nargout1,                                // PUSH_SLOT_NARGOUT1,
+      &&index_id1,                                         // INDEX_ID_NARGOUT1,
+      &&push_fcn_handle,                                   // PUSH_FCN_HANDLE,
+      &&colon,                                             // COLON3,
+      &&colon,                                             // COLON2,
+      &&colon_cmd,                                         // COLON3_CMD,
+      &&colon_cmd,                                         // COLON2_CMD,
+      &&push_true,                                         // PUSH_TRUE,
+      &&push_false,                                        // PUSH_FALSE,
+      &&unary_true,                                        // UNARY_TRUE,
+      &&index_idn,                                         // INDEX_IDN,
+      &&assign_n,                                          // ASSIGNN,
+      &&push_slot_nargoutn,                                // PUSH_SLOT_NARGOUTN,
+      &&subassign_id,                                      // SUBASSIGN_ID,
+      &&end_id,                                            // END_ID,
+      &&matrix,                                            // MATRIX,
+      &&trans_mul,                                         // TRANS_MUL,
+      &&mul_trans,                                         // MUL_TRANS,
+      &&herm_mul,                                          // HERM_MUL,
+      &&mul_herm,                                          // MUL_HERM,
+      &&trans_ldiv,                                        // TRANS_LDIV,
+      &&herm_ldiv,                                         // HERM_LDIV,
+      &&wordcmd,                                           // WORDCMD,
+      &&handle_signals,                                    // HANDLE_SIGNALS,
+      &&push_cell,                                         // PUSH_CELL,
+      &&push_ov_u64,                                       // PUSH_OV_U64,
+      &&expand_cs_list,                                    // EXPAND_CS_LIST,
+      &&index_cell_id0,                                    // INDEX_CELL_ID_NARGOUT0,
+      &&index_cell_id1,                                    // INDEX_CELL_ID_NARGOUT1,
+      &&index_cell_idn,                                    // INDEX_CELL_ID_NARGOUTN,
+      &&incr_prefix,                                       // INCR_PREFIX,
+      &&rot,                                               // ROT,
+      &&init_global,                                       // GLOBAL_INIT,
+      &&assign_compound,                                   // ASSIGN_COMPOUND,
+      &&jmp_ifdef,                                         // JMP_IFDEF,
+      &&switch_cmp,                                        // JMP_IFNCASEMATCH,
+      &&braindead_precond,                                 // BRAINDEAD_PRECONDITION,
+      &&braindead_warning,                                 // BRAINDEAD_WARNING,
+      &&force_assign,                                      // FORCE_ASSIGN, // Accepts undefined rhs
+      &&push_nil,                                          // PUSH_NIL,
+      &&throw_iferrorobj,                                  // THROW_IFERROBJ,
+      &&index_struct_n,                                    // INDEX_STRUCT_NARGOUTN,
+      &&subasgn_struct,                                    // SUBASSIGN_STRUCT,
+      &&subasgn_cell_id,                                   // SUBASSIGN_CELL_ID,
+      &&index_obj,                                         // INDEX_OBJ,
+      &&subassign_obj,                                     // SUBASSIGN_OBJ,
+      &&matrix_big,                                        // MATRIX_UNEVEN,
+      &&load_far_cst,                                      // LOAD_FAR_CST,
+      &&end_obj,                                           // END_OBJ,
+      &&set_ignore_outputs,                                // SET_IGNORE_OUTPUTS,
+      &&clear_ignore_outputs,                              // CLEAR_IGNORE_OUTPUTS,
+      &&subassign_chained,                                 // SUBASSIGN_CHAINED,
+      &&set_slot_to_stack_depth,                           // SET_SLOT_TO_STACK_DEPTH,
+      &&dupn,                                              // DUPN,
+      &&debug,                                             // DEBUG,
+      &&index_struct_call,                                 // INDEX_STRUCT_CALL,
+      &&end_x_n,                                           // END_X_N,
+      &&eval,                                              // EVAL,
+      &&bind_ans,                                          // BIND_ANS,
+      &&push_anon_fcn_handle,                              // PUSH_ANON_FCN_HANDLE,
+      &&for_complex_setup,                                 // FOR_COMPLEX_SETUP, // opcode
+      &&for_complex_cond,                                  // FOR_COMPLEX_COND,
+      &&push_slot1_special,                                // PUSH_SLOT_NARGOUT1_SPECIAL,
+      &&disp,                                              // DISP,
+      &&push_slot_disp,                                    // PUSH_SLOT_DISP,
+      &&load_cst_alt2,                                     // LOAD_CST_ALT2,
+      &&load_cst_alt3,                                     // LOAD_CST_ALT3,
+      &&load_cst_alt4,                                     // LOAD_CST_ALT4,
+      &&load_2_cst,                                        // LOAD_2_CST,
+      &&mul_dbl,                                           // MUL_DBL,
+      &&add_dbl,                                           // ADD_DBL,
+      &&sub_dbl,                                           // SUB_DBL,
+      &&div_dbl,                                           // DIV_DBL,
+      &&pow_dbl,                                           // POW_DBL,
+      &&le_dbl,                                            // LE_DBL,
+      &&le_eq_dbl,                                         // LE_EQ_DBL,
+      &&gr_dbl,                                            // GR_DBL,
+      &&gr_eq_dbl,                                         // GR_EQ_DBL,
+      &&eq_dbl,                                            // EQ_DBL,
+      &&neq_dbl,                                           // NEQ_DBL,
+      &&index_id1_mat_1d,                                  // INDEX_ID1_MAT_1D,
+      &&index_id1_mat_2d,                                  // INDEX_ID1_MAT_2D,
+      &&push_pi,                                           // PUSH_PI,
+      &&index_math_ufun_id1,                               // INDEX_ID1_MATHY_UFUN,
+      &&subassign_id_mat_1d,                               // SUBASSIGN_ID_MAT_1D,
+      &&incr_id_prefix_dbl,                                // INCR_ID_PREFIX_DBL,
+      &&decr_id_prefix_dbl,                                // DECR_ID_PREFIX_DBL,
+      &&incr_id_postfix_dbl,                               // INCR_ID_POSTFIX_DBL,
+      &&decr_id_postfix_dbl,                               // DECR_ID_POSTFIX_DBL,
+      &&push_cst_dbl_0,                                    // PUSH_DBL_0,
+      &&push_cst_dbl_1,                                    // PUSH_DBL_1,
+      &&push_cst_dbl_2,                                    // PUSH_DBL_2,
+      &&jmp_if_bool,                                       // JMP_IF_BOOL,
+      &&jmp_ifn_bool,                                      // JMP_IFN_BOOL,
+      &&usub_dbl,                                          // USUB_DBL,
+      &&not_dbl,                                           // NOT_DBL,
+      &&not_bool,                                          // NOT_BOOL,
+      &&push_folded_cst,                                   // PUSH_FOLDED_CST,
+      &&set_folded_cst,                                    // SET_FOLDED_CST,
+      &&wide,                                              // WIDE
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -796,13 +856,15 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
   //
   // If GCC is not nudged to put these in registers, its register allocator
   // might make the VM spend quite some time pushing and popping of the C-stack.
+  register int arg0 asm("r12");
   register stack_element *sp asm("r14");    // Stack pointer register
   register unsigned char *ip asm("r15");    // The instruction pointer register
   register stack_element *bsp asm("r13");   // Base stack pointer
 #else
-   stack_element *sp;
-   unsigned char *ip;
-   stack_element *bsp;
+  int arg0;
+  stack_element *sp;
+  unsigned char *ip;
+  stack_element *bsp;
 #endif
 
   unsigned char *code; // The instruction base register
@@ -822,12 +884,12 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
   {
 #define N_RETURNS() static_cast<signed char>(code[0])
 #define N_ARGS() static_cast<signed char>(code[1])
-#define N_LOCALS() code[2]
+#define N_LOCALS() (code[2] | (code [3] << 8))
 
     int n_returns = static_cast<signed char> (*ip++);
     // n_args is negative for varargin calls
     int n_args = static_cast<signed char> (*ip++);
-    int n_locals = *ip++; // Note: An arg and return can share slot
+    int n_locals = POP_CODE_USHORT (); // Note: An arg and return can share slot
 
     bool is_varargin = n_args < 0;
     bool is_varargout = n_returns < 0;
@@ -898,12 +960,14 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       {
         (*sp++).pee = new execution_exception {"error","","function called with too many inputs"};
         (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+        ip++; // unwind expects ip to point to two after the opcode being executed
         goto unwind;
       }
     if (!is_varargout && root_nargout > n_returns - 1) // n_returns includes %nargout, so subtract one
       {
         (*sp++).pee = new execution_exception {"error","","function called with too many outputs"};
         (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+        ip++;
         goto unwind;
       }
 
@@ -917,18 +981,18 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
 pop:
   {
     (*--sp).ov.~octave_value ();
-    DISPATCH ();
+    DISPATCH_1BYTEOP ();
   }
 dup:
   {
     new (sp) octave_value ((sp[-1]).ov);
     sp++;
-    DISPATCH ();
+    DISPATCH_1BYTEOP ();
   }
 load_cst:
   {
     // The next instruction is the offset in the data.
-    int offset = *ip++;
+    int offset = arg0;
 
     // Copy construct it into the top of the stack
     new (sp++) octave_value (data [offset]);
@@ -937,28 +1001,28 @@ load_cst:
   }
 mul_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_mul, mul, MUL, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 mul:
   MAKE_BINOP_SELFMODIFYING (binary_op::op_mul, mul_dbl, MUL_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 div_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_div, div, DIV, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 div:
   MAKE_BINOP_SELFMODIFYING (binary_op::op_div, div_dbl, DIV_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 add_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_add, add, ADD, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 add:
   MAKE_BINOP_SELFMODIFYING (binary_op::op_add, add_dbl, ADD_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 sub_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_sub, sub, SUB, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 sub:
   MAKE_BINOP_SELFMODIFYING (binary_op::op_sub, sub_dbl, SUB_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 ret:
   {
     // We need to tell the bytecode frame we are unwinding so that it can save
@@ -1179,7 +1243,7 @@ ret:
 assign:
   {
     // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value_vm &ov_rhs = TOP_OV_VM ();
     octave_value_vm &ov_lhs = bsp[slot].ov_vm;
@@ -1201,7 +1265,7 @@ assign:
 assign_dispath:
 {
   // Extract the slot number again
-  int slot = ip[-1];
+  int slot = arg0;
 
   octave_value &ov_rhs = TOP_OV ();
   octave_value &ov_lhs = bsp[slot].ov;
@@ -1260,11 +1324,11 @@ jmp_if_bool:
   if (OCTAVE_UNLIKELY (ov_1.type_id () != m_bool_typeid))
     {
       // Change the specialized opcode to the generic one
-      ip[-1] = static_cast<unsigned char> (INSTR::JMP_IF);
+      ip[-2] = static_cast<unsigned char> (INSTR::JMP_IF);
       goto jmp_if;
     }
 
-  unsigned char b0 = *ip++;
+  unsigned char b0 = arg0;
   unsigned char b1 = *ip++;
 
   int target = b0 | (b1 << 8);
@@ -1288,11 +1352,11 @@ jmp_if:
     if (OCTAVE_UNLIKELY (ov_1.type_id () == m_bool_typeid))
       {
         // Change the generic opcode to the specialized one
-        ip[-1] = static_cast<unsigned char> (INSTR::JMP_IF_BOOL);
+        ip[-2] = static_cast<unsigned char> (INSTR::JMP_IF_BOOL);
         goto jmp_if_bool;
       }
 
-    unsigned char b0 = *ip++;
+    unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
     int target = b0 | (b1 << 8);
@@ -1304,8 +1368,11 @@ jmp_if:
           {
             is_true = ov_1.is_true ();
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
+        CATCH_BAD_ALLOC
+        CATCH_EXIT_EXCEPTION
       }
     else
       {
@@ -1321,7 +1388,7 @@ jmp_if:
   DISPATCH();
 jmp:
   {
-    unsigned char b0 = *ip++;
+    unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
     int target = b0 | (b1 << 8);
@@ -1335,11 +1402,11 @@ jmp_ifn_bool:
   if (OCTAVE_UNLIKELY (ov_1.type_id () != m_bool_typeid))
     {
       // Change the specialized opcode to the generic one
-      ip[-1] = static_cast<unsigned char> (INSTR::JMP_IFN);
+      ip[-2] = static_cast<unsigned char> (INSTR::JMP_IFN);
       goto jmp_ifn;
     }
 
-  unsigned char b0 = *ip++;
+  unsigned char b0 = arg0;
   unsigned char b1 = *ip++;
 
   int target = b0 | (b1 << 8);
@@ -1363,11 +1430,11 @@ jmp_ifn:
     if (OCTAVE_UNLIKELY (ov_1.type_id () == m_bool_typeid))
       {
         // Change the generic opcode to the specialized one
-        ip[-1] = static_cast<unsigned char> (INSTR::JMP_IFN_BOOL);
+        ip[-2] = static_cast<unsigned char> (INSTR::JMP_IFN_BOOL);
         goto jmp_ifn_bool;
       }
 
-    unsigned char b0 = *ip++;
+    unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
     int target = b0 | (b1 << 8);
@@ -1379,8 +1446,11 @@ jmp_ifn:
           {
             is_true = ov_1.is_true ();
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
+        CATCH_BAD_ALLOC
+        CATCH_EXIT_EXCEPTION
       }
     else
       {
@@ -1393,11 +1463,11 @@ jmp_ifn:
     if (!is_true)
       ip = code + target;
   }
-  DISPATCH();
+  DISPATCH ();
 push_slot_nargoutn:
   {
     // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
@@ -1415,12 +1485,39 @@ push_slot_nargoutn:
       PUSH_OV (ov.ref_rep ()->deref ()); // global, persistent ... need dereferencing
   }
   DISPATCH();
+set_folded_cst:
+{
+  int slot = arg0;
+  octave_cached_value *ovb = static_cast<octave_cached_value*> (bsp[slot].ovb);
+  ovb->set_cached_obj (std::move (TOP_OV ()));
+  STACK_DESTROY (1);
+}
+DISPATCH();
+push_folded_cst:
+  {
+    int slot = arg0;
+    unsigned char b0 = *ip++;
+    unsigned char b1 = *ip++;
+  
+    octave_cached_value *ovb = static_cast<octave_cached_value*> (bsp[slot].ovb);
+    if (ovb->is_defined () && ovb->cache_is_valid ())
+      {
+        PUSH_OV (ovb->get_cached_value ());
+        int target = b0 | (b1 << 8);
+        ip = code + target;
+      }
+    else
+      {
+        bsp[slot].ov = octave_value {new octave_cached_value};
+      }
+  }
+  DISPATCH();
+
 push_slot_nargout0:
 push_slot_nargout1:
 push_slot1_special:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_base_value *ovb = bsp[slot].ovb;
 
@@ -1434,8 +1531,7 @@ push_slot1_special:
 // This is not an op-code and is only jumped to from above opcode.
 push_slot_dispatch:
   {
-    // Reread the slot number
-    int slot = ip[-1];
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
@@ -1459,8 +1555,8 @@ disp:
     octave_value &ov = TOP_OV ();
     // 0 is magic slot number that indicates no name or always not a command
     // for this opcode.
-    int slot = *ip++;
-    int slot_was_cmd = *ip++; // Marker for if the preceding call was a command call
+    int slot = arg0;
+    int slot_was_cmd = POP_CODE_USHORT (); // Marker for if the preceding call was a command call
 
     bool call_was_cmd = false;
     if (slot_was_cmd)
@@ -1488,9 +1584,11 @@ disp:
                   {
                     interp.feval ("display", el_ovl);
                   }
+                CATCH_INTERRUPT_EXCEPTION
                 CATCH_INDEX_EXCEPTION
                 CATCH_EXECUTION_EXCEPTION
                 CATCH_BAD_ALLOC
+                CATCH_EXIT_EXCEPTION
               }
           }
         else
@@ -1511,9 +1609,12 @@ disp:
               {
                 interp.feval ("display", ovl);
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
       }
 
@@ -1523,9 +1624,8 @@ disp:
 
 push_slot_disp:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
-    int slot_was_cmd = *ip++;
+    int slot = arg0;
+    int slot_was_cmd = POP_CODE_USHORT ();
     octave_value &ov = bsp[slot].ov;
     octave_value &ov_was_cmd = bsp[slot_was_cmd].ov;
 
@@ -1533,15 +1633,19 @@ push_slot_disp:
     // I.e. cmd fn calls or classdef metas.
     // Also error if no function-ish thing is found
     // in lookups.
+
+    // Assume that the pushed slot will not be a cmd.
+    // disp will later use the ov_was_cmd slot to choose between printing
+    // 'ans = ...' or 'foo = ...'
+    ov_was_cmd = octave_value ();
+
     if (ov.is_maybe_function ())
       {
         if (ov.is_undefined ()) // class objects are defined
-          ov_was_cmd = true;
-        ip--; // cmd_fcn_or_undef_error: looks for the opcode in ip[-1]
+          ov_was_cmd = true; 
+        ip -= 2; // Rewind to slot so the state matches 'push_slot_nargoutn' and 'push_slot_dispatch'.
         goto cmd_fcn_or_undef_error;
       }
-    else
-      ov_was_cmd = octave_value ();
 
     // Push the value in the slot to the stack
     if (OCTAVE_LIKELY (!ov.is_ref ()))
@@ -1554,14 +1658,14 @@ push_slot_disp:
 // Some kludge to handle the possibility of command form function calls.
 cmd_fcn_or_undef_error:
   {
-    // Need the slot number
-    int slot = *(ip - 1);
+    int slot = arg0;
     octave_value ov = bsp[slot].ov;
     bool is_ref = ov.is_ref ();
     if (is_ref)
       ov = ov.ref_rep ()->deref ();
 
-    // Check to opcode to see how many nargout there are
+    // Check to opcode to see how many nargout there are.
+    // Also skip ip to the end of the opcode.
     int nargout;
     bool push_classdef_metas = false;
     INSTR opcode = static_cast<INSTR> (*(ip - 2));
@@ -1580,7 +1684,7 @@ cmd_fcn_or_undef_error:
     else if (opcode == INSTR::PUSH_SLOT_DISP)
       {
         nargout = 0;
-        ip++; // Skip the maybe command slot
+        ip += 2; // Skip the maybe command slot
       }
     else
       PANIC ("Invalid opcode");
@@ -1636,9 +1740,12 @@ cmd_fcn_or_undef_error:
 
                 EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ovl, nargout);
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
         else
           PUSH_OV (ov); // TODO: The walker does this. Sane?
@@ -1649,46 +1756,46 @@ cmd_fcn_or_undef_error:
   DISPATCH ();
 le_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_le, le, LE, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP ();
 le:
   MAKE_BINOP_SELFMODIFYING (binary_op::op_lt, le_dbl, LE_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP ();
 le_eq_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_le_eq, le_eq, LE_EQ, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 le_eq:
   MAKE_BINOP_SELFMODIFYING(binary_op::op_le, le_eq_dbl, LE_EQ_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 gr_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_gr, gr, GR, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 gr:
   MAKE_BINOP_SELFMODIFYING(binary_op::op_gt, gr_dbl, GR_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 gr_eq_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_gr_eq, gr_eq, GR_EQ, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 gr_eq:
   MAKE_BINOP_SELFMODIFYING(binary_op::op_ge, gr_eq_dbl, GR_EQ_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 eq_dbl:
   MAKE_BINOP_SPECIALIZED(m_fn_dbl_eq, eq, EQ, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 eq:
   MAKE_BINOP_SELFMODIFYING(binary_op::op_eq, eq_dbl, EQ_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 neq_dbl:
   MAKE_BINOP_SPECIALIZED(m_fn_dbl_neq, neq, NEQ, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 neq:
   MAKE_BINOP_SELFMODIFYING(binary_op::op_ne, neq_dbl, NEQ_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 
 
 index_id1_mat_1d:
 {
+  int slot = arg0;
   ip++; // n_args_on_stack ignored
-  int slot = *ip++;
 
   octave_base_value *arg1 = TOP_OVB ();
   octave_value &mat = SEC_OV ();
@@ -1698,10 +1805,11 @@ index_id1_mat_1d:
   // If the args have change types we need to use the generic index opcode
   if (OCTAVE_UNLIKELY (!is_scalar || !is_mat))
     {
-      // Rewind ip to the 2nd byte of the opcode
-      ip -= 2;
+      // Rewind ip ton_args_on_stack
+      ip -= 1;
+      int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
       // Change the specialized opcode to the generic one
-      ip[-1] = static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1);
+      ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1);
       goto index_id1;
     }
 
@@ -1724,16 +1832,18 @@ index_id1_mat_1d:
       STACK_DESTROY (2);
       PUSH_OV (std::move (ans));
     }
+  CATCH_INTERRUPT_EXCEPTION
   CATCH_INDEX_EXCEPTION_WITH_NAME
   CATCH_EXECUTION_EXCEPTION
   CATCH_BAD_ALLOC
+  CATCH_EXIT_EXCEPTION
 }
 DISPATCH();
 
 index_id1_mat_2d:
 {
+  int slot = arg0;
   ip++; // n_args_on_stack ignored
-  int slot = *ip++;
 
   octave_base_value *arg2 = TOP_OVB (); // Collumn index
   octave_base_value *arg1 = SEC_OVB (); // Row index
@@ -1747,10 +1857,11 @@ index_id1_mat_2d:
   // If the args have change types we need to use the generic index opcode
   if (OCTAVE_UNLIKELY (!is_scalar || !is_mat))
     {
-      // Rewind ip to the 2nd byte of the opcode
-      ip -= 2;
+      // Rewind ip to n_args_on_stack
+      ip -= 1;
+      int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
       // Change the specialized opcode to the generic one
-      ip[-1] = static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1);
+      ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1);
       goto index_id1;
     }
 
@@ -1785,25 +1896,29 @@ index_id1_mat_2d:
       STACK_DESTROY (3);
       PUSH_OV (std::move (ans));
     }
+  CATCH_INTERRUPT_EXCEPTION
   CATCH_INDEX_EXCEPTION_WITH_NAME
   CATCH_EXECUTION_EXCEPTION
   CATCH_BAD_ALLOC
+  CATCH_EXIT_EXCEPTION
 }
 DISPATCH();
 
 index_math_ufun_id1:
 {
-  auto ufn = static_cast<octave_base_value::unary_mapper_t> (*ip++);
-  ip++; // "n_args_on_stack" ignored. Always 1
+  auto ufn = static_cast<octave_base_value::unary_mapper_t> (arg0);
   ip++; // slot number ignored
+  ip++; // "n_args_on_stack" ignored. Always 1
+
   // The object to index is before the arg on the stack
   octave_value &arg = TOP_OV ();
   octave_value &ov = SEC_OV ();
 
-  if (arg.type_id () != m_scalar_typeid ||
-      !ov.is_function_cache ())
+  if (OCTAVE_UNLIKELY (arg.type_id () != m_scalar_typeid ||
+      !ov.is_function_cache ()))
     {
-      ip -= 2;
+      ip -= 1; // Rewind ip to n_args_on_stack
+      arg0 = ip[-1]; // set arg0 to slot
       goto index_math_ufun_id1_dispatch;
     }
 
@@ -1816,9 +1931,10 @@ index_math_ufun_id1:
     }
   CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
 
-  if (!fcn->is_builtin_function ())
+  if (OCTAVE_UNLIKELY (!fcn->is_builtin_function ()))
     {
-      ip -= 2;
+      ip -= 1; // Rewind ip to n_args_on_stack
+      arg0 = ip[-1]; // set arg0 to slot
       goto index_math_ufun_id1_dispatch;
     }
 
@@ -1836,16 +1952,15 @@ push_pi:
 // is used instead.
 {
   // The next instruction is the slot number
-  int slot = *ip++;
+  int slot = arg0;
 
   octave_value &ov = bsp[slot].ov;
   // If the slot value is not a function cache we do a
   // PUSH_SLOT_NARGOUT1 which will most likely put a
   // function cache in the slot (unless the user has done a
   // "pi = 123;" or whatever).
-  if (!ov.is_function_cache ())
+  if (OCTAVE_UNLIKELY (!ov.is_function_cache ()))
     {
-      ip--;
       goto push_slot_nargout1;
     }
 
@@ -1857,9 +1972,8 @@ push_pi:
     }
   CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
 
-  if (fcn != m_pi_builtin_fn)
+  if (OCTAVE_UNLIKELY (fcn != m_pi_builtin_fn))
     {
-      ip--;
       goto push_slot_nargout1;
     }
 
@@ -1872,35 +1986,39 @@ DISPATCH();
     // TODO: Too much code. Should be broken out?
 
     // Note: Beutifully interleaved if branches and goto labels
-    int nargout;
+    int nargout, slot;
     bool specialization_ok;
     if (0)
       {
 index_idn:
+        slot = arg0; // Needed if we need a function lookup
         nargout = *ip++;
         specialization_ok = false;
       }
     else if (0)
       {
 index_id1:
+        slot = arg0;
         nargout = 1;
         specialization_ok = true;
       }
     else if (0)
       {
 index_id_nargout0:
+        slot = arg0;
         nargout = 0;
         specialization_ok = false;
       }
     else
       {
 index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 specialization
+        slot = arg0;
         nargout = 1;
         specialization_ok = false;
       }
 
     int n_args_on_stack = *ip++;
-    int slot = *ip++; // Needed if we need a function lookup
+
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
 
@@ -1934,16 +2052,22 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
       {
         if (n_args_on_stack == 1)
           {
-            ip -= 2;
-            CHECK (ip[-1] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
-            ip[-1] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_1D);
+            ip -= 1;
+            int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+            
+            CHECK (ip[-2 + wide_opcode_offset] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
+            ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_1D);
+
             goto index_id1_mat_1d;
           }
         else if (n_args_on_stack == 2)
           {
-            ip -= 2;
-            CHECK (ip[-1] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
-            ip[-1] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_2D);
+            ip -= 1;
+            int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+
+            CHECK (ip[-2 + wide_opcode_offset] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
+            ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_2D);
+
             goto index_id1_mat_2d;
           }
       }
@@ -1967,9 +2091,12 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
                 retval = ov.simple_subsref ('(', ovl, nargout);
                 ovl.clear ();
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION_WITH_NAME
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
         else
           TODO ("Silly state");
@@ -2017,9 +2144,11 @@ querry_fcn_cache:
                 STACK_DESTROY (n_args_on_stack + 1);
                 EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
           }
       }
     else
@@ -2042,7 +2171,7 @@ querry_fcn_cache:
 push_slot_indexed:
   {
     // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
     octave_value &ov = bsp[slot].ov;
 
     // Unlike push_slot this can't be a command function call
@@ -2059,39 +2188,39 @@ push_slot_indexed:
 
 pow_dbl:
   MAKE_BINOP_SPECIALIZED (m_fn_dbl_pow, pow, POW, m_scalar_typeid)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 pow:
   MAKE_BINOP_SELFMODIFYING(binary_op::op_pow, pow_dbl, POW_DBL)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 ldiv:
   MAKE_BINOP(binary_op::op_ldiv)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 el_mul:
   MAKE_BINOP(binary_op::op_el_mul)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 el_div:
   MAKE_BINOP(binary_op::op_el_div)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 el_pow:
   MAKE_BINOP(binary_op::op_el_pow)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 el_and:
   MAKE_BINOP(binary_op::op_el_and)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 el_or:
   MAKE_BINOP(binary_op::op_el_or)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 el_ldiv:
   MAKE_BINOP(binary_op::op_el_ldiv)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 
 not_dbl:
 MAKE_UNOP_SPECIALIZED (m_fn_dbl_not, op_not, NOT, m_scalar_typeid);
-DISPATCH ();
+DISPATCH_1BYTEOP ();
 
 not_bool:
 MAKE_UNOP_SPECIALIZED (m_fn_bool_not, op_not, NOT, m_bool_typeid);
-DISPATCH ();
+DISPATCH_1BYTEOP ();
 
 op_not:
   {
@@ -2101,13 +2230,13 @@ op_not:
     if (OCTAVE_UNLIKELY (type_id == m_scalar_typeid))
       {
         // Change the generic opcode to the specialized one
-        ip[-1] = static_cast<unsigned char> (INSTR::NOT_DBL);
+        ip[-2] = static_cast<unsigned char> (INSTR::NOT_DBL);
         goto not_dbl;
       }
     else if (OCTAVE_UNLIKELY (type_id == m_bool_typeid))
       {
         // Change the generic opcode to the specialized one
-        ip[-1] = static_cast<unsigned char> (INSTR::NOT_BOOL);
+        ip[-2] = static_cast<unsigned char> (INSTR::NOT_BOOL);
         goto not_bool;
       }
 
@@ -2121,11 +2250,13 @@ op_not:
 
         new (sp++) octave_value (std::move (ans));
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 uadd:
   {
     octave_value &ov = TOP_OV ();
@@ -2140,15 +2271,17 @@ uadd:
 
         new (sp++) octave_value (std::move (ans));
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 
 usub_dbl:
 MAKE_UNOP_SPECIALIZED (m_fn_dbl_usub, usub, USUB, m_scalar_typeid);
-DISPATCH ();
+DISPATCH_1BYTEOP ();
 usub:
   {
     octave_value &ov = TOP_OV ();
@@ -2156,7 +2289,7 @@ usub:
     if (OCTAVE_UNLIKELY (ov.type_id () == m_scalar_typeid))
       {
         // Change the generic opcode to the specialized one
-        ip[-1] = static_cast<unsigned char> (INSTR::USUB_DBL);
+        ip[-2] = static_cast<unsigned char> (INSTR::USUB_DBL);
         goto usub_dbl;
       }
 
@@ -2170,11 +2303,13 @@ usub:
 
         new (sp++) octave_value (std::move (ans));
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 trans:
   {
     octave_value &ov = TOP_OV ();
@@ -2190,11 +2325,13 @@ trans:
 
         new (sp++) octave_value (std::move (ans));
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 herm:
   {
     octave_value &ov = TOP_OV ();
@@ -2210,25 +2347,26 @@ herm:
 
         new (sp++) octave_value (std::move (ans));
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 
 incr_id_prefix_dbl:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () != m_scalar_typeid)
       {
-        ip -= 1;
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
         // Change the specialized opcode to the generic one
-        ip[-1] = static_cast<unsigned char> (INSTR::INCR_ID_PREFIX);
-        goto decr_id_prefix;
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INCR_ID_PREFIX);
+        goto incr_id_prefix;
       }
 
     octave_scalar &scalar = REP (octave_scalar, ov);
@@ -2242,16 +2380,15 @@ incr_id_prefix_dbl:
   DISPATCH();
 incr_id_prefix:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () == m_scalar_typeid)
       {
-        ip -= 1;
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
         // Change the generic opcode to the specialized one
-        ip[-1] = static_cast<unsigned char> (INSTR::INCR_ID_PREFIX_DBL);
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INCR_ID_PREFIX_DBL);
         goto incr_id_prefix_dbl;
       }
 
@@ -2269,23 +2406,24 @@ incr_id_prefix:
             PUSH_OV (ov_glb);
           }
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
   DISPATCH();
 
 decr_id_prefix_dbl:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () != m_scalar_typeid)
       {
-        ip -= 1;
-        ip[-1] = static_cast<unsigned char> (INSTR::DECR_ID_PREFIX);
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::DECR_ID_PREFIX);
         goto decr_id_prefix;
       }
 
@@ -2300,15 +2438,14 @@ decr_id_prefix_dbl:
   DISPATCH();
 decr_id_prefix:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () == m_scalar_typeid)
       {
-        ip -= 1;
-        ip[-1] = static_cast<unsigned char> (INSTR::DECR_ID_PREFIX_DBL);
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::DECR_ID_PREFIX_DBL);
         goto decr_id_prefix_dbl;
       }
 
@@ -2326,22 +2463,23 @@ decr_id_prefix:
             PUSH_OV (ov_glb);
           }
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
   DISPATCH();
 incr_id_postfix_dbl:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () != m_scalar_typeid)
       {
-        ip -= 1;
-        ip[-1] = static_cast<unsigned char> (INSTR::INCR_ID_POSTFIX);
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INCR_ID_POSTFIX);
         goto incr_id_postfix;
       }
 
@@ -2354,15 +2492,14 @@ incr_id_postfix_dbl:
   DISPATCH();
 incr_id_postfix:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () == m_scalar_typeid)
       {
-        ip -= 1;
-        ip[-1] = static_cast<unsigned char> (INSTR::INCR_ID_POSTFIX_DBL);
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INCR_ID_POSTFIX_DBL);
         goto incr_id_postfix_dbl;
       }
 
@@ -2382,22 +2519,23 @@ incr_id_postfix:
             PUSH_OV (std::move (copy));
           }
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
   DISPATCH();
 decr_id_postfix_dbl:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () != m_scalar_typeid)
       {
-        ip -= 1;
-        ip[-1] = static_cast<unsigned char> (INSTR::DECR_ID_POSTFIX);
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::DECR_ID_POSTFIX);
         goto decr_id_postfix;
       }
 
@@ -2410,15 +2548,14 @@ decr_id_postfix_dbl:
   DISPATCH();
 decr_id_postfix:
   {
-    // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov = bsp[slot].ov;
 
     if (ov.type_id () == m_scalar_typeid)
       {
-        ip -= 1;
-        ip[-1] = static_cast<unsigned char> (INSTR::DECR_ID_POSTFIX_DBL);
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+        ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::DECR_ID_POSTFIX_DBL);
         goto decr_id_postfix_dbl;
       }
 
@@ -2438,9 +2575,11 @@ decr_id_postfix:
             PUSH_OV (std::move (copy));
           }
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
   DISPATCH();
 for_setup:
@@ -2449,8 +2588,9 @@ for_setup:
 
     octave_idx_type n = ov_range.numel();
 
+    bool is_range = ov_range.is_range ();
     //TODO: Kludge galore. Should be refactored into some virtual call.
-    if ((ov_range.is_range ()) &&
+    if (is_range &&
         (
          ov_range.is_double_type () ||
          ov_range.is_int64_type () ||
@@ -2467,7 +2607,7 @@ for_setup:
       {
         ov_range = ov_range.maybe_as_trivial_range ();
       }
-    else if (ov_range.is_range () ||
+    else if (is_range ||
              ov_range.is_matrix_type () ||
              ov_range.iscell () ||
              ov_range.is_string () ||
@@ -2488,7 +2628,17 @@ for_setup:
       TODO ("Unsupported for rhs type");
 
     // TODO: Kludgy classes.
-    // TODO: print "inf" warning here
+
+    if (!ov_range.is_trivial_range () && is_range)
+      {
+        // TODO: Wasteful copy of range.
+        auto range = ov_range.range_value ();
+        if (math::isinf (range.limit ()) || math::isinf (range.base ()))
+            warning_with_id ("Octave:infinite-loop",
+                     "FOR loop limit is infinite, will stop after %"
+                     OCTAVE_IDX_TYPE_FORMAT " steps", range.numel ());
+      }
+
 
     // Push n to the stack
     (*sp++).i = n;
@@ -2500,7 +2650,11 @@ for_setup:
     if (! n)
       {
         // Slot from the for_cond that always follow a for_setup
-        int slot = *(ip + 3);
+        int slot;
+        if (arg0 == static_cast<int> (INSTR::WIDE))
+          slot = ip[1];
+        else
+          slot = ip[0];
         try
         {
           octave_value &lhs_ov = bsp[slot].ov;
@@ -2511,12 +2665,9 @@ for_setup:
         }
         CATCH_EXECUTION_EXCEPTION
       }
-
-    // The next opcode will be FOR_COND implictly.
-    // We will just fall through to it and point ip
-    // to FOR_COND's first operand.
-    ip++;
   }
+DISPATCH_1BYTEOP ();
+
 for_cond:
   {
     // Check if we should exit the loop due to e.g. ctrl-c, or handle
@@ -2525,24 +2676,22 @@ for_cond:
       {
         octave_quit ();
       }
-    catch (interrupt_exception &e)
-      {
-        (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);
-        goto unwind;
-      }
+    CATCH_INTERRUPT_EXCEPTION
+    CATCH_INDEX_EXCEPTION
+    CATCH_EXECUTION_EXCEPTION
+    CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     // Increase counter
     TOP ().i++; // Wraps to zero first iteration
-
-    ip +=2; // Skip the after address
-
+    
     // Check if we done all iterations
     // n is second element on the stack
     if (TOP ().i == SEC ().i)
       {
         // The after address
-        unsigned char b0 = *(ip - 2);
-        unsigned char b1 = *(ip - 1);
+        unsigned char b0 = *ip++;
+        unsigned char b1 = *ip++;
 
         int after = b0 | (b1 << 8);
 
@@ -2552,7 +2701,9 @@ for_cond:
     else
       {
         // Write the iteration's value to the for loop variable
-        int slot = *ip++;
+        int slot = arg0;
+        ip +=2; // Skip the after address
+
         octave_idx_type counter = TOP ().i;
 
         octave_value &ov_range = THIRD_OV ();
@@ -2580,12 +2731,12 @@ for_cond:
   DISPATCH ();
 pop_n_ints:
   {
-    sp -= *ip++;
+    sp -= arg0;
     DISPATCH();
   }
 push_fcn_handle:
   {
-    int slot = *ip++;
+    int slot = arg0;
 
     //octave_value &fcn_cache = bsp[slot].ov;
 
@@ -2617,8 +2768,8 @@ colon_cmd:
       }
 
     bool has_incr = false;
-    if (*(ip - 1) == static_cast<int> (INSTR::COLON3) ||
-        *(ip - 1) == static_cast<int> (INSTR::COLON3_CMD))
+    if (ip[-2] == static_cast<int> (INSTR::COLON3) ||
+        ip[-2] == static_cast<int> (INSTR::COLON3_CMD))
       has_incr = true;
 
     octave_value ret;
@@ -2633,6 +2784,7 @@ colon_cmd:
         {
           ret = colon_op(base, incr, limit, is_for_cmd);
         }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
 
@@ -2647,6 +2799,7 @@ colon_cmd:
         {
           ret = colon_op(base, limit, is_for_cmd);
         }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
 
@@ -2655,18 +2808,18 @@ colon_cmd:
 
     PUSH_OV (std::move (ret));
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 
 push_true:
   {
     PUSH_OV(ov_true);
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 push_false:
   {
     PUSH_OV(ov_false);
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 unary_true:
   {
     octave_value &op1 = TOP_OV ();
@@ -2677,8 +2830,11 @@ unary_true:
       {
         is_true = op1.is_true ();
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
+    CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     STACK_DESTROY (1);
 
@@ -2688,10 +2844,10 @@ unary_true:
       PUSH_OV (ov_false);
 
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 assign_n:
   {
-    int n_slots = *ip++;
+    int n_slots = arg0;
 
     int n_actual = 0;
     do
@@ -2699,7 +2855,7 @@ assign_n:
         // Move operand to the local at slot in relation to base stack pointer
 
         octave_value &arg = (*--sp).ov;
-        int slot = *ip++;
+        int slot = POP_CODE_USHORT ();
         octave_value &lhs_ov = bsp[slot].ov;
 
 
@@ -2809,8 +2965,8 @@ assign_n:
 
 subassign_id_mat_1d:
 {
+  int slot = arg0;
   ip++; // nargs always one
-  int slot = *ip++;
 
   // The top of the stack is the rhs value
   octave_value &rhs = TOP_OV ();
@@ -2826,9 +2982,10 @@ subassign_id_mat_1d:
     arg_type_id != m_scalar_typeid)
   {
     // Rewind ip to the 2nd byte of the opcode
-    ip -= 2;
+    ip -= 1;
+    int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
     // Change the specialized opcode to the general one
-    ip[-1] = static_cast<unsigned char> (INSTR::SUBASSIGN_ID);
+    ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::SUBASSIGN_ID);
     goto subassign_id;
   }
 
@@ -2850,7 +3007,7 @@ subassign_id_mat_1d:
           idx != idx_dbl - 1)
         {
           // Rewind ip to the 2nd byte of the opcode
-          ip -= 2;
+          ip -= 1;
           goto subassign_id;
         }
 
@@ -2859,9 +3016,11 @@ subassign_id_mat_1d:
 
       arr.xelem (idx) = val;
     }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION_WITH_NAME
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
   STACK_DESTROY (2);
 }
@@ -2870,8 +3029,8 @@ DISPATCH ();
 subassign_id:
   {
     // The args to the subassign are on the operand stack
+    int slot = arg0;
     int nargs = *ip++;
-    int slot = *ip++;
 
     // The top of the stack is the rhs value
     octave_value &rhs = TOP_OV ();
@@ -2900,14 +3059,16 @@ subassign_id:
     if (nargs == 1 && all_args_are_scalar && ov.type_id () == m_matrix_typeid &&
         rhs.type_id () == m_scalar_typeid)
       {
+        int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+
         // If the opcode allready is SUBASSIGN_ID_MAT_1D we were sent back to
         // SUBASSIGN_ID to handle some error or edgecase, so don't go back.
-        if ( ip[-3] != static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_1D))
+        if ( ip[-3 + wide_opcode_offset] != static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_1D))
           {
             // Rewind ip to the 2nd byte of the opcode
-            ip -= 2;
+            ip -= 1;
             // Change the general opcode to the specialized one
-            ip[-1] = static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_1D);
+            ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_1D);
             goto subassign_id_mat_1d;
           }
       }
@@ -2941,10 +3102,11 @@ subassign_id:
       {
         ov = ov.simple_subsasgn('(', args, rhs);
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION_WITH_NAME
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
-
+    CATCH_EXIT_EXCEPTION
 
     // Destroy the args on the operand stack aswell as rhs
     STACK_DESTROY (nargs + 1);
@@ -2953,6 +3115,8 @@ subassign_id:
 
 end_id:
   {
+    // Indexed variable
+    int slot = arg0;
     // Amount of args to the index, i.e. amount of dimensions
     // being indexed.
     // E.g. foo (1,2,3) => 3
@@ -2960,8 +3124,6 @@ end_id:
     // Index of the end, in the index, counting from 0.
     // E.g. foo (1, end, 3) => 1
     int idx = *ip++;
-    // Indexed variable
-    int slot = *ip++;
 
     octave_value ov = bsp[slot].ov;
 
@@ -2982,9 +3144,11 @@ end_id:
           {
             end_idx = handle_object_end (ov, idx, nargs);
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
         CATCH_BAD_ALLOC
+        CATCH_EXIT_EXCEPTION
       }
     else
       end_idx = octave_value (ov.end_index (idx, nargs));
@@ -2994,6 +3158,8 @@ end_id:
   DISPATCH ();
 end_obj:
   {
+    // Slot that stores the stack depth of the indexed object
+    int slot = arg0;
     // Amount of args to the index, i.e. amount of dimensions
     // being indexed.
     // E.g. foo (1,2,3) => 3
@@ -3001,8 +3167,6 @@ end_obj:
     // Index of the end, in the index, counting from 0.
     // E.g. foo (1, end, 3) => 1
     int idx = *ip++;
-    // Slot that stores the stack depth of the indexed object
-    int slot = *ip++;
 
     octave_value &stack_depth = bsp[slot].ov;
     // Indexed object
@@ -3022,9 +3186,11 @@ end_obj:
           {
             end_idx = handle_object_end (ov, idx, nargs);
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
         CATCH_BAD_ALLOC
+        CATCH_EXIT_EXCEPTION
       }
     else
       end_idx = octave_value (ov.end_index (idx, nargs));
@@ -3040,7 +3206,7 @@ end_x_n:
     // need to scan inner to outer after a defined
     // object to find the end of.
 
-    int n_ids = *ip++;
+    int n_ids = arg0;
     int i;
 
     for (i = 0; i < n_ids;)
@@ -3058,7 +3224,7 @@ end_x_n:
         // Slot that stores:
         //    the object that is being indexed for type 0
         //    the stack depth of the indexed object for type 1
-        int slot = *ip++;
+        int slot = POP_CODE_USHORT ();
 
         octave_value ov = bsp[slot].ov;
 
@@ -3093,9 +3259,12 @@ end_x_n:
               {
                 end_idx = handle_object_end (ov, idx, nargs);
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
         else
           end_idx = octave_value (ov.end_index (idx, nargs));
@@ -3107,13 +3276,13 @@ end_x_n:
 
     // Skip any unread objects to index
     for (; i < n_ids; i++)
-      ip += 4;
+      ip += 5;
   }
   DISPATCH ();
 
 eval:
   {
-    int nargout = POP_CODE ();
+    int nargout = arg0;
     int tree_idx = POP_CODE_INT ();
     CHECK (tree_idx < 0); // Should always be negative to mark for eval. Otherwise it is debug data
 
@@ -3127,16 +3296,18 @@ eval:
     {
       retval = te->evaluate_n (*m_tw, nargout);
     }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
   }
   DISPATCH ();
 bind_ans:
   {
-    int slot = POP_CODE ();
+    int slot = arg0;
     octave_value &ans_on_stack = TOP_OV ();
     octave_value &ans_in_slot = bsp [slot].ov;
 
@@ -3213,6 +3384,7 @@ DISPATCH ();
 
 push_anon_fcn_handle:
 {
+  ip--; // Rewind ip for int macro underneath
   int tree_idx = POP_CODE_INT ();
 
   auto it = unwind_data->m_ip_to_tree.find (tree_idx);
@@ -3230,7 +3402,7 @@ for_complex_setup:
 {
   octave_value &ov_rhs = TOP_OV ();
   ov_rhs.make_unique (); // TODO: Dunno if needed
-  unsigned char b0 = *ip++;
+  unsigned char b0 = arg0;
   unsigned char b1 = *ip++;
 
   int target = b0 | (b1 << 8);
@@ -3259,24 +3431,21 @@ for_complex_setup:
   // Push a counter to the stack, initialized so that it will
   // increment to 0.
   (*sp++).i = -1;
-
-  // Fallthrough to cond
-  ip++;
 }
+DISPATCH ();
+
 for_complex_cond:
 {
   // Increase counter
   TOP ().i++; // Wraps to zero first iteration
-
-  ip +=2; // Skip the after address
 
   // Check if we done all iterations
   // n is second element on the stack
   if (TOP ().i == SEC ().i)
     {
       // The after address
-      unsigned char b0 = *(ip - 2);
-      unsigned char b1 = *(ip - 1);
+      unsigned char b0 = arg0;
+      unsigned char b1 = *ip++;
 
       int after = b0 | (b1 << 8);
 
@@ -3285,39 +3454,40 @@ for_complex_cond:
     }
   else
     {
-        int slot_key = *ip++;
-        int slot_value = *ip++;
-        octave_idx_type counter = TOP ().i;
+      ip++; // Skip 2nd part of afteraddress
+      int slot_key = POP_CODE_USHORT ();
+      int slot_value = POP_CODE_USHORT ();
+      octave_idx_type counter = TOP ().i;
 
-        octave_value &ov_rhs = THIRD_OV (); // This is always a struct
-        octave_value &ov_key = bsp[slot_key].ov;
-        octave_value &ov_val = bsp[slot_value].ov;
+      octave_value &ov_rhs = THIRD_OV (); // This is always a struct
+      octave_value &ov_key = bsp[slot_key].ov;
+      octave_value &ov_val = bsp[slot_value].ov;
 
-        // TODO: Abit wasteful copying map_value () each time but whatever
-        //       who uses complex for loops anyways.
-        std::string key = ov_rhs.map_value ().keys () [counter];
-        const Cell val_lst = ov_rhs.map_value ().contents (key);
+      // TODO: Abit wasteful copying map_value () each time but whatever
+      //       who uses complex for loops anyways.
+      std::string key = ov_rhs.map_value ().keys () [counter];
+      const Cell val_lst = ov_rhs.map_value ().contents (key);
 
-        octave_idx_type n = val_lst.numel ();
-        octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
+      octave_idx_type n = val_lst.numel ();
+      octave_value val = (n == 1) ? val_lst(0) : octave_value (val_lst);
 
-        if (counter == 0)
-          {
-            ov_val.maybe_call_dtor (); // The first iteration these could be class objects ...
-            ov_key.maybe_call_dtor ();
-          }
+      if (counter == 0)
+        {
+          ov_val.maybe_call_dtor (); // The first iteration these could be class objects ...
+          ov_key.maybe_call_dtor ();
+        }
 
-        val.make_unique (); // TODO: Dunno if needed
+      val.make_unique (); // TODO: Dunno if needed
 
-        if (ov_val.is_ref ())
-          ov_val.ref_rep ()->set_value (val);
-        else
-          ov_val = val;
+      if (ov_val.is_ref ())
+        ov_val.ref_rep ()->set_value (val);
+      else
+        ov_val = val;
 
-        if (ov_val.is_ref ())
-          ov_key.ref_rep ()->set_value (key);
-        else
-          ov_key = key;
+      if (ov_val.is_ref ())
+        ov_key.ref_rep ()->set_value (key);
+      else
+        ov_key = key;
     }
 }
 DISPATCH ();
@@ -3325,7 +3495,7 @@ DISPATCH ();
 /* For dynamic m*n matrix where m and n < 256 */
 matrix:
   {
-    int nrows = *ip++;
+    int nrows = arg0;
     int ncols = *ip++;
     int n_el = nrows * ncols;
 
@@ -3347,14 +3517,16 @@ matrix:
 
         PUSH_OV (ov);
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
   DISPATCH ();
 matrix_big:
   {
-    int type = POP_CODE ();
+    int type = arg0;
 
     /* type 0 indicates a matrix that has unequal length of the rows.
      *
@@ -3392,9 +3564,11 @@ matrix_big:
 
             PUSH_OV (ov);
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
         CATCH_BAD_ALLOC
+        CATCH_EXIT_EXCEPTION
       }
     else
       {
@@ -3420,35 +3594,38 @@ matrix_big:
 
             PUSH_OV (ov);
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
         CATCH_BAD_ALLOC
+        CATCH_EXIT_EXCEPTION
       }
   }
   DISPATCH ();
 trans_mul:
   MAKE_BINOP(compound_binary_op::op_trans_mul)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 mul_trans:
   MAKE_BINOP(compound_binary_op::op_mul_trans)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 herm_mul:
   MAKE_BINOP(compound_binary_op::op_herm_mul)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 mul_herm:
   MAKE_BINOP(compound_binary_op::op_mul_herm)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 trans_ldiv:
   MAKE_BINOP(compound_binary_op::op_trans_ldiv)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 herm_ldiv:
   MAKE_BINOP(compound_binary_op::op_herm_ldiv)
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 wordcmd:
   {
+    int slot = arg0; // Needed if we need a function lookup
     int nargout = *ip++;
     int n_args_on_stack = *ip++;
-    int slot = *ip++; // Needed if we need a function lookup
+
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
 
@@ -3505,9 +3682,12 @@ querry_fcn_cache2:
                 STACK_DESTROY (n_args_on_stack + 1);
                 EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION_WITH_NAME
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
       }
     else
@@ -3533,28 +3713,28 @@ handle_signals:
       {
         octave_quit ();
       }
-    catch (interrupt_exception &e)
-      {
-        (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);
-        goto unwind;
-      }
+    CATCH_INTERRUPT_EXCEPTION
+    CATCH_INDEX_EXCEPTION
+    CATCH_EXECUTION_EXCEPTION
+    CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 push_cst_dbl_0:
 {
   PUSH_OV (ov_dbl_0);
 }
-DISPATCH ();
+DISPATCH_1BYTEOP ();
 push_cst_dbl_1:
 {
   PUSH_OV (ov_dbl_1);
 }
-DISPATCH ();
+DISPATCH_1BYTEOP ();
 push_cst_dbl_2:
 {
   PUSH_OV (ov_dbl_2);
 }
-DISPATCH ();
+DISPATCH_1BYTEOP ();
 
 push_cell:
   {
@@ -3627,12 +3807,12 @@ push_cell:
 
     PUSH_OV (cell);
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 push_ov_u64:
   {
     PUSH_OV (octave_int<uint64_t>{});
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 expand_cs_list:
   {
     octave_value cs = TOP_OV ();
@@ -3663,25 +3843,34 @@ expand_cs_list:
     PUSH_OV (rows_ov);
     PUSH_OV (cols_ov);
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 
   {
     // TODO: Too much code. Should be broken out?
     // Something made sp not be in r15.
 
-    int nargout;
+    int nargout, slot;
     if (0)
+      {
 index_cell_idn:
-      nargout = *ip++;
+        slot = arg0; // Needed if we need a function lookup
+        nargout = *ip++;
+      }
     else if (0)
 index_cell_id1:
-      nargout = 1;
+      {
+        slot = arg0;
+        nargout = 1;
+      }
     else if (0)
 index_cell_id0:
-      nargout = 0;
-
+      {
+        slot = arg0;
+        nargout = 0;
+      }
+    
     int n_args_on_stack = *ip++;
-    int slot = *ip++; // Needed if we need a function lookup
+
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
 
@@ -3732,9 +3921,12 @@ index_cell_id0:
                 retval = ov.subsref("{", idx, nargout);
                 idx.clear ();
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION_WITH_NAME
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
         else
           {
@@ -3778,9 +3970,11 @@ index_cell_id0:
                     m_tw->set_active_bytecode_ip (ip - code);
                     retval = fcn->call (*m_tw, nargout, final_args);
                   }
+                CATCH_INTERRUPT_EXCEPTION
                 CATCH_INDEX_EXCEPTION
                 CATCH_EXECUTION_EXCEPTION
                 CATCH_BAD_ALLOC
+                CATCH_EXIT_EXCEPTION
               }
 
             idx.clear ();
@@ -3829,9 +4023,12 @@ querry_fcn_cache3:
                 STACK_DESTROY (n_args_on_stack + 1);
                 EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION_WITH_NAME
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
       }
     else
@@ -3857,7 +4054,7 @@ incr_prefix:
     // Inplace
     ov.non_const_unary_op (octave_value::unary_op::op_incr);
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 
 rot:
   {
@@ -3867,7 +4064,7 @@ rot:
     PUSH_OV (top_ov);
     PUSH_OV (sec_ov);
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 
 varargin_call:
   {
@@ -3878,11 +4075,11 @@ varargin_call:
 
     octave_user_function *usr_fcn = static_cast<octave_user_function *> (sp[0].pv);
 
-    int n_returns_callee = static_cast<signed char> (*(ip - 3));
+    int n_returns_callee = static_cast<signed char> (ip[-4]);
     if (n_returns_callee < 0)
       n_returns_callee = -n_returns_callee;
-    int n_args_callee = -static_cast<signed char> (*(ip - 2)); // Note: Minus
-    int n_locals_callee = *(ip - 1);
+    int n_args_callee = -static_cast<signed char> (ip[-3]); // Note: Minus
+    int n_locals_callee = ip[-2] | (ip[-1] << 8);
 
     int nargout = sp[-1].i;
 
@@ -3992,7 +4189,12 @@ varargin_call:
       PUSH_OV ();
 
     int nargin = n_args_on_callee_stack + idx_cell; // n_args_callee count includes varargin
-    m_tw->push_stack_frame(*this, usr_fcn, nargout, nargin);
+    try
+      {
+        m_tw->push_stack_frame(*this, usr_fcn, nargout, nargin);
+      }
+    CATCH_STACKPUSH_EXECUTION_EXCEPTION // Sets m_could_not_push_frame to true
+    CATCH_STACKPUSH_BAD_ALLOC
 
     /* Called fn needs to know about ignored outputs .e.g. [~, a] = foo() */
     if (m_output_ignore_data)
@@ -4021,6 +4223,7 @@ varargin_call:
 
 unwind:
   {
+    ip--; // Rewind ip to after the opcode (i.e. arg0's position in the code)
     // Push VM state
     m_sp = sp;
     m_bsp = bsp;
@@ -4036,12 +4239,20 @@ unwind:
     m_sp--;
 
     // Save current exception to the error system in handle_error ()
-    handle_error (et);
+    error_data errdat = handle_error (et);
+
+    // Only run unwind_protect code if the exception is the interrupt or OOM exception.
+    // I.e. no 'throw ... catch' code.
+    bool only_unwind_protect = et == error_type::INTERRUPT_EXC;
 
     while (1)
       {
         // Find unwind entry for current value of the instruction pointer
-        unwind_entry *entry = find_unwind_entry_for_current_state ();
+        unwind_entry *entry = find_unwind_entry_for_current_state (only_unwind_protect);
+
+        unwind_entry_type type = unwind_entry_type::INVALID;
+        if (entry)
+          type = entry->m_unwind_entry_type;
 
         // We need to figure out what stack depth we want.
         // If we are unwinding in a try catch we need to save any
@@ -4076,10 +4287,6 @@ unwind:
               (*--m_sp).ov.~octave_value ();
           }
 
-        unwind_entry_type type = unwind_entry_type::INVALID;
-        if (entry)
-          type = entry->m_unwind_entry_type;
-
         if (type == unwind_entry_type::UNWIND_PROTECT ||
             type == unwind_entry_type::TRY_CATCH)
           {
@@ -4105,6 +4312,9 @@ unwind:
             // away by a POP instruction or assigned to the catch
             // clause identifier.
             PUSH_OV (err_map);
+
+            if (et == error_type::INTERRUPT_EXC)
+              m_unwinding_interrupt = true;
 
             goto bail_unwind;
           }
@@ -4154,8 +4364,11 @@ unwind:
         // Restore the stack pointer
         sp = m_sp = m_sp[-1].pse;
 
-        // Pop dynamic stackframe
-        m_tw->pop_stack_frame ();
+        // Pop dynamic stackframe (unless it was never pushed)
+        if (!m_could_not_push_frame)
+          m_tw->pop_stack_frame ();
+        else
+          m_could_not_push_frame = false;
 
         // If we are messing with the interpreters lvalue_list due to some
         // ~ we need to restore stuff.
@@ -4174,8 +4387,11 @@ unwind:
 
     m_tw->set_lvalue_list (m_original_lvalue_list);
 
+    // Rethrow exceptions out of the VM
     if (et == error_type::INTERRUPT_EXC)
       throw interrupt_exception {};
+    else if (et == error_type::EXIT_EXCEPTION)
+      throw exit_exception (errdat.m_exit_status, errdat.m_safe_to_return);
     else
       {
         error_system& es = m_tw->get_interpreter().get_error_system ();
@@ -4190,11 +4406,11 @@ init_global:
   {
     // The next instruction tells whether we should init a global or persistent
     // variable.
-    global_type type = static_cast<global_type> (*ip++);
+    global_type type = static_cast<global_type> (arg0);
 
     // The next instruction is the local slot number for the global variable
-    int slot = *ip++;
-    ip++; // Not used
+    int slot = POP_CODE_USHORT();
+    POP_CODE_USHORT(); // Not used TODO: Remove. Make this opcode use WIDE
 
     std::string& name = name_data[slot];
 
@@ -4321,7 +4537,7 @@ init_global:
 assign_compound:
   {
     // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
     // The next instruction is the type of compound operation
     octave_value::assign_op op =
       static_cast<octave_value::assign_op> (*ip++);
@@ -4348,9 +4564,11 @@ assign_compound:
             glb_ref.assign (op, ov_rhs);
           }
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION_WITH_NAME
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     STACK_DESTROY (1);
   }
@@ -4358,7 +4576,7 @@ assign_compound:
 jmp_ifdef:
   {
     octave_value &ov_1 = TOP_OV ();
-    unsigned char b0 = *ip++;
+    unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
     int target = b0 | (b1 << 8);
@@ -4373,7 +4591,7 @@ switch_cmp:
   {
     octave_value &ov_label = TOP_OV ();
     octave_value &ov_switch = SEC_OV ();
-    unsigned char b0 = *ip++;
+    unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
     int target = b0 | (b1 << 8);
@@ -4423,13 +4641,13 @@ braindead_precond:
     else
       PUSH_OV (ov_false);
   }
-  DISPATCH ();
+  DISPATCH_1BYTEOP ();
 
 braindead_warning:
   {
     // A slot stores whether we allready printed this warning for a particular
     // place where there could be a braindead short circuit
-    int slot = *ip++;
+    int slot = arg0;
     // The next codepoint is the type of warning
     int type = *ip++; // asci '|' or '&'
 
@@ -4454,7 +4672,7 @@ braindead_warning:
 force_assign:
   {
     // The next instruction is the slot number
-    int slot = *ip++;
+    int slot = arg0;
 
     octave_value &ov_rhs = TOP_OV ();
     octave_value &ov_lhs = bsp[slot].ov;
@@ -4476,7 +4694,7 @@ push_nil:
   {
     PUSH_OV(octave_value{});
   }
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 throw_iferrorobj:
   {
     octave_value& ov_top = TOP_OV ();
@@ -4502,7 +4720,14 @@ throw_iferrorobj:
         std::string s_msg  = msg.string_value ();
         std::string s_id = id.string_value ();
 
-        octave_map err_stack = map.contents ("stack").xmap_value ("ERR.STACK must be a struct");;
+        octave_map err_stack = map.contents ("stack").xmap_value ("ERR.STACK must be a struct");
+
+        // Are we unwinding an interrupt exception?
+        if (m_unwinding_interrupt)
+          {
+            (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);
+            goto unwind;
+          }
 
         // On a rethrow, the C++ exception is always base class execution_exception.
         // We use rethrow_error() to recreate a stack info object from the octave_map
@@ -4523,13 +4748,13 @@ throw_iferrorobj:
     else
       STACK_DESTROY (1);
   }
-  DISPATCH();
+  DISPATCH_1BYTEOP();
 
 index_struct_call:
   {
-    int nargout = POP_CODE ();
-    bool has_slot = *ip++; /* has_slot */
-    int slot = *ip++; /* slot */
+    int slot = arg0;
+    bool has_slot = *ip++;
+    int nargout = *ip++;
 
     int n_subs = POP_CODE ();
 
@@ -4627,9 +4852,11 @@ index_struct_call:
                       retval = fcn->call (*m_tw, step_nargout, {});
                     // TODO: Bytecode call.
                   }
+                CATCH_INTERRUPT_EXCEPTION
                 CATCH_INDEX_EXCEPTION
                 CATCH_EXECUTION_EXCEPTION
                 CATCH_BAD_ALLOC
+                CATCH_EXIT_EXCEPTION
               }
             else if (ov.is_function () && !ov.is_classdef_meta ())
               {
@@ -4648,9 +4875,11 @@ index_struct_call:
                   {
                     retval = ov.subsref (step_type.c_str (), step_idx, step_nargout);
                   }
+                CATCH_INTERRUPT_EXCEPTION
                 CATCH_INDEX_EXCEPTION_WITH_MAYBE_NAME (has_slot && cntr == 0)
                 CATCH_EXECUTION_EXCEPTION
                 CATCH_BAD_ALLOC
+                CATCH_EXIT_EXCEPTION
               }
 
             // If the first retval has zero length and we got more to go, it is an error
@@ -4698,9 +4927,11 @@ index_struct_call:
 
         idx.clear ();
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     STACK_DESTROY (1);
     EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
@@ -4709,10 +4940,10 @@ index_struct_call:
 
 index_struct_n:
   {
-    int nargout = *ip++;
+    int nargout = arg0;
 
-    int slot = *ip++; // Needed if we need a function lookup
-    int slot_for_field = *ip++;
+    int slot = POP_CODE_USHORT (); // Needed if we need a function lookup
+    int slot_for_field = POP_CODE_USHORT ();
 
     octave_value &ov = TOP_OV ();
 
@@ -4749,9 +4980,11 @@ index_struct_n:
 
         idx.clear ();
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION_WITH_NAME
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     STACK_DESTROY (1);
     EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
@@ -4760,8 +4993,8 @@ index_struct_n:
 
 subasgn_struct:
   {
-    int slot = *ip++;
-    int field_slot = *ip++;
+    int slot = arg0;
+    int field_slot = POP_CODE_USHORT ();
 
     // The top of the stack is the rhs value
     octave_value &rhs = TOP_OV ();
@@ -4794,9 +5027,11 @@ subasgn_struct:
       {
         ov = ov.subsasgn (".", idx, rhs);
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION_WITH_NAME
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     STACK_DESTROY (1);
   }
@@ -4805,8 +5040,8 @@ subasgn_struct:
 subasgn_cell_id:
   {
     // The args to the subassign are on the operand stack
+    int slot = arg0;
     int nargs = *ip++;
-    int slot = *ip++;
 
     // The top of the stack is the rhs value
     octave_value &rhs = TOP_OV ();
@@ -4845,9 +5080,11 @@ subasgn_cell_id:
         // copy the return value to the slot.
         ov = ov.subsasgn("{", idx, rhs);
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION_WITH_NAME
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     // Destroy the args on the operand stack aswell as rhs
     STACK_DESTROY (nargs + 1);
@@ -4857,7 +5094,7 @@ subasgn_cell_id:
 subassign_obj:
   {
     // The args to the subassign are on the operand stack
-    int nargs = *ip++;
+    int nargs = arg0;
     char type = *ip++;
 
     // First argument
@@ -4892,9 +5129,11 @@ subassign_obj:
         // copy the return value to the slot.
         lhs = lhs.subsasgn(std::string {type}, idx, rhs);
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     // We want lhs on the top of the stack after dropping all
     // the args to SUBASSIGN_OBJ, so we move it to where rhs is
@@ -4910,9 +5149,9 @@ subassign_obj:
 
 index_obj:
   {
-    int nargout = *ip++;
+    int nargout = arg0;
     int has_slot = *ip++;
-    int slot = *ip++;
+    int slot = POP_CODE_USHORT ();
     int n_args_on_stack = *ip++;
     char type = *ip++;
 
@@ -4964,9 +5203,12 @@ index_obj:
                 retval = ov.subsref(std::string {type}, idx, nargout);
                 idx.clear ();
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION_WITH_MAYBE_NAME (has_slot)
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
         else
           PANIC ("Strange state");
@@ -5002,9 +5244,11 @@ index_obj:
                     m_tw->set_active_bytecode_ip (ip - code);
                     retval = fcn->call (*m_tw, nargout, final_args);
                   }
+                CATCH_INTERRUPT_EXCEPTION
                 CATCH_INDEX_EXCEPTION_WITH_MAYBE_NAME (has_slot)
                 CATCH_EXECUTION_EXCEPTION
                 CATCH_BAD_ALLOC
+                CATCH_EXIT_EXCEPTION
               }
 
             idx.clear ();
@@ -5057,9 +5301,12 @@ querry_fcn_cache_index_obj:
                 STACK_DESTROY (n_args_on_stack + 1);
                 EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
               }
+            CATCH_INTERRUPT_EXCEPTION
             CATCH_INDEX_EXCEPTION
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
+
           }
       }
     else
@@ -5090,7 +5337,7 @@ querry_fcn_cache_index_obj:
   DISPATCH ();
 load_far_cst:
   {
-    // The next instruction is the offset in the data.
+    ip--;
     int offset = POP_CODE_INT ();
 
     // Copy construct it into the top of the stack
@@ -5106,7 +5353,7 @@ set_ignore_outputs:
         m_output_ignore_data = new output_ignore_data;
       }
 
-    int n_ignored = POP_CODE ();
+    int n_ignored = arg0;
     int n_total = POP_CODE ();
     auto *M = new Matrix {};
     m_output_ignore_data->m_v_matrixes.push_back (M);
@@ -5162,10 +5409,10 @@ clear_ignore_outputs:
       }
 
     // Clear any value written to the %~X slot(s)
-    int n_slots = POP_CODE ();
+    int n_slots = arg0;
     for (int i = 0; i < n_slots; i++)
       {
-        int slot = POP_CODE ();
+        int slot = POP_CODE_USHORT ();
 
         octave_value &ov = bsp[slot].ov;
 
@@ -5179,7 +5426,7 @@ clear_ignore_outputs:
 
 subassign_chained:
   {
-    octave_value::assign_op op = static_cast<octave_value::assign_op> (POP_CODE ());
+    octave_value::assign_op op = static_cast<octave_value::assign_op> (arg0);
     int n_chained = POP_CODE ();
     std::vector<int> v_n_args;
     std::string type (n_chained, 0);
@@ -5218,11 +5465,16 @@ subassign_chained:
 
     try
       {
+        if (type.size () && type.back () != '(' && lhs_assign_numel (lhs, type, idx) != 1)
+          err_invalid_structure_assignment ();
+
         lhs.assign (op, type, idx, rhs);
       }
+    CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
 
     PUSH_OV (lhs);
   }
@@ -5230,14 +5482,14 @@ subassign_chained:
 
 set_slot_to_stack_depth:
   {
-    int slot = POP_CODE ();
+    int slot = arg0;
     int stack_depth = sp - bsp;
     bsp[slot].ov = octave_value {stack_depth};
   }
   DISPATCH ();
 dupn:
   {
-    int offset = POP_CODE ();
+    int offset = arg0;
     int n = POP_CODE ();
     stack_element *first = sp - n - offset;
     for (int i = 0; i < n; i++)
@@ -5246,8 +5498,7 @@ dupn:
   DISPATCH ();
 load_cst_alt2:
   {
-    // The next instruction is the offset in the data.
-    int offset = *ip++;
+    int offset = arg0;
 
     // Copy construct it into the top of the stack
     new (sp++) octave_value (data [offset]);
@@ -5256,8 +5507,7 @@ load_cst_alt2:
   }
 load_cst_alt3:
   {
-    // The next instruction is the offset in the data.
-    int offset = *ip++;
+    int offset = arg0;
 
     // Copy construct it into the top of the stack
     new (sp++) octave_value (data [offset]);
@@ -5266,8 +5516,7 @@ load_cst_alt3:
   }
 load_cst_alt4:
   {
-    // The next instruction is the offset in the data.
-    int offset = *ip++;
+    int offset = arg0;
 
     // Copy construct it into the top of the stack
     new (sp++) octave_value (data [offset]);
@@ -5279,7 +5528,7 @@ load_2_cst:
   // We are pushing two constants to the stack. E.g. for "3 * 2".
   // The next instruction is the offset in the data of the lhs.
   // rhs is right after.
-  int offset = *ip++;
+  int offset = arg0;
 
   // Copy construct the two constants onto the top of the stack
   new (sp++) octave_value (data [offset]);     // lhs in a binop
@@ -5288,8 +5537,25 @@ load_2_cst:
   DISPATCH ();
 }
 /* Check whether we should enter the debugger on the next ip */
-debug_check:
+{
+  bool onebyte_op;
+  if (0)
+    debug_check:
+    onebyte_op = false;
+  else if (0)
+    debug_check_1b:
+    onebyte_op = true;
+  
   {
+    int tmp_ip = ip - code;
+    if (onebyte_op)
+      tmp_ip--;
+
+    if (OCTAVE_UNLIKELY (m_trace_enabled))
+      {
+        PRINT_VM_STATE ("Trace: ");
+      }
+
     if (OCTAVE_UNLIKELY (m_profiler_enabled))
       {
         int64_t t1 = vm_profiler::unow ();
@@ -5301,16 +5567,16 @@ debug_check:
         std::string fn_name = data[2].string_value (); // profiler_name () querried at compile time
         vm_profiler::vm_profiler_fn_stats &stat = p->m_map_fn_stats[fn_name];
 
-        if (!stat.m_v_t0.size ())
+        if (!stat.m_v_t.size ())
           {
             // The profiler got enabled after the current function was called.
             p->enter_fn (fn_name, "", unwind_data, name_data, code);
-            stat.m_v_t0.back () = -1;
+            stat.m_v_t.back () = -1;
             stat.m_v_ip.back () = ip - code; // We are not at function start, so set ip to proper value.
           }
-        else if (stat.m_v_t0.back () != -1)
+        else if (stat.m_v_t.back () != -1)
           {
-            int64_t t0 = stat.m_v_t0.back ();
+            int64_t t0 = stat.m_v_t.back ();
             int64_t dt = t1 - t0;
 
             stat.add_t (dt);
@@ -5322,9 +5588,6 @@ debug_check:
     //       Until another bp is set? Debugging will be quite slow
     //       with one check for each op-code.
 
-    // find() uses int& but we don't want the registers to ever leave the c-stack
-    // so we do a copy here.
-    int tmp_ip = ip - code;
     auto it = unwind_data->m_ip_to_tree.find (tmp_ip);
 
     if (it == unwind_data->m_ip_to_tree.end ())
@@ -5353,40 +5616,54 @@ debug_check:
           {
             m_tw->do_breakpoint (t->is_active_breakpoint (*m_tw), is_ret);
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
         CATCH_BAD_ALLOC
-        catch (interrupt_exception &e)
+        CATCH_EXIT_EXCEPTION
+      }
+  }
+  debug_check_end:
+  {
+    if (OCTAVE_UNLIKELY (m_profiler_enabled))
+      {
+        auto p = m_vm_profiler;
+
+        if (p)
           {
-            (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);
-            goto unwind;
+            std::string fn_name = data[2].string_value (); // profiler_name () querried at compile time
+            vm_profiler::vm_profiler_fn_stats &stat = m_vm_profiler->m_map_fn_stats[fn_name];
+
+            // If someone enabled profiling in the debugger we need to wait until
+            // the debug_check: block is ran next time.
+            if (stat.m_v_t.size())
+              {
+                int tmp_ip = ip - code;
+                if (onebyte_op)
+                  tmp_ip--;
+                stat.m_v_ip.back () = tmp_ip; // Sets a new 'currently running ip'
+                stat.m_v_t.back () = vm_profiler::unow (); // Sets a new timestamp for the current ip
+              }
           }
       }
   }
-debug_check_end:
-{
-  if (OCTAVE_UNLIKELY (m_profiler_enabled))
+  if (onebyte_op)
     {
-      auto p = m_vm_profiler;
-
-      if (p)
-        {
-          std::string fn_name = data[2].string_value (); // profiler_name () querried at compile time
-          vm_profiler::vm_profiler_fn_stats &stat = m_vm_profiler->m_map_fn_stats[fn_name];
-
-          // If someone enabled profiling in the debugger we need to wait until
-          // the debug_check: block is ran next time.
-          if (stat.m_v_t0.size())
-            {
-              stat.m_v_ip.back () = ip - code;
-              stat.m_v_t0.back () = vm_profiler::unow ();
-            }
-        }
+      int opcode = ip[-1];
+      arg0 = ip[0];
+      ip++;
+      goto *instr [opcode];
+    }
+  else
+    {
+      int opcode = ip[0];
+      arg0 = ip[1];
+      ip += 2;
+      goto *instr [opcode];
     }
 }
-DISPATCH_NO_DEBUG ();
 
-debug:
+debug: // TODO: Remove
   {
     if (m_tw->debug_mode ())
       {
@@ -5398,17 +5675,24 @@ debug:
           {
             m_tw->enter_debugger ();
           }
+        CATCH_INTERRUPT_EXCEPTION
         CATCH_INDEX_EXCEPTION
         CATCH_EXECUTION_EXCEPTION
         CATCH_BAD_ALLOC
-        catch (interrupt_exception &e)
-          {
-            (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);
-            goto unwind;
-          }
+        CATCH_EXIT_EXCEPTION
       }
   }
   DISPATCH ();
+
+  wide:
+  {
+    int opcode = arg0; // The opcode to execute next is in arg0, i.e. ip[-1]
+    // The next opcode needs its arg0, which is a unsigned short instead of the usual byte
+    // that DISPATCH() writes to arg0.
+    arg0 = (ip[1] << 8) | ip[0];
+    ip += 2; // Forward ip so it points to after the widened argument
+    goto *instr [opcode];
+  }
 
   __builtin_unreachable ();
 }
@@ -5443,9 +5727,11 @@ vm::find_fcn_for_cmd_call (std::string *name)
   return symtab.find_function (*name);
 }
 
-void
+vm::error_data
 vm::handle_error (error_type error_type)
 {
+  error_data ret;
+
   error_system& es = m_tw->get_interpreter().get_error_system ();
 
   std::stringstream ss;
@@ -5522,6 +5808,10 @@ vm::handle_error (error_type error_type)
       }
     case error_type::INTERRUPT_EXC:
       break; // Do nothing
+    case error_type::EXIT_EXCEPTION:
+      ret.m_safe_to_return = (--m_sp)->i;
+      ret.m_exit_status = (--m_sp)->i;
+      break;
     case error_type::INVALID_N_EL_RHS_IN_ASSIGNMENT:
     {
       execution_exception e {"error", "", "invalid number of elements on RHS of assignment"};
@@ -5542,7 +5832,7 @@ vm::handle_error (error_type error_type)
       TODO ("Unhandeled error type");
     }
 
-  return;
+  return ret;
 }
 
 vm::~vm ()
@@ -5570,7 +5860,6 @@ vm::vm (tree_evaluator *tw, bytecode &initial_bytecode)
   m_data = initial_bytecode.m_data.data ();
   m_code = initial_bytecode.m_code.data ();
   m_name_data = initial_bytecode.m_ids.data ();
-  m_name_data_size = initial_bytecode.m_ids.size ();
   m_unwind_data = &initial_bytecode.m_unwind_data;
 
   // Check that the typeids are what the VM anticipates. If the id change, just change
@@ -5627,6 +5916,148 @@ static void copy_many_args_to_caller (octave::stack_element *sp,
   for (int i = n_args_to_move; i < n_args_caller_expects; i++)
     PUSH_OV ();
 }
+
+static octave_value xeval_for_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx);
+
+// This function reimplements octave_lvalue::numel()
+// TODO: octave_lvalue::numel() could be broken out or made static and used instead. But don't mess with that code 
+//       to keep the VM somewhat independent of other code.
+static int lhs_assign_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx)
+{
+  // Return 1 if there is no index because without an index there
+  // should be no way to have a cs-list here.  Cs-lists may be passed
+  // around internally but they are not supposed to be stored as
+  // single symbols in a stack frame.
+
+  std::size_t num_indices = idx.size ();
+
+  if (num_indices == 0)
+    return 1;
+
+  switch (type[num_indices-1])
+    {
+    case '(':
+      return 1;
+
+    case '{':
+      {
+        // FIXME: Duplicate code in '.' case below...
+
+        // Evaluate, skipping the last index.
+
+        std::string tmp_type = type;
+        std::list<octave_value_list> tmp_idx = idx;
+
+        tmp_type.pop_back ();
+        tmp_idx.pop_back ();
+
+        octave_value tmp = xeval_for_numel (ov, tmp_type, tmp_idx);
+
+        octave_value_list tidx = idx.back ();
+
+        if (tmp.is_undefined ())
+          {
+            if (tidx.has_magic_colon ())
+              err_invalid_inquiry_subscript ();
+
+            tmp = Cell ();
+          }
+        else if (tmp.is_zero_by_zero ()
+                 && (tmp.is_matrix_type () || tmp.is_string ()))
+          {
+            tmp = Cell ();
+          }
+
+        return tmp.xnumel (tidx);
+      }
+      break;
+
+    case '.':
+      {
+        // Evaluate, skipping either the last index or the last two
+        // indices if we are looking at "(idx).field".
+
+        std::string tmp_type = type;
+        std::list<octave_value_list> tmp_idx = idx;
+
+        tmp_type.pop_back ();
+        tmp_idx.pop_back ();
+
+        bool paren_dot = num_indices > 1 && type[num_indices-2] == '(';
+
+        // Index for paren operator, if any.
+        octave_value_list pidx;
+
+        if (paren_dot)
+          {
+            pidx = tmp_idx.back ();
+
+            tmp_type.pop_back ();
+            tmp_idx.pop_back ();
+          }
+
+        octave_value tmp = xeval_for_numel (ov, tmp_type, tmp_idx);
+
+        bool autoconv = (tmp.is_zero_by_zero ()
+                         && (tmp.is_matrix_type () || tmp.is_string ()
+                             || tmp.iscell ()));
+
+        if (paren_dot)
+          {
+            // Use octave_map, not octave_scalar_map so that the
+            // dimensions are 0x0, not 1x1.
+
+            if (tmp.is_undefined ())
+              {
+                if (pidx.has_magic_colon ())
+                  err_invalid_inquiry_subscript ();
+
+                tmp = octave_map ();
+              }
+            else if (autoconv)
+              tmp = octave_map ();
+
+            return tmp.xnumel (pidx);
+          }
+        else if (tmp.is_undefined () || autoconv)
+          return 1;
+        else
+          return tmp.xnumel (octave_value_list ());
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+}
+
+static octave_value xeval_for_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx)
+{
+  octave_value retval;
+
+  try
+    {
+      retval = ov;
+
+      if (retval.is_constant () && ! idx.empty ())
+        retval = retval.subsref (type, idx);
+    }
+  catch (const execution_exception&)
+    {
+      // Ignore an error and treat it as undefined.  The error
+      // could happen because there is an index is out of range
+      // and we will be resizing a cell array.
+
+      interpreter& interp = __get_interpreter__ ();
+
+      interp.recover_from_exception ();
+
+      retval = octave_value ();
+    }
+
+  return retval;
+}
+
 
 loc_entry vm::find_loc (int ip, std::vector<octave::loc_entry> &loc_entries)
 {
@@ -5707,7 +6138,7 @@ vm::find_unwind_entry_for_forloop (int current_stack_depth)
 }
 
 unwind_entry*
-vm::find_unwind_entry_for_current_state ()
+vm::find_unwind_entry_for_current_state (bool only_find_unwind_protect)
 {
   int best_match = -1;
 
@@ -5717,6 +6148,10 @@ vm::find_unwind_entry_for_current_state ()
       unwind_entry& entry = m_unwind_data->m_unwind_entries[i];
       int start = entry.m_ip_start;
       int end = entry.m_ip_end;
+
+      // When unwinding for e.g. interrupt exceptions we are only looking for UNWIND_PROTECT
+      if (only_find_unwind_protect && (entry.m_unwind_entry_type != unwind_entry_type::UNWIND_PROTECT))
+        continue;
 
       // Skip for loop entries
       if (entry.m_unwind_entry_type == unwind_entry_type::FOR_LOOP)
@@ -5759,11 +6194,7 @@ void
 vm_profiler::vm_profiler_fn_stats::add_t (int64_t dt)
 {
   int ip = m_v_ip.back ();
-
-  if (m_v_cum_t.size () <= static_cast<std::size_t> (ip))
-    m_v_cum_t.resize (ip + 1);
-  if (m_v_n_cum.size () <= static_cast<std::size_t> (ip))
-    m_v_n_cum.resize (ip + 1);
+  maybe_resize (ip);
 
   m_v_cum_t[ip] += dt;
   ++m_v_n_cum[ip];
@@ -5775,7 +6206,7 @@ vm_profiler::add_t (int64_t dt)
   if (!m_shadow_call_stack.size ())
     return;
 
-  m_shadow_call_stack.back ().m_t_cum += dt;
+  m_shadow_call_stack.back ().m_t_self_cum += dt;
 }
 
 // There is no std::format since we use C++ 11 so lets make our own.
@@ -5832,6 +6263,7 @@ vm_profiler::print_to_stdout ()
   // These could probably be vectors, but we'll do with maps to keep the
   // code easier to follow.
   map<string, int64_t> map_fn_to_cum_t;
+  map<string, int64_t> map_fn_to_self_cum_t;
   map<string, vector<string>> map_fn_to_sourcerows;
   map<string, vector<pair<int, string>>> map_fn_to_opcodes_stringrows;
   map<string, string> map_fn_to_annotated_source;
@@ -5844,12 +6276,19 @@ vm_profiler::print_to_stdout ()
       vm_profiler_fn_stats &stats = kv.second;
 
       int64_t t_fn_cum = 0;
+      int64_t t_fn_self_cum = 0;
       unsigned n = stats.m_v_cum_t.size ();
 
       for (unsigned ip = 0; ip < n; ip++)
-        t_fn_cum += stats.m_v_cum_t[ip];
+        {
+          t_fn_cum += stats.m_v_cum_t[ip];
+          t_fn_self_cum += stats.m_v_cum_t[ip];
+        }
+      for (unsigned ip = 0; ip < stats.m_v_cum_call_t.size (); ip++)
+        t_fn_cum += stats.m_v_cum_call_t[ip];
 
       map_fn_to_cum_t[fn_name] = t_fn_cum;
+      map_fn_to_self_cum_t[fn_name] = t_fn_self_cum;
     }
 
   // Try to get the source code
@@ -5953,17 +6392,17 @@ vm_profiler::print_to_stdout ()
           string s = ls.second; // Text representation of the opcode
 
           // Ignore strange data
-          if (ip < 0 || static_cast<unsigned> (ip) >= stats.m_v_cum_t.size ())
+          if (ip < 0)
             continue;
 
-          if (stats.m_v_cum_t[ip] == 0)
+          if (static_cast<unsigned> (ip) >= stats.m_v_cum_t.size () || (stats.m_v_cum_t[ip] == 0 && stats.m_v_cum_call_t[ip] == 0))
           {
             ans += x_snprintf ("\t%*s %5d: %s\n", 43, "", ip, s.c_str ());
             continue;
           }
 
           int64_t n_hits = stats.m_v_n_cum[ip];
-          int64_t t_op = stats.m_v_cum_t[ip];
+          int64_t t_op = stats.m_v_cum_t[ip] + stats.m_v_cum_call_t[ip];
           double share_of_fn = 100. * static_cast<double> (t_op) / fn_cum_t;
 
           // Try to make the table neat around the decimal separator
@@ -6005,7 +6444,7 @@ vm_profiler::print_to_stdout ()
 
       for (unsigned ip = 0; ip < stats.m_v_cum_t.size (); ip++)
         {
-          int64_t tcum = stats.m_v_cum_t[ip];
+          int64_t tcum = stats.m_v_cum_t[ip] + stats.m_v_cum_call_t[ip];
           int64_t nhits = stats.m_v_n_cum[ip];
           int src_line = map_op_offset_to_src_line[ip];
           map_srcline_to_tcum[src_line] += tcum;
@@ -6099,6 +6538,7 @@ vm_profiler::print_to_stdout ()
       vm_profiler_fn_stats &stats = kv.second;
 
       int64_t fn_cum_t = map_fn_to_cum_t[fn_name];
+      int64_t fn_self_cum_t = map_fn_to_self_cum_t[fn_name];
       string annotated_source = map_fn_to_annotated_source[fn_name];
       string annotated_bytecode = map_fn_to_annotated_bytecode[fn_name];
 
@@ -6110,7 +6550,9 @@ vm_profiler::print_to_stdout ()
       for (string caller : stats.m_set_callers)
         printf ("%s ", caller.c_str ());
       printf ("\n");
-      printf ("\tCumulative time: %9.5gs %lld ns\n\n", fn_cum_t/1e9, static_cast<long long> (fn_cum_t));
+      printf ("\tCumulative time: %9.5gs %lld ns\n", fn_cum_t/1e9, static_cast<long long> (fn_cum_t));
+      printf ("\tCumulative self time: %9.5gs %lld ns\n", fn_self_cum_t/1e9, static_cast<long long> (fn_self_cum_t));
+      printf ("\n\n");
 
       if (annotated_source.size ())
       {
@@ -6163,7 +6605,7 @@ vm_profiler::enter_fn (std::string fn_name, std::string caller, octave::unwind_d
 
   m_shadow_call_stack.push_back (call);
 
-  callee_stat.m_v_t0.push_back (now);
+  callee_stat.m_v_t.push_back (now);
   callee_stat.m_v_ip.push_back (0);
 
   if (callee_stat.m_code.size ())
@@ -6198,7 +6640,7 @@ vm_profiler::purge_shadow_stack ()
   {
     auto &v = kv.second;
     v.m_v_callers.clear ();
-    v.m_v_t0.clear ();
+    v.m_v_t.clear ();
     v.m_v_ip.clear ();
   }
 }
@@ -6207,12 +6649,34 @@ void
 vm_profiler::exit_fn (std::string fn_name)
 {
   {
+    int64_t t_exit = unow ();
+
     vm_profiler_fn_stats &callee_stat = m_map_fn_stats[fn_name];
+
+    // Add the cost of the RET up till now to the callee
+    if (callee_stat.m_v_t.size () && callee_stat.m_v_t.back () != -1)
+      {
+        int64_t t0 = callee_stat.m_v_t.back ();
+        int64_t dt = t_exit - t0;
+
+        callee_stat.add_t (dt);
+        this->add_t (dt);
+      }
 
     if (!m_shadow_call_stack.size ())
       goto error;
     if (!callee_stat.m_v_callers.size ())
       goto error;
+
+    bool is_recursive = false;
+    for (auto &call : m_shadow_call_stack)
+      {
+        if (call.m_caller == fn_name)
+          {
+            is_recursive = true;
+            break;
+          }
+      }
     
     vm_profiler_call call = m_shadow_call_stack.back ();
     m_shadow_call_stack.pop_back ();
@@ -6220,7 +6684,11 @@ vm_profiler::exit_fn (std::string fn_name)
     std::string caller = call.m_caller;
 
     std::string caller_according_to_callee = callee_stat.m_v_callers.back ();
+
+    // Pop one level
     callee_stat.m_v_callers.pop_back ();
+    callee_stat.m_v_t.pop_back ();
+    callee_stat.m_v_ip.pop_back ();
 
     if (caller_according_to_callee != caller)
       goto error;
@@ -6229,16 +6697,29 @@ vm_profiler::exit_fn (std::string fn_name)
       {
         vm_profiler_fn_stats &caller_stat = m_map_fn_stats[caller];
 
-        if (!caller_stat.m_v_t0.size ())
+        if (!caller_stat.m_v_t.size ())
           goto error;
 
-        int64_t caller_enters_call = caller_stat.m_v_t0.back ();
+        int64_t caller_enters_call = caller_stat.m_v_t.back ();
         int64_t caller_enters_callee = call.m_entry_time;
         int64_t caller_call_overhead = caller_enters_callee - caller_enters_call;
-        int64_t callee_exit = unow ();
-        // Change the caller's last timestamp to now and subtract the accumalted time in the callee and
-        // the caller's call overhead
-        caller_stat.m_v_t0.back () = callee_exit - call.m_t_cum - caller_call_overhead;
+        int64_t callee_dt = call.m_t_self_cum + call.m_t_call_cum - caller_call_overhead;
+
+        // Add the call's cumulative time to the caller's "time spent in bytecode call"-vector
+        // unless the call is recursive (to prevent confusing double book keeping of the time).
+        unsigned caller_ip = caller_stat.m_v_ip.back ();
+        caller_stat.maybe_resize (caller_ip);
+
+        if (!is_recursive)
+        {
+          // Add to cumulative spent in call from this ip, in caller
+          caller_stat.m_v_cum_call_t[caller_ip] += callee_dt;
+          // Add to cumulative time spent in *the latest call* to caller
+          if (m_shadow_call_stack.size ())
+            m_shadow_call_stack.back ().m_t_call_cum += callee_dt;
+        }
+        // Change the caller's last timestamp to now and subtract the caller's call overhead.
+        caller_stat.m_v_t.back () = unow () - caller_call_overhead;
       }
     return;
   }

@@ -21,9 +21,9 @@ function [a b] = bytecode_leaks (c, d)
   assert (refs_e, __ref_count (e))
 
   % varargin
-  suby4 (e,e,e,e)
+  suby4 (e,e,e,e);
   assert (refs_e, __ref_count (e))
-  suby5 (e,e,e,e)
+  suby5 (e,e,e,e);
   assert (refs_e, __ref_count (e))
 
   % varargout
@@ -63,10 +63,14 @@ function [a b] = bytecode_leaks (c, d)
   assert (refs_e, __ref_count (e))
 
   % "command call" with disp
-  e
+  disp ("The disp of e and pi underneath is on purpose. There should be a 'e = 2' and 'ans = 3.14...'")
+  e % Should print "e = 2"
   assert (refs_e + 1, __ref_count (e)) % in ans
   ans = 0;
   assert (refs_e, __ref_count (e))
+
+  % This will be a function call and should print "ans = 3.14..."
+  pi
 
   % no disp
   e;

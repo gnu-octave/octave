@@ -1,5 +1,5 @@
 function bytecode_varargout ()
-        disp ("foobar")
+
     % Just check this works
     [a b] = {7, 8}{:};
     __printf_assert__ ("%d %d ", a, b);
@@ -20,10 +20,10 @@ function bytecode_varargout ()
 
     [a b c] = return_isargout (4);
     __printf_assert__ ("%d ", a);
- disp ("foobar2")
+
     [a, ~, c] = return_isargout (2);
     __printf_assert__ ("%d ", a);
- disp ("foobar22")
+
     [a, ~, ~] = return_isargout (2);
     __printf_assert__ ("%d ", a);
     [a, ~, ~] = return_isargout (1);

@@ -29,6 +29,7 @@
 #include "octave-config.h"
 
 #include "ov.h"
+#include "load-path.h"
 
 
 // octave_value_vm is to be used only by the VM
@@ -163,6 +164,40 @@ public:
   { return m_rep->is_matrix_type (); }
 
   octave_base_value *m_rep;
+};
+
+class
+octave_cached_value : public octave_base_value
+{
+public:
+
+  octave_cached_value ()
+  {
+    m_n_updated = octave::load_path::get_weak_n_updated ();
+  }
+
+  void set_cached_obj (octave_value cache_obj)
+  {
+    m_cached_object = cache_obj;
+  }
+
+  octave_value get_cached_value ()
+  {
+    return m_cached_object;
+  }
+
+  bool cache_is_valid ()
+  {
+    return m_n_updated == octave::load_path::get_weak_n_updated () && m_cached_object.is_defined ();
+  }
+
+  bool is_defined () const { return true; }
+
+
+private:
+
+  octave_value m_cached_object;
+  octave_idx_type m_n_updated = 0;
 };
 
 #endif

@@ -661,4 +661,3 @@
 %!
 %! assert (n_c == __ref_count (c))
 %! assert (n_d == __ref_count (d))
-%!

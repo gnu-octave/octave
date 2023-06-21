@@ -674,7 +674,7 @@ classdef inputParser < handle
         this.Results = ...
           cell2struct (vertcat (struct2cell (this.Results), unmatched_def),
                        [Resultnames; unmatched_names]);
-        this.UsingDefaults = [this.UsingDefaults, unmatched_names];
+        this.UsingDefaults = [this.UsingDefaults, unmatched_names.'];
       endif
 
     endfunction
@@ -1052,4 +1052,10 @@ endclassdef
 %! assert (p.Results.year, 1980);
 %! assert (p.Results.color, 'black');
 
-
+%!test <*64318>
+%! p = inputParser;
+%! p.addOptional ('p_opt', []);
+%! p.addParameter ('p1', 'p1_default');
+%! p.addParameter ('p2', 'p2_default');
+%! p.parse ();
+%! assert (size (p.UsingDefaults), [1, 3]);

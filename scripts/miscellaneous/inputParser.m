@@ -358,13 +358,9 @@ classdef inputParser < handle
       endif
 
       this.validate_name ("Parameter", name);
-      if iscell(def)
-        ## Allow constructs like these (bug #64305)
-        ##    p = inputParser;
-        ##    p.addParameter('p3', {});
-        tmp = struct ("name", name, "def", [], "val", val);
-        tmp.def = def;
-        this.Parameter(end+1) = tmp;
+      if (iscell (def))
+        ## Accept cell default values (bug #64305).
+        this.Parameter(end+1) = struct ("name", name, "def", {def}, "val", val);
       else
         this.Parameter(end+1) = struct ("name", name, "def", def, "val", val);
       endif

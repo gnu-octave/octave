@@ -66,6 +66,17 @@
 ## @ifnottex
 ##  < 2^64.
 ## @end ifnottex
+## Cast inputs larger than @code{flintmax} to @code{uint64}.
+##
+## For larger inputs, use ‘sym’ if you have the Symbolic package installed
+## and loaded:
+##
+## @example
+## @group
+## isprime (sym ('58745389709258902525390450') + (0:4))
+##    @result{}  0  1  0  0  0
+## @end group
+## @end example
 ##
 ## Compatibility Note: @sc{matlab} does not extend the definition of prime
 ## numbers and will produce an error if given negative or complex inputs.

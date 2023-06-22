@@ -325,9 +325,8 @@ classdef inputParser < handle
       ## @var{default} will be the value used when the parameter is not
       ## specified.
       ##
-      ## The optional argument @var{validator} is a function (handle or name)
-      ## that will return false or throw an error if the input @var{argname}
-      ## is invalid.
+      ## The optional argument @var{validator} is a function handle that will
+      ## return false or throw an error if the input @var{argname} is invalid.
       ##
       ## See @code{help inputParser} for examples.
       ##
@@ -337,14 +336,20 @@ classdef inputParser < handle
         print_usage ();
       endif
 
+      this.validate_name ("Parameter", name);
+
       n_opt = numel (varargin);
 
       if (n_opt == 0 || n_opt == 2)
         val = inputParser.def_val;
       else  # n_opt is 1 or 3
         val = varargin{1};
+        if (! is_function_handle (val))
+          error ("inputParser.addParameter: VALIDATOR must be a function handle");
+        endif
       endif
 
+      ## FIXME: PartialMatchPriority is parsed, but not implemented
       if (n_opt == 0 || n_opt == 1)
         match_priority = 1;
       else  # n_opt is 2 or 3
@@ -357,7 +362,6 @@ classdef inputParser < handle
                             "PartialMatchPriority");
       endif
 
-      this.validate_name ("Parameter", name);
       if (iscell (def))
         ## Accept cell default values (bug #64305).
         this.Parameter(end+1) = struct ("name", name, "def", {def}, "val", val);

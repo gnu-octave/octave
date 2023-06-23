@@ -59,7 +59,7 @@ function native_bytes = unicode2native (utf8_str, codepage = "")
     error ("unicode2native: UTF8_STR must be a character vector");
   endif
 
-  if (! (ischar (codepage) && isrow (codepage)))
+  if (nargin > 1 && ! (ischar (codepage) && isrow (codepage)))
     error ("unicode2native: CODEPAGE must be a string");
   endif
 
@@ -78,6 +78,8 @@ endfunction
 %! assert (unicode2native (["ЄЅІ" "\0" "ЇЈЉЊ"], "ISO-8859-5"),
 %!         uint8 ([164:166 0 167:170]));
 %!assert <*60480> (unicode2native (''), uint8 ([]))
+%!testif HAVE_ICONV <*64331>
+%! assert (! isempty (unicode2native ("abc")));
 
 # short character arrays with invalid UTF-8
 %!testif HAVE_ICONV <*63930>
@@ -105,7 +107,7 @@ endfunction
 %!error <UTF8_STR must be a character vector> unicode2native (['ab'; 'cd'])
 %!error <UTF8_STR must be a character vector> unicode2native ({1 2 3 4})
 %!error <CODEPAGE must be a string> unicode2native ('ЄЅІЇЈЉЊ', 123)
-%!error <CODEPAGE must be a string> unicode2native ('ЄЅІЇЈЉЊ', ['ISO-8859-1']')
+%!error <CODEPAGE must be a string> unicode2native ('ЄЅІЇЈЉЊ', ['ISO-8859-1'].')
 %!testif HAVE_ICONV
 %! fail ("unicode2native ('a', 'foo')",
 %!       "converting from UTF-8 to codepage 'foo'");

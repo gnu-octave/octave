@@ -1888,74 +1888,82 @@ QString file_editor_tab::load_file (const QString& fileName)
   if (encoding.compare (0, 6, "SYSTEM") == 0)
     encoding = octave_locale_charset_wrapper ();
 
-  // check if the selected encoding can be used to decode the file
-
-  const char *src = text_data.constData ();
   std::size_t srclen = text_data.length ();
 
-  std::size_t length;
-  uint16_t *u16_str;
-
-  // try to convert encoding in strict mode
-  u16_str = octave_u16_conv_from_encoding_strict (encoding.c_str (),
-                                                  src, srclen, &length);
-
-  // check for invalid characters in input file
-  if (! u16_str)
+  if (srclen == 0)
+    m_edit_area->setText (QString ());
+  else
     {
-      // Set read only
-      m_edit_area->setReadOnly (true);
+      // check if the selected encoding can be used to decode the file
 
-      // convert encoding allowing replacements
-      u16_str = octave_u16_conv_from_encoding (encoding.c_str (),
-                                               src, srclen, &length);
+      const char *src = text_data.constData ();
 
+      std::size_t length;
+      uint16_t *u16_str;
+
+      // try to convert encoding in strict mode
+      u16_str = octave_u16_conv_from_encoding_strict (encoding.c_str (),
+                                                      src, srclen, &length);
+
+      // check for invalid characters in input file
       if (! u16_str)
         {
-          // FIXME: Can this ever happen?
+          // Set read only
+          m_edit_area->setReadOnly (true);
 
-          // non-modal error message box
-          QMessageBox *msgBox
-            = new QMessageBox (QMessageBox::Critical,
-                               tr ("Octave Editor"),
-                               tr ("Unable to read file '%1'\n"
-                                   "with selected encoding '%2': %3")
-                                  .arg (file_to_load).arg (m_encoding)
-                                  .arg (std::strerror (errno)),
-                               QMessageBox::Ok, nullptr);
-          show_dialog (msgBox, false);
-          return QString ();
+          // convert encoding allowing replacements
+          u16_str = octave_u16_conv_from_encoding (encoding.c_str (),
+                                                   src, srclen, &length);
+
+          if (! u16_str)
+            {
+              // FIXME: Can this ever happen?
+
+              // non-modal error message box
+              QMessageBox *msgBox
+                = new QMessageBox (QMessageBox::Critical,
+                                   tr ("Octave Editor"),
+                                   tr ("Unable to read file '%1'\n"
+                                       "with selected encoding '%2': %3")
+                                      .arg (file_to_load).arg (m_encoding)
+                                      .arg (std::strerror (errno)),
+                                   QMessageBox::Ok, nullptr);
+              show_dialog (msgBox, false);
+              return QString ();
+            }
+
+          // Message box for user decision
+          QString msg = tr ("There were problems reading the file\n"
+                            "%1\n"
+                            "with the selected encoding %2.\n\n"
+                            "Modifying and saving the file might "
+                            "cause data loss!")
+                            .arg (file_to_load).arg (m_encoding);
+          QMessageBox *msg_box = new QMessageBox ();
+          msg_box->setIcon (QMessageBox::Warning);
+          msg_box->setText (msg);
+          msg_box->setWindowTitle (tr ("Octave Editor"));
+          msg_box->addButton (tr ("&Edit anyway"), QMessageBox::YesRole);
+          msg_box->addButton (tr ("Chan&ge encoding"),
+                              QMessageBox::AcceptRole);
+          msg_box->addButton (tr ("&Close"), QMessageBox::RejectRole);
+
+          connect (msg_box, &QMessageBox::buttonClicked,
+                   this, &file_editor_tab::handle_decode_warning_answer);
+
+          msg_box->setWindowModality (Qt::WindowModal);
+          msg_box->setAttribute (Qt::WA_DeleteOnClose);
+          msg_box->show ();
         }
 
-      // Message box for user decision
-      QString msg = tr ("There were problems reading the file\n"
-                        "%1\n"
-                        "with the selected encoding %2.\n\n"
-                        "Modifying and saving the file might "
-                        "cause data loss!")
-                        .arg (file_to_load).arg (m_encoding);
-      QMessageBox *msg_box = new QMessageBox ();
-      msg_box->setIcon (QMessageBox::Warning);
-      msg_box->setText (msg);
-      msg_box->setWindowTitle (tr ("Octave Editor"));
-      msg_box->addButton (tr ("&Edit anyway"), QMessageBox::YesRole);
-      msg_box->addButton (tr ("Chan&ge encoding"), QMessageBox::AcceptRole);
-      msg_box->addButton (tr ("&Close"), QMessageBox::RejectRole);
+      unwind_action free_u16_str ([=] () { ::free (u16_str); });
 
-      connect (msg_box, &QMessageBox::buttonClicked,
-               this, &file_editor_tab::handle_decode_warning_answer);
+      QString text
+        = QString::fromUtf16 (reinterpret_cast<char16_t *> (u16_str), length);
 
-      msg_box->setWindowModality (Qt::WindowModal);
-      msg_box->setAttribute (Qt::WA_DeleteOnClose);
-      msg_box->show ();
+      m_edit_area->setText (text);
     }
 
-  unwind_action free_u16_str ([=] () { ::free (u16_str); });
-
-  QString text
-    = QString::fromUtf16 (reinterpret_cast<char16_t *> (u16_str), length);
-
-  m_edit_area->setText (text);
   m_edit_area->setEolMode (detect_eol_mode ());
 
   m_copy_available = false;  // no selection yet available

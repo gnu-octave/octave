@@ -59,7 +59,7 @@ function native_bytes = unicode2native (utf8_str, codepage = "")
     error ("unicode2native: UTF8_STR must be a character vector");
   endif
 
-  if (nargin > 1 && ! (ischar (codepage) && isrow (codepage)))
+  if (! (ischar (codepage) && (isrow (codepage) || isempty (codepage))))
     error ("unicode2native: CODEPAGE must be a string");
   endif
 
@@ -80,6 +80,8 @@ endfunction
 %!assert <*60480> (unicode2native (''), uint8 ([]))
 %!testif HAVE_ICONV <*64331>
 %! assert (! isempty (unicode2native ("abc")));
+%!testif HAVE_ICONV <*64331>
+%! assert (! isempty (unicode2native ("abc", "")));
 
 # short character arrays with invalid UTF-8
 %!testif HAVE_ICONV <*63930>

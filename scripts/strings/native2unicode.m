@@ -58,7 +58,7 @@ function utf8_str = native2unicode (native_bytes, codepage = "")
     error ("native2unicode: NATIVE_BYTES must be a numeric vector");
   endif
 
-  if (nargin == 2 && ! (ischar (codepage) && isrow (codepage)))
+  if (! (ischar (codepage) && (isrow (codepage) || isempty (codepage))))
     error ("native2unicode: CODEPAGE must be a string");
   endif
 
@@ -86,6 +86,10 @@ endfunction
 %!assert (native2unicode ("foobar"), "foobar")
 %!assert <*54384> (double (native2unicode ([0 0 120.3 0 0 122.6 0 0])),
 %!                 [0 0 120 0 0 123 0 0])
+%!testif HAVE_ICONV <*64331>
+%! assert (! isempty (native2unicode (97:99)));
+%!testif HAVE_ICONV <*64331>
+%! assert (! isempty (native2unicode (97:99, "")));
 
 %!error <Invalid call> native2unicode ()
 %!error <called with too many inputs> native2unicode (1, 'ISO-8859-1', 'test')

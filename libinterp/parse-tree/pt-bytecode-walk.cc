@@ -2314,6 +2314,11 @@ visit_octave_user_function (octave_user_function& fcn)
   // Set the amount of locals that has a placeholder since earlier
   SET_CODE_SHORT (m_offset_n_locals, m_n_locals);
 
+  // When the last byte of opcode, a 'RET', is to be executed, the VM reads the
+  // next byte of code and puts it in 'arg0'.  So, we need to add a dummy
+  // opcode afterwards to prevent out-of-bounds reads.
+  PUSH_CODE (INSTR::RET);
+
   // We want to add the locals to the scope in slot order
   // so we push all the locals' names to a vector by their slot
   // number
@@ -4952,4 +4957,3 @@ visit_continue_command (tree_continue_command&)
   PUSH_NEED_CONTINUE_TARGET (CODE_SIZE ());
   PUSH_CODE_SHORT (-1); // Placeholder
 }
-

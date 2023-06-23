@@ -1861,6 +1861,8 @@ QString file_editor_tab::load_file (const QString& fileName)
     }
 
   QApplication::setOverrideCursor (Qt::WaitCursor);
+  unwind_action reset_cursor ([] ()
+                              { QApplication::restoreOverrideCursor (); });
 
   // read the file binary, decoding later
   QByteArray text_data = file.readAll ();
@@ -1955,8 +1957,6 @@ QString file_editor_tab::load_file (const QString& fileName)
 
   m_edit_area->setText (text);
   m_edit_area->setEolMode (detect_eol_mode ());
-
-  QApplication::restoreOverrideCursor ();
 
   m_copy_available = false;  // no selection yet available
   m_edit_area->setModified (false);  // loaded file is not modified yet

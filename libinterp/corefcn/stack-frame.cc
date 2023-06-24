@@ -1187,7 +1187,23 @@ public:
   base_value_stack_frame&
   operator = (const base_value_stack_frame& elt) = delete;
 
+// LLVM libc++ has the opposite element dtor order compared to GNU libstdc++
+// for std::vector.  So, overwrite elements manually from first to last when
+// using LLVM libc++ to have identical dtor call order, e.g., for classdefs.
+#if defined (HAVE_LLVM_LIBCXX)
+  ~base_value_stack_frame ()
+  {
+    // Member dtor order is last to first.  So, m_auto_vars before m_values.
+
+    for (std::size_t i = 0; i < m_auto_vars.size (); i++)
+      m_auto_vars[i] = octave_value ();
+
+    for (std::size_t i = 0; i < m_values.size (); i++)
+      m_values[i] = octave_value ();
+  }
+#else
   ~base_value_stack_frame () = default;
+#endif
 
   std::size_t size () const
   {

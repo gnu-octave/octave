@@ -1446,10 +1446,17 @@ template <typename T, typename Alloc>
 void
 Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
 {
-  if (dim < 0 || dim >= ndims ())
+  if (dim < 0)
     (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 
-  octave_idx_type n = m_dimensions(dim);
+  dim_vector dimensions = m_dimensions;
+
+  if (dim >= ndims ())
+    dimensions.resize (dim + 1, 1);
+
+  octave_idx_type ndim = dimensions.ndims ();
+  octave_idx_type n = dimensions(dim);
+
   if (i.is_colon ())
     {
       *this = Array<T, Alloc> ();
@@ -1467,10 +1474,10 @@ Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
           octave_idx_type nd = n + l - u;
           octave_idx_type dl = 1;
           octave_idx_type du = 1;
-          dim_vector rdv = m_dimensions;
+          dim_vector rdv = dimensions;
           rdv(dim) = nd;
-          for (int k = 0; k < dim; k++) dl *= m_dimensions(k);
-          for (int k = dim + 1; k < ndims (); k++) du *= m_dimensions(k);
+          for (int k = 0; k < dim; k++) dl *= dimensions(k);
+          for (int k = dim + 1; k < ndim; k++) du *= dimensions(k);
 
           // Special case deleting a contiguous range.
           Array<T, Alloc> tmp = Array<T, Alloc> (rdv);
@@ -1491,7 +1498,7 @@ Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
       else
         {
           // Use index.
-          Array<octave::idx_vector> ia (dim_vector (ndims (), 1), octave::idx_vector::colon);
+          Array<octave::idx_vector> ia (dim_vector (ndim, 1), octave::idx_vector::colon);
           ia (dim) = i.complement (n);
           *this = index (ia);
         }

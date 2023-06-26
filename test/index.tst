@@ -503,6 +503,28 @@
 %! x([], false, :) = [];
 %! assert (x, y);
 
+## Test deletion of non-existent dimensions
+%!test
+%! x = ones (10, 10, 2);
+%! x(:, :, 1) = [];
+%! x(:, :, 1) = [];
+%! assert (size (x), [10, 10, 0]);
+
+%!test
+%! x = ones (10, 10);
+%! x(:,:,:, 1) = [];
+%! assert (size (x), [10, 10, 1, 0]);
+
+%!test
+%! x = ones (10, 10);
+%! try
+%!   x(:,:,2) = [];
+%! catch
+%!   m = strfind (lasterr (), 'index out of bounds: value 2 out of bound 1');
+%!   assert (m > 0);
+%! end_try_catch
+%! assert (size (x), [10, 10]);
+
 ##  Test indexing of unnamed constants
 %!error <index \(0\): subscripts must be>     1(0)
 %!error <index \(-1\): subscripts must be>    1(-1)

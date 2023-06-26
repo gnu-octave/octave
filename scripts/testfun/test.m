@@ -731,7 +731,7 @@ function [__n, __nmax, __nxfail, __nbug, __nskip, __nrtskip, __nregression] = te
             && ! strcmp (__type, "testif")
             && ! strcmp (__type, "xtest")
             && ! all (__shared == " "))
-          fputs (__fid, "shared variables ");
+          fdisp (__fid, "shared variables ");
           eval (sprintf ("fdisp (__fid,var2struct(%s));", __shared));
         endif
         fflush (__fid);

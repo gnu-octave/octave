@@ -2263,6 +2263,21 @@ public:
     : octave::base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
       m_interpreter (interp), m_input_event_hook_fcn_id ()
   {
+    static bool warned = false;
+
+    if (! warned)
+      {
+        warning_with_id
+        ("Octave:fltk-graphics",
+         "using the fltk graphics toolkit is discouraged\n\
+\n\
+The FLTK graphics toolkit is not actively maintained and has a number\n\
+of limitations that are unlikely to be fixed.\n\
+The qt toolkit is recommended instead.\n");
+
+        warned = true;
+      }
+
     Fl::visual (FL_RGB);
   }
 

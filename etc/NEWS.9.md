@@ -37,6 +37,10 @@ improvement.
 
 ### Graphics backend
 
+* The FLTK backend is not maintained and its use is discouraged.  The
+recommended backend is qt.  Enabling the fltk backend with
+`graphics_backend fltk` now emits a warning.
+
 * The `set` function now accepts any combination of name/value pairs,
 cell array of names / cell array of values, or property structures.
 This change is Matlab-compatible.

@@ -61,7 +61,7 @@
 function filename = fullfile (varargin)
 
   ## remove empty arguments
-  varargin(cellfun (@isempty, varargin)) = [];
+  varargin(cellfun (@(x) isempty (x) & ! iscell (x), varargin)) = [];
 
   if (isempty (varargin))
     ## return early for all empty or no input
@@ -157,12 +157,14 @@ endfunction
 %!        {["folder1", fs, "sub", fs, "f1.m"], ...
 %!         ["folder2", fs, "sub", fs, "f2.m"]});
 
+%!assert <*64377> (fullfile ("x", {}), {})
+
 ## Windows specific - drive letters and file sep type
 %!testif ; ispc ()
 %! assert (fullfile ('\/\/\//A:/\/\', "x/", "/", "/", "y", "/", "/"), ...
 %!         ['A:\' xfsyfs]);
 
-## *nix specific - double backslash
+## *nix specific - double slash
 %!testif ; ! ispc ()
 %! assert (fullfile (fs, fs), fs);
 

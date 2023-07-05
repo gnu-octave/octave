@@ -160,7 +160,7 @@ octave_mktime_wrapper (struct tm *tp)
 #include "gethrxtime.h"
 
 long long
-octave_gettime_ns_wrapper ()
+octave_gettime_ns_wrapper (void)
 {
   return gethrxtime ();
 }

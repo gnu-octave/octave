@@ -1584,6 +1584,26 @@ AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
     :
   fi
 ])
+
+dnl
+dnl Check for support of some specific formats in sndfile library 
+dnl
+AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_FORMATS], [
+  AC_CACHE_CHECK([whether sndfile library supports mp3],
+    [octave_cv_lib_sndfile_format_mp3],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #include <sndfile.h>
+        ]], [[
+        int x = SF_FORMAT_MPEG;
+      ]])],
+      octave_cv_lib_sndfile_format_mp3=yes,
+      octave_cv_lib_sndfile_format_mp3=no)
+  ])
+  if test $octave_cv_lib_sndfile_format_mp3 = yes; then
+    AC_DEFINE(HAVE_LIB_SNDFILE_FORMAT_MP3, 1,
+      [Define to 1 if libsndfile supports mp3.])
+  fi
+])
 dnl
 dnl Check whether new API is used with QHelpIndexWidget.
 dnl Under new API, QHelpIndexWidget emits documentActivates.

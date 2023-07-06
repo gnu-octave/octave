@@ -1665,7 +1665,8 @@ OCTAVE_CHECK_LIB(sndfile, sndfile,
   [], [don't use sndfile library, disable audio file I/O],
   [warn_sndfile=
    OCTAVE_CHECK_LIB_SNDFILE_OK(
-    [AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])],
+    [AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])
+     OCTAVE_CHECK_LIB_SNDFILE_FORMATS],
     [warn_sndfile="sndfile library found, but does not seem to work properly; disabling audio file I/O functions"])])
 
 ### Check for PortAudio library.

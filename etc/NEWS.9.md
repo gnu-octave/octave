@@ -43,6 +43,9 @@ improvement.
 
 - The `perms` function has been made faster.
 
+- The `audiowrite` function now supports writing to MPEG audio formats --
+including MP3 -- if the `sndfile` library supports it.
+
 ### Graphical User Interface
 
 ### Graphics backend

@@ -3,6 +3,14 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 
 ### General improvements
 
+- Octave now has an experimental virtual machine (VM) for just-in-time (JIT)
+compilation of m-code.  This VM can be enabled by the end user with the
+command `__enable_vm_eval__ (1)` as long as the configuration option
+`--disable-vm-evaluator` was *not* used when building Octave.  Speedups from 2X
+to 40X have been observed for different kinds of m-code.  This feature is
+considered experimental for now.  M-code that cannot be handled by the VM yet
+falls back automatically to the existing interpreter.
+
 - `oruntests`: The current directory now changes to the directory
 containing the files with the tests for the duration of the test.  This
 aligns the behavior of this function with Octave's test suite.  This also
@@ -32,6 +40,8 @@ property now also affect the line width of the base marker.
 
 - The `inputParser` function has been re-architected for a 60% performance
 improvement.
+
+- The `perms` function has been made faster.
 
 ### Graphical User Interface
 
@@ -68,12 +78,16 @@ overflow or precision concerns (bug #54567), and `mean` avoids errors due to
 limits of single precision by processing as doubles (bug #63848).  `median`
 has also adopted the 'outtype' option from `mean`.
 
+- Code such as `A = ones (3, 3); A(:, :, 1) = []` is now Matlab-compatible.
+
 - `mad` function now produces Matlab compatible output using improved `mean`
 and `median` functions.  'vecdim' and 'all' options are now supported.  `mad`
 ignores all NaN values (using 'omitnan' mean/median option) and produces
 expected output behavior for empty inputs.
 
 - `mode` now produces Matlab compatible output for empty inputs (bug #50583).
+
+- `linspace` and `logspace` now handle `inf` inputs in a Matlab-compatible way.
 
 - `normalize` now produces Matlab compatible output for inputs containing NaN
 values (bug #50571).
@@ -139,7 +153,8 @@ Any uses can simply be removed from existing code with no loss of function.
 is obsolete and always returns true.  Any uses can simply be removed from
 existing code with no loss of function.
 
-    * The member variable `octave_base_value::count` is deprecated and will be removed from Octave 11.  Replace all instances with the new name `m_count`.
+    * The member variable `octave_base_value::count` is deprecated and will be
+removed from Octave 11.  Replace all instances with the new name `m_count`.
 
 The following features were deprecated in Octave 7 and have been removed
 from Octave 9.
@@ -189,9 +204,16 @@ Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
 
 - Bugfixes to `whos -file`, `urlread`, `mat2cell`, `set`.
 
-- Memory usage reduced for `movfun` by eliminating temporary copies.
+- Better input validation for `sparse`, `speye`.
+
+- Memory usage reduced for `movfun` and `movslice`.
 
 - Memory usage reduced when saving to file, preventing OOM and data loss.
+
+- Memory usage improved when plotting grid tick marks.
+
+- Text encoding for non-UTF-8 generally made more robust.  File editor now
+  lists available encodings.
 
 - Several race conditions removed in signal handler.
 

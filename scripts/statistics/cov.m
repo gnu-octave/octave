@@ -329,6 +329,15 @@ endfunction
 %! assert (isscalar (c));
 %! assert (c, 6);
 
+%!test <*64395>
+%! x = [1, 2, 3];
+%! assert (cov (x), 1, eps);
+%! assert (cov (x'), 1, eps);
+%! assert (cov (x, x), ones (2), eps);
+%! assert (cov (x', x), ones (2), eps);
+%! assert (cov (x, x'), ones (2), eps);
+%! assert (cov (x', x'), ones (2), eps);
+
 %!test
 %! x = [1 0; 1 0];
 %! y = [1 2; 1 1];

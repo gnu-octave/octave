@@ -425,17 +425,24 @@ load_path::update ()
 
   m_package_map.clear ();
 
-  for (auto& di : m_dir_info_list)
+  for (dir_info_list_iterator di = m_dir_info_list.begin ();
+       di != m_dir_info_list.end ();)
     {
-      bool ok = di.update ();
+      bool ok = di->update ();
 
       if (! ok)
-        warning_with_id
-        ("Octave:load-path:update-failed",
-         "load-path: update failed for '%s', removing from path",
-         di.dir_name.c_str ());
+        {
+          warning_with_id
+            ("Octave:load-path:update-failed",
+             "load-path: update failed for '%s', removing from path",
+             di->dir_name.c_str ());
+          di = m_dir_info_list.erase (di);
+        }
       else
-        add (di, true, "", true);
+        {
+          add (*di, true, "", true);
+          di++;
+        }
     }
 }
 

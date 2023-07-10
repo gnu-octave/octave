@@ -436,6 +436,12 @@ load_path::update ()
             ("Octave:load-path:update-failed",
              "load-path: update failed for '%s', removing from path",
              di->dir_name.c_str ());
+
+          if (m_remove_hook)
+            m_remove_hook (di->dir_name.c_str ());
+
+          remove (*di);
+
           di = m_dir_info_list.erase (di);
         }
       else

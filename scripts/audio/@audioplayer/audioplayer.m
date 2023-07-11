@@ -141,6 +141,9 @@ function player = audioplayer (varargin)
     ## if (ischar (varargin{1}))
     ##   varargin{1} = str2func (varargin{1});
     ## endif
+    if (isempty (varargin{1}))
+      error ("audioplayer: Y must be non-empty numeric data");
+    endif
     player.player = __player_audioplayer__ (varargin{:});
     player = class (player, "audioplayer");
   endif

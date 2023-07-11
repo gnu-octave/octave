@@ -55,9 +55,9 @@ function r = corr (x, y = [])
     print_usage ();
   endif
 
-  ## Most input validation is done by cov.m.  Don't repeat tests here
+  ## Most input validation is done by cov.m.  Don't repeat tests here.
 
-  ## Special case, scalar is always 100% correlated with itself
+  ## Special case, scalar is always 100% correlated with itself.
   if (isscalar (x))
     if (isa (x, "single"))
       r = single (1);
@@ -70,31 +70,31 @@ function r = corr (x, y = [])
   ## No check for division by zero error, which happens only when
   ## there is a constant vector and should be rare.
   if (nargin == 2)
-    ## Adjust for Octave 9.1.0 compatability behavior change in two-input cov.
+    ## Adjust for Octave 9.1.0 compatibility behavior change in two-input cov.
     ## cov now treats cov(x,y) as cov(x(:),y(:)), returning a 2x2 covariance
     ## of the two univariate distributions x and y.  corr will now pass [x,y]
     ## as cov([x,y]), which for m x n inputs will return 2n x 2n outputs, with
-    ##  the off diagonal matrix quarters containing what was previously
+    ## the off-diagonal matrix quarters containing what was previously
     ## returned by cov(x,y).
 
-    ## FIXME: Returning a larger than needed arary and discarding 3/4 of the
-    ##        information is nonideal.  Consider implementing a more
+    ## FIXME: Returning a larger than needed array and discarding 3/4 of the
+    ##        information is non-ideal.  Consider implementing a more
     ##        efficient cov here as a subfunction to corr.
 
-    ## Check for equal input sizes. cov ignores 2-D vector orientation
+    ## Check for equal input sizes.  cov ignores 2-D vector orientation,
     ## but corr does not.
-
     if (! size_equal (x, y))
-      error ("corr: inputs must be the same size");
+      error ("corr: X and Y must be the same size");
     endif
 
     nx = columns (x);
     c = cov ([x, y]);
 
-    ## Special handling for row vectors. std=0 along dim 1 and /0 will return
-    ## NaN, but cov will process along vector dimension. Keep special handling
-    ## after call to cov so it handles all other input validation and avoid
-    ## duplicating validation overhead for all other cases.
+    ## Special handling for row vectors.  std=0 along dim 1 and division by 0
+    ## will return NaN, but cov will process along vector dimension.  Keep
+    ## special handling after call to cov so it handles all other input
+    ## validation and avoid duplicating validation overhead for all other
+    ## cases.
     if (isrow (x))
       if (isa (x, "single") || isa (y, "single"))
         r = NaN (nx, "single");
@@ -111,7 +111,7 @@ function r = corr (x, y = [])
   else
     c = cov (x);
 
-    if isrow(x)  # Special handling for row vector.
+    if (isrow (x))  # Special handling for row vector.
       if (isa (x, "single"))
         r = NaN (nx, "single");
       else
@@ -126,12 +126,6 @@ function r = corr (x, y = [])
 
 endfunction
 
-%!test <*64395>
-%! x = [1, 2, 3];
-%! assert (corr (x), NaN (3));
-%! assert (corr (x'), 1, eps);
-%! assert (corr (x, x), NaN (3));
-%! assert (corr (x', x'), 1, eps);
 
 %!test
 %! x = rand (10);
@@ -154,8 +148,16 @@ endfunction
 %! assert (corr (x, flipud (y)), single (1), 5*eps);
 %! assert (corr ([x, y]), single ([1 -1; -1 1]), 5*eps);
 
+## Special case: scalar
 %!assert (corr (5), 1)
 %!assert (corr (single (5)), single (1))
+
+%!test <*64395>
+%! x = [1, 2, 3];
+%! assert (corr (x), NaN (3));
+%! assert (corr (x'), 1, eps);
+%! assert (corr (x, x), NaN (3));
+%! assert (corr (x', x'), 1, eps);
 
 ## Test input validation
 %!error <Invalid call> corr ()
@@ -164,4 +166,3 @@ endfunction
 %!error <inputs must be the same size> corr (ones (2,2), ones (2,2,2))
 %!error <inputs must be the same size> corr ([1,2,3], [1,2,3]')
 %!error <inputs must be the same size> corr ([1,2,3]', [1,2,3])
-

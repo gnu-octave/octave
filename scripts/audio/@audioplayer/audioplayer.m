@@ -75,47 +75,9 @@
 ## @audiorecorder/audiorecorder, sound, soundsc}
 ## @end deftypefn
 
-################################################################################
-## FIXME: callbacks don't work properly, apparently because portaudio
-## will execute the callbacks in a separate thread, and calling Octave
-## functions in a separate thread which is likely to cause trouble with
-## all of Octave's global data...
-##
-## @deftypefnx {} {@var{player} =} audioplayer (@var{function}, @dots{})
-##
-## Given a function handle, use that function to process the audio.
-#
-## The following example will create and register a callback that generates
-## a sine wave on both channels.
-##
-## @example
-## @group
-## function [ sound, status ] = callback_sine (frames)
-##   global lphase = 0.0;
-##   global rphase = 0.0;
-##   incl = 440.0 / 44100.0;
-##   incr = 443.0 / 44100.0;
-##   nl = incl * frames;
-##   nr = incr * frames;
-##   left = sin (2.0 * pi * [lphase:incl:lphase+nl]);
-##   right = sin (2.0 * pi * [rphase:incr:rphase+nr]);
-##   sound = [left', right'];
-##   status = 0;
-##   lphase = lphase + nl;
-##   rphase = rphase + nr;
-## endfunction
-## player = audioplayer (@@callback_sine, 44100);
-## play (player);
-## # play for as long as you want
-## stop (player);
-## @end group
-################################################################################
-
 function player = audioplayer (varargin)
 
-  if (nargin < 1 || nargin > 4
-      || (nargin < 2 && ! (is_function_handle (varargin{1})
-                           || ischar (varargin{1}))))
+  if (nargin < 1 || nargin > 4)
     print_usage ();
   endif
 
@@ -133,14 +95,8 @@ function player = audioplayer (varargin)
       print_usage ();
     endif
   else
-    ## FIXME: Prevent use of callbacks until situation is fixed.
-    if (is_function_handle (varargin{1}) || ischar (varargin{1}))
-      error ("audioplayer: first argument cannot be a callback function");
-    endif
-    ## FIXME: Uncomment when callback functions are supported.
-    ## if (ischar (varargin{1}))
-    ##   varargin{1} = str2func (varargin{1});
-    ## endif
+    ## FIXME: There is incomplete input validation in internal C++ function.
+    ##        All validation should occur here in m-file.
     if (isempty (varargin{1}))
       error ("audioplayer: Y must be non-empty numeric data");
     endif
@@ -187,26 +143,6 @@ endfunction
 %! assert (player.SampleRate, 44100);
 %! assert (player.BitsPerSample, 16);
 
-## FIXME: Callbacks do not work currently (5/31/2020) so BIST tests commented.
-%!#function [sound, status] = callback (samples)
-%!#  sound = rand (samples, 2) - 0.5;
-%!#  status = 0;
-%!#endfunction
-
-%!#testif HAVE_PORTAUDIO
-%!# player = audioplayer (@callback, 44100);
-%!# play (player);
-%!# pause (2);
-%!# stop (player);
-%!# assert (1);
-
-%!#testif HAVE_PORTAUDIO
-%!# player = audioplayer ("callback", 44100, 16);
-%!# play (player);
-%!# pause (2);
-%!# stop (player);
-%!# assert (1);
-
 ## Verify input validation
 %!testif HAVE_PORTAUDIO; audiodevinfo (0) > 0
 %! ## Verify nbits option only accepts 8, 16, 24
@@ -216,5 +152,4 @@ endfunction
 %! player = audioplayer (1, 8e3, 16);
 %! player = audioplayer (1, 8e3, 24);
 
-%!error <first argument cannot be a callback> audioplayer (@ls, 8000)
-%!error <first argument cannot be a callback> audioplayer ("ls", 8000)
+%!error <Y must be non-empty numeric data> audioplayer ([])

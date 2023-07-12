@@ -59,33 +59,14 @@
 ## @audiorecorder/recordblocking, @audioplayer/resume, @audiorecorder/set,
 ## @audiorecorder/stop, audiodevinfo, @audioplayer/audioplayer, record}
 
-################################################################################
-## FIXME: callbacks don't work properly, apparently because portaudio
-## will execute the callbacks in a separate thread, and calling Octave
-## functions in a separate thread is likely to cause trouble with
-## all of Octave's global data...
-##
-## @deftypefnx {} {@var{recorder} =} audiorecorder (@var{function}, @dots{})
-##
-## Given a function handle, use that function to process the audio.
-################################################################################
-
 function recorder = audiorecorder (varargin)
 
-  if (nargin > 5)
+  if (! (nargin == 0 || nargin == 3 || nargin == 4))
     print_usage ();
   endif
 
-  ## FIXME: Prevent use of callbacks until situation is fixed.
-  if (nargin > 0 && (is_function_handle (varargin{1}) || ischar (varargin{1})))
-    error ("audiorecorder: first argument cannot be a callback function");
-  endif
-
-  ## FIXME: Uncomment when callback functions are supported.
-  ## if (nargin > 0 && ischar (varargin{1}))
-  ##   varargin{1} = str2func (varargin{1});
-  ## endif
-
+  ## FIXME: No input validation in internal C++ function.
+  ##        It should occur here.
   recorder.recorder = __recorder_audiorecorder__ (varargin{:});
   recorder = class (recorder, "audiorecorder");
 
@@ -108,34 +89,7 @@ endfunction
 
 ## Tests of audiorecorder must not actually record anything.
 
-## FIXME: Uncomment when callbacks are supported
-%!#function status = callback_record (sound)
-%!#  fid = fopen ("record.txt", "at");
-%!#  for index = 1:rows(sound)
-%!#    fprintf (fid, "%.4f, %.4f\n", sound(index, 1), sound(index, 2));
-%!#  endfor
-%!#  fclose (fid);
-%!#  status = 0;
-%!#endfunction
-
-%!#testif HAVE_PORTAUDIO
-%!# recorder = audiorecorder (@callback_record, 44100);
-%!# unlink ("record.txt")
-%!# record (recorder);
-%!# pause (2);
-%!# stop (recorder);
-%!# s = stat ("record.txt");
-%!# assert (s.size > 0);
-
-%!#testif HAVE_PORTAUDIO
-%!# recorder = audiorecorder (@callback_record, 44100);
-%!# unlink ("record.txt")
-%!# record (recorder);
-%!# pause (2);
-%!# stop (recorder);
-%!# s = stat ("record.txt");
-%!# assert (s.size > 0);
-
 ## Test input validation
-%!error <first argument cannot be a callback> audiorecorder (@ls)
-%!error <first argument cannot be a callback> audiorecorder ("ls")
+%!error <Invalid call> audiorecorder (1)
+%!error <Invalid call> audiorecorder (1, 8)
+%!error <Invalid call> audiorecorder (1, 8, 2, -1, 5)

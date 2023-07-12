@@ -536,7 +536,6 @@ public:
   bool print_as_scalar (void) const { return true; }
 
   void init (void);
-  void init_fn (void);
   void set_y (const octave_value& y);
   void set_y (octave_function *fcn);
   void set_y (std::string fcn);
@@ -901,36 +900,6 @@ void
 audioplayer::print_raw (std::ostream& os, bool) const
 {
   os << 0;
-}
-
-void
-audioplayer::init_fn (void)
-{
-  if (Pa_Initialize () != paNoError)
-    error ("audioplayer: initialization error");
-
-  if (Pa_GetDeviceCount () < 1)
-    error ("audioplayer: no audio devices found or available");
-
-  int device = get_id ();
-
-  if (device == -1)
-    device = Pa_GetDefaultOutputDevice ();
-
-  output_parameters.device = device;
-  output_parameters.channelCount = 2;
-  output_parameters.sampleFormat = bits_to_format (get_nbits ());
-
-  const PaDeviceInfo *device_info = Pa_GetDeviceInfo (device);
-
-  if (! device_info)
-    warning_with_id ("Octave:invalid-default-audio-device",
-                     "invalid default audio device ID = %d", device);
-
-  output_parameters.suggestedLatency
-    = (device_info ? device_info->defaultHighOutputLatency : -1);
-
-  output_parameters.hostApiSpecificStreamInfo = nullptr;
 }
 
 void
@@ -1916,7 +1885,6 @@ DEFUN_DLD (__recorder_audiorecorder__, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels})
 @deftypefnx {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fs}, @var{nbits}, @var{channels}, @var{id})
-@deftypefnx {} {@var{recorder} =} __recorder_audiorecorder__ (@var{fcn}, @dots{})
 Undocumented internal function.
 @end deftypefn */)
 {
@@ -1927,15 +1895,6 @@ Undocumented internal function.
   int nargin = args.length ();
 
   audiorecorder *recorder = new audiorecorder ();
-
-  if (nargin > 0)
-    {
-      bool is_function = (args(0).is_string () || args(0).is_function_handle ()
-                          || args(0).is_inline_function ());
-
-      if (is_function)
-        error ("audiorecorder: callback functions are not yet implemented");
-    }
 
   if (nargin >= 3)
     {
@@ -2342,12 +2301,6 @@ Undocumented internal function.
 
   audioplayer *recorder = new audioplayer ();
 
-  bool is_function = (args(0).is_string () || args(0).is_function_handle ()
-                      || args(0).is_inline_function ());
-
-  if (is_function)
-    error ("audioplayer: callback functions are not yet implemented");
-
   recorder->set_y (args(0));
   recorder->set_fs (args(1).int_value ());
 
@@ -2371,10 +2324,7 @@ Undocumented internal function.
         }
     }
 
-  if (is_function)
-    recorder->init_fn ();
-  else
-    recorder->init ();
+  recorder->init ();
 
   retval = recorder;
 #else

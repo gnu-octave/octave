@@ -1191,17 +1191,19 @@ public:
   {
     // The C++ standard doesn't guarantee in which order the elements of a
     // std::vector are destroyed.  GNU libstdc++ and LLVM libc++ seem to
-    // destroy them in a different order.  So, overwrite elements manually
+    // destroy them in a different order.  So, erase elements manually
     // from first to last to be able to guarantee a destructor call order
     // independent of the used STL, e.g., for classdef objects.
 
     // Member dtor order is last to first.  So, m_auto_vars before m_values.
 
-    for (auto& auto_var : m_auto_vars)
-      auto_var = octave_value ();
+    for (auto auto_vars_iter = m_auto_vars.begin ();
+         auto_vars_iter != m_auto_vars.end ();)
+      auto_vars_iter = m_auto_vars.erase (auto_vars_iter);
 
-    for (auto& value : m_values)
-      value = octave_value ();
+    for (auto values_iter = m_values.begin ();
+         values_iter != m_values.end ();)
+      values_iter = m_values.erase (values_iter);
   }
 
   std::size_t size () const

@@ -936,7 +936,6 @@ function rlist = missing_functions ()
   "islocalmax",
   "islocalmin",
   "isLocked",
-  "ismembertol",
   "ismissing",
   "isnat",
   "isomorphism",

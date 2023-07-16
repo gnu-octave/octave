@@ -9,6 +9,7 @@ FCN_FILE_DIRS += \
   %reldir%/.oct-config \
   %reldir%/intersect.m \
   %reldir%/ismember.m \
+  %reldir%/ismembertol.m \
   %reldir%/powerset.m \
   %reldir%/setdiff.m \
   %reldir%/setxor.m \

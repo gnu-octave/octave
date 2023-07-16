@@ -67,4 +67,6 @@ function which is of order O(n).
 
 @DOCSTRING(ismember)
 
+@DOCSTRING(ismembertol)
+
 @DOCSTRING(powerset)

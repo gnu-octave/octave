@@ -71,7 +71,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{lookup, unique, union, intersect, setdiff, setxor}
+## @seealso{lookup, unique, union, intersect, setdiff, setxor, ismembertol}
 ## @end deftypefn
 
 function [tf, s_idx] = ismember (a, s, varargin)

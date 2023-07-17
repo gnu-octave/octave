@@ -57,16 +57,6 @@ function r = corr (x, y = [])
 
   ## Most input validation is done by cov.m.  Don't repeat tests here.
 
-  ## Special case, scalar is always 100% correlated with itself.
-  if (isscalar (x))
-    if (isa (x, "single"))
-      r = single (1);
-    else
-      r = 1;
-    endif
-    return;
-  endif
-
   ## No check for division by zero error, which happens only when
   ## there is a constant vector and should be rare.
   if (nargin == 2)
@@ -79,7 +69,8 @@ function r = corr (x, y = [])
 
     ## FIXME: Returning a larger than needed array and discarding 3/4 of the
     ##        information is non-ideal.  Consider implementing a more
-    ##        efficient cov here as a subfunction to corr.
+    ##        efficient cov here as a subfunction to corr.  At that point,
+    ##        input validation will need to be coded back into this function.
 
     ## Check for equal input sizes.  cov ignores 2-D vector orientation,
     ## but corr does not.
@@ -87,8 +78,8 @@ function r = corr (x, y = [])
       error ("corr: X and Y must be the same size");
     endif
 
-    nx = columns (x);
-    c = cov ([x, y]);
+    c = cov ([x, y]);  # Also performs input validation of x and y.
+    nc = columns (x);
 
     ## Special handling for row vectors.  std=0 along dim 1 and division by 0
     ## will return NaN, but cov will process along vector dimension.  Keep
@@ -97,25 +88,26 @@ function r = corr (x, y = [])
     ## cases.
     if (isrow (x))
       if (isa (x, "single") || isa (y, "single"))
-        r = NaN (nx, "single");
+        r = NaN (nc, "single");
       else
-        r = NaN (nx);
+        r = NaN (nc);
       endif
       return;
     endif
 
-    c = c(1:nx, nx+1:end);
+    c = c(1:nc, nc+1:end);
     s = std (x, [], 1)' * std (y, [], 1);
     r = c ./ s;
 
   else
-    c = cov (x);
+    c = cov (x);    # Also performs input validation of x.
 
     if (isrow (x))  # Special handling for row vector.
+      nc = columns (x);
       if (isa (x, "single"))
-        r = NaN (nx, "single");
+        r = NaN (nc, "single");
       else
-        r = NaN (columns (x));
+        r = NaN (nc);
       endif
       return;
     endif
@@ -149,8 +141,8 @@ endfunction
 %! assert (corr ([x, y]), single ([1 -1; -1 1]), 5*eps);
 
 ## Special case: scalar
-%!assert (corr (5), 1)
-%!assert (corr (single (5)), single (1))
+%!assert (corr (5), NaN)
+%!assert (corr (single (5)), single (NaN))
 
 %!test <*64395>
 %! x = [1, 2, 3];
@@ -159,10 +151,17 @@ endfunction
 %! assert (corr (x, x), NaN (3));
 %! assert (corr (x', x'), 1, eps);
 
+%!test <*64395>
+%! x = single ([1, 2, 3]);
+%! assert (corr (x), single (NaN (3)));
+%! assert (corr (x'), 1, single (eps));
+%! assert (corr (x, x), single (NaN (3)));
+%! assert (corr (x', x'), 1, single (eps));
+
 ## Test input validation
 %!error <Invalid call> corr ()
-%!error corr ([1; 2], ["A"; "B"])
-%!error corr (ones (2,2,2))
 %!error <X and Y must be the same size> corr (ones (2,2), ones (2,2,2))
 %!error <X and Y must be the same size> corr ([1,2,3], [1,2,3]')
 %!error <X and Y must be the same size> corr ([1,2,3]', [1,2,3])
+%!error corr ([1; 2], ["A"; "B"])
+%!error corr (ones (2,2,2))

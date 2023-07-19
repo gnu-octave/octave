@@ -1787,7 +1787,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (bool econ)
       OCTAVE_LOCAL_BUFFER (cs_complex_t, bvec, nr);
 
       for (octave_idx_type i = 0; i < nr; i++)
-        bvec[i] = cs_complex_t (0.0, 0.0);
+        bvec[i] = 0.0;
 
       OCTAVE_LOCAL_BUFFER (Complex, buf, S->m2);
 
@@ -1795,7 +1795,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (bool econ)
         {
           octave_quit ();
 
-          bvec[j] = cs_complex_t (1.0, 0.0);
+          bvec[j] = 1.0;
 
           volatile octave_idx_type nm = (nr < nc ? nr : nc);
 
@@ -1814,7 +1814,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (bool econ)
           for (octave_idx_type i = 0; i < nr; i++)
             vec[i+idx] = buf[i];
 
-          bvec[j] = cs_complex_t (0.0, 0.0);
+          bvec[j] = 0.0;
         }
     }
 

@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <limits>
+
 #include "oct-locbuf.h"
 #include "oct-norm.h"
 
@@ -57,7 +59,7 @@ double ichol_mult_real (double a, double b)
 
 bool ichol_checkpivot_complex (Complex pivot)
 {
-  if (pivot.imag () != 0)
+  if (fabs (pivot.imag ()) > std::numeric_limits<double>::epsilon())
     error ("ichol: non-real pivot encountered.  The matrix must be Hermitian.");
   else if (pivot.real () < 0)
     error ("ichol: negative pivot encountered");

@@ -616,8 +616,8 @@ endfunction
 %! b = A * ones (N, 1);
 %! M2 = chol (A + 0.1 * eye (N));  # Factor of a perturbed matrix
 %! M = M2' * M2;
-%! Hermitian_A = ishermitian (A);
-%! Hermitian_M = ishermitian (M);
+%! Hermitian_A = ishermitian (A, eps);  # AVX optimization can cause matrix
+%! Hermitian_M = ishermitian (M, eps);  # to miss being Hermitian by eps.
 %! [x, flag] = pcg (A, b, [], 2*N, M);
 %! assert (Hermitian_A, true);
 %! assert (Hermitian_M, true);

@@ -379,7 +379,8 @@ base_qobject::~base_qobject ()
   delete m_qt_tr;
   delete m_workspace_model;
 
-  delete m_main_window;
+  if (m_main_window)
+    delete m_main_window;
 
   delete m_qapplication;
 

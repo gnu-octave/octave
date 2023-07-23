@@ -361,26 +361,27 @@ base_qobject::~base_qobject ()
       if (m_community_news)
         m_community_news->close ();
     }
-  else
-    {
-      delete m_main_window;
-    }
 
   delete m_terminal_widget;
   delete m_documentation_widget;
   delete m_file_browser_widget;
   delete m_history_widget;
   delete m_workspace_widget;
-  delete m_editor_widget;
+  if (m_editor_widget)
+    delete m_editor_widget;
   delete m_variable_editor_widget;
-  delete m_community_news;
+  if (m_community_news)
+    delete m_community_news;
 
   delete m_interpreter_qobj;
   delete m_qsci_tr;
   delete m_gui_tr;
   delete m_qt_tr;
-  delete m_qapplication;
   delete m_workspace_model;
+
+  delete m_main_window;
+
+  delete m_qapplication;
 
   string_vector::delete_c_str_vec (m_argv);
 }

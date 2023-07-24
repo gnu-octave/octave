@@ -24,7 +24,7 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} ellipsoid (@var{xc}, @var{yc}, @var{zc}, @var{xr}, @var{yr}, @var{zr}, @var{n})
+## @deftypefn  {} {} ellipsoid (@var{xc}, @var{yc}, @var{zc}, @var{xr}, @var{yr}, @var{zr})
 ## @deftypefnx {} {} ellipsoid (@dots{}, @var{n})
 ## @deftypefnx {} {} ellipsoid (@var{hax}, @dots{})
 ## @deftypefnx {} {[@var{x}, @var{y}, @var{z}] =} ellipsoid (@dots{})
@@ -45,7 +45,7 @@
 ## @seealso{cylinder, rectangle, sphere}
 ## @end deftypefn
 
-function [xx, yy, zz] = ellipsoid (varargin)
+function [x, y, z] = ellipsoid (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("ellipsoid", varargin{:});
 
@@ -105,6 +105,19 @@ endfunction
 %! clf;
 %! ellipsoid (0, 0, 1, 2, 3, 4, 20);
 %! title ("ellipsoid()");
+
+%!test <*64468> # No return if nargout = 0
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   1 + 1;
+%!   assert (ans, 2);
+%!   ellipsoid (hax, 0, 0, 0, 1, 1, 1);
+%!   assert (ans, 2);
+%!
+%!  unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 ## Test input validation
 %!error <Invalid call> ellipsoid (1,2,3,4,5)

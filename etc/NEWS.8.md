@@ -4,6 +4,8 @@ Summary of bugs fixed for version 8.3.0 (yyyy-mm-dd):
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
+- `ellipsoid.m`: avoid returning geometry data unless it is explicitly
+requested to avoid overwriting `ans`.
 
 ### GUI
 

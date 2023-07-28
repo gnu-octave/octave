@@ -307,7 +307,7 @@ octave_struct::subsasgn (const std::string& type,
   octave_value t_rhs = rhs;
 
   if (idx.front ().empty ())
-    error ("missing index in indexed assignment");
+    error ("subsasgn: missing index in indexed assignment");
 
   if (n > 1 && ! (type.length () == 2 && type[0] == '(' && type[1] == '.'))
     {
@@ -322,9 +322,11 @@ octave_struct::subsasgn (const std::string& type,
 
                 octave_value_list key_idx = *++p;
 
-                panic_if (key_idx.length () != 1);
+                if (key_idx.length () != 1)
+                  error ("subsasgn: dynamic structure field names must be strings");
 
-                std::string key = key_idx(0).string_value ();
+                std::string key
+                  = key_idx(0).xstring_value ("dynamic structure field names must be strings");
 
                 maybe_warn_invalid_field_name (key, "subsasgn");
 
@@ -378,9 +380,11 @@ octave_struct::subsasgn (const std::string& type,
           {
             octave_value_list key_idx = idx.front ();
 
-            panic_if (key_idx.length () != 1);
+            if (key_idx.length () != 1)
+              error ("subsasgn: dynamic structure field names must be strings");
 
-            std::string key = key_idx(0).string_value ();
+            std::string key
+              = key_idx(0).xstring_value ("subsasgn: dynamic structure field names must be strings");
 
             maybe_warn_invalid_field_name (key, "subsasgn");
 
@@ -444,9 +448,11 @@ octave_struct::subsasgn (const std::string& type,
             octave_value_list key_idx = *++p;
             octave_value_list idxf = idx.front ();
 
-            panic_if (key_idx.length () != 1);
+            if (key_idx.length () != 1)
+              error ("subsasgn: dynamic structure field names must be strings");
 
-            std::string key = key_idx(0).string_value ();
+            std::string key
+              = key_idx(0).xstring_value ("subsasgn: dynamic structure field names must be strings");
 
             maybe_warn_invalid_field_name (key, "subsasgn");
 
@@ -515,9 +521,11 @@ octave_struct::subsasgn (const std::string& type,
       {
         octave_value_list key_idx = idx.front ();
 
-        panic_if (key_idx.length () != 1);
+        if (key_idx.length () != 1)
+          error ("subsasgn: dynamic structure field names must be strings");
 
-        std::string key = key_idx(0).string_value ();
+        std::string key
+          = key_idx(0).xstring_value ("subsasgn: dynamic structure field names must be strings");
 
         maybe_warn_invalid_field_name (key, "subsasgn");
 
@@ -558,6 +566,21 @@ octave_struct::subsasgn (const std::string& type,
 
   return retval;
 }
+
+/*
+%!test
+%! x(1:2) = struct ();
+%! idx = struct ("type", {"()", ".", "."}, "subs", {{1}, "a", "b"});
+%! x = subsasgn (x, idx, 42);
+%! assert (x(1).a.b, 42);
+%! assert (isempty (x(2).a));
+
+%!test <*64213>
+%! x(1:2) = struct ();
+%! idx = struct ("type", {"()", "."}, "subs", {{1}, {"a", "b"}});
+%! fail ("x = subsasgn (x, idx, 42);", ...
+%!       "structure field names must be strings");
+*/
 
 octave_value
 octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
@@ -1255,7 +1278,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
   octave_value retval;
 
   if (idx.front ().empty ())
-    error ("missing index in indexed assignment");
+    error ("subsasgn: missing index in indexed assignment");
 
   if (type[0] == '.')
     {
@@ -1265,9 +1288,11 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       octave_value_list key_idx = idx.front ();
 
-      panic_if (key_idx.length () != 1);
+      if (key_idx.length () != 1)
+        error ("subsasgn: structure field names must be strings");
 
-      std::string key = key_idx(0).string_value ();
+      std::string key
+        = key_idx(0).xstring_value ("subsasgn: structure field names must be strings");
 
       maybe_warn_invalid_field_name (key, "subsasgn");
 
@@ -1317,6 +1342,20 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
   return retval;
 }
+
+/*
+%!test
+%! x = struct ();
+%! idx = struct ("type", ".", "subs", {"a", "b"});
+%! x = subsasgn (x, idx, 42);
+%! assert (x.a.b, 42);
+
+%!test <*64213>
+%! x = struct ();
+%! idx = struct ("type", ".", "subs", {{"a", "b"}});
+%! fail ("x = subsasgn (x, idx, 42)", ...
+%!       "structure field names must be strings");
+*/
 
 octave_value
 octave_scalar_struct::do_index_op (const octave_value_list& idx, bool resize_ok)

@@ -4,14 +4,44 @@ Summary of bugs fixed for version 8.3.0 (yyyy-mm-dd):
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
-- `ellipsoid.m`: avoid returning geometry data unless it is explicitly
-requested to avoid overwriting `ans`.
-
-### GUI
+- `undo_string_escapes`: Return `'\0'` for `NUL` byte input (bug #64051).
+- Stop excessive memory usage for minor grid ticks (bug #64017).
+- Include needed headers in installed `.cc` files (bug #63922).
+- Fix floating point exception when sparse array reshaped to `0x0` (bug
+  #64080).
+- `unicode2native`: Fix conversion to UTF-16 (bug #64139).
+- `memory`: Fix execution on Cygwin.
+- `uniconv-wrappers`: Avoid freeing uninitialized pointer (bug #64182).
+- `lo-regexp.cc`: Only include PCRE2/PCRE headers if feature test succeeded
+  (bug #64172).
+- Fix segfault when `saveobj()` used with old-style class files (bug #64220).
+- Fix restoring breakpoints from `dbstatus` breakpoint structure (bug #64271).
+- `colorbar.m`: Fix undefined variable `d` (bug #64287).
+- Reset all axes properties except `'Units'` and `'Position'` with
+  `cla ('reset')`.
+- `unicode2native.m`: Restore support for one input parameter (bug #64331).
+- `native2unicode`, `unicode2native`: Support empty second argument (bug
+  #64331).
+- `fullfile.m`: Return empty cell for input with empty cell (bug #64377).
+- `audioplayer.m`: Emit error if input data `Y` is empty (bug #64379).
+- Remove obsolete callback constructor code for `@audioplayer` and
+  `@audiorecorder` (bug #64379).
+- Avoid false detection of "non-real pivot" in `ichol()` (bug #63785).
+- Fix building against SuiteSparse 7.1.0 when SPQR is disabled (bug #64446).
+- `ellipsoid.m`: Avoid returning geometry data unless it is explicitly
+  requested to avoid overwriting `ans`.
+- `subsasgn`: Avoid panic on invalid field names (bug #64213).
 
 ### Build system / Tests
+- `betaincinv.m`: Slightly increase test tolerance (for macOS 13).
+- `colorbar.m`: Add tests (bug #64287).
+- `sparse-qr.cc`: Fix compatibility with SuiteSparse 7.1.0 / CXSparse 4.0.4.
+- `pcg.m`: Use eps tolerance in test for `ishermitian` (bug #63787).
 
 ### Documentation
+- Return documentation for `help properties` (bug #64067).
+- Add note to `isprime.m` on inputs over 2^64.
+
 
 Summary of bugs fixed for version 8.2.0 (2023-04-13):
 ----------------------------------------------------
@@ -202,6 +232,7 @@ option to the `print` function.
   retain current behavior.  Further, if your code relies on backslash escape
   sequence interpretation in double-quoted strings (except for special cases
   like the `printf` family), that code may need to change as well.
+
 
 ### Alphabetical list of new functions added in Octave 8
 

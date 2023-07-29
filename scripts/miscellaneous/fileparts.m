@@ -53,7 +53,13 @@ function [dir, name, ext] = fileparts (filename)
   endif
 
   if (ds == 0)
-    dir = "";
+    if (ispc () && length (filename) >= 2 && strcmp (filename(2), ":"))
+      ## Relative path on Windows drive. At least, fix file name.
+      ds = 2;
+      dir = filename(1:2);
+    else
+      dir = "";
+    endif
   elseif (ds == 1)
     dir = filename(1);
   else
@@ -109,6 +115,14 @@ endfunction
 %!test
 %! [d, n, e] = fileparts (".ext");
 %! assert (strcmp (d, "") && strcmp (n, "") && strcmp (e, ".ext"));
+
+%!testif ; ispc () <*64462>
+%! [d, n, e] = fileparts ("c:file.ext");
+%! assert (strcmp (d, "c:") && strcmp (n, "file") && strcmp (e, ".ext"));
+
+%!testif ; ispc () <*64462>
+%! [d, n, e] = fileparts ("c:d1/../d2/file.ext");
+%! assert (strcmp (d, "c:d1/../d2") && strcmp (n, "file") && strcmp (e, ".ext"));
 
 ## Test input validation
 %!error <Invalid call> fileparts ()

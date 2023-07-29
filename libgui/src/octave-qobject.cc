@@ -362,16 +362,14 @@ base_qobject::~base_qobject ()
         m_community_news->close ();
     }
 
-  delete m_terminal_widget;
-  delete m_documentation_widget;
-  delete m_file_browser_widget;
-  delete m_history_widget;
-  delete m_workspace_widget;
-  if (m_editor_widget)
-    delete m_editor_widget;
-  delete m_variable_editor_widget;
-  if (m_community_news)
-    delete m_community_news;
+  m_terminal_widget.data ()->deleteLater ();
+  m_documentation_widget.data ()->deleteLater ();
+  m_file_browser_widget.data ()->deleteLater ();
+  m_history_widget.data ()->deleteLater ();
+  m_workspace_widget.data ()->deleteLater ();
+  m_editor_widget.data ()->deleteLater ();
+  m_variable_editor_widget.data ()->deleteLater ();
+  m_community_news.data ()->deleteLater ();
 
   delete m_interpreter_qobj;
   delete m_qsci_tr;
@@ -379,8 +377,7 @@ base_qobject::~base_qobject ()
   delete m_qt_tr;
   delete m_workspace_model;
 
-  if (m_main_window)
-    delete m_main_window;
+  m_main_window->deleteLater ();
 
   delete m_qapplication;
 

@@ -326,7 +326,7 @@ octave_struct::subsasgn (const std::string& type,
                   error ("subsasgn: dynamic structure field names must be strings");
 
                 std::string key
-                  = key_idx(0).xstring_value ("dynamic structure field names must be strings");
+                  = key_idx(0).xstring_value ("subsasgn: dynamic structure field names must be strings");
 
                 maybe_warn_invalid_field_name (key, "subsasgn");
 

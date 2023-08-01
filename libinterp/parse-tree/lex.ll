@@ -366,7 +366,7 @@ D_      [0-9_]
 S       [ \t]
 NL      ((\n)|(\r)|(\r\n))
 CCHAR   [#%]
-IDENT   ([_$a-zA-Z][_$a-zA-Z0-9]*)
+IDENT   ([_a-zA-Z][_a-zA-Z0-9]*)
 FQIDENT ({IDENT}({S}*\.{S}*{IDENT})*)
 
 %{

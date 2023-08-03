@@ -571,7 +571,7 @@ jobs:
           echo "makeinfo_program (sprintf ('%s && cd %s && perl makeinfo', [s=nthargout(2, @system, 'cygpath -w /usr/bin')](1:2), strtrim (s)));" \
             >> ./scripts/startup/site-rcfile
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
-          make -C ./.build check | tee ./test-suite.log
+          make -C ./.build check RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite.log
 
       - name: display test log
         continue-on-error: true

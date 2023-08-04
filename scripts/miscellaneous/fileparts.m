@@ -82,47 +82,87 @@ endfunction
 
 %!test
 %! [d, n, e] = fileparts ("file");
-%! assert (strcmp (d, "") && strcmp (n, "file") && strcmp (e, ""));
+%! assert (d, "");
+%! assert (n, "file");
+%! assert (e, "");
 
 %!test
 %! [d, n, e] = fileparts ("file.ext");
-%! assert (strcmp (d, "") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, "");
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 %!test
 %! [d, n, e] = fileparts ("/file.ext");
-%! assert (strcmp (d, "/") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, "/");
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 %!test
 %! [d, n, e] = fileparts ("dir/file.ext");
-%! assert (strcmp (d, "dir") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, "dir");
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 %!test
 %! [d, n, e] = fileparts ("./file.ext");
-%! assert (strcmp (d, ".") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, ".");
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 %!test
 %! [d, n, e] = fileparts ("d1/d2/file.ext");
-%! assert (strcmp (d, "d1/d2") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, "d1/d2");
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 %!test
 %! [d, n, e] = fileparts ("/d1/d2/file.ext");
-%! assert (strcmp (d, "/d1/d2") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, "/d1/d2");
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 %!test
 %! [d, n, e] = fileparts ("/.ext");
-%! assert (strcmp (d, "/") && strcmp (n, "") && strcmp (e, ".ext"));
+%! assert (d, "/");
+%! assert (n, "");
+%! assert (e, ".ext");
 
 %!test
 %! [d, n, e] = fileparts (".ext");
-%! assert (strcmp (d, "") && strcmp (n, "") && strcmp (e, ".ext"));
+%! assert (d, "");
+%! assert (n, "");
+%! assert (e, ".ext");
+
+%!test
+%! [d, n, e] = fileparts ("a");
+%! assert (d, "");
+%! assert (n, "a");
+%! assert (e, "");
+
+%!test
+%! [d, n, e] = fileparts ("");
+%! assert (d, "");
+%! assert (n, "");
+%! assert (e, "");
 
 %!testif ; ispc () <*64462>
 %! [d, n, e] = fileparts ("c:file.ext");
-%! assert (strcmp (d, "c:") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, "c:");
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 %!testif ; ispc () <*64462>
 %! [d, n, e] = fileparts ("c:d1/../d2/file.ext");
-%! assert (strcmp (d, "c:d1/../d2") && strcmp (n, "file") && strcmp (e, ".ext"));
+%! assert (d, "c:d1/../d2");
+%! assert (n, "file");
+%! assert (e, ".ext");
+
+%!testif ; ispc ()
+%! [d, n, e] = fileparts ('c:\dir\file.ext');
+%! assert (d, 'c:\dir');
+%! assert (n, "file");
+%! assert (e, ".ext");
 
 ## Test input validation
 %!error <Invalid call> fileparts ()

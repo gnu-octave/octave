@@ -995,17 +995,17 @@ ov_range<double>::could_be_trivial_range ()
   if (n <= 1)
     return false;
 
-  if (m_range.final_value () > std::numeric_limits<int>::max() ||
-      m_range.final_value () < std::numeric_limits<int>::min())
+  if (m_range.final_value () > std::numeric_limits<int>::max ()
+      || m_range.final_value () < std::numeric_limits<int>::min ())
     return false;
-  if (m_range.increment () > std::numeric_limits<int>::max() ||
-      m_range.increment () < std::numeric_limits<int>::min())
+  if (m_range.increment () > std::numeric_limits<int>::max ()
+      || m_range.increment () < std::numeric_limits<int>::min ())
     return false;
-  if (m_range.base () > std::numeric_limits<int>::max() ||
-      m_range.base () < std::numeric_limits<int>::min())
+  if (m_range.base () > std::numeric_limits<int>::max ()
+      || m_range.base () < std::numeric_limits<int>::min ())
     return false;
-  if (m_range.limit () > std::numeric_limits<int>::max() ||
-      m_range.limit () < std::numeric_limits<int>::min())
+  if (m_range.limit () > std::numeric_limits<int>::max ()
+      || m_range.limit () < std::numeric_limits<int>::min ())
     return false;
 
   if (std::isnan (m_range.final_value ()))

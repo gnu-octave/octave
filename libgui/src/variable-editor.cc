@@ -705,7 +705,7 @@ variable_editor_view::createContextMenu (const QPoint& qpos)
 
           QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
-          connect (plot_mapper, SIGNAL (mapped (const QString&)),
+          connect (plot_mapper, SIGNAL (mappedString (const QString&)),
                    this, SLOT (selected_command_requested (const QString&)));
         }
 
@@ -753,7 +753,7 @@ variable_editor_view::createColumnMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
-  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+  connect (plot_mapper, SIGNAL (mappedString (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
 
   QPoint menupos = pt;
@@ -800,7 +800,7 @@ variable_editor_view::createRowMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
-  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+  connect (plot_mapper, SIGNAL (mappedString (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
 
   QPoint menupos = pt;
@@ -1182,7 +1182,7 @@ void variable_editor::focusInEvent (QFocusEvent *ev)
         }
       else
         {
-          QDockWidget *any_qdw = m_main->findChild<QDockWidget *> ();
+          QDockWidget *any_qdw = m_main->findChild<QDockWidget *> (QString (), Qt::FindDirectChildrenOnly);
           if (any_qdw != nullptr)
             {
               activateWindow ();
@@ -1292,8 +1292,9 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   edit_view->verticalHeader ()->setDefaultSectionSize (m_default_height
                                                        + m_add_font_height);
 
-  connect (m_plot_mapper, SIGNAL (mapped (const QString&)),
+  connect (m_plot_mapper, SIGNAL (mappedString (const QString&)),
            edit_view, SLOT (selected_command_requested (const QString&)));
+
   connect (m_save_mapper, SIGNAL (mapped (const QString&)),
            stack, SLOT (save (const QString&)));
 

@@ -92,6 +92,12 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
     std_formats{++nfmt} = "mmm.dd.yyyy HH:MM:SS";
     std_formats{++nfmt} = "mmm.dd.yyyy";
     std_formats{++nfmt} = "mm/dd/yyyy HH:MM";
+
+    ## These are ISO 8601 conform formats used in several SW
+    std_formats{++nfmt} = "yyyy";
+    std_formats{++nfmt} = "yyyy-mm";
+    std_formats{++nfmt} = "yyyy-mm-ddTHH:MM:SSZ";
+    std_formats{++nfmt} = "yyyy-mm-ddTHH:MM:SS.FFFZ";
   endif
 
   if (nargin < 1)
@@ -301,25 +307,27 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
       ## Might not match idx because of things like yyyy -> %y.
       [~, nc] = strptime (ds, f(1:idx-1));
 
-      msec = ds(nc:min (nc+2,end)); # pull 3-digit fractional seconds.
-      msec_idx = find (! isdigit (msec), 1);
+      if (! isempty (nc) && nc != 0)
+        msec = ds(nc:min (nc+2,end));  # pull 3-digit fractional seconds.
+        msec_idx = find (! isdigit (msec), 1);
 
-      if (! isempty (msec_idx))  # non-digits in msec
-        msec = msec(1:msec_idx-1);
-        msec(end+1:3) = "0";     # pad msec with trailing zeros
-        ds = [ds(1:(nc-1)), msec, ds((nc-1)+msec_idx:end)];  # zero pad ds
-      elseif (numel (msec) < 3)  # less than three digits in msec
-        m_len = numel (msec);
-        msec(end+1:3) = "0";     # pad msec with trailing zeros
-        ds = [ds(1:(nc-1)), msec, ds(nc+m_len:end)];  # zero pad ds as well
-      endif
+        if (! isempty (msec_idx))  # non-digits in msec
+          msec = msec(1:msec_idx-1);
+          msec(end+1:3) = "0";  # pad msec with trailing zeros
+          ds = [ds(1:(nc-1)), msec, ds((nc-1)+msec_idx:end)];  # zero pad ds
+        elseif (numel (msec) < 3)  # less than three digits in msec
+          m_len = numel (msec);
+          msec(end+1:3) = "0";  # pad msec with trailing zeros
+          ds = [ds(1:(nc-1)), msec, ds(nc+m_len:end)];  # zero pad ds as well
+        endif
 
-      ## replace FFF with digits to guarantee match in strptime.
-      f(idx:idx+2) = msec;
+        ## replace FFF with digits to guarantee match in strptime.
+        f(idx:idx+2) = msec;
 
-      if (nc > 0)
-        [tm, nc] = strptime (ds, f);
-        tm.usec = 1000 * str2double (msec);
+        if (nc > 0)
+          [tm, nc] = strptime (ds, f);
+          tm.usec = 1000 * str2double (msec);
+        endif
       endif
 
     else
@@ -410,6 +418,12 @@ endfunction
 %!        [2015,6,1,3,7,12.12])
 %!assert (datevec ("06/01/2015 3:07:12.12 PM", "mm/dd/yyyy HH:MM:SS.FFF PM"),
 %!        [2015,6,1,15,7,12.12])
+
+## Test ISO 8601 conform formats
+%!assert (datevec ("1998"), [1998, 1, 0, 0, 0, 0]);
+%!assert (datevec ("1998-07"), [1998, 7, 1, 0, 0, 0]);
+%!assert (datevec ("1998-07-19T15:03:47Z"), [1998, 7, 19, 15, 3, 47]);
+%!assert (datevec ("1998-07-19T15:03:47.219Z"), [1998, 7, 19, 15, 3, 47.219]);
 
 ## Test structure of return value
 %!test <*42334>

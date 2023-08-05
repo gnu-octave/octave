@@ -1541,7 +1541,7 @@ variable_editor::variable_focused (const QString& name)
   m_focus_widget_vdw = nullptr;
   if (current != nullptr)
     {
-      QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
+      QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> (QString (), Qt::FindDirectChildrenOnly);
       for (int i = 0; i < vdwlist.size (); i++)
         {
           variable_dock_widget *vdw = vdwlist.at (i);

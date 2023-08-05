@@ -705,8 +705,13 @@ variable_editor_view::createContextMenu (const QPoint& qpos)
 
           QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
           connect (plot_mapper, SIGNAL (mappedString (const QString&)),
                    this, SLOT (selected_command_requested (const QString&)));
+#else
+          connect (plot_mapper, SIGNAL (mapped (const QString&)),
+                   this, SLOT (selected_command_requested (const QString&)));
+#endif
         }
 
       menu->exec (mapToGlobal (qpos));
@@ -753,8 +758,13 @@ variable_editor_view::createColumnMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   connect (plot_mapper, SIGNAL (mappedString (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
+#else
+  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+           this, SLOT (selected_command_requested (const QString&)));
+#endif
 
   QPoint menupos = pt;
   menupos.setY (horizontalHeader ()->height ());
@@ -800,9 +810,13 @@ variable_editor_view::createRowMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   connect (plot_mapper, SIGNAL (mappedString (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
-
+#else
+  connect (plot_mapper, SIGNAL (mapped (const QString&)),
+           this, SLOT (selected_command_requested (const QString&)));
+#endif
   QPoint menupos = pt;
   menupos.setX (verticalHeader ()->width ());
 
@@ -1292,11 +1306,17 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   edit_view->verticalHeader ()->setDefaultSectionSize (m_default_height
                                                        + m_add_font_height);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   connect (m_plot_mapper, SIGNAL (mappedString (const QString&)),
            edit_view, SLOT (selected_command_requested (const QString&)));
-
+  connect (m_save_mapper, SIGNAL (mappedString (const QString&)),
+           stack, SLOT (save (const QString&)));
+#else
+  connect (m_plot_mapper, SIGNAL (mapped (const QString&)),
+           edit_view, SLOT (selected_command_requested (const QString&)));
   connect (m_save_mapper, SIGNAL (mapped (const QString&)),
            stack, SLOT (save (const QString&)));
+#endif
 
   connect (edit_view, &variable_editor_view::command_signal,
            this, &variable_editor::command_signal);

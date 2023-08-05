@@ -395,23 +395,13 @@ files_dock_widget::files_dock_widget (QWidget *p)
   connect (m_current_directory->lineEdit (), &QLineEdit::returnPressed,
            this, &files_dock_widget::accept_directory_line_edit);
 
-  // FIXME: We could use
-  //
-  //    connect (m_current_directory,
-  //             QOverload<const QString&>::of (&QComboBox::activated),
-  //             this, &files_dock_widget::set_current_directory);
-  //
-  // but referring to QComboBox::activated will generate deprecated
-  // function warnings from GCC.  We could also use
-  //
-  //    connect (m_current_directory, &QComboBox::textActivated,
-  //             this, &files_dock_widget::set_current_directory);
-  //
-  // but the function textActivated was not introduced until Qt 5.14
-  // so we'll need a feature test.
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect (m_current_directory, &QComboBox::textActivated,
+           this, &files_dock_widget::set_current_directory);
+#else
   connect (m_current_directory, SIGNAL (activated (const QString&)),
            this, SLOT (set_current_directory (const QString&)));
+#endif
 
   QCompleter *completer = new QCompleter (m_file_system_model, this);
   m_current_directory->setCompleter (completer);

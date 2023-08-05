@@ -2624,8 +2624,13 @@ void main_window::construct_tool_bar ()
     = m_main_tool_bar->addAction (settings.icon ("folder"),
                                   tr ("Browse directories"));
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect (m_current_directory_combo_box, &QComboBox::textActivated,
+           this, &main_window::set_current_working_directory);
+#else
   connect (m_current_directory_combo_box, SIGNAL (activated (const QString&)),
            this, SLOT (set_current_working_directory (const QString&)));
+#endif
 
   connect (m_current_directory_combo_box->lineEdit (),
            &QLineEdit::returnPressed,

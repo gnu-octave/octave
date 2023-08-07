@@ -184,11 +184,11 @@ function retval = setoptionfields (opts, old, new, validation, useempty)
       if (nmatch == 1)
         key = opts{find (i)};
       elseif (nmatch == 0)
-        warning ("optimset: unrecognized option: %s", key);
+        warning ("optimset: unrecognized option: '%s'", key);
       else
-        fmt = sprintf ("optimset: ambiguous option: %%s (%s%%s)",
+        fmt = sprintf ("optimset: ambiguous option: '%%s' (%s%%s)",
                        repmat ("%s, ", 1, nmatch-1));
-        warning (fmt, key, opts{i});
+        error (fmt, key, opts{i});
       endif
     endif
     if (useempty || ! isempty (val))
@@ -220,5 +220,5 @@ endfunction
 ## Test input validation
 %!error optimset ("1_Parameter")
 %!error <no defaults for function> optimset ("%NOT_A_REAL_FUNCTION_NAME%")
-%!warning <unrecognized option: foobar> optimset ("foobar", 13);
-%!warning <ambiguous option: Max> optimset ("Max", 10);
+%!warning <unrecognized option: 'foobar'> optimset ("foobar", 13);
+%!error <ambiguous option: 'Max'> optimset ("Max", 10);

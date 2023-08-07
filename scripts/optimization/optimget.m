@@ -48,11 +48,11 @@ function optval = optimget (options, optname, default)
   if (nmatch == 1)
     optname = opts{idx};
   elseif (nmatch == 0)
-    warning ("optimget: unrecognized option: %s", optname);
+    warning ("optimget: unrecognized option: '%s'", optname);
   else
-    fmt = sprintf ("optimget: ambiguous option: %%s (%s%%s)",
+    fmt = sprintf ("optimget: ambiguous option: '%%s' (%s%%s)",
                    repmat ("%s, ", 1, nmatch-1));
-    warning (fmt, optname, opts{idx});
+    error (fmt, optname, opts{idx});
   endif
 
   if (isfield (options, optname) && ! isempty (options.(optname)))
@@ -79,5 +79,5 @@ endfunction
 %!error <Invalid call> optimget (1)
 %!error optimget (1, "name")
 %!error optimget (struct (), 2)
-%!warning <unrecognized option: foobar> (optimget (opts, "foobar"));
-%!warning <ambiguous option: Max> (optimget (opts, "Max"));
+%!warning <unrecognized option: 'foobar'> (optimget (opts, "foobar"));
+%!error <ambiguous option: 'Max'> (optimget (opts, "Max"));

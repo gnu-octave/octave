@@ -233,6 +233,8 @@ struct unwind_data
 
   unsigned m_code_size;
   unsigned m_ids_size;
+
+  bool m_is_script;
 };
 
 struct bytecode

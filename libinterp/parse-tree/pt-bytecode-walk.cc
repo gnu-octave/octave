@@ -2040,6 +2040,7 @@ visit_octave_user_script (octave_user_script& fcn)
 {
   m_is_script = true;
 
+  m_code.m_unwind_data.m_is_script = true;
   m_code.m_unwind_data.m_name = fcn.name ();
   m_code.m_unwind_data.m_file = fcn.fcn_file_name ();
   PUSH_DATA (fcn.name ());

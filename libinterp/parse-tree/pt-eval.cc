@@ -1367,12 +1367,15 @@ tree_evaluator::reset_debug_state ()
                   || m_dbstep_flag != 0
                   || m_break_on_next_stmt
                   || in_debug_repl ());
+
+  update_vm_dbgprofecho_flag ();
 }
 
 void
 tree_evaluator::reset_debug_state (bool mode)
 {
   m_debug_mode = mode;
+  update_vm_dbgprofecho_flag ();
 }
 
 void
@@ -4850,6 +4853,7 @@ tree_evaluator::set_echo_state (int type, const std::string& file_name,
                                 int pos)
 {
   m_echo_state = echo_this_file (file_name, type);
+
   m_echo_file_name = file_name;
   m_echo_file_pos = pos;
 }
@@ -4859,6 +4863,7 @@ tree_evaluator::uwp_set_echo_state (bool state, const std::string& file_name,
                                     int pos)
 {
   m_echo_state = state;
+
   m_echo_file_name = file_name;
   m_echo_file_pos = pos;
 }
@@ -5039,6 +5044,8 @@ tree_evaluator::echo (const octave_value_list& args, int)
 
   if (cleanup_pushed)
     maybe_set_echo_state ();
+
+  update_vm_dbgprofecho_flag (); // Since m_echo might have changed value we need to call this
 
   return octave_value ();
 }

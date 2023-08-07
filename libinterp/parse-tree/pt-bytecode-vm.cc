@@ -642,7 +642,7 @@ static void stack_lift (stack_element *start, int n_elem, int n_lift)
   /* PRINT_VM_STATE ("%d" COMMA __LINE__); */ \
   /* CHECK_STACK (0); */ \
 \
-  if (OCTAVE_UNLIKELY (m_tw->debug_mode ())) /* Do we need to check for breakpoints? */\
+  if (OCTAVE_UNLIKELY (m_tw->vm_dbgprofecho_flag ())) /* Do we need to check for breakpoints? */\
     goto debug_check;\
   int opcode = ip[0];\
   arg0 = ip[1];\
@@ -659,7 +659,7 @@ static void stack_lift (stack_element *start, int n_elem, int n_lift)
   /* PRINT_VM_STATE ("%d" COMMA __LINE__); */ \
   /* CHECK_STACK (0); */ \
 \
-  if (OCTAVE_UNLIKELY (m_tw->debug_mode ())) /* Do we need to check for breakpoints? */\
+  if (OCTAVE_UNLIKELY (m_tw->vm_dbgprofecho_flag ())) /* Do we need to check for breakpoints? */\
     goto debug_check_1b;\
   int opcode = arg0;\
   arg0 = *ip++;\
@@ -4344,6 +4344,8 @@ unwind:
     m_ip = ip - code;
     m_unwind_data = unwind_data;
 
+    m_echo_prior_op_was_cond = false; // Used by the echo functionality
+
     // Ther error_type is put on the stack before the jump to unwind.
     error_type et = static_cast<error_type> (m_sp[-1].i);
     m_sp--;
@@ -5674,6 +5676,7 @@ load_2_cst:
         PRINT_VM_STATE ("Trace: ");
       }
 
+    // Handle the VM profiler
     if (OCTAVE_UNLIKELY (m_profiler_enabled))
       {
         int64_t t1 = vm_profiler::unow ();
@@ -5702,43 +5705,97 @@ load_2_cst:
           }
       }
 
+    // Handle the echo functionality.
+    if (m_tw->echo ())
+      {
+        int ip_offset = ip - code;
+        // In the beginning of functions we need to push an echo state for the function.
+        // push_echo_state () checks e.g. if the current function is supposed to be printed.
+        // The check is querried with echo_state ().
+        if (ip_offset == 4) // TODO: Make constexpr for first opcode offset
+          {
+            int type = m_unwind_data->m_is_script ? tree_evaluator::ECHO_SCRIPTS : tree_evaluator::ECHO_FUNCTIONS;
+            m_tw->push_echo_state (type, m_unwind_data->m_file);
+          }
+
+        if (!m_tw->echo_state ())
+          goto bail_echo;
+
+        auto it = unwind_data->m_ip_to_tree.find (tmp_ip);
+        if (it == unwind_data->m_ip_to_tree.end ())
+          goto bail_echo;
+
+        tree *t = it->second;
+        if (!t)
+          goto bail_echo;
+
+        int line = t->line ();
+        if (line < 0)
+          line = 1;
+
+        // We don't want to echo the condition checks in for loops, but
+        // reset the "last echoed" line to echo the next line properly.
+        switch (static_cast<INSTR> (*ip))
+          {
+            case INSTR::FOR_COND:
+            case INSTR::FOR_COMPLEX_COND:
+              m_echo_prior_op_was_cond = true;
+              goto bail_echo;
+            default:
+              break;
+          }
+
+        if (m_echo_prior_op_was_cond)
+          {
+            m_echo_prior_op_was_cond = false;
+            m_tw->set_echo_file_pos (line);
+          }
+
+        m_tw->echo_code (line);
+        m_tw->set_echo_file_pos (line + 1);
+      }
+bail_echo:
+
     // TODO: Check all trees one time and cache the result somewhere?
     //       Until another bp is set? Debugging will be quite slow
     //       with one check for each op-code.
 
-    auto it = unwind_data->m_ip_to_tree.find (tmp_ip);
-
-    if (it == unwind_data->m_ip_to_tree.end ())
-      goto debug_check_end;
-
-    bool is_ret = *ip == static_cast<unsigned char> (INSTR::RET);
-
-    m_sp = sp;
-    m_bsp = bsp;
-    m_rsp = rsp;
-    m_code = code;
-    m_data = data;
-    m_name_data = name_data;
-    m_ip = tmp_ip;
-    m_unwind_data = unwind_data;
-    m_tw->set_active_bytecode_ip (tmp_ip);
-
-    tree *t = it->second;
-
-    // do_breakpoint will check if there is a breakpoint attached
-    // to the relevant code and escape to the debugger repl
-    // if neccessary.
-    if (t)
+    if (m_tw->debug_mode ())
       {
-        try
+        auto it = unwind_data->m_ip_to_tree.find (tmp_ip);
+
+        if (it == unwind_data->m_ip_to_tree.end ())
+          goto debug_check_end;
+
+        bool is_ret = *ip == static_cast<unsigned char> (INSTR::RET);
+
+        m_sp = sp;
+        m_bsp = bsp;
+        m_rsp = rsp;
+        m_code = code;
+        m_data = data;
+        m_name_data = name_data;
+        m_ip = tmp_ip;
+        m_unwind_data = unwind_data;
+        m_tw->set_active_bytecode_ip (tmp_ip);
+
+        tree *t = it->second;
+
+        // do_breakpoint will check if there is a breakpoint attached
+        // to the relevant code and escape to the debugger repl
+        // if neccessary.
+        if (t)
           {
-            m_tw->do_breakpoint (t->is_active_breakpoint (*m_tw), is_ret);
+            try
+              {
+                m_tw->do_breakpoint (t->is_active_breakpoint (*m_tw), is_ret);
+              }
+            CATCH_INTERRUPT_EXCEPTION
+            CATCH_INDEX_EXCEPTION
+            CATCH_EXECUTION_EXCEPTION
+            CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
           }
-        CATCH_INTERRUPT_EXCEPTION
-        CATCH_INDEX_EXCEPTION
-        CATCH_EXECUTION_EXCEPTION
-        CATCH_BAD_ALLOC
-        CATCH_EXIT_EXCEPTION
       }
   }
   debug_check_end:

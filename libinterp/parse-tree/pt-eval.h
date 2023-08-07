@@ -838,6 +838,8 @@ public:
   {
     int old_val = m_echo;
     m_echo = val;
+
+    update_vm_dbgprofecho_flag ();
     return old_val;
   }
 
@@ -857,6 +859,21 @@ public:
   void push_echo_state (int type, const std::string& file_name, int pos = 1);
 
   bool debug_mode () const { return m_debug_mode; }
+
+  int echo_state () { return m_echo_state; }
+
+  void set_echo_file_pos (int pos)
+  {
+    m_echo_file_pos = pos;
+  }
+
+  void vm_set_profiler_active (bool val)
+  {
+    m_vm_profiler_active = val;
+    update_vm_dbgprofecho_flag ();
+  }
+
+  bool vm_dbgprofecho_flag () { return m_vm_dbg_profile_echo; }
 
 private:
 
@@ -972,6 +989,18 @@ private:
   bool m_echo_state;
 
   std::string m_echo_file_name;
+
+  // The VM needs to keep know if the evaluation is in a debug, echo or profiler
+  // state.
+  bool m_vm_dbg_profile_echo; // Set to true if either echo, dbg or vm profiler active
+  bool m_vm_profiler_active; // VM specific profiler flag
+
+  // Set m_vm_dbg_profile_echo to its proper state. Need to be done after each update to
+  // the underlying flags.
+  void update_vm_dbgprofecho_flag ()
+  {
+    m_vm_dbg_profile_echo = m_debug_mode || m_echo || m_vm_profiler_active;
+  }
 
   // Next line to echo, counting from 1.  We use int here because the
   // parser does.  It also initializes line and column numbers to the

@@ -522,6 +522,8 @@ class vm
   std::string *m_name_data;
   unwind_data *m_unwind_data;
 
+  bool m_echo_prior_op_was_cond = false;
+
   int m_ip;
 
   // Generic data container to recreate exceptions

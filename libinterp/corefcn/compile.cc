@@ -189,12 +189,7 @@ Not that output to a variable is not implemented yet.
 {
   int nargin = args.length ();
 
-  // Unless a "profiler enabled" flag is added to the evaluator
-  // the vm profiler need the debugger to be active for it to actually
-  // be able to profile.
-  if (!interp.get_evaluator ().debug_mode ())
-    warning ("As a workaround atleast one breakpoint has to be set"
-    " in any file (preferably not being profiled) for the profiler to actually profile anything.");
+  auto &evaler = interp.get_evaluator ();
 
   std::string arg0;
 
@@ -208,9 +203,11 @@ Not that output to a variable is not implemented yet.
           vm::m_vm_profiler = std::make_shared<vm_profiler> ();
 
           vm::m_profiler_enabled = true;
+          evaler.vm_set_profiler_active (true);
         }
       else
         {
+          evaler.vm_set_profiler_active (false);
           vm::m_profiler_enabled = false;
           auto p = vm::m_vm_profiler;
           vm::m_vm_profiler = nullptr;
@@ -224,6 +221,7 @@ Not that output to a variable is not implemented yet.
       vm::m_profiler_enabled = false;
       vm::m_vm_profiler = std::make_shared<vm_profiler> ();
       vm::m_profiler_enabled = true;
+      evaler.vm_set_profiler_active (true);
     }
   else if (arg0 == "resume")
     {
@@ -231,13 +229,16 @@ Not that output to a variable is not implemented yet.
         vm::m_vm_profiler = std::make_shared<vm_profiler> ();
 
       vm::m_profiler_enabled = true;
+      evaler.vm_set_profiler_active (true);
     }
   else if (arg0 == "off")
     {
+      evaler.vm_set_profiler_active (false);
       vm::m_profiler_enabled = false;
     }
   else if (arg0 == "clear")
     {
+      evaler.vm_set_profiler_active (false);
       vm::m_profiler_enabled = false;
       vm::m_vm_profiler = nullptr;
     }

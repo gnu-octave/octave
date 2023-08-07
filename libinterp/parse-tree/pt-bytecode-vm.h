@@ -538,8 +538,17 @@ class vm
   static
   loc_entry find_loc (int ip, std::vector<octave::loc_entry> &loc_entries);
 
-  octave_value_list execute_code (const octave_value_list &args, int root_nargout)
-    __attribute__ ((optimize("no-gcse","no-crossjumping")));
+  // Disable some optimizations in GCC that are not suitable for dynamic label dispatch
+#if defined __has_attribute
+#  if __has_attribute (optimize)
+#    define OCTAVE_VM_EXECUTE_ATTR __attribute__ ((optimize("no-gcse","no-crossjumping")))
+#  endif
+#endif
+#if !defined OCTAVE_VM_EXECUTE_ATTR
+#  define OCTAVE_VM_EXECUTE_ATTR
+#endif
+
+  octave_value_list execute_code (const octave_value_list &args, int root_nargout) OCTAVE_VM_EXECUTE_ATTR;
 
   octave_value find_fcn_for_cmd_call (std::string *name);
   octave_value handle_object_end (octave_value ov, int idx, int nargs);

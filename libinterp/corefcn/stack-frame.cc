@@ -139,26 +139,7 @@ public:
   operator = (const bytecode_fcn_stack_frame& elt) = delete;
 
   bytecode_fcn_stack_frame&
-  operator = (bytecode_fcn_stack_frame&& elt)
-  {
-    if (m_lazy_data)
-      {
-        if (m_lazy_data->m_stack_cpy)
-          {
-            // Note: int nargout at offset 0
-            for (unsigned i = 1; i < m_size; i++)
-              m_lazy_data->m_stack_cpy[i].ov.~octave_value ();
-            delete m_lazy_data->m_stack_cpy;
-          }
-        delete m_lazy_data->m_unwind_protect_frame;
-        delete m_lazy_data;
-      }
-
-    *this = std::move (elt);
-    elt.m_lazy_data = nullptr;
-
-    return *this;
-  }
+  operator = (bytecode_fcn_stack_frame&& elt) = delete;
 
   // vm_clear_for_cache () and the dtor need to mirror eachother
   // so they both call dispose()

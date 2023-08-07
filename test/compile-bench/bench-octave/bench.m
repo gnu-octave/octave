@@ -44,14 +44,14 @@ function bench (varargin)
   end
 
   % For compatibility with older releases and Matlab
-  if ~exist("__compile")
-    __compile = @(varargin) true;
+  if ~exist("__compile__")
+    __compile__ = @(varargin) true;
   end
-  if ~exist("__dummy_mark_1")
-    __dummy_mark_1 = @() true;
+  if ~exist("__dummy_mark_1__")
+    __dummy_mark_1__ = @() true;
   end
-  if ~exist("__dummy_mark_2")
-    __dummy_mark_2 = @() true;
+  if ~exist("__dummy_mark_2__")
+    __dummy_mark_2__ = @() true;
   end
 
   cal_res = {};
@@ -118,15 +118,15 @@ function bench (varargin)
 
       tic;
       [ccttot0, cctuser0, cctsys0] = cputime;
-      assert (__compile (name));
+      assert (__compile__ (name));
       [ccttot1, cctuser1, cctsys1] = cputime;
       cctwall = toc;
 
       [cttot0, ctuser0, ctsys0] = cputime;
       tic;
-      __dummy_mark_1 ();
+      __dummy_mark_1__ ();
       fn (arg);
-      __dummy_mark_2 ();
+      __dummy_mark_2__ ();
       [cttot1, ctuser1, ctsys1] = cputime;
       ctwall = toc;
 

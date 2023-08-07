@@ -42,9 +42,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 extern "C" void dummy_mark_1 (void);
 extern "C" void dummy_mark_2 (void);
 
-DEFUN (__dummy_mark_1, , ,
+DEFUN (__dummy_mark_1__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __dummy_mark_1 ()
+@deftypefn  {} {} __dummy_mark_1__ ()
 
 Dummy function that calls the c-function void dummy_mark_1 (void)
 that does nothing.
@@ -59,9 +59,9 @@ or as an entry point for gdb.
   return {};
 }
 
-DEFUN (__dummy_mark_2, , ,
+DEFUN (__dummy_mark_2__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __dummy_mark_2 ()
+@deftypefn  {} {} __dummy_mark_2__ ()
 
 Dummy function that calls the c-function void dummy_mark_2 (void)
 that does nothing.
@@ -89,9 +89,9 @@ Internal function.
   return octave_value {true};
 }
 
-DEFUN (__vm_print_trace, , ,
+DEFUN (__vm_print_trace__, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{prints_trace} =} __vm_print_trace ())
+@deftypefn  {} {@var{prints_trace} =} __vm_print_trace__ ())
 
 Internal function.
 
@@ -109,9 +109,9 @@ Returns true if a trace will be printed from now on, false otherwise.
   return octave_value {vm::m_trace_enabled};
 }
 
-DEFUN (__ref_count, args, ,
+DEFUN (__ref_count__, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{count} =} __ref_count (@var{obj}))
+@deftypefn  {} {@var{count} =} __ref_count__ (@var{obj}))
 
 Internal function.
 
@@ -129,13 +129,13 @@ Returns reference count for an object.
   return octave_value {ov.get_count ()};
 }
 
-DEFMETHOD (__vm_is_executing, interp, , ,
+DEFMETHOD (__vm_is_executing__, interp, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{is_executing} =} __vm_is_executing ())
+@deftypefn  {} {@var{is_executing} =} __vm_is_executing__ ())
 
 Internal function.
 
-Returns true if the VM is executing the function calling __vm_is_executing ().
+Returns true if the VM is executing the function calling __vm_is_executing__ ().
 
 False otherwise.
 
@@ -146,14 +146,14 @@ False otherwise.
   return octave_value {bytecode_running};
 }
 
-DEFMETHOD (__vm_profile, interp, args, ,
+DEFMETHOD (__vm_profile__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {} __vm_profile on
-@deftypefnx {} {} __vm_profile off
-@deftypefnx {} {} __vm_profile resume
-@deftypefnx {} {} __vm_profile clear
-@deftypefnx {} {@var{T} =} __vm_profile ("info")
-@deftypefnx {} {} __vm_profile
+@deftypefn  {} {} __vm_profile__ on
+@deftypefnx {} {} __vm_profile__ off
+@deftypefnx {} {} __vm_profile__ resume
+@deftypefnx {} {} __vm_profile__ clear
+@deftypefnx {} {@var{T} =} __vm_profile__ ("info")
+@deftypefnx {} {} __vm_profile__
 
 Internal function.
 
@@ -258,9 +258,9 @@ Not that output to a variable is not implemented yet.
   return octave_value {true};
 }
 
-DEFMETHOD (__print_bytecode, interp, args, ,
+DEFMETHOD (__print_bytecode__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __print_bytecode (@var{fn_name}))
+@deftypefn  {} {@var{success} =} __print_bytecode__ (@var{fn_name}))
 
 Internal function.
 
@@ -305,11 +305,11 @@ Prints the bytecode of a function, if any.
   return octave_value {true};
 }
 
-DEFMETHOD (__compile, interp, args, ,
+DEFMETHOD (__compile__, interp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __compile (@var{fn_name})
-@deftypefnx  {} {@var{success} =} __compile (@var{fn_name}, "clear")
-@deftypefnx  {} {@var{success} =} __compile (@var{fn_name}, "print")
+@deftypefn  {} {@var{success} =} __compile__ (@var{fn_name})
+@deftypefnx  {} {@var{success} =} __compile__ (@var{fn_name}, "clear")
+@deftypefnx  {} {@var{success} =} __compile__ (@var{fn_name}, "print")
 
 Compile the specified function to bytecode.
 
@@ -442,7 +442,7 @@ VM no matter the state of @qcode{"__enable_vm_eval__"}, until the bytecode is
 cleared, by e.g. @qcode{"clear all"} or an modification to the
 function's m-file.
 
-@seealso{__compile}
+@seealso{__compile__}
 
 @end deftypefn */)
 {

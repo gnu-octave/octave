@@ -7,76 +7,76 @@ function [a b] = bytecode_leaks (c, d)
   b = d;
 
   e = 1+1;
-  refs_e = __ref_count (e);
+  refs_e = __ref_count__ (e);
   suby1(e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   aa = suby2(e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % Test special code path for assigning argument to return value
   aa = suby3(e);
-  assert (refs_e + 1, __ref_count (e))
+  assert (refs_e + 1, __ref_count__ (e))
   aa = 0;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % varargin
   suby4 (e,e,e,e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
   suby5 (e,e,e,e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % varargout
   suby6(e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
   [tmp1, tmp2, tmp3, tmp4, tmp5] = suby6(e);
   tmp1 = 0; tmp2 = 0; tmp3 = 0; tmp4 = 0; tmp5 = 0;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   suby7(e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
   [tmp1, tmp2, tmp3, tmp4, tmp5] = suby6(e);
   tmp1 = 0; tmp2 = 0; tmp3 = 0; tmp4 = 0; tmp5 = 0;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % Call non-vm function
   sin (e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % Index matrix
   m = [1 2 3 4];
   m (e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % Ops
   tmp1 = -e + e * e - e / e ^ e;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % Dynamic matrix
   m = [1 2 3 e; e 4 5 6];
   m = 0;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % Cell
   m = {1,2,3, e; 4, 5, e, 6};
   m = 0;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % "command call" with disp
   disp ("The disp of e and pi underneath is on purpose. There should be a 'e = 2' and 'ans = 3.14...'")
   e % Should print "e = 2"
-  assert (refs_e + 1, __ref_count (e)) % in ans
+  assert (refs_e + 1, __ref_count__ (e)) % in ans
   ans = 0;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % This will be a function call and should print "ans = 3.14..."
   pi
 
   % no disp
   e;
-  assert (refs_e + 1, __ref_count (e)) % in ans
+  assert (refs_e + 1, __ref_count__ (e)) % in ans
   ans = 0;
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
 
   % Too many or few args
@@ -84,31 +84,31 @@ function [a b] = bytecode_leaks (c, d)
     suby1 (e,e,e);
   catch
   end
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   try
     subsuby5 (e);
   catch
   end
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   try
     m = [];
     m(e)
   catch
   end
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   try
     m = [];
     m(e) = 123;
   catch
   end
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 
   % eval dynamic stack
   suby8 (e);
-  assert (refs_e, __ref_count (e))
+  assert (refs_e, __ref_count__ (e))
 end
 
 function suby1 (a)

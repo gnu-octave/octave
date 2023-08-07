@@ -50,8 +50,6 @@
 
 //#pragma GCC optimize("O0")
 
-extern "C" void vm_debug_print_ovl (void *p);
-extern "C" void vm_debug_print_ov (void *p);
 static bool ov_need_stepwise_subsrefs (octave_value &ov);
 static void copy_many_args_to_caller (octave::stack_element *sp, octave::stack_element *caller_stack_end,
                                       int n_args_to_move, int n_args_caller_expects);
@@ -537,7 +535,7 @@ static int pop_code_ushort (unsigned char *ip)
 
 
 
-// Debug functions easy to break out into in gdb. Called by __dummy_mark_1() in Octave
+// Debug functions easy to break out into in gdb. Called by __dummy_mark_1__() in Octave
 extern "C" void dummy_mark_1 (void);
 extern "C" void dummy_mark_2 (void);
 
@@ -6751,23 +6749,24 @@ error:
 
 // Debugging functions to be called from gdb
 
-extern "C" void
-vm_debug_print_ov (void *p)
+void
+vm_debug_print_obv (octave_base_value *obv)
 {
-  octave_value *ov = reinterpret_cast<octave_value*> (p);
-  ov->print (std::cout);
+  obv->print (std::cout);
 }
 
-extern "C" void
-vm_debug_print_ovl (void *p)
+void
+vm_debug_print_ov (octave_value ov)
 {
-  octave_value_list *ovl = reinterpret_cast<octave_value_list*> (p);
+  ov.print (std::cout);
+}
 
-  if (! ovl) return;
-
-  for (int i = 0; i < ovl->length (); i++)
+void
+vm_debug_print_ovl (octave_value_list ovl)
+{
+  for (int i = 0; i < ovl.length (); i++)
     {
-      (*ovl) (i).print (std::cout);
+      ovl (i).print (std::cout);
     }
 }
 

@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 8.3.0 (yyyy-mm-dd):
+Summary of bugs fixed for version 8.3.0 (2023-08-08):
 ----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX

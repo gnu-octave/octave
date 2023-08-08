@@ -92,4 +92,18 @@ function bytecode_subsasgn ()
   C.A = A;
   C.A(4) *= 2;
   __printf_assert__ ("%d ", C.A);
+
+  % Chained assignments
+  AA = BB.c = 3;
+  __printf_assert__ ("%d ", AA);
+  CC = DD.c.d = 3;
+  __printf_assert__ ("%d ", DD.c.d);
+  __printf_assert__ ("%d ", CC);
+  EE.a = FF.c.d = 3;
+  __printf_assert__ ("%d ", EE.a);
+  GG = HH.a = II.a.b = JJ.a.b.c = 3;
+  __printf_assert__ ("%d ", GG);
+  __printf_assert__ ("%d ", HH.a);
+  __printf_assert__ ("%d ", II.a.b);
+  __printf_assert__ ("%d ", JJ.a.b.c);
 end

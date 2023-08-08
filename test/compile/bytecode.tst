@@ -178,7 +178,7 @@
 %! __enable_vm_eval__ (0, "local");
 %! clear all
 %! clear functions  % persistent variables in bytecode_subsasgn
-%! key = "3 5 9 8 11 13 1 2 3 4 5 6 77 88 99 1010 1 2 3 987 987 6 77 88 99 1010 0 0 0 0 0 13 double 3 2 4 2 3 cell 1 3 6 7 2 3 1 4 5 1 3 5 2 4 6 7 7 7 7 7 7 1 2 3 1 3 3 2 3 2 3 1 3 1 2 3 4 4 4 3 4 5 6 1 5 3 4 1 5 -1 4 1 5 -1 8 ";
+%! key = "3 5 9 8 11 13 1 2 3 4 5 6 77 88 99 1010 1 2 3 987 987 6 77 88 99 1010 0 0 0 0 0 13 double 3 2 4 2 3 cell 1 3 6 7 2 3 1 4 5 1 3 5 2 4 6 7 7 7 7 7 7 1 2 3 1 3 3 2 3 2 3 1 3 1 2 3 4 4 4 3 4 5 6 1 5 3 4 1 5 -1 4 1 5 -1 8 3 3 3 3 3 3 3 3 ";
 %!
 %! __compile bytecode_subsasgn clear;
 %! bytecode_subsasgn ();

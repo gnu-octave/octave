@@ -2817,7 +2817,10 @@ visit_simple_assignment (tree_simple_assignment& expr)
       CHECK_NONNULL (rhs);
       rhs->accept (*this);
 
-      // rhs is on the stack now
+      // rhs is on the stack now. If the assignment is nested we need to DUP rhs.
+      // E.g. "a = b.c.d = 3" => a = 3 or "a = length (b.c.d = 3)" => a = 1
+      if (DEPTH () != 1)
+        PUSH_CODE (INSTR::DUP);
 
       if (e->is_identifier ())
         {
@@ -2965,9 +2968,6 @@ visit_simple_assignment (tree_simple_assignment& expr)
       // Now we got the value that is subassigned to, on the stack
       if (e->is_identifier ())
         {
-          if (DEPTH () != 1) // Duplicate value for chained assignments
-            PUSH_CODE (INSTR::DUP);
-
           // Write the subassigned value back to the slot
           int slot = SLOT (e->name ());
           MAYBE_PUSH_WIDE_OPEXT (slot);

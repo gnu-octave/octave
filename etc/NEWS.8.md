@@ -1,9 +1,22 @@
-Summary of bugs fixed for version 8.3.0 (yyyy-mm-dd):
+Summary of bugs fixed for version 8.4.0 (tbd):
 ----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
+Summary of bugs fixed for version 8.3.0 (2022-08-08):
+----------------------------------------------------
+
+### Improvements and fixes
+
 - `undo_string_escapes`: Return `'\0'` for `NUL` byte input (bug #64051).
 - Stop excessive memory usage for minor grid ticks (bug #64017).
 - Include needed headers in installed `.cc` files (bug #63922).
@@ -31,12 +44,17 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `ellipsoid.m`: Avoid returning geometry data unless it is explicitly
   requested to avoid overwriting `ans`.
 - `subsasgn`: Avoid panic on invalid field names (bug #64213).
+- `lex.ll`: Remove `$` as a valid character for identifiers.
+- `fileparts.m`: Allow for relative path on different drive on Windows (bug
+  #64462).
+- `datevec.m`: Add some ISO 8601 conform formats (patch #9964).
 
 ### Build system / Tests
 - `betaincinv.m`: Slightly increase test tolerance (for macOS 13).
 - `colorbar.m`: Add tests (bug #64287).
 - `sparse-qr.cc`: Fix compatibility with SuiteSparse 7.1.0 / CXSparse 4.0.4.
 - `pcg.m`: Use eps tolerance in test for `ishermitian` (bug #63787).
+- `fileparts.m`: Overhaul BISTs.
 
 ### Documentation
 - Return documentation for `help properties` (bug #64067).

@@ -1,9 +1,22 @@
-Summary of bugs fixed for version 8.3.0 (2023-08-08):
+Summary of bugs fixed for version 8.4.0 (tbd):
 ----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
+Summary of bugs fixed for version 8.3.0 (2022-08-08):
+----------------------------------------------------
+
+### Improvements and fixes
+
 - `undo_string_escapes`: Return `'\0'` for `NUL` byte input (bug #64051).
 - Stop excessive memory usage for minor grid ticks (bug #64017).
 - Include needed headers in installed `.cc` files (bug #63922).

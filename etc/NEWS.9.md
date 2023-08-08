@@ -123,6 +123,9 @@ plotted data (equivalent of `axis tight`).
 - `xlim`, `ylim`, `zlim` functions can now query or set the limit calculation
 method which is one of "tickaligned", "tight", or "padded".
 
+- `optimget` and `optimset` now error on an ambiguous match of an incomplete
+option name instead of emitting a warning.
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isenv`

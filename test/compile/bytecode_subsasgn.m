@@ -106,4 +106,10 @@ function bytecode_subsasgn ()
   __printf_assert__ ("%d ", HH.a);
   __printf_assert__ ("%d ", II.a.b);
   __printf_assert__ ("%d ", JJ.a.b.c);
+
+  % cs-list in lhs using opcode SUBASSIGN_CHAINED
+  idx = {1, 2};
+  M = ones (2,2);
+  M(idx{:}) *= 3;
+  __printf_assert__ ("%d ", M);
 end

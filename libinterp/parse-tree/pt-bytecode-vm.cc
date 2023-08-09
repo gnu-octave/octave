@@ -5467,7 +5467,10 @@ subassign_chained:
         for (int j = 0; j < n_args; j++)
           {
             octave_value &arg = TOP_OV ();
-            ovl.append (std::move (arg));
+            if (arg.is_cs_list ())
+              ovl.append (arg.list_value ().reverse ()); // Expand cs-list
+            else
+              ovl.append (std::move (arg));
             STACK_DESTROY (1);
           }
         ovl.reverse ();

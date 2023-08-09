@@ -2059,6 +2059,10 @@ visit_octave_user_function (octave_user_function& fcn)
         }
     }
 
+  // TODO: The return_list is a nullptr for anonymous functions.
+  if (!returns)
+    error ("Compiling anonymous functions is not supported by the VM yet");
+
   // Does the function output varargout?
   m_varargout = returns->takes_varargs ();
   // "varargout" is not in the 'returns' list (if in the proper last position)

@@ -1,3 +1,5 @@
+% TODO: The anonymous functions bodies are not compiled
+
 function bytecode_anon_handles ()
   h1 = @(x) __printf_assert__ ("%d ", x);
   h1 (1);

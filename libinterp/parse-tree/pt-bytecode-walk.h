@@ -184,6 +184,7 @@ namespace octave
     bool m_pending_ignore_outputs = false;
     int m_ignored_of_total = 0;
     std::vector<int> m_v_ignored;
+    int m_ignored_ip_start = 0;
 
     //
     bool m_is_folding = false;

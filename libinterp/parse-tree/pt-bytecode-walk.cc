@@ -2474,6 +2474,13 @@ visit_multi_assignment (tree_multi_assignment& expr)
 
   rhs->accept (*this); // Walks rhs for NARGOUT elements
 
+  if (m_pending_ignore_outputs)
+    {
+      // The outer expression in rhs should have set m_ignored_ip_start to its ip offset.
+      CHECK (m_ignored_ip_start);
+      UNWIND (D.m_idx_unwind).m_ip_start = m_ignored_ip_start;
+    }
+
   if (DEPTH () != 1)
     TODO ("Only root multi assignment supported now");
 
@@ -2512,6 +2519,7 @@ visit_multi_assignment (tree_multi_assignment& expr)
     {
       m_pending_ignore_outputs = 0;
       m_v_ignored.clear ();
+      m_ignored_ip_start = 0;
     }
 
   POP_NARGOUT ();
@@ -3669,6 +3677,7 @@ visit_identifier (tree_identifier& id)
           PUSH_CODE (m_ignored_of_total);
           for (int i : m_v_ignored)
             PUSH_CODE (i);
+          m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect
         }
 
       if (id.is_postfix_indexed ())
@@ -4308,6 +4317,7 @@ simple_visit_index_expression (tree_index_expression& expr)
       PUSH_CODE (m_ignored_of_total);
       for (int i : m_v_ignored)
         PUSH_CODE (i);
+      m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect
     }
 
   int loc_id = N_LOC ();
@@ -4574,6 +4584,7 @@ visit_index_expression (tree_index_expression& expr)
       PUSH_CODE (m_ignored_of_total);
       for (int i : m_v_ignored)
         PUSH_CODE (i);
+      m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect        
     }
 
   int nargout = NARGOUT ();

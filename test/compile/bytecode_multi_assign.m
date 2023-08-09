@@ -46,6 +46,14 @@ function bytecode_multi_assign ()
   __printf_assert__ ("%d ", C{1});
   __printf_assert__ ("%d ", C{2});
   __printf_assert__ ("%d ", D);
+
+  % Check that opcodes SET_IGNORE_OUTPUTS and CLEAR_IGNORE_OUTPUTS
+  % does not mess up if a nested expression throws before SET_IGNORE_OUTPUTS
+  % is executed.
+  try
+    [~, b] = bar (baz_throws ());
+  catch
+  end
 end
 
 function [a,b,c,d] = foo ()
@@ -53,4 +61,13 @@ function [a,b,c,d] = foo ()
   b = 2;
   c = 3;
   d = 4;
+end
+
+function [a b] = bar (c)
+  a = 1;
+  b = 0;
+end
+
+function a = baz_throws ()
+  error ("qwe");
 end

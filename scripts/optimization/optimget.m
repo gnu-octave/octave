@@ -24,13 +24,27 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {@var{optval} =} optimget (@var{options}, @var{optname})
-## @deftypefnx {} {@var{optval} =} optimget (@var{options}, @var{optname}, @var{default})
-## Return the specific option @var{optname} from the optimization options
-## structure @var{options} created by @code{optimset}.
+## @deftypefn  {} {@var{val} =} optimget (@var{options}, @var{par})
+## @deftypefnx {} {@var{val} =} optimget (@var{options}, @var{par}, @var{default})
+## Return the value of the specific parameter @var{par} from the optimization
+## options structure @var{options} created by @code{optimset}.
 ##
-## If @var{optname} is not defined then return @var{default} if supplied,
-## otherwise return an empty matrix.
+## If @var{par} is not defined then return the @var{default} value if
+## supplied, otherwise return an empty matrix.
+##
+## If @var{par} does not exactly match the name of a standard parameter,
+## @code{optimget} will attempt to expand the name to match a standard
+## parameter and will return that parameter's value if a match is found.
+## @code{optimget} produces an error if it finds multiple ambiguous matches.
+## If no standard parameter matches are found a warning is issued.  See
+## @code{optimset} for information about the standard options list.
+##
+## Note that any non-standard field names in @var{options} are ignored when
+## matching option names, and @var{par} will always be expanded
+## to match a standard option even if an exact non-standard match exists.  The
+## value of a non-standard parameter that is ambigious with one or more
+## standard parameters cannot be returned by @code{optimget} and can only be
+## accessed using @code{getfield} or dot notation for structs.
 ## @seealso{optimset}
 ## @end deftypefn
 

@@ -44,7 +44,14 @@
 ## are updated from either the @var{par}/@var{val} list or from the options
 ## structure @var{new}.
 ##
-## Valid parameters are:
+## If @var{par} does not exactly match the name of a standard parameter,
+## @code{optimset} will attempt to expand the name to match a standard
+## parameter and will set the value of that parameter if a match is found.
+## @code{optimset} produces an error if it finds multiple ambiguous matches.
+## If no standard parameter matches are found a warning is issued and the
+## non-standard parameter is created.
+##
+## Standard list of valid parameters:
 ##
 ## @table @asis
 ## @item AutoScaling
@@ -116,6 +123,24 @@
 ##
 ## @item Updating
 ## @end table
+##
+## This list can be extended by the user or other loaded Octave packages. An
+## updated valid parameters list can be queried using the no-argument form of
+## @code{optimset}.
+##
+## Note 1:  Any non-standard field names in @var{old} are ignored when
+## matching parameter names, and @var{par} will always match to a standard
+## parameter even if an exact non-standard match exists.  The value of a
+## non-standard parameter that is ambigious with one or more standard
+## parameters cannot be set by @code{optimset} and can only be set using
+## @code{setfield} or dot notation for structs.
+##
+## Note 2:  The optimization options structure is primarily intended for
+## manipulation of known parameters by @code{optimset} and @code{optimget}.
+## Unpredictable behavior on future calls to @code{optimset} or
+## @code{optimget} can result from creating non-standard or ambiguous
+## parameters or from loading/unloading packages that change the known
+## parameter list after creation of an optimization options structure.
 ## @seealso{optimget}
 ## @end deftypefn
 

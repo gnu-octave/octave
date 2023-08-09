@@ -399,7 +399,8 @@ if (m_output_ignore_data)                                                       
                                                                                                   \
 if (n_args_on_callee_stack > n_args_callee)                                                       \
   {                                                                                               \
-    (*sp++).pee = new execution_exception {"error","","function called with too many inputs"};    \
+    std::string fn_name = unwind_data->m_name;                                                    \
+    (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call", fn_name + ": function called with too many inputs"};\
     (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);                                     \
     goto unwind;                                                                                  \
   }                                                                                               \
@@ -407,7 +408,8 @@ if (n_args_on_callee_stack > n_args_callee)                                     
 int n_returns = N_RETURNS () - 1; /* %nargout in N_RETURNS */                                     \
 if (n_returns >= 0 && nargout > n_returns)                                                        \
   {                                                                                               \
-    (*sp++).pee = new execution_exception {"error","","function called with too many outputs"};   \
+    std::string fn_name = unwind_data->m_name;                                                    \
+    (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call", fn_name + ": function called with too many outputs"};\
     (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);                                     \
     goto unwind;                                                                                  \
   }                                                                                               \

@@ -958,14 +958,18 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
     /* We do the number of args check after frame init so that the unwind is easier. */
     if (!is_varargin && n_args < n_root_args)
       {
-        (*sp++).pee = new execution_exception {"error","","function called with too many inputs"};
+        std::string fn_name = unwind_data->m_name;
+        (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call", 
+                                               fn_name + ": function called with too many inputs"};
         (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
         ip++; // unwind expects ip to point to two after the opcode being executed
         goto unwind;
       }
     if (!is_varargout && root_nargout > n_returns - 1) // n_returns includes %nargout, so subtract one
       {
-        (*sp++).pee = new execution_exception {"error","","function called with too many outputs"};
+        std::string fn_name = unwind_data->m_name;
+        (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call",
+                                               fn_name + ": function called with too many outputs"};
         (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
         ip++;
         goto unwind;

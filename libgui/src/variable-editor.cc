@@ -1128,6 +1128,7 @@ variable_editor::variable_editor (QWidget *p)
     m_font (),
     m_sel_font (),
     m_table_colors (),
+    m_variables (QList<variable_dock_widget*>  ()),
     m_current_focus_vname (""),
     m_hovered_focus_vname (""),
     m_plot_mapper (nullptr),
@@ -1196,13 +1197,18 @@ void variable_editor::focusInEvent (QFocusEvent *ev)
         }
       else
         {
-          QDockWidget *any_qdw = m_main->findChild<QDockWidget *> (QString (), Qt::FindDirectChildrenOnly);
-          if (any_qdw != nullptr)
+          bool focus_set = false;
+          for (qsizetype i = 0; i < m_variables.size (); i++)
             {
-              activateWindow ();
-              any_qdw->setFocus ();
+              if (m_variables.at (i) != nullptr)
+                {
+                  activateWindow ();
+                  m_variables.at (i)->setFocus ();
+                  focus_set = true;
+                  break;
+                }
             }
-          else
+          if (! focus_set)
             setFocus();
         }
     }
@@ -1210,14 +1216,14 @@ void variable_editor::focusInEvent (QFocusEvent *ev)
 
 variable_editor::~variable_editor ()
 {
-  // FIXME: Maybe toolbar actions could be handled with signals and
-  // slots so that deleting the toolbar here would disconnect all
-  // toolbar actions and any other slots that might try to access the
-  // toolbar would work properly (I'm looking at you,
-  // handle_focus_change).
-
-  delete m_tool_bar;
-  m_tool_bar = nullptr;
+  // Disconnect the destroyed() signals from all variable_dock_widget
+  // other wise the non existing slot in variable_editor seems to be
+  // accessed in Qt6 leading to a crash (signal 6).
+  for (qsizetype i = 0; i < m_variables.size (); i++)
+    {
+      if (m_variables.at (i) != nullptr)
+        disconnect (m_variables.at (i), SIGNAL (destroyed (QObject*)), 0, 0);
+    }
 }
 
 void
@@ -1250,6 +1256,8 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
     }
 
   variable_dock_widget *page = new variable_dock_widget (this);
+
+  m_variables << page;
 
   page->setObjectName (name);
   m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
@@ -1516,13 +1524,17 @@ variable_editor::variable_destroyed (QObject *obj)
       m_focus_widget_vdw = nullptr;
     }
 
-  if (m_tool_bar)
+  for (qsizetype i = 0; i < m_variables.size (); i++)
     {
-      // If no variable pages remain, deactivate the tool bar.
-      QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
-      if (vdwlist.isEmpty ())
-        m_tool_bar->setEnabled (false);
+      if (m_variables.at (i) == obj)
+        {
+          m_variables.removeAt (i);
+          break;
+        }
     }
+
+  if (m_tool_bar && m_variables.isEmpty ())
+    m_tool_bar->setEnabled (false);
 
   QFocusEvent ev (QEvent::FocusIn);
   focusInEvent (&ev);
@@ -1541,14 +1553,12 @@ variable_editor::variable_focused (const QString& name)
   m_focus_widget_vdw = nullptr;
   if (current != nullptr)
     {
-      QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> (QString (), Qt::FindDirectChildrenOnly);
-      for (int i = 0; i < vdwlist.size (); i++)
+      for (qsizetype i = 0; i < m_variables.size (); i++)
         {
-          variable_dock_widget *vdw = vdwlist.at (i);
-          if (vdw->isAncestorOf (current))
+          if (m_variables.at (i)->isAncestorOf (current))
             {
               m_focus_widget = current;
-              m_focus_widget_vdw = vdw;
+              m_focus_widget_vdw = m_variables.at (i);
               break;
             }
         }

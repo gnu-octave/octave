@@ -1198,7 +1198,7 @@ void variable_editor::focusInEvent (QFocusEvent *ev)
       else
         {
           bool focus_set = false;
-          for (qsizetype i = 0; i < m_variables.size (); i++)
+          for (long long int i = 0; i < m_variables.size (); i++)
             {
               if (m_variables.at (i) != nullptr)
                 {
@@ -1219,7 +1219,7 @@ variable_editor::~variable_editor ()
   // Disconnect the destroyed() signals from all variable_dock_widget
   // other wise the non existing slot in variable_editor seems to be
   // accessed in Qt6 leading to a crash (signal 6).
-  for (qsizetype i = 0; i < m_variables.size (); i++)
+  for (long long int i = 0; i < m_variables.size (); i++)
     {
       if (m_variables.at (i) != nullptr)
         disconnect (m_variables.at (i), SIGNAL (destroyed (QObject*)), 0, 0);
@@ -1524,7 +1524,7 @@ variable_editor::variable_destroyed (QObject *obj)
       m_focus_widget_vdw = nullptr;
     }
 
-  for (qsizetype i = 0; i < m_variables.size (); i++)
+  for (long long int i = 0; i < m_variables.size (); i++)
     {
       if (m_variables.at (i) == obj)
         {
@@ -1553,7 +1553,7 @@ variable_editor::variable_focused (const QString& name)
   m_focus_widget_vdw = nullptr;
   if (current != nullptr)
     {
-      for (qsizetype i = 0; i < m_variables.size (); i++)
+      for (long long int i = 0; i < m_variables.size (); i++)
         {
           if (m_variables.at (i)->isAncestorOf (current))
             {

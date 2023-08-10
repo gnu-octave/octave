@@ -412,7 +412,7 @@ void base_qobject::start_main_thread ()
   // the interpreter until after the main window and QApplication are
   // running to prevent race conditions.
 
-  QTimer::singleShot (0, m_interpreter_qobj, SLOT (execute ()));
+  QTimer::singleShot (0, m_interpreter_qobj, &interpreter_qobject::execute);
 
   m_interpreter_qobj->moveToThread (m_main_thread);
 

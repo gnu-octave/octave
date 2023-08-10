@@ -96,7 +96,7 @@ endfunction
 %! b = t(1:4,:);
 %! pp = mkpp (x, [m(:),b(:)]);
 %! xi = linspace (0, pi, 50);
-%! plot (x, t, "x", xi, ppval (pp,xi));bb4af245dff7
+%! plot (x, t, "x", xi, ppval (pp,xi));
 %! legend ("control", "interp");
 
 %!demo # piecewise polynomial shape

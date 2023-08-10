@@ -313,7 +313,13 @@ m_unwind_data = unwind_data = &bc.m_unwind_data;                                
 /* Set the ip to 0 */                                                                             \
 ip = code;                                                                                        \
 int n_returns_callee = static_cast<signed char> (*ip++); /* Negative for varargout */             \
-n_returns_callee = n_returns_callee >= 0 ? n_returns_callee : -n_returns_callee;                  \
+if (OCTAVE_UNLIKELY (n_returns_callee < 0))                                                       \
+  {                                                                                               \
+    if (n_returns_callee == -128) /* Anonymous function */                                        \
+      n_returns_callee = 1;                                                                       \
+    else                                                                                          \
+      n_returns_callee = -n_returns_callee;                                                       \
+  }                                                                                               \
 int n_args_callee = static_cast<signed char> (*ip++); /* Negative for varargin */                 \
 int n_locals_callee = POP_CODE_USHORT ();                                                         \
                                                                                                   \
@@ -376,7 +382,6 @@ int n_locals_to_ctor =                                                          
 for (int i = 0; i < n_locals_to_ctor; i++)                                                        \
   PUSH_OV ();                                                                                     \
                                                                                                   \
-                                                                                                  \
 try                                                                                               \
   {                                                                                               \
     m_tw->push_stack_frame(*this, usr_fcn, nargout, n_args_on_callee_stack);                      \
@@ -384,18 +389,14 @@ try                                                                             
 CATCH_STACKPUSH_EXECUTION_EXCEPTION /* Sets m_could_not_push_frame to true */                     \
 CATCH_STACKPUSH_BAD_ALLOC                                                                         \
                                                                                                   \
+if (OCTAVE_UNLIKELY (m_output_ignore_data))                                                       \
+  {                                                                                               \
+    /* Called fn needs to know about ignored outputs .e.g. [~, a] = foo() */                      \
+    m_output_ignore_data->push_frame (*this);                                                     \
+  }                                                                                               \
+                                                                                                  \
 /* "auto var" in the frame object. This is needed if nargout() etc are called */                  \
 set_nargout (nargout);                                                                            \
-/* Called fn needs to know about ignored outputs .e.g. [~, a] = foo() */                          \
-if (m_output_ignore_data)                                                                         \
-  {                                                                                               \
-    if (m_output_ignore_data->is_pending ())                                                      \
-      m_tw->set_auto_fcn_var (stack_frame::IGNORED, m_output_ignore_data->get_ignore_matrix ());  \
-    else                                                                                          \
-      m_tw->set_auto_fcn_var (stack_frame::IGNORED, {});                                          \
-    m_output_ignore_data->m_v_lvalue_list.push_back (m_tw->lvalue_list ());                       \
-    m_tw->set_lvalue_list (nullptr);                                                              \
-  }                                                                                               \
                                                                                                   \
 if (n_args_on_callee_stack > n_args_callee)                                                       \
   {                                                                                               \

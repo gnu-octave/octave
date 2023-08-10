@@ -64,6 +64,7 @@
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
+#include "pt-bytecode-walk.h"
 #include "stack-frame.h"
 #include "syminfo.h"
 #include "symscope.h"
@@ -741,6 +742,9 @@ public:
   {
     return m_stack_context;
   }
+
+  // Compile the underlying function to bytecode for the VM.
+  void compile ();
 
 protected:
 
@@ -2919,15 +2923,52 @@ octave_value anonymous_fcn_handle::make_weak_anonymous_handle () const
 octave_value_list
 anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
 {
+  bool is_compiled = false;
+
   tree_evaluator& tw = __get_evaluator__ ();
 
   octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
-  tw.push_stack_frame (oct_usr_fcn, m_local_vars, m_stack_context);
+  if (oct_usr_fcn)
+    {
+      is_compiled = oct_usr_fcn->is_compiled ();
+      if (octave::V__enable_vm_eval__ && !is_compiled && !oct_usr_fcn->m_compilation_failed)
+      {
+        try
+          {
+            octave::compile_anon_user_function (*oct_usr_fcn, false, m_local_vars);
+            is_compiled = true;
+          }
+        catch (std::exception &e)
+          {
+            warning ("Auto-compilation of anonymous function failed with message %s", e.what ());
+            oct_usr_fcn->m_compilation_failed = true;
+          }
+      }
+    }
+
+  // Bytecode functions push their own stack frames in the vm
+  if (!is_compiled)
+    tw.push_stack_frame (oct_usr_fcn, m_local_vars, m_stack_context);
 
   unwind_action act ([&tw] () { tw.pop_stack_frame (); });
 
   return oct_usr_fcn->execute (tw, nargout, args);
+}
+
+void anonymous_fcn_handle::compile ()
+{
+  octave_user_code *usr_code = user_function_value ();
+
+  try
+    {
+      compile_anon_user_function (*usr_code, false, m_local_vars);
+    }
+  catch (std::exception &e)
+    {
+      warning ("Auto-compilation of anonymous function failed with message %s", e.what ());
+      usr_code->m_compilation_failed = true;
+    }
 }
 
 octave_value anonymous_fcn_handle::workspace () const

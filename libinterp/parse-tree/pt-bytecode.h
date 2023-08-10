@@ -184,6 +184,13 @@ enum class INSTR
   SUBASSIGN_ID_MAT_2D,
   ENTER_SCRIPT_FRAME,
   EXIT_SCRIPT_FRAME,
+  RET_ANON,
+  INDEX_IDNX,
+  INDEX_CELL_IDNX,
+  PUSH_SLOT_NX,
+  EXT_NARGOUT,
+  WORDCMD_NX,
+  ANON_MAYBE_SET_IGNORE_OUTPUTS,
 };
 
 enum class unwind_entry_type
@@ -234,7 +241,8 @@ struct unwind_data
   unsigned m_code_size;
   unsigned m_ids_size;
 
-  bool m_is_script;
+  bool m_is_script = false;
+  bool m_is_anon = false;
 };
 
 struct bytecode

@@ -43,6 +43,7 @@ class octave_user_function;
 namespace octave
 {
   void compile_user_function (octave_user_code &fn, bool print);
+  void compile_anon_user_function (octave_user_code &fn, bool print, stack_frame::local_vars_map &locals);
 
   // No separate visitor needed
   // Base classes only, so no need to include them.
@@ -153,6 +154,7 @@ namespace octave
 
     bool m_varargout = false;
     bool m_is_script = false;
+    bool m_is_anon = false;
 
     std::vector<std::vector<int>> m_continue_target;
     std::vector<std::vector<int>> m_need_break_target;
@@ -187,6 +189,11 @@ namespace octave
     std::vector<int> m_v_ignored;
     int m_ignored_ip_start = 0;
 
+    // The values that the locals of an anonymous function are supposed
+    // to be set to. The field is set before calling the first accept()
+    // for anonymous functions.
+    stack_frame::local_vars_map *m_anon_local_values = nullptr;
+
     //
     bool m_is_folding = false;
     std::vector<tree*> m_v_trees_to_fold;
@@ -210,6 +217,7 @@ namespace octave
 
     void emit_load_2_cst (tree_expression *lhs, tree_expression *rhs);
 
+    void maybe_emit_anon_maybe_ignore_outputs ();
     void maybe_emit_bind_ans_and_disp (tree_expression &expr, const std::string maybe_cmd_name = "");
     void maybe_emit_disp_id (tree_expression &expr, const std::string &name, const std::string maybe_cmd_name = "" );
     void maybe_emit_push_and_disp_id (tree_expression &expr, const std::string &name, const std::string maybe_cmd_name = "");

@@ -621,14 +621,18 @@
 %!test
 %! __enable_vm_eval__ (0, "local");
 %! clear all
-%! key = "1 2 12 3 4 1 2 3 1 2 11 12 1 ";
+%! key = "1 2 12 3 4 4 4 1 2 3 1 2 3 1 2 1 2 11 12 11 12 1 4 4 1 1 1 2 1 2 1 2 3 1 2 3 1 3 1 3 9 0 1 fooo ~101 103 ~101 103 ~110 123 ~101 123 ~010 123 ~000 123 ~011 123 ";
 %! __compile__ bytecode_anon_handles clear;
 %! bytecode_anon_handles;
+%!
+%! global __assert_printf__;
+%!
 %! assert (__prog_output_assert__ (key));
 %!
 %! __enable_vm_eval__ (1, "local");
 %! assert (__compile__ ("bytecode_anon_handles"));
 %! bytecode_anon_handles;
+%! global __assert_printf__;
 %! assert (__prog_output_assert__ (key));
 
 ## Test compling a function named differently from its

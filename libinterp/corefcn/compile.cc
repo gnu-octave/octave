@@ -274,24 +274,32 @@ Prints the bytecode of a function, if any.
   if (nargin != 1)
     print_usage ();
 
-  std::string fn_name = args(0).string_value ();
-  symbol_table& symtab = interp.get_symbol_table ();
+  octave_value ov;
 
-  octave_value ov = symtab.find_function (fn_name);
-
-  if (!ov.is_defined ())
+  if (args (0).is_string ())
     {
-      error ("Function not defined: %s", fn_name.c_str ());
+      std::string fn_name = args(0).string_value ();
+      symbol_table& symtab = interp.get_symbol_table ();
+
+      ov = symtab.find_function (fn_name);
+
+      if (!ov.is_defined ())
+        {
+          error ("Function not defined: %s", fn_name.c_str ());
+        }
     }
+  else
+    ov = args (0);
 
   octave_user_function *ufn = ov.user_function_value ();
+  std::string fn_name = ufn->name ();
 
   if (!ufn || (!ufn->is_user_function () && !ufn->is_user_script ()))
     {
       error ("Function not a user function or script: %s", fn_name.c_str ());
     }
 
-  if (!ufn->is_compiled () && V__enable_vm_eval__)
+  if (!ufn->is_compiled () && V__enable_vm_eval__ && !ov.is_anonymous_function ())
     compile_user_function (*ufn, 0);
   else if (!ufn->is_compiled ())
     error ("Function not compiled: %s", fn_name.c_str ());

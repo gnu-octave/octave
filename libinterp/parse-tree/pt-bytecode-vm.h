@@ -370,6 +370,15 @@
 
 #include "pt-bytecode.h"
 
+#if defined(__FILE_NAME__)
+#define CHECK_PANIC(cond) \
+do { if (!(cond)) panic ("VM internal error at %s:%d, " #cond, __FILE_NAME__, __LINE__);} while ((0))
+#else
+#define CHECK_PANIC(cond) \
+do { if (!(cond)) panic ("VM internal error at %d, " #cond, __LINE__);} while ((0))
+#endif
+
+
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class tree_evaluator;
@@ -491,19 +500,54 @@ class vm
   static int constexpr m_matrix_typeid = 4;
   static int constexpr m_bool_typeid = 10;
 
+  // If there are any ignored outputs, e.g. "[x, ~] = foo ()", we need to push a separate
+  // stack frame with the ignored outputs for isargout () to be able to querry for ignored
+  // outputs in the callees.
+  //
+  //
   struct output_ignore_data {
-    std::vector<Matrix*> m_v_matrixes;
+    octave_value m_ov_pending_ignore_matrix;
     std::vector<const std::list<octave::octave_lvalue>*> m_v_lvalue_list;
+    std::vector<bool> m_v_owns_lvalue_list; // If true, should call delete on active lvalue list
+    // A sanity check flag. Set to true if the first ignorer is calling from outside the VM
+    bool m_external_root_ignorer = false;
 
-    bool is_pending () {return m_v_matrixes.size () && m_v_matrixes.back () != nullptr; }
-
-    Matrix get_ignore_matrix ()
+    output_ignore_data ()
     {
-      Matrix m = *m_v_matrixes.back ();
-      delete m_v_matrixes.back ();
-      m_v_matrixes.back () = nullptr;
+      m_v_lvalue_list.push_back (nullptr);
+      m_v_owns_lvalue_list.push_back (false);
+    }
 
-      return m;
+    static void maybe_delete_ignore_data (vm &vm, unsigned target_depth)
+    {
+      if (!vm.m_output_ignore_data)
+        return;
+      if (vm.m_output_ignore_data->m_v_owns_lvalue_list.size () > target_depth)
+        return;
+
+      delete vm.m_output_ignore_data;
+      vm.m_output_ignore_data = nullptr;
+    }
+
+    void push_frame (vm &vm);
+    void pop_frame (vm &vm);
+    void clear_ignore (vm &vm);
+    void set_ignore (vm &vm, octave_value ignore_matrix,
+                     std::list<octave_lvalue> *new_lval_list);
+
+    void set_ignore_anon (vm &vm, octave_value ignore_matrix);
+
+    octave_value get_and_null_ignore_matrix ()
+    {
+      octave_value ret = m_ov_pending_ignore_matrix;
+      m_ov_pending_ignore_matrix = {};
+
+      return ret;
+    }
+
+    octave_value get_ignore_matrix ()
+    {
+      return m_ov_pending_ignore_matrix;
     }
 
     const std::list<octave::octave_lvalue>* pop_lvalue_list ()
@@ -555,6 +599,8 @@ class vm
   void set_nargin (int nargin);
 
   void set_nargout (int nargout);
+
+  void caller_ignores_output ();
 
   unwind_entry* find_unwind_entry_for_current_state (bool only_find_unwind_protect);
   int find_unwind_entry_for_forloop (int current_stack_depth);

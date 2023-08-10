@@ -33,6 +33,7 @@
 
 #include "pt-bytecode-vm.h"
 #include "pt-bytecode-vm-internal.h"
+#include "pt-bytecode-walk.h"
 #include "ov.h"
 #include "error.h"
 #include "symtab.h"
@@ -47,6 +48,7 @@
 #include "ov-inline.h"
 
 #include "ov-vm.h"
+#include "ov-fcn-handle.h"
 
 //#pragma GCC optimize("O0")
 
@@ -191,7 +193,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
     {
       switch (static_cast<INSTR> (*p))
         {
-
+          PRINT_OP (ANON_MAYBE_SET_IGNORE_OUTPUTS)
+          PRINT_OP (EXT_NARGOUT)
           PRINT_OP (POP)
           PRINT_OP (DUP)
           PRINT_OP (MUL)
@@ -203,6 +206,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           PRINT_OP (DIV)
           PRINT_OP (DIV_DBL)
           PRINT_OP (RET)
+          PRINT_OP (RET_ANON)
           PRINT_OP (LE)
           PRINT_OP (LE_DBL)
           PRINT_OP (LE_EQ)
@@ -310,11 +314,13 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (INDEX_ID_NARGOUT0)      PSLOT () PCHAR () CASE_END ()
           CASE_START (INDEX_ID_NARGOUT1)      PSLOT () PCHAR () CASE_END ()
+          CASE_START (INDEX_IDNX)             PSLOT () PCHAR () CASE_END ()
           CASE_START (INDEX_ID1_MAT_2D)       PSLOT () PCHAR () CASE_END ()
           CASE_START (INDEX_ID1_MAT_1D)       PSLOT () PCHAR () CASE_END ()
 
           CASE_START (INDEX_CELL_ID_NARGOUT0) PSLOT () PCHAR () CASE_END ()
           CASE_START (INDEX_CELL_ID_NARGOUT1) PSLOT () PCHAR () CASE_END ()
+          CASE_START (INDEX_CELL_IDNX)        PSLOT () PCHAR () CASE_END ()
 
           CASE_START (INDEX_CELL_ID_NARGOUTN) PSLOT () PCHAR () PCHAR () CASE_END ()
           CASE_START (INDEX_IDN)              PSLOT () PCHAR () PCHAR () CASE_END ()
@@ -334,6 +340,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (INDEX_STRUCT_NARGOUTN)  PCHAR () PWSLOT () PWSLOT () CASE_END ()
           CASE_START (END_ID)                 PSLOT () PCHAR () PCHAR () CASE_END ()
 
+          CASE_START (PUSH_SLOT_NX)           PSLOT () PCHAR () CASE_END ()
           CASE_START (PUSH_SLOT_NARGOUTN)     PSLOT () PCHAR () CASE_END ()
           CASE_START (BRAINDEAD_WARNING)      PSLOT () PCHAR () CASE_END ()
           CASE_START (SUBASSIGN_STRUCT)       PSLOT () PWSLOT () CASE_END ()
@@ -348,6 +355,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (PUSH_ANON_FCN_HANDLE) PINT () CASE_END ()
 
           CASE_START (INDEX_STRUCT_CALL)
+            PCHAR ()
             PCHAR ()
             PCHAR ()
             PCHAR ()
@@ -368,6 +376,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (END_OBJ) PSLOT () PCHAR () PCHAR () CASE_END ()
 
+          CASE_START (WORDCMD_NX) PSLOT () PCHAR () CASE_END ()
           CASE_START (WORDCMD) PSLOT () PCHAR () PCHAR () CASE_END ()
 
           CASE_START (SET_IGNORE_OUTPUTS)
@@ -842,6 +851,13 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&subassign_id_mat_2d,
       &&enter_script_frame,
       &&exit_script_frame,
+      &&ret_anon,
+      &&index_idnx,
+      &&index_cell_idnx,
+      &&push_slot_nx,
+      &&ext_nargout,
+      &&wordcmd_nx,
+      &&anon_maybe_set_ignore_output,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -902,11 +918,16 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
 
     if (is_varargin)
       n_args = -n_args;
-    if (n_returns < 0)  // Negative for varargout
-      n_returns = -n_returns;
+    if (OCTAVE_UNLIKELY (n_returns < 0))  // Negative for varargout and anonymous functions
+      {
+        if (n_returns != -128)
+          n_returns = -n_returns;
+        else
+          n_returns = 1;
+      }
 
     // The first return is always nargout, as a uint64
-    (*sp++).u = 0; //TODO: nargout as arg to this func
+    (*sp++).u = root_nargout;
 
     // Construct nil octave_values for the return slots
     for (int i = 1; i < n_returns; i++)
@@ -1033,6 +1054,15 @@ sub:
   DISPATCH_1BYTEOP();
 ret:
   {
+    // If we have any active ~/"black hole", e.g. [~] = foo() in the stack
+    // the m_output_ignore_data pointer is live. We need to pop and reset
+    // lvalue lists for the tree walker.
+    if (OCTAVE_UNLIKELY (m_output_ignore_data))
+      {
+        m_output_ignore_data->pop_frame (*this);
+        output_ignore_data::maybe_delete_ignore_data (*this, 0);
+      }
+
     // We need to tell the bytecode frame we are unwinding so that it can save
     // variables on the VM stack if it is referenced from somewhere else.
     m_tw->get_current_stack_frame ()->vm_unwinds ();
@@ -1043,10 +1073,10 @@ ret:
     int n_returns_callee = N_RETURNS ();
 
     bool is_varargout = n_returns_callee < 0;
-    if (n_returns_callee < 0)
+    if (OCTAVE_UNLIKELY (is_varargout))
       n_returns_callee = -n_returns_callee;
-
     assert (n_returns_callee > 0);
+
     int n_locals_callee = N_LOCALS ();
 
     // Destroy locals
@@ -1143,18 +1173,6 @@ ret:
     // so we have to restore the caller stack frame and cleanup the callee's.
     //
     // Essentially do the same thing as in the call but in reverse order.
-
-    // If we have any active ~/"black hole", e.g. [~] = foo() in the stack
-    // the m_output_ignore_data pointer is live. We need to pop and reset
-    // lvalue lists for the tree walker.
-    if (m_output_ignore_data)
-      {
-        delete m_tw->lvalue_list ();
-        CHECK (!m_output_ignore_data->m_v_lvalue_list.empty ());
-
-        m_tw->set_lvalue_list (m_output_ignore_data->m_v_lvalue_list.back ());
-        m_output_ignore_data->m_v_lvalue_list.pop_back ();
-      }
 
     // The sp now points one past the last return value
     stack_element *caller_stack_end = sp - n_returns_callee;
@@ -1533,6 +1551,7 @@ push_folded_cst:
 push_slot_nargout0:
 push_slot_nargout1:
 push_slot1_special:
+push_slot_nx:
   {
     int slot = arg0;
 
@@ -1708,6 +1727,10 @@ cmd_fcn_or_undef_error:
       {
         nargout = 0;
         ip += 2; // Skip the maybe command slot
+      }
+    else if (opcode == INSTR::PUSH_SLOT_NX)
+      {
+        nargout = bsp[0].i;
       }
     else
       PANIC ("Invalid opcode");
@@ -2012,6 +2035,13 @@ DISPATCH();
     int nargout, slot;
     bool specialization_ok;
     if (0)
+      {
+index_idnx:
+        slot = arg0;
+        nargout = bsp[0].i;
+        specialization_ok = false;
+      }
+    else if (0)
       {
 index_idn:
         slot = arg0; // Needed if we need a function lookup
@@ -2910,9 +2940,15 @@ assign_n:
                       {
                         ignored = tmp.matrix_value ();
 
-                        if (slot < N_RETURNS ())
+                        int n_returns = N_RETURNS ();
+                        if (n_returns == -128)
+                          n_returns = 1;
+                        else if (n_returns < 0)
+                          n_returns = -n_returns;
+
+                        if (slot < n_returns)
                           {
-                            int outputnum = N_RETURNS () - 1 - slot;
+                            int outputnum = n_returns - 1 - slot;
 
                             octave_idx_type idx = ignored.lookup (outputnum);
                             is_ignored = idx > 0 && ignored (idx - 1) == outputnum;
@@ -2956,9 +2992,15 @@ assign_n:
                   {
                     ignored = tmp.matrix_value ();
 
-                    if (slot < N_RETURNS ())
+                    int n_returns = N_RETURNS ();
+                    if (n_returns == -128)
+                      n_returns = 1;
+                    else if (n_returns < 0)
+                      n_returns = -n_returns;
+
+                    if (slot < n_returns)
                       {
-                        int outputnum = N_RETURNS () - 1 - slot;
+                        int outputnum = n_returns - 1 - slot;
 
                         octave_idx_type idx = ignored.lookup (outputnum);
                         is_ignored = idx > 0 && ignored (idx - 1) == outputnum;
@@ -3499,9 +3541,12 @@ push_anon_fcn_handle:
   auto it = unwind_data->m_ip_to_tree.find (tree_idx);
   CHECK (it != unwind_data->m_ip_to_tree.end ());
 
-  tree_anon_fcn_handle *h = reinterpret_cast <tree_anon_fcn_handle*> (it->second);
+  tree_anon_fcn_handle *tree_h = reinterpret_cast <tree_anon_fcn_handle*> (it->second);
 
-  octave_value ret = m_tw->evaluate_anon_fcn_handle (*h);
+  octave_value ret = m_tw->evaluate_anon_fcn_handle (*tree_h);
+  octave_fcn_handle *fn_h = ret.fcn_handle_value ();
+  CHECK (fn_h);
+  fn_h->compile ();
 
   PUSH_OV (ret);
 }
@@ -3729,11 +3774,27 @@ trans_ldiv:
 herm_ldiv:
   MAKE_BINOP(compound_binary_op::op_herm_ldiv)
   DISPATCH_1BYTEOP();
-wordcmd:
+
   {
-    int slot = arg0; // Needed if we need a function lookup
-    int nargout = *ip++;
-    int n_args_on_stack = *ip++;
+    int slot; // Needed if we need a function lookup
+    int nargout;
+    int n_args_on_stack;
+
+    if (0)
+      {
+wordcmd_nx:
+        slot = arg0;
+        nargout = bsp[0].i;
+        n_args_on_stack = *ip++;
+      }
+    else if (0)
+      {
+wordcmd:
+        slot = arg0;
+        nargout = *ip++;
+        n_args_on_stack = *ip++;
+      }
+
 
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
@@ -3961,6 +4022,12 @@ expand_cs_list:
     int nargout, slot;
     if (0)
       {
+index_cell_idnx:
+        slot = arg0; // Needed if we need a function lookup
+        nargout = bsp[0].i;
+      }
+    else if (0)
+      {
 index_cell_idn:
         slot = arg0; // Needed if we need a function lookup
         nargout = *ip++;
@@ -4185,8 +4252,13 @@ varargin_call:
     octave_user_function *usr_fcn = static_cast<octave_user_function *> (sp[0].pv);
 
     int n_returns_callee = static_cast<signed char> (ip[-4]);
-    if (n_returns_callee < 0)
-      n_returns_callee = -n_returns_callee;
+    if (OCTAVE_UNLIKELY (n_returns_callee < 0))
+      {
+        if (n_returns_callee == -128) /* Anonymous function */
+          n_returns_callee = 1;
+        else
+          n_returns_callee = -n_returns_callee;
+      }
     int n_args_callee = -static_cast<signed char> (ip[-3]); // Note: Minus
     int n_locals_callee = ip[-2] | (ip[-1] << 8);
 
@@ -4299,23 +4371,21 @@ varargin_call:
       PUSH_OV ();
 
     int nargin = n_args_on_callee_stack + idx_cell; // n_args_callee count includes varargin
-    try
-      {
-        m_tw->push_stack_frame(*this, usr_fcn, nargout, nargin);
-      }
-    CATCH_STACKPUSH_EXECUTION_EXCEPTION // Sets m_could_not_push_frame to true
-    CATCH_STACKPUSH_BAD_ALLOC
 
+try
+  {
+    m_tw->push_stack_frame(*this, usr_fcn, nargout, n_args_on_callee_stack);
+  }
+CATCH_STACKPUSH_EXECUTION_EXCEPTION /* Sets m_could_not_push_frame to true */
+CATCH_STACKPUSH_BAD_ALLOC
+
+  m_tw->set_nargin (nargin);
+
+if (OCTAVE_UNLIKELY (m_output_ignore_data))
+  {
     /* Called fn needs to know about ignored outputs .e.g. [~, a] = foo() */
-    if (m_output_ignore_data)
-      {
-        if (m_output_ignore_data->is_pending ())
-          m_tw->set_auto_fcn_var (stack_frame::IGNORED, m_output_ignore_data->get_ignore_matrix ());
-        else
-          m_tw->set_auto_fcn_var (stack_frame::IGNORED, {});
-        m_output_ignore_data->m_v_lvalue_list.push_back (m_tw->lvalue_list ());
-        m_tw->set_lvalue_list (nullptr);
-      }
+m_output_ignore_data->push_frame (*this);
+  }
 
     /* N_RETURNS is negative for varargout */
     int n_returns = N_RETURNS () - 1; /* %nargout in N_RETURNS */
@@ -4491,13 +4561,18 @@ unwind:
         // ~ we need to restore stuff.
         if (m_output_ignore_data)
           {
-            delete m_tw->lvalue_list ();
-            CHECK (!m_output_ignore_data->m_v_lvalue_list.empty ());
-
-            m_tw->set_lvalue_list (m_output_ignore_data->m_v_lvalue_list.back ());
-            m_output_ignore_data->m_v_lvalue_list.pop_back ();
+            m_output_ignore_data->pop_frame (*this);
+            output_ignore_data::maybe_delete_ignore_data (*this, 0);
           }
       }
+
+    if (m_output_ignore_data)
+      {
+        CHECK_PANIC (m_output_ignore_data->m_external_root_ignorer);
+        output_ignore_data::maybe_delete_ignore_data (*this, 1);
+      }
+
+    CHECK_PANIC (!m_output_ignore_data);
 
     CHECK_STACK (0);
     this->m_dbg_proper_return = true;
@@ -4869,9 +4944,9 @@ throw_iferrorobj:
 
 index_struct_call:
   {
-    int slot = arg0;
+    int nargout = arg0;
     bool has_slot = *ip++;
-    int nargout = *ip++;
+    int slot = POP_CODE_USHORT ();
 
     int n_subs = POP_CODE ();
 
@@ -5463,6 +5538,17 @@ load_far_cst:
     DISPATCH();
   }
 
+anon_maybe_set_ignore_output:
+  {
+    if (m_output_ignore_data)
+      {
+        // We want to propagate the caller's ignore matrix.
+        octave_value current_ignore_matrix = m_tw->get_auto_fcn_var (stack_frame::auto_var_type::IGNORED);
+        m_output_ignore_data->set_ignore_anon (*this, current_ignore_matrix);
+      }
+  }
+  DISPATCH_1BYTEOP ();
+
 set_ignore_outputs:
   {
     if (!m_output_ignore_data)
@@ -5473,7 +5559,6 @@ set_ignore_outputs:
     int n_ignored = arg0;
     int n_total = POP_CODE ();
     auto *M = new Matrix {};
-    m_output_ignore_data->m_v_matrixes.push_back (M);
     M->resize (1, n_ignored);
 
     std::set<int> set_ignored;
@@ -5485,45 +5570,29 @@ set_ignore_outputs:
         set_ignored.insert (ignore_idx);
       }
 
-    // For calls into m-functions etc
-    auto *active_lvalue_list = new std::list<octave_lvalue> {};
+    octave_value ignore_matrix {*M};
 
-    auto *saved_lvalue_list = m_tw->lvalue_list ();
-    m_output_ignore_data->m_v_lvalue_list.push_back (saved_lvalue_list);
+    // For calls into m-functions etc
+    auto *new_lvalue_list = new std::list<octave_lvalue> {};
 
     for (int i = 0; i < n_total; i++)
       {
         octave_lvalue lval ({}, m_tw->get_current_stack_frame ());
         if (set_ignored.find (i + 1) != set_ignored.end ())
           lval.mark_black_hole ();
-        active_lvalue_list->push_back (lval);
+        new_lvalue_list->push_back (lval);
       }
 
-    m_tw->set_lvalue_list (active_lvalue_list);
+    m_output_ignore_data->set_ignore (*this, ignore_matrix, new_lvalue_list);
   }
   DISPATCH();
 
 clear_ignore_outputs:
   {
-    CHECK (m_output_ignore_data);
+    if (m_output_ignore_data)
+      m_output_ignore_data->clear_ignore (*this);
 
-    auto *active_lvalue_list = m_tw->lvalue_list ();
-    delete active_lvalue_list;
-
-    // Restore the evaluators lvalue list
-    m_tw->set_lvalue_list (m_output_ignore_data->pop_lvalue_list ());
-
-    // Delete the matrix we used to set the autovar (if it has not been used an nulled)
-    delete m_output_ignore_data->m_v_matrixes.back ();
-    m_output_ignore_data->m_v_matrixes.pop_back ();
-
-    // We want to null m_output_ignore_data if it is empty
-    if (m_output_ignore_data->m_v_matrixes.empty ())
-      {
-        CHECK (m_output_ignore_data->m_v_lvalue_list.empty ());
-        delete m_output_ignore_data;
-        m_output_ignore_data = nullptr;
-      }
+    output_ignore_data::maybe_delete_ignore_data (*this, 1);
 
     // Clear any value written to the %~X slot(s)
     int n_slots = arg0;
@@ -5656,6 +5725,198 @@ load_2_cst:
 
   DISPATCH ();
 }
+
+ret_anon:
+  {
+    // We need to tell the bytecode frame we are unwinding so that it can save
+    // variables on the VM stack if it is referenced from somewhere else.
+    m_tw->get_current_stack_frame ()->vm_unwinds ();
+
+    assert (N_RETURNS () == -128);
+
+    int n_returns_callee = bsp[0].i + 1; // Nargout on stack, +1 to include %nargout
+    if (n_returns_callee == 1)
+      n_returns_callee = 2;
+
+    int n_locals_callee = N_LOCALS (); // Amount of arguments, purely local variables and %nargout
+
+    // Assert that the stack pointer is back where it should be
+    assert (bsp + n_locals_callee +  n_returns_callee - 1 == sp);
+
+    stack_element *first_ret = sp - n_returns_callee + 1;
+
+    // Destroy locals
+    //
+    // Note that we destroy from the bottom towards
+    // the top of the stack to calls ctors in the same
+    // order as the treewalker.
+
+    stack_element *first_pure_local = bsp + 1;
+    while (first_pure_local != first_ret)
+      {
+        (*first_pure_local++).ov.~octave_value ();
+      }
+
+    if (OCTAVE_UNLIKELY (m_profiler_enabled))
+      {
+        auto p = vm::m_vm_profiler;
+        if (p)
+          {
+            std::string fn_name = data[2].string_value (); // profiler_name () querried at compile time
+            p->exit_fn (fn_name);
+          }
+      }
+
+    // If we have any active ~/"black hole", e.g. [~] = foo() in the stack
+    // the m_output_ignore_data pointer is live. We need to pop and reset
+    // lvalue lists for the tree walker.
+    if (OCTAVE_UNLIKELY (m_output_ignore_data))
+      {
+        m_output_ignore_data->pop_frame (*this);
+        output_ignore_data::maybe_delete_ignore_data (*this, 0);
+      }
+
+    // Are we at the root routine?
+    if (bsp == rsp)
+      {
+        CHECK (!m_output_ignore_data); // Should not be active
+
+        // Collect return values in octave_value_list.
+        // Skip %nargout, the first value, which is an integer.
+        // n_returns_callee includes %nargout, but root_nargout doesn't.
+        octave_value_list ret;
+
+        int j;
+        // nargout 0 should still give one return value, if there is one
+        int n_root_wanted = std::max (root_nargout, 1);
+        for (j = 1; j < n_returns_callee && j < (n_root_wanted + 1); j++)
+          {
+            int idx = (n_returns_callee - 1) - j;
+            ret.append (std::move (first_ret[idx].ov));
+            first_ret[idx].ov.~octave_value ();
+          }
+        // Destroy rest of return values, if any
+        for (; j < n_returns_callee; j++)
+          {
+            int idx = (n_returns_callee - 1) - j;
+            first_ret[idx].ov.~octave_value ();
+          }
+
+        //Note: Stack frame object popped by caller
+        CHECK_STACK (0);
+        this->m_dbg_proper_return = true;
+
+        m_tw->set_lvalue_list (m_original_lvalue_list);
+        return ret;
+      }
+
+    // If the root stack pointer is not the same as the base pointer,
+    // we are returning from a bytecode routine to another bytecode routine,
+    // so we have to restore the caller stack frame and cleanup the callee's.
+    //
+    // Essentially do the same thing as in the call but in reverse order.
+
+    // Point sp one past the last return value
+    stack_element *caller_stack_end = bsp;
+    sp = caller_stack_end; // sp points to one past caller stack
+
+    int callee_nargout = caller_stack_end[0].i;
+    //TODO: Check nargout
+
+    // Restore ip
+    ip = (*--sp).puc;
+
+    // Restore bsp
+    bsp = (*--sp).pse;
+
+    // Restore id names
+    name_data = (*--sp).ps;
+
+    // Restore data
+    data = (*--sp).pov;
+
+    // Restore code
+    code = (*--sp).puc;
+
+    // Restore unwind data
+    unwind_data = (*--sp).pud;
+
+    // Restore the stack pointer. The stored address is the first arg
+    // on the caller stack, or where it would have been if there are no args.
+    // The args were moved to the callee stack and destroyed on the caller
+    // stack in the call.
+    sp = sp[-1].pse;
+
+    // We now have the object that was called on the stack, destroy it
+    STACK_DESTROY (1);
+
+    // Move the callee's return values to the top of the stack of the caller.
+    // Renaming variables to keep my sanity.
+    int n_args_caller_expects = callee_nargout;
+    int n_args_callee_has = n_returns_callee - 1; // Excludes %nargout
+    int n_args_to_move = std::min (n_args_caller_expects, n_args_callee_has);
+    int n_args_actually_moved = 0;
+
+    // If no return values is requested but there exists return values,
+    // we need to push one to be able to write it to ans.
+    if (n_args_caller_expects == 0 && n_args_callee_has)
+      {
+        n_args_actually_moved++;
+        PUSH_OV (std::move (first_ret[0].ov));
+      }
+    // If the callee aint returning anything, we need to push a
+    // nil object, since the caller always anticipates atleast
+    // one object, even for nargout == 0.
+    else if (n_args_caller_expects == 0 && !n_args_callee_has)
+      PUSH_OV();
+    // If the stacks will overlap due to many returns, do copy via container
+    else if (sp + n_args_caller_expects >= caller_stack_end)
+      {
+        // This pushes 'n_args_to_move' number of return values and 'n_args_caller_expects - n_args_to_move'
+        // number of nils.
+        copy_many_args_to_caller (sp, first_ret, n_args_to_move, n_args_caller_expects);
+        n_args_actually_moved = n_args_caller_expects;
+        sp += n_args_actually_moved;
+      }
+    // Move 'n_args_to_move' return value from callee to caller
+    else
+      {
+        // If the caller wants '[a, b, ~]' and the callee has 'd e'
+        // we need to push 'nil' 'd' 'e'
+        for (int i = n_args_to_move; i < n_args_caller_expects; i++)
+          PUSH_OV ();
+        for (int i = 0; i < n_args_to_move; i++)
+          {
+            // Move into caller stack. Note that the order is reversed, such that
+            // a b c on the callee stack becomes c b a on the caller stack.
+            octave_value &arg = first_ret[i].ov;
+
+            PUSH_OV (std::move (arg));
+          }
+        n_args_actually_moved = n_args_caller_expects;
+      }
+
+    // Destroy the unused return values on the callee stack
+    for (int i = 0; i < n_args_callee_has; i++)
+      {
+        int idx = n_args_callee_has - 1 - i;
+        first_ret[idx].ov.~octave_value (); // Destroy ov in callee
+      }
+
+    // Pop the current dynamic stack frame
+    std::shared_ptr<stack_frame> fp = m_tw->pop_return_stack_frame ();
+    // If the pointer is not shared, stash it in a cache which is used
+    // to avoid having to allocate shared pointers each frame push.
+    if (fp.unique () && m_frame_ptr_cache.size () < 8)
+      {
+        fp->vm_clear_for_cache ();
+        m_frame_ptr_cache.push_back (std::move (fp));
+      }
+
+    // Continue execution back in the caller
+  }
+  DISPATCH ();
+
 /* Check whether we should enter the debugger on the next ip */
 {
   bool onebyte_op;
@@ -5767,7 +6028,7 @@ bail_echo:
         if (it == unwind_data->m_ip_to_tree.end ())
           goto debug_check_end;
 
-        bool is_ret = *ip == static_cast<unsigned char> (INSTR::RET);
+        bool is_ret = *ip == static_cast<unsigned char> (INSTR::RET) || *ip == static_cast<unsigned char> (INSTR::RET_ANON);
 
         m_sp = sp;
         m_bsp = bsp;
@@ -5868,6 +6129,25 @@ debug: // TODO: Remove
     ip += 2; // Forward ip so it points to after the widened argument
     goto *instr [opcode];
   }
+
+  ext_nargout:
+  {
+    // This opcode replaces the first opcode argument of the next opcode, with the
+    // current function's nargout.
+    //
+    // Anonymous functions need to have a dynamic "expression nargout" on the
+    // root expression since the "expression nargout" is decided by the caller.
+    // E.g. '[a b] = anon ()' yields 2 for the root expression in 'anon'.
+    //
+    // In a ordinary function "expression nargout" is decided by the source row.
+
+    int opcode = arg0; // The opcode to execute next is in arg0, i.e. ip[-1]
+    // The next opcode needs its arg0, which is supposed to be a nargout value
+    arg0 = bsp[0].i; // %nargout is stored in the first slot in the stack frame
+    ip++; // Forward ip so it points to after the nargout argument in the next opcode
+    goto *instr [opcode]; // Execute the next opcode
+  }
+
   enter_script_frame:
   {
     auto fp = m_tw->get_current_stack_frame ();
@@ -6271,6 +6551,14 @@ loc_entry vm::find_loc (int ip, std::vector<octave::loc_entry> &loc_entries)
 void vm::set_nargin (int nargin)
 {
   m_tw->set_nargin (nargin);
+}
+
+void vm::caller_ignores_output ()
+{
+  m_output_ignore_data = new output_ignore_data;
+  m_output_ignore_data->m_v_lvalue_list.back () = m_tw->lvalue_list ();
+  m_output_ignore_data->m_v_owns_lvalue_list.back () = false;
+  m_output_ignore_data->m_external_root_ignorer = true;
 }
 
 void vm::set_nargout (int nargout)
@@ -6913,6 +7201,94 @@ vm_profiler::exit_fn (std::string fn_name)
 error:
   purge_shadow_stack ();
   return;
+}
+
+void
+vm::output_ignore_data::push_frame (vm &vm)
+{
+  vm.m_tw->set_auto_fcn_var (stack_frame::IGNORED, m_ov_pending_ignore_matrix);
+  m_ov_pending_ignore_matrix = {}; // Clear ignore matrix so that the next call wont ignore anything
+  m_v_lvalue_list.push_back (vm.m_tw->lvalue_list ()); // Will be restored in output_ignore_data::pop_frame ()
+  m_v_owns_lvalue_list.push_back (false); // Caller owns the current lvalue
+
+  vm.m_tw->set_lvalue_list (nullptr); // There is not lvalue list set for the new frame
+}
+
+void
+vm::output_ignore_data::clear_ignore (vm &vm)
+{
+  CHECK_PANIC (m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+
+  // If the output_ignore_data object owns the current lvalue list
+  // we need to free it.
+  auto *current_lval_list = vm.m_tw->lvalue_list ();
+
+  bool owns_lval_list = m_v_owns_lvalue_list.back ();
+  m_v_owns_lvalue_list.back () = false;
+
+  if (owns_lval_list)
+    delete current_lval_list;
+
+  // Restore the prior lvalue list in the tree walker
+  vm.m_tw->set_lvalue_list (m_v_lvalue_list.back ());
+  m_v_lvalue_list.back () = nullptr;
+
+  m_ov_pending_ignore_matrix = {};
+}
+
+void
+vm::output_ignore_data::pop_frame (vm &vm)
+{
+  CHECK_PANIC (m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+
+  // If the output_ignore_data object owns the current lvalue list
+  // we need to free it.
+  auto *current_lval_list = vm.m_tw->lvalue_list ();
+
+  bool owns_lval_list = m_v_owns_lvalue_list.back ();
+  m_v_owns_lvalue_list.pop_back ();
+
+  if (owns_lval_list)
+    delete current_lval_list;
+
+  // Restore the prior lvalue list in the tree walker
+  vm.m_tw->set_lvalue_list (m_v_lvalue_list.back ());
+  m_v_lvalue_list.pop_back ();
+}
+
+void
+vm::output_ignore_data::set_ignore_anon (vm &vm, octave_value ignore_matrix)
+{
+  CHECK_PANIC (m_ov_pending_ignore_matrix.is_nil ());
+  CHECK_PANIC (m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+
+  // For anonymous functions we propagate the current ignore matrix and lvalue list to the callee.
+
+  m_ov_pending_ignore_matrix = ignore_matrix;
+  // Since the caller owns the lvalue list, we need to note not to delete the lvalue list when popping
+  // the callee frame.
+  vm.m_tw->set_lvalue_list (m_v_lvalue_list.back ());
+}
+
+void
+vm::output_ignore_data::set_ignore (vm &vm, octave_value ignore_matrix,
+                                    std::list<octave_lvalue> *new_lval_list)
+{
+  CHECK_PANIC (m_ov_pending_ignore_matrix.is_nil ());
+  CHECK_PANIC (m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size ());
+  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+
+  m_ov_pending_ignore_matrix = ignore_matrix;
+  m_v_owns_lvalue_list.back () = true;
+  m_v_lvalue_list.back () = vm.m_tw->lvalue_list ();
+  vm.m_tw->set_lvalue_list (new_lval_list);
 }
 
 // Debugging functions to be called from gdb

@@ -73,6 +73,7 @@
 #include "utils.h"
 #include "variables.h"
 #include "pt-bytecode-vm.h"
+#include "pt-bytecode-walk.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -3566,7 +3567,11 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
       // The caller can be bytecode if evalin("caller", ...) is used in some uncompiled function.
       if (!caller_is_bytecode)
         set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (xargs.name_tags ()));
-      set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
+      if (ignored_outputs.numel())
+        {
+          vm.caller_ignores_output ();
+          set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
+        }
 
       octave_value_list ret;
 

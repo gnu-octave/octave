@@ -159,6 +159,8 @@ public:
   virtual bool
   has_function_cache (void) const { return false; }
 
+  virtual void compile () {}
+
 protected:
 
   void warn_load (const char *file_type) const;
@@ -375,6 +377,7 @@ public:
   get_cached_fcn (const octave_value_list& args) { return m_rep->get_cached_fcn (args); }
   bool has_function_cache (void) const { return m_rep->has_function_cache (); }
 
+  void compile () { m_rep->compile (); }
 private:
 
   std::shared_ptr<octave::base_fcn_handle> m_rep;

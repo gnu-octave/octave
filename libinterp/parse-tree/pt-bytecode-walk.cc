@@ -37,6 +37,54 @@
 
 using namespace octave;
 
+// Compiles an anonymous function.
+//
+// The compilation need to happen at runtime since the values of the variables are embedded into the bytecode
+// as constants. I.e. when the anonymous function is created by running e.g. "a = @() b;"
+void octave::compile_anon_user_function (octave_user_code &ufn, bool do_print, stack_frame::local_vars_map &locals)
+{
+  try
+    {
+      if (!ufn.is_anonymous_function ())
+        error ("compile_anon_user_function (): Function is not anonymous");
+
+      if (ufn.is_classdef_constructor ())
+        error ("Classdef constructors are not supported by the VM yet"); // Needs special handling
+      if (ufn.is_inline_function () || ufn.is_nested_function ())
+        error ("Inlined or scoped functions are not supported by the VM yet");
+
+      // Begin with clearing the old bytecode, if any
+      ufn.clear_bytecode ();
+
+      bytecode_walker bw;
+
+      // The value of each variable that is taken from the calling scope
+      bw.m_anon_local_values = &locals;
+      bw.m_is_anon = true; // Flag used during compilation
+
+      ufn.accept (bw);
+
+      if (do_print)
+        print_bytecode (bw.m_code);
+
+      ufn.set_bytecode (bw.m_code);
+
+      // Compile the subfunctions
+      auto subs = ufn.subfunctions ();
+      for (auto kv : subs)
+        {
+          octave_user_function *sub = kv.second.user_function_value ();
+          compile_user_function (*sub, do_print);
+          sub->get_bytecode ().m_unwind_data.m_file = ufn.fcn_file_name ();
+        }
+    }
+  catch(...)
+  {
+    ufn.clear_bytecode ();
+    throw;
+  }
+}
+
 void octave::compile_user_function (octave_user_code &ufn, bool do_print)
 {
   try
@@ -282,6 +330,17 @@ do {\
     PUSH_CODE (INSTR::WIDE);\
 } while ((0))
 
+// Anonymous functions need dynamic nargout
+// The extension opcode EXT_NARGOUT replaces the arg0
+// (the static opcode embedded 'nargout') of the following opcode
+// with the %nargout on the stack.
+// -1 is the marker value for the need of the dynamic nargout
+#define MAYBE_PUSH_ANON_NARGOUT_OPEXT(nargout) \
+do {\
+  if ((nargout) == -1)\
+    PUSH_CODE (INSTR::EXT_NARGOUT);\
+} while ((0))
+
 #define PUSH_SLOT(slot) \
 do {\
   if (slot >= 256)\
@@ -419,7 +478,12 @@ visit_statement_list (tree_statement_list& lst)
     {
       CHECK_NONNULL (elt);
 
-      PUSH_NARGOUT (0);
+      // For anonymous functions the nargout is dynamic, which is marked
+      // by setting nargout to -1
+      if (m_is_anon)
+        PUSH_NARGOUT (-1);
+      else
+        PUSH_NARGOUT (0);
 
       elt->accept (*this);
       POP_NARGOUT ();
@@ -1319,6 +1383,8 @@ visit_postfix_expression (tree_postfix_expression& expr)
       POP_NARGOUT ();
     }
 
+  maybe_emit_anon_maybe_ignore_outputs ();
+
   switch (op)
     {
     case octave_value::unary_op::op_not:
@@ -1344,8 +1410,10 @@ visit_postfix_expression (tree_postfix_expression& expr)
             PUSH_TREE_FOR_EVAL (&expr);
             int tree_idx = -CODE_SIZE (); // NB: Negative to not collide with debug data
 
+            int nargout = NARGOUT ();
+            MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
             PUSH_CODE (INSTR::EVAL);
-            PUSH_CODE (NARGOUT ());
+            PUSH_CODE (nargout);
             PUSH_CODE_INT (tree_idx);
           }
         else
@@ -1364,8 +1432,10 @@ visit_postfix_expression (tree_postfix_expression& expr)
             PUSH_TREE_FOR_EVAL (&expr);
             int tree_idx = -CODE_SIZE (); // NB: Negative to not collide with debug data
 
+            int nargout = NARGOUT ();
+            MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
             PUSH_CODE (INSTR::EVAL);
-            PUSH_CODE (NARGOUT ());
+            PUSH_CODE (nargout);
             PUSH_CODE_INT (tree_idx);
           }
         else
@@ -1446,6 +1516,8 @@ visit_prefix_expression (tree_prefix_expression& expr)
       POP_NARGOUT ();
     }
 
+  maybe_emit_anon_maybe_ignore_outputs ();
+
   switch (op)
     {
     case octave_value::unary_op::op_not:
@@ -1471,8 +1543,10 @@ visit_prefix_expression (tree_prefix_expression& expr)
             PUSH_TREE_FOR_EVAL (&expr);
             int tree_idx = -CODE_SIZE (); // NB: Negative to not collide with debug data
 
+            int nargout = NARGOUT ();
+            MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
             PUSH_CODE (INSTR::EVAL);
-            PUSH_CODE (NARGOUT ());
+            PUSH_CODE (nargout);
             PUSH_CODE_INT (tree_idx);
           }
         else
@@ -1491,8 +1565,10 @@ visit_prefix_expression (tree_prefix_expression& expr)
             PUSH_TREE_FOR_EVAL (&expr);
             int tree_idx = -CODE_SIZE (); // NB: Negative to not collide with debug data
 
+            int nargout = NARGOUT ();
+            MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
             PUSH_CODE (INSTR::EVAL);
-            PUSH_CODE (NARGOUT ());
+            PUSH_CODE (nargout);
             PUSH_CODE_INT (tree_idx);
           }
         else
@@ -1648,6 +1724,8 @@ visit_compound_binary_expression (tree_compound_binary_expression &expr)
 
   CHECK_NONNULL (op2);
   op2->accept (*this);
+
+  maybe_emit_anon_maybe_ignore_outputs ();
 
   switch (expr.cop_type ())
     {
@@ -1881,6 +1959,8 @@ visit_binary_expression (tree_binary_expression& expr)
       op1->accept (*this);
       op2->accept (*this);
     }
+
+  maybe_emit_anon_maybe_ignore_outputs ();
 
   switch (expr.op_type ())
     {
@@ -2201,19 +2281,23 @@ visit_octave_user_function (octave_user_function& fcn)
         }
     }
 
-  // TODO: The return_list is a nullptr for anonymous functions.
-  if (! returns)
-    error ("Compiling anonymous functions is not supported by the VM yet");
-
   // Does the function output varargout?
-  m_varargout = returns->takes_varargs ();
+  m_varargout = returns ? returns->takes_varargs () : false;
   // "varargout" is not in the 'returns' list (if in the proper last position)
   // so add one to size if 'm_varargout' is true
   int n_returns = returns ? returns->size () + m_varargout: 0;
 
   // The first instruction is the amount of return variables. Negative for varargout.
-  // +1 for native '%nargout' on the stack
-  PUSH_CODE (m_varargout ? -(n_returns + 1) : (n_returns + 1));
+  // Anonymous functions have no return parameter list specified. For those we set
+  // the amount of returns to magic number -128.
+  if (!returns)
+    {
+      m_code.m_unwind_data.m_is_anon = true;
+      CHECK (m_is_anon); // m_is_anon is set by compile_anon_user_function ()
+      PUSH_CODE (-128);
+    }
+  else
+    PUSH_CODE (m_varargout ? -(n_returns + 1) : (n_returns + 1)); // +1 for native '%nargout' on the stack.
 
   // Check if the last parameter is "varargin"
   // If that is the case, we need to mess with the stacks
@@ -2242,12 +2326,15 @@ visit_octave_user_function (octave_user_function& fcn)
   add_id_to_table("%nargout");
 
   // Then the return values
-  for (auto it = returns->begin (); it != returns->end (); it++)
+  if (returns)
     {
-      std::string name = (*it)->name();
-      tree_identifier *id = (*it)->ident ();
-      CHECK_NONNULL (id);
-      add_id_to_table (id->name ());
+      for (auto it = returns->begin (); it != returns->end (); it++)
+        {
+          std::string name = (*it)->name();
+          tree_identifier *id = (*it)->ident ();
+          CHECK_NONNULL (id);
+          add_id_to_table (id->name ());
+        }
     }
   if (m_varargout)
     add_id_to_table ("varargout"); // Not in the returns list. Need to be last
@@ -2344,13 +2431,16 @@ visit_octave_user_function (octave_user_function& fcn)
             }
         }
     }
-  for (auto it = returns->begin (); it != returns->end (); it++)
+  if (returns)
     {
-      std::string name = (*it)->name();
-      tree_identifier *id = (*it)->ident ();
-      int frame_offset = id->symbol ().data_offset ();
-      int slot = SLOT (name);
-      m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset] = slot;
+      for (auto it = returns->begin (); it != returns->end (); it++)
+        {
+          std::string name = (*it)->name();
+          tree_identifier *id = (*it)->ident ();
+          int frame_offset = id->symbol ().data_offset ();
+          int slot = SLOT (name);
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset] = slot;
+        }
     }
 
   // The function name should be in the frame as an id too aswell
@@ -2406,6 +2496,32 @@ visit_octave_user_function (octave_user_function& fcn)
         m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("ans");
     }
 
+  // Add code to initialize variables in anonymous functions that took their value from
+  // the parent scope.
+  if (m_is_anon)
+    {
+      CHECK_NONNULL (m_anon_local_values);
+
+      for (auto kv : *m_anon_local_values)
+        {
+          std::string name = kv.first;
+          CHECK (m_map_locals_to_slot.find (name) != m_map_locals_to_slot.end ()); // Ensure it is in the scope
+
+          int slot = SLOT (name);
+
+          int data_offset = DATA_SIZE ();
+          octave_value val = kv.second;
+          PUSH_DATA (val);
+
+          // Push the value to the operand stack
+          PUSH_CODE_LOAD_CST (data_offset);
+          // Assign the value on the stack to the slot.
+          MAYBE_PUSH_WIDE_OPEXT (slot);
+          PUSH_CODE (INSTR::FORCE_ASSIGN);
+          PUSH_SLOT (slot);
+        }
+    }
+
   // Add code to handle default arguments. If an argument is undefined or
   // "magic colon" it is to get its default value.
   if (paras)
@@ -2459,6 +2575,10 @@ visit_octave_user_function (octave_user_function& fcn)
 
   // Set the amount of locals that has a placeholder since earlier
   SET_CODE_SHORT (m_offset_n_locals, m_n_locals);
+
+  // Anonymous functions has no end marker, so push RET_ANON here
+  if (m_is_anon)
+    PUSH_CODE (INSTR::RET_ANON);
 
   // When the last byte of opcode, a 'RET', is to be executed, the VM reads the
   // next byte of code and puts it in 'arg0'.  So, we need to add a dummy
@@ -2555,11 +2675,12 @@ visit_multi_assignment (tree_multi_assignment& expr)
       PUSH_TREE_FOR_EVAL (&expr);
       int tree_idx = -CODE_SIZE (); // NB: Negative to not collide with debug data
 
+      MAYBE_PUSH_ANON_NARGOUT_OPEXT (outer_nargout);
       PUSH_CODE (INSTR::EVAL);
       PUSH_CODE (outer_nargout);
       PUSH_CODE_INT (tree_idx);
 
-      if (DEPTH () == 1)
+      if (!m_is_anon && DEPTH () == 1)
         PUSH_CODE (INSTR::POP);
 
       POP_NARGOUT ();
@@ -2804,9 +2925,28 @@ maybe_emit_disp_id (tree_expression &expr, const std::string &name, const std::s
 
 void
 bytecode_walker::
+maybe_emit_anon_maybe_ignore_outputs ()
+{
+  // The ignored output of the caller need to be propagated to the outer nested expression
+  // for anonymous functions.
+  // E.g.:
+  //  anon = @() foo (bar (baz ()))
+  // [x, ~] = anon (); % The foo call will have isargout(2) set to false
+  if (m_is_anon && DEPTH () == 1)
+    PUSH_CODE (INSTR::ANON_MAYBE_SET_IGNORE_OUTPUTS);
+}
+
+void
+bytecode_walker::
 maybe_emit_bind_ans_and_disp (tree_expression &expr, const std::string maybe_cmd_name)
 {
   bool print_result = expr.print_result ();
+
+  // Anonymous functions never print or write to ans.
+  // The value currently on the stack is used as the return value
+  // by RET_ANON. For normal functions the write to ans would pop it.
+  if (m_is_anon)
+    return;
 
   // If this is an root expression we need to write the return value
   // to ans.
@@ -2857,7 +2997,10 @@ emit_return ()
   if (m_is_script)
     PUSH_CODE (INSTR::EXIT_SCRIPT_FRAME);
 
-  PUSH_CODE (INSTR::RET);
+  if (m_is_anon)
+    PUSH_CODE (INSTR::RET_ANON);
+  else
+    PUSH_CODE (INSTR::RET);
 }
 
 void
@@ -2947,7 +3090,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
           PUSH_CODE (0); // nargout
           PUSH_CODE_INT (tree_idx);
 
-          if (DEPTH () == 1)
+          if (!m_is_anon && DEPTH () == 1)
             PUSH_CODE (INSTR::POP);
 
           POP_NARGOUT ();
@@ -3136,7 +3279,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
               PUSH_CODE (INSTR::DUP);
               emit_disp_obj (expr);
             }
-          if (DEPTH () == 1)
+          if (!m_is_anon && DEPTH () == 1)
             PUSH_CODE (INSTR::POP);
         }
     }
@@ -3247,7 +3390,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
           // SUBASSIGN_OBJ puts the lhs back on the stack
           // but since lhs is not an id from a slot we just
           // pop it unless it is used by a chained assign.
-          if (DEPTH () == 1)
+          if (!m_is_anon && DEPTH () == 1)
             PUSH_CODE (INSTR::POP);
         }
       else if (type == '(')
@@ -3445,7 +3588,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
               // SUBASSIGN_OBJ puts the lhs back on the stack
               // but since lhs is not an id from a slot we just
               // pop it, unless there are chained assignments.
-              if (DEPTH () == 1)
+              if (!m_is_anon && DEPTH () == 1)
                 PUSH_CODE (INSTR::POP);
             }
           else //(is_dynamic_field && !is_id)
@@ -3483,7 +3626,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
               // SUBASSIGN_OBJ puts the lhs back on the stack
               // but since lhs is not an id from a slot we just
               // pop it, unless there are chained assignments.
-              if (DEPTH () == 1)
+              if (!m_is_anon && DEPTH () == 1)
                 PUSH_CODE (INSTR::POP);
             }
         }
@@ -3714,9 +3857,11 @@ visit_cell (tree_cell &m)
           tree_expression *e = *it;
           CHECK_NONNULL (e);
 
+          PUSH_NARGOUT (1);
           INC_DEPTH ();
           e->accept (*this);
           DEC_DEPTH ();
+          POP_NARGOUT ();
           n_cols++;
 
           // We now need to expand the value (if it is an cs list)
@@ -3749,6 +3894,8 @@ bytecode_walker::
 visit_identifier (tree_identifier& id)
 {
   INC_DEPTH();
+
+  maybe_emit_anon_maybe_ignore_outputs ();
 
   std::string name = id.name ();
   if (name == "__VM_DBG")
@@ -3837,7 +3984,7 @@ visit_identifier (tree_identifier& id)
             PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
           PUSH_SLOT (slot);
         }
-      else if (DEPTH () == 1)
+      else if (DEPTH () == 1 && NARGOUT () != -1)
         {
           CHECK (NARGOUT () == 0);
 
@@ -3874,6 +4021,12 @@ visit_identifier (tree_identifier& id)
             PUSH_CODE (INSTR::PUSH_PI);
           else
             PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT1);
+          PUSH_SLOT (slot);
+        }
+      else if (NARGOUT () == -1)
+        {
+          MAYBE_PUSH_WIDE_OPEXT (slot);
+          PUSH_CODE (INSTR::PUSH_SLOT_NX);
           PUSH_SLOT (slot);
         }
       else if (NARGOUT() > 1)
@@ -4381,11 +4534,15 @@ eval_visit_index_expression (tree_index_expression& expr)
   tree_expression *e = expr.expression ();
   CHECK_NONNULL(e);
 
+  maybe_emit_anon_maybe_ignore_outputs ();
+
   PUSH_TREE_FOR_EVAL (&expr);
   int tree_idx = -CODE_SIZE (); // NB: Negative to not collide with debug data
 
+  int nargout = NARGOUT ();
+  MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
   PUSH_CODE (INSTR::EVAL);
-  PUSH_CODE (NARGOUT ());
+  PUSH_CODE (nargout);
   PUSH_CODE_INT (tree_idx);
 
   maybe_emit_bind_ans_and_disp (expr);
@@ -4465,6 +4622,8 @@ simple_visit_index_expression (tree_index_expression& expr)
       m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect
     }
 
+  maybe_emit_anon_maybe_ignore_outputs ();
+
   int loc_id = N_LOC ();
   PUSH_LOC ();
   LOC (loc_id).m_ip_start = CODE_SIZE ();
@@ -4480,12 +4639,24 @@ simple_visit_index_expression (tree_index_expression& expr)
       std::string id_name = e->name ();
       int slot = SLOT (id_name);
       MAYBE_PUSH_WIDE_OPEXT (slot);
-      PUSH_CODE (INSTR::WORDCMD);
-      // The vm need the name of the identifier for function lookups
-      PUSH_SLOT (slot);
-      PUSH_CODE (nargout);
-      // Push nargin
-      PUSH_CODE (args ? args->size () : 0);
+
+      if (nargout == -1) // Anonymous functions need dynamic nargout
+        {
+          PUSH_CODE (INSTR::WORDCMD_NX);
+          // The vm need the name of the identifier for function lookups
+          PUSH_SLOT (slot);
+          // Push nargin
+          PUSH_CODE (args ? args->size () : 0);
+        }
+      else
+        {
+          PUSH_CODE (INSTR::WORDCMD);
+          // The vm need the name of the identifier for function lookups
+          PUSH_SLOT (slot);
+          PUSH_CODE (nargout);
+          // Push nargin
+          PUSH_CODE (args ? args->size () : 0);
+        }
     }
   else if (e->is_identifier () && !(type == '.' && !struct_is_id_dot_id))
     {
@@ -4523,6 +4694,13 @@ simple_visit_index_expression (tree_index_expression& expr)
 
               PUSH_SLOT (slot);
             }
+          // Anonymous functions need to have dynamic nargout
+          else if (nargout == -1)
+            {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
+              PUSH_CODE (INSTR::INDEX_IDNX);
+              PUSH_SLOT (slot);
+            }
           else
             {
               MAYBE_PUSH_WIDE_OPEXT (slot);
@@ -4549,6 +4727,12 @@ simple_visit_index_expression (tree_index_expression& expr)
               PUSH_CODE (INSTR::INDEX_CELL_ID_NARGOUT1);
               PUSH_SLOT (slot);
             }
+          else if (nargout == -1)
+            {
+              MAYBE_PUSH_WIDE_OPEXT (slot);
+              PUSH_CODE (INSTR::INDEX_CELL_IDNX);
+              PUSH_SLOT (slot);
+            }
           else
             {
               MAYBE_PUSH_WIDE_OPEXT (slot);
@@ -4562,6 +4746,7 @@ simple_visit_index_expression (tree_index_expression& expr)
         }
       else if (type == '.')
         {
+          MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
           PUSH_CODE (INSTR::INDEX_STRUCT_NARGOUTN);
           PUSH_CODE (nargout);
 
@@ -4580,8 +4765,9 @@ simple_visit_index_expression (tree_index_expression& expr)
       // We are not indexing an id, but e.g.:
       // (foo).()
       // I.e. a temporary object.
+      MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
       PUSH_CODE (INSTR::INDEX_OBJ);
-      PUSH_CODE (nargout);
+      PUSH_CODE (nargout); // This is arg0, not used if EXT_NARGOUT is used
       PUSH_CODE (0); // "has slot"
       PUSH_WSLOT (0); // The w/e slot TODO: Remove?
       // Push nargin
@@ -4732,6 +4918,8 @@ visit_index_expression (tree_index_expression& expr)
       m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect        
     }
 
+  maybe_emit_anon_maybe_ignore_outputs ();
+
   int nargout = NARGOUT ();
 
   arg_name_entry.m_ip_start = CODE_SIZE ();
@@ -4739,18 +4927,19 @@ visit_index_expression (tree_index_expression& expr)
   if (first_expression && first_expression->is_identifier ())
     {
       int slot = SLOT (first_expression->name ());
-      MAYBE_PUSH_WIDE_OPEXT (slot);
+      MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
       PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-      PUSH_SLOT (slot); // the slot
-      PUSH_CODE (1); // has slot
       PUSH_CODE (nargout);
+      PUSH_CODE (1); // has slot
+      PUSH_WSLOT (slot); // the slot
     }
   else
     {
+      MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
       PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-      PUSH_SLOT (0); // slot
-      PUSH_CODE (0); // has slot
       PUSH_CODE (nargout);
+      PUSH_SLOT (0); // has slot
+      PUSH_WSLOT (0); // slot ignored
     }
 
   PUSH_CODE (v_n_args.size ());
@@ -5042,6 +5231,8 @@ visit_fcn_handle (tree_fcn_handle &handle)
   // slot for the handle function cache
   int slot = add_id_to_table(aname);
 
+  maybe_emit_anon_maybe_ignore_outputs ();
+
   MAYBE_PUSH_WIDE_OPEXT (slot);
   PUSH_CODE (INSTR::PUSH_FCN_HANDLE);
   PUSH_SLOT (slot);
@@ -5071,6 +5262,8 @@ visit_colon_expression (tree_colon_expression& expr)
 
   CHECK_NONNULL (op3);
   op3->accept (*this);
+
+  maybe_emit_anon_maybe_ignore_outputs ();
 
   // Colon expressions have some different semantics
   // in command expressions.

@@ -514,7 +514,7 @@ public:
         int start = entries[i].m_ip_start;
         int end = entries[i].m_ip_end;
 
-        if (start > m_ip || end < m_ip)
+        if (start > (m_ip - 1) || end < (m_ip - 1))
           continue;
 
         if (best_match != -1)

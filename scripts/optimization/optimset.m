@@ -45,11 +45,12 @@
 ## structure @var{new}.
 ##
 ## If @var{par} does not exactly match the name of a standard parameter,
-## @code{optimset} will attempt to expand the name to match a standard
-## parameter and will set the value of that parameter if a match is found.
-## @code{optimset} produces an error if it finds multiple ambiguous matches.
-## If no standard parameter matches are found a warning is issued and the
-## non-standard parameter is created.
+## @code{optimset} will attempt to match @var{par} to a standard parameter
+## and will set the value of that parameter if a match is found.  Matching is
+## case insensitive and is based on character matching at the start of the
+## parameter name.  @code{optimset} produces an error if it finds multiple
+## ambiguous matches.  If no standard parameter matches are found a warning is
+## issued and the non-standard parameter is created.
 ##
 ## Standard list of valid parameters:
 ##
@@ -128,12 +129,12 @@
 ## updated valid parameters list can be queried using the no-argument form of
 ## @code{optimset}.
 ##
-## Note 1:  Any non-standard field names in @var{old} are ignored when
-## matching parameter names, and @var{par} will always match to a standard
-## parameter even if an exact non-standard match exists.  The value of a
-## non-standard parameter that is ambigious with one or more standard
-## parameters cannot be set by @code{optimset} and can only be set using
-## @code{setfield} or dot notation for structs.
+## Note 1:  Only parameter names from the standard list are considered when
+## matching short parameter names, and @var{par} will always be expanded
+## to match a standard parameter even if an exact non-standard match exists.
+## The value of a non-standard parameter that is ambigious with one or more
+## standard parameters cannot be set by @code{optimset} and can only be set
+## using @code{setfield} or dot notation for structs.
 ##
 ## Note 2:  The optimization options structure is primarily intended for
 ## manipulation of known parameters by @code{optimset} and @code{optimget}.

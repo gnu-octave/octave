@@ -411,8 +411,11 @@ void base_qobject::start_main_thread ()
   // With the old terminal widget, we defer initializing and executing
   // the interpreter until after the main window and QApplication are
   // running to prevent race conditions.
-
+#if  QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   QTimer::singleShot (0, m_interpreter_qobj, &interpreter_qobject::execute);
+#else
+  QTimer::singleShot (0, m_interpreter_qobj, SLOT (execute ()));
+#endif
 
   m_interpreter_qobj->moveToThread (m_main_thread);
 

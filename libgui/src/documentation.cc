@@ -48,6 +48,7 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include <QSqlDatabase>
 #include <QTabWidget>
 #include <QTimer>
 #include <QWheelEvent>
@@ -96,16 +97,46 @@ documentation::documentation (QWidget *p)
 
   // Mark help as readonly to avoid error if collection file is stored in a
   // readonly location
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  m_help_engine->setReadOnly (true);
+#else
   m_help_engine->setProperty ("_q_readonly",
                               QVariant::fromValue<bool> (true));
+#endif
 
   QString tmpdir = QString::fromStdString (sys::env::get_temp_directory ());
   m_collection
     = QString::fromStdString (sys::tempnam (tmpdir.toStdString (),
                                             "oct-qhelp-"));
 
-  if (m_help_engine->copyCollectionFile (m_collection))
-    m_help_engine->setCollectionFile (m_collection);
+  bool copy_ok = false;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  // FIXME: Qt6: copyCollectionFile truncates the collection file.
+  // This workaround normally copies the file. Since the relativ
+  // link to the qch file is not updated then, the namespace and
+  // the original qch file are re-registered.
+  QStringList namespaces = m_help_engine->registeredDocumentations ();
+  QString qch_file;
+  if (! namespaces.isEmpty ())
+    qch_file = m_help_engine->documentationFileName (namespaces.at (0));
+  QFile collection_file (collection);
+  copy_ok = collection_file.copy (m_collection);
+#else
+  // Qt5: use copyCollectionFile
+  copy_ok = m_help_engine->copyCollectionFile (m_collection);
+#endif
+
+  if (copy_ok)
+    {
+#ifdef ENABLE_DOCS
+      if (!QSqlDatabase::isDriverAvailable(QLatin1String("QSQLITE")))
+        {
+          QMessageBox::warning (this, tr ("Octave Documentation"),
+                                      tr ("SQlite module missing."));
+        }
+#endif
+      m_help_engine->setCollectionFile (m_collection);
+    }
   else
 #ifdef ENABLE_DOCS
     // FIXME: Perhaps a better way to do this would be to keep a count
@@ -131,11 +162,20 @@ documentation::documentation (QWidget *p)
                                 "documentation viewer. Only help texts in\n"
                                 "the Command Window will be available."));
 #endif
-
       disconnect (m_help_engine, 0, 0, 0);
 
       delete m_help_engine;
       m_help_engine = nullptr;
+    }
+  else
+    {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+      // Qt6: un- and re-register qch-file for fixing not having
+      // used copyCollectionFile with automatic path update
+      if (! namespaces.isEmpty ())
+        m_help_engine->unregisterDocumentation (namespaces.at (0));
+      m_help_engine->registerDocumentation (qch_file);
+#endif
     }
 
   // The browser

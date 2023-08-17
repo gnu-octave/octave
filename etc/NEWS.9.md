@@ -126,6 +126,11 @@ method which is one of "tickaligned", "tight", or "padded".
 - `optimget` and `optimset` now error on an ambiguous match of an incomplete
 option name instead of emitting a warning.
 
+- `datevec` when provided a date format will match date string characters
+up to the length of the format string.  A date vector will be returned as
+long the characters up to the format string length is a perfect match, and
+any trailing characters in the date string wil be ignored. (bug #42241)
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isenv`

@@ -32,6 +32,7 @@
 ## a variable, then the @w{(@var{i}, @var{j})-th} entry of
 ## @code{corr (@var{x}, @var{y})} is the correlation between the
 ## @var{i}-th variable in @var{x} and the @var{j}-th variable in @var{y}.
+## @var{x} and @var{y} must have the same number of rows (observations).
 ## @tex
 ## $$
 ## {\rm corr}(x,y) = {{\rm cov}(x,y) \over {\rm std}(x) \, {\rm std}(y)}
@@ -55,10 +56,13 @@ function r = corr (x, y = [])
     print_usage ();
   endif
 
-  ## Most input validation is done by cov.m.  Don't repeat tests here.
+  if (! (isnumeric (x) || islogical (x)))
+    error ("corr: X must be a numeric vector or matrix");
+  endif
 
   ## No check for division by zero error, which happens only when
   ## there is a constant vector and should be rare.
+
   if (nargin == 2)
     ## Adjust for Octave 9.1.0 compatibility behavior change in two-input cov.
     ## cov now treats cov(x,y) as cov(x(:),y(:)), returning a 2x2 covariance
@@ -72,30 +76,46 @@ function r = corr (x, y = [])
     ##        efficient cov here as a subfunction to corr.  At that point,
     ##        input validation will need to be coded back into this function.
 
-    ## Check for equal input sizes.  cov ignores 2-D vector orientation,
-    ## but corr does not.
-    if (! size_equal (x, y))
-      error ("corr: X and Y must be the same size");
+    if (! (isnumeric (y) || islogical (y)))
+      error ("corr: Y must be a numeric vector or matrix");
     endif
 
-    c = cov ([x, y]);  # Also performs input validation of x and y.
-    nc = columns (x);
+    ## Check for equal number of rows before concatenating inputs for cov.
+    ## This will also catch mixed orientation 2-D vectors which cov allows but
+    ## corr should not.
+    if (rows (x) != rows (y))
+      error ("corr: X and Y must have the same number of rows");
+    endif
+
+    rowx = isrow (x);
+    rowy = isrow (y);
+
+    if ((! rowy && ndims (x) > 2) || (! rowx && ndims (y) > 2))
+      ## For compatibility 3D is permitted only if other input is row vector
+      ## which results in NaNs.
+        error (["corr: X and Y must be two dimensional unless the other ", ...
+                "input is a scalar or row vector"]);
+    endif
 
     ## Special handling for row vectors.  std=0 along dim 1 and division by 0
     ## will return NaN, but cov will process along vector dimension.  Keep
     ## special handling after call to cov so it handles all other input
     ## validation and avoid duplicating validation overhead for all other
     ## cases.
-    if (isrow (x))
+    ncx = columns (x);
+    ncy = columns (y);
+    if (rowx || rowy)
       if (isa (x, "single") || isa (y, "single"))
-        r = NaN (nc, "single");
+        r = NaN (ncx, ncy, "single");
       else
-        r = NaN (nc);
+        r = NaN (ncx, ncy);
       endif
       return;
     endif
 
-    c = c(1:nc, nc+1:end);
+    c = cov ([x, y]);  # Also performs input validation of x and y.
+
+    c = c(1:ncx, ncx+1:end);
     s = std (x, [], 1)' * std (y, [], 1);
     r = c ./ s;
 
@@ -144,6 +164,17 @@ endfunction
 %!assert (corr (5), NaN)
 %!assert (corr (single (5)), single (NaN))
 
+## Special case: constant vectors
+%!assert (corr ([5; 5; 5], [1; 2; 3]), NaN)
+%!assert (corr ([1; 2; 3], [5;5;5]), NaN)
+
+%!test <*64555>
+%! x = [1 2; 3 4; 5 6];
+%! y = [1 2 3]';
+%! assert (corr (x, y), [1; 1]);
+%! assert (corr (y, x), [1, 1]);
+%! assert (corr (x, [y, y]), [1 1; 1 1])
+
 %!test <*64395>
 %! x = [1, 2, 3];
 %! assert (corr (x), NaN (3));
@@ -158,10 +189,27 @@ endfunction
 %! assert (corr (x, x), single (NaN (3)));
 %! assert (corr (x', x'), 1, single (eps));
 
+%!assert <*64555> (corr (1, rand (1, 10)), NaN (1, 10));
+%!assert <*64555> (corr (rand (1, 10), 1), NaN (10, 1));
+%!assert <*64555> (corr (rand (1, 10), rand (1, 10)), NaN (10, 10));
+%!assert <*64555> (corr (rand (1, 5), rand (1, 10)), NaN (5, 10));
+%!assert <*64555> (corr (5, rand (1, 10, 5)), NaN (1, 10));
+%!assert <*64555> (corr (rand (1, 5, 5), rand (1, 10)), NaN (5, 10));
+%!assert <*64555> (corr (rand (1, 5, 5, 99), rand (1, 10)), NaN (5, 10));
+
 ## Test input validation
 %!error <Invalid call> corr ()
-%!error <X and Y must be the same size> corr (ones (2,2), ones (2,2,2))
-%!error <X and Y must be the same size> corr ([1,2,3], [1,2,3]')
-%!error <X and Y must be the same size> corr ([1,2,3]', [1,2,3])
-%!error corr ([1; 2], ["A"; "B"])
-%!error corr (ones (2,2,2))
+%!error corr (1, 2, 3)
+%!error <X must be a> corr ("foo")
+%!error <X must be a> corr ({123})
+%!error <X must be a> corr (struct())
+%!error <Y must be a> corr (1, "foo")
+%!error <Y must be a> corr (1, {123})
+%!error <Y must be a> corr (1, struct())
+%!error <Y must be a> corr ([1; 2], ["A"; "B"])
+%!error <X and Y must have the same number of rows> corr (ones (2,2), ones (3,2))
+%!error <X and Y must have the same number of rows> corr ([1,2,3], [1,2,3]')
+%!error <X and Y must have the same number of rows> corr ([1,2,3]', [1,2,3])
+%!error <X and Y must have the same number of rows> corr (ones (2,2), ones (1,2,2))
+%!error <X and Y must be two dimensional unless> corr (ones (2,2), ones (2,2,2))
+%!error corr (ones (2,2,2)) # Single input validation handled by corr

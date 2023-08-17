@@ -154,8 +154,9 @@ function c = cov (x, varargin)
         if (ischar (varargin{end}))
           nanflag = lower (varargin{end});
 
-          if (isscalar (varargin{1}) && ...
-            (varargin{1} == 0 || varargin{1} == 1))
+          if ((isnumeric (varargin{1}) || islogical (varargin{1})) && ...
+              isscalar (varargin{1}) && ...
+              (varargin{1} == 0 || varargin{1} == 1))
             opt = double (varargin {1});
 
           else
@@ -173,8 +174,9 @@ function c = cov (x, varargin)
         if (ischar (varargin{end}))
           nanflag = lower (varargin{end});
 
-        elseif (isscalar (varargin{1}) && ...
-               (varargin{1} == 0 || varargin{1} == 1))
+        elseif ((isnumeric (varargin{1}) || islogical (varargin{1})) && ...
+                isscalar (varargin{1}) && ...
+                (varargin{1} == 0 || varargin{1} == 1))
           opt = double (varargin {1});
 
         else
@@ -388,6 +390,11 @@ endfunction
 %!assert (cov (0, logical(0)), double(0))
 %!assert (cov (logical(0), 0), double(0))
 %!assert (cov (logical([0 1; 1 0]), logical([0 1; 1 0])), double ([1 1;1 1]./3))
+%!assert (cov ([1 2 3], [3 4 5], 0), [1 1; 1 1])
+%!assert (cov ([1 2 3], [3 4 5], false), [1 1; 1 1])
+%!assert (cov ([1 2 3], [3 4 5], 1), [2/3 2/3; 2/3 2/3], eps)
+%!assert (cov ([1 2 3], [3 4 5], true), [2/3 2/3; 2/3 2/3], eps)
+
 
 ## Test empty and NaN handling (bug #50583)
 %!assert <*50583> (cov ([]), NaN)
@@ -499,14 +506,16 @@ endfunction
 %!error <X must be a> cov ("foo")
 %!error <X must be a> cov ({123})
 %!error <X must be a> cov (struct())
-%!error <X must be a> cov (ones (2, 2, 2))
-%!error <X must be a> cov (ones (1, 0, 2))
+%!error <X must be a 2-D> cov (ones (2, 2, 2))
+%!error <X must be a 2-D> cov (ones (1, 0, 2))
 %!error <only one NANFLAG> cov (1, "foo", 0, "includenan")
 %!error <only one NANFLAG> cov (1, 1, "foo", "includenan")
 %!error <normalization paramter OPT must be> cov (1, 2, [])
 %!error <normalization paramter OPT must be> cov (1, 2, 1.1)
 %!error <normalization paramter OPT must be> cov (1, 2, -1)
 %!error <normalization paramter OPT must be> cov (1, 2, [0 1])
+%!error <Y must be a> cov (1, {123})
+%!error <Y must be a> cov (1, struct())
 %!error <X and Y must have the same number> cov (5,[1 2])
 %!error <X and Y must have the same number> cov (ones (2, 2), ones (2, 2, 2))
 %!error <X and Y must have the same number> cov (ones (2, 2), ones (3, 2))

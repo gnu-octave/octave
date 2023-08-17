@@ -539,12 +539,9 @@ class vm
   loc_entry find_loc (int ip, std::vector<octave::loc_entry> &loc_entries);
 
   // Disable some optimizations in GCC that are not suitable for dynamic label dispatch
-#if defined __has_attribute
-#  if __has_attribute (optimize)
-#    define OCTAVE_VM_EXECUTE_ATTR __attribute__ ((optimize("no-gcse","no-crossjumping")))
-#  endif
-#endif
-#if !defined OCTAVE_VM_EXECUTE_ATTR
+#if defined (__has_attribute) && __has_attribute (optimize)
+#  define OCTAVE_VM_EXECUTE_ATTR __attribute__ ((optimize("no-gcse","no-crossjumping")))
+#else
 #  define OCTAVE_VM_EXECUTE_ATTR
 #endif
 

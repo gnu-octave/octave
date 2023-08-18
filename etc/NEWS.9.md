@@ -131,6 +131,12 @@ up to the length of the format string.  A date vector will be returned as
 long the characters up to the format string length is a perfect match, and
 any trailing characters in the date string wil be ignored. (bug #42241)
 
+- `unwrap` now produces compatible output for inputs with non-finite
+elements (Inf, NaN, NA).  Such elements will now retained in the output but
+skipped over by the wrapping calculation.  The function also permits
+logical inputs and specified operating dimensions larger than the number
+of dimensions in the input array.
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isenv`

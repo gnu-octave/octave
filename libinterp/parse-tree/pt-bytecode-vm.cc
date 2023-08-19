@@ -1683,7 +1683,9 @@ cmd_fcn_or_undef_error:
     // Also skip ip to the end of the opcode.
     int nargout;
     bool push_classdef_metas = false;
-    INSTR opcode = static_cast<INSTR> (*(ip - 2));
+    int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+
+    INSTR opcode = static_cast<INSTR> (*(ip - 2 + wide_opcode_offset));
     if (opcode == INSTR::PUSH_SLOT_NARGOUT1 ||
         opcode == INSTR::PUSH_PI)
       nargout = 1;

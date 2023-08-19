@@ -111,6 +111,20 @@ function wide_sub ()
     assert (s.s == 2);
     s.w.s = 3;
     assert (s.w.s == 3);
+
+    % Test command function calling
+    pi; % WIDE PUSH_PI
+    assert (round (100 * pi) == 314)
+
+    suby1;
+    assert (suby1 == 1);
+    suby2;
+    [a, b] = suby2;
+    assert (a == 1)
+    assert (b == 2)
+    [a, b] = suby2 ();
+    assert (a == 1)
+    assert (b == 2)
   end
 
 
@@ -118,4 +132,12 @@ function wide_sub ()
   for i = 1:512
     eval (sprintf ("assert (a%03d == %d);", i, i));
   end
+end
+
+function ret = suby1
+  ret = 1;
+end
+
+function [a, b] = suby2
+  a = 1; b = 2;
 end

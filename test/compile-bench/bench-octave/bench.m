@@ -3,31 +3,13 @@ function bench (varargin)
   % The tests to run
   %
   % {name, {arg_type, n}, ...}
-  tests = {
-    {"for_loop_empty", {"n", 206824596}, 1, {}},
-    {"for_loop_silly", {"n", 34894840}, 1, {}},
-    {"for_loop_binop_1", {"n", 20300088}, 1, {}},
-    {"for_loop_sinpi", {"n", 12991066}, 1, {}},
-    {"for_loop_ifs", {"n", 5874007}, 1, {}},
-    {"while_loop_empty", {"n", 24237997}, 1, {}},
-    {"do_until_loop_empty", {"n", 27109647}, 1, {}},
-    {"for_loop_subfun_1", {"n", 11930390}, 1, {}},
-    {"for_loop_matselfmul", {"rand sq",150}, 3, {}},
-    {"for_sum_1", {"rand rowvec", 19267692}, 1, {}},
-    {"for_sum_2", {"rand rowvec", 8742659}, 1, {}},
-    {"qsort_recursive", {"rand rowvec", 107851}, 1, {}}, % Mostly copies vectors around
-    {"qsort_iterative", {"rand rowvec", 344418}, 1, {}},
-    {"for_loop_fncall", {"n", 2164885}, 1, {}},
-    {"bench_median", {"rand rowvec", 1927}, 1, {}},
-    {"bench_cov", {"rand rowvec", 15261}, 1, {}},
-    {"str_mod", {"n", 2335290}, 1, {}},
-    {"fib", {"n", 31}, 1, {}},
-  };
+  tests = get_bench_conf ();
 
   reg = '';
   calibrate = 0;
   do_both = 1;
   n_factor = 1;
+  no_compile = 0;
   filter = "";
   i = 1;
   while i <= nargin
@@ -40,6 +22,8 @@ function bench (varargin)
     elseif strcmp (arg, "n_factor")
       assert (i <= nargin)
       n_factor = varargin{i++};
+    elseif strcmp (arg, "nocompile")
+      no_compile = 1;
     end
   end
 
@@ -62,6 +46,7 @@ function bench (varargin)
     name = test{1};
     complexity = test{3};
     also_compile = test{4};
+    is_script = test{5};
     j = 1;
 
     % Skip on not matching regex, if there is one
@@ -83,11 +68,15 @@ function bench (varargin)
       n = round (conf{2} * n_factor);
       arg = n;
     elseif strcmp (conf_type, "rand sq")
-      rng (0); % Reset rng
+      if exist ("rng") % rng is a kinda new function. Keep backwards compatibility
+        rng (0); % Reset rng
+      end
       n = round (conf{2} * n_factor);
       arg = randn (n);
     elseif strcmp (conf_type, "rand rowvec")
-      rng (0); % Reset rng
+      if exist ("rng")
+        rng (0); % Reset rng
+      end
       n = round (conf{2} * n_factor);
       arg = randn (n, 1);
     end
@@ -105,11 +94,15 @@ function bench (varargin)
         n = round (n_norm * n_factor);
         arg = n;
       elseif strcmp (conf_type, "rand sq")
-        rng (0); % Reset rng
+        if exist ("rng")
+          rng (0); % Reset rng
+        end
         n = round (n_norm * n_factor);
         arg = randn (n);
       elseif strcmp (conf_type, "rand rowvec")
-        rng (0); % Reset rng
+        if exist ("rng")
+          rng (0); % Reset rng
+        end
         n = round (n_norm * n_factor);
         arg = randn (n, 1);
       end
@@ -118,17 +111,32 @@ function bench (varargin)
 
       tic;
       [ccttot0, cctuser0, cctsys0] = cputime;
-      assert (__compile__ (name));
+      if !no_compile
+        if ! __compile__ (name)
+          warning ("Could not compile %s, skipping ...", name)
+          continue;
+        end
+      end
       [ccttot1, cctuser1, cctsys1] = cputime;
       cctwall = toc;
 
-      [cttot0, ctuser0, ctsys0] = cputime;
-      tic;
-      __dummy_mark_1__ ();
-      fn (arg);
-      __dummy_mark_2__ ();
-      [cttot1, ctuser1, ctsys1] = cputime;
-      ctwall = toc;
+      try
+        [cttot0, ctuser0, ctsys0] = cputime;
+        tic;
+        __dummy_mark_1__ ();
+        if is_script
+          fn ();
+        else
+          fn (arg);
+        end
+        __dummy_mark_1__ ();
+        __dummy_mark_2__ ();
+        [cttot1, ctuser1, ctsys1] = cputime;
+        ctwall = toc;
+      catch
+        warning ("Could not run %s due to '%s', skipping ...", e.msg, name)
+        continue;
+      end
 
       printf ("                %-16s %-16s %-16s %-16s %-16s\n", "t tic","t cpu", "t usr" , "t sys", "n");
       printf ("    Runtime:    %-16g %-16g %-16g %-16g %-16g\n", ctwall, cttot1 - cttot0, ctuser1 - ctuser0, ctsys1 - ctsys0, n);

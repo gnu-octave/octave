@@ -37,7 +37,7 @@
 
 using namespace octave;
 
-void octave::compile_user_function (octave_user_function &ufn, bool do_print)
+void octave::compile_user_function (octave_user_code &ufn, bool do_print)
 {
   try
     {
@@ -2036,6 +2036,147 @@ visit_constant (tree_constant& cst)
 
 void
 bytecode_walker::
+visit_octave_user_script (octave_user_script& fcn)
+{
+  m_is_script = true;
+
+  m_code.m_unwind_data.m_name = fcn.name ();
+  m_code.m_unwind_data.m_file = fcn.fcn_file_name ();
+  PUSH_DATA (fcn.name ());
+  PUSH_DATA (std::string {"user-script"});
+  PUSH_DATA (fcn.profiler_name ());
+
+  tree_statement_list *cmd_list = fcn.body ();
+
+  // The first instruction is the amount of return variables.
+  PUSH_CODE (1); // Only the dummy return '%nargout'
+
+  // The second instruction is the amount of arguments
+  PUSH_CODE (0);
+
+  // The third is the amount of locals, which need to be set
+  // after compiling the function. So we need to store the offset
+  // to it for later
+  m_offset_n_locals = CODE_SIZE ();
+  PUSH_CODE (-1); // Placeholder
+  PUSH_CODE (-1);
+
+  // The first slot is a native int represenation nargout
+  // so we add a dummy slot object for it
+  add_id_to_table("%nargout");
+
+  // We always need the magic id "ans"
+  add_id_to_table ("ans");
+
+  // We add all identifiers in the body to the id-table. We also
+  // make a map mapping the interpreters frame offset of a id
+  // to the frame offset in the bytecode VM frame.
+  if (cmd_list)
+    {
+      auto v_names_offsets = collect_idnames_walker::collect_id_names (*cmd_list);
+
+      for (auto name_offset : v_names_offsets)
+        {
+          std::string name = name_offset.first;
+          int frame_offset = name_offset.second;
+          add_id_to_table (name_offset.first);
+          int slot = SLOT (name);
+
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset] = slot;
+        }
+    }
+
+  // The function name should be in the frame as an id too
+  std::string function_name = fcn.name ();
+  auto dot_idx = function_name.find_last_of ('.'); // Names might be e.g. "get.Count" but we only want "Count"
+  if (dot_idx != std::string::npos)
+    function_name = function_name.substr (dot_idx + 1);
+
+  // We need to keep track of which id is the function name so that
+  // we can add the id to the id-table and get it's external offset.
+  //
+  // Note that the file 'bar.m' can have one function with the id name 'foo'
+  // which will be added to the scope by the parser, but the function name
+  // and thus call-name is 'bar'.
+  std::size_t idx_fn_name = 1; // "1" since 'ans' is always added first
+
+  for (auto p : fcn.scope ().symbols ())
+    {
+      std::string name = p.first;
+      symbol_record sym = p.second;
+      std::size_t offset = sym.data_offset ();
+
+      bool is_fn_id = offset == idx_fn_name; // Are we at the function name id?
+
+      auto it = m_map_locals_to_slot.find (name);
+      if (it == m_map_locals_to_slot.end ())
+        {
+          if (is_fn_id)
+            {
+              // Add the function name id to the table and add the correct external offset.
+              // (The name might not be the call-name of the function.)
+              int slot = add_id_to_table (name);
+              m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = slot;
+            }
+          else
+            continue;
+        }
+
+      if (name == "varargin")
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("varargin");
+      else if (name == "varargout")
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("varargout");
+      else if (name == "ans")
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("ans");
+    }
+
+  PUSH_CODE (INSTR::ENTER_SCRIPT_FRAME); // Special opcode to steal the "eval scopes" values
+
+  CHECK_NONNULL (cmd_list);
+  cmd_list->accept (*this);
+
+  // EXIT_SCRIPT_FRAME is put before each RET during the walk.
+
+  // Set the amount of locals that has a placeholder since earlier
+  SET_CODE_SHORT (m_offset_n_locals, m_n_locals);
+
+  // We want to add the locals to the scope in slot order
+  // so we push all the locals' names to a vector by their slot
+  // number
+  unsigned n_slots = m_map_locals_to_slot.size ();
+  CHECK (n_slots == static_cast<unsigned> (m_n_locals));
+  std::vector<std::string> names (n_slots);
+
+  auto iter = m_map_locals_to_slot.begin ();
+  for (unsigned i = 0; i < n_slots; i++)
+    {
+      auto kv = *iter++;
+
+      const std::string& name = kv.first;
+      int slot = kv.second;
+
+      CHECK (slot >= 0 && slot < static_cast<int> (n_slots));
+      CHECK (names[slot] == ""); // Check not duplicate slot number used
+
+      names[slot] = name;
+    }
+
+  // Check that the mapping between external offsets and internal slots has no holes in it
+  int i = 0;
+  for (auto it : m_code.m_unwind_data.m_external_frame_offset_to_internal)
+    {
+      int external_offset = it.first;
+      CHECK (external_offset == i);
+      i++;
+    }
+
+  // The profiler needs to know these sizes when copying from pointers.
+  m_code.m_unwind_data.m_code_size = m_code.m_code.size ();
+  m_code.m_unwind_data.m_ids_size = m_code.m_ids.size ();
+}
+
+void
+bytecode_walker::
 visit_octave_user_function (octave_user_function& fcn)
 {
   m_code.m_unwind_data.m_name = fcn.name ();
@@ -2711,6 +2852,9 @@ emit_return ()
           ERR("Invalid state");
         }
     }
+
+  if (m_is_script)
+    PUSH_CODE (INSTR::EXIT_SCRIPT_FRAME);
 
   PUSH_CODE (INSTR::RET);
 }

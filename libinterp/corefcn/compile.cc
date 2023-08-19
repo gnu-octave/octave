@@ -285,9 +285,9 @@ Prints the bytecode of a function, if any.
 
   octave_user_function *ufn = ov.user_function_value ();
 
-  if (!ufn || !ufn->is_user_function ())
+  if (!ufn || (!ufn->is_user_function () && !ufn->is_user_script ()))
     {
-      error ("Function not a user function: %s", fn_name.c_str ());
+      error ("Function not a user function or script: %s", fn_name.c_str ());
     }
 
   if (!ufn->is_compiled () && V__enable_vm_eval__)
@@ -389,16 +389,16 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
         error ("Function not defined: %s", name.c_str ());
       }
 
-    if (! ov.is_user_function ())
+    if (!ov.is_user_function () && !ov.is_user_script ())
       {
-        error ("Function is not a user function: %s", name.c_str ());
+        error ("Function is not a user function or script: %s", name.c_str ());
       }
 
-    octave_user_function *ufn = ov.user_function_value ();
+    octave_user_code *ufn = ov.user_code_value ();
 
-    if (!ufn || !ufn->is_user_function ())
+    if (!ufn || (!ufn->is_user_function () && !ufn->is_user_script ()))
       {
-        error ("Function is not really a user function: %s", name.c_str ());
+        error ("Function is not really user function or script: %s", name.c_str ());
       }
 
     // Throws on errors

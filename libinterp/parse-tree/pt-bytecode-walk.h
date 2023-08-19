@@ -42,7 +42,7 @@ class octave_user_function;
 
 namespace octave
 {
-  void compile_user_function (octave_user_function &fn, bool print);
+  void compile_user_function (octave_user_code &fn, bool print);
 
   // No separate visitor needed
   // Base classes only, so no need to include them.
@@ -152,6 +152,7 @@ namespace octave
     symbol_scope m_scope;
 
     bool m_varargout = false;
+    bool m_is_script = false;
 
     std::vector<std::vector<int>> m_continue_target;
     std::vector<std::vector<int>> m_need_break_target;
@@ -273,7 +274,7 @@ namespace octave
 
     void visit_spmd_command (tree_spmd_command&) ERROR_NOT_IMPLEMENTED
 
-    void visit_octave_user_script (octave_user_script&) ERROR_NOT_IMPLEMENTED
+    void visit_octave_user_script (octave_user_script&);
 
     void visit_octave_user_function (octave_user_function&);
 

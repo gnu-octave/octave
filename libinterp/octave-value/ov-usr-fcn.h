@@ -120,7 +120,22 @@ public:
 
   octave_value dump () const;
 
+  void set_bytecode (octave::bytecode &bytecode)
+  {
+    m_bytecode = bytecode;
+  }
+
+  void clear_bytecode ();
+
+  bool is_compiled () const { return m_bytecode.m_code.size (); }
+
+  octave::bytecode &get_bytecode () { return m_bytecode; }
+
+  bool m_compilation_failed = false;
+
 protected:
+
+  octave::bytecode m_bytecode;
 
   void get_file_info ();
 
@@ -241,6 +256,8 @@ public:
 
   int ending_line () const { return m_end_location_line; }
   int ending_column () const { return m_end_location_column; }
+
+  octave::symbol_scope scope (void) { return m_scope; }
 
   void maybe_relocate_end ();
 
@@ -400,33 +417,7 @@ public:
 
   octave_value dump () const;
 
-  void set_bytecode (octave::bytecode &bytecode)
-  {
-    m_bytecode = bytecode;
-  }
-
-  void clear_bytecode ()
-  {
-    m_bytecode = octave::bytecode {};
-
-    auto subs = subfunctions ();
-    for (auto kv : subs)
-      {
-        octave_user_function *sub = kv.second.user_function_value ();
-        if (sub)
-          sub->clear_bytecode ();
-      }
-  }
-
-  bool is_compiled () const { return m_bytecode.m_code.size (); }
-
-  octave::bytecode &get_bytecode () { return m_bytecode; }
-
-  bool m_compilation_failed = false;
-
 private:
-
-  octave::bytecode m_bytecode;
 
   enum class_method_type
   {

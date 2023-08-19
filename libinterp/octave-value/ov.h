@@ -50,6 +50,7 @@ class stack_frame;
 class type_info;
 class vm;
 class bytecode_fcn_stack_frame;
+class scope_stack_frame;
 
 OCTAVE_END_NAMESPACE(octave)
 
@@ -1546,6 +1547,7 @@ protected:
   friend class octave_value_vm;
   friend class octave::vm;
   friend class octave::bytecode_fcn_stack_frame;
+  friend class octave::scope_stack_frame;
 
   bool is_ref () const { return m_rep->is_ref (); }
 

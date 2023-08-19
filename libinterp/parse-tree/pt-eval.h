@@ -443,6 +443,10 @@ public:
 
   void push_stack_frame (vm &vm, octave_user_function *fcn, int nargout, int nargin);
 
+  void push_stack_frame (vm &vm, octave_user_script *fcn, int nargout, int nargin);
+
+  void push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin);
+
   void pop_stack_frame ();
 
   std::shared_ptr<stack_frame> pop_return_stack_frame ();

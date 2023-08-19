@@ -24,6 +24,7 @@ compile_TEST_FILES = \
   %reldir%/bytecode_persistant.m \
   %reldir%/bytecode_range.m \
   %reldir%/bytecode_return.m \
+  %reldir%/bytecode_scripts.m \
   %reldir%/bytecode_struct.m \
   %reldir%/bytecode_subfuncs.m \
   %reldir%/bytecode_subsasgn.m \
@@ -39,6 +40,10 @@ compile_TEST_FILES = \
   %reldir%/inputname_args.m \
   %reldir%/just_call_handle_with_arg.m \
   %reldir%/return_isargout.m \
+  %reldir%/script1.m \
+  %reldir%/script11.m \
+  %reldir%/script2.m \
+  %reldir%/script3.m \
   %reldir%/shutup_operator_test/@double/display.m \
   %reldir%/shutup_operator_test/@logical/display.m \
   %reldir%/shutup_operator_test/bytecode_disp.m \

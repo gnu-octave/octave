@@ -78,7 +78,7 @@ public:
   bytecode_fcn_stack_frame (void) = delete;
 
   bytecode_fcn_stack_frame (tree_evaluator& tw,
-                            octave_user_function *fcn,
+                            octave_user_code *fcn,
                             std::size_t index,
                             const std::shared_ptr<stack_frame>& parent_link,
                             const std::shared_ptr<stack_frame>& static_link,
@@ -236,8 +236,8 @@ public:
         octave_value ov1 = varval (sym_scope);
         octave_value ov2 = varval (scope_name);
         octave_value ov3 = varval (scope_offset);
-        octave_value ov4 = varref (sym_scope);
-        octave_value ov5 = varref (scope_offset);
+        octave_value ov4 = varref (sym_scope, true);
+        octave_value ov5 = varref (scope_offset, true);
 
         if (!ov1.same_rep (ov2))
           error ("VM stack check failed: Same object differs 2\n");
@@ -278,7 +278,7 @@ public:
         // Restore warningstates
         if (m_fcn)
           {
-            auto usr_fn_p = m_fcn->user_function_value ();
+            auto usr_fn_p = m_fcn->user_function_value (true);
             if (usr_fn_p)
               usr_fn_p->restore_warning_states (); // TODO: octave_user_function::restore_warning_states() could be static.
           }
@@ -410,6 +410,7 @@ public:
         return LOCAL;
       }
 
+    // TODO: Could use code above instead?
     size_t extra_offset = local_offset - m_size;
     if (m_lazy_data && extra_offset < m_lazy_data->m_extra_flags.size ())
       return m_lazy_data->m_extra_flags.at (local_offset - m_size);
@@ -419,19 +420,31 @@ public:
 
   void set_scope_flag (std::size_t external_offset, scope_flags flag)
   {
-    std::size_t local_offset = external_to_local_offset (external_offset);
-    if (local_offset >= m_size)
-      {
-        if (!m_lazy_data)
-          error ("VM internal error: Trying to set scope flag on invalid offset");
-        m_lazy_data->m_extra_flags.at (local_offset - m_size) = flag;
-        return;
-      }
-
     scope_flags current_flag = get_scope_flag (external_offset);
 
     bool is_global = current_flag == GLOBAL;
     bool is_pers = current_flag == PERSISTENT;
+
+    std::size_t local_offset = external_to_local_offset (external_offset);
+
+    octave_value *ov; // Pointer to the slot
+    std::string name; // Used for globals
+
+    if (local_offset >= m_size)
+      {
+        if (!m_lazy_data)
+          error ("VM internal error: Trying to set scope flag on invalid offset");
+
+        m_lazy_data->m_extra_flags.at (local_offset - m_size) = flag;
+
+        ov = &m_lazy_data->m_extra_slots.at (local_offset - m_size);
+        name = m_lazy_data->m_extra_names.at (local_offset - m_size);
+      }
+    else
+      {
+        ov = &m_stack_start [local_offset].ov;
+        name = m_name_data [local_offset];
+      }
 
     if (flag == GLOBAL)
       {
@@ -440,8 +453,7 @@ public:
         if (is_pers)
           error ("VM internal error: Trying to make persistent variable global");
 
-        octave_value &ov = m_stack_start [local_offset].ov;
-        ov = octave_value {new octave_value_ref_global {m_name_data [local_offset]}};
+        *ov = octave_value {new octave_value_ref_global {name}};
 
         return;
       }
@@ -453,8 +465,7 @@ public:
         if (is_global)
           error ("VM internal error: Trying to make global variable persistent");
 
-        octave_value &ov = m_stack_start [local_offset].ov;
-        ov = octave_value {new octave_value_ref_persistent {get_scope (), static_cast<int> (external_offset)}};
+        *ov = octave_value {new octave_value_ref_persistent {get_scope (), static_cast<int> (external_offset)}};
 
         return;
       }
@@ -468,8 +479,7 @@ public:
         if (is_global || is_pers)
           {
             // Clear the ref in its slot
-            octave_value& ov_ref = m_stack_start [local_offset].ov;
-            ov_ref = octave_value {};
+            *ov = octave_value {};
           }
 
         return;
@@ -619,7 +629,10 @@ public:
         std::size_t extra_offset = local_offset - stack_slots;
         if (!m_lazy_data || extra_offset >= extra_size)
           error ("VM internal error: Trying to access extra slot out of range, %zu", extra_offset);
-        return m_lazy_data->m_extra_slots.at (extra_offset);
+        octave_value ov = m_lazy_data->m_extra_slots.at (extra_offset);
+        if (ov.is_ref ())
+          return ov.ref_rep ()->deref ();
+        return ov;
       }
   }
 
@@ -632,9 +645,36 @@ public:
     std::size_t external_offset = sym.data_offset ();
     std::size_t local_offset = external_to_local_offset (external_offset);
 
-    // If the offset is out of range we return a nil ov
+    // If the offset is out of range we return a nil ov, unless this is a script frame,
+    // in which case we need to look in enclosing frames for the symbol.
+    //
+    // Normaly any symbol will be moved to the current script frame, but a call to eval might
+    // refer to a symbol in an enclosing frame that has not been moved.
     if (local_offset >= internal_size ())
-      return {};
+      {
+        if (!m_fcn->is_user_script ())
+          return {};
+        else
+          {
+            // Look in the enclosing frames for the symbol
+            auto frame = access_link ();
+            std::string name = sym.name ();
+
+            while (frame)
+            {
+              symbol_scope scope = frame->get_scope ();
+
+              symbol_record rec = scope.lookup_symbol (name);
+
+              if (rec)
+                return frame->varval (rec);
+
+              frame = frame->access_link ();
+            }
+
+            return {}; // Nothing found
+          }
+      }
     if (local_offset >= m_size)
       {
         std::string nm_src = sym.name ();
@@ -659,7 +699,7 @@ public:
     return varval (external_offset);
   }
 
-  octave_value& varref (std::size_t external_offset)
+  octave_value& varref (std::size_t external_offset, bool deref_refs)
   {
     static octave_value fake_dummy_nargout{0};
 
@@ -675,7 +715,7 @@ public:
     if (local_offset < stack_slots)
       {
         octave_value &ov = m_stack_start [local_offset].ov;
-        if (ov.is_ref ())
+        if (deref_refs && ov.is_ref ())
           return ov.ref_rep ()->ref ();
         return ov;
       }
@@ -684,12 +724,16 @@ public:
         std::size_t extra_offset = local_offset - stack_slots;
         if (!m_lazy_data || extra_offset >= extra_size)
           error ("VM internal error: Trying to access extra slot out of range, %zu", extra_offset);
-        return m_lazy_data->m_extra_slots.at (extra_offset);
+        octave_value &ov = m_lazy_data->m_extra_slots.at (extra_offset);
+        if (deref_refs && ov.is_ref ())
+          return ov.ref_rep ()->ref ();
+        return ov;
       }
   }
 
-  octave_value& varref (const symbol_record& sym)
+  octave_value& varref (const symbol_record& sym, bool deref_refs)
   {
+    bool add_to_parent_scriptframes = false;
     std::size_t external_offset = sym.data_offset ();
     std::size_t local_offset = external_to_local_offset (external_offset);
 
@@ -698,7 +742,13 @@ public:
 
     // If the offset is out of range we make room for it
     if (local_offset >= internal_size ())
+    {
       internal_resize (local_offset + 1);
+
+      // If this bytecode frame is a script we need to add the symbol to the parent frames
+      if (m_fcn->is_user_script ())
+        add_to_parent_scriptframes = true;
+    }
     if (local_offset >= m_size)
       {
         std::string nm_src = sym.name ();
@@ -720,12 +770,53 @@ public:
     if (is_pers)
       return get_scope ().persistent_varref(external_offset);
 
-    return varref (external_offset);
+    if (!add_to_parent_scriptframes)
+      return varref (external_offset, deref_refs);
+    else
+      {
+        // Mirrors what happens in vm_enter_script ().
+        // Essentially the octave_value in the enclosing script frame
+        // is stolen and put in this frame, and a pointer to the value in this
+        // frame is put in the enclosing frame.
+
+        std::string name = sym.name ();
+
+        auto eval_frame = access_link ();
+        auto eval_scope = eval_frame->get_scope ();
+
+        symbol_record eval_scope_sr;
+
+        const std::map<std::string, symbol_record>& eval_scope_symbols
+          = eval_scope.symbols ();
+
+        auto p = eval_scope_symbols.find (name);
+
+        if (p == eval_scope_symbols.end ())
+          eval_scope_sr = eval_scope.insert (name);
+        else
+          eval_scope_sr = p->second;
+
+        octave_value &p_ov = varref (external_offset, false); // Pointer to current VM stack frame
+        octave_value &orig = eval_frame->varref (eval_scope_sr, false); // Ref to value on parent's VM stack
+        p_ov = orig; // Move parent's value to current stack frame
+        orig = octave_value (new octave_value_ref_vmlocal {sym, this}); // Replace parents value with reference ov.
+
+        // We need to do the opposite when unwinding.
+        lazy_data ().m_script_sr_originals.push_back (eval_scope_sr);
+        lazy_data ().m_script_local_refs.push_back (sym);
+
+        return p_ov;
+      }
   }
 
   void mark_scope (const symbol_record& sym,
                    scope_flags flag)
   {
+    bool was_global = is_global (sym);
+    bool is_script = m_lazy_data && m_lazy_data->m_is_script;
+    bool add_global_to_scripts = flag == GLOBAL && is_script;
+    bool remove_global_from_scripts = flag != GLOBAL && is_script && was_global;
+
     std::size_t external_offset = sym.data_offset ();
     std::size_t local_offset = external_to_local_offset (external_offset);
 
@@ -733,6 +824,69 @@ public:
       internal_resize (local_offset + 1);
 
     set_scope_flag (external_offset, flag);
+
+    // If we are executing a bytecode script, we need to mark a symbol as global in
+    // the nesting frames too. Likewise, if we are to "unglobal" a symbol in a
+    // bytecode script, we need to unglobal the symbol in all nesting bytecode script frames.
+    //
+    // TODO: Refactor
+    if (add_global_to_scripts || remove_global_from_scripts)
+      {
+        auto parent_frame = parent_link ();
+        auto nesting_frame = access_link ();
+
+        bool do_access_frame = nesting_frame == parent_frame;
+
+        if (!parent_frame->is_bytecode_fcn_frame ())
+          do_access_frame = true;
+
+        auto f = static_cast<bytecode_fcn_stack_frame*> (parent_frame.get ());
+        bool f_is_script = f->m_lazy_data && f->m_lazy_data->m_is_script;
+        if (!f_is_script)
+          do_access_frame = true;
+
+        // TODO: Make not recursive to allow deep stacks.
+        if (do_access_frame)
+          {
+            auto scope = nesting_frame->get_scope ();
+            const auto &symbols = scope.symbols ();
+            auto p = symbols.find (sym.name ());
+            symbol_record sr;
+
+            if (add_global_to_scripts && p == symbols.end ())
+              sr = scope.insert (sym.name ());
+            else if (remove_global_from_scripts && p == symbols.end ())
+              return;
+            else
+              sr = p->second;
+
+            // If top scope, clear slot without following refs. mark_scope() does this in itself
+            // for bytecode frames' mark_scope().
+            if (!nesting_frame->is_bytecode_fcn_frame ())
+              {
+                octave_value &ov = nesting_frame->varref (sr, false);
+                ov = {};
+              }
+
+            nesting_frame->mark_scope (sr, flag); // Will call parent bytecode scripts recursively
+          }
+        else
+          {
+            auto scope = f->get_scope ();
+            const auto &symbols = scope.symbols ();
+            auto p = symbols.find (sym.name ());
+            symbol_record sr;
+
+            if (add_global_to_scripts && p == symbols.end ())
+              sr = scope.insert (sym.name ());
+            else if (remove_global_from_scripts && p == symbols.end ())
+              return;
+            else
+              sr = p->second;
+
+            f->mark_scope (sr, flag); // Will call parent bytecode scripts recursively
+          }
+      }
   }
 
   bool is_bytecode_fcn_frame (void) const { return true; }
@@ -869,7 +1023,98 @@ public:
 
   std::weak_ptr<stack_frame> m_weak_ptr_to_self;
 
-private:
+  void vm_enter_script ()
+  {
+    lazy_data ().m_is_script = true;
+
+    auto eval_frame = access_link ();
+    auto eval_scope = eval_frame->get_scope ();
+
+    if (!m_fcn->is_user_script ())
+      panic ("Invalid call to vm_enter_script ()");
+
+    auto script_scope = m_fcn->scope ();
+    std::size_t num_script_symbols = script_scope.num_symbols ();
+    resize (num_script_symbols);
+
+    const std::map<std::string, symbol_record>& script_symbols
+      = script_scope.symbols ();
+    const std::map<std::string, symbol_record>& eval_scope_symbols
+      = eval_scope.symbols ();
+
+    // We want to steal all named ov:s of the eval scope, replace them
+    // with references and put the ov:s on the VM stack
+
+    for (const auto& nm_sr : script_symbols)
+      {
+        std::string name = nm_sr.first;
+        symbol_record script_sr = nm_sr.second;
+
+        auto p = eval_scope_symbols.find (name);
+
+        symbol_record eval_scope_sr;
+
+        if (p == eval_scope_symbols.end ())
+          eval_scope_sr = eval_scope.insert (name); // TODO: Does this work with nested nested scripts? Do we need to add to all scopes?
+        else
+          eval_scope_sr = p->second;
+
+        stack_frame::scope_flags flag = eval_frame->scope_flag (eval_scope_sr);
+
+        if (flag == stack_frame::scope_flags::GLOBAL)
+          {
+            mark_global (script_sr);
+          }
+        else
+          {
+            octave_value &orig = eval_frame->varref (eval_scope_sr, false); // Ref to value on parent's VM stack
+            octave_value &p_ov = varref (script_sr, false); // Pointer to current VM stack frame
+
+            p_ov = orig; // Move parent's value to current stack frame
+            orig = octave_value (new octave_value_ref_vmlocal {script_sr, this}); // Replace parents value with reference ov.
+
+            // We need to do the opposite when unwinding.
+            lazy_data ().m_script_sr_originals.push_back (eval_scope_sr);
+            lazy_data ().m_script_local_refs.push_back (script_sr);
+          }
+      }
+  }
+
+  void vm_exit_script ()
+  {
+    // Restore values from the VM stack frame to the original frame
+
+    if (!m_lazy_data || m_lazy_data->m_is_script != true)
+      return;
+
+    auto eval_frame = access_link ();
+    auto eval_scope = eval_frame->get_scope ();
+
+    if (!m_fcn->is_user_script ())
+      panic ("Invalid call to vm_exit_script (). Not an user script.");
+
+    auto &script_sr_originals = lazy_data ().m_script_sr_originals;
+    auto &script_local_refs = lazy_data ().m_script_local_refs;
+
+    std::size_t n = script_sr_originals.size ();
+
+    for (unsigned i = 0; i < n; i++)
+      {
+        symbol_record sr_orig = script_sr_originals[i];
+        symbol_record sr_this = script_local_refs[i];
+
+        if (is_global (sr_this))
+          continue;
+        if (is_persistent (sr_this))
+          continue;
+
+        octave_value &ref = varref (sr_this, false);
+        octave_value &orig_ref = eval_frame->varref (sr_orig, false);
+        orig_ref = ref;
+        ref = octave_value {};
+      }
+  }
+
   // To keep down the footprint of the frame some seldom used
   // variables are lazy initialized and stored in *m_lazy_data
   struct lazy_data_struct
@@ -884,6 +1129,10 @@ private:
 
     unwind_protect *m_unwind_protect_frame = nullptr;
     stack_element *m_stack_cpy = nullptr;
+    bool m_is_script;
+
+    std::vector<symbol_record> m_script_sr_originals;
+    std::vector<symbol_record> m_script_local_refs;
   };
 
   lazy_data_struct & lazy_data ()
@@ -895,7 +1144,8 @@ private:
 
   lazy_data_struct *m_lazy_data = nullptr;
 
-  octave_function *m_fcn;
+private:
+  octave_user_code *m_fcn;
 
   unwind_data *m_unwind_data;
 
@@ -985,12 +1235,12 @@ public:
     return m_static_link->varval (sym);
   }
 
-  octave_value& varref (const symbol_record& sym)
+  octave_value& varref (const symbol_record& sym, bool deref_refs)
   {
     // Look in closest stack frame that contains values (either the
     // top scope, or a user-defined function or script).
 
-    return m_static_link->varref (sym);
+    return m_static_link->varref (sym, deref_refs);
   }
 
   void mark_scope (const symbol_record& sym, scope_flags flag)
@@ -1116,7 +1366,7 @@ public:
 
   octave_value varval (const symbol_record& sym) const;
 
-  octave_value& varref (const symbol_record& sym);
+  octave_value& varref (const symbol_record& sym, bool deref_refs);
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -1233,7 +1483,7 @@ public:
     return m_values.at (data_offset);
   }
 
-  octave_value& varref (std::size_t data_offset)
+  octave_value& varref (std::size_t data_offset, bool)
   {
     return m_values.at (data_offset);
   }
@@ -1356,7 +1606,7 @@ public:
 
   octave_value varval (const symbol_record& sym) const;
 
-  octave_value& varref (const symbol_record& sym);
+  octave_value& varref (const symbol_record& sym, bool deref_refs);
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -1426,7 +1676,7 @@ public:
 
   octave_value varval (const symbol_record& sym) const;
 
-  octave_value& varref (const symbol_record& sym);
+  octave_value& varref (const symbol_record& sym, bool deref_refs);
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -1983,12 +2233,48 @@ stack_frame *stack_frame::create (tree_evaluator& tw,
   return new scope_stack_frame (tw, scope, index, parent_link, static_link);
 }
 
-std::shared_ptr<stack_frame>
-stack_frame::create_bytecode (tree_evaluator& tw, octave_user_function *fcn,
-                              vm &vm, std::size_t index,
-                              const std::shared_ptr<stack_frame>& parent_link,
-                              const std::shared_ptr<stack_frame>& static_link,
-                              int nargout, int nargin)
+std::shared_ptr<stack_frame> stack_frame::create_bytecode (
+                   tree_evaluator& tw,
+                   octave_user_script *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   int nargout, int nargin)
+{
+  auto frame = create_bytecode (tw, static_cast<octave_user_code*> (fcn), vm, index, parent_link, static_link, nargout, nargin);
+
+  std::shared_ptr<stack_frame> eval_frame = static_link;
+
+  while (true)
+    {
+      if (eval_frame->is_user_script_frame ())
+        eval_frame = eval_frame->access_link ();
+      else if (eval_frame->is_bytecode_fcn_frame ())
+        {
+          bytecode_fcn_stack_frame *bcf = static_cast<bytecode_fcn_stack_frame *> (eval_frame.get ());
+          if (bcf->m_lazy_data && bcf->m_lazy_data->m_is_script)
+            eval_frame = eval_frame->access_link ();
+          else
+            break;
+        }
+      else
+        break;
+    }
+
+  frame->m_access_link = eval_frame;
+
+  return frame;
+}
+
+std::shared_ptr<stack_frame> stack_frame::create_bytecode (
+                   tree_evaluator& tw,
+                   octave_user_code *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   int nargout, int nargin)
 {
   // If we have any cached shared_ptr to empty bytecode_fcn_stack_frame objects
   // we use on of those
@@ -2270,7 +2556,7 @@ octave_value stack_frame::varval (std::size_t) const
   panic_impossible ();
 }
 
-octave_value& stack_frame::varref (std::size_t)
+octave_value& stack_frame::varref (std::size_t, bool)
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -2903,7 +3189,7 @@ octave_value script_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& script_stack_frame::varref (const symbol_record& sym)
+octave_value& script_stack_frame::varref (const symbol_record& sym, bool deref_refs)
 {
   std::size_t frame_offset;
   std::size_t data_offset;
@@ -2926,7 +3212,7 @@ octave_value& script_stack_frame::varref (const symbol_record& sym)
   switch (frame->get_scope_flag (data_offset))
     {
     case LOCAL:
-      return frame->varref (data_offset);
+      return frame->varref (data_offset, deref_refs);
 
     case PERSISTENT:
       {
@@ -3235,7 +3521,7 @@ octave_value user_fcn_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& user_fcn_stack_frame::varref (const symbol_record& sym)
+octave_value& user_fcn_stack_frame::varref (const symbol_record& sym, bool deref_refs)
 {
   std::size_t frame_offset = sym.frame_offset ();
   std::size_t data_offset = sym.data_offset ();
@@ -3257,7 +3543,7 @@ octave_value& user_fcn_stack_frame::varref (const symbol_record& sym)
   switch (frame->get_scope_flag (data_offset))
     {
     case LOCAL:
-      return frame->varref (data_offset);
+      return frame->varref (data_offset, deref_refs);
 
     case PERSISTENT:
       {
@@ -3374,8 +3660,13 @@ octave_value scope_stack_frame::varval (const symbol_record& sym) const
   switch (get_scope_flag (data_offset))
     {
     case LOCAL:
-      return m_values.at (data_offset);
-
+      {
+        octave_value ov = m_values.at (data_offset);
+        if (ov.is_ref ())
+          return ov.ref_rep ()->deref ();
+        else
+          return ov;
+      }
     case PERSISTENT:
       return m_scope.persistent_varval (data_offset);
 
@@ -3386,7 +3677,7 @@ octave_value scope_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& scope_stack_frame::varref (const symbol_record& sym)
+octave_value& scope_stack_frame::varref (const symbol_record& sym, bool deref_refs)
 {
   // There is no access link for scope frames, so the frame
   // offset must be zero.
@@ -3399,8 +3690,13 @@ octave_value& scope_stack_frame::varref (const symbol_record& sym)
   switch (get_scope_flag (data_offset))
     {
     case LOCAL:
-      return m_values.at (data_offset);
-
+      {
+        octave_value &ov = m_values.at (data_offset);
+        if (deref_refs && ov.is_ref ())
+          return ov.ref_rep ()->ref ();
+        else
+          return ov;
+      }
     case PERSISTENT:
       return m_scope.persistent_varref (data_offset);
 

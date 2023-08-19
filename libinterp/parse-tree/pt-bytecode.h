@@ -182,6 +182,8 @@ enum class INSTR
   SET_FOLDED_CST,
   WIDE,
   SUBASSIGN_ID_MAT_2D,
+  ENTER_SCRIPT_FRAME,
+  EXIT_SCRIPT_FRAME,
 };
 
 enum class unwind_entry_type

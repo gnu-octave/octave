@@ -186,7 +186,16 @@ public:
   // Bytecode function stackframe
   static std::shared_ptr<stack_frame>
   create_bytecode (tree_evaluator& tw,
-                   octave_user_function *fcn,
+                   octave_user_code *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   int nargout, int nargin);
+
+  static std::shared_ptr<stack_frame>
+  create_bytecode (tree_evaluator& tw,
+                   octave_user_script *fcn,
                    vm &vm,
                    std::size_t index,
                    const std::shared_ptr<stack_frame>& parent_link,
@@ -466,9 +475,9 @@ public:
     return sym ? varval (sym) : octave_value ();
   }
 
-  virtual octave_value& varref (const symbol_record& sym) = 0;
+  virtual octave_value& varref (const symbol_record& sym, bool deref_refs = true) = 0;
 
-  virtual octave_value& varref (std::size_t data_offset);
+  virtual octave_value& varref (std::size_t data_offset, bool deref_refs = true);
 
   void assign (const symbol_record& sym, const octave_value& val)
   {
@@ -590,6 +599,8 @@ public:
   virtual void vm_unwinds () {}
   virtual void vm_dbg_check_scope () {}
   virtual void vm_clear_for_cache () {}
+  virtual void vm_enter_script () {}
+  virtual void vm_exit_script () {}
 
 protected:
 

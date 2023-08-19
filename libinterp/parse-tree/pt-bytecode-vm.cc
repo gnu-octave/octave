@@ -258,6 +258,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           PRINT_OP (PUSH_DBL_0);
           PRINT_OP (PUSH_DBL_1);
           PRINT_OP (PUSH_DBL_2);
+          PRINT_OP (ENTER_SCRIPT_FRAME);
+          PRINT_OP (EXIT_SCRIPT_FRAME);
 
           CASE_START (WIDE)
             wide_opext_active = true;
@@ -838,6 +840,8 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&set_folded_cst,                                    // SET_FOLDED_CST,
       &&wide,                                              // WIDE
       &&subassign_id_mat_2d,
+      &&enter_script_frame,
+      &&exit_script_frame,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -2145,7 +2149,7 @@ querry_fcn_cache:
           }
         else if (fcn->is_compiled ())
           {
-            octave_user_function *usr_fcn = static_cast<octave_user_function *> (fcn);
+            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
 
             // Alot of code in this define
             MAKE_BYTECODE_CALL
@@ -3769,7 +3773,7 @@ querry_fcn_cache2:
 
         if (fcn->is_compiled ())
           {
-            octave_user_function *usr_fcn = static_cast<octave_user_function *> (fcn);
+            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
             // Alot of code in this define
             bool has_cs_list_arg = false;
             MAKE_BYTECODE_CALL
@@ -4111,7 +4115,7 @@ querry_fcn_cache3:
 
         if (fcn->is_compiled ())
           {
-            octave_user_function *usr_fcn = static_cast<octave_user_function *> (fcn);
+            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
             // Alot of code in this define
             MAKE_BYTECODE_CALL
 
@@ -4425,7 +4429,12 @@ unwind:
             goto bail_unwind;
           }
 
-        m_tw->get_current_stack_frame ()->vm_unwinds ();
+        if (!m_could_not_push_frame)
+          {
+            auto sf = m_tw->get_current_stack_frame ();
+            sf->vm_exit_script ();
+            sf->vm_unwinds ();
+          }
 
         // Destroy locals down to nargout
         while (m_sp != m_bsp + 1)
@@ -4523,7 +4532,7 @@ init_global:
     octave_value &ov_slot = bsp[slot].ov;
     bool slot_already_live = ov_slot.is_defined ();
 
-    bool is_marked_in_VM = ov_slot.is_ref ();
+    bool is_marked_in_VM = ov_slot.is_ref (); // TODO: Can this be other refs?
 
     // The next instruction is whether the global declare has an
     // initialization value
@@ -5390,7 +5399,7 @@ querry_fcn_cache_index_obj:
 
         if (fcn->is_compiled ())
           {
-            octave_user_function *usr_fcn = static_cast<octave_user_function *> (fcn);
+            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
             // Alot of code in this define
             MAKE_BYTECODE_CALL
 
@@ -5802,6 +5811,18 @@ debug: // TODO: Remove
     ip += 2; // Forward ip so it points to after the widened argument
     goto *instr [opcode];
   }
+  enter_script_frame:
+  {
+    auto fp = m_tw->get_current_stack_frame ();
+    fp->vm_enter_script ();
+  }
+  DISPATCH_1BYTEOP ();
+  exit_script_frame:
+  {
+    auto fp = m_tw->get_current_stack_frame ();
+    fp->vm_exit_script ();
+  }
+  DISPATCH_1BYTEOP ();
 
   __builtin_unreachable ();
 }

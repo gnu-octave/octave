@@ -31,7 +31,7 @@
 #include "ov-base.h"
 #include "ovl.h"
 #include "symscope.h"
-
+#include "symrec.h"
 #include <string>
 #include <memory>
 
@@ -60,8 +60,9 @@ public:
     virtual octave_value & ref () = 0;
     virtual void maybe_save_state  () {};
 
-    virtual bool is_global_ref () { return false; }
-    virtual bool is_persistent_ref () { return false; }
+    virtual bool is_global_ref () const { return false; }
+    virtual bool is_persistent_ref () const { return false; }
+    virtual bool is_vmlocal_ref () const { return true; }
 
     void maybe_call_dtor ();
     octave_value simple_subsasgn (char type, octave_value_list& idx, const octave_value& rhs);
@@ -84,7 +85,7 @@ public:
     octave_value & ref ();
     void set_value (octave_value val);
 
-    bool is_global_ref () { return true; }
+    bool is_global_ref () const { return true; }
 
 private:
     std::string m_name;
@@ -105,11 +106,33 @@ public:
     octave_value & ref ();
     void set_value (octave_value val);
 
-    bool is_persistent_ref () { return true; }
+    bool is_persistent_ref () const { return true; }
 
 private:
     int m_offset;
     octave::symbol_scope m_scope;
+
+    DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+};
+
+class OCTINTERP_API
+octave_value_ref_vmlocal : public octave_value_ref
+{
+public:
+    octave_value_ref_vmlocal () = default;
+    ~octave_value_ref_vmlocal () = default;
+    octave_value_ref_vmlocal (octave::symbol_record sym, octave::stack_frame *frame)
+        : m_frame (frame), m_sym (sym) { }
+
+    octave_value deref ();
+    octave_value & ref ();
+    void set_value (octave_value val);
+
+    bool is_vmlocal_ref () const { return true; }
+
+private:
+    octave::stack_frame *m_frame = nullptr;
+    octave::symbol_record m_sym;
 
     DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

@@ -40,6 +40,11 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_value_ref_global,
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_value_ref_persistent,
                                      "global value persistent",
                                      "global value persistent");
+
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_value_ref_vmlocal,
+                                     "local vm value reference",
+                                     "local vm value reference");
+
 void
 octave_value_ref::maybe_call_dtor ()
 {
@@ -120,4 +125,22 @@ octave_value &
 octave_value_ref_persistent::ref ()
 {
   return m_scope.persistent_varref (m_offset);
+}
+
+octave_value &
+octave_value_ref_vmlocal::ref ()
+{
+  return m_frame->varref (m_sym);
+}
+
+octave_value
+octave_value_ref_vmlocal::deref ()
+{
+  return m_frame->varval (m_sym);
+}
+
+void
+octave_value_ref_vmlocal::set_value (octave_value val)
+{
+  m_frame->varref (m_sym) = val;
 }

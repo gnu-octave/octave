@@ -2472,6 +2472,20 @@ void tree_evaluator::push_stack_frame (vm &vm, octave_user_function *fcn, int na
   m_call_stack.push (vm, fcn, nargout, nargin);
 }
 
+void tree_evaluator::push_stack_frame (vm &vm, octave_user_script *fcn, int nargout, int nargin)
+{
+  m_call_stack.push (vm, fcn, nargout, nargin);
+}
+
+void tree_evaluator::push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin)
+{
+  if (fcn->is_user_function ())
+    m_call_stack.push (vm, static_cast<octave_user_function*> (fcn), nargout, nargin);
+  else
+    m_call_stack.push (vm, static_cast<octave_user_script*> (fcn), nargout, nargin);
+}
+
+
 void tree_evaluator::pop_stack_frame ()
 {
   m_call_stack.pop ();
@@ -3459,24 +3473,56 @@ tree_evaluator::execute_user_script (octave_user_script& user_script,
   if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
     error ("max_recursion_depth exceeded");
 
-  unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
+  // Check if it has been compiled and execute the bytecode if so
+  if (user_script.is_compiled ())
+    {
+      bytecode &bc = user_script.get_bytecode ();
 
-  profiler::enter<octave_user_script> block (m_profiler, user_script);
+      vm vm (this, bc);
 
-  if (echo ())
-    push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
+      // Pushes a bytecode stackframe. nargin is set inside the VM.
+      push_stack_frame (vm, &user_script, 0, 0);
 
-  // FIXME: Should we be using tree_evaluator::eval here?
+      octave_value_list ret;
 
-  cmd_list->accept (*this);
+      try {
+        ret = vm.execute_code (args, 0);
+      } catch (std::exception &e) {
+        if (vm.m_dbg_proper_return == false)
+          {
+            std::cout << e.what () << std::endl;
+            // TODO: Replace with panic when the VM almost works
 
-  if (m_returning)
-    m_returning = 0;
+            // Some test code eats errors messages, so we print to stderr too.
+            fprintf (stderr, "VM error %d: " "Exception in script %s escaped the VM\n", __LINE__, user_script.name ().c_str());
+            error("VM error %d: " "Exception in script %s escaped the VM\n", __LINE__, user_script.name ().c_str());
+          }
+        throw;
+      }
 
-  if (m_breaking)
-    m_breaking--;
+      return ret;
+    }
+  else
+    {
+      unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
 
-  return retval;
+      profiler::enter<octave_user_script> block (m_profiler, user_script);
+
+      if (echo ())
+        push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
+
+      // FIXME: Should we be using tree_evaluator::eval here?
+
+      cmd_list->accept (*this);
+
+      if (m_returning)
+        m_returning = 0;
+
+      if (m_breaking)
+        m_breaking--;
+
+      return retval;
+    }
 }
 
 void

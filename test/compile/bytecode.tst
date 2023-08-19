@@ -661,3 +661,17 @@
 %!
 %! assert (n_c == __ref_count__ (c))
 %! assert (n_d == __ref_count__ (d))
+
+## Test scripts
+%!test
+%! __enable_vm_eval__ (0, "local");
+%! clear all
+%! key = "0 1 3 4 5 3 ";
+%! __compile__ bytecode_scripts clear;
+%! bytecode_scripts;
+%! assert (__prog_output_assert__ (key));
+%!
+%! __enable_vm_eval__ (1, "local");
+%! assert (__compile__ ("bytecode_scripts"));
+%! bytecode_scripts;
+%! assert (__prog_output_assert__ (key));

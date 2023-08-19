@@ -169,6 +169,8 @@ public:
 
   void push (vm &vm, octave_user_function *fcn, int nargout, int nargin);
 
+  void push (vm &vm, octave_user_script *fcn, int nargout, int nargin);
+
   void set_location (int l, int c)
   {
     if (! m_cs.empty ())

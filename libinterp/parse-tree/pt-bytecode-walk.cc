@@ -4362,9 +4362,9 @@ simple_visit_index_expression (tree_index_expression& expr)
               // in the end map(unary_mapper_t) will be called while executing,
               // unless the user have overriden those.
               // We do a special opcode for those to speed them up.
-              // Don't do the special opcode if it would need wide slots, i.e. slot nr > 256.
+              // Don't do the special opcode if it would need wide slots, i.e. slot nr >= 256.
               auto umaped_fn_it = m_name_to_unary_func.find (id_name);
-              if (!args || args->size () != 1 || umaped_fn_it == m_name_to_unary_func.end () || slot > 256)
+              if (!args || args->size () != 1 || umaped_fn_it == m_name_to_unary_func.end () || slot >= 256)
                 {
                   MAYBE_PUSH_WIDE_OPEXT (slot);
                   PUSH_CODE (INSTR::INDEX_ID_NARGOUT1);

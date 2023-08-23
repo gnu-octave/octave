@@ -35,7 +35,7 @@
 ##
 ## Each element of the 3-dimensional array @var{v} represents a scalar value at
 ## a location given by the parameters @var{x}, @var{y}, and @var{z}.  The
-## parameters @var{x}, @var{x}, and @var{z} are either 3-dimensional arrays of
+## parameters @var{x}, @var{y}, and @var{z} are either 3-dimensional arrays of
 ## the same size as the array @var{v} in the @qcode{"meshgrid"} format or
 ## vectors.  The parameters @var{xi}, etc.@: respect a similar format to
 ## @var{x}, etc., and they represent the points at which the array @var{vi}

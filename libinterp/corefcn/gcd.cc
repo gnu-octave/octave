@@ -473,6 +473,17 @@ gcd ([15, 9], [20, 18])
 @end group
 @end example
 
+Programming tip: To find the GCD of all the elements of a single array, use
+@code{num2cell} instead of nested calls or a loop:
+
+@example
+@group
+x = [30 42 70 105];    # vector or array of inputs
+gcd (num2cell (x) @{:@})
+   @result{}     1
+@end group
+@end example
+
 @seealso{lcm, factor, isprime}
 @end deftypefn */)
 {

@@ -82,8 +82,8 @@ dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
 
   if (is_out_of_date ())
     (*current_liboctave_warning_with_id_handler)
-      ("Octave:warn-future-time-stamp",
-       "timestamp on file %s is in the future", m_file.c_str ());
+      ("Octave:future-time-stamp",
+       "time stamp for file '%s' is in the future", m_file.c_str ());
 }
 
 bool

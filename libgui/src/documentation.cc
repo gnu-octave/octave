@@ -48,7 +48,6 @@
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QRegularExpression>
-#include <QSqlDatabase>
 #include <QTabWidget>
 #include <QTimer>
 #include <QWheelEvent>
@@ -127,16 +126,7 @@ documentation::documentation (QWidget *p)
 #endif
 
   if (copy_ok)
-    {
-#ifdef ENABLE_DOCS
-      if (!QSqlDatabase::isDriverAvailable(QLatin1String("QSQLITE")))
-        {
-          QMessageBox::warning (this, tr ("Octave Documentation"),
-                                      tr ("SQlite module missing."));
-        }
-#endif
-      m_help_engine->setCollectionFile (m_collection);
-    }
+    m_help_engine->setCollectionFile (m_collection);
   else
 #ifdef ENABLE_DOCS
     // FIXME: Perhaps a better way to do this would be to keep a count
@@ -159,8 +149,10 @@ documentation::documentation (QWidget *p)
 #ifdef ENABLE_DOCS
       QMessageBox::warning (this, tr ("Octave Documentation"),
                             tr ("Could not setup the data required for the\n"
-                                "documentation viewer. Only help texts in\n"
-                                "the Command Window will be available."));
+                                "documentation viewer. Maybe the Qt SQlite\n"
+                                "module is missing.\n"
+                                "Only help texts in the Command Window will\n"
+                                "be available."));
 #endif
       disconnect (m_help_engine, 0, 0, 0);
 

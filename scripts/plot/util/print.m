@@ -427,6 +427,10 @@
 ## respectively.  Allowed values for @var{N} are 1, 2, or 4.
 ## @end table
 ##
+## @item -no-append-file-extension
+##   With this option, @var{filename} is used verbatim.  That means no file
+## extension matching the file format is appended automatically.
+##
 ## @seealso{saveas, getframe, savefig, hgsave, orient, figure}
 ## @end deftypefn
 
@@ -823,6 +827,23 @@ function RGB = print (varargin)
 
 endfunction
 
+## Print to file with and without file extension
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   x = 0:0.1:1;
+%!   hax = axes (hf);
+%!   plot (hax, x, x);
+%!   tmp_name = tempname ();
+%!   print (hf, tmp_name, "-dpng");
+%!   assert (isfile ([tmp_name ".png"]));
+%!   unlink ([tmp_name ".png"]);
+%!   print (hf, tmp_name, "-dpng", "-no-append-file-extension");
+%!   assert (isfile (tmp_name));
+%!   unlink (tmp_name);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
 
 %!error <a graphics handle>
 %! hf = figure ("visible", "off");

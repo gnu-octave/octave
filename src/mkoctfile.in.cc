@@ -934,9 +934,12 @@ main (int argc, char **sys_argv)
         {
           // Pass through any unrecognized options.
           pass_on_options += (' ' + arg);
-          // Check for an additional argument following the option.
-          // However, don't check the final position which is typically a file
-          if (i < argc-2)
+          // If the current argument does not contain a '=' character, check
+          // for an additional argument following the option.
+          // However, don't copy the final position which is typically a file.
+          // FIXME: We might be copying flags that might need to be parsed
+          //        instead.  See bugs #52928 and #64590.
+          if (i < argc-2 && (arg.find ('=') == std::string::npos))
             {
               arg = argv[i+1];
               if (arg[0] != '-')

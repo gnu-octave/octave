@@ -124,7 +124,11 @@ QColor gui_settings::get_color_value (const QVariant& def, int mode) const
 
   // Determine whether the default value in pref is given as
   // QPalette::ColorRole or as QColor
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  if (def.canConvert (QMetaType (QMetaType::QColor)))
+#else
   if (def.canConvert (QMetaType::QColor))
+#endif
     default_color = def.value<QColor> ();
   else
     {

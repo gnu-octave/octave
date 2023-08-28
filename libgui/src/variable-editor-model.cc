@@ -960,8 +960,13 @@ bool
 variable_editor_model::setData (const QModelIndex& idx,
                                 const QVariant& v_user_input, int role)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  if (role != Qt::EditRole || ! v_user_input.canConvert (QMetaType (QMetaType::QString))
+      || ! idx.isValid ())
+#else
   if (role != Qt::EditRole || ! v_user_input.canConvert (QMetaType::QString)
       || ! idx.isValid ())
+#endif
     return false;
 
   // Initially, set value to whatever the user entered.

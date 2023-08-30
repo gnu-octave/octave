@@ -828,7 +828,9 @@ function RGB = print (varargin)
 endfunction
 
 ## Print to file with and without file extension
-%!test
+%!testif ; (have_window_system () && any (strcmp ("qt", available_graphics_toolkits ())))
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("qt");
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   x = 0:0.1:1;
@@ -843,6 +845,7 @@ endfunction
 %!   unlink (tmp_name);
 %! unwind_protect_cleanup
 %!   close (hf);
+%!   graphics_toolkit (toolkit);
 %! end_unwind_protect
 
 %!error <a graphics handle>

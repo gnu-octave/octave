@@ -425,11 +425,11 @@
 ## anti-aliasing is applied using Ghostscript's TextAlphaBits and
 ## GraphicsAlphaBits options.  The default number of bits are 4 and 1
 ## respectively.  Allowed values for @var{N} are 1, 2, or 4.
-## @end table
 ##
 ## @item -no-append-file-extension
 ##   With this option, @var{filename} is used verbatim.  That means no file
 ## extension matching the file format is appended automatically.
+## @end table
 ##
 ## @seealso{saveas, getframe, savefig, hgsave, orient, figure}
 ## @end deftypefn

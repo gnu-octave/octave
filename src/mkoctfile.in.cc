@@ -164,7 +164,11 @@ replace_prefix (std::string s)
   std::size_t pos = s.find (match);
   while (pos != std::string::npos )
     {
-      s.replace (pos, match.length (), repl);
+      // Quote replacement path if the input isn't quoted.
+      if (pos > 0 && s[pos-1] != '"' && s[pos-1] != '\'')
+        s.replace (pos, match.length (), quote_path (repl));
+      else
+        s.replace (pos, match.length (), repl);
       pos = s.find (match);
     }
 #endif

@@ -338,6 +338,12 @@ public:
     mark_global (sym);
   }
 
+  void clear_parent_static_link ()
+  {
+    m_parent_link = nullptr;
+    m_static_link = nullptr;
+  }
+
   std::size_t
   parent_frame_index () const { return m_parent_link->index (); }
 
@@ -601,7 +607,21 @@ public:
 
   virtual void break_closure_cycles (const std::shared_ptr<stack_frame>&) { }
 
-  void mark_closure_context () { m_is_closure_context = true; }
+  void mark_closure_context () 
+  { 
+    m_is_closure_context = true;
+
+    // Mark any access linked frames as closure contexts too,
+    // so that they'll make any function handle on its stack frame
+    // weak when the frame itself is being popped.
+    auto nxt = access_link ();
+    while (nxt)
+      {
+        nxt->m_is_closure_context = true;
+        nxt = nxt->access_link ();
+      }
+  }
+
   bool is_closure_context () const { return m_is_closure_context; }
 
   // The VM needs to tell the bytecode stackframe that it unwinds so

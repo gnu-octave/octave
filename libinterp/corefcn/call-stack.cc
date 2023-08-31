@@ -834,6 +834,8 @@ void call_stack::pop ()
       if (elt->is_closure_context ())
         elt->break_closure_cycles (elt);
 
+      elt->clear_parent_static_link ();
+
       m_cs.pop_back ();
     }
 }
@@ -849,6 +851,8 @@ std::shared_ptr<stack_frame> call_stack::pop_return ()
 
       if (elt->is_closure_context ())
         elt->break_closure_cycles (elt);
+
+      elt->clear_parent_static_link ();
 
       return elt;
     }

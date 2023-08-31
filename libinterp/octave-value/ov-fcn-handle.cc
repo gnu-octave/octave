@@ -417,7 +417,19 @@ public:
 
   bool is_nested (const std::shared_ptr<stack_frame>& frame) const
   {
-    return frame == m_stack_context;
+    if (frame == m_stack_context)
+      return true;
+
+    // We need to check each of the access links of the context frame, for 'frame' too
+    auto nxt = m_stack_context->access_link ();
+    while (nxt)
+      {
+        if (nxt == frame)
+          return true;
+        nxt = nxt->access_link ();
+      }
+    
+    return false;
   }
 
   nested_fcn_handle * clone () const

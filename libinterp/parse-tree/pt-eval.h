@@ -447,6 +447,8 @@ public:
 
   void push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin);
 
+  void push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin, const std::shared_ptr<stack_frame>& closure_frames);
+
   void pop_stack_frame ();
 
   std::shared_ptr<stack_frame> pop_return_stack_frame ();

@@ -45,6 +45,10 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_value_ref_vmlocal,
                                      "local vm value reference",
                                      "local vm value reference");
 
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_value_ref_ptr,
+                                     "local vm value pointer",
+                                     "local vm value pointer");
+
 void
 octave_value_ref::maybe_call_dtor ()
 {
@@ -143,4 +147,29 @@ void
 octave_value_ref_vmlocal::set_value (octave_value val)
 {
   m_frame->varref (m_sym) = val;
+}
+
+octave_value &
+octave_value_ref_ptr::ref ()
+{
+  if (m_pov->is_ref ())
+    return m_pov->ref_rep ()->ref ();
+  return *m_pov;
+}
+
+octave_value
+octave_value_ref_ptr::deref ()
+{
+  if (m_pov->is_ref ())
+    return m_pov->ref_rep ()->deref ();
+  return *m_pov;
+}
+
+void
+octave_value_ref_ptr::set_value (octave_value val)
+{
+  if (m_pov->is_ref ())
+    m_pov->ref_rep ()->set_value (val);
+  else
+    *m_pov = val;
 }

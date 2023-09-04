@@ -2040,6 +2040,9 @@ nested_fcn_handle::call (int nargout, const octave_value_list& args)
 
   octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
+  if (octave::vm::maybe_compile_or_compiled (oct_usr_fcn))
+    return octave::vm::call (tw, nargout, args, oct_usr_fcn, m_stack_context);
+
   tw.push_stack_frame (oct_usr_fcn, m_stack_context);
 
   unwind_action act ([&tw] () { tw.pop_stack_frame (); });
@@ -2923,33 +2926,14 @@ octave_value anonymous_fcn_handle::make_weak_anonymous_handle () const
 octave_value_list
 anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
 {
-  bool is_compiled = false;
-
   tree_evaluator& tw = __get_evaluator__ ();
 
   octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
-  if (oct_usr_fcn)
-    {
-      is_compiled = oct_usr_fcn->is_compiled ();
-      if (octave::V__enable_vm_eval__ && !is_compiled && !oct_usr_fcn->m_compilation_failed)
-      {
-        try
-          {
-            octave::compile_anon_user_function (*oct_usr_fcn, false, m_local_vars);
-            is_compiled = true;
-          }
-        catch (std::exception &e)
-          {
-            warning ("Auto-compilation of anonymous function failed with message %s", e.what ());
-            oct_usr_fcn->m_compilation_failed = true;
-          }
-      }
-    }
+  if (octave::vm::maybe_compile_or_compiled (oct_usr_fcn, &m_local_vars))
+    return octave::vm::call (tw, nargout, args, oct_usr_fcn);
 
-  // Bytecode functions push their own stack frames in the vm
-  if (!is_compiled)
-    tw.push_stack_frame (oct_usr_fcn, m_local_vars, m_stack_context);
+  tw.push_stack_frame (oct_usr_fcn, m_local_vars, m_stack_context);
 
   unwind_action act ([&tw] () { tw.pop_stack_frame (); });
 

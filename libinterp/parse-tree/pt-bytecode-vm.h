@@ -591,6 +591,16 @@ class vm
 #  define OCTAVE_VM_EXECUTE_ATTR
 #endif
 
+  // Returns true if the VM should be used to call the function
+  static bool maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map *locals = nullptr);
+
+  // Allocate a VM and call the function
+  static octave_value_list call (tree_evaluator& tw,
+                                 int nargout,
+                                 const octave_value_list& args,
+                                 octave_user_code *fn,
+                                 std::shared_ptr<stack_frame> context = nullptr);
+
   octave_value_list execute_code (const octave_value_list &args, int root_nargout) OCTAVE_VM_EXECUTE_ATTR;
 
   octave_value find_fcn_for_cmd_call (std::string *name);

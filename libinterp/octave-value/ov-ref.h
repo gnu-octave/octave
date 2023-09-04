@@ -32,6 +32,7 @@
 #include "ovl.h"
 #include "symscope.h"
 #include "symrec.h"
+#include "stack-frame.h"
 #include <string>
 #include <memory>
 
@@ -62,7 +63,10 @@ public:
 
     virtual bool is_global_ref () const { return false; }
     virtual bool is_persistent_ref () const { return false; }
-    virtual bool is_vmlocal_ref () const { return true; }
+    virtual bool is_ptr_ref () const { return false; }
+    virtual bool is_local_ref () const { return false; }
+
+    virtual octave::stack_frame::scope_flags get_scope_flag () = 0;
 
     void maybe_call_dtor ();
     octave_value simple_subsasgn (char type, octave_value_list& idx, const octave_value& rhs);
@@ -87,6 +91,11 @@ public:
 
     bool is_global_ref () const { return true; }
 
+    octave::stack_frame::scope_flags get_scope_flag ()
+    { 
+      return octave::stack_frame::scope_flags::GLOBAL; 
+    }
+
 private:
     std::string m_name;
 
@@ -108,6 +117,11 @@ public:
 
     bool is_persistent_ref () const { return true; }
 
+    octave::stack_frame::scope_flags get_scope_flag ()
+    {
+      return octave::stack_frame::scope_flags::PERSISTENT;
+    }
+
 private:
     int m_offset;
     octave::symbol_scope m_scope;
@@ -128,11 +142,43 @@ public:
     octave_value & ref ();
     void set_value (octave_value val);
 
-    bool is_vmlocal_ref () const { return true; }
+    octave::stack_frame::scope_flags get_scope_flag ()
+    {
+      return octave::stack_frame::scope_flags::LOCAL;
+    }
+
+    bool is_local_ref () const { return true; }
 
 private:
     octave::stack_frame *m_frame = nullptr;
     octave::symbol_record m_sym;
+
+    DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+};
+
+class OCTINTERP_API
+octave_value_ref_ptr : public octave_value_ref
+{
+public:
+    octave_value_ref_ptr () = default;
+    ~octave_value_ref_ptr () = default;
+    octave_value_ref_ptr (octave_value *pov)
+        : m_pov (pov) { }
+
+    octave_value deref ();
+    octave_value & ref ();
+    void set_value (octave_value val);
+
+    octave::stack_frame::scope_flags get_scope_flag ()
+    {
+      if (m_pov->is_ref ())
+        return m_pov->ref_rep ()->get_scope_flag ();
+      return octave::stack_frame::scope_flags::LOCAL;
+    }
+
+    bool is_ptr_ref () const { return true; }
+private:
+    octave_value *m_pov;
 
     DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

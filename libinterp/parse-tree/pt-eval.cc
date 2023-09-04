@@ -2489,6 +2489,12 @@ void tree_evaluator::push_stack_frame (vm &vm, octave_user_code *fcn, int nargou
     m_call_stack.push (vm, static_cast<octave_user_script*> (fcn), nargout, nargin);
 }
 
+void tree_evaluator::push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin,
+                                       const std::shared_ptr<stack_frame>& closure_frames)
+{
+  CHECK_PANIC (fcn->is_user_function ());
+  m_call_stack.push (vm, static_cast<octave_user_function*> (fcn), nargout, nargin, closure_frames);
+}
 
 void tree_evaluator::pop_stack_frame ()
 {
@@ -3477,56 +3483,24 @@ tree_evaluator::execute_user_script (octave_user_script& user_script,
   if (m_call_stack.size () >= static_cast<std::size_t> (m_max_recursion_depth))
     error ("max_recursion_depth exceeded");
 
-  // Check if it has been compiled and execute the bytecode if so
-  if (user_script.is_compiled ())
-    {
-      bytecode &bc = user_script.get_bytecode ();
+  unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
 
-      vm vm (this, bc);
+  profiler::enter<octave_user_script> block (m_profiler, user_script);
 
-      // Pushes a bytecode stackframe. nargin is set inside the VM.
-      push_stack_frame (vm, &user_script, 0, 0);
+  if (echo ())
+    push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
 
-      octave_value_list ret;
+  // FIXME: Should we be using tree_evaluator::eval here?
 
-      try {
-        ret = vm.execute_code (args, 0);
-      } catch (std::exception &e) {
-        if (vm.m_dbg_proper_return == false)
-          {
-            std::cout << e.what () << std::endl;
-            // TODO: Replace with panic when the VM almost works
+  cmd_list->accept (*this);
 
-            // Some test code eats errors messages, so we print to stderr too.
-            fprintf (stderr, "VM error %d: " "Exception in script %s escaped the VM\n", __LINE__, user_script.name ().c_str());
-            error("VM error %d: " "Exception in script %s escaped the VM\n", __LINE__, user_script.name ().c_str());
-          }
-        throw;
-      }
+  if (m_returning)
+    m_returning = 0;
 
-      return ret;
-    }
-  else
-    {
-      unwind_protect_var<stmt_list_type> upv (m_statement_context, SC_SCRIPT);
+  if (m_breaking)
+    m_breaking--;
 
-      profiler::enter<octave_user_script> block (m_profiler, user_script);
-
-      if (echo ())
-        push_echo_state (tree_evaluator::ECHO_SCRIPTS, file_name);
-
-      // FIXME: Should we be using tree_evaluator::eval here?
-
-      cmd_list->accept (*this);
-
-      if (m_returning)
-        m_returning = 0;
-
-      if (m_breaking)
-        m_breaking--;
-
-      return retval;
-    }
+  return retval;
 }
 
 void
@@ -3550,48 +3524,6 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
 
   // FIXME: this probably shouldn't be a double-precision matrix.
   Matrix ignored_outputs = ignored_fcn_outputs ();
-
-  // Check if it has been compiled and execute the bytecode if so
-  if (user_function.is_compiled ())
-    {
-      bytecode &bc = user_function.get_bytecode ();
-
-      vm vm (this, bc);
-
-      bool caller_is_bytecode = get_current_stack_frame ()->is_bytecode_fcn_frame ();
-
-      // Pushes a bytecode stackframe. nargin is set inside the VM.
-      push_stack_frame (vm, &user_function, nargout, 0);
-
-      // The arg names of root stackframe in VM need to be set here, unless the caller is bytecode.
-      // The caller can be bytecode if evalin("caller", ...) is used in some uncompiled function.
-      if (!caller_is_bytecode)
-        set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (xargs.name_tags ()));
-      if (ignored_outputs.numel())
-        {
-          vm.caller_ignores_output ();
-          set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
-        }
-
-      octave_value_list ret;
-
-      try {
-        ret = vm.execute_code (args, nargout);
-      } catch (std::exception &e) {
-        if (vm.m_dbg_proper_return == false)
-          {
-            std::cout << e.what () << std::endl;
-            // TODO: Replace with panic when the VM almost works
-
-            // Some test code eats errors messages, so we print to stderr too.
-            fprintf (stderr, "VM error %d: " "Exception in function %s escaped the VM\n", __LINE__, user_function.name ().c_str());
-            error("VM error %d: " "Exception in function %s escaped the VM\n", __LINE__, user_function.name ().c_str());
-          }
-        throw;
-      }
-
-      return ret;
-    }
 
   octave_value_list ret_args;
 

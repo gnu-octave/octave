@@ -42,8 +42,9 @@ class octave_user_function;
 
 namespace octave
 {
-  void compile_user_function (octave_user_code &fn, bool print);
-  void compile_anon_user_function (octave_user_code &fn, bool print, stack_frame::local_vars_map &locals);
+  void compile_user_function (octave_user_code &ufn, bool do_print);
+  void compile_nested_user_function (octave_user_function &ufn, bool do_print, std::vector<octave_user_function *> v_parent_fns);
+  void compile_anon_user_function (octave_user_code &ufn, bool do_print, stack_frame::local_vars_map &locals);
 
   // No separate visitor needed
   // Base classes only, so no need to include them.
@@ -155,6 +156,8 @@ namespace octave
     bool m_varargout = false;
     bool m_is_script = false;
     bool m_is_anon = false;
+    int m_n_nested_fn = 0;
+    std::vector<octave_user_function*> m_v_parent_fns; // Parent functions for nested functions
 
     std::vector<std::vector<int>> m_continue_target;
     std::vector<std::vector<int>> m_need_break_target;

@@ -191,6 +191,7 @@ enum class INSTR
   EXT_NARGOUT,
   WORDCMD_NX,
   ANON_MAYBE_SET_IGNORE_OUTPUTS,
+  ENTER_NESTED_FRAME,
 };
 
 enum class unwind_entry_type
@@ -228,12 +229,26 @@ struct arg_name_entry
 
 struct unwind_data
 {
+  // Id to let nested children recognize their parents when they look for them on the stack.
+  std::size_t m_id = 0;
+  std::size_t m_parent_id = 0; // Id of parent, which could be the root function or another nested function.
+  std::size_t m_matriarch_id = 0; // Id of the root function, which have nested functions. Common for all nested functions in that function.
+  static std::size_t m_id_cntr;
+
+  unwind_data ()
+  {
+    m_id = ++m_id_cntr;
+  }
+
   std::vector<unwind_entry> m_unwind_entries;
   std::vector<loc_entry> m_loc_entry;
   std::map<int, int> m_slot_to_persistent_slot;
   std::map<int, tree*> m_ip_to_tree;
   std::vector<arg_name_entry> m_argname_entries;
-  std::map<int,int> m_external_frame_offset_to_internal;
+  std::vector<std::map<int,int>> m_external_frame_offset_to_internal;
+
+  struct nested_var_offset { int m_depth; int m_slot_parent; int m_slot_nested; };
+  std::vector<nested_var_offset> m_v_nested_vars;
 
   std::string m_name;
   std::string m_file;
@@ -243,6 +258,15 @@ struct unwind_data
 
   bool m_is_script = false;
   bool m_is_anon = false;
+  int m_n_nested_fn = 0;
+
+  // Note:
+  //  n locals includes n args and n returns.
+  //  n returns and n locals are not negative for varargout and varargin.
+  //  %nargout is included in the counts.
+  int m_n_returns;
+  int m_n_args;
+  int m_n_locals;
 };
 
 struct bytecode

@@ -195,6 +195,16 @@ public:
 
   static std::shared_ptr<stack_frame>
   create_bytecode (tree_evaluator& tw,
+                   octave_user_code *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   const std::shared_ptr<stack_frame>& access_link,
+                   int nargout, int nargin);
+
+  static std::shared_ptr<stack_frame>
+  create_bytecode (tree_evaluator& tw,
                    octave_user_script *fcn,
                    vm &vm,
                    std::size_t index,
@@ -601,6 +611,7 @@ public:
   virtual void vm_clear_for_cache () {}
   virtual void vm_enter_script () {}
   virtual void vm_exit_script () {}
+  virtual void vm_enter_nested () {}
 
 protected:
 

@@ -264,6 +264,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           PRINT_OP (PUSH_DBL_2);
           PRINT_OP (ENTER_SCRIPT_FRAME);
           PRINT_OP (EXIT_SCRIPT_FRAME);
+          PRINT_OP (ENTER_NESTED_FRAME);
 
           CASE_START (WIDE)
             wide_opext_active = true;
@@ -858,6 +859,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&ext_nargout,
       &&wordcmd_nx,
       &&anon_maybe_set_ignore_output,
+      &&enter_nested_frame,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -897,8 +899,9 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
 
   code = m_code;
   ip = code;
+  m_ip = 0;
 
-  sp = bsp = rsp = m_stack;
+  m_sp = m_bsp = m_rsp = sp = bsp = rsp = m_stack;
 
   // Read the meta data for constructing a stack frame.
   {
@@ -1735,19 +1738,15 @@ cmd_fcn_or_undef_error:
     else
       PANIC ("Invalid opcode");
 
-    // A global or persistent var should not be undefined but whatever check anyway
     bool ov_defined1 = ov.is_defined ();
-    if (is_ref && !ov_defined1)
-      {
-        (*sp++).ps = new std::string {name_data[slot]};
-        (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
-        goto unwind;
-      }
 
     if (!ov_defined1 && ov.is_nil ())
       {
-        ov = bsp[slot].ov =
-          octave_value (new octave_fcn_cache (name_data[slot]));
+        ov = octave_value (new octave_fcn_cache (name_data[slot]));
+        if (bsp[slot].ov.is_ref ())
+          bsp[slot].ov.ref_rep ()->set_value (ov);
+        else
+          bsp[slot].ov = ov;
       }
 
     if (!ov_defined1 && ov.is_function_cache ())
@@ -1779,19 +1778,35 @@ cmd_fcn_or_undef_error:
         // TODO: Bytecode call
         if (fcn)
           {
-            try
+
+            if (fcn->is_compiled ())
               {
-                m_tw->set_active_bytecode_ip (ip - code);
-                octave_value_list ovl = fcn->call (*m_tw, nargout);
+                octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
 
-                EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ovl, nargout);
+                // Alot of code in this define
+                PUSH_OV (ov); // Calling convention anticipates object to call on the stack.
+                int n_args_on_stack = 0;
+                bool has_cs_list_arg = false;
+                MAKE_BYTECODE_CALL
+
+                // Now dispatch to first instruction in the
+                // called function
               }
-            CATCH_INTERRUPT_EXCEPTION
-            CATCH_INDEX_EXCEPTION
-            CATCH_EXECUTION_EXCEPTION
-            CATCH_BAD_ALLOC
-            CATCH_EXIT_EXCEPTION
+            else
+              {
+              try
+                {
+                  m_tw->set_active_bytecode_ip (ip - code);
+                  octave_value_list ovl = fcn->call (*m_tw, nargout);
 
+                  EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ovl, nargout);
+                }
+              CATCH_INTERRUPT_EXCEPTION
+              CATCH_INDEX_EXCEPTION
+              CATCH_EXECUTION_EXCEPTION
+              CATCH_BAD_ALLOC
+              CATCH_EXIT_EXCEPTION
+            }
           }
         else
           PUSH_OV (ov); // TODO: The walker does this. Sane?
@@ -2214,8 +2229,11 @@ querry_fcn_cache:
           }
 
         // Put a function cache object in the slot and in the local ov
-        ov = bsp[slot].ov =
-          octave_value (new octave_fcn_cache (name_data[slot]));
+        ov = octave_value (new octave_fcn_cache (name_data[slot]));
+        if (bsp[slot].ov.is_ref ())
+          bsp[slot].ov.ref_rep ()->set_value (ov);
+        else
+          bsp[slot].ov = ov;
         goto querry_fcn_cache; // Jump into the if clause above
       }
   }
@@ -3870,8 +3888,11 @@ querry_fcn_cache2:
           }
 
         // Put a function cache object in the slot and in the local ov
-        ov = bsp[slot].ov =
-          octave_value (new octave_fcn_cache (name_data[slot]));
+        ov = octave_value (new octave_fcn_cache (name_data[slot]));
+        if (bsp[slot].ov.is_ref ())
+          bsp[slot].ov.ref_rep ()->set_value (ov);
+        else
+          bsp[slot].ov = ov;
         goto querry_fcn_cache2; // Jump into the if clause above
       }
   }
@@ -4217,8 +4238,11 @@ querry_fcn_cache3:
           }
 
         // Put a function cache object in the slot and in the local ov
-        ov = bsp[slot].ov =
-          octave_value (new octave_fcn_cache (name_data[slot]));
+        ov = octave_value (new octave_fcn_cache (name_data[slot]));
+        if (bsp[slot].ov.is_ref ())
+          bsp[slot].ov.ref_rep ()->set_value (ov);
+        else
+          bsp[slot].ov = ov;
         goto querry_fcn_cache3; // Jump into the if clause above
       }
   }
@@ -5521,8 +5545,11 @@ querry_fcn_cache_index_obj:
         // Put a function cache object in the slot and in the local ov
         // and jump into the if clause above to search for some function
         // to call.
-        ov = bsp[slot].ov =
-          octave_value (new octave_fcn_cache (name_data[slot]));
+        ov = octave_value (new octave_fcn_cache (name_data[slot]));
+        if (bsp[slot].ov.is_ref ())
+          bsp[slot].ov.ref_rep ()->set_value (ov);
+        else
+          bsp[slot].ov = ov;
         goto querry_fcn_cache_index_obj;
       }
   }
@@ -6158,6 +6185,13 @@ debug: // TODO: Remove
   {
     auto fp = m_tw->get_current_stack_frame ();
     fp->vm_exit_script ();
+  }
+  DISPATCH_1BYTEOP ();
+
+  enter_nested_frame:
+  {
+    auto fp = m_tw->get_current_stack_frame ();
+    fp->vm_enter_nested ();
   }
   DISPATCH_1BYTEOP ();
 
@@ -7289,6 +7323,103 @@ vm::output_ignore_data::set_ignore (vm &vm, octave_value ignore_matrix,
   m_v_owns_lvalue_list.back () = true;
   m_v_lvalue_list.back () = vm.m_tw->lvalue_list ();
   vm.m_tw->set_lvalue_list (new_lval_list);
+}
+
+bool
+vm::maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map *locals)
+{
+  if (!fn)
+    return false;
+
+  if (fn->is_compiled ())
+    return true;
+
+  if (V__enable_vm_eval__ && !fn->m_compilation_failed)
+    {
+      try
+        {
+          if (fn->is_anonymous_function ())
+            octave::compile_anon_user_function (*fn, false, *locals);
+          else
+            octave::compile_user_function (*fn, false);
+
+          return true;
+        }
+      catch (std::exception &e)
+        {
+          warning ("Auto-compilation of %s failed with message %s", fn->name().c_str (), e.what ());
+          fn->m_compilation_failed = true;
+          return false;
+        }
+    }
+
+  return false;
+}
+
+octave_value_list
+vm::call (tree_evaluator& tw, int nargout, const octave_value_list& xargs,
+          octave_user_code *fn, std::shared_ptr<stack_frame> context)
+{
+  CHECK_PANIC (fn);
+  CHECK_PANIC (fn->is_compiled ());
+
+  bool call_script = fn->is_user_script ();
+
+  if (call_script && (xargs.length () != 0 || nargout != 0))
+    error ("invalid call to script %s", fn->name ().c_str ());
+
+  if (tw.m_call_stack.size () >= static_cast<std::size_t> (tw.m_max_recursion_depth))
+    error ("max_recursion_depth exceeded");
+
+  octave_value_list args (xargs);
+
+  bytecode &bc = fn->get_bytecode ();
+
+  vm vm (&tw, bc);
+
+  bool caller_is_bytecode = tw.get_current_stack_frame ()->is_bytecode_fcn_frame ();
+
+  // Pushes a bytecode stackframe. nargin is set inside the VM.
+  if (context)
+    tw.push_stack_frame (vm, fn, nargout, 0, context); // Closure context for nested frames
+  else
+    tw.push_stack_frame (vm, fn, nargout, 0);
+
+  // The arg names of root stackframe in VM need to be set here, unless the caller is bytecode.
+  // The caller can be bytecode if evalin("caller", ...) is used in some uncompiled function.
+  if (!caller_is_bytecode)
+    tw.set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (xargs.name_tags ()));
+  if (!call_script)
+    {
+      Matrix ignored_outputs = tw.ignored_fcn_outputs ();
+      if (ignored_outputs.numel())
+        {
+          vm.caller_ignores_output ();
+          tw.set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
+        }
+    }
+
+  octave_value_list ret;
+
+  try {
+    ret = vm.execute_code (args, nargout);
+  } catch (std::exception &e) {
+    if (vm.m_dbg_proper_return == false)
+      {
+        std::cout << e.what () << std::endl;
+        // TODO: Replace with panic when the VM almost works
+
+        // Some test code eats errors messages, so we print to stderr too.
+        fprintf (stderr, "VM error %d: " "Exception in %s escaped the VM\n", __LINE__, fn->name ().c_str());
+        error("VM error %d: " "Exception in %s escaped the VM\n", __LINE__, fn->name ().c_str());
+      }
+
+    tw.pop_stack_frame ();
+    throw;
+  }
+
+  tw.pop_stack_frame ();
+  return ret;
 }
 
 // Debugging functions to be called from gdb

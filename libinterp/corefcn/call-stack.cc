@@ -474,6 +474,26 @@ void call_stack::push (vm &vm, octave_user_script *fcn, int nargout, int nargin)
   m_curr_frame = new_frame_idx;
 }
 
+void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargin,
+                       const std::shared_ptr<stack_frame>& closure_frames)
+{
+  std::size_t new_frame_idx;
+  std::shared_ptr<stack_frame> parent_link;
+  std::shared_ptr<stack_frame> static_link;
+
+  get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
+
+  std::shared_ptr<stack_frame> new_frame
+    = stack_frame::create_bytecode (m_evaluator, fcn, vm,
+                                    new_frame_idx,
+                                    parent_link, static_link, closure_frames,
+                                    nargout, nargin);
+
+  m_cs.push_back (new_frame);
+
+  m_curr_frame = new_frame_idx;
+}
+
 void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargin)
 {
   std::size_t new_frame_idx;

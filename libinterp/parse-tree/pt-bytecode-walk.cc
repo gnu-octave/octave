@@ -37,6 +37,16 @@
 
 using namespace octave;
 
+#define ERR(msg) error("VM error %d: " msg, __LINE__)
+
+#define TODO(msg) error("VM error, Not done yet %d: " msg, __LINE__)
+
+#define CHECK(cond)                                                            \
+  do {                                                                         \
+    if (!(cond))                                                               \
+      ERR("Internal VM compiler consistency check failed, " #cond);             \
+  } while ((0))
+
 // Compiles an anonymous function.
 //
 // The compilation need to happen at runtime since the values of the variables are embedded into the bytecode
@@ -85,6 +95,52 @@ void octave::compile_anon_user_function (octave_user_code &ufn, bool do_print, s
   }
 }
 
+void octave::compile_nested_user_function (octave_user_function &ufn, bool do_print, std::vector<octave_user_function *> v_parent_fns)
+{
+  try
+    {
+      if (ufn.is_classdef_constructor ())
+        error ("Classdef constructors are not supported by the VM yet"); // Needs special handling
+      CHECK (ufn.is_nested_function ());
+
+      // Begin with clearing the old bytecode, if any
+      ufn.clear_bytecode ();
+
+      bytecode_walker bw;
+      bw.m_n_nested_fn = v_parent_fns.size ();
+      bw.m_v_parent_fns = v_parent_fns;
+      bw.m_code.m_unwind_data.m_parent_id = v_parent_fns.back ()->get_bytecode ().m_unwind_data.m_id; // Direct parent (root or another nested function)
+      bw.m_code.m_unwind_data.m_matriarch_id = v_parent_fns.front ()->get_bytecode ().m_unwind_data.m_id; // Root parent (the function with all nested functions in it)
+
+      ufn.accept (bw);
+
+      if (do_print)
+        print_bytecode (bw.m_code);
+
+      bw.m_code.m_unwind_data.m_file = v_parent_fns.front ()->get_bytecode ().m_unwind_data.m_file;
+
+      ufn.set_bytecode (bw.m_code);
+
+      v_parent_fns.push_back (&ufn);
+
+      // Compile the subfunctions
+      auto subs = ufn.subfunctions ();
+      for (auto kv : subs)
+        {
+          octave_user_function *sub = kv.second.user_function_value ();
+
+          CHECK (sub->is_nested_function ());
+
+          compile_nested_user_function (*sub, do_print, v_parent_fns);
+        }
+    }
+  catch(...)
+  {
+    ufn.clear_bytecode ();
+    throw;
+  }
+}
+
 void octave::compile_user_function (octave_user_code &ufn, bool do_print)
 {
   try
@@ -111,7 +167,16 @@ void octave::compile_user_function (octave_user_code &ufn, bool do_print)
       for (auto kv : subs)
         {
           octave_user_function *sub = kv.second.user_function_value ();
-          compile_user_function (*sub, do_print);
+
+          if (sub->is_nested_function ())
+            {
+              std::vector<octave_user_function *> v_parent_fns;
+              v_parent_fns.push_back (static_cast<octave_user_function *> (&ufn));
+              compile_nested_user_function (*sub, do_print, v_parent_fns);
+            }
+          else
+            compile_user_function (*sub, do_print);
+
           sub->get_bytecode ().m_unwind_data.m_file = ufn.fcn_file_name ();
         }
     }
@@ -236,7 +301,9 @@ private:
 class collect_idnames_walker : tree_walker
 {
 public:
-  static std::vector<std::pair<std::string, int>> collect_id_names (tree_statement_list &l)
+  struct id_data { std::string m_name; std::size_t m_offset; std::size_t m_frame_offset; };
+
+  static std::vector<id_data> collect_id_names (tree_statement_list &l)
   {
     collect_idnames_walker walker;
 
@@ -249,7 +316,7 @@ public:
     return walker.m_id_names_and_offset;
   }
 
-  static std::vector<std::pair<std::string, int>> collect_id_names (tree_expression &e)
+  static std::vector<id_data> collect_id_names (tree_expression &e)
   {
     collect_idnames_walker walker;
     e.accept (walker);
@@ -257,7 +324,7 @@ public:
     return walker.m_id_names_and_offset;
   }
 
-  std::vector<std::pair<std::string, int>> m_id_names_and_offset;
+  std::vector<id_data> m_id_names_and_offset;
 
   void visit_identifier (tree_identifier &id)
   {
@@ -265,7 +332,7 @@ public:
     if (name == "~") // We dont want this magic id
       return;
 
-    m_id_names_and_offset.push_back ({name, id.symbol ().data_offset ()});
+    m_id_names_and_offset.push_back ({name, id.symbol ().data_offset (), id.symbol ().frame_offset ()});
   }
 
   void visit_anon_fcn_handle (tree_anon_fcn_handle &)
@@ -282,16 +349,6 @@ typename T::value_type vector_pop (T &v)
   v.pop_back ();
   return tmp;
 }
-
-#define ERR(msg) error("VM error %d: " msg, __LINE__)
-
-#define TODO(msg) error("VM error, Not done yet %d: " msg, __LINE__)
-
-#define CHECK(cond)                                                            \
-  do {                                                                         \
-    if (!(cond))                                                               \
-      ERR("Internal VM compiler consistency check failed, " #cond);             \
-  } while ((0))
 
 #define PUSH_CODE(code_) do {\
     int code_check_s_ = static_cast<int> (code_); \
@@ -2120,6 +2177,8 @@ visit_octave_user_script (octave_user_script& fcn)
 {
   m_is_script = true;
 
+  m_code.m_unwind_data.m_external_frame_offset_to_internal.push_back ({});
+
   m_code.m_unwind_data.m_is_script = true;
   m_code.m_unwind_data.m_name = fcn.name ();
   m_code.m_unwind_data.m_file = fcn.fcn_file_name ();
@@ -2158,12 +2217,17 @@ visit_octave_user_script (octave_user_script& fcn)
 
       for (auto name_offset : v_names_offsets)
         {
-          std::string name = name_offset.first;
-          int frame_offset = name_offset.second;
-          add_id_to_table (name_offset.first);
+          std::string name = name_offset.m_name;
+          unsigned frame_offset = name_offset.m_frame_offset;
+          unsigned offset = name_offset.m_offset;
+
+          add_id_to_table (name);
           int slot = SLOT (name);
 
-          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset] = slot;
+          if (frame_offset >= m_code.m_unwind_data.m_external_frame_offset_to_internal.size ())
+            m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (frame_offset + 1);
+
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
         }
     }
 
@@ -2197,18 +2261,18 @@ visit_octave_user_script (octave_user_script& fcn)
               // Add the function name id to the table and add the correct external offset.
               // (The name might not be the call-name of the function.)
               int slot = add_id_to_table (name);
-              m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = slot;
+              m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = slot;
             }
           else
             continue;
         }
 
       if (name == "varargin")
-        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("varargin");
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("varargin");
       else if (name == "varargout")
-        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("varargout");
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("varargout");
       else if (name == "ans")
-        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("ans");
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("ans");
     }
 
   PUSH_CODE (INSTR::ENTER_SCRIPT_FRAME); // Special opcode to steal the "eval scopes" values
@@ -2243,23 +2307,33 @@ visit_octave_user_script (octave_user_script& fcn)
     }
 
   // Check that the mapping between external offsets and internal slots has no holes in it
-  int i = 0;
-  for (auto it : m_code.m_unwind_data.m_external_frame_offset_to_internal)
+  if (m_n_nested_fn == 0)
     {
-      int external_offset = it.first;
-      CHECK (external_offset == i);
-      i++;
+      int i = 0;
+      for (auto it : m_code.m_unwind_data.m_external_frame_offset_to_internal[0])
+        {
+          int external_offset = it.first;
+          CHECK (external_offset == i);
+          i++;
+        }
     }
 
   // The profiler needs to know these sizes when copying from pointers.
   m_code.m_unwind_data.m_code_size = m_code.m_code.size ();
   m_code.m_unwind_data.m_ids_size = m_code.m_ids.size ();
+
+  m_code.m_unwind_data.m_n_returns = 1; // Only %nargout
+  m_code.m_unwind_data.m_n_args = 0; // No args
+  m_code.m_unwind_data.m_n_locals = n_slots;
 }
 
 void
 bytecode_walker::
 visit_octave_user_function (octave_user_function& fcn)
 {
+  m_code.m_unwind_data.m_external_frame_offset_to_internal.push_back ({});
+  m_code.m_unwind_data.m_n_nested_fn = m_n_nested_fn;
+
   m_code.m_unwind_data.m_name = fcn.name ();
   m_code.m_unwind_data.m_file = fcn.fcn_file_name ();
   PUSH_DATA (fcn.name ());
@@ -2393,12 +2467,16 @@ visit_octave_user_function (octave_user_function& fcn)
 
       for (auto name_offset : v_names_offsets)
         {
-          std::string name = name_offset.first;
-          int frame_offset = name_offset.second;
-          add_id_to_table (name_offset.first);
+          std::string name = name_offset.m_name;
+          unsigned offset = name_offset.m_offset;
+          unsigned frame_offset = name_offset.m_frame_offset;
+          add_id_to_table (name);
           int slot = SLOT (name);
 
-          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset] = slot;
+          if (frame_offset >= m_code.m_unwind_data.m_external_frame_offset_to_internal.size ())
+            m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (frame_offset + 1);
+
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
         }
     }
   // We need the arguments and return id:s in the map too.
@@ -2408,9 +2486,9 @@ visit_octave_user_function (octave_user_function& fcn)
         {
           CHECK_NONNULL (*it);
           tree_identifier *id = (*it)->ident ();
-          int frame_offset = id->symbol ().data_offset ();
+          int offset = id->symbol ().data_offset ();
           int slot = SLOT (id->name ());
-          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset] = slot;
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = slot;
 
           // If the parameter has an init expression e.g.
           // "function foo (a = sin (pi))"
@@ -2421,12 +2499,12 @@ visit_octave_user_function (octave_user_function& fcn)
               auto v_names_offsets = collect_idnames_walker::collect_id_names (*init_expr);
               for (auto name_offset : v_names_offsets)
                 {
-                  std::string name = name_offset.first;
-                  int frame_offset_i = name_offset.second;
-                  add_id_to_table (name_offset.first);
+                  std::string name = name_offset.m_name;
+                  int offset_i = name_offset.m_offset;
+                  add_id_to_table (name);
                   int slot_i = SLOT (name);
 
-                  m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset_i] = slot_i;
+                  m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset_i] = slot_i;
                 }
             }
         }
@@ -2439,7 +2517,7 @@ visit_octave_user_function (octave_user_function& fcn)
           tree_identifier *id = (*it)->ident ();
           int frame_offset = id->symbol ().data_offset ();
           int slot = SLOT (name);
-          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset] = slot;
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[0][frame_offset] = slot;
         }
     }
 
@@ -2464,7 +2542,13 @@ visit_octave_user_function (octave_user_function& fcn)
   // Note that the file 'bar.m' can have one function with the id name 'foo'
   // which will be added to the scope by the parser, but the function name
   // and thus call-name is 'bar'.
-  std::size_t idx_fn_name = n_returns + 1; // "+1" since 'ans' is always added first
+  std::size_t idx_fn_name;
+  if (m_n_nested_fn)
+    {
+      idx_fn_name = fcn.scope ().find_symbol (function_name).data_offset ();
+    }
+  else
+    idx_fn_name = n_returns + 1; // "+1" since 'ans' is always added first
 
   for (auto p : fcn.scope ().symbols ())
     {
@@ -2482,19 +2566,21 @@ visit_octave_user_function (octave_user_function& fcn)
               // Add the function name id to the table and add the correct external offset.
               // (The name might not be the call-name of the function.)
               int slot = add_id_to_table (name);
-              m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = slot;
+              m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = slot;
             }
           else
             continue;
         }
 
       if (name == "varargin")
-        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("varargin");
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("varargin");
       else if (name == "varargout")
-        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("varargout");
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("varargout");
       else if (name == "ans")
-        m_code.m_unwind_data.m_external_frame_offset_to_internal[offset] = SLOT ("ans");
+        m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("ans");
     }
+
+  CHECK (! (m_is_anon && m_n_nested_fn));
 
   // Add code to initialize variables in anonymous functions that took their value from
   // the parent scope.
@@ -2520,6 +2606,75 @@ visit_octave_user_function (octave_user_function& fcn)
           PUSH_CODE (INSTR::FORCE_ASSIGN);
           PUSH_SLOT (slot);
         }
+    }
+  if (m_n_nested_fn)
+    {
+      // So we are compiling a nested function. We need to put references to the proper parent stack
+      // from the nested functions stack for each shared variable. To do this we store which id:s in
+      // the nested stack that are shared with the parent stack in the unwind date.
+      // Then the opcode ENTER_NESTED_FRAME sets up the references at runtime.
+      //
+      // All variables of the parent is shared with the nested function, including 'ans'. The arguments
+      // and returns of the nested function are local to it. The rule is recursive for nested nested functions.
+      //
+      // A local slot number is only added once, and outer scopes take precedence.
+      CHECK (fcn.is_nested_function ());
+
+      std::vector<unwind_data::nested_var_offset> v_nested_vars;
+      std::set<int> set_locals_added;
+
+      for (unsigned i = 0; i < m_v_parent_fns.size (); i++)
+        {
+          unsigned depth = m_v_parent_fns.size () - i;
+
+          octave_user_function *parent_fn = m_v_parent_fns[i];
+
+          bytecode &bc = parent_fn->get_bytecode ();
+
+          for (unsigned parent_slot_idx = 1; parent_slot_idx < bc.m_ids.size (); parent_slot_idx++) // 1, for %nargout
+            {
+              std::string &parent_id_name = bc.m_ids[parent_slot_idx];
+
+              // Skip special id:s
+              if (parent_id_name.size ())
+                {
+                  switch (parent_id_name.front ())
+                    {
+                      case '%':
+                      case '#':
+                      case '!':
+                        continue;
+                      default:
+                        ;
+                    }
+                }
+
+              auto it = m_map_locals_to_slot.find (parent_id_name);
+              if (it == m_map_locals_to_slot.end ())
+                continue;
+
+              int local_slot_nr = it->second;
+
+              // The return values and arguments of the nested function are not shared with parents
+              if (local_slot_nr < 1 + n_returns + n_paras)
+                continue;
+
+              unwind_data::nested_var_offset data;
+              data.m_depth = depth;
+              data.m_slot_nested = local_slot_nr;
+              data.m_slot_parent = parent_slot_idx;
+
+               // Add only an local slot nr once to v_nested_vars
+              if (!set_locals_added.count (local_slot_nr))
+                {
+                  v_nested_vars.push_back (data);
+                  set_locals_added.insert (local_slot_nr);
+                }
+            }
+        }
+
+      m_code.m_unwind_data.m_v_nested_vars = std::move (v_nested_vars);
+      PUSH_CODE (INSTR::ENTER_NESTED_FRAME);
     }
 
   // Add code to handle default arguments. If an argument is undefined or
@@ -2607,17 +2762,24 @@ visit_octave_user_function (octave_user_function& fcn)
     }
 
   // Check that the mapping between external offsets and internal slots has no holes in it
-  int i = 0;
-  for (auto it : m_code.m_unwind_data.m_external_frame_offset_to_internal)
+  if (m_n_nested_fn == 0)
     {
-      int external_offset = it.first;
-      CHECK (external_offset == i);
-      i++;
+      int i = 0;
+      for (auto it : m_code.m_unwind_data.m_external_frame_offset_to_internal[0])
+        {
+          int external_offset = it.first;
+          CHECK (external_offset == i);
+          i++;
+        }
     }
 
   // The profiler needs to know these sizes when copying from pointers.
   m_code.m_unwind_data.m_code_size = m_code.m_code.size ();
   m_code.m_unwind_data.m_ids_size = m_code.m_ids.size ();
+
+  m_code.m_unwind_data.m_n_returns = n_returns;
+  m_code.m_unwind_data.m_n_args = n_paras;
+  m_code.m_unwind_data.m_n_locals = n_slots;
 }
 
 void
@@ -5310,3 +5472,5 @@ visit_continue_command (tree_continue_command&)
   PUSH_NEED_CONTINUE_TARGET (CODE_SIZE ());
   PUSH_CODE_SHORT (-1); // Placeholder
 }
+
+std::size_t unwind_data::m_id_cntr = 0;

@@ -1548,6 +1548,7 @@ protected:
   friend class octave::vm;
   friend class octave::bytecode_fcn_stack_frame;
   friend class octave::scope_stack_frame;
+  friend class octave_value_ref_ptr;
 
   bool is_ref () const { return m_rep->is_ref (); }
 

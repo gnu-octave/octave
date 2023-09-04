@@ -679,3 +679,24 @@
 %! assert (__compile__ ("bytecode_scripts"));
 %! bytecode_scripts;
 %! assert (__prog_output_assert__ (key));
+
+## Test nested functions.
+%!test
+%! global cdef_bar_cnt
+%! cdef_bar_cnt = 0;
+%!
+%! __enable_vm_eval__ (0, "local");
+%! clear all
+%! __compile__ bytecode_nested clear;
+%! % These tests uses asserts in themself
+%! bytecode_nested;
+%!
+%! cdef_bar_cnt = 0;
+%!
+%! __enable_vm_eval__ (1, "local");
+%! assert (__compile__ ("bytecode_nested"));
+%! bytecode_nested;
+%!
+%! assert (cdef_bar_cnt == 0);
+%! clear -global cdef_bar_alive_objs cdef_bar_cnt glb_d glb_e glb_f
+

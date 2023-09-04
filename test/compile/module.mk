@@ -21,6 +21,7 @@ compile_TEST_FILES = \
   %reldir%/bytecode_matrix.m \
   %reldir%/bytecode_misc.m \
   %reldir%/bytecode_multi_assign.m \
+  %reldir%/bytecode_nested.m \
   %reldir%/bytecode_persistant.m \
   %reldir%/bytecode_range.m \
   %reldir%/bytecode_return.m \
@@ -36,6 +37,7 @@ compile_TEST_FILES = \
   %reldir%/bytecode_varargout.m \
   %reldir%/bytecode_while.m \
   %reldir%/bytecode_wordlistcmd.m \
+  %reldir%/cdef_bar.m \
   %reldir%/cdef_foo.m \
   %reldir%/inputname_args.m \
   %reldir%/just_call_handle_with_arg.m \

@@ -171,6 +171,9 @@ public:
 
   void push (vm &vm, octave_user_script *fcn, int nargout, int nargin);
 
+  void push (vm &vm, octave_user_function *fcn, int nargout, int nargin,
+             const std::shared_ptr<stack_frame>& closure_frames);
+
   void set_location (int l, int c)
   {
     if (! m_cs.empty ())

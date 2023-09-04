@@ -50,6 +50,7 @@
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
+#include "pt-bytecode-vm.h"
 #include "pt-walk.h"
 #include "symtab.h"
 #include "interpreter-private.h"
@@ -197,28 +198,10 @@ octave_value_list
 octave_user_script::call (octave::tree_evaluator& tw, int nargout,
                           const octave_value_list& args)
 {
-  bool is_compiled = false;
+  if (octave::vm::maybe_compile_or_compiled (this))
+    return octave::vm::call (tw, nargout, args, this);
 
-  is_compiled = this->is_compiled ();
-  if (octave::V__enable_vm_eval__ && !is_compiled && !m_compilation_failed)
-  {
-    try
-      {
-        octave::compile_user_function (*this, false);
-        is_compiled = true;
-      }
-    catch (std::exception &e)
-      {
-        warning ("Auto-compilation of %s failed with message %s", name().c_str (), e.what ());
-        this->m_compilation_failed = true;
-      }
-  }
-
-  // Bytecode functions push their own stack frames in the vm
-  if (!is_compiled)
-  {
-    tw.push_stack_frame (this);
-  }
+  tw.push_stack_frame (this);
 
   octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
 
@@ -517,26 +500,10 @@ octave_value_list
 octave_user_function::call (octave::tree_evaluator& tw, int nargout,
                             const octave_value_list& args)
 {
-  bool is_compiled = false;
+  if (octave::vm::maybe_compile_or_compiled (this))
+    return octave::vm::call (tw, nargout, args, this);
 
-  is_compiled = this->is_compiled ();
-  if (octave::V__enable_vm_eval__ && !is_compiled && !m_compilation_failed)
-  {
-    try
-      {
-        octave::compile_user_function (*this, false);
-        is_compiled = true;
-      }
-    catch (std::exception &e)
-      {
-        warning ("Auto-compilation of %s failed with message %s", name().c_str (), e.what ());
-        this->m_compilation_failed = true;
-      }
-  }
-
-  // Bytecode functions push their own stack frames in the vm
-  if (!is_compiled)
-    tw.push_stack_frame (this);
+  tw.push_stack_frame (this);
 
   octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
 

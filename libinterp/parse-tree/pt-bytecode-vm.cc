@@ -338,6 +338,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (SUBASSIGN_ID)         PSLOT () PCHAR () CASE_END ()
           CASE_START (SUBASSIGN_ID_MAT_1D)  PSLOT () PCHAR () CASE_END ()
+          CASE_START (SUBASSIGN_ID_MAT_2D)  PSLOT () PCHAR () CASE_END ()
           CASE_START (SUBASSIGN_CELL_ID)    PSLOT () PCHAR () CASE_END ()
 
           CASE_START (EVAL) PCHAR () PINT () CASE_END ()
@@ -836,6 +837,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&push_folded_cst,                                   // PUSH_FOLDED_CST,
       &&set_folded_cst,                                    // SET_FOLDED_CST,
       &&wide,                                              // WIDE
+      &&subassign_id_mat_2d,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -2980,6 +2982,87 @@ assign_n:
   }
   DISPATCH ();
 
+subassign_id_mat_2d:
+{
+  int slot = arg0;
+  ip++; // nargs always two
+
+  // The top of the stack is the rhs value
+  octave_value &rhs = TOP_OV ();
+  octave_value &arg2 = SEC_OV ();
+  octave_value &arg1 = THIRD_OV ();
+  // The ov to subassign to
+  octave_value &mat_ov = bsp[slot].ov;
+
+  int rhs_type_id = rhs.type_id ();
+  int arg1_type_id = arg1.type_id ();
+  int arg2_type_id = arg2.type_id ();
+  int mat_type_id = mat_ov.type_id ();
+
+  if (rhs_type_id != m_scalar_typeid || mat_type_id != m_matrix_typeid ||
+    arg2_type_id != m_scalar_typeid || arg1_type_id != arg2_type_id)
+  {
+    // Rewind ip to the 2nd byte of the opcode
+    ip -= 1;
+    int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+    // Change the specialized opcode to the general one
+    ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::SUBASSIGN_ID);
+    goto subassign_id;
+  }
+
+  try
+    {
+      mat_ov.make_unique ();
+
+      octave_scalar &rhs_scalar = REP (octave_scalar, rhs);
+      octave_scalar &arg1_scalar = REP (octave_scalar, arg1);
+      octave_scalar &arg2_scalar = REP (octave_scalar, arg2);
+
+      double idx2_dbl = arg2_scalar.octave_scalar::double_value ();
+      octave_idx_type idx2 = idx2_dbl - 1;
+      double idx1_dbl = arg1_scalar.octave_scalar::double_value ();
+      octave_idx_type idx1 = idx1_dbl - 1;
+      double val = rhs_scalar.octave_scalar::double_value ();
+
+      octave_matrix &mat_ovb = REP (octave_matrix, mat_ov);
+      NDArray &arr = mat_ovb.matrix_ref ();
+      // Handle out-of-bound or non-integer index in the generic opcode
+      if (idx1 >= arr.rows () || idx1 < 0 ||
+          idx1 != idx1_dbl - 1)
+        {
+          // Rewind ip to the 2nd byte of the opcode
+          ip -= 1;
+          goto subassign_id;
+        }
+      if (idx2 >= arr.cols () || idx2 < 0 ||
+          idx2 != idx2_dbl - 1)
+        {
+          // Rewind ip to the 2nd byte of the opcode
+          ip -= 1;
+          goto subassign_id;
+        }
+      if (arr.dims ().ndims () != 2)
+        {
+          // Rewind ip to the 2nd byte of the opcode
+          ip -= 1;
+          goto subassign_id;
+        }
+
+      // The NDArray got its own m_rep that might be shared
+      arr.make_unique ();
+
+      arr.xelem (idx1, idx2) = val;
+    }
+    CATCH_INTERRUPT_EXCEPTION
+    CATCH_INDEX_EXCEPTION_WITH_NAME
+    CATCH_EXECUTION_EXCEPTION
+    CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
+
+  STACK_DESTROY (3);
+}
+DISPATCH ();
+
 subassign_id_mat_1d:
 {
   int slot = arg0;
@@ -3073,20 +3156,25 @@ subassign_id:
     // The ov to subassign to
     octave_value &ov = bsp[slot].ov;
 
-    if (nargs == 1 && all_args_are_scalar && ov.type_id () == m_matrix_typeid &&
+    if ((nargs == 1 || nargs == 2) && all_args_are_scalar && ov.type_id () == m_matrix_typeid &&
         rhs.type_id () == m_scalar_typeid)
       {
         int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
 
+        unsigned char opcode = nargs == 1 ? static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_1D) : static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_2D);
+
         // If the opcode allready is SUBASSIGN_ID_MAT_1D we were sent back to
         // SUBASSIGN_ID to handle some error or edgecase, so don't go back.
-        if ( ip[-3 + wide_opcode_offset] != static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_1D))
+        if ( ip[-3 + wide_opcode_offset] != opcode)
           {
             // Rewind ip to the 2nd byte of the opcode
             ip -= 1;
             // Change the general opcode to the specialized one
-            ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::SUBASSIGN_ID_MAT_1D);
-            goto subassign_id_mat_1d;
+            ip[-2 + wide_opcode_offset] = opcode;
+            if (nargs == 1)
+              goto subassign_id_mat_1d;
+            else
+              goto subassign_id_mat_2d;
           }
       }
 

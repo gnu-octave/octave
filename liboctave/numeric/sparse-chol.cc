@@ -93,6 +93,13 @@ public:
   {
     return m_L;
   }
+
+  cholmod_common *cc (void) const
+  {
+    cholmod_common *ret = const_cast<cholmod_common *> (&m_common);
+    return ret;
+  }
+
 #endif
 
   octave_idx_type P () const
@@ -417,7 +424,8 @@ sparse_chol<chol_type>::L () const
   cholmod_sparse *m = m_rep->L ();
 
   octave_idx_type nc = m->ncol;
-  octave_idx_type nnz = m->nzmax;
+  octave_idx_type nnz
+    = from_suitesparse_long (CHOLMOD_NAME(nnz) (m, m_rep->cc ()));
 
   chol_type ret (m->nrow, nc, nnz);
 

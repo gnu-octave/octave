@@ -371,11 +371,13 @@ cod2ccd (const ComplexMatrix& a)
 // Convert real sparse cholmod matrix to real sparse octave matrix.
 // Returns a "shallow" copy of y.
 static SparseMatrix
-rcs2ros (const cholmod_sparse *y)
+rcs2ros (cholmod_sparse *y, const cholmod_common *cc1)
 {
   octave_idx_type nrow = from_size_t (y->nrow);
   octave_idx_type ncol = from_size_t (y->ncol);
-  octave_idx_type nz = from_size_t (y->nzmax);
+  octave_idx_type nz
+    = from_suitesparse_long
+      (cholmod_l_nnz (y, const_cast<cholmod_common *> (cc1)));
   SparseMatrix ret (nrow, ncol, nz);
 
   SuiteSparse_long *y_p = reinterpret_cast<SuiteSparse_long *> (y->p);
@@ -396,11 +398,11 @@ rcs2ros (const cholmod_sparse *y)
 // Convert complex sparse cholmod matrix to complex sparse octave matrix.
 // Returns a "deep" copy of a.
 static SparseComplexMatrix
-ccs2cos (const cholmod_sparse *a)
+ccs2cos (cholmod_sparse *a, cholmod_common *cc1)
 {
   octave_idx_type nrow = from_size_t (a->nrow);
   octave_idx_type ncol = from_size_t (a->ncol);
-  octave_idx_type nz = from_size_t (a->nzmax);
+  octave_idx_type nz = from_suitesparse_long (cholmod_l_nnz (a, cc1));
   SparseComplexMatrix ret (nrow, ncol, nz);
 
   SuiteSparse_long *a_p = reinterpret_cast<SuiteSparse_long *> (a->p);
@@ -595,7 +597,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::V (void) const
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-  return rcs2ros (m_H);
+  return rcs2ros (m_H, &m_cc);
 
 #elif defined (HAVE_CXSPARSE)
 
@@ -609,7 +611,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::V (void) const
   CXSPARSE_DNAME (_spfree) (D);
 
   octave_idx_type nc = N->L->n;
-  octave_idx_type nz = N->L->nzmax;
+  octave_idx_type nz = N->L->p[nc];
   SparseMatrix ret (N->L->m, nc, nz);
 
   for (octave_idx_type j = 0; j < nc+1; j++)
@@ -638,7 +640,9 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::R (bool econ) const
 
   octave_idx_type nr = static_cast<octave_idx_type> (m_R->nrow);
   octave_idx_type nc = static_cast<octave_idx_type> (m_R->ncol);
-  octave_idx_type nz = static_cast<octave_idx_type> (m_R->nzmax);
+  octave_idx_type nz
+    = from_suitesparse_long
+      (cholmod_l_nnz (m_R, const_cast<cholmod_common *> (&m_cc)));
 
   // FIXME: Does this work if econ = true?
   SparseMatrix ret ((econ ? (nc > nr ? nr : nc) : nr), nc, nz);
@@ -668,7 +672,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::R (bool econ) const
   CXSPARSE_DNAME (_spfree) (D);
 
   octave_idx_type nc = N->U->n;
-  octave_idx_type nz = N->U->nzmax;
+  octave_idx_type nz = N->U->p[nc];
 
   SparseMatrix ret ((econ ? (nc > nrows ? nrows : nc) : nrows), nc, nz);
 
@@ -942,7 +946,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
       for (octave_idx_type i = 0; i < ncols+1; i++)
         R2_p[i] = suitesparse_long_to_suitesparse_integer (R_p[i]);
       R2.p = R2_p;
-      octave_idx_type nnz = m_R->nzmax;
+      octave_idx_type nnz = from_suitesparse_long (cholmod_l_nnz (m_R, &m_cc));
       R2_i = new suitesparse_integer[nnz];
       SuiteSparse_long *R_i = reinterpret_cast<SuiteSparse_long *> (m_R->i);
       for (octave_idx_type i = 0; i < nnz; i++)
@@ -1542,7 +1546,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::V (void) const
   CXSPARSE_ZNAME (_spfree) (D);
 
   octave_idx_type nc = N->L->n;
-  octave_idx_type nz = N->L->nzmax;
+  octave_idx_type nz = N->L->p[nc];
   SparseComplexMatrix ret (N->L->m, nc, nz);
 
   for (octave_idx_type j = 0; j < nc+1; j++)
@@ -1571,7 +1575,9 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
 
   octave_idx_type nr = from_size_t (m_R->nrow);
   octave_idx_type nc = from_size_t (m_R->ncol);
-  octave_idx_type nz = from_size_t (m_R->nzmax);
+  octave_idx_type nz
+    = from_suitesparse_long
+      (cholmod_l_nnz (m_R, const_cast<cholmod_common *> (&m_cc)));
 
   // FIXME: Does this work if econ = true?
   SparseComplexMatrix ret ((econ ? (nc > nr ? nr : nc) : nr), nc, nz);
@@ -1601,7 +1607,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
   CXSPARSE_ZNAME (_spfree) (D);
 
   octave_idx_type nc = N->U->n;
-  octave_idx_type nz = N->U->nzmax;
+  octave_idx_type nz = N->U->p[nc];
 
   SparseComplexMatrix ret ((econ ? (nc > nrows ? nrows : nc) : nrows),
                            nc, nz);
@@ -2822,7 +2828,7 @@ sparse_qr<SparseMatrix>::min2norm_solve<SparseMatrix, SparseMatrix>
       delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
     }
 
-  x = rcs2ros (X);
+  x = rcs2ros (X, &cc);
   cholmod_l_finish (&cc);
   info = 0;
 
@@ -2897,7 +2903,7 @@ sparse_qr<SparseMatrix>::min2norm_solve<SparseComplexMatrix,
     }
   cholmod_l_finish (&cc);
 
-  SparseComplexMatrix ret = ccs2cos(X);
+  SparseComplexMatrix ret = ccs2cos (X, &cc);
 
   info = 0;
 
@@ -3022,7 +3028,7 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseComplexMatrix,
 
   info = 0;
 
-  return ccs2cos (X);
+  return ccs2cos (X, &cc);
 
 }
 
@@ -3047,7 +3053,7 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseMatrix,
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
   spqr_error_handler (&cc);
 
-  SparseComplexMatrix ret = ccs2cos(X);
+  SparseComplexMatrix ret = ccs2cos (X, &cc);
 
   if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
     {

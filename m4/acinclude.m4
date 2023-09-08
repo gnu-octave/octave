@@ -2014,6 +2014,9 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
           QT_MODULES="$QT_MODULES Qt6Core5Compat"
         ;;
       esac
+      ## Ensure that the C++ compiler fully supports C++17.
+      ## Preferably with GNU extensions if flags are required.
+      AX_CXX_COMPILE_STDCXX(17, [], mandatory)
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])

@@ -105,8 +105,7 @@ public:
   octave_idx_type P () const
   {
 #if defined (HAVE_CHOLMOD)
-    return (m_minor_p == static_cast<octave_idx_type> (m_L->ncol) ?
-            0 : m_minor_p + 1);
+    return (m_minor_p == from_size_t (m_L->ncol) ? 0 : m_minor_p + 1);
 #else
     return 0;
 #endif

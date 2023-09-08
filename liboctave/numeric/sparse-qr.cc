@@ -634,8 +634,8 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::R (bool econ) const
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-  octave_idx_type nr = static_cast<octave_idx_type> (m_R->nrow);
-  octave_idx_type nc = static_cast<octave_idx_type> (m_R->ncol);
+  octave_idx_type nr = from_size_t (m_R->nrow);
+  octave_idx_type nc = from_size_t (m_R->ncol);
   octave_idx_type nz
     = from_suitesparse_long
       (cholmod_l_nnz (m_R, const_cast<cholmod_common *> (&m_cc)));

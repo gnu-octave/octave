@@ -6040,8 +6040,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
               cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type> (X->nrow),
-                        static_cast<octave_idx_type> (X->ncol),
+                       (octave::from_size_t (X->nrow),
+                        octave::from_size_t (X->ncol),
                         octave::from_suitesparse_long (CHOLMOD_NAME(nnz)
                                                        (X, cm)));
               for (octave_idx_type j = 0;
@@ -6550,8 +6550,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type> (X->nrow),
-                        static_cast<octave_idx_type> (X->ncol),
+                       (octave::from_size_t (X->nrow),
+                        octave::from_size_t (X->ncol),
                         octave::from_suitesparse_long (CHOLMOD_NAME(nnz)
                                                        (X, cm)));
               for (octave_idx_type j = 0;

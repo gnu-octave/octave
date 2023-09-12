@@ -73,6 +73,11 @@ function T = delaunayn (pts, varargin)
     error ("delaunayn: input PTS must be a 2-dimensional numeric array");
   endif
 
+  ## Avoid erroneous calculations due to int truncation.  See bug #64658.
+  if (isinteger (pts))
+    pts = double (pts);
+  endif
+
   ## Perform delaunay calculation using either default or specified options
   if (isempty (varargin) || isempty (varargin{1}))
     try
@@ -233,6 +238,13 @@ endfunction
 %!       + edges(:,3,1) .* ...
 %!            (edges(:,1,2) .* edges(:,2,3) - edges(:,2,2) .* edges(:,1,3));
 %! assert (all (vol >= 0));
+
+## Avoid integer input erroneous volume truncation
+%!testif HAVE_QHULL <*64658>
+%! pts = [0 0 0; 0 0 10; 0 10 0; 0 10 10; 10 0 0; ...
+%!              10 0 10; 10 10 0; 10 10 10; 5 5 5];
+%! assert (isempty (delaunayn (int32 (pts))), false);
+%! assert (delaunayn (pts), delaunayn (int32 (pts)));
 
 ## Input validation tests
 %!error <Invalid call> delaunayn ()

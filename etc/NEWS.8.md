@@ -48,6 +48,8 @@ Summary of bugs fixed for version 8.3.0 (2022-08-08):
 - `fileparts.m`: Allow for relative path on different drive on Windows (bug
   #64462).
 - `datevec.m`: Add some ISO 8601 conform formats (patch #9964).
+- `delaunayn.m`: Avoid erroneous simplex removal for integer inputs (bug
+  #64658).
 
 ### Build system / Tests
 - `betaincinv.m`: Slightly increase test tolerance (for macOS 13).

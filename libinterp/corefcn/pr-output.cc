@@ -3207,7 +3207,7 @@ with numerator @var{N} and denominator @var{D} such that
 @code{@var{x} = @var{N}/@var{D}}.
 
 The optional second argument defines the maximum length of the string
-representing the elements of @var{x}.  By default, @var{len} is 9.
+representing the elements of @var{x}.  By default, @var{len} is 13.
 
 If the length of the smallest possible rational approximation exceeds
 @var{len}, an asterisk (*) padded with spaces will be returned instead.
@@ -3248,7 +3248,7 @@ x = str2num (r)
 
   frame.protect_var (rat_string_len);
 
-  rat_string_len = 9;
+  rat_string_len = 13;
   if (nargin == 2)
     rat_string_len = args(1).nint_value ();
 

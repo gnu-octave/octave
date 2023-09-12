@@ -137,6 +137,8 @@ skipped over by the wrapping calculation.  The function also permits
 logical inputs and specified operating dimensions larger than the number
 of dimensions in the input array.
 
+- The default string length for the function `rats` has changed from 9 to 13.
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isenv`

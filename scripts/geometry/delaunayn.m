@@ -73,11 +73,6 @@ function T = delaunayn (pts, varargin)
     error ("delaunayn: input PTS must be a 2-dimensional numeric array");
   endif
 
-  ## Avoid erroneous calculations due to int truncation.  See bug #64658.
-  if (isinteger (pts))
-    pts = double (pts);
-  endif
-
   ## Perform delaunay calculation using either default or specified options
   if (isempty (varargin) || isempty (varargin{1}))
     try
@@ -91,6 +86,20 @@ function T = delaunayn (pts, varargin)
     end_try_catch
   else
     T = __delaunayn__ (pts, varargin{:});
+  endif
+
+  ## Avoid erroneous calculations due to int truncation.  See bug #64658.
+  ## TODO: Large integer values in excess of flintmax can lose precision
+  ##       when converting from (u)int64 to double.  Consider modifying
+  ##       simplex checking to account for large integer math to avoid this
+  ##       problem.
+  if (isinteger (pts))
+    if (any (pts(:) > flintmax ('double')))
+      warning (["delaunayn: conversion of large integer values to ", ...
+                "double, potential loss of precision may result in " ...
+                "erroneous triangulations."]);
+    endif
+    pts = double (pts);
   endif
 
   ## Begin check for and removal of trivial simplices

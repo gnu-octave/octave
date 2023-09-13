@@ -88,13 +88,13 @@ function T = delaunayn (pts, varargin)
     T = __delaunayn__ (pts, varargin{:});
   endif
 
-  ## Avoid erroneous calculations due to int truncation.  See bug #64658.
-  ## TODO: Large integer values in excess of flintmax can lose precision
-  ##       when converting from (u)int64 to double.  Consider modifying
-  ##       simplex checking to account for large integer math to avoid this
-  ##       problem.
+  ## Avoid erroneous calculations due to integer truncation.  See bug #64658.
+  ## FIXME: Large integer values in excess of flintmax can lose precision
+  ##        when converting from (u)int64 to double.  Consider modifying
+  ##        simplex checking to account for large integer math to avoid this
+  ##        problem.
   if (isinteger (pts))
-    if (any (pts(:) > flintmax ('double')))
+    if (any (abs (pts(:)) > flintmax ('double')))
       warning (["delaunayn: conversion of large integer values to ", ...
                 "double, potential loss of precision may result in " ...
                 "erroneous triangulations."]);

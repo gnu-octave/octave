@@ -127,12 +127,6 @@ function h = area (varargin)
       set (hax, "box", "on");
     endif
 
-    ## Correct graphics.cc sometimes setting axis limits wider than the X data.
-    ## See bug #53214.
-    ## FIXME:  Would be better to correct xlim setting dircetly in graphics.cc.
-    axis (hax, "tight");
-    set (hax, "ylimmode", "auto");
-
   unwind_protect_cleanup
     if (! isempty (oldfig))
       set (0, "currentfigure", oldfig);
@@ -292,22 +286,6 @@ endfunction
 %! h = area (x, y);
 %! set (h, "ydata", sort (get (h, "ydata")));
 %! title ("area() plot of sorted data");
-
-## Test automatic xlimits, avoid extra space on either side.
-%!test <*>
-%! hf = figure ("visible", "off");
-%! hax = gca ();
-%! unwind_protect
-%!   h = area (hax, rand(10));
-%!   xlimits = get (hax, 'xlim');
-%!   assert (xlimits, [1, 10]);
-%!   h = area (hax, 22:31, rand(10));
-%!   xlimits = get (hax, 'xlim');
-%!   assert (xlimits, [22, 31]);
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
 
 ## Test input validation
 %!error <Invalid call> area ()

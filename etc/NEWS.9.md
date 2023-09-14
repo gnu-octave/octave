@@ -139,9 +139,6 @@ of dimensions in the input array.
 
 - The default string length for the function `rats` has changed from 9 to 13.
 
-- The `area` function now defaults to setting axis limit setting to 
-'tight', fixing the axis limits to match the data limits (bug #53214).
-
 ### Alphabetical list of new functions added in Octave 9
 
 * `isenv`

@@ -54,6 +54,11 @@
 ## time component will have the value set to zero.  Formats which do not
 ## specify a date will default to January 1st of the current year.
 ##
+## When passing separate @var{year}, @var{month}, @var{day}, etc. arguments,
+## each may be a scalar or nonscalar array. Nonscalar inputs must all be of
+## the same size. Scalar inputs will be expanded to be the size of the
+## nonscalar inputs.
+##
 ## @var{p} is the year at the start of the century to which two-digit years
 ## will be referenced.  If not specified, it defaults to the current year
 ## minus 50.
@@ -83,6 +88,50 @@
 ## Days can be fractional.
 ## @end itemize
 ##
+## Examples:
+##
+## @example
+## @group
+## Convert from datestrs:
+## d = datenum ("1966-06-14")
+## @result{} d = 718232
+## @end group
+##
+## @group
+## d = datenum (@{"1966-06-14", "1966-06-15", "1966-06-16"@})
+## @result{} d =
+##       718232
+##       718233
+##       718234
+## @end group
+##
+## @group
+## Convert from datevec:
+## d = datenum ([1966 06 14])
+## @result{} d = 718232
+## @end group
+##
+## @group
+## d = datenum ([1966 06 14 23 59 59])
+## @result{} d = 718232.9999884259
+## @end group
+##
+## @group
+## Specify date components separately:
+## d = datenum (1966, 6, 14)
+## @result{} d = 718232
+## @end group
+##
+## @group
+## d = datenum (1966, magic(3), 1)
+## @result{} d =
+##
+##       718280   718068   718219
+##       718127   718188   718249
+##       718158   718311   718099
+## @end group
+## @end example
+##
 ## @strong{Caution:} datenums represent a specific time for the Earth as a
 ## whole.  They do not take in to account time zones (shifts in time based
 ## on location), nor seasonal changes due to Daylight Savings Time (shifts in
@@ -101,7 +150,7 @@
 ##
 ## @seealso{datestr, datevec, now, clock, date}
 ## @end deftypefn
-
+##
 ## Algorithm: Peter Baum (http://vsg.cape.com/~pbaum/date/date0.htm)
 
 function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 0, second = 0)

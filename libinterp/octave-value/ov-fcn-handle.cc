@@ -428,7 +428,7 @@ public:
           return true;
         nxt = nxt->access_link ();
       }
-    
+
     return false;
   }
 

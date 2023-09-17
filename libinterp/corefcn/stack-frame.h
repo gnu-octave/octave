@@ -607,8 +607,8 @@ public:
 
   virtual void break_closure_cycles (const std::shared_ptr<stack_frame>&) { }
 
-  void mark_closure_context () 
-  { 
+  void mark_closure_context ()
+  {
     m_is_closure_context = true;
 
     // Mark any access linked frames as closure contexts too,

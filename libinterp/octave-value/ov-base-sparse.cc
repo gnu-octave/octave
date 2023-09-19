@@ -449,7 +449,7 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
 %! assert (nnz (B), 0);
 %! txt_file = [tempname(), ".dat"];
 %! unwind_protect
-%! save (txt_file, "A", "B");
+%!   save ("-text", txt_file, "A", "B");
 %!   s = load (txt_file);
 %! unwind_protect_cleanup
 %!   unlink (txt_file);

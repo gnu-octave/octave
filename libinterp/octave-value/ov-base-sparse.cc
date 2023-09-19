@@ -429,15 +429,34 @@ octave_base_sparse<T>::load_ascii (std::istream& is)
 
   T tmp (nr, nc, nz);
 
-  is >> tmp;
+  if (nz > 0)
+    {
+      is >> tmp;
 
-  if (! is)
-    error ("load: failed to load matrix constant");
+      if (! is)
+        error ("load: failed to load matrix constant");
+    }
 
   matrix = tmp;
 
   return true;
 }
+
+/*
+%!test <64696>
+%! A = B = sparse (1, 2);
+%! assert (nnz (A), 0);
+%! assert (nnz (B), 0);
+%! txt_file = [tempname(), ".dat"];
+%! unwind_protect
+%! save (txt_file, "A", "B");
+%!   s = load (txt_file);
+%! unwind_protect_cleanup
+%!   unlink (txt_file);
+%! end_unwind_protect
+%! assert (s.A, A);
+%! assert (s.B, B);
+*/
 
 template <typename T>
 octave_value

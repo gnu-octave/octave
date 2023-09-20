@@ -71,6 +71,9 @@ LIBINTERP_BUILT_NODISTFILES = \
   %reldir%/liboctinterp-build-info.cc \
   %reldir%/operators/ops.cc
 
+## C++ files with templates that are #included, not compiled
+LIBINTERP_TEMPLATE_SRC =
+
 %canon_reldir%_EXTRA_DIST += \
   %reldir%/DOCSTRINGS \
   %reldir%/build-env.in.cc \
@@ -87,6 +90,7 @@ octinclude_HEADERS += \
   %reldir%/octave.h \
   $(COREFCN_INC) \
   $(LIBINTERP_OPERATORS_INC) \
+  $(LIBINTERP_TEMPLATE_SRC) \
   $(OCTAVE_VALUE_INC) \
   $(PARSE_TREE_INC) \
   $(PARSER_INC) \
@@ -104,6 +108,7 @@ nodist_octinclude_HEADERS += \
 
 DIST_SRC += \
   %reldir%/octave.cc \
+  $(LIBINTERP_TEMPLATE_SRC) \
   $(OCTAVE_VALUE_SRC) \
   $(PARSE_TREE_SRC) \
   $(COREFCN_SRC)

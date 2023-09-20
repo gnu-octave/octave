@@ -1422,6 +1422,8 @@ public:
     return *m_lazy_data;
   }
 
+  bool is_script_frame () { return m_unwind_data->m_is_script; }
+
   lazy_data_struct *m_lazy_data = nullptr;
 
 private:
@@ -2343,7 +2345,9 @@ public:
 
   void visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame& frame)
   {
-    append_list (frame);
+    // For scripts, only collect symbol info in the outer most frame
+    if (!frame.is_script_frame ())
+      append_list (frame);
 
     std::shared_ptr<stack_frame> alink = frame.access_link ();
 

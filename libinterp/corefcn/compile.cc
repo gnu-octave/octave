@@ -146,7 +146,15 @@ False otherwise.
 
 @end deftypefn */)
 {
-  bool bytecode_running = interp.get_evaluator ().get_current_stack_frame ()->is_bytecode_fcn_frame ();
+  auto frame = interp.get_evaluator ().get_current_stack_frame ();
+  if (!frame)
+    error ("Invalid current frame");
+
+  auto caller_frame = frame->static_link ();
+  if (!caller_frame)
+    error ("Invalid caller frame");
+
+  bool bytecode_running = caller_frame->is_bytecode_fcn_frame ();
 
   return octave_value {bytecode_running};
 }
@@ -264,13 +272,14 @@ Not that output to a variable is not implemented yet.
   return octave_value {true};
 }
 
-DEFMETHOD (__print_bytecode__, interp, args, ,
+DEFMETHOD (__vm_print_bytecode__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __print_bytecode__ (@var{fn_name}))
+@deftypefn  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_name}))
+@deftypefnx  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_handle}))
 
 Internal function.
 
-Prints the bytecode of a function, if any.
+Prints the bytecode of a function name or function handle, if any.
 
 @end deftypefn */)
 {
@@ -296,7 +305,19 @@ Prints the bytecode of a function, if any.
   else
     ov = args (0);
 
-  octave_user_function *ufn = ov.user_function_value ();
+  octave_user_code *ufn = nullptr;
+  octave_fcn_handle *h = nullptr;
+  
+  if (ov.is_function_handle ())
+    {
+      h = ov.fcn_handle_value ();
+      if (!h)
+        error ("Invalid function handle");
+      ufn = h->user_function_value ();
+    }
+  else
+   ufn = ov.user_code_value ();
+
   std::string fn_name = ufn->name ();
 
   if (!ufn || (!ufn->is_user_function () && !ufn->is_user_script ()))
@@ -304,8 +325,15 @@ Prints the bytecode of a function, if any.
       error ("Function not a user function or script: %s", fn_name.c_str ());
     }
 
-  if (!ufn->is_compiled () && V__vm_enable__ && !ov.is_anonymous_function ())
-    compile_user_function (*ufn, 0);
+  // Nested functions need to be compiled via their parent
+  bool is_nested = ufn->is_nested_function ();
+
+  bool try_compile = !ufn->is_compiled () && V__vm_enable__ && !is_nested;
+  
+  if (try_compile && h && h->is_anonymous ())
+    h->compile ();
+  else if (try_compile)
+    vm::maybe_compile_or_compiled (ufn, 0);
   else if (!ufn->is_compiled ())
     error ("Function not compiled: %s", fn_name.c_str ());
 
@@ -319,11 +347,77 @@ Prints the bytecode of a function, if any.
   return octave_value {true};
 }
 
+DEFMETHOD (__vm_is_compiled__, interp, args, ,
+  doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_name})
+@deftypefnx  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_handle})
+
+Internal function.
+
+Returns true if the specified function name or function handle is compiled.
+
+False otherwise.
+
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin != 1)
+    print_usage ();
+
+  std::string fcn_to_compile;
+  octave_fcn_handle *handle_to_compile = nullptr;
+
+  bool do_handle = false;
+
+  if (args (0).is_string ())
+    fcn_to_compile = args (0).string_value ();
+  else if (args (0).is_function_handle ())
+    {
+      handle_to_compile = args (0).fcn_handle_value ();
+      do_handle = true;
+    }
+  else
+    error ("First argument need to be a function name or function handle.");
+
+  try
+    {
+      if (do_handle)
+        {
+          octave_user_function *ufn = handle_to_compile->user_function_value ();
+          if (!ufn)
+            return octave_value {false};
+          return octave_value {ufn->is_compiled ()};
+        }
+      else
+        {
+          std::string name = fcn_to_compile;
+          symbol_table& symtab = interp.get_symbol_table ();
+          octave_value ov = symtab.find_function (name);
+
+          if (!ov.is_defined ())
+            return octave_value {false};
+
+          octave_user_code *ufn = ov.user_code_value ();
+          if (!ufn)
+            return octave_value {false};
+
+          return octave_value {ufn->is_compiled ()};
+        }
+    }
+  catch (execution_exception &)
+    {
+      return octave_value {false};
+    }
+}
+
 DEFMETHOD (__vm_compile__, interp, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{success} =} __vm_compile__ (@var{fn_name})
 @deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "clear")
 @deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "print")
+
+Internal function.
 
 Compile the specified function to bytecode.
 
@@ -331,6 +425,8 @@ The compiled function and its subfunctions will be executed
 by the VM when called.
 
 Returns true on success, otherwise false.
+
+Don't recompile or clear the bytecode of a running function with __vm_compile__.
 
 The @qcode{"print"} option prints the bytecode after compilation.
 
@@ -344,10 +440,19 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
     print_usage ();
 
   std::string fcn_to_compile;
+  octave_fcn_handle *handle_to_compile = nullptr;
+
   bool do_clear = false;
   bool do_print = false;
 
-  for (int i = 0; i < nargin; i++)
+  if (args (0).is_string ())
+    fcn_to_compile = args (0).string_value ();
+  else if (args (0).is_function_handle ())
+    handle_to_compile = args (0).fcn_handle_value ();
+  else
+    error ("First argument need to be a function name or function handle.");
+
+  for (int i = 1; i < nargin; i++)
     {
       auto arg = args(i);
 
@@ -356,12 +461,6 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
 
       std::string arg_s = arg.string_value ();
 
-      if (i == 0)
-        {
-          fcn_to_compile = arg_s;
-          continue;
-        }
-
       if (arg_s == "clear")
         do_clear = true;
 
@@ -369,7 +468,17 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
         do_print = true;
     }
 
-  if (do_clear)
+  if (do_clear && handle_to_compile)
+    {
+      octave_user_function *ufn = handle_to_compile->user_function_value ();
+      if (!ufn)
+        error ("Invalid function handle");
+
+      ufn->clear_bytecode ();
+
+      return octave_value {true};
+    }
+  else if (do_clear)
     {
       std::string name = fcn_to_compile;
       symbol_table& symtab = interp.get_symbol_table ();
@@ -382,9 +491,9 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
 
       octave_user_code *ufn = ov.user_code_value ();
 
-      if (!ufn || !ufn->is_user_function ())
+      if (!ufn || (!ufn->is_user_function () && !ufn->is_user_script ()))
         {
-          error ("Function not a user function: %s", name.c_str ());
+          error ("Function not an user function or script: %s", name.c_str ());
         }
 
       ufn->clear_bytecode ();
@@ -392,32 +501,65 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
       return octave_value {true};
     }
 
+  if (handle_to_compile)
+    {
+      octave_user_function *ufn = handle_to_compile->user_function_value ();
+      if (!ufn)
+        error ("Invalid function handle");
 
-  {
-    std::string name = fcn_to_compile;
-    symbol_table& symtab = interp.get_symbol_table ();
-    octave_value ov = symtab.find_function (name);
+      if (ufn->is_nested_function ())
+        error ("Nested functions need to be compiled via their parent");
 
-    if (!ov.is_defined ())
-      {
-        error ("Function not defined: %s", name.c_str ());
-      }
+      // Anonymous functions need to be compiled via their handle
+      // to get the locals.
+      if (handle_to_compile->is_anonymous ())
+        {
+          handle_to_compile->compile ();
+          if (do_print && ufn->is_compiled ())
+            {
+              auto bc = ufn->get_bytecode ();
+              print_bytecode (bc);
+            }
 
-    if (!ov.is_user_function () && !ov.is_user_script ())
-      {
-        error ("Function is not a user function or script: %s", name.c_str ());
-      }
+            return octave_value {true};
+        }
+      else
+        {
+          // Throws on errors
+          compile_user_function (*ufn, do_print);
 
-    octave_user_code *ufn = ov.user_code_value ();
+          return octave_value {true};
+        }
+    }
+  else 
+    {
+      std::string name = fcn_to_compile;
+      symbol_table& symtab = interp.get_symbol_table ();
+      octave_value ov = symtab.find_function (name);
 
-    if (!ufn || (!ufn->is_user_function () && !ufn->is_user_script ()))
-      {
-        error ("Function is not really user function or script: %s", name.c_str ());
-      }
+      if (!ov.is_defined ())
+        {
+          error ("Function not defined: %s", name.c_str ());
+        }
 
-    // Throws on errors
-    compile_user_function (*ufn, do_print);
-  }
+      if (!ov.is_user_function () && !ov.is_user_script ())
+        {
+          error ("Function is not a user function or script: %s", name.c_str ());
+        }
+
+      octave_user_code *ufn = ov.user_code_value ();
+
+      if (!ufn || (!ufn->is_user_function () && !ufn->is_user_script ()))
+        {
+          error ("Function is not really user function or script: %s", name.c_str ());
+        }
+
+      if (ufn->is_nested_function ())
+        error ("Nested functions need to be compiled via their parent");
+
+      // Throws on errors
+      compile_user_function (*ufn, do_print);
+    }
 
   return octave_value {true};
 }

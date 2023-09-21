@@ -1068,7 +1068,7 @@ public:
 
   int is_char (void) const { return m_id == mxCHAR_CLASS; }
 
-  int is_complex (void) const { return 0; }
+  int is_complex (void) const { return m_is_complex; }
 
   int is_double (void) const { return m_id == mxDOUBLE_CLASS; }
 
@@ -1559,15 +1559,10 @@ public:
 
 protected:
 
-  mxArray_matlab (bool interleaved, mxClassID id = mxUNKNOWN_CLASS)
+  mxArray_matlab (bool interleaved, bool is_complex, mxClassID id,
+                  mwSize ndims, const mwSize *dims)
     : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
-      m_ndims (0), m_dims (nullptr)
-  { }
-
-  mxArray_matlab (bool interleaved, mxClassID id, mwSize ndims,
-                  const mwSize *dims)
-    : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
-      m_ndims (ndims < 2 ? 2 : ndims),
+      m_is_complex (is_complex), m_ndims (ndims < 2 ? 2 : ndims),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     if (ndims == 0)
@@ -1593,9 +1588,10 @@ protected:
       }
   }
 
-  mxArray_matlab (bool interleaved, mxClassID id, const dim_vector& dv)
+  mxArray_matlab (bool interleaved, bool is_complex, mxClassID id,
+                  const dim_vector& dv)
     : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
-      m_ndims (dv.ndims ()),
+      m_is_complex (is_complex), m_ndims (dv.ndims ()),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     for (mwIndex i = 0; i < m_ndims; i++)
@@ -1610,9 +1606,10 @@ protected:
       }
   }
 
-  mxArray_matlab (bool interleaved, mxClassID id, mwSize m, mwSize n)
+  mxArray_matlab (bool interleaved, bool is_complex, mxClassID id,
+                  mwSize m, mwSize n)
     : mxArray_base (interleaved), m_class_name (nullptr), m_id (id),
-      m_ndims (2),
+      m_is_complex (is_complex), m_ndims (2),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     m_dims[0] = m;
@@ -1621,12 +1618,14 @@ protected:
 
   mxArray_matlab (const mxArray_matlab& val)
     : mxArray_base (val), m_class_name (mxArray::strsave (val.m_class_name)),
-      m_id (val.m_id), m_ndims (val.m_ndims),
+      m_id (val.m_id), m_is_complex (val.m_is_complex), m_ndims (val.m_ndims),
       m_dims (static_cast<mwSize *> (mxArray::malloc (m_ndims * sizeof (mwSize))))
   {
     for (mwIndex i = 0; i < m_ndims; i++)
       m_dims[i] = val.m_dims[i];
   }
+
+  void set_complexity (bool is_complex) { m_is_complex = is_complex; }
 
   dim_vector
   dims_to_dim_vector (void) const
@@ -1650,6 +1649,8 @@ private:
 
   mxClassID m_id;
 
+  bool m_is_complex;
+
   mwSize m_ndims;
   mwSize *m_dims;
 };
@@ -1661,25 +1662,26 @@ class mxArray_base_full : public mxArray_matlab
 {
 public:
 
-  mxArray_base_full (bool interleaved, mxClassID id, mwSize ndims,
-                     const mwSize *dims, bool init = true)
-    : mxArray_matlab (interleaved, id, ndims, dims),
+  mxArray_base_full (bool interleaved, bool is_complex, mxClassID id,
+                     mwSize ndims, const mwSize *dims, bool init = true)
+    : mxArray_matlab (interleaved, is_complex, id, ndims, dims),
       m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
   { }
 
-  mxArray_base_full (bool interleaved, mxClassID id, const dim_vector& dv)
-    : mxArray_matlab (interleaved, id, dv),
+  mxArray_base_full (bool interleaved, bool is_complex, mxClassID id,
+                     const dim_vector& dv)
+    : mxArray_matlab (interleaved, is_complex, id, dv),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   { }
 
-  mxArray_base_full (bool interleaved, mxClassID id, mwSize m, mwSize n,
-                     bool init = true)
-    : mxArray_matlab (interleaved, id, m, n),
+  mxArray_base_full (bool interleaved, bool is_complex, mxClassID id,
+                     mwSize m, mwSize n, bool init = true)
+    : mxArray_matlab (interleaved, is_complex, id, m, n),
       m_pr (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
   { }
 
   mxArray_base_full (bool interleaved, mxClassID id, double val)
-    : mxArray_matlab (interleaved, id, 1, 1),
+    : mxArray_matlab (interleaved, false, id, 1, 1),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   {
     double *dpr = static_cast<double *> (m_pr);
@@ -1687,7 +1689,7 @@ public:
   }
 
   mxArray_base_full (bool interleaved, mxClassID id, mxLogical val)
-    : mxArray_matlab (interleaved, id, 1, 1),
+    : mxArray_matlab (interleaved, false, id, 1, 1),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   {
     mxLogical *lpr = static_cast<mxLogical *> (m_pr);
@@ -1695,7 +1697,7 @@ public:
   }
 
   mxArray_base_full (bool interleaved, const char *str)
-    : mxArray_matlab (interleaved, mxCHAR_CLASS,
+    : mxArray_matlab (interleaved, false, mxCHAR_CLASS,
                       str ? (strlen (str) ? 1 : 0) : 0,
                       str ? strlen (str) : 0),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
@@ -1708,7 +1710,7 @@ public:
 
   // FIXME: ???
   mxArray_base_full (bool interleaved, mwSize m, const char **str)
-    : mxArray_matlab (interleaved, mxCHAR_CLASS, m, max_str_len (m, str)),
+    : mxArray_matlab (interleaved, false, mxCHAR_CLASS, m, max_str_len (m, str)),
       m_pr (mxArray::calloc (get_number_of_elements (), get_element_size ()))
   {
     mxChar *cpr = static_cast<mxChar *> (m_pr);
@@ -2253,37 +2255,34 @@ public:
 
   mxArray_interleaved_full (mxClassID id, mwSize ndims, const mwSize *dims,
                             mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (true, id, ndims, dims, init),
-      m_complex (flag == mxCOMPLEX)
+    : mxArray_base_full (true, flag == mxCOMPLEX, id, ndims, dims, init)
   { }
 
   mxArray_interleaved_full (mxClassID id, const dim_vector& dv,
                             mxComplexity flag = mxREAL)
-    : mxArray_base_full (true, id, dv),
-      m_complex (flag == mxCOMPLEX)
+    : mxArray_base_full (true, flag == mxCOMPLEX, id, dv)
   { }
 
   mxArray_interleaved_full (mxClassID id, mwSize m, mwSize n,
                             mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (true, id, m, n, init),
-      m_complex (flag == mxCOMPLEX)
+    : mxArray_base_full (true, flag == mxCOMPLEX, id, m, n, init)
   { }
 
   mxArray_interleaved_full (mxClassID id, double val)
-    : mxArray_base_full (true, id, val), m_complex (false)
+    : mxArray_base_full (true, id, val)
   { }
 
   mxArray_interleaved_full (mxClassID id, mxLogical val)
-    : mxArray_base_full (true, id, val), m_complex (false)
+    : mxArray_base_full (true, id, val)
   { }
 
   mxArray_interleaved_full (const char *str)
-    : mxArray_base_full (true, str), m_complex (false)
+    : mxArray_base_full (true, str)
   { }
 
   // FIXME: ???
   mxArray_interleaved_full (mwSize m, const char **str)
-    : mxArray_base_full (true, m, str), m_complex (false)
+    : mxArray_base_full (true, m, str)
   { }
 
   // No assignment!  FIXME: should this be implemented?  Note that we
@@ -2298,8 +2297,6 @@ public:
 
   ~mxArray_interleaved_full (void) = default;
 
-  int is_complex (void) const { return m_complex; }
-
   void * get_imag_data (void) const { panic_impossible (); }
 
   void set_imag_data (void */*pi*/) { panic_impossible (); }
@@ -2307,11 +2304,8 @@ public:
 protected:
 
   mxArray_interleaved_full (const mxArray_interleaved_full& val)
-    : mxArray_base_full (val), m_complex (val.m_complex)
+    : mxArray_base_full (val)
   { }
-
-  // Flag to identify complex object.
-  bool m_complex;
 };
 
 class mxArray_separate_full : public mxArray_base_full
@@ -2320,7 +2314,7 @@ public:
 
   mxArray_separate_full (mxClassID id, mwSize ndims, const mwSize *dims,
                          mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (false, id, ndims, dims, init),
+    : mxArray_base_full (false, flag == mxCOMPLEX, id, ndims, dims, init),
       m_pi (flag == mxCOMPLEX
             ? mxArray::alloc (init, get_number_of_elements (), get_element_size ())
             : nullptr)
@@ -2328,16 +2322,16 @@ public:
 
   mxArray_separate_full (mxClassID id, const dim_vector& dv,
                          mxComplexity flag = mxREAL)
-    : mxArray_base_full (false, id, dv),
-      m_pi (flag == mxCOMPLEX
+    : mxArray_base_full (false, flag == mxCOMPLEX, id, dv),
+      m_pi (is_complex ()
             ? mxArray::calloc (get_number_of_elements (), get_element_size ())
             : nullptr)
   { }
 
   mxArray_separate_full (mxClassID id, mwSize m, mwSize n,
                          mxComplexity flag = mxREAL, bool init = true)
-    : mxArray_base_full (false, id, m, n, init),
-      m_pi (flag == mxCOMPLEX
+    : mxArray_base_full (false, flag == mxCOMPLEX, id, m, n, init),
+      m_pi (is_complex ()
             ? (mxArray::alloc (init, get_number_of_elements (), get_element_size ()))
             : nullptr)
   { }
@@ -2374,11 +2368,14 @@ public:
     mxFree (m_pi);
   }
 
-  int is_complex (void) const { return m_pi != nullptr; }
-
   void * get_imag_data (void) const { return m_pi; }
 
-  void set_imag_data (void *pi) { m_pi = pi; }
+  void set_imag_data (void *pi)
+  {
+    m_pi = pi;
+
+    set_complexity (m_pi != nullptr);
+  }
 
   mxDouble * get_doubles (void) const { panic_impossible (); }
   mxSingle * get_singles (void) const { panic_impossible (); }
@@ -2512,9 +2509,9 @@ class mxArray_base_sparse : public mxArray_matlab
 {
 public:
 
-  mxArray_base_sparse (bool interleaved, mxClassID id, mwSize m, mwSize n,
-                       mwSize nzmax)
-    : mxArray_matlab (interleaved, id, m, n),
+  mxArray_base_sparse (bool interleaved, bool is_complex,
+                       mxClassID id, mwSize m, mwSize n, mwSize nzmax)
+    : mxArray_matlab (interleaved, is_complex, id, m, n),
 
       m_nzmax (nzmax > 0 ? nzmax : 1),
       m_ir (static_cast<mwIndex *> (mxArray::calloc (m_nzmax, sizeof (mwIndex)))),
@@ -2697,14 +2694,13 @@ public:
 
   mxArray_interleaved_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
                               mxComplexity flag = mxREAL)
-    : mxArray_base_sparse (true, id, m, n, nzmax),
-      m_complex (flag == mxCOMPLEX)
+    : mxArray_base_sparse (true, flag == mxCOMPLEX, id, m, n, nzmax)
   { }
 
 private:
 
   mxArray_interleaved_sparse (const mxArray_interleaved_sparse& val)
-    : mxArray_base_sparse (val), m_complex (val.m_complex)
+    : mxArray_base_sparse (val)
   { }
 
 public:
@@ -2721,17 +2717,9 @@ public:
 
   ~mxArray_interleaved_sparse (void) = default;
 
-  int is_complex (void) const { return m_complex; }
-
   void * get_imag_data (void) const { panic_impossible (); }
 
   void set_imag_data (void */*pi*/) { panic_impossible (); }
-
-private:
-
-  // Flag to identify complex object if using interleaved data and PI is
-  // always nullptr.
-  bool m_complex;
 };
 
 class mxArray_separate_sparse : public mxArray_base_sparse
@@ -2740,8 +2728,8 @@ public:
 
   mxArray_separate_sparse (mxClassID id, mwSize m, mwSize n, mwSize nzmax,
                            mxComplexity flag = mxREAL)
-    : mxArray_base_sparse (false, id, m, n, nzmax),
-      m_pi (flag == mxCOMPLEX
+    : mxArray_base_sparse (false, flag == mxCOMPLEX, id, m, n, nzmax),
+      m_pi (is_complex ()
             ? mxArray::calloc (m_nzmax, get_element_size ())
             : nullptr)
   { }
@@ -2775,14 +2763,13 @@ public:
     mxFree (m_pi);
   }
 
-  int is_complex (void) const
-  {
-    return m_pi != nullptr;
-  }
-
   void * get_imag_data (void) const { return m_pi; }
 
-  void set_imag_data (void *pi) { m_pi = pi; }
+  void set_imag_data (void *pi)
+  {
+    m_pi = pi;
+    set_complexity (m_pi != nullptr);
+  }
 
   mxDouble * get_doubles (void) const { panic_impossible (); }
   mxComplexDouble * get_complex_doubles (void) const { panic_impossible (); }
@@ -2846,7 +2833,7 @@ public:
 
   mxArray_struct (bool interleaved, mwSize ndims, const mwSize *dims,
                   int num_keys, const char **keys)
-    : mxArray_matlab (interleaved, mxSTRUCT_CLASS, ndims, dims),
+    : mxArray_matlab (interleaved, false, mxSTRUCT_CLASS, ndims, dims),
       m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
                                       sizeof (char *)))),
@@ -2859,7 +2846,7 @@ public:
 
   mxArray_struct (bool interleaved, const dim_vector& dv, int num_keys,
                   const char **keys)
-    : mxArray_matlab (interleaved, mxSTRUCT_CLASS, dv),
+    : mxArray_matlab (interleaved, false, mxSTRUCT_CLASS, dv),
       m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
                                       sizeof (char *)))),
@@ -2872,7 +2859,7 @@ public:
 
   mxArray_struct (bool interleaved, mwSize m, mwSize n, int num_keys,
                   const char **keys)
-    : mxArray_matlab (interleaved, mxSTRUCT_CLASS, m, n),
+    : mxArray_matlab (interleaved, false, mxSTRUCT_CLASS, m, n),
       m_nfields (num_keys),
       m_fields (static_cast<char **> (mxArray::calloc (m_nfields,
                                       sizeof (char *)))),
@@ -3112,19 +3099,19 @@ class mxArray_cell : public mxArray_matlab
 public:
 
   mxArray_cell (bool interleaved, mwSize ndims, const mwSize *dims)
-    : mxArray_matlab (interleaved, mxCELL_CLASS, ndims, dims),
+    : mxArray_matlab (interleaved, false, mxCELL_CLASS, ndims, dims),
       m_data (static_cast<mxArray * *> (
                 mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
   mxArray_cell (bool interleaved, const dim_vector& dv)
-    : mxArray_matlab (interleaved, mxCELL_CLASS, dv),
+    : mxArray_matlab (interleaved, false, mxCELL_CLASS, dv),
       m_data (static_cast<mxArray * *> (
                 mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }
 
   mxArray_cell (bool interleaved, mwSize m, mwSize n)
-    : mxArray_matlab (interleaved, mxCELL_CLASS, m, n),
+    : mxArray_matlab (interleaved, false, mxCELL_CLASS, m, n),
       m_data (static_cast<mxArray * *> (
                 mxArray::calloc (get_number_of_elements (), sizeof (mxArray *))))
   { }

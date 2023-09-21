@@ -340,6 +340,11 @@ public:
     // We dont collect any id:s in the handle, since the original scope
     // don't.
   }
+
+  void visit_function_def (tree_function_def &)
+  {
+    // Don't collect any id:s inside a function def (functions embedded in scripts)
+  }
 };
 
 template <class T>
@@ -4051,6 +4056,35 @@ visit_cell (tree_cell &m)
   maybe_emit_bind_ans_and_disp (m);
 
   DEC_DEPTH ();
+}
+
+void
+bytecode_walker::
+visit_function_def (tree_function_def &cmd)
+{
+  // Function definitions in scripts are supposed to be installed
+  // at runtime when reaching the relevant row.
+  //
+  // So we store the function in the constant data and load it
+  // with INSTALL_FUNCTION.
+
+  CHECK (m_is_script);
+
+  octave_value fcn = cmd.function ();
+  octave_function *f = fcn.function_value ();
+
+  // tree_evaluator just does nothing on nullptr, but abort compilation instead here
+  CHECK_NONNULL (f);
+
+  std::string name = f->name ();
+  int slot = add_id_to_table (name);
+
+  int data_offset = DATA_SIZE ();
+  PUSH_DATA (fcn);
+
+  PUSH_CODE (INSTR::INSTALL_FUNCTION);
+  PUSH_SLOT (slot);
+  PUSH_CODE_INT (data_offset);
 }
 
 void

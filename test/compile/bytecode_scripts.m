@@ -6,6 +6,7 @@ function bytecode_scripts
     b1 = 2;
     __printf_assert__ ("%d ", exist ("a1"));
     script1 (); % defines 'a1', 'b1', 'c1', 'd1'
+
     __printf_assert__ ("%d ", eval ("a1;"));
     __printf_assert__ ("%d ", b1);
     __printf_assert__ ("%d ", eval ("c1;"));
@@ -18,4 +19,7 @@ function bytecode_scripts
     end
 
     script3 ();
+
+    % Inline function defined in script1
+    assert (inlinefn2 (234) == 235) 
 end

@@ -192,6 +192,7 @@ enum class INSTR
   WORDCMD_NX,
   ANON_MAYBE_SET_IGNORE_OUTPUTS,
   ENTER_NESTED_FRAME,
+  INSTALL_FUNCTION,
 };
 
 enum class unwind_entry_type

@@ -311,6 +311,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (JMP_IFN_BOOL)             PSHORT() CASE_END ()
           CASE_START (FOR_COMPLEX_SETUP)        PSHORT() CASE_END ()
 
+          CASE_START (INSTALL_FUNCTION)       PSLOT () PINT() CASE_END ()
+
           CASE_START (ASSIGN_COMPOUND)        PSLOT () PCHAR () CASE_END ()
 
           CASE_START (INDEX_ID_NARGOUT0)      PSLOT () PCHAR () CASE_END ()
@@ -861,6 +863,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&wordcmd_nx,
       &&anon_maybe_set_ignore_output,
       &&enter_nested_frame,
+      &&install_function,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -6217,6 +6220,30 @@ debug: // TODO: Remove
     fp->vm_enter_nested ();
   }
   DISPATCH_1BYTEOP ();
+
+
+  install_function:
+  {
+    int slot = arg0;
+    int fn_cst_idx = POP_CODE_INT ();
+
+    std::string fn_name = name_data [slot];
+
+    octave_value fn = data[fn_cst_idx];
+
+    symbol_table& symtab = m_tw->get_interpreter ().get_symbol_table ();
+    symtab.install_cmdline_function (fn_name, fn);
+
+    // Make sure that any variable with the same name as the new
+    // function is cleared.
+    octave_value &ov = bsp[slot].ov;
+
+    if (ov.is_ref ())
+      ov.ref_rep ()->set_value (octave_value {});
+    else
+      ov = octave_value {};
+  }
+  DISPATCH ();
 
   __builtin_unreachable ();
 }

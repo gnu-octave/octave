@@ -289,7 +289,7 @@ namespace octave
 
     void visit_octave_user_function (octave_user_function&);
 
-    void visit_function_def (tree_function_def&) ERROR_NOT_IMPLEMENTED
+    void visit_function_def (tree_function_def&);
 
     void visit_identifier (tree_identifier&);
 

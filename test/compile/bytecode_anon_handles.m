@@ -100,6 +100,13 @@ function bytecode_anon_handles ()
   assert (a == 0)
   [~, a] = h2 ([-2 5])
   assert (a == 0)
+
+  % Nested anon functions
+  h1 = @(y) y * 2;
+  h2 = @(yy) execute_handle (@(yyy) h1 (yyy), yy); %h1 captured here
+  assert (h2 (3) == 6)
+  h2 = @(yy) execute_handle (@(yyyy) execute_handle (@(yyy) h1 (yyy), yyyy), yy); % Nest some more
+  assert (h2 (3) == 6)
 end
 
 function [x, y, z] = try_isargout ()
@@ -122,4 +129,8 @@ function varargout = expression_nargout ()
   for i = 1:nargout
     varargout{i} = i;
   end
+end
+
+function b = execute_handle (h, arg1)
+  b = h (arg1);
 end

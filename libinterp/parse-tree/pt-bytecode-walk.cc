@@ -2592,11 +2592,33 @@ visit_octave_user_function (octave_user_function& fcn)
   if (m_is_anon)
     {
       CHECK_NONNULL (m_anon_local_values);
+      // external frame offset 1 is used for storing internal offsets to local
+      // variables in nested anonymous funcitons, so assure there is no other use
+      // of frame offset by checking the size is one.
+      CHECK (m_code.m_unwind_data.m_external_frame_offset_to_internal.size () == 1);
 
       for (auto kv : *m_anon_local_values)
         {
           std::string name = kv.first;
-          CHECK (m_map_locals_to_slot.find (name) != m_map_locals_to_slot.end ()); // Ensure it is in the scope
+
+          // Nested anonymous functions leads to local variables that need to be stored
+          // in all outer anonymous function scopes. I.e. the local is in m_anon_local_values
+          // but not in m_map_locals_to_slot.
+          //
+          // These variables are given "fake" frame offset and data offset so they are accessable.
+          // They are fake in as much, that the scope object does not have the offsets registered
+          // and they are only lookup-able by name. But the resulting symbol_record (with the fake offsets)
+          // is usable. E.g. tree_evaluator::evaluate_anon_fcn_handle() needs this.
+          if (m_map_locals_to_slot.find (name) == m_map_locals_to_slot.end ())
+            {
+              int slot_added = add_id_to_table (name);
+
+              // Fake frame offset of one
+              m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (2);
+              // Increasing number for fake external offset
+              int fake_external_offset = m_code.m_unwind_data.m_external_frame_offset_to_internal[1].size ();
+              m_code.m_unwind_data.m_external_frame_offset_to_internal[1][fake_external_offset] = slot_added;
+            }
 
           int slot = SLOT (name);
 

@@ -3359,7 +3359,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
 
               n_args_in_part++;
             }
-          else
+          else if (args)
             {
               // Push all the args to the stack
 
@@ -3413,7 +3413,13 @@ visit_simple_assignment (tree_simple_assignment& expr)
       // We want to put them in lists and feed them to a subsassgn() call. We use
       // a special op-code for this.
 
+      int slot = 0;
+      if (e->is_identifier ())
+        slot = SLOT (e->name ());
+
+      MAYBE_PUSH_WIDE_OPEXT (slot);
       PUSH_CODE (INSTR::SUBASSIGN_CHAINED);
+      PUSH_SLOT (slot);
       PUSH_CODE (op); // =, += etc.
       PUSH_CODE (n_chained);
       for (unsigned i = 0; i < n_chained; i++)
@@ -3426,11 +3432,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
       // Now we got the value that is subassigned to, on the stack
       if (e->is_identifier ())
         {
-          // Write the subassigned value back to the slot
-          int slot = SLOT (e->name ());
-          MAYBE_PUSH_WIDE_OPEXT (slot);
-          PUSH_CODE (INSTR::FORCE_ASSIGN);
-          PUSH_SLOT (slot);
+          PUSH_CODE (INSTR::POP);
 
           maybe_emit_push_and_disp_id (expr, e->name ());
         }

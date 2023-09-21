@@ -433,6 +433,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_END ()
 
           CASE_START (SUBASSIGN_CHAINED)
+            PSLOT ();
             PCHAR (); // op
             PCHAR (); // nchained
             int nn = *p;
@@ -5639,7 +5640,8 @@ clear_ignore_outputs:
 
 subassign_chained:
   {
-    octave_value::assign_op op = static_cast<octave_value::assign_op> (arg0);
+    int slot = arg0;
+    octave_value::assign_op op = static_cast<octave_value::assign_op> (*ip++);
     int n_chained = POP_CODE ();
     std::vector<int> v_n_args;
     std::string type (n_chained, 0);
@@ -5684,15 +5686,36 @@ subassign_chained:
         if (type.size () && type.back () != '(' && lhs_assign_numel (lhs, type, idx) != 1)
           err_invalid_structure_assignment ();
 
-        lhs.assign (op, type, idx, rhs);
+        if (slot)
+          {
+            octave_value &lhs_slot = bsp[slot].ov;
+
+            // We don't need to he lhs value put on the stack since we are working on a slot.
+            // Clear it to make assigns not need a new copy.
+            lhs = octave_value {};
+
+            bool is_ref = lhs_slot.is_ref ();
+
+            if (is_ref)
+              lhs_slot.ref_rep ()->ref ().make_unique ();
+
+            lhs_slot.assign (op, type, idx, rhs);
+
+            // Push a dummy octave_value. Always poped by a POP opcode. 
+            PUSH_OV (octave_value {});
+          }
+        else
+          {
+            lhs.assign (op, type, idx, rhs);
+            // The value is pushed and used for further chaining.
+            PUSH_OV (lhs);
+          }
       }
     CATCH_INTERRUPT_EXCEPTION
     CATCH_INDEX_EXCEPTION
     CATCH_EXECUTION_EXCEPTION
     CATCH_BAD_ALLOC
     CATCH_EXIT_EXCEPTION
-
-    PUSH_OV (lhs);
   }
   DISPATCH ();
 

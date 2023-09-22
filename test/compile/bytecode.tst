@@ -311,7 +311,7 @@
 %!test
 %! __enable_vm_eval__ (0, "local");
 %! clear all
-%! key = "double 0 0 1 1 1 1 1 2 2 2 400 100 0 1 3 double 1 1 1 2 double 1 2 1 1 11 eclass:double 1 1 3 4 double 1 2 400 100 1 1 1 1 3 4 1 1 5 6 1 1 1 2 double 1 2 1 2 double 1 2 1 1 3 4 eclass:double 1 2 3 4 double 1 2 0 0 1 1 3 4 1 1 5 6 1 0 2 double 2 double 11 2 6 4 5 double 1 5 11 double 1 1 22 double 1 1 33 double 1 1 3 double 1 1 4 double 1 1 10 double 1 1 2 3 double 1 2 3 double 1 1 2 double 1 1 55 double 1 1 7 double 1 1 0 ";
+%! key = "double 0 0 1 1 1 1 1 2 2 2 400 100 0 1 3 double 1 1 1 2 double 1 2 1 1 11 eclass:double 1 1 3 4 double 1 2 400 100 1 1 1 1 3 4 1 1 5 6 1 1 1 2 double 1 2 1 2 double 1 2 1 1 3 4 eclass:double 1 2 3 4 double 1 2 0 0 1 1 3 4 1 1 5 6 1 0 2 double 2 double 11 2 6 4 5 double 1 5 11 double 1 1 22 double 1 1 33 double 1 1 3 double 1 1 4 double 1 1 10 double 1 1 2 3 double 1 2 3 double 1 1 2 double 1 1 55 double 1 1 7 double 1 1 0 11 12 4 11 12 4 ";
 %!
 %! __compile__ bytecode_global_1 clear;
 %! clear global a;

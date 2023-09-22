@@ -123,6 +123,23 @@ function bytecode_global_1 ()
   clear global c
   __printf_assert__ ("%d ", length (who ('global','c')));
 
+  % Assure some different subassignment operators are working
+  global s;
+  s = [1 2 3 4];
+  s(1) = 11;  %SUBASSIGN_ID
+  s(2) += 10; %SUBASSIGN_CHAINED
+  s(3) = [];  %SUBASSIGN_ID
+
+  __printf_assert__ ("%d ", s);
+
+  global t;
+  t.s = [1 2 3 4];
+  t.s(1) = 11;  %SUBASSIGN_CHAINED
+  t.s(2) += 10; %SUBASSIGN_CHAINED
+  t.s(3) = [];  %SUBASSIGN_CHAINED
+
+  __printf_assert__ ("%d ", t.s);
+
   clear global d
   clear global e
   clear global f
@@ -135,6 +152,8 @@ function bytecode_global_1 ()
   clear global o
   clear global p
   clear global r
+  clear global s
+  clear global t
 end
 
 function [q w e] = returns3()

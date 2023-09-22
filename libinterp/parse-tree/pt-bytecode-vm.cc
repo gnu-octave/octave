@@ -1160,7 +1160,10 @@ ret:
         int n_root_wanted = std::max (root_nargout, 1);
         for (j = 1; j < n_returns_callee && j < (n_root_wanted + 1); j++)
           {
-            ret.append (std::move (bsp[j].ov));
+            if (OCTAVE_UNLIKELY (bsp[j].ov.is_ref ()))
+              ret.append (bsp[j].ov.ref_rep ()->deref ());
+            else
+              ret.append (std::move (bsp[j].ov));
             bsp[j].ov.~octave_value ();
           }
         // Destroy rest of return values, if any
@@ -5035,8 +5038,13 @@ index_struct_call:
             if (cntr == 0 && ov.is_nil () && has_slot)
               {
                 // Put a function cache object in the slot and in the local ov
-                ov = bsp[slot].ov =
-                  octave_value (new octave_fcn_cache (name_data[slot]));
+                ov = octave_value (new octave_fcn_cache (name_data[slot]));
+
+                if (OCTAVE_UNLIKELY (bsp[slot].ov.is_ref ()))
+                  bsp[slot].ov.ref_rep ()->set_value (ov);
+                else
+                  bsp[slot].ov = ov;
+
               }
 
             if (cntr == 0 && ov.has_function_cache () && has_slot)
@@ -5697,12 +5705,14 @@ subassign_chained:
             // Clear it to make assigns not need a new copy.
             lhs = octave_value {};
 
-            bool is_ref = lhs_slot.is_ref ();
-
-            if (is_ref)
-              lhs_slot.ref_rep ()->ref ().make_unique ();
-
-            lhs_slot.assign (op, type, idx, rhs);
+            if (OCTAVE_UNLIKELY (lhs_slot.is_ref ()))
+              {
+                octave_value &ov_ref = lhs_slot.ref_rep ()->ref ();
+                ov_ref.make_unique ();
+                ov_ref.assign (op, type, idx, rhs);
+              }
+            else
+              lhs_slot.assign (op, type, idx, rhs);
 
             // Push a dummy octave_value. Always poped by a POP opcode. 
             PUSH_OV (octave_value {});

@@ -380,7 +380,7 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
           error ("Function not defined: %s", name.c_str ());
         }
 
-      octave_user_function *ufn = ov.user_function_value ();
+      octave_user_code *ufn = ov.user_code_value ();
 
       if (!ufn || !ufn->is_user_function ())
         {

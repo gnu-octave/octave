@@ -199,7 +199,12 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
                           const octave_value_list& args)
 {
   if (octave::vm::maybe_compile_or_compiled (this))
-    return octave::vm::call (tw, nargout, args, this);
+    {
+      auto frame = tw.get_current_stack_frame ();
+      if (frame->is_scope_frame () || frame->is_bytecode_fcn_frame ())
+        return octave::vm::call (tw, nargout, args, this);
+    }
+
 
   tw.push_stack_frame (this);
 

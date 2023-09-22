@@ -67,6 +67,7 @@ public:
     virtual bool is_local_ref () const { return false; }
 
     virtual octave::stack_frame::scope_flags get_scope_flag () = 0;
+    virtual void mark_globalness_in_owning_frame (bool /* should_be_global */) {}
 
     void maybe_call_dtor ();
     octave_value simple_subsasgn (char type, octave_value_list& idx, const octave_value& rhs);
@@ -142,10 +143,9 @@ public:
     octave_value & ref ();
     void set_value (octave_value val);
 
-    octave::stack_frame::scope_flags get_scope_flag ()
-    {
-      return octave::stack_frame::scope_flags::LOCAL;
-    }
+    octave::stack_frame::scope_flags get_scope_flag ();
+
+    void mark_globalness_in_owning_frame (bool should_be_global);
 
     bool is_local_ref () const { return true; }
 

@@ -700,3 +700,48 @@
 %! assert (cdef_bar_cnt == 0);
 %! clear -global cdef_bar_alive_objs cdef_bar_cnt glb_d glb_e glb_f
 
+## Test script interaction when called from top scope
+%!test
+%!
+%! __vm_enable__ (0, "local");
+%! clear all
+%!
+%! global bytecode_script_topscope_place; % Used in bytecode_script_topscope the select where to evalin
+%! bytecode_script_topscope_place = "base";
+%!
+%! global bytecode_script_topscope_call_self
+%! bytecode_script_topscope_call_self = false;
+%!
+%! bytecode_script_topscope_setup; % Does some setups of globals and locals in base frame
+%! evalin ("base", "bytecode_script_topscope");
+%!
+%! bytecode_script_topscope_assert; % Does some asserts and cleans up the globals and locals added
+%!
+%! __vm_enable__ (1, "local");
+%! bytecode_script_topscope_setup;
+%! assert (__vm_compile__ ("bytecode_script_topscope"));
+%! evalin ("base", "bytecode_script_topscope");
+%! bytecode_script_topscope_assert;
+%!
+%! %% Redo the test, but nested in itself to get a stack frame in between.
+%! bytecode_script_topscope_call_self = true;
+%!
+%! bytecode_script_topscope_setup;
+%! assert (__vm_compile__ ("bytecode_script_topscope"));
+%! evalin ("base", "bytecode_script_topscope");
+%! bytecode_script_topscope_assert;
+%!
+%! bytecode_script_topscope_call_self = false;
+%!
+%! %% Redo the test, but in a command line function instead of in the top scope.
+%! bytecode_script_topscope_place = "caller"; % Governs some evalin() in nbytecode_script_topscope. Switch to "caller"
+%!
+%! eval ("function bytecode_script_topscope_cli_fn ()\nbytecode_script_topscope_setup ('caller');\nbytecode_script_topscope;\nbytecode_script_topscope_assert ('caller');\nend");
+%!
+%! bytecode_script_topscope_cli_fn ();
+%! bytecode_script_topscope_call_self = true;
+%! bytecode_script_topscope_cli_fn ();
+%!
+%! clear global bytecode_script_topscope_call_self
+%! clear global bytecode_script_topscope_place
+%! clear bytecode_script_topscope_cli_fn

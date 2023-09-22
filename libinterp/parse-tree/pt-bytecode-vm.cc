@@ -4537,7 +4537,7 @@ unwind:
         if (!m_could_not_push_frame)
           {
             auto sf = m_tw->get_current_stack_frame ();
-            sf->vm_exit_script ();
+            sf->vm_exit_script (); // Just returns for non-scripts
             sf->vm_unwinds ();
           }
 
@@ -4674,13 +4674,11 @@ init_global:
             goto unwind;
           }
 
-        auto sym = m_tw->get_current_stack_frame ()->insert_symbol (name);
+        auto frame = m_tw->get_current_stack_frame ();
+        auto sym = frame->insert_symbol (name);
         // Note: Install variable wont override global's value with nil ov from
         //       the "{}" argument.
-        //
-        //       Also install_variable () will write a true ov to the marker
-        //       ov on the VM stack.
-        m_tw->get_current_stack_frame()->install_variable (sym, {}, 1);
+        frame->install_variable (sym, {}, 1);
 
         octave_value &ov_gbl = m_tw->global_varref (name);
         global_is_new_in_callstack = ov_gbl.is_undefined ();

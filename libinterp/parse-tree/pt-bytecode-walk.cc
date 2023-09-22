@@ -32,6 +32,7 @@
 #include "symrec.h"
 #include "pt-walk.h"
 #include "ov-scalar.h"
+#include "file-ops.h"
 
 //#pragma GCC optimize("Og")
 
@@ -2229,6 +2230,9 @@ visit_octave_user_script (octave_user_script& fcn)
             m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (frame_offset + 1);
 
           m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
+
+          if (frame_offset == 0)
+            m_code.m_unwind_data.m_set_user_locals_names.insert (name);
         }
     }
 
@@ -2308,16 +2312,19 @@ visit_octave_user_script (octave_user_script& fcn)
     }
 
   // Check that the mapping between external offsets and internal slots has no holes in it
-  if (m_n_nested_fn == 0)
+   int i = 0;
+  for (auto it : m_code.m_unwind_data.m_external_frame_offset_to_internal[0])
     {
-      int i = 0;
-      for (auto it : m_code.m_unwind_data.m_external_frame_offset_to_internal[0])
-        {
-          int external_offset = it.first;
-          CHECK (external_offset == i);
-          i++;
-        }
+      int external_offset = it.first;
+      CHECK (external_offset == i);
+      i++;
     }
+
+  // Save how many symbols there were originally, so that the VM can easely check if more symbols
+  // have been added to the scope object when a frame is pushed to the call stack.
+  m_code.m_unwind_data.m_n_orig_scope_size = 0;
+  for (auto m : m_code.m_unwind_data.m_external_frame_offset_to_internal)
+    m_code.m_unwind_data.m_n_orig_scope_size += m.size ();
 
   // The profiler needs to know these sizes when copying from pointers.
   m_code.m_unwind_data.m_code_size = m_code.m_code.size ();
@@ -2478,6 +2485,9 @@ visit_octave_user_function (octave_user_function& fcn)
             m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (frame_offset + 1);
 
           m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
+
+          if (frame_offset == 0)
+            m_code.m_unwind_data.m_set_user_locals_names.insert (name);
         }
     }
   // We need the arguments and return id:s in the map too.
@@ -2532,46 +2542,66 @@ visit_octave_user_function (octave_user_function& fcn)
   //
   // Note that there might be symbols added to the original scope by
   // eg. eval ("foo = 3"). We just ignore those.
-  std::string function_name = fcn.name ();
-  auto dot_idx = function_name.find_last_of ('.'); // Names might be e.g. "get.Count" but we only want "Count"
-  if (dot_idx != std::string::npos)
-    function_name = function_name.substr (dot_idx + 1);
-
+  //
   // We need to keep track of which id is the function name so that
   // we can add the id to the id-table and get it's external offset.
   //
   // Note that the file 'bar.m' can have one function with the id name 'foo'
   // which will be added to the scope by the parser, but the function name
   // and thus call-name is 'bar'.
-  std::size_t idx_fn_name;
+  //
+  // Also, for nested functions any parent nesting function name need to
+  // be included too.
+  if (!fcn.is_anonymous_function ())
+    {
+      auto scope = fcn.scope ();
+      std::string fn_name = scope.fcn_name ();
+
+      // Names might be e.g. "get.Count" but we only want "Count"
+      auto dot_idx = fn_name.find_last_of ('.'); 
+      if (dot_idx != std::string::npos)
+        fn_name = fn_name.substr (dot_idx + 1);
+
+      symbol_record fn_sr = scope.find_symbol (fn_name);
+      CHECK (fn_sr.is_valid ());
+
+      std::size_t offset = fn_sr.data_offset ();
+      std::size_t frame_offset = fn_sr.frame_offset ();
+
+      if (frame_offset >= m_code.m_unwind_data.m_external_frame_offset_to_internal.size ())
+        m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (frame_offset + 1);
+
+      int slot = add_id_to_table (fn_name);
+      m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
+    }
+
+  // Add the parents' function names for nested functions
   if (m_n_nested_fn)
     {
-      idx_fn_name = fcn.scope ().find_symbol (function_name).data_offset ();
-    }
-  else
-    idx_fn_name = n_returns + 1; // "+1" since 'ans' is always added first
+      auto scope = fcn.scope ();
+      for (std::string parent_name : scope.parent_fcn_names ())
+        {
+          symbol_record parent_sr = scope.find_symbol (parent_name);
+          CHECK (parent_sr.is_valid ());
 
+          std::size_t offset = parent_sr.data_offset ();
+          std::size_t frame_offset = parent_sr.frame_offset ();
+          
+          if (frame_offset >= m_code.m_unwind_data.m_external_frame_offset_to_internal.size ())
+            m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (frame_offset + 1);
+
+          int slot = add_id_to_table (parent_name);
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
+        }
+    }
+
+  // Add varargin, varargout, ans
   for (auto p : fcn.scope ().symbols ())
     {
       std::string name = p.first;
       symbol_record sym = p.second;
       std::size_t offset = sym.data_offset ();
-
-      bool is_fn_id = offset == idx_fn_name; // Are we at the function name id?
-
-      auto it = m_map_locals_to_slot.find (name);
-      if (it == m_map_locals_to_slot.end ())
-        {
-          if (is_fn_id)
-            {
-              // Add the function name id to the table and add the correct external offset.
-              // (The name might not be the call-name of the function.)
-              int slot = add_id_to_table (name);
-              m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = slot;
-            }
-          else
-            continue;
-        }
+      std::size_t frame_offset = sym.frame_offset ();
 
       if (name == "varargin")
         m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("varargin");
@@ -2579,6 +2609,13 @@ visit_octave_user_function (octave_user_function& fcn)
         m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("varargout");
       else if (name == "ans")
         m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = SLOT ("ans");
+      else if (offset == 1 && frame_offset == 0 && !fcn.is_anonymous_function ())
+        {
+          // If the function name and function identifier of the root function don't match ('foo.m' with 'bar' function)
+          // the identifier's name ('bar') will end up on offset 1. Make sure it is added by always adding
+          // the 1 offset symbol in the scope for nested functions.
+          m_code.m_unwind_data.m_external_frame_offset_to_internal[0][1] = add_id_to_table (sym.name ());
+        }
     }
 
   CHECK (! (m_is_anon && m_n_nested_fn));
@@ -2795,6 +2832,12 @@ visit_octave_user_function (octave_user_function& fcn)
           i++;
         }
     }
+
+  // Save how many symbols there were originally, so that the VM can easely check if more symbols
+  // have been added to the scope object.
+  m_code.m_unwind_data.m_n_orig_scope_size = 0;
+  for (auto m : m_code.m_unwind_data.m_external_frame_offset_to_internal)
+    m_code.m_unwind_data.m_n_orig_scope_size += m.size ();
 
   // The profiler needs to know these sizes when copying from pointers.
   m_code.m_unwind_data.m_code_size = m_code.m_code.size ();

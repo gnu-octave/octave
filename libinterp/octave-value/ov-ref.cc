@@ -149,6 +149,21 @@ octave_value_ref_vmlocal::set_value (octave_value val)
   m_frame->varref (m_sym) = val;
 }
 
+octave::stack_frame::scope_flags 
+octave_value_ref_vmlocal::get_scope_flag ()
+{
+  return m_frame->scope_flag (m_sym);
+}
+
+void
+octave_value_ref_vmlocal::mark_globalness_in_owning_frame (bool should_be_global)
+{
+  if (should_be_global)
+    m_frame->mark_global (m_sym);
+  else
+    m_frame->unmark_global (m_sym);
+}
+
 octave_value &
 octave_value_ref_ptr::ref ()
 {

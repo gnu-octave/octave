@@ -102,12 +102,30 @@ public:
     // to resize the bytecode frame size.
     std::size_t n_syms =  fcn->scope_num_symbols ();
 
-    m_orig_size = m_unwind_data->m_external_frame_offset_to_internal[0].size (); // TODO: Check m_n_locals instead?
+    m_orig_size = m_unwind_data->m_n_orig_scope_size;
 
-    if (n_syms > m_orig_size)
+    // If any symbols been added to the scope since the compilation we allocate room for
+    // them on the dynamic stack frame. Unless it is a script, which should put stuff in the
+    // eval frame.
+    if (n_syms > m_orig_size && !fcn->is_user_script ())
       {
-        int n_to_add = m_orig_size - n_syms;
-        internal_resize (m_size + n_to_add);
+        int n_to_add = n_syms - m_orig_size;
+        // Make room for the extra symbols
+        internal_resize (internal_size () + n_to_add);
+        
+        // We need to get the names of the extra symbols too
+        auto scope = get_scope ();
+        auto &sym_map = scope.symbols ();
+
+        for (auto &kv : sym_map)
+          {
+            symbol_record &sr = kv.second;
+            if (sr.frame_offset ())
+              continue;
+            unsigned offset = sr.data_offset ();
+            if (offset >= m_orig_size)
+              internal_set_extra_name (external_to_local_offset (offset), sr.name ());
+          }
       }
   }
 
@@ -130,7 +148,6 @@ public:
         auto &lazy = lazy_data ();
 
         lazy.m_extra_slots = elt.m_lazy_data->m_extra_slots;
-        lazy.m_extra_flags = elt.m_lazy_data->m_extra_flags;
         lazy.m_extra_names = elt.m_lazy_data->m_extra_names;
       }
   }
@@ -207,8 +224,13 @@ public:
     return it->second;
   }
 
-  bool maybe_external_to_local_offset (std::size_t external_offset, std::size_t frame_offset, std::size_t &internal_offset_out) const
+  // Returns true if the symbol with the external offset and frame offset is stored in this frame.
+  // Note that this does not imply that frame offset is zero, if the return value is true.
+  bool maybe_external_to_local_offset (std::size_t external_offset, std::size_t frame_offset, 
+                                       std::size_t &internal_offset_out, bool &allready_added_out) const
   {
+    allready_added_out = false;
+
     if (frame_offset >= m_unwind_data->m_external_frame_offset_to_internal.size ())
       return false;
 
@@ -221,67 +243,16 @@ public:
           error ("VM internal error: Invalid external offset. Smaller than original size and not in table");
         // The offsets that are not in the original translation table are in the extra slots added dynamically
         internal_offset_out = m_size + (external_offset - m_orig_size);
+        allready_added_out = internal_offset_out < internal_size ();
         return true;
       }
     else if (!found)
       return false;
 
     internal_offset_out = it->second;
+    allready_added_out = true;
+
     return true;
-  }
-
-  // Do an expensive check if the stack is in order. Call only during debugging.
-  void vm_dbg_check_scope ()
-  {
-    symbol_scope scope = __get_interpreter__().get_current_scope ();
-    auto symbols = scope.symbol_list ();
-
-    for (symbol_record sym_scope : symbols)
-      {
-        if (sym_scope.frame_offset ()) // Don't check nested function stuff becouse it aint working anyways
-          continue;
-
-        std::size_t scope_offset = sym_scope.data_offset ();
-        std::size_t frame_offset = sym_scope.frame_offset ();
-        std::string scope_name = sym_scope.name ();
-
-        std::size_t internal_offset = external_to_local_offset (scope_offset, frame_offset);
-        if (internal_offset >= m_size)
-          continue; // We don't check the "extra" slots since these can change with eval and evalin:s etc
-
-        symbol_record sym_frame = lookup_symbol (scope_name);
-
-        std::size_t offset2 = sym_frame.data_offset ();
-        std::string frame_name = sym_frame.name ();
-
-        if (scope_name != frame_name && frame_name != "")
-          error ("VM stack check failed: %s != %s\n", scope_name.c_str (), frame_name.c_str ());
-        if (scope_offset != offset2 && frame_name != "")
-          error ("VM stack check failed: %zu != %zu\n", scope_offset, offset2);
-
-        if (internal_offset >= internal_size ())
-          internal_resize (internal_offset + 1);
-
-        auto flag = get_scope_flag (scope_offset);
-        if (flag == PERSISTENT || flag == GLOBAL)
-          continue;
-
-        octave_value ov1 = varval (sym_scope);
-        octave_value ov2 = varval (scope_name);
-        octave_value ov3 = varval (scope_offset);
-        octave_value ov4 = varref (sym_scope, true);
-        octave_value ov5 = varref (scope_offset, true);
-
-        if (!ov1.same_rep (ov2))
-          error ("VM stack check failed: Same object differs 2\n");
-        if (!ov1.same_rep (ov3))
-          error ("VM stack check failed: Same object differs 3\n");
-        if (!ov1.same_rep (ov4))
-          error ("VM stack check failed: Same object differs 4\n");
-        if (!ov1.same_rep (ov5))
-          error ("VM stack check failed: Same object differs 5\n");
-      }
-
   }
 
   void vm_clear_for_cache ()
@@ -300,7 +271,6 @@ public:
   // they can be accessed.
   void vm_unwinds ()
   {
-    //vm_dbg_check_scope ();
     bool is_alone = m_weak_ptr_to_self.use_count () <= 2; // Two seems about right
 
     if (m_lazy_data)
@@ -373,16 +343,28 @@ public:
       internal_resize (internal_size () + diff);
   }
 
+  void internal_set_extra_name (std::size_t local_offset, std::string name)
+  {
+    std::size_t extra_offset = local_offset - m_size;
+    std::size_t extra_size = (m_lazy_data ? m_lazy_data->m_extra_slots.size () : 0);
+
+    if (!m_lazy_data || extra_offset >= extra_size)
+      panic ("VM internal panic: Trying to set extra slot name out of range");
+
+    m_lazy_data->m_extra_names.at (extra_offset) = name;
+  }
+
   void internal_resize (std::size_t arg)
   {
+    // Not ok to resize for scripts. Extra slots should be in the eval frame.
+    CHECK_PANIC (!m_fcn->is_user_script ());
+
     int diff = static_cast<int> (arg) - static_cast<int>(internal_size ());
 
     if (diff > 0)
       {
         auto &lazy = lazy_data ();
         lazy.m_extra_slots.resize (lazy.m_extra_slots.size () + diff);
-
-        lazy.m_extra_flags.resize (lazy.m_extra_flags.size () + diff);
 
         lazy.m_extra_names.resize (lazy.m_extra_names.size () + diff);
       }
@@ -394,17 +376,18 @@ public:
       {
         if (!m_lazy_data)
           panic ("bytecode_fcn_stack_frame::slot_is_global(%zu): Bad request", local_offset);
-        scope_flags flag = m_lazy_data->m_extra_flags.at (local_offset - m_size);
-        return flag == GLOBAL;
+
+        octave_value ov = m_lazy_data->m_extra_slots.at (local_offset - m_size);
+        if (!ov.is_ref ())
+          return false;
+        return ov.ref_rep ()->get_scope_flag () == GLOBAL;
       }
 
     octave_value &ov = m_stack_start [local_offset].ov;
     if (!ov.is_ref ())
       return false;
-    if (ov.ref_rep ()->is_global_ref ())
-      return true;
 
-    return false;
+    return ov.ref_rep ()->get_scope_flag () == GLOBAL;
   }
 
   bool slot_is_persistent (std::size_t local_offset) const
@@ -413,26 +396,27 @@ public:
       {
         if (!m_lazy_data)
           panic ("bytecode_fcn_stack_frame::slot_is_global(%zu): Bad request", local_offset);
-        scope_flags flag = m_lazy_data->m_extra_flags.at (local_offset - m_size);
-        return flag == PERSISTENT;
+        octave_value ov = m_lazy_data->m_extra_slots.at (local_offset - m_size);
+        if (!ov.is_ref ())
+          return false;
+        return ov.ref_rep ()->get_scope_flag () == PERSISTENT;
       }
 
     octave_value &ov = m_stack_start [local_offset].ov;
     if (!ov.is_ref ())
       return false;
-    if (ov.ref_rep ()->is_persistent_ref ())
-      return true;
-    return false;
+    return ov.ref_rep ()->get_scope_flag () == PERSISTENT;
   }
 
   stack_frame::scope_flags get_scope_flag_internal (std::size_t external_offset, std::size_t frame_offset) const
   {
     std::size_t local_offset;
-    bool found = maybe_external_to_local_offset (external_offset, frame_offset, local_offset);
+    bool allready_added;
+    bool in_this_frame = maybe_external_to_local_offset (external_offset, frame_offset, local_offset, allready_added);
 
     // Note, quirk: A variable that is not added to a nested frame is not to be reported as global
     // eventhough it is global in the parent frame.
-    if (!found)
+    if (!in_this_frame)
       {
         if (!m_fcn->is_nested_function ())
           error ("VM internal error: Invalid call to get_scope_flag_internal");
@@ -450,10 +434,14 @@ public:
         return ov.ref_rep ()->get_scope_flag ();
       }
 
-    // TODO: Could use code above instead?
     size_t extra_offset = local_offset - m_size;
-    if (m_lazy_data && extra_offset < m_lazy_data->m_extra_flags.size ())
-      return m_lazy_data->m_extra_flags.at (local_offset - m_size);
+    if (m_lazy_data && extra_offset < m_lazy_data->m_extra_slots.size ())
+      {
+        octave_value ov = m_lazy_data->m_extra_slots.at (extra_offset);
+        if (!ov.is_ref ())
+          return LOCAL;
+        return ov.ref_rep ()->get_scope_flag ();
+      }
 
     return LOCAL;
   }
@@ -480,8 +468,6 @@ public:
         if (!m_lazy_data)
           error ("VM internal error: Trying to set scope flag on invalid offset");
 
-        m_lazy_data->m_extra_flags.at (local_offset - m_size) = flag;
-
         ov = &m_lazy_data->m_extra_slots.at (local_offset - m_size);
         name = m_lazy_data->m_extra_names.at (local_offset - m_size);
       }
@@ -497,9 +483,19 @@ public:
           return;
         if (is_pers)
           error ("VM internal error: Trying to make persistent variable global");
+        if (name == "")
+          error ("VM internal error: Trying to make unnamed symbol global");
 
-        *ov = octave_value {new octave_value_ref_global {name}};
-
+        if (ov->is_ref ())
+          {
+            octave_value_ref *r = ov->ref_rep ();
+            if (r->is_local_ref ())
+              r->mark_globalness_in_owning_frame (true);
+            else
+              *ov = octave_value {new octave_value_ref_global {name}};
+          }
+        else
+          *ov = octave_value {new octave_value_ref_global {name}};
         return;
       }
 
@@ -524,7 +520,16 @@ public:
         if (is_global || is_pers)
           {
             // Clear the ref in its slot
-            *ov = octave_value {};
+            if (ov->is_ref ())
+              {
+                octave_value_ref *r = ov->ref_rep ();
+                if (r->is_local_ref ())
+                  r->mark_globalness_in_owning_frame (false);
+                else
+                  *ov = octave_value {};
+              }
+            else
+              *ov = octave_value {};
           }
 
         return;
@@ -538,7 +543,34 @@ public:
     std::size_t external_offset = sym.data_offset ();
     std::size_t frame_offset = sym.frame_offset ();
 
-    return get_scope_flag_internal (external_offset, frame_offset);
+    if (m_fcn->is_nested_function ())
+      return get_scope_flag_internal (external_offset, frame_offset);
+
+    bool is_script = m_fcn->is_user_script ();
+
+    std::size_t local_offset;
+    bool allready_added;
+    bool in_this_frame = maybe_external_to_local_offset (external_offset, frame_offset, local_offset, allready_added);
+
+    if (frame_offset == 0 && is_script && !allready_added)
+      {
+        // Try to find the symbol in the root frame instead.
+        auto sym_in_root = access_link ()->lookup_symbol (sym.name ());
+        return access_link ()->scope_flag (sym_in_root);
+      }
+    else if (frame_offset == 0 && in_this_frame)
+      return get_scope_flag_internal (external_offset, frame_offset);
+
+    // If we have a frame offset and are in a bytecode script frame
+    // we need to follow the access links until we got the correct frame
+    auto access_frame = access_link ();
+    while (--frame_offset && access_frame)
+      access_frame = access_frame->access_link ();
+
+    if (!access_frame)
+      error ("Invalid call to bytecode_fcn_stack_frame::scope_flag()");
+
+    return access_frame->get_scope_flag (external_offset);
   }
 
   virtual octave_value get_active_bytecode_call_arg_names ()
@@ -688,15 +720,19 @@ public:
     std::size_t external_offset = sym.data_offset ();
     std::size_t frame_offset = sym.frame_offset ();
     std::size_t local_offset;
-    bool found = maybe_external_to_local_offset (external_offset, frame_offset, local_offset);
+    bool allready_added;
+    bool in_this_frame = maybe_external_to_local_offset (external_offset, frame_offset, local_offset, allready_added);
 
-    if (!found && m_fcn->is_nested_function ())
+    bool is_script = m_fcn->is_user_script ();
+    bool is_nested = m_fcn->is_nested_function ();
+
+    if (!allready_added && (is_nested || is_script))
       {
         // Try to find the symbol in the root frame instead.
         auto sym_in_root = access_link ()->lookup_symbol (sym.name ());
         return access_link ()->varval (sym_in_root);
       }
-    else if (!found)
+    else if (!in_this_frame)
       error ("VM internal error: Invalid call to varval() with frame offset %zu, name '%s'", frame_offset, sym.name ().c_str ());
 
     // If the offset is out of range we return a nil ov, unless this is a script frame,
@@ -796,22 +832,27 @@ public:
     std::size_t frame_offset = sym.frame_offset ();
 
     std::size_t local_offset;
-    bool found = maybe_external_to_local_offset (external_offset, frame_offset, local_offset);
+    bool allready_added;
+    bool in_this_frame = maybe_external_to_local_offset (external_offset, frame_offset, local_offset, allready_added);
 
-    // Only nested functions should be able to not find the internal offset for an external offset.
-    if (!found && m_fcn->is_nested_function ())
+    bool is_nested = m_fcn->is_nested_function ();
+    bool is_script = m_fcn->is_user_script ();
+
+    if (!allready_added && (is_nested || is_script))
       {
         // Try to find the symbol in the root frame instead.
         auto sym_in_root = access_link ()->insert_symbol (sym.name ());
+        CHECK_PANIC (sym_in_root.frame_offset () == 0);
         return access_link ()->varref (sym_in_root, deref_refs);
       }
-    else if (!found)
+    else if (!in_this_frame)
       panic ("VM internal error: Invalid call to varref() with frame offset %zu, name '%s'", frame_offset, sym.name ().c_str ());
 
     // If the offset is out of range we make room for it
     if (local_offset >= internal_size ())
     {
       internal_resize (local_offset + 1);
+      internal_set_extra_name (local_offset, sym.name ());
 
       // If this bytecode frame is a script we need to add the symbol to the parent frames
       if (m_fcn->is_user_script ())
@@ -830,27 +871,20 @@ public:
             nm.c_str (), nm_src.c_str ());
       }
 
-    bool is_global = slot_is_global (local_offset);
-    bool is_pers = slot_is_persistent (local_offset);
-
-    if (is_global)
-      return m_evaluator.global_varref (sym.name ());
-    if (is_pers)
-      return get_scope ().persistent_varref(external_offset);
-
-    if (!add_to_parent_scriptframes)
-      return varref_internal (local_offset, deref_refs);
-    else
+    if (add_to_parent_scriptframes)
       {
         // Mirrors what happens in vm_enter_script ().
         // Essentially the octave_value in the enclosing script frame
         // is stolen and put in this frame, and a pointer to the value in this
         // frame is put in the enclosing frame.
-
+        symbol_record script_sr = sym;
         std::string name = sym.name ();
 
         auto eval_frame = access_link ();
         auto eval_scope = eval_frame->get_scope ();
+        auto parent_frame = parent_link ();
+        bool caller_is_eval_frame = eval_frame == parent_frame;
+
 
         symbol_record eval_scope_sr;
 
@@ -864,17 +898,77 @@ public:
         else
           eval_scope_sr = p->second;
 
-        octave_value &p_ov = varref (external_offset, false); // Pointer to current VM stack frame
-        octave_value &orig = eval_frame->varref (eval_scope_sr, false); // Ref to value on parent's VM stack
-        p_ov = orig; // Move parent's value to current stack frame
-        orig = octave_value (new octave_value_ref_vmlocal {sym, this}); // Replace parents value with reference ov.
+        if (eval_frame->is_global (eval_scope_sr))
+          {
+            mark_global (script_sr);
 
-        // We need to do the opposite when unwinding.
-        lazy_data ().m_script_sr_originals.push_back (eval_scope_sr);
-        lazy_data ().m_script_local_refs.push_back (sym);
+            octave_value &orig = eval_frame->varref (eval_scope_sr.data_offset (), false);
+            orig = octave_value (new octave_value_ref_vmlocal {script_sr, this});
 
-        return p_ov;
+            if (!caller_is_eval_frame)
+              {
+                symbol_record sr_parent = parent_frame->lookup_symbol (script_sr.name ());
+                CHECK_PANIC (sr_parent.is_valid ());
+                CHECK_PANIC (sr_parent.frame_offset () == 0);
+
+                octave_value &parent_ref = parent_frame->varref (sr_parent, false);
+
+                CHECK_PANIC (parent_frame->is_global (sr_parent));
+
+                if (&parent_ref != &orig)
+                  {
+                    CHECK_PANIC (parent_ref.is_ref () && parent_ref.ref_rep ()->is_global_ref ());
+                    parent_ref = octave_value (new octave_value_ref_vmlocal {script_sr, this});
+                  }
+              }
+          }
+        else
+          {
+            octave_value &orig_ref = eval_frame->varref (eval_scope_sr, false); // Ref to value on parent's VM stack
+            octave_value &ref = varref (script_sr, false); // Pointer to current VM stack frame
+
+            CHECK_PANIC (&ref != &orig_ref);
+
+            if (!caller_is_eval_frame)
+              {
+                symbol_record sr_parent = parent_frame->lookup_symbol (script_sr.name ());
+                CHECK_PANIC (sr_parent.is_valid ());
+
+                // If the symbol is not in the parent frame, we add it to it.
+                if (sr_parent.frame_offset ())
+                  {
+                    // Move the value from whatever parent has the it to the current stack frame
+                    ref = parent_frame->varref (sr_parent, false);
+
+                    sr_parent = parent_frame->insert_symbol (script_sr.name ()); // TODO: Need to be done to all parents missing it?
+                    octave_value &parent_ref = parent_frame->varref (sr_parent, false);
+
+                    CHECK_PANIC (&parent_ref != &orig_ref);
+                    CHECK_PANIC (&parent_ref != &ref);
+
+                    parent_ref = octave_value (new octave_value_ref_vmlocal {script_sr, this});
+                  }
+                else
+                  {
+                    octave_value &parent_ref = parent_frame->varref (sr_parent, false);
+
+                    CHECK_PANIC (&ref != &parent_ref);
+                    CHECK_PANIC (&parent_ref != &orig_ref);
+
+                    ref = parent_ref; // Move parent's value to the current stack frame
+                    parent_ref = octave_value (new octave_value_ref_vmlocal {script_sr, this});
+                  }
+              }
+            else
+              {
+                ref = orig_ref; // Move eval frame's value to current stack frame
+              }
+
+            orig_ref = octave_value (new octave_value_ref_vmlocal {script_sr, this}); // Replace parents value with reference ov.
+          }
       }
+
+    return varref_internal (local_offset, deref_refs);
   }
 
   void mark_scope (const symbol_record& sym,
@@ -885,88 +979,70 @@ public:
     bool add_global_to_scripts = flag == GLOBAL && is_script;
     bool remove_global_from_scripts = flag != GLOBAL && is_script && was_global;
 
+    bool is_nested = m_fcn->is_nested_function ();
+
     std::size_t external_offset = sym.data_offset ();
     std::size_t frame_offset = sym.frame_offset ();
 
     std::size_t local_offset;
-    bool found = maybe_external_to_local_offset (external_offset, frame_offset, local_offset);
+    bool allready_added;
+    bool in_this_frame = maybe_external_to_local_offset (external_offset, frame_offset, local_offset, allready_added);
 
-    if (!found)
+    if (!in_this_frame || ((is_script || is_nested) && !allready_added))
       {
-        if (!m_fcn->is_nested_function ())
+        if (!is_script && !is_nested)
           error ("VM internal error: Invalid call to mark_scope");
 
-        auto sym_in_root = access_link ()->lookup_symbol (sym.name ());
+        auto sym_in_root = access_link ()->insert_symbol (sym.name ()); // Adds symbol if doesn't exist
         access_link ()->mark_scope (sym_in_root, flag);
         return;
       }
 
     if (local_offset >= internal_size ())
-      internal_resize (local_offset + 1);
+      {
+        internal_resize (local_offset + 1);
+        internal_set_extra_name (local_offset, sym.name ());
+      }
 
     set_scope_flag (external_offset, flag);
 
-    // If we are executing a bytecode script, we need to mark a symbol as global in
-    // the nesting frames too. Likewise, if we are to "unglobal" a symbol in a
-    // bytecode script, we need to unglobal the symbol in all nesting bytecode script frames.
-    //
-    // TODO: Refactor
-    if (add_global_to_scripts || remove_global_from_scripts)
+    if (add_global_to_scripts)
       {
-        auto parent_frame = parent_link ();
-        auto nesting_frame = access_link ();
+        symbol_record sym_access =  m_access_link->insert_symbol (sym.name ());
+        octave_value &ov_access = m_access_link->varref (sym_access.data_offset (), false);
 
-        bool do_access_frame = nesting_frame == parent_frame;
+        bool make_ref = true;
 
-        if (!parent_frame->is_bytecode_fcn_frame ())
-          do_access_frame = true;
-
-        auto f = static_cast<bytecode_fcn_stack_frame*> (parent_frame.get ());
-        bool f_is_script = f->m_lazy_data && f->m_lazy_data->m_is_script;
-        if (!f_is_script)
-          do_access_frame = true;
-
-        // TODO: Make not recursive to allow deep stacks.
-        if (do_access_frame)
+        if (ov_access.is_ref ())
           {
-            auto scope = nesting_frame->get_scope ();
-            const auto &symbols = scope.symbols ();
-            auto p = symbols.find (sym.name ());
-            symbol_record sr;
-
-            if (add_global_to_scripts && p == symbols.end ())
-              sr = scope.insert (sym.name ());
-            else if (remove_global_from_scripts && p == symbols.end ())
-              return;
-            else
-              sr = p->second;
-
-            // If top scope, clear slot without following refs. mark_scope() does this in itself
-            // for bytecode frames' mark_scope().
-            if (!nesting_frame->is_bytecode_fcn_frame ())
-              {
-                octave_value &ov = nesting_frame->varref (sr, false);
-                ov = {};
-              }
-
-            nesting_frame->mark_scope (sr, flag); // Will call parent bytecode scripts recursively
+            octave_value_ref *r = ov_access.ref_rep ();
+            if (r->is_local_ref ())
+              make_ref = false;
           }
-        else
+
+        m_access_link->mark_global (sym_access);
+
+        if (make_ref)
+          ov_access = octave_value (new octave_value_ref_vmlocal {sym, this});
+      }
+    else if (remove_global_from_scripts)
+      {
+        symbol_record sym_access =  m_access_link->insert_symbol (sym.name ());
+        octave_value &ov_access = m_access_link->varref (sym_access.data_offset (), false);
+
+        bool make_ref = true;
+
+        if (ov_access.is_ref ())
           {
-            auto scope = f->get_scope ();
-            const auto &symbols = scope.symbols ();
-            auto p = symbols.find (sym.name ());
-            symbol_record sr;
-
-            if (add_global_to_scripts && p == symbols.end ())
-              sr = scope.insert (sym.name ());
-            else if (remove_global_from_scripts && p == symbols.end ())
-              return;
-            else
-              sr = p->second;
-
-            f->mark_scope (sr, flag); // Will call parent bytecode scripts recursively
+            octave_value_ref *r = ov_access.ref_rep ();
+            if (r->is_local_ref ())
+              make_ref = false;
           }
+
+        m_access_link->unmark_global (sym_access);
+
+        if (make_ref)
+          ov_access = octave_value (new octave_value_ref_vmlocal {sym, this});
       }
   }
 
@@ -1008,7 +1084,11 @@ public:
         ret.set_frame_offset (frame_offset);
 
         // Check if the symbol is an argument or return symbol. Note: Negative count for vararg and varargin
-        int n_returns = abs (static_cast<signed char> (m_code[0]));
+        int n_returns = static_cast<signed char> (m_code[0]);
+        if (n_returns == -128) // Magic number for anonymous function's "dynamic amount of returns"
+          n_returns = 0;
+        else
+          n_returns = abs (n_returns);
         int n_args = abs (static_cast<signed char> (m_code[1]));
         if (local_offset < n_returns + n_args)
           ret.mark_formal ();
@@ -1022,7 +1102,7 @@ public:
           {
             if (m_lazy_data->m_extra_names.at (i) == name)
               {
-                symbol_record ret (name, m_lazy_data->m_extra_flags.at (i));
+                symbol_record ret (name, flag);
                 ret.set_data_offset (m_orig_size + i);
                 return ret;
               }
@@ -1057,6 +1137,9 @@ public:
 
   symbol_record insert_symbol (const std::string& name)
   {
+    bool is_script = m_lazy_data && m_lazy_data->m_is_script;
+    bool allready_added;
+
     // If the symbols is already in the immediate scope, there is
     // nothing more to do.
 
@@ -1064,18 +1147,68 @@ public:
 
     symbol_record sym = scope.lookup_symbol (name);
 
-    if (sym)
-      return sym;
+    if (!sym)
+      {
+        // If we have not created the extra slots, now is the time
+        lazy_data ();
 
-    // If we have not created the extra slots, now is the time
-    auto &lazy = lazy_data ();
-    lazy.m_extra_names.push_back (name);
-    lazy.m_extra_slots.push_back ({});
-    lazy.m_extra_flags.push_back (LOCAL);
+        sym = scope.find_symbol (name);
 
-    sym = scope.find_symbol (name);
+        CHECK_PANIC (sym.is_valid ());
+        CHECK_PANIC (sym.frame_offset () == 0);
 
-    panic_unless (sym.is_valid ());
+        unsigned local_offset = external_to_local_offset (sym.data_offset ());
+
+        if (local_offset >= internal_size ())
+          internal_resize (local_offset + 1);
+
+        internal_set_extra_name (local_offset, sym.name ());
+
+        allready_added = false;
+      }
+    else
+      allready_added = true;
+
+    // If we are in a script, we might need to add the symbol to the eval frame too,
+    // and point a ref to the script's slot from the eval frame.
+    if (is_script)
+      {
+        CHECK_PANIC (m_access_link);
+
+        bool access_allready_added;
+        
+        symbol_record sym_access = m_access_link->lookup_symbol (name);
+        if (sym_access.is_valid ())
+          access_allready_added = true;
+        else
+          {
+            access_allready_added = false;
+            sym_access =  m_access_link->insert_symbol (name);
+          }
+
+        CHECK_PANIC ((allready_added && access_allready_added) || !allready_added);
+
+        if (!allready_added)
+          {
+            octave_value &ov_access = m_access_link->varref (sym_access.data_offset (), false);
+            octave_value &ov = varref (sym.data_offset (), false);
+
+            bool make_ref = true;
+
+            if (ov_access.is_ref ())
+              {
+                octave_value_ref *r = ov_access.ref_rep ();
+                if (r->is_local_ref ())
+                  make_ref = false;
+              }
+            
+            if (make_ref)
+              {
+                ov = ov_access;
+                ov_access = octave_value (new octave_value_ref_vmlocal {sym, this});
+              }
+          }
+      }
 
     return sym;
   }
@@ -1287,93 +1420,186 @@ public:
 
   void vm_enter_script ()
   {
+    CHECK_PANIC (m_fcn->is_user_script ());
+    // Check that there are no "extra slots" in the current frame. Those should have been added to the eval frame.
+    CHECK_PANIC (!(m_lazy_data && m_lazy_data->m_extra_slots.size () != 0));
+
     lazy_data ().m_is_script = true;
 
     auto eval_frame = access_link ();
-    auto eval_scope = eval_frame->get_scope ();
+    auto parent_frame = parent_link ();
 
-    if (!m_fcn->is_user_script ())
-      panic ("Invalid call to vm_enter_script ()");
+    bool caller_is_eval_frame = eval_frame == parent_frame;
+    bool eval_frame_is_bytecode = eval_frame->is_bytecode_fcn_frame ();
 
-    auto script_scope = m_fcn->scope ();
-    std::size_t num_script_symbols = script_scope.num_symbols ();
-    resize (num_script_symbols);
-
-    const std::map<std::string, symbol_record>& script_symbols
-      = script_scope.symbols ();
-    const std::map<std::string, symbol_record>& eval_scope_symbols
-      = eval_scope.symbols ();
-
-    // We want to steal all named ov:s of the eval scope, replace them
-    // with references and put the ov:s on the VM stack
-
-    for (const auto& nm_sr : script_symbols)
+    if (!caller_is_eval_frame)
       {
-        std::string name = nm_sr.first;
-        symbol_record script_sr = nm_sr.second;
+        CHECK_PANIC (parent_frame->is_bytecode_fcn_frame ());
+        auto *parent_frame_bc = static_cast<bytecode_fcn_stack_frame*> (parent_frame.get ());
 
-        auto p = eval_scope_symbols.find (name);
+        // Check that there are no "extra slots" in the parent frame. Those should have been added to the eval frame
+        CHECK_PANIC (!(parent_frame_bc->m_lazy_data && parent_frame_bc->m_lazy_data->m_extra_slots.size () != 0));
 
-        symbol_record eval_scope_sr;
-
-        if (p == eval_scope_symbols.end ())
-          eval_scope_sr = eval_scope.insert (name); // TODO: Does this work with nested nested scripts? Do we need to add to all scopes?
-        else
-          eval_scope_sr = p->second;
-
-        stack_frame::scope_flags flag = eval_frame->scope_flag (eval_scope_sr);
-
-        if (flag == stack_frame::scope_flags::GLOBAL)
+        // Move all user symbol values from the parent frame to the eval frame.
+        // Replace the values in the parent frame with a pointer-like object "octave_value_ref_vmlocal"
+        // pointing to the eval frame.
+        for (std::string id_name : parent_frame_bc->m_unwind_data->m_set_user_locals_names)
           {
-            mark_global (script_sr);
+            symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
+            if (!sr_eval.is_valid ())
+              sr_eval = eval_frame->insert_symbol (id_name);
+            eval_frame->varref (sr_eval, false); // A bit silly, but allocates space for it
+
+            // We need to use the varref(size_t) since it gets in "behind" any global value in
+            // top scope, directly to the m_value vector. While the varref(symbol_record) returns
+            // a ref to the global value itself. Unless the frame offset is set, in which case we
+            // need to use the varref(symbol_record) variant to walk access frames properly. E.g.
+            // 'nest.tst' need frame offset when a script tries to access a variable from a nested
+            // function.
+            // TODO: Fix this hack
+            octave_value *ov_eval = sr_eval.frame_offset () ? 
+                                      &eval_frame->varref (sr_eval, false) :
+                                      &eval_frame->varref (sr_eval.data_offset (), false);
+
+            symbol_record sr_parent = parent_frame->lookup_symbol (id_name); // TODO: Store slot nr instead?
+            CHECK_PANIC (sr_parent.is_valid () && sr_parent.frame_offset () == 0);
+            octave_value &ov_parent = parent_frame->varref (sr_parent.data_offset (), false);
+
+            CHECK_PANIC (!(ov_parent.is_ref () && ov_parent.ref_rep ()->is_local_ref ()));
+
+            bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
+            bool is_global_in_parent_frame = parent_frame->is_global (sr_parent);
+            CHECK_PANIC (is_global_in_eval_frame == is_global_in_parent_frame);
+
+            if (is_global_in_parent_frame)
+              CHECK_PANIC (ov_parent.is_ref () && ov_parent.ref_rep ()->is_global_ref ());
+
+            if (!is_global_in_parent_frame || eval_frame_is_bytecode)
+              *ov_eval = ov_parent;
+            else
+              *ov_eval = {};
+
+            ov_parent = octave_value {new octave_value_ref_vmlocal {sr_eval, eval_frame.get ()}};
           }
+      }
+
+    // Move all user symbols from the eval frame to the current frame we are entering.
+    // Replace the moved values in the eval frame with a pointer-like object "octave_value_ref_vmlocal"
+    // pointing to the current frame.
+    for (std::string id_name : m_unwind_data->m_set_user_locals_names)
+      {
+        symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
+        if (!sr_eval.is_valid ())
+          sr_eval = eval_frame->insert_symbol (id_name);
+        eval_frame->varref (sr_eval, false); // A bit silly, but allocates space for it
+
+        octave_value *ov_eval = sr_eval.frame_offset () ? 
+                                  &eval_frame->varref (sr_eval, false) :
+                                  &eval_frame->varref (sr_eval.data_offset (), false);
+
+        symbol_record sr_current = lookup_symbol (id_name);
+        CHECK_PANIC (sr_current.is_valid () && sr_current.frame_offset () == 0);
+        octave_value &ov_current = varref (sr_current.data_offset (), false);
+
+        CHECK_PANIC (!(ov_current.is_ref () && ov_current.ref_rep ()->is_local_ref ()));
+        CHECK_PANIC (!(ov_eval->is_ref () && ov_eval->ref_rep ()->is_local_ref ()));
+
+        bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
+
+        if (is_global_in_eval_frame)
+          ov_current = octave_value {new octave_value_ref_global {id_name}};
         else
-          {
-            octave_value &orig = eval_frame->varref (eval_scope_sr, false); // Ref to value on parent's VM stack
-            octave_value &p_ov = varref (script_sr, false); // Pointer to current VM stack frame
+          ov_current = *ov_eval;
 
-            p_ov = orig; // Move parent's value to current stack frame
-            orig = octave_value (new octave_value_ref_vmlocal {script_sr, this}); // Replace parents value with reference ov.
-
-            // We need to do the opposite when unwinding.
-            lazy_data ().m_script_sr_originals.push_back (eval_scope_sr);
-            lazy_data ().m_script_local_refs.push_back (script_sr);
-          }
+        *ov_eval = octave_value {new octave_value_ref_vmlocal {sr_current, this}};
       }
   }
 
   void vm_exit_script ()
   {
-    // Restore values from the VM stack frame to the original frame
-
-    if (!m_lazy_data || m_lazy_data->m_is_script != true)
+    if (!m_fcn->is_user_script ()) // Nothing to do for non-script frames
       return;
 
+    // Restore values from the VM stack frame to the original frame
+
+    // Check that there are no "extra slots" in the current frame. Those should have been added to the eval frame.
+    CHECK_PANIC (!(m_lazy_data && m_lazy_data->m_extra_slots.size () != 0));
+
+    lazy_data ().m_is_script = true;
+
     auto eval_frame = access_link ();
-    auto eval_scope = eval_frame->get_scope ();
+    auto parent_frame = parent_link ();
 
-    if (!m_fcn->is_user_script ())
-      panic ("Invalid call to vm_exit_script (). Not an user script.");
+    bool caller_is_eval_frame = eval_frame == parent_frame;
+    bool eval_frame_is_bytecode = eval_frame->is_bytecode_fcn_frame ();
 
-    auto &script_sr_originals = lazy_data ().m_script_sr_originals;
-    auto &script_local_refs = lazy_data ().m_script_local_refs;
-
-    std::size_t n = script_sr_originals.size ();
-
-    for (unsigned i = 0; i < n; i++)
+    // Move all user symbols from the current frame to the eval frame.
+    for (std::string id_name : m_unwind_data->m_set_user_locals_names)
       {
-        symbol_record sr_orig = script_sr_originals[i];
-        symbol_record sr_this = script_local_refs[i];
+        symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
+        CHECK_PANIC (sr_eval.is_valid ());
+        octave_value *ov_eval = sr_eval.frame_offset () ?
+                                  &eval_frame->varref (sr_eval, false) :
+                                  &eval_frame->varref (sr_eval.data_offset (), false);
 
-        if (is_global (sr_this))
-          continue;
-        if (is_persistent (sr_this))
-          continue;
+        symbol_record sr_current = lookup_symbol (id_name);
+        CHECK_PANIC (sr_current.is_valid () && sr_current.frame_offset () == 0);
+        octave_value &ov_current = varref (sr_current.data_offset (), false);
 
-        octave_value &ref = varref (sr_this, false);
-        octave_value &orig_ref = eval_frame->varref (sr_orig, false);
-        orig_ref = ref;
-        ref = octave_value {};
+        CHECK_PANIC (!(ov_current.is_ref () && ov_current.ref_rep ()->is_local_ref ()));
+
+        bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
+        bool is_global_in_current_frame = is_global (sr_current);
+        CHECK_PANIC (is_global_in_eval_frame == is_global_in_current_frame);
+
+        if (is_global_in_current_frame)
+          CHECK_PANIC (ov_current.is_ref () && ov_current.ref_rep ()->is_global_ref ());
+
+        if (!is_global_in_current_frame || eval_frame_is_bytecode)
+          *ov_eval = ov_current;
+        else
+          *ov_eval = {};
+
+        ov_current = {};
+      }
+
+    // Move all values the parent frame needs to it from the eval frame
+    if (!caller_is_eval_frame)
+      {
+        CHECK_PANIC (parent_frame->is_bytecode_fcn_frame ());
+        auto *parent_frame_bc = static_cast<bytecode_fcn_stack_frame*> (parent_frame.get ());
+
+        // Check that there are no "extra slots" in the parent frame. Those should have been added to the eval frame
+        CHECK_PANIC (!(parent_frame_bc->m_lazy_data && parent_frame_bc->m_lazy_data->m_extra_slots.size () != 0));
+
+        // Move all values the parent frame needs to it from the eval frame.
+        // In the eval frame, put a pointer-like object "octave_value_ref_vmlocal"
+        // pointing to the parent frame
+        for (std::string id_name : parent_frame_bc->m_unwind_data->m_set_user_locals_names)
+          {
+            symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
+            CHECK_PANIC (sr_eval.is_valid ());
+            octave_value *ov_eval = sr_eval.frame_offset () ?
+                                      &eval_frame->varref (sr_eval, false) :
+                                      &eval_frame->varref (sr_eval.data_offset (), false);
+
+            symbol_record sr_parent = parent_frame->lookup_symbol (id_name); // TODO: Store slot nr instead?
+            CHECK_PANIC (sr_parent.is_valid () && sr_parent.frame_offset () == 0);
+            octave_value &ov_parent = parent_frame->varref (sr_parent.data_offset (), false);
+
+            CHECK_PANIC (!(ov_eval->is_ref () && ov_eval->ref_rep ()->is_local_ref ()));
+
+            bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
+            bool is_global_in_parent_frame = parent_frame->is_global (sr_parent);
+            CHECK_PANIC (is_global_in_eval_frame == is_global_in_parent_frame);
+
+            if (!is_global_in_parent_frame || eval_frame_is_bytecode)
+              ov_parent = *ov_eval;
+            else
+              ov_parent = octave_value {new octave_value_ref_global {id_name}};
+
+            *ov_eval = octave_value {new octave_value_ref_vmlocal {sr_parent, parent_frame.get ()}};
+          }
       }
   }
 
@@ -1405,14 +1631,10 @@ public:
 
     std::vector<octave_value> m_extra_slots;
     std::vector<std::string> m_extra_names;
-    std::vector<scope_flags> m_extra_flags;
 
     unwind_protect *m_unwind_protect_frame = nullptr;
     stack_element *m_stack_cpy = nullptr;
     bool m_is_script;
-
-    std::vector<symbol_record> m_script_sr_originals;
-    std::vector<symbol_record> m_script_local_refs;
   };
 
   lazy_data_struct & lazy_data ()
@@ -1737,7 +1959,35 @@ public:
 
   void set_scope_flag (std::size_t data_offset, scope_flags flag)
   {
+    bool was_global = m_flags.at (data_offset) == scope_flags::GLOBAL;
+
     m_flags.at (data_offset) = flag;
+
+    bool is_global = flag == scope_flags::GLOBAL;
+
+    // If the VM is running scripts it places octave_value_ref objects in
+    // the top scope to "steal" the variables from it to be able to keep the
+    // canonical copy on its active stack frame. When it unwinds, the top scope
+    // gets the value back.
+    //
+    // If e.g. evalin () changes the globalness state of a symbol in the top scope,
+    // the VM need to be notified, if the variable is on the VM stack.
+    if (was_global != is_global)
+      {
+        octave_value ov = m_values.at (data_offset);
+        // Only the VM spreads ref objects around, so this is only true if the VM is running
+        if (ov.is_ref ())
+          {
+            octave_value cpy = ov;
+            // Pop the value in the top scope to avoid recursive loop, since mark_globalness_in_owning_frame()
+            // will call mark_global (), which will walk the stack frames down to the root.
+            m_values.at (data_offset) = octave_value {};
+            octave_value_ref *ref = cpy.ref_rep ();
+            ref->mark_globalness_in_owning_frame (is_global);
+            // We need the ref back in place if the flag changes again
+            m_values.at (data_offset) = cpy;
+          }
+      }
   }
 
   octave_value get_auto_fcn_var (auto_var_type avt) const

@@ -3589,6 +3589,11 @@ visit_simple_assignment (tree_simple_assignment& expr)
 
           tree_argument_list *arg = *arg_lists.begin ();
 
+          // rhs will be copied to this stack position if assigns are chained.
+          // (Chained as in b(1) = c(2) = 3)
+          if (DEPTH () != 1)
+            PUSH_CODE (INSTR::PUSH_NIL);
+
           int nargs = 0;
           if (arg)
             {
@@ -3612,19 +3617,19 @@ visit_simple_assignment (tree_simple_assignment& expr)
           // The value of rhs is on the operand stack now
 
           // If the assignment is not at root we want to keep the
-          // value on the stack, e.g.
+          // rhs value on the stack, e.g.
           //   a = b(1) = 3;
           //   Gives: a == 3
-          // We use a slot to store the rhs in.
-          std::string rhs_copy_nm = "%rhs_" + std::to_string (CODE_SIZE ());
-          int slot_cpy = -1;
+          //
+          // If that is the case, we pushed a nil earlier, so we
+          // copy the top of the stack (rhs) to the nils place in the stack. 
+          // The copy will then be in place to be rhs again.
           if (DEPTH () != 1)
             {
-              slot_cpy = add_id_to_table (rhs_copy_nm);
-              PUSH_CODE (INSTR::DUP);
-              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
-              PUSH_CODE (INSTR::FORCE_ASSIGN);
-              PUSH_SLOT (slot_cpy);
+              PUSH_CODE (INSTR::DUP_MOVE);
+              // There is rhs and n args on the stack, over the nil
+              // we want to copy rhs (the top of the stack) to.
+              PUSH_CODE (nargs + 1);
             }
 
           int slot = SLOT (name);
@@ -3632,13 +3637,6 @@ visit_simple_assignment (tree_simple_assignment& expr)
           PUSH_CODE (INSTR::SUBASSIGN_ID);
           PUSH_SLOT (slot);
           PUSH_CODE (nargs);
-
-          if (DEPTH () != 1)
-            {
-              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
-              PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-              PUSH_SLOT (slot_cpy);
-            }
 
           maybe_emit_push_and_disp_id (expr, name);
         }
@@ -3670,15 +3668,19 @@ visit_simple_assignment (tree_simple_assignment& expr)
               rhs->accept (*this);
               // The value of rhs is on the operand stack now
 
-              std::string rhs_copy_nm = "%rhs_" + std::to_string (CODE_SIZE ());
-              int slot_cpy = -1;
-              if (DEPTH () != 1) // Chained assignments?
+              // If the assignment is not at root we want to keep the
+              // rhs value on the stack, e.g.
+              //   a = b(1) = 3;
+              //   Gives: a == 3
+              //
+              // If that is the case, dup rhs on the stack.
+              // The copy will then be in place to be rhs again.
+              if (DEPTH () != 1)
                 {
-                  slot_cpy = add_id_to_table (rhs_copy_nm);
+                  // There is 1 rhs and no args on the stack, so just do a dup,
+                  // not a DUP_MOVE like for SUBASSIGN_ID and SUBASSIGN_CELL that
+                  // got args on the stack that need to be moved around.
                   PUSH_CODE (INSTR::DUP);
-                  MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
-                  PUSH_CODE (INSTR::FORCE_ASSIGN);
-                  PUSH_SLOT (slot_cpy);
                 }
 
               int slot = SLOT (name);
@@ -3686,13 +3688,6 @@ visit_simple_assignment (tree_simple_assignment& expr)
               PUSH_CODE (INSTR::SUBASSIGN_STRUCT);
               PUSH_SLOT (slot);
               PUSH_WSLOT (slot_field);
-
-              if (DEPTH () != 1)
-                {
-                  MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
-                  PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-                  PUSH_SLOT (slot_cpy);
-                }
 
               maybe_emit_push_and_disp_id (expr, name);
             }
@@ -3831,6 +3826,11 @@ visit_simple_assignment (tree_simple_assignment& expr)
           CHECK (arg_lists.size ());
           tree_argument_list *arg = *arg_lists.begin ();
 
+          // rhs will be copied to this stack position if assigns are chained.
+          // (Chained as in b(1) = c(2) = 3)
+          if (DEPTH () != 1)
+            PUSH_CODE (INSTR::PUSH_NIL);
+
           int nargs = 0;
           if (arg)
             {
@@ -3854,19 +3854,19 @@ visit_simple_assignment (tree_simple_assignment& expr)
           // The value of rhs is on the operand stack now
 
           // If the assignment is not at root we want to keep the
-          // value on the stack, e.g.
-          // a = b(1) = 3;
-          // Gives: a == 3
-          // We use a slot to store the rhs in.
-          std::string rhs_copy_nm = "%rhs_" + std::to_string (CODE_SIZE ());
-          int slot_cpy = -1;
+          // rhs value on the stack, e.g.
+          //   a = b(1) = 3;
+          //   Gives: a == 3
+          //
+          // If that is the case, we pushed a nil earlier, so we
+          // copy the top of the stack (rhs) to the nils place in the stack. 
+          // The copy will then be in place to be rhs again.
           if (DEPTH () != 1)
             {
-              slot_cpy = add_id_to_table (rhs_copy_nm);
-              PUSH_CODE (INSTR::DUP);
-              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
-              PUSH_CODE (INSTR::FORCE_ASSIGN);
-              PUSH_SLOT (slot_cpy);
+              PUSH_CODE (INSTR::DUP_MOVE);
+              // There is rhs and n args on the stack, over the nil
+              // we want to copy rhs (the top of the stack) to.
+              PUSH_CODE (nargs + 1);
             }
 
           int slot = SLOT (name);
@@ -3874,13 +3874,6 @@ visit_simple_assignment (tree_simple_assignment& expr)
           PUSH_CODE (INSTR::SUBASSIGN_CELL_ID);
           PUSH_SLOT (slot);
           PUSH_CODE (nargs);
-
-          if (DEPTH () != 1)
-            {
-              MAYBE_PUSH_WIDE_OPEXT (slot_cpy);
-              PUSH_CODE (INSTR::PUSH_SLOT_INDEXED);
-              PUSH_SLOT (slot_cpy);
-            }
 
           maybe_emit_push_and_disp_id (expr, name);
         }

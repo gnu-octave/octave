@@ -193,6 +193,7 @@ enum class INSTR
   ANON_MAYBE_SET_IGNORE_OUTPUTS,
   ENTER_NESTED_FRAME,
   INSTALL_FUNCTION,
+  DUP_MOVE,
 };
 
 enum class unwind_entry_type

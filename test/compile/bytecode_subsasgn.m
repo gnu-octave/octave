@@ -112,4 +112,32 @@ function bytecode_subsasgn ()
   M = ones (2,2);
   M(idx{:}) *= 3;
   __printf_assert__ ("%d ", M);
+
+  % SUBASSIGN_ID need to handle magic [] constant when chained (bug #64704)
+  M1 = [1 2 3];
+  M2 = [4 5 6];
+  M3 = [7 8 9];
+
+  M1(1) = M2(2) = M3(3) = [];
+  assert (M1 == [2 3])
+  assert (M2 == [4 6])
+  assert (M3 == [7 8])
+
+  M1 = {1 2 3};
+  M2 = {4 5 6};
+  M3 = {7 8 9};
+
+  M1(1) = M2(2) = M3(3) = [];
+  assert (cell2mat (M1) == [2 3])
+  assert (cell2mat (M2) == [4 6])
+  assert (cell2mat (M3) == [7 8])
+
+  M1 = [1 2 3; 4 5 6];
+  M2 = {4 5 6; 7 8 9};
+  S3.a = "zxc";
+
+  M1(1,2) = M2{2,1} = S3.a = 123;
+  assert (M1 == [1 123 3; 4 5 6])
+  assert (cell2mat (M2) == [4 5 6; 123 8 9])
+  assert (S3.a == 123)
 end

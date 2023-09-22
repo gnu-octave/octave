@@ -279,6 +279,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (LOAD_CST_ALT4)  PCHAR () CASE_END ()
           CASE_START (LOAD_2_CST)     PCHAR () CASE_END ()
           CASE_START (POP_N_INTS)     PCHAR () CASE_END ()
+          CASE_START (DUP_MOVE)       PCHAR () CASE_END ()
 
           CASE_START (ASSIGN)                     PSLOT() CASE_END ()
           CASE_START (BIND_ANS)                   PSLOT() CASE_END ()
@@ -864,6 +865,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&anon_maybe_set_ignore_output,
       &&enter_nested_frame,
       &&install_function,
+      &&dup_move,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -6210,6 +6212,16 @@ debug: // TODO: Remove
     ip++; // Forward ip so it points to after the nargout argument in the next opcode
     goto *instr [opcode]; // Execute the next opcode
   }
+
+  dup_move:
+  {
+    // Copy the top of the stack and move it n positions down the stack.
+    int n = arg0;
+
+    octave_value ov = sp[-1].ov;
+    sp[-1 - n].ov = ov;
+  }
+  DISPATCH ();
 
   enter_script_frame:
   {

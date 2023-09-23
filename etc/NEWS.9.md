@@ -4,7 +4,7 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 ### General improvements
 
 - Octave now has an experimental virtual machine (VM) for just-in-time (JIT)
-compilation of m-code.  This VM can be enabled by the end user with the
+evaluation of m-code.  This VM can be enabled by the end user with the
 command `__enable_vm_eval__ (1)` as long as the configuration option
 `--disable-vm-evaluator` was *not* used when building Octave.  Speedups from 2X
 to 40X have been observed for different kinds of m-code.  This feature is
@@ -37,6 +37,13 @@ When a linestyle with a base marker is set suppressing arrowhead display,
 subsequent name-value property pairs in the quiver/quiver3 function call
 will no longer turn arrowhead display back on (bug #64143).  The linewdith
 property now also affect the line width of the base marker.
+
+- Classdefs now support breakpoints inside them.
+
+- Ranges with floating point values in them such as `1.8 : 0.05 : 1.9`
+  or `-2 : (0.3 - 0.2 - 0.1)` now trigger warnings, to avoid hard-to-debug
+  errors when floating point rounding does non-intuitive things.  The Octave
+  manual now lists several safer alternatives for such cases.
 
 - The `inputParser` function has been re-architected for a 60% performance
 improvement.
@@ -223,7 +230,8 @@ from Octave 9.
 Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
 ----------------------------------------------------
 
-- Bugfixes to `whos -file`, `urlread`, `mat2cell`, `set`.
+- Bugfixes to `whos -file`, `urlread`, `mat2cell`, `set`, `savepath`,
+  `loadpath` and the general interpreter stack-handling.
 
 - Better input validation for `sparse`, `speye`.
 
@@ -233,13 +241,23 @@ Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
 
 - Memory usage improved when plotting grid tick marks.
 
+- Memory management made more robust in the GUI code and with several GUI
+  components (variable editor, doc browser, etc).
+
 - Text encoding for non-UTF-8 generally made more robust.  File editor now
   lists available encodings.
 
+- Octave on Windows now supports directory names and path names with non-ASCII
+  characters (other platforms had it already for years).  Windows paths now
+  also allow relative paths on different drives.
+
 - Several race conditions removed in signal handler.
 
-- Performance improvements: avoid unnecessary string construction, use
-  static casts instead of dynamic casts where possible.
+- Better compatibility when linking to `libc++`.
+
+- Performance and stability improvements: avoid unnecessary string
+  construction, use static casts instead of dynamic casts where possible,
+  eliminate various isolated crash conditions.
 
 ### Old release news
 

@@ -2084,8 +2084,6 @@ void interpreter::maximum_braindamage ()
 
   m_error_system.disable_warning ("Octave:abbreviated-property-match");
   m_error_system.disable_warning ("Octave:colon-nonscalar-argument");
-  m_error_system.disable_warning ("Octave:range-limit-not-integer");
-  m_error_system.disable_warning ("Octave:floating-point-in-range");
   m_error_system.disable_warning ("Octave:data-file-in-path");
   m_error_system.disable_warning ("Octave:empty-index");
   m_error_system.disable_warning ("Octave:function-name-clash");

@@ -40,11 +40,6 @@ property now also affect the line width of the base marker.
 
 - Classdefs now support breakpoints inside them.
 
-- Ranges with floating point values in them such as `1.8 : 0.05 : 1.9`
-  or `-2 : (0.3 - 0.2 - 0.1)` now trigger warnings, to avoid hard-to-debug
-  errors when floating point rounding does non-intuitive things.  The Octave
-  manual now lists several safer alternatives for such cases.
-
 - The `inputParser` function has been re-architected for a 60% performance
 improvement.
 

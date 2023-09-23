@@ -431,10 +431,21 @@ This space saving optimization may be disabled using the function
 @DOCSTRING(optimize_range)
 
 Note that the upper (or lower, if the increment is negative) bound on
-the range is not always included in the set of values, and that ranges
-defined by floating point values can produce surprising results because
+the range is not always included in the set of values.  This can be useful
+in some contexts.  For example:
+
+@example
+## x is some predefined range or vector or matrix or array
+x(1:2:end) += 1;   # increment all  odd-numbered elements
+x(2:2:end) -= 1;   # decrement all even-numbered elements
+@end example
+
+The above code works correctly whether @var{x} has an odd number of elements
+or not, so no need to treat the two cases differently.
+
 Octave uses floating point arithmetic to compute the values in the
-range.  Here are some pitfalls that can happen:
+range.  As a result, defining ranges with floating-point values can result
+in pitfalls like these:
 
 @example
 a = -2
@@ -468,8 +479,8 @@ y = (0:1) * 0.05 + 1.85
 makes it much safer and much more repeatable across platforms, compilers,
 and compiler settings.  If you know the number of elements, you can also use
 the @code{linspace} function (@pxref{Special Utility Matrices}), which will
-include the endpoints of a range.  If you do not, you can also make judicious
-use of @code{round}, @code{floor}, @code{ceil}, @code{fix}, etc to set the
+include the endpoints of a range.  You can also make judicious use of
+@code{round}, @code{floor}, @code{ceil}, @code{fix}, etc to set the
 limits and the increment without getting interference from floating-point
 rounding.  For example, the earlier example can be made safer and much more
 repeatable with one of the following:

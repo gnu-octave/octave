@@ -403,7 +403,7 @@ defines the set of values @code{[ 1, 4 ]}.
 Although a range constant specifies a row vector, Octave does @emph{not}
 normally convert range constants to vectors unless it is necessary to do so.
 This allows you to write a constant like @code{1 : 10000} without using
-80,000 bytes of storage on a typical 32-bit workstation.
+80,000 bytes of storage on a typical workstation.
 
 A common example of when it does become necessary to convert ranges into
 vectors occurs when they appear within a vector (i.e., inside square
@@ -434,9 +434,55 @@ Note that the upper (or lower, if the increment is negative) bound on
 the range is not always included in the set of values, and that ranges
 defined by floating point values can produce surprising results because
 Octave uses floating point arithmetic to compute the values in the
-range.  If it is important to include the endpoints of a range and the
-number of elements is known, you should use the @code{linspace} function
-instead (@pxref{Special Utility Matrices}).
+range.  Here are some pitfalls that can happen:
+
+@example
+a = -2
+b = (0.3 - 0.2 - 0.1)
+x = a : b
+@end example
+
+Due to floating point rounding, @var{b} may or may not equal zero exactly,
+and if it does not, it may be above zero or below zero, hence the final range
+@var{x} may or may not include zero as its final value.  Similarly:
+
+@example
+x = 1.80 : 0.05 : 1.90
+y = 1.85 : 0.05 : 1.90
+@end example
+
+is not as predictable as it looks.  As of Octave 8.3, the results obtained are
+that @var{x} has three elements (1.80, 1.85, and 1.90), and @var{y} has only
+one element (1.85 but not 1.90).  Thus, when using floating points in ranges,
+changing the start of the range can easily affect the end of the range even
+though the ending value was not touched in the above example.
+
+To avoid such pitfalls with floating-points in ranges, you should use one of
+the following patterns. This change to the previous code:
+
+@example
+x = (0:2) * 0.05 + 1.80
+y = (0:1) * 0.05 + 1.85
+@end example
+
+makes it much safer and much more repeatable across platforms, compilers,
+and compiler settings.  If you know the number of elements, you can also use
+the @code{linspace} function (@pxref{Special Utility Matrices}), which will
+include the endpoints of a range.  If you do not, you can also make judicious
+use of @code{round}, @code{floor}, @code{ceil}, @code{fix}, etc to set the
+limits and the increment without getting interference from floating-point
+rounding.  For example, the earlier example can be made safer and much more
+repeatable with one of the following:
+
+@example
+a = -2
+b = round ((0.3 - 0.2 - 0.1) * 1e12) / 1e12   # rounds to 12 digits
+c = floor (0.3 - 0.2 - 0.1)                   # floors as integer
+d = floor ((0.3 - 0.2 - 0.1) * 1e12) / 1e12   # floors at 12 digits
+x = a : b
+y = a : c
+z = a : d
+@end example
 
 When adding a scalar to a range, subtracting a scalar from it (or subtracting a
 range from a scalar) and multiplying by scalar, Octave will attempt to avoid

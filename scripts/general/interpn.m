@@ -131,7 +131,7 @@ function vi = interpn (varargin)
     y = cell (1, nd);
     for i = 1 : nd
       x{i} = 1 : sz(i);
-      y{i} = 1 : (1 / (2 ^ m)) : sz(i);
+      y{i} = (2^m : (sz(i) * 2^m)) / 2^m;
     endfor
     y{1} = y{1}.';
     [y{:}] = ndgrid (y{:});

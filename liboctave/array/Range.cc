@@ -147,7 +147,7 @@ bool xall_elements_are_ints (T base, T inc, T final_val, octave_idx_type nel)
 
   // If the range has only one element, then the base needs to be an
   // integer.
-  if (nel == 1 && math::nint_big (base))
+  if (nel == 1 && math::nint_big (base) == base)
     return true;
 
   return false;
@@ -216,11 +216,23 @@ xinit (T base, T limit, T inc, bool reverse, T& final_val,
       return;
     }
 
+  // Warn about floating point values in ranges.
+  if (math::nint_big (base) == base && math::nint_big (inc) == inc
+      && math::nint_big (limit) != limit)
+    (*current_liboctave_warning_with_id_handler)
+      ("Octave:range-limit-not-integer",
+       "range limit is not an integer and will not be reached exactly");
+  else if (math::nint_big (base) != base || math::nint_big (inc) != inc)
+    (*current_liboctave_warning_with_id_handler)
+      ("Octave:floating-point-in-range",
+       "using floating point values in ranges may yield unexpected results");
+
   // The following case also catches Inf values for increment when
   // there will be only one element.
 
-  if ((limit <= base && base + inc < limit)
-      || (limit >= base && base + inc > limit))
+  if ( ( (limit <= base && base + inc < limit) 
+         || (limit >= base && base + inc > limit) )
+        && ! xteq (base + inc, limit) )
     {
       final_val = base;
       nel = 1;

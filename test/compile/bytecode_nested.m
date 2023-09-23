@@ -331,6 +331,15 @@ function bytecode_nested ()
   h4 = sub_returns_nested_fn2;
   assert (h4 () == 1)
   assert (h4 () == 2)
+
+  % Try a function with both nested and anonymous functions (bug #64703)
+  assert (sub_nestandanon (2) == [6; 8])
+
+  % Try some legacy inline functions
+  h1i = inline ("x + 1");
+  assert (h1i (2) == 3)
+  h2i = inline ("__vm_is_executing__()");
+  assert (h2i() == __vm_is_executing__);
 end
 
 function subby
@@ -370,3 +379,16 @@ function h1 = sub_returns_nested_fn2
 
   h1 = nested_fn1 ();
 end
+
+function retval = sub_nestandanon(x)
+  retval = zeros(2,1);
+
+  f1 = @(x) 3 .* x;
+  retval(1) = f1(x);
+
+  function [ret] = f2(x)
+    ret = 4 .* x;
+  endfunction
+
+  retval(2) = f2(x);
+endfunction 

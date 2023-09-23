@@ -60,8 +60,6 @@ void octave::compile_anon_user_function (octave_user_code &ufn, bool do_print, s
 
       if (ufn.is_classdef_constructor ())
         error ("Classdef constructors are not supported by the VM yet"); // Needs special handling
-      if (ufn.is_inline_function () || ufn.is_nested_function ())
-        error ("Inlined or scoped functions are not supported by the VM yet");
 
       // Begin with clearing the old bytecode, if any
       ufn.clear_bytecode ();
@@ -147,8 +145,6 @@ void octave::compile_user_function (octave_user_code &ufn, bool do_print)
     {
       if (ufn.is_classdef_constructor ())
         error ("Classdef constructors are not supported by the VM yet"); // Needs special handling
-      if (ufn.is_inline_function () || ufn.is_nested_function ())
-        error ("Inlined or scoped functions are not supported by the VM yet");
 
       // Begin with clearing the old bytecode, if any
       ufn.clear_bytecode ();

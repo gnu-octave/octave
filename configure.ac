@@ -613,6 +613,12 @@ if test $enable_shared = yes; then
   SHARED_LIBS=yes
 else
   SHARED_LIBS=no
+  # Note: Octave doesn't build currently without shared libraries.  And it
+  #       might not work or make sense at all to build static Octave libraries.
+  #       All existing logic for this use-case is still in place in case
+  #       someone would like to base on that to build static versions of the
+  #       libraries.
+  AC_MSG_ERROR([Building shared libraries is required!])
 fi
 AC_SUBST(SHARED_LIBS)
 

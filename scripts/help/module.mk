@@ -23,6 +23,7 @@ FCN_FILE_DIRS += \
   %reldir%/print_usage.m \
   %reldir%/slash.m \
   %reldir%/type.m \
+  %reldir%/vm.m \
   %reldir%/warning_ids.m \
   %reldir%/which.m
 

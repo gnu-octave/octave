@@ -43,6 +43,7 @@ code.
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
 * Memoization::                Memoization techniques
+* VM evaluator::               VM evaluator
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 @end menu
@@ -627,6 +628,50 @@ The function @code{clearAllMemoizedCaches} clears the memoization tables when
 they are no longer needed.
 
 @DOCSTRING(clearAllMemoizedCaches)
+
+@node VM evaluator
+@section VM evaluator
+
+Octave's virtual machine (VM) evaluator allows faster execution of existing
+code.  Octave versions 9 onwards have the VM built-in by default.
+
+At its simplest, the only thing a user needs is to run the single command
+@code{__enable_vm_eval__ (1)} on starting Octave, and the rest of the user's
+session is as before, except that some code will likely run faster.  If you
+find yourself doing this frequently, you can also add the following code to
+your Octave startup file (`.octaverc` or similar):
+
+@example
+@group
+if (exist ("__enable_vm_eval__") == 5)  # built-in function exists
+  __enable_vm_eval__ (1);
+end
+@end group
+@end example
+
+The full calling form for @code{__enable_vm_eval__} is:
+
+@DOCSTRING(__enable_vm_eval__)
+
+A more comprehensive list of VM-related functions is given by the @code{vm}
+command.
+
+@DOCSTRING(vm)
+
+If broad-spectrum evaluation of all the user code with the VM is not desirable,
+then more advanced VM-related techniques are to selectively switch on or off
+VM compilation for specific functions as the user needs.  In general, these
+might be done for frequently called functions ("hotspots").
+
+@DOCSTRING(__compile__)
+
+@DOCSTRING(__vm_clear_cache__)
+
+@DOCSTRING(__vm_is_executing__)
+
+@DOCSTRING(__vm_print_trace__)
+
+@DOCSTRING(__vm_profile__)
 
 @node Miscellaneous Techniques
 @section Miscellaneous Techniques

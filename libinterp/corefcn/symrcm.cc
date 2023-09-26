@@ -238,8 +238,6 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
           octave_idx_type j2 = cidx2[i];
           while (j1 < cidx[i+1] || j2 < cidx2[i+1])
             {
-              octave_quit ();
-
               if (j1 == cidx[i+1])
                 {
                   octave_idx_type r2 = ridx2[j2++];
@@ -374,8 +372,6 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
   nz = 0;
   for (octave_idx_type i = 0; i < N; i++)
     {
-      octave_quit ();
-
       cidx2[i] = nz;
       nz += w[i];
       w[i] = cidx2[i];
@@ -386,8 +382,6 @@ transpose (octave_idx_type N, const octave_idx_type *ridx,
   for (octave_idx_type j = 0; j < N; j++)
     for (octave_idx_type k = cidx[j]; k < cidx[j + 1]; k++)
       {
-        octave_quit ();
-
         octave_idx_type q = w[ridx[k]]++;
         ridx2[q] = j;
       }
@@ -442,6 +436,8 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   //(if necessary)
   SparseMatrix Ar;
 
+  octave_quit ();
+
   if (arg.isreal ())
     {
       Ar = arg.sparse_matrix_value ();
@@ -452,6 +448,8 @@ Mathematics, ISBN 0-13-165274-5, 1981.
       Ar = max (max (real (Ac), -real (Ac)), max (imag (Ac), -imag (Ac)));
     }
 
+  octave_quit ();
+
   // Note cidx/ridx are const, so use xridx and xcidx...
   octave_idx_type *cidx = Ar.xcidx ();
   octave_idx_type *ridx = Ar.xridx ();
@@ -461,9 +459,13 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   OCTAVE_LOCAL_BUFFER (octave_idx_type, ridx2, cidx[N]);
   transpose (N, ridx, cidx, ridx2, cidx2);
 
+  octave_quit ();
+
   // vertex degrees
   OCTAVE_LOCAL_BUFFER (octave_idx_type, D, N);
   octave_idx_type max_deg = calc_degrees (N, cidx, ridx, cidx2, ridx2, D);
+
+  octave_quit ();
 
   // the permutation vector
   NDArray P (dim_vector (1, N));
@@ -511,6 +513,8 @@ Mathematics, ISBN 0-13-165274-5, 1981.
 
   boolNDArray btmp (dim_vector (1, N), false);
   bool *visit = btmp.fortran_vec ();
+
+  octave_quit ();
 
   do
     {
@@ -561,12 +565,8 @@ Mathematics, ISBN 0-13-165274-5, 1981.
           octave_idx_type j1 = cidx[i];
           octave_idx_type j2 = cidx2[i];
 
-          octave_quit ();
-
           while (j1 < cidx[i+1] || j2 < cidx2[i+1])
             {
-              octave_quit ();
-
               if (j1 == cidx[i+1])
                 {
                   octave_idx_type r2 = ridx2[j2++];
@@ -628,8 +628,6 @@ Mathematics, ISBN 0-13-165274-5, 1981.
           // add the neighbors to the queue (sorted by node degree)
           while (! H_empty (S, s))
             {
-              octave_quit ();
-
               // locate a neighbor of i with minimal degree in O(log(N))
               v = H_remove_min (S, s, 1);
 

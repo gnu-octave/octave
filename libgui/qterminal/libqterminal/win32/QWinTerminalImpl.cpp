@@ -1362,8 +1362,9 @@ void QConsolePrivate::startCommand (void)
       si.cb = sizeof (si);
       ZeroMemory (&pi, sizeof (pi));
 
+      LPCWSTR wcmd = reinterpret_cast<LPCWSTR> (cmd.utf16 ());
       if (CreateProcessW (nullptr,
-                          static_cast<LPWSTR> (cmd.unicode ()),
+                          const_cast<LPWSTR> (wcmd),
                           nullptr,
                           nullptr,
                           TRUE,

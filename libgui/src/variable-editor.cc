@@ -1574,15 +1574,11 @@ variable_editor::record_hovered_focus_variable ()
 void
 variable_editor::restore_hovered_focus_variable ()
 {
-  variable_dock_widget *tofocus = findChild<variable_dock_widget *> (m_hovered_focus_vname);
-  if (tofocus != nullptr)
+  variable_dock_widget *tofocus
+    = findChild<variable_dock_widget *> (m_hovered_focus_vname);
+  if (tofocus)
     {
-      // Note that this may be platform and window system dependent.
-      // On a particular Linux system, activateWindow() alone didn't
-      // immediately set the active window and there was a race
-      // between the window focus and action signal.  Setting the
-      // active window via the QApplication route did work.
-      QApplication::setActiveWindow(tofocus->window());
+      tofocus->raise ();
       tofocus->activateWindow ();
       tofocus->setFocus (Qt::OtherFocusReason);
     }

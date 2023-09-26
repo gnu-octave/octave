@@ -380,7 +380,7 @@ octave_dock_widget::make_widget (bool)
     }
 
   raise ();
-  QApplication::setActiveWindow (this);
+  activateWindow ();
 
   if (vis)
     {

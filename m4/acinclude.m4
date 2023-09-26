@@ -1957,7 +1957,12 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_QT_TOOL], [
   AC_CHECK_TOOLS(m4_toupper([$1])_QTVER, [$1-qt$qt_version])
   if test -z "$m4_toupper([$1])_QTVER"; then
-    AC_CHECK_TOOLS(m4_toupper([$1]), [$1])
+    if test -n "$QT_HOST_LIBEXECS"; then
+      AC_PATH_TOOL(m4_toupper([$1]), [$1], [], [$QT_HOST_LIBEXECS])
+    fi
+    if test -z "$m4_toupper([$1])"; then
+      AC_CHECK_TOOLS(m4_toupper([$1]), [$1])
+    fi
     if test -n "$m4_toupper([$1])"; then
       if test -n "$QTCHOOSER"; then
         m4_toupper([$1])FLAGS="-qt=$qt_version"
@@ -2068,14 +2073,31 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   QT_TOOLS_MISSING=
 
   if test $build_qt_gui = yes; then
-    AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
+    case "$qt_version" in
+      5)
+        AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
+      ;;
+      6)
+        if test -z "$QT_HOST_LIBEXECS"; then
+          AC_CHECK_TOOLS(QTPATHS6, [qtpaths6])
+          QT_HOST_LIBEXECS=`$QTPATHS6 --query QT_HOST_LIBEXECS`
+        fi
+      ;;
+    esac
 
     OCTAVE_CHECK_QT_TOOL([moc])
     OCTAVE_CHECK_QT_TOOL([uic])
     OCTAVE_CHECK_QT_TOOL([rcc])
     OCTAVE_CHECK_QT_TOOL([lrelease])
-    OCTAVE_CHECK_QT_TOOL([qcollectiongenerator])
     OCTAVE_CHECK_QT_TOOL([qhelpgenerator])
+    case "$qt_version" in
+      5)
+        OCTAVE_CHECK_QT_TOOL([qcollectiongenerator])
+      ;;
+      6)
+        QCOLLECTIONGENERATOR=$QHELPGENERATOR
+      ;;
+    esac
 
     if test -n "$QT_TOOLS_MISSING"; then
       warn_qt_tools="one or more of the Qt utilities moc, uic, rcc, lrelease, qcollectiongenerator, and qhelpgenerator not found; disabling Qt GUI"

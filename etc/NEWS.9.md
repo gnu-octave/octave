@@ -141,6 +141,23 @@ of dimensions in the input array.
 
 - The default string length for the function `rats` has changed from 9 to 13.
 
+- *Continuing reminder of future breaking changes*:  There is ongoing work
+  to implement a Matlab-compatible string class that will differ from a vector
+  of characters.  In Octave, single-quoted character arrays are currently
+  compatible with Matlab, but double-quoted forms are not, and are likely to
+  change in future as a consequence of implementing Matlab-style string syntax.
+  For example, 'foo' will remain a three-element character vector, but
+  "foo" will become a single-element string object.
+
+  *What this means for user code*: If your code currently relies on
+  double-quoted strings (e.g., "foo") representing character vectors as
+  opposed to string objects, then start replacing all double-quoted strings
+  with single-quoted strings in your code over time (e.g., replace "foo" with
+  'foo'). Single-quoted strings are expected to retain current behavior.
+  Further, if your code relies on backslash escape sequence interpretation in
+  double-quoted strings (except in special cases like the `printf` family),
+  that code may need to change as well.
+
 ### Alphabetical list of new functions added in Octave 9
 
 * `isenv`

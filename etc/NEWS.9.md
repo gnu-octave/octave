@@ -9,7 +9,9 @@ command `__enable_vm_eval__ (1)` as long as the configuration option
 `--disable-vm-evaluator` was *not* used when building Octave.  Speedups from 2X
 to 40X have been observed for different kinds of m-code.  This feature is
 considered experimental for now.  M-code that cannot be handled by the VM yet
-falls back automatically to the existing interpreter.
+falls back automatically to the existing interpreter.  User tests of the VM
+evaluator are encouraged.  To learn more about VM commands, type `vm`
+or `help vm` at the Octave prompt.
 
 - `oruntests`: The current directory now changes to the directory
 containing the files with the tests for the duration of the test.  This

@@ -335,53 +335,25 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
 // as well.
 
 static octave_idx_type
-calc_degrees (octave_idx_type N, const octave_idx_type *ridx,
-              const octave_idx_type *cidx, octave_idx_type *D)
+calc_degrees (octave_idx_type N, octave_idx_type *cidx, octave_idx_type *ridx,
+            octave_idx_type *cidx2, octave_idx_type *ridx2, octave_idx_type *D)
 {
   octave_idx_type max_deg = 0;
-
   for (octave_idx_type i = 0; i < N; i++)
     D[i] = 0;
 
   for (octave_idx_type j = 0; j < N; j++)
-    {
-      for (octave_idx_type i = cidx[j]; i < cidx[j+1]; i++)
-        {
-          octave_quit ();
+    for (octave_idx_type i = cidx[j]; i < cidx[j+1]; i++)
+      D[ridx[i]]++;
 
-          octave_idx_type k = ridx[i];
-          // there is a nonzero element (k,j)
-          D[k]++;
-          if (D[k] > max_deg)
-            max_deg = D[k];
-          // if there is no element (j,k) there is one in
-          // the symmetric matrix:
-          if (k != j)
-            {
-              bool found = false;
-              for (octave_idx_type l = cidx[k]; l < cidx[k + 1]; l++)
-                {
-                  octave_quit ();
+  for (octave_idx_type j = 0; j < N; j++)
+    for (octave_idx_type i = cidx2[j]; i < cidx2[j+1]; i++)
+      D[ridx2[i]]++;
 
-                  if (ridx[l] == j)
-                    {
-                      found = true;
-                      break;
-                    }
-                  else if (ridx[l] > j)
-                    break;
-                }
+  for (octave_idx_type i = 0; i < N; i++)
+    if (D[i] > max_deg)
+      max_deg = D[i];
 
-              if (! found)
-                {
-                  // A(j,k) == 0
-                  D[j]++;
-                  if (D[j] > max_deg)
-                    max_deg = D[j];
-                }
-            }
-        }
-    }
   return max_deg;
 }
 
@@ -454,27 +426,6 @@ Mathematics, ISBN 0-13-165274-5, 1981.
 
   octave_value arg = args(0);
 
-  // the parameter of the matrix is converted into a sparse matrix
-  //(if necessary)
-  octave_idx_type *cidx;
-  octave_idx_type *ridx;
-  SparseMatrix Ar;
-  SparseComplexMatrix Ac;
-
-  if (arg.isreal ())
-    {
-      Ar = arg.sparse_matrix_value ();
-      // Note cidx/ridx are const, so use xridx and xcidx...
-      cidx = Ar.xcidx ();
-      ridx = Ar.xridx ();
-    }
-  else
-    {
-      Ac = arg.sparse_complex_matrix_value ();
-      cidx = Ac.xcidx ();
-      ridx = Ac.xridx ();
-    }
-
   octave_idx_type nr = arg.rows ();
   octave_idx_type nc = arg.columns ();
 
@@ -484,6 +435,52 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   if (nr == 0 && nc == 0)
     return ovl (NDArray (dim_vector (1, 0)));
 
+  // dimension of the matrix
+  octave_idx_type N = nr;
+
+  // the parameter of the matrix is converted into a sparse matrix
+  //(if necessary)
+  SparseMatrix Ar;
+
+  if (arg.isreal ())
+    {
+      Ar = arg.sparse_matrix_value ();
+    }
+  else
+    {
+      SparseComplexMatrix Ac = arg.sparse_complex_matrix_value ();
+      Ar = max (max (real (Ac), -real (Ac)), max (imag (Ac), -imag (Ac)));
+    }
+
+  // Note cidx/ridx are const, so use xridx and xcidx...
+  octave_idx_type *cidx = Ar.xcidx ();
+  octave_idx_type *ridx = Ar.xridx ();
+
+  // transpose
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, cidx2, N + 1);
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, ridx2, cidx[N]);
+  transpose (N, ridx, cidx, ridx2, cidx2);
+
+  // vertex degrees
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, D, N);
+  octave_idx_type max_deg = calc_degrees (N, cidx, ridx, cidx2, ridx2, D);
+
+  // the permutation vector
+  NDArray P (dim_vector (1, N));
+
+  // if none of the nodes has a degree > 0 (a matrix of zeros)
+  // the return value corresponds to the identity permutation
+  if (max_deg == 0)
+    {
+      for (octave_idx_type i = 0; i < N; i++)
+        P(i) = i+1;  // +1 to convert from base-0 to base-1
+
+      return ovl (P);
+    }
+
+  // At this point, all early returns have completed.
+  // Proceed to BFS.
+
   // sizes of the heaps
   octave_idx_type s = 0;
 
@@ -491,29 +488,6 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   octave_idx_type qt = 0;
   octave_idx_type qh = 0;
   CMK_Node v, w;
-  // dimension of the matrix
-  octave_idx_type N = nr;
-
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, cidx2, N + 1);
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, ridx2, cidx[N]);
-  transpose (N, ridx, cidx, ridx2, cidx2);
-
-  // the permutation vector
-  NDArray P (dim_vector (1, N));
-
-  // compute the node degrees
-  OCTAVE_LOCAL_BUFFER (octave_idx_type, D, N);
-  octave_idx_type max_deg = calc_degrees (N, ridx, cidx, D);
-
-  // if none of the nodes has a degree > 0 (a matrix of zeros)
-  // the return value corresponds to the identity permutation
-  if (max_deg == 0)
-    {
-      for (octave_idx_type i = 0; i < N; i++)
-        P(i) = i;
-
-      return ovl (P);
-    }
 
   // a heap for the a node's neighbors.  The number of neighbors is
   // limited by the maximum degree max_deg:
@@ -705,5 +679,34 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   // increment all indices, since Octave is not C
   return ovl (P+1);
 }
+
+/*
+
+  basic functionality test, with icosahedron:
+%!test <*64718>
+%! adj = [ 0 1 1 1 1 1 0 0 0 0 0 0;
+%!         1 0 1 0 0 1 1 0 0 0 1 0;
+%!         1 1 0 1 0 0 1 1 0 0 0 0;
+%!         1 0 1 0 1 0 0 1 1 0 0 0;
+%!         1 0 0 1 0 1 0 0 1 1 0 0;
+%!         1 1 0 0 1 0 0 0 0 1 1 0;
+%!         0 1 1 0 0 0 0 1 0 0 1 1;
+%!         0 0 1 1 0 0 1 0 1 0 0 1;
+%!         0 0 0 1 1 0 0 1 0 1 0 1;
+%!         0 0 0 0 1 1 0 0 1 0 1 1;
+%!         0 1 0 0 0 1 1 0 0 1 0 1;
+%!         0 0 0 0 0 0 1 1 1 1 1 0 ];
+%! p = symrcm (adj);
+%! assert (p, [12 8 9 10 11 7 3 4 5 6 2 1]);
+%! assert (bandwidth (adj), 9);
+%! assert (bandwidth (adj(p, p)), 6);
+
+  handle zero-matrix properly:
+%!test <*64718>
+%! adj = false (5);
+%! p = symrcm (adj);
+%! assert (p, 1:5);
+
+*/
 
 OCTAVE_END_NAMESPACE(octave)

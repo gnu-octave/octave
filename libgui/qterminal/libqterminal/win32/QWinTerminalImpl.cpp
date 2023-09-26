@@ -21,7 +21,6 @@ see <https://www.gnu.org/licenses/>.
 */
 
 #include <algorithm>
-#include <cmath>
 #include <csignal>
 #include <cstdio>
 #include <cstdarg>
@@ -653,7 +652,7 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
     {
       int len = 0;
       bool hasChar = false;
-      double x = fm.horizontalAdvance (sample, cx1);
+      int x = fm.horizontalAdvance (sample, cx1);
       WORD attr = 0;
       int curr_cx1 = cx1;
 
@@ -672,7 +671,7 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
                       if (attr & 0x00f0)
                         // Try to not paint over parts of the preceeding
                         // character.
-                        p.fillRect (std::ceil (x), y-ascent,
+                        p.fillRect (x, y-ascent,
                                     fm.horizontalAdvance (sample, len), ch,
                                     p.brush ());
                     }
@@ -701,7 +700,7 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
 
           if (attr & 0x00f0)
             // Try to not paint over parts of the preceeding character.
-            p.fillRect (std::ceil (x), y-ascent,
+            p.fillRect (x, y-ascent,
                         fm.horizontalAdvance (sample, len), ch, p.brush ());
         }
     }
@@ -857,8 +856,8 @@ void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
                      ? end.x () - selectionBegin + 1
                      : stride - selectionBegin);
 
-          p.fillRect (std::floor (fm.horizontalAdvance (sample, selectionBegin)),
-                      y-ascent, std::ceil (fm.horizontalAdvance (sample, len)),
+          p.fillRect (fm.horizontalAdvance (sample, selectionBegin),
+                      y-ascent, fm.horizontalAdvance (sample, len),
                       ch, selectionColor ());
         }
     }
@@ -932,7 +931,7 @@ void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
       // Reset string buffer and starting X coordinate
       s.clear ();
       bool hasChar = false;
-      double x = fm.horizontalAdvance (sample, cx1);
+      int x = fm.horizontalAdvance (sample, cx1);
       WORD attr = 0;
       int curr_cx1 = cx1;
 
@@ -971,7 +970,7 @@ void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
           // No need to update s or x, they will be reset on the next
           // for-loop iteration
 
-          p.drawText (std::ceil (x), y, s);
+          p.drawText (x, y, s);
         }
     }
 
@@ -1472,7 +1471,7 @@ QConsolePrivate::cursorRect (void)
   int ch = m_charSize.height ();
 
   // Make sure the cursor starts *right* of the previous character.
-  return QRect (std::ceil (fm.horizontalAdvance (sample)),
+  return QRect (fm.horizontalAdvance (sample),
                 (m_cursorPos.y () - m_consoleRect.y ()) * ch,
                 cw, ch);
 }
@@ -1480,8 +1479,8 @@ QConsolePrivate::cursorRect (void)
 QRect
 QConsolePrivate::boundingRect (void)
 {
-  // This might be slightly larger than cursorRect to make sure the entirety
-  // of a character is redrawn.
+  // This is slightly larger than cursorRect to make sure the entirety of a
+  // character is redrawn.
 
   QFontMetrics fm = m_consoleView->fontMetrics ();
   QString sample ('m');
@@ -1492,9 +1491,9 @@ QConsolePrivate::boundingRect (void)
   int cw = m_charSize.width ();
   int ch = m_charSize.height ();
 
-  return QRect (std::floor (fm.horizontalAdvance (sample)),
+  return QRect (fm.horizontalAdvance (sample)-1,
                 (m_cursorPos.y () - m_consoleRect.y ()) * ch,
-                cw+1, ch);
+                cw+2, ch);
 }
 
 //////////////////////////////////////////////////////////////////////////////

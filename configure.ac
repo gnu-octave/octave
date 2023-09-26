@@ -1871,7 +1871,7 @@ OCTAVE_CHECK_LIB(fontconfig, fontconfig,
 
 ### GUI/Qt related tests.
 
-QT_VERSIONS="5 6"
+QT_VERSIONS="6 5"
 
 AC_ARG_WITH([qt],
   [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])

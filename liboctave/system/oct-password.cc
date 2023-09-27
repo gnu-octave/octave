@@ -29,12 +29,9 @@
 
 #include <sys/types.h>
 
-#if defined (HAVE_PWD_H)
-#  include <pwd.h>
-#endif
-
 #include "lo-error.h"
 #include "oct-password.h"
+#include "pwd-wrappers.h"
 
 #define NOT_SUPPORTED(nm)                       \
   nm ": not supported on this system"
@@ -125,7 +122,7 @@ password::getpwent (std::string& msg)
 {
 #if defined HAVE_GETPWENT
   msg = "";
-  return password (::getpwent (), msg);
+  return password (octave_getpwent_wrapper (), msg);
 #else
   msg = NOT_SUPPORTED ("getpwent");
   return password ();
@@ -144,7 +141,7 @@ password::getpwuid (uid_t uid, std::string& msg)
 {
 #if defined (HAVE_GETPWUID)
   msg = "";
-  return password (::getpwuid (uid), msg);
+  return password (octave_getpwuid_wrapper (uid), msg);
 #else
   octave_unused_parameter (uid);
 
@@ -165,7 +162,7 @@ password::getpwnam (const std::string& nm, std::string& msg)
 {
 #if defined (HAVE_GETPWNAM)
   msg = "";
-  return password (::getpwnam (nm.c_str ()), msg);
+  return password (octave_getpwnam_wrapper (nm.c_str ()), msg);
 #else
   octave_unused_parameter (nm);
 
@@ -186,7 +183,7 @@ password::setpwent (std::string& msg)
 {
 #if defined (HAVE_SETPWENT)
   msg = "";
-  ::setpwent ();
+  octave_setpwent_wrapper ();
   return 0;
 #else
   msg = NOT_SUPPORTED ("setpwent");
@@ -206,7 +203,7 @@ password::endpwent (std::string& msg)
 {
 #if defined (HAVE_ENDPWENT)
   msg = "";
-  ::endpwent ();
+  octave_endpwent_wrapper ();
   return 0;
 #else
   msg = NOT_SUPPORTED ("endpwent");
@@ -223,15 +220,16 @@ password::password (void *p, std::string& msg)
 
   if (p)
     {
-      struct ::passwd *pw = static_cast<struct ::passwd *> (p);
+      struct octave_passwd_wrapper pw;
+      octave_from_passwd (static_cast<struct ::passwd *> (p), &pw);
 
-      m_name = pw->pw_name;
-      m_passwd = pw->pw_passwd;
-      m_uid = pw->pw_uid;
-      m_gid = pw->pw_gid;
-      m_gecos = pw->pw_gecos;
-      m_dir = pw->pw_dir;
-      m_shell = pw->pw_shell;
+      m_name = pw.pw_name;
+      m_passwd = pw.pw_passwd;
+      m_uid = pw.pw_uid;
+      m_gid = pw.pw_gid;
+      m_gecos = pw.pw_gecos;
+      m_dir = pw.pw_dir;
+      m_shell = pw.pw_shell;
 
       m_valid = true;
     }

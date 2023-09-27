@@ -2091,13 +2091,13 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         if test -z "$QT_HOST_LIBEXECS"; then
           AC_CHECK_TOOLS(QTPATHS6, [qtpaths6 qtpaths-qt6])
           if test -n "$QTPATHS6"; then
-            QT_HOST_LIBEXECS=`$QTPATHS6 --query QT_HOST_LIBEXECS`
+            QT_HOST_LIBEXECS="`$QTPATHS6 --query QT_HOST_LIBEXECS`"
           fi
         fi
         if test -z "$QT_HOST_LIBEXECS"; then
           AC_CHECK_TOOLS(QMAKE6, [qmake6 qmake-qt6])
           if test -n "$QMAKE6"; then
-            QT_HOST_LIBEXECS=`$QMAKE6 -query QT_HOST_LIBEXECS`
+            QT_HOST_LIBEXECS="`$QMAKE6 -query QT_HOST_LIBEXECS`"
           fi
         fi
         if test -n "$QT_HOST_LIBEXECS"; then
@@ -2105,7 +2105,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
             mingw*)
               AC_CHECK_TOOL(CYGPATH, [cygpath])
               if test -n "$CYGPATH"; then
-                QT_HOST_LIBEXECS=`$CYGPATH -u $QT_HOST_LIBEXECS`
+                QT_HOST_LIBEXECS="`$CYGPATH -u $QT_HOST_LIBEXECS`"
               fi
             ;;
           esac
@@ -2123,7 +2123,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         OCTAVE_CHECK_QT_TOOL([qcollectiongenerator])
       ;;
       6)
-        QCOLLECTIONGENERATOR=$QHELPGENERATOR
+        QCOLLECTIONGENERATOR="$QHELPGENERATOR"
       ;;
     esac
 

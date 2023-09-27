@@ -2087,7 +2087,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
       ;;
       6)
-        ac_octave_save_QT_HOST_LIBEXECS=QT_HOST_LIBEXECS
+        ac_octave_save_QT_HOST_LIBEXECS="$QT_HOST_LIBEXECS"
         if test -z "$QT_HOST_LIBEXECS"; then
           AC_CHECK_TOOLS(QTPATHS6, [qtpaths6 qtpaths-qt6])
           if test -n "$QTPATHS6"; then
@@ -2132,7 +2132,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       LRELEASEFLAGS=
       QCOLLECTIONGENERATORFLAGS=
       QHELPGENERATORFLAGS=
-      QT_HOST_LIBEXECS=ac_octave_save_QT_HOST_LIBEXECS
+      QT_HOST_LIBEXECS="$ac_octave_save_QT_HOST_LIBEXECS"
       $as_unset ac_cv_prog_MOC_QTVER
       $as_unset ac_cv_prog_ac_ct_MOC_QTVER
       $as_unset ac_cv_prog_UIC_QTVER

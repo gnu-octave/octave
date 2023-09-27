@@ -2021,13 +2021,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
           QT_MODULES="$QT_MODULES Qt6Core5Compat"
         ;;
       esac
-      ## Ensure that the C++ compiler fully supports C++17.
-      ## Preferably with GNU extensions if flags are required.
-      AX_CXX_COMPILE_STDCXX(17, [], optional)
-      if test $HAVE_CXX17 -eq 0; then
-        build_qt_gui=no
-        warn_qt_cxx17="compiler doesn't support C++17; disabling Qt GUI"
-      fi
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])
@@ -2197,6 +2190,16 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
            warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])
       ;;
     esac
+  fi
+
+  if test $build_qt_gui = yes && test "$qt_version" -eq 6; then
+    ## Ensure that the C++ compiler fully supports C++17.
+    ## Preferably with GNU extensions if flags are required.
+    AX_CXX_COMPILE_STDCXX(17, [], optional)
+    if test $HAVE_CXX17 -eq 0; then
+      build_qt_gui=no
+      warn_qt_cxx17="compiler doesn't support C++17; disabling Qt GUI"
+    fi
   fi
 
   if test $build_qt_gui = yes; then

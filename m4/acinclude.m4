@@ -2100,6 +2100,16 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
             QT_HOST_LIBEXECS=`$QMAKE6 -query QT_HOST_LIBEXECS`
           fi
         fi
+        if test -n "$QT_HOST_LIBEXECS"; then
+          case $host_os in
+            mingw*)
+              AC_CHECK_TOOL(CYGPATH, [cygpath])
+              if test -n "$CYGPATH"; then
+                QT_HOST_LIBEXECS=`$CYGPATH -u $QT_HOST_LIBEXECS`
+              fi
+            ;;
+          esac
+        fi
       ;;
     esac
 

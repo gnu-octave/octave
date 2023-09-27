@@ -1860,6 +1860,9 @@ AC_DEFUN([OCTAVE_CHECK_QT], [
     if test -n "$warn_qt_modules"; then
       OCTAVE_CONFIGURE_WARNING([warn_qt_modules])
     fi
+    if test -n "$warn_qt_cxx17"; then
+      OCTAVE_CONFIGURE_WARNING([warn_qt_cxx17])
+    fi
     if test -n "$warn_qt_libraries"; then
       OCTAVE_CONFIGURE_WARNING([warn_qt_libraries])
     fi
@@ -2021,30 +2024,36 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       esac
       ## Ensure that the C++ compiler fully supports C++17.
       ## Preferably with GNU extensions if flags are required.
-      AX_CXX_COMPILE_STDCXX(17, [], mandatory)
+      AX_CXX_COMPILE_STDCXX(17, [], optional)
+      if test $HAVE_CXX17 -eq 0; then
+        build_qt_gui=no
+        warn_qt_cxx17="compiler doesn't support C++17; disabling Qt GUI"
+      fi
     ;;
     *)
       AC_MSG_ERROR([Unrecognized Qt version $qt_version])
     ;;
   esac
 
-  ## Use this check to get info in the log file.
-  PKG_CHECK_MODULES(QT, [$QT_MODULES],
-    [],
-    [build_qt_gui=no
-     warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
+  if test $build_qt_gui = yes; then
+    ## Use this check to get info in the log file.
+    PKG_CHECK_MODULES(QT, [$QT_MODULES],
+      [],
+      [build_qt_gui=no
+       warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
 
-  ## Check the modules again individually to get lists of modules that
-  ## are available and/or missing
-  QT_MODULES_AVAILABLE=
-  QT_MODULES_MISSING=
-  for qt_mod in $QT_MODULES; do
-    if $PKG_CONFIG --exists $qt_mod; then
-      QT_MODULES_AVAILABLE="$QT_MODULES_AVAILABLE $qt_mod"
-    else
-      QT_MODULES_MISSING="$QT_MODULES_MISSING $qt_mod"
-    fi
-  done
+    ## Check the modules again individually to get lists of modules that
+    ## are available and/or missing
+    QT_MODULES_AVAILABLE=
+    QT_MODULES_MISSING=
+    for qt_mod in $QT_MODULES; do
+      if $PKG_CONFIG --exists $qt_mod; then
+        QT_MODULES_AVAILABLE="$QT_MODULES_AVAILABLE $qt_mod"
+      else
+        QT_MODULES_MISSING="$QT_MODULES_MISSING $qt_mod"
+      fi
+    done
+  fi
 
   if test $build_qt_gui = yes; then
     ## Retrieve Qt compilation and linker flags
@@ -2078,9 +2087,18 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
         AC_CHECK_TOOLS(QTCHOOSER, [qtchooser])
       ;;
       6)
+        ac_octave_save_QT_HOST_LIBEXECS=QT_HOST_LIBEXECS
         if test -z "$QT_HOST_LIBEXECS"; then
-          AC_CHECK_TOOLS(QTPATHS6, [qtpaths6])
-          QT_HOST_LIBEXECS=`$QTPATHS6 --query QT_HOST_LIBEXECS`
+          AC_CHECK_TOOLS(QTPATHS6, [qtpaths6 qtpaths-qt6])
+          if test -n "$QTPATHS6"; then
+            QT_HOST_LIBEXECS=`$QTPATHS6 --query QT_HOST_LIBEXECS`
+          fi
+        fi
+        if test -z "$QT_HOST_LIBEXECS"; then
+          AC_CHECK_TOOLS(QMAKE6, [qmake6 qmake-qt6])
+          if test -n "$QMAKE6"; then
+            QT_HOST_LIBEXECS=`$QMAKE6 -query QT_HOST_LIBEXECS`
+          fi
         fi
       ;;
     esac
@@ -2114,6 +2132,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       LRELEASEFLAGS=
       QCOLLECTIONGENERATORFLAGS=
       QHELPGENERATORFLAGS=
+      QT_HOST_LIBEXECS=ac_octave_save_QT_HOST_LIBEXECS
       $as_unset ac_cv_prog_MOC_QTVER
       $as_unset ac_cv_prog_ac_ct_MOC_QTVER
       $as_unset ac_cv_prog_UIC_QTVER

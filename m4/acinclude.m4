@@ -1960,9 +1960,8 @@ dnl
 AC_DEFUN([OCTAVE_CHECK_QT_TOOL], [
   AC_CHECK_TOOLS(m4_toupper([$1])_QTVER, [$1-qt$qt_version])
   if test -z "$m4_toupper([$1])_QTVER"; then
-    if test -n "$QT_HOST_LIBEXECS"; then
-      AC_PATH_TOOL(m4_toupper([$1]), [$1], [], [$QT_HOST_LIBEXECS])
-    fi
+    AC_PATH_TOOL(m4_toupper([$1]), [$1], [],
+                 [$QT_HOST_LIBEXECS$PATH_SEPARATOR$QT_HOST_BINS$PATH_SEPARATOR])
     if test -z "$m4_toupper([$1])"; then
       AC_CHECK_TOOLS(m4_toupper([$1]), [$1])
     fi
@@ -2110,6 +2109,29 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
             ;;
           esac
         fi
+        ac_octave_save_QT_HOST_BINS="$QT_HOST_BINS"
+        if test -z "$QT_HOST_BINS"; then
+          AC_CHECK_TOOLS(QTPATHS6, [qtpaths6 qtpaths-qt6])
+          if test -n "$QTPATHS6"; then
+            QT_HOST_BINS="`$QTPATHS6 --query QT_HOST_BINS`"
+          fi
+        fi
+        if test -z "$QT_HOST_BINS"; then
+          AC_CHECK_TOOLS(QMAKE6, [qmake6 qmake-qt6])
+          if test -n "$QMAKE6"; then
+            QT_HOST_BINS="`$QMAKE6 -query QT_HOST_BINS`"
+          fi
+        fi
+        if test -n "$QT_HOST_BINS"; then
+          case $host_os in
+            mingw*)
+              AC_CHECK_TOOL(CYGPATH, [cygpath])
+              if test -n "$CYGPATH"; then
+                QT_HOST_BINS="`$CYGPATH -u $QT_HOST_BINS`"
+              fi
+            ;;
+          esac
+        fi
       ;;
     esac
 
@@ -2143,6 +2165,7 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
       QCOLLECTIONGENERATORFLAGS=
       QHELPGENERATORFLAGS=
       QT_HOST_LIBEXECS="$ac_octave_save_QT_HOST_LIBEXECS"
+      QT_HOST_BINS="$ac_octave_save_QT_HOST_BINS"
       $as_unset ac_cv_prog_MOC_QTVER
       $as_unset ac_cv_prog_ac_ct_MOC_QTVER
       $as_unset ac_cv_prog_UIC_QTVER

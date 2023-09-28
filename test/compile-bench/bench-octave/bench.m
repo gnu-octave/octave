@@ -28,8 +28,8 @@ function bench (varargin)
   end
 
   % For compatibility with older releases and Matlab
-  if ~exist("__compile__")
-    __compile__ = @(varargin) true;
+  if ~exist("__vm_compile__")
+    __vm_compile__ = @(varargin) true;
   end
   if ~exist("__dummy_mark_1__")
     __dummy_mark_1__ = @() true;
@@ -112,7 +112,7 @@ function bench (varargin)
       tic;
       [ccttot0, cctuser0, cctsys0] = cputime;
       if !no_compile
-        if ! __compile__ (name)
+        if ! __vm_compile__ (name)
           warning ("Could not compile %s, skipping ...", name)
           continue;
         end

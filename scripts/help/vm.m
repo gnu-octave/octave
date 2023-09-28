@@ -33,10 +33,10 @@
 ## The VM commands available in Octave are
 ##
 ## @table @code
-## @item __enable_vm_eval__
+## @item __vm_enable__
 ## The main VM user function.  Switch on or off the VM as a whole.
 ##
-## @item __compile__
+## @item __vm_compile__
 ## Another VM user function.  Compiles a specified function to bytecode.
 ##
 ## @item __vm_clear_cache__
@@ -55,7 +55,7 @@
 ##
 ## @noindent
 ##
-## @seealso{__enable_vm_eval__, __compile__, __vm_clear_cache__,
+## @seealso{__vm_enable__, __vm_compile__, __vm_clear_cache__,
 ## __vm_is_executing__, __vm_print_trace__, __vm_profile__}
 ## @end deftypefn
 

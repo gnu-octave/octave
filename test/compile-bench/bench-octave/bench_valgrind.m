@@ -37,7 +37,7 @@ function bench_valgrind (octbin_path, factor, benchname_filter, octbin_path_ref,
       % logfilename, octbin, bench folder, benchname filter
       cmd_template = ["valgrind --tool=callgrind  --callgrind-out-file=%s  --separate-recs=10 " ...
                       "--dump-instr=yes --collect-jumps=yes \"--dump-after=dummy_mark_1\" " ...
-                      " %s -W --eval \"__enable_vm_eval__ (1); cd %s; bench('reg','%s','n_factor', %d);exit(0)\""];
+                      " %s -W --eval \"__vm_enable__ (1); cd %s; bench('reg','%s','n_factor', %d);exit(0)\""];
 
       logfilename1 = ["callgrind.out.log_mark_", name, "_", num2str(i), "_", name, ".log"];
       logfilename2 = ["callgrind.out.log_ref1_", name, "_", num2str(i), "_", name, ".log"];

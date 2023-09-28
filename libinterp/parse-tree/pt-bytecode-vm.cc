@@ -7406,7 +7406,7 @@ vm::maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map
   if (fn->is_compiled ())
     return true;
 
-  if (V__enable_vm_eval__ && !fn->m_compilation_failed)
+  if (V__vm_enable__ && !fn->m_compilation_failed)
     {
       try
         {

@@ -38,6 +38,11 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+// If TRUE, use VM evaluator rather than tree walker.
+// FIXME: Use OCTAVE_ENABLE_VM_EVALUATOR define to set it to true when
+// the VM has been tested properly.
+bool V__vm_enable__ = false;
+
 // Cleverly hidden in pt-bytecode-vm.cc to prevent inlining here
 extern "C" void dummy_mark_1 (void);
 extern "C" void dummy_mark_2 (void);
@@ -299,7 +304,7 @@ Prints the bytecode of a function, if any.
       error ("Function not a user function or script: %s", fn_name.c_str ());
     }
 
-  if (!ufn->is_compiled () && V__enable_vm_eval__ && !ov.is_anonymous_function ())
+  if (!ufn->is_compiled () && V__vm_enable__ && !ov.is_anonymous_function ())
     compile_user_function (*ufn, 0);
   else if (!ufn->is_compiled ())
     error ("Function not compiled: %s", fn_name.c_str ());
@@ -314,11 +319,11 @@ Prints the bytecode of a function, if any.
   return octave_value {true};
 }
 
-DEFMETHOD (__compile__, interp, args, ,
+DEFMETHOD (__vm_compile__, interp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __compile__ (@var{fn_name})
-@deftypefnx  {} {@var{success} =} __compile__ (@var{fn_name}, "clear")
-@deftypefnx  {} {@var{success} =} __compile__ (@var{fn_name}, "print")
+@deftypefn  {} {@var{success} =} __vm_compile__ (@var{fn_name})
+@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "clear")
+@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "print")
 
 Compile the specified function to bytecode.
 
@@ -417,23 +422,18 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
   return octave_value {true};
 }
 
-// If TRUE, use VM evaluator rather than tree walker.
-// FIXME: Use OCTAVE_ENABLE_VM_EVALUATOR define to set it to true when
-// the VM has been tested properly.
-bool V__enable_vm_eval__ = false;
-
-DEFUN (__enable_vm_eval__, args, nargout,
+DEFUN (__vm_enable__, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} __enable_vm_eval__ ()
-@deftypefnx {} {@var{old_val} =} __enable_vm_eval__ (@var{new_val})
-@deftypefnx {} {@var{old_val} =} __enable_vm_eval__ (@var{new_val}, "local")
+@deftypefn  {} {@var{val} =} __vm_enable__ ()
+@deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val})
+@deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val}, "local")
 Query or set whether Octave automatically compiles functions to bytecode
 and executes them in a virtual machine (VM).
 
 Note that the virtual machine feature is experimental.
 
 The default value is currently false, while the VM is still experimental.
-Users need to explicitly call @code{__enable_vm_eval__ (1)} to enable it.
+Users need to explicitly call @code{__vm_enable__ (1)} to enable it.
 In future, this will be set to the value of  the OCTAVE_ENABLE_VM_EVALUATOR
 flag that was set when building Octave.
 
@@ -447,16 +447,16 @@ is changed locally for the function and any subroutines it calls.  The original
 setting is restored when exiting the function.
 
 Once compiled to bytecode, the function will always be evaluated by the
-VM no matter the state of @qcode{"__enable_vm_eval__"}, until the bytecode is
+VM no matter the state of @qcode{"__vm_enable__"}, until the bytecode is
 cleared, by e.g. @qcode{"clear all"} or an modification to the
 function's m-file.
 
-@seealso{__compile__}
+@seealso{__vm_compile__}
 
 @end deftypefn */)
 {
-  return set_internal_variable (V__enable_vm_eval__, args, nargout,
-                                "__enable_vm_eval__");
+  return set_internal_variable (V__vm_enable__, args, nargout,
+                                "__vm_enable__");
 }
 
 OCTAVE_END_NAMESPACE(octave)

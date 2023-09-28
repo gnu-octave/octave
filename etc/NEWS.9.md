@@ -4,14 +4,12 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 ### General improvements
 
 - Octave now has an experimental virtual machine (VM) for just-in-time (JIT)
-evaluation of m-code.  This VM can be enabled by the end user with the
-command `__enable_vm_eval__ (1)` as long as the configuration option
-`--disable-vm-evaluator` was *not* used when building Octave.  Speedups from 2X
-to 40X have been observed for different kinds of m-code.  This feature is
-considered experimental for now.  M-code that cannot be handled by the VM yet
-falls back automatically to the existing interpreter.  User tests of the VM
-evaluator are encouraged.  To learn more about VM commands, type `vm`
-or `help vm` at the Octave prompt.
+evaluation of m-code.  Speedups from 2X to 40X have been observed for different
+kinds of m-code.  This feature is considered experimental for now.  M-code
+that cannot be handled by the VM yet falls back automatically to the existing
+interpreter.  User tests of the VM evaluator are encouraged.  To learn more
+about VM commands, type `vm` or `help vm` at the Octave prompt, or refer the
+Octave manual section 19.6 on the VM.
 
 - `oruntests`: The current directory now changes to the directory
 containing the files with the tests for the duration of the test.  This

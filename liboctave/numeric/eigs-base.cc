@@ -3129,8 +3129,8 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error in znaupd: %s",
-               arpack_errno2str (info, "znaupd").c_str ());
+              ("eigs: error %" OCTAVE_IDX_TYPE_FORMAT " in znaupd: %s",
+               info, arpack_errno2str (info, "znaupd").c_str ());
 
           break;
         }
@@ -3455,8 +3455,8 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error in znaupd: %s",
-               arpack_errno2str (info, "znaupd").c_str ());
+              ("eigs: error %" OCTAVE_IDX_TYPE_FORMAT " in znaupd: %s",
+               info, arpack_errno2str (info, "znaupd").c_str ());
 
           break;
         }
@@ -3845,8 +3845,8 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
         {
           if (info < 0)
             (*current_liboctave_error_handler)
-              ("eigs: error in znaupd: %s",
-               arpack_errno2str (info, "znaupd").c_str ());
+              ("eigs: error %" OCTAVE_IDX_TYPE_FORMAT " in znaupd: %s",
+               info, arpack_errno2str (info, "znaupd").c_str ());
 
           break;
         }

@@ -755,12 +755,15 @@ main (int argc, char **sys_argv)
   bool r2018a_option = false;
   // The default for this may change in the future.
   bool mx_has_interleaved_complex = false;
+  bool pass_on_followup = false;
 
   for (int i = 1; i < argc; i++)
     {
       std::string arg = argv[i];
 
       std::string file;
+
+      bool found_unknown_dash_arg = false;
 
       if (ends_with (arg, ".c"))
         {
@@ -936,28 +939,31 @@ main (int argc, char **sys_argv)
         }
       else if (starts_with (arg, "-"))
         {
+          found_unknown_dash_arg = true;
+
           // Pass through any unrecognized options.
           pass_on_options += (' ' + arg);
-          // If the current argument does not contain a '=' character, check
-          // for an additional argument following the option.
-          // However, don't copy the final position which is typically a file.
-          // FIXME: We might be copying flags that might need to be parsed
-          //        instead.  See bugs #52928 and #64590.
-          if (i < argc-2 && (arg.find ('=') == std::string::npos))
-            {
-              arg = argv[i+1];
-              if (arg[0] != '-')
-                {
-                  pass_on_options += (' ' + arg);
-                  i++;
-                }
-            }
+
+          // Don't pass on the final position which is typically a file.
+          // FIXME: Does it make sense to have that exception for the last
+          //        argument?
+          if (i < argc-2)
+            pass_on_followup = true;
+        }
+      else if (pass_on_followup)
+        {
+          // Pass through a followup argument.
+          pass_on_options += (' ' + arg);
         }
       else
         {
           std::cerr << "mkoctfile: unrecognized argument " << arg << std::endl;
           return 1;
         }
+
+      // reset pass_on_followup if anything but an unknown argument was found
+      if (! found_unknown_dash_arg)
+        pass_on_followup = false;
 
       if (! file.empty () && octfile.empty ())
         octfile = file;

@@ -366,7 +366,7 @@ fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
       if (plan_destroys_in)
         {
           // Create matrix with the same size and 16-byte alignment as input
-          OCTAVE_LOCAL_BUFFER (double, itmp, nn + 32);
+          OCTAVE_LOCAL_BUFFER (double, itmp, nn * howmany + 32);
           itmp = reinterpret_cast<double *>
                  (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                   ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
@@ -721,7 +721,7 @@ float_fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
       if (plan_destroys_in)
         {
           // Create matrix with the same size and 16-byte alignment as input
-          OCTAVE_LOCAL_BUFFER (float, itmp, nn + 32);
+          OCTAVE_LOCAL_BUFFER (float, itmp, nn * howmany + 32);
           itmp = reinterpret_cast<float *>
                  (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
                   ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));

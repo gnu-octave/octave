@@ -312,6 +312,28 @@ dimension of the matrix along which the inverse FFT is performed.
 %! S(N-n+1) = N/2;
 %!
 %! assert (ifft (S), s, 4*N* eps ("single"));
+
+%!testif HAVE_FFTW <*64729>
+%! x = rand (5, 5, 5, 5);
+%! old_planner = fftw ('planner', 'measure');
+%! unwind_protect
+%!   y = fft (x);
+%!   y = fft (x);  # second invocation might crash Octave
+%!   assert (size (y), [5, 5, 5, 5]);
+%! unwind_protect_cleanup
+%!   fftw ('planner', old_planner);
+%! end_unwind_protect
+
+%!testif HAVE_FFTW <*64729>
+%! x = rand (5, 5, 5, 5, 'single');
+%! old_planner = fftw ('planner', 'measure');
+%! unwind_protect
+%!   y = fft (x);
+%!   y = fft (x);  # second invocation might crash Octave
+%!   assert (size (y), [5, 5, 5, 5]);
+%! unwind_protect_cleanup
+%!   fftw ('planner', old_planner);
+%! end_unwind_protect
 */
 
 OCTAVE_END_NAMESPACE(octave)

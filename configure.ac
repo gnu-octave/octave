@@ -300,7 +300,7 @@ esac
 AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
   [Define this to be the path to the shell command interpreter.])
 
-### Determine which C++ compiler to use (we expect to find g++).
+### Determine which C++ compiler to use (we expect to find g++ or clang++).
 
 AC_PROG_CXX
 AC_PROG_CXXCPP
@@ -315,15 +315,45 @@ AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
      *) AC_MSG_ERROR([bad value $enableval for --enable-std-pmr-polymorphic-allocator]) ;;
    esac])
 
-### Determine compiler capabilities.
+AC_ARG_WITH([qt],
+  [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])
+dnl Second help string must not be indented for correct alignment
+AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
+  [case $withval in
+     yes | "")
+     ;;
+     no)
+       QT_VERSIONS=
+     ;;
+     *)
+       QT_VERSIONS="$withval"
+     ;;
+   esac])
 
-if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
-  ## Test for flags to fully support C++17.
-  ## Preferably with GNU extensions if flags are required.
+### Determine C++ compiler capabilities.
+
+if test "$QT_VERSIONS" = 6; then
+  ## If QT_VERSIONS is set to 6, require that the C++ compiler fully
+  ## supports C++17.  Preferably with GNU extensions if flags are required.
+  ## We could use "AX_CXX_COMPILE_STDCXX(17, [], mandatory)" in this case.
+  ## But prefer to emit a more helpful error message.
+  AX_CXX_COMPILE_STDCXX(17, [], [])
+  if test "$HAVE_CXX17" = 0; then
+    ## The user explicitly requested Qt6.  But the C++ compiler lacks
+    ## support for C++17.
+    AC_MSG_ERROR([Qt6 requires a compiler that supports C++17.  Configure with "--with-qt=5" or "--without-qt", or use a compiler that supports C++17.])
+  fi
+elif test -z "${QT_VERSIONS+x}" || test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
+  ## If QT_VERSIONS is not explicitly set, check if the C++ compiler fully
+  ## supports C++17 (but don't require it).
+  ## The defaults for the Qt version will depend on the result of this check.
   AX_CXX_COMPILE_STDCXX(17, [], [])
 else
+  ## Set HAVE_CXX17 to 0 because we don't require it (even if the used
+  ## C++ compiler might technically support C++17).
   HAVE_CXX17=0
 fi
+
 if test "$HAVE_CXX17" = 0; then
   ## Ensure that the C++ compiler fully supports C++11.
   ## Preferably with GNU extensions if flags are required.
@@ -334,7 +364,7 @@ if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
   OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
 fi
 
-### Determine which C compiler to use (we expect to find gcc).
+### Determine which C compiler to use (we expect to find gcc or clang).
 
 AC_PROG_CC
 AC_PROG_CPP
@@ -1871,22 +1901,15 @@ OCTAVE_CHECK_LIB(fontconfig, fontconfig,
 
 ### GUI/Qt related tests.
 
-QT_VERSIONS="6 5"
-
-AC_ARG_WITH([qt],
-  [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])
-dnl Second help string must not be indented for correct alignment
-AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
-  [case $withval in
-     yes | "")
-     ;;
-     no)
-       QT_VERSIONS=
-     ;;
-     *)
-       QT_VERSIONS="$withval"
-     ;;
-   esac])
+if test -z ${QT_VERSIONS+x}; then
+  ## If QT_VERSIONS is unset, choose default depending on compiler support.
+  if test $HAVE_CXX17 = 0; then
+    dnl Qt6 requires support for C++17.
+    QT_VERSIONS="5"
+  else
+    QT_VERSIONS="6 5"
+  fi
+fi
 
 check_qscintilla=yes
 AC_ARG_WITH([qscintilla],

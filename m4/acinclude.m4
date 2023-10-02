@@ -2002,30 +2002,41 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   warn_qt_abstract_item_model=""
   warn_qt_opengl=""
 
-  ## Check for Qt libraries
-  case "$qt_version" in
-    5)
-      QT_MODULES="Qt5Core Qt5Gui Qt5Help Qt5Network Qt5OpenGL Qt5PrintSupport Qt5Xml"
-    ;;
-    6)
-      QT_MODULES="Qt6Core Qt6Gui Qt6Help Qt6Network Qt6OpenGL Qt6OpenGLWidgets Qt6PrintSupport Qt6Xml"
-      case $host_os in
-        mingw* | msdosmsvc*)
-        ;;
-        *)
-          # FIXME: Remove Qt6Core5Compat when we no longer rely on classes that
-          #        have been removed in Qt6:
-          #        https://www.qt.io/blog/porting-from-qt-5-to-qt-6-using-qt5compat-library
-          #        It is still needed for the terminal implementation in
-          #        libgui/qterminal/libqterminal/unix
-          QT_MODULES="$QT_MODULES Qt6Core5Compat"
-        ;;
-      esac
-    ;;
-    *)
-      AC_MSG_ERROR([Unrecognized Qt version $qt_version])
-    ;;
-  esac
+  if test $build_qt_gui = yes && test "$qt_version" -eq 6; then
+    ## Ensure that the C++ compiler fully supports C++17.
+    ## Preferably with GNU extensions if flags are required.
+    if test $HAVE_CXX17 -eq 0; then
+      build_qt_gui=no
+      warn_qt_cxx17="compiler doesn't support C++17; disabling Qt GUI"
+    fi
+  fi
+
+  if test $build_qt_gui = yes; then
+    ## Check for Qt libraries
+    case "$qt_version" in
+      5)
+        QT_MODULES="Qt5Core Qt5Gui Qt5Help Qt5Network Qt5OpenGL Qt5PrintSupport Qt5Xml"
+      ;;
+      6)
+        QT_MODULES="Qt6Core Qt6Gui Qt6Help Qt6Network Qt6OpenGL Qt6OpenGLWidgets Qt6PrintSupport Qt6Xml"
+        case $host_os in
+          mingw* | msdosmsvc*)
+          ;;
+          *)
+            # FIXME: Remove Qt6Core5Compat when we no longer rely on classes that
+            #        have been removed in Qt6:
+            #        https://www.qt.io/blog/porting-from-qt-5-to-qt-6-using-qt5compat-library
+            #        It is still needed for the terminal implementation in
+            #        libgui/qterminal/libqterminal/unix
+            QT_MODULES="$QT_MODULES Qt6Core5Compat"
+          ;;
+        esac
+      ;;
+      *)
+        AC_MSG_ERROR([Unrecognized Qt version $qt_version])
+      ;;
+    esac
+  fi
 
   if test $build_qt_gui = yes; then
     ## Use this check to get info in the log file.
@@ -2190,16 +2201,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
            warn_qt_lib_fcns="At least one of chmod, chown, ftruncate, mmap, and munmap not found; disabling Qt GUI"])
       ;;
     esac
-  fi
-
-  if test $build_qt_gui = yes && test "$qt_version" -eq 6; then
-    ## Ensure that the C++ compiler fully supports C++17.
-    ## Preferably with GNU extensions if flags are required.
-    AX_CXX_COMPILE_STDCXX(17, [], optional)
-    if test $HAVE_CXX17 -eq 0; then
-      build_qt_gui=no
-      warn_qt_cxx17="compiler doesn't support C++17; disabling Qt GUI"
-    fi
   fi
 
   if test $build_qt_gui = yes; then

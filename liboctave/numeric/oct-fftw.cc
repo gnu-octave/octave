@@ -244,30 +244,28 @@ fftw_planner::do_create_plan (int dir, const int rank,
       if (*cur_plan_p)
         fftw_destroy_plan (*cur_plan_p);
 
+      OCTAVE_SCOPED_BUFFER_ANCHOR (Complex, itmp);
+      itmp = const_cast<Complex *> (in);
+      Complex *otmp = out;
+
       if (plan_destroys_in)
         {
           // Create matrix with the same size and 16-byte alignment as input
-          OCTAVE_LOCAL_BUFFER (Complex, itmp, nn * howmany + 32);
+          OCTAVE_SCOPED_BUFFER (Complex, itmp, nn * howmany + 32);
           itmp = reinterpret_cast<Complex *>
-                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                  ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
+                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF)
+                  + ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
-          *cur_plan_p
-            = fftw_plan_many_dft (rank, tmp, howmany,
-                                  reinterpret_cast<fftw_complex *> (itmp),
-                                  nullptr, stride, dist,
-                                  reinterpret_cast<fftw_complex *> (out),
-                                  nullptr, stride, dist, dir, plan_flags);
+          if (in == out)
+            otmp = itmp;
         }
-      else
-        {
-          *cur_plan_p
-            = fftw_plan_many_dft (rank, tmp, howmany,
-                                  reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
-                                  nullptr, stride, dist,
-                                  reinterpret_cast<fftw_complex *> (out),
-                                  nullptr, stride, dist, dir, plan_flags);
-        }
+
+      *cur_plan_p
+        = fftw_plan_many_dft (rank, tmp, howmany,
+                              reinterpret_cast<fftw_complex *> (itmp),
+                              nullptr, stride, dist,
+                              reinterpret_cast<fftw_complex *> (otmp),
+                              nullptr, stride, dist, dir, plan_flags);
 
       if (*cur_plan_p == nullptr)
         (*current_liboctave_error_handler) ("Error creating FFTW plan");
@@ -363,29 +361,29 @@ fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
       if (*cur_plan_p)
         fftw_destroy_plan (*cur_plan_p);
 
+      OCTAVE_SCOPED_BUFFER_ANCHOR (double, itmp);
+      itmp = const_cast<double *> (in);
+      Complex *otmp = out;
+
       if (plan_destroys_in)
         {
           // Create matrix with the same size and 16-byte alignment as input
-          OCTAVE_LOCAL_BUFFER (double, itmp, nn * howmany + 32);
+          octave_idx_type in_place = reinterpret_cast<double *> (out) == in;
+          OCTAVE_SCOPED_BUFFER (double, itmp,
+                                nn * howmany * (in_place + 1) + 32);
           itmp = reinterpret_cast<double *>
-                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                  ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
+                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF)
+                  + ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
-          *cur_plan_p
-            = fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                      nullptr, stride, dist,
-                                      reinterpret_cast<fftw_complex *> (out),
-                                      nullptr, stride, dist, plan_flags);
+          if (in_place)
+            otmp = reinterpret_cast<Complex *> (itmp);
         }
-      else
-        {
-          *cur_plan_p
-            = fftw_plan_many_dft_r2c (rank, tmp, howmany,
-                                      (const_cast<double *> (in)),
-                                      nullptr, stride, dist,
-                                      reinterpret_cast<fftw_complex *> (out),
-                                      nullptr, stride, dist, plan_flags);
-        }
+
+      *cur_plan_p
+        = fftw_plan_many_dft_r2c (rank, tmp, howmany, itmp,
+                                  nullptr, stride, dist,
+                                  reinterpret_cast<fftw_complex *> (otmp),
+                                  nullptr, stride, dist, plan_flags);
 
       if (*cur_plan_p == nullptr)
         (*current_liboctave_error_handler) ("Error creating FFTW plan");
@@ -599,30 +597,28 @@ float_fftw_planner::do_create_plan (int dir, const int rank,
       if (*cur_plan_p)
         fftwf_destroy_plan (*cur_plan_p);
 
+      OCTAVE_SCOPED_BUFFER_ANCHOR (FloatComplex, itmp);
+      itmp = const_cast<FloatComplex *> (in);
+      FloatComplex *otmp = out;
+
       if (plan_destroys_in)
         {
           // Create matrix with the same size and 16-byte alignment as input
-          OCTAVE_LOCAL_BUFFER (FloatComplex, itmp, nn * howmany + 32);
+          OCTAVE_SCOPED_BUFFER (FloatComplex, itmp, nn * howmany + 32);
           itmp = reinterpret_cast<FloatComplex *>
-                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                  ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
+                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF)
+                  + ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
-          *cur_plan_p
-            = fftwf_plan_many_dft (rank, tmp, howmany,
-                                   reinterpret_cast<fftwf_complex *> (itmp),
-                                   nullptr, stride, dist,
-                                   reinterpret_cast<fftwf_complex *> (out),
-                                   nullptr, stride, dist, dir, plan_flags);
+          if (out == in)
+            otmp = itmp;
         }
-      else
-        {
-          *cur_plan_p
-            = fftwf_plan_many_dft (rank, tmp, howmany,
-                                   reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
-                                   nullptr, stride, dist,
-                                   reinterpret_cast<fftwf_complex *> (out),
-                                   nullptr, stride, dist, dir, plan_flags);
-        }
+
+      *cur_plan_p
+        = fftwf_plan_many_dft (rank, tmp, howmany,
+                               reinterpret_cast<fftwf_complex *> (itmp),
+                               nullptr, stride, dist,
+                               reinterpret_cast<fftwf_complex *> (otmp),
+                               nullptr, stride, dist, dir, plan_flags);
 
       if (*cur_plan_p == nullptr)
         (*current_liboctave_error_handler) ("Error creating FFTW plan");
@@ -718,29 +714,29 @@ float_fftw_planner::do_create_plan (const int rank, const dim_vector& dims,
       if (*cur_plan_p)
         fftwf_destroy_plan (*cur_plan_p);
 
+      OCTAVE_SCOPED_BUFFER_ANCHOR (float, itmp);
+      itmp = const_cast<float *> (in);
+      FloatComplex *otmp = out;
+
       if (plan_destroys_in)
         {
           // Create matrix with the same size and 16-byte alignment as input
-          OCTAVE_LOCAL_BUFFER (float, itmp, nn * howmany + 32);
+          octave_idx_type in_place = reinterpret_cast<float *> (out) == in;
+          OCTAVE_SCOPED_BUFFER (float, itmp,
+                                nn * howmany * (in_place + 1) + 32);
           itmp = reinterpret_cast<float *>
-                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF) +
-                  ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
+                 (((reinterpret_cast<std::ptrdiff_t> (itmp) + 15) & ~ 0xF)
+                  + ((reinterpret_cast<std::ptrdiff_t> (in)) & 0xF));
 
-          *cur_plan_p
-            = fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
-                                       nullptr, stride, dist,
-                                       reinterpret_cast<fftwf_complex *> (out),
-                                       nullptr, stride, dist, plan_flags);
+          if (in_place)
+            otmp = reinterpret_cast<FloatComplex *> (itmp);
         }
-      else
-        {
-          *cur_plan_p
-            = fftwf_plan_many_dft_r2c (rank, tmp, howmany,
-                                       (const_cast<float *> (in)),
-                                       nullptr, stride, dist,
-                                       reinterpret_cast<fftwf_complex *> (out),
-                                       nullptr, stride, dist, plan_flags);
-        }
+
+      *cur_plan_p
+        = fftwf_plan_many_dft_r2c (rank, tmp, howmany, itmp,
+                                   nullptr, stride, dist,
+                                   reinterpret_cast<fftwf_complex *> (otmp),
+                                   nullptr, stride, dist, plan_flags);
 
       if (*cur_plan_p == nullptr)
         (*current_liboctave_error_handler) ("Error creating FFTW plan");

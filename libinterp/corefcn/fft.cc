@@ -334,6 +334,22 @@ dimension of the matrix along which the inverse FFT is performed.
 %! unwind_protect_cleanup
 %!   fftw ('planner', old_planner);
 %! end_unwind_protect
+
+%!testif HAVE_FFTW <*64733>
+%! old_planner = fftw ('planner', 'measure');
+%! unwind_protect
+%!   assert (ifft ([2, 4, 6, 8]), [5, -1-1i, -1, -1+1i]);
+%! unwind_protect_cleanup
+%!   fftw ('planner', old_planner);
+%! end_unwind_protect
+
+%!testif HAVE_FFTW <*64733>
+%! old_planner = fftw ('planner', 'measure');
+%! unwind_protect
+%!   assert (ifft (single ([2, 4, 6, 8])), single ([5, -1-1i, -1, -1+1i]));
+%! unwind_protect_cleanup
+%!   fftw ('planner', old_planner);
+%! end_unwind_protect
 */
 
 OCTAVE_END_NAMESPACE(octave)

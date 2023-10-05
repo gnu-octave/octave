@@ -349,6 +349,11 @@ run-octave: run-octave.in build-aux/subst-script-vals.sh
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-script-vals.sh) && \
 	chmod a+rx $@
 
+if AMCOND_ENABLE_VM_EVALUATOR
+check-vm:
+	$(MAKE) -C test check-vm
+endif
+
 octave-config.h: config.h build-aux/mk-octave-config-h.sh
 	$(AM_V_GEN)$(SHELL) $(srcdir)/build-aux/mk-octave-config-h.sh $< > $@-t && \
 	$(simple_move_if_change_rule)

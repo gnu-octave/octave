@@ -1419,6 +1419,7 @@ if test $ENABLE_VM_EVALUATOR = yes; then
   AC_DEFINE(OCTAVE_ENABLE_VM_EVALUATOR, 1,
     [Define to 1 to build experimental Virtual Machine evaluator.])
 fi
+AM_CONDITIONAL([AMCOND_ENABLE_VM_EVALUATOR], [test $ENABLE_VM_EVALUATOR = yes])
 
 ### Check for PCRE2 or PCRE regex library, requiring one to exist.
 

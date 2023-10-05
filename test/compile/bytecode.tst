@@ -712,13 +712,15 @@
 %! global bytecode_script_topscope_call_self
 %! bytecode_script_topscope_call_self = false;
 %!
-%! bytecode_script_topscope_setup; % Does some setups of globals and locals in base frame
-%! evalin ("base", "bytecode_script_topscope");
+%! bytecode_script_topscope_setup; % Does some setups of globals and locals in base frame, from a function
+%! evalin ("base", "bytecode_script_topscope_setup_script"); % Also does some setups, but from a script
+%! evalin ("base", "bytecode_script_topscope"); % A script that does things a does some asserts
 %!
 %! bytecode_script_topscope_assert; % Does some asserts and cleans up the globals and locals added
 %!
 %! __vm_enable__ (1, "local");
 %! bytecode_script_topscope_setup;
+%! evalin ("base", "bytecode_script_topscope_setup_script");
 %! assert (__vm_compile__ ("bytecode_script_topscope"));
 %! evalin ("base", "bytecode_script_topscope");
 %! bytecode_script_topscope_assert;
@@ -727,6 +729,7 @@
 %! bytecode_script_topscope_call_self = true;
 %!
 %! bytecode_script_topscope_setup;
+%! evalin ("base", "bytecode_script_topscope_setup_script");
 %! assert (__vm_compile__ ("bytecode_script_topscope"));
 %! evalin ("base", "bytecode_script_topscope");
 %! bytecode_script_topscope_assert;
@@ -736,12 +739,50 @@
 %! %% Redo the test, but in a command line function instead of in the top scope.
 %! bytecode_script_topscope_place = "caller"; % Governs some evalin() in nbytecode_script_topscope. Switch to "caller"
 %!
-%! eval ("function bytecode_script_topscope_cli_fn ()\nbytecode_script_topscope_setup ('caller');\nbytecode_script_topscope;\nbytecode_script_topscope_assert ('caller');\nend");
+%! eval ("function bytecode_script_topscope_cli_fn ()\nbytecode_script_topscope_setup ('caller');\nbytecode_script_topscope_setup_script;\nbytecode_script_topscope;\nbytecode_script_topscope_assert ('caller');\nend");
 %!
 %! bytecode_script_topscope_cli_fn ();
 %! bytecode_script_topscope_call_self = true;
 %! bytecode_script_topscope_cli_fn ();
 %!
+%! %% Redo the test, but test all 15 different combinations of compiled and uncompiled functions and scripts
+%!
+%! __vm_enable__ (0, "local");
+%! clear all
+%!
+%! global bytecode_script_topscope_place % An assert in nbytecode_script_topscope need to know whether to check in caller or base
+%! global bytecode_script_topscope_call_self; % Whether nbytecode_script_topscope should call it self to add another frame
+%!
+%! names = {"bytecode_script_topscope_cli_fn", "bytecode_script_topscope_setup", "bytecode_script_topscope", "bytecode_script_topscope_assert", "bytecode_script_topscope_setup_script"};
+%!
+%! for k = 0:5
+%!   choices = nchoosek (names, k);
+%!   for choise = choices'
+%!     clear bytecode_script_topscope_cli_fn bytecode_script_topscope_setup nbytecode_script_topscope nbytecode_script_topscope_assert bytecode_script_topscope_setup_script
+%!
+%!     eval ("function bytecode_script_topscope_cli_fn ()\nbytecode_script_topscope_setup ('caller');\nbytecode_script_topscope_setup_script;\nbytecode_script_topscope;\nbytecode_script_topscope_assert ('caller');\nend");
+%!
+%!     for fn = choise'
+%!       assert (__vm_compile__ (fn{1}))
+%!     end
+%!
+%!     % Check if it works in the CLI function
+%!     bytecode_script_topscope_place = "caller";
+%!     bytecode_script_topscope_call_self = false;
+%!     bytecode_script_topscope_cli_fn ();
+%!     bytecode_script_topscope_call_self = true;
+%!     bytecode_script_topscope_cli_fn ();
+%!
+%!     % Check if it works in base
+%!     bytecode_script_topscope_place = "base";
+%!     bytecode_script_topscope_call_self = false;
+%!     evalin ("base", "bytecode_script_topscope_setup ('base');\nbytecode_script_topscope_setup_script;\nbytecode_script_topscope;\nbytecode_script_topscope_assert ('base');")
+%!     bytecode_script_topscope_call_self = true;
+%!     evalin ("base", "bytecode_script_topscope_setup ('base');\nbytecode_script_topscope_setup_script;\nbytecode_script_topscope;\nbytecode_script_topscope_assert ('base');")
+%!   end
+%! end
+%!
+%! %% Cleanup after the tests
 %! clear global bytecode_script_topscope_call_self
 %! clear global bytecode_script_topscope_place
 %! clear bytecode_script_topscope_cli_fn

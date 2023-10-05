@@ -2209,6 +2209,9 @@ visit_octave_user_script (octave_user_script& fcn)
 
   // We always need the magic id "ans"
   add_id_to_table ("ans");
+  // m_set_user_locals_names keeps track of what user symbols to borrow from and return back to
+  // the eval_frame when the script frame is pushed and popped.
+  m_code.m_unwind_data.m_set_user_locals_names.insert ("ans");
 
   // We add all identifiers in the body to the id-table. We also
   // make a map mapping the interpreters frame offset of a id

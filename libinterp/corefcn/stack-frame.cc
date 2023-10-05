@@ -484,7 +484,29 @@ public:
         if (is_pers)
           error ("VM internal error: Trying to make persistent variable global");
         if (name == "")
-          error ("VM internal error: Trying to make unnamed symbol global");
+          {
+            // If a non-bytecode script adds a symbol to the scope of an eval frame
+            // that is a bytecode function we don't have any name specified in the frame
+            // so we need to look for the name in the scope, since we need it to create the 
+            // global ref.
+
+            CHECK_PANIC (!m_fcn->is_user_script ()); // A bytecode script should never be an eval frame
+
+            // TODO: Linear search. Might be abit wasteful.
+            auto scope = get_scope ();
+            auto sym_map = scope.symbols ();
+            for (auto kv : sym_map)
+              {
+                symbol_record sr = kv.second;
+                if (sr.frame_offset () == 0 && sr.data_offset () == external_offset)
+                  {
+                    name = kv.first;
+                  }
+              }
+
+            if (name == "")
+              error ("VM internal error: Trying to make unnamed symbol global");
+          }
 
         if (ov->is_ref ())
           {
@@ -1048,6 +1070,11 @@ public:
 
   bool is_bytecode_fcn_frame (void) const { return true; }
 
+  // E.g. script_stack_frame::get_access_link() need to think the bytecode frame is a user script frame
+  // if it executes a script.
+  bool is_user_script_frame () const { return m_lazy_data ? m_lazy_data->m_is_script : false; }
+  bool is_user_fcn_frame () const { return m_lazy_data ? !m_lazy_data->m_is_script : true; }
+
   symbol_record lookup_symbol (const std::string& name) const
   {
     int local_offset = -1;
@@ -1427,14 +1454,15 @@ public:
     lazy_data ().m_is_script = true;
 
     auto eval_frame = access_link ();
-    auto parent_frame = parent_link ();
+    auto parent_frame = static_link ();
 
     bool caller_is_eval_frame = eval_frame == parent_frame;
     bool eval_frame_is_bytecode = eval_frame->is_bytecode_fcn_frame ();
 
-    if (!caller_is_eval_frame)
+    // If the parent frame is a bytecode frame, and not the eval frame, we need to
+    // move the parent frame's values to the eval frame
+    if (!caller_is_eval_frame && parent_frame->is_bytecode_fcn_frame ())
       {
-        CHECK_PANIC (parent_frame->is_bytecode_fcn_frame ());
         auto *parent_frame_bc = static_cast<bytecode_fcn_stack_frame*> (parent_frame.get ());
 
         // Check that there are no "extra slots" in the parent frame. Those should have been added to the eval frame
@@ -1465,7 +1493,10 @@ public:
             CHECK_PANIC (sr_parent.is_valid () && sr_parent.frame_offset () == 0);
             octave_value &ov_parent = parent_frame->varref (sr_parent.data_offset (), false);
 
-            CHECK_PANIC (!(ov_parent.is_ref () && ov_parent.ref_rep ()->is_local_ref ()));
+            // Assert that the ov in the parent is not a local vm ref, as that would be a leak.
+            // Unless the current frame has been moved by e.g. evalin() in which case there could
+            // be local vm ref:s in the eval frame from a different call chain than the current one.
+            CHECK_PANIC (!(ov_parent.is_ref () && ov_parent.ref_rep ()->is_local_ref ()) || !stacks_in_order ());
 
             bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
             bool is_global_in_parent_frame = parent_frame->is_global (sr_parent);
@@ -1501,8 +1532,8 @@ public:
         CHECK_PANIC (sr_current.is_valid () && sr_current.frame_offset () == 0);
         octave_value &ov_current = varref (sr_current.data_offset (), false);
 
-        CHECK_PANIC (!(ov_current.is_ref () && ov_current.ref_rep ()->is_local_ref ()));
-        CHECK_PANIC (!(ov_eval->is_ref () && ov_eval->ref_rep ()->is_local_ref ()));
+        CHECK_PANIC (!(ov_current.is_ref () && ov_current.ref_rep ()->is_local_ref ()) || !stacks_in_order ());
+        CHECK_PANIC (!(ov_eval->is_ref () && ov_eval->ref_rep ()->is_local_ref ()) || !stacks_in_order ());
 
         bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
 
@@ -1528,7 +1559,7 @@ public:
     lazy_data ().m_is_script = true;
 
     auto eval_frame = access_link ();
-    auto parent_frame = parent_link ();
+    auto parent_frame = static_link ();
 
     bool caller_is_eval_frame = eval_frame == parent_frame;
     bool eval_frame_is_bytecode = eval_frame->is_bytecode_fcn_frame ();
@@ -1546,7 +1577,7 @@ public:
         CHECK_PANIC (sr_current.is_valid () && sr_current.frame_offset () == 0);
         octave_value &ov_current = varref (sr_current.data_offset (), false);
 
-        CHECK_PANIC (!(ov_current.is_ref () && ov_current.ref_rep ()->is_local_ref ()));
+        CHECK_PANIC (!(ov_current.is_ref () && ov_current.ref_rep ()->is_local_ref ()) || !stacks_in_order ());
 
         bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
         bool is_global_in_current_frame = is_global (sr_current);
@@ -1563,10 +1594,10 @@ public:
         ov_current = {};
       }
 
-    // Move all values the parent frame needs to it from the eval frame
-    if (!caller_is_eval_frame)
+    // Move all values the parent frame needs to it from the eval frame, 
+    // if the parent frame is a bytecode frame.
+    if (!caller_is_eval_frame && parent_frame->is_bytecode_fcn_frame ())
       {
-        CHECK_PANIC (parent_frame->is_bytecode_fcn_frame ());
         auto *parent_frame_bc = static_cast<bytecode_fcn_stack_frame*> (parent_frame.get ());
 
         // Check that there are no "extra slots" in the parent frame. Those should have been added to the eval frame
@@ -1587,7 +1618,7 @@ public:
             CHECK_PANIC (sr_parent.is_valid () && sr_parent.frame_offset () == 0);
             octave_value &ov_parent = parent_frame->varref (sr_parent.data_offset (), false);
 
-            CHECK_PANIC (!(ov_eval->is_ref () && ov_eval->ref_rep ()->is_local_ref ()));
+            CHECK_PANIC (!(ov_eval->is_ref () && ov_eval->ref_rep ()->is_local_ref ()) || !stacks_in_order ());
 
             bool is_global_in_eval_frame = eval_frame->is_global (sr_eval);
             bool is_global_in_parent_frame = parent_frame->is_global (sr_parent);
@@ -1649,6 +1680,26 @@ public:
   lazy_data_struct *m_lazy_data = nullptr;
 
 private:
+
+  // Returns true of the stack frames under this frame are in order, i.e.
+  // there is no active evalin(), dbupdown or similar.
+  bool stacks_in_order ()
+  {
+    auto frame = parent_link ();
+    unsigned expected_idx = index ();
+    
+    while (frame)
+      {
+        if (frame->index () != expected_idx)
+          return false;
+
+        frame = frame->parent_link ();
+        expected_idx--;
+      }
+
+    return true;
+  }
+
   octave_user_code *m_fcn;
 
   unwind_data *m_unwind_data;

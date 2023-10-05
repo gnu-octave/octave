@@ -29,6 +29,7 @@ compile_TEST_FILES = \
   %reldir%/bytecode_script_topscope.m \
   %reldir%/bytecode_script_topscope_assert.m \
   %reldir%/bytecode_script_topscope_setup.m \
+  %reldir%/bytecode_script_topscope_setup_script.m \
   %reldir%/bytecode_struct.m \
   %reldir%/bytecode_subfuncs.m \
   %reldir%/bytecode_subsasgn.m \

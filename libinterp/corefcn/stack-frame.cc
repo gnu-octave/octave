@@ -752,6 +752,8 @@ public:
       {
         // Try to find the symbol in the root frame instead.
         auto sym_in_root = access_link ()->lookup_symbol (sym.name ());
+        if (!sym_in_root)
+          return {}; // Not found, return nil
         return access_link ()->varval (sym_in_root);
       }
     else if (!in_this_frame)
@@ -1165,14 +1167,21 @@ public:
   symbol_record insert_symbol (const std::string& name)
   {
     bool is_script = m_lazy_data && m_lazy_data->m_is_script;
-    bool allready_added;
-
-    // If the symbols is already in the immediate scope, there is
-    // nothing more to do.
 
     symbol_scope scope = get_scope ();
 
     symbol_record sym = scope.lookup_symbol (name);
+
+    if (is_script)
+      {
+        // TODO: Instead of doing a call to varref to maybe insert a symbol,
+        //       common functionality between varref and insert_symbol should
+        //       be put in some function.
+        if (!sym)
+          sym = scope.find_symbol (name);
+        varref (sym, false);
+        return sym;
+      }
 
     if (!sym)
       {
@@ -1190,51 +1199,6 @@ public:
           internal_resize (local_offset + 1);
 
         internal_set_extra_name (local_offset, sym.name ());
-
-        allready_added = false;
-      }
-    else
-      allready_added = true;
-
-    // If we are in a script, we might need to add the symbol to the eval frame too,
-    // and point a ref to the script's slot from the eval frame.
-    if (is_script)
-      {
-        CHECK_PANIC (m_access_link);
-
-        bool access_allready_added;
-        
-        symbol_record sym_access = m_access_link->lookup_symbol (name);
-        if (sym_access.is_valid ())
-          access_allready_added = true;
-        else
-          {
-            access_allready_added = false;
-            sym_access =  m_access_link->insert_symbol (name);
-          }
-
-        CHECK_PANIC ((allready_added && access_allready_added) || !allready_added);
-
-        if (!allready_added)
-          {
-            octave_value &ov_access = m_access_link->varref (sym_access.data_offset (), false);
-            octave_value &ov = varref (sym.data_offset (), false);
-
-            bool make_ref = true;
-
-            if (ov_access.is_ref ())
-              {
-                octave_value_ref *r = ov_access.ref_rep ();
-                if (r->is_local_ref ())
-                  make_ref = false;
-              }
-            
-            if (make_ref)
-              {
-                ov = ov_access;
-                ov_access = octave_value (new octave_value_ref_vmlocal {sym, this});
-              }
-          }
       }
 
     return sym;

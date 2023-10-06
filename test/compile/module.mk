@@ -18,6 +18,8 @@ compile_TEST_FILES = \
   %reldir%/bytecode_index_obj.m \
   %reldir%/bytecode_inputname.m \
   %reldir%/bytecode_leaks.m \
+  %reldir%/bytecode_load_script_save.m \
+  %reldir%/bytecode_load_script_load_and_assert.m \
   %reldir%/bytecode_matrix.m \
   %reldir%/bytecode_misc.m \
   %reldir%/bytecode_multi_assign.m \

@@ -786,3 +786,43 @@
 %! clear global bytecode_script_topscope_call_self
 %! clear global bytecode_script_topscope_place
 %! clear bytecode_script_topscope_cli_fn
+
+## Test save() and load() from scripts.
+%!test
+%! clear all
+%!
+%! for use_vm = [true, false] % Test with and without VM
+%!   __vm_enable__ (use_vm, "local");
+%!
+%!   % We need to pass the file name to the scripts with a global
+%!   global bytecode_load_script_file
+%!   bytecode_load_script_file = [tempname(), ".mat"];
+%!
+%!   eval ("function bytecode_load_script_save_fn\n  bytecode_load_script_save\n;  bytecode_load_script_load_and_assert;\n  end\n")
+%!
+%!   if use_vm
+%!     assert (__vm_compile__ ("bytecode_load_script_save"))
+%!     assert (__vm_compile__ ("bytecode_load_script_load_and_assert"))
+%!     assert (__vm_compile__ ("bytecode_load_script_save_fn"))
+%!   end
+%!
+%!   unwind_protect
+%!     evalin ("base", "bytecode_load_script_save"); % Saves some variables to a file with save ()
+%!     evalin ("base", "bytecode_load_script_load_and_assert"); % Loads them back and checks their values etc
+%!   unwind_protect_cleanup
+%!     unlink (bytecode_load_script_file);
+%!     evalin ("base", "clear local_aa local_bb local_cc")
+%!     evalin ("base", "clear global glb_aa glb_bb glb_cc glb_dd glb_ee")
+%!   end_unwind_protect
+%!   
+%!   bytecode_load_script_file = [tempname(), ".mat"];
+%!   %% Same test, but from a function
+%!   unwind_protect
+%!     bytecode_load_script_save_fn;
+%!   unwind_protect_cleanup
+%!     unlink (bytecode_load_script_file);
+%!   end_unwind_protect
+%!   
+%!   clear all
+%! end
+%!

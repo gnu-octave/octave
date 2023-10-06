@@ -382,7 +382,7 @@ file_time::file_time ()
       | curr_file_time.dwLowDateTime;
 #else
   time_t ot_unix_time;
-  time_t ot_usec;
+  long ot_usec;
   octave_gettimeofday_wrapper (&ot_unix_time, &ot_usec);
   // Discard usec.  We are assuming a 1 second resolution anyway.
   m_time = ot_unix_time;

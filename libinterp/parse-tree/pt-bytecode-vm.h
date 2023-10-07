@@ -456,7 +456,12 @@ class vm
 
   static constexpr size_t stack_size = 2048 * 8;
   static constexpr size_t stack_pad = 32;
-  static constexpr size_t stack_magic_int = 0xBABEBEEFCAFE5000;
+ 
+#if SIZE_MAX == 0xFFFFFFFF
+  static constexpr size_t stack_magic_int = 0xBABEBEEF; // 32bit systems
+#else
+  static constexpr size_t stack_magic_int = 0xBABEBEEFCAFE1234;
+#endif
   static constexpr size_t stack_min_for_new_call = 1024;
 
   vm (tree_evaluator *tw, bytecode &initial_bytecode);

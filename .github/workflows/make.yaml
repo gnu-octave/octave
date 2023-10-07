@@ -142,17 +142,43 @@ jobs:
         timeout-minutes: 60
         run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check | tee ./test-suite.log
 
-      - name: display test log
+      - name: display test suite log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
+
+      - name: check with VM
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-vm.log
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check-vm | tee ./test-suite-vm.log
+
+      - name: display test suite log with VM
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without VM
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-vm.log"
+          diff -urN ./test-suite.log ./test-suite-vm.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run:  |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-vm.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite-vm.log)" ] || exit 1
           echo No unknown failing tests.
 
       - name: test history file creation
@@ -333,18 +359,44 @@ jobs:
           echo 'makeinfo_program ("/usr/local/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
           make -C ./.build check | tee ./test-suite.log
 
-      - name: display test log
+      - name: display test suite log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
+
+      - name: check with VM
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-vm.log
+          make -C ./.build check-vm | tee ./test-suite-vm.log
+
+      - name: display test suite log with VM
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without VM
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-vm.log"
+          diff -urN ./test-suite.log ./test-suite-vm.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
-          echo Finished analyzing test suite results.
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-vm.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite-vm.log)" ] || exit 1
+          echo No unknown failing tests.
 
       - name: test history file creation
         # see bug #62365
@@ -583,17 +635,43 @@ jobs:
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
           make -C ./.build check RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite.log
 
-      - name: display test log
+      - name: display test suite log
         continue-on-error: true
         # Displaying the log shouldn't take long. Cancel the step if it does.
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
+
+      - name: check with VM
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-vm.log
+          make -C ./.build check-vm RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite-vm.log
+
+      - name: display test suite log with VM
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without VM
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-vm.log"
+          diff -urN ./test-suite.log ./test-suite-vm.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-vm.log)" ] || echo "::warning::At least one test failed with VM"
+          [ -z "$(grep -e "REGRESSION" ./test-suite-vm.log)" ] || echo "::warning::At least one regression in test suite with VM"
           echo Finished analyzing test suite results.
 
       - name: test history file creation
@@ -834,17 +912,44 @@ jobs:
           export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
           EGREP="grep -E" make -C ./.build check | tee ./test-suite.log
 
-      - name: display test log
+      - name: display test suite log
         continue-on-error: true
         # Displaying the log shouldn't take long.  Cancel the step if it does.
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
+
+      - name: check with VM
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-vm.log
+          export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
+          EGREP="grep -E" make -C ./.build check-vm | tee ./test-suite-vm.log
+
+      - name: display test suite log with VM
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without VM
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-vm.log"
+          diff -urN ./test-suite.log ./test-suite-vm.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-vm.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
 
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-vm.log)" ] || echo "::warning::At least one test failed with VM"
+          [ -z "$(grep -e "REGRESSION" ./test-suite-vm.log)" ] || echo "::warning::At least one regression in test suite with VM"
           echo Finished analyzing test suite results.
 
       - name: test history file creation

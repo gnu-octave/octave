@@ -3682,11 +3682,11 @@ matrix:
 
     // The first element is down the stack
     // and the last element is at the top.
-    octave_value *first_arg = &(*sp).ov - n_el;
+    stack_element *first_arg = &sp[-n_el];
 
     // The stack pointer is pointing to the first unused
     // stack position, so it is the end pointer.
-    octave_value *end_arg = &(*sp).ov;
+    stack_element *end_arg = sp;
 
     try
       {
@@ -3729,11 +3729,11 @@ matrix_big:
 
         // The first element is down the stack
         // and the last element is at the top.
-        octave_value *first_arg = &(*sp).ov - n_el;
+        stack_element *first_arg = &sp[-n_el];
 
         // The stack pointer is pointing to the first unused
         // stack position, so it is the end pointer.
-        octave_value *end_arg = &(*sp).ov;
+        stack_element *end_arg = sp;
 
         try
           {
@@ -3759,11 +3759,11 @@ matrix_big:
 
         // The first element is down the stack
         // and the last element is at the top.
-        octave_value *first_arg = &(*sp).ov - n_el;
+        stack_element *first_arg = &sp[-n_el];
 
         // The stack pointer is pointing to the first unused
         // stack position, so it is the end pointer.
-        octave_value *end_arg = &(*sp).ov;
+        stack_element *end_arg = sp;
 
         try
           {

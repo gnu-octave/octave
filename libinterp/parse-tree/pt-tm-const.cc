@@ -38,6 +38,7 @@
 #include "ovl.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
+#include "pt-bytecode-vm.h"
 #include "pt-eval.h"
 #include "pt-exp.h"
 #include "pt-mat.h"
@@ -59,6 +60,12 @@ eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+tm_row_const::tm_row_const (const stack_element *beg, const stack_element *end)
+    : tm_info (beg == end), m_values ()
+{
+  init (beg, end);
+}
 
 void tm_row_const::cellify ()
 {
@@ -228,7 +235,7 @@ void tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
 // The common parts should be factored out into a single function that
 // is used by the others.
 
-void tm_row_const::init (const octave_value *beg, const octave_value *end)
+void tm_row_const::init (const stack_element *beg, const stack_element *end)
 {
   bool first_elem = true;
 
@@ -236,7 +243,7 @@ void tm_row_const::init (const octave_value *beg, const octave_value *end)
     {
       octave_quit ();
 
-      octave_value tmp = *beg;
+      octave_value tmp = beg->ov;
 
       if (tmp.is_undefined ())
         error ("undefined element in matrix list");
@@ -282,6 +289,19 @@ void tm_row_const::init (const octave_value *beg, const octave_value *end)
     }
 }
 
+tm_const::tm_const (const stack_element *beg, const stack_element *end,
+                    octave_idx_type n_rows, tree_evaluator& tw)
+  : tm_info (beg == end), m_evaluator (tw), m_tm_rows ()
+{
+  init (beg, end, n_rows);
+}
+
+tm_const::tm_const (const stack_element *beg, const stack_element *end,
+                    const std::vector<int>& row_lengths, tree_evaluator& tw)
+  : tm_info (beg == end), m_evaluator (tw), m_tm_rows ()
+{
+  init (beg, end, row_lengths);
+}
 
 octave_value tm_const::concat (char string_fill_char) const
 {
@@ -499,7 +519,7 @@ void tm_const::init (const tree_matrix& tm)
 // is used by the others.
 
 // For variable length rows
-void tm_const::init (const octave_value *beg, const octave_value *end,
+void tm_const::init (const stack_element *beg, const stack_element *end,
                      const std::vector<int>& row_lengths)
 {
   bool first_elem = true;
@@ -628,7 +648,7 @@ void tm_const::init (const octave_value *beg, const octave_value *end,
 // is used by the others.
 
 // Fixed row size
-void tm_const::init (const octave_value *beg, const octave_value *end,
+void tm_const::init (const stack_element *beg, const stack_element *end,
                      octave_idx_type row_length)
 {
   bool first_elem = true;

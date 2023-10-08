@@ -359,6 +359,7 @@
 #include "octave-config.h"
 
 #include <cstddef>
+#include <cstdint>
 #include <vector>
 #include <memory>
 

@@ -1535,7 +1535,8 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
   int charLine = 0;
   int charColumn = 0;
 
-  getCharacterPosition(ev->pos(),charLine,charColumn);
+  QPoint mouse_position = ev->pos ();
+  getCharacterPosition (mouse_position, charLine, charColumn);
 
   // handle filters
   // change link hot-spot appearance on mouse-over
@@ -1558,7 +1559,8 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
       const QString& tooltip = spot->tooltip();
       if ( !tooltip.isEmpty() )
         {
-          QToolTip::showText( mapToGlobal(ev->pos()) , tooltip , this , _mouseOverHotspotArea );
+          QToolTip::showText (mapToGlobal (mouse_position), tooltip, this,
+                              _mouseOverHotspotArea );
         }
 
       update( _mouseOverHotspotArea | previousHotspotArea );
@@ -1602,8 +1604,10 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
       // if the mouse has moved sufficiently, we will confirm
 
       int distance = 10; //KGlobalSettings::dndEventDelay();
-      if ( ev->x() > dragInfo.start.x() + distance || ev->x() < dragInfo.start.x() - distance ||
-           ev->y() > dragInfo.start.y() + distance || ev->y() < dragInfo.start.y() - distance)
+      if (mouse_position.x () > dragInfo.start.x () + distance
+          || mouse_position.x () < dragInfo.start.x () - distance
+          || mouse_position.y () > dragInfo.start.y () + distance
+          || mouse_position.y () < dragInfo.start.y () - distance)
         {
           // we've left the drag square, we can start a real drag operation now
           emit isBusySelecting(false); // Ok.. we can breath again.

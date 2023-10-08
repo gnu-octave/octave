@@ -200,10 +200,13 @@ Canvas::updateCurrentPoint (const graphics_object& fig,
           Matrix x_zlim = ap.get_transform_zlim ();
           graphics_xform x_form = ap.get_transform ();
 
-          ColumnVector p1 = x_form.untransform (event->x (), event->y (),
-                                                x_zlim(0));
-          ColumnVector p2 = x_form.untransform (event->x (), event->y (),
-                                                x_zlim(1));
+          QPoint mouse_position = event->pos ();
+          ColumnVector p1
+            = x_form.untransform (mouse_position.x (), mouse_position.y (),
+                                  x_zlim(0));
+          ColumnVector p2
+            = x_form.untransform (mouse_position.x (), mouse_position.y (),
+                                  x_zlim(1));
 
           Matrix cp (2, 3, 0.0);
 
@@ -452,8 +455,9 @@ Canvas::canvasMouseMoveEvent (QMouseEvent *event)
           {
             axes::properties& ap = Utils::properties<axes> (ax);
 
-            ap.rotate3d (m_mouseCurrent.x (), event->x (),
-                         m_mouseCurrent.y (), event->y ());
+            QPoint mouse_position = event->pos ();
+            ap.rotate3d (m_mouseCurrent.x (), mouse_position.x (),
+                         m_mouseCurrent.y (), mouse_position.y ());
 
             // Update current mouse position
             m_mouseCurrent = event->pos ();
@@ -479,8 +483,9 @@ Canvas::canvasMouseMoveEvent (QMouseEvent *event)
 
             ColumnVector p0 = ap.pixel2coord (m_mouseCurrent.x (),
                                               m_mouseCurrent.y ());
-            ColumnVector p1 = ap.pixel2coord (event->x (),
-                                              event->y ());
+            QPoint mouse_position = event->pos ();
+            ColumnVector p1 = ap.pixel2coord (mouse_position.x (),
+                                              mouse_position.y ());
 
             ap.translate_view (mode, p0(0), p1(0), p0(1), p1(1));
 
@@ -532,7 +537,11 @@ Canvas::canvasMouseMoveEvent (QMouseEvent *event)
           axes::properties& ap = Utils::properties<axes> (axesObj);
 
           if (fig)
-            fig->updateStatusBar (ap.pixel2coord (event->x (), event->y ()));
+            {
+              QPoint mouse_position = event->pos ();
+              fig->updateStatusBar (ap.pixel2coord (mouse_position.x (),
+                                                    mouse_position.y ()));
+            }
         }
     }
 }
@@ -805,11 +814,13 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
 
           std::string zm = zoom_mode (figObj);
 
-          if (m_mouseAnchor == event->pos ())
+          QPoint mouse_position = event->pos ();
+          if (m_mouseAnchor == mouse_position)
             {
               double factor = (m_clickMode ? 2.0 : 0.5);
 
-              ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
+              ColumnVector p1 = ap.pixel2coord (mouse_position.x (),
+                                                mouse_position.y ());
 
               ap.zoom_about_point (zm, p1(0), p1(1), factor);
             }
@@ -817,8 +828,8 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
             {
               ColumnVector p0 = ap.pixel2coord (m_mouseAnchor.x (),
                                                 m_mouseAnchor.y ());
-              ColumnVector p1 = ap.pixel2coord (event->x (),
-                                                event->y ());
+              ColumnVector p1 = ap.pixel2coord (mouse_position.x (),
+                                                mouse_position.y ());
 
               Matrix xl (1, 2, 0.0);
               Matrix yl (1, 2, 0.0);
@@ -860,11 +871,12 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
           QWidget *w = qWidget ();
           if (w)
             {
+              QPoint mouse_position = event->pos ();
               Matrix bb = figObj.get ("position").matrix_value ();
               bb(0) = m_mouseAnchor.x () / bb(2);
               bb(1) = 1.0 - (m_mouseAnchor.y () / bb(3));
-              bb(2) = (event->x () - m_mouseAnchor.x ()) / bb(2);
-              bb(3) = (m_mouseAnchor.y () - event->y ()) / bb(3);
+              bb(2) = (mouse_position.x () - m_mouseAnchor.x ()) / bb(2);
+              bb(3) = (m_mouseAnchor.y () - mouse_position.y ()) / bb(3);
 
               octave_value_list props = ovl ("textbox", bb);
 

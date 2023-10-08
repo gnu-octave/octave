@@ -386,7 +386,11 @@ void gui_settings::config_translators (QTranslator *qt_tr,
   bool loaded;
 
   QString qt_trans_dir
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    = QLibraryInfo::path (QLibraryInfo::TranslationsPath);
+#else
     = QLibraryInfo::location (QLibraryInfo::TranslationsPath);
+#endif
 
   QString language = "SYSTEM";  // take system language per default
 

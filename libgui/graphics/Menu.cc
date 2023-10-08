@@ -275,7 +275,7 @@ Menu::menu ()
 
   if (! action_menu)
     {
-      action_menu = new QMenu (action->parentWidget ());
+      action_menu = new QMenu (qobject_cast<QWidget *> (action->parent ()));
       action->setMenu (action_menu);
       action->setShortcut (QKeySequence ());
       connect (action_menu, &QMenu::aboutToShow, this, &Menu::actionHovered);

@@ -1410,6 +1410,8 @@ fi
 
 ### Configure compilation of *experimental* Virtual Machine evaluator.
 
+AC_C_BIGENDIAN()
+
 ENABLE_VM_EVALUATOR=yes
 AC_ARG_ENABLE([vm-evaluator],
   [AS_HELP_STRING([--disable-vm-evaluator],

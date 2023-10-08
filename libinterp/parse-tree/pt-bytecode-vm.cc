@@ -52,6 +52,20 @@
 
 //#pragma GCC optimize("O0")
 
+// Returns the uint16 value stored at 'p' taking endianess into account
+#ifdef WORDS_BIGENDIAN
+#define USHORT_FROM_UCHAR_PTR(p) (((p)[0] << 8) + (p)[1])
+#else
+#define USHORT_FROM_UCHAR_PTR(p) ((p)[0] + ((p)[1] << 8))
+#endif
+
+// Returns the uint16 value from two unsigned chars taking endianess into account
+#ifdef WORDS_BIGENDIAN
+#define USHORT_FROM_UCHARS(c1,c2) ((c1 << 8) | (c2))
+#else
+#define USHORT_FROM_UCHARS(c1,c2) ((c1) | (c2 << 8))
+#endif
+
 static bool ov_need_stepwise_subsrefs (octave_value &ov);
 static void copy_many_args_to_caller (octave::stack_element *sp, octave::stack_element *caller_stack_end,
                                       int n_args_to_move, int n_args_caller_expects);
@@ -72,10 +86,17 @@ static unsigned
 chars_to_uint (unsigned char *p)
 {
   unsigned u = 0;
+#ifdef WORDS_BIGENDIAN
+  u |= *p++ << 24;
+  u |= *p++ << 16;
+  u |= *p++ << 8;
+  u |= *p;
+#else
   u |= *p++;
   u |= *p++ << 8;
   u |= *p++ << 16;
   u |= *p << 24;
+#endif
 
   return u;
 }
@@ -134,13 +155,13 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
     s += std::string {" '"} + static_cast<char> (*p) + "'";}
 
 #define PSHORT() \
-    {p++;                           \
-    CHECK_END ();                   \
-    unsigned char b0 = *p;          \
-    p++;                            \
-    CHECK_END ();                   \
-    unsigned char b1 = *p;          \
-    unsigned u = b0 | (b1 << 8);    \
+    {p++;                                        \
+    CHECK_END ();                                \
+    unsigned char b0 = *p;                       \
+    p++;                                         \
+    CHECK_END ();                                \
+    unsigned char b1 = *p;                       \
+    unsigned u = USHORT_FROM_UCHARS (b0, b1);    \
     s += " " + std::to_string (u);}
 
 #define PSSLOT() \
@@ -165,7 +186,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
     p++;                                                            \
     CHECK_END ();                                                   \
     unsigned char b1 = *p;                                          \
-    unsigned u = b0 | (b1 << 8);                                    \
+    unsigned u = USHORT_FROM_UCHARS (b0, b1);                       \
     s += " " + std::to_string (u);                                  \
     v_ids.push_back (std::string {u < names.size() ?                \
                                       names[u].c_str() :            \
@@ -174,6 +195,22 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 #define CHECK_END() \
   do {if (p >= v_code.data () + v_code.size ()) { error ("Invalid bytecode\n");}} while((0))
 
+#ifdef WORDS_BIGENDIAN
+#define PINT() \
+  do {\
+    unsigned u = 0;\
+    p++;\
+    CHECK_END ();\
+    u |= *p++ << 24;\
+    CHECK_END ();\
+    u |= *p++ << 16;\
+    CHECK_END ();\
+    u |= *p++ << 8;\
+    CHECK_END ();\
+    u |= *p;\
+    s += " " + std::to_string (u);\
+  } while (0);
+#else
 #define PINT() \
   do {\
     unsigned u = 0;\
@@ -188,6 +225,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
     u |= *p << 24;\
     s += " " + std::to_string (u);\
   } while (0);
+#endif
 
   while (p < code + n)
     {
@@ -532,11 +570,17 @@ static int pop_code_int (unsigned char *ip)
 {
   unsigned int ans;
   ip -= 4;
+#ifdef WORDS_BIGENDIAN
+  ans = *ip++ << 24;
+  ans |= *ip++ << 16;
+  ans |= *ip++ << 8;
+  ans |= *ip++;
+#else
   ans = *ip++;
   ans |= *ip++ << 8;
   ans |= *ip++ << 16;
   ans |= *ip++ << 24;
-
+#endif
   return ans;
 }
 
@@ -544,9 +588,13 @@ static int pop_code_ushort (unsigned char *ip)
 {
   unsigned int ans;
   ip -= 2;
+#ifdef WORDS_BIGENDIAN
+  ans = *ip++ << 8;
+  ans |= *ip++;
+#else
   ans = *ip++;
   ans |= *ip++ << 8;
-
+#endif
   return ans;
 }
 
@@ -913,7 +961,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
   {
 #define N_RETURNS() static_cast<signed char>(code[0])
 #define N_ARGS() static_cast<signed char>(code[1])
-#define N_LOCALS() (code[2] | (code [3] << 8))
+#define N_LOCALS() USHORT_FROM_UCHAR_PTR (code + 2)
 
     int n_returns = static_cast<signed char> (*ip++);
     // n_args is negative for varargin calls
@@ -1378,7 +1426,7 @@ jmp_if_bool:
   unsigned char b0 = arg0;
   unsigned char b1 = *ip++;
 
-  int target = b0 | (b1 << 8);
+  int target = USHORT_FROM_UCHARS (b0, b1);
 
   octave_bool &ovb_bool = REP (octave_bool, ov_1);
 
@@ -1406,7 +1454,7 @@ jmp_if:
     unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
-    int target = b0 | (b1 << 8);
+    int target = USHORT_FROM_UCHARS (b0, b1);
 
     bool is_true;
     if (ov_1.is_defined ())
@@ -1438,7 +1486,7 @@ jmp:
     unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
-    int target = b0 | (b1 << 8);
+    int target = USHORT_FROM_UCHARS (b0, b1);
     ip = code + target;
   }
   DISPATCH ();
@@ -1456,7 +1504,7 @@ jmp_ifn_bool:
   unsigned char b0 = arg0;
   unsigned char b1 = *ip++;
 
-  int target = b0 | (b1 << 8);
+  int target = USHORT_FROM_UCHARS (b0, b1);
 
   octave_bool &ovb_bool = REP (octave_bool, ov_1);
 
@@ -1484,7 +1532,7 @@ jmp_ifn:
     unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
-    int target = b0 | (b1 << 8);
+    int target = USHORT_FROM_UCHARS (b0, b1);
 
     bool is_true;
     if (ov_1.is_defined ()) //10
@@ -1550,7 +1598,7 @@ push_folded_cst:
     if (ovb->is_defined () && ovb->cache_is_valid ())
       {
         PUSH_OV (ovb->get_cached_value ());
-        int target = b0 | (b1 << 8);
+        int target = USHORT_FROM_UCHARS (b0, b1);
         ip = code + target;
       }
     else
@@ -2734,8 +2782,8 @@ for_setup:
         // The next opcode is in arg0, and is either WIDE or FOR_COND
         if (arg0 == static_cast<int> (INSTR::WIDE))
           {
-            // Byte layout: ip[-2]:FOR_SETUP, ip[-1]:WIDE, ip[0]:FOR_COND, ip[1]:slot_lsb, ip[2]:slot_msb
-            slot = ip[1] + (ip[2] << 8);
+            // Byte layout: ip[-2]:FOR_SETUP, ip[-1]:WIDE, ip[0]:FOR_COND, ip[1:2]:wide slot
+            slot = USHORT_FROM_UCHAR_PTR (ip + 1);
           }
         else
           {
@@ -2780,7 +2828,7 @@ for_cond:
         unsigned char b0 = *ip++;
         unsigned char b1 = *ip++;
 
-        int after = b0 | (b1 << 8);
+        int after = USHORT_FROM_UCHARS (b0, b1);
 
         // goto after block
         ip = code + after;
@@ -3593,7 +3641,7 @@ for_complex_setup:
   unsigned char b0 = arg0;
   unsigned char b1 = *ip++;
 
-  int target = b0 | (b1 << 8);
+  int target = USHORT_FROM_UCHARS (b0, b1);
 
   if (ov_rhs.is_undefined ())
     {
@@ -3635,7 +3683,7 @@ for_complex_cond:
       unsigned char b0 = arg0;
       unsigned char b1 = *ip++;
 
-      int after = b0 | (b1 << 8);
+      int after = USHORT_FROM_UCHARS (b0, b1);
 
       // goto after block
       ip = code + after;
@@ -4300,7 +4348,7 @@ varargin_call:
           n_returns_callee = -n_returns_callee;
       }
     int n_args_callee = -static_cast<signed char> (ip[-3]); // Note: Minus
-    int n_locals_callee = ip[-2] | (ip[-1] << 8);
+    int n_locals_callee = USHORT_FROM_UCHAR_PTR (ip - 2);
 
     int nargout = sp[-1].i;
 
@@ -4755,7 +4803,7 @@ init_global:
       {
         unsigned char b0 = *ip++;
         unsigned char b1 = *ip++;
-        after = b0 | (b1 << 8);
+        after = USHORT_FROM_UCHARS (b0, b1);
 
         if (!global_is_new_in_callstack || slot_already_live)
           ip = code + after;
@@ -4809,7 +4857,7 @@ jmp_ifdef:
     unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
-    int target = b0 | (b1 << 8);
+    int target = USHORT_FROM_UCHARS (b0, b1);
 
     if (ov_1.is_defined () && !ov_1.is_magic_colon ())
       ip = code + target;
@@ -4824,7 +4872,7 @@ switch_cmp:
     unsigned char b0 = arg0;
     unsigned char b1 = *ip++;
 
-    int target = b0 | (b1 << 8);
+    int target = USHORT_FROM_UCHARS (b0, b1);
 
     bool do_it;
     if (ov_label.is_undefined ())
@@ -6195,7 +6243,7 @@ debug: // TODO: Remove
     int opcode = arg0; // The opcode to execute next is in arg0, i.e. ip[-1]
     // The next opcode needs its arg0, which is a unsigned short instead of the usual byte
     // that DISPATCH() writes to arg0.
-    arg0 = (ip[1] << 8) | ip[0];
+    arg0 = USHORT_FROM_UCHAR_PTR (ip);
     ip += 2; // Forward ip so it points to after the widened argument
     goto *instr [opcode];
   }

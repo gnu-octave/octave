@@ -111,7 +111,8 @@ function [c, ia, ib] = intersect (a, b, varargin)
     else
       c = [a; b];
       ## FIXME: Is there a way to avoid a call to sort?
-      c = c(sort (ic(match)), :);
+      [c_ind, sort_ind] = sort (ic(match));
+      c = c(c_ind, :);
     endif
     len_a = rows (a);
   else
@@ -132,7 +133,8 @@ function [c, ia, ib] = intersect (a, b, varargin)
     else
       c = [a(:); b(:)];
       ## FIXME: Is there a way to avoid a call to sort?
-      c = c(sort (ic(match)));
+      [c_ind, sort_ind] = sort (ic(match));
+      c = c(c_ind);
     endif
 
     ## Adjust output orientation for Matlab compatibility
@@ -147,8 +149,9 @@ function [c, ia, ib] = intersect (a, b, varargin)
     if (! optsorted)
       ## FIXME: Is there a way to avoid a call to sort?
       ia = sort (ia);
-      [~, idx] = min (ib);
-      ib = [ib(idx:end); ib(1:idx-1)];
+      ib_ind(sort_ind) = 1:numel(sort_ind);
+      ## Change ordering to conform to unsorted c
+      ib(ib_ind) = ib;
     endif
     if (optlegacy && isrowvec && ! by_rows)
       ia = ia.';
@@ -211,6 +214,15 @@ endfunction
 %! b = [1 2 3 4 5 6];
 %! c = intersect (a, b, "stable");
 %! assert (c, [2,1]);
+
+## Test "stable" argument
+%!test <*60347>
+%! a = [8 4 2 6]';
+%! b = [1 7 2 8]';
+%! [c, ia, ib] = intersect (a, b, "stable");
+%! assert (c, [8;2]);
+%! assert (ia, [1;3]);
+%! assert (ib, [4;3]);
 
 %!test
 %! a = [3 2 4 5 7 6 5 1 0 13 13];

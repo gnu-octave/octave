@@ -1547,7 +1547,11 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
 
                 if (m->button () == Qt::RightButton)
                   ContextMenu::executeAt (m_interpreter, properties (),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                          m->globalPosition ().toPoint ());
+#else
                                           m->globalPos ());
+#endif
               }
             else
               {
@@ -1689,7 +1693,12 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
                 emit gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)
-                  ContextMenu::executeAt (m_interpreter, tp, m->globalPos ());
+                  ContextMenu::executeAt (m_interpreter, tp,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                          m->globalPosition ().toPoint ());
+#else
+                                          m->globalPos ());
+#endif
               }
             else
               {

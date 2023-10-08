@@ -273,7 +273,12 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
                 emit gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)
-                  ContextMenu::executeAt (m_interpreter, up, m->globalPos ());
+                  ContextMenu::executeAt (m_interpreter, up,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                          m->globalPosition ().toPoint ());
+#else
+                                          m->globalPos ());
+#endif
               }
             else
               {

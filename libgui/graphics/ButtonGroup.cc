@@ -233,7 +233,11 @@ ButtonGroup::eventFilter (QObject *watched, QEvent *xevent)
                     octave::autolock guard (gh_mgr.graphics_lock ());
 
                     ContextMenu::executeAt (m_interpreter, properties (),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                            m->globalPosition ().toPoint ());
+#else
                                             m->globalPos ());
+#endif
                   }
               }
               break;

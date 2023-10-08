@@ -220,7 +220,11 @@ Panel::eventFilter (QObject *watched, QEvent *xevent)
                     if (go.valid_object ())
                       ContextMenu::executeAt (m_interpreter,
                                               go.get_properties (),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                              m->globalPosition ().toPoint ());
+#else
                                               m->globalPos ());
+#endif
                   }
               }
               break;

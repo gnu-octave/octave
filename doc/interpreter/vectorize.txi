@@ -667,7 +667,11 @@ might be done for frequently called functions ("hotspots").
 
 @DOCSTRING(__vm_clear_cache__)
 
+@DOCSTRING(__vm_is_compiled__)
+
 @DOCSTRING(__vm_is_executing__)
+
+@DOCSTRING(__vm_print_bytecode__)
 
 @DOCSTRING(__vm_print_trace__)
 

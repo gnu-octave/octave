@@ -222,7 +222,7 @@ namespace Utils
 
         if (c)
           {
-            QPoint qp = c->mapFromGlobal (event->globalPos ());
+            QPoint qp = event->pos ();
 
             return tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
                                                                       qp.y ());

@@ -296,14 +296,23 @@ QString gui_settings::get_default_font_family ()
 {
   // Get all available fixed width fonts from the Qt font database.
 
-  QFontDatabase font_database;
   QStringList fonts;
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  for (QString font : QFontDatabase::families ())
+    {
+      if (QFontDatabase::isFixedPitch (font))
+        fonts << font;
+    }
+#else
+  QFontDatabase font_database;
 
   for (QString font : font_database.families ())
     {
       if (font_database.isFixedPitch (font))
         fonts << font;
     }
+#endif
 
   QString default_family;
 

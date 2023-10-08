@@ -20,7 +20,7 @@ function bytecode_misc ()
   % Try to run out of VM stack space
   % Assure that the VM is running, since we will disable the tree_evaluators
   % stack limit mechanism.
-  if __vm_is_executing__ ()
+  if vm_is_executing ()
     absurd_frame_limit = max_stack_depth * 10000;
     max_stack_depth (absurd_frame_limit, "local");
 

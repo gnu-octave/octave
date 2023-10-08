@@ -636,22 +636,22 @@ Octave's virtual machine (VM) evaluator allows faster execution of existing
 code.  Octave versions 9 onwards have the VM built-in by default.
 
 At its simplest, the only thing a user needs is to run the single command
-@code{__vm_enable__ (1)} on starting Octave, and the rest of the user's
+@code{vm_enable (1)} on starting Octave, and the rest of the user's
 session is as before, except that some code will likely run faster.  If you
 find yourself doing this frequently, you can also add the following code to
 your Octave startup file (`.octaverc` or similar):
 
 @example
 @group
-if (exist ("__vm_enable__") == 5)  # built-in function exists
-  __vm_enable__ (1);
+if (exist ("vm_enable") == 5)  # built-in function exists
+  vm_enable (1);
 end
 @end group
 @end example
 
-The full calling form for @code{__vm_enable__} is:
+The full calling form for @code{vm_enable} is:
 
-@DOCSTRING(__vm_enable__)
+@DOCSTRING(vm_enable)
 
 A more comprehensive list of VM-related functions is given by the @code{vm}
 command.
@@ -663,19 +663,19 @@ then more advanced VM-related techniques are to selectively switch on or off
 VM compilation for specific functions as the user needs.  In general, these
 might be done for frequently called functions ("hotspots").
 
-@DOCSTRING(__vm_compile__)
+@DOCSTRING(vm_compile)
 
-@DOCSTRING(__vm_clear_cache__)
+@DOCSTRING(vm_clear_cache)
 
-@DOCSTRING(__vm_is_compiled__)
+@DOCSTRING(vm_is_compiled)
 
-@DOCSTRING(__vm_is_executing__)
+@DOCSTRING(vm_is_executing)
 
-@DOCSTRING(__vm_print_bytecode__)
+@DOCSTRING(vm_print_bytecode)
 
-@DOCSTRING(__vm_print_trace__)
+@DOCSTRING(vm_print_trace)
 
-@DOCSTRING(__vm_profile__)
+@DOCSTRING(vm_profile)
 
 @node Miscellaneous Techniques
 @section Miscellaneous Techniques

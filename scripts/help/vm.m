@@ -33,37 +33,37 @@
 ## The VM commands available in Octave are:
 ##
 ## @table @code
-## @item __vm_enable__
+## @item vm_enable
 ## Main VM user function.  Switch on or off the VM as a whole.
 ##
-## @item __vm_compile__
+## @item vm_compile
 ## VM user function.  Compile a specified function to bytecode.
 ##
-## @item __vm_clear_cache__
+## @item vm_clear_cache
 ## Internal function.  Clear the cache of already-processed code.
 ##
-## @item __vm_is_compiled__
+## @item vm_is_compiled
 ## VM internal function.  Return true if the specified function is compiled.
 ##
-## @item __vm_is_executing__
+## @item vm_is_executing
 ## Internal function.  Return true if the VM is executing.
 ##
-## @item __vm_print_bytecode__
+## @item vm_print_bytecode
 ## Internal function.  Print bytecode of specified function.
 ##
-## @item __vm_print_trace__
+## @item vm_print_trace
 ## Internal function.  Print a debug trace from the VM.
 ##
-## @item __vm_profile__
+## @item vm_profile
 ## Internal function.  Profile the code running in the VM.
 ##
 ## @end table
 ##
 ## @noindent
 ##
-## @seealso{__vm_enable__, __vm_compile__, __vm_clear_cache__,
-## __vm_is_compiled__, __vm_is_executing__, __vm_print_bytecode__,
-## __vm_print_trace__, __vm_profile__}
+## @seealso{vm_enable, vm_compile, vm_clear_cache,
+## vm_is_compiled, vm_is_executing, vm_print_bytecode,
+## vm_print_trace, vm_profile}
 ## @end deftypefn
 
 function vm ()

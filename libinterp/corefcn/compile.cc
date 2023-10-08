@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // If TRUE, use VM evaluator rather than tree walker.
 // FIXME: Use OCTAVE_ENABLE_VM_EVALUATOR define to set it to true when
 // the VM has been tested properly.
-bool V__vm_enable__ = false;
+bool Vvm_enable = false;
 
 // Cleverly hidden in pt-bytecode-vm.cc to prevent inlining here
 extern "C" void dummy_mark_1 (void);
@@ -81,9 +81,9 @@ or as an entry point for gdb.
   return {};
 }
 
-DEFUN (__vm_clear_cache__, , ,
+DEFUN (vm_clear_cache, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} __vm_clear_cache__ ()
+@deftypefn  {} {@var{val} =} vm_clear_cache ()
 
 Internal function.
 
@@ -94,9 +94,9 @@ Internal function.
   return octave_value {true};
 }
 
-DEFUN (__vm_print_trace__, , ,
+DEFUN (vm_print_trace, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{prints_trace} =} __vm_print_trace__ ())
+@deftypefn  {} {@var{prints_trace} =} vm_print_trace ())
 
 Internal function.
 
@@ -134,13 +134,13 @@ Returns reference count for an object.
   return octave_value {ov.get_count ()};
 }
 
-DEFMETHOD (__vm_is_executing__, interp, , ,
+DEFMETHOD (vm_is_executing, interp, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{is_executing} =} __vm_is_executing__ ())
+@deftypefn  {} {@var{is_executing} =} vm_is_executing ())
 
 Internal function.
 
-Returns true if the VM is executing the function calling __vm_is_executing__ ().
+Returns true if the VM is executing the function calling vm_is_executing ().
 
 False otherwise.
 
@@ -159,14 +159,14 @@ False otherwise.
   return octave_value {bytecode_running};
 }
 
-DEFMETHOD (__vm_profile__, interp, args, ,
+DEFMETHOD (vm_profile, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {} __vm_profile__ on
-@deftypefnx {} {} __vm_profile__ off
-@deftypefnx {} {} __vm_profile__ resume
-@deftypefnx {} {} __vm_profile__ clear
-@deftypefnx {} {@var{T} =} __vm_profile__ ("info")
-@deftypefnx {} {} __vm_profile__
+@deftypefn  {} {} vm_profile on
+@deftypefnx {} {} vm_profile off
+@deftypefnx {} {} vm_profile resume
+@deftypefnx {} {} vm_profile clear
+@deftypefnx {} {@var{T} =} vm_profile ("info")
+@deftypefnx {} {} vm_profile
 
 Internal function.
 
@@ -272,10 +272,10 @@ Not that output to a variable is not implemented yet.
   return octave_value {true};
 }
 
-DEFMETHOD (__vm_print_bytecode__, interp, args, ,
+DEFMETHOD (vm_print_bytecode, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_name}))
-@deftypefnx  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_handle}))
+@deftypefn  {} {@var{success} =} vm_print_bytecode (@var{fn_name}))
+@deftypefnx  {} {@var{success} =} vm_print_bytecode (@var{fn_handle}))
 
 Internal function.
 
@@ -328,7 +328,7 @@ Prints the bytecode of a function name or function handle, if any.
   // Nested functions need to be compiled via their parent
   bool is_nested = ufn->is_nested_function ();
 
-  bool try_compile = !ufn->is_compiled () && V__vm_enable__ && !is_nested;
+  bool try_compile = !ufn->is_compiled () && Vvm_enable && !is_nested;
   
   if (try_compile && h && h->is_anonymous ())
     h->compile ();
@@ -347,10 +347,10 @@ Prints the bytecode of a function name or function handle, if any.
   return octave_value {true};
 }
 
-DEFMETHOD (__vm_is_compiled__, interp, args, ,
+DEFMETHOD (vm_is_compiled, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_name})
-@deftypefnx  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_handle})
+@deftypefn  {} {@var{is_compiled} =} vm_is_compiled (@var{fn_name})
+@deftypefnx  {} {@var{is_compiled} =} vm_is_compiled (@var{fn_handle})
 
 Internal function.
 
@@ -411,11 +411,11 @@ False otherwise.
     }
 }
 
-DEFMETHOD (__vm_compile__, interp, args, ,
+DEFMETHOD (vm_compile, interp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __vm_compile__ (@var{fn_name})
-@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "clear")
-@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "print")
+@deftypefn  {} {@var{success} =} vm_compile (@var{fn_name})
+@deftypefnx  {} {@var{success} =} vm_compile (@var{fn_name}, "clear")
+@deftypefnx  {} {@var{success} =} vm_compile (@var{fn_name}, "print")
 
 Internal function.
 
@@ -426,7 +426,7 @@ by the VM when called.
 
 Returns true on success, otherwise false.
 
-Don't recompile or clear the bytecode of a running function with __vm_compile__.
+Don't recompile or clear the bytecode of a running function with vm_compile.
 
 The @qcode{"print"} option prints the bytecode after compilation.
 
@@ -564,18 +564,18 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
   return octave_value {true};
 }
 
-DEFUN (__vm_enable__, args, nargout,
+DEFUN (vm_enable, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} __vm_enable__ ()
-@deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val})
-@deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val}, "local")
+@deftypefn  {} {@var{val} =} vm_enable ()
+@deftypefnx {} {@var{old_val} =} vm_enable (@var{new_val})
+@deftypefnx {} {@var{old_val} =} vm_enable (@var{new_val}, "local")
 Query or set whether Octave automatically compiles functions to bytecode
 and executes them in a virtual machine (VM).
 
 Note that the virtual machine feature is experimental.
 
 The default value is currently false, while the VM is still experimental.
-Users need to explicitly call @code{__vm_enable__ (1)} to enable it.
+Users need to explicitly call @code{vm_enable (1)} to enable it.
 In future, this will be set to the value of  the OCTAVE_ENABLE_VM_EVALUATOR
 flag that was set when building Octave.
 
@@ -589,16 +589,16 @@ is changed locally for the function and any subroutines it calls.  The original
 setting is restored when exiting the function.
 
 Once compiled to bytecode, the function will always be evaluated by the
-VM no matter the state of @qcode{"__vm_enable__"}, until the bytecode is
+VM no matter the state of @qcode{"vm_enable"}, until the bytecode is
 cleared, by e.g. @qcode{"clear all"} or an modification to the
 function's m-file.
 
-@seealso{__vm_compile__}
+@seealso{vm_compile}
 
 @end deftypefn */)
 {
-  return set_internal_variable (V__vm_enable__, args, nargout,
-                                "__vm_enable__");
+  return set_internal_variable (Vvm_enable, args, nargout,
+                                "vm_enable");
 }
 
 OCTAVE_END_NAMESPACE(octave)

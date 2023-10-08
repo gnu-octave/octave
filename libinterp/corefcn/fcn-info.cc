@@ -644,7 +644,7 @@ out_of_date_check (octave_value& function,
                       bp_table& bptab = __get_bp_table__ ();
 
                       bptab.remove_all_breakpoints_from_function (canonical_nm,
-                          true);
+                          "", true);
                     }
                 }
             }

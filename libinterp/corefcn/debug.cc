@@ -321,7 +321,7 @@ files.
   else
     {
       if (symbol_name != "")
-        bptab.remove_breakpoints_from_function (symbol_name, lines);
+        bptab.remove_breakpoints_from_function (symbol_name, class_name, lines);
     }
 
   // If we remove a breakpoint, we also need to reset debug_mode.

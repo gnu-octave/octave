@@ -107,14 +107,17 @@ public:
 
   // Remove a breakpoint from the given line in file.
   int remove_breakpoint_from_function (const std::string& fname = "",
+                                       const std::string& cname = "",
                                        int line = 1);
 
   // Remove a set of breakpoints from the given lines in file.
   int remove_breakpoints_from_function (const std::string& fname = "",
+                                        const std::string& cname = "",
                                         const bp_lines& lines = bp_lines ());
 
   // Remove all the breakpoints in a specified function.
   bp_lines remove_all_breakpoints_from_function (const std::string& fname,
+                                                 const std::string& cname = "",
                                                  bool silent = false);
 
   // Remove a breakpoint from the given line in file.

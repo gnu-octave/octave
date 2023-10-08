@@ -899,28 +899,30 @@ int bp_table::remove_breakpoint_1 (octave_user_code *fcn,
 }
 
 int
-bp_table::remove_breakpoint_from_function (const std::string& fname, int line)
+bp_table::remove_breakpoint_from_function (const std::string& fname,
+                                           const std::string& cname, int line)
 {
   bp_lines line_info;
   line_info.insert (line);
 
-  return remove_breakpoints_from_function (fname, line_info);
+  return remove_breakpoints_from_function (fname, cname, line_info);
 }
 
 int
 bp_table::remove_breakpoints_from_function (const std::string& fname,
+                                            const std::string& cname,
                                             const bp_table::bp_lines& lines)
 {
   int retval = 0;
 
   if (lines.empty ())
     {
-      bp_lines results = remove_all_breakpoints_from_function (fname);
+      bp_lines results = remove_all_breakpoints_from_function (fname, cname);
       retval = results.size ();
     }
   else
     {
-      octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname);
+      octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname, cname);
       user_code_provider user_code (fname, dbg_fcn);
 
       if (user_code.is_valid ())
@@ -994,11 +996,12 @@ bp_table::remove_breakpoints_from_function (const std::string& fname,
 
 bp_table::bp_lines
 bp_table::remove_all_breakpoints_from_function (const std::string& fname,
+                                                const std::string& cname,
                                                 bool silent)
 {
   bp_lines retval;
 
-  octave_user_code *fcn = m_evaluator.get_user_code (fname);
+  octave_user_code *fcn = m_evaluator.get_user_code (fname, cname);
   user_code_provider user_code (fname, fcn);
 
   if (user_code.is_valid ())
@@ -1043,7 +1046,7 @@ bp_table::remove_breakpoint_from_file (const std::string& file, int line)
   if (! info.ok ())
     return 0;
 
-  return remove_breakpoint_from_function (info.fcn (), line);
+  return remove_breakpoint_from_function (info.fcn (), "", line);
 }
 
 int
@@ -1058,7 +1061,7 @@ bp_table::remove_breakpoints_from_file (const std::string& file,
   if (! info.ok ())
     return 0;
 
-  return remove_breakpoints_from_function (info.fcn (), lines);
+  return remove_breakpoints_from_function (info.fcn (), "", lines);
 }
 
 bp_table::bp_lines
@@ -1073,7 +1076,7 @@ bp_table::remove_all_breakpoints_from_file (const std::string& file,
   if (! info.ok ())
     return bp_lines ();
 
-  return remove_all_breakpoints_from_function (info.fcn (), silent);
+  return remove_all_breakpoints_from_function (info.fcn (), "", silent);
 }
 
 void bp_table::remove_all_breakpoints ()

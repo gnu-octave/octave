@@ -40,22 +40,22 @@
 ## VM user function.  Compile a specified function to bytecode.
 ##
 ## @item vm_clear_cache
-## Internal function.  Clear the cache of already-processed code.
+## Clear the cache of already-processed code.
 ##
 ## @item vm_is_compiled
-## VM internal function.  Return true if the specified function is compiled.
+## Return true if the specified function is compiled.
 ##
 ## @item vm_is_executing
-## Internal function.  Return true if the VM is executing.
+## Return true if the VM is executing.
 ##
 ## @item vm_print_bytecode
-## Internal function.  Print bytecode of specified function.
+## Print bytecode of specified function.
 ##
 ## @item vm_print_trace
-## Internal function.  Print a debug trace from the VM.
+## Print a debug trace from the VM.
 ##
 ## @item vm_profile
-## Internal function.  Profile the code running in the VM.
+## Profile the code running in the VM.
 ##
 ## @end table
 ##

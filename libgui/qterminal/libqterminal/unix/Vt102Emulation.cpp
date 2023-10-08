@@ -1196,7 +1196,7 @@ char Vt102Emulation::getErase() const
                                             Qt::Key_Backspace,
                                             Qt::NoModifier);
 
-  if ( entry.text().count() > 0 )
+  if ( entry.text ().size () > 0 )
       return entry.text()[0];
   else
       return '\b';

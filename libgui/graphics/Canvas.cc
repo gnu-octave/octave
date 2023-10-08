@@ -373,7 +373,12 @@ Canvas::select_object (graphics_object obj, QMouseEvent *event,
 
           r.adjust (-5, -5, 5, 5);
 
-          bool rect_contains_pos = r.contains (event->localPos ());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+          QPointF mouse_pos = event->position ();
+#else
+          QPointF mouse_pos = event->localPos ();
+#endif
+          bool rect_contains_pos = r.contains (mouse_pos);
           if (rect_contains_pos)
             {
               currentObj = childObj;
@@ -427,7 +432,12 @@ Canvas::select_object (graphics_object obj, QMouseEvent *event,
               // the axes and still select it.
               r.adjust (-20, -20, 20, 20);
 
-              bool rect_contains_pos = r.contains (event->localPos ());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+              QPointF mouse_pos = event->position ();
+#else
+              QPointF mouse_pos = event->localPos ();
+#endif
+              bool rect_contains_pos = r.contains (mouse_pos);
               if (rect_contains_pos)
                 axesObj = *it;
             }

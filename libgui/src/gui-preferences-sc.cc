@@ -39,14 +39,14 @@
 // by defining a macro won't work because lupdate won't know to look for
 // the macro.
 
-sc_pref sc_dock_widget_dock (QCoreApplication::translate ("shortcuts", "Undock/Dock Widget"), sc_dock_widget + ":dock", CTRL_ALT | Qt::Key_D);
-sc_pref sc_dock_widget_close (QCoreApplication::translate ("shortcuts", "Close Widget"), sc_dock_widget + ":close", CTRL_ALT | Qt::Key_C);
+sc_pref sc_dock_widget_dock (QCoreApplication::translate ("shortcuts", "Undock/Dock Widget"), sc_dock_widget + ":dock", OCTAVE_QT_KEYCOMBINATION (CTRL_ALT, Qt::Key_D));
+sc_pref sc_dock_widget_close (QCoreApplication::translate ("shortcuts", "Close Widget"), sc_dock_widget + ":close", OCTAVE_QT_KEYCOMBINATION (CTRL_ALT, Qt::Key_C));
 
 // Main window menu
 
 // file
 sc_pref sc_main_file_new_file (QCoreApplication::translate ("shortcuts", "New File"), sc_main_file + ":new_file", QKeySequence::New);
-sc_pref sc_main_file_new_function (QCoreApplication::translate ("shortcuts", "New Function"), sc_main_file + ":new_function", CTRL_SHIFT | Qt::Key_N);
+sc_pref sc_main_file_new_function (QCoreApplication::translate ("shortcuts", "New Function"), sc_main_file + ":new_function", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_N));
 sc_pref sc_main_file_new_figure (QCoreApplication::translate ("shortcuts", "New Figure"), sc_main_file + ":new_figure", QKeySequence::UnknownKey);
 sc_pref sc_main_file_open_file (QCoreApplication::translate ("shortcuts", "Open File"), sc_main_file + ":open_file", QKeySequence::Open);
 sc_pref sc_main_file_load_workspace (QCoreApplication::translate ("shortcuts", "Load Workspace"), sc_main_file + ":load_workspace", QKeySequence::UnknownKey);
@@ -59,7 +59,7 @@ sc_pref sc_main_edit_paste (QCoreApplication::translate ("shortcuts", "Paste"), 
 sc_pref sc_main_edit_undo (QCoreApplication::translate ("shortcuts", "Undo"), sc_main_edit + ":undo", QKeySequence::Undo);
 sc_pref sc_main_edit_select_all (QCoreApplication::translate ("shortcuts", "Select All"), sc_main_edit + ":select_all", QKeySequence::SelectAll);
 sc_pref sc_main_edit_clear_clipboard (QCoreApplication::translate ("shortcuts", "Clear Clipboard"), sc_main_edit + ":clear_clipboard", QKeySequence::UnknownKey);
-sc_pref sc_main_edit_find_in_files (QCoreApplication::translate ("shortcuts", "Find in Files"), sc_main_edit + ":find_in_files", CTRL_SHIFT | Qt::Key_F);
+sc_pref sc_main_edit_find_in_files (QCoreApplication::translate ("shortcuts", "Find in Files"), sc_main_edit + ":find_in_files", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_F));
 sc_pref sc_main_edit_clear_command_window (QCoreApplication::translate ("shortcuts", "Clear Command Window"), sc_main_edit + ":clear_command_window", QKeySequence::UnknownKey);
 sc_pref sc_main_edit_clear_history (QCoreApplication::translate ("shortcuts", "Clear Command History"), sc_main_edit + ":clear_history", QKeySequence::UnknownKey);
 sc_pref sc_main_edit_clear_workspace (QCoreApplication::translate ("shortcuts", "Clear Workspace"), sc_main_edit + ":clear_workspace", QKeySequence::UnknownKey);
@@ -67,34 +67,34 @@ sc_pref sc_main_edit_set_path (QCoreApplication::translate ("shortcuts", "Set Pa
 sc_pref sc_main_edit_preferences (QCoreApplication::translate ("shortcuts", "Preferences"), sc_main_edit + ":preferences", QKeySequence::UnknownKey);
 
 // debug
-sc_pref sc_main_debug_step_over (QCoreApplication::translate ("shortcuts", "Step"), sc_main_debug + ":step_over", PRE | Qt::Key_F10);
-sc_pref sc_main_debug_step_into (QCoreApplication::translate ("shortcuts", "Step Into"), sc_main_debug + ":step_into", PRE | Qt::Key_F11);
-sc_pref sc_main_debug_step_out (QCoreApplication::translate ("shortcuts", "Step Out"), sc_main_debug + ":step_out", PRE | Qt::ShiftModifier | Qt::Key_F11);
-sc_pref sc_main_debug_continue (QCoreApplication::translate ("shortcuts", "Continue"), sc_main_debug + ":continue", PRE | Qt::Key_F5);
-sc_pref sc_main_debug_quit (QCoreApplication::translate ("shortcuts", "Quit Debug Mode"), sc_main_debug + ":quit", PRE | Qt::ShiftModifier | Qt::Key_F5);
+sc_pref sc_main_debug_step_over (QCoreApplication::translate ("shortcuts", "Step"), sc_main_debug + ":step_over", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F10));
+sc_pref sc_main_debug_step_into (QCoreApplication::translate ("shortcuts", "Step Into"), sc_main_debug + ":step_into", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F11));
+sc_pref sc_main_debug_step_out (QCoreApplication::translate ("shortcuts", "Step Out"), sc_main_debug + ":step_out", OCTAVE_QT_KEYCOMBINATION (PRE | Qt::ShiftModifier, Qt::Key_F11));
+sc_pref sc_main_debug_continue (QCoreApplication::translate ("shortcuts", "Continue"), sc_main_debug + ":continue", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F5));
+sc_pref sc_main_debug_quit (QCoreApplication::translate ("shortcuts", "Quit Debug Mode"), sc_main_debug + ":quit", OCTAVE_QT_KEYCOMBINATION (PRE | Qt::ShiftModifier, Qt::Key_F5));
 
 // tools
-sc_pref sc_main_tools_start_profiler (QCoreApplication::translate ("shortcuts", "Start/Stop Profiler Session"), sc_main_tools + ":start_profiler", CTRL_SHIFT | Qt::Key_P);
+sc_pref sc_main_tools_start_profiler (QCoreApplication::translate ("shortcuts", "Start/Stop Profiler Session"), sc_main_tools + ":start_profiler", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_P));
 sc_pref sc_main_tools_resume_profiler (QCoreApplication::translate ("shortcuts", "Resume Profiler Session"), sc_main_tools + ":resume_profiler", QKeySequence::UnknownKey);
-sc_pref sc_main_tools_show_profiler (QCoreApplication::translate ("shortcuts", "Show Profile Data"), sc_main_tools + ":show_profiler", Qt::AltModifier | Qt::ShiftModifier | Qt::Key_P);
+sc_pref sc_main_tools_show_profiler (QCoreApplication::translate ("shortcuts", "Show Profile Data"), sc_main_tools + ":show_profiler", OCTAVE_QT_KEYCOMBINATION (Qt::AltModifier | Qt::ShiftModifier, Qt::Key_P));
 
 
 // window
-sc_pref sc_main_window_show_command (QCoreApplication::translate ("shortcuts", "Show Command Window"), sc_main_window + ":show_command", PRE | CTRL_SHIFT | Qt::Key_0);
-sc_pref sc_main_window_show_history (QCoreApplication::translate ("shortcuts", "Show Command History"), sc_main_window + ":show_history", PRE | CTRL_SHIFT | Qt::Key_1);
-sc_pref sc_main_window_show_file_browser (QCoreApplication::translate ("shortcuts", "Show File Browser"), sc_main_window + ":show_file_browser", PRE | CTRL_SHIFT | Qt::Key_2);
-sc_pref sc_main_window_show_workspace (QCoreApplication::translate ("shortcuts", "Show Workspace"), sc_main_window + ":show_workspace", PRE | CTRL_SHIFT | Qt::Key_3);
-sc_pref sc_main_window_show_editor (QCoreApplication::translate ("shortcuts", "Show Editor"), sc_main_window + ":show_editor", PRE | CTRL_SHIFT | Qt::Key_4);
-sc_pref sc_main_window_show_doc (QCoreApplication::translate ("shortcuts", "Show Documentation"), sc_main_window + ":show_doc", PRE | CTRL_SHIFT | Qt::Key_5);
-sc_pref sc_main_window_show_variable_editor (QCoreApplication::translate ("shortcuts", "Show Variable Editor"), sc_main_window + ":show_variable_editor", PRE | CTRL_SHIFT | Qt::Key_6);
-sc_pref sc_main_window_command (QCoreApplication::translate ("shortcuts", "Command Window"), sc_main_window + ":command", PRE | CTRL | Qt::Key_0);
-sc_pref sc_main_window_history (QCoreApplication::translate ("shortcuts", "Command History"), sc_main_window + ":history", PRE | CTRL | Qt::Key_1);
-sc_pref sc_main_window_file_browser (QCoreApplication::translate ("shortcuts", "File Browser"), sc_main_window + ":file_browser", PRE | CTRL | Qt::Key_2);
-sc_pref sc_main_window_workspace (QCoreApplication::translate ("shortcuts", "Workspace"), sc_main_window + ":workspace", PRE | CTRL | Qt::Key_3);
-sc_pref sc_main_window_editor (QCoreApplication::translate ("shortcuts", "Editor"), sc_main_window + ":editor", PRE | CTRL | Qt::Key_4);
-sc_pref sc_main_window_doc (QCoreApplication::translate ("shortcuts", "Documentation"), sc_main_window + ":doc", PRE | CTRL | Qt::Key_5);
-sc_pref sc_main_window_variable_editor (QCoreApplication::translate ("shortcuts", "Variable Editor"), sc_main_window + ":variable_editor", PRE | CTRL | Qt::Key_6);
-sc_pref sc_main_window_previous_dock (QCoreApplication::translate ("shortcuts", "Previous Widget"), sc_main_window + ":previous_widget", PRE | CTRL_ALT | Qt::Key_P);
+sc_pref sc_main_window_show_command (QCoreApplication::translate ("shortcuts", "Show Command Window"), sc_main_window + ":show_command", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_SHIFT, Qt::Key_0));
+sc_pref sc_main_window_show_history (QCoreApplication::translate ("shortcuts", "Show Command History"), sc_main_window + ":show_history", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_SHIFT, Qt::Key_1));
+sc_pref sc_main_window_show_file_browser (QCoreApplication::translate ("shortcuts", "Show File Browser"), sc_main_window + ":show_file_browser", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_SHIFT, Qt::Key_2));
+sc_pref sc_main_window_show_workspace (QCoreApplication::translate ("shortcuts", "Show Workspace"), sc_main_window + ":show_workspace", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_SHIFT, Qt::Key_3));
+sc_pref sc_main_window_show_editor (QCoreApplication::translate ("shortcuts", "Show Editor"), sc_main_window + ":show_editor", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_SHIFT, Qt::Key_4));
+sc_pref sc_main_window_show_doc (QCoreApplication::translate ("shortcuts", "Show Documentation"), sc_main_window + ":show_doc", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_SHIFT, Qt::Key_5));
+sc_pref sc_main_window_show_variable_editor (QCoreApplication::translate ("shortcuts", "Show Variable Editor"), sc_main_window + ":show_variable_editor", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_SHIFT, Qt::Key_6));
+sc_pref sc_main_window_command (QCoreApplication::translate ("shortcuts", "Command Window"), sc_main_window + ":command", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL, Qt::Key_0));
+sc_pref sc_main_window_history (QCoreApplication::translate ("shortcuts", "Command History"), sc_main_window + ":history", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL, Qt::Key_1));
+sc_pref sc_main_window_file_browser (QCoreApplication::translate ("shortcuts", "File Browser"), sc_main_window + ":file_browser", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL, Qt::Key_2));
+sc_pref sc_main_window_workspace (QCoreApplication::translate ("shortcuts", "Workspace"), sc_main_window + ":workspace", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL, Qt::Key_3));
+sc_pref sc_main_window_editor (QCoreApplication::translate ("shortcuts", "Editor"), sc_main_window + ":editor", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL, Qt::Key_4));
+sc_pref sc_main_window_doc (QCoreApplication::translate ("shortcuts", "Documentation"), sc_main_window + ":doc", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL, Qt::Key_5));
+sc_pref sc_main_window_variable_editor (QCoreApplication::translate ("shortcuts", "Variable Editor"), sc_main_window + ":variable_editor", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL, Qt::Key_6));
+sc_pref sc_main_window_previous_dock (QCoreApplication::translate ("shortcuts", "Previous Widget"), sc_main_window + ":previous_widget", OCTAVE_QT_KEYCOMBINATION (PRE | CTRL_ALT, Qt::Key_P));
 sc_pref sc_main_window_reset (QCoreApplication::translate ("shortcuts", "Reset Default Window Layout"), sc_main_window + ":reset", QKeySequence::UnknownKey);
 
 // help
@@ -116,24 +116,24 @@ sc_pref sc_main_news_community_news (QCoreApplication::translate ("shortcuts", "
 sc_pref sc_edit_file_close (QCoreApplication::translate ("shortcuts", "Close Tab"), sc_edit_file_cl, QKeySequence::Close);
 sc_pref sc_edit_file_close_all (QCoreApplication::translate ("shortcuts", "Close All Tabs"), sc_edit_file_cl + "_all", QKeySequence::UnknownKey);
 sc_pref sc_edit_file_close_other (QCoreApplication::translate ("shortcuts", "Close Other Tabs"), sc_edit_file_cl + "_other", QKeySequence::UnknownKey);
-sc_pref sc_edit_tabs_switch_left_tab (QCoreApplication::translate ("shortcuts", "Switch to Left Tab"), sc_edit_tabs + ":switch_left_tab", CTRL | Qt::Key_PageUp);
-sc_pref sc_edit_tabs_switch_right_tab (QCoreApplication::translate ("shortcuts", "Switch to Right Tab"), sc_edit_tabs + ":switch_right_tab", CTRL | Qt::Key_PageDown);
-sc_pref sc_edit_tabs_move_tab_left (QCoreApplication::translate ("shortcuts", "Move Tab Left"), sc_edit_tabs + ":move_tab_left", Qt::AltModifier | Qt::Key_PageUp);
-sc_pref sc_edit_tabs_move_tab_right (QCoreApplication::translate ("shortcuts", "Move Tab Right"), sc_edit_tabs + ":move_tab_right", Qt::AltModifier | Qt::Key_PageDown);
+sc_pref sc_edit_tabs_switch_left_tab (QCoreApplication::translate ("shortcuts", "Switch to Left Tab"), sc_edit_tabs + ":switch_left_tab", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_PageUp));
+sc_pref sc_edit_tabs_switch_right_tab (QCoreApplication::translate ("shortcuts", "Switch to Right Tab"), sc_edit_tabs + ":switch_right_tab", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_PageDown));
+sc_pref sc_edit_tabs_move_tab_left (QCoreApplication::translate ("shortcuts", "Move Tab Left"), sc_edit_tabs + ":move_tab_left", OCTAVE_QT_KEYCOMBINATION (Qt::AltModifier, Qt::Key_PageUp));
+sc_pref sc_edit_tabs_move_tab_right (QCoreApplication::translate ("shortcuts", "Move Tab Right"), sc_edit_tabs + ":move_tab_right", OCTAVE_QT_KEYCOMBINATION (Qt::AltModifier, Qt::Key_PageDown));
 
 // Zooming
 sc_pref sc_edit_view_zoom_in (QCoreApplication::translate ("shortcuts", "Zoom In"), sc_edit_view_zoom + "_in", QKeySequence::ZoomIn);
 sc_pref sc_edit_view_zoom_out (QCoreApplication::translate ("shortcuts", "Zoom Out"), sc_edit_view_zoom + "_out", QKeySequence::ZoomOut);
 #if defined (Q_OS_MAC)
-sc_pref sc_edit_view_zoom_normal (QCoreApplication::translate ("shortcuts", "Zoom Normal"), sc_edit_view_zoom + "_normal", CTRL | Qt::Key_Underscore);
+sc_pref sc_edit_view_zoom_normal (QCoreApplication::translate ("shortcuts", "Zoom Normal"), sc_edit_view_zoom + "_normal", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_Underscore));
 #else
-sc_pref sc_edit_view_zoom_normal (QCoreApplication::translate ("shortcuts", "Zoom Normal"), sc_edit_view_zoom + "_normal", CTRL | Qt::Key_Period);
+sc_pref sc_edit_view_zoom_normal (QCoreApplication::translate ("shortcuts", "Zoom Normal"), sc_edit_view_zoom + "_normal", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_Period));
 #endif
 
 // Actions of the editor
 
 // file
-sc_pref sc_edit_file_edit_function (QCoreApplication::translate ("shortcuts", "Edit Function"), sc_edit_file + ":edit_function", CTRL | Qt::Key_E);
+sc_pref sc_edit_file_edit_function (QCoreApplication::translate ("shortcuts", "Edit Function"), sc_edit_file + ":edit_function", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_E));
 sc_pref sc_edit_file_save (QCoreApplication::translate ("shortcuts", "Save File"), sc_edit_file + ":save", QKeySequence::Save);
 sc_pref sc_edit_file_save_as (QCoreApplication::translate ("shortcuts", "Save File As"), sc_edit_file + ":save_as", QKeySequence::SaveAs);
 sc_pref sc_edit_file_print (QCoreApplication::translate ("shortcuts", "Print"), sc_edit_file + ":print", QKeySequence::Print);
@@ -146,27 +146,27 @@ sc_pref sc_edit_edit_find_next (QCoreApplication::translate ("shortcuts", "Find 
 sc_pref sc_edit_edit_find_previous (QCoreApplication::translate ("shortcuts", "Find Previous"), sc_edit_edit_find + "_previous", QKeySequence::FindPrevious);
 sc_pref sc_edit_edit_delete_start_word (QCoreApplication::translate ("shortcuts", "Delete to Start of Word"), sc_edit_edit + ":delete_start_word", QKeySequence::DeleteStartOfWord);
 sc_pref sc_edit_edit_delete_end_word (QCoreApplication::translate ("shortcuts", "Delete to End of Word"), sc_edit_edit + ":delete_end_word", QKeySequence::DeleteEndOfWord);
-sc_pref sc_edit_edit_delete_start_line (QCoreApplication::translate ("shortcuts", "Delete to Start of Line"), sc_edit_edit + ":delete_start_line", CTRL_SHIFT | Qt::Key_Backspace);
-sc_pref sc_edit_edit_delete_end_line (QCoreApplication::translate ("shortcuts", "Delete to End of Line"), sc_edit_edit + ":delete_end_line", CTRL_SHIFT | Qt::Key_Delete);
-sc_pref sc_edit_edit_delete_line (QCoreApplication::translate ("shortcuts", "Delete Line"), sc_edit_edit + ":delete_line", CTRL_SHIFT | Qt::Key_L);
-sc_pref sc_edit_edit_copy_line (QCoreApplication::translate ("shortcuts", "Copy Line"), sc_edit_edit + ":copy_line", CTRL_SHIFT | Qt::Key_C);
-sc_pref sc_edit_edit_cut_line (QCoreApplication::translate ("shortcuts", "Cut Line"), sc_edit_edit + ":cut_line", CTRL_SHIFT | Qt::Key_X);
-sc_pref sc_edit_edit_duplicate_selection (QCoreApplication::translate ("shortcuts", "Duplicate Selection/Line"), sc_edit_edit + ":duplicate_selection", CTRL | Qt::Key_D);
-sc_pref sc_edit_edit_transpose_line (QCoreApplication::translate ("shortcuts", "Transpose Line"), sc_edit_edit + ":transpose_line", CTRL | Qt::Key_T);
-sc_pref sc_edit_edit_completion_list (QCoreApplication::translate ("shortcuts", "Show Completion List"), sc_edit_edit + ":completion_list", CTRL | Qt::Key_Space);
+sc_pref sc_edit_edit_delete_start_line (QCoreApplication::translate ("shortcuts", "Delete to Start of Line"), sc_edit_edit + ":delete_start_line", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_Backspace));
+sc_pref sc_edit_edit_delete_end_line (QCoreApplication::translate ("shortcuts", "Delete to End of Line"), sc_edit_edit + ":delete_end_line", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_Delete));
+sc_pref sc_edit_edit_delete_line (QCoreApplication::translate ("shortcuts", "Delete Line"), sc_edit_edit + ":delete_line", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_L));
+sc_pref sc_edit_edit_copy_line (QCoreApplication::translate ("shortcuts", "Copy Line"), sc_edit_edit + ":copy_line", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_C));
+sc_pref sc_edit_edit_cut_line (QCoreApplication::translate ("shortcuts", "Cut Line"), sc_edit_edit + ":cut_line", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_X));
+sc_pref sc_edit_edit_duplicate_selection (QCoreApplication::translate ("shortcuts", "Duplicate Selection/Line"), sc_edit_edit + ":duplicate_selection", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_D));
+sc_pref sc_edit_edit_transpose_line (QCoreApplication::translate ("shortcuts", "Transpose Line"), sc_edit_edit + ":transpose_line", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_T));
+sc_pref sc_edit_edit_completion_list (QCoreApplication::translate ("shortcuts", "Show Completion List"), sc_edit_edit + ":completion_list", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_Space));
 
-sc_pref sc_edit_edit_comment_selection (QCoreApplication::translate ("shortcuts", "Comment Selection"), sc_edit_edit + ":comment_selection", CTRL | Qt::Key_R);
-sc_pref sc_edit_edit_uncomment_selection (QCoreApplication::translate ("shortcuts", "Uncomment Selection"), sc_edit_edit + ":uncomment_selection", CTRL_SHIFT | Qt::Key_R);
-sc_pref sc_edit_edit_comment_var_selection (QCoreApplication::translate ("shortcuts", "Comment Selection (Choosing String)"), sc_edit_edit + ":comment_var_selection", CTRL_ALT | Qt::Key_R);
-sc_pref sc_edit_edit_upper_case (QCoreApplication::translate ("shortcuts", "Uppercase Selection"), sc_edit_edit + ":upper_case", CTRL | Qt::Key_U);
-sc_pref sc_edit_edit_lower_case (QCoreApplication::translate ("shortcuts", "Lowercase Selection"), sc_edit_edit + ":lower_case", CTRL_ALT | Qt::Key_U);
+sc_pref sc_edit_edit_comment_selection (QCoreApplication::translate ("shortcuts", "Comment Selection"), sc_edit_edit + ":comment_selection", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_R));
+sc_pref sc_edit_edit_uncomment_selection (QCoreApplication::translate ("shortcuts", "Uncomment Selection"), sc_edit_edit + ":uncomment_selection", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_R));
+sc_pref sc_edit_edit_comment_var_selection (QCoreApplication::translate ("shortcuts", "Comment Selection (Choosing String)"), sc_edit_edit + ":comment_var_selection", OCTAVE_QT_KEYCOMBINATION (CTRL_ALT, Qt::Key_R));
+sc_pref sc_edit_edit_upper_case (QCoreApplication::translate ("shortcuts", "Uppercase Selection"), sc_edit_edit + ":upper_case", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_U));
+sc_pref sc_edit_edit_lower_case (QCoreApplication::translate ("shortcuts", "Lowercase Selection"), sc_edit_edit + ":lower_case", OCTAVE_QT_KEYCOMBINATION (CTRL_ALT, Qt::Key_U));
 
 #if defined (Q_OS_MAC)
-sc_pref sc_edit_edit_indent_selection (QCoreApplication::translate ("shortcuts", "Indent Selection Rigidly"), sc_edit_edit + ":indent_selection", PRE | Qt::Key_Tab);
-sc_pref sc_edit_edit_unindent_selection (QCoreApplication::translate ("shortcuts", "Unindent Selection Rigidly"), sc_edit_edit + ":unindent_selection", PRE | Qt::ShiftModifier | Qt::Key_Tab);
+sc_pref sc_edit_edit_indent_selection (QCoreApplication::translate ("shortcuts", "Indent Selection Rigidly"), sc_edit_edit + ":indent_selection", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_Tab));
+sc_pref sc_edit_edit_unindent_selection (QCoreApplication::translate ("shortcuts", "Unindent Selection Rigidly"), sc_edit_edit + ":unindent_selection", OCTAVE_QT_KEYCOMBINATION (PRE | Qt::ShiftModifier, Qt::Key_Tab));
 #else
-sc_pref sc_edit_edit_indent_selection (QCoreApplication::translate ("shortcuts", "Indent Selection Rigidly"), sc_edit_edit + ":indent_selection", CTRL | Qt::Key_Tab);
-sc_pref sc_edit_edit_unindent_selection (QCoreApplication::translate ("shortcuts", "Unindent Selection Rigidly"), sc_edit_edit + ":unindent_selection", CTRL_SHIFT | Qt::Key_Tab);
+sc_pref sc_edit_edit_indent_selection (QCoreApplication::translate ("shortcuts", "Indent Selection Rigidly"), sc_edit_edit + ":indent_selection", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_Tab));
+sc_pref sc_edit_edit_unindent_selection (QCoreApplication::translate ("shortcuts", "Unindent Selection Rigidly"), sc_edit_edit + ":unindent_selection", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_Tab));
 #endif
 sc_pref sc_edit_edit_smart_indent_line_or_selection (QCoreApplication::translate ("shortcuts", "Indent Code"), sc_edit_edit + ":smart_indent_line_or_selection", QKeySequence::UnknownKey);
 
@@ -174,12 +174,12 @@ sc_pref sc_edit_edit_conv_eol_winows (QCoreApplication::translate ("shortcuts", 
 sc_pref sc_edit_edit_conv_eol_unix (QCoreApplication::translate ("shortcuts", "Convert Line Endings to Unix"), sc_edit_edit + ":conv_eol_unix", QKeySequence::UnknownKey);
 sc_pref sc_edit_edit_conv_eol_mac (QCoreApplication::translate ("shortcuts", "Convert Line Endings to Mac"), sc_edit_edit + ":conv_eol_mac", QKeySequence::UnknownKey);
 
-sc_pref sc_edit_edit_goto_line (QCoreApplication::translate ("shortcuts", "Goto Line"), sc_edit_edit + ":goto_line", CTRL | Qt::Key_L);
-sc_pref sc_edit_edit_move_to_brace (QCoreApplication::translate ("shortcuts", "Move to Matching Brace"), sc_edit_edit + ":move_to_brace", CTRL | Qt::Key_M);
-sc_pref sc_edit_edit_select_to_brace (QCoreApplication::translate ("shortcuts", "Select to Matching Brace"), sc_edit_edit + ":select_to_brace", CTRL_SHIFT | Qt::Key_M);
-sc_pref sc_edit_edit_toggle_bookmark (QCoreApplication::translate ("shortcuts", "Toggle Bookmark"), sc_edit_edit + ":toggle_bookmark", PRE | Qt::Key_F7);
-sc_pref sc_edit_edit_next_bookmark (QCoreApplication::translate ("shortcuts", "Next Bookmark"), sc_edit_edit + ":next_bookmark", PRE | Qt::Key_F2);
-sc_pref sc_edit_edit_previous_bookmark (QCoreApplication::translate ("shortcuts", "Previous Bookmark"), sc_edit_edit + ":previous_bookmark", PRE | Qt::ShiftModifier | Qt::Key_F2);
+sc_pref sc_edit_edit_goto_line (QCoreApplication::translate ("shortcuts", "Goto Line"), sc_edit_edit + ":goto_line", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_L));
+sc_pref sc_edit_edit_move_to_brace (QCoreApplication::translate ("shortcuts", "Move to Matching Brace"), sc_edit_edit + ":move_to_brace", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_M));
+sc_pref sc_edit_edit_select_to_brace (QCoreApplication::translate ("shortcuts", "Select to Matching Brace"), sc_edit_edit + ":select_to_brace", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_M));
+sc_pref sc_edit_edit_toggle_bookmark (QCoreApplication::translate ("shortcuts", "Toggle Bookmark"), sc_edit_edit + ":toggle_bookmark", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F7));
+sc_pref sc_edit_edit_next_bookmark (QCoreApplication::translate ("shortcuts", "Next Bookmark"), sc_edit_edit + ":next_bookmark", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F2));
+sc_pref sc_edit_edit_previous_bookmark (QCoreApplication::translate ("shortcuts", "Previous Bookmark"), sc_edit_edit + ":previous_bookmark", OCTAVE_QT_KEYCOMBINATION (PRE | Qt::ShiftModifier, Qt::Key_F2));
 sc_pref sc_edit_edit_remove_bookmark (QCoreApplication::translate ("shortcuts", "Remove All Bookmark"), sc_edit_edit + ":remove_bookmark", QKeySequence::UnknownKey);
 
 sc_pref sc_edit_edit_preferences (QCoreApplication::translate ("shortcuts", "Preferences"), sc_edit_edit + ":preferences", QKeySequence::UnknownKey);
@@ -203,19 +203,19 @@ sc_pref sc_edit_debug_previous_breakpoint (QCoreApplication::translate ("shortcu
 sc_pref sc_edit_debug_remove_breakpoints (QCoreApplication::translate ("shortcuts", "Remove All Breakpoints"), sc_edit_debug + ":remove_breakpoints", QKeySequence::UnknownKey);
 
 // run
-sc_pref sc_edit_run_run_file (QCoreApplication::translate ("shortcuts", "Run File"), sc_edit_run + ":run_file", PRE | Qt::Key_F5);
-sc_pref sc_edit_run_run_selection (QCoreApplication::translate ("shortcuts", "Run Selection"), sc_edit_run + ":run_selection", PRE | Qt::Key_F9);
+sc_pref sc_edit_run_run_file (QCoreApplication::translate ("shortcuts", "Run File"), sc_edit_run + ":run_file", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F5));
+sc_pref sc_edit_run_run_selection (QCoreApplication::translate ("shortcuts", "Run Selection"), sc_edit_run + ":run_selection", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F9));
 
 // help
 sc_pref sc_edit_help_help_keyword (QCoreApplication::translate ("shortcuts", "Help on Keyword"), sc_edit_help + ":help_keyword", QKeySequence::HelpContents);
-sc_pref sc_edit_help_doc_keyword (QCoreApplication::translate ("shortcuts", "Document on Keyword"), sc_edit_help + ":doc_keyword", Qt::SHIFT | Qt::Key_F1);
+sc_pref sc_edit_help_doc_keyword (QCoreApplication::translate ("shortcuts", "Document on Keyword"), sc_edit_help + ":doc_keyword", OCTAVE_QT_KEYCOMBINATION (Qt::SHIFT, Qt::Key_F1));
 
 
 // Documentation browser
-sc_pref sc_doc_go_home (QCoreApplication::translate ("shortcuts", "Go to Homepage"), sc_doc + ":go_home", Qt::AltModifier | Qt::Key_Home);
+sc_pref sc_doc_go_home (QCoreApplication::translate ("shortcuts", "Go to Homepage"), sc_doc + ":go_home", OCTAVE_QT_KEYCOMBINATION (Qt::AltModifier, Qt::Key_Home));
 sc_pref sc_doc_go_back (QCoreApplication::translate ("shortcuts", "Go Back one Page"), sc_doc + ":go_back", QKeySequence::Back);
 sc_pref sc_doc_go_next (QCoreApplication::translate ("shortcuts", "Go Forward one Page"), sc_doc + ":go_next", QKeySequence::Forward);
-sc_pref sc_doc_bookmark (QCoreApplication::translate ("shortcuts", "Bookmark this Page"), sc_doc + ":bookmark", CTRL | Qt::Key_D);
+sc_pref sc_doc_bookmark (QCoreApplication::translate ("shortcuts", "Bookmark this Page"), sc_doc + ":bookmark", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_D));
 
 QString get_shortcut_section (const QString& key)
 {

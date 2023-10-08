@@ -40,16 +40,26 @@
 // Therefore, these prefs for key sequences require a separate constant
 // definition and value method for the settings class.
 
+
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+#  include <QKeyCombination>
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     QKeyCombination (mod, key).toCombined ()
+#else
+#  define OCTAVE_QT_KEYCOMBINATION(mod, key) \
+     mod | key
+#endif
+
 #if defined (Q_OS_MAC)
 // Use CMD key as an equivalent of Ctrl key on other platforms
 const Qt::KeyboardModifier CTRL = Qt::MetaModifier;
 // Some of octave default shortcuts on windows/linux are already defined
 // as system wide shortcuts on Mac Os X (almost all Function keys).
 // Prefix those with Option (Alt) modifier to avoid conflicts.
-const int PRE = Qt::AltModifier;
+const Qt::KeyboardModifier PRE = Qt::AltModifier;
 #else
 const Qt::KeyboardModifier CTRL = Qt::ControlModifier;
-const int PRE = Qt::NoModifier;
+const Qt::KeyboardModifier PRE = Qt::NoModifier;
 #endif
 
 const Qt::KeyboardModifiers CTRL_SHIFT = CTRL | Qt::ShiftModifier;

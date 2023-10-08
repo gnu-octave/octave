@@ -165,25 +165,25 @@ DEFMETHOD (vm_profile, interp, args, ,
 Profile code running in the VM.
 
 @table @code
-@item profile on
+@item vm_profile on
 Start the profiler, clearing all previously collected data if there is any.
 
-@item profile off
+@item vm_profile off
 Stop profiling.  The collected data can later be retrieved and examined
 with @code{T = profile ("info")}.
 
-@item profile clear
+@item vm_profile clear
 Clear all collected profiler data.
 
-@item profile resume
+@item vm_profile resume
 Restart profiling without clearing the old data.  All newly collected
 statistics are added to the existing ones.
 
-@item profile
+@item vm_profile
 Toggles between profiling and printing the result of the profiler.
 Clears the profiler on each print.
 
-@item info
+@item vm_profile info
 Prints the profiler data.
 
 Not that output to a variable is not implemented yet.

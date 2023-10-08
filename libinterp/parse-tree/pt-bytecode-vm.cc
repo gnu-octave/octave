@@ -2731,10 +2731,17 @@ for_setup:
       {
         // Slot from the for_cond that always follow a for_setup
         int slot;
+        // The next opcode is in arg0, and is either WIDE or FOR_COND
         if (arg0 == static_cast<int> (INSTR::WIDE))
-          slot = ip[1];
+          {
+            // Byte layout: ip[-2]:FOR_SETUP, ip[-1]:WIDE, ip[0]:FOR_COND, ip[1]:slot_lsb, ip[2]:slot_msb
+            slot = ip[1] + (ip[2] << 8);
+          }
         else
-          slot = ip[0];
+          {
+            // Byte layout: ip[-2]:FOR_SETUP, ip[-1]:FOR_COND, ip[0]:slot
+            slot = ip[0];
+          }
         try
         {
           octave_value &lhs_ov = bsp[slot].ov;

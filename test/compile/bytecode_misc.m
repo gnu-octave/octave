@@ -127,6 +127,12 @@ function wide_sub ()
     assert (b == 2)
   end
 
+  % Bug #64749: With no iterations, FOR_SETUP writes to the wrong id with wide slots
+  i = 123;
+  for i = 1:0
+  end
+  assert (isempty (i));
+  assert (size(i) == [1 0])
 
   % Check that a001 to a512 have to correct values
   for i = 1:512

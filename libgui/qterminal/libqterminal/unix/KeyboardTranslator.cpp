@@ -345,10 +345,10 @@ bool KeyboardTranslatorReader::decodeSequence(const QString& text,
     KeyboardTranslator::States tempFlags = flags;
     KeyboardTranslator::States tempFlagMask = flagMask;
 
-    for ( int i = 0 ; i < text.count() ; i++ )
+    for ( int i = 0 ; i < text.size () ; i++ )
     {
         const QChar& ch = text[i];
-        bool isLastLetter = ( i == text.count()-1 );
+        bool isLastLetter = ( i == text.size ()-1 );
 
         endOfItem = true;
         if ( ch.isLetterOrNumber() )

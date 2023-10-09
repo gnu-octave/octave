@@ -656,8 +656,6 @@ The full calling form for @code{vm_enable} is:
 A more comprehensive list of VM-related functions is given by the @code{vm}
 command.
 
-@DOCSTRING(vm)
-
 If broad-spectrum evaluation of all the user code with the VM is not desirable,
 then more advanced VM-related techniques are to selectively switch on or off
 VM compilation for specific functions as the user needs.  In general, these
@@ -665,15 +663,7 @@ might be done for frequently called functions ("hotspots").
 
 @DOCSTRING(vm_compile)
 
-@DOCSTRING(vm_clear_cache)
-
-@DOCSTRING(vm_is_compiled)
-
-@DOCSTRING(vm_is_executing)
-
-@DOCSTRING(vm_print_bytecode)
-
-@DOCSTRING(vm_print_trace)
+Profiling can be done with the @code{vm_profile} command.
 
 @DOCSTRING(vm_profile)
 

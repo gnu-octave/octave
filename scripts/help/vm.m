@@ -34,36 +34,19 @@
 ##
 ## @table @code
 ## @item vm_enable
-## Main VM user function.  Switch on or off the VM as a whole.
+## Switch on or off the VM as a whole.
 ##
 ## @item vm_compile
-## VM user function.  Compile a specified function to bytecode.
-##
-## @item vm_clear_cache
-## Internal function.  Clear the cache of already-processed code.
-##
-## @item vm_is_compiled
-## VM internal function.  Return true if the specified function is compiled.
-##
-## @item vm_is_executing
-## Internal function.  Return true if the VM is executing.
-##
-## @item vm_print_bytecode
-## Internal function.  Print bytecode of specified function.
-##
-## @item vm_print_trace
-## Internal function.  Print a debug trace from the VM.
+## Compile a specified function to bytecode.
 ##
 ## @item vm_profile
-## Internal function.  Profile the code running in the VM.
+## Profile the code running in the VM.
 ##
 ## @end table
 ##
 ## @noindent
 ##
-## @seealso{vm_enable, vm_compile, vm_clear_cache,
-## vm_is_compiled, vm_is_executing, vm_print_bytecode,
-## vm_print_trace, vm_profile}
+## @seealso{vm_enable, vm_compile, vm_profile}
 ## @end deftypefn
 
 function vm ()

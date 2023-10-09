@@ -81,9 +81,9 @@ or as an entry point for gdb.
   return {};
 }
 
-DEFUN (vm_clear_cache, , ,
+DEFUN (__vm_clear_cache__, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} vm_clear_cache ()
+@deftypefn  {} {@var{val} =} __vm_clear_cache__ ()
 
 Internal function.
 
@@ -94,9 +94,9 @@ Internal function.
   return octave_value {true};
 }
 
-DEFUN (vm_print_trace, , ,
+DEFUN (__vm_print_trace__, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{prints_trace} =} vm_print_trace ())
+@deftypefn  {} {@var{prints_trace} =} __vm_print_trace__ ())
 
 Internal function.
 
@@ -134,13 +134,13 @@ Returns reference count for an object.
   return octave_value {ov.get_count ()};
 }
 
-DEFMETHOD (vm_is_executing, interp, , ,
+DEFMETHOD (__vm_is_executing__, interp, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{is_executing} =} vm_is_executing ())
+@deftypefn  {} {@var{is_executing} =} __vm_is_executing__ ())
 
 Internal function.
 
-Returns true if the VM is executing the function calling vm_is_executing ().
+Returns true if the VM is executing the function calling __vm_is_executing__ ().
 
 False otherwise.
 
@@ -272,10 +272,10 @@ Not that output to a variable is not implemented yet.
   return octave_value {true};
 }
 
-DEFMETHOD (vm_print_bytecode, interp, args, ,
+DEFMETHOD (__vm_print_bytecode__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} vm_print_bytecode (@var{fn_name}))
-@deftypefnx  {} {@var{success} =} vm_print_bytecode (@var{fn_handle}))
+@deftypefn  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_name}))
+@deftypefnx  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_handle}))
 
 Internal function.
 
@@ -347,10 +347,10 @@ Prints the bytecode of a function name or function handle, if any.
   return octave_value {true};
 }
 
-DEFMETHOD (vm_is_compiled, interp, args, ,
+DEFMETHOD (__vm_is_compiled__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{is_compiled} =} vm_is_compiled (@var{fn_name})
-@deftypefnx  {} {@var{is_compiled} =} vm_is_compiled (@var{fn_handle})
+@deftypefn  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_name})
+@deftypefnx  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_handle})
 
 Internal function.
 

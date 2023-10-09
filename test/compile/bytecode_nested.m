@@ -338,8 +338,8 @@ function bytecode_nested ()
   % Try some legacy inline functions
   h1i = inline ("x + 1");
   assert (h1i (2) == 3)
-  h2i = inline ("vm_is_executing()");
-  assert (h2i() == vm_is_executing);
+  h2i = inline ("__vm_is_executing__()");
+  assert (h2i() == __vm_is_executing__);
 end
 
 function subby

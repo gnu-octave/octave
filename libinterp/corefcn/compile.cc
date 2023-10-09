@@ -85,7 +85,7 @@ DEFUN (vm_clear_cache, , ,
   doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} vm_clear_cache ()
 
-Clear the VM evaluator's internal cache.
+Internal function.
 
 @end deftypefn */)
 {
@@ -97,6 +97,8 @@ Clear the VM evaluator's internal cache.
 DEFUN (vm_print_trace, , ,
   doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{prints_trace} =} vm_print_trace ())
+
+Internal function.
 
 Print a debug trace from the VM. Toggles on or off each call.
 
@@ -116,6 +118,8 @@ DEFUN (__ref_count__, args, ,
   doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{count} =} __ref_count__ (@var{obj}))
 
+Internal function.
+
 Returns reference count for an object.
 
 @end deftypefn */)
@@ -133,6 +137,8 @@ Returns reference count for an object.
 DEFMETHOD (vm_is_executing, interp, , ,
   doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{is_executing} =} vm_is_executing ())
+
+Internal function.
 
 Returns true if the VM is executing the function calling vm_is_executing ().
 
@@ -161,6 +167,8 @@ DEFMETHOD (vm_profile, interp, args, ,
 @deftypefnx {} {} vm_profile clear
 @deftypefnx {} {@var{T} =} vm_profile ("info")
 @deftypefnx {} {} vm_profile
+
+Internal function.
 
 Profile code running in the VM.
 
@@ -269,6 +277,8 @@ DEFMETHOD (vm_print_bytecode, interp, args, ,
 @deftypefn  {} {@var{success} =} vm_print_bytecode (@var{fn_name}))
 @deftypefnx  {} {@var{success} =} vm_print_bytecode (@var{fn_handle}))
 
+Internal function.
+
 Prints the bytecode of a function name or function handle, if any.
 
 @end deftypefn */)
@@ -342,6 +352,8 @@ DEFMETHOD (vm_is_compiled, interp, args, ,
 @deftypefn  {} {@var{is_compiled} =} vm_is_compiled (@var{fn_name})
 @deftypefnx  {} {@var{is_compiled} =} vm_is_compiled (@var{fn_handle})
 
+Internal function.
+
 Returns true if the specified function name or function handle is compiled.
 
 False otherwise.
@@ -404,6 +416,8 @@ DEFMETHOD (vm_compile, interp, args, ,
 @deftypefn  {} {@var{success} =} vm_compile (@var{fn_name})
 @deftypefnx  {} {@var{success} =} vm_compile (@var{fn_name}, "clear")
 @deftypefnx  {} {@var{success} =} vm_compile (@var{fn_name}, "print")
+
+Internal function.
 
 Compile the specified function to bytecode.
 

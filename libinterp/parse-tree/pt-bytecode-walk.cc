@@ -4061,7 +4061,6 @@ visit_cell (tree_cell &m)
   INC_DEPTH ();
 
   auto p = m.begin ();
-  int n_rows = 0;
   int n_cols = -1;
 
   PUSH_CODE (INSTR::PUSH_OV_U64); // number of rows
@@ -4104,8 +4103,6 @@ visit_cell (tree_cell &m)
       // rotate it with the amount of columns and increment the rows.
       PUSH_CODE (INSTR::ROT);
       PUSH_CODE (INSTR::INCR_PREFIX);
-
-      n_rows++;
     }
 
   PUSH_CODE (INSTR::PUSH_CELL);

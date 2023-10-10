@@ -6319,8 +6319,6 @@ debug: // TODO: Remove
       ov = octave_value {};
   }
   DISPATCH ();
-
-  __builtin_unreachable ();
 }
 
 octave_value
@@ -7573,14 +7571,10 @@ vm_debug_print_ovl (octave_value_list ovl)
 
 extern "C" void dummy_mark_1 (void)
 {
-  static int cntr;
-  cntr++;
   asm ("");
 }
 
 extern "C" void dummy_mark_2 (void)
 {
-  static int cntr;
-  cntr++;
   asm ("");
 }

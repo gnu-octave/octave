@@ -183,8 +183,12 @@ along with Octave; see the file COPYING.  If not, see
 
   <url type="homepage">https://www.octave.org/</url>
   <url type="bugtracker">https://bugs.octave.org/</url>
-  <url type="donation">https://www.octave.org/donate.html</url>
   <url type="faq">https://wiki.octave.org/FAQ</url>
+  <url type="help">https://octave.org/support</url>
+  <url type="donation">https://www.octave.org/donate.html</url>
+  <url type="contact">https://octave.org/support</url>
+  <url type="vcs-browser">https://hg.savannah.gnu.org/hgweb/octave</url>
+  <url type="contribute">https://octave.org/get-involved</url>
   <update_contact>maintainers@octave.org</update_contact>
   <project_group>GNU</project_group>
   <developer_name>John W. Eaton and others</developer_name>

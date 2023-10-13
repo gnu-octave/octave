@@ -3468,18 +3468,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             delete lhs;
           }
+        else if (parfor)
+          {
+            delete lhs;
+            delete expr;
+            delete maxproc;
+            delete body;
+
+            bison_error ("invalid syntax for parfor statement");
+          }
         else
           {
-            if (parfor)
-              {
-                delete lhs;
-                delete expr;
-                delete maxproc;
-                delete body;
-
-                bison_error ("invalid syntax for parfor statement");
-              }
-
             m_lexer.mark_as_variables (lhs->variable_names ());
 
             retval = new tree_complex_for_command (lhs, expr, body,

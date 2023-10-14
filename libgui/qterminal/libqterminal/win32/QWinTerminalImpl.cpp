@@ -21,6 +21,7 @@ see <https://www.gnu.org/licenses/>.
 */
 
 #include <algorithm>
+#include <cmath>
 #include <csignal>
 #include <cstdio>
 #include <cstdarg>
@@ -35,6 +36,7 @@ see <https://www.gnu.org/licenses/>.
 #include <io.h>
 #include <versionhelpers.h>
 
+#include <QtDebug>
 #include <QApplication>
 #include <QClipboard>
 #include <QColor>
@@ -44,7 +46,8 @@ see <https://www.gnu.org/licenses/>.
 #include <QPainter>
 #include <QResizeEvent>
 #include <QScrollBar>
-#include <QtDebug>
+#include <QSize>
+#include <QSizeF>
 #include <QThread>
 #include <QTimer>
 #include <QToolTip>
@@ -237,7 +240,7 @@ private:
   bool m_inWheelEvent;
   QString m_title;
 
-  QSize m_charSize;
+  QSizeF m_charSize;
   QSize m_bufferSize;
   QRect m_consoleRect;
   bool m_auto_scroll;
@@ -494,10 +497,12 @@ void QConsolePrivate::setupStandardIO (DWORD stdHandleId, int targetFd,
 
 QPoint QConsolePrivate::posToCell (const QPoint& p)
 {
-  // FIXME: This might become inaccurate for very long lines if the actual
-  //        character width is fractional.
-  return QPoint (m_consoleRect.left () + p.x () / m_charSize.width (),
-                 m_consoleRect.top () + p.y () / m_charSize.height ());
+  return QPoint (m_consoleRect.left ()
+                 + std::round (static_cast<qreal> (p.x ())
+                               / m_charSize.width ()),
+                 m_consoleRect.top ()
+                 + std::round (static_cast<qreal> (p.y ())
+                               / m_charSize.height ()));
 }
 
 QString QConsolePrivate::getSelection (void)
@@ -1019,11 +1024,22 @@ void QConsolePrivate::updateConsoleSize (bool sync, bool allow_smaller_width)
   QFontMetrics fm = m_consoleView->fontMetrics ();
   QSize winSize = m_consoleView->size ();
 
-  m_charSize.rwidth () = fm.averageCharWidth ();
+  // QFontMetrics::averageCharWidth returns the average character width of the
+  // used font rounded(?) to the nearest integer.  However, the actual
+  // character width might be fractional on screens with non-scalar DPI
+  // scaling.  Take a large sample and divide by the number of characters in
+  // the sample to get a more accurate (fractional) average character width of
+  // the used font.
+  QString sample ('m');
+  sample = sample.repeated (160);  // Is 160 a large enough sample?
+  m_charSize.rwidth ()
+    = static_cast<qreal> (fm.horizontalAdvance (sample)) / 160.;
   m_charSize.rheight () = fm.lineSpacing ();
 
-  m_consoleRect.setWidth (winSize.width () / m_charSize.width ());
-  m_consoleRect.setHeight (winSize.height () / m_charSize.height ());
+  m_consoleRect.setWidth (std::floor (static_cast<qreal> (winSize.width ())
+                                      / m_charSize.width ()));
+  m_consoleRect.setHeight (std::floor (static_cast<qreal> (winSize.height ())
+                                       / m_charSize.height ()));
 
   // Don't shrink the size of the buffer.  That way wide lines won't be
   // truncated and will reappear if the window is enlarged again later.
@@ -1466,13 +1482,13 @@ QConsolePrivate::cursorRect (void)
 
   // Integer precision is good enough for the line height and for the
   // dimensions of the marker.
-  int cw = m_charSize.width ();
-  int ch = m_charSize.height ();
+  qreal cw = m_charSize.width ();
+  qreal ch = m_charSize.height ();
 
   // Make sure the cursor starts *right* of the previous character.
   return QRect (fm.horizontalAdvance (sample),
                 (m_cursorPos.y () - m_consoleRect.y ()) * ch,
-                cw, ch);
+                std::round (cw), ch);
 }
 
 QRect
@@ -1487,12 +1503,12 @@ QConsolePrivate::boundingRect (void)
 
   // Integer precision is good enough for the line height and for the
   // dimensions of the marker.
-  int cw = m_charSize.width ();
-  int ch = m_charSize.height ();
+  qreal cw = m_charSize.width ();
+  qreal ch = m_charSize.height ();
 
   return QRect (fm.horizontalAdvance (sample)-1,
                 (m_cursorPos.y () - m_consoleRect.y ()) * ch,
-                cw+2, ch);
+                std::round (cw+2), ch);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1593,16 +1609,18 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView *w, QPaintEvent *event)
 {
   QPainter p (w);
 
-  int cw = d->m_charSize.width ();
-  int ch = d->m_charSize.height ();
+  qreal cw = d->m_charSize.width ();
+  qreal ch = d->m_charSize.height ();
 
   QRect updateRect = event->rect ();
   p.fillRect (updateRect, QBrush (d->backgroundColor ()));
 
-  int cx1 = updateRect.left () / cw;
+  int cx1 = std::round (static_cast<qreal> (updateRect.left ()) / cw);
   int cy1 = updateRect.top () / ch;
-  int cx2 = qMin (d->m_consoleRect.width () - 1, updateRect.right () / cw);
-  int cy2 = qMin (d->m_consoleRect.height () - 1, updateRect.bottom () / ch);
+  int cx2 = std::round (static_cast<qreal> (updateRect.right ()) / cw);
+  cx2 = qMin (d->m_consoleRect.width () - 1, cx2);
+  int cy2 = std::round (static_cast<qreal> (updateRect.bottom ()) / ch);
+  cy2 = qMin (d->m_consoleRect.height () - 1, cy2);
 
   if (cx1 > d->m_consoleRect.width () - 1
       || cy1 > d->m_consoleRect.height () - 1)

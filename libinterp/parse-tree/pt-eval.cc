@@ -2896,8 +2896,7 @@ std::list<std::string> tree_evaluator::variable_names () const
 // current call stack.
 
 octave_user_code *
-tree_evaluator::get_user_code (const std::string& fname,
-                               const std::string& class_name)
+tree_evaluator::get_user_code (const std::string& fname)
 {
   octave_user_code *user_code = nullptr;
 
@@ -2940,17 +2939,18 @@ tree_evaluator::get_user_code (const std::string& fname,
 
           std::string method = name.substr (p1+1, p2-1);
 
-          fcn = symtab.find_method (method, dispatch_type);
-        }
-      else if (! class_name.empty ())
-        {
+          // first check for classdef method
           cdef_manager& cdm = m_interpreter.get_cdef_manager ();
 
-          fcn = cdm.find_method (class_name, name);
+//          fcn = cdm.find_method_symbol (method, dispatch_type);
+
+          cdef_class cls = cdm.find_class (dispatch_type, false);
+          if (cls.ok () && cls.get_name () == dispatch_type)
+            fcn = cls.find_method (method).get_function ();
 
           // If there is no classdef method, then try legacy classes.
           if (fcn.is_undefined ())
-            fcn = symtab.find_method (name, class_name);
+            fcn = symtab.find_method (method, dispatch_type);
         }
       else
         {

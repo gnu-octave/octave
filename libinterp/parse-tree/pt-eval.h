@@ -575,8 +575,7 @@ public:
 
   std::list<std::string> variable_names () const;
 
-  octave_user_code * get_user_code (const std::string& fname = "",
-                                   const std::string& class_name = "");
+  octave_user_code * get_user_code (const std::string& fname = "");
 
   std::string current_function_name (bool skip_first = false) const;
 

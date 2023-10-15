@@ -82,15 +82,13 @@ public:
   typedef fname_bp_map::iterator fname_bp_map_iterator;
 
   // Add a breakpoint at the nearest executable line in a function.
-  int add_breakpoint_in_function (const std::string& fname = "",
-                                  const std::string& class_name = "",
+  int add_breakpoint_in_function (const std::string& fcn_ident = "",
                                   int line = 1,
                                   const std::string& condition = "");
 
   // Add a set of breakpoints at the nearest executable lines in a
   // function.
-  bp_lines add_breakpoints_in_function (const std::string& fname = "",
-                                        const std::string& class_name = "",
+  bp_lines add_breakpoints_in_function (const std::string& fcn_ident = "",
                                         const bp_lines& lines = bp_lines (),
                                         const std::string& condition = "");
 
@@ -106,18 +104,15 @@ public:
                                     const std::string& condition = "");
 
   // Remove a breakpoint from the given line in file.
-  int remove_breakpoint_from_function (const std::string& fname = "",
-                                       const std::string& cname = "",
+  int remove_breakpoint_from_function (const std::string& fcn_ident = "",
                                        int line = 1);
 
   // Remove a set of breakpoints from the given lines in file.
-  int remove_breakpoints_from_function (const std::string& fname = "",
-                                        const std::string& cname = "",
+  int remove_breakpoints_from_function (const std::string& fcn_ident = "",
                                         const bp_lines& lines = bp_lines ());
 
   // Remove all the breakpoints in a specified function.
-  bp_lines remove_all_breakpoints_from_function (const std::string& fname,
-                                                 const std::string& cname = "",
+  bp_lines remove_all_breakpoints_from_function (const std::string& fcn_ident,
                                                  bool silent = false);
 
   // Remove a breakpoint from the given line in file.

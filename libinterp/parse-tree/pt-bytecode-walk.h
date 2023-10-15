@@ -197,6 +197,15 @@ namespace octave
     // for anonymous functions.
     stack_frame::local_vars_map *m_anon_local_values = nullptr;
 
+    // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
+    // where under certain conditions a magic number nargout of -1 is
+    // expected to  maybe return a cs-list. "-1" in this context 
+    // does not have the same meaning as in the VM, where it means
+    // a varargout with only one return symbol 'varargout'.
+    //
+    // We need to track "unknown nargout" for this.
+    int m_unknown_nargout = 0;
+
     //
     bool m_is_folding = false;
     std::vector<tree*> m_v_trees_to_fold;

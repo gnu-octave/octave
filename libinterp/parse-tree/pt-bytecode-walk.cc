@@ -1397,6 +1397,7 @@ void
 bytecode_walker::
 visit_postfix_expression (tree_postfix_expression& expr)
 {
+  m_unknown_nargout++;
   INC_DEPTH();
 
   tree_expression *e = expr.operand ();
@@ -1524,12 +1525,14 @@ visit_postfix_expression (tree_postfix_expression& expr)
   maybe_emit_bind_ans_and_disp (expr);
 
   DEC_DEPTH();
+  m_unknown_nargout--;
 }
 
 void
 bytecode_walker::
 visit_prefix_expression (tree_prefix_expression& expr)
 {
+  m_unknown_nargout++;
   INC_DEPTH();
 
   tree_expression *e = expr.operand ();
@@ -1657,6 +1660,7 @@ visit_prefix_expression (tree_prefix_expression& expr)
   maybe_emit_bind_ans_and_disp (expr);
 
   DEC_DEPTH();
+  m_unknown_nargout--;
 }
 
 void
@@ -1773,6 +1777,7 @@ visit_compound_binary_expression (tree_compound_binary_expression &expr)
   // do fused for a matrix, like M'*A etc.
   INC_DEPTH();
   PUSH_NARGOUT (1);
+  m_unknown_nargout++;
 
   tree_expression *op1 = expr.clhs ();
 
@@ -1814,6 +1819,7 @@ visit_compound_binary_expression (tree_compound_binary_expression &expr)
 
   POP_NARGOUT ();
   DEC_DEPTH();
+  m_unknown_nargout--;
 }
 
 void
@@ -1822,6 +1828,7 @@ visit_binary_expression (tree_binary_expression& expr)
 {
   INC_DEPTH ();
   PUSH_NARGOUT (1);
+  m_unknown_nargout++;
 
   std::vector<int> need_after;
   int fold_slot = -1;
@@ -2100,6 +2107,7 @@ visit_binary_expression (tree_binary_expression& expr)
   POP_NARGOUT ();
 
   DEC_DEPTH ();
+  m_unknown_nargout--;
 }
 
 void
@@ -5176,12 +5184,30 @@ visit_index_expression (tree_index_expression& expr)
 
   arg_name_entry.m_ip_start = CODE_SIZE ();
 
+  // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
+  // where under certain conditions a magic number nargout of -1 is
+  // expected to  maybe return a cs-list. "-1" in this context 
+  // does not have the same meaning as in the VM, where it means
+  // a varargout with only one return symbol 'varargout'.
+  bool m1_magic_nargout = false;
+  if (m_unknown_nargout)
+    {
+      if ((v_types.size () >= 1 && (v_types[0] == '{' || v_types[0] == '.')) ||
+          (v_types.size () >= 2 && (v_types[0] == '(' && v_types[1] == '.')))
+      {
+          m1_magic_nargout = true; 
+      }
+    }
+
   if (first_expression && first_expression->is_identifier ())
     {
       int slot = SLOT (first_expression->name ());
       MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
       PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-      PUSH_CODE (nargout);
+      if (m1_magic_nargout)
+        PUSH_CODE (-1);
+      else
+        PUSH_CODE (nargout);
       PUSH_CODE (1); // has slot
       PUSH_WSLOT (slot); // the slot
     }
@@ -5189,7 +5215,10 @@ visit_index_expression (tree_index_expression& expr)
     {
       MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
       PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-      PUSH_CODE (nargout);
+      if (m1_magic_nargout)
+        PUSH_CODE (-1);
+      else
+        PUSH_CODE (nargout);
       PUSH_SLOT (0); // has slot
       PUSH_WSLOT (0); // slot ignored
     }

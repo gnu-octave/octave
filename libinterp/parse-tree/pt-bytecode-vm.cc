@@ -5031,6 +5031,13 @@ throw_iferrorobj:
 index_struct_call:
   {
     int nargout = arg0;
+    // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
+    // where under certain conditions a magic number nargout of -1 is
+    // expected to  maybe return a cs-list. "-1" in this context 
+    // does not have the same meaning as in the VM, where it means
+    // a varargout with only one return symbol 'varargout'.
+    if (nargout == 255)
+      nargout = -1;
     bool has_slot = *ip++;
     int slot = POP_CODE_USHORT ();
 
@@ -5217,6 +5224,13 @@ index_struct_call:
     CATCH_EXIT_EXCEPTION
 
     STACK_DESTROY (1);
+  // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
+  // where under certain conditions a magic number nargout of -1 is
+  // expected to  maybe return a cs-list. "-1" in this context 
+  // does not have the same meaning as in the VM, where it means
+  // a varargout with only one return symbol 'varargout'.
+    if (nargout == -1)
+      nargout = 1;
     EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
   }
   DISPATCH ();

@@ -558,6 +558,15 @@ octave::print_bytecode(bytecode &bc)
       printf ("\tip:%5d obj=%p\n", it.first, it.second);
     }
 
+  if (bc.m_unwind_data.m_v_nested_vars.size ())
+    {
+      printf ("Nested symbols table:\n");
+      for (auto it : bc.m_unwind_data.m_v_nested_vars)
+        {
+          printf ("%d:nth parent's slot: %d, child slot: %d\n", it.m_depth, it.m_slot_parent, it.m_slot_nested);
+        }
+    }
+
   printf("code: (n=%d)\n", n);
   auto v_ls = opcodes_to_strings (bc);
   for (auto ls : v_ls)
@@ -1326,7 +1335,8 @@ ret:
     std::shared_ptr<stack_frame> fp = m_tw->pop_return_stack_frame ();
     // If the pointer is not shared, stash it in a cache which is used
     // to avoid having to allocate shared pointers each frame push.
-    if (fp.unique () && m_frame_ptr_cache.size () < 8)
+    // If it is a closure context, there might be weak pointers to it from function handles.
+    if (fp.unique () && m_frame_ptr_cache.size () < 8 && !fp->is_closure_context ())
       {
         fp->vm_clear_for_cache ();
         m_frame_ptr_cache.push_back (std::move (fp));

@@ -1264,7 +1264,9 @@ public:
     auto *child_bc_frame = this;
 
     // Walk the parent(s) to see if they are in direct order and all bytecode frames.
-    // Collect the bsp. (base stack pointer)
+    // Collect the bsp. (base stack pointer).
+
+    // TODO: There might be a need to check that all children share access frame?
     int n_nested_depth = m_unwind_data->m_n_nested_fn;
     std::vector<stack_element*> v_parent_bsps;
     int i;
@@ -1299,8 +1301,31 @@ public:
               }
             else
               {
-                is_direct_call = false;
-                break;
+                // At the last depth the access frame might be the final parent.
+                if (i + 1 != n_nested_depth)
+                  {
+                    is_direct_call = false;
+                    break;
+                  }
+
+                auto access_frame = access_link ();
+
+                if (!access_frame || !access_frame->is_bytecode_fcn_frame ())
+                  {
+                    is_direct_call = false;
+                    break;
+                  }
+
+                auto access_bc_frame = static_cast<bytecode_fcn_stack_frame*> (access_frame.get ());
+                // Check that the access frame the matriarch of the current frame.
+                if (access_bc_frame->m_unwind_data->m_id != m_unwind_data->m_matriarch_id)
+                  {
+                    is_direct_call = false;
+                    break;
+                  }
+
+                // The access frame is the last parent
+                parent_bc_frame = access_bc_frame;
               }
           }
 
@@ -1319,10 +1344,7 @@ public:
         parent_bc_frame = static_cast<bytecode_fcn_stack_frame*> (parent_frame.get ());
       }
 
-    // Nested function handles have a closure context
-    bool has_closure = access_link ()->is_closure_context ();
-
-    if (is_direct_call && ! has_closure)
+    if (is_direct_call)
       {
         for (unwind_data::nested_var_offset &d : m_unwind_data->m_v_nested_vars)
         {
@@ -1358,10 +1380,13 @@ public:
 
         std::vector<decltype(first_context_frame)> v_frames {std::move (first_context_frame)};
 
+        // TODO: Need to make test cases to verify that this works for nested nested function handles from
+        //       used in other function than the original root function.
         for (int j = 1; j < m_unwind_data->m_n_nested_fn; j++) // 1, since first one already added
           {
             auto &upper_frame = v_frames.back ();
             auto lower_frame = upper_frame->access_link ();
+
             CHECK_PANIC (lower_frame);
             v_frames.push_back (lower_frame);
           }
@@ -1603,13 +1628,22 @@ public:
     if (m_stack_start)
       {
         for (unsigned i = 1; i < m_size; i++)
-          m_stack_start[i].ov.break_closure_cycles (frame);
+          {
+            // break_closure_cycles () is making a clone of nil values
+            // but we want nil values to have the same m_rep pointer, on the
+            // VM stack. is_nil () wont return true on a cloned nil value.
+            if (!m_stack_start[i].ov.is_nil ())
+              m_stack_start[i].ov.break_closure_cycles (frame);
+          }
       }
 
     if (m_lazy_data)
       {
         for (octave_value &ov : m_lazy_data->m_extra_slots)
-          ov.break_closure_cycles (frame);
+          {
+            if (!ov.is_nil ())
+              ov.break_closure_cycles (frame);
+          }
       }
 
     if (m_access_link)

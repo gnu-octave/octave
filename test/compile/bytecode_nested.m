@@ -340,13 +340,43 @@ function bytecode_nested ()
   assert (h1i (2) == 3)
   h2i = inline ("__vm_is_executing__()");
   assert (h2i() == __vm_is_executing__);
+
+  %% Bug 64778. clone() of nil octave_value causing problems.
+  function nested_18
+    nested_18_local_a = 1;
+
+    function nested_18_1
+      nested_18_local_a = 2;
+    end
+
+    nested_18_1;
+    assert (nested_18_local_a == 2); % Assure value on the current stack frame changed
+
+    nested_18_local_a = 1;
+    hh = @nested_18_1;
+    hh();
+    % A handle call also changes the current stack frame, since the handle refers to the current frame
+    assert (nested_18_local_a == 2);
+  end
+
+  h5 = @nested_18; % Make a handle
+  nested_18 ();    % Call normally. Caused problem since "is_closure_frame ()" was used improperly.
+  subby2 (); % The slot value for subby2 was cloned and caused an internal error "ov.is_nil()" check to trigger
+  call_handle0 (h5); % Test calling from another frame too.
 end
 
 function subby
 end
 
+function subby2
+end
+
 function a = call_handle1 (h)
   a = h ();
+end
+
+function call_handle0 (h)
+  h ();
 end
 
 function h = sub_returns_nested_fn ()

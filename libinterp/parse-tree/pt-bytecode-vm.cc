@@ -2750,7 +2750,7 @@ for_setup:
         else
           n = 0; // A e.g. 0x3 sized Cell gives no iterations, not 3
       }
-    else if (ov_range.is_scalar_type ())
+    else if (ov_range.is_scalar_type () || ov_range.is_undefined ())
       ;
     else
       TODO ("Unsupported for rhs type");
@@ -2775,7 +2775,7 @@ for_setup:
     (*sp++).i = -1;
 
     // For empty rhs just assign it to lhs
-    if (! n)
+    if (! n && ov_range.is_defined ())
       {
         // Slot from the for_cond that always follow a for_setup
         int slot;
@@ -3645,13 +3645,15 @@ for_complex_setup:
 
   if (ov_rhs.is_undefined ())
     {
+      (*sp++).i = 1; // Need two native ints on the stack so they can be popped by the POP_N_INTS
+      (*sp++).i = 2; // after the for loop body.
       ip = code + target;
       DISPATCH ();
     }
 
   if (!ov_rhs.isstruct ())
     {
-      (*sp++).i = 1; // Need two native ints on the stack so they can be poped by the unwind.
+      (*sp++).i = 1; // Need two native ints on the stack so they can be popped by the unwind.
       (*sp++).i = 2;
       (*sp++).pee = new execution_exception {"error", "", "in statement 'for [X, Y] = VAL', VAL must be a structure"};
       (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);

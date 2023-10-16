@@ -201,6 +201,21 @@ function bytecode_for()
   for [val, key] = struct ()
     __printf_assert__ ("boo");
   end
+
+  % If rhs is an undefined value, the body should not be executed
+  % and the iteration variable not modified.
+  x = 1;
+  for x = __varval__ ("") % Use __varval__ to get an undefined value
+    __printf_assert__ ("booo");
+  end
+  assert (x == 1);
+
+  y = 2;
+  for [x, y] = __varval__ ("")
+    __printf_assert__ ("boo");
+  end
+  assert (x == 1);
+  assert (y == 2);
 end
 
 

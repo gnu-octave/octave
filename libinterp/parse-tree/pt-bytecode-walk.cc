@@ -3984,6 +3984,7 @@ bytecode_walker::
 visit_matrix (tree_matrix &m)
 {
   INC_DEPTH ();
+  m_unknown_nargout++;
 
   bool is_rectangle = true;
   std::vector<int> row_lengths;
@@ -4060,6 +4061,7 @@ visit_matrix (tree_matrix &m)
   maybe_emit_bind_ans_and_disp (m);
 
   DEC_DEPTH ();
+  m_unknown_nargout--;
 }
 
 void
@@ -4067,6 +4069,7 @@ bytecode_walker::
 visit_cell (tree_cell &m)
 {
   INC_DEPTH ();
+  m_unknown_nargout++;
 
   auto p = m.begin ();
   int n_cols = -1;
@@ -4118,6 +4121,7 @@ visit_cell (tree_cell &m)
   maybe_emit_bind_ans_and_disp (m);
 
   DEC_DEPTH ();
+  m_unknown_nargout--;
 }
 
 void
@@ -5069,10 +5073,25 @@ visit_index_expression (tree_index_expression& expr)
   size_t n_chained = type_tags.size ();
   CHECK (n_chained);
 
+  // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
+  // where under certain conditions a magic number nargout of -1 is
+  // expected to  maybe return a cs-list. "-1" in this context 
+  // does not have the same meaning as in the VM, where it means
+  // a varargout with only one return symbol 'varargout'.
+  bool m1_magic_nargout = false;
+  if (m_unknown_nargout)
+    {
+      if ((type_tags.size () >= 1 && (type_tags[0] == '{' || type_tags[0] == '.')) ||
+          (type_tags.size () >= 2 && (type_tags[0] == '(' && type_tags[1] == '.')))
+      {
+          m1_magic_nargout = true; 
+      }
+    }
+
   // For un-chained index expressions we use specialized
   // op-codes that has e.g. nargout and type '(','{' and '.'
   // encoded in the op-code it self to speed things up.
-  if (n_chained == 1)
+  if (n_chained == 1 && !m1_magic_nargout)
     {
       simple_visit_index_expression (expr);
       return;
@@ -5183,21 +5202,6 @@ visit_index_expression (tree_index_expression& expr)
   int nargout = NARGOUT ();
 
   arg_name_entry.m_ip_start = CODE_SIZE ();
-
-  // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
-  // where under certain conditions a magic number nargout of -1 is
-  // expected to  maybe return a cs-list. "-1" in this context 
-  // does not have the same meaning as in the VM, where it means
-  // a varargout with only one return symbol 'varargout'.
-  bool m1_magic_nargout = false;
-  if (m_unknown_nargout)
-    {
-      if ((v_types.size () >= 1 && (v_types[0] == '{' || v_types[0] == '.')) ||
-          (v_types.size () >= 2 && (v_types[0] == '(' && v_types[1] == '.')))
-      {
-          m1_magic_nargout = true; 
-      }
-    }
 
   if (first_expression && first_expression->is_identifier ())
     {

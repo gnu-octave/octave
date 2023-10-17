@@ -7509,6 +7509,10 @@ octave_value_list
 vm::call (tree_evaluator& tw, int nargout, const octave_value_list& xargs,
           octave_user_code *fn, std::shared_ptr<stack_frame> context)
 {
+  // If number of outputs unknown, pass nargout=1 to the function being called
+  if (nargout < 0)
+    nargout = 1;
+
   CHECK_PANIC (fn);
   CHECK_PANIC (fn->is_compiled ());
 

@@ -2298,6 +2298,11 @@ visit_octave_user_script (octave_user_script& fcn)
 
   // EXIT_SCRIPT_FRAME is put before each RET during the walk.
 
+  // When the last byte of opcode, a 'RET', is to be executed, the VM reads the
+  // next byte of code and puts it in 'arg0'.  So, we need to add a dummy
+  // opcode afterwards to prevent out-of-bounds reads.
+  PUSH_CODE (INSTR::RET);
+
   // Set the amount of locals that has a placeholder since earlier
   SET_CODE_SHORT (m_offset_n_locals, m_n_locals);
 

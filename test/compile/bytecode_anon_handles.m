@@ -96,9 +96,9 @@ function bytecode_anon_handles ()
   % The optim package exposed a bug with EXPAND_CS_LIST during development
   h1 = @ (p) - (p(1)^2 + 1 - p(2));
   h2 = @ (p) {[], h1(p)}{:};
-  [~, a] = h2 ([-2 5])
+  [~, a] = h2 ([-2 5]);
   assert (a == 0)
-  [~, a] = h2 ([-2 5])
+  [~, a] = h2 ([-2 5]);
   assert (a == 0)
 
   % Nested anon functions

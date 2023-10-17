@@ -62,15 +62,10 @@ function [a b] = bytecode_leaks (c, d)
   m = 0;
   assert (refs_e, __ref_count__ (e))
 
-  % "command call" with disp
-  disp ("The disp of e and pi underneath is on purpose. There should be a 'e = 2' and 'ans = 3.14...'")
-  e % Should print "e = 2"
-  assert (refs_e + 1, __ref_count__ (e)) % in ans
-  ans = 0;
-  assert (refs_e, __ref_count__ (e))
-
-  % This will be a function call and should print "ans = 3.14..."
-  pi
+  % "command call" with disp. Do it in an evalc () to not clutter stdout
+  s_ans = evalc ("silent_disp_test ()");
+  assert (strfind (s_ans, "e = 2"))
+  assert (strfind (s_ans, "ans = 3.14"))
 
   % no disp
   e;
@@ -109,6 +104,21 @@ function [a b] = bytecode_leaks (c, d)
   % eval dynamic stack
   suby8 (e);
   assert (refs_e, __ref_count__ (e))
+end
+
+function silent_disp_test ()
+  assert (__vm_is_executing__);
+
+  e = 2;
+  refs_e = __ref_count__ (e);
+
+  e % Should print "e = 2"
+  assert (refs_e + 1, __ref_count__ (e)) % in ans
+  ans = 0;
+  assert (refs_e, __ref_count__ (e))
+
+  % This will be a function call and should print "ans = 3.14..."
+  pi
 end
 
 function suby1 (a)

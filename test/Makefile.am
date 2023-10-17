@@ -78,6 +78,7 @@ include bug-44940/module.mk
 include bug-45351/module.mk
 include bug-46660/module.mk
 include bug-47680/module.mk
+include bug-48693/module.mk
 include bug-49379/module.mk
 include bug-50014/module.mk
 include bug-50035/module.mk

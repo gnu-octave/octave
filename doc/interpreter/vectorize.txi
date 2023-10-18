@@ -633,39 +633,10 @@ they are no longer needed.
 @section VM evaluator
 
 Octave's virtual machine (VM) evaluator allows faster execution of existing
-code.  Octave versions 9 onwards have the VM built-in by default.
-
-At its simplest, the only thing a user needs is to run the single command
-@code{vm_enable (1)} on starting Octave, and the rest of the user's
-session is as before, except that some code will likely run faster.  If you
-find yourself doing this frequently, you can also add the following code to
-your Octave startup file (`.octaverc` or similar):
-
-@example
-@group
-if (exist ("vm_enable") == 5)  # built-in function exists
-  vm_enable (1);
-end
-@end group
-@end example
-
-The full calling form for @code{vm_enable} is:
-
-@DOCSTRING(vm_enable)
-
-A more comprehensive list of VM-related functions is given by the @code{vm}
-command.
-
-If broad-spectrum evaluation of all the user code with the VM is not desirable,
-then more advanced VM-related techniques are to selectively switch on or off
-VM compilation for specific functions as the user needs.  In general, these
-might be done for frequently called functions ("hotspots").
-
-@DOCSTRING(vm_compile)
-
-Profiling can be done with the @code{vm_profile} command.
-
-@DOCSTRING(vm_profile)
+code.  Octave versions 9 onwards have the VM built-in by default.  The VM is
+still considered experimental, therefore the VM functions are not explicitly
+documented in this manual.  Instead, the command @code{vm} will list several
+VM-related functions, including how to enable it.
 
 @node Miscellaneous Techniques
 @section Miscellaneous Techniques

@@ -28,15 +28,15 @@
 ## Summary of commands related to Octave's virtual machine (VM) evaluator.
 ##
 ## As of Octave 9, the VM evaluator is considered @emph{experimental}.
-## The user is encouraged to test the VM with that in mind. All VM functions
-## being experimental for now, may be renamed in future. Currently they are
-## all named @code{__vm_X__}`.
+## The user is encouraged to test the VM with that in mind. All VM functions,
+## being experimental, may be renamed in future. Currently they are
+## all named @code{__vm_X__}.
 ##
 ## To switch on the VM, type: @code{__vm_enable__ (1)}
 ##
 ## To switch off the VM, type: @code{__vm_enable__ (0)}
 ##
-## If you want to always use the VM, you can add @code{__vm_enable__ (1)}
+## To always use the VM, add @code{__vm_enable__ (1)}
 ## to your Octave startup file (.octaverc or similar).
 ##
 ## For more information on each command and available options use
@@ -54,7 +54,7 @@
 ## @end table
 ##
 ## There are also several private VM functions whose names also begin with
-## @code{__vm_}.
+## @code{__vm_}.  These are meant for developer use.
 ##
 ## @noindent
 ## @end deftypefn

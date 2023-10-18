@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // If TRUE, use VM evaluator rather than tree walker.
 // FIXME: Use OCTAVE_ENABLE_VM_EVALUATOR define to set it to true when
 // the VM has been tested properly.
-bool Vvm_enable = false;
+bool V__vm_enable__ = false;
 
 // Cleverly hidden in pt-bytecode-vm.cc to prevent inlining here
 extern "C" void dummy_mark_1 (void);
@@ -159,39 +159,39 @@ False otherwise.
   return octave_value {bytecode_running};
 }
 
-DEFMETHOD (vm_profile, interp, args, ,
+DEFMETHOD (__vm_profile__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {} vm_profile on
-@deftypefnx {} {} vm_profile off
-@deftypefnx {} {} vm_profile resume
-@deftypefnx {} {} vm_profile clear
-@deftypefnx {} {@var{T} =} vm_profile ("info")
-@deftypefnx {} {} vm_profile
+@deftypefn  {} {} __vm_profile__ on
+@deftypefnx {} {} __vm_profile__ off
+@deftypefnx {} {} __vm_profile__ resume
+@deftypefnx {} {} __vm_profile__ clear
+@deftypefnx {} {@var{T} =} __vm_profile__ ("info")
+@deftypefnx {} {} __vm_profile__
 
 Internal function.
 
 Profile code running in the VM.
 
 @table @code
-@item vm_profile on
+@item __vm_profile__ on
 Start the profiler, clearing all previously collected data if there is any.
 
-@item vm_profile off
+@item __vm_profile__ off
 Stop profiling.  The collected data can later be retrieved and examined
 with @code{T = profile ("info")}.
 
-@item vm_profile clear
+@item __vm_profile__ clear
 Clear all collected profiler data.
 
-@item vm_profile resume
+@item __vm_profile__ resume
 Restart profiling without clearing the old data.  All newly collected
 statistics are added to the existing ones.
 
-@item vm_profile
+@item __vm_profile__
 Toggles between profiling and printing the result of the profiler.
 Clears the profiler on each print.
 
-@item vm_profile info
+@item __vm_profile__ info
 Prints the profiler data.
 
 Not that output to a variable is not implemented yet.
@@ -328,7 +328,7 @@ Prints the bytecode of a function name or function handle, if any.
   // Nested functions need to be compiled via their parent
   bool is_nested = ufn->is_nested_function ();
 
-  bool try_compile = !ufn->is_compiled () && Vvm_enable && !is_nested;
+  bool try_compile = !ufn->is_compiled () && V__vm_enable__ && !is_nested;
   
   if (try_compile && h && h->is_anonymous ())
     h->compile ();
@@ -411,11 +411,11 @@ False otherwise.
     }
 }
 
-DEFMETHOD (vm_compile, interp, args, ,
+DEFMETHOD (__vm_compile__, interp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} vm_compile (@var{fn_name})
-@deftypefnx  {} {@var{success} =} vm_compile (@var{fn_name}, "clear")
-@deftypefnx  {} {@var{success} =} vm_compile (@var{fn_name}, "print")
+@deftypefn  {} {@var{success} =} __vm_compile__ (@var{fn_name})
+@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "clear")
+@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "print")
 
 Internal function.
 
@@ -426,7 +426,7 @@ by the VM when called.
 
 Returns true on success, otherwise false.
 
-Don't recompile or clear the bytecode of a running function with vm_compile.
+Don't recompile or clear the bytecode of a running function with __vm_compile__.
 
 The @qcode{"print"} option prints the bytecode after compilation.
 
@@ -564,18 +564,18 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
   return octave_value {true};
 }
 
-DEFUN (vm_enable, args, nargout,
+DEFUN (__vm_enable__, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} vm_enable ()
-@deftypefnx {} {@var{old_val} =} vm_enable (@var{new_val})
-@deftypefnx {} {@var{old_val} =} vm_enable (@var{new_val}, "local")
+@deftypefn  {} {@var{val} =} __vm_enable__ ()
+@deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val})
+@deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val}, "local")
 Query or set whether Octave automatically compiles functions to bytecode
 and executes them in a virtual machine (VM).
 
 Note that the virtual machine feature is experimental.
 
 The default value is currently false, while the VM is still experimental.
-Users need to explicitly call @code{vm_enable (1)} to enable it.
+Users need to explicitly call @code{__vm_enable__ (1)} to enable it.
 In future, this will be set to the value of  the OCTAVE_ENABLE_VM_EVALUATOR
 flag that was set when building Octave.
 
@@ -589,16 +589,16 @@ is changed locally for the function and any subroutines it calls.  The original
 setting is restored when exiting the function.
 
 Once compiled to bytecode, the function will always be evaluated by the
-VM no matter the state of @qcode{"vm_enable"}, until the bytecode is
+VM no matter the state of @qcode{"__vm_enable__"}, until the bytecode is
 cleared, by e.g. @qcode{"clear all"} or an modification to the
 function's m-file.
 
-@seealso{vm_compile}
+@seealso{__vm_compile__}
 
 @end deftypefn */)
 {
-  return set_internal_variable (Vvm_enable, args, nargout,
-                                "vm_enable");
+  return set_internal_variable (V__vm_enable__, args, nargout,
+                                "__vm_enable__");
 }
 
 OCTAVE_END_NAMESPACE(octave)

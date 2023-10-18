@@ -328,7 +328,7 @@ enum class global_type
 };
 
 // If TRUE, use VM evaluator rather than tree walker.
-extern bool Vvm_enable;
+extern bool V__vm_enable__;
 
 OCTAVE_END_NAMESPACE(octave)
 

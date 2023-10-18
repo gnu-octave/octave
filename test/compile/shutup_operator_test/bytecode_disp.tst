@@ -9,10 +9,10 @@
 %! % double's display. Is this a bug ???
 %! clear classes
 %! key = "ans = 1 . ans = 5 . . ans = 0 . ans = 8 . ans = 3 . x = 3 . x = 1 y = 2 . x = 1 . . x = 1 . y = 2 . x = 1 ";
-%! vm_compile bytecode_disp clear;
+%! __vm_compile__ bytecode_disp clear;
 %! bytecode_disp;
 %! assert (__prog_output_assert__ (key));
 %!
-%! assert (vm_compile ("bytecode_disp"));
+%! assert (__vm_compile__ ("bytecode_disp"));
 %! bytecode_disp;
 %! assert (__prog_output_assert__ (key));

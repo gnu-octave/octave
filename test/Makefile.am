@@ -150,10 +150,8 @@ endef
 check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests)
 
-if AMCOND_ENABLE_VM_EVALUATOR
 check-vm: $(BUILT_SOURCES) $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests,__vm_enable__ (1))
-endif
 
 COVERAGE_DIR = coverage
 COVERAGE_INFO = $(COVERAGE_DIR)/$(PACKAGE).info

@@ -1408,20 +1408,8 @@ if test $ENABLE_COMMAND_LINE_PUSH_PARSER = yes; then
     [Define to 1 to use Bison's push parser interface in the command line REPL.])
 fi
 
-### Configure compilation of *experimental* Virtual Machine evaluator.
-
+## FIXME: The next line is needed for VM-related ifdefs in pt-bytecode-vm.cc.
 AC_C_BIGENDIAN()
-
-ENABLE_VM_EVALUATOR=yes
-AC_ARG_ENABLE([vm-evaluator],
-  [AS_HELP_STRING([--disable-vm-evaluator],
-    [don't compile *experimental* virtual machine evaluator])],
-  [if test "$enableval" = no; then ENABLE_VM_EVALUATOR=no; fi], [])
-if test $ENABLE_VM_EVALUATOR = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_VM_EVALUATOR, 1,
-    [Define to 1 to build experimental Virtual Machine evaluator.])
-fi
-AM_CONDITIONAL([AMCOND_ENABLE_VM_EVALUATOR], [test $ENABLE_VM_EVALUATOR = yes])
 
 ### Check for PCRE2 or PCRE regex library, requiring one to exist.
 

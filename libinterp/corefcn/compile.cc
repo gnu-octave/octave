@@ -39,8 +39,6 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 // If TRUE, use VM evaluator rather than tree walker.
-// FIXME: Use OCTAVE_ENABLE_VM_EVALUATOR define to set it to true when
-// the VM has been tested properly.
 bool V__vm_enable__ = false;
 
 // Cleverly hidden in pt-bytecode-vm.cc to prevent inlining here
@@ -576,8 +574,6 @@ Note that the virtual machine feature is experimental.
 
 The default value is currently false, while the VM is still experimental.
 Users need to explicitly call @code{__vm_enable__ (1)} to enable it.
-In future, this will be set to the value of  the OCTAVE_ENABLE_VM_EVALUATOR
-flag that was set when building Octave.
 
 When false, Octave uses a traditional tree walker
 to evaluate statements parsed from m-code.  When true, Octave translates parsed

@@ -457,7 +457,7 @@ class vm
 
   static constexpr size_t stack_size = 2048 * 8;
   static constexpr size_t stack_pad = 32;
- 
+
 #if SIZE_MAX == 0xFFFFFFFF
   static constexpr size_t stack_magic_int = 0xBABEBEEF; // 32bit systems
 #else

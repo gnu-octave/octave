@@ -305,7 +305,7 @@ Prints the bytecode of a function name or function handle, if any.
 
   octave_user_code *ufn = nullptr;
   octave_fcn_handle *h = nullptr;
-  
+
   if (ov.is_function_handle ())
     {
       h = ov.fcn_handle_value ();
@@ -327,7 +327,7 @@ Prints the bytecode of a function name or function handle, if any.
   bool is_nested = ufn->is_nested_function ();
 
   bool try_compile = !ufn->is_compiled () && V__vm_enable__ && !is_nested;
-  
+
   if (try_compile && h && h->is_anonymous ())
     h->compile ();
   else if (try_compile)
@@ -529,7 +529,7 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
           return octave_value {true};
         }
     }
-  else 
+  else
     {
       std::string name = fcn_to_compile;
       symbol_table& symtab = interp.get_symbol_table ();

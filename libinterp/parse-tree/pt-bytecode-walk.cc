@@ -2574,7 +2574,7 @@ visit_octave_user_function (octave_user_function& fcn)
       std::string fn_name = scope.fcn_name ();
 
       // Names might be e.g. "get.Count" but we only want "Count"
-      auto dot_idx = fn_name.find_last_of ('.'); 
+      auto dot_idx = fn_name.find_last_of ('.');
       if (dot_idx != std::string::npos)
         fn_name = fn_name.substr (dot_idx + 1);
 
@@ -2602,7 +2602,7 @@ visit_octave_user_function (octave_user_function& fcn)
 
           std::size_t offset = parent_sr.data_offset ();
           std::size_t frame_offset = parent_sr.frame_offset ();
-          
+
           if (frame_offset >= m_code.m_unwind_data.m_external_frame_offset_to_internal.size ())
             m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (frame_offset + 1);
 
@@ -3681,7 +3681,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
           //   Gives: a == 3
           //
           // If that is the case, we pushed a nil earlier, so we
-          // copy the top of the stack (rhs) to the nils place in the stack. 
+          // copy the top of the stack (rhs) to the nils place in the stack.
           // The copy will then be in place to be rhs again.
           if (DEPTH () != 1)
             {
@@ -3918,7 +3918,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
           //   Gives: a == 3
           //
           // If that is the case, we pushed a nil earlier, so we
-          // copy the top of the stack (rhs) to the nils place in the stack. 
+          // copy the top of the stack (rhs) to the nils place in the stack.
           // The copy will then be in place to be rhs again.
           if (DEPTH () != 1)
             {
@@ -5080,7 +5080,7 @@ visit_index_expression (tree_index_expression& expr)
 
   // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
   // where under certain conditions a magic number nargout of -1 is
-  // expected to  maybe return a cs-list. "-1" in this context 
+  // expected to  maybe return a cs-list. "-1" in this context
   // does not have the same meaning as in the VM, where it means
   // a varargout with only one return symbol 'varargout'.
   bool m1_magic_nargout = false;
@@ -5089,7 +5089,7 @@ visit_index_expression (tree_index_expression& expr)
       if ((type_tags.size () >= 1 && (type_tags[0] == '{' || type_tags[0] == '.')) ||
           (type_tags.size () >= 2 && (type_tags[0] == '(' && type_tags[1] == '.')))
       {
-          m1_magic_nargout = true; 
+          m1_magic_nargout = true;
       }
     }
 
@@ -5199,7 +5199,7 @@ visit_index_expression (tree_index_expression& expr)
       PUSH_CODE (m_ignored_of_total);
       for (int i : m_v_ignored)
         PUSH_CODE (i);
-      m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect        
+      m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect
     }
 
   maybe_emit_anon_maybe_ignore_outputs ();

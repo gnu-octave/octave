@@ -93,8 +93,8 @@ public:
     bool is_global_ref () const { return true; }
 
     octave::stack_frame::scope_flags get_scope_flag ()
-    { 
-      return octave::stack_frame::scope_flags::GLOBAL; 
+    {
+      return octave::stack_frame::scope_flags::GLOBAL;
     }
 
 private:

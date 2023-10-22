@@ -3544,7 +3544,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
   // pass nargout=1 to the function being called
   if (nargout < 0)
     nargout = 1;
-  
+
   if (user_function.is_classdef_constructor ())
     {
       if (nargin > 0)

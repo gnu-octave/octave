@@ -1586,7 +1586,7 @@ AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_OK], [
 ])
 
 dnl
-dnl Check for support of some specific formats in sndfile library 
+dnl Check for support of some specific formats in sndfile library
 dnl
 AC_DEFUN([OCTAVE_CHECK_LIB_SNDFILE_FORMATS], [
   AC_CACHE_CHECK([whether sndfile library supports mp3],

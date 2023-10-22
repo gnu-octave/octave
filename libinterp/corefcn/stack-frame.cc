@@ -112,7 +112,7 @@ public:
         int n_to_add = n_syms - m_orig_size;
         // Make room for the extra symbols
         internal_resize (internal_size () + n_to_add);
-        
+
         // We need to get the names of the extra symbols too
         auto scope = get_scope ();
         auto &sym_map = scope.symbols ();
@@ -226,7 +226,7 @@ public:
 
   // Returns true if the symbol with the external offset and frame offset is stored in this frame.
   // Note that this does not imply that frame offset is zero, if the return value is true.
-  bool maybe_external_to_local_offset (std::size_t external_offset, std::size_t frame_offset, 
+  bool maybe_external_to_local_offset (std::size_t external_offset, std::size_t frame_offset,
                                        std::size_t &internal_offset_out, bool &allready_added_out) const
   {
     allready_added_out = false;
@@ -487,7 +487,7 @@ public:
           {
             // If a non-bytecode script adds a symbol to the scope of an eval frame
             // that is a bytecode function we don't have any name specified in the frame
-            // so we need to look for the name in the scope, since we need it to create the 
+            // so we need to look for the name in the scope, since we need it to create the
             // global ref.
 
             CHECK_PANIC (!m_fcn->is_user_script ()); // A bytecode script should never be an eval frame
@@ -1474,7 +1474,7 @@ public:
             // 'nest.tst' need frame offset when a script tries to access a variable from a nested
             // function.
             // TODO: Fix this hack
-            octave_value *ov_eval = sr_eval.frame_offset () ? 
+            octave_value *ov_eval = sr_eval.frame_offset () ?
                                       &eval_frame->varref (sr_eval, false) :
                                       &eval_frame->varref (sr_eval.data_offset (), false);
 
@@ -1513,7 +1513,7 @@ public:
           sr_eval = eval_frame->insert_symbol (id_name);
         eval_frame->varref (sr_eval, false); // A bit silly, but allocates space for it
 
-        octave_value *ov_eval = sr_eval.frame_offset () ? 
+        octave_value *ov_eval = sr_eval.frame_offset () ?
                                   &eval_frame->varref (sr_eval, false) :
                                   &eval_frame->varref (sr_eval.data_offset (), false);
 
@@ -1583,7 +1583,7 @@ public:
         ov_current = {};
       }
 
-    // Move all values the parent frame needs to it from the eval frame, 
+    // Move all values the parent frame needs to it from the eval frame,
     // if the parent frame is a bytecode frame.
     if (!caller_is_eval_frame && parent_frame->is_bytecode_fcn_frame ())
       {
@@ -1685,7 +1685,7 @@ private:
   {
     auto frame = parent_link ();
     unsigned expected_idx = index ();
-    
+
     while (frame)
       {
         if (frame->index () != expected_idx)

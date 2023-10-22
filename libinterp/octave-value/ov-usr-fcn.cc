@@ -205,7 +205,7 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       //     * The caller is top scope or a bytecode frame
       // , to allow executing the script in the VM. I.e. don't execute scripts in the VM
       // if the caller is an user function that is not compiled.
-  
+
       // TODO: "octave_value varval (std::size_t data_offset) const" and "varref" would need to
       // follow ref_rep() like scope_stack_frame::varref() does for having un-compiled functions
       // as an eval frame, but that might maybe degrade performance somewhat of the evaluator.

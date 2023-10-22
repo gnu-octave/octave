@@ -21,5 +21,5 @@ function bytecode_scripts
     script3 ();
 
     % Inline function defined in script1
-    assert (inlinefn2 (234) == 235) 
+    assert (inlinefn2 (234) == 235)
 end

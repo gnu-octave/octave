@@ -1,6 +1,6 @@
 % (bug #64705)
 %
-% Test the interaction between a script called from top scope and 
+% Test the interaction between a script called from top scope and
 % global and local variables
 
 % If this global is true, we do a recursive call to this script

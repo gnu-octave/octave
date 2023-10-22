@@ -814,7 +814,7 @@
 %!     evalin ("base", "clear local_aa local_bb local_cc")
 %!     evalin ("base", "clear global glb_aa glb_bb glb_cc glb_dd glb_ee")
 %!   end_unwind_protect
-%!   
+%!
 %!   bytecode_load_script_file = [tempname(), ".mat"];
 %!   %% Same test, but from a function
 %!   unwind_protect
@@ -822,7 +822,7 @@
 %!   unwind_protect_cleanup
 %!     unlink (bytecode_load_script_file);
 %!   end_unwind_protect
-%!   
+%!
 %!   clear all
 %! end
 %!

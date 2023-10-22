@@ -1050,7 +1050,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
     if (!is_varargin && n_args < n_root_args)
       {
         std::string fn_name = unwind_data->m_name;
-        (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call", 
+        (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call",
                                                fn_name + ": function called with too many inputs"};
         (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
         ip++; // unwind expects ip to point to two after the opcode being executed
@@ -5045,7 +5045,7 @@ index_struct_call:
     int nargout = arg0;
     // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
     // where under certain conditions a magic number nargout of -1 is
-    // expected to  maybe return a cs-list. "-1" in this context 
+    // expected to  maybe return a cs-list. "-1" in this context
     // does not have the same meaning as in the VM, where it means
     // a varargout with only one return symbol 'varargout'.
     if (nargout == 255)
@@ -5238,7 +5238,7 @@ index_struct_call:
     STACK_DESTROY (1);
   // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
   // where under certain conditions a magic number nargout of -1 is
-  // expected to  maybe return a cs-list. "-1" in this context 
+  // expected to  maybe return a cs-list. "-1" in this context
   // does not have the same meaning as in the VM, where it means
   // a varargout with only one return symbol 'varargout'.
     if (nargout == -1)
@@ -5795,7 +5795,7 @@ subassign_chained:
             else
               lhs_slot.assign (op, type, idx, rhs);
 
-            // Push a dummy octave_value. Always poped by a POP opcode. 
+            // Push a dummy octave_value. Always poped by a POP opcode.
             PUSH_OV (octave_value {});
           }
         else

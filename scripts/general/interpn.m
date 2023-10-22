@@ -388,4 +388,3 @@ endfunction
 %! interpn ([1,2], [1,2], magic (3), [1,2], ones (2,2), "spline")
 %!error <pchip interpolation not yet implemented> interpn ([1,2], "pchip")
 %!error <cubic interpolation not yet implemented> interpn ([1,2], "cubic")
-

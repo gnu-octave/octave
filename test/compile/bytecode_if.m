@@ -139,4 +139,3 @@ function a = falsy (b)
   __printf_assert__ ("%d ", b);
   a = 0;
 end
-

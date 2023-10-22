@@ -954,4 +954,3 @@ endfunction
 %! var ([1 2 3; 2 3 4], [1 3], "all")
 %!error <weight matrix or array does not match X in size> ...
 %! var (repmat ([1:20;6:25], [5 2 6 3]), repmat ([1:20;6:25], [5 2 3]), "all")
-

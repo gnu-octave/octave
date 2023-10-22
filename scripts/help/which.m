@@ -123,4 +123,3 @@ endfunction
 %!error <Invalid call> which ()
 %!error <Invalid call> which (1)
 %!warning <'-all' not yet implemented> which ("1", "-all")
-

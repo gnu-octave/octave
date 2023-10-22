@@ -25,4 +25,3 @@ function h1 = sub_returns_nested_fn2
 
   h1 = nested_fn1 ();
 end
-

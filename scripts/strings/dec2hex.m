@@ -130,4 +130,3 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> dec2hex ()
-

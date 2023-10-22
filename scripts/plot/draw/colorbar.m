@@ -927,4 +927,3 @@ endfunction
 %!error <invalid axes handle following "peer"> colorbar ("peer", -1)
 %!error <PROP/VAL inputs must occur in pairs> colorbar ("PROP")
 %!error <unrecognized colorbar location> colorbar ("location", "foobar")
-

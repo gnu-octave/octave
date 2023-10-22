@@ -342,4 +342,3 @@ function update_data (h, ~)
   endif
 
 endfunction
-

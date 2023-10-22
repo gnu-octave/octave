@@ -145,4 +145,3 @@ endfunction
 %! disp("Terminate odeplot\n");
 %! odeplot ([], [], "done");
 %! title("Plot complete");
-

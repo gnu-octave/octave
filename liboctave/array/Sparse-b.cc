@@ -42,4 +42,3 @@ Sparse<bool>::SparseRep::any_element_is_nan () const
 }
 
 INSTANTIATE_SPARSE (bool);
-

@@ -614,4 +614,3 @@ endfunction
 %!error <scaling factor must be> quiver (10, 20, [1 2])
 %!error <scaling factor must be> quiver (10, 20, 30, 40, -5)
 %!error <scaling factor must be> quiver (10, 20, 30, 40, [1 2])
-

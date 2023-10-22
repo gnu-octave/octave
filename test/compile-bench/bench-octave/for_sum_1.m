@@ -4,4 +4,3 @@ function for_sum_1 (mat)
     sum = sum + mat (i);
   end
 end
-

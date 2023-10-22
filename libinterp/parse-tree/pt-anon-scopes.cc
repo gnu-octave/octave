@@ -122,4 +122,3 @@ tree_anon_scopes::visit_statement_list (tree_statement_list& lst)
 }
 
 OCTAVE_END_NAMESPACE(octave)
-

@@ -773,4 +773,3 @@ endfunction
 %!      "warning", "Format specifiers for dates should be lower case");
 %!fail ("datevec ('2015-03-31 hh:00','yyyy-mm-dd hh:MM')", ...
 %!      "warning", "format specifiers for time should be upper case");
-

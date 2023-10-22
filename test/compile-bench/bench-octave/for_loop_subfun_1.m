@@ -11,4 +11,3 @@ end
 
 function c = suby2 (a, b)
 end
-

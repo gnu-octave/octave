@@ -164,4 +164,3 @@ endfunction
 %!error <DIM must be .* a valid dimension> cumtrapz (1, 2, 0)
 %!error <length of X and length of Y.*must match> cumtrapz ([1 2], [1 2 3])
 %!error <X and Y must have same shape> cumtrapz (ones (2,3), ones (2,4))
-

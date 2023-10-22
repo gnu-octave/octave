@@ -217,4 +217,3 @@ function sub1(make_global)
     b = 6;
   end
 end
-

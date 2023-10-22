@@ -53,4 +53,3 @@
 %! obj = myclass2 ();
 %! obj.data(end) = -1;
 %! assert (obj.data, [1001:1004, -1]);
-

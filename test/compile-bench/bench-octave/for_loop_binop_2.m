@@ -5,4 +5,3 @@ function for_loop_binop_2 (n)
     f = g + j - 3;
   end
 end
-

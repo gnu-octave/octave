@@ -365,4 +365,3 @@
 %! fail ("i:5", "warning", "imaginary part of complex colon arguments is ignored");
 %! fail ("1:5*i", "warning", "imaginary part of complex colon arguments is ignored");
 %! fail ("1:i:5", "warning", "imaginary part of complex colon arguments is ignored");
-

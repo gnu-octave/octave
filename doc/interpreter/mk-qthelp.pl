@@ -199,4 +199,3 @@ print $FH <<__EOT4__;
   </docFiles>
 </QHelpCollectionProject>
 __EOT4__
-

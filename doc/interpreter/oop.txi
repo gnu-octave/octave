@@ -1118,4 +1118,3 @@ persistently:
 @result{} ans =  3
 @end group
 @end example
-

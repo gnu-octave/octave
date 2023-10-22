@@ -850,4 +850,3 @@ updated to use some other function.
 */
 
 OCTAVE_END_NAMESPACE(octave)
-

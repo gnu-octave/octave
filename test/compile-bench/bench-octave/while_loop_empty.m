@@ -4,4 +4,3 @@ function while_loop_empty (n)
     i++;
   end
 end
-

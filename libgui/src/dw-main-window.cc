@@ -246,4 +246,3 @@ bool dw_main_window::event (QEvent *ev)
 }
 
 OCTAVE_END_NAMESPACE(octave)
-

@@ -151,4 +151,3 @@ endfunction
 ## Test input validation
 %!error <Invalid call> dec2bin ()
 %!error <input must be real> dec2bin (1+i);
-

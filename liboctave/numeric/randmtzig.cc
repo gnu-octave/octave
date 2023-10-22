@@ -866,4 +866,3 @@ template <> OCTAVE_API void rand_exponential (octave_idx_type n, float *p)
 }
 
 OCTAVE_END_NAMESPACE(octave)
-

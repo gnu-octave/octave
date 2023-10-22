@@ -51,4 +51,3 @@ sparse_descending_compare<double> (double a, double b)
 }
 
 INSTANTIATE_SPARSE (double);
-

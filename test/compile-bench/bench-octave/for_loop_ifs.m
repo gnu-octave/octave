@@ -27,4 +27,3 @@ function for_loop_ifs (n)
     end
   end
 end
-

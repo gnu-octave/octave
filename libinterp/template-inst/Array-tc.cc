@@ -55,4 +55,3 @@ INSTANTIATE_ARRAY (octave::cdef_object, OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_A
 #if defined (HAVE_PRAGMA_GCC_VISIBILITY)
 #  pragma GCC visibility pop
 #endif
-

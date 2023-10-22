@@ -4,4 +4,3 @@ function do_until_loop_empty (n)
     i++;
   until i >= n
 end
-

@@ -63,4 +63,3 @@ sparse_descending_compare<Complex> (const Complex& a, const Complex& b)
 }
 
 INSTANTIATE_SPARSE (Complex);
-

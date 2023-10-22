@@ -825,4 +825,3 @@ Implement @code{methods} for Octave class objects and classnames.
 */
 
 OCTAVE_END_NAMESPACE(octave)
-

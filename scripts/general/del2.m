@@ -339,4 +339,3 @@ endfunction
 %!error <in spacing vector 1> del2 (1, 2, [1 1])
 %!error <in spacing vector 2> del2 (1, [1 1], 2)
 %!error <must be a scalar or vector> del2 (1, ones (2,2), 2)
-

@@ -137,4 +137,3 @@ octave_set_opterr_wrapper (int val)
 
   return retval;
 }
-

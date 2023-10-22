@@ -4,4 +4,3 @@ function sum = for_sum_2 (arg)
     sum = sum + i;
   end
 end
-

@@ -57,4 +57,3 @@ subf: Reference to a cleared variable a.
 Error in test_clear_inside_function (line 13)
 subf ();  fprintf ('a=%d\n', a);
 #}
-

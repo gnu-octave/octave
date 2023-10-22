@@ -1306,4 +1306,3 @@ QT_END_NAMESPACE
 #include "qrc_qprintdialog.cpp"
 
 #endif // QT_NO_PRINTDIALOG
-

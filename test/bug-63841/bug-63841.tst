@@ -159,4 +159,3 @@
 %!error <unary operator \'\'\' not implemented for \'cs-list\' operands> ti(1:3).a_property'*3
 %!error <unary operator \'\'\' not implemented for \'cs-list\' operands> 3*ti2(1:3).a_property'
 %!error <unary operator \'\'\' not implemented for \'cs-list\' operands> ti2(1:3).a_property'*3
-

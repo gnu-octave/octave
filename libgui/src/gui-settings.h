@@ -223,4 +223,3 @@ const QStringList settings_color_modes_ext (QStringList () << "" << "_2");
 const int settings_reload_default_colors_flag = -1;
 
 #endif
-

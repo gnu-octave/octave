@@ -345,5 +345,3 @@ endfunction
 %!error <DIM must be .* a valid dimension> mode (1, -1.5)
 %!error <DIM must be .* a valid dimension> mode (1, Inf)
 %!error <DIM must be .* a valid dimension> mode (1, NaN)
-
-

@@ -71,4 +71,3 @@ fb_startup_dir ("filesdockwidget/startup_dir", QVariant (QString ()));
 gui_pref
 fb_txt_file_ext ("filesdockwidget/txt_file_extensions",
                  QVariant ("m;c;cc;cpp;h;txt"));
-

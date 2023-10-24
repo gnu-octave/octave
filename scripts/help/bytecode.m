@@ -24,43 +24,42 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} vm ()
-## Summary of commands related to Octave's virtual machine (VM) evaluator.
+## @deftypefn {} {} bytecode ()
+## Summary of commands related to Octave's bytecode interpreter.
 ##
-## As of Octave 9, the VM evaluator is considered @emph{experimental}.
-## The user is encouraged to test the VM with that in mind. All VM functions,
-## being experimental, may be renamed in future. Currently they are
-## all named @code{__vm_X__}.
+## As of Octave 9, the bytecode interpreter is considered @emph{experimental}.
+## The user is encouraged to test it with that in mind. All bytecode functions,
+## being experimental, may be renamed in future.
 ##
-## To switch on the VM, type: @code{__vm_enable__ (1)}
+## To switch on the bytecode interpreter, type: @code{__vm_enable__ (1)}
 ##
-## To switch off the VM, type: @code{__vm_enable__ (0)}
+## To switch it off, type: @code{__vm_enable__ (0)}
 ##
-## To always use the VM, add @code{__vm_enable__ (1)}
+## To always use it, add @code{__vm_enable__ (1)}
 ## to your Octave startup file (.octaverc or similar).
 ##
 ## For more information on each command and available options use
 ## @code{help CMD}.
 ##
-## The other VM commands available in Octave are:
+## The other bytecode commands available in Octave are:
 ##
 ## @table @code
 ## @item __vm_compile__
 ## Compile a specified function to bytecode.
 ##
 ## @item __vm_profile__
-## Profile the code running in the VM.
+## Profile the code running in the bytecode interpreter.
 ##
 ## @end table
 ##
-## There are also several private VM functions whose names also begin with
+## There are also several private functions whose names also begin with
 ## @code{__vm_}.  These are meant for developer use.
 ##
 ## @noindent
 ## @end deftypefn
 
-function vm ()
-  help ("vm");
+function bytecode ()
+  help ("bytecode");
 endfunction
 
 ## Mark file as being tested.  No real test needed for a documentation .m file

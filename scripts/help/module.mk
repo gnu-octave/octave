@@ -13,6 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/__unimplemented__.m \
   %reldir%/ans.m \
   %reldir%/bessel.m \
+  %reldir%/bytecode.m \
   %reldir%/debug.m \
   %reldir%/doc.m \
   %reldir%/doc_cache_create.m \
@@ -23,7 +24,6 @@ FCN_FILE_DIRS += \
   %reldir%/print_usage.m \
   %reldir%/slash.m \
   %reldir%/type.m \
-  %reldir%/vm.m \
   %reldir%/warning_ids.m \
   %reldir%/which.m
 

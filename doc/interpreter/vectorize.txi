@@ -43,7 +43,7 @@ code.
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
 * Memoization::                Memoization techniques
-* VM evaluator::               VM evaluator
+* Bytecode interpreter::       Bytecode interpreter
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 @end menu
@@ -629,14 +629,14 @@ they are no longer needed.
 
 @DOCSTRING(clearAllMemoizedCaches)
 
-@node VM evaluator
-@section VM evaluator
+@node Bytecode interpreter
+@section Bytecode interpreter
 
-Octave's virtual machine (VM) evaluator allows faster execution of existing
-code.  Octave versions 9 onwards have the VM built-in by default.  The VM is
-still considered experimental, therefore the VM functions are not explicitly
-documented in this manual.  Instead, the command @code{vm} will list several
-VM-related functions, including how to enable it.
+Octave's bytecode interpreter allows faster execution of existing
+code.  Octave versions 9 onwards have the bytecode interpreter built-in
+by default.  It is still considered experimental, therefore the related
+functions are not explicitly documented in this manual.  Instead, the command
+@code{bytecode} describes how to invoke it.
 
 @node Miscellaneous Techniques
 @section Miscellaneous Techniques

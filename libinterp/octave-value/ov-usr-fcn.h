@@ -257,8 +257,6 @@ public:
   int ending_line () const { return m_end_location_line; }
   int ending_column () const { return m_end_location_column; }
 
-  octave::symbol_scope scope (void) { return m_scope; }
-
   void maybe_relocate_end ();
 
   void stash_parent_fcn_scope (const octave::symbol_scope& ps);

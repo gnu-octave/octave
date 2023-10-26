@@ -21,7 +21,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `fft`: Avoid overwriting input for inplace operations (bug #64733).
 - `intersect.m`: Correct third output with `"stable"` flag (bug #60347).
 - Avoid use-after-free issue in parser (bug #60882).
-- `betainf.m`: Improve integer input logic and validation (bug #64726).
+- `betainc.m`: Improve integer input logic and validation (bug #64726).
 
 ### GUI
 

@@ -5,11 +5,43 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
 
+- `mkoctfile`: Skip parsing for less flags (bug #64590).
+- Fix getting number of non-zero elements in SuiteSparse matrices.
+- `delaunayn.m`: Avoid erroneous simplex removal for integer inputs
+  (bug #64658).
+- `delaunayn`: Add precision loss warning for large int inputs (bug #64658).
+- `delaunayn`: Also warn for negative integers with large magnitude
+  (bug #64658).
+- Correctly load all-zero sparse matrices from text files (bug #64696).
+- Allocate correct storage for interleaved complex mxArray objects
+  (bug #64687).
+- `mkoctfile`: Prefer parsing over passing on argument after unknown argument
+  (bug #64725).
+- `fft`: Avoid segmentation fault with ND-arrays (bug #64729).
+- `fft`: Avoid overwriting input for inplace operations (bug #64733).
+- `intersect.m`: Correct third output with `"stable"` flag (bug #60347).
+- Avoid use-after-free issue in parser (bug #60882).
+- `betainf.m`: Improve integer input logic and validation (bug #64726).
+
 ### GUI
 
 ### Build system / Tests
 
+- `mkpp.m`: Remove stray text causing error with demo code.
+- Ensure that new test for saving sparse matrices writes a text file.
+- Search for tests in and install octave-value template sources (bug #64696).
+
 ### Documentation
+
+- Correct variable name typo in documentation of `slice()`.
+- Expand documentation for `gcd()` and `lcm()`.
+- `datevec`: Clarify that heuristics are used to detect the format of a date
+  string (bug #64563).
+- `datenum`: Add help text that inputs can be arrays, add examples
+  (bug #54679).
+- `datevec`: Add help text that inputs can be arrays (bug #54679).
+- Describe various pitfalls with floating point ranges (bug #64692).
+- Add range example and some copyedits.
 
 
 Summary of bugs fixed for version 8.3.0 (2022-08-08):

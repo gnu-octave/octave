@@ -58,6 +58,9 @@ public:
   octave_fcn_cache (const std::string &name) :m_fcn_name (name) { }
   octave_fcn_cache () {}
 
+  octave_base_value *
+  clone () const { return new octave_fcn_cache (*this); }
+
   bool is_function_cache (void) const { return true; }
 
   bool has_function_cache (void) const { return true; }

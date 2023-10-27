@@ -1079,29 +1079,14 @@ public:
 
   symbol_record lookup_symbol (const std::string& name) const
   {
-    int local_offset = -1;
     scope_flags flag = LOCAL;
 
-    for (int i = 0; i < static_cast<int> (m_size); i++)
+    auto it = m_unwind_data->m_map_user_locals_names_to_slot.find (name);
+
+    if (it != m_unwind_data->m_map_user_locals_names_to_slot.end ())
       {
-        if (m_name_data [i] == name)
-          {
-            local_offset = i;
+        int local_offset = it->second;
 
-            bool is_global = slot_is_global (local_offset);
-            bool is_pers = slot_is_persistent (local_offset);
-
-            if (is_global)
-              flag = GLOBAL;
-            else if (is_pers)
-              flag = PERSISTENT;
-
-            break;
-          }
-      }
-
-    if (local_offset >= 0)
-      {
         symbol_record ret (name, flag);
 
         size_t frame_offset;
@@ -1139,7 +1124,7 @@ public:
       }
 
     // Search the "scope" object of this and any nested frame
-    // The scope object will have e.g. variables added by scripts or eval
+    // The scope object will have e.g. variables added by scripts, global declares or eval
     const stack_frame *frame = this;
     std::size_t frame_cntr = 0;
     while (frame)
@@ -1150,9 +1135,10 @@ public:
 
         if (sym)
           {
-            // Return symbol record with adjusted frame offset (relative to the one lookup is done on)
+            // Return symbol record with adjusted frame offset relative
+            // to the one lookup is done on, i.e. the 'this' frame.
             symbol_record new_sym = sym.dup ();
-            new_sym.set_frame_offset (frame_cntr);
+            new_sym.set_frame_offset (new_sym.frame_offset () + frame_cntr);
             return new_sym;
           }
 
@@ -1460,8 +1446,9 @@ public:
         // Move all user symbol values from the parent frame to the eval frame.
         // Replace the values in the parent frame with a pointer-like object "octave_value_ref_vmlocal"
         // pointing to the eval frame.
-        for (std::string id_name : parent_frame_bc->m_unwind_data->m_set_user_locals_names)
+        for (const auto &kv : parent_frame_bc->m_unwind_data->m_map_user_locals_names_to_slot)
           {
+            const std::string &id_name = kv.first;
             symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
             if (!sr_eval.is_valid ())
               sr_eval = eval_frame->insert_symbol (id_name);
@@ -1506,8 +1493,9 @@ public:
     // Move all user symbols from the eval frame to the current frame we are entering.
     // Replace the moved values in the eval frame with a pointer-like object "octave_value_ref_vmlocal"
     // pointing to the current frame.
-    for (std::string id_name : m_unwind_data->m_set_user_locals_names)
+    for (const auto &kv : m_unwind_data->m_map_user_locals_names_to_slot)
       {
+        const std::string &id_name = kv.first;
         symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
         if (!sr_eval.is_valid ())
           sr_eval = eval_frame->insert_symbol (id_name);
@@ -1554,10 +1542,12 @@ public:
     bool eval_frame_is_bytecode = eval_frame->is_bytecode_fcn_frame ();
 
     // Move all user symbols from the current frame to the eval frame.
-    for (std::string id_name : m_unwind_data->m_set_user_locals_names)
+    for (const auto &kv : m_unwind_data->m_map_user_locals_names_to_slot)
       {
+        const std::string &id_name = kv.first;
         symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
         CHECK_PANIC (sr_eval.is_valid ());
+
         octave_value *ov_eval = sr_eval.frame_offset () ?
                                   &eval_frame->varref (sr_eval, false) :
                                   &eval_frame->varref (sr_eval.data_offset (), false);
@@ -1595,8 +1585,9 @@ public:
         // Move all values the parent frame needs to it from the eval frame.
         // In the eval frame, put a pointer-like object "octave_value_ref_vmlocal"
         // pointing to the parent frame
-        for (std::string id_name : parent_frame_bc->m_unwind_data->m_set_user_locals_names)
+        for (const auto &kv : parent_frame_bc->m_unwind_data->m_map_user_locals_names_to_slot)
           {
+            const std::string &id_name = kv.first;
             symbol_record sr_eval = eval_frame->lookup_symbol (id_name);
             CHECK_PANIC (sr_eval.is_valid ());
             octave_value *ov_eval = sr_eval.frame_offset () ?

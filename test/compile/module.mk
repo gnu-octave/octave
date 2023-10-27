@@ -48,6 +48,7 @@ compile_TEST_FILES = \
   %reldir%/inputname_args.m \
   %reldir%/just_call_handle_with_arg.m \
   %reldir%/return_isargout.m \
+  %reldir%/script_defines_qweqwe.m \
   %reldir%/script1.m \
   %reldir%/script11.m \
   %reldir%/script2.m \

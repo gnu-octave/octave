@@ -17,8 +17,22 @@ function bytecode_struct ()
   % Test word command struct subref
 
   __printf_assert__ ("%d ", suby.b);
+
+  % Bug 64817
+  test_bug_64817;
 end
 
 function a = suby ()
   a.b = 4;
+end
+
+function test_bug_64817
+  % Field id slot collided with variable slot when making
+  % the script frame.
+
+  script_defines_qweqwe; % Just does "qweqwe = 0;"
+
+  if 0
+    asd.qweqwe; % 'qweqwe' is a field here
+  end
 end

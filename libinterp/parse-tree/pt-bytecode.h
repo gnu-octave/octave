@@ -273,7 +273,7 @@ struct unwind_data
   std::map<int, tree*> m_ip_to_tree;
   std::vector<arg_name_entry> m_argname_entries;
   std::vector<std::map<int,int>> m_external_frame_offset_to_internal;
-  std::set<std::string> m_set_user_locals_names;
+  std::map<std::string, int> m_map_user_locals_names_to_slot;
 
   struct nested_var_offset { int m_depth; int m_slot_parent; int m_slot_nested; };
   std::vector<nested_var_offset> m_v_nested_vars;

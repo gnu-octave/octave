@@ -2418,10 +2418,10 @@ visit_octave_user_script (octave_user_script& fcn)
   add_id_to_table("%nargout");
 
   // We always need the magic id "ans"
-  add_id_to_table ("ans");
-  // m_set_user_locals_names keeps track of what user symbols to borrow from and return back to
+  int slot_ans = add_id_to_table ("ans");
+  // m_map_user_locals_names_to_slot keeps track of what user symbols to borrow from and return back to
   // the eval_frame when the script frame is pushed and popped.
-  m_code.m_unwind_data.m_set_user_locals_names.insert ("ans");
+  m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({"ans", slot_ans});
 
   // We add all identifiers in the body to the id-table. We also
   // make a map mapping the interpreters frame offset of a id
@@ -2445,7 +2445,7 @@ visit_octave_user_script (octave_user_script& fcn)
           m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
 
           if (frame_offset == 0)
-            m_code.m_unwind_data.m_set_user_locals_names.insert (name);
+            m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name, slot});
         }
     }
 
@@ -2630,17 +2630,19 @@ visit_octave_user_function (octave_user_function& fcn)
     {
       for (auto it = returns->begin (); it != returns->end (); it++)
         {
-          std::string name = (*it)->name();
           tree_identifier *id = (*it)->ident ();
           CHECK_NONNULL (id);
-          add_id_to_table (id->name ());
+          std::string name = id->name ();
+          int slot = add_id_to_table (name);
+          m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name, slot});
         }
     }
-  if (m_varargout)
-    add_id_to_table ("varargout"); // Not in the returns list. Need to be last
 
-  // The function itself is put after the arg outs
-  /* add_id_to_table (fcn.name ()); */
+  if (m_varargout)
+  {
+    int slot = add_id_to_table ("varargout"); // Not in the returns list. Need to be last
+    m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({"varargout", slot});
+  }
 
   // Then the arguments
   for (std::string name : v_paras)
@@ -2678,11 +2680,13 @@ visit_octave_user_function (octave_user_function& fcn)
           continue;
         }
 
-      add_id_to_table (name);
+      int slot = add_id_to_table (name);
+      m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name, slot});
     }
 
   // We always need the magic id "ans"
-  add_id_to_table ("ans");
+  int slot_ans = add_id_to_table ("ans");
+  m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({"ans", slot_ans});
 
   // We add all identifiers in the body to the id-table. We also
   // make a map mapping the interpreters frame offset of a id
@@ -2705,7 +2709,7 @@ visit_octave_user_function (octave_user_function& fcn)
           m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
 
           if (frame_offset == 0)
-            m_code.m_unwind_data.m_set_user_locals_names.insert (name);
+            m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name, slot});
         }
     }
   // We need the arguments and return id:s in the map too.
@@ -2716,8 +2720,10 @@ visit_octave_user_function (octave_user_function& fcn)
           CHECK_NONNULL (*it);
           tree_identifier *id = (*it)->ident ();
           int offset = id->symbol ().data_offset ();
-          int slot = SLOT (id->name ());
+          std::string name = id->name ();
+          int slot = SLOT (name);
           m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset] = slot;
+          m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name, slot});
 
           // If the parameter has an init expression e.g.
           // "function foo (a = sin (pi))"
@@ -2728,12 +2734,12 @@ visit_octave_user_function (octave_user_function& fcn)
               auto v_names_offsets = collect_idnames_walker::collect_id_names (*init_expr);
               for (auto name_offset : v_names_offsets)
                 {
-                  std::string name = name_offset.m_name;
+                  std::string name_i = name_offset.m_name;
                   int offset_i = name_offset.m_offset;
-                  add_id_to_table (name);
-                  int slot_i = SLOT (name);
+                  int slot_i = add_id_to_table (name_i);
 
                   m_code.m_unwind_data.m_external_frame_offset_to_internal[0][offset_i] = slot_i;
+                  m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name_i, slot_i});
                 }
             }
         }
@@ -2791,6 +2797,8 @@ visit_octave_user_function (octave_user_function& fcn)
 
       int slot = add_id_to_table (fn_name);
       m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
+
+      m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({fn_name, slot});
     }
 
   // Add the parents' function names for nested functions
@@ -2810,6 +2818,8 @@ visit_octave_user_function (octave_user_function& fcn)
 
           int slot = add_id_to_table (parent_name);
           m_code.m_unwind_data.m_external_frame_offset_to_internal[frame_offset][offset] = slot;
+
+          m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({parent_name, slot});
         }
     }
 
@@ -2880,6 +2890,8 @@ visit_octave_user_function (octave_user_function& fcn)
               // Increasing number for fake external offset
               int fake_external_offset = m_code.m_unwind_data.m_external_frame_offset_to_internal[1].size ();
               m_code.m_unwind_data.m_external_frame_offset_to_internal[1][fake_external_offset] = slot_added;
+
+              m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name, slot_added});
             }
 
           int slot = SLOT (name);

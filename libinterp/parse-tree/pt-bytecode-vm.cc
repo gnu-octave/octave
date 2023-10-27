@@ -330,6 +330,29 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (POP_N_INTS)     PCHAR () CASE_END ()
           CASE_START (DUP_MOVE)       PCHAR () CASE_END ()
 
+          CASE_START (MUL_CST)        PCHAR () PCHAR () CASE_END ()
+          CASE_START (MUL_CST_DBL)    PCHAR () PCHAR () CASE_END ()
+          CASE_START (DIV_CST)        PCHAR () PCHAR () CASE_END ()
+          CASE_START (DIV_CST_DBL)    PCHAR () PCHAR () CASE_END ()
+          CASE_START (ADD_CST)        PCHAR () PCHAR () CASE_END ()
+          CASE_START (ADD_CST_DBL)    PCHAR () PCHAR () CASE_END ()
+          CASE_START (SUB_CST)        PCHAR () PCHAR () CASE_END ()
+          CASE_START (SUB_CST_DBL)    PCHAR () PCHAR () CASE_END ()
+          CASE_START (LE_CST)         PCHAR () PCHAR () CASE_END ()
+          CASE_START (LE_CST_DBL)     PCHAR () PCHAR () CASE_END ()
+          CASE_START (LE_EQ_CST)      PCHAR () PCHAR () CASE_END ()
+          CASE_START (LE_EQ_CST_DBL)  PCHAR () PCHAR () CASE_END ()
+          CASE_START (GR_CST)         PCHAR () PCHAR () CASE_END ()
+          CASE_START (GR_CST_DBL)     PCHAR () PCHAR () CASE_END ()
+          CASE_START (GR_EQ_CST)      PCHAR () PCHAR () CASE_END ()
+          CASE_START (GR_EQ_CST_DBL)  PCHAR () PCHAR () CASE_END ()
+          CASE_START (EQ_CST)         PCHAR () PCHAR () CASE_END ()
+          CASE_START (EQ_CST_DBL)     PCHAR () PCHAR () CASE_END ()
+          CASE_START (NEQ_CST)        PCHAR () PCHAR () CASE_END ()
+          CASE_START (NEQ_CST_DBL)    PCHAR () PCHAR () CASE_END ()
+          CASE_START (POW_CST)        PCHAR () PCHAR () CASE_END ()
+          CASE_START (POW_CST_DBL)    PCHAR () PCHAR () CASE_END ()
+
           CASE_START (ASSIGN)                     PSLOT() CASE_END ()
           CASE_START (BIND_ANS)                   PSLOT() CASE_END ()
           CASE_START (INCR_ID_PREFIX)             PSLOT() CASE_END ()
@@ -990,6 +1013,28 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&enter_nested_frame,
       &&install_function,
       &&dup_move,
+      &&mul_cst_dbl,
+      &&mul_cst,
+      &&add_cst_dbl,
+      &&add_cst,
+      &&div_cst_dbl,
+      &&div_cst,
+      &&sub_cst_dbl,
+      &&sub_cst,
+      &&le_cst_dbl,
+      &&le_cst,
+      &&le_eq_cst_dbl,
+      &&le_eq_cst,
+      &&gr_cst_dbl,
+      &&gr_cst,
+      &&gr_eq_cst_dbl,
+      &&gr_eq_cst,
+      &&eq_cst_dbl,
+      &&eq_cst,
+      &&neq_cst_dbl,
+      &&neq_cst,
+      &&pow_cst_dbl,
+      &&pow_cst,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -6340,7 +6385,6 @@ debug: // TODO: Remove
   }
   DISPATCH_1BYTEOP ();
 
-
   install_function:
   {
     int slot = arg0;
@@ -6363,6 +6407,74 @@ debug: // TODO: Remove
       ov = octave_value {};
   }
   DISPATCH ();
+
+  mul_cst:
+  MAKE_BINOP_CST_SELFMODIFYING (binary_op::op_mul, mul_cst_dbl, MUL_CST_DBL);
+  DISPATCH ();
+  mul_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_mul, mul_cst, MUL_CST, m_scalar_typeid);
+  DISPATCH ();
+  add_cst:
+  MAKE_BINOP_CST_SELFMODIFYING (binary_op::op_add, add_cst_dbl, ADD_CST_DBL);
+  DISPATCH ();
+  add_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_add, add_cst, ADD_CST, m_scalar_typeid);
+  DISPATCH ();
+  div_cst:
+  MAKE_BINOP_CST_SELFMODIFYING (binary_op::op_div, div_cst_dbl, DIV_CST_DBL);
+  DISPATCH ();
+  div_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_div, div_cst, DIV_CST, m_scalar_typeid);
+  DISPATCH ();
+  sub_cst:
+  MAKE_BINOP_CST_SELFMODIFYING (binary_op::op_sub, sub_cst_dbl, SUB_CST_DBL);
+  DISPATCH ();
+  sub_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_sub, sub_cst, SUB_CST, m_scalar_typeid);
+  DISPATCH ();
+  le_cst:
+  MAKE_BINOP_CST_SELFMODIFYING (binary_op::op_lt, le_cst_dbl, LE_CST_DBL);
+  DISPATCH ();
+  le_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_le, le_cst, LE_CST, m_scalar_typeid);
+  DISPATCH ();
+  le_eq_cst:
+  MAKE_BINOP_CST_SELFMODIFYING (binary_op::op_le, le_eq_cst_dbl, LE_EQ_CST_DBL);
+  DISPATCH ();
+  le_eq_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_le_eq, le_eq_cst, LE_EQ_CST, m_scalar_typeid);
+  DISPATCH ();
+  gr_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_gr, gr_cst, GR_CST, m_scalar_typeid)
+  DISPATCH ();
+  gr_cst:
+  MAKE_BINOP_CST_SELFMODIFYING(binary_op::op_gt, gr_cst_dbl, GR_CST_DBL)
+  DISPATCH();
+  gr_eq_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_gr_eq, gr_eq_cst, GR_EQ_CST, m_scalar_typeid)
+  DISPATCH();
+  gr_eq_cst:
+  MAKE_BINOP_CST_SELFMODIFYING(binary_op::op_ge, gr_eq_cst_dbl, GR_EQ_CST_DBL)
+  DISPATCH();
+  eq_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED(m_fn_dbl_eq, eq_cst, EQ_CST, m_scalar_typeid)
+  DISPATCH();
+  eq_cst:
+  MAKE_BINOP_CST_SELFMODIFYING(binary_op::op_eq, eq_cst_dbl, EQ_CST_DBL)
+  DISPATCH();
+  neq_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED(m_fn_dbl_neq, neq_cst, NEQ_CST, m_scalar_typeid)
+  DISPATCH();
+  neq_cst:
+  MAKE_BINOP_CST_SELFMODIFYING(binary_op::op_ne, neq_cst_dbl, NEQ_CST_DBL)
+  DISPATCH();
+  pow_cst_dbl:
+  MAKE_BINOP_CST_SPECIALIZED (m_fn_dbl_pow, pow_cst, POW_CST, m_scalar_typeid)
+  DISPATCH();
+  pow_cst:
+  MAKE_BINOP_CST_SELFMODIFYING(binary_op::op_pow, pow_cst_dbl, POW_CST_DBL)
+  DISPATCH();
+
 }
 
 octave_value

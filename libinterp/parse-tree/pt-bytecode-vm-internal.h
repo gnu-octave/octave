@@ -121,6 +121,34 @@ else /* TODO: Should be function call to keep code shorter. */\
   CATCH_BAD_ALLOC                                                                        \
 }                                                                                        \
 
+#define MAKE_BINOP_CST_SPECIALIZED(op_fn,jmp_target,op_target,target_type) \
+{                                                                              \
+  octave_value &cst = data [arg0];                                             \
+  octave_value &arg = TOP_OV ();                                               \
+  int lhs_is_cst = *ip++;                                                      \
+                                                                               \
+  int arg_type = arg.type_id ();                                               \
+  if (OCTAVE_UNLIKELY (arg_type != target_type))                               \
+    {                                                                          \
+      ip[-3] = static_cast<unsigned char> (INSTR::op_target);                  \
+      ip--;                                                                    \
+      goto jmp_target;                                                         \
+    }                                                                          \
+                                                                               \
+  try                                                                          \
+    {                                                                          \
+      octave_value ret =  lhs_is_cst ?                                         \
+        op_fn (cst.get_rep (), arg.get_rep ()) :                               \
+        op_fn (arg.get_rep (), cst.get_rep ());                                \
+      STACK_DESTROY (1);                                                       \
+      PUSH_OV (ret);                                                           \
+    }                                                                          \
+  CATCH_INTERRUPT_EXCEPTION                                                    \
+  CATCH_INDEX_EXCEPTION                                                        \
+  CATCH_EXECUTION_EXCEPTION                                                    \
+  CATCH_BAD_ALLOC                                                              \
+}                                                                              \
+
 #define MAKE_UNOP_SPECIALIZED(op_fn, jmp_target, op_target, target_type) \
 {                                                                                        \
   octave_value &ov = TOP_OV ();                                                          \
@@ -168,7 +196,40 @@ else /* TODO: Should be function call to keep code shorter. */\
   CATCH_INDEX_EXCEPTION                                                                    \
   CATCH_EXECUTION_EXCEPTION                                                                \
   CATCH_BAD_ALLOC                                                                          \
-}                                                                                          \
+}
+
+#define MAKE_BINOP_CST_SELFMODIFYING(op, jmp_target, op_target) \
+{                                                                                             \
+  octave_value &cst = data [arg0];                                                            \
+  octave_value &arg = TOP_OV ();                                                              \
+  int lhs_is_cst = *ip++;                                                                     \
+                                                                                              \
+  int cst_type = cst.type_id ();                                                              \
+  int arg_type = arg.type_id ();                                                              \
+  if (OCTAVE_UNLIKELY (cst_type == arg_type && cst_type == m_scalar_typeid))                  \
+    {                                                                                         \
+      ip[-3] = static_cast<unsigned char> (INSTR::op_target);                                 \
+      ip--;                                                                                   \
+      goto jmp_target;                                                                        \
+    }                                                                                         \
+                                                                                              \
+  try                                                                                         \
+    {                                                                                         \
+      octave_value ans = lhs_is_cst ?                                                         \
+          binary_op (*m_ti,                                                                   \
+                      octave_value::op,                                                       \
+                      cst, arg)                                                               \
+        : binary_op (*m_ti,                                                                   \
+                      octave_value::op,                                                       \
+                      arg, cst);                                                              \
+      STACK_DESTROY (1);                                                                      \
+      PUSH_OV (std::move (ans));                                                              \
+    }                                                                                         \
+  CATCH_INTERRUPT_EXCEPTION                                                                   \
+  CATCH_INDEX_EXCEPTION                                                                       \
+  CATCH_EXECUTION_EXCEPTION                                                                   \
+  CATCH_BAD_ALLOC                                                                             \
+}
 
 #define CATCH_INDEX_EXCEPTION \
 catch (index_exception& ie)                              \

@@ -2012,11 +2012,39 @@ visit_binary_expression (tree_binary_expression& expr)
   CHECK_NONNULL (op1);
   CHECK_NONNULL (op2);
 
-  if (op1->is_constant () && op2->is_constant () && DATA_SIZE () < 255)
+  bool op1_is_cst = op1->is_constant ();
+  bool op2_is_cst = op2->is_constant ();
+  int n_cst = op1_is_cst + op2_is_cst;
+  int cst_offset = -1;
+
+  if (op1_is_cst && op2_is_cst && DATA_SIZE () < 255)
     {
       // If both rhs and lhs are constants we want to emit a super op-code
       // aslong as the WIDE op is not going to be used (<255)
       emit_load_2_cst (op1, op2);
+    }
+  else if (n_cst == 1 &&
+           (expr.op_type () <= octave_value::binary_op::op_ne && expr.op_type () >= octave_value::binary_op::op_add) &&
+           DATA_SIZE () < 255 && expr.op_type () != octave_value::binary_op::op_ldiv)
+    {
+      if (op1_is_cst)
+        {
+          tree_constant *tree_cst = static_cast<tree_constant *> (op1);
+          octave_value ov_cst = tree_cst->value ();
+          cst_offset = DATA_SIZE ();
+          PUSH_DATA (ov_cst);
+
+          op2->accept (*this);
+        }
+      else
+        {
+          tree_constant *tree_cst = static_cast<tree_constant *> (op2);
+          octave_value ov_cst = tree_cst->value ();
+          cst_offset = DATA_SIZE ();
+          PUSH_DATA (ov_cst);
+
+          op1->accept (*this);
+        }
     }
   else
     {
@@ -2029,37 +2057,115 @@ visit_binary_expression (tree_binary_expression& expr)
   switch (expr.op_type ())
     {
     case octave_value::binary_op::op_mul:
-      PUSH_CODE (INSTR::MUL);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::MUL);
+      else
+        {
+          PUSH_CODE (INSTR::MUL_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
+      break;
       break;
     case octave_value::binary_op::op_div:
-      PUSH_CODE (INSTR::DIV);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::DIV);
+      else
+        {
+          PUSH_CODE (INSTR::DIV_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_add:
-      PUSH_CODE (INSTR::ADD);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::ADD);
+      else
+        {
+          PUSH_CODE (INSTR::ADD_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_sub:
-      PUSH_CODE (INSTR::SUB);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::SUB);
+      else
+        {
+          PUSH_CODE (INSTR::SUB_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_lt:
-      PUSH_CODE (INSTR::LE);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::LE);
+      else
+        {
+          PUSH_CODE (INSTR::LE_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_le:
-      PUSH_CODE (INSTR::LE_EQ);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::LE_EQ);
+      else
+        {
+          PUSH_CODE (INSTR::LE_EQ_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_gt:
-      PUSH_CODE (INSTR::GR);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::GR);
+      else
+        {
+          PUSH_CODE (INSTR::GR_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_ge:
-      PUSH_CODE (INSTR::GR_EQ);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::GR_EQ);
+      else
+        {
+          PUSH_CODE (INSTR::GR_EQ_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_eq:
-      PUSH_CODE (INSTR::EQ);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::EQ);
+      else
+        {
+          PUSH_CODE (INSTR::EQ_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_ne:
-      PUSH_CODE (INSTR::NEQ);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::NEQ);
+      else
+        {
+          PUSH_CODE (INSTR::NEQ_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_pow:
-      PUSH_CODE (INSTR::POW);
+      if (cst_offset == -1)
+        PUSH_CODE (INSTR::POW);
+      else
+        {
+          PUSH_CODE (INSTR::POW_CST);
+          PUSH_CODE (cst_offset);
+          PUSH_CODE (op1_is_cst);
+        }
       break;
     case octave_value::binary_op::op_ldiv:
       PUSH_CODE (INSTR::LDIV);

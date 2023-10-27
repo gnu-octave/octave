@@ -501,6 +501,8 @@ class vm
   type_info::unary_op_fcn m_fn_bool_not = nullptr;
 
   octave_function * m_pi_builtin_fn = nullptr;
+  octave_function * m_i_builtin_fn = nullptr;
+  octave_function * m_e_builtin_fn = nullptr;
 
   static int constexpr m_scalar_typeid = 2;
   static int constexpr m_matrix_typeid = 4;

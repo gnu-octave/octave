@@ -366,6 +366,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (FORCE_ASSIGN)               PSLOT() CASE_END ()
           CASE_START (PUSH_SLOT_NARGOUT1)         PSLOT() CASE_END ()
           CASE_START (PUSH_PI)                    PSLOT() CASE_END ()
+          CASE_START (PUSH_I)                     PSLOT() CASE_END ()
+          CASE_START (PUSH_E)                     PSLOT() CASE_END ()
           CASE_START (PUSH_SLOT_NARGOUT1_SPECIAL) PSLOT() CASE_END ()
           CASE_START (PUSH_SLOT_INDEXED)          PSLOT() CASE_END ()
           CASE_START (PUSH_FCN_HANDLE)            PSLOT() CASE_END ()
@@ -845,6 +847,14 @@ static octave_value ov_dbl_0 {0.0};
 static octave_value ov_dbl_1 {1.0};
 static octave_value ov_dbl_2 {2.0};
 
+static octave_value ov_i {Complex (0.0, 1.0)};
+#if defined (M_E)
+  static octave_value ov_e {M_E};
+#else
+  // Initialized in vm::vm()
+  static octave_value ov_e;
+#endif
+
 // TODO: Push non-nil and nil ov instead of true false to make some checks
 //       faster? Would they be faster?
 
@@ -1035,6 +1045,8 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&neq_cst,
       &&pow_cst_dbl,
       &&pow_cst,
+      &&push_i,
+      &&push_e,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -1894,7 +1906,7 @@ cmd_fcn_or_undef_error:
 
     INSTR opcode = static_cast<INSTR> (*(ip - 2 + wide_opcode_offset));
     if (opcode == INSTR::PUSH_SLOT_NARGOUT1 ||
-        opcode == INSTR::PUSH_PI)
+        opcode == INSTR::PUSH_PI || opcode == INSTR::PUSH_I || opcode == INSTR::PUSH_E)
       nargout = 1;
     else if (opcode == INSTR::PUSH_SLOT_NARGOUT0)
       nargout = 0;
@@ -2222,6 +2234,84 @@ push_pi:
 
   // The user wanna push 3.1415...
   PUSH_OV (ov_pi);
+}
+DISPATCH();
+
+push_i:
+// Specialization to push i (the imaginary unit) fast as a scalar.
+//
+// If the user use i as a variable opcode PUSH_SLOT_NARGOUT1
+// is used instead.
+{
+  int slot = arg0;
+
+  octave_value &ov = bsp[slot].ov;
+  // If the slot value is not a function cache we do a
+  // PUSH_SLOT_NARGOUT1 which will most likely put a
+  // function cache in the slot (unless the user has done a
+  // "i = 123;" or whatever).
+  if (OCTAVE_UNLIKELY (!ov.is_function_cache ()))
+    {
+      goto push_slot_nargout1;
+    }
+
+  // We need to check so the user has not defined some i function
+  octave_function *fcn;
+  try
+    {
+      octave_fcn_cache &cache = REP (octave_fcn_cache, ov);
+      fcn = cache.get_cached_fcn_if_fresh ();
+      if (! fcn)
+        fcn = cache.get_cached_fcn (static_cast<octave_value*> (nullptr), static_cast<octave_value*> (nullptr));
+    }
+  CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
+
+  if (OCTAVE_UNLIKELY (fcn != m_i_builtin_fn))
+    {
+      goto push_slot_nargout1;
+    }
+
+  // The user wanna push i ...
+  PUSH_OV (ov_i);
+}
+DISPATCH();
+
+push_e:
+// Specialization to push e fast as a scalar.
+//
+// If the user use 'e' as a variable opcode PUSH_SLOT_NARGOUT1
+// is used instead.
+{
+  int slot = arg0;
+
+  octave_value &ov = bsp[slot].ov;
+  // If the slot value is not a function cache we do a
+  // PUSH_SLOT_NARGOUT1 which will most likely put a
+  // function cache in the slot (unless the user has done a
+  // "e = 123;" or whatever).
+  if (OCTAVE_UNLIKELY (!ov.is_function_cache ()))
+    {
+      goto push_slot_nargout1;
+    }
+
+  // We need to check so the user has not defined some pi function
+  octave_function *fcn;
+  try
+    {
+      octave_fcn_cache &cache = REP (octave_fcn_cache, ov);
+      fcn = cache.get_cached_fcn_if_fresh ();
+      if (! fcn)
+        fcn = cache.get_cached_fcn (static_cast<octave_value*> (nullptr), static_cast<octave_value*> (nullptr));
+    }
+  CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
+
+  if (OCTAVE_UNLIKELY (fcn != m_e_builtin_fn))
+    {
+      goto push_slot_nargout1;
+    }
+
+  // The user wanna push e...
+  PUSH_OV (ov_e);
 }
 DISPATCH();
 
@@ -6668,10 +6758,16 @@ vm::vm (tree_evaluator *tw, bytecode &initial_bytecode)
   m_fn_bool_not = m_ti->lookup_unary_op (octave_value::unary_op::op_not, m_bool_typeid);
 
   m_pi_builtin_fn = m_symtab->find_built_in_function ("pi").function_value ();
-  // If the platform has no M_PI we need to initialize ov_pi
+  m_i_builtin_fn = m_symtab->find_built_in_function ("i").function_value ();
+  m_e_builtin_fn = m_symtab->find_built_in_function ("e").function_value ();
+  // If the platform has no M_PI, M_E we need to initialize ov_pi and ov_e
 #if !defined (M_PI)
   ov_pi = 4.0 * atan (1.0);
 #endif
+#if !defined (M_E)
+  ov_e = exp (1.0);
+#endif
+
 }
 
 // If there are too many return values we can't just move them since the stacks will overlap so we

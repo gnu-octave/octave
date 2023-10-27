@@ -48,6 +48,8 @@ using namespace octave;
       ERR("Internal VM compiler consistency check failed, " #cond);             \
   } while ((0))
 
+#define CHECK_NONNULL(ptr) if (!ptr) error ("Unexpected null %d", __LINE__)
+
 // Compiles an anonymous function.
 //
 // The compilation need to happen at runtime since the values of the variables are embedded into the bytecode
@@ -183,6 +185,104 @@ void octave::compile_user_function (octave_user_code &ufn, bool do_print)
     throw;
   }
 }
+
+// Class to walk the tree and collect most id:s that are assigned to.
+// E.g. any assign to index expression "pi(3) = 4;" is not collected.
+// This walker is used to try to figure out if any "i" identifier is used
+// as a variable or the imaginary unit.
+class find_assigned_ids_walker : tree_walker
+{
+public:
+  static std::set<std::string>
+  find_ids (octave_user_code &e)
+  {
+    find_assigned_ids_walker walker;
+    e.accept (walker);
+
+    return walker.m_set_of_ids;
+  }
+
+  std::set<std::string> m_set_of_ids; // ... that are assigned to
+
+  void visit_simple_assignment (tree_simple_assignment &t)
+  {
+    auto lhs = t.left_hand_side ();
+
+    if (lhs->is_identifier ())
+      m_set_of_ids.insert (lhs->name ());
+
+    t.right_hand_side ()->accept (*this);
+  }
+
+  void visit_multi_assignment (tree_multi_assignment &t)
+  {
+    octave::tree_argument_list *lhs = t.left_hand_side ();
+    if (!lhs)
+      return;
+
+    for (auto it = lhs->begin (); it != lhs->end (); it++)
+      {
+        if ((*it)->is_identifier ())
+          m_set_of_ids.insert ((*it)->name ());
+      }
+
+    t.right_hand_side ()->accept (*this);
+  }
+
+  void visit_simple_for_command (tree_simple_for_command& cmd)
+  {
+    tree_expression *lhs = cmd.left_hand_side ();
+    if (lhs->is_identifier ())
+      m_set_of_ids.insert (lhs->name ());
+
+    tree_statement_list *list = cmd.body ();
+    if (list)
+      list->accept (*this);
+  }
+
+  void visit_complex_for_command (tree_complex_for_command& cmd)
+  {
+    octave::tree_argument_list *lhs = cmd.left_hand_side ();
+
+    CHECK (lhs);
+    CHECK (lhs->size () == 2);
+
+    auto p = lhs->begin ();
+    tree_expression *val = *p++;
+    tree_expression *key = *p++;
+
+    CHECK (val); CHECK (key);
+
+    CHECK (val->is_identifier ());
+    CHECK (key->is_identifier ());
+
+    m_set_of_ids.insert (val->name ());
+    m_set_of_ids.insert (key->name ());
+
+    tree_statement_list *list = cmd.body ();
+    if (list)
+      list->accept (*this);
+  }
+
+  void visit_octave_user_function (octave_user_function& fcn)
+  {
+    octave::tree_parameter_list *paras = fcn.parameter_list ();
+    if (paras)
+      {
+        for (auto it = paras->begin (); it != paras->end (); it++)
+          {
+            CHECK_NONNULL (*it);
+            CHECK ((*it)->ident ());
+            m_set_of_ids.insert ((*it)->name ());
+          }
+      }
+
+    // Walk body
+    tree_statement_list *cmd_list = fcn.body ();
+    if (cmd_list)
+      cmd_list->accept (*this);
+  }
+};
 
 // Class to walk the tree and see if a index expression has
 // an end in it.
@@ -462,8 +562,6 @@ do {\
   m_continue_target.back ().push_back (offset)
 
 #define SLOT(name) get_slot (name)
-
-#define CHECK_NONNULL(ptr) if (!ptr) error ("Unexpected null %d", __LINE__)
 
 #define PUSH_ID_BEGIN_INDEXED(slot, idx, narg, is_obj) \
   m_indexed_id.push_back ({slot, idx, narg, is_obj})
@@ -2738,6 +2836,17 @@ visit_octave_user_function (octave_user_function& fcn)
         }
     }
 
+  // If the id:s "i", "j", "I","J" or "e" are used we try to figure out if they are used as variables or as
+  // the imaginary unit, to choose between PUSH_I, PUSH_E (specialized) or a generic push op-code.
+  bool ije_used = m_map_locals_to_slot.find ("i") != m_map_locals_to_slot.end ();
+  ije_used |= m_map_locals_to_slot.find ("j") != m_map_locals_to_slot.end ();
+  ije_used |= m_map_locals_to_slot.find ("I") != m_map_locals_to_slot.end ();
+  ije_used |= m_map_locals_to_slot.find ("J") != m_map_locals_to_slot.end ();
+  ije_used |= m_map_locals_to_slot.find ("e") != m_map_locals_to_slot.end ();
+
+  if (ije_used)
+    m_set_assigned_ids = find_assigned_ids_walker::find_ids (fcn);
+
   CHECK (! (m_is_anon && m_n_nested_fn));
 
   // Add code to initialize variables in anonymous functions that took their value from
@@ -4391,7 +4500,23 @@ visit_identifier (tree_identifier& id)
           // Push the local at its slot number to the stack
           MAYBE_PUSH_WIDE_OPEXT (slot);
           if (name == "pi")
-            PUSH_CODE (INSTR::PUSH_PI);
+            PUSH_CODE (INSTR::PUSH_PI); // Specialization that pushes pi fast
+          else if (name == "i" || name == "I" || name == "j" || name == "J")
+            {
+              // If the id is assigned to anywhere in the function, we don't use the 
+              // specialization.
+              if (m_set_assigned_ids.find (name) == m_set_assigned_ids.end ())
+                PUSH_CODE (INSTR::PUSH_I); // Specialization that pushes imaginary unit fast
+              else
+                PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT1);
+            }
+          else if (name == "e")
+            {
+              if (m_set_assigned_ids.find (name) == m_set_assigned_ids.end ())
+                PUSH_CODE (INSTR::PUSH_E); // Specialization that pushes e fast
+              else
+                PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT1);
+            }
           else
             PUSH_CODE (INSTR::PUSH_SLOT_NARGOUT1);
           PUSH_SLOT (slot);

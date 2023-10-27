@@ -216,6 +216,8 @@ enum class INSTR
   NEQ_CST,
   POW_CST_DBL,
   POW_CST,
+  PUSH_I,
+  PUSH_E,
 };
 
 enum class unwind_entry_type

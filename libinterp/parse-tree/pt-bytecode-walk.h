@@ -168,6 +168,8 @@ namespace octave
 
     std::vector<nesting_statement> m_nesting_statement;
 
+    std::set<std::string> m_set_assigned_ids; // Only populated if i,j,I,J,e are ids
+
     // For "end" in indexing expression we need to know what variable is
     // being indexed.
     std::vector<id_being_indexed> m_indexed_id;

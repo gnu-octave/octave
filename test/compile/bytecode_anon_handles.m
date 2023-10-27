@@ -107,6 +107,30 @@ function bytecode_anon_handles ()
   assert (h2 (3) == 6)
   h2 = @(yy) execute_handle (@(yyyy) execute_handle (@(yyy) h1 (yyy), yyyy), yy); % Nest some more
   assert (h2 (3) == 6)
+
+  % Test not enough return values
+  threw = false;
+  try
+    h1 = @() 1;
+    [a, b] = h1 ();
+  catch
+    threw = true;
+  end
+
+  assert (threw);
+
+  h1 = @(varargin) varargin{:};
+  [a b c] = h1(1,2,3);
+  assert ([a b c] == [1 2 3])
+
+  threw = false;
+  try
+    [a b c d] = h1(1,2,3);
+  catch
+    threw = true;
+  end
+
+  assert (threw);
 end
 
 function [x, y, z] = try_isargout ()

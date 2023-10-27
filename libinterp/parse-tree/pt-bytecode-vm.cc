@@ -5972,16 +5972,19 @@ ret_anon:
 
     assert (N_RETURNS () == -128);
 
-    int n_returns_callee = bsp[0].i + 1; // Nargout on stack, +1 to include %nargout
-    if (n_returns_callee == 1)
-      n_returns_callee = 2;
+    int n_returns_callee = bsp[0].i; // Nargout on stack
+    if (n_returns_callee == 0)
+      n_returns_callee = 1;
 
     int n_locals_callee = N_LOCALS (); // Amount of arguments, purely local variables and %nargout
 
-    // Assert that the stack pointer is back where it should be
-    assert (bsp + n_locals_callee +  n_returns_callee - 1 == sp);
+    int n_ret_on_stack = sp - bsp - n_locals_callee;
 
-    stack_element *first_ret = sp - n_returns_callee + 1;
+    // Assert that the stack pointer is back where it should be, i.e. that there are between
+    // zero and nargout return values.
+    assert (n_ret_on_stack >= 0 && n_ret_on_stack <= n_returns_callee);
+
+    stack_element *first_ret = sp - n_ret_on_stack;
 
     // Destroy locals
     //
@@ -6027,16 +6030,16 @@ ret_anon:
         int j;
         // nargout 0 should still give one return value, if there is one
         int n_root_wanted = std::max (root_nargout, 1);
-        for (j = 1; j < n_returns_callee && j < (n_root_wanted + 1); j++)
+        for (j = 0; j < n_ret_on_stack && j < n_root_wanted; j++)
           {
-            int idx = (n_returns_callee - 1) - j;
+            int idx = n_ret_on_stack - 1 - j;
             ret.append (std::move (first_ret[idx].ov));
             first_ret[idx].ov.~octave_value ();
           }
         // Destroy rest of return values, if any
-        for (; j < n_returns_callee; j++)
+        for (; j < n_ret_on_stack; j++)
           {
-            int idx = (n_returns_callee - 1) - j;
+            int idx = n_ret_on_stack - j;
             first_ret[idx].ov.~octave_value ();
           }
 
@@ -6093,7 +6096,7 @@ ret_anon:
     // Move the callee's return values to the top of the stack of the caller.
     // Renaming variables to keep my sanity.
     int n_args_caller_expects = caller_nval_back;
-    int n_args_callee_has = n_returns_callee - 1; // Excludes %nargout
+    int n_args_callee_has = n_ret_on_stack; // Excludes %nargout
     int n_args_to_move = std::min (n_args_caller_expects, n_args_callee_has);
     int n_args_actually_moved = 0;
 

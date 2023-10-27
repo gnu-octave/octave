@@ -218,6 +218,7 @@ enum class INSTR
   POW_CST,
   PUSH_I,
   PUSH_E,
+  INDEX_STRUCT_SUBCALL,
 };
 
 enum class unwind_entry_type

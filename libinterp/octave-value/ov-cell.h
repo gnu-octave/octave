@@ -180,6 +180,9 @@ public:
 
   octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
 
+  octave_value_list
+  simple_subsref (char type, octave_value_list& idx, int nargout);
+
 private:
 
   void clear_cellstr_cache () const

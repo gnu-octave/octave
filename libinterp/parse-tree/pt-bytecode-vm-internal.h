@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#define EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK(ovl,n) \
+#define EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK(ovl,nargout) \
 do {\
   if (nargout <= 1)\
     PUSH_OV (ovl.first_or_nil_ov());\
@@ -345,8 +345,12 @@ stack_element *first_arg = sp - n_args_on_stack;                                
 (*sp++).pse = bsp;                                                                                \
                                                                                                   \
 /* Push the instruction pointer */                                                                \
-/* (last on caller stack) */                                                                      \
 (*sp++).puc = ip;                                                                                 \
+                                                                                                  \
+/* The amount of return values the caller actually wants. Not necesserely the */                  \
+/* same as the amount of return values the caller wants the callee to produce. */                 \
+/* (last on caller stack) */                                                                      \
+(*sp++).u = caller_nvalback;                                                                      \
                                                                                                   \
 /* set callee bsp */                                                                              \
 m_sp = bsp = sp;                                                                                  \

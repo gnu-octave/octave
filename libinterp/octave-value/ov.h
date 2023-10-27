@@ -1554,6 +1554,8 @@ protected:
 
   bool is_ref () const { return m_rep->is_ref (); }
 
+  bool is_vm_chainargs_wrapper () const { return m_rep->is_vm_chainargs_wrapper (); }
+
   octave_value_ref * ref_rep () { return m_rep->ref_rep (); }
 
   bool is_nil (void) const { return m_rep == nil_rep (); }

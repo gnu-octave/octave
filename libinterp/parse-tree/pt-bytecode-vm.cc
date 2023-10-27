@@ -50,6 +50,7 @@
 
 #include "ov-vm.h"
 #include "ov-fcn-handle.h"
+#include "ov-cs-list.h"
 
 //#pragma GCC optimize("O0")
 
@@ -330,6 +331,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (POP_N_INTS)     PCHAR () CASE_END ()
           CASE_START (DUP_MOVE)       PCHAR () CASE_END ()
 
+          CASE_START (INDEX_STRUCT_SUBCALL) PCHAR ()  PCHAR () PCHAR () PCHAR () PCHAR_AS_CHAR () CASE_END ()
+
           CASE_START (MUL_CST)        PCHAR () PCHAR () CASE_END ()
           CASE_START (MUL_CST_DBL)    PCHAR () PCHAR () CASE_END ()
           CASE_START (DIV_CST)        PCHAR () PCHAR () CASE_END ()
@@ -434,20 +437,9 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (INDEX_STRUCT_CALL)
             PCHAR ()
+            PWSLOT ()
             PCHAR ()
-            PCHAR ()
-            PCHAR ()
-            PCHAR ()
-            int nn = *p;
-            s += " {";
-            for (int i = 0; i < nn; i++)
-              {
-                PCHAR ()
-                PCHAR_AS_CHAR ()
-                if (i + 1 != nn)
-                  s += ", ";
-              }
-            s += "} ";
+            PCHAR_AS_CHAR ()
           CASE_END ()
 
           CASE_START (LOAD_FAR_CST) PINT () CASE_END ()
@@ -718,6 +710,62 @@ static void append_cslist_to_ovl (octave_value_list &ovl, octave_value ov_cs)
 {
   octave_value_list cslist = ov_cs.list_value (); // TODO: Wastefull copy. octave_cs_list has no const ref to m_list.
   ovl.append (cslist);
+}
+
+
+// Note: The function assumes the ip points to the next opcode. I.e.
+// the current opcode it searches for entries for is at ip - 1.
+arg_name_entry get_argname_entry (int ip, unwind_data *unwind_data)
+{
+  int best_match = -1;
+  int best_start = -1;
+
+  auto &entries = unwind_data->m_argname_entries;
+  for (unsigned i = 0; i < entries.size (); i++)
+    {
+      int start = entries[i].m_ip_start;
+      int end = entries[i].m_ip_end;
+
+      if (start > (ip - 1) || end < (ip - 1))
+        continue;
+
+      if (best_match != -1)
+        {
+          if (best_start > start)
+            continue;
+        }
+
+      best_match = i;
+      best_start = start;
+    }
+
+  if (best_match == -1)
+    return {};
+
+  return entries[best_match];
+}
+
+// Expand any cs-list among the args on the stack.
+// I.e. if there is e.g. a two element cs-list
+// among the args, we need to expand it and move up the
+// rest of the args, on the stack.
+//
+// Modifies sp and n_args_on_stack ...
+#define EXPAND_ARGS_CSLISTS_ON_STACK \
+{                                                                 \
+  stack_element *pov = &sp[-n_args_on_stack];                     \
+  while (pov != sp)                                               \
+    {                                                             \
+      if (OCTAVE_UNLIKELY (pov->ov.is_cs_list ()))                \
+        {                                                         \
+          int n_change = expand_cslist_inplace (pov, sp);         \
+          sp += n_change;                                         \
+          pov += n_change;                                        \
+          n_args_on_stack += n_change;                            \
+        }                                                         \
+                                                                  \
+      pov++;                                                      \
+    }                                                             \
 }
 
 #define POP_STACK_RANGE_TO_OVL(ovl, beg, end) \
@@ -1047,6 +1095,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&pow_cst,
       &&push_i,
       &&push_e,
+      &&index_struct_subcall,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -1371,8 +1420,10 @@ ret:
     stack_element *caller_stack_end = sp - n_returns_callee;
     sp = caller_stack_end; // sp points to one past caller stack
 
-    int callee_nargout = caller_stack_end[0].i;
-    //TODO: Check nargout
+    // The amount of return values the caller wants, as stored last on the caller stack.
+    // Note that this is not necessarily the same as nargout, the amount of return values the caller
+    // want the callee to produce, stored first on callee stack.
+    int caller_nval_back = (*--sp).u;
 
     // Restore ip
     ip = (*--sp).puc;
@@ -1403,7 +1454,7 @@ ret:
 
     // Move the callee's return values to the top of the stack of the caller.
     // Renaming variables to keep my sanity.
-    int n_args_caller_expects = callee_nargout;
+    int n_args_caller_expects = caller_nval_back;
     int n_args_callee_has = n_returns_callee - 1; // Exclude %nargout
     int n_args_to_move = std::min (n_args_caller_expects, n_args_callee_has);
     int n_args_actually_moved = 0;
@@ -1977,6 +2028,7 @@ cmd_fcn_or_undef_error:
                 // Alot of code in this define
                 PUSH_OV (ov); // Calling convention anticipates object to call on the stack.
                 int n_args_on_stack = 0;
+                int caller_nvalback = nargout; // Caller wants as many values returned as it wants the callee to produce
                 MAKE_BYTECODE_CALL
 
                 // Now dispatch to first instruction in the
@@ -2473,6 +2525,7 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
                 octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
 
                 // Alot of code in this define
+                int caller_nvalback = nargout; // Caller wants as many values returned as it wants the callee to produce
                 MAKE_BYTECODE_CALL
 
                 // Now dispatch to first instruction in the
@@ -4129,6 +4182,7 @@ wordcmd:
               {
                 octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
                 // Alot of code in this define
+                int caller_nvalback = nargout; // Caller wants as many values returned as it wants the callee to produce
                 MAKE_BYTECODE_CALL
 
                 // Now dispatch to first instruction in the
@@ -4448,6 +4502,7 @@ index_cell_id0:
               {
                 octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
                 // Alot of code in this define
+                int caller_nvalback = nargout; // Caller wants as many values returned as it wants the callee to produce
                 MAKE_BYTECODE_CALL
 
                 // Now dispatch to first instruction in the
@@ -4522,8 +4577,8 @@ varargin_call:
 
     // Recreate first arg and n_args_on_stack
     // from the stack
-    stack_element *first_arg = sp[-8].pse;
-    int n_args_on_stack = (sp - 8) - first_arg;
+    stack_element *first_arg = sp[-9].pse;
+    int n_args_on_stack = (sp - 9) - first_arg;
 
     // Construct return values - note nargout
     // is allready pushed as a uint64
@@ -4784,6 +4839,9 @@ unwind:
                 p->exit_fn (fn_name);
               }
           }
+
+        // Skipp caller_nvalback
+        m_sp--;
 
         // Restore ip
         ip = (*--m_sp).puc;
@@ -5198,210 +5256,104 @@ throw_iferrorobj:
 
 index_struct_call:
   {
+    // This opcode is a setup for a chain of opcodes that each does a part
+    // in a chained subsref.
+    //
+    // It is done like this since there can be bytecode function calls in the middle
+    // of the chain and the call can only return to an opcode, not some arbitrary point in
+    // the C++ code.
+
     int nargout = arg0;
-    // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
-    // where under certain conditions a magic number nargout of -1 is
-    // expected to  maybe return a cs-list. "-1" in this context
-    // does not have the same meaning as in the VM, where it means
-    // a varargout with only one return symbol 'varargout'.
-    if (nargout == 255)
-      nargout = -1;
-    bool has_slot = *ip++;
     int slot = POP_CODE_USHORT ();
+    int n_args_on_stack = POP_CODE ();
+    char type = POP_CODE ();
 
-    int n_subs = POP_CODE ();
+    // The object being indexed is on the stack under the arguments
+    octave_value &ov = sp[-1 - n_args_on_stack].ov;
 
-    std::list<octave_value_list> idx;
-
-    std::vector<int> v_n_args;
-    std::string types;
-    types.resize (n_subs);
-
-    for (int i = 0; i < n_subs; i++)
+    // If there is a slot specified, we need to check if we need to call
+    // its octave_value (e.g. a handle) or a function corrensponding to its name.
+    if (slot)
       {
-        v_n_args.push_back (POP_CODE ());
-        types[i] = POP_CODE ();
-      }
-
-    // Add the args of each sub indexing to the idx list
-    for (int i = 0; i < n_subs; i++)
-      {
-        octave_value_list ovl;
-        int n_args = v_n_args[n_subs - 1 - i]; // Note, from end to beginning
-        for (int j = 0; j < n_args; j++)
+        if (ov.is_nil ())
           {
-            octave_value &arg = TOP_OV ();
+            // The slot the object being indexed was pushed from
+            octave_value &slot_ov = bsp[slot].ov;
 
-            if (arg.is_cs_list ())
-              ovl.append (arg.list_value ().reverse ());
+            // Put a function cache object in the slot and in the local ov
+            ov = octave_value (new octave_fcn_cache (name_data[slot]));
+            if (slot_ov.is_ref())
+              slot_ov.ref_rep ()->set_value (ov);
             else
-              ovl.append (std::move (arg));
-            STACK_DESTROY (1);
+              slot_ov = ov;
           }
-        // args are pushed left to right to stack, so we need to reverse the ovl
-        ovl.reverse ();
-        idx.push_back (ovl);
-      }
-    idx.reverse (); // expressions was pushed left to right, so we need to reverse
 
-    octave_value &ov = TOP_OV ();
-    octave_value_list retval;
-    try
-      {
-        m_tw->set_active_bytecode_ip (ip - code);
-
-        // TODO: Need to figure out a clean way to do this kind of stuff.
-        //       See tree_index_expression::evaluate_n()
-        //       It should be general, because I don't think this will always work?
-        int cntr = 0;
-        while (ov_need_stepwise_subsrefs(ov) && types.size () > 0)
+        // Should we call the object?
+        if (ov.vm_dispatch_call () == octave_base_value::vm_call_dispatch_type::CALL)
           {
-            bool eat_args = true;
-            std::string step_type {types.front ()};
+            CHECK_PANIC (ov.has_function_cache ());
 
-            std::list<octave_value_list> step_idx;
-            step_idx.push_back (idx.front ());
+            octave_function *fcn;
 
-            int step_nargout = types.size () > 1 ? 1 : nargout;
+            octave_value_list ovl;
+            // The operands are on the top of the stack
+            POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
 
-            if (cntr == 0 && ov.is_nil () && has_slot)
+            try
               {
-                // Put a function cache object in the slot and in the local ov
-                ov = octave_value (new octave_fcn_cache (name_data[slot]));
+                if (type == '(')
+                  {
+                    fcn = ov.get_cached_fcn (ovl);
+                  }
+                else // { or .
+                  {
+                    fcn = ov.get_cached_fcn (static_cast<octave_value*> (nullptr), static_cast<octave_value*> (nullptr));
+                  }
+              }
+            CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
 
-                if (OCTAVE_UNLIKELY (bsp[slot].ov.is_ref ()))
-                  bsp[slot].ov.ref_rep ()->set_value (ov);
-                else
-                  bsp[slot].ov = ov;
-
+            if (! fcn)
+              {
+                (*sp++).ps = new std::string {name_data[slot]};
+                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                goto unwind;
               }
 
-            if (cntr == 0 && ov.has_function_cache () && has_slot && !ov.is_classdef_meta ())
+            try
               {
-                octave_function *fcn;
-                try
-                  {
-                    if (step_type == "(")
-                      {
-                        octave_value_list &ovl = idx.front ();
-                        fcn = ov.get_cached_fcn (ovl);
-                      }
-                    else // { or .
-                      {
-                        fcn = ov.get_cached_fcn (static_cast<octave_value*> (nullptr), static_cast<octave_value*> (nullptr));
-                        eat_args = false; // The function call has no args
-                      }
-                  }
-                CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
+                // TODO: Bytecode call
 
-                if (! fcn)
+                octave_value_list retval;
+                m_tw->set_active_bytecode_ip (ip - code);
+                if (type == '(')
                   {
-                    (*sp++).ps = new std::string {name_data[slot]};
-                    (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
-                    goto unwind;
-                  }
-
-                try
-                  {
-                    m_tw->set_active_bytecode_ip (ip - code);
-                    if (eat_args)
-                      retval = fcn->call (*m_tw, step_nargout, idx.front ());
+                     // Skip the following subsref. Need to check for nargout extension.
+                    if (*ip == static_cast<unsigned char> (INSTR::EXT_NARGOUT))
+                      ip += 7; // Skip EXT_NARGOUT + STRUCT_INDEX_SUBCALL
                     else
-                      retval = fcn->call (*m_tw, step_nargout, {});
-                    // TODO: Bytecode call.
-                  }
-                CATCH_INTERRUPT_EXCEPTION
-                CATCH_INDEX_EXCEPTION
-                CATCH_EXECUTION_EXCEPTION
-                CATCH_BAD_ALLOC
-                CATCH_EXIT_EXCEPTION
-              }
-            else if (ov.is_function () && !ov.is_classdef_meta ())
-              {
-                octave_function *fcn = ov.function_value (true);
-                if (fcn)
-                  {
-                    octave_value_list args = idx.front ();
-                    retval = fcn->call (*m_tw, step_nargout, args);
+                      ip += 6; // Skip STRUCT_INDEX_SUBCALL
+                    retval = fcn->call (*m_tw, nargout, ovl);
                   }
                 else
-                  PANIC ("Silly state");
-              }
-            else
-              {
-                try
                   {
-                    retval = ov.subsref (step_type.c_str (), step_idx, step_nargout);
+                    retval = fcn->call (*m_tw, nargout, {});
                   }
-                CATCH_INTERRUPT_EXCEPTION
-                CATCH_INDEX_EXCEPTION_WITH_MAYBE_NAME (has_slot && cntr == 0)
-                CATCH_EXECUTION_EXCEPTION
-                CATCH_BAD_ALLOC
-                CATCH_EXIT_EXCEPTION
-              }
 
-            // If the first retval has zero length and we got more to go, it is an error
-            if (cntr == 0 && step_type.size() > 1 && retval.length () == 0)
-              {
-                (*sp++).pee = new execution_exception {"error","","indexing undefined value"};
-                (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
-                goto unwind;
+                STACK_DESTROY (1); // Destroy the ov being indexed
+                PUSH_OV (retval.first_or_nil_ov ()); // Push the next ov to be indexed
               }
-
-            ov = retval.first_or_nil_ov ();
-
-            if (cntr != 0 && ov.is_cs_list () && step_type.size() > 1)
-              {
-                (*sp++).pee = new execution_exception {"error","","a cs-list cannot be further indexed"};
-                (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
-                goto unwind;
-              }
-
-            if (eat_args)
-              {
-                types = types.substr(1, types.size () - 1);
-                idx.pop_front ();
-              }
-            cntr++;
+            CATCH_INTERRUPT_EXCEPTION
+            CATCH_INDEX_EXCEPTION
+            CATCH_EXECUTION_EXCEPTION
+            CATCH_BAD_ALLOC
+            CATCH_EXIT_EXCEPTION
           }
-
-        if ((!ov.is_function () || ov.is_classdef_meta ()) && types.size ())
-        {
-          retval = ov.subsref (types.c_str (), idx, nargout);
-          idx.pop_front ();
-        }
-
-        octave_value val = (retval.length () ? retval(0) : octave_value ());
-        if (val.is_function ())
-          {
-            octave_function *fcn = val.function_value (true);
-
-            if (fcn)
-              {
-                octave_value_list args = idx.size () ? idx.front () : (octave_value_list){};
-                retval = fcn->call (*m_tw, nargout, args);
-              }
-          }
-
-        idx.clear ();
       }
-    CATCH_INTERRUPT_EXCEPTION
-    CATCH_INDEX_EXCEPTION
-    CATCH_EXECUTION_EXCEPTION
-    CATCH_BAD_ALLOC
-    CATCH_EXIT_EXCEPTION
 
-    STACK_DESTROY (1);
-  // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
-  // where under certain conditions a magic number nargout of -1 is
-  // expected to  maybe return a cs-list. "-1" in this context
-  // does not have the same meaning as in the VM, where it means
-  // a varargout with only one return symbol 'varargout'.
-    if (nargout == -1)
-      nargout = 1;
-    EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
+  // The next instruction is a INDEX_STRUCT_SUBCALL
+  // One for each part of the chain
   }
-  DISPATCH ();
+  DISPATCH (); // TODO: Make hardcoded goto to index_struct_subcall:
 
 index_struct_n:
   {
@@ -5755,6 +5707,7 @@ index_obj:
               {
                 octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
                 // Alot of code in this define
+                int caller_nvalback = nargout; // Caller wants as many values as it wants the callee to produce
                 MAKE_BYTECODE_CALL
 
                 // Now dispatch to first instruction in the
@@ -6105,8 +6058,10 @@ ret_anon:
     stack_element *caller_stack_end = bsp;
     sp = caller_stack_end; // sp points to one past caller stack
 
-    int callee_nargout = caller_stack_end[0].i;
-    //TODO: Check nargout
+    // The amount of return values the caller wants, as stored last on the caller stack.
+    // Note that this is not necessarily the same as nargout, the amount of return values the caller
+    // want the callee to produce, stored first on callee stack.
+    int caller_nval_back = (*--sp).u;
 
     // Restore ip
     ip = (*--sp).puc;
@@ -6137,7 +6092,7 @@ ret_anon:
 
     // Move the callee's return values to the top of the stack of the caller.
     // Renaming variables to keep my sanity.
-    int n_args_caller_expects = callee_nargout;
+    int n_args_caller_expects = caller_nval_back;
     int n_args_callee_has = n_returns_callee - 1; // Excludes %nargout
     int n_args_to_move = std::min (n_args_caller_expects, n_args_callee_has);
     int n_args_actually_moved = 0;
@@ -6565,6 +6520,381 @@ debug: // TODO: Remove
   MAKE_BINOP_CST_SELFMODIFYING(binary_op::op_pow, pow_cst_dbl, POW_CST_DBL)
   DISPATCH();
 
+  index_struct_subcall:
+  {
+    // The INDEX_STRUCT_SUBCALL opcode is a chain of INDEX_STRUCT_SUBCALL opcodes,
+    // that are always proceded by INDEX_STRUCT_CALL.
+    //
+    // INDEX_STRUCT_SUBCALL executes a subexpression of a chain of subsrefs.
+    //
+    // The opcode is more or less a "stackification" of tree_index_expression::evaluate_n ().
+
+    int nargout = arg0;
+    // TODO: Kludge alert. Mirror the behaviour in ov_classdef::subsref
+    // where under certain conditions a magic number nargout of -1 is
+    // expected to  maybe return a cs-list. "-1" in this context
+    // does not have the same meaning as in the VM, where it means
+    // a varargout with only one return symbol 'varargout'.
+    int subsref_nargout = nargout;
+    if (nargout == 255)
+      {
+        nargout = 1;
+        subsref_nargout = -1;
+      }
+    int i = *ip++;
+    int n = *ip++;
+    int n_args_on_stack = *ip++;
+    char type = *ip++;
+
+    // The object to index is before the args on the stack
+    octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
+
+    bool ov_is_vm_chainargs_wrapper = ov.is_vm_chainargs_wrapper ();
+    bool need_stepwise_subsref = ov_need_stepwise_subsrefs(ov);
+
+    try
+      {
+        if (!ov_is_vm_chainargs_wrapper && need_stepwise_subsref)
+          {
+            switch (ov.vm_dispatch_call ())
+              {
+                case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+                  {
+                    (*sp++).pee = new execution_exception {"error", "", "invalid undefined value in chained index expression"}; // TODO: Uninformative?
+                    (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+                    goto unwind;
+                  }
+                case octave_base_value::vm_call_dispatch_type::SUBSREF:
+                  {
+                    octave_value_list ovl;
+                    // The operands are on the top of the stack
+                    POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
+
+                    CHECK_PANIC (! ov.is_function () || ov.is_classdef_meta ()); // TODO: Remove
+
+                    octave_value_list retval;
+                    try
+                      {
+                        m_tw->set_active_bytecode_ip (ip - code);
+                        retval = ov.simple_subsref (type, ovl, subsref_nargout);
+                      }
+                    CATCH_INTERRUPT_EXCEPTION
+                    catch (index_exception& ie)
+                      {
+                        // Fetch the name of the left most object being indexed from the arg name entries.
+                        int ip_offset = ip - code;
+                        arg_name_entry entry = get_argname_entry (ip_offset, unwind_data);
+
+                        if (entry.m_obj_name != "")
+                          {
+                            // Only set the name if the object is defined (i.e. not a function call to e.g. 'zero')
+                            // to match the error messages in tree_evaluator and pass index.tst
+                            if (m_tw->get_current_stack_frame ()->varval (entry.m_obj_name).is_defined ())
+                              ie.set_var (entry.m_obj_name);
+                          }
+
+                        (*sp++).pee = ie.dup ();
+                        (*sp++).i = static_cast<int> (error_type::INDEX_ERROR);
+                        goto unwind;
+                      }
+                    CATCH_EXECUTION_EXCEPTION
+                    CATCH_BAD_ALLOC
+                    CATCH_EXIT_EXCEPTION
+
+                    ov = octave_value ();
+                    STACK_DESTROY (1); // Destroy the object being indexed
+
+                    ovl.clear (); // Destroy the args
+
+                    bool is_last_iteration = i + 1 == n;
+
+                    if (is_last_iteration)
+                      {
+                        // TODO: Kludge for e.g. "m = containsers.Map;" which returns a function.
+                        //       Should preferably be done by .subsref?
+                        //       If only classdefs does this, this is not really needed here.
+                        octave_value val = (retval.length () ? retval(0) : octave_value ());
+                        if (val.is_function ())
+                          {
+                            octave_function *fcn = val.function_value (true);
+
+                            if (fcn)
+                              {
+                                retval = fcn->call (*m_tw, nargout, {});
+                              }
+                          }
+                      }
+
+                    // Push one value if this iteration of INDEX_STRUCT_SUBCALL
+                    // is not the last one.
+                    if (!is_last_iteration)
+                      nargout = 1;
+                    EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
+                  }
+                break;
+
+                case octave_base_value::vm_call_dispatch_type::CALL:
+                case octave_base_value::vm_call_dispatch_type::HANDLE:
+                case octave_base_value::vm_call_dispatch_type::OBJECT:
+                  {
+                    CHECK_PANIC (ov.has_function_cache ()); // TODO :Remove
+
+                    octave_function *fcn;
+                    try
+                      {
+                        stack_element *first_arg = &sp[-n_args_on_stack];
+                        stack_element *end_arg = &sp[0];
+                        fcn = ov.get_cached_fcn (first_arg, end_arg);
+                      }
+                    CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
+
+                    if (! fcn)
+                      {
+                        (*sp++).pee = new execution_exception {"error", "", "invalid return value in chained index expression"}; // TODO: Uninformative?
+                        (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+                        goto unwind;
+                      }
+                    else if (fcn->is_compiled ())
+                      {
+                        octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+
+                        // The last iteration the caller wants as many returned on the stack
+                        // as it wants the callee to produce.
+                        // In any other iteration the caller wants one value returned, but still
+                        // wants the callee to produce nargout number of return values.
+                        int caller_nvalback;
+                        if (i + 1 != n)
+                          caller_nvalback = 1;
+                        else
+                          caller_nvalback = nargout;
+
+                        MAKE_BYTECODE_CALL
+
+                        // Now dispatch to first instruction in the
+                        // called function
+                      }
+                    else
+                      {
+                        try
+                          {
+                            octave_value_list ovl;
+                            // The operands are on the top of the stack
+                            POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
+
+                            m_tw->set_active_bytecode_ip (ip - code);
+                            octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
+
+                            STACK_DESTROY (1); // Destroy the object being indexed
+
+                            bool is_last_iteration = i + 1 == n;
+
+                            if (is_last_iteration)
+                              {
+                                // TODO: Kludge for e.g. "m = containsers.Map;" which returns a function.
+                                //       Should preferably be done by .subsref?
+                                //       If only classdefs does this, this is not really needed here.
+                                octave_value val = (ret.length () ? ret(0) : octave_value ());
+                                if (val.is_function ())
+                                  {
+                                    octave_function *fcn_final = val.function_value (true);
+
+                                    if (fcn_final)
+                                      {
+                                        ret = fcn_final->call (*m_tw, nargout, {});
+                                      }
+                                  }
+                              }
+
+                            // Push one value if this iteration of INDEX_STRUCT_SUBCALL
+                            // is not the last one.
+                            if (!is_last_iteration)
+                              nargout = 1;
+                            EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
+                          }
+                        CATCH_INTERRUPT_EXCEPTION
+                        CATCH_INDEX_EXCEPTION
+                        CATCH_EXECUTION_EXCEPTION
+                        CATCH_BAD_ALLOC
+                        CATCH_EXIT_EXCEPTION
+                      }
+                  }
+                break;
+              }
+
+          }
+        else
+          {
+            if (!ov_is_vm_chainargs_wrapper)
+              {
+                // Replace the object being indexed on the stack with a wrapper object
+                // with the object being indexed in it.
+                ov = octave_value {new octave_vm_chainargs_wrapper {ov}};
+              }
+
+            octave_vm_chainargs_wrapper &ovb_chainargs = REP (octave_vm_chainargs_wrapper, ov);
+
+            { // Limit ovl to this scope to not polute the whole C++ scope with an invalid ovl after the move
+              octave_value_list ovl;
+              // The operands are on the top of the stack
+              POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
+
+              ovb_chainargs.append_args (std::move (ovl));
+              ovb_chainargs.append_type (type);
+            }
+
+            // In the last INDEX_STRUCT_SUBCALL the args have been collected and it is
+            // time to make the call.
+            if (i + 1 == n)
+              {
+                std::list<octave_value_list> idxs = ovb_chainargs.steal_idxs ();
+                std::string types = ovb_chainargs.steal_types ();
+
+                // Replace the wrapper object with the object being indexed.
+                // Since ov and ovb_chainargs are the same octave value
+                // there has to be a intermediate copy to keep the refcounts
+                // correct.
+                {
+                  octave_value tmp = ovb_chainargs.steal_obj_to_call ();
+                  ov = tmp;
+                  // Note: 'ovb_chainargs' is invalid from now on
+                }
+
+                switch (ov.vm_dispatch_call ())
+                  {
+                    case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+                      panic_impossible ();
+                      break;
+                    case octave_base_value::vm_call_dispatch_type::SUBSREF:
+                      {
+                        CHECK_PANIC (! ov.is_function () || ov.is_classdef_meta ()); // TODO: Remove
+
+                        octave_value_list retval;
+                        try
+                          {
+                            m_tw->set_active_bytecode_ip (ip - code);
+                            retval = ov.subsref (types, idxs, subsref_nargout);
+                            idxs.clear ();
+                          }
+                        CATCH_INTERRUPT_EXCEPTION
+                        catch (index_exception& ie)
+                          {
+                            // Fetch the name of the left most object being indexed from the arg name entries.
+                            int ip_offset = ip - code - 1; // Minus one since ip points at next opcode now
+                            arg_name_entry entry = get_argname_entry (ip_offset, unwind_data);
+
+                            if (entry.m_obj_name != "")
+                              {
+                                // Only set the name if the object is defined (i.e. not a function call to e.g. 'zero')
+                                // to match the error messages in tree_evaluator and pass index.tst
+                                if (m_tw->get_current_stack_frame ()->varval (entry.m_obj_name).is_defined ())
+                                  ie.set_var (entry.m_obj_name);
+                              }
+
+                            (*sp++).pee = ie.dup ();
+                            (*sp++).i = static_cast<int> (error_type::INDEX_ERROR);
+                            goto unwind;
+                          }
+                        CATCH_EXECUTION_EXCEPTION
+                        CATCH_BAD_ALLOC
+                        CATCH_EXIT_EXCEPTION
+
+                        // TODO: Kludge for e.g. "m = containsers.Map;" which returns a function.
+                        //       Should preferably be done by subsref()/call()?
+                        octave_value val = (retval.length () ? retval(0) : octave_value ());
+                        if (val.is_function ())
+                          {
+                            octave_function *fcn_final = val.function_value (true);
+
+                            if (fcn_final)
+                              {
+                                retval = fcn_final->call (*m_tw, nargout, {});
+                              }
+                          }
+
+                        STACK_DESTROY (1); // Destroy the object being indexed
+                        EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
+                      }
+                    break;
+
+                    case octave_base_value::vm_call_dispatch_type::CALL:
+                    case octave_base_value::vm_call_dispatch_type::HANDLE:
+                    case octave_base_value::vm_call_dispatch_type::OBJECT:
+                      {
+                        CHECK_PANIC (ov.is_function ()); // TODO :Remove
+
+                        octave_function *fcn = ov.function_value ();
+
+                        // tree_evaluator silently ignored nullptr here
+                        if (! fcn)
+                          {
+                            (*sp++).pee = new execution_exception {"error", "", "invalid return value in chained index expression"}; // TODO: Uninformative?
+                            (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+                            goto unwind;
+                          }
+#if 0 // TODO: Support for bytecode calls to ctors
+                    else if (fcn->is_compiled ())
+                      {
+                        octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+
+                        // Alot of code in this define
+                        int nargout = 1;
+                        MAKE_BYTECODE_CALL
+
+                        // Now dispatch to first instruction in the
+                        // called function
+                      }
+#endif
+                        else
+                          {
+                            try
+                              {
+                                if (idxs.size () != 1)
+                                  error ("unexpected extra index at end of expression");
+                                if (type != '(')
+                                  error ("invalid index type '%c' for function call",
+                                    type);
+
+                                octave_value_list final_args = idxs.front ();
+
+                                m_tw->set_active_bytecode_ip (ip - code);
+                                octave_value_list ret = fcn->call (*m_tw, nargout, final_args);
+
+                                // TODO: Kludge for e.g. "m = containsers.Map;" which returns a function.
+                                //       Should preferably be done by subsref()/call()?
+                                //       Is this actually executed? See pt-idx.cc
+                                octave_value val = (ret.length () ? ret(0) : octave_value ());
+                                if (val.is_function ())
+                                  {
+                                    octave_function *fcn_final = val.function_value (true);
+
+                                    if (fcn_final)
+                                      {
+                                        ret = fcn_final->call (*m_tw, nargout, final_args); // Called with same args as above ...
+                                      }
+                                  }
+
+                                STACK_DESTROY (1); // Destroy the object being indexed
+                                EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
+                              }
+                            CATCH_INTERRUPT_EXCEPTION
+                            CATCH_INDEX_EXCEPTION
+                            CATCH_EXECUTION_EXCEPTION
+                            CATCH_BAD_ALLOC
+                            CATCH_EXIT_EXCEPTION
+                          }
+                      }
+                    break;
+                  }
+              }
+          }
+      }
+    CATCH_INTERRUPT_EXCEPTION
+    CATCH_INDEX_EXCEPTION
+    CATCH_EXECUTION_EXCEPTION
+    CATCH_BAD_ALLOC
+    CATCH_EXIT_EXCEPTION
+  }
+  DISPATCH ();
 }
 
 octave_value

@@ -151,6 +151,50 @@ void octave_cell::break_closure_cycles (const std::shared_ptr<octave::stack_fram
 }
 
 octave_value_list
+octave_cell::simple_subsref (char type, octave_value_list& idx, int)
+{
+  octave_value_list retval;
+
+  switch (type)
+    {
+    case '(':
+      retval(0) = do_index_op (idx);
+      break;
+
+    case '{':
+      {
+        if (idx.empty ())
+          error ("invalid empty index expression {}, use {:} instead");
+
+        octave_value tmp = do_index_op (idx);
+
+        Cell tcell = tmp.cell_value ();
+
+        if (tcell.numel () == 1)
+          retval(0) = tcell(0, 0);
+        else
+          {
+            // Return a comma-separated list.
+            retval = octave_value (octave_value_list (tcell));
+          }
+      }
+      break;
+
+    case '.':
+      {
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+}
+
+octave_value_list
 octave_cell::subsref (const std::string& type,
                       const std::list<octave_value_list>& idx,
                       int nargout)

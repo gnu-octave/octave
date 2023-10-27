@@ -828,6 +828,8 @@ public:
 
   virtual bool is_ref () const { return false; }
 
+  virtual bool is_vm_chainargs_wrapper () const { return false; }
+
   virtual octave_value_ref * ref_rep ();
 
   virtual octave_value

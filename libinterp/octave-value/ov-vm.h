@@ -200,4 +200,43 @@ private:
   octave_idx_type m_n_updated = 0;
 };
 
+// Class that is a wrapper around arguments and subsref type (i.e. '(','{' and '.')
+// that are needed for building up the args for a classdef subsref. The object
+// that will be called is set in the constructor of the wrapper.
+//
+// The reason it is in an octave_value is to make unwinding of the VM stack easier.
+//
+// INDEX_STRUCT_SUBCALL adds one set of args and type for each execution of itself,
+// and the last INDEX_STRUCT_SUBCALL makes a subsref of the classdef object with all
+// the args.
+class octave_vm_chainargs_wrapper : public octave_base_value
+{
+public:
+  octave_vm_chainargs_wrapper (octave_value obj_to_call) : m_obj_to_call (obj_to_call) {}
+
+  // Invalid to call after steal
+  void append_args (octave_value_list &&ovl)
+  {
+    m_idxs.push_back (ovl);
+  }
+
+  // Invalid to call after steal
+  void append_type (char type)
+  {
+    m_types.push_back (type);
+  }
+
+  bool is_vm_chainargs_wrapper () const { return true; }
+
+  // Only callable once
+  std::list<octave_value_list> && steal_idxs () { return std::move (m_idxs); }
+  std::string && steal_types () { return std::move (m_types); }
+  octave_value && steal_obj_to_call () { return std::move (m_obj_to_call); }
+
+private:
+  std::list<octave_value_list> m_idxs;
+  std::string m_types;
+  octave_value m_obj_to_call;
+};
+
 #endif

@@ -5389,26 +5389,21 @@ visit_index_expression (tree_index_expression& expr)
   auto arg_type_tags_it = type_tags.begin ();
 
   tree_expression *first_expression = e;
-  // Iterate over the chained subexpressions
+  // Iterate over the chained subexpressions. Collect arg names and amount of args.
   std::vector<int> v_n_args {}; // We pushed one field above
   std::vector<int> v_types {};// The type is .
   while (arg_lists_it != arg_lists.end ())
     {
       tree_argument_list *arg_list = *arg_lists_it++;
       string_vector field_names = *arg_names_it++;
-      tree_expression *dyn_expr = *arg_lists_dyn_it++;
       char type = *arg_type_tags_it++;
 
       v_types.push_back (type);
 
       if (type == '.')
-        {
-          emit_fields_for_visit_index_expression (field_names, dyn_expr, nullptr, nullptr);
-          v_n_args.push_back (1);
-        }
+        v_n_args.push_back (1);
       else if (arg_list)
         {
-          emit_args_for_visit_index_expression (arg_list, nullptr);
           v_n_args.push_back (arg_list->size ());
           // Push the argnames for inputname ()
           int n_args = field_names.numel ();
@@ -5431,41 +5426,106 @@ visit_index_expression (tree_index_expression& expr)
       m_ignored_ip_start = CODE_SIZE (); // visit_multi_assignment () need the code offset to set the proper range for the unwind protect
     }
 
-  maybe_emit_anon_maybe_ignore_outputs ();
+  // Reset the iterators to iterate over them all again
+  arg_names_it = arg_names.begin ();
+  arg_lists_it = arg_lists.begin ();
+  arg_lists_dyn_it = dyn_fields.begin ();
+  arg_type_tags_it = type_tags.begin ();
 
-  int nargout = NARGOUT ();
+  // The first subcall need to be handled specially since it can be a function call
+  // by identifier name.
+  {
+    tree_argument_list *arg_list = *arg_lists_it++;
+    string_vector field_names = *arg_names_it++;
+    tree_expression *dyn_expr = *arg_lists_dyn_it++;
+    char type = *arg_type_tags_it++;
 
-  arg_name_entry.m_ip_start = CODE_SIZE ();
+    if (type == '.')
+      emit_fields_for_visit_index_expression (field_names, dyn_expr, nullptr, nullptr);
+    else if (arg_list)
+      emit_args_for_visit_index_expression (arg_list, nullptr);
+    // For e.g. the call to "bar" in "foo.bar ()" no args need to be emitted
 
-  if (first_expression && first_expression->is_identifier ())
+
+    maybe_emit_anon_maybe_ignore_outputs ();
+
+    int nargout = NARGOUT ();
+
+    arg_name_entry.m_ip_start = CODE_SIZE ();
+
+    if (first_expression && first_expression->is_identifier ())
+      {
+        // Name of the left most identifier needed for error messages
+        // since INDEX_STRUCT_SUBCALL:s don't have any slot specified
+        arg_name_entry.m_obj_name = first_expression->name ();
+
+        int slot = SLOT (first_expression->name ());
+        MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
+        PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
+        if (m1_magic_nargout)
+          PUSH_CODE (1); // Note, 1, not -1. Since there is no subsref in INDEX_STRUCT_CALL
+        else
+          PUSH_CODE (nargout);
+        PUSH_WSLOT (slot); // the slot
+      }
+    else
+      {
+        MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
+        PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
+        if (m1_magic_nargout)
+          PUSH_CODE (1); // Note, 1, not -1.
+        else
+          PUSH_CODE (nargout);
+        PUSH_WSLOT (0); // slot ignored
+      }
+
+    PUSH_CODE (v_n_args[0]);
+    PUSH_CODE (v_types[0]); // '.', '(' or '{'
+
+    // The first subcall (INDEX_STRUCT_CALL) checks the identifier to see if it is function that should be called.
+    // Or an callable object that should be called.
+    //
+    // If it is, the following opcode is skipped for '(' type calls since those eat the args, whereas it is executed
+    // for '{' or '.' types.
+    MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
+    PUSH_CODE (INSTR::INDEX_STRUCT_SUBCALL);
+    if (m1_magic_nargout)
+      PUSH_CODE (-1);
+    else
+      PUSH_CODE (nargout);
+    PUSH_CODE (0);
+    PUSH_CODE (v_n_args.size ());
+    PUSH_CODE (v_n_args[0]);
+    PUSH_CODE (v_types[0]);
+  }
+
+  // Now do the rest of the subcalls
+  int cntr = 0; // The subcall number, starting at one since the first is allready done above
+  while (arg_lists_it != arg_lists.end ())
     {
-      int slot = SLOT (first_expression->name ());
+      cntr++; // One first iteration of the loop
+      tree_argument_list *arg_list = *arg_lists_it++;
+      string_vector field_names = *arg_names_it++;
+      tree_expression *dyn_expr = *arg_lists_dyn_it++;
+      char type = *arg_type_tags_it++;
+
+      if (type == '.')
+        emit_fields_for_visit_index_expression (field_names, dyn_expr, nullptr, nullptr);
+      else if (arg_list)
+        emit_args_for_visit_index_expression (arg_list, nullptr);
+      // For e.g. the call to "bar" in "foo.bar ()" no args need to be emitted
+
+      int nargout = NARGOUT ();
       MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
-      PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
+      PUSH_CODE (INSTR::INDEX_STRUCT_SUBCALL);
       if (m1_magic_nargout)
         PUSH_CODE (-1);
       else
         PUSH_CODE (nargout);
-      PUSH_CODE (1); // has slot
-      PUSH_WSLOT (slot); // the slot
-    }
-  else
-    {
-      MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
-      PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
-      if (m1_magic_nargout)
-        PUSH_CODE (-1);
-      else
-        PUSH_CODE (nargout);
-      PUSH_SLOT (0); // has slot
-      PUSH_WSLOT (0); // slot ignored
-    }
-
-  PUSH_CODE (v_n_args.size ());
-  for (unsigned i = 0; i < v_n_args.size (); i++)
-    {
-      PUSH_CODE (v_n_args[i]);
-      PUSH_CODE (v_types[i]);
+      PUSH_CODE (cntr);
+      PUSH_CODE (v_n_args.size ());
+      PUSH_CODE (v_n_args[cntr]);
+      PUSH_CODE (v_types[cntr]);
     }
 
   arg_name_entry.m_ip_end = CODE_SIZE ();

@@ -38,9 +38,9 @@ else /* TODO: Should be function call to keep code shorter. */\
 \
     int n_retval = std::min (static_cast<int> (ovl.length ()), static_cast<int> (nargout));\
     /* We want to push the ovl backwards */\
-    for (int i = n_retval - 1; i >= 0 && actual_nargout < nargout; i--)\
+    for (int ii = n_retval - 1; ii >= 0 && actual_nargout < nargout; ii--)\
     {\
-      octave_value &arg = ovl (i);\
+      octave_value &arg = ovl (ii);\
 \
       if (arg.is_cs_list ())\
         {\
@@ -331,55 +331,49 @@ if (n_args_callee < 0)                                                          
                                                                                                   \
 /* Construct return values - note nargout */                                                      \
 /* is allready pushed as a uint64 */                                                              \
-for (int i = 1; i < n_returns_callee; i++)                                                        \
+for (int ii = 1; ii < n_returns_callee; ii++)                                                     \
   PUSH_OV ();                                                                                     \
                                                                                                   \
-int ii;                                                                                           \
 int n_args_on_callee_stack = 0;                                                                   \
+bool all_too_many_args = false;                                                                   \
 /* Move the args to the new stack */                                                              \
-if (!has_cs_list_arg) /* TODO: Kludge. Move to beginning. */                                      \
- {                                                                                                \
-    n_args_on_callee_stack = n_args_on_stack;                                                     \
-    for (ii = 0; ii < n_args_on_stack; ii++)                                                      \
-      {                                                                                           \
-        PUSH_OV (std::move (first_arg[ii].ov));                                                   \
-        /* Destroy the args */                                                                    \
-        first_arg[ii].ov.~octave_value ();                                                        \
-      }                                                                                           \
-  }                                                                                               \
-else                                                                                              \
+for (int ii = 0; ii < n_args_on_stack; ii++)                                                      \
   {                                                                                               \
-    for (ii = 0; ii < n_args_on_stack; ii++)                                                      \
-      {                                                                                           \
-        octave_value &arg = first_arg[ii].ov;                                                     \
+    octave_value &arg = first_arg[ii].ov;                                                         \
                                                                                                   \
-        if (arg.is_cs_list ())                                                                    \
+    if (arg.is_cs_list ())                                                                        \
+      {                                                                                           \
+        octave_value_list args = arg.list_value ();                                               \
+        octave_idx_type n_el = args.length ();                                                    \
+        if (n_el + n_args_on_callee_stack > 512)                                                  \
           {                                                                                       \
-            /* TODO: Use opcode instead? */                                                       \
-            octave_value_list args = arg.list_value ();                                           \
-            for (int j = 0; j < args.length (); j++)                                              \
+            all_too_many_args = true;                                                             \
+          }                                                                                       \
+        else                                                                                      \
+          {                                                                                       \
+            for (int j = 0; j < n_el; j++)                                                        \
               {                                                                                   \
                 PUSH_OV (args (j));                                                               \
                 n_args_on_callee_stack++;                                                         \
               }                                                                                   \
-        }                                                                                         \
-      else                                                                                        \
-        {                                                                                         \
-          PUSH_OV (std::move (arg));                                                              \
-          n_args_on_callee_stack++;                                                               \
-        }                                                                                         \
-      /* Destroy the args */                                                                      \
-      arg.~octave_value ();                                                                       \
-    }                                                                                             \
+          }                                                                                       \
+      }                                                                                           \
+    else                                                                                          \
+      {                                                                                           \
+        PUSH_OV (std::move (arg));                                                                \
+        n_args_on_callee_stack++;                                                                 \
+      }                                                                                           \
+    /* Destroy the args */                                                                        \
+    arg.~octave_value ();                                                                         \
   }                                                                                               \
 /* Construct missing args */                                                                      \
-for (int i = n_args_on_callee_stack; i < n_args_callee; i++)                                      \
+for (int ii = n_args_on_callee_stack; ii < n_args_callee; ii++)                                   \
   PUSH_OV ();                                                                                     \
                                                                                                   \
 /* Construct locals */                                                                            \
 int n_locals_to_ctor =                                                                            \
   n_locals_callee - n_args_callee - n_returns_callee;                                             \
-for (int i = 0; i < n_locals_to_ctor; i++)                                                        \
+for (int ii = 0; ii < n_locals_to_ctor; ii++)                                                     \
   PUSH_OV ();                                                                                     \
                                                                                                   \
 try                                                                                               \
@@ -398,6 +392,15 @@ if (OCTAVE_UNLIKELY (m_output_ignore_data))                                     
 /* "auto var" in the frame object. This is needed if nargout() etc are called */                  \
 set_nargout (nargout);                                                                            \
                                                                                                   \
+if (all_too_many_args)                                                                            \
+  {                                                                                               \
+    std::string fn_name = unwind_data->m_name;                                                    \
+    (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call",                    \
+                                           fn_name + ": function called with over 512 inputs."    \
+                                           " Consider using varargin."};                          \
+    (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);                                     \
+    goto unwind;                                                                                  \
+  }                                                                                               \
 if (n_args_on_callee_stack > n_args_callee)                                                       \
   {                                                                                               \
     std::string fn_name = unwind_data->m_name;                                                    \

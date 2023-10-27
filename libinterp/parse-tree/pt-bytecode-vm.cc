@@ -43,6 +43,7 @@
 #include "pt-tm-const.h"
 #include "pt-stmt.h"
 #include "ov-classdef.h"
+#include "ov-cs-list.h"
 #include "ov-ref.h"
 #include "ov-range.h"
 #include "ov-inline.h"
@@ -674,11 +675,67 @@ static void stack_lift (stack_element *start, int n_elem, int n_lift)
     tmp.append (std::move (start[i].ov));
   for (int i = 0; i < n_elem; i++)
     start[i].ov.~octave_value ();
+
+  // Negative n_lift means we need to erase
+  for (int i = n_lift; i < 0; i++)
+    {
+      start[i].ov.~octave_value ();
+      new (start + i) octave_value;
+    }
   for (int i = 0; i < n_lift; i++)
     new (start + i) octave_value;
+
   for (int i = 0; i < n_elem; i++)
     new (start + n_lift + i) octave_value (std::move (tmp.xelem (i)));
 }
+
+static void append_cslist_to_ovl (octave_value_list &ovl, octave_value ov_cs)
+{
+  octave_value_list cslist = ov_cs.list_value (); // TODO: Wastefull copy. octave_cs_list has no const ref to m_list.
+  ovl.append (cslist);
+}
+
+#define POP_STACK_RANGE_TO_OVL(ovl, beg, end) \
+do {                                               \
+  stack_element *pbeg = beg;                       \
+  stack_element *pend = end;                       \
+  while (pbeg != pend)                             \
+    {                                              \
+      if (OCTAVE_UNLIKELY (pbeg->ov.is_cs_list ()))\
+        {                                          \
+          append_cslist_to_ovl (ovl, pbeg->ov);    \
+          pbeg->ov.~octave_value ();               \
+        }                                          \
+      else                                         \
+        {                                          \
+          ovl.append (std::move (pbeg->ov));       \
+          pbeg->ov.~octave_value ();               \
+        }                                          \
+                                                   \
+      pbeg++;                                      \
+    }                                              \
+  sp = beg;                                        \
+                                                   \
+} while (0)
+
+#define COPY_STACK_RANGE_TO_OVL(ovl, beg, end) \
+do {                                \
+  stack_element *pbeg = beg;        \
+  stack_element *pend = end;        \
+  while (pbeg != pend)                             \
+    {                                              \
+      if (OCTAVE_UNLIKELY (pbeg->ov.is_cs_list ()))\
+        {                                          \
+          append_cslist_to_ovl (ovl, pbeg->ov);    \
+        }                                          \
+      else                                         \
+        {                                          \
+          ovl.append (pbeg->ov);                   \
+        }                                          \
+                                                   \
+      pbeg++;                                      \
+    }                                              \
+} while (0)
 
 #define COMMA ,
 #define PRINT_VM_STATE(msg)                                                    \
@@ -1830,8 +1887,8 @@ cmd_fcn_or_undef_error:
       {
         try
           {
-            octave_fcn_cache *ovb_cache = ov.fcn_cache_value ();
-            ov = ovb_cache->get_cached_obj ({});
+            octave_fcn_cache &cache = REP (octave_fcn_cache, ov);
+            ov = cache.get_cached_obj ();
           }
         CATCH_EXECUTION_EXCEPTION
       }
@@ -1863,7 +1920,6 @@ cmd_fcn_or_undef_error:
                 // Alot of code in this define
                 PUSH_OV (ov); // Calling convention anticipates object to call on the stack.
                 int n_args_on_stack = 0;
-                bool has_cs_list_arg = false;
                 MAKE_BYTECODE_CALL
 
                 // Now dispatch to first instruction in the
@@ -2065,7 +2121,8 @@ index_math_ufun_id1:
   octave_function *fcn;
   try
     {
-      fcn = ov.get_cached_fcn ({arg});
+      octave_fcn_cache &cache = REP (octave_fcn_cache, ov);
+      fcn = cache.get_cached_fcn (&sp[-1], &sp[0]); // sp[-1] is the arg, sp[0] is the stack end
     }
   CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
 
@@ -2106,7 +2163,10 @@ push_pi:
   octave_function *fcn;
   try
     {
-      fcn = ov.get_cached_fcn ({});
+      octave_fcn_cache &cache = REP (octave_fcn_cache, ov);
+      fcn = cache.get_cached_fcn_if_fresh ();
+      if (! fcn)
+        fcn = cache.get_cached_fcn (static_cast<octave_value*> (nullptr), static_cast<octave_value*> (nullptr));
     }
   CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
 
@@ -2167,69 +2227,59 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
 
-    // TODO: The ovl should not be needed
-    // Make an ovl with the args
-    // TODO: Should be inplace moves
-    octave_value_list ovl;
-    bool has_cs_list_arg = false;
-    // The operands are on the top of the stack
-
-    bool all_args_double = true;
-    for (int i = n_args_on_stack - 1; i >= 0; i--)
+    switch (ov.vm_dispatch_call ())
       {
-        octave_value &arg = sp[-1 - i].ov;
-        if (arg.type_id () != m_scalar_typeid)
-          all_args_double = false;
-        // If the operand arg is a cs list we need to expand it
-        if (arg.is_cs_list ())
+        case octave_base_value::vm_call_dispatch_type::SUBSREF:
           {
-            has_cs_list_arg = true;
-            ovl.append (arg.list_value ());
-          }
-        else
-          ovl.append (sp[-1 - i].ov); // TODO: copied, not moved
-      }
+            // Make an ovl with the args
+            octave_value_list ovl;
 
-    // If the ov is a "full matrix", i.e. based on octave_base_matrix,
-    // and the arguments are all scalar, we modify this opcode to a
-    // specialized opcode for matrix scalar indexing.
-    if (nargout == 1 && all_args_double && ov.is_full_num_matrix () && specialization_ok)
-      {
-        if (n_args_on_stack == 1)
-          {
-            ip -= 1;
-            int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+            // The operands are on the top of the stack
+            bool all_args_double = true;
+            for (int i = n_args_on_stack - 1; i >= 0; i--)
+              {
+                octave_value &arg = sp[-1 - i].ov;
+                int type = arg.type_id ();
+                if (type != m_scalar_typeid)
+                  all_args_double = false;
 
-            CHECK (ip[-2 + wide_opcode_offset] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
-            ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_1D);
+                if (OCTAVE_UNLIKELY (type == m_cslist_typeid))
+                  ovl.append (arg.list_value ());
+                else
+                  ovl.append (arg); // TODO: copied, not moved
+              }
 
-            goto index_id1_mat_1d;
-          }
-        else if (n_args_on_stack == 2)
-          {
-            ip -= 1;
-            int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
+            // If the ov is a "full matrix", i.e. based on octave_base_matrix,
+            // and the arguments are all scalar, we modify this opcode to a
+            // specialized opcode for matrix scalar indexing.
+            if (nargout == 1 && all_args_double && ov.is_full_num_matrix () && specialization_ok)
+              {
+                if (n_args_on_stack == 1)
+                  {
+                    ip -= 1;
+                    int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
 
-            CHECK (ip[-2 + wide_opcode_offset] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
-            ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_2D);
+                    CHECK (ip[-2 + wide_opcode_offset] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
+                    ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_1D);
 
-            goto index_id1_mat_2d;
-          }
-      }
+                    goto index_id1_mat_1d;
+                  }
+                else if (n_args_on_stack == 2)
+                  {
+                    ip -= 1;
+                    int wide_opcode_offset = slot < 256 ? 0 : -1; // If WIDE is used, we need to look further back
 
-    //TODO: Are the args really destroyed in all paths? Remember cell too
+                    CHECK (ip[-2 + wide_opcode_offset] == static_cast<unsigned char> (INSTR::INDEX_ID_NARGOUT1));
+                    ip[-2 + wide_opcode_offset] = static_cast<unsigned char> (INSTR::INDEX_ID1_MAT_2D);
 
-    // octave_fcn_cache and some octave_fcn_handle have caches
-    bool has_function_cache = ov.has_function_cache ();
+                    goto index_id1_mat_2d;
+                  }
+              }
 
-    if (! has_function_cache && ov.is_defined ())
-      {
-        // It is probably a variable
-        octave_value_list retval;
+            octave_value_list retval;
 
-        if (OCTAVE_LIKELY (! ov.is_function ()
-                           || ov.is_classdef_meta ()))
-          {
+            CHECK_PANIC (! ov.is_function () || ov.is_classdef_meta ()); // TODO: Remove
+
             try
               {
                 m_tw->set_active_bytecode_ip (ip - code);
@@ -2242,76 +2292,80 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
             CATCH_BAD_ALLOC
             CATCH_EXIT_EXCEPTION
 
+            ov = octave_value ();
+
+            STACK_DESTROY (n_args_on_stack + 1);
+            EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
           }
-        else
-          TODO ("Silly state");
+        break;
 
-        ov = octave_value ();
-
-        STACK_DESTROY (n_args_on_stack + 1);
-        EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
-      }
-    else if (has_function_cache)
-      {
-// The else clause bellow jumps to here
-querry_fcn_cache:
-
-        octave_function *fcn;
-        try
+        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
           {
-            fcn = ov.get_cached_fcn (ovl);
+            // It is probably a function call
+            CHECK_PANIC (ov.is_nil ()); // TODO :Remove
+
+            // Put a function cache object in the slot and in the local ov
+            ov = octave_value (new octave_fcn_cache (name_data[slot]));
+            if (OCTAVE_UNLIKELY (bsp[slot].ov.is_ref ()))
+              bsp[slot].ov.ref_rep ()->set_value (ov);
+            else
+              bsp[slot].ov = ov;
           }
-        CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
-
-        if (! fcn)
+          // Fallthrough
+        case octave_base_value::vm_call_dispatch_type::CALL:
+        case octave_base_value::vm_call_dispatch_type::HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OBJECT:
           {
-            (*sp++).ps = new std::string {name_data[slot]};
-            (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
-            goto unwind;
-          }
-        else if (fcn->is_compiled ())
-          {
-            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+            CHECK_PANIC (ov.has_function_cache ()); // TODO :Remove
 
-            // Alot of code in this define
-            MAKE_BYTECODE_CALL
-
-            // Now dispatch to first instruction in the
-            // called function
-          }
-        else
-          {
+            octave_function *fcn;
             try
               {
-                m_tw->set_active_bytecode_ip (ip - code);
-                octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
-
-                STACK_DESTROY (n_args_on_stack + 1);
-                EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
+                stack_element *first_arg = &sp[-n_args_on_stack];
+                stack_element *end_arg = &sp[0];
+                fcn = ov.get_cached_fcn (first_arg, end_arg);
               }
-            CATCH_INTERRUPT_EXCEPTION
-            CATCH_INDEX_EXCEPTION
-            CATCH_EXECUTION_EXCEPTION
-            CATCH_BAD_ALLOC
-            CATCH_EXIT_EXCEPTION
-          }
-      }
-    else
-      {
-        // It is probably a function call
-        if (! ov.is_nil ())
-          {
-            PRINT_VM_STATE("err %s" COMMA name_data[slot].c_str ());
-            TODO ("Not nil object for fcn cache replacement");
-          }
+            CATCH_EXECUTION_EXCEPTION // parse errors might throw in classdefs
 
-        // Put a function cache object in the slot and in the local ov
-        ov = octave_value (new octave_fcn_cache (name_data[slot]));
-        if (bsp[slot].ov.is_ref ())
-          bsp[slot].ov.ref_rep ()->set_value (ov);
-        else
-          bsp[slot].ov = ov;
-        goto querry_fcn_cache; // Jump into the if clause above
+            if (! fcn)
+              {
+                (*sp++).ps = new std::string {name_data[slot]};
+                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                goto unwind;
+              }
+            else if (fcn->is_compiled ())
+              {
+                octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+
+                // Alot of code in this define
+                MAKE_BYTECODE_CALL
+
+                // Now dispatch to first instruction in the
+                // called function
+              }
+            else
+              {
+                try
+                  {
+                    octave_value_list ovl;// = octave_value_list::make_ovl_from_stack_range (sp - n_args_on_stack, sp);
+                    //sp = sp - n_args_on_stack;
+                    // The operands are on the top of the stack
+                    POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
+
+                    m_tw->set_active_bytecode_ip (ip - code);
+                    octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
+
+                    STACK_DESTROY (1);
+                    EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
+                  }
+                CATCH_INTERRUPT_EXCEPTION
+                CATCH_INDEX_EXCEPTION
+                CATCH_EXECUTION_EXCEPTION
+                CATCH_BAD_ALLOC
+                CATCH_EXIT_EXCEPTION
+              }
+          }
+        break;
       }
   }
   DISPATCH ();
@@ -3899,87 +3953,79 @@ wordcmd:
         n_args_on_stack = *ip++;
       }
 
-
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
 
-    octave_value_list ovl;
-    // The operands are on the top of the stack
-    for (int i = n_args_on_stack - 1; i >= 0; i--)
-      ovl.append (sp[-1 - i].ov); // TODO: copied, not moved
-    // TODO: Expand cs_list? Probably not since strings?
-
-    // octave_fcn_cache and some octave_fcn_handle have caches
-    bool has_function_cache = ov.has_function_cache ();
-
-    if (! has_function_cache && ov.is_defined ())
-      TODO ("Error: word list command defined");
-
-    else if (has_function_cache)
+    switch (ov.vm_dispatch_call ())
       {
-// The else clause bellow jumps to here
-// TODO: Should be a shared thing?
-//       Add a "register" for octave_function *fcn?
-querry_fcn_cache2:
-
-        octave_function *fcn;
-        try
+        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
           {
-            fcn = ov.get_cached_fcn (ovl);
+            CHECK_PANIC (ov.is_nil ()); // TODO: Remove
+
+            // Put a function cache object in the slot and in the local ov
+            ov = octave_value (new octave_fcn_cache (name_data[slot]));
+            if (bsp[slot].ov.is_ref ())
+              bsp[slot].ov.ref_rep ()->set_value (ov);
+            else
+              bsp[slot].ov = ov;
           }
-        CATCH_EXECUTION_EXCEPTION
-
-        if (! fcn)
+          // Fallthrough
+        case octave_base_value::vm_call_dispatch_type::CALL:
+        case octave_base_value::vm_call_dispatch_type::HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OBJECT:
           {
-            (*sp++).ps = new std::string {name_data[slot]};
-            (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
-            goto unwind;
-          }
-
-        if (fcn->is_compiled ())
-          {
-            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
-            // Alot of code in this define
-            bool has_cs_list_arg = false;
-            MAKE_BYTECODE_CALL
-
-            // Now dispatch to first instruction in the
-            // called function
-          }
-        else
-          {
+            octave_function *fcn;
             try
               {
-                m_tw->set_active_bytecode_ip (ip - code);
-                octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
-
-                STACK_DESTROY (n_args_on_stack + 1);
-                EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
+                stack_element *first_arg = &sp[-n_args_on_stack];
+                stack_element *end_arg = &sp[0];
+                fcn = ov.get_cached_fcn (first_arg, end_arg);
               }
-            CATCH_INTERRUPT_EXCEPTION
-            CATCH_INDEX_EXCEPTION_WITH_NAME
             CATCH_EXECUTION_EXCEPTION
-            CATCH_BAD_ALLOC
-            CATCH_EXIT_EXCEPTION
 
-          }
-      }
-    else
-      {
-        // It is probably a function call
-        if (! ov.is_nil ())
-          {
-            PRINT_VM_STATE("err %s" COMMA name_data[slot].c_str ());
-            TODO ("Not nil object for fcn cache replacement");
-          }
+            if (! fcn)
+              {
+                (*sp++).ps = new std::string {name_data[slot]};
+                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                goto unwind;
+              }
 
-        // Put a function cache object in the slot and in the local ov
-        ov = octave_value (new octave_fcn_cache (name_data[slot]));
-        if (bsp[slot].ov.is_ref ())
-          bsp[slot].ov.ref_rep ()->set_value (ov);
-        else
-          bsp[slot].ov = ov;
-        goto querry_fcn_cache2; // Jump into the if clause above
+            if (fcn->is_compiled ())
+              {
+                octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+                // Alot of code in this define
+                MAKE_BYTECODE_CALL
+
+                // Now dispatch to first instruction in the
+                // called function
+              }
+            else
+              {
+
+                octave_value_list ovl;
+                // The operands are on the top of the stack
+                POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
+
+                try
+                  {
+                    m_tw->set_active_bytecode_ip (ip - code);
+                    octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
+
+                    STACK_DESTROY (1);
+                    EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
+                  }
+                CATCH_INTERRUPT_EXCEPTION
+                CATCH_INDEX_EXCEPTION_WITH_NAME
+                CATCH_EXECUTION_EXCEPTION
+                CATCH_BAD_ALLOC
+                CATCH_EXIT_EXCEPTION
+
+              }
+          }
+          break;
+
+        case octave_base_value::vm_call_dispatch_type::SUBSREF:
+          PANIC ("Invalid dispatch");
       }
   }
   DISPATCH ();
@@ -4157,47 +4203,22 @@ index_cell_id0:
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
 
-    // TODO: The ovl should not be needed
-    // Make an ovl with the args
-    // TODO: Should be inplace moves
-    // TODO: cl_lists should expanded inplace on the stack instead.
-    // TODO: Cache lookup should just take pointers to the stack.
-    octave_value_list ovl;
-    bool has_cs_list_arg = false;
-    // The operands are on the top of the stack
-    for (int i = n_args_on_stack - 1; i >= 0; i--)
+    switch (ov.vm_dispatch_call ())
       {
-        octave_value &arg = sp[-1 - i].ov;
-        // If the operand arg is a cs list we need to expand it
-        if (arg.is_cs_list ())
+        case octave_base_value::vm_call_dispatch_type::SUBSREF:
           {
-            has_cs_list_arg = true;
-            ovl.append (arg.list_value ());
-          }
-        else
-          ovl.append (sp[-1 - i].ov); // TODO: copied, not moved
-      }
+            std::list<octave_value_list> idx; // TODO: mallocs!
 
-    // octave_fcn_cache and some octave_fcn_handle have caches
-    bool has_function_cache = ov.has_function_cache ();
+            // Make an ovl with the args
+            octave_value_list ovl;
+            // The operands are on the top of the stack
+            POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
 
-    if (! has_function_cache && ov.is_defined ())
-      {
-        // It is probably a variable
+            idx.push_back(ovl);
 
-        // TODO: subsref should take ovl instead and be chained,
-        // or something smarter
-        std::list<octave_value_list> idx; // TODO: mallocs!
+            // TODO: subsref might throw index error
+            octave_value_list retval;
 
-        idx.push_back(ovl);
-
-
-        // TODO: subsref might throw index error
-        octave_value_list retval;
-
-        if (OCTAVE_LIKELY (! ov.is_function ()
-                           || ov.is_classdef_meta ()))
-          {
             try
               {
                 m_tw->set_active_bytecode_ip (ip - code);
@@ -4210,126 +4231,116 @@ index_cell_id0:
             CATCH_BAD_ALLOC
             CATCH_EXIT_EXCEPTION
 
-          }
-        else
-          {
-            TODO ("Classes not implemented for cell index yet");
-            #if 0
-            retval = handle_superclass (*m_tw,
-                                        ov,
-                                        idx,
-                                        nargout);
-            #endif
-          }
+            bool is_fcn = (retval.length () ?
+                            retval(0).is_function() : false);
 
-        bool is_fcn = (retval.length () ?
-                         retval(0).is_function() : false);
+            // "FIXME: when can the following happen?  In what case does indexing
+            //  result in a value that is a function?  Classdef method calls?
+            //  Something else?"
 
-        // "FIXME: when can the following happen?  In what case does indexing
-        //  result in a value that is a function?  Classdef method calls?
-        //  Something else?"
-
-        if (OCTAVE_LIKELY (!is_fcn))
-          {
-            idx.clear ();
-            // TODO: Necessary? I guess it might trigger dtors
-            // or something?
-            ov = octave_value ();
-          }
-        else
-          {
-            octave_value val = retval(0);
-            octave_function *fcn = val.function_value (true);
-
-            if (fcn)
+            if (OCTAVE_LIKELY (!is_fcn))
               {
-                octave_value_list final_args;
+                idx.clear ();
+                // TODO: Necessary? I guess it might trigger dtors
+                // or something?
+                ov = octave_value ();
+              }
+            else
+              {
+                octave_value val = retval(0);
+                octave_function *fcn = val.function_value (true);
 
-                if (! idx.empty ())
-                  final_args = idx.front ();
+                if (fcn)
+                  {
+                    octave_value_list final_args;
+
+                    if (! idx.empty ())
+                      final_args = idx.front ();
+
+                    try
+                      {
+                        m_tw->set_active_bytecode_ip (ip - code);
+                        retval = fcn->call (*m_tw, nargout, final_args);
+                      }
+                    CATCH_INTERRUPT_EXCEPTION
+                    CATCH_INDEX_EXCEPTION
+                    CATCH_EXECUTION_EXCEPTION
+                    CATCH_BAD_ALLOC
+                    CATCH_EXIT_EXCEPTION
+                  }
+
+                idx.clear ();
+                ov = octave_value ();
+                val = octave_value ();
+              }
+
+            STACK_DESTROY (1);
+            EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
+          }
+          break;
+
+        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+          {
+            // Put a function cache object in the slot and in the local ov
+            ov = octave_value (new octave_fcn_cache (name_data[slot]));
+            if (bsp[slot].ov.is_ref ())
+              bsp[slot].ov.ref_rep ()->set_value (ov);
+            else
+              bsp[slot].ov = ov;
+          }
+          // Fallthrough
+        case octave_base_value::vm_call_dispatch_type::CALL:
+        case octave_base_value::vm_call_dispatch_type::HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OBJECT:
+          {
+            octave_function *fcn;
+            try
+              {
+                stack_element *first_arg = &sp[-n_args_on_stack];
+                stack_element *end_arg = &sp[0];
+                fcn = ov.get_cached_fcn (first_arg, end_arg);
+              }
+            CATCH_EXECUTION_EXCEPTION
+
+            if (! fcn)
+              {
+                (*sp++).ps = new std::string {name_data[slot]};
+                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                goto unwind;
+              }
+
+            if (fcn->is_compiled ())
+              {
+                octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+                // Alot of code in this define
+                MAKE_BYTECODE_CALL
+
+                // Now dispatch to first instruction in the
+                // called function
+              }
+            else
+              {
+                // Make an ovl with the args
+                octave_value_list ovl;
+                // The operands are on the top of the stack
+                POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
 
                 try
                   {
                     m_tw->set_active_bytecode_ip (ip - code);
-                    retval = fcn->call (*m_tw, nargout, final_args);
+                    octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
+
+                    STACK_DESTROY (1);
+                    EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
                   }
                 CATCH_INTERRUPT_EXCEPTION
-                CATCH_INDEX_EXCEPTION
+                CATCH_INDEX_EXCEPTION_WITH_NAME
                 CATCH_EXECUTION_EXCEPTION
                 CATCH_BAD_ALLOC
                 CATCH_EXIT_EXCEPTION
+
               }
-
-            idx.clear ();
-            ov = octave_value ();
-            val = octave_value ();
           }
-
-        STACK_DESTROY (n_args_on_stack + 1);
-        EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
-      }
-    else if (has_function_cache)
-      {
-// The else clause bellow jumps to here
-querry_fcn_cache3:
-
-        octave_function *fcn;
-        try
-          {
-            fcn = ov.get_cached_fcn (ovl);
-          }
-        CATCH_EXECUTION_EXCEPTION
-
-        if (! fcn)
-          {
-            (*sp++).ps = new std::string {name_data[slot]};
-            (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
-            goto unwind;
-          }
-
-        if (fcn->is_compiled ())
-          {
-            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
-            // Alot of code in this define
-            MAKE_BYTECODE_CALL
-
-            // Now dispatch to first instruction in the
-            // called function
-          }
-        else
-          {
-            try
-              {
-                m_tw->set_active_bytecode_ip (ip - code);
-                octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
-
-                STACK_DESTROY (n_args_on_stack + 1);
-                EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
-              }
-            CATCH_INTERRUPT_EXCEPTION
-            CATCH_INDEX_EXCEPTION_WITH_NAME
-            CATCH_EXECUTION_EXCEPTION
-            CATCH_BAD_ALLOC
-            CATCH_EXIT_EXCEPTION
-
-          }
-      }
-    else
-      {
-        // It is probably a function call
-        if (! ov.is_nil ())
-          {
-            PRINT_VM_STATE("err %s" COMMA name_data[slot].c_str ());
-            TODO ("Not nil object for fcn cache replacement");
-          }
-
-        // Put a function cache object in the slot and in the local ov
-        ov = octave_value (new octave_fcn_cache (name_data[slot]));
-        if (bsp[slot].ov.is_ref ())
-          bsp[slot].ov.ref_rep ()->set_value (ov);
-        else
-          bsp[slot].ov = ov;
-        goto querry_fcn_cache3; // Jump into the if clause above
       }
   }
   DISPATCH ();
@@ -5090,7 +5101,6 @@ index_struct_call:
               ovl.append (arg.list_value ().reverse ());
             else
               ovl.append (std::move (arg));
-
             STACK_DESTROY (1);
           }
         // args are pushed left to right to stack, so we need to reverse the ovl
@@ -5131,18 +5141,19 @@ index_struct_call:
 
               }
 
-            if (cntr == 0 && ov.has_function_cache () && has_slot)
+            if (cntr == 0 && ov.has_function_cache () && has_slot && !ov.is_classdef_meta ())
               {
                 octave_function *fcn;
                 try
                   {
                     if (step_type == "(")
                       {
-                        fcn = ov.get_cached_fcn (idx.front ());
+                        octave_value_list &ovl = idx.front ();
+                        fcn = ov.get_cached_fcn (ovl);
                       }
                     else // { or .
                       {
-                        fcn = ov.get_cached_fcn ({});
+                        fcn = ov.get_cached_fcn (static_cast<octave_value*> (nullptr), static_cast<octave_value*> (nullptr));
                         eat_args = false; // The function call has no args
                       }
                   }
@@ -5477,45 +5488,23 @@ index_obj:
     // The object to index is before the args on the stack
     octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
 
-    // Make an ovl with the args
-    // TODO: Should be inplace moves
-    octave_value_list ovl;
-    bool has_cs_list_arg = false;
-    // The operands are on the top of the stack
-    for (int i = n_args_on_stack - 1; i >= 0; i--)
+    switch (ov.vm_dispatch_call ())
       {
-        octave_value &arg = sp[-1 - i].ov;
-
-        // If the operand arg is a cs list we need to expand it
-        if (arg.is_cs_list ())
+        case octave_base_value::vm_call_dispatch_type::SUBSREF:
           {
-            has_cs_list_arg = true;
-            ovl.append (arg.list_value ());
-          }
-        else
-          ovl.append (sp[-1 - i].ov); // TODO: copied, not moved
-      }
+            // TODO: subsref should take ovl instead and be chained,
+            // or something smarter
+            std::list<octave_value_list> idx; // TODO: mallocs!
 
-    // octave_fcn_cache and some octave_fcn_handle have caches
-    bool has_function_cache = ov.has_function_cache ();
+            // Make an ovl with the args
+            octave_value_list ovl;
+            // The operands are on the top of the stack
+            POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
 
-    if (! has_function_cache && ov.is_defined ())
-      {
-        // It is probably a variable
+            idx.push_back(ovl);
 
-        // TODO: subsref should take ovl instead and be chained,
-        // or something smarter
-        std::list<octave_value_list> idx; // TODO: mallocs!
+            octave_value_list retval;
 
-        idx.push_back(ovl);
-
-
-        // TODO: subsref might throw index error
-        octave_value_list retval;
-
-        if (OCTAVE_LIKELY (! ov.is_function ()
-                           || ov.is_classdef_meta ()))
-          {
             try
               {
                 m_tw->set_active_bytecode_ip (ip - code);
@@ -5528,133 +5517,139 @@ index_obj:
             CATCH_BAD_ALLOC
             CATCH_EXIT_EXCEPTION
 
-          }
-        else
-          PANIC ("Strange state");
+            bool is_fcn = (retval.length () ?
+                            retval(0).is_function() : false);
 
-        bool is_fcn = (retval.length () ?
-                         retval(0).is_function() : false);
+            // "FIXME: when can the following happen?  In what case does indexing
+            //  result in a value that is a function?  Classdef method calls?
+            //  Something else?"
 
-        // "FIXME: when can the following happen?  In what case does indexing
-        //  result in a value that is a function?  Classdef method calls?
-        //  Something else?"
-
-        if (OCTAVE_LIKELY (!is_fcn))
-          {
-            idx.clear ();
-            // TODO: Necessary? I guess it might trigger dtors
-            // or something?
-            ov = octave_value ();
-          }
-        else
-          {
-            octave_value val = retval(0);
-            octave_function *fcn = val.function_value (true);
-
-            if (fcn)
+            if (OCTAVE_LIKELY (!is_fcn))
               {
-                octave_value_list final_args;
+                idx.clear ();
+                // TODO: Necessary? I guess it might trigger dtors
+                // or something?
+                ov = octave_value ();
+              }
+            else
+              {
+                octave_value val = retval(0);
+                octave_function *fcn = val.function_value (true);
 
-                if (! idx.empty ())
-                  final_args = idx.front ();
+                if (fcn)
+                  {
+                    octave_value_list final_args;
+
+                    if (! idx.empty ())
+                      final_args = idx.front ();
+
+                    try
+                      {
+                        m_tw->set_active_bytecode_ip (ip - code);
+                        retval = fcn->call (*m_tw, nargout, final_args);
+                      }
+                    CATCH_INTERRUPT_EXCEPTION
+                    CATCH_INDEX_EXCEPTION_WITH_MAYBE_NAME (has_slot)
+                    CATCH_EXECUTION_EXCEPTION
+                    CATCH_BAD_ALLOC
+                    CATCH_EXIT_EXCEPTION
+                  }
+
+                idx.clear ();
+                ov = octave_value ();
+                val = octave_value ();
+              }
+
+            // Destroy the indexed variable on the stack
+            STACK_DESTROY (1);
+            EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
+          }
+        break;
+
+        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+          {
+            // If the first object is not an identifier we can't look it up for
+            // a function call.
+            if (!has_slot)
+              {
+                (*sp++).ps = new std::string {"temporary object"};
+                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                goto unwind;
+              }
+
+            if (! ov.is_nil ())
+              {
+                TODO ("Not nil object for fcn cache replacement");
+              }
+
+            // It is probably a function call.
+            // Put a function cache object in the slot and in the local ov
+            // and jump into the if clause above to search for some function
+            // to call.
+            ov = octave_value (new octave_fcn_cache (name_data[slot]));
+            if (bsp[slot].ov.is_ref ())
+              bsp[slot].ov.ref_rep ()->set_value (ov);
+            else
+              bsp[slot].ov = ov;
+          }
+        // Fallthrough
+        case octave_base_value::vm_call_dispatch_type::CALL:
+        case octave_base_value::vm_call_dispatch_type::HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OBJECT:
+          {
+            octave_function *fcn;
+            try
+              {
+                stack_element *first_arg = &sp[-n_args_on_stack];
+                stack_element *end_arg = &sp[0];
+                fcn = ov.get_cached_fcn (first_arg, end_arg);
+              }
+            CATCH_EXECUTION_EXCEPTION
+
+            if (! fcn)
+              {
+                if (has_slot)
+                  (*sp++).ps = new std::string {name_data[slot]};
+                else
+                  (*sp++).ps = new std::string {"temporary object"};
+                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                goto unwind;
+              }
+
+            if (fcn->is_compiled ())
+              {
+                octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+                // Alot of code in this define
+                MAKE_BYTECODE_CALL
+
+                // Now dispatch to first instruction in the
+                // called function
+              }
+            else
+              {
+                // Make an ovl with the args
+                octave_value_list ovl;
+                // The operands are on the top of the stack
+                POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
 
                 try
                   {
                     m_tw->set_active_bytecode_ip (ip - code);
-                    retval = fcn->call (*m_tw, nargout, final_args);
+                    octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
+
+                    STACK_DESTROY (1);
+                    EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
                   }
                 CATCH_INTERRUPT_EXCEPTION
-                CATCH_INDEX_EXCEPTION_WITH_MAYBE_NAME (has_slot)
+                CATCH_INDEX_EXCEPTION
                 CATCH_EXECUTION_EXCEPTION
                 CATCH_BAD_ALLOC
                 CATCH_EXIT_EXCEPTION
+
               }
-
-            idx.clear ();
-            ov = octave_value ();
-            val = octave_value ();
-          }
-
-        // TODO: Maybe the args should be destroyed before the indexed
-        // variable?
-        STACK_DESTROY (n_args_on_stack + 1);
-        EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (retval, nargout);
-      }
-    else if (has_function_cache)
-      {
-querry_fcn_cache_index_obj:
-
-        octave_function *fcn;
-        try
-          {
-            fcn = ov.get_cached_fcn (ovl);
-          }
-        CATCH_EXECUTION_EXCEPTION
-
-        if (! fcn)
-          {
-            if (has_slot)
-              (*sp++).ps = new std::string {name_data[slot]};
-            else
-              (*sp++).ps = new std::string {"temporary object"};
-            (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
-            goto unwind;
-          }
-
-        if (fcn->is_compiled ())
-          {
-            octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
-            // Alot of code in this define
-            MAKE_BYTECODE_CALL
-
-            // Now dispatch to first instruction in the
-            // called function
-          }
-        else
-          {
-            try
-              {
-                m_tw->set_active_bytecode_ip (ip - code);
-                octave_value_list ret = fcn->call (*m_tw, nargout, ovl);
-
-                STACK_DESTROY (n_args_on_stack + 1);
-                EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
-              }
-            CATCH_INTERRUPT_EXCEPTION
-            CATCH_INDEX_EXCEPTION
-            CATCH_EXECUTION_EXCEPTION
-            CATCH_BAD_ALLOC
-            CATCH_EXIT_EXCEPTION
-
           }
       }
-    else
-      {
-        // If the first object is not an identifier we can't look it up for
-        // a function call.
-        if (!has_slot)
-          {
-            (*sp++).ps = new std::string {"temporary object"};
-            (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
-            goto unwind;
-          }
 
-        if (! ov.is_nil ())
-          {
-            TODO ("Not nil object for fcn cache replacement");
-          }
-
-        // It is probably a function call.
-        // Put a function cache object in the slot and in the local ov
-        // and jump into the if clause above to search for some function
-        // to call.
-        ov = octave_value (new octave_fcn_cache (name_data[slot]));
-        if (bsp[slot].ov.is_ref ())
-          bsp[slot].ov.ref_rep ()->set_value (ov);
-        else
-          bsp[slot].ov = ov;
-        goto querry_fcn_cache_index_obj;
-      }
   }
   DISPATCH ();
 load_far_cst:
@@ -6540,6 +6535,7 @@ vm::vm (tree_evaluator *tw, bytecode &initial_bytecode)
   CHECK (octave_scalar::static_type_id () == m_scalar_typeid);
   CHECK (octave_bool::static_type_id () == m_bool_typeid);
   CHECK (octave_matrix::static_type_id () == m_matrix_typeid);
+  CHECK (octave_cs_list::static_type_id () == m_cslist_typeid);
 
   // Function pointer used for specialized op-codes
   m_fn_dbl_mul = m_ti->lookup_binary_op (octave_value::binary_op::op_mul, m_scalar_typeid, m_scalar_typeid);

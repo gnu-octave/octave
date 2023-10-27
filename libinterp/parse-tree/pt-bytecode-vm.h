@@ -505,6 +505,7 @@ class vm
   static int constexpr m_scalar_typeid = 2;
   static int constexpr m_matrix_typeid = 4;
   static int constexpr m_bool_typeid = 10;
+  static int constexpr m_cslist_typeid = 36;
 
   // If there are any ignored outputs, e.g. "[x, ~] = foo ()", we need to push a separate
   // stack frame with the ignored outputs for isargout () to be able to querry for ignored

@@ -38,7 +38,7 @@ class octave_user_script;
 class octave_user_function;
 
 #define ERROR_NOT_IMPLEMENTED \
-{ error("Not implemented %s:%d", __FILE__, __LINE__); }
+{ error("not implemented %s:%d", __FILE__, __LINE__); }
 
 namespace octave
 {

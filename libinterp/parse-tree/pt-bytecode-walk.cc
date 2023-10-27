@@ -45,10 +45,10 @@ using namespace octave;
 #define CHECK(cond)                                                            \
   do {                                                                         \
     if (!(cond))                                                               \
-      ERR("Internal VM compiler consistency check failed, " #cond);             \
+      ERR("internal VM compiler consistency check failed, " #cond);             \
   } while ((0))
 
-#define CHECK_NONNULL(ptr) if (!ptr) error ("Unexpected null %d", __LINE__)
+#define CHECK_NONNULL(ptr) if (!ptr) error ("unexpected null %d", __LINE__)
 
 // Compiles an anonymous function.
 //
@@ -62,7 +62,7 @@ void octave::compile_anon_user_function (octave_user_code &ufn, bool do_print, s
         error ("compile_anon_user_function (): Function is not anonymous");
 
       if (ufn.is_classdef_constructor ())
-        error ("Classdef constructors are not supported by the VM yet"); // Needs special handling
+        error ("classdef constructors are not supported by the VM yet"); // Needs special handling
 
       // Begin with clearing the old bytecode, if any
       ufn.clear_bytecode ();
@@ -101,7 +101,7 @@ void octave::compile_nested_user_function (octave_user_function &ufn, bool do_pr
   try
     {
       if (ufn.is_classdef_constructor ())
-        error ("Classdef constructors are not supported by the VM yet"); // Needs special handling
+        error ("classdef constructors are not supported by the VM yet"); // Needs special handling
       CHECK (ufn.is_nested_function ());
 
       // Begin with clearing the old bytecode, if any
@@ -147,7 +147,7 @@ void octave::compile_user_function (octave_user_code &ufn, bool do_print)
   try
     {
       if (ufn.is_classdef_constructor ())
-        error ("Classdef constructors are not supported by the VM yet"); // Needs special handling
+        error ("classdef constructors are not supported by the VM yet"); // Needs special handling
 
       // Begin with clearing the old bytecode, if any
       ufn.clear_bytecode ();

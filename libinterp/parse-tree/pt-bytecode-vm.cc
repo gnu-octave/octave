@@ -492,7 +492,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
             else
               {
                 if (p + 3 >= code + n)
-                  error ("Invalid bytecode\n");
+                  error ("invalid bytecode");
                 int i = chars_to_uint (p + 1);
                 s += " ROWS"; PINT ();
                 s += " COLS";
@@ -543,7 +543,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           default:
             CHECK_END ();
-            error ("Unknown op: %d\n", *p);
+            error ("unknown op: %d", *p);
             break;
         }
       p++;
@@ -7462,7 +7462,7 @@ x_snprintf (const char *fmt, ...)
       delete [] buff;
 
       if (n_needed < 0)
-        error ("Profiler internal error: Invalid call to x_snprintf()");
+        error ("profiler internal error: Invalid call to x_snprintf()");
       if (n_needed < n)
         return ret;
 
@@ -7850,7 +7850,7 @@ vm_profiler::enter_fn (std::string fn_name, std::string caller, octave::unwind_d
 void
 vm_profiler::purge_shadow_stack ()
 {
-  warning ("Profiler shadow stack got messed up. Measurement results might be inaccurate.");
+  warning ("profiler shadow stack got messed up. Measurement results might be inaccurate");
 
   m_shadow_call_stack.clear ();
 
@@ -8056,7 +8056,7 @@ vm::maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map
         }
       catch (std::exception &e)
         {
-          warning ("Auto-compilation of %s failed with message %s", fn->name().c_str (), e.what ());
+          warning ("auto-compilation of %s failed with message %s", fn->name().c_str (), e.what ());
           fn->m_compilation_failed = true;
           return false;
         }

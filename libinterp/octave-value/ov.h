@@ -1603,6 +1603,11 @@ protected:
     return m_rep->vm_need_dispatch_push ();
   }
 
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
+  {
+    return m_rep->vm_dispatch_call ();
+  }
+
   bool same_rep (octave_value &ov) const { return m_rep == ov.m_rep; }
 
   void maybe_call_dtor () { m_rep->maybe_call_dtor (); }

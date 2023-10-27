@@ -377,6 +377,13 @@ public:
   get_cached_fcn (const octave_value_list& args) { return m_rep->get_cached_fcn (args); }
   bool has_function_cache (void) const { return m_rep->has_function_cache (); }
 
+  vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    if (m_rep->has_function_cache ())
+      return vm_call_dispatch_type::CALL;
+    return vm_call_dispatch_type::SUBSREF;
+  }
+
   void compile () { m_rep->compile (); }
 private:
 

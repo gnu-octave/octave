@@ -962,6 +962,23 @@ octave_base_value::function_value (bool silent)
   return nullptr;
 }
 
+octave_base_value::vm_call_dispatch_type
+octave_base_value::vm_dispatch_call (void)
+{
+  // This is the fallback way to determine the dispatch type
+  // for octave_base_value classes that does not implement vm_dispatch_call ()
+
+  bool has_function_cache = this->has_function_cache ();
+  bool is_defined = this->is_defined ();
+
+  if (! has_function_cache && is_defined)
+    return vm_call_dispatch_type::SUBSREF;
+  else if (has_function_cache)
+      return vm_call_dispatch_type::CALL;
+  else
+      return vm_call_dispatch_type::FN_LOOKUP;
+}
+
 octave_value_ref *
 octave_base_value::ref_rep ()
 {

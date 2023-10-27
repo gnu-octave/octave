@@ -219,6 +219,7 @@ public:
   octave_value
   checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
 
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
 protected:
 
   MT m_matrix;

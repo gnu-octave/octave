@@ -814,6 +814,16 @@ public:
   virtual bool vm_need_dispatch_assign_lhs (void) { return true; }
   virtual bool vm_need_dispatch_push (void) { return true; }
 
+  enum class vm_call_dispatch_type {
+    SUBSREF,
+    FN_LOOKUP,
+    CALL,
+    HANDLE,
+    OBJECT,
+  };
+
+  virtual vm_call_dispatch_type vm_dispatch_call (void);
+
   virtual bool is_ref () const { return false; }
 
   virtual octave_value_ref * ref_rep ();

@@ -178,6 +178,8 @@ public:
   // You should not use it anywhere else.
   const void * mex_get_data () const;
 
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+
 private:
 
   void clear_cellstr_cache () const

@@ -179,6 +179,8 @@ public:
   bool vm_need_dispatch_assign_lhs (void) { return false; }
   bool vm_need_dispatch_push (void) { return false; }
 
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+
 protected:
 
   // The value of this scalar.

@@ -247,6 +247,7 @@ public:
 
   OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
 protected:
 
   DMT m_matrix;

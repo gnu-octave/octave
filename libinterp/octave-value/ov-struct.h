@@ -165,6 +165,8 @@ public:
   bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
 
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+
 protected:
 
   // The associative array used to manage the structure data.
@@ -289,6 +291,8 @@ public:
   mxArray * as_mxArray (bool interleaved) const;
 
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
+
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
 
 protected:
 

@@ -79,11 +79,6 @@ public:
   octave_value
   get_cached_obj ();
 
-  octave_fcn_cache * fcn_cache_value (void)
-  {
-    return this;
-  }
-
   octave_value_list
   call (octave::tree_evaluator& tw,
         octave_function *fcn,

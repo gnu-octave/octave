@@ -1584,12 +1584,6 @@ protected:
   bool is_maybe_function (void) const
   { return m_rep->is_maybe_function (); }
 
-  octave_fcn_cache *
-  fcn_cache_value () const
-  {
-    return m_rep->fcn_cache_value ();
-  }
-
   bool vm_need_storable_call () const
   {
     return m_rep->vm_need_storable_call ();
@@ -1614,8 +1608,6 @@ protected:
   {
     return m_rep->vm_dispatch_call ();
   }
-
-  bool same_rep (octave_value &ov) const { return m_rep == ov.m_rep; }
 
   void maybe_call_dtor () { m_rep->maybe_call_dtor (); }
 

@@ -553,8 +553,6 @@ public:
 
   virtual octave_function * get_cached_fcn (void*, void*) { return nullptr; }
 
-  virtual octave_fcn_cache * fcn_cache_value (void) { return nullptr; }
-
   virtual void erase_subfunctions () { }
 
   virtual short int short_value (bool = false, bool = false) const;
@@ -945,10 +943,6 @@ protected:
   numeric_assign (const std::string& type,
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
-
-  OCTINTERP_API octave_value
-  simple_numeric_assign (char type, octave_value_list& idx,
-                         const octave_value& rhs);
 
   void reset_indent_level () const
   { s_curr_print_indent_level = 0; }

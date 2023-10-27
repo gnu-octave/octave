@@ -1339,8 +1339,6 @@ visit_decl_command (tree_decl_command& cmd)
               CHECK_NONNULL (id);
               int offset = id->symbol ().data_offset ();
 
-              CHECK (offset < 256); // TODO: Support more slots
-
               // The VM need to know the special persistent variable offset
               // so we store it in the unwind data
               m_code.m_unwind_data.

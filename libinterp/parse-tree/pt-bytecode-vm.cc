@@ -6167,7 +6167,19 @@ ret_anon:
             m_tw->set_echo_file_pos (line);
           }
 
-        m_tw->echo_code (line);
+        try
+          {
+            m_tw->echo_code (line);
+          }
+        catch (execution_exception &)
+          {
+            // echo_code() might throw if there is no file info
+            // attached to the executing function.
+            // Just ignore it.
+            // TODO: Might be a bug? Does this apply to the tree_evaluator?
+            //       Run "echo on all; test bytecode.tst" to recreate.
+          }
+
         m_tw->set_echo_file_pos (line + 1);
       }
 bail_echo:

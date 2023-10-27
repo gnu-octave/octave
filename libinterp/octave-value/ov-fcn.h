@@ -71,10 +71,13 @@ public:
   get_cached_fcn (const octave_value_list& args);
 
   octave_function *
+  get_cached_fcn (void *beg, void *end);
+
+  octave_function *
   get_cached_fcn () { return m_cached_function.function_value (); }
 
   octave_value
-  get_cached_obj (const octave_value_list& args);
+  get_cached_obj ();
 
   octave_fcn_cache * fcn_cache_value (void)
   {
@@ -108,6 +111,10 @@ public:
 
     return true;
   }
+
+  bool has_cached_function (void *beg, void *end) const;
+
+  octave_function * get_cached_fcn_if_fresh ();
 
 private:
 
@@ -318,6 +325,15 @@ public:
            const octave_value_list& args = octave_value_list ()) = 0;
 
   vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::CALL; }
+
+  octave_function *
+  get_cached_fcn (void *, void *) { return function_value (); }
+
+  octave_function *
+  get_cached_fcn (const octave_value_list&) { return function_value (); }
+
+  bool has_function_cache (void) const { return true; }
+
 protected:
 
   octave_function (const std::string& nm,

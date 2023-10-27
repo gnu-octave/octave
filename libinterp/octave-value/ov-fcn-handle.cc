@@ -233,6 +233,9 @@ public:
   octave_function *
   get_cached_fcn (const octave_value_list &args);
 
+  octave_function *
+  get_cached_fcn (void *beg, void *end);
+
   bool has_function_cache (void) const;
 
 private:
@@ -310,6 +313,15 @@ public:
 
   friend bool is_equal_to (const scoped_fcn_handle& fh1,
                            const scoped_fcn_handle& fh2);
+
+  octave_function *
+  get_cached_fcn (void *, void *) { return m_fcn.function_value (); }
+
+  octave_function *
+  get_cached_fcn (const octave_value_list&) { return m_fcn.function_value (); }
+
+  bool
+  has_function_cache (void) const { return true; }
 
 protected:
 
@@ -697,6 +709,10 @@ public:
 
   octave_function *
   get_cached_fcn (const octave_value_list&) { return m_fcn.function_value (); }
+
+  octave_function *
+  get_cached_fcn (void *, void *) { return m_fcn.function_value (); }
+
   // TODO: This is a hack to get uncompiled anonymous functions to be subsrefed in the VM
   bool has_function_cache (void) const
   {
@@ -977,6 +993,7 @@ bool is_equal_to (const internal_fcn_handle& fh1,
 
 // FIXME: Find a way to avoid duplication of code in
 // simple_fcn_handle::call
+
 octave_function *
 simple_fcn_handle::
 get_cached_fcn (const octave_value_list &args)
@@ -1031,6 +1048,23 @@ get_cached_fcn (const octave_value_list &args)
 
     return fcn_to_call.function_value ();
   }
+}
+
+octave_function *
+simple_fcn_handle::
+get_cached_fcn (void *pbeg, void *pend)
+{
+  if (m_cache.has_cached_function (pbeg, pend))
+    return m_cache.get_cached_fcn ();
+
+  octave::stack_element *beg = static_cast<octave::stack_element *> (pbeg);
+  octave::stack_element *end = static_cast<octave::stack_element *> (pend);
+
+  octave_value_list args;
+  while (beg != end)
+    args.append ((beg++)->ov);
+
+  return get_cached_fcn (args); // TODO: Avoid extra call to has_cached_function()
 }
 
 // FIXME: Find a way to avoid duplication of code in

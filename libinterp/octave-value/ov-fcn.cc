@@ -69,6 +69,29 @@ octave_function::call (octave::tree_evaluator& tw, int nargout,
   return execute (tw, nargout, args);
 }
 
+bool
+octave_fcn_cache::has_cached_function (void *pbeg, void *pend) const
+{
+  octave::stack_element *beg = static_cast<octave::stack_element *> (pbeg);
+  octave::stack_element *end = static_cast<octave::stack_element *> (pend);
+
+  if (m_n_updated == 0)
+    return false;
+
+  unsigned vec_n = m_cached_args.size ();
+
+  unsigned n_args = end - beg;
+  if (n_args != vec_n)
+    return false;
+
+  for (unsigned i = 0; i < n_args; i++)
+    {
+      if (beg[i].ov.type_id () != m_cached_args [i])
+        return false;
+    }
+
+  return true;
+}
 
 void
 octave_fcn_cache::set_cached_function (octave_value ov,
@@ -78,6 +101,9 @@ octave_fcn_cache::set_cached_function (octave_value ov,
   clear_cached_function ();
 
   if (!ov.is_defined ())
+    return;
+  // Arbitrary limit on how many args we keep track of in caches.
+  if (args.length () > 32)
     return;
 
   // We need to keep a reference to the metaobject for as long as the function is alive
@@ -105,12 +131,12 @@ octave_fcn_cache::set_cached_function (octave_value ov,
 
 octave_value
 octave_fcn_cache::
-get_cached_obj (const octave_value_list& args)
+get_cached_obj ()
 {
   octave_function *fcn = nullptr;
 
   octave_idx_type current_n_updated = octave::load_path::get_weak_n_updated ();
-  if (has_cached_function (args))
+  if (has_cached_function (nullptr, nullptr))
     {
       if (m_n_updated == current_n_updated)
         return m_cached_function;
@@ -124,12 +150,12 @@ get_cached_obj (const octave_value_list& args)
         octave::__get_interpreter__ ();
 
       octave::symbol_table& symtab = interp.get_symbol_table ();
-      octave_value val = symtab.find_function (m_fcn_name, args);
+      octave_value val = symtab.find_function (m_fcn_name, octave_value_list {});
 
       if (val.is_function ())
         {
           fcn = val.function_value (true);
-          set_cached_function (val, args, current_n_updated);
+          set_cached_function (val, octave_value_list {}, current_n_updated);
           return val;
         }
 
@@ -176,12 +202,46 @@ get_cached_fcn_internal (const octave_value_list& args)
 
 octave_function *
 octave_fcn_cache::
+get_cached_fcn_if_fresh ()
+{
+  octave_idx_type current_n_updated = octave::load_path::get_weak_n_updated ();
+  if (m_n_updated == current_n_updated)
+    return get_cached_fcn ();
+  return nullptr;
+}
+
+octave_function *
+octave_fcn_cache::
 get_cached_fcn (const octave_value_list& args)
 {
   octave_idx_type current_n_updated = octave::load_path::get_weak_n_updated ();
   if (OCTAVE_LIKELY (has_cached_function (args)))
     if (OCTAVE_LIKELY (m_n_updated == current_n_updated))
       return m_cached_function.function_value (true);
+
+  return get_cached_fcn_internal (args);
+}
+
+octave_function *
+octave_fcn_cache::
+get_cached_fcn (void *pbeg, void *pend)
+{
+  octave_idx_type current_n_updated = octave::load_path::get_weak_n_updated ();
+  if (OCTAVE_LIKELY (has_cached_function (pbeg, pend)))
+    if (OCTAVE_LIKELY (m_n_updated == current_n_updated))
+      return m_cached_function.function_value (true);
+
+  octave::stack_element *beg = static_cast<octave::stack_element *> (pbeg);
+  octave::stack_element *end = static_cast<octave::stack_element *> (pend);
+
+  octave_value_list args;
+  for (; beg != end; beg++)
+    {
+      if (OCTAVE_UNLIKELY (beg->ov.is_cs_list ()))
+        args.append (beg->ov.list_value ());
+      else
+        args.append (beg->ov);
+    }
 
   return get_cached_fcn_internal (args);
 }

@@ -1572,6 +1572,11 @@ protected:
   octave_function * get_cached_fcn (const octave_value_list& args)
   { return m_rep->get_cached_fcn (args); }
 
+  // Arguments need to be pointing to union stack_element:s.
+  // Using void* to avoid polluting namespace.
+  octave_function * get_cached_fcn (void *beg, void *end)
+  { return m_rep->get_cached_fcn (beg, end); }
+
   // Returns true if the octave_value is either undefined or
   // or a function.
   bool is_maybe_function (void) const

@@ -155,7 +155,11 @@ public:
   }
 
   virtual octave_function *
+  get_cached_fcn (void *, void *) { return nullptr; }
+
+  virtual octave_function *
   get_cached_fcn (const octave_value_list&) { return nullptr; }
+
   virtual bool
   has_function_cache (void) const { return false; }
 
@@ -374,7 +378,11 @@ public:
   is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2);
 
   octave_function *
+  get_cached_fcn (void *beg, void *end) { return m_rep->get_cached_fcn (beg, end); }
+
+  octave_function *
   get_cached_fcn (const octave_value_list& args) { return m_rep->get_cached_fcn (args); }
+
   bool has_function_cache (void) const { return m_rep->has_function_cache (); }
 
   vm_call_dispatch_type vm_dispatch_call (void)

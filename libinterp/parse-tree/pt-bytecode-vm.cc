@@ -145,9 +145,19 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
   CASE_END ()             \
 
 #define PCHAR() \
-    {p++;                               \
-    CHECK_END ();                       \
-    s += " " + std::to_string (*p);}
+    {\
+      if (wide_opext_active)                  \
+        {                                     \
+          wide_opext_active = false;          \
+          PSHORT()                            \
+        }                                     \
+      else                                    \
+        {                                     \
+          p++;                                \
+          CHECK_END ();                       \
+          s += " " + std::to_string (*p);     \
+        }\
+    }
 
 #define PCHAR_AS_CHAR() \
     {p++;                                     \

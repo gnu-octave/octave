@@ -5678,19 +5678,20 @@ set_ignore_outputs:
 
     int n_ignored = arg0;
     int n_total = POP_CODE ();
-    auto *M = new Matrix {};
-    M->resize (1, n_ignored);
+
+    Matrix M;
+    M.resize (1, n_ignored);
 
     std::set<int> set_ignored;
 
     for (int i = 0; i < n_ignored; i++)
       {
         int ignore_idx = POP_CODE ();
-        (*M) (i) = ignore_idx;
+        M (i) = ignore_idx;
         set_ignored.insert (ignore_idx);
       }
 
-    octave_value ignore_matrix {*M};
+    octave_value ignore_matrix {M};
 
     // For calls into m-functions etc
     auto *new_lvalue_list = new std::list<octave_lvalue> {};

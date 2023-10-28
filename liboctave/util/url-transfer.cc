@@ -753,7 +753,8 @@ public:
 
     set_header_fields (options.HeaderFields);
 
-    SETOPT (CURLOPT_TIMEOUT, options.Timeout);
+    SETOPT (CURLOPT_TIMEOUT_MS, options.Timeout);
+    SETOPT (CURLOPT_CONNECTTIMEOUT_MS, options.Timeout);
 
     if (! options.UserAgent.empty ())
       SETOPT (CURLOPT_USERAGENT, options.UserAgent.c_str ());

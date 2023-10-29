@@ -764,7 +764,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %!
 %! R1 = cholupdate (R1, u, "-");
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1 - R, Inf) < 1e1*eps);
+%! assert (norm (R1 - R, Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (Ac);
@@ -774,7 +774,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %!
 %! R1 = cholupdate (R1, uc, "-");
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1 - R, Inf) < 1e1*eps);
+%! assert (norm (R1 - R, Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (single (A));

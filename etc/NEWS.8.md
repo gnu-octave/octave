@@ -22,6 +22,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `intersect.m`: Correct third output with `"stable"` flag (bug #60347).
 - Avoid use-after-free issue in parser (bug #60882).
 - `betainc.m`: Improve integer input logic and validation (bug #64726).
+- `webread`: Apply timeout also for initial connection (bug #64826).
 
 ### GUI
 

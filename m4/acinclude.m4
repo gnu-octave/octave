@@ -1985,9 +1985,6 @@ dnl
 dnl OCTAVE_CHECK_QT_VERSION(VERSION)
 dnl
 AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
-  QT_CPPFLAGS=
-  QT_LDFLAGS=
-  QT_LIBS=
 
   qt_version="$1";
 
@@ -2038,47 +2035,55 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     esac
   fi
 
-  if test $build_qt_gui = yes; then
-    ## Use this check to get info in the log file.
-    PKG_CHECK_MODULES(QT, [$QT_MODULES],
-      [],
-      [build_qt_gui=no
-       warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
+  if test $build_qt_gui = yes \
+      && test -n "$QT_CPPFLAGS" \
+      && test -n "$QT_LIBS"; then
+    ## Don't use pkg-config but assume the provided flags are correct
+    ## and match the --with-qt value.
+    AC_MSG_WARN("Using provided values for QT_CPPFLAGS, QT_LIBS, and QT_LDFLAGS for Qt$qt_version")
+  else
+    if test $build_qt_gui = yes; then
+      ## Use this check to get info in the log file.
+      PKG_CHECK_MODULES(QT, [$QT_MODULES],
+        [],
+        [build_qt_gui=no
+         warn_qt_libraries="Qt libraries not found; disabling Qt GUI"])
 
-    ## Check the modules again individually to get lists of modules that
-    ## are available and/or missing
-    QT_MODULES_AVAILABLE=
-    QT_MODULES_MISSING=
-    for qt_mod in $QT_MODULES; do
-      if $PKG_CONFIG --exists $qt_mod; then
-        QT_MODULES_AVAILABLE="$QT_MODULES_AVAILABLE $qt_mod"
-      else
-        QT_MODULES_MISSING="$QT_MODULES_MISSING $qt_mod"
-      fi
-    done
-  fi
-
-  if test $build_qt_gui = yes; then
-    ## Retrieve Qt compilation and linker flags
-    QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
-    QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
-    QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
-
-    case $host_os in
-      *darwin*)
-        ## Qt might be installed in framework
-        if test -z "$QT_LIBS"; then
-          QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
-          QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
-          ## Enabling link_all_deps works around libtool's imperfect handling
-          ## of the -F flag
-          if test -n "$QT_LDFLAGS"; then
-            link_all_deps=yes
-          fi
-          AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
+      ## Check the modules again individually to get lists of modules that
+      ## are available and/or missing
+      QT_MODULES_AVAILABLE=
+      QT_MODULES_MISSING=
+      for qt_mod in $QT_MODULES; do
+        if $PKG_CONFIG --exists $qt_mod; then
+          QT_MODULES_AVAILABLE="$QT_MODULES_AVAILABLE $qt_mod"
+        else
+          QT_MODULES_MISSING="$QT_MODULES_MISSING $qt_mod"
         fi
-      ;;
-    esac
+      done
+    fi
+
+    if test $build_qt_gui = yes; then
+      ## Retrieve Qt compilation and linker flags
+      QT_CPPFLAGS="$($PKG_CONFIG --cflags-only-I $QT_MODULES | $SED -e 's/^ *$//')"
+      QT_LDFLAGS="$($PKG_CONFIG --libs-only-L $QT_MODULES | $SED -e 's/^ *$//')"
+      QT_LIBS="$($PKG_CONFIG --libs-only-l $QT_MODULES | $SED -e 's/^ *$//')"
+
+      case $host_os in
+        *darwin*)
+          ## Qt might be installed in framework
+          if test -z "$QT_LIBS"; then
+            QT_LDFLAGS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -e '-F' | uniq | tr '\n' ' '`"
+            QT_LIBS="`$PKG_CONFIG --libs-only-other $QT_MODULES | tr ' ' '\n' | $GREP -v -e '-F' | uniq | tr '\n' ' '`"
+            ## Enabling link_all_deps works around libtool's imperfect handling
+            ## of the -F flag
+            if test -n "$QT_LDFLAGS"; then
+              link_all_deps=yes
+            fi
+            AM_CONDITIONAL([AMCOND_LINK_ALL_DEPS], [test $link_all_deps = yes])
+          fi
+        ;;
+      esac
+    fi
   fi
 
   QT_TOOLS_AVAILABLE=
@@ -2239,6 +2244,14 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
     OCTAVE_CHECK_QSCINTILLA([$qt_version])
 
   fi
+
+  if test $build_qt_gui = no; then
+    QT_CPPFLAGS=
+    QT_LDFLAGS=
+    QT_LIBS=
+  fi
+
+
   AC_SUBST(MOCFLAGS)
   AC_SUBST(UICFLAGS)
   AC_SUBST(RCCFLAGS)

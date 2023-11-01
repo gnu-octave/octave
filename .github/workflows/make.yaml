@@ -193,7 +193,7 @@ jobs:
   macos:
     runs-on: ${{ matrix.os }}
 
-    name: ${{ matrix.os }}
+    name: ${{ matrix.os }} Qt${{ matrix.qt }}
 
     strategy:
       # Allow other runners in the matrix to continue if some fail
@@ -207,6 +207,7 @@ jobs:
         # that don't match.
         # compiler: [real-gcc, clang]
         compiler: [clang]
+        qt: [6]
         include:
           # - compiler: real-gcc
           #   cc: "/usr/local/bin/gcc-10"
@@ -216,6 +217,18 @@ jobs:
           - compiler: clang
             cc: "clang"
             cxx: "clang++"
+            # Qt6 doesn't install pkg-config files on macOS. See: https://bugreports.qt.io/browse/QTBUG-86080
+            # So, we need to provide the necessary flags manually.
+            qt-cppflags: "-I/usr/local/opt/qt@6/include/QtCore -I/usr/local/opt/qt@6/include/QtGui -I/usr/local/opt/qt@6/include/QtHelp -I/usr/local/opt/qt@6/include/QtNetwork -I/usr/local/opt/qt@6/include/QtOpenGL -I/usr/local/opt/qt@6/include/QtOpenGLWidgets -I/usr/local/opt/qt@6/include/QtPrintSupport -I/usr/local/opt/qt@6/include/QtSql -I/usr/local/opt/qt@6/include/QtWidgets -I/usr/local/opt/qt@6/include/QtXml -I/usr/local/opt/qt@6/include/QtCore5Compat"
+            qt-ldflags: "-F/usr/local/opt/qt@6/Frameworks"
+            qt-libs: "-framework QtCore -framework QtGui -framework QtHelp -framework QtNetwork -framework QtOpenGL -framework QtOpenGLWidgets -framework QtPrintSupport -framework QtSql -framework QtWidgets -framework QtXml -framework QtCore5Compat"
+          - os: macos-13
+            qt: "5"
+            cc: "clang"
+            cxx: "clang++"
+            # SUNDIALS >= 6.5.0 doesn't compile with the default flags determined
+            # by the configure script. Set CXX manually to enable building with it.
+            cxx-compiler-flags: "-std=gnu++14"
 
     env:
       CC: ${{ matrix.cc }}
@@ -252,12 +265,12 @@ jobs:
           brew install arpack epstool fftw fig2dev fltk fontconfig freetype \
             ghostscript gl2ps glpk gnuplot graphicsmagick hdf5 libsndfile \
             libtool openblas pcre2 portaudio pstoedit qhull qrupdate \
-            qscintilla2 qt@5 rapidjson readline suite-sparse sundials texinfo \
+            qscintilla2 qt@${{ matrix.qt }} rapidjson readline suite-sparse sundials texinfo \
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
           eval "$(/usr/libexec/path_helper)"
           echo "/Library/TeX/texbin" >> $GITHUB_PATH
-          echo "/usr/local/opt/qt@5/bin" >> $GITHUB_PATH
+          echo "/usr/local/opt/qt@${{ matrix.qt }}/bin" >> $GITHUB_PATH
           echo "/usr/local/opt/texinfo/bin" >> $GITHUB_PATH
           echo "/usr/local/opt/bison/bin" >> $GITHUB_PATH
           echo "/usr/local/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
@@ -267,7 +280,7 @@ jobs:
         # used in action/cache/restore and action/cache/save steps
         id: ccache-prepare
         run: |
-          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
+          echo "key=ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:${{ github.ref }}:$(date +"%Y-%m-%d_%H-%M-%S"):${{ github.sha }}" >> $GITHUB_OUTPUT
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
@@ -277,8 +290,8 @@ jobs:
           path: /Users/runner/Library/Caches/ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
           restore-keys: |
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:${{ github.ref }}
-            ccache:${{ matrix.os }}:${{ matrix.compiler }}:refs/heads/default
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:${{ github.ref }}
+            ccache:${{ matrix.os }}:${{ matrix.compiler }}:qt${{ matrix.qt }}:refs/heads/default
 
       - name: configure ccache
         # The cache doesn't seem to compress well on macOS. Is it already compressed?
@@ -304,8 +317,6 @@ jobs:
         # https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/octave.rb
         # Amended with additional flags that seem to be needed.
         # Not all of those might be needed or be correct.
-        # SUNDIALS >= 6.5.0 doesn't compile with the default flags determined
-        # by the configure script. Set CXX manually to enable building with it.
         run: |
           echo $PATH
           echo which ccache
@@ -321,13 +332,17 @@ jobs:
           gfortran --version
           mkdir .build
           cd .build && ../configure \
-            CXX="$CXX -std=gnu++14" \
+            CXX="${CXX} ${{ matrix.cxx-compiler-flags }}" \
             F77="ccache gfortran" \
-            CPPFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/icu4c/include -I/usr/local/opt/qt@5/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include $MY_CPPFLAGS" \
+            CPPFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/icu4c/include -I/usr/local/opt/qt@${{ matrix.qt }}/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include $MY_CPPFLAGS" \
             CXXFLAGS="-O2 -g" \
             LDFLAGS="-L/usr/local/lib -L/usr/local/opt/bison/lib -L/usr/local/opt/gettext/lib -L/usr/local/opt/icu4c/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/sqlite/lib $MY_LDFLAGS" \
-            PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig:/usr/local/opt/icu4c/lib/pkgconfig:/usr/local/opt/qt@5/lib/pkgconfig" \
+            PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig:/usr/local/opt/icu4c/lib/pkgconfig:/usr/local/opt/qt@${{ matrix.qt }}/lib/pkgconfig" \
+            --with-qt=${{ matrix.qt }} \
             QCOLLECTIONGENERATOR="qhelpgenerator" \
+            QT_CPPFLAGS="${{ matrix.qt-cppflags }}" \
+            QT_LDFLAGS="${{ matrix.qt-ldflags }}" \
+            QT_LIBS="${{ matrix.qt-libs }}" \
             --with-x=no \
             --with-blas="-L/usr/local/opt/openblas/lib -lopenblas" \
             --with-java-homedir="/usr/local/opt/openjdk" \

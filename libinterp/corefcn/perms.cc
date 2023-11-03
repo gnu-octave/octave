@@ -56,7 +56,7 @@ GetPerms (const Array<T> &ar_in, bool uniq_v, bool do_sort = false)
   double nr = Factorial (m);
 
   // Setup index vector filled from 0..m-1
-  int myvidx[m];
+  int* myvidx = new int[m];
   for (int i = 0; i < m; i++)
     myvidx[i] = i;
 
@@ -114,6 +114,8 @@ GetPerms (const Array<T> &ar_in, bool uniq_v, bool do_sort = false)
     }
   while (std::next_permutation (myvidx, myvidx + m, std::greater<int> ()));
 
+  delete[] myvidx;
+
   return res;
 }
 
@@ -129,7 +131,7 @@ GetPermsNoSort (const Array<T> &ar_in, bool uniq_v = false)
   double nr = Factorial (m);
 
   // Setup index vector filled from 0..m-1
-  int myvidx[m];
+  int* myvidx = new int[m];
   for (int i = 0; i < m; i++)
     myvidx[i] = i;
 
@@ -176,6 +178,9 @@ GetPermsNoSort (const Array<T> &ar_in, bool uniq_v = false)
       i++;
     }
   while (std::next_permutation (myvidx, myvidx + m, std::greater<int> ()));
+
+  delete[] myvidx;
+
   return res;
 }
 

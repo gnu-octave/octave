@@ -28,6 +28,7 @@
 #endif
 
 #include <iostream>
+#include <iomanip>
 
 #include "time-wrappers.h"
 
@@ -555,51 +556,59 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 void
 octave::print_bytecode(bytecode &bc)
 {
+  using std::cout;
+  using std::to_string;
+  using std::setw;
+
   unsigned char *p = bc.m_code.data ();
   int n = bc.m_code.size ();
 
   CHECK (bc.m_data.size () >= 2);
-  printf ("metadata:\n");
-  printf ("\t%s\n", bc.m_data[0].string_value ().c_str ()); // function name
-  printf ("\t%s\n\n", bc.m_data[1].string_value ().c_str ()); // function type
+  cout << "metadata:\n";
+  cout << "\t" << bc.m_data[0].string_value () << "\n"; // function name
+  cout << "\t" << bc.m_data[1].string_value () << "\n\n"; // function type
 
-  printf("frame:\n");
-  printf("\t.n_return %d\n", *p++);
-  printf("\t.n_args %d\n", *p++);
-  printf("\t.n_locals %d\n\n", *p++);
+  cout << "frame:\n";
+  cout << "\t.n_return " << to_string (*p++) << "\n";
+  cout << "\t.n_args " << to_string (*p++) << "\n";
+  cout << "\t.n_locals " << to_string (*p++) << "\n\n";
 
-  printf("slots:\n");
+  cout << "slots:\n";
   int idx = 0;
   for (std::string local : bc.m_ids)
-    printf("%5d: %s\n", idx++, local.c_str ());
-  printf ("\n");
+    cout << setw (5) << to_string (idx++) << ": " << local << "\n";
+  cout << "\n";
 
-  printf ("source code lut:\n");
+  cout << "source code lut:\n";
   for (auto it : bc.m_unwind_data.m_loc_entry)
     {
-      printf ("\tl:%5d c:%5d ip0:%5d ip1:%5d\n", it.m_line, it.m_col, it.m_ip_start, it.m_ip_end);
+      cout << "\tl:" << setw (5) << it.m_line <<
+              " c:" << setw (5) <<  it.m_col <<
+              " ip0:" << setw (5) << it.m_ip_start <<
+              " ip1:" << setw (5) << it.m_ip_end <<
+              "\n";
     }
 
-  printf ("dbg tree object:\n");
+  cout << "dbg tree object:\n";
   for (auto it : bc.m_unwind_data.m_ip_to_tree)
     {
-      printf ("\tip:%5d obj=%p\n", it.first, it.second);
+      cout << "\tip:" << it.first << " obj=" << it.second << "\n";
     }
 
   if (bc.m_unwind_data.m_v_nested_vars.size ())
     {
-      printf ("Nested symbols table:\n");
+      cout << "Nested symbols table:\n";
       for (auto it : bc.m_unwind_data.m_v_nested_vars)
         {
-          printf ("%d:nth parent's slot: %d, child slot: %d\n", it.m_depth, it.m_slot_parent, it.m_slot_nested);
+          cout << it.m_depth << ":nth parent's slot: " << it.m_slot_parent << ", child slot: " << it.m_slot_nested << "\n";
         }
     }
 
-  printf("code: (n=%d)\n", n);
+  cout << "code: (n=" << n << ")\n";
   auto v_ls = opcodes_to_strings (bc);
   for (auto ls : v_ls)
     {
-      printf ("\t%5d: %s\n", ls.first, ls.second.c_str ());
+      cout << "\t" << setw(5) << ls.first << ": " << ls.second << "\n";
     }
 }
 
@@ -811,20 +820,20 @@ do {                                \
 } while (0)
 
 #define COMMA ,
-#define PRINT_VM_STATE(msg)                                                    \
-  do {                                                                         \
-    printf(msg);                                                               \
-    printf("\n");                                                              \
-    printf("sp  : %p\n", sp);                                                  \
-    printf("bsp : %p\n", bsp);                                                 \
-    printf("sp i: %zu\n", sp - bsp);                                           \
-    printf("sp ii: %zu\n", sp - m_stack);                                      \
-    printf("ip  : %zu\n", ip - code);                                          \
-    printf("code: %p\n", code);                                                \
-    printf("data: %p\n", data);                                                \
-    printf("ids : %p\n", name_data);                                           \
-    printf("fn  : %s\n", m_tw->get_current_stack_frame ()->fcn_name ().c_str ());\
-    printf("Next op: %u\n\n", *ip);\
+#define PRINT_VM_STATE(msg)                                                         \
+  do {                                                                              \
+    std::cout << msg;                                                               \
+    std::cout << "\n";                                                              \
+    std::cout << "sp  : " << sp << "\n";                                            \
+    std::cout << "bsp : " << bsp << "\n";                                           \
+    std::cout << "sp i: " << sp - bsp << "\n";                                      \
+    std::cout << "sp ii: " << sp - m_stack << "\n";                                 \
+    std::cout << "ip  : " << ip - code << "\n";                                     \
+    std::cout << "code: " << code << "\n";                                          \
+    std::cout << "data: " << data << "\n";                                          \
+    std::cout << "ids : " << name_data << "\n";                                     \
+    std::cout << "fn  : " << m_tw->get_current_stack_frame ()->fcn_name () << "\n"; \
+    std::cout << "Next op: " << std::to_string (*ip) << "\n\n";                     \
   } while ((0))
 
 #define CHECK_STACK(n) \
@@ -845,14 +854,6 @@ do {                                \
 #define REP(type,ov) static_cast<type&> (const_cast<octave_base_value &> (ov.get_rep()))
 
 #define DISPATCH() do { \
-  /*if (!m_tw->get_current_stack_frame ()->is_bytecode_fcn_frame ()) \
-    { \
-      printf ("Why oh why\n"); \
-      dummy_mark_1 (); \
-    } */ \
-  /* PRINT_VM_STATE ("%d" COMMA __LINE__); */ \
-  /* CHECK_STACK (0); */ \
-\
   if (OCTAVE_UNLIKELY (m_tw->vm_dbgprofecho_flag ())) /* Do we need to check for breakpoints? */\
     goto debug_check;\
   int opcode = ip[0];\
@@ -862,14 +863,6 @@ do {                                \
 } while ((0))
 
 #define DISPATCH_1BYTEOP() do { \
-  /*if (!m_tw->get_current_stack_frame ()->is_bytecode_fcn_frame ()) \
-    { \
-      printf ("Why oh why\n"); \
-      dummy_mark_1 (); \
-    } */ \
-  /* PRINT_VM_STATE ("%d" COMMA __LINE__); */ \
-  /* CHECK_STACK (0); */ \
-\
   if (OCTAVE_UNLIKELY (m_tw->vm_dbgprofecho_flag ())) /* Do we need to check for breakpoints? */\
     goto debug_check_1b;\
   int opcode = arg0;\
@@ -7478,6 +7471,9 @@ vm_profiler::print_to_stdout ()
   using std::map;
   using std::pair;
 
+  using std::cout;
+  using std::setw;
+
   // These could probably be vectors, but we'll do with maps to keep the
   // code easier to follow.
   map<string, int64_t> map_fn_to_cum_t;
@@ -7739,11 +7735,11 @@ vm_profiler::print_to_stdout ()
 
   // Print stuff to the user
 
-  printf ("\n\n\nProfiled functions:\n");
-  printf ("\tRuntime order:\n");
+  cout << "\n\n\nProfiled functions:\n";
+  cout << "\tRuntime order:\n";
   for (auto it = map_cumt_to_fn.rbegin (); it != map_cumt_to_fn.rend (); it++)
     printf ("\t\t%12lld ns %3.0f%% %s\n", static_cast<long long> (it->first), it->first * 100. / t_tot, it->second.c_str ());
-  printf ("\tFirst call order:\n");
+  cout << "\tFirst call order:\n";
   for (string fn_name : m_fn_first_call_order)
   {
     int64_t tcum = map_fn_to_cum_t[fn_name];
@@ -7760,34 +7756,36 @@ vm_profiler::print_to_stdout ()
       string annotated_source = map_fn_to_annotated_source[fn_name];
       string annotated_bytecode = map_fn_to_annotated_bytecode[fn_name];
 
-      printf ("\n\n\nFunction: %s\n\n", kv.first.c_str ());
+      cout << "\n\n\nFunction: " << kv.first << "\n\n";
       if (stats.m_fn_file.size ())
-        printf ("\tFile: %s\n", stats.m_fn_file.c_str ());
-      printf ("\tAmount of calls: %lld\n", static_cast<long long> (stats.m_n_calls));
-      printf ("\tCallers:         ");
+        cout << "\tFile: " << stats.m_fn_file << "\n";
+      cout << "\tAmount of calls: " << static_cast<long long> (stats.m_n_calls) << "\n";
+      cout << "\tCallers:         ";
       for (string caller : stats.m_set_callers)
-        printf ("%s ", caller.c_str ());
-      printf ("\n");
+        cout << caller << " ";
+      cout << "\n";
       printf ("\tCumulative time: %9.5gs %lld ns\n", fn_cum_t/1e9, static_cast<long long> (fn_cum_t));
       printf ("\tCumulative self time: %9.5gs %lld ns\n", fn_self_cum_t/1e9, static_cast<long long> (fn_self_cum_t));
-      printf ("\n\n");
+      cout << "\n\n";
 
       if (annotated_source.size ())
       {
-         printf ("\tAnnotated source:\n");
-         printf ("\t     ops         time       share\n");
-         printf ("\n");
-         printf ("%s\n\n", annotated_source.c_str ());
+         cout << "\tAnnotated source:\n";
+         cout << "\t     ops         time       share\n";
+         cout << "\n";
+         cout << annotated_source << "\n\n";
       }
       if (annotated_bytecode.size ())
       {
-        printf ("\tAnnotated bytecode:\n");
-        printf ("\t     hits         time       share\n");
-        printf ("\n");
-        printf ("%s\n\n", annotated_bytecode.c_str ());
+        cout << "\tAnnotated bytecode:\n";
+        cout << "\t     hits         time       share\n";
+        cout << "\n";
+        cout << annotated_bytecode << "\n\n";
       }
-      printf ("\n");
+      cout << "\n";
     }
+
+  cout << std::flush;
 }
 
 void
@@ -8123,7 +8121,7 @@ vm::call (tree_evaluator& tw, int nargout, const octave_value_list& xargs,
         // TODO: Replace with panic when the VM almost works
 
         // Some test code eats errors messages, so we print to stderr too.
-        fprintf (stderr, "VM error %d: " "Exception in %s escaped the VM\n", __LINE__, fn->name ().c_str());
+        std::cerr << "VM error " << __LINE__ << ": Exception in " << fn->name () << " escaped the VM\n";
         error("VM error %d: " "Exception in %s escaped the VM\n", __LINE__, fn->name ().c_str());
       }
 

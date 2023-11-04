@@ -2997,7 +2997,7 @@ void anonymous_fcn_handle::compile ()
   catch (std::exception &e)
     {
       warning ("Auto-compilation of anonymous function failed with message %s", e.what ());
-      usr_code->m_compilation_failed = true;
+      usr_code->set_compilation_failed (true);
     }
 }
 

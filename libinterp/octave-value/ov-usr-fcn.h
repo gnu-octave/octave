@@ -131,9 +131,12 @@ public:
 
   octave::bytecode &get_bytecode () { return m_bytecode; }
 
-  bool m_compilation_failed = false;
+  bool compilation_failed () { return m_compilation_failed; }
+  void set_compilation_failed (bool val) { m_compilation_failed = val; }
 
 protected:
+
+  bool m_compilation_failed = false;
 
   octave::bytecode m_bytecode;
 

@@ -8048,7 +8048,7 @@ vm::maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map
   if (fn->is_compiled ())
     return true;
 
-  if (V__vm_enable__ && !fn->m_compilation_failed)
+  if (V__vm_enable__ && !fn->compilation_failed ())
     {
       try
         {
@@ -8062,7 +8062,7 @@ vm::maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map
       catch (std::exception &e)
         {
           warning ("auto-compilation of %s failed with message %s", fn->name().c_str (), e.what ());
-          fn->m_compilation_failed = true;
+          fn->set_compilation_failed(true);
           return false;
         }
     }

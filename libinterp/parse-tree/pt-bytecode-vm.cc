@@ -1772,15 +1772,22 @@ push_folded_cst:
     unsigned char b0 = *ip++;
     unsigned char b1 = *ip++;
 
-    octave_cached_value *ovb = static_cast<octave_cached_value*> (bsp[slot].ovb);
-    if (ovb->is_defined () && ovb->cache_is_valid ())
+    // If the slot value is defined it is a octave_cached_value, since only
+    // this opcode and SET_FOLDED_CST writes to the slot.
+
+    octave_base_value *ovb = bsp[slot].ovb;
+    octave_cached_value *ovbc = static_cast<octave_cached_value*> (ovb);
+    if (ovb->is_defined () && ovbc->cache_is_valid ())
       {
-        PUSH_OV (ovb->get_cached_value ());
+        // Use the cached value. Push it to the stack.
+        PUSH_OV (ovbc->get_cached_value ());
+        // Jump over the initialization code (the folded code) of the cached value
         int target = USHORT_FROM_UCHARS (b0, b1);
         ip = code + target;
       }
     else
       {
+        // Put a octave_cached_value in the slot for SET_FOLDED_CST
         bsp[slot].ov = octave_value {new octave_cached_value};
       }
   }

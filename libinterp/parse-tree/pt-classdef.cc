@@ -146,6 +146,7 @@ tree_classdef_property::tree_classdef_property (tree_arg_validation *av,
 tree_classdef_property::~tree_classdef_property ()
 {
   delete m_av;
+  delete m_comments;
 }
 
 tree_identifier *tree_classdef_property::ident ()

@@ -94,6 +94,7 @@ public:
       m_size (m_unwind_data->m_ids_size),
       // The above fields in vm change during execution so we need to store them in the frame
       m_vm (&vm),
+      m_ip (0),
       m_nargin (nargin),
       m_nargout (nargout)
   {

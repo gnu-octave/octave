@@ -417,6 +417,7 @@ public:
   ~tree_classdef_event ()
   {
     delete m_id;
+    delete m_comments;
   }
 
   tree_identifier * ident () { return m_id; }
@@ -498,6 +499,7 @@ public:
   {
     delete m_id;
     delete m_expr;
+    delete m_comments;
   }
 
   tree_identifier * ident () { return m_id; }

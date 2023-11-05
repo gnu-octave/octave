@@ -1,3 +1,17 @@
+Summary of bugs fixed for version 8.5.0 (tbd):
+----------------------------------------------------
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
 Summary of bugs fixed for version 8.4.0 (2023-11-05):
 ----------------------------------------------------
 

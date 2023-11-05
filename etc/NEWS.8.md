@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 8.4.0 (tbd):
+Summary of bugs fixed for version 8.4.0 (2023-11-05):
 ----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX

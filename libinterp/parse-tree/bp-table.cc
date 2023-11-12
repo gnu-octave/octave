@@ -691,7 +691,8 @@ int bp_table::add_breakpoint_in_function (const std::string& fcn_ident,
 class user_code_provider
 {
 public:
-  user_code_provider (const std::string& fcn_ident, octave_user_code* pfcn)
+  user_code_provider (const std::string& fcn_ident, octave_user_code* pfcn,
+                      bool silent = false)
     : m_fcn (nullptr), m_is_valid (false)
   {
     m_fcn = pfcn;
@@ -716,7 +717,7 @@ public:
     m_is_valid = m_cls.ok () && (m_cls.get_name () == class_name);
     if (m_is_valid)
       populate_function_cache ();
-    else
+    else if (! silent)
       error ("add_breakpoints_in_function: unable to find function '%s'\n",
              fcn_ident.c_str ());
 
@@ -1024,7 +1025,7 @@ bp_table::remove_all_breakpoints_from_function (const std::string& fcn_ident,
   bp_lines retval;
 
   octave_user_code *fcn = m_evaluator.get_user_code (fcn_ident);
-  user_code_provider user_code (fcn_ident, fcn);
+  user_code_provider user_code (fcn_ident, fcn, silent);
 
   if (user_code.is_valid ())
     {

@@ -187,9 +187,20 @@ octave_sparse_bool_matrix::save_binary (std::ostream& os, bool)
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();
 
-  int nr = dv(0);
-  int nc = dv(1);
-  int nz = nnz ();
+  octave_idx_type nr = dv(0);
+  octave_idx_type nc = dv(1);
+  octave_idx_type nz = nnz ();
+
+  // For compatiblity, indices are always saved with 4 bytes
+#if OCTAVE_SIZEOF_IDX_TYPE == OCTAVE_SIZEOF_INT
+  if (nr < 0 || nc < 0 || nz < 0)
+    return false;
+#else
+  octave_idx_type max_val = std::numeric_limits<uint32_t>::max ();
+  if (nr < 0 || nr > max_val || nc < 0 || nc > max_val
+      || nz < 0 || nz > max_val)
+    return false;
+#endif
 
   int32_t itmp;
   // Use negative value for ndims to be consistent with other formats

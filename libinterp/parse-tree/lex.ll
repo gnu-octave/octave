@@ -762,16 +762,17 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_block_comment_nesting_level--;
 
-    int status = -1;
-
     if (curr_lexer->m_block_comment_nesting_level == 0)
       {
-        status = -2;
-
         curr_lexer->pop_start_state ();
-      }
 
-    HANDLE_EOB_OR_EOF (status);
+        if (curr_lexer->pending_token_count () > 0)
+          HANDLE_EOB_OR_EOF (-1);
+        else
+          HANDLE_EOB_OR_EOF (-2);
+      }
+    else
+      HANDLE_EOB_OR_EOF (-1);
   }
 
 %{

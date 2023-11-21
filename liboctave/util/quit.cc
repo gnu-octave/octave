@@ -96,12 +96,13 @@ void execution_exception::display (std::ostream& os) const
     }
 }
 
-void octave_quit_c (void)
+OCTAVE_END_NAMESPACE(octave)
+
+extern "C" OCTAVE_API void
+octave_quit_c (void)
 {
   octave_quit ();
 }
-
-OCTAVE_END_NAMESPACE(octave)
 
 void
 octave_handle_signal ()

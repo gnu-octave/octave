@@ -37,7 +37,7 @@ ODE : public base_diff_eqn, public ODEFunc
 {
 public:
 
-  ODE (void)
+  ODE ()
     : base_diff_eqn (), ODEFunc () { }
 
   ODE (const ColumnVector& s, double tm, const ODEFunc& f)
@@ -56,7 +56,7 @@ public:
     return *this;
   }
 
-  virtual ~ODE (void) = default;
+  virtual ~ODE () = default;
 
   // Derived classes must provide functions to actually do the
   // integration.

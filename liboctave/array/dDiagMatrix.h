@@ -42,13 +42,13 @@ public:
 
   typedef Matrix full_matrix_type;
 
-  DiagMatrix (void) = default;
+  DiagMatrix () = default;
 
   DiagMatrix (const DiagMatrix& a) = default;
 
   DiagMatrix& operator = (const DiagMatrix& a) = default;
 
-  ~DiagMatrix (void) = default;
+  ~DiagMatrix () = default;
 
   DiagMatrix (octave_idx_type r, octave_idx_type c)
     : MDiagArray2<double> (r, c) { }
@@ -77,9 +77,9 @@ public:
   OCTAVE_API DiagMatrix& fill (const ColumnVector& a, octave_idx_type beg);
   OCTAVE_API DiagMatrix& fill (const RowVector& a, octave_idx_type beg);
 
-  DiagMatrix transpose (void) const
+  DiagMatrix transpose () const
   { return MDiagArray2<double>::transpose (); }
-  DiagMatrix abs (void) const;
+  DiagMatrix abs () const;
 
   friend OCTAVE_API DiagMatrix real (const ComplexDiagMatrix& a);
   friend OCTAVE_API DiagMatrix imag (const ComplexDiagMatrix& a);
@@ -98,7 +98,7 @@ public:
   OCTAVE_API ColumnVector column (octave_idx_type i) const;
   OCTAVE_API ColumnVector column (char *s) const;
 
-  OCTAVE_API DiagMatrix inverse (void) const;
+  OCTAVE_API DiagMatrix inverse () const;
   OCTAVE_API DiagMatrix inverse (octave_idx_type& info) const;
   OCTAVE_API DiagMatrix pseudo_inverse (double tol = 0.0) const;
 
@@ -107,8 +107,8 @@ public:
   ColumnVector extract_diag (octave_idx_type k = 0) const
   { return MDiagArray2<double>::extract_diag (k); }
 
-  OCTAVE_API DET determinant (void) const;
-  OCTAVE_API double rcond (void) const;
+  OCTAVE_API DET determinant () const;
+  OCTAVE_API double rcond () const;
 
   // i/o
 

@@ -39,7 +39,7 @@ FloatComplexNDArray : public MArray<FloatComplex>
 {
 public:
 
-  FloatComplexNDArray (void) : MArray<FloatComplex> () { }
+  FloatComplexNDArray () : MArray<FloatComplex> () { }
 
   FloatComplexNDArray (const dim_vector& dv) : MArray<FloatComplex> (dv) { }
 
@@ -63,17 +63,19 @@ public:
     return *this;
   }
 
+  ~FloatComplexNDArray () = default;
+
   // unary operations
 
-  OCTAVE_API boolNDArray operator ! (void) const;
+  OCTAVE_API boolNDArray operator ! () const;
 
   // FIXME: this is not quite the right thing.
 
-  OCTAVE_API bool any_element_is_nan (void) const;
-  OCTAVE_API bool any_element_is_inf_or_nan (void) const;
-  OCTAVE_API bool all_elements_are_real (void) const;
+  OCTAVE_API bool any_element_is_nan () const;
+  OCTAVE_API bool any_element_is_inf_or_nan () const;
+  OCTAVE_API bool all_elements_are_real () const;
   OCTAVE_API bool all_integers (float& max_val, float& min_val) const;
-  OCTAVE_API bool too_large_for_float (void) const;
+  OCTAVE_API bool too_large_for_float () const;
 
   OCTAVE_API boolNDArray all (int dim = -1) const;
   OCTAVE_API boolNDArray any (int dim = -1) const;
@@ -114,23 +116,23 @@ public:
   OCTAVE_API FloatComplexNDArray&
   insert (const FloatComplexNDArray& a, const Array<octave_idx_type>& ra_idx);
 
-  OCTAVE_API FloatNDArray abs (void) const;
-  OCTAVE_API boolNDArray isnan (void) const;
-  OCTAVE_API boolNDArray isinf (void) const;
-  OCTAVE_API boolNDArray isfinite (void) const;
+  OCTAVE_API FloatNDArray abs () const;
+  OCTAVE_API boolNDArray isnan () const;
+  OCTAVE_API boolNDArray isinf () const;
+  OCTAVE_API boolNDArray isfinite () const;
 
   friend OCTAVE_API FloatComplexNDArray conj (const FloatComplexNDArray& a);
 
   OCTAVE_API FloatComplexNDArray fourier (int dim = 1) const;
   OCTAVE_API FloatComplexNDArray ifourier (int dim = 1) const;
 
-  OCTAVE_API FloatComplexNDArray fourier2d (void) const;
-  OCTAVE_API FloatComplexNDArray ifourier2d (void) const;
+  OCTAVE_API FloatComplexNDArray fourier2d () const;
+  OCTAVE_API FloatComplexNDArray ifourier2d () const;
 
-  OCTAVE_API FloatComplexNDArray fourierNd (void) const;
-  OCTAVE_API FloatComplexNDArray ifourierNd (void) const;
+  OCTAVE_API FloatComplexNDArray fourierNd () const;
+  OCTAVE_API FloatComplexNDArray ifourierNd () const;
 
-  FloatComplexNDArray squeeze (void) const
+  FloatComplexNDArray squeeze () const
   { return MArray<FloatComplex>::squeeze (); }
 
   static OCTAVE_API void
@@ -147,7 +149,7 @@ public:
   friend OCTAVE_API std::istream& operator >> (std::istream& is,
                                                FloatComplexNDArray& a);
 
-  //  bool all_elements_are_real (void) const;
+  //  bool all_elements_are_real () const;
   //  bool all_integers (float& max_val, float& min_val) const;
 
   OCTAVE_API FloatComplexNDArray diag (octave_idx_type k = 0) const;
@@ -155,7 +157,7 @@ public:
   OCTAVE_API FloatComplexNDArray
   diag (octave_idx_type m, octave_idx_type n) const;
 
-  FloatComplexNDArray& changesign (void)
+  FloatComplexNDArray& changesign ()
   {
     MArray<FloatComplex>::changesign ();
     return *this;

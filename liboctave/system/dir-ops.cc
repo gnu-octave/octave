@@ -34,6 +34,10 @@
 #include <list>
 #include <string>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+#  include "windows.h"
+#endif
+
 #include "dirent-wrappers.h"
 
 #include "dir-ops.h"
@@ -58,10 +62,24 @@ dir_entry::open (const std::string& n)
 
       std::string fullname = sys::file_ops::tilde_expand (m_name);
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+      std::string msg;
+
+      if (sys::dir_exists (fullname, msg))
+        // Never dereference this pointer!
+        // We just need something that is non-null.
+        m_dir = reinterpret_cast<void *> (1);
+      else
+        {
+          m_dir = nullptr;
+          m_errmsg = msg;
+        }
+#else
       m_dir = octave_opendir_wrapper (fullname.c_str ());
 
       if (! m_dir)
         m_errmsg = std::strerror (errno);
+#endif
     }
   else
     m_errmsg = "dir_entry::open: empty filename";
@@ -70,7 +88,7 @@ dir_entry::open (const std::string& n)
 }
 
 string_vector
-dir_entry::read (void)
+dir_entry::read ()
 {
   string_vector retval;
 
@@ -78,10 +96,29 @@ dir_entry::read (void)
     {
       std::list<std::string> dirlist;
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+      WIN32_FIND_DATAW find_file_data;
+      std::wstring pattern = u8_to_wstring (m_name + "\\*");
+      std::string file_name;
+
+      HANDLE h_find_file = FindFirstFileW (pattern.c_str (), &find_file_data);
+      if (h_find_file != INVALID_HANDLE_VALUE)
+        {
+          do
+            {
+              file_name = u8_from_wstring (find_file_data.cFileName);
+              dirlist.push_back (file_name);
+            }
+          while (FindNextFileW (h_find_file, &find_file_data));
+
+          FindClose (h_find_file);
+        }
+#else
       char *fname;
 
       while ((fname = octave_readdir_wrapper (m_dir)))
         dirlist.push_back (fname);
+#endif
 
       retval = string_vector (dirlist);
     }
@@ -90,22 +127,26 @@ dir_entry::read (void)
 }
 
 bool
-dir_entry::close (void)
+dir_entry::close ()
 {
   bool retval = true;
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+  m_dir = nullptr;
+#else
   if (m_dir)
     {
       retval = (octave_closedir_wrapper (m_dir) == 0);
 
       m_dir = nullptr;
     }
+#endif
 
   return retval;
 }
 
 unsigned int
-dir_entry::max_name_length (void)
+dir_entry::max_name_length ()
 {
   return octave_name_max_wrapper ();
 }

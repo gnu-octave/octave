@@ -859,7 +859,8 @@ and @ref{XREFaxesouterposition, , @w{@qcode{\"outerposition\"} property}}.";
 
       case "tickdir"
         s.doc = "Control whether axes tick marks project \"in\" to the plot \
-box or \"out\".  __modemsg__.";
+box or \"out\".  The value \"none\" means no tick marks will be drawn, \
+although tick labels will still be rendered.  __modemsg__.";
 
       case "tickdirmode"
 

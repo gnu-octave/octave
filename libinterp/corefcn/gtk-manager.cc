@@ -28,15 +28,15 @@
 #endif
 
 #include "error.h"
+#include "interpreter.h"
 #include "graphics-toolkit.h"
 #include "gtk-manager.h"
 #include "ovl.h"
-#include "parse.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 graphics_toolkit
-gtk_manager::get_toolkit (void) const
+gtk_manager::get_toolkit () const
 {
   graphics_toolkit retval;
 
@@ -55,7 +55,7 @@ gtk_manager::get_toolkit (void) const
 
       octave_value_list args;
       args(0) = m_dtk;
-      feval ("graphics_toolkit", args);
+      m_interpreter.feval ("graphics_toolkit", args);
 
       pl = m_loaded_toolkits.find (m_dtk);
 

@@ -2,13 +2,12 @@ Update bootstrap script from upstream gnulib to automatically fetch from reposit
 
 See also: https://lists.gnu.org/archive/html/bug-gnulib/2020-08/msg00150.html
 
-diff -urN a/bootstrap-funclib.sh b/bootstrap-funclib.sh
---- a/bootstrap-funclib.sh.	2022-11-12 13:47:39.921059000 +0100
-+++ b/bootstrap-funclib.sh	2022-11-12 13:55:04.393284235 +0100
-@@ -532,6 +532,11 @@
+--- ./bootstrap-funclib.sh.orig	2023-11-20 18:29:45.640064746 +0100
++++ ./bootstrap-funclib.sh	2023-11-20 18:35:57.451241555 +0100
+@@ -534,6 +534,11 @@
          fi
  
-         trap - 1 2 13 15
+         trap - HUP INT PIPE TERM
 +
 +      elif test -n "$GNULIB_REVISION" \
 +           && ! git --git-dir="$gnulib_path"/.git cat-file \
@@ -17,7 +16,7 @@ diff -urN a/bootstrap-funclib.sh b/bootstrap-funclib.sh
        fi
      fi
      GNULIB_SRCDIR=$gnulib_path
-@@ -543,6 +548,10 @@
+@@ -546,6 +551,10 @@
    # XXX Should this be done if $use_git is false?
    if test -d "$GNULIB_SRCDIR"/.git && test -n "$GNULIB_REVISION" \
       && ! git_modules_config submodule.gnulib.url >/dev/null; then

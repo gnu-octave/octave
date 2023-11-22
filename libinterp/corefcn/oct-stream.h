@@ -79,13 +79,9 @@ public:
       m_errmsg ()
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (base_stream)
 
-  base_stream (const base_stream&) = delete;
-
-  base_stream& operator = (const base_stream&) = delete;
-
-  virtual ~base_stream (void) = default;
+  virtual ~base_stream () = default;
 
   // The remaining functions are not specific to input or output only,
   // and must be provided by the derived classes.
@@ -96,32 +92,32 @@ public:
 
   // Return current stream position.
 
-  virtual off_t tell (void) = 0;
+  virtual off_t tell () = 0;
 
   // Return TRUE if EOF has been reached on this stream.
 
-  virtual bool eof (void) const = 0;
+  virtual bool eof () const = 0;
 
   // The name of the file.
 
-  virtual std::string name (void) const = 0;
+  virtual std::string name () const = 0;
 
   // If the derived class provides this function and it returns a
   // pointer to a valid istream, scanf(), read(), getl(), and gets()
   // will automatically work for this stream.
 
-  virtual std::istream * input_stream (void) { return nullptr; }
+  virtual std::istream * input_stream () { return nullptr; }
 
   // If the derived class provides this function and it returns a
   // pointer to a valid ostream, flush(), write(), and printf() will
   // automatically work for this stream.
 
-  virtual std::ostream * output_stream (void) { return nullptr; }
+  virtual std::ostream * output_stream () { return nullptr; }
 
   // Return either the original output stream or one wrapped with the
   // encoding facet.
 
-  std::ostream * preferred_output_stream (void)
+  std::ostream * preferred_output_stream ()
   {
     if (! m_encoding.compare ("utf-8"))
       return output_stream ();
@@ -145,11 +141,11 @@ public:
 
   // Return TRUE if this stream is open.
 
-  bool is_open (void) const { return m_open_state; }
+  bool is_open () const { return m_open_state; }
 
-  virtual void do_close (void) { }
+  virtual void do_close () { }
 
-  void close (void)
+  void close ()
   {
     if (is_open ())
       {
@@ -158,7 +154,7 @@ public:
       }
   }
 
-  virtual int file_number (void) const
+  virtual int file_number () const
   {
     // Kluge alert!
 
@@ -172,7 +168,7 @@ public:
       return -1;
   }
 
-  bool ok (void) const { return ! m_fail; }
+  bool ok () const { return ! m_fail; }
 
   // Return current error message for this stream.
 
@@ -180,11 +176,11 @@ public:
 
 protected:
 
-  int mode (void) const { return m_mode; }
+  int mode () const { return m_mode; }
 
-  mach_info::float_format float_format (void) const { return m_flt_fmt; }
+  mach_info::float_format float_format () const { return m_flt_fmt; }
 
-  std::string encoding (void) const { return m_encoding; }
+  std::string encoding () const { return m_encoding; }
 
   // Set current error state and set fail to TRUE.
 
@@ -193,11 +189,11 @@ protected:
 
   // Clear any error message and set fail to FALSE.
 
-  OCTINTERP_API void clear (void);
+  OCTINTERP_API void clear ();
 
   // Clear stream state.
 
-  OCTINTERP_API void clearerr (void);
+  OCTINTERP_API void clearerr ();
 
 private:
 
@@ -273,7 +269,7 @@ private:
   // Functions that are defined for all output streams (output streams
   // are those that define os).
 
-  OCTINTERP_API int flush (void);
+  OCTINTERP_API int flush ();
 
   OCTINTERP_API int
   do_numeric_printf_conv (std::ostream& os, const printf_format_elt *elt,
@@ -314,9 +310,9 @@ public:
 
   stream& operator = (const stream&) = default;
 
-  ~stream (void) = default;
+  ~stream () = default;
 
-  OCTINTERP_API int flush (void);
+  OCTINTERP_API int flush ();
 
   OCTINTERP_API std::string
   getl (octave_idx_type max_len, bool& err,
@@ -346,13 +342,13 @@ public:
   OCTINTERP_API int
   seek (const octave_value& offset, const octave_value& origin);
 
-  OCTINTERP_API off_t tell (void);
+  OCTINTERP_API off_t tell ();
 
-  OCTINTERP_API int rewind (void);
+  OCTINTERP_API int rewind ();
 
-  OCTINTERP_API bool is_open (void) const;
+  OCTINTERP_API bool is_open () const;
 
-  OCTINTERP_API void close (void);
+  OCTINTERP_API void close ();
 
   OCTINTERP_API octave_value
   read (const Array<double>& size, octave_idx_type block_size,
@@ -408,7 +404,7 @@ public:
   OCTINTERP_API int
   puts (const octave_value& s, const std::string& who /* = "puts" */);
 
-  OCTINTERP_API bool eof (void) const;
+  OCTINTERP_API bool eof () const;
 
   OCTINTERP_API std::string error (bool clear, int& err_num);
 
@@ -428,33 +424,33 @@ public:
 
   void error (const char *msg) { error (std::string (msg)); }
 
-  int file_number (void) { return m_rep ? m_rep->file_number () : -1; }
+  int file_number () { return m_rep ? m_rep->file_number () : -1; }
 
-  bool is_valid (void) const { return bool (m_rep); }
+  bool is_valid () const { return bool (m_rep); }
 
-  bool ok (void) const { return m_rep && m_rep->ok (); }
+  bool ok () const { return m_rep && m_rep->ok (); }
 
   operator bool () const { return ok (); }
 
-  OCTINTERP_API std::string name (void) const;
+  OCTINTERP_API std::string name () const;
 
-  OCTINTERP_API int mode (void) const;
+  OCTINTERP_API int mode () const;
 
-  OCTINTERP_API mach_info::float_format float_format (void) const;
+  OCTINTERP_API mach_info::float_format float_format () const;
 
   OCTINTERP_API static std::string mode_as_string (int mode);
 
-  std::string encoding (void)
+  std::string encoding ()
   {
     return m_rep ? m_rep->encoding () : std::string ();
   }
 
-  std::istream * input_stream (void)
+  std::istream * input_stream ()
   {
     return m_rep ? m_rep->input_stream () : nullptr;
   }
 
-  std::ostream * output_stream (void)
+  std::ostream * output_stream ()
   {
     return (m_rep ? m_rep->output_stream () : nullptr);
   }
@@ -465,7 +461,7 @@ public:
     return (m_rep ? m_rep->preferred_output_stream () : nullptr);
   }
 
-  void clearerr (void) { if (m_rep) m_rep->clearerr (); }
+  void clearerr () { if (m_rep) m_rep->clearerr (); }
 
 private:
 
@@ -511,10 +507,9 @@ public:
 
   OCTINTERP_API stream_list (interpreter& interp);
 
-  stream_list (const stream_list&) = delete;
-  stream_list& operator = (const stream_list&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (stream_list)
 
-  OCTINTERP_API ~stream_list (void);
+  OCTINTERP_API ~stream_list ();
 
   OCTINTERP_API int insert (stream& os);
 
@@ -531,15 +526,15 @@ public:
   OCTINTERP_API string_vector get_info (int fid) const;
   OCTINTERP_API string_vector get_info (const octave_value& fid) const;
 
-  OCTINTERP_API std::string list_open_files (void) const;
+  OCTINTERP_API std::string list_open_files () const;
 
-  OCTINTERP_API octave_value open_file_numbers (void) const;
+  OCTINTERP_API octave_value open_file_numbers () const;
 
   OCTINTERP_API int get_file_number (const octave_value& fid) const;
 
-  OCTINTERP_API octave_value stdin_file (void) const;
-  OCTINTERP_API octave_value stdout_file (void) const;
-  OCTINTERP_API octave_value stderr_file (void) const;
+  OCTINTERP_API octave_value stdin_file () const;
+  OCTINTERP_API octave_value stdout_file () const;
+  OCTINTERP_API octave_value stderr_file () const;
 
 private:
 

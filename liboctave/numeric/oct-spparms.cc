@@ -39,7 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 sparse_params *sparse_params::s_instance = nullptr;
 
-bool sparse_params::instance_ok (void)
+bool sparse_params::instance_ok ()
 {
   bool retval = true;
 
@@ -52,24 +52,24 @@ bool sparse_params::instance_ok (void)
   return retval;
 }
 
-void sparse_params::defaults (void)
+void sparse_params::defaults ()
 {
   if (instance_ok ())
     s_instance->do_defaults ();
 }
 
-void sparse_params::tight (void)
+void sparse_params::tight ()
 {
   if (instance_ok ())
     s_instance->do_tight ();
 }
 
-string_vector sparse_params::get_keys (void)
+string_vector sparse_params::get_keys ()
 {
   return instance_ok () ? s_instance->do_get_keys () : string_vector ();
 }
 
-ColumnVector sparse_params::get_vals (void)
+ColumnVector sparse_params::get_vals ()
 {
   return instance_ok () ? s_instance->do_get_vals () : ColumnVector ();
 }
@@ -90,7 +90,7 @@ double sparse_params::get_key (const std::string& key)
           ? s_instance->do_get_key (key) : numeric_limits<double>::NaN ());
 }
 
-double sparse_params::get_bandden (void)
+double sparse_params::get_bandden ()
 {
   return instance_ok () ? s_instance->do_get_bandden () : 0.0;
 }
@@ -101,7 +101,7 @@ void sparse_params::print_info (std::ostream& os, const std::string& prefix)
     s_instance->do_print_info (os, prefix);
 }
 
-void sparse_params::do_defaults (void)
+void sparse_params::do_defaults ()
 {
   m_params(0) = 0;      // spumoni
   m_params(1) = 1;      // ths_rel
@@ -118,7 +118,7 @@ void sparse_params::do_defaults (void)
   m_params(12) = 0.001; // sym_tol
 }
 
-void sparse_params::do_tight (void)
+void sparse_params::do_tight ()
 {
   m_params(0) = 0;      // spumoni
   m_params(1) = 1;      // ths_rel
@@ -135,7 +135,7 @@ void sparse_params::do_tight (void)
   m_params(12) = 0.001; // sym_tol
 }
 
-void sparse_params::init_keys (void)
+void sparse_params::init_keys ()
 {
   m_keys(0) = "spumoni";
   m_keys(1) = "ths_rel";
@@ -152,7 +152,7 @@ void sparse_params::init_keys (void)
   m_keys(12) = "sym_tol";
 }
 
-double sparse_params::do_get_bandden (void)
+double sparse_params::do_get_bandden ()
 {
   return m_params(10);
 }

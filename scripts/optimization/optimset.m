@@ -44,7 +44,15 @@
 ## are updated from either the @var{par}/@var{val} list or from the options
 ## structure @var{new}.
 ##
-## Valid parameters are:
+## If @var{par} does not exactly match the name of a standard parameter,
+## @code{optimset} will attempt to match @var{par} to a standard parameter
+## and will set the value of that parameter if a match is found.  Matching is
+## case insensitive and is based on character matching at the start of the
+## parameter name.  @code{optimset} produces an error if it finds multiple
+## ambiguous matches.  If no standard parameter matches are found a warning is
+## issued and the non-standard parameter is created.
+##
+## Standard list of valid parameters:
 ##
 ## @table @asis
 ## @item AutoScaling
@@ -116,6 +124,24 @@
 ##
 ## @item Updating
 ## @end table
+##
+## This list can be extended by the user or other loaded Octave packages. An
+## updated valid parameters list can be queried using the no-argument form of
+## @code{optimset}.
+##
+## Note 1:  Only parameter names from the standard list are considered when
+## matching short parameter names, and @var{par} will always be expanded
+## to match a standard parameter even if an exact non-standard match exists.
+## The value of a non-standard parameter that is ambigious with one or more
+## standard parameters cannot be set by @code{optimset} and can only be set
+## using @code{setfield} or dot notation for structs.
+##
+## Note 2:  The optimization options structure is primarily intended for
+## manipulation of known parameters by @code{optimset} and @code{optimget}.
+## Unpredictable behavior on future calls to @code{optimset} or
+## @code{optimget} can result from creating non-standard or ambiguous
+## parameters or from loading/unloading packages that change the known
+## parameter list after creation of an optimization options structure.
 ## @seealso{optimget}
 ## @end deftypefn
 
@@ -184,11 +210,11 @@ function retval = setoptionfields (opts, old, new, validation, useempty)
       if (nmatch == 1)
         key = opts{find (i)};
       elseif (nmatch == 0)
-        warning ("optimset: unrecognized option: %s", key);
+        warning ("optimset: unrecognized option: '%s'", key);
       else
-        fmt = sprintf ("optimset: ambiguous option: %%s (%s%%s)",
+        fmt = sprintf ("optimset: ambiguous option: '%%s' (%s%%s)",
                        repmat ("%s, ", 1, nmatch-1));
-        warning (fmt, key, opts{i});
+        error (fmt, key, opts{i});
       endif
     endif
     if (useempty || ! isempty (val))
@@ -220,5 +246,5 @@ endfunction
 ## Test input validation
 %!error optimset ("1_Parameter")
 %!error <no defaults for function> optimset ("%NOT_A_REAL_FUNCTION_NAME%")
-%!warning <unrecognized option: foobar> optimset ("foobar", 13);
-%!warning <ambiguous option: Max> optimset ("Max", 10);
+%!warning <unrecognized option: 'foobar'> optimset ("foobar", 13);
+%!error <ambiguous option: 'Max'> optimset ("Max", 10);

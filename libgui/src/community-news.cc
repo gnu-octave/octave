@@ -35,27 +35,25 @@
 #include "gui-utils.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
+#include "gui-settings.h"
 #include "news-reader.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-community_news::community_news (base_qobject& oct_qobj, int serial)
-: QWidget (nullptr), m_browser (nullptr)
+community_news::community_news (int serial)
+  : QWidget (nullptr), m_browser (nullptr)
 {
-  construct (oct_qobj, "https://octave.org", "community-news.html", serial);
+  construct ("https://octave.org", "community-news.html", serial);
 }
 
-community_news::community_news (base_qobject& oct_qobj, QWidget *parent,
-                                const QString& base_url, const QString& page,
-                                int serial)
+community_news::community_news (QWidget *parent, const QString& base_url,
+                                const QString& page, int serial)
   : QWidget (parent), m_browser (nullptr)
 {
-  construct (oct_qobj, base_url, page, serial);
+  construct (base_url, page, serial);
 }
 
-void community_news::construct (base_qobject& oct_qobj,
-                                const QString& base_url, const QString& page,
+void community_news::construct (const QString& base_url, const QString& page,
                                 int serial)
 {
   m_browser = new QTextBrowser (this);
@@ -76,11 +74,10 @@ void community_news::construct (base_qobject& oct_qobj,
   resize (win_x/2, win_y/2);
   move ((win_x - width ())/2, (win_y - height ())/2);
 
-  resource_manager& rmgr = oct_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
   QString icon;
-  QString icon_set = settings->value (dw_icon_set).toString ();
+  QString icon_set = settings.string_value (dw_icon_set);
   if (icon_set != "NONE")
     // No extra icon for Community news, take the one of the release notes
     icon = dw_icon_set_names[icon_set] + "ReleaseWidget.png";
@@ -92,15 +89,12 @@ void community_news::construct (base_qobject& oct_qobj,
   // FIXME: This is a news reader preference, so shouldn't it be used
   // in the news_reader object?
 
-  bool connect_to_web
-    = (settings
-       ? settings->value (nr_allow_connection).toBool ()
-       : true);
+  bool connect_to_web = settings.bool_value (nr_allow_connection);
 
   QThread *worker_thread = new QThread;
 
-  news_reader *reader = new news_reader (oct_qobj, base_url, page,
-                                         serial, connect_to_web);
+  news_reader *reader
+    = new news_reader (base_url, page, serial, connect_to_web);
 
   reader->moveToThread (worker_thread);
 
@@ -125,7 +119,7 @@ void community_news::set_news (const QString& news)
   m_browser->setHtml (news);
 }
 
-void community_news::display (void)
+void community_news::display ()
 {
   if (! isVisible ())
     show ();

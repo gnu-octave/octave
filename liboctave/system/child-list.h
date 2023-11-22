@@ -56,7 +56,7 @@ public:
 
   child& operator = (const child&) = default;
 
-  ~child (void) = default;
+  ~child () = default;
 
   // The process ID of this child.
   pid_t m_pid;
@@ -76,15 +76,15 @@ class OCTAVE_API child_list
 {
 public:
 
-  child_list (void) { }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (child_list)
 
   void insert (pid_t pid, child::child_event_handler f);
 
   void remove (pid_t pid);
 
-  void reap (void);
+  void reap ();
 
-  bool wait (void);
+  bool wait ();
 
 private:
 

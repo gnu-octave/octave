@@ -43,10 +43,8 @@
 #include <QtDebug>
 #include <QTimer>
 #include <QToolBar>
-#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
-#  include <QWindow>
-#  include <QScreen>
-#endif
+#include <QWindow>
+#include <QScreen>
 
 #include "Canvas.h"
 #include "Container.h"
@@ -109,19 +107,19 @@ pointer_to_qimage (const Matrix& cdata)
 }
 
 Figure *
-Figure::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Figure::create (octave::interpreter& interp,
                 const graphics_object& go)
 {
-  return new Figure (oct_qobj, interp, go, new FigureWindow ());
+  return new Figure (interp, go, new FigureWindow ());
 }
 
-Figure::Figure (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Figure::Figure (octave::interpreter& interp,
                 const graphics_object& go, FigureWindow *win)
-  : Object (oct_qobj, interp, go, win), m_blockUpdates (false),
+  : Object (interp, go, win), m_blockUpdates (false),
     m_figureToolBar (nullptr), m_menuBar (nullptr), m_innerRect (),
     m_outerRect (), m_previousHeight (0), m_resizable (true)
 {
-  m_container = new Container (win, oct_qobj, interp);
+  m_container = new Container (win, interp);
   win->setCentralWidget (m_container);
 
   connect (m_container, QOverload<const octave::fcn_callback&>::of (&Container::interpreter_event),
@@ -162,7 +160,9 @@ Figure::Figure (octave::base_qobject& oct_qobj, octave::interpreter& interp,
   update (figure::properties::ID_NUMBERTITLE);
 
   // Decide what keyboard events we listen to
-  m_container->canvas (m_handle)->setEventMask (0);
+  Canvas *canvas = m_container->canvas (m_handle);
+  if (canvas)
+    canvas->setEventMask (0);
   update (figure::properties::ID_KEYPRESSFCN);
   update (figure::properties::ID_KEYRELEASEFCN);
 
@@ -189,11 +189,11 @@ Figure::Figure (octave::base_qobject& oct_qobj, octave::interpreter& interp,
   m_container->addReceiver (this);
 }
 
-Figure::~Figure (void)
+Figure::~Figure ()
 { }
 
 QString
-Figure::fileName (void)
+Figure::fileName ()
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -219,7 +219,7 @@ Figure::setFileName (const QString& name)
 }
 
 MouseMode
-Figure::mouseMode (void)
+Figure::mouseMode ()
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -278,13 +278,13 @@ Figure::set_geometry (QRect r)
 }
 
 Container *
-Figure::innerContainer (void)
+Figure::innerContainer ()
 {
   return m_container;
 }
 
 void
-Figure::redraw (void)
+Figure::redraw ()
 {
   Canvas *canvas = m_container->canvas (m_handle);
 
@@ -307,7 +307,7 @@ Figure::redraw (void)
 }
 
 void
-Figure::show (void)
+Figure::show ()
 {
   QWidget *win = qWidget<QWidget> ();
 
@@ -325,7 +325,7 @@ Figure::print (const QString& file_cmd, const QString& term)
 }
 
 uint8NDArray
-Figure::slotGetPixels (void)
+Figure::slotGetPixels ()
 {
   uint8NDArray retval;
   Canvas *canvas = m_container->canvas (m_handle);
@@ -343,7 +343,7 @@ Figure::slotGetPixels (void)
 }
 
 void
-Figure::beingDeleted (void)
+Figure::beingDeleted ()
 {
   Canvas *canvas = m_container->canvas (m_handle.value (), false);
 
@@ -442,54 +442,69 @@ Figure::update (int pId)
       break;
 
     case figure::properties::ID_KEYPRESSFCN:
-      if (fp.get_keypressfcn ().isempty ())
-        m_container->canvas (m_handle)->clearEventMask (Canvas::KeyPress);
-      else
-        m_container->canvas (m_handle)->addEventMask (Canvas::KeyPress);
-      // Signal the change to uipanels as well
-      for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
-        {
-          if (qobj->objectName () == "UIPanel")
-            {
-              Object *obj = Object::fromQObject (qobj);
+      {
+        Canvas *canvas = m_container->canvas (m_handle);
 
-              if (obj)
-                {
-                  if (fp.get_keypressfcn ().isempty ())
-                    obj->innerContainer ()->canvas (m_handle)->
-                      clearEventMask (Canvas::KeyPress);
-                  else
-                    obj->innerContainer ()->canvas (m_handle)->
-                      addEventMask (Canvas::KeyPress);
-                }
-            }
-        }
+        if (canvas)
+          {
+            if (fp.get_keypressfcn ().isempty ())
+              canvas->clearEventMask (Canvas::KeyPress);
+            else
+              canvas->addEventMask (Canvas::KeyPress);
+          }
+
+        // Signal the change to uipanels as well
+        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
+          {
+            if (qobj->objectName () == "UIPanel")
+              {
+                Object *obj = Object::fromQObject (qobj);
+
+                if (obj)
+                  {
+                    if (fp.get_keypressfcn ().isempty ())
+                      obj->innerContainer ()->canvas (m_handle)->
+                        clearEventMask (Canvas::KeyPress);
+                    else
+                      obj->innerContainer ()->canvas (m_handle)->
+                        addEventMask (Canvas::KeyPress);
+                  }
+              }
+          }
+      }
       break;
 
     case figure::properties::ID_KEYRELEASEFCN:
-      if (fp.get_keyreleasefcn ().isempty ())
-        m_container->canvas (m_handle)->clearEventMask (Canvas::KeyRelease);
-      else
-        m_container->canvas (m_handle)->addEventMask (Canvas::KeyRelease);
-      break;
-      // Signal the change to uipanels as well
-      for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
-        {
-          if (qobj->objectName () == "UIPanel")
-            {
-              Object *obj = Object::fromQObject (qobj);
+      {
+        Canvas *canvas = m_container->canvas (m_handle);
 
-              if (obj)
-                {
-                  if (fp.get_keypressfcn ().isempty ())
-                    obj->innerContainer ()->canvas (m_handle)->
-                      clearEventMask (Canvas::KeyRelease);
-                  else
-                    obj->innerContainer ()->canvas (m_handle)->
-                      addEventMask (Canvas::KeyRelease);
-                }
-            }
-        }
+        if (canvas)
+          {
+            if (fp.get_keyreleasefcn ().isempty ())
+              canvas->clearEventMask (Canvas::KeyRelease);
+            else
+              canvas->addEventMask (Canvas::KeyRelease);
+          }
+        break;
+        // Signal the change to uipanels as well
+        for (auto *qobj : qWidget<QWidget> ()->findChildren<QObject *> ())
+          {
+            if (qobj->objectName () == "UIPanel")
+              {
+                Object *obj = Object::fromQObject (qobj);
+
+                if (obj)
+                  {
+                    if (fp.get_keypressfcn ().isempty ())
+                      obj->innerContainer ()->canvas (m_handle)->
+                        clearEventMask (Canvas::KeyRelease);
+                    else
+                      obj->innerContainer ()->canvas (m_handle)->
+                        addEventMask (Canvas::KeyRelease);
+                  }
+              }
+          }
+      }
       break;
 
     case figure::properties::ID_WINDOWSTYLE:
@@ -521,11 +536,14 @@ Figure::update (int pId)
     case figure::properties::ID_POINTERSHAPEHOTSPOT:
     case figure::properties::ID___MOUSE_MODE__:
     case figure::properties::ID___ZOOM_MODE__:
-      m_container->canvas (m_handle)->setCursor (mouseMode (),
-                                                 fp.get_pointer (),
-                                                 m_pointer_cdata,
-                                                 fp.get_pointershapehotspot ()
-                                                 .matrix_value());
+      {
+        Canvas *canvas = m_container->canvas (m_handle);
+
+        if (canvas)
+          canvas->setCursor (mouseMode (), fp.get_pointer (),
+                             m_pointer_cdata,
+                             fp.get_pointershapehotspot ().matrix_value());
+      }
       break;
 
     default:
@@ -597,7 +615,7 @@ Figure::do_connections (const QObject *receiver, const QObject * /* emitter */)
 }
 
 QWidget *
-Figure::menu (void)
+Figure::menu ()
 {
   return qWidget<QMainWindow> ()->menuBar ();
 }
@@ -846,7 +864,7 @@ Figure::showCustomToolBar (QToolBar *bar, bool visible)
 }
 
 void
-Figure::updateContainer (void)
+Figure::updateContainer ()
 {
   redraw ();
 }
@@ -854,7 +872,6 @@ Figure::updateContainer (void)
 void
 Figure::figureWindowShown ()
 {
-#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
   QWindow *window = qWidget<QMainWindow> ()->windowHandle ();
   QScreen *screen = window->screen ();
 
@@ -866,13 +883,11 @@ Figure::figureWindowShown ()
   fp.set___device_pixel_ratio__ (screen->devicePixelRatio ());
 
   connect (window, &QWindow::screenChanged, this, &Figure::screenChanged);
-#endif
 }
 
 void
 Figure::screenChanged (QScreen *screen)
 {
-#if defined (HAVE_QSCREEN_DEVICEPIXELRATIO)
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
   octave::autolock guard (gh_mgr.graphics_lock ());
@@ -888,17 +903,19 @@ Figure::screenChanged (QScreen *screen)
       // from the GUI thread does not necessarily trigger a redraw.  Force it.
       redraw ();
     }
-#else
-  octave_unused_parameter (screen);
-#endif
 }
 
 void
-Figure::enableMouseTracking (void)
+Figure::enableMouseTracking ()
 {
   // Enable mouse tracking on every widgets
   m_container->setMouseTracking (true);
-  m_container->canvas (m_handle)->qWidget ()->setMouseTracking (true);
+
+  Canvas *canvas = m_container->canvas (m_handle);
+
+  if (canvas)
+    canvas->qWidget ()->setMouseTracking (true);
+
   for (auto *w : m_container->findChildren<QWidget *> ())
     w->setMouseTracking (true);
 }

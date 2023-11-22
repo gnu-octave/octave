@@ -40,7 +40,7 @@ command_history
 {
 protected:
 
-  command_history (void)
+  command_history ()
     : m_initialized (false), m_ignoring_additions (false),
       m_history_control (0), m_lines_in_file (0),
       m_lines_this_session (0), m_file (), m_size (-1)
@@ -48,62 +48,58 @@ protected:
 
 public:
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (command_history)
 
-  command_history (const command_history&) = delete;
-
-  command_history& operator = (const command_history&) = delete;
-
-  virtual ~command_history (void) = default;
+  virtual ~command_history () = default;
 
   static void initialize (bool, const std::string&, int, const std::string&);
 
-  static bool is_initialized (void);
+  static bool is_initialized ();
 
   static void set_file (const std::string&);
 
-  static std::string file (void);
+  static std::string file ();
 
   static void process_histcontrol (const std::string&);
 
-  static std::string histcontrol (void);
+  static std::string histcontrol ();
 
   static void set_size (int);
 
-  static int size (void);
+  static int size ();
 
   static void ignore_entries (bool = true);
 
-  static bool ignoring_entries (void);
+  static bool ignoring_entries ();
 
   static bool add (const std::string&);
 
   static void remove (int);
 
-  static void clear (void);
+  static void clear ();
 
-  static int where (void);
+  static int where ();
 
-  static int length (void);
+  static int length ();
 
-  static int max_input_history (void);
+  static int max_input_history ();
 
-  static int base (void);
+  static int base ();
 
-  static int current_number (void);
+  static int current_number ();
 
   static void stifle (int);
 
-  static int unstifle (void);
+  static int unstifle ();
 
-  static int is_stifled (void);
+  static int is_stifled ();
 
   static void set_mark (int n);
 
   // Gag.  This declaration has to match the Function typedef in
   // readline.h.
 
-  static int goto_mark (void);
+  static int goto_mark ();
 
   static void read (bool = true);
 
@@ -130,14 +126,14 @@ public:
 
 private:
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
-  static void make_command_history (void);
+  static void make_command_history ();
 
   // The real thing.
   static command_history *s_instance;
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   {
     delete s_instance;
     s_instance = nullptr;
@@ -151,50 +147,50 @@ protected:
 
   virtual void do_set_file (const std::string&);
 
-  virtual std::string do_file (void);
+  virtual std::string do_file ();
 
   virtual void do_process_histcontrol (const std::string&);
 
-  virtual std::string do_histcontrol (void) const { return ""; }
+  virtual std::string do_histcontrol () const { return ""; }
 
   virtual void do_initialize (bool, const std::string&, int,
                               const std::string&);
 
-  virtual bool do_is_initialized (void) const;
+  virtual bool do_is_initialized () const;
 
   virtual void do_set_size (int);
 
-  virtual int do_size (void) const;
+  virtual int do_size () const;
 
   virtual void do_ignore_entries (bool);
 
-  virtual bool do_ignoring_entries (void) const;
+  virtual bool do_ignoring_entries () const;
 
   virtual bool do_add (const std::string&);
 
   virtual void do_remove (int);
 
-  virtual void do_clear (void);
+  virtual void do_clear ();
 
-  virtual int do_where (void) const;
+  virtual int do_where () const;
 
-  virtual int do_length (void) const;
+  virtual int do_length () const;
 
-  virtual int do_max_input_history (void) const;
+  virtual int do_max_input_history () const;
 
-  virtual int do_base (void) const;
+  virtual int do_base () const;
 
-  virtual int do_current_number (void) const;
+  virtual int do_current_number () const;
 
   virtual void do_stifle (int);
 
-  virtual int do_unstifle (void);
+  virtual int do_unstifle ();
 
-  virtual int do_is_stifled (void) const;
+  virtual int do_is_stifled () const;
 
   virtual void do_set_mark (int);
 
-  virtual int do_goto_mark (void);
+  virtual int do_goto_mark ();
 
   virtual void do_read (const std::string&, bool);
 

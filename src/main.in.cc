@@ -111,7 +111,7 @@ gui_driver_set_signal_handler (const char *signame,
 }
 
 static void
-install_signal_handlers (void)
+install_signal_handlers ()
 {
   // FIXME: do we need to handle and forward all the signals that Octave
   // handles, or is it sufficient to only forward things like SIGINT,
@@ -169,7 +169,7 @@ install_signal_handlers (void)
 }
 
 static std::string
-get_octave_bindir (void)
+get_octave_bindir ()
 {
   // Accept value from the environment literally, but substitute
   // OCTAVE_HOME in the configuration value OCTAVE_BINDIR in case Octave
@@ -183,7 +183,7 @@ get_octave_bindir (void)
 }
 
 static std::string
-get_octave_archlibdir (void)
+get_octave_archlibdir ()
 {
   // Accept value from the environment literally, but substitute
   // OCTAVE_HOME in the configuration value OCTAVE_ARCHLIBDIR in case

@@ -43,13 +43,13 @@ Cell : public Array<octave_value>
 {
 public:
 
-  Cell (void) = default;
+  Cell () = default;
 
   Cell (const Cell& c) = default;
 
   Cell& operator = (const Cell& c) = default;
 
-  ~Cell (void) = default;
+  ~Cell () = default;
 
   Cell (const octave_value& val)
     : Array<octave_value> (dim_vector (1, 1), val) { }
@@ -97,11 +97,11 @@ public:
 
   Cell (const dim_vector& dv, const string_vector& sv, bool trim = false);
 
-  bool iscellstr (void) const;
+  bool iscellstr () const;
 
-  Array<std::string> cellstr_value (void) const;
+  Array<std::string> cellstr_value () const;
 
-  string_vector string_vector_value (void) const;
+  string_vector string_vector_value () const;
 
   using Array<octave_value>::index;
 
@@ -119,7 +119,7 @@ public:
   Cell reshape (const dim_vector& new_dims) const
   { return Array<octave_value>::reshape (new_dims); }
 
-  octave_idx_type nnz (void) const;
+  octave_idx_type nnz () const;
 
   Cell column (octave_idx_type i) const;
 
@@ -135,33 +135,33 @@ public:
   Cell& insert (const Cell& a, const Array<octave_idx_type>& ra_idx);
 
   // FIXME
-  bool any_element_is_nan (void) const { return false; }
-  bool is_true (void) const { return false; }
+  bool any_element_is_nan () const { return false; }
+  bool is_true () const { return false; }
 
-  octave_value resize_fill_value (void) const;
+  octave_value resize_fill_value () const;
 
   Cell diag (octave_idx_type k = 0) const;
 
   Cell diag (octave_idx_type m, octave_idx_type n) const;
 
-  Cell xisalnum (void) const { return map (&octave_value::xisalnum); }
-  Cell xisalpha (void) const { return map (&octave_value::xisalpha); }
-  Cell xisascii (void) const { return map (&octave_value::xisascii); }
-  Cell xiscntrl (void) const { return map (&octave_value::xiscntrl); }
-  Cell xisdigit (void) const { return map (&octave_value::xisdigit); }
-  Cell xisgraph (void) const { return map (&octave_value::xisgraph); }
-  Cell xislower (void) const { return map (&octave_value::xislower); }
-  Cell xisprint (void) const { return map (&octave_value::xisprint); }
-  Cell xispunct (void) const { return map (&octave_value::xispunct); }
-  Cell xisspace (void) const { return map (&octave_value::xisspace); }
-  Cell xisupper (void) const { return map (&octave_value::xisupper); }
-  Cell xisxdigit (void) const { return map (&octave_value::xisxdigit); }
-  Cell xtolower (void) const { return map (&octave_value::xtolower); }
-  Cell xtoupper (void) const { return map (&octave_value::xtoupper); }
+  Cell xisalnum () const { return map (&octave_value::xisalnum); }
+  Cell xisalpha () const { return map (&octave_value::xisalpha); }
+  Cell xisascii () const { return map (&octave_value::xisascii); }
+  Cell xiscntrl () const { return map (&octave_value::xiscntrl); }
+  Cell xisdigit () const { return map (&octave_value::xisdigit); }
+  Cell xisgraph () const { return map (&octave_value::xisgraph); }
+  Cell xislower () const { return map (&octave_value::xislower); }
+  Cell xisprint () const { return map (&octave_value::xisprint); }
+  Cell xispunct () const { return map (&octave_value::xispunct); }
+  Cell xisspace () const { return map (&octave_value::xisspace); }
+  Cell xisupper () const { return map (&octave_value::xisupper); }
+  Cell xisxdigit () const { return map (&octave_value::xisxdigit); }
+  Cell xtolower () const { return map (&octave_value::xtolower); }
+  Cell xtoupper () const { return map (&octave_value::xtoupper); }
 
 private:
 
-  typedef octave_value (octave_value::*ctype_mapper) (void) const;
+  typedef octave_value (octave_value::*ctype_mapper) () const;
 
   Cell map (ctype_mapper) const;
 };

@@ -69,6 +69,14 @@ octave_base_scalar<ST>::subsref (const std::string& type,
 
 template <typename ST>
 octave_value
+octave_base_scalar<ST>::vm_extract_forloop_value (octave_idx_type)
+{
+  return octave_value (scalar);
+}
+
+
+template <typename ST>
+octave_value
 octave_base_scalar<ST>::subsasgn (const std::string& type,
                                   const std::list<octave_value_list>& idx,
                                   const octave_value& rhs)
@@ -107,7 +115,7 @@ octave_base_scalar<ST>::subsasgn (const std::string& type,
 
 template <typename ST>
 dim_vector
-octave_base_scalar<ST>::dims (void) const
+octave_base_scalar<ST>::dims () const
 {
   static dim_vector dv (1, 1);
   return dv;
@@ -143,7 +151,7 @@ octave_base_scalar<ST>::diag (octave_idx_type m, octave_idx_type n) const
 
 template <typename ST>
 bool
-octave_base_scalar<ST>::is_true (void) const
+octave_base_scalar<ST>::is_true () const
 {
   if (octave::math::isnan (scalar))
     octave::err_nan_to_logical_conversion ();
@@ -194,7 +202,7 @@ octave_base_scalar<ST>::short_disp (std::ostream& os) const
 
 template <typename ST>
 float_display_format
-octave_base_scalar<ST>::get_edit_display_format (void) const
+octave_base_scalar<ST>::get_edit_display_format () const
 {
   return make_format (scalar);
 }

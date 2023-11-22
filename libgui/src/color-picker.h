@@ -42,17 +42,17 @@ public:
 
   color_picker (QColor color = QColor (0, 0, 0), QWidget *parent = nullptr);
 
-  QColor color (void) const { return m_color; }
+  QColor color () const { return m_color; }
 
   void set_color (QColor new_color);
 
 private slots:
 
-  void select_color (void);
+  void select_color ();
 
 private:
 
-  virtual void update_button (void);
+  virtual void update_button ();
 
   QColor m_color;
 };

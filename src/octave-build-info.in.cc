@@ -32,7 +32,7 @@
 #include "octave-build-info.h"
 
 std::string
-octave_hg_id (void)
+octave_hg_id ()
 {
   return "%OCTAVE_HG_ID%";
 }

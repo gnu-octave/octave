@@ -44,42 +44,25 @@ group
 {
 public:
 
-  group (void)
+  group ()
     : m_name (), m_passwd (), m_gid (0), m_mem (), m_valid (false)
   { }
 
-  group (const group& gr)
-    : m_name (gr.m_name), m_passwd (gr.m_passwd),
-      m_gid (gr.m_gid), m_mem (gr.m_mem), m_valid (gr.m_valid)
-  { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (group)
 
-  group& operator = (const group& gr)
-  {
-    if (this != &gr)
-      {
-        m_name = gr.m_name;
-        m_passwd = gr.m_passwd;
-        m_gid = gr.m_gid;
-        m_mem = gr.m_mem;
-        m_valid = gr.m_valid;
-      }
+  std::string name () const;
 
-    return *this;
-  }
+  std::string passwd () const;
 
-  std::string name (void) const;
+  gid_t gid () const;
 
-  std::string passwd (void) const;
+  string_vector mem () const;
 
-  gid_t gid (void) const;
-
-  string_vector mem (void) const;
-
-  bool ok (void) const { return m_valid; }
+  bool ok () const { return m_valid; }
 
   operator bool () const { return ok (); }
 
-  static group getgrent (void);
+  static group getgrent ();
   static group getgrent (std::string& msg);
 
   static group getgrgid (gid_t gid);
@@ -88,10 +71,10 @@ public:
   static group getgrnam (const std::string& nm);
   static group getgrnam (const std::string& nm, std::string& msg);
 
-  static int setgrent (void);
+  static int setgrent ();
   static int setgrent (std::string& msg);
 
-  static int endgrent (void);
+  static int endgrent ();
   static int endgrent (std::string& msg);
 
 private:

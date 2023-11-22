@@ -39,7 +39,7 @@ class OCTAVE_API CollocWt
 {
 public:
 
-  CollocWt (void)
+  CollocWt ()
     : m_n (0), m_inc_left (0), m_inc_right (0), m_lb (0.0), m_rb (1.0),
       m_alpha (0.0), m_beta (0.0), m_r (), m_q (), m_A (), m_B (),
       m_initialized (false)
@@ -77,7 +77,7 @@ public:
 
   CollocWt& operator = (const CollocWt& a) = default;
 
-  ~CollocWt (void) = default;
+  ~CollocWt () = default;
 
   CollocWt& resize (octave_idx_type nc)
   {
@@ -86,14 +86,14 @@ public:
     return *this;
   }
 
-  CollocWt& add_left (void)
+  CollocWt& add_left ()
   {
     m_inc_left = 1;
     m_initialized = false;
     return *this;
   }
 
-  CollocWt& delete_left (void)
+  CollocWt& delete_left ()
   {
     m_inc_left = 0;
     m_initialized = false;
@@ -102,14 +102,14 @@ public:
 
   CollocWt& set_left (double val);
 
-  CollocWt& add_right (void)
+  CollocWt& add_right ()
   {
     m_inc_right = 1;
     m_initialized = false;
     return *this;
   }
 
-  CollocWt& delete_right (void)
+  CollocWt& delete_right ()
   {
     m_inc_right = 0;
     m_initialized = false;
@@ -132,20 +132,20 @@ public:
     return *this;
   }
 
-  octave_idx_type ncol (void) const { return m_n; }
+  octave_idx_type ncol () const { return m_n; }
 
-  octave_idx_type left_included (void) const { return m_inc_left; }
-  octave_idx_type right_included (void) const { return m_inc_right; }
+  octave_idx_type left_included () const { return m_inc_left; }
+  octave_idx_type right_included () const { return m_inc_right; }
 
-  double left (void) const { return m_lb; }
-  double right (void) const { return m_rb; }
+  double left () const { return m_lb; }
+  double right () const { return m_rb; }
 
-  double width (void) const { return m_rb - m_lb; }
+  double width () const { return m_rb - m_lb; }
 
-  double alpha (void) const { return m_alpha; }
-  double beta (void) const { return m_beta; }
+  double alpha () const { return m_alpha; }
+  double beta () const { return m_beta; }
 
-  ColumnVector roots (void)
+  ColumnVector roots ()
   {
     if (! m_initialized)
       init ();
@@ -153,7 +153,7 @@ public:
     return m_r;
   }
 
-  ColumnVector quad (void)
+  ColumnVector quad ()
   {
     if (! m_initialized)
       init ();
@@ -161,9 +161,9 @@ public:
     return m_q;
   }
 
-  ColumnVector quad_weights (void) { return quad (); }
+  ColumnVector quad_weights () { return quad (); }
 
-  Matrix first (void)
+  Matrix first ()
   {
     if (! m_initialized)
       init ();
@@ -171,7 +171,7 @@ public:
     return m_A;
   }
 
-  Matrix second (void)
+  Matrix second ()
   {
     if (! m_initialized)
       init ();
@@ -202,16 +202,11 @@ protected:
 
   bool m_initialized;
 
-  void init (void);
+  void init ();
 
   void error (const char *msg);
 };
 
 OCTAVE_END_NAMESPACE(octave)
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "use 'octave::CollocWt' instead")
-typedef octave::CollocWt CollocWt;
-#endif
 
 #endif

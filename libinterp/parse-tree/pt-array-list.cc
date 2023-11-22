@@ -34,7 +34,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-tree_array_list::~tree_array_list (void)
+tree_array_list::~tree_array_list ()
 {
   while (! empty ())
     {
@@ -45,7 +45,7 @@ tree_array_list::~tree_array_list (void)
 }
 
 bool
-tree_array_list::all_elements_are_constant (void) const
+tree_array_list::all_elements_are_constant () const
 {
   for (const tree_argument_list *elt : *this)
     {

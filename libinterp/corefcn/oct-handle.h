@@ -39,7 +39,7 @@
 class octave_handle
 {
 public:
-  octave_handle (void) : m_dval (octave::numeric_limits<double>::NaN ()) { }
+  octave_handle () : m_dval (octave::numeric_limits<double>::NaN ()) { }
 
   octave_handle (const octave_value& a)
     : m_dval (octave::numeric_limits<double>::NaN ())
@@ -73,23 +73,23 @@ public:
     return *this;
   }
 
-  ~octave_handle (void) = default;
+  ~octave_handle () = default;
 
-  double value (void) const { return m_dval; }
+  double value () const { return m_dval; }
 
-  octave_value as_octave_value (void) const
+  octave_value as_octave_value () const
   {
     return ok () ? octave_value (m_dval) : octave_value (Matrix ());
   }
 
   // Prefix increment/decrement operators.
-  octave_handle& operator ++ (void)
+  octave_handle& operator ++ ()
   {
     ++m_dval;
     return *this;
   }
 
-  octave_handle& operator -- (void)
+  octave_handle& operator -- ()
   {
     --m_dval;
     return *this;
@@ -110,7 +110,7 @@ public:
     return old_value;
   }
 
-  bool ok (void) const { return ! octave::math::isnan (m_dval); }
+  bool ok () const { return ! octave::math::isnan (m_dval); }
 
 private:
   double m_dval;

@@ -41,21 +41,21 @@
 #include "oct-locbuf.h"
 
 static void
-warn_cached (void)
+warn_cached ()
 {
   (*current_liboctave_warning_with_id_handler)
     ("Octave:matrix-type-info", "using cached matrix type");
 }
 
 static void
-warn_invalid (void)
+warn_invalid ()
 {
   (*current_liboctave_warning_with_id_handler)
     ("Octave:matrix-type-info", "invalid matrix type");
 }
 
 static void
-warn_calculating_sparse_type (void)
+warn_calculating_sparse_type ()
 {
   (*current_liboctave_warning_with_id_handler)
     ("Octave:matrix-type-info", "calculating sparse matrix type");
@@ -63,7 +63,7 @@ warn_calculating_sparse_type (void)
 
 // FIXME: There is a large code duplication here
 
-MatrixType::MatrixType (void)
+MatrixType::MatrixType ()
   : m_type (MatrixType::Unknown),
     m_sp_bandden (octave::sparse_params::get_bandden ()),
     m_bandden (0), m_upper_band (0), m_lower_band (0),
@@ -613,7 +613,7 @@ MatrixType::MatrixType (const matrix_type t, const octave_idx_type ku,
     warn_invalid ();
 }
 
-MatrixType::~MatrixType (void)
+MatrixType::~MatrixType ()
 {
   if (m_nperm != 0)
     {
@@ -900,7 +900,7 @@ MatrixType::info () const
 }
 
 void
-MatrixType::mark_as_symmetric (void)
+MatrixType::mark_as_symmetric ()
 {
   if (m_type == MatrixType::Tridiagonal
       || m_type == MatrixType::Tridiagonal_Hermitian)
@@ -917,7 +917,7 @@ MatrixType::mark_as_symmetric (void)
 }
 
 void
-MatrixType::mark_as_unsymmetric (void)
+MatrixType::mark_as_unsymmetric ()
 {
   if (m_type == MatrixType::Tridiagonal
       || m_type == MatrixType::Tridiagonal_Hermitian)
@@ -952,7 +952,7 @@ MatrixType::mark_as_permuted (const octave_idx_type np,
 }
 
 void
-MatrixType::mark_as_unpermuted (void)
+MatrixType::mark_as_unpermuted ()
 {
   if (m_nperm)
     {
@@ -970,7 +970,7 @@ MatrixType::mark_as_unpermuted (void)
 }
 
 MatrixType
-MatrixType::transpose (void) const
+MatrixType::transpose () const
 {
   MatrixType retval (*this);
   if (m_type == MatrixType::Upper)

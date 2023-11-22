@@ -43,7 +43,7 @@
 #include "qt-graphics-toolkit.h"
 
 #include "annotation-dialog.h"
-#include "octave-qobject.h"
+#include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
 #include "builtin-defun-decls.h"
@@ -76,9 +76,9 @@ Canvas::blockRedraw (bool block)
 QCursor
 Canvas::make_cursor (const QString& name, int hot_x, int hot_y)
 {
-  octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
-  QIcon icon = rmgr.icon (name);
+  QIcon icon = settings.icon (name);
 
   return QCursor (icon.pixmap (22, 22), hot_x, hot_y);
 }
@@ -172,9 +172,9 @@ Canvas::setCursor (MouseMode mode, std::string fallback,
 }
 
 /*
-  Two updateCurrentPoint() routines are required:
-  1) Used for QMouseEvents where cursor position data is in callback from Qt.
-  2) Used for QKeyEvents where cursor position must be determined.
+   Two updateCurrentPoint() routines are required:
+   1) Used for QMouseEvents where cursor position data is in callback from Qt.
+   2) Used for QKeyEvents where cursor position must be determined.
 */
 void
 Canvas::updateCurrentPoint (const graphics_object& fig,
@@ -200,10 +200,13 @@ Canvas::updateCurrentPoint (const graphics_object& fig,
           Matrix x_zlim = ap.get_transform_zlim ();
           graphics_xform x_form = ap.get_transform ();
 
-          ColumnVector p1 = x_form.untransform (event->x (), event->y (),
-                                                x_zlim(0));
-          ColumnVector p2 = x_form.untransform (event->x (), event->y (),
-                                                x_zlim(1));
+          QPoint mouse_position = event->pos ();
+          ColumnVector p1
+            = x_form.untransform (mouse_position.x (), mouse_position.y (),
+                                  x_zlim(0));
+          ColumnVector p2
+            = x_form.untransform (mouse_position.x (), mouse_position.y (),
+                                  x_zlim(1));
 
           Matrix cp (2, 3, 0.0);
 
@@ -272,7 +275,7 @@ autoscale_axes (gh_manager& gh_mgr, axes::properties& ap)
 }
 
 void
-Canvas::canvasPaintEvent (void)
+Canvas::canvasPaintEvent ()
 {
   if (! m_redrawBlocked)
     {
@@ -370,7 +373,12 @@ Canvas::select_object (graphics_object obj, QMouseEvent *event,
 
           r.adjust (-5, -5, 5, 5);
 
-          bool rect_contains_pos = r.contains (event->localPos ());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+          QPointF mouse_pos = event->position ();
+#else
+          QPointF mouse_pos = event->localPos ();
+#endif
+          bool rect_contains_pos = r.contains (mouse_pos);
           if (rect_contains_pos)
             {
               currentObj = childObj;
@@ -424,7 +432,12 @@ Canvas::select_object (graphics_object obj, QMouseEvent *event,
               // the axes and still select it.
               r.adjust (-20, -20, 20, 20);
 
-              bool rect_contains_pos = r.contains (event->localPos ());
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+              QPointF mouse_pos = event->position ();
+#else
+              QPointF mouse_pos = event->localPos ();
+#endif
+              bool rect_contains_pos = r.contains (mouse_pos);
               if (rect_contains_pos)
                 axesObj = *it;
             }
@@ -452,8 +465,9 @@ Canvas::canvasMouseMoveEvent (QMouseEvent *event)
           {
             axes::properties& ap = Utils::properties<axes> (ax);
 
-            ap.rotate3d (m_mouseCurrent.x (), event->x (),
-                         m_mouseCurrent.y (), event->y ());
+            QPoint mouse_position = event->pos ();
+            ap.rotate3d (m_mouseCurrent.x (), mouse_position.x (),
+                         m_mouseCurrent.y (), mouse_position.y ());
 
             // Update current mouse position
             m_mouseCurrent = event->pos ();
@@ -479,8 +493,9 @@ Canvas::canvasMouseMoveEvent (QMouseEvent *event)
 
             ColumnVector p0 = ap.pixel2coord (m_mouseCurrent.x (),
                                               m_mouseCurrent.y ());
-            ColumnVector p1 = ap.pixel2coord (event->x (),
-                                              event->y ());
+            QPoint mouse_position = event->pos ();
+            ColumnVector p1 = ap.pixel2coord (mouse_position.x (),
+                                              mouse_position.y ());
 
             ap.translate_view (mode, p0(0), p1(0), p0(1), p1(1));
 
@@ -532,7 +547,11 @@ Canvas::canvasMouseMoveEvent (QMouseEvent *event)
           axes::properties& ap = Utils::properties<axes> (axesObj);
 
           if (fig)
-            fig->updateStatusBar (ap.pixel2coord (event->x (), event->y ()));
+            {
+              QPoint mouse_position = event->pos ();
+              fig->updateStatusBar (ap.pixel2coord (mouse_position.x (),
+                                                    mouse_position.y ()));
+            }
         }
     }
 }
@@ -621,9 +640,9 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
 
       // Make selected axes current
       bool valid_axes = axesObj.valid_object ()
-        && axesObj.get_properties ().handlevisibility_is ("on")
-        && axesObj.get_properties ().get_tag () != "legend"
-        && axesObj.get_properties ().get_tag () != "colorbar";
+                        && axesObj.get_properties ().handlevisibility_is ("on")
+                        && axesObj.get_properties ().get_tag () != "legend"
+                        && axesObj.get_properties ().get_tag () != "colorbar";
 
       if (valid_axes)
         Utils::properties<figure> (figObj)
@@ -674,7 +693,11 @@ Canvas::canvasMousePressEvent (QMouseEvent *event)
             if (currentObj && event->button () == Qt::RightButton)
               ContextMenu::executeAt (m_interpreter,
                                       currentObj.get_properties (),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                      event->globalPosition ().toPoint ());
+#else
                                       event->globalPos ());
+#endif
           }
           break;
 
@@ -805,11 +828,13 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
 
           std::string zm = zoom_mode (figObj);
 
-          if (m_mouseAnchor == event->pos ())
+          QPoint mouse_position = event->pos ();
+          if (m_mouseAnchor == mouse_position)
             {
               double factor = (m_clickMode ? 2.0 : 0.5);
 
-              ColumnVector p1 = ap.pixel2coord (event->x (), event->y ());
+              ColumnVector p1 = ap.pixel2coord (mouse_position.x (),
+                                                mouse_position.y ());
 
               ap.zoom_about_point (zm, p1(0), p1(1), factor);
             }
@@ -817,8 +842,8 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
             {
               ColumnVector p0 = ap.pixel2coord (m_mouseAnchor.x (),
                                                 m_mouseAnchor.y ());
-              ColumnVector p1 = ap.pixel2coord (event->x (),
-                                                event->y ());
+              ColumnVector p1 = ap.pixel2coord (mouse_position.x (),
+                                                mouse_position.y ());
 
               Matrix xl (1, 2, 0.0);
               Matrix yl (1, 2, 0.0);
@@ -860,15 +885,16 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
           QWidget *w = qWidget ();
           if (w)
             {
+              QPoint mouse_position = event->pos ();
               Matrix bb = figObj.get ("position").matrix_value ();
               bb(0) = m_mouseAnchor.x () / bb(2);
               bb(1) = 1.0 - (m_mouseAnchor.y () / bb(3));
-              bb(2) = (event->x () - m_mouseAnchor.x ()) / bb(2);
-              bb(3) = (m_mouseAnchor.y () - event->y ()) / bb(3);
+              bb(2) = (mouse_position.x () - m_mouseAnchor.x ()) / bb(2);
+              bb(3) = (m_mouseAnchor.y () - mouse_position.y ()) / bb(3);
 
               octave_value_list props = ovl ("textbox", bb);
 
-              annotation_dialog anno_dlg (m_octave_qobj, w, props);
+              annotation_dialog anno_dlg (w, props);
 
               if (anno_dlg.exec () == QDialog::Accepted)
                 {
@@ -877,13 +903,13 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
 
                   emit interpreter_event
                     ([=] (octave::interpreter& interp)
-                    {
-                      // INTERPRETER THREAD
+                     {
+                       // INTERPRETER THREAD
 
-                      interp.feval ("annotation", props);
+                       interp.feval ("annotation", props);
 
-                      redraw ();
-                    });
+                       redraw ();
+                     });
                 }
             }
         }
@@ -946,18 +972,14 @@ Canvas::canvasWheelEvent (QWheelEvent *event)
           if (axesObj.get_properties ().handlevisibility_is ("on"))
             {
               Utils::properties<figure> (figObj)
-                .set_currentaxes (axesObj.get_handle ().as_octave_value ());
+              .set_currentaxes (axesObj.get_handle ().as_octave_value ());
 
               if (zoom_enabled (figObj))
                 {
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
                   if (event->angleDelta().y () > 0)
-#else
-                    if (event->delta () > 0)
-#endif
-                      newMouseMode = ZoomInMode;
-                    else
-                      newMouseMode = ZoomOutMode;
+                    newMouseMode = ZoomInMode;
+                  else
+                    newMouseMode = ZoomOutMode;
 
                   mode = zoom_mode (figObj);
                 }
@@ -996,11 +1018,7 @@ Canvas::canvasWheelEvent (QWheelEvent *event)
               {
                 axes::properties& ap = Utils::properties<axes> (axesObj);
 
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
                 double factor = (event->angleDelta().y () > 0 ? 0.1 : -0.1);
-#else
-                double factor = (event->delta () > 0 ? 0.1 : -0.1);
-#endif
 
                 if (event->modifiers () == Qt::NoModifier
                     && mode != "horizontal")
@@ -1085,12 +1103,12 @@ Canvas::canvasKeyReleaseEvent (QKeyEvent *event)
 }
 
 Canvas *
-Canvas::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Canvas::create (octave::interpreter& interp,
                 const graphics_handle& handle, QWidget *parent,
                 const std::string& /* name */)
 {
   // Only OpenGL
-  return new GLCanvas (oct_qobj, interp, handle, parent);
+  return new GLCanvas (interp, handle, parent);
 }
 
 OCTAVE_END_NAMESPACE(octave)

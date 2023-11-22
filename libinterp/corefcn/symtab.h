@@ -60,15 +60,11 @@ public:
 
   symbol_table (interpreter& interp);
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (symbol_table)
 
-  symbol_table (const symbol_table&) = delete;
+  ~symbol_table () = default;
 
-  symbol_table& operator = (const symbol_table&) = delete;
-
-  ~symbol_table (void) = default;
-
-  symbol_scope current_scope (void) const;
+  symbol_scope current_scope () const;
 
   bool is_built_in_function_name (const std::string& name);
 
@@ -155,7 +151,7 @@ public:
   // This clears oct and mex files, including autoloads.
   void clear_dld_function (const std::string& name);
 
-  void clear_mex_functions (void);
+  void clear_mex_functions ();
 
   bool set_class_relationship (const std::string& sup_class,
                                const std::string& inf_class);
@@ -168,20 +164,20 @@ public:
   void install_built_in_dispatch (const std::string& name,
                                   const std::string& klass);
 
-  std::list<std::string> user_function_names (void);
+  std::list<std::string> user_function_names ();
 
-  std::list<std::string> built_in_function_names (void);
+  std::list<std::string> built_in_function_names ();
 
-  std::list<std::string> cmdline_function_names (void);
+  std::list<std::string> cmdline_function_names ();
 
-  octave_value dump (void) const;
+  octave_value dump () const;
 
   void add_to_parent_map (const std::string& classname,
                           const std::list<std::string>& parent_list);
 
   std::list<std::string> parent_classes (const std::string& dispatch_type);
 
-  void cleanup (void);
+  void cleanup ();
 
   fcn_info * get_fcn_info (const std::string& name);
 
@@ -222,10 +218,10 @@ private:
   typedef std::map<std::string, std::list<std::string>>::iterator
       parent_map_iterator;
 
-  octave_value dump_fcn_table_map (void) const;
+  octave_value dump_fcn_table_map () const;
 
   // This function is generated automatically by mk-builtins.pl.
-  void install_builtins (void);
+  void install_builtins ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -38,7 +38,7 @@ public:
   typedef ColumnVector (*ODERHSFunc) (const ColumnVector&, double);
   typedef Matrix (*ODEJacFunc) (const ColumnVector&, double);
 
-  ODEFunc (void)
+  ODEFunc ()
     : m_fcn (nullptr), m_jac (nullptr), m_reset (true) { }
 
   ODEFunc (ODERHSFunc f)
@@ -61,9 +61,9 @@ public:
     return *this;
   }
 
-  virtual ~ODEFunc (void) = default;
+  virtual ~ODEFunc () = default;
 
-  ODERHSFunc function (void) const { return m_fcn; }
+  ODERHSFunc function () const { return m_fcn; }
 
   ODEFunc& set_function (ODERHSFunc f)
   {
@@ -72,7 +72,7 @@ public:
     return *this;
   }
 
-  ODEJacFunc jacobian_function (void) const { return m_jac; }
+  ODEJacFunc jacobian_function () const { return m_jac; }
 
   ODEFunc& set_jacobian_function (ODEJacFunc j)
   {

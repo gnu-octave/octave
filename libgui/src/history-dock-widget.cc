@@ -38,8 +38,8 @@
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-hw.h"
+#include "gui-settings.h"
 #include "history-dock-widget.h"
-#include "octave-qobject.h"
 
 #include "cmd-hist.h"
 
@@ -47,8 +47,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-history_dock_widget::history_dock_widget (QWidget *p, base_qobject& oct_qobj)
-: octave_dock_widget ("HistoryDockWidget", p, oct_qobj)
+history_dock_widget::history_dock_widget (QWidget *p)
+  : octave_dock_widget ("HistoryDockWidget", p)
 {
   setStatusTip (tr ("Browse and search the command history."));
 
@@ -80,33 +80,29 @@ void history_dock_widget::append_history (const QString& hist_entry)
     m_history_list_view->scrollToBottom ();
 }
 
-void history_dock_widget::clear_history (void)
+void history_dock_widget::clear_history ()
 {
   m_history_model->setStringList (QStringList ());
 }
 
-void history_dock_widget::save_settings (void)
+void history_dock_widget::save_settings ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
-  if (! settings)
-    return;
-
-  settings->setValue (hw_filter_active.key, m_filter_checkbox->isChecked ());
-  settings->setValue (hw_filter_shown.key, m_filter_shown);
+  settings.setValue (hw_filter_active.settings_key (), m_filter_checkbox->isChecked ());
+  settings.setValue (hw_filter_shown.settings_key (), m_filter_shown);
 
   QStringList mru;
   for (int i = 0; i < m_filter->count (); i++)
     mru.append (m_filter->itemText (i));
-  settings->setValue (hw_mru_list.key, mru);
+  settings.setValue (hw_mru_list.settings_key (), mru);
 
-  settings->sync ();
+  settings.sync ();
 
   octave_dock_widget::save_settings ();
 }
 
-void history_dock_widget::update_filter_history (void)
+void history_dock_widget::update_filter_history ()
 {
   QString text = m_filter->currentText ();   // get current text
   int index = m_filter->findText (text);     // and its actual index
@@ -153,13 +149,13 @@ void history_dock_widget::ctxMenu (const QPoint& xpos)
 
   if (index.isValid () && index.column () == 0)
     {
-      resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+      gui_settings settings;
 
-      menu.addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+      menu.addAction (settings.icon ("edit-copy"), tr ("Copy"), this,
                       &history_dock_widget::handle_contextmenu_copy);
       menu.addAction (tr ("Evaluate"), this,
                       &history_dock_widget::handle_contextmenu_evaluate);
-      menu.addAction (rmgr.icon ("document-new"), tr ("Create script"), this,
+      menu.addAction (settings.icon ("document-new"), tr ("Create script"), this,
                       &history_dock_widget::handle_contextmenu_create_script);
     }
   if (m_filter_shown)
@@ -183,13 +179,13 @@ void history_dock_widget::handle_contextmenu_copy (bool)
   QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
   QModelIndexList rows = selectionModel->selectedRows ();
   bool prev_valid_row = false;
-  for (auto it = rows.begin (); it != rows.end (); it++)
+  for (const auto& it : rows)
     {
-      if ((*it).isValid ())
+      if (it.isValid ())
         {
           if (prev_valid_row)
             text += '\n';
-          text += (*it).data ().toString ();
+          text += it.data ().toString ();
           prev_valid_row = true;
         }
     }
@@ -200,11 +196,9 @@ void history_dock_widget::handle_contextmenu_evaluate (bool)
 {
   QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
   QModelIndexList rows = selectionModel->selectedRows ();
-  for (auto it = rows.begin () ; it != rows.end (); it++)
-    {
-      if ((*it).isValid ())
-        emit command_double_clicked ((*it).data ().toString ());
-    }
+  for (const auto& it : rows)
+    if (it.isValid ())
+      emit command_double_clicked (it.data ().toString ());
 }
 
 void history_dock_widget::handle_contextmenu_create_script (bool)
@@ -214,13 +208,13 @@ void history_dock_widget::handle_contextmenu_create_script (bool)
   QModelIndexList rows = selectionModel->selectedRows ();
 
   bool prev_valid_row = false;
-  for (auto it = rows.begin (); it != rows.end (); it++)
+  for (const auto& it : rows)
     {
-      if ((*it).isValid ())
+      if (it.isValid ())
         {
           if (prev_valid_row)
             text += '\n';
-          text += (*it).data ().toString ();
+          text += it.data ().toString ();
           prev_valid_row = true;
         }
     }
@@ -229,7 +223,7 @@ void history_dock_widget::handle_contextmenu_create_script (bool)
     emit command_create_script (text);
 }
 
-void history_dock_widget::handle_contextmenu_filter (void)
+void history_dock_widget::handle_contextmenu_filter ()
 {
   m_filter_shown = ! m_filter_shown;
   m_filter_widget->setVisible (m_filter_shown);
@@ -237,7 +231,7 @@ void history_dock_widget::handle_contextmenu_filter (void)
   set_filter_focus (m_filter_shown && m_filter_checkbox->isChecked ()) ;
 }
 
-void history_dock_widget::copyClipboard (void)
+void history_dock_widget::copyClipboard ()
 {
   if (m_history_list_view->hasFocus ())
     handle_contextmenu_copy (true);
@@ -249,7 +243,7 @@ void history_dock_widget::copyClipboard (void)
     }
 }
 
-void history_dock_widget::pasteClipboard (void)
+void history_dock_widget::pasteClipboard ()
 {
   if (m_filter->lineEdit ()->hasFocus ())
     {
@@ -260,7 +254,7 @@ void history_dock_widget::pasteClipboard (void)
     }
 }
 
-void history_dock_widget::selectAll (void)
+void history_dock_widget::selectAll ()
 {
   if (m_filter->lineEdit ()->hasFocus ())
     m_filter->lineEdit ()->selectAll ();
@@ -280,7 +274,7 @@ void history_dock_widget::handle_visibility (bool visible)
     }
 }
 
-void history_dock_widget::construct (void)
+void history_dock_widget::construct ()
 {
   m_history_model = new QStringListModel ();
   m_sort_filter_proxy_model.setSourceModel (m_history_model);
@@ -318,29 +312,27 @@ void history_dock_widget::construct (void)
   filter_layout->addWidget (filter_label);
   filter_layout->addWidget (m_filter_checkbox);
   filter_layout->addWidget (m_filter);
-  filter_layout->setMargin(0);
+  filter_layout->setContentsMargins (0, 0, 0, 0);
   m_filter_widget->setLayout (filter_layout);
 
   QVBoxLayout *hist_layout = new QVBoxLayout ();
   hist_layout->addWidget (m_filter_widget);
   hist_layout->addWidget (m_history_list_view);
 
-  hist_layout->setMargin (2);
+  hist_layout->setContentsMargins (2, 2, 2, 2);
   hist_layout->setSpacing (0);
   widget ()->setLayout (hist_layout);
 
   // Init state of the filter
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
 
-  m_filter_shown
-    = settings->value (hw_filter_shown).toBool ();
+  gui_settings settings;
+
+  m_filter_shown = settings.bool_value (hw_filter_shown);
   m_filter_widget->setVisible (m_filter_shown);
 
-  m_filter->addItems (settings->value (hw_mru_list).toStringList ());
+  m_filter->addItems (settings.string_list_value (hw_mru_list));
 
-  bool filter_state
-    = settings->value (hw_filter_active).toBool ();
+  bool filter_state = settings.bool_value (hw_filter_active);
   m_filter_checkbox->setChecked (filter_state);
   filter_activate (filter_state);
 
@@ -359,15 +351,17 @@ void history_dock_widget::construct (void)
   m_history_list_view->setTextElideMode (Qt::ElideRight);
 }
 
-void history_dock_widget::notice_settings (const gui_settings *settings)
+void history_dock_widget::notice_settings ()
 {
+  gui_settings settings;
+
   QFont font = QFont ();
 
   font.setStyleHint (QFont::TypeWriter);
-  QString default_font = settings->value (global_mono_font).toString ();
+  QString default_font = settings.string_value (global_mono_font);
 
-  font.setFamily (settings->value (cs_font.key, default_font).toString ());
-  font.setPointSize (settings->value (cs_font_size).toInt ());
+  font.setFamily (settings.value (cs_font.settings_key (), default_font).toString ());
+  font.setPointSize (settings.int_value (cs_font_size));
 
   m_history_list_view->setFont (font);
 }

@@ -24,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#  include "config.h"
 #endif
 
 #include <sstream>
@@ -104,7 +104,7 @@ base_ve_model::base_ve_model (const QString& expr, const octave_value& val)
 { }
 
 std::string
-base_ve_model::name (void) const
+base_ve_model::name () const
 {
   return m_name;
 }
@@ -125,7 +125,7 @@ base_ve_model::index_ok (const QModelIndex& idx, int& row, int& col) const
 }
 
 int
-base_ve_model::column_width (void) const
+base_ve_model::column_width () const
 {
   int width = 0;
 
@@ -257,7 +257,7 @@ base_ve_model::update_pending_data (const QModelIndex& idx) const
 }
 
 void
-base_ve_model::clear_update_pending (void)
+base_ve_model::clear_update_pending ()
 {
   return m_update_pending.clear ();
 }
@@ -285,7 +285,7 @@ base_ve_model::subscript_expression (const QModelIndex&) const
 }
 
 QString
-base_ve_model::make_description_text (void) const
+base_ve_model::make_description_text () const
 {
   QString lbl_txt = QString::fromStdString (m_name);
 
@@ -330,13 +330,9 @@ public:
     maybe_resize_columns (m_data_cols + 16);
   }
 
-  ~numeric_model (void) = default;
+  ~numeric_model () = default;
 
-  // No copying!
-
-  numeric_model (const numeric_model&) = delete;
-
-  numeric_model& operator = (const numeric_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (numeric_model)
 
   void maybe_resize_rows (int rows)
   {
@@ -394,13 +390,9 @@ public:
     m_display_cols = 1;
   }
 
-  ~string_model (void) = default;
+  ~string_model () = default;
 
-  // No copying!
-
-  string_model (const string_model&) = delete;
-
-  string_model& operator = (const string_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (string_model)
 
   QVariant edit_display (const QModelIndex&, int) const
   {
@@ -431,13 +423,9 @@ public:
     maybe_resize_columns (m_data_cols + 16);
   }
 
-  ~cell_model (void) = default;
+  ~cell_model () = default;
 
-  // No copying!
-
-  cell_model (const cell_model&) = delete;
-
-  cell_model& operator = (const cell_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (cell_model)
 
   void maybe_resize_rows (int rows)
   {
@@ -532,13 +520,9 @@ public:
     m_display_cols = 1;
   }
 
-  ~scalar_struct_model (void) = default;
+  ~scalar_struct_model () = default;
 
-  // No copying!
-
-  scalar_struct_model (const scalar_struct_model&) = delete;
-
-  scalar_struct_model& operator = (const scalar_struct_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (scalar_struct_model)
 
   QVariant edit_display (const QModelIndex& idx, int role) const
   {
@@ -655,15 +639,11 @@ public:
     m_display_cols = m_data_cols;
   }
 
-  ~display_only_model (void) = default;
+  ~display_only_model () = default;
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (display_only_model)
 
-  display_only_model (const display_only_model&) = delete;
-
-  display_only_model& operator = (const display_only_model&) = delete;
-
-  bool is_editable (void) const { return false; }
+  bool is_editable () const { return false; }
 
   QVariant edit_display (const QModelIndex&, int) const
   {
@@ -679,7 +659,7 @@ public:
     return QString::fromStdString (buf.str ());
   }
 
-  QString make_description_text (void) const
+  QString make_description_text () const
   {
     return (QString ("unable to edit %1")
             .arg (base_ve_model::make_description_text ()));
@@ -706,13 +686,9 @@ public:
     m_display_cols = m_data_cols;
   }
 
-  ~vector_struct_model (void) = default;
+  ~vector_struct_model () = default;
 
-  // No copying!
-
-  vector_struct_model (const vector_struct_model&) = delete;
-
-  vector_struct_model& operator = (const vector_struct_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (vector_struct_model)
 
   void maybe_resize_rows (int rows)
   {
@@ -839,13 +815,9 @@ public:
     maybe_resize_columns (m_data_cols + 16);
   }
 
-  ~struct_model (void) = default;
+  ~struct_model () = default;
 
-  // No copying!
-
-  struct_model (const struct_model&) = delete;
-
-  struct_model& operator = (const struct_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (struct_model)
 
   void maybe_resize_rows (int rows)
   {
@@ -951,7 +923,7 @@ variable_editor_model::create (const QString& expr, const octave_value& val)
 variable_editor_model::variable_editor_model (const QString& expr,
                                               const octave_value& val,
                                               QObject *parent)
-  : QAbstractTableModel (parent), rep (create (expr, val))
+  : QAbstractTableModel (parent), m_rep (create (expr, val))
 {
   update_description ();
 
@@ -988,8 +960,13 @@ bool
 variable_editor_model::setData (const QModelIndex& idx,
                                 const QVariant& v_user_input, int role)
 {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  if (role != Qt::EditRole || ! v_user_input.canConvert (QMetaType (QMetaType::QString))
+      || ! idx.isValid ())
+#else
   if (role != Qt::EditRole || ! v_user_input.canConvert (QMetaType::QString)
       || ! idx.isValid ())
+#endif
     return false;
 
   // Initially, set value to whatever the user entered.
@@ -1255,7 +1232,7 @@ variable_editor_model::user_error (const QString& title, const QString& msg)
 }
 
 void
-variable_editor_model::update_data_cache (void)
+variable_editor_model::update_data_cache ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1336,7 +1313,7 @@ variable_editor_model::maybe_resize_rows (int rows)
   int old_rows = display_rows ();
   int old_cols = display_columns ();
 
-  rep->maybe_resize_rows (rows);
+  m_rep->maybe_resize_rows (rows);
 
   int new_rows = display_rows ();
   int new_cols = display_columns ();
@@ -1351,7 +1328,7 @@ variable_editor_model::maybe_resize_columns (int cols)
   int old_rows = display_rows ();
   int old_cols = display_columns ();
 
-  rep->maybe_resize_columns (cols);
+  m_rep->maybe_resize_columns (cols);
 
   int new_rows = display_rows ();
   int new_cols = display_columns ();
@@ -1371,9 +1348,9 @@ variable_editor_model::data_error (const QString& msg)
 void
 variable_editor_model::reset (const octave_value& val)
 {
-  base_ve_model *old_rep = rep;
+  base_ve_model *old_rep = m_rep;
 
-  rep = create (QString::fromStdString (name ()), val);
+  m_rep = create (QString::fromStdString (name ()), val);
 
   delete old_rep;
 
@@ -1383,7 +1360,7 @@ variable_editor_model::reset (const octave_value& val)
 }
 
 void
-variable_editor_model::invalidate (void)
+variable_editor_model::invalidate ()
 {
   beginResetModel ();
 
@@ -1404,7 +1381,7 @@ variable_editor_model::double_click (const QModelIndex& idx)
 {
   if (requires_sub_editor (idx))
     {
-      QString name = QString::fromStdString(rep->name ());
+      QString name = QString::fromStdString(m_rep->name ());
       emit edit_variable_signal (name + subscript_expression (idx),
                                  value_at (idx));
     }

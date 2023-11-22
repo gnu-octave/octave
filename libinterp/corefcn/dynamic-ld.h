@@ -52,15 +52,11 @@ private:
     typedef std::list<dynamic_library>::iterator iterator;
     typedef std::list<dynamic_library>::const_iterator const_iterator;
 
-    shlibs_list (void) : m_lib_list () { }
+    shlibs_list () : m_lib_list () { }
 
-    // No copying!
+    OCTAVE_DISABLE_COPY_MOVE (shlibs_list)
 
-    shlibs_list (const shlibs_list&) = delete;
-
-    shlibs_list& operator = (const shlibs_list&) = delete;
-
-    ~shlibs_list (void) = default;
+    ~shlibs_list () = default;
 
     void append (const dynamic_library& shl);
 
@@ -68,7 +64,7 @@ private:
 
     dynamic_library find_file (const std::string& file_name) const;
 
-    void display (void) const;
+    void display () const;
 
   private:
 
@@ -79,17 +75,15 @@ private:
 
 public:
 
+  dynamic_loader () = delete;
+
   dynamic_loader (interpreter& interp)
     : m_interpreter (interp), m_loaded_shlibs (), m_doing_load (false)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (dynamic_loader)
 
-  dynamic_loader (const dynamic_loader&) = delete;
-
-  dynamic_loader& operator = (const dynamic_loader&) = delete;
-
-  virtual ~dynamic_loader (void) = default;
+  virtual ~dynamic_loader () = default;
 
   octave_function *
   load_oct (const std::string& fcn_name,

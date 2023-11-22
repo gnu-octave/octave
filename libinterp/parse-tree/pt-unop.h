@@ -59,21 +59,17 @@ protected:
 
 public:
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_unary_expression)
 
-  tree_unary_expression (const tree_unary_expression&) = delete;
+  ~tree_unary_expression () { delete m_op; }
 
-  tree_unary_expression& operator = (const tree_unary_expression&) = delete;
+  bool is_unary_expression () const { return true; }
 
-  ~tree_unary_expression (void) { delete m_op; }
+  tree_expression * operand () { return m_op; }
 
-  bool is_unary_expression (void) const { return true; }
+  std::string oper () const;
 
-  tree_expression * operand (void) { return m_op; }
-
-  std::string oper (void) const;
-
-  octave_value::unary_op op_type (void) const { return m_etype; }
+  octave_value::unary_op op_type () const { return m_etype; }
 
 protected:
 
@@ -98,15 +94,11 @@ public:
                           = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_prefix_expression)
 
-  tree_prefix_expression (const tree_prefix_expression&) = delete;
+  ~tree_prefix_expression () = default;
 
-  tree_prefix_expression& operator = (const tree_prefix_expression&) = delete;
-
-  ~tree_prefix_expression (void) = default;
-
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -122,7 +114,7 @@ public:
     tw.visit_prefix_expression (*this);
   }
 
-  std::string profiler_name (void) const { return "prefix " + oper (); }
+  std::string profiler_name () const { return "prefix " + oper (); }
 };
 
 // Postfix expressions.
@@ -139,15 +131,11 @@ public:
                            = octave_value::unknown_unary_op)
     : tree_unary_expression (e, l, c, t) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_postfix_expression)
 
-  tree_postfix_expression (const tree_postfix_expression&) = delete;
+  ~tree_postfix_expression () = default;
 
-  tree_postfix_expression& operator = (const tree_postfix_expression&) = delete;
-
-  ~tree_postfix_expression (void) = default;
-
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
@@ -163,7 +151,7 @@ public:
     tw.visit_postfix_expression (*this);
   }
 
-  std::string profiler_name (void) const { return "postfix " + oper (); }
+  std::string profiler_name () const { return "postfix " + oper (); }
 };
 
 OCTAVE_END_NAMESPACE(octave)

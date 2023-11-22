@@ -30,7 +30,6 @@
 ## @deftypefnx {} {@var{z} =} normalize (@dots{}, @var{method}, @var{option})
 ## @deftypefnx {} {@var{z} =} normalize (@dots{}, @var{scale}, @var{scaleoption}, @var{center}, @var{centeroption})
 ## @deftypefnx {} {[@var{z}, @var{c}, @var{s}] =} normalize (@dots{})
-##
 ## Return a normalization of the data in @var{x} using one of several available
 ## scaling and centering methods.
 ##
@@ -60,6 +59,9 @@
 ##
 ## If the optional second argument @var{dim} is given, operate along this
 ## dimension.
+##
+## @code{normalize} ignores NaN values is @var{x} similar to the behavior of
+## the omitnan option in @code{std}, @code{mean}, and @code{median}.
 ##
 ## The optional inputs @var{method} and @var{option} can be used to specify the
 ## type of normalization performed on @var{x}.  Note that only the
@@ -156,10 +158,6 @@
 ## @item
 ## The option @option{DataVariables} is not yet implemented for Table class
 ## @var{x} inputs.
-##
-## @item
-## Certain arrays containing NaN elements may not return @sc{matlab} compatible
-## output.
 ## @end enumerate
 ##
 ## @seealso{zscore, iqr, norm, rescale, std, median, mean, mad}
@@ -167,9 +165,8 @@
 
 function [z, c, s] = normalize (x, varargin)
 
-  ## FIXME: Until NANFLAG/OMITNAN option is implemented in std, mean, median,
-  ## etc., normalize cannot efficiently reproduce some behavior with NaNs in
-  ## x.  xtests added to capture this.  (See bug #50571)
+  ## FIXME: Until NANFLAG/OMITNAN option is implemented in sum, inefficient
+  ##        workaround is used for method "norm" option 1  (See bug #50571)
 
   ## FIXME: When table class is implemented, remove DataVariables error line in
   ## option checking section and add DataVariables data handling switch
@@ -186,7 +183,7 @@ function [z, c, s] = normalize (x, varargin)
 
   if (nargin == 1)
     ## Directly handle simple 1 input case.
-    [s, c] = std (x);
+    [s, c] = std (x, "omitnan");
 
   else
     ## Parse input options
@@ -216,7 +213,7 @@ function [z, c, s] = normalize (x, varargin)
         print_usage ();
       endif
 
-      prop = tolower (varargin{vararg_idx});
+      prop = lower (varargin{vararg_idx});
 
       if (strcmp (prop, "datavariables"))
         ## FIXME: Remove error on next line and undo block comment when support
@@ -268,7 +265,7 @@ function [z, c, s] = normalize (x, varargin)
           case "zscore"
             method = "zscore";
             if (vararg_idx < n_varargin)
-              nextprop = tolower (varargin{vararg_idx+1});
+              nextprop = lower (varargin{vararg_idx+1});
               if (strcmp (nextprop, "std") || strcmp (nextprop, "robust"))
                 methodoption = nextprop;
                 vararg_idx++;
@@ -312,7 +309,7 @@ function [z, c, s] = normalize (x, varargin)
           case "scale"
             method = "scale";
             if (vararg_idx < n_varargin)
-              nextprop = tolower (varargin{vararg_idx+1});
+              nextprop = lower (varargin{vararg_idx+1});
               if (isnumeric (nextprop))
                 if (! isscalar (nextprop))
                   error ("normalize: scale value must be a scalar");
@@ -333,7 +330,7 @@ function [z, c, s] = normalize (x, varargin)
           case "center"
             method = "center";
             if (vararg_idx < n_varargin)
-              nextprop = tolower (varargin{vararg_idx+1});
+              nextprop = lower (varargin{vararg_idx+1});
               if (isscalar (nextprop)
                   || any (strcmp (nextprop, {"mean", "median"})))
                 methodoption = nextprop;
@@ -385,20 +382,27 @@ function [z, c, s] = normalize (x, varargin)
       case "zscore"
         switch (methodoption)
           case "std"
-            [s, c] = std (x, [], dim);
+            [s, c] = std (x, [], dim, "omitnan");
           case "robust"
             ## center/median to zero and MAD = 1
-            c = median (x, dim);
+            c = median (x, dim, "omitnan");
             ## FIXME: Use bsxfun, rather than broadcasting, until broadcasting
-            ##        supports diagonal and sparse matrices (Bugs #41441, #35787).
-            s = median (abs (bsxfun (@minus, x , c)), dim);
-            ## s = median (abs (x - c), dim);   # Automatic broadcasting
+            ##        supports diagonal and sparse matrices.
+            ##        (Bugs #41441, #35787).
+            s = median (abs (bsxfun (@minus, x , c)), dim, "omitnan");
+            ## s = median (abs (x - c), dim, "omitnan");# Broadcasting.
         endswitch
 
       case "norm"
         switch (methodoption)
           case 1
+            ## FIXME:  when sum supports omitnan option replace entire case
+            ## with single line:
+            ## s = sum (abs (x), dim, "omitnan");
+            xnan = isnan (x);
+            x(xnan) = 0;
             s = sum (abs (x), dim);
+            x(xnan) = NaN;
           case Inf
             s = max (abs (x), [], dim);
           otherwise
@@ -439,7 +443,7 @@ function [z, c, s] = normalize (x, varargin)
         c = process_center_option (x, dim, center_option);
 
       case "medianiqr"
-        c = median (x, dim);
+        c = median (x, dim, "omitnan");
         s = iqr (x, dim);
 
     endswitch
@@ -462,9 +466,9 @@ function c = process_center_option (x, dim, center_option)
   else
     switch (center_option)
       case "mean"
-        c = mean (x, dim);
+        c = mean (x, dim, "omitnan");
       case "median"
-        c = median (x, dim);
+        c = median (x, dim, "omitnan");
     endswitch
   endif
 
@@ -479,7 +483,7 @@ function s = process_scale_option (x, dim, scale_option)
   else
     switch (scale_option)
       case "std"
-        s = std (x, [], dim);
+        s = std (x, [], dim, "omitnan");
       case "mad"
         s = mad (x, 1, dim);
       case "first"
@@ -644,10 +648,23 @@ endfunction
 %! assert (issparse (c));
 %! assert (issparse (s));
 
-## Matlab ignores NaNs, operating as if the vector had one less element, then
-## returns the result retaining the NaN in the solution.
-%!assert <50571> (normalize ([1 2 NaN], 2), [-1, 1, NaN]*sqrt(2)/2)
-%!assert <50571> (normalize ([1 2 NaN; 1 2 3], 2), [[-1 1 NaN]*sqrt(2)/2; -1 0 1], eps)
+## Test that normalize ignores NaN values
+%!assert <*50571> (normalize ([1 2 NaN], 2), [-1, 1, NaN]*sqrt(2)/2, eps)
+%!assert <*50571> (normalize ([1 2 NaN; 1 2 3], 2), [[-1 1 NaN]*sqrt(2)/2; -1 0 1], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 1 2 NaN], 1), NaN (2, 3))
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2), [sqrt(2)/2*[-1 1 NaN]; -1 0 1], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "zscore", "robust"), [-1 1 NaN; -1 0 1])
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "norm", 1), [1/3 2/3 NaN; 2/9 1/3 4/9], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "norm", Inf), [0.5 1 NaN; 0.5 0.75 1], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "range", [1 2]), [1 2 NaN; 1 1.5 2], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "scale", 2), [0.5 1 NaN; 1 1.5 2], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "scale", "mad"), [2 4 NaN; 2 3 4], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "scale", "first"), [1 2 NaN; 1 1.5 2], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "scale", "iqr"), [1 2 NaN; 4/3 2 8/3], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "center", "mean"), [-0.5 0.5 NaN; -1 0 1], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "center", "median"), [-0.5 0.5 NaN; -1 0 1], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 4], 2, "center", -1), [2 3 NaN; 3 4 5], eps)
+%!assert <*50571> (normalize ([1 2 NaN; 2 3 NaN], 2, "center", "mean", "scale", "std"), sqrt(2)/2*[-1 1 NaN; -1 1 NaN], eps)
 
 ## Test input validation
 %!error <Invalid call> normalize ()

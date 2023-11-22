@@ -13,6 +13,7 @@
   %reldir%/NEWS.6.md \
   %reldir%/NEWS.7.md \
   %reldir%/NEWS.8.md \
+  %reldir%/NEWS.9.md \
   %reldir%/gdbinit
 
 %canon_reldir%_EXTRA_DIST += \
@@ -43,12 +44,12 @@ endif
 %canon_reldir%_EXTRA_DIST += \
   $(fallback_FONT_FILES)
 
-appdatadir = $(datadir)/metainfo
+metainfodir = $(datadir)/metainfo
 
-APPDATA_XML_FILE := \
-  %reldir%/icons/org.octave.Octave.appdata.xml
+METAINFO_XML_FILE := \
+  %reldir%/icons/org.octave.Octave.metainfo.xml
 
-appdata_DATA = $(APPDATA_XML_FILE)
+metainfo_DATA = $(METAINFO_XML_FILE)
 
 desktopdir = $(datadir)/applications
 
@@ -83,7 +84,7 @@ BUILT_ICONS = \
   $(BUILT_ICONS) \
   $(icon_IMAGE_FILES) \
   %reldir%/icons/octave_branding_samples.svg \
-  %reldir%/icons/org.octave.Octave.appdata.xml \
+  %reldir%/icons/org.octave.Octave.metainfo.xml \
   %reldir%/icons/org.octave.Octave.desktop.in
 
 image_DATA += \
@@ -114,21 +115,21 @@ $(BUILT_PNG_ICONS): %reldir%/icons/octave-logo.svg | %reldir%/icons/$(octave_dir
 	mv $@-t $@
 
 ## Check that the release date and version number are in
-## $(APPDATA_XML_FILE), but only for actual releases, which means
+## $(METAINFO_XML_FILE), but only for actual releases, which means
 ## we skip the test if the minor version number is 0 or the patch
 ## version number is not 0.
 
-appdata-dist-hook:
-	@test x"$(DIST_IGNORE_APPDATA_VERSION)" != x || \
+metainfo-dist-hook:
+	@test x"$(DIST_IGNORE_METAINFO_VERSION)" != x || \
 	 test $(OCTAVE_MINOR_VERSION) -eq 0 || \
 	 test $(OCTAVE_PATCH_VERSION) -ne 0 || \
-	 grep "<release *date=\"$(OCTAVE_RELEASE_DATE)\" *version=\"$(OCTAVE_VERSION)\"/>" $(srcdir)/$(APPDATA_XML_FILE) > /dev/null || \
+	 grep "<release *date=\"$(OCTAVE_RELEASE_DATE)\" *version=\"$(OCTAVE_VERSION)\"/>" $(srcdir)/$(METAINFO_XML_FILE) > /dev/null || \
 	{ echo; \
-	  echo "Packaging distribution requires the version number in the $(APPDATA_XML_FILE)."; \
-	  echo "Please update first or pass DIST_IGNORE_APPDATA_VERSION=1."; \
+	  echo "Packaging distribution requires the version number in the $(METAINFO_XML_FILE)."; \
+	  echo "Please update first or pass DIST_IGNORE_METAINFO_VERSION=1."; \
 	  echo "Cannot package distribution!"; \
 	  echo; exit 1; }
-.PHONY: appdata-dist-hook
+.PHONY: metainfo-dist-hook
 
 install-data-local: install-icons
 

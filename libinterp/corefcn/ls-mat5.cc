@@ -44,6 +44,7 @@
 #include "file-stat.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
+#include "lo-sysdep.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
@@ -897,9 +898,8 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                     std::string str
                       = (octave::config::octave_exec_home ()
                          + fpath.substr (mroot.length ()));
-                    octave::sys::file_stat fs (str);
 
-                    if (fs.exists ())
+                    if (octave::sys::file_exists (str))
                       {
                         std::size_t xpos
                           = str.find_last_of (octave::sys::file_ops::dir_sep_chars ());
@@ -1239,7 +1239,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
                       {
                         try
                           {
-                            octave_value_list tmp = octave::feval ("loadobj", tc, 1);
+                            octave_value_list tmp = interp.feval ("loadobj", tc, 1);
 
                             tc = tmp(0);
                           }
@@ -2724,14 +2724,16 @@ save_mat5_binary_element (std::ostream& os,
 
       octave_map m;
 
-      octave::load_path& lp = octave::__get_load_path__ ();
+      octave::interpreter& interp = octave::__get_interpreter__ ();
+
+      octave::load_path& lp = interp.get_load_path ();
 
       if (tc.isobject ()
           && lp.find_method (tc.class_name (), "saveobj") != "")
         {
           try
             {
-              octave_value_list tmp = octave::feval ("saveobj", tc, 1);
+              octave_value_list tmp = interp.feval ("saveobj", tc, 1);
 
               m = tmp(0).map_value ();
             }

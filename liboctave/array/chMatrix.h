@@ -44,13 +44,13 @@ charMatrix : public charNDArray
 
 public:
 
-  charMatrix (void) = default;
+  charMatrix () = default;
 
   charMatrix (const charMatrix& a) = default;
 
   charMatrix& operator = (const charMatrix& a) = default;
 
-  ~charMatrix (void) = default;
+  ~charMatrix () = default;
 
   charMatrix (octave_idx_type r, octave_idx_type c)
     : charNDArray (dim_vector (r, c)) { }
@@ -77,7 +77,7 @@ public:
   OCTAVE_API bool operator == (const charMatrix& a) const;
   OCTAVE_API bool operator != (const charMatrix& a) const;
 
-  charMatrix transpose (void) const { return Array<char>::transpose (); }
+  charMatrix transpose () const { return Array<char>::transpose (); }
 
   // destructive insert/delete/reorder operations
 
@@ -100,13 +100,6 @@ public:
     Array<char>::resize (dim_vector (nr, nc), rfv);
   }
 
-#if 0
-  // i/o
-
-  friend OCTAVE_API std::ostream&
-  operator << (std::ostream& os, const Matrix& a);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, Matrix& a);
-#endif
 };
 
 MS_CMP_OP_DECLS (charMatrix, char, OCTAVE_API)

@@ -47,6 +47,7 @@
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"
 
+#include "gh-manager.h"
 #include "gl-render.h"
 #include "interpreter-private.h"
 #include "oct-opengl.h"
@@ -68,7 +69,9 @@ public:
       m_fontname (), m_buffer_overflow (false), m_svg_def_index (0)
   { }
 
-  ~gl2ps_renderer (void) = default;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (gl2ps_renderer)
+
+  ~gl2ps_renderer () = default;
 
   // FIXME: should we import the functions from the base class and
   // overload them here, or should we use a different name so we don't
@@ -1009,8 +1012,8 @@ gl2ps_renderer::strlist_to_svg (double x, double y, double z,
       // provide an x coordinate for each character in the string
       os << "x=\"";
       std::vector<double> xdata = p->get_xdata ();
-      for (auto q = xdata.begin (); q != xdata.end (); q++)
-        os << (*q) << " ";
+      for (const auto& q : xdata)
+        os << q << " ";
       os << '"';
 
       os << '>';
@@ -1021,10 +1024,10 @@ gl2ps_renderer::strlist_to_svg (double x, double y, double z,
       else
         {
           const std::string str = p->get_string ();
-          for (auto q = str.begin (); q != str.end (); q++)
+          for (const auto& q : str)
             {
               std::stringstream chr;
-              chr << *q;
+              chr << q;
               if (chr.str () == "\"")
                 os << "&quot;";
               else if (chr.str () == "'")

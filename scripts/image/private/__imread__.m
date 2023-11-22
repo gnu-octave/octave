@@ -91,7 +91,7 @@ function varargout = __imread__ (filename, varargin)
   options.region = {1:1:info.rows, 1:1:info.columns};
 
   for idx = offset:2:(numel (varargin) - offset + 1)
-    switch (tolower (varargin{idx}))
+    switch (lower (varargin{idx}))
 
       case {"frames", "index"}
         ## Do nothing.  This option was already processed before the loop.

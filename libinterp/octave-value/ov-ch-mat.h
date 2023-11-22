@@ -53,7 +53,7 @@ octave_char_matrix : public octave_base_matrix<charNDArray>
 {
 protected:
 
-  octave_char_matrix (void)
+  octave_char_matrix ()
     : octave_base_matrix<charNDArray> () { }
 
   octave_char_matrix (const charMatrix& chm)
@@ -82,21 +82,21 @@ protected:
 
 public:
 
-  ~octave_char_matrix (void) = default;
+  ~octave_char_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_char_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_char_matrix (); }
 
   octave::idx_vector index_vector (bool require_integers = false) const;
 
-  builtin_type_t builtin_type (void) const { return btyp_char; }
+  builtin_type_t builtin_type () const { return btyp_char; }
 
-  bool is_char_matrix (void) const { return true; }
-  bool is_real_matrix (void) const { return true; }
+  bool is_char_matrix () const { return true; }
+  bool is_real_matrix () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
   double double_value (bool = false) const;
 
@@ -148,18 +148,18 @@ public:
   octave_value convert_to_str_internal (bool, bool, char type) const
   { return octave_value (m_matrix, type); }
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

@@ -40,20 +40,16 @@ event_queue : public action_container
 {
 public:
 
-  event_queue (void) : m_fifo () { }
+  event_queue () : m_fifo () { }
 
-  // No copying!
-
-  event_queue (const event_queue&) = delete;
-
-  event_queue& operator = (const event_queue&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (event_queue)
 
   // Destructor should not raise an exception, so all actions registered
   // should be exception-safe.  If you're not sure, see event_queue_safe.
 
-  ~event_queue (void) { run (); }
+  ~event_queue () { run (); }
 
-  void run_first (void)
+  void run_first ()
   {
     if (! empty ())
       {
@@ -64,7 +60,7 @@ public:
       }
   }
 
-  void discard_first (void)
+  void discard_first ()
   {
     if (! empty ())
       {
@@ -74,7 +70,7 @@ public:
       }
   }
 
-  std::size_t size (void) const { return m_fifo.size (); }
+  std::size_t size () const { return m_fifo.size (); }
 
 protected:
 
@@ -97,15 +93,11 @@ event_queue_safe : public event_queue
 {
 public:
 
-  event_queue_safe (void) : event_queue () { }
+  event_queue_safe () : event_queue () { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (event_queue_safe)
 
-  event_queue_safe (const event_queue_safe&) = delete;
-
-  event_queue_safe& operator = (const event_queue_safe&) = delete;
-
-  ~event_queue_safe (void)
+  ~event_queue_safe ()
   {
     while (! empty ())
       {
@@ -122,7 +114,7 @@ public:
 
 private:
 
-  void warn_unhandled_exception (void) const;
+  void warn_unhandled_exception () const;
 
 };
 

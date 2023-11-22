@@ -50,13 +50,13 @@ octave_builtin::execute (octave::tree_evaluator& tw, int nargout,
 }
 
 octave_builtin::fcn
-octave_builtin::function (void) const
+octave_builtin::function () const
 {
   return m_fcn;
 }
 
 octave_builtin::meth
-octave_builtin::method (void) const
+octave_builtin::method () const
 {
   return m_meth;
 }

@@ -36,7 +36,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-settings::settings (void)
+settings::settings ()
   : m_display_tokens (false), m_token_count (0),
     m_lexer_debug_flag (false)
 { }

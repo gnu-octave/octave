@@ -41,13 +41,13 @@
 // Currently 1 is subtracted to allow safe conversion of any 2D Array into
 // Sparse, but this offset may change in the future.
 octave_idx_type
-dim_vector::dim_max (void)
+dim_vector::dim_max ()
 {
   return std::numeric_limits<octave_idx_type>::max () - 1;
 }
 
 void
-dim_vector::chop_all_singletons (void)
+dim_vector::chop_all_singletons ()
 {
   int j = 0;
   int nd = ndims ();
@@ -83,7 +83,7 @@ dim_vector::str (char sep) const
 }
 
 int
-dim_vector::num_ones (void) const
+dim_vector::num_ones () const
 {
   int retval = 0;
 
@@ -95,7 +95,7 @@ dim_vector::num_ones (void) const
 }
 
 octave_idx_type
-dim_vector::safe_numel (void) const
+dim_vector::safe_numel () const
 {
   octave_idx_type idx_max = dim_max ();
   octave_idx_type n = 1;
@@ -114,7 +114,7 @@ dim_vector::safe_numel (void) const
 }
 
 dim_vector
-dim_vector::squeeze (void) const
+dim_vector::squeeze () const
 {
   dim_vector new_dims = *this;
   new_dims.chop_all_singletons ();
@@ -263,7 +263,7 @@ dim_vector::redim (int n) const
 }
 
 Array<octave_idx_type>
-dim_vector::as_array (void) const
+dim_vector::as_array () const
 {
   octave_idx_type nd = ndims ();
 

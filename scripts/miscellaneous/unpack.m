@@ -241,7 +241,7 @@ function filelist = unpack (file, dir = [], filetype = "")
     error ("unpack: %s: not a directory", dir);
   endif
 
-  if (isfield (commandlist, tolower (nodotext)))
+  if (isfield (commandlist, lower (nodotext)))
     [commandv, commandq, parsefcn, move] = deal (commandlist.(nodotext){:});
     origdir = pwd ();
     if (move)

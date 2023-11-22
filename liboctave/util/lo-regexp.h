@@ -61,7 +61,7 @@ public:
 
   regexp& operator = (const regexp& rx) = default;
 
-  ~regexp (void) { free (); }
+  ~regexp () { free (); }
 
   void compile (const std::string& pat,
                 const regexp::opts& opt = regexp::opts ())
@@ -125,7 +125,7 @@ public:
   {
   public:
 
-    opts (void)
+    opts ()
       : m_case_insensitive (false), m_dotexceptnewline (false),
         m_emptymatch (false), m_freespacing (false), m_lineanchors (false),
         m_once (false) { }
@@ -134,7 +134,7 @@ public:
 
     opts& operator = (const opts&) = default;
 
-    ~opts (void) = default;
+    ~opts () = default;
 
     void case_insensitive (bool val) { m_case_insensitive = val; }
     void dotexceptnewline (bool val) { m_dotexceptnewline = val; }
@@ -143,12 +143,12 @@ public:
     void lineanchors (bool val) { m_lineanchors = val; }
     void once (bool val) { m_once = val; }
 
-    bool case_insensitive (void) const { return m_case_insensitive; }
-    bool dotexceptnewline (void) const { return m_dotexceptnewline; }
-    bool emptymatch (void) const { return m_emptymatch; }
-    bool freespacing (void) const { return m_freespacing; }
-    bool lineanchors (void) const { return m_lineanchors; }
-    bool once (void) const { return m_once; }
+    bool case_insensitive () const { return m_case_insensitive; }
+    bool dotexceptnewline () const { return m_dotexceptnewline; }
+    bool emptymatch () const { return m_emptymatch; }
+    bool freespacing () const { return m_freespacing; }
+    bool lineanchors () const { return m_lineanchors; }
+    bool once () const { return m_once; }
 
   private:
 
@@ -164,6 +164,8 @@ public:
   {
   public:
 
+    match_element () = delete;
+
     match_element (const string_vector& nt, const string_vector& t,
                    const std::string& ms, const Matrix& te,
                    double s, double e)
@@ -171,16 +173,14 @@ public:
         m_token_extents (te), m_start (s), m_end (e)
     { }
 
-    match_element (const match_element&) = default;
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (match_element)
 
-    match_element& operator = (const match_element&) = default;
-
-    std::string match_string (void) const { return m_match_string; }
-    string_vector named_tokens (void) const { return m_named_tokens; }
-    string_vector tokens (void) const { return m_tokens; }
-    Matrix token_extents (void) const { return m_token_extents; }
-    double start (void) const { return m_start; }
-    double end (void) const { return m_end; }
+    std::string match_string () const { return m_match_string; }
+    string_vector named_tokens () const { return m_named_tokens; }
+    string_vector tokens () const { return m_tokens; }
+    Matrix token_extents () const { return m_token_extents; }
+    double start () const { return m_start; }
+    double end () const { return m_end; }
 
   private:
 
@@ -200,7 +200,7 @@ public:
   {
   public:
 
-    match_data (void)
+    match_data ()
       : base_list<match_element> (), m_named_pats ()
     { }
 
@@ -208,13 +208,9 @@ public:
       : base_list<match_element> (l), m_named_pats (np)
     { }
 
-    match_data (const match_data&) = default;
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (match_data)
 
-    match_data& operator = (const match_data&) = default;
-
-    ~match_data (void) = default;
-
-    string_vector named_patterns (void) const { return m_named_pats; }
+    string_vector named_patterns () const { return m_named_pats; }
 
   private:
 
@@ -236,9 +232,9 @@ private:
   Array<int> m_named_idx;
   std::string m_who;
 
-  void free (void);
+  void free ();
 
-  void compile_internal (void);
+  void compile_internal ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

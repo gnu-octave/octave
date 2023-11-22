@@ -40,24 +40,24 @@ OCTINTERP_API
 octave_perm_matrix : public octave_base_value
 {
 public:
-  octave_perm_matrix (void) : m_matrix (), m_dense_cache () { }
+  octave_perm_matrix () : m_matrix (), m_dense_cache () { }
 
   octave_perm_matrix (const PermMatrix& p) : m_matrix (p), m_dense_cache () { }
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_perm_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_perm_matrix (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
-  std::size_t byte_size (void) const { return m_matrix.byte_size (); }
+  std::size_t byte_size () const { return m_matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return m_matrix; }
+  octave_value squeeze () const { return m_matrix; }
 
-  octave_value full_value (void) const { return to_dense (); }
+  octave_value full_value () const { return to_dense (); }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -74,9 +74,9 @@ public:
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
 
-  dim_vector dims (void) const { return m_matrix.dims (); }
+  dim_vector dims () const { return m_matrix.dims (); }
 
-  octave_idx_type nnz (void) const { return m_matrix.rows (); }
+  octave_idx_type nnz () const { return m_matrix.rows (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   { return to_dense ().reshape (new_dims); }
@@ -90,7 +90,7 @@ public:
   octave_value all (int dim = 0) const { return to_dense ().all (dim); }
   octave_value any (int dim = 0) const { return to_dense ().any (dim); }
 
-  MatrixType matrix_type (void) const { return MatrixType::Permuted_Diagonal; }
+  MatrixType matrix_type () const { return MatrixType::Permuted_Diagonal; }
   MatrixType matrix_type (const MatrixType&) const
   { return matrix_type (); }
 
@@ -117,27 +117,27 @@ public:
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const
   { return to_dense ().is_sorted_rows (mode); }
 
-  builtin_type_t builtin_type (void) const { return btyp_double; }
+  builtin_type_t builtin_type () const { return btyp_double; }
 
-  bool is_perm_matrix (void) const { return true; }
+  bool is_perm_matrix () const { return true; }
 
-  bool is_matrix_type (void) const { return true; }
+  bool is_matrix_type () const { return true; }
 
-  bool isnumeric (void) const { return true; }
+  bool isnumeric () const { return true; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool is_real_matrix (void) const { return true; }
+  bool is_real_matrix () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
-  bool is_true (void) const;
+  bool is_true () const;
 
   double double_value (bool = false) const;
 
@@ -148,7 +148,7 @@ public:
 
   octave::idx_vector index_vector (bool require_integers = false) const;
 
-  PermMatrix perm_matrix_value (void) const
+  PermMatrix perm_matrix_value () const
   { return m_matrix; }
 
   Matrix matrix_value (bool = false) const;
@@ -182,47 +182,47 @@ public:
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
   int8NDArray
-  int8_array_value (void) const { return to_dense ().int8_array_value (); }
+  int8_array_value () const { return to_dense ().int8_array_value (); }
 
   int16NDArray
-  int16_array_value (void) const { return to_dense ().int16_array_value (); }
+  int16_array_value () const { return to_dense ().int16_array_value (); }
 
   int32NDArray
-  int32_array_value (void) const { return to_dense ().int32_array_value (); }
+  int32_array_value () const { return to_dense ().int32_array_value (); }
 
   int64NDArray
-  int64_array_value (void) const { return to_dense ().int64_array_value (); }
+  int64_array_value () const { return to_dense ().int64_array_value (); }
 
   uint8NDArray
-  uint8_array_value (void) const { return to_dense ().uint8_array_value (); }
+  uint8_array_value () const { return to_dense ().uint8_array_value (); }
 
   uint16NDArray
-  uint16_array_value (void) const { return to_dense ().uint16_array_value (); }
+  uint16_array_value () const { return to_dense ().uint16_array_value (); }
 
   uint32NDArray
-  uint32_array_value (void) const { return to_dense ().uint32_array_value (); }
+  uint32_array_value () const { return to_dense ().uint32_array_value (); }
 
   uint64NDArray
-  uint64_array_value (void) const { return to_dense ().uint64_array_value (); }
+  uint64_array_value () const { return to_dense ().uint64_array_value (); }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  float_display_format get_edit_display_format (void) const;
+  float_display_format get_edit_display_format () const;
 
   std::string edit_display (const float_display_format& fmt,
                             octave_idx_type i, octave_idx_type j) const;
@@ -242,7 +242,7 @@ public:
 
   mxArray * as_mxArray (bool interleaved) const;
 
-  bool print_as_scalar (void) const;
+  bool print_as_scalar () const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -259,7 +259,7 @@ protected:
 
   PermMatrix m_matrix;
 
-  virtual octave_value to_dense (void) const;
+  virtual octave_value to_dense () const;
 
   mutable octave_value m_dense_cache;
 

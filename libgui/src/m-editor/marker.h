@@ -68,9 +68,9 @@ public:
           editor_markers marker_type, int editor_linenr,
           const QString& condition = "");
 
-  ~marker (void) = default;
+  ~marker () = default;
 
-  const QString& get_cond (void) const { return m_condition; }
+  const QString& get_cond () const { return m_condition; }
 
   void set_cond (const QString& cond) { m_condition = cond; }
 
@@ -82,14 +82,14 @@ public slots:
 
   void handle_remove_via_original_linenr (int original_linenr);
   void handle_request_remove_via_editor_linenr (int editor_linenr);
-  void handle_remove (void);
+  void handle_remove ();
   void handle_find_translation (int original_linenr, int& editor_linenr,
                                 marker*& bp);
   void handle_find_just_before (int linenr, int& original_linenr,
                                 int& editor_linenr);
   void handle_find_just_after (int linenr, int& original_linenr,
                                int& editor_linenr);
-  /*  void handle_lines_changed (void);*/
+  /*  void handle_lines_changed ();*/
   void handle_marker_line_deleted (int mhandle);
   void handle_marker_line_undeleted (int mhandle);
   void handle_report_editor_linenr (QIntList& lines, QStringList& conditions);

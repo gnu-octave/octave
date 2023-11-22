@@ -45,13 +45,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Declarations (global, static, etc.).
 
 tree_decl_elt::tree_decl_elt (tree_identifier *i, tree_expression *e)
-  : type (unknown), m_id (i), m_expr (e)
+  : m_type (unknown), m_id (i), m_expr (e)
 {
   if (! m_id)
     error ("tree_decl_elt: invalid ID");
 }
 
-tree_decl_elt::~tree_decl_elt (void)
+tree_decl_elt::~tree_decl_elt ()
 {
   delete m_id;
   delete m_expr;
@@ -84,7 +84,7 @@ tree_decl_command::tree_decl_command (const std::string& n,
     }
 }
 
-tree_decl_command::~tree_decl_command (void)
+tree_decl_command::~tree_decl_command ()
 {
   delete m_init_list;
 }

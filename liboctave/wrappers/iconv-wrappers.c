@@ -42,3 +42,29 @@ octave_iconv_close_wrapper (void *cd)
 {
   return iconv_close ((iconv_t) cd);
 }
+
+void
+octave_iconvlist_wrapper (int (*do_one) (unsigned int namescount,
+                                         const char * const *names,
+                                         void *data),
+                          void *data)
+{
+#if defined (HAVE_ICONVLIST)
+  iconvlist (do_one, data);
+#else
+  octave_unused_parameter (do_one);
+  octave_unused_parameter (data);
+#endif
+
+  return;
+}
+
+const char *
+octave_iconv_canonicalize_wrapper (const char *name)
+{
+#if defined (HAVE_ICONV_CANONICALIZE)
+  return iconv_canonicalize (name);
+#else
+  return name;
+#endif
+}

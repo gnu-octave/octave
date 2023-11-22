@@ -41,11 +41,11 @@ FigureWindow::FigureWindow (QWidget *xparent)
   setWindowIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)));
 }
 
-FigureWindow::~FigureWindow (void)
+FigureWindow::~FigureWindow ()
 { }
 
 QMenu *
-FigureWindow::createPopupMenu (void)
+FigureWindow::createPopupMenu ()
 {
   // For the time being, disable menubar/toolbar popup menu
   return nullptr;

@@ -41,14 +41,4 @@ do_class_concat (const octave_value_list& ovl, const std::string& cattype,
 
 OCTAVE_END_NAMESPACE(octave)
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "use 'octave::do_class_concat' instead")
-inline OCTINTERP_API octave_value
-do_class_concat (const octave_value_list& ovl, const std::string& cattype,
-                 int dim)
-{
-  return octave::do_class_concat (ovl, cattype, dim);
-}
-#endif
-
 #endif

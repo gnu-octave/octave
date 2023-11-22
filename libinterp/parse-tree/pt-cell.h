@@ -51,17 +51,13 @@ public:
     : tree_array_list (row, l, c)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_cell)
 
-  tree_cell (const tree_cell&) = delete;
+  ~tree_cell () = default;
 
-  tree_cell& operator = (const tree_cell&) = delete;
+  bool iscell () const { return true; }
 
-  ~tree_cell (void) = default;
-
-  bool iscell (void) const { return true; }
-
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   tree_expression * dup (symbol_scope& scope) const;
 

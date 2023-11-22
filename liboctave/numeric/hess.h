@@ -40,7 +40,7 @@ hess
 {
 public:
 
-  hess (void)
+  hess ()
     : m_hess_mat (), m_unitary_hess_mat ()
   { }
 
@@ -71,11 +71,11 @@ public:
     return *this;
   }
 
-  ~hess (void) = default;
+  ~hess () = default;
 
-  T hess_matrix (void) const { return m_hess_mat; }
+  T hess_matrix () const { return m_hess_mat; }
 
-  T unitary_hess_matrix (void) const { return m_unitary_hess_mat; }
+  T unitary_hess_matrix () const { return m_unitary_hess_mat; }
 
 private:
 

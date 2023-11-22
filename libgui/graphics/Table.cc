@@ -48,8 +48,6 @@
 #include "Table.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 #include "graphics.h"
 #include "interpreter.h"
 #include "oct-map.h"
@@ -74,43 +72,43 @@ static QSize realQSizeForTable (QTableWidget *t)
   return QSize (w, h);
 }
 
-#define FORMATNUMBER(type)                                              \
-  static QString formatNumber (type d,                                  \
-                               char format = 'f',                       \
-                               int precision = 4)                       \
-  {                                                                     \
-    type ten = 10;                                                      \
-    if (format == 'n')                                                  \
-      {                                                                 \
-        if (d == floor (d))                                             \
-          return QString::number (d, 'g', precision);                   \
-        else if (d <= pow (ten, precision - 1)                          \
-                 && d > pow (ten, 1 - precision))                       \
-          return QString::number (d, 'f', precision);                   \
-        else                                                            \
-          return QString::number (d, 'e', precision);                   \
-      }                                                                 \
-    else if (format == 'F')                                             \
-      {                                                                 \
-        int exponent = floor (log10 (d) / 3) * 3;                       \
-        d *= pow (ten, -exponent);                                      \
-        return QString::number (d, 'f', precision) + "e" +              \
-          (exponent < 0 ? "-" : "+") +                                  \
-          QString ("%1").arg (abs (exponent), 3, 10, QChar ('0'));      \
-      }                                                                 \
-    else if (format == 'E')                                             \
-      {                                                                 \
-        int exponent = floor (log10 (d) / 3) * 3;                       \
-        d *=  pow (ten, -exponent);                                     \
-        return QString::number (d,                                      \
-                                'f',                                    \
-                                precision - floor (log10 (d)) - 1) +    \
-          "e" + (exponent < 0 ? "-" : "+") +                            \
-          QString ("%1").arg (abs (exponent), 3, 10, QChar ('0'));      \
-      }                                                                 \
-    else                                                                \
-      return QString::number (d, format, precision);                    \
-  }
+#define FORMATNUMBER(type)                                                    \
+static QString formatNumber (type d,                                        \
+                             char format = 'f',                             \
+                             int precision = 4)                             \
+{                                                                           \
+  type ten = 10;                                                            \
+  if (format == 'n')                                                        \
+    {                                                                       \
+      if (d == floor (d))                                                   \
+        return QString::number (d, 'g', precision);                         \
+      else if (d <= pow (ten, precision - 1)                                \
+               && d > pow (ten, 1 - precision))                             \
+        return QString::number (d, 'f', precision);                         \
+      else                                                                  \
+        return QString::number (d, 'e', precision);                         \
+    }                                                                       \
+  else if (format == 'F')                                                   \
+    {                                                                       \
+      int exponent = floor (log10 (d) / 3) * 3;                             \
+      d *= pow (ten, -exponent);                                            \
+      return QString::number (d, 'f', precision) + "e" +                    \
+        (exponent < 0 ? "-" : "+") +                                        \
+        QString ("%1").arg (abs (exponent), 3, 10, QChar ('0'));            \
+    }                                                                       \
+  else if (format == 'E')                                                   \
+    {                                                                       \
+      int exponent = floor (log10 (d) / 3) * 3;                             \
+      d *=  pow (ten, -exponent);                                           \
+      return QString::number (d,                                            \
+                              'f',                                          \
+                              precision - floor (log10 (d)) - 1) +          \
+             "e" + (exponent < 0 ? "-" : "+") +                             \
+             QString ("%1").arg (abs (exponent), 3, 10, QChar ('0'));       \
+    }                                                                       \
+  else                                                                      \
+    return QString::number (d, format, precision);                          \
+}
 
 FORMATNUMBER(double)
 FORMATNUMBER(float)
@@ -120,75 +118,75 @@ FORMATNUMBER(float)
 static QString formatComplex (Complex c, char format = 'f', int precision = 4)
 {
   return formatNumber (c.real (), format, precision) + " + "
-    + formatNumber (c.imag (), format, precision) + "i";
+         + formatNumber (c.imag (), format, precision) + "i";
 }
 
-#define FORMAT_VALUE_EXCEPT_RAT(f,l)                            \
-  if (format == "numeric" || format == "short")                 \
-    text = formatNumber (value, 'n', f);                        \
-  else if (format == "short f" || format == "shortf")           \
-    text = formatNumber (value, 'f', f);                        \
-  else if (format == "short e" || format == "shorte")           \
-    text = formatNumber (value, 'e', f);                        \
-  else if (format == "short eng" || format == "shorteng")       \
-    text = formatNumber (value, 'F', f);                        \
-  else if (format == "short g" || format == "shortg")           \
-    text = formatNumber (value, 'g', f + 1);                    \
-  else if (format == "long")                                    \
-    text = formatNumber (value, 'n', l);                        \
-  else if (format == "long f" || format == "longf")             \
-    text = formatNumber (value, 'f', l);                        \
-  else if (format == "long e" || format == "longe")             \
-    text = formatNumber (value, 'e', l);                        \
-  else if (format == "long eng" || format == "longeng")         \
-    text = formatNumber (value, 'E', l);                        \
-  else if (format == "long g" || format == "longg")             \
-    text = formatNumber (value, 'g', l + 1);                    \
-  else if (format == "bank")                                    \
-    text = QString::number (value, 'f', 2);                     \
-  else if (format == "+")                                       \
-    if (value > 0)                                              \
-      text = Utils::fromStdString ("+");                        \
-    else if (value < 0)                                         \
-      text = Utils::fromStdString ("-");                        \
-    else                                                        \
-      text = Utils::fromStdString ("");
+#define FORMAT_VALUE_EXCEPT_RAT(f,l)                      \
+if (format == "numeric" || format == "short")           \
+  text = formatNumber (value, 'n', f);                  \
+else if (format == "short f" || format == "shortf")     \
+  text = formatNumber (value, 'f', f);                  \
+else if (format == "short e" || format == "shorte")     \
+  text = formatNumber (value, 'e', f);                  \
+else if (format == "short eng" || format == "shorteng") \
+  text = formatNumber (value, 'F', f);                  \
+else if (format == "short g" || format == "shortg")     \
+  text = formatNumber (value, 'g', f + 1);              \
+else if (format == "long")                              \
+  text = formatNumber (value, 'n', l);                  \
+else if (format == "long f" || format == "longf")       \
+  text = formatNumber (value, 'f', l);                  \
+else if (format == "long e" || format == "longe")       \
+  text = formatNumber (value, 'e', l);                  \
+else if (format == "long eng" || format == "longeng")   \
+  text = formatNumber (value, 'E', l);                  \
+else if (format == "long g" || format == "longg")       \
+  text = formatNumber (value, 'g', l + 1);              \
+else if (format == "bank")                              \
+  text = QString::number (value, 'f', 2);               \
+else if (format == "+")                                 \
+  if (value > 0)                                        \
+    text = Utils::fromStdString ("+");                  \
+  else if (value < 0)                                   \
+    text = Utils::fromStdString ("-");                  \
+  else                                                  \
+    text = Utils::fromStdString ("");
 
 #define FORMAT_VALUE(f,l)                                               \
-  FORMAT_VALUE_EXCEPT_RAT(f,l)                                          \
-  else if (format == "rat")                                             \
-    text = Utils::fromStdString (rational_approx (double (value), 0));  \
-  else                                                                  \
-    {                                                                   \
-      text = formatNumber (value, 'n', f);                              \
-      flag = Qt::AlignLeft ;                                            \
-    }
+FORMAT_VALUE_EXCEPT_RAT(f,l)                                          \
+else if (format == "rat")                                             \
+  text = Utils::fromStdString (rational_approx (double (value), 0));  \
+else                                                                  \
+  {                                                                   \
+    text = formatNumber (value, 'n', f);                              \
+    flag = Qt::AlignLeft ;                                            \
+  }
 
-#define FORMAT_UINT_VALUE()                     \
-  text = QString::number (value);               \
-  if (format == "char"  || format == "popup")   \
-    flag = Qt::AlignLeft;                       \
-  else if (format == "+")                       \
-    {                                           \
-      if (value > 0)                            \
-        text = Utils::fromStdString ("+");      \
-      else                                      \
-        text = Utils::fromStdString ("");       \
-    }
+#define FORMAT_UINT_VALUE()                    \
+text = QString::number (value);              \
+if (format == "char"  || format == "popup")  \
+  flag = Qt::AlignLeft;                      \
+else if (format == "+")                      \
+  {                                          \
+    if (value > 0)                           \
+      text = Utils::fromStdString ("+");     \
+    else                                     \
+      text = Utils::fromStdString ("");      \
+  }
 
-#define FORMAT_INT_VALUE()                      \
-  text = QString::number (value);               \
-  if (format == "char" || format == "popup")    \
-    flag = Qt::AlignLeft ;                      \
-  else if (format == "+")                       \
-    {                                           \
-      if (value > 0)                            \
-        text = Utils::fromStdString ("+");      \
-      else if (value < 0)                       \
-        text = Utils::fromStdString ("-");      \
-      else                                      \
-        text = Utils::fromStdString ("");       \
-    }
+#define FORMAT_INT_VALUE()                     \
+text = QString::number (value);              \
+if (format == "char" || format == "popup")   \
+  flag = Qt::AlignLeft ;                     \
+else if (format == "+")                      \
+  {                                          \
+    if (value > 0)                           \
+      text = Utils::fromStdString ("+");     \
+    else if (value < 0)                      \
+      text = Utils::fromStdString ("-");     \
+    else                                     \
+      text = Utils::fromStdString ("");      \
+  }
 
 static std::pair<Qt::AlignmentFlag, QString>
 qStringValueFor (octave_value val, std::string format = "")
@@ -238,14 +236,14 @@ qStringValueFor (octave_value val, std::string format = "")
         }
       else if (format == "rat")
         text = Utils::fromStdString (rational_approx (c.real (), 0)) + " + "
-          + Utils::fromStdString (rational_approx (c.imag (), 0)) + "i";
+               + Utils::fromStdString (rational_approx (c.imag (), 0)) + "i";
       else if (format == "numeric")
         text = QString::number (c.real (), 'g', 5) + " + "
-          + QString::number (c.imag (), 'g', 5) + "i";
+               + QString::number (c.imag (), 'g', 5) + "i";
       else
         {
           text = QString::number (c.real (), 'g', 5) + " + "
-            + QString::number (c.imag (), 'g', 5) + "i";
+                 + QString::number (c.imag (), 'g', 5) + "i";
           flag = Qt::AlignLeft;
         }
     }
@@ -253,52 +251,52 @@ qStringValueFor (octave_value val, std::string format = "")
     {
       double value = val.double_value ();
       FORMAT_VALUE(4, 15)
-        }
+    }
   else if (val.is_single_type ())
     {
       float value = val.float_value ();
       FORMAT_VALUE(4, 7)
-        }
+    }
   else if (val.is_int8_type ())
     {
       short int value = val.short_value ();
       FORMAT_INT_VALUE()
-        }
+    }
   else if (val.is_uint8_type ())
     {
       unsigned short int value = val.ushort_value ();
       FORMAT_UINT_VALUE()
-        }
+    }
   else if (val.is_int16_type ())
     {
       int value = val.int_value ();
       FORMAT_INT_VALUE()
-        }
+    }
   else if (val.is_uint16_type ())
     {
       unsigned int value = val.uint_value ();
       FORMAT_UINT_VALUE()
-        }
+    }
   else if (val.is_int32_type ())
     {
       long int value = val.long_value ();
       FORMAT_INT_VALUE()
-        }
+    }
   else if (val.is_uint32_type ())
     {
       unsigned long int value = val.ulong_value ();
       FORMAT_UINT_VALUE()
-        }
+    }
   else if (val.is_int64_type ())
     {
       int64_t value = val.int64_value ();
       FORMAT_INT_VALUE()
-        }
+    }
   else if (val.is_uint64_type ())
     {
       uint64_t value = val.uint64_value ();
       FORMAT_UINT_VALUE()
-        }
+    }
   else if (val.islogical ())
     {
       bool b = val.bool_value ();
@@ -357,31 +355,31 @@ attempt_type_conversion (const octave_value& ov,
   // Define a macro to help with the conversion of strings to integers
   // FIXME: these will happily integer overflow in the (u)int64 case
   // - this probably doesn't matter.
-#define SCANF_AND_CONVERT(name,ctype,format)            \
-  else if (old_value.is_ ## name ## _type ())           \
-    {                                                   \
-      ctype val;                                        \
-      int n;                                            \
-      const std::string cxx_str = ov.string_value ();   \
-      const char *c_str = cxx_str.c_str ();             \
-      int error = sscanf (c_str, format, &val, &n);     \
-      if (error != 1 || c_str[n])                       \
-        {                                               \
-          val = 0;                                      \
-        }                                               \
-      retval = octave_value ( octave_ ## name (val));   \
-    }
+#define SCANF_AND_CONVERT(name,ctype,format)           \
+else if (old_value.is_ ## name ## _type ())          \
+  {                                                  \
+    ctype val;                                       \
+    int n;                                           \
+    const std::string cxx_str = ov.string_value ();  \
+    const char *c_str = cxx_str.c_str ();            \
+    int error = sscanf (c_str, format, &val, &n);    \
+    if (error != 1 || c_str[n])                      \
+      {                                              \
+        val = 0;                                     \
+      }                                              \
+    retval = octave_value ( octave_ ## name (val));  \
+  }
 
   if (old_value.is_string ())
     retval = ov;
   SCANF_AND_CONVERT(int8, int64_t, "%" PRId64 " %n")
-    SCANF_AND_CONVERT(uint8, uint64_t, "%" PRIu64 " %n")
-    SCANF_AND_CONVERT(int16, int64_t, "%" PRId64 " %n")
-    SCANF_AND_CONVERT(uint16, uint64_t, "%" PRIu64 " %n")
-    SCANF_AND_CONVERT(int32, int64_t, "%" PRId64 " %n")
-    SCANF_AND_CONVERT(uint32, uint64_t, "%" PRIu64 " %n")
-    SCANF_AND_CONVERT(int64, int64_t, "%" PRId64 " %n")
-    SCANF_AND_CONVERT(uint64, uint64_t, "%" PRIu64 " %n")
+  SCANF_AND_CONVERT(uint8, uint64_t, "%" PRIu64 " %n")
+  SCANF_AND_CONVERT(int16, int64_t, "%" PRId64 " %n")
+  SCANF_AND_CONVERT(uint16, uint64_t, "%" PRIu64 " %n")
+  SCANF_AND_CONVERT(int32, int64_t, "%" PRId64 " %n")
+  SCANF_AND_CONVERT(uint32, uint64_t, "%" PRIu64 " %n")
+  SCANF_AND_CONVERT(int64, int64_t, "%" PRId64 " %n")
+  SCANF_AND_CONVERT(uint64, uint64_t, "%" PRIu64 " %n")
 
 #undef SCANF_AND_CONVERT
 
@@ -432,7 +430,7 @@ Table::checkBoxForLogical (octave_value val, bool enabled = false)
 }
 
 Table *
-Table::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Table::create (octave::interpreter& interp,
                const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
@@ -442,15 +440,15 @@ Table::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
       Container *container = parent->innerContainer ();
 
       if (container)
-        return new Table (oct_qobj, interp, go, new QTableWidget (container));
+        return new Table (interp, go, new QTableWidget (container));
     }
 
   return 0;
 }
 
-Table::Table (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Table::Table (octave::interpreter& interp,
               const graphics_object& go, QTableWidget *tableWidget)
-  : Object (oct_qobj, interp, go, tableWidget), m_tableWidget (tableWidget),
+  : Object (interp, go, tableWidget), m_tableWidget (tableWidget),
     m_curData (), m_blockUpdates (false)
 {
   qObject ()->setObjectName ("UItable");
@@ -487,7 +485,7 @@ Table::Table (octave::base_qobject& oct_qobj, octave::interpreter& interp,
            this, &Table::itemSelectionChanged);
 }
 
-Table::~Table (void) { }
+Table::~Table () { }
 
 void
 Table::itemSelectionChanged ()
@@ -538,7 +536,6 @@ Table::sendCellEditCallback (int row,
                              octave_value edit_data,
                              octave_value error)
 {
-
   if (!(properties<uitable> ().get_celleditcallback ().isempty ()))
     {
       Matrix indices = Matrix (1, 2);
@@ -629,8 +626,8 @@ Table::comboBoxCurrentIndexChanged (const QString& value)
       else
         {
           octave_value old_data = data.is_matrix_type ()
-            ? data.fast_elem_extract (row + col * data.rows ())
-            : octave_value ();
+                                  ? data.fast_elem_extract (row + col * data.rows ())
+                                  : octave_value ();
           data.fast_elem_insert (row + col * data.rows (),
                                  attempt_type_conversion (edit_data, old_data));
 
@@ -877,7 +874,7 @@ Table::itemChanged (QTableWidgetItem *item)
 }
 
 void
-Table::redraw (void)
+Table::redraw ()
 {
   update (uitable::properties::ID_POSITION);
 }
@@ -980,7 +977,7 @@ Table::update (int pId)
 }
 
 void
-Table::updateColumnname (void)
+Table::updateColumnname ()
 {
   uitable::properties& tp = properties<uitable> ();
 
@@ -1076,7 +1073,7 @@ Table::updateColumnname (void)
 }
 
 void
-Table::updateColumnwidth (void)
+Table::updateColumnwidth ()
 {
   uitable::properties& tp = properties<uitable> ();
 
@@ -1304,7 +1301,7 @@ Table::updateData ()
 }
 
 void
-Table::updateEnable (void)
+Table::updateEnable ()
 {
   uitable::properties& tp = properties<uitable> ();
   bool enabled = tp.is_enable ();
@@ -1362,7 +1359,7 @@ Table::updateEnable (void)
 }
 
 void
-Table::updateExtent (void)
+Table::updateExtent ()
 {
   QSize s = realQSizeForTable (m_tableWidget);
   Matrix extent = Matrix (1, 4);
@@ -1375,7 +1372,7 @@ Table::updateExtent (void)
 }
 
 void
-Table::updatePalette (void)
+Table::updatePalette ()
 {
   uitable::properties& tp = properties<uitable> ();
 
@@ -1392,7 +1389,7 @@ Table::updatePalette (void)
 }
 
 void
-Table::updateRowname (void)
+Table::updateRowname ()
 {
   uitable::properties& tp = properties<uitable> ();
 
@@ -1490,7 +1487,7 @@ Table::updateRowname (void)
 }
 
 void
-Table::updateRearrangeableColumns (void)
+Table::updateRearrangeableColumns ()
 {
   uitable::properties& tp = properties<uitable> ();
 
@@ -1550,7 +1547,11 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
 
                 if (m->button () == Qt::RightButton)
                   ContextMenu::executeAt (m_interpreter, properties (),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                          m->globalPosition ().toPoint ());
+#else
                                           m->globalPos ());
+#endif
               }
             else
               {
@@ -1628,12 +1629,12 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
                         {
                           if (col - 1 >= 0)
                             m_tableWidget->setCurrentCell
-                              (m_tableWidget->rowCount () - 1,
-                               col - 1);
+                            (m_tableWidget->rowCount () - 1,
+                             col - 1);
                           else
                             m_tableWidget->setCurrentCell
-                              (m_tableWidget->rowCount () - 1,
-                               m_tableWidget->columnCount () - 1);
+                            (m_tableWidget->rowCount () - 1,
+                             m_tableWidget->columnCount () - 1);
                         }
                     }
                 }
@@ -1692,7 +1693,12 @@ Table::eventFilter (QObject *watched, QEvent *xevent)
                 emit gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)
-                  ContextMenu::executeAt (m_interpreter, tp, m->globalPos ());
+                  ContextMenu::executeAt (m_interpreter, tp,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                          m->globalPosition ().toPoint ());
+#else
+                                          m->globalPos ());
+#endif
               }
             else
               {

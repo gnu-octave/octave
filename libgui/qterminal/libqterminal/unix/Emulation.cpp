@@ -35,13 +35,11 @@
 // Qt
 #include <QApplication>
 #include <QClipboard>
-#include <QtCore/QHash>
+#include <QHash>
 #include <QKeyEvent>
-#include <QtCore/QRegExp>
-#include <QtCore/QTextStream>
-#include <QtCore/QThread>
-
-#include <QtCore/QTime>
+#include <QTextStream>
+#include <QThread>
+#include <QTime>
 
 // Konsole
 #include "unix/KeyboardTranslator.h"

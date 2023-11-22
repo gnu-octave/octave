@@ -65,7 +65,7 @@ __lo_ieee_is_NA (double x)
 }
 
 double
-lo_ieee_inf_value (void)
+lo_ieee_inf_value ()
 {
   octave_ieee_init ();
 
@@ -73,7 +73,7 @@ lo_ieee_inf_value (void)
 }
 
 double
-lo_ieee_na_value (void)
+lo_ieee_na_value ()
 {
   octave_ieee_init ();
 
@@ -81,7 +81,7 @@ lo_ieee_na_value (void)
 }
 
 double
-lo_ieee_nan_value (void)
+lo_ieee_nan_value ()
 {
   octave_ieee_init ();
 
@@ -97,7 +97,7 @@ __lo_ieee_float_is_NA (float x)
 }
 
 float
-lo_ieee_float_inf_value (void)
+lo_ieee_float_inf_value ()
 {
   octave_ieee_init ();
 
@@ -105,7 +105,7 @@ lo_ieee_float_inf_value (void)
 }
 
 float
-lo_ieee_float_na_value (void)
+lo_ieee_float_na_value ()
 {
   octave_ieee_init ();
 
@@ -113,7 +113,7 @@ lo_ieee_float_na_value (void)
 }
 
 float
-lo_ieee_float_nan_value (void)
+lo_ieee_float_nan_value ()
 {
   octave_ieee_init ();
 
@@ -121,7 +121,7 @@ lo_ieee_float_nan_value (void)
 }
 
 void
-octave_ieee_init (void)
+octave_ieee_init ()
 {
   static bool initialized = false;
 

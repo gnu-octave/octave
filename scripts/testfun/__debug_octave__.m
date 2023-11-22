@@ -75,4 +75,3 @@ function __debug_octave__ (command_string)
   system (sprintf (command_string, getpid ()), false, "async");
 
 endfunction
-

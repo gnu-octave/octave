@@ -123,4 +123,3 @@ endfunction
 %!error <Invalid call> getpixelposition ()
 %!error <H must be a scalar> getpixelposition ([1, 2])
 %!error <H must be a .* graphics handle> getpixelposition (-1)
-

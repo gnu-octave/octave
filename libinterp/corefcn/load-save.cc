@@ -43,6 +43,7 @@
 #include "file-stat.h"
 #include "glob-match.h"
 #include "lo-mappers.h"
+#include "lo-sysdep.h"
 #include "mach-info.h"
 #include "oct-env.h"
 #include "oct-locbuf.h"
@@ -193,16 +194,12 @@ find_file_to_load (const std::string& name, const std::string& orig_name)
       // Either no '.' in name or no '.' appears after last directory
       // separator.
 
-      sys::file_stat fs (fname);
-
-      if (! (fs.exists () && fs.is_reg ()))
+      if (! (sys::file_exists (fname, false)))
         fname = find_file_to_load (fname + ".mat", orig_name);
     }
   else
     {
-      sys::file_stat fs (fname);
-
-      if (! (fs.exists () && fs.is_reg ()))
+      if (! (sys::file_exists (fname, false)))
         {
           fname = "";
 
@@ -268,7 +265,7 @@ load_save_system::load_save_system (interpreter& interp)
 #endif
 }
 
-load_save_system::~load_save_system (void)
+load_save_system::~load_save_system ()
 {
 #if defined (HAVE_HDF5)
   H5close ();
@@ -732,7 +729,7 @@ void load_save_system::save_vars (const string_vector& argv, int argv_idx,
     }
 }
 
-void load_save_system::dump_octave_core (void)
+void load_save_system::dump_octave_core ()
 {
   if (m_crash_dumps_octave_core)
     {
@@ -1074,7 +1071,7 @@ void load_save_system::install_loaded_variable (const std::string& name,
   m_interpreter.install_variable (name, val, global);
 }
 
-std::string load_save_system::init_save_header_format (void)
+std::string load_save_system::init_save_header_format ()
 {
   return
     (std::string ("# Created by Octave " OCTAVE_VERSION
@@ -1465,7 +1462,16 @@ load_save_system::save (const octave_value_list& args, int nargout)
     print_usage ();
   else
     {
-      std::string fname = sys::file_ops::tilde_expand (argv[i]);
+      // For non-append mode, we make a new temporary filename, write to that
+      // instead of the file specified, then rename it at the end.
+      // That way, if something goes wrong during the save like OOM,
+      // we won't overwrite already-saved data in a file.
+      // See bug #63803 for context.
+      // In append mode, this kind of guard is counterproductive so we write
+      // directly to the specified file.
+
+      std::string desiredname = sys::file_ops::tilde_expand (argv[i]);
+      std::string fname = desiredname + (append ? "" : ".saving_in_progress");
 
       i++;
 
@@ -1541,6 +1547,20 @@ load_save_system::save (const octave_value_list& args, int nargout)
 
               file.close ();
             }
+        }
+
+      // If we are all the way here without Octave crashing or running
+      // out of memory etc, then we can say that writing to the
+      // temporary file was successful. So now we try to rename it to
+      // the actual file that was specified, unless we were in append mode
+      // in which case we take no action.
+
+      if (! append)
+        {
+          std::string msg;
+          if (octave::sys::rename (fname, desiredname, msg) < 0)
+            error ("save: unable to save to %s  %s",
+                   desiredname.c_str (), msg.c_str ());
         }
     }
 
@@ -2060,13 +2080,3 @@ The original variable value is restored when exiting the function.
 }
 
 OCTAVE_END_NAMESPACE(octave)
-
-// DEPRECATED in Octave 7
-
-void
-dump_octave_core (void)
-{
-  octave::load_save_system& load_save_sys = octave::__get_load_save_system__ ();
-
-  load_save_sys.dump_octave_core ();
-}

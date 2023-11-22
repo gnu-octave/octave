@@ -189,4 +189,3 @@ window without using a mouse for selection.
 @DOCSTRING(filebrowser)
 
 @DOCSTRING(workspace)
-

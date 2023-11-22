@@ -45,39 +45,41 @@ class OCTAVE_API rand
 {
 protected:
 
-  OCTAVE_API rand (void);
+  OCTAVE_API rand ();
 
 public:
 
-  ~rand (void) = default;
+  OCTAVE_DISABLE_COPY_MOVE (rand)
 
-  static bool instance_ok (void);
+  ~rand () = default;
+
+  static bool instance_ok ();
 
   // Return the current seed.
-  static double seed (void)
+  static double seed ()
   {
     return (instance_ok ()
-            ? m_instance->do_seed () : numeric_limits<double>::NaN ());
+            ? s_instance->do_seed () : numeric_limits<double>::NaN ());
   }
 
   // Set the seed.
   static void seed (double s)
   {
     if (instance_ok ())
-      m_instance->do_seed (s);
+      s_instance->do_seed (s);
   }
 
   // Reset the seed.
-  static void reset (void)
+  static void reset ()
   {
     if (instance_ok ())
-      m_instance->do_reset ();
+      s_instance->do_reset ();
   }
 
   // Return the current state.
   static uint32NDArray state (const std::string& d = "")
   {
-    return instance_ok () ? m_instance->do_state (d) : uint32NDArray ();
+    return instance_ok () ? s_instance->do_state (d) : uint32NDArray ();
   }
 
   // Set the current state/
@@ -85,20 +87,20 @@ public:
                      const std::string& d = "")
   {
     if (instance_ok ())
-      m_instance->do_state (s, d);
+      s_instance->do_state (s, d);
   }
 
   // Reset the current state/
   static void reset (const std::string& d)
   {
     if (instance_ok ())
-      m_instance->do_reset (d);
+      s_instance->do_reset (d);
   }
 
   // Return the current distribution.
-  static std::string distribution (void)
+  static std::string distribution ()
   {
-    return instance_ok () ? m_instance->do_distribution () : "";
+    return instance_ok () ? s_instance->do_distribution () : "";
   }
 
   // Set the current distribution.  May be either "uniform" (the
@@ -106,70 +108,70 @@ public:
   static void distribution (const std::string& d)
   {
     if (instance_ok ())
-      m_instance->do_distribution (d);
+      s_instance->do_distribution (d);
   }
 
-  static void uniform_distribution (void)
+  static void uniform_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_uniform_distribution ();
+      s_instance->do_uniform_distribution ();
   }
 
-  static void normal_distribution (void)
+  static void normal_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_normal_distribution ();
+      s_instance->do_normal_distribution ();
   }
 
-  static void exponential_distribution (void)
+  static void exponential_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_exponential_distribution ();
+      s_instance->do_exponential_distribution ();
   }
 
-  static void poisson_distribution (void)
+  static void poisson_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_poisson_distribution ();
+      s_instance->do_poisson_distribution ();
   }
 
-  static void gamma_distribution (void)
+  static void gamma_distribution ()
   {
     if (instance_ok ())
-      m_instance->do_gamma_distribution ();
+      s_instance->do_gamma_distribution ();
   }
 
   // Return the next number from the sequence.
   static double scalar (double a = 1.0)
   {
     return (instance_ok ()
-            ? m_instance->do_scalar (a) : numeric_limits<double>::NaN ());
+            ? s_instance->do_scalar (a) : numeric_limits<double>::NaN ());
   }
 
   // Return the next number from the sequence.
   static float float_scalar (float a = 1.0)
   {
     return (instance_ok ()
-            ? m_instance->do_scalar (a) : numeric_limits<float>::NaN ());
+            ? s_instance->do_scalar (a) : numeric_limits<float>::NaN ());
   }
 
   // Return an array of numbers from the sequence.
   static Array<double> vector (octave_idx_type n, double a = 1.0)
   {
-    return instance_ok () ? m_instance->do_vector (n, a) : Array<double> ();
+    return instance_ok () ? s_instance->do_vector (n, a) : Array<double> ();
   }
 
   // Return an array of numbers from the sequence.
   static Array<float> float_vector (octave_idx_type n, float a = 1.0)
   {
-    return instance_ok () ? m_instance->do_vector (n, a) : Array<float> ();
+    return instance_ok () ? s_instance->do_vector (n, a) : Array<float> ();
   }
 
   // Return an N-dimensional array of numbers from the sequence,
   // filled in column major order.
   static NDArray nd_array (const dim_vector& dims, double a = 1.0)
   {
-    return instance_ok () ? m_instance->do_nd_array (dims, a) : NDArray ();
+    return instance_ok () ? s_instance->do_nd_array (dims, a) : NDArray ();
   }
 
   // Return an N-dimensional array of numbers from the sequence,
@@ -177,15 +179,15 @@ public:
   static FloatNDArray float_nd_array (const dim_vector& dims, float a = 1.0)
   {
     return (instance_ok ()
-            ? m_instance->do_float_nd_array (dims, a) : FloatNDArray ());
+            ? s_instance->do_float_nd_array (dims, a) : FloatNDArray ());
   }
 
 private:
 
-  static rand *m_instance;
+  static rand *s_instance;
 
-  static void cleanup_instance (void)
-  { delete m_instance; m_instance = nullptr; }
+  static void cleanup_instance ()
+  { delete s_instance; s_instance = nullptr; }
 
   enum
   {
@@ -208,7 +210,7 @@ private:
   std::map<int, uint32NDArray> m_rand_states;
 
   // Return the current seed.
-  OCTAVE_API double do_seed (void);
+  OCTAVE_API double do_seed ();
 
   // Set the seed.
   OCTAVE_API void do_seed (double s);
@@ -226,30 +228,30 @@ private:
   OCTAVE_API void do_reset (const std::string& d);
 
   // Return the current distribution.
-  OCTAVE_API std::string do_distribution (void);
+  OCTAVE_API std::string do_distribution ();
 
   // Set the current distribution.  May be either "uniform" (the
   // default), "normal", "exponential", "poisson", or "gamma".
   OCTAVE_API void do_distribution (const std::string& d);
 
-  OCTAVE_API void do_uniform_distribution (void);
+  OCTAVE_API void do_uniform_distribution ();
 
-  OCTAVE_API void do_normal_distribution (void);
+  OCTAVE_API void do_normal_distribution ();
 
-  OCTAVE_API void do_exponential_distribution (void);
+  OCTAVE_API void do_exponential_distribution ();
 
-  OCTAVE_API void do_poisson_distribution (void);
+  OCTAVE_API void do_poisson_distribution ();
 
-  OCTAVE_API void do_gamma_distribution (void);
+  OCTAVE_API void do_gamma_distribution ();
 
   // The following templates only make sense for double and float
   // types.
 
-  template <typename T> OCTAVE_API T uniform (void);
+  template <typename T> OCTAVE_API T uniform ();
 
-  template <typename T> OCTAVE_API T normal (void);
+  template <typename T> OCTAVE_API T normal ();
 
-  template <typename T> OCTAVE_API T exponential (void);
+  template <typename T> OCTAVE_API T exponential ();
 
   template <typename T> OCTAVE_API T poisson (T a);
 
@@ -273,13 +275,13 @@ private:
 
   // Some helper functions.
 
-  OCTAVE_API void initialize_ranlib_generators (void);
+  OCTAVE_API void initialize_ranlib_generators ();
 
-  OCTAVE_API void initialize_mersenne_twister (void);
+  OCTAVE_API void initialize_mersenne_twister ();
 
-  OCTAVE_API uint32NDArray get_internal_state (void);
+  OCTAVE_API uint32NDArray get_internal_state ();
 
-  OCTAVE_API void save_state (void);
+  OCTAVE_API void save_state ();
 
   OCTAVE_API int get_dist_id (const std::string& d);
 

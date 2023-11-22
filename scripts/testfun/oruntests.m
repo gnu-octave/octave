@@ -71,29 +71,34 @@ function run_all_tests (directory, do_class_dirs)
   no_tests = {};
   printf ("Processing files in %s:\n\n", directory);
   fflush (stdout);
-  for i = 1:numel (flist)
-    f = flist{i};
-    if ((length (f) > 2 && strcmpi (f((end-1):end), ".m"))
-        || (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
-      ff = fullfile (directory, f);
-      if (! isfile (ff))
-        continue;
+  unwind_protect
+    old_dir = cd (directory);
+    for i = 1:numel (flist)
+      f = flist{i};
+      if ((length (f) > 2 && strcmpi (f((end-1):end), ".m"))
+          || (length (f) > 3 && strcmpi (f((end-2):end), ".cc")))
+        ff = fullfile (directory, f);
+        if (! isfile (ff))
+          continue;
+        endif
+        if (has_tests (ff))
+          print_test_file_name (f);
+          [p, n, xf, xb, sk, rtsk, rgrs] = test (ff, "quiet");
+          print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
+          fflush (stdout);
+        elseif (has_functions (ff))
+          no_tests(end+1) = f;
+        endif
+      elseif (f(1) == "@")
+        f = fullfile (directory, f);
+        if (isfolder (f))
+          dirs(end+1) = f;
+        endif
       endif
-      if (has_tests (ff))
-        print_test_file_name (f);
-        [p, n, xf, xb, sk, rtsk, rgrs] = test (ff, "quiet");
-        print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
-        fflush (stdout);
-      elseif (has_functions (ff))
-        no_tests(end+1) = f;
-      endif
-    elseif (f(1) == "@")
-      f = fullfile (directory, f);
-      if (isfolder (f))
-        dirs(end+1) = f;
-      endif
-    endif
-  endfor
+    endfor
+  unwind_protect_cleanup
+    cd (old_dir);
+  end_unwind_protect
   if (! isempty (no_tests))
     printf ("\nThe following files in %s have no tests:\n\n", directory);
     printf ("%s", list_in_columns (no_tests));

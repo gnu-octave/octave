@@ -197,20 +197,20 @@ function y = movfun (fcn, x, wlen, varargin)
   clear parser
   ## End parse input arguments
 
+  if (isempty (x))
+    ## Nothing to do.  Return immediately with empty output same shape as input.
+    ## Technically, it would be best to return the correct class, rather than
+    ## always "double", but this seems like a lot of work for little gain.
+    y = zeros (size (x));
+    return;
+  endif
+
   ## If dim was not provided find the first non-singleton dimension.
   szx = size (x);
   if (isempty (dim))
     (dim = find (szx > 1, 1)) || (dim = 1);
   endif
-
   N = szx(dim);
-  if (N == 0)
-    ## Nothing to do.  Return immediately with empty output same shape as input.
-    ## Technically, it would be best to return the correct class, rather than
-    ## always "double", but this seems like a lot of work for little gain.
-    y = zeros (szx);
-    return;
-  endif
 
   ## Calculate slicing indices.  This call also validates WLEN input.
   [slc, C, Cpre, Cpos, win] = movslice (N, wlen);
@@ -237,7 +237,7 @@ function y = movfun (fcn, x, wlen, varargin)
     bcfcn = @replaceval_bc;
     bcfcn (true, bc);  # initialize replaceval function with value
   else
-    switch (tolower (bc))
+    switch (lower (bc))
       case "shrink"
         bcfcn = @shrink_bc;
 
@@ -305,7 +305,23 @@ function y = movfun_oncol (fcn, yclass, x, wlen, bcfcn, slcidx, C, Cpre, Cpos, w
   y = zeros (N, odim, yclass);
 
   ## Process center of data
-  y(C,:) = fcn (x(slcidx));
+  try
+    y(C,:) = fcn (x(slcidx));
+  catch err
+    ## Operation failed, likely because of out-of-memory error for "x(slcidx)".
+    if (! strcmp (err.identifier, "Octave:bad-alloc"))
+      rethrow (err);
+    endif
+
+    ## Try divide and conquer approach with smaller slices of data.
+    ## For loops are slow, so don't try too hard with this approach.
+    N_SLICES = 8;  # configurable
+    idx1 = fix (linspace (1, numel (C), N_SLICES));
+    idx2 = fix (linspace (1, columns (slcidx), N_SLICES));
+    for i = 1 : N_SLICES-1
+      y(C(idx1(i):idx1(i+1)),:) = fcn (x(slcidx(:, idx2(i):idx2(i+1))));
+    endfor
+  end_try_catch
 
   ## Process boundaries
   if (! isempty (Cpre))
@@ -617,7 +633,7 @@ endfunction
 ## outdim > dim
 %!error movfun (@(x) [min(x), max(x)], (1:10).', 3, "Outdim", 3)
 
-## Test for correct return class based on output of function. 
+## Test for correct return class based on output of function.
 %!test <*63802>
 %! x = single (1:10);
 %! y = movfun (@mean, x, 3);

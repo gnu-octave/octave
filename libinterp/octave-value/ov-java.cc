@@ -63,7 +63,6 @@
 #include "oct-process.h"
 #include "oct-shlib.h"
 #include "ov-java.h"
-#include "parse.h"
 #include "variables.h"
 
 #if defined (HAVE_JAVA)
@@ -230,7 +229,7 @@ class JVMArgs
 {
 public:
 
-  JVMArgs (void)
+  JVMArgs ()
   {
     m_vm_args.version = JNI_VERSION_1_6;
     m_vm_args.nOptions = 0;
@@ -238,7 +237,7 @@ public:
     m_vm_args.ignoreUnrecognized = false;
   }
 
-  ~JVMArgs (void)
+  ~JVMArgs ()
   {
     clean ();
   }
@@ -276,7 +275,7 @@ public:
 
 private:
 
-  void clean (void)
+  void clean ()
   {
     if (m_vm_args.options != nullptr)
       {
@@ -290,7 +289,7 @@ private:
       }
   }
 
-  void update (void)
+  void update ()
   {
     clean ();
 
@@ -341,7 +340,7 @@ OCTAVE_END_NAMESPACE(octave)
 //! the options given by @c java.opts.
 
 static std::string
-initial_java_dir (void)
+initial_java_dir ()
 {
   static std::string java_dir;
 
@@ -420,7 +419,7 @@ read_classpath_txt (const std::string& filepath)
 //! @returns The initial classpath.
 
 static std::string
-initial_class_path (void)
+initial_class_path ()
 {
   std::string java_dir = initial_java_dir ();
 
@@ -668,7 +667,7 @@ get_jvm_lib_path_from_registry ()
 //! @see #terminate_jvm()
 
 static void
-initialize_jvm (void)
+initialize_jvm ()
 {
   // Most of the time JVM already exists and has been initialized.
   // Also it seems, as if jvm is set, the jvm is already attached.
@@ -830,7 +829,7 @@ initialize_jvm (void)
 //! @see #initialize_jvm()
 
 static void
-terminate_jvm (void)
+terminate_jvm ()
 {
   // There is nothing to do if jvm is not set (= nullptr).
   if (jvm)
@@ -894,7 +893,7 @@ jstring_to_string (JNIEnv *jni_env, jobject obj)
 //! @returns A reference to jni, if #jvm is present, otherwise @c nullptr.
 
 static inline JNIEnv *
-thread_jni_env (void)
+thread_jni_env ()
 {
   JNIEnv *env = nullptr;
 
@@ -907,7 +906,7 @@ thread_jni_env (void)
 #endif
 
 bool
-octave_java::is_java_string (void) const
+octave_java::is_java_string () const
 {
 #if defined (HAVE_JAVA)
 
@@ -1979,7 +1978,7 @@ get_current_thread_ID (JNIEnv *jni_env)
 //! @returns 0 in any case for good reason.
 
 static int
-java_event_hook (void)
+java_event_hook ()
 {
   JNIEnv *current_env = thread_jni_env ();
 
@@ -2006,7 +2005,7 @@ java_event_hook (void)
 //! @c __java_get__, @c __java_set__, and @c __java2mat__.
 
 static void
-initialize_java (void)
+initialize_java ()
 {
   if (! jvm)
     {
@@ -2038,12 +2037,14 @@ Java_org_octave_Octave_call (JNIEnv *env, jclass, jstring fcnName,
   int nargout = env->GetArrayLength (argout);
   int nargin = env->GetArrayLength (argin);
 
-  octave_value_list varargin, varargout;
+  octave_value_list varargin;
 
   for (int i = 0; i < nargin; i++)
     varargin(i) = box (env, env->GetObjectArrayElement (argin, i), nullptr);
 
-  varargout = octave::feval (fname, varargin, nargout);
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave_value_list varargout = interp.feval (fname, varargin, nargout);
 
   jobjectArray_ref out_objs (env, argout), out_clss (env);
   out_objs.detach ();
@@ -2074,10 +2075,12 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           oct_args(i) = box (env, jobj, nullptr);
         }
 
+      octave::interpreter& interp = octave::__get_interpreter__ ();
+
       if (val.is_function_handle ())
         {
           octave_function *fcn = val.function_value ();
-          octave::feval (fcn, oct_args);
+          interp.feval (fcn, oct_args);
         }
       else if (val.iscell () && val.length () > 0
                && (val.rows () == 1 || val.columns () == 1)
@@ -2089,7 +2092,7 @@ Java_org_octave_Octave_doInvoke (JNIEnv *env, jclass, jint ID,
           for (int i=1; i<c.numel (); i++)
             oct_args(len+i-1) = c(i);
 
-          octave::feval (fcn, oct_args);
+          interp.feval (fcn, oct_args);
         }
       else
         error ("trying to invoke non-invocable object");
@@ -2116,7 +2119,7 @@ Java_org_octave_Octave_needThreadedInvokation (JNIEnv *env, jclass)
 
 //! Ctor.
 
-octave_java::octave_java (void)
+octave_java::octave_java ()
   : octave_base_value (), m_java_object (nullptr), m_java_class (nullptr)
 {
 #if ! defined (HAVE_JAVA)
@@ -2143,16 +2146,16 @@ octave_java::octave_java (const voidptr& jobj, void *jcls)
 #endif
 }
 
-int octave_java::t_id (-1);
+int octave_java::s_t_id (-1);
 
-const std::string octave_java::t_name ("octave_java");
+const std::string octave_java::s_t_name ("octave_java");
 
 void
 octave_java::register_type (octave::type_info& ti)
 {
 #if defined (HAVE_JAVA)
 
-  t_id = ti.register_type (octave_java::t_name, "<unknown>",
+  s_t_id = ti.register_type (octave_java::s_t_name, "<unknown>",
                            octave_value (new octave_java ()));
 
 #else
@@ -2163,7 +2166,7 @@ octave_java::register_type (octave::type_info& ti)
 }
 
 dim_vector
-octave_java::dims (void) const
+octave_java::dims () const
 {
 #if defined (HAVE_JAVA)
 
@@ -2200,10 +2203,10 @@ octave_java::subsref (const std::string& type,
     case '.':
       if (type.length () > 1 && type[1] == '(')
         {
-          octave_value_list ovl;
-          count++;
-          ovl(1) = octave_value (this);
+          octave_value_list ovl (2);
+          m_count++;
           ovl(0) = (idx.front ())(0);
+          ovl(1) = octave_value (this);
           auto it = idx.begin ();
           ovl.append (*++it);
           retval = octave::FjavaMethod (ovl, 1);
@@ -2211,8 +2214,8 @@ octave_java::subsref (const std::string& type,
         }
       else
         {
-          octave_value_list ovl;
-          count++;
+          octave_value_list ovl (2);
+          m_count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
           retval = octave::F__java_get__ (ovl, 1);
@@ -2266,14 +2269,14 @@ octave_java::subsasgn (const std::string& type,
       if (type.length () == 1)
         {
           // field assignment
-          octave_value_list ovl;
-          count++;
+          octave_value_list ovl (3);
+          m_count++;
           ovl(0) = octave_value (this);
           ovl(1) = (idx.front ())(0);
           ovl(2) = rhs;
           octave::F__java_set__ (ovl);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       else if (type.length () > 2 && type[1] == '(')
@@ -2289,7 +2292,7 @@ octave_java::subsasgn (const std::string& type,
           next_idx.erase (next_idx.begin ());
           u(0).subsasgn (type.substr (2), next_idx, rhs);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       else if (type[1] == '.')
@@ -2300,7 +2303,7 @@ octave_java::subsasgn (const std::string& type,
           next_idx.erase (next_idx.begin ());
           u(0).subsasgn (type.substr (1), next_idx, rhs);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       else
@@ -2313,7 +2316,7 @@ octave_java::subsasgn (const std::string& type,
           set_array_elements (current_env, TO_JOBJECT (to_java ()),
                               idx.front (), rhs);
 
-          count++;
+          m_count++;
           retval = octave_value (this);
         }
       break;
@@ -2340,7 +2343,7 @@ octave_java::subsasgn (const std::string& type,
 }
 
 string_vector
-octave_java::map_keys (void) const
+octave_java::map_keys () const
 {
 #if defined (HAVE_JAVA)
 
@@ -3004,7 +3007,7 @@ octave_java::init (void *jobj_arg, void *jcls_arg)
 }
 
 void
-octave_java::release (void)
+octave_java::release ()
 {
 #if defined (HAVE_JAVA)
 

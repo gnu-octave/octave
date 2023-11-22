@@ -121,8 +121,7 @@
 ## inequality constraints @var{g} and @var{h}.  If the arguments are vectors
 ## then @var{x}(i) is bound by @var{lb}(i) and @var{ub}(i).  A bound can also
 ## be a scalar in which case all elements of @var{x} will share the same
-## bound.  If only one bound (lb, ub) is specified then the other will
-## default to (-@var{realmax}, +@var{realmax}).
+## bound.
 ##
 ## The seventh argument @var{maxiter} specifies the maximum number of
 ## iterations.  The default value is 100.
@@ -288,37 +287,43 @@ function [x, obj, info, iter, nf, lambda] = sqp (x0, objf, cef, cif, lb, ub, max
       ## constraint inequality function with bounds present
       lb_idx = ub_idx = true (size (x0));
       ub_grad = - (lb_grad = eye (rows (x0)));
-      if (isvector (lb))
-        globals.lb = tmp_lb = lb(:);
-        lb_idx(:) = tmp_idx = (lb != -Inf);
-        globals.lb = globals.lb(tmp_idx, 1);
-        lb_grad = lb_grad(lb_idx, :);
-      elseif (isempty (lb))
+
+      ## if unspecified set ub and lb to +/-Inf, preserving single type
+      if (isempty (lb))
         if (isa (x0, "single"))
-          globals.lb = tmp_lb = -realmax ("single");
+          lb = - inf (size (x0), "single");
         else
-          globals.lb = tmp_lb = -realmax ();
+          lb = - inf (size (x0));
         endif
+      endif
+
+      if (isvector (lb))
+        lb = lb(:);
+        lb_idx(:) = (lb != -Inf);
+        globals.lb = lb(lb_idx, 1);
+        lb_grad = lb_grad(lb_idx, :);
       else
         error ("sqp: invalid lower bound");
       endif
 
-      if (isvector (ub))
-        globals.ub = tmp_ub = ub(:);
-        ub_idx(:) = tmp_idx = (ub != Inf);
-        globals.ub = globals.ub(tmp_idx, 1);
-        ub_grad = ub_grad(ub_idx, :);
-      elseif (isempty (ub))
+      if (isempty (ub))
         if (isa (x0, "single"))
-          globals.ub = tmp_ub = realmax ("single");
+          ub = inf (size (x0), "single");
         else
-          globals.ub = tmp_ub = realmax ();
+          ub = inf (size (x0));
         endif
+      endif
+
+      if (isvector (ub))
+        ub = ub(:);
+        ub_idx(:) = (ub != Inf);
+        globals.ub = ub(ub_idx, 1);
+        ub_grad = ub_grad(ub_idx, :);
       else
         error ("sqp: invalid upper bound");
       endif
 
-      if (any (tmp_lb > tmp_ub))
+      if (any (globals.lb > globals.ub))
         error ("sqp: upper bound smaller than lower bound");
       endif
       bounds_grad = [lb_grad; ub_grad];
@@ -705,14 +710,31 @@ endfunction
 
 
 function res = cf_ub_lb (x, lbidx, ubidx, globals)
+  ## function returning constraint evaluated at x, and distance between ub/lb
+  ## and x, when they are specified (otherwise return empty)
 
-  ## combine constraint function with ub and lb
-  if (isempty (globals.cifcn))
-    res = [x(lbidx,1)-globals.lb; globals.ub-x(ubidx,1)];
+  ## inequality constraints
+  if (! isempty (globals.cifcn))
+    ci = feval (globals.cifcn, x);
   else
-    res = [feval(globals.cifcn,x); x(lbidx,1)-globals.lb;
-           globals.ub-x(ubidx,1)];
+    ci = [];
   endif
+
+  ## lower bounds
+  if (! isempty (globals.lb))
+    lb = x(lbidx, 1) - globals.lb;
+  else
+    lb = [];
+  endif
+
+  ## upper bounds
+  if (! isempty (globals.ub))
+    ub = globals.ub - x(ubidx, 1);
+  else
+    ub = [];
+  end
+
+  res = [ci; lb; ub];
 
 endfunction
 

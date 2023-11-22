@@ -33,33 +33,30 @@ class QTextBrowser;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class community_news : public QWidget
 {
   Q_OBJECT
 
 public:
 
-  community_news (base_qobject& oct_qobj, int serial);
+  community_news (int serial);
 
-  community_news (base_qobject& oct_qobj, QWidget *parent = nullptr,
+  community_news (QWidget *parent = nullptr,
                   const QString& base_url = "https://octave.org",
                   const QString& page = "community-news.html",
                   int serial = -1);
 
-  ~community_news (void) = default;
+  ~community_news () = default;
 
 public slots:
 
   void set_news (const QString& news);
 
-  void display (void);
+  void display ();
 
 private:
 
-  void construct (base_qobject& oct_qobj, const QString& base_url,
-                  const QString& page, int serial);
+  void construct (const QString& base_url, const QString& page, int serial);
 
   QTextBrowser *m_browser;
 };

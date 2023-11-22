@@ -53,7 +53,7 @@ octave_bool_matrix : public octave_base_matrix<boolNDArray>
 {
 public:
 
-  octave_bool_matrix (void)
+  octave_bool_matrix ()
     : octave_base_matrix<boolNDArray> () { }
 
   octave_bool_matrix (const boolNDArray& bnda)
@@ -77,17 +77,17 @@ public:
   octave_bool_matrix (const octave_bool_matrix& bm)
     : octave_base_matrix<boolNDArray> (bm) { }
 
-  ~octave_bool_matrix (void) = default;
+  ~octave_bool_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_bool_matrix (*this); }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_bool_matrix (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
@@ -95,39 +95,39 @@ public:
            : set_idx_cache (octave::idx_vector (m_matrix));
   }
 
-  builtin_type_t builtin_type (void) const { return btyp_bool; }
+  builtin_type_t builtin_type () const { return btyp_bool; }
 
-  bool is_bool_matrix (void) const { return true; }
+  bool is_bool_matrix () const { return true; }
 
-  bool islogical (void) const { return true; }
+  bool islogical () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool isnumeric (void) const { return false; }
+  bool isnumeric () const { return false; }
 
   int8NDArray
-  int8_array_value (void) const { return int8NDArray (m_matrix); }
+  int8_array_value () const { return int8NDArray (m_matrix); }
 
   int16NDArray
-  int16_array_value (void) const { return int16NDArray (m_matrix); }
+  int16_array_value () const { return int16NDArray (m_matrix); }
 
   int32NDArray
-  int32_array_value (void) const { return int32NDArray (m_matrix); }
+  int32_array_value () const { return int32NDArray (m_matrix); }
 
   int64NDArray
-  int64_array_value (void) const { return int64NDArray (m_matrix); }
+  int64_array_value () const { return int64NDArray (m_matrix); }
 
   uint8NDArray
-  uint8_array_value (void) const { return uint8NDArray (m_matrix); }
+  uint8_array_value () const { return uint8NDArray (m_matrix); }
 
   uint16NDArray
-  uint16_array_value (void) const { return uint16NDArray (m_matrix); }
+  uint16_array_value () const { return uint16NDArray (m_matrix); }
 
   uint32NDArray
-  uint32_array_value (void) const { return uint32NDArray (m_matrix); }
+  uint32_array_value () const { return uint32NDArray (m_matrix); }
 
   uint64NDArray
-  uint64_array_value (void) const { return uint64NDArray (m_matrix); }
+  uint64_array_value () const { return uint64NDArray (m_matrix); }
 
   double double_value (bool = false) const;
 
@@ -194,21 +194,21 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   // Use matrix_ref here to clear index cache.
-  void invert (void) { matrix_ref ().invert (); }
+  void invert () { matrix_ref ().invert (); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 

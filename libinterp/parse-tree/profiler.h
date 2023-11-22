@@ -76,36 +76,28 @@ public:
         }
     }
 
-    // No copying!
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (enter)
 
-    enter (const enter&) = delete;
-
-    enter& operator = (const enter&) = delete;
-
-    ~enter (void)
+    ~enter ()
     {
       if (m_enabled)
         m_profiler.exit_function (m_fcn);
     }
   };
 
-  profiler (void);
+  profiler ();
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (profiler)
 
-  profiler (const profiler&) = delete;
+  virtual ~profiler ();
 
-  profiler& operator = (const profiler&) = delete;
-
-  virtual ~profiler (void);
-
-  bool enabled (void) const { return m_enabled; }
+  bool enabled () const { return m_enabled; }
   void set_active (bool);
 
-  void reset (void);
+  void reset ();
 
-  octave_value get_flat (void) const;
-  octave_value get_hierarchical (void) const;
+  octave_value get_flat () const;
+  octave_value get_hierarchical () const;
 
 private:
 
@@ -115,7 +107,10 @@ private:
   struct stats
   {
   public:
-    stats (void);
+
+    stats ();
+
+    OCTAVE_DEFAULT_COPY_MOVE_DELETE (stats)
 
     typedef std::set<octave_idx_type> function_set;
 
@@ -143,13 +138,9 @@ private:
 
     tree_node (tree_node *, octave_idx_type);
 
-    virtual ~tree_node (void);
+    virtual ~tree_node ();
 
-    // No copying!
-
-    tree_node (const tree_node&) = delete;
-
-    tree_node& operator = (const tree_node&) = delete;
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_node)
 
     void add_time (double dt) { m_time += dt; }
 
@@ -212,12 +203,12 @@ private:
   // This is not static because in the future, maybe we want a flag
   // in the profiler or something to choose between cputime, wall-time,
   // user-time, system-time, ...
-  double query_time (void) const;
+  double query_time () const;
 
   // Add the time elapsed since last_time to the function we're currently in.
   // This is called from two different positions, thus it is useful to have
   // it as a separate function.
-  void add_current_time (void);
+  void add_current_time ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

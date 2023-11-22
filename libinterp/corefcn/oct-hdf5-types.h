@@ -38,16 +38,6 @@ extern bool check_hdf5_types (bool warn = true);
 
 OCTAVE_END_NAMESPACE(octave)
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::check_hdf5_types' instead")
-inline bool check_hdf5_types (bool warn = true)
-{
-  return octave::check_hdf5_types (warn);
-}
-
-#endif
-
 #endif
 
 // Available for C and C++.

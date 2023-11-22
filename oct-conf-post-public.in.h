@@ -39,7 +39,7 @@
    OCTAVE_ATTRIBUTE_NAME in place of vendor specific attribute
    mechanisms.  As compilers evolve, the underlying implementation can
    be changed with the macro definitions below.  FIXME: Update macros
-   to use C++ standard attribute syntax when Octave moves to C++ 2011
+   to use C++ standard attribute syntax when Octave moves to C++ 2014
    standard.  */
 
 #if defined (__GNUC__)
@@ -64,6 +64,16 @@
 /* #  undef HAVE_OCTAVE_DEPRECATED_ATTR */
 /* #  undef HAVE_OCTAVE_NORETURN_ATTR */
 /* #  undef HAVE_OCTAVE_UNUSED_ATTR */
+#endif
+
+/* Branch hint macros for use in if condititions.
+   Returns logical value of x. */
+#if defined (__GNUC__)
+#  define OCTAVE_LIKELY(x) __builtin_expect (!!(x), 1)
+#  define OCTAVE_UNLIKELY(x) __builtin_expect (!!(x), 0)
+#else
+#  define OCTAVE_LIKELY(x) !!(x)
+#  define OCTAVE_UNLIKELY(x) !!(x)
 #endif
 
 #if defined (__MINGW32__)
@@ -318,6 +328,83 @@ octave_unused_parameter (const T&)
 
 #if defined (__cplusplus) && ! defined (OCTAVE_THREAD_LOCAL)
 #  define OCTAVE_THREAD_LOCAL
+#endif
+
+#if defined (__cplusplus)
+#  define OCTAVE_DISABLE_COPY(X)                \
+  X (const X&) = delete;                        \
+  X& operator = (const X&) = delete;
+
+#  define OCTAVE_DISABLE_MOVE(X)                \
+  X (X&&) = delete;                             \
+  X (const X&&) = delete;                       \
+  X& operator = (X&&) = delete;                 \
+  X& operator = (const X&&) = delete;
+
+#  define OCTAVE_DISABLE_COPY_MOVE(X)           \
+  OCTAVE_DISABLE_COPY (X)                       \
+  OCTAVE_DISABLE_MOVE (X)
+
+#  define OCTAVE_DISABLE_COPY_MOVE_ASGN(X)      \
+  X& operator = (const X&) = delete;            \
+  X& operator = (X&&) = delete;                 \
+  X& operator = (const X&&) = delete;
+
+#  define OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE(X) \
+  X () = delete;                                \
+  OCTAVE_DISABLE_COPY (X)                       \
+  OCTAVE_DISABLE_MOVE (X)
+
+#  define OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE_DELETE(X)  \
+  X () = delete;                                        \
+  OCTAVE_DISABLE_COPY (X)                               \
+  OCTAVE_DISABLE_MOVE (X)                               \
+  ~X () = delete;
+
+#  define OCTAVE_DEFAULT_COPY(X)                \
+  X (const X&) = default;                       \
+  X& operator = (const X&) = default;
+
+#  define OCTAVE_DEFAULT_MOVE(X)                \
+  X (X&&) = default;                            \
+  X& operator = (X&&) = default;
+
+#  define OCTAVE_DEFAULT_COPY_MOVE(X)           \
+  OCTAVE_DEFAULT_COPY (X)                       \
+  OCTAVE_DEFAULT_MOVE (X)
+
+#  define OCTAVE_DEFAULT_COPY_MOVE_CTOR(X)      \
+  X (const X&) = default;                       \
+  X (X&&) = default;
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY(X)      \
+  X () = default;                               \
+  OCTAVE_DEFAULT_COPY (X)
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE(X) \
+  X () = default;                               \
+  OCTAVE_DEFAULT_COPY_MOVE (X)
+
+#  define OCTAVE_DEFAULT_COPY_DELETE(X)         \
+  OCTAVE_DEFAULT_COPY (X)                       \
+  ~X () = default;
+
+#  define OCTAVE_DEFAULT_COPY_MOVE_DELETE(X)    \
+  OCTAVE_DEFAULT_COPY_MOVE (X)                  \
+  ~X () = default;
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_DELETE(X)    \
+  X () = default;                               \
+  ~X () = default;
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY_DELETE(X)       \
+  OCTAVE_DEFAULT_CONSTRUCT_DELETE (X)                   \
+  OCTAVE_DEFAULT_COPY (X)                               \
+
+#  define OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE(X)  \
+  OCTAVE_DEFAULT_CONSTRUCT_DELETE (X)                   \
+  OCTAVE_DEFAULT_COPY_MOVE (X)
+
 #endif
 
 typedef OCTAVE_IDX_TYPE octave_idx_type;

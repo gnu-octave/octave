@@ -69,7 +69,7 @@ function str = regexptranslate (op, s)
     error ("regexptranslate: operation OP must be a string");
   endif
 
-  op = tolower (op);
+  op = lower (op);
   if (strcmp ("wildcard", op))
     str = strrep (strrep (strrep (s, '.', '\.'),
                                      '*', '.*'),

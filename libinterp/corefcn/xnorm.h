@@ -48,36 +48,4 @@ xfrobnorm (const octave_value& x);
 
 OCTAVE_END_NAMESPACE(octave)
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::xnorm' instead")
-inline octave_value
-xnorm (const octave_value& x, const octave_value& p)
-{
-  return octave::xnorm (x, p);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::xcolnorms' instead")
-inline octave_value
-xcolnorms (const octave_value& x, const octave_value& p)
-{
-  return octave::xcolnorms (x, p);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::xrownorms' instead")
-inline octave_value
-xrownorms (const octave_value& x, const octave_value& p)
-{
-  return octave::xrownorms (x, p);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::xfrobnorm' instead")
-inline octave_value
-xfrobnorm (const octave_value& x)
-{
-  return octave::xfrobnorm (x);
-}
-
-#endif
-
 #endif

@@ -33,23 +33,22 @@ class QObject;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class BaseControl : public Object
 {
 public:
-  BaseControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  BaseControl (octave::interpreter& interp,
                const graphics_object& go, QWidget *w);
-  ~BaseControl (void);
+  ~BaseControl ();
 
-  Container * innerContainer (void) { return nullptr; }
+  Container * innerContainer () { return nullptr; }
 
   bool eventFilter (QObject *watched, QEvent *e);
 
 protected:
   void init (QWidget *w, bool callBase = false);
-  void redraw (void);
+  void redraw ();
   void update (int pId);
 
 private:

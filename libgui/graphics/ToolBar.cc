@@ -42,11 +42,10 @@
 #include "QtHandlesUtils.h"
 
 #include "gui-preferences-global.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-static QIcon makeEmptyIcon (void)
+static QIcon makeEmptyIcon ()
 {
   QPixmap pix (16, 16);
 
@@ -69,7 +68,7 @@ addEmptyAction (QToolBar *bar)
 }
 
 ToolBar *
-ToolBar::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+ToolBar::create (octave::interpreter& interp,
                  const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
@@ -79,16 +78,16 @@ ToolBar::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
       QWidget *parentWidget = parent->qWidget<QWidget> ();
 
       if (parentWidget)
-        return new ToolBar (oct_qobj, interp, go,
+        return new ToolBar (interp, go,
                             new QToolBar (parentWidget));
     }
 
   return nullptr;
 }
 
-ToolBar::ToolBar (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+ToolBar::ToolBar (octave::interpreter& interp,
                   const graphics_object& go, QToolBar *bar)
-  : Object (oct_qobj, interp, go, bar), m_empty (nullptr), m_figure (nullptr)
+  : Object (interp, go, bar), m_empty (nullptr), m_figure (nullptr)
 {
   uitoolbar::properties& tp = properties<uitoolbar> ();
 
@@ -109,7 +108,7 @@ ToolBar::ToolBar (octave::base_qobject& oct_qobj, octave::interpreter& interp,
   bar->installEventFilter (this);
 }
 
-ToolBar::~ToolBar (void)
+ToolBar::~ToolBar ()
 { }
 
 void
@@ -169,13 +168,13 @@ ToolBar::eventFilter (QObject *watched, QEvent *xevent)
 }
 
 void
-ToolBar::hideEmpty (void)
+ToolBar::hideEmpty ()
 {
   m_empty->setVisible (false);
 }
 
 void
-ToolBar::beingDeleted (void)
+ToolBar::beingDeleted ()
 {
   if (m_figure)
     {

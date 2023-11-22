@@ -44,15 +44,11 @@ public:
                  mach_info::float_format ff = mach_info::native_float_format ())
     : base_stream (m, ff), m_name (n) { }
 
-  // No copying!
-
-  base_iostream (const base_iostream&) = delete;
-
-  base_iostream& operator = (const base_iostream&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_iostream)
 
 protected:
 
-  ~base_iostream (void) = default;
+  ~base_iostream () = default;
 
 public:
 
@@ -62,25 +58,25 @@ public:
 
   // Return current stream position.
 
-  off_t tell (void);
+  off_t tell ();
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const;
+  bool eof () const;
 
   // The name of the file.
 
-  std::string name (void) const { return m_name; }
+  std::string name () const { return m_name; }
 
 protected:
 
-  void invalid_operation (void) const;
+  void invalid_operation () const;
 
 private:
 
   std::string m_name;
 
-  virtual const char * stream_type (void) const = 0;
+  virtual const char * stream_type () const = 0;
 };
 
 class
@@ -93,32 +89,28 @@ public:
       m_istream (arg)
   { }
 
+  OCTAVE_DISABLE_COPY_MOVE (istream)
+
   static stream
   create (std::istream *arg = nullptr, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const;
+  bool eof () const;
 
-  std::istream * input_stream (void) { return m_istream; }
+  std::istream * input_stream () { return m_istream; }
 
-  std::ostream * output_stream (void) { return nullptr; }
+  std::ostream * output_stream () { return nullptr; }
 
 protected:
 
-  ~istream (void) = default;
+  ~istream () = default;
 
 private:
 
   std::istream *m_istream;
 
-  const char * stream_type (void) const { return "istream"; }
-
-  // No copying!
-
-  istream (const istream&) = delete;
-
-  istream& operator = (const istream&) = delete;
+  const char * stream_type () const { return "istream"; }
 };
 
 class
@@ -131,47 +123,30 @@ public:
       m_ostream (arg)
   { }
 
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (ostream)
+
   static stream
   create (std::ostream *arg, const std::string& n = "");
 
   // Return nonzero if EOF has been reached on this stream.
 
-  bool eof (void) const;
+  bool eof () const;
 
-  std::istream * input_stream (void) { return nullptr; }
+  std::istream * input_stream () { return nullptr; }
 
-  std::ostream * output_stream (void) { return m_ostream; }
+  std::ostream * output_stream () { return m_ostream; }
 
 protected:
 
-  ~ostream (void) = default;
+  ~ostream () = default;
 
 private:
 
   std::ostream *m_ostream;
 
-  const char * stream_type (void) const { return "ostream"; }
-
-  // No copying!
-
-  ostream (const ostream&) = delete;
-
-  ostream& operator = (const ostream&) = delete;
+  const char * stream_type () const { return "ostream"; }
 };
 
 OCTAVE_END_NAMESPACE(octave)
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::base_iostream' instead")
-typedef octave::base_iostream octave_base_iostream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::istream' instead")
-typedef octave::istream octave_istream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::ostream' instead")
-typedef octave::ostream octave_ostream;
-
-#endif
 
 #endif

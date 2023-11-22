@@ -102,7 +102,7 @@ ft_manager
 {
 private:
 
-  ft_manager (void)
+  ft_manager ()
     : m_library (), m_freetype_initialized (false),
       m_fontconfig_initialized (false)
   {
@@ -121,15 +121,11 @@ private:
 
 public:
 
-  // No copying!
-
-  ft_manager (const ft_manager&) = delete;
-
-  ft_manager& operator = (const ft_manager&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (ft_manager)
 
 private:
 
-  ~ft_manager (void)
+  ~ft_manager ()
   {
     if (m_freetype_initialized)
       FT_Done_FreeType (m_library);
@@ -146,42 +142,42 @@ private:
 
 public:
 
-  static bool instance_ok (void)
+  static bool instance_ok ()
   {
     bool retval = true;
 
-    if (! m_instance)
+    if (! s_instance)
       {
-        m_instance = new ft_manager ();
+        s_instance = new ft_manager ();
         singleton_cleanup_list::add (cleanup_instance);
       }
 
     return retval;
   }
 
-  static void cleanup_instance (void)
-  { delete m_instance; m_instance = nullptr; }
+  static void cleanup_instance ()
+  { delete s_instance; s_instance = nullptr; }
 
   static FT_Face get_font (const std::string& name, const std::string& weight,
                            const std::string& angle, double size,
                            FT_ULong c = 0)
   {
     return (instance_ok ()
-            ? m_instance->do_get_font (name, weight, angle, size, c)
+            ? s_instance->do_get_font (name, weight, angle, size, c)
             : nullptr);
   }
 
-  static octave_map get_system_fonts (void)
+  static octave_map get_system_fonts ()
   {
     return (instance_ok ()
-            ? m_instance->do_get_system_fonts ()
+            ? s_instance->do_get_system_fonts ()
             : octave_map ());
   }
 
   static void font_destroyed (FT_Face face)
   {
     if (instance_ok ())
-      m_instance->do_font_destroyed (face);
+      s_instance->do_font_destroyed (face);
   }
 
 private:
@@ -189,7 +185,7 @@ private:
   typedef std::pair<std::string, double> ft_key;
   typedef std::map<ft_key, FT_Face> ft_cache;
 
-  static octave_map do_get_system_fonts (void)
+  static octave_map do_get_system_fonts ()
   {
     static octave_map font_map;
 
@@ -434,7 +430,7 @@ private:
 
   //--------
 
-  static ft_manager *m_instance;
+  static ft_manager *s_instance;
 
   // Cache the fonts loaded by FreeType.  This cache only contains
   // weak references to the fonts, strong references are only present
@@ -446,7 +442,7 @@ private:
   bool m_fontconfig_initialized;
 };
 
-ft_manager *ft_manager::m_instance = nullptr;
+ft_manager *ft_manager::s_instance = nullptr;
 
 static void
 ft_face_destroyed (void *object)
@@ -468,7 +464,7 @@ public:
 
 public:
 
-  ft_text_renderer (void)
+  ft_text_renderer ()
     : base_text_renderer (), m_font (), m_bbox (1, 4, 0.0), m_halign (0),
       m_xoffset (0), m_line_yoffset (0), m_yoffset (0), m_mode (MODE_BBOX),
       m_color (dim_vector (1, 3), 0), m_do_strlist (false), m_strlist (),
@@ -476,13 +472,9 @@ public:
       m_max_fontsize (0), m_antialias (true)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (ft_text_renderer)
 
-  ft_text_renderer (const ft_text_renderer&) = delete;
-
-  ft_text_renderer& operator = (const ft_text_renderer&) = delete;
-
-  ~ft_text_renderer (void) = default;
+  ~ft_text_renderer () = default;
 
   void visit (text_element_string& e);
 
@@ -504,11 +496,11 @@ public:
 
   void visit (text_element_combined& e);
 
-  void reset (void);
+  void reset ();
 
-  uint8NDArray get_pixels (void) const { return m_pixels; }
+  uint8NDArray get_pixels () const { return m_pixels; }
 
-  Matrix get_boundingbox (void) const { return m_bbox; }
+  Matrix get_boundingbox () const { return m_bbox; }
 
   uint8NDArray render (text_element *elt, Matrix& box,
                        int rotation = ROTATION_0);
@@ -522,7 +514,7 @@ public:
   void set_font (const std::string& name, const std::string& weight,
                  const std::string& angle, double size);
 
-  octave_map get_system_fonts (void);
+  octave_map get_system_fonts ();
 
   void set_color (const Matrix& c);
 
@@ -543,7 +535,7 @@ private:
   {
   public:
 
-    ft_font (void)
+    ft_font ()
       : text_renderer::font (), m_face (nullptr) { }
 
     ft_font (const std::string& nm, const std::string& wt,
@@ -553,7 +545,7 @@ private:
 
     ft_font (const ft_font& ft);
 
-    ~ft_font (void)
+    ~ft_font ()
     {
       if (m_face)
         FT_Done_Face (m_face);
@@ -561,20 +553,20 @@ private:
 
     ft_font& operator = (const ft_font& ft);
 
-    bool is_valid (void) const { return get_face (); }
+    bool is_valid () const { return get_face (); }
 
-    FT_Face get_face (void) const;
+    FT_Face get_face () const;
 
   private:
 
     mutable FT_Face m_face;
   };
 
-  void push_new_line (void);
+  void push_new_line ();
 
-  void update_line_bbox (void);
+  void update_line_bbox ();
 
-  void compute_bbox (void);
+  void compute_bbox ();
 
   int compute_line_xoffset (const Matrix& lb) const;
 
@@ -660,13 +652,13 @@ ft_text_renderer::set_font (const std::string& name,
 }
 
 octave_map
-ft_text_renderer::get_system_fonts (void)
+ft_text_renderer::get_system_fonts ()
 {
   return ft_manager::get_system_fonts ();
 }
 
 void
-ft_text_renderer::push_new_line (void)
+ft_text_renderer::push_new_line ()
 {
   switch (m_mode)
     {
@@ -727,7 +719,7 @@ ft_text_renderer::compute_line_xoffset (const Matrix& lb) const
 }
 
 void
-ft_text_renderer::compute_bbox (void)
+ft_text_renderer::compute_bbox ()
 {
   // Stack the various line bbox together and compute the final
   // bounding box for the entire text string.
@@ -761,7 +753,7 @@ ft_text_renderer::compute_bbox (void)
 }
 
 void
-ft_text_renderer::update_line_bbox (void)
+ft_text_renderer::update_line_bbox ()
 {
   // Called after a font change, when in MODE_BBOX mode, to update the
   // current line bbox with the new font metrics.  This also includes the
@@ -1368,7 +1360,7 @@ ft_text_renderer::visit (text_element_combined& e)
 }
 
 void
-ft_text_renderer::reset (void)
+ft_text_renderer::reset ()
 {
   set_mode (MODE_BBOX);
   set_color (Matrix (1, 3, 0.0));
@@ -1509,7 +1501,7 @@ ft_text_renderer::ft_font::operator = (const ft_font& ft)
 }
 
 FT_Face
-ft_text_renderer::ft_font::get_face (void) const
+ft_text_renderer::ft_font::get_face () const
 {
   if (! m_face && ! m_name.empty ())
     {
@@ -1534,7 +1526,7 @@ OCTAVE_END_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 base_text_renderer *
-make_ft_text_renderer (void)
+make_ft_text_renderer ()
 {
 #if defined (HAVE_FREETYPE)
   return new ft_text_renderer ();

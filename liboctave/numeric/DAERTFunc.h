@@ -37,7 +37,7 @@ public:
 
   typedef ColumnVector (*DAERTConstrFunc) (const ColumnVector& x, double t);
 
-  DAERTFunc (void)
+  DAERTFunc ()
     : DAEFunc (), m_constr (nullptr), m_reset (true) { }
 
   DAERTFunc (DAERHSFunc f)
@@ -66,9 +66,9 @@ public:
     return *this;
   }
 
-  virtual ~DAERTFunc (void) = default;
+  virtual ~DAERTFunc () = default;
 
-  DAERTConstrFunc constraint_function (void) const { return m_constr; }
+  DAERTConstrFunc constraint_function () const { return m_constr; }
 
   DAERTFunc& set_constraint_function (DAERTConstrFunc cf)
   {

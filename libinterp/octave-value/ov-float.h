@@ -56,7 +56,7 @@ octave_float_scalar : public octave_base_scalar<float>
 {
 public:
 
-  octave_float_scalar (void)
+  octave_float_scalar ()
     : octave_base_scalar<float> (0.0) { }
 
   octave_float_scalar (float d)
@@ -65,15 +65,15 @@ public:
   octave_float_scalar (const octave_float_scalar& s)
     : octave_base_scalar<float> (s) { }
 
-  ~octave_float_scalar (void) = default;
+  ~octave_float_scalar () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_float_scalar (*this); }
 
   // We return an octave_matrix here instead of an octave_float_scalar so
   // that in expressions like A(2,2,2) = 2 (for A previously
   // undefined), A will be empty instead of a 1x1 object.
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_float_matrix (); }
 
   octave_value do_index_op (const octave_value_list& idx,
@@ -85,51 +85,51 @@ public:
   octave_value any (int = 0) const
   { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }
 
-  builtin_type_t builtin_type (void) const { return btyp_float; }
+  builtin_type_t builtin_type () const { return btyp_float; }
 
-  bool is_real_scalar (void) const { return true; }
+  bool is_real_scalar () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_single_type (void) const { return true; }
+  bool is_single_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   int8NDArray
-  int8_array_value (void) const
+  int8_array_value () const
   { return int8NDArray (dim_vector (1, 1), scalar); }
 
   int16NDArray
-  int16_array_value (void) const
+  int16_array_value () const
   { return int16NDArray (dim_vector (1, 1), scalar); }
 
   int32NDArray
-  int32_array_value (void) const
+  int32_array_value () const
   { return int32NDArray (dim_vector (1, 1), scalar); }
 
   int64NDArray
-  int64_array_value (void) const
+  int64_array_value () const
   { return int64NDArray (dim_vector (1, 1), scalar); }
 
   uint8NDArray
-  uint8_array_value (void) const
+  uint8_array_value () const
   { return uint8NDArray (dim_vector (1, 1), scalar); }
 
   uint16NDArray
-  uint16_array_value (void) const
+  uint16_array_value () const
   { return uint16NDArray (dim_vector (1, 1), scalar); }
 
   uint32NDArray
-  uint32_array_value (void) const
+  uint32_array_value () const
   { return uint32NDArray (dim_vector (1, 1), scalar); }
 
   uint64NDArray
-  uint64_array_value (void) const
+  uint64_array_value () const
   { return uint64NDArray (dim_vector (1, 1), scalar); }
 
 #define DEFINE_INT_SCALAR_VALUE(TYPE)         \
   octave_ ## TYPE                             \
-  TYPE ## _scalar_value (void) const          \
+  TYPE ## _scalar_value () const          \
   {                                           \
     return octave_ ## TYPE (scalar);          \
   }
@@ -220,18 +220,18 @@ public:
     return boolNDArray (dim_vector (1, 1), scalar);
   }
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   // We don't need to override both forms of the diag method.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -242,9 +242,9 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  void increment (void) { ++scalar; }
+  void increment () { ++scalar; }
 
-  void decrement (void) { --scalar; }
+  void decrement () { --scalar; }
 
   bool save_ascii (std::ostream& os);
 

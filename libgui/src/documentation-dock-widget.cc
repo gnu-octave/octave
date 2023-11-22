@@ -33,10 +33,9 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-documentation_dock_widget::documentation_dock_widget (QWidget *p,
-                                                      base_qobject& oct_qobj)
-: octave_dock_widget ("DocumentationDockWidget", p, oct_qobj),
-  m_docs (new documentation (this, oct_qobj))
+documentation_dock_widget::documentation_dock_widget (QWidget *p)
+  : octave_dock_widget ("DocumentationDockWidget", p),
+    m_docs (new documentation (this))
 {
   set_title (tr ("Documentation"));
   setStatusTip (tr ("See the documentation for help."));
@@ -47,28 +46,28 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p,
     make_window ();
 }
 
-void documentation_dock_widget::notice_settings (const gui_settings *settings)
+void documentation_dock_widget::notice_settings ()
 {
-  m_docs->notice_settings (settings);
+  m_docs->notice_settings ();
 }
 
-void documentation_dock_widget::save_settings (void)
+void documentation_dock_widget::save_settings ()
 {
   m_docs->save_settings ();
   octave_dock_widget::save_settings ();
 }
 
-void documentation_dock_widget::copyClipboard (void)
+void documentation_dock_widget::copyClipboard ()
 {
   m_docs->copyClipboard ();
 }
 
-void documentation_dock_widget::pasteClipboard (void)
+void documentation_dock_widget::pasteClipboard ()
 {
   m_docs->pasteClipboard ();
 }
 
-void documentation_dock_widget::selectAll (void)
+void documentation_dock_widget::selectAll ()
 {
   m_docs->selectAll ();
 }

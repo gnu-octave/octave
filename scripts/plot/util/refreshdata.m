@@ -79,7 +79,7 @@ function refreshdata (h, workspace)
           || ! any (strcmpi (workspace, {"base", "caller"})))
         error ('refreshdata: WORKSPACE must be "base" or "caller"');
       endif
-      workspace = tolower (workspace);
+      workspace = lower (workspace);
     endif
   endif
 

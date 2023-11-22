@@ -46,13 +46,9 @@ public:
   tree_command (int l = -1, int c = -1)
     : tree (l, c) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_command)
 
-  tree_command (const tree_command&) = delete;
-
-  tree_command& operator = (const tree_command&) = delete;
-
-  virtual ~tree_command (void) = default;
+  virtual ~tree_command () = default;
 };
 
 // No-op.
@@ -65,27 +61,23 @@ public:
                       int l = -1, int c = -1)
     : tree_command (l, c), m_eof (e), m_orig_cmd (cmd) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_no_op_command)
 
-  tree_no_op_command (const tree_no_op_command&) = delete;
-
-  tree_no_op_command& operator = (const tree_no_op_command&) = delete;
-
-  ~tree_no_op_command (void) = default;
+  ~tree_no_op_command () = default;
 
   void accept (tree_walker& tw)
   {
     tw.visit_no_op_command (*this);
   }
 
-  bool is_end_of_fcn_or_script (void) const
+  bool is_end_of_fcn_or_script () const
   {
     return (m_orig_cmd == "endfunction" || m_orig_cmd == "endscript");
   }
 
-  bool is_end_of_file (void) const { return m_eof; }
+  bool is_end_of_file () const { return m_eof; }
 
-  std::string original_command (void) { return m_orig_cmd; }
+  std::string original_command () { return m_orig_cmd; }
 
 private:
 
@@ -103,20 +95,16 @@ public:
   tree_function_def (octave_function *f, int l = -1, int c = -1)
     : tree_command (l, c), m_fcn (f) { }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_function_def)
 
-  tree_function_def (const tree_function_def&) = delete;
-
-  tree_function_def& operator = (const tree_function_def&) = delete;
-
-  ~tree_function_def (void) = default;
+  ~tree_function_def () = default;
 
   void accept (tree_walker& tw)
   {
     tw.visit_function_def (*this);
   }
 
-  octave_value function (void) { return m_fcn; }
+  octave_value function () { return m_fcn; }
 
 private:
 

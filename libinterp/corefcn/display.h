@@ -42,32 +42,32 @@ public:
   // initialize to find the actual system parameters for the given
   // display.
 
-  display_info (void)
+  display_info ()
     : m_rx (72), m_ry (72), m_ht (1), m_wd (1), m_dp (0),
       m_dpy_avail (false), m_msg ()
   { }
 
-  ~display_info (void) = default;
+  ~display_info () = default;
 
   display_info (const display_info&) = default;
 
   display_info& operator = (const display_info&) = default;
 
-  void initialize (void);
+  void initialize ();
 
-  double x_dpi (void) const { return m_rx; }
+  double x_dpi () const { return m_rx; }
 
-  double y_dpi (void) const { return m_ry; }
+  double y_dpi () const { return m_ry; }
 
-  int height (void) const { return m_ht; }
+  int height () const { return m_ht; }
 
-  int width (void) const { return m_wd; }
+  int width () const { return m_wd; }
 
-  int depth (void) const { return m_dp; }
+  int depth () const { return m_dp; }
 
-  bool display_available (void) const { return m_dpy_avail; }
+  bool display_available () const { return m_dpy_avail; }
 
-  std::string message (void) const { return m_msg; }
+  std::string message () const { return m_msg; }
 
 private:
 

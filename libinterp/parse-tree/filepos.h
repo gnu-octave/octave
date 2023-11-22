@@ -34,7 +34,7 @@ class filepos
 {
 public:
 
-  filepos (void) : m_line (0), m_column (0) { }
+  filepos () : m_line (0), m_column (0) { }
 
   filepos (int l, int c) : m_line (l), m_column (c) { }
 
@@ -42,15 +42,15 @@ public:
 
   filepos& operator = (const filepos&) = default;
 
-  ~filepos (void) = default;
+  ~filepos () = default;
 
   operator bool () { return m_line > 0 && m_column > 0; }
 
   void line (int l) { m_line = l; }
   void column (int c) { m_column = c; }
 
-  int line (void) const { return m_line; }
-  int column (void) const { return m_column; }
+  int line () const { return m_line; }
+  int column () const { return m_column; }
 
   void increment_line (int val = 1) { m_line += val; }
   void increment_column (int val = 1) { m_column += val; }
@@ -58,7 +58,7 @@ public:
   void decrement_line (int val = 1) { m_line -= val; }
   void decrement_column (int val = 1) { m_column -= val; }
 
-  void next_line (void)
+  void next_line ()
   {
     m_line++;
     m_column = 1;

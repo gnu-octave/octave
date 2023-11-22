@@ -49,7 +49,7 @@ sparse_qr
 {
 public:
 
-  OCTAVE_API sparse_qr (void);
+  OCTAVE_API sparse_qr ();
 
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
   // order = 7 selects SPQR default ordering
@@ -60,22 +60,22 @@ public:
 
   sparse_qr (const sparse_qr& a) = default;
 
-  ~sparse_qr (void) = default;
+  ~sparse_qr () = default;
 
   sparse_qr& operator = (const sparse_qr& a) = default;
 
-  OCTAVE_API bool ok (void) const;
+  OCTAVE_API bool ok () const;
 
-  OCTAVE_API ColumnVector E (void) const;
+  OCTAVE_API ColumnVector E () const;
 
   // constructs permutation matrix from permutation vector rep -> E()
   OCTAVE_API SparseMatrix E_MAT () const;
 
-  OCTAVE_API SPARSE_T V (void) const;
+  OCTAVE_API SPARSE_T V () const;
 
-  OCTAVE_API ColumnVector Pinv (void) const;
+  OCTAVE_API ColumnVector Pinv () const;
 
-  OCTAVE_API ColumnVector P (void) const;
+  OCTAVE_API ColumnVector P () const;
 
   OCTAVE_API SPARSE_T R (bool econ = false) const;
 

@@ -54,12 +54,17 @@ public:
       m_etype (ct)
   { }
 
-  octave_value::compound_binary_op cop_type (void) const { return m_etype; }
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_compound_binary_expression)
 
-  bool rvalue_ok (void) const { return true; }
+  // FIXME: who is responsibile for deleting M_LHS and M_RHS?
+  ~tree_compound_binary_expression () = default;
 
-  tree_expression * clhs (void) { return m_lhs; }
-  tree_expression * crhs (void) { return m_rhs; }
+  octave_value::compound_binary_op cop_type () const { return m_etype; }
+
+  bool rvalue_ok () const { return true; }
+
+  tree_expression * clhs () { return m_lhs; }
+  tree_expression * crhs () { return m_rhs; }
 
   octave_value evaluate (tree_evaluator&, int nargout = 1);
 
@@ -79,13 +84,6 @@ private:
   tree_expression *m_rhs;
 
   octave_value::compound_binary_op m_etype;
-
-  // No copying!
-
-  tree_compound_binary_expression (const tree_compound_binary_expression&) = delete;
-
-  tree_compound_binary_expression&
-  operator = (const tree_compound_binary_expression&) = delete;
 };
 
 // a "virtual constructor"

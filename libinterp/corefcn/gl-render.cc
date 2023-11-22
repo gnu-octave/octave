@@ -40,6 +40,7 @@
 #include "oct-locbuf.h"
 
 #include "errwarn.h"
+#include "gh-manager.h"
 #include "gl-render.h"
 #include "interpreter-private.h"
 #include "oct-opengl.h"
@@ -113,7 +114,9 @@ private:
         m_tx (double(m_w)/m_tw), m_ty (double(m_h)/m_th), m_valid (true)
     { }
 
-    ~texture_rep (void)
+    OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (texture_rep)
+
+    ~texture_rep ()
     {
       if (m_valid)
         m_glfcns.glDeleteTextures (1, &m_id);
@@ -141,6 +144,8 @@ private:
 
 public:
 
+  opengl_texture () = delete;
+
   opengl_texture (opengl_functions& glfcns)
     : m_rep (new texture_rep (glfcns))
   { }
@@ -150,11 +155,7 @@ public:
     : m_rep (new texture_rep (glfcns, id, w, h, tw, th))
   { }
 
-  opengl_texture (const opengl_texture&) = default;
-
-  ~opengl_texture (void) = default;
-
-  opengl_texture& operator = (const opengl_texture&) = default;
+  OCTAVE_DEFAULT_COPY_DELETE (opengl_texture)
 
   static opengl_texture create (opengl_functions& glfcns,
                                 const octave_value& data);
@@ -163,7 +164,7 @@ public:
 
   void tex_coord (double q, double r) const { m_rep->tex_coord (q, r); }
 
-  bool is_valid (void) const { return m_rep->m_valid; }
+  bool is_valid () const { return m_rep->m_valid; }
 
 private:
 
@@ -345,20 +346,16 @@ public:
 #if defined (HAVE_FRAMEWORK_OPENGL) && defined (HAVE_GLUTESSCALLBACK_THREEDOTS)
   typedef GLvoid (CALLBACK *fcn) (...);
 #else
-  typedef void (CALLBACK *fcn) (void);
+  typedef void (CALLBACK *fcn) ();
 #endif
 
 public:
 
-  opengl_tessellator (void) : m_glu_tess (nullptr), m_fill () { init (); }
+  opengl_tessellator () : m_glu_tess (nullptr), m_fill () { init (); }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (opengl_tessellator)
 
-  opengl_tessellator (const opengl_tessellator&) = delete;
-
-  opengl_tessellator operator = (const opengl_tessellator&) = delete;
-
-  virtual ~opengl_tessellator (void)
+  virtual ~opengl_tessellator ()
   { if (m_glu_tess) gluDeleteTess (m_glu_tess); }
 
   void begin_polygon (bool filled = true)
@@ -369,13 +366,13 @@ public:
     gluTessBeginPolygon (m_glu_tess, this);
   }
 
-  void end_polygon (void) const
+  void end_polygon () const
   { gluTessEndPolygon (m_glu_tess); }
 
-  void begin_contour (void) const
+  void begin_contour () const
   { gluTessBeginContour (m_glu_tess); }
 
-  void end_contour (void) const
+  void end_contour () const
   { gluTessEndContour (m_glu_tess); }
 
   void add_vertex (double *loc, void *data) const
@@ -384,7 +381,7 @@ public:
 protected:
   virtual void begin (GLenum /*type*/) { }
 
-  virtual void end (void) { }
+  virtual void end () { }
 
   virtual void vertex (void * /*data*/) { }
 
@@ -396,7 +393,7 @@ protected:
   virtual void error (GLenum err)
   { ::error ("OpenGL tessellation error (%d)", err); }
 
-  virtual void init (void)
+  virtual void init ()
   {
     m_glu_tess = gluNewTess ();
 
@@ -414,7 +411,7 @@ protected:
                      reinterpret_cast<fcn> (tess_error));
   }
 
-  bool is_filled (void) const { return m_fill; }
+  bool is_filled () const { return m_fill; }
 
 private:
   static void CALLBACK tess_begin (GLenum type, void *t)
@@ -450,7 +447,7 @@ public:
   {
   public:
 
-    vertex_data_rep (void)
+    vertex_data_rep ()
       : m_coords (), m_color (), m_vertex_normal (), m_face_normal (),
         m_alpha (), m_ambient (), m_diffuse (), m_specular (),
         m_specular_exp (), m_specular_color_refl ()
@@ -463,6 +460,10 @@ public:
         m_face_normal (fn), m_alpha (a), m_ambient (as), m_diffuse (ds),
         m_specular (ss), m_specular_exp (se), m_specular_color_refl (scr)
     { }
+
+    OCTAVE_DEFAULT_COPY (vertex_data_rep)
+
+    ~vertex_data_rep () = default;
 
     Matrix m_coords;
     Matrix m_color;
@@ -479,7 +480,7 @@ public:
 public:
 
   // Required to instantiate std::list<vertex_data> objects.
-  vertex_data (void) : m_rep (nil_rep ()) { }
+  vertex_data () : m_rep (nil_rep ()) { }
 
   vertex_data (const Matrix& c, const Matrix& col, const Matrix& vn,
                const Matrix& fn, double a, float as, float ds, float ss,
@@ -489,15 +490,15 @@ public:
 
   vertex_data (const vertex_data&) = default;
 
-  ~vertex_data (void) = default;
+  ~vertex_data () = default;
 
   vertex_data& operator = (const vertex_data&) = default;
 
-  vertex_data_rep * get_rep (void) const { return m_rep.get (); }
+  vertex_data_rep * get_rep () const { return m_rep.get (); }
 
 private:
 
-  static std::shared_ptr<vertex_data_rep> nil_rep (void)
+  static std::shared_ptr<vertex_data_rep> nil_rep ()
   {
     static std::shared_ptr<vertex_data_rep> nr (new vertex_data_rep ());
 
@@ -511,12 +512,17 @@ class
 opengl_renderer::patch_tessellator : public opengl_tessellator
 {
 public:
+
   patch_tessellator (opengl_renderer *r, int cmode, int lmode, bool fl,
                      float idx = 0.0)
     : opengl_tessellator (), m_renderer (r),
       m_color_mode (cmode), m_light_mode (lmode), m_face_lighting (fl),
       m_index (idx), m_first (true), m_tmp_vdata ()
   { }
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (patch_tessellator)
+
+  ~patch_tessellator () = default;
 
 protected:
   void begin (GLenum type)
@@ -537,7 +543,7 @@ protected:
     glfcns.glBegin (type);
   }
 
-  void end (void)
+  void end ()
   {
     opengl_functions& glfcns = m_renderer->get_opengl_functions ();
 
@@ -656,12 +662,8 @@ protected:
 
 private:
 
-  // No copying!
-
-  patch_tessellator (const patch_tessellator&) = delete;
-
-  patch_tessellator& operator = (const patch_tessellator&) = delete;
-
+  // FIXME: We don't own this object; should it be a shared/weak/unique
+  // pointer?  Managed some other way?
   opengl_renderer *m_renderer;
   int m_color_mode;
   int m_light_mode;
@@ -1252,7 +1254,7 @@ opengl_renderer::get_pixels (int width, int height)
 }
 
 void
-opengl_renderer::finish (void)
+opengl_renderer::finish ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -1584,7 +1586,8 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
       // X ticks and grid properties
       Matrix xticks = m_xform.xscale (props.get_xtick ().matrix_value ());
       Matrix xmticks = m_xform.xscale (props.get_xminortickvalues ().matrix_value ());
-      bool do_xminortick = props.is_xminortick () && ! xticks.isempty ();
+      bool do_xtick = ! props.tickdir_is ("none") && ! xticks.isempty ();
+      bool do_xminortick = do_xtick && props.is_xminortick ();
       string_vector xticklabels = props.get_xticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
@@ -1685,20 +1688,23 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
         }
 
       // tick marks
-      if (tick_along_z)
-        render_tickmarks (xticks, x_min, x_max,
-                          is_origin ? y_axis_pos : ypTick, ypTick,
-                          zpTick, zpTickN, 0., 0.,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (zpTick-zpTickN)*fz*xticklen,
-                          0, ! is_origin && mirror);
-      else
-        render_tickmarks (xticks, x_min, x_max,
-                          is_origin ? y_axis_pos : ypTick, ypTickN,
-                          zpTick, zpTick, 0.,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (ypTick-ypTickN)*fy*xticklen,
-                          0., 0, ! is_origin && mirror);
+      if (do_xtick)
+        {
+          if (tick_along_z)
+            render_tickmarks (xticks, x_min, x_max,
+                              is_origin ? y_axis_pos : ypTick, ypTick,
+                              zpTick, zpTickN, 0., 0.,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (zpTick-zpTickN)*fz*xticklen,
+                              0, ! is_origin && mirror);
+          else
+            render_tickmarks (xticks, x_min, x_max,
+                              is_origin ? y_axis_pos : ypTick, ypTickN,
+                              zpTick, zpTick, 0.,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (ypTick-ypTickN)*fy*xticklen,
+                              0., 0, ! is_origin && mirror);
+        }
 
       // tick texts
       if (xticklabels.numel () > 0)
@@ -1780,7 +1786,8 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
       // Y ticks and grid properties
       Matrix yticks = m_xform.yscale (props.get_ytick ().matrix_value ());
       Matrix ymticks = m_xform.yscale (props.get_yminortickvalues ().matrix_value ());
-      bool do_yminortick = props.is_yminortick () && ! yticks.isempty ();
+      bool do_ytick = ! props.tickdir_is ("none") && ! yticks.isempty ();
+      bool do_yminortick = do_ytick && props.is_yminortick ();
       string_vector yticklabels = props.get_yticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
@@ -1882,20 +1889,23 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
         }
 
       // tick marks
-      if (tick_along_z)
-        render_tickmarks (yticks, y_min, y_max,
-                          is_origin ? x_axis_pos : xpTick, xpTick,
-                          zpTick, zpTickN, 0., 0.,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (zpTick-zpTickN)*fz*yticklen,
-                          1, ! is_origin && mirror);
-      else
-        render_tickmarks (yticks, y_min, y_max,
-                          is_origin ? x_axis_pos : xpTick, xpTickN,
-                          zpTick, zpTick,
-                          (is_origin_low ? -1. : 1.) *
-                          math::signum (xPlaneN-xPlane)*fx*yticklen,
-                          0., 0., 1, ! is_origin && mirror);
+      if (do_ytick)
+        {
+          if (tick_along_z)
+            render_tickmarks (yticks, y_min, y_max,
+                              is_origin ? x_axis_pos : xpTick, xpTick,
+                              zpTick, zpTickN, 0., 0.,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (zpTick-zpTickN)*fz*yticklen,
+                              1, ! is_origin && mirror);
+          else
+            render_tickmarks (yticks, y_min, y_max,
+                              is_origin ? x_axis_pos : xpTick, xpTickN,
+                              zpTick, zpTick,
+                              (is_origin_low ? -1. : 1.) *
+                              math::signum (xPlaneN-xPlane)*fx*yticklen,
+                              0., 0., 1, ! is_origin && mirror);
+        }
 
       // tick texts
       if (yticklabels.numel () > 0)
@@ -1966,7 +1976,8 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
       // Z ticks and grid properties
       Matrix zticks = m_xform.zscale (props.get_ztick ().matrix_value ());
       Matrix zmticks = m_xform.zscale (props.get_zminortickvalues ().matrix_value ());
-      bool do_zminortick = props.is_zminortick () && ! zticks.isempty ();
+      bool do_ztick = ! props.tickdir_is ("none") && ! zticks.isempty ();
+      bool do_zminortick = do_ztick && props.is_zminortick ();
       string_vector zticklabels = props.get_zticklabel ().string_vector_value ();
       int wmax = 0;
       int hmax = 0;
@@ -2061,31 +2072,34 @@ opengl_renderer::draw_axes_z_grid (const axes::properties& props)
         }
 
       // tick marks
-      if (xySym)
+      if (do_ztick)
         {
-          if (math::isinf (fy))
-            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
-                              yPlane, yPlane,
-                              math::signum (xPlaneN-xPlane)*fx*zticklen,
-                              0., 0., 2, mirror);
+          if (xySym)
+            {
+              if (math::isinf (fy))
+                render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                                  yPlane, yPlane,
+                                  math::signum (xPlaneN-xPlane)*fx*zticklen,
+                                  0., 0., 2, mirror);
+              else
+                render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
+                                  yPlane, yPlane, 0.,
+                                  math::signum (yPlane-yPlaneN)*fy*zticklen,
+                                  0., 2, false);
+            }
           else
-            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlaneN,
-                              yPlane, yPlane, 0.,
-                              math::signum (yPlane-yPlaneN)*fy*zticklen,
-                              0., 2, false);
-        }
-      else
-        {
-          if (math::isinf (fx))
-            render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
-                              yPlaneN, yPlane, 0.,
-                              math::signum (yPlaneN-yPlane)*fy*zticklen,
-                              0., 2, mirror);
-          else
-            render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
-                              yPlaneN, yPlane,
-                              math::signum (xPlane-xPlaneN)*fx*zticklen,
-                              0., 0., 2, false);
+            {
+              if (math::isinf (fx))
+                render_tickmarks (zticks, z_min, z_max, xPlaneN, xPlane,
+                                  yPlaneN, yPlane, 0.,
+                                  math::signum (yPlaneN-yPlane)*fy*zticklen,
+                                  0., 2, mirror);
+              else
+                render_tickmarks (zticks, z_min, z_max, xPlane, xPlane,
+                                  yPlaneN, yPlane,
+                                  math::signum (xPlane-xPlaneN)*fx*zticklen,
+                                  0., 0., 2, false);
+            }
         }
 
       // tick texts
@@ -2172,7 +2186,7 @@ opengl_renderer::draw_all_lights (const base_properties& props,
     {
       graphics_object go = gh_mgr.get_object (children(i));
 
-      base_properties p = go.get_properties ();
+      base_properties& p = go.get_properties ();
 
       if (p.is_visible ()
           || (m_selecting && p.pickableparts_is ("all")))
@@ -2272,10 +2286,8 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
 
   m_glfcns.glDisable (GL_DEPTH_TEST);
 
-  for (it = obj_list.begin (); it != obj_list.end (); it++)
+  for (const graphics_object& go : obj_list)
     {
-      graphics_object go = (*it);
-
       set_clipping (go.get_properties ().is_clipping ());
       draw (go);
     }
@@ -3880,7 +3892,7 @@ opengl_renderer::draw_hggroup (const hggroup::properties& props)
 }
 
 void
-opengl_renderer::set_ortho_coordinates (void)
+opengl_renderer::set_ortho_coordinates ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -3905,7 +3917,7 @@ opengl_renderer::set_ortho_coordinates (void)
 }
 
 void
-opengl_renderer::restore_previous_coordinates (void)
+opengl_renderer::restore_previous_coordinates ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -4100,7 +4112,7 @@ opengl_renderer::draw_texture_image (const octave_value cdata, Matrix x,
   // Expect RGB data
   if (dv.ndims () == 3 && (dv(2) == 3 || dv(2) == 4))
     {
-      opengl_texture tex  = opengl_texture::create (m_glfcns, cdata);
+      opengl_texture tex = opengl_texture::create (m_glfcns, cdata);
       if (tex.is_valid ())
         {
           m_glfcns.glColor4d (1.0, 1.0, 1.0, 1.0);
@@ -4191,7 +4203,7 @@ opengl_renderer::set_viewport (int w, int h)
 }
 
 Matrix
-opengl_renderer::get_viewport_scaled (void) const
+opengl_renderer::get_viewport_scaled () const
 {
   Matrix retval (1, 4, 0.0);
 
@@ -4497,7 +4509,7 @@ opengl_renderer::change_marker (const std::string& m, double size)
 }
 
 void
-opengl_renderer::end_marker (void)
+opengl_renderer::end_marker ()
 {
 #if defined (HAVE_OPENGL)
 
@@ -4573,7 +4585,7 @@ opengl_renderer::draw_marker (double x, double y, double z,
 }
 
 void
-opengl_renderer::init_maxlights (void)
+opengl_renderer::init_maxlights ()
 {
 #if defined (HAVE_OPENGL)
 

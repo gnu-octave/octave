@@ -58,40 +58,40 @@ public:
 
   base_fcn_handle (const base_fcn_handle&) = default;
 
-  virtual ~base_fcn_handle (void) = default;
+  virtual ~base_fcn_handle () = default;
 
-  virtual base_fcn_handle * clone (void) const = 0;
+  virtual base_fcn_handle * clone () const = 0;
 
-  virtual std::string type (void) const = 0;
+  virtual std::string type () const = 0;
 
-  virtual bool is_internal (void) const { return false; }
+  virtual bool is_internal () const { return false; }
 
-  virtual bool is_simple (void) const { return false; }
+  virtual bool is_simple () const { return false; }
 
-  virtual bool is_scoped (void) const { return false; }
+  virtual bool is_scoped () const { return false; }
 
-  virtual bool is_nested (void) const { return false; }
+  virtual bool is_nested () const { return false; }
 
   virtual bool is_nested (const std::shared_ptr<stack_frame>&) const
   {
     return false;
   }
 
-  virtual bool is_weak_nested (void) const { return false; }
+  virtual bool is_weak_nested () const { return false; }
 
-  virtual bool is_class_simple (void) const { return false; }
+  virtual bool is_class_simple () const { return false; }
 
-  virtual bool is_anonymous (void) const { return false; }
+  virtual bool is_anonymous () const { return false; }
 
-  virtual bool is_weak_anonymous (void) const { return false; }
+  virtual bool is_weak_anonymous () const { return false; }
 
-  virtual octave_value make_weak_nested_handle (void) const;
+  virtual octave_value make_weak_nested_handle () const;
 
-  virtual octave_value make_weak_anonymous_handle (void) const;
+  virtual octave_value make_weak_anonymous_handle () const;
 
-  std::string fcn_name (void) const { return m_name; }
+  std::string fcn_name () const { return m_name; }
 
-  std::string file (void) const { return m_file; }
+  std::string file () const { return m_file; }
 
   octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx,
@@ -112,16 +112,16 @@ public:
     return nullptr;
   }
 
-  virtual octave_value fcn_val (void) { return octave_value (); }
+  virtual octave_value fcn_val () { return octave_value (); }
 
-  virtual octave_value workspace (void) const { return octave_value (); }
+  virtual octave_value workspace () const { return octave_value (); }
 
   // Should be const.
-  virtual octave_scalar_map info (void) { return octave_scalar_map (); }
+  virtual octave_scalar_map info () { return octave_scalar_map (); }
 
   virtual void set_dispatch_class (const std::string& /*class_name*/) { }
 
-  virtual std::string get_dispatch_class (void) const { return ""; }
+  virtual std::string get_dispatch_class () const { return ""; }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
@@ -146,13 +146,24 @@ public:
   { }
 
   // Function handles are printed without a newline by default.
-  virtual bool print_as_scalar (void) const { return true; }
+  virtual bool print_as_scalar () const { return true; }
 
   virtual bool
   set_fcn (const std::string& /*octaveroot*/, const std::string& /*fpath*/)
   {
     return false;
   }
+
+  virtual octave_function *
+  get_cached_fcn (void *, void *) { return nullptr; }
+
+  virtual octave_function *
+  get_cached_fcn (const octave_value_list&) { return nullptr; }
+
+  virtual bool
+  has_function_cache (void) const { return false; }
+
+  virtual void compile () {}
 
 protected:
 
@@ -182,7 +193,7 @@ public:
   // Creates an invalid function handle.  Used to create generic
   // function handle objects when loading function handles.  Further
   // dispatch happens in the octave_fcn_handle load/save functions.
-  octave_fcn_handle (void);
+  octave_fcn_handle ();
 
   // Create a handle to a built-in or internal function.
   octave_fcn_handle (const octave_value& fcn);
@@ -221,18 +232,23 @@ public:
                      const std::shared_ptr<octave::stack_frame>& closure_frames
                      = std::shared_ptr<octave::stack_frame> ());
 
+  // Create a simple function handle that is not bound to a function.
+  // Lookup happens when a function call is attempted and the function
+  // lookup is cached in a octave_fcn_cache.
+  octave_fcn_handle (const std::string& name, octave_value cache);
+
   octave_fcn_handle (octave::base_fcn_handle *rep);
 
   octave_fcn_handle (const octave_fcn_handle& fh);
 
-  ~octave_fcn_handle (void) = default;
+  ~octave_fcn_handle () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   {
     return new octave_fcn_handle (*this);
   }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   {
     return new octave_fcn_handle ();
   }
@@ -258,44 +274,44 @@ public:
 
   octave_value_list call (int nargout, const octave_value_list& args);
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  builtin_type_t builtin_type (void) const { return btyp_func_handle; }
+  builtin_type_t builtin_type () const { return btyp_func_handle; }
 
-  bool is_function_handle (void) const { return true; }
+  bool is_function_handle () const { return true; }
 
-  bool is_internal (void) const { return m_rep->is_internal (); }
+  bool is_internal () const { return m_rep->is_internal (); }
 
-  bool is_simple (void) const { return m_rep->is_simple (); }
+  bool is_simple () const { return m_rep->is_simple (); }
 
-  bool is_scoped (void) const { return m_rep->is_scoped (); }
+  bool is_scoped () const { return m_rep->is_scoped (); }
 
-  bool is_nested (void) const { return m_rep->is_nested (); }
+  bool is_nested () const { return m_rep->is_nested (); }
 
   bool is_nested (const std::shared_ptr<octave::stack_frame>& frame) const
   {
     return m_rep->is_nested (frame);
   }
 
-  bool is_weak_nested (void) const { return m_rep->is_weak_nested (); }
+  bool is_weak_nested () const { return m_rep->is_weak_nested (); }
 
-  bool is_class_simple (void) const { return m_rep->is_class_simple (); }
+  bool is_class_simple () const { return m_rep->is_class_simple (); }
 
-  bool is_anonymous (void) const { return m_rep->is_anonymous (); }
+  bool is_anonymous () const { return m_rep->is_anonymous (); }
 
-  bool is_weak_anonymous (void) const { return m_rep->is_weak_anonymous (); }
+  bool is_weak_anonymous () const { return m_rep->is_weak_anonymous (); }
 
-  octave_value make_weak_nested_handle (void) const
+  octave_value make_weak_nested_handle () const
   {
     return m_rep->make_weak_nested_handle ();
   }
 
-  octave_value make_weak_anonymous_handle (void) const
+  octave_value make_weak_anonymous_handle () const
   {
     return m_rep->make_weak_anonymous_handle ();
   }
 
-  dim_vector dims (void) const;
+  dim_vector dims () const;
 
   // FIXME: These must go away.  They don't do the right thing for
   // scoping or overloads.
@@ -311,24 +327,24 @@ public:
 
   octave_fcn_handle * fcn_handle_value (bool = false) { return this; }
 
-  octave_value fcn_val (void) { return m_rep->fcn_val (); }
+  octave_value fcn_val () { return m_rep->fcn_val (); }
 
   // FCN_NAME should be eliminated.
-  std::string fcn_name (void) const { return m_rep->fcn_name (); }
+  std::string fcn_name () const { return m_rep->fcn_name (); }
 
-  octave_value workspace (void) const
+  octave_value workspace () const
   {
     return m_rep->workspace ();
   }
 
-  octave_scalar_map info (void) { return m_rep->info (); }
+  octave_scalar_map info () { return m_rep->info (); }
 
   void set_dispatch_class (const std::string& class_name)
   {
     m_rep->set_dispatch_class (class_name);
   }
 
-  std::string get_dispatch_class (void) const
+  std::string get_dispatch_class () const
   {
     return m_rep->get_dispatch_class ();
   }
@@ -356,16 +372,32 @@ public:
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
   // Simple function handles are printed without a newline.
-  bool print_as_scalar (void) const { return m_rep->print_as_scalar (); }
+  bool print_as_scalar () const { return m_rep->print_as_scalar (); }
 
   friend bool
   is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2);
 
+  octave_function *
+  get_cached_fcn (void *beg, void *end) { return m_rep->get_cached_fcn (beg, end); }
+
+  octave_function *
+  get_cached_fcn (const octave_value_list& args) { return m_rep->get_cached_fcn (args); }
+
+  bool has_function_cache (void) const { return m_rep->has_function_cache (); }
+
+  vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    if (m_rep->has_function_cache ())
+      return vm_call_dispatch_type::CALL;
+    return vm_call_dispatch_type::SUBSREF;
+  }
+
+  void compile () { m_rep->compile (); }
 private:
 
   std::shared_ptr<octave::base_fcn_handle> m_rep;
 
-  octave::base_fcn_handle * get_rep (void) const { return m_rep.get (); }
+  octave::base_fcn_handle * get_rep () const { return m_rep.get (); }
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

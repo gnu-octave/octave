@@ -117,7 +117,7 @@ function [data, conv_kernel, sz, std_dev] = __parse_smooth3_args__ (data, method
             "of positive odd integers"]);
   endif
 
-  switch (tolower (method))
+  switch (lower (method))
     case {"b", "box"}
       conv_kernel = ones (sz) / prod (sz);
 

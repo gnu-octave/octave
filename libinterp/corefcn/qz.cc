@@ -59,15 +59,10 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-// FIXME: Matlab does not produce lambda as the first output argument.
-// Compatibility problem?
-
 DEFUN (qz, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{lambda} =} qz (@var{A}, @var{B})
-@deftypefnx {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}, @var{lambda}] =} qz (@var{A}, @var{B})
-@deftypefnx {} {[@var{AA}, @var{BB}, @var{Z}] =} qz (@var{A}, @var{B}, @var{opt})
-@deftypefnx {} {[@var{AA}, @var{BB}, @var{Z}, @var{lambda}] =} qz (@var{A}, @var{B}, @var{opt})
+@deftypefn {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B})
+@deftypefnx {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B}, @var{opt})
 Compute the QZ@tie{}decomposition of a generalized eigenvalue problem.
 
 The generalized eigenvalue problem is defined as
@@ -81,27 +76,17 @@ $$A x = \lambda B x$$
 
 @end ifnottex
 
-There are three calling forms of the function:
+There are two calling forms of the function:
 
 @enumerate
-@item @code{@var{lambda} = qz (@var{A}, @var{B})}
-
-Compute the generalized eigenvalues
-@tex
-$\lambda.$
-@end tex
-@ifnottex
-@var{lambda}.
-@end ifnottex
-
 @item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}, @var{lambda}] = qz (@var{A}, @var{B})}
 
-Compute QZ@tie{}decomposition, generalized eigenvectors, and generalized
+Compute the complex QZ@tie{}decomposition, generalized eigenvectors, and generalized
 eigenvalues.
 @tex
 $$ AA = Q^T AZ, BB = Q^T BZ $$
-$$ AV = BV{ \rm diag }(\lambda) $$
-$$ W^T A = { \rm diag }(\lambda)W^T B $$
+$$ { \rm diag }(BB)AV = BV{ \rm diag }(AA) $$
+$$ { \rm diag }(BB) W^T A = { \rm diag }(AA) W^T B $$
 @end tex
 @ifnottex
 
@@ -109,58 +94,32 @@ $$ W^T A = { \rm diag }(\lambda)W^T B $$
 @group
 
 @var{AA} = @var{Q} * @var{A} * @var{Z}, @var{BB} = @var{Q} * @var{B} * @var{Z}
-@var{A} * @var{V} = @var{B} * @var{V} * diag (@var{lambda})
-@var{W}' * @var{A} = diag (@var{lambda}) * @var{W}' * @var{B}
+@var{A} * @var{V} * diag (diag (@var{BB})) = @var{B} * @var{V} * diag (diag (@var{AA}))
+diag (diag (@var{BB})) * @var{W}' * @var{A} = diag (diag (@var{AA})) * @var{W}' * @var{B}
 
 @end group
 @end example
 
 @end ifnottex
-with @var{Q} and @var{Z} orthogonal (unitary for complex case).
+with @var{AA} and @var{BB} upper triangular, and @var{Q} and @var{Z}
+unitary. The matrices @var{V} and @var{W} respectively contain the right
+and left generalized eigenvectors.
 
 @item @code{[@var{AA}, @var{BB}, @var{Z} @{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}
 
-As in form 2 above, but allows ordering of generalized eigenpairs for, e.g.,
-solution of discrete time algebraic @nospell{Riccati} equations.  Form 3 is not
-available for complex matrices, and does not compute the generalized
-eigenvectors @var{V}, @var{W}, nor the orthogonal matrix @var{Q}.
+The @var{opt} argument must be equal to either @qcode{"real"} or
+@qcode{"complex"}. If it is equal to @qcode{"complex"}, then this
+calling form is equivalent to the first one with only two input
+arguments.
 
-@table @var
-@item opt
-for ordering eigenvalues of the @nospell{GEP} pencil.  The leading block of
-the revised pencil contains all eigenvalues that satisfy:
+If @var{opt} is equal to @qcode{"real"}, then the real QZ decomposition
+is computed. In particular, @var{AA} is only guaranteed to be
+quasi-upper triangular with 1-by-1 and 2-by-2 blocks on the diagonal,
+and @var{Q} and @var{Z} are orthogonal. The identities mentioned above
+for right and left generalized eigenvectors are only verified if
+@var{AA} is upper triangular (i.e., when all the generalized eigenvalues
+are real, in which case the real and complex QZ coincide).
 
-@table @asis
-@item @qcode{"N"}
-unordered (default)
-
-@item @qcode{"S"}
-small: leading block has all
-@tex
-$|\lambda| < 1$
-@end tex
-@ifnottex
-|@var{lambda}| < 1
-@end ifnottex
-
-@item @qcode{"B"}
-big: leading block has all
-@tex
-$|\lambda| \geq 1$
-@end tex
-@ifnottex
-|@var{lambda}| @geq{} 1
-@end ifnottex
-
-@item @qcode{"-"}
-negative real part: leading block has all eigenvalues in the open left
-half-plane
-
-@item @qcode{"+"}
-non-negative real part: leading block has all eigenvalues in the closed right
-half-plane
-@end table
-@end table
 @end enumerate
 
 Note: @code{qz} performs permutation balancing, but not scaling
@@ -177,65 +136,29 @@ compatibility with @sc{matlab}.
                 << ", nargout = " << nargout << std::endl;
 #endif
 
-  if (nargin < 2 || nargin > 3 || nargout > 7)
+  if (nargin < 2 || nargin > 3 || nargout > 6)
     print_usage ();
 
-  if (nargin == 3 && (nargout < 3 || nargout > 4))
-    error ("qz: invalid number of output arguments for form 3 call");
-
-#if defined (DEBUG)
-  octave_stdout << "qz: determine ordering option" << std::endl;
-#endif
-
-  // Determine ordering option.
-
-  char ord_job = 'N';
-  double safmin = 0.0;
+  bool complex_case = true;
 
   if (nargin == 3)
     {
       std::string opt = args(2).xstring_value ("qz: OPT must be a string");
 
-      if (opt.empty ())
-        error ("qz: OPT must be a non-empty string");
-
-      ord_job = std::toupper (opt[0]);
-
-      std::string valid_opts = "NSB+-";
-
-      if (valid_opts.find_first_of (ord_job) == std::string::npos)
-        error ("qz: invalid order option '%c'", ord_job);
-
-      // overflow constant required by dlag2
-      F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG2 ("S", 1),
-                                   safmin
-                                   F77_CHAR_ARG_LEN (1));
-
-#if defined (DEBUG_EIG)
-      octave_stdout << "qz: initial value of safmin="
-                    << setiosflags (std::ios::scientific)
-                    << safmin << std::endl;
-#endif
-
-      // Some machines (e.g., DEC alpha) get safmin = 0;
-      // for these, use eps instead to avoid problems in dlag2.
-      if (safmin == 0)
+      if (opt == "real")
         {
-#if defined (DEBUG_EIG)
-          octave_stdout << "qz: DANGER WILL ROBINSON: safmin is 0!"
-                        << std::endl;
-#endif
-
-          F77_FUNC (xdlamch, XDLAMCH) (F77_CONST_CHAR_ARG2 ("E", 1),
-                                       safmin
-                                       F77_CHAR_ARG_LEN (1));
-
-#if defined (DEBUG_EIG)
-          octave_stdout << "qz: safmin set to "
-                        << setiosflags (std::ios::scientific)
-                        << safmin << std::endl;
-#endif
+          if (args(0).iscomplex () || args(1).iscomplex ())
+            {
+              warning ("qz: ignoring 'real' option with complex matrices");
+              complex_case = true;
+            }
+          else
+            complex_case = false;
         }
+      else if (opt == "complex")
+        complex_case = true;
+      else
+        error ("qz: OPT must be 'real' or 'complex'");
     }
 
 #if defined (DEBUG)
@@ -251,12 +174,7 @@ compatibility with @sc{matlab}.
                 << std::endl;
 #endif
 
-  if (args(0).isempty ())
-    {
-      warn_empty_arg ("qz: A");
-      return octave_value_list (2, Matrix ());
-    }
-  else if (nc != nn)
+  if (nc != nn)
     err_square_matrix_required ("qz", "A");
 
   // Matrix A: get value.
@@ -287,13 +205,6 @@ compatibility with @sc{matlab}.
   else
     bb = args(1).matrix_value ();
 
-  // Both matrices loaded, now check whether to calculate complex or real val.
-
-  bool complex_case = (args(0).iscomplex () || args(1).iscomplex ());
-
-  if (nargin == 3 && complex_case)
-    error ("qz: cannot re-order complex qz decomposition");
-
   // First, declare variables used in both the real and complex cases.
   // FIXME: There are a lot of excess variables declared.
   //        Probably a better way to handle this.
@@ -303,7 +214,7 @@ compatibility with @sc{matlab}.
   ComplexMatrix CQ (nn, nn), CZ (nn, nn), CVR (nn, nn), CVL (nn, nn);
   F77_INT ilo, ihi, info;
   char comp_q = (nargout >= 3 ? 'V' : 'N');
-  char comp_z = ((nargout >= 4 || nargin == 3)? 'V' : 'N');
+  char comp_z = (nargout >= 4 ? 'V' : 'N');
 
   // Initialize Q, Z to identity matrix if either is needed
   if (comp_q == 'V' || comp_z == 'V')
@@ -365,44 +276,6 @@ compatibility with @sc{matlab}.
     }
 
   // Only permutation balance above is done.  Skip scaling balance.
-
-#if 0
-  // Since we just want the balancing matrices, we can use dggbal
-  // for both the real and complex cases; left first
-
-  if (comp_q == 'V')
-    {
-      F77_XFCN (dggbak, DGGBAK,
-                (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                 F77_CONST_CHAR_ARG2 ("L", 1),
-                 nn, ilo, ihi, lscale.data (), rscale.data (),
-                 nn, QQ.fortran_vec (), nn, info
-                 F77_CHAR_ARG_LEN (1)
-                 F77_CHAR_ARG_LEN (1)));
-
-#if defined (DEBUG)
-      if (comp_q == 'V')
-        octave_stdout << "qz: balancing done; QQ =\n" << QQ << std::endl;
-#endif
-    }
-
-  // then right
-  if (comp_z == 'V')
-    {
-      F77_XFCN (dggbak, DGGBAK,
-                (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                 F77_CONST_CHAR_ARG2 ("R", 1),
-                 nn, ilo, ihi, lscale.data (), rscale.data (),
-                 nn, ZZ.fortran_vec (), nn, info
-                 F77_CHAR_ARG_LEN (1)
-                 F77_CHAR_ARG_LEN (1)));
-
-#if defined (DEBUG)
-      if (comp_z == 'V')
-        octave_stdout << "qz: balancing done; ZZ=\n" << ZZ << std::endl;
-#endif
-    }
-#endif
 
   char qz_job = (nargout < 2 ? 'E' : 'S');
 
@@ -575,127 +448,6 @@ compatibility with @sc{matlab}.
 
     }
 
-  // Order the QZ decomposition?
-  if (ord_job != 'N')
-    {
-      if (complex_case)
-        // Probably not needed, but better be safe.
-        error ("qz: cannot re-order complex QZ decomposition");
-
-#if defined (DEBUG_SORT)
-      octave_stdout << "qz: ordering eigenvalues: ord_job = "
-                    << ord_job << std::endl;
-#endif
-
-      Array<F77_LOGICAL> select (dim_vector (nn, 1));
-
-      for (int j = 0; j < nn; j++)
-        {
-          switch (ord_job)
-            {
-            case 'S':
-              select(j) = alphar(j)*alphar(j) + alphai(j)*alphai(j) < betar(j)*betar(j);
-              break;
-
-            case 'B':
-              select(j) = alphar(j)*alphar(j) + alphai(j)*alphai(j) >= betar(j)*betar(j);
-              break;
-
-            case '+':
-              select(j) = alphar(j) * betar(j) >= 0;
-              break;
-
-            case '-':
-              select(j) = alphar(j) * betar(j) < 0;
-              break;
-
-            default:
-              // Invalid order option
-              // (should never happen since options were checked at the top).
-              panic_impossible ();
-              break;
-            }
-        }
-
-      F77_LOGICAL wantq = 0, wantz = (comp_z == 'V');
-      F77_INT ijob = 0, mm, lrwork3 = 4*nn+16, liwork = nn;
-      F77_DBLE pl, pr;
-      RowVector rwork3(lrwork3);
-      Array<F77_INT> iwork (dim_vector (liwork, 1));
-
-      F77_XFCN (dtgsen, DTGSEN,
-                (ijob, wantq, wantz,
-                 select.fortran_vec (), nn,
-                 aa.fortran_vec (), nn,
-                 bb.fortran_vec (), nn,
-                 alphar.fortran_vec (),
-                 alphai.fortran_vec (),
-                 betar.fortran_vec (),
-                 nullptr, nn,
-                 ZZ.fortran_vec (), nn,
-                 mm,
-                 pl, pr,
-                 nullptr,
-                 rwork3.fortran_vec (), lrwork3,
-                 iwork.fortran_vec (), liwork,
-                 info));
-
-#if defined (DEBUG_SORT)
-      octave_stdout << "qz: back from dtgsen: aa =\n";
-      octave_print_internal (octave_stdout, aa);
-      octave_stdout << "\nbb =\n";
-      octave_print_internal (octave_stdout, bb);
-      if (comp_z == 'V')
-        {
-          octave_stdout << "\nZZ =\n";
-          octave_print_internal (octave_stdout, ZZ);
-        }
-      octave_stdout << "\nqz: info=" << info;
-      octave_stdout << "\nalphar =\n";
-      octave_print_internal (octave_stdout, Matrix (alphar));
-      octave_stdout << "\nalphai =\n";
-      octave_print_internal (octave_stdout, Matrix (alphai));
-      octave_stdout << "\nbeta =\n";
-      octave_print_internal (octave_stdout, Matrix (betar));
-      octave_stdout << std::endl;
-#endif
-    }
-
-  // Compute the generalized eigenvalues as well?
-  ComplexColumnVector gev;
-
-  if (nargout < 2 || nargout == 7 || (nargin == 3 && nargout == 4))
-    {
-      if (complex_case)
-        {
-          ComplexColumnVector tmp (nn);
-
-          for (F77_INT i = 0; i < nn; i++)
-            tmp(i) = xalpha(i) / xbeta(i);
-
-          gev = tmp;
-        }
-      else
-        {
-#if defined (DEBUG)
-          octave_stdout << "qz: computing generalized eigenvalues" << std::endl;
-#endif
-
-          // Return finite generalized eigenvalues.
-          ComplexColumnVector tmp (nn);
-
-          for (F77_INT i = 0; i < nn; i++)
-            {
-              if (betar(i) != 0)
-                tmp(i) = Complex (alphar(i), alphai(i)) / betar(i);
-              else
-                tmp(i) = numeric_limits<double>::Inf ();
-            }
-
-          gev = tmp;
-        }
-    }
-
   // Right, left eigenvector matrices.
   if (nargout >= 5)
     {
@@ -744,56 +496,6 @@ compatibility with @sc{matlab}.
                      m, work.fortran_vec (), info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
-
-          // Now construct the complex form of VV, WW.
-          F77_INT j = 0;
-
-          while (j < nn)
-            {
-              octave_quit ();
-
-              // See if real or complex eigenvalue.
-
-              // Column increment; assume complex eigenvalue.
-              int cinc = 2;
-
-              if (j == (nn-1))
-                // Single column.
-                cinc = 1;
-              else if (aa(j+1, j) == 0)
-                cinc = 1;
-
-              // Now copy the eigenvector (s) to CVR, CVL.
-              if (cinc == 1)
-                {
-                  for (F77_INT i = 0; i < nn; i++)
-                    CVR(i, j) = VR(i, j);
-
-                  if (side == 'B')
-                    for (F77_INT i = 0; i < nn; i++)
-                      CVL(i, j) = VL(i, j);
-                }
-              else
-                {
-                  // Double column; complex vector.
-
-                  for (F77_INT i = 0; i < nn; i++)
-                    {
-                      CVR(i, j) = Complex (VR(i, j), VR(i, j+1));
-                      CVR(i, j+1) = Complex (VR(i, j), -VR(i, j+1));
-                    }
-
-                  if (side == 'B')
-                    for (F77_INT i = 0; i < nn; i++)
-                      {
-                        CVL(i, j) = Complex (VL(i, j), VL(i, j+1));
-                        CVL(i, j+1) = Complex (VL(i, j), -VL(i, j+1));
-                      }
-                }
-
-              // Advance to next eigenvectors (if any).
-              j += cinc;
-            }
         }
     }
 
@@ -801,57 +503,39 @@ compatibility with @sc{matlab}.
 
   switch (nargout)
     {
-    case 7:
-      retval(6) = gev;
-      OCTAVE_FALLTHROUGH;
-
     case 6:
       // Return left eigenvectors.
-      retval(5) = CVL;
+      if (complex_case)
+        retval(5) = CVL;
+      else
+        retval(5) = VL;
       OCTAVE_FALLTHROUGH;
 
     case 5:
       // Return right eigenvectors.
-      retval(4) = CVR;
+      if (complex_case)
+        retval(4) = CVR;
+      else
+        retval(4) = VR;
       OCTAVE_FALLTHROUGH;
 
     case 4:
-      if (nargin == 3)
-        {
-#if defined (DEBUG)
-          octave_stdout << "qz: sort: retval(3) = gev =\n";
-          octave_print_internal (octave_stdout, ComplexMatrix (gev));
-          octave_stdout << std::endl;
-#endif
-          retval(3) = gev;
-        }
+      if (complex_case)
+        retval(3) = CZ;
       else
-        {
-          if (complex_case)
-            retval(3) = CZ;
-          else
-            retval(3) = ZZ;
-        }
+        retval(3) = ZZ;
       OCTAVE_FALLTHROUGH;
 
     case 3:
-      if (nargin == 3)
-        {
-          if (complex_case)
-            retval(2) = CZ;
-          else
-            retval(2) = ZZ;
-        }
+      if (complex_case)
+        retval(2) = CQ.hermitian ();
       else
-        {
-          if (complex_case)
-            retval(2) = CQ.hermitian ();
-          else
-            retval(2) = QQ.transpose ();
-        }
+        retval(2) = QQ.transpose ();
       OCTAVE_FALLTHROUGH;
 
     case 2:
+    case 1:
+    case 0:
       {
         if (complex_case)
           {
@@ -880,17 +564,23 @@ compatibility with @sc{matlab}.
       }
       break;
 
-    case 1:
-    case 0:
-#if defined (DEBUG)
-      octave_stdout << "qz: retval(0) = gev = " << gev << std::endl;
-#endif
-      retval(0) = gev;
-      break;
+    }
 
-    default:
-      error ("qz: too many return arguments");
-      break;
+  // FIXME: The API for qz changed in version 9.
+  // These warnings can be removed in Octave version 11.
+  if (nargout == 1)
+    {
+      warning_with_id ("Octave:qz:single-arg-out",
+                       "qz: requesting a single output argument no longer returns eigenvalues since version 9");
+      disable_warning ("Octave:qz:single-arg-out");
+    }
+
+  if (nargin == 2 && args(0).isreal () && args(1).isreal ()
+      && retval(0).iscomplex ())
+    {
+      warning_with_id ("Octave:qz:complex-default",
+                       "qz: returns the complex QZ by default on real matrices since version 9");
+      disable_warning ("Octave:qz:complex-default");
     }
 
 #if defined (DEBUG)
@@ -901,35 +591,26 @@ compatibility with @sc{matlab}.
 }
 
 /*
-%!test
-%! A = [1 2; 0 3];
-%! B = [1 0; 0 0];
-%! C = [0 1; 0 0];
-%! assert (qz (A,B), [1; Inf]);
-%! assert (qz (A,C), [Inf; Inf]);
-
-## Example 7.7.3 in Golub & Van Loan
+## Example 7.7.3 in Golub & Van Loan (3rd ed.; not present in 4th ed.)
+## The generalized eigenvalues are real, so the real and complex QZ coincide.
 %!test
 %! a = [ 10  1  2;
 %!        1  2 -1;
 %!        1  1  2 ];
 %! b = reshape (1:9, 3,3);
-%! [aa, bb, q, z, v, w, lambda] = qz (a, b);
+%! [aa, bb, q, z, v, w] = qz (a, b);
+%! assert (isreal (aa) && isreal (bb) && isreal (q) && isreal (z) ...
+%!         && isreal (v) && isreal (w));
+%! assert (istriu (aa) && istriu (bb));
+%! assert (q * q', eye(3), 1e-15);
+%! assert (z * z', eye(3), 1e-15);
 %! assert (q * a * z, aa, norm (aa) * 1e-14);
 %! assert (q * b * z, bb, norm (bb) * 1e-14);
-%! is_finite = abs (lambda) < 1 / eps (max (a(:)));
-%! observed = (b * v * diag (lambda))(:,is_finite);
-%! assert (observed, (a*v)(:,is_finite), norm (observed) * 1e-14);
-%! observed = (diag (lambda) * w' * b)(is_finite,:);
-%! assert (observed, (w'*a)(is_finite,:), norm (observed) * 1e-13);
+%! assert (a * v * diag (diag (bb)), b * v * diag (diag (aa)), 1e-13);
+%! assert (diag (diag (bb)) * w' * a, diag (diag (aa)) * w' * b, 1e-13);
 
-%!test
-%! A = [0, 0, -1, 0; 1, 0, 0, 0; -1, 0, -2, -1; 0, -1, 1, 0];
-%! B = [0, 0, 0, 0; 0, 1, 0, 0; 0, 0, 1, 0; 0, 0, 0, 1];
-%! [AA, BB, Q, Z1] = qz (A, B);
-%! [AA, BB, Z2] = qz (A, B, "-");
-%! assert (Z1, Z2);
-
+## An example with real matrices where some generalized eigenvalues are
+## complex, so the real and complex QZ differ.
 %!test
 %! A = [ -1.03428  0.24929  0.43205 -0.12860;
 %!        1.16228  0.27870  2.12954  0.69250;
@@ -939,18 +620,35 @@ compatibility with @sc{matlab}.
 %!        0.149898  0.298248  0.991777  0.023652;
 %!        0.169281 -0.405205 -1.775834  1.511730;
 %!        0.717770  1.291390 -1.766607 -0.531352 ];
-%! [AA, BB, Z, lambda] = qz (A, B, "+");
-%! assert (all (real (lambda(1:3)) >= 0));
-%! assert (real (lambda(4) < 0));
-%! [AA, BB, Z, lambda] = qz (A, B, "-");
-%! assert (real (lambda(1) < 0));
-%! assert (all (real (lambda(2:4)) >= 0));
-%! [AA, BB, Z, lambda] = qz (A, B, "B");
-%! assert (all (abs (lambda(1:3)) >= 1));
-%! assert (abs (lambda(4) < 1));
-%! [AA, BB, Z, lambda] = qz (A, B, "S");
-%! assert (abs (lambda(1) < 1));
-%! assert (all (abs (lambda(2:4)) >= 1));
+%! [CAA, CBB, CQ, CZ, CV, CW] = qz (A, B, 'complex');
+%! assert (iscomplex (CAA) && iscomplex (CBB) && iscomplex (CQ) ...
+%!         && iscomplex (CZ) && iscomplex (CV) && iscomplex (CW));
+%! assert (istriu (CAA) && istriu (CBB));
+%! assert (CQ * CQ', eye(4), 1e-14);
+%! assert (CZ * CZ', eye(4), 1e-14);
+%! assert (CQ * A * CZ, CAA, norm (CAA) * 1e-14);
+%! assert (CQ * B * CZ, CBB, norm (CBB) * 1e-14);
+%! assert (A * CV * diag (diag (CBB)), B * CV * diag (diag (CAA)), 1e-13);
+%! assert (diag (diag (CBB)) * CW' * A, diag (diag (CAA)) * CW' * B, 1e-13);
+%! [AA, BB, Q, Z, V, W] = qz (A, B, 'real');
+%! assert (isreal (AA) && isreal (BB) && isreal (Q) && isreal (Z) ...
+%!         && isreal (V) && isreal (W));
+%! assert (istriu (BB));
+%! assert (Q * Q', eye(4), 1e-14);
+%! assert (Z * Z', eye(4), 1e-14);
+%! assert (Q * A * Z, AA, norm (AA) * 1e-14);
+%! assert (Q * B * Z, BB, norm (BB) * 1e-14);
+
+## Test input validation
+%!error <Invalid call> qz ()
+%!error <Invalid call> qz (1)
+%!error <Invalid call> qz (1,2,3,4)
+%!error <Invalid call> [r1,r2,r3,r4,r5,r6,r7] = qz (1,2)
+%!error <OPT must be a string> qz (1,2, 3)
+%!error <OPT must be 'real' or 'complex'> qz (1,2, 'foobar')
+%!warning <ignoring 'real' option with complex matrices> qz (2i, 3, 'real');
+%!warning <ignoring 'real' option with complex matrices> qz (2, 3i, 'real');
+
 */
 
 OCTAVE_END_NAMESPACE(octave)

@@ -719,17 +719,6 @@ orthogonal basis of @code{span (A)}.
 %!test
 %! a = [0, 2, 1; 2, 1, 2];
 %!
-%! [q, r] = qr (a);
-%! [qe, re] = qr (a, 0);
-%! [qe2, re2] = qr (a, "econ");
-%!
-%! assert (q * r, a, sqrt (eps));
-%! assert (qe * re, a, sqrt (eps));
-%! assert (qe2 * re2, a, sqrt (eps));
-
-%!test
-%! a = [0, 2, 1; 2, 1, 2];
-%!
 %! [q, r, p] = qr (a);  # FIXME: not giving right dimensions.
 %! [qe, re, pe] = qr (a, 0);
 %! [qe2, re2, pe2] = qr (a, "econ");
@@ -892,7 +881,10 @@ orthogonal basis of @code{span (A)}.
 %!        29   -44    52   -23   208   208  -911    99 ];
 %! [q,r] = qr (a);
 %!
-%! assert (all (t) && norm (q*r - a) < 5000*eps);
+%! assert (all (t));
+%! if (all (t))
+%!   assert (norm (q*r - a), 0, 5000*eps);
+%! endif
 
 %!test
 %! a = single ([0, 2, 1; 2, 1, 2]);
@@ -1022,7 +1014,10 @@ orthogonal basis of @code{span (A)}.
 %!        29   -44    52   -23   208   208  -911    99 ];
 %! [q,r] = qr (a);
 %!
-%! assert (all (t) && norm (q*r-a) < 5000* eps ("single"));
+%! assert (all (t));
+%! if (all (t))
+%!   assert (norm (q*r - a), 0, 5000 * eps ("single"));
+%! endif
 
 ## The deactivated tests below can't be tested till rectangular back-subs is
 ## implemented for sparse matrices.
@@ -1084,7 +1079,7 @@ orthogonal basis of @code{span (A)}.
 %! randn ("state", 42);
 %! a = 1i* sprandn (n,n,d) + speye (n,n);
 %! r = qr (a);
-%! assert (r'*r,a'*a,1e-10);
+%! assert (r'*r, a'*a, 1e-10);
 
 %!testif HAVE_COLAMD; (__have_feature__ ("SPQR") && __have_feature__ ("CHOLMOD")) || __have_feature__ ("CXSPARSE")
 %! n = 20;  d = 0.2;
@@ -1425,32 +1420,34 @@ economized (R is square).
 %!test
 %! [Q,R] = qr (A);
 %! [Q,R] = qrupdate (Q, R, u, v);
-%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - A - u*v'), Inf) < norm (A)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R)-R), Inf), 0);
+%! assert (norm (vec (Q*R - A - u*v'), Inf), 0, norm (A)*1e1*eps);
 %!
 %!test
 %! [Q,R] = qr (Ac);
 %! [Q,R] = qrupdate (Q, R, uc, vc);
-%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - Ac - uc*vc'), Inf) < norm (Ac)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R)-R), Inf), 0);
+%! assert (norm (vec (Q*R - Ac - uc*vc'), Inf), 0, norm (Ac)*1e1*eps);
 
 %!test
 %! [Q,R] = qr (single (A));
 %! [Q,R] = qrupdate (Q, R, single (u), single (v));
-%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - single (A) - single (u)* single (v)'), Inf)
-%!         < norm (single (A))*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R)-R), Inf), single (0));
+%! assert (norm (vec (Q*R - single (A) - single (u)* single (v)'), Inf), ...
+%!         single (0), norm (single (A))*1e1 * eps ("single"));
 %!
 %!test
 %! [Q,R] = qr (single (Ac));
 %! [Q,R] = qrupdate (Q, R, single (uc), single (vc));
-%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R)-R), Inf) == 0);
-%! assert (norm (vec (Q*R - single (Ac) - single (uc)* single (vc)'), Inf)
-%!         < norm (single (Ac))*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R)-R), Inf), single (0));
+%! assert (norm (vec (Q*R - single (Ac) - single (uc)* single (vc)'), Inf), ...
+%!         single (0), norm (single (Ac))*1e1 * eps ("single"));
 */
 
 DEFUN (qrinsert, args, ,
@@ -1594,64 +1591,70 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!test
 %! [Q,R] = qr (A);
 %! [Q,R] = qrinsert (Q, R, 3, u);
-%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [A(:,1:2) u A(:,3)]), Inf) < norm (A)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - [A(:,1:2) u A(:,3)]), Inf), 0, norm (A)*1e1*eps);
 %!test
 %! [Q,R] = qr (Ac);
 %! [Q,R] = qrinsert (Q, R, 3, uc);
-%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [Ac(:,1:2) uc Ac(:,3)]), Inf) < norm (Ac)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - [Ac(:,1:2) uc Ac(:,3)]), Inf), 0, ...
+%!         norm (Ac) * 1e1 * eps);
 %!test
 %! x = [0.85082  0.76426  0.42883 ];
 %!
 %! [Q,R] = qr (A);
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
-%! assert (norm (vec (Q'*Q - eye (6)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [A(1:2,:);x;A(3:5,:)]), Inf) < norm (A)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (6)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - [A(1:2,:);x;A(3:5,:)]), Inf), 0, norm (A)*1e1*eps);
 %!test
 %! x = [0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ];
 %!
 %! [Q,R] = qr (Ac);
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
-%! assert (norm (vec (Q'*Q - eye (6)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [Ac(1:2,:);x;Ac(3:5,:)]), Inf) < norm (Ac)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (6)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - [Ac(1:2,:);x;Ac(3:5,:)]), Inf), 0, ...
+%!         norm (Ac) * 1e1 * eps);
 
 %!test
 %! [Q,R] = qr (single (A));
 %! [Q,R] = qrinsert (Q, R, 3, single (u));
-%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([A(:,1:2) u A(:,3)])), Inf)
-%!         < norm (single (A))*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - single ([A(:,1:2) u A(:,3)])), Inf), ...
+%!         single (0), norm (single (A))*1e1 * eps ("single"));
 %!test
 %! [Q,R] = qr (single (Ac));
 %! [Q,R] = qrinsert (Q, R, 3, single (uc));
-%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([Ac(:,1:2) uc Ac(:,3)])), Inf)
-%!         < norm (single (Ac))*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - single ([Ac(:,1:2) uc Ac(:,3)])), Inf), ...
+%!         single (0), norm (single (Ac))*1e1 * eps ("single"));
 %!test
 %! x = single ([0.85082  0.76426  0.42883 ]);
 %!
 %! [Q,R] = qr (single (A));
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
-%! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf)
-%!         < norm (single (A))*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (6,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - single ([A(1:2,:);x;A(3:5,:)])), Inf), ...
+%!         single (0), norm (single (A))*1e1 * eps ("single"));
 %!test
 %! x = single ([0.20351 + 0.05401i  0.13141 + 0.43708i  0.29808 + 0.08789i ]);
 %!
 %! [Q,R] = qr (single (Ac));
 %! [Q,R] = qrinsert (Q, R, 3, x, "row");
-%! assert (norm (vec (Q'*Q - eye (6,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf)
-%!         < norm (single (Ac))*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (6,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - single ([Ac(1:2,:);x;Ac(3:5,:)])), Inf), ...
+%!         single (0), norm (single (Ac))*1e1 * eps ("single"));
 */
 
 DEFUN (qrdelete, args, ,
@@ -1791,9 +1794,9 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3);
-%! assert (norm (vec (Q'*Q - eye (5)), Inf) < 16*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf) < norm (AA)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (5)), Inf), 0, 16*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf), 0, norm (AA)*1e1*eps);
 %!
 %!test
 %! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1817,9 +1820,9 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3, "row");
-%! assert (norm (vec (Q'*Q - eye (4)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (4)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf), 0, norm (AA)*1e1*eps);
 %!
 %!test
 %! AA = [0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1830,9 +1833,9 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3, "row");
-%! assert (norm (vec (Q'*Q - eye (4)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf) < norm (AA)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (4)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf), 0, norm (AA)*1e1*eps);
 
 %!test
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
@@ -1843,10 +1846,11 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3);
-%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf)
-%!         < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 %!
 %!test
 %! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1857,10 +1861,11 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3);
-%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf)
-%!         < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (5,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - [AA(:,1:2) AA(:,4)]), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 
 %!test
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
@@ -1871,10 +1876,11 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3, "row");
-%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1.5e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
-%!         < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf), single (0), ...
+%!         1.5e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 %!testif HAVE_QRUPDATE
 %! ## Same test as above but with more precicision
 %! AA = single ([0.091364  0.613038  0.027504  0.999083;
@@ -1885,10 +1891,11 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3, "row");
-%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
-%!         < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf), single (0), ...
+%!         1e1* eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 %!
 %!test
 %! AA = single ([0.364554 + 0.993117i  0.669818 + 0.510234i  0.426568 + 0.041337i  0.847051 + 0.233291i;
@@ -1899,10 +1906,11 @@ If @var{orient} is @qcode{"row"}, full factorization is needed.
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrdelete (Q, R, 3, "row");
-%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf)
-%!         < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (4,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - [AA(1:2,:);AA(4:5,:)]), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 */
 
 DEFUN (qrshift, args, ,
@@ -2005,17 +2013,17 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), 0, norm (AA)*1e1*eps);
 %!
 %! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), 0, norm (AA)*1e1*eps);
 %!
 %!test
 %! AA = Ac.';
@@ -2023,17 +2031,17 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), 0, norm (AA)*1e1*eps);
 %!
 %! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3)), Inf) < 1e1*eps);
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1*eps);
+%! assert (norm (vec (Q'*Q - eye (3)), Inf), 0, 1e1*eps);
+%! assert (norm (vec (triu (R) - R), Inf), 0);
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), 0, norm (AA)*1e1*eps);
 
 %!test
 %! AA = single (A).';
@@ -2041,17 +2049,21 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 %!
 %! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 %!
 %!test
 %! AA = single (Ac).';
@@ -2059,17 +2071,21 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 %!
 %! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
-%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf) < 1e1* eps ("single"));
-%! assert (norm (vec (triu (R) - R), Inf) == 0);
-%! assert (norm (vec (Q*R - AA(:,p)), Inf) < norm (AA)*1e1* eps ("single"));
+%! assert (norm (vec (Q'*Q - eye (3,"single")), Inf), single (0), ...
+%!         1e1 * eps ("single"));
+%! assert (norm (vec (triu (R) - R), Inf), single (0));
+%! assert (norm (vec (Q*R - AA(:,p)), Inf), single (0), ...
+%!         norm (AA)*1e1 * eps ("single"));
 */
 
 OCTAVE_END_NAMESPACE(octave)

@@ -37,12 +37,17 @@ preserve_stream_state
 {
 public:
 
+  preserve_stream_state () = delete;
+
   preserve_stream_state (std::ios& s)
     : m_stream (s), m_oflags (s.flags ()), m_oprecision (s.precision ()),
       m_owidth (s.width ()), m_ofill (s.fill ())
   { }
 
-  ~preserve_stream_state (void)
+  OCTAVE_DEFAULT_COPY_MOVE_CTOR (preserve_stream_state)
+  OCTAVE_DISABLE_COPY_MOVE_ASGN (preserve_stream_state)
+
+  ~preserve_stream_state ()
   {
     m_stream.flags (m_oflags);
     m_stream.precision (m_oprecision);

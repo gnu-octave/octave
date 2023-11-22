@@ -133,7 +133,7 @@ Matrix::operator != (const Matrix& a) const
 }
 
 bool
-Matrix::issymmetric (void) const
+Matrix::issymmetric () const
 {
   if (issquare () && rows () > 0)
     {
@@ -448,7 +448,7 @@ norm1 (const Matrix& a)
 }
 
 Matrix
-Matrix::inverse (void) const
+Matrix::inverse () const
 {
   octave_idx_type info;
   double rcon;
@@ -731,7 +731,7 @@ Matrix::pseudo_inverse (double tol) const
 #if defined (HAVE_FFTW)
 
 ComplexMatrix
-Matrix::fourier (void) const
+Matrix::fourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -760,7 +760,7 @@ Matrix::fourier (void) const
 }
 
 ComplexMatrix
-Matrix::ifourier (void) const
+Matrix::ifourier () const
 {
   std::size_t nr = rows ();
   std::size_t nc = cols ();
@@ -790,7 +790,7 @@ Matrix::ifourier (void) const
 }
 
 ComplexMatrix
-Matrix::fourier2d (void) const
+Matrix::fourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -802,7 +802,7 @@ Matrix::fourier2d (void) const
 }
 
 ComplexMatrix
-Matrix::ifourier2d (void) const
+Matrix::ifourier2d () const
 {
   dim_vector dv (rows (), cols ());
 
@@ -817,7 +817,7 @@ Matrix::ifourier2d (void) const
 #else
 
 ComplexMatrix
-Matrix::fourier (void) const
+Matrix::fourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -826,7 +826,7 @@ Matrix::fourier (void) const
 }
 
 ComplexMatrix
-Matrix::ifourier (void) const
+Matrix::ifourier () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -835,7 +835,7 @@ Matrix::ifourier (void) const
 }
 
 ComplexMatrix
-Matrix::fourier2d (void) const
+Matrix::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -844,7 +844,7 @@ Matrix::fourier2d (void) const
 }
 
 ComplexMatrix
-Matrix::ifourier2d (void) const
+Matrix::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -855,7 +855,7 @@ Matrix::ifourier2d (void) const
 #endif
 
 DET
-Matrix::determinant (void) const
+Matrix::determinant () const
 {
   octave_idx_type info;
   double rcon;
@@ -1026,7 +1026,7 @@ Matrix::determinant (MatrixType& mattype,
 }
 
 double
-Matrix::rcond (void) const
+Matrix::rcond () const
 {
   MatrixType mattype (*this);
   return rcond (mattype);
@@ -2398,7 +2398,7 @@ Matrix::sumsq (int dim) const
 }
 
 Matrix
-Matrix::abs (void) const
+Matrix::abs () const
 {
   return NDArray::abs ();
 }
@@ -2426,7 +2426,7 @@ Matrix::diag (octave_idx_type m, octave_idx_type n) const
 }
 
 ColumnVector
-Matrix::row_min (void) const
+Matrix::row_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_min (dummy_idx);
@@ -2481,7 +2481,7 @@ Matrix::row_min (Array<octave_idx_type>& idx_arg) const
 }
 
 ColumnVector
-Matrix::row_max (void) const
+Matrix::row_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return row_max (dummy_idx);
@@ -2536,7 +2536,7 @@ Matrix::row_max (Array<octave_idx_type>& idx_arg) const
 }
 
 RowVector
-Matrix::column_min (void) const
+Matrix::column_min () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_min (dummy_idx);
@@ -2591,7 +2591,7 @@ Matrix::column_min (Array<octave_idx_type>& idx_arg) const
 }
 
 RowVector
-Matrix::column_max (void) const
+Matrix::column_max () const
 {
   Array<octave_idx_type> dummy_idx;
   return column_max (dummy_idx);
@@ -3029,19 +3029,7 @@ Matrix linspace (const ColumnVector& x1,
 
   retval.clear (m, n);
   for (octave_idx_type i = 0; i < m; i++)
-    retval.xelem (i, 0) = x1(i);
-
-  // The last column is unused so temporarily store delta there
-  double *delta = &retval.xelem (0, n-1);
-  for (octave_idx_type i = 0; i < m; i++)
-    delta[i] = (x1(i) == x2(i)) ? 0 : (x2(i) - x1(i)) / (n - 1);
-
-  for (octave_idx_type j = 1; j < n-1; j++)
-    for (octave_idx_type i = 0; i < m; i++)
-      retval.xelem (i, j) = x1(i) + j*delta[i];
-
-  for (octave_idx_type i = 0; i < m; i++)
-    retval.xelem (i, n-1) = x2(i);
+    retval.insert (linspace (x1(i), x2(i), n), i, 0);
 
   return retval;
 }

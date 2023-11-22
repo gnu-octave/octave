@@ -39,15 +39,17 @@ class environment
 {
 public:
 
-  environment (void)
+  environment ()
     : m_editor (init_editor ()),
       m_exec_path (init_exec_path ()),
       m_image_path (init_image_path ())
   { }
 
+  OCTAVE_DEFAULT_COPY_DELETE (environment)
+
   octave_value editor (const octave_value_list& args, int nargout);
 
-  std::string editor (void) const { return m_editor; }
+  std::string editor () const { return m_editor; }
 
   std::string editor (const std::string& ed)
   {
@@ -56,13 +58,13 @@ public:
 
   octave_value exec_path (const octave_value_list& args, int nargout);
 
-  std::string exec_path (void) const { return m_exec_path; }
+  std::string exec_path () const { return m_exec_path; }
 
   std::string exec_path (const std::string& path);
 
   octave_value image_path (const octave_value_list& args, int nargout);
 
-  std::string image_path (void) const { return m_image_path; }
+  std::string image_path () const { return m_image_path; }
 
   std::string image_path (const std::string& path)
   {
@@ -77,11 +79,11 @@ private:
 
   std::string m_image_path;
 
-  static std::string init_editor (void);
+  static std::string init_editor ();
 
-  static std::string init_exec_path (void);
+  static std::string init_exec_path ();
 
-  static std::string init_image_path (void);
+  static std::string init_image_path ();
 
   std::string set (std::string& var, const std::string& new_val)
   {

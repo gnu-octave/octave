@@ -27,8 +27,12 @@
 ## @deftypefn  {} {} savepath
 ## @deftypefnx {} {} savepath @var{file}
 ## @deftypefnx {} {@var{status} =} savepath (@dots{})
-## Save the unique portion of the current function search path that is
-## not set during Octave's initialization process to @var{file}.
+## Save the unique portion of the current function search path to @var{file}.
+##
+## The list of folders that are saved in @var{file} does @emph{not} include
+## the folders that are added for Octave's own functions, those that belong to
+## Octave packages (see @ref{XREFpkg,,pkg load}), and those added via command
+## line switches.
 ##
 ## If @var{file} is omitted, Octave looks in the current directory for a
 ## project-specific @file{.octaverc} file in which to save the path
@@ -113,16 +117,23 @@ function status = savepath (file)
     ## Determine the path to Octave's user and system wide packages.
     [pkg_user, pkg_system] = pkg ("list");
 
-    ## Conversion from cell array of structs to cellstr of archprefixes.
-    pkg_path = unique (cellfun (@(elt) elt.archprefix,
+    ## Conversion from cell array of structs to cellarray of strings with the
+    ## unique contents of the fields "dir" and "archprefix".
+    pkg_path = unique ([cellfun(@(elt) elt.dir,
                                 [pkg_user, pkg_system],
-                                "uniformoutput", false));
+                                "uniformoutput", false);
+                        cellfun(@(elt) elt.archprefix,
+                                [pkg_user, pkg_system],
+                                "uniformoutput", false)]);
 
     ## Rely on Octave's initialization to include the pkg path elements.
-    if (! isempty (pkg_path))
-      [~, n] = setdiff (path_to_preserve, strcat (pkg_path, ":"));
-      path_to_preserve = path_to_preserve(sort (n));
-    endif
+    for i_pkg = 1:numel (pkg_path)
+      ## Remove all paths that are (sub-)folders of a package folder.
+      pkg_path_pattern = [regexptranslate("escape", pkg_path{i_pkg}), ".*"];
+      not_pkg_path ...
+        = cellfun (@isempty, regexp (path_to_preserve, pkg_path_pattern));
+      path_to_preserve = path_to_preserve(not_pkg_path);
+    endfor
 
     ## Split the path to be saved into two groups.  Those path elements that
     ## belong at the beginning and those at the end.
@@ -133,7 +144,7 @@ function status = savepath (file)
       [~, n] = setdiff (path_to_preserve, default_path);
       path_to_save = path_to_preserve(sort (n));
       ## Remove pwd
-      path_to_save(strcmp (path_to_save, ["." pathsep])) = [];
+      path_to_save(strcmp (path_to_save, ["." pathsep()])) = [];
       if (! isempty (path_to_save))
         n = ones (numel (path_to_save), 1);
         for m = 1:numel (path_to_save)

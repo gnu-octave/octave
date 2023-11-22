@@ -94,7 +94,7 @@ function tickval = xticks (varargin)
     set (hax, "xtick", arg);
 
   elseif (ischar (arg))
-    arg = tolower (arg);
+    arg = lower (arg);
     switch (arg)
       case "mode"
         tickval = get (hax, "xtickmode");

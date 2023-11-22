@@ -62,7 +62,7 @@ svd_type (int nargin, int nargout, const octave_value_list& args, const T& A)
 
 template <typename T>
 static typename math::svd<T>::Driver
-svd_driver (void)
+svd_driver ()
 {
   if (Vsvd_driver == "gejsv")
     return math::svd<T>::Driver::GEJSV;

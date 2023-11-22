@@ -47,7 +47,7 @@ schur
 {
 public:
 
-  schur (void) : m_schur_mat (), m_unitary_schur_mat () { }
+  schur () : m_schur_mat (), m_unitary_schur_mat () { }
 
   schur (const T& a, const std::string& ord, bool calc_unitary = true)
     : m_schur_mat (), m_unitary_schur_mat ()
@@ -84,11 +84,11 @@ public:
     return *this;
   }
 
-  ~schur (void) = default;
+  ~schur () = default;
 
-  T schur_matrix (void) const { return m_schur_mat; }
+  T schur_matrix () const { return m_schur_mat; }
 
-  T unitary_schur_matrix (void) const { return m_unitary_schur_mat; }
+  T unitary_schur_matrix () const { return m_unitary_schur_mat; }
 
 protected:
 

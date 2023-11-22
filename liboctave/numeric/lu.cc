@@ -65,14 +65,14 @@ lu<T>::lu (const T& l, const T& u, const PermMatrix& p)
 
 template <typename T>
 bool
-lu<T>::packed (void) const
+lu<T>::packed () const
 {
   return m_L.dims () == dim_vector ();
 }
 
 template <typename T>
 void
-lu<T>::unpack (void)
+lu<T>::unpack ()
 {
   if (packed ())
     {
@@ -93,7 +93,7 @@ lu<T>::unpack (void)
 
 template <typename T>
 T
-lu<T>::L (void) const
+lu<T>::L () const
 {
   if (packed ())
     {
@@ -120,7 +120,7 @@ lu<T>::L (void) const
 
 template <typename T>
 T
-lu<T>::U (void) const
+lu<T>::U () const
 {
   if (packed ())
     {
@@ -144,7 +144,7 @@ lu<T>::U (void) const
 
 template <typename T>
 T
-lu<T>::Y (void) const
+lu<T>::Y () const
 {
   if (! packed ())
     (*current_liboctave_error_handler)
@@ -155,7 +155,7 @@ lu<T>::Y (void) const
 
 template <typename T>
 Array<octave_idx_type>
-lu<T>::getp (void) const
+lu<T>::getp () const
 {
   if (packed ())
     {
@@ -186,14 +186,14 @@ lu<T>::getp (void) const
 
 template <typename T>
 PermMatrix
-lu<T>::P (void) const
+lu<T>::P () const
 {
   return PermMatrix (getp (), false);
 }
 
 template <typename T>
 ColumnVector
-lu<T>::P_vec (void) const
+lu<T>::P_vec () const
 {
   octave_idx_type a_nr = m_a_fact.rows ();
 
@@ -209,7 +209,7 @@ lu<T>::P_vec (void) const
 
 template <typename T>
 bool
-lu<T>::regular (void) const
+lu<T>::regular () const
 {
   bool retval = true;
 

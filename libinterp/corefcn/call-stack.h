@@ -49,6 +49,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class tree_evaluator;
 class symbol_info_list;
 class unwind_protect;
+class vm;
 
 class
 OCTINTERP_API
@@ -73,39 +74,39 @@ public:
 
   octave_function * current_function (bool skip_first = false) const;
 
-  octave_function * caller_function (void) const
+  octave_function * caller_function () const
   {
     return current_function (true);
   }
 
   // Current line in current function.
-  int current_line (void) const;
+  int current_line () const;
 
   // Current column in current function.
-  int current_column (void) const;
+  int current_column () const;
 
-  std::size_t current_frame (void) const { return m_curr_frame; }
+  std::size_t current_frame () const { return m_curr_frame; }
 
-  std::size_t size (void) const { return m_cs.size (); }
+  std::size_t size () const { return m_cs.size (); }
 
-  std::shared_ptr<stack_frame> get_current_stack_frame (void) const
+  std::shared_ptr<stack_frame> get_current_stack_frame () const
   {
     return m_cs[m_curr_frame];
   }
 
-  symbol_scope top_scope (void) const
+  symbol_scope top_scope () const
   {
     return m_cs[0]->get_scope ();
   }
 
-  symbol_scope current_scope (void) const
+  symbol_scope current_scope () const
   {
     // FIXME: Can m_curr_frame ever be invalid?
     return (m_curr_frame < m_cs.size ()
             ? m_cs[m_curr_frame]->get_scope () : symbol_scope ());
   }
 
-  bool at_top_level (void) const
+  bool at_top_level () const
   {
     return current_scope () == top_scope ();
   }
@@ -123,26 +124,26 @@ public:
   }
 
   // User code caller.
-  octave_user_code * current_user_code (void) const;
+  octave_user_code * current_user_code () const;
 
-  unwind_protect * curr_fcn_unwind_protect_frame (void);
+  unwind_protect * curr_fcn_unwind_protect_frame ();
 
   // Line in user code caller.
-  int current_user_code_line (void) const;
+  int current_user_code_line () const;
 
   // Column in user code caller.
-  int current_user_code_column (void) const;
+  int current_user_code_column () const;
 
   // Current function that we are debugging.
-  octave_user_code * debug_user_code (void) const;
+  octave_user_code * debug_user_code () const;
 
   // Line number in current function that we are debugging.
-  int debug_user_code_line (void) const;
+  int debug_user_code_line () const;
 
   // Column number in current function that we are debugging.
-  int debug_user_code_column (void) const;
+  int debug_user_code_column () const;
 
-  std::string get_dispatch_class (void) const;
+  std::string get_dispatch_class () const;
 
   void set_dispatch_class (const std::string& class_name);
 
@@ -151,7 +152,7 @@ public:
   bool is_class_constructor_executing (std::string& dispatch_class) const;
 
   // Return TRUE if all elements on the call stack are scripts.
-  bool all_scripts (void) const;
+  bool all_scripts () const;
 
   void push (const symbol_scope& scope);
 
@@ -165,6 +166,13 @@ public:
   void push (octave_user_script *script);
 
   void push (octave_function *fcn);
+
+  void push (vm &vm, octave_user_function *fcn, int nargout, int nargin);
+
+  void push (vm &vm, octave_user_script *fcn, int nargout, int nargin);
+
+  void push (vm &vm, octave_user_function *fcn, int nargout, int nargin,
+             const std::shared_ptr<stack_frame>& closure_frames);
 
   void set_location (int l, int c)
   {
@@ -204,23 +212,23 @@ public:
     goto_frame (n);
   }
 
-  std::size_t find_current_user_frame (void) const;
+  std::size_t find_current_user_frame () const;
 
-  std::shared_ptr<stack_frame> current_user_frame (void) const;
+  std::shared_ptr<stack_frame> current_user_frame () const;
 
   std::size_t dbupdown (std::size_t start, int n, bool verbose);
   std::size_t dbupdown (int n = -1, bool verbose = false);
 
-  void goto_caller_frame (void);
+  void goto_caller_frame ();
 
-  void goto_base_frame (void);
+  void goto_base_frame ();
 
   std::list<std::shared_ptr<stack_frame>>
                                        backtrace_frames (octave_idx_type& curr_user_frame) const;
 
   // List of raw stack frames.
 
-  std::list<std::shared_ptr<stack_frame>> backtrace_frames (void) const;
+  std::list<std::shared_ptr<stack_frame>> backtrace_frames () const;
 
   // List of stack_info objects that can be used in liboctave and
   // stored in the execution_exception object.
@@ -228,7 +236,7 @@ public:
   std::list<frame_info> backtrace_info (octave_idx_type& curr_user_frame,
                                         bool print_subfn = true) const;
 
-  std::list<frame_info> backtrace_info (void) const;
+  std::list<frame_info> backtrace_info () const;
 
   // The same as backtrace_info but in the form of a struct array
   // object that may be used in the interpreter.
@@ -236,21 +244,23 @@ public:
   octave_map backtrace (octave_idx_type& curr_user_frame,
                         bool print_subfn = true) const;
 
-  octave_map backtrace (void) const;
+  octave_map backtrace () const;
 
-  octave_map empty_backtrace (void) const;
+  octave_map empty_backtrace () const;
 
-  void pop (void);
+  void pop ();
 
-  void clear (void);
+  std::shared_ptr<stack_frame> pop_return ();
 
-  symbol_info_list all_variables (void);
+  void clear ();
 
-  std::list<std::string> global_variable_names (void) const;
+  symbol_info_list all_variables ();
 
-  std::list<std::string> top_level_variable_names (void) const;
+  std::list<std::string> global_variable_names () const;
 
-  std::list<std::string> variable_names (void) const;
+  std::list<std::string> top_level_variable_names () const;
+
+  std::list<std::string> variable_names () const;
 
   void clear_global_variable (const std::string& name);
 
@@ -258,15 +268,15 @@ public:
 
   void clear_global_variable_regexp(const std::string& pattern);
 
-  void clear_global_variables (void);
+  void clear_global_variables ();
 
   symbol_info_list glob_symbol_info (const std::string& pattern) const;
 
   symbol_info_list regexp_symbol_info (const std::string& pattern) const;
 
-  symbol_info_list get_symbol_info (void);
+  symbol_info_list get_symbol_info ();
 
-  symbol_info_list top_scope_symbol_info (void) const;
+  symbol_info_list top_scope_symbol_info () const;
 
   octave_value max_stack_depth (const octave_value_list& args, int nargout);
 
@@ -294,12 +304,17 @@ public:
                                   bool have_regexp, bool return_list,
                                   bool verbose, const std::string& msg = "");
 
-  void display (void) const;
+  void display () const;
 
   void set_auto_fcn_var (stack_frame::auto_var_type avt,
                          const octave_value& val);
 
+  void set_nargin (int nargin);
+  void set_nargout (int nargout);
+
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
+
+  void set_active_bytecode_ip (int ip);
 
 private:
 

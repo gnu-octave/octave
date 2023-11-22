@@ -52,7 +52,7 @@ octave_base_sparse : public octave_base_value
 {
 public:
 
-  octave_base_sparse (void)
+  octave_base_sparse ()
     : octave_base_value (), matrix (), typ (MatrixType ())
   { }
 
@@ -73,19 +73,19 @@ public:
   octave_base_sparse (const octave_base_sparse& a)
     : octave_base_value (), matrix (a.matrix), typ (a.typ) { }
 
-  ~octave_base_sparse (void) = default;
+  ~octave_base_sparse () = default;
 
-  octave_idx_type numel (void) const { return dims ().safe_numel (); }
+  octave_idx_type numel () const { return dims ().safe_numel (); }
 
-  octave_idx_type nnz (void) const { return matrix.nnz (); }
+  octave_idx_type nnz () const { return matrix.nnz (); }
 
-  octave_idx_type nzmax (void) const { return matrix.nzmax (); }
+  octave_idx_type nzmax () const { return matrix.nzmax (); }
 
-  std::size_t byte_size (void) const { return matrix.byte_size (); }
+  std::size_t byte_size () const { return matrix.byte_size (); }
 
-  octave_value squeeze (void) const { return matrix.squeeze (); }
+  octave_value squeeze () const { return matrix.squeeze (); }
 
-  octave_value full_value (void) const { return matrix.matrix_value (); }
+  octave_value full_value () const { return matrix.matrix_value (); }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -163,7 +163,7 @@ public:
 
   OCTINTERP_API void delete_elements (const octave_value_list& idx);
 
-  dim_vector dims (void) const { return matrix.dims (); }
+  dim_vector dims () const { return matrix.dims (); }
 
   OCTINTERP_API octave_value
   do_index_op (const octave_value_list& idx, bool resize_ok = false);
@@ -196,23 +196,23 @@ public:
   sortmode issorted (sortmode mode = UNSORTED) const
   { return full_value ().issorted (mode); }
 
-  MatrixType matrix_type (void) const { return typ; }
+  MatrixType matrix_type () const { return typ; }
   MatrixType matrix_type (const MatrixType& _typ) const
   { MatrixType ret = typ; typ = _typ; return ret; }
 
-  bool is_matrix_type (void) const { return true; }
+  bool is_matrix_type () const { return true; }
 
-  bool isnumeric (void) const { return true; }
+  bool isnumeric () const { return true; }
 
-  bool issparse (void) const { return true; }
+  bool issparse () const { return true; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  OCTINTERP_API bool is_true (void) const;
+  OCTINTERP_API bool is_true () const;
 
-  OCTINTERP_API bool print_as_scalar (void) const;
+  OCTINTERP_API bool print_as_scalar () const;
 
   OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -226,7 +226,7 @@ public:
 
   OCTINTERP_API bool load_ascii (std::istream& is);
 
-  OCTINTERP_API float_display_format get_edit_display_format (void) const;
+  OCTINTERP_API float_display_format get_edit_display_format () const;
 
   OCTINTERP_API std::string
   edit_display (const float_display_format& fmt,
@@ -234,13 +234,15 @@ public:
 
   // These functions exists to support the MEX interface.
   // You should not use them anywhere else.
-  const void * mex_get_data (void) const { return matrix.data (); }
+  const void * mex_get_data () const { return matrix.data (); }
 
-  const octave_idx_type * mex_get_ir (void) const { return matrix.ridx (); }
+  const octave_idx_type * mex_get_ir () const { return matrix.ridx (); }
 
-  const octave_idx_type * mex_get_jc (void) const { return matrix.cidx (); }
+  const octave_idx_type * mex_get_jc () const { return matrix.cidx (); }
 
   OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
+
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
 
 protected:
 

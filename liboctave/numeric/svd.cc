@@ -48,7 +48,8 @@ class
 gejsv_lwork
 {
 public:
-  gejsv_lwork () = delete;
+
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE_DELETE (gejsv_lwork)
 
   // Unfortunately, dgejsv and sgejsv do not provide estimation of 'lwork'.
   // Thus, we have to estimate it according to corresponding LAPACK
@@ -307,7 +308,7 @@ OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename T>
 T
-svd<T>::left_singular_matrix (void) const
+svd<T>::left_singular_matrix () const
 {
   if (m_type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)
@@ -318,7 +319,7 @@ svd<T>::left_singular_matrix (void) const
 
 template <typename T>
 T
-svd<T>::right_singular_matrix (void) const
+svd<T>::right_singular_matrix () const
 {
   if (m_type == svd::Type::sigma_only)
     (*current_liboctave_error_handler)

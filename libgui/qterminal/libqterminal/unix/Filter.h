@@ -25,11 +25,11 @@
 
 // Qt
 #include <QAction>
-#include <QtCore/QList>
-#include <QtCore/QObject>
-#include <QtCore/QStringList>
-#include <QtCore/QHash>
-#include <QtCore/QRegExp>
+#include <QHash>
+#include <QList>
+#include <QObject>
+#include <QRegularExpression>
+#include <QStringList>
 
 // Local
 #include "unix/Character.h"
@@ -230,9 +230,9 @@ public:
      * Regular expressions which match the empty string are treated as not matching
      * anything.
      */
-    void setRegExp(const QRegExp& text);
+    void setRegExp(const QRegularExpression& text);
     /** Returns the regular expression which the filter searches for in blocks of text */
-    QRegExp regExp() const;
+    QRegularExpression regExp() const;
 
     /**
      * Reimplemented to search the filter's text buffer for text matching regExp()
@@ -256,7 +256,7 @@ protected:
                                     int endLine,int endColumn, Type);
     Type _type;
 
-    QRegExp _searchText;
+    QRegularExpression _searchText;
 };
 
 class FilterObject;
@@ -316,14 +316,14 @@ protected:
 
 private:
 
-    static const QRegExp FullUrlRegExp;
-    static const QRegExp EmailAddressRegExp;
-    static const QRegExp ErrorLinkRegExp;
-    static const QRegExp ParseErrorLinkRegExp;
-    static const QRegExp CompleteErrorLinkRegExp;
+    static const QRegularExpression FullUrlRegExp;
+    static const QRegularExpression EmailAddressRegExp;
+    static const QRegularExpression ErrorLinkRegExp;
+    static const QRegularExpression ParseErrorLinkRegExp;
+    static const QRegularExpression CompleteErrorLinkRegExp;
 
     // combined OR of FullUrlRegExp and EmailAddressRegExp
-    static const QRegExp CompleteUrlRegExp;
+    static const QRegularExpression CompleteUrlRegExp;
 };
 
 class FilterObject : public QObject

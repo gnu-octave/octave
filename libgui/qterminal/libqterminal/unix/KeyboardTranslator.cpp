@@ -29,11 +29,13 @@
 #include <stdio.h>
 
 // Qt
-#include <QtCore/QBuffer>
-#include <QtCore/QFile>
-#include <QtCore/QFileInfo>
 #include <QtCore>
 #include <QtGui>
+
+#include <QBuffer>
+#include <QFile>
+#include <QFileInfo>
+#include <QRegularExpression>
 
 // FIXME: We should not have a special case for Mac here.  Instead, we
 // should be loading .keytab files at run time, and ideally, allowing
@@ -343,10 +345,10 @@ bool KeyboardTranslatorReader::decodeSequence(const QString& text,
     KeyboardTranslator::States tempFlags = flags;
     KeyboardTranslator::States tempFlagMask = flagMask;
 
-    for ( int i = 0 ; i < text.count() ; i++ )
+    for ( int i = 0 ; i < text.size () ; i++ )
     {
         const QChar& ch = text[i];
-        bool isLastLetter = ( i == text.count()-1 );
+        bool isLastLetter = ( i == text.size ()-1 );
 
         endOfItem = true;
         if ( ch.isLetterOrNumber() )
@@ -438,7 +440,11 @@ bool KeyboardTranslatorReader::parseAsKeyCode(const QString& item , int& keyCode
     QKeySequence sequence = QKeySequence::fromString(item);
     if ( !sequence.isEmpty() )
     {
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+        keyCode = sequence[0].toCombined ();
+#else
         keyCode = sequence[0];
+#endif
 
         if ( sequence.count() > 1 )
         {
@@ -509,49 +515,52 @@ bool KeyboardTranslatorReader::parseError()
 {
     return false;
 }
-QList<KeyboardTranslatorReader::Token> KeyboardTranslatorReader::tokenize(const QString& line)
+QList<KeyboardTranslatorReader::Token>
+KeyboardTranslatorReader::tokenize (const QString& line)
 {
     QString text = line.simplified();
 
     // comment line: # comment
-    static QRegExp comment("\\#.*");
+    static QRegularExpression comment {"\\#.*"};
     // title line: keyboard "title"
-    static QRegExp title("keyboard\\s+\"(.*)\"");
+    static QRegularExpression title {"keyboard\\s+\"(.*)\""};
     // key line: key KeySequence : "output"
     // key line: key KeySequence : command
-    static QRegExp key("key\\s+([\\w\\+\\s\\-]+)\\s*:\\s*(\"(.*)\"|\\w+)");
+    static QRegularExpression key {"key\\s+([\\w\\+\\s\\-]+)\\s*:\\s*(\"(.*)\"|\\w+)"};
 
     QList<Token> list;
 
-    if ( text.isEmpty() || comment.exactMatch(text) )
+    if ( text.isEmpty() || comment.match (text).hasMatch () )
     {
         return list;
     }
 
-    if ( title.exactMatch(text) )
+    QRegularExpressionMatch match;
+    if ((match = title.match (text)).hasMatch ())
     {
         Token titleToken = { Token::TitleKeyword , QString() };
-        Token textToken = { Token::TitleText , title.capturedTexts()[1] };
+        Token textToken = { Token::TitleText , match.captured (1) };
 
         list << titleToken << textToken;
     }
-    else if  ( key.exactMatch(text) )
+    else if  ((match = key.match (text)).hasMatch ())
     {
         Token keyToken = { Token::KeyKeyword , QString() };
-        Token sequenceToken = { Token::KeySequence , key.capturedTexts()[1].remove(' ') };
+        Token sequenceToken = { Token::KeySequence,
+                                match.captured (1).remove (' ') };
 
         list << keyToken << sequenceToken;
 
-        if ( key.capturedTexts()[3].isEmpty() )
+        if ( match.captured (3).isEmpty () )
         {
             // capturedTexts()[2] is a command
-            Token commandToken = { Token::Command , key.capturedTexts()[2] };
+            Token commandToken = { Token::Command , match.captured (2) };
             list << commandToken;
         }
         else
         {
             // capturedTexts()[3] is the output string
-            Token outputToken = { Token::OutputText , key.capturedTexts()[3] };
+            Token outputToken = { Token::OutputText , match.captured (3) };
             list << outputToken;
         }
     }
@@ -631,7 +640,7 @@ QByteArray KeyboardTranslator::Entry::escapedText(bool expandWildCards,Qt::Keybo
 {
     QByteArray result(text(expandWildCards,modifiers));
 
-    for ( int i = 0 ; i < result.count() ; i++ )
+    for ( int i = 0 ; i < result.size () ; i++ )
     {
         char ch = result[i];
         char replacement = 0;
@@ -668,10 +677,10 @@ QByteArray KeyboardTranslator::Entry::unescape(const QByteArray& input) const
 {
     QByteArray result(input);
 
-    for ( int i = 0 ; i < result.count()-1 ; i++ )
+    for ( int i = 0 ; i < result.size ()-1 ; i++ )
     {
 
-        QByteRef ch = result[i];
+        char ch = result[i];
         if ( ch == '\\' )
         {
             char replacement[2] = {0,0};
@@ -693,9 +702,9 @@ QByteArray KeyboardTranslator::Entry::unescape(const QByteArray& input) const
                 // with the corresponding character value
                 char hexDigits[3] = {0};
 
-                if ( (i < result.count()-2) && isxdigit(result[i+2]) )
+                if ( (i < result.size ()-2) && isxdigit(result[i+2]) )
                     hexDigits[0] = result[i+2];
-                if ( (i < result.count()-3) && isxdigit(result[i+3]) )
+                if ( (i < result.size ()-3) && isxdigit(result[i+3]) )
                     hexDigits[1] = result[i+3];
 
                 int charValue = 0;

@@ -104,6 +104,7 @@ class symbol_info_list;
 class unwind_protect;
 
 class stack_frame_walker;
+class vm;
 
 class stack_frame
 {
@@ -137,7 +138,7 @@ public:
     NUM_AUTO_VARS
   };
 
-  stack_frame (void) = delete;
+  stack_frame () = delete;
 
   stack_frame (tree_evaluator& tw, std::size_t index,
                const std::shared_ptr<stack_frame>& parent_link,
@@ -182,32 +183,62 @@ public:
           const std::shared_ptr<stack_frame>& parent_link,
           const std::shared_ptr<stack_frame>& static_link);
 
+  // Bytecode function stackframe
+  static std::shared_ptr<stack_frame>
+  create_bytecode (tree_evaluator& tw,
+                   octave_user_code *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   int nargout, int nargin);
+
+  static std::shared_ptr<stack_frame>
+  create_bytecode (tree_evaluator& tw,
+                   octave_user_code *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   const std::shared_ptr<stack_frame>& access_link,
+                   int nargout, int nargin);
+
+  static std::shared_ptr<stack_frame>
+  create_bytecode (tree_evaluator& tw,
+                   octave_user_script *fcn,
+                   vm &vm,
+                   std::size_t index,
+                   const std::shared_ptr<stack_frame>& parent_link,
+                   const std::shared_ptr<stack_frame>& static_link,
+                   int nargout, int nargin);
+
   stack_frame (const stack_frame& elt) = default;
 
   stack_frame& operator = (const stack_frame& elt) = delete;
 
-  virtual ~stack_frame (void) = default;
+  virtual ~stack_frame () = default;
 
   // FIXME: It would be nice to eliminate these but there are a few
   // places where we still need to know the specific type of the
   // stack frame that we are handling.
 
-  virtual bool is_compiled_fcn_frame (void) const { return false; }
-  virtual bool is_user_script_frame (void) const { return false; }
-  virtual bool is_user_fcn_frame (void) const { return false; }
-  virtual bool is_scope_frame (void) const { return false; }
+  virtual bool is_compiled_fcn_frame () const { return false; }
+  virtual bool is_user_script_frame () const { return false; }
+  virtual bool is_user_fcn_frame () const { return false; }
+  virtual bool is_scope_frame () const { return false; }
+  virtual bool is_bytecode_fcn_frame (void) const { return false; }
 
-  virtual void clear_values (void);
+  virtual void clear_values ();
 
-  std::size_t index (void) const { return m_index; }
+  std::size_t index () const { return m_index; }
 
   void line (int l) { m_line = l; }
-  int line (void) const { return m_line; }
+  virtual int line () const { return m_line; }
 
   void column (int c) { m_column = c; }
-  int column (void) const { return m_column; }
+  virtual int column () const { return m_column; }
 
-  std::string fcn_file_name (void) const
+  std::string fcn_file_name () const
   {
     octave_function *fcn = function ();
 
@@ -238,11 +269,11 @@ public:
     return retval;
   }
 
-  virtual symbol_scope get_scope (void) const = 0;
+  virtual symbol_scope get_scope () const = 0;
 
-  virtual octave_function * function (void) const { return nullptr; }
+  virtual octave_function * function () const { return nullptr; }
 
-  virtual unwind_protect * unwind_protect_frame (void) { return nullptr; }
+  virtual unwind_protect * unwind_protect_frame () { return nullptr; }
 
   symbol_info_list
   make_symbol_info_list (const std::list<symbol_record>& symrec_list) const;
@@ -252,11 +283,11 @@ public:
                     const std::string& whos_line_fmt,
                     const std::string& msg);
 
-  symbol_info_list all_variables (void);
+  symbol_info_list all_variables ();
 
-  octave_value workspace (void);
+  octave_value workspace ();
 
-  std::list<std::string> variable_names (void) const;
+  std::list<std::string> variable_names () const;
 
   // Look for named symbol visible from current scope.  Don't
   // attempt to insert if missing.
@@ -270,7 +301,7 @@ public:
 
   symbol_info_list regexp_symbol_info (const std::string& pattern);
 
-  symbol_info_list get_symbol_info (void)
+  symbol_info_list get_symbol_info ()
   {
     return all_variables ();
   }
@@ -307,16 +338,25 @@ public:
     mark_global (sym);
   }
 
-  std::shared_ptr<stack_frame>
-  parent_link (void) const {return m_parent_link; }
+  void clear_parent_static_link ()
+  {
+    m_parent_link = nullptr;
+    m_static_link = nullptr;
+  }
+
+  std::size_t
+  parent_frame_index () const { return m_parent_link->index (); }
 
   std::shared_ptr<stack_frame>
-  static_link (void) const {return m_static_link; }
+  parent_link () const {return m_parent_link; }
 
   std::shared_ptr<stack_frame>
-  access_link (void) const {return m_access_link; }
+  static_link () const {return m_static_link; }
 
-  virtual std::size_t size (void) const;
+  std::shared_ptr<stack_frame>
+  access_link () const {return m_access_link; }
+
+  virtual std::size_t size () const;
 
   virtual void resize (std::size_t);
 
@@ -423,9 +463,22 @@ public:
     install_variable (sym, value, global);
   }
 
+  virtual octave_value get_active_bytecode_call_arg_names ()
+  {
+    panic_impossible (); // Only bytecode frame need to implement this
+  }
+
+  virtual void set_active_bytecode_ip (int)
+  {
+    panic_impossible (); // Only bytecode frame need to implement this
+  }
+
   virtual octave_value get_auto_fcn_var (auto_var_type) const = 0;
 
   virtual void set_auto_fcn_var (auto_var_type, const octave_value&) = 0;
+
+  virtual void set_nargin (int nargin) { set_auto_fcn_var (NARGIN, nargin); }
+  virtual void set_nargout (int nargout) { set_auto_fcn_var (NARGOUT, nargout); }
 
   virtual octave_value varval (const symbol_record& sym) const = 0;
 
@@ -438,9 +491,9 @@ public:
     return sym ? varval (sym) : octave_value ();
   }
 
-  virtual octave_value& varref (const symbol_record& sym) = 0;
+  virtual octave_value& varref (const symbol_record& sym, bool deref_refs = true) = 0;
 
-  virtual octave_value& varref (std::size_t data_offset);
+  virtual octave_value& varref (std::size_t data_offset, bool deref_refs = true);
 
   void assign (const symbol_record& sym, const octave_value& val)
   {
@@ -525,7 +578,7 @@ public:
       unmark_persistent (sym);
   }
 
-  void clear_objects (void);
+  void clear_objects ();
 
   void clear_variable (const std::string& name);
 
@@ -535,9 +588,9 @@ public:
   void clear_variable_regexp (const std::string& pattern);
   void clear_variable_regexp (const string_vector& patterns);
 
-  void clear_variables (void);
+  void clear_variables ();
 
-  std::string get_dispatch_class (void) const { return m_dispatch_class; }
+  std::string get_dispatch_class () const { return m_dispatch_class; }
 
   void set_dispatch_class (const std::string& class_name)
   {
@@ -554,8 +607,31 @@ public:
 
   virtual void break_closure_cycles (const std::shared_ptr<stack_frame>&) { }
 
-  void mark_closure_context (void) { m_is_closure_context = true; }
-  bool is_closure_context (void) const { return m_is_closure_context; }
+  void mark_closure_context ()
+  {
+    m_is_closure_context = true;
+
+    // Mark any access linked frames as closure contexts too,
+    // so that they'll make any function handle on its stack frame
+    // weak when the frame itself is being popped.
+    auto nxt = access_link ();
+    while (nxt)
+      {
+        nxt->m_is_closure_context = true;
+        nxt = nxt->access_link ();
+      }
+  }
+
+  bool is_closure_context () const { return m_is_closure_context; }
+
+  // The VM needs to tell the bytecode stackframe that it unwinds so
+  // that it can check whether to save the stack.
+  virtual void vm_unwinds () {}
+  virtual void vm_dbg_check_scope () {}
+  virtual void vm_clear_for_cache () {}
+  virtual void vm_enter_script () {}
+  virtual void vm_exit_script () {}
+  virtual void vm_enter_nested () {}
 
 protected:
 

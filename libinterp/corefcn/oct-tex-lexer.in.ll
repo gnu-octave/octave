@@ -237,7 +237,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return (m_scanner && m_buffer_state);
   }
 
-  void text_parser_tex::destroy_lexer (void)
+  void text_parser_tex::destroy_lexer ()
   {
     if (m_buffer_state)
       {

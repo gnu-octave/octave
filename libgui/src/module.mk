@@ -301,8 +301,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-color-picker.cc \
   %reldir%/moc-tab-bar.cc \
   %reldir%/moc-qt-interpreter-events.cc \
-  %reldir%/moc-resource-manager.cc \
-  %reldir%/moc-shortcut-manager.cc \
+  %reldir%/moc-shortcuts-tree-widget.cc \
   %reldir%/moc-welcome-wizard.cc \
   %reldir%/moc-workspace-model.cc \
   %reldir%/moc-workspace-view.cc \
@@ -378,14 +377,12 @@ noinst_HEADERS += \
   %reldir%/main-window.h \
   %reldir%/news-reader.h \
   %reldir%/octave-qobject.h \
-  %reldir%/octave-qtutils.h \
   %reldir%/qt-application.h \
   %reldir%/qt-interpreter-events.h \
   %reldir%/qt-utils.h \
   %reldir%/release-notes.h \
-  %reldir%/resource-manager.h \
   %reldir%/settings-dialog.h \
-  %reldir%/shortcut-manager.h \
+  %reldir%/shortcuts-tree-widget.h \
   %reldir%/tab-bar.h \
   %reldir%/terminal-dock-widget.h \
   %reldir%/color-picker.h \
@@ -412,6 +409,23 @@ noinst_HEADERS += \
   %reldir%/external-editor-interface.cc \
   %reldir%/files-dock-widget.cc \
   %reldir%/graphics-init.cc \
+  %reldir%/gui-preferences-cs.cc \
+  %reldir%/gui-preferences-dc.cc \
+  %reldir%/gui-preferences-dw.cc \
+  %reldir%/gui-preferences-ed.cc \
+  %reldir%/gui-preferences-fb.cc \
+  %reldir%/gui-preferences-ff.cc \
+  %reldir%/gui-preferences-global.cc \
+  %reldir%/gui-preferences-gp.cc \
+  %reldir%/gui-preferences-hw.cc \
+  %reldir%/gui-preferences-mw.cc \
+  %reldir%/gui-preferences-nr.cc \
+  %reldir%/gui-preferences-pd.cc \
+  %reldir%/gui-preferences-sc.cc \
+  %reldir%/gui-preferences-sd.cc \
+  %reldir%/gui-preferences-ve.cc \
+  %reldir%/gui-preferences-ws.cc \
+  %reldir%/gui-preferences.cc \
   %reldir%/gui-settings.cc \
   %reldir%/history-dock-widget.cc \
   %reldir%/interpreter-qobject.cc \
@@ -429,9 +443,8 @@ noinst_HEADERS += \
   %reldir%/qt-interpreter-events.cc \
   %reldir%/qt-application.cc \
   %reldir%/release-notes.cc \
-  %reldir%/resource-manager.cc \
   %reldir%/settings-dialog.cc \
-  %reldir%/shortcut-manager.cc \
+  %reldir%/shortcuts-tree-widget.cc \
   %reldir%/tab-bar.cc \
   %reldir%/terminal-dock-widget.cc \
   %reldir%/color-picker.cc \

@@ -51,6 +51,7 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-flt-cx-mat.h \
   %reldir%/ov-flt-re-diag.h \
   %reldir%/ov-flt-re-mat.h \
+  %reldir%/ov-inline.h \
   %reldir%/ov-java.h \
   %reldir%/ov-lazy-idx.h \
   %reldir%/ov-legacy-range.h \
@@ -61,6 +62,7 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-perm.h \
   %reldir%/ov-range-traits.h \
   %reldir%/ov-range.h \
+  %reldir%/ov-ref.h \
   %reldir%/ov-re-diag.h \
   %reldir%/ov-re-mat.h \
   %reldir%/ov-scalar.h \
@@ -69,6 +71,7 @@ OCTAVE_VALUE_INC = \
   %reldir%/ov-typeinfo.h \
   %reldir%/ov-usr-fcn.h \
   %reldir%/ov.h \
+  %reldir%/ov-vm.h \
   %reldir%/ovl.h \
   $(OV_INTTYPE_INC) \
   $(OV_SPARSE_INC)
@@ -127,6 +130,7 @@ OCTAVE_VALUE_SRC = \
   %reldir%/ov-oncleanup.cc \
   %reldir%/ov-perm.cc \
   %reldir%/ov-range.cc \
+  %reldir%/ov-ref.cc \
   %reldir%/ov-re-diag.cc \
   %reldir%/ov-re-mat.cc \
   %reldir%/ov-scalar.cc \

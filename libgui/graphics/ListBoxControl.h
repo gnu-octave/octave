@@ -34,7 +34,6 @@ class QModelIndex;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class ListBoxControl : public BaseControl
@@ -42,13 +41,12 @@ class ListBoxControl : public BaseControl
   Q_OBJECT
 
 public:
-  ListBoxControl (octave::base_qobject& oct_qobj,
-                  octave::interpreter& interp, const graphics_object& go,
+  ListBoxControl (octave::interpreter& interp, const graphics_object& go,
                   QListWidget *list);
-  ~ListBoxControl (void);
+  ~ListBoxControl ();
 
   static ListBoxControl *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
 protected:
@@ -57,7 +55,7 @@ protected:
   void sendSelectionChange ();
 
 private slots:
-  void itemSelectionChanged (void);
+  void itemSelectionChanged ();
   void itemActivated (const QModelIndex&);
   void itemPressed (QListWidgetItem *);
 

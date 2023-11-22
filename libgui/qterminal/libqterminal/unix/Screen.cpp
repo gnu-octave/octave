@@ -32,8 +32,8 @@
 #include <ctype.h>
 
 // Qt
-#include <QtCore/QTextStream>
-#include <QtCore/QDate>
+#include <QDate>
+#include <QTextStream>
 
 // Konsole
 #include "unix/konsole_wcwidth.h"
@@ -1381,8 +1381,8 @@ void Screen::copyLineToStream(int line ,
 		}
 		else
 		{
-			if ( count == -1 )
-					count = columns - start;
+            if ( count == -1 )
+              count = columns - start;
 
             assert( count >= 0 );
 
@@ -1391,14 +1391,14 @@ void Screen::copyLineToStream(int line ,
             Character* data = screenLines[screenLine].data();
             int length = screenLines[screenLine].count();
 
-			//retrieve line from screen image
-			for (int i=start;i < qMin(start+count,length);i++)
-			{
-			    characterBuffer[i-start] = data[i];
+            //retrieve line from screen image
+            for (int i=start; i < qMin(start+count,length); i++)
+            {
+                characterBuffer[i-start] = data[i];
             }
 
             // count cannot be any greater than length
-			count = qBound(0,count,length-start);
+            count = qBound (0, count, qMax (0, length-start));
 
             Q_ASSERT( screenLine < lineProperties.count() );
             currentLineProperties |= lineProperties[screenLine];

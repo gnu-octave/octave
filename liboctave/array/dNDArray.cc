@@ -158,7 +158,7 @@ NDArray::ifourier (int dim) const
 }
 
 ComplexNDArray
-NDArray::fourier2d (void) const
+NDArray::fourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -178,7 +178,7 @@ NDArray::fourier2d (void) const
 }
 
 ComplexNDArray
-NDArray::ifourier2d (void) const
+NDArray::ifourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -197,7 +197,7 @@ NDArray::ifourier2d (void) const
 }
 
 ComplexNDArray
-NDArray::fourierNd (void) const
+NDArray::fourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -212,7 +212,7 @@ NDArray::fourierNd (void) const
 }
 
 ComplexNDArray
-NDArray::ifourierNd (void) const
+NDArray::ifourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -252,7 +252,7 @@ NDArray::ifourier (int dim) const
 }
 
 ComplexNDArray
-NDArray::fourier2d (void) const
+NDArray::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -261,7 +261,7 @@ NDArray::fourier2d (void) const
 }
 
 ComplexNDArray
-NDArray::ifourier2d (void) const
+NDArray::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -270,7 +270,7 @@ NDArray::ifourier2d (void) const
 }
 
 ComplexNDArray
-NDArray::fourierNd (void) const
+NDArray::fourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -279,7 +279,7 @@ NDArray::fourierNd (void) const
 }
 
 ComplexNDArray
-NDArray::ifourierNd (void) const
+NDArray::ifourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -292,7 +292,7 @@ NDArray::ifourierNd (void) const
 // unary operations
 
 boolNDArray
-NDArray::operator ! (void) const
+NDArray::operator ! () const
 {
   if (any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
@@ -315,31 +315,31 @@ NDArray::any_element_is_positive (bool neg_zero) const
 }
 
 bool
-NDArray::any_element_is_nan (void) const
+NDArray::any_element_is_nan () const
 {
   return do_mx_check<double> (*this, mx_inline_any_nan);
 }
 
 bool
-NDArray::any_element_is_inf_or_nan (void) const
+NDArray::any_element_is_inf_or_nan () const
 {
   return ! do_mx_check<double> (*this, mx_inline_all_finite);
 }
 
 bool
-NDArray::any_element_not_one_or_zero (void) const
+NDArray::any_element_not_one_or_zero () const
 {
   return ! test_all (octave::is_one_or_zero);
 }
 
 bool
-NDArray::all_elements_are_zero (void) const
+NDArray::all_elements_are_zero () const
 {
   return test_all (octave::is_zero);
 }
 
 bool
-NDArray::all_elements_are_int_or_inf_or_nan (void) const
+NDArray::all_elements_are_int_or_inf_or_nan () const
 {
   return test_all (octave::is_int_or_inf_or_nan);
 }
@@ -378,13 +378,13 @@ NDArray::all_integers (double& max_val, double& min_val) const
 }
 
 bool
-NDArray::all_integers (void) const
+NDArray::all_integers () const
 {
   return test_all (octave::math::isinteger);
 }
 
 bool
-NDArray::too_large_for_float (void) const
+NDArray::too_large_for_float () const
 {
   return test_any (octave::too_large_for_float);
 }
@@ -567,25 +567,25 @@ NDArray::insert (const NDArray& a, const Array<octave_idx_type>& ra_idx)
 }
 
 NDArray
-NDArray::abs (void) const
+NDArray::abs () const
 {
   return do_mx_unary_map<double, double, std::abs> (*this);
 }
 
 boolNDArray
-NDArray::isnan (void) const
+NDArray::isnan () const
 {
   return do_mx_unary_map<bool, double, octave::math::isnan> (*this);
 }
 
 boolNDArray
-NDArray::isinf (void) const
+NDArray::isinf () const
 {
   return do_mx_unary_map<bool, double, octave::math::isinf> (*this);
 }
 
 boolNDArray
-NDArray::isfinite (void) const
+NDArray::isfinite () const
 {
   return do_mx_unary_map<bool, double, octave::math::isfinite> (*this);
 }

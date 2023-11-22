@@ -88,7 +88,7 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
     for i = 1:numel (hg)
       fn_old = fieldnames (hg(i).properties);
       for j = 1:numel (fn_new)
-        idx = ismember (tolower (fn_old), tolower (fn_new{j}));
+        idx = ismember (lower (fn_old), lower (fn_new{j}));
         if (any (idx))
           if (calc_old_prop)
             old_prop{i}.(fn_new{j}) = hg(i).properties.(fn_old{idx});

@@ -82,7 +82,7 @@ function d = base2dec (str, base)
   elseif (! (base >= 2 && base <= length (symbols)))
     error ("base2dec: BASE must be between 2 and 36, or a string of symbols");
   else
-    str = toupper (str);
+    str = upper (str);
   endif
 
   ## Right justify the values and squeeze out any spaces.

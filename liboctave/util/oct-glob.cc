@@ -35,14 +35,13 @@
 #include "oct-glob.h"
 #include "file-ops.h"
 #include "file-stat.h"
+#include "lo-sysdep.h"
 #include "unwind-prot.h"
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
 #  include <shlwapi.h>
 #  include <wchar.h>
-
-#  include "lo-sysdep.h"
 #endif
 
 // These functions are defined here and not in glob_match.cc so that we
@@ -52,14 +51,6 @@
 // which is not what we want...
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
-static bool
-single_match_exists (const std::string& file)
-{
-  sys::file_stat s (file);
-
-  return s.exists ();
-}
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
@@ -121,7 +112,7 @@ glob (const string_vector& pat)
 
               if (n > 1
                   || (n == 1
-                      && single_match_exists (std::string (matches[0]))))
+                      && sys::file_exists (std::string (matches[0]))))
                 {
                   retval.resize (k+n);
 
@@ -371,7 +362,7 @@ windows_glob (const string_vector& pat)
 
               if (n > 1
                   || (n == 1
-                      && single_match_exists (std::string (matches[0]))))
+                      && sys::file_exists (std::string (matches[0]))))
                 {
                   retval.resize (k + n);
 

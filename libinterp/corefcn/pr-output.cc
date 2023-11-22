@@ -50,11 +50,11 @@
 #include "defun.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter.h"
 #include "ovl.h"
 #include "oct-stream.h"
 #include "octave-preserve-stream-state.h"
 #include "pager.h"
-#include "parse.h"
 #include "pr-flt-fmt.h"
 #include "pr-output.h"
 #include "sysdep.h"
@@ -170,14 +170,14 @@ num_digits (T x)
 
 template <typename T>
 int
-pr_engineering_float<T>::exponent (void) const
+pr_engineering_float<T>::exponent () const
 {
   return engineering_exponent (m_val);
 }
 
 template <typename T>
 T
-pr_engineering_float<T>::mantissa (void) const
+pr_engineering_float<T>::mantissa () const
 {
   return m_val / std::pow (static_cast<T> (10), exponent ());
 }
@@ -896,10 +896,12 @@ make_complex_scalar_format (const std::complex<T>& c)
   T rp = c.real ();
   T ip = c.imag ();
 
-  bool inf_or_nan = (octave::math::isinf (c) || octave::math::isnan (c));
+  bool r_inf_or_nan = (octave::math::isinf (rp) || octave::math::isnan (rp));
+  bool i_inf_or_nan = (octave::math::isinf (ip) || octave::math::isnan (ip));
+  bool inf_or_nan = r_inf_or_nan || i_inf_or_nan;
 
-  bool int_only = (octave::math::x_nint (rp) == rp
-                   && octave::math::x_nint (ip) == ip);
+  bool int_only = ((r_inf_or_nan || octave::math::x_nint (rp) == rp)
+                   && (i_inf_or_nan || octave::math::x_nint (ip) == ip));
 
   T r_abs = (rp < 0 ? -rp : rp);
   T i_abs = (ip < 0 ? -ip : ip);
@@ -3205,7 +3207,7 @@ with numerator @var{N} and denominator @var{D} such that
 @code{@var{x} = @var{N}/@var{D}}.
 
 The optional second argument defines the maximum length of the string
-representing the elements of @var{x}.  By default, @var{len} is 9.
+representing the elements of @var{x}.  By default, @var{len} is 13.
 
 If the length of the smallest possible rational approximation exceeds
 @var{len}, an asterisk (*) padded with spaces will be returned instead.
@@ -3246,7 +3248,7 @@ x = str2num (r)
 
   frame.protect_var (rat_string_len);
 
-  rat_string_len = 9;
+  rat_string_len = 13;
   if (nargin == 2)
     rat_string_len = args(1).nint_value ();
 
@@ -3445,8 +3447,8 @@ Note that the output from @code{fdisp} always ends with a newline.
 %! end_unwind_protect
 */
 
-DEFUN (display, args, ,
-       classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
+DEFMETHOD (display, interp, args, ,
+           classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
        doc: /* -*- texinfo -*-
 @deftypefn {} {} display (@var{obj})
 Display the contents of the object @var{obj} prepended by its name.
@@ -3518,7 +3520,7 @@ of properly displaying the object's name.  This can be done by using the
 
   // Use feval so that dispatch will also work for disp.
 
-  feval ("disp", ovl (value));
+  interp.feval ("disp", ovl (value));
 
   if (print_newlines)
     octave_stdout << std::endl;
@@ -3555,7 +3557,7 @@ of properly displaying the object's name.  This can be done by using the
 */
 
 static inline void
-init_format_state (void)
+init_format_state ()
 {
   free_format = false;
   plus_format = false;
@@ -3603,7 +3605,7 @@ set_format_style (int argc, const string_vector& argv)
   frame.protect_var (Vcompact_format);
   frame.protect_var (uppercase_format);
   int prec = output_precision ();
-  frame.add ([=] (void) { set_output_prec (prec); });
+  frame.add ([=] () { set_output_prec (prec); });
 
   format = format_string;   // Initialize with existing value
   while (argc-- > 0)

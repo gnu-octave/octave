@@ -77,7 +77,7 @@ endfunction
 %!   assert (! ishold (gca));
 %!   assert (get (gca, "NextPlot"), "replace");
 %!   assert (get (hf, "NextPlot"), "add");
-%!   hold;
+%!   hold on;
 %!   assert (ishold);
 %!   assert (ishold (gca));
 %!   assert (get (gca, "NextPlot"), "add");

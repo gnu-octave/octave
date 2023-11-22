@@ -26,6 +26,8 @@
 #if ! defined (octave_qt_interpreter_events_h)
 #define octave_qt_interpreter_events_h 1
 
+#include "octave-config.h"
+
 #include <list>
 #include <string>
 
@@ -36,7 +38,6 @@
 #include <QWaitCondition>
 
 #include "dialog.h"
-#include "gui-settings.h"
 
 #include "event-manager.h"
 
@@ -73,20 +74,16 @@ public:
 
   qt_interpreter_events (base_qobject& oct_qobj);
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (qt_interpreter_events)
 
-  qt_interpreter_events (const qt_interpreter_events&) = delete;
-
-  qt_interpreter_events& operator = (const qt_interpreter_events&) = delete;
-
-  ~qt_interpreter_events (void) = default;
+  ~qt_interpreter_events () = default;
 
   // Note: these functions currently do nothing with the old terminal
   // widget.
   void start_gui (bool gui_app = false);
-  void close_gui (void);
+  void close_gui ();
 
-  bool have_dialogs (void) const { return true; }
+  bool have_dialogs () const { return true; }
 
   std::list<std::string>
   file_dialog (const filter_list& filter, const std::string& title,
@@ -113,30 +110,30 @@ public:
                    const std::string& btn1, const std::string& btn2,
                    const std::string& btn3, const std::string& btndef);
 
-  void update_path_dialog (void);
+  void update_path_dialog ();
 
-  void show_preferences (void);
+  void show_preferences ();
 
-  void apply_preferences (void);
+  void apply_preferences ();
 
-  void show_terminal_window (void);
+  void show_terminal_window ();
 
   bool show_documentation (const std::string& file);
 
-  void show_file_browser (void);
+  void show_file_browser ();
 
-  void show_command_history (void);
+  void show_command_history ();
 
-  void show_workspace (void);
+  void show_workspace ();
 
   void show_community_news (int serial);
-  void show_release_notes (void);
+  void show_release_notes ();
 
   bool edit_file (const std::string& file);
 
   void edit_variable (const std::string& name, const octave_value& val);
 
-  bool confirm_shutdown (void);
+  bool confirm_shutdown ();
 
   bool prompt_new_edit_file (const std::string& file);
 
@@ -167,7 +164,7 @@ public:
 
   void gui_status_update (const std::string& feature, const std::string& status);
 
-  void update_gui_lexer (void);
+  void update_gui_lexer ();
 
   void directory_changed (const std::string& dir);
 
@@ -180,7 +177,7 @@ public:
                       const symbol_info_list& syminfo,
                       bool update_variable_editor);
 
-  void clear_workspace (void);
+  void clear_workspace ();
 
   void update_prompt (const std::string& prompt);
 
@@ -188,33 +185,33 @@ public:
 
   void append_history (const std::string& hist_entry);
 
-  void clear_history (void);
+  void clear_history ();
 
-  void pre_input_event (void);
+  void pre_input_event ();
 
-  void post_input_event (void);
+  void post_input_event ();
 
   void enter_debugger_event (const std::string& fcn_name,
                              const std::string& fcn_file_name, int line);
 
   void execute_in_debugger_event (const std::string& file, int line);
 
-  void exit_debugger_event (void);
+  void exit_debugger_event ();
 
   void update_breakpoint (bool insert, const std::string& file, int line,
                           const std::string& cond);
 
-  void lock (void) { m_mutex.lock (); }
+  void lock () { m_mutex.lock (); }
 
-  void wait (void) { m_waitcondition.wait (&m_mutex); }
+  void wait () { m_waitcondition.wait (&m_mutex); }
 
-  void unlock (void) { m_mutex.unlock (); }
+  void unlock () { m_mutex.unlock (); }
 
-  void wake_all (void) { m_waitcondition.wakeAll (); }
+  void wake_all () { m_waitcondition.wakeAll (); }
 
 public slots:
 
-  void confirm_shutdown_octave (void);
+  void confirm_shutdown_octave ();
 
   void get_named_icon_slot (const QString& name);
 
@@ -224,7 +221,7 @@ signals:
 
   // Note: these signals are not currently used by the old terminal widget.
   void start_gui_signal (bool gui_app);
-  void close_gui_signal (void);
+  void close_gui_signal ();
 
   void copy_image_to_clipboard_signal (const QString& file, bool remove_file);
 
@@ -234,7 +231,7 @@ signals:
 
   void directory_changed_signal (const QString& dir);
 
-  void update_path_dialog_signal (void);
+  void update_path_dialog_signal ();
 
   void file_remove_signal (const QString& old_name, const QString& new_name);
 
@@ -245,7 +242,7 @@ signals:
   void set_workspace_signal (bool top_level, bool debug,
                              const symbol_info_list& syminfo);
 
-  void clear_workspace_signal (void);
+  void clear_workspace_signal ();
 
   void update_prompt_signal (const QString& prompt);
 
@@ -253,11 +250,11 @@ signals:
 
   void append_history_signal (const QString& hist_entry);
 
-  void clear_history_signal (void);
+  void clear_history_signal ();
 
-  void enter_debugger_signal (void);
+  void enter_debugger_signal ();
 
-  void exit_debugger_signal (void);
+  void exit_debugger_signal ();
 
   void update_breakpoint_marker_signal (bool insert, const QString& file,
                                         int line, const QString& cond);
@@ -266,11 +263,11 @@ signals:
 
   void delete_debugger_pointer_signal (const QString&, int);
 
-  void show_preferences_signal (void);
+  void show_preferences_signal ();
 
   void gui_preference_signal (const QString& key, const QString& value);
 
-  void show_terminal_window_signal (void);
+  void show_terminal_window_signal ();
 
   void show_documentation_signal (const QString& file);
 
@@ -278,14 +275,14 @@ signals:
 
   void unregister_documentation_signal (const QString& file);
 
-  void show_file_browser_signal (void);
+  void show_file_browser_signal ();
 
-  void show_command_history_signal (void);
+  void show_command_history_signal ();
 
-  void show_workspace_signal (void);
+  void show_workspace_signal ();
 
   void show_community_news_signal (int serial);
-  void show_release_notes_signal (void);
+  void show_release_notes_signal ();
 
   // Note: the next two signals are currently not used by the old terminal widget.
   void interpreter_output_signal (const QString& msg);
@@ -297,15 +294,15 @@ signals:
 
   void edit_variable_signal (const QString& name, const octave_value& val);
 
-  void refresh_variable_editor_signal (void);
+  void refresh_variable_editor_signal ();
 
-  void confirm_shutdown_signal (void);
+  void confirm_shutdown_signal ();
 
   void get_named_icon_signal (const QString& name);
 
-  void settings_changed (const gui_settings *, bool);
+  void settings_changed (bool);
 
-  void apply_new_settings (void);
+  void apply_new_settings ();
 
 private:
 

@@ -95,7 +95,7 @@ find_files_model::find_files_model (QObject *p)
   m_sortorder = 0;
 }
 
-void find_files_model::clear (void)
+void find_files_model::clear ()
 {
   beginResetModel ();
 
@@ -111,6 +111,9 @@ void find_files_model::addFile (const QFileInfo& info)
   QList<QFileInfo>::Iterator it;
   find_file_less_than less_than (m_sortorder);
 
+  // FIXME: This loop is trying to insert info in a sorted QList.
+  // Is there a library function or data structure
+  // that can do this without a loop?
   for (it = m_files.begin (); it != m_files.end (); it++)
     {
       if (less_than (info, *it))

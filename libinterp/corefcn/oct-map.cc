@@ -36,7 +36,7 @@
 #include "utils.h"
 
 octave_fields::fields_rep *
-octave_fields::nil_rep (void)
+octave_fields::nil_rep ()
 {
   static fields_rep nr;
   return &nr;
@@ -155,7 +155,7 @@ octave_fields::equal_up_to_order (const octave_fields& other,
 }
 
 string_vector
-octave_fields::fieldnames (void) const
+octave_fields::fieldnames () const
 {
   octave_idx_type n = nfields ();
   string_vector retval(n);
@@ -205,7 +205,7 @@ octave_scalar_map::rmfield (const std::string& k)
 }
 
 octave_scalar_map
-octave_scalar_map::orderfields (void) const
+octave_scalar_map::orderfields () const
 {
   Array<octave_idx_type> perm;
   return orderfields (perm);
@@ -303,7 +303,7 @@ octave_map::rmfield (const std::string& k)
 }
 
 octave_map
-octave_map::orderfields (void) const
+octave_map::orderfields () const
 {
   Array<octave_idx_type> perm;
   return orderfields (perm);
@@ -439,7 +439,7 @@ octave_map::fast_elem_insert (octave_idx_type n,
 }
 
 octave_map
-octave_map::squeeze (void) const
+octave_map::squeeze () const
 {
   octave_map retval (*this);
   octave_idx_type nf = nfields ();
@@ -496,7 +496,7 @@ octave_map::permute (const Array<int>& vec, bool inv) const
 */
 
 octave_map
-octave_map::transpose (void) const
+octave_map::transpose () const
 {
   octave_map retval (m_keys);
 
@@ -1344,7 +1344,7 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
 }
 
 void
-octave_map::optimize_dimensions (void)
+octave_map::optimize_dimensions ()
 {
   octave_idx_type nf = nfields ();
 

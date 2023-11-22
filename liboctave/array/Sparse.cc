@@ -54,7 +54,7 @@
 
 template <typename T, typename Alloc>
 OCTAVE_API typename Sparse<T, Alloc>::SparseRep *
-Sparse<T, Alloc>::nil_rep (void)
+Sparse<T, Alloc>::nil_rep ()
 {
   static typename Sparse<T, Alloc>::SparseRep nr;
   return &nr;
@@ -176,7 +176,7 @@ Sparse<T, Alloc>::SparseRep::change_length (octave_idx_type nz)
 template <typename T, typename Alloc>
 OCTAVE_API
 bool
-Sparse<T, Alloc>::SparseRep::indices_ok (void) const
+Sparse<T, Alloc>::SparseRep::indices_ok () const
 {
   return sparse_indices_ok (m_ridx, m_cidx, m_nrows, m_ncols, nnz ());
 }
@@ -184,7 +184,7 @@ Sparse<T, Alloc>::SparseRep::indices_ok (void) const
 template <typename T, typename Alloc>
 OCTAVE_API
 bool
-Sparse<T, Alloc>::SparseRep::any_element_is_nan (void) const
+Sparse<T, Alloc>::SparseRep::any_element_is_nan () const
 {
   octave_idx_type nz = nnz ();
 
@@ -705,7 +705,7 @@ Sparse<T, Alloc>::Sparse (const Array<T>& a)
 
 template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T, Alloc>::~Sparse (void)
+Sparse<T, Alloc>::~Sparse ()
 {
   if (--m_rep->m_count == 0)
     delete m_rep;
@@ -1138,7 +1138,7 @@ Sparse<T, Alloc>::insert (const Sparse<T, Alloc>& a,
 template <typename T, typename Alloc>
 OCTAVE_API
 Sparse<T, Alloc>
-Sparse<T, Alloc>::transpose (void) const
+Sparse<T, Alloc>::transpose () const
 {
   assert (ndims () == 2);
 

@@ -59,13 +59,13 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatMatrix (void) = default;
+  FloatMatrix () = default;
 
   FloatMatrix (const FloatMatrix& a) = default;
 
   FloatMatrix& operator = (const FloatMatrix& a) = default;
 
-  ~FloatMatrix (void) = default;
+  ~FloatMatrix () = default;
 
   FloatMatrix (octave_idx_type r, octave_idx_type c)
     : FloatNDArray (dim_vector (r, c)) { }
@@ -103,7 +103,7 @@ public:
   OCTAVE_API bool operator == (const FloatMatrix& a) const;
   OCTAVE_API bool operator != (const FloatMatrix& a) const;
 
-  OCTAVE_API bool issymmetric (void) const;
+  OCTAVE_API bool issymmetric () const;
 
   // destructive insert/delete/reorder operations
 
@@ -136,8 +136,8 @@ public:
 
   friend class FloatComplexMatrix;
 
-  FloatMatrix hermitian (void) const { return MArray<float>::transpose (); }
-  FloatMatrix transpose (void) const { return MArray<float>::transpose (); }
+  FloatMatrix hermitian () const { return MArray<float>::transpose (); }
+  FloatMatrix transpose () const { return MArray<float>::transpose (); }
 
   // resize is the destructive equivalent for this one
 
@@ -168,7 +168,7 @@ private:
                         float& rcon, bool force, bool calc_cond) const;
 
 public:
-  OCTAVE_API FloatMatrix inverse (void) const;
+  OCTAVE_API FloatMatrix inverse () const;
   OCTAVE_API FloatMatrix inverse (octave_idx_type& info) const;
   OCTAVE_API FloatMatrix
   inverse (octave_idx_type& info, float& rcon, bool force = false,
@@ -183,13 +183,13 @@ public:
 
   OCTAVE_API FloatMatrix pseudo_inverse (float tol = 0.0) const;
 
-  OCTAVE_API FloatComplexMatrix fourier (void) const;
-  OCTAVE_API FloatComplexMatrix ifourier (void) const;
+  OCTAVE_API FloatComplexMatrix fourier () const;
+  OCTAVE_API FloatComplexMatrix ifourier () const;
 
-  OCTAVE_API FloatComplexMatrix fourier2d (void) const;
-  OCTAVE_API FloatComplexMatrix ifourier2d (void) const;
+  OCTAVE_API FloatComplexMatrix fourier2d () const;
+  OCTAVE_API FloatComplexMatrix ifourier2d () const;
 
-  OCTAVE_API FloatDET determinant (void) const;
+  OCTAVE_API FloatDET determinant () const;
   OCTAVE_API FloatDET determinant (octave_idx_type& info) const;
   OCTAVE_API FloatDET
   determinant (octave_idx_type& info, float& rcon,
@@ -198,7 +198,7 @@ public:
   determinant (MatrixType& mattype, octave_idx_type& info, float& rcon,
                bool calc_cond = true) const;
 
-  OCTAVE_API float rcond (void) const;
+  OCTAVE_API float rcond () const;
   OCTAVE_API float rcond (MatrixType& mattype) const;
 
 private:
@@ -374,20 +374,20 @@ public:
   OCTAVE_API FloatMatrix prod (int dim = -1) const;
   OCTAVE_API FloatMatrix sum (int dim = -1) const;
   OCTAVE_API FloatMatrix sumsq (int dim = -1) const;
-  OCTAVE_API FloatMatrix abs (void) const;
+  OCTAVE_API FloatMatrix abs () const;
 
   OCTAVE_API FloatMatrix diag (octave_idx_type k = 0) const;
 
   OCTAVE_API FloatDiagMatrix diag (octave_idx_type m, octave_idx_type n) const;
 
-  OCTAVE_API FloatColumnVector row_min (void) const;
-  OCTAVE_API FloatColumnVector row_max (void) const;
+  OCTAVE_API FloatColumnVector row_min () const;
+  OCTAVE_API FloatColumnVector row_max () const;
 
   OCTAVE_API FloatColumnVector row_min (Array<octave_idx_type>& index) const;
   OCTAVE_API FloatColumnVector row_max (Array<octave_idx_type>& index) const;
 
-  OCTAVE_API FloatRowVector column_min (void) const;
-  OCTAVE_API FloatRowVector column_max (void) const;
+  OCTAVE_API FloatRowVector column_min () const;
+  OCTAVE_API FloatRowVector column_max () const;
 
   OCTAVE_API FloatRowVector column_min (Array<octave_idx_type>& index) const;
   OCTAVE_API FloatRowVector column_max (Array<octave_idx_type>& index) const;

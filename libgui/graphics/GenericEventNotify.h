@@ -39,8 +39,8 @@ class GenericEventNotifyReceiver;
 class GenericEventNotifySender
 {
 public:
-  GenericEventNotifySender (void) : m_receivers () { }
-  virtual ~GenericEventNotifySender (void) = default;
+  GenericEventNotifySender () : m_receivers () { }
+  virtual ~GenericEventNotifySender () = default;
 
   void addReceiver (GenericEventNotifyReceiver *r)
   { m_receivers.insert (r); }
@@ -59,8 +59,8 @@ private:
 class GenericEventNotifyReceiver
 {
 public:
-  GenericEventNotifyReceiver (void) { }
-  virtual ~GenericEventNotifyReceiver (void) = default;
+  GenericEventNotifyReceiver () { }
+  virtual ~GenericEventNotifyReceiver () = default;
 
   virtual bool eventNotifyBefore (QObject *obj, QEvent *evt) = 0;
   virtual void eventNotifyAfter (QObject *obj, QEvent *evt) = 0;
@@ -92,7 +92,7 @@ class T : public B, public GenericEventNotifySender \
 { \
 public: \
   T (QWidget *xparent) : B (xparent), GenericEventNotifySender () { } \
-  ~ T (void) = default; \
+  ~ T () = default; \
 \
   bool event (QEvent *evt) \
     { \

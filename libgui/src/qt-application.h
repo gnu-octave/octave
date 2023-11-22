@@ -26,6 +26,10 @@
 #if ! defined (octave_qt_application_h)
 #define octave_qt_application_h 1
 
+#include "octave-config.h"
+
+#include <string>
+
 #include "octave.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -41,29 +45,30 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 //! allows Qt graphics to be used or it may start an interface that
 //! provides the full GUI experience.
 
-  class OCTGUI_API qt_application  : public application
+class OCTGUI_API qt_application  : public application
 {
- public:
+public:
+
+  qt_application (const std::string& organization_name,
+                  const std::string& application_name,
+                  const std::string& application_version,
+                  int argc, char **argv);
 
   qt_application (int argc, char **argv);
 
-  // No copying, at least not yet.
+  OCTAVE_DISABLE_COPY_MOVE (qt_application)
 
-  qt_application (const qt_application&) = delete;
-
-  qt_application& operator = (const qt_application&) = delete;
-
-  ~qt_application (void) = default;
+  ~qt_application () = default;
 
   // Should we start the GUI or fall back to the CLI?
-  bool start_gui_p (void) const;
+  bool start_gui_p () const;
 
-  int execute (void);
+  int execute ();
 
-  bool gui_running (void) const { return m_gui_running; }
+  bool gui_running () const { return m_gui_running; }
   void gui_running (bool arg) { m_gui_running = arg; }
 
- private:
+private:
 
   // If TRUE, the GUI should be started.
   bool m_gui_running = false;

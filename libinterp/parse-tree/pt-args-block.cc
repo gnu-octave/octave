@@ -31,7 +31,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-tree_args_block_validation_list::~tree_args_block_validation_list (void)
+tree_args_block_validation_list::~tree_args_block_validation_list ()
 {
   while (! empty ())
     {

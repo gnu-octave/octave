@@ -41,9 +41,9 @@ public:
 
   find_files_model (QObject *p = nullptr);
 
-  ~find_files_model (void) = default;
+  ~find_files_model () = default;
 
-  void clear (void);
+  void clear ();
 
   void addFile (const QFileInfo& info);
 

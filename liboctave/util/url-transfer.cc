@@ -48,7 +48,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-base_url_transfer::base_url_transfer (void)
+base_url_transfer::base_url_transfer ()
   : m_host_or_url (), m_valid (false), m_ftp (false),
     m_ascii_mode (false), m_ok (true), m_errmsg (),
     m_curr_istream (&std::cin), m_curr_ostream (&std::cout)
@@ -75,9 +75,8 @@ base_url_transfer::mget_directory (const std::string& directory,
                                    const std::string& target)
 {
   std::string sep = sys::file_ops::dir_sep_str ();
-  sys::file_stat fs (directory);
 
-  if (! fs || ! fs.is_dir ())
+  if (! sys::dir_exists (directory))
     {
       std::string msg;
       int status = sys::mkdir (directory, 0777, msg);
@@ -175,9 +174,7 @@ base_url_transfer::mput_directory (const std::string& base,
             std::string realfile
               = realdir + sys::file_ops::dir_sep_str () + file;
 
-            sys::file_stat fs (realfile);
-
-            if (! fs.exists ())
+            if (! sys::file_exists (realfile))
               {
                 m_ok = false;
                 m_errmsg = "__ftp__mput: file '" + realfile
@@ -185,7 +182,7 @@ base_url_transfer::mput_directory (const std::string& base,
                 break;
               }
 
-            if (fs.is_dir ())
+            if (sys::dir_exists (realfile))
               {
                 file_list.append (mput_directory (realdir, file));
 
@@ -289,7 +286,7 @@ class curl_transfer : public base_url_transfer
 {
 public:
 
-  curl_transfer (void)
+  curl_transfer ()
     : base_url_transfer (), m_curl (curl_easy_init ()), m_errnum (), m_url (),
       m_userpwd ()
   {
@@ -352,19 +349,15 @@ public:
     SETOPT (CURLOPT_HTTPGET, 1);
   }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (curl_transfer);
 
-  curl_transfer (const curl_transfer&) = delete;
-
-  curl_transfer& operator = (const curl_transfer&) = delete;
-
-  ~curl_transfer (void)
+  ~curl_transfer ()
   {
     if (m_curl)
       curl_easy_cleanup (m_curl);
   }
 
-  void perform (void)
+  void perform ()
   {
     m_errnum = curl_easy_perform (m_curl);
 
@@ -375,7 +368,7 @@ public:
       }
   }
 
-  std::string lasterror (void) const
+  std::string lasterror () const
   {
     return std::string (curl_easy_strerror (m_errnum));
   }
@@ -396,13 +389,13 @@ public:
     return retval;
   }
 
-  void ascii (void)
+  void ascii ()
   {
     m_ascii_mode = true;
     SETOPT (CURLOPT_TRANSFERTEXT, 1);
   }
 
-  void binary (void)
+  void binary ()
   {
     m_ascii_mode = false;
     SETOPT (CURLOPT_TRANSFERTEXT, 0);
@@ -483,7 +476,7 @@ public:
     SETOPT (CURLOPT_URL, m_url.c_str ());
   }
 
-  void dir (void)
+  void dir ()
   {
     m_url = "ftp://" + m_host_or_url + '/';
     SETOPT (CURLOPT_URL, m_url.c_str ());
@@ -498,7 +491,7 @@ public:
     SETOPT (CURLOPT_URL, m_url.c_str ());
   }
 
-  string_vector list (void)
+  string_vector list ()
   {
     string_vector retval;
 
@@ -582,7 +575,7 @@ public:
     curl_easy_getinfo (m_curl, CURLINFO_FILETIME, &ft);
     filetime = ft;
     double fs;
-    curl_easy_getinfo (m_curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD, &fs);
+    curl_easy_getinfo (m_curl, CURLINFO_CONTENT_LENGTH_DOWNLOAD_T, &fs);
     filesize = fs;
 
     SETOPT (CURLOPT_WRITEFUNCTION, write_data);
@@ -598,7 +591,7 @@ public:
     cwd ('/' + path);
   }
 
-  std::string pwd (void)
+  std::string pwd ()
   {
     std::string retval;
 
@@ -717,12 +710,12 @@ public:
   // path of the file as its value.
   void form_data_post (const Array<std::string>& param)
   {
-    struct curl_httppost *post = nullptr;
-    struct curl_httppost *last = nullptr;
+    curl_mime *mime = nullptr;
+    curl_mimepart *part = nullptr;
 
     SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
 
-    unwind_action cleanup_httppost ([=] () { curl_formfree (post); });
+    unwind_action cleanup_mime ([=] () { curl_mime_free (mime); });
 
     if (param.numel () >= 2)
       {
@@ -731,15 +724,15 @@ public:
             std::string name = param(i);
             std::string data = param(i+1);
 
+            part = curl_mime_addpart (mime);
+            curl_mime_name (part, name.c_str ());
             if (name == "file")
-              curl_formadd (&post, &last, CURLFORM_COPYNAME, name.c_str (),
-                            CURLFORM_FILE, data.c_str (), CURLFORM_END);
+              curl_mime_filedata (part, data.c_str ());
             else
-              curl_formadd(&post, &last, CURLFORM_COPYNAME, name.c_str (),
-                           CURLFORM_COPYCONTENTS, data.c_str (), CURLFORM_END);
+              curl_mime_data (part, data.c_str (), CURL_ZERO_TERMINATED);
           }
 
-        SETOPT (CURLOPT_HTTPPOST, post);
+        SETOPT (CURLOPT_MIMEPOST, mime);
       }
 
     perform ();
@@ -924,7 +917,7 @@ private:
 #  define REP_CLASS base_url_transfer
 #endif
 
-url_transfer::url_transfer (void) : m_rep (new REP_CLASS ())
+url_transfer::url_transfer () : m_rep (new REP_CLASS ())
 { }
 
 url_transfer::url_transfer (const std::string& host, const std::string& user,

@@ -86,7 +86,7 @@ string_vector::sort (bool make_uniq)
   return *this;
 }
 string_vector&
-string_vector::uniq (void)
+string_vector::uniq ()
 {
   octave_idx_type len = numel ();
 
@@ -154,7 +154,7 @@ string_vector::join (const std::string& sep) const
 }
 
 char **
-string_vector::c_str_vec (void) const
+string_vector::c_str_vec () const
 {
   octave_idx_type len = numel ();
 
@@ -169,7 +169,7 @@ string_vector::c_str_vec (void) const
 }
 
 std::list<std::string>
-string_vector::std_list (void) const
+string_vector::std_list () const
 {
   octave_idx_type len = numel ();
 

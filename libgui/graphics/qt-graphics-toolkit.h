@@ -34,7 +34,6 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
-class base_qobject;
 
 class Object;
 class ObjectProxy;
@@ -46,10 +45,9 @@ class qt_graphics_toolkit
 
 public:
 
-  qt_graphics_toolkit (octave::interpreter& interp,
-                       octave::base_qobject& oct_qobj);
+  qt_graphics_toolkit (octave::interpreter& interp);
 
-  ~qt_graphics_toolkit (void) = default;
+  ~qt_graphics_toolkit () = default;
 
   // The interpreter may call graphics toolkit functions that we
   // implement here.  The Qt GUI that manages these actions runs in a
@@ -66,7 +64,7 @@ public:
   // we should ensure that they are correctly handling the connection
   // between the interpreter and GUI threads.
 
-  bool is_valid (void) const { return true; }
+  bool is_valid () const { return true; }
 
   void redraw_figure (const graphics_object& h) const;
 
@@ -119,8 +117,6 @@ public slots:
 private:
 
   octave::interpreter& m_interpreter;
-
-  octave::base_qobject& m_octave_qobj;
 };
 
 OCTAVE_END_NAMESPACE(octave)

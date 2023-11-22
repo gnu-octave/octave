@@ -254,9 +254,9 @@ general regular expressions, the following functions come with Octave.
 
 The following functions are useful to perform common String operations.
 
-@DOCSTRING(tolower)
+@DOCSTRING(lower)
 
-@DOCSTRING(toupper)
+@DOCSTRING(upper)
 
 @DOCSTRING(deblank)
 

@@ -32,9 +32,12 @@
 
 #include "dir-ops.h"
 #include "file-ops.h"
-#include "file-stat.h"
+#include "lo-sysdep.h"
 #include "oct-env.h"
 #include "pathsearch.h"
+#if ! defined (OCTAVE_USE_WINDOWS_API)
+#  include "file-stat.h"
+#endif
 
 #include "defaults.h"
 #include "defun.h"
@@ -147,45 +150,6 @@ strip_trailing_separators (const std::string& dir_arg)
   return dir;
 }
 
-// Should we cache all files in private directories, or is it OK to just
-// look them up each time as needed?
-
-static std::string
-find_private_file (const std::string& fname)
-{
-  std::string retval;
-
-  // Look in private directory corresponding to current function (if
-  // any).
-
-  symbol_scope scope = __get_current_scope__ ();
-
-  octave_user_code *curr_code = scope ? scope.user_code () : nullptr;
-
-  if (curr_code)
-    {
-      // Even for private functions, dir_name doesn't contain the
-      // "private" directory component so we append it here in all
-      // cases.
-
-      std::string dir_name = curr_code->dir_name ();
-
-      if (! dir_name.empty ())
-        {
-          std::string pfname = dir_name + sys::file_ops::dir_sep_str ()
-                               + "private" + sys::file_ops::dir_sep_str ()
-                               + fname;
-
-          sys::file_stat fs (pfname);
-
-          if (fs.exists () && fs.is_reg ())
-            retval = pfname;
-        }
-    }
-
-  return retval;
-}
-
 // True if a path is contained in a path list separated by path_sep_char
 
 static bool
@@ -205,24 +169,6 @@ in_path_list (const std::string& path_list, const std::string& path)
     }
 
   return false;
-}
-
-static void
-rehash_internal (void)
-{
-  load_path& lp = __get_load_path__ ();
-
-  lp.update ();
-
-  // Signal the GUI allowing updating the load path dialog
-  event_manager& evmgr = __get_event_manager__ ();
-  evmgr.update_path_dialog ();
-
-  // FIXME: maybe we should rename this variable since it is being
-  // used for more than keeping track of the prompt time.
-
-  // This will force updated functions to be found.
-  Vlast_prompt_time.stamp ();
 }
 
 //! Check if directory contains modified subdirectories.
@@ -249,7 +195,7 @@ rehash_internal (void)
 //! @return true if directory contains modified subdirectories
 
 static bool
-subdirs_modified (const std::string& d, const sys::time& last_checked)
+subdirs_modified (const std::string& d, const sys::file_time& last_checked)
 {
   sys::dir_entry dir (d);
 
@@ -265,13 +211,22 @@ subdirs_modified (const std::string& d, const sys::time& last_checked)
 
           std::string full_name = sys::file_ops::concat (d, fname);
 
-          sys::file_stat fs (full_name);
-
           // Check if directory AND if relevant (@,+,private)
           // AND (if modified OR recursion into (@,+) sub-directories)
+#if defined (OCTAVE_USE_WINDOWS_API)
+          if (sys::dir_exists (full_name)
+#else
+          sys::file_stat fs (full_name);
+
           if (fs && fs.is_dir ()
+#endif
               && (fname[0] == '@' || fname[0] == '+' || fname == "private")
-              && ((fs.mtime () + fs.time_resolution () > last_checked)
+#if defined (OCTAVE_USE_WINDOWS_API)
+              && ((sys::file_time (full_name)
+#else
+              && ((sys::file_time (fs.mtime ().unix_time ())
+#endif
+                   + sys::file_time::time_resolution () > last_checked)
                   || ((fname[0] == '@' || fname[0] == '+')
                       && subdirs_modified (full_name, last_checked))))
             return true;
@@ -290,11 +245,13 @@ std::string load_path::s_sys_path;
 load_path::abs_dir_cache_type load_path::s_abs_dir_cache;
 
 load_path::load_path (interpreter& interp)
-  : add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
-remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); }),
+  : m_add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
+m_remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); }),
 m_interpreter (interp), m_package_map (), m_top_level_package (),
 m_dir_info_list (), m_init_dirs (), m_command_line_path ()
 { }
+
+std::atomic<octave_idx_type> load_path::s_n_updated;
 
 void
 load_path::initialize (bool set_initial_path)
@@ -335,8 +292,10 @@ load_path::initialize (bool set_initial_path)
 }
 
 void
-load_path::clear (void)
+load_path::clear ()
 {
+  signal_clear_fcn_cache ();
+
   m_dir_info_list.clear ();
 
   m_top_level_package.clear ();
@@ -374,9 +333,9 @@ load_path::set (const std::string& p, bool warn, bool is_init)
   // Temporarily disable add hook.
 
   unwind_protect frame;
-  frame.protect_var (add_hook);
+  frame.protect_var (m_add_hook);
 
-  add_hook = nullptr;
+  m_add_hook = nullptr;
 
   clear ();
 
@@ -390,8 +349,8 @@ load_path::set (const std::string& p, bool warn, bool is_init)
   //        Why not use const here?  Does add_hook change dir_info_list?
   for (auto& di : m_dir_info_list)
     {
-      if (add_hook)
-        add_hook (di.dir_name);
+      if (m_add_hook)
+        m_add_hook (di.dir_name);
     }
 
   // Always prepend current directory.
@@ -419,7 +378,7 @@ load_path::remove (const std::string& dir_arg)
 
   if (! dir_arg.empty ())
     {
-      if (same_file (dir_arg, "."))
+      if (sys::same_file (dir_arg, "."))
         {
           warning (R"(rmpath: can't remove "." from path)");
 
@@ -438,8 +397,8 @@ load_path::remove (const std::string& dir_arg)
             {
               retval = true;
 
-              if (remove_hook)
-                remove_hook (dir);
+              if (m_remove_hook)
+                m_remove_hook (dir);
 
               dir_info& di = *i;
 
@@ -454,27 +413,42 @@ load_path::remove (const std::string& dir_arg)
 }
 
 void
-load_path::update (void)
+load_path::update ()
 {
   // I don't see a better way to do this because we need to
   // preserve the correct directory ordering for new files that
   // have appeared.
 
+  signal_clear_fcn_cache ();
+
   m_top_level_package.clear ();
 
   m_package_map.clear ();
 
-  for (auto& di : m_dir_info_list)
+  for (dir_info_list_iterator di = m_dir_info_list.begin ();
+       di != m_dir_info_list.end ();)
     {
-      bool ok = di.update ();
+      bool ok = di->update ();
 
       if (! ok)
-        warning_with_id
-        ("Octave:load-path:update-failed",
-         "load-path: update failed for '%s', removing from path",
-         di.dir_name.c_str ());
+        {
+          warning_with_id
+            ("Octave:load-path:update-failed",
+             "load-path: update failed for '%s', removing from path",
+             di->dir_name.c_str ());
+
+          if (m_remove_hook)
+            m_remove_hook (di->dir_name.c_str ());
+
+          remove (*di);
+
+          di = m_dir_info_list.erase (di);
+        }
       else
-        add (di, true, "", true);
+        {
+          add (*di, true, "", true);
+          di++;
+        }
     }
 }
 
@@ -485,7 +459,7 @@ load_path::contains_canonical (const std::string& dir) const
 
   for (const auto& d : m_dir_info_list)
     {
-      if (same_file (dir, d.dir_name))
+      if (sys::same_file (dir, d.dir_name))
         {
           retval = true;
           break;
@@ -504,7 +478,7 @@ load_path::contains_file_in_dir (const std::string& file,
 
   std::string curr_dir = sys::env::get_current_directory ();
 
-  if (same_file (curr_dir, dir))
+  if (sys::same_file (curr_dir, dir))
     ok = true;
   else
     {
@@ -519,7 +493,7 @@ load_path::contains_file_in_dir (const std::string& file,
 
       if (dir_in_load_path)
         {
-          if (same_file (lp_file, file))
+          if (sys::same_file (lp_file, file))
             ok = true;
         }
       else
@@ -530,9 +504,9 @@ load_path::contains_file_in_dir (const std::string& file,
           // not enough because the file in the current directory would
           // still be found.
 
-          if (same_file (lp_file, base_file))
+          if (sys::same_file (lp_file, base_file))
             {
-              if (same_file (curr_dir, dir))
+              if (sys::same_file (curr_dir, dir))
                 ok = true;
               else
                 addpath_option = false;
@@ -605,11 +579,7 @@ load_path::find_file (const std::string& file) const
 
   if (sys::env::absolute_pathname (file)
       || sys::env::rooted_relative_pathname (file))
-    {
-      sys::file_stat fs (file);
-
-      return fs.exists () ? file : retval;
-    }
+    return sys::file_exists (file) ? file : retval;
   else
     {
       std::string tfile = find_private_file (file);
@@ -627,9 +597,7 @@ load_path::find_file (const std::string& file) const
         {
           std::string tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
-          sys::file_stat fs (tfile);
-
-          if (fs.exists ())
+          if (sys::file_exists (tfile))
             return tfile;
         }
     }
@@ -662,9 +630,7 @@ load_path::find_dir (const std::string& dir) const
       && (sys::env::absolute_pathname (dir)
           || sys::env::rooted_relative_pathname (dir)))
     {
-      sys::file_stat fs (dir);
-
-      if (fs.exists () && fs.is_dir ())
+      if (sys::dir_exists (dir))
         return dir;
     }
   else
@@ -687,13 +653,9 @@ load_path::find_dir (const std::string& dir) const
 
           if (dname_len > dir_len
               && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && canon_dir == dname.substr (dname_len - dir_len))
-            {
-              sys::file_stat fs (di.dir_name);
-
-              if (fs.exists () && fs.is_dir ())
-                return di.abs_dir_name;
-            }
+              && canon_dir == dname.substr (dname_len - dir_len)
+              && sys::dir_exists (di.dir_name))
+            return di.abs_dir_name;
         }
     }
 
@@ -709,9 +671,7 @@ load_path::find_matching_dirs (const std::string& dir) const
       && (sys::env::absolute_pathname (dir)
           || sys::env::rooted_relative_pathname (dir)))
     {
-      sys::file_stat fs (dir);
-
-      if (fs.exists () && fs.is_dir ())
+      if (sys::dir_exists (dir))
         retlist.push_back (dir);
     }
   else
@@ -734,13 +694,9 @@ load_path::find_matching_dirs (const std::string& dir) const
 
           if (dname_len > dir_len
               && sys::file_ops::is_dir_sep (dname[dname_len - dir_len - 1])
-              && canon_dir == dname.substr (dname_len - dir_len))
-            {
-              sys::file_stat fs (di.dir_name);
-
-              if (fs.exists () && fs.is_dir ())
-                retlist.push_back (di.abs_dir_name);
-            }
+              && canon_dir == dname.substr (dname_len - dir_len)
+              && sys::dir_exists (di.dir_name))
+            retlist.push_back (di.abs_dir_name);
         }
     }
 
@@ -770,9 +726,7 @@ load_path::find_first_of (const string_vector& flist) const
           if (sys::env::absolute_pathname (file)
               || sys::env::rooted_relative_pathname (file))
             {
-              sys::file_stat fs (file);
-
-              if (fs.exists ())
+              if (sys::file_exists (file))
                 return file;
             }
           else
@@ -782,9 +736,7 @@ load_path::find_first_of (const string_vector& flist) const
                   std::string tfile;
                   tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
-                  sys::file_stat fs (tfile);
-
-                  if (fs.exists ())
+                  if (sys::file_exists (tfile))
                     return tfile;
                 }
             }
@@ -847,9 +799,7 @@ load_path::find_all_first_of (const string_vector& flist) const
           if (sys::env::absolute_pathname (file)
               || sys::env::rooted_relative_pathname (file))
             {
-              sys::file_stat fs (file);
-
-              if (fs.exists ())
+              if (sys::file_exists (file))
                 retlist.push_back (file);
             }
           else
@@ -859,9 +809,7 @@ load_path::find_all_first_of (const string_vector& flist) const
                   std::string tfile;
                   tfile = sys::file_ops::concat (di.abs_dir_name, file);
 
-                  sys::file_stat fs (tfile);
-
-                  if (fs.exists ())
+                  if (sys::file_exists (tfile))
                     retlist.push_back (tfile);
                 }
             }
@@ -893,7 +841,7 @@ load_path::find_all_first_of (const string_vector& flist) const
 }
 
 string_vector
-load_path::dirs (void) const
+load_path::dirs () const
 {
   std::size_t len = m_dir_info_list.size ();
 
@@ -908,7 +856,7 @@ load_path::dirs (void) const
 }
 
 std::list<std::string>
-load_path::dir_list (void) const
+load_path::dir_list () const
 {
   std::list<std::string> retval;
 
@@ -947,13 +895,13 @@ load_path::files (const std::string& dir, bool omit_exts) const
 }
 
 string_vector
-load_path::fcn_names (void) const
+load_path::fcn_names () const
 {
   return m_top_level_package.fcn_names ();
 }
 
 std::string
-load_path::path (void) const
+load_path::path () const
 {
   std::string xpath;
 
@@ -1021,6 +969,23 @@ load_path::execute_pkg_del (const std::string& dir)
   execute_pkg_add_or_del (dir, "PKG_DEL");
 }
 
+void load_path::rehash ()
+{
+  update ();
+
+  // Signal the GUI allowing updating the load path dialog
+
+  event_manager& evmgr = m_interpreter.get_event_manager ();
+
+  evmgr.update_path_dialog ();
+
+  // FIXME: maybe we should rename this variable since it is being
+  // used for more than keeping track of the prompt time.
+
+  // This will force updated functions to be found.
+  Vlast_prompt_time.stamp ();
+}
+
 void load_path::execute_pkg_add_or_del (const std::string& dir,
                                         const std::string& script_file)
 {
@@ -1029,9 +994,7 @@ void load_path::execute_pkg_add_or_del (const std::string& dir,
 
   std::string file = sys::file_ops::concat (dir, script_file);
 
-  sys::file_stat fs (file);
-
-  if (fs.exists ())
+  if (sys::file_exists (file))
     source_file (file, "base");
 }
 
@@ -1143,34 +1106,27 @@ load_path::add (const std::string& dir_arg, bool at_end, bool warn)
     move (i, at_end);
   else
     {
-      sys::file_stat fs (dir);
+      std::string msg;
 
-      if (fs)
+      if (sys::dir_exists (dir, msg))
         {
-          if (fs.is_dir ())
-            {
-              read_dir_config (dir);
+          read_dir_config (dir);
 
-              dir_info di (dir);
+          dir_info di (dir);
 
-              if (at_end)
-                m_dir_info_list.push_back (di);
-              else
-                m_dir_info_list.push_front (di);
+          if (at_end)
+            m_dir_info_list.push_back (di);
+          else
+            m_dir_info_list.push_front (di);
 
-              add (di, at_end);
+          add (di, at_end);
 
-              if (add_hook)
-                add_hook (dir);
-            }
-          else if (warn)
-            warning ("addpath: %s: not a directory", dir_arg.c_str ());
+          if (m_add_hook)
+            m_add_hook (dir);
         }
-      else if (warn)
-        {
-          std::string msg = fs.error ();
-          warning ("addpath: %s: %s", dir_arg.c_str (), msg.c_str ());
-        }
+
+      if (warn && ! msg.empty ())
+        warning ("addpath: %s: %s", dir_arg.c_str (), msg.c_str ());
     }
 
   // FIXME: is there a better way to do this?
@@ -1223,7 +1179,7 @@ load_path::read_dir_config (const std::string& dir) const
       return;
     }
 
-  unwind_action close_file ([cfile] (void) { fclose (cfile); });
+  unwind_action close_file ([cfile] () { fclose (cfile); });
 
   // find line with character encoding and read it
   bool eof = false;
@@ -1334,6 +1290,43 @@ load_path::get_file_list (const load_path::dir_info::fcn_file_map_type& lst) con
   return retval;
 }
 
+// Should we cache all files in private directories, or is it OK to just
+// look them up each time as needed?
+
+std::string
+load_path::find_private_file (const std::string& fname) const
+{
+  std::string retval;
+
+  // Look in private directory corresponding to current function (if
+  // any).
+
+  symbol_scope scope = m_interpreter.get_current_scope ();
+
+  octave_user_code *curr_code = scope ? scope.user_code () : nullptr;
+
+  if (curr_code)
+    {
+      // Even for private functions, dir_name doesn't contain the
+      // "private" directory component so we append it here in all
+      // cases.
+
+      std::string dir_name = curr_code->dir_name ();
+
+      if (! dir_name.empty ())
+        {
+          std::string pfname = dir_name + sys::file_ops::dir_sep_str ()
+                               + "private" + sys::file_ops::dir_sep_str ()
+                               + fname;
+
+          if (sys::file_exists (pfname, false))
+            retval = pfname;
+        }
+    }
+
+  return retval;
+}
+
 load_path::dir_info::fcn_file_map_type
 get_fcn_files (const std::string& d)
 {
@@ -1389,13 +1382,20 @@ get_fcn_files (const std::string& d)
 }
 
 bool
-load_path::dir_info::update (void)
+load_path::dir_info::update ()
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::string msg;
+
+  if (! sys::dir_exists (dir_name, msg))
+    {
+#else
   sys::file_stat fs (dir_name);
 
   if (! fs)
     {
       std::string msg = fs.error ();
+#endif
       warning_with_id ("Octave:load-path:dir-info:update-failed",
                        "load_path: %s: %s", dir_name.c_str (), msg.c_str ());
 
@@ -1419,7 +1419,12 @@ load_path::dir_info::update (void)
               // slow things down tremendously for large directories.
               const dir_info& di = p->second;
 
-              if ((fs.mtime () + fs.time_resolution ()
+#if defined (OCTAVE_USE_WINDOWS_API)
+              if ((sys::file_time (dir_name)
+#else
+              if ((sys::file_time (fs.mtime ().unix_time ())
+#endif
+                   + sys::file_time::time_resolution ()
                    > di.dir_time_last_checked)
                   || subdirs_modified (dir_name, dir_time_last_checked))
                 initialize ();
@@ -1454,7 +1459,12 @@ load_path::dir_info::update (void)
         }
     }
   // Absolute path, check timestamp to see whether it requires re-caching
-  else if (fs.mtime () + fs.time_resolution () > dir_time_last_checked
+#if defined (OCTAVE_USE_WINDOWS_API)
+  else if (sys::file_time (dir_name)
+#else
+  else if (sys::file_time (fs.mtime ().unix_time ())
+#endif
+           + sys::file_time::time_resolution () > dir_time_last_checked
            || subdirs_modified (dir_name, dir_time_last_checked))
     initialize ();
 
@@ -1483,21 +1493,32 @@ load_path::dir_info::is_package (const std::string& name) const
 }
 
 void
-load_path::dir_info::initialize (void)
+load_path::dir_info::initialize ()
 {
   is_relative = ! sys::env::absolute_pathname (dir_name);
 
-  dir_time_last_checked = sys::time (static_cast<OCTAVE_TIME_T> (0));
+  dir_time_last_checked = sys::file_time (static_cast<OCTAVE_TIME_T> (0));
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::string msg;
+
+  if (sys::dir_exists (dir_name, msg))
+#else
   sys::file_stat fs (dir_name);
 
   if (fs)
+#endif
     {
       method_file_map.clear ();
       package_dir_map.clear ();
 
-      dir_mtime = fs.mtime ();
-      dir_time_last_checked = sys::time ();
+#if defined (OCTAVE_USE_WINDOWS_API)
+      dir_mtime = sys::file_time (dir_name);
+#else
+      dir_mtime = fs.mtime ().unix_time ();
+#endif
+
+      dir_time_last_checked = sys::file_time ();
 
       get_file_list (dir_name);
 
@@ -1523,7 +1544,9 @@ load_path::dir_info::initialize (void)
     }
   else
     {
+#if ! defined (OCTAVE_USE_WINDOWS_API)
       std::string msg = fs.error ();
+#endif
       warning ("load_path: %s: %s", dir_name.c_str (), msg.c_str ());
     }
 }
@@ -1554,36 +1577,31 @@ load_path::dir_info::get_file_list (const std::string& d)
 
       std::string full_name = sys::file_ops::concat (d, fname);
 
-      sys::file_stat fs (full_name);
-
-      if (fs)
+      if (sys::dir_exists (full_name))
         {
-          if (fs.is_dir ())
-            {
-              if (fname == "private")
-                get_private_file_map (full_name);
-              else if (fname[0] == '@')
-                get_method_file_map (full_name, fname.substr (1));
-              else if (fname[0] == '+')
-                get_package_dir (full_name, fname.substr (1));
-            }
-          else
-            {
-              all_files[all_files_count++] = fname;
+          if (fname == "private")
+            get_private_file_map (full_name);
+          else if (fname[0] == '@')
+            get_method_file_map (full_name, fname.substr (1));
+          else if (fname[0] == '+')
+            get_package_dir (full_name, fname.substr (1));
+        }
+      else if (sys::file_exists (full_name))
+        {
+          all_files[all_files_count++] = fname;
 
-              std::size_t pos = fname.rfind ('.');
+          std::size_t pos = fname.rfind ('.');
 
-              if (pos != std::string::npos)
+          if (pos != std::string::npos)
+            {
+              std::string ext = fname.substr (pos);
+
+              if (ext == ".m" || ext == ".oct" || ext == ".mex")
                 {
-                  std::string ext = fname.substr (pos);
+                  std::string base = fname.substr (0, pos);
 
-                  if (ext == ".m" || ext == ".oct" || ext == ".mex")
-                    {
-                      std::string base = fname.substr (0, pos);
-
-                      if (valid_identifier (base))
-                        fcn_files[fcn_files_count++] = fname;
-                    }
+                  if (valid_identifier (base))
+                    fcn_files[fcn_files_count++] = fname;
                 }
             }
         }
@@ -1607,9 +1625,7 @@ load_path::dir_info::get_method_file_map (const std::string& d,
 
   std::string pd = sys::file_ops::concat (d, "private");
 
-  sys::file_stat fs (pd);
-
-  if (fs && fs.is_dir ())
+  if (sys::dir_exists (pd))
     method_file_map[class_name].private_file_map = get_fcn_files (pd);
 }
 
@@ -1746,11 +1762,10 @@ load_path::package_info::find_fcn (const std::string& fcn,
 
           retval = find_method (class_name, meth, dir_name);
         }
-      else
-        retval = "";
     }
   else
     {
+      // Ensure that dir_name is empty if function is not found.
       dir_name = "";
 
       const_fcn_map_iterator p = m_fcn_map.find (fcn);
@@ -1820,6 +1835,7 @@ load_path::package_info::find_method (const std::string& class_name,
 
   //  update ();
 
+  // Ensure that dir_name is empty if method is not found.
   dir_name = "";
 
   const_method_map_iterator q = m_method_map.find (class_name);
@@ -1897,7 +1913,7 @@ load_path::package_info::overloads (const std::string& meth,
 }
 
 string_vector
-load_path::package_info::fcn_names (void) const
+load_path::package_info::fcn_names () const
 {
   std::size_t len = m_fcn_map.size ();
 
@@ -2445,9 +2461,7 @@ genpath (const std::string& dirname, const string_vector& skip)
             {
               std::string nm = sys::file_ops::concat (dirname, elt);
 
-              sys::file_stat fs (nm);
-
-              if (fs && fs.is_dir ())
+              if (sys::dir_exists (nm))
                 retval += (directory_path::path_sep_str ()
                            + genpath (nm, skip));
             }
@@ -2500,13 +2514,15 @@ directories with those names.
   return retval;
 }
 
-DEFUN (rehash, , ,
-       doc: /* -*- texinfo -*-
+DEFMETHOD (rehash, interp, , ,
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} rehash ()
 Reinitialize Octave's load path directory cache.
 @end deftypefn */)
 {
-  rehash_internal ();
+  load_path& lp = interp.get_load_path ();
+
+  lp.rehash ();
 
   return ovl ();
 }
@@ -2599,7 +2615,7 @@ No checks are made for duplicate elements.
 
       lp.set (path, true);
 
-      rehash_internal ();
+      lp.rehash ();
     }
 
   if (nargout > 0)
@@ -2754,7 +2770,7 @@ For each directory that is added, and that was not already in the path,
     }
 
   if (need_to_update)
-    rehash_internal ();
+    lp.rehash ();
 
   return retval;
 }
@@ -2814,7 +2830,7 @@ and runs it if it exists.
     }
 
   if (need_to_update)
-    rehash_internal ();
+    lp.rehash ();
 
   return retval;
 }

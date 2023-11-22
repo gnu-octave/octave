@@ -37,7 +37,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Unary expressions.
 
 std::string
-tree_unary_expression::oper (void) const
+tree_unary_expression::oper () const
 {
   return octave_value::unary_op_as_string (m_etype);
 }
@@ -77,7 +77,8 @@ tree_prefix_expression::evaluate (tree_evaluator& tw, int)
         }
       else
         {
-          octave_value op_val = m_op->evaluate (tw);
+          // Evaluate with unknown number of output arguments
+          octave_value op_val = m_op->evaluate (tw, -1);
 
           if (op_val.is_defined ())
             {
@@ -138,7 +139,8 @@ tree_postfix_expression::evaluate (tree_evaluator& tw, int)
         }
       else
         {
-          octave_value op_val = m_op->evaluate (tw);
+          // Evaluate with unknown number of output arguments
+          octave_value op_val = m_op->evaluate (tw, -1);
 
           if (op_val.is_defined ())
             {

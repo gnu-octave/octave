@@ -29,19 +29,16 @@
 
 #include <sys/types.h>
 
-#if defined (HAVE_PWD_H)
-#  include <pwd.h>
-#endif
-
 #include "lo-error.h"
 #include "oct-password.h"
+#include "pwd-wrappers.h"
 
 #define NOT_SUPPORTED(nm)                       \
   nm ": not supported on this system"
 
 OCTAVE_NORETURN static
 void
-err_invalid (void)
+err_invalid ()
 {
   (*current_liboctave_error_handler) ("invalid password object");
 }
@@ -51,7 +48,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 std::string
-password::name (void) const
+password::name () const
 {
   if (! ok ())
     err_invalid ();
@@ -60,7 +57,7 @@ password::name (void) const
 }
 
 std::string
-password::passwd (void) const
+password::passwd () const
 {
   if (! ok ())
     err_invalid ();
@@ -69,7 +66,7 @@ password::passwd (void) const
 }
 
 uid_t
-password::uid (void) const
+password::uid () const
 {
   if (! ok ())
     err_invalid ();
@@ -78,7 +75,7 @@ password::uid (void) const
 }
 
 gid_t
-password::gid (void) const
+password::gid () const
 {
   if (! ok ())
     err_invalid ();
@@ -87,7 +84,7 @@ password::gid (void) const
 }
 
 std::string
-password::gecos (void) const
+password::gecos () const
 {
   if (! ok ())
     err_invalid ();
@@ -96,7 +93,7 @@ password::gecos (void) const
 }
 
 std::string
-password::dir (void) const
+password::dir () const
 {
   if (! ok ())
     err_invalid ();
@@ -105,7 +102,7 @@ password::dir (void) const
 }
 
 std::string
-password::shell (void) const
+password::shell () const
 {
   if (! ok ())
     err_invalid ();
@@ -114,7 +111,7 @@ password::shell (void) const
 }
 
 password
-password::getpwent (void)
+password::getpwent ()
 {
   std::string msg;
   return getpwent (msg);
@@ -125,7 +122,7 @@ password::getpwent (std::string& msg)
 {
 #if defined HAVE_GETPWENT
   msg = "";
-  return password (::getpwent (), msg);
+  return password (octave_getpwent_wrapper (), msg);
 #else
   msg = NOT_SUPPORTED ("getpwent");
   return password ();
@@ -144,7 +141,7 @@ password::getpwuid (uid_t uid, std::string& msg)
 {
 #if defined (HAVE_GETPWUID)
   msg = "";
-  return password (::getpwuid (uid), msg);
+  return password (octave_getpwuid_wrapper (uid), msg);
 #else
   octave_unused_parameter (uid);
 
@@ -165,7 +162,7 @@ password::getpwnam (const std::string& nm, std::string& msg)
 {
 #if defined (HAVE_GETPWNAM)
   msg = "";
-  return password (::getpwnam (nm.c_str ()), msg);
+  return password (octave_getpwnam_wrapper (nm.c_str ()), msg);
 #else
   octave_unused_parameter (nm);
 
@@ -175,7 +172,7 @@ password::getpwnam (const std::string& nm, std::string& msg)
 }
 
 int
-password::setpwent (void)
+password::setpwent ()
 {
   std::string msg;
   return setpwent (msg);
@@ -186,7 +183,7 @@ password::setpwent (std::string& msg)
 {
 #if defined (HAVE_SETPWENT)
   msg = "";
-  ::setpwent ();
+  octave_setpwent_wrapper ();
   return 0;
 #else
   msg = NOT_SUPPORTED ("setpwent");
@@ -195,7 +192,7 @@ password::setpwent (std::string& msg)
 }
 
 int
-password::endpwent (void)
+password::endpwent ()
 {
   std::string msg;
   return endpwent (msg);
@@ -206,7 +203,7 @@ password::endpwent (std::string& msg)
 {
 #if defined (HAVE_ENDPWENT)
   msg = "";
-  ::endpwent ();
+  octave_endpwent_wrapper ();
   return 0;
 #else
   msg = NOT_SUPPORTED ("endpwent");
@@ -223,15 +220,16 @@ password::password (void *p, std::string& msg)
 
   if (p)
     {
-      struct ::passwd *pw = static_cast<struct ::passwd *> (p);
+      struct octave_passwd_wrapper pw;
+      octave_from_passwd (static_cast<struct ::passwd *> (p), &pw);
 
-      m_name = pw->pw_name;
-      m_passwd = pw->pw_passwd;
-      m_uid = pw->pw_uid;
-      m_gid = pw->pw_gid;
-      m_gecos = pw->pw_gecos;
-      m_dir = pw->pw_dir;
-      m_shell = pw->pw_shell;
+      m_name = pw.pw_name;
+      m_passwd = pw.pw_passwd;
+      m_uid = pw.pw_uid;
+      m_gid = pw.pw_gid;
+      m_gecos = pw.pw_gecos;
+      m_dir = pw.pw_dir;
+      m_shell = pw.pw_shell;
 
       m_valid = true;
     }

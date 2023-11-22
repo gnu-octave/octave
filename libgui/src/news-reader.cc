@@ -33,15 +33,15 @@
 #include <QString>
 
 #include "news-reader.h"
-#include "octave-qobject.h"
 #include "gui-preferences-nr.h"
+#include "gui-settings.h"
 
 #include "url-transfer.h"
 #include "version.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-void news_reader::process (void)
+void news_reader::process ()
 {
   QString html_text;
 
@@ -68,16 +68,12 @@ void news_reader::process (void)
         {
           if (m_serial >= 0)
             {
-              resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-              gui_settings *settings = rmgr.get_settings ();
+              gui_settings settings;
 
-              if (settings)
-                {
-                  settings->setValue (nr_last_time.key,
-                                      QDateTime::currentDateTime ());
+              settings.setValue (nr_last_time.settings_key (),
+                                 QDateTime::currentDateTime ());
 
-                  settings->sync ();
-                }
+              settings.sync ();
 
               QString tag ("community-news-page-serial=");
 
@@ -95,13 +91,8 @@ void news_reader::process (void)
 
                   if (curr_page_serial > m_serial)
                     {
-                      if (settings)
-                        {
-                          settings->setValue (nr_last_news.key,
-                                              curr_page_serial);
-
-                          settings->sync ();
-                        }
+                      settings.setValue (nr_last_news.settings_key (), curr_page_serial);
+                      settings.sync ();
                     }
                   else
                     return;

@@ -106,17 +106,13 @@ public:
   typedef std::function<bool (typename ref_param<T>::type,
                               typename ref_param<T>::type)> compare_fcn_type;
 
-  octave_sort (void);
+  octave_sort ();
 
   octave_sort (const compare_fcn_type&);
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (octave_sort)
 
-  octave_sort (const octave_sort&) = delete;
-
-  octave_sort& operator = (const octave_sort&) = delete;
-
-  ~octave_sort (void);
+  ~octave_sort ();
 
   void set_compare (const compare_fcn_type& comp) { m_compare = comp; }
 
@@ -199,20 +195,16 @@ private:
   {
   public:
 
-    MergeState (void)
+    MergeState ()
       : m_min_gallop (), m_a (nullptr), m_ia (nullptr), m_alloced (0), m_n (0)
     { reset (); }
 
-    // No copying!
+    OCTAVE_DISABLE_COPY_MOVE (MergeState)
 
-    MergeState (const MergeState&) = delete;
-
-    MergeState& operator = (const MergeState&) = delete;
-
-    ~MergeState (void)
+    ~MergeState ()
     { delete [] m_a; delete [] m_ia; }
 
-    void reset (void)
+    void reset ()
     { m_min_gallop = MIN_GALLOP; m_n = 0; }
 
     void getmem (octave_idx_type need);

@@ -92,7 +92,7 @@ function tickval = rticks (varargin)
     error ("rticks: MODE is not yet implemented for the rtick property");
 
     ## FIXME: Enable mode args if/when they are available in polar/polarplot
-    ## arg = tolower (arg);
+    ## arg = lower (arg);
     ## switch (arg)
     ##   case "mode"
     ##     tickval = get (hax, "rtickmode");

@@ -49,8 +49,8 @@ DEFBINOP_OP (mul, scalar, complex, *)
 
 DEFBINOP (div, scalar, complex)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.double_value () / v2.complex_value ());
 }
@@ -59,8 +59,8 @@ DEFBINOP_FN (pow, scalar, complex, xpow)
 
 DEFBINOP (ldiv, scalar, complex)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v2.complex_value () / v1.double_value ());
 }
@@ -76,8 +76,8 @@ DEFBINOP_OP (el_mul, scalar, complex, *)
 
 DEFBINOP (el_div, scalar, complex)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.double_value () / v2.complex_value ());
 }
@@ -86,24 +86,24 @@ DEFBINOP_FN (el_pow, scalar, complex, xpow)
 
 DEFBINOP (el_ldiv, scalar, complex)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v2.complex_value () / v1.double_value ());
 }
 
 DEFBINOP (el_and, scalar, complex)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.double_value () && (v2.complex_value () != 0.0));
 }
 
 DEFBINOP (el_or, scalar, complex)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_complex& v2 = dynamic_cast<const octave_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_complex&, v2, a2);
 
   return octave_value (v1.double_value () || (v2.complex_value () != 0.0));
 }

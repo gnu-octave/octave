@@ -44,20 +44,18 @@ public:
 
   history_system (interpreter& interp);
 
-  history_system (const history_system&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (history_system)
 
-  history_system& operator = (const history_system&) = delete;
-
-  ~history_system (void) = default;
+  ~history_system () = default;
 
   void initialize (bool read_history_file = false);
 
-  void write_timestamp (void);
+  void write_timestamp ();
 
   octave_value input_from_tmp_file (const octave_value_list& args,
                                     int nargout);
 
-  bool input_from_tmp_file (void) const
+  bool input_from_tmp_file () const
   {
     return m_input_from_tmp_file;
   }
@@ -70,7 +68,7 @@ public:
   octave_value timestamp_format_string (const octave_value_list& args,
                                         int nargout);
 
-  std::string timestamp_format_string (void) const
+  std::string timestamp_format_string () const
   {
     return m_timestamp_format_string;
   }
@@ -99,11 +97,11 @@ private:
   // Octave exits.
   std::string m_timestamp_format_string;
 
-  static std::string default_file (void);
+  static std::string default_file ();
 
-  static int default_size (void);
+  static int default_size ();
 
-  static std::string default_timestamp_format (void);
+  static std::string default_timestamp_format ();
 
   template <typename T>
   T set (T& var, const T& new_val)

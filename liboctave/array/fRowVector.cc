@@ -123,7 +123,7 @@ FloatRowVector::append (const FloatRowVector& a) const
 }
 
 FloatColumnVector
-FloatRowVector::transpose (void) const
+FloatRowVector::transpose () const
 {
   return MArray<float>::transpose ();
 }
@@ -204,7 +204,7 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
 // other operations
 
 float
-FloatRowVector::min (void) const
+FloatRowVector::min () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -220,7 +220,7 @@ FloatRowVector::min (void) const
 }
 
 float
-FloatRowVector::max (void) const
+FloatRowVector::max () const
 {
   octave_idx_type len = numel ();
   if (len == 0)
@@ -279,6 +279,11 @@ linspace (float x1, float x2, octave_idx_type n_in)
       retval.resize (1, x2);
       return retval;
     }
+  else if (x1 == x2)
+    {
+      retval.resize (n_in, x2);
+      return retval;
+    }
 
   // Use unsigned type (guaranteed n_in > 1 at this point) so that divisions
   // by 2 can be replaced by compiler with shift right instructions.
@@ -292,7 +297,14 @@ linspace (float x1, float x2, octave_idx_type n_in)
   retval.xelem (n-1) = x2;
 
   // Construct linspace symmetrically from both ends.
+  bool isnan_delta = false;
   float delta = (x2 - x1) / (n - 1);
+  if (octave::math::isinf (delta))
+    {
+      delta = octave::numeric_limits<float>::NaN ();
+      isnan_delta = true;
+    }
+
   unsigned_octave_idx_type n2 = n/2;
   for (unsigned_octave_idx_type i = 1; i < n2; i++)
     {
@@ -300,7 +312,14 @@ linspace (float x1, float x2, octave_idx_type n_in)
       retval.xelem (n-1-i) = x2 - i*delta;
     }
   if (n % 2 == 1)  // Middle element if number of elements is odd.
-    retval.xelem (n2) = (x1 == -x2 ? 0 : (x1 + x2) / 2);
+    {
+      if (x1 == -x2)
+        retval.xelem (n2) = 0;
+      else if (isnan_delta)
+        retval.xelem (n2) = octave::numeric_limits<float>::NaN ();
+      else
+        retval.xelem (n2) = (x1 + x2) / 2;
+    }
 
   return retval;
 }

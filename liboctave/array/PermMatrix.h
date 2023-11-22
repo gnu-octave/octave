@@ -38,13 +38,13 @@ class OCTAVE_API PermMatrix : protected Array<octave_idx_type>
 {
 public:
 
-  PermMatrix (void) = default;
+  PermMatrix () = default;
 
   PermMatrix (const PermMatrix& m) = default;
 
   PermMatrix& operator = (const PermMatrix& m) = default;
 
-  ~PermMatrix (void) = default;
+  ~PermMatrix () = default;
 
   OCTAVE_API PermMatrix (octave_idx_type n);
 
@@ -54,33 +54,33 @@ public:
   OCTAVE_API PermMatrix (const octave::idx_vector& idx, bool colp,
                          octave_idx_type n = 0);
 
-  octave_idx_type dim1 (void) const
+  octave_idx_type dim1 () const
   { return Array<octave_idx_type>::numel (); }
-  octave_idx_type dim2 (void) const
+  octave_idx_type dim2 () const
   { return Array<octave_idx_type>::numel (); }
 
-  octave_idx_type rows (void) const { return dim1 (); }
-  octave_idx_type cols (void) const { return dim2 (); }
-  octave_idx_type columns (void) const { return dim2 (); }
+  octave_idx_type rows () const { return dim1 (); }
+  octave_idx_type cols () const { return dim2 (); }
+  octave_idx_type columns () const { return dim2 (); }
 
-  octave_idx_type perm_length (void) const
+  octave_idx_type perm_length () const
   { return Array<octave_idx_type>::numel (); }
   // FIXME: a dangerous ambiguity?
-  octave_idx_type length (void) const
+  octave_idx_type length () const
   { return perm_length (); }
 
-  octave_idx_type numel (void) const { return dim1 () * dim2 (); }
+  octave_idx_type numel () const { return dim1 () * dim2 (); }
 
-  std::size_t byte_size (void) const
+  std::size_t byte_size () const
   { return Array<octave_idx_type>::byte_size (); }
 
-  dim_vector dims (void) const { return dim_vector (dim1 (), dim2 ()); }
+  dim_vector dims () const { return dim_vector (dim1 (), dim2 ()); }
 
-  bool isempty (void) const { return numel () == 0; }
+  bool isempty () const { return numel () == 0; }
 
-  int ndims (void) const { return 2; }
+  int ndims () const { return 2; }
 
-  const Array<octave_idx_type>& col_perm_vec (void) const
+  const Array<octave_idx_type>& col_perm_vec () const
   { return *this; }
 
   octave_idx_type
@@ -99,17 +99,17 @@ public:
   }
 
   // These are, in fact, super-fast.
-  OCTAVE_API PermMatrix transpose (void) const;
-  OCTAVE_API PermMatrix inverse (void) const;
+  OCTAVE_API PermMatrix transpose () const;
+  OCTAVE_API PermMatrix inverse () const;
 
   // Determinant, i.e., the sign of permutation.
-  OCTAVE_API octave_idx_type determinant (void) const;
+  OCTAVE_API octave_idx_type determinant () const;
 
   // Efficient integer power of a permutation.
   OCTAVE_API PermMatrix power (octave_idx_type n) const;
 
-  bool is_col_perm (void) const { return true; }
-  bool is_row_perm (void) const { return false; }
+  bool is_col_perm () const { return true; }
+  bool is_row_perm () const { return false; }
 
   void print_info (std::ostream& os, const std::string& prefix) const
   { Array<octave_idx_type>::print_info (os, prefix); }

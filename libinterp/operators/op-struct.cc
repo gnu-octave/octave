@@ -41,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (transpose, struct)
 {
-  const octave_struct& v = dynamic_cast<const octave_struct&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_struct&, v, a);
 
   if (v.ndims () > 2)
     error ("transpose not defined for N-D objects");
@@ -51,7 +51,7 @@ DEFUNOP (transpose, struct)
 
 DEFUNOP (scalar_transpose, scalar_struct)
 {
-  const octave_scalar_struct& v = dynamic_cast<const octave_scalar_struct&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar_struct&, v, a);
 
   return octave_value (v.scalar_map_value ());
 }
@@ -66,8 +66,8 @@ oct_catop_struct_matrix (const octave_base_value& a1,
                          const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
-  const octave_struct& v1 = dynamic_cast<const octave_struct&> (a1);
-  const octave_matrix& v2 = dynamic_cast<const octave_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_struct&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v2, a2);
 
   NDArray tmp = v2.array_value ();
   dim_vector dv = tmp.dims ();
@@ -83,8 +83,8 @@ oct_catop_matrix_struct (const octave_base_value& a1,
                          const octave_base_value& a2,
                          const Array<octave_idx_type>&)
 {
-  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
-  const octave_struct& v2 = dynamic_cast<const octave_struct&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_struct&, v2, a2);
 
   NDArray tmp = v1.array_value ();
   dim_vector dv = tmp.dims ();

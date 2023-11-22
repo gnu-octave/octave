@@ -54,7 +54,7 @@ public:
     Rectangular
   };
 
-  OCTAVE_API MatrixType (void);
+  OCTAVE_API MatrixType ();
 
   OCTAVE_API MatrixType (const MatrixType& a);
 
@@ -78,7 +78,7 @@ public:
   OCTAVE_API MatrixType (const matrix_type t, const octave_idx_type ku,
                          const octave_idx_type kl, bool _full = false);
 
-  OCTAVE_API ~MatrixType (void);
+  OCTAVE_API ~MatrixType ();
 
   OCTAVE_API MatrixType& operator = (const MatrixType& a);
 
@@ -96,77 +96,77 @@ public:
 
   OCTAVE_API int type (const SparseComplexMatrix& a);
 
-  double band_density (void) const { return m_bandden; }
+  double band_density () const { return m_bandden; }
 
-  int nupper (void) const { return m_upper_band; }
+  int nupper () const { return m_upper_band; }
 
-  int nlower (void) const { return m_lower_band; }
+  int nlower () const { return m_lower_band; }
 
-  bool is_dense (void) const { return m_dense; }
+  bool is_dense () const { return m_dense; }
 
-  bool isdiag (void) const
+  bool isdiag () const
   { return (m_type == Diagonal || m_type == Permuted_Diagonal); }
 
-  bool istriu (void) const
+  bool istriu () const
   { return (m_type == Upper || m_type == Permuted_Upper); }
 
-  bool istril (void) const
+  bool istril () const
   { return (m_type == Lower || m_type == Permuted_Lower); }
 
-  bool isbanded (void) const
+  bool isbanded () const
   { return (m_type == Banded || m_type == Banded_Hermitian); }
 
-  bool is_tridiagonal (void) const
+  bool is_tridiagonal () const
   { return (m_type == Tridiagonal || m_type == Tridiagonal_Hermitian); }
 
-  bool ishermitian (void) const
+  bool ishermitian () const
   {
     return (m_type == Banded_Hermitian || m_type == Tridiagonal_Hermitian
             || m_type == Hermitian);
   }
 
-  bool is_rectangular (void) const { return (m_type == Rectangular); }
+  bool is_rectangular () const { return (m_type == Rectangular); }
 
-  bool is_known (void) const { return (m_type != Unknown); }
+  bool is_known () const { return (m_type != Unknown); }
 
-  bool is_unknown (void) const { return (m_type == Unknown); }
+  bool is_unknown () const { return (m_type == Unknown); }
 
-  OCTAVE_API void info (void) const;
+  OCTAVE_API void info () const;
 
-  octave_idx_type * triangular_perm (void) const { return m_perm; }
+  octave_idx_type * triangular_perm () const { return m_perm; }
 
-  void invalidate_type (void) { m_type = Unknown; }
+  void invalidate_type () { m_type = Unknown; }
 
-  void mark_as_diagonal (void) { m_type = Diagonal; }
+  void mark_as_diagonal () { m_type = Diagonal; }
 
-  void mark_as_permuted_diagonal (void) { m_type = Permuted_Diagonal; }
+  void mark_as_permuted_diagonal () { m_type = Permuted_Diagonal; }
 
-  void mark_as_upper_triangular (void) { m_type = Upper; }
+  void mark_as_upper_triangular () { m_type = Upper; }
 
-  void mark_as_lower_triangular (void) { m_type = Lower; }
+  void mark_as_lower_triangular () { m_type = Lower; }
 
-  void mark_as_tridiagonal (void) {m_type = Tridiagonal; }
+  void mark_as_tridiagonal () {m_type = Tridiagonal; }
 
   void mark_as_banded (const octave_idx_type ku, const octave_idx_type kl)
   { m_type = Banded; m_upper_band = ku; m_lower_band = kl; }
 
-  void mark_as_full (void) { m_type = Full; }
+  void mark_as_full () { m_type = Full; }
 
-  void mark_as_rectangular (void) { m_type = Rectangular; }
+  void mark_as_rectangular () { m_type = Rectangular; }
 
-  void mark_as_dense (void) { m_dense = true; }
+  void mark_as_dense () { m_dense = true; }
 
-  void mark_as_not_dense (void) { m_dense = false; }
+  void mark_as_not_dense () { m_dense = false; }
 
-  OCTAVE_API void mark_as_symmetric (void);
+  OCTAVE_API void mark_as_symmetric ();
 
-  OCTAVE_API void mark_as_unsymmetric (void);
+  OCTAVE_API void mark_as_unsymmetric ();
 
   OCTAVE_API void mark_as_permuted (const octave_idx_type np, const octave_idx_type *p);
 
-  OCTAVE_API void mark_as_unpermuted (void);
+  OCTAVE_API void mark_as_unpermuted ();
 
-  OCTAVE_API MatrixType transpose (void) const;
+  OCTAVE_API MatrixType transpose () const;
 
 private:
   void type (int new_typ) { m_type = static_cast<matrix_type> (new_typ); }

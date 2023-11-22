@@ -203,7 +203,7 @@ function [q, err] = quadgk (f, a, b, varargin)
           error ("quadgk: property PROP must be a string");
         endif
         prop = varargin{idx++};
-        switch (tolower (prop))
+        switch (lower (prop))
           case "reltol"
             reltol = varargin{idx++};
           case "abstol"

@@ -33,31 +33,31 @@
 #endif
 
 #include <QDockWidget>
+#include <QEvent>
 #include <QMenu>
 
 #include "dw-main-window.h"
-#include "octave-qobject.h"
-#include "shortcut-manager.h"
 #include "gui-preferences-sc.h"
+#include "gui-settings.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-dw_main_window::dw_main_window (base_qobject& oct_qobj, QWidget *p)
-: QMainWindow (p), m_octave_qobj (oct_qobj)
+dw_main_window::dw_main_window (QWidget *p)
+  : QMainWindow (p)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
   // Adding the actions for closing the dock widgets
   m_close_action
-    = add_action (nullptr, rmgr.icon ("window-close", false),
+    = add_action (nullptr, settings.icon ("window-close", false),
                   tr ("&Close"), SLOT (request_close ()), this);
 
   m_close_all_action
-    = add_action (nullptr, rmgr.icon ("window-close", false),
+    = add_action (nullptr, settings.icon ("window-close", false),
                   tr ("Close &All"), SLOT (request_close_all ()), this);
 
   m_close_others_action
-    = add_action (nullptr, rmgr.icon ("window-close", false),
+    = add_action (nullptr, settings.icon ("window-close", false),
                   tr ("Close &Other"), SLOT (request_close_other ()), this);
 
   m_switch_left_action
@@ -75,7 +75,7 @@ dw_main_window::dw_main_window (base_qobject& oct_qobj, QWidget *p)
   m_actions_list << m_switch_left_action;
   m_actions_list << m_switch_right_action;
 
-  notice_settings (rmgr.get_settings ());
+  notice_settings ();
 }
 
 // Re-implementing the popup menu of the main window
@@ -127,16 +127,16 @@ QAction * dw_main_window::add_action (QMenu *menu, const QIcon& icon,
 }
 
 // Update the settings
-void dw_main_window::notice_settings (const gui_settings *)
+void dw_main_window::notice_settings ()
 {
-  shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+  gui_settings settings;
 
-  scmgr.set_shortcut (m_close_action, sc_edit_file_close);
-  scmgr.set_shortcut (m_close_all_action, sc_edit_file_close_all);
-  scmgr.set_shortcut (m_close_others_action, sc_edit_file_close_other);
+  settings.set_shortcut (m_close_action, sc_edit_file_close);
+  settings.set_shortcut (m_close_all_action, sc_edit_file_close_all);
+  settings.set_shortcut (m_close_others_action, sc_edit_file_close_other);
 
-  scmgr.set_shortcut (m_switch_left_action, sc_edit_tabs_switch_left_tab);
-  scmgr.set_shortcut (m_switch_right_action, sc_edit_tabs_switch_right_tab);
+  settings.set_shortcut (m_switch_left_action, sc_edit_tabs_switch_left_tab);
+  settings.set_shortcut (m_switch_right_action, sc_edit_tabs_switch_right_tab);
 }
 
 // Slots for handling actions
@@ -246,4 +246,3 @@ bool dw_main_window::event (QEvent *ev)
 }
 
 OCTAVE_END_NAMESPACE(octave)
-

@@ -24,12 +24,23 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{str} =} fileread (@var{filename})
+## @deftypefn  {} {@var{str} =} fileread (@var{filename})
+## @deftypefnx {} {@var{str} =} fileread (@var{filename}, @var{param}, @var{value}, @dots{})
 ## Read the contents of @var{filename} and return it as a string.
-## @seealso{fread, fscanf, importdata, textscan, type}
+##
+## @var{param}, @var{value} are optional pairs of parameters and values.  Valid
+## options are:
+##
+## @table @asis
+## @item @qcode{"Encoding"}
+## Specify encoding used when reading from the file.  This is a character
+## string of a valid encoding identifier.  The default is @qcode{"utf-8"}.
+## @end table
+##
+## @seealso{fopen, fread, fscanf, importdata, textscan, type}
 ## @end deftypefn
 
-function str = fileread (filename)
+function str = fileread (filename, varargin)
 
   if (nargin < 1)
     print_usage ();
@@ -39,7 +50,32 @@ function str = fileread (filename)
     error ("fileread: FILENAME argument must be a string");
   endif
 
-  fid = fopen (filename, "r");
+  encoding = "utf-8";
+
+  if (nargin > 1)
+
+    ## Check for parameter/value arguments
+    for i_arg = 1:2:numel (varargin)
+
+      if (! ischar (varargin{i_arg}))
+        error ("fileread: parameter %d must be a string", i_arg);
+      endif
+      parameter = varargin{i_arg};
+      if (i_arg+1 > numel (varargin))
+        error ('fileread: parameter "%s" missing value', parameter);
+      endif
+
+      switch (lower (parameter))
+        case "encoding"
+          encoding = varargin{i_arg+1};
+        otherwise
+          error ('fileread: Unknown option "%s"', parameter);
+      endswitch
+
+    endfor
+  endif
+
+  fid = fopen (filename, "r", "n", encoding);
   if (fid < 0)
     error ("fileread: cannot open file");
   endif
@@ -66,3 +102,11 @@ endfunction
 ## Test input validation
 %!error <Invalid call> fileread ()
 %!error <FILENAME argument must be a string> fileread (1)
+%!error <parameter "Encoding" missing value> fileread ("filename", "Encoding")
+%!error <Unknown option "UnknownParam">
+%! fileread ("filename", "UnknownParam", "UnknownValue")
+## FIXME: The following test should be skipped if
+##        OCTAVE_HAVE_STRICT_ENCODING_FACET is defined.
+%!testif ; ! __have_feature__ ("LLVM_LIBCXX")
+%! fail ('fileread ("filename", "Encoding", "UnknownValue")', ...
+%!       "conversion from codepage 'unknownvalue' not supported");

@@ -34,7 +34,6 @@ class QTableWidgetItem;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class Container;
@@ -44,35 +43,35 @@ class Table : public Object
   Q_OBJECT
 
 public:
-  Table (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Table (octave::interpreter& interp,
          const graphics_object& go, QTableWidget *tableWidget);
-  ~Table (void);
+  ~Table ();
 
-  Container * innerContainer (void) { return m_container; }
+  Container * innerContainer () { return m_container; }
 
   bool eventFilter (QObject *watched, QEvent *event);
 
   static Table *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
 protected:
   void update (int pId);
-  void redraw (void);
-  void updateColumnname (void);
-  void updateColumnwidth (void);
-  void updateData (void);
-  void updateEnable (void);
-  void updateExtent (void);
-  void updatePalette (void);
-  void updateRearrangeableColumns (void);
-  void updateRowname (void);
+  void redraw ();
+  void updateColumnname ();
+  void updateColumnwidth ();
+  void updateData ();
+  void updateEnable ();
+  void updateExtent ();
+  void updatePalette ();
+  void updateRearrangeableColumns ();
+  void updateRowname ();
 
 private slots:
   void itemChanged (QTableWidgetItem *item);
   void comboBoxCurrentIndexChanged (const QString& value);
   void cellClicked (int row, int col);
-  void itemSelectionChanged (void);
+  void itemSelectionChanged ();
 
 private:
   Container *m_container;

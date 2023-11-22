@@ -35,8 +35,6 @@
 #include "ListBoxControl.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static void
@@ -69,8 +67,7 @@ updateSelection (QListWidget *list, const Matrix& value)
 }
 
 ListBoxControl *
-ListBoxControl::create (octave::base_qobject& oct_qobj,
-                        octave::interpreter& interp,
+ListBoxControl::create (octave::interpreter& interp,
                         const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
@@ -80,17 +77,16 @@ ListBoxControl::create (octave::base_qobject& oct_qobj,
       Container *container = parent->innerContainer ();
 
       if (container)
-        return new ListBoxControl (oct_qobj, interp, go,
+        return new ListBoxControl (interp, go,
                                    new QListWidget (container));
     }
 
   return nullptr;
 }
 
-ListBoxControl::ListBoxControl (octave::base_qobject& oct_qobj,
-                                octave::interpreter& interp,
+ListBoxControl::ListBoxControl (octave::interpreter& interp,
                                 const graphics_object& go, QListWidget *list)
-  : BaseControl (oct_qobj, interp, go, list), m_blockCallback (false),
+  : BaseControl (interp, go, list), m_blockCallback (false),
     m_selectionChanged (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
@@ -131,7 +127,7 @@ ListBoxControl::ListBoxControl (octave::base_qobject& oct_qobj,
            this, &ListBoxControl::itemPressed);
 }
 
-ListBoxControl::~ListBoxControl (void)
+ListBoxControl::~ListBoxControl ()
 { }
 
 void
@@ -201,7 +197,7 @@ ListBoxControl::sendSelectionChange ()
 }
 
 void
-ListBoxControl::itemSelectionChanged (void)
+ListBoxControl::itemSelectionChanged ()
 {
   if (! m_blockCallback)
     m_selectionChanged = true;

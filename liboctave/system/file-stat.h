@@ -44,7 +44,7 @@ base_file_stat
 {
 public:
 
-  base_file_stat (void)
+  base_file_stat ()
     : m_initialized (false), m_fail (false), m_errmsg (), m_mode (),
       m_ino (), m_dev (), m_nlink (), m_uid (), m_gid (),
       m_size (), m_atime (), m_mtime (), m_ctime (), m_rdev (),
@@ -86,7 +86,7 @@ public:
   // The minimum difference in file time stamp values.
   // FIXME: This value should come from the filesystem itself.
   //        How can we get that info?
-  sys::time time_resolution (void) const
+  sys::time time_resolution () const
   {
     static sys::time resolution (1.0);
     return resolution;
@@ -97,13 +97,13 @@ public:
   // should all return 0 (or the equivalent, for the given object)
   // which is likely not meaningful.
 
-  bool is_blk (void) const;
-  bool is_chr (void) const;
-  bool is_dir (void) const;
-  bool is_fifo (void) const;
-  bool is_lnk (void) const;
-  bool is_reg (void) const;
-  bool is_sock (void) const;
+  bool is_blk () const;
+  bool is_chr () const;
+  bool is_dir () const;
+  bool is_fifo () const;
+  bool is_lnk () const;
+  bool is_reg () const;
+  bool is_sock () const;
 
   static bool is_blk (mode_t mode);
   static bool is_chr (mode_t mode);
@@ -113,40 +113,40 @@ public:
   static bool is_reg (mode_t mode);
   static bool is_sock (mode_t mode);
 
-  static bool have_struct_stat_st_rdev (void);
-  static bool have_struct_stat_st_blksize (void);
-  static bool have_struct_stat_st_blocks (void);
+  static bool have_struct_stat_st_rdev ();
+  static bool have_struct_stat_st_blksize ();
+  static bool have_struct_stat_st_blocks ();
 
-  ino_t ino (void) const { return m_ino; }
-  dev_t dev (void) const { return m_dev; }
+  ino_t ino () const { return m_ino; }
+  dev_t dev () const { return m_dev; }
 
-  nlink_t nlink (void) const { return m_nlink; }
+  nlink_t nlink () const { return m_nlink; }
 
-  uid_t uid (void) const { return m_uid; }
-  gid_t gid (void) const { return m_gid; }
+  uid_t uid () const { return m_uid; }
+  gid_t gid () const { return m_gid; }
 
-  off_t size (void) const { return m_size; }
+  off_t size () const { return m_size; }
 
-  sys::time atime (void) const { return m_atime; }
-  sys::time mtime (void) const { return m_mtime; }
-  sys::time ctime (void) const { return m_ctime; }
+  sys::time atime () const { return m_atime; }
+  sys::time mtime () const { return m_mtime; }
+  sys::time ctime () const { return m_ctime; }
 
-  dev_t rdev (void) const { return m_rdev; }
+  dev_t rdev () const { return m_rdev; }
 
-  long blksize (void) const { return m_blksize; }
-  long blocks (void) const { return m_blocks; }
+  long blksize () const { return m_blksize; }
+  long blocks () const { return m_blocks; }
 
-  mode_t mode (void) const { return m_mode; }
+  mode_t mode () const { return m_mode; }
 
-  std::string mode_as_string (void) const;
+  std::string mode_as_string () const;
 
-  bool ok (void) const { return m_initialized && ! m_fail; }
+  bool ok () const { return m_initialized && ! m_fail; }
 
   operator bool () const { return ok (); }
 
-  bool exists (void) const { return ok (); }
+  bool exists () const { return ok (); }
 
-  std::string error (void) const { return ok () ? "" : m_errmsg; }
+  std::string error () const { return ok () ? "" : m_errmsg; }
 
   // Has the file referenced by this object been modified since TIME?
   bool is_newer (const sys::time& time) const { return m_mtime > time; }
@@ -157,7 +157,7 @@ public:
 
 protected:
 
-  virtual ~base_file_stat (void) = default;
+  virtual ~base_file_stat () = default;
 
   // TRUE means we have already called stat.
   bool m_initialized;
@@ -237,7 +237,7 @@ public:
 
   // This destructor must remain as an empty destructor defined in the
   // cpp file rather than in the header file (bug #50234).
-  ~file_stat (void);
+  ~file_stat ();
 
   void get_stats (bool force = false)
   {
@@ -275,27 +275,14 @@ file_fstat : public base_file_stat
 {
 public:
 
+  file_fstat () = delete;
+
   file_fstat (int n) : base_file_stat (), m_fid (n)
   {
     update_internal ();
   }
 
-  file_fstat (const file_fstat& fs)
-    : base_file_stat (fs), m_fid (fs.m_fid) { }
-
-  file_fstat& operator = (const file_fstat& fs)
-  {
-    if (this != &fs)
-      {
-        base_file_stat::operator = (fs);
-
-        m_fid = fs.m_fid;
-      }
-
-    return *this;
-  }
-
-  ~file_fstat (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (file_fstat)
 
   void get_stats (bool force = false)
   {

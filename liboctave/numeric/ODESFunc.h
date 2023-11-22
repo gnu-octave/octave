@@ -52,7 +52,7 @@ public:
   typedef Matrix (*ODES_jsub) (const ColumnVector& x, double,
                                const ColumnVector& theta);
 
-  ODESFunc (void)
+  ODESFunc ()
     : m_fsub (nullptr), m_bsub (nullptr), m_jsub (nullptr) { }
 
   ODESFunc (ODES_fsub f)
@@ -78,9 +78,9 @@ public:
     return *this;
   }
 
-  virtual ~ODESFunc (void) = default;
+  virtual ~ODESFunc () = default;
 
-  ODES_fsub fsub_function (void) const { return m_fsub; }
+  ODES_fsub fsub_function () const { return m_fsub; }
 
   ODESFunc& set_fsub_function (ODES_fsub f)
   {
@@ -88,7 +88,7 @@ public:
     return *this;
   }
 
-  ODES_bsub bsub_function (void) const { return m_bsub; }
+  ODES_bsub bsub_function () const { return m_bsub; }
 
   ODESFunc& set_bsub_function (ODES_bsub b)
   {
@@ -96,7 +96,7 @@ public:
     return *this;
   }
 
-  ODES_jsub jsub_function (void) const { return m_jsub; }
+  ODES_jsub jsub_function () const { return m_jsub; }
 
   ODESFunc& set_jsub_function (ODES_jsub j)
   {

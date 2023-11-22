@@ -37,8 +37,8 @@
 #include "defun.h"
 #include "error.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "ovl.h"
-#include "parse.h"
 #include "utils.h"
 #include "variables.h"
 
@@ -1715,7 +1715,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
             ex(i) = m + xi[i]*h;
         }
       fargs(0) = ex;
-      fvals = feval (fcn, fargs, 1);
+      fvals = interp.feval (fcn, fargs, 1);
       if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
         error ("quadcc: integrand F must return a single, real-valued vector");
 
@@ -1825,7 +1825,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                   ex(i) = m + xi[(2*i + 1) * skip[d]] * h;
               }
             fargs(0) = ex;
-            fvals = feval (fcn, fargs, 1);
+            fvals = interp.feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               error ("quadcc: integrand F must return a single, real-valued vector");
 
@@ -1958,7 +1958,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                   ex(i) = ml + xi[(i + 1) * skip[0]] * hl;
               }
             fargs(0) = ex;
-            fvals = feval (fcn, fargs, 1);
+            fvals = interp.feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               error ("quadcc: integrand F must return a single, real-valued vector");
 
@@ -2049,7 +2049,7 @@ Mathematical Software, Vol.@: 37, Issue 3, Article No.@: 3, 2010.
                   ex(i) = mr + xi[(i + 1) * skip[0]] * hr;
               }
             fargs(0) = ex;
-            fvals = feval (fcn, fargs, 1);
+            fvals = interp.feval (fcn, fargs, 1);
             if (fvals.length () != 1 || ! fvals(0).is_real_matrix ())
               error ("quadcc: integrand F must return a single, real-valued vector");
 

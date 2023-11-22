@@ -58,7 +58,9 @@
 
 function hold (varargin)
 
+  have_axes_arg = false;
   if (nargin > 0 && isscalar (varargin{1}) && isaxes (varargin{1}))
+    have_axes_arg = true;
     hax = varargin{1};
     varargin(1) = [];
     nargs = numel (varargin);
@@ -74,8 +76,11 @@ function hold (varargin)
   hold_all = false;
   if (nargs == 0)
     turn_hold_off = ishold (hax);
+    state_str = ifelse (turn_hold_off, "off", "on");
+    axes_str = ifelse (have_axes_arg, "specified", "current");
+    printf ("hold is now %s for %s axes\n", state_str, axes_str);
   elseif (nargs == 1)
-    state = tolower (varargin{1});
+    state = lower (varargin{1});
     switch (state)
       case "off"
         turn_hold_off = true;

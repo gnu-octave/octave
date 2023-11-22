@@ -161,9 +161,13 @@ namespace Utils
     Matrix rgb (1, 3);
     double *rgbData = rgb.fortran_vec ();
 
+#if HAVE_QCOLOR_FLOAT_TYPE
+    float tmp[3];
+#else
     // qreal is a typedef for double except for ARM CPU architectures
     // where it is a typedef for float (Bug #44970).
     qreal tmp[3];
+#endif
     c.getRgbF (tmp, tmp+1, tmp+2);
     rgbData[0] = tmp[0]; rgbData[1] = tmp[1]; rgbData[2] = tmp[2];
 
@@ -218,7 +222,7 @@ namespace Utils
 
         if (c)
           {
-            QPoint qp = c->mapFromGlobal (event->globalPos ());
+            QPoint qp = event->pos ();
 
             return tkFig->properties<figure> ().map_from_boundingbox (qp.x (),
                                                                       qp.y ());
@@ -401,11 +405,8 @@ namespace Utils
 
     // We assume a standard mouse with 15 degree steps and Qt returns
     // 1/8 of a degree.
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
     int ydelta = -(event->angleDelta().y ());
-#else
-    int ydelta = -(event->delta ());
-#endif
+
     retval.setfield ("VerticalScrollCount", octave_value (ydelta / 120));
 
     // FIXME: Is there any way to access the number of lines a scroll step

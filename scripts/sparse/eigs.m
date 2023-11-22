@@ -275,7 +275,7 @@ function varargout = eigs (varargin)
       if (nargin > 2 + offset)
         arg = varargin{3+offset};
         if (ischar (arg))
-          sigma = tolower (arg);
+          sigma = lower (arg);
         elseif (isnumeric (arg) && isscalar (arg))
           sigma = arg;
         elseif (isfield (arg, "p"))

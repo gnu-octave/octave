@@ -52,26 +52,26 @@ octave_base_magic_int : public octave_base_scalar<T>
 {
 public:
 
-  octave_base_magic_int (void)
+  octave_base_magic_int ()
     : octave_base_scalar<T> (0) { }
 
   octave_base_magic_int (const T& val)
     : octave_base_scalar<T> (val) { }
 
-  ~octave_base_magic_int (void) = default;
+  ~octave_base_magic_int () = default;
 
   // We return an octave_matrix here instead of an octave_scalar so
   // that in expressions like A(2,2,2) = 2 (for A previously
   // undefined), A will be empty instead of a 1x1 object.
-  octave_base_value * empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value * empty_clone () const { return new octave_matrix (); }
 
   // Although SCALAR is a protected member of the base class, it is not
   // directly visible here without the explicit octave_base_slalar<T>::
   // qualification.  Why not?
 
-  const T& scalar_ref (void) const { return octave_base_scalar<T>::scalar; }
+  const T& scalar_ref () const { return octave_base_scalar<T>::scalar; }
 
-  T& scalar_ref (void) { return octave_base_scalar<T>::scalar; }
+  T& scalar_ref () { return octave_base_scalar<T>::scalar; }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false);
@@ -80,66 +80,67 @@ public:
 
   octave_value any (int = 0) const { return scalar_ref () != T (0); }
 
-  builtin_type_t builtin_type (void) const { return btyp_double; }
+  builtin_type_t builtin_type () const { return btyp_double; }
 
-  bool is_storable (void) const { return false; }
+  bool is_storable () const { return false; }
 
-  bool is_magic_int (void) const { return true; }
+  bool is_magic_int () const { return true; }
+  bool vm_need_storable_call (void) const { return true; }
 
-  bool is_real_scalar (void) const { return true; }
+  bool is_real_scalar () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
-  int8NDArray int8_array_value (void) const
+  int8NDArray int8_array_value () const
   { return int8NDArray (dim_vector (1, 1), double_value ()); }
 
-  int16NDArray int16_array_value (void) const
+  int16NDArray int16_array_value () const
   { return int16NDArray (dim_vector (1, 1), double_value ()); }
 
-  int32NDArray int32_array_value (void) const
+  int32NDArray int32_array_value () const
   { return int32NDArray (dim_vector (1, 1), double_value ()); }
 
-  int64NDArray int64_array_value (void) const
+  int64NDArray int64_array_value () const
   { return int64NDArray (dim_vector (1, 1), double_value ()); }
 
-  uint8NDArray uint8_array_value (void) const
+  uint8NDArray uint8_array_value () const
   { return uint8NDArray (dim_vector (1, 1), double_value ()); }
 
-  uint16NDArray uint16_array_value (void) const
+  uint16NDArray uint16_array_value () const
   { return uint16NDArray (dim_vector (1, 1), double_value ()); }
 
-  uint32NDArray uint32_array_value (void) const
+  uint32NDArray uint32_array_value () const
   { return uint32NDArray (dim_vector (1, 1), double_value ()); }
 
-  uint64NDArray uint64_array_value (void) const
+  uint64NDArray uint64_array_value () const
   { return uint64NDArray (dim_vector (1, 1), double_value ()); }
 
-  octave_int8 int8_scalar_value (void) const
+  octave_int8 int8_scalar_value () const
   { return octave_int8 (double_value ()); }
 
-  octave_int16 int16_scalar_value (void) const
+  octave_int16 int16_scalar_value () const
   { return octave_int16 (double_value ()); }
 
-  octave_int32 int32_scalar_value (void) const
+  octave_int32 int32_scalar_value () const
   { return octave_int32 (double_value ()); }
 
-  octave_int64 int64_scalar_value (void) const
+  octave_int64 int64_scalar_value () const
   { return octave_int64 (double_value ()); }
 
-  octave_uint8 uint8_scalar_value (void) const
+  octave_uint8 uint8_scalar_value () const
   { return octave_uint8 (double_value ()); }
 
-  octave_uint16 uint16_scalar_value (void) const
+  octave_uint16 uint16_scalar_value () const
   { return octave_uint16 (double_value ()); }
 
-  octave_uint32 uint32_scalar_value (void) const
+  octave_uint32 uint32_scalar_value () const
   { return octave_uint32 (double_value ()); }
 
-  octave_uint64 uint64_scalar_value (void) const
+  octave_uint64 uint64_scalar_value () const
   { return octave_uint64 (double_value ()); }
 
   double double_value (bool = false) const
@@ -221,18 +222,18 @@ public:
     return boolNDArray (dim_vector (1, 1), double_value ());
   }
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   // We don't need to override both forms of the diag method.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -243,9 +244,9 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  void increment (void) { scalar_ref () += T (1); }
+  void increment () { scalar_ref () += T (1); }
 
-  void decrement (void) { scalar_ref () -= T (1); }
+  void decrement () { scalar_ref () -= T (1); }
 
   bool save_ascii (std::ostream& os);
 
@@ -279,20 +280,20 @@ octave_magic_uint : public octave_base_magic_int<octave_uint64>
 {
 public:
 
-  octave_magic_uint (void)
+  octave_magic_uint ()
     : octave_base_magic_int<octave_uint64> (0) { }
 
   octave_magic_uint (const octave_uint64& val)
     : octave_base_magic_int<octave_uint64> (val) { }
 
-  ~octave_magic_uint (void) = default;
+  ~octave_magic_uint () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   {
     return new octave_magic_uint (*this);
   }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
 private:
 
@@ -305,20 +306,20 @@ octave_magic_int : public octave_base_magic_int<octave_int64>
 {
 public:
 
-  octave_magic_int (void)
+  octave_magic_int ()
     : octave_base_magic_int<octave_int64> (0) { }
 
   octave_magic_int (const octave_int64& val)
     : octave_base_magic_int<octave_int64> (val) { }
 
-  ~octave_magic_int (void) = default;
+  ~octave_magic_int () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   {
     return new octave_magic_int (*this);
   }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
 private:
 

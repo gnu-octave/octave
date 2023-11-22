@@ -119,7 +119,7 @@
 #include "oct-locbuf.h"
 
 template <typename T>
-octave_sort<T>::octave_sort (void) :
+octave_sort<T>::octave_sort () :
   m_compare (ascending_compare), m_ms (nullptr)
 { }
 

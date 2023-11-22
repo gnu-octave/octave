@@ -32,7 +32,6 @@
 #include <QThread>
 
 #include "graphics-init.h"
-#include "octave-qobject.h"
 #include "qt-graphics-toolkit.h"
 #include "QtHandlesUtils.h"
 
@@ -42,10 +41,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-void graphics_init (interpreter& interp, base_qobject& oct_qobj)
+void graphics_init (interpreter& interp)
 {
-#if defined (HAVE_QT_GRAPHICS)
-
   gh_manager& gh_mgr = interp.get_gh_manager ();
 
   autolock guard (gh_mgr.graphics_lock ());
@@ -54,7 +51,7 @@ void graphics_init (interpreter& interp, base_qobject& oct_qobj)
 
   gh_mgr.enable_event_processing (true);
 
-  qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp, oct_qobj);
+  qt_graphics_toolkit *qt_gtk = new qt_graphics_toolkit (interp);
 
   if (QThread::currentThread ()
       != QApplication::instance ()->thread ())
@@ -67,13 +64,6 @@ void graphics_init (interpreter& interp, base_qobject& oct_qobj)
   gtk_mgr.register_toolkit ("qt");
 
   gtk_mgr.load_toolkit (tk);
-
-#else
-
-  octave_unused_parameter (interp);
-  octave_unused_parameter (oct_qobj);
-
-#endif
 }
 
 OCTAVE_END_NAMESPACE(octave)

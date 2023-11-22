@@ -31,26 +31,24 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class documentation_dock_widget : public octave_dock_widget
 {
   Q_OBJECT
 
 public:
 
-  documentation_dock_widget (QWidget *parent, base_qobject& oct_qobj);
+  documentation_dock_widget (QWidget *parent);
 
-  ~documentation_dock_widget (void) = default;
+  ~documentation_dock_widget () = default;
 
 public slots:
 
-  void notice_settings (const gui_settings *settings);
-  void save_settings (void);
+  void notice_settings ();
+  void save_settings ();
 
-  void copyClipboard (void);
-  void pasteClipboard (void);
-  void selectAll (void);
+  void copyClipboard ();
+  void pasteClipboard ();
+  void selectAll ();
 
   void showDoc (const QString& name);
   void registerDoc (const QString& name);

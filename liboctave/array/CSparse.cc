@@ -139,7 +139,7 @@ SparseComplexMatrix::operator != (const SparseComplexMatrix& a) const
 }
 
 bool
-SparseComplexMatrix::ishermitian (void) const
+SparseComplexMatrix::ishermitian () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -597,13 +597,13 @@ SparseComplexMatrix::concat (const SparseMatrix& rb,
 }
 
 ComplexMatrix
-SparseComplexMatrix::matrix_value (void) const
+SparseComplexMatrix::matrix_value () const
 {
   return Sparse<Complex>::array_value ();
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::hermitian (void) const
+SparseComplexMatrix::hermitian () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -657,7 +657,7 @@ conj (const SparseComplexMatrix& a)
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::inverse (void) const
+SparseComplexMatrix::inverse () const
 {
   octave_idx_type info;
   double rcond;
@@ -1068,7 +1068,7 @@ SparseComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info,
 }
 
 ComplexDET
-SparseComplexMatrix::determinant (void) const
+SparseComplexMatrix::determinant () const
 {
   octave_idx_type info;
   double rcond;
@@ -6040,8 +6040,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
               cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type> (X->nrow),
-                        static_cast<octave_idx_type> (X->ncol),
+                       (octave::from_size_t (X->nrow),
+                        octave::from_size_t (X->ncol),
                         octave::from_suitesparse_long (CHOLMOD_NAME(nnz)
                                                        (X, cm)));
               for (octave_idx_type j = 0;
@@ -6550,8 +6550,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               cholmod_sparse *X = CHOLMOD_NAME(spsolve) (CHOLMOD_A, L, B, cm);
 
               retval = SparseComplexMatrix
-                       (static_cast<octave_idx_type> (X->nrow),
-                        static_cast<octave_idx_type> (X->ncol),
+                       (octave::from_size_t (X->nrow),
+                        octave::from_size_t (X->ncol),
                         octave::from_suitesparse_long (CHOLMOD_NAME(nnz)
                                                        (X, cm)));
               for (octave_idx_type j = 0;
@@ -7214,7 +7214,7 @@ SparseComplexMatrix::solve (const ComplexColumnVector& b, octave_idx_type& info,
 
 // unary operations
 SparseBoolMatrix
-SparseComplexMatrix::operator ! (void) const
+SparseComplexMatrix::operator ! () const
 {
   if (any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
@@ -7248,7 +7248,7 @@ SparseComplexMatrix::operator ! (void) const
 }
 
 SparseComplexMatrix
-SparseComplexMatrix::squeeze (void) const
+SparseComplexMatrix::squeeze () const
 {
   return MSparse<Complex>::squeeze ();
 }
@@ -7274,7 +7274,7 @@ SparseComplexMatrix::ipermute (const Array<octave_idx_type>& vec) const
 // other operations
 
 bool
-SparseComplexMatrix::any_element_is_nan (void) const
+SparseComplexMatrix::any_element_is_nan () const
 {
   octave_idx_type nel = nnz ();
 
@@ -7289,7 +7289,7 @@ SparseComplexMatrix::any_element_is_nan (void) const
 }
 
 bool
-SparseComplexMatrix::any_element_is_inf_or_nan (void) const
+SparseComplexMatrix::any_element_is_inf_or_nan () const
 {
   octave_idx_type nel = nnz ();
 
@@ -7306,7 +7306,7 @@ SparseComplexMatrix::any_element_is_inf_or_nan (void) const
 // Return true if no elements have imaginary components.
 
 bool
-SparseComplexMatrix::all_elements_are_real (void) const
+SparseComplexMatrix::all_elements_are_real () const
 {
   return mx_inline_all_real (nnz (), data ());
 }
@@ -7354,7 +7354,7 @@ SparseComplexMatrix::all_integers (double& max_val, double& min_val) const
 }
 
 bool
-SparseComplexMatrix::too_large_for_float (void) const
+SparseComplexMatrix::too_large_for_float () const
 {
   return test_any (octave::too_large_for_float);
 }
@@ -7421,7 +7421,7 @@ SparseComplexMatrix::sumsq (int dim) const
 #undef COL_EXPR
 }
 
-SparseMatrix SparseComplexMatrix::abs (void) const
+SparseMatrix SparseComplexMatrix::abs () const
 {
   octave_idx_type nz = nnz ();
   octave_idx_type nc = cols ();

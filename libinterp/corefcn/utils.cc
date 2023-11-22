@@ -39,6 +39,7 @@
 #include "file-ops.h"
 #include "file-stat.h"
 #include "lo-mappers.h"
+#include "lo-sysdep.h"
 #include "lo-utils.h"
 #include "nanosleep-wrapper.h"
 #include "oct-cmplx.h"
@@ -293,7 +294,7 @@ For more documentation, see @code{matlab.lang.makeValidName}.
 
 bool same_file (const std::string& f, const std::string& g)
 {
-  return same_file_internal (f, g);
+  return sys::same_file (f, g);
 }
 
 DEFUN (is_same_file, args, ,
@@ -336,7 +337,7 @@ return true.
       std::string file1 = args(0).string_value ();
       std::string file2 = args(1).string_value ();
 
-      retval = same_file (file1, file2);
+      retval = sys::same_file (file1, file2);
     }
   else if ((s1_string && s2_cellstr) || (s1_cellstr && s2_string))
     {
@@ -359,7 +360,7 @@ return true.
       boolNDArray output (cellstr.dims (), false);
 
       for (octave_idx_type idx = 0; idx < cellstr.numel (); idx++)
-        output(idx) = same_file (str, cellstr(idx));
+        output(idx) = sys::same_file (str, cellstr(idx));
 
       retval = output;
     }
@@ -377,7 +378,7 @@ return true.
       boolNDArray output (size1, false);
 
       for (octave_idx_type idx = 0; idx < cellstr1.numel (); idx++)
-        output(idx) = same_file (cellstr1(idx), cellstr2(idx));
+        output(idx) = sys::same_file (cellstr1(idx), cellstr2(idx));
 
       retval = output;
     }
@@ -391,7 +392,7 @@ return true.
 %!testif ; ! ispc ()
 %! assert (is_same_file ("~", tilde_expand ("~")));
 %!testif ; ispc ()
-%! assert (is_same_file (tolower (tempdir ()), toupper (tempdir ())), true);
+%! assert (is_same_file (lower (tempdir ()), upper (tempdir ())), true);
 %!assert (is_same_file ({pwd(), ".", tempdir()}, canonicalize_file_name (".")),
 %!        [true, true, false])
 
@@ -573,8 +574,7 @@ If no files are found, return an empty cell array.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  string_vector names = args(
-                          0).xstring_vector_value ("file_in_loadpath: FILE argument must be a string");
+  string_vector names = args(0).xstring_vector_value ("file_in_loadpath: FILE argument must be a string");
 
   if (names.empty ())
     error ("file_in_loadpath: FILE argument must not be empty");
@@ -585,8 +585,7 @@ If no files are found, return an empty cell array.
     return ovl (sys::env::make_absolute (lp.find_first_of (names)));
   else
     {
-      std::string opt = args(
-                          1).xstring_value ("file_in_loadpath: optional second argument must be a string");
+      std::string opt = args(1).xstring_value ("file_in_loadpath: optional second argument must be a string");
 
       if (opt != "all")
         error (R"(file_in_loadpath: "all" is only valid second argument)");
@@ -712,10 +711,8 @@ std::string find_data_file_in_load_path  (const std::string& fcn,
       // Load path will also search "." first, but we don't want to
       // issue a warning if the file is found in the current directory,
       // so do an explicit check for that.
-      sys::file_stat fs (fname);
-
       bool local_file_ok
-        = fs.exists () && (fs.is_reg () || ! require_regular_file);
+        = sys::file_exists (fname, ! require_regular_file);
 
       if (! local_file_ok)
         {
@@ -736,7 +733,7 @@ std::string find_data_file_in_load_path  (const std::string& fcn,
   return fname;
 }
 
-// See if there is an function file in the path.
+// See if there is a function file in the path.
 // If so, return the full path to the file.
 
 std::string fcn_file_in_path (const std::string& name)
@@ -749,9 +746,7 @@ std::string fcn_file_in_path (const std::string& name)
     {
       if (sys::env::absolute_pathname (name))
         {
-          sys::file_stat fs (name);
-
-          if (fs.exists () && ! fs.is_dir ())
+          if (sys::file_exists (name, false))
             retval = name;
         }
       else if (len > 2 && name[len - 2] == '.' && name[len - 1] == 'm')
@@ -790,9 +785,7 @@ std::string contents_file_in_path (const std::string& dir)
       std::string tcontents
         = sys::file_ops::concat (lp.find_dir (dir), "Contents.m");
 
-      sys::file_stat fs (tcontents);
-
-      if (fs.exists ())
+      if (sys::file_exists (tcontents))
         retval = sys::env::make_absolute (tcontents);
     }
 
@@ -940,8 +933,7 @@ Escape sequences begin with a leading backslash
   if (args.length () != 1)
     print_usage ();
 
-  std::string str = args(
-                      0).xstring_value ("do_string_escapes: STRING argument must be of type string");
+  std::string str = args(0).xstring_value ("do_string_escapes: STRING argument must be of type string");
 
   return ovl (do_string_escapes (str));
 }

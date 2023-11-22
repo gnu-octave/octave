@@ -39,7 +39,7 @@ octave_lazy_index : public octave_base_value
 {
 public:
 
-  octave_lazy_index (void)
+  octave_lazy_index ()
     : octave_base_value (), m_index (), m_value () { }
 
   octave_lazy_index (const octave::idx_vector& idx)
@@ -48,37 +48,37 @@ public:
   octave_lazy_index (const octave_lazy_index& i)
     : octave_base_value (), m_index (i.m_index), m_value (i.m_value) { }
 
-  ~octave_lazy_index (void) = default;
+  ~octave_lazy_index () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_lazy_index (*this); }
-  octave_base_value * empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value * empty_clone () const { return new octave_matrix (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
   octave_value fast_elem_extract (octave_idx_type n) const;
 
-  std::size_t byte_size (void) const
+  std::size_t byte_size () const
   { return numel () * sizeof (octave_idx_type); }
 
-  octave_value squeeze (void) const;
+  octave_value squeeze () const;
 
-  octave_value full_value (void) const { return make_value (); }
+  octave_value full_value () const { return make_value (); }
 
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   { return m_index; }
 
-  builtin_type_t builtin_type (void) const { return btyp_double; }
+  builtin_type_t builtin_type () const { return btyp_double; }
 
-  bool is_real_matrix (void) const { return true; }
+  bool is_real_matrix () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_double_type (void) const { return true; }
+  bool is_double_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -97,11 +97,11 @@ public:
                             bool resize_ok = false)
   { return make_value ().index_op (idx, resize_ok); }
 
-  dim_vector dims (void) const { return m_index.orig_dimensions (); }
+  dim_vector dims () const { return m_index.orig_dimensions (); }
 
-  octave_idx_type numel (void) const { return m_index.length (0); }
+  octave_idx_type numel () const { return m_index.length (0); }
 
-  octave_idx_type nnz (void) const { return numel (); }
+  octave_idx_type nnz () const { return numel (); }
 
   octave_value reshape (const dim_vector& new_dims) const;
 
@@ -113,7 +113,7 @@ public:
   octave_value all (int dim = 0) const { return make_value ().all (dim); }
   octave_value any (int dim = 0) const { return make_value ().any (dim); }
 
-  MatrixType matrix_type (void) const { return make_value ().matrix_type (); }
+  MatrixType matrix_type () const { return make_value ().matrix_type (); }
   MatrixType matrix_type (const MatrixType& _typ) const
   { return make_value ().matrix_type (_typ); }
 
@@ -128,18 +128,18 @@ public:
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
-  bool is_matrix_type (void) const { return true; }
+  bool is_matrix_type () const { return true; }
 
-  bool isnumeric (void) const { return true; }
+  bool isnumeric () const { return true; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool is_true (void) const
+  bool is_true () const
   { return make_value ().is_true (); }
 
-  bool print_as_scalar (void) const
+  bool print_as_scalar () const
   { return make_value ().print_as_scalar (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false)
@@ -149,7 +149,7 @@ public:
   { make_value ().print_info (os, prefix); }
 
 #define FORWARD_VALUE_QUERY(TYPE, NAME)         \
-  TYPE NAME (void) const                        \
+  TYPE NAME () const                        \
   {                                             \
     return make_value ().NAME ();               \
   }
@@ -202,18 +202,18 @@ public:
     return make_value ().convert_to_str_internal (pad, force, type);
   }
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const
   {
@@ -238,7 +238,7 @@ public:
 
   // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  const void * mex_get_data (void) const
+  const void * mex_get_data () const
   {
     return make_value ().mex_get_data ();
   }
@@ -255,7 +255,7 @@ public:
 
 private:
 
-  const octave_value& make_value (void) const
+  const octave_value& make_value () const
   {
     if (m_value.is_undefined ())
       m_value = octave_value (m_index, false);
@@ -263,7 +263,7 @@ private:
     return m_value;
   }
 
-  octave_value& make_value (void)
+  octave_value& make_value ()
   {
     if (m_value.is_undefined ())
       m_value = octave_value (m_index, false);

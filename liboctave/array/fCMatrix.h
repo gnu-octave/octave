@@ -60,13 +60,13 @@ public:
 
   typedef void (*solve_singularity_handler) (float rcon);
 
-  FloatComplexMatrix (void) = default;
+  FloatComplexMatrix () = default;
 
   FloatComplexMatrix (const FloatComplexMatrix& a) = default;
 
   FloatComplexMatrix& operator = (const FloatComplexMatrix& a) = default;
 
-  ~FloatComplexMatrix (void) = default;
+  ~FloatComplexMatrix () = default;
 
   FloatComplexMatrix (octave_idx_type r, octave_idx_type c)
     : FloatComplexNDArray (dim_vector (r, c)) { }
@@ -120,7 +120,7 @@ public:
   OCTAVE_API bool operator == (const FloatComplexMatrix& a) const;
   OCTAVE_API bool operator != (const FloatComplexMatrix& a) const;
 
-  OCTAVE_API bool ishermitian (void) const;
+  OCTAVE_API bool ishermitian () const;
 
   // destructive insert/delete/reorder operations
 
@@ -175,9 +175,9 @@ public:
   OCTAVE_API FloatComplexMatrix stack (const FloatComplexColumnVector& a) const;
   OCTAVE_API FloatComplexMatrix stack (const FloatComplexDiagMatrix& a) const;
 
-  FloatComplexMatrix hermitian (void) const
+  FloatComplexMatrix hermitian () const
   { return MArray<FloatComplex>::hermitian (std::conj); }
-  FloatComplexMatrix transpose (void) const
+  FloatComplexMatrix transpose () const
   { return MArray<FloatComplex>::transpose (); }
 
   friend OCTAVE_API FloatComplexMatrix conj (const FloatComplexMatrix& a);
@@ -212,7 +212,7 @@ private:
                                float& rcon, bool force, bool calc_cond) const;
 
 public:
-  OCTAVE_API FloatComplexMatrix inverse (void) const;
+  OCTAVE_API FloatComplexMatrix inverse () const;
   OCTAVE_API FloatComplexMatrix inverse (octave_idx_type& info) const;
   OCTAVE_API FloatComplexMatrix
   inverse (octave_idx_type& info, float& rcon, bool force = false,
@@ -227,13 +227,13 @@ public:
 
   OCTAVE_API FloatComplexMatrix pseudo_inverse (float tol = 0.0) const;
 
-  OCTAVE_API FloatComplexMatrix fourier (void) const;
-  OCTAVE_API FloatComplexMatrix ifourier (void) const;
+  OCTAVE_API FloatComplexMatrix fourier () const;
+  OCTAVE_API FloatComplexMatrix ifourier () const;
 
-  OCTAVE_API FloatComplexMatrix fourier2d (void) const;
-  OCTAVE_API FloatComplexMatrix ifourier2d (void) const;
+  OCTAVE_API FloatComplexMatrix fourier2d () const;
+  OCTAVE_API FloatComplexMatrix ifourier2d () const;
 
-  OCTAVE_API FloatComplexDET determinant (void) const;
+  OCTAVE_API FloatComplexDET determinant () const;
   OCTAVE_API FloatComplexDET determinant (octave_idx_type& info) const;
   OCTAVE_API FloatComplexDET
   determinant (octave_idx_type& info, float& rcon,
@@ -242,7 +242,7 @@ public:
   determinant (MatrixType& mattype, octave_idx_type& info,
                float& rcon, bool calc_cond = true) const;
 
-  OCTAVE_API float rcond (void) const;
+  OCTAVE_API float rcond () const;
   OCTAVE_API float rcond (MatrixType& mattype) const;
 
 private:
@@ -426,7 +426,7 @@ public:
 
   // unary operations
 
-  OCTAVE_API boolMatrix operator ! (void) const;
+  OCTAVE_API boolMatrix operator ! () const;
 
   // other operations
 
@@ -438,7 +438,7 @@ public:
   OCTAVE_API FloatComplexMatrix prod (int dim = -1) const;
   OCTAVE_API FloatComplexMatrix sum (int dim = -1) const;
   OCTAVE_API FloatComplexMatrix sumsq (int dim = -1) const;
-  OCTAVE_API FloatMatrix abs (void) const;
+  OCTAVE_API FloatMatrix abs () const;
 
   OCTAVE_API FloatComplexMatrix diag (octave_idx_type k = 0) const;
 
@@ -448,16 +448,16 @@ public:
   OCTAVE_API bool row_is_real_only (octave_idx_type) const;
   OCTAVE_API bool column_is_real_only (octave_idx_type) const;
 
-  OCTAVE_API FloatComplexColumnVector row_min (void) const;
-  OCTAVE_API FloatComplexColumnVector row_max (void) const;
+  OCTAVE_API FloatComplexColumnVector row_min () const;
+  OCTAVE_API FloatComplexColumnVector row_max () const;
 
   OCTAVE_API FloatComplexColumnVector
   row_min (Array<octave_idx_type>& index) const;
   OCTAVE_API FloatComplexColumnVector
   row_max (Array<octave_idx_type>& index) const;
 
-  OCTAVE_API FloatComplexRowVector column_min (void) const;
-  OCTAVE_API FloatComplexRowVector column_max (void) const;
+  OCTAVE_API FloatComplexRowVector column_min () const;
+  OCTAVE_API FloatComplexRowVector column_max () const;
 
   OCTAVE_API FloatComplexRowVector
   column_min (Array<octave_idx_type>& index) const;

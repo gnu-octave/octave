@@ -32,18 +32,17 @@ class QLabel;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class TextControl : public BaseControl
 {
 public:
-  TextControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  TextControl (octave::interpreter& interp,
                const graphics_object& go, QLabel *label);
-  ~TextControl (void);
+  ~TextControl ();
 
   static TextControl *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
 protected:

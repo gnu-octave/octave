@@ -41,7 +41,7 @@ class file_info
 {
 public:
 
-  file_info (void)
+  file_info ()
     : m_file_buf (), m_offsets (), m_timestamp (static_cast<OCTAVE_TIME_T> (0))
   { }
 
@@ -60,22 +60,22 @@ public:
 
   file_info& operator = (const file_info&) = default;
 
-  ~file_info (void) = default;
+  ~file_info () = default;
 
   OCTAVE_API std::string get_line (std::size_t line) const;
 
   OCTAVE_API std::deque<std::string>
   get_lines (std::size_t line, std::size_t num_lines) const;
 
-  std::size_t num_lines (void) const { return m_offsets.size (); }
+  std::size_t num_lines () const { return m_offsets.size (); }
 
-  std::string text (void) const { return m_file_buf; }
+  std::string text () const { return m_file_buf; }
 
-  std::vector<std::size_t> line_offsets (void) const { return m_offsets; }
+  std::vector<std::size_t> line_offsets () const { return m_offsets; }
 
-  sys::time timestamp (void) const { return m_timestamp; }
+  sys::time timestamp () const { return m_timestamp; }
 
-  std::size_t size (void) const { return m_file_buf.length (); }
+  std::size_t size () const { return m_file_buf.length (); }
 
 private:
 

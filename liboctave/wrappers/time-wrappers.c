@@ -43,7 +43,7 @@ octave_gettimeofday_wrapper (time_t *sec, long *usec)
 {
   struct timeval tv;
 
-  int status = gettimeofday (&tv, 0);
+  int status = gettimeofday (&tv, NULL);
 
   if (status < 0)
     {
@@ -154,4 +154,13 @@ time_t
 octave_mktime_wrapper (struct tm *tp)
 {
   return mktime (tp);
+}
+
+// Avoid the risk of gnulib overriding anything above by placing this underneath the above fns
+#include "gethrxtime.h"
+
+long long
+octave_gettime_ns_wrapper (void)
+{
+  return gethrxtime ();
 }

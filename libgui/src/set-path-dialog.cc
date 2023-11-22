@@ -50,8 +50,7 @@
 #include <QVBoxLayout>
 
 #include "gui-preferences-pd.h"
-#include "octave-qobject.h"
-#include "octave-qtutils.h"
+#include "gui-settings.h"
 #include "set-path-dialog.h"
 #include "set-path-model.h"
 
@@ -59,8 +58,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-set_path_dialog::set_path_dialog (QWidget *parent, base_qobject& oct_qobj)
-: QDialog (parent), m_octave_qobj (oct_qobj)
+set_path_dialog::set_path_dialog (QWidget *parent)
+  : QDialog (parent)
 {
   setWindowTitle (tr ("Set Path"));
 
@@ -168,13 +167,12 @@ set_path_dialog::set_path_dialog (QWidget *parent, base_qobject& oct_qobj)
 
   setLayout (main_layout);
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  restoreGeometry (
-                   settings->value(pd_geometry.key).toByteArray());
+  gui_settings settings;
+
+  restoreGeometry (settings.value(pd_geometry.settings_key ()).toByteArray());
 }
 
-void set_path_dialog::update_model (void)
+void set_path_dialog::update_model ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   m->path_to_model ();
@@ -205,17 +203,17 @@ void set_path_dialog::add_dir_common (bool subdirs)
     }
 }
 
-void set_path_dialog::add_dir(void)
+void set_path_dialog::add_dir()
 {
   add_dir_common (false);
 }
 
-void set_path_dialog::add_dir_subdirs (void)
+void set_path_dialog::add_dir_subdirs ()
 {
   add_dir_common (true);
 }
 
-void set_path_dialog::rm_dir (void)
+void set_path_dialog::rm_dir ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -225,7 +223,7 @@ void set_path_dialog::rm_dir (void)
   selmodel->clearSelection ();
 }
 
-void set_path_dialog::move_dir_up (void)
+void set_path_dialog::move_dir_up ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -245,7 +243,7 @@ void set_path_dialog::move_dir_up (void)
   m_path_list->scrollTo (m->index (min_row));
 }
 
-void set_path_dialog::move_dir_down (void)
+void set_path_dialog::move_dir_down ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -265,7 +263,7 @@ void set_path_dialog::move_dir_down (void)
   m_path_list->scrollTo (m->index (max_row));
 }
 
-void set_path_dialog::move_dir_top (void)
+void set_path_dialog::move_dir_top ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -280,7 +278,7 @@ void set_path_dialog::move_dir_top (void)
   m_path_list->scrollTo (m->index (0));
 }
 
-void set_path_dialog::move_dir_bottom (void)
+void set_path_dialog::move_dir_bottom ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -299,9 +297,9 @@ void set_path_dialog::move_dir_bottom (void)
 
 void set_path_dialog::save_settings ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  settings->setValue (pd_geometry.key, saveGeometry ());
+  gui_settings settings;
+
+  settings.setValue (pd_geometry.settings_key (), saveGeometry ());
 }
 
 void set_path_dialog::closeEvent (QCloseEvent *e)

@@ -74,7 +74,7 @@ aepbalance<Matrix>::aepbalance (const Matrix& a, bool noperm, bool noscal)
 
 template <>
 OCTAVE_API Matrix
-aepbalance<Matrix>::balancing_matrix (void) const
+aepbalance<Matrix>::balancing_matrix () const
 {
   F77_INT n = to_f77_int (m_balanced_mat.rows ());
 
@@ -126,7 +126,7 @@ aepbalance<FloatMatrix>::aepbalance (const FloatMatrix& a, bool noperm,
 
 template <>
 OCTAVE_API FloatMatrix
-aepbalance<FloatMatrix>::balancing_matrix (void) const
+aepbalance<FloatMatrix>::balancing_matrix () const
 {
   F77_INT n = to_f77_int (m_balanced_mat.rows ());
 
@@ -179,7 +179,7 @@ aepbalance<ComplexMatrix>::aepbalance (const ComplexMatrix& a, bool noperm,
 
 template <>
 OCTAVE_API ComplexMatrix
-aepbalance<ComplexMatrix>::balancing_matrix (void) const
+aepbalance<ComplexMatrix>::balancing_matrix () const
 {
   F77_INT n = to_f77_int (m_balanced_mat.rows ());
 
@@ -233,7 +233,7 @@ aepbalance<FloatComplexMatrix>::aepbalance (const FloatComplexMatrix& a,
 
 template <>
 OCTAVE_API FloatComplexMatrix
-aepbalance<FloatComplexMatrix>::balancing_matrix (void) const
+aepbalance<FloatComplexMatrix>::balancing_matrix () const
 {
   F77_INT n = to_f77_int (m_balanced_mat.rows ());
 

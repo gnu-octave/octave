@@ -43,23 +43,19 @@ unwind_protect : public action_container
 {
 public:
 
-  unwind_protect (void) : m_lifo () { }
+  unwind_protect () : m_lifo () { }
 
-  // No copying!
-
-  unwind_protect (const unwind_protect&) = delete;
-
-  unwind_protect& operator = (const unwind_protect&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (unwind_protect)
 
   // Destructor should not raise an exception, so all actions
   // registered should be exception-safe.  If you're not sure, see
   // unwind_protect_safe.
 
-  ~unwind_protect (void) { run (); }
+  ~unwind_protect () { run (); }
 
-  operator bool (void) const { return ! empty (); }
+  operator bool () const { return ! empty (); }
 
-  void run_first (void)
+  void run_first ()
   {
     if (! empty ())
       {
@@ -70,7 +66,7 @@ public:
       }
   }
 
-  void discard_first (void)
+  void discard_first ()
   {
     if (! empty ())
       {
@@ -80,7 +76,7 @@ public:
       }
   }
 
-  std::size_t size (void) const { return m_lifo.size (); }
+  std::size_t size () const { return m_lifo.size (); }
 
 protected:
 
@@ -102,19 +98,15 @@ unwind_protect_safe : public unwind_protect
 {
 private:
 
-  void warn_unhandled_exception (void) const;
+  void warn_unhandled_exception () const;
 
 public:
 
-  unwind_protect_safe (void) : unwind_protect () { }
+  unwind_protect_safe () : unwind_protect () { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (unwind_protect_safe)
 
-  unwind_protect_safe (const unwind_protect_safe&) = delete;
-
-  unwind_protect_safe& operator = (const unwind_protect_safe&) = delete;
-
-  ~unwind_protect_safe (void)
+  ~unwind_protect_safe ()
   {
     while (! empty ())
       {
@@ -150,7 +142,7 @@ public:
 //     // flexibility in calling forms (function pointer or lambda):
 //
 //     unwind_action act1 (fcn, val);
-//     unwind_action act2 ([val] (void) { fcn (val); });
+//     unwind_action act2 ([val] () { fcn (val); });
 //   }
 //
 // NOTE: Don't forget to provide a name for the unwind_action
@@ -166,7 +158,7 @@ class OCTAVE_API unwind_action
 {
 public:
 
-  unwind_action (void) : m_fcn () { }
+  unwind_action () : m_fcn () { }
 
   // FIXME: Do we need to apply std::forward to the arguments to
   // std::bind here?
@@ -176,13 +168,9 @@ public:
     : m_fcn (std::bind (fcn, args...))
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (unwind_action)
 
-  unwind_action (const unwind_action&) = delete;
-
-  unwind_action& operator = (const unwind_action&) = delete;
-
-  ~unwind_action (void) { run (); }
+  ~unwind_action () { run (); }
 
   // FIXME: Do we need to apply std::forward to the arguments to
   // std::bind here?
@@ -193,12 +181,12 @@ public:
     m_fcn = std::bind (fcn, args...);
   }
 
-  void set (void) { m_fcn = nullptr; }
+  void set () { m_fcn = nullptr; }
 
   // Alias for set() which is clearer about programmer intention.
-  void discard (void) { set (); }
+  void discard () { set (); }
 
-  void run (void)
+  void run ()
   {
     if (m_fcn)
       m_fcn ();
@@ -209,7 +197,7 @@ public:
 
 private:
 
-  std::function<void (void)> m_fcn;
+  std::function<void ()> m_fcn;
 };
 
 // Like unwind_action, but this one will guard against the possibility
@@ -220,11 +208,11 @@ class OCTAVE_API unwind_action_safe
 {
 private:
 
-  void warn_unhandled_exception (void) const;
+  void warn_unhandled_exception () const;
 
 public:
 
-  unwind_action_safe (void) : m_fcn () { }
+  unwind_action_safe () : m_fcn () { }
 
   // FIXME: Do we need to apply std::forward to the arguments to
   // std::bind here?
@@ -234,13 +222,9 @@ public:
     : m_fcn (std::bind (fcn, args...))
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (unwind_action_safe)
 
-  unwind_action_safe (const unwind_action_safe&) = delete;
-
-  unwind_action_safe& operator = (const unwind_action_safe&) = delete;
-
-  ~unwind_action_safe (void) { run (); }
+  ~unwind_action_safe () { run (); }
 
   // FIXME: Do we need to apply std::forward to the arguments to
   // std::bind here?
@@ -251,12 +235,12 @@ public:
     m_fcn = std::bind (fcn, args...);
   }
 
-  void set (void) { m_fcn = nullptr; }
+  void set () { m_fcn = nullptr; }
 
   // Alias for set() which is clearer about programmer intention.
-  void discard (void) { set (); }
+  void discard () { set (); }
 
-  void run (void)
+  void run ()
   {
     try
       {
@@ -274,7 +258,7 @@ public:
 
 private:
 
-  std::function<void (void)> m_fcn;
+  std::function<void ()> m_fcn;
 };
 
 // Reset a variable value at the end of the current scope when
@@ -333,13 +317,9 @@ public:
     m_ref = new_val;
   }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (unwind_protect_var)
 
-  unwind_protect_var (const unwind_protect_var&) = delete;
-
-  unwind_protect_var& operator = (const unwind_protect_var&) = delete;
-
-  ~unwind_protect_var (void)
+  ~unwind_protect_var ()
   {
     m_ref = m_val;
   }

@@ -45,7 +45,7 @@ public:
 
   directory_path& operator = (const directory_path&) = default;
 
-  ~directory_path (void) = default;
+  ~directory_path () = default;
 
   void set (const std::string& s)
   {
@@ -54,9 +54,9 @@ public:
     init ();
   }
 
-  std::list<std::string> elements (void);
+  std::list<std::string> elements ();
 
-  std::list<std::string> all_directories (void);
+  std::list<std::string> all_directories ();
 
   std::string find_first (const std::string&);
 
@@ -69,17 +69,17 @@ public:
   std::list<std::string>
   find_all_first_of (const std::list<std::string>& names);
 
-  void rehash (void)
+  void rehash ()
   {
     m_initialized = false;
     init ();
   }
 
-  static char path_sep_char (void);
+  static char path_sep_char ();
 
   // static void path_sep_char (char c);
 
-  static std::string path_sep_str (void);
+  static std::string path_sep_str ();
 
   static bool is_path_sep (char c) { return c == path_sep_char (); }
 
@@ -98,7 +98,7 @@ private:
   // The elements of the list.
   std::list<std::string> m_path_elements;
 
-  void init (void);
+  void init ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

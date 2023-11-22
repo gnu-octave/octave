@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <atomic>
 #include <cstring>
 
 #include <ostream>
@@ -35,16 +36,16 @@
 
 #include "quit.h"
 
-sig_atomic_t octave_interrupt_state = 0;
+std::atomic<sig_atomic_t> octave_interrupt_state{0};
 
-volatile sig_atomic_t octave_signal_caught = 0;
+volatile std::atomic<bool> octave_signal_caught{false};
 
-void (*octave_signal_hook) (void) = nullptr;
-void (*octave_interrupt_hook) (void) = nullptr;
+void (*octave_signal_hook) () = nullptr;
+void (*octave_interrupt_hook) () = nullptr;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-std::string execution_exception::stack_trace (void) const
+std::string execution_exception::stack_trace () const
 {
   std::size_t nframes = m_stack_info.size ();
 
@@ -97,16 +98,24 @@ void execution_exception::display (std::ostream& os) const
 
 OCTAVE_END_NAMESPACE(octave)
 
+extern "C" OCTAVE_API void
+octave_quit_c (void)
+{
+  octave_quit ();
+}
+
 void
-octave_handle_signal (void)
+octave_handle_signal ()
 {
   if (octave_signal_hook)
     octave_signal_hook ();
 
-  if (octave_interrupt_state > 0)
-    {
-      octave_interrupt_state = -1;
+  sig_atomic_t curr_interrupt_state = octave_interrupt_state.load ();
 
-      throw octave::interrupt_exception ();
-    }
+  while (curr_interrupt_state > 0 &&
+    ! octave_interrupt_state.compare_exchange_weak (curr_interrupt_state, -1))
+    ;
+
+  if (curr_interrupt_state > 0)
+    throw octave::interrupt_exception ();
 }

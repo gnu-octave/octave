@@ -51,8 +51,8 @@ DEFBINOP_OP (mul, matrix, sparse_matrix, *)
 
 DEFBINOP (div, matrix, sparse_matrix)
 {
-  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.array_value () / v2.scalar_value ());
@@ -74,8 +74,8 @@ DEFBINOPX (pow, matrix, sparse_matrix)
 
 DEFBINOP (ldiv, matrix, sparse_matrix)
 {
-  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
   MatrixType typ = v1.matrix_type ();
 
   Matrix ret = xleftdiv (v1.matrix_value (), v2.matrix_value (), typ);
@@ -98,8 +98,8 @@ DEFBINOP_FN (el_div, matrix, sparse_matrix, quotient)
 
 DEFBINOP (el_pow, matrix, sparse_matrix)
 {
-  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   return octave_value (elem_xpow (SparseMatrix (v1.matrix_value ()),
                                   v2.sparse_matrix_value ()));
@@ -107,8 +107,8 @@ DEFBINOP (el_pow, matrix, sparse_matrix)
 
 DEFBINOP (el_ldiv, matrix, sparse_matrix)
 {
-  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   return octave_value
          (quotient (v2.sparse_matrix_value (), v1.matrix_value ()));
@@ -119,15 +119,15 @@ DEFBINOP_FN (el_or,  matrix, sparse_matrix, mx_el_or)
 
 DEFCATOP (m_sm, matrix, sparse_matrix)
 {
-  const octave_matrix& v1 = dynamic_cast<const octave_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
   SparseMatrix tmp (v1.matrix_value ());
   return octave_value (tmp. concat (v2.sparse_matrix_value (), ra_idx));
 }
 
 DEFCONV (sparse_matrix_conv, matrix, sparse_matrix)
 {
-  const octave_matrix& v = dynamic_cast<const octave_matrix&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v, a);
   return new octave_sparse_matrix (SparseMatrix (v.matrix_value ()));
 }
 

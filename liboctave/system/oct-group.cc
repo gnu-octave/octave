@@ -42,7 +42,7 @@
 
 OCTAVE_NORETURN static
 void
-err_invalid (void)
+err_invalid ()
 {
   (*current_liboctave_error_handler) ("invalid group object");
 }
@@ -52,7 +52,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 std::string
-group::name (void) const
+group::name () const
 {
   if (! ok ())
     err_invalid ();
@@ -61,7 +61,7 @@ group::name (void) const
 }
 
 std::string
-group::passwd (void) const
+group::passwd () const
 {
   if (! ok ())
     err_invalid ();
@@ -70,7 +70,7 @@ group::passwd (void) const
 }
 
 gid_t
-group::gid (void) const
+group::gid () const
 {
   if (! ok ())
     err_invalid ();
@@ -79,7 +79,7 @@ group::gid (void) const
 }
 
 string_vector
-group::mem (void) const
+group::mem () const
 {
   if (! ok ())
     err_invalid ();
@@ -88,7 +88,7 @@ group::mem (void) const
 }
 
 group
-group::getgrent (void)
+group::getgrent ()
 {
   std::string msg;
   return getgrent (msg);
@@ -149,7 +149,7 @@ group::getgrnam (const std::string& nm, std::string& msg)
 }
 
 int
-group::setgrent (void)
+group::setgrent ()
 {
   std::string msg;
   return setgrent (msg);
@@ -169,7 +169,7 @@ group::setgrent (std::string& msg)
 }
 
 int
-group::endgrent (void)
+group::endgrent ()
 {
   std::string msg;
   return endgrent (msg);

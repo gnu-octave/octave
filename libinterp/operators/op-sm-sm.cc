@@ -48,7 +48,7 @@ DEFUNOP_OP (uminus, sparse_matrix, -)
 
 DEFUNOP (transpose, sparse_matrix)
 {
-  const octave_sparse_matrix& v = dynamic_cast<const octave_sparse_matrix&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v, a);
   return octave_value (v.sparse_matrix_value ().transpose (),
                        v.matrix_type ().transpose ());
 }
@@ -62,10 +62,8 @@ DEFBINOP_OP (add, sparse_matrix, sparse_matrix, +)
 static octave_value
 oct_binop_sub (const octave_base_value& a1, const octave_base_value& a2)
 {
-  const octave_sparse_matrix& v1
-    = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_sparse_matrix& v2
-    = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
   SparseMatrix m = v1.sparse_matrix_value () - v2.sparse_matrix_value ();
 
   return octave_value (m);
@@ -75,8 +73,8 @@ DEFBINOP_OP (mul, sparse_matrix, sparse_matrix, *)
 
 DEFBINOP (div, sparse_matrix, sparse_matrix)
 {
-  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   if (v2.rows () == 1 && v2.columns () == 1)
     return octave_value (v1.sparse_matrix_value () / v2.scalar_value ());
@@ -98,8 +96,8 @@ DEFBINOPX (pow, sparse_matrix, sparse_matrix)
 
 DEFBINOP (ldiv, sparse_matrix, sparse_matrix)
 {
-  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
 
   if (v1.rows () == 1 && v1.columns () == 1)
     return octave_value (v2.sparse_matrix_value () / v1.double_value ());
@@ -129,8 +127,8 @@ DEFBINOP_FN (el_pow, sparse_matrix, sparse_matrix, elem_xpow)
 
 DEFBINOP (el_ldiv, sparse_matrix, sparse_matrix)
 {
-  const octave_sparse_matrix& v1 = dynamic_cast<const octave_sparse_matrix&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
   return octave_value
          (quotient (v2.sparse_matrix_value (), v1.sparse_matrix_value ()));
 }

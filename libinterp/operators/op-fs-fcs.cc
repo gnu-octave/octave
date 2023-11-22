@@ -50,8 +50,8 @@ DEFBINOP_OP (mul, float_scalar, float_complex, *)
 
 DEFBINOP (div, float_scalar, float_complex)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v2, a2);
 
   return octave_value (v1.float_value () / v2.float_complex_value ());
 }
@@ -60,8 +60,8 @@ DEFBINOP_FN (pow, float_scalar, float_complex, xpow)
 
 DEFBINOP (ldiv, float_scalar, float_complex)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v2, a2);
 
   return octave_value (v2.float_complex_value () / v1.float_value ());
 }
@@ -77,8 +77,8 @@ DEFBINOP_OP (el_mul, float_scalar, float_complex, *)
 
 DEFBINOP (el_div, float_scalar, float_complex)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v2, a2);
 
   return octave_value (v1.float_value () / v2.float_complex_value ());
 }
@@ -87,16 +87,16 @@ DEFBINOP_FN (el_pow, float_scalar, float_complex, xpow)
 
 DEFBINOP (el_ldiv, float_scalar, float_complex)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v2, a2);
 
   return octave_value (v2.float_complex_value () / v1.float_value ());
 }
 
 DEFBINOP (el_and, float_scalar, float_complex)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v2, a2);
 
   return octave_value (v1.float_scalar_value ()
                        && (v2.float_complex_value () != 0.0f));
@@ -104,8 +104,8 @@ DEFBINOP (el_and, float_scalar, float_complex)
 
 DEFBINOP (el_or, float_scalar, float_complex)
 {
-  const octave_float_scalar& v1 = dynamic_cast<const octave_float_scalar&> (a1);
-  const octave_float_complex& v2 = dynamic_cast<const octave_float_complex&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_float_complex&, v2, a2);
 
   return octave_value (v1.float_scalar_value ()
                        || (v2.float_complex_value () != 0.0f));

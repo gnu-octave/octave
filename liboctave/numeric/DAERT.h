@@ -37,7 +37,7 @@ DAERT : public base_diff_alg_eqn, public DAERTFunc
 {
 public:
 
-  DAERT (void)
+  DAERT ()
     : base_diff_alg_eqn (), DAERTFunc () { }
 
   DAERT (const ColumnVector& xx, double tt, DAERTFunc& f)
@@ -61,7 +61,7 @@ public:
     return *this;
   }
 
-  virtual ~DAERT (void) = default;
+  virtual ~DAERT () = default;
 
   void initialize (const ColumnVector& xx, const ColumnVector& xxdot,
                    double tt)

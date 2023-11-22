@@ -182,7 +182,7 @@ procbuf::open (const char *command, int mode)
 }
 
 procbuf *
-procbuf::close (void)
+procbuf::close ()
 {
 #if defined (__CYGWIN__) || defined (__MINGW32__) || defined (_MSC_VER)
 

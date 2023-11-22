@@ -27,13 +27,13 @@
 #  include "config.h"
 #endif
 
-#include <iostream>
+#include <sstream>
 
 #include <QTreeWidget>
+#include <QToolTip>
 
 #include "gui-preferences-ws.h"
 #include "gui-settings.h"
-#include "octave-qobject.h"
 #include "workspace-model.h"
 
 #include "syminfo.h"
@@ -42,7 +42,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 workspace_model::workspace_model (QObject *p)
-: QAbstractTableModel (p)
+  : QAbstractTableModel (p)
 {
   // The header names. Use tr () again when accessing them since
   // the translator si not yet initialized when this ctor is called
@@ -191,22 +191,24 @@ workspace_model::set_workspace (bool top_level, bool /* debug */,
 }
 
 void
-workspace_model::clear_workspace (void)
+workspace_model::clear_workspace ()
 {
   clear_data ();
   update_table ();
 }
 
 void
-workspace_model::notice_settings (const gui_settings *settings)
+workspace_model::notice_settings ()
 {
-  m_enable_colors = settings->value (ws_enable_colors).toBool ();
+  gui_settings settings;
 
-  int mode = settings->value (ws_color_mode).toInt ();
+  m_enable_colors = settings.bool_value (ws_enable_colors);
+
+  int mode = settings.int_value (ws_color_mode);
 
   for (int i = 0; i < ws_colors_count; i++)
     {
-      QColor setting_color = settings->color_value (ws_colors[i], mode);
+      QColor setting_color = settings.color_value (ws_colors[i], mode);
 
       QPalette p (setting_color);
       m_storage_class_colors.replace (i, setting_color);
@@ -218,7 +220,19 @@ workspace_model::notice_settings (const gui_settings *settings)
 }
 
 void
-workspace_model::clear_data (void)
+workspace_model::show_symbol_tooltip (const QPoint& pos,
+                                      const QString& symbol)
+{
+  int symbol_idx = m_symbols.indexOf (symbol);
+
+  if (symbol_idx > -1)
+    QToolTip::showText (pos, symbol + " = " + m_values.at (symbol_idx));
+  else
+    QToolTip::hideText ();
+}
+
+void
+workspace_model::clear_data ()
 {
   m_top_level = false;
   m_syminfo_list = symbol_info_list ();
@@ -231,7 +245,7 @@ workspace_model::clear_data (void)
 }
 
 void
-workspace_model::update_table (void)
+workspace_model::update_table ()
 {
   beginResetModel ();
 

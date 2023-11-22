@@ -71,7 +71,7 @@ function [y, c] = stft (x, win_size = 80, inc = 24, num_coef = 64, win_type = 1)
   endif
 
   if (ischar (win_type))
-    switch (tolower (win_type))
+    switch (lower (win_type))
       case "hanning"   , win_type = 1;
       case "hamming"   , win_type = 2;
       case "rectangle" , win_type = 3;

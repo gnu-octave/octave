@@ -51,7 +51,7 @@ public:
     economy
   };
 
-  qr (void) : m_q (), m_r () { }
+  qr () : m_q (), m_r () { }
 
   qr (const T& a, type qr_type = qr::std)
     : m_q (), m_r ()
@@ -74,15 +74,15 @@ public:
     return *this;
   }
 
-  virtual ~qr (void) = default;
+  virtual ~qr () = default;
 
-  T Q (void) const { return m_q; }
+  T Q () const { return m_q; }
 
-  T R (void) const { return m_r; }
+  T R () const { return m_r; }
 
-  OCTAVE_API type get_type (void) const;
+  OCTAVE_API type get_type () const;
 
-  OCTAVE_API bool regular (void) const;
+  OCTAVE_API bool regular () const;
 
   OCTAVE_API void init (const T& a, type qr_type);
 
@@ -113,7 +113,7 @@ protected:
   form (octave_idx_type n, T& afact, ELT_T *tau, type qr_type);
 };
 
-extern OCTAVE_API void warn_qrupdate_once (void);
+extern OCTAVE_API void warn_qrupdate_once ();
 
 OCTAVE_END_NAMESPACE(math)
 OCTAVE_END_NAMESPACE(octave)

@@ -40,22 +40,4 @@ get_save_type (float max_val, float min_val);
 
 OCTAVE_END_NAMESPACE(octave)
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::get_save_type' instead")
-inline save_type
-get_save_type (double max_val, double min_val)
-{
-  return octave::get_save_type (max_val, min_val);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::get_save_type' instead")
-inline save_type
-get_save_type (float max_val, float min_val)
-{
-  return octave::get_save_type (max_val, min_val);
-}
-
-#endif
-
 #endif

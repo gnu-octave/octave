@@ -227,7 +227,7 @@ function __save_as__ (hf, fname = "")
             "*.tiff", "TIFF Image"};
   ## Reorder filters to have current first
   [~, ~, ext] = fileparts (def);
-  idx = strcmp (filter(:,1), ["*" tolower(ext)]);
+  idx = strcmp (filter(:,1), ["*" lower(ext)]);
   filter = [filter(idx,:); filter(! idx,:)];
 
   [filename, filedir, filteridx] = uiputfile (filter, "Save Figure", def);

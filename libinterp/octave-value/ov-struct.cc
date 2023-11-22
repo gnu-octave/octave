@@ -52,6 +52,7 @@
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 #include "pr-output.h"
+#include "ov-inline.h"
 
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_struct, "struct", "struct");
@@ -76,7 +77,7 @@ octave_struct::break_closure_cycles (const std::shared_ptr<octave::stack_frame>&
 }
 
 octave_base_value *
-octave_struct::try_narrowing_conversion (void)
+octave_struct::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -109,7 +110,7 @@ octave_struct::dotref (const octave_value_list& idx, bool auto_add)
 }
 
 static void
-err_invalid_index_for_assignment (void)
+err_invalid_index_for_assignment ()
 {
   error ("invalid index for structure array assignment");
 }
@@ -471,7 +472,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 m_map.assign (idxf, key, tmp_cell);
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
             else
@@ -484,7 +485,7 @@ octave_struct::subsasgn (const std::string& type,
                     m_map.assign (idxf,
                                   key, Cell (t_rhs.storable_value ()));
 
-                    count++;
+                    m_count++;
                     retval = octave_value (this);
                   }
                 else
@@ -499,7 +500,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 m_map.assign (idx.front (), rhs_map);
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
             else
@@ -509,7 +510,7 @@ octave_struct::subsasgn (const std::string& type,
 
                 m_map.delete_elements (idx.front ());
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
           }
@@ -548,7 +549,7 @@ octave_struct::subsasgn (const std::string& type,
             m_map.setfield (key, tmp_cell);
           }
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;
@@ -594,7 +595,7 @@ octave_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 }
 
 std::size_t
-octave_struct::byte_size (void) const
+octave_struct::byte_size () const
 {
   // Neglect the size of the fieldnames.
 
@@ -1118,6 +1119,39 @@ octave_struct::fast_elem_insert (octave_idx_type n,
   return retval;
 }
 
+octave_value
+octave_struct::vm_extract_forloop_value (octave_idx_type counter)
+{
+  // TODO: Maybe this is slow? Should preferably be done once per loop
+  octave_value_list idx;
+  octave_value arg = octave_value_factory::make_copy (this);
+
+  dim_vector dv = arg.dims ().redim (2);
+  octave_idx_type nrows = dv(0);
+
+  if (arg.ndims () > 2)
+    arg = arg.reshape (dv);
+
+  octave_idx_type iidx;
+
+  // for row vectors, use single index to speed things up.
+  if (nrows == 1)
+    {
+      idx.resize (1);
+      iidx = 0;
+    }
+  else
+    {
+      idx.resize (2);
+      idx(0) = octave_value::magic_colon_t;
+      iidx = 1;
+    }
+
+  // One based indexing
+  idx(iidx) = counter + 1;
+  return arg.index_op (idx).storable_value ();
+}
+
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",
                                     "struct");
 
@@ -1296,7 +1330,7 @@ octave_scalar_struct::subsasgn (const std::string& type,
 
       m_map.setfield (key, t_rhs.storable_value ());
 
-      count++;
+      m_count++;
       retval = this;
     }
   else
@@ -1331,7 +1365,7 @@ octave_scalar_struct::do_index_op (const octave_value_list& idx, bool resize_ok)
 }
 
 std::size_t
-octave_scalar_struct::byte_size (void) const
+octave_scalar_struct::byte_size () const
 {
   // Neglect the size of the fieldnames.
 
@@ -1733,7 +1767,7 @@ octave_scalar_struct::as_mxArray (bool interleaved) const
 }
 
 octave_value
-octave_scalar_struct::to_array (void)
+octave_scalar_struct::to_array ()
 {
   return new octave_struct (octave_map (m_map));
 }
@@ -1833,8 +1867,7 @@ orderfields, isstruct, structfun}
     {
       if (nargin == 2)
         {
-          Array<std::string> cstr = args(
-                                      1).xcellstr_value ("struct: second argument should be a cell array of field names");
+          Array<std::string> cstr = args(1).xcellstr_value ("struct: second argument should be a cell array of field names");
 
           return ovl (octave_map (args(0).dims (), cstr));
         }
@@ -2059,7 +2092,7 @@ Return the number of fields of the structure @var{s}.
 
 OCTAVE_NORETURN
 static void
-invalid_cell2struct_fields_error (void)
+invalid_cell2struct_fields_error ()
 {
   error ("cell2struct: FIELDS must be a cell array of strings or a scalar string");
 }
@@ -2130,8 +2163,7 @@ S(1)
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  const Cell vals
-    = args(0).xcell_value ("cell2struct: argument CELL must be of type cell");
+  const Cell vals = args(0).xcell_value ("cell2struct: argument CELL must be of type cell");
 
   const Array<std::string> fields = get_cell2struct_fields (args(1));
 
@@ -2222,7 +2254,7 @@ the named fields.
 
   octave_map m = args(0).xmap_value ("rmfield: first argument must be a struct");
 
-  octave_value_list fval = Fcellstr (args(1), 1);
+  octave_value_list fval = Fcellstr (ovl (args(1)), 1);
 
   Cell fcell = fval(0).cell_value ();
 

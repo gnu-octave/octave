@@ -37,11 +37,11 @@
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
 #include "pager.h"
-#include "parse.h"
 #include "pr-output.h"
 #include "unwind-prot.h"
 #include "utils.h"
@@ -79,7 +79,9 @@ lsode_user_function (const ColumnVector& x, double t)
 
       try
         {
-          tmp = octave::feval (lsode_fcn, args, 1);
+          interpreter& interp = __get_interpreter__ ();
+
+          tmp = interp.feval (lsode_fcn, args, 1);
         }
       catch (octave::execution_exception& ee)
         {
@@ -119,7 +121,9 @@ lsode_user_jacobian (const ColumnVector& x, double t)
 
       try
         {
-          tmp = octave::feval (lsode_jac, args, 1);
+          interpreter& interp = __get_interpreter__ ();
+
+          tmp = interp.feval (lsode_jac, args, 1);
         }
       catch (octave::execution_exception& ee)
         {
@@ -135,8 +139,7 @@ lsode_user_jacobian (const ColumnVector& x, double t)
           warned_jac_imaginary = true;
         }
 
-      retval = tmp(
-                 0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
+      retval = tmp(0).xmatrix_value ("lsode: expecting user supplied jacobian function to return numeric array");
 
       if (retval.isempty ())
         err_user_supplied_eval ("lsode");

@@ -36,14 +36,14 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static double
-make_handle_fraction (void)
+make_handle_fraction ()
 {
   static double maxrand = RAND_MAX + 2.0;
 
   return (rand () + 1.0) / maxrand;
 }
 
-url_handle url_handle_manager::get_handle (void)
+url_handle url_handle_manager::get_handle ()
 {
   url_handle retval;
 

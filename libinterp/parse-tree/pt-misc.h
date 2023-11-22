@@ -68,31 +68,27 @@ public:
     append (new tree_decl_elt (id));
   }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_parameter_list)
 
-  tree_parameter_list (const tree_parameter_list&) = delete;
+  ~tree_parameter_list ();
 
-  tree_parameter_list& operator = (const tree_parameter_list&) = delete;
+  void mark_as_formal_parameters ();
 
-  ~tree_parameter_list (void);
+  void mark_varargs () { m_marked_for_varargs = 1; }
 
-  void mark_as_formal_parameters (void);
+  void mark_varargs_only () { m_marked_for_varargs = -1; }
 
-  void mark_varargs (void) { m_marked_for_varargs = 1; }
+  bool takes_varargs () const { return m_marked_for_varargs != 0; }
 
-  void mark_varargs_only (void) { m_marked_for_varargs = -1; }
+  bool varargs_only () { return (m_marked_for_varargs < 0); }
 
-  bool takes_varargs (void) const { return m_marked_for_varargs != 0; }
+  bool is_input_list () const { return m_in_or_out == in; }
 
-  bool varargs_only (void) { return (m_marked_for_varargs < 0); }
+  bool is_output_list () const { return m_in_or_out == out; }
 
-  bool is_input_list (void) const { return m_in_or_out == in; }
+  std::list<std::string> variable_names () const;
 
-  bool is_output_list (void) const { return m_in_or_out == out; }
-
-  std::list<std::string> variable_names (void) const;
-
-  std::string varargs_symbol_name (void) const
+  std::string varargs_symbol_name () const
   {
     return m_in_or_out == in ? "varargin" : "varargout";
   }

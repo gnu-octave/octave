@@ -158,7 +158,7 @@ run_command_and_return_output (const std::string& cmd_str)
 // Combine alloc+get in one action.
 
 static void *
-get_signal_mask (void)
+get_signal_mask ()
 {
   void *mask = octave_alloc_signal_mask ();
 
@@ -540,7 +540,6 @@ specified option.
         { "QT_CPPFLAGS", build_env::QT_CPPFLAGS },
         { "QT_LDFLAGS", build_env::QT_LDFLAGS },
         { "QT_LIBS", build_env::QT_LIBS },
-        { "QT_OPENGL_LIBS", build_env::QT_OPENGL_LIBS },
         { "RANLIB", build_env::RANLIB },
         { "RDYNAMIC_FLAG", build_env::RDYNAMIC_FLAG },
         { "READLINE_LIBS", build_env::READLINE_LIBS },
@@ -614,8 +613,7 @@ specified option.
 
   if (nargin == 1)
     {
-      std::string arg = args(
-                          0).xstring_value ("__octave_config_info__: OPTION argument must be a string");
+      std::string arg = args(0).xstring_value ("__octave_config_info__: OPTION argument must be a string");
 
       octave_value info = find_config_info (config, arg);
 
@@ -654,7 +652,7 @@ OCTAVE_END_NAMESPACE(octave)
 
 int debug_new_delete = 0;
 
-typedef void (*vfp)(void);
+typedef void (*vfp)();
 extern vfp __new_handler;
 
 void *

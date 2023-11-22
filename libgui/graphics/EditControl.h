@@ -33,7 +33,6 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class TextEdit;
@@ -43,16 +42,16 @@ class EditControl : public BaseControl
   Q_OBJECT
 
 public:
-  EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  EditControl (octave::interpreter& interp,
                const graphics_object& go, QLineEdit *edit);
 
-  EditControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  EditControl (octave::interpreter& interp,
                const graphics_object& go, TextEdit *edit);
 
-  ~EditControl (void);
+  ~EditControl ();
 
   static EditControl *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
 protected:
@@ -66,9 +65,9 @@ private:
   bool updateMultiLine (int pId);
 
 private slots:
-  void textChanged (void);
-  void editingFinished (void);
-  void returnPressed (void);
+  void textChanged ();
+  void editingFinished ();
+  void returnPressed ();
 
 private:
   bool m_multiLine;

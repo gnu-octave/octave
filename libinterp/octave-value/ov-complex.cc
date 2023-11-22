@@ -80,18 +80,27 @@ public:
     update_message ();
   }
 
-  ~complex_index_exception (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE (complex_index_exception)
 
-  void update_message (void)
+  ~complex_index_exception () = default;
+
+  void update_message ()
   {
     set_message (expression ()
                  + ": subscripts must be real (forgot to initialize i or j?)");
   }
 
   // ID of error to throw.
-  const char * err_id (void) const
+  const char * err_id () const
   {
     return "Octave:invalid-index";
+  }
+
+  index_exception * dup ()
+  {
+    complex_index_exception *retval = new complex_index_exception {*this};
+    retval->set_identifier (retval->err_id ());
+    return retval;
   }
 };
 
@@ -106,7 +115,7 @@ default_numeric_demotion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_complex::numeric_demotion_function (void) const
+octave_complex::numeric_demotion_function () const
 {
   return
     octave_base_value::type_conv_info (default_numeric_demotion_function,
@@ -114,7 +123,7 @@ octave_complex::numeric_demotion_function (void) const
 }
 
 octave_base_value *
-octave_complex::try_narrowing_conversion (void)
+octave_complex::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -292,13 +301,13 @@ octave_complex::resize (const dim_vector& dv, bool fill) const
 }
 
 octave_value
-octave_complex::as_double (void) const
+octave_complex::as_double () const
 {
   return scalar;
 }
 
 octave_value
-octave_complex::as_single (void) const
+octave_complex::as_single () const
 {
   return FloatComplex (scalar);
 }

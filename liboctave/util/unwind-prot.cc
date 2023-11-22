@@ -33,7 +33,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 void
-unwind_protect_safe::warn_unhandled_exception (void) const
+unwind_protect_safe::warn_unhandled_exception () const
 {
   (*current_liboctave_warning_handler)
     ("unhandled exception in unwind_protect_safe handler.  "
@@ -42,7 +42,7 @@ unwind_protect_safe::warn_unhandled_exception (void) const
 }
 
 void
-unwind_action_safe::warn_unhandled_exception (void) const
+unwind_action_safe::warn_unhandled_exception () const
 {
   (*current_liboctave_warning_handler)
     ("unhandled exception in unwind_action_safe handler.  "

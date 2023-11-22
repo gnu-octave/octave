@@ -41,7 +41,6 @@
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
-#include "parse.h"
 #include "pt-assign.h"
 #include "pt-classdef.h"
 #include "pt-eval.h"
@@ -133,7 +132,9 @@ cdef_property::cdef_property_rep::get_value (const cdef_object& obj,
 
       args(0) = to_ov (obj);
 
-      args = feval (get_fcn, args, 1);
+      interpreter& interp = __get_interpreter__ ();
+
+      args = interp.feval (get_fcn, args, 1);
 
       retval = args(0);
     }
@@ -207,11 +208,13 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
       args(0) = to_ov (obj);
       args(1) = val;
 
+      interpreter& interp = __get_interpreter__ ();
+
       if (obj.is_handle_object ())
-        feval (set_fcn, args, 0);
+        interp.feval (set_fcn, args, 0);
       else
         {
-          args = feval (set_fcn, args, 1);
+          args = interp.feval (set_fcn, args, 1);
 
           if (args.length () > 0 && args(0).is_defined ())
             {
@@ -230,7 +233,7 @@ cdef_property::cdef_property_rep::set_value (cdef_object& obj,
 }
 
 bool
-cdef_property::cdef_property_rep::check_get_access (void) const
+cdef_property::cdef_property_rep::check_get_access () const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 
@@ -240,7 +243,7 @@ cdef_property::cdef_property_rep::check_get_access (void) const
 }
 
 bool
-cdef_property::cdef_property_rep::check_set_access (void) const
+cdef_property::cdef_property_rep::check_set_access () const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 

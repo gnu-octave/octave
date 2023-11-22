@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2019 Michael Goffioul
+Copyright (C) 2011-2023 The Octave Project Developers
 
 This file is part of QConsole.
 
@@ -21,6 +21,7 @@ see <https://www.gnu.org/licenses/>.
 */
 
 #include <algorithm>
+#include <cmath>
 #include <csignal>
 #include <cstdio>
 #include <cstdarg>
@@ -28,13 +29,14 @@ see <https://www.gnu.org/licenses/>.
 
 #define WIN32_LEAN_AND_MEAN
 #if ! defined (_WIN32_WINNT) && ! defined (NTDDI_VERSION)
-#define _WIN32_WINNT 0x0500
+#  define _WIN32_WINNT 0x0500
 #endif
 #include <windows.h>
 #include <fcntl.h>
 #include <io.h>
 #include <versionhelpers.h>
 
+#include <QtDebug>
 #include <QApplication>
 #include <QClipboard>
 #include <QColor>
@@ -44,7 +46,8 @@ see <https://www.gnu.org/licenses/>.
 #include <QPainter>
 #include <QResizeEvent>
 #include <QScrollBar>
-#include <QtDebug>
+#include <QSize>
+#include <QSizeF>
 #include <QThread>
 #include <QTimer>
 #include <QToolTip>
@@ -65,7 +68,7 @@ see <https://www.gnu.org/licenses/>.
 #define HIDDEN_CONSOLE
 
 #ifdef _MSC_VER
-# pragma warning(disable : 4996)
+#  pragma warning(disable : 4996)
 #endif
 
 //////////////////////////////////////////////////////////////////////////////
@@ -73,15 +76,15 @@ see <https://www.gnu.org/licenses/>.
 class QConsoleView : public QWidget
 {
 public:
-  QConsoleView (QWinTerminalImpl* parent = 0) : QWidget (parent), q (parent) { }
+  QConsoleView (QWinTerminalImpl *parent = 0) : QWidget (parent), q (parent) { }
   ~QConsoleView (void) { }
 
 protected:
-  void paintEvent (QPaintEvent* event) { q->viewPaintEvent (this, event); }
-  void resizeEvent (QResizeEvent* event) { q->viewResizeEvent (this, event); }
+  void paintEvent (QPaintEvent *event) { q->viewPaintEvent (this, event); }
+  void resizeEvent (QResizeEvent *event) { q->viewResizeEvent (this, event); }
 
 private:
-  QWinTerminalImpl* q;
+  QWinTerminalImpl *q;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -89,14 +92,14 @@ private:
 class QConsoleThread : public QThread
 {
 public:
-  QConsoleThread (QWinTerminalImpl* console) : QThread (console), q (console) { }
+  QConsoleThread (QWinTerminalImpl *console) : QThread (console), q (console) { }
 
 protected:
   void run (void)
     { q->start (); }
 
 private:
-  QWinTerminalImpl* q;
+  QWinTerminalImpl *q;
 };
 
 //////////////////////////////////////////////////////////////////////////////
@@ -176,7 +179,7 @@ public:
       IBeamCursor
     };
 
-  QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd = QString ());
+  QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd = QString ());
   ~QConsolePrivate (void);
 
   void updateConsoleSize (bool sync = false, bool allow_smaller_width = false);
@@ -191,15 +194,16 @@ public:
   void startCommand (void);
   void sendConsoleText (const QString& s);
   QRect cursorRect (void);
-  void selectAll();
-  void selectWord(const QPoint& cellPos);
-  void selectLine(const QPoint& cellPos);
+  QRect boundingRect (void);
+  void selectAll ();
+  void selectWord (const QPoint& cellPos);
+  void selectLine (const QPoint& cellPos);
 
-  void log (const char* fmt, ...);
+  void log (const char *fmt, ...);
 
-  void closeStandardIO (int fd, DWORD stdHandleId, const char* name);
-  void setupStandardIO (DWORD stdHandleId, int fd, const char* name,
-                        const char* devName);
+  void closeStandardIO (int fd, DWORD stdHandleId, const char *name);
+  void setupStandardIO (DWORD stdHandleId, int fd, const char *name,
+                        const char *devName);
 
   QPoint posToCell (const QPoint& pt);
   QString getSelection (void);
@@ -218,18 +222,16 @@ public:
   void setScrollBufferSize (int value);
 
   void drawTextBackground (QPainter& p, int cx1, int cy1, int cx2, int cy2,
-                           int cw, int ch);
+                           int ch);
 
-  void drawSelection (QPainter& p, int cx1, int cy1, int cx2, int cy2,
-                      int cw, int ch);
+  void drawSelection (QPainter& p, int cx1, int cy1, int cx2, int cy2, int ch);
 
   void drawCursor (QPainter& p);
 
-  void drawText (QPainter& p, int cx1, int cy1, int cx2, int cy2,
-                 int cw, int ch);
+  void drawText (QPainter& p, int cx1, int cy1, int cx2, int cy2, int ch);
 
 private:
-  QWinTerminalImpl* q;
+  QWinTerminalImpl *q;
 
 private:
   QFont m_font;
@@ -238,7 +240,7 @@ private:
   bool m_inWheelEvent;
   QString m_title;
 
-  QSize m_charSize;
+  QSizeF m_charSize;
   QSize m_bufferSize;
   QRect m_consoleRect;
   bool m_auto_scroll;
@@ -257,14 +259,14 @@ private:
 
   HANDLE m_stdOut;
   HWND m_consoleWindow;
-  CHAR_INFO* m_buffer;
-  CHAR_INFO* m_tmpBuffer;
+  CHAR_INFO *m_buffer;
+  CHAR_INFO *m_tmpBuffer;
   HANDLE m_process;
 
-  QConsoleView* m_consoleView;
-  QScrollBar* m_horizontalScrollBar;
-  QScrollBar* m_verticalScrollBar;
-  QTimer* m_consoleWatcher;
+  QConsoleView *m_consoleView;
+  QScrollBar *m_horizontalScrollBar;
+  QScrollBar *m_verticalScrollBar;
+  QTimer *m_consoleWatcher;
   QConsoleThread *m_consoleThread;
 
   // The delay in milliseconds between redrawing blinking text.
@@ -280,7 +282,7 @@ static void maybeSwapPoints (QPoint& begin, QPoint& end)
 
 //////////////////////////////////////////////////////////////////////////////
 
-QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
+QConsolePrivate::QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd)
   : q (parent), m_command (cmd), m_auto_scroll (true), m_cursorBlinking (false),
     m_hasBlinkingCursor (true), m_cursorType (BlockCursor),
     m_beginSelection (0, 0), m_endSelection (0, 0), m_settingSelection (false),
@@ -351,7 +353,8 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   CONSOLE_SCREEN_BUFFER_INFO sbi;
 
   GetConsoleScreenBufferInfo (hStdOut, &sbi);
-  m_bufferSize = QSize (sbi.dwSize.X, qMax (sbi.dwSize.Y, (SHORT)500));
+  m_bufferSize = QSize (sbi.dwSize.X,
+                        qMax (sbi.dwSize.Y, static_cast<SHORT> (500)));
   m_consoleRect = QRect (sbi.srWindow.Left, sbi.srWindow.Top,
                          sbi.srWindow.Right - sbi.srWindow.Left + 1,
                          sbi.srWindow.Bottom - sbi.srWindow.Top + 1);
@@ -380,7 +383,7 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl* parent, const QString& cmd)
   m_horizontalScrollBar = new QScrollBar (Qt::Horizontal, parent);
   m_verticalScrollBar = new QScrollBar (Qt::Vertical, parent);
 
-  QGridLayout* l = new QGridLayout (parent);
+  QGridLayout *l = new QGridLayout (parent);
   l->setContentsMargins (0, 0, 0, 0);
   l->setSpacing (0);
   l->addWidget (m_consoleView, 0, 0);
@@ -454,7 +457,7 @@ QConsolePrivate::~QConsolePrivate (void)
 {
   if (m_consoleThread && m_consoleThread->isRunning () && m_process)
     {
-      TerminateProcess (m_process, (UINT)-1);
+      TerminateProcess (m_process, static_cast<UINT> (-1));
       m_consoleThread->wait ();
     }
 
@@ -465,7 +468,7 @@ QConsolePrivate::~QConsolePrivate (void)
 //////////////////////////////////////////////////////////////////////////////
 
 void QConsolePrivate::setupStandardIO (DWORD stdHandleId, int targetFd,
-                                       const char* name, const char* devName)
+                                       const char *name, const char *devName)
 {
   log ("Opening %s...\n", devName);
 
@@ -494,8 +497,12 @@ void QConsolePrivate::setupStandardIO (DWORD stdHandleId, int targetFd,
 
 QPoint QConsolePrivate::posToCell (const QPoint& p)
 {
-  return QPoint (m_consoleRect.left () + p.x () / m_charSize.width (),
-                 m_consoleRect.top () + p.y () / m_charSize.height ());
+  return QPoint (m_consoleRect.left ()
+                 + std::round (static_cast<qreal> (p.x ())
+                               / m_charSize.width ()),
+                 m_consoleRect.top ()
+                 + std::round (static_cast<qreal> (p.y ())
+                               / m_charSize.height ()));
 }
 
 QString QConsolePrivate::getSelection (void)
@@ -509,7 +516,7 @@ QString QConsolePrivate::getSelection (void)
 
   if (begin != end)
     {
-      CHAR_INFO* buf;
+      CHAR_INFO *buf;
       COORD bufSize, bufCoord;
       SMALL_RECT bufRect;
       int nr;
@@ -629,17 +636,21 @@ void QConsolePrivate::setScrollBufferSize (int value)
   CONSOLE_SCREEN_BUFFER_INFO sbi;
   GetConsoleScreenBufferInfo (m_stdOut, &sbi);
 
-  m_bufferSize = QSize (sbi.dwSize.X, (SHORT)value);
+  m_bufferSize = QSize (sbi.dwSize.X, static_cast<SHORT> (value));
 
   updateConsoleSize (true);
 }
 
 void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
-                                          int cx2, int cy2, int cw, int ch)
+                                          int cx2, int cy2, int ch)
 {
   p.save ();
 
-  int ascent = p.fontMetrics ().ascent ();
+  QFontMetrics fm = p.fontMetrics ();
+  QString sample ('m');
+  sample = sample.repeated (cx2);
+
+  int ascent = fm.ascent ();
   int stride = m_consoleRect.width ();
   int y = ascent + cy1 * ch;
 
@@ -647,12 +658,13 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
     {
       int len = 0;
       bool hasChar = false;
-      int x = cx1 * cw;
+      int x = fm.horizontalAdvance (sample, cx1);
       WORD attr = 0;
+      int curr_cx1 = cx1;
 
       for (int i = cx1; i <= cx2; i++)
         {
-          CHAR_INFO* ci = &(m_buffer[stride*j+i]);
+          CHAR_INFO *ci = &(m_buffer[stride*j+i]);
 
           if ((ci->Attributes & 0x00ff) != attr)
             {
@@ -663,10 +675,15 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
                   if (hasChar || (attr & 0x00f0))
                     {
                       if (attr & 0x00f0)
-                        p.fillRect (x, y-ascent, len * cw, ch, p.brush ());
+                        // Try to not paint over parts of the preceeding
+                        // character.
+                        p.fillRect (x, y-ascent,
+                                    fm.horizontalAdvance (sample, len), ch,
+                                    p.brush ());
                     }
 
-                  x += (len * cw);
+                  curr_cx1 += len;
+                  x = fm.horizontalAdvance (sample, curr_cx1);
                   len = 0;
                   hasChar = false;
                 }
@@ -688,22 +705,23 @@ void QConsolePrivate::drawTextBackground (QPainter& p, int cx1, int cy1,
           // for-loop iteration
 
           if (attr & 0x00f0)
-            p.fillRect (x, y-ascent, len * cw, ch, p.brush ());
+            // Try to not paint over parts of the preceeding character.
+            p.fillRect (x, y-ascent,
+                        fm.horizontalAdvance (sample, len), ch, p.brush ());
         }
     }
 
   p.restore ();
 }
 
-void QConsolePrivate::selectAll()
+void QConsolePrivate::selectAll ()
 {
-  m_beginSelection = QPoint (0,0);
-  m_endSelection = QPoint(m_bufferSize.width (),
-                          m_cursorPos.y());
+  m_beginSelection = QPoint (0, 0);
+  m_endSelection = QPoint (m_bufferSize.width (), m_cursorPos.y ());
   updateSelection();
 }
 
-void QConsolePrivate::selectWord (const QPoint & cellpos)
+void QConsolePrivate::selectWord (const QPoint& cellpos)
 {
   QPoint begin = cellpos;
   QPoint end = cellpos;
@@ -720,36 +738,33 @@ void QConsolePrivate::selectWord (const QPoint & cellpos)
   begin.rx () -= horizontalScrollOffset;
   end.rx () -= horizontalScrollOffset;
 
-  // loog at current clicked on char to determinate ig getting space chunk or nonspace chunk
-  if (QChar(m_buffer[begin.y ()*stride + begin.x ()].Char.UnicodeChar).isSpace () == false)
-  {
-    // from current char, go back and fwd to find start and end of block
-    while(begin.x () > 0 &&
-          QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace() == false)
+  // check currently clicked on character and determinate if it is whitespace
+  if (QChar (m_buffer[begin.y ()*stride
+                      + begin.x ()].Char.UnicodeChar).isSpace () == false)
     {
+      // from current char, go back and fwd to find start and end of block
+      while (begin.x () > 0
+             && ! QChar (m_buffer[begin.y ()*stride
+                                  + begin.x () - 1].Char.UnicodeChar).isSpace ())
         begin.rx () --;
-    }
 
-    while(end.x () < m_consoleRect.width () &&
-          QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace() == false)
-    {
-      end.rx () ++;
+      while (end.x () < m_consoleRect.width ()
+             && ! QChar (m_buffer[end.y ()*stride
+                                  + end.x () + 1].Char.UnicodeChar).isSpace ())
+        end.rx () ++;
     }
-  }
-  else
-  {
-    while(begin.x () > 0 &&
-          QChar(m_buffer[begin.y ()*stride + begin.x () -1].Char.UnicodeChar).isSpace())
+    else
     {
-      begin.rx () --;
-    }
+      while (begin.x () > 0
+             && QChar (m_buffer[begin.y ()*stride
+                                + begin.x () - 1].Char.UnicodeChar).isSpace ())
+        begin.rx () --;
 
-    while(end.x () < m_consoleRect.width () &&
-          QChar(m_buffer[end.y ()*stride + end.x () +1].Char.UnicodeChar).isSpace ())
-    {
-      end.rx () ++;
+      while (end.x () < m_consoleRect.width ()
+             && QChar (m_buffer[end.y ()*stride
+                                + end.x () + 1].Char.UnicodeChar).isSpace ())
+        end.rx () ++;
     }
-  }
 
   // convert console  offsets to absolute cell positions
   begin.ry () += verticalScrollOffset;
@@ -764,7 +779,7 @@ void QConsolePrivate::selectWord (const QPoint & cellpos)
   updateSelection ();
 }
 
-void QConsolePrivate::selectLine (const QPoint & cellpos)
+void QConsolePrivate::selectLine (const QPoint& cellpos)
 {
   m_beginSelection = QPoint (0, cellpos.y ());
   m_endSelection = QPoint (m_bufferSize.width ()-1, cellpos.y ());
@@ -773,7 +788,7 @@ void QConsolePrivate::selectLine (const QPoint & cellpos)
 
 
 void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
-                                     int cx2, int cy2, int cw, int ch)
+                                     int cx2, int cy2, int ch)
 {
   p.save ();
 
@@ -794,7 +809,11 @@ void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
   begin.rx () -= horizontalScrollOffset;
   end.rx () -= horizontalScrollOffset;
 
-  int ascent = p.fontMetrics ().ascent ();
+  QFontMetrics fm = p.fontMetrics ();
+  QString sample ('m');
+  sample = sample.repeated (cx2);
+
+  int ascent = fm.ascent ();
   int stride = m_consoleRect.width ();
 
   int y = ascent + cy1 * ch;
@@ -840,8 +859,9 @@ void QConsolePrivate::drawSelection (QPainter& p, int cx1, int cy1,
                      ? end.x () - selectionBegin + 1
                      : stride - selectionBegin);
 
-          p.fillRect (selectionBegin * cw, y-ascent, len * cw, ch,
-                      selectionColor ());
+          p.fillRect (fm.horizontalAdvance (sample, selectionBegin),
+                      y-ascent, fm.horizontalAdvance (sample, len),
+                      ch, selectionColor ());
         }
     }
 
@@ -868,7 +888,7 @@ void QConsolePrivate::drawCursor (QPainter& p)
               // draw the cursor outline, adjusting the area so that
               // it is draw entirely inside 'rect'
 
-              int penWidth = qMax (1, p.pen().width());
+              int penWidth = qMax (1, p.pen ().width ());
 
               p.drawRect (rect.adjusted (penWidth/2, penWidth/2,
                                          - penWidth/2 - penWidth%2,
@@ -891,7 +911,7 @@ void QConsolePrivate::drawCursor (QPainter& p)
 }
 
 void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
-                                int cx2, int cy2, int cw, int ch)
+                                int cx2, int cy2, int ch)
 {
   p.save ();
 
@@ -901,7 +921,11 @@ void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
   QString s;
   s.reserve (cx2 - cx1 + 1);
 
-  int ascent = p.fontMetrics ().ascent ();
+  QFontMetrics fm = p.fontMetrics ();
+  QString sample ('m');
+  sample = sample.repeated (cx2);
+
+  int ascent = fm.ascent ();
   int stride = m_consoleRect.width ();
 
   int y = ascent + cy1 * ch;
@@ -910,8 +934,9 @@ void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
       // Reset string buffer and starting X coordinate
       s.clear ();
       bool hasChar = false;
-      int x = cx1 * cw;
+      int x = fm.horizontalAdvance (sample, cx1);
       WORD attr = 0;
+      int curr_cx1 = cx1;
 
       for (int i = cx1; i <= cx2; i++)
         {
@@ -926,7 +951,8 @@ void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
                   if (hasChar || (attr & 0x00f0))
                     p.drawText (x, y, s);
 
-                  x += (s.length () * cw);
+                  curr_cx1 += s.length ();
+                  x = fm.horizontalAdvance (sample, curr_cx1);
                   s.clear ();
                   hasChar = false;
                 }
@@ -957,7 +983,7 @@ void QConsolePrivate::drawText (QPainter& p, int cx1, int cy1,
 /////////////////////////////////////////////////////////////////////////////
 
 void QConsolePrivate::closeStandardIO (int fd, DWORD stdHandleId,
-                                       const char* name)
+                                       const char *name)
 {
   if (close (fd) == -1)
     log ("Failed to close file descriptor %d: errno=%d.\n", fd, errno);
@@ -967,13 +993,13 @@ void QConsolePrivate::closeStandardIO (int fd, DWORD stdHandleId,
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::log (const char* fmt, ...)
+void QConsolePrivate::log (const char *fmt, ...)
 {
 #ifdef DEBUG_QCONSOLE
   if (fmt)
     {
       va_list l;
-      FILE* flog = fopen (LOGFILENAME, "ab");
+      FILE *flog = fopen (LOGFILENAME, "ab");
 
       va_start (l, fmt);
       vfprintf (flog, fmt, l);
@@ -983,7 +1009,7 @@ void QConsolePrivate::log (const char* fmt, ...)
   else
     {
       // Special case to re-initialize the log file
-      FILE* flog = fopen (LOGFILENAME, "w");
+      FILE *flog = fopen (LOGFILENAME, "w");
       fclose (flog);
     }
 #else
@@ -998,11 +1024,22 @@ void QConsolePrivate::updateConsoleSize (bool sync, bool allow_smaller_width)
   QFontMetrics fm = m_consoleView->fontMetrics ();
   QSize winSize = m_consoleView->size ();
 
-  m_charSize.rwidth () = fm.averageCharWidth ();
+  // QFontMetrics::averageCharWidth returns the average character width of the
+  // used font rounded(?) to the nearest integer.  However, the actual
+  // character width might be fractional on screens with non-scalar DPI
+  // scaling.  Take a large sample and divide by the number of characters in
+  // the sample to get a more accurate (fractional) average character width of
+  // the used font.
+  QString sample ('m');
+  sample = sample.repeated (160);  // Is 160 a large enough sample?
+  m_charSize.rwidth ()
+    = static_cast<qreal> (fm.horizontalAdvance (sample)) / 160.;
   m_charSize.rheight () = fm.lineSpacing ();
 
-  m_consoleRect.setWidth (winSize.width () / fm.averageCharWidth ());
-  m_consoleRect.setHeight (winSize.height () / fm.lineSpacing ());
+  m_consoleRect.setWidth (std::floor (static_cast<qreal> (winSize.width ())
+                                      / m_charSize.width ()));
+  m_consoleRect.setHeight (std::floor (static_cast<qreal> (winSize.height ())
+                                       / m_charSize.height ()));
 
   // Don't shrink the size of the buffer.  That way wide lines won't be
   // truncated and will reappear if the window is enlarged again later.
@@ -1264,16 +1301,22 @@ void QConsolePrivate::monitorConsole (void)
           || m_cursorPos.y () != sbi.dwCursorPosition.Y)
         {
           // Cursor position changed
+          QFontMetrics fm = m_consoleView->fontMetrics ();
+          QString sample ('m');
+          sample = sample.repeated (m_bufferSize.width ());
+          // "over-size" update rectangle for fractional character widths
           m_consoleView->update
-            ((m_cursorPos.x () - sbi.srWindow.Left) * m_charSize.width (),
+            (fm.horizontalAdvance (sample,
+                                   m_cursorPos.x () - sbi.srWindow.Left) - 1,
              (m_cursorPos.y () - sbi.srWindow.Top) * m_charSize.height (),
-             m_charSize.width (), m_charSize.height ());
+             m_charSize.width () + 2, m_charSize.height ());
           m_cursorPos.rx () = sbi.dwCursorPosition.X;
           m_cursorPos.ry () = sbi.dwCursorPosition.Y;
           m_consoleView->update
-            ((m_cursorPos.x () - sbi.srWindow.Left) * m_charSize.width (),
+            (fm.horizontalAdvance (sample,
+                                   m_cursorPos.x () - sbi.srWindow.Left) - 1,
              (m_cursorPos.y () - sbi.srWindow.Top) * m_charSize.height (),
-             m_charSize.width (), m_charSize.height ());
+             m_charSize.width () + 2, m_charSize.height ());
         }
 
       if (m_consoleRect.left () != sbi.srWindow.Left
@@ -1335,8 +1378,9 @@ void QConsolePrivate::startCommand (void)
       si.cb = sizeof (si);
       ZeroMemory (&pi, sizeof (pi));
 
+      LPCWSTR wcmd = reinterpret_cast<LPCWSTR> (cmd.utf16 ());
       if (CreateProcessW (nullptr,
-                          (LPWSTR)cmd.unicode (),
+                          const_cast<LPWSTR> (wcmd),
                           nullptr,
                           nullptr,
                           TRUE,
@@ -1427,19 +1471,50 @@ void QConsolePrivate::sendConsoleText (const QString& s)
 QRect
 QConsolePrivate::cursorRect (void)
 {
-  int cw = m_charSize.width ();
-  int ch = m_charSize.height ();
+  // The actual character width might be fractional (with non-integer scaling -
+  // high DPI).  But m_charSize.width () is integer.
+  // Assume a fixed-width font and calculate cursor position by measuring the
+  // width of characters starting from the first column.
 
-  return QRect ((m_cursorPos.x () - m_consoleRect.x ()) * cw,
+  QFontMetrics fm = m_consoleView->fontMetrics ();
+  QString sample ('m');
+  sample = sample.repeated (m_cursorPos.x () - m_consoleRect.x ());
+
+  // Integer precision is good enough for the line height and for the
+  // dimensions of the marker.
+  qreal cw = m_charSize.width ();
+  qreal ch = m_charSize.height ();
+
+  // Make sure the cursor starts *right* of the previous character.
+  return QRect (fm.horizontalAdvance (sample),
                 (m_cursorPos.y () - m_consoleRect.y ()) * ch,
-                cw, ch);
+                std::round (cw), ch);
+}
+
+QRect
+QConsolePrivate::boundingRect (void)
+{
+  // This is slightly larger than cursorRect to make sure the entirety of a
+  // character is redrawn.
+
+  QFontMetrics fm = m_consoleView->fontMetrics ();
+  QString sample ('m');
+  sample = sample.repeated (m_cursorPos.x () - m_consoleRect.x ());
+
+  // Integer precision is good enough for the line height and for the
+  // dimensions of the marker.
+  qreal cw = m_charSize.width ();
+  qreal ch = m_charSize.height ();
+
+  return QRect (fm.horizontalAdvance (sample)-1,
+                (m_cursorPos.y () - m_consoleRect.y ()) * ch,
+                std::round (cw+2), ch);
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-QWinTerminalImpl::QWinTerminalImpl (octave::base_qobject& oct_qobj,
-                                    QWidget* parent)
-    : QTerminal (oct_qobj, parent), d (new QConsolePrivate (this)),
+QWinTerminalImpl::QWinTerminalImpl (QWidget *parent)
+    : QTerminal (parent), d (new QConsolePrivate (this)),
       allowTripleClick (false)
 {
     installEventFilter (this);
@@ -1501,8 +1576,8 @@ void QWinTerminalImpl::mouseDoubleClickEvent (QMouseEvent *event)
 
       allowTripleClick = true;
 
-      QTimer::singleShot (QApplication::doubleClickInterval (),this,
-                     SLOT (tripleClickTimeout ()));
+      QTimer::singleShot (QApplication::doubleClickInterval (), this,
+                          SLOT (tripleClickTimeout ()));
 
     }
 }
@@ -1522,7 +1597,7 @@ void QWinTerminalImpl::tripleClickTimeout ()
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::viewResizeEvent (QConsoleView*, QResizeEvent*)
+void QWinTerminalImpl::viewResizeEvent (QConsoleView *, QResizeEvent *)
 {
   d->updateConsoleSize (true);
   d->grabConsoleBuffer ();
@@ -1530,29 +1605,31 @@ void QWinTerminalImpl::viewResizeEvent (QConsoleView*, QResizeEvent*)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::viewPaintEvent (QConsoleView* w, QPaintEvent* event)
+void QWinTerminalImpl::viewPaintEvent (QConsoleView *w, QPaintEvent *event)
 {
   QPainter p (w);
 
-  int cw = d->m_charSize.width ();
-  int ch = d->m_charSize.height ();
+  qreal cw = d->m_charSize.width ();
+  qreal ch = d->m_charSize.height ();
 
   QRect updateRect = event->rect ();
-  p.fillRect(updateRect, QBrush(d->backgroundColor()));
+  p.fillRect (updateRect, QBrush (d->backgroundColor ()));
 
-  int cx1 = updateRect.left () / cw;
+  int cx1 = std::round (static_cast<qreal> (updateRect.left ()) / cw);
   int cy1 = updateRect.top () / ch;
-  int cx2 = qMin (d->m_consoleRect.width () - 1, updateRect.right () / cw);
-  int cy2 = qMin (d->m_consoleRect.height () - 1, updateRect.bottom () / ch);
+  int cx2 = std::round (static_cast<qreal> (updateRect.right ()) / cw);
+  cx2 = qMin (d->m_consoleRect.width () - 1, cx2);
+  int cy2 = std::round (static_cast<qreal> (updateRect.bottom ()) / ch);
+  cy2 = qMin (d->m_consoleRect.height () - 1, cy2);
 
   if (cx1 > d->m_consoleRect.width () - 1
       || cy1 > d->m_consoleRect.height () - 1)
     return;
 
-  d->drawTextBackground (p, cx1, cy1, cx2, cy2, cw, ch);
-  d->drawSelection (p, cx1, cy1, cx2, cy2, cw, ch);
+  d->drawTextBackground (p, cx1, cy1, cx2, cy2, ch);
+  d->drawSelection (p, cx1, cy1, cx2, cy2, ch);
   d->drawCursor (p);
-  d->drawText (p, cx1, cy1, cx2, cy2, cw, ch);
+  d->drawText (p, cx1, cy1, cx2, cy2, ch);
 }
 
 void QWinTerminalImpl::blinkCursorEvent (void)
@@ -1562,7 +1639,7 @@ void QWinTerminalImpl::blinkCursorEvent (void)
   else
     d->m_cursorBlinking = false;
 
-  d->m_consoleView->update (d->cursorRect ());
+  d->m_consoleView->update (d->boundingRect ());
 }
 
 void QWinTerminalImpl::setBlinkingCursor (bool blink)
@@ -1595,7 +1672,7 @@ void QWinTerminalImpl::init_terminal_size (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::wheelEvent (QWheelEvent* event)
+void QWinTerminalImpl::wheelEvent (QWheelEvent *event)
 {
   if (! d->m_inWheelEvent)
     {
@@ -1632,14 +1709,14 @@ void QWinTerminalImpl::updateSelection (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::focusInEvent (QFocusEvent* event)
+void QWinTerminalImpl::focusInEvent (QFocusEvent *event)
 {
   setBlinkingCursorState (true);
 
   QWidget::focusInEvent (event);
 }
 
-void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
+void QWinTerminalImpl::focusOutEvent (QFocusEvent *event)
 {
   // Force the cursor to be redrawn.
   d->m_cursorBlinking = true;
@@ -1649,13 +1726,13 @@ void QWinTerminalImpl::focusOutEvent (QFocusEvent* event)
   QWidget::focusOutEvent (event);
 }
 
-bool QWinTerminalImpl::eventFilter (QObject *obj, QEvent * event)
+bool QWinTerminalImpl::eventFilter (QObject *obj, QEvent *event)
 {
   // if a keypress, filter out tab keys so that the next/prev tabbing is
   // disabled - but we still need to pass along to the console .
   if (event->type () == QEvent::KeyPress)
   {
-    QKeyEvent* k = static_cast<QKeyEvent*>(event);
+    QKeyEvent *k = static_cast<QKeyEvent *> (event);
     if (k->key () == Qt::Key_Tab)
     {
       sendText ("\t");
@@ -1665,7 +1742,7 @@ bool QWinTerminalImpl::eventFilter (QObject *obj, QEvent * event)
   return false;
 }
 
-void QWinTerminalImpl::keyPressEvent (QKeyEvent* event)
+void QWinTerminalImpl::keyPressEvent (QKeyEvent *event)
 {
   QString s = translateKey (event);
   if (!s.isEmpty ())

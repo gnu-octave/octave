@@ -53,6 +53,7 @@
 #include "ops.h"
 #include "ovl.h"
 #include "oct-hdf5.h"
+#include "ov-inline.h"
 #include "ov-range-traits.h"
 #include "ov-range.h"
 #include "ov-re-mat.h"
@@ -69,114 +70,21 @@
 template <>
 octave_hdf5_id ov_range<double>::hdf5_save_type = H5T_NATIVE_DOUBLE;
 
-// For now, disable all but ov_range<double>.
-
-#  if 0
-
-template <>
-octave_hdf5_id ov_range<float>::hdf5_save_type = H5T_NATIVE_FLOAT;
-
-template <>
-octave_hdf5_id ov_range<octave_int8>::hdf5_save_type = H5T_NATIVE_INT8;
-
-template <>
-octave_hdf5_id ov_range<octave_int16>::hdf5_save_type = H5T_NATIVE_INT16;
-
-template <>
-octave_hdf5_id ov_range<octave_int32>::hdf5_save_type = H5T_NATIVE_INT32;
-
-template <>
-octave_hdf5_id ov_range<octave_int64>::hdf5_save_type = H5T_NATIVE_INT64;
-
-template <>
-octave_hdf5_id ov_range<octave_uint8>::hdf5_save_type = H5T_NATIVE_UINT8;
-
-template <>
-octave_hdf5_id ov_range<octave_uint16>::hdf5_save_type = H5T_NATIVE_UINT16;
-
-template <>
-octave_hdf5_id ov_range<octave_uint32>::hdf5_save_type = H5T_NATIVE_UINT32;
-
-template <>
-octave_hdf5_id ov_range<octave_uint64>::hdf5_save_type = H5T_NATIVE_UINT64;
-
-#  endif
+// For now, enable only ov_range<double>.
 
 #else
 
 template <>
 octave_hdf5_id ov_range<double>::hdf5_save_type = 0;
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-octave_hdf5_id ov_range<float>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_int8>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_int16>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_int32>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_int64>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_uint8>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_uint16>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_uint32>::hdf5_save_type = 0;
-
-template <>
-octave_hdf5_id ov_range<octave_uint64>::hdf5_save_type = 0;
-
-#  endif
+// For now, enable only ov_range<double>.
 
 #endif
 
 DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<double>,
     "double_range", "double");
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<float>,
-    "float_range", "single");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int8>,
-    "int8_range", "int8");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int16>,
-    "int16_range", "int16");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int32>,
-    "int32_range", "int32");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_int64>,
-    "int64_range", "int64");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint8>,
-    "uint8_range", "uint8");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint16>,
-    "uint16_range", "uint16");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint32>,
-    "uint32_range", "uint32");
-
-DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA (ov_range<octave_uint64>,
-    "uint64_range", "uint64");
-
-#endif
+// For now, enable only ov_range<double>.
 
 template <typename T>
 static octave_base_value *
@@ -191,7 +99,7 @@ default_numeric_conversion_function (const octave_base_value& a)
 
 template <typename T>
 octave_base_value::type_conv_info
-ov_range<T>::numeric_conversion_function (void) const
+ov_range<T>::numeric_conversion_function () const
 {
   typedef typename octave_value_range_traits<T>::matrix_type ov_mx_type;
 
@@ -201,7 +109,7 @@ ov_range<T>::numeric_conversion_function (void) const
 
 template <typename T>
 octave_base_value *
-ov_range<T>::try_narrowing_conversion (void)
+ov_range<T>::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -414,79 +322,12 @@ ov_range<T>::resize (const dim_vector& dv, bool fill) const
 
 template <typename T>
 octave::range<double>
-ov_range<T>::range_value (void) const
+ov_range<T>::range_value () const
 {
   err_wrong_type_arg ("ov_range<T>::range_value()", type_name ());
 }
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <typename T>
-octave::range<float>
-ov_range<T>::float_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::float_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_int8>
-ov_range<T>::int8_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::int8_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_int16>
-ov_range<T>::int16_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::int16_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_int32>
-ov_range<T>::int32_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::int32_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_int64>
-ov_range<T>::int64_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::int64_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_uint8>
-ov_range<T>::uint8_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::uint8_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_uint16>
-ov_range<T>::uint16_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::uint16_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_uint32>
-ov_range<T>::uint32_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::uint32_range_value ()", type_name ());
-}
-
-template <typename T>
-octave::range<octave_uint64>
-ov_range<T>::uint64_range_value (void) const
-{
-  err_wrong_type_arg ("ov_range<T>::uint64_range_value ()", type_name ());
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 template <typename T>
 octave_value
@@ -500,70 +341,70 @@ ov_range<T>::convert_to_str_internal (bool pad, bool force, char type) const
 
 template <typename T>
 octave_value
-ov_range<T>::as_double (void) const
+ov_range<T>::as_double () const
 {
   return NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_single (void) const
+ov_range<T>::as_single () const
 {
   return FloatMatrix (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int8 (void) const
+ov_range<T>::as_int8 () const
 {
   return int8NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int16 (void) const
+ov_range<T>::as_int16 () const
 {
   return int16NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int32 (void) const
+ov_range<T>::as_int32 () const
 {
   return int32NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_int64 (void) const
+ov_range<T>::as_int64 () const
 {
   return int64NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint8 (void) const
+ov_range<T>::as_uint8 () const
 {
   return uint8NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint16 (void) const
+ov_range<T>::as_uint16 () const
 {
   return uint16NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint32 (void) const
+ov_range<T>::as_uint32 () const
 {
   return uint32NDArray (raw_array_value ());
 }
 
 template <typename T>
 octave_value
-ov_range<T>::as_uint64 (void) const
+ov_range<T>::as_uint64 () const
 {
   return uint64NDArray (raw_array_value ());
 }
@@ -655,7 +496,7 @@ skip_comments (std::istream& is)
 
 template <typename T>
 float_display_format
-ov_range<T>::get_edit_display_format (void) const
+ov_range<T>::get_edit_display_format () const
 {
   return make_format (m_range);
 }
@@ -715,39 +556,7 @@ ov_range<T>::save_ascii (std::ostream& os)
 
 // specialize for saving with "reverse" flag
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-bool
-ov_range<octave_uint8>::save_ascii (std::ostream& os)
-{
-  return xsave_ascii (os, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint16>::save_ascii (std::ostream& os)
-{
-  return xsave_ascii (os, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint32>::save_ascii (std::ostream& os)
-{
-  return xsave_ascii (os, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint64>::save_ascii (std::ostream& os)
-{
-  return xsave_ascii (os, m_range, true);
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 template <typename T>
 bool
@@ -780,39 +589,7 @@ ov_range<T>::load_ascii (std::istream& is)
 
 // specialize for loading with "reverse" flag
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-bool
-ov_range<octave_uint8>::load_ascii (std::istream& is)
-{
-  return xload_ascii (is, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint16>::load_ascii (std::istream& is)
-{
-  return xload_ascii (is, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint32>::load_ascii (std::istream& is)
-{
-  return xload_ascii (is, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint64>::load_ascii (std::istream& is)
-{
-  return xload_ascii (is, m_range, true);
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 /*
 %!test
@@ -874,39 +651,7 @@ ov_range<T>::save_binary (std::ostream& os, bool save_as_floats)
   return xsave_binary (os, save_as_floats, m_range, false);
 }
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-bool
-ov_range<octave_uint8>::save_binary (std::ostream& os, bool save_as_floats)
-{
-  return xsave_binary (os, save_as_floats, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint16>::save_binary (std::ostream& os, bool save_as_floats)
-{
-  return xsave_binary (os, save_as_floats, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint32>::save_binary (std::ostream& os, bool save_as_floats)
-{
-  return xsave_binary (os, save_as_floats, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint64>::save_binary (std::ostream& os, bool save_as_floats)
-{
-  return xsave_binary (os, save_as_floats, m_range, true);
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 template <typename T>
 bool
@@ -954,43 +699,7 @@ ov_range<T>::load_binary (std::istream& is, bool swap,
   return xload_binary (is, swap, fmt, m_range, false);
 }
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-bool
-ov_range<octave_uint8>::load_binary (std::istream& is, bool swap,
-                                     octave::mach_info::float_format fmt)
-{
-  return xload_binary (is, swap, fmt, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint16>::load_binary (std::istream& is, bool swap,
-                                      octave::mach_info::float_format fmt)
-{
-  return xload_binary (is, swap, fmt, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint32>::load_binary (std::istream& is, bool swap,
-                                      octave::mach_info::float_format fmt)
-{
-  return xload_binary (is, swap, fmt, m_range, true);
-}
-
-template <>
-bool
-ov_range<octave_uint64>::load_binary (std::istream& is, bool swap,
-                                      octave::mach_info::float_format fmt)
-{
-  return xload_binary (is, swap, fmt, m_range, true);
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 /*
 %!test
@@ -1139,87 +848,7 @@ ov_range<T>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #endif
 }
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-bool
-ov_range<octave_uint8>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                   bool save_as_floats)
-{
-#if defined (HAVE_HDF5)
-  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
-                     true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-  octave_unused_parameter (save_as_floats);
-
-  warn_save ("hdf5");
-
-  return false;
-#endif
-}
-
-template <>
-bool
-ov_range<octave_uint16>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                    bool save_as_floats)
-{
-#if defined (HAVE_HDF5)
-  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
-                     true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-  octave_unused_parameter (save_as_floats);
-
-  warn_save ("hdf5");
-
-  return false;
-#endif
-}
-
-template <>
-bool
-ov_range<octave_uint32>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                    bool save_as_floats)
-{
-#if defined (HAVE_HDF5)
-  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
-                     true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-  octave_unused_parameter (save_as_floats);
-
-  warn_save ("hdf5");
-
-  return false;
-#endif
-}
-
-template <>
-bool
-ov_range<octave_uint64>::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                    bool save_as_floats)
-{
-#if defined (HAVE_HDF5)
-  return xsave_hdf5 (loc_id, name, save_as_floats, m_range, hdf5_save_type,
-                     true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-  octave_unused_parameter (save_as_floats);
-
-  warn_save ("hdf5");
-
-  return false;
-#endif
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 #if defined (HAVE_HDF5)
 
@@ -1298,75 +927,7 @@ ov_range<T>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 #endif
 }
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-bool
-ov_range<octave_uint8>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
-{
-#if defined (HAVE_HDF5)
-  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-
-  warn_load ("hdf5");
-
-  return false;
-#endif
-}
-
-template <>
-bool
-ov_range<octave_uint16>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
-{
-#if defined (HAVE_HDF5)
-  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-
-  warn_load ("hdf5");
-
-  return false;
-#endif
-}
-
-template <>
-bool
-ov_range<octave_uint32>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
-{
-#if defined (HAVE_HDF5)
-  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-
-  warn_load ("hdf5");
-
-  return false;
-#endif
-}
-
-template <>
-bool
-ov_range<octave_uint64>::load_hdf5 (octave_hdf5_id loc_id, const char *name)
-{
-#if defined (HAVE_HDF5)
-  return xload_hdf5 (loc_id, name, m_range, hdf5_save_type, true);
-#else
-  octave_unused_parameter (loc_id);
-  octave_unused_parameter (name);
-
-  warn_load ("hdf5");
-
-  return false;
-#endif
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 /*
 %!testif HAVE_HDF5
@@ -1417,6 +978,74 @@ ov_range<T>::as_mxArray (bool interleaved) const
   return retval;
 }
 
+DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA  (octave_trivial_range,
+                                     "trivial range", "double");
+
+template <typename T>
+bool
+ov_range<T>::could_be_trivial_range () { return false; }
+
+template <>
+bool
+ov_range<double>::could_be_trivial_range ()
+{
+  octave_idx_type n = m_range.numel ();
+  if (n > std::numeric_limits<int>::max())
+    return false;
+  if (n <= 1)
+    return false;
+
+  if (m_range.final_value () > std::numeric_limits<int>::max ()
+      || m_range.final_value () < std::numeric_limits<int>::min ())
+    return false;
+  if (m_range.increment () > std::numeric_limits<int>::max ()
+      || m_range.increment () < std::numeric_limits<int>::min ())
+    return false;
+  if (m_range.base () > std::numeric_limits<int>::max ()
+      || m_range.base () < std::numeric_limits<int>::min ())
+    return false;
+  if (m_range.limit () > std::numeric_limits<int>::max ()
+      || m_range.limit () < std::numeric_limits<int>::min ())
+    return false;
+
+  if (std::isnan (m_range.final_value ()))
+    return false;
+  if (std::isnan (m_range.increment ()))
+    return false;
+  if (std::isnan (m_range.base ()))
+    return false;
+  if (std::isnan (m_range.limit ()))
+    return false;
+
+  if (static_cast<int> (m_range.final_value ()) != m_range.final_value ())
+    return false;
+  if (static_cast<int> (m_range.increment ()) != m_range.increment ())
+    return false;
+  if (static_cast<int> (m_range.base ()) != m_range.base ())
+    return false;
+  if (static_cast<int> (m_range.limit ()) != m_range.limit ())
+    return false;
+
+  if (m_range.reverse ())
+    return false;
+
+  return true;
+}
+
+template <typename T>
+octave_value
+ov_range<T>::as_trivial_range ()
+{
+  error ("Type error returning trivial range");
+}
+
+template <>
+octave_value
+ov_range<double>::as_trivial_range ()
+{
+  return octave_value (new octave_trivial_range (m_range.numel (), m_range.base (), m_range.increment ()));
+}
+
 template <typename T>
 octave_value
 ov_range<T>::fast_elem_extract (octave_idx_type n) const
@@ -1428,79 +1057,30 @@ ov_range<T>::fast_elem_extract (octave_idx_type n) const
 
 template <>
 octave::range<double>
-ov_range<double>::range_value (void) const
+ov_range<double>::range_value () const
 {
   return m_range;
 }
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-template <>
-octave::range<float>
-ov_range<float>::float_range_value (void) const
+template <typename T>
+octave_value
+ov_range<T>::vm_extract_forloop_value (octave_idx_type n)
 {
-  return m_range;
-}
+  octave_value ov = octave_value_factory::make (m_range.elem (n));
 
-template <>
-octave::range<octave_int8>
-ov_range<octave_int8>::int8_range_value (void) const
-{
-  return m_range;
+  return ov.as_double_or_copy ();
 }
 
 template <>
-octave::range<octave_int16>
-ov_range<octave_int16>::int16_range_value (void) const
+octave_value
+ov_range<double>::vm_extract_forloop_value (octave_idx_type n)
 {
-  return m_range;
+  octave_value ov = octave_value_factory::make (m_range.elem (n));
+
+  return ov;
 }
 
-template <>
-octave::range<octave_int32>
-ov_range<octave_int32>::int32_range_value (void) const
-{
-  return m_range;
-}
-
-template <>
-octave::range<octave_int64>
-ov_range<octave_int64>::int64_range_value (void) const
-{
-  return m_range;
-}
-
-template <>
-octave::range<octave_uint8>
-ov_range<octave_uint8>::uint8_range_value (void) const
-{
-  return m_range;
-}
-
-template <>
-octave::range<octave_uint16>
-ov_range<octave_uint16>::uint16_range_value (void) const
-{
-  return m_range;
-}
-
-template <>
-octave::range<octave_uint32>
-ov_range<octave_uint32>::uint32_range_value (void) const
-{
-  return m_range;
-}
-
-template <>
-octave::range<octave_uint64>
-ov_range<octave_uint64>::uint64_range_value (void) const
-{
-  return m_range;
-}
-
-#endif
+// For now, enable only ov_range<double>.
 
 template <>
 octave::idx_vector
@@ -1520,7 +1100,7 @@ ov_range<double>::index_vector (bool require_integers) const
 
 template <>
 octave_idx_type
-ov_range<double>::nnz (void) const
+ov_range<double>::nnz () const
 {
   return m_range.nnz ();
 }

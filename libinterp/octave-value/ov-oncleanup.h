@@ -39,11 +39,11 @@ class octave_oncleanup : public octave_base_value
 {
 public:
 
-  octave_oncleanup (void) = default;
+  octave_oncleanup () = default;
 
   octave_oncleanup (const octave_value& m_fcn);
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   {
     if (m_fcn.is_defined ())
       error ("onCleanup: internal error: cloning nonempty object");
@@ -51,22 +51,22 @@ public:
     return empty_clone ();
   }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   {
     return new octave_oncleanup ();
   }
 
-  ~octave_oncleanup (void);
+  ~octave_oncleanup ();
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool isobject (void) const { return true; } // do we want this?
+  bool isobject () const { return true; } // do we want this?
 
-  octave_map map_value (void) const { return scalar_map_value (); }
+  octave_map map_value () const { return scalar_map_value (); }
 
-  octave_scalar_map scalar_map_value (void) const;
+  octave_scalar_map scalar_map_value () const;
 
-  dim_vector dims (void) const
+  dim_vector dims () const
   {
     static dim_vector dv (1, 1);
     return dv;
@@ -89,7 +89,13 @@ public:
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  void call_object_destructor (void);
+  void call_object_destructor ();
+
+  void maybe_call_dtor ()
+  {
+    if (m_count == 1)
+      call_object_destructor ();
+  }
 
 private:
 

@@ -81,7 +81,7 @@ function [path1, path2] = javaclasspath (what = "")
     if (! nargin)
       what = "-all";
     endif
-    switch (tolower (what))
+    switch (lower (what))
       case "-dynamic", disp_path_list ("DYNAMIC", dynamic_path_list);
       case "-static",  disp_path_list ("STATIC", static_path_list);
       case "-all"
@@ -100,7 +100,7 @@ function [path1, path2] = javaclasspath (what = "")
       path1 = cellstr (dynamic_path_list);
       path2 = cellstr (static_path_list);
     else
-      switch (tolower (what))
+      switch (lower (what))
         case "-all",     path1 = cellstr ([static_path_list,dynamic_path_list]);
         case "-dynamic", path1 = cellstr (dynamic_path_list);
         case "-static",  path1 = cellstr (static_path_list);

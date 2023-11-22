@@ -48,13 +48,13 @@ public:
   typedef Complex complex_elt_type;
   typedef Complex element_type;
 
-  ComplexDiagMatrix (void) = default;
+  ComplexDiagMatrix () = default;
 
   ComplexDiagMatrix (const ComplexDiagMatrix& a) = default;
 
   ComplexDiagMatrix& operator = (const ComplexDiagMatrix& a) = default;
 
-  ~ComplexDiagMatrix (void) = default;
+  ~ComplexDiagMatrix () = default;
 
   ComplexDiagMatrix (octave_idx_type r, octave_idx_type c)
     : MDiagArray2<Complex> (r, c) { }
@@ -102,11 +102,11 @@ public:
   OCTAVE_API ComplexDiagMatrix&
   fill (const ComplexRowVector& a, octave_idx_type beg);
 
-  ComplexDiagMatrix hermitian (void) const
+  ComplexDiagMatrix hermitian () const
   { return MDiagArray2<Complex>::hermitian (std::conj); }
-  ComplexDiagMatrix transpose (void) const
+  ComplexDiagMatrix transpose () const
   { return MDiagArray2<Complex>::transpose (); }
-  DiagMatrix abs (void) const;
+  DiagMatrix abs () const;
 
   friend OCTAVE_API ComplexDiagMatrix conj (const ComplexDiagMatrix& a);
 
@@ -125,10 +125,10 @@ public:
   OCTAVE_API ComplexColumnVector column (char *s) const;
 
   OCTAVE_API ComplexDiagMatrix inverse (octave_idx_type& info) const;
-  OCTAVE_API ComplexDiagMatrix inverse (void) const;
+  OCTAVE_API ComplexDiagMatrix inverse () const;
   OCTAVE_API ComplexDiagMatrix pseudo_inverse (double tol = 0.0) const;
 
-  OCTAVE_API bool all_elements_are_real (void) const;
+  OCTAVE_API bool all_elements_are_real () const;
 
   // diagonal matrix by diagonal matrix -> diagonal matrix operations
 
@@ -140,8 +140,8 @@ public:
   ComplexColumnVector extract_diag (octave_idx_type k = 0) const
   { return MDiagArray2<Complex>::extract_diag (k); }
 
-  OCTAVE_API ComplexDET determinant (void) const;
-  OCTAVE_API double rcond (void) const;
+  OCTAVE_API ComplexDET determinant () const;
+  OCTAVE_API double rcond () const;
 
   // i/o
 

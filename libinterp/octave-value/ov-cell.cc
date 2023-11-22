@@ -151,6 +151,50 @@ void octave_cell::break_closure_cycles (const std::shared_ptr<octave::stack_fram
 }
 
 octave_value_list
+octave_cell::simple_subsref (char type, octave_value_list& idx, int)
+{
+  octave_value_list retval;
+
+  switch (type)
+    {
+    case '(':
+      retval(0) = do_index_op (idx);
+      break;
+
+    case '{':
+      {
+        if (idx.empty ())
+          error ("invalid empty index expression {}, use {:} instead");
+
+        octave_value tmp = do_index_op (idx);
+
+        Cell tcell = tmp.cell_value ();
+
+        if (tcell.numel () == 1)
+          retval(0) = tcell(0, 0);
+        else
+          {
+            // Return a comma-separated list.
+            retval = octave_value (octave_value_list (tcell));
+          }
+      }
+      break;
+
+    case '.':
+      {
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+
+  return retval;
+}
+
+octave_value_list
 octave_cell::subsref (const std::string& type,
                       const std::list<octave_value_list>& idx,
                       int nargout)
@@ -364,7 +408,7 @@ octave_cell::subsasgn (const std::string& type,
         else
           octave_base_matrix<Cell>::assign (i, Cell (t_rhs));
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;
@@ -396,7 +440,7 @@ octave_cell::subsasgn (const std::string& type,
         else
           err_nonbraced_cs_list_assignment ();
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;
@@ -428,7 +472,7 @@ octave_cell::subsasgn (const std::string& type,
 }
 
 bool
-octave_cell::iscellstr (void) const
+octave_cell::iscellstr () const
 {
   bool retval;
   if (m_cellstr_cache.get ())
@@ -466,7 +510,7 @@ octave_cell::delete_elements (const octave_value_list& idx)
 }
 
 std::size_t
-octave_cell::byte_size (void) const
+octave_cell::byte_size () const
 {
   std::size_t retval = 0;
 
@@ -559,13 +603,13 @@ octave_cell::is_sorted_rows (sortmode mode) const
 }
 
 bool
-octave_cell::is_true (void) const
+octave_cell::is_true () const
 {
   error ("invalid conversion from cell array to logical value");
 }
 
 octave_value_list
-octave_cell::list_value (void) const
+octave_cell::list_value () const
 {
   return octave_value_list (m_matrix);
 }
@@ -633,7 +677,7 @@ octave_cell::string_vector_value (bool pad) const
 }
 
 Array<std::string>
-octave_cell::cellstr_value (void) const
+octave_cell::cellstr_value () const
 {
   if (! iscellstr ())
     error ("invalid conversion from cell array to array of strings");
@@ -645,7 +689,7 @@ octave_cell::cellstr_value (void) const
 }
 
 bool
-octave_cell::print_as_scalar (void) const
+octave_cell::print_as_scalar () const
 {
   return true;
 }
@@ -995,7 +1039,7 @@ octave_cell::load_binary (std::istream& is, bool swap,
 }
 
 const void *
-octave_cell::mex_get_data (void) const
+octave_cell::mex_get_data () const
 {
   clear_cellstr_cache ();
   return m_matrix.data ();
@@ -1286,6 +1330,8 @@ dimensions.
 }
 
 /*
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (cell (2, -3)), [2, 0])
 
 %!test <*63132>
 %! x = {1, 3};
@@ -1336,11 +1382,10 @@ To convert back from a cellstr to a character array use @code{char}.
     return ovl (args(0));
   else
     {
-      string_vector s = args(
-                          0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
+      string_vector s = args(0).xstring_vector_value ("cellstr: argument STRING must be a 2-D character array");
 
       return ovl (s.isempty () ? Cell (octave_value (""))
-                  : Cell (s, true));
+                               : Cell (s, true));
     }
 }
 

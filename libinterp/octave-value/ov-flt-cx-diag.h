@@ -42,7 +42,7 @@ octave_float_complex_diag_matrix
 {
 public:
 
-  octave_float_complex_diag_matrix (void)
+  octave_float_complex_diag_matrix ()
     : octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix> () { }
 
   octave_float_complex_diag_matrix (const FloatComplexDiagMatrix& m)
@@ -51,26 +51,26 @@ public:
   octave_float_complex_diag_matrix (const octave_float_complex_diag_matrix& m)
     : octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix> (m) { }
 
-  ~octave_float_complex_diag_matrix (void) = default;
+  ~octave_float_complex_diag_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_float_complex_diag_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_float_complex_diag_matrix (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
-  builtin_type_t builtin_type (void) const { return btyp_float_complex; }
+  builtin_type_t builtin_type () const { return btyp_float_complex; }
 
-  bool is_complex_matrix (void) const { return true; }
+  bool is_complex_matrix () const { return true; }
 
-  bool iscomplex (void) const { return true; }
+  bool iscomplex () const { return true; }
 
-  bool is_single_type (void) const { return true; }
+  bool is_single_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   DiagMatrix diag_matrix_value (bool = false) const;
 
@@ -80,8 +80,8 @@ public:
 
   FloatComplexDiagMatrix float_complex_diag_matrix_value (bool = false) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
   bool save_binary (std::ostream& os, bool save_as_floats);
 

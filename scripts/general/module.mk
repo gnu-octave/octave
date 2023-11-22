@@ -44,6 +44,7 @@ FCN_FILE_DIRS += \
   %reldir%/interpn.m \
   %reldir%/isequal.m \
   %reldir%/isequaln.m \
+  %reldir%/isuniform.m \
   %reldir%/logspace.m \
   %reldir%/nextpow2.m \
   %reldir%/num2str.m \

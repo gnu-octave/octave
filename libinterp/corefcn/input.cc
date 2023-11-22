@@ -70,7 +70,6 @@
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "pt-eval.h"
 #include "pt-stmt.h"
 #include "sighandlers.h"
@@ -259,7 +258,7 @@ generate_possible_completions (const std::string& text, std::string& prefix,
 }
 
 static bool
-is_completing_dirfns (void)
+is_completing_dirfns ()
 {
   static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
   static const std::size_t dirfns_commands_length = 4;
@@ -386,7 +385,7 @@ generate_completion (const std::string& text, int state)
   return retval;
 }
 
-static int internal_input_event_hook_fcn (void)
+static int internal_input_event_hook_fcn ()
 {
   octave_quit ();
 
@@ -489,7 +488,7 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
 
   octave_value retval
     = set_internal_variable (m_mfile_encoding, args, nargout,
-                             "__mfile_encoding__");
+                             "mfile_encoding");
 
   // Additional validation if the encoding has changed.
 
@@ -516,10 +515,10 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
             {
               m_mfile_encoding = saved_encoding;
               if (errno == EINVAL)
-                error ("__mfile_encoding__: conversion from encoding '%s' "
+                error ("mfile_encoding: conversion from encoding '%s' "
                        "not supported", encoding.c_str ());
               else
-                error ("__mfile_encoding__: error %d opening encoding '%s'",
+                error ("mfile_encoding: error %d opening encoding '%s'",
                        errno, encoding.c_str ());
             }
           else
@@ -529,8 +528,7 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
     }
 
   // Synchronize the related gui preference for editor encoding
-  feval ("__event_manager_gui_preference__",
-         ovl ("editor/default_encoding", m_mfile_encoding));
+  F__event_manager_gui_preference__ (m_interpreter, ovl ("editor/default_encoding", m_mfile_encoding));
 
   return retval;
 }
@@ -747,7 +745,7 @@ input_system::get_user_input (const octave_value_list& args, int nargout)
   return retval;
 }
 
-bool input_system::have_input_event_hooks (void) const
+bool input_system::have_input_event_hooks () const
 {
   return ! m_input_event_hook_functions.empty ();
 }
@@ -769,12 +767,12 @@ bool input_system::remove_input_event_hook (const std::string& hook_fcn_id)
   return true;
 }
 
-void input_system::clear_input_event_hooks (void)
+void input_system::clear_input_event_hooks ()
 {
   m_input_event_hook_functions.clear ();
 }
 
-void input_system::run_input_event_hooks (void)
+void input_system::run_input_event_hooks ()
 {
   m_input_event_hook_functions.run ();
 }
@@ -889,9 +887,9 @@ public:
 
   std::string get_input (const std::string& prompt, bool& eof);
 
-  std::string input_source (void) const { return s_in_src; }
+  std::string input_source () const { return s_in_src; }
 
-  bool input_from_terminal (void) const { return true; }
+  bool input_from_terminal () const { return true; }
 
 private:
 
@@ -918,9 +916,9 @@ public:
 
   std::string get_input (const std::string& prompt, bool& eof);
 
-  std::string input_source (void) const { return s_in_src; }
+  std::string input_source () const { return s_in_src; }
 
-  bool input_from_file (void) const { return true; }
+  bool input_from_file () const { return true; }
 
 private:
 
@@ -942,9 +940,9 @@ public:
 
   std::string get_input (const std::string& prompt, bool& eof);
 
-  std::string input_source (void) const { return s_in_src; }
+  std::string input_source () const { return s_in_src; }
 
-  bool input_from_eval_string (void) const { return true; }
+  bool input_from_eval_string () const { return true; }
 
 private:
 
@@ -1444,8 +1442,7 @@ for input.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string hook_fcn_id = args(
-                              0).xstring_value ("remove_input_event_hook: argument not valid as a hook function name or id");
+  std::string hook_fcn_id = args(0).xstring_value ("remove_input_event_hook: argument not valid as a hook function name or id");
 
   bool warn = (nargin < 2);
 
@@ -1497,9 +1494,7 @@ The original variable value is restored when exiting the function.
 @seealso{PS2, PS4}
 @end deftypefn */)
 {
-  input_system& input_sys = interp.get_input_system ();
-
-  return input_sys.PS1 (args, nargout);
+  return interp.PS1 (args, nargout);
 }
 
 DEFMETHOD (PS2, interp, args, nargout,
@@ -1521,9 +1516,7 @@ The original variable value is restored when exiting the function.
 @seealso{PS1, PS4}
 @end deftypefn */)
 {
-  input_system& input_sys = interp.get_input_system ();
-
-  return input_sys.PS2 (args, nargout);
+  return interp.PS2 (args, nargout);
 }
 
 DEFMETHOD (completion_append_char, interp, args, nargout,
@@ -1577,20 +1570,39 @@ Undocumented internal function.
   return input_sys.gud_mode (args, nargout);
 }
 
-DEFMETHOD (__mfile_encoding__, interp, args, nargout,
+DEFMETHOD (mfile_encoding, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{current_encoding} =} __mfile_encoding__ ()
-@deftypefnx {} {} __mfile_encoding__ (@var{new_encoding})
-@deftypefnx {} {@var{old_encoding} =} __mfile_encoding__ (@var{new_encoding})
-Query or set the codepage that is used for reading m-files.
+@deftypefn  {} {@var{current_encoding} =} mfile_encoding ()
+@deftypefnx {} {} mfile_encoding (@var{new_encoding})
+@deftypefnx {} {@var{old_encoding} =} mfile_encoding (@var{new_encoding})
+Query or set the encoding that is used for reading m-files.
 
-The input and output are strings naming a particular codepage, e.g., "utf-8".
+The input and output are strings naming an encoding, e.g., "utf-8".
+
+This encoding is used by Octave's parser when reading m-files unless a
+different encoding was set for a specific directory containing m-files using
+the function @code{dir_encoding} or in a file @file{.oct-config} in that
+directory.
+
+The special value @qcode{"system"} selects the encoding that matches the system
+locale.
+
+If the m-file encoding is changed after the m-files have already been parsed,
+the files have to be parsed again for that change to take effect.  That can be
+triggered with the command @code{clear all}.
+
+Additionally, this encoding is used to load and save files with the built-in
+editor in Octave's GUI.
+
+@seealso{dir_encoding}
 @end deftypefn */)
 {
   input_system& input_sys = interp.get_input_system ();
 
   return input_sys.mfile_encoding (args, nargout);
 }
+
+DEFALIAS (__mfile_encoding__, mfile_encoding);
 
 DEFMETHOD (dir_encoding, interp, args, nargout,
            doc: /* -*- texinfo -*-
@@ -1600,7 +1612,8 @@ DEFMETHOD (dir_encoding, interp, args, nargout,
 @deftypefnx {} {@var{old_encoding} =} dir_encoding (@var{dir}, @var{new_encoding})
 Query or set the @var{encoding} that is used for reading m-files in @var{dir}.
 
-The per-directory encoding overrides the (globally set) m-file encoding.
+The per-directory encoding overrides the (globally set) m-file encoding,
+@pxref{XREFmfile_encoding,,@code{mfile_encoding}}.
 
 The string @var{DIR} must match how the directory would appear in the load
 path.
@@ -1629,7 +1642,7 @@ If the file encoding is changed after the files have already been parsed, the
 files have to be parsed again for that change to take effect.  That can be done
 with the command @code{clear all}.
 
-@seealso{addpath, path}
+@seealso{addpath, path, mfile_encoding}
 @end deftypefn */)
 {
   int nargin = args.length ();

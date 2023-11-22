@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Argument lists.
 
-tree_argument_list::~tree_argument_list (void)
+tree_argument_list::~tree_argument_list ()
 {
   while (! empty ())
     {
@@ -66,7 +66,7 @@ tree_argument_list::append (const element_type& s)
 }
 
 bool
-tree_argument_list::all_elements_are_constant (void) const
+tree_argument_list::all_elements_are_constant () const
 {
   for (const tree_expression *elt : *this)
     {
@@ -78,7 +78,7 @@ tree_argument_list::all_elements_are_constant (void) const
 }
 
 bool
-tree_argument_list::is_valid_lvalue_list (void) const
+tree_argument_list::is_valid_lvalue_list () const
 {
   bool retval = true;
 
@@ -98,7 +98,7 @@ tree_argument_list::is_valid_lvalue_list (void) const
 }
 
 string_vector
-tree_argument_list::get_arg_names (void) const
+tree_argument_list::get_arg_names () const
 {
   int len = length ();
 
@@ -113,7 +113,7 @@ tree_argument_list::get_arg_names (void) const
 }
 
 std::list<std::string>
-tree_argument_list::variable_names (void) const
+tree_argument_list::variable_names () const
 {
   std::list<std::string> retval;
 

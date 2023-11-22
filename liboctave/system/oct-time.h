@@ -31,6 +31,18 @@
 #include <iosfwd>
 #include <string>
 
+#if defined (OCTAVE_USE_WINDOWS_API)
+// Some Windows headers must be included in a certain order.
+// Don't include "windows.h" here to avoid potential issues due to that.
+// Instead just define the one type we need for the interface of one function.
+struct OCTAVE_WIN_FILETIME
+{
+  uint32_t dwLowDateTime;
+  uint32_t dwHighDateTime;
+};
+#endif
+
+
 static inline double
 as_double (OCTAVE_TIME_T sec, long usec)
 {
@@ -52,7 +64,7 @@ time
 {
 public:
 
-  time (void)
+  time ()
     : m_ot_unix_time (0), m_ot_usec (0) { stamp (); }
 
   time (OCTAVE_TIME_T t)
@@ -98,20 +110,20 @@ public:
     return *this;
   }
 
-  ~time (void) = default;
+  ~time () = default;
 
-  OCTAVE_API void stamp (void);
+  OCTAVE_API void stamp ();
 
-  double double_value (void) const
+  double double_value () const
   {
     return as_double (m_ot_unix_time, m_ot_usec);
   }
 
-  OCTAVE_TIME_T unix_time (void) const { return m_ot_unix_time; }
+  OCTAVE_TIME_T unix_time () const { return m_ot_unix_time; }
 
-  long usec (void) const { return m_ot_usec; }
+  long usec () const { return m_ot_usec; }
 
-  OCTAVE_API std::string ctime (void) const;
+  OCTAVE_API std::string ctime () const;
 
   friend OCTAVE_API std::ostream& operator << (std::ostream& os, const time& ot);
 
@@ -186,7 +198,7 @@ base_tm
 {
 public:
 
-  base_tm (void)
+  base_tm ()
     : m_usec (0), m_sec (0), m_min (0), m_hour (0),
       m_mday (0), m_mon (0), m_year (0), m_wday (0),
       m_yday (0), m_isdst (0), m_gmtoff (0), m_zone ("unknown")
@@ -220,20 +232,20 @@ public:
     return *this;
   }
 
-  virtual ~base_tm (void) = default;
+  virtual ~base_tm () = default;
 
-  int usec (void) const { return m_usec; }
-  int sec (void) const { return m_sec; }
-  int min (void) const { return m_min; }
-  int hour (void) const { return m_hour; }
-  int mday (void) const { return m_mday; }
-  int mon (void) const { return m_mon; }
-  int year (void) const { return m_year; }
-  int wday (void) const { return m_wday; }
-  int yday (void) const { return m_yday; }
-  int isdst (void) const { return m_isdst; }
-  long gmtoff (void) const { return m_gmtoff; }
-  std::string zone (void) const { return m_zone; }
+  int usec () const { return m_usec; }
+  int sec () const { return m_sec; }
+  int min () const { return m_min; }
+  int hour () const { return m_hour; }
+  int mday () const { return m_mday; }
+  int mon () const { return m_mon; }
+  int year () const { return m_year; }
+  int wday () const { return m_wday; }
+  int yday () const { return m_yday; }
+  int isdst () const { return m_isdst; }
+  long gmtoff () const { return m_gmtoff; }
+  std::string zone () const { return m_zone; }
 
   OCTAVE_API base_tm& usec (int v);
   OCTAVE_API base_tm& sec (int v);
@@ -250,7 +262,7 @@ public:
 
   OCTAVE_API std::string strftime (const std::string& fmt) const;
 
-  std::string asctime (void) const
+  std::string asctime () const
   { return strftime ("%a %b %d %H:%M:%S %Y\n"); }
 
 protected:
@@ -299,7 +311,7 @@ localtime : public base_tm
 {
 public:
 
-  localtime (void)
+  localtime ()
     : base_tm () { init (time ()); }
 
   localtime (const time& ot)
@@ -314,7 +326,7 @@ public:
     return *this;
   }
 
-  ~localtime (void) = default;
+  ~localtime () = default;
 
 private:
 
@@ -326,19 +338,13 @@ gmtime : public base_tm
 {
 public:
 
-  gmtime (void)
+  gmtime ()
     : base_tm () { init (time ()); }
 
   gmtime (const time& ot)
     : base_tm () { init (ot); }
 
-  gmtime& operator = (const gmtime& t)
-  {
-    base_tm::operator = (t);
-    return *this;
-  }
-
-  ~gmtime (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (gmtime)
 
 private:
 
@@ -350,25 +356,17 @@ strptime : public base_tm
 {
 public:
 
+  strptime () = delete;
+
   strptime (const std::string& str, const std::string& fmt)
     : base_tm (), m_nchars (0)
   {
     init (str, fmt);
   }
 
-  strptime (const strptime& s)
-    : base_tm (s), m_nchars (s.m_nchars) { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (strptime)
 
-  strptime& operator = (const strptime& s)
-  {
-    base_tm::operator = (s);
-    m_nchars = s.m_nchars;
-    return *this;
-  }
-
-  int characters_converted (void) const { return m_nchars; }
-
-  ~strptime (void) = default;
+  int characters_converted () const { return m_nchars; }
 
 private:
 
@@ -384,47 +382,31 @@ public:
 
   friend class resource_usage;
 
-  cpu_time (void)
+  cpu_time ()
     : m_usr_sec (0), m_sys_sec (0), m_usr_usec (0), m_sys_usec (0)
   {
     stamp ();
   }
 
-  cpu_time (const cpu_time& tm)
-    : m_usr_sec (tm.m_usr_sec), m_sys_sec (tm.m_sys_sec),
-      m_usr_usec (tm.m_usr_usec), m_sys_usec (tm.m_sys_usec)
-  { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (cpu_time)
 
-  cpu_time& operator = (const cpu_time& tm)
-  {
-    if (&tm != this)
-      {
-        m_usr_sec = tm.m_usr_sec;
-        m_sys_sec = tm.m_sys_sec;
-        m_usr_usec = tm.m_usr_usec;
-        m_sys_usec = tm.m_sys_usec;
-      }
+  OCTAVE_API void stamp ();
 
-    return *this;
-  }
-
-  OCTAVE_API void stamp (void);
-
-  double user (void) const
+  double user () const
   {
     return as_double (m_usr_sec, m_usr_usec);
   }
 
-  double system (void) const
+  double system () const
   {
     return as_double (m_sys_sec, m_sys_usec);
   }
 
-  OCTAVE_TIME_T user_sec (void) const { return m_usr_sec; }
-  long user_usec (void) const { return m_usr_usec; }
+  OCTAVE_TIME_T user_sec () const { return m_usr_sec; }
+  long user_usec () const { return m_usr_usec; }
 
-  OCTAVE_TIME_T system_sec (void) const { return m_sys_sec; }
-  long system_usec (void) const { return m_sys_usec; }
+  OCTAVE_TIME_T system_sec () const { return m_sys_sec; }
+  long system_usec () const { return m_sys_usec; }
 
 private:
 
@@ -445,7 +427,7 @@ resource_usage
 {
 public:
 
-  resource_usage (void)
+  resource_usage ()
     : m_cpu (), m_maxrss (0), m_ixrss (0), m_idrss (0),
       m_isrss (0), m_minflt (0), m_majflt (0), m_nswap (0),
       m_inblock (0), m_oublock (0), m_msgsnd (0), m_msgrcv (0),
@@ -454,60 +436,26 @@ public:
     stamp ();
   }
 
-  resource_usage (const resource_usage& ru)
-    : m_cpu (ru.m_cpu), m_maxrss (ru.m_maxrss),
-      m_ixrss (ru.m_ixrss), m_idrss (ru.m_idrss),
-      m_isrss (ru.m_isrss), m_minflt (ru.m_minflt),
-      m_majflt (ru.m_majflt), m_nswap (ru.m_nswap),
-      m_inblock (ru.m_inblock), m_oublock (ru.m_oublock),
-      m_msgsnd (ru.m_msgsnd), m_msgrcv (ru.m_msgrcv),
-      m_nsignals (ru.m_nsignals), m_nvcsw (ru.m_nvcsw),
-      m_nivcsw (ru.m_nivcsw)
-  { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (resource_usage)
 
-  resource_usage& operator = (const resource_usage& ru)
-  {
-    if (&ru != this)
-      {
-        m_cpu = ru.m_cpu;
+  OCTAVE_API void stamp ();
 
-        m_maxrss = ru.m_maxrss;
-        m_ixrss = ru.m_ixrss;
-        m_idrss = ru.m_idrss;
-        m_isrss = ru.m_isrss;
-        m_minflt = ru.m_minflt;
-        m_majflt = ru.m_majflt;
-        m_nswap = ru.m_nswap;
-        m_inblock = ru.m_inblock;
-        m_oublock = ru.m_oublock;
-        m_msgsnd = ru.m_msgsnd;
-        m_msgrcv = ru.m_msgrcv;
-        m_nsignals = ru.m_nsignals;
-        m_nvcsw = ru.m_nvcsw;
-        m_nivcsw = ru.m_nivcsw;
-      }
+  cpu_time cpu () const { return m_cpu; }
 
-    return *this;
-  }
-
-  OCTAVE_API void stamp (void);
-
-  cpu_time cpu (void) const { return m_cpu; }
-
-  long maxrss (void) const { return m_maxrss; }
-  long ixrss (void) const { return m_ixrss; }
-  long idrss (void) const { return m_idrss; }
-  long isrss (void) const { return m_isrss; }
-  long minflt (void) const { return m_minflt; }
-  long majflt (void) const { return m_majflt; }
-  long nswap (void) const { return m_nswap; }
-  long inblock (void) const { return m_inblock; }
-  long oublock (void) const { return m_oublock; }
-  long msgsnd (void) const { return m_msgsnd; }
-  long msgrcv (void) const { return m_msgrcv; }
-  long nsignals (void) const { return m_nsignals; }
-  long nvcsw (void) const { return m_nvcsw; }
-  long nivcsw (void) const { return m_nivcsw; }
+  long maxrss () const { return m_maxrss; }
+  long ixrss () const { return m_ixrss; }
+  long idrss () const { return m_idrss; }
+  long isrss () const { return m_isrss; }
+  long minflt () const { return m_minflt; }
+  long majflt () const { return m_majflt; }
+  long nswap () const { return m_nswap; }
+  long inblock () const { return m_inblock; }
+  long oublock () const { return m_oublock; }
+  long msgsnd () const { return m_msgsnd; }
+  long msgrcv () const { return m_msgrcv; }
+  long nsignals () const { return m_nsignals; }
+  long nvcsw () const { return m_nvcsw; }
+  long nivcsw () const { return m_nivcsw; }
 
 private:
 
@@ -527,6 +475,113 @@ private:
   long m_nsignals;
   long m_nvcsw;
   long m_nivcsw;
+};
+
+// class to handle file time efficiently on different platforms
+
+class OCTAVE_API file_time
+{
+public:
+
+  file_time ();
+
+  file_time (OCTAVE_TIME_T t)
+    : m_time (t)
+  { }
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+  file_time (OCTAVE_WIN_FILETIME& t)
+  {
+    m_time = (static_cast<OCTAVE_TIME_T> (t.dwHighDateTime)) >> 32
+             | t.dwLowDateTime;
+  }
+#endif
+
+  file_time (const std::string& filename);
+
+  file_time (const file_time& ot)
+  {
+    m_time = ot.time ();
+  }
+
+  file_time& operator = (const file_time& ot)
+  {
+    if (this != &ot)
+      m_time = ot.time ();
+
+    return *this;
+  }
+
+  ~file_time () = default;
+
+  inline static file_time time_resolution ()
+  {
+#if defined (OCTAVE_USE_WINDOWS_API)
+    // FAT file systems have 2 seconds resolution for the modification time.
+    static OCTAVE_TIME_T time_resolution = 20000;
+#else
+    // Assume 1 second (see file_stat)
+    static OCTAVE_TIME_T time_resolution = 1;
+#endif
+    return time_resolution;
+  }
+
+  inline bool
+  operator == (const file_time& t2) const
+  {
+    return time () == t2.time ();
+  }
+
+  inline bool
+  operator != (const file_time& t2) const
+  {
+    return ! (*this == t2);
+  }
+
+  inline bool
+  operator < (const file_time& t2) const
+  {
+    return time () < t2.time ();
+  }
+
+  inline bool
+  operator <= (const file_time& t2) const
+  {
+    return (*this < t2 || *this == t2);
+  }
+
+  inline bool
+  operator > (const file_time& t2) const
+  {
+    return time () > t2.time ();
+  }
+
+  inline bool
+  operator >= (const file_time& t2) const
+  {
+    return (*this > t2 || *this == t2);
+  }
+
+  inline file_time
+  operator + (const file_time& t2) const
+  {
+    return file_time (time () + t2.time ());
+  }
+
+  inline file_time
+  operator + (const OCTAVE_TIME_T t2) const
+  {
+    return file_time (time () + t2);
+  }
+
+  OCTAVE_TIME_T time () const { return m_time; }
+
+private:
+
+  // The native file time type differs per platform.
+  // On POSIX, this is the number of 1 second intervals since the epoch.
+  // On Windows, this is the number of 0.1 ms intervals since a different epoch.
+  OCTAVE_TIME_T m_time;
 };
 
 OCTAVE_END_NAMESPACE(sys)

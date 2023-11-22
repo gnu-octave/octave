@@ -62,13 +62,9 @@ public:
       m_preserve_operands (false)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_binary_expression)
 
-  tree_binary_expression (const tree_binary_expression&) = delete;
-
-  tree_binary_expression& operator = (const tree_binary_expression&) = delete;
-
-  ~tree_binary_expression (void)
+  ~tree_binary_expression ()
   {
     if (! m_preserve_operands)
       {
@@ -77,18 +73,18 @@ public:
       }
   }
 
-  void preserve_operands (void) { m_preserve_operands = true; }
+  void preserve_operands () { m_preserve_operands = true; }
 
-  bool is_binary_expression (void) const { return true; }
+  bool is_binary_expression () const { return true; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
-  std::string oper (void) const;
+  std::string oper () const;
 
-  octave_value::binary_op op_type (void) const { return m_etype; }
+  octave_value::binary_op op_type () const { return m_etype; }
 
-  tree_expression * lhs (void) { return m_lhs; }
-  tree_expression * rhs (void) { return m_rhs; }
+  tree_expression * lhs () { return m_lhs; }
+  tree_expression * rhs () { return m_rhs; }
 
   void lhs (tree_expression *expr) { m_lhs = expr; }
   void rhs (tree_expression *expr) { m_rhs = expr; }
@@ -107,10 +103,11 @@ public:
     tw.visit_binary_expression (*this);
   }
 
-  std::string profiler_name (void) const { return "binary " + oper (); }
+  std::string profiler_name () const { return "binary " + oper (); }
 
   void matlab_style_short_circuit_warning (const char *op);
 
+  virtual bool is_braindead () const { return false; }
 protected:
 
   // The operands for the expression.
@@ -132,27 +129,23 @@ class tree_braindead_shortcircuit_binary_expression
 public:
 
   tree_braindead_shortcircuit_binary_expression (tree_expression *a,
-      tree_expression *b,
-      int l, int c,
-      octave_value::binary_op t)
+                                                 tree_expression *b,
+                                                 int l, int c,
+                                                 octave_value::binary_op t)
     : tree_binary_expression (a, b, l, c, t)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_braindead_shortcircuit_binary_expression)
 
-  tree_braindead_shortcircuit_binary_expression
-  (const tree_braindead_shortcircuit_binary_expression&) = delete;
-
-  tree_braindead_shortcircuit_binary_expression&
-  operator = (const tree_braindead_shortcircuit_binary_expression&) = delete;
-
-  ~tree_braindead_shortcircuit_binary_expression (void) = default;
+  ~tree_braindead_shortcircuit_binary_expression () = default;
 
   tree_expression * dup (symbol_scope& scope) const;
 
   octave_value evaluate (tree_evaluator&, int nargout = 1);
 
   using tree_binary_expression::evaluate_n;
+
+  bool is_braindead () const { return true; }
 };
 
 // Boolean expressions.
@@ -175,21 +168,17 @@ public:
                            int l = -1, int c = -1, type t = unknown)
     : tree_binary_expression (a, b, l, c), m_etype (t) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_boolean_expression)
 
-  tree_boolean_expression (const tree_boolean_expression&) = delete;
+  ~tree_boolean_expression () = default;
 
-  tree_boolean_expression& operator = (const tree_boolean_expression&) = delete;
+  bool is_boolean_expression () const { return true; }
 
-  ~tree_boolean_expression (void) = default;
+  bool rvalue_ok () const { return true; }
 
-  bool is_boolean_expression (void) const { return true; }
+  std::string oper () const;
 
-  bool rvalue_ok (void) const { return true; }
-
-  std::string oper (void) const;
-
-  type op_type (void) const { return m_etype; }
+  type op_type () const { return m_etype; }
 
   tree_expression * dup (symbol_scope& scope) const;
 

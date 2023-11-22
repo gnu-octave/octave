@@ -53,45 +53,45 @@ class output_system;
 class tree_evaluator;
 class type_info;
 
-extern OCTINTERP_API interpreter& __get_interpreter__ (void);
+extern OCTINTERP_API interpreter& __get_interpreter__ ();
 
-extern OCTINTERP_API dynamic_loader& __get_dynamic_loader__ (void);
+extern OCTINTERP_API dynamic_loader& __get_dynamic_loader__ ();
 
-extern OCTINTERP_API error_system& __get_error_system__ (void);
+extern OCTINTERP_API error_system& __get_error_system__ ();
 
-extern OCTINTERP_API gh_manager& __get_gh_manager__ (void);
+extern OCTINTERP_API gh_manager& __get_gh_manager__ ();
 
-extern OCTINTERP_API help_system& __get_help_system__ (void);
+extern OCTINTERP_API help_system& __get_help_system__ ();
 
-extern OCTINTERP_API input_system& __get_input_system__ (void);
+extern OCTINTERP_API input_system& __get_input_system__ ();
 
-extern OCTINTERP_API load_path& __get_load_path__ (void);
+extern OCTINTERP_API load_path& __get_load_path__ ();
 
-extern OCTINTERP_API load_save_system& __get_load_save_system__ (void);
+extern OCTINTERP_API load_save_system& __get_load_save_system__ ();
 
-extern OCTINTERP_API event_manager& __get_event_manager__ (void);
+extern OCTINTERP_API event_manager& __get_event_manager__ ();
 
-extern OCTINTERP_API output_system& __get_output_system__ (void);
+extern OCTINTERP_API output_system& __get_output_system__ ();
 
-extern OCTINTERP_API type_info& __get_type_info__ (void);
+extern OCTINTERP_API type_info& __get_type_info__ ();
 
-extern OCTINTERP_API symbol_table& __get_symbol_table__ (void);
+extern OCTINTERP_API symbol_table& __get_symbol_table__ ();
 
-extern OCTINTERP_API symbol_scope __get_current_scope__ (void);
+extern OCTINTERP_API symbol_scope __get_current_scope__ ();
 
-extern OCTINTERP_API symbol_scope __require_current_scope__ (void);
+extern OCTINTERP_API symbol_scope __require_current_scope__ ();
 
-extern OCTINTERP_API tree_evaluator& __get_evaluator__ (void);
+extern OCTINTERP_API tree_evaluator& __get_evaluator__ ();
 
-extern OCTINTERP_API bp_table& __get_bp_table__ (void);
+extern OCTINTERP_API bp_table& __get_bp_table__ ();
 
-extern OCTINTERP_API child_list& __get_child_list__ (void);
+extern OCTINTERP_API child_list& __get_child_list__ ();
 
-extern OCTINTERP_API cdef_manager& __get_cdef_manager__ (void);
+extern OCTINTERP_API cdef_manager& __get_cdef_manager__ ();
 
-extern OCTINTERP_API display_info& __get_display_info__ (void);
+extern OCTINTERP_API display_info& __get_display_info__ ();
 
-extern OCTINTERP_API gtk_manager& __get_gtk_manager__ (void);
+extern OCTINTERP_API gtk_manager& __get_gtk_manager__ ();
 
 // Functions that could be methods in the interpreter class but maybe
 // shouldn't be exposed as part of the public interface.

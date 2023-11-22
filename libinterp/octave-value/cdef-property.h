@@ -53,24 +53,24 @@ private:
   {
   public:
 
-    cdef_property_rep (void) : cdef_meta_object_rep () { }
+    cdef_property_rep () : cdef_meta_object_rep () { }
 
     cdef_property_rep& operator = (const cdef_property_rep& p) = delete;
 
-    ~cdef_property_rep (void) = default;
+    ~cdef_property_rep () = default;
 
-    cdef_object_rep * copy (void) const
+    cdef_object_rep * copy () const
     {
       return new cdef_property_rep (*this);
     }
 
-    bool is_property (void) const { return true; }
+    bool is_property () const { return true; }
 
-    std::string get_name (void) const { return get("Name").string_value (); }
+    std::string get_name () const { return get("Name").string_value (); }
 
     void set_name (const std::string& nm) { put ("Name", nm); }
 
-    bool is_constant (void) const { return get("Constant").bool_value (); }
+    bool is_constant () const { return get("Constant").bool_value (); }
 
     octave_value get_value (bool do_check_access = true,
                             const std::string& who = "") const;
@@ -83,9 +83,9 @@ private:
                     bool do_check_access = true,
                     const std::string& who = "");
 
-    OCTINTERP_API bool check_get_access (void) const;
+    OCTINTERP_API bool check_get_access () const;
 
-    OCTINTERP_API bool check_set_access (void) const;
+    OCTINTERP_API bool check_set_access () const;
 
   private:
     cdef_property_rep (const cdef_property_rep& p)
@@ -94,7 +94,7 @@ private:
 
     OCTINTERP_API bool is_recursive_set (const cdef_object& obj) const;
 
-    cdef_property wrap (void)
+    cdef_property wrap ()
     {
       m_count++;
       return cdef_property (this);
@@ -107,7 +107,7 @@ private:
 
 public:
 
-  cdef_property (void) : cdef_meta_object () { }
+  cdef_property () : cdef_meta_object () { }
 
   cdef_property (const std::string& nm)
     : cdef_meta_object (new cdef_property_rep ())
@@ -133,7 +133,7 @@ public:
     return *this;
   }
 
-  ~cdef_property (void) = default;
+  ~cdef_property () = default;
 
   octave_value get_value (const cdef_object& obj, bool do_check_access = true,
                           const std::string& who = "") const
@@ -154,28 +154,28 @@ public:
     get_rep ()->set_value (obj, val, do_check_access, who);
   }
 
-  bool check_get_access (void) const
+  bool check_get_access () const
   {
     return get_rep ()->check_get_access ();
   }
 
-  bool check_set_access (void) const
+  bool check_set_access () const
   {
     return get_rep ()->check_set_access ();
   }
 
-  std::string get_name (void) const { return get_rep ()->get_name (); }
+  std::string get_name () const { return get_rep ()->get_name (); }
 
-  bool is_constant (void) const { return get_rep ()->is_constant (); }
+  bool is_constant () const { return get_rep ()->is_constant (); }
 
 private:
 
-  cdef_property_rep * get_rep (void)
+  cdef_property_rep * get_rep ()
   {
     return dynamic_cast<cdef_property_rep *> (cdef_object::get_rep ());
   }
 
-  const cdef_property_rep * get_rep (void) const
+  const cdef_property_rep * get_rep () const
   {
     return dynamic_cast<const cdef_property_rep *> (cdef_object::get_rep ());
   }

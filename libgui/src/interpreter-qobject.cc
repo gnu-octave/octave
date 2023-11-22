@@ -39,10 +39,10 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 interpreter_qobject::interpreter_qobject (base_qobject& oct_qobj)
-: QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
+  : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
 { }
 
-void interpreter_qobject::execute (void)
+void interpreter_qobject::execute ()
 {
   // The Octave application context owns the interpreter.
 
@@ -67,10 +67,8 @@ void interpreter_qobject::execute (void)
       if (app_context.start_gui_p ()
           && ! m_octave_qobj.experimental_terminal_widget ())
         {
-          input_system& input_sys = interp.get_input_system ();
-
-          input_sys.PS1 (">> ");
-          input_sys.PS2 ("");
+          interp.PS1 (">> ");
+          interp.PS2 ("");
         }
 
       if (interp.initialized ())
@@ -82,7 +80,7 @@ void interpreter_qobject::execute (void)
 
           emit ready ();
 
-          graphics_init (interp, m_octave_qobj);
+          graphics_init (interp);
 
           // Start executing commands in the command window.
 
@@ -130,7 +128,7 @@ void interpreter_qobject::interpreter_event (const meth_callback& meth)
   evmgr.post_event (meth);
 }
 
-void interpreter_qobject::interrupt (void)
+void interpreter_qobject::interrupt ()
 {
   if (! m_interpreter)
     return;
@@ -141,7 +139,7 @@ void interpreter_qobject::interrupt (void)
   m_interpreter->interrupt ();
 }
 
-void interpreter_qobject::pause (void)
+void interpreter_qobject::pause ()
 {
   // FIXME: Should we make this action work with the old terminal
   // widget?
@@ -158,7 +156,7 @@ void interpreter_qobject::pause (void)
     }
 }
 
-void interpreter_qobject::stop (void)
+void interpreter_qobject::stop ()
 {
   // FIXME: Should we make this action work with the old terminal
   // widget?
@@ -175,7 +173,7 @@ void interpreter_qobject::stop (void)
     }
 }
 
-void interpreter_qobject::resume (void)
+void interpreter_qobject::resume ()
 {
   // FIXME: Should we make this action work with the old terminal
   // widget?
@@ -195,7 +193,7 @@ void interpreter_qobject::resume (void)
     }
 }
 
-qt_interpreter_events *interpreter_qobject::qt_link (void)
+qt_interpreter_events *interpreter_qobject::qt_link ()
 {
   return m_octave_qobj.qt_link ();
 }

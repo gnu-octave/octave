@@ -48,7 +48,7 @@ public:
 
   using typename Array<T>::element_type;
 
-  DiagArray2 (void)
+  DiagArray2 ()
     : Array<T> (), m_d1 (0), m_d2 (0) { }
 
   DiagArray2 (octave_idx_type r, octave_idx_type c)
@@ -69,7 +69,7 @@ public:
   DiagArray2 (const DiagArray2<U>& a)
     : Array<T> (a.extract_diag ()), m_d1 (a.dim1 ()), m_d2 (a.dim2 ()) { }
 
-  ~DiagArray2 (void) = default;
+  ~DiagArray2 () = default;
 
   DiagArray2<T>& operator = (const DiagArray2<T>& a)
   {
@@ -83,26 +83,26 @@ public:
     return *this;
   }
 
-  octave_idx_type dim1 (void) const { return m_d1; }
-  octave_idx_type dim2 (void) const { return m_d2; }
+  octave_idx_type dim1 () const { return m_d1; }
+  octave_idx_type dim2 () const { return m_d2; }
 
-  octave_idx_type rows (void) const { return dim1 (); }
-  octave_idx_type cols (void) const { return dim2 (); }
-  octave_idx_type columns (void) const { return dim2 (); }
+  octave_idx_type rows () const { return dim1 (); }
+  octave_idx_type cols () const { return dim2 (); }
+  octave_idx_type columns () const { return dim2 (); }
 
-  octave_idx_type diag_length (void) const { return Array<T>::numel (); }
+  octave_idx_type diag_length () const { return Array<T>::numel (); }
   // FIXME: a dangerous ambiguity?
-  octave_idx_type length (void) const { return Array<T>::numel (); }
-  octave_idx_type nelem (void) const { return dim1 () * dim2 (); }
-  octave_idx_type numel (void) const { return nelem (); }
+  octave_idx_type length () const { return Array<T>::numel (); }
+  octave_idx_type nelem () const { return dim1 () * dim2 (); }
+  octave_idx_type numel () const { return nelem (); }
 
-  std::size_t byte_size (void) const { return Array<T>::byte_size (); }
+  std::size_t byte_size () const { return Array<T>::byte_size (); }
 
-  dim_vector dims (void) const { return dim_vector (m_d1, m_d2); }
+  dim_vector dims () const { return dim_vector (m_d1, m_d2); }
 
-  bool isempty (void) const { return numel () == 0; }
+  bool isempty () const { return numel () == 0; }
 
-  int ndims (void) const { return 2; }
+  int ndims () const { return 2; }
 
   OCTAVE_API Array<T> extract_diag (octave_idx_type k = 0) const;
 
@@ -161,19 +161,14 @@ public:
     resize (n, m, Array<T>::resize_fill_value ());
   }
 
-  OCTAVE_API DiagArray2<T> transpose (void) const;
+  OCTAVE_API DiagArray2<T> transpose () const;
   OCTAVE_API DiagArray2<T> hermitian (T (*fcn) (const T&) = nullptr) const;
 
-  OCTAVE_API Array<T> array_value (void) const;
+  OCTAVE_API Array<T> array_value () const;
 
-  const T * data (void) const { return Array<T>::data (); }
+  const T * data () const { return Array<T>::data (); }
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "for read-only access, use 'data' method instead")
-  const T * fortran_vec (void) const { return Array<T>::data (); }
-#endif
-
-  T * fortran_vec (void) { return Array<T>::fortran_vec (); }
+  T * fortran_vec () { return Array<T>::fortran_vec (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const
   { Array<T>::print_info (os, prefix); }

@@ -30,17 +30,18 @@
 #include "lo-regexp.h"
 #include "str-vec.h"
 
+#include "pt-bytecode-vm.h"
+#include "builtin-defun-decls.h"
 #include "call-stack.h"
 #include "defun.h"
 #include "interpreter.h"
 #include "interpreter-private.h"
 #include "oct-map.h"
 #include "ov.h"
-#include "ov-fcn.h"
 #include "ov-fcn-handle.h"
+#include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "stack-frame.h"
 #include "syminfo.h"
 #include "symrec.h"
@@ -88,7 +89,7 @@ octave_function *call_stack::current_function (bool skip_first) const
   return fcn;
 }
 
-int call_stack::current_line (void) const
+int call_stack::current_line () const
 {
   int retval = -1;
 
@@ -101,7 +102,7 @@ int call_stack::current_line (void) const
   return retval;
 }
 
-int call_stack::current_column (void) const
+int call_stack::current_column () const
 {
   int retval = -1;
 
@@ -114,7 +115,7 @@ int call_stack::current_column (void) const
   return retval;
 }
 
-octave_user_code *call_stack::current_user_code (void) const
+octave_user_code *call_stack::current_user_code () const
 {
   // Start at current frame.
 
@@ -133,7 +134,7 @@ octave_user_code *call_stack::current_user_code (void) const
   return nullptr;
 }
 
-int call_stack::current_user_code_line (void) const
+int call_stack::current_user_code_line () const
 {
   // Start at current frame.
 
@@ -157,7 +158,7 @@ int call_stack::current_user_code_line (void) const
   return -1;
 }
 
-int call_stack::current_user_code_column (void) const
+int call_stack::current_user_code_column () const
 {
   // Start at current frame.
 
@@ -181,7 +182,7 @@ int call_stack::current_user_code_column (void) const
   return -1;
 }
 
-unwind_protect *call_stack::curr_fcn_unwind_protect_frame (void)
+unwind_protect *call_stack::curr_fcn_unwind_protect_frame ()
 {
   // Start at current frame.
 
@@ -200,7 +201,7 @@ unwind_protect *call_stack::curr_fcn_unwind_protect_frame (void)
   return nullptr;
 }
 
-octave_user_code *call_stack::debug_user_code (void) const
+octave_user_code *call_stack::debug_user_code () const
 {
   octave_user_code *retval = nullptr;
 
@@ -226,7 +227,7 @@ octave_user_code *call_stack::debug_user_code (void) const
   return retval;
 }
 
-int call_stack::debug_user_code_line (void) const
+int call_stack::debug_user_code_line () const
 {
   int retval = -1;
 
@@ -255,7 +256,7 @@ int call_stack::debug_user_code_line (void) const
   return retval;
 }
 
-int call_stack::debug_user_code_column (void) const
+int call_stack::debug_user_code_column () const
 {
   int retval = -1;
 
@@ -285,7 +286,7 @@ int call_stack::debug_user_code_column (void) const
   return retval;
 }
 
-std::string call_stack::get_dispatch_class (void) const
+std::string call_stack::get_dispatch_class () const
 {
   return m_cs[m_curr_frame]->get_dispatch_class ();
 }
@@ -323,7 +324,7 @@ bool call_stack::is_class_constructor_executing (std::string& dispatch_class) co
   return retval;
 }
 
-bool call_stack::all_scripts (void) const
+bool call_stack::all_scripts () const
 {
   bool retval = true;
 
@@ -448,6 +449,70 @@ void call_stack::push (octave_user_script *script)
   m_curr_frame = new_frame_idx;
 }
 
+
+void call_stack::push (vm &vm, octave_user_script *fcn, int nargout, int nargin)
+{
+  std::size_t new_frame_idx;
+  std::shared_ptr<stack_frame> parent_link;
+  std::shared_ptr<stack_frame> static_link;
+
+  get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
+
+  std::shared_ptr<stack_frame> new_frame =
+    stack_frame::create_bytecode (
+       m_evaluator,
+       fcn,
+       vm,
+       new_frame_idx, // ??? index
+       parent_link,
+       static_link,
+       nargout,
+       nargin);
+
+  m_cs.push_back (new_frame);
+
+  m_curr_frame = new_frame_idx;
+}
+
+void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargin,
+                       const std::shared_ptr<stack_frame>& closure_frames)
+{
+  std::size_t new_frame_idx;
+  std::shared_ptr<stack_frame> parent_link;
+  std::shared_ptr<stack_frame> static_link;
+
+  get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
+
+  std::shared_ptr<stack_frame> new_frame
+    = stack_frame::create_bytecode (m_evaluator, fcn, vm,
+                                    new_frame_idx,
+                                    parent_link, static_link, closure_frames,
+                                    nargout, nargin);
+
+  m_cs.push_back (new_frame);
+
+  m_curr_frame = new_frame_idx;
+}
+
+void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargin)
+{
+  std::size_t new_frame_idx;
+  std::shared_ptr<stack_frame> parent_link;
+  std::shared_ptr<stack_frame> static_link;
+
+  get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
+
+  std::shared_ptr<stack_frame> new_frame
+    = stack_frame::create_bytecode (m_evaluator, fcn, vm,
+                                    new_frame_idx, // ??? index
+                                    parent_link, static_link,
+                                    nargout, nargin);
+
+  m_cs.push_back (new_frame);
+
+  m_curr_frame = new_frame_idx;
+}
+
 void call_stack::push (octave_function *fcn)
 {
   std::size_t new_frame_idx;
@@ -486,14 +551,14 @@ bool call_stack::goto_frame (std::size_t n, bool verbose)
   return retval;
 }
 
-std::size_t call_stack::find_current_user_frame (void) const
+std::size_t call_stack::find_current_user_frame () const
 {
   std::size_t user_frame = m_curr_frame;
 
   std::shared_ptr<stack_frame> frm = m_cs[user_frame];
 
   if (! (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
-         || frm->is_scope_frame ()))
+         || frm->is_scope_frame () || frm->is_bytecode_fcn_frame()))
     {
       frm = frm->static_link ();
 
@@ -503,7 +568,7 @@ std::size_t call_stack::find_current_user_frame (void) const
   return user_frame;
 }
 
-std::shared_ptr<stack_frame> call_stack::current_user_frame (void) const
+std::shared_ptr<stack_frame> call_stack::current_user_frame () const
 {
   std::size_t frame = find_current_user_frame ();
 
@@ -533,7 +598,8 @@ std::size_t call_stack::dbupdown (std::size_t start, int n, bool verbose)
 
   if (! (frm && (frm->is_user_fcn_frame ()
                  || frm->is_user_script_frame ()
-                 || frm->is_scope_frame ())))
+                 || frm->is_scope_frame ()
+                 || frm->is_bytecode_fcn_frame ())))
     error ("call_stack::dbupdown: invalid initial frame in call stack!");
 
   // Use index into the call stack to begin the search.  At this point
@@ -569,7 +635,7 @@ std::size_t call_stack::dbupdown (std::size_t start, int n, bool verbose)
       frm = m_cs[xframe];
 
       if (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
-          || frm->is_scope_frame ())
+          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame ())
         {
           last_good_frame = xframe;
 
@@ -616,7 +682,7 @@ std::size_t call_stack::dbupdown (int n, bool verbose)
 // value of m_curr_frame would be wiped out when dbup returns and the
 // stack frame for dbup is popped.
 
-void call_stack::goto_caller_frame (void)
+void call_stack::goto_caller_frame ()
 {
   std::size_t start = find_current_user_frame ();
 
@@ -628,7 +694,7 @@ void call_stack::goto_caller_frame (void)
   m_curr_frame = caller_frame ? caller_frame->index () : 0;
 }
 
-void call_stack::goto_base_frame (void)
+void call_stack::goto_base_frame ()
 {
   if (m_curr_frame > 0)
     m_curr_frame = 0;
@@ -653,7 +719,7 @@ std::list<std::shared_ptr<stack_frame>>
       std::shared_ptr<stack_frame> frm = m_cs[n];
 
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame ())
+          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame())
         {
           if (frm->index () == curr_frame)
             curr_user_frame = frames.size ();
@@ -669,7 +735,7 @@ std::list<std::shared_ptr<stack_frame>>
 }
 
 std::list<std::shared_ptr<stack_frame>>
-                                     call_stack::backtrace_frames (void) const
+                                     call_stack::backtrace_frames () const
 {
   octave_idx_type curr_user_frame = -1;
 
@@ -688,7 +754,7 @@ call_stack::backtrace_info (octave_idx_type& curr_user_frame,
   for (const auto& frm : frames)
     {
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame ())
+          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame())
         {
           retval.push_back (frame_info (frm->fcn_file_name (),
                                         frm->fcn_name (print_subfn),
@@ -699,7 +765,7 @@ call_stack::backtrace_info (octave_idx_type& curr_user_frame,
   return retval;
 }
 
-std::list<frame_info> call_stack::backtrace_info (void) const
+std::list<frame_info> call_stack::backtrace_info () const
 {
   octave_idx_type curr_user_frame = -1;
 
@@ -726,7 +792,7 @@ octave_map call_stack::backtrace (octave_idx_type& curr_user_frame,
   for (const auto& frm : frames)
     {
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame ())
+          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame())
         {
           file(k) = frm->fcn_file_name ();
           name(k) = frm->fcn_name (print_subfn);
@@ -740,19 +806,19 @@ octave_map call_stack::backtrace (octave_idx_type& curr_user_frame,
   return retval;
 }
 
-octave_map call_stack::backtrace (void) const
+octave_map call_stack::backtrace () const
 {
   octave_idx_type curr_user_frame = -1;
 
   return backtrace (curr_user_frame, true);
 }
 
-octave_map call_stack::empty_backtrace (void) const
+octave_map call_stack::empty_backtrace () const
 {
   return octave_map (dim_vector (0, 1), bt_fields);
 }
 
-void call_stack::pop (void)
+void call_stack::pop ()
 {
   // Never pop top scope.
   // FIXME: is it possible for this case to happen?
@@ -768,22 +834,44 @@ void call_stack::pop (void)
       if (elt->is_closure_context ())
         elt->break_closure_cycles (elt);
 
+      elt->clear_parent_static_link ();
+
       m_cs.pop_back ();
     }
 }
 
-void call_stack::clear (void)
+std::shared_ptr<stack_frame> call_stack::pop_return ()
+{
+  if (!m_cs.empty ())
+    {
+      std::shared_ptr<stack_frame> elt = std::move (m_cs.back ());
+      m_cs.pop_back ();
+
+      m_curr_frame = elt->parent_frame_index ();
+
+      if (elt->is_closure_context ())
+        elt->break_closure_cycles (elt);
+
+      elt->clear_parent_static_link ();
+
+      return elt;
+    }
+
+  return nullptr;
+}
+
+void call_stack::clear ()
 {
   while (! m_cs.empty ())
     pop ();
 }
 
-symbol_info_list call_stack::all_variables (void)
+symbol_info_list call_stack::all_variables ()
 {
   return m_cs[m_curr_frame]->all_variables ();
 }
 
-std::list<std::string> call_stack::global_variable_names (void) const
+std::list<std::string> call_stack::global_variable_names () const
 {
   std::list<std::string> retval;
 
@@ -798,12 +886,12 @@ std::list<std::string> call_stack::global_variable_names (void) const
   return retval;
 }
 
-std::list<std::string> call_stack::top_level_variable_names (void) const
+std::list<std::string> call_stack::top_level_variable_names () const
 {
   return m_cs[0]->variable_names ();
 }
 
-std::list<std::string> call_stack::variable_names (void) const
+std::list<std::string> call_stack::variable_names () const
 {
   return m_cs[m_curr_frame]->variable_names ();
 }
@@ -838,7 +926,7 @@ void call_stack::clear_global_variable_regexp (const std::string& pattern)
     }
 }
 
-void call_stack::clear_global_variables (void)
+void call_stack::clear_global_variables ()
 {
   for (auto& nm_ov : m_global_values)
     nm_ov.second = octave_value ();
@@ -856,12 +944,12 @@ call_stack::regexp_symbol_info (const std::string& pattern) const
   return m_cs[m_curr_frame]->regexp_symbol_info (pattern);
 }
 
-symbol_info_list call_stack::get_symbol_info (void)
+symbol_info_list call_stack::get_symbol_info ()
 {
   return m_cs[m_curr_frame]->get_symbol_info ();
 }
 
-symbol_info_list call_stack::top_scope_symbol_info (void) const
+symbol_info_list call_stack::top_scope_symbol_info () const
 {
   return m_cs[0]->get_symbol_info ();
 }
@@ -976,15 +1064,17 @@ octave_value call_stack::do_who (int argc, const string_vector& argv,
 
       // Set up temporary scope.
 
-      symbol_scope tmp_scope ("$dummy_scope$");
+      symbol_scope tmp_scope (file_name);
 
       push (tmp_scope);
 
-      unwind_action restore_scope ([=] (void) { pop (); });
+      unwind_action restore_scope ([=] () { pop (); });
 
-      feval ("load", octave_value (file_name), 0);
+      interpreter& interp = m_evaluator.get_interpreter ();
 
-      std::string newmsg = "Variables in the file " + file_name + ":\n\n";
+      Fload (interp, ovl (file_name));
+
+      std::string newmsg = "Variables in the file " + file_name + ":\n";
 
       if (global_only)
         return do_global_who_two (patterns, have_regexp, return_list,
@@ -1109,7 +1199,7 @@ octave_value call_stack::do_global_who_two (const string_vector& patterns,
   return octave_value ();
 }
 
-void call_stack::display (void) const
+void call_stack::display () const
 {
   std::ostream& os = octave_stdout;
 
@@ -1127,6 +1217,24 @@ void call_stack::set_auto_fcn_var (stack_frame::auto_var_type avt,
                                    const octave_value& val)
 {
   m_cs[m_curr_frame]->set_auto_fcn_var (avt, val);
+}
+
+void
+call_stack::set_nargin (int nargin)
+{
+  m_cs[m_curr_frame]->set_nargin (nargin);
+}
+
+void
+call_stack::set_nargout (int nargout)
+{
+  m_cs[m_curr_frame]->set_nargout (nargout);
+}
+
+void
+call_stack::set_active_bytecode_ip (int ip)
+{
+  m_cs[m_curr_frame]->set_active_bytecode_ip (ip);
 }
 
 octave_value call_stack::get_auto_fcn_var (stack_frame::auto_var_type avt) const

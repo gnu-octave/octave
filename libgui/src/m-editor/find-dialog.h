@@ -79,7 +79,6 @@ class QPushButton;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class file_editor;
 
 class find_dialog : public QDialog
@@ -88,13 +87,13 @@ class find_dialog : public QDialog
 
 public:
 
-  find_dialog (base_qobject& oct_qobj, octave_dock_widget *ed, QWidget *p);
+  find_dialog (octave_dock_widget *ed, QWidget *p);
 
   //! Set dialog visible or not and storing the new visibility state
   void set_visible (bool visible);
 
   //! Init the search text with the selected text in the editor tab
-  void init_search_text (void);
+  void init_search_text ();
 
   //! Restore position and the search options from the given settings
   //! where def_pos is the default position suitable for the current
@@ -103,8 +102,8 @@ public:
 
 public slots:
 
-  void find_next (void);
-  void find_prev (void);
+  void find_next ();
+  void find_prev ();
 
   //! Slot for updating the edit area when the active tab has changed
   void update_edit_area (octave_qscintilla *);
@@ -117,12 +116,10 @@ private slots:
   void handle_backward_search_changed (int);
 
   void find (bool forward = true);
-  void replace (void);
-  void replace_all (void);
+  void replace ();
+  void replace_all ();
 
 private:
-
-  base_qobject& m_octave_qobj;
 
   //! Save position and the search options in the given settings
   void save_settings ();
@@ -136,11 +133,11 @@ private:
   //! Update mru lists with new entry
   void mru_update (QComboBox *mru);
 
-  void no_matches_message (void);
-  void do_replace (void);
+  void no_matches_message ();
+  void do_replace ();
 
-  void handle_search_text_changed (void);
-  void handle_replace_text_changed (void);
+  void handle_search_text_changed ();
+  void handle_replace_text_changed ();
 
   octave_dock_widget *m_editor;
 

@@ -44,7 +44,7 @@
 ## in the class declaration:
 ##
 ##   TYPE
-##   get_NAME (void) const
+##   get_NAME () const
 ##   {
 ##     return NAME;
 ##   }
@@ -151,7 +151,7 @@
 
 function emit_get_accessor (i, rtype, faccess)
 {
-  printf ("  %s get_%s (void) const", rtype, name[i]);
+  printf ("  %s get_%s () const", rtype, name[i]);
 
   if (emit_get[i] == "definition" && deprecated[i])
     printf ("\n  {\n    warning_with_id (\"Octave:deprecated-property\",\"'%s' is deprecated and will be removed from a future version of Octave\");\n    return m_%s.%s ();\n  }\n", name[i], name[i], faccess);
@@ -165,7 +165,7 @@ function emit_get_accessor (i, rtype, faccess)
 
 function emit_get_bool (i)
 {
-  printf ("  bool is_%s (void) const", name[i]);
+  printf ("  bool is_%s () const", name[i]);
 
   if (emit_get[i] == "definition")
     printf (" { return m_%s.is_on (); }\n", name[i]);
@@ -193,7 +193,7 @@ function emit_get_radio (i)
 
 function emit_get_color (i)
 {
-  printf ("  bool %s_is_rgb (void) const { return m_%s.is_rgb (); }\n", name[i], name[i]);
+  printf ("  bool %s_is_rgb () const { return m_%s.is_rgb (); }\n", name[i], name[i]);
 
   printf ("  bool %s_is (const std::string& v) const", name[i]);
 
@@ -202,7 +202,7 @@ function emit_get_color (i)
   else
     printf (";\n");
 
-  printf ("  Matrix get_%s_rgb (void) const", name[i]);
+  printf ("  Matrix get_%s_rgb () const", name[i]);
 
   if (emit_get[i] == "definition")
     printf (" { return (m_%s.is_rgb () ? m_%s.rgb () : Matrix ()); }\n", name[i], name[i]);
@@ -216,7 +216,7 @@ function emit_get_color (i)
 
 function emit_get_double_radio (i)
 {
-  printf ("  bool %s_is_double (void) const { return m_%s.is_double (); }\n", name[i], name[i]);
+  printf ("  bool %s_is_double () const { return m_%s.is_double (); }\n", name[i], name[i]);
 
   printf ("  bool %s_is (const std::string& v) const", name[i]);
 
@@ -225,7 +225,7 @@ function emit_get_double_radio (i)
   else
     printf (";\n");
 
-  printf ("  double get_%s_double (void) const", name[i]);
+  printf ("  double get_%s_double () const", name[i]);
 
   if (emit_get[i] == "definition")
     printf (" { return (m_%s.is_double () ? m_%s.double_value () : 0); }\n", name[i], name[i]);
@@ -260,14 +260,14 @@ function emit_get_array (i)
 
 function emit_get_string_array (i)
 {
-  printf ("  std::string get_%s_string (void) const", name[i]);
+  printf ("  std::string get_%s_string () const", name[i]);
 
   if (emit_get[i] == "definition")
     printf (" { return m_%s.string_value (); }\n", name[i]);
   else
     printf (";\n");
 
-  printf ("  string_vector get_%s_vector (void) const", name[i]);
+  printf ("  string_vector get_%s_vector () const", name[i]);
 
   if (emit_get[i] == "definition")
     printf (" { return m_%s.string_vector_value (); }\n", name[i]);
@@ -283,15 +283,17 @@ function emit_common_declarations ()
 {
   printf ("public:\n");
   printf ("  properties (const graphics_handle& mh, const graphics_handle& p);\n\n");
-  printf ("  ~properties (void) { }\n\n");
+  printf ("  properties () = delete;\n\n");
+  printf ("  OCTAVE_DISABLE_COPY_MOVE (properties)\n\n");
+  printf ("  ~properties () = default;\n\n");
   printf ("  void set (const caseless_str& pname, const octave_value& val);\n\n");
   printf ("  octave_value get (bool all = false) const;\n\n");
   printf ("  octave_value get (const caseless_str& pname) const;\n\n");
   printf ("  octave_value get (const std::string& pname) const\n  {\n    return get (caseless_str (pname));\n  }\n\n");
   printf ("  octave_value get (const char *pname) const\n  {\n    return get (caseless_str (pname));\n  }\n\n");
   printf ("  property get_property (const caseless_str& pname);\n\n");
-  printf ("  std::string graphics_object_name (void) const { return s_go_name; }\n\n");
-  printf ("  static property_list::pval_map_type factory_defaults (void);\n\n");
+  printf ("  std::string graphics_object_name () const { return s_go_name; }\n\n");
+  printf ("  static property_list::pval_map_type factory_defaults ();\n\n");
   printf ("private:\n  static std::string s_go_name;\n\n");
 }
 
@@ -300,7 +302,7 @@ function emit_declarations ()
   if (class_name && ! base)
     emit_common_declarations();
 
-  printf ("public:\n\n\n  static std::set<std::string> core_property_names (void);\n\n  static std::set<std::string> readonly_property_names (void);\n\n  static bool has_core_property (const caseless_str& pname);\n\n  static bool has_readonly_property (const caseless_str& pname);\n\n  std::set<std::string> all_property_names (void) const;\n\n");
+  printf ("public:\n\n\n  static std::set<std::string> core_property_names ();\n\n  static std::set<std::string> readonly_property_names ();\n\n  static bool has_core_property (const caseless_str& pname);\n\n  static bool has_readonly_property (const caseless_str& pname);\n\n  std::set<std::string> all_property_names () const;\n\n");
 
   if (! base)
     printf ("  bool has_property (const caseless_str& pname) const;\n\n");
@@ -357,7 +359,7 @@ function emit_declarations ()
         emit_get_string_array(i);
       else
       {
-        printf ("  %s get_%s (void) const", type[i], name[i]);
+        printf ("  %s get_%s () const", type[i], name[i]);
 
         if (emit_get[i] == "definition")
           printf (" { return m_%s; }\n", name[i]);
@@ -418,7 +420,7 @@ function emit_declarations ()
 
     if (updater[i] == "extern")
     {
-      printf ("  void update_%s (void);\n\n", name[i]);
+      printf ("  void update_%s ();\n\n", name[i]);
     }
 
 ##    if (emit_ov_set[i])
@@ -593,12 +595,12 @@ function emit_source ()
 
     if (base)
     {
-      printf ("property_list::pval_map_type\nbase_properties::factory_defaults (void)\n{\n");
+      printf ("property_list::pval_map_type\nbase_properties::factory_defaults ()\n{\n");
       printf ("  property_list::pval_map_type m;\n\n");
     }
     else
     {
-      printf ("property_list::pval_map_type\n%s::properties::factory_defaults (void)\n{\n",
+      printf ("property_list::pval_map_type\n%s::properties::factory_defaults ()\n{\n",
               class_name);
       printf ("  property_list::pval_map_type m = base_properties::factory_defaults ();\n\n");
     }
@@ -638,7 +640,7 @@ function emit_source ()
       printf ("base_properties");
     else
       printf ("%s::properties", class_name);
-    printf ("::core_property_names (void)\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n");
+    printf ("::core_property_names ()\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n");
     for (i = 1; i <= idx; i++)
       printf ("      all_pnames.insert (\"%s\");\n", name[i]);
     if (! base)
@@ -658,7 +660,7 @@ function emit_source ()
       printf ("base_properties");
     else
       printf ("%s::properties", class_name);
-    printf ("::readonly_property_names (void)\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n");
+    printf ("::readonly_property_names ()\n{\n  static std::set<std::string> all_pnames;\n\n  static bool initialized = false;\n\n  if (! initialized)\n    {\n");
     for (i = 1; i <= idx; i++)
         if (readonly[i])
         {
@@ -681,7 +683,7 @@ function emit_source ()
         printf ("base_properties");
     else
       printf ("%s::properties", class_name);
-    printf ("::all_property_names (void) const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n");
+    printf ("::all_property_names () const\n{\n  static std::set<std::string> all_pnames = core_property_names ();\n\n");
     if (base)
       printf ("  std::set<std::string> retval = all_pnames;\n  std::set<std::string> dyn_props = dynamic_property_names ();\n  retval.insert (dyn_props.begin (), dyn_props.end ());\n  for (std::map<caseless_str, property, cmp_caseless_str>::const_iterator p = m_all_props.begin ();\n       p != m_all_props.end (); p++)\n    retval.insert (p->first);\n\n  return retval;\n}\n\n");
     else

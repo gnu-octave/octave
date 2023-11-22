@@ -72,8 +72,8 @@ updatePalette (const uicontrol::properties& props, QWidget *w)
       QColor bcol = Utils::fromRgb (props.get_backgroundcolor_rgb ());
       QColor fcol = Utils::fromRgb (props.get_foregroundcolor_rgb ());
       QString qss = QString (":enabled { background: %1 none;\n"
-                             "color: %2; }")
-        .arg(bcol.name ()).arg (fcol.name ());
+                                        "color: %2; }")
+                    .arg(bcol.name ()).arg (fcol.name ());
       w->setStyleSheet(qss);
       return;
     }
@@ -95,8 +95,8 @@ updatePalette (const uicontrol::properties& props, QWidget *w)
       QColor bcol = Utils::fromRgb (props.get_backgroundcolor_rgb ());
       QColor fcol = Utils::fromRgb (props.get_foregroundcolor_rgb ());
       QString qss = QString (":enabled { background: %1 none;\n"
-                             "color: %2; }")
-        .arg(bcol.name ()).arg (fcol.name ());
+                                        "color: %2; }")
+                    .arg(bcol.name ()).arg (fcol.name ());
       w->setStyleSheet(qss);
       return;
     }
@@ -115,10 +115,9 @@ updatePalette (const uicontrol::properties& props, QWidget *w)
   w->setPalette (p);
 }
 
-BaseControl::BaseControl (octave::base_qobject& oct_qobj,
-                          octave::interpreter& interp,
+BaseControl::BaseControl (octave::interpreter& interp,
                           const graphics_object& go, QWidget *w)
-  : Object (oct_qobj, interp, go, w), m_normalizedFont (false),
+  : Object (interp, go, w), m_normalizedFont (false),
     m_keyPressHandlerDefined (false)
 {
   qObject ()->setObjectName ("UIControl");
@@ -151,11 +150,11 @@ BaseControl::init (QWidget *w, bool callBase)
   m_normalizedFont = up.fontunits_is ("normalized");
 }
 
-BaseControl::~BaseControl (void)
+BaseControl::~BaseControl ()
 { }
 
 void
-BaseControl::redraw (void)
+BaseControl::redraw ()
 {
   update (uicontrol::properties::ID_POSITION);
 }
@@ -274,7 +273,12 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
                 emit gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)
-                  ContextMenu::executeAt (m_interpreter, up, m->globalPos ());
+                  ContextMenu::executeAt (m_interpreter, up,
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                          m->globalPosition ().toPoint ());
+#else
+                                          m->globalPos ());
+#endif
               }
             else
               {

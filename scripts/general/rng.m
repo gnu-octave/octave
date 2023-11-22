@@ -173,7 +173,7 @@ function gen = check_generator (val)
     error ("rng: GENERATOR must be a string");
   endif
 
-  gen = tolower (char (val));
+  gen = lower (char (val));
   if (any (strcmp (gen, {"simdtwister", "combrecursive", "philox", "threefry", "multfibonacci", "v4"})))
     error ('rng: random number generator "%s" is not available in Octave', gen);
   elseif (! any (strcmp (gen, {"twister", "v5uniform", "v5normal"})))

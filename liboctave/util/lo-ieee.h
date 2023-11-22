@@ -129,43 +129,30 @@ template <typename T>
 struct numeric_limits
 {
 public:
-  static T NA (void) { return static_cast<T> (0); }
-  static T NaN (void) { return static_cast<T> (0); }
-  static T Inf (void) { return static_cast<T> (0); }
+  static T NA () { return static_cast<T> (0); }
+  static T NaN () { return static_cast<T> (0); }
+  static T Inf () { return static_cast<T> (0); }
 };
 
 template <>
 struct numeric_limits<double>
 {
 public:
-  static double NA (void) { return octave_NA; }
-  static double NaN (void) { return octave_NaN; }
-  static double Inf (void) { return octave_Inf; }
+  static double NA () { return octave_NA; }
+  static double NaN () { return octave_NaN; }
+  static double Inf () { return octave_Inf; }
 };
 
 template <>
 struct numeric_limits<float>
 {
 public:
-  static float NA (void) { return octave_Float_NA; }
-  static float NaN (void) { return octave_Float_NaN; }
-  static float Inf (void) { return octave_Float_Inf; }
+  static float NA () { return octave_Float_NA; }
+  static float NaN () { return octave_Float_NaN; }
+  static float Inf () { return octave_Float_Inf; }
 };
 
 OCTAVE_END_NAMESPACE(octave)
-
-#endif
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use '__lo_ieee_isfinite' instead")
-inline int __lo_ieee_finite (double x) { return __lo_ieee_isfinite (x); }
-
-OCTAVE_DEPRECATED (7, "use '__lo_ieee_float_isfinite' instead")
-inline int __lo_ieee_float_finite (float x)
-{ return __lo_ieee_float_isfinite (x); }
-
-#define lo_ieee_finite(x) lo_ieee_isfinite(x)
 
 #endif
 

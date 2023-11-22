@@ -52,7 +52,7 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcond);
 
-  SparseComplexMatrix (void) : MSparse<Complex> () { }
+  SparseComplexMatrix () : MSparse<Complex> () { }
 
   SparseComplexMatrix (octave_idx_type r,
                        octave_idx_type c) : MSparse<Complex> (r, c) { }
@@ -105,10 +105,12 @@ public:
     return *this;
   }
 
+  ~SparseComplexMatrix () = default;
+
   OCTAVE_API bool operator == (const SparseComplexMatrix& a) const;
   OCTAVE_API bool operator != (const SparseComplexMatrix& a) const;
 
-  OCTAVE_API bool ishermitian (void) const;
+  OCTAVE_API bool ishermitian () const;
 
   OCTAVE_API SparseComplexMatrix max (int dim = -1) const;
   OCTAVE_API SparseComplexMatrix
@@ -131,10 +133,10 @@ public:
   OCTAVE_API SparseComplexMatrix
   concat (const SparseMatrix& rb, const Array<octave_idx_type>& ra_idx);
 
-  OCTAVE_API ComplexMatrix matrix_value (void) const;
+  OCTAVE_API ComplexMatrix matrix_value () const;
 
-  OCTAVE_API SparseComplexMatrix hermitian (void) const;  // complex conjugate transpose
-  SparseComplexMatrix transpose (void) const
+  OCTAVE_API SparseComplexMatrix hermitian () const;  // complex conjugate transpose
+  SparseComplexMatrix transpose () const
   { return MSparse<Complex>::transpose (); }
 
   friend OCTAVE_API SparseComplexMatrix conj (const SparseComplexMatrix& a);
@@ -155,7 +157,7 @@ private:
                                 const bool calccond = true) const;
 
 public:
-  OCTAVE_API SparseComplexMatrix inverse (void) const;
+  OCTAVE_API SparseComplexMatrix inverse () const;
   OCTAVE_API SparseComplexMatrix inverse (MatrixType& mattype) const;
   OCTAVE_API SparseComplexMatrix
   inverse (MatrixType& mattype, octave_idx_type& info) const;
@@ -163,7 +165,7 @@ public:
   inverse (MatrixType& mattype, octave_idx_type& info, double& rcond,
            bool force = false, bool calc_cond = true) const;
 
-  OCTAVE_API ComplexDET determinant (void) const;
+  OCTAVE_API ComplexDET determinant () const;
   OCTAVE_API ComplexDET determinant (octave_idx_type& info) const;
   OCTAVE_API ComplexDET
   determinant (octave_idx_type& info, double& rcond,
@@ -437,7 +439,7 @@ public:
   solve (const ComplexColumnVector& b, octave_idx_type& info, double& rcond,
          solve_singularity_handler sing_handler) const;
 
-  OCTAVE_API SparseComplexMatrix squeeze (void) const;
+  OCTAVE_API SparseComplexMatrix squeeze () const;
 
   OCTAVE_API SparseComplexMatrix reshape (const dim_vector& new_dims) const;
 
@@ -447,13 +449,13 @@ public:
   OCTAVE_API SparseComplexMatrix
   ipermute (const Array<octave_idx_type>& vec) const;
 
-  OCTAVE_API bool any_element_is_nan (void) const;
-  OCTAVE_API bool any_element_is_inf_or_nan (void) const;
-  OCTAVE_API bool all_elements_are_real (void) const;
+  OCTAVE_API bool any_element_is_nan () const;
+  OCTAVE_API bool any_element_is_inf_or_nan () const;
+  OCTAVE_API bool all_elements_are_real () const;
   OCTAVE_API bool all_integers (double& max_val, double& min_val) const;
-  OCTAVE_API bool too_large_for_float (void) const;
+  OCTAVE_API bool too_large_for_float () const;
 
-  OCTAVE_API SparseBoolMatrix operator ! (void) const;
+  OCTAVE_API SparseBoolMatrix operator ! () const;
 
   OCTAVE_API SparseBoolMatrix all (int dim = -1) const;
   OCTAVE_API SparseBoolMatrix any (int dim = -1) const;
@@ -463,7 +465,7 @@ public:
   OCTAVE_API SparseComplexMatrix prod (int dim = -1) const;
   OCTAVE_API SparseComplexMatrix sum (int dim = -1) const;
   OCTAVE_API SparseComplexMatrix sumsq (int dim = -1) const;
-  OCTAVE_API SparseMatrix abs (void) const;
+  OCTAVE_API SparseMatrix abs () const;
 
   OCTAVE_API SparseComplexMatrix diag (octave_idx_type k = 0) const;
 

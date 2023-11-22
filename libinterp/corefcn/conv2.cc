@@ -239,6 +239,9 @@ When the third argument is a matrix, return the convolution of the matrix
 
 ## Test shapes
 %!shared A, B, C
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! A = rand (3, 4);
 %! B = rand (4);
 %! C = conv2 (A, B);
@@ -248,6 +251,11 @@ When the third argument is a matrix, return the convolution of the matrix
 %!assert (size (conv2 (B,A, "valid")), [2 1])
 
 %!test
+%!shared A, B, C
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
+%! A = rand (3, 4);
 %! B = rand (5);
 %! C = conv2 (A, B);
 %!assert (conv2 (A,B, "full"), C)
@@ -419,6 +427,9 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 ##        the tests will be marked as known failures.
 %!shared a, b, c
 %! ## test 3D by 3D
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! a = rand (10, 10, 10);
 %! b = rand (3, 3, 3);
 %! c = convn (a, b, "full");
@@ -427,6 +438,9 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! assert (convn (a, b, "valid"), c(3:10,3:10,3:10));
 %!
 %!test
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! ## test 3D by 2D
 %! a = rand (10, 10, 10);
 %! b = rand (3, 3);
@@ -436,6 +450,9 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! assert (convn (a, b, "valid"), c(3:10,3:10,:));
 %!
 %!test
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! ## test 2D by 3D
 %! a = rand (10, 10);
 %! b = rand (3, 3, 3);
@@ -444,6 +461,9 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %!assert (convn (a, b, "valid"), c(3:10,3:10,3:2))  # a 7x7x0 matrix
 %!
 %!test
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
 %! ## test multiple different number of dimensions, with odd and even numbers
 %! a = rand (10, 15, 7, 8, 10);
 %! b = rand (4, 3, 2, 3);
@@ -557,18 +577,26 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %!assert (convn (a, b, "valid"), c(4,3:8,3:4,:))
 
 ## test correct class
-%!assert (class (convn (rand (5), rand (3))), "double")
-%!assert (class (convn (rand (5, "single"), rand (3))), "single")
-%!assert (class (convn (rand (5), rand (3, "single"))), "single")
-%!assert (class (convn (true (5), rand (3))), "double")
-%!assert (class (convn (true (5), rand (3, "single"))), "single")
-%!assert (class (convn (ones (5, "uint8"), rand (3))), "double")
-%!assert (class (convn (rand (3, "single"), ones (5, "uint8"))), "single")
+%!shared a, b, c, d
+%! old_state = rand ("state");
+%! restore_state = onCleanup (@() rand ("state", old_state));
+%! rand ("state", 12345); # initialize generator to make behavior reproducible
+%! a = rand (5);
+%! b = rand (3);
+%! c = rand (5, "single");
+%! d = rand (3, "single");
+%!assert (class (convn (a, b)), "double")
+%!assert (class (convn (c, b)), "single")
+%!assert (class (convn (a, d)), "single")
+%!assert (class (convn (true (5), b)), "double")
+%!assert (class (convn (true (5), d)), "single")
+%!assert (class (convn (ones (5, "uint8"), b)), "double")
+%!assert (class (convn (d, ones (5, "uint8"))), "single")
 
 %!error convn ()
 %!error convn (1)
 %!error <SHAPE type not valid> convn (1,2, "NOT_A_SHAPE")
-%!error convn (rand (3), 1, 1)
+%!error convn (b, 1, 1)
 */
 
 OCTAVE_END_NAMESPACE(octave)

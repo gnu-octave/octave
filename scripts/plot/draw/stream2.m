@@ -231,4 +231,3 @@ endfunction
 %! stream2 ([1 2], [2 1], [1 1], [2 2], [3 3], [4 4]);
 %#!error <non-monotonically increasing or NaN values found in mesh>
 %! stream2 ([1 2], [1 NaN], [1 1], [2 2], [3 3], [4 4]);
-

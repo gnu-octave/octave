@@ -28,8 +28,7 @@
 ## Undocumented internal function.
 ## @end deftypefn
 
-function hg = __quiver__ (varargin)
-
+function [hax, hg]= __quiver__ (varargin)
   hax = varargin{1};
   is3d = varargin{2};
 
@@ -40,74 +39,120 @@ function hg = __quiver__ (varargin)
   ## in order to get equivalent visual results while keeping equivalent
   ## property values.
   arrowsize = 0.20;
+  lastnumeric = find (cellfun ("ischar", varargin(3:nargin)), 1) - 1;
 
-  firstnonnumeric = find (! cellfun ("isnumeric", varargin(3:nargin)), 1);
-  if (isempty (firstnonnumeric))
-    firstnonnumeric = Inf;
+  if (isempty (lastnumeric))
+    lastnumeric = nargin;
+    ## Recast non-float inputs as doubles to avoid erroneous plots.
+    varargin(3:end) = cellfun ('double', varargin(3:end), ...
+                                  "UniformOutput", false);
   else
-    firstnonnumeric += 2;
-  endif
 
-  ioff = 3;
-  if (nargin < (6 + is3d) || firstnonnumeric < (6 + is3d))
-    if (is3d)
-      z = varargin{ioff++};
-    endif
-    u = varargin{ioff++};
-    v = varargin{ioff++};
-    if (is3d)
-      w = varargin{ioff++};
-    endif
-    if (is3d)
-      if (! size_equal (z, u, v, w))
-        error ("quiver3: Z, U, V, and W must be the same size");
-      endif
-    else
-      if (! size_equal (u, v))
-        error ("quiver: U and V must be the same size");
-      endif
-    endif
-    [x, y] = meshgrid (1:columns (u), 1:rows (u));
+    lastnumeric += 2;
+    ## Recast non-float inputs as doubles to avoid erroneous plots.
+    varargin(3:lastnumeric) = cellfun ('double',
+                    varargin(3:lastnumeric), "UniformOutput", false);
 
-    if (nargin >= ioff && isnumeric (varargin{ioff})
-        && isscalar (varargin{ioff}))
-      autoscale = varargin{ioff++};
-    endif
-  else
-    x = varargin{ioff++};
-    y = varargin{ioff++};
-    if (is3d)
-      z = varargin{ioff++};
-    endif
-    u = varargin{ioff++};
-    v = varargin{ioff++};
-    if (is3d)
-      w = varargin{ioff++};
-      if (isvector (x) && isvector (y) && isvector (z)
-          && (! isvector (u) || ! isvector (v) || ! isvector (w)))
-        [x, y, z] = meshgrid (x, y, z);
-      endif
-    else
-      if (isvector (x) && isvector (y) && (! isvector (u) || ! isvector (v)))
-        [x, y] = meshgrid (x, y);
-      endif
-    endif
-    if (is3d)
-      if (! size_equal (x, y, z, u, v, w))
-        error ("quiver3: X, Y, Z, U, V, and W must be the same size");
-      endif
-    else
-      if (! size_equal (x, y, u, v))
-        error ("quiver: X, Y, U, and V must be the same size");
-      endif
-    endif
-
-    if (nargin >= ioff && isnumeric (varargin{ioff})
-        && isscalar (varargin{ioff}))
-      autoscale = varargin{ioff++};
+    ## Check for scaling factor "off" and set it to 0.
+    if ((nargin > lastnumeric) && strcmpi (varargin{lastnumeric+1}, "off"))
+      varargin(++lastnumeric) = 0;
     endif
   endif
 
+  if (is3d)
+    ## quiver3 3D input validation.
+    switch (lastnumeric)
+      case {6,7}
+        [z, u, v, w] = deal (varargin{3:6});
+        if (isvector (z) && ! isvector (u))
+          if (! size_equal (u, v, w))
+            error ("quiver3: U, V, and W must be the same size");
+          elseif (numel(z) != size (u, 3))
+            error (["quiver3: Z vector length must equal size of ", ...
+                        "U, V, and W in dim 3"]);
+          endif
+          [x, y, z] = meshgrid (1 : columns (u), 1 : rows (u), z);
+        else
+          if (! size_equal (z, u, v, w))
+            error ("quiver3: Z, U, V, and W must be the same size");
+          endif
+          [x, y] = meshgrid (1 : columns (u), 1 : rows (u), 1:size (u, 3));
+        endif
+
+      case {8,9}
+        [x, y, z, u, v, w] = deal (varargin{3:8});
+        if (isvector (x) && isvector (y) && isvector (z) && ! isvector (u))
+          if (! size_equal (u, v, w))
+            error ("quiver3: U, V, and W must be the same size");
+          elseif (numel(x) != columns (u))
+            error (["quiver3: X vector length must equal number of ", ...
+                        "columns in U, V, and W"]);
+          elseif (numel(y) != rows (u))
+            error (["quiver3: Y vector length must equal number of ", ...
+                        "rows in U, V, and W"]);
+          elseif (numel(z) != size (u, 3))
+            error (["quiver3: Z vector length must equal size of ", ...
+                        "U, V, and W in dim 3"]);
+          endif
+          [x, y, z] = meshgrid (x, y, z);
+
+        elseif (! size_equal (x, y, z, u, v, w))
+          error ("quiver3: X, Y, Z, U, V, and W must be the same size");
+        endif
+      otherwise
+        ## too few or too many numeric inputs before first style input
+        print_usage ("quiver3");
+    endswitch
+
+  else
+    ## quiver 2D input validation.
+    switch (lastnumeric)
+      case {4,5}
+        [u, v] = deal (varargin{3:4});
+        if (! size_equal (u, v))
+          error ("quiver: U and V must be the same size");
+        endif
+        [x, y] = meshgrid (1:columns (u), 1:rows (u));
+
+      case {6,7} #
+        [x, y, u, v] = deal (varargin{3:6});
+
+        if (isvector (x) && isvector (y) && ...
+                (! isvector (u) || ! isvector (v) ))
+           if (! size_equal (u, v))
+              error ("quiver: U and V must be the same size");
+           elseif (numel (x) != columns (u))
+              error (["quiver: X vector length must equal number of ", ...
+                        "columns in U and V"]);
+           elseif (numel (y) != rows (u))
+              error (["quiver: Y vector length must equal number of ", ...
+                        "rows in U and V"]);
+           endif
+          [x, y] = meshgrid (x, y);
+        elseif (! size_equal (x, y, u, v))
+          error ("quiver: X, Y, U, and V must be the same size");
+        endif
+      otherwise
+        ## too few or too many numeric inputs before first style input
+        print_usage ("quiver");
+    endswitch
+  endif
+
+  if (rem (lastnumeric, 2))
+    autoscale = varargin{lastnumeric}; # Last odd input is scale factor.
+
+    if (autoscale < 0 || ! isscalar (autoscale))
+      if (is3d)
+        error (["quiver3: scaling factor must be a non-negative scalar ", ...
+                 "or 'off'"]);
+      else
+        error (["quiver: scaling factor must be a non-negative scalar ", ...
+                 "or 'off'"]);
+      endif
+    endif
+  endif
+
+  ioff = lastnumeric + 1;
   have_filled = false;
   have_line_spec = false;
   args = {};
@@ -149,7 +194,7 @@ function hg = __quiver__ (varargin)
   else
     len = max (sqrt (u(:).^2 + v(:).^2));
   endif
-  if (len > 0 && autoscale && numel (u) > 1)
+  if (len > 0 && autoscale && numel (u) >= 1)
     if (isvector (x))
       nx = ny = sqrt (length (x));
     else
@@ -175,6 +220,7 @@ function hg = __quiver__ (varargin)
     endif
   endif
 
+  hax = newplot (hax);
   hstate = get (hax, "nextplot");
   unwind_protect
     if (have_line_spec)
@@ -333,7 +379,12 @@ function hg = __quiver__ (varargin)
 
     if (! isempty (args))
       set (hg, args{:});
+      if (have_line_spec && ! isempty (linespec.marker) && ...
+            ! strcmp (linespec.marker, "none"))
+        set (h2, "linestyle", "none");
+      endif
     endif
+
   unwind_protect_cleanup
     set (hax, "nextplot", hstate);
   end_unwind_protect
@@ -450,7 +501,8 @@ function update_props (h, ~)
   set (kids([3 2]), {"color", "linestyle", "linewidth"},
             get (h, {"color", "linestyle", "linewidth"}));
   set (kids(2), "visible", get (h, "showarrowhead"));
-  set (kids(1), {"color", "marker", "markerfacecolor", "markersize"},
-        get (h, {"color", "marker", "markerfacecolor", "markersize"}));
+  set (kids(1), {"color", "marker", "markerfacecolor", "markersize", ...
+            "linewidth"}, get (h, {"color", "marker", "markerfacecolor", ...
+            "markersize", "linewidth"}));
 
 endfunction

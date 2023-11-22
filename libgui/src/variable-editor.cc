@@ -38,6 +38,8 @@
 #include <QMdiArea>
 #include <QMenu>
 #include <QPalette>
+#include <QPointer>
+#include <QRegularExpression>
 #include <QScreen>
 #include <QScrollBar>
 #include <QStackedWidget>
@@ -55,11 +57,9 @@
 #include "gui-preferences-global.h"
 #include "gui-preferences-sc.h"
 #include "gui-preferences-ve.h"
-#include "octave-qobject.h"
-#include "octave-qtutils.h"
+#include "gui-settings.h"
 #include "ovl.h"
 #include "qt-utils.h"
-#include "shortcut-manager.h"
 #include "variable-editor-model.h"
 #include "variable-editor.h"
 
@@ -84,13 +84,12 @@ make_plot_mapper (QMenu *menu)
 
 // Variable dock widget
 
-variable_dock_widget::variable_dock_widget (QWidget *p,
-                                            base_qobject& oct_qobj)
-  : label_dock_widget (p, oct_qobj)
-    // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+variable_dock_widget::variable_dock_widget (QWidget *p)
+  : label_dock_widget (p)
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
-  , m_waiting_for_mouse_move (false)
-  , m_waiting_for_mouse_button_release (false)
+    , m_waiting_for_mouse_move (false)
+    , m_waiting_for_mouse_button_release (false)
 #endif
 {
   setFocusPolicy (Qt::StrongFocus);
@@ -113,9 +112,10 @@ variable_dock_widget::variable_dock_widget (QWidget *p,
   m_prev_geom = QRect (0, 0, 0, 0);
 
   QHBoxLayout *h_layout = m_title_widget->findChild<QHBoxLayout *> ();
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+  gui_settings settings;
   m_fullscreen_action
-    = new QAction (rmgr.icon ("view-fullscreen", false), "", this);
+    = new QAction (settings.icon ("view-fullscreen", false), "", this);
   m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
   QToolButton *fullscreen_button = new QToolButton (m_title_widget);
   fullscreen_button->setDefaultAction (m_fullscreen_action);
@@ -148,8 +148,8 @@ variable_dock_widget::change_floating (bool)
       if (m_full_screen)
         {
           setGeometry (m_prev_geom);
-          resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-          m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
+          gui_settings settings;
+          m_fullscreen_action->setIcon (settings.icon ("view-fullscreen", false));
           m_full_screen = false;
         }
       m_fullscreen_action->setToolTip (tr (DOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -183,7 +183,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
       activateWindow ();
       setFocus ();
 
-      // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
       m_waiting_for_mouse_move = true;
 #endif
@@ -196,7 +196,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
 
       setFocus ();
 
-      // See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
+// See  Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #if (QT_VERSION >= 0x050302) && (QT_VERSION <= QTBUG_44813_FIX_VERSION)
       m_waiting_for_mouse_move = false;
       m_waiting_for_mouse_button_release = false;
@@ -205,14 +205,14 @@ variable_dock_widget::toplevel_change (bool toplevel)
 }
 
 void
-variable_dock_widget::change_fullscreen (void)
+variable_dock_widget::change_fullscreen ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
   if (! m_full_screen)
     {
       m_prev_floating = isFloating ();
-      m_fullscreen_action->setIcon (rmgr.icon ("view-restore", false));
+      m_fullscreen_action->setIcon (settings.icon ("view-restore", false));
       if (m_prev_floating)
         m_fullscreen_action->setToolTip (tr ("Restore geometry"));
       else
@@ -232,7 +232,7 @@ variable_dock_widget::change_fullscreen (void)
     }
   else
     {
-      m_fullscreen_action->setIcon (rmgr.icon ("view-fullscreen", false));
+      m_fullscreen_action->setIcon (settings.icon ("view-fullscreen", false));
       setGeometry (m_prev_geom);
       if (m_prev_floating)
         m_fullscreen_action->setToolTip (tr (UNDOCKED_FULLSCREEN_BUTTON_TOOLTIP));
@@ -329,7 +329,7 @@ variable_dock_widget::event (QEvent *event)
 }
 
 void
-variable_dock_widget::unfloat_float (void)
+variable_dock_widget::unfloat_float ()
 {
   hide ();
   setFloating (false);
@@ -340,7 +340,7 @@ variable_dock_widget::unfloat_float (void)
 }
 
 void
-variable_dock_widget::refloat (void)
+variable_dock_widget::refloat ()
 {
   setFloating (true);
   m_waiting_for_mouse_move = false;
@@ -353,21 +353,19 @@ variable_dock_widget::refloat (void)
 #else
 
 void
-variable_dock_widget::unfloat_float (void)
+variable_dock_widget::unfloat_float ()
 { }
 
 void
-variable_dock_widget::refloat (void)
+variable_dock_widget::refloat ()
 { }
 
 #endif
 
 // Variable editor stack
 
-variable_editor_stack::variable_editor_stack (QWidget *p,
-                                              base_qobject& oct_qobj)
-  : QStackedWidget (p), m_octave_qobj (oct_qobj),
-    m_edit_view (new variable_editor_view (this, m_octave_qobj))
+variable_editor_stack::variable_editor_stack (QWidget *p)
+  : QStackedWidget (p), m_edit_view (new variable_editor_view (this))
 {
   setFocusPolicy (Qt::StrongFocus);
 
@@ -426,7 +424,7 @@ variable_editor_stack::set_editable (bool editable)
 }
 
 void
-variable_editor_stack::levelUp (void)
+variable_editor_stack::levelUp ()
 {
   if (! hasFocus ())
     return;
@@ -437,7 +435,7 @@ variable_editor_stack::levelUp (void)
 
   if (name.endsWith (')') || name.endsWith ('}'))
     {
-      name.remove ( QRegExp ("[({][^({]*[)}]$)") );
+      name.remove (QRegularExpression {"[({][^({]*[)}]$)"});
       emit edit_variable_signal (name, octave_value ());
     }
 }
@@ -467,24 +465,24 @@ variable_editor_stack::save (const QString& format)
   // No format given, test save default options
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+      {
+        // INTERPRETER THREAD
 
-      // We can skip the entire callback function because it does not
-      // make any changes to the interpreter state.
+        // We can skip the entire callback function because it does
+        // not make any changes to the interpreter state.
 
-      if (this_ves.isNull ())
-        return;
+        if (this_ves.isNull ())
+          return;
 
-      octave_value_list argout
-        = Fsave_default_options (interp, octave_value_list (), 1);
-      QString save_opts = QString::fromStdString (argout(0).string_value ());
+        octave_value_list argout
+          = Fsave_default_options (interp, octave_value_list (), 1);
+        QString save_opts = QString::fromStdString (argout(0).string_value ());
 
-      connect (this, &variable_editor_stack::do_save_signal,
-               this, &variable_editor_stack::do_save);
+        connect (this, &variable_editor_stack::do_save_signal,
+                 this, &variable_editor_stack::do_save);
 
-      emit (do_save_signal (format_string, save_opts));
-    });
+        emit do_save_signal (format_string, save_opts);
+      });
 }
 
 // Perform saving the variable after desired format is determined
@@ -503,9 +501,10 @@ variable_editor_stack::do_save (const QString& format, const QString& save_opts)
 
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   int opts = 0;  // No options by default.
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (! settings->value (global_use_native_dialogs).toBool ())
+
+  gui_settings settings;
+
+  if (! settings.bool_value (global_use_native_dialogs))
     opts = QFileDialog::DontUseNativeDialog;
 
   QString name = objectName ();
@@ -521,25 +520,24 @@ variable_editor_stack::do_save (const QString& format, const QString& save_opts)
   // Let the interpreter thread do the saving
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+      {
+        // INTERPRETER THREAD
 
-      octave_value_list ovl;
-      std::list<octave_value> str_list
-        = {octave_value (file.toStdString ()),
-        octave_value (name.toStdString ())};
-      if (! format.isEmpty ())
-        str_list.push_front (octave_value (format.toStdString ()));
+        octave_value_list ovl;
+        std::list<octave_value> str_list
+                            = {octave_value (file.toStdString ()),
+                               octave_value (name.toStdString ())};
+        if (! format.isEmpty ())
+          str_list.push_front (octave_value (format.toStdString ()));
 
-      Fsave (interp, octave_value_list (str_list));
-    });
+        Fsave (interp, octave_value_list (str_list));
+      });
 }
 
 // Custom editable variable table view
 
-variable_editor_view::variable_editor_view (QWidget *p,
-                                            base_qobject& oct_qobj)
-  : QTableView (p), m_octave_qobj (oct_qobj), m_var_model (nullptr)
+variable_editor_view::variable_editor_view (QWidget *p)
+  : QTableView (p), m_var_model (nullptr)
 {
   setWordWrap (false);
   setContextMenuPolicy (Qt::CustomContextMenu);
@@ -576,7 +574,7 @@ variable_editor_view::setModel (QAbstractItemModel *model)
 }
 
 QList<int>
-variable_editor_view::range_selected (void)
+variable_editor_view::range_selected ()
 {
   QItemSelectionModel *sel = selectionModel ();
 
@@ -632,9 +630,9 @@ variable_editor_view::selected_command_requested (const QString& cmd)
 
   // Variable with desired range as string
   QString variable = QString ("%1(%2:%3,%4:%5)")
-    .arg (objectName ())
-    .arg (range.at (0)).arg (s1)
-    .arg (range.at (2)).arg (s2);
+                              .arg (objectName ())
+                              .arg (range.at (0)).arg (s1)
+                              .arg (range.at (2)).arg (s2);
 
   // Desired command as string
   QString command;
@@ -642,7 +640,7 @@ variable_editor_view::selected_command_requested (const QString& cmd)
     command = QString ("unnamed = %1;").arg (variable);
   else
     command = QString ("figure (); %1 (%2); title ('%2');")
-      .arg (cmd).arg (variable);
+                        .arg (cmd).arg (variable);
 
   emit command_signal (command);
 }
@@ -651,31 +649,31 @@ void
 variable_editor_view::add_edit_actions (QMenu *menu,
                                         const QString& qualifier_string)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
-  menu->addAction (rmgr.icon ("edit-cut"),
+  menu->addAction (settings.icon ("edit-cut"),
                    tr ("Cut") + qualifier_string,
                    this, &variable_editor_view::cutClipboard);
 
-  menu->addAction (rmgr.icon ("edit-copy"),
+  menu->addAction (settings.icon ("edit-copy"),
                    tr ("Copy") + qualifier_string,
                    this, &variable_editor_view::copyClipboard);
 
-  menu->addAction (rmgr.icon ("edit-paste"),
+  menu->addAction (settings.icon ("edit-paste"),
                    tr ("Paste"),
                    this, &variable_editor_view::pasteClipboard);
 
   menu->addSeparator ();
 
-  menu->addAction (rmgr.icon ("edit-delete"),
+  menu->addAction (settings.icon ("edit-delete"),
                    tr ("Clear") + qualifier_string,
                    this, &variable_editor_view::clearContent);
 
-  menu->addAction (rmgr.icon ("edit-delete"),
+  menu->addAction (settings.icon ("edit-delete"),
                    tr ("Delete") + qualifier_string,
                    this, &variable_editor_view::delete_selected);
 
-  menu->addAction (rmgr.icon ("document-new"),
+  menu->addAction (settings.icon ("document-new"),
                    tr ("Variable from Selection"),
                    this, &variable_editor_view::createVariable);
 }
@@ -707,8 +705,13 @@ variable_editor_view::createContextMenu (const QPoint& qpos)
 
           QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+          connect (plot_mapper, SIGNAL (mappedString (const QString&)),
+                   this, SLOT (selected_command_requested (const QString&)));
+#else
           connect (plot_mapper, SIGNAL (mapped (const QString&)),
                    this, SLOT (selected_command_requested (const QString&)));
+#endif
         }
 
       menu->exec (mapToGlobal (qpos));
@@ -755,8 +758,13 @@ variable_editor_view::createColumnMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect (plot_mapper, SIGNAL (mappedString (const QString&)),
+           this, SLOT (selected_command_requested (const QString&)));
+#else
   connect (plot_mapper, SIGNAL (mapped (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
+#endif
 
   QPoint menupos = pt;
   menupos.setY (horizontalHeader ()->height ());
@@ -802,9 +810,13 @@ variable_editor_view::createRowMenu (const QPoint& pt)
 
   QSignalMapper *plot_mapper = make_plot_mapper (menu);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect (plot_mapper, SIGNAL (mappedString (const QString&)),
+           this, SLOT (selected_command_requested (const QString&)));
+#else
   connect (plot_mapper, SIGNAL (mapped (const QString&)),
            this, SLOT (selected_command_requested (const QString&)));
-
+#endif
   QPoint menupos = pt;
   menupos.setX (verticalHeader ()->width ());
 
@@ -816,7 +828,7 @@ variable_editor_view::createRowMenu (const QPoint& pt)
 }
 
 void
-variable_editor_view::createVariable (void)
+variable_editor_view::createVariable ()
 {
   // FIXME: Create unnamed1..n if exist ('unnamed', 'var') is true.
 
@@ -824,7 +836,7 @@ variable_editor_view::createVariable (void)
 }
 
 void
-variable_editor_view::transposeContent (void)
+variable_editor_view::transposeContent ()
 {
   if (! hasFocus ())
     return;
@@ -833,7 +845,7 @@ variable_editor_view::transposeContent (void)
 }
 
 void
-variable_editor_view::delete_selected (void)
+variable_editor_view::delete_selected ()
 {
   if (! hasFocus ())
     return;
@@ -863,7 +875,7 @@ variable_editor_view::delete_selected (void)
 }
 
 void
-variable_editor_view::clearContent (void)
+variable_editor_view::clearContent ()
 {
   if (! hasFocus ())
     return;
@@ -881,7 +893,7 @@ variable_editor_view::clearContent (void)
 }
 
 void
-variable_editor_view::cutClipboard (void)
+variable_editor_view::cutClipboard ()
 {
   copyClipboard ();
 
@@ -889,7 +901,7 @@ variable_editor_view::cutClipboard (void)
 }
 
 void
-variable_editor_view::copyClipboard (void)
+variable_editor_view::copyClipboard ()
 {
   if (! hasFocus ())
     return;
@@ -920,7 +932,7 @@ variable_editor_view::copyClipboard (void)
 }
 
 void
-variable_editor_view::pasteClipboard (void)
+variable_editor_view::pasteClipboard ()
 {
   if (! hasFocus ())
     return;
@@ -1103,9 +1115,9 @@ bool ReturnFocusMenu::eventFilter (QObject *obj, QEvent *ev)
 
 // Variable editor.
 
-variable_editor::variable_editor (QWidget *p, base_qobject& oct_qobj)
-  : octave_dock_widget ("VariableEditor", p, oct_qobj),
-    m_main (new dw_main_window (oct_qobj)),
+variable_editor::variable_editor (QWidget *p)
+  : octave_dock_widget ("VariableEditor", p),
+    m_main (new dw_main_window ()),
     m_tool_bar (new QToolBar (m_main)),
     m_default_width (30),
     m_default_height (100),
@@ -1116,6 +1128,7 @@ variable_editor::variable_editor (QWidget *p, base_qobject& oct_qobj)
     m_font (),
     m_sel_font (),
     m_table_colors (),
+    m_variables (QList<variable_dock_widget*>  ()),
     m_current_focus_vname (""),
     m_hovered_focus_vname (""),
     m_plot_mapper (nullptr),
@@ -1127,7 +1140,7 @@ variable_editor::variable_editor (QWidget *p, base_qobject& oct_qobj)
   setAttribute (Qt::WA_AlwaysShowToolTips);
 
   m_main->setParent (this);
-  // See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
+// See Octave bug #53409 and https://bugreports.qt.io/browse/QTBUG-55357
 #if (QT_VERSION < 0x050601) || (QT_VERSION >= 0x050701)
   m_main->setDockOptions (QMainWindow::AnimatedDocks |
                           QMainWindow::AllowNestedDocks |
@@ -1184,40 +1197,40 @@ void variable_editor::focusInEvent (QFocusEvent *ev)
         }
       else
         {
-          QDockWidget *any_qdw = m_main->findChild<QDockWidget *> ();
-          if (any_qdw != nullptr)
+          bool focus_set = false;
+          for (long long int i = 0; i < m_variables.size (); i++)
             {
-              activateWindow ();
-              any_qdw->setFocus ();
+              if (m_variables.at (i) != nullptr)
+                {
+                  activateWindow ();
+                  m_variables.at (i)->setFocus ();
+                  focus_set = true;
+                  break;
+                }
             }
-          else
+          if (! focus_set)
             setFocus();
         }
     }
 }
 
-variable_editor::~variable_editor (void)
+variable_editor::~variable_editor ()
 {
-  // FIXME: Maybe toolbar actions could be handled with signals and
-  // slots so that deleting the toolbar here would disconnect all
-  // toolbar actions and any other slots that might try to access the
-  // toolbar would work properly (I'm looking at you,
-  // handle_focus_change).
-
-  delete m_tool_bar;
-  m_tool_bar = nullptr;
+  // Disconnect the destroyed() signals from all variable_dock_widget
+  // other wise the non existing slot in variable_editor seems to be
+  // accessed in Qt6 leading to a crash (signal 6).
+  for (long long int i = 0; i < m_variables.size (); i++)
+    {
+      if (m_variables.at (i) != nullptr)
+        disconnect (m_variables.at (i), SIGNAL (destroyed (QObject*)), 0, 0);
+    }
 }
 
 void
 variable_editor::edit_variable (const QString& name, const octave_value& val)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
   if (m_stylesheet.isEmpty ())
-    {
-      gui_settings *settings = rmgr.get_settings ();
-      notice_settings (settings);
-    }
+    notice_settings ();
 
   QDockWidget *existing_qdw = m_main->findChild<QDockWidget *> (name);
   if (existing_qdw)
@@ -1242,8 +1255,9 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
       return;
     }
 
-  variable_dock_widget *page
-    = new variable_dock_widget (this, m_octave_qobj);
+  variable_dock_widget *page = new variable_dock_widget (this);
+
+  m_variables << page;
 
   page->setObjectName (name);
   m_main->addDockWidget (Qt::LeftDockWidgetArea, page);
@@ -1270,8 +1284,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
            page, SLOT (refloat ()), Qt::QueuedConnection);
 #endif
 
-  variable_editor_stack *stack
-    = new variable_editor_stack (page, m_octave_qobj);
+  variable_editor_stack *stack = new variable_editor_stack (page);
 
   stack->setObjectName (name);
   page->setWidget (stack);
@@ -1301,10 +1314,17 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   edit_view->verticalHeader ()->setDefaultSectionSize (m_default_height
                                                        + m_add_font_height);
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect (m_plot_mapper, SIGNAL (mappedString (const QString&)),
+           edit_view, SLOT (selected_command_requested (const QString&)));
+  connect (m_save_mapper, SIGNAL (mappedString (const QString&)),
+           stack, SLOT (save (const QString&)));
+#else
   connect (m_plot_mapper, SIGNAL (mapped (const QString&)),
            edit_view, SLOT (selected_command_requested (const QString&)));
   connect (m_save_mapper, SIGNAL (mapped (const QString&)),
            stack, SLOT (save (const QString&)));
+#endif
 
   connect (edit_view, &variable_editor_view::command_signal,
            this, &variable_editor::command_signal);
@@ -1388,7 +1408,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
 }
 
 void
-variable_editor::tab_to_front (void)
+variable_editor::tab_to_front ()
 {
   QWidget *parent = parentWidget ();
 
@@ -1413,7 +1433,7 @@ variable_editor::tab_to_front (void)
 }
 
 void
-variable_editor::refresh (void)
+variable_editor::refresh ()
 {
   emit refresh_signal ();
 }
@@ -1425,31 +1445,33 @@ variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
 }
 
 void
-variable_editor::notice_settings (const gui_settings *settings)
+variable_editor::notice_settings ()
 {
-  m_main->notice_settings (settings); // update settings in parent main win
+  gui_settings settings;
 
-  m_default_width = settings->value (ve_column_width).toInt ();
+  m_main->notice_settings (); // update settings in parent main win
 
-  m_default_height = settings->value (ve_row_height).toInt ();
+  m_default_width = settings.int_value (ve_column_width);
 
-  m_alternate_rows = settings->value (ve_alternate_rows).toBool ();
+  m_default_height = settings.int_value (ve_row_height);
 
-  m_use_terminal_font = settings->value (ve_use_terminal_font).toBool ();
+  m_alternate_rows = settings.bool_value (ve_alternate_rows);
+
+  m_use_terminal_font = settings.bool_value (ve_use_terminal_font);
 
   QString font_name;
   int font_size;
-  QString default_font = settings->value (global_mono_font).toString ();
+  QString default_font = settings.string_value (global_mono_font);
 
   if (m_use_terminal_font)
     {
-      font_name = settings->value (cs_font.key, default_font).toString ();
-      font_size = settings->value (cs_font_size).toInt ();
+      font_name = settings.value (cs_font.settings_key (), default_font).toString ();
+      font_size = settings.int_value (cs_font_size);
     }
   else
     {
-      font_name = settings->value (ve_font_name.key, default_font).toString ();
-      font_size = settings->value (ve_font_size).toInt ();
+      font_name = settings.value (ve_font_name.settings_key (), default_font).toString ();
+      font_size = settings.int_value (ve_font_size);
     }
 
   m_font = QFont (font_name, font_size);
@@ -1458,11 +1480,11 @@ variable_editor::notice_settings (const gui_settings *settings)
 
   m_add_font_height = fm.height ();
 
-  int mode = settings->value (ve_color_mode).toInt ();
+  int mode = settings.int_value (ve_color_mode);
 
   for (int i = 0; i < ve_colors_count; i++)
     {
-      QColor setting_color = settings->color_value (ve_colors[i], mode);
+      QColor setting_color = settings.color_value (ve_colors[i], mode);
       m_table_colors.replace (i, setting_color);
     }
 
@@ -1472,7 +1494,7 @@ variable_editor::notice_settings (const gui_settings *settings)
 
   if (m_tool_bar)
     {
-      int size_idx = settings->value (global_icon_size).toInt ();
+      int size_idx = settings.int_value (global_icon_size);
       size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
       QStyle *st = style ();
@@ -1481,8 +1503,7 @@ variable_editor::notice_settings (const gui_settings *settings)
     }
 
   // Shortcuts (same as file editor)
-  shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-  scmgr.set_shortcut (m_save_action, sc_edit_file_save);
+  settings.set_shortcut (m_save_action, sc_edit_file_save);
 }
 
 void
@@ -1503,13 +1524,17 @@ variable_editor::variable_destroyed (QObject *obj)
       m_focus_widget_vdw = nullptr;
     }
 
-  if (m_tool_bar)
+  for (long long int i = 0; i < m_variables.size (); i++)
     {
-      // If no variable pages remain, deactivate the tool bar.
-      QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
-      if (vdwlist.isEmpty ())
-        m_tool_bar->setEnabled (false);
+      if (m_variables.at (i) == obj)
+        {
+          m_variables.removeAt (i);
+          break;
+        }
     }
+
+  if (m_tool_bar && m_variables.isEmpty ())
+    m_tool_bar->setEnabled (false);
 
   QFocusEvent ev (QEvent::FocusIn);
   focusInEvent (&ev);
@@ -1528,14 +1553,12 @@ variable_editor::variable_focused (const QString& name)
   m_focus_widget_vdw = nullptr;
   if (current != nullptr)
     {
-      QList<variable_dock_widget *> vdwlist = findChildren<variable_dock_widget *> ();
-      for (int i = 0; i < vdwlist.size (); i++)
+      for (long long int i = 0; i < m_variables.size (); i++)
         {
-          variable_dock_widget *vdw = vdwlist.at (i);
-          if (vdw->isAncestorOf (current))
+          if (m_variables.at (i)->isAncestorOf (current))
             {
               m_focus_widget = current;
-              m_focus_widget_vdw = vdw;
+              m_focus_widget_vdw = m_variables.at (i);
               break;
             }
         }
@@ -1543,36 +1566,32 @@ variable_editor::variable_focused (const QString& name)
 }
 
 void
-variable_editor::record_hovered_focus_variable (void)
+variable_editor::record_hovered_focus_variable ()
 {
   m_hovered_focus_vname = m_current_focus_vname;
 }
 
 void
-variable_editor::restore_hovered_focus_variable (void)
+variable_editor::restore_hovered_focus_variable ()
 {
-  variable_dock_widget *tofocus = findChild<variable_dock_widget *> (m_hovered_focus_vname);
-  if (tofocus != nullptr)
+  variable_dock_widget *tofocus
+    = findChild<variable_dock_widget *> (m_hovered_focus_vname);
+  if (tofocus)
     {
-      // Note that this may be platform and window system dependent.
-      // On a particular Linux system, activateWindow() alone didn't
-      // immediately set the active window and there was a race
-      // between the window focus and action signal.  Setting the
-      // active window via the QApplication route did work.
-      QApplication::setActiveWindow(tofocus->window());
+      tofocus->raise ();
       tofocus->activateWindow ();
       tofocus->setFocus (Qt::OtherFocusReason);
     }
 }
 
 void
-variable_editor::save (void)
+variable_editor::save ()
 {
   emit save_signal ();
 }
 
 void
-variable_editor::cutClipboard (void)
+variable_editor::cutClipboard ()
 {
   copyClipboard ();
 
@@ -1580,13 +1599,13 @@ variable_editor::cutClipboard (void)
 }
 
 void
-variable_editor::copyClipboard (void)
+variable_editor::copyClipboard ()
 {
   emit copy_clipboard_signal ();
 }
 
 void
-variable_editor::pasteClipboard (void)
+variable_editor::pasteClipboard ()
 {
   emit paste_clipboard_signal ();
 
@@ -1594,40 +1613,40 @@ variable_editor::pasteClipboard (void)
 }
 
 void
-variable_editor::levelUp (void)
+variable_editor::levelUp ()
 {
   emit level_up_signal ();
 }
 
 // Also updates the font.
 
-void variable_editor::update_colors (void)
+void variable_editor::update_colors ()
 {
   m_stylesheet = "";
 
   if (m_table_colors.length () > 0)
     m_stylesheet += "QTableView::item{ color: "
-      + m_table_colors[0].name () +" }";
+                    + m_table_colors[0].name () +" }";
 
   if (m_table_colors.length () > 1)
     m_stylesheet += "QTableView::item{ background-color: "
-      + m_table_colors[1].name () +" }";
+                    + m_table_colors[1].name () +" }";
 
   if (m_table_colors.length () > 2)
     m_stylesheet += "QTableView::item{ selection-color: "
-      + m_table_colors[2].name () +" }";
+                    + m_table_colors[2].name () +" }";
 
   if (m_table_colors.length () > 3)
     m_stylesheet += "QTableView::item:selected{ background-color: "
-      + m_table_colors[3].name () +" }";
+                    + m_table_colors[3].name () +" }";
 
   if (m_table_colors.length () > 4 && m_alternate_rows)
     {
       m_stylesheet += "QTableView::item:alternate{ background-color: "
-        + m_table_colors[4].name () +" }";
+                      + m_table_colors[4].name () +" }";
 
       m_stylesheet += "QTableView::item:alternate:selected{ background-color: "
-        + m_table_colors[3].name () +" }";
+                      + m_table_colors[3].name () +" }";
     }
 
   QList<QTableView *> viewlist = findChildren<QTableView *> ();
@@ -1664,7 +1683,7 @@ variable_editor::add_tool_bar_button (const QIcon& icon,
 }
 
 void
-variable_editor::construct_tool_bar (void)
+variable_editor::construct_tool_bar ()
 {
   m_tool_bar->setAllowedAreas (Qt::TopToolBarArea);
 
@@ -1672,22 +1691,23 @@ variable_editor::construct_tool_bar (void)
 
   m_tool_bar->setWindowTitle (tr ("Variable Editor Toolbar"));
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
-  m_save_action = add_tool_bar_button (rmgr.icon ("document-save"), tr ("Save"),
-                                       this, SLOT (save ()));
+  m_save_action = add_tool_bar_button (settings.icon ("document-save"),
+                                       tr ("Save"), this, SLOT (save ()));
   addAction (m_save_action);
   m_save_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
   m_save_action->setStatusTip(tr("Save variable to a file"));
 
-  QAction *action = new QAction (rmgr.icon ("document-save-as"), tr ("Save in format ..."), m_tool_bar);
+  QAction *action = new QAction (settings.icon ("document-save-as"),
+                                 tr ("Save in format ..."), m_tool_bar);
 
   QToolButton *save_tool_button = new HoverToolButton (m_tool_bar);
   save_tool_button->setDefaultAction (action);
 
   save_tool_button->setText (tr ("Save in format ..."));
   save_tool_button->setToolTip (tr("Save variable to a file in different format"));
-  save_tool_button->setIcon (rmgr.icon ("document-save-as"));
+  save_tool_button->setIcon (settings.icon ("document-save-as"));
   save_tool_button->setPopupMode (QToolButton::InstantPopup);
 
   QMenu *save_menu = new ReturnFocusMenu (save_tool_button);
@@ -1699,22 +1719,22 @@ variable_editor::construct_tool_bar (void)
     m_save_mapper->setMapping
       (save_menu->addAction (ve_save_formats.at (i),
                              m_save_mapper, SLOT (map ())),
-       ve_save_formats.at (i));
+                             ve_save_formats.at (i));
 
   save_tool_button->setMenu (save_menu);
   m_tool_bar->addWidget (save_tool_button);
 
   m_tool_bar->addSeparator ();
 
-  action = add_tool_bar_button (rmgr.icon ("edit-cut"), tr ("Cut"),
+  action = add_tool_bar_button (settings.icon ("edit-cut"), tr ("Cut"),
                                 this, SLOT (cutClipboard ()));
   action->setStatusTip(tr("Cut data to clipboard"));
 
-  action = add_tool_bar_button (rmgr.icon ("edit-copy"), tr ("Copy"),
+  action = add_tool_bar_button (settings.icon ("edit-copy"), tr ("Copy"),
                                 this, SLOT (copyClipboard ()));
   action->setStatusTip(tr("Copy data to clipboard"));
 
-  action = add_tool_bar_button (rmgr.icon ("edit-paste"), tr ("Paste"),
+  action = add_tool_bar_button (settings.icon ("edit-paste"), tr ("Paste"),
                                 this, SLOT (pasteClipboard ()));
   action->setStatusTip(tr("Paste clipboard into variable data"));
 
@@ -1724,14 +1744,15 @@ variable_editor::construct_tool_bar (void)
   // QAction *print_action; /icons/fileprint.png
   // m_tool_bar->addSeparator ();
 
-  action = new QAction (rmgr.icon ("plot-xy-curve"), tr ("Plot"), m_tool_bar);
+  action = new QAction (settings.icon ("plot-xy-curve"), tr ("Plot"),
+                        m_tool_bar);
   action->setToolTip (tr ("Plot Selected Data"));
   QToolButton *plot_tool_button = new HoverToolButton (m_tool_bar);
   plot_tool_button->setDefaultAction (action);
 
   plot_tool_button->setText (tr ("Plot"));
   plot_tool_button->setToolTip (tr ("Plot selected data"));
-  plot_tool_button->setIcon (rmgr.icon ("plot-xy-curve"));
+  plot_tool_button->setIcon (settings.icon ("plot-xy-curve"));
 
   plot_tool_button->setPopupMode (QToolButton::InstantPopup);
 
@@ -1747,7 +1768,7 @@ variable_editor::construct_tool_bar (void)
 
   m_tool_bar->addSeparator ();
 
-  action = add_tool_bar_button (rmgr.icon ("go-up"), tr ("Up"), this,
+  action = add_tool_bar_button (settings.icon ("go-up"), tr ("Up"), this,
                                 SLOT (levelUp ()));
   action->setStatusTip(tr("Go one level up in variable hierarchy"));
 
@@ -1757,7 +1778,7 @@ variable_editor::construct_tool_bar (void)
   QList<HoverToolButton *> hbuttonlist
     = m_tool_bar->findChildren<HoverToolButton *> (""
                                                    , Qt::FindDirectChildrenOnly
-                                                   );
+                                                  );
   for (int i = 0; i < hbuttonlist.size (); i++)
     {
       connect (hbuttonlist.at (i), &HoverToolButton::hovered_signal,
@@ -1769,7 +1790,7 @@ variable_editor::construct_tool_bar (void)
   QList<ReturnFocusToolButton *> rfbuttonlist
     = m_tool_bar->findChildren<ReturnFocusToolButton *> (""
                                                          , Qt::FindDirectChildrenOnly
-                                                         );
+                                                        );
   for (int i = 0; i < rfbuttonlist.size (); i++)
     {
       connect (rfbuttonlist.at (i), &ReturnFocusToolButton::about_to_activate,

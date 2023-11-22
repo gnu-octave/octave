@@ -24,7 +24,7 @@
 ////////////////////////////////////////////////////////////////////////
 
 #ifdef HAVE_CONFIG_H
-#include <config.h>
+#  include "config.h"
 #endif
 
 #include "error.h"
@@ -122,4 +122,3 @@ tree_anon_scopes::visit_statement_list (tree_statement_list& lst)
 }
 
 OCTAVE_END_NAMESPACE(octave)
-

@@ -68,7 +68,7 @@ err_method_access (const std::string& from, const cdef_method& meth)
 }
 
 void
-cdef_method::cdef_method_rep::check_method (void)
+cdef_method::cdef_method_rep::check_method ()
 {
   if (is_external ())
     {
@@ -134,7 +134,11 @@ cdef_method::cdef_method_rep::execute (const octave_value_list& args,
   check_method ();
 
   if (m_function.is_defined ())
-    retval = feval (m_function, args, nargout);
+    {
+      interpreter& interp = __get_interpreter__ ();
+
+      retval = interp.feval (m_function, args, nargout);
+    }
 
   return retval;
 }
@@ -166,14 +170,16 @@ cdef_method::cdef_method_rep::execute (const cdef_object& obj,
       for (int i = 0; i < args.length (); i++)
         new_args(i+1) = args(i);
 
-      retval = feval (m_function, new_args, nargout);
+      interpreter& interp = __get_interpreter__ ();
+
+      retval = interp.feval (m_function, new_args, nargout);
     }
 
   return retval;
 }
 
 bool
-cdef_method::cdef_method_rep::is_constructor (void) const
+cdef_method::cdef_method_rep::is_constructor () const
 {
   if (m_function.is_function())
     return m_function.function_value ()->is_classdef_constructor ();
@@ -190,7 +196,7 @@ cdef_method::cdef_method_rep::is_defined_in_class (const std::string& cname) con
 }
 
 std::string
-cdef_method::cdef_method_rep::get_doc_string (void)
+cdef_method::cdef_method_rep::get_doc_string ()
 {
   check_method ();
 
@@ -200,7 +206,7 @@ cdef_method::cdef_method_rep::get_doc_string (void)
 }
 
 bool
-cdef_method::cdef_method_rep::check_access (void) const
+cdef_method::cdef_method_rep::check_access () const
 {
   cdef_class cls (to_cdef (get ("DefiningClass")));
 

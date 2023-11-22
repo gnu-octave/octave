@@ -160,7 +160,7 @@ protected:
     // Use new instead of setting data to 0 so that fortran_vec and
     // data always return valid addresses, even for zero-size arrays.
 
-    ArrayRep (void)
+    ArrayRep ()
       : Alloc (), m_data (allocate (0)), m_len (0), m_count (1) { }
 
     explicit ArrayRep (octave_idx_type len)
@@ -185,9 +185,9 @@ protected:
       std::copy_n (a.m_data, a.m_len, m_data);
     }
 
-    ~ArrayRep (void) { deallocate (m_data, m_len); }
+    ~ArrayRep () { deallocate (m_data, m_len); }
 
-    octave_idx_type numel (void) const { return m_len; }
+    octave_idx_type numel () const { return m_len; }
 
     // No assignment!
 
@@ -213,7 +213,7 @@ protected:
 
 public:
 
-  OCTARRAY_OVERRIDABLE_FUNC_API void make_unique (void)
+  OCTARRAY_OVERRIDABLE_FUNC_API void make_unique ()
   {
     if (m_rep->m_count > 1)
       {
@@ -267,12 +267,12 @@ protected:
 
 private:
 
-  static OCTARRAY_API typename Array<T, Alloc>::ArrayRep *nil_rep (void);
+  static OCTARRAY_API typename Array<T, Alloc>::ArrayRep *nil_rep ();
 
 public:
 
   //! Empty ctor (0 by 0).
-  Array (void)
+  Array ()
     : m_dimensions (), m_rep (nil_rep ()), m_slice_data (m_rep->m_data),
       m_slice_len (m_rep->m_len)
   {
@@ -348,7 +348,7 @@ public:
 
 public:
 
-  virtual ~Array (void)
+  virtual ~Array ()
   {
     // Because we define a move constructor and a move assignment
     // operator, m_rep may be a nullptr here.  We should only need to
@@ -403,7 +403,7 @@ public:
 
   OCTARRAY_API void fill (const T& val);
 
-  OCTARRAY_API void clear (void);
+  OCTARRAY_API void clear ();
   OCTARRAY_API void clear (const dim_vector& dv);
 
   void clear (octave_idx_type r, octave_idx_type c)
@@ -411,13 +411,13 @@ public:
 
   //! Number of elements in the array.
   OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type
-  numel (void) const
+  numel () const
   { return m_slice_len; }
   //@}
 
   //! Return the array as a column vector.
   OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc>
-  as_column (void) const
+  as_column () const
   {
     Array<T, Alloc> retval (*this);
     if (m_dimensions.ndims () != 2 || m_dimensions(1) != 1)
@@ -428,7 +428,7 @@ public:
 
   //! Return the array as a row vector.
   OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc>
-  as_row (void) const
+  as_row () const
   {
     Array<T, Alloc> retval (*this);
     if (m_dimensions.ndims () != 2 || m_dimensions(0) != 1)
@@ -439,7 +439,7 @@ public:
 
   //! Return the array as a matrix.
   OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc>
-  as_matrix (void) const
+  as_matrix () const
   {
     Array<T, Alloc> retval (*this);
     if (m_dimensions.ndims () != 2)
@@ -453,10 +453,10 @@ public:
   //! Get the first dimension of the array (number of rows)
   //@{
   OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type
-  dim1 (void) const
+  dim1 () const
   { return m_dimensions(0); }
   OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type
-  rows (void) const
+  rows () const
   { return dim1 (); }
   //@}
 
@@ -464,11 +464,11 @@ public:
   //!
   //! Get the second dimension of the array (number of columns)
   //@{
-  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type dim2 (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type dim2 () const
   { return m_dimensions(1); }
-  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type cols (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type cols () const
   { return dim2 (); }
-  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type columns (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type columns () const
   { return dim2 (); }
   //@}
 
@@ -476,9 +476,9 @@ public:
   //!
   //! Get the third dimension of the array (number of pages)
   //@{
-  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type dim3 (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type dim3 () const
   { return m_dimensions.ndims () >= 3 ? m_dimensions(2) : 1; }
-  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type pages (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type pages () const
   { return dim3 (); }
   //@}
 
@@ -496,15 +496,15 @@ public:
     return d >= ndims () ? 1 : m_dimensions(d);
   }
 
-  OCTARRAY_OVERRIDABLE_FUNC_API std::size_t byte_size (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API std::size_t byte_size () const
   { return static_cast<std::size_t> (numel ()) * sizeof (T); }
 
   //! Return a const-reference so that dims ()(i) works efficiently.
-  OCTARRAY_OVERRIDABLE_FUNC_API const dim_vector& dims (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API const dim_vector& dims () const
   { return m_dimensions; }
 
   //! Chop off leading singleton dimensions
-  OCTARRAY_API Array<T, Alloc> squeeze (void) const;
+  OCTARRAY_API Array<T, Alloc> squeeze () const;
 
   OCTARRAY_API octave_idx_type
   compute_index (octave_idx_type i, octave_idx_type j) const;
@@ -645,36 +645,30 @@ public:
   ipermute (const Array<octave_idx_type>& vec) const
   { return permute (vec, true); }
 
-  OCTARRAY_OVERRIDABLE_FUNC_API bool issquare (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool issquare () const
   { return (dim1 () == dim2 ()); }
 
-  OCTARRAY_OVERRIDABLE_FUNC_API bool isempty (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool isempty () const
   { return numel () == 0; }
 
-  OCTARRAY_OVERRIDABLE_FUNC_API bool isvector (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool isvector () const
   { return m_dimensions.isvector (); }
 
-  OCTARRAY_OVERRIDABLE_FUNC_API bool is_nd_vector (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool is_nd_vector () const
   { return m_dimensions.is_nd_vector (); }
 
-  OCTARRAY_API Array<T, Alloc> transpose (void) const;
+  OCTARRAY_API Array<T, Alloc> transpose () const;
   OCTARRAY_API Array<T, Alloc> hermitian (T (*fcn) (const T&) = nullptr) const;
 
-  OCTARRAY_OVERRIDABLE_FUNC_API const T * data (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API const T * data () const
   { return m_slice_data; }
 
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "for read-only access, use 'data' method instead")
-  OCTARRAY_OVERRIDABLE_FUNC_API const T * fortran_vec (void) const
-  { return data (); }
-#endif
+  OCTARRAY_API T * fortran_vec ();
 
-  OCTARRAY_API T * fortran_vec (void);
-
-  OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared () const
   { return m_rep->m_count > 1; }
 
-  OCTARRAY_OVERRIDABLE_FUNC_API int ndims (void) const
+  OCTARRAY_OVERRIDABLE_FUNC_API int ndims () const
   { return m_dimensions.ndims (); }
 
   //@{
@@ -686,7 +680,7 @@ public:
   OCTARRAY_API Array<T, Alloc> index (const Array<octave::idx_vector>& ia) const;
   //@}
 
-  virtual OCTARRAY_API T resize_fill_value (void) const;
+  virtual OCTARRAY_API T resize_fill_value () const;
 
   //@{
   //! Resizing (with fill).
@@ -792,7 +786,7 @@ public:
   OCTARRAY_API Array<T, Alloc>&
   insert (const Array<T, Alloc>& a, octave_idx_type r, octave_idx_type c);
 
-  OCTARRAY_OVERRIDABLE_FUNC_API void maybe_economize (void)
+  OCTARRAY_OVERRIDABLE_FUNC_API void maybe_economize ()
   {
     if (m_rep->m_count == 1 && m_slice_len != m_rep->m_len)
       {
@@ -828,7 +822,7 @@ public:
                                               sortmode mode = UNSORTED) const;
 
   //! Count nonzero elements.
-  OCTARRAY_API octave_idx_type nnz (void) const;
+  OCTARRAY_API octave_idx_type nnz () const;
 
   //! Find indices of (at most n) nonzero elements.  If n is specified,
   //! backward specifies search from backward.

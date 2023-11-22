@@ -83,15 +83,12 @@
 #include "find-dialog.h"
 #include "gui-preferences-ed.h"
 #include "gui-utils.h"
-#include "resource-manager.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-find_dialog::find_dialog (base_qobject& oct_qobj,
-                          octave_dock_widget *ed, QWidget *p)
-: QDialog (p), m_octave_qobj (oct_qobj), m_editor (ed),
-  m_in_sel (false), m_sel_beg (-1), m_sel_end (-1)
+find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
+  : QDialog (p), m_editor (ed), m_in_sel (false),
+    m_sel_beg (-1), m_sel_end (-1)
 {
   setWindowTitle (tr ("Editor: Find and Replace"));
 
@@ -111,9 +108,9 @@ find_dialog::find_dialog (base_qobject& oct_qobj,
   m_replace_line_edit->completer ()->setCaseSensitivity (Qt::CaseSensitive);
   m_replace_label->setBuddy (m_replace_line_edit);
 
-  int width = QFontMetrics (m_search_line_edit->font ()).averageCharWidth();
-  m_search_line_edit->setFixedWidth (20*width);
-  m_replace_line_edit->setFixedWidth (20*width);
+   int width = QFontMetrics (m_search_line_edit->font ()).averageCharWidth();
+   m_search_line_edit->setFixedWidth (20*width);
+   m_replace_line_edit->setFixedWidth (20*width);
 
   m_case_check_box = new QCheckBox (tr ("Match &case"));
   m_from_start_check_box = new QCheckBox (tr ("Search from &start"));
@@ -162,7 +159,7 @@ find_dialog::find_dialog (base_qobject& oct_qobj,
            this, &find_dialog::handle_sel_search_changed);
 
   QVBoxLayout *extension_layout = new QVBoxLayout ();
-  extension_layout->setMargin (0);
+  extension_layout->setContentsMargins (0, 0, 0, 0);
   extension_layout->addWidget (m_whole_words_check_box);
   extension_layout->addWidget (m_backward_check_box);
   extension_layout->addWidget (m_search_selection_check_box);
@@ -218,8 +215,7 @@ void find_dialog::update_edit_area (octave_qscintilla *edit_area)
 
 void find_dialog::save_settings ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *s = rmgr.get_settings ();
+  gui_settings settings;
 
   // Save position
   QPoint dlg_pos = pos ();
@@ -232,7 +228,7 @@ void find_dialog::save_settings ()
 
   m_last_position = QPoint (dlg_pos.x (), y);
 
-  s->setValue (ed_fdlg_pos.key, m_last_position);
+  settings.setValue (ed_fdlg_pos.settings_key (), m_last_position);
 
   // Is current search/replace text in the mru list?
   mru_update (m_search_line_edit);
@@ -242,46 +238,45 @@ void find_dialog::save_settings ()
   QStringList mru;
   for (int i = 0; i < m_search_line_edit->count (); i++)
     mru.append (m_search_line_edit->itemText (i));
-  s->setValue (ed_fdlg_search.key, mru);
+  settings.setValue (ed_fdlg_search.settings_key (), mru);
 
   mru.clear ();
   for (int i = 0; i < m_replace_line_edit->count (); i++)
     mru.append (m_replace_line_edit->itemText (i));
-  s->setValue (ed_fdlg_replace.key, mru);
+  settings.setValue (ed_fdlg_replace.settings_key (), mru);
 
   // Store dialog's options
   int opts = 0
-    + m_extension->isVisible () * FIND_DLG_MORE
-    + m_case_check_box->isChecked () * FIND_DLG_CASE
-    + m_from_start_check_box->isChecked () * FIND_DLG_START
-    + m_wrap_check_box->isChecked () * FIND_DLG_WRAP
-    + m_regex_check_box->isChecked () * FIND_DLG_REGX
-    + m_whole_words_check_box->isChecked () * FIND_DLG_WORDS
-    + m_backward_check_box->isChecked () * FIND_DLG_BACK
-    + m_search_selection_check_box->isChecked () * FIND_DLG_SEL;
-  s->setValue (ed_fdlg_opts.key, opts);
+             + m_extension->isVisible () * FIND_DLG_MORE
+             + m_case_check_box->isChecked () * FIND_DLG_CASE
+             + m_from_start_check_box->isChecked () * FIND_DLG_START
+             + m_wrap_check_box->isChecked () * FIND_DLG_WRAP
+             + m_regex_check_box->isChecked () * FIND_DLG_REGX
+             + m_whole_words_check_box->isChecked () * FIND_DLG_WORDS
+             + m_backward_check_box->isChecked () * FIND_DLG_BACK
+             + m_search_selection_check_box->isChecked () * FIND_DLG_SEL;
+  settings.setValue (ed_fdlg_opts.settings_key (), opts);
 
-  s->sync ();
+  settings.sync ();
 }
 
 void find_dialog::restore_settings (QPoint ed_bottom_right)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *s = rmgr.get_settings ();
+  gui_settings settings;
 
   // Get mru lists for search and replace text
-  QStringList mru = s->value (ed_fdlg_search.key).toStringList ();
+  QStringList mru = settings.value (ed_fdlg_search.settings_key ()).toStringList ();
   while (mru.length () > m_mru_length)
     mru.removeLast ();
   m_search_line_edit->addItems (mru);
 
-  mru = s->value (ed_fdlg_replace.key).toStringList ();
+  mru = settings.value (ed_fdlg_replace.settings_key ()).toStringList ();
   while (mru.length () > m_mru_length)
     mru.removeLast ();
   m_replace_line_edit->addItems (mru);
 
   // Get the dialog's options
-  int opts = s->value (ed_fdlg_opts.key, ed_fdlg_opts.def).toInt ();
+  int opts = settings.int_value (ed_fdlg_opts);
 
   m_extension->setVisible (FIND_DLG_MORE & opts);
   m_case_check_box->setChecked (FIND_DLG_CASE & opts);
@@ -298,7 +293,7 @@ void find_dialog::restore_settings (QPoint ed_bottom_right)
   QRect default_geometry (xp, yp, sizeHint ().width (), sizeHint ().height ());
 
   // Last position from settings
-  m_last_position = s->value (ed_fdlg_pos.key, QPoint (xp, yp)).toPoint ();
+  m_last_position = settings.value (ed_fdlg_pos.settings_key (), QPoint (xp, yp)).toPoint ();
   QRect last_geometry (m_last_position,
                        QSize (sizeHint ().width (), sizeHint ().height ()));
 
@@ -319,7 +314,7 @@ void find_dialog::handle_backward_search_changed (int backward)
 }
 
 // search text has changed: reset the search
-void find_dialog::handle_search_text_changed (void)
+void find_dialog::handle_search_text_changed ()
 {
   // Return if nothing has changed
   if (m_search_line_edit->currentText () == m_search_line_edit->itemText (0))
@@ -332,7 +327,7 @@ void find_dialog::handle_search_text_changed (void)
 }
 
 // replaced text has changed: reset the search
-void find_dialog::handle_replace_text_changed (void)
+void find_dialog::handle_replace_text_changed ()
 {
   // Return if nothing has changed
   if (m_replace_line_edit->currentText () == m_replace_line_edit->itemText (0))
@@ -384,7 +379,7 @@ void find_dialog::handle_selection_changed (bool has_selected)
 }
 
 // initialize search text with selected text if this is in one single line
-void find_dialog::init_search_text (void)
+void find_dialog::init_search_text ()
 {
   if (m_edit_area && m_edit_area->hasSelectedText ())
     {
@@ -403,12 +398,12 @@ void find_dialog::init_search_text (void)
   m_find_next_button->setDefault (true);
 }
 
-void find_dialog::find_next (void)
+void find_dialog::find_next ()
 {
   find (! m_backward_check_box->isChecked ());
 }
 
-void find_dialog::find_prev (void)
+void find_dialog::find_prev ()
 {
   find (m_backward_check_box->isChecked ());
 }
@@ -523,7 +518,7 @@ void find_dialog::find (bool forward)
 #if defined (HAVE_QSCI_VERSION_2_6_0)
                               , true
 #endif
-                              );
+                             );
 
   if (m_find_result_available)
     {
@@ -566,7 +561,7 @@ void find_dialog::find (bool forward)
 
 }
 
-void find_dialog::do_replace (void)
+void find_dialog::do_replace ()
 {
   if (m_edit_area)
     {
@@ -577,15 +572,15 @@ void find_dialog::do_replace (void)
         {
           // Update the length of the selection
           m_sel_end = m_sel_end
-            - m_search_line_edit->currentText ().toUtf8 ().size ()
-            + m_replace_line_edit->currentText ().toUtf8 ().size ();
+                      - m_search_line_edit->currentText ().toUtf8 ().size ()
+                      + m_replace_line_edit->currentText ().toUtf8 ().size ();
         }
 
       m_rep_active = false;
     }
 }
 
-void find_dialog::replace (void)
+void find_dialog::replace ()
 {
   if (m_edit_area)
     {
@@ -599,7 +594,7 @@ void find_dialog::replace (void)
     }
 }
 
-void find_dialog::replace_all (void)
+void find_dialog::replace_all ()
 {
   int line, col;
 
@@ -634,7 +629,7 @@ void find_dialog::replace_all (void)
     }
 }
 
-void find_dialog::no_matches_message (void)
+void find_dialog::no_matches_message ()
 {
   QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
                        tr ("No more matches found"), QMessageBox::Ok, this);

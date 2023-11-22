@@ -47,10 +47,10 @@ public:
   typedef typename std::list<elt_type>::const_reverse_iterator
     const_reverse_iterator;
 
-  bool empty (void) const { return m_lst.empty (); }
+  bool empty () const { return m_lst.empty (); }
 
-  std::size_t size (void) const { return m_lst.size (); }
-  std::size_t length (void) const { return size (); }
+  std::size_t size () const { return m_lst.size (); }
+  std::size_t length () const { return size (); }
 
   iterator erase (iterator pos) { return m_lst.erase (pos); }
 
@@ -60,38 +60,38 @@ public:
     m_lst.remove_if (pred);
   }
 
-  void clear (void) { m_lst.clear (); }
+  void clear () { m_lst.clear (); }
 
-  iterator begin (void) { return iterator (m_lst.begin ()); }
-  const_iterator begin (void) const { return const_iterator (m_lst.begin ()); }
+  iterator begin () { return iterator (m_lst.begin ()); }
+  const_iterator begin () const { return const_iterator (m_lst.begin ()); }
 
-  iterator end (void) { return iterator (m_lst.end ()); }
-  const_iterator end (void) const { return const_iterator (m_lst.end ()); }
+  iterator end () { return iterator (m_lst.end ()); }
+  const_iterator end () const { return const_iterator (m_lst.end ()); }
 
-  reverse_iterator rbegin (void) { return reverse_iterator (m_lst.rbegin ()); }
-  const_reverse_iterator rbegin (void) const
+  reverse_iterator rbegin () { return reverse_iterator (m_lst.rbegin ()); }
+  const_reverse_iterator rbegin () const
   { return const_reverse_iterator (m_lst.rbegin ()); }
 
-  reverse_iterator rend (void) { return reverse_iterator (m_lst.rend ()); }
-  const_reverse_iterator rend (void) const
+  reverse_iterator rend () { return reverse_iterator (m_lst.rend ()); }
+  const_reverse_iterator rend () const
   { return const_reverse_iterator (m_lst.rend ()); }
 
-  elt_type& front (void) { return m_lst.front (); }
-  elt_type& back (void) { return m_lst.back (); }
+  elt_type& front () { return m_lst.front (); }
+  elt_type& back () { return m_lst.back (); }
 
-  const elt_type& front (void) const { return m_lst.front (); }
-  const elt_type& back (void) const { return m_lst.back (); }
+  const elt_type& front () const { return m_lst.front (); }
+  const elt_type& back () const { return m_lst.back (); }
 
   void push_front (const elt_type& s) { m_lst.push_front (s); }
   void push_back (const elt_type& s) { m_lst.push_back (s); }
 
-  void pop_front (void) { m_lst.pop_front (); }
-  void pop_back (void) { m_lst.pop_back (); }
+  void pop_front () { m_lst.pop_front (); }
+  void pop_back () { m_lst.pop_back (); }
 
   // For backward compatibility.
   void append (const elt_type& s) { m_lst.push_back (s); }
 
-  base_list (void) = default;
+  base_list () = default;
 
   base_list (const std::list<elt_type>& l) : m_lst (l) { }
 
@@ -99,7 +99,7 @@ public:
 
   base_list& operator = (const base_list& bl) = default;
 
-  virtual ~base_list (void) = default;
+  virtual ~base_list () = default;
 
 protected:
 

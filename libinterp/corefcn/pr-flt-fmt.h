@@ -40,7 +40,7 @@ class pr_formatted_float;
 template <typename T>
 class pr_rational_float;
 
-extern OCTINTERP_API int output_precision (void);
+extern OCTINTERP_API int output_precision ();
 
 extern OCTINTERP_API void set_output_prec (int prec);
 
@@ -60,33 +60,33 @@ public:
 
   float_format& operator = (const float_format&) = default;
 
-  ~float_format (void) = default;
+  ~float_format () = default;
 
-  float_format& scientific (void)
+  float_format& scientific ()
   {
     m_fmt = std::ios::scientific;
     return *this;
   }
 
-  float_format& fixed (void)
+  float_format& fixed ()
   {
     m_fmt = std::ios::fixed;
     return *this;
   }
 
-  float_format& general (void)
+  float_format& general ()
   {
     m_fmt = 0;
     return *this;
   }
 
-  float_format& uppercase (void)
+  float_format& uppercase ()
   {
     m_up = std::ios::uppercase;
     return *this;
   }
 
-  float_format& lowercase (void)
+  float_format& lowercase ()
   {
     m_up = 0;
     return *this;
@@ -117,57 +117,57 @@ public:
     return *this;
   }
 
-  std::ios::fmtflags format_flags (void) const
+  std::ios::fmtflags format_flags () const
   {
     return static_cast<std::ios::fmtflags> (m_fmt | m_up | m_sp);
   }
 
-  int format (void) const
+  int format () const
   {
     return m_fmt;
   }
 
-  bool is_scientific (void) const
+  bool is_scientific () const
   {
     return m_fmt == std::ios::scientific;
   }
 
-  bool is_fixed (void) const
+  bool is_fixed () const
   {
     return m_fmt == std::ios::fixed;
   }
 
-  bool is_general (void) const
+  bool is_general () const
   {
     return m_fmt == 0;
   }
 
-  bool is_uppercase (void) const
+  bool is_uppercase () const
   {
     return m_up == std::ios::uppercase;
   }
 
-  bool is_lowercase (void) const
+  bool is_lowercase () const
   {
     return m_up == 0;
   }
 
-  int precision (void) const
+  int precision () const
   {
     return m_prec;
   }
 
-  int width (void) const
+  int width () const
   {
     return m_fw;
   }
 
-  int exponent_width (void) const
+  int exponent_width () const
   {
     return m_ex;
   }
 
-  bool show_trailing_zeros (void) const
+  bool show_trailing_zeros () const
   {
     return m_sp == std::ios::showpoint;
   }
@@ -211,7 +211,7 @@ float_display_format
 {
 public:
 
-  float_display_format (void) = default;
+  float_display_format () = default;
 
   float_display_format (double scale, const float_format& real_fmt,
                         const float_format& imag_fmt = float_format ())
@@ -227,13 +227,13 @@ public:
 
   float_display_format& operator = (const float_display_format&) = default;
 
-  ~float_display_format (void) = default;
+  ~float_display_format () = default;
 
-  double scale_factor (void) const { return m_scale; }
+  double scale_factor () const { return m_scale; }
 
-  float_format real_format (void) const { return m_real_fmt; }
+  float_format real_format () const { return m_real_fmt; }
 
-  float_format imag_format (void) const { return m_imag_fmt; }
+  float_format imag_format () const { return m_imag_fmt; }
 
   void set_precision (int prec)
   {

@@ -45,13 +45,12 @@
 #include "gui-utils.h"
 #include "main-window.h"
 #include "octave-dock-widget.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-label_dock_widget::label_dock_widget (QWidget *p, base_qobject& oct_qobj)
-: QDockWidget (p), m_octave_qobj (oct_qobj),
-  m_default_float_button (nullptr), m_default_close_button (nullptr)
+label_dock_widget::label_dock_widget (QWidget *p)
+  : QDockWidget (p), m_default_float_button (nullptr),
+    m_default_close_button (nullptr)
 {
   QStyle *st = style ();
   m_icon_size = 0.75*st->pixelMetric (QStyle::PM_SmallIconSize);
@@ -73,13 +72,13 @@ label_dock_widget::label_dock_widget (QWidget *p, base_qobject& oct_qobj)
         }
     }
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
   // the custom (extra) title bar of the widget
   m_title_widget = new QWidget ();
 
   m_dock_action = new QAction
-    (rmgr.icon ("widget-undock", true), "", this);
+    (settings.icon ("widget-undock", true), "", this);
   m_dock_action->setToolTip (tr ("Undock widget"));
   m_dock_button = new QToolButton (m_title_widget);
   m_dock_button->setDefaultAction (m_dock_action);
@@ -87,7 +86,7 @@ label_dock_widget::label_dock_widget (QWidget *p, base_qobject& oct_qobj)
   m_dock_button->setIconSize (QSize (m_icon_size, m_icon_size));
 
   m_close_action = new QAction
-    (rmgr.icon ("widget-close", true), "", this);
+    (settings.icon ("widget-close", true), "", this);
   m_close_action->setToolTip (tr ("Close widget"));
   m_close_button = new QToolButton (m_title_widget);
   m_close_button->setDefaultAction (m_close_action);
@@ -184,14 +183,13 @@ qdockwidget_css (const QString& close_icon, const QString& close_tooltip,
                   "  top: 3px;\n"
                   "}\n"
                   ).arg (close_icon).arg (float_icon).arg (icon_size)
-    .arg (close_tooltip).arg (float_tooltip)
-    .arg (titlebar_foreground).arg (titlebar_background)
-    .arg ((icon_size*2)/3).arg((icon_size*7)/3);
+                   .arg (close_tooltip).arg (float_tooltip)
+                   .arg (titlebar_foreground).arg (titlebar_background)
+                   .arg ((icon_size*2)/3).arg((icon_size*7)/3);
 }
 
-octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
-                                        base_qobject& oct_qobj)
-  : label_dock_widget (p, oct_qobj), m_adopted (false),
+octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
+  : label_dock_widget (p), m_main_window (nullptr),  m_adopted (false),
     m_custom_style (false), m_focus_follows_mouse (false),
     m_recent_float_geom (), m_recent_dock_geom (),
     m_waiting_for_mouse_button_release (false)
@@ -219,14 +217,15 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
   connect (this, &octave_dock_widget::queue_make_widget,
            this, [=] () { make_widget (); }, Qt::QueuedConnection);
 
-  shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-  scmgr.set_shortcut (m_dock_action, sc_dock_widget_dock);
+  gui_settings settings;
+
+  settings.set_shortcut (m_dock_action, sc_dock_widget_dock);
   m_dock_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
   addAction (m_dock_action);
   connect (m_dock_action, &QAction::triggered,
            this, &octave_dock_widget::make_window);
 
-  scmgr.set_shortcut (m_close_action, sc_dock_widget_close);
+  settings.set_shortcut (m_close_action, sc_dock_widget_close);
   m_close_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
   addAction (m_close_action);
   connect (m_close_action, &QAction::triggered,
@@ -234,17 +233,14 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
 
   m_close_action->setToolTip (tr ("Hide widget"));
 
-  setStyleSheet (qdockwidget_css (
-                                  global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
-                                  QString ("Close widget"),
-                                  global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
-                                  QString ("Undock widget"),
-                                  m_icon_size,
-                                  QString (""),
-                                  QString ("")));
+  setStyleSheet (qdockwidget_css
+                 (global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
+                  QString ("Close widget"),
+                  global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
+                  QString ("Undock widget"), m_icon_size, "", ""));
 
   if (widget ())
-    widget ()->setToolTip (QString (""));
+    widget ()->setToolTip ("");
 
   m_icon_color = "";
   m_title_3d = 50;
@@ -257,12 +253,11 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p,
                | QDockWidget::DockWidgetMovable
                | QDockWidget::DockWidgetFloatable);
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  handle_settings (rmgr.get_settings ());
+  handle_settings ();
 }
 
 void
-octave_dock_widget::init_window_menu_entry (void)
+octave_dock_widget::init_window_menu_entry ()
 {
   emit active_changed (isVisible ());  // emit once for init of window menu
 }
@@ -303,7 +298,7 @@ octave_dock_widget::make_window (bool widget_was_dragged)
   // the window outside the main window
   if (! widget_was_dragged)
     geom = m_recent_float_geom.isNull () ? QRect (50,100,480,480)
-      : m_recent_float_geom;
+                                         : m_recent_float_geom;
   setGeometry (geom);
 
   // adjust the (un)dock action
@@ -314,8 +309,9 @@ octave_dock_widget::make_window (bool widget_was_dragged)
   // adjust the (un)dock icon
   if (titleBarWidget ())
     {
-      resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-      m_dock_action->setIcon (rmgr.icon ("widget-dock" + m_icon_color, true));
+      gui_settings settings;
+
+      m_dock_action->setIcon (settings.icon ("widget-dock" + m_icon_color, true));
       m_dock_action->setToolTip (tr ("Dock widget"));
     }
   else
@@ -342,15 +338,15 @@ octave_dock_widget::make_window (bool widget_was_dragged)
 void
 octave_dock_widget::make_widget (bool)
 {
+  gui_settings settings;
+
   bool vis = isVisible ();
 
   // Since floating widget has no parent, we have to read it
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
 
   if (m_main_window)
     {
-      settings->setValue (mw_state.key, m_main_window->saveState ());
+      settings.setValue (mw_state.settings_key (), m_main_window->saveState ());
 
       // Stay window, otherwise will bounce back to window by default
       // because there is no layout information for this widget in the
@@ -359,7 +355,7 @@ octave_dock_widget::make_widget (bool)
       m_main_window->addDockWidget (Qt::BottomDockWidgetArea, this);
       m_adopted = false;
       // recover old window states, hide and re-show new added widget
-      m_main_window->restoreState (settings->value (mw_state.key).toByteArray ());
+      m_main_window->restoreState (settings.value (mw_state.settings_key ()).toByteArray ());
       setFloating (false);
       // restore size using setGeometry instead of restoreGeometry
       // following this post:
@@ -373,7 +369,7 @@ octave_dock_widget::make_widget (bool)
            this, &octave_dock_widget::make_window);
   if (titleBarWidget ())
     {
-      m_dock_action->setIcon (rmgr.icon ("widget-undock" + m_icon_color, true));
+      m_dock_action->setIcon (settings.icon ("widget-undock" + m_icon_color, true));
       m_dock_action->setToolTip (tr ("Undock widget"));
     }
   else
@@ -384,7 +380,7 @@ octave_dock_widget::make_widget (bool)
     }
 
   raise ();
-  QApplication::setActiveWindow (this);
+  activateWindow ();
 
   if (vis)
     {
@@ -442,7 +438,7 @@ octave_dock_widget::closeEvent (QCloseEvent *e)
 
 // get focus widget
 QWidget *
-octave_dock_widget::focusWidget (void)
+octave_dock_widget::focusWidget ()
 {
   QWidget *w = QApplication::focusWidget ();
   if (w && w->focusProxy ()) w = w->focusProxy ();
@@ -471,28 +467,24 @@ octave_dock_widget::event (QEvent *event)
 }
 
 void
-octave_dock_widget::handle_settings (const gui_settings *settings)
+octave_dock_widget::handle_settings ()
 {
-  if (! settings)
-    return;
+  gui_settings settings;
 
-  m_focus_follows_mouse = settings->value (dw_focus_follows_mouse).toBool ();
+  m_focus_follows_mouse = settings.bool_value (dw_focus_follows_mouse);
 
   m_custom_style
-    = settings->value (dw_title_custom_style).toBool ();
+    = settings.bool_value (dw_title_custom_style);
 
-  m_title_3d = settings->value (dw_title_3d.key, dw_title_3d.def).toInt ();
+  m_title_3d = settings.int_value (dw_title_3d);
 
-  m_fg_color
-    = settings->value (dw_title_fg_color).value<QColor> ();
+  m_fg_color = settings.color_value (dw_title_fg_color);
 
-  m_fg_color_active
-    = settings->value (dw_title_fg_color_active).value<QColor> ();
+  m_fg_color_active = settings.color_value (dw_title_fg_color_active);
 
-  m_bg_color = settings->value (dw_title_bg_color).value<QColor> ();
+  m_bg_color = settings.color_value (dw_title_bg_color);
 
-  m_bg_color_active
-    = settings->value (dw_title_bg_color_active).value<QColor> ();
+  m_bg_color_active = settings.color_value (dw_title_bg_color_active);
 
   QColor bcol (m_bg_color);
   QColor bcola (m_bg_color_active);
@@ -534,7 +526,7 @@ octave_dock_widget::handle_settings (const gui_settings *settings)
     }
 
   m_recent_float_geom
-    = settings->value (dw_float_geometry.key.arg (objectName ()),
+    = settings.value (dw_float_geometry.settings_key ().arg (objectName ()),
                        default_floating_size).toRect ();
 
   adjust_to_screen (m_recent_float_geom, default_floating_size);
@@ -543,14 +535,18 @@ octave_dock_widget::handle_settings (const gui_settings *settings)
   // saveGeomety to new QRect setting (see comment for restoring size
   // of docked widgets)
   QVariant dock_geom
-    = settings->value (dw_dock_geometry.key.arg (objectName ()),
-                       default_dock_size);
+    = settings.value (dw_dock_geometry.settings_key ().arg (objectName ()),
+                      default_dock_size);
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  if (dock_geom.canConvert (QMetaType (QMetaType::QRect)))
+#else
   if (dock_geom.canConvert (QMetaType::QRect))
+#endif
     m_recent_dock_geom = dock_geom.toRect ();
   else
-    m_recent_dock_geom = dw_dock_geometry.def.toRect ();
+    m_recent_dock_geom = dw_dock_geometry.def ().toRect ();
 
-  notice_settings (settings);  // call individual handler
+  notice_settings ();  // call individual handler
 
   set_style (false);
 
@@ -583,29 +579,26 @@ octave_dock_widget::handle_active_dock_changed (octave_dock_widget *w_old,
 }
 
 void
-octave_dock_widget::save_settings (void)
+octave_dock_widget::save_settings ()
 {
+  gui_settings settings;
+
   // save state of this dock-widget
   QString name = objectName ();
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-
-  if (! settings)
-    return;
 
   store_geometry ();
 
   // conditional needed?
   if (! m_recent_float_geom.isNull ())
-    settings->setValue (dw_float_geometry.key.arg (name), m_recent_float_geom);
+    settings.setValue (dw_float_geometry.settings_key ().arg (name), m_recent_float_geom);
 
   if (! m_recent_dock_geom.isEmpty ())
-    settings->setValue (dw_dock_geometry.key.arg (name), m_recent_dock_geom);
-  settings->setValue (dw_is_visible.key.arg (name), isVisible ()); // store visibility
-  settings->setValue (dw_is_floating.key.arg (name), isFloating ()); // store floating
-  settings->setValue (dw_is_minimized.key.arg (name), isMinimized ()); // store minimized
+    settings.setValue (dw_dock_geometry.settings_key ().arg (name), m_recent_dock_geom);
+  settings.setValue (dw_is_visible.settings_key ().arg (name), isVisible ()); // store visibility
+  settings.setValue (dw_is_floating.settings_key ().arg (name), isFloating ()); // store floating
+  settings.setValue (dw_is_minimized.settings_key ().arg (name), isMinimized ()); // store minimized
 
-  settings->sync ();
+  settings.sync ();
 }
 
 bool octave_dock_widget::eventFilter (QObject *obj, QEvent *e)
@@ -627,7 +620,7 @@ bool octave_dock_widget::eventFilter (QObject *obj, QEvent *e)
 }
 
 void
-octave_dock_widget::store_geometry (void)
+octave_dock_widget::store_geometry ()
 {
   if (isFloating ())
     {
@@ -664,7 +657,7 @@ octave_dock_widget::change_visibility (bool)
   emit active_changed (false);
 }
 
-void octave_dock_widget::activate (void)
+void octave_dock_widget::activate ()
 {
   if (! isVisible ())
     setVisible (true);
@@ -795,21 +788,22 @@ octave_dock_widget::set_style (bool active)
     }
   else
     {
-      css_foreground = QString ("");
-      css_background = QString ("");
+      css_foreground = "";
+      css_background = "";
     }
 
   QString full_dock_icon = dock_icon + icon_col;
   QString full_close_icon = "widget-close" + icon_col;
   if (titleBarWidget ())
     {
-      resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+      gui_settings settings;
+
       titleBarWidget ()->setStyleSheet (css_foreground + css_background);
       css_button = QString ("QToolButton {background: transparent; border: 0px;}");
       m_dock_button->setStyleSheet (css_button);
       m_close_button->setStyleSheet (css_button);
-      m_dock_action->setIcon (rmgr.icon (full_dock_icon, true));
-      m_close_action->setIcon (rmgr.icon (full_close_icon, true));
+      m_dock_action->setIcon (settings.icon (full_dock_icon, true));
+      m_close_action->setIcon (settings.icon (full_close_icon, true));
     }
   else
     {
@@ -825,34 +819,13 @@ octave_dock_widget::set_style (bool active)
 
 // set focus to previously active widget in tabbed widget stack
 void
-octave_dock_widget::set_focus_predecessor (void)
+octave_dock_widget::set_focus_predecessor ()
 {
   // only != 0 if widget was tabbed
   if (m_predecessor_widget && m_predecessor_widget->isVisible ())
     m_predecessor_widget->setFocus ();
 
   m_predecessor_widget = nullptr;
-
-  // FIXME: Until cset bda0c5b38bda, the wrong keys "Dockwidget/..." were used
-  // here.  This had no effect in Qt4, but does in Qt5.  In the following, the
-  // four incorrect keys are updated if still present in the settings files.
-  // The keys are also used in the settings dialog, but
-  // octave_dock_widget::handle_settings is already called at program start.
-  // These tests can be removed in a future version of Octave (version 6).
-
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-  rmgr.update_settings_key ("Dockwidgets/title_bg_color",
-                            dw_title_bg_color.key);
-
-  rmgr.update_settings_key ("Dockwidgets/title_bg_color_active",
-                            dw_title_bg_color_active.key);
-
-  rmgr.update_settings_key ("Dockwidgets/title_fg_color",
-                            dw_title_fg_color.key);
-
-  rmgr.update_settings_key ("Dockwidgets/title_fg_color_active",
-                            dw_title_fg_color_active.key);
 }
 
 OCTAVE_END_NAMESPACE(octave)

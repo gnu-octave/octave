@@ -189,8 +189,14 @@ debug_on_interrupt}
 
       if (symbol_name != "")
         {
-          retmap = bptab.add_breakpoints_in_function (symbol_name, class_name,
-                   lines, condition);
+          std::string fcn_ident;
+          if (class_name.empty ())
+            fcn_ident = symbol_name;
+          else
+            fcn_ident = "@" + class_name + "/" + symbol_name;
+
+          retmap = bptab.add_breakpoints_in_function (fcn_ident, lines,
+                                                      condition);
           retval = bp_lines_to_ov (retmap);
         }
     }
@@ -242,7 +248,7 @@ debug_on_interrupt}
               lines.clear ();
               lines.insert (line(i).int_value ());
               bptab.add_breakpoints_in_function (name(i).string_value (),
-                                                 "", lines,
+                                                 lines,
                                                  (use_cond
                                                   ? cond(i).string_value ()
                                                   : unconditional));
@@ -318,10 +324,15 @@ files.
       bptab.remove_all_breakpoints ();
       bptab.dbclear_all_signals ();
     }
-  else
+  else if (symbol_name != "")
     {
-      if (symbol_name != "")
-        bptab.remove_breakpoints_from_function (symbol_name, lines);
+      std::string fcn_ident;
+      if (class_name.empty ())
+        fcn_ident = symbol_name;
+      else
+        fcn_ident = "@" + class_name + "/" + symbol_name;
+
+      bptab.remove_breakpoints_from_function (fcn_ident, lines);
     }
 
   // If we remove a breakpoint, we also need to reset debug_mode.
@@ -538,13 +549,27 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %!   dbstop @audioplayer/set 75;
 %!   dbstop quantile>__quantile__;
 %!   dbstop ls;
-%!   s = dbstatus;
+%!   dbstop in inputParser at addOptional;
+%!   dbstop in inputParser at 285;
+%!   s = dbstatus ();
 %!   dbclear all;
+%!   ## For Matlab compatibility, the following name should be:
+%!   ## audioplayer.set>setproperty
 %!   assert (s(1).name, "@audioplayer/set>setproperty");
+%!   ## For Matlab compatibility, the following name should be:
+%!   ## ftp.dir
 %!   assert (s(2).name, "@ftp/dir");
-%!   assert (s(3).name, "ls");
-%!   assert (s(4).name, "quantile>__quantile__");
 %!   assert (s(2).file(end-10:end), [filesep "@ftp" filesep "dir.m"]);
+%!   ## For Matlab compatibility, the following two names should be:
+%!   ## inputParser.inputParser>inputParser.addOptional
+%!   assert (s(3).name, "@inputParser/addOptional");
+%!   assert (s(3).line, 278);
+%!   assert (s(4).name, "@inputParser/addOptional");
+%!   assert (s(4).line, 285);
+%!   assert (s(5).name, "ls");
+%!   assert (s(6).name, "quantile>__quantile__");
+%!   s = dbstatus ();
+%!   assert (isempty (s));
 %! unwind_protect_cleanup
 %!   if (isguirunning ())
 %!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
@@ -939,7 +964,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
 // for example.
 
 void
-show_octave_dbstack (void)
+show_octave_dbstack ()
 {
   do_dbstack (octave::__get_interpreter__ (),
               octave_value_list (), 0, std::cerr);

@@ -39,19 +39,17 @@ class QTimer;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class find_files_dialog : public QDialog
 {
   Q_OBJECT
 
 public:
 
-  find_files_dialog (QWidget *parent, base_qobject& oct_qobj);
+  find_files_dialog (QWidget *parent);
 
-  virtual ~find_files_dialog (void);
+  virtual ~find_files_dialog ();
 
-  void save_settings (void);
+  void save_settings ();
 
 signals:
 
@@ -64,18 +62,16 @@ public slots:
 
 private slots:
 
-  void start_find (void);
-  void stop_find (void);
-  void browse_folders (void);
-  void look_for_files (void);
+  void start_find ();
+  void stop_find ();
+  void browse_folders ();
+  void look_for_files ();
   void item_double_clicked (const QModelIndex&);
   void handle_done (int);
 
 private:
 
   bool is_match (const QFileInfo& info);
-
-  base_qobject& m_octave_qobj;
 
   QLineEdit *m_start_dir_edit;
   QLineEdit *m_file_name_edit;

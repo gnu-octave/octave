@@ -39,13 +39,13 @@
 // unary operations
 
 boolNDArray
-boolNDArray::operator ! (void) const
+boolNDArray::operator ! () const
 {
   return do_mx_unary_op<bool, bool> (*this, mx_inline_not);
 }
 
 boolNDArray&
-boolNDArray::invert (void)
+boolNDArray::invert ()
 {
   if (is_shared ())
     *this = ! *this;

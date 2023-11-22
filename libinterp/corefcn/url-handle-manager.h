@@ -48,17 +48,15 @@ class OCTINTERP_API url_handle_manager
 {
 public:
 
-  url_handle_manager (void)
+  url_handle_manager ()
     : m_handle_map (), m_handle_free_list (),
       m_next_handle (-1.0 - (rand () + 1.0) / (RAND_MAX + 2.0)) { }
 
-  url_handle_manager (const url_handle_manager&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (url_handle_manager)
 
-  url_handle_manager& operator = (const url_handle_manager&) = delete;
+  ~url_handle_manager () = default;
 
-  ~url_handle_manager (void) = default;
-
-  url_handle get_handle (void);
+  url_handle get_handle ();
 
   void free (const url_handle& h);
 
@@ -110,7 +108,7 @@ public:
     return h;
   }
 
-  Matrix handle_list (void)
+  Matrix handle_list ()
   {
     Matrix retval (1, m_handle_map.size ());
 

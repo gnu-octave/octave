@@ -50,11 +50,10 @@
 #include "gui-preferences-ed.h"
 #include "gui-preferences-sc.h"
 #include "gui-preferences-global.h"
+#include "gui-settings.h"
 #include "main-window.h"
-#include "octave-qobject.h"
-#include "octave-qtutils.h"
-#include "shortcut-manager.h"
 
+#include "lo-sysdep.h"
 #include "oct-env.h"
 
 #include "event-manager.h"
@@ -68,7 +67,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Functions of the the reimplemented tab widget
 
 file_editor_tab_widget::file_editor_tab_widget (QWidget *p, file_editor *fe)
-: QTabWidget (p)
+  : QTabWidget (p)
 {
   tab_bar *bar = new tab_bar (this);
 
@@ -82,13 +81,13 @@ file_editor_tab_widget::file_editor_tab_widget (QWidget *p, file_editor *fe)
   setMovable (true);
 }
 
-tab_bar *file_editor_tab_widget::get_tab_bar (void) const
+tab_bar *file_editor_tab_widget::get_tab_bar () const
 {
   return qobject_cast<tab_bar *> (tabBar ());
 }
 
 std::list<file_editor_tab *>
-file_editor_tab_widget::tab_list (void) const
+file_editor_tab_widget::tab_list () const
 {
   std::list<file_editor_tab *> retval;
   for (int i = 0; i < count (); i++)
@@ -98,8 +97,8 @@ file_editor_tab_widget::tab_list (void) const
 
 // File editor
 
-file_editor::file_editor (QWidget *p, base_qobject& oct_qobj)
-  : file_editor_interface (p, oct_qobj)
+file_editor::file_editor (QWidget *p)
+  : file_editor_interface (p)
 {
   // Set current editing directory before construction because loaded
   // files will change ced accordingly.
@@ -178,12 +177,12 @@ void file_editor::insert_global_actions (QList<QAction *> shared_actions)
   m_edit_menu->insertAction (m_find_action, m_find_files_action);
 }
 
-void file_editor::handle_enter_debug_mode (void)
+void file_editor::handle_enter_debug_mode ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  QString sc_run = settings->sc_value (sc_edit_run_run_file);
-  QString sc_cont = settings->sc_value (sc_main_debug_continue);
+  gui_settings settings;
+
+  QString sc_run = settings.sc_value (sc_edit_run_run_file);
+  QString sc_cont = settings.sc_value (sc_main_debug_continue);
 
   if (sc_run == sc_cont)
     m_run_action->setShortcut (QKeySequence ());  // prevent ambiguous shortcuts
@@ -193,16 +192,16 @@ void file_editor::handle_enter_debug_mode (void)
   emit enter_debug_mode_signal ();
 }
 
-void file_editor::handle_exit_debug_mode (void)
+void file_editor::handle_exit_debug_mode ()
 {
-  shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-  scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
+  gui_settings settings;
+  settings.set_shortcut (m_run_action, sc_edit_run_run_file);
   m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
 
   emit exit_debug_mode_signal ();
 }
 
-void file_editor::check_actions (void)
+void file_editor::check_actions ()
 {
   // Do not include shared actions not only related to the editor
   bool have_tabs = m_tab_widget->count () > 0;
@@ -264,10 +263,10 @@ void file_editor::empty_script (bool startup, bool visible)
         return;  // not yet ready but got visibility changed signals
     }
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (settings->value (global_use_custom_editor.key,
-                       global_use_custom_editor.def).toBool ())
+  gui_settings settings;
+
+  if (settings.value (global_use_custom_editor.settings_key (),
+                      global_use_custom_editor.def ()).toBool ())
     return;  // do not open an empty script in the external editor
 
   bool real_visible;
@@ -317,27 +316,29 @@ void file_editor::empty_script (bool startup, bool visible)
   request_new_file ("");
 }
 
-void file_editor::restore_session (gui_settings *settings)
+void file_editor::restore_session ()
 {
+  gui_settings settings;
+
   //restore previous session
-  if (! settings->value (ed_restore_session).toBool ())
+  if (! settings.bool_value (ed_restore_session))
     return;
 
   // get the data from the settings file
   QStringList sessionFileNames
-    = settings->value (ed_session_names).toStringList ();
+    = settings.string_list_value (ed_session_names);
 
   QStringList session_encodings
-    = settings->value (ed_session_enc).toStringList ();
+    = settings.string_list_value (ed_session_enc);
 
   QStringList session_index
-    = settings->value (ed_session_ind).toStringList ();
+    = settings.string_list_value (ed_session_ind);
 
   QStringList session_lines
-    = settings->value (ed_session_lines).toStringList ();
+    = settings.string_list_value (ed_session_lines);
 
   QStringList session_bookmarks
-    = settings->value (ed_session_bookmarks).toStringList ();
+    = settings.string_list_value (ed_session_bookmarks);
 
   // fill a list of the struct and sort it (depending on index)
   QList<session_data> s_data;
@@ -354,7 +355,7 @@ void file_editor::restore_session (gui_settings *settings)
         continue;
 
       session_data item = { 0, -1, sessionFileNames.at (n),
-        QString (), QString (), QString ()};
+                            QString (), QString (), QString ()};
       if (do_lines)
         item.line = session_lines.at (n).toInt ();
       if (do_index)
@@ -376,7 +377,7 @@ void file_editor::restore_session (gui_settings *settings)
                        s_data.at (n).bookmarks);
 }
 
-void file_editor::activate (void)
+void file_editor::activate ()
 {
   if (m_no_focus)
     return;  // No focus for the editor if external open/close request
@@ -437,10 +438,9 @@ void file_editor::enable_menu_shortcuts (bool enable)
 // Save open files for restoring in next session
 // (even if last session will not be restored next time)
 // together with encoding and the tab index
-void file_editor::save_session (void)
+void file_editor::save_session ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
   QStringList fetFileNames;
   QStringList fet_encodings;
@@ -472,15 +472,16 @@ void file_editor::save_session (void)
         }
     }
 
-  settings->setValue (ed_session_names.key, fetFileNames);
-  settings->setValue (ed_session_enc.key, fet_encodings);
-  settings->setValue (ed_session_ind.key, fet_index);
-  settings->setValue (ed_session_lines.key, fet_lines);
-  settings->setValue (ed_session_bookmarks.key, fet_bookmarks);
-  settings->sync ();
+  settings.setValue (ed_session_names.settings_key (), fetFileNames);
+  settings.setValue (ed_session_enc.settings_key (), fet_encodings);
+  settings.setValue (ed_session_ind.settings_key (), fet_index);
+  settings.setValue (ed_session_lines.settings_key (), fet_lines);
+  settings.setValue (ed_session_bookmarks.settings_key (), fet_bookmarks);
+
+  settings.sync ();
 }
 
-bool file_editor::check_closing (void)
+bool file_editor::check_closing ()
 {
   // When the application or the editor is closing and the user wants to
   // close all files, in the latter case all editor tabs are checked whether
@@ -530,7 +531,7 @@ bool file_editor::check_closing (void)
   return true;
 }
 
-void file_editor::handle_tab_ready_to_close (void)
+void file_editor::handle_tab_ready_to_close ()
 {
   if (m_closing_canceled)
     return;
@@ -689,29 +690,29 @@ void file_editor::request_run_file (bool)
 
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      // If THIS_FE is no longer valid, skip the entire callback
-      // function.  With the way things are implemented now, we can't
-      // run the contents of a file unless the file editor and the
-      // corresponding file editor tab are still valid.
+       // If THIS_FE is no longer valid, skip the entire callback
+       // function.  With the way things are implemented now, we can't
+       // run the contents of a file unless the file editor and the
+       // corresponding file editor tab are still valid.
 
-      if (this_fe.isNull ())
-        return;
+       if (this_fe.isNull ())
+         return;
 
-      // Act as though this action was entered at the command propmt
-      // so that the interpreter will check for updated file time
-      // stamps.
-      Vlast_prompt_time.stamp ();
+       // Act as though this action was entered at the command propmt
+       // so that the interpreter will check for updated file time
+       // stamps.
+       Vlast_prompt_time.stamp ();
 
-      tree_evaluator& tw = interp.get_evaluator ();
+       tree_evaluator& tw = interp.get_evaluator ();
 
-      if (tw.in_debug_repl ())
-        emit request_dbcont_signal ();
-      else
-        emit fetab_run_file (m_tab_widget->currentWidget ());
-    });
+       if (tw.in_debug_repl ())
+         emit request_dbcont_signal ();
+       else
+         emit fetab_run_file (m_tab_widget->currentWidget ());
+     });
 }
 
 void file_editor::request_step_into_file ()
@@ -914,9 +915,9 @@ void file_editor::find_create ()
     m_find_dialog->close ();
 
   if (isFloating ())
-    m_find_dialog = new find_dialog (m_octave_qobj, this, this);
+    m_find_dialog = new find_dialog (this, this);
   else
-    m_find_dialog = new find_dialog (m_octave_qobj, this, parentWidget ());
+    m_find_dialog = new find_dialog (this, parentWidget ());
 
   // Add required actions
   m_find_dialog->addAction (m_find_next_action);
@@ -987,7 +988,7 @@ void file_editor::handle_file_name_changed (const QString& fname,
   QObject *fileEditorTab = sender ();
   if (fileEditorTab)
     {
-      resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+      gui_settings settings;
 
       for (int i = 0; i < m_tab_widget->count (); i++)
         {
@@ -1000,7 +1001,7 @@ void file_editor::handle_file_name_changed (const QString& fname,
               m_current_tab_modified = modified;
 
               if (modified)
-                m_tab_widget->setTabIcon (i, rmgr.icon ("document-save"));
+                m_tab_widget->setTabIcon (i, settings.icon ("document-save"));
               else
                 m_tab_widget->setTabIcon (i, QIcon ());
             }
@@ -1016,7 +1017,7 @@ void file_editor::handle_tab_close_request (int index)
 }
 
 void
-file_editor::handle_tab_remove_request (void)
+file_editor::handle_tab_remove_request ()
 {
   QObject *fileEditorTab = sender ();
   if (fileEditorTab)
@@ -1268,8 +1269,7 @@ void file_editor::handle_file_renamed (bool load_new)
           if (m_tmp_closed_files.at (i).new_file_name.isEmpty ())
             m_tmp_closed_files.at (i).editor_tab->file_has_changed (QString (), true);
           else
-            m_tmp_closed_files.at (i).editor_tab->set_file_name (
-                                                                 m_tmp_closed_files.at (i).new_file_name);
+            m_tmp_closed_files.at (i).editor_tab->set_file_name (m_tmp_closed_files.at (i).new_file_name);
         }
       else
         {
@@ -1286,9 +1286,11 @@ void file_editor::handle_file_renamed (bool load_new)
   m_tmp_closed_files.clear ();
 }
 
-void file_editor::notice_settings (const gui_settings *settings)
+void file_editor::notice_settings ()
 {
-  int size_idx = settings->value (global_icon_size).toInt ();
+  gui_settings settings;
+
+  int size_idx = settings.int_value (global_icon_size);
   size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
   QStyle *st = style ();
@@ -1297,14 +1299,14 @@ void file_editor::notice_settings (const gui_settings *settings)
 
   // Tab position and rotation
   QTabWidget::TabPosition pos
-    = static_cast<QTabWidget::TabPosition> (settings->value (ed_tab_position).toInt ());
-  bool rotated = settings->value (ed_tabs_rotated).toBool ();
+    = static_cast<QTabWidget::TabPosition> (settings.int_value (ed_tab_position));
+  bool rotated = settings.bool_value (ed_tabs_rotated);
 
   m_tab_widget->setTabPosition (pos);
 
   if (rotated)
     m_tab_widget->setTabsClosable (false);  // No close buttons
-  // FIXME: close buttons can not be correctly placed in rotated tabs
+    // FIXME: close buttons can not be correctly placed in rotated tabs
 
   // Get the tab bar and set the rotation
   int rotation = rotated;
@@ -1321,7 +1323,7 @@ void file_editor::notice_settings (const gui_settings *settings)
     height = is;
 
   // Calculate possibly limited width and set the elide mode
-  int chars = settings->value (ed_tabs_max_width).toInt ();
+  int chars = settings.int_value (ed_tabs_max_width);
   int width = 9999;
   if (chars > 0)
     width = chars * QFontMetrics (m_tab_widget->font ()).averageCharWidth ();
@@ -1336,9 +1338,9 @@ void file_editor::notice_settings (const gui_settings *settings)
     }
 
   QString style_sheet
-    = QString ("QTabBar::tab {max-" + height_str + ": %1px;\n"
-               "max-" + width_str + ": %2px; }")
-    .arg (height).arg (width);
+      = QString ("QTabBar::tab {max-" + height_str + ": %1px;\n"
+                               "max-" + width_str + ": %2px; }")
+                        .arg (height).arg (width);
 
 #if defined (Q_OS_MAC)
   // FIXME: This is a workaround for missing tab close buttons on MacOS
@@ -1347,13 +1349,13 @@ void file_editor::notice_settings (const gui_settings *settings)
     {
       QString icon = global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png";
 
-      QString close_button_css_mac (
-                                    "QTabBar::close-button"
-                                    " { image: url(" + icon + ");"
-                                    " padding: 4px;"
-                                    "   subcontrol-position: bottom; }\n"
-                                    "QTabBar::close-button:hover"
-                                    "  { background-color: #cccccc; }");
+      QString close_button_css_mac
+        ("QTabBar::close-button"
+         " { image: url(" + icon + ");"
+         " padding: 4px;"
+         "   subcontrol-position: bottom; }\n"
+         "QTabBar::close-button:hover"
+         "  { background-color: #cccccc; }");
 
       style_sheet = style_sheet + close_button_css_mac;
     }
@@ -1362,23 +1364,23 @@ void file_editor::notice_settings (const gui_settings *settings)
   m_tab_widget->setStyleSheet (style_sheet);
 
   bool show_it;
-  show_it = settings->value (ed_show_line_numbers).toBool ();
+  show_it = settings.bool_value (ed_show_line_numbers);
   m_show_linenum_action->setChecked (show_it);
-  show_it = settings->value (ed_show_white_space).toBool ();
+  show_it = settings.bool_value (ed_show_white_space);
   m_show_whitespace_action->setChecked (show_it);
-  show_it = settings->value (ed_show_eol_chars).toBool ();
+  show_it = settings.bool_value (ed_show_eol_chars);
   m_show_eol_action->setChecked (show_it);
-  show_it = settings->value (ed_show_indent_guides).toBool ();
+  show_it = settings.bool_value (ed_show_indent_guides);
   m_show_indguide_action->setChecked (show_it);
-  show_it = settings->value (ed_long_line_marker).toBool ();
+  show_it = settings.bool_value (ed_long_line_marker);
   m_show_longline_action->setChecked (show_it);
 
-  show_it = settings->value (ed_show_toolbar).toBool ();
+  show_it = settings.bool_value (ed_show_toolbar);
   m_show_toolbar_action->setChecked (show_it);
   m_tool_bar->setVisible (show_it);
-  show_it = settings->value (ed_show_edit_status_bar).toBool ();
+  show_it = settings.bool_value (ed_show_edit_status_bar);
   m_show_statusbar_action->setChecked (show_it);
-  show_it = settings->value (ed_show_hscroll_bar).toBool ();
+  show_it = settings.bool_value (ed_show_hscroll_bar);
   m_show_hscrollbar_action->setChecked (show_it);
 
   set_shortcuts ();
@@ -1388,99 +1390,98 @@ void file_editor::notice_settings (const gui_settings *settings)
     m_find_dialog->setWindowIcon (windowIcon ());
 
   // Relay signal to file editor tabs.
-  emit fetab_settings_changed (settings);
+  emit fetab_settings_changed ();
 }
 
-void file_editor::set_shortcuts (void)
+void file_editor::set_shortcuts ()
 {
   // Shortcuts also available in the main window, as well as the related
   // shortcuts, are defined in main_window and added to the editor
 
-  shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
+  gui_settings settings;
 
   // File menu
-  scmgr.set_shortcut (m_edit_function_action, sc_edit_file_edit_function);
-  scmgr.set_shortcut (m_save_action, sc_edit_file_save);
-  scmgr.set_shortcut (m_save_as_action, sc_edit_file_save_as);
-  scmgr.set_shortcut (m_close_action, sc_edit_file_close);
-  scmgr.set_shortcut (m_close_all_action, sc_edit_file_close_all);
-  scmgr.set_shortcut (m_close_others_action, sc_edit_file_close_other);
-  scmgr.set_shortcut (m_print_action, sc_edit_file_print);
+  settings.set_shortcut (m_edit_function_action, sc_edit_file_edit_function);
+  settings.set_shortcut (m_save_action, sc_edit_file_save);
+  settings.set_shortcut (m_save_as_action, sc_edit_file_save_as);
+  settings.set_shortcut (m_close_action, sc_edit_file_close);
+  settings.set_shortcut (m_close_all_action, sc_edit_file_close_all);
+  settings.set_shortcut (m_close_others_action, sc_edit_file_close_other);
+  settings.set_shortcut (m_print_action, sc_edit_file_print);
 
   // Edit menu
-  scmgr.set_shortcut (m_redo_action, sc_edit_edit_redo);
-  scmgr.set_shortcut (m_cut_action, sc_edit_edit_cut);
-  scmgr.set_shortcut (m_find_action, sc_edit_edit_find_replace);
-  scmgr.set_shortcut (m_find_next_action, sc_edit_edit_find_next);
-  scmgr.set_shortcut (m_find_previous_action, sc_edit_edit_find_previous);
+  settings.set_shortcut (m_redo_action, sc_edit_edit_redo);
+  settings.set_shortcut (m_cut_action, sc_edit_edit_cut);
+  settings.set_shortcut (m_find_action, sc_edit_edit_find_replace);
+  settings.set_shortcut (m_find_next_action, sc_edit_edit_find_next);
+  settings.set_shortcut (m_find_previous_action, sc_edit_edit_find_previous);
 
-  scmgr.set_shortcut (m_delete_start_word_action, sc_edit_edit_delete_start_word);
-  scmgr.set_shortcut (m_delete_end_word_action, sc_edit_edit_delete_end_word);
-  scmgr.set_shortcut (m_delete_start_line_action, sc_edit_edit_delete_start_line);
-  scmgr.set_shortcut (m_delete_end_line_action, sc_edit_edit_delete_end_line);
-  scmgr.set_shortcut (m_delete_line_action, sc_edit_edit_delete_line);
-  scmgr.set_shortcut (m_copy_line_action, sc_edit_edit_copy_line);
-  scmgr.set_shortcut (m_cut_line_action, sc_edit_edit_cut_line);
-  scmgr.set_shortcut (m_duplicate_selection_action, sc_edit_edit_duplicate_selection);
-  scmgr.set_shortcut (m_transpose_line_action, sc_edit_edit_transpose_line);
-  scmgr.set_shortcut (m_comment_selection_action, sc_edit_edit_comment_selection);
-  scmgr.set_shortcut (m_uncomment_selection_action, sc_edit_edit_uncomment_selection);
-  scmgr.set_shortcut (m_comment_var_selection_action, sc_edit_edit_comment_var_selection);
+  settings.set_shortcut (m_delete_start_word_action, sc_edit_edit_delete_start_word);
+  settings.set_shortcut (m_delete_end_word_action, sc_edit_edit_delete_end_word);
+  settings.set_shortcut (m_delete_start_line_action, sc_edit_edit_delete_start_line);
+  settings.set_shortcut (m_delete_end_line_action, sc_edit_edit_delete_end_line);
+  settings.set_shortcut (m_delete_line_action, sc_edit_edit_delete_line);
+  settings.set_shortcut (m_copy_line_action, sc_edit_edit_copy_line);
+  settings.set_shortcut (m_cut_line_action, sc_edit_edit_cut_line);
+  settings.set_shortcut (m_duplicate_selection_action, sc_edit_edit_duplicate_selection);
+  settings.set_shortcut (m_transpose_line_action, sc_edit_edit_transpose_line);
+  settings.set_shortcut (m_comment_selection_action, sc_edit_edit_comment_selection);
+  settings.set_shortcut (m_uncomment_selection_action, sc_edit_edit_uncomment_selection);
+  settings.set_shortcut (m_comment_var_selection_action, sc_edit_edit_comment_var_selection);
 
-  scmgr.set_shortcut (m_upper_case_action, sc_edit_edit_upper_case);
-  scmgr.set_shortcut (m_lower_case_action, sc_edit_edit_lower_case);
-  scmgr.set_shortcut (m_indent_selection_action, sc_edit_edit_indent_selection);
-  scmgr.set_shortcut (m_unindent_selection_action, sc_edit_edit_unindent_selection);
-  scmgr.set_shortcut (m_smart_indent_line_or_selection_action, sc_edit_edit_smart_indent_line_or_selection);
-  scmgr.set_shortcut (m_completion_action, sc_edit_edit_completion_list);
-  scmgr.set_shortcut (m_goto_line_action, sc_edit_edit_goto_line);
-  scmgr.set_shortcut (m_move_to_matching_brace, sc_edit_edit_move_to_brace);
-  scmgr.set_shortcut (m_sel_to_matching_brace, sc_edit_edit_select_to_brace);
-  scmgr.set_shortcut (m_toggle_bookmark_action, sc_edit_edit_toggle_bookmark);
-  scmgr.set_shortcut (m_next_bookmark_action, sc_edit_edit_next_bookmark);
-  scmgr.set_shortcut (m_previous_bookmark_action, sc_edit_edit_previous_bookmark);
-  scmgr.set_shortcut (m_remove_bookmark_action, sc_edit_edit_remove_bookmark);
-  scmgr.set_shortcut (m_preferences_action, sc_edit_edit_preferences);
-  scmgr.set_shortcut (m_styles_preferences_action, sc_edit_edit_styles_preferences);
+  settings.set_shortcut (m_upper_case_action, sc_edit_edit_upper_case);
+  settings.set_shortcut (m_lower_case_action, sc_edit_edit_lower_case);
+  settings.set_shortcut (m_indent_selection_action, sc_edit_edit_indent_selection);
+  settings.set_shortcut (m_unindent_selection_action, sc_edit_edit_unindent_selection);
+  settings.set_shortcut (m_smart_indent_line_or_selection_action, sc_edit_edit_smart_indent_line_or_selection);
+  settings.set_shortcut (m_completion_action, sc_edit_edit_completion_list);
+  settings.set_shortcut (m_goto_line_action, sc_edit_edit_goto_line);
+  settings.set_shortcut (m_move_to_matching_brace, sc_edit_edit_move_to_brace);
+  settings.set_shortcut (m_sel_to_matching_brace, sc_edit_edit_select_to_brace);
+  settings.set_shortcut (m_toggle_bookmark_action, sc_edit_edit_toggle_bookmark);
+  settings.set_shortcut (m_next_bookmark_action, sc_edit_edit_next_bookmark);
+  settings.set_shortcut (m_previous_bookmark_action, sc_edit_edit_previous_bookmark);
+  settings.set_shortcut (m_remove_bookmark_action, sc_edit_edit_remove_bookmark);
+  settings.set_shortcut (m_preferences_action, sc_edit_edit_preferences);
+  settings.set_shortcut (m_styles_preferences_action, sc_edit_edit_styles_preferences);
 
-  scmgr.set_shortcut (m_conv_eol_windows_action, sc_edit_edit_conv_eol_winows);
-  scmgr.set_shortcut (m_conv_eol_unix_action,    sc_edit_edit_conv_eol_unix);
-  scmgr.set_shortcut (m_conv_eol_mac_action,     sc_edit_edit_conv_eol_mac);
+  settings.set_shortcut (m_conv_eol_windows_action, sc_edit_edit_conv_eol_winows);
+  settings.set_shortcut (m_conv_eol_unix_action,    sc_edit_edit_conv_eol_unix);
+  settings.set_shortcut (m_conv_eol_mac_action,     sc_edit_edit_conv_eol_mac);
 
   // View menu
-  scmgr.set_shortcut (m_show_linenum_action, sc_edit_view_show_line_numbers);
-  scmgr.set_shortcut (m_show_whitespace_action, sc_edit_view_show_white_spaces);
-  scmgr.set_shortcut (m_show_eol_action, sc_edit_view_show_eol_chars);
-  scmgr.set_shortcut (m_show_indguide_action, sc_edit_view_show_ind_guides);
-  scmgr.set_shortcut (m_show_longline_action, sc_edit_view_show_long_line);
-  scmgr.set_shortcut (m_show_toolbar_action, sc_edit_view_show_toolbar);
-  scmgr.set_shortcut (m_show_statusbar_action, sc_edit_view_show_statusbar);
-  scmgr.set_shortcut (m_show_hscrollbar_action, sc_edit_view_show_hscrollbar);
-  scmgr.set_shortcut (m_zoom_in_action, sc_edit_view_zoom_in);
-  scmgr.set_shortcut (m_zoom_out_action, sc_edit_view_zoom_out);
-  scmgr.set_shortcut (m_zoom_normal_action, sc_edit_view_zoom_normal);
-  scmgr.set_shortcut (m_sort_tabs_action, sc_edit_view_sort_tabs);
+  settings.set_shortcut (m_show_linenum_action, sc_edit_view_show_line_numbers);
+  settings.set_shortcut (m_show_whitespace_action, sc_edit_view_show_white_spaces);
+  settings.set_shortcut (m_show_eol_action, sc_edit_view_show_eol_chars);
+  settings.set_shortcut (m_show_indguide_action, sc_edit_view_show_ind_guides);
+  settings.set_shortcut (m_show_longline_action, sc_edit_view_show_long_line);
+  settings.set_shortcut (m_show_toolbar_action, sc_edit_view_show_toolbar);
+  settings.set_shortcut (m_show_statusbar_action, sc_edit_view_show_statusbar);
+  settings.set_shortcut (m_show_hscrollbar_action, sc_edit_view_show_hscrollbar);
+  settings.set_shortcut (m_zoom_in_action, sc_edit_view_zoom_in);
+  settings.set_shortcut (m_zoom_out_action, sc_edit_view_zoom_out);
+  settings.set_shortcut (m_zoom_normal_action, sc_edit_view_zoom_normal);
+  settings.set_shortcut (m_sort_tabs_action, sc_edit_view_sort_tabs);
 
   // Debug menu
-  scmgr.set_shortcut (m_toggle_breakpoint_action, sc_edit_debug_toggle_breakpoint);
-  scmgr.set_shortcut (m_next_breakpoint_action, sc_edit_debug_next_breakpoint);
-  scmgr.set_shortcut (m_previous_breakpoint_action, sc_edit_debug_previous_breakpoint);
-  scmgr.set_shortcut (m_remove_all_breakpoints_action, sc_edit_debug_remove_breakpoints);
+  settings.set_shortcut (m_toggle_breakpoint_action, sc_edit_debug_toggle_breakpoint);
+  settings.set_shortcut (m_next_breakpoint_action, sc_edit_debug_next_breakpoint);
+  settings.set_shortcut (m_previous_breakpoint_action, sc_edit_debug_previous_breakpoint);
+  settings.set_shortcut (m_remove_all_breakpoints_action, sc_edit_debug_remove_breakpoints);
 
   // Run menu
-  scmgr.set_shortcut (m_run_action, sc_edit_run_run_file);
-  scmgr.set_shortcut (m_run_selection_action, sc_edit_run_run_selection);
+  settings.set_shortcut (m_run_action, sc_edit_run_run_file);
+  settings.set_shortcut (m_run_selection_action, sc_edit_run_run_selection);
 
   // Help menu
-  scmgr.set_shortcut (m_context_help_action, sc_edit_help_help_keyword);
-  scmgr.set_shortcut (m_context_doc_action,  sc_edit_help_doc_keyword);
+  settings.set_shortcut (m_context_help_action, sc_edit_help_help_keyword);
+  settings.set_shortcut (m_context_doc_action,  sc_edit_help_doc_keyword);
 
   // Tab navigation without menu entries
-  scmgr.set_shortcut (m_switch_left_tab_action, sc_edit_tabs_switch_left_tab);
-  scmgr.set_shortcut (m_switch_right_tab_action, sc_edit_tabs_switch_right_tab);
-  scmgr.set_shortcut (m_move_tab_left_action, sc_edit_tabs_move_tab_left);
-  scmgr.set_shortcut (m_move_tab_right_action, sc_edit_tabs_move_tab_right);
-
+  settings.set_shortcut (m_switch_left_tab_action, sc_edit_tabs_switch_left_tab);
+  settings.set_shortcut (m_switch_right_tab_action, sc_edit_tabs_switch_right_tab);
+  settings.set_shortcut (m_move_tab_left_action, sc_edit_tabs_move_tab_left);
+  settings.set_shortcut (m_move_tab_right_action, sc_edit_tabs_move_tab_right);
 }
 
 // This slot is a reimplementation of the virtual slot in octave_dock_widget.
@@ -1496,9 +1497,8 @@ void file_editor::handle_visibility (bool visible)
   if (m_closed && visible)
     {
       m_closed = false;
-      resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-      gui_settings *settings = rmgr.get_settings ();
-      restore_session (settings);
+
+      restore_session ();
     }
 
   empty_script (false, visible);
@@ -1525,28 +1525,28 @@ void file_editor::update_octave_directory (const QString& dir)
   emit fetab_set_directory (m_ced);  // for save dialog
 }
 
-void file_editor::copyClipboard (void)
+void file_editor::copyClipboard ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_COPY);
 }
 
-void file_editor::pasteClipboard (void)
+void file_editor::pasteClipboard ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_PASTE);
 }
 
-void file_editor::selectAll (void)
+void file_editor::selectAll ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_SELECTALL);
 }
 
-void file_editor::do_undo (void)
+void file_editor::do_undo ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
@@ -1562,10 +1562,9 @@ void file_editor::request_open_file (const QString& openFileName,
                                      const QString& cond, int index,
                                      const QString& bookmarks)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
-  if (settings->value (global_use_custom_editor).toBool ())
+  if (settings.bool_value (global_use_custom_editor))
     {
       // Custom editor
       if (debug_pointer || breakpoint_marker)
@@ -1575,8 +1574,7 @@ void file_editor::request_open_file (const QString& openFileName,
         return;   // Custom editor called
     }
 
-  bool show_dbg_file
-    = settings->value (ed_show_dbg_file).toBool ();
+  bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
 
   if (openFileName.isEmpty ())
     {
@@ -1693,7 +1691,7 @@ void file_editor::request_open_file (const QString& openFileName,
                   bool create_file = true;
                   QMessageBox *msgBox;
 
-                  if (! settings->value (ed_create_new_file).toBool ())
+                  if (! settings.bool_value (ed_create_new_file))
                     {
                       msgBox = new QMessageBox (QMessageBox::Question,
                                                 tr ("Octave Editor"),
@@ -1865,9 +1863,9 @@ void file_editor::edit_status_update (bool undo, bool redo)
 // handler for the close event
 void file_editor::closeEvent (QCloseEvent *e)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (settings->value (ed_hiding_closes_files).toBool ())
+  gui_settings settings;
+
+  if (settings.bool_value (ed_hiding_closes_files))
     {
       if (check_closing ())
         {
@@ -1906,7 +1904,7 @@ void file_editor::dropEvent (QDropEvent *e)
     }
 }
 
-bool file_editor::is_editor_console_tabbed (void)
+bool file_editor::is_editor_console_tabbed ()
 {
   // FIXME: is there a way to do this job that doesn't require casting
   // the parent to a main_window object?
@@ -1929,7 +1927,7 @@ bool file_editor::is_editor_console_tabbed (void)
   return false;
 }
 
-void file_editor::construct (void)
+void file_editor::construct ()
 {
   QWidget *editor_widget = new QWidget (this);
 
@@ -1947,13 +1945,12 @@ void file_editor::construct (void)
 
   m_tab_widget = new file_editor_tab_widget (editor_widget, this);
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
   // the mru-list and an empty array of actions
-  gui_settings *settings = rmgr.get_settings ();
-  m_mru_files = settings->value (ed_mru_file_list).toStringList ();
-  m_mru_files_encodings = settings->value (ed_mru_file_encodings)
-    .toStringList ();
+
+  gui_settings settings;
+
+  m_mru_files = settings.string_list_value (ed_mru_file_list);
+  m_mru_files_encodings = settings.string_list_value (ed_mru_file_encodings);
 
   if (m_mru_files_encodings.count () != m_mru_files.count ())
     {
@@ -1991,33 +1988,33 @@ void file_editor::construct (void)
   m_fileMenu->addSeparator ();
 
   m_save_action
-    = add_action (m_fileMenu, rmgr.icon ("document-save"),
+    = add_action (m_fileMenu, settings.icon ("document-save"),
                   tr ("&Save File"), SLOT (request_save_file (bool)));
 
   m_save_as_action
-    = add_action (m_fileMenu, rmgr.icon ("document-save-as"),
+    = add_action (m_fileMenu, settings.icon ("document-save-as"),
                   tr ("Save File &As..."),
                   SLOT (request_save_file_as (bool)));
 
   m_fileMenu->addSeparator ();
 
   m_close_action
-    = add_action (m_fileMenu, rmgr.icon ("window-close", false),
+    = add_action (m_fileMenu, settings.icon ("window-close", false),
                   tr ("&Close"), SLOT (request_close_file (bool)));
 
   m_close_all_action
-    = add_action (m_fileMenu, rmgr.icon ("window-close", false),
+    = add_action (m_fileMenu, settings.icon ("window-close", false),
                   tr ("Close All"), SLOT (request_close_all_files (bool)));
 
   m_close_others_action
-    = add_action (m_fileMenu, rmgr.icon ("window-close", false),
+    = add_action (m_fileMenu, settings.icon ("window-close", false),
                   tr ("Close Other Files"),
                   SLOT (request_close_other_files (bool)));
 
   m_fileMenu->addSeparator ();
 
   m_print_action
-    = add_action (m_fileMenu, rmgr.icon ("document-print"),
+    = add_action (m_fileMenu, settings.icon ("document-print"),
                   tr ("Print..."), SLOT (request_print_file (bool)));
 
   // edit menu (undo, copy, paste and select all later via main window)
@@ -2025,19 +2022,19 @@ void file_editor::construct (void)
   m_edit_menu = add_menu (m_menu_bar, tr ("&Edit"));
 
   m_redo_action
-    = add_action (m_edit_menu, rmgr.icon ("edit-redo"),
+    = add_action (m_edit_menu, settings.icon ("edit-redo"),
                   tr ("&Redo"), SLOT (request_redo (bool)));
   m_redo_action->setEnabled (false);
 
   m_edit_menu->addSeparator ();
 
   m_cut_action
-    = add_action (m_edit_menu, rmgr.icon ("edit-cut"),
+    = add_action (m_edit_menu, settings.icon ("edit-cut"),
                   tr ("Cu&t"), SLOT (request_cut (bool)));
   m_cut_action->setEnabled (false);
 
   m_find_action
-    = add_action (m_edit_menu, rmgr.icon ("edit-find-replace"),
+    = add_action (m_edit_menu, settings.icon ("edit-find-replace"),
                   tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
   m_find_next_action
@@ -2134,7 +2131,7 @@ void file_editor::construct (void)
 
   m_smart_indent_line_or_selection_action
     = add_action (m_edit_fmt_menu, tr ("Indent Code"),
-                  SLOT (request_smart_indent_line_or_selected_text (void)));
+                  SLOT (request_smart_indent_line_or_selected_text ()));
 
   m_edit_fmt_menu->addSeparator ();
 
@@ -2189,12 +2186,12 @@ void file_editor::construct (void)
   m_edit_menu->addSeparator ();
 
   m_preferences_action
-    = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
+    = add_action (m_edit_menu, settings.icon ("preferences-system"),
                   tr ("&Preferences..."),
                   SLOT (request_preferences (bool)));
 
   m_styles_preferences_action
-    = add_action (m_edit_menu, rmgr.icon ("preferences-system"),
+    = add_action (m_edit_menu, settings.icon ("preferences-system"),
                   tr ("&Styles Preferences..."),
                   SLOT (request_styles_preferences (bool)));
 
@@ -2249,22 +2246,22 @@ void file_editor::construct (void)
   view_menu->addSeparator ();
 
   m_zoom_in_action
-    = add_action (view_menu, rmgr.icon ("view-zoom-in"), tr ("Zoom &In"),
+    = add_action (view_menu, settings.icon ("view-zoom-in"), tr ("Zoom &In"),
                   SLOT (zoom_in (bool)));
 
   m_zoom_out_action
-    = add_action (view_menu, rmgr.icon ("view-zoom-out"), tr ("Zoom &Out"),
-                  SLOT (zoom_out (bool)));
+    = add_action (view_menu, settings.icon ("view-zoom-out"),
+                  tr ("Zoom &Out"), SLOT (zoom_out (bool)));
 
   m_zoom_normal_action
-    = add_action (view_menu, rmgr.icon ("view-zoom-original"), tr ("&Normal Size"),
-                  SLOT (zoom_normal (bool)));
+    = add_action (view_menu, settings.icon ("view-zoom-original"),
+                  tr ("&Normal Size"), SLOT (zoom_normal (bool)));
 
   view_menu->addSeparator ();
 
   m_sort_tabs_action
     = add_action (view_menu, tr ("&Sort Tabs Alphabetically"),
-                  SLOT (sort_tabs_alph (void)),
+                  SLOT (sort_tabs_alph ()),
                   m_tab_widget->get_tab_bar ());
 
   m_menu_bar->addMenu (view_menu);
@@ -2274,22 +2271,22 @@ void file_editor::construct (void)
   m_debug_menu = add_menu (m_menu_bar, tr ("&Debug"));
 
   m_toggle_breakpoint_action
-    = add_action (m_debug_menu, rmgr.icon ("bp-toggle"),
+    = add_action (m_debug_menu, settings.icon ("bp-toggle"),
                   tr ("Toggle &Breakpoint"),
                   SLOT (request_toggle_breakpoint (bool)));
 
   m_next_breakpoint_action
-    = add_action (m_debug_menu, rmgr.icon ("bp-next"),
+    = add_action (m_debug_menu, settings.icon ("bp-next"),
                   tr ("&Next Breakpoint"),
                   SLOT (request_next_breakpoint (bool)));
 
   m_previous_breakpoint_action
-    = add_action (m_debug_menu, rmgr.icon ("bp-prev"),
+    = add_action (m_debug_menu, settings.icon ("bp-prev"),
                   tr ("Pre&vious Breakpoint"),
                   SLOT (request_previous_breakpoint (bool)));
 
   m_remove_all_breakpoints_action
-    = add_action (m_debug_menu, rmgr.icon ("bp-rm-all"),
+    = add_action (m_debug_menu, settings.icon ("bp-rm-all"),
                   tr ("&Remove All Breakpoints"),
                   SLOT (request_remove_breakpoint (bool)));
 
@@ -2303,7 +2300,7 @@ void file_editor::construct (void)
 
   m_run_action
     = add_action (_run_menu,
-                  rmgr.icon ("system-run"),
+                  settings.icon ("system-run"),
                   tr ("Save File and Run / Continue"),
                   SLOT (request_run_file (bool)));
 
@@ -2330,19 +2327,19 @@ void file_editor::construct (void)
   // tab navigation (no menu, only actions; slots in tab_bar)
 
   m_switch_left_tab_action
-    = add_action (nullptr, "", SLOT (switch_left_tab (void)),
+    = add_action (nullptr, "", SLOT (switch_left_tab ()),
                   m_tab_widget->get_tab_bar ());
 
   m_switch_right_tab_action
-    = add_action (nullptr, "", SLOT (switch_right_tab (void)),
+    = add_action (nullptr, "", SLOT (switch_right_tab ()),
                   m_tab_widget->get_tab_bar ());
 
   m_move_tab_left_action
-    = add_action (nullptr, "", SLOT (move_tab_left (void)),
+    = add_action (nullptr, "", SLOT (move_tab_left ()),
                   m_tab_widget->get_tab_bar ());
 
   m_move_tab_right_action
-    = add_action (nullptr, "", SLOT (move_tab_right (void)),
+    = add_action (nullptr, "", SLOT (move_tab_right ()),
                   m_tab_widget->get_tab_bar ());
 
   // toolbar
@@ -2383,7 +2380,7 @@ void file_editor::construct (void)
   vbox_layout->addWidget (m_menu_bar);
   vbox_layout->addWidget (m_tool_bar);
   vbox_layout->addWidget (m_tab_widget);
-  vbox_layout->setMargin (0);
+  vbox_layout->setContentsMargins (0, 0, 0, 0);
   vbox_layout->setSpacing (0);
   editor_widget->setLayout (vbox_layout);
   setWidget (editor_widget);
@@ -2420,7 +2417,7 @@ void file_editor::construct (void)
 }
 
 // Slot when autocompletion list was cancelled
-void file_editor::handle_autoc_cancelled (void)
+void file_editor::handle_autoc_cancelled ()
 {
   // List was cancelled but somehow still active and blocking the
   // edit area from accepting shortcuts. Only after another keypress
@@ -2444,7 +2441,7 @@ void file_editor::handle_autoc_cancelled (void)
     qsci->undo ();
 }
 
-file_editor_tab *file_editor::reset_focus (void)
+file_editor_tab *file_editor::reset_focus ()
 {
   // Reset the focus of the tab and the related edit area
   file_editor_tab *f
@@ -2456,9 +2453,12 @@ file_editor_tab *file_editor::reset_focus (void)
 file_editor_tab *
 file_editor::make_file_editor_tab (const QString& directory)
 {
-  file_editor_tab *f = new file_editor_tab (m_octave_qobj, directory);
+  file_editor_tab *f = new file_editor_tab (directory);
 
   // signals from the qscintilla edit area
+  connect (f->qsci_edit_area (), &octave_qscintilla::show_symbol_tooltip_signal,
+           this, &file_editor::show_symbol_tooltip_signal);
+
   connect (f->qsci_edit_area (), &octave_qscintilla::status_update,
            this, &file_editor::edit_status_update);
 
@@ -2467,10 +2467,10 @@ file_editor::make_file_editor_tab (const QString& directory)
 
   connect (f->qsci_edit_area (),
            SIGNAL (SCN_AUTOCCOMPLETED (const char *, int, int, int)),
-           this, SLOT (reset_focus (void)));
+           this, SLOT (reset_focus ()));
 
-  connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED (void)),
-           this, SLOT (handle_autoc_cancelled (void)));
+  connect (f->qsci_edit_area (), SIGNAL (SCN_AUTOCCANCELLED ()),
+           this, SLOT (handle_autoc_cancelled ()));
 
   // signals from the qscintilla edit area
   connect (this, &file_editor::enter_debug_mode_signal,
@@ -2509,7 +2509,7 @@ file_editor::make_file_editor_tab (const QString& directory)
 
   // Signals from the file_editor or main-win non-trivial operations
   connect (this, &file_editor::fetab_settings_changed,
-           f, [=] (const gui_settings *settings) { f->notice_settings (settings); });
+           f, [=] () { f->notice_settings (); });
 
   connect (this, &file_editor::fetab_change_request,
            f, &file_editor_tab::change_editor_state);
@@ -2663,7 +2663,7 @@ void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
   check_actions ();
 }
 
-void file_editor::mru_menu_update (void)
+void file_editor::mru_menu_update ()
 {
   int num_files = qMin (m_mru_files.size (), int (MaxMRUFiles));
 
@@ -2693,22 +2693,23 @@ void file_editor::mru_menu_update (void)
     }
 
   // save actual mru-list in settings
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
 
-  settings->setValue (ed_mru_file_list.key,  m_mru_files);
-  settings->setValue (ed_mru_file_encodings.key,  m_mru_files_encodings);
-  settings->sync ();
+  gui_settings settings;
+
+  settings.setValue (ed_mru_file_list.settings_key (),  m_mru_files);
+  settings.setValue (ed_mru_file_encodings.settings_key (),  m_mru_files_encodings);
+
+  settings.sync ();
 }
 
 bool file_editor::call_custom_editor (const QString& file_name, int line)
 {
   // Check if the user wants to use a custom file editor.
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
 
-  if (settings->value (global_use_custom_editor.key,
-                       global_use_custom_editor.def).toBool ())
+  gui_settings settings;
+
+  if (settings.value (global_use_custom_editor.settings_key (),
+                       global_use_custom_editor.def ()).toBool ())
     {
       // use the external editor interface for handling the call
       emit request_open_file_external (file_name, line);
@@ -2725,12 +2726,11 @@ bool file_editor::call_custom_editor (const QString& file_name, int line)
 
 void file_editor::toggle_preference (const gui_pref& preference)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
-  bool old = settings->value (preference).toBool ();
-  settings->setValue (preference.key, ! old);
-  notice_settings (settings);
+  bool old = settings.bool_value (preference);
+  settings.setValue (preference.settings_key (), ! old);
+  notice_settings ();
 }
 
 // Function for closing the files in a removed directory
@@ -2802,7 +2802,7 @@ void file_editor::handle_dir_remove (const QString& old_name,
     }
 }
 
-bool file_editor::editor_tab_has_focus (void)
+bool file_editor::editor_tab_has_focus ()
 {
   QWidget *foc_w = focusWidget ();
   if (foc_w && foc_w->inherits ("octave::octave_qscintilla"))
@@ -2827,7 +2827,8 @@ file_editor_tab *file_editor::find_tab_widget (const QString& file)
       //
       // is false
 
-      if (same_file (std_file, tab_file.toStdString ()) || file == tab_file)
+      if (sys::same_file (std_file, tab_file.toStdString ())
+          || file == tab_file)
         return fe_tab;
     }
 

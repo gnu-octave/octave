@@ -499,7 +499,7 @@ DASSL::integrate (const ColumnVector& tout, Matrix& xdot_out,
 }
 
 std::string
-DASSL::error_message (void) const
+DASSL::error_message () const
 {
   std::string retval;
 

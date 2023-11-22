@@ -37,18 +37,22 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class interpreter;
+
 class OCTINTERP_API gtk_manager
 {
 public:
 
-  gtk_manager (void) { }
+  gtk_manager (interpreter& interp) : m_interpreter (interp) { }
 
-  ~gtk_manager (void)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (gtk_manager)
+
+  ~gtk_manager ()
   {
     unload_all_toolkits ();
   }
 
-  graphics_toolkit get_toolkit (void) const;
+  graphics_toolkit get_toolkit () const;
 
   void register_toolkit (const std::string& name);
 
@@ -74,7 +78,7 @@ public:
       return graphics_toolkit ();
   }
 
-  Cell available_toolkits_list (void) const
+  Cell available_toolkits_list () const
   {
     Cell m (1, m_available_toolkits.size ());
 
@@ -85,7 +89,7 @@ public:
     return m;
   }
 
-  Cell loaded_toolkits_list (void) const
+  Cell loaded_toolkits_list () const
   {
     Cell m (1, m_loaded_toolkits.size ());
 
@@ -96,7 +100,7 @@ public:
     return m;
   }
 
-  void unload_all_toolkits (void)
+  void unload_all_toolkits ()
   {
     while (! m_loaded_toolkits.empty ())
       {
@@ -112,9 +116,11 @@ public:
       }
   }
 
-  std::string default_toolkit (void) const { return m_dtk; }
+  std::string default_toolkit () const { return m_dtk; }
 
 private:
+
+  interpreter& m_interpreter;
 
   // The name of the default toolkit.
   std::string m_dtk;

@@ -77,6 +77,7 @@ freeze (Array<octave::idx_vector>& ra_idx, const dim_vector& dimensions,
 
 extern OCTAVE_API bool vector_equivalent (const dim_vector& dv);
 
+OCTAVE_DEPRECATED (9, "all_ok (Array<octave::idx_vector>&) is obsolete and always returns true")
 extern OCTAVE_API bool all_ok (const Array<octave::idx_vector>& ra_idx);
 
 extern OCTAVE_API bool

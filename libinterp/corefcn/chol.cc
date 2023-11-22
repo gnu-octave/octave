@@ -760,41 +760,41 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %! R = chol (A);
 %! R1 = cholupdate (R, u);
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - R'*R - u*u', Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - R'*R - u*u', Inf), 0, 1e1*eps);
 %!
 %! R1 = cholupdate (R1, u, "-");
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1 - R, Inf) < 1e1*eps);
+%! assert (norm (R1 - R, Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (Ac);
 %! R1 = cholupdate (R, uc);
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - R'*R - uc*uc', Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - R'*R - uc*uc', Inf), 0, 1e1*eps);
 %!
 %! R1 = cholupdate (R1, uc, "-");
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1 - R, Inf) < 1e1*eps);
+%! assert (norm (R1 - R, Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (single (A));
 %! R1 = cholupdate (R, single (u));
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (R1'*R1 - R'*R - single (u*u'), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - R'*R - single (u*u'), Inf), 0, 1e1* eps ("single"));
 %!
 %! R1 = cholupdate (R1, single (u), "-");
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (R1 - R, Inf) < 2e1* eps ("single"));
+%! assert (norm (R1 - R, Inf), 0, 2e1* eps ("single"));
 
 %!test
 %! R = chol (single (Ac));
 %! R1 = cholupdate (R, single (uc));
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (R1'*R1 - R'*R - single (uc*uc'), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - R'*R - single (uc*uc'), Inf), 0, 1e1* eps ("single"));
 %!
 %! R1 = cholupdate (R1, single (uc), "-");
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (R1 - R, Inf) < 2e1* eps ("single"));
+%! assert (norm (R1 - R, Inf), 0, 2e1* eps ("single"));
 */
 
 DEFUN (cholinsert, args, nargout,
@@ -930,7 +930,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %! A1 = R1'*R1;
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (A1(p,p) - A, Inf) < 1e1*eps);
+%! assert (norm (A1(p,p) - A, Inf), 0, 1e1*eps);
 
 %!test
 %! u2 = [  0.35080  + 0.04298i;
@@ -946,7 +946,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %! A1 = R1'*R1;
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (A1(p,p) - Ac, Inf) < 1e1*eps);
+%! assert (norm (A1(p,p) - Ac, Inf), 0, 1e1*eps);
 
 %!test
 %! u2 = single ([  0.35080 ;
@@ -962,7 +962,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %! A1 = R1'*R1;
 %!
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (A1(p,p) - A, Inf) < 1e1* eps ("single"));
+%! assert (norm (A1(p,p) - A, Inf), 0, 1e1* eps ("single"));
 
 %!test
 %! u2 = single ([  0.35080  + 0.04298i;
@@ -978,7 +978,7 @@ If @var{info} is not present, an error message is printed in cases 1 and 2.
 %! A1 = R1'*R1;
 %!
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (A1(p,p) - single (Ac), Inf) < 2e1* eps ("single"));
+%! assert (norm (A1(p,p) - single (Ac), Inf), 0, 2e1* eps ("single"));
 
 %!test
 %! cu = chol (triu (A), "upper");
@@ -1147,7 +1147,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 %! R1 = choldelete (R, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - A(p,p), Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - A(p,p), Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (Ac);
@@ -1156,7 +1156,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 %! R1 = choldelete (R, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - Ac(p,p), Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - Ac(p,p), Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (single (A));
@@ -1165,7 +1165,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 %! R1 = choldelete (R, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (R1'*R1 - single (A(p,p)), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - single (A(p,p)), Inf), 0, 1e1* eps ("single"));
 
 %!test
 %! R = chol (single (Ac));
@@ -1174,7 +1174,7 @@ triangular, return the Cholesky@tie{}factorization of @w{A(p,p)}, where
 %! R1 = choldelete (R,j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), single (0));
-%! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - single (Ac(p,p)), Inf), 0, 1e1* eps ("single"));
 */
 
 DEFUN (cholshift, args, ,
@@ -1280,13 +1280,13 @@ triangular, return the Cholesky@tie{}factorization of
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - A(p,p), Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - A(p,p), Inf), 0, 1e1*eps);
 %!
 %! j = 1;  i = 3;  p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1) - R1, Inf), 0);
-%! assert (norm (R1'*R1 - A(p,p), Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - A(p,p), Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (Ac);
@@ -1295,13 +1295,13 @@ triangular, return the Cholesky@tie{}factorization of
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - Ac(p,p), Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - Ac(p,p), Inf), 0, 1e1*eps);
 %!
 %! j = 1;  i = 3;  p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - Ac(p,p), Inf) < 1e1*eps);
+%! assert (norm (R1'*R1 - Ac(p,p), Inf), 0, 1e1*eps);
 
 %!test
 %! R = chol (single (A));
@@ -1310,13 +1310,13 @@ triangular, return the Cholesky@tie{}factorization of
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - single (A(p,p)), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - single (A(p,p)), Inf), 0, 1e1* eps ("single"));
 %!
 %! j = 1;  i = 3;  p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - single (A(p,p)), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - single (A(p,p)), Inf), 0, 1e1* eps ("single"));
 
 %!test
 %! R = chol (single (Ac));
@@ -1325,13 +1325,13 @@ triangular, return the Cholesky@tie{}factorization of
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - single (Ac(p,p)), Inf), 0, 1e1* eps ("single"));
 %!
 %! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
-%! assert (norm (R1'*R1 - single (Ac(p,p)), Inf) < 1e1* eps ("single"));
+%! assert (norm (R1'*R1 - single (Ac(p,p)), Inf), 0, 1e1* eps ("single"));
 */
 
 OCTAVE_END_NAMESPACE(octave)

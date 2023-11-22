@@ -46,25 +46,23 @@ public:
 
   typedef int (*close_fcn) (FILE *);
 
-  FILE * stdiofile (void) { return m_f; }
+  FILE * stdiofile () { return m_f; }
+
+  c_file_ptr_buf () = delete;
 
   c_file_ptr_buf (FILE *f, close_fcn cf = file_close)
     : std::streambuf (), m_f (f), m_cf (cf)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (c_file_ptr_buf)
 
-  c_file_ptr_buf (const c_file_ptr_buf&) = delete;
-
-  c_file_ptr_buf& operator = (const c_file_ptr_buf&) = delete;
-
-  ~c_file_ptr_buf (void);
+  ~c_file_ptr_buf ();
 
   int_type overflow (int_type);
 
-  int_type underflow (void) { return underflow_common (false); }
+  int_type underflow () { return underflow_common (false); }
 
-  int_type uflow (void) { return underflow_common (true); }
+  int_type uflow () { return underflow_common (true); }
 
   int_type pbackfail (int_type);
 
@@ -78,19 +76,19 @@ public:
   std::streampos seekpos (std::streampos,
                           std::ios::openmode = std::ios::in | std::ios::out);
 
-  int sync (void);
+  int sync ();
 
-  int flush (void);
+  int flush ();
 
-  int buf_close (void);
+  int buf_close ();
 
   int file_number () const { return m_f ? fileno (m_f) : -1; }
 
   int seek (off_t offset, int origin);
 
-  off_t tell (void);
+  off_t tell ();
 
-  void clear (void) { if (m_f) clearerr (m_f); }
+  void clear () { if (m_f) clearerr (m_f); }
 
   static int file_close (FILE *m_f);
 
@@ -113,29 +111,27 @@ c_file_ptr_stream : public STREAM_T
 {
 public:
 
+  c_file_ptr_stream () = delete;
+
   c_file_ptr_stream (FILE_T m_f,
                      typename BUF_T::close_fcn m_cf = BUF_T::file_close)
     : STREAM_T (nullptr), m_buf (new BUF_T (m_f, m_cf))
   { STREAM_T::init (m_buf); }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (c_file_ptr_stream)
 
-  c_file_ptr_stream (const c_file_ptr_stream&) = delete;
+  ~c_file_ptr_stream () { delete m_buf; m_buf = nullptr; }
 
-  c_file_ptr_stream& operator = (const c_file_ptr_stream&) = delete;
+  BUF_T * rdbuf () { return m_buf; }
 
-  ~c_file_ptr_stream (void) { delete m_buf; m_buf = nullptr; }
-
-  BUF_T * rdbuf (void) { return m_buf; }
-
-  void stream_close (void) { if (m_buf) m_buf->buf_close (); }
+  void stream_close () { if (m_buf) m_buf->buf_close (); }
 
   int seek (off_t offset, int origin)
   { return m_buf ? m_buf->seek (offset, origin) : -1; }
 
-  off_t tell (void) { return m_buf ? m_buf->tell () : -1; }
+  off_t tell () { return m_buf ? m_buf->tell () : -1; }
 
-  void clear (void) { if (m_buf) m_buf->clear (); STREAM_T::clear (); }
+  void clear () { if (m_buf) m_buf->clear (); STREAM_T::clear (); }
 
 private:
 
@@ -161,25 +157,23 @@ public:
 
   typedef int (*close_fcn) (gzFile);
 
-  gzFile stdiofile (void) { return m_f; }
+  gzFile stdiofile () { return m_f; }
+
+  c_zfile_ptr_buf () = delete;
 
   c_zfile_ptr_buf (gzFile f, close_fcn cf = file_close)
     : std::streambuf (), m_f (f), m_cf (cf)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (c_zfile_ptr_buf)
 
-  c_zfile_ptr_buf (const c_zfile_ptr_buf&) = delete;
-
-  c_zfile_ptr_buf& operator = (const c_zfile_ptr_buf&) = delete;
-
-  ~c_zfile_ptr_buf (void);
+  ~c_zfile_ptr_buf ();
 
   int_type overflow (int_type);
 
-  int_type underflow (void) { return underflow_common (false); }
+  int_type underflow () { return underflow_common (false); }
 
-  int_type uflow (void) { return underflow_common (true); }
+  int_type uflow () { return underflow_common (true); }
 
   int_type pbackfail (int_type);
 
@@ -193,20 +187,20 @@ public:
   std::streampos seekpos (std::streampos,
                           std::ios::openmode = std::ios::in | std::ios::out);
 
-  int sync (void);
+  int sync ();
 
-  int flush (void);
+  int flush ();
 
-  int buf_close (void);
+  int buf_close ();
 
   int file_number () const { return -1; }
 
   int seek (off_t offset, int origin)
   { return m_f ? gzseek (m_f, offset, origin) >= 0 : -1; }
 
-  off_t tell (void) { return m_f ? gztell (m_f) : -1; }
+  off_t tell () { return m_f ? gztell (m_f) : -1; }
 
-  void clear (void) { if (m_f) gzclearerr (m_f); }
+  void clear () { if (m_f) gzclearerr (m_f); }
 
   static int file_close (gzFile m_f) { return ::gzclose (m_f); }
 
@@ -231,40 +225,5 @@ typedef c_file_ptr_stream<std::iostream, gzFile, c_zfile_ptr_buf>
 #endif
 
 OCTAVE_END_NAMESPACE(octave)
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::i_c_file_ptr_stream' instead")
-typedef octave::i_c_file_ptr_stream i_c_file_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::o_c_file_ptr_stream' instead")
-typedef octave::o_c_file_ptr_stream o_c_file_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::io_c_file_ptr_stream' instead")
-typedef octave::io_c_file_ptr_stream io_c_file_ptr_stream;
-
-// FIXME: HAVE_ZLIB is not defined here because we do not (and should
-// not) include config.h in this header file.  We need to find a way to
-// define this interface without exposing gzFile.  Should this be a
-// private header that can only be used if included after config.h in an
-// Octave source file and not inside another header file?
-
-#  if defined (HAVE_ZLIB)
-
-OCTAVE_DEPRECATED (7, "use 'octave::i_c_zfile_ptr_stream' instead")
-typedef octave::c_file_ptr_stream<std::istream, gzFile, octave::c_zfile_ptr_buf>
-  i_c_zfile_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::o_c_zfile_ptr_stream' instead")
-typedef octave::c_file_ptr_stream<std::ostream, gzFile, octave::c_zfile_ptr_buf>
-  o_c_zfile_ptr_stream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::io_c_zfile_ptr_stream' instead")
-typedef octave::c_file_ptr_stream<std::iostream, gzFile, octave::c_zfile_ptr_buf>
-  io_c_zfile_ptr_stream;
-
-#  endif
-
-#endif
 
 #endif

@@ -31,17 +31,15 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class external_editor_interface : public QWidget
 {
   Q_OBJECT
 
 public:
 
-  external_editor_interface (QWidget *main_win, base_qobject& oct_qobj);
+  external_editor_interface (QWidget *main_win);
 
-  ~external_editor_interface (void) = default;
+  ~external_editor_interface () = default;
 
 signals:
 
@@ -63,9 +61,7 @@ public slots:
 
 private:
 
-  QString external_editor (void);
-
-  base_qobject& m_octave_qobj;
+  QString external_editor ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

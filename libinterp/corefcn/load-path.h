@@ -51,15 +51,13 @@ public:
 
   typedef void (*hook_fcn_ptr) (const std::string& dir);
 
-  load_path (const load_path&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (load_path)
 
-  load_path& operator = (const load_path&) = delete;
-
-  ~load_path (void) = default;
+  ~load_path () = default;
 
   void initialize (bool set_initial_path = false);
 
-  void clear (void);
+  void clear ();
 
   void set (const std::string& p, bool warn = false, bool is_init = false);
 
@@ -69,7 +67,7 @@ public:
 
   bool remove (const std::string& dir);
 
-  void update (void);
+  void update ();
 
   bool contains_canonical (const std::string& dir_name) const;
 
@@ -159,36 +157,36 @@ public:
 
   string_vector find_all_first_of (const string_vector& files) const;
 
-  string_vector dirs (void) const;
+  string_vector dirs () const;
 
-  std::list<std::string> dir_list (void) const;
+  std::list<std::string> dir_list () const;
 
   string_vector files (const std::string& dir, bool omit_exts = false) const;
 
-  string_vector fcn_names (void) const;
+  string_vector fcn_names () const;
 
-  std::string path (void) const;
+  std::string path () const;
 
   void display (std::ostream& os) const;
 
-  std::function<void (const std::string&)> get_add_hook (void)
+  std::function<void (const std::string&)> get_add_hook ()
   {
-    return add_hook;
+    return m_add_hook;
   }
 
-  std::function<void (const std::string&)> get_remove_hook (void)
+  std::function<void (const std::string&)> get_remove_hook ()
   {
-    return remove_hook;
+    return m_remove_hook;
   }
 
   void set_add_hook (const std::function<void (const std::string&)>& f)
   {
-    add_hook = f;
+    m_add_hook = f;
   }
 
   void set_remove_hook (const std::function<void (const std::string&)>& f)
   {
-    remove_hook = f;
+    m_remove_hook = f;
   }
 
   void read_dir_config (const std::string& dir) const;
@@ -204,18 +202,28 @@ public:
       m_command_line_path += directory_path::path_sep_str () + p;
   }
 
-  std::string get_command_line_path (void) const
+  std::string get_command_line_path () const
   {
     return m_command_line_path;
   }
 
-  std::string system_path (void) const { return s_sys_path; }
+  std::string system_path () const { return s_sys_path; }
+
+  void rehash ();
 
   static const int M_FILE = 1;
   static const int OCT_FILE = 2;
   static const int MEX_FILE = 4;
 
+  static octave_idx_type get_weak_n_updated () { return s_n_updated; }
+
+  static void signal_clear_fcn_cache ()
+  {
+    s_n_updated++;
+  }
+
 private:
+  static std::atomic<octave_idx_type> s_n_updated;
 
   class dir_info
   {
@@ -230,7 +238,7 @@ private:
     struct class_info
     {
     public:
-      class_info (void) : method_file_map (), private_file_map () { }
+      class_info () : method_file_map (), private_file_map () { }
 
       class_info (const class_info& ci)
         : method_file_map (ci.method_file_map),
@@ -247,7 +255,7 @@ private:
         return *this;
       }
 
-      ~class_info (void) = default;
+      ~class_info () = default;
 
       fcn_file_map_type method_file_map;
       fcn_file_map_type private_file_map;
@@ -268,7 +276,7 @@ private:
     // This default constructor is only provided so we can create a
     // std::map of dir_info objects.  You should not use this
     // constructor for any other purpose.
-    dir_info (void) = default;
+    dir_info () = default;
 
     dir_info (const std::string& d)
       : dir_name (d), abs_dir_name (), is_relative (false),
@@ -280,17 +288,17 @@ private:
 
     dir_info (const dir_info&) = default;
 
-    ~dir_info (void) = default;
+    ~dir_info () = default;
 
     dir_info& operator = (const dir_info&) = default;
 
-    bool update (void);
+    bool update ();
 
     std::string dir_name;
     std::string abs_dir_name;
     bool is_relative;
-    sys::time dir_mtime;
-    sys::time dir_time_last_checked;
+    sys::file_time dir_mtime;
+    sys::file_time dir_time_last_checked;
     string_vector all_files;
     string_vector fcn_files;
     fcn_file_map_type private_file_map;
@@ -301,7 +309,7 @@ private:
 
   private:
 
-    void initialize (void);
+    void initialize ();
 
     void get_file_list (const std::string& d);
 
@@ -320,12 +328,14 @@ private:
   {
   public:
 
+    file_info () = delete;
+
     file_info (const std::string& d, int t) : dir_name (d), types (t) { }
 
     file_info (const file_info& fi)
       : dir_name (fi.dir_name), types (fi.types) { }
 
-    ~file_info (void) = default;
+    ~file_info () = default;
 
     file_info& operator = (const file_info& fi)
     {
@@ -404,7 +414,7 @@ private:
         m_private_fcn_map (l.m_private_fcn_map), m_method_map (l.m_method_map)
     { }
 
-    ~package_info (void) = default;
+    ~package_info () = default;
 
     package_info& operator = (const package_info& l)
     {
@@ -438,7 +448,7 @@ private:
 
     void remove (const dir_info& di);
 
-    void clear (void)
+    void clear ()
     {
       m_dir_list.clear ();
 
@@ -468,7 +478,7 @@ private:
 
     void overloads (const std::string& meth, std::list<std::string>& l) const;
 
-    string_vector fcn_names (void) const;
+    string_vector fcn_names () const;
 
   private:
 
@@ -515,9 +525,9 @@ private:
   typedef package_map_type::const_iterator const_package_map_iterator;
   typedef package_map_type::iterator package_map_iterator;
 
-  std::function<void (const std::string&)> add_hook;
+  std::function<void (const std::string&)> m_add_hook;
 
-  std::function<void (const std::string&)> remove_hook;
+  std::function<void (const std::string&)> m_remove_hook;
 
   void execute_pkg_add_or_del (const std::string& dir,
                                const std::string& script_file);
@@ -557,6 +567,8 @@ private:
   }
 
   string_vector get_file_list (const dir_info::fcn_file_map_type& lst) const;
+
+  std::string find_private_file (const std::string& fname) const;
 
   friend dir_info::fcn_file_map_type get_fcn_files (const std::string& d);
 

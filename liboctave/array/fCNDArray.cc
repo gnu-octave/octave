@@ -117,7 +117,7 @@ FloatComplexNDArray::ifourier (int dim) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::fourier2d (void) const
+FloatComplexNDArray::fourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -137,7 +137,7 @@ FloatComplexNDArray::fourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::ifourier2d (void) const
+FloatComplexNDArray::ifourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -157,7 +157,7 @@ FloatComplexNDArray::ifourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::fourierNd (void) const
+FloatComplexNDArray::fourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -172,7 +172,7 @@ FloatComplexNDArray::fourierNd (void) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::ifourierNd (void) const
+FloatComplexNDArray::ifourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -211,7 +211,7 @@ FloatComplexNDArray::ifourier (int dim) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::fourier2d (void) const
+FloatComplexNDArray::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -220,7 +220,7 @@ FloatComplexNDArray::fourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::ifourier2d (void) const
+FloatComplexNDArray::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -229,7 +229,7 @@ FloatComplexNDArray::ifourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::fourierNd (void) const
+FloatComplexNDArray::fourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -238,7 +238,7 @@ FloatComplexNDArray::fourierNd (void) const
 }
 
 FloatComplexNDArray
-FloatComplexNDArray::ifourierNd (void) const
+FloatComplexNDArray::ifourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -251,7 +251,7 @@ FloatComplexNDArray::ifourierNd (void) const
 // unary operations
 
 boolNDArray
-FloatComplexNDArray::operator ! (void) const
+FloatComplexNDArray::operator ! () const
 {
   if (any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
@@ -262,13 +262,13 @@ FloatComplexNDArray::operator ! (void) const
 // FIXME: this is not quite the right thing.
 
 bool
-FloatComplexNDArray::any_element_is_nan (void) const
+FloatComplexNDArray::any_element_is_nan () const
 {
   return do_mx_check<FloatComplex> (*this, mx_inline_any_nan);
 }
 
 bool
-FloatComplexNDArray::any_element_is_inf_or_nan (void) const
+FloatComplexNDArray::any_element_is_inf_or_nan () const
 {
   return ! do_mx_check<FloatComplex> (*this, mx_inline_all_finite);
 }
@@ -276,7 +276,7 @@ FloatComplexNDArray::any_element_is_inf_or_nan (void) const
 // Return true if no elements have imaginary components.
 
 bool
-FloatComplexNDArray::all_elements_are_real (void) const
+FloatComplexNDArray::all_elements_are_real () const
 {
   return do_mx_check<FloatComplex> (*this, mx_inline_all_real);
 }
@@ -337,7 +337,7 @@ FloatComplexNDArray::all_integers (float& max_val, float& min_val) const
 }
 
 bool
-FloatComplexNDArray::too_large_for_float (void) const
+FloatComplexNDArray::too_large_for_float () const
 {
   return false;
 }
@@ -487,25 +487,25 @@ FloatComplexNDArray::cummin (Array<octave_idx_type>& idx_arg, int dim) const
 }
 
 FloatNDArray
-FloatComplexNDArray::abs (void) const
+FloatComplexNDArray::abs () const
 {
   return do_mx_unary_map<float, FloatComplex, std::abs> (*this);
 }
 
 boolNDArray
-FloatComplexNDArray::isnan (void) const
+FloatComplexNDArray::isnan () const
 {
   return do_mx_unary_map<bool, FloatComplex, octave::math::isnan> (*this);
 }
 
 boolNDArray
-FloatComplexNDArray::isinf (void) const
+FloatComplexNDArray::isinf () const
 {
   return do_mx_unary_map<bool, FloatComplex, octave::math::isinf> (*this);
 }
 
 boolNDArray
-FloatComplexNDArray::isfinite (void) const
+FloatComplexNDArray::isfinite () const
 {
   return do_mx_unary_map<bool, FloatComplex, octave::math::isfinite> (*this);
 }

@@ -33,15 +33,12 @@
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
-#include "octave-qobject.h"
-
 #include "interpreter.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 ContextMenu *
-ContextMenu::create (octave::base_qobject& oct_qobj,
-                     octave::interpreter& interp, const graphics_object& go)
+ContextMenu::create (octave::interpreter& interp, const graphics_object& go)
 {
   Object *xparent = parentObject (interp, go);
 
@@ -49,16 +46,15 @@ ContextMenu::create (octave::base_qobject& oct_qobj,
     {
       QWidget *w = xparent->qWidget<QWidget> ();
 
-      return new ContextMenu (oct_qobj, interp, go, new QMenu (w));
+      return new ContextMenu (interp, go, new QMenu (w));
     }
 
   return nullptr;
 }
 
-ContextMenu::ContextMenu (octave::base_qobject& oct_qobj,
-                          octave::interpreter& interp,
+ContextMenu::ContextMenu (octave::interpreter& interp,
                           const graphics_object& go, QMenu *xmenu)
-  : Object (oct_qobj, interp, go, xmenu)
+  : Object (interp, go, xmenu)
 {
   xmenu->setAutoFillBackground (true);
 
@@ -66,7 +62,7 @@ ContextMenu::ContextMenu (octave::base_qobject& oct_qobj,
   connect (xmenu, &QMenu::aboutToHide, this, &ContextMenu::aboutToHide);
 }
 
-ContextMenu::~ContextMenu (void)
+ContextMenu::~ContextMenu ()
 { }
 
 void
@@ -100,20 +96,20 @@ ContextMenu::update (int pId)
 }
 
 void
-ContextMenu::aboutToShow (void)
+ContextMenu::aboutToShow ()
 {
   emit gh_callback_event (m_handle, "callback");
   emit gh_set_event (m_handle, "visible", "on", false);
 }
 
 void
-ContextMenu::aboutToHide (void)
+ContextMenu::aboutToHide ()
 {
   emit gh_set_event (m_handle, "visible", "off", false);
 }
 
 QWidget *
-ContextMenu::menu (void)
+ContextMenu::menu ()
 {
   return qWidget<QWidget> ();
 }

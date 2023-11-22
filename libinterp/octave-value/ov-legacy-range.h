@@ -31,9 +31,8 @@
 #include <cstdlib>
 
 #include <iosfwd>
+#include <memory>
 #include <string>
-
-#include "Range.h"
 
 #include "lo-mappers.h"
 #include "lo-utils.h"
@@ -44,6 +43,8 @@
 #include "ov-base.h"
 #include "ov-re-mat.h"
 #include "ov-typeinfo.h"
+
+class Range;
 
 class octave_value_list;
 
@@ -61,19 +62,19 @@ octave_legacy_range : public octave_base_value
 {
 public:
 
-  octave_legacy_range (void);
+  octave_legacy_range ();
 
   octave_legacy_range (const Range& r);
 
-  octave_legacy_range (const octave_legacy_range& r) = default;
+  octave_legacy_range (const octave_legacy_range& r);
 
   // No assignment.
 
   octave_legacy_range& operator = (const octave_legacy_range&) = delete;
 
-  ~octave_legacy_range (void) { }
+  ~octave_legacy_range () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   {
     return new octave_legacy_range (*this);
   }
@@ -81,17 +82,17 @@ public:
   // A range is really just a special kind of real matrix object.  In
   // the places where we need to call empty_clone, it makes more sense
   // to create an empty matrix (0x0) instead of an empty range (1x0).
-  octave_base_value * empty_clone (void) const { return new octave_matrix (); }
+  octave_base_value * empty_clone () const { return new octave_matrix (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_legacy_object (void) const { return true; }
+  bool is_legacy_object () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
   bool load_ascii (std::istream& is);
 
@@ -102,7 +103,7 @@ public:
 
 private:
 
-  Range range;
+  std::unique_ptr<Range> m_range;
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

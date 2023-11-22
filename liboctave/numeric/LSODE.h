@@ -39,7 +39,7 @@ LSODE : public ODE, public LSODE_options
 {
 public:
 
-  LSODE (void)
+  LSODE ()
     : ODE (), LSODE_options (), m_initialized (false), m_method_flag (0),
       m_itask (0), m_iopt (0), m_itol (0), m_liw (0), m_lrw (0),
       m_iwork (), m_rwork (), m_rel_tol (0.0), m_abs_tol () { }
@@ -49,7 +49,7 @@ public:
       m_method_flag (0), m_itask (0), m_iopt (0), m_itol (0), m_liw (0),
       m_lrw (0), m_iwork (), m_rwork (), m_rel_tol (0.0), m_abs_tol () { }
 
-  ~LSODE (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (LSODE)
 
   ColumnVector do_integrate (double t);
 
@@ -57,7 +57,7 @@ public:
 
   Matrix do_integrate (const ColumnVector& tout, const ColumnVector& tcrit);
 
-  std::string error_message (void) const;
+  std::string error_message () const;
 
 private:
 

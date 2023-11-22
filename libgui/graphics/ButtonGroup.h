@@ -36,7 +36,6 @@ class QRadioButton;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class Container;
@@ -46,33 +45,33 @@ class ButtonGroup : public Object
   Q_OBJECT
 
 public:
-  ButtonGroup (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  ButtonGroup (octave::interpreter& interp,
                const graphics_object& go, QButtonGroup *buttongroup,
                QFrame *frame);
-  ~ButtonGroup (void);
+  ~ButtonGroup ();
 
-  Container * innerContainer (void) { return m_container; }
+  Container * innerContainer () { return m_container; }
 
   bool eventFilter (QObject *watched, QEvent *event);
 
   static ButtonGroup *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
   void addButton (QAbstractButton *btn);
 
-  void selectNothing (void);
+  void selectNothing ();
 
 protected:
   void update (int pId);
-  void redraw (void);
+  void redraw ();
 
 private slots:
   void buttonToggled (bool toggled);
   void buttonClicked (QAbstractButton *btn);
 
 private:
-  void updateLayout (void);
+  void updateLayout ();
 
 private:
   QButtonGroup *m_buttongroup;

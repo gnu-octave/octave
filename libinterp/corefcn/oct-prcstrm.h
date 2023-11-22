@@ -51,11 +51,7 @@ public:
                       = octave::mach_info::native_float_format (),
                       const std::string& encoding = "utf-8");
 
-  // No copying!
-
-  octave_iprocstream (const octave_iprocstream&) = delete;
-
-  octave_iprocstream& operator = (const octave_iprocstream&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (octave_iprocstream)
 
   static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::in,
@@ -65,7 +61,7 @@ public:
 
 protected:
 
-  ~octave_iprocstream (void);
+  ~octave_iprocstream ();
 };
 
 class
@@ -79,11 +75,7 @@ public:
                       = octave::mach_info::native_float_format (),
                       const std::string& encoding = "utf-8");
 
-  // No copying!
-
-  octave_oprocstream (const octave_oprocstream&) = delete;
-
-  octave_oprocstream& operator = (const octave_oprocstream&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (octave_oprocstream)
 
   static octave::stream
   create (const std::string& n, std::ios::openmode arg_md = std::ios::out,
@@ -93,19 +85,9 @@ public:
 
 protected:
 
-  ~octave_oprocstream (void);
+  ~octave_oprocstream ();
 };
 
 OCTAVE_END_NAMESPACE(octave)
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::octave_iprocstream' instead")
-typedef octave::octave_iprocstream octave_iprocstream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::octave_oprocstream' instead")
-typedef octave::octave_oprocstream octave_oprocstream;
-
-#endif
 
 #endif

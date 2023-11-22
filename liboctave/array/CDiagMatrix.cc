@@ -206,7 +206,7 @@ ComplexDiagMatrix::fill (const ComplexRowVector& a, octave_idx_type beg)
 }
 
 DiagMatrix
-ComplexDiagMatrix::abs (void) const
+ComplexDiagMatrix::abs () const
 {
   return DiagMatrix (extract_diag ().abs (), rows (), columns ());
 }
@@ -301,7 +301,7 @@ ComplexDiagMatrix::column (char *s) const
 }
 
 ComplexDiagMatrix
-ComplexDiagMatrix::inverse (void) const
+ComplexDiagMatrix::inverse () const
 {
   octave_idx_type info;
   return inverse (info);
@@ -320,7 +320,7 @@ ComplexDiagMatrix::inverse (octave_idx_type& info) const
   info = 0;
   octave_idx_type len = r;        // alias for readability
   octave_idx_type z_count  = 0;   // zeros
-  octave_idx_type nz_count = 0;   // non-zeros
+  octave_idx_type nz_count = 0;   // nonzeros
   for (octave_idx_type i = 0; i < len; i++)
     {
       if (xelem (i, i) == 0.0)
@@ -374,7 +374,7 @@ ComplexDiagMatrix::pseudo_inverse (double tol) const
 }
 
 bool
-ComplexDiagMatrix::all_elements_are_real (void) const
+ComplexDiagMatrix::all_elements_are_real () const
 {
   return mx_inline_all_real (length (), data ());
 }
@@ -490,7 +490,7 @@ operator * (const ComplexDiagMatrix& a, const ComplexDiagMatrix& b)
 // other operations
 
 ComplexDET
-ComplexDiagMatrix::determinant (void) const
+ComplexDiagMatrix::determinant () const
 {
   ComplexDET det (1.0);
   if (rows () != cols ())
@@ -504,7 +504,7 @@ ComplexDiagMatrix::determinant (void) const
 }
 
 double
-ComplexDiagMatrix::rcond (void) const
+ComplexDiagMatrix::rcond () const
 {
   ColumnVector av = extract_diag (0).map<double> (std::abs);
   double amx = av.max ();

@@ -38,7 +38,7 @@ glob_match::match (const std::string& str) const
 }
 
 string_vector
-glob_match::glob (void) const
+glob_match::glob () const
 {
   return octave::sys::glob (m_pat);
 }

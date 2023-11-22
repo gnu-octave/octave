@@ -53,6 +53,22 @@ extern OCTAVE_API char *
 octave_u8_conv_to_encoding_strict (const char *tocode, const uint8_t *src,
                                    size_t srclen, size_t *lengthp);
 
+extern OCTAVE_API uint16_t *
+octave_u16_conv_from_encoding (const char *fromcode, const char *src,
+                               size_t srclen, size_t *lengthp);
+
+extern OCTAVE_API uint16_t *
+octave_u16_conv_from_encoding_strict (const char *fromcode, const char *src,
+                                      size_t srclen, size_t *lengthp);
+
+extern OCTAVE_API char *
+octave_u16_conv_to_encoding (const char *tocode, const uint16_t *src,
+                             size_t srclen, size_t *lengthp);
+
+extern OCTAVE_API char *
+octave_u16_conv_to_encoding_strict (const char *tocode, const uint16_t *src,
+                                    size_t srclen, size_t *lengthp);
+
 extern OCTAVE_API char *
 octave_u32_conv_to_encoding_strict (const char *tocode, const uint32_t *src,
                                     size_t srclen, size_t *lengthp);

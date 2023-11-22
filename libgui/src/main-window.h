@@ -52,7 +52,6 @@
 #include "interpreter-qobject.h"
 #include "led-indicator.h"
 #include "octave-dock-widget.h"
-#include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "set-path-dialog.h"
 #include "terminal-dock-widget.h"
@@ -65,6 +64,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
+class base_qobject;
 class settings_dialog;
 
 //! Represents the main window.
@@ -80,35 +80,35 @@ public:
 
   main_window (base_qobject& oct_qobj);
 
-  ~main_window (void);
+  ~main_window ();
 
   void make_dock_widget_connections (octave_dock_widget *dw);
 
-  bool command_window_has_focus (void) const;
+  bool command_window_has_focus () const;
 
-  void focus_command_window (void);
+  void focus_command_window ();
 
-  bool confirm_shutdown (void);
+  bool confirm_shutdown ();
 
 signals:
 
   // Note: CLOSE_GUI_SIGNAL is currently only used by the new
   // experimental terminal widget.
-  void close_gui_signal (void);
+  void close_gui_signal ();
 
   void active_dock_changed (octave_dock_widget *, octave_dock_widget *);
   void editor_focus_changed (bool);
 
-  void settings_changed (const gui_settings *);
-  void init_terminal_size_signal (void);
-  void init_window_menu (void);
+  void settings_changed ();
+  void init_terminal_size_signal ();
+  void init_window_menu ();
   void new_file_signal (const QString&);
   void open_file_signal (const QString&);
   void open_file_signal (const QString& file, const QString& enc, int line);
-  void step_into_file_signal (void);
+  void step_into_file_signal ();
 
   void show_community_news_signal (int serial);
-  void show_release_notes_signal (void);
+  void show_release_notes_signal ();
 
   void update_gui_lexer_signal (bool);
 
@@ -117,10 +117,10 @@ signals:
   void update_breakpoint_marker_signal (bool insert, const QString& file,
                                         int line, const QString& cond);
 
-  void copyClipboard_signal (void);
-  void pasteClipboard_signal (void);
-  void selectAll_signal (void);
-  void undo_signal (void);
+  void copyClipboard_signal ();
+  void pasteClipboard_signal ();
+  void selectAll_signal ();
+  void undo_signal ();
 
   void add_actions_signal (QList <QAction *> action_list);
 
@@ -131,61 +131,62 @@ signals:
 
   void execute_command_signal (const QString& command);
 
+  void update_prompt_signal (const QString& prompt);
+
 public slots:
 
   void focus_changed (QWidget *w_old, QWidget *w_new);
   void focus_window (const QString& win_name);
-  void request_reload_settings (void);
+  void request_reload_settings ();
 
   void report_status_message (const QString& statusMessage);
-  void handle_save_workspace_request (void);
+  void handle_save_workspace_request ();
   void handle_load_workspace_request (const QString& file = QString ());
   void handle_open_any_request (const QString& file = QString ());
-  void handle_clear_workspace_request (void);
-  void handle_clear_command_window_request (void);
-  void handle_clear_history_request (void);
-  void handle_undo_request (void);
+  void handle_clear_workspace_request ();
+  void handle_clear_command_window_request ();
+  void handle_clear_history_request ();
+  void handle_undo_request ();
   void modify_path (const QStringList& dir_list, bool rm, bool subdirs);
   void edit_mfile (const QString&, int);
   void file_remove_proxy (const QString& o, const QString& n);
-  void open_online_documentation_page (void);
-  void open_bug_tracker_page (void);
-  void open_octave_packages_page (void);
-  void open_contribute_page (void);
-  void open_donate_page (void);
+  void open_online_documentation_page ();
+  void open_bug_tracker_page ();
+  void open_octave_packages_page ();
+  void open_contribute_page ();
+  void open_donate_page ();
   void process_settings_dialog_request (const QString& desired_tab
                                         = QString ());
-  void show_about_octave (void);
-  void notice_settings (const gui_settings *settings,
-                        bool update_by_worker = false);
+  void show_about_octave ();
+  void notice_settings (bool update_by_worker = false);
   QPalette getFusionDarkPalette();
-  void prepare_to_exit (void);
-  void go_to_previous_widget (void);
-  void reset_windows (void);
+  void prepare_to_exit ();
+  void go_to_previous_widget ();
+  void reset_windows ();
   void do_reset_windows (bool show = true, bool save = true,
                          bool force_all = false);
 
   void update_octave_directory (const QString& dir);
-  void browse_for_directory (void);
+  void browse_for_directory ();
   void set_current_working_directory (const QString& dir);
-  void change_directory_up (void);
-  void accept_directory_line_edit (void);
+  void change_directory_up ();
+  void accept_directory_line_edit ();
 
   void execute_command_in_terminal (const QString& dir);
   void run_file_in_terminal (const QFileInfo& info);
 
-  void handle_new_figure_request (void);
+  void handle_new_figure_request ();
 
-  void handle_enter_debugger (void);
-  void handle_exit_debugger (void);
-  void debug_continue (void);
-  void debug_step_into (void);
-  void debug_step_over (void);
-  void debug_step_out (void);
-  void debug_quit (void);
+  void handle_enter_debugger ();
+  void handle_exit_debugger ();
+  void debug_continue ();
+  void debug_step_into ();
+  void debug_step_over ();
+  void debug_step_out ();
+  void debug_quit ();
   void editor_tabs_changed (bool, bool);
 
-  void request_open_file (void);
+  void request_open_file ();
   void request_new_script (const QString& commands = QString ());
   void request_new_function (bool triggered = true);
   void handle_edit_mfile_request (const QString& name, const QString& file,
@@ -197,28 +198,28 @@ public slots:
                                                 const QString& file, int line,
                                                 const QString& cond);
 
-  void read_settings (void);
-  void init_terminal_size (void);
-  void set_window_layout (gui_settings *settings);
-  void write_settings (void);
+  void read_settings ();
+  void init_terminal_size ();
+  void set_window_layout ();
+  void write_settings ();
 
-  void copyClipboard (void);
-  void pasteClipboard (void);
-  void selectAll (void);
+  void copyClipboard ();
+  void pasteClipboard ();
+  void selectAll ();
 
   void handle_gui_status_update (const QString& feature, const QString& status);
 
-  void focus_console_after_command (void);
+  void focus_console_after_command ();
 
-  void profiler_session (void);
-  void profiler_session_resume (void);
-  void profiler_stop (void);
+  void profiler_session ();
+  void profiler_session_resume ();
+  void profiler_stop ();
   void handle_profiler_status_update (bool);
-  void profiler_show (void);
+  void profiler_show ();
 
   void handle_octave_ready ();
 
-  void handle_set_path_dialog_request (void);
+  void handle_set_path_dialog_request ();
 
   //! Find files dialog.
   //!@{
@@ -230,13 +231,13 @@ public slots:
 
   //! Handling the clipboard.
   //!@{
-  void clipboard_has_changed (void);
+  void clipboard_has_changed ();
   void clear_clipboard ();
   //!@}
 
   //! Returns a list of dock widgets.
 
-  QList<octave_dock_widget *> get_dock_widget_list (void)
+  QList<octave_dock_widget *> get_dock_widget_list ()
   {
     return dock_widget_list ();
   }
@@ -244,7 +245,7 @@ public slots:
 private slots:
 
   void disable_menu_shortcuts (bool disable);
-  void restore_create_file_setting (void);
+  void restore_create_file_setting ();
   void set_file_encoding (const QString& new_encoding);
   void request_open_files (const QStringList& open_file_names);
 
@@ -256,28 +257,28 @@ protected:
 
 private:
 
-  void adopt_dock_widgets (void);
+  void adopt_dock_widgets ();
 
-  void adopt_terminal_widget (void);
-  void adopt_documentation_widget (void);
-  void adopt_file_browser_widget (void);
-  void adopt_history_widget (void);
-  void adopt_workspace_widget (void);
-  void adopt_editor_widget (void);
-  void adopt_variable_editor_widget (void);
+  void adopt_terminal_widget ();
+  void adopt_documentation_widget ();
+  void adopt_file_browser_widget ();
+  void adopt_history_widget ();
+  void adopt_workspace_widget ();
+  void adopt_editor_widget ();
+  void adopt_variable_editor_widget ();
 
-  void construct_central_widget (void);
+  void construct_central_widget ();
 
-  void construct (void);
+  void construct ();
 
-  void construct_octave_qt_link (void);
+  void construct_octave_qt_link ();
 
   QAction * add_action (QMenu *menu, const QIcon& icon,
                         const QString& text, const char *member,
                         const QWidget *receiver = nullptr);
 
   QMenu * m_add_menu (QMenuBar *p, QString text);
-  void construct_menu_bar (void);
+  void construct_menu_bar ();
   void construct_file_menu (QMenuBar *p);
   void construct_new_menu (QMenu *p);
   void construct_edit_menu (QMenuBar *p);
@@ -293,15 +294,15 @@ private:
 
   void construct_news_menu (QMenuBar *p);
 
-  void construct_tool_bar (void);
+  void construct_tool_bar ();
 
-  void configure_shortcuts (void);
+  void configure_shortcuts ();
 
-  QList<octave_dock_widget *> dock_widget_list (void);
+  QList<octave_dock_widget *> dock_widget_list ();
 
   void update_default_encoding (const QString& default_encoding);
 
-  void set_default_geometry (void);
+  void set_default_geometry ();
   void resize_dock (QDockWidget *dw, int width, int height);
 
   base_qobject& m_octave_qobj;
@@ -403,8 +404,8 @@ private:
   //! For Toolbars.
   //!@{
   QComboBox *m_current_directory_combo_box;
-  static const int current_directory_max_visible = 16;
-  static const int current_directory_max_count = 16;
+  static const int CURRENT_DIRECTORY_MAX_VISIBLE = 16;
+  static const int CURRENT_DIRECTORY_MAX_COUNT = 16;
   QLineEdit *m_current_directory_line_edit;
   //!@}
 

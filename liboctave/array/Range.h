@@ -50,7 +50,7 @@ range<T, typename std::enable_if<std::is_floating_point<T>::value>::type>
 {
 public:
 
-  range (void)
+  range ()
     : m_base (0), m_increment (0), m_limit (0), m_final (0), m_numel (0),
       m_reverse (false)
   { }
@@ -101,58 +101,37 @@ public:
     // purpose of this strange constructor form.
 
     T final_val = (reverse ? base - (numel - 1) * increment
-                   : base + (numel - 1) * increment);
+                           : base + (numel - 1) * increment);
 
     return range<T> (base, increment, final_val, numel, reverse);
   }
 
-  range (const range<T>& r)
-    : m_base (r.m_base), m_increment (r.m_increment),
-      m_limit (r.m_limit), m_final (r.m_final),
-      m_numel (r.m_numel), m_reverse (r.m_reverse)
-  { }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (range)
 
-  range<T>& operator = (const range<T>& r)
-  {
-    if (this != &r)
-      {
-        m_base = r.m_base;
-        m_increment = r.m_increment;
-        m_limit = r.m_limit;
-        m_final = r.m_final;
-        m_numel = r.m_numel;
-        m_reverse = r.m_reverse;
-      }
+  T base () const { return m_base; }
+  T increment () const { return m_increment; }
+  T limit () const { return m_limit; }
+  bool reverse () const { return m_reverse; }
 
-    return *this;
-  }
+  T final_value () const { return m_final; }
 
-  ~range (void) = default;
-
-  T base (void) const { return m_base; }
-  T increment (void) const { return m_increment; }
-  T limit (void) const { return m_limit; }
-  bool reverse (void) const { return m_reverse; }
-
-  T final_value (void) const { return m_final; }
-
-  T min (void) const
+  T min () const
   {
     return (m_numel > 0
             ? ((m_reverse ? m_increment > T (0)
-                : m_increment > T (0)) ? base () : final_value ())
+                          : m_increment > T (0)) ? base () : final_value ())
             : T (0));
   }
 
-  T max (void) const
+  T max () const
   {
     return (m_numel > 0
             ? ((m_reverse ? m_increment < T (0)
-                : m_increment > T (0)) ? final_value () : base ())
+                          : m_increment > T (0)) ? final_value () : base ())
             : T (0));
   }
 
-  octave_idx_type numel (void) const { return m_numel; }
+  octave_idx_type numel () const { return m_numel; }
 
   // To support things like "for i = 1:Inf; ...; end" that are
   // required for Matlab compatibility, creation of a range object
@@ -162,26 +141,26 @@ public:
   // us to easily distinguish ranges with an infinite number of
   // elements.  There are specializations for double and float.
 
-  bool is_storable (void) const { return true; }
+  bool is_storable () const { return true; }
 
-  dim_vector dims (void) const { return dim_vector (1, m_numel); }
+  dim_vector dims () const { return dim_vector (1, m_numel); }
 
-  octave_idx_type rows (void) const { return 1; }
+  octave_idx_type rows () const { return 1; }
 
-  octave_idx_type cols (void) const { return numel (); }
-  octave_idx_type columns (void) const { return numel (); }
+  octave_idx_type cols () const { return numel (); }
+  octave_idx_type columns () const { return numel (); }
 
-  bool isempty (void) const { return numel () == 0; }
+  bool isempty () const { return numel () == 0; }
 
-  bool all_elements_are_ints (void) const { return true; }
+  bool all_elements_are_ints () const { return true; }
 
   sortmode issorted (sortmode mode = ASCENDING) const
   {
     if (m_numel > 1 && (m_reverse ? m_increment < T (0)
-                        : m_increment > T (0)))
+                                  : m_increment > T (0)))
       mode = ((mode == DESCENDING) ? UNSORTED : ASCENDING);
     else if (m_numel > 1 && (m_reverse ? m_increment > T (0)
-                             : m_increment < T (0)))
+                                       : m_increment < T (0)))
       mode = ((mode == ASCENDING) ? UNSORTED : DESCENDING);
     else
       mode = ((mode == UNSORTED) ? ASCENDING : mode);
@@ -189,7 +168,7 @@ public:
     return mode;
   }
 
-  OCTAVE_API octave_idx_type nnz (void) const;
+  OCTAVE_API octave_idx_type nnz () const;
 
   // Support for single-index subscripting, without generating matrix cache.
 
@@ -203,7 +182,7 @@ public:
       return (m_numel == 1 ? final_value () : m_base);
     else if (i < m_numel - 1)
       return (m_reverse ? m_base + T (i) * m_increment
-              : m_base + T (i) * m_increment);
+                        : m_base + T (i) * m_increment);
     else
       return final_value ();
   }
@@ -224,7 +203,7 @@ public:
       return (m_numel == 1 ? final_value () : m_base);
     else if (i < m_numel - 1)
       return (m_reverse ? m_base - T (i) * m_increment
-              : m_base + T (i) * m_increment);
+                        : m_base + T (i) * m_increment);
     else
       return final_value ();
   }
@@ -280,7 +259,7 @@ public:
             *array++ = (m_numel == 0 ? m_final : m_base);
           else if (i < m_numel - 1)
             *array++ = (m_reverse ? m_base - T (i) * m_increment
-                        : m_base + T (i) * m_increment);
+                                  : m_base + T (i) * m_increment);
           else
             *array++ = m_final;
         });
@@ -294,7 +273,7 @@ public:
     return array_value ().diag (k);
   }
 
-  Array<T> array_value (void) const
+  Array<T> array_value () const
   {
     octave_idx_type nel = numel ();
 
@@ -338,7 +317,7 @@ private:
   // These calculations are appropriate for integer ranges.  There are
   // specializations for double and float.
 
-  void init (void)
+  void init ()
   {
     if (m_reverse)
       {
@@ -365,225 +344,22 @@ private:
 
 // Specializations defined externally.
 
-template <> OCTAVE_API bool range<double>::all_elements_are_ints (void) const;
-template <> OCTAVE_API bool range<float>::all_elements_are_ints (void) const;
+template <> OCTAVE_API bool range<double>::all_elements_are_ints () const;
+template <> OCTAVE_API bool range<float>::all_elements_are_ints () const;
 
-template <> OCTAVE_API void range<double>::init (void);
-template <> OCTAVE_API void range<float>::init (void);
+template <> OCTAVE_API void range<double>::init ();
+template <> OCTAVE_API void range<float>::init ();
 
 // For now, only define for floating point types.  However, we only
 // need range<float> as a temporary local variable in make_float_range
 // in ov.cc.
 
-#if 0
+template <> OCTAVE_API bool range<double>::is_storable () const;
+template <> OCTAVE_API bool range<float>::is_storable () const;
 
-template <> OCTAVE_API void range<octave_int8>::init (void);
-template <> OCTAVE_API void range<octave_int16>::init (void);
-template <> OCTAVE_API void range<octave_int32>::init (void);
-template <> OCTAVE_API void range<octave_int64>::init (void);
-template <> OCTAVE_API void range<octave_uint8>::init (void);
-template <> OCTAVE_API void range<octave_uint16>::init (void);
-template <> OCTAVE_API void range<octave_uint32>::init (void);
-template <> OCTAVE_API void range<octave_uint64>::init (void);
-
-#endif
-
-template <> OCTAVE_API bool range<double>::is_storable (void) const;
-template <> OCTAVE_API bool range<float>::is_storable (void) const;
-
-template <> OCTAVE_API octave_idx_type range<double>::nnz (void) const;
-template <> OCTAVE_API octave_idx_type range<float>::nnz (void) const;
+template <> OCTAVE_API octave_idx_type range<double>::nnz () const;
+template <> OCTAVE_API octave_idx_type range<float>::nnz () const;
 
 OCTAVE_END_NAMESPACE(octave)
-
-class
-Range
-{
-public:
-
-  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
-  Range (void)
-    : m_base (0), m_limit (0), m_inc (0), m_numel (0)
-  { }
-
-  // Assume range is already properly constructed, so just copy internal
-  // values.  However, we set LIMIT to the computed final value because
-  // that mimics the behavior of the other Range class constructors that
-  // reset limit to the computed final value.
-
-  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
-  Range (const octave::range<double>& r)
-    : m_base (r.base ()), m_limit (r.final_value ()), m_inc (r.increment ()),
-      m_numel (r.numel ())
-  { }
-
-  Range (const Range& r) = default;
-
-  Range& operator = (const Range& r) = default;
-
-  ~Range (void) = default;
-
-  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
-  Range (double b, double l)
-    : m_base (b), m_limit (l), m_inc (1), m_numel (numel_internal ())
-  {
-    if (! octave::math::isinf (m_limit))
-      m_limit = limit_internal ();
-  }
-
-  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
-  Range (double b, double l, double i)
-    : m_base (b), m_limit (l), m_inc (i), m_numel (numel_internal ())
-  {
-    if (! octave::math::isinf (m_limit))
-      m_limit = limit_internal ();
-  }
-
-  // NOTE: The following constructor may be deprecated and removed after
-  // the arithmetic operators are removed.
-
-  // For operators' usage (to preserve element count) and to create
-  // constant row vectors (obsolete usage).
-
-  OCTAVE_DEPRECATED (7, "use the 'octave::range<double>' class instead")
-  Range (double b, double i, octave_idx_type n)
-    : m_base (b), m_limit (b + (n-1) * i), m_inc (i), m_numel (n)
-  {
-    if (! octave::math::isinf (m_limit))
-      m_limit = limit_internal ();
-  }
-
-  // The range has a finite number of elements.
-  bool ok (void) const
-  {
-    return (octave::math::isfinite (m_limit)
-            && (m_numel >= 0 || m_numel == -2));
-  }
-
-  double base (void) const { return m_base; }
-  double limit (void) const { return m_limit; }
-  double inc (void) const { return m_inc; }
-  double increment (void) const { return m_inc; }
-
-  // We adjust the limit to be the final value, so return that.  We
-  // could introduce a new variable to store the final value separately,
-  // but it seems like that would just add confusion.  If we changed
-  // the meaning of the limit function, we would change the behavior of
-  // programs that expect limit to be the final value instead of the
-  // value of the limit when the range was created.  This problem will
-  // be fixed with the new template range class.
-  double final_value (void) const { return m_limit; }
-
-  octave_idx_type numel (void) const { return m_numel; }
-
-  dim_vector dims (void) const { return dim_vector (1, m_numel); }
-
-  octave_idx_type rows (void) const { return 1; }
-
-  octave_idx_type cols (void) const { return numel (); }
-  octave_idx_type columns (void) const { return numel (); }
-
-  bool isempty (void) const { return numel () == 0; }
-
-  OCTAVE_API bool all_elements_are_ints (void) const;
-
-  OCTAVE_API Matrix matrix_value (void) const;
-
-  OCTAVE_API double min (void) const;
-  OCTAVE_API double max (void) const;
-
-  OCTAVE_API void sort_internal (bool ascending = true);
-  OCTAVE_API void sort_internal (Array<octave_idx_type>& sidx, bool ascending = true);
-
-  OCTAVE_API Matrix diag (octave_idx_type k = 0) const;
-
-  OCTAVE_API Range sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
-  OCTAVE_API Range sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
-                         sortmode mode = ASCENDING) const;
-
-  OCTAVE_API sortmode issorted (sortmode mode = ASCENDING) const;
-
-  OCTAVE_API octave_idx_type nnz (void) const;
-
-  // Support for single-index subscripting, without generating matrix cache.
-
-  OCTAVE_API double checkelem (octave_idx_type i) const;
-  OCTAVE_API double checkelem (octave_idx_type i, octave_idx_type j) const;
-
-  OCTAVE_API double elem (octave_idx_type i) const;
-  double elem (octave_idx_type /* i */, octave_idx_type j) const
-  { return elem (j); }
-
-  double operator () (octave_idx_type i) const { return elem (i); }
-  double operator () (octave_idx_type i, octave_idx_type j) const
-  { return elem (i, j); }
-
-  OCTAVE_API Array<double> index (const octave::idx_vector& i) const;
-
-  OCTAVE_API void set_base (double b);
-
-  OCTAVE_API void set_limit (double l);
-
-  OCTAVE_API void set_inc (double i);
-
-  friend OCTAVE_API std::ostream& operator << (std::ostream& os,
-                                               const Range& r);
-  friend OCTAVE_API std::istream& operator >> (std::istream& is, Range& r);
-
-  friend OCTAVE_API Range operator - (const Range& r);
-  friend OCTAVE_API Range operator + (double x, const Range& r);
-  friend OCTAVE_API Range operator + (const Range& r, double x);
-  friend OCTAVE_API Range operator - (double x, const Range& r);
-  friend OCTAVE_API Range operator - (const Range& r, double x);
-  friend OCTAVE_API Range operator * (double x, const Range& r);
-  friend OCTAVE_API Range operator * (const Range& r, double x);
-
-private:
-
-  double m_base;
-  double m_limit;
-  double m_inc;
-
-  octave_idx_type m_numel;
-
-  OCTAVE_API octave_idx_type numel_internal (void) const;
-
-  OCTAVE_API double limit_internal (void) const;
-
-  OCTAVE_API void init (void);
-
-protected:
-
-  // NOTE: The following constructor may be removed when the arithmetic
-  // operators are removed.
-
-  // For operators' usage (to allow all values to be set directly).
-  Range (double b, double l, double i, octave_idx_type n)
-    : m_base (b), m_limit (l), m_inc (i), m_numel (n)
-  { }
-};
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator - (const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator + (double x, const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator + (const Range& r, double x);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator - (double x, const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator - (const Range& r, double x);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator * (double x, const Range& r);
-
-OCTAVE_DEPRECATED (7, "arithmetic operations on Range objects are unreliable")
-extern OCTAVE_API Range operator * (const Range& r, double x);
-#endif
 
 #endif

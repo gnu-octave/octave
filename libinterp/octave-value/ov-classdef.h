@@ -48,41 +48,39 @@ octave_classdef : public octave_base_value
 {
 public:
 
-  octave_classdef (void)
+  octave_classdef ()
     : octave_base_value (), m_object () { }
 
   octave_classdef (const octave::cdef_object& obj)
     : octave_base_value (), m_object (obj) { }
 
-  octave_classdef (const octave_classdef&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_classdef)
 
-  octave_classdef& operator = (const octave_classdef&) = delete;
+  ~octave_classdef () = default;
 
-  ~octave_classdef (void) = default;
-
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   {
     return new octave_classdef (m_object.clone ());
   }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   {
     return new octave_classdef (m_object.empty_clone ());
   }
 
   octave_classdef * classdef_object_value (bool = false) { return this; }
 
-  octave::cdef_object get_object (void) const { return m_object; }
+  octave::cdef_object get_object () const { return m_object; }
 
-  octave::cdef_object& get_object_ref (void) { return m_object; }
+  octave::cdef_object& get_object_ref () { return m_object; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool isstruct (void) const { return false; }
+  bool isstruct () const { return false; }
 
-  bool isobject (void) const { return true; }
+  bool isobject () const { return true; }
 
-  bool is_classdef_object (void) const { return true; }
+  bool is_classdef_object () const { return true; }
 
   OCTINTERP_API void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -120,15 +118,15 @@ public:
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  OCTINTERP_API Matrix size (void);
+  OCTINTERP_API Matrix size ();
 
   OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
-  string_vector map_keys (void) const { return m_object.map_keys (); }
+  string_vector map_keys () const { return m_object.map_keys (); }
 
-  octave_map map_value (void) const { return m_object.map_value (); }
+  octave_map map_value () const { return m_object.map_value (); }
 
-  dim_vector dims (void) const { return m_object.dims (); }
+  dim_vector dims () const { return m_object.dims (); }
 
   void set_property (octave_idx_type idx, const std::string& name,
                      const octave_value& pval)
@@ -149,22 +147,22 @@ public:
 
 public:
 
-  int type_id (void) const { return t_id; }
-  std::string type_name (void) const { return t_name; }
-  std::string class_name (void) const { return m_object.class_name (); }
+  int type_id () const { return s_t_id; }
+  std::string type_name () const { return s_t_name; }
+  std::string class_name () const { return m_object.class_name (); }
 
-  static int static_type_id (void) { return t_id; }
-  static std::string static_type_name (void) { return t_name; }
-  static std::string static_class_name (void) { return "<unknown>"; }
+  static int static_type_id () { return s_t_id; }
+  static std::string static_type_name () { return s_t_name; }
+  static std::string static_class_name () { return "<unknown>"; }
   static OCTINTERP_API void register_type (octave::type_info&);
 
 private:
 
   octave::cdef_object m_object;
 
-  static int t_id;
+  static int s_t_id;
 
-  static const std::string t_name;
+  static const std::string s_t_name;
 };
 
 void install_classdef (octave::interpreter& interp);
@@ -177,15 +175,13 @@ public:
     : m_object (obj)
   { }
 
-  octave_classdef_meta (const octave_classdef_meta&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_classdef_meta)
 
-  octave_classdef_meta& operator = (const octave_classdef_meta&) = delete;
+  ~octave_classdef_meta () { m_object.meta_release (); }
 
-  ~octave_classdef_meta (void) { m_object.meta_release (); }
+  bool is_classdef_meta () const { return true; }
 
-  bool is_classdef_meta (void) const { return true; }
-
-  bool is_package (void) const { return m_object.is_package(); }
+  bool is_package () const { return m_object.is_package(); }
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -232,7 +228,9 @@ public:
 
   OCTINTERP_API std::string doc_string (const std::string& meth_name) const;
 
-  OCTINTERP_API std::string file_name (void) const;
+  OCTINTERP_API std::string file_name () const;
+
+    vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
 
 private:
 
@@ -242,20 +240,18 @@ private:
 class octave_classdef_superclass_ref : public octave_function
 {
 public:
-  octave_classdef_superclass_ref (void) = delete;
+  octave_classdef_superclass_ref () = delete;
 
   octave_classdef_superclass_ref (const std::string& meth,
                                   const std::string& cls)
     : octave_function (), m_method_name (meth), m_class_name (cls)
   { }
 
-  octave_classdef_superclass_ref (const octave_classdef_superclass_ref&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (octave_classdef_superclass_ref)
 
-  octave_classdef_superclass_ref& operator = (const octave_classdef_superclass_ref&) = delete;
+  ~octave_classdef_superclass_ref () = default;
 
-  ~octave_classdef_superclass_ref (void) = default;
-
-  bool is_classdef_superclass_ref (void) const { return true; }
+  bool is_classdef_superclass_ref () const { return true; }
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -284,4 +280,3 @@ private:
 };
 
 #endif
-

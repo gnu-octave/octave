@@ -59,11 +59,11 @@ public:
 
   file_editor_tab_widget (QWidget *p, file_editor *fe);
 
-  ~file_editor_tab_widget (void) = default;
+  ~file_editor_tab_widget () = default;
 
-  tab_bar * get_tab_bar (void) const;
+  tab_bar * get_tab_bar () const;
 
-  std::list<file_editor_tab *> tab_list (void) const;
+  std::list<file_editor_tab *> tab_list () const;
 };
 
 // the class for the file editor
@@ -96,39 +96,39 @@ public:
     QString new_file_name;
   };
 
-  file_editor (QWidget *p, base_qobject& oct_qobj);
+  file_editor (QWidget *p);
 
-  ~file_editor (void) = default;
+  ~file_editor () = default;
 
-  QMenu * get_mru_menu (void) { return m_mru_file_menu; }
+  QMenu * get_mru_menu () { return m_mru_file_menu; }
 
-  QMenu * debug_menu (void) { return m_debug_menu; }
+  QMenu * debug_menu () { return m_debug_menu; }
 
-  QToolBar * toolbar (void) { return m_tool_bar; }
+  QToolBar * toolbar () { return m_tool_bar; }
 
-  QMenuBar * menubar (void) { return m_menu_bar; }
+  QMenuBar * menubar () { return m_menu_bar; }
 
   void insert_global_actions (QList<QAction *>);
 
   enum shared_actions_idx
-    {
-      NEW_SCRIPT_ACTION = 0,
-      NEW_FUNCTION_ACTION,
-      OPEN_ACTION,
-      FIND_FILES_ACTION,
-      UNDO_ACTION,
-      COPY_ACTION,
-      PASTE_ACTION,
-      SELECTALL_ACTION
-    };
+  {
+    NEW_SCRIPT_ACTION = 0,
+    NEW_FUNCTION_ACTION,
+    OPEN_ACTION,
+    FIND_FILES_ACTION,
+    UNDO_ACTION,
+    COPY_ACTION,
+    PASTE_ACTION,
+    SELECTALL_ACTION
+  };
 
-  void check_actions (void);
+  void check_actions ();
   void empty_script (bool startup, bool visible);
-  void restore_session (gui_settings *settings);
+  void restore_session ();
 
 signals:
 
-  void fetab_settings_changed (const gui_settings *settings);
+  void fetab_settings_changed ();
   void fetab_change_request (const QWidget *ID);
   // Save is a ping-pong type of communication
   void fetab_save_file (const QWidget *ID, const QString& fileName,
@@ -171,38 +171,40 @@ signals:
   void fetab_zoom_normal (const QWidget *ID);
 
   void fetab_set_directory (const QString& dir);
-  void fetab_recover_from_exit (void);
+  void fetab_recover_from_exit ();
 
   void edit_area_changed (octave_qscintilla *edit_area);
 
   void request_settings_dialog (const QString&);
   void request_open_file_external (const QString& file_name, int line);
-  void file_loaded_signal (void);
+  void file_loaded_signal ();
 
   void editor_tabs_changed_signal (bool, bool);
-  void request_dbcont_signal (void);
+  void request_dbcont_signal ();
 
-  void enter_debug_mode_signal (void);
-  void exit_debug_mode_signal (void);
+  void enter_debug_mode_signal ();
+  void exit_debug_mode_signal ();
 
   void update_gui_lexer_signal (bool);
   void execute_command_in_terminal_signal (const QString&);
-  void focus_console_after_command_signal (void);
+  void focus_console_after_command_signal ();
   void run_file_signal (const QFileInfo&);
   void edit_mfile_request (const QString&, const QString&, const QString&, int);
-  void debug_quit_signal (void);
+  void debug_quit_signal ();
+
+  void show_symbol_tooltip_signal (const QPoint&, const QString&);
 
 public slots:
 
-  void activate (void);
+  void activate ();
   void set_focus (QWidget *fet);
   void enable_menu_shortcuts (bool);
-  void save_session (void);
-  bool check_closing (void);
-  void handle_tab_ready_to_close (void);
+  void save_session ();
+  bool check_closing ();
+  void handle_tab_ready_to_close ();
 
-  void handle_enter_debug_mode (void);
-  void handle_exit_debug_mode (void);
+  void handle_enter_debug_mode ();
+  void handle_exit_debug_mode ();
 
   void request_new_file (const QString& commands);
   void request_close_file (bool);
@@ -252,7 +254,7 @@ public slots:
   void request_lower_case (bool);
   void request_indent_selected_text (bool);
   void request_unindent_selected_text (bool);
-  void request_smart_indent_line_or_selected_text (void);
+  void request_smart_indent_line_or_selected_text ();
   void request_conv_eol_windows (bool);
   void request_conv_eol_unix (bool);
   void request_conv_eol_mac (bool);
@@ -268,7 +270,7 @@ public slots:
                                  const QString& toolTip,
                                  bool modified);
   void handle_tab_close_request (int index);
-  void handle_tab_remove_request (void);
+  void handle_tab_remove_request ();
   void active_tab_changed (int index);
   void handle_editor_state_changed (bool enableCopy, bool is_octave_file,
                                     bool is_modified);
@@ -287,9 +289,9 @@ public slots:
   void handle_file_renamed (bool load_new = true);
 
   // Tells the editor to react on changed settings.
-  void notice_settings (const gui_settings *settings);
+  void notice_settings ();
 
-  void set_shortcuts (void);
+  void set_shortcuts ();
 
   void handle_visibility (bool visible);
 
@@ -297,16 +299,16 @@ public slots:
 
   void toplevel_change (bool toplevel);
 
-  void handle_autoc_cancelled (void);
+  void handle_autoc_cancelled ();
 
-  file_editor_tab * reset_focus (void);
+  file_editor_tab * reset_focus ();
 
 protected slots:
 
-  void copyClipboard (void);
-  void pasteClipboard (void);
-  void selectAll (void);
-  void do_undo (void);
+  void copyClipboard ();
+  void pasteClipboard ();
+  void selectAll ();
+  void do_undo ();
 
 private slots:
 
@@ -345,20 +347,20 @@ private:
 
   file_editor_tab * make_file_editor_tab (const QString& directory = "");
 
-  bool is_editor_console_tabbed (void);
-  void construct (void);
+  bool is_editor_console_tabbed ();
+  void construct ();
   void add_file_editor_tab (file_editor_tab *f, const QString& fn,
                             int index = -1);
-  void mru_menu_update (void);
+  void mru_menu_update ();
   bool call_custom_editor (const QString& file_name = QString (), int line = -1);
 
   void toggle_preference (const gui_pref& preference);
 
   void handle_dir_remove (const QString& old_name, const QString& new_name);
 
-  bool editor_tab_has_focus (void);
+  bool editor_tab_has_focus ();
 
-  void find_create (void);
+  void find_create ();
 
   file_editor_tab * find_tab_widget (const QString& openFileName);
   QAction * add_action (QMenu *menu, const QString& text,

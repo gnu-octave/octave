@@ -31,13 +31,10 @@
 
 #include "ToolBarButton.cc"
 
-#include "octave-qobject.h"
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 ToggleTool *
-ToggleTool::create (octave::base_qobject& oct_qobj,
-                    octave::interpreter& interp, const graphics_object& go)
+ToggleTool::create (octave::interpreter& interp, const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
 
@@ -46,17 +43,16 @@ ToggleTool::create (octave::base_qobject& oct_qobj,
       QWidget *parentWidget = parent->qWidget<QWidget> ();
 
       if (parentWidget)
-        return new ToggleTool (oct_qobj, interp, go,
+        return new ToggleTool (interp, go,
                                new QAction (parentWidget));
     }
 
   return nullptr;
 }
 
-ToggleTool::ToggleTool (octave::base_qobject& oct_qobj,
-                        octave::interpreter& interp,
+ToggleTool::ToggleTool (octave::interpreter& interp,
                         const graphics_object& go, QAction *action)
-  : ToolBarButton<uitoggletool> (oct_qobj, interp, go, action)
+  : ToolBarButton<uitoggletool> (interp, go, action)
 {
   uitoggletool::properties& tp = properties<uitoggletool> ();
 
@@ -66,7 +62,7 @@ ToggleTool::ToggleTool (octave::base_qobject& oct_qobj,
   connect (action, &QAction::toggled, this, &ToggleTool::triggered);
 }
 
-ToggleTool::~ToggleTool (void)
+ToggleTool::~ToggleTool ()
 { }
 
 void

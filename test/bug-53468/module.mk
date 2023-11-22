@@ -5,4 +5,3 @@ bug_53468_TEST_FILES = \
   %reldir%/ofig51.ofig
 
 TEST_FILES += $(bug_53468_TEST_FILES)
-

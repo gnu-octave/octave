@@ -162,7 +162,7 @@ function h = __patch__ (p, varargin)
     elseif (iscolorspec (c))
       ## Color specification is a string
       args{7} = "facecolor";
-      args{8} = tolower (c);
+      args{8} = lower (c);
       args{9} = "cdata";
       args{10} = [];
     elseif (! isempty (c))

@@ -36,8 +36,6 @@
 #include "Menu.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static QKeySequence
@@ -62,7 +60,7 @@ accelSequence (const uimenu::properties& up)
 }
 
 Menu *
-Menu::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Menu::create (octave::interpreter& interp,
               const graphics_object& go)
 {
   Object *parent_obj = parentObject (interp, go);
@@ -72,16 +70,16 @@ Menu::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
       QObject *qObj = parent_obj->qObject ();
 
       if (qObj)
-        return new Menu (oct_qobj, interp, go, new QAction (qObj),
+        return new Menu (interp, go, new QAction (qObj),
                          parent_obj);
     }
 
   return nullptr;
 }
 
-Menu::Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Menu::Menu (octave::interpreter& interp,
             const graphics_object& go, QAction *action, Object *xparent)
-  : Object (oct_qobj, interp, go, action), m_parent (nullptr),
+  : Object (interp, go, action), m_parent (nullptr),
     m_separator (nullptr)
 {
   uimenu::properties& up = properties<uimenu> ();
@@ -127,7 +125,7 @@ Menu::Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
               count++;
 
           up.get_property ("position").set
-            (octave_value (static_cast<double> (count)), true, false);
+          (octave_value (static_cast<double> (count)), true, false);
         }
       else
         {
@@ -156,14 +154,14 @@ Menu::Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
             updateSiblingPositions ();
           else
             up.get_property ("position").set
-              (octave_value (static_cast<double> (count+1)), true, false);
+            (octave_value (static_cast<double> (count+1)), true, false);
         }
     }
 
   connect (action, &QAction::triggered, this, &Menu::actionTriggered);
 }
 
-Menu::~Menu (void)
+Menu::~Menu ()
 { }
 
 void
@@ -270,14 +268,14 @@ Menu::update (int pId)
 }
 
 QWidget *
-Menu::menu (void)
+Menu::menu ()
 {
   QAction *action = qWidget<QAction> ();
   QMenu *action_menu = action->menu ();
 
   if (! action_menu)
     {
-      action_menu = new QMenu (action->parentWidget ());
+      action_menu = new QMenu (qobject_cast<QWidget *> (action->parent ()));
       action->setMenu (action_menu);
       action->setShortcut (QKeySequence ());
       connect (action_menu, &QMenu::aboutToShow, this, &Menu::actionHovered);
@@ -287,7 +285,7 @@ Menu::menu (void)
 }
 
 void
-Menu::actionTriggered (void)
+Menu::actionTriggered ()
 {
   QAction *action = qWidget<QAction> ();
 
@@ -297,13 +295,13 @@ Menu::actionTriggered (void)
 }
 
 void
-Menu::actionHovered (void)
+Menu::actionHovered ()
 {
   emit gh_callback_event (m_handle, "menuselectedfcn");
 }
 
 void
-Menu::updateSiblingPositions (void)
+Menu::updateSiblingPositions ()
 {
   if (m_parent)
     {
@@ -326,7 +324,7 @@ Menu::updateSiblingPositions (void)
                       uimenu::properties& up = Utils::properties<uimenu> (go);
 
                       up.get_property ("position").set
-                        (octave_value (count), true, false);
+                      (octave_value (count), true, false);
                     }
                 }
 

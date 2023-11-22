@@ -45,9 +45,6 @@
 #include "QtHandlesUtils.h"
 #include "qt-graphics-toolkit.h"
 
-#include "octave-qobject.h"
-#include "octave-qtutils.h"
-
 #include "interpreter.h"
 #include "oct-map.h"
 
@@ -99,8 +96,7 @@ borderWidthFromProperties (const uibuttongroup::properties& pp)
 }
 
 ButtonGroup *
-ButtonGroup::create (octave::base_qobject& oct_qobj,
-                     octave::interpreter& interp, const graphics_object& go)
+ButtonGroup::create (octave::interpreter& interp, const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
 
@@ -111,7 +107,7 @@ ButtonGroup::create (octave::base_qobject& oct_qobj,
       if (container)
         {
           QFrame *frame = new QFrame (container);
-          return new ButtonGroup (oct_qobj, interp, go,
+          return new ButtonGroup (interp, go,
                                   new QButtonGroup (frame), frame);
         }
     }
@@ -119,11 +115,10 @@ ButtonGroup::create (octave::base_qobject& oct_qobj,
   return nullptr;
 }
 
-ButtonGroup::ButtonGroup (octave::base_qobject& oct_qobj,
-                          octave::interpreter& interp,
+ButtonGroup::ButtonGroup (octave::interpreter& interp,
                           const graphics_object& go,
                           QButtonGroup *buttongroup, QFrame *frame)
-  : Object (oct_qobj, interp, go, frame), m_hiddenbutton (nullptr),
+  : Object (interp, go, frame), m_hiddenbutton (nullptr),
     m_container (nullptr), m_title (nullptr), m_blockUpdates (false)
 {
   uibuttongroup::properties& pp = properties<uibuttongroup> ();
@@ -143,7 +138,7 @@ ButtonGroup::ButtonGroup (octave::base_qobject& oct_qobj,
   m_hiddenbutton->hide ();
   m_buttongroup->addButton (m_hiddenbutton);
 
-  m_container = new Container (frame, oct_qobj, interp);
+  m_container = new Container (frame, interp);
   m_container->canvas (m_handle);
 
   connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
@@ -178,7 +173,7 @@ ButtonGroup::ButtonGroup (octave::base_qobject& oct_qobj,
       QTimer::singleShot (0, frame, &QFrame::show);
       // FIXME: What is the intent here?  QButtonGroup::show is not a
       // member of QButtonGroup.
-      QTimer::singleShot (0, buttongroup, SLOT (show (void)));
+      QTimer::singleShot (0, buttongroup, SLOT (show ()));
     }
   else
     frame->hide ();
@@ -188,7 +183,7 @@ ButtonGroup::ButtonGroup (octave::base_qobject& oct_qobj,
            this, &ButtonGroup::buttonClicked);
 }
 
-ButtonGroup::~ButtonGroup (void)
+ButtonGroup::~ButtonGroup ()
 { }
 
 bool
@@ -238,7 +233,11 @@ ButtonGroup::eventFilter (QObject *watched, QEvent *xevent)
                     octave::autolock guard (gh_mgr.graphics_lock ());
 
                     ContextMenu::executeAt (m_interpreter, properties (),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                            m->globalPosition ().toPoint ());
+#else
                                             m->globalPos ());
+#endif
                   }
               }
               break;
@@ -379,7 +378,7 @@ ButtonGroup::update (int pId)
 
         Object *selectedObject = qt_graphics_toolkit::toolkitObject (go);
         ToggleButtonControl *toggle = static_cast<ToggleButtonControl *>
-          (selectedObject);
+                                      (selectedObject);
         RadioButtonControl *radio = static_cast<RadioButtonControl *>(selectedObject);
         if (toggle)
           {
@@ -404,7 +403,7 @@ ButtonGroup::update (int pId)
 }
 
 void
-ButtonGroup::redraw (void)
+ButtonGroup::redraw ()
 {
   update (uibuttongroup::properties::ID_POSITION);
 
@@ -416,7 +415,7 @@ ButtonGroup::redraw (void)
 }
 
 void
-ButtonGroup::updateLayout (void)
+ButtonGroup::updateLayout ()
 {
   uibuttongroup::properties& pp = properties<uibuttongroup> ();
   QFrame *frame = qWidget<QFrame> ();
@@ -457,7 +456,7 @@ ButtonGroup::updateLayout (void)
 }
 
 void
-ButtonGroup::selectNothing (void)
+ButtonGroup::selectNothing ()
 {
   m_hiddenbutton->setChecked (true);
 }

@@ -41,7 +41,6 @@
 #include "defun.h"
 #include "interpreter-private.h"
 #include "interpreter.h"
-#include "parse.h"
 #include "variables.h"
 #include "unwind-prot.h"
 #include "errwarn.h"
@@ -68,11 +67,9 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static octave_value_list
-get_output_list (error_system& es,
-                 octave_idx_type count, octave_idx_type nargout,
-                 const octave_value_list& inputlist,
-                 octave_value& fcn,
-                 octave_value& error_handler)
+get_output_list (interpreter& interp, octave_idx_type count,
+                 octave_idx_type nargout, const octave_value_list& inputlist,
+                 octave_value& fcn, octave_value& error_handler)
 {
   octave_value_list tmp;
 
@@ -80,13 +77,13 @@ get_output_list (error_system& es,
 
   try
     {
-      tmp = feval (fcn, inputlist, nargout);
+      tmp = interp.feval (fcn, inputlist, nargout);
     }
   catch (const execution_exception& ee)
     {
       if (error_handler.is_defined ())
         {
-          interpreter& interp = __get_interpreter__ ();
+          error_system& es = interp.get_error_system ();
 
           es.save_exception (ee);
           interp.recover_from_exception ();
@@ -101,6 +98,8 @@ get_output_list (error_system& es,
     {
       if (error_handler.is_defined ())
         {
+          error_system& es = interp.get_error_system ();
+
           octave_scalar_map msg;
           msg.assign ("identifier", es.last_error_id ());
           msg.assign ("message", es.last_error_message ());
@@ -111,7 +110,7 @@ get_output_list (error_system& es,
           octave_value_list errlist = inputlist;
           errlist.prepend (msg);
 
-          tmp = feval (error_handler, errlist, nargout);
+          tmp = interp.feval (error_handler, errlist, nargout);
         }
       else
         tmp.clear ();
@@ -359,7 +358,7 @@ into a cell array (or cell arrays).  For example:
 
 @example
 @group
-cellfun ("tolower", @{"Foo", "Bar", "FooBar"@},
+cellfun ("lower", @{"Foo", "Bar", "FooBar"@},
          "UniformOutput", false)
 @result{} @{"foo", "bar", "foobar"@}
 @end group
@@ -537,8 +536,6 @@ nevermind:
         }
     }
 
-  error_system& es = interp.get_error_system ();
-
   // Apply functions.
 
   if (uniform_output)
@@ -559,7 +556,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, fcn,
+            = get_output_list (interp, count, nargout, inputlist, fcn,
                                error_handler);
 
           int tmp_numel = tmp.length ();
@@ -645,7 +642,7 @@ nevermind:
             }
 
           const octave_value_list tmp
-            = get_output_list (es, count, nargout, inputlist, fcn,
+            = get_output_list (interp, count, nargout, inputlist, fcn,
                                error_handler);
 
           if (nargout > 0 && tmp.length () < nargout)
@@ -1277,8 +1274,6 @@ arrayfun (@@str2num, [1234],
             }
         }
 
-      error_system& es = interp.get_error_system ();
-
       // Apply functions.
 
       if (uniform_output)
@@ -1300,7 +1295,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, fcn,
+                = get_output_list (interp, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -1392,7 +1387,7 @@ arrayfun (@@str2num, [1234],
                 }
 
               const octave_value_list tmp
-                = get_output_list (es, count, nargout, inputlist, fcn,
+                = get_output_list (interp, count, nargout, inputlist, fcn,
                                    error_handler);
 
               if (nargout > 0 && tmp.length () < nargout)
@@ -2057,20 +2052,29 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
 
-  dim_vector rdv = dim_vector::alloc (nd);
+  // For each dimension, count the number of partitions specified.
+  // For example, "mat2cell (A, [1 1 1], [2 2])" has 3 partitions on dim1
+  // and 2 partitions on dim2.  Number of dimension (nd) is 2 for this example.
+  dim_vector retdv = dim_vector::alloc (nd);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, nidx, nd);
-  octave_idx_type idxtot = 0;
+  octave_idx_type idxtot = 0;   // Number of idx operations.  5 in example.
   for (int i = 0; i < nd; i++)
     {
-      rdv(i) = nidx[i] = d[i].numel ();
+      retdv(i) = nidx[i] = d[i].numel ();
       idxtot += nidx[i];
     }
 
-  retval.clear (rdv);
+  if (nd == 1)
+    retdv(1) = 1;        // All Octave arrays have at least two dimensions.
+  retval.clear (retdv);  // Resize retval based on calculated partitions.
 
   OCTAVE_LOCAL_BUFFER (idx_vector, xidx, idxtot);
   OCTAVE_LOCAL_BUFFER (idx_vector *, idx, nd);
 
+  // Loop over all dimensions (specified partitions) and prepare an idx_vector
+  // to retrieve the requested elements.  The partitions are specified in
+  // input parameter 'd' which is an Array of octave_idx_type.  In the example,
+  // d[0] = [1 1 1].
   idxtot = 0;
   for (int i = 0; i < nd; i++)
     {
@@ -2080,19 +2084,28 @@ do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
     }
 
   OCTAVE_LOCAL_BUFFER_INIT (octave_idx_type, ridx, nd, 0);
-  Array<idx_vector> ra_idx
-  (dim_vector (1, std::max (nd, a.ndims ())), idx_vector::colon);
+  // Declare array of index vectors which will perform indexing.
+  // Initialize to magic colon (':') so that dimensions that are not actually
+  // specified will be collapsed.
+  Array<idx_vector> ra_idx (dim_vector (1, std::max (nd, a.ndims ())),
+                                        idx_vector::colon);
 
-  for (octave_idx_type j = 0; j < retval.numel (); j++)
+  const octave_idx_type retnumel = retval.numel ();
+  for (octave_idx_type j = 0; j < retnumel; j++)
     {
       octave_quit ();
 
+      // Copy prepared indices for this iteration to ra_idx.
       for (int i = 0; i < nd; i++)
         ra_idx.xelem (i) = idx[i][ridx[i]];
 
+      // Perform indexing operation and store in output retval.
       retval.xelem (j) = a.index (ra_idx);
 
-      rdv.increment_index (ridx);
+      // DO NOT increment on last loop because it will overflow past
+      // declared size of ridx (bug #63682).
+      if (j < (retnumel - 1))
+        retdv.increment_index (ridx);
     }
 
   return retval;
@@ -2166,7 +2179,7 @@ DEFUN (mat2cell, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{C} =} mat2cell (@var{A}, @var{dim1}, @var{dim2}, @dots{}, @var{dimi}, @dots{}, @var{dimn})
 @deftypefnx {} {@var{C} =} mat2cell (@var{A}, @var{rowdim})
-Convert the matrix @var{A} to a cell array.
+Convert the matrix @var{A} to a cell array @var{C}.
 
 Each dimension argument (@var{dim1}, @var{dim2}, etc.@:) is a vector of
 integers which specifies how to divide that dimension's elements amongst the
@@ -2337,6 +2350,15 @@ mat2cell (x, [3,1])
 %! c = mat2cell (x, 1, [0,4,2,0,4,0]);
 %! empty1by0str = resize ("", 1, 0);
 %! assert (c, {empty1by0str,"abcd","ef",empty1by0str,"ghij",empty1by0str});
+
+## Omitted input for trailing dimensions means not splitting on them.
+%!test <*63682>
+%! x = reshape (1:16, 4, 2, 2);
+%! c1 = mat2cell (x, [2, 2], 2, 2);
+%! c2 = mat2cell (x, [2, 2]);
+%! assert (c1, c2);
+%! assert (c1, {cat(3, [1,5;2,6], [9,13;10,14]); ...
+%!              cat(3, [3,7;4,8], [11,15;12,16])});
 */
 
 // FIXME: it would be nice to allow ranges being handled without a conversion.

@@ -58,7 +58,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_sparse_complex_matrix,
                                      "sparse complex matrix", "double");
 
 octave_base_value *
-octave_sparse_complex_matrix::try_narrowing_conversion (void)
+octave_sparse_complex_matrix::try_narrowing_conversion ()
 {
   return (matrix.all_elements_are_real ()
           ? new octave_sparse_matrix (::real (matrix)) : nullptr);
@@ -173,7 +173,7 @@ octave_sparse_complex_matrix::sparse_bool_matrix_value (bool warn) const
 }
 
 octave_value
-octave_sparse_complex_matrix::as_double (void) const
+octave_sparse_complex_matrix::as_double () const
 {
   return this->matrix;
 }

@@ -44,7 +44,7 @@ class string_vector;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-typedef std::function<void (void)> fcn_callback;
+typedef std::function<void ()> fcn_callback;
 typedef std::function<void (interpreter&)> meth_callback;
 
 class execution_exception;
@@ -79,13 +79,13 @@ class OCTINTERP_API interpreter_events
 {
 public:
 
-  interpreter_events (void) = default;
+  interpreter_events () = default;
 
   interpreter_events (const interpreter_events&) = default;
 
   interpreter_events& operator = (const interpreter_events&) = default;
 
-  virtual ~interpreter_events (void) = default;
+  virtual ~interpreter_events () = default;
 
   // Note: START_GUI and CLOSE_GUI currently only work with the new
   // experimental terminal widget.
@@ -96,11 +96,11 @@ public:
   // command line application.
 
   virtual void start_gui (bool /*gui_app*/ = false) { }
-  virtual void close_gui (void) { }
+  virtual void close_gui () { }
 
   // Dialogs.
 
-  virtual bool have_dialogs (void) const { return false; }
+  virtual bool have_dialogs () const { return false; }
 
   typedef std::list<std::pair<std::string, std::string>> filter_list;
 
@@ -144,27 +144,27 @@ public:
     return "";
   }
 
-  virtual void update_path_dialog (void) {  }
+  virtual void update_path_dialog () {  }
 
-  virtual void show_preferences (void) { }
+  virtual void show_preferences () { }
 
-  virtual void apply_preferences (void) { }
+  virtual void apply_preferences () { }
 
-  virtual void show_terminal_window (void) { }
+  virtual void show_terminal_window () { }
 
   virtual bool show_documentation (const std::string& /*file*/)
   {
     return false;
   }
 
-  virtual void show_file_browser (void) { }
+  virtual void show_file_browser () { }
 
-  virtual void show_command_history (void) { }
+  virtual void show_command_history () { }
 
-  virtual void show_workspace (void) { }
+  virtual void show_workspace () { }
 
   virtual void show_community_news (int /*serial*/) { }
-  virtual void show_release_notes (void) { }
+  virtual void show_release_notes () { }
 
   virtual bool edit_file (const std::string& /*file*/) { return false; }
 
@@ -176,7 +176,7 @@ public:
   // confirmation before another action.  Could these be reformulated
   // using the question_dialog action?
 
-  virtual bool confirm_shutdown (void) { return true; }
+  virtual bool confirm_shutdown () { return true; }
 
   virtual bool prompt_new_edit_file (const std::string& /*file*/)
   {
@@ -231,7 +231,7 @@ public:
   virtual void gui_status_update (const std::string& /*feature*/,
                                   const std::string& /*status*/) { }
 
-  virtual void update_gui_lexer (void) { }
+  virtual void update_gui_lexer () { }
 
   // Notifications of events in the interpreter that a GUI will
   // normally wish to respond to.
@@ -250,7 +250,7 @@ public:
                  bool /*update_variable_editor*/)
   { }
 
-  virtual void clear_workspace (void) { }
+  virtual void clear_workspace () { }
 
   virtual void update_prompt (const std::string& /*prompt*/) { }
 
@@ -258,11 +258,11 @@ public:
 
   virtual void append_history (const std::string& /*hist_entry*/) { }
 
-  virtual void clear_history (void) { }
+  virtual void clear_history () { }
 
-  virtual void pre_input_event (void) { }
+  virtual void pre_input_event () { }
 
-  virtual void post_input_event (void) { }
+  virtual void post_input_event () { }
 
   virtual void
   enter_debugger_event (const std::string& /*fcn_name*/,
@@ -273,14 +273,14 @@ public:
   virtual void
   execute_in_debugger_event (const std::string& /*file*/, int /*line*/) { }
 
-  virtual void exit_debugger_event (void) { }
+  virtual void exit_debugger_event () { }
 
   virtual void
   update_breakpoint (bool /*insert*/, const std::string& /*file*/,
                      int /*line*/, const std::string& /*cond*/)
   { }
 
-  virtual void interpreter_interrupted (void) { }
+  virtual void interpreter_interrupted () { }
 };
 
 //! Provides threadsafe access to octave.
@@ -296,14 +296,9 @@ public:
 
   OCTINTERP_API event_manager (interpreter& interp);
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (event_manager)
 
-  event_manager (const event_manager&) = delete;
-
-  event_manager&
-  operator = (const event_manager&) = delete;
-
-  virtual ~event_manager (void);
+  virtual ~event_manager ();
 
   // OBJ should be an object of a class that is derived from the base
   // class interpreter_events, or nullptr to disconnect and delete the
@@ -312,16 +307,16 @@ public:
   OCTINTERP_API void
   connect_link (const std::shared_ptr<interpreter_events>& obj);
 
-  OCTINTERP_API bool enable (void);
+  OCTINTERP_API bool enable ();
 
-  bool disable (void)
+  bool disable ()
   {
     bool retval = m_link_enabled;
     m_link_enabled = false;
     return retval;
   }
 
-  bool enabled (void) const
+  bool enabled () const
   {
     return m_link_enabled;
   }
@@ -337,22 +332,22 @@ public:
   }
 
   std::shared_ptr<interpreter_events>
-  qt_event_handlers (void) const { return m_qt_event_handlers; }
+  qt_event_handlers () const { return m_qt_event_handlers; }
 
   // If disable is TRUE, then no additional events will be processed
   // other than exit.
 
   OCTINTERP_API void process_events (bool disable = false);
 
-  OCTINTERP_API void discard_events (void);
+  OCTINTERP_API void discard_events ();
 
   // The post_event and post_exception functions provide a thread-safe
   // way for the GUI to queue interpreter functions for execution.
   // The queued functions are executed when the interpreter is
   // otherwise idle.
 
-  void push_event_queue (void);
-  void pop_event_queue (void);
+  void push_event_queue ();
+  void pop_event_queue ();
 
   OCTINTERP_API void post_event (const fcn_callback& fcn);
   OCTINTERP_API void post_event (const meth_callback& meth);
@@ -376,7 +371,7 @@ public:
       m_instance->start_gui (gui_app);
   }
 
-  void close_gui (void)
+  void close_gui ()
   {
     if (enabled ())
       m_instance->close_gui ();
@@ -384,7 +379,7 @@ public:
 
   // Dialogs
 
-  bool have_dialogs (void) const
+  bool have_dialogs () const
   {
     return m_qt_event_handlers && m_qt_event_handlers->have_dialogs ();
   }
@@ -442,13 +437,13 @@ public:
             : "");
   }
 
-  void update_path_dialog (void)
+  void update_path_dialog ()
   {
     if (application::is_gui_running () && enabled ())
       m_instance->update_path_dialog ();
   }
 
-  bool show_preferences (void)
+  bool show_preferences ()
   {
     if (enabled ())
       {
@@ -459,7 +454,7 @@ public:
       return false;
   }
 
-  bool apply_preferences (void)
+  bool apply_preferences ()
   {
     if (enabled ())
       {
@@ -470,7 +465,7 @@ public:
       return false;
   }
 
-  void show_terminal_window (void)
+  void show_terminal_window ()
   {
     if (enabled ())
       m_instance->show_terminal_window ();
@@ -481,19 +476,19 @@ public:
     return enabled () ? m_instance->show_documentation (file) : false;
   }
 
-  void show_file_browser (void)
+  void show_file_browser ()
   {
     if (enabled ())
       m_instance->show_file_browser ();
   }
 
-  void show_command_history (void)
+  void show_command_history ()
   {
     if (enabled ())
       m_instance->show_command_history ();
   }
 
-  void show_workspace (void)
+  void show_workspace ()
   {
     if (enabled ())
       m_instance->show_workspace ();
@@ -505,7 +500,7 @@ public:
       m_instance->show_community_news (serial);
   }
 
-  void show_release_notes (void)
+  void show_release_notes ()
   {
     if (enabled ())
       m_instance->show_release_notes ();
@@ -527,7 +522,7 @@ public:
       return false;
   }
 
-  bool confirm_shutdown (void)
+  bool confirm_shutdown ()
   {
     bool retval = true;
 
@@ -637,7 +632,7 @@ public:
       return false;
   }
 
-  bool update_gui_lexer (void)
+  bool update_gui_lexer ()
   {
     if (enabled ())
       {
@@ -667,7 +662,7 @@ public:
       m_instance->file_renamed (load_new);
   }
 
-  OCTINTERP_API void set_workspace (void);
+  OCTINTERP_API void set_workspace ();
 
   void set_workspace (bool top_level, const symbol_info_list& syminfo,
                       bool update_variable_editor = true)
@@ -677,7 +672,7 @@ public:
                                  update_variable_editor);
   }
 
-  void clear_workspace (void)
+  void clear_workspace ()
   {
     if (enabled ())
       m_instance->clear_workspace ();
@@ -689,7 +684,7 @@ public:
       m_instance->update_prompt (prompt);
   }
 
-  OCTINTERP_API void set_history (void);
+  OCTINTERP_API void set_history ();
 
   void set_history (const string_vector& hist)
   {
@@ -703,19 +698,19 @@ public:
       m_instance->append_history (hist_entry);
   }
 
-  void clear_history (void)
+  void clear_history ()
   {
     if (enabled ())
       m_instance->clear_history ();
   }
 
-  void pre_input_event (void)
+  void pre_input_event ()
   {
     if (enabled ())
       m_instance->pre_input_event ();
   }
 
-  void post_input_event (void)
+  void post_input_event ()
   {
     if (enabled ())
       m_instance->post_input_event ();
@@ -738,7 +733,7 @@ public:
       m_instance->execute_in_debugger_event (file, line);
   }
 
-  void exit_debugger_event (void)
+  void exit_debugger_event ()
   {
     if (enabled () && m_debugging)
       {
@@ -755,7 +750,7 @@ public:
       m_instance->update_breakpoint (insert, file, line, cond);
   }
 
-  void interpreter_interrupted (void)
+  void interpreter_interrupted ()
   {
     if (enabled ())
       m_instance->interpreter_interrupted ();

@@ -51,7 +51,7 @@ octave_cell : public octave_base_matrix<Cell>
 {
 public:
 
-  octave_cell (void)
+  octave_cell ()
     : octave_base_matrix<Cell> (), m_cellstr_cache () { }
 
   octave_cell (const Cell& c)
@@ -64,16 +64,12 @@ public:
   octave_cell (const octave_cell& c)
     : octave_base_matrix<Cell> (c), m_cellstr_cache () { }
 
-  ~octave_cell (void) = default;
+  ~octave_cell () = default;
 
-  octave_base_value * clone (void) const { return new octave_cell (*this); }
-  octave_base_value * empty_clone (void) const { return new octave_cell (); }
+  octave_base_value * clone () const { return new octave_cell (*this); }
+  octave_base_value * empty_clone () const { return new octave_cell (); }
 
   void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
-
-#if 0
-  octave_base_value * try_narrowing_conversion (void);
-#endif
 
   octave_value subsref (const std::string& type,
                         const std::list<octave_value_list>& idx)
@@ -107,7 +103,7 @@ public:
 
   void delete_elements (const octave_value_list& idx);
 
-  std::size_t byte_size (void) const;
+  std::size_t byte_size () const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 
@@ -120,36 +116,38 @@ public:
 
   sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
-  bool is_matrix_type (void) const { return false; }
+  bool is_matrix_type () const { return false; }
 
-  bool isnumeric (void) const { return false; }
+  bool isnumeric () const { return false; }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool iscell (void) const { return true; }
+  bool iscell () const { return true; }
 
-  builtin_type_t builtin_type (void) const { return btyp_cell; }
+  builtin_type_t builtin_type () const { return btyp_cell; }
 
-  bool iscellstr (void) const;
+  bool iscellstr () const;
 
-  bool is_true (void) const;
+  bool is_true () const;
 
-  Cell cell_value (void) const { return m_matrix; }
+  bool is_full_num_matrix () const { return false; }
 
-  octave_value_list list_value (void) const;
+  Cell cell_value () const { return m_matrix; }
+
+  octave_value_list list_value () const;
 
   octave_value convert_to_str_internal (bool pad, bool, char type) const
   { return octave_value (string_vector_value (pad), type); }
 
   string_vector string_vector_value (bool pad = false) const;
 
-  Array<std::string> cellstr_value (void) const;
+  Array<std::string> cellstr_value () const;
 
   Array<std::string> cellstr_value (const char *fmt, ...) const;
 
-  bool print_as_scalar (void) const;
+  bool print_as_scalar () const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -178,11 +176,16 @@ public:
 
   // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  const void * mex_get_data (void) const;
+  const void * mex_get_data () const;
+
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+
+  octave_value_list
+  simple_subsref (char type, octave_value_list& idx, int nargout);
 
 private:
 
-  void clear_cellstr_cache (void) const
+  void clear_cellstr_cache () const
   { m_cellstr_cache.reset (); }
 
   //--------

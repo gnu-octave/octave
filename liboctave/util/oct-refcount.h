@@ -45,14 +45,12 @@ public:
     : m_count (initial_count)
   { }
 
-  refcount (const refcount&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (refcount)
 
-  refcount& operator = (const refcount&) = delete;
-
-  ~refcount (void) = default;
+  ~refcount () = default;
 
   // Increment/Decrement.  int is postfix.
-  count_type operator++ (void)
+  count_type operator++ ()
   {
     return ++m_count;
   }
@@ -62,7 +60,7 @@ public:
     return m_count++;
   }
 
-  count_type operator-- (void)
+  count_type operator-- ()
   {
     return --m_count;
   }
@@ -72,12 +70,12 @@ public:
     return m_count--;
   }
 
-  count_type value (void) const
+  count_type value () const
   {
     return m_count.load ();
   }
 
-  operator count_type (void) const
+  operator count_type () const
   {
     return value ();
   }

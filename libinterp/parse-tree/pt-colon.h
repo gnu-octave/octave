@@ -60,13 +60,9 @@ public:
     : tree_expression (l, c), m_base (bas), m_limit (lim),
       m_increment (inc), m_save_base (false) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_colon_expression)
 
-  tree_colon_expression (const tree_colon_expression&) = delete;
-
-  tree_colon_expression& operator = (const tree_colon_expression&) = delete;
-
-  ~tree_colon_expression (void)
+  ~tree_colon_expression ()
   {
     if (! m_save_base)
       delete m_base;
@@ -75,21 +71,21 @@ public:
     delete m_increment;
   }
 
-  void preserve_base (void) { m_save_base = true; }
+  void preserve_base () { m_save_base = true; }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   void eval_error (const std::string& s) const;
 
-  tree_expression * base (void) { return m_base; }
+  tree_expression * base () { return m_base; }
 
-  tree_expression * limit (void) { return m_limit; }
+  tree_expression * limit () { return m_limit; }
 
-  tree_expression * increment (void) { return m_increment; }
+  tree_expression * increment () { return m_increment; }
 
   tree_expression * dup (symbol_scope& scope) const;
 
-  bool is_colon_expression (void) const { return true; }
+  bool is_colon_expression () const { return true; }
 
   octave_value evaluate (tree_evaluator&, int nargout = 1);
 

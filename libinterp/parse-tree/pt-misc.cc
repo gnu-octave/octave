@@ -34,7 +34,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Parameter lists.
 
-tree_parameter_list::~tree_parameter_list (void)
+tree_parameter_list::~tree_parameter_list ()
 {
   while (! empty ())
     {
@@ -45,14 +45,14 @@ tree_parameter_list::~tree_parameter_list (void)
 }
 
 void
-tree_parameter_list::mark_as_formal_parameters (void)
+tree_parameter_list::mark_as_formal_parameters ()
 {
   for (tree_decl_elt *elt : *this)
     elt->mark_as_formal_parameter ();
 }
 
 std::list<std::string>
-tree_parameter_list::variable_names (void) const
+tree_parameter_list::variable_names () const
 {
   std::list<std::string> retval;
 

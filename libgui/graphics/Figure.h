@@ -39,19 +39,18 @@ class QScreen;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 enum MouseMode
-  {
-    NoMode,
-    RotateMode,
-    ZoomInMode,
-    ZoomOutMode,
-    PanMode,
-    SelectMode,
-    TextMode
-  };
+{
+  NoMode,
+  RotateMode,
+  ZoomInMode,
+  ZoomOutMode,
+  PanMode,
+  SelectMode,
+  TextMode
+};
 
 class Container;
 class FigureWindow;
@@ -68,21 +67,21 @@ class Figure :
   friend class ToolBar;
 
 public:
-  Figure (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Figure (octave::interpreter& interp,
           const graphics_object& go, FigureWindow *win);
-  ~Figure (void);
+  ~Figure ();
 
   static Figure *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
-  QString fileName (void);
+  QString fileName ();
   void setFileName (const QString& name);
 
-  MouseMode mouseMode (void);
+  MouseMode mouseMode ();
 
-  Container * innerContainer (void);
-  QWidget * menu (void);
+  Container * innerContainer ();
+  QWidget * menu ();
   void updateStatusBar (ColumnVector pt);
 
   void do_connections (const QObject *receiver,
@@ -93,19 +92,19 @@ public:
 
 protected:
   enum UpdateBoundingBoxFlag
-    {
-      UpdateBoundingBoxPosition = 0x1,
-      UpdateBoundingBoxSize     = 0x2,
-      UpdateBoundingBoxAll      = 0x3
-    };
+  {
+    UpdateBoundingBoxPosition = 0x1,
+    UpdateBoundingBoxSize     = 0x2,
+    UpdateBoundingBoxAll      = 0x3
+  };
 
 protected:
-  void redraw (void);
-  void show (void);
+  void redraw ();
+  void show ();
   void print (const QString& file_cmd, const QString& term);
   void update (int pId);
   void updateBoundingBox (bool internal = false, int flags = 0);
-  void beingDeleted (void);
+  void beingDeleted ();
 
 private:
   void showFigureStatusBar (bool visible);
@@ -113,19 +112,19 @@ private:
   void showCustomToolBar (QToolBar *bar, bool visible);
   void set_geometry (QRect r);
 
-  void enableMouseTracking (void);
+  void enableMouseTracking ();
 
 private slots:
   void updateFigureHeight (int delta_h);
-  void updateContainer (void);
+  void updateContainer ();
   void figureWindowShown ();
   void screenChanged (QScreen *);
 
 public slots:
-  uint8NDArray slotGetPixels (void);
+  uint8NDArray slotGetPixels ();
 
 signals:
-  void asyncUpdate (void);
+  void asyncUpdate ();
   void interpreter_event (const octave::fcn_callback& fcn);
   void interpreter_event (const octave::meth_callback& meth);
 

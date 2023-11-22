@@ -34,9 +34,9 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-extern std::string get_comment_text (void);
+extern std::string get_comment_text ();
 
-extern char * get_comment_text_c_str (void);
+extern char * get_comment_text_c_str ();
 
 extern void save_comment_text (const std::string& text);
 
@@ -72,17 +72,17 @@ public:
     return *this;
   }
 
-  std::string text (void) const { return m_text; }
+  std::string text () const { return m_text; }
 
-  comment_type type (void) const { return m_type; }
+  comment_type type () const { return m_type; }
 
-  bool is_block (void) const { return m_type == block; }
-  bool is_full_line (void) const { return m_type == full_line; }
-  bool is_end_of_line (void) const { return m_type == end_of_line; }
-  bool is_doc_string (void) const { return m_type == doc_string; }
-  bool is_copyright (void) const { return m_type == copyright; }
+  bool is_block () const { return m_type == block; }
+  bool is_full_line () const { return m_type == full_line; }
+  bool is_end_of_line () const { return m_type == end_of_line; }
+  bool is_doc_string () const { return m_type == doc_string; }
+  bool is_copyright () const { return m_type == copyright; }
 
-  ~comment_elt (void) = default;
+  ~comment_elt () = default;
 
 private:
 
@@ -98,7 +98,7 @@ comment_list : public base_list<comment_elt>
 {
 public:
 
-  comment_list (void) { }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (comment_list)
 
   void append (const comment_elt& elt)
   { base_list<comment_elt>::append (elt); }
@@ -107,7 +107,7 @@ public:
                comment_elt::comment_type t = comment_elt::unknown)
   { append (comment_elt (s, t)); }
 
-  comment_list * dup (void) const;
+  comment_list * dup () const;
 };
 
 OCTAVE_END_NAMESPACE(octave)

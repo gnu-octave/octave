@@ -146,7 +146,7 @@ function z = iqr (x, dim)
         error ("iqr: vector DIM must contain non-repeating positive integers");
       endif
 
-    elseif (strcmp (tolower (dim), "all"))
+    elseif (strcmp (lower (dim), "all"))
       ## "ALL" simplifies to collapsing all elements to single vector
       x = x(:);
       dim = 1;

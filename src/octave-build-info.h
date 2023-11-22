@@ -30,6 +30,6 @@
 
 #include <string>
 
-extern std::string octave_hg_id (void);
+extern std::string octave_hg_id ();
 
 #endif

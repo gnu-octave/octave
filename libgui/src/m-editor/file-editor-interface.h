@@ -30,12 +30,9 @@
 #include <QMenuBar>
 #include <QToolBar>
 
-#include "gui-settings.h"
 #include "octave-dock-widget.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
-class base_qobject;
 
 class file_editor_interface : public octave_dock_widget
 {
@@ -43,20 +40,20 @@ class file_editor_interface : public octave_dock_widget
 
 public:
 
-  file_editor_interface (QWidget *p, base_qobject& oct_qobj)
-    : octave_dock_widget ("FileEditor", p, oct_qobj)
+  file_editor_interface (QWidget *p)
+    : octave_dock_widget ("FileEditor", p)
   { }
 
-  virtual ~file_editor_interface (void) = default;
+  virtual ~file_editor_interface () = default;
 
-  virtual QMenu * get_mru_menu (void) = 0;
-  virtual QMenu * debug_menu (void) = 0;
-  virtual QToolBar * toolbar (void) = 0;
-  virtual QMenuBar * menubar (void) = 0;
+  virtual QMenu * get_mru_menu () = 0;
+  virtual QMenu * debug_menu () = 0;
+  virtual QToolBar * toolbar () = 0;
+  virtual QMenuBar * menubar () = 0;
 
   virtual void insert_global_actions (QList<QAction *>) = 0;
-  virtual void handle_enter_debug_mode (void) = 0;
-  virtual void handle_exit_debug_mode (void) = 0;
+  virtual void handle_enter_debug_mode () = 0;
+  virtual void handle_exit_debug_mode () = 0;
 
   virtual void
   handle_insert_debugger_pointer_request (const QString& file, int line) = 0;
@@ -70,11 +67,11 @@ public:
 
   virtual void handle_edit_file_request (const QString& file) = 0;
 
-  virtual bool check_closing (void) = 0;
+  virtual bool check_closing () = 0;
 
   virtual void empty_script (bool, bool) = 0;
 
-  virtual void restore_session (gui_settings *) = 0;
+  virtual void restore_session () = 0;
 
   virtual void enable_menu_shortcuts (bool enable) = 0;
 

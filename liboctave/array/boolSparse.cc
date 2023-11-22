@@ -102,7 +102,7 @@ SparseBoolMatrix::concat (const SparseBoolMatrix& rb,
 // unary operations
 
 SparseBoolMatrix
-SparseBoolMatrix::operator ! (void) const
+SparseBoolMatrix::operator ! () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -245,7 +245,7 @@ SparseBoolMatrix::diag (octave_idx_type k) const
 }
 
 boolMatrix
-SparseBoolMatrix::matrix_value (void) const
+SparseBoolMatrix::matrix_value () const
 {
   octave_idx_type nr = rows ();
   octave_idx_type nc = cols ();
@@ -284,7 +284,7 @@ operator >> (std::istream& is, SparseBoolMatrix& a)
 }
 
 SparseBoolMatrix
-SparseBoolMatrix::squeeze (void) const
+SparseBoolMatrix::squeeze () const
 {
   return Sparse<bool>::squeeze ();
 }

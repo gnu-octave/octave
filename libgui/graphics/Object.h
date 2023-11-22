@@ -37,7 +37,6 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class Container;
@@ -48,39 +47,39 @@ class Object : public QObject
   Q_OBJECT
 
 public:
-  Object (octave::base_qobject& qobj, octave::interpreter& interp,
-          const graphics_object& go, QObject *obj = nullptr);
+  Object (octave::interpreter& interp, const graphics_object& go,
+          QObject *obj = nullptr);
 
-  virtual ~Object (void);
+  virtual ~Object ();
 
-  base_properties& properties (void)
+  base_properties& properties ()
   { return object ().get_properties (); }
 
-  const base_properties& properties (void) const
+  const base_properties& properties () const
   { return object ().get_properties (); }
 
   template <typename T>
-  typename T::properties& properties (void)
+  typename T::properties& properties ()
   {
     return dynamic_cast<typename T::properties&>
-      (object ().get_properties ());
+           (object ().get_properties ());
   }
 
   template <typename T>
-  const typename T::properties& properties (void) const
+  const typename T::properties& properties () const
   {
     return dynamic_cast<const typename T::properties&>
-      (object ().get_properties ());
+           (object ().get_properties ());
   }
 
-  graphics_object object (void) const;
+  graphics_object object () const;
 
-  virtual QObject * qObject (void) { return m_qobject; }
+  virtual QObject * qObject () { return m_qobject; }
 
   template <typename T>
-  T * qWidget (void) { return qobject_cast<T *>(qObject ()); }
+  T * qWidget () { return qobject_cast<T *>(qObject ()); }
 
-  virtual Container * innerContainer (void) = 0;
+  virtual Container * innerContainer () = 0;
 
   static Object * fromQObject (QObject *obj);
 
@@ -109,9 +108,9 @@ signals:
 
 public slots:
   void slotUpdate (int pId);
-  void slotFinalize (void);
-  void slotRedraw (void);
-  void slotShow (void);
+  void slotFinalize ();
+  void slotRedraw ();
+  void slotShow ();
   void slotPrint (const QString& file_cmd, const QString& term);
 
   void objectDestroyed (QObject *obj = nullptr);
@@ -123,16 +122,15 @@ protected:
   void init (QObject *obj, bool callBase = false);
 
   virtual void update (int pId);
-  virtual void finalize (void);
-  virtual void redraw (void);
-  virtual void show (void);
+  virtual void finalize ();
+  virtual void redraw ();
+  virtual void show ();
   virtual void print (const QString& file_cmd, const QString& term);
 
-  virtual void beingDeleted (void);
+  virtual void beingDeleted ();
 
 protected:
 
-  octave::base_qobject& m_octave_qobj;
   octave::interpreter& m_interpreter;
 
   // Store the graphics object directly so that it will exist when

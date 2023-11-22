@@ -180,7 +180,7 @@ function [q, err, iter] = quad2d (f, xa, xb, ya, yb, varargin)
       error ("quad2d: property PROP must be a string");
     endif
 
-    switch (tolower (prop))
+    switch (lower (prop))
       case "abstol"
         abstol = varargin{idx++};
         if (! (isnumeric (abstol) && isscalar (abstol) && abstol >= 0))

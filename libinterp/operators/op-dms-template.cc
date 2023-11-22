@@ -54,24 +54,24 @@ DEFNDBINOP_OP (dmsmul, MATRIX, SCALAR, MATRIXV, SCALARV, *)
 
 DEFBINOP (dmsdiv, MATRIX, SCALAR)
 {
-  const OCTAVE_MATRIX& v1 = dynamic_cast<const OCTAVE_MATRIX&> (a1);
-  const OCTAVE_SCALAR& v2 = dynamic_cast<const OCTAVE_SCALAR&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_MATRIX&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v2, a2);
 
   return v1.MATRIX_VALUE () / v2.SCALAR_VALUE ();
 }
 
 DEFBINOP (sdmldiv, SCALAR, MATRIX)
 {
-  const OCTAVE_SCALAR& v1 = dynamic_cast<const OCTAVE_SCALAR&> (a1);
-  const OCTAVE_MATRIX& v2 = dynamic_cast<const OCTAVE_MATRIX&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_MATRIX&, v2, a2);
 
   return v2.MATRIX_VALUE () / v1.SCALAR_VALUE ();
 }
 
 DEFBINOP (dmspow, MATRIX, SCALAR)
 {
-  const OCTAVE_MATRIX& v1 = dynamic_cast<const OCTAVE_MATRIX&> (a1);
-  const OCTAVE_SCALAR& v2 = dynamic_cast<const OCTAVE_SCALAR&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_MATRIX&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const OCTAVE_SCALAR&, v2, a2);
 
   return xpow (v1.MATRIX_VALUE (), v2.SCALAR_VALUE ());
 }

@@ -30,7 +30,6 @@
 #include "error.h"
 #include "interpreter-private.h"
 #include "oct-lvalue.h"
-#include "parse.h"
 #include "pt-const.h"
 #include "pt-id.h"
 #include "symscope.h"
@@ -42,7 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // Symbols from the symbol table.
 
 void
-tree_identifier::eval_undefined_error (void)
+tree_identifier::eval_undefined_error ()
 {
   int l = line ();
   int c = column ();
@@ -136,7 +135,10 @@ tree_identifier::evaluate_n (tree_evaluator& tw, int nargout)
             {
               octave_value_list args = ovl (val);
               args.stash_name_tags (string_vector (name ()));
-              feval ("display", args);
+
+              interpreter& interp = tw.get_interpreter ();
+
+              interp.feval ("display", args);
             }
 
           retval = ovl (val);

@@ -44,16 +44,17 @@
 #include "event-manager.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+#include "gui-settings.h"
 #include "gui-utils.h"
 #include "input.h"
 #include "interpreter.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-command_widget::command_widget (base_qobject& oct_qobj, QWidget *p)
-: QWidget (p), m_incomplete_parse (false),
-  m_prompt (QString ()),
-  m_console (new console (this, oct_qobj))
+command_widget::command_widget (QWidget *p)
+  : QWidget (p), m_incomplete_parse (false),
+    m_prompt (QString ()),
+    m_console (new console (this))
 {
   QPushButton *pause_button = new QPushButton (tr("Pause"), this);
   QPushButton *stop_button = new QPushButton (tr("Stop"), this);
@@ -83,8 +84,17 @@ command_widget::command_widget (base_qobject& oct_qobj, QWidget *p)
   connect (stop_button, &QPushButton::clicked,
            this, &command_widget::interpreter_stop);
 
+  connect (this, &command_widget::update_prompt_signal,
+           this, &command_widget::update_prompt);
+
   connect (this, &command_widget::new_command_line_signal,
            m_console, &console::new_command_line);
+
+  connect (m_console, QOverload<const fcn_callback&>::of (&console::interpreter_event),
+           this, QOverload<const fcn_callback&>::of (&command_widget::interpreter_event));
+
+  connect (m_console, QOverload<const meth_callback&>::of (&console::interpreter_event),
+           this, QOverload<const meth_callback&>::of (&command_widget::interpreter_event));
 
   insert_interpreter_output ("\n\n    Welcome to Octave\n\n");
 
@@ -100,22 +110,23 @@ void command_widget::init_command_prompt ()
 
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      // We can skip the entire callback function because it does not
-      // make any changes to the interpreter state.
+       // We can skip the entire callback function because it does not
+       // make any changes to the interpreter state.
 
-      if (this_cw.isNull ())
-        return;
+       if (this_cw.isNull ())
+         return;
 
-      event_manager& evmgr = interp.get_event_manager ();
-      input_system& input_sys = interp.get_input_system ();
-      std::string prompt = input_sys.PS1 ();
-      evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+       std::string prompt = interp.PS1 ();
+       std::string decoded_prompt
+         = command_editor::decode_prompt_string (prompt);
 
-      emit new_command_line_signal ();
-    });
+       emit update_prompt_signal (QString::fromStdString (decoded_prompt));
+
+       emit new_command_line_signal ();
+     });
 }
 
 void command_widget::update_prompt (const QString& prompt)
@@ -143,52 +154,54 @@ void command_widget::process_input_line (const QString& input_line)
 
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      // If THIS_CW is no longer valid, we still want to parse and
-      // execute INPUT_LINE but we can't emit the signals associated
-      // with THIS_CW.
+       // If THIS_CW is no longer valid, we still want to parse and
+       // execute INPUT_LINE but we can't emit the signals associated
+       // with THIS_CW.
 
-      interp.parse_and_execute (input_line.toStdString (),
-                                m_incomplete_parse);
+       interp.parse_and_execute (input_line.toStdString (),
+                                 m_incomplete_parse);
 
-      if (this_cw.isNull ())
-        return;
+       if (this_cw.isNull ())
+         return;
 
-      event_manager& evmgr = interp.get_event_manager ();
-      input_system& input_sys = interp.get_input_system ();
+       std::string prompt
+         = m_incomplete_parse ? interp.PS2 () : interp.PS1 ();
 
-      std::string prompt
-        = m_incomplete_parse ? input_sys.PS2 () : input_sys.PS1 ();
+       std::string decoded_prompt
+         = command_editor::decode_prompt_string (prompt);
 
-      evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+       emit update_prompt_signal (QString::fromStdString (decoded_prompt));
 
-      emit new_command_line_signal ();
-    });
+       emit new_command_line_signal ();
+     });
 
 }
 
-void command_widget::notice_settings (const gui_settings *settings)
+void command_widget::notice_settings ()
 {
+  gui_settings settings;
+
   // Set terminal font:
   QFont term_font = QFont ();
   term_font.setStyleHint (QFont::TypeWriter);
-  QString default_font = settings->value (global_mono_font).toString ();
+  QString default_font = settings.string_value (global_mono_font);
   term_font.setFamily
-    (settings->value (cs_font.key, default_font).toString ());
+    (settings.value (cs_font.settings_key (), default_font).toString ());
   term_font.setPointSize
-    (settings->value (cs_font_size).toInt ());
+    (settings.int_value (cs_font_size));
 
   m_console->setFont (term_font);
 
   // Colors
-  int mode = settings->value (cs_color_mode).toInt ();
-  QColor fgc = settings->color_value (cs_colors[0], mode);
-  QColor bgc = settings->color_value (cs_colors[1], mode);
+  int mode = settings.int_value (cs_color_mode);
+  QColor fgc = settings.color_value (cs_colors[0], mode);
+  QColor bgc = settings.color_value (cs_colors[1], mode);
 
   m_console->setStyleSheet (QString ("color: %1; background-color:%2;")
-                            .arg (fgc.name ()).arg (bgc.name ()));
+                                   .arg (fgc.name ()).arg (bgc.name ()));
 }
 
 // The console itself using QScintilla.
@@ -196,7 +209,7 @@ void command_widget::notice_settings (const gui_settings *settings)
 // "qpconsole" as proposed by user "DerManu" in the Qt-forum thread
 // https://forum.qt.io/topic/28765/command-terminal-using-qtextedit
 
-console::console (command_widget *p, base_qobject&)
+console::console (command_widget *p)
   : QsciScintilla (p),
     m_command_position (-1),
     m_cursor_position (0),
@@ -210,11 +223,11 @@ console::console (command_widget *p, base_qobject&)
   connect (this, SIGNAL (cursorPositionChanged (int, int)),
            this, SLOT (cursor_position_changed (int, int)));
 
-  connect (this, SIGNAL (textChanged (void)),
-           this, SLOT (text_changed (void)));
+  connect (this, SIGNAL (textChanged ()),
+           this, SLOT (text_changed ()));
 
-  connect (this, SIGNAL (modificationAttempted (void)),
-           this, SLOT (move_cursor_to_end (void)));
+  connect (this, SIGNAL (modificationAttempted ()),
+           this, SLOT (move_cursor_to_end ()));
 }
 
 // Prepare a new command line with the current prompt
@@ -295,7 +308,7 @@ void console::cursor_position_changed (int line, int col)
 
 // User attempted to type on read only mode: move cursor at end and allow
 // editing
-void console::move_cursor_to_end (void)
+void console::move_cursor_to_end ()
 {
   if ((! m_last_key_string.isEmpty ()) && (m_last_key_string.at (0).isPrint ()))
     {
@@ -306,7 +319,7 @@ void console::move_cursor_to_end (void)
 
 // Text has changed: is cursor still in "writable" area?
 // This signal seems to be emitted before cursor position changed.
-void console::text_changed (void)
+void console::text_changed ()
 {
   m_text_changed = true;
 }

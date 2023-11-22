@@ -36,6 +36,7 @@
 #include "ov-typeinfo.h"
 #include "symscope.h"
 #include "unwind-prot.h"
+#include "pt-bytecode.h"
 
 class string_vector;
 
@@ -73,15 +74,11 @@ protected:
 
 public:
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (octave_user_code)
 
-  octave_user_code (const octave_user_code& f) = delete;
+  ~octave_user_code ();
 
-  octave_user_code& operator = (const octave_user_code& f) = delete;
-
-  ~octave_user_code (void);
-
-  bool is_user_code (void) const { return true; }
+  bool is_user_code () const { return true; }
 
   std::string get_code_line (std::size_t line);
 
@@ -91,7 +88,9 @@ public:
   void cache_function_text (const std::string& text,
                             const octave::sys::time& timestamp);
 
-  octave::symbol_scope scope (void) { return m_scope; }
+  octave::symbol_scope scope () { return m_scope; }
+
+  std::size_t scope_num_symbols () { return m_scope.num_symbols (); }
 
   void stash_fcn_file_name (const std::string& nm) { m_file_name = nm; }
 
@@ -104,26 +103,44 @@ public:
     mark_fcn_file_up_to_date (t);
   }
 
-  std::string fcn_file_name (void) const { return m_file_name; }
+  std::string fcn_file_name () const { return m_file_name; }
 
-  octave::sys::time time_parsed (void) const { return m_t_parsed; }
+  octave::sys::time time_parsed () const { return m_t_parsed; }
 
-  octave::sys::time time_checked (void) const { return m_t_checked; }
+  octave::sys::time time_checked () const { return m_t_checked; }
 
   virtual octave_value find_subfunction (const std::string&) const
   {
     return octave_value ();
   }
 
-  virtual std::map<std::string, octave_value> subfunctions (void) const;
+  virtual std::map<std::string, octave_value> subfunctions () const;
 
-  octave::tree_statement_list * body (void) { return m_cmd_list; }
+  octave::tree_statement_list * body () { return m_cmd_list; }
 
-  octave_value dump (void) const;
+  octave_value dump () const;
+
+  void set_bytecode (octave::bytecode &bytecode)
+  {
+    m_bytecode = bytecode;
+  }
+
+  void clear_bytecode ();
+
+  bool is_compiled () const { return m_bytecode.m_code.size (); }
+
+  octave::bytecode &get_bytecode () { return m_bytecode; }
+
+  bool compilation_failed () { return m_compilation_failed; }
+  void set_compilation_failed (bool val) { m_compilation_failed = val; }
 
 protected:
 
-  void get_file_info (void);
+  bool m_compilation_failed = false;
+
+  octave::bytecode m_bytecode;
+
+  void get_file_info ();
 
   // Our symbol table scope.
   octave::symbol_scope m_scope;
@@ -153,7 +170,7 @@ octave_user_script : public octave_user_code
 {
 public:
 
-  octave_user_script (void);
+  octave_user_script ();
 
   octave_user_script (const std::string& fnm, const std::string& nm,
                       const octave::symbol_scope& scope = octave::symbol_scope (),
@@ -164,13 +181,9 @@ public:
                       const octave::symbol_scope& scope = octave::symbol_scope (),
                       const std::string& ds = "");
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (octave_user_script)
 
-  octave_user_script (const octave_user_script& f) = delete;
-
-  octave_user_script& operator = (const octave_user_script& f) = delete;
-
-  ~octave_user_script (void) = default;
+  ~octave_user_script () = default;
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -181,7 +194,7 @@ public:
   // Scripts and user functions are both considered "scripts" because
   // they are written in Octave's scripting language.
 
-  bool is_user_script (void) const { return true; }
+  bool is_user_script () const { return true; }
 
   // We must overload the call method so that we call the proper
   // push_stack_frame method, which is overloaded for pointers to
@@ -215,13 +228,9 @@ public:
                         octave::tree_parameter_list *rl = nullptr,
                         octave::tree_statement_list *cl = nullptr);
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (octave_user_function)
 
-  octave_user_function (const octave_user_function& fcn) = delete;
-
-  octave_user_function& operator = (const octave_user_function& fcn) = delete;
-
-  ~octave_user_function (void);
+  ~octave_user_function ();
 
   octave_function * function_value (bool = false) { return this; }
 
@@ -239,8 +248,8 @@ public:
     m_location_column = col;
   }
 
-  int beginning_line (void) const { return m_location_line; }
-  int beginning_column (void) const { return m_location_column; }
+  int beginning_line () const { return m_location_line; }
+  int beginning_column () const { return m_location_column; }
 
   void stash_fcn_end_location (int line, int col)
   {
@@ -248,10 +257,10 @@ public:
     m_end_location_column = col;
   }
 
-  int ending_line (void) const { return m_end_location_line; }
-  int ending_column (void) const { return m_end_location_column; }
+  int ending_line () const { return m_end_location_line; }
+  int ending_column () const { return m_end_location_column; }
 
-  void maybe_relocate_end (void);
+  void maybe_relocate_end ();
 
   void stash_parent_fcn_scope (const octave::symbol_scope& ps);
 
@@ -259,68 +268,68 @@ public:
 
   void stash_trailing_comment (octave::comment_list *tc) { m_trail_comm = tc; }
 
-  std::string profiler_name (void) const;
+  std::string profiler_name () const;
 
-  std::string parent_fcn_name (void) const
+  std::string parent_fcn_name () const
   {
     octave::symbol_scope pscope = parent_fcn_scope ();
 
     return pscope.fcn_name ();
   }
 
-  octave::symbol_scope parent_fcn_scope (void) const
+  octave::symbol_scope parent_fcn_scope () const
   {
     return m_scope.parent_scope ();
   }
 
-  std::list<std::string> parent_fcn_names (void) const
+  std::list<std::string> parent_fcn_names () const
   {
     return m_scope.parent_fcn_names ();
   }
 
-  void mark_as_system_fcn_file (void);
+  void mark_as_system_fcn_file ();
 
-  bool is_system_fcn_file (void) const { return m_system_fcn_file; }
+  bool is_system_fcn_file () const { return m_system_fcn_file; }
 
-  bool is_user_function (void) const { return true; }
+  bool is_user_function () const { return true; }
 
-  void erase_subfunctions (void);
+  void erase_subfunctions ();
 
-  bool takes_varargs (void) const;
+  bool takes_varargs () const;
 
-  bool takes_var_return (void) const;
+  bool takes_var_return () const;
 
   void mark_as_private_function (const std::string& cname = "");
 
-  void lock_subfunctions (void);
+  void lock_subfunctions ();
 
-  void unlock_subfunctions (void);
+  void unlock_subfunctions ();
 
-  std::map<std::string, octave_value> subfunctions (void) const;
+  std::map<std::string, octave_value> subfunctions () const;
 
   octave_value find_subfunction (const std::string& subfuns) const;
 
-  bool has_subfunctions (void) const;
+  bool has_subfunctions () const;
 
   void stash_subfunction_names (const std::list<std::string>& names);
 
-  std::list<std::string> subfunction_names (void) const;
+  std::list<std::string> subfunction_names () const;
 
   octave_value_list all_va_args (const octave_value_list& args);
 
   void stash_function_name (const std::string& s) { m_name = s; }
 
-  void mark_as_subfunction (void) { m_subfunction = true; }
+  void mark_as_subfunction () { m_subfunction = true; }
 
-  bool is_subfunction (void) const { return m_subfunction; }
+  bool is_subfunction () const { return m_subfunction; }
 
-  void mark_as_inline_function (void) { m_inline_function = true; }
+  void mark_as_inline_function () { m_inline_function = true; }
 
-  bool is_inline_function (void) const { return m_inline_function; }
+  bool is_inline_function () const { return m_inline_function; }
 
-  void mark_as_anonymous_function (void) { m_anonymous_function = true; }
+  void mark_as_anonymous_function () { m_anonymous_function = true; }
 
-  bool is_anonymous_function (void) const { return m_anonymous_function; }
+  bool is_anonymous_function () const { return m_anonymous_function; }
 
   bool is_anonymous_function_of_class
   (const std::string& cname = "") const
@@ -335,18 +344,18 @@ public:
   // If we are a special expression, then the function body consists of exactly
   // one expression.  The expression's result is the return value of the
   // function.
-  bool is_special_expr (void) const
+  bool is_special_expr () const
   {
     return is_inline_function () || is_anonymous_function ();
   }
 
-  void mark_as_nested_function (void) { m_nested_function = true; }
+  void mark_as_nested_function () { m_nested_function = true; }
 
-  bool is_nested_function (void) const { return m_nested_function; }
+  bool is_nested_function () const { return m_nested_function; }
 
-  bool is_parent_function (void) const { return m_scope.is_parent (); }
+  bool is_parent_function () const { return m_scope.is_parent (); }
 
-  void mark_as_legacy_constructor (void) { m_class_constructor = legacy; }
+  void mark_as_legacy_constructor () { m_class_constructor = legacy; }
 
   bool is_legacy_constructor (const std::string& cname = "") const
   {
@@ -354,7 +363,7 @@ public:
             ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
-  void mark_as_classdef_constructor (void) { m_class_constructor = classdef; }
+  void mark_as_classdef_constructor () { m_class_constructor = classdef; }
 
   bool is_classdef_constructor (const std::string& cname = "") const
   {
@@ -362,7 +371,7 @@ public:
             ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
-  void mark_as_legacy_method (void) { m_class_method = legacy; }
+  void mark_as_legacy_method () { m_class_method = legacy; }
 
   bool is_legacy_method (const std::string& cname = "") const
   {
@@ -370,7 +379,7 @@ public:
             ? (cname.empty () ? true : cname == dispatch_class ()) : false);
   }
 
-  void mark_as_classdef_method (void) { m_class_method = classdef; }
+  void mark_as_classdef_method () { m_class_method = classdef; }
 
   bool is_classdef_method (const std::string& cname = "") const
   {
@@ -391,23 +400,23 @@ public:
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ());
 
-  octave::tree_parameter_list * parameter_list (void) { return m_param_list; }
+  octave::tree_parameter_list * parameter_list () { return m_param_list; }
 
-  octave::tree_parameter_list * return_list (void) { return m_ret_list; }
+  octave::tree_parameter_list * return_list () { return m_ret_list; }
 
-  octave::comment_list * leading_comment (void) { return m_lead_comm; }
+  octave::comment_list * leading_comment () { return m_lead_comm; }
 
-  octave::comment_list * trailing_comment (void) { return m_trail_comm; }
+  octave::comment_list * trailing_comment () { return m_trail_comm; }
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
-  octave::tree_expression * special_expr (void);
+  octave::tree_expression * special_expr ();
 
-  bool subsasgn_optimization_ok (void);
+  bool subsasgn_optimization_ok ();
 
   void accept (octave::tree_walker& tw);
 
-  octave_value dump (void) const;
+  octave_value dump () const;
 
 private:
 
@@ -418,8 +427,8 @@ private:
     classdef
   };
 
-  std::string ctor_type_str (void) const;
-  std::string method_type_str (void) const;
+  std::string ctor_type_str () const;
+  std::string method_type_str () const;
 
   // List of arguments for this function.  These are local variables.
   octave::tree_parameter_list *m_param_list;
@@ -466,7 +475,7 @@ private:
   // Enum describing whether this function is a method for a class.
   class_method_type m_class_method;
 
-  void maybe_relocate_end_internal (void);
+  void maybe_relocate_end_internal ();
 
   void print_code_function_header (const std::string& prefix);
 
@@ -475,7 +484,7 @@ private:
   // XXX FIXME (public)
 public:
 
-  void restore_warning_states (void);
+  void restore_warning_states ();
 
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

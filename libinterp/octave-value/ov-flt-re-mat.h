@@ -54,7 +54,7 @@ octave_float_matrix : public octave_base_matrix<FloatNDArray>
 {
 public:
 
-  octave_float_matrix (void)
+  octave_float_matrix ()
     : octave_base_matrix<FloatNDArray> () { }
 
   octave_float_matrix (const FloatMatrix& m)
@@ -81,14 +81,14 @@ public:
   octave_float_matrix (const octave_float_matrix& m)
     : octave_base_matrix<FloatNDArray> (m) { }
 
-  ~octave_float_matrix (void) = default;
+  ~octave_float_matrix () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_float_matrix (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_float_matrix (); }
 
-  octave_base_value * try_narrowing_conversion (void);
+  octave_base_value * try_narrowing_conversion ();
 
   octave::idx_vector index_vector (bool /* require_integers */ = false) const
   {
@@ -96,39 +96,39 @@ public:
            : set_idx_cache (octave::idx_vector (m_matrix));
   }
 
-  builtin_type_t builtin_type (void) const { return btyp_float; }
+  builtin_type_t builtin_type () const { return btyp_float; }
 
-  bool is_real_matrix (void) const { return true; }
+  bool is_real_matrix () const { return true; }
 
-  bool isreal (void) const { return true; }
+  bool isreal () const { return true; }
 
-  bool is_single_type (void) const { return true; }
+  bool is_single_type () const { return true; }
 
-  bool isfloat (void) const { return true; }
+  bool isfloat () const { return true; }
 
   int8NDArray
-  int8_array_value (void) const { return int8NDArray (m_matrix); }
+  int8_array_value () const { return int8NDArray (m_matrix); }
 
   int16NDArray
-  int16_array_value (void) const { return int16NDArray (m_matrix); }
+  int16_array_value () const { return int16NDArray (m_matrix); }
 
   int32NDArray
-  int32_array_value (void) const { return int32NDArray (m_matrix); }
+  int32_array_value () const { return int32NDArray (m_matrix); }
 
   int64NDArray
-  int64_array_value (void) const { return int64NDArray (m_matrix); }
+  int64_array_value () const { return int64NDArray (m_matrix); }
 
   uint8NDArray
-  uint8_array_value (void) const { return uint8NDArray (m_matrix); }
+  uint8_array_value () const { return uint8NDArray (m_matrix); }
 
   uint16NDArray
-  uint16_array_value (void) const { return uint16NDArray (m_matrix); }
+  uint16_array_value () const { return uint16NDArray (m_matrix); }
 
   uint32NDArray
-  uint32_array_value (void) const { return uint32NDArray (m_matrix); }
+  uint32_array_value () const { return uint32NDArray (m_matrix); }
 
   uint64NDArray
-  uint64_array_value (void) const { return uint64NDArray (m_matrix); }
+  uint64_array_value () const { return uint64NDArray (m_matrix); }
 
   double double_value (bool = false) const;
 
@@ -168,29 +168,29 @@ public:
 
   SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
-  octave_value as_double (void) const;
-  octave_value as_single (void) const;
+  octave_value as_double () const;
+  octave_value as_single () const;
 
-  octave_value as_int8 (void) const;
-  octave_value as_int16 (void) const;
-  octave_value as_int32 (void) const;
-  octave_value as_int64 (void) const;
+  octave_value as_int8 () const;
+  octave_value as_int16 () const;
+  octave_value as_int32 () const;
+  octave_value as_int64 () const;
 
-  octave_value as_uint8 (void) const;
-  octave_value as_uint16 (void) const;
-  octave_value as_uint32 (void) const;
-  octave_value as_uint64 (void) const;
+  octave_value as_uint8 () const;
+  octave_value as_uint16 () const;
+  octave_value as_uint32 () const;
+  octave_value as_uint64 () const;
 
   octave_value diag (octave_idx_type k = 0) const;
 
   octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
   // Use matrix_ref here to clear index cache.
-  void increment (void) { matrix_ref () += 1.0; }
+  void increment () { matrix_ref () += 1.0; }
 
-  void decrement (void) { matrix_ref () -= 1.0; }
+  void decrement () { matrix_ref () -= 1.0; }
 
-  void changesign (void) { matrix_ref ().changesign (); }
+  void changesign () { matrix_ref ().changesign (); }
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 

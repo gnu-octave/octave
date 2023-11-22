@@ -33,6 +33,7 @@
 
 #include "dir-ops.h"
 #include "file-ops.h"
+#include "file-stat.h"
 #include "lo-error.h"
 #include "lo-sysdep.h"
 #include "localcharset-wrapper.h"
@@ -68,7 +69,7 @@ system (const std::string& cmd_str)
 }
 
 std::string
-getcwd (void)
+getcwd ()
 {
   std::string retval;
 
@@ -308,7 +309,201 @@ static bool check_fseek_ftell_workaround_needed (bool set_nonbuffered_mode)
   return strcmp (buf1, buf2);
 }
 
+static std::string
+get_formatted_last_error ()
+{
+  std::string msg = "";
+
+  DWORD last_error = GetLastError ();
+
+  wchar_t *error_text = nullptr;
+  FormatMessageW (FORMAT_MESSAGE_FROM_SYSTEM |
+                  FORMAT_MESSAGE_ALLOCATE_BUFFER |
+                  FORMAT_MESSAGE_IGNORE_INSERTS,
+                  nullptr, last_error,
+                  MAKELANGID (LANG_NEUTRAL, SUBLANG_DEFAULT),
+                  reinterpret_cast <wchar_t *> (&error_text), 0, nullptr);
+
+  if (error_text != nullptr)
+    {
+      msg = u8_from_wstring (error_text);
+      LocalFree (error_text);
+    }
+  else
+    msg = "Unknown error.";
+
+  return msg;
+}
 #endif
+
+bool
+file_exists (const std::string& filename, bool is_dir)
+{
+  // Check if a file with the given name exists on the file system.  If is_dir
+  // is true (the default), also return true if filename refers to a directory.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_fn = u8_to_wstring (filename);
+
+  DWORD f_attr = GetFileAttributesW (w_fn.c_str ());
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (is_dir || ! (f_attr & FILE_ATTRIBUTE_DIRECTORY)));
+
+#else
+  file_stat fs (filename);
+
+  return (fs && (fs.is_reg () || (is_dir && fs.is_dir ())));
+
+#endif
+}
+
+bool
+file_exists (const std::string& filename, bool is_dir, std::string& msg)
+{
+  // Check if a file with the given name exists on the file system.  If is_dir
+  // is true (the default), also return true if filename refers to a directory.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_fn = u8_to_wstring (filename);
+
+  DWORD f_attr = GetFileAttributesW (w_fn.c_str ());
+
+  if (f_attr == INVALID_FILE_ATTRIBUTES)
+    msg = get_formatted_last_error ();
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (is_dir || ! (f_attr & FILE_ATTRIBUTE_DIRECTORY)));
+
+#else
+  file_stat fs (filename);
+
+  if (! fs)
+    msg = fs.error ();
+
+  return (fs && (fs.is_reg () || (is_dir && fs.is_dir ())));
+
+#endif
+}
+
+bool
+dir_exists (const std::string& dirname)
+{
+  // Check if a directory with the given name exists on the file system.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_dn = u8_to_wstring (dirname);
+
+  DWORD f_attr = GetFileAttributesW (w_dn.c_str ());
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (f_attr & FILE_ATTRIBUTE_DIRECTORY));
+
+#else
+  file_stat fs (dirname);
+
+  return (fs && fs.is_dir ());
+
+#endif
+}
+
+bool
+dir_exists (const std::string& dirname, std::string& msg)
+{
+  // Check if a directory with the given name exists on the file system.
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring w_dn = u8_to_wstring (dirname);
+
+  DWORD f_attr = GetFileAttributesW (w_dn.c_str ());
+
+  if (f_attr == INVALID_FILE_ATTRIBUTES)
+    msg = get_formatted_last_error ();
+
+  return ((f_attr != INVALID_FILE_ATTRIBUTES)
+          && (f_attr & FILE_ATTRIBUTE_DIRECTORY));
+
+#else
+  file_stat fs (dirname);
+
+  if (! fs)
+    msg = fs.error ();
+
+  return (fs && fs.is_dir ());
+
+#endif
+}
+
+// Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
+
+bool same_file (const std::string& file1, const std::string& file2)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+  // FIXME: When Octave switches to C++17, consider replacing this function
+  //        by https://en.cppreference.com/w/cpp/filesystem/equivalent.
+
+  bool retval = false;
+
+  std::wstring file1w = sys::u8_to_wstring (file1);
+  std::wstring file2w = sys::u8_to_wstring (file2);
+  const wchar_t *f1 = file1w.c_str ();
+  const wchar_t *f2 = file2w.c_str ();
+
+  bool f1_is_dir = GetFileAttributesW (f1) & FILE_ATTRIBUTE_DIRECTORY;
+  bool f2_is_dir = GetFileAttributesW (f2) & FILE_ATTRIBUTE_DIRECTORY;
+
+  // Windows native code
+  // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
+
+  DWORD share = FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE;
+
+  HANDLE hfile1
+    = CreateFileW (f1, 0, share, 0, OPEN_EXISTING,
+                   f1_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
+
+  if (hfile1 != INVALID_HANDLE_VALUE)
+    {
+      HANDLE hfile2
+        = CreateFileW (f2, 0, share, 0, OPEN_EXISTING,
+                       f2_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
+
+      if (hfile2 != INVALID_HANDLE_VALUE)
+        {
+          BY_HANDLE_FILE_INFORMATION hfi1;
+          BY_HANDLE_FILE_INFORMATION hfi2;
+
+          if (GetFileInformationByHandle (hfile1, &hfi1)
+              && GetFileInformationByHandle (hfile2, &hfi2))
+            {
+              retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
+                        && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
+                        && hfi1.nFileIndexLow == hfi2.nFileIndexLow
+                        && hfi1.nFileSizeHigh == hfi2.nFileSizeHigh
+                        && hfi1.nFileSizeLow == hfi2.nFileSizeLow
+                        && hfi1.ftLastWriteTime.dwLowDateTime
+                        == hfi2.ftLastWriteTime.dwLowDateTime
+                        && hfi1.ftLastWriteTime.dwHighDateTime
+                        == hfi2.ftLastWriteTime.dwHighDateTime);
+            }
+
+          CloseHandle (hfile2);
+        }
+
+      CloseHandle (hfile1);
+    }
+
+  return retval;
+
+#else
+
+  // POSIX Code
+
+  sys::file_stat fs_file1 (file1);
+  sys::file_stat fs_file2 (file2);
+
+  return (fs_file1 && fs_file2
+          && fs_file1.ino () == fs_file2.ino ()
+          && fs_file1.dev () == fs_file2.dev ());
+
+#endif
+}
 
 std::FILE *
 fopen (const std::string& filename, const std::string& mode)
@@ -508,6 +703,18 @@ unsetenv_wrapper (const std::string& name)
 #else
   return octave_unsetenv_wrapper (name.c_str ());
 #endif
+}
+
+bool
+isenv_wrapper (const std::string& name)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring wname = u8_to_wstring (name);
+  wchar_t *env = _wgetenv (wname.c_str ());
+#else
+  char *env = ::getenv (name.c_str ());
+#endif
+  return env != 0;
 }
 
 std::wstring

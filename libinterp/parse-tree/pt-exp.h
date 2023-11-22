@@ -51,67 +51,63 @@ public:
     : tree (l, c), m_num_parens (0), m_postfix_index_type ('\0'),
       m_for_cmd_expr (false), m_print_flag (false) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_expression)
 
-  tree_expression (const tree_expression&) = delete;
-
-  tree_expression& operator = (const tree_expression&) = delete;
-
-  virtual ~tree_expression (void) = default;
+  virtual ~tree_expression () = default;
 
   virtual tree_expression * dup (symbol_scope& scope) const = 0;
 
-  virtual bool is_constant (void) const { return false; }
+  virtual bool is_constant () const { return false; }
 
-  virtual bool is_matrix (void) const { return false; }
+  virtual bool is_matrix () const { return false; }
 
-  virtual bool iscell (void) const { return false; }
+  virtual bool iscell () const { return false; }
 
-  virtual bool is_identifier (void) const { return false; }
+  virtual bool is_identifier () const { return false; }
 
-  virtual bool is_index_expression (void) const { return false; }
+  virtual bool is_index_expression () const { return false; }
 
-  virtual bool is_assignment_expression (void) const { return false; }
+  virtual bool is_assignment_expression () const { return false; }
 
-  virtual bool is_prefix_expression (void) const { return false; }
+  virtual bool is_prefix_expression () const { return false; }
 
-  virtual bool is_unary_expression (void) const { return false; }
+  virtual bool is_unary_expression () const { return false; }
 
-  virtual bool is_binary_expression (void) const { return false; }
+  virtual bool is_binary_expression () const { return false; }
 
-  virtual bool is_boolean_expression (void) const { return false; }
+  virtual bool is_boolean_expression () const { return false; }
 
-  virtual bool is_colon_expression (void) const { return false; }
+  virtual bool is_colon_expression () const { return false; }
 
-  virtual bool lvalue_ok (void) const { return false; }
+  virtual bool lvalue_ok () const { return false; }
 
-  virtual bool rvalue_ok (void) const { return false; }
+  virtual bool rvalue_ok () const { return false; }
 
   virtual octave_lvalue lvalue (tree_evaluator&);
 
-  int paren_count (void) const { return m_num_parens; }
+  int paren_count () const { return m_num_parens; }
 
-  bool is_postfix_indexed (void) const
+  bool is_postfix_indexed () const
   { return (m_postfix_index_type != '\0'); }
 
-  char postfix_index (void) const { return m_postfix_index_type; }
+  char postfix_index () const { return m_postfix_index_type; }
 
   // Check if the result of the expression should be printed.
   // Should normally be used in conjunction with
   // tree_evaluator::statement_printing_enabled.
-  bool print_result (void) const { return m_print_flag; }
+  bool print_result () const { return m_print_flag; }
 
-  virtual std::string oper (void) const { return "<unknown>"; }
+  virtual std::string oper () const { return "<unknown>"; }
 
-  virtual std::string name (void) const { return "<unknown>"; }
+  virtual std::string name () const { return "<unknown>"; }
 
-  virtual std::string original_text (void) const;
+  virtual std::string original_text () const;
 
-  void mark_as_for_cmd_expr (void) { m_for_cmd_expr = true; }
+  void mark_as_for_cmd_expr () { m_for_cmd_expr = true; }
 
-  bool is_for_cmd_expr (void) const { return m_for_cmd_expr; }
+  bool is_for_cmd_expr () const { return m_for_cmd_expr; }
 
-  tree_expression * mark_in_parens (void)
+  tree_expression * mark_in_parens ()
   {
     m_num_parens++;
     return this;

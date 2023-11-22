@@ -109,8 +109,7 @@ OCTAVE_REGISTER_INT_TYPE (uint64_t);
 
 #undef OCTAVE_REGISTER_INT_TYPE
 
-// Handles non-homogeneous integer comparisons.  Avoids doing useless
-// tests.
+// Handles non-homogeneous integer comparisons.  Avoids doing useless tests.
 
 class octave_int_cmp_op
 {
@@ -124,22 +123,22 @@ class octave_int_cmp_op
   class prom
   {
     // Promote to int?
-    static const bool pint = (sizeof (T1) < sizeof (int)
+    static const bool s_pint = (sizeof (T1) < sizeof (int)
                               && sizeof (T2) < sizeof (int));
 
-    static const bool t1sig = std::numeric_limits<T1>::is_signed;
-    static const bool t2sig = std::numeric_limits<T2>::is_signed;
+    static const bool s_t1sig = std::numeric_limits<T1>::is_signed;
+    static const bool s_t2sig = std::numeric_limits<T2>::is_signed;
 
-    static const bool psig
-      = (pint || (sizeof (T2) > sizeof (T1) && t2sig) || t1sig);
+    static const bool s_psig
+      = (s_pint || (sizeof (T2) > sizeof (T1) && s_t2sig) || s_t1sig);
 
-    static const int psize
-      = (pint
+    static const int s_psize
+      = (s_pint
          ? sizeof (int)
          : (sizeof (T2) > sizeof (T1) ? sizeof (T2) : sizeof (T1)));
   public:
 
-    typedef typename query_integer_type<psize, psig>::type type;
+    typedef typename query_integer_type<s_psize, s_psig>::type type;
   };
 
   // Implements comparisons between two types of equal size but
@@ -346,8 +345,8 @@ class octave_int_base
 {
 public:
 
-  static T min_val (void) { return std::numeric_limits<T>::min (); }
-  static T max_val (void) { return std::numeric_limits<T>::max (); }
+  static T min_val () { return std::numeric_limits<T>::min (); }
+  static T max_val () { return std::numeric_limits<T>::max (); }
 
   // Convert integer value.
 
@@ -787,7 +786,7 @@ public:
 
   typedef T val_type;
 
-  octave_int (void) : m_ival () { }
+  octave_int () : m_ival () { }
 
   octave_int (T i) : m_ival (i) { }
 
@@ -827,26 +826,26 @@ public:
 
   octave_int& operator = (const octave_int<T>&) = default;
 
-  ~octave_int (void) = default;
+  ~octave_int () = default;
 
-  T value (void) const { return m_ival; }
+  T value () const { return m_ival; }
 
-  const unsigned char * iptr (void) const
+  const unsigned char * iptr () const
   {
     return reinterpret_cast<const unsigned char *> (& m_ival);
   }
 
-  bool operator ! (void) const { return ! m_ival; }
+  bool operator ! () const { return ! m_ival; }
 
-  bool bool_value (void) const { return static_cast<bool> (value ()); }
+  bool bool_value () const { return static_cast<bool> (value ()); }
 
-  char char_value (void) const { return static_cast<char> (value ()); }
+  char char_value () const { return static_cast<char> (value ()); }
 
-  double double_value (void) const { return static_cast<double> (value ()); }
+  double double_value () const { return static_cast<double> (value ()); }
 
-  float float_value (void) const { return static_cast<float> (value ()); }
+  float float_value () const { return static_cast<float> (value ()); }
 
-  operator T (void) const { return value (); }
+  operator T () const { return value (); }
 
   octave_int<T> operator + () const { return *this; }
 
@@ -864,7 +863,7 @@ public:
 
 #undef OCTAVE_INT_UN_OP
 
-  octave_int<T> operator ~ (void) const
+  octave_int<T> operator ~ () const
   {
     T bitinv = ~ m_ival;
     return bitinv;
@@ -895,12 +894,12 @@ public:
 
 #undef OCTAVE_INT_BIN_OP
 
-  static octave_int<T> min (void) { return std::numeric_limits<T>::min (); }
-  static octave_int<T> max (void) { return std::numeric_limits<T>::max (); }
+  static octave_int<T> min () { return std::numeric_limits<T>::min (); }
+  static octave_int<T> max () { return std::numeric_limits<T>::max (); }
 
-  static int nbits (void) { return std::numeric_limits<T>::digits; }
+  static int nbits () { return std::numeric_limits<T>::digits; }
 
-  static int byte_size (void) { return sizeof (T); }
+  static int byte_size () { return sizeof (T); }
 
   static const OCTAVE_API char * type_name ();
 

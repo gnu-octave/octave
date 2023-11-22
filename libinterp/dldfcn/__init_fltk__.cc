@@ -102,7 +102,6 @@ To initialize:
 #include "ov-fcn-handle.h"
 #include "ov.h"
 #include "ovl.h"
-#include "parse.h"
 #include "variables.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -145,7 +144,9 @@ public:
 #endif
   }
 
-  ~OpenGL_fltk (void) = default;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (OpenGL_fltk)
+
+  ~OpenGL_fltk () = default;
 
   void zoom (bool z)
   {
@@ -154,7 +155,7 @@ public:
       hide_overlay ();
   }
 
-  bool zoom (void) { return m_in_zoom; }
+  bool zoom () { return m_in_zoom; }
   void set_zoom_box (const Matrix& zb) { m_zoom_box = zb; }
 
   void print (const std::string& cmd, const std::string& term)
@@ -164,7 +165,7 @@ public:
     octave::gl2ps_print (m_glfcns, gh_mgr.get_object (m_number), cmd, term);
   }
 
-  uint8NDArray get_pixels (void)
+  uint8NDArray get_pixels ()
   {
     gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 
@@ -219,7 +220,7 @@ private:
   // (x1,y1,x2,y2)
   Matrix m_zoom_box;
 
-  void draw (void)
+  void draw ()
   {
 #if defined (HAVE_OPENGL)
 
@@ -247,7 +248,7 @@ private:
 #endif
   }
 
-  void overlay (void)
+  void overlay ()
   {
     Matrix overlaycolor (3, 1);
     overlaycolor(0) = 0.45;
@@ -308,7 +309,11 @@ public:
     : m_menubar (new Fl_Menu_Bar (xx, yy, ww, hh))
   { }
 
-  int items_to_show (void)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (fltk_uimenu)
+
+  ~fltk_uimenu () = default;
+
+  int items_to_show ()
   {
     //returns the number of visible menu items
     int len = m_menubar->size ();
@@ -325,19 +330,19 @@ public:
     return n;
   }
 
-  void show (void)
+  void show ()
   {
     m_menubar->show ();
     m_menubar->redraw ();
   }
 
-  void hide (void)
+  void hide ()
   {
     m_menubar->hide ();
     m_menubar->redraw ();
   }
 
-  bool is_visible (void)
+  bool is_visible ()
   {
     return m_menubar->visible ();
   }
@@ -648,8 +653,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
 
             // if no pos yet, delay adding menu until after other menus
             int pos = kprop.get_position ();
@@ -669,8 +674,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
             add_to_menu (kprop);
             update_position (kprop, ++count);
           }
@@ -694,8 +699,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
 
             // if no pos yet, delay adding menu until after other menus
             int pos = kprop.get_position ();
@@ -716,8 +721,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties& kprop = dynamic_cast<uimenu::properties&>
-                                        (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
             add_to_menu (kprop);
             update_position (kprop, ++count);
           }
@@ -740,8 +745,8 @@ public:
 
         if (kgo.valid_object ())
           {
-            uimenu::properties kprop = dynamic_cast<uimenu::properties&>
-                                       (kgo.get_properties ());
+            uimenu::properties& kprop
+              = dynamic_cast<uimenu::properties&> (kgo.get_properties ());
             remove_from_menu (kprop);
           }
       }
@@ -750,17 +755,6 @@ public:
       delete_entry (dynamic_cast<uimenu::properties&> (prop));
     else if (type == "figure")
       m_menubar->clear ();
-  }
-
-  // No copying!
-
-  fltk_uimenu (const fltk_uimenu&) = delete;
-
-  fltk_uimenu operator = (const fltk_uimenu&) = delete;
-
-  ~fltk_uimenu (void)
-  {
-    // FLTK is supposed to manage memory for widgets.
   }
 
 private:
@@ -784,7 +778,7 @@ public:
 
   plot_window (int xx, int yy, int ww, int hh, figure::properties& xfp,
                bool internal)
-    : Fl_Window (xx, yy, ww, hh + m_menu_h + m_status_h + 2, "octave"),
+    : Fl_Window (xx, yy, ww, hh + MENU_H + STATUS_H + 2, "octave"),
       m_window_label (), m_fp (xfp), m_uimenu (nullptr), m_canvas (nullptr),
       m_autoscale (nullptr), m_togglegrid (nullptr), m_panzoom (nullptr),
       m_rotate (nullptr), m_help (nullptr), m_status (nullptr),
@@ -794,8 +788,8 @@ public:
 
     // The size of the resize_dummy box also determines the minimum
     // window size.
-    m_resize_dummy = new Fl_Box (5 * m_status_h, m_menu_h,
-                                 ww - 5 * m_status_h, hh);
+    m_resize_dummy = new Fl_Box (5 * STATUS_H, MENU_H,
+                                 ww - 5 * STATUS_H, hh);
 
     // See http://fltk.org/articles.php?L415+I0+T+M1000+P1
                 // for how resizable works
@@ -809,16 +803,16 @@ public:
     // windows.  Otherwise, the class is just "FLTK"
     //default_xclass ("Octave");
 
-    m_uimenu = new fltk_uimenu (0, 0, ww, m_menu_h);
-    m_canvas = new OpenGL_fltk (0, m_menu_h, ww, hh, number ());
+    m_uimenu = new fltk_uimenu (0, 0, ww, MENU_H);
+    m_canvas = new OpenGL_fltk (0, MENU_H, ww, hh, number ());
 
     // The bottom toolbar is a composite of "autoscale", "togglegrid",
     // "panzoom", "rotate", "help", and "status".
     // Only "status" should be resized.
 
-    int toolbar_y = m_menu_h + hh + 1;
-    m_status = new Fl_Output (5 * m_status_h, toolbar_y,
-                              ww - 5 * m_status_h, m_status_h, "");
+    int toolbar_y = MENU_H + hh + 1;
+    m_status = new Fl_Output (5 * STATUS_H, toolbar_y,
+                              ww - 5 * STATUS_H, STATUS_H, "");
 
     m_status->textcolor (FL_BLACK);
     m_status->color (FL_GRAY);
@@ -826,23 +820,23 @@ public:
     m_status->textsize (10);
     m_status->box (FL_ENGRAVED_BOX);
 
-    m_autoscale = new Fl_Button (0, toolbar_y, m_status_h, m_status_h, "A");
+    m_autoscale = new Fl_Button (0, toolbar_y, STATUS_H, STATUS_H, "A");
     m_autoscale->callback (button_callback, static_cast<void *> (this));
     m_autoscale->tooltip ("Autoscale");
 
-    m_togglegrid = new Fl_Button (m_status_h, toolbar_y, m_status_h, m_status_h, "G");
+    m_togglegrid = new Fl_Button (STATUS_H, toolbar_y, STATUS_H, STATUS_H, "G");
     m_togglegrid->callback (button_callback, static_cast<void *> (this));
     m_togglegrid->tooltip ("Toggle Grid");
 
-    m_panzoom = new Fl_Button (2* m_status_h, toolbar_y, m_status_h, m_status_h, "P");
+    m_panzoom = new Fl_Button (2* STATUS_H, toolbar_y, STATUS_H, STATUS_H, "P");
     m_panzoom->callback (button_callback, static_cast<void *> (this));
     m_panzoom->tooltip ("Mouse Pan/Zoom");
 
-    m_rotate = new Fl_Button (3 * m_status_h, toolbar_y, m_status_h, m_status_h, "R");
+    m_rotate = new Fl_Button (3 * STATUS_H, toolbar_y, STATUS_H, STATUS_H, "R");
     m_rotate->callback (button_callback, static_cast<void *> (this));
     m_rotate->tooltip ("Mouse Rotate");
 
-    m_help = new Fl_Button (4 * m_status_h, toolbar_y, m_status_h, m_status_h, "?");
+    m_help = new Fl_Button (4 * STATUS_H, toolbar_y, STATUS_H, STATUS_H, "?");
     m_help->callback (button_callback, static_cast<void *> (this));
     m_help->tooltip ("Help");
 
@@ -883,13 +877,9 @@ public:
       }
   }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (plot_window)
 
-  plot_window (const plot_window&) = delete;
-
-  plot_window& operator = (const plot_window&) = delete;
-
-  ~plot_window (void)
+  ~plot_window ()
   {
     this->hide ();
     Fl::check ();
@@ -899,7 +889,7 @@ public:
     // FLTK is supposed to manage memory for widgets.
   }
 
-  double number (void) { return m_fp.get___myhandle__ ().value (); }
+  double number () { return m_fp.get___myhandle__ ().value (); }
 
   void renumber (double new_number)
   {
@@ -920,13 +910,13 @@ public:
     return m_canvas->get_pixels ();
   }
 
-  void show_menubar (void)
+  void show_menubar ()
   {
     m_uimenu->show ();
     update_toolbar_position ();
   }
 
-  void hide_menubar (void)
+  void hide_menubar ()
   {
     m_uimenu->hide ();
     update_toolbar_position ();
@@ -997,7 +987,7 @@ public:
       }
   }
 
-  void show_canvas (void)
+  void show_canvas ()
   {
     if (! m_canvas->can_do ())
       error ("unable to plot due to insufficient OpenGL support");
@@ -1008,7 +998,7 @@ public:
       }
   }
 
-  void hide_canvas (void)
+  void hide_canvas ()
   {
     m_canvas->hide ();
   }
@@ -1027,12 +1017,12 @@ public:
 
     int toolbar_y = m_canvas->h () + menu_dy () + 1;
     m_autoscale->position (0, toolbar_y);
-    m_togglegrid->position (m_status_h, toolbar_y);
-    m_panzoom->position (2 * m_status_h, toolbar_y);
-    m_rotate->position (3 * m_status_h, toolbar_y);
-    m_help->position (4 * m_status_h, toolbar_y);
-    m_status->resize (5 * m_status_h, toolbar_y,
-                      w () - 5 * m_status_h, m_status_h);
+    m_togglegrid->position (STATUS_H, toolbar_y);
+    m_panzoom->position (2 * STATUS_H, toolbar_y);
+    m_rotate->position (3 * STATUS_H, toolbar_y);
+    m_help->position (4 * STATUS_H, toolbar_y);
+    m_status->resize (5 * STATUS_H, toolbar_y,
+                      w () - 5 * STATUS_H, STATUS_H);
     init_sizes ();
     redraw ();
   }
@@ -1041,7 +1031,7 @@ public:
   {
     Matrix pos = outerpos;
     pos(1) += menu_dy ();
-    pos(3) -= menu_dy () + m_status_h + 2;
+    pos(3) -= menu_dy () + STATUS_H + 2;
     return pos;
   }
 
@@ -1049,7 +1039,7 @@ public:
   {
     Matrix outerpos = pos;
     outerpos(1) -= menu_dy ();
-    outerpos(3) += menu_dy () + m_status_h + 2;
+    outerpos(3) += menu_dy () + STATUS_H + 2;
     return outerpos;
   }
 
@@ -1066,12 +1056,12 @@ public:
     resize (bb(0), bb(1), bb(2), bb(3));
   }
 
-  void mark_modified (void)
+  void mark_modified ()
   {
     m_canvas->redraw ();
   }
 
-  void set_name (void)
+  void set_name ()
   {
     m_window_label = m_fp.get_title ();
     label (m_window_label.c_str ());
@@ -1087,10 +1077,10 @@ private:
   figure::properties& m_fp;
 
   // Status area height.
-  static const int m_status_h = 20;
+  static const int STATUS_H = 20;
 
   // Menu height
-  static const int m_menu_h = 25;
+  static const int MENU_H = 25;
 
   fltk_uimenu *m_uimenu;
 
@@ -1113,9 +1103,12 @@ private:
   // Window callback.
   static void window_close (Fl_Widget *, void *data)
   {
+    interpreter& interp = __get_interpreter__ ();
+
     octave_value_list args;
     args(0) = static_cast<plot_window *> (data)->number ();
-    octave::feval ("close", args);
+
+    interp.feval ("close", args);
   }
 
   // Button callbacks.
@@ -1166,25 +1159,32 @@ private:
       }
   }
 
-  void axis_auto (void)
+  void axis_auto ()
   {
     octave_value_list args;
     if (m_fp.get_currentaxes ().ok ())
       {
+        interpreter& interp = __get_interpreter__ ();
+
         args(0) = m_fp.get_currentaxes ().as_octave_value ();
         args(1) = "auto";
-        octave::feval ("axis", args);
+
+        interp.feval ("axis", args);
+
         mark_modified ();
       }
   }
 
-  void toggle_grid (void)
+  void toggle_grid ()
   {
+    interpreter& interp = __get_interpreter__ ();
+
     octave_value_list args;
     if (m_fp.get_currentaxes ().ok ())
       args(0) = m_fp.get_currentaxes ().as_octave_value ();
 
-    octave::feval ("grid", args);
+    interp.feval ("grid", args);
+
     mark_modified ();
   }
 
@@ -1332,7 +1332,7 @@ private:
   int menu_dy ()
   {
     if (m_uimenu->is_visible ())
-      return m_menu_h;
+      return MENU_H;
     else
       return 0;
   }
@@ -1466,7 +1466,7 @@ private:
     m_fp.set_boundingbox (outerposition2position (bb), true, false);
   }
 
-  bool pan_enabled (void)
+  bool pan_enabled ()
   {
     // Getting pan mode property:
     octave_value ov_pm = m_fp.get___pan_mode__ ();
@@ -1476,7 +1476,7 @@ private:
     return pm.contents ("Enable").string_value () == "on";
   }
 
-  std::string pan_mode (void)
+  std::string pan_mode ()
   {
     // Getting pan mode property:
     octave_value ov_pm = m_fp.get___pan_mode__ ();
@@ -1486,7 +1486,7 @@ private:
     return pm.contents ("Motion").string_value ();
   }
 
-  bool rotate_enabled (void)
+  bool rotate_enabled ()
   {
     // Getting rotate mode property:
     octave_value ov_rm = m_fp.get___rotate_mode__ ();
@@ -1871,47 +1871,43 @@ class figure_manager
 {
 private:
 
-  figure_manager (void) = default;
+  figure_manager () = default;
 
 public:
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (figure_manager)
 
-  figure_manager (const figure_manager&) = delete;
-
-  figure_manager& operator = (const figure_manager&) = delete;
-
-  ~figure_manager (void)
+  ~figure_manager ()
   {
     close_all ();
   }
 
-  static bool instance_ok (void)
+  static bool instance_ok ()
   {
     bool retval = true;
 
-    if (! instance)
-      instance = new figure_manager ();
+    if (! s_instance)
+      s_instance = new figure_manager ();
 
     return retval;
   }
 
-  static void close_all (void)
+  static void close_all ()
   {
     if (instance_ok ())
-      instance->do_close_all ();
+      s_instance->do_close_all ();
   }
 
   static void new_window (figure::properties& fp)
   {
     if (instance_ok ())
-      instance->do_new_window (fp);
+      s_instance->do_new_window (fp);
   }
 
   static void delete_window (int idx)
   {
     if (instance_ok ())
-      instance->do_delete_window (idx);
+      s_instance->do_delete_window (idx);
   }
 
   static void delete_window (const std::string& idx_str)
@@ -1922,13 +1918,13 @@ public:
   static void renumber_figure (const std::string& idx_str, double new_number)
   {
     if (instance_ok ())
-      instance->do_renumber_figure (str2idx (idx_str), new_number);
+      s_instance->do_renumber_figure (str2idx (idx_str), new_number);
   }
 
   static void toggle_window_visibility (int idx, bool is_visible)
   {
     if (instance_ok ())
-      instance->do_toggle_window_visibility (idx, is_visible);
+      s_instance->do_toggle_window_visibility (idx, is_visible);
   }
 
   static void toggle_window_visibility (const std::string& idx_str,
@@ -1940,7 +1936,7 @@ public:
   static void mark_modified (int idx)
   {
     if (instance_ok ())
-      instance->do_mark_modified (idx);
+      s_instance->do_mark_modified (idx);
   }
 
   static void mark_modified (const graphics_handle& gh)
@@ -1951,7 +1947,7 @@ public:
   static void set_name (int idx)
   {
     if (instance_ok ())
-      instance->do_set_name (idx);
+      s_instance->do_set_name (idx);
   }
 
   static void set_name (const std::string& idx_str)
@@ -1961,7 +1957,7 @@ public:
 
   static Matrix get_size (int idx)
   {
-    return instance_ok () ? instance->do_get_size (idx) : Matrix ();
+    return instance_ok () ? s_instance->do_get_size (idx) : Matrix ();
   }
 
   static Matrix get_size (const graphics_handle& gh)
@@ -1973,14 +1969,14 @@ public:
                      const std::string& term)
   {
     if (instance_ok ())
-      instance->do_print (hnd2idx (gh), cmd, term);
+      s_instance->do_print (hnd2idx (gh), cmd, term);
   }
 
   static uint8NDArray get_pixels (const graphics_handle& gh)
   {
     uint8NDArray retval;
     if (instance_ok ())
-      retval = instance->do_get_pixels (hnd2idx (gh));
+      retval = s_instance->do_get_pixels (hnd2idx (gh));
 
     return retval;
   }
@@ -1989,60 +1985,59 @@ public:
                              const graphics_handle& uimenuh, int id)
   {
     if (instance_ok ())
-      instance->do_uimenu_update (hnd2idx (figh), uimenuh, id);
+      s_instance->do_uimenu_update (hnd2idx (figh), uimenuh, id);
   }
 
   static void update_canvas (const graphics_handle& gh,
                              const graphics_handle& ca)
   {
     if (instance_ok ())
-      instance->do_update_canvas (hnd2idx (gh), ca);
+      s_instance->do_update_canvas (hnd2idx (gh), ca);
   }
 
   static void update_boundingbox (const std::string& fig_idx_str,
                                   bool internal)
   {
     if (instance_ok ())
-      instance->do_update_boundingbox (str2idx (fig_idx_str), internal);
+      s_instance->do_update_boundingbox (str2idx (fig_idx_str), internal);
   }
 
   static void toggle_menubar_visibility (const std::string& fig_idx_str,
                                          bool menubar_is_figure)
   {
     if (instance_ok ())
-      instance->do_toggle_menubar_visibility (str2idx (fig_idx_str),
+      s_instance->do_toggle_menubar_visibility (str2idx (fig_idx_str),
                                               menubar_is_figure);
   }
 
 private:
 
-  static figure_manager *instance;
+  static figure_manager *s_instance;
 
   // Singleton -- hide all of the above.
 
-  static int curr_index;
+  static int s_curr_index;
 
   typedef std::map<int, plot_window *> window_map;
 
   typedef window_map::iterator wm_iterator;
 
-  window_map windows;
+  window_map m_windows;
 
-  static std::string fltk_idx_header;
+  static std::string s_fltk_idx_header;
 
-  void do_close_all (void)
+  void do_close_all ()
   {
-    wm_iterator win;
-    for (win = windows.begin (); win != windows.end (); win++)
-      delete win->second;
-    windows.clear ();
+    for (auto& win : m_windows)
+      delete win.second;
+    m_windows.clear ();
   }
 
   void do_new_window (figure::properties& fp)
   {
     int idx = figprops2idx (fp);
 
-    if (idx >= 0 && windows.find (idx) == windows.end ())
+    if (idx >= 0 && m_windows.find (idx) == m_windows.end ())
       {
         Matrix pos = fp.get_outerposition ().matrix_value ();
         bool internal = false;
@@ -2058,37 +2053,37 @@ private:
             pos = fp.get_boundingbox (internal);
           }
 
-        idx2figprops (curr_index, fp);
+        idx2figprops (s_curr_index, fp);
 
-        windows[curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
+        m_windows[s_curr_index++] = new plot_window (pos(0), pos(1), pos(2), pos(3),
             fp, internal);
       }
   }
 
   void do_delete_window (int idx)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         delete win->second;
-        windows.erase (win);
+        m_windows.erase (win);
       }
   }
 
   void do_renumber_figure (int idx, double new_number)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->renumber (new_number);
   }
 
   void do_toggle_window_visibility (int idx, bool is_visible)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         if (is_visible)
           {
@@ -2103,9 +2098,9 @@ private:
 
   void do_toggle_menubar_visibility (int fig_idx, bool menubar_is_figure)
   {
-    wm_iterator win = windows.find (fig_idx);
+    wm_iterator win = m_windows.find (fig_idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         if (menubar_is_figure)
           win->second->show_menubar ();
@@ -2118,9 +2113,9 @@ private:
 
   void do_mark_modified (int idx)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         win->second->mark_modified ();
       }
@@ -2128,9 +2123,9 @@ private:
 
   void do_set_name (int idx)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->set_name ();
   }
 
@@ -2138,9 +2133,9 @@ private:
   {
     Matrix sz (1, 2, 0.0);
 
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         sz(0) = win->second->w ();
         sz(1) = win->second->h ();
@@ -2151,18 +2146,18 @@ private:
 
   void do_print (int idx, const std::string& cmd, const std::string& term)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->print (cmd, term);
   }
 
   uint8NDArray do_get_pixels (int idx)
   {
     uint8NDArray retval;
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       retval = win->second->get_pixels ();
 
     return retval;
@@ -2170,17 +2165,17 @@ private:
 
   void do_uimenu_update (int idx, const graphics_handle& gh, int id)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->uimenu_update (gh, id);
   }
 
   void do_update_canvas (int idx, const graphics_handle& ca)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       {
         if (ca.ok ())
           win->second->show_canvas ();
@@ -2191,18 +2186,18 @@ private:
 
   void do_update_boundingbox (int idx, bool internal)
   {
-    wm_iterator win = windows.find (idx);
+    wm_iterator win = m_windows.find (idx);
 
-    if (win != windows.end ())
+    if (win != m_windows.end ())
       win->second->update_boundingbox (internal);
   }
 
   static int str2idx (const caseless_str& clstr)
   {
     int ind;
-    if (clstr.find (fltk_idx_header, 0) == 0)
+    if (clstr.find (s_fltk_idx_header, 0) == 0)
       {
-        std::istringstream istr (clstr.substr (fltk_idx_header.size ()));
+        std::istringstream istr (clstr.substr (s_fltk_idx_header.size ()));
         if (istr >> ind)
           return ind;
       }
@@ -2213,7 +2208,7 @@ private:
   void idx2figprops (int idx, figure::properties& fp)
   {
     std::ostringstream ind_str;
-    ind_str << fltk_idx_header << idx;
+    ind_str << s_fltk_idx_header << idx;
     fp.set___plot_stream__ (ind_str.str ());
   }
 
@@ -2253,10 +2248,10 @@ private:
   }
 };
 
-figure_manager *figure_manager::instance = nullptr;
+figure_manager *figure_manager::s_instance = nullptr;
 
-std::string figure_manager::fltk_idx_header="fltk index=";
-int figure_manager::curr_index = 1;
+std::string figure_manager::s_fltk_idx_header="fltk index=";
+int figure_manager::s_curr_index = 1;
 
 static bool toolkit_loaded = false;
 
@@ -2266,14 +2261,31 @@ public:
 
   fltk_graphics_toolkit (octave::interpreter& interp)
     : octave::base_graphics_toolkit (FLTK_GRAPHICS_TOOLKIT_NAME),
-      m_interpreter (interp), input_event_hook_fcn_id ()
+      m_interpreter (interp), m_input_event_hook_fcn_id ()
   {
+    static bool warned = false;
+
+    if (! warned)
+      {
+        warning_with_id
+        ("Octave:fltk-graphics",
+         "using the fltk graphics toolkit is discouraged\n\
+\n\
+The FLTK graphics toolkit is not actively maintained and has a number\n\
+of limitations that are unlikely to be fixed.\n\
+The qt toolkit is recommended instead.\n");
+
+        warned = true;
+      }
+
     Fl::visual (FL_RGB);
   }
 
-  ~fltk_graphics_toolkit (void) = default;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (fltk_graphics_toolkit)
 
-  bool is_valid (void) const { return true; }
+  ~fltk_graphics_toolkit () = default;
+
+  bool is_valid () const { return true; }
 
   bool initialize (const graphics_object& go)
   {
@@ -2440,7 +2452,7 @@ public:
   }
 
   /*
-    double get_screen_resolution (void) const
+    double get_screen_resolution () const
     {
       // FLTK doesn't give this info.
       return 72.0;
@@ -2450,7 +2462,7 @@ public:
     }
   */
 
-  Matrix get_screen_size (void) const
+  Matrix get_screen_size () const
   {
     Matrix sz (1, 2, 0.0);
     sz(0) = Fl::w ();
@@ -2458,16 +2470,16 @@ public:
     return sz;
   }
 
-  void close (void)
+  void close ()
   {
     if (toolkit_loaded)
       {
         m_interpreter.munlock ("__init_fltk__");
 
-        octave_value_list args = input_event_hook_fcn_id;
+        octave_value_list args = m_input_event_hook_fcn_id;
         args.append (false);
-        Fremove_input_event_hook (m_interpreter, args, 0);
-        input_event_hook_fcn_id = octave_value_list ();
+        Fremove_input_event_hook (m_interpreter, args);
+        m_input_event_hook_fcn_id = octave_value_list ();
 
         figure_manager::close_all ();
       }
@@ -2475,14 +2487,14 @@ public:
 
   void set_input_event_hook_id (const octave_value_list& id)
   {
-    input_event_hook_fcn_id = id;
+    m_input_event_hook_fcn_id = id;
   }
 
 private:
 
   octave::interpreter& m_interpreter;
 
-  octave_value_list input_event_hook_fcn_id;
+  octave_value_list m_input_event_hook_fcn_id;
 };
 
 #endif
@@ -2534,7 +2546,8 @@ Undocumented internal function.
       octave_value fcn (new octave_builtin (F__fltk_check__));
       octave_value fcn_handle (new octave_fcn_handle (fcn));
 
-      octave_value_list id = Fadd_input_event_hook (interp, fcn_handle, 1);
+      octave_value_list id = Fadd_input_event_hook (interp,
+                                                    ovl (fcn_handle), 1);
 
       fltk->set_input_event_hook_id (id);
     }

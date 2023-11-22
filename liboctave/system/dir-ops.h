@@ -73,21 +73,21 @@ public:
     return *this;
   }
 
-  ~dir_entry (void) { close (); }
+  ~dir_entry () { close (); }
 
   bool open (const std::string& = "");
 
-  string_vector read (void);
+  string_vector read ();
 
-  bool close (void);
+  bool close ();
 
-  bool ok (void) const { return m_dir && ! m_fail; }
+  bool ok () const { return m_dir && ! m_fail; }
 
   operator bool () const { return ok (); }
 
-  std::string error (void) const { return ok () ? "" : m_errmsg; }
+  std::string error () const { return ok () ? "" : m_errmsg; }
 
-  static unsigned int max_name_length (void);
+  static unsigned int max_name_length ();
 
 private:
 

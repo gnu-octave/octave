@@ -111,13 +111,13 @@ function R = randi (bounds, varargin)
   ## Rejection Algorithm to guarantee unbiased results.  See bug #54619.
   rng = (imax - imin) + 1;              # requested range
   N = prod ([varargin{:}]);             # number of requested elements
-  K = floor ((flintmax () + 1) / rng);  # number of primary integers ...
+  K = floor (flintmax () / rng);        # number of primary integers ...
                                         # mapped to single output
-  p = (K*rng) / (flintmax () + 1);      # expected proportion of used primaries
+  p = (K*rng) / flintmax ();            # expected proportion of used primaries
 
   do
     M = ceil (N/p + 10*sqrt (N/p - N)); # number of requested primary integers
-    r_prim = floor (rand (M,1) * (flintmax () + 1));
+    r_prim = floor (rand (M,1) * flintmax ());
     r_prim = r_prim(r_prim < K*rng);
   until (numel (r_prim) >= N)           # should practically always be true
 

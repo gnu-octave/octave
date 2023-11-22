@@ -61,6 +61,7 @@
 %! assert (!a .b, logical ([1 0]));
 %! assert (3*a .b, [0 3]);
 %! assert (a. b-1, [-1 0]);
+%! warning ('off', 'Octave:colon-nonscalar-argument', 'local');
 %! assert (a. b:3, 0:3);
 %! assert (a. b>0.5, logical ([0 1]));
 %! assert (a. b&0, logical ([0 0]));
@@ -364,4 +365,3 @@
 %! fail ("i:5", "warning", "imaginary part of complex colon arguments is ignored");
 %! fail ("1:5*i", "warning", "imaginary part of complex colon arguments is ignored");
 %! fail ("1:i:5", "warning", "imaginary part of complex colon arguments is ignored");
-

@@ -56,26 +56,25 @@
 #include "ov-typeinfo.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "pr-output.h"
 #include "unwind-prot.h"
 #include "variables.h"
 
 
-int octave_class::t_id (-1);
+int octave_class::s_t_id (-1);
 
-const std::string octave_class::t_name ("class");
+const std::string octave_class::s_t_name ("class");
 
 void
 octave_class::register_type (octave::type_info& ti)
 {
-  t_id = ti.register_type (octave_class::t_name, "<unknown>",
+  s_t_id = ti.register_type (octave_class::s_t_name, "<unknown>",
                            octave_value (new octave_class ()));
 }
 
 octave_class::octave_class (const octave_map& m, const std::string& id,
                             const octave_value_list& parents)
-  : octave_base_value (), m_map (m), c_name (id), m_obsolete_copies (0)
+  : octave_base_value (), m_map (m), m_c_name (id), m_obsolete_copies (0)
 {
   octave_idx_type n = parents.length ();
 
@@ -206,18 +205,18 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
 }
 
 octave_base_value *
-octave_class::unique_clone (void)
+octave_class::unique_clone ()
 {
-  if (count == m_obsolete_copies)
+  if (m_count == m_obsolete_copies)
     {
       // All remaining copies are obsolete.  We don't actually need to clone.
-      count++;
+      m_count++;
       return this;
     }
   else
     {
       // In theory, this shouldn't be happening, but it's here just in case.
-      if (count < m_obsolete_copies)
+      if (m_count < m_obsolete_copies)
         m_obsolete_copies = 0;
 
       return clone ();
@@ -225,7 +224,7 @@ octave_class::unique_clone (void)
 }
 
 std::string
-octave_class::get_current_method_class (void)
+octave_class::get_current_method_class ()
 {
   std::string retval = class_name ();
 
@@ -246,14 +245,14 @@ octave_class::get_current_method_class (void)
 
 OCTAVE_NORETURN static
 void
-err_invalid_index1 (void)
+err_invalid_index1 ()
 {
   error ("invalid index for class");
 }
 
 OCTAVE_NORETURN static
 void
-err_invalid_index_for_assignment (void)
+err_invalid_index_for_assignment ()
 {
   error ("invalid index for class assignment");
 }
@@ -305,23 +304,25 @@ octave_class::dotref (const octave_value_list& idx)
 }
 
 Matrix
-octave_class::size (void)
+octave_class::size ()
 {
   if (in_class_method () || called_from_builtin ())
     return octave_base_value::size ();
 
   Matrix retval (1, 2, 1.0);
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value meth = symtab.find_method ("size", class_name ());
 
   if (meth.is_defined ())
     {
-      count++;
+      m_count++;
       octave_value_list args (1, octave_value (this));
 
-      octave_value_list lv = octave::feval (meth.function_value (), args, 1);
+      octave_value_list lv = interp.feval (meth.function_value (), args, 1);
       if (lv.length () <= 0
           || ! lv(0).is_matrix_type () || ! lv(0).dims ().isvector ())
         error ("@%s/size: invalid return value", class_name ().c_str ());
@@ -352,7 +353,9 @@ octave_class::xnumel (const octave_value_list& idx)
   octave_idx_type retval = -1;
   const std::string cn = class_name ();
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value meth = symtab.find_method ("numel", cn);
 
@@ -360,13 +363,13 @@ octave_class::xnumel (const octave_value_list& idx)
     {
       octave_value_list args (idx.length () + 1, octave_value ());
 
-      count++;
+      m_count++;
       args(0) = octave_value (this);
 
       for (octave_idx_type i = 0; i < idx.length (); i++)
         args(i+1) = idx(i);
 
-      octave_value_list lv = octave::feval (meth.function_value (), args, 1);
+      octave_value_list lv = interp.feval (meth.function_value (), args, 1);
       if (lv.length () != 1 || ! lv(0).is_scalar_type ())
         error ("@%s/numel: invalid return value", cn.c_str ());
 
@@ -415,7 +418,7 @@ octave_class::subsref (const std::string& type,
               }
             else
               retval(0) = octave_value (m_map.index (idx.front ()),
-                                        c_name, m_parent_list);
+                                        m_c_name, m_parent_list);
           }
           break;
 
@@ -447,7 +450,9 @@ octave_class::subsref (const std::string& type,
     }
   else
     {
-      octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+      octave::interpreter& interp = octave::__get_interpreter__ ();
+
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       octave_value meth = symtab.find_method ("subsref", class_name ());
 
@@ -457,40 +462,52 @@ octave_class::subsref (const std::string& type,
 
           args(1) = make_idx_args (type, idx, "subsref");
 
-          count++;
+          m_count++;
           args(0) = octave_value (this);
 
-          // FIXME: for Matlab compatibility, let us attempt to set up a proper
-          // value for nargout at least in the simple case where the
+          // If the number of output arguments is unknown, attempt to set up
+          // a proper value for nargout at least in the simple case where the
           // cs-list-type expression - i.e., {} or ().x, is the leading one.
-          // Note that Octave does not actually need this, since it will
-          // be able to properly react to varargout a posteriori.
-          bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
-                                      || (type.length () > 1 && type[0] == '('
-                                          && type[1] == '.'));
-
-          int true_nargout = nargout;
-
-          if (maybe_cs_list_query)
+          if (nargout <= 0)
             {
-              // Set up a proper nargout for the subsref call by calling numel.
-              octave_value_list tmp;
-              if (type[0] != '.') tmp = idx.front ();
-              true_nargout = xnumel (tmp);
+              bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
+                                          || (type.length () > 1 && type[0] == '('
+                                              && type[1] == '.'));
+
+              if (maybe_cs_list_query)
+                {
+                  // Set up a proper nargout for the subsref call by calling numel.
+                  octave_value_list tmp;
+                  int nout;
+                  if (type[0] != '.') tmp = idx.front ();
+                  nout = xnumel (tmp);
+                  if (nargout != 0 || nout > 1)
+                    nargout = nout;
+                }
+              else if (nargout < 0)
+                nargout = 1;
             }
 
-          retval = octave::feval (meth.function_value (), args, true_nargout);
+          retval = interp.feval (meth.function_value (), args, nargout);
 
-          // Since we're handling subsref, if the list has more than one
-          // element, return it as a comma-separated list so that we can
-          // pass it to the evaluator
-          if (retval.length () > 1)
-            retval = octave_value (retval);
+          // Since we're handling subsref, if the list has more than one element
+          // and the caller to subsref accepts more that one output, return
+          // the elements as a comma-separated list so that we can pass it to the
+          // evaluator
+          if (retval.length () > 1 && (nargout < 0 || nargout >1))
+            {
+              if (nargout <= 0 || nargout>=retval.length())
+                // Take the whole list
+                retval = octave_value (retval);
+              else
+                // Take nargout elements of the list
+                retval = octave_value(retval.slice(0,nargout));
+            }
         }
       else
         {
           if (type.length () == 1 && type[0] == '(')
-            retval(0) = octave_value (m_map.index (idx.front ()), c_name,
+            retval(0) = octave_value (m_map.index (idx.front ()), m_c_name,
                                       m_parent_list);
           else
             err_invalid_index1 ();
@@ -521,7 +538,7 @@ octave_class::subsasgn (const std::string& type,
                         const std::list<octave_value_list>& idx,
                         const octave_value& rhs)
 {
-  count++;
+  m_count++;
   return subsasgn_common (octave_value (this), type, idx, rhs);
 }
 
@@ -547,7 +564,9 @@ octave_class::subsasgn_common (const octave_value& obj,
 
   if (! (in_class_method () || called_from_builtin ()))
     {
-      octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+      octave::interpreter& interp = octave::__get_interpreter__ ();
+
+      octave::symbol_table& symtab = interp.get_symbol_table ();
 
       octave_value meth = symtab.find_method ("subsasgn", class_name ());
 
@@ -589,10 +608,10 @@ octave_class::subsasgn_common (const octave_value& obj,
               octave::unwind_protect_var<int> restore_var (m_obsolete_copies);
               m_obsolete_copies = 2;
 
-              tmp = octave::feval (meth.function_value (), args);
+              tmp = interp.feval (meth.function_value (), args);
             }
           else
-            tmp = octave::feval (meth.function_value (), args);
+            tmp = interp.feval (meth.function_value (), args);
 
           // FIXME: Should the subsasgn method be able to return
           //        more than one value?
@@ -622,7 +641,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
       obvp->subsasgn (type, idx, rhs);
 
-      count++;
+      m_count++;
       retval = octave_value (this);
 
       return retval;
@@ -748,7 +767,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
             m_map.assign (idx.front (), key, t_rhs);
 
-            count++;
+            m_count++;
             retval = octave_value (this);
           }
         else
@@ -759,7 +778,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 m_map.assign (idx.front (), rhs_map);
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
             else
@@ -769,7 +788,7 @@ octave_class::subsasgn_common (const octave_value& obj,
 
                 m_map.delete_elements (idx.front ());
 
-                count++;
+                m_count++;
                 retval = octave_value (this);
               }
           }
@@ -804,7 +823,7 @@ octave_class::subsasgn_common (const octave_value& obj,
             m_map.setfield (key, tmp_cell);
           }
 
-        count++;
+        m_count++;
         retval = octave_value (this);
       }
       break;
@@ -823,7 +842,9 @@ octave_class::subsasgn_common (const octave_value& obj,
 octave::idx_vector
 octave_class::index_vector (bool require_integers) const
 {
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value meth = symtab.find_method ("subsindex", class_name ());
 
@@ -832,9 +853,9 @@ octave_class::index_vector (bool require_integers) const
            class_name ().c_str ());
 
   octave_value_list args;
-  args(0) = octave_value (new octave_class (m_map, c_name, m_parent_list));
+  args(0) = octave_value (new octave_class (m_map, m_c_name, m_parent_list));
 
-  octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
+  octave_value_list tmp = interp.feval (meth.function_value (), args, 1);
 
   if (tmp(0).isobject ())
     error ("subsindex function must return a valid index vector");
@@ -848,7 +869,7 @@ octave_class::index_vector (bool require_integers) const
 }
 
 std::size_t
-octave_class::byte_size (void) const
+octave_class::byte_size () const
 {
   // Neglect the size of the fieldnames.
 
@@ -867,11 +888,13 @@ octave_class::byte_size (void) const
 }
 
 bool
-octave_class::is_true (void) const
+octave_class::is_true () const
 {
   bool retval = false;
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value meth = symtab.find_method ("logical", class_name ());
 
@@ -879,7 +902,7 @@ octave_class::is_true (void) const
     {
       octave_value in = new octave_class (*this);
 
-      octave_value_list tmp = octave::feval (meth.function_value (), in, 1);
+      octave_value_list tmp = interp.feval (meth.function_value (), in, 1);
       retval = tmp(0).is_true ();
     }
 
@@ -887,7 +910,7 @@ octave_class::is_true (void) const
 }
 
 string_vector
-octave_class::map_keys (void) const
+octave_class::map_keys () const
 {
   err_wrong_type_arg ("octave_class::map_keys()", type_name ());
 }
@@ -989,7 +1012,9 @@ octave_class::string_vector_value (bool pad) const
 {
   string_vector retval;
 
-  octave::symbol_table& symtab = octave::__get_symbol_table__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value meth = symtab.find_method ("char", class_name ());
 
@@ -997,9 +1022,9 @@ octave_class::string_vector_value (bool pad) const
     error ("no char method defined for class %s", class_name ().c_str ());
 
   octave_value_list args;
-  args(0) = octave_value (new octave_class (m_map, c_name, m_parent_list));
+  args(0) = octave_value (new octave_class (m_map, m_c_name, m_parent_list));
 
-  octave_value_list tmp = octave::feval (meth.function_value (), args, 1);
+  octave_value_list tmp = interp.feval (meth.function_value (), args, 1);
 
   if (tmp.length () >= 1)
     {
@@ -1030,12 +1055,12 @@ octave_class::print_raw (std::ostream& os, bool) const
 // If we don't have one, we attempt to create one by calling the constructor
 // with no arguments.
 bool
-octave_class::reconstruct_exemplar (void)
+octave_class::reconstruct_exemplar ()
 {
   bool retval = false;
 
   octave_class::exemplar_const_iterator it
-    = octave_class::exemplar_map.find (c_name);
+    = octave_class::exemplar_map.find (m_c_name);
 
   if (it != octave_class::exemplar_map.end ())
     retval = true;
@@ -1045,7 +1070,7 @@ octave_class::reconstruct_exemplar (void)
 
       octave::symbol_table& symtab = interp.get_symbol_table ();
 
-      octave_value ctor = symtab.find_method (c_name, c_name);
+      octave_value ctor = symtab.find_method (m_c_name, m_c_name);
 
       bool have_ctor = false;
 
@@ -1053,7 +1078,7 @@ octave_class::reconstruct_exemplar (void)
         {
           octave_function *fcn = ctor.function_value ();
 
-          if (fcn && fcn->is_class_constructor (c_name))
+          if (fcn && fcn->is_class_constructor (m_c_name))
             have_ctor = true;
 
           // Something has gone terribly wrong if
@@ -1076,7 +1101,7 @@ octave_class::reconstruct_exemplar (void)
 
           try
             {
-              result = octave::feval (ctor, ovl (), 1);
+              result = interp.feval (ctor, ovl (), 1);
             }
           catch (const octave::execution_exception&)
             {
@@ -1089,14 +1114,14 @@ octave_class::reconstruct_exemplar (void)
             retval = true;
         }
       else
-        warning ("no constructor for class %s", c_name.c_str ());
+        warning ("no constructor for class %s", m_c_name.c_str ());
     }
 
   return retval;
 }
 
 void
-octave_class::clear_exemplar_map (void)
+octave_class::clear_exemplar_map ()
 {
   exemplar_map.clear ();
 }
@@ -1109,7 +1134,7 @@ octave_class::clear_exemplar_map (void)
 //  class structure here so the user's loadobj method has a chance
 //  to do its magic.
 bool
-octave_class::reconstruct_parents (void)
+octave_class::reconstruct_parents ()
 {
   bool retval = true;
   bool might_have_inheritance = false;
@@ -1135,7 +1160,7 @@ octave_class::reconstruct_parents (void)
   if (might_have_inheritance)
     {
       octave_class::exemplar_const_iterator it
-        = octave_class::exemplar_map.find (c_name);
+        = octave_class::exemplar_map.find (m_c_name);
 
       if (it == octave_class::exemplar_map.end ())
         retval = false;
@@ -1165,12 +1190,15 @@ octave_class::save_ascii (std::ostream& os)
   os << "# classname: " << class_name () << "\n";
   octave_map m;
 
-  octave::load_path& lp = octave::__get_load_path__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::load_path& lp = interp.get_load_path ();
 
   if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = octave::feval ("saveobj", in, 1);
+
+      octave_value_list tmp = interp.feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1223,8 +1251,7 @@ octave_class::load_ascii (std::istream& is)
           if (! is)
             break;
 
-          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (
-                          t2));
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
           m.assign (nm, tcell);
         }
@@ -1232,7 +1259,7 @@ octave_class::load_ascii (std::istream& is)
       if (! is)
         error ("load: failed to load class");
 
-      c_name = classname;
+      m_c_name = classname;
       reconstruct_exemplar ();
 
       m_map = m;
@@ -1240,12 +1267,14 @@ octave_class::load_ascii (std::istream& is)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      octave::load_path& lp = octave::__get_load_path__ ();
+      octave::interpreter& interp = octave::__get_interpreter__ ();
+
+      octave::load_path& lp = interp.get_load_path ();
 
       if (lp.find_method (classname, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
-          octave_value_list tmp = octave::feval ("loadobj", in, 1);
+          octave_value_list tmp = interp.feval ("loadobj", in, 1);
 
           m_map = tmp(0).map_value ();
         }
@@ -1253,7 +1282,7 @@ octave_class::load_ascii (std::istream& is)
   else if (len == 0)
     {
       m_map = octave_map (dim_vector (1, 1));
-      c_name = classname;
+      m_c_name = classname;
     }
   else
     panic_impossible ();
@@ -1271,12 +1300,14 @@ octave_class::save_binary (std::ostream& os, bool save_as_floats)
 
   octave_map m;
 
-  octave::load_path& lp = octave::__get_load_path__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::load_path& lp = interp.get_load_path ();
 
   if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = octave::feval ("saveobj", in, 1);
+      octave_value_list tmp = interp.feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1321,7 +1352,7 @@ octave_class::load_binary (std::istream& is, bool swap,
     classname[classname_len] = '\0';
     if (! is.read (reinterpret_cast<char *> (classname), classname_len))
       return false;
-    c_name = classname;
+    m_c_name = classname;
   }
   reconstruct_exemplar ();
 
@@ -1348,8 +1379,7 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! is)
             break;
 
-          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (
-                          t2));
+          Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
           m.assign (nm, tcell);
         }
@@ -1361,12 +1391,14 @@ octave_class::load_binary (std::istream& is, bool swap,
           if (! reconstruct_parents ())
             warning ("load: unable to reconstruct object inheritance");
 
-          octave::load_path& lp = octave::__get_load_path__ ();
+          octave::interpreter& interp = octave::__get_interpreter__ ();
 
-          if (lp.find_method (c_name, "loadobj") != "")
+          octave::load_path& lp = interp.get_load_path ();
+
+          if (lp.find_method (m_c_name, "loadobj") != "")
             {
               octave_value in = new octave_class (*this);
-              octave_value_list tmp = octave::feval ("loadobj", in, 1);
+              octave_value_list tmp = interp.feval ("loadobj", in, 1);
 
               m_map = tmp(0).map_value ();
             }
@@ -1400,7 +1432,9 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   octave_map m;
   octave_map::iterator i;
 
-  octave::load_path& lp = octave::__get_load_path__ ();
+  octave::interpreter& interp = octave::__get_interpreter__ ();
+
+  octave::load_path& lp = interp.get_load_path ();
 
 #if defined (HAVE_HDF5_18)
   group_hid = H5Gcreate (loc_id, name, octave_H5P_DEFAULT, octave_H5P_DEFAULT,
@@ -1412,7 +1446,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     goto error_cleanup;
 
   // Add the class name to the group
-  type_hid = H5Tcopy (H5T_C_S1); H5Tset_size (type_hid, c_name.length () + 1);
+  type_hid = H5Tcopy (H5T_C_S1); H5Tset_size (type_hid, m_c_name.length () + 1);
   if (type_hid < 0)
     goto error_cleanup;
 
@@ -1430,7 +1464,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #endif
   if (class_hid < 0 || H5Dwrite (class_hid, type_hid, octave_H5S_ALL,
                                  octave_H5S_ALL, octave_H5P_DEFAULT,
-                                 c_name.c_str ()) < 0)
+                                 m_c_name.c_str ()) < 0)
     goto error_cleanup;
 
 #if defined (HAVE_HDF5_18)
@@ -1445,7 +1479,7 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   if (lp.find_method (class_name (), "saveobj") != "")
     {
       octave_value in = new octave_class (*this);
-      octave_value_list tmp = octave::feval ("saveobj", in, 1);
+      octave_value_list tmp = interp.feval ("saveobj", in, 1);
 
       m = tmp(0).map_value ();
     }
@@ -1578,7 +1612,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       H5Dclose (data_hid);
       data_hid = -1;
 
-      c_name = classname;
+      m_c_name = classname;
     }
   while (0);
   reconstruct_exemplar ();
@@ -1597,8 +1631,7 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     {
       octave_value t2 = dsub.tc;
 
-      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (
-                      t2));
+      Cell tcell = (t2.iscell () ? t2.xcell_value ("load: internal error loading class elements") : Cell (t2));
 
       m.assign (dsub.name, tcell);
 
@@ -1611,12 +1644,14 @@ octave_class::load_hdf5 (octave_hdf5_id loc_id, const char *name)
       if (! reconstruct_parents ())
         warning ("load: unable to reconstruct object inheritance");
 
-      octave::load_path& lp = octave::__get_load_path__ ();
+      octave::interpreter& interp = octave::__get_interpreter__ ();
 
-      if (lp.find_method (c_name, "loadobj") != "")
+      octave::load_path& lp = interp.get_load_path ();
+
+      if (lp.find_method (m_c_name, "loadobj") != "")
         {
           octave_value in = new octave_class (*this);
-          octave_value_list tmp = octave::feval ("loadobj", in, 1);
+          octave_value_list tmp = interp.feval ("loadobj", in, 1);
 
           m_map = tmp(0).map_value ();
           retval = true;
@@ -1647,7 +1682,7 @@ octave_class::as_mxArray (bool) const
 }
 
 bool
-octave_class::in_class_method (void)
+octave_class::in_class_method ()
 {
   octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
@@ -1824,8 +1859,7 @@ belongs to.
 
   octave_value obj = args(0);  // not const because of find_parent_class ()
   std::string obj_cls = obj.class_name ();
-  Array<std::string> clsnames = args(
-                                  1).xcellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
+  Array<std::string> clsnames = args(1).xcellstr_value ("isa: CLASSNAME must be a string or cell array of strings");
 
   boolNDArray matches (clsnames.dims (), false);
 
@@ -2062,13 +2096,9 @@ public:
 
   octave_inline_fcn (octave_inline *obj) : m_inline_obj (obj) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (octave_inline_fcn)
 
-  octave_inline_fcn (const octave_inline_fcn& ob) = delete;
-
-  octave_inline_fcn& operator = (const octave_inline_fcn& ob) = delete;
-
-  ~octave_inline_fcn (void) = default;
+  ~octave_inline_fcn () = default;
 
   // Override default call method because we ultimately use feval to
   // execute the inline function and that will push a stack frame.
@@ -2093,7 +2123,7 @@ private:
 // to eliminate the octave_inline class below and replace the
 // octave_value::is_inline_function method with
 //
-// bool octave_value::is_inline_function (void) const
+// bool octave_value::is_inline_function () const
 // {
 //   return class_name () == "inline";
 // }
@@ -2109,16 +2139,16 @@ public:
 
   octave_inline (const octave_inline&) = default;
 
-  ~octave_inline (void) = default;
+  ~octave_inline () = default;
 
-  octave_base_value * clone (void) const { return new octave_inline (*this); }
+  octave_base_value * clone () const { return new octave_inline (*this); }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   {
     return new octave_inline (octave_map (map_keys ()));
   }
 
-  bool is_inline_function (void) const { return true; }
+  bool is_inline_function () const { return true; }
 
   octave_function * function_value (bool)
   {

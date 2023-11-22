@@ -168,7 +168,7 @@ function retval = edit (varargin)
     ## so first check for the various states
     statevar = varargin{1};
     stateval = varargin{2};
-    switch (toupper (statevar))
+    switch (upper (statevar))
       case "EDITOR"
         error ("Octave:deprecated-function",
                "The EDITOR option of edit has been removed.  Use EDITOR() directly.");
@@ -204,8 +204,8 @@ function retval = edit (varargin)
         FUNCTION.EDITINPLACE = stateval;
         return;
       case "GET"
-        if (isfield (FUNCTION, toupper (stateval)))
-          retval = FUNCTION.(toupper (stateval));
+        if (isfield (FUNCTION, upper (stateval)))
+          retval = FUNCTION.(upper (stateval));
         else
           retval = FUNCTION;
         endif
@@ -419,7 +419,7 @@ function retval = edit (varargin)
     author = ["Author: " FUNCTION.AUTHOR " " FUNCTION.EMAIL];
 
     ## Fill in the header.
-    uclicense = toupper (FUNCTION.LICENSE);
+    uclicense = upper (FUNCTION.LICENSE);
     switch (uclicense)
       case "GPL"
         head = cstrcat (copyright, "\n\n", "\

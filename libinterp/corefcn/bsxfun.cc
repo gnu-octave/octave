@@ -38,7 +38,6 @@
 #include "oct-map.h"
 #include "ov-colon.h"
 #include "ov-fcn-handle.h"
-#include "parse.h"
 #include "unwind-prot.h"
 #include "variables.h"
 
@@ -131,7 +130,7 @@ do_bsxfun_real_pow (const octave_value& x, const octave_value& y)
     return octave_value (bsxfun_pow (xa, ya));
 }
 
-static void maybe_fill_table (void)
+static void maybe_fill_table ()
 {
   static bool filled = false;
   if (filled)
@@ -283,30 +282,6 @@ maybe_update_column (octave_value& Ac, const octave_value& A,
     }
 }
 
-#if 0
-// FIXME: this function is not used; is it OK to delete it?
-static void
-update_index (octave_value_list& idx, const dim_vector& dv, octave_idx_type i)
-{
-  octave_idx_type nd = dv.ndims ();
-
-  if (i == 0)
-    {
-      for (octave_idx_type j = nd - 1; j > 0; j--)
-        idx(j) = octave_value (1.0);
-      idx(0) = octave_value (':');
-    }
-  else
-    {
-      for (octave_idx_type j = 1; j < nd; j++)
-        {
-          idx (j) = octave_value (i % dv(j) + 1);
-          i /= dv(j);
-        }
-    }
-}
-#endif
-
 static void
 update_index (Array<int>& idx, const dim_vector& dv, octave_idx_type i)
 {
@@ -414,14 +389,14 @@ as the other array.
           octave_value_list inputs (2);
           inputs(0) = A;
           inputs(1) = B;
-          retval = feval (fcn, inputs, 1);
+          retval = interp.feval (fcn, inputs, 1);
         }
       else if (dvc.numel () < 1)
         {
           octave_value_list inputs (2);
           inputs(0) = A.resize (dvc);
           inputs(1) = B.resize (dvc);
-          retval = feval (fcn, inputs, 1);
+          retval = interp.feval (fcn, inputs, 1);
         }
       else
         {
@@ -463,7 +438,7 @@ as the other array.
               if (maybe_update_column (Bc, B, dvb, dvc, i, idxB))
                 inputs(1) = Bc;
 
-              octave_value_list tmp = feval (fcn, inputs, 1);
+              octave_value_list tmp = interp.feval (fcn, inputs, 1);
 
 #define BSXINIT(T, CLS, EXTRACTOR)                                      \
               (result_type == CLS)                                      \

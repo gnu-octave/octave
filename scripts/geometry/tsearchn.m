@@ -26,15 +26,17 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{idx} =} tsearchn (@var{x}, @var{t}, @var{xi})
 ## @deftypefnx {} {[@var{idx}, @var{p}] =} tsearchn (@var{x}, @var{t}, @var{xi})
-## Search for the enclosing Delaunay convex hull.
+## Find the simplexes enclosing the given points.
 ##
-## For @code{@var{t} = delaunayn (@var{x})}, finds the index in @var{t}
-## containing the points @var{xi}.  For points outside the convex hull,
-## @var{idx} is NaN.
+## @code{tsearchn} is typically used with @code{delaunayn}:
+## @code{@var{t} = delaunayn (@var{x})} returns a set of simplexes @code{t},
+## then @code{tsearchn} returns the row index of @var{t} containing each point
+## of @var{xi}.  For points outside the convex hull, @var{idx} is NaN.
 ##
-## If requested @code{tsearchn} also returns the Barycentric coordinates
-## @var{p} of the enclosing triangles.
-## @seealso{delaunay, delaunayn}
+## If requested, @code{tsearchn} also returns the barycentric coordinates
+## @var{p} of the enclosing simplexes.
+##
+## @seealso{delaunay, delaunayn, tsearch}
 ## @end deftypefn
 
 function [idx, p] = tsearchn (x, t, xi)
@@ -43,57 +45,53 @@ function [idx, p] = tsearchn (x, t, xi)
     print_usage ();
   endif
 
+  if (columns (x) != columns (xi))
+    error ("tsearchn: number of columns of X and XI must match");
+  endif
+
+  if (max (t(:)) > rows (x))
+    error ("tsearchn: triangulation T must not access points outside X");
+  endif
+
+  if (nargout <= 1 && columns (x) == 2)  # pass to the faster tsearch.cc
+    idx = tsearch (x(:,1), x(:,2), t, xi(:,1), xi(:,2));
+    return;
+  endif
+
   nt = rows (t);
   [m, n] = size (x);
   mi = rows (xi);
   idx = NaN (mi, 1);
   p = NaN (mi, n + 1);
-
   ni = [1:mi].';
-  for i = 1 : nt
-    ## Only calculate the Barycentric coordinates for points that have not
-    ## already been found in a triangle.
-    b = cart2bary (x (t (i, :), :), xi(ni,:));
 
-    ## Our points xi are in the current triangle if
-    ## (all (b >= 0) && all (b <= 1)).  However as we impose that
-    ## sum (b,2) == 1 we only need to test all(b>=0).  Note need to add
-    ## a small margin for rounding errors
-    intri = all (b >= -1e-12, 2);
-    idx(ni(intri)) = i;
-    p(ni(intri),:) = b(intri, :);
-    ni(intri) = [];
+  for i = 1 : nt  # each simplex in turn
+
+    T = x(t(i, :), :);  # T is the current simplex
+    P = xi(ni, :);      # P is the set of points left to calculate
+
+    ## Convert to barycentric coords: these are used to express a point P
+    ## as    P = Beta * T
+    ## where T is a simplex.
+    ##
+    ## If 0 <= Beta <= 1, then the linear combination is also convex,
+    ## and the point P is inside the simplex T, otherwise it is outside.
+    ## Since the equation system is underdetermined, we apply the constraint
+    ## sum (Beta) == 1  to make it unique up to scaling.
+    ##
+    ## Note that the code below is vectorized over P, one point per row.
+
+    b = (P - T(end,:)) / (T(1:end-1,:) - T(end,:));
+    b(:, end+1) = 1 - sum (b, 2);
+
+    ## The points xi are inside the current simplex if
+    ## (all (b >= 0) && all (b <= 1)).  As sum (b,2) == 1, we only need to
+    ## test all(b>=0).
+    inside = all (b >= -1e-12, 2);  # -1e-12 instead of 0 for rounding errors
+    idx(ni(inside)) = i;
+    p(ni(inside), :) = b(inside, :);
+    ni = ni(! inside);
   endfor
-
-endfunction
-
-function Beta = cart2bary (T, P)
-
-  ## Conversion of Cartesian to Barycentric coordinates.
-  ## Given a reference simplex in N dimensions represented by an
-  ## N+1-by-N matrix, an arbitrary point P in Cartesian coordinates,
-  ## represented by an N-by-1 column vector can be written as
-  ##
-  ## P = Beta * T
-  ##
-  ## Where Beta is an N+1 vector of the barycentric coordinates.  A criteria
-  ## on Beta is that
-  ##
-  ## sum (Beta) == 1
-  ##
-  ## and therefore we can write the above as
-  ##
-  ## P - T(end, :) = Beta(1:end-1) * (T(1:end-1,:) - ones (N,1) * T(end,:))
-  ##
-  ## and then we can solve for Beta as
-  ##
-  ## Beta(1:end-1) = (P - T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:))
-  ## Beta(end) = sum (Beta)
-  ##
-  ## Note code below is generalized for multiple values of P, one per row.
-  [M, N] = size (P);
-  Beta = (P - ones (M,1) * T(end,:)) / (T(1:end-1,:) - ones (N,1) * T(end,:));
-  Beta (:,end+1) = 1 - sum (Beta, 2);
 
 endfunction
 
@@ -121,3 +119,10 @@ endfunction
 %! [idx, p] = tsearchn (x,tri,[1,1]);
 %! assert (idx, NaN);
 %! assert (p, [NaN, NaN, NaN]);
+
+## Test input validation
+%!error <Invalid call> tsearchn ()
+%!error <Invalid call> tsearchn (1)
+%!error <Invalid call> tsearchn (1, 2)
+%!error <number of columns of X and XI must match> tsearchn ([1,2], 3, 4)
+%!error <T must not access points outside X> tsearchn (1, 2, 3)

@@ -78,6 +78,7 @@ include bug-44940/module.mk
 include bug-45351/module.mk
 include bug-46660/module.mk
 include bug-47680/module.mk
+include bug-48693/module.mk
 include bug-49379/module.mk
 include bug-50014/module.mk
 include bug-50035/module.mk
@@ -107,11 +108,15 @@ include bug-60237/module.mk
 include bug-60882/module.mk
 include bug-61105/module.mk
 include bug-61191/module.mk
+include bug-63841/module.mk
 include class-concat/module.mk
 include classdef/module.mk
+include classdef-debug/module.mk
 include classdef-multiple-inheritance/module.mk
 include classes/module.mk
 include colon-op/module.mk
+include compile-bench/module.mk
+include compile/module.mk
 include ctor-vs-method/module.mk
 include fcn-handle/module.mk
 include file-encoding/module.mk
@@ -124,8 +129,12 @@ include private-functions/module.mk
 include publish/module.mk
 include pkg/module.mk
 
+# run-octave (optional-prepare-commands)
+
 define run-octave-tests
-  ( $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) $(1) --no-init-file --silent --no-history -p $(abs_top_builddir)/test/mex $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test ) && \
+  ( $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --no-init-file --silent \
+      --no-history -p $(abs_top_builddir)/test/mex \
+      $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test "$(1)" ) && \
   if $(AM_V_P); then \
     echo ""; \
     if [ -f fntests.log ]; then \
@@ -140,6 +149,9 @@ endef
 
 check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests)
+
+check-vm: $(BUILT_SOURCES) $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
+	$(AM_V_at)$(call run-octave-tests,__vm_enable__ (1))
 
 COVERAGE_DIR = coverage
 COVERAGE_INFO = $(COVERAGE_DIR)/$(PACKAGE).info

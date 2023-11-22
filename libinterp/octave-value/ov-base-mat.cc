@@ -39,7 +39,31 @@
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-base-scalar.h"
+#include "ov-inline.h"
 #include "pr-output.h"
+
+template <typename MT>
+octave_value_list
+octave_base_matrix<MT>::simple_subsref (char type, octave_value_list& idx, int)
+{
+  switch (type)
+    {
+    case '(':
+      return do_index_op (idx);
+      break;
+
+    case '{':
+    case '.':
+      {
+        std::string nm = type_name ();
+        error ("%s cannot be indexed with %c", nm.c_str (), type);
+      }
+      break;
+
+    default:
+      panic_impossible ();
+    }
+}
 
 template <typename MT>
 octave_value
@@ -417,10 +441,10 @@ octave_base_matrix<MT>::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
-// Return true if this matrix has all true elements (non-zero, not NA/NaN).
+// Return true if this matrix has all true elements (nonzero, not NA/NaN).
 template <typename MT>
 bool
-octave_base_matrix<MT>::is_true (void) const
+octave_base_matrix<MT>::is_true () const
 {
   bool retval = false;
   dim_vector dv = m_matrix.dims ();
@@ -446,7 +470,7 @@ octave_base_matrix<MT>::is_true (void) const
 
 template <typename MT>
 bool
-octave_base_matrix<MT>::print_as_scalar (void) const
+octave_base_matrix<MT>::print_as_scalar () const
 {
   dim_vector dv = dims ();
 
@@ -523,7 +547,7 @@ octave_base_matrix<MT>::short_disp (std::ostream& os) const
 
 template <typename MT>
 float_display_format
-octave_base_matrix<MT>::get_edit_display_format (void) const
+octave_base_matrix<MT>::get_edit_display_format () const
 {
   return make_format (m_matrix);
 }
@@ -547,6 +571,54 @@ octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
     return m_matrix(n);
   else
     return octave_value ();
+}
+
+template <typename MT>
+octave_value
+octave_base_matrix<MT>::checked_full_matrix_elem (octave_idx_type i) const
+{
+  return m_matrix.checkelem (i);
+}
+
+template <typename MT>
+octave_value
+octave_base_matrix<MT>::checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const
+{
+  return m_matrix.checkelem (i, j);
+}
+
+template <typename MT>
+octave_value
+octave_base_matrix<MT>::vm_extract_forloop_value (octave_idx_type counter)
+{
+  // TODO: Maybe this is slow? Should preferably be done once per loop
+  octave_value_list idx;
+  octave_value arg = octave_value_factory::make_copy (this);
+
+  dim_vector dv = arg.dims ().redim (2);
+  octave_idx_type nrows = dv(0);
+
+  if (arg.ndims () > 2)
+    arg = arg.reshape (dv);
+
+  octave_idx_type iidx;
+
+  // for row vectors, use single index to speed things up.
+  if (nrows == 1)
+    {
+      idx.resize (1);
+      iidx = 0;
+    }
+  else
+    {
+      idx.resize (2);
+      idx(0) = octave_value::magic_colon_t;
+      iidx = 1;
+    }
+
+  // One based indexing
+  idx(iidx) = counter + 1;
+  return arg.index_op (idx).storable_value ();
 }
 
 template <typename MT>

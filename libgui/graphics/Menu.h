@@ -35,7 +35,6 @@ class QWidget;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class Menu : public Object, public MenuContainer
@@ -43,27 +42,27 @@ class Menu : public Object, public MenuContainer
   Q_OBJECT
 
 public:
-  Menu (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Menu (octave::interpreter& interp,
         const graphics_object& go, QAction *action, Object *parent);
-  ~Menu (void);
+  ~Menu ();
 
   static Menu *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
-  Container * innerContainer (void) { return nullptr; }
+  Container * innerContainer () { return nullptr; }
 
-  QWidget * menu (void);
+  QWidget * menu ();
 
 protected:
   void update (int pId);
 
 private slots:
-  void actionTriggered (void);
-  void actionHovered (void);
+  void actionTriggered ();
+  void actionHovered ();
 
 private:
-  void updateSiblingPositions (void);
+  void updateSiblingPositions ();
 
 private:
   QWidget *m_parent;

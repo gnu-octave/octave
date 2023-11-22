@@ -62,12 +62,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 std::list<dynamic_library> possibly_unreferenced_dynamic_libraries;
 
-void dynamic_library::delete_later (void)
+void dynamic_library::delete_later ()
 {
   possibly_unreferenced_dynamic_libraries.push_back (*this);
 }
 
-int release_unreferenced_dynamic_libraries (void)
+int release_unreferenced_dynamic_libraries ()
 {
   possibly_unreferenced_dynamic_libraries.clear ();
 
@@ -82,19 +82,19 @@ dynamic_library::dynlib_rep::dynlib_rep (const std::string& f)
 
   if (is_out_of_date ())
     (*current_liboctave_warning_with_id_handler)
-      ("Octave:warn-future-time-stamp",
-       "timestamp on file %s is in the future", m_file.c_str ());
+      ("Octave:future-time-stamp",
+       "time stamp for file '%s' is in the future", m_file.c_str ());
 }
 
 bool
-dynamic_library::dynlib_rep::is_out_of_date (void) const
+dynamic_library::dynlib_rep::is_out_of_date () const
 {
   sys::file_stat fs (m_file);
   return (fs && fs.is_newer (m_time_loaded));
 }
 
 void
-dynamic_library::dynlib_rep::fake_reload (void)
+dynamic_library::dynlib_rep::fake_reload ()
 {
   // We can't actually reload the library, but we'll pretend we did.
   sys::file_stat fs (m_file);
@@ -127,7 +127,7 @@ dynamic_library::dynlib_rep::get_instance (const std::string& f, bool fake)
 }
 
 std::list<std::string>
-dynamic_library::dynlib_rep::function_names (void) const
+dynamic_library::dynlib_rep::function_names () const
 {
   std::list<std::string> retval;
 
@@ -178,13 +178,9 @@ public:
 
   octave_dlopen_shlib (const std::string& f);
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (octave_dlopen_shlib)
 
-  octave_dlopen_shlib (const octave_dlopen_shlib&) = delete;
-
-  octave_dlopen_shlib& operator = (const octave_dlopen_shlib&) = delete;
-
-  ~octave_dlopen_shlib (void);
+  ~octave_dlopen_shlib ();
 
   void * search (const std::string& name,
                 const dynamic_library::name_mangler& mangler
@@ -194,7 +190,7 @@ public:
   // normally throw an exception, avoiding the construction of an invalid
   // library.  Leave it here for possible future use.
 
-  bool is_open (void) const
+  bool is_open () const
   {
     return (m_search_all_loaded || m_library != nullptr);
   }
@@ -246,7 +242,7 @@ octave_dlopen_shlib::octave_dlopen_shlib (const std::string& f)
     }
 }
 
-octave_dlopen_shlib::~octave_dlopen_shlib (void)
+octave_dlopen_shlib::~octave_dlopen_shlib ()
 {
   if (m_library)
     dlclose (m_library);
@@ -284,13 +280,9 @@ public:
 
   octave_w32_shlib (const std::string& f);
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (octave_w32_shlib)
 
-  octave_w32_shlib (const octave_w32_shlib&) = delete;
-
-  octave_w32_shlib& operator = (const octave_w32_shlib&) = delete;
-
-  ~octave_w32_shlib (void);
+  ~octave_w32_shlib ();
 
   void * search (const std::string& name,
                 const dynamic_library::name_mangler& mangler
@@ -298,7 +290,7 @@ public:
 
   void * global_search (const std::string& sym_name);
 
-  bool is_open (void) const
+  bool is_open () const
   {
     return (m_search_all_loaded || m_handle != nullptr);
   }
@@ -354,7 +346,7 @@ octave_w32_shlib::octave_w32_shlib (const std::string& f)
     }
 }
 
-octave_w32_shlib::~octave_w32_shlib (void)
+octave_w32_shlib::~octave_w32_shlib ()
 {
   if (m_handle)
     FreeLibrary (m_handle);

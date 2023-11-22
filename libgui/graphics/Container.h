@@ -35,11 +35,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-}
-
-OCTAVE_BEGIN_NAMESPACE(octave)
-
 DECLARE_GENERICEVENTNOTIFY_SENDER(ContainerBase, QWidget);
 
 class Canvas;
@@ -49,9 +44,8 @@ class Container : public ContainerBase
   Q_OBJECT
 
 public:
-  Container (QWidget *parent, octave::base_qobject& oct_qobj,
-             octave::interpreter& interp);
-  ~Container (void);
+  Container (QWidget *parent, octave::interpreter& interp);
+  ~Container ();
 
   Canvas * canvas (const graphics_handle& handle, bool create = true);
 
@@ -80,7 +74,6 @@ protected:
   void resizeEvent (QResizeEvent *event);
 
 private:
-  octave::base_qobject& m_octave_qobj;
   octave::interpreter& m_interpreter;
   Canvas *m_canvas;
 };

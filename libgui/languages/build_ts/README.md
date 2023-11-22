@@ -19,4 +19,3 @@ The Following steps are required in order to update the language files `libgui/l
 1. Change into `libgui/languages`
 2. Start the update by calling `build_ts/update_ts_files`
 3. Select the language files that should be updated
-

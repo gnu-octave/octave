@@ -77,7 +77,7 @@ function [status, errmsg] = license (cmd, feature, toggle)
 
   [features, loaded] = get_all_features ();
 
-  switch (tolower (cmd))
+  switch (lower (cmd))
     case "inuse"
       features = features(loaded);
 
@@ -99,7 +99,7 @@ function [status, errmsg] = license (cmd, feature, toggle)
         ## We ignore the toggle argument because... what's the point?  We
         ## don't need a license management system on Octave.  This function
         ## will return true, even if anyone tries to disable a license.
-        switch (tolower (toggle))
+        switch (lower (toggle))
           case "enable"   # do nothing
           case "disable"  # do nothing
           otherwise       error ("license: TOGGLE must be enable or disable");

@@ -49,10 +49,10 @@ public:
 
   tab_bar (QWidget *p);
 
-  ~tab_bar (void) = default;
+  ~tab_bar () = default;
 
   void set_rotated (int rotated);
-  QMenu * get_context_menu (void) { return m_context_menu; };
+  QMenu * get_context_menu () { return m_context_menu; };
   QSize tabSizeHint (int idx) const;
 
 signals:
@@ -61,11 +61,11 @@ signals:
 
 public slots:
 
-  void switch_left_tab (void);
-  void switch_right_tab (void);
-  void move_tab_left (void);
-  void move_tab_right (void);
-  void sort_tabs_alph (void);
+  void switch_left_tab ();
+  void switch_right_tab ();
+  void move_tab_left ();
+  void move_tab_right ();
+  void sort_tabs_alph ();
 
 private slots:
 

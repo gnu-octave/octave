@@ -37,7 +37,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 static inline void
-check_suitesparse_integer_size (void)
+check_suitesparse_integer_size ()
 {
   // FIXME: maybe it would be better to make this a configure check and
   // disable suitesparse if it fails?

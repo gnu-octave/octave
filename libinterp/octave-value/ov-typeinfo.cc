@@ -581,7 +581,7 @@ type_info::lookup_widening_op (int t, int t_result)
 }
 
 string_vector
-type_info::installed_type_names (void) const
+type_info::installed_type_names () const
 {
   string_vector retval (m_num_types);
 
@@ -592,7 +592,7 @@ type_info::installed_type_names (void) const
 }
 
 octave_scalar_map
-type_info::unary_ops_map (void) const
+type_info::unary_ops_map () const
 {
   octave_scalar_map retval;
 
@@ -617,7 +617,7 @@ type_info::unary_ops_map (void) const
 }
 
 octave_scalar_map
-type_info::non_const_unary_ops_map (void) const
+type_info::non_const_unary_ops_map () const
 {
   octave_scalar_map retval;
 
@@ -642,7 +642,7 @@ type_info::non_const_unary_ops_map (void) const
 }
 
 octave_scalar_map
-type_info::binary_ops_map (void) const
+type_info::binary_ops_map () const
 {
   octave_scalar_map retval;
 
@@ -668,7 +668,7 @@ type_info::binary_ops_map (void) const
 }
 
 octave_scalar_map
-type_info::compound_binary_ops_map (void) const
+type_info::compound_binary_ops_map () const
 {
   octave_scalar_map retval;
 
@@ -695,7 +695,7 @@ type_info::compound_binary_ops_map (void) const
 }
 
 octave_scalar_map
-type_info::assign_ops_map (void) const
+type_info::assign_ops_map () const
 {
   octave_scalar_map retval;
 
@@ -721,7 +721,7 @@ type_info::assign_ops_map (void) const
 }
 
 octave_scalar_map
-type_info::assignany_ops_map (void) const
+type_info::assignany_ops_map () const
 {
   octave_scalar_map retval;
 
@@ -746,7 +746,7 @@ type_info::assignany_ops_map (void) const
 }
 
 octave_scalar_map
-type_info::installed_type_info (void) const
+type_info::installed_type_info () const
 {
   octave_scalar_map retval;
 
@@ -875,14 +875,14 @@ lookup_widening_op (int t, int t_result)
   return type_info.lookup_widening_op (t, t_result);
 }
 
-string_vector installed_type_names (void)
+string_vector installed_type_names ()
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 
   return type_info.installed_type_names ();
 }
 
-octave_scalar_map installed_type_info (void)
+octave_scalar_map installed_type_info ()
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 

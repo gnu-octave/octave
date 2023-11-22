@@ -46,7 +46,7 @@ public:
     sigma_only
   };
 
-  gsvd (void) : m_sigmaA (), m_sigmaB (), m_left_smA (), m_left_smB (), m_right_sm ()
+  gsvd () : m_sigmaA (), m_sigmaB (), m_left_smA (), m_left_smB (), m_right_sm ()
   { }
 
   gsvd (const T& a, const T& b,
@@ -73,18 +73,18 @@ public:
     return *this;
   }
 
-  ~gsvd (void) = default;
+  ~gsvd () = default;
 
   typename T::real_matrix_type
-  singular_values_A (void) const { return m_sigmaA; }
+  singular_values_A () const { return m_sigmaA; }
 
   typename T::real_matrix_type
-  singular_values_B (void) const { return m_sigmaB; }
+  singular_values_B () const { return m_sigmaB; }
 
-  T left_singular_matrix_A (void) const;
-  T left_singular_matrix_B (void) const;
+  T left_singular_matrix_A () const;
+  T left_singular_matrix_B () const;
 
-  T right_singular_matrix (void) const;
+  T right_singular_matrix () const;
 
 private:
   typedef typename T::value_type P;

@@ -32,7 +32,7 @@
 #include "liboctgui-build-info.h"
 
 std::string
-liboctgui_hg_id (void)
+liboctgui_hg_id ()
 {
   return "%OCTAVE_HG_ID%";
 }

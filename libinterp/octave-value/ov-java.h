@@ -43,7 +43,7 @@ class OCTINTERP_API octave_java : public octave_base_value
 {
 public:
 
-  octave_java (void);
+  octave_java ();
 
   octave_java (const voidptr& obj, void *cls = nullptr);
 
@@ -53,29 +53,29 @@ public:
     init (jobj.m_java_object, jobj.m_java_class);
   }
 
-  ~octave_java (void) { release (); }
+  ~octave_java () { release (); }
 
-  void * to_java (void) const { return m_java_object; }
-  void * to_class (void) const { return m_java_class; }
+  void * to_java () const { return m_java_object; }
+  void * to_class () const { return m_java_class; }
 
-  std::string java_class_name (void) const { return m_java_classname; }
+  std::string java_class_name () const { return m_java_classname; }
 
-  octave_base_value * clone (void) const { return new octave_java (*this); }
-  octave_base_value * empty_clone (void) const { return new octave_java (); }
+  octave_base_value * clone () const { return new octave_java (*this); }
+  octave_base_value * empty_clone () const { return new octave_java (); }
 
   bool is_instance_of (const std::string&) const;
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool is_constant (void) const { return true; }
+  bool is_constant () const { return true; }
 
-  bool isstruct (void) const { return false; }
+  bool isstruct () const { return false; }
 
-  bool isjava (void) const { return true; }
+  bool isjava () const { return true; }
 
-  string_vector map_keys (void) const;
+  string_vector map_keys () const;
 
-  dim_vector dims (void) const;
+  dim_vector dims () const;
 
   void print (std::ostream& os, bool pr_as_read_syntax = false);
 
@@ -117,7 +117,7 @@ public:
 
   octave_value convert_to_str_internal (bool pad, bool force, char type) const;
 
-  bool is_java_string (void) const;
+  bool is_java_string () const;
 
   octave_value do_javaMethod (void *jni_env, const std::string& name,
                               const octave_value_list& args);
@@ -168,7 +168,7 @@ private:
 
   void init (void *jobj, void *jcls);
 
-  void release (void);
+  void release ();
 
 private:
 
@@ -180,19 +180,19 @@ private:
 
 public:
 
-  int type_id (void) const { return t_id; }
-  std::string type_name (void) const { return t_name; }
-  std::string class_name (void) const { return m_java_classname; }
+  int type_id () const { return s_t_id; }
+  std::string type_name () const { return s_t_name; }
+  std::string class_name () const { return m_java_classname; }
 
-  static int static_type_id (void) { return t_id; }
-  static std::string static_type_name (void) { return t_name; }
-  static std::string static_class_name (void) { return "<unknown>"; }
+  static int static_type_id () { return s_t_id; }
+  static std::string static_type_name () { return s_t_name; }
+  static std::string static_class_name () { return "<unknown>"; }
   static void register_type (octave::type_info&);
 
 private:
 
-  static int t_id;
-  static const std::string t_name;
+  static int s_t_id;
+  static const std::string s_t_name;
 };
 
 extern OCTINTERP_API bool Vjava_matrix_autoconversion;

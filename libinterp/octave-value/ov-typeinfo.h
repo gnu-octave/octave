@@ -69,13 +69,9 @@ public:
 
   explicit type_info (int init_tab_sz = 16);
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (type_info)
 
-  type_info (const type_info&) = delete;
-
-  type_info& operator = (const type_info&) = delete;
-
-  ~type_info (void) = default;
+  ~type_info () = default;
 
   // It is intentional that there is no install_type function.
 
@@ -219,21 +215,21 @@ public:
 
   octave_base_value::type_conv_fcn lookup_widening_op (int, int);
 
-  string_vector installed_type_names (void) const;
+  string_vector installed_type_names () const;
 
-  octave_scalar_map installed_type_info (void) const;
+  octave_scalar_map installed_type_info () const;
 
-  octave_scalar_map unary_ops_map (void) const;
+  octave_scalar_map unary_ops_map () const;
 
-  octave_scalar_map non_const_unary_ops_map (void) const;
+  octave_scalar_map non_const_unary_ops_map () const;
 
-  octave_scalar_map binary_ops_map (void) const;
+  octave_scalar_map binary_ops_map () const;
 
-  octave_scalar_map compound_binary_ops_map (void) const;
+  octave_scalar_map compound_binary_ops_map () const;
 
-  octave_scalar_map assign_ops_map (void) const;
+  octave_scalar_map assign_ops_map () const;
 
-  octave_scalar_map assignany_ops_map (void) const;
+  octave_scalar_map assignany_ops_map () const;
 
 private:
 
@@ -328,9 +324,9 @@ extern OCTINTERP_API int lookup_pref_assign_conv (int t_lhs, int t_rhs);
 extern OCTINTERP_API octave_base_value::type_conv_fcn
 lookup_widening_op (int t, int t_result);
 
-extern OCTINTERP_API string_vector installed_type_names (void);
+extern OCTINTERP_API string_vector installed_type_names ();
 
-extern OCTINTERP_API octave_scalar_map installed_type_info (void);
+extern OCTINTERP_API octave_scalar_map installed_type_info ();
 
 OCTAVE_END_NAMESPACE(octave_value_typeinfo)
 

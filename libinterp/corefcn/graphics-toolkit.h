@@ -55,14 +55,16 @@ public:
     : m_name (nm)
   { }
 
-  virtual ~base_graphics_toolkit (void) = default;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (base_graphics_toolkit)
 
-  std::string get_name (void) const
+  virtual ~base_graphics_toolkit () = default;
+
+  std::string get_name () const
   {
     return m_name;
   }
 
-  virtual bool is_valid (void) const
+  virtual bool is_valid () const
   {
     return false;
   }
@@ -96,13 +98,13 @@ public:
     return Matrix (1, 2, 0.0);
   }
 
-  virtual double get_screen_resolution (void) const
+  virtual double get_screen_resolution () const
   {
     gripe_if_tkit_invalid ("get_screen_resolution");
     return 72.0;
   }
 
-  virtual Matrix get_screen_size (void) const
+  virtual Matrix get_screen_size () const
   {
     gripe_if_tkit_invalid ("get_screen_size");
     return Matrix (1, 2, 0.0);
@@ -146,7 +148,7 @@ public:
   void finalize (const graphics_handle&);
 
   // Close the graphics toolkit.
-  virtual void close (void)
+  virtual void close ()
   {
     gripe_if_tkit_invalid ("base_graphics_toolkit::close");
   }
@@ -183,14 +185,14 @@ public:
 
   graphics_toolkit& operator = (const graphics_toolkit& b) = default;
 
-  ~graphics_toolkit (void) = default;
+  ~graphics_toolkit () = default;
 
-  operator bool (void) const
+  operator bool () const
   {
     return m_rep->is_valid ();
   }
 
-  std::string get_name (void) const
+  std::string get_name () const
   {
     return m_rep->get_name ();
   }
@@ -222,12 +224,12 @@ public:
     return m_rep->get_canvas_size (fh);
   }
 
-  double get_screen_resolution (void) const
+  double get_screen_resolution () const
   {
     return m_rep->get_screen_resolution ();
   }
 
-  Matrix get_screen_size (void) const
+  Matrix get_screen_size () const
   {
     return m_rep->get_screen_size ();
   }
@@ -273,7 +275,7 @@ public:
   }
 
   // Close the graphics toolkit.
-  void close (void)
+  void close ()
   {
     m_rep->close ();
   }

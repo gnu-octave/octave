@@ -132,8 +132,7 @@ The author of the code itself is Timothy A. Davis
   AMD_NAME (_defaults) (Control);
   if (nargin > 1)
     {
-      octave_scalar_map arg1 = args(
-                                 1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");
+      octave_scalar_map arg1 = args(1).xscalar_map_value ("amd: OPTS argument must be a scalar structure");
 
       octave_value tmp;
 

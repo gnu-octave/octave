@@ -52,7 +52,7 @@
 #include "sysdep.h"
 
 static void
-check_hg_versions (void)
+check_hg_versions ()
 {
   bool ok = true;
 

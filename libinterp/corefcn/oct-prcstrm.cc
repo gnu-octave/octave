@@ -50,7 +50,7 @@ octave_iprocstream::octave_iprocstream (const std::string& n,
                          arg_md, ff, encoding, octave::pclose)
 { }
 
-octave_iprocstream::~octave_iprocstream (void)
+octave_iprocstream::~octave_iprocstream ()
 {
   do_close ();
 }
@@ -71,7 +71,7 @@ octave_oprocstream::octave_oprocstream (const std::string& n,
                          arg_md, ff, encoding, octave::pclose)
 { }
 
-octave_oprocstream::~octave_oprocstream (void)
+octave_oprocstream::~octave_oprocstream ()
 {
   do_close ();
 }

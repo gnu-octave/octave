@@ -3,8 +3,8 @@ EXTRA_DIST += \
   %reldir%/OctJavaQry.java \
   %reldir%/changelog.tmpl \
   %reldir%/check-subst-vars.in.sh \
-  %reldir%/find-defun-files.sh \
-  %reldir%/find-files-with-tests.sh \
+  %reldir%/find-defun-files.in.sh \
+  %reldir%/find-files-with-tests.in.sh \
   %reldir%/get-source-mtime.sh \
   %reldir%/inplace_edit.pl \
   %reldir%/mk-hg-id.sh \
@@ -12,7 +12,6 @@ EXTRA_DIST += \
   %reldir%/mk-opts.pl \
   %reldir%/mk-pkg-add.sh \
   %reldir%/move-if-change \
-  %reldir%/stl_algo.h-fixed \
   %reldir%/subst-config-vals.in.sh \
   %reldir%/subst-cross-config-vals.in.sh \
   %reldir%/subst-script-vals.in.sh \

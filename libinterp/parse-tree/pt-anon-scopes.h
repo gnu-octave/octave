@@ -41,21 +41,17 @@ tree_anon_scopes : public tree_walker
 {
 public:
 
-  tree_anon_scopes (void) = delete;
+  tree_anon_scopes () = delete;
 
   tree_anon_scopes (tree_anon_fcn_handle& anon_fh);
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_anon_scopes)
 
-  tree_anon_scopes (const tree_anon_scopes&) = delete;
+  ~tree_anon_scopes () = default;
 
-  tree_anon_scopes& operator = (const tree_anon_scopes&) = delete;
+  std::set<std::string> fcn_parameters () const { return m_params; }
 
-  ~tree_anon_scopes (void) = default;
-
-  std::set<std::string> fcn_parameters (void) const { return m_params; }
-
-  std::set<std::string> free_variables (void) const { return m_vars; }
+  std::set<std::string> free_variables () const { return m_vars; }
 
   // The following methods, though public, don't belong to the
   // intended user interface of this class.

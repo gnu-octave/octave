@@ -37,11 +37,11 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-extern OCTINTERP_API void sysdep_init (void);
+extern OCTINTERP_API void sysdep_init ();
 
-extern OCTINTERP_API void set_application_id (void);
+extern OCTINTERP_API void set_application_id ();
 
-extern OCTINTERP_API void sysdep_cleanup (void);
+extern OCTINTERP_API void sysdep_cleanup ();
 
 extern OCTINTERP_API void raw_mode (bool, bool wait = true);
 
@@ -51,10 +51,7 @@ extern OCTINTERP_API int pclose (FILE *f);
 
 extern OCTINTERP_API int kbhit (bool wait = true);
 
-extern OCTINTERP_API std::string get_P_tmpdir (void);
-
-extern OCTINTERP_API bool same_file_internal (const std::string&,
-                                              const std::string&);
+extern OCTINTERP_API std::string get_P_tmpdir ();
 
 extern OCTINTERP_API bool drive_or_unc_share (const std::string&);
 

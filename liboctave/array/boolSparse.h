@@ -44,7 +44,7 @@ public:
   // Corresponding dense matrix type for this sparse matrix type.
   typedef boolMatrix dense_matrix_type;
 
-  SparseBoolMatrix (void) : Sparse<bool> () { }
+  SparseBoolMatrix () : Sparse<bool> () { }
 
   SparseBoolMatrix (octave_idx_type r, octave_idx_type c)
     : Sparse<bool> (r, c) { }
@@ -83,10 +83,12 @@ public:
     return *this;
   }
 
+  ~SparseBoolMatrix () = default;
+
   OCTAVE_API bool operator == (const SparseBoolMatrix& a) const;
   OCTAVE_API bool operator != (const SparseBoolMatrix& a) const;
 
-  SparseBoolMatrix transpose (void) const
+  SparseBoolMatrix transpose () const
   { return Sparse<bool>::transpose (); }
 
   // destructive insert/delete/reorder operations
@@ -102,9 +104,9 @@ public:
 
   OCTAVE_API SparseBoolMatrix diag (octave_idx_type k = 0) const;
 
-  OCTAVE_API boolMatrix matrix_value (void) const;
+  OCTAVE_API boolMatrix matrix_value () const;
 
-  OCTAVE_API SparseBoolMatrix squeeze (void) const;
+  OCTAVE_API SparseBoolMatrix squeeze () const;
 
   OCTAVE_API SparseBoolMatrix
   index (const octave::idx_vector& i, bool resize_ok) const;
@@ -123,7 +125,7 @@ public:
 
   // unary operations
 
-  OCTAVE_API SparseBoolMatrix operator ! (void) const;
+  OCTAVE_API SparseBoolMatrix operator ! () const;
 
   // other operations
 

@@ -37,11 +37,12 @@
 #include "defun-dld.h"
 #include "error.h"
 #include "errwarn.h"
+#include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
-#include "parse.h"
 
 #if defined (HAVE_SUNDIALS)
 
@@ -168,7 +169,7 @@ public:
                                     SparseMatrix *dfdyp, realtype cj);
 
   //Default
-  IDA (void)
+  IDA ()
     : m_t0 (0.0), m_y0 (), m_yp0 (), m_havejac (false), m_havejacfcn (false),
       m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fcn (),
       m_ida_jac (), m_dfdy (nullptr), m_dfdyp (nullptr), m_spdfdy (nullptr),
@@ -188,8 +189,9 @@ public:
       m_sunJacMatrix (nullptr), m_sunLinearSolver (nullptr)
   { }
 
+  OCTAVE_DISABLE_COPY_MOVE (IDA)
 
-  ~IDA (void)
+  ~IDA ()
   {
     IDAFree (&m_mem);
     SUNLinSolFree (m_sunLinearSolver);
@@ -250,9 +252,9 @@ public:
     return *this;
   }
 
-  void set_userdata (void);
+  void set_userdata ();
 
-  void initialize (void);
+  void initialize ();
 
   static ColumnVector NVecToCol (N_Vector& v, octave_f77_int_type n);
 
@@ -350,7 +352,7 @@ public:
              const octave_value& event_fcn,
              const octave_idx_type num_event_args);
 
-  void print_stat (void);
+  void print_stat ();
 
 private:
 
@@ -521,7 +523,7 @@ IDA::jacsparse_impl (realtype t, realtype cj, N_Vector& yy, N_Vector& yyp,
     {
       // Allocate memory for sparse Jacobian defined in user function.
       // This will always be required at least once since we set the number
-      // of non-zero elements to zero initially.
+      // of nonzero elements to zero initially.
       if (SUNSparseMatrix_Reallocate (Jac, nnz))
         error ("Unable to allocate sufficient memory for IDA sparse matrix");
     }
@@ -571,7 +573,7 @@ IDA::ColToNVec (const ColumnVector& data, octave_f77_int_type n)
 }
 
 void
-IDA::set_userdata (void)
+IDA::set_userdata ()
 {
   void *userdata = this;
 
@@ -580,7 +582,7 @@ IDA::set_userdata (void)
 }
 
 void
-IDA::initialize (void)
+IDA::initialize ()
 {
   m_num = to_f77_int (m_y0.numel ());
 #  if defined (HAVE_SUNDIALS_SUNCONTEXT)
@@ -811,9 +813,11 @@ IDA::event (const octave_value& event_fcn,
   // cont is the number of steps reached by the solver
   // temp is the number of events registered
 
+  interpreter& interp = __get_interpreter__ ();
+
   if (flag == "init")
     {
-      octave_value_list output = feval (event_fcn, args, 3);
+      octave_value_list output = interp.feval (event_fcn, args, 3);
       oldval = output(0).vector_value ();
       oldisterminal = output(1).vector_value ();
       olddir = output(2).vector_value ();
@@ -821,7 +825,7 @@ IDA::event (const octave_value& event_fcn,
   else if (flag == "")
     {
       ColumnVector index (0);
-      octave_value_list output = feval (event_fcn, args, 3);
+      octave_value_list output = interp.feval (event_fcn, args, 3);
       ColumnVector val = output(0).vector_value ();
       ColumnVector isterminal = output(1).vector_value ();
       ColumnVector dir = output(2).vector_value ();
@@ -994,6 +998,8 @@ IDA::outputfun (const octave_value& output_fcn, bool haveoutputsel,
   else
     output(1) = yout;
 
+  interpreter& interp = __get_interpreter__ ();
+
   if (flag == "init")
     {
       ColumnVector toutput (2);
@@ -1001,19 +1007,19 @@ IDA::outputfun (const octave_value& output_fcn, bool haveoutputsel,
       toutput(1) = tend;
       output(0) = toutput;
 
-      feval (output_fcn, output, 0);
+      interp.feval (output_fcn, output, 0);
     }
   else if (flag == "")
     {
       output(0) = tsol;
-      octave_value_list val = feval (output_fcn, output, 1);
+      octave_value_list val = interp.feval (output_fcn, output, 1);
       status = val(0).bool_value ();
     }
   else
     {
       // Cleanup plotter
       output(0) = tend;
-      feval (output_fcn, output, 0);
+      interp.feval (output_fcn, output, 0);
     }
 
   return status;
@@ -1041,7 +1047,7 @@ IDA::set_maxorder (int maxorder)
 }
 
 void
-IDA::print_stat (void)
+IDA::print_stat ()
 {
   long int nsteps = 0, netfails = 0, nrevals = 0;
 
@@ -1070,7 +1076,9 @@ ida_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
   try
     {
-      tmp = feval (ida_fc, ovl (t, x, xdot), 1);
+      interpreter& interp = __get_interpreter__ ();
+
+      tmp = interp.feval (ida_fc, ovl (t, x, xdot), 1);
     }
   catch (execution_exception& ee)
     {
@@ -1088,7 +1096,9 @@ ida_dense_jac (const ColumnVector& x, const ColumnVector& xdot,
 
   try
     {
-      tmp = feval (ida_jc, ovl (t, x, xdot), 2);
+      interpreter& interp = __get_interpreter__ ();
+
+      tmp = interp.feval (ida_jc, ovl (t, x, xdot), 2);
     }
   catch (execution_exception& ee)
     {
@@ -1106,7 +1116,9 @@ ida_sparse_jac (const ColumnVector& x, const ColumnVector& xdot,
 
   try
     {
-      tmp = feval (ida_jc, ovl (t, x, xdot), 2);
+      interpreter& interp = __get_interpreter__ ();
+
+      tmp = interp.feval (ida_jc, ovl (t, x, xdot), 2);
     }
   catch (execution_exception& ee)
     {

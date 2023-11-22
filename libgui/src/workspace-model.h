@@ -34,8 +34,6 @@
 #include <QStringList>
 #include <QVector>
 
-#include "gui-settings.h"
-
 #include "syminfo.h"
 
 // Defined for purposes of sending QList<int> as part of signal.
@@ -51,7 +49,7 @@ public:
 
   workspace_model (QObject *parent = nullptr);
 
-  ~workspace_model (void) = default;
+  ~workspace_model () = default;
 
   int rowCount (const QModelIndex& parent = QModelIndex ()) const;
 
@@ -64,36 +62,38 @@ public:
 
   QVariant data (const QModelIndex& index, int role) const;
 
-  bool is_top_level (void) const { return m_top_level; }
+  bool is_top_level () const { return m_top_level; }
 
   QColor storage_class_color (int s_class)
   {
     return m_storage_class_colors.at (s_class);
   }
 
-  symbol_info_list get_symbol_info (void) const { return m_syminfo_list; }
+  symbol_info_list get_symbol_info () const { return m_syminfo_list; }
 
-  QStringList get_symbol_names (void) const { return m_symbols; }
-  QStringList get_symbol_values (void) const { return m_values; }
+  QStringList get_symbol_names () const { return m_symbols; }
+  QStringList get_symbol_values () const { return m_values; }
 
 signals:
 
-  void model_changed (void);
-  void prompt_variable_editor(void);
+  void model_changed ();
+  void prompt_variable_editor();
 
 public slots:
 
   void set_workspace (bool top_level, bool debug,
                       const symbol_info_list& syminfo);
 
-  void clear_workspace (void);
+  void clear_workspace ();
 
-  void notice_settings (const gui_settings *);
+  void notice_settings ();
+
+  void show_symbol_tooltip (const QPoint& pos, const QString& symbol);
 
 private:
 
-  void clear_data (void);
-  void update_table (void);
+  void clear_data ();
+  void update_table ();
 
   bool m_top_level;
   symbol_info_list m_syminfo_list;

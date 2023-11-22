@@ -70,7 +70,7 @@ qr<T>::qr (const T& q_arg, const T& r_arg)
 
 template <typename T>
 typename qr<T>::type
-qr<T>::get_type (void) const
+qr<T>::get_type () const
 {
   type retval;
 
@@ -86,7 +86,7 @@ qr<T>::get_type (void) const
 
 template <typename T>
 bool
-qr<T>::regular (void) const
+qr<T>::regular () const
 {
   bool retval = true;
 
@@ -109,7 +109,7 @@ qr<T>::regular (void) const
 // Replacement update methods.
 
 void
-warn_qrupdate_once (void)
+warn_qrupdate_once ()
 {
   static bool warned = false;
 

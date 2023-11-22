@@ -29,8 +29,8 @@
 ## Return a string representing the conversion of the integer @var{d} to a
 ## hexadecimal (base16) number.
 ##
-## If @var{d} is negative, return the hexadecimal equivalent of the two's
-## complement binary value of @var{d}.
+## If @var{d} is negative, return the hexadecimal complement of @var{d}.
+##
 ## If @var{d} is a matrix or cell array, return a string matrix with one row
 ## for each element in @var{d}, padded with leading zeros to the width of the
 ## largest value.
@@ -50,6 +50,11 @@
 ## @end group
 ## @end example
 ##
+## Programming tip: @code{dec2hex} discards any fractional part of the input.
+## If you need the fractional part to be converted too, call @code{dec2base}
+## with a nonzero number of decimal places.  You can also use @code{fix} or
+## @code{round} on fractional inputs to ensure predictable rounding behavior.
+##
 ## @seealso{hex2dec, dec2base, dec2bin}
 ## @end deftypefn
 
@@ -59,24 +64,38 @@ function hstr = dec2hex (d, len)
     print_usage ();
   endif
 
-  ## To avoid repeating a lot of code, including input validation, we call dec2bin.
+  if (iscell (d))
+    d = cell2mat (d);
+  endif
+  d = d(:);
+
+  neg = (d < 0);
+
   if (nargin == 2)
     d = dec2bin (d, len*4);
   else
     d = dec2bin (d);
   endif
 
-  ## Left-pad with zeros to make the number of columns divisible by 4
+  ## Left-pad to a multiple of 4 columns.
   n = mod (columns (d), 4);
   if (n > 0)
-    d = [repmat("0", rows(d), 4-n), d];
+    tmp = "01"(neg + 1);  # leftpad with "0" for positive, "1" for negative
+    d = [repmat(tmp(:), 1, 4 - n), d];
   endif
 
-  d -= "0"; # convert to numeric
+  d -= '0';  # convert to numeric
   d = d(:, 1:4:end) * 8 + d(:, 2:4:end) * 4 + d(:, 3:4:end) * 2 + d(:, 4:4:end);
-  ## Elements of d are now in the range 0 to 15
+  ## Elements of d are now in the range 0 to 15.
 
-  hstr = "0123456789ABCDEF"(d+1); # convert to char and return
+  hstr = "0123456789ABCDEF"(d+1);
+  if (rows (hstr) < rows (d))  # this edge case happens when
+    hstr = hstr(:);            # passing multiple inputs in the range 0 to 15.
+    ## If we don't manually convert it to column, we'd get all those
+    ## hex digits on the same line as one big string instead of one per line.
+    ## Good test for this:    dec2hex (0:15)
+    ## compared with:         dec2hex (uint64 (81985529216486895), 16)
+  endif
 
 endfunction
 
@@ -90,7 +109,7 @@ endfunction
 ## Test negative inputs
 %!assert (dec2hex (-3), "FD")
 %!assert (dec2hex (-3, 1), "FD")
-%!assert (dec2hex (-3, 3), "0FD")
+%!assert (dec2hex (-3, 3), "FFD")
 %!assert (dec2hex (-2^7 - 1), "FF7F")
 %!assert (dec2hex (-2^15 - 1), "FFFF7FFF")
 %!assert (dec2hex (-2^31 - 1), "FFFFFFFF7FFFFFFF")
@@ -103,6 +122,11 @@ endfunction
 %!assert (dec2hex ([1, 2; 3, -4]), ["01"; "03"; "02"; "FC"])
 %!assert (dec2hex ({1, 2; 3, -4}), ["01"; "03"; "02"; "FC"])
 
+## Test that the output is of the correct shape.
+## Next line should return a column vector:
+%!assert (dec2hex (0:15), "0123456789ABCDEF"(:))
+## Next line should return a row vector:
+%!assert (dec2hex (uint64 (18364758544493064720)), "FEDCBA9876543210")
+
 ## Test input validation
 %!error <Invalid call> dec2hex ()
-

@@ -33,13 +33,10 @@
 #include "TextControl.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 TextControl *
-TextControl::create (octave::base_qobject& oct_qobj,
-                     octave::interpreter& interp, const graphics_object& go)
+TextControl::create (octave::interpreter& interp, const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
 
@@ -48,16 +45,15 @@ TextControl::create (octave::base_qobject& oct_qobj,
       Container *container = parent->innerContainer ();
 
       if (container)
-        return new TextControl (oct_qobj, interp, go, new QLabel (container));
+        return new TextControl (interp, go, new QLabel (container));
     }
 
   return nullptr;
 }
 
-TextControl::TextControl (octave::base_qobject& oct_qobj,
-                          octave::interpreter& interp,
+TextControl::TextControl (octave::interpreter& interp,
                           const graphics_object& go, QLabel *label)
-  : BaseControl (oct_qobj, interp, go, label)
+  : BaseControl (interp, go, label)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -65,11 +61,11 @@ TextControl::TextControl (octave::base_qobject& oct_qobj,
   label->setTextFormat (Qt::PlainText);
   label->setWordWrap (false);
   label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-                                           up.get_verticalalignment ()));
+                       up.get_verticalalignment ()));
   label->setText (Utils::fromStringVector (up.get_string_vector ()).join ("\n"));
 }
 
-TextControl::~TextControl (void)
+TextControl::~TextControl ()
 { }
 
 void
@@ -87,7 +83,7 @@ TextControl::update (int pId)
     case uicontrol::properties::ID_HORIZONTALALIGNMENT:
     case uicontrol::properties::ID_VERTICALALIGNMENT:
       label->setAlignment (Utils::fromHVAlign (up.get_horizontalalignment (),
-                                               up.get_verticalalignment ()));
+                           up.get_verticalalignment ()));
       break;
 
     default:

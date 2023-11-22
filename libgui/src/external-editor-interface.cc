@@ -29,17 +29,16 @@
 
 #include <QMessageBox>
 #include <QProcess>
+#include <QRegularExpression>
 
 #include "external-editor-interface.h"
 #include "gui-settings.h"
 #include "gui-preferences-global.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-external_editor_interface::external_editor_interface (QWidget *p,
-                                                      base_qobject& oct_qobj)
-: QWidget (p), m_octave_qobj (oct_qobj)
+external_editor_interface::external_editor_interface (QWidget *p)
+  : QWidget (p)
 { }
 
 // Calling the external editor
@@ -57,7 +56,7 @@ external_editor_interface::call_custom_editor (const QString& file, int line)
   editor.replace ("%f", file);
   editor.replace ("%l", QString::number (line));
 
-  QStringList arguments = editor.split (QRegExp("\\s+"));
+  QStringList arguments = editor.split (QRegularExpression {"\\s+"});
   editor = arguments.takeFirst ();
 
   // start the process and check for success
@@ -100,12 +99,12 @@ void external_editor_interface::handle_edit_file_request (const QString& file)
 }
 
 // Get and verify the settings of the external editor program
-QString external_editor_interface::external_editor (void)
+QString external_editor_interface::external_editor ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  QString editor = settings->value (global_custom_editor.key,
-                                    global_custom_editor.def).toString ();
+  gui_settings settings;
+
+  QString editor = settings.value (global_custom_editor.settings_key (),
+                                   global_custom_editor.def ()).toString ();
 
   // check the settings (avoid an empty string)
   if (editor.trimmed ().isEmpty ())

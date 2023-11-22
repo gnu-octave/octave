@@ -54,7 +54,7 @@ octave_char_matrix_str : public octave_char_matrix
 {
 public:
 
-  octave_char_matrix_str (void)
+  octave_char_matrix_str ()
     : octave_char_matrix () { }
 
   octave_char_matrix_str (const charMatrix& chm)
@@ -84,20 +84,20 @@ public:
   octave_char_matrix_str (const octave_char_matrix_str& chms)
     : octave_char_matrix (chms) { }
 
-  ~octave_char_matrix_str (void) = default;
+  ~octave_char_matrix_str () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_char_matrix_str (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_char_matrix_str (); }
 
-  type_conv_info numeric_conversion_function (void) const;
+  type_conv_info numeric_conversion_function () const;
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)
   { return do_index_op_internal (idx, resize_ok); }
 
-  octave_value squeeze (void) const
+  octave_value squeeze () const
   { return octave_value (charNDArray (m_matrix.squeeze ())); }
 
   octave_value reshape (const dim_vector& new_dims) const
@@ -116,9 +116,9 @@ public:
   octave_value diag (octave_idx_type k = 0) const
   { return octave_value (m_matrix.diag (k)); }
 
-  bool is_string (void) const { return true; }
+  bool is_string () const { return true; }
 
-  bool isnumeric (void) const { return false; }
+  bool isnumeric () const { return false; }
 
   double double_value (bool = false) const;
 
@@ -136,9 +136,9 @@ public:
 
   std::string string_value (bool force = false) const;
 
-  std::string xstring_value (void) const { return string_value (); }
+  std::string xstring_value () const { return string_value (); }
 
-  Array<std::string> cellstr_value (void) const;
+  Array<std::string> cellstr_value () const;
 
   octave_value sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const
   { return octave_value (m_matrix.sort (dim, mode)); }
@@ -147,7 +147,7 @@ public:
                      sortmode mode = ASCENDING) const
   { return octave_value (m_matrix.sort (sidx, dim, mode)); }
 
-  bool print_as_scalar (void) const { return (rows () <= 1); }
+  bool print_as_scalar () const { return (rows () <= 1); }
 
   void print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
@@ -191,7 +191,7 @@ octave_char_matrix_sq_str : public octave_char_matrix_str
 {
 public:
 
-  octave_char_matrix_sq_str (void)
+  octave_char_matrix_sq_str ()
     : octave_char_matrix_str () { }
 
   octave_char_matrix_sq_str (const charMatrix& chm)
@@ -221,14 +221,14 @@ public:
   octave_char_matrix_sq_str (const octave_char_matrix_sq_str& chms)
     : octave_char_matrix_str (chms) { }
 
-  ~octave_char_matrix_sq_str (void) = default;
+  ~octave_char_matrix_sq_str () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new octave_char_matrix_sq_str (*this); }
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new octave_char_matrix_sq_str (); }
 
-  octave_value squeeze (void) const
+  octave_value squeeze () const
   { return octave_value (charNDArray (m_matrix.squeeze ()), '\''); }
 
   octave_value reshape (const dim_vector& new_dims) const
@@ -252,7 +252,7 @@ public:
   octave_value diag (octave_idx_type k = 0) const
   { return octave_value (m_matrix.diag (k), '\''); }
 
-  bool is_sq_string (void) const { return true; }
+  bool is_sq_string () const { return true; }
 
   octave_value do_index_op (const octave_value_list& idx,
                             bool resize_ok = false)

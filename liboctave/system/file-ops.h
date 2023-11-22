@@ -75,15 +75,15 @@ extern OCTAVE_API string_vector tilde_additional_suffixes;
 // text which identified this tilde starter in LEN, excluding the
 // tilde itself.
 
-extern OCTAVE_API char dev_sep_char (void);
+extern OCTAVE_API char dev_sep_char ();
 
 extern OCTAVE_API bool is_dev_sep (char c);
 
-extern OCTAVE_API char dir_sep_char (void);
+extern OCTAVE_API char dir_sep_char ();
 
-extern OCTAVE_API std::string dir_sep_str (void);
+extern OCTAVE_API std::string dir_sep_str ();
 
-extern OCTAVE_API std::string dir_sep_chars (void);
+extern OCTAVE_API std::string dir_sep_chars ();
 
 extern OCTAVE_API bool is_dir_sep (char c);
 

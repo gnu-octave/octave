@@ -126,4 +126,3 @@ endfunction
 %!error <DATA must be a string> webwrite ("URL", 1)
 %!error <KEYS and VALUES must be strings> webwrite ("URL", "NAME1", 5)
 %!error <KEYS/VALUES must occur in pairs> webwrite ("URL", "KEY1", "VAL1", "A")
-

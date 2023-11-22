@@ -53,7 +53,7 @@ default_numeric_conversion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_complex_diag_matrix::numeric_conversion_function (void) const
+octave_complex_diag_matrix::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info
          (default_numeric_conversion_function,
@@ -71,7 +71,7 @@ default_numeric_demotion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_complex_diag_matrix::numeric_demotion_function (void) const
+octave_complex_diag_matrix::numeric_demotion_function () const
 {
   return
     octave_base_value::type_conv_info (default_numeric_demotion_function,
@@ -79,7 +79,7 @@ octave_complex_diag_matrix::numeric_demotion_function (void) const
 }
 
 octave_base_value *
-octave_complex_diag_matrix::try_narrowing_conversion (void)
+octave_complex_diag_matrix::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -142,13 +142,13 @@ octave_complex_diag_matrix::float_complex_diag_matrix_value (bool) const
 }
 
 octave_value
-octave_complex_diag_matrix::as_double (void) const
+octave_complex_diag_matrix::as_double () const
 {
   return m_matrix;
 }
 
 octave_value
-octave_complex_diag_matrix::as_single (void) const
+octave_complex_diag_matrix::as_single () const
 {
   return FloatComplexDiagMatrix (m_matrix);
 }

@@ -33,11 +33,13 @@
 #include <map>
 #include <set>
 #include <string>
+#include <vector>
 
 #include "file-ops.h"
 #include "oct-env.h"
 
 #include "bp-table.h"
+#include "cdef-utils.h"
 #include "defun-int.h"
 #include "error.h"
 #include "event-manager.h"
@@ -96,12 +98,12 @@ public:
       m_ok = true;
   }
 
-  std::string file (void) const { return m_file; }
-  std::string dir (void) const { return m_fcn; }
-  std::string fcn (void) const { return m_fcn; }
-  std::string class_name (void) const { return m_class_name; }
+  std::string file () const { return m_file; }
+  std::string dir () const { return m_fcn; }
+  std::string fcn () const { return m_fcn; }
+  std::string class_name () const { return m_class_name; }
 
-  bool ok (void) const { return m_ok; }
+  bool ok () const { return m_ok; }
 
 private:
 
@@ -114,7 +116,7 @@ private:
 
 // Clear all reasons to stop, other than breakpoints.
 
-void bp_table::dbclear_all_signals (void)
+void bp_table::dbclear_all_signals ()
 {
   interpreter& interp = m_evaluator.get_interpreter ();
   error_system& es = interp.get_error_system ();
@@ -230,7 +232,7 @@ void bp_table::dbstop_process_map_args (const octave_map& mv)
 // Record in m_bp_set that fname contains a breakpoint.
 
 bool bp_table::add_breakpoint_1 (octave_user_code *fcn,
-                                 const std::string& fname,
+                                 const std::string& fcn_ident,
                                  const bp_table::bp_lines& line,
                                  const std::string& condition,
                                  bp_table::bp_lines& retval)
@@ -257,11 +259,12 @@ bool bp_table::add_breakpoint_1 (octave_user_code *fcn,
               // Otherwise, there can be an entry for both
               // file>subfunction and file, which causes a crash on
               // dbclear all
-              const char *s = strchr (fname.c_str (), '>');
+              const char *s = strchr (fcn_ident.c_str (), '>');
               if (s)
-                m_bp_set.insert (fname.substr (0, s - fname.c_str ()));
+                m_bp_set.insert (fcn_ident.substr (0, s - fcn_ident.c_str ()));
               else
-                m_bp_set.insert (fname);
+                m_bp_set.insert (fcn_ident);
+
               found = true;
               break;
             }
@@ -607,8 +610,8 @@ void bp_table::process_id_list (const char *who,
 // If END_LINE != 0, *END_LINE is set to last line of the returned function.
 
 static octave_user_code * find_fcn_by_line (octave_user_code *main_fcn,
-    int lineno,
-    int *end_line = nullptr)
+                                            int lineno,
+                                            int *end_line = nullptr)
 {
   octave_user_code *retval = nullptr;
   octave_user_code *next_fcn = nullptr;  // 1st function starting after lineno
@@ -666,35 +669,134 @@ static octave_user_code * find_fcn_by_line (octave_user_code *main_fcn,
   return retval;
 }
 
-// Given file name fname, find the subfunction at line and create
+// Given function identifier fcn_ident, find the subfunction at line and create
 // a breakpoint there.  Put the system into debug_mode.
-int bp_table::add_breakpoint_in_function (const std::string& fname,
-    const std::string& class_name,
-    int line,
-    const std::string& condition)
+int bp_table::add_breakpoint_in_function (const std::string& fcn_ident,
+                                          int line,
+                                          const std::string& condition)
 {
   bp_lines line_info;
   line_info.insert (line);
 
   bp_lines result
-    = add_breakpoints_in_function (fname, class_name, line_info, condition);
+    = add_breakpoints_in_function (fcn_ident, line_info, condition);
 
   return result.empty () ? 0 : *(result.begin ());
 }
 
+// A class that encapsulates the "get_user_code" operation.
+// This operation changes depending on the symbol being a function or classdef.
+// Octave used to assume everything was a function, one per file.
+// Classdefs can have several functions in a single file.
+class user_code_provider
+{
+public:
+  user_code_provider (const std::string& who, const std::string& fcn_ident,
+                      octave_user_code* pfcn, bool silent = false)
+    : m_fcn (nullptr), m_is_valid (false)
+  {
+    m_fcn = pfcn;
+    if (m_fcn && ! (m_fcn->is_classdef_method ()
+                    || m_fcn->is_classdef_constructor ()))
+      {
+        // Already have the usercode, no need to do anything.
+        m_is_valid = true;
+        return;
+      }
+
+    // If we get here, try to get a classdef to support getting method by
+    // line number.
+
+    // Extract class name from function identifier
+    std::string class_name = fcn_ident;
+    const char *s = strchr (fcn_ident.c_str (), '/');
+    if (s && fcn_ident[0] == '@')
+      class_name = fcn_ident.substr (1, s - fcn_ident.c_str () - 1);
+
+    m_cls = lookup_class (class_name, false);
+    m_is_valid = m_cls.ok () && (m_cls.get_name () == class_name);
+    if (m_is_valid)
+      populate_function_cache ();
+    else if (! silent)
+      error ("%s: unable to find function '%s'\n", who.c_str (),
+             fcn_ident.c_str ());
+
+  }
+
+  octave_user_code * operator () (int line = 1)
+  {
+    if (! is_valid ())
+      return nullptr;
+
+    if (is_function ())
+      return find_fcn_by_line (m_fcn, line);
+
+    return m_cls.get_method (line).user_code_value (true);
+  }
+
+  bool is_function () const { return m_fcn; }
+
+  bool is_valid () const { return m_is_valid; }
+
+  size_t number_of_functions () const
+  {
+    if (! is_valid ())
+      return 0;
+
+    if (is_function ())
+      return 1;
+
+    return m_methods_cache.size ();
+  }
+
+  octave_user_code * get_function (const size_t i) const
+  {
+    if (! is_valid ())
+      return nullptr;
+
+    if (is_function ())
+      return m_fcn;
+
+    if (i < m_methods_cache.size ())
+      return m_methods_cache[i];
+
+    return nullptr;
+  }
+
+private:
+  void populate_function_cache ()
+  {
+      if (m_methods_cache.empty ())
+        {
+          // Not the most effecient, but reuses code:
+          const std::map<std::string, cdef_method>& map
+            = m_cls.get_method_map (false, true);
+          for (auto iter = map.cbegin (); iter != map.cend (); ++iter)
+            {
+              octave_user_code *fcn
+                = m_cls.get_method (iter->first).user_code_value (true);
+              if (fcn != nullptr)
+                m_methods_cache.push_back (fcn);
+            }
+        }
+  }
+
+private:
+  std::vector<octave_user_code *> m_methods_cache;
+  cdef_class m_cls;
+  octave_user_code *m_fcn;
+  bool m_is_valid;
+};
+
 // Given file name fname, find the subfunction at line and create
 // a breakpoint there.  Put the system into debug_mode.
 bp_table::bp_lines
-bp_table::add_breakpoints_in_function (const std::string& fname,
-                                       const std::string& class_name,
+bp_table::add_breakpoints_in_function (const std::string& fcn_ident,
                                        const bp_table::bp_lines& lines,
                                        const std::string& condition)
 {
-  octave_user_code *main_fcn = m_evaluator.get_user_code (fname, class_name);
-
-  if (! main_fcn)
-    error ("add_breakpoints_in_function: unable to find function '%s'\n",
-           fname.c_str ());
+  user_code_provider user_code ("add_breakpoints_in_function", fcn_ident,
+                                m_evaluator.get_user_code (fcn_ident));
 
   condition_valid (condition);  // Throw error if condition not valid.
 
@@ -702,14 +804,22 @@ bp_table::add_breakpoints_in_function (const std::string& fname,
 
   for (const auto& lineno : lines)
     {
-      octave_user_code *dbg_fcn = find_fcn_by_line (main_fcn, lineno);
+      octave_user_code *dbg_fcn = user_code (lineno);
 
       // We've found the right (sub)function.  Now insert the breakpoint.
       bp_lines line_info;
       line_info.insert (lineno);
 
       bp_lines ret_one;
-      if (dbg_fcn && add_breakpoint_1 (dbg_fcn, fname, line_info,
+
+      std::string ident = fcn_ident;
+      if (! user_code.is_function () && fcn_ident[0] != '@' && dbg_fcn)
+        {
+          // identifier of the form @class_name/method_name
+          ident = "@" + fcn_ident + "/" + dbg_fcn->name ();
+        }
+
+      if (dbg_fcn && add_breakpoint_1 (dbg_fcn, ident, line_info,
                                        condition, ret_one))
         {
           if (! ret_one.empty ())
@@ -739,8 +849,13 @@ int bp_table::add_breakpoint_in_file (const std::string& file,
   if (! info.ok ())
     return 0;
 
-  return add_breakpoint_in_function (info.fcn (), info.class_name (),
-                                     line, condition);
+  std::string fcn_ident;
+  if (info.class_name ().empty ())
+    fcn_ident = info.fcn ();
+  else
+    fcn_ident = "@" + info.class_name () + "/" + info.fcn ();
+
+  return add_breakpoint_in_function (fcn_ident, line, condition);
 }
 
 bp_table::bp_lines
@@ -756,12 +871,17 @@ bp_table::add_breakpoints_in_file (const std::string& file,
   if (! info.ok ())
     return bp_lines ();
 
-  return add_breakpoints_in_function (info.fcn (), info.class_name (),
-                                      lines, condition);
+  std::string fcn_ident;
+  if (info.class_name ().empty ())
+    fcn_ident = info.fcn ();
+  else
+    fcn_ident = "@" + info.class_name () + "/" + info.fcn ();
+
+  return add_breakpoints_in_function (fcn_ident, lines, condition);
 }
 
 int bp_table::remove_breakpoint_1 (octave_user_code *fcn,
-                                   const std::string& fname,
+                                   const std::string& fcn_ident,
                                    const bp_table::bp_lines& lines)
 {
   int retval = 0;
@@ -792,7 +912,7 @@ int bp_table::remove_breakpoint_1 (octave_user_code *fcn,
 
           results = cmds->list_breakpoints ();
 
-          auto it = m_bp_set.find (fname);
+          auto it = m_bp_set.find (fcn_ident);
           if (results.empty () && it != m_bp_set.end ())
             m_bp_set.erase (it);
         }
@@ -804,54 +924,86 @@ int bp_table::remove_breakpoint_1 (octave_user_code *fcn,
 }
 
 int
-bp_table::remove_breakpoint_from_function (const std::string& fname, int line)
+bp_table::remove_breakpoint_from_function (const std::string& fcn_ident,
+                                           int line)
 {
   bp_lines line_info;
   line_info.insert (line);
 
-  return remove_breakpoints_from_function (fname, line_info);
+  return remove_breakpoints_from_function (fcn_ident, line_info);
 }
 
 int
-bp_table::remove_breakpoints_from_function (const std::string& fname,
-    const bp_table::bp_lines& lines)
+bp_table::remove_breakpoints_from_function (const std::string& fcn_ident,
+                                            const bp_table::bp_lines& lines)
 {
   int retval = 0;
 
   if (lines.empty ())
     {
-      bp_lines results = remove_all_breakpoints_from_function (fname);
+      bp_lines results = remove_all_breakpoints_from_function (fcn_ident);
       retval = results.size ();
     }
   else
     {
-      octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname);
+      octave_user_code *dbg_fcn = m_evaluator.get_user_code (fcn_ident);
+      user_code_provider user_code ("remove_breakpoints_from_function",
+                                    fcn_ident, dbg_fcn);
 
-      if (! dbg_fcn)
-        error ("remove_breakpoints_from_function: unable to find function %s\n",
-               fname.c_str ());
-
-      retval = remove_breakpoint_1 (dbg_fcn, fname, lines);
-
-      // Search subfunctions in the order they appear in the file.
-
-      const std::list<std::string> subfcn_names
-        = dbg_fcn->subfunction_names ();
-
-      std::map<std::string, octave_value> subfcns
-        = dbg_fcn->subfunctions ();
-
-      for (const auto& subf_nm : subfcn_names)
+      // Remove all breakpoints from all functions
+      for (const auto line : lines)
         {
-          const auto q = subfcns.find (subf_nm);
+          octave_user_code *fcn = user_code (line);
+          std::string file = fcn->fcn_file_name ();
 
-          if (q != subfcns.end ())
+          tree_statement_list *cmds = fcn->body ();
+          if (cmds)
             {
-              octave_user_code *dbg_subfcn = q->second.user_code_value ();
+              octave_value_list results = cmds->list_breakpoints ();
 
-              retval += remove_breakpoint_1 (dbg_subfcn, fname, lines);
+              if (results.length () > 0)
+                {
+                  interpreter& interp = m_evaluator.get_interpreter ();
+                  event_manager& evmgr = interp.get_event_manager ();
+
+                  cmds->delete_breakpoint (line);
+
+                  if (! file.empty ())
+                    evmgr.update_breakpoint (false, file, line);
+                }
             }
         }
+
+      // Remove all breakpoints from all subfunctions
+      if (dbg_fcn != nullptr)
+        {
+          // Search subfunctions in the order they appear in the file.
+          const std::list<std::string> subfcn_names
+            = dbg_fcn->subfunction_names ();
+
+          std::map<std::string, octave_value> subfcns
+            = dbg_fcn->subfunctions ();
+
+          for (const auto& subf_nm : subfcn_names)
+            {
+              const auto q = subfcns.find (subf_nm);
+
+              if (q != subfcns.end ())
+                {
+                  octave_user_code *dbg_subfcn
+                    = q->second.user_code_value ();
+
+                  retval += remove_breakpoint_1 (dbg_subfcn, fcn_ident, lines);
+                }
+            }
+        }
+      // Remove file from breakpoint set if no breakpoints remain
+      octave_value_list fname_list = {fcn_ident};
+      const bool no_breakpoints
+        = get_breakpoint_list (fname_list).empty ();
+      auto iter = m_bp_set.find (fcn_ident);
+      if (no_breakpoints && iter != m_bp_set.end ())
+        m_bp_set.erase (iter);
     }
 
   m_evaluator.reset_debug_state ();
@@ -862,35 +1014,38 @@ bp_table::remove_breakpoints_from_function (const std::string& fname,
 // Remove all breakpoints from a file, including those in subfunctions.
 
 bp_table::bp_lines
-bp_table::remove_all_breakpoints_from_function (const std::string& fname,
-    bool silent)
+bp_table::remove_all_breakpoints_from_function (const std::string& fcn_ident,
+                                                bool silent)
 {
   bp_lines retval;
 
-  octave_user_code *dbg_fcn = m_evaluator.get_user_code (fname);
+  octave_user_code *fcn = m_evaluator.get_user_code (fcn_ident);
+  user_code_provider user_code ("remove_all_breakpoints_from_function",
+                                fcn_ident, fcn, silent);
 
-  if (dbg_fcn)
+  if (user_code.is_valid ())
     {
-      std::string file = dbg_fcn->fcn_file_name ();
-
-      tree_statement_list *cmds = dbg_fcn->body ();
-
-      if (cmds)
+      for (size_t i = 0; i != user_code.number_of_functions (); ++i)
         {
-          interpreter& interp = m_evaluator.get_interpreter ();
+          octave_user_code *dbg_fcn = user_code.get_function (i);
+          std::string file = dbg_fcn->fcn_file_name ();
 
-          event_manager& evmgr = interp.get_event_manager ();
+          tree_statement_list *cmds = dbg_fcn->body ();
 
-          retval = cmds->remove_all_breakpoints (evmgr, file);
+          if (cmds)
+            {
+              interpreter& interp = m_evaluator.get_interpreter ();
 
-          auto it = m_bp_set.find (fname);
-          if (it != m_bp_set.end ())
-            m_bp_set.erase (it);
+              event_manager& evmgr = interp.get_event_manager ();
+
+              retval = cmds->remove_all_breakpoints (evmgr, file);
+            }
         }
+
+      auto it = m_bp_set.find (fcn_ident);
+      if (it != m_bp_set.end ())
+        m_bp_set.erase (it);
     }
-  else if (! silent)
-    error ("remove_all_breakpoints_from_function: "
-           "unable to find function %s\n", fname.c_str ());
 
   m_evaluator.reset_debug_state ();
 
@@ -928,7 +1083,7 @@ bp_table::remove_breakpoints_from_file (const std::string& file,
 
 bp_table::bp_lines
 bp_table::remove_all_breakpoints_from_file (const std::string& file,
-    bool silent)
+                                            bool silent)
 {
   // Duplicates what the GUI was doing previously, but this action
   // should not be specific to the GUI.
@@ -941,7 +1096,7 @@ bp_table::remove_all_breakpoints_from_file (const std::string& file,
   return remove_all_breakpoints_from_function (info.fcn (), silent);
 }
 
-void bp_table::remove_all_breakpoints (void)
+void bp_table::remove_all_breakpoints ()
 {
   // Odd loop structure required because delete will invalidate
   // m_bp_set iterators.
@@ -986,22 +1141,37 @@ bp_table::get_breakpoint_list (const octave_value_list& fname_list)
           || find_bkpt_list (fname_list, bp_fname) != "")
         {
           octave_user_code *dbg_fcn = m_evaluator.get_user_code (bp_fname);
-
-          if (dbg_fcn)
+          user_code_provider user_code ("get_breakpoint_list", bp_fname,
+                                        dbg_fcn);
+          // Gather breakpoints from all functions in the file
+          std::list<bp_type> all_bkpts;
+          std::list<bp_type>::iterator it (all_bkpts.begin ());
+          for (size_t i = 0; i != user_code.number_of_functions (); ++i)
             {
-              tree_statement_list *cmds = dbg_fcn->body ();
-
-              // FIXME: move the operation on cmds to the
-              //        tree_statement_list class?
-              if (cmds)
+              octave_user_code *fcn = user_code.get_function (i);
+              if (fcn)
                 {
-                  std::list<bp_type> bkpts = cmds->breakpoints_and_conds ();
-
-                  if (! bkpts.empty ())
-                    retval[bp_fname] = bkpts;
+                  tree_statement_list *cmds = fcn->body ();
+                  // FIXME: move the operation on cmds to the
+                  //        tree_statement_list class?
+                  if (cmds)
+                    {
+                      const std::list<bp_type>& bp
+                        = cmds->breakpoints_and_conds ();
+                      if(!bp.empty())
+                        it = all_bkpts.insert (it, bp.cbegin (),
+                                               bp.cend ());
+                    }
                 }
+            }
 
-              // look for breakpoints in subfunctions
+          if (! all_bkpts.empty ())
+            retval[bp_fname] = all_bkpts;
+
+          // look for breakpoints in subfunctions
+          // Assuming classdefs can't have subfunctions
+          if (dbg_fcn != nullptr)
+            {
               const std::list<std::string> subf_nm
                 = dbg_fcn->subfunction_names ();
 
@@ -1017,7 +1187,7 @@ bp_table::get_breakpoint_list (const octave_value_list& fname_list)
                       octave_user_code *dbg_subfcn
                         = q->second.user_code_value ();
 
-                      cmds = dbg_subfcn->body ();
+                      tree_statement_list *cmds = dbg_subfcn->body ();
                       if (cmds)
                         {
                           std::list<bp_type> bkpts

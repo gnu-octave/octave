@@ -33,7 +33,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-tree_spmd_command::~tree_spmd_command (void)
+tree_spmd_command::~tree_spmd_command ()
 {
   delete m_body;
   delete m_lead_comm;

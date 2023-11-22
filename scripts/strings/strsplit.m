@@ -159,7 +159,7 @@ function [cstr, matches] = strsplit (str, del, varargin)
   fields = fieldnames (args);
   for n = 1:2:numel (params)
     if (any (strcmpi (params{n}, fields)))
-      args.(tolower (params{n})) = params{n+1};
+      args.(lower (params{n})) = params{n+1};
     elseif (ischar (varargin{n}))
       error ("Octave:strsplit:invalid_parameter_name",
              "strsplit: invalid parameter name, '%s'", varargin{n});

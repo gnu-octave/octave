@@ -32,7 +32,6 @@ class QAbstractButton;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class ButtonControl : public BaseControl
@@ -40,15 +39,15 @@ class ButtonControl : public BaseControl
   Q_OBJECT
 
 public:
-  ButtonControl (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  ButtonControl (octave::interpreter& interp,
                  const graphics_object& go, QAbstractButton *btn);
-  ~ButtonControl (void);
+  ~ButtonControl ();
 
 protected:
   void update (int pId);
 
 private slots:
-  void clicked (void);
+  void clicked ();
   void toggled (bool checked);
 
 private:

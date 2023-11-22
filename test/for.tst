@@ -169,24 +169,51 @@
 %!
 %! fail ("for i = 0:-1:-inf; break; end", "warning",
 %!       "FOR loop limit is infinite");
+%!
+%! fail ("for i = inf:-1:1; break; end", "warning",
+%!       "FOR loop limit is infinite");
+%!
+%! fail ("for i = -inf:+1:1; break; end", "warning",
+%!       "FOR loop limit is infinite");
 
 %!test <*45143>
 %! warning ("on", "Octave:infinite-loop", "local");
-%! k = 0;
-%! for i = 1:Inf
-%!   if (++k > 10)
-%!     break;
-%!   endif
-%! endfor
-%! assert (i, 11);
+%
+%! code = cstrcat ("k = 0;               ",
+%!                 "for i = 1:Inf;       ",
+%!                 "  if (++k > 10);     ",
+%!                 "    break;           ",
+%!                 "  endif;             ",
+%!                 "endfor;              ",
+%!                 "assert (i, 11);      ");
+%! fail (code, "warning", "FOR loop limit is infinite");
 %!
-%! k = 0;
-%! for i = -1:-1:-Inf
-%!   if (++k > 10)
-%!     break;
-%!   endif
-%! endfor
-%! assert (i, -11);
+%! code = cstrcat ("k = 0;               ",
+%!                 "for i = -1:-1:-Inf;  ",
+%!                 "  if (++k > 10);     ",
+%!                 "    break;           ",
+%!                 "  endif;             ",
+%!                 "endfor;              ",
+%!                 "assert (i, -11);     ");
+%! fail (code, "warning", "FOR loop limit is infinite");
+%!
+%! code = cstrcat ("k = 0;               ",
+%!                 "for i = Inf:-1:1;    ",
+%!                 "  if (++k > 10);     ",
+%!                 "    break;           ",
+%!                 "  endif;             ",
+%!                 "endfor;              ",
+%!                 "assert (i, Inf);     ");
+%! fail (code, "warning", "FOR loop limit is infinite");
+%!
+%! code = cstrcat ("k = 0;               ",
+%!                 "for i = -Inf:+1:1;   ",
+%!                 "  if (++k > 10);     ",
+%!                 "    break;           ",
+%!                 "  endif;             ",
+%!                 "endfor;              ",
+%!                 "assert (i, -Inf);    ");
+%! fail (code, "warning", "FOR loop limit is infinite");
 %!
 %! k = 0;
 %! for i = 1:-Inf

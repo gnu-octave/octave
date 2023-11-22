@@ -44,7 +44,7 @@ EIG
 
 public:
 
-  EIG (void) : m_lambda (), m_v (), m_w () { }
+  EIG () : m_lambda (), m_v (), m_w () { }
 
   EIG (const Matrix& a, bool calc_rev = true,
        bool calc_lev = true, bool balance = true)
@@ -116,11 +116,11 @@ public:
     return *this;
   }
 
-  ~EIG (void) = default;
+  ~EIG () = default;
 
-  ComplexColumnVector eigenvalues (void) const { return m_lambda; }
-  ComplexMatrix right_eigenvectors (void) const { return m_v; }
-  ComplexMatrix left_eigenvectors (void) const { return m_w; }
+  ComplexColumnVector eigenvalues () const { return m_lambda; }
+  ComplexMatrix right_eigenvectors () const { return m_v; }
+  ComplexMatrix left_eigenvectors () const { return m_w; }
 
   friend std::ostream&  operator << (std::ostream& os, const EIG& a);
 

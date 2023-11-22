@@ -247,7 +247,7 @@ chol2inv (const T& r)
 // Compute the inverse of a matrix using the Cholesky factorization.
 template <typename T>
 T
-chol<T>::inverse (void) const
+chol<T>::inverse () const
 {
   return chol2inv_internal (m_chol_mat, m_is_upper);
 }

@@ -60,13 +60,13 @@ public:
 
   typedef void (*solve_singularity_handler) (double rcon);
 
-  ComplexMatrix (void) = default;
+  ComplexMatrix () = default;
 
   ComplexMatrix (const ComplexMatrix& a) = default;
 
   ComplexMatrix& operator = (const ComplexMatrix& a) = default;
 
-  ~ComplexMatrix (void) = default;
+  ~ComplexMatrix () = default;
 
   ComplexMatrix (octave_idx_type r, octave_idx_type c)
     : ComplexNDArray (dim_vector (r, c)) { }
@@ -116,7 +116,7 @@ public:
   OCTAVE_API bool operator == (const ComplexMatrix& a) const;
   OCTAVE_API bool operator != (const ComplexMatrix& a) const;
 
-  OCTAVE_API bool ishermitian (void) const;
+  OCTAVE_API bool ishermitian () const;
 
   // destructive insert/delete/reorder operations
 
@@ -167,9 +167,9 @@ public:
   OCTAVE_API ComplexMatrix stack (const ComplexColumnVector& a) const;
   OCTAVE_API ComplexMatrix stack (const ComplexDiagMatrix& a) const;
 
-  ComplexMatrix hermitian (void) const
+  ComplexMatrix hermitian () const
   { return MArray<Complex>::hermitian (std::conj); }
-  ComplexMatrix transpose (void) const
+  ComplexMatrix transpose () const
   { return MArray<Complex>::transpose (); }
 
   friend OCTAVE_API ComplexMatrix conj (const ComplexMatrix& a);
@@ -204,7 +204,7 @@ private:
                           double& rcon, bool force, bool calc_cond) const;
 
 public:
-  OCTAVE_API ComplexMatrix inverse (void) const;
+  OCTAVE_API ComplexMatrix inverse () const;
   OCTAVE_API ComplexMatrix inverse (octave_idx_type& info) const;
   OCTAVE_API ComplexMatrix
   inverse (octave_idx_type& info, double& rcon,
@@ -219,13 +219,13 @@ public:
 
   OCTAVE_API ComplexMatrix pseudo_inverse (double tol = 0.0) const;
 
-  OCTAVE_API ComplexMatrix fourier (void) const;
-  OCTAVE_API ComplexMatrix ifourier (void) const;
+  OCTAVE_API ComplexMatrix fourier () const;
+  OCTAVE_API ComplexMatrix ifourier () const;
 
-  OCTAVE_API ComplexMatrix fourier2d (void) const;
-  OCTAVE_API ComplexMatrix ifourier2d (void) const;
+  OCTAVE_API ComplexMatrix fourier2d () const;
+  OCTAVE_API ComplexMatrix ifourier2d () const;
 
-  OCTAVE_API ComplexDET determinant (void) const;
+  OCTAVE_API ComplexDET determinant () const;
   OCTAVE_API ComplexDET determinant (octave_idx_type& info) const;
   OCTAVE_API ComplexDET
   determinant (octave_idx_type& info, double& rcon,
@@ -234,7 +234,7 @@ public:
   determinant (MatrixType& mattype, octave_idx_type& info, double& rcon,
                bool calc_cond = true) const;
 
-  OCTAVE_API double rcond (void) const;
+  OCTAVE_API double rcond () const;
   OCTAVE_API double rcond (MatrixType& mattype) const;
 
 private:
@@ -418,7 +418,7 @@ public:
   OCTAVE_API ComplexMatrix prod (int dim = -1) const;
   OCTAVE_API ComplexMatrix sum (int dim = -1) const;
   OCTAVE_API ComplexMatrix sumsq (int dim = -1) const;
-  OCTAVE_API Matrix abs (void) const;
+  OCTAVE_API Matrix abs () const;
 
   OCTAVE_API ComplexMatrix diag (octave_idx_type k = 0) const;
 
@@ -428,14 +428,14 @@ public:
   OCTAVE_API bool row_is_real_only (octave_idx_type) const;
   OCTAVE_API bool column_is_real_only (octave_idx_type) const;
 
-  OCTAVE_API ComplexColumnVector row_min (void) const;
-  OCTAVE_API ComplexColumnVector row_max (void) const;
+  OCTAVE_API ComplexColumnVector row_min () const;
+  OCTAVE_API ComplexColumnVector row_max () const;
 
   OCTAVE_API ComplexColumnVector row_min (Array<octave_idx_type>& index) const;
   OCTAVE_API ComplexColumnVector row_max (Array<octave_idx_type>& index) const;
 
-  OCTAVE_API ComplexRowVector column_min (void) const;
-  OCTAVE_API ComplexRowVector column_max (void) const;
+  OCTAVE_API ComplexRowVector column_min () const;
+  OCTAVE_API ComplexRowVector column_max () const;
 
   OCTAVE_API ComplexRowVector column_min (Array<octave_idx_type>& index) const;
   OCTAVE_API ComplexRowVector column_max (Array<octave_idx_type>& index) const;

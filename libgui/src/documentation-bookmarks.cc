@@ -28,20 +28,22 @@
 #endif
 
 #include <QCompleter>
+#include <QDir>
+#include <QFileInfo>
+#include <QLabel>
+#include <QLineEdit>
 #include <QMenu>
-#include <QShortcut>
+#include <QMessageBox>
 #include <QVBoxLayout>
 #include <QWidget>
 
 #include "documentation.h"
 #include "documentation-bookmarks.h"
 
-#include "gui-settings.h"
 #include "gui-preferences-global.h"
 #include "gui-preferences-dc.h"
 #include "gui-preferences-sc.h"
-#include "octave-qtutils.h"
-#include "shortcut-manager.h"
+#include "gui-settings.h"
 
 #include "defaults.h"
 #include "file-ops.h"
@@ -49,17 +51,14 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-documentation_bookmarks::documentation_bookmarks (
-                                                  documentation *doc, documentation_browser *browser,
-                                                  base_qobject& oct_qobj, QWidget *p)
-: QWidget (p),
-  m_doc (doc), m_browser (browser), m_octave_qobj (oct_qobj),
-  m_ctx_menu_item (nullptr)
+documentation_bookmarks::documentation_bookmarks (documentation *doc,
+                                                  documentation_browser *browser,
+                                                  QWidget *p)
+  : QWidget (p), m_doc (doc), m_browser (browser), m_ctx_menu_item (nullptr)
 {
   setObjectName ("documentation_tab_bookmarks");
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
   // Setup the tree view with the bookmarks
   m_tree = new QTreeWidget (p);
@@ -82,14 +81,14 @@ documentation_bookmarks::documentation_bookmarks (
            this, &documentation_bookmarks::handle_double_click);
 
   // Define the icons for the tree view
-  icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirClosedIcon),
+  m_icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirClosedIcon),
                          QIcon::Normal, QIcon::Off);
-  icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirOpenIcon),
+  m_icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirOpenIcon),
                          QIcon::Normal, QIcon::On);
-  icon_bookmark.addPixmap (style ()->standardPixmap(QStyle::SP_FileIcon));
+  m_icon_bookmark.addPixmap (style ()->standardPixmap(QStyle::SP_FileIcon));
 
   // Setup and read the bookmarkfile
-  QFileInfo f (settings->fileName ());
+  QFileInfo f (settings.fileName ());
   QString f_path = f.absolutePath ();
   f.setFile (QDir (f_path), dc_bookmark_file);
   m_xbel_file.setFileName (f.absoluteFilePath ());
@@ -121,7 +120,7 @@ documentation_bookmarks::documentation_bookmarks (
   m_filter->setSizePolicy (size_pol);
   m_filter->completer ()->setCaseSensitivity (Qt::CaseSensitive);
 
-  m_filter->addItems (settings->value (dc_bookmark_filter_mru).toStringList ());
+  m_filter->addItems (settings.string_list_value (dc_bookmark_filter_mru));
 
   connect (m_filter, &QComboBox::editTextChanged,
            this, &documentation_bookmarks::filter_bookmarks);
@@ -129,7 +128,7 @@ documentation_bookmarks::documentation_bookmarks (
            this, &documentation_bookmarks::update_filter_history);
 
   m_filter_checkbox = new QCheckBox (m_filter_widget);
-  bool filter_state = settings->value (dc_bookmark_filter_active).toBool ();
+  bool filter_state = settings.bool_value (dc_bookmark_filter_active);
   m_filter_checkbox->setChecked (filter_state);
   filter_activate (filter_state);
 
@@ -141,10 +140,10 @@ documentation_bookmarks::documentation_bookmarks (
   h_box_bm->addWidget (filter_label);
   h_box_bm->addWidget (m_filter_checkbox);
   h_box_bm->addWidget (m_filter);
-  h_box_bm->setMargin (2);
+  h_box_bm->setContentsMargins (2, 2, 2, 2);
   m_filter_widget->setLayout (h_box_bm);
 
-  m_filter_shown = settings->value (dc_bookmark_filter_shown).toBool ();
+  m_filter_shown = settings.bool_value (dc_bookmark_filter_shown);
   m_filter_widget->setVisible (m_filter_shown);
 
   // Resulting Layout of this widget
@@ -155,7 +154,7 @@ documentation_bookmarks::documentation_bookmarks (
 }
 
 // Slot for adding the current page as a bookmark
-void documentation_bookmarks::add_bookmark (void)
+void documentation_bookmarks::add_bookmark ()
 {
   QUrl url = m_browser->historyUrl (0);
 
@@ -189,9 +188,9 @@ void documentation_bookmarks::add_bookmark (const QString& title,
   new_item->setData (0, tag_role, QVariant (bookmark_tag));
   new_item->setData (0, url_role, QVariant (url));
   new_item->setFlags ((new_item->flags () & (~Qt::ItemIsDropEnabled))
-                      | Qt::ItemIsEditable
-                      | Qt::ItemIsDragEnabled);
-  new_item->setIcon (0, icon_bookmark);
+                                          | Qt::ItemIsEditable
+                                          | Qt::ItemIsDragEnabled);
+  new_item->setIcon (0, m_icon_bookmark);
 
   // Insert as top level or child item
   // TODO: Open dialog allowing to select a target folder if this
@@ -227,15 +226,15 @@ void documentation_bookmarks::add_folder (bool)
 
 // Function for actually adding a folder to the tree
 QTreeWidgetItem* documentation_bookmarks::add_folder (const QString& folder,
-                                                      QTreeWidgetItem *item, bool expanded)
+                                          QTreeWidgetItem *item, bool expanded)
 {
   QTreeWidgetItem *new_folder = new QTreeWidgetItem (QStringList (folder));
   new_folder->setData (0, tag_role, QVariant (folder_tag));
   new_folder->setFlags (new_folder->flags() | Qt::ItemIsEditable
-                        | Qt::ItemIsDragEnabled
-                        | Qt::ItemIsDropEnabled);
+                                            | Qt::ItemIsDragEnabled
+                                            | Qt::ItemIsDropEnabled);
   new_folder->setChildIndicatorPolicy (QTreeWidgetItem::DontShowIndicatorWhenChildless);
-  new_folder->setIcon (0, icon_folder);
+  new_folder->setIcon (0, m_icon_folder);
   new_folder->setExpanded (expanded);
 
   // Insert as top level or child item
@@ -283,7 +282,7 @@ void documentation_bookmarks::filter_activate (bool state)
   filter_bookmarks (pattern);
 }
 
-void documentation_bookmarks::update_filter_history (void)
+void documentation_bookmarks::update_filter_history ()
 {
   QString text = m_filter->currentText ();   // get current text
   int index = m_filter->findText (text);     // and its actual index
@@ -322,11 +321,11 @@ void documentation_bookmarks::ctx_menu (const QPoint& xpos)
 
   if (m_ctx_menu_item)
     {
-      resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+      gui_settings settings;
 
       menu.addAction (tr ("&Open"), this, &documentation_bookmarks::open);
       menu.addAction (tr ("&Rename"), this, &documentation_bookmarks::edit);
-      menu.addAction (rmgr.icon ("window-close"), tr ("Remo&ve"),
+      menu.addAction (settings.icon ("window-close"), tr ("Remo&ve"),
                       this, &documentation_bookmarks::remove);
       menu.addSeparator ();
     }
@@ -366,12 +365,9 @@ void documentation_bookmarks::remove (bool)
 {
   QList<QTreeWidgetItem *> items = m_tree->selectedItems ();
 
-  for (auto it = items.begin () ; it != items.end (); it++)
-    {
-      if (*it)
-        m_tree->takeTopLevelItem (
-                                  m_tree->indexOfTopLevelItem (*it));
-    }
+  for (const auto& it : items)
+    if (it)
+      m_tree->takeTopLevelItem (m_tree->indexOfTopLevelItem (it));
 }
 
 void documentation_bookmarks::show_filter (bool)
@@ -380,32 +376,34 @@ void documentation_bookmarks::show_filter (bool)
   m_filter_widget->setVisible (m_filter_shown);
 }
 
-void documentation_bookmarks::save_settings (gui_settings *settings)
+void documentation_bookmarks::save_settings ()
 {
   // Write the bookmarks to the xbel-file
   write_bookmarks ();
 
   // Store settings
-  settings->setValue (dc_bookmark_filter_active.key, m_filter_checkbox->isChecked ());
-  settings->setValue (dc_bookmark_filter_shown.key, m_filter_shown);
+  gui_settings settings;
+
+  settings.setValue (dc_bookmark_filter_active.settings_key (), m_filter_checkbox->isChecked ());
+  settings.setValue (dc_bookmark_filter_shown.settings_key (), m_filter_shown);
 
   QStringList mru;
   for (int i = 0; i < m_filter->count (); i++)
     mru.append (m_filter->itemText (i));
-  settings->setValue (dc_bookmark_filter_mru.key, mru);
+  settings.setValue (dc_bookmark_filter_mru.settings_key (), mru);
 
-  settings->sync ();
+  settings.sync ();
 }
 
-void documentation_bookmarks::write_bookmarks (void)
+void documentation_bookmarks::write_bookmarks ()
 {
   if (! m_xbel_file.open (QFile::WriteOnly | QFile::Text))
     {
       QMessageBox::warning (this, tr("Octave: Saving Documentation Bookmarks"),
                             tr("Unable to write file %1:\n%2.\n\n"
                                "Documentation bookmarks are not saved!\n")
-                            .arg (m_xbel_file.fileName ())
-                            .arg (m_xbel_file.errorString()));
+                              .arg (m_xbel_file.fileName ())
+                              .arg (m_xbel_file.errorString()));
       return;
     }
 
@@ -450,7 +448,7 @@ void documentation_bookmarks::write_tree_item (QXmlStreamWriter* xml_writer,
     }
 }
 
-QString documentation_bookmarks::read_bookmarks (void)
+QString documentation_bookmarks::read_bookmarks ()
 {
   QString error_message;
 
@@ -458,8 +456,8 @@ QString documentation_bookmarks::read_bookmarks (void)
   if (! m_xbel_file.open (QFile::ReadOnly | QFile::Text))
     {
       error_message = tr ("Unable to read file %1:\n%2.")
-        .arg (m_xbel_file.fileName ())
-        .arg (m_xbel_file.errorString());
+                          .arg (m_xbel_file.fileName ())
+                          .arg (m_xbel_file.errorString());
       return error_message;
     }
 
@@ -469,7 +467,7 @@ QString documentation_bookmarks::read_bookmarks (void)
     {
       error_message = tr ("No start element found in %1.\n"
                           "Invalid bookmark file?")
-        .arg (m_xbel_file.fileName ());
+                          .arg (m_xbel_file.fileName ());
       return error_message;
     }
 
@@ -479,7 +477,7 @@ QString documentation_bookmarks::read_bookmarks (void)
       error_message = tr ("The file\n"
                           "%1\n"
                           "is not a valid XBEL file version 1.0.")
-        .arg (m_xbel_file.fileName ());
+                          .arg (m_xbel_file.fileName ());
       return error_message;
     }
 

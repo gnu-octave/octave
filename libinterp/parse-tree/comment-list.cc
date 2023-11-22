@@ -35,7 +35,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 comment_list *
-comment_list::dup (void) const
+comment_list::dup () const
 {
   comment_list *new_cl = new comment_list ();
 

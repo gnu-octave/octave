@@ -150,23 +150,6 @@ $name (const octave_value_list& = octave_value_list (), int = 0);
 
   print "\nOCTAVE_END_NAMESPACE(octave)\n";
 
-  print "\n#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)\n\n";
-
-  foreach $name (sort (@fcn_names))
-  {
-    print "OCTAVE_DEPRECATED (7, \"use 'octave::$name' instead\")
-inline octave_value_list
-$name (const octave_value_list& args = octave_value_list (), int nargout = 0)
-{
-  return octave::$name (args, nargout);
-}
-
-";
-  }
-
-  ## end OCTAVE_PROVIDE_DEPRECATED_SYMBOLS block
-  print "\n\n#endif\n";
-
   print "\n#endif\n";
 }
 elsif ($make_source)
@@ -314,7 +297,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   print "
   void
-  symbol_table::install_builtins (void)
+  symbol_table::install_builtins ()
   {
 ";
 

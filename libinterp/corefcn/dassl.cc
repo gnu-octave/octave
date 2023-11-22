@@ -35,11 +35,11 @@
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-cell.h"
 #include "pager.h"
-#include "parse.h"
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
@@ -81,7 +81,9 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = feval (dassl_fcn, args, 1);
+          interpreter& interp = __get_interpreter__ ();
+
+          tmp = interp.feval (dassl_fcn, args, 1);
         }
       catch (execution_exception& ee)
         {
@@ -131,7 +133,9 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 
       try
         {
-          tmp = feval (dassl_jac, args, 1);
+          interpreter& interp = __get_interpreter__ ();
+
+          tmp = interp.feval (dassl_jac, args, 1);
         }
       catch (execution_exception& ee)
         {

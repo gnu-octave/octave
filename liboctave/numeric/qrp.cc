@@ -113,7 +113,7 @@ qrp<Matrix>::qrp (const Matrix& a, type qr_type)
 template <>
 OCTAVE_API
 RowVector
-qrp<Matrix>::Pvec (void) const
+qrp<Matrix>::Pvec () const
 {
   Array<double> pa (m_p.col_perm_vec ());
   RowVector pv (MArray<double> (pa) + 1.0);
@@ -184,7 +184,7 @@ qrp<FloatMatrix>::qrp (const FloatMatrix& a, type qr_type)
 template <>
 OCTAVE_API
 FloatRowVector
-qrp<FloatMatrix>::Pvec (void) const
+qrp<FloatMatrix>::Pvec () const
 {
   Array<float> pa (m_p.col_perm_vec ());
   FloatRowVector pv (MArray<float> (pa) + 1.0f);
@@ -263,7 +263,7 @@ qrp<ComplexMatrix>::qrp (const ComplexMatrix& a, type qr_type)
 template <>
 OCTAVE_API
 RowVector
-qrp<ComplexMatrix>::Pvec (void) const
+qrp<ComplexMatrix>::Pvec () const
 {
   Array<double> pa (m_p.col_perm_vec ());
   RowVector pv (MArray<double> (pa) + 1.0);
@@ -342,7 +342,7 @@ qrp<FloatComplexMatrix>::qrp (const FloatComplexMatrix& a, type qr_type)
 template <>
 OCTAVE_API
 FloatRowVector
-qrp<FloatComplexMatrix>::Pvec (void) const
+qrp<FloatComplexMatrix>::Pvec () const
 {
   Array<float> pa (m_p.col_perm_vec ());
   FloatRowVector pv (MArray<float> (pa) + 1.0f);

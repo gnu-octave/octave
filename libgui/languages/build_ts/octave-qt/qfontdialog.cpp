@@ -463,7 +463,7 @@ bool QFontDialog::eventFilter(QObject *o , QEvent *e)
          k->key() == Qt::Key_PageDown)) {
 
             int ci = d->sizeList->currentItem();
-            (void)QApplication::sendEvent(d->sizeList, k);
+            ()QApplication::sendEvent(d->sizeList, k);
 
             if (ci != d->sizeList->currentItem()
                     && style()->styleHint(QStyle::SH_FontDialog_SelectAssociatedText, 0, this))

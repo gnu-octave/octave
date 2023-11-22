@@ -46,7 +46,7 @@ color_picker::color_picker (QColor old_color, QWidget *p)
 }
 
 // Slot for button clicked: select a new color using QColorDialog
-void color_picker::select_color (void)
+void color_picker::select_color ()
 {
   QColor new_color = QColorDialog::getColor (m_color);
 
@@ -65,7 +65,7 @@ void color_picker::set_color (QColor new_color)
 }
 
 // Draw the button with the actual color (using a stylesheet)
-void color_picker::update_button (void)
+void color_picker::update_button ()
 {
   // Is this the right place to look for a "foreground" color that would
   // provide a reasonable border for the color swatches?

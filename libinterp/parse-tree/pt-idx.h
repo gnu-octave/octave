@@ -62,13 +62,9 @@ public:
   tree_index_expression (tree_expression *e, tree_expression *df,
                          int l = -1, int c = -1);
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_index_expression)
 
-  tree_index_expression (const tree_index_expression&) = delete;
-
-  tree_index_expression& operator = (const tree_index_expression&) = delete;
-
-  ~tree_index_expression (void);
+  ~tree_index_expression ();
 
   tree_index_expression *
   append (tree_argument_list *lst = nullptr, char t = '(');
@@ -77,27 +73,27 @@ public:
 
   tree_index_expression * append (tree_expression *df);
 
-  bool is_index_expression (void) const { return true; }
+  bool is_index_expression () const { return true; }
 
-  std::string name (void) const;
+  std::string name () const;
 
-  tree_expression * expression (void) { return m_expr; }
+  tree_expression * expression () { return m_expr; }
 
-  std::list<tree_argument_list *> arg_lists (void) { return m_args; }
+  std::list<tree_argument_list *> arg_lists () { return m_args; }
 
-  std::string type_tags (void) { return m_type; }
+  std::string type_tags () { return m_type; }
 
-  std::list<string_vector> arg_names (void) { return m_arg_nm; }
+  std::list<string_vector> arg_names () { return m_arg_nm; }
 
-  std::list<tree_expression *> dyn_fields (void) { return m_dyn_field; }
+  std::list<tree_expression *> dyn_fields () { return m_dyn_field; }
 
-  void mark_word_list_cmd (void) { m_word_list_cmd = true; }
+  void mark_word_list_cmd () { m_word_list_cmd = true; }
 
-  bool is_word_list_cmd (void) const { return m_word_list_cmd; }
+  bool is_word_list_cmd () const { return m_word_list_cmd; }
 
-  bool lvalue_ok (void) const { return m_expr->lvalue_ok (); }
+  bool lvalue_ok () const { return m_expr->lvalue_ok (); }
 
-  bool rvalue_ok (void) const { return true; }
+  bool rvalue_ok () const { return true; }
 
   octave_lvalue lvalue (tree_evaluator& tw);
 
@@ -145,7 +141,7 @@ private:
 
   tree_index_expression (int l, int c);
 
-  octave_map make_arg_struct (void) const;
+  octave_map make_arg_struct () const;
 };
 
 OCTAVE_END_NAMESPACE(octave)

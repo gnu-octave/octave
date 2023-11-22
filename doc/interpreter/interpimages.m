@@ -96,8 +96,7 @@ endfunction
 function set_graphics_toolkit ()
   if (isempty (available_graphics_toolkits ()))
     error ("no graphics toolkit available for plotting");
-  elseif (strcmp ("qt", graphics_toolkit ())
-          && __have_feature__ ("QT_OFFSCREEN"))
+  elseif (strcmp ("qt", graphics_toolkit ()))
     ## Use qt with QOffscreenSurface for plot
   elseif (! strcmp ("gnuplot", graphics_toolkit ()))
     if (! any (strcmp ("gnuplot", available_graphics_toolkits ())))

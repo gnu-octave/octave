@@ -126,8 +126,7 @@ urlwrite ("http://www.google.com/search", "search.html",
       if (method != "get" && method != "post")
         error (R"(urlwrite: METHOD must be "get" or "post")");
 
-      param = args(
-                3).xcellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
+      param = args(3).xcellstr_value ("urlwrite: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
         error ("urlwrite: number of elements in PARAM must be even");
@@ -136,8 +135,6 @@ urlwrite ("http://www.google.com/search", "search.html",
   // The file should only be deleted if it doesn't initially exist, we
   // create it, and the download fails.  We use unwind_protect to do
   // it so that the deletion happens no matter how we exit the function.
-
-  sys::file_stat fs (filename);
 
   std::ofstream ofile =
     sys::ofstream (filename.c_str (), std::ios::out | std::ios::binary);
@@ -238,8 +235,7 @@ s = urlread ("http://www.google.com/search",
       if (method != "get" && method != "post")
         error (R"(urlread: METHOD must be "get" or "post")");
 
-      param = args(
-                2).xcellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
+      param = args(2).xcellstr_value ("urlread: parameters (PARAM) for get and post requests must be given as a cell array of strings");
 
       if (param.numel () % 2 == 1)
         error ("urlread: number of elements in PARAM must be even");
@@ -254,17 +250,16 @@ s = urlread ("http://www.google.com/search",
 
   url_xfer.http_action (param, method);
 
-  octave_value_list retval;
-
-  if (nargout > 0)
-    {
-      // Return empty string if no error occurred.
-      retval = ovl (buf.str (), url_xfer.good (),
-                    url_xfer.good () ? "" : url_xfer.lasterror ());
-    }
-
   if (nargout < 2 && ! url_xfer.good ())
     error ("urlread: %s", url_xfer.lasterror ().c_str ());
+
+  octave_value_list retval (std::max (1, std::min (nargout, 3)));
+
+  retval(0) = buf.str ();
+  if (nargout > 1)
+    retval(1) = url_xfer.good ();
+  if (nargout > 2)
+    retval(2) = url_xfer.good () ? "" : url_xfer.lasterror ();
 
   return retval;
 }

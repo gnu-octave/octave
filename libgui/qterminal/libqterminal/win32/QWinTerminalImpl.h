@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2019 Michael Goffioul
+Copyright (C) 2011-2023 The Octave Project Developers
 
 This file is part of QConsole.
 
@@ -49,7 +49,7 @@ class QWinTerminalImpl : public QTerminal
   friend class QConsoleView;
 
 public:
-  QWinTerminalImpl (octave::base_qobject&, QWidget* parent);
+  QWinTerminalImpl (QWidget *parent);
   ~QWinTerminalImpl (void);
 
   void setTerminalFont (const QFont& font);
@@ -61,7 +61,7 @@ public:
   void setForegroundColor (const QColor& color);
   void setSelectionColor (const QColor& color);
   void setCursorColor (bool useForegoundColor, const QColor& color);
-  void setScrollBufferSize(int value);
+  void setScrollBufferSize (int value);
 
   QString selectedText ();
 
@@ -79,25 +79,25 @@ signals:
   void titleChanged (const QString&);
 
 protected:
-  void viewPaintEvent (QConsoleView*, QPaintEvent*);
+  void viewPaintEvent (QConsoleView *, QPaintEvent *);
   void setBlinkingCursor (bool blink);
   void setBlinkingCursorState (bool blink);
-  void viewResizeEvent (QConsoleView*, QResizeEvent*);
-  void wheelEvent (QWheelEvent*);
-  void focusInEvent (QFocusEvent*);
-  void focusOutEvent (QFocusEvent*);
-  void keyPressEvent (QKeyEvent*);
+  void viewResizeEvent (QConsoleView *, QResizeEvent *);
+  void wheelEvent (QWheelEvent *);
+  void focusInEvent (QFocusEvent *);
+  void focusOutEvent (QFocusEvent *);
+  void keyPressEvent (QKeyEvent *);
   virtual void start (void);
   void mouseMoveEvent (QMouseEvent *event);
   void mousePressEvent (QMouseEvent *event);
   void mouseReleaseEvent (QMouseEvent *event);
-  void mouseDoubleClickEvent (QMouseEvent* event);
-  void mouseTripleClickEvent (QMouseEvent* event);
+  void mouseDoubleClickEvent (QMouseEvent *event);
+  void mouseTripleClickEvent (QMouseEvent *event);
 
-  bool eventFilter(QObject *obj, QEvent *ev);
+  bool eventFilter (QObject *obj, QEvent *ev);
 
-  void dragEnterEvent(QDragEnterEvent *event);
-  void dropEvent(QDropEvent *event);
+  void dragEnterEvent (QDragEnterEvent *event);
+  void dropEvent (QDropEvent *event);
 
 private slots:
   void horizontalScrollValueChanged (int value);
@@ -107,7 +107,7 @@ private slots:
   void tripleClickTimeout (void);
 
 private:
-  QConsolePrivate* d;
+  QConsolePrivate *d;
   bool allowTripleClick;
   bool _extra_interrupt;
 };

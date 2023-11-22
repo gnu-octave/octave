@@ -74,7 +74,7 @@ oct_assignop_conv_and_assign (octave_base_value& a1,
                               const octave_value_list& idx,
                               const octave_base_value& a2)
 {
-  octave_bool_matrix& v1 = dynamic_cast<octave_bool_matrix&> (a1);
+  OCTAVE_CAST_BASE_VALUE (octave_bool_matrix&, v1, a1);
 
   // FIXME: perhaps add a warning for this conversion
   //        if the values are not all 0 or 1?

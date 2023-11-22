@@ -548,7 +548,7 @@ function txt = check_package (fcn, name, classes)
                  fcn, name);
 
   [~, status] = pkg ("describe", name);
-  switch (tolower (status{1}))
+  switch (lower (status{1}))
     case "loaded",
       for i = 1:length (classes)
         cls = classes{i};
@@ -936,7 +936,6 @@ function rlist = missing_functions ()
   "islocalmax",
   "islocalmin",
   "isLocked",
-  "ismembertol",
   "ismissing",
   "isnat",
   "isomorphism",

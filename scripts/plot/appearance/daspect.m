@@ -82,7 +82,7 @@ function daratio = daspect (varargin)
         error ("daspect: DATA_ASPECT_RATIO must be a 2 or 3 element vector");
       endif
     elseif (ischar (arg))
-      arg = tolower (arg);
+      arg = lower (arg);
       switch (arg)
         case "auto"
           set (hax, "dataaspectratiomode", "auto");

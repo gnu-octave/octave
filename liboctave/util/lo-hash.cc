@@ -57,14 +57,14 @@ hash (hash_fptr hash_fcn, const std::string& str, int result_buf_len)
   return buf.str ();
 }
 
-int md2_digest_size (void) { return octave_md2_digest_size (); }
-int md4_digest_size (void) { return octave_md4_digest_size (); }
-int md5_digest_size (void) { return octave_md5_digest_size (); }
-int sha1_digest_size (void) { return octave_sha1_digest_size (); }
-int sha224_digest_size (void) { return octave_sha224_digest_size (); }
-int sha256_digest_size (void) { return octave_sha256_digest_size (); }
-int sha384_digest_size (void) { return octave_sha384_digest_size (); }
-int sha512_digest_size (void) { return octave_sha512_digest_size (); }
+int md2_digest_size () { return octave_md2_digest_size (); }
+int md4_digest_size () { return octave_md4_digest_size (); }
+int md5_digest_size () { return octave_md5_digest_size (); }
+int sha1_digest_size () { return octave_sha1_digest_size (); }
+int sha224_digest_size () { return octave_sha224_digest_size (); }
+int sha256_digest_size () { return octave_sha256_digest_size (); }
+int sha384_digest_size () { return octave_sha384_digest_size (); }
+int sha512_digest_size () { return octave_sha512_digest_size (); }
 
 std::string
 md2_hash (const std::string& str)

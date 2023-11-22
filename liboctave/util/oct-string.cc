@@ -34,8 +34,10 @@
 #include <cstring>
 #include <iomanip>
 #include <string>
+#include <unordered_set>
 
 #include "Array.h"
+#include "iconv-wrappers.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "uniconv-wrappers.h"
@@ -605,6 +607,174 @@ octave::string::u8_validate (const std::string& who,
 
   in_str = out_str;
   return num_replacements;
+}
+
+std::string
+octave::string::u16_to_encoding (const std::string& who,
+                                 const std::u16string& u16_string,
+                                 const std::string& encoding)
+{
+  const uint16_t *src = reinterpret_cast<const uint16_t *>
+                        (u16_string.c_str ());
+  std::size_t srclen = u16_string.length ();
+
+  std::size_t length;
+  char *native_str = octave_u16_conv_to_encoding (encoding.c_str (), src,
+                                                  srclen, &length);
+
+  if (! native_str)
+    {
+      if (errno == ENOSYS)
+        (*current_liboctave_error_handler)
+          ("%s: iconv() is not supported. Installing GNU libiconv and then "
+           "re-compiling Octave could fix this.", who.c_str ());
+      else
+        (*current_liboctave_error_handler)
+          ("%s: converting from UTF-16 to codepage '%s' failed: %s",
+           who.c_str (), encoding.c_str (), std::strerror (errno));
+    }
+
+  octave::unwind_action free_native_str ([=] () { ::free (native_str); });
+
+  std::string retval = std::string (native_str, length);
+
+  return retval;
+}
+
+std::vector<std::string>
+octave::string::get_encoding_list ()
+{
+  static std::vector<std::string> encoding_list;
+
+  if (encoding_list.empty ())
+    {
+#if defined (HAVE_ICONVLIST)
+      // get number of supported encodings
+      std::size_t count = 0;
+      octave_iconvlist_wrapper (
+        [] (unsigned int num, const char * const *, void *data) -> int
+          {
+            std::size_t *count_ptr = static_cast<std::size_t *> (data);
+            *count_ptr = num;
+            return 0;
+          },
+        &count);
+
+      if (count == static_cast<size_t>(-1))
+        {
+          encoding_list.push_back ("UTF-8");
+          return encoding_list;
+        }
+
+#  if defined (HAVE_ICONV_CANONICALIZE)
+      // use unordered_set to skip canonicalized aliases
+      std::unordered_set<std::string> encoding_set;
+      encoding_set.reserve (count);
+
+      // populate vector with name of encodings
+      octave_iconvlist_wrapper (
+        [] (unsigned int num, const char * const *names, void *data) -> int
+          {
+            std::unordered_set<std::string> *encoding_set_ptr
+              = static_cast<std::unordered_set<std::string> *> (data);
+            for (std::size_t i = 0; i < num; i++)
+              {
+                const char *canonicalized_enc
+                  = octave_iconv_canonicalize_wrapper (names[i]);
+                encoding_set_ptr->insert (canonicalized_enc);
+              }
+            return 0;
+          },
+        &encoding_set);
+
+      encoding_list.assign (encoding_set.begin (), encoding_set.end ());
+#  endif
+
+#else
+      // Use hardcoded list of encodings as a fallback for platforms without
+      // iconvlist (or another way of programmatically querrying a list of
+      // supported encodings).
+      // This list is inspired by the encodings supported by Geany.
+      encoding_list
+        = {"ISO-8859-1",
+           "ISO-8859-2",
+           "ISO-8859-3",
+           "ISO-8859-4",
+           "ISO-8859-5",
+           "ISO-8859-6",
+           "ISO-8859-7",
+           "ISO-8859-8",
+           "ISO-8859-9",
+           "ISO-8859-10",
+           "ISO-8859-13",
+           "ISO-8859-14",
+           "ISO-8859-15",
+           "ISO-8859-16",
+
+           "UTF-7",
+           "UTF-8",
+           "UTF-16LE",
+           "UTF-16BE",
+           "UTF-32LE",
+           "UTF-32BE",
+           "UCS-2LE",
+           "UCS-2BE",
+
+           "ARMSCII-8",
+           "BIG5",
+           "BIG5-HKSCS",
+           "CP866",
+
+           "EUC-JP",
+           "EUC-KR",
+           "EUC-TW",
+
+           "GB18030",
+           "GB_2312-80",
+           "GBK",
+           "HZ",
+
+           "IBM850",
+           "IBM852",
+           "IBM855",
+           "IBM857",
+           "IBM862",
+           "IBM864",
+
+           "ISO-2022-JP",
+           "ISO-2022-KR",
+           "JOHAB",
+           "KOI8-R",
+           "KOI8-U",
+
+           "SHIFT_JIS",
+           "TCVN",
+           "TIS-620",
+           "UHC",
+           "VISCII",
+
+           "CP1250",
+           "CP1251",
+           "CP1252",
+           "CP1253",
+           "CP1254",
+           "CP1255",
+           "CP1256",
+           "CP1257",
+           "CP1258",
+
+           "CP932"
+           };
+
+      // FIXME: Should we check whether those are actually valid encoding
+      // identifiers?
+#endif
+
+      // sort list of encodings
+      std::sort (encoding_list.begin (), encoding_list.end ());
+    }
+
+  return encoding_list;
 }
 
 typedef octave::string::codecvt_u8::InternT InternT;

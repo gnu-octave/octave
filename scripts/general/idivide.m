@@ -81,7 +81,7 @@ function C = idivide (A, B, op)
   if (nargin == 2)
     op = "fix";
   else
-    op = tolower (op);
+    op = lower (op);
   endif
 
   if (! isinteger (A) && ! isinteger (B))

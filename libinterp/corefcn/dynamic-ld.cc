@@ -95,7 +95,7 @@ dynamic_loader::shlibs_list::find_file (const std::string& file_name) const
 }
 
 void
-dynamic_loader::shlibs_list::display (void) const
+dynamic_loader::shlibs_list::display () const
 {
   std::cerr << "current shared libraries:" << std::endl;
   for (const auto& lib : m_lib_list)

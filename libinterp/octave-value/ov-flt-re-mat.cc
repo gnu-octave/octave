@@ -90,7 +90,7 @@ DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
                                      "single");
 
 octave_base_value *
-octave_float_matrix::try_narrowing_conversion (void)
+octave_float_matrix::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -240,61 +240,61 @@ octave_float_matrix::sparse_complex_matrix_value (bool) const
 }
 
 octave_value
-octave_float_matrix::as_double (void) const
+octave_float_matrix::as_double () const
 {
   return NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_single (void) const
+octave_float_matrix::as_single () const
 {
   return FloatNDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_int8 (void) const
+octave_float_matrix::as_int8 () const
 {
   return int8NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_int16 (void) const
+octave_float_matrix::as_int16 () const
 {
   return int16NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_int32 (void) const
+octave_float_matrix::as_int32 () const
 {
   return int32NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_int64 (void) const
+octave_float_matrix::as_int64 () const
 {
   return int64NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_uint8 (void) const
+octave_float_matrix::as_uint8 () const
 {
   return uint8NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_uint16 (void) const
+octave_float_matrix::as_uint16 () const
 {
   return uint16NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_uint32 (void) const
+octave_float_matrix::as_uint32 () const
 {
   return uint32NDArray (m_matrix);
 }
 
 octave_value
-octave_float_matrix::as_uint64 (void) const
+octave_float_matrix::as_uint64 () const
 {
   return uint64NDArray (m_matrix);
 }
@@ -631,7 +631,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
       return false;
     }
 
-  float *mtmp = m.fortran_vec ();
+  const float *mtmp = m.data ();
   retval = H5Dwrite (data_hid, H5T_NATIVE_FLOAT, octave_H5S_ALL, octave_H5S_ALL,
                      octave_H5P_DEFAULT, mtmp) >= 0;
 

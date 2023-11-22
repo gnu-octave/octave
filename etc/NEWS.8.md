@@ -193,7 +193,7 @@ Summary of important user-visible changes for version 8 (2023-03-07):
 - Octave is now compatible with PCRE2 (UTF-8).  PCRE2 is preferred over PCRE
   if both are installed.  Configure with `--without-pcre2` if you prefer Octave
   to use PCRE in this case.
-  
+
 - `mean` now internally processes data as type double to reduce likelihood of
 hitting overflow or precision limits with other types (bug #63848).
 

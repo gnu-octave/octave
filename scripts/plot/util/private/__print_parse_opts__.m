@@ -61,6 +61,7 @@ function arg_st = __print_parse_opts__ (varargin)
   arg_st.lpr_binary = __quote_path__ (__find_binary__ ("lpr"));
   arg_st.polymerge = 1;
   arg_st.name = "";
+  arg_st.append_file_extension = true;
   arg_st.orientation = "";
   arg_st.pstoedit_binary = __quote_path__ (__find_binary__ ("pstoedit"));
   arg_st.preview = "";
@@ -148,6 +149,8 @@ function arg_st = __print_parse_opts__ (varargin)
       elseif (any (strcmp (arg,
                            {"-interchange", "-metafile", "-pict", "-tiff"})))
         arg_st.preview = arg(2:end);
+      elseif (strcmp (arg, "-no-append-file-extension"))
+        arg_st.append_file_extension = false;
       elseif (strncmp (arg, "-debug", 6))
         arg_st.debug = true;
         arg_st.ghostscript.debug = true;
@@ -155,7 +158,7 @@ function arg_st = __print_parse_opts__ (varargin)
           arg_st.debug_file = arg(8:end);
         endif
       elseif (length (arg) > 2 && arg(1:2) == "-d")
-        arg_st.devopt = tolower (arg(3:end));
+        arg_st.devopt = lower (arg(3:end));
       elseif (length (arg) > 2 && arg(1:2) == "-P")
         arg_st.printer = arg;
       elseif (strncmp (arg, "-EPSTOOL:", 9))
@@ -233,10 +236,10 @@ function arg_st = __print_parse_opts__ (varargin)
   if (isempty (arg_st.devopt))
     if (arg_st.rgb_output)
       arg_st.devopt = "png";
-    elseif (dot == 0)
+    elseif (dot == 0 || ! arg_st.append_file_extension)
       arg_st.devopt = "psc";
     else
-      arg_st.devopt = tolower (arg_st.name(dot+1:end));
+      arg_st.devopt = lower (arg_st.name(dot+1:end));
     endif
   endif
 
@@ -246,7 +249,7 @@ function arg_st = __print_parse_opts__ (varargin)
 
   if (any (strcmp (unsupported, arg_st.devopt)))
     warning ('Octave:print:deprecated-format',
-             'print: "%s" format is no more officially supported', ...
+             'print: "%s" format is no longer officially supported',
              arg_st.devopt);
   endif
 
@@ -355,7 +358,8 @@ function arg_st = __print_parse_opts__ (varargin)
     default_suffix = suffixes{match};
   endif
 
-  if (dot == 0 && ! isempty (arg_st.name) && ! isempty (default_suffix))
+  if (arg_st.append_file_extension && dot == 0 && ! isempty (arg_st.name) ...
+      && ! isempty (default_suffix))
     arg_st.name = [arg_st.name "." default_suffix];
   endif
 
@@ -809,10 +813,10 @@ function aliases = gs_aliases (do_eps)
   aliases.tiffn = "tiff24nc";
 
   if (do_eps)
-    aliases.eps   = "ps2write";
-    aliases.eps2  = "ps2write";
-    aliases.epsc  = "ps2write";
-    aliases.epsc2 = "ps2write";
+    aliases.eps   = "eps2write";
+    aliases.eps2  = "eps2write";
+    aliases.epsc  = "eps2write";
+    aliases.epsc2 = "eps2write";
   endif
 
 endfunction

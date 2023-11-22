@@ -127,11 +127,11 @@ endfunction
 %!test
 %! A = toeplitz ([0, 1, 0, 0], [0, -1, 0, 0]);
 %! B = toeplitz ([0, 0, 0, 1], [0, -1, 0, 2]);
-%! [AA, BB] = qz (A, B);
+%! [AA, BB] = qz (A, B, 'real');
 %! assert (isreal (AA) && isreal (BB));
 %! lambda = ordeig (AA, BB);
 %! assert (lambda, [0.5+0.86603i; 0.5-0.86603i; i; -i], 1e-4);
-%! [AA, BB] = qz (complex (A), complex (B));
+%! [AA, BB] = qz (A, B, 'complex');
 %! assert (iscomplex (AA) && iscomplex (BB));
 %! lambda = ordeig (AA, BB);
 %! assert (lambda, diag (AA) ./ diag (BB));

@@ -425,6 +425,10 @@
 ## anti-aliasing is applied using Ghostscript's TextAlphaBits and
 ## GraphicsAlphaBits options.  The default number of bits are 4 and 1
 ## respectively.  Allowed values for @var{N} are 1, 2, or 4.
+##
+## @item -no-append-file-extension
+##   With this option, @var{filename} is used verbatim.  That means no file
+## extension matching the file format is appended automatically.
 ## @end table
 ##
 ## @seealso{saveas, getframe, savefig, hgsave, orient, figure}
@@ -823,6 +827,26 @@ function RGB = print (varargin)
 
 endfunction
 
+## Print to file with and without file extension
+%!testif ; (have_window_system () && any (strcmp ("qt", available_graphics_toolkits ())))
+%! toolkit = graphics_toolkit ();
+%! graphics_toolkit ("qt");
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   x = 0:0.1:1;
+%!   hax = axes (hf);
+%!   plot (hax, x, x);
+%!   tmp_name = tempname ();
+%!   print (hf, tmp_name, "-dpng");
+%!   assert (isfile ([tmp_name ".png"]));
+%!   unlink ([tmp_name ".png"]);
+%!   print (hf, tmp_name, "-dpng", "-no-append-file-extension");
+%!   assert (isfile (tmp_name));
+%!   unlink (tmp_name);
+%! unwind_protect_cleanup
+%!   close (hf);
+%!   graphics_toolkit (toolkit);
+%! end_unwind_protect
 
 %!error <a graphics handle>
 %! hf = figure ("visible", "off");

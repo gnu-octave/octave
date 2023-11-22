@@ -50,15 +50,11 @@ public:
       m_bp_list (), m_bp_cond_list ()
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_breakpoint)
 
-  tree_breakpoint (const tree_breakpoint&) = delete;
+  ~tree_breakpoint () = default;
 
-  tree_breakpoint& operator = (const tree_breakpoint&) = delete;
-
-  ~tree_breakpoint (void) = default;
-
-  bool success (void) const { return m_found; }
+  bool success () const { return m_found; }
 
   void visit_argument_list (tree_argument_list&);
 
@@ -147,11 +143,11 @@ public:
 
   void visit_unwind_protect_command (tree_unwind_protect_command&);
 
-  octave_value_list get_list (void) { return m_bp_list; }
+  octave_value_list get_list () { return m_bp_list; }
 
-  octave_value_list get_cond_list (void) { return m_bp_cond_list; }
+  octave_value_list get_cond_list () { return m_bp_cond_list; }
 
-  int get_line (void) { return m_found ? m_line : 0; }
+  int get_line () { return m_found ? m_line : 0; }
 
 private:
 

@@ -48,27 +48,26 @@ format_url (bool html, const std::string& url)
 std::string
 octave_www_statement (bool html)
 {
-  return "Additional information about Octave is available at "
-         + format_url (html, "https://www.octave.org") + ".";
+  return "Home page:            "
+         + format_url (html, "https://octave.org");
 }
 
 std::string
 octave_contrib_statement (bool html)
 {
-  return "Please contribute if you find this software useful.\n\
-For more information, visit "
-         + format_url (html, "https://www.octave.org/get-involved.html");
+  return "Improve Octave:       "
+         + format_url (html, "https://octave.org/get-involved");
 }
 
 std::string
 octave_bugs_statement (bool html)
 {
-  return "Read " + format_url (html, "https://www.octave.org/bugs.html")
-         + " to learn how to submit bug reports.";
+  return "Support resources:    "
+         + format_url (html, "https://octave.org/support");
 }
 
 std::string
-octave_name_version_and_copyright (void)
+octave_name_version_and_copyright ()
 {
   // The GNU coding standards say that on the first line printed by
   // --version, the version number should follow the last space on the
@@ -99,21 +98,15 @@ std::string
 octave_name_version_copyright_copying_warranty_and_bugs
   (bool html, const std::string& extra_info)
 {
-  std::string sep = (html ? "\n</p>\n<p>\n" : "\n\n");
-
-  std::string msg;
-
-  if (html)
-    msg = "<p>\n";
-
-  msg += octave_name_version_copyright_copying_and_warranty (html, extra_info)
-         + sep
-         + octave_www_statement (html)
-         + sep
-         + octave_contrib_statement (html)
-         + sep
-         + octave_bugs_statement (html)
-         + (html ? "\n</p>" : "");
+  std::string sep = (html ? "\n</p>\n<p>\n" : "\n");
+  std::string msg =
+        (html ? "<p>\n" : "")
+        + octave_name_version_copyright_copying_and_warranty (html, extra_info)
+        + (html ? "" : "\n")               + sep
+        + octave_www_statement (html)      + sep
+        + octave_bugs_statement (html)     + sep
+        + octave_contrib_statement (html)  + sep
+        + (html ? "\n</p>" : "");
 
   return msg;
 }
@@ -127,7 +120,7 @@ octave_startup_message (bool html)
 
   msg += (html ? "<p>\n" : "\n");
 
-  msg += "For information about changes from previous versions, type 'news'.";
+  msg += "For changes from previous versions, type 'news'.";
 
   msg += (html ? "\n</p>" : "");
 

@@ -30,9 +30,9 @@
 #include <string>
 
 #include "error.h"
+#include "interpreter.h"
 #include "oct-lvalue.h"
 #include "ov.h"
-#include "parse.h"
 #include "pt-arg-list.h"
 #include "pt-assign.h"
 
@@ -48,7 +48,7 @@ tree_simple_assignment::tree_simple_assignment (tree_expression *le,
     m_ans_assign (), m_etype (t)
 { }
 
-tree_simple_assignment::~tree_simple_assignment (void)
+tree_simple_assignment::~tree_simple_assignment ()
 {
   if (! m_preserve)
     delete m_lhs;
@@ -57,7 +57,7 @@ tree_simple_assignment::~tree_simple_assignment (void)
 }
 
 std::string
-tree_simple_assignment::oper (void) const
+tree_simple_assignment::oper () const
 {
   return octave_value::assign_op_as_string (m_etype);
 }
@@ -134,7 +134,10 @@ tree_simple_assignment::evaluate (tree_evaluator& tw, int)
 
               octave_value_list args = ovl (lhs_val);
               args.stash_name_tags (string_vector (m_lhs->name ()));
-              feval ("display", args);
+
+              interpreter& interp = tw.get_interpreter ();
+
+              interp.feval ("display", args);
             }
         }
       catch (index_exception& ie)
@@ -156,7 +159,7 @@ tree_multi_assignment::tree_multi_assignment (tree_argument_list *lst,
   : tree_expression (l, c), m_lhs (lst), m_rhs (r), m_preserve (plhs)
 { }
 
-tree_multi_assignment::~tree_multi_assignment (void)
+tree_multi_assignment::~tree_multi_assignment ()
 {
   if (! m_preserve)
     delete m_lhs;
@@ -165,7 +168,7 @@ tree_multi_assignment::~tree_multi_assignment (void)
 }
 
 std::string
-tree_multi_assignment::oper (void) const
+tree_multi_assignment::oper () const
 {
   return octave_value::assign_op_as_string (op_type ());
 }
@@ -339,7 +342,10 @@ tree_multi_assignment::evaluate_n (tree_evaluator& tw, int)
 
               octave_value_list args = ovl (lhs_val);
               args.stash_name_tags (string_vector (lhs_elt->name ()));
-              feval ("display", args);
+
+              interpreter& interp = tw.get_interpreter ();
+
+              interp.feval ("display", args);
             }
         }
 

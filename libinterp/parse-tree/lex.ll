@@ -183,28 +183,6 @@ and after the nested call.
      }                                                                  \
    while (0)
 
-#define CMD_OR_DEPRECATED_OP(PATTERN, REPLACEMENT, VERSION, TOK)        \
-   do                                                                   \
-     {                                                                  \
-       curr_lexer->lexer_debug (PATTERN);                               \
-                                                                        \
-       if (curr_lexer->looks_like_command_arg ())                       \
-         {                                                              \
-           yyless (0);                                                  \
-           curr_lexer->push_start_state (COMMAND_START);                \
-         }                                                              \
-       else                                                             \
-         {                                                              \
-           curr_lexer->warn_deprecated_operator (PATTERN, REPLACEMENT,  \
-                                                 #VERSION);             \
-           /* set COMPAT to true here to avoid warning about            \
-              compatibility since we've already warned about the        \
-              operator being deprecated.  */                            \
-           return curr_lexer->handle_op (TOK, false, true);             \
-         }                                                              \
-     }                                                                  \
-   while (0)
-
 #define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT)                           \
    do                                                                   \
      {                                                                  \
@@ -1089,28 +1067,6 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->m_string_text += '\v';
   }
 
-<DQ_STRING_START>(\.\.\.){S}*{NL} {
-    curr_lexer->lexer_debug ("<DQ_STRING_START>(\\.\\.\\.){S}*{NL}");
-
-    /* FIXME: Remove support for '...' continuation in Octave 9 */
-    static const char *msg = "'...' continuations in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave; please use '\\' instead";
-
-    curr_lexer->warn_deprecated_syntax (msg);
-
-    HANDLE_STRING_CONTINUATION;
-  }
-
-<DQ_STRING_START>\\{S}+{NL} {
-    curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{S}+{NL}");
-
-    /* FIXME: Remove support for WS after line continuation in Octave 9 */
-    static const char *msg = "whitespace after continuation markers in double-quoted character strings were deprecated in version 7 and will not be allowed in a future version of Octave";
-
-    curr_lexer->warn_deprecated_syntax (msg);
-
-    HANDLE_STRING_CONTINUATION;
-  }
-
 <DQ_STRING_START>\\{NL} {
     curr_lexer->lexer_debug ("<DQ_STRING_START>\\\\{NL}");
 
@@ -1303,17 +1259,6 @@ ANY_INCLUDING_NL (.|{NL})
 // Deprecated C preprocessor style continuation markers.
 %}
 
-\\{S}*{NL} |
-\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL} {
-    curr_lexer->lexer_debug ("\\\\{S}*{NL}|\\\\{S}*{CCHAR}{ANY_EXCEPT_NL}*{NL}");
-
-    /* FIXME: Remove support for '\\' line continuation in Octave 9 */
-    static const char *msg = "using continuation marker \\ outside of double quoted strings was deprecated in version 7 and will be removed from a future version of Octave, use ... instead";
-
-    curr_lexer->warn_deprecated_syntax (msg);
-
-    curr_lexer->handle_continuation ();
-  }
 
 %{
 // End of file.
@@ -1645,13 +1590,10 @@ ANY_INCLUDING_NL (.|{NL})
 %}
 
 ":"   { CMD_OR_OP (":", ':', true); }
-".+"  { CMD_OR_DEPRECATED_OP (".+", "+", 7, '+'); }
-".-"  { CMD_OR_DEPRECATED_OP (".-", "-", 7, '-'); }
 ".*"  { CMD_OR_OP (".*", EMUL, true); }
 "./"  { CMD_OR_OP ("./", EDIV, true); }
 ".\\" { CMD_OR_OP (".\\", ELEFTDIV, true); }
 ".^"  { CMD_OR_OP (".^", EPOW, true); }
-".**" { CMD_OR_DEPRECATED_OP (".**", ".^", 7, EPOW); }
 "<="  { CMD_OR_OP ("<=", EXPR_LE, true); }
 "=="  { CMD_OR_OP ("==", EXPR_EQ, true); }
 "!="  { CMD_OR_OP ("!=", EXPR_NE, false); }
@@ -1681,7 +1623,6 @@ ANY_INCLUDING_NL (.|{NL})
   }
 
 "^"   { CMD_OR_OP ("^", POW, true); }
-"**"  { CMD_OR_DEPRECATED_OP ("**", "^", 7, POW); }
 "&&"  { CMD_OR_OP ("&&", EXPR_AND_AND, true); }
 "||"  { CMD_OR_OP ("||", EXPR_OR_OR, true); }
 
@@ -1818,15 +1759,11 @@ ANY_INCLUDING_NL (.|{NL})
 "*="   { CMD_OR_OP ("*=", MUL_EQ, false); }
 "/="   { CMD_OR_OP ("/=", DIV_EQ, false); }
 "\\="  { CMD_OR_OP ("\\=", LEFTDIV_EQ, false); }
-".+="  { CMD_OR_DEPRECATED_OP (".+=", "+=", 7, ADD_EQ); }
-".-="  { CMD_OR_DEPRECATED_OP (".-=", "-=", 7, SUB_EQ); }
 ".*="  { CMD_OR_OP (".*=", EMUL_EQ, false); }
 "./="  { CMD_OR_OP ("./=", EDIV_EQ, false); }
 ".\\=" { CMD_OR_OP (".\\=", ELEFTDIV_EQ, false); }
 "^="   { CMD_OR_OP ("^=", POW_EQ, false); }
-"**="  { CMD_OR_DEPRECATED_OP ("**=", "^=", 7, POW_EQ); }
 ".^="  { CMD_OR_OP (".^=", EPOW_EQ, false); }
-".**=" { CMD_OR_DEPRECATED_OP (".**=", ".^=", 7, EPOW_EQ); }
 "&="   { CMD_OR_OP ("&=", AND_EQ, false); }
 "|="   { CMD_OR_OP ("|=", OR_EQ, false); }
 
@@ -2178,14 +2115,14 @@ If @var{name} is omitted, return a list of keywords.
 */
 
   void
-  lexical_feedback::symbol_table_context::clear (void)
+  lexical_feedback::symbol_table_context::clear ()
   {
     while (! m_frame_stack.empty ())
       m_frame_stack.pop_front ();
   }
 
   void
-  lexical_feedback::symbol_table_context::pop (void)
+  lexical_feedback::symbol_table_context::pop ()
   {
     if (empty ())
       panic_impossible ();
@@ -2194,7 +2131,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   symbol_scope
-  lexical_feedback::symbol_table_context::curr_scope (void) const
+  lexical_feedback::symbol_table_context::curr_scope () const
   {
     if (empty ())
       return m_interpreter.get_current_scope ();
@@ -2203,7 +2140,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   symbol_scope
-  lexical_feedback::symbol_table_context::parent_scope (void) const
+  lexical_feedback::symbol_table_context::parent_scope () const
   {
     std::size_t sz = size ();
 
@@ -2212,13 +2149,13 @@ If @var{name} is omitted, return a list of keywords.
             : (sz == 1 ? m_frame_stack[0] : symbol_scope ()));
   }
 
-  lexical_feedback::~lexical_feedback (void)
+  lexical_feedback::~lexical_feedback ()
   {
     m_tokens.clear ();
   }
 
   void
-  lexical_feedback::init (void)
+  lexical_feedback::init ()
   {
     // The closest paren, brace, or bracket nesting is not an object
     // index.
@@ -2226,7 +2163,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   void
-  lexical_feedback::reset (void)
+  lexical_feedback::reset ()
   {
     m_end_of_input = false;
     m_allow_command_syntax = true;
@@ -2286,7 +2223,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   int
-  lexical_feedback::previous_token_value (void) const
+  lexical_feedback::previous_token_value () const
   {
     const token *tok = m_tokens.front ();
     return tok ? tok->token_value () : 0;
@@ -2300,7 +2237,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   void
-  lexical_feedback::mark_previous_token_trailing_space (void)
+  lexical_feedback::mark_previous_token_trailing_space ()
   {
     token *tok = m_tokens.front ();
     if (tok && ! previous_token_value_is ('\n'))
@@ -2308,14 +2245,14 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   bool
-  lexical_feedback::space_follows_previous_token (void) const
+  lexical_feedback::space_follows_previous_token () const
   {
     const token *tok = m_tokens.front ();
     return tok ? tok->space_follows_token () : false;
   }
 
   bool
-  lexical_feedback::previous_token_is_binop (void) const
+  lexical_feedback::previous_token_is_binop () const
   {
     int tok = previous_token_value ();
 
@@ -2335,7 +2272,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   bool
-  lexical_feedback::previous_token_is_keyword (void) const
+  lexical_feedback::previous_token_is_keyword () const
   {
     const token *tok = m_tokens.front ();
     return tok ? tok->iskeyword () : false;
@@ -2360,7 +2297,7 @@ If @var{name} is omitted, return a list of keywords.
   }
 
   bool
-  lexical_feedback::previous_token_may_be_command (void) const
+  lexical_feedback::previous_token_may_be_command () const
   {
     if (! m_allow_command_syntax)
       return false;
@@ -2456,13 +2393,13 @@ looks_like_shebang (const std::string& s)
     return len;
   }
 
-  base_lexer::~base_lexer (void)
+  base_lexer::~base_lexer ()
   {
     yylex_destroy (m_scanner);
   }
 
   void
-  base_lexer::init (void)
+  base_lexer::init ()
   {
     yylex_init (&m_scanner);
 
@@ -2483,7 +2420,7 @@ looks_like_shebang (const std::string& s)
   struct yyguts_t *yyg = static_cast<struct yyguts_t*> (m_scanner)
 
   void
-  base_lexer::reset (void)
+  base_lexer::reset ()
   {
     // Start off on the right foot.
     clear_start_state ();
@@ -2506,7 +2443,7 @@ looks_like_shebang (const std::string& s)
   }
 
   void
-  base_lexer::prep_for_file (void)
+  base_lexer::prep_for_file ()
   {
     m_reading_script_file = true;
 
@@ -2522,7 +2459,7 @@ looks_like_shebang (const std::string& s)
   }
 
   int
-  base_lexer::handle_end_of_input (void)
+  base_lexer::handle_end_of_input ()
   {
     lexer_debug ("<<EOF>>");
 
@@ -2547,19 +2484,19 @@ looks_like_shebang (const std::string& s)
   }
 
   char *
-  base_lexer::flex_yytext (void)
+  base_lexer::flex_yytext ()
   {
     return yyget_text (m_scanner);
   }
 
   int
-  base_lexer::flex_yyleng (void)
+  base_lexer::flex_yyleng ()
   {
     return yyget_leng (m_scanner);
   }
 
   int
-  base_lexer::text_yyinput (void)
+  base_lexer::text_yyinput ()
   {
     int c = yyinput (m_scanner);
 
@@ -2630,7 +2567,7 @@ looks_like_shebang (const std::string& s)
   }
 
   bool
-  base_lexer::looking_at_space (void)
+  base_lexer::looking_at_space ()
   {
     int c = text_yyinput ();
     xunput (c);
@@ -2638,7 +2575,7 @@ looks_like_shebang (const std::string& s)
   }
 
   bool
-  base_lexer::inside_any_object_index (void)
+  base_lexer::inside_any_object_index ()
   {
     bool retval = false;
 
@@ -2965,7 +2902,7 @@ looks_like_shebang (const std::string& s)
   }
 
   bool
-  base_lexer::whitespace_is_significant (void)
+  base_lexer::whitespace_is_significant ()
   {
     return (m_nesting_level.is_bracket ()
             || (m_nesting_level.is_brace ()
@@ -3036,7 +2973,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
   template <>
   int
-  base_lexer::handle_number<2> (void)
+  base_lexer::handle_number<2> ()
   {
     // Skip 0[bB] prefix.
     std::string yytxt (flex_yytext () + 2);
@@ -3122,14 +3059,14 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   static uint64_t
-  flintmax (void)
+  flintmax ()
   {
     return (static_cast<uint64_t> (1) << std::numeric_limits<double>::digits);
   }
 
   template <>
   int
-  base_lexer::handle_number<10> (void)
+  base_lexer::handle_number<10> ()
   {
     bool imag = false;
     bool digits_only = true;
@@ -3244,7 +3181,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
   template <>
   int
-  base_lexer::handle_number<16> (void)
+  base_lexer::handle_number<16> ()
   {
     // Skip 0[xX] prefix.
     std::string yytxt (flex_yytext () + 2);
@@ -3320,7 +3257,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::handle_continuation (void)
+  base_lexer::handle_continuation ()
   {
     char *yytxt = flex_yytext ();
     int yylng = flex_yyleng ();
@@ -3383,7 +3320,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   {
     bool copyright = looks_like_copyright (m_comment_text);
 
-    if (m_nesting_level.none () && m_help_text.empty () && ! m_comment_text.empty ()
+    if (typ != octave::comment_elt::end_of_line
+        && m_nesting_level.none ()
+        && m_help_text.empty () && ! m_comment_text.empty ()
         && ! copyright && ! looks_like_shebang (m_comment_text))
       m_help_text = m_comment_text;
 
@@ -3423,7 +3362,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   bool
-  base_lexer::looks_like_command_arg (void)
+  base_lexer::looks_like_command_arg ()
   {
     if (! m_allow_command_syntax)
       return false;
@@ -3436,7 +3375,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_superclass_identifier (void)
+  base_lexer::handle_superclass_identifier ()
   {
     update_token_positions (flex_yyleng ());
 
@@ -3470,7 +3409,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_meta_identifier (void)
+  base_lexer::handle_meta_identifier ()
   {
     std::string txt = flex_yytext ();
 
@@ -3501,7 +3440,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_fq_identifier (void)
+  base_lexer::handle_fq_identifier ()
   {
     std::string txt = flex_yytext ();
 
@@ -3535,7 +3474,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   // should be ignored.
 
   int
-  base_lexer::handle_identifier (void)
+  base_lexer::handle_identifier ()
   {
     update_token_positions (flex_yyleng ());
 
@@ -3641,7 +3580,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::warn_language_extension_continuation (void)
+  base_lexer::warn_language_extension_continuation ()
   {
     warn_language_extension ("\\ used as line continuation marker");
   }
@@ -3668,16 +3607,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::warn_deprecated_operator (const std::string& deprecated_op,
-                                        const std::string& recommended_op,
-                                        const std::string& version)
-  {
-    std::string msg = "the '" + deprecated_op + "' operator was deprecated in version " + version + " and will not be allowed in a future version of Octave; please use '" + recommended_op + "' instead";
-
-    warn_deprecated_syntax (msg);
-  }
-
-  void
   base_lexer::push_token (token *tok)
   {
     YYSTYPE *lval = yyget_lval (m_scanner);
@@ -3686,14 +3615,14 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   token *
-  base_lexer::current_token (void)
+  base_lexer::current_token ()
   {
     YYSTYPE *lval = yyget_lval (m_scanner);
     return lval->tok_val;
   }
 
   std::size_t
-  base_lexer::pending_token_count (void) const
+  base_lexer::pending_token_count () const
   {
     return m_tokens.size ();
   }
@@ -3833,21 +3762,21 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   bool
-  base_lexer::debug_flag (void) const
+  base_lexer::debug_flag () const
   {
     settings& stgs = m_interpreter.get_settings ();
     return stgs.lexer_debug_flag ();
   }
 
   bool
-  base_lexer::display_tokens (void) const
+  base_lexer::display_tokens () const
   {
     settings& stgs = m_interpreter.get_settings ();
     return stgs.display_tokens ();
   }
 
   void
-  base_lexer::increment_token_count (void)
+  base_lexer::increment_token_count ()
   {
     settings& stgs = m_interpreter.get_settings ();
     stgs.increment_token_count ();
@@ -3870,7 +3799,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   bool
-  base_lexer::input_from_tmp_history_file (void)
+  base_lexer::input_from_tmp_history_file ()
   {
     history_system& history_sys = m_interpreter.get_history_system ();
 
@@ -3888,7 +3817,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::pop_start_state (void)
+  base_lexer::pop_start_state ()
   {
     OCTAVE_YYG;
 
@@ -3898,7 +3827,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::clear_start_state (void)
+  base_lexer::clear_start_state ()
   {
     while (! start_state_stack.empty ())
       start_state_stack.pop ();
@@ -3907,7 +3836,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::display_start_state (void) const
+  base_lexer::display_start_state () const
   {
     std::cerr << "S: ";
 
@@ -4018,7 +3947,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   // function call.
 
   int
-  base_lexer::finish_command_arg (void)
+  base_lexer::finish_command_arg ()
   {
     int tok = SQ_STRING;
 
@@ -4084,10 +4013,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (m_input_buf.empty ())
       {
-        input_system& input_sys = m_interpreter.get_input_system ();
-
         std::string ps
-          = m_initial_input ? input_sys.PS1 () : input_sys.PS2 ();
+          = m_initial_input ? m_interpreter.PS1 () : m_interpreter.PS2 ();
 
         std::string prompt = command_editor::decode_prompt_string (ps);
 

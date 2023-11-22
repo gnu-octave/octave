@@ -215,7 +215,10 @@ read_inf_nan_na (std::istream& is, char c0)
           {
             char c2 = is.get ();
             if (c2 == 'f' || c2 == 'F')
-              val = std::numeric_limits<T>::infinity ();
+              {
+                val = std::numeric_limits<T>::infinity ();
+                is.peek ();  // Potentially set EOF bit
+              }
             else
               is.setstate (std::ios::failbit);
           }
@@ -231,7 +234,10 @@ read_inf_nan_na (std::istream& is, char c0)
           {
             char c2 = is.get ();
             if (c2 == 'n' || c2 == 'N')
-              val = std::numeric_limits<T>::quiet_NaN ();
+              {
+                val = std::numeric_limits<T>::quiet_NaN ();
+                is.peek ();  // Potentially set EOF bit
+              }
             else
               {
                 val = numeric_limits<T>::NA ();
@@ -263,16 +269,13 @@ read_fp_value (std::istream& is)
   T val = 0.0;
 
   // FIXME: resetting stream position is likely to fail unless we are
-  // reading from a file.
+  //        reading from a file.
   std::streampos pos = is.tellg ();
 
-  char c1 = ' ';
-
-  while (isspace (c1))
-    c1 = is.get ();
+  is >> std::ws;  // skip through whitespace and advance stream pointer
 
   bool neg = false;
-
+  char c1 = is.get ();
   switch (c1)
     {
     case '-':
@@ -285,13 +288,15 @@ read_fp_value (std::istream& is)
         c2 = is.get ();
         if (c2 == 'i' || c2 == 'I' || c2 == 'n' || c2 == 'N')
           val = read_inf_nan_na<T> (is, c2);
+        else if (isspace (c2))
+          is.setstate (std::ios::failbit);
         else
           {
             is.putback (c2);
             is >> val;
           }
 
-        if (neg && ! is.fail ())
+        if (neg && ! math::isnan (val) && ! is.fail ())
           val = -val;
       }
       break;
@@ -321,10 +326,11 @@ read_fp_value (std::istream& is)
         }
       else
         {
-          // True error.  Reset stream to original position and pass status on.
+          // True error.
+          // Reset stream to original position, clear eof bit, pass status on.
           is.clear ();
           is.seekg (pos);
-          is.setstate (status);
+          is.setstate (status & ~std::ios_base::eofbit);
         }
     }
 
@@ -379,22 +385,22 @@ read_cx_fp_value (std::istream& is)
 
 template <> OCTAVE_API double read_value (std::istream& is)
 {
-                                          return read_fp_value<double> (is);
+  return read_fp_value<double> (is);
 }
 
 template <> OCTAVE_API Complex read_value (std::istream& is)
 {
-                                           return read_cx_fp_value<double> (is);
+  return read_cx_fp_value<double> (is);
 }
 
 template <> OCTAVE_API float read_value (std::istream& is)
 {
-                                         return read_fp_value<float> (is);
+  return read_fp_value<float> (is);
 }
 
 template <> OCTAVE_API FloatComplex read_value (std::istream& is)
 {
-                                                return read_cx_fp_value<float> (is);
+  return read_cx_fp_value<float> (is);
 }
 
 template <typename T>
@@ -477,43 +483,43 @@ write_value (std::ostream& os, const FloatComplex& value)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-bool int_multiply_overflow (int a, int b, int *r)
-{
-  return octave_i_multiply_overflow_wrapper (a, b, r);
-}
+  bool int_multiply_overflow (int a, int b, int *r)
+  {
+    return octave_i_multiply_overflow_wrapper (a, b, r);
+  }
 
-bool int_multiply_overflow (long int a, long int b, long int *r)
-{
-  return octave_li_multiply_overflow_wrapper (a, b, r);
-}
+  bool int_multiply_overflow (long int a, long int b, long int *r)
+  {
+    return octave_li_multiply_overflow_wrapper (a, b, r);
+  }
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-bool int_multiply_overflow (long long int a, long long int b,
-                            long long int *r)
-{
-  return octave_lli_multiply_overflow_wrapper (a, b, r);
-}
+  bool int_multiply_overflow (long long int a, long long int b,
+                              long long int *r)
+  {
+    return octave_lli_multiply_overflow_wrapper (a, b, r);
+  }
 #endif
 
-bool int_multiply_overflow (unsigned int a, unsigned int b,
-                            unsigned int *r)
-{
-  return octave_ui_multiply_overflow_wrapper (a, b, r);
-}
+  bool int_multiply_overflow (unsigned int a, unsigned int b,
+                              unsigned int *r)
+  {
+    return octave_ui_multiply_overflow_wrapper (a, b, r);
+  }
 
-bool int_multiply_overflow (unsigned long int a, unsigned long int b,
-                            unsigned long int *r)
-{
-  return octave_uli_multiply_overflow_wrapper (a, b, r);
-}
+  bool int_multiply_overflow (unsigned long int a, unsigned long int b,
+                              unsigned long int *r)
+  {
+    return octave_uli_multiply_overflow_wrapper (a, b, r);
+  }
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
-bool int_multiply_overflow (unsigned long long int a,
-                            unsigned long long int b,
-                            unsigned long long int *r)
-{
-  return octave_ulli_multiply_overflow_wrapper (a, b, r);
-}
+  bool int_multiply_overflow (unsigned long long int a,
+                              unsigned long long int b,
+                              unsigned long long int *r)
+  {
+    return octave_ulli_multiply_overflow_wrapper (a, b, r);
+  }
 #endif
 
 OCTAVE_END_NAMESPACE(math)

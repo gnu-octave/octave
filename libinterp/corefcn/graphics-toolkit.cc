@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include "gh-manager.h"
 #include "graphics.h"
 #include "gtk-manager.h"
 #include "interpreter-private.h"

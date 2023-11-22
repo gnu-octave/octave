@@ -41,7 +41,6 @@
 #include "ov-classdef.h"
 #include "ov-fcn-handle.h"
 #include "ov-usr-fcn.h"
-#include "parse.h"
 #include "pt-assign.h"
 #include "pt-classdef.h"
 #include "pt-idx.h"
@@ -85,26 +84,26 @@ map2Cell (const std::map<T1, T2>& m)
   Cell retval (1, m.size ());
   int i = 0;
 
-  for (auto it = m.begin (); it != m.end (); ++it, ++i)
-    retval(i) = to_ov (it->second);
+  for (const auto& it : m)
+    retval(i++) = to_ov (it.second);
 
   return retval;
 }
 
 Cell
-cdef_package::cdef_package_rep::get_classes (void) const
+cdef_package::cdef_package_rep::get_classes () const
 {
   return map2Cell (m_class_map);
 }
 
 Cell
-cdef_package::cdef_package_rep::get_functions (void) const
+cdef_package::cdef_package_rep::get_functions () const
 {
   return map2Cell (m_function_map);
 }
 
 Cell
-cdef_package::cdef_package_rep::get_packages (void) const
+cdef_package::cdef_package_rep::get_packages () const
 {
   return map2Cell (m_package_map);
 }
@@ -133,8 +132,7 @@ cdef_package::cdef_package_rep::meta_subsref
         if (idx.front ().length () != 1)
           error ("invalid meta.package indexing");
 
-        std::string nm = idx.front ()(
-                           0).xstring_value ("invalid meta.package indexing, expected a symbol name");
+        std::string nm = idx.front ()(0).xstring_value ("invalid meta.package indexing, expected a symbol name");
 
 #if DEBUG_TRACE
         std::cerr << "meta.package query: " << nm << std::endl;
@@ -161,7 +159,9 @@ cdef_package::cdef_package_rep::meta_subsref
               {
                 octave_value_list tmp_args;
 
-                retval = feval (o, tmp_args, nargout);
+                interpreter& interp = __get_interpreter__ ();
+
+                retval = interp.feval (o, tmp_args, nargout);
               }
             else
               retval(0) = o;
@@ -186,7 +186,7 @@ cdef_package::cdef_package_rep::meta_subsref
 }
 
 void
-cdef_package::cdef_package_rep::meta_release (void)
+cdef_package::cdef_package_rep::meta_release ()
 {
   // FIXME: Do we really want to unregister the package, as it
   //        could still be referenced by classes or sub-packages?

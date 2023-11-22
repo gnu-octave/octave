@@ -40,15 +40,13 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-Container::Container (QWidget *xparent, octave::base_qobject& oct_qobj,
-                      octave::interpreter& interp)
-: ContainerBase (xparent), m_octave_qobj (oct_qobj),
-  m_interpreter (interp),  m_canvas (nullptr)
+Container::Container (QWidget *xparent, octave::interpreter& interp)
+  : ContainerBase (xparent), m_interpreter (interp),  m_canvas (nullptr)
 {
   setFocusPolicy (Qt::ClickFocus);
 }
 
-Container::~Container (void)
+Container::~Container ()
 { }
 
 Canvas *
@@ -66,7 +64,7 @@ Container::canvas (const graphics_handle& gh, bool xcreate)
         {
           graphics_object fig = go.get_ancestor ("figure");
 
-          m_canvas = Canvas::create (m_octave_qobj, m_interpreter, gh, this,
+          m_canvas = Canvas::create (m_interpreter, gh, this,
                                      fig.get ("renderer").string_value ());
 
           connect (m_canvas, QOverload<const octave::fcn_callback&>::of (&Canvas::interpreter_event),

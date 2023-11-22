@@ -73,9 +73,7 @@
 #include "main-window.h"
 #include "news-reader.h"
 #include "octave-qobject.h"
-#include "octave-qtutils.h"
 #include "settings-dialog.h"
-#include "shortcut-manager.h"
 #include "welcome-wizard.h"
 
 #include "cmd-edit.h"
@@ -93,41 +91,43 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 main_window::main_window (base_qobject& oct_qobj)
-: QMainWindow (), m_octave_qobj (oct_qobj),
-  m_status_bar (nullptr),
-  m_command_window (nullptr),
-  m_history_window (nullptr),
-  m_file_browser_window (nullptr),
-  m_editor_window (nullptr),
-  m_workspace_window (nullptr),
-  m_external_editor (new external_editor_interface (this, m_octave_qobj)),
-  m_active_editor (m_external_editor), m_settings_dlg (nullptr),
-  m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
-  m_clipboard (QApplication::clipboard ()),
-  m_prevent_readline_conflicts (true),
-  m_prevent_readline_conflicts_menu (false),
-  m_suppress_dbg_location (true),
-  m_closing (false), m_file_encoding (QString ())
+  : QMainWindow (), m_octave_qobj (oct_qobj),
+    m_status_bar (nullptr),
+    m_command_window (nullptr),
+    m_history_window (nullptr),
+    m_file_browser_window (nullptr),
+    m_editor_window (nullptr),
+    m_workspace_window (nullptr),
+    m_external_editor (new external_editor_interface (this)),
+    m_active_editor (m_external_editor), m_settings_dlg (nullptr),
+    m_find_files_dlg (nullptr), m_set_path_dlg (nullptr),
+    m_clipboard (QApplication::clipboard ()),
+    m_prevent_readline_conflicts (true),
+    m_prevent_readline_conflicts_menu (false),
+    m_suppress_dbg_location (true),
+    m_closing (false), m_file_encoding (QString ())
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
-  if (rmgr.is_first_run ())
+  if (! settings.bool_value (global_skip_welcome_wizard))
     {
       // Before wizard.
       m_octave_qobj.config_translators ();
 
-      welcome_wizard welcomeWizard (m_octave_qobj);
+      welcome_wizard welcomeWizard;
 
       if (welcomeWizard.exec () == QDialog::Rejected)
         exit (1);
 
+      settings.setValue (global_skip_welcome_wizard.settings_key (), QVariant (true));
+
       // Install settings file.
-      rmgr.reload_settings ();
+      settings.reload ();
     }
   else
     {
       // Get settings file.
-      rmgr.reload_settings ();
+      settings.reload ();
 
       // After settings.
       m_octave_qobj.config_translators ();
@@ -135,9 +135,9 @@ main_window::main_window (base_qobject& oct_qobj)
 
   setObjectName (gui_obj_name_main_window);
 
-  rmgr.config_icon_theme ();
+  settings.config_icon_theme ();
 
-  rmgr.update_network_settings ();
+  settings.update_network_settings ();
 
   // We provide specific terminal capabilities, so ensure that
   // TERM is always set appropriately.
@@ -147,13 +147,6 @@ main_window::main_window (base_qobject& oct_qobj)
 #else
   sys::env::putenv ("TERM", "xterm");
 #endif
-
-  // FIXME: can we do this job when creating the shortcut manager?
-  // A quick look shows that it may require some coordination with the
-  // resource manager.  Startup is complicated, but maybe we can make
-  // it simpler?
-  shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-  scmgr.init_data ();
 
   construct_central_widget ();
 
@@ -165,33 +158,22 @@ main_window::main_window (base_qobject& oct_qobj)
 
   adopt_dock_widgets ();
 
-#if defined (HAVE_QGUIAPPLICATION_SETDESKTOPFILENAME)
   QGuiApplication::setDesktopFileName ("org.octave.Octave.desktop");
-#endif
 
   QApplication *qapp = m_octave_qobj.qapplication ();
 
   m_default_style = qapp->style ()->objectName ();
   m_default_palette = qapp->palette ();
 
-  gui_settings *settings = rmgr.get_settings ();
-
   bool connect_to_web = true;
   QDateTime last_checked;
   int serial = 0;
   m_active_dock = nullptr;
 
-  if (settings)
-    {
-      connect_to_web
-        = settings->value (nr_allow_connection).toBool ();
-
-      last_checked
-        = settings->value (nr_last_time).toDateTime ();
-
-      serial = settings->value (nr_last_news).toInt ();
-      m_default_encoding = settings->value (ed_default_enc).toString ();
-    }
+  connect_to_web = settings.bool_value (nr_allow_connection);
+  last_checked = settings.date_time_value (nr_last_time);
+  serial = settings.int_value (nr_last_news);
+  m_default_encoding = settings.string_value (ed_default_enc);
 
   QDateTime current = QDateTime::currentDateTime ();
   QDateTime one_day_ago = current.addDays (-1);
@@ -216,9 +198,9 @@ main_window::main_window (base_qobject& oct_qobj)
   focus_command_window ();
 }
 
-main_window::~main_window (void) { }
+main_window::~main_window () { }
 
-void main_window::adopt_dock_widgets (void)
+void main_window::adopt_dock_widgets ()
 {
   adopt_terminal_widget ();
   adopt_documentation_widget ();
@@ -231,7 +213,7 @@ void main_window::adopt_dock_widgets (void)
   m_previous_dock = m_command_window;
 }
 
-void main_window::adopt_terminal_widget (void)
+void main_window::adopt_terminal_widget ()
 {
   m_command_window = m_octave_qobj.terminal_widget (this);
 
@@ -289,14 +271,14 @@ void main_window::adopt_terminal_widget (void)
     }
 }
 
-void main_window::adopt_documentation_widget (void)
+void main_window::adopt_documentation_widget ()
 {
   m_doc_browser_window = m_octave_qobj.documentation_widget (this);
 
   make_dock_widget_connections (m_doc_browser_window);
 }
 
-void main_window::adopt_file_browser_widget (void)
+void main_window::adopt_file_browser_widget ()
 {
   m_file_browser_window = m_octave_qobj.file_browser_widget (this);
 
@@ -324,7 +306,7 @@ void main_window::adopt_file_browser_widget (void)
            this, &main_window::find_files);
 }
 
-void main_window::adopt_history_widget (void)
+void main_window::adopt_history_widget ()
 {
   m_history_window = m_octave_qobj.history_widget (this);
 
@@ -337,7 +319,7 @@ void main_window::adopt_history_widget (void)
            this, &main_window::execute_command_in_terminal);
 }
 
-void main_window::adopt_workspace_widget (void)
+void main_window::adopt_workspace_widget ()
 {
   m_workspace_window = m_octave_qobj.workspace_widget (this);
 
@@ -347,14 +329,14 @@ void main_window::adopt_workspace_widget (void)
            this, &main_window::execute_command_in_terminal);
 }
 
-void main_window::adopt_editor_widget (void)
+void main_window::adopt_editor_widget ()
 {
   interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
   qt_interpreter_events *qt_link = interp_qobj->qt_link ();
 
 #if defined (HAVE_QSCINTILLA)
-  file_editor *editor = new file_editor (this, m_octave_qobj);
+  file_editor *editor = new file_editor (this);
 
   make_dock_widget_connections (editor);
 
@@ -362,6 +344,10 @@ void main_window::adopt_editor_widget (void)
   // those differences are resolved, make interpreter_event
   // connections here instead of in base_qobject::editor_widget.
   m_octave_qobj.connect_interpreter_events (editor);
+
+  connect (editor, &file_editor::show_symbol_tooltip_signal,
+           m_octave_qobj.get_workspace_model (),
+           &workspace_model::show_symbol_tooltip);
 
   connect (editor, &file_editor::request_settings_dialog,
            this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));
@@ -451,7 +437,7 @@ void main_window::adopt_editor_widget (void)
            m_active_editor, SLOT (handle_edit_file_request (const QString&)));
 }
 
-void main_window::adopt_variable_editor_widget (void)
+void main_window::adopt_variable_editor_widget ()
 {
   m_variable_editor_window = m_octave_qobj.variable_editor_widget (this);
 
@@ -482,12 +468,12 @@ void main_window::make_dock_widget_connections (octave_dock_widget *dw)
            dw, &octave_dock_widget::save_settings);
 }
 
-bool main_window::command_window_has_focus (void) const
+bool main_window::command_window_has_focus () const
 {
   return m_command_window->has_focus ();
 }
 
-void main_window::focus_command_window (void)
+void main_window::focus_command_window ()
 {
   m_command_window->activate ();
 }
@@ -504,15 +490,14 @@ void main_window::focus_window (const QString& win_name)
     m_file_browser_window->activate ();
 }
 
-bool main_window::confirm_shutdown (void)
+bool main_window::confirm_shutdown ()
 {
   bool closenow = true;
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
-  if (settings->value (global_prompt_to_exit.key,
-                       global_prompt_to_exit.def).toBool ())
+  if (settings.value (global_prompt_to_exit.settings_key (),
+                      global_prompt_to_exit.def ()).toBool ())
     {
       int ans = QMessageBox::question (this, tr ("Octave"),
                                        tr ("Are you sure you want to exit Octave?"),
@@ -646,13 +631,9 @@ void main_window::focus_changed (QWidget *, QWidget *new_widget)
     }
 }
 
-void main_window::request_reload_settings (void)
+void main_window::request_reload_settings ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-
-  if (settings)
-    emit settings_changed (settings);
+  emit settings_changed ();
 }
 
 void main_window::report_status_message (const QString& statusMessage)
@@ -660,13 +641,14 @@ void main_window::report_status_message (const QString& statusMessage)
   m_status_bar->showMessage (statusMessage, 1000);
 }
 
-void main_window::handle_save_workspace_request (void)
+void main_window::handle_save_workspace_request ()
 {
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   int opts = 0;  // No options by default.
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (! settings->value (global_use_native_dialogs).toBool ())
+
+  gui_settings settings;
+
+  if (! settings.bool_value (global_use_native_dialogs))
     opts = QFileDialog::DontUseNativeDialog;
 
   QString file
@@ -677,11 +659,11 @@ void main_window::handle_save_workspace_request (void)
     {
       emit interpreter_event
         ([=] (interpreter& interp)
-        {
-          // INTERPRETER THREAD
+         {
+           // INTERPRETER THREAD
 
-          Fsave (interp, ovl (file.toStdString ()));
-        });
+           Fsave (interp, ovl (file.toStdString ()));
+         });
     }
 }
 
@@ -689,9 +671,10 @@ void main_window::handle_load_workspace_request (const QString& file_arg)
 {
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   int opts = 0;  // No options by default.
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (! settings->value (global_use_native_dialogs).toBool ())
+
+  gui_settings settings;
+
+  if (! settings.bool_value (global_use_native_dialogs))
     opts = QFileDialog::DontUseNativeDialog;
 
   QString file = file_arg;
@@ -704,17 +687,17 @@ void main_window::handle_load_workspace_request (const QString& file_arg)
     {
       emit interpreter_event
         ([=] (interpreter& interp)
-        {
-          // INTERPRETER THREAD
+         {
+           // INTERPRETER THREAD
 
-          Fload (interp, ovl (file.toStdString ()));
+           Fload (interp, ovl (file.toStdString ()));
 
-          tree_evaluator& tw = interp.get_evaluator ();
+           tree_evaluator& tw = interp.get_evaluator ();
 
-          event_manager& xevmgr = interp.get_event_manager ();
+           event_manager& xevmgr = interp.get_event_manager ();
 
-          xevmgr.set_workspace (true, tw.get_symbol_info ());
-        });
+           xevmgr.set_workspace (true, tw.get_symbol_info ());
+         });
     }
 }
 
@@ -726,70 +709,70 @@ void main_window::handle_open_any_request (const QString& file_arg)
 
       emit interpreter_event
         ([=] (interpreter& interp)
-        {
-          // INTERPRETER THREAD
+         {
+           // INTERPRETER THREAD
 
-          interp.feval ("open", ovl (file));
+           interp.feval ("open", ovl (file));
 
-          // Update the workspace since open.m may have loaded new
-          // variables.
-          tree_evaluator& tw = interp.get_evaluator ();
+           // Update the workspace since open.m may have loaded new
+           // variables.
+           tree_evaluator& tw = interp.get_evaluator ();
 
-          event_manager& xevmgr = interp.get_event_manager ();
+           event_manager& xevmgr = interp.get_event_manager ();
 
-          xevmgr.set_workspace (true, tw.get_symbol_info ());
-        });
+           xevmgr.set_workspace (true, tw.get_symbol_info ());
+         });
     }
 }
 
-void main_window::handle_clear_workspace_request (void)
+void main_window::handle_clear_workspace_request ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      Fclear (interp);
-    });
+       Fclear (interp);
+     });
 }
 
-void main_window::handle_clear_command_window_request (void)
+void main_window::handle_clear_command_window_request ()
 {
   emit interpreter_event
-    ([] (void)
-    {
-      // INTERPRETER THREAD
+    ([] ()
+     {
+       // INTERPRETER THREAD
 
-      command_editor::kill_full_line ();
-      command_editor::clear_screen ();
-    });
+       command_editor::kill_full_line ();
+       command_editor::clear_screen ();
+     });
 }
 
-void main_window::handle_clear_history_request (void)
+void main_window::handle_clear_history_request ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      history_system& history_sys = interp.get_history_system ();
+       history_system& history_sys = interp.get_history_system ();
 
-      history_sys.do_history (ovl ("-c"));
-    });
+       history_sys.do_history (ovl ("-c"));
+     });
 }
 
-void main_window::handle_undo_request (void)
+void main_window::handle_undo_request ()
 {
   if (command_window_has_focus ())
     {
       emit interpreter_event
-        ([] (void)
-        {
-          // INTERPRETER THREAD
+        ([] ()
+         {
+           // INTERPRETER THREAD
 
-          command_editor::undo ();
-          command_editor::redisplay ();
-        });
+           command_editor::undo ();
+           command_editor::redisplay ();
+         });
     }
   else
     emit undo_signal ();
@@ -849,28 +832,28 @@ void main_window::file_remove_proxy (const QString& o, const QString& n)
   qt_link->wake_all ();
 }
 
-void main_window::open_online_documentation_page (void)
+void main_window::open_online_documentation_page ()
 {
   QDesktopServices::openUrl
     (QUrl ("https://octave.org/doc/interpreter/index.html"));
 }
 
-void main_window::open_bug_tracker_page (void)
+void main_window::open_bug_tracker_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://octave.org/bugs.html"));
 }
 
-void main_window::open_octave_packages_page (void)
+void main_window::open_octave_packages_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://packages.octave.org/index.html"));
 }
 
-void main_window::open_contribute_page (void)
+void main_window::open_contribute_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://octave.org/contribute.html"));
 }
 
-void main_window::open_donate_page (void)
+void main_window::open_donate_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://octave.org/donate.html"));
 }
@@ -885,17 +868,13 @@ void main_window::process_settings_dialog_request (const QString& desired_tab)
       return;
     }
 
-  m_settings_dlg = new settings_dialog (this, m_octave_qobj, desired_tab);
+  m_settings_dlg = new settings_dialog (this, desired_tab);
 
   connect (m_settings_dlg, &settings_dialog::apply_new_settings,
            this, &main_window::request_reload_settings);
-
-  m_settings_dlg->setModal (false);
-  m_settings_dlg->setAttribute (Qt::WA_DeleteOnClose);
-  m_settings_dlg->show ();
 }
 
-void main_window::show_about_octave (void)
+void main_window::show_about_octave ()
 {
   std::string message
     = octave_name_version_copyright_copying_warranty_and_bugs (true);
@@ -904,17 +883,15 @@ void main_window::show_about_octave (void)
                       QString::fromStdString (message));
 }
 
-void main_window::notice_settings (const gui_settings *settings,
-                                   bool update_by_worker)
+void main_window::notice_settings (bool update_by_worker)
 {
-  if (! settings)
-    return;
+  gui_settings settings;
 
   // Get desired style from preferences or take the default one if
   // the desired one is not found
-  QString preferred_style = settings->value (global_style).toString ();
+  QString preferred_style = settings.string_value (global_style);
 
-  if (preferred_style == global_style.def.toString ())
+  if (preferred_style == global_style.def ().toString ())
     preferred_style = m_default_style;
 
   QApplication* qapp = m_octave_qobj.qapplication();
@@ -938,7 +915,7 @@ void main_window::notice_settings (const gui_settings *settings,
     }
 
   // the widget's icons (when floating)
-  QString icon_set = settings->value (dw_icon_set).toString ();
+  QString icon_set = settings.string_value (dw_icon_set);
 
   QString icon;
   for (auto *widget : dock_widget_list ())
@@ -954,29 +931,28 @@ void main_window::notice_settings (const gui_settings *settings,
         }
     }
 
-  int size_idx = settings->value (global_icon_size).toInt ();
+  int size_idx = settings.int_value (global_icon_size);
   size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
 
   QStyle *st = style ();
   int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
   m_main_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
-  if (settings->value (global_status_bar).toBool ())
+  if (settings.bool_value (global_status_bar))
     m_status_bar->show ();
   else
     m_status_bar->hide ();
 
   m_prevent_readline_conflicts
-    = settings->value (sc_prevent_rl_conflicts).toBool ();
+    = settings.bool_value (sc_prevent_rl_conflicts);
 
   m_prevent_readline_conflicts_menu
-    = settings->value (sc_prevent_rl_conflicts_menu).toBool ();
+    = settings.bool_value (sc_prevent_rl_conflicts_menu);
 
   m_suppress_dbg_location
-    = ! settings->value (cs_dbg_location).toBool ();
+    = ! settings.bool_value (cs_dbg_location);
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  rmgr.update_network_settings ();
+  settings.update_network_settings ();
 
   emit active_dock_changed (nullptr, m_active_dock); // update dock widget styles
 
@@ -984,14 +960,14 @@ void main_window::notice_settings (const gui_settings *settings,
 
   bool do_disable_main_menu_shortcuts
     = (m_active_dock == m_editor_window)
-    || (m_prevent_readline_conflicts_menu
-        && (m_active_dock == m_command_window));
+      || (m_prevent_readline_conflicts_menu
+          && (m_active_dock == m_command_window));
 
   disable_menu_shortcuts (do_disable_main_menu_shortcuts);
 
   // Check whether some octave internal preferences have to be updated
   QString new_default_encoding
-    = settings->value (ed_default_enc).toString ();
+    = settings.string_value (ed_default_enc);
   // Do not update internal pref only if a) this update was not initiated
   // by the worker and b) the pref has really changes
   if (! update_by_worker && (new_default_encoding != m_default_encoding))
@@ -1003,10 +979,10 @@ void main_window::notice_settings (const gui_settings *settings,
   //       getting the cursor blink preferences from all OS environments
   bool cursor_blinking;
 
-  if (settings->contains (global_cursor_blinking.key))
-    cursor_blinking = settings->value (global_cursor_blinking).toBool ();
+  if (settings.contains (global_cursor_blinking.settings_key ()))
+    cursor_blinking = settings.bool_value (global_cursor_blinking);
   else
-    cursor_blinking = settings->value (cs_cursor_blinking).toBool ();
+    cursor_blinking = settings.bool_value (cs_cursor_blinking);
 
   if (cursor_blinking)
     QApplication::setCursorFlashTime (1000);  // 1000 ms flash time
@@ -1042,7 +1018,7 @@ QPalette main_window::getFusionDarkPalette()
   return darkPalette;
 }
 
-void main_window::prepare_to_exit (void)
+void main_window::prepare_to_exit ()
 {
   // Find files dialog is constructed dynamically, not at time of main_window
   // construction.  Connecting it to qApp aboutToQuit signal would have
@@ -1060,7 +1036,7 @@ void main_window::prepare_to_exit (void)
   m_active_dock = nullptr;
 }
 
-void main_window::go_to_previous_widget (void)
+void main_window::go_to_previous_widget ()
 {
   m_previous_dock->activate ();
 }
@@ -1080,13 +1056,14 @@ void main_window::update_octave_directory (const QString& dir)
   m_current_directory_combo_box->setCurrentIndex (0);
 }
 
-void main_window::browse_for_directory (void)
+void main_window::browse_for_directory ()
 {
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   int opts = QFileDialog::ShowDirsOnly;
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (! settings->value (global_use_native_dialogs).toBool ())
+
+  gui_settings settings;
+
+  if (! settings.bool_value (global_use_native_dialogs))
     opts = QFileDialog::DontUseNativeDialog;
 
   QString dir
@@ -1113,15 +1090,15 @@ void main_window::set_current_working_directory (const QString& dir)
     {
       emit interpreter_event
         ([=] (interpreter& interp)
-        {
-          // INTERPRETER THREAD
+         {
+           // INTERPRETER THREAD
 
-          interp.chdir (xdir.toStdString ());
-        });
+           interp.chdir (xdir.toStdString ());
+         });
     }
 }
 
-void main_window::change_directory_up (void)
+void main_window::change_directory_up ()
 {
   set_current_working_directory ("..");
 }
@@ -1130,7 +1107,7 @@ void main_window::change_directory_up (void)
 // combobox to change to a new directory or a directory that is already
 // in the drop down list.
 
-void main_window::accept_directory_line_edit (void)
+void main_window::accept_directory_line_edit ()
 {
   // Get new directory name, and change to it if it is new.  Otherwise,
   // the combo box will trigger the "activated" signal to change to the
@@ -1153,18 +1130,18 @@ void main_window::execute_command_in_terminal (const QString& command)
   else
     {
       emit interpreter_event
-        ([=] (void)
-        {
-          // INTERPRETER THREAD
+        ([=] ()
+         {
+           // INTERPRETER THREAD
 
-          std::string pending_input = command_editor::get_current_line ();
+           std::string pending_input = command_editor::get_current_line ();
 
-          command_editor::set_initial_input (pending_input);
-          command_editor::replace_line (command.toStdString ());
-          command_editor::redisplay ();
-          command_editor::interrupt_event_loop ();
-          command_editor::accept_line ();
-        });
+           command_editor::set_initial_input (pending_input);
+           command_editor::replace_line (command.toStdString ());
+           command_editor::redisplay ();
+           command_editor::interrupt_event_loop ();
+           command_editor::accept_line ();
+         });
     }
 
   focus_console_after_command ();
@@ -1174,59 +1151,59 @@ void main_window::run_file_in_terminal (const QFileInfo& info)
 {
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      QString function_name = info.fileName ();
-      function_name.chop (info.suffix ().length () + 1);
-      std::string file_path = info.absoluteFilePath ().toStdString ();
+       QString function_name = info.fileName ();
+       function_name.chop (info.suffix ().length () + 1);
+       std::string file_path = info.absoluteFilePath ().toStdString ();
 
-      std::string pending_input = command_editor::get_current_line ();
+       std::string pending_input = command_editor::get_current_line ();
 
-      if (valid_identifier (function_name.toStdString ()))
-        {
-          // Valid identifier: call as function with possibility to
-          // debug.
+       if (valid_identifier (function_name.toStdString ()))
+         {
+           // Valid identifier: call as function with possibility to
+           // debug.
 
-          load_path& lp = interp.get_load_path ();
+           load_path& lp = interp.get_load_path ();
 
-          std::string path = info.absolutePath ().toStdString ();
+           std::string path = info.absolutePath ().toStdString ();
 
-          if (lp.contains_file_in_dir (file_path, path))
-            command_editor::replace_line (function_name.toStdString ());
-        }
-      else
-        {
-          // No valid identifier: use equivalent of Fsource (), no
-          // debug possible.
+           if (lp.contains_file_in_dir (file_path, path))
+             command_editor::replace_line (function_name.toStdString ());
+         }
+       else
+         {
+           // No valid identifier: use equivalent of Fsource (), no
+           // debug possible.
 
-          interp.source_file (file_path);
+           interp.source_file (file_path);
 
-          command_editor::replace_line ("");
-        }
+           command_editor::replace_line ("");
+         }
 
-      command_editor::set_initial_input (pending_input);
-      command_editor::redisplay ();
-      command_editor::interrupt_event_loop ();
-      command_editor::accept_line ();
-    });
+       command_editor::set_initial_input (pending_input);
+       command_editor::redisplay ();
+       command_editor::interrupt_event_loop ();
+       command_editor::accept_line ();
+     });
 
   focus_console_after_command ();
 }
 
-void main_window::handle_new_figure_request (void)
+void main_window::handle_new_figure_request ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      Fbuiltin (interp, ovl ("figure"));
-      Fdrawnow (interp);
-    });
+       Fbuiltin (interp, ovl ("figure"));
+       Fdrawnow (interp);
+     });
 }
 
-void main_window::handle_enter_debugger (void)
+void main_window::handle_enter_debugger ()
 {
   setWindowTitle ("Octave (Debugging)");
 
@@ -1237,7 +1214,7 @@ void main_window::handle_enter_debugger (void)
   m_debug_quit->setEnabled (true);
 }
 
-void main_window::handle_exit_debugger (void)
+void main_window::handle_exit_debugger ()
 {
   setWindowTitle ("Octave");
 
@@ -1248,35 +1225,35 @@ void main_window::handle_exit_debugger (void)
   m_debug_quit->setEnabled (false);
 }
 
-void main_window::debug_continue (void)
+void main_window::debug_continue ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
-      Fdbcont (interp);
+       F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+       Fdbcont (interp);
 
-      command_editor::interrupt (true);
-    });
+       command_editor::interrupt (true);
+     });
 }
 
-void main_window::debug_step_into (void)
+void main_window::debug_step_into ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
-      Fdbstep (interp, ovl ("in"));
+       F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+       Fdbstep (interp, ovl ("in"));
 
-      command_editor::interrupt (true);
-    });
+       command_editor::interrupt (true);
+     });
 }
 
-void main_window::debug_step_over (void)
+void main_window::debug_step_over ()
 {
   if (m_debug_quit->isEnabled ())
     {
@@ -1284,15 +1261,15 @@ void main_window::debug_step_over (void)
 
       emit interpreter_event
         ([=] (interpreter& interp)
-        {
-          // INTERPRETER THREAD
+         {
+           // INTERPRETER THREAD
 
-          F__db_next_breakpoint_quiet__ (interp,
-                                         ovl (m_suppress_dbg_location));
-          Fdbstep (interp);
+           F__db_next_breakpoint_quiet__ (interp,
+                                          ovl (m_suppress_dbg_location));
+           Fdbstep (interp);
 
-          command_editor::interrupt (true);
-        });
+           command_editor::interrupt (true);
+         });
     }
   else
     {
@@ -1301,31 +1278,31 @@ void main_window::debug_step_over (void)
     }
 }
 
-void main_window::debug_step_out (void)
+void main_window::debug_step_out ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
-      Fdbstep (interp, ovl ("out"));
+       F__db_next_breakpoint_quiet__ (interp, ovl (m_suppress_dbg_location));
+       Fdbstep (interp, ovl ("out"));
 
-      command_editor::interrupt (true);
-    });
+       command_editor::interrupt (true);
+     });
 }
 
-void main_window::debug_quit (void)
+void main_window::debug_quit ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      Fdbquit (interp);
+       Fdbquit (interp);
 
-      command_editor::interrupt (true);
-    });
+       command_editor::interrupt (true);
+     });
 }
 
 //
@@ -1334,16 +1311,16 @@ void main_window::debug_quit (void)
 // These are moved from editor to here for also using them when octave
 // is built without qscintilla
 //
-void main_window::request_open_file (void)
+void main_window::request_open_file ()
 {
   // Open file isn't a file_editor_tab or editor function since the file
   // might be opened in an external editor.  Hence, functionality is here.
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
+
   bool is_internal = m_editor_window
-    && ! settings->value (global_use_custom_editor.key,
-                          global_use_custom_editor.def).toBool ();
+                     && ! settings.value (global_use_custom_editor.settings_key (),
+                                           global_use_custom_editor.def ()).toBool ();
 
   // Create a NonModal message.
   QWidget *p = this;
@@ -1358,7 +1335,7 @@ void main_window::request_open_file (void)
   fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
 
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-  if (! settings->value (global_use_native_dialogs).toBool ())
+  if (! settings.bool_value (global_use_native_dialogs))
     fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
   connect (fileDialog, &QFileDialog::filesSelected,
@@ -1383,10 +1360,11 @@ void main_window::request_new_function (bool)
   // editor window or the main window.  The latter is chosen, if a custom
   // editor is used or qscintilla is not available
   QWidget *p = m_editor_window;
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (! p || settings->value (global_use_custom_editor.key,
-                              global_use_custom_editor.def).toBool ())
+
+  gui_settings settings;
+
+  if (! p || settings.value (global_use_custom_editor.settings_key (),
+                              global_use_custom_editor.def ()).toBool ())
     p = this;
   QString new_name = QInputDialog::getText (p, tr ("New Function"),
                                             tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
@@ -1394,15 +1372,15 @@ void main_window::request_new_function (bool)
   if (ok && new_name.length () > 0)
     {
       // append suffix if it does not already exist
-      if (new_name.rightRef (2) != ".m")
+      if (new_name.right (2) != ".m")
         new_name.append (".m");
       // check whether new files are created without prompt
-      if (! settings->value (ed_create_new_file).toBool ())
+      if (! settings.bool_value (ed_create_new_file))
         {
           // no, so enable this settings and wait for end of new file loading
-          settings->setValue (ed_create_new_file.key, true);
-          connect (m_editor_window, SIGNAL (file_loaded_signal (void)),
-                   this, SLOT (restore_create_file_setting (void)));
+          settings.setValue (ed_create_new_file.settings_key (), true);
+          connect (m_editor_window, SIGNAL (file_loaded_signal ()),
+                   this, SLOT (restore_create_file_setting ()));
         }
       // start the edit command
       execute_command_in_terminal ("edit " + new_name);
@@ -1422,92 +1400,92 @@ void main_window::handle_edit_mfile_request (const QString& fname,
 
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      // We can skip the entire callback function because it does not
-      // make any changes to the interpreter state.
+       // We can skip the entire callback function because it does not
+       // make any changes to the interpreter state.
 
-      if (this_mw.isNull ())
-        return;
+       if (this_mw.isNull ())
+         return;
 
-      // Split possible subfunctions
-      QStringList fcn_list = fname.split ('>');
-      QString fcn_name = fcn_list.at (0) + ".m";
+       // Split possible subfunctions
+       QStringList fcn_list = fname.split ('>');
+       QString fcn_name = fcn_list.at (0) + ".m";
 
-      // FIXME: could use symbol_exist directly, but we may also want
-      // to fix that to be a member function in the interpreter
-      // class?
+       // FIXME: could use symbol_exist directly, but we may also want
+       // to fix that to be a member function in the interpreter
+       // class?
 
-      // Is it a regular function within the search path? (Call Fexist)
-      octave_value_list fct = Fexist (interp, ovl (fname.toStdString ()),0);
-      int type = fct (0).int_value ();
+       // Is it a regular function within the search path? (Call Fexist)
+       octave_value_list fct = Fexist (interp, ovl (fname.toStdString ()),0);
+       int type = fct (0).int_value ();
 
-      QString message = QString ();
-      QString filename = QString ();
+       QString message = QString ();
+       QString filename = QString ();
 
-      switch (type)
-        {
-        case 3:
-        case 5:
-        case 103:
-          message = tr ("%1 is a built-in, compiled or inline\n"
-                        "function and can not be edited.");
-          break;
+       switch (type)
+         {
+         case 3:
+         case 5:
+         case 103:
+           message = tr ("%1 is a built-in, compiled or inline\n"
+                         "function and can not be edited.");
+           break;
 
-        case 2:
-          // FIXME: could use a load_path function directly.
-          octave_value_list file_path
-            = Ffile_in_loadpath (interp, ovl (fcn_name.toStdString ()), 0);
-          if (file_path.length () > 0)
-            filename = QString::fromStdString (file_path (0).string_value ());
-          break;
-        }
+         case 2:
+           // FIXME: could use a load_path function directly.
+           octave_value_list file_path
+             = Ffile_in_loadpath (interp, ovl (fcn_name.toStdString ()), 0);
+           if (file_path.length () > 0)
+             filename = QString::fromStdString (file_path (0).string_value ());
+           break;
+         }
 
-      if (filename.isEmpty () && message.isEmpty ())
-        {
-          // No error so far, but function still not known
-          // -> try directory of edited file
-          // get directory
-          QDir dir;
-          if (ffile.isEmpty ())
-            {
-              if (curr_dir.isEmpty ())
-                dir = QDir (m_current_directory_combo_box->itemText (0));
-              else
-                dir = QDir (curr_dir);
-            }
-          else
-            dir = QDir (QFileInfo (ffile).canonicalPath ());
+       if (filename.isEmpty () && message.isEmpty ())
+         {
+           // No error so far, but function still not known
+           // -> try directory of edited file
+           // get directory
+           QDir dir;
+           if (ffile.isEmpty ())
+             {
+               if (curr_dir.isEmpty ())
+                 dir = QDir (m_current_directory_combo_box->itemText (0));
+               else
+                 dir = QDir (curr_dir);
+             }
+           else
+             dir = QDir (QFileInfo (ffile).canonicalPath ());
 
-          QFileInfo file = QFileInfo (dir, fcn_name);
-          if (file.exists ())
-            filename = file.canonicalFilePath (); // local file exists
-          else
-            {
-              // local file does not exist -> try private directory
-              file = QFileInfo (ffile);
-              file = QFileInfo (QDir (file.canonicalPath () + "/private"),
-                                fcn_name);
-              if (file.exists ())
-                filename = file.canonicalFilePath ();  // private function exists
-              else
-                message = tr ("Can not find function %1");  // no file found
-            }
-        }
+           QFileInfo file = QFileInfo (dir, fcn_name);
+           if (file.exists ())
+             filename = file.canonicalFilePath (); // local file exists
+           else
+             {
+               // local file does not exist -> try private directory
+               file = QFileInfo (ffile);
+               file = QFileInfo (QDir (file.canonicalPath () + "/private"),
+                                 fcn_name);
+               if (file.exists ())
+                 filename = file.canonicalFilePath ();  // private function exists
+               else
+                 message = tr ("Can not find function %1");  // no file found
+             }
+         }
 
-      if (! message.isEmpty ())
-        {
-          emit warning_function_not_found_signal (message.arg (fname));
-          return;
-        }
+       if (! message.isEmpty ())
+         {
+           emit warning_function_not_found_signal (message.arg (fname));
+           return;
+         }
 
-      if (! filename.endsWith (".m"))
-        filename.append (".m");
+       if (! filename.endsWith (".m"))
+         filename.append (".m");
 
-      // default encoding
-      emit open_file_signal (filename, QString (), line);
-    });
+       // default encoding
+       emit open_file_signal (filename, QString (), line);
+     });
 }
 
 void main_window::warning_function_not_found (const QString& message)
@@ -1555,42 +1533,38 @@ void main_window::handle_update_breakpoint_marker_request (bool insert,
     focus_command_window ();
 }
 
-void main_window::read_settings (void)
+void main_window::read_settings ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
-  if (! settings)
-    {
-      qDebug ("Error: gui_settings pointer from resource manager is NULL.");
-      return;
-    }
-
-  set_window_layout (settings);
+  set_window_layout ();
 
   // restore the list of the last directories
-  QStringList curr_dirs = settings->value (mw_dir_list).toStringList ();
+  QStringList curr_dirs = settings.string_list_value (mw_dir_list);
   for (int i=0; i < curr_dirs.size (); i++)
     {
       m_current_directory_combo_box->addItem (curr_dirs.at (i));
     }
-  emit settings_changed (settings);
+
+  emit settings_changed ();
 }
 
-void main_window::init_terminal_size (void)
+void main_window::init_terminal_size ()
 {
   emit init_terminal_size_signal ();
 }
 
-void main_window::set_window_layout (gui_settings *settings)
+void main_window::set_window_layout ()
 {
+  gui_settings settings;
+
   // For resetting from some inconsistent state, first reset layout
   // without saving or showing it
   do_reset_windows (true, false);
 
   // Restore main window state and geometry from settings file or, in case
   // of an error (no pref values yet), from the default layout.
-  if (! restoreGeometry (settings->value (mw_geometry).toByteArray ()))
+  if (! restoreGeometry (settings.byte_array_value (mw_geometry)))
     {
       do_reset_windows (true);
       return;
@@ -1619,7 +1593,7 @@ void main_window::set_window_layout (gui_settings *settings)
                      | Qt::WindowCloseButtonHint);
     }
 
-  if (! restoreState (settings->value (mw_state).toByteArray ()))
+  if (! restoreState (settings.byte_array_value (mw_state)))
     {
       do_reset_windows (true);
       return;
@@ -1642,10 +1616,10 @@ void main_window::set_window_layout (gui_settings *settings)
           bool floating = false;
           bool visible = true;
 
-          floating = settings->value
-            (dw_is_floating.key.arg (name), dw_is_floating.def).toBool ();
-          visible = settings->value
-            (dw_is_visible.key.arg (name), dw_is_visible.def).toBool ();
+          floating = settings.value
+            (dw_is_floating.settings_key ().arg (name), dw_is_floating.def ()).toBool ();
+          visible = settings.value
+            (dw_is_visible.settings_key ().arg (name), dw_is_visible.def ()).toBool ();
 
           // If floating, make window from widget.
           if (floating)
@@ -1654,8 +1628,8 @@ void main_window::set_window_layout (gui_settings *settings)
 
               if (visible)
                 {
-                  if (settings->value (dw_is_minimized.key.arg (name),
-                                       dw_is_minimized.def).toBool ())
+                  if (settings.value (dw_is_minimized.settings_key ().arg (name),
+                                      dw_is_minimized.def ()).toBool ())
                     widget->showMinimized ();
                   else
                     widget->setVisible (true);
@@ -1677,29 +1651,23 @@ void main_window::set_window_layout (gui_settings *settings)
   show ();
 }
 
-void main_window::write_settings (void)
+void main_window::write_settings ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (! settings)
-    {
-      qDebug ("Error: gui_settings pointer from resource manager is NULL.");
-      return;
-    }
+  gui_settings settings;
 
-  settings->setValue (mw_geometry.key, saveGeometry ());
-  settings->setValue (mw_state.key, saveState ());
+  settings.setValue (mw_geometry.settings_key (), saveGeometry ());
+  settings.setValue (mw_state.settings_key (), saveState ());
   // write the list of recently used directories
   QStringList curr_dirs;
   for (int i=0; i<m_current_directory_combo_box->count (); i++)
     {
       curr_dirs.append (m_current_directory_combo_box->itemText (i));
     }
-  settings->setValue (mw_dir_list.key, curr_dirs);
-  settings->sync ();
+  settings.setValue (mw_dir_list.settings_key (), curr_dirs);
+  settings.sync ();
 }
 
-void main_window::copyClipboard (void)
+void main_window::copyClipboard ()
 {
   if (m_current_directory_combo_box->hasFocus ())
     {
@@ -1714,7 +1682,7 @@ void main_window::copyClipboard (void)
     emit copyClipboard_signal ();
 }
 
-void main_window::pasteClipboard (void)
+void main_window::pasteClipboard ()
 {
   if (m_current_directory_combo_box->hasFocus ())
     {
@@ -1730,7 +1698,7 @@ void main_window::pasteClipboard (void)
     emit pasteClipboard_signal ();
 }
 
-void main_window::selectAll (void)
+void main_window::selectAll ()
 {
   if (m_current_directory_combo_box->hasFocus ())
     {
@@ -1759,33 +1727,30 @@ void main_window::handle_gui_status_update (const QString& feature,
     }
 }
 
-void main_window::handle_octave_ready (void)
+void main_window::handle_octave_ready ()
 {
   // actions after the startup files are executed
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+
+  gui_settings settings;
 
   QDir startup_dir = QDir ();    // current octave dir after startup
 
-  if (settings)
+  if (settings.bool_value (global_restore_ov_dir))
     {
-      if (settings->value (global_restore_ov_dir).toBool ())
-        {
-          // restore last dir from previous session
-          QStringList curr_dirs
-            = settings->value (mw_dir_list).toStringList ();
-          if (curr_dirs.length () > 0)
-            startup_dir = QDir (curr_dirs.at (0));  // last dir prev. session
-        }
-      else if (! settings->value (global_ov_startup_dir).toString ().isEmpty ())
-        {
-          // do not restore but there is a startup dir configured
-          startup_dir
-            = QDir (settings->value (global_ov_startup_dir).toString ());
-        }
-
-      update_default_encoding (settings->value (ed_default_enc).toString ());
+      // restore last dir from previous session
+      QStringList curr_dirs
+        = settings.string_list_value (mw_dir_list);
+      if (curr_dirs.length () > 0)
+        startup_dir = QDir (curr_dirs.at (0));  // last dir prev. session
     }
+  else if (! settings.string_value (global_ov_startup_dir).isEmpty ())
+    {
+      // do not restore but there is a startup dir configured
+      startup_dir
+        = QDir (settings.string_value (global_ov_startup_dir));
+    }
+
+  update_default_encoding (settings.string_value (ed_default_enc));
 
   if (! startup_dir.exists ())
     {
@@ -1802,7 +1767,7 @@ void main_window::handle_octave_ready (void)
       // This can not be done when the editor is created because all functions
       // must be known for the lexer's auto completion information
       m_editor_window->empty_script (true, false);
-      m_editor_window->restore_session (settings);
+      m_editor_window->restore_session ();
 #endif
     }
 
@@ -1810,18 +1775,31 @@ void main_window::handle_octave_ready (void)
     {
       // Set initial prompt.
 
+      // The interpreter_event callback function below emits a
+      // signal.  Because we don't control when that happens, use a
+      // guarded pointer so that the callback can abort if this object
+      // is no longer valid.
+
+      QPointer<main_window> this_mw (this);
+
       emit interpreter_event
-        ([] (interpreter& interp)
+        ([=] (interpreter& interp)
         {
           // INTERPRETER_THREAD
 
-          event_manager& evmgr = interp.get_event_manager ();
-          input_system& input_sys = interp.get_input_system ();
+          // We can skip the entire callback function because it does
+          // not make any changes to the interpreter state.
 
-          input_sys.PS1 (">> ");
-          std::string prompt = input_sys.PS1 ();
+          if (this_mw.isNull ())
+            return;
 
-          evmgr.update_prompt (command_editor::decode_prompt_string (prompt));
+          interp.PS1 (">> ");
+          std::string prompt = interp.PS1 ();
+
+          std::string decoded_prompt
+            = command_editor::decode_prompt_string (prompt);
+
+          emit update_prompt_signal (QString::fromStdString (decoded_prompt));
         });
     }
 
@@ -1829,12 +1807,12 @@ void main_window::handle_octave_ready (void)
   focus_command_window ();  // make sure that the command window has focus
 }
 
-void main_window::handle_set_path_dialog_request (void)
+void main_window::handle_set_path_dialog_request ()
 {
   if (m_set_path_dlg)  // m_set_path_dlg is a guarded pointer!
     return;
 
-  m_set_path_dlg = new set_path_dialog (this, m_octave_qobj);
+  m_set_path_dlg = new set_path_dialog (this);
 
   m_set_path_dlg->setModal (false);
   m_set_path_dlg->setAttribute (Qt::WA_DeleteOnClose);
@@ -1870,7 +1848,7 @@ void main_window::find_files (const QString& start_dir)
 
   if (! m_find_files_dlg)
     {
-      m_find_files_dlg = new find_files_dialog (this, m_octave_qobj);
+      m_find_files_dlg = new find_files_dialog (this);
 
       connect (m_find_files_dlg, &find_files_dialog::finished,
                this, &main_window::find_files_finished);
@@ -1898,15 +1876,15 @@ void main_window::find_files (const QString& start_dir)
 void main_window::set_screen_size (int ht, int wd)
 {
   emit interpreter_event
-    ([=] (void)
-    {
-      // INTERPRETER THREAD
+    ([=] ()
+     {
+       // INTERPRETER THREAD
 
-      command_editor::set_screen_size (ht, wd);
-    });
+       command_editor::set_screen_size (ht, wd);
+     });
 }
 
-void main_window::clipboard_has_changed (void)
+void main_window::clipboard_has_changed ()
 {
   if (m_clipboard->text ().isEmpty ())
     {
@@ -1920,7 +1898,7 @@ void main_window::clipboard_has_changed (void)
     }
 }
 
-void main_window::clear_clipboard (void)
+void main_window::clear_clipboard ()
 {
   m_clipboard->clear (QClipboard::Clipboard);
 }
@@ -1936,14 +1914,15 @@ void main_window::disable_menu_shortcuts (bool disable)
     }
 }
 
-void main_window::restore_create_file_setting (void)
+void main_window::restore_create_file_setting ()
 {
   // restore the new files creation setting
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  settings->setValue (ed_create_new_file.key, false);
-  disconnect (m_editor_window, SIGNAL (file_loaded_signal (void)),
-              this, SLOT (restore_create_file_setting (void)));
+
+  gui_settings settings;
+
+  settings.setValue (ed_create_new_file.settings_key (), false);
+  disconnect (m_editor_window, SIGNAL (file_loaded_signal ()),
+              this, SLOT (restore_create_file_setting ()));
 }
 
 void main_window::set_file_encoding (const QString& new_encoding)
@@ -1960,37 +1939,34 @@ void main_window::request_open_files (const QStringList& open_file_names)
     emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
 }
 
-void main_window::profiler_session (void)
+void main_window::profiler_session ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
-
-      Ffeval (interp, ovl ("profile","on"));
-    });
+      {
+        // INTERPRETER THREAD
+        F__profiler_enable__ (interp, ovl (true));
+      });
 }
 
-void main_window::profiler_session_resume (void)
+void main_window::profiler_session_resume ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
-
-      Ffeval (interp, ovl ("profile","resume"));
-    });
+      {
+        // INTERPRETER THREAD
+        F__profiler_enable__ (interp, ovl (true));
+      });
 }
 
-void main_window::profiler_stop (void)
+void main_window::profiler_stop ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
-
-      Ffeval (interp, ovl ("profile","off"));
-    });
+      {
+        // INTERPRETER THREAD
+        F__profiler_enable__ (interp, ovl (false));
+      });
 }
 
 void main_window::handle_profiler_status_update (bool active)
@@ -2005,7 +1981,7 @@ void main_window::handle_profiler_status_update (bool active)
   m_profiler_status_indicator->set_state (state);
 }
 
-void main_window::profiler_show (void)
+void main_window::profiler_show ()
 {
   // Do not use a separate interpreter event as in the other
   // profiler slots since the output of the command "profshow"
@@ -2036,18 +2012,18 @@ void main_window::closeEvent (QCloseEvent *e)
         {
           emit interpreter_event
             ([] (interpreter& interp)
-            {
-              // INTERPRETER THREAD
+             {
+               // INTERPRETER THREAD
 
-              interp.quit (0, false, false);
-            });
+               interp.quit (0, false, false);
+             });
         }
     }
   else
     e->ignore ();
 }
 
-void main_window::construct_central_widget (void)
+void main_window::construct_central_widget ()
 {
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
@@ -2063,7 +2039,7 @@ void main_window::construct_central_widget (void)
 
 // Main subroutine of the constructor
 
-void main_window::construct (void)
+void main_window::construct ()
 {
   setWindowIcon (QIcon (dw_icon_set_names["NONE"]));
 
@@ -2083,8 +2059,9 @@ void main_window::construct (void)
   connect (qApp, &QApplication::focusChanged,
            this, &main_window::focus_changed);
 
+  // Default argument requires wrapper.
   connect (this, &main_window::settings_changed,
-           this, [=] (const gui_settings *settings) { notice_settings (settings); });
+           this, [=] () { notice_settings (); });
 
   // Connections for signals from the interpreter thread where the slot
   // should be executed by the gui thread
@@ -2109,7 +2086,7 @@ void main_window::construct (void)
   configure_shortcuts ();
 }
 
-void main_window::construct_octave_qt_link (void)
+void main_window::construct_octave_qt_link ()
 {
   interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
@@ -2186,7 +2163,7 @@ QMenu* main_window::m_add_menu (QMenuBar *p, QString name)
   return menu;
 }
 
-void main_window::construct_menu_bar (void)
+void main_window::construct_menu_bar ()
 {
   QMenuBar *menu_bar = menuBar ();
 
@@ -2227,11 +2204,11 @@ void main_window::construct_file_menu (QMenuBar *p)
 
   construct_new_menu (file_menu);
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
-  m_open_action = add_action (
-                              file_menu, rmgr.icon ("document-open"), tr ("Open..."),
-                              SLOT (request_open_file (void)), this);
+  m_open_action
+    = add_action (file_menu, settings.icon ("document-open"), tr ("Open..."),
+                  SLOT (request_open_file ()), this);
   m_open_action->setToolTip (tr ("Open an existing file in editor"));
 
 #if defined (HAVE_QSCINTILLA)
@@ -2240,19 +2217,19 @@ void main_window::construct_file_menu (QMenuBar *p)
 
   file_menu->addSeparator ();
 
-  m_load_workspace_action = add_action (
-                                        file_menu, QIcon (), tr ("Load Workspace..."),
-                                        SLOT (handle_load_workspace_request (void)), this);
+  m_load_workspace_action
+    = add_action (file_menu, QIcon (), tr ("Load Workspace..."),
+                  SLOT (handle_load_workspace_request ()), this);
 
-  m_save_workspace_action = add_action (
-                                        file_menu, QIcon (), tr ("Save Workspace As..."),
-                                        SLOT (handle_save_workspace_request (void)), this);
+  m_save_workspace_action
+    = add_action (file_menu, QIcon (), tr ("Save Workspace As..."),
+                  SLOT (handle_save_workspace_request ()), this);
 
   file_menu->addSeparator ();
 
-  m_exit_action = add_action (
-                              file_menu, QIcon (), tr ("Exit"),
-                              SLOT (close (void)), this);
+  m_exit_action
+    = add_action (file_menu, QIcon (), tr ("Exit"),
+                  SLOT (close ()), this);
   m_exit_action->setMenuRole (QAction::QuitRole);
 
   // Connect signal related to opening or creating editor files
@@ -2272,41 +2249,40 @@ void main_window::construct_new_menu (QMenu *p)
 {
   QMenu *new_menu = p->addMenu (tr ("New"));
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+  gui_settings settings;
 
-  m_new_script_action = add_action (
-                                    new_menu, rmgr.icon ("document-new"), tr ("New Script"),
-                                    SLOT (request_new_script (void)), this);
+  m_new_script_action
+    = add_action (new_menu, settings.icon ("document-new"), tr ("New Script"),
+                  SLOT (request_new_script ()), this);
 
-  m_new_function_action = add_action (
-                                      new_menu, QIcon (), tr ("New Function..."),
-                                      SLOT (request_new_function (void)), this);
+  m_new_function_action
+    = add_action (new_menu, QIcon (), tr ("New Function..."),
+                  SLOT (request_new_function ()), this);
 
-  m_new_figure_action = add_action (
-                                    new_menu, QIcon (), tr ("New Figure"),
-                                    SLOT (handle_new_figure_request (void)), this);
+  m_new_figure_action
+    = add_action (new_menu, QIcon (), tr ("New Figure"),
+                  SLOT (handle_new_figure_request ()), this);
 }
 
 void main_window::construct_edit_menu (QMenuBar *p)
 {
   QMenu *edit_menu = m_add_menu (p, tr ("&Edit"));
 
-  QKeySequence ctrl_shift = Qt::ControlModifier + Qt::ShiftModifier;
+  gui_settings settings;
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
   m_undo_action
-    = edit_menu->addAction (rmgr.icon ("edit-undo"), tr ("Undo"));
+    = edit_menu->addAction (settings.icon ("edit-undo"), tr ("Undo"));
   m_undo_action->setShortcutContext (Qt::ApplicationShortcut);
 
   edit_menu->addSeparator ();
 
   m_copy_action
-    = edit_menu->addAction (rmgr.icon ("edit-copy"), tr ("Copy"), this,
+    = edit_menu->addAction (settings.icon ("edit-copy"), tr ("Copy"), this,
                             &main_window::copyClipboard);
   m_copy_action->setShortcutContext (Qt::ApplicationShortcut);
 
   m_paste_action
-    = edit_menu->addAction (rmgr.icon ("edit-paste"), tr ("Paste"), this,
+    = edit_menu->addAction (settings.icon ("edit-paste"), tr ("Paste"), this,
                             &main_window::pasteClipboard);
   m_paste_action->setShortcutContext (Qt::ApplicationShortcut);
 
@@ -2322,7 +2298,8 @@ void main_window::construct_edit_menu (QMenuBar *p)
   edit_menu->addSeparator ();
 
   m_find_files_action
-    = edit_menu->addAction (rmgr.icon ("edit-find"), tr ("Find Files..."));
+    = edit_menu->addAction (settings.icon ("edit-find"),
+                            tr ("Find Files..."));
 
   edit_menu->addSeparator ();
 
@@ -2341,7 +2318,7 @@ void main_window::construct_edit_menu (QMenuBar *p)
     = edit_menu->addAction (tr ("Set Path"));
 
   m_preferences_action
-    = edit_menu->addAction (rmgr.icon ("preferences-system"),
+    = edit_menu->addAction (settings.icon ("preferences-system"),
                             tr ("Preferences..."));
 
   connect (m_find_files_action, &QAction::triggered,
@@ -2379,8 +2356,9 @@ QAction * main_window::construct_debug_menu_item (const char *icon,
                                                   const QString& item,
                                                   const char *member)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  QAction *action = add_action (m_debug_menu, rmgr.icon (QString (icon)),
+  gui_settings settings;
+
+  QAction *action = add_action (m_debug_menu, settings.icon (QString (icon)),
                                 item, member);
 
   action->setEnabled (false);
@@ -2399,19 +2377,19 @@ void main_window::construct_debug_menu (QMenuBar *p)
 
   m_debug_step_over
     = construct_debug_menu_item ("db-step", tr ("Step"),
-                                 SLOT (debug_step_over (void)));
+                                 SLOT (debug_step_over ()));
 
   m_debug_step_into
     = construct_debug_menu_item ("db-step-in", tr ("Step In"),
-                                 SLOT (debug_step_into (void)));
+                                 SLOT (debug_step_into ()));
 
   m_debug_step_out
     = construct_debug_menu_item ("db-step-out", tr ("Step Out"),
-                                 SLOT (debug_step_out (void)));
+                                 SLOT (debug_step_out ()));
 
   m_debug_continue
     = construct_debug_menu_item ("db-cont", tr ("Continue"),
-                                 SLOT (debug_continue (void)));
+                                 SLOT (debug_continue ()));
 
   m_debug_menu->addSeparator ();
 #if defined (HAVE_QSCINTILLA)
@@ -2420,7 +2398,7 @@ void main_window::construct_debug_menu (QMenuBar *p)
 
   m_debug_quit
     = construct_debug_menu_item ("db-stop", tr ("Quit Debug Mode"),
-                                 SLOT (debug_quit (void)));
+                                 SLOT (debug_quit ()));
 }
 
 void main_window::construct_tools_menu (QMenuBar *p)
@@ -2428,17 +2406,17 @@ void main_window::construct_tools_menu (QMenuBar *p)
   QMenu *tools_menu = m_add_menu (p, tr ("&Tools"));
 
   m_profiler_start = add_action (tools_menu, QIcon (),
-                                 tr ("Start &Profiler Session"), SLOT (profiler_session ()));
+        tr ("Start &Profiler Session"), SLOT (profiler_session ()));
 
   m_profiler_resume = add_action (tools_menu, QIcon (),
-                                  tr ("&Resume Profiler Session"), SLOT (profiler_session_resume ()));
+        tr ("&Resume Profiler Session"), SLOT (profiler_session_resume ()));
 
   m_profiler_stop = add_action (tools_menu, QIcon (),
-                                tr ("&Stop Profiler"), SLOT (profiler_stop ()));
+        tr ("&Stop Profiler"), SLOT (profiler_stop ()));
   m_profiler_stop->setEnabled (false);
 
   m_profiler_show = add_action (tools_menu, QIcon (),
-                                tr ("&Show Profile Data"), SLOT (profiler_show ()));
+        tr ("&Show Profile Data"), SLOT (profiler_show ()));
 }
 
 void main_window::editor_tabs_changed (bool have_tabs, bool is_octave)
@@ -2474,8 +2452,8 @@ QAction * main_window::construct_window_menu_item (QMenu *p,
       else
         {
           // action for focus of dock widget
-          connect (action, SIGNAL (triggered (void)),
-                   widget, SLOT (activate (void)));
+          connect (action, SIGNAL (triggered ()),
+                   widget, SLOT (activate ()));
         }
     }
   else
@@ -2537,12 +2515,12 @@ void main_window::construct_window_menu (QMenuBar *p)
   window_menu->addSeparator ();
 
   m_previous_dock_action = add_action (window_menu, QIcon (),
-                                       tr ("Previous Widget"), SLOT (go_to_previous_widget (void)));
+                                         tr ("Previous Widget"), SLOT (go_to_previous_widget ()));
 
   window_menu->addSeparator ();
 
   m_reset_windows_action = add_action (window_menu, QIcon (),
-                                       tr ("Reset Default Window Layout"), SLOT (reset_windows (void)));
+                                       tr ("Reset Default Window Layout"), SLOT (reset_windows ()));
 }
 
 void main_window::construct_help_menu (QMenuBar *p)
@@ -2603,7 +2581,7 @@ void main_window::construct_news_menu (QMenuBar *p)
   m_current_news_action->setShortcutContext (Qt::ApplicationShortcut);
 }
 
-void main_window::construct_tool_bar (void)
+void main_window::construct_tool_bar ()
 {
   m_main_tool_bar = addToolBar (tr ("Toolbar"));
   m_main_tool_bar->setStyleSheet (m_main_tool_bar->styleSheet ()
@@ -2627,8 +2605,8 @@ void main_window::construct_tool_bar (void)
   m_current_directory_combo_box->setEditable (true);
   m_current_directory_combo_box->setInsertPolicy (QComboBox::NoInsert);
   m_current_directory_combo_box->setToolTip (tr ("Enter directory name"));
-  m_current_directory_combo_box->setMaxVisibleItems (current_directory_max_visible);
-  m_current_directory_combo_box->setMaxCount (current_directory_max_count);
+  m_current_directory_combo_box->setMaxVisibleItems (CURRENT_DIRECTORY_MAX_VISIBLE);
+  m_current_directory_combo_box->setMaxCount (CURRENT_DIRECTORY_MAX_COUNT);
   QSizePolicy sizePol (QSizePolicy::Preferred, QSizePolicy::Preferred);
   m_current_directory_combo_box->setSizePolicy (sizePol);
 
@@ -2636,16 +2614,23 @@ void main_window::construct_tool_bar (void)
   // need to delete these upon destroying this main_window.
   m_main_tool_bar->addWidget (new QLabel (tr ("Current Directory: ")));
   m_main_tool_bar->addWidget (m_current_directory_combo_box);
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
+
+  gui_settings settings;
+
   QAction *current_dir_up
-    = m_main_tool_bar->addAction (rmgr.icon ("folder-up", false, "go-up"),
+    = m_main_tool_bar->addAction (settings.icon ("folder-up", false, "go-up"),
                                   tr ("One directory up"));
   QAction *current_dir_search
-    = m_main_tool_bar->addAction (rmgr.icon ("folder"),
+    = m_main_tool_bar->addAction (settings.icon ("folder"),
                                   tr ("Browse directories"));
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect (m_current_directory_combo_box, &QComboBox::textActivated,
+           this, &main_window::set_current_working_directory);
+#else
   connect (m_current_directory_combo_box, SIGNAL (activated (const QString&)),
            this, SLOT (set_current_working_directory (const QString&)));
+#endif
 
   connect (m_current_directory_combo_box->lineEdit (),
            &QLineEdit::returnPressed,
@@ -2661,90 +2646,90 @@ void main_window::construct_tool_bar (void)
            this, &main_window::handle_undo_request);
 }
 
-void main_window::focus_console_after_command (void)
+void main_window::focus_console_after_command ()
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (settings->value (cs_focus_cmd).toBool ())
+  gui_settings settings;
+
+  if (settings.bool_value (cs_focus_cmd))
     focus_command_window ();
 }
 
-void main_window::configure_shortcuts (void)
+void main_window::configure_shortcuts ()
 {
+  gui_settings settings;
+
   bool enable
     = ! ((m_active_dock == m_command_window) && m_prevent_readline_conflicts);
 
-  shortcut_manager& scmgr = m_octave_qobj.get_shortcut_manager ();
-
   // file menu
-  scmgr.set_shortcut (m_open_action, sc_main_file_open_file, enable);
-  scmgr.set_shortcut (m_new_script_action, sc_main_file_new_file, enable);
-  scmgr.set_shortcut (m_new_function_action, sc_main_file_new_function, enable);
-  scmgr.set_shortcut (m_new_figure_action, sc_main_file_new_figure, enable);
-  scmgr.set_shortcut (m_load_workspace_action, sc_main_file_load_workspace, enable);
-  scmgr.set_shortcut (m_save_workspace_action, sc_main_file_save_workspace, enable);
-  scmgr.set_shortcut (m_exit_action, sc_main_file_exit, enable);
+  settings.set_shortcut (m_open_action, sc_main_file_open_file, enable);
+  settings.set_shortcut (m_new_script_action, sc_main_file_new_file, enable);
+  settings.set_shortcut (m_new_function_action, sc_main_file_new_function, enable);
+  settings.set_shortcut (m_new_figure_action, sc_main_file_new_figure, enable);
+  settings.set_shortcut (m_load_workspace_action, sc_main_file_load_workspace, enable);
+  settings.set_shortcut (m_save_workspace_action, sc_main_file_save_workspace, enable);
+  settings.set_shortcut (m_exit_action, sc_main_file_exit, enable);
 
   // edit menu
-  scmgr.set_shortcut (m_copy_action, sc_main_edit_copy, enable);
-  scmgr.set_shortcut (m_paste_action, sc_main_edit_paste, enable);
-  scmgr.set_shortcut (m_undo_action, sc_main_edit_undo, enable);
-  scmgr.set_shortcut (m_select_all_action, sc_main_edit_select_all, enable);
-  scmgr.set_shortcut (m_clear_clipboard_action, sc_main_edit_clear_clipboard, enable);
-  scmgr.set_shortcut (m_find_files_action, sc_main_edit_find_in_files, enable);
-  scmgr.set_shortcut (m_clear_command_history_action, sc_main_edit_clear_history, enable);
-  scmgr.set_shortcut (m_clear_command_window_action, sc_main_edit_clear_command_window, enable);
-  scmgr.set_shortcut (m_clear_workspace_action, sc_main_edit_clear_workspace, enable);
-  scmgr.set_shortcut (m_set_path_action, sc_main_edit_set_path, enable);
-  scmgr.set_shortcut (m_preferences_action, sc_main_edit_preferences, enable);
+  settings.set_shortcut (m_copy_action, sc_main_edit_copy, enable);
+  settings.set_shortcut (m_paste_action, sc_main_edit_paste, enable);
+  settings.set_shortcut (m_undo_action, sc_main_edit_undo, enable);
+  settings.set_shortcut (m_select_all_action, sc_main_edit_select_all, enable);
+  settings.set_shortcut (m_clear_clipboard_action, sc_main_edit_clear_clipboard, enable);
+  settings.set_shortcut (m_find_files_action, sc_main_edit_find_in_files, enable);
+  settings.set_shortcut (m_clear_command_history_action, sc_main_edit_clear_history, enable);
+  settings.set_shortcut (m_clear_command_window_action, sc_main_edit_clear_command_window, enable);
+  settings.set_shortcut (m_clear_workspace_action, sc_main_edit_clear_workspace, enable);
+  settings.set_shortcut (m_set_path_action, sc_main_edit_set_path, enable);
+  settings.set_shortcut (m_preferences_action, sc_main_edit_preferences, enable);
 
   // debug menu
-  scmgr.set_shortcut (m_debug_step_over, sc_main_debug_step_over, enable);
-  scmgr.set_shortcut (m_debug_step_into, sc_main_debug_step_into, enable);
-  scmgr.set_shortcut (m_debug_step_out, sc_main_debug_step_out, enable);
-  scmgr.set_shortcut (m_debug_continue, sc_main_debug_continue, enable);
-  scmgr.set_shortcut (m_debug_quit, sc_main_debug_quit, enable);
+  settings.set_shortcut (m_debug_step_over, sc_main_debug_step_over, enable);
+  settings.set_shortcut (m_debug_step_into, sc_main_debug_step_into, enable);
+  settings.set_shortcut (m_debug_step_out, sc_main_debug_step_out, enable);
+  settings.set_shortcut (m_debug_continue, sc_main_debug_continue, enable);
+  settings.set_shortcut (m_debug_quit, sc_main_debug_quit, enable);
 
   // tools menu
-  scmgr.set_shortcut (m_profiler_start, sc_main_tools_start_profiler, enable);
-  scmgr.set_shortcut (m_profiler_resume, sc_main_tools_resume_profiler, enable);
-  scmgr.set_shortcut (m_profiler_stop, sc_main_tools_start_profiler, enable); // same, toggling
-  scmgr.set_shortcut (m_profiler_show, sc_main_tools_show_profiler, enable);
+  settings.set_shortcut (m_profiler_start, sc_main_tools_start_profiler, enable);
+  settings.set_shortcut (m_profiler_resume, sc_main_tools_resume_profiler, enable);
+  settings.set_shortcut (m_profiler_stop, sc_main_tools_start_profiler, enable); // same, toggling
+  settings.set_shortcut (m_profiler_show, sc_main_tools_show_profiler, enable);
 
   // window menu
-  scmgr.set_shortcut (m_show_command_window_action, sc_main_window_show_command, enable);
-  scmgr.set_shortcut (m_show_history_action, sc_main_window_show_history, enable);
-  scmgr.set_shortcut (m_show_workspace_action, sc_main_window_show_workspace, enable);
-  scmgr.set_shortcut (m_show_file_browser_action, sc_main_window_show_file_browser, enable);
-  scmgr.set_shortcut (m_show_editor_action, sc_main_window_show_editor, enable);
-  scmgr.set_shortcut (m_show_documentation_action, sc_main_window_show_doc, enable);
-  scmgr.set_shortcut (m_show_variable_editor_action, sc_main_window_show_variable_editor, enable);
-  scmgr.set_shortcut (m_reset_windows_action, sc_main_window_reset, enable);
-  scmgr.set_shortcut (m_command_window_action, sc_main_window_command, enable);
+  settings.set_shortcut (m_show_command_window_action, sc_main_window_show_command, enable);
+  settings.set_shortcut (m_show_history_action, sc_main_window_show_history, enable);
+  settings.set_shortcut (m_show_workspace_action, sc_main_window_show_workspace, enable);
+  settings.set_shortcut (m_show_file_browser_action, sc_main_window_show_file_browser, enable);
+  settings.set_shortcut (m_show_editor_action, sc_main_window_show_editor, enable);
+  settings.set_shortcut (m_show_documentation_action, sc_main_window_show_doc, enable);
+  settings.set_shortcut (m_show_variable_editor_action, sc_main_window_show_variable_editor, enable);
+  settings.set_shortcut (m_reset_windows_action, sc_main_window_reset, enable);
+  settings.set_shortcut (m_command_window_action, sc_main_window_command, enable);
   // Switching to the other widgets (including the previous one) is always enabled
-  scmgr.set_shortcut (m_history_action, sc_main_window_history, true);
-  scmgr.set_shortcut (m_workspace_action, sc_main_window_workspace, true);
-  scmgr.set_shortcut (m_file_browser_action, sc_main_window_file_browser, true);
-  scmgr.set_shortcut (m_editor_action, sc_main_window_editor, true);
-  scmgr.set_shortcut (m_documentation_action, sc_main_window_doc, true);
-  scmgr.set_shortcut (m_variable_editor_action, sc_main_window_variable_editor, true);
-  scmgr.set_shortcut (m_previous_dock_action, sc_main_window_previous_dock, true);
+  settings.set_shortcut (m_history_action, sc_main_window_history, true);
+  settings.set_shortcut (m_workspace_action, sc_main_window_workspace, true);
+  settings.set_shortcut (m_file_browser_action, sc_main_window_file_browser, true);
+  settings.set_shortcut (m_editor_action, sc_main_window_editor, true);
+  settings.set_shortcut (m_documentation_action, sc_main_window_doc, true);
+  settings.set_shortcut (m_variable_editor_action, sc_main_window_variable_editor, true);
+  settings.set_shortcut (m_previous_dock_action, sc_main_window_previous_dock, true);
 
   // help menu
-  scmgr.set_shortcut (m_ondisk_doc_action, sc_main_help_ondisk_doc, enable);
-  scmgr.set_shortcut (m_online_doc_action, sc_main_help_online_doc, enable);
-  scmgr.set_shortcut (m_report_bug_action, sc_main_help_report_bug, enable);
-  scmgr.set_shortcut (m_octave_packages_action, sc_main_help_packages, enable);
-  scmgr.set_shortcut (m_contribute_action, sc_main_help_contribute, enable);
-  scmgr.set_shortcut (m_developer_action, sc_main_help_developer, enable);
-  scmgr.set_shortcut (m_about_octave_action, sc_main_help_about, enable);
+  settings.set_shortcut (m_ondisk_doc_action, sc_main_help_ondisk_doc, enable);
+  settings.set_shortcut (m_online_doc_action, sc_main_help_online_doc, enable);
+  settings.set_shortcut (m_report_bug_action, sc_main_help_report_bug, enable);
+  settings.set_shortcut (m_octave_packages_action, sc_main_help_packages, enable);
+  settings.set_shortcut (m_contribute_action, sc_main_help_contribute, enable);
+  settings.set_shortcut (m_developer_action, sc_main_help_developer, enable);
+  settings.set_shortcut (m_about_octave_action, sc_main_help_about, enable);
 
   // news menu
-  scmgr.set_shortcut (m_release_notes_action, sc_main_news_release_notes, enable);
-  scmgr.set_shortcut (m_current_news_action, sc_main_news_community_news, enable);
+  settings.set_shortcut (m_release_notes_action, sc_main_news_release_notes, enable);
+  settings.set_shortcut (m_current_news_action, sc_main_news_community_news, enable);
 }
 
-QList<octave_dock_widget *> main_window::dock_widget_list (void)
+QList<octave_dock_widget *> main_window::dock_widget_list ()
 {
   QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
   list.append (static_cast<octave_dock_widget *> (m_command_window));
@@ -2768,32 +2753,20 @@ void main_window::update_default_encoding (const QString& default_encoding)
 
   emit interpreter_event
     ([=] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      F__mfile_encoding__ (interp, ovl (mfile_encoding));
-    });
+       Fmfile_encoding (interp, ovl (mfile_encoding));
+     });
 }
 
 void main_window::resize_dock (QDockWidget *dw, int width, int height)
 {
-#if defined (HAVE_QMAINWINDOW_RESIZEDOCKS)
   // resizeDockWidget was added to Qt in Qt 5.6
   if (width >= 0)
     resizeDocks ({dw}, {width}, Qt::Horizontal);
   if (height >= 0)
     resizeDocks ({dw}, {height}, Qt::Vertical);
-#else
-  // This replacement of resizeDockWidget is not very reliable.
-  // But even if Qt4 is not yet
-  QSize s = dw->widget ()->size ();
-  if (width >= 0)
-    s.setWidth (width);
-  if (height >= 0)
-    s.setHeight (height);
-  dw->widget ()->resize (s);
-  dw->adjustSize ();
-#endif
 }
 
 // The default main window size relative to the desktop size
@@ -2806,7 +2779,7 @@ void main_window::set_default_geometry ()
   resize (2*win_x/3, 7*win_y/8);
 }
 
-void main_window::reset_windows (void)
+void main_window::reset_windows ()
 {
   // Slot for resetting the window layout to the default one
   hide ();
@@ -2913,11 +2886,10 @@ void main_window::do_reset_windows (bool show, bool save, bool force_all)
 
       if (save)
         {
-          resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-          gui_settings *settings = rmgr.get_settings ();
+          gui_settings settings;
 
-          settings->setValue (mw_geometry.key, saveGeometry ());
-          settings->setValue (mw_state.key, saveState ());
+          settings.setValue (mw_geometry.settings_key (), saveGeometry ());
+          settings.setValue (mw_state.settings_key (), saveState ());
         }
 
       focus_command_window ();

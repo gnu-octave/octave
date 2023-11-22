@@ -66,21 +66,17 @@ public:
       m_trail_comm (tc)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_while_command)
 
-  tree_while_command (const tree_while_command&) = delete;
+  ~tree_while_command ();
 
-  tree_while_command& operator = (const tree_while_command&) = delete;
+  tree_expression * condition () { return m_expr; }
 
-  ~tree_while_command (void);
+  tree_statement_list * body () { return m_list; }
 
-  tree_expression * condition (void) { return m_expr; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  tree_statement_list * body (void) { return m_list; }
-
-  comment_list * leading_comment (void) { return m_lead_comm; }
-
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -126,13 +122,9 @@ public:
     : tree_while_command (e, lst, lc, tc, l, c)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_do_until_command)
 
-  tree_do_until_command (const tree_do_until_command&) = delete;
-
-  tree_do_until_command& operator = (const tree_do_until_command&) = delete;
-
-  ~tree_do_until_command (void) = default;
+  ~tree_do_until_command () = default;
 
   void accept (tree_walker& tw)
   {
@@ -164,27 +156,23 @@ public:
       m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_simple_for_command)
 
-  tree_simple_for_command (const tree_simple_for_command&) = delete;
+  ~tree_simple_for_command ();
 
-  tree_simple_for_command& operator = (const tree_simple_for_command&) = delete;
+  bool in_parallel () { return m_parallel; }
 
-  ~tree_simple_for_command (void);
+  tree_expression * left_hand_side () { return m_lhs; }
 
-  bool in_parallel (void) { return m_parallel; }
+  tree_expression * control_expr () { return m_expr; }
 
-  tree_expression * left_hand_side (void) { return m_lhs; }
+  tree_expression * maxproc_expr () { return m_maxproc; }
 
-  tree_expression * control_expr (void) { return m_expr; }
+  tree_statement_list * body () { return m_list; }
 
-  tree_expression * maxproc_expr (void) { return m_maxproc; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  tree_statement_list * body (void) { return m_list; }
-
-  comment_list * leading_comment (void) { return m_lead_comm; }
-
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -234,23 +222,19 @@ public:
       m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_complex_for_command)
 
-  tree_complex_for_command (const tree_complex_for_command&) = delete;
+  ~tree_complex_for_command ();
 
-  tree_complex_for_command& operator = (const tree_complex_for_command&) = delete;
+  tree_argument_list * left_hand_side () { return m_lhs; }
 
-  ~tree_complex_for_command (void);
+  tree_expression * control_expr () { return m_expr; }
 
-  tree_argument_list * left_hand_side (void) { return m_lhs; }
+  tree_statement_list * body () { return m_list; }
 
-  tree_expression * control_expr (void) { return m_expr; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  tree_statement_list * body (void) { return m_list; }
-
-  comment_list * leading_comment (void) { return m_lead_comm; }
-
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {

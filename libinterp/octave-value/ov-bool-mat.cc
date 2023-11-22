@@ -79,14 +79,14 @@ default_numeric_conversion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_bool_matrix::numeric_conversion_function (void) const
+octave_bool_matrix::numeric_conversion_function () const
 {
   return octave_base_value::type_conv_info (default_numeric_conversion_function,
          octave_matrix::static_type_id ());
 }
 
 octave_base_value *
-octave_bool_matrix::try_narrowing_conversion (void)
+octave_bool_matrix::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -167,61 +167,61 @@ octave_bool_matrix::convert_to_str_internal (bool pad, bool force,
 }
 
 octave_value
-octave_bool_matrix::as_double (void) const
+octave_bool_matrix::as_double () const
 {
   return NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_single (void) const
+octave_bool_matrix::as_single () const
 {
   return FloatNDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int8 (void) const
+octave_bool_matrix::as_int8 () const
 {
   return int8NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int16 (void) const
+octave_bool_matrix::as_int16 () const
 {
   return int16NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int32 (void) const
+octave_bool_matrix::as_int32 () const
 {
   return int32NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_int64 (void) const
+octave_bool_matrix::as_int64 () const
 {
   return int64NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint8 (void) const
+octave_bool_matrix::as_uint8 () const
 {
   return uint8NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint16 (void) const
+octave_bool_matrix::as_uint16 () const
 {
   return uint16NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint32 (void) const
+octave_bool_matrix::as_uint32 () const
 {
   return uint32NDArray (m_matrix);
 }
 
 octave_value
-octave_bool_matrix::as_uint64 (void) const
+octave_bool_matrix::as_uint64 () const
 {
   return uint64NDArray (m_matrix);
 }
@@ -361,15 +361,9 @@ octave_bool_matrix::save_binary (std::ostream& os, bool /* save_as_floats */)
       os.write (reinterpret_cast<char *> (&tmp), 4);
     }
 
-  boolNDArray m = bool_array_value ();
-  bool *mtmp = m.fortran_vec ();
-  octave_idx_type nel = m.numel ();
-  OCTAVE_LOCAL_BUFFER (char, htmp, nel);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    htmp[i] = (mtmp[i] ? 1 : 0);
-
-  os.write (htmp, nel);
+  const bool *mtmp = m_matrix.data ();
+  octave_idx_type nel = m_matrix.numel ();
+  os.write (reinterpret_cast<const char*> (mtmp), nel);
 
   return true;
 }
@@ -444,7 +438,6 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
   int rank = dv.ndims ();
   hid_t space_hid, data_hid;
   space_hid = data_hid = -1;
-  boolNDArray m = bool_array_value ();
 
   OCTAVE_LOCAL_BUFFER (hsize_t, hdims, rank);
 
@@ -468,15 +461,11 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
       return false;
     }
 
-  octave_idx_type nel = m.numel ();
-  bool *mtmp = m.fortran_vec ();
-  OCTAVE_LOCAL_BUFFER (hbool_t, htmp, nel);
-
-  for (octave_idx_type i = 0; i < nel; i++)
-    htmp[i] = mtmp[i];
+  const bool *mtmp = m_matrix.data ();
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
-                     octave_H5P_DEFAULT, htmp) >= 0;
+                     octave_H5P_DEFAULT,
+                     reinterpret_cast<const char*> (mtmp)) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);

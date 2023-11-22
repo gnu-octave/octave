@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+
+Copyright (C) 2013-2023 The Octave Project Developers
+
+See the file COPYRIGHT.md in the top-level directory of this
+distribution or <https://octave.org/copyright/>.
+
+This file is part of Octave.
+
+Octave is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+Octave is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with Octave; see the file COPYING.  If not, see
+<https://www.gnu.org/licenses/>.
+
+-->
+<component type="desktop-application">
+  <id>org.octave.Octave.desktop</id>
+  <metadata_license>FSFAP</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>GNU Octave</name>
+  <summary>Interactive programming environment for numerical computations</summary>
+  <summary xml:lang="ca">Entorn de programació interactiva per a càlculs numèrics</summary>
+  <summary xml:lang="de">Interaktive Programmierumgebung für numerische Berechnungen</summary>
+  <summary xml:lang="es">Entorno de programación interactiva para cálculos numéricos</summary>
+  <summary xml:lang="fr">Environnement de programmation interactif pour le calcul numérique</summary>
+  <summary xml:lang="hu">Interaktív programozási környezet számszerű számításokhoz</summary>
+  <summary xml:lang="it">Ambiente di programmazione interattivo per il calcolo numerico</summary>
+  <summary xml:lang="ja">数値計算のための対話的なプログラミング環境</summary>
+  <summary xml:lang="nl">Interactieve programmeeromgeving voor numerieke berekeningen</summary>
+  <summary xml:lang="pt">Ambiente de programação interativo para computação numérica</summary>
+  <summary xml:lang="zh">数值计算交互式编程环境</summary>
+  <description>
+    <p>
+      GNU Octave is a high-level interpreted language, primarily intended for
+      numerical computations. It provides capabilities for the numerical
+      solution of linear and nonlinear problems, and for performing other
+      numerical experiments. It also provides extensive graphics capabilities
+      for data visualization and manipulation. Octave is normally used through
+      its interactive command line interface, but it can also be used to write
+      non-interactive programs. The Octave language is quite similar to
+      Matlab so that most programs are easily portable.
+    </p>
+    <p xml:lang="de">
+      GNU Octave ist eine höhere, interpretierte Programmiersprache, die
+      hauptsächlich für numerische Berechnungen gedacht ist. Sie bietet
+      Funktionen für die numerische Lösung linearer und nichtlinearer Probleme
+      und für die Durchführung anderer numerischer Experimente. Darüber hinaus
+      bietet es umfangreiche Grafikfunktionen zur Datenvisualisierung und
+      -manipulation. Octave wird normalerweise mittels einer interaktiven
+      Befehlszeile verwendet, kann aber auch zum Schreiben nicht interaktiver
+      Programme verwendet werden. Die Octave-Programmiersprache ist sehr
+      ähnlich zu Matlab, so dass die meisten Programme leicht übertragbar sind.
+    </p>
+    <p xml:lang="es">
+      GNU Octave es un lenguaje interpretado de alto nivel, destinado
+      principalmente a cálculos numéricos. Dispone capacidades para
+      la solución numérica de problemas lineales y no lineales, y para
+      realizar otros experimentos numéricos. También proporciona amplias
+      funcionalidades gráficas para la visualización y manipulación de datos.
+      Octave se usa normalmente a través de su interfaz de línea de comandos
+      interactiva, pero también se puede usar para escribir programas no
+      interactivos. El lenguaje Octave es muy similar a Matlab,
+      por lo que la mayoría de los programas son fáciles de portar.
+    </p>
+    <p xml:lang="fr">
+      GNU Octave est un langage de programmation interprété, destiné
+      principalement au calcul numérique. Il fournit des fonctionnalités
+      pour la résolution de problèmes linéaires et non-linéaires, et pour toutes
+      sortes d'expériences numériques.  Il s'accompagne d'un système complet
+      de visualisation et de manipulation des données. Octave s’utilise
+      généralement via son environnement en lignes de commandes interactif,
+      mais il peut aussi être utilisé pour écrire des programmes non
+      interactifs. Le langage Octave est très similaire à Matlab de telle sorte
+      que les programmes Matlab sont très faciles à porter sous Octave.
+    </p>
+    <p xml:lang="hu">
+      A GNU Octave egy magas szintű értelmezett nyelv, elsősorban numerikus
+      számításokhoz. Képességeket biztosít a lineáris és nemlineáris problémák
+      numerikus megoldására, valamint egyéb numerikus kísérletek elvégzésére.
+      Ezenkívül kiterjedt grafikus képességeket biztosít az adatok
+      megjelenítéséhez és manipulálásához. Az Octave-t általában az interaktív
+      parancssori felületen keresztül használják, de nem interaktív programok
+      írására is használható. Az Octave nyelv nagyon hasonló a Matlabhoz, így
+      a legtöbb program könnyen hordozható.
+    </p>
+    <p xml:lang="nl">
+      GNU Octave is een hogere geïnterpreteerde taal, primair bedoeld voor
+      numerieke berekeningen. Het biedt mogelijkheden voor het numeriek
+      oplossen van lineaire en niet-lineaire problemen en andere numerieke
+      experimenten. Ook biedt het uitgebreide mogelijkheden for grafische
+      visualisatie en -manipulatie van data. Octave wordt meestal gebruikt
+      door middel van zijn interactieve opdrachtregelinterface (terminal)
+      maar kan ook gebruikt worden voor het schrijven van niet-interactieve
+      programma's. Octave's taal lijkt zeer veel op die van Matlab zodat de
+      meeste Matlabcode simpel te draaien is in Octave.
+    </p>
+    <p>
+      Octave has extensive tools for solving common numerical linear algebra
+      problems, finding the roots of nonlinear equations, integrating ordinary
+      functions, manipulating polynomials, and integrating ordinary
+      differential and differential-algebraic equations. It is easily
+      extensible and customizable via user-defined functions written in
+      Octave's own language, or using dynamically loaded modules written in
+      C++, C, Fortran, or other languages.
+    </p>
+    <p xml:lang="de">
+      Octave verfügt über umfangreiche Werkzeuge zur Lösung gängiger
+      numerischer linearer Probleme der Algebra, zum Auffinden der Nullstellen
+      nichtlinearer Gleichungen, zur Integration gewöhnlicher Funktionen, zur
+      Manipulation von Polynomen und zur Integration gewöhnlicher
+      Differentialgleichungen und differential-algebraischer Gleichungen. Es
+      ist leicht erweiter- und anpassbar mittels benutzerdefinierter
+      Funktionen, die in Octaves eigener Programmiersprache geschrieben wurden,
+      oder über dynamisch geladene, in C++, C, Fortran oder anderen Sprachen
+      geschriebene Module.
+    </p>
+    <p xml:lang="es">
+      Octave dispone de una amplia variedad de herramientas para resolver
+      problemas comunes de álgebra lineal numérica, encontrar
+      las raíces de ecuaciones no lineales, integrar funciones ordinarias,
+      manipular polinomios e integrar ecuaciones diferenciales ordinarias
+      y algebraicas diferenciales. Es fácilmente extensible y personalizable
+      a través de funciones definidas por el usuario escritas en el propio
+      lenguaje de Octave, o utilizando módulos cargados dinámicamente
+      escritos en C ++, C, Fortran u otros idiomas.
+    </p>
+    <p xml:lang="fr">
+      Octave dispose de nombreux outils pour résoudre les problèmes classiques
+      d'algèbre linéaire, trouver les racines d'équations non-linéaires,
+      intégrer les fonctions ordinaires et les équations différentielles.
+      Il peut très facilement être étendu en définissant de nouvelles
+      fonctions écrites en langage Octave ou en utilisant des modules
+      chargés dynamiquement, écrits en C++, C, Fortran ou autres langages.
+    </p>
+    <p xml:lang="hu">
+      Az Octave kiterjedt eszközökkel rendelkezik a gyakori numerikus lineáris
+      algebrai problémák megoldásához, a nemlineáris egyenletek gyökereinek
+      megkereséséhez, a hétköznapi függvények integrálásához, a polinomok
+      manipulálásához, valamint a közönséges differenciál- és differenciál-
+      algebrai egyenletek integrálásához. Könnyen bővíthető és testreszabható
+      a felhasználó által meghatározott, Octave saját nyelvén írt funkciókkal,
+      vagy dinamikusan betöltött modulokkal, C++, C, Fortran vagy más
+      nyelveken.
+    </p>
+    <p xml:lang="nl">
+      Octave heeft een uitgebreide verzameling gereedschappen for het oplossen
+      van numerieke lineaire-algebra vraagstukken, vinden van wortels van
+      niet-lineaire vergelijkingen, integreren van gewone functies, manipuleren
+      van polynomen en integreren van gewone differentiaal- en algebrïsche
+      differentiaalvergelijkingen. Het is makkelijk uit te breiden en aan te
+      passen met behulp van door zelfgemaakte functies geschreven in Octave's
+      eigen taal en/of met dynamische te laden modules gechreven in C++, C,
+      Fortran of andere programmeertalen.
+    </p>
+  </description>
+
+  <screenshots>
+    <!--
+      From: https://www.freedesktop.org/software/appstream/docs/
+      All screenshots should have a 16:9 aspect ratio, and should have
+      a width that is no smaller than 620px. Screenshots should be in PNG
+      or JPEG format. PNG is the preferred format.
+    -->
+    <screenshot type="default">
+      <image>https://www.gnu.org/software/octave/img/screenshot.png</image>
+    </screenshot>
+  </screenshots>
+
+  <launchable type="desktop-id">org.octave.Octave.desktop</launchable>
+  <provides>
+    <binary>octave</binary>
+  </provides>
+
+  <url type="homepage">https://www.octave.org/</url>
+  <url type="bugtracker">https://bugs.octave.org/</url>
+  <url type="faq">https://wiki.octave.org/FAQ</url>
+  <url type="help">https://octave.org/support</url>
+  <url type="donation">https://www.octave.org/donate.html</url>
+  <url type="contact">https://octave.org/support</url>
+  <url type="vcs-browser">https://hg.savannah.gnu.org/hgweb/octave</url>
+  <url type="contribute">https://octave.org/get-involved</url>
+  <update_contact>maintainers@octave.org</update_contact>
+  <project_group>GNU</project_group>
+  <developer_name>John W. Eaton and others</developer_name>
+  <content_rating type="oars-1.0"/>
+  <releases>
+    <release date="2023-11-05" version="8.4.0"/>
+    <release date="2023-08-08" version="8.3.0"/>
+    <release date="2023-04-13" version="8.2.0"/>
+    <release date="2023-03-07" version="8.1.0"/>
+    <release date="2022-11-02" version="7.3.0"/>
+    <release date="2022-07-28" version="7.2.0"/>
+    <release date="2022-04-06" version="7.1.0"/>
+    <release date="2021-10-30" version="6.4.0"/>
+    <release date="2021-07-11" version="6.3.0"/>
+    <release date="2021-02-19" version="6.2.0"/>
+    <release date="2020-11-26" version="6.1.0"/>
+    <release date="2020-01-31" version="5.2.0"/>
+    <release date="2019-02-23" version="5.1.0"/>
+    <release date="2018-08-09" version="4.4.1"/>
+    <release date="2018-04-30" version="4.4.0"/>
+    <release date="2018-03-13" version="4.2.2"/>
+  </releases>
+</component>

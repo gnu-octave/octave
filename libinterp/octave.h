@@ -44,49 +44,47 @@ class OCTINTERP_API cmdline_options
 {
 public:
 
-  cmdline_options (void);
+  cmdline_options ();
 
   cmdline_options (int argc, char **argv);
 
-  cmdline_options (const cmdline_options&) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (cmdline_options)
 
-  cmdline_options& operator = (const cmdline_options&) = default;
+  int sys_argc () const { return m_all_args.numel (); }
+  char ** sys_argv () const { return m_all_args.c_str_vec (); }
 
-  int sys_argc (void) const { return m_all_args.numel (); }
-  char ** sys_argv (void) const { return m_all_args.c_str_vec (); }
+  bool echo_commands () const { return m_echo_commands; }
 
-  bool echo_commands (void) const { return m_echo_commands; }
-
-  bool experimental_terminal_widget (void) const
+  bool experimental_terminal_widget () const
   { return m_experimental_terminal_widget; }
-  bool forced_interactive (void) const { return m_forced_interactive; }
-  bool forced_line_editing (void) const { return m_forced_line_editing; }
-  bool gui (void) const { return m_gui; }
-  bool inhibit_startup_message (void) const
+  bool forced_interactive () const { return m_forced_interactive; }
+  bool forced_line_editing () const { return m_forced_line_editing; }
+  bool gui () const { return m_gui; }
+  bool inhibit_startup_message () const
   { return m_inhibit_startup_message; }
-  bool line_editing (void) const { return m_line_editing; }
+  bool line_editing () const { return m_line_editing; }
 
-  bool no_window_system (void) const { return m_no_window_system; }
-  bool persist (void) const { return m_persist; }
-  bool read_history_file (void) const { return m_read_history_file; }
-  bool read_init_files (void) const { return m_read_init_files; }
-  bool read_site_files (void) const { return m_read_site_files; }
-  bool server (void) const { return m_server; }
-  bool set_initial_path (void) const { return m_set_initial_path; }
-  bool traditional (void) const { return m_traditional; }
-  bool verbose_flag (void) const { return m_verbose_flag; }
-  std::string code_to_eval (void) const { return m_code_to_eval; }
-  std::list<std::string> command_line_path (void) const
+  bool no_window_system () const { return m_no_window_system; }
+  bool persist () const { return m_persist; }
+  bool read_history_file () const { return m_read_history_file; }
+  bool read_init_files () const { return m_read_init_files; }
+  bool read_site_files () const { return m_read_site_files; }
+  bool server () const { return m_server; }
+  bool set_initial_path () const { return m_set_initial_path; }
+  bool traditional () const { return m_traditional; }
+  bool verbose_flag () const { return m_verbose_flag; }
+  std::string code_to_eval () const { return m_code_to_eval; }
+  std::list<std::string> command_line_path () const
   { return m_command_line_path; }
-  std::string docstrings_file (void) const { return m_docstrings_file; }
-  std::string doc_cache_file (void) const { return m_doc_cache_file; }
-  std::string exec_path (void) const { return m_exec_path; }
-  std::string image_path (void) const { return m_image_path; }
-  std::string info_file (void) const { return m_info_file; }
-  std::string info_program (void) const { return m_info_program; }
-  std::string texi_macros_file (void) const {return m_texi_macros_file; }
-  string_vector all_args (void) const { return m_all_args; }
-  string_vector remaining_args (void) const { return m_remaining_args; }
+  std::string docstrings_file () const { return m_docstrings_file; }
+  std::string doc_cache_file () const { return m_doc_cache_file; }
+  std::string exec_path () const { return m_exec_path; }
+  std::string image_path () const { return m_image_path; }
+  std::string info_file () const { return m_info_file; }
+  std::string info_program () const { return m_info_program; }
+  std::string texi_macros_file () const {return m_texi_macros_file; }
+  string_vector all_args () const { return m_all_args; }
+  string_vector remaining_args () const { return m_remaining_args; }
 
   void echo_commands (bool arg) { m_echo_commands = arg; }
 
@@ -120,7 +118,7 @@ public:
   void all_args (const string_vector& arg) { m_all_args = arg; }
   void remaining_args (const string_vector& arg) { m_remaining_args = arg; }
 
-  octave_value as_octave_value (void) const;
+  octave_value as_octave_value () const;
 
 private:
 
@@ -249,42 +247,38 @@ public:
 
   application (int argc, char **argv);
 
-  // No copying, at least not yet...
+  OCTAVE_DISABLE_COPY_MOVE (application)
 
-  application (const application&) = delete;
+  virtual ~application ();
 
-  application& operator = (const application&) = delete;
-
-  virtual ~application (void);
-
-  int sys_argc (void) const { return m_options.sys_argc (); }
-  char ** sys_argv (void) const { return m_options.sys_argv (); }
+  int sys_argc () const { return m_options.sys_argc (); }
+  char ** sys_argv () const { return m_options.sys_argv (); }
 
   void set_program_names (const std::string& pname);
 
   void intern_argv (const string_vector& args);
 
-  cmdline_options options (void) const { return m_options; }
+  cmdline_options options () const { return m_options; }
 
-  bool have_eval_option_code (void) const { return m_have_eval_option_code; }
+  bool have_eval_option_code () const { return m_have_eval_option_code; }
 
-  bool have_script_file (void) const { return m_have_script_file; }
+  bool have_script_file () const { return m_have_script_file; }
 
-  bool is_octave_program (void) const { return m_is_octave_program; }
+  bool is_octave_program () const { return m_is_octave_program; }
 
-  bool interpreter_initialized (void);
+  bool interpreter_initialized ();
 
-  virtual interpreter& create_interpreter (void);
+  virtual interpreter& create_interpreter ();
 
-  virtual void initialize_interpreter (void);
+  virtual void initialize_interpreter ();
 
-  virtual int execute_interpreter (void);
+  virtual int execute_interpreter ();
 
-  virtual void delete_interpreter (void);
+  virtual void delete_interpreter ();
 
-  virtual int execute (void) = 0;
+  virtual int execute () = 0;
 
-  virtual bool gui_running (void) const { return false; }
+  virtual bool gui_running () const { return false; }
   virtual void gui_running (bool) { }
 
   void program_invocation_name (const std::string& nm)
@@ -296,40 +290,40 @@ public:
 
   // Provided for convenience.  Will be removed once we eliminate the
   // old terminal widget.
-  bool experimental_terminal_widget (void) const;
+  bool experimental_terminal_widget () const;
 
-  static application * app (void) { return s_instance; }
+  static application * app () { return s_instance; }
 
-  static std::string program_invocation_name (void)
+  static std::string program_invocation_name ()
   {
     return s_instance ? s_instance->m_program_invocation_name : "";
   }
 
-  static std::string program_name (void)
+  static std::string program_name ()
   {
     return s_instance ? s_instance->m_program_name : "";
   }
 
-  static string_vector argv (void)
+  static string_vector argv ()
   {
     return s_instance ? s_instance->m_argv : string_vector ();
   }
 
-  static bool is_gui_running (void)
+  static bool is_gui_running ()
   {
     return s_instance ? s_instance->gui_running () : false;
   }
 
   // Convenience functions.
 
-  static bool forced_interactive (void);
+  static bool forced_interactive ();
 
 private:
 
   // The application instance;  There should be only one.
   static application *s_instance;
 
-  void init (void);
+  void init ();
 
 protected:
 
@@ -374,15 +368,11 @@ public:
     : application (argc, argv)
   { }
 
-  // No copying, at least not yet...
+  OCTAVE_DISABLE_COPY_MOVE (cli_application)
 
-  cli_application (const cli_application&) = delete;
+  ~cli_application () = default;
 
-  cli_application& operator = (const cli_application&) = delete;
-
-  ~cli_application (void) = default;
-
-  int execute (void);
+  int execute ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -54,7 +54,9 @@
 ## the format string @var{f} if it is known.  Formats which do not specify a
 ## particular time component will have the value set to zero.  Formats which
 ## do not specify a particular date component will default that component to
-## January 1st of the current year.
+## January 1st of the current year.  Trailing characters are ignored for the
+## purpose of calculating the date vector, even if the characters contain
+## additional time/date information.
 ##
 ## @var{p} is the year at the start of the century to which two-digit years
 ## will be referenced.  If not specified, it defaults to the current year
@@ -149,7 +151,8 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
           [f, rY, ry, fy, fm, fd, fh, fmi, fs] = ...
             __date_vfmt2sfmt__ (std_formats{l});
           [found y(k) m(k) d(k) h(k) mi(k) s(k)] = ...
-            __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
+            __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, ...
+                              fs, true);
           if (found)
             break;
           endif
@@ -163,7 +166,8 @@ function [y, m, d, h, mi, s] = datevec (date, f = [], p = [])
       [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f);
       for k = 1:nd
         [found y(k) m(k) d(k) h(k) mi(k) s(k)] = ...
-          __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, fs);
+          __date_str2vec__ (date{k}, p, f, rY, ry, fy, fm, fd, fh, fmi, ...
+                            fs, false);
         if (! found)
           error ("datevec: DATE not parsed correctly with given format");
         endif
@@ -303,7 +307,7 @@ function [f, rY, ry, fy, fm, fd, fh, fmi, fs] = __date_vfmt2sfmt__ (f)
 
 endfunction
 
-function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm, fd, fh, fmi, fs)
+function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm, fd, fh, fmi, fs, exact_match)
 
   ## Local time zone is irrelevant, and potentially dangerous, when using
   ## strptime to simply convert a string into a broken down struct tm.
@@ -354,7 +358,10 @@ function [found, y, m, d, h, mi, s] = __date_str2vec__ (ds, p, f, rY, ry, fy, fm
     endif
   end_unwind_protect
 
-  if (nc == columns (ds) + 1)
+  ## Require an exact match unless the user supplied a format to use, then use
+  ## that format as long as it matches the start of the string and ignore any
+  ## trailing characters.
+  if ((! exact_match && nc > 0) || (nc == columns (ds) + 1))
     found = true;
     y = tm.year + 1900; m = tm.mon + 1; d = tm.mday;
     h = tm.hour; mi = tm.min; s = tm.sec + tm.usec / 1e6;
@@ -485,6 +492,273 @@ endfunction
 %!   endif
 %! end_unwind_protect
 
+## Test matching string and ignoring trailing characters
+%!test <*42241>
+%! fail ("datevec ('2013-08-15 09:00:35/xyzpdq')");
+%! assert (datevec ("15-Aug-2013 09:00:35.123", "dd-mmm-yyyy HH:MM:SS"), ...
+%!              [2013, 8, 15, 9, 0, 35]);
+%! assert (datevec ("2013-08-15 09:00:35/xyzpdq", "yyyy-mm-dd HH:MM:SS"), ...
+%!              [2013, 8, 15, 9, 0, 35]);
+
+## Test all other standard formats specified in function with/without trailing
+## characters with format specified.
+
+## 0 dd-mm-yyyy HH:MM:SS
+%!assert <*42241> (datevec ("15-aug-2013 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15-aug-2013 09:00:35", "dd-mmm-yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15-aug-2013 09:00:35ABC", "dd-mmm-yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## 1 dd-mmm-yyyy
+%!assert <*42241> (datevec ("15-aug-2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15-aug-2013", "dd-mmm-yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15-aug-2013 09:00:35", "dd-mmm-yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15-aug-2013ABC", "dd-mmm-yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## 2 mm/dd/yy
+%!assert <*42241> (datevec ("08/15/13"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/13", "mm/dd/yy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/13 09:00:35", "mm/dd/yy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/13ABC", "mm/dd/yy"), [2013, 8, 15, 0, 0, 0])
+
+## 3 mmm
+%!assert <*42241> (datevec ("Aug", "mmm"), [1900, 8, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug 15", "mmm"), [1900, 8, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("AugABC", "mmm"), [1900, 8, 0, 0, 0, 0])
+
+## 4 m datestr std format 4 -  datevec("A", "m") does not resolve
+
+## 5 mm
+%!assert <*42241> (datevec ("08"), [8, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("08", "mm"), [1900, 8, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/2013", "mm"), [1900, 8, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("08ABC", "mm"), [1900, 8, 0, 0, 0, 0])
+
+# 6 mm/dd
+%!assert <*42241> (datevec ("08/15"), [yr, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15", "mm/dd"), [yr, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/13", "mm/dd"), [yr, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15ABC", "mm/dd"), [yr, 8, 15, 0, 0, 0])
+
+## 7 dd
+%!assert <*42241> (datevec ("15"), [15, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("15", "dd"), [1900, 1, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15-Aug-2013", "dd"), [1900, 1, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15ABC", "dd"), [1900, 1, 15, 0, 0, 0])
+
+## 8 ddd
+%!assert <*42241> (datevec ("Fri", "ddd"), [1900, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("Fri, Aug 15 2013", "ddd"), [1900, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("FriABC", "ddd"), [1900, 1, 0, 0, 0, 0])
+
+## 9 d datestr std format 9 -  datevec("F", "d") does not resolve
+
+## 10 yyyy
+%!assert <*42241> (datevec ("2013"), [2013, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("2013", "yyyy"), [2013, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("2013/08/15", "yyyy"), [2013, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("2013ABC", "yyyy"), [2013, 1, 0, 0, 0, 0])
+
+## 11 yy
+%!assert <*42241> (datevec ("13"), [13, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("13", "yy"), [2013, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("13/08/15", "yy"), [2013, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("13ABC", "yy"), [2013, 1, 0, 0, 0, 0])
+
+## 12 mmmyy
+%!assert <*42241> (datevec ("AUG13"), [2013, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("AUG13", "mmmyy"), [2013, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("AUG2013", "mmmyy"), [2020, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("AUG13ABC", "mmmyy"), [2013, 8, 1, 0, 0, 0])
+
+## 13 HH:MM:SS
+%!assert <*42241> (datevec ("09:00:35"), [yr, 1, 1, 9, 0, 35])
+%!assert <*42241> (datevec ("09:00:35", "HH:MM:SS"), [yr, 1, 1, 9, 0, 35])
+%!assert <*42241> (datevec ("09:00:35 AM", "HH:MM:SS"), [yr, 1, 1, 9, 0, 35])
+%!assert <*42241> (datevec ("09:00:35ABC", "HH:MM:SS"), [yr, 1, 1, 9, 0, 35])
+
+## 14 HH:MM:SS PM
+%!assert <*42241> (datevec ("09:00:35 AM"), [yr, 1, 1, 9, 0, 35])
+%!assert <*42241> (datevec ("09:00:35 AM", "HH:MM:SS PM"), [yr, 1, 1, 9, 0, 35])
+%!assert <*42241> (datevec ("09:00:35 am", "HH:MM:SS PM"), [yr, 1, 1, 9, 0, 35])
+%!assert <*42241> (datevec ("09:00:35 PM", "HH:MM:SS PM"), [yr, 1, 1, 21, 0, 35])
+%!assert <*42241> (datevec ("09:00:35 AMABC", "HH:MM:SS PM"), [yr, 1, 1, 9, 0, 35])
+
+## 15 HH:MM
+%!assert <*42241> (datevec ("09:00"), [yr, 1, 1, 9, 0, 0])
+%!assert <*42241> (datevec ("09:00", "HH:MM"), [yr, 1, 1, 9, 0, 0])
+%!assert <*42241> (datevec ("09:00:35", "HH:MM"), [yr, 1, 1, 9, 0, 0])
+%!assert <*42241> (datevec ("09:00ABC", "HH:MM"), [yr, 1, 1, 9, 0, 0])
+
+## 16 HH:MM PM
+%!assert <*42241> (datevec ("09:00 AM"), [yr, 1, 1, 9, 0, 0])
+%!assert <*42241> (datevec ("09:00 AM", "HH:MM PM"), [yr, 1, 1, 9, 0, 0])
+%!assert <*42241> (datevec ("09:00 PM", "HH:MM PM"), [yr, 1, 1, 21, 0, 0])
+%!assert <*42241> (datevec ("09:00 AMABC", "HH:MM PM"), [yr, 1, 1, 9, 0, 0])
+
+## 17 QQ-YY datestr std format 17 -  datevec("Q1-13", "QQ-YY") does not resolve
+
+## 18 QQ datestr std format 18 -  datevec("Q1", "QQ") does not resolve
+
+## 19 dd/mm
+%!assert <*42241> (datevec ("15/08", "dd/mm"), [yr, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15/08/2023", "dd/mm"), [yr, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15/08ABC", "dd/mm"), [yr, 8, 15, 0, 0, 0])
+
+## 20 dd/mm/yy
+%!assert <*42241> (datevec ("15/08/13"), [15, 8, 13, 0, 0, 0])
+%!assert <*42241> (datevec ("15/08/13", "dd/mm/yy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15/08/13 09:00:35", "dd/mm/yy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15/08/13ABC", "dd/mm/yy"), [2013, 8, 15, 0, 0, 0])
+
+## 21 mmm.dd,yyyy HH:MM:SS
+%!assert <*42241> (datevec ("aug.15,2013 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("aug.15,2013 09:00:35", "mmm.dd,yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("aug.15,2013 09:00:35 PM", "mmm.dd,yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("aug.15,2013 09:00:35ABC", "mmm.dd,yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## 22 mm.dd,yyyy
+%!assert <*42241> (datevec ("aug.15,2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("aug.15,2013", "mmm.dd,yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("aug.15,2013 09:00:35", "mmm.dd,yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("aug.15,2013ABC", "mmm.dd,yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## 23 mm/dd/yyyy
+%!assert <*42241> (datevec ("08/15/2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/2013", "mm/dd/yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/2013 09:00:35", "mm/dd/yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("08/15/2013ABC", "mm/dd/yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## 24 dd/mm/yyyy
+%!assert <*42241> (datevec ("15/08/2013", "dd/mm/yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15/08/2013 09:00:35", "dd/mm/yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15/08/2013ABC", "dd/mm/yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## 25 yy/mm/dd
+%!assert <*42241> (datevec ("13/08/15"), [13, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("13/08/15", "yy/mm/dd"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("13/08/15 09:00:35", "yy/mm/dd"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("13/08/15ABC", "yy/mm/dd"), [2013, 8, 15, 0, 0, 0])
+
+## 26 yyyy/mm/dd
+%!assert <*42241> (datevec ("2013/08/15"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("2013/08/15", "yyyy/mm/dd"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("2013/08/15 09:00:35", "yyyy/mm/dd"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("2013/08/15ABC", "yyyy/mm/dd"), [2013, 8, 15, 0, 0, 0])
+
+## 27 QQ-YYYY datestr std format 27 -  datevec("Q1-2013", "QQ-YYYY") does not resolve
+
+## 28 mmmyyyy
+%!assert <*42241> (datevec ("Aug2013"), [13, 8, 20, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug2013", "mmmyyyy"), [2013, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug2013 09:00:35", "mmmyyyy"), [2013, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug2013ABC", "mmmyyyy"), [2013, 8, 1, 0, 0, 0])
+
+## 29 yyyy-mm-dd
+%!assert <*42241> (datevec ("2013-08-15"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("2013-08-15", "yyyy-mm-dd"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("2013-08-15 09:00:35", "yyyy-mm-dd"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("2013-08-15ABC", "yyyy-mm-dd"), [2013, 8, 15, 0, 0, 0])
+
+## 30 yyyymmddTHHMMSS
+%!assert <*42241> (datevec ("20130815T090035", "yyyymmddTHHMMSS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("20130815T090035", "yyyymmddTHHMMSS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("20130815T090035", "yyyymmddTHHMMSS"), [2013, 8, 15, 9, 0, 35])
+
+## 31 yyyy-mm-dd HH:MM:SS
+%!assert <*42241> (datevec ("2013-08-15 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("2013-08-15 09:00:35", "yyyy-mm-dd HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("2013-08-15 09:00:35 PM", "yyyy-mm-dd HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("2013-08-15 09:00:35ABC", "yyyy-mm-dd HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## mmm-dd-yyyy HH:MM:SS
+%!assert <*42241> (datevec ("Aug-15-2013 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug-15-2013 09:00:35", "mmm-dd-yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug-15-2013 09:00:35 PM", "mmm-dd-yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug-15-2013 09:00:35ABC", "mmm-dd-yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## mmm-dd-yyyy
+%!assert <*42241> (datevec ("Aug-15-2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug-15-2013", "mmm-dd-yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug-15-2013 09:00:35", "mmm-dd-yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug-15-2013ABC", "mmm-dd-yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## dd mmm yyyy HH:MM:SS
+%!assert <*42241> (datevec ("15 Aug 2013 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15 Aug 2013 09:00:35", "dd mmm yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15 Aug 2013 09:00:35 PM", "dd mmm yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15 Aug 2013 09:00:35ABC", "dd mmm yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## dd mmm yyyy
+%!assert <*42241> (datevec ("15 Aug 2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15 Aug 2013", "dd mmm yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15 Aug 2013 09:00:35", "dd mmm yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15 Aug 2013ABC", "dd mmm yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## mmm dd yyyy HH:MM:SS
+%!assert <*42241> (datevec ("Aug 15 2013 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug 15 2013 09:00:35", "mmm dd yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug 15 2013 09:00:35 PM", "mmm dd yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug 15 2013 09:00:35ABC", "mmm dd yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## mmm dd yyyy
+%!assert <*42241> (datevec ("Aug 15 2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug 15 2013", "mmm dd yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug 15 2013 09:00:35", "mmm dd yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug 15 2013ABC", "mmm dd yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## dd.mmm.yyyy HH:MM:SS
+%!assert <*42241> (datevec ("15.Aug.2013 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15.Aug.2013 09:00:35", "dd.mmm.yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15.Aug.2013 09:00:35 PM", "dd.mmm.yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("15.Aug.2013 09:00:35ABC", "dd.mmm.yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## dd.mmm.yyyy
+%!assert <*42241> (datevec ("15.Aug.2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15.Aug.2013", "dd.mmm.yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15.Aug.2013 09:00:35", "dd.mmm.yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("15.Aug.2013ABC", "dd.mmm.yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## mmm.dd.yyyy HH:MM:SS
+%!assert <*42241> (datevec ("Aug.15.2013 09:00:35"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug.15.2013 09:00:35", "mmm.dd.yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug.15.2013 09:00:35 PM", "mmm.dd.yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("Aug.15.2013 09:00:35ABC", "mmm.dd.yyyy HH:MM:SS"), [2013, 8, 15, 9, 0, 35])
+
+## mmm.dd.yyyy
+%!assert <*42241> (datevec ("Aug.15.2013"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug.15.2013", "mmm.dd.yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug.15.2013 09:00:35", "mmm.dd.yyyy"), [2013, 8, 15, 0, 0, 0])
+%!assert <*42241> (datevec ("Aug.15.2013ABC", "mmm.dd.yyyy"), [2013, 8, 15, 0, 0, 0])
+
+## mm/dd/yyyy HH:MM
+%!assert <*42241> (datevec ("08/15/2013 09:00"), [2013, 8, 15, 9, 0, 0])
+%!assert <*42241> (datevec ("08/15/2013 09:00", "mm/dd/yyyy HH:MM"), [2013, 8, 15, 9, 0, 0])
+%!assert <*42241> (datevec ("08/15/2013 09:00:35", "mm/dd/yyyy HH:MM"), [2013, 8, 15, 9, 0, 0])
+%!assert <*42241> (datevec ("08/15/2013 09:00ABC", "mm/dd/yyyy HH:MM"), [2013, 8, 15, 9, 0, 0])
+
+## yyyy
+%!assert <*42241> (datevec ("2013"), [2013, 1, 0, 0, 0, 0]) # Octave uses Jan 0 as origin
+%!assert <*42241> (datevec ("2013", "yyyy"), [2013, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("2013-08-15", "yyyy"), [2013, 1, 0, 0, 0, 0])
+%!assert <*42241> (datevec ("2013ABC", "yyyy"), [2013, 1, 0, 0, 0, 0])
+
+## yyyy-mm
+%!assert <*42241> (datevec ("2013-08"), [2013, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("2013-08", "yyyy-mm"), [2013, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("2013-08-15", "yyyy-mm"), [2013, 8, 1, 0, 0, 0])
+%!assert <*42241> (datevec ("2013-08ABC", "yyyy-mm"), [2013, 8, 1, 0, 0, 0])
+
+## yyyy-mm-ddTHH:MM:SSZ
+%!assert <*42241> (datevec ("2013-08-15T09:00:35Z"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("2013-08-15T09:00:35Z", "yyyy-mm-ddTHH:MM:SSZ"), [2013, 8, 15, 9, 0, 35])
+%!assert <*42241> (datevec ("2013-08-15T09:00:35ZABC", "yyyy-mm-ddTHH:MM:SSZ"), [2013, 8, 15, 9, 0, 35])
+
+## yyyy-mm-ddTHH:MM:SS.FFFZ
+%!assert <*42241> (datevec ("2013-08-15T09:00:35.123Z"), [2013, 8, 15, 9, 0, 35.123])
+%!assert <*42241> (datevec ("2013-08-15T09:00:35.123Z", "yyyy-mm-ddTHH:MM:SS.FFFZ"), [2013, 8, 15, 9, 0, 35.123])
+%!assert <*42241> (datevec ("2013-08-15T09:00:35.123ZABC", "yyyy-mm-ddTHH:MM:SS.FFFZ"), [2013, 8, 15, 9, 0, 35.123])
+
+
 ## Test input validation
 %!error <Invalid call> datevec ()
 %!error <none of the standard formats match> datevec ("foobar")
@@ -499,4 +773,3 @@ endfunction
 %!      "warning", "Format specifiers for dates should be lower case");
 %!fail ("datevec ('2015-03-31 hh:00','yyyy-mm-dd hh:MM')", ...
 %!      "warning", "format specifiers for time should be upper case");
-

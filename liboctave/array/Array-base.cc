@@ -43,7 +43,7 @@
 
 template <typename T, typename Alloc>
 typename Array<T, Alloc>::ArrayRep *
-Array<T, Alloc>::nil_rep (void)
+Array<T, Alloc>::nil_rep ()
 {
   static ArrayRep nr;
   return &nr;
@@ -106,7 +106,7 @@ Array<T, Alloc>::fill (const T& val)
 
 template <typename T, typename Alloc>
 void
-Array<T, Alloc>::clear (void)
+Array<T, Alloc>::clear ()
 {
   if (--m_rep->m_count == 0)
     delete m_rep;
@@ -136,7 +136,7 @@ Array<T, Alloc>::clear (const dim_vector& dv)
 
 template <typename T, typename Alloc>
 Array<T, Alloc>
-Array<T, Alloc>::squeeze (void) const
+Array<T, Alloc>::squeeze () const
 {
   Array<T, Alloc> retval = *this;
 
@@ -312,6 +312,7 @@ Array<T, Alloc>::linear_slice (octave_idx_type lo, octave_idx_type up) const
 class rec_permute_helper
 {
 public:
+
   rec_permute_helper (const dim_vector& dv, const Array<octave_idx_type>& perm)
 
     : m_n (dv.ndims ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
@@ -350,13 +351,9 @@ public:
 
   }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (rec_permute_helper)
 
-  rec_permute_helper (const rec_permute_helper&) = delete;
-
-  rec_permute_helper& operator = (const rec_permute_helper&) = delete;
-
-  ~rec_permute_helper (void) { delete [] m_dim; }
+  ~rec_permute_helper () { delete [] m_dim; }
 
   template <typename T>
   void permute (const T *src, T *dest) const { do_permute (src, dest, m_top); }
@@ -526,6 +523,7 @@ Array<T, Alloc>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) 
 class rec_index_helper
 {
 public:
+
   rec_index_helper (const dim_vector& dv, const Array<octave::idx_vector>& ia)
     : m_n (ia.numel ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
       m_cdim (m_dim + m_n), m_idx (new octave::idx_vector [m_n])
@@ -555,13 +553,9 @@ public:
       }
   }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (rec_index_helper)
 
-  rec_index_helper (const rec_index_helper&) = delete;
-
-  rec_index_helper& operator = (const rec_index_helper&) = delete;
-
-  ~rec_index_helper (void) { delete [] m_idx; delete [] m_dim; }
+  ~rec_index_helper () { delete [] m_idx; delete [] m_dim; }
 
   template <typename T>
   void index (const T *src, T *dest) const { do_index (src, dest, m_top); }
@@ -646,6 +640,7 @@ private:
 class rec_resize_helper
 {
 public:
+
   rec_resize_helper (const dim_vector& ndv, const dim_vector& odv)
     : m_cext (nullptr), m_sext (nullptr), m_dext (nullptr), m_n (0)
   {
@@ -671,13 +666,9 @@ public:
     m_cext[0] *= ld;
   }
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (rec_resize_helper)
 
-  rec_resize_helper (const rec_resize_helper&) = delete;
-
-  rec_resize_helper& operator = (const rec_resize_helper&) = delete;
-
-  ~rec_resize_helper (void) { delete [] m_cext; }
+  ~rec_resize_helper () { delete [] m_cext; }
 
   template <typename T>
   void resize_fill (const T *src, T *dest, const T& rfv) const
@@ -905,7 +896,7 @@ Array<T, Alloc>::index (const Array<octave::idx_vector>& ia) const
 
 template <typename T, typename Alloc>
 T
-Array<T, Alloc>::resize_fill_value (void) const
+Array<T, Alloc>::resize_fill_value () const
 {
   static T zero = T ();
   return zero;
@@ -1455,10 +1446,17 @@ template <typename T, typename Alloc>
 void
 Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
 {
-  if (dim < 0 || dim >= ndims ())
+  if (dim < 0)
     (*current_liboctave_error_handler) ("invalid dimension in delete_elements");
 
-  octave_idx_type n = m_dimensions(dim);
+  dim_vector dimensions = m_dimensions;
+
+  if (dim >= ndims ())
+    dimensions.resize (dim + 1, 1);
+
+  octave_idx_type ndim = dimensions.ndims ();
+  octave_idx_type n = dimensions(dim);
+
   if (i.is_colon ())
     {
       *this = Array<T, Alloc> ();
@@ -1476,10 +1474,10 @@ Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
           octave_idx_type nd = n + l - u;
           octave_idx_type dl = 1;
           octave_idx_type du = 1;
-          dim_vector rdv = m_dimensions;
+          dim_vector rdv = dimensions;
           rdv(dim) = nd;
-          for (int k = 0; k < dim; k++) dl *= m_dimensions(k);
-          for (int k = dim + 1; k < ndims (); k++) du *= m_dimensions(k);
+          for (int k = 0; k < dim; k++) dl *= dimensions(k);
+          for (int k = dim + 1; k < ndim; k++) du *= dimensions(k);
 
           // Special case deleting a contiguous range.
           Array<T, Alloc> tmp = Array<T, Alloc> (rdv);
@@ -1500,7 +1498,7 @@ Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
       else
         {
           // Use index.
-          Array<octave::idx_vector> ia (dim_vector (ndims (), 1), octave::idx_vector::colon);
+          Array<octave::idx_vector> ia (dim_vector (ndim, 1), octave::idx_vector::colon);
           ia (dim) = i.complement (n);
           *this = index (ia);
         }
@@ -1622,7 +1620,7 @@ Array<T, Alloc>::insert (const Array<T, Alloc>& a, const Array<octave_idx_type>&
 
 template <typename T, typename Alloc>
 Array<T, Alloc>
-Array<T, Alloc>::transpose (void) const
+Array<T, Alloc>::transpose () const
 {
   assert (ndims () == 2);
 
@@ -1763,7 +1761,7 @@ Array<T, Alloc>::hermitian (T (*fcn) (const T&)) const
 
 template <typename T, typename Alloc>
 T *
-Array<T, Alloc>::fortran_vec (void)
+Array<T, Alloc>::fortran_vec ()
 {
   make_unique ();
 
@@ -2222,7 +2220,7 @@ Array<T, Alloc>::lookup (const Array<T, Alloc>& values, sortmode mode) const
 
 template <typename T, typename Alloc>
 octave_idx_type
-Array<T, Alloc>::nnz (void) const
+Array<T, Alloc>::nnz () const
 {
   const T *src = data ();
   octave_idx_type nel = numel ();
@@ -2522,7 +2520,7 @@ Array<T, Alloc>::nth_element (const octave::idx_vector& n, int dim) const
     return Array<octave_idx_type> ();                                   \
   }                                                                     \
   template <> API octave_idx_type                                       \
-  Array<T>::nnz (void) const                                            \
+  Array<T>::nnz () const                                            \
   {                                                                     \
     return 0;                                                           \
   }                                                                     \

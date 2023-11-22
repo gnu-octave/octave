@@ -41,8 +41,6 @@ class QHBoxLayout;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class set_path_dialog : public QDialog
 {
   Q_OBJECT
@@ -53,11 +51,11 @@ public:
   // in the dialog.  That may only be done after the intepreter_event
   // signal connections are made to the Octave interpreter.
 
-  set_path_dialog (QWidget *parent, base_qobject& oct_qobj);
+  set_path_dialog (QWidget *parent);
 
-  virtual ~set_path_dialog (void) = default;
+  virtual ~set_path_dialog () = default;
 
-  void save_settings (void);
+  void save_settings ();
 
 signals:
 
@@ -71,7 +69,7 @@ signals:
 
 public slots:
 
-  void update_model (void);
+  void update_model ();
 
 protected:
 
@@ -79,24 +77,22 @@ protected:
 
 private slots:
 
-  void add_dir (void);
-  void add_dir_subdirs (void);
+  void add_dir ();
+  void add_dir_subdirs ();
 
-  void rm_dir (void);
+  void rm_dir ();
 
-  void move_dir_up (void);
+  void move_dir_up ();
 
-  void move_dir_down (void);
+  void move_dir_down ();
 
-  void move_dir_top (void);
+  void move_dir_top ();
 
-  void move_dir_bottom (void);
+  void move_dir_bottom ();
 
 private:
 
   void add_dir_common (bool subdirs);
-
-  base_qobject& m_octave_qobj;
 
   QLabel *m_info_label;
   QPushButton *m_reload_button;

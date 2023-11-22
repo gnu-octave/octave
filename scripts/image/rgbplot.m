@@ -62,7 +62,7 @@ function h = rgbplot (cmap, style = "profile")
     error ("rgbplot: STYLE must be a string");
   endif
 
-  switch (tolower (style))
+  switch (lower (style))
     case "profile"
       x = 1:rows (cmap);
       htmp = plot (x,cmap(:,1),"r", x,cmap(:,2),"g", x,cmap(:,3),"b");

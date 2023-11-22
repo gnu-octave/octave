@@ -320,7 +320,7 @@ std::string help_system::which (const std::string& name) const
   return which (name, type);
 }
 
-string_vector help_system::make_name_list (void) const
+string_vector help_system::make_name_list () const
 {
   const static string_vector keywords
     = Fiskeyword ()(0).string_vector_value ();
@@ -447,7 +447,7 @@ void help_system::get_help_text_from_file (const std::string& fname,
     }
 }
 
-std::string help_system::init_built_in_docstrings_file (void)
+std::string help_system::init_built_in_docstrings_file ()
 {
   std::string df = sys::env::getenv ("OCTAVE_BUILT_IN_DOCSTRINGS_FILE");
 
@@ -459,7 +459,7 @@ std::string help_system::init_built_in_docstrings_file (void)
   return df;
 }
 
-std::string help_system::init_doc_cache_file (void)
+std::string help_system::init_doc_cache_file ()
 {
   std::string def_file = config::prepend_octave_home (OCTAVE_DOC_CACHE_FILE);
 
@@ -468,7 +468,7 @@ std::string help_system::init_doc_cache_file (void)
   return (env_file.empty () ? def_file : env_file);
 }
 
-std::string help_system::init_info_file (void)
+std::string help_system::init_info_file ()
 {
   std::string std_info_file = config::prepend_octave_home (OCTAVE_INFOFILE);
 
@@ -477,7 +477,7 @@ std::string help_system::init_info_file (void)
   return (oct_info_file.empty () ? std_info_file : oct_info_file);
 }
 
-std::string help_system::init_info_program (void)
+std::string help_system::init_info_program ()
 {
   std::string info_prog = sys::env::getenv ("OCTAVE_INFO_PROGRAM");
 
@@ -487,7 +487,7 @@ std::string help_system::init_info_program (void)
   return info_prog;
 }
 
-std::string help_system::init_texi_macros_file (void)
+std::string help_system::init_texi_macros_file ()
 {
   std::string def_file
     = config::prepend_octave_home (OCTAVE_TEXI_MACROS_FILE);
@@ -499,7 +499,7 @@ std::string help_system::init_texi_macros_file (void)
 
 // Return a vector of all functions from this file,
 // for use in command line auto-completion.
-string_vector help_system::local_functions (void) const
+string_vector help_system::local_functions () const
 {
   string_vector retval;
 
@@ -725,7 +725,7 @@ help_system::raw_help_from_docstrings_file (const std::string& nm,
 
 // FIXME: It's not likely that this does the right thing now.
 
-string_vector make_name_list (void)
+string_vector make_name_list ()
 {
   help_system& help_sys = __get_help_system__ ();
 

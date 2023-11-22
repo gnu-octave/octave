@@ -81,7 +81,7 @@ void marker::handle_request_remove_via_editor_linenr (int linenr)
     }
 }
 
-void marker::handle_remove (void)
+void marker::handle_remove ()
 {
   m_edit_area->markerDeleteHandle (m_mhandle);
   delete this;

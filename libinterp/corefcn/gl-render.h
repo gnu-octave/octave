@@ -43,15 +43,11 @@ public:
 
   opengl_renderer (opengl_functions& glfcns);
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (opengl_renderer)
 
-  opengl_renderer (const opengl_renderer&) = delete;
+  virtual ~opengl_renderer () = default;
 
-  opengl_renderer& operator = (const opengl_renderer&) = delete;
-
-  virtual ~opengl_renderer (void) = default;
-
-  opengl_functions& get_opengl_functions (void) const { return m_glfcns; }
+  opengl_functions& get_opengl_functions () const { return m_glfcns; }
 
   virtual void draw (const graphics_object& go, bool toplevel = true);
 
@@ -62,8 +58,8 @@ public:
 
   virtual void set_viewport (int w, int h);
   virtual void set_device_pixel_ratio (double dpr) { m_devpixratio = dpr; }
-  virtual Matrix get_viewport_scaled (void) const;
-  virtual graphics_xform get_transform (void) const { return m_xform; }
+  virtual Matrix get_viewport_scaled () const;
+  virtual graphics_xform get_transform () const { return m_xform; }
   virtual uint8NDArray get_pixels (int width, int height);
 
   virtual void draw_zoom_box (int width, int height,
@@ -73,7 +69,7 @@ public:
                               const Matrix& bordercolor,
                               double borderalpha, double borderwidth);
 
-  virtual void finish (void);
+  virtual void finish ();
 
 protected:
 
@@ -118,7 +114,7 @@ protected:
 
   virtual void init_marker (const std::string& m, double size, float width);
   virtual void change_marker (const std::string& m, double size);
-  virtual void end_marker (void);
+  virtual void end_marker ();
   virtual void draw_marker (double x, double y, double z,
                             const Matrix& lc, const Matrix& fc,
                             const double la = 1.0, const double fa = 1.0);
@@ -180,7 +176,7 @@ private:
 
   class patch_tessellator;
 
-  void init_maxlights (void);
+  void init_maxlights ();
 
   std::string get_string (unsigned int id) const;
 
@@ -208,9 +204,9 @@ private:
 
   void set_normal (int bfl_mode, const NDArray& n, int j, int i);
 
-  void set_ortho_coordinates (void);
+  void set_ortho_coordinates ();
 
-  void restore_previous_coordinates (void);
+  void restore_previous_coordinates ();
 
   double points_to_pixels (const double val) const;
 

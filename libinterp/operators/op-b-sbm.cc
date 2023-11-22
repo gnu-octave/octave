@@ -51,9 +51,8 @@ DEFBINOP_FN (el_or, bool, sparse_bool_matrix, mx_el_or)
 
 DEFCATOP (b_sbm, bool, sparse_bool_matrix)
 {
-  const octave_bool& v1 = dynamic_cast<const octave_bool&> (a1);
-  const octave_sparse_bool_matrix& v2
-    = dynamic_cast<const octave_sparse_bool_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_bool&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_bool_matrix&, v2, a2);
   SparseBoolMatrix tmp (1, 1, v1.bool_value ());
   return octave_value (tmp. concat (v2.sparse_bool_matrix_value (),
                                     ra_idx));
@@ -61,24 +60,23 @@ DEFCATOP (b_sbm, bool, sparse_bool_matrix)
 
 DEFCATOP (b_sm, bool, sparse_matrix)
 {
-  const octave_bool& v1 = dynamic_cast<const octave_bool&> (a1);
-  const octave_sparse_matrix& v2 = dynamic_cast<const octave_sparse_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_bool&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_matrix&, v2, a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
   return octave_value (tmp. concat (v2.sparse_matrix_value (), ra_idx));
 }
 
 DEFCATOP (s_sbm, scalar, sparse_bool_matrix)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_sparse_bool_matrix& v2
-    = dynamic_cast<const octave_sparse_bool_matrix&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_sparse_bool_matrix&, v2, a2);
   SparseMatrix tmp (1, 1, v1.scalar_value ());
   return octave_value(tmp. concat (v2.sparse_matrix_value (), ra_idx));
 }
 
 DEFCONV (sparse_bool_matrix_conv, bool, sparse_bool_matrix)
 {
-  const octave_bool& v = dynamic_cast<const octave_bool&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_bool&, v, a);
 
   return new octave_sparse_bool_matrix
          (SparseBoolMatrix (1, 1, v.bool_value ()));

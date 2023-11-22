@@ -682,4 +682,3 @@ endfunction
 %! assert (flag, 0);
 %! assert (relres, resvec(2) / norm (b));
 %! assert (iter, 1);
-

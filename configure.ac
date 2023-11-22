@@ -27,7 +27,7 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [8.4.1], [https://octave.org/bugs.html], [octave],
+AC_INIT([GNU Octave], [9.0.0], [https://octave.org/bugs.html], [octave],
         [https://www.gnu.org/software/octave/])
 
 ### Declare version numbers
@@ -39,16 +39,16 @@ dnl AC_INIT requires it to be static, not computed from shell variables.
 ## explains how to update these numbers for release and development
 ## versions.
 
-OCTAVE_MAJOR_VERSION=8
-OCTAVE_MINOR_VERSION=4
-OCTAVE_PATCH_VERSION=1
+OCTAVE_MAJOR_VERSION=9
+OCTAVE_MINOR_VERSION=0
+OCTAVE_PATCH_VERSION=0
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"
 
 OCTAVE_COPYRIGHT="Copyright (C) 1993-2023 The Octave Project Developers."
 
-OCTAVE_RELEASE_DATE="2023-11-05"
+OCTAVE_RELEASE_DATE="2023-04-13"
 
 ## The "API version" is used as a way of checking that interfaces in the
 ## liboctave and libinterp libraries haven't changed in a backwardly
@@ -300,7 +300,7 @@ esac
 AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
   [Define this to be the path to the shell command interpreter.])
 
-### Determine which C++ compiler to use (we expect to find g++).
+### Determine which C++ compiler to use (we expect to find g++ or clang++).
 
 AC_PROG_CXX
 AC_PROG_CXXCPP
@@ -315,15 +315,45 @@ AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
      *) AC_MSG_ERROR([bad value $enableval for --enable-std-pmr-polymorphic-allocator]) ;;
    esac])
 
-### Determine compiler capabilities.
+AC_ARG_WITH([qt],
+  [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])
+dnl Second help string must not be indented for correct alignment
+AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
+  [case $withval in
+     yes | "")
+     ;;
+     no)
+       QT_VERSIONS=
+     ;;
+     *)
+       QT_VERSIONS="$withval"
+     ;;
+   esac])
 
-if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
-  ## Test for flags to fully support C++17.
-  ## Preferably with GNU extensions if flags are required.
+### Determine C++ compiler capabilities.
+
+if test "$QT_VERSIONS" = 6; then
+  ## If QT_VERSIONS is set to 6, require that the C++ compiler fully
+  ## supports C++17.  Preferably with GNU extensions if flags are required.
+  ## We could use "AX_CXX_COMPILE_STDCXX(17, [], mandatory)" in this case.
+  ## But prefer to emit a more helpful error message.
+  AX_CXX_COMPILE_STDCXX(17, [], [])
+  if test "$HAVE_CXX17" = 0; then
+    ## The user explicitly requested Qt6.  But the C++ compiler lacks
+    ## support for C++17.
+    AC_MSG_ERROR([Qt6 requires a compiler that supports C++17.  Configure with "--with-qt=5" or "--without-qt", or use a compiler that supports C++17.])
+  fi
+elif test -z "${QT_VERSIONS+x}" || test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
+  ## If QT_VERSIONS is not explicitly set, check if the C++ compiler fully
+  ## supports C++17 (but don't require it).
+  ## The defaults for the Qt version will depend on the result of this check.
   AX_CXX_COMPILE_STDCXX(17, [], [])
 else
+  ## Set HAVE_CXX17 to 0 because we don't require it (even if the used
+  ## C++ compiler might technically support C++17).
   HAVE_CXX17=0
 fi
+
 if test "$HAVE_CXX17" = 0; then
   ## Ensure that the C++ compiler fully supports C++11.
   ## Preferably with GNU extensions if flags are required.
@@ -334,7 +364,7 @@ if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
   OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
 fi
 
-### Determine which C compiler to use (we expect to find gcc).
+### Determine which C compiler to use (we expect to find gcc or clang).
 
 AC_PROG_CC
 AC_PROG_CPP
@@ -388,16 +418,6 @@ if test "$GXX" = yes; then
   GXX_VERSION=$octave_cv_gxx_version
 fi
 AC_SUBST(GXX_VERSION)
-
-## Workaround for broken STL algorithm library.
-OCTAVE_CHECK_BROKEN_STL_ALGO_H
-AM_CONDITIONAL([AMCOND_HAVE_BROKEN_STL_ALGO_H],
-  [test $octave_cv_broken_stl_algo_h = yes])
-
-if test $octave_cv_broken_stl_algo_h = yes; then
-  warn_stl_algo_h="Found nth_element broken in g++ $GXX_VERSION.  Attempting to repair by using local patched version of bits/stl_algo.h."
-  OCTAVE_CONFIGURE_WARNING([warn_stl_algo_h])
-fi
 
 ### Check version number when using gcc.
 dnl It might be different from the g++ version number.
@@ -623,6 +643,12 @@ if test $enable_shared = yes; then
   SHARED_LIBS=yes
 else
   SHARED_LIBS=no
+  # Note: Octave doesn't build currently without shared libraries.  And it
+  #       might not work or make sense at all to build static Octave libraries.
+  #       All existing logic for this use-case is still in place in case
+  #       someone would like to base on that to build static versions of the
+  #       libraries.
+  AC_MSG_ERROR([Building shared libraries is required!])
 fi
 AC_SUBST(SHARED_LIBS)
 
@@ -940,6 +966,20 @@ if test $ENABLE_FLOAT_TRUNCATE = yes; then
     [Define to 1 to truncate intermediate FP results.])
 fi
 
+### Enable internal checks
+
+## The checks slow down the execution and are redundant,
+## but useful for debugging or verifying GNU Octave.
+ENABLE_INTERNAL_CHECKS=no
+AC_ARG_ENABLE([internal-checks],
+  [AS_HELP_STRING([--enable-internal-checks],
+    [Enable internal checks that are redundant but useful to debug or verify GNU Octave])],
+  [if test "$enableval" = yes; then ENABLE_INTERNAL_CHECKS=yes; fi], [])
+if test $ENABLE_INTERNAL_CHECKS = yes; then
+  AC_DEFINE(OCTAVE_ENABLE_INTERNAL_CHECKS, 1,
+    [Define to 1 to enable internal checks.])
+fi
+
 ### Determine extra CFLAGS, CXXFLAGS that may be necessary for Octave.
 
 ## On Intel systems with gcc, we need to compile with -mieee-fp to get full
@@ -998,6 +1038,7 @@ esac
 
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
+AC_SUBST(XTRA_LDFLAGS)
 
 ### Defaults for cross compiling.
 dnl BUILD_CC and BUILD_CXX are the compilers that we use for building tools
@@ -1367,17 +1408,8 @@ if test $ENABLE_COMMAND_LINE_PUSH_PARSER = yes; then
     [Define to 1 to use Bison's push parser interface in the command line REPL.])
 fi
 
-### Configure compilation of *experimental* Virtual Machine evaluator.
-
-ENABLE_VM_EVALUATOR=yes
-AC_ARG_ENABLE([vm-evaluator],
-  [AS_HELP_STRING([--disable-vm-evaluator],
-    [don't compile *experimental* virtual machine evaluator])],
-  [if test "$enableval" = no; then ENABLE_VM_EVALUATOR=no; fi], [])
-if test $ENABLE_VM_EVALUATOR = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_VM_EVALUATOR, 1,
-    [Define to 1 to build experimental Virtual Machine evaluator.])
-fi
+## FIXME: The next line is needed for VM-related ifdefs in pt-bytecode-vm.cc.
+AC_C_BIGENDIAN()
 
 ### Check for PCRE2 or PCRE regex library, requiring one to exist.
 
@@ -1491,6 +1523,12 @@ fi
 ### Check for readline library.
 
 OCTAVE_ENABLE_READLINE
+
+### Check whether functions from libiconv are available.
+
+OCTAVE_CHECK_ICONVLIST
+
+OCTAVE_CHECK_ICONV_CANONICALIZE
 
 ### Check for ZLIB library.
 
@@ -1654,7 +1692,8 @@ OCTAVE_CHECK_LIB(sndfile, sndfile,
   [], [don't use sndfile library, disable audio file I/O],
   [warn_sndfile=
    OCTAVE_CHECK_LIB_SNDFILE_OK(
-    [AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])],
+    [AC_DEFINE(HAVE_SNDFILE, 1, [Define to 1 if sndfile is available.])
+     OCTAVE_CHECK_LIB_SNDFILE_FORMATS],
     [warn_sndfile="sndfile library found, but does not seem to work properly; disabling audio file I/O functions"])])
 
 ### Check for PortAudio library.
@@ -1853,22 +1892,15 @@ OCTAVE_CHECK_LIB(fontconfig, fontconfig,
 
 ### GUI/Qt related tests.
 
-QT_VERSIONS="5"
-
-AC_ARG_WITH([qt],
-  [AS_HELP_STRING([--with-qt=VER], [use the Qt major version VER])
-dnl Second help string must not be indented for correct alignment
-AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
-  [case $withval in
-     yes | "")
-     ;;
-     no)
-       QT_VERSIONS=
-     ;;
-     *)
-       QT_VERSIONS="$withval"
-     ;;
-   esac])
+if test -z ${QT_VERSIONS+x}; then
+  ## If QT_VERSIONS is unset, choose default depending on compiler support.
+  if test $HAVE_CXX17 = 0; then
+    dnl Qt6 requires support for C++17.
+    QT_VERSIONS="5"
+  else
+    QT_VERSIONS="6 5"
+  fi
+fi
 
 check_qscintilla=yes
 AC_ARG_WITH([qscintilla],
@@ -2008,8 +2040,11 @@ AC_SUBST(FLTK_CPPFLAGS)
 AC_SUBST(FLTK_LDFLAGS)
 AC_SUBST(FLTK_LIBS)
 
-### Final determination of whether OpenGL graphics can be built.
-if test $build_qt_graphics = no && test $build_fltk_graphics = no; then
+### Final determination of whether OpenGL graphics features should
+### be built.  Note that there is no longer a way to build the Qt GUI
+### without also building a Qt widget that uses OpenGL graphics so we
+### check $build_qt_gui instead of $build_qt_graphics here.
+if test $build_qt_gui = no && test $build_fltk_graphics = no; then
   opengl_graphics=no
 else
   opengl_graphics=yes
@@ -2109,7 +2144,9 @@ save_LIBS="$LIBS"
 LIBS="$LIB_CLOCK_GETTIME $LIBS"
 OCTAVE_CHECK_LIB(suitesparseconfig, SUITESPARSECONFIG,
   [], [], [SuiteSparse_time], [],
-  [don't link directly with suitesparseconfig library])
+  [don't link directly with suitesparseconfig library],
+  [],
+  SuiteSparse_config)
 LIBS="$save_LIBS"
 
 if test -n "$SUITESPARSECONFIG_LIBS" && test -n "$LIB_CLOCK_GETTIME"; then
@@ -2126,7 +2163,9 @@ OCTAVE_CHECK_LIB(amd, AMD,
   [AMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [amd.h suitesparse/amd.h amd/amd.h],
   [amd_postorder],
-  [], [don't use AMD library, disable some sparse matrix functionality])
+  [], [don't use AMD library, disable some sparse matrix functionality],
+  [],
+  AMD)
 
 ### Check for CAMD library.
 
@@ -2134,7 +2173,9 @@ OCTAVE_CHECK_LIB(camd, CAMD,
   [CAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [camd.h suitesparse/camd.h camd/camd.h],
   [camd_postorder],
-  [], [don't use CAMD library, disable some sparse matrix functionality])
+  [], [don't use CAMD library, disable some sparse matrix functionality],
+  [],
+  CAMD)
 
 ### Check for COLAMD library.
 
@@ -2142,7 +2183,9 @@ OCTAVE_CHECK_LIB(colamd, COLAMD,
   [COLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [colamd.h suitesparse/colamd.h colamd/colamd.h],
   [colamd],
-  [], [don't use COLAMD library, disable some sparse matrix functionality])
+  [], [don't use COLAMD library, disable some sparse matrix functionality],
+  [],
+  COLAMD)
 
 ### Check for CCOLAMD library.
 
@@ -2150,7 +2193,9 @@ OCTAVE_CHECK_LIB(ccolamd, CCOLAMD,
   [CCOLAMD library not found.  This will result in some lack of functionality for sparse matrices.],
   [ccolamd.h suitesparse/ccolamd.h ccolamd/ccolamd.h],
   [ccolamd],
-  [], [don't use CCOLAMD library, disable some sparse matrix functionality])
+  [], [don't use CCOLAMD library, disable some sparse matrix functionality],
+  [],
+  CCOLAMD)
 
 ### Check for CHOLMOD library.
 dnl If your cholmod library requires cblas, then you will need to configure
@@ -2162,7 +2207,9 @@ OCTAVE_CHECK_LIB(cholmod, CHOLMOD,
   [CHOLMOD library not found.  This will result in some lack of functionality for sparse matrices.],
   [cholmod.h suitesparse/cholmod.h cholmod/cholmod.h],
   [cholmod${CHOLMOD_TAG}start],
-  [], [don't use CHOLMOD library, disable some sparse matrix functionality])
+  [], [don't use CHOLMOD library, disable some sparse matrix functionality],
+  [],
+  CHOLMOD)
 LIBS="$save_LIBS"
 
 ### Check for SPQR library.
@@ -2173,7 +2220,9 @@ OCTAVE_CHECK_LIB(spqr, SPQR,
   [SPQR library not found.  This will result in some lack of functionality for sparse matrices.],
   [SuiteSparseQR.hpp suitesparse/SuiteSparseQR.hpp],
   [SuiteSparseQR_C],
-  [C++], [don't use SPQR library, disable some sparse matrix functionality])
+  [C++], [don't use SPQR library, disable some sparse matrix functionality],
+  [],
+  SPQR)
 LIBS="$save_LIBS"
 
 ### Check for CXSparse library.
@@ -2182,7 +2231,9 @@ OCTAVE_CHECK_LIB(cxsparse, CXSparse,
   [CXSparse library not found.  This will result in some lack of functionality for sparse matrices.],
   [cs.h suitesparse/cs.h cxsparse/cs.h],
   [cs${CXSPARSE_TAG}sqr],
-  [C++], [don't use CXSparse library, disable some sparse matrix functionality])
+  [C++], [don't use CXSparse library, disable some sparse matrix functionality],
+  [],
+  CXSparse)
 
 if test -n "$CXSPARSE_LIBS"; then
   ## Additional check for CXSparse version >= 2.2
@@ -2204,7 +2255,9 @@ OCTAVE_CHECK_LIB([umfpack], UMFPACK,
   [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
   [umfpack.h suitesparse/umfpack.h umfpack/umfpack.h],
   [umfpack${UMFPACK_TAG}get_determinant],
-  [], [don't use UMFPACK, disable some sparse matrix functionality])
+  [], [don't use UMFPACK, disable some sparse matrix functionality],
+  [],
+  UMFPACK)
 CPPFLAGS="$save_CPPFLAGS"
 LIBS="$save_LIBS"
 
@@ -2218,7 +2271,9 @@ if test -z "$UMFPACK_LIBS"; then
     [UMFPACK not found.  This will result in some lack of functionality for sparse matrices.],
     [umfpack.h suitesparse/umfpack.h umfpack/umfpack.h],
     [umfpack${UMFPACK_TAG}get_determinant],
-    [], [don't use UMFPACK, disable some sparse matrix functionality])
+    [], [don't use UMFPACK, disable some sparse matrix functionality],
+    [],
+    UMFPACK)
   if test -n "$UMFPACK_LIBS"; then
     UMFPACK_LIBS="$UMFPACK_LIBS -lcblas"
   fi
@@ -2230,7 +2285,9 @@ fi
 OCTAVE_CHECK_LIB(klu, KLU,
   [KLU library not found.  This will result in some lack of functionality for sparse matrices.],
   [klu.h suitesparse/klu.h klu/klu.h], [klu_solve],
-  [], [don't use KLU library, disable some sparse matrix functionality])
+  [], [don't use KLU library, disable some sparse matrix functionality],
+  [],
+  KLU)
 
 ## Restore LIBS after all suitesparse configuration tests
 LIBS="$suitesparse_save_LIBS"
@@ -2676,7 +2733,7 @@ AC_ARG_ENABLE([docs],
    fi], [])
 
 if test $ENABLE_DOCS = yes; then
-  if test $opengl_graphics = no || test "$have_qt_opengl_offscreen" = no; then
+  if test $opengl_graphics = no; then
     if test -n "$warn_gnuplot"; then
       ENABLE_DOCS=no
       warn_docs_graphics="building documentation disabled because no suitable graphics toolkit is available; make dist will fail."
@@ -2730,10 +2787,10 @@ AM_CONDITIONAL([AMCOND_INSTALL_BUILD_LOGS], [test $install_build_logs = yes])
 
 ### Determine whether libraries should be linked with visibility attributes.
 
-ENABLE_LIB_VISIBILITY_FLAGS=no
+ENABLE_LIB_VISIBILITY_FLAGS=yes
 AC_ARG_ENABLE(lib-visibility-flags,
-  [AS_HELP_STRING([--enable-lib-visibility-flags],
-    [build libraries with visibility flags (export only symbols from API)])],
+  [AS_HELP_STRING([--disable-lib-visibility-flags],
+    [don't build libraries with visibility flags (export all symbols)])],
   [case $enableval in
      yes) ENABLE_LIB_VISIBILITY_FLAGS=yes ;;
      no) ENABLE_LIB_VISIBILITY_FLAGS=no ;;
@@ -2881,19 +2938,19 @@ if test $try_address_sanitizer_flags = yes; then
   ADDRESS_SANITIZER_ENABLED=yes
   for flag in $GCC_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
-      WARN_CFLAGS="$WARN_CFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CFLAGS])])
+      XTRA_CFLAGS="$XTRA_CFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to XTRA_CFLAGS])])
   done
   for flag in $GXX_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CXX_FLAG([$flag], [
-      WARN_CXXFLAGS="$WARN_CXXFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_CXXFLAGS])])
+      XTRA_CXXFLAGS="$XTRA_CXXFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to XTRA_CXXFLAGS])])
   done
   dnl FIXME: do we really need an LD-specific test, or is this good enough?
   for flag in $LD_ADDRESS_SANITIZER_FLAGS; do
     OCTAVE_CC_FLAG([$flag], [
-      WARN_LDFLAGS="$WARN_LDFLAGS $flag";
-      AC_MSG_RESULT([adding $flag to WARN_LDFLAGS])])
+      XTRA_LDFLAGS="$XTRA_LDFLAGS $flag";
+      AC_MSG_RESULT([adding $flag to XTRA_LDFLAGS])])
   done
 fi
 AC_SUBST(ADDRESS_SANITIZER_ENABLED)
@@ -3041,8 +3098,8 @@ OCTAVE_GUI_LINK_DEPS=""
 OCTAVE_GUI_LINK_OPTS=""
 
 if test $build_qt_gui = yes; then
-  LIBOCTGUI_LINK_DEPS="$QT_LIBS $QT_OPENGL_LIBS"
-  LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS $QT_OPENGL_LDFLAGS"
+  LIBOCTGUI_LINK_DEPS="$QT_LIBS"
+  LIBOCTGUI_LINK_OPTS="$QT_LDFLAGS"
 
   if test $link_all_deps = yes || test -n "$QT_LDFLAGS"; then
     LIBOCTGUI_LINK_DEPS="$LIBOCTGUI_LINK_DEPS $LIBOCTINTERP_LINK_DEPS"
@@ -3161,6 +3218,8 @@ AC_SUBST(ac_config_headers)
 AC_CONFIG_FILES([
   Makefile
   build-aux/check-subst-vars.sh:build-aux/check-subst-vars.in.sh
+  build-aux/find-defun-files.sh:build-aux/find-defun-files.in.sh
+  build-aux/find-files-with-tests.sh:build-aux/find-files-with-tests.in.sh
   doc/doxyhtml/Doxyfile
   libgnu/Makefile
   test/Makefile
@@ -3207,7 +3266,7 @@ Octave is now configured for $canonical_host_type
   Lex libraries:                 $LEXLIB
   LIBS:                          $LIBS
   LDFLAGS:                       $LDFLAGS
-  Extra LDFLAGS:                 $WARN_LDFLAGS
+  Extra LDFLAGS:                 $XTRA_LDFLAGS $WARN_LDFLAGS
 
   AMD CPPFLAGS:                  $AMD_CPPFLAGS
   AMD LDFLAGS:                   $AMD_LDFLAGS
@@ -3287,7 +3346,6 @@ Octave is now configured for $canonical_host_type
   Qt CPPFLAGS:                   $QT_CPPFLAGS
   Qt LDFLAGS:                    $QT_LDFLAGS
   Qt GUI libraries:              $QT_LIBS
-  Qt OpenGL libraries:           $QT_OPENGL_LIBS
   Qt moc:                        $MOC $MOCFLAGS
   Qt uic:                        $UIC $UICFLAGS
   Qt rcc:                        $RCC $RCCFLAGS

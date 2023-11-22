@@ -67,7 +67,7 @@ fstream::seek (off_t, int)
 // Return current stream position.
 
 off_t
-fstream::tell (void)
+fstream::tell ()
 {
   // Note: error is inherited from base_stream, not ::error.
   // This error function does not halt execution so "return ..." must exist.
@@ -78,19 +78,19 @@ fstream::tell (void)
 // Return nonzero if EOF has been reached on this stream.
 
 bool
-fstream::eof (void) const
+fstream::eof () const
 {
   return m_fstream.eof ();
 }
 
 void
-fstream::do_close (void)
+fstream::do_close ()
 {
   m_fstream.close ();
 }
 
 std::istream *
-fstream::input_stream (void)
+fstream::input_stream ()
 {
   std::istream *retval = nullptr;
 
@@ -101,7 +101,7 @@ fstream::input_stream (void)
 }
 
 std::ostream *
-fstream::output_stream (void)
+fstream::output_stream ()
 {
   std::ostream *retval = nullptr;
 

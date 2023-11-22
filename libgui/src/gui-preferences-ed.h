@@ -31,150 +31,103 @@
 #endif
 
 #include "gui-settings.h"
-#include "localcharset-wrapper.h"
 
 // Editor preferences
 
 // Lexer
 
-const gui_pref
-ed_color_mode ("editor/color_mode", QVariant (0));
+extern gui_pref ed_color_mode;
 
 const int ed_max_lexer_styles = 64;
 const int ed_max_style_number = 128;
 
 // Code completion
 
-const gui_pref
-ed_code_completion_octave_builtins ("editor/codeCompletion_octave_builtins",
-                                    QVariant (true));
+extern gui_pref ed_code_completion_octave_builtins;
 
-const gui_pref
-ed_code_completion_octave_functions ("editor/codeCompletion_octave_functions",
-                                     QVariant (true));
+extern gui_pref ed_code_completion_octave_functions;
 
-const gui_pref
-ed_code_completion_keywords ("editor/codeCompletion_keywords", QVariant (true));
+extern gui_pref ed_code_completion_keywords;
 
-const gui_pref
-ed_code_completion_document ("editor/codeCompletion_document", QVariant (true));
+extern gui_pref ed_code_completion_document;
 
-const gui_pref
-ed_code_completion_replace ("editor/codeCompletion_replace", QVariant (false));
+extern gui_pref ed_code_completion_replace;
 
-const gui_pref
-ed_code_completion_case ("editor/codeCompletion_case", QVariant (true));
+extern gui_pref ed_code_completion_case;
 
-const gui_pref
-ed_code_completion ("editor/codeCompletion", QVariant (true));
+extern gui_pref ed_code_completion;
 
-const gui_pref
-ed_code_completion_threshold ("editor/codeCompletion_threshold", QVariant (3));
+extern gui_pref ed_code_completion_threshold;
 
 // Code formatting
 
-const gui_pref
-ed_code_folding ("editor/code_folding", QVariant (true));
+extern gui_pref ed_code_folding;
 
-const gui_pref
-ed_auto_indent ("editor/auto_indent", QVariant (true));
+extern gui_pref ed_auto_indent;
 
-const gui_pref
-ed_tab_indents_line ("editor/tab_indents_line", QVariant (false));
+extern gui_pref ed_tab_indents_line;
 
-const gui_pref
-ed_backspace_unindents_line ("editor/backspace_unindents_line",
-                             QVariant (false));
+extern gui_pref ed_backspace_unindents_line;
 
-const gui_pref
-ed_show_indent_guides ("editor/show_indent_guides", QVariant (false));
+extern gui_pref ed_show_indent_guides;
 
-const gui_pref
-ed_indent_uses_tabs ("editor/indent_uses_tabs", QVariant (false));
+extern gui_pref ed_indent_uses_tabs;
 
-const gui_pref
-ed_indent_width ("editor/indent_width", QVariant (2));
+extern gui_pref ed_indent_width;
 
-const gui_pref
-ed_tab_width ("editor/tab_width", QVariant (2));
+extern gui_pref ed_tab_width;
 
-const gui_pref
-ed_auto_endif ("editor/auto_endif", QVariant (1));
+extern gui_pref ed_auto_endif;
 
 // Long line handling
 
-const gui_pref
-ed_long_line_column ("editor/long_line_column", QVariant (80));
+extern gui_pref ed_long_line_column;
 
-const gui_pref
-ed_long_line_marker ("editor/long_line_marker", QVariant (true));
+extern gui_pref ed_long_line_marker;
 
-const gui_pref
-ed_long_line_marker_line ("editor/long_line_marker_line", QVariant (true));
+extern gui_pref ed_long_line_marker_line;
 
-const gui_pref
-ed_long_line_marker_background ("editor/long_line_marker_background",
-                                QVariant (false));
+extern gui_pref ed_long_line_marker_background;
 
-const gui_pref
-ed_wrap_lines ("editor/wrap_lines", QVariant (false));
+extern gui_pref ed_wrap_lines;
 
-const gui_pref
-ed_break_lines ("editor/break_lines", QVariant (false));
+extern gui_pref ed_break_lines;
 
-const gui_pref
-ed_break_lines_comments ("editor/break_lines_comments", QVariant (false));
+extern gui_pref ed_break_lines_comments;
 
 // Other
 
-const gui_pref
-ed_highlight_all_occurrences ("editor/highlight_all_occurrences",
-                              QVariant (true));
+extern gui_pref ed_highlight_all_occurrences;
 
-const gui_pref
-ed_show_Line_numbers ("editor/showLineNumbers", QVariant (true));
+extern gui_pref ed_show_Line_numbers;
 
-const gui_pref
-ed_line_numbers_size ("editor/line_numbers_size", QVariant ( 0));
+extern gui_pref ed_line_numbers_size;
 
-const gui_pref
-ed_show_edit_status_bar ("editor/show_edit_status_bar", QVariant (true));
+extern gui_pref ed_show_edit_status_bar;
 
-const gui_pref
-ed_highlight_current_line ("editor/highlightCurrentLine", QVariant (true));
+extern gui_pref ed_highlight_current_line;
 
-const gui_pref
-ed_highlight_current_line_color ("editor/highlightCurrentLineColor",
-                                 QVariant (settings_color_no_change));
+extern gui_pref ed_highlight_current_line_color;
 
-const gui_pref
-ed_show_white_space ("editor/show_white_space", QVariant (false));
+extern gui_pref ed_show_white_space;
 
-const gui_pref
-ed_show_white_space_indent ("editor/show_white_space_indent", QVariant (false));
+extern gui_pref ed_show_white_space_indent;
 
-const gui_pref
-ed_show_line_numbers ("editor/showLineNumbers", QVariant (true));
+extern gui_pref ed_show_line_numbers;
 
-const gui_pref
-ed_show_eol_chars ("editor/show_eol_chars", QVariant (false));
+extern gui_pref ed_show_eol_chars;
 
-const gui_pref
-ed_show_toolbar ("editor/show_toolbar", QVariant (true));
+extern gui_pref ed_show_toolbar;
 
-const gui_pref
-ed_show_hscroll_bar ("editor/show_hscroll_bar", QVariant (true));
+extern gui_pref ed_show_hscroll_bar;
 
 // Octave comment strings
 
-const gui_pref
-ed_comment_str_old ("editor/octave_comment_string", QVariant (0));
+extern gui_pref ed_comment_str_old;
 
-const gui_pref
-ed_comment_str ("editor/oct_comment_str", QVariant (0));
+extern gui_pref ed_comment_str;
 
-const gui_pref
-ed_uncomment_str ("editor/oct_uncomment_str", QVariant (1 + 2 + 4 + 8));
+extern gui_pref ed_uncomment_str;
 
 const QString
 ed_last_comment_str ("editor/oct_last_comment_str");
@@ -192,23 +145,17 @@ const int ed_comment_strings_count = 5;
 
 // Session data
 
-const gui_pref
-ed_restore_session ("editor/restoreSession", QVariant (true));
+extern gui_pref ed_restore_session;
 
-const gui_pref
-ed_session_names ("editor/savedSessionTabs", QVariant (QStringList ()));
+extern gui_pref ed_session_names;
 
-const gui_pref
-ed_session_enc ("editor/saved_session_encodings", QVariant (QStringList ()));
+extern gui_pref ed_session_enc;
 
-const gui_pref
-ed_session_ind ("editor/saved_session_tab_index", QVariant (QStringList ()));
+extern gui_pref ed_session_ind;
 
-const gui_pref
-ed_session_lines ("editor/saved_session_lines", QVariant (QStringList ()));
+extern gui_pref ed_session_lines;
 
-const gui_pref
-ed_session_bookmarks ("editor/saved_session_bookmarks", QVariant (QStringList ()));
+extern gui_pref ed_session_bookmarks;
 
 // Tabs
 const QStringList
@@ -219,22 +166,17 @@ ed_tab_position_names = {
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Right")
 };
 
-const gui_pref
-ed_tab_position ("editor/tab_position", QVariant (QTabWidget::North));
+extern gui_pref ed_tab_position;
 
-const gui_pref
-ed_tabs_rotated ("editor/tabs_rotated", QVariant (false));
+extern gui_pref ed_tabs_rotated;
 
-const gui_pref
-ed_tabs_max_width ("editor/tabs_max_width", QVariant (0));
+extern gui_pref ed_tabs_max_width;
 
 // File handling
 
-const gui_pref
-ed_force_newline ("editor/force_newline", QVariant (true));
+extern gui_pref ed_force_newline;
 
-const gui_pref
-ed_rm_trailing_spaces ("editor/rm_trailing_spaces", QVariant (true));
+extern gui_pref ed_rm_trailing_spaces;
 
 #if defined (HAVE_QSCINTILLA)
 #if defined (Q_OS_WIN32)
@@ -246,30 +188,21 @@ const int os_eol_mode = QsciScintilla::EolUnix;
 const int os_eol_mode = 2;
 #endif
 
-const gui_pref
-ed_default_eol_mode ("editor/default_eol_mode", QVariant (os_eol_mode));
+extern gui_pref ed_default_eol_mode;
 
-const gui_pref
-ed_show_dbg_file ("editor/show_dbg_file", QVariant (true));
+extern gui_pref ed_show_dbg_file;
 
-const gui_pref
-ed_default_enc ("editor/default_encoding", QVariant ("UTF-8"));
+extern gui_pref ed_default_enc;
 
-const gui_pref
-ed_create_new_file ("editor/create_new_file", QVariant (false));
+extern gui_pref ed_create_new_file;
 
-const gui_pref
-ed_hiding_closes_files ("editor/hiding_closes_files", QVariant (false));
+extern gui_pref ed_hiding_closes_files;
 
-const gui_pref
-ed_always_reload_changed_files ("editor/always_reload_changed_files",
-                                QVariant (false));
+extern gui_pref ed_always_reload_changed_files;
 
-const gui_pref
-ed_mru_file_list ("editor/mru_file_list", QVariant ());
+extern gui_pref ed_mru_file_list;
 
-const gui_pref
-ed_mru_file_encodings ("editor/mru_file_encodings", QVariant ());
+extern gui_pref ed_mru_file_encodings;
 
 // The find dialog
 
@@ -286,15 +219,12 @@ enum find_dialog_options
 };
 
 // Dialog position, the default will be calculated from the editor's geometry
-const gui_pref
-ed_fdlg_pos ("editor/fdgl_pos", QVariant (QPoint (0, 0)));
+extern gui_pref ed_fdlg_pos;
 
-const gui_pref
-ed_fdlg_opts ("editor/fdgl_opts", QVariant (FIND_DLG_WRAP));
+extern gui_pref ed_fdlg_opts;
 
-const gui_pref
-ed_fdlg_search ("editor/fdgl_search", QVariant ());
-const gui_pref
-ed_fdlg_replace ("editor/fdgl_replace", QVariant ());
+extern gui_pref ed_fdlg_search;
+
+extern gui_pref ed_fdlg_replace;
 
 #endif

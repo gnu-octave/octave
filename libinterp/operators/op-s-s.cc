@@ -47,7 +47,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUNOP (not, scalar)
 {
-  const octave_scalar& v = dynamic_cast<const octave_scalar&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v, a);
   double x = v.scalar_value ();
   if (octave::math::isnan (x))
     octave::err_nan_to_logical_conversion ();
@@ -71,8 +71,8 @@ DEFBINOP_OP (mul, scalar, scalar, *)
 
 DEFBINOP (div, scalar, scalar)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v2, a2);
 
   return octave_value (v1.double_value () / v2.double_value ());
 }
@@ -81,8 +81,8 @@ DEFBINOP_FN (pow, scalar, scalar, xpow)
 
 DEFBINOP (ldiv, scalar, scalar)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v2, a2);
 
   return octave_value (v2.double_value () / v1.double_value ());
 }
@@ -98,8 +98,8 @@ DEFBINOP_OP (el_mul, scalar, scalar, *)
 
 DEFBINOP (el_div, scalar, scalar)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v2, a2);
 
   return octave_value (v1.double_value () / v2.double_value ());
 }
@@ -108,8 +108,8 @@ DEFBINOP_FN (el_pow, scalar, scalar, xpow)
 
 DEFBINOP (el_ldiv, scalar, scalar)
 {
-  const octave_scalar& v1 = dynamic_cast<const octave_scalar&> (a1);
-  const octave_scalar& v2 = dynamic_cast<const octave_scalar&> (a2);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v1, a1);
+  OCTAVE_CAST_BASE_VALUE (const octave_scalar&, v2, a2);
 
   return octave_value (v2.double_value () / v1.double_value ());
 }

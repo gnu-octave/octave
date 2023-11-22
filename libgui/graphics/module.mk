@@ -1,5 +1,3 @@
-if AMCOND_BUILD_QT_GRAPHICS
-
 OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-ButtonControl.cc \
   %reldir%/moc-ButtonGroup.cc \
@@ -9,6 +7,7 @@ OCTAVE_GUI_GRAPHICS_MOC = \
   %reldir%/moc-EditControl.cc \
   %reldir%/moc-Figure.cc \
   %reldir%/moc-FigureWindow.cc \
+  %reldir%/moc-GLCanvas.cc \
   %reldir%/moc-ListBoxControl.cc \
   %reldir%/moc-Menu.cc \
   %reldir%/moc-Object.cc \
@@ -128,7 +127,7 @@ nodist_%canon_reldir%_libgraphics_la_SOURCES = $(libgraphics_MOC)
   $(FONTCONFIG_CPPFLAGS) \
   $(HDF5_CPPFLAGS) \
   @OCTGUI_DLL_DEFS@ \
-  @QT_OPENGL_CPPFLAGS@ \
+  @QT_CPPFLAGS@ \
   -Ilibgui/graphics -I$(srcdir)/libgui/graphics \
   -Ilibgui/src -I$(srcdir)/libgui/src \
   -Iliboctave \
@@ -153,5 +152,3 @@ libgui_CLEANFILES += \
   $(libgraphics_MOC) \
   $(libgraphics_MOC_H) \
   $(libgraphics_UI_H)
-
-endif

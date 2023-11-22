@@ -49,6 +49,7 @@
 #include "error.h"
 #include "errwarn.h"
 #include "interpreter-private.h"
+#include "interpreter.h"
 #include "oct-map.h"
 #include "ov-class.h"
 #include "ov-complex.h"
@@ -60,7 +61,6 @@
 #include "ov.h"
 #include "ovl.h"
 #include "pager.h"
-#include "parse.h"
 #include "pt-mat.h"
 #include "utils.h"
 #include "variables.h"
@@ -1680,7 +1680,9 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
   std::string cname = ov.class_name ();
 
-  symbol_table& symtab = __get_symbol_table__ ();
+  interpreter& interp = __get_interpreter__ ();
+
+  symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value fcn = symtab.find_method (dtype, cname);
 
@@ -1690,7 +1692,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = feval (fcn, ovl (ov), 1);
+          result = interp.feval (fcn, ovl (ov), 1);
         }
       catch (execution_exception& ee)
         {
@@ -1718,7 +1720,7 @@ attempt_type_conversion (const octave_value& ov, std::string dtype)
 
       try
         {
-          result = feval (fcn, ovl (ov), 1);
+          result = interp.feval (fcn, ovl (ov), 1);
         }
       catch (execution_exception& ee)
         {
@@ -1746,7 +1748,9 @@ do_class_concat (const octave_value_list& ovl,
 
   std::string dtype = get_dispatch_type (ovl);
 
-  symbol_table& symtab = __get_symbol_table__ ();
+  interpreter& interp = __get_interpreter__ ();
+
+  symbol_table& symtab = interp.get_symbol_table ();
 
   octave_value fcn = symtab.find_method (cattype, dtype);
 
@@ -1758,7 +1762,7 @@ do_class_concat (const octave_value_list& ovl,
 
       try
         {
-          tmp2 = feval (fcn, ovl, 1);
+          tmp2 = interp.feval (fcn, ovl, 1);
         }
       catch (execution_exception& ee)
         {
@@ -4635,6 +4639,7 @@ val = ones (m,n, "uint8")
 %!assert (ones (2, "like", speye (2)), sparse ([1, 1; 1, 1]))
 %!assert (ones (2, "like", sparse (1i)), sparse (complex ([1, 1; 1, 1])))
 
+## Note: Matlab compatibility requires using 0 for negative dimensions.
 %!assert (size (ones (1, -2, 2)), [1, 0, 2])
 
 ## Test input validation
@@ -4789,6 +4794,9 @@ DEFALIAS (inf, Inf);
 %!assert (Inf (2, 3, "single"), single ([Inf, Inf, Inf; Inf, Inf, Inf]))
 %!assert (Inf (3, 2, "single"), single ([Inf, Inf; Inf, Inf; Inf, Inf]))
 %!assert (size (inf (3, 4, 5, "single")), [3, 4, 5])
+
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (Inf (2, -3, 2)), [2, 0, 2])
 
 %!assert (Inf (2, 2, "like", speye (2)), sparse ([Inf, Inf; Inf, Inf]))
 %!assert (Inf (2, 2, "like", complex (ones (2, 2))), [Inf, Inf; Inf, Inf])
@@ -5045,6 +5053,10 @@ type and may be either @qcode{"double"} or @qcode{"single"}.
 %!assert (eps (single (NaN)), single (NaN))
 %!assert (eps (single ([1/2 1 2 realmax("single") 0 realmin("single")/2 realmin("single")/16 Inf NaN])),
 %!        single ([2^-24 2^-23 2^-22 2^104 2^-149 2^-149 2^-149 NaN NaN]))
+
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (eps (2, -3, 2)), [2, 0, 2])
+
 %!error <X must be of a floating point type> eps (uint8 ([0 1 2]))
 %!error <must be scalar> eps (1:3, 1)
 %!error <must be scalar> eps (1, 1:3)
@@ -5534,11 +5546,14 @@ definitions are for compatibility with @sc{matlab}.
 %!assert (full (eye (3)), [1, 0, 0; 0, 1, 0; 0, 0, 1])
 %!assert (full (eye (2, 3)), [1, 0, 0; 0, 1, 0])
 
-%!assert (full (eye (3,"single")), single ([1, 0, 0; 0, 1, 0; 0, 0, 1]))
-%!assert (full (eye (2, 3,"single")), single ([1, 0, 0; 0, 1, 0]))
+%!assert (full (eye (3, "single")), single ([1, 0, 0; 0, 1, 0; 0, 0, 1]))
+%!assert (full (eye (2, 3, "single")), single ([1, 0, 0; 0, 1, 0]))
 
 %!assert (eye (3, "int8"), int8 ([1, 0, 0; 0, 1, 0; 0, 0, 1]))
 %!assert (eye (2, 3, "int8"), int8 ([1, 0, 0; 0, 1, 0]))
+
+## Note: Matlab compatibility requires using 0 for negative dimensions.
+%!assert (size (eye (2, -3)), [2, 0])
 
 ## Test input validation
 %!error eye (1, 2, 3)
@@ -5741,27 +5756,41 @@ is returned.
 %!assert (numel (linspace (0, 1, 2-eps)), 1)
 %!assert (linspace (10, 20, 2.1), [10 20])
 %!assert (linspace (10, 20, 2.9), [10 20])
-%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 %!assert (linspace (Inf, Inf, 3), [Inf, Inf, Inf])
 %!assert (linspace (-Inf, -Inf, 3), [-Inf, -Inf, -Inf])
 %!assert (linspace (-Inf, Inf, 3), [-Inf, 0, Inf])
+## Octave prefers to return NaN which indicates failure of algorithm.
+%!assert (linspace (-Inf, Inf, 4), [-Inf, NaN, NaN, Inf])
+%!assert (linspace (-Inf, 0, 3), [-Inf, NaN, 0])
+%!assert (linspace (-Inf, 0, 4), [-Inf, NaN, NaN, 0])
 %!assert (linspace (Inf + 1i, Inf + 1i, 3), [Inf + 1i, Inf + 1i, Inf + 1i])
-%!assert (linspace (-Inf + 1i, Inf + 1i, 3), [-Inf + 1i, NaN + 1i, Inf + 1i])
+%!assert (linspace (-Inf - 1i, Inf + 1i, 3), [-Inf - 1i, 0 + 0i, Inf + 1i])
+%!assert (linspace (-Inf - 1i, Inf + 2i, 3), [-Inf - 1i, NaN + 0.5i, Inf + 2i])
+%!assert (linspace (-Inf - 3i, Inf + 0i, 4),
+%!        [-Inf - 3i, NaN - 2i, NaN - 1i, Inf + 0i])
+%!assert (linspace (complex (-1, -Inf), complex (1, Inf), 3),
+%!          [complex(-1, -Inf), 0 + 0i, complex(1, Inf)])
+%!assert (linspace (complex (-1, -Inf), complex (2, Inf), 3),
+%!          [complex(-1, -Inf), complex(0.5, NaN), complex(2, Inf)])
+%!assert (linspace (complex (-3, -Inf), complex (0, Inf), 4),
+%!        [complex(-3, -Inf), complex(-2, NaN), complex(-1, NaN), complex(0, Inf)])
 
 ## FIXME: Octave is not fully Matlab-compatible for some combinations of
 ##        Inf/-Inf endpoints.  See bug #56933.  This was dubbed "Won't Fix"
-##        so these tests have been removed from the test suite by commenting
-##        them out.  If the behavior in the future is made compatible these
-##        tests can be re-instated.
+##        as Octave prefers to return NaN for some of these conditions to
+##        better reflect that the algorithm has failed.  If the behavior in
+##        the future is made compatible these tests can be re-instated.
 ##%!assert <56933> (linspace (-Inf, Inf, 4), [-Inf, -Inf, Inf, Inf])
 ##%!assert <56933> (linspace (-Inf, Inf, 5), [-Inf, -Inf, 0, Inf, Inf])
 ##%!assert <56933> (linspace (0, Inf, 4), [0, Inf, Inf, Inf])
 ##%!assert <56933> (linspace (0, -Inf, 4), [0, -Inf, -Inf, -Inf])
 ##%!assert <56933> (linspace (-Inf, 0, 4), [-Inf, NaN, NaN, 0])
 ##%!assert <56933> (linspace (Inf, 0, 4), [Inf, NaN, NaN, 0])
+##%!assert (1 ./ linspace (-0, 0, 4), [-Inf, Inf, Inf, Inf])
 
-%!error linspace ()
-%!error linspace (1, 2, 3, 4)
+## Test input validation
+%!error <Invalid call> linspace ()
+%!error <Invalid call> linspace (1, 2, 3, 4)
 %!error <N must be a scalar> linspace (1, 2, [3, 4])
 %!error <START, END must be scalars or vectors> linspace (ones (2,2), 2, 3)
 %!error <START, END must be scalars or vectors> linspace (2, ones (2,2), 3)
@@ -6528,7 +6557,7 @@ cumulatively from left to right:
 (@dots{}((@var{A1} * @var{A2}) * @var{A3}) * @dots{})
 @end example
 
-@seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower}
+@seealso{times, plus, minus, rdivide, mrdivide, mldivide, mpower, tensorprod}
 @end deftypefn */)
 {
   return binary_assoc_op_defun_body (octave_value::op_mul,

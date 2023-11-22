@@ -43,13 +43,15 @@ procstreambase : virtual public std::ios
 {
 public:
 
-  procstreambase (void) : m_pb () { pb_init (); }
+  procstreambase () : m_pb () { pb_init (); }
 
   procstreambase (const std::string& name, int mode);
 
   procstreambase (const char *name, int mode);
 
-  ~procstreambase (void) { close (); }
+  OCTAVE_DISABLE_COPY_MOVE (procstreambase)
+
+  ~procstreambase () { close (); }
 
   void open (const std::string& name, int mode)
   {
@@ -58,28 +60,24 @@ public:
 
   void open (const char *name, int mode);
 
-  int is_open (void) const { return m_pb.is_open (); }
+  int is_open () const { return m_pb.is_open (); }
 
-  int close (void);
+  int close ();
 
-  pid_t pid (void) const { return m_pb.pid (); }
+  pid_t pid () const { return m_pb.pid (); }
 
-  int file_number (void) const { return m_pb.file_number (); }
+  int file_number () const { return m_pb.file_number (); }
 
 private:
 
   procbuf m_pb;
 
-  void pb_init (void)
+  void pb_init ()
   {
     // Explicit initialization of the std::ios object is needed.
     // FIXME: is there a better way to organize these classes?
     init (&m_pb);
   }
-
-  procstreambase (const procstreambase&);
-
-  procstreambase& operator = (const procstreambase&);
 };
 
 class
@@ -88,7 +86,7 @@ iprocstream : public std::istream, public procstreambase
 {
 public:
 
-  iprocstream (void) : std::istream (nullptr), procstreambase () { }
+  iprocstream () : std::istream (nullptr), procstreambase () { }
 
   iprocstream (const std::string& name, int mode = std::ios::in)
     : std::istream (nullptr), procstreambase (name, mode)
@@ -98,7 +96,9 @@ public:
     : std::istream (nullptr), procstreambase (name, mode)
   { }
 
-  ~iprocstream (void) = default;
+  OCTAVE_DISABLE_COPY_MOVE (iprocstream)
+
+  ~iprocstream () = default;
 
   void open (const std::string& name, int mode = std::ios::in)
   {
@@ -109,12 +109,6 @@ public:
   {
     procstreambase::open (name, mode);
   }
-
-private:
-
-  iprocstream (const iprocstream&);
-
-  iprocstream& operator = (const iprocstream&);
 };
 
 class
@@ -123,7 +117,7 @@ oprocstream : public std::ostream, public procstreambase
 {
 public:
 
-  oprocstream (void) : std::ostream (nullptr), procstreambase () { }
+  oprocstream () : std::ostream (nullptr), procstreambase () { }
 
   oprocstream (const std::string& name, int mode = std::ios::out)
     : std::ostream (nullptr), procstreambase (name, mode) { }
@@ -131,7 +125,9 @@ public:
   oprocstream (const char *name, int mode = std::ios::out)
     : std::ostream (nullptr), procstreambase (name, mode) { }
 
-  ~oprocstream (void) = default;
+  OCTAVE_DISABLE_COPY_MOVE (oprocstream)
+
+  ~oprocstream () = default;
 
   void open (const std::string& name, int mode = std::ios::out)
   {
@@ -142,12 +138,6 @@ public:
   {
     procstreambase::open (name, mode);
   }
-
-private:
-
-  oprocstream (const oprocstream&);
-
-  oprocstream& operator = (const oprocstream&);
 };
 
 class
@@ -156,7 +146,7 @@ procstream : public std::iostream, public procstreambase
 {
 public:
 
-  procstream (void) : std::iostream (nullptr), procstreambase () { }
+  procstream () : std::iostream (nullptr), procstreambase () { }
 
   procstream (const std::string& name, int mode)
     : std::iostream (nullptr), procstreambase (name, mode)
@@ -166,7 +156,9 @@ public:
     : std::iostream (nullptr), procstreambase (name, mode)
   { }
 
-  ~procstream (void) = default;
+  OCTAVE_DISABLE_COPY_MOVE (procstream)
+
+  ~procstream () = default;
 
   void open (const std::string& name, int mode)
   {
@@ -177,30 +169,8 @@ public:
   {
     procstreambase::open (name, mode);
   }
-
-private:
-
-  procstream (const procstream&);
-
-  procstream& operator = (const procstream&);
 };
 
 OCTAVE_END_NAMESPACE(octave)
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-
-OCTAVE_DEPRECATED (7, "use 'octave::procstreambase' instead")
-typedef octave::procstreambase procstreambase;
-
-OCTAVE_DEPRECATED (7, "use 'octave::iprocstream' instead")
-typedef octave::iprocstream iprocstream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::oprocstream' instead")
-typedef octave::oprocstream oprocstream;
-
-OCTAVE_DEPRECATED (7, "use 'octave::procstream' instead")
-typedef octave::procstream procstream;
-
-#endif
 
 #endif

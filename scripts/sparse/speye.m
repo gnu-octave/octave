@@ -26,36 +26,41 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{s} =} speye (@var{m}, @var{n})
 ## @deftypefnx {} {@var{s} =} speye (@var{m})
-## @deftypefnx {} {@var{s} =} speye (@var{sz})
+## @deftypefnx {} {@var{s} =} speye ([@var{m}, @var{n}])
 ## Return a sparse identity matrix of size @var{m}x@var{n}.
 ##
 ## The implementation is significantly more efficient than
-## @code{sparse (eye (@var{m}))} as the full matrix is not constructed.
+## @w{@code{sparse (eye (@var{m}))}} as the full matrix is not constructed.
 ##
-## Called with a single argument a square matrix of size
-## @var{m}-by-@var{m} is created.  If called with a single vector argument
-## @var{sz}, this argument is taken to be the size of the matrix to create.
+## When called with a single argument, a square matrix of size
+## @var{m}-by-@var{m} is created.  If called with a single vector argument,
+## this argument is taken to be the size of the matrix to create.
 ## @seealso{sparse, spdiags, eye}
 ## @end deftypefn
 
 function s = speye (m, n)
 
   if (nargin == 1)
-    if (isvector (m) && length (m) == 2)
-      n = m(2);
-      m = m(1);
-    elseif (isscalar (m))
+    if (! isvector (m) || numel (m) > 2)
+      print_usage ();
+    endif
+
+    if (isscalar (m))
       n = m;
     else
-      error ("speye: invalid matrix dimension");
+      n = m(2);
+      m = m(1);
     endif
   else
-    if (! isscalar (m) || ! isscalar (n))
-      error ("speye: invalid matrix dimension");
+    if (! (isscalar (m) && isscalar (n)))
+      error ("speye: M and N must be scalar dimensions");
     endif
   endif
 
-  lo = min ([m, n]);
+  ## Note: Matlab compatibility requires using 0 for negative dimensions.
+  m = ifelse (m < 0, 0, m);
+  n = ifelse (n < 0, 0, n);
+  lo = min (m, n);
   s = sparse (1:lo, 1:lo, 1, m, n);
 
 endfunction
@@ -66,3 +71,10 @@ endfunction
 %!assert (speye (2,4), sparse (1:2,1:2,1,2,4))
 %!assert (speye (4,2), sparse (1:2,1:2,1,4,2))
 %!assert (speye ([4,2]), sparse (1:2,1:2,1,4,2))
+%!assert (speye (2, -3), sparse (2, 0))
+
+## Test input validation
+%!error <Invalid call> speye (ones (2,2))
+%!error <Invalid call> speye ([1, 2, 3])
+%!error <M and N must be scalar dimensions> speye ([1, 2], 3)
+%!error <M and N must be scalar dimensions> speye (1, [2, 3])

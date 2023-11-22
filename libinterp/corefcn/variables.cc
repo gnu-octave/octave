@@ -60,7 +60,6 @@
 #include "ov-class.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#include "parse.h"
 #include "pt-eval.h"
 #include "syminfo.h"
 #include "symtab.h"
@@ -558,7 +557,7 @@ wants_local_change (const octave_value_list& args, int& nargin)
 }
 
 static octave::unwind_protect *
-curr_fcn_unwind_protect_frame (void)
+curr_fcn_unwind_protect_frame ()
 {
   octave::tree_evaluator& tw = octave::__get_evaluator__ ();
 
@@ -1236,6 +1235,11 @@ variables.
 
   string_vector argv = args.make_argv ("clear");
 
+  // FIXME: This action should probably happen in the functions that
+  // are called below, not here.
+  // Mark any function cache in use by the VM as invalid
+  octave::load_path::signal_clear_fcn_cache ();
+
   if (argc == 1)
     {
       do_clear_variables (interp, argv, argc, true);
@@ -1430,7 +1434,7 @@ maybe_missing_function_hook (const std::string& name)
       Vmissing_function_hook.clear ();
 
       // Call.
-      octave_value_list tmp = octave::feval (fcn_name, octave_value (name), 1);
+      octave_value_list tmp = interp.feval (fcn_name, octave_value (name), 1);
 
       if (tmp.length () == 1 && tmp(0).is_string ())
         return tmp(0).string_value ();

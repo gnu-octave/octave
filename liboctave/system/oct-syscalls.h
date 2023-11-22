@@ -51,17 +51,17 @@ extern OCTAVE_API pid_t vfork (std::string&);
 
 extern OCTAVE_API pid_t getpgrp (std::string&);
 
-extern OCTAVE_API pid_t getpid (void);
+extern OCTAVE_API pid_t getpid ();
 
-extern OCTAVE_API pid_t getppid (void);
+extern OCTAVE_API pid_t getppid ();
 
-extern OCTAVE_API gid_t getgid (void);
+extern OCTAVE_API gid_t getgid ();
 
-extern OCTAVE_API gid_t getegid (void);
+extern OCTAVE_API gid_t getegid ();
 
-extern OCTAVE_API uid_t getuid (void);
+extern OCTAVE_API uid_t getuid ();
 
-extern OCTAVE_API uid_t geteuid (void);
+extern OCTAVE_API uid_t geteuid ();
 
 extern OCTAVE_API int pipe (int *);
 extern OCTAVE_API int pipe (int *, std::string&);
@@ -69,7 +69,7 @@ extern OCTAVE_API int pipe (int *, std::string&);
 extern OCTAVE_API pid_t waitpid (pid_t, int *status, int);
 extern OCTAVE_API pid_t waitpid (pid_t, int *status, int, std::string&);
 
-extern OCTAVE_API int wcontinue (void);
+extern OCTAVE_API int wcontinue ();
 
 extern OCTAVE_API int wcoredump (int status);
 
@@ -83,13 +83,13 @@ extern OCTAVE_API bool wifstopped (int status);
 
 extern OCTAVE_API int wexitstatus (int status);
 
-extern OCTAVE_API int wnohang (void);
+extern OCTAVE_API int wnohang ();
 
 extern OCTAVE_API int wstopsig (int status);
 
 extern OCTAVE_API int wtermsig (int status);
 
-extern OCTAVE_API int wuntraced (void);
+extern OCTAVE_API int wuntraced ();
 
 extern OCTAVE_API int kill (pid_t, int);
 extern OCTAVE_API int kill (pid_t, int, std::string&);

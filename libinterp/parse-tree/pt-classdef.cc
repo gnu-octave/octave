@@ -95,7 +95,7 @@ tree_metaclass_query::evaluate (tree_evaluator&, int)
 
 // Classdef attribute_list
 
-tree_classdef_attribute_list::~tree_classdef_attribute_list (void)
+tree_classdef_attribute_list::~tree_classdef_attribute_list ()
 {
   while (! empty ())
     {
@@ -109,7 +109,7 @@ tree_classdef_attribute_list::~tree_classdef_attribute_list (void)
 
 // Classdef superclass_list
 
-tree_classdef_superclass_list::~tree_classdef_superclass_list (void)
+tree_classdef_superclass_list::~tree_classdef_superclass_list ()
 {
   while (! empty ())
     {
@@ -143,26 +143,27 @@ tree_classdef_property::tree_classdef_property (tree_arg_validation *av,
     m_doc_string (check_for_doc_string (m_comments))
 { }
 
-tree_classdef_property::~tree_classdef_property (void)
+tree_classdef_property::~tree_classdef_property ()
 {
   delete m_av;
+  delete m_comments;
 }
 
-tree_identifier *tree_classdef_property::ident (void)
+tree_identifier *tree_classdef_property::ident ()
 {
   tree_expression *id_expr = m_av->identifier_expression ();
 
   return dynamic_cast<tree_identifier *> (id_expr);
 }
 
-tree_expression *tree_classdef_property::expression (void)
+tree_expression *tree_classdef_property::expression ()
 {
   return m_av->initializer_expression ();
 }
 
 // Classdef property_list
 
-tree_classdef_property_list::~tree_classdef_property_list (void)
+tree_classdef_property_list::~tree_classdef_property_list ()
 {
   while (! empty ())
     {
@@ -188,7 +189,7 @@ tree_classdef_event::tree_classdef_event (tree_identifier *i,
 
 // Classdef events_list
 
-tree_classdef_events_list::~tree_classdef_events_list (void)
+tree_classdef_events_list::~tree_classdef_events_list ()
 {
   while (! empty ())
     {
@@ -211,7 +212,7 @@ tree_classdef_enum::tree_classdef_enum (tree_identifier *i,
 
 // Classdef enum_list
 
-tree_classdef_enum_list::~tree_classdef_enum_list (void)
+tree_classdef_enum_list::~tree_classdef_enum_list ()
 {
   while (! empty ())
     {
@@ -225,7 +226,7 @@ tree_classdef_enum_list::~tree_classdef_enum_list (void)
 
 // Classdef body
 
-tree_classdef_body::tree_classdef_body (void)
+tree_classdef_body::tree_classdef_body ()
   : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
 { }
 
@@ -257,7 +258,7 @@ tree_classdef_body::tree_classdef_body (tree_classdef_enum_block *enb)
   append (enb);
 }
 
-tree_classdef_body::~tree_classdef_body (void)
+tree_classdef_body::~tree_classdef_body ()
 {
   while (! m_properties_lst.empty ())
     {

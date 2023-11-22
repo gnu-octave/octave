@@ -13,6 +13,7 @@ FCN_FILE_DIRS += \
   %reldir%/__unimplemented__.m \
   %reldir%/ans.m \
   %reldir%/bessel.m \
+  %reldir%/bytecode.m \
   %reldir%/debug.m \
   %reldir%/doc.m \
   %reldir%/doc_cache_create.m \

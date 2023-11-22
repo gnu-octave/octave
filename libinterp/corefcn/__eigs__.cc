@@ -53,6 +53,10 @@ struct eigs_callback
 {
 public:
 
+  eigs_callback (octave::interpreter& interp)
+    : m_interpreter (interp)
+  { }
+
   ColumnVector
   eigs_func (const ColumnVector& x, int& eigs_error);
 
@@ -60,6 +64,8 @@ public:
   eigs_complex_func (const ComplexColumnVector& x, int& eigs_error);
 
   //--------
+
+  octave::interpreter& m_interpreter;
 
   // Pointer for user defined function.
   octave_value m_eigs_fcn;
@@ -84,7 +90,7 @@ eigs_callback::eigs_func (const ColumnVector& x, int& eigs_error)
 
       try
         {
-          tmp = octave::feval (m_eigs_fcn, args, 1);
+          tmp = m_interpreter.feval (m_eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& ee)
         {
@@ -125,7 +131,7 @@ eigs_callback::eigs_complex_func (const ComplexColumnVector& x,
 
       try
         {
-          tmp = octave::feval (m_eigs_fcn, args, 1);
+          tmp = m_interpreter.feval (m_eigs_fcn, args, 1);
         }
       catch (octave::execution_exception& ee)
         {
@@ -213,7 +219,7 @@ Undocumented internal function.
   ComplexColumnVector cresid;
   octave_idx_type info = 1;
 
-  eigs_callback callback;
+  eigs_callback callback (interp);
 
   unwind_protect_var<int> restore_var (call_depth);
   call_depth++;

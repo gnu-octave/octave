@@ -42,22 +42,26 @@ Quad : public Quad_options
 {
 public:
 
+  Quad () = delete;
+
   Quad (integrand_fcn fcn)
     : Quad_options (), m_f (fcn), m_ff () { }
 
   Quad (float_integrand_fcn fcn)
     : Quad_options (), m_f (), m_ff (fcn) { }
 
-  virtual ~Quad (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE (Quad)
 
-  virtual double integrate (void)
+  virtual ~Quad () = default;
+
+  virtual double integrate ()
   {
     octave_idx_type ier, neval;
     double abserr;
     return do_integrate (ier, neval, abserr);
   }
 
-  virtual float float_integrate (void)
+  virtual float float_integrate ()
   {
     octave_idx_type ier, neval;
     float abserr;
@@ -120,6 +124,8 @@ DefQuad : public Quad
 {
 public:
 
+  DefQuad () = delete;
+
   DefQuad (integrand_fcn fcn)
     : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0), m_singularities ()
   { }
@@ -137,7 +143,7 @@ public:
     : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0),
       m_singularities (sing) { }
 
-  ~DefQuad (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (DefQuad)
 
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
@@ -161,13 +167,15 @@ public:
 
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
+  IndefQuad () = delete;
+
   IndefQuad (integrand_fcn fcn)
     : Quad (fcn), m_bound (0.0), m_type (bound_to_inf) { }
 
   IndefQuad (integrand_fcn fcn, double b, IntegralType t)
     : Quad (fcn), m_bound (b), m_type (t) { }
 
-  ~IndefQuad (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (IndefQuad)
 
   double do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr);
@@ -187,6 +195,8 @@ FloatDefQuad : public Quad
 {
 public:
 
+  FloatDefQuad () = delete;
+
   FloatDefQuad (float_integrand_fcn fcn)
     : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0), m_singularities ()
   { }
@@ -204,7 +214,7 @@ public:
     : Quad (fcn), m_lower_limit (0.0), m_upper_limit (1.0),
       m_singularities (sing) { }
 
-  ~FloatDefQuad (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (FloatDefQuad)
 
   OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
                                        octave_idx_type& neval, double& abserr);
@@ -228,13 +238,15 @@ public:
 
   enum IntegralType { bound_to_inf, neg_inf_to_bound, doubly_infinite };
 
+  FloatIndefQuad () = delete;
+
   FloatIndefQuad (float_integrand_fcn fcn)
     : Quad (fcn), m_bound (0.0), m_type (bound_to_inf) { }
 
   FloatIndefQuad (float_integrand_fcn fcn, double b, IntegralType t)
     : Quad (fcn), m_bound (b), m_type (t) { }
 
-  ~FloatIndefQuad (void) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (FloatIndefQuad)
 
   OCTAVE_NORETURN double do_integrate (octave_idx_type& ier,
                                        octave_idx_type& neval, double& abserr);

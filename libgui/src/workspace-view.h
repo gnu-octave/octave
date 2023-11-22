@@ -39,17 +39,15 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class workspace_view : public octave_dock_widget
 {
   Q_OBJECT
 
 public:
 
-  workspace_view (QWidget *parent, base_qobject& oct_qobj);
+  workspace_view (QWidget *parent);
 
-  ~workspace_view (void) = default;
+  ~workspace_view () = default;
 
 signals:
 
@@ -74,15 +72,15 @@ public slots:
 
   void setModel (workspace_model *model);
 
-  void notice_settings (const gui_settings *);
+  void notice_settings ();
 
-  void save_settings (void);
+  void save_settings ();
 
 protected slots:
 
   void filter_update (const QString& expression);
   void filter_activate (bool enable);
-  void update_filter_history (void);
+  void update_filter_history ();
 
   void header_contextmenu_requested (const QPoint& mpos);
 
@@ -90,22 +88,22 @@ protected slots:
 
   void contextmenu_requested (const QPoint& pos);
 
-  void handle_contextmenu_copy (void);
-  void handle_contextmenu_copy_value (void);
-  void handle_contextmenu_rename (void);
-  void handle_contextmenu_edit (void);
-  void handle_contextmenu_clear (void);
-  void handle_contextmenu_disp (void);
-  void handle_contextmenu_plot (void);
-  void handle_contextmenu_stem (void);
-  void handle_contextmenu_filter (void);
+  void handle_contextmenu_copy ();
+  void handle_contextmenu_copy_value ();
+  void handle_contextmenu_rename ();
+  void handle_contextmenu_edit ();
+  void handle_contextmenu_clear ();
+  void handle_contextmenu_disp ();
+  void handle_contextmenu_plot ();
+  void handle_contextmenu_stem ();
+  void handle_contextmenu_filter ();
 
 public slots:
 
-  void handle_model_changed (void);
+  void handle_model_changed ();
 
-  void copyClipboard (void);
-  void selectAll (void);
+  void copyClipboard ();
+  void selectAll ();
 
 private:
 

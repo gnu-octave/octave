@@ -61,7 +61,7 @@ DEFNDCATOP_FN (f_bm, float_scalar, bool_matrix, float_array, float_array,
 
 DEFCONV (bool_matrix_conv, bool, bool_matrix)
 {
-  const octave_bool& v = dynamic_cast<const octave_bool&> (a);
+  OCTAVE_CAST_BASE_VALUE (const octave_bool&, v, a);
 
   return new octave_bool_matrix (v.bool_matrix_value ());
 }

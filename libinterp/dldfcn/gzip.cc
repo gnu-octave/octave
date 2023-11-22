@@ -98,7 +98,7 @@ class CFile
 {
 public:
 
-  CFile (void) = delete;
+  CFile () = delete;
 
   CFile (const std::string& path, const std::string& mode)
     : m_fp (sys::fopen (path, mode))
@@ -107,17 +107,15 @@ public:
       throw std::runtime_error ("unable to open file");
   }
 
-  CFile (const CFile&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (CFile)
 
-  CFile& operator = (const CFile&) = delete;
-
-  ~CFile (void)
+  ~CFile ()
   {
     if (m_fp)
       std::fclose (m_fp);
   }
 
-  void close (void)
+  void close ()
   {
     if (std::fclose (m_fp))
       throw std::runtime_error ("unable to close file");
@@ -150,7 +148,7 @@ private:
   {
   public:
 
-    zipper (void) = delete;
+    zipper () = delete;
 
     zipper (const std::string& source_path, const std::string& dest_path)
       : m_status (BZ_OK), m_source (source_path, "rb"),
@@ -161,17 +159,15 @@ private:
         throw std::runtime_error ("failed to open bzip2 stream");
     }
 
-    zipper (const zipper&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (zipper)
 
-    zipper& operator = (const zipper&) = delete;
-
-    ~zipper (void)
+    ~zipper ()
     {
       if (m_bz != nullptr)
         BZ2_bzWriteClose (&m_status, m_bz, 1, nullptr, nullptr);
     }
 
-    void deflate (void)
+    void deflate ()
     {
       const std::size_t buf_len = 8192;
       char buf[buf_len];
@@ -188,7 +184,7 @@ private:
         throw std::runtime_error ("failed to read from source file");
     }
 
-    void close (void)
+    void close ()
     {
       int abandon = (m_status == BZ_IO_ERROR) ? 1 : 0;
       BZ2_bzWriteClose (&m_status, m_bz, abandon, nullptr, nullptr);
@@ -265,7 +261,7 @@ private:
     // Bytef is a typedef for unsigned char
     unsigned char *p;
 
-    uchar_array (void) = delete;
+    uchar_array () = delete;
 
     uchar_array (const std::string& str)
     {
@@ -273,18 +269,16 @@ private:
       std::strcpy (reinterpret_cast<char *> (p), str.c_str ());
     }
 
-    uchar_array (const uchar_array&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (uchar_array)
 
-    uchar_array& operator = (const uchar_array&) = delete;
-
-    ~uchar_array (void) { delete[] p; }
+    ~uchar_array () { delete[] p; }
   };
 
   class gzip_header : public gz_header
   {
   public:
 
-    gzip_header (void) = delete;
+    gzip_header () = delete;
 
     gzip_header (const std::string& source_path)
       : m_basename (sys::env::base_pathname (source_path))
@@ -353,11 +347,9 @@ private:
 #endif
     }
 
-    gzip_header (const gzip_header&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (gzip_header)
 
-    gzip_header& operator = (const gzip_header&) = delete;
-
-    ~gzip_header (void) = default;
+    ~gzip_header () = default;
 
   private:
 
@@ -369,7 +361,7 @@ private:
   {
   public:
 
-    zipper (void) = delete;
+    zipper () = delete;
 
     zipper (const std::string& source_path, const std::string& dest_path)
       : m_source (source_path, "rb"), m_dest (dest_path, "wb"),
@@ -380,18 +372,16 @@ private:
       m_strm->opaque = Z_NULL;
     }
 
-    zipper (const zipper&) = delete;
+    OCTAVE_DISABLE_COPY_MOVE (zipper)
 
-    zipper& operator = (const zipper&) = delete;
-
-    ~zipper (void)
+    ~zipper ()
     {
       if (m_strm)
         deflateEnd (m_strm);
       delete m_strm;
     }
 
-    void deflate (void)
+    void deflate ()
     {
       // int deflateInit2 (z_streamp m_strm,
       //                   int  level,      // compression level (default is 8)
@@ -451,7 +441,7 @@ private:
         throw std::runtime_error ("failed to write file");
     }
 
-    void close (void)
+    void close ()
     {
       if (deflateEnd (m_strm) != Z_OK)
         throw std::runtime_error ("failed to close zlib stream");

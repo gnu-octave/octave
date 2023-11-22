@@ -148,20 +148,6 @@ octave_execv_wrapper (const char *file, char *const *argv)
 
   int status = _wspawnv (P_WAIT, wfile, wargv+1);
 
-#    if 0
-  // Code snippet from gnulib execute.c
-
-  // Executing arbitrary files as shell scripts is unsecure.
-  if (status == -1 && errno == ENOEXEC)
-    {
-      // prog is not a native executable.  Try to execute it as a
-      // shell script.  Note that prepare_spawn() has already prepended
-      // a hidden element "sh.exe" to argv.
-      argv[1] = prog_path;
-      status = _wspawnv (P_WAIT, wargv[0], wargv);
-    }
-#    endif
-
   // This happens when the spawned child process terminates.
 
   free (wfile);

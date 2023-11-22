@@ -39,19 +39,19 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 void
-base_mutex::lock (void)
+base_mutex::lock ()
 {
   (*current_liboctave_error_handler) ("mutex not supported on this platform");
 }
 
 void
-base_mutex::unlock (void)
+base_mutex::unlock ()
 {
   (*current_liboctave_error_handler) ("mutex not supported on this platform");
 }
 
 bool
-base_mutex::try_lock (void)
+base_mutex::try_lock ()
 {
   (*current_liboctave_error_handler) ("mutex not supported on this platform");
 
@@ -64,28 +64,28 @@ class
 w32_mutex : public base_mutex
 {
 public:
-  w32_mutex (void)
+  w32_mutex ()
     : base_mutex ()
   {
     InitializeCriticalSection (&cs);
   }
 
-  ~w32_mutex (void)
+  ~w32_mutex ()
   {
     DeleteCriticalSection (&cs);
   }
 
-  void lock (void)
+  void lock ()
   {
     EnterCriticalSection (&cs);
   }
 
-  void unlock (void)
+  void unlock ()
   {
     LeaveCriticalSection (&cs);
   }
 
-  bool try_lock (void)
+  bool try_lock ()
   {
     return (TryEnterCriticalSection (&cs) != 0);
   }
@@ -97,13 +97,13 @@ private:
 static DWORD thread_id = 0;
 
 void
-thread::init (void)
+thread::init ()
 {
   thread_id = GetCurrentThreadId ();
 }
 
 bool
-thread::is_thread (void)
+thread::is_thread ()
 {
   return (GetCurrentThreadId () == thread_id);
 }
@@ -114,7 +114,8 @@ class
 pthread_mutex : public base_mutex
 {
 public:
-  pthread_mutex (void)
+
+  pthread_mutex ()
     : base_mutex (), m_pm ()
   {
     pthread_mutexattr_t attr;
@@ -125,22 +126,24 @@ public:
     pthread_mutexattr_destroy (&attr);
   }
 
-  ~pthread_mutex (void)
+  OCTAVE_DISABLE_COPY_MOVE (pthread_mutex)
+
+  ~pthread_mutex ()
   {
     pthread_mutex_destroy (&m_pm);
   }
 
-  void lock (void)
+  void lock ()
   {
     pthread_mutex_lock (&m_pm);
   }
 
-  void unlock (void)
+  void unlock ()
   {
     pthread_mutex_unlock (&m_pm);
   }
 
-  bool try_lock (void)
+  bool try_lock ()
   {
     return (pthread_mutex_trylock (&m_pm) == 0);
   }
@@ -152,13 +155,13 @@ private:
 static pthread_t thread_id = 0;
 
 void
-thread::init (void)
+thread::init ()
 {
   thread_id = pthread_self ();
 }
 
 bool
-thread::is_thread (void)
+thread::is_thread ()
 {
   return (pthread_equal (thread_id, pthread_self ()) != 0);
 }
@@ -166,7 +169,7 @@ thread::is_thread (void)
 #endif
 
 static base_mutex *
-init_rep (void)
+init_rep ()
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
   return new w32_mutex ();
@@ -177,6 +180,6 @@ init_rep (void)
 #endif
 }
 
-mutex::mutex (void) : m_rep (init_rep ()) { }
+mutex::mutex () : m_rep (init_rep ()) { }
 
 OCTAVE_END_NAMESPACE(octave)

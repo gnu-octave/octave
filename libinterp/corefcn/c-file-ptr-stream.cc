@@ -47,7 +47,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #  define SEEK_END 2
 #endif
 
-c_file_ptr_buf::~c_file_ptr_buf (void)
+c_file_ptr_buf::~c_file_ptr_buf ()
 {
   buf_close ();
 }
@@ -142,7 +142,7 @@ c_file_ptr_buf::seekpos (std::streampos offset, std::ios::openmode)
 }
 
 int
-c_file_ptr_buf::sync (void)
+c_file_ptr_buf::sync ()
 {
   flush ();
 
@@ -150,13 +150,13 @@ c_file_ptr_buf::sync (void)
 }
 
 int
-c_file_ptr_buf::flush (void)
+c_file_ptr_buf::flush ()
 {
   return m_f ? std::fflush (m_f) : traits_type::eof ();
 }
 
 int
-c_file_ptr_buf::buf_close (void)
+c_file_ptr_buf::buf_close ()
 {
   int retval = -1;
 
@@ -178,7 +178,7 @@ c_file_ptr_buf::seek (off_t offset, int origin)
 }
 
 off_t
-c_file_ptr_buf::tell (void)
+c_file_ptr_buf::tell ()
 {
   return m_f ? octave_ftello_wrapper (m_f) : -1;
 }
@@ -191,7 +191,7 @@ c_file_ptr_buf::file_close (FILE *m_f)
 
 #if defined (HAVE_ZLIB)
 
-c_zfile_ptr_buf::~c_zfile_ptr_buf (void)
+c_zfile_ptr_buf::~c_zfile_ptr_buf ()
 {
   buf_close ();
 }
@@ -253,39 +253,17 @@ c_zfile_ptr_buf::seekoff (std::streamoff /* offset */,
                           std::ios::seekdir /* dir */,
                           std::ios::openmode)
 {
-  // FIXME
-#if 0
-  if (m_f)
-    {
-      gzseek (m_f, offset, seekdir_to_whence (dir));
-
-      return gztell (m_f);
-    }
-  else
-    return 0;
-#endif
   return -1;
 }
 
 std::streampos
 c_zfile_ptr_buf::seekpos (std::streampos /* offset */, std::ios::openmode)
 {
-  // FIXME
-#if 0
-  if (m_f)
-    {
-      gzseek (m_f, offset, SEEK_SET);
-
-      return gztell (m_f);
-    }
-  else
-    return 0;
-#endif
   return -1;
 }
 
 int
-c_zfile_ptr_buf::sync (void)
+c_zfile_ptr_buf::sync ()
 {
   flush ();
 
@@ -293,7 +271,7 @@ c_zfile_ptr_buf::sync (void)
 }
 
 int
-c_zfile_ptr_buf::flush (void)
+c_zfile_ptr_buf::flush ()
 {
   // FIXME: do we need something more complex here, passing
   // something other than 0 for the second argument to gzflush and
@@ -303,7 +281,7 @@ c_zfile_ptr_buf::flush (void)
 }
 
 int
-c_zfile_ptr_buf::buf_close (void)
+c_zfile_ptr_buf::buf_close ()
 {
   int retval = -1;
 

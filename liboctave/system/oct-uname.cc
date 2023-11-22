@@ -38,7 +38,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(sys)
 
 void
-uname::init (void)
+uname::init ()
 {
   char *sysname, *nodename, *release, *version, *machine;
 

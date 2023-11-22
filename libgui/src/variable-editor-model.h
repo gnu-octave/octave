@@ -26,6 +26,8 @@
 #if ! defined (octave_variable_editor_model_h)
 #define octave_variable_editor_model_h 1
 
+#include "octave-config.h"
+
 #include <QAbstractTableModel>
 #include <QMap>
 #include <QString>
@@ -45,27 +47,23 @@ public:
 
   base_ve_model (const QString& expr, const octave_value& val);
 
-  virtual ~base_ve_model (void) = default;
+  virtual ~base_ve_model () = default;
 
-  // No copying!
-
-  base_ve_model (const base_ve_model&) = delete;
-
-  base_ve_model& operator = (const base_ve_model&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (base_ve_model)
 
   virtual void maybe_resize_rows (int) { }
 
   virtual void maybe_resize_columns (int) { }
 
-  std::string name (void) const;
+  std::string name () const;
 
   bool index_ok (const QModelIndex& idx, int& row, int& col) const;
 
-  virtual bool is_editable (void) const { return true; }
+  virtual bool is_editable () const { return true; }
 
   virtual octave_value value_at (const QModelIndex& idx) const;
 
-  int column_width (void) const;
+  int column_width () const;
 
   int rowCount (const QModelIndex& = QModelIndex ()) const;
 
@@ -85,7 +83,7 @@ public:
 
   QString update_pending_data (const QModelIndex& idx) const;
 
-  void clear_update_pending (void);
+  void clear_update_pending ();
 
   virtual char quote_char (const QModelIndex& idx) const;
 
@@ -98,17 +96,17 @@ public:
 
   virtual QString subscript_expression (const QModelIndex& idx) const;
 
-  bool is_valid (void) const { return m_valid; }
+  bool is_valid () const { return m_valid; }
 
-  octave_idx_type data_rows (void) const { return m_data_rows; }
+  octave_idx_type data_rows () const { return m_data_rows; }
 
-  octave_idx_type data_columns (void) const { return m_data_cols; }
+  octave_idx_type data_columns () const { return m_data_cols; }
 
-  int display_rows (void) const { return m_display_rows; }
+  int display_rows () const { return m_display_rows; }
 
-  int display_columns (void) const { return m_display_cols; }
+  int display_columns () const { return m_display_cols; }
 
-  virtual QString make_description_text (void) const;
+  virtual QString make_description_text () const;
 
   void reset (const octave_value& val);
 
@@ -145,51 +143,47 @@ public:
   variable_editor_model (const QString& expr, const octave_value& val,
                          QObject *parent = nullptr);
 
-  ~variable_editor_model (void)
+  ~variable_editor_model ()
   {
-    delete rep;
+    delete m_rep;
   }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (variable_editor_model)
 
-  variable_editor_model (const variable_editor_model&) = delete;
-
-  variable_editor_model& operator = (const variable_editor_model&) = delete;
-
-  std::string name (void) const
+  std::string name () const
   {
-    return rep->name ();
+    return m_rep->name ();
   }
 
-  bool is_editable (void) const
+  bool is_editable () const
   {
-    return rep->is_editable ();
+    return m_rep->is_editable ();
   }
 
   octave_value value_at (const QModelIndex& idx) const
   {
-    return rep->value_at (idx);
+    return m_rep->value_at (idx);
   }
 
-  int column_width (void) const
+  int column_width () const
   {
-    return rep->column_width ();
+    return m_rep->column_width ();
   }
 
   int rowCount (const QModelIndex& idx = QModelIndex ()) const
   {
-    return rep->rowCount (idx);
+    return m_rep->rowCount (idx);
   }
 
   int columnCount (const QModelIndex& idx = QModelIndex ()) const
   {
-    return rep->columnCount (idx);
+    return m_rep->columnCount (idx);
   }
 
   QVariant data (const QModelIndex& idx = QModelIndex (),
                  int role = Qt::DisplayRole) const
   {
-    return rep->data (idx, role);
+    return m_rep->data (idx, role);
   }
 
   bool setData (const QModelIndex& idx, const QVariant& v,
@@ -215,38 +209,38 @@ public:
 
   bool requires_sub_editor (const QModelIndex& idx) const
   {
-    return rep->requires_sub_editor (idx);
+    return m_rep->requires_sub_editor (idx);
   }
 
   void set_update_pending (const QModelIndex& idx, const QString& str)
   {
-    rep->set_update_pending (idx, str);
+    m_rep->set_update_pending (idx, str);
   }
 
   bool update_pending (const QModelIndex& idx) const
   {
-    return rep->update_pending (idx);
+    return m_rep->update_pending (idx);
   }
 
   QString update_pending_data (const QModelIndex& idx) const
   {
-    return rep->update_pending_data (idx);
+    return m_rep->update_pending_data (idx);
   }
 
-  void clear_update_pending (void)
+  void clear_update_pending ()
   {
-    rep->clear_update_pending ();
+    m_rep->clear_update_pending ();
   }
 
   char quote_char (const QModelIndex& idx) const
   {
-    return rep->quote_char (idx);
+    return m_rep->quote_char (idx);
   }
 
   QVariant
   headerData (int section, Qt::Orientation orientation, int role) const
   {
-    return rep->header_data (section, orientation, role);
+    return m_rep->header_data (section, orientation, role);
   }
 
   // Return a subscript expression as a string that can be used to
@@ -255,27 +249,27 @@ public:
 
   QString subscript_expression (const QModelIndex& idx) const
   {
-    return rep->subscript_expression (idx);
+    return m_rep->subscript_expression (idx);
   }
 
-  int display_rows (void) const
+  int display_rows () const
   {
-    return rep->display_rows ();
+    return m_rep->display_rows ();
   }
 
-  octave_idx_type data_rows (void) const
+  octave_idx_type data_rows () const
   {
-    return rep->data_rows ();
+    return m_rep->data_rows ();
   }
 
-  int display_columns (void) const
+  int display_columns () const
   {
-    return rep->display_columns ();
+    return m_rep->display_columns ();
   }
 
-  octave_idx_type data_columns (void) const
+  octave_idx_type data_columns () const
   {
-    return rep->data_columns ();
+    return m_rep->data_columns ();
   }
 
   void maybe_resize_rows (int rows);
@@ -303,7 +297,7 @@ public slots:
 
   void update_data (const octave_value& val);
 
-  void update_data_cache (void);
+  void update_data_cache ();
 
   void double_click (const QModelIndex& idx);
 
@@ -315,7 +309,7 @@ private slots:
 
 private:
 
-  base_ve_model *rep;
+  base_ve_model *m_rep;
 
   void init_from_oct (interpreter& interp);
 
@@ -323,22 +317,22 @@ private:
 
   octave_value retrieve_variable (interpreter&, const std::string& name);
 
-  bool is_valid (void) const
+  bool is_valid () const
   {
-    return rep->is_valid ();
+    return m_rep->is_valid ();
   }
 
   void change_display_size (int old_rows, int old_cols,
                             int new_rows, int new_cols);
 
-  QString make_description_text (void) const
+  QString make_description_text () const
   {
-    return rep->make_description_text ();
+    return m_rep->make_description_text ();
   }
 
   void reset (const octave_value& val);
 
-  void invalidate (void);
+  void invalidate ();
 
   void update_description (const QString& description = QString ());
 

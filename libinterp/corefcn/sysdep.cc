@@ -108,7 +108,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #if defined (__386BSD__) || defined (__FreeBSD__) || defined (__NetBSD__)
 
 static void
-BSD_init (void)
+BSD_init ()
 {
 #  if defined (HAVE_FLOATINGPOINT_H)
   // Disable trapping on common exceptions.
@@ -124,7 +124,7 @@ BSD_init (void)
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
 static void
-w32_set_octave_home (void)
+w32_set_octave_home ()
 {
   std::string bin_dir;
 
@@ -171,7 +171,7 @@ w32_set_octave_home (void)
 }
 
 static void
-w32_init (void)
+w32_init ()
 {
   w32_set_octave_home ();
 
@@ -180,7 +180,7 @@ w32_init (void)
 
 #endif
 
-void set_application_id (void)
+void set_application_id ()
 {
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
@@ -363,7 +363,7 @@ On non-Windows platforms, this function fails with an error.
 #if defined (__MINGW32__)
 
 static void
-MINGW_init (void)
+MINGW_init ()
 {
   w32_init ();
 }
@@ -373,87 +373,12 @@ MINGW_init (void)
 #if defined (_MSC_VER)
 
 static void
-MSVC_init (void)
+MSVC_init ()
 {
   w32_init ();
 }
 
 #endif
-
-// Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
-
-bool same_file_internal (const std::string& file1, const std::string& file2)
-{
-#if defined (OCTAVE_USE_WINDOWS_API)
-
-  // FIXME: When Octave switches to C++17, consider replacing this function
-  //        by https://en.cppreference.com/w/cpp/filesystem/equivalent.
-
-  bool retval = false;
-
-  std::wstring file1w = sys::u8_to_wstring (file1);
-  std::wstring file2w = sys::u8_to_wstring (file2);
-  const wchar_t *f1 = file1w.c_str ();
-  const wchar_t *f2 = file2w.c_str ();
-
-  bool f1_is_dir = GetFileAttributesW (f1) & FILE_ATTRIBUTE_DIRECTORY;
-  bool f2_is_dir = GetFileAttributesW (f2) & FILE_ATTRIBUTE_DIRECTORY;
-
-  // Windows native code
-  // Reference: http://msdn2.microsoft.com/en-us/library/aa363788.aspx
-
-  DWORD share = FILE_SHARE_DELETE | FILE_SHARE_READ | FILE_SHARE_WRITE;
-
-  HANDLE hfile1
-    = CreateFileW (f1, 0, share, 0, OPEN_EXISTING,
-                   f1_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
-
-  if (hfile1 != INVALID_HANDLE_VALUE)
-    {
-      HANDLE hfile2
-        = CreateFileW (f2, 0, share, 0, OPEN_EXISTING,
-                       f2_is_dir ? FILE_FLAG_BACKUP_SEMANTICS : 0, 0);
-
-      if (hfile2 != INVALID_HANDLE_VALUE)
-        {
-          BY_HANDLE_FILE_INFORMATION hfi1;
-          BY_HANDLE_FILE_INFORMATION hfi2;
-
-          if (GetFileInformationByHandle (hfile1, &hfi1)
-              && GetFileInformationByHandle (hfile2, &hfi2))
-            {
-              retval = (hfi1.dwVolumeSerialNumber == hfi2.dwVolumeSerialNumber
-                        && hfi1.nFileIndexHigh == hfi2.nFileIndexHigh
-                        && hfi1.nFileIndexLow == hfi2.nFileIndexLow
-                        && hfi1.nFileSizeHigh == hfi2.nFileSizeHigh
-                        && hfi1.nFileSizeLow == hfi2.nFileSizeLow
-                        && hfi1.ftLastWriteTime.dwLowDateTime
-                        == hfi2.ftLastWriteTime.dwLowDateTime
-                        && hfi1.ftLastWriteTime.dwHighDateTime
-                        == hfi2.ftLastWriteTime.dwHighDateTime);
-            }
-
-          CloseHandle (hfile2);
-        }
-
-      CloseHandle (hfile1);
-    }
-
-  return retval;
-
-#else
-
-  // POSIX Code
-
-  sys::file_stat fs_file1 (file1);
-  sys::file_stat fs_file2 (file2);
-
-  return (fs_file1 && fs_file2
-          && fs_file1.ino () == fs_file2.ino ()
-          && fs_file1.dev () == fs_file2.dev ());
-
-#endif
-}
 
 // Return TRUE if NAME refers to an existing drive letter or UNC share
 
@@ -506,7 +431,7 @@ bool drive_or_unc_share (const std::string& name)
 #endif
 }
 
-void sysdep_init (void)
+void sysdep_init ()
 {
   // Use a function from libgomp to force loading of OpenMP library.
   // Otherwise, a dynamically loaded library making use of OpenMP such
@@ -524,7 +449,7 @@ void sysdep_init (void)
 #endif
 }
 
-void sysdep_cleanup (void)
+void sysdep_cleanup ()
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
   // Let us fail immediately without displaying any dialog.
@@ -763,7 +688,7 @@ int kbhit (bool wait)
   return c;
 }
 
-std::string get_P_tmpdir (void)
+std::string get_P_tmpdir ()
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
 
@@ -830,7 +755,7 @@ getenv ("PATH")
 
 @noindent
 returns a string containing the value of your path.
-@seealso{setenv, unsetenv}
+@seealso{setenv, unsetenv, isenv}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -845,6 +770,43 @@ returns a string containing the value of your path.
 %!assert (ischar (getenv ("OCTAVE_HOME")))
 */
 
+DEFUN (isenv, args, ,
+       doc: /* -*- texinfo -*-
+@deftypefn {} {@var{val} =} isenv (@var{var})
+Check if the environment variable @var{var} exists.
+
+This function returns true if an environment variable with the name @var{var}
+exists.  Otherwise, it returns false.
+
+For example,
+
+@example
+tf = isenv ("PATH")
+@end example
+
+@noindent
+returns true if an environment variable with the name @qcode{"PATH"} exists.
+@seealso{getenv, setenv, unsetenv}
+@end deftypefn */)
+{
+  if (args.length () != 1)
+    print_usage ();
+
+  std::string name = args(0).xstring_value ("isenv: VAR must be a string");
+
+  return ovl (sys::env::isenv (name));
+}
+
+/*
+%!test
+%! setenv ("dummy_variable_that_cannot_matter", "foobar");
+%! assert (isenv ("dummy_variable_that_cannot_matter"), true);
+%! unsetenv ("dummy_variable_that_cannot_matter");
+%! assert (isenv ("dummy_variable_that_cannot_matter"), false);
+
+%!error <VAR must be a string> isenv (struct ())
+*/
+
 DEFUN (setenv, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {} setenv ("@var{var}", @var{value})
@@ -857,7 +819,7 @@ string.
 
 Programming Note: @code{putenv} is an alias for @code{setenv} and can be used
 interchangeably.
-@seealso{unsetenv, getenv}
+@seealso{unsetenv, getenv, isenv}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -893,7 +855,7 @@ Delete the environment variable @var{var}.
 
 Return 0 if the variable was deleted, or did not exist, and -1 if an error
 occurred.
-@seealso{setenv, getenv}
+@seealso{setenv, getenv, isenv}
 @end deftypefn */)
 {
   if (args.length () != 1)
@@ -1134,10 +1096,9 @@ On non-Windows platforms this function fails with an error.
         error ("winqueryreg: error %ld reading names from registry", retval);
 
       Cell fieldnames (dim_vector (1, fields.size ()));
-      std::size_t i;
-      std::list<std::string>::const_iterator it;
-      for (i = 0, it = fields.begin (); it != fields.end (); ++it, ++i)
-        fieldnames(i) = *it;
+      std::size_t i = 0;
+      for (const auto& it : fields)
+        fieldnames(i++) = it;
 
       return ovl (fieldnames);
     }

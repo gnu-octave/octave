@@ -43,17 +43,13 @@ fftw_planner
 {
 protected:
 
-  fftw_planner (void);
+  fftw_planner ();
 
 public:
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (fftw_planner)
 
-  fftw_planner (const fftw_planner&) = delete;
-
-  fftw_planner& operator = (const fftw_planner&) = delete;
-
-  ~fftw_planner (void);
+  ~fftw_planner ();
 
   enum FftwMethod
   {
@@ -65,7 +61,7 @@ public:
     HYBRID
   };
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
   static void *
   create_plan (int dir, const int rank, const dim_vector& dims,
@@ -90,7 +86,7 @@ public:
            : nullptr;
   }
 
-  static FftwMethod method (void)
+  static FftwMethod method ()
   {
     static FftwMethod dummy;
 
@@ -106,7 +102,7 @@ public:
 
   static void threads (int nt);
 
-  static int threads (void)
+  static int threads ()
   {
     return instance_ok () ? s_instance->m_nthreads : 0;
   }
@@ -115,7 +111,7 @@ private:
 
   static fftw_planner *s_instance;
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   { delete s_instance; s_instance = nullptr; }
 
   void *
@@ -129,7 +125,7 @@ private:
                   octave_idx_type howmany, octave_idx_type stride,
                   octave_idx_type dist, const double *in, Complex *out);
 
-  FftwMethod do_method (void);
+  FftwMethod do_method ();
 
   FftwMethod do_method (FftwMethod meth);
 
@@ -189,18 +185,13 @@ float_fftw_planner
 {
 protected:
 
-  float_fftw_planner (void);
+  float_fftw_planner ();
 
 public:
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (float_fftw_planner)
 
-  float_fftw_planner (const float_fftw_planner&) = delete;
-
-  float_fftw_planner&
-  operator = (const float_fftw_planner&) = delete;
-
-  ~float_fftw_planner (void);
+  ~float_fftw_planner ();
 
   enum FftwMethod
   {
@@ -212,7 +203,7 @@ public:
     HYBRID
   };
 
-  static bool instance_ok (void);
+  static bool instance_ok ();
 
   static void *
   create_plan (int dir, const int rank, const dim_vector& dims,
@@ -237,7 +228,7 @@ public:
            : nullptr;
   }
 
-  static FftwMethod method (void)
+  static FftwMethod method ()
   {
     static FftwMethod dummy;
 
@@ -253,7 +244,7 @@ public:
 
   static void threads (int nt);
 
-  static int threads (void)
+  static int threads ()
   {
     return instance_ok () ? s_instance->m_nthreads : 0;
   }
@@ -262,7 +253,7 @@ private:
 
   static float_fftw_planner *s_instance;
 
-  static void cleanup_instance (void)
+  static void cleanup_instance ()
   { delete s_instance; s_instance = nullptr; }
 
   void *
@@ -276,7 +267,7 @@ private:
                   octave_idx_type howmany, octave_idx_type stride,
                   octave_idx_type dist, const float *in, FloatComplex *out);
 
-  FftwMethod do_method (void);
+  FftwMethod do_method ();
 
   FftwMethod do_method (FftwMethod meth);
 
@@ -336,13 +327,7 @@ fftw
 {
 public:
 
-  fftw (void) = delete;
-
-  // No copying.
-
-  fftw (const fftw&) = delete;
-
-  fftw& operator = (const fftw&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE_DELETE (fftw)
 
   static int fft (const double *in, Complex *out, std::size_t npts,
                   std::size_t nsamples = 1, octave_idx_type stride = 1,
@@ -378,8 +363,8 @@ public:
                      const dim_vector&);
 };
 
-extern OCTAVE_API std::string fftw_version (void);
-extern OCTAVE_API std::string fftwf_version (void);
+extern OCTAVE_API std::string fftw_version ();
+extern OCTAVE_API std::string fftwf_version ();
 
 OCTAVE_END_NAMESPACE(octave)
 

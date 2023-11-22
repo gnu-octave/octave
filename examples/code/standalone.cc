@@ -2,7 +2,7 @@
 #include <octave/oct.h>
 
 int
-main (void)
+main ()
 {
   std::cout << "Hello Octave world!\n";
 

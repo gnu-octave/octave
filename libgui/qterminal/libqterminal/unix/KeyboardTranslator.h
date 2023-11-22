@@ -25,13 +25,14 @@
 #define KEYBOARDTRANSLATOR_H
 
 // Qt
-#include <QtCore/QHash>
-#include <QtCore/QMultiHash>
-#include <QtCore/QList>
-#include <QKeySequence>
-#include <QtCore/QMetaType>
-#include <QtCore/QVarLengthArray>
 #include <QtCore>
+
+#include <QHash>
+#include <QKeySequence>
+#include <QList>
+#include <QMetaType>
+#include <QMultiHash>
+#include <QVarLengthArray>
 
 #if QT_VERSION >= 0x050100
 #  define K_GLOBAL_STATIC Q_GLOBAL_STATIC

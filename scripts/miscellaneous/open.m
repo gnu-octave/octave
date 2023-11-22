@@ -91,9 +91,9 @@ function output = open (file)
   [~, fname, ext] = fileparts (file);
 
   if (! isempty (ext)
-      && any (exist (["open" tolower(ext(2:end))]) == [2 3 5 103]))
+      && any (exist (["open" lower(ext(2:end))]) == [2 3 5 103]))
     try
-      openfcn = ["open" tolower(ext(2:end))];
+      openfcn = ["open" lower(ext(2:end))];
       if (nargout > 0)
         output = feval (openfcn, file);
       else

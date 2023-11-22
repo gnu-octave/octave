@@ -86,7 +86,7 @@ nodist_%canon_reldir%_%canon_reldir%_la_SOURCES = \
 ## to the rules in the etc/HACKING.md file:
 
 %canon_reldir%_%canon_reldir%_current = 10
-%canon_reldir%_%canon_reldir%_revision = 2
+%canon_reldir%_%canon_reldir%_revision = 0
 %canon_reldir%_%canon_reldir%_age = 0
 
 %canon_reldir%_%canon_reldir%_version_info = $(%canon_reldir%_%canon_reldir%_current):$(%canon_reldir%_%canon_reldir%_revision):$(%canon_reldir%_%canon_reldir%_age)
@@ -108,7 +108,7 @@ LIBOCTAVE_TST_SRC = \
   $(%canon_reldir%_util_libutil_la_SOURCES) \
   $(LIBOCTAVE_TEMPLATE_SRC)
 
-LIBOCTAVE_TST_FILES_SRC := $(shell $(SHELL) $(srcdir)/build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
+LIBOCTAVE_TST_FILES_SRC := $(shell $(SHELL) build-aux/find-files-with-tests.sh "$(srcdir)" $(LIBOCTAVE_TST_SRC))
 
 LIBOCTAVE_TST_FILES := $(addsuffix -tst,$(LIBOCTAVE_TST_FILES_SRC))
 

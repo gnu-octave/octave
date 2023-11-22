@@ -32,7 +32,6 @@
 
 #include "Object.h"
 #include "QtHandlesUtils.h"
-#include "octave-qobject.h"
 #include "qt-graphics-toolkit.h"
 
 #include "graphics.h"
@@ -40,10 +39,10 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-Object::Object (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Object::Object (octave::interpreter& interp,
                 const graphics_object& go, QObject *obj)
-: QObject (), m_octave_qobj (oct_qobj), m_interpreter (interp),
-  m_go (go), m_handle (go.get_handle ()), m_qobject (nullptr)
+  : QObject (), m_interpreter (interp), m_go (go),
+    m_handle (go.get_handle ()), m_qobject (nullptr)
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -75,11 +74,11 @@ Object::init (QObject *obj, bool)
     }
 }
 
-Object::~Object (void)
+Object::~Object ()
 { }
 
 graphics_object
-Object::object (void) const
+Object::object () const
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -102,9 +101,9 @@ Object::slotUpdate (int pId)
 
   switch (pId)
     {
-      // Special case for objects being deleted, as it's very likely
-      // that the graphics_object already has been destroyed when this
-      // is executed (because of the async behavior).
+    // Special case for objects being deleted, as it's very likely
+    // that the graphics_object already has been destroyed when this
+    // is executed (because of the async behavior).
     case base_properties::ID_BEINGDELETED:
       beingDeleted ();
       break;
@@ -117,7 +116,7 @@ Object::slotUpdate (int pId)
 }
 
 void
-Object::slotFinalize (void)
+Object::slotFinalize ()
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -127,7 +126,7 @@ Object::slotFinalize (void)
 }
 
 void
-Object::slotRedraw (void)
+Object::slotRedraw ()
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -138,7 +137,7 @@ Object::slotRedraw (void)
 }
 
 void
-Object::slotShow (void)
+Object::slotShow ()
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
@@ -164,7 +163,7 @@ Object::update (int /* pId */)
 { }
 
 void
-Object::finalize (void)
+Object::finalize ()
 {
   if (m_qobject)
     {
@@ -175,11 +174,11 @@ Object::finalize (void)
 }
 
 void
-Object::redraw (void)
+Object::redraw ()
 { }
 
 void
-Object::show (void)
+Object::show ()
 { }
 
 void
@@ -187,7 +186,7 @@ Object::print (const QString& /* file_cmd */, const QString& /* term */)
 { }
 
 void
-Object::beingDeleted (void)
+Object::beingDeleted ()
 { }
 
 void Object::objectDestroyed (QObject *obj)
@@ -204,7 +203,7 @@ Object::parentObject (octave::interpreter& interp, const graphics_object& go)
   octave::autolock guard (gh_mgr.graphics_lock ());
 
   Object *parent = qt_graphics_toolkit::toolkitObject
-    (gh_mgr.get_object (go.get_parent ()));
+                   (gh_mgr.get_object (go.get_parent ()));
 
   return parent;
 }

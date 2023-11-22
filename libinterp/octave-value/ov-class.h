@@ -55,19 +55,19 @@ octave_class : public octave_base_value
 {
 public:
 
-  octave_class (void)
-    : octave_base_value (), m_map (), c_name (),
+  octave_class ()
+    : octave_base_value (), m_map (), m_c_name (),
       m_parent_list (), m_obsolete_copies (0)
   { }
 
   octave_class (const octave_map& m, const std::string& id)
-    : octave_base_value (), m_map (m), c_name (id),
+    : octave_base_value (), m_map (m), m_c_name (id),
       m_parent_list (), m_obsolete_copies (0)
   { }
 
   octave_class (const octave_map& m, const std::string& id,
                 const std::list<std::string>& plist)
-    : octave_base_value (), m_map (m), c_name (id),
+    : octave_base_value (), m_map (m), m_c_name (id),
       m_parent_list (plist), m_obsolete_copies (0)
   { }
 
@@ -75,25 +75,25 @@ public:
                 const octave_value_list& parents);
 
   octave_class (const octave_class& s)
-    : octave_base_value (s), m_map (s.m_map), c_name (s.c_name),
+    : octave_base_value (s), m_map (s.m_map), m_c_name (s.m_c_name),
       m_parent_list (s.m_parent_list), m_obsolete_copies (0)  { }
 
-  ~octave_class (void) = default;
+  ~octave_class () = default;
 
-  octave_base_value * clone (void) const { return new octave_class (*this); }
+  octave_base_value * clone () const { return new octave_class (*this); }
 
-  OCTINTERP_API octave_base_value * unique_clone (void);
+  OCTINTERP_API octave_base_value * unique_clone ();
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   {
-    return new octave_class (octave_map (m_map.keys ()), c_name, m_parent_list);
+    return new octave_class (octave_map (m_map.keys ()), m_c_name, m_parent_list);
   }
 
   void break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame);
 
   OCTINTERP_API Cell dotref (const octave_value_list& idx);
 
-  OCTINTERP_API Matrix size (void);
+  OCTINTERP_API Matrix size ();
 
   OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
@@ -131,21 +131,21 @@ public:
   OCTINTERP_API octave::idx_vector
   index_vector (bool require_integers = false) const;
 
-  dim_vector dims (void) const { return m_map.dims (); }
+  dim_vector dims () const { return m_map.dims (); }
 
-  OCTINTERP_API std::size_t byte_size (void) const;
+  OCTINTERP_API std::size_t byte_size () const;
 
   // This is the number of elements in each field.  The total number
   // of elements is numel () * nfields ().
-  octave_idx_type numel (void) const
+  octave_idx_type numel () const
   {
     dim_vector dv = dims ();
     return dv.numel ();
   }
 
-  octave_idx_type nfields (void) const { return m_map.nfields (); }
+  octave_idx_type nfields () const { return m_map.nfields (); }
 
-  std::size_t nparents (void) const { return m_parent_list.size (); }
+  std::size_t nparents () const { return m_parent_list.size (); }
 
   octave_value reshape (const dim_vector& new_dims) const
   {
@@ -161,22 +161,22 @@ public:
     return octave_value (new octave_class (retval));
   }
 
-  bool is_defined (void) const { return true; }
+  bool is_defined () const { return true; }
 
-  bool isstruct (void) const { return false; }
+  bool isstruct () const { return false; }
 
-  bool isobject (void) const { return true; }
+  bool isobject () const { return true; }
 
-  OCTINTERP_API bool is_true (void) const;
+  OCTINTERP_API bool is_true () const;
 
-  octave_map map_value (void) const { return m_map; }
+  octave_map map_value () const { return m_map; }
 
-  OCTINTERP_API string_vector map_keys (void) const;
+  OCTINTERP_API string_vector map_keys () const;
 
-  std::list<std::string> parent_class_name_list (void) const
+  std::list<std::string> parent_class_name_list () const
   { return m_parent_list; }
 
-  string_vector parent_class_names (void) const
+  string_vector parent_class_names () const
   { return string_vector (m_parent_list); }
 
   OCTINTERP_API octave_base_value * find_parent_class (const std::string&);
@@ -192,11 +192,11 @@ public:
   OCTINTERP_API void print_raw (std::ostream& os,
                                 bool pr_as_read_syntax = false) const;
 
-  OCTINTERP_API bool reconstruct_exemplar (void);
+  OCTINTERP_API bool reconstruct_exemplar ();
 
-  OCTINTERP_API static void clear_exemplar_map (void);
+  OCTINTERP_API static void clear_exemplar_map ();
 
-  OCTINTERP_API bool reconstruct_parents (void);
+  OCTINTERP_API bool reconstruct_parents ();
 
   OCTINTERP_API bool save_ascii (std::ostream& os);
 
@@ -220,24 +220,24 @@ private:
   octave_map m_map;
 
 public:
-  int type_id (void) const { return t_id; }
-  std::string type_name (void) const { return t_name; }
-  std::string class_name (void) const { return c_name; }
+  int type_id () const { return s_t_id; }
+  std::string type_name () const { return s_t_name; }
+  std::string class_name () const { return m_c_name; }
 
-  static int static_type_id (void) { return t_id; }
-  static std::string static_type_name (void) { return t_name; }
-  static std::string static_class_name (void) { return "<unknown>"; }
+  static int static_type_id () { return s_t_id; }
+  static std::string static_type_name () { return s_t_name; }
+  static std::string static_class_name () { return "<unknown>"; }
   static OCTINTERP_API void register_type (octave::type_info&);
 
 private:
-  static int t_id;
+  static int s_t_id;
 
-  static const std::string t_name;
-  std::string c_name;
+  static const std::string s_t_name;
+  std::string m_c_name;
   std::list<std::string> m_parent_list;
 
-  OCTINTERP_API bool in_class_method (void);
-  OCTINTERP_API std::string get_current_method_class (void);
+  OCTINTERP_API bool in_class_method ();
+  OCTINTERP_API std::string get_current_method_class ();
 
   OCTINTERP_API octave_value
   subsasgn_common (const octave_value& obj, const std::string& type,
@@ -253,7 +253,7 @@ public:
   {
   public:
 
-    exemplar_info (void) : m_field_names (), m_parent_class_names () { }
+    exemplar_info () : m_field_names (), m_parent_class_names () { }
 
     OCTINTERP_API exemplar_info (const octave_value& obj);
 
@@ -271,13 +271,13 @@ public:
       return *this;
     }
 
-    octave_idx_type nfields (void) const { return m_field_names.numel (); }
+    octave_idx_type nfields () const { return m_field_names.numel (); }
 
-    std::size_t nparents (void) const { return m_parent_class_names.size (); }
+    std::size_t nparents () const { return m_parent_class_names.size (); }
 
-    string_vector fields (void) const { return m_field_names; }
+    string_vector fields () const { return m_field_names; }
 
-    std::list<std::string> parents (void) const { return m_parent_class_names; }
+    std::list<std::string> parents () const { return m_parent_class_names; }
 
     OCTINTERP_API bool compare (const octave_value& obj) const;
 

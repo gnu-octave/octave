@@ -44,17 +44,15 @@ typedef QList<float> QFloatList;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 class QUIWidgetCreator : public QObject
 {
   Q_OBJECT
 
 public:
 
-  QUIWidgetCreator (base_qobject& oct_qobj);
+  QUIWidgetCreator ();
 
-  ~QUIWidgetCreator (void) = default;
+  ~QUIWidgetCreator () = default;
 
 public:
 
@@ -64,9 +62,9 @@ public:
                           const QString& icon, const QStringList& button,
                           const QString& defbutton, const QStringList& role);
 
-  int get_dialog_result (void) { return m_dialog_result; }
+  int get_dialog_result () { return m_dialog_result; }
 
-  QString get_dialog_button (void) { return m_dialog_button; }
+  QString get_dialog_button () { return m_dialog_button; }
 
   QPair<QIntList, int> list_dialog (const QStringList& list,
                                     const QString& mode,
@@ -77,24 +75,24 @@ public:
                                     const QString& ok_string,
                                     const QString& cancel_string);
 
-  QIntList get_list_index (void) const { return m_list_index; }
+  QIntList get_list_index () const { return m_list_index; }
 
   QStringList input_dialog (const QStringList& prompt, const QString& title,
                             const QFloatList& nr, const QFloatList& nc,
                             const QStringList& defaults);
 
-  QStringList get_string_list (void) const { return m_string_list; }
+  QStringList get_string_list () const { return m_string_list; }
 
   QStringList file_dialog (const QStringList& filters, const QString& title,
                            const QString& filename, const QString& dirname,
                            const QString& multimode);
 
-  QString get_dialog_path (void) const { return m_path_name; }
+  QString get_dialog_path () const { return m_path_name; }
 
-  void lock (void) { m_mutex.lock (); }
-  void wait (void) { m_waitcondition.wait (&m_mutex); }
-  void unlock (void) { m_mutex.unlock (); }
-  void wake_all (void) { m_waitcondition.wakeAll (); }
+  void lock () { m_mutex.lock (); }
+  void wait () { m_waitcondition.wait (&m_mutex); }
+  void unlock () { m_mutex.unlock (); }
+  void wake_all () { m_waitcondition.wakeAll (); }
 
 signals:
 
@@ -148,8 +146,6 @@ public slots:
 
 private:
 
-  base_qobject& m_octave_qobj;
-
   int m_dialog_result;
   QString m_dialog_button;
 
@@ -176,12 +172,12 @@ class MessageDialog : public QMessageBox
 
 public:
 
-  MessageDialog (base_qobject& oct_qobj, const QString& message,
+  MessageDialog (const QString& message,
                  const QString& title, const QString& icon,
                  const QStringList& button, const QString& defbutton,
                  const QStringList& role);
 
-  ~MessageDialog (void) = default;
+  ~MessageDialog () = default;
 
 private:
 
@@ -197,17 +193,15 @@ class ListDialog : public QDialog
 {
   Q_OBJECT
 
-  QItemSelectionModel *selector;
-
 public:
 
-  ListDialog (base_qobject& oct_qobj, const QStringList& list,
+  ListDialog (const QStringList& list,
               const QString& mode, int width, int height,
               const QList<int>& initial, const QString& name,
               const QStringList& prompt, const QString& ok_string,
               const QString& cancel_string);
 
-  ~ListDialog (void) = default;
+  ~ListDialog () = default;
 
 signals:
 
@@ -215,32 +209,31 @@ signals:
 
 public slots:
 
-  void buttonOk_clicked (void);
+  void buttonOk_clicked ();
 
-  void buttonCancel_clicked (void);
+  void buttonCancel_clicked ();
 
-  void reject (void);
+  void reject ();
 
   void item_double_clicked (const QModelIndex&);
 
 private:
 
   QAbstractItemModel *m_model;
+  QItemSelectionModel *m_selector;
 };
 
 class InputDialog : public QDialog
 {
   Q_OBJECT
 
-  QList<QLineEdit *> input_line;
-
 public:
 
-  InputDialog (base_qobject& oct_qobj, const QStringList& prompt,
+  InputDialog (const QStringList& prompt,
                const QString& title, const QFloatList& nr,
                const QFloatList& nc, const QStringList& defaults);
 
-  ~InputDialog (void) = default;
+  ~InputDialog () = default;
 
 signals:
 
@@ -248,11 +241,15 @@ signals:
 
 public slots:
 
-  void buttonOk_clicked (void);
+  void buttonOk_clicked ();
 
-  void buttonCancel_clicked (void);
+  void buttonCancel_clicked ();
 
-  void reject (void);
+  void reject ();
+
+private:
+
+  QList<QLineEdit *> m_input_line;
 };
 
 class FileDialog : public QFileDialog
@@ -261,11 +258,11 @@ class FileDialog : public QFileDialog
 
 public:
 
-  FileDialog (base_qobject& oct_qobj, const QStringList& filters,
+  FileDialog (const QStringList& filters,
               const QString& title, const QString& filename,
               const QString& dirname, const QString& multimode);
 
-  ~FileDialog (void) = default;
+  ~FileDialog () = default;
 
 signals:
 
@@ -273,9 +270,9 @@ signals:
 
 private slots:
 
-  void acceptSelection (void);
+  void acceptSelection ();
 
-  void rejectSelection (void);
+  void rejectSelection ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

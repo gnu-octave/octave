@@ -46,8 +46,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
-
 //!  Dock widget to display files in the current directory.
 
 class files_dock_widget : public octave_dock_widget
@@ -56,9 +54,9 @@ class files_dock_widget : public octave_dock_widget
 
 public:
 
-  files_dock_widget (QWidget *parent, base_qobject& oct_qobj);
+  files_dock_widget (QWidget *parent);
 
-  ~files_dock_widget (void) = default;
+  ~files_dock_widget () = default;
 
 signals:
 
@@ -107,15 +105,15 @@ public slots:
 
   //! Slot for handling the up-directory button in the toolbar.
 
-  void change_directory_up (void);
+  void change_directory_up ();
 
   //! Slot for handling the sync octave directory button in the toolbar.
 
-  void do_sync_octave_directory (void);
+  void do_sync_octave_directory ();
 
   //! Slot for handling the sync browser directory button in the toolbar.
 
-  void do_sync_browser_directory (void);
+  void do_sync_browser_directory ();
 
   //! Sets the current directory being displayed.
 
@@ -123,7 +121,7 @@ public slots:
 
   //! Accepts user input a the line edit for the current directory.
 
-  void accept_directory_line_edit (void);
+  void accept_directory_line_edit ();
 
   //! Set the internal variable that holds the actual octave variable.
 
@@ -131,9 +129,9 @@ public slots:
 
   //! Tells the widget to react on changed settings.
 
-  void notice_settings (const gui_settings *settings);
+  void notice_settings ();
 
-  void save_settings (void);
+  void save_settings ();
 
 private slots:
 

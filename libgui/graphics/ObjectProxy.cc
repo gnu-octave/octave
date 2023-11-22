@@ -91,7 +91,7 @@ ObjectProxy::update (int pId)
 }
 
 void
-ObjectProxy::finalize (void)
+ObjectProxy::finalize ()
 {
   if (! m_object)
     error ("ObjectProxy::finalize: invalid GUI Object");
@@ -106,13 +106,13 @@ ObjectProxy::finalize (void)
 }
 
 void
-ObjectProxy::redraw (void)
+ObjectProxy::redraw ()
 {
   emit sendRedraw ();
 }
 
 void
-ObjectProxy::show (void)
+ObjectProxy::show ()
 {
   emit sendShow ();
 }
@@ -135,7 +135,7 @@ ObjectProxy::print (const QString& file_cmd, const QString& term)
 }
 
 uint8NDArray
-ObjectProxy::get_pixels (void)
+ObjectProxy::get_pixels ()
 {
   if (! m_object)
     error ("ObjectProxy::finalize: invalid GUI Object");

@@ -26,13 +26,11 @@
 #if ! defined (octave_dw_main_window_h)
 #define octave_dw_main_window_h 1
 
+#include "octave-config.h"
+
 #include <QMainWindow>
 
-#include "gui-settings.h"
-
 OCTAVE_BEGIN_NAMESPACE(octave)
-
-class base_qobject;
 
 class dw_main_window : public QMainWindow
 {
@@ -40,19 +38,15 @@ class dw_main_window : public QMainWindow
 
 public:
 
-  dw_main_window (base_qobject& oct_qboj, QWidget *parent = nullptr);
+  dw_main_window (QWidget *parent = nullptr);
 
-  ~dw_main_window (void) = default;
+  ~dw_main_window () = default;
 
-  // No copying!
-
-  dw_main_window (const dw_main_window&) = delete;
-
-  dw_main_window& operator = (const dw_main_window&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (dw_main_window)
 
 public slots:
 
-  void notice_settings (const gui_settings *);
+  void notice_settings ();
 
 protected slots:
 
@@ -75,8 +69,6 @@ private:
 
   QAction * add_action (QMenu *menu, const QIcon& icon, const QString& text,
                         const char *member, QWidget *receiver);
-
-  base_qobject& m_octave_qobj;
 
   QList<QDockWidget *> m_dw_list;
 

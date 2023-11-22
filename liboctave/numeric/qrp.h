@@ -45,7 +45,7 @@ public:
 
   typedef typename qr<T>::type type;
 
-  qrp (void) : qr<T> (), m_p () { }
+  qrp () : qr<T> (), m_p () { }
 
   OCTAVE_API qrp (const T&, type = qr<T>::std);
 
@@ -62,13 +62,13 @@ public:
     return *this;
   }
 
-  ~qrp (void) = default;
+  ~qrp () = default;
 
   OCTAVE_API void init (const T&, type = qr<T>::std);
 
-  PermMatrix P (void) const { return m_p; }
+  PermMatrix P () const { return m_p; }
 
-  OCTAVE_API RV_T Pvec (void) const;
+  OCTAVE_API RV_T Pvec () const;
 
 private:
 

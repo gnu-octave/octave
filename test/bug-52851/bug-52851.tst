@@ -21,4 +21,3 @@
 %! script4
 %! assert (r1, 1);
 %! assert (r2, 2);
-

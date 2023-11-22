@@ -39,8 +39,6 @@
 #include "Panel.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 #include "graphics.h"
 #include "interpreter.h"
 
@@ -92,7 +90,7 @@ borderWidthFromProperties (const uipanel::properties& pp)
 }
 
 Panel *
-Panel::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Panel::create (octave::interpreter& interp,
                const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
@@ -102,15 +100,15 @@ Panel::create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
       Container *container = parent->innerContainer ();
 
       if (container)
-        return new Panel (oct_qobj, interp, go, new QFrame (container));
+        return new Panel (interp, go, new QFrame (container));
     }
 
   return nullptr;
 }
 
-Panel::Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+Panel::Panel (octave::interpreter& interp,
               const graphics_object& go, QFrame *frame)
-  : Object (oct_qobj, interp, go, frame), m_container (nullptr),
+  : Object (interp, go, frame), m_container (nullptr),
     m_title (nullptr), m_blockUpdates (false),
     m_previous_bbox (Matrix (1, 4, 0))
 {
@@ -127,7 +125,7 @@ Panel::Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
   setupPalette (pp, pal);
   frame->setPalette (pal);
 
-  m_container = new Container (frame, oct_qobj, interp);
+  m_container = new Container (frame, interp);
   m_container->canvas (m_handle);
 
   connect (m_container, SIGNAL (interpeter_event (const fcn_callback&)),
@@ -168,7 +166,7 @@ Panel::Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
     frame->hide ();
 }
 
-Panel::~Panel (void)
+Panel::~Panel ()
 { }
 
 bool
@@ -222,7 +220,11 @@ Panel::eventFilter (QObject *watched, QEvent *xevent)
                     if (go.valid_object ())
                       ContextMenu::executeAt (m_interpreter,
                                               go.get_properties (),
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+                                              m->globalPosition ().toPoint ());
+#else
                                               m->globalPos ());
+#endif
                   }
               }
               break;
@@ -368,7 +370,7 @@ Panel::update (int pId)
 }
 
 void
-Panel::redraw (void)
+Panel::redraw ()
 {
   update (uipanel::properties::ID_POSITION);
 
@@ -379,7 +381,7 @@ Panel::redraw (void)
 }
 
 void
-Panel::updateLayout (void)
+Panel::updateLayout ()
 {
   uipanel::properties& pp = properties<uipanel> ();
   QFrame *frame = qWidget<QFrame> ();

@@ -88,6 +88,14 @@ function labels = yticklabels (varargin)
     hax = gca ();
   endif
 
+  if (! (iscell (arg) || isnumeric (arg) || ischar (arg)))
+    print_usage ();
+  endif
+
+  if (isempty (arg))
+    arg = {};  # Either '' or [] are converted empty cell array
+  endif
+
   if (iscell (arg) || isnumeric (arg))
     if (nargout > 0)
       error ("yticklabels: too many output arguments requested");
@@ -99,7 +107,6 @@ function labels = yticklabels (varargin)
       ## This implementation allows for a numeric array, which is handled in
       ## the same order as Matlab handles a cell array
       arg = num2cell (arg(:));
-
     endif
 
     ## Convert any numeric elements to characters, make it a 1-D cell array.
@@ -113,9 +120,8 @@ function labels = yticklabels (varargin)
               "yticklabelmode", "manual",
               "ytickmode", "manual");
 
-  elseif (ischar (arg))
-    arg = tolower (arg);
-    switch (arg)
+  else
+    switch (lower (arg))
       case "mode"
         labels = get (hax, "yticklabelmode");
 
@@ -131,8 +137,6 @@ function labels = yticklabels (varargin)
 
     endswitch
 
-  else
-    print_usage ();
   endif
 
 endfunction

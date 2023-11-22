@@ -57,21 +57,17 @@ public:
                   int l = -1, int c = -1)
     : tree (l, c), m_expr (e), m_list (sl), m_lead_comm (lc) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_if_clause)
 
-  tree_if_clause (const tree_if_clause&) = delete;
+  ~tree_if_clause ();
 
-  tree_if_clause& operator = (const tree_if_clause&) = delete;
+  bool is_else_clause () { return ! m_expr; }
 
-  ~tree_if_clause (void);
+  tree_expression * condition () { return m_expr; }
 
-  bool is_else_clause (void) { return ! m_expr; }
+  tree_statement_list * commands () { return m_list; }
 
-  tree_expression * condition (void) { return m_expr; }
-
-  tree_statement_list * commands (void) { return m_list; }
-
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -94,17 +90,13 @@ class tree_if_command_list : public base_list<tree_if_clause *>
 {
 public:
 
-  tree_if_command_list (void) { }
+  tree_if_command_list () { }
 
   tree_if_command_list (tree_if_clause *t) { append (t); }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_if_command_list)
 
-  tree_if_command_list (const tree_if_command_list&) = delete;
-
-  tree_if_command_list& operator = (const tree_if_command_list&) = delete;
-
-  ~tree_if_command_list (void)
+  ~tree_if_command_list ()
   {
     while (! empty ())
       {
@@ -134,19 +126,15 @@ public:
     : tree_command (l, c), m_list (lst), m_lead_comm (lc), m_trail_comm (tc)
   { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_if_command)
 
-  tree_if_command (const tree_if_command&) = delete;
+  ~tree_if_command ();
 
-  tree_if_command& operator = (const tree_if_command&) = delete;
+  tree_if_command_list * cmd_list () { return m_list; }
 
-  ~tree_if_command (void);
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  tree_if_command_list * cmd_list (void) { return m_list; }
-
-  comment_list * leading_comment (void) { return m_lead_comm; }
-
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -184,21 +172,17 @@ public:
                     int l = -1, int c = -1)
     : tree (l, c), m_label (e), m_list (sl), m_lead_comm (lc) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_switch_case)
 
-  tree_switch_case (const tree_switch_case&) = delete;
+  ~tree_switch_case ();
 
-  tree_switch_case& operator = (const tree_switch_case&) = delete;
+  bool is_default_case () { return ! m_label; }
 
-  ~tree_switch_case (void);
+  tree_expression * case_label () { return m_label; }
 
-  bool is_default_case (void) { return ! m_label; }
+  tree_statement_list * commands () { return m_list; }
 
-  tree_expression * case_label (void) { return m_label; }
-
-  tree_statement_list * commands (void) { return m_list; }
-
-  comment_list * leading_comment (void) { return m_lead_comm; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
   void accept (tree_walker& tw)
   {
@@ -221,17 +205,13 @@ class tree_switch_case_list : public base_list<tree_switch_case *>
 {
 public:
 
-  tree_switch_case_list (void) { }
+  tree_switch_case_list () { }
 
   tree_switch_case_list (tree_switch_case *t) { append (t); }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_switch_case_list)
 
-  tree_switch_case_list (const tree_switch_case_list&) = delete;
-
-  tree_switch_case_list& operator = (const tree_switch_case_list&) = delete;
-
-  ~tree_switch_case_list (void)
+  ~tree_switch_case_list ()
   {
     while (! empty ())
       {
@@ -261,21 +241,17 @@ public:
     : tree_command (l, c), m_expr (e), m_list (lst), m_lead_comm (lc),
       m_trail_comm (tc) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_switch_command)
 
-  tree_switch_command (const tree_switch_command&) = delete;
+  ~tree_switch_command ();
 
-  tree_switch_command& operator = (const tree_switch_command&) = delete;
+  tree_expression * switch_value () { return m_expr; }
 
-  ~tree_switch_command (void);
+  tree_switch_case_list * case_list () { return m_list; }
 
-  tree_expression * switch_value (void) { return m_expr; }
+  comment_list * leading_comment () { return m_lead_comm; }
 
-  tree_switch_case_list * case_list (void) { return m_list; }
-
-  comment_list * leading_comment (void) { return m_lead_comm; }
-
-  comment_list * trailing_comment (void) { return m_trail_comm; }
+  comment_list * trailing_comment () { return m_trail_comm; }
 
   void accept (tree_walker& tw)
   {

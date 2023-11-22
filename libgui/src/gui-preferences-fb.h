@@ -30,45 +30,30 @@
 
 // Files dock widget
 
-const gui_pref
-fb_column_state ("filesdockwidget/column_state", QVariant ());
+extern gui_pref fb_column_state;
 
-const gui_pref
-fb_mru_list ("filesdockwidget/mru_dir_list", QVariant (QStringList ()));
+extern gui_pref fb_mru_list;
 
-const gui_pref
-fb_show_size ("filesdockwidget/showFileSize", QVariant (false));
+extern gui_pref fb_show_size;
 
-const gui_pref
-fb_show_type ("filesdockwidget/showFileType", QVariant (false));
+extern gui_pref fb_show_type;
 
-const gui_pref
-fb_show_date ("filesdockwidget/showLastModified", QVariant (false));
+extern gui_pref fb_show_date;
 
-const gui_pref
-fb_show_hidden ("filesdockwidget/showHiddenFiles", QVariant (false));
+extern gui_pref fb_show_hidden;
 
-const gui_pref
-fb_show_altcol ("filesdockwidget/useAlternatingRowColors", QVariant (true));
+extern gui_pref fb_show_altcol;
 
-const gui_pref
-fb_sort_column ("filesdockwidget/sort_files_by_column", QVariant (0));
+extern gui_pref fb_sort_column;
 
-const gui_pref
-fb_sort_order ("filesdockwidget/sort_files_by_order",
-               QVariant (Qt::AscendingOrder));
+extern gui_pref fb_sort_order;
 
-const gui_pref
-fb_sync_octdir ("filesdockwidget/sync_octave_directory", QVariant (true));
+extern gui_pref fb_sync_octdir;
 
-const gui_pref
-fb_restore_last_dir ("filesdockwidget/restore_last_dir", QVariant (false));
+extern gui_pref fb_restore_last_dir;
 
-const gui_pref
-fb_startup_dir ("filesdockwidget/startup_dir", QVariant (QString ()));
+extern gui_pref fb_startup_dir;
 
-const gui_pref
-fb_txt_file_ext ("filesdockwidget/txt_file_extensions",
-                 QVariant ("m;c;cc;cpp;h;txt"));
+extern gui_pref fb_txt_file_ext;
 
 #endif

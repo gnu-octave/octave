@@ -45,7 +45,7 @@ public:
   typedef typename T::column_vector_type VT;
   typedef typename T::element_type ELT_T;
 
-  lu (void)
+  lu ()
     : m_a_fact (), m_L (), m_ipvt () { }
 
   OCTAVE_API lu (const T& a);
@@ -67,23 +67,23 @@ public:
     return *this;
   }
 
-  virtual ~lu (void) = default;
+  virtual ~lu () = default;
 
-  OCTAVE_API bool packed (void) const;
+  OCTAVE_API bool packed () const;
 
-  OCTAVE_API void unpack (void);
+  OCTAVE_API void unpack ();
 
-  OCTAVE_API T L (void) const;
+  OCTAVE_API T L () const;
 
-  OCTAVE_API T U (void) const;
+  OCTAVE_API T U () const;
 
-  OCTAVE_API T Y (void) const;
+  OCTAVE_API T Y () const;
 
-  OCTAVE_API PermMatrix P (void) const;
+  OCTAVE_API PermMatrix P () const;
 
-  OCTAVE_API ColumnVector P_vec (void) const;
+  OCTAVE_API ColumnVector P_vec () const;
 
-  OCTAVE_API bool regular (void) const;
+  OCTAVE_API bool regular () const;
 
   OCTAVE_API void update (const VT& u, const VT& v);
 
@@ -97,7 +97,7 @@ protected:
 
   // The result of getp is passed to other Octave Matrix functions,
   // so we use octave_idx_type.
-  OCTAVE_API Array<octave_idx_type> getp (void) const;
+  OCTAVE_API Array<octave_idx_type> getp () const;
 
   T m_a_fact;
   T m_L;

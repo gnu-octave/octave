@@ -219,7 +219,7 @@ OCTAVE_BEGIN_NAMESPACE(sys)
 
 OCTAVE_BEGIN_NAMESPACE(file_ops)
 
-char dev_sep_char (void)
+char dev_sep_char ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return ':';
@@ -228,7 +228,7 @@ char dev_sep_char (void)
 #endif
 }
 
-char dir_sep_char (void)
+char dir_sep_char ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return '\\';
@@ -237,7 +237,7 @@ char dir_sep_char (void)
 #endif
 }
 
-std::string dir_sep_str (void)
+std::string dir_sep_str ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return R"(\)";
@@ -246,7 +246,7 @@ std::string dir_sep_str (void)
 #endif
 }
 
-std::string dir_sep_chars (void)
+std::string dir_sep_chars ()
 {
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
   return R"(/\)";
@@ -568,6 +568,26 @@ int rename (const std::string& from, const std::string& to,
   int status = -1;
 
   msg = "";
+
+  // Do nothing if source and target are the same file.
+  if (same_file (to, from))
+    return 0;
+
+  // The behavior of std::rename with existing target is not defined by the
+  // standard.  Implementations differ vastly.  For Octave, use the following
+  // for the case that the target already exists:
+  // If the source and the target are regular files, overwrite the target.
+  // In other cases, fail.
+  if (file_exists (to))
+    {
+      if (file_exists (to, false) && file_exists (from, false))
+        unlink (to);
+      else
+        {
+          msg = "Target already exists.";
+          return status;
+        }
+    }
 
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::wstring wfrom = u8_to_wstring (from);

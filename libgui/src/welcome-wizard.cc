@@ -39,7 +39,7 @@
 
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
-#include "octave-qobject.h"
+#include "gui-settings.h"
 #include "welcome-wizard.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -53,10 +53,9 @@ make_octave_logo (QWidget *p = nullptr, int height = 100)
   return logo;
 };
 
-welcome_wizard::welcome_wizard (base_qobject& oct_qobj, QWidget *p)
-  : QDialog (p), m_octave_qobj (oct_qobj), m_page_ctor_list (),
-    m_page_list_iterator (),
-    m_current_page (initial_page::create (oct_qobj, this)),
+welcome_wizard::welcome_wizard (QWidget *p)
+  : QDialog (p), m_page_ctor_list (), m_page_list_iterator (),
+    m_current_page (initial_page::create (this)),
     m_allow_web_connect_state (false),
     m_max_height (0), m_max_width (0)
 {
@@ -92,7 +91,7 @@ welcome_wizard::welcome_wizard (base_qobject& oct_qobj, QWidget *p)
 #endif
 }
 
-void welcome_wizard::adjust_size (void)
+void welcome_wizard::adjust_size ()
 {
   // Get adjusted size for the current page
   adjustSize ();
@@ -112,12 +111,12 @@ void welcome_wizard::handle_web_connect_option (int state)
   m_allow_web_connect_state = state == Qt::Checked;
 }
 
-void welcome_wizard::show_page (void)
+void welcome_wizard::show_page ()
 {
   delete m_current_page;
   delete layout ();
 
-  m_current_page = (*m_page_list_iterator) (m_octave_qobj, this);
+  m_current_page = (*m_page_list_iterator) (this);
 
   QVBoxLayout *new_layout = new QVBoxLayout ();
   setLayout (new_layout);
@@ -125,41 +124,34 @@ void welcome_wizard::show_page (void)
   new_layout->addWidget (m_current_page);
 }
 
-void welcome_wizard::previous_page (void)
+void welcome_wizard::previous_page ()
 {
   --m_page_list_iterator;
 
   show_page ();
 }
 
-void welcome_wizard::next_page (void)
+void welcome_wizard::next_page ()
 {
   ++m_page_list_iterator;
 
   show_page ();
 }
 
-void welcome_wizard::accept (void)
+void welcome_wizard::accept ()
 {
   // Create default settings file.
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  rmgr.reload_settings ();
+  gui_settings settings;
 
-  gui_settings *settings = rmgr.get_settings ();
+  settings.setValue (nr_allow_connection.settings_key (), m_allow_web_connect_state);
 
-  if (settings)
-    {
-      settings->setValue (nr_allow_connection.key,
-                          m_allow_web_connect_state);
-
-      settings->sync ();
-    }
+  settings.sync ();
 
   QDialog::accept ();
 }
 
-initial_page::initial_page (base_qobject& oct_qobj, welcome_wizard *wizard)
+initial_page::initial_page (welcome_wizard *wizard)
   : QWidget (wizard),
     m_title (new QLabel (tr ("Welcome to Octave!"), this)),
     m_message (new QLabel (this)),
@@ -171,7 +163,7 @@ initial_page::initial_page (base_qobject& oct_qobj, welcome_wizard *wizard)
   ft.setPointSize (20);
   m_title->setFont (ft);
 
-  resource_manager& rmgr = oct_qobj.get_resource_manager ();
+  gui_settings settings;
 
   m_message->setText
     (tr ("<html><body>\n"
@@ -179,7 +171,7 @@ initial_page::initial_page (base_qobject& oct_qobj, welcome_wizard *wizard)
          "Click 'Next' to create a configuration file and launch Octave.</p>\n"
          "<p>The configuration file is stored in<br>%1.</p>\n"
          "</body></html>").
-     arg (rmgr.get_settings_file ()));
+     arg (settings.file_name ()));
   m_message->setWordWrap (true);
   m_message->setMinimumWidth (400);
 
@@ -217,8 +209,7 @@ initial_page::initial_page (base_qobject& oct_qobj, welcome_wizard *wizard)
   connect (m_cancel, &QPushButton::clicked, wizard, &welcome_wizard::reject);
 }
 
-setup_community_news::setup_community_news (base_qobject&,
-                                            welcome_wizard *wizard)
+setup_community_news::setup_community_news (welcome_wizard *wizard)
   : QWidget (wizard),
     m_title (new QLabel (tr ("Community News"), this)),
     m_message (new QLabel (this)),
@@ -257,7 +248,7 @@ setup_community_news::setup_community_news (base_qobject&,
 
   QHBoxLayout *checkbox_layout = new QHBoxLayout;
 
-  bool allow_connection = nr_allow_connection.def.toBool ();
+  bool allow_connection = nr_allow_connection.def ().toBool ();
   if (allow_connection)
     m_checkbox->setCheckState (Qt::Checked);
   else
@@ -311,7 +302,7 @@ setup_community_news::setup_community_news (base_qobject&,
   connect (m_cancel, &QPushButton::clicked, wizard, &welcome_wizard::reject);
 }
 
-final_page::final_page (base_qobject&, welcome_wizard *wizard)
+final_page::final_page (welcome_wizard *wizard)
   : QWidget (wizard),
     m_title (new QLabel (tr ("Enjoy!"), this)),
     m_message (new QLabel (this)),

@@ -63,19 +63,19 @@ public:
       m_is_global (is_global), m_is_persistent (is_persistent)
   { }
 
-  std::string name (void) const { return m_name; }
+  std::string name () const { return m_name; }
 
-  octave_value value (void) const { return m_value; }
+  octave_value value () const { return m_value; }
 
-  bool is_complex (void) const { return m_is_complex; }
+  bool is_complex () const { return m_is_complex; }
 
-  bool is_sparse (void) const { return m_is_sparse; }
+  bool is_sparse () const { return m_is_sparse; }
 
-  bool is_formal (void) const { return m_is_formal; }
+  bool is_formal () const { return m_is_formal; }
 
-  bool is_global (void) const { return m_is_global; }
+  bool is_global () const { return m_is_global; }
 
-  bool is_persistent (void) const { return m_is_persistent; }
+  bool is_persistent () const { return m_is_persistent; }
 
   void display_line (std::ostream& os,
                      const std::list<whos_parameter>& params) const;
@@ -96,17 +96,17 @@ symbol_info_list : public base_list<symbol_info>
 {
 public:
 
-  symbol_info_list (void) = default;
+  symbol_info_list () = default;
 
   symbol_info_list (const symbol_info_list&) = default;
 
   symbol_info_list& operator = (const symbol_info_list&) = default;
 
-  ~symbol_info_list (void) = default;
+  ~symbol_info_list () = default;
 
   octave_value varval (const std::string& name) const;
 
-  std::list<std::string> names (void) const;
+  std::list<std::string> names () const;
 
   octave_map map_value (const std::string& caller_function_name,
                         int nesting_level) const;

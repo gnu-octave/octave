@@ -58,7 +58,7 @@ private:
   cdef_class_rep : public cdef_meta_object_rep
   {
   public:
-    cdef_class_rep (void)
+    cdef_class_rep ()
       : cdef_meta_object_rep (), m_member_count (0), m_handle_class (false),
         m_meta (false)
     { }
@@ -67,20 +67,20 @@ private:
 
     cdef_class_rep& operator = (const cdef_class_rep&) = delete;
 
-    ~cdef_class_rep (void) = default;
+    ~cdef_class_rep () = default;
 
-    cdef_object_rep * copy (void) const { return new cdef_class_rep (*this); }
+    cdef_object_rep * copy () const { return new cdef_class_rep (*this); }
 
-    bool is_class (void) const { return true; }
+    bool is_class () const { return true; }
 
-    std::string get_name (void) const
+    std::string get_name () const
     { return get ("Name").string_value (); }
 
     void set_name (const std::string& nm) { put ("Name", nm); }
 
-    bool is_abstract (void) const { return get ("Abstract").bool_value (); }
+    bool is_abstract () const { return get ("Abstract").bool_value (); }
 
-    bool is_sealed (void) const { return get ("Sealed").bool_value (); }
+    bool is_sealed () const { return get ("Sealed").bool_value (); }
 
     OCTINTERP_API cdef_method
     find_method (const std::string& nm, bool local = false);
@@ -103,11 +103,11 @@ private:
     OCTINTERP_API std::map<std::string, cdef_property>
     get_property_map (int mode);
 
-    OCTINTERP_API string_vector get_names (void);
+    OCTINTERP_API string_vector get_names ();
 
     void set_directory (const std::string& dir) { m_directory = dir; }
 
-    std::string get_directory (void) const { return m_directory; }
+    std::string get_directory () const { return m_directory; }
 
     OCTINTERP_API void delete_object (const cdef_object& obj);
 
@@ -115,7 +115,7 @@ private:
     meta_subsref (const std::string& type,
                   const std::list<octave_value_list>& idx, int nargout);
 
-    OCTINTERP_API void meta_release (void);
+    OCTINTERP_API void meta_release ();
 
     bool meta_accepts_postfix_index (char type) const
     {
@@ -123,6 +123,8 @@ private:
     }
 
     OCTINTERP_API octave_value get_method (const std::string& name) const;
+
+    OCTINTERP_API octave_value get_method (int line) const;
 
     OCTINTERP_API octave_value construct (const octave_value_list& args);
 
@@ -134,13 +136,13 @@ private:
     OCTINTERP_API void
     run_constructor (cdef_object& obj, const octave_value_list& args);
 
-    void mark_as_handle_class (void) { m_handle_class = true; }
+    void mark_as_handle_class () { m_handle_class = true; }
 
-    bool is_handle_class (void) const { return m_handle_class; }
+    bool is_handle_class () const { return m_handle_class; }
 
-    octave_idx_type static_count (void) const { return m_member_count; }
+    octave_idx_type static_count () const { return m_member_count; }
 
-    void destroy (void)
+    void destroy ()
     {
       if (m_member_count)
         {
@@ -155,21 +157,21 @@ private:
         delete this;
     }
 
-    void mark_as_meta_class (void) { m_meta = true; }
+    void mark_as_meta_class () { m_meta = true; }
 
-    bool is_meta_class (void) const { return m_meta; }
+    bool is_meta_class () const { return m_meta; }
 
     void doc_string (const std::string& txt) { m_doc_string = txt; }
 
-    std::string doc_string (void) const { return m_doc_string; }
+    std::string doc_string () const { return m_doc_string; }
 
     void file_name (const std::string& nm) { m_file_name = nm; }
 
-    std::string file_name (void) const { return m_file_name; }
+    std::string file_name () const { return m_file_name; }
 
   private:
 
-    OCTINTERP_API void load_all_methods (void);
+    OCTINTERP_API void load_all_methods ();
 
     OCTINTERP_API void find_names (std::set<std::string>& names, bool all);
 
@@ -181,7 +183,7 @@ private:
     find_methods (std::map<std::string, cdef_method>& meths,
                   bool only_inherited, bool include_ctor = false);
 
-    cdef_class wrap (void)
+    cdef_class wrap ()
     {
       m_count++;
       return cdef_class (this);
@@ -237,7 +239,7 @@ public:
 
   // Create an invalid class object.
 
-  cdef_class (void) : cdef_meta_object () { }
+  cdef_class () : cdef_meta_object () { }
 
   cdef_class (const std::string& nm,
               const std::list<cdef_class>& superclasses)
@@ -264,7 +266,7 @@ public:
     return *this;
   }
 
-  ~cdef_class (void) = default;
+  ~cdef_class () = default;
 
   OCTINTERP_API cdef_method
   find_method (const std::string& nm, bool local = false);
@@ -303,25 +305,25 @@ public:
     return get_rep ()->get_property_map (mode);
   }
 
-  string_vector get_names (void) { return get_rep ()->get_names (); }
+  string_vector get_names () { return get_rep ()->get_names (); }
 
-  bool is_abstract (void) const { return get_rep ()->is_abstract (); }
+  bool is_abstract () const { return get_rep ()->is_abstract (); }
 
-  bool is_sealed (void) const { return get_rep ()->is_sealed (); }
+  bool is_sealed () const { return get_rep ()->is_sealed (); }
 
   void set_directory (const std::string& dir)
   {
     get_rep ()->set_directory (dir);
   }
 
-  std::string get_directory (void) const
+  std::string get_directory () const
   {
     return get_rep ()->get_directory ();
   }
 
-  std::string get_name (void) const { return get_rep ()->get_name (); }
+  std::string get_name () const { return get_rep ()->get_name (); }
 
-  bool is_builtin (void) const { return get_directory ().empty (); }
+  bool is_builtin () const { return get_directory ().empty (); }
 
   void delete_object (const cdef_object& obj)
   {
@@ -357,9 +359,14 @@ public:
     return get_rep ()->get_method (nm);
   }
 
+  octave_value get_method (int ln) const
+  {
+    return get_rep ()->get_method (ln);
+  }
+
   OCTINTERP_API octave_value get_method_function (const std::string& nm);
 
-  octave_value get_constructor_function (void)
+  octave_value get_constructor_function ()
   {
     return get_method_function (get_name ());
   }
@@ -384,27 +391,27 @@ public:
     get_rep ()->run_constructor (obj, args);
   }
 
-  void mark_as_handle_class (void)
+  void mark_as_handle_class ()
   {
     get_rep ()->mark_as_handle_class ();
   }
 
-  bool is_handle_class (void) const
+  bool is_handle_class () const
   {
     return get_rep ()->is_handle_class ();
   }
 
-  void mark_as_meta_class (void) { get_rep ()->mark_as_meta_class (); }
+  void mark_as_meta_class () { get_rep ()->mark_as_meta_class (); }
 
-  bool is_meta_class (void) const { return get_rep ()->is_meta_class (); }
+  bool is_meta_class () const { return get_rep ()->is_meta_class (); }
 
   void doc_string (const std::string& txt) { get_rep ()->doc_string (txt); }
 
-  std::string doc_string (void) const { return get_rep ()->doc_string (); }
+  std::string doc_string () const { return get_rep ()->doc_string (); }
 
   void file_name (const std::string& nm) { get_rep ()->file_name (nm); }
 
-  std::string file_name (void) const { return get_rep ()->file_name (); }
+  std::string file_name () const { return get_rep ()->file_name (); }
 
 public:
 
@@ -417,12 +424,12 @@ public:
 
 private:
 
-  cdef_class_rep * get_rep (void)
+  cdef_class_rep * get_rep ()
   {
     return dynamic_cast<cdef_class_rep *> (cdef_object::get_rep ());
   }
 
-  const cdef_class_rep * get_rep (void) const
+  const cdef_class_rep * get_rep () const
   {
     return dynamic_cast<const cdef_class_rep *> (cdef_object::get_rep ());
   }

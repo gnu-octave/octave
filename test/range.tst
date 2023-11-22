@@ -31,7 +31,9 @@
 %!assert (full (9:-1:1), [ 9 8 7 6 5 4 3 2 1 ])
 %!assert (full (1:-1:9), zeros (1,0))
 %!assert (full (1:1:1), 1)
-%!assert (full (i:2i:10i), zeros (1,0))
+%!test
+%! warning ('off', 'Octave:colon-complex-argument', 'local');
+%! assert (full (i:2i:10i), zeros (1,0));
 
 ## Test mixing integer range with other types
 

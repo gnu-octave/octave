@@ -35,10 +35,12 @@
 #include <QIcon>
 #include <QMetaType>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QStringList>
 
 #include "dialog.h"
 #include "gui-preferences-ed.h"
+#include "gui-settings.h"
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "qt-utils.h"
@@ -92,7 +94,7 @@ make_filter_list (const event_manager::filter_list& lst)
 
       // Strip out extensions from name and replace ';' with spaces in list.
 
-      name.replace (QRegExp (R"(\(.*\))"), "");
+      name.replace (QRegularExpression {R"(\(.*\))"}, "");
       ext.replace (";", " ");
 
       if (name.isEmpty ())
@@ -109,7 +111,7 @@ make_filter_list (const event_manager::filter_list& lst)
 
 qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
   : interpreter_events (), m_octave_qobj (oct_qobj),
-    m_uiwidget_creator (oct_qobj), m_result (), m_mutex (),
+    m_uiwidget_creator (), m_result (), m_mutex (),
     m_waitcondition ()
 {
   qRegisterMetaType<QIntList> ("QIntList");
@@ -137,7 +139,7 @@ void qt_interpreter_events::start_gui (bool gui_app)
     emit start_gui_signal (gui_app);
 }
 
-void qt_interpreter_events::close_gui (void)
+void qt_interpreter_events::close_gui ()
 {
   if (m_octave_qobj.experimental_terminal_widget ())
     emit close_gui_signal ();
@@ -244,22 +246,22 @@ qt_interpreter_events::question_dialog (const std::string& msg,
   return answer.toStdString ();
 }
 
-void qt_interpreter_events::update_path_dialog (void)
+void qt_interpreter_events::update_path_dialog ()
 {
   emit update_path_dialog_signal ();
 }
 
-void qt_interpreter_events::show_preferences (void)
+void qt_interpreter_events::show_preferences ()
 {
   emit show_preferences_signal ();
 }
 
-void qt_interpreter_events::apply_preferences (void)
+void qt_interpreter_events::apply_preferences ()
 {
   emit apply_new_settings ();
 }
 
-void qt_interpreter_events::show_terminal_window (void)
+void qt_interpreter_events::show_terminal_window ()
 {
   emit show_terminal_window_signal ();
 }
@@ -271,17 +273,17 @@ bool qt_interpreter_events::show_documentation (const std::string& file)
   return true;
 }
 
-void qt_interpreter_events::show_file_browser (void)
+void qt_interpreter_events::show_file_browser ()
 {
   emit show_file_browser_signal ();
 }
 
-void qt_interpreter_events::show_command_history (void)
+void qt_interpreter_events::show_command_history ()
 {
   emit show_command_history_signal ();
 }
 
-void qt_interpreter_events::show_workspace (void)
+void qt_interpreter_events::show_workspace ()
 {
   emit show_workspace_signal ();
 }
@@ -291,7 +293,7 @@ void qt_interpreter_events::show_community_news (int serial)
   emit show_community_news_signal (serial);
 }
 
-void qt_interpreter_events::show_release_notes (void)
+void qt_interpreter_events::show_release_notes ()
 {
   emit show_release_notes_signal ();
 }
@@ -309,7 +311,7 @@ void qt_interpreter_events::edit_variable (const std::string& expr,
   emit edit_variable_signal (QString::fromStdString (expr), val);
 }
 
-bool qt_interpreter_events::confirm_shutdown (void)
+bool qt_interpreter_events::confirm_shutdown ()
 {
   QMutexLocker autolock (&m_mutex);
 
@@ -323,10 +325,9 @@ bool qt_interpreter_events::confirm_shutdown (void)
 
 bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
 {
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
-  if (! settings || settings->value (ed_create_new_file).toBool ())
+  if (settings.bool_value (ed_create_new_file))
     return true;
 
   std::string abs_fname = sys::env::make_absolute (file);
@@ -438,8 +439,9 @@ void qt_interpreter_events::get_named_icon_slot (const QString& name)
 {
   QMutexLocker autolock (&m_mutex);
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  m_result = QVariant::fromValue (rmgr.icon (name));
+  gui_settings settings;
+
+  m_result = QVariant::fromValue (settings.icon (name));
 
   wake_all ();
 }
@@ -533,7 +535,7 @@ void qt_interpreter_events::gui_status_update (const std::string& feature,
                                  QString::fromStdString (status));
 }
 
-void qt_interpreter_events::update_gui_lexer (void)
+void qt_interpreter_events::update_gui_lexer ()
 {
   emit update_gui_lexer_signal (true);
 }
@@ -574,7 +576,7 @@ void qt_interpreter_events::set_workspace (bool top_level, bool debug,
     emit refresh_variable_editor_signal ();
 }
 
-void qt_interpreter_events::clear_workspace (void)
+void qt_interpreter_events::clear_workspace ()
 {
   emit clear_workspace_signal ();
 }
@@ -599,15 +601,15 @@ void qt_interpreter_events::append_history (const std::string& hist_entry)
   emit append_history_signal (QString::fromStdString (hist_entry));
 }
 
-void qt_interpreter_events::clear_history (void)
+void qt_interpreter_events::clear_history ()
 {
   emit clear_history_signal ();
 }
 
-void qt_interpreter_events::pre_input_event (void)
+void qt_interpreter_events::pre_input_event ()
 { }
 
-void qt_interpreter_events::post_input_event (void)
+void qt_interpreter_events::post_input_event ()
 { }
 
 void qt_interpreter_events::enter_debugger_event (const std::string& /*fcn_name*/,
@@ -629,7 +631,7 @@ qt_interpreter_events::execute_in_debugger_event (const std::string& file,
   delete_debugger_pointer (file, line);
 }
 
-void qt_interpreter_events::exit_debugger_event (void)
+void qt_interpreter_events::exit_debugger_event ()
 {
   emit exit_debugger_signal ();
 }
@@ -660,7 +662,7 @@ qt_interpreter_events::delete_debugger_pointer (const std::string& file,
 }
 
 void
-qt_interpreter_events::confirm_shutdown_octave (void)
+qt_interpreter_events::confirm_shutdown_octave ()
 {
   QMutexLocker autolock (&m_mutex);
 
@@ -684,10 +686,10 @@ qt_interpreter_events::gui_preference_slot (const QString& key,
 {
   QMutexLocker autolock (&m_mutex);
 
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
-  QString read_value = settings->value (key).toString ();
+  // We don't want to apply default value here.
+  QString read_value = settings.value (key).toString ();
 
   // Some preferences need extra handling
   QString adjusted_value = gui_preference_adjust (key, value);
@@ -695,9 +697,9 @@ qt_interpreter_events::gui_preference_slot (const QString& key,
   if (! adjusted_value.isEmpty () && (read_value != adjusted_value))
     {
       // Change settings only for new, non-empty values
-      settings->setValue (key, QVariant (adjusted_value));
+      settings.setValue (key, QVariant (adjusted_value));
 
-      emit settings_changed (settings, true);   // true: changed by worker
+      emit settings_changed (true);   // true: changed by worker
     }
 
   m_result = read_value;
@@ -716,35 +718,15 @@ qt_interpreter_events::gui_preference_adjust (const QString& key,
 
   QString adjusted_value = value;
 
-  // Not all encodings are available.  Encodings are uppercase and do
-  // not use CPxxx but IBMxxx or WINDOWS-xxx.
-
-  if (key == ed_default_enc.key)
+  if (key == ed_default_enc.settings_key ())
     {
       adjusted_value = adjusted_value.toUpper ();
-
-      QStringList codecs;
-      resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-      rmgr.get_codecs (&codecs);
-
-      QRegExp re ("^CP(\\d+)$");
 
       if (adjusted_value == "SYSTEM")
         adjusted_value =
           QString ("SYSTEM (") +
           QString (octave_locale_charset_wrapper ()).toUpper () +
           QString (")");
-      else if (re.indexIn (adjusted_value) > -1)
-        {
-          if (codecs.contains ("IBM" + re.cap (1)))
-            adjusted_value = "IBM" + re.cap (1);
-          else if (codecs.contains ("WINDOWS-" + re.cap (1)))
-            adjusted_value = "WINDOWS-" + re.cap (1);
-          else
-            adjusted_value.clear ();
-        }
-      else if (! codecs.contains (adjusted_value))
-        adjusted_value.clear ();
     }
 
   return adjusted_value;

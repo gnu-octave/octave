@@ -30,7 +30,6 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class ToggleTool : public ToolBarButton<uitoggletool>
@@ -38,13 +37,13 @@ class ToggleTool : public ToolBarButton<uitoggletool>
   Q_OBJECT
 
 public:
-  ToggleTool (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  ToggleTool (octave::interpreter& interp,
               const graphics_object& go,
               QAction *action);
-  ~ToggleTool (void);
+  ~ToggleTool ();
 
   static ToggleTool *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
 protected:

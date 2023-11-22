@@ -298,23 +298,14 @@ vector_equivalent (const dim_vector& dv)
   return true;
 }
 
+// FIXME: Deprecated in Octave 9.
 bool
 all_ok (const Array<octave::idx_vector>& ra_idx)
 {
-  bool retval = true;
+  octave_unused_parameter (ra_idx);
 
-  octave_idx_type n = ra_idx.numel ();
-
-  for (octave_idx_type i = 0; i < n; i++)
-    {
-      if (! ra_idx(i))
-        {
-          retval = false;
-          break;
-        }
-    }
-
-  return retval;
+  // idx_vector objects are always valid once constructed
+  return true;
 }
 
 bool
@@ -409,18 +400,6 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
     increment_index (retval, dims);
 
   // FIXME: the solution using increment_index is not efficient.
-
-#if 0
-  octave_idx_type var = 1;
-  for (int i = 0; i < n_dims; i++)
-    {
-      std::cout << "idx: " << idx << ", var: " << var
-                << ", dims(" << i << "): " << dims(i) <<"\n";
-      retval(i) = ((int)floor(((idx) / (double)var))) % dims(i);
-      idx -= var * retval(i);
-      var = dims(i);
-    }
-#endif
 
   return retval;
 }

@@ -29,10 +29,14 @@ currdir = canonicalize_file_name (".");
 
 debug_on_error (true);
 
-if (nargin == 1)
+if (nargin > 0)
   xdir = argv (){1};
 else
   xdir = ".";
+endif
+
+if (nargin > 1)
+  eval (argv (){2});
 endif
 
 srcdir = canonicalize_file_name (xdir);

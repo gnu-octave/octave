@@ -5,7 +5,7 @@
 #include <octave/interpreter.h>
 
 int
-main (void)
+main ()
 {
   // Create interpreter.
 

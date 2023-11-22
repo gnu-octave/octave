@@ -214,7 +214,7 @@ octave_sparse_matrix::convert_to_str_internal (bool, bool, char type) const
 }
 
 octave_value
-octave_sparse_matrix::as_double (void) const
+octave_sparse_matrix::as_double () const
 {
   return this->matrix;
 }

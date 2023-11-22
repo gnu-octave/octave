@@ -39,6 +39,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "Array.h"
 #include "Cell.h"
@@ -262,7 +263,7 @@ public:
 
   scanf_format_elt& operator = (const scanf_format_elt&) = default;
 
-  ~scanf_format_elt (void) = default;
+  ~scanf_format_elt () = default;
 
   // The C-style format string.
   std::string text;
@@ -291,30 +292,26 @@ public:
 
   scanf_format_list (const std::string& fmt = "");
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (scanf_format_list)
 
-  scanf_format_list (const scanf_format_list&) = delete;
+  ~scanf_format_list ();
 
-  scanf_format_list& operator = (const scanf_format_list&) = delete;
-
-  ~scanf_format_list (void);
-
-  octave_idx_type num_conversions (void) { return m_nconv; }
+  octave_idx_type num_conversions () { return m_nconv; }
 
   // The length can be different than the number of conversions.
   // For example, "x %d y %d z" has 2 conversions but the length of
   // the list is 3 because of the characters that appear after the
   // last conversion.
 
-  std::size_t length (void) const { return m_fmt_elts.size (); }
+  std::size_t length () const { return m_fmt_elts.size (); }
 
-  const scanf_format_elt * first (void)
+  const scanf_format_elt * first ()
   {
     m_curr_idx = 0;
     return current ();
   }
 
-  const scanf_format_elt * current (void) const
+  const scanf_format_elt * current () const
   {
     return length () > 0 ? m_fmt_elts[m_curr_idx] : nullptr;
   }
@@ -337,15 +334,15 @@ public:
     return current ();
   }
 
-  void printme (void) const;
+  void printme () const;
 
-  bool ok (void) const { return (m_nconv >= 0); }
+  bool ok () const { return (m_nconv >= 0); }
 
   operator bool () const { return ok (); }
 
-  bool all_character_conversions (void);
+  bool all_character_conversions ();
 
-  bool all_numeric_conversions (void);
+  bool all_numeric_conversions ();
 
 private:
 
@@ -449,7 +446,7 @@ scanf_format_list::scanf_format_list (const std::string& s)
   m_buf.str ("");
 }
 
-scanf_format_list::~scanf_format_list (void)
+scanf_format_list::~scanf_format_list ()
 {
   std::size_t n = m_fmt_elts.size ();
 
@@ -665,7 +662,7 @@ scanf_format_list::finish_conversion (const std::string& s, std::size_t& i,
 }
 
 void
-scanf_format_list::printme (void) const
+scanf_format_list::printme () const
 {
   std::size_t n = m_fmt_elts.size ();
 
@@ -693,7 +690,7 @@ scanf_format_list::printme (void) const
 }
 
 bool
-scanf_format_list::all_character_conversions (void)
+scanf_format_list::all_character_conversions ()
 {
   std::size_t n = m_fmt_elts.size ();
 
@@ -723,7 +720,7 @@ scanf_format_list::all_character_conversions (void)
 }
 
 bool
-scanf_format_list::all_numeric_conversions (void)
+scanf_format_list::all_numeric_conversions ()
 {
   std::size_t n = m_fmt_elts.size ();
 
@@ -767,7 +764,7 @@ public:
 
   printf_format_elt& operator = (const printf_format_elt&) = default;
 
-  ~printf_format_elt (void) = default;
+  ~printf_format_elt () = default;
 
   // The C-style format string.
   std::string text;
@@ -799,28 +796,24 @@ public:
 
   printf_format_list (const std::string& fmt = "");
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (printf_format_list)
 
-  printf_format_list (const printf_format_list&) = delete;
+  ~printf_format_list ();
 
-  printf_format_list& operator = (const printf_format_list&) = delete;
+  octave_idx_type num_conversions () { return m_nconv; }
 
-  ~printf_format_list (void);
-
-  octave_idx_type num_conversions (void) { return m_nconv; }
-
-  const printf_format_elt * first (void)
+  const printf_format_elt * first ()
   {
     m_curr_idx = 0;
     return current ();
   }
 
-  const printf_format_elt * current (void) const
+  const printf_format_elt * current () const
   {
     return length () > 0 ? m_fmt_elts[m_curr_idx] : nullptr;
   }
 
-  std::size_t length (void) const { return m_fmt_elts.size (); }
+  std::size_t length () const { return m_fmt_elts.size (); }
 
   const printf_format_elt * next (bool cycle = true)
   {
@@ -837,11 +830,11 @@ public:
     return current ();
   }
 
-  bool last_elt_p (void) { return (m_curr_idx + 1 == length ()); }
+  bool last_elt_p () { return (m_curr_idx + 1 == length ()); }
 
-  void printme (void) const;
+  void printme () const;
 
-  bool ok (void) const { return (m_nconv >= 0); }
+  bool ok () const { return (m_nconv >= 0); }
 
   operator bool () const { return ok (); }
 
@@ -958,7 +951,7 @@ printf_format_list::printf_format_list (const std::string& s)
     }
 }
 
-printf_format_list::~printf_format_list (void)
+printf_format_list::~printf_format_list ()
 {
   std::size_t n = m_fmt_elts.size ();
 
@@ -1160,7 +1153,7 @@ printf_format_list::finish_conversion (const std::string& s, std::size_t& i,
 }
 
 void
-printf_format_list::printme (void) const
+printf_format_list::printme () const
 {
   std::size_t n = m_fmt_elts.size ();
 
@@ -1198,7 +1191,7 @@ pown (double x, unsigned int n)
 }
 
 static Cell
-init_inf_nan (void)
+init_inf_nan ()
 {
   Cell retval (dim_vector (1, 2));
 
@@ -1231,17 +1224,13 @@ public:
 
   delimited_stream (std::istream& is, const delimited_stream& ds);
 
-  // No copying!
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (delimited_stream)
 
-  delimited_stream (const delimited_stream&) = delete;
-
-  delimited_stream& operator = (const delimited_stream&) = delete;
-
-  ~delimited_stream (void);
+  ~delimited_stream ();
 
   // Called when optimized sequence of get is finished.  Ensures that
   // there is a remaining delimiter in buf, or loads more data in.
-  void field_done (void)
+  void field_done ()
   {
     if (m_idx >= m_last)
       refresh_buf ();
@@ -1253,7 +1242,7 @@ public:
 
   // Get a character, relying on caller to call field_done if
   // a delimiter has been reached.
-  int get (void)
+  int get ()
   {
     if (m_delimited)
       return eof () ? std::istream::traits_type::eof () : *m_idx++;
@@ -1262,17 +1251,17 @@ public:
   }
 
   // Get a character, checking for underrun of the buffer.
-  int get_undelim (void);
+  int get_undelim ();
 
   // Read character that will be got by the next get.
   // FIXME: This will not set EOF if delimited stream is at EOF and a peek
   // is attempted.  This does *NOT* behave like C++ input stream.
   // For a compatible peek function, use peek_undelim.  See bug #56917.
-  int peek (void)
+  int peek ()
   { return eof () ? std::istream::traits_type::eof () : *m_idx; }
 
   // Read character that will be got by the next get.
-  int peek_undelim (void);
+  int peek_undelim ();
 
   // Undo a 'get' or 'get_undelim'.  It is the caller's responsibility
   // to avoid overflow by calling putbacks only for a character got by
@@ -1288,22 +1277,22 @@ public:
 
   // Return a position suitable to "seekg", valid only within this
   // block between calls to field_done.
-  char * tellg (void) { return m_idx; }
+  char * tellg () { return m_idx; }
 
   void seekg (char *old_idx) { m_idx = old_idx; }
 
-  bool eof (void)
+  bool eof ()
   {
     return (m_eob == m_buf + m_overlap && m_i_stream.eof ())
            || (m_flags & std::ios_base::eofbit);
   }
 
-  operator const void *(void)
+  operator const void *()
   { return (! eof () && ! m_flags) ? this : nullptr; }
 
-  bool fail (void) { return m_flags & std::ios_base::failbit; }
+  bool fail () { return m_flags & std::ios_base::failbit; }
 
-  std::ios_base::iostate rdstate (void) { return m_flags; }
+  std::ios_base::iostate rdstate () { return m_flags; }
 
   void setstate (std::ios_base::iostate m) { m_flags = m_flags | m; }
 
@@ -1316,14 +1305,14 @@ public:
   // Report if any characters have been consumed.
   // (get, read, etc. not cancelled by putback or seekg)
 
-  void progress_benchmark (void) { m_progress_marker = m_idx; }
+  void progress_benchmark () { m_progress_marker = m_idx; }
 
-  bool no_progress (void) { return m_progress_marker == m_idx; }
+  bool no_progress () { return m_progress_marker == m_idx; }
 
   // Number of characters remaining until end of stream if it is already
   // buffered. int_max otherwise.
 
-  std::ptrdiff_t remaining (void)
+  std::ptrdiff_t remaining ()
   {
     if (m_eob < m_buf + m_bufsize)
       return m_eob - m_idx;
@@ -1398,7 +1387,7 @@ delimited_stream::delimited_stream (std::istream& is,
   : delimited_stream (is, ds.m_delims, ds.m_longest, ds.m_bufsize)
 { }
 
-delimited_stream::~delimited_stream (void)
+delimited_stream::~delimited_stream ()
 {
   // Seek to the correct position in i_stream.
   if (! eof ())
@@ -1415,7 +1404,7 @@ delimited_stream::~delimited_stream (void)
 // if necessary.
 
 int
-delimited_stream::get_undelim (void)
+delimited_stream::get_undelim ()
 {
   int retval;
   if (eof ())
@@ -1449,7 +1438,7 @@ delimited_stream::get_undelim (void)
 // pointer, refilling the buffer from the file if necessary.
 
 int
-delimited_stream::peek_undelim (void)
+delimited_stream::peek_undelim ()
 {
   int retval = get_undelim ();
   putback ();
@@ -1659,6 +1648,8 @@ public:
     literal_conversion = 2
   };
 
+  textscan_format_elt () = delete;
+
   textscan_format_elt (const std::string& txt, int w = 0, int p = -1,
                        int bw = 0, bool dis = false, char typ = '\0',
                        const std::string& ch_class = std::string ())
@@ -1667,28 +1658,7 @@ public:
       numeric (typ == 'd' || typ == 'u' || type == 'f' || type == 'n')
   { }
 
-  textscan_format_elt (const textscan_format_elt& e)
-    : text (e.text), width (e.width), prec (e.prec),
-      bitwidth (e.bitwidth), char_class (e.char_class), type (e.type),
-      discard (e.discard), numeric (e.numeric)
-  { }
-
-  textscan_format_elt& operator = (const textscan_format_elt& e)
-  {
-    if (this != &e)
-      {
-        text = e.text;
-        width = e.width;
-        prec = e.prec;
-        bitwidth = e.bitwidth;
-        discard = e.discard;
-        type = e.type;
-        numeric = e.numeric;
-        char_class = e.char_class;
-      }
-
-    return *this;
-  }
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (textscan_format_elt)
 
   // The C-style format string.
   std::string text;
@@ -1729,30 +1699,26 @@ public:
 
   textscan_format_list (const std::string& fmt = std::string (),
                         const std::string& who = "textscan");
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (textscan_format_list)
 
-  textscan_format_list (const textscan_format_list&) = delete;
+  ~textscan_format_list ();
 
-  textscan_format_list& operator = (const textscan_format_list&) = delete;
-
-  ~textscan_format_list (void);
-
-  octave_idx_type num_conversions (void) const { return m_nconv; }
+  octave_idx_type num_conversions () const { return m_nconv; }
 
   // The length can be different than the number of conversions.
   // For example, "x %d y %d z" has 2 conversions but the length of
   // the list is 3 because of the characters that appear after the
   // last conversion.
 
-  std::size_t numel (void) const { return m_fmt_elts.size (); }
+  std::size_t numel () const { return m_fmt_elts.size (); }
 
-  const textscan_format_elt * first (void)
+  const textscan_format_elt * first ()
   {
     m_curr_idx = 0;
     return current ();
   }
 
-  const textscan_format_elt * current (void) const
+  const textscan_format_elt * current () const
   {
     return numel () > 0 ? m_fmt_elts[m_curr_idx] : nullptr;
   }
@@ -1772,11 +1738,11 @@ public:
     return current ();
   }
 
-  void printme (void) const;
+  void printme () const;
 
-  bool ok (void) const { return (m_nconv >= 0); }
+  bool ok () const { return (m_nconv >= 0); }
 
-  operator const void *(void) const { return ok () ? this : nullptr; }
+  operator const void *() const { return ok () ? this : nullptr; }
 
   // What function name should be shown when reporting errors.
   std::string who;
@@ -1789,7 +1755,7 @@ public:
 
   int read_first_row (delimited_stream& is, textscan& ts);
 
-  std::list<octave_value> out_buf (void) const
+  std::list<octave_value> out_buf () const
   { return (m_output_container); }
 
 private:
@@ -1846,13 +1812,9 @@ public:
   textscan (const std::string& who_arg = "textscan",
             const std::string& encoding = "utf-8");
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (textscan)
 
-  textscan (const textscan&) = delete;
-
-  textscan& operator = (const textscan&) = delete;
-
-  ~textscan (void) = default;
+  ~textscan () = default;
 
   octave_value scan (std::istream& isp, const std::string& fmt,
                      octave_idx_type ntimes,
@@ -1922,7 +1884,7 @@ private:
   { return m_whitespace_table[ch & 0xff]; }
 
   // True if the only delimiter is whitespace.
-  bool whitespace_delim (void) const { return m_delim_table.empty (); }
+  bool whitespace_delim () const { return m_delim_table.empty (); }
 
   //--------
 
@@ -1982,7 +1944,7 @@ private:
   short m_return_on_error;
 
   bool m_collect_output;
-  bool multiple_delims_as_one;
+  bool m_multiple_delims_as_one;
   bool m_default_exp;
 
   octave_idx_type m_lines;
@@ -2088,7 +2050,7 @@ textscan_format_list::textscan_format_list (const std::string& s,
   m_buf.str ("");
 }
 
-textscan_format_list::~textscan_format_list (void)
+textscan_format_list::~textscan_format_list ()
 {
   std::size_t n = numel ();
 
@@ -2474,7 +2436,7 @@ textscan_format_list::finish_conversion (const std::string& s, std::size_t& i,
 }
 
 void
-textscan_format_list::printme (void) const
+textscan_format_list::printme () const
 {
   std::size_t n = numel ();
 
@@ -2590,7 +2552,7 @@ textscan::textscan (const std::string& who_arg, const std::string& encoding)
     m_exp_chars ("edED"), m_header_lines (0), m_treat_as_empty (),
     m_treat_as_empty_len (0), m_whitespace (" \b\t"), m_eol1 ('\r'),
     m_eol2 ('\n'), m_return_on_error (1), m_collect_output (false),
-    multiple_delims_as_one (false), m_default_exp (true), m_lines (0)
+    m_multiple_delims_as_one (false), m_default_exp (true), m_lines (0)
 { }
 
 octave_value
@@ -2664,7 +2626,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   int err = 0;
   octave_idx_type row = 0;
 
-  if (multiple_delims_as_one)           // bug #44750?
+  if (m_multiple_delims_as_one)           // bug #44750?
     skip_delim (is);
 
   int done_after;  // Number of columns read when EOF seen.
@@ -2690,7 +2652,7 @@ textscan::do_scan (std::istream& isp, textscan_format_list& fmt_list,
   // after reading in data.
   // If the format was "", that conversion may already have happened,
   // so force all to be merged (as all are %f).
-  bool merge_with_prev[fmt_list.numel ()];
+  std::vector<bool> merge_with_prev (fmt_list.numel ());
   int conv = 0;
   if (m_collect_output)
     {
@@ -3748,7 +3710,7 @@ textscan::parse_options (const octave_value_list& args,
         }
       else if (param == "multipledelimsasone")
         {
-          multiple_delims_as_one = args(i
+          m_multiple_delims_as_one = args(i
                                         +1).xbool_value ("%s: MultipleDelimsAsOne must be logical or numeric", m_who.c_str ());
         }
       else if (param == "returnonerror")
@@ -3983,7 +3945,7 @@ textscan::skip_delim (delimited_stream& is)
           if (c1 == m_eol1 && is.peek_undelim () == m_eol2)
             is.get ();          // if \r\n, skip the \n too.
 
-          if (multiple_delims_as_one)
+          if (m_multiple_delims_as_one)
             {
               int prev = -1;
               // skip multiple delims.
@@ -4021,7 +3983,7 @@ textscan::skip_delim (delimited_stream& is)
               is.get_undelim ();
             }
 
-          if (multiple_delims_as_one)
+          if (m_multiple_delims_as_one)
             {
               int prev = -1;
               // skip multiple delims.
@@ -4084,14 +4046,14 @@ base_stream::error (const std::string& who, const std::string& msg)
 }
 
 void
-base_stream::clear (void)
+base_stream::clear ()
 {
   m_fail = false;
   m_errmsg = "";
 }
 
 void
-base_stream::clearerr (void)
+base_stream::clearerr ()
 {
   std::istream *is = input_stream ();
   std::ostream *os = preferred_output_stream ();
@@ -4288,6 +4250,9 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
 {
   T value = T ();
 
+    is >> std::ws;  // skip through whitespace and advance stream pointer
+    std::streampos pos = is.tellg ();
+
   switch (fmt.type)
     {
     case 'o':
@@ -4301,11 +4266,7 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
 
     case 'i':
       {
-        int c1 = std::istream::traits_type::eof ();
-
-        while (is && (c1 = is.get ()) != std::istream::traits_type::eof ()
-               && isspace (c1))
-          ; // skip whitespace
+          int c1 = is.get ();
 
         if (c1 != std::istream::traits_type::eof ())
           {
@@ -4354,18 +4315,33 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
       break;
     }
 
-  // If conversion produces an integer that overflows, failbit is set but
-  // value is non-zero.  We want to treat this case as success, so clear
-  // failbit from the stream state to keep going.
-  // FIXME: Maybe set error state on octave stream as above? Matlab does
-  // *not* indicate an error message on overflow.
-  if ((is.rdstate () & std::ios::failbit) && value != T ())
-    is.clear (is.rdstate () & ~std::ios::failbit);
-
-  // Only copy the converted value if the stream is in a state where we
-  // want to continue reading.
-  if (! (is.rdstate () & std::ios::failbit))
-    *valptr = value;
+    std::ios::iostate status = is.rdstate ();
+    if (! (status & std::ios::failbit))
+      {
+        // Copy the converted value if the stream is in a good state
+        *valptr = value;
+      }
+    else
+      {
+        if (value != T ())
+          {
+            // If conversion produces an integer that overflows, failbit is set
+            // but value is nonzero.  We want to treat this case as success,
+            // so clear  failbit from the stream state to keep going.
+            // FIXME: Maybe set error state on octave stream?  Matlab does
+            // *not* indicate an error message on overflow.
+            is.clear (status & ~std::ios::failbit);
+            *valptr = value;
+          }
+        else
+          {
+            // True error.
+            // Reset stream to original position, clear eof bit, pass status on.
+            is.clear ();
+            is.seekg (pos);
+            is.setstate (status & ~std::ios_base::eofbit);
+          }
+      }
 
   return is;
 }
@@ -4433,17 +4409,20 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double *valptr)
     case 'E':
     case 'G':
       {
-        int c1 = std::istream::traits_type::eof ();
-
-        while (is && (c1 = is.get ()) != std::istream::traits_type::eof ()
-               && isspace (c1))
-          ; // skip whitespace
-
-        if (c1 != std::istream::traits_type::eof ())
+          is >> std::ws;  // skip through whitespace and advance stream pointer
+          if (is.good ())
           {
-            is.putback (c1);
+              std::streampos pos = is.tellg ();
 
             ref = read_value<double> (is);
+
+              std::ios::iostate status = is.rdstate ();
+              if (status & std::ios::failbit)
+                {
+                  is.clear ();
+                  is.seekg (pos);
+                  is.setstate (status & ~std::ios_base::eofbit);
+                }
           }
       }
       break;
@@ -4497,11 +4476,16 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
     {                                                                   \
       int c = std::istream::traits_type::eof ();                        \
                                                                         \
+      /* get all whitespace characters */                               \
       while (is && (c = is.get ()) != std::istream::traits_type::eof () \
              && isspace (c))                                            \
         { /* skip whitespace */ }                                       \
                                                                         \
-      if (c != std::istream::traits_type::eof ())                       \
+      if (c == std::istream::traits_type::eof ())                       \
+        /* reset failbit at eof */                                      \
+        is.clear (is.rdstate () & (~std::ios::failbit));                \
+      else                                                              \
+        /* put back non-whitespace character */                         \
         is.putback (c);                                                 \
     }                                                                   \
   while (0)
@@ -4566,8 +4550,8 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
          && (c = is.get ()) != std::istream::traits_type::eof ())       \
     tmp[n++] = static_cast<char> (c);                                   \
                                                                         \
-  if (n > 0 && c == std::istream::traits_type::eof ())                  \
-    is.clear ();                                                        \
+  if (c == std::istream::traits_type::eof ())                           \
+    is.clear (is.rdstate () & (~std::ios::failbit));                    \
                                                                         \
   tmp.resize (n)
 
@@ -4609,8 +4593,8 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
                 tmp[n++] = static_cast<char> (c);                       \
             }                                                           \
                                                                         \
-          if (n > 0 && c == std::istream::traits_type::eof ())          \
-            is.clear ();                                                \
+          if (c == std::istream::traits_type::eof ())                   \
+            is.clear (is.rdstate () & (~std::ios::failbit));            \
                                                                         \
           tmp.resize (n);                                               \
         }                                                               \
@@ -4623,15 +4607,13 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
 
 // This format must match a nonempty sequence of characters.
 #define BEGIN_CHAR_CLASS_CONVERSION()                                   \
-  int width = elt->width;                                               \
+  int width = (elt->width ? elt->width                                  \
+                          : std::numeric_limits<int>::max ());          \
                                                                         \
   std::string tmp;                                                      \
                                                                         \
   do                                                                    \
     {                                                                   \
-      if (! width)                                                      \
-        width = std::numeric_limits<int>::max ();                       \
-                                                                        \
       std::ostringstream buf;                                           \
                                                                         \
       std::string char_class = elt->char_class;                         \
@@ -4642,29 +4624,39 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
         {                                                               \
           int chars_read = 0;                                           \
           while (is && chars_read++ < width                             \
-                 && (c = is.get ()) != std::istream::traits_type::eof () \
-                 && char_class.find (c) != std::string::npos)           \
-            buf << static_cast<char> (c);                               \
+                 && (c = is.get ()) != std::istream::traits_type::eof ()) \
+            {                                                           \
+              if (char_class.find (c) != std::string::npos)             \
+                buf << static_cast<char> (c);                           \
+              else                                                      \
+                {                                                       \
+                  is.putback (c);                                       \
+                  break;                                                \
+                }                                                       \
+            }                                                           \
         }                                                               \
       else                                                              \
         {                                                               \
           int chars_read = 0;                                           \
           while (is && chars_read++ < width                             \
-                 && (c = is.get ()) != std::istream::traits_type::eof () \
-                 && char_class.find (c) == std::string::npos)           \
-            buf << static_cast<char> (c);                               \
+                 && (c = is.get ()) != std::istream::traits_type::eof ()) \
+            {                                                           \
+              if (char_class.find (c) == std::string::npos)             \
+                buf << static_cast<char> (c);                           \
+              else                                                      \
+                {                                                       \
+                  is.putback (c);                                       \
+                  break;                                                \
+                }                                                       \
+            }                                                           \
         }                                                               \
-                                                                        \
-      if (width == std::numeric_limits<int>::max ()                     \
-          && c != std::istream::traits_type::eof ())                    \
-        is.putback (c);                                                 \
                                                                         \
       tmp = buf.str ();                                                 \
                                                                         \
       if (tmp.empty ())                                                 \
         is.setstate (std::ios::failbit);                                \
       else if (c == std::istream::traits_type::eof ())                  \
-        is.clear ();                                                    \
+        is.clear (is.rdstate () & (~std::ios::failbit));                \
                                                                         \
     }                                                                   \
   while (0)
@@ -4676,7 +4668,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
         tmp = string::u8_from_encoding (who, tmp, encoding ());         \
       width = tmp.length ();                                            \
                                                                         \
-      if (is)                                                           \
+      if (is && width > 0)                                              \
         {                                                               \
           int i = 0;                                                    \
                                                                         \
@@ -5048,10 +5040,10 @@ base_stream::do_scanf (scanf_format_list& fmt_list,
 
                   // If it looks like we have a matching failure, then
                   // reset the failbit in the stream state.
-                  if (! is.eof () && is.rdstate () & std::ios::failbit)
+                    if (is.rdstate () & std::ios::failbit)
                     {
-                      error (who, "format failed to match");
                       is.clear (is.rdstate () & (~std::ios::failbit));
+                        error (who, "format failed to match");
                     }
 
                   // FIXME: is this the right thing to do?
@@ -5470,7 +5462,7 @@ base_stream::do_textscan (const std::string& fmt,
 // (output streams are those that define os).
 
 int
-base_stream::flush (void)
+base_stream::flush ()
 {
   int retval = -1;
 
@@ -5510,13 +5502,9 @@ public:
       }
   }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (printf_value_cache)
 
-  printf_value_cache (const printf_value_cache&) = delete;
-
-  printf_value_cache& operator = (const printf_value_cache&) = delete;
-
-  ~printf_value_cache (void) = default;
+  ~printf_value_cache () = default;
 
   // Get the current value as a double and advance the internal pointer.
   octave_value get_next_value (char type = 0);
@@ -5525,16 +5513,16 @@ public:
   // pointer.  Value before conversion to int must be >= 0 and less
   // than std::numeric_limits<int>::max ().
 
-  int int_value (void);
+  int int_value ();
 
   operator bool () const { return (m_curr_state == ok); }
 
-  bool exhausted (void) { return (m_val_idx >= m_n_vals); }
+  bool exhausted () { return (m_val_idx >= m_n_vals); }
 
 private:
 
   // Must create value cache with values!
-  printf_value_cache (void);
+  printf_value_cache ();
 
   //--------
 
@@ -5664,7 +5652,7 @@ printf_value_cache::get_next_value (char type)
 }
 
 int
-printf_value_cache::int_value (void)
+printf_value_cache::int_value ()
 {
   octave_value val = get_next_value ();
 
@@ -6132,7 +6120,7 @@ base_stream::invalid_operation (const std::string& who, const char *rw)
 }
 
 int
-stream::flush (void)
+stream::flush ()
 {
   int retval = -1;
 
@@ -6372,7 +6360,7 @@ stream::seek (const octave_value& tc_offset,
 }
 
 off_t
-stream::tell (void)
+stream::tell ()
 {
   off_t retval = -1;
 
@@ -6383,13 +6371,13 @@ stream::tell (void)
 }
 
 int
-stream::rewind (void)
+stream::rewind ()
 {
   return seek (0, SEEK_SET);
 }
 
 bool
-stream::is_open (void) const
+stream::is_open () const
 {
   bool retval = false;
 
@@ -6400,7 +6388,7 @@ stream::is_open (void) const
 }
 
 void
-stream::close (void)
+stream::close ()
 {
   if (stream_ok ())
     {
@@ -7297,7 +7285,7 @@ stream::puts (const octave_value& tc_s, const std::string& who)
 }
 
 bool
-stream::eof (void) const
+stream::eof () const
 {
   int retval = -1;
 
@@ -7319,7 +7307,7 @@ stream::error (bool clear, int& err_num)
 }
 
 std::string
-stream::name (void) const
+stream::name () const
 {
   std::string retval;
 
@@ -7330,7 +7318,7 @@ stream::name (void) const
 }
 
 int
-stream::mode (void) const
+stream::mode () const
 {
   int retval = 0;
 
@@ -7341,7 +7329,7 @@ stream::mode (void) const
 }
 
 mach_info::float_format
-stream::float_format (void) const
+stream::float_format () const
 {
   mach_info::float_format retval = mach_info::flt_fmt_unknown;
 
@@ -7412,7 +7400,7 @@ stream_list::stream_list (interpreter& interp)
   m_stderr_file = insert (stderr_stream);
 }
 
-stream_list::~stream_list (void)
+stream_list::~stream_list ()
 {
   clear ();
 }
@@ -7620,7 +7608,7 @@ string_vector stream_list::get_info (const octave_value& fid) const
   return get_info (int_fid);
 }
 
-std::string stream_list::list_open_files (void) const
+std::string stream_list::list_open_files () const
 {
   std::ostringstream buf;
 
@@ -7652,7 +7640,7 @@ std::string stream_list::list_open_files (void) const
   return buf.str ();
 }
 
-octave_value stream_list::open_file_numbers (void) const
+octave_value stream_list::open_file_numbers () const
 {
   Matrix retval (1, m_list.size (), 0.0);
 
@@ -7710,17 +7698,17 @@ int stream_list::get_file_number (const octave_value& fid) const
   return retval;
 }
 
-octave_value stream_list::stdin_file (void) const
+octave_value stream_list::stdin_file () const
 {
   return octave_value (m_stdin_file);
 }
 
-octave_value stream_list::stdout_file (void) const
+octave_value stream_list::stdout_file () const
 {
   return octave_value (m_stdout_file);
 }
 
-octave_value stream_list::stderr_file (void) const
+octave_value stream_list::stderr_file () const
 {
   return octave_value (m_stderr_file);
 }

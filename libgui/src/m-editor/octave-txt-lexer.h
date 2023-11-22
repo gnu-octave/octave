@@ -37,9 +37,9 @@ class octave_txt_lexer : public QsciLexer
 
 public:
 
-  virtual const char * language (void) const;
+  virtual const char * language () const;
 
-  virtual const char * lexer (void) const;
+  virtual const char * lexer () const;
 
   virtual QString description (int style) const;
 };

@@ -32,7 +32,9 @@
 #include <QApplication>
 #include <QClipboard>
 #include <QFile>
-#include <QTextCodec>
+#if ! defined (Q_OS_WIN32)
+#  include <QTextCodec>
+#endif
 #include <QThread>
 #include <QTimer>
 #include <QTranslator>
@@ -46,6 +48,7 @@
 #include "community-news.h"
 #include "documentation-dock-widget.h"
 #include "files-dock-widget.h"
+#include "gui-settings.h"
 #include "history-dock-widget.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
@@ -53,8 +56,6 @@
 #include "qt-application.h"
 #include "qt-interpreter-events.h"
 #include "release-notes.h"
-#include "resource-manager.h"
-#include "shortcut-manager.h"
 #include "terminal-dock-widget.h"
 #include "variable-editor.h"
 #include "workspace-model.h"
@@ -74,7 +75,7 @@
 
 // Bug #55940 (Disable App Nap on Mac)
 #if defined (Q_OS_MAC)
-static void disable_app_nap (void)
+static void disable_app_nap ()
 {
   Class process_info_class;
   SEL process_info_selector;
@@ -149,11 +150,11 @@ bool octave_qapplication::notify (QObject *receiver, QEvent *ev)
   catch (execution_exception& ee)
     {
       emit interpreter_event
-        ([=] (void)
-        {
-          // INTERPRETER THREAD
-          throw ee;
-        });
+        ([=] ()
+         {
+           // INTERPRETER THREAD
+           throw ee;
+         });
     }
 
   return false;
@@ -174,8 +175,6 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
     m_argc (m_app_context.sys_argc ()),
     m_argv (m_app_context.sys_argv ()),
     m_qapplication (new octave_qapplication (m_argc, m_argv)),
-    m_resource_manager (),
-    m_shortcut_manager (*this),
     m_qt_tr (new QTranslator ()),
     m_gui_tr (new QTranslator ()),
     m_qsci_tr (new QTranslator ()),
@@ -194,23 +193,17 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
     m_variable_editor_widget (),
     m_main_window (nullptr)
 {
-  std::string show_gui_msgs =
-    sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
+  std::string show_gui_msgs = sys::env::getenv ("OCTAVE_SHOW_GUI_MESSAGES");
 
   // Installing our handler suppresses the messages.
 
   if (show_gui_msgs.empty ())
     qInstallMessageHandler (message_handler);
 
-  // Set the codec for all strings (before wizard or any GUI object)
 #if ! defined (Q_OS_WIN32)
+  // Set the codec for all strings (before wizard or any GUI object)
   QTextCodec::setCodecForLocale (QTextCodec::codecForName ("UTF-8"));
 #endif
-
-  // Initialize global Qt application metadata.
-
-  QCoreApplication::setApplicationName ("GNU Octave");
-  QCoreApplication::setApplicationVersion (OCTAVE_VERSION);
 
   // Register octave_value_list for connecting thread crossing signals.
 
@@ -221,6 +214,9 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
   // Mac App Nap feature causes pause() and sleep() to misbehave.
   // Disable it for the entire program run.
   disable_app_nap ();
+
+  // Don't let Qt interpret CMD key ("Meta" in Qt terminology) as Ctrl.
+  QCoreApplication::setAttribute (Qt::AA_MacDontSwapCtrlAndMeta, true);
 #endif
 
   // Force left-to-right alignment (see bug #46204)
@@ -310,14 +306,14 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
       else
         {
           // Get settings file.
-          m_resource_manager.reload_settings ();
+          gui_settings settings;
+
+          settings.reload ();
 
           // After settings.
           config_translators ();
-          m_resource_manager.config_icon_theme ();
 
-          // Initilize the shortcut-manager
-          m_shortcut_manager.init_data ();
+          settings.config_icon_theme ();
 
           m_qapplication->setQuitOnLastWindowClosed (false);
         }
@@ -326,7 +322,7 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
   start_main_thread ();
 }
 
-base_qobject::~base_qobject (void)
+base_qobject::~base_qobject ()
 {
   // Note that we don't delete m_main_thread here.  That is handled by
   // deleteLater slot that is called when the m_main_thread issues a
@@ -367,7 +363,7 @@ base_qobject::~base_qobject (void)
     }
   else
     {
-      delete m_main_window;
+      m_main_window->deleteLater ();
     }
 
   delete m_terminal_widget;
@@ -383,18 +379,21 @@ base_qobject::~base_qobject (void)
   delete m_qsci_tr;
   delete m_gui_tr;
   delete m_qt_tr;
-  delete m_qapplication;
   delete m_workspace_model;
+
+  delete m_qapplication;
 
   string_vector::delete_c_str_vec (m_argv);
 }
 
-void base_qobject::config_translators (void)
+void base_qobject::config_translators ()
 {
   if (m_translators_installed)
     return;
 
-  m_resource_manager.config_translators (m_qt_tr, m_qsci_tr, m_gui_tr);
+  gui_settings settings;
+
+  settings.config_translators (m_qt_tr, m_qsci_tr, m_gui_tr);
 
   m_qapplication->installTranslator (m_qt_tr);
   m_qapplication->installTranslator (m_gui_tr);
@@ -403,7 +402,7 @@ void base_qobject::config_translators (void)
   m_translators_installed = true;
 }
 
-void base_qobject::start_main_thread (void)
+void base_qobject::start_main_thread ()
 {
   // Note: if using the new experimental terminal widget, we defer
   // initializing and executing the interpreter until the main event
@@ -412,15 +411,18 @@ void base_qobject::start_main_thread (void)
   // With the old terminal widget, we defer initializing and executing
   // the interpreter until after the main window and QApplication are
   // running to prevent race conditions.
-
-  QTimer::singleShot (0, m_interpreter_qobj, SLOT (execute (void)));
+#if  QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  QTimer::singleShot (0, m_interpreter_qobj, &interpreter_qobject::execute);
+#else
+  QTimer::singleShot (0, m_interpreter_qobj, SLOT (execute ()));
+#endif
 
   m_interpreter_qobj->moveToThread (m_main_thread);
 
   m_main_thread->start ();
 }
 
-int base_qobject::exec (void)
+int base_qobject::exec ()
 {
   int status = m_qapplication->exec ();
 
@@ -437,12 +439,12 @@ int base_qobject::exec (void)
 
 // Provided for convenience.  Will be removed once we eliminate the
 // old terminal widget.
-bool base_qobject::experimental_terminal_widget (void) const
+bool base_qobject::experimental_terminal_widget () const
 {
   return m_app_context.experimental_terminal_widget ();
 }
 
-bool base_qobject::gui_running (void) const
+bool base_qobject::gui_running () const
 {
   return m_app_context.gui_running ();
 }
@@ -457,9 +459,12 @@ base_qobject::terminal_widget (main_window *mw)
     }
   else if (! m_terminal_widget)
     {
+      bool etw = m_app_context.experimental_terminal_widget ();
+
       m_terminal_widget
-        = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw, *this));
-      if (experimental_terminal_widget ())
+        = QPointer<terminal_dock_widget> (new terminal_dock_widget (mw, etw));
+
+      if (etw)
         {
 #if defined (HAVE_QSCINTILLA)
           command_widget *cmd_widget
@@ -483,6 +488,9 @@ base_qobject::terminal_widget (main_window *mw)
           connect (qt_link (), &qt_interpreter_events::new_command_line_signal,
                    m_terminal_widget, &terminal_dock_widget::new_command_line_signal);
 
+          connect (mw, &main_window::update_prompt_signal,
+                   m_terminal_widget, &terminal_dock_widget::update_prompt_signal);
+
           connect_interpreter_events (cmd_widget);
 #endif
         }
@@ -493,6 +501,8 @@ base_qobject::terminal_widget (main_window *mw)
           // Connect the interrupt signal (emitted by Ctrl-C)
           connect (cmd_widget, &QTerminal::interrupt_signal,
                    this, &base_qobject::interpreter_interrupt);
+
+          connect_interpreter_events (cmd_widget);
         }
     }
 
@@ -510,7 +520,7 @@ base_qobject::documentation_widget (main_window *mw)
   else if (! m_documentation_widget)
     {
       m_documentation_widget
-        = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw, *this));
+        = QPointer<documentation_dock_widget> (new documentation_dock_widget (mw));
 
       connect (qt_link (),
                &qt_interpreter_events::register_documentation_signal,
@@ -536,7 +546,7 @@ base_qobject::file_browser_widget (main_window *mw)
     }
   else if (! m_file_browser_widget)
     m_file_browser_widget
-      = QPointer<files_dock_widget> (new files_dock_widget (mw, *this));
+      = QPointer<files_dock_widget> (new files_dock_widget (mw));
 
   connect (qt_link (), &qt_interpreter_events::directory_changed_signal,
            m_file_browser_widget, &files_dock_widget::update_octave_directory);
@@ -555,7 +565,7 @@ base_qobject::history_widget (main_window *mw)
   else if (! m_history_widget)
     {
       m_history_widget
-        = QPointer<history_dock_widget> (new history_dock_widget (mw, *this));
+        = QPointer<history_dock_widget> (new history_dock_widget (mw));
 
       connect (qt_link (), &qt_interpreter_events::set_history_signal,
                m_history_widget, &history_dock_widget::set_history);
@@ -590,7 +600,7 @@ base_qobject::workspace_widget (main_window *mw)
   else if (! m_workspace_widget)
     {
       m_workspace_widget
-        = QPointer<workspace_view> (new workspace_view (mw, *this));
+        = QPointer<workspace_view> (new workspace_view (mw));
 
       m_workspace_widget->setModel (m_workspace_model);
 
@@ -608,23 +618,23 @@ base_qobject::workspace_widget (main_window *mw)
                [=] (const QString& var_name) {
                  emit interpreter_event
                    ([=] (interpreter& interp)
-                   {
-                     // INTERPRETER THREAD
+                    {
+                      // INTERPRETER THREAD
 
-                     octave_value val = interp.varval (var_name.toStdString ());
+                      octave_value val = interp.varval (var_name.toStdString ());
 
-                     if (val.is_undefined ())
-                       val = 0;
+                      if (val.is_undefined ())
+                        val = 0;
 
-                     std::ostringstream buf;
-                     val.print_raw (buf, true);
+                      std::ostringstream buf;
+                      val.print_raw (buf, true);
 
-                     // FIXME: is the following operation thread safe or should
-                     // it be done with a signal/slot connection?
+                      // FIXME: is the following operation thread safe or should
+                      // it be done with a signal/slot connection?
 
-                     QClipboard *clipboard = QApplication::clipboard ();
-                     clipboard->setText (QString::fromStdString (buf.str ()));
-                   });
+                      QClipboard *clipboard = QApplication::clipboard ();
+                      clipboard->setText (QString::fromStdString (buf.str ()));
+                    });
                });
 
       connect (m_workspace_widget, &workspace_view::rename_variable_signal,
@@ -683,16 +693,6 @@ base_qobject::workspace_widget (main_window *mw)
 QPointer<file_editor_interface>
 base_qobject::editor_widget (main_window */*mw*/)
 {
-#if 0
-  if (m_editor_widget && mw)
-    {
-      m_editor_widget->set_main_window (mw);
-      m_editor_widget->set_adopted (true);
-    }
-  else if (! m_editor_widget)
-    m_editor_widget = new file_editor (mw, *this);
-#endif
-
   return m_editor_widget;
 }
 
@@ -707,7 +707,7 @@ base_qobject::variable_editor_widget (main_window *mw)
   else if (! m_variable_editor_widget)
     {
       m_variable_editor_widget
-        = QPointer<variable_editor> (new variable_editor (mw, *this));
+        = QPointer<variable_editor> (new variable_editor (mw));
 
       connect (m_variable_editor_widget, &variable_editor::updated,
                this, &base_qobject::handle_variable_editor_update);
@@ -729,20 +729,20 @@ QPointer<community_news> base_qobject::community_news_widget (int serial)
 {
   if (! m_community_news)
     m_community_news
-      = QPointer<community_news> (new community_news (*this, serial));
+      = QPointer<community_news> (new community_news (serial));
 
   return m_community_news;
 }
 
-QPointer<release_notes> base_qobject::release_notes_widget (void)
+QPointer<release_notes> base_qobject::release_notes_widget ()
 {
   if (! m_release_notes)
-    m_release_notes = QPointer<release_notes> (new release_notes (*this));
+    m_release_notes = QPointer<release_notes> (new release_notes ());
 
   return m_release_notes;
 }
 
-bool base_qobject::confirm_shutdown (void)
+bool base_qobject::confirm_shutdown ()
 {
   // Currently, we forward to main_window::confirm_shutdown instead of
   // just displaying a dialog box here because the main_window also
@@ -795,7 +795,7 @@ void base_qobject::start_gui (bool gui_app)
     }
 }
 
-void base_qobject::show_terminal_window (void)
+void base_qobject::show_terminal_window ()
 {
   terminal_dock_widget *widget
     = (m_terminal_widget
@@ -823,7 +823,7 @@ void base_qobject::show_documentation_window (const QString& file)
     }
 }
 
-void base_qobject::show_file_browser_window (void)
+void base_qobject::show_file_browser_window ()
 {
   files_dock_widget *widget
     = m_file_browser_widget ? m_file_browser_widget : file_browser_widget ();
@@ -835,7 +835,7 @@ void base_qobject::show_file_browser_window (void)
     }
 }
 
-void base_qobject::show_command_history_window (void)
+void base_qobject::show_command_history_window ()
 {
   history_dock_widget *widget
     = m_history_widget ? m_history_widget : history_widget ();
@@ -847,7 +847,7 @@ void base_qobject::show_command_history_window (void)
     }
 }
 
-void base_qobject::show_workspace_window (void)
+void base_qobject::show_workspace_window ()
 {
   workspace_view *widget
     = m_workspace_widget ? m_workspace_widget : workspace_widget ();
@@ -876,7 +876,7 @@ void base_qobject::show_variable_editor_window (const QString& name,
   widget->edit_variable (name, value);
 }
 
-void base_qobject::handle_variable_editor_update (void)
+void base_qobject::handle_variable_editor_update ()
 {
   // Called when the variable editor emits the updated signal.  The size
   // of a variable may have changed, so we refresh the workspace in the
@@ -885,15 +885,15 @@ void base_qobject::handle_variable_editor_update (void)
 
   interpreter_event
     ([] (interpreter& interp)
-    {
-      // INTERPRETER THREAD
+     {
+       // INTERPRETER THREAD
 
-      tree_evaluator& tw = interp.get_evaluator ();
+       tree_evaluator& tw = interp.get_evaluator ();
 
-      event_manager& xevmgr = interp.get_event_manager ();
+       event_manager& xevmgr = interp.get_event_manager ();
 
-      xevmgr.set_workspace (true, tw.get_symbol_info (), false);
-    });
+       xevmgr.set_workspace (true, tw.get_symbol_info (), false);
+     });
 }
 
 void base_qobject::show_community_news (int serial)
@@ -904,7 +904,7 @@ void base_qobject::show_community_news (int serial)
   m_community_news->display ();
 }
 
-void base_qobject::show_release_notes (void)
+void base_qobject::show_release_notes ()
 {
   // Ensure widget exists.
   release_notes_widget ();
@@ -930,7 +930,7 @@ void base_qobject::execute_command (const QString& command)
     });
 }
 
-void base_qobject::close_gui (void)
+void base_qobject::close_gui ()
 {
   if (m_app_context.experimental_terminal_widget ())
     {
@@ -964,7 +964,7 @@ void base_qobject::close_gui (void)
     }
 }
 
-void base_qobject::interpreter_ready (void)
+void base_qobject::interpreter_ready ()
 {
   m_interpreter_ready = true;
 }
@@ -993,7 +993,7 @@ void base_qobject::interpreter_event (const meth_callback& meth)
   m_interpreter_qobj->interpreter_event (meth);
 }
 
-void base_qobject::interpreter_interrupt (void)
+void base_qobject::interpreter_interrupt ()
 {
   m_interpreter_qobj->interrupt ();
 }
@@ -1001,19 +1001,19 @@ void base_qobject::interpreter_interrupt (void)
 // FIXME: Should we try to make the pause, stop, and resume actions
 // work for both the old and new terminal widget?
 
-void base_qobject::interpreter_pause (void)
+void base_qobject::interpreter_pause ()
 {
   if (m_app_context.experimental_terminal_widget ())
     m_interpreter_qobj->pause ();
 }
 
-void base_qobject::interpreter_stop (void)
+void base_qobject::interpreter_stop ()
 {
   if (m_app_context.experimental_terminal_widget ())
     m_interpreter_qobj->stop ();
 }
 
-void base_qobject::interpreter_resume (void)
+void base_qobject::interpreter_resume ()
 {
   if (m_app_context.experimental_terminal_widget ())
     m_interpreter_qobj->resume ();

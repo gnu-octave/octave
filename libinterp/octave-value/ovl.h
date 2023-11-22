@@ -44,7 +44,7 @@ octave_value_list
 {
 public:
 
-  octave_value_list (void) = default;
+  octave_value_list () = default;
 
   explicit octave_value_list (octave_idx_type n)
     : m_data (n), m_names () { }
@@ -81,13 +81,13 @@ public:
   octave_value_list (const std::list<octave_value>&);
   octave_value_list (const std::list<octave_value_list>&);
 
-  ~octave_value_list (void) = default;
+  ~octave_value_list () = default;
 
   octave_value_list& operator = (const octave_value_list& obj) = default;
 
   octave_value_list& operator = (octave_value_list&& obj) = default;
 
-  Array<octave_value> array_value (void) const
+  Array<octave_value> array_value () const
   {
     Array<octave_value> retval;
 
@@ -102,7 +102,7 @@ public:
     return retval;
   }
 
-  Cell cell_value (void) const { return array_value (); }
+  Cell cell_value () const { return array_value (); }
 
   // Assignment will resize on range errors.
 
@@ -110,9 +110,9 @@ public:
 
   const octave_value& operator () (octave_idx_type n) const { return elem (n); }
 
-  octave_idx_type length (void) const { return m_data.size (); }
+  octave_idx_type length () const { return m_data.size (); }
 
-  bool empty (void) const { return length () == 0; }
+  bool empty () const { return length () == 0; }
 
   void resize (octave_idx_type n, const octave_value& rfv = octave_value ())
   {
@@ -125,7 +125,7 @@ public:
 
   octave_value_list& append (const octave_value_list& lst);
 
-  octave_value_list& reverse (void);
+  octave_value_list& reverse ();
 
   octave_value_list
   slice (octave_idx_type offset, octave_idx_type len, bool tags = false) const
@@ -152,25 +152,33 @@ public:
   splice (octave_idx_type offset, octave_idx_type len,
           const octave_value_list& lst = octave_value_list ()) const;
 
-  bool all_strings_p (void) const;
+  bool all_strings_p () const;
 
-  bool all_scalars (void) const;
+  bool all_scalars () const;
 
-  bool any_cell (void) const;
+  bool any_cell () const;
 
-  bool has_magic_colon (void) const;
+  bool has_magic_colon () const;
 
   string_vector make_argv (const std::string& = "") const;
 
   void stash_name_tags (const string_vector& nm) { m_names = nm; }
 
-  string_vector name_tags (void) const { return m_names; }
+  string_vector name_tags () const { return m_names; }
 
-  void make_storable_values (void);
+  void make_storable_values ();
 
   octave_value& xelem (octave_idx_type i) { return m_data[i]; }
 
-  void clear (void) { m_data.clear (); }
+  void clear () { m_data.clear (); }
+
+  octave_value first_or_nil_ov () const
+  {
+    if (length ())
+      return m_data.front ();
+
+    return octave_value ();
+  }
 
 private:
 

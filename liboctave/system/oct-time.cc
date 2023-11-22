@@ -36,6 +36,8 @@
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 #  include <windows.h>
+#else
+#  include "file-stat.h"
 #endif
 
 #include "lo-error.h"
@@ -94,7 +96,7 @@ time::time (const base_tm& tm)
 }
 
 std::string
-time::ctime (void) const
+time::ctime () const
 {
   return localtime (*this).asctime ();
 }
@@ -111,7 +113,7 @@ operator << (std::ostream& os, const time& ot)
 }
 
 void
-time::stamp (void)
+time::stamp ()
 {
   time_t ot_unix_time;
   octave_gettimeofday_wrapper (&ot_unix_time, &m_ot_usec);
@@ -346,7 +348,7 @@ strptime::init (const std::string& str, const std::string& fmt)
 }
 
 void
-cpu_time::stamp (void)
+cpu_time::stamp ()
 {
   time_t usr_sec, sys_sec;
   octave_cpu_time (&usr_sec, &sys_sec, &m_usr_usec, &m_sys_usec);
@@ -355,7 +357,7 @@ cpu_time::stamp (void)
 }
 
 void
-resource_usage::stamp (void)
+resource_usage::stamp ()
 {
   time_t usr_sec, sys_sec;
   long usr_usec, sys_usec;
@@ -368,6 +370,47 @@ resource_usage::stamp (void)
                             &m_nsignals, &m_nvcsw, &m_nivcsw);
 
   m_cpu = cpu_time (usr_sec, sys_sec, usr_usec, sys_usec);
+}
+
+file_time::file_time ()
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  FILETIME curr_file_time;
+  GetSystemTimeAsFileTime (&curr_file_time);
+  m_time
+    = (static_cast<OCTAVE_TIME_T> (curr_file_time.dwHighDateTime)) >> 32
+      | curr_file_time.dwLowDateTime;
+#else
+  time_t ot_unix_time;
+  long ot_usec;
+  octave_gettimeofday_wrapper (&ot_unix_time, &ot_usec);
+  // Discard usec.  We are assuming a 1 second resolution anyway.
+  m_time = ot_unix_time;
+#endif
+}
+
+file_time::file_time (const std::string& filename)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+  std::wstring wfull_name = sys::u8_to_wstring (filename);
+  WIN32_FILE_ATTRIBUTE_DATA file_attributes;
+
+  if (! GetFileAttributesExW (wfull_name.c_str (), GetFileExInfoStandard,
+                              &file_attributes))
+    {
+      m_time = 0;
+      return;
+    }
+
+  FILETIME last_write_time = file_attributes.ftLastWriteTime;
+
+  m_time
+    = (static_cast<OCTAVE_TIME_T> (last_write_time.dwHighDateTime)) >> 32
+      | last_write_time.dwLowDateTime;
+#else
+  file_stat fs = file_stat (filename);
+  m_time = fs.mtime ().unix_time ();
+#endif
 }
 
 OCTAVE_END_NAMESPACE(sys)

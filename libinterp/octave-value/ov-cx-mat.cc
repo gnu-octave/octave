@@ -79,7 +79,7 @@ default_numeric_demotion_function (const octave_base_value& a)
 }
 
 octave_base_value::type_conv_info
-octave_complex_matrix::numeric_demotion_function (void) const
+octave_complex_matrix::numeric_demotion_function () const
 {
   return octave_base_value::type_conv_info
          (default_numeric_demotion_function,
@@ -87,7 +87,7 @@ octave_complex_matrix::numeric_demotion_function (void) const
 }
 
 octave_base_value *
-octave_complex_matrix::try_narrowing_conversion (void)
+octave_complex_matrix::try_narrowing_conversion ()
 {
   octave_base_value *retval = nullptr;
 
@@ -281,13 +281,13 @@ octave_complex_matrix::sparse_complex_matrix_value (bool) const
 }
 
 octave_value
-octave_complex_matrix::as_double (void) const
+octave_complex_matrix::as_double () const
 {
   return m_matrix;
 }
 
 octave_value
-octave_complex_matrix::as_single (void) const
+octave_complex_matrix::as_single () const
 {
   return FloatComplexNDArray (m_matrix);
 }
@@ -613,7 +613,7 @@ octave_complex_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   if (retval)
     {
-      Complex *mtmp = m.fortran_vec ();
+      const Complex *mtmp = m.data ();
       if (H5Dwrite (data_hid, complex_type_hid, octave_H5S_ALL, octave_H5S_ALL,
                     octave_H5P_DEFAULT, mtmp)
           < 0)

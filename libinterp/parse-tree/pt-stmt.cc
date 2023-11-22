@@ -53,7 +53,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // A list of commands to be executed.
 
-tree_statement::~tree_statement (void)
+tree_statement::~tree_statement ()
 {
   delete m_command;
   delete m_expression;
@@ -68,7 +68,7 @@ tree_statement::set_print_flag (bool print_flag)
 }
 
 bool
-tree_statement::print_result (void)
+tree_statement::print_result ()
 {
   return m_expression && m_expression->print_result ();
 }
@@ -83,7 +83,7 @@ tree_statement::set_breakpoint (const std::string& condition)
 }
 
 void
-tree_statement::delete_breakpoint (void)
+tree_statement::delete_breakpoint ()
 {
   if (m_command)
     m_command->delete_breakpoint ();
@@ -92,7 +92,7 @@ tree_statement::delete_breakpoint (void)
 }
 
 bool
-tree_statement::is_breakpoint (void) const
+tree_statement::is_breakpoint () const
 {
   return m_command ? m_command->is_breakpoint ()
          : (m_expression ? m_expression->is_breakpoint ()
@@ -116,7 +116,7 @@ tree_statement::bp_cond () const
 }
 
 int
-tree_statement::line (void) const
+tree_statement::line () const
 {
   return (m_command
           ? m_command->line ()
@@ -124,7 +124,7 @@ tree_statement::line (void) const
 }
 
 int
-tree_statement::column (void) const
+tree_statement::column () const
 {
   return (m_command
           ? m_command->column ()
@@ -149,7 +149,7 @@ tree_statement::echo_code (const std::string& prefix)
 }
 
 bool
-tree_statement::is_end_of_fcn_or_script (void) const
+tree_statement::is_end_of_fcn_or_script () const
 {
   bool retval = false;
 
@@ -166,7 +166,7 @@ tree_statement::is_end_of_fcn_or_script (void) const
 }
 
 bool
-tree_statement::is_end_of_file (void) const
+tree_statement::is_end_of_file () const
 {
   bool retval = false;
 
@@ -218,7 +218,7 @@ tree_statement_list::delete_breakpoint (int line)
 }
 
 octave_value_list
-tree_statement_list::list_breakpoints (void)
+tree_statement_list::list_breakpoints ()
 {
   tree_breakpoint tbp (0, tree_breakpoint::list);
   accept (tbp);
@@ -228,7 +228,7 @@ tree_statement_list::list_breakpoints (void)
 
 // Get list of pairs (breakpoint line, breakpoint condition)
 std::list<bp_type>
-tree_statement_list::breakpoints_and_conds (void)
+tree_statement_list::breakpoints_and_conds ()
 {
   tree_breakpoint tbp (0, tree_breakpoint::list);
   accept (tbp);

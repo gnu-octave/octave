@@ -57,7 +57,7 @@ function __imwrite__ (img, varargin)
 
   for idx = 1:2:numel (param_list)
 
-    switch (tolower (param_list{idx}))
+    switch (lower (param_list{idx}))
 
       case "alpha"
         options.alpha = param_list{idx+1};
@@ -80,7 +80,7 @@ function __imwrite__ (img, varargin)
           error ("imwrite: value for %s option must be a string",
                  param_list{idx});
         endif
-        options.compression = tolower (options.compression);
+        options.compression = lower (options.compression);
         if (! any (strcmp (options.compression, {"none", "bzip", "fax3", ...
                                                  "fax4", "jpeg", "lzw", ...
                                                  "rle", "deflate"})))
@@ -115,7 +115,7 @@ function __imwrite__ (img, varargin)
         elseif (! iscell (options.disposalmethod))
           options.disposalmethod = {options.disposalmethod};
         endif
-        options.disposalmethod = tolower (options.disposalmethod);
+        options.disposalmethod = lower (options.disposalmethod);
         matches = ismember (options.disposalmethod,
                             {"donotspecify", "leaveinplace", ...
                              "restorebg", "restoreprevious"});
@@ -172,7 +172,7 @@ function __imwrite__ (img, varargin)
           error ('imwrite: value for %s option must be "append" or "overwrite"',
                  param_list{idx});
         endif
-        options.writemode = tolower (options.writemode);
+        options.writemode = lower (options.writemode);
 
       otherwise
         error ("imwrite: invalid PARAMETER '%s'", param_list{idx});

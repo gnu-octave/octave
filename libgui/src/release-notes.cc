@@ -40,25 +40,25 @@
 #include "gui-utils.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-nr.h"
+#include "gui-settings.h"
 #include "news-reader.h"
-#include "octave-qobject.h"
 
 #include "defaults.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-release_notes::release_notes (base_qobject& oct_qobj)
-: QWidget (nullptr), m_browser (nullptr)
+release_notes::release_notes ()
+  : QWidget (nullptr), m_browser (nullptr)
 {
 
-  resource_manager& rmgr = oct_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+  gui_settings settings;
 
   // The icon
-  QString icon_set = settings->value (dw_icon_set).toString ();
+  QString icon_set = settings.string_value (dw_icon_set);
+
   if (icon_set != "NONE")
     m_release_notes_icon = dw_icon_set_names[icon_set]
-      + "ReleaseWidget.png";
+                           + "ReleaseWidget.png";
   else
     m_release_notes_icon = dw_icon_set_names[icon_set];
 
@@ -106,7 +106,7 @@ release_notes::release_notes (base_qobject& oct_qobj)
   move (20, 20);  // move to the top left corner
 }
 
-void release_notes::display (void)
+void release_notes::display ()
 {
   if (! isVisible ())
     show ();

@@ -39,9 +39,8 @@
 #include <assert.h>
 
 // Qt
-#include <QtCore/QEvent>
+#include <QEvent>
 #include <QKeyEvent>
-#include <QtCore/QByteRef>
 
 // Konsole
 #include "unix/KeyboardTranslator.h"
@@ -359,7 +358,7 @@ void Vt102Emulation::XtermHack()
     arg = 10*arg + (pbuf[i]-'0');
   if (pbuf[i] != ';') { ReportErrorToken(); return; }
   QChar *str = new QChar[ppos-i-2];
-  for (int j = 0; j < ppos-i-2; j++) str[j] = pbuf[i+1+j];
+  for (int j = 0; j < ppos-i-2; j++) str[j] = QChar {pbuf[i+1+j]};
   QString unistr(str,ppos-i-2);
 
   // arg == 1 doesn't change the title. In XTerm it only changes the icon name
@@ -402,38 +401,6 @@ void Vt102Emulation::updateTitle()
 
 void Vt102Emulation::tau( int token, int p, int q )
 {
-#if 0
-int N = (token>>0)&0xff;
-int A = (token>>8)&0xff;
-switch( N )
-{
-   case 0: printf("%c", (p < 128) ? p : '?');
-           break;
-   case 1: if (A == 'J') printf("\r");
-           else if (A == 'M') printf("\n");
-           else printf("CTL-%c ", (token>>8)&0xff);
-           break;
-   case 2: printf("ESC-%c ", (token>>8)&0xff);
-           break;
-   case 3: printf("ESC_CS-%c-%c ", (token>>8)&0xff, (token>>16)&0xff);
-           break;
-   case 4: printf("ESC_DE-%c ", (token>>8)&0xff);
-           break;
-   case 5: printf("CSI-PS-%c-%d", (token>>8)&0xff, (token>>16)&0xff );
-           break;
-   case 6: printf("CSI-PN-%c [%d]", (token>>8)&0xff, p);
-           break;
-   case 7: printf("CSI-PR-%c-%d", (token>>8)&0xff, (token>>16)&0xff );
-           break;
-   case 8: printf("VT52-%c", (token>>8)&0xff);
-           break;
-   case 9: printf("CSI-PG-%c", (token>>8)&0xff);
-           break;
-   case 10: printf("CSI-PE-%c", (token>>8)&0xff);
-           break;
-}
-#endif
-
   switch (token)
   {
 
@@ -1007,7 +974,7 @@ void Vt102Emulation::sendKeyEvent( QKeyEvent* event )
                                          "is missing.");
 
         reset();
-        receiveData( translatorError.toLatin1().constData() , translatorError.count() );
+        receiveData( translatorError.toLatin1().constData() , translatorError.size () );
     }
 }
 
@@ -1229,7 +1196,7 @@ char Vt102Emulation::getErase() const
                                             Qt::Key_Backspace,
                                             Qt::NoModifier);
 
-  if ( entry.text().count() > 0 )
+  if ( entry.text ().size () > 0 )
       return entry.text()[0];
   else
       return '\b';

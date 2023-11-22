@@ -33,23 +33,24 @@
 #include "unix/TerminalView.h"
 
 // Qt
+#include <QtCore>
+#include <QtGui>
+
 #include <QApplication>
 #include <QBoxLayout>
 #include <QClipboard>
-#include <QKeyEvent>
-#include <QtCore/QEvent>
-#include <QtCore/QTime>
-#include <QtCore/QFile>
+#include <QEvent>
+#include <QFile>
 #include <QGridLayout>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QLayout>
 #include <QPainter>
 #include <QPixmap>
 #include <QScrollBar>
 #include <QStyle>
+#include <QTime>
 #include <QToolTip>
-#include <QtCore>
-#include <QtGui>
 
 #include "unix/Filter.h"
 #include "unix/konsole_wcwidth.h"
@@ -331,7 +332,7 @@ TerminalView::TerminalView(QWidget *parent)
   setAttribute(Qt::WA_OpaquePaintEvent);
 
   _gridLayout = new QGridLayout(this);
-  _gridLayout->setMargin(0);
+  _gridLayout->setContentsMargins (0, 0, 0, 0);
 
   setLayout( _gridLayout );
 }
@@ -569,26 +570,6 @@ void TerminalView::drawTextFragment(QPainter& painter ,
 
 void TerminalView::setRandomSeed(uint randomSeed) { _randomSeed = randomSeed; }
 uint TerminalView::randomSeed() const { return _randomSeed; }
-
-#if 0
-/*!
-    Set XIM Position
-*/
-void TerminalDisplay::setCursorPos(const int curx, const int cury)
-{
-  QPoint tL  = contentsRect().topLeft();
-  int    tLx = tL.x();
-  int    tLy = tL.y();
-
-  int xpos, ypos;
-  ypos = _topMargin + tLy + _fontHeight*(cury-1) + _fontAscent;
-  xpos = _leftMargin + tLx + _fontWidth*curx;
-  //setMicroFocusHint(xpos, ypos, 0, _fontHeight); //### ???
-  // fprintf(stderr, "x/y = %d/%d\txpos/ypos = %d/%d\n", curx, cury, xpos, ypos);
-  _cursorLine = cury;
-  _cursorCol = curx;
-}
-#endif
 
 // scrolls the image by 'lines', down if lines > 0 or up otherwise.
 //
@@ -1554,7 +1535,8 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
   int charLine = 0;
   int charColumn = 0;
 
-  getCharacterPosition(ev->pos(),charLine,charColumn);
+  QPoint mouse_position = ev->pos ();
+  getCharacterPosition (mouse_position, charLine, charColumn);
 
   // handle filters
   // change link hot-spot appearance on mouse-over
@@ -1577,7 +1559,8 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
       const QString& tooltip = spot->tooltip();
       if ( !tooltip.isEmpty() )
         {
-          QToolTip::showText( mapToGlobal(ev->pos()) , tooltip , this , _mouseOverHotspotArea );
+          QToolTip::showText (mapToGlobal (mouse_position), tooltip, this,
+                              _mouseOverHotspotArea );
         }
 
       update( _mouseOverHotspotArea | previousHotspotArea );
@@ -1621,8 +1604,10 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
       // if the mouse has moved sufficiently, we will confirm
 
       int distance = 10; //KGlobalSettings::dndEventDelay();
-      if ( ev->x() > dragInfo.start.x() + distance || ev->x() < dragInfo.start.x() - distance ||
-           ev->y() > dragInfo.start.y() + distance || ev->y() < dragInfo.start.y() - distance)
+      if (mouse_position.x () > dragInfo.start.x () + distance
+          || mouse_position.x () < dragInfo.start.x () - distance
+          || mouse_position.y () > dragInfo.start.y () + distance
+          || mouse_position.y () < dragInfo.start.y () - distance)
         {
           // we've left the drag square, we can start a real drag operation now
           emit isBusySelecting(false); // Ok.. we can breath again.
@@ -1646,13 +1631,6 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
 
   extendSelection( ev->pos() );
 }
-
-#if 0
-void TerminalDisplay::setSelectionEnd()
-{
-  extendSelection( _configureRequestPoint );
-}
-#endif
 
 void TerminalView::extendSelection(const QPoint& position) {
   QPoint pos = position;
@@ -2043,13 +2021,8 @@ void TerminalView::mouseDoubleClickEvent(QMouseEvent* ev)
 
 void TerminalView::wheelEvent( QWheelEvent* ev )
 {
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
   if (ev->angleDelta().y() == 0)
     return;
-#else
-  if (ev->orientation() != Qt::Vertical)
-    return;
-#endif
 
   if ( _mouseMarks )
     _scrollBar->event(ev);
@@ -2064,11 +2037,8 @@ void TerminalView::wheelEvent( QWheelEvent* ev )
 #endif
       getCharacterPosition( pos , charLine , charColumn );
 
-#if defined (HAVE_QWHEELEVENT_ANGLEDELTA)
       int delta = ev->angleDelta().y();
-#else
-      int delta = ev->delta();
-#endif
+
       emit mouseSignal( delta > 0 ? 4 : 5,
                         charColumn + 1,
                         charLine + 1 +_scrollBar->value() -_scrollBar->maximum() ,

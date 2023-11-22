@@ -112,6 +112,18 @@ function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
   Cnf   = N - wlen(2) + 1;        # first center that can't fit the post-window
   Cpost = Cnf:N;                  # centers that can't fit centered post-window
   C     = (wlen(1) + 1):(Cnf - 1);
+  ## Convert C to minimum unsigned integer array large enough to hold indices.
+  ## This can save significant memory in resulting slcidx array over using a
+  ## double (8 bytes).
+  if (N <= 255)
+    C = uint8 (C);
+  elseif (N <= 65535)
+    C = uint16 (C);
+  elseif (N <= 4294967295)
+    C = uint32 (C);
+  else
+    C = uint64 (C);
+  endif
   win   = (-wlen(1):wlen(2)).';
   slcidx = C + win;
 

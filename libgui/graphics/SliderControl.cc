@@ -33,8 +33,6 @@
 #include "SliderControl.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-
 #include "graphics.h"
 #include "interpreter.h"
 
@@ -43,8 +41,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 SliderControl *
-SliderControl::create (octave::base_qobject& oct_qobj,
-                       octave::interpreter& interp,
+SliderControl::create (octave::interpreter& interp,
                        const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
@@ -54,18 +51,17 @@ SliderControl::create (octave::base_qobject& oct_qobj,
       Container *container = parent->innerContainer ();
 
       if (container)
-        return new SliderControl (oct_qobj, interp, go,
+        return new SliderControl (interp, go,
                                   new QScrollBar (container));
     }
 
   return nullptr;
 }
 
-SliderControl::SliderControl (octave::base_qobject& oct_qobj,
-                              octave::interpreter& interp,
+SliderControl::SliderControl (octave::interpreter& interp,
                               const graphics_object& go,
                               QAbstractSlider *slider)
-  : BaseControl (oct_qobj, interp, go, slider), m_blockUpdates (false)
+  : BaseControl (interp, go, slider), m_blockUpdates (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -93,7 +89,7 @@ SliderControl::SliderControl (octave::base_qobject& oct_qobj,
            this, &SliderControl::valueChanged);
 }
 
-SliderControl::~SliderControl (void)
+SliderControl::~SliderControl ()
 { }
 
 void

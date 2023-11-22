@@ -131,16 +131,14 @@ class ctor_analyzer : public tree_walker
 {
 public:
 
-  ctor_analyzer (void) = delete;
+  ctor_analyzer () = delete;
 
   ctor_analyzer (const std::string& ctor, const std::string& obj)
     : tree_walker (), m_who (ctor), m_obj_name (obj) { }
 
-  ctor_analyzer (const ctor_analyzer&) = delete;
+  OCTAVE_DISABLE_COPY_MOVE (ctor_analyzer)
 
-  ctor_analyzer& operator = (const ctor_analyzer&) = delete;
-
-  ~ctor_analyzer (void) = default;
+  ~ctor_analyzer () = default;
 
   void visit_statement (tree_statement& t)
   {
@@ -163,7 +161,7 @@ public:
     t.expression ()->accept (*this);
   }
 
-  std::list<cdef_class> get_constructor_list (void) const
+  std::list<cdef_class> get_constructor_list () const
   { return m_ctor_list; }
 
   // NO-OP
@@ -278,7 +276,7 @@ cdef_class::cdef_class_rep::install_method (const cdef_method& meth)
 }
 
 void
-cdef_class::cdef_class_rep::load_all_methods (void)
+cdef_class::cdef_class_rep::load_all_methods ()
 {
   // FIXME: re-scan class directory
 }
@@ -319,26 +317,24 @@ cdef_class::cdef_class_rep::find_methods (std::map<std::string,
 {
   load_all_methods ();
 
-  method_const_iterator it;
-
-  for (it = m_method_map.begin (); it != m_method_map.end (); ++it)
+  for (const auto& it : m_method_map)
     {
-      if (include_ctor || ! it->second.is_constructor ())
+      if (include_ctor || ! it.second.is_constructor ())
         {
-          std::string nm = it->second.get_name ();
+          std::string nm = it.second.get_name ();
 
           if (meths.find (nm) == meths.end ())
             {
               if (only_inherited)
                 {
-                  octave_value acc = it->second.get ("Access");
+                  octave_value acc = it.second.get ("Access");
 
                   if (! acc.is_string ()
                       || acc.string_value () == "private")
                     continue;
                 }
 
-              meths[nm] = it->second;
+              meths[nm] = it.second;
             }
         }
     }
@@ -425,24 +421,22 @@ cdef_class::cdef_class_rep::find_properties (std::map<std::string,
     cdef_property>& props,
     int mode)
 {
-  property_const_iterator it;
-
-  for (it = m_property_map.begin (); it != m_property_map.end (); ++it)
+  for (const auto& it : m_property_map)
     {
-      std::string nm = it->second.get_name ();
+      std::string nm = it.second.get_name ();
 
       if (props.find (nm) == props.end ())
         {
           if (mode == property_inherited)
             {
-              octave_value acc = it->second.get ("GetAccess");
+              octave_value acc = it.second.get ("GetAccess");
 
               if (! acc.is_string ()
                   || acc.string_value () == "private")
                 continue;
             }
 
-          props[nm] = it->second;
+          props[nm] = it.second;
         }
     }
 
@@ -515,7 +509,7 @@ cdef_class::cdef_class_rep::find_names (std::set<std::string>& names,
 }
 
 string_vector
-cdef_class::cdef_class_rep::get_names (void)
+cdef_class::cdef_class_rep::get_names ()
 {
   std::set<std::string> names;
 
@@ -584,8 +578,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
         if (idx.front ().length () != 1)
           error ("invalid meta.class indexing");
 
-        std::string nm = idx.front ()(
-                           0).xstring_value ("invalid meta.class indexing, expected a method or property name");
+        std::string nm = idx.front ()(0).xstring_value ("invalid meta.class indexing, expected a method or property name");
 
         cdef_method meth = find_method (nm);
 
@@ -633,7 +626,7 @@ cdef_class::cdef_class_rep::meta_subsref (const std::string& type,
 }
 
 void
-cdef_class::cdef_class_rep::meta_release (void)
+cdef_class::cdef_class_rep::meta_release ()
 {
   cdef_manager& cdm = __get_cdef_manager__ ();
 
@@ -715,6 +708,39 @@ cdef_class::cdef_class_rep::get_method (const std::string& name) const
   return p->second.get_function ();
 }
 
+octave_value
+cdef_class::cdef_class_rep::get_method (int line) const
+{
+  octave_value closest_match;
+  int closest_match_end_line = std::numeric_limits<int>::max ();
+  // Since we have a dynamic cast, performance could be an issue if this is
+  // called from a critical path.  If performance is an issue, we can cache
+  // an ordered version of the method map
+  for (auto i = m_method_map.cbegin (); i != m_method_map.cend (); ++i)
+    {
+      const octave_value& fcn = i->second.get_function ();
+      octave_user_code *user_code = fcn.user_code_value ();
+
+      if (user_code == nullptr)
+        continue;
+
+      octave_user_function* pfcn
+        = dynamic_cast<octave_user_function*> (user_code);
+
+      if (pfcn == nullptr)
+        continue;
+
+      const int e = pfcn->ending_line ();
+      if (line <= e && e <= closest_match_end_line && pfcn->is_defined ()
+          && pfcn->is_user_code ())
+        {
+          closest_match = fcn;
+          closest_match_end_line = e;
+        }
+    }
+
+  return closest_match;
+}
 
 octave_value
 cdef_class::cdef_class_rep::construct (const octave_value_list& args)

@@ -110,7 +110,7 @@ function varargout = uisetfont (varargin)
   ## Populate fontstruct
   persistent defstruct = [];
   if (isempty (defstruct))
-    factory_fields = strcat ("factorytext", tolower (fontfields));
+    factory_fields = strcat ("factorytext", lower (fontfields));
     values = get (0, factory_fields);
     defstruct = struct ([fontfields; values]{:});
   endif

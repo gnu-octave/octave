@@ -36,6 +36,9 @@
 extern "C" {
 #endif
 
+extern OCTAVE_API long long
+octave_gettime_ns_wrapper (void);
+
 extern OCTAVE_API int octave_gettimeofday_wrapper (time_t *sec, long *usec);
 
 extern OCTAVE_API int

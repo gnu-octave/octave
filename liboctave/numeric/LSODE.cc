@@ -348,7 +348,7 @@ LSODE::do_integrate (double tout)
 }
 
 std::string
-LSODE::error_message (void) const
+LSODE::error_message () const
 {
   std::string retval;
 

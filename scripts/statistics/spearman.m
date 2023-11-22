@@ -113,6 +113,9 @@ endfunction
 
 %!assert (spearman ([1 2 3], [-1 1 -2]), -0.5, 5*eps)
 
+%!assert (spearman (1), NaN)
+%!assert (spearman (single (1)), single (NaN))
+
 ## Test input validation
 %!error <Invalid call> spearman ()
 %!error spearman (['A'; 'B'])

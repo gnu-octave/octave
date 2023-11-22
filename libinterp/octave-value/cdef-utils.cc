@@ -282,7 +282,7 @@ get_class_context (std::string& name, bool& in_constructor)
 }
 
 cdef_class
-get_class_context (void)
+get_class_context ()
 {
   std::string dummy_string;
   bool dummy_bool;

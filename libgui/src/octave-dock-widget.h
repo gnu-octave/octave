@@ -31,12 +31,10 @@
 #include <QMouseEvent>
 #include <QToolButton>
 
-#include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class main_window;
 
 // The few decoration items common to both main window and variable editor.
@@ -47,9 +45,9 @@ class label_dock_widget : public QDockWidget
 
 public:
 
-  label_dock_widget (QWidget *p, base_qobject& oct_qobj);
+  label_dock_widget (QWidget *p);
 
-  ~label_dock_widget (void) = default;
+  ~label_dock_widget () = default;
 
   // set_title() uses the custom title bar while setWindowTitle() uses
   // the default title bar (with style sheets)
@@ -59,18 +57,16 @@ protected slots:
 
   //! Slots to handle copy & paste.
   //!@{
-  virtual void copyClipboard (void) { }
-  virtual void pasteClipboard (void) { }
-  virtual void selectAll (void) { }
+  virtual void copyClipboard () { }
+  virtual void pasteClipboard () { }
+  virtual void selectAll () { }
   //!@}
 
   //! Slot to handle undo.
 
-  virtual void do_undo (void) { }
+  virtual void do_undo () { }
 
 protected:
-
-  base_qobject& m_octave_qobj;
 
   int m_icon_size;
   QWidget *m_title_widget;
@@ -89,17 +85,16 @@ class octave_dock_widget : public label_dock_widget
 
 public:
 
-  octave_dock_widget (const QString& obj_name, QWidget *p,
-                      base_qobject& oct_qobj);
+  octave_dock_widget (const QString& obj_name, QWidget *p);
 
-  ~octave_dock_widget (void) = default;
+  ~octave_dock_widget () = default;
 
   void set_predecessor_widget (octave_dock_widget *prev_widget);
 
   void set_main_window (main_window *mw);
 
   void set_adopted (bool adopted = true) { m_adopted = adopted; }
-  bool adopted (void) const { return m_adopted; }
+  bool adopted () const { return m_adopted; }
 
 signals:
 
@@ -110,29 +105,29 @@ signals:
 
   void queue_make_window (bool widget_was_dragged);
 
-  void queue_make_widget (void);
+  void queue_make_widget ();
 
 protected:
 
   virtual void closeEvent (QCloseEvent *e);
 
-  QWidget * focusWidget (void);
+  QWidget * focusWidget ();
 
   bool event (QEvent *event);
 
 public slots:
 
-  virtual void activate (void);
+  virtual void activate ();
 
   virtual void handle_visibility (bool visible);
 
-  virtual void notice_settings (const gui_settings *) { }
+  virtual void notice_settings () { }
 
-  virtual void save_settings (void);
+  virtual void save_settings ();
 
-  void init_window_menu_entry (void);
+  void init_window_menu_entry ();
 
-  void handle_settings (const gui_settings *);
+  void handle_settings ();
 
   void handle_active_dock_changed (octave_dock_widget *, octave_dock_widget *);
 
@@ -161,8 +156,10 @@ private slots:
 private:
 
   void set_style (bool active);
-  void set_focus_predecessor (void);
-  void store_geometry (void);
+  void set_focus_predecessor ();
+  void store_geometry ();
+
+private:
 
   //! Stores the parent, since we are reparenting to 0.
 

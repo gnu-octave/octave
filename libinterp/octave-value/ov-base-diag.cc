@@ -192,7 +192,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                   {
                     m_matrix.dgelem (i0(0)) = val;
                     retval = this;
-                    this->count++;
+                    this->m_count++;
                     // invalidate cache
                     m_dense_cache = octave_value ();
                   }
@@ -220,7 +220,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
                   {
                     m_matrix.dgelem (i0(0)) = val;
                     retval = this;
-                    this->count++;
+                    this->m_count++;
                     // invalidate cache
                     m_dense_cache = octave_value ();
                   }
@@ -276,10 +276,10 @@ octave_base_diag<DMT, MT>::resize (const dim_vector& dv, bool fill) const
   return retval;
 }
 
-// Return true if this matrix has all true elements (non-zero, not NA/NaN).
+// Return true if this matrix has all true elements (nonzero, not NA/NaN).
 template <typename DMT, typename MT>
 bool
-octave_base_diag<DMT, MT>::is_true (void) const
+octave_base_diag<DMT, MT>::is_true () const
 {
   if (dims ().numel () > 1)
     {
@@ -473,7 +473,7 @@ octave_base_diag<DMT, MT>::convert_to_str_internal (bool pad, bool force,
 
 template <typename DMT, typename MT>
 float_display_format
-octave_base_diag<DMT, MT>::get_edit_display_format (void) const
+octave_base_diag<DMT, MT>::get_edit_display_format () const
 {
   // FIXME
   return float_display_format ();
@@ -551,7 +551,7 @@ octave_base_diag<DMT, MT>::as_mxArray (bool interleaved) const
 
 template <typename DMT, typename MT>
 bool
-octave_base_diag<DMT, MT>::print_as_scalar (void) const
+octave_base_diag<DMT, MT>::print_as_scalar () const
 {
   dim_vector dv = dims ();
 
@@ -657,7 +657,7 @@ octave_base_diag<DMT, MT>::fast_elem_extract (octave_idx_type n) const
 
 template <typename DMT, typename MT>
 octave_value
-octave_base_diag<DMT, MT>::to_dense (void) const
+octave_base_diag<DMT, MT>::to_dense () const
 {
   if (! m_dense_cache.is_defined ())
     m_dense_cache = MT (m_matrix);

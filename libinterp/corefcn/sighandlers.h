@@ -36,6 +36,8 @@ Free Software Foundation, Inc.
 #if ! defined (octave_sighandlers_h)
 #define octave_sighandlers_h 1
 
+#include <atomic>
+
 #include "octave-config.h"
 
 #include "child-list.h"
@@ -56,7 +58,7 @@ struct interrupt_handler
 extern int pipe_handler_error_count;
 
 // TRUE means we can be interrupted.
-extern OCTINTERP_API bool can_interrupt;
+extern OCTINTERP_API std::atomic<bool> can_interrupt;
 
 extern OCTINTERP_API sig_handler *
 set_signal_handler (int sig, sig_handler *h,
@@ -66,13 +68,13 @@ extern OCTINTERP_API sig_handler *
 set_signal_handler (const char *signame, sig_handler *h,
                     bool restart_syscalls = true);
 
-extern OCTINTERP_API void install_signal_handlers (void);
+extern OCTINTERP_API void install_signal_handlers ();
 
-extern OCTINTERP_API void respond_to_pending_signals (void);
+extern OCTINTERP_API void respond_to_pending_signals ();
 
-extern OCTINTERP_API interrupt_handler catch_interrupts (void);
+extern OCTINTERP_API interrupt_handler catch_interrupts ();
 
-extern OCTINTERP_API interrupt_handler ignore_interrupts (void);
+extern OCTINTERP_API interrupt_handler ignore_interrupts ();
 
 extern OCTINTERP_API interrupt_handler
 set_interrupt_handler (const volatile interrupt_handler& h,

@@ -43,51 +43,60 @@ classdef inputParser < handle
   ## @end enumerate
   ##
   ## After defining the function API with these methods, the supplied arguments
-  ## can be parsed with the @code{parse} method and the parsing results
-  ## accessed with the @code{Results} accessor.
+  ## can be parsed with the @code{parse} method and the results accessed with
+  ## the @code{Results} accessor.
   ## @end deftypefn
   ##
   ## @deftypefn {} {} inputParser.Parameters
-  ## Return list of parameter names already defined.
+  ## Return the list of parameter names already defined.  (read-only)
   ## @end deftypefn
   ##
   ## @deftypefn {} {} inputParser.Results
-  ## Return structure with argument names as fieldnames and corresponding
-  ## values.
+  ## Return a structure with argument names as fieldnames and corresponding
+  ## values.  (read-only)
   ## @end deftypefn
   ##
   ## @deftypefn {} {} inputParser.Unmatched
-  ## Return structure similar to @code{Results}, but for unmatched parameters.
+  ## Return a structure similar to @code{Results}, but for unmatched
+  ## parameters.  (read-only)
   ## See the @code{KeepUnmatched} property.
   ## @end deftypefn
   ##
   ## @deftypefn {} {} inputParser.UsingDefaults
   ## Return cell array with the names of arguments that are using default
-  ## values.
-  ## @end deftypefn
-  ##
-  ## @deftypefn {} {} inputParser.CaseSensitive = @var{boolean}
-  ## Set whether matching of argument names should be case sensitive.  Defaults
-  ## to false.
+  ## values.  (read-only)
   ## @end deftypefn
   ##
   ## @deftypefn {} {} inputParser.FunctionName = @var{name}
   ## Set function name to be used in error messages; Defaults to empty string.
   ## @end deftypefn
   ##
+  ## @deftypefn {} {} inputParser.CaseSensitive = @var{boolean}
+  ## Set whether matching of argument names should be case sensitive; Defaults
+  ## to false.
+  ## @end deftypefn
+  ##
   ## @deftypefn {} {} inputParser.KeepUnmatched = @var{boolean}
-  ## Set whether an error should be given for non-defined arguments.  Defaults
-  ## to false.  If set to true, the extra arguments can be accessed through
-  ## @code{Unmatched} after the @code{parse} method.  Note that since
-  ## @code{Switch} and @code{Parameter} arguments can be mixed, it is
-  ## not possible to know the unmatched type.  If argument is found unmatched
-  ## it is assumed to be of the @code{Parameter} type and it is expected to
-  ## be followed by a value.
+  ## Set whether string arguments which do not match any Parameter are parsed
+  ## and stored in the @code{Unmatched} property; Defaults to false.  If false,
+  ## an error will be emitted at the first unrecognized argument and parsing
+  ## will stop.  Note that since @code{Switch} and @code{Parameter} arguments
+  ## can be mixed, it is not possible to know the type of the unmatched
+  ## argument.  Octave assumes that all unmatched arguments are of the
+  ## @code{Parameter} type and therefore must be followed by a value.
+  ## @end deftypefn
+  ##
+  ## @deftypefn {} {} inputParser.PartialMatching = @var{boolean}
+  ## Set whether argument names for @code{Parameter} and @code{Switch} options
+  ## may be given in shortened form as long as the name uniquely identifies
+  ## an option; Defaults to true.  For example, the argument @qcode{'opt'} will
+  ## match a parameter @qcode{'opt_color'}, but will fail if there is also a
+  ## parameter @qcode{'opt_case'}.
   ## @end deftypefn
   ##
   ## @deftypefn {} {} inputParser.StructExpand = @var{boolean}
-  ## Set whether a structure can be passed to the function instead of
-  ## parameter/value pairs.  Defaults to true.
+  ## Set whether a structure passed to the function is expanded into
+  ## parameter/value pairs (parameter = fieldname); Defaults to true.
   ##
   ## The following example shows how to use this class:
   ##
@@ -99,23 +108,23 @@ classdef inputParser < handle
   ##   p.addRequired ("pack", @@ischar);         # mandatory argument
   ##   p.addOptional ("path", pwd(), @@ischar);  # optional argument
   ##
-  ##   ## create a function handle to anonymous functions for validators
-  ##   val_mat = @@(x) isvector (x) && all (x <= 1) && all (x >= 0);
-  ##   p.addOptional ("mat", [0 0], val_mat);
+  ##   ## Create anonymous function handle for validators
+  ##   valid_vec = @@(x) isvector (x) && all (x >= 0) && all (x <= 1);
+  ##   p.addOptional ("vec", [0 0], valid_vec);
   ##
-  ##   ## create two arguments of type "Parameter"
-  ##   val_type = @@(x) any (strcmp (x, @{"linear", "quadratic"@}));
-  ##   p.addParameter ("type", "linear", val_type);
-  ##   val_verb = @@(x) any (strcmp (x, @{"low", "medium", "high"@}));
-  ##   p.addParameter ("tolerance", "low", val_verb);
+  ##   ## Create two arguments of type "Parameter"
+  ##   vld_type = @@(x) any (strcmp (x, @{"linear", "quadratic"@}));
+  ##   p.addParameter ("type", "linear", vld_type);
+  ##   vld_tol = @@(x) any (strcmp (x, @{"low", "medium", "high"@}));
+  ##   p.addParameter ("tolerance", "low", vld_tol);
   ##
-  ##   ## create a switch type of argument
+  ##   ## Create a switch type of argument
   ##   p.addSwitch ("verbose");
   ##
   ##   p.parse (varargin@{:@});  # Run created parser on inputs
   ##
-  ##   ## the rest of the function can access inputs by using p.Results.
-  ##   ## for example, get the tolerance input with p.Results.tolerance
+  ##   ## The rest of the function can access inputs by using p.Results.
+  ##   ## For example, get the tolerance input with p.Results.tolerance
   ## endfunction
   ## @end example
   ##
@@ -129,13 +138,13 @@ classdef inputParser < handle
   ## check ("mech", "~/dev", [0 1 0 0], "type", "linear");  # valid
   ##
   ## ## following is also valid.  Note how the Switch argument type can
-  ## ## be mixed into or before the Parameter argument type (but it
-  ## ## must still appear after any Optional argument).
+  ## ## be mixed in with or before the Parameter argument type (but it
+  ## ## must still appear after any Optional arguments).
   ## check ("mech", "~/dev", [0 1 0 0], "verbose", "tolerance", "high");
   ##
-  ## ## following returns an error since not all optional arguments,
-  ## ## 'path' and 'mat', were given before the named argument 'type'.
-  ## check ("mech", "~/dev", "type", "linear");
+  ## ## following returns an error since an Optional argument, 'path',
+  ## ## was given after the Parameter argument 'type'.
+  ## check ("mech", "type", "linear", "~/dev");
   ## @end group
   ## @end example
   ##
@@ -143,7 +152,7 @@ classdef inputParser < handle
   ## they must appear in a specific order.  @code{Required} arguments must be
   ## first and can be followed by any @code{Optional} arguments.  Only
   ## the @code{Parameter} and @code{Switch} arguments may be mixed
-  ## together and they must appear at the end.
+  ## together and they must appear following the first two types.
   ##
   ## @emph{Note 2}: If both @code{Optional} and @code{Parameter} arguments
   ## are mixed in a function API then once a string Optional argument fails to
@@ -156,10 +165,10 @@ classdef inputParser < handle
 
   properties
     ## FIXME: set input checking for these properties
-    CaseSensitive = false;
-    FunctionName  = "";
-    KeepUnmatched = false;
-    PartialMatching = false; # FIXME: unimplemented (and default should be true)
+    CaseSensitive   = false;
+    FunctionName    = "";
+    KeepUnmatched   = false;
+    PartialMatching = true;
     StructExpand    = true;
   endproperties
 
@@ -175,19 +184,19 @@ classdef inputParser < handle
     ## structs with the fields "name", "def" (default), and "val" (validator).
     Required = cell ();
     Optional = cell ();
-    ## Parameter and Switch are unordered so we have a struct whose fieldnames
-    ## are the argname, and values are a struct with fields "def" and "val"
-    Parameter = struct ();
-    Switch    = struct ();
+    ## Parameter and Switch are unordered so we use a struct array with
+    ## fields "name", "def" (default", and "val" (validator).
+    Parameter = struct ([]);  # create 0x0 struct array, not scalar struct
+    Switch    = struct ([]);
 
-    ## List of Parameter and Switch names to ease searches
+    ## List of Parameter and Switch names to simplify searches
     ParameterNames = cell ();
     SwitchNames    = cell ();
 
-    ## When checking for fieldnames in a Case Insensitive way, this variable
-    ## holds the correct identifier for the last searched named using the
-    ## is_argname method.
+    ## Simplify searches by cacheing the last name and last index of a
+    ## match from is_argname() into the Parameter or Switch struct arrays.
     last_name = "";
+    last_idx = 1;
   endproperties
 
   properties (Access = protected, Constant = true)
@@ -197,12 +206,6 @@ classdef inputParser < handle
 
   methods
 
-    function set.PartialMatching (this, val)
-      if (val)
-        error ("inputParser: PartialMatching is not yet implemented");
-      endif
-    endfunction
-
     function addRequired (this, name, val = inputParser.def_val)
 
       ## -*- texinfo -*-
@@ -210,27 +213,27 @@ classdef inputParser < handle
       ## @deftypefnx {} {} addRequired (@var{argname}, @var{validator})
       ## Add new mandatory argument to the object @var{parser} of inputParser
       ## class.  This method belongs to the inputParser class and implements
-      ## an ordered arguments type of API.
+      ## an ordered-argument type of API.
       ##
       ## @var{argname} must be a string with the name of the new argument.  The
-      ## order in which new arguments are added with @code{addrequired},
+      ## order in which new arguments are added with @code{addRequired}
       ## represents the expected order of arguments.
       ##
-      ## @var{validator} is an optional function handle to validate the given
-      ## values for the argument with name @var{argname}.  Alternatively, a
-      ## function name can be used.
+      ## The optional argument @var{validator} is a function (handle or name)
+      ## that will return false or throw an error if the input @var{argname}
+      ## is invalid.
       ##
       ## See @code{help inputParser} for examples.
       ##
-      ## @emph{Note}: this can be used together with the other type of
-      ## arguments but it must be the first (see @code{@@inputParser}).
+      ## @emph{Note}: A Required argument can be used together with other
+      ## types of arguments but it must be the first (see @code{@@inputParser}).
       ##
       ## @end deftypefn
 
       if (nargin < 2)
         print_usage ();
-      elseif (numel (this.Optional) || numfields (this.Parameter)
-              || numfields (this.Switch))
+      elseif (numel (this.Optional)
+              || numel (this.Parameter) || numel (this.Switch))
         error (["inputParser.addRequired: can't have a Required argument " ...
                 "after Optional, Parameter, or Switch"]);
       endif
@@ -245,33 +248,36 @@ classdef inputParser < handle
       ## @deftypefn  {} {} addOptional (@var{argname}, @var{default})
       ## @deftypefnx {} {} addOptional (@var{argname}, @var{default}, @var{validator})
       ## Add new optional argument to the object @var{parser} of the class
-      ## inputParser to implement an ordered arguments type of API
+      ## inputParser to implement an ordered-argument type of API
       ##
       ## @var{argname} must be a string with the name of the new argument.  The
-      ## order in which new arguments are added with @code{addOptional},
+      ## order in which new arguments are added with @code{addOptional}
       ## represents the expected order of arguments.
       ##
       ## @var{default} will be the value used when the argument is not
       ## specified.
       ##
-      ## @var{validator} is an optional anonymous function to validate the
-      ## given values for the argument with name @var{argname}.  Alternatively,
-      ## a function name can be used.
+      ## The optional argument @var{validator} is a function (handle or name)
+      ## that will return false or throw an error if the input @var{argname}
+      ## is invalid.
       ##
       ## See @code{help inputParser} for examples.
       ##
-      ## @emph{Note}: if a string argument does not validate, it will be
-      ## considered a ParamValue key.  If an optional argument is not given a
-      ## validator, anything will be valid, and so any string will be
-      ## considered will be the value of the optional argument (in @sc{matlab},
-      ## if no validator is given and argument is a string it will also be
-      ## considered a ParamValue key).
+      ## @emph{Note1}: If an optional argument is not given a
+      ## validator then anything will be valid, and therefore a string in the
+      ## correct position (after Required arguments) will be assigned to the
+      ## value of the Optional argument @emph{even} if the string is the name
+      ## of a Parameter key.  @sc{matlab} adds a default validator
+      ## @code{@@(x) ~ischar (x)} if none is specified which emits an error
+      ## in this instance.
       ##
+      ## @emph{Note2}: if a string argument fails validation, it will be
+      ## considered as a possible Parameter.
       ## @end deftypefn
 
       if (nargin < 3)
         print_usage ();
-      elseif (numfields (this.Parameter) || numfields (this.Switch))
+      elseif (numel (this.Parameter) || numel (this.Switch))
         error (["inputParser.Optional: can't have Optional arguments " ...
                 "after Parameter or Switch"]);
       endif
@@ -288,11 +294,14 @@ classdef inputParser < handle
       ## -*- texinfo -*-
       ## @deftypefn  {} {} addParamValue (@var{argname}, @var{default})
       ## @deftypefnx {} {} addParamValue (@var{argname}, @var{default}, @var{validator})
+      ## This function is deprecated.  Use @code{addParameter} in all new code.
+      ##
       ## Add new parameter to the object @var{parser} of the class inputParser
       ## to implement a name/value pair type of API.
       ##
       ## This is an alias for @code{addParameter} method without the
-      ## @qcode{"PartialMatchPriority"} option.  See it for the help text.
+      ## @qcode{"PartialMatchPriority"} option.  See @code{addParameter} for
+      ## the help text.
       ##
       ## @end deftypefn
 
@@ -308,17 +317,16 @@ classdef inputParser < handle
       ## -*- texinfo -*-
       ## @deftypefn  {} {} addParameter (@var{argname}, @var{default})
       ## @deftypefnx {} {} addParameter (@var{argname}, @var{default}, @var{validator})
-      ## Add new parameter to the object @var{parser} of the class inputParser
-      ## to implement a name/value pair type of API.
+      ## Add new parameter argument to the object @var{parser} of the class
+      ## inputParser to implement a name/value pair type of API.
       ##
       ## @var{argname} must be a string with the name of the new parameter.
       ##
       ## @var{default} will be the value used when the parameter is not
       ## specified.
       ##
-      ## @var{validator} is an optional function handle to validate the given
-      ## values for the parameter with name @var{argname}.  Alternatively, a
-      ## function name can be used.
+      ## The optional argument @var{validator} is a function handle that will
+      ## return false or throw an error if the input @var{argname} is invalid.
       ##
       ## See @code{help inputParser} for examples.
       ##
@@ -328,17 +336,23 @@ classdef inputParser < handle
         print_usage ();
       endif
 
+      this.validate_name ("Parameter", name);
+
       n_opt = numel (varargin);
 
       if (n_opt == 0 || n_opt == 2)
         val = inputParser.def_val;
-      else # n_opt is 1 or 3
+      else  # n_opt is 1 or 3
         val = varargin{1};
+        if (! is_function_handle (val))
+          error ("inputParser.addParameter: VALIDATOR must be a function handle");
+        endif
       endif
 
+      ## FIXME: PartialMatchPriority is parsed, but not implemented
       if (n_opt == 0 || n_opt == 1)
         match_priority = 1;
-      else # n_opt is 2 or 3
+      else  # n_opt is 2 or 3
         if (! strcmpi (varargin{end-1}, "PartialMatchPriority"))
           error ("inputParser.addParameter: unrecognized option");
         endif
@@ -348,9 +362,12 @@ classdef inputParser < handle
                             "PartialMatchPriority");
       endif
 
-      this.validate_name ("Parameter", name);
-      this.Parameter.(name).def = def;
-      this.Parameter.(name).val = val;
+      if (iscell (def))
+        ## Accept cell default values (bug #64305).
+        this.Parameter(end+1) = struct ("name", name, "def", {def}, "val", val);
+      else
+        this.Parameter(end+1) = struct ("name", name, "def", def, "val", val);
+      endif
 
     endfunction
 
@@ -358,20 +375,23 @@ classdef inputParser < handle
 
       ## -*- texinfo -*-
       ## @deftypefn {} {} addSwitch (@var{argname})
-      ## Add new switch type of argument to the object @var{parser} of
-      ## inputParser class.
-      ##
-      ## This method belongs to the inputParser class and implements a switch
-      ## arguments type of API.
+      ## Add new switch argument to the object @var{parser} of the class
+      ## inputParser to implement a name/boolean type of API.
       ##
       ## @var{argname} must be a string with the name of the new argument.
-      ## Arguments of this type can be specified at the end, after
-      ## @code{Required} and @code{Optional}, and mixed between the
-      ## @code{Parameter}.  They default to false.  If one of the arguments
-      ## supplied is a string like @var{argname}, then after parsing the value
-      ## of @var{parse}.Results.@var{argname} will be true.
+      ##
+      ## Arguments of this type must be specified after @code{Required} and
+      ## @code{Optional} arguments, but can be mixed with any @code{Parameter}
+      ## definitions.  The default for switch arguments is false.  During
+      ## parsing, if one of the arguments supplied is a string such as
+      ## @var{argname} that matches a defined switch such as
+      ## @w{@code{addSwitch (@var{argname})}}, then after parsing the value
+      ## of @code{parse.Results.@var{argname}} will be true.
       ##
       ## See @code{help inputParser} for examples.
+      ##
+      ## Compatibility Note: @code{addSwitch} is an Octave extension not
+      ## present in @sc{matlab}.
       ##
       ## @end deftypefn
 
@@ -379,7 +399,7 @@ classdef inputParser < handle
         print_usage ();
       endif
       this.validate_name ("Switch", name);
-      this.Switch.(name).def = false;
+      this.Switch(end+1) = struct ("name", name, "def", false);
 
     endfunction
 
@@ -387,8 +407,8 @@ classdef inputParser < handle
 
       ## -*- texinfo -*-
       ## @deftypefn {} {} parse (@var{varargin})
-      ## Parses and validates list of arguments according to object
-      ## @var{parser} of the class inputParser.
+      ## Parse and validate list of arguments according to object @var{parser}
+      ## of the class inputParser.
       ##
       ## After parsing, the results can be accessed with the @code{Results}
       ## accessor.  See @code{help inputParser} for a more complete
@@ -407,9 +427,14 @@ classdef inputParser < handle
         endif
       endif
       pnargin = numel (varargin);
-
-      this.ParameterNames = fieldnames (this.Parameter);
-      this.SwitchNames    = fieldnames (this.Switch);
+      this.ParameterNames = {};
+      if (numel (this.Parameter))
+        this.ParameterNames = {this.Parameter.name};
+      endif
+      this.SwitchNames = {};
+      if (numel (this.Switch))
+        this.SwitchNames = {this.Switch.name};
+      endif
 
       ## Evaluate the Required arguments first
       nReq = numel (this.Required);
@@ -428,34 +453,30 @@ classdef inputParser < handle
         in  = varargin{++vidx};
         if ((this.is_argname ("Parameter", in) && vidx < pnargin)
             || this.is_argname ("Switch", in))
-          ## This looks like an optional parameter/value pair or a
-          ## switch, not an positional option.  This does mean that
-          ## positional options cannot be strings named like parameter
-          ## keys.  See bug #50752.
+          ## The string value looks like an optional parameter/value pair or a
+          ## switch.  The Optional positional argument which could apply here
+          ## is specifically not used (this is Matlab compatible).
+          ## See bug #50752.
           idx -= 1;
           vidx -= 1;
           break;
         endif
-        try
-          valid_option = opt.val (in);
-        catch
-          valid_option = false;
-        end_try_catch
+        valid_option = this.validate_arg ("", opt.val, in);
         if (! valid_option)
-          ## If it does not match there's two options:
-          ##    1) input is actually wrong and we should error;
-          ##    2) it's a Parameter or Switch name and we should use
+          ## If it does not match there are two options:
+          ##   1a) it's a Parameter or Switch name and we should use
           ##       the default for the rest;
-          ##    3) it's a struct with the Parameter pairs.
-          if (ischar (in) || (this.StructExpand && isstruct (in)
-                              && isscalar (in)))
+          ##   1b) it's a struct with the Parameter pairs.
+          ##   2) input is actually wrong and we should error;
+          if (ischar (in)
+              || (this.StructExpand && isstruct (in) && isscalar (in)))
             idx -= 1;
             vidx -= 1;
             break;
           else
-            this.error (sprintf (["failed validation of %s\n", ...
+            this.error (sprintf (["failed validation of '%s'\n", ...
                                   "Validation function: %s"],
-                                 toupper (opt.name), disp (opt.val)));
+                                 opt.name, disp (opt.val)));
           endif
         endif
         this.Results.(opt.name) = in;
@@ -477,7 +498,7 @@ classdef inputParser < handle
           if (isempty (expanded_options))
             continue;  # empty, continue to next argument
           endif
-          n_new_args = numel (expanded_options) -1;
+          n_new_args = numel (expanded_options) - 1;
           pnargin += n_new_args;
           varargin(vidx+n_new_args+1:pnargin) = varargin(vidx+1:end);
           varargin(vidx:vidx+n_new_args) = expanded_options;
@@ -485,16 +506,15 @@ classdef inputParser < handle
         endif
 
         if (! ischar (name))
-          this.error ("non-string for Parameter name or Switch");
+          this.error ("Parameter or Switch name must be a string");
         endif
 
         if (this.is_argname ("Parameter", name))
-          if (vidx++ > pnargin)
-            this.error (sprintf ("no matching value for option '%s'",
-                                 toupper (name)));
+          if (++vidx > pnargin)
+            this.error (sprintf ("no value for parameter '%s'", name));
           endif
           this.validate_arg (this.last_name,
-                             this.Parameter.(this.last_name).val,
+                             this.Parameter(this.last_idx).val,
                              varargin{vidx});
         elseif (this.is_argname ("Switch", name))
           this.Results.(this.last_name) = true;
@@ -502,14 +522,16 @@ classdef inputParser < handle
           if (vidx++ < pnargin && this.KeepUnmatched)
             this.Unmatched.(name) = varargin{vidx};
           else
-            this.error (sprintf ("argument '%s' is not a valid parameter",
-                                 toupper (name)));
+            this.error (sprintf ("argument '%s' is not a declared parameter or switch", name));
           endif
         endif
       endwhile
       ## Add them to the UsingDefaults list
       this.add_missing ("Parameter");
       this.add_missing ("Switch");
+
+      ## Sort fields for Matlab compatibility (bug #64003)
+      this.Results = orderfields (this.Results);
 
     endfunction
 
@@ -520,10 +542,12 @@ classdef inputParser < handle
       endif
       printf ("inputParser object with properties:\n\n");
       b2s = @(x) ifelse (any (x), "true", "false");
-      printf (["   CaseSensitive   : %s\n   FunctionName    : %s\n" ...
-               "   KeepUnmatched   : %s\n   PartialMatching : %s\n" ...
+      printf (["   FunctionName    : \"%s\"\n" ...
+               "   CaseSensitive   : %s\n" ...
+               "   KeepUnmatched   : %s\n" ...
+               "   PartialMatching : %s\n" ...
                "   StructExpand    : %s\n\n"],
-               b2s (this.CaseSensitive), b2s (this.FunctionName),
+               this.FunctionName, b2s (this.CaseSensitive),
                b2s (this.KeepUnmatched), b2s (this.PartialMatching),
                b2s (this.StructExpand));
       printf ("Defined parameters:\n\n   {%s}\n",
@@ -540,42 +564,41 @@ classdef inputParser < handle
       if (! isvarname (name))
         error ("inputParser.add%s: NAME is an invalid identifier", method);
       elseif (any (strcmpi (this.Parameters, name)))
-        ## Even if CaseSensitive is "on", we still shouldn't allow
+        ## Even if CaseSensitive is true, we still shouldn't allow
         ## two args with the same name.
-        error ("inputParser.add%s: argname '%s' has already been specified",
+        error ("inputParser.add%s: argname '%s' has already been declared",
                type, name);
       endif
       this.Parameters{end+1} = name;
+      ## Sort Parameters for Matlab compatibility (bug #64003)
+      this.Parameters = sort (this.Parameters);
 
     endfunction
 
-    function validate_arg (this, name, val, in)
+    function r = validate_arg (this, name, val, in)
 
-      ## Checking "nargout (val)" doesn't work for builtin functions.
-      ## So, we need to use this nested try-catch construct.
-      err = sprintf ('Checked with "%s"', func2str (val));
+      ## Validation function can either produce a true/false result or have
+      ## no outputs but throw an error when failing.  Tricky code here
+      ## relies on side effect, but calls validation function only once
+      ## which is a performance win and may also be necessary if validation
+      ## function maintains state.  See bug #49793.
+      ans = true;
       try
-        ok = val (in);
-      catch exception
-        if (strcmp (exception.identifier, "Octave:invalid-fun-call"))
-          ## check if function also fails when called without output argument
-          try
-            val (in);
-            ok = true;
-          catch exception
-            ok = false;
-            err = exception.message;
-          end_try_catch
-        else
-          ok = false;
-          err = exception.message;
-        endif
+        val (in);  # call function with no arguments in case nargout == 0
+        ok = ans;  # use side effect of assignment to 'ans' when nargout == 1
+      catch
+        ok = false;
       end_try_catch
-      if (! ok)
-        this.error (sprintf ("failed validation of %s. %s",
-                             toupper (name), err));
+
+      if (nargout > 0)
+        r = ok;
+      else
+        if (! ok)
+          err = sprintf ('Checked with "%s"', func2str (val));
+          this.error (sprintf ("failed validation of '%s'.  %s", name, err));
+        endif
+        this.Results.(name) = in;
       endif
-      this.Results.(name) = in;
 
     endfunction
 
@@ -583,31 +606,80 @@ classdef inputParser < handle
 
       r = ischar (name) && isrow (name);
       if (r)
-        if (this.CaseSensitive)
-          r = isfield (this.(type), name);
-          if (r)
-            this.last_name = name;
+        fnames = this.([type "Names"]);
+        if (this.PartialMatching)
+          if (this.CaseSensitive)
+            idx = strncmp (name, fnames, numel (name));
+            r = sum (idx);
+            if (r > 1)
+              ## Check for exact match and prefer it over a partial match
+              idx2 = strcmp (name, {fnames{idx}});
+              if (any (idx2))
+                idx = (find (idx))(idx2);
+                r = 1;
+              else
+                matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
+                matches(end) = '.';
+                this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+              endif
+            endif
+            r = logical (r);
+          else  # not CaseSensitive
+            idx = strncmpi (name, fnames, numel (name));
+            r = sum (idx);
+            if (r > 1)
+              idx2 = strcmpi (name, {fnames{idx}});
+              if (any (idx2))
+                idx = (find (idx))(idx2);
+                r = 1;
+              else
+                matches = sprintf ("'%s', ", fnames{idx})(1:end-1);
+                matches(end) = '.';
+                this.error (sprintf ("argument '%s' matches more than one %s: %s", name, type, matches));
+              endif
+            endif
+            r = logical (r);
           endif
-        else
-          fnames = this.([type "Names"]);
-          l = strcmpi (name, fnames);
-          r = any (l(:));
-          if (r)
-            this.last_name = fnames{l};
+        else  # no PartialMatching
+          if (this.CaseSensitive)
+            idx = strcmp (name, fnames);
+            r = any (idx(:));
+          else
+            idx = strcmpi (name, fnames);
+            r = any (idx(:));
           endif
         endif
+      endif
+
+      if (r)
+        ## Cache values to simplify and speed up later code.
+        this.last_name = fnames{idx};
+        this.last_idx = find (idx);
       endif
 
     endfunction
 
     function add_missing (this, type)
 
-      unmatched = setdiff (fieldnames (this.(type)), fieldnames (this.Results));
-      for namec = unmatched(:)'
-        name = namec{1};
-        this.UsingDefaults{end+1} = name;
-        this.Results.(name) = this.(type).(name).def;
-      endfor
+      if (isempty (this.(type)))
+        return;
+      endif
+
+      ## Implement setdiff() without calling out to function for performance.
+      typenames = {this.(type).name}(:);
+      Resultnames = fieldnames (this.Results);
+      [sorted, sidx] = sort ([typenames; Resultnames]);
+      dups = strcmp (sorted(1:end-1), sorted(2:end));
+      idx = true (size (typenames));
+      idx(sidx(dups)) = false;
+      if (any (idx))
+        unmatched_names = typenames(idx);
+        unmatched_def = {this.(type)(idx).def}(:);
+        this.Results = ...
+          cell2struct (vertcat (struct2cell (this.Results), unmatched_def),
+                       [Resultnames; unmatched_names]);
+        this.UsingDefaults = [this.UsingDefaults, unmatched_names.'];
+      endif
 
     endfunction
 
@@ -629,6 +701,7 @@ endclassdef
 %!function p = create_p ()
 %!  p = inputParser ();
 %!  p.CaseSensitive = true;
+%!  p.PartialMatching = false;
 %!  p.addRequired ("req1", @(x) ischar (x));
 %!  p.addOptional ("op1", "val", @(x) any (strcmp (x, {"val", "foo"})));
 %!  p.addOptional ("op2", 78, @(x) x > 50);
@@ -662,14 +735,32 @@ endclassdef
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "val", 78,    false,     "circle"});
 
-## check case insensitivity
+## check CaseSensitive (default false state)
 %!test
 %! p = create_p ();
-%!  p.CaseSensitive = false;
+%! p.CaseSensitive = false;
 %! p.parse ("file", "foo", 80, "LiNE", "circle", "vERbOSe");
 %! r = p.Results;
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
+
+## check PartialMatching (default true state)
+%!test
+%! p = create_p ();
+%! p.PartialMatching = true;
+%! p.parse ("file", "foo", 80, "l", "circle", "verb");
+%! r = p.Results;
+%! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
+%!         {"file", "foo", 80,    true,      "circle"});
+
+## Check PartialMatching selects an exact match if it exists
+%!test
+%! p = inputParser ();
+%! p.addParameter ('Mass', []);
+%! p.addParameter ('MassSingular', []);
+%! p.parse ("Mass", pi);
+%! r = p.Results;
+%! assert ({r.Mass, r.MassSingular}, {pi, []});
 
 ## check KeepUnmatched
 %!test
@@ -683,20 +774,37 @@ endclassdef
 %! p = create_p ();
 %! p.parse ();
 
-## check error when given required does not validate
+## check error when required arg does not validate
 %!error <failed validation of >
 %! p = create_p ();
 %! p.parse (50);
 
-## check error when given optional does not validate
-%!error <is not a valid parameter>
+## check error when optional arg does not validate
+%!error <is not a declared parameter or switch>
 %! p = create_p ();
 %! p.parse ("file", "no-val");
 
-## check error when given Parameter does not validate
+## check error when Parameter arg does not validate
 %!error <failed validation of >
 %! p = create_p ();
 %! p.parse ("file", "foo", 51, "line", "round");
+
+## check PartialMatching errors
+%!error <'arg' matches more than one Parameter: 'arg123', 'arg456'>
+%! p = inputParser ();
+%! p.addParameter ('arg123', 123);
+%! p.addParameter ('arg456', 456);
+%! p.addSwitch ('arg789');
+%! p.addSwitch ('arg790');
+%! p.parse ('arg', 'bad');
+
+%!error <'arg7' matches more than one Switch: 'arg789', 'arg790'>
+%! p = inputParser ();
+%! p.addParameter ('arg123', 123);
+%! p.addParameter ('arg456', 456);
+%! p.addSwitch ('arg789');
+%! p.addSwitch ('arg790');
+%! p.parse ('arg7', 'bad');
 
 ## check alternative method (obj, ...) API
 %!function p2 = create_p2 ();
@@ -725,7 +833,7 @@ endclassdef
 %! assert ({r.req1, r.op1, r.op2, r.verbose, r.line},
 %!         {"file", "foo", 80,    true,      "circle"});
 
-## We must not perform validation of default values
+## Octave must not perform validation of default values
 %!test <*45837>
 %! p = inputParser ();
 %! p.addParameter ("Dir", [], @ischar);
@@ -759,7 +867,7 @@ endclassdef
 %!  addParameter (p3, "style", "tt", @(x) any (strcmp (x, {"tt", "f", "i"})));
 %!endfunction
 
-## Test StructExpand
+## check StructExpand
 %!test
 %! p3 = create_p3 ();
 %! p3.parse (struct ("line", "circle", "color", "green"));
@@ -767,7 +875,7 @@ endclassdef
 %!                             "line", "circle", "color", "green",
 %!                             "style", "tt"))
 
-%!test
+%!test  # check last param/value pair overrides previous
 %! p3 = create_p3 ();
 %! p3.parse (struct ("line", "circle", "color", "green"), "line", "tree");
 %! assert (p3.Results.line, "tree");
@@ -790,27 +898,26 @@ endclassdef
 %! assert (p3.Results.color, "green");
 %! assert (p3.Results.verbose, false);
 
-
 ## Some simple tests for addParamValue since all the other ones use add
 ## addParameter but they use the same codepath.
 %!test
 %! p = inputParser ();
-%! addParameter (p, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
-%! addParameter (p, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
+%! addParamValue (p, "line", "tree", @(x) any (strcmp (x, {"tree", "circle"})));
+%! addParamValue (p, "color", "red", @(x) any (strcmp (x, {"red", "green"})));
 %! p.parse ("line", "circle");
 %! assert ({p.Results.line, p.Results.color}, {"circle", "red"});
 
 %!test
 %! p = inputParser ();
-%! p.addParameter ("foo", "bar", @ischar);
+%! p.addParamValue ("foo", "bar", @ischar);
 %! p.parse ();
 %! assert (p.Results, struct ("foo", "bar"));
 %! p.parse ("foo", "qux");
 %! assert (p.Results, struct ("foo", "qux"));
 
-## This behaviour means that a positional option can never be a string
-## that is the name of a parameter key.  This is required for Matlab
-## compatibility.
+## An Optional argument which has a string value that is the name of a
+## Parameter will be parsed as a Parameter/Value pair.
+## This is required for Matlab compatibility.
 %!test <*50752>
 %! p = inputParser ();
 %! p.addOptional ("op1", "val");
@@ -843,13 +950,13 @@ endclassdef
 %! p.addOptional ("op1", "val1", @ischar);
 %! p.addOptional ("op2", "val2", @isnumeric);
 %! p.addParameter ("line", "circle", @ischar);
-%! fail ('p.parse ("line", 89)', "failed validation of LINE")
+%! fail ('p.parse ("line", 89)', "failed validation of 'line'")
 %!
 %! p = inputParser ();
 %! p.addOptional ("op1", "val1");
 %! p.addParamValue ("line", "circle", @ischar);
 %! fail ('p.parse ("line", "line", 89)',
-%!       "non-string for Parameter name or Switch")
+%!       "Parameter or Switch name must be a string")
 
 %!test <*50752>
 %! ## This fails in Matlab but works in Octave.  It is a bug there
@@ -887,7 +994,7 @@ endclassdef
 %! assert (p.Unmatched, struct ());
 
 ## Test for patch #9241
-%!error <failed validation of A.*ischar>
+%!error <failed validation of 'a'.*ischar>
 %! p = inputParser ();
 %! p.addParameter ("a", [], @ischar);
 %! p.parse ("a", 1);
@@ -920,3 +1027,39 @@ endclassdef
 %! p.parse ("x");
 %! r = p.Results;
 %! assert (r.opt, "x");
+
+%!test <*64003>
+%! p = inputParser ();
+%! p.addOptional ('c',3);
+%! p.addOptional ('z',4);
+%! p.addParameter ('b',2);
+%! p.addParameter ('a',1);
+%! p.parse (30, 'b', 20, 'a',10);
+%! assert (fieldnames (p.Results), {'a'; 'b'; 'c'; 'z'});
+
+%!test <*64305>
+%! p = inputParser ();
+%! p.addParameter ('a',{});
+%! p.parse ('a', 20);
+%! assert (fieldnames (p.Results), {'a'});
+%! assert (p.Results.a, 20);
+
+%!test <*49793>
+%! p = inputParser ();
+%! p.addRequired ("name", @(x) validateattributes (x, {'char'}, {'nonempty'}));
+%! p.addOptional ("year", 0001, @(x) validateattributes (x, {'numeric'}, ...
+%!                                     {'nonempty','integer','positive'}));
+%! p.addParameter ("color", '-', @(x) validateattributes (x, {'char'}, ...
+%!                                                           {'nonempty'}));
+%! p.parse ('Jim', 1980, 'color', 'black');
+%! assert (p.Results.name, 'Jim');
+%! assert (p.Results.year, 1980);
+%! assert (p.Results.color, 'black');
+
+%!test <*64318>
+%! p = inputParser;
+%! p.addOptional ('p_opt', []);
+%! p.addParameter ('p1', 'p1_default');
+%! p.addParameter ('p2', 'p2_default');
+%! p.parse ();
+%! assert (size (p.UsingDefaults), [1, 3]);

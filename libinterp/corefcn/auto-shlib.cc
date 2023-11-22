@@ -34,7 +34,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-auto_shlib::auto_shlib (void)
+auto_shlib::auto_shlib ()
   : dynamic_library (get_current_shlib ())
 { }
 

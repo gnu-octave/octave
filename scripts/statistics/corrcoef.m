@@ -62,7 +62,7 @@
 ## Outputs @var{lci} and @var{hci} are matrices containing, respectively, the
 ## lower and higher bounds of the 95% confidence interval of each correlation
 ## coefficient.
-## @seealso{corr, cov}
+## @seealso{corr, cov, std}
 ## @end deftypefn
 
 ## FIXME: It would be good to add a definition of the calculation method
@@ -70,7 +70,7 @@
 
 function [r, p, lci, hci] = corrcoef (x, varargin)
 
-  if (nargin == 0)
+  if (nargin < 1 || nargin > 6)
     print_usage ();
   endif
 
@@ -103,7 +103,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
       endif
       value = varargin{i+1};
 
-      switch (tolower (parameter))
+      switch (lower (parameter))
         case "alpha"
           if (isnumeric (value) && isscalar (value)
               && value >= 0 && value <= 1)
@@ -116,7 +116,7 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
           if (! ischar (value))
             error ('corrcoef: "rows" value must be a string');
           endif
-          value = tolower (value);
+          value = lower (value);
           switch (value)
             case {"all", "complete", "pairwise"}
               rows = value;
@@ -170,7 +170,19 @@ function [r, p, lci, hci] = corrcoef (x, varargin)
         xi(idx) = xj(idx) = [];
         mpw(i,j) = mpw(j,i) = m - nnz (idx);
       endif
-      r(i,j) = r(j,i) = corr (xi, xj);
+      ## Adjust for Octave 9.1.0 compatability behavior change in two-input
+      ## cov, which now handles cov(x,y) as cov(x(:),y(:)) and returns a 2x2
+      ## covariance of the two univariate distributions x and y. The previous
+      ## scalar covariance expected for r(i,j) is contained in the (1,2)
+      ## and (2,1) elements of the new array.
+
+      ## FIXME: Returning a larger than needed arary and discarding 3/4 of the
+      ##        information is nonideal, especially in this low efficiency
+      ##        for loop approach.  Consider implementing a more efficient cov
+      ##        here as a subfunction to corr, or see if vectorizing this
+      ##        entire code allows direct usage of current cov version.
+
+      r(i,j) = r(j,i) = (cov (xi, xj) ./ (std (xi) .* std (xj)))(2);
       if (calc_pval)
         df = m - 2;
         stat = sqrt (df) * r(i,j) / sqrt (1 - r(i,j)^2);
@@ -285,6 +297,7 @@ endfunction
 %! assert (r, [1, NaN; NaN, 1]);
 
 %!error <Invalid call> corrcoef ()
+%!error <Invalid call> corrcoef (1, 2, "alpha", 0.05, "rows", "all" , 1)
 %!error <parameter 1 must be a string> corrcoef (1, 2, 3)
 %!error <parameter "alpha" missing value> corrcoef (1, 2, "alpha")
 %!error <"alpha" must be a scalar> corrcoef (1,2, "alpha", "1")

@@ -37,7 +37,7 @@
 static int Voutput_precision = 5;
 
 int
-output_precision (void)
+output_precision ()
 {
   return Voutput_precision;
 }

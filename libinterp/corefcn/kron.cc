@@ -275,6 +275,7 @@ kron (kron (@var{A1}, @var{A2}), @dots{}, @var{An})
 
 @noindent
 Since the Kronecker product is associative, this is well-defined.
+@seealso{tensorprod}
 @end deftypefn */)
 {
   int nargin = args.length ();

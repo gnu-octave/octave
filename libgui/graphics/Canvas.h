@@ -43,7 +43,6 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class Canvas : public QObject
@@ -52,13 +51,13 @@ class Canvas : public QObject
 
 public:
   enum EventMask
-    {
-      KeyPress   = 0x01,
-      KeyRelease = 0x02
-    };
+  {
+    KeyPress   = 0x01,
+    KeyRelease = 0x02
+  };
 
 public:
-  virtual ~Canvas (void) = default;
+  virtual ~Canvas () = default;
 
   void redraw (bool sync = false);
   void blockRedraw (bool block = true);
@@ -75,14 +74,13 @@ public:
   void setCursor (MouseMode mode, std::string fallback,
                   QImage cdata, Matrix hotspot);
 
-  virtual QWidget * qWidget (void) = 0;
+  virtual QWidget * qWidget () = 0;
 
   static Canvas *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-          const graphics_handle& handle, QWidget *parent,
-          const std::string& name);
+  create (octave::interpreter& interp, const graphics_handle& handle,
+          QWidget *parent, const std::string& name);
 
-  virtual uint8NDArray getPixels (void) { return do_getPixels (m_handle); };
+  virtual uint8NDArray getPixels () { return do_getPixels (m_handle); };
 
 signals:
 
@@ -114,22 +112,18 @@ protected:
                          const graphics_handle& handle) = 0;
 
 protected:
-  Canvas (octave::base_qobject& oct_qobj, octave::interpreter& interp,
-          const graphics_handle& handle)
-    : m_octave_qobj (oct_qobj),
-      m_interpreter (interp),
-      m_handle (handle),
-      m_redrawBlocked (false),
-      m_mouseMode (NoMode),
-      m_clickMode (false),
-      m_eventMask (0),
-      m_rectMode (false)
+
+  Canvas (octave::interpreter& interp, const graphics_handle& handle)
+    : QObject (), m_interpreter (interp), m_handle (handle),
+      m_redrawBlocked (false), m_mouseMode (NoMode), m_clickMode (false),
+      m_eventMask (0), m_rectMode (false)
   { }
 
+public:
   void canvasToggleAxes (const graphics_handle& handle);
   void canvasToggleGrid (const graphics_handle& handle);
   void canvasAutoAxes (const graphics_handle& handle);
-  void canvasPaintEvent (void);
+  void canvasPaintEvent ();
   void canvasMouseDoubleClickEvent (QMouseEvent *event);
   void canvasMouseMoveEvent (QMouseEvent *event);
   void canvasMousePressEvent (QMouseEvent *event);
@@ -149,12 +143,12 @@ protected:
                       std::vector<std::string> omit = std::vector<std::string> ());
 
 protected:
-  octave::base_qobject& m_octave_qobj;
+
   octave::interpreter& m_interpreter;
 
 private:
 
-  QCursor make_cursor (const QString& name, int hot_x  = -1, int hot_y = -1);
+  QCursor make_cursor (const QString& name, int hot_x = -1, int hot_y = -1);
 
   graphics_handle m_handle;
   bool m_redrawBlocked;

@@ -30,15 +30,14 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QMenu>
-#include <Qsci/qsciscintilla.h>
+#include <QPointer>
 #include <QTemporaryFile>
+#include <Qsci/qsciscintilla.h>
 
 #include "gui-settings.h"
 #include "qt-interpreter-events.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
-
-class base_qobject;
 
 class octave_qscintilla : public QsciScintilla
 {
@@ -46,9 +45,9 @@ class octave_qscintilla : public QsciScintilla
 
 public:
 
-  octave_qscintilla (QWidget *p, base_qobject& oct_qobj);
+  octave_qscintilla (QWidget *p);
 
-  ~octave_qscintilla (void) = default;
+  ~octave_qscintilla () = default;
 
   enum
     {
@@ -61,12 +60,12 @@ public:
   virtual void setCursorPosition (int line, int col);
 
   void context_help_doc (bool);
-  void context_edit (void);
-  void context_run (void);
+  void context_edit ();
+  void context_run ();
   void get_global_textcursor_pos (QPoint *global_pos, QPoint *local_pos);
-  bool get_actual_word (void);
-  void clear_selection_markers (void);
-  QString eol_string (void);
+  bool get_actual_word ();
+  void clear_selection_markers ();
+  QString eol_string ();
   void get_current_position (int *pos, int *line, int *col);
   QStringList comment_string (bool comment = true);
   int get_style (int pos = -1);
@@ -94,43 +93,44 @@ signals:
   void qsci_has_focus_signal (bool);
   void status_update (bool, bool);
   void show_doc_signal (const QString&);
+  void show_symbol_tooltip_signal (const QPoint&, const QString&);
   void context_menu_break_condition_signal (int);
   void context_menu_break_once (int);
-  void ctx_menu_run_finished_signal (bool, int, QTemporaryFile *,
-                                     QTemporaryFile *, bool, bool);
-  void focus_console_after_command_signal (void);
+  void ctx_menu_run_finished_signal (bool, int, QPointer<QTemporaryFile>,
+                                     QPointer<QTemporaryFile>, bool, bool);
+  void focus_console_after_command_signal ();
 
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
 public slots:
 
-  void handle_enter_debug_mode (void);
-  void handle_exit_debug_mode (void);
+  void handle_enter_debug_mode ();
+  void handle_exit_debug_mode ();
 
 private slots:
 
-  void ctx_menu_run_finished (bool, int, QTemporaryFile *, QTemporaryFile *,
-                              bool, bool);
+  void ctx_menu_run_finished (bool, int, QPointer<QTemporaryFile>,
+                              QPointer<QTemporaryFile>, bool, bool);
 
   void contextmenu_help (bool);
   void contextmenu_doc (bool);
   void contextmenu_help_doc (bool);
   void contextmenu_edit (bool);
   void contextmenu_run (bool);
-  void contextmenu_run_temp_error (void);
+  void contextmenu_run_temp_error ();
 
   void contextmenu_break_condition (bool);
   void contextmenu_break_once (const QPoint&);
 
-  void text_changed (void);
+  void text_changed ();
   void cursor_position_changed (int, int);
 
 protected:
 
   void focusInEvent (QFocusEvent *focusEvent);
 
-  void show_replace_action_tooltip (void);
+  void show_replace_action_tooltip ();
 
   bool event (QEvent *e);
 
@@ -143,7 +143,8 @@ private:
   void auto_close (int auto_endif, int l,
                    const QString& line, QString& first_word);
 
-  base_qobject& m_octave_qobj;
+  QPointer<QTemporaryFile> create_tmp_file (const QString& extension,
+                                            const QString& contents);
 
   bool m_debug_mode;
 

@@ -39,17 +39,18 @@
 #include <QLabel>
 #include <QMessageBox>
 #include <QPushButton>
+#include <QRegularExpression>
 #include <QVBoxLayout>
 
 #include "dialog.h"
-#include "octave-qobject.h"
 #include "gui-preferences-global.h"
+#include "gui-settings.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-QUIWidgetCreator::QUIWidgetCreator (base_qobject& oct_qobj)
-: QObject (), m_octave_qobj (oct_qobj), m_dialog_result (-1),
-  m_dialog_button (), m_string_list (), m_list_index (), m_path_name ()
+QUIWidgetCreator::QUIWidgetCreator ()
+  : QObject (), m_dialog_result (-1), m_dialog_button (),
+    m_string_list (), m_list_index (), m_path_name ()
 {
   connect (this, &QUIWidgetCreator::create_dialog,
            this, &QUIWidgetCreator::handle_create_dialog);
@@ -67,7 +68,7 @@ QUIWidgetCreator::QUIWidgetCreator (base_qobject& oct_qobj)
 QString QUIWidgetCreator::rm_amp (const QString& text)
 {
   QString text_wo_amp = text;
-  text_wo_amp.replace (QRegExp ("&(\\w)"), "\\1");
+  text_wo_amp.replace (QRegularExpression {"&(\\w)"}, "\\1");
   return text_wo_amp;
 }
 
@@ -180,8 +181,7 @@ void QUIWidgetCreator::handle_create_dialog (const QString& message,
                                              const QStringList& role)
 {
   MessageDialog *message_dialog
-    = new MessageDialog (m_octave_qobj, message, title, icon,
-                         button, defbutton, role);
+    = new MessageDialog (message, title, icon, button, defbutton, role);
 
   connect (message_dialog, &MessageDialog::buttonClicked,
            this, &QUIWidgetCreator::dialog_button_clicked);
@@ -232,7 +232,7 @@ void QUIWidgetCreator::handle_create_listview (const QStringList& list,
                                                const QString& cancel_string)
 {
   ListDialog *list_dialog
-    = new ListDialog (m_octave_qobj, list, mode, wd, ht, initial,
+    = new ListDialog (list, mode, wd, ht, initial,
                       name, prompt, ok_string, cancel_string);
 
   connect (list_dialog, &ListDialog::finish_selection,
@@ -264,7 +264,7 @@ void QUIWidgetCreator::handle_create_inputlayout (const QStringList& prompt,
                                                   const QStringList& defaults)
 {
   InputDialog *input_dialog
-    = new InputDialog (m_octave_qobj, prompt, title, nr, nc, defaults);
+    = new InputDialog (prompt, title, nr, nc, defaults);
 
   connect (input_dialog, &InputDialog::finish_input,
            this, &QUIWidgetCreator::input_finished);
@@ -292,8 +292,7 @@ void QUIWidgetCreator::handle_create_filedialog (const QStringList& filters,
                                                  const QString& multimode)
 {
   FileDialog *file_dialog
-    = new FileDialog (m_octave_qobj, filters, title, filename,
-                      dirname, multimode);
+    = new FileDialog (filters, title, filename, dirname, multimode);
 
   connect (file_dialog, &FileDialog::finish_input,
            this, &QUIWidgetCreator::filedialog_finished);
@@ -316,7 +315,7 @@ void QUIWidgetCreator::filedialog_finished (const QStringList& files,
   wake_all ();
 }
 
-MessageDialog::MessageDialog (base_qobject&, const QString& message,
+MessageDialog::MessageDialog (const QString& message,
                               const QString& title, const QString& qsicon,
                               const QStringList& qsbutton,
                               const QString& defbutton,
@@ -388,7 +387,7 @@ MessageDialog::MessageDialog (base_qobject&, const QString& message,
     }
 }
 
-ListDialog::ListDialog (base_qobject&, const QStringList& list,
+ListDialog::ListDialog (const QStringList& list,
                         const QString& mode, int wd, int ht,
                         const QList<int>& initial, const QString& title,
                         const QStringList& prompt,
@@ -406,13 +405,12 @@ ListDialog::ListDialog (base_qobject&, const QStringList& list,
   else
     view->setSelectionMode (QAbstractItemView::NoSelection);
 
-  selector = view->selectionModel ();
-  int i = 0;
-  for (auto it = initial.begin (); it != initial.end (); it++)
+  m_selector = view->selectionModel ();
+  for (int i = 0; i < initial.count(); i++)
     {
-      QModelIndex idx = m_model->index (initial.value (i++) - 1, 0,
+      QModelIndex idx = m_model->index (initial.value (i) - 1, 0,
                                         QModelIndex ());
-      selector->select (idx, QItemSelectionModel::Select);
+      m_selector->select (idx, QItemSelectionModel::Select);
     }
 
   bool fixed_layout = false;
@@ -427,26 +425,17 @@ ListDialog::ListDialog (base_qobject&, const QStringList& list,
   QVBoxLayout *listLayout = new QVBoxLayout;
   if (! prompt.isEmpty ())
     {
-      // For now, assume html-like Rich Text.  May be incompatible
-      // with something down the road, but just testing capability.
+      // Note: Assume html-like Rich Text.
+      // Check for future incompatibilities if any.
       QString prompt_string;
-      for (int j = 0; j < prompt.length (); j++)
+      prompt_string.append (prompt.at (0));
+      for (int j = 1; j < prompt.length (); j++)
         {
-          if (j > 0)
-            // FIXME: Why define and then immediately test value?
-#define RICH_TEXT 1
-#if RICH_TEXT
-            prompt_string.append ("<br>");
-#else
-          prompt_string.append ("\n");
-#endif
+          prompt_string.append ("<br>");
           prompt_string.append (prompt.at (j));
         }
       QLabel *plabel = new QLabel (prompt_string);
-#if RICH_TEXT
       plabel->setTextFormat (Qt::RichText);
-#endif
-#undef RICH_TEXT
       listLayout->addWidget (plabel);
     }
   listLayout->addWidget (view);
@@ -486,12 +475,12 @@ ListDialog::ListDialog (base_qobject&, const QStringList& list,
            this, &ListDialog::item_double_clicked);
 }
 
-void ListDialog::buttonOk_clicked (void)
+void ListDialog::buttonOk_clicked ()
 {
   // Store information about what button was pressed so that builtin
   // functions can retrieve.
 
-  QModelIndexList selected_index = selector->selectedIndexes ();
+  QModelIndexList selected_index = m_selector->selectedIndexes ();
   QIntList selected_int;
 
   for (int i = 0; i < selected_index.size (); i++)
@@ -502,7 +491,7 @@ void ListDialog::buttonOk_clicked (void)
   done (QDialog::Accepted);
 }
 
-void ListDialog::buttonCancel_clicked (void)
+void ListDialog::buttonCancel_clicked ()
 {
   // Store information about what button was pressed so that builtin
   // functions can retrieve.
@@ -514,7 +503,7 @@ void ListDialog::buttonCancel_clicked (void)
   done (QDialog::Rejected);
 }
 
-void ListDialog::reject (void)
+void ListDialog::reject ()
 {
   buttonCancel_clicked ();
 }
@@ -524,7 +513,7 @@ void ListDialog::item_double_clicked (const QModelIndex&)
   buttonOk_clicked ();
 }
 
-InputDialog::InputDialog (base_qobject&, const QStringList& prompt,
+InputDialog::InputDialog (const QStringList& prompt,
                           const QString& title, const QFloatList& nr,
                           const QFloatList& nc, const QStringList& defaults)
   : QDialog ()
@@ -557,7 +546,7 @@ InputDialog::InputDialog (base_qobject&, const QStringList& prompt,
               line_edit->setFixedWidth (intval);
             }
         }
-      input_line << line_edit;
+      m_input_line << line_edit;
 #if LINE_EDIT_FOLLOWS_PROMPT
       promptInputLayout->addWidget (label, i + 1, 0);
       promptInputLayout->addWidget (line_edit, i + 1, 1);
@@ -591,19 +580,19 @@ InputDialog::InputDialog (base_qobject&, const QStringList& prompt,
            this, &InputDialog::buttonCancel_clicked);
 }
 
-void InputDialog::buttonOk_clicked (void)
+void InputDialog::buttonOk_clicked ()
 {
   // Store information about what button was pressed so that builtin
   // functions can retrieve.
 
   QStringList string_result;
-  for (int i = 0; i < input_line.size (); i++)
-    string_result << input_line.at (i)->text ();
+  for (int i = 0; i < m_input_line.size (); i++)
+    string_result << m_input_line.at (i)->text ();
   emit finish_input (string_result, 1);
   done (QDialog::Accepted);
 }
 
-void InputDialog::buttonCancel_clicked (void)
+void InputDialog::buttonCancel_clicked ()
 {
   // Store information about what button was pressed so that builtin
   // functions can retrieve.
@@ -613,13 +602,12 @@ void InputDialog::buttonCancel_clicked (void)
   done (QDialog::Rejected);
 }
 
-void InputDialog::reject (void)
+void InputDialog::reject ()
 {
   buttonCancel_clicked ();
 }
 
-FileDialog::FileDialog (base_qobject& oct_qobj,
-                        const QStringList& name_filters,
+FileDialog::FileDialog (const QStringList& name_filters,
                         const QString& title, const QString& filename,
                         const QString& dirname, const QString& multimode)
   : QFileDialog ()
@@ -631,9 +619,10 @@ FileDialog::FileDialog (base_qobject& oct_qobj,
   setDirectory (dirname);
 
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-  resource_manager& rmgr = oct_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
-  if (! settings->value (global_use_native_dialogs).toBool ())
+
+  gui_settings settings;
+
+  if (! settings.bool_value (global_use_native_dialogs))
     setOption(QFileDialog::DontUseNativeDialog);
 
   if (multimode == "on")         // uigetfile multiselect=on
@@ -669,13 +658,13 @@ FileDialog::FileDialog (base_qobject& oct_qobj,
   connect (this, &FileDialog::rejected, this, &FileDialog::rejectSelection);
 }
 
-void FileDialog::rejectSelection (void)
+void FileDialog::rejectSelection ()
 {
   QStringList empty;
   emit finish_input (empty, "", 0);
 }
 
-void FileDialog::acceptSelection (void)
+void FileDialog::acceptSelection ()
 {
   QStringList string_result;
   QString path;

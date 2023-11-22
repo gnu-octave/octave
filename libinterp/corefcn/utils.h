@@ -68,6 +68,8 @@ public:
 
   make_valid_name_options () = default;
 
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (make_valid_name_options)
+
   //! Extract attribute-value-pairs from an octave_value_list of strings.
   //!
   //! If attributes occur multiple times, the rightmost pair is chosen.
@@ -103,6 +105,7 @@ private:
 extern OCTINTERP_API bool
 make_valid_name (std::string& str, const make_valid_name_options& options);
 
+OCTAVE_DEPRECATED (9, "octave::same_file is obsolete, use octave::sys::same_file")
 extern OCTINTERP_API bool
 same_file (const std::string& f, const std::string& g);
 

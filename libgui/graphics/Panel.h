@@ -33,7 +33,6 @@ class QLabel;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class Container;
@@ -41,16 +40,16 @@ class Container;
 class Panel : public Object
 {
 public:
-  Panel (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  Panel (octave::interpreter& interp,
          const graphics_object& go, QFrame *frame);
-  ~Panel (void);
+  ~Panel ();
 
-  Container * innerContainer (void) { return m_container; }
+  Container * innerContainer () { return m_container; }
 
   bool eventFilter (QObject *watched, QEvent *event);
 
   static Panel *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
   void do_connections (const QObject *receiver,
@@ -58,10 +57,10 @@ public:
 
 protected:
   void update (int pId);
-  void redraw (void);
+  void redraw ();
 
 private:
-  void updateLayout (void);
+  void updateLayout ();
 
 private:
   Container *m_container;

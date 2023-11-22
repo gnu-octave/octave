@@ -35,21 +35,12 @@ function __check_rendering_capability__ (who, fig)
   endif
 
   toolkit = get (fig, "__graphics_toolkit__");
-  display = getenv ("DISPLAY");
 
-  if (! strcmp (toolkit, "qt"))
-    error ("%s: rendering with %s toolkit requires visible figure (DISPLAY='%s')",
-           who, toolkit, display);
-  endif
-
-  gl_window = get (fig, "__gl_window__");
-  qt_offscreen = __have_feature__ ("QT_OFFSCREEN");
-
-  if (strcmp (gl_window, "on") || qt_offscreen)
+  if (strcmp (toolkit, "qt"))
     return;
   endif
 
-  error ("%s: offscreen rendering with %s toolkit requires __gl_window__='on' or QT_OFFSCREEN feature (__gl_window__='%s'; QT_OFFSCREEN=%d, DISPLAY='%s')",
-         who, toolkit, gl_window, qt_offscreen, display);
+  error ("%s: rendering with %s toolkit requires visible figure (DISPLAY='%s')",
+         who, toolkit, getenv ("DISPLAY"));
 
 endfunction

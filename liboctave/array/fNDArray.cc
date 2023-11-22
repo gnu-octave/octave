@@ -116,7 +116,7 @@ FloatNDArray::ifourier (int dim) const
 }
 
 FloatComplexNDArray
-FloatNDArray::fourier2d (void) const
+FloatNDArray::fourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -136,7 +136,7 @@ FloatNDArray::fourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatNDArray::ifourier2d (void) const
+FloatNDArray::ifourier2d () const
 {
   dim_vector dv = dims ();
   if (dv.ndims () < 2)
@@ -155,7 +155,7 @@ FloatNDArray::ifourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatNDArray::fourierNd (void) const
+FloatNDArray::fourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -170,7 +170,7 @@ FloatNDArray::fourierNd (void) const
 }
 
 FloatComplexNDArray
-FloatNDArray::ifourierNd (void) const
+FloatNDArray::ifourierNd () const
 {
   dim_vector dv = dims ();
   int rank = dv.ndims ();
@@ -209,7 +209,7 @@ FloatNDArray::ifourier (int dim) const
 }
 
 FloatComplexNDArray
-FloatNDArray::fourier2d (void) const
+FloatNDArray::fourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -218,7 +218,7 @@ FloatNDArray::fourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatNDArray::ifourier2d (void) const
+FloatNDArray::ifourier2d () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -227,7 +227,7 @@ FloatNDArray::ifourier2d (void) const
 }
 
 FloatComplexNDArray
-FloatNDArray::fourierNd (void) const
+FloatNDArray::fourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -236,7 +236,7 @@ FloatNDArray::fourierNd (void) const
 }
 
 FloatComplexNDArray
-FloatNDArray::ifourierNd (void) const
+FloatNDArray::ifourierNd () const
 {
   (*current_liboctave_error_handler)
     ("support for FFTW was unavailable or disabled when liboctave was built");
@@ -249,7 +249,7 @@ FloatNDArray::ifourierNd (void) const
 // unary operations
 
 boolNDArray
-FloatNDArray::operator ! (void) const
+FloatNDArray::operator ! () const
 {
   if (any_element_is_nan ())
     octave::err_nan_to_logical_conversion ();
@@ -272,31 +272,31 @@ FloatNDArray::any_element_is_positive (bool neg_zero) const
 }
 
 bool
-FloatNDArray::any_element_is_nan (void) const
+FloatNDArray::any_element_is_nan () const
 {
   return do_mx_check<float> (*this, mx_inline_any_nan);
 }
 
 bool
-FloatNDArray::any_element_is_inf_or_nan (void) const
+FloatNDArray::any_element_is_inf_or_nan () const
 {
   return ! do_mx_check<float> (*this, mx_inline_all_finite);
 }
 
 bool
-FloatNDArray::any_element_not_one_or_zero (void) const
+FloatNDArray::any_element_not_one_or_zero () const
 {
   return ! test_all (octave::is_one_or_zero);
 }
 
 bool
-FloatNDArray::all_elements_are_zero (void) const
+FloatNDArray::all_elements_are_zero () const
 {
   return test_all (octave::is_zero);
 }
 
 bool
-FloatNDArray::all_elements_are_int_or_inf_or_nan (void) const
+FloatNDArray::all_elements_are_int_or_inf_or_nan () const
 {
   return test_all (octave::is_int_or_inf_or_nan);
 }
@@ -335,13 +335,13 @@ FloatNDArray::all_integers (float& max_val, float& min_val) const
 }
 
 bool
-FloatNDArray::all_integers (void) const
+FloatNDArray::all_integers () const
 {
   return test_all (octave::math::isinteger);
 }
 
 bool
-FloatNDArray::too_large_for_float (void) const
+FloatNDArray::too_large_for_float () const
 {
   return false;
 }
@@ -535,25 +535,25 @@ FloatNDArray::insert (const FloatNDArray& a,
 }
 
 FloatNDArray
-FloatNDArray::abs (void) const
+FloatNDArray::abs () const
 {
   return do_mx_unary_map<float, float, std::abs> (*this);
 }
 
 boolNDArray
-FloatNDArray::isnan (void) const
+FloatNDArray::isnan () const
 {
   return do_mx_unary_map<bool, float, octave::math::isnan> (*this);
 }
 
 boolNDArray
-FloatNDArray::isinf (void) const
+FloatNDArray::isinf () const
 {
   return do_mx_unary_map<bool, float, octave::math::isinf> (*this);
 }
 
 boolNDArray
-FloatNDArray::isfinite (void) const
+FloatNDArray::isfinite () const
 {
   return do_mx_unary_map<bool, float, octave::math::isfinite> (*this);
 }

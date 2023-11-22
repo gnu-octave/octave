@@ -229,6 +229,9 @@ extension_to_format (const std::string& ext)
       table["ogg"] = SF_FORMAT_OGG;
       table["mpc2k"] = SF_FORMAT_MPC2K;
       table["rf64"] = SF_FORMAT_RF64;
+#if defined (HAVE_LIB_SNDFILE_FORMAT_MP3)
+      table["m1a"] = SF_FORMAT_MPEG;
+#endif
 
       initialized = true;
     }
@@ -343,6 +346,14 @@ Comment.
       // problem and produces valid files.
       chunk_size = 0x100000;
     }
+#if defined (HAVE_LIB_SNDFILE_FORMAT_MP3)
+  else if (ext == "mp1")
+    info.format = SF_FORMAT_MPEG|SF_FORMAT_MPEG_LAYER_I;
+  else if (ext == "mp2")
+    info.format = SF_FORMAT_MPEG|SF_FORMAT_MPEG_LAYER_II;
+  else if (ext == "mp3")
+    info.format = SF_FORMAT_MPEG|SF_FORMAT_MPEG_LAYER_III;
+#endif
   else
     info.format = SF_FORMAT_PCM_16;
 

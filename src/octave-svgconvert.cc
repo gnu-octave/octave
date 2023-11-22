@@ -44,7 +44,7 @@
 #include <QImage>
 #include <QPainter>
 #include <QPrinter>
-#include <QRegExp>
+#include <QRegularExpression>
 
 // Include a set of path rendering functions extracted from Qt-5.12 source
 #include "octave-qsvghandler.h"
@@ -53,30 +53,32 @@
 class pdfpainter : public QPainter
 {
 public:
+
+  pdfpainter () = delete;
+
   pdfpainter (QString fname, QRectF sz)
-      :  m_printer ()
+    : m_printer ()
   {
     // Printer settings
     m_printer.setOutputFormat (QPrinter::PdfFormat);
     m_printer.setFontEmbeddingEnabled (true);
     m_printer.setOutputFileName (fname);
     m_printer.setFullPage (true);
-#if defined (HAVE_QPRINTER_SETPAGESIZE)
     m_printer.setPageSize (QPageSize (sz.size (), QPageSize::Point,
                                       QString ("custom"),
                                       QPageSize::ExactMatch));
-#else
-    m_printer.setPaperSize (sz.size (), QPrinter::Point);
-#endif
 
     // Painter settings
     begin (&m_printer);
     setWindow (sz.toRect ());
   }
 
-  ~pdfpainter (void) { end (); }
+  OCTAVE_DISABLE_COPY_MOVE (pdfpainter)
+
+  ~pdfpainter () { end (); }
 
 private:
+
   QPrinter m_printer;
 };
 
@@ -85,23 +87,20 @@ QVector<double> qstr2vectorf (QString str)
 {
   QVector<double> pts;
   QStringList coords = str.split (",");
-  for (QStringList::iterator p = coords.begin (); p != coords.end (); p += 1)
-    {
-      double pt = (*p).toDouble ();
-      pts.append (pt);
-    }
+  for (auto& p : coords)
+    pts.append (p.toDouble ());
+
   return pts;
 }
 
+// FIXME: What's the difference between qstr2vectorf and qstr2vectord?
+// Can one be called from the other to avoid code duplication, or deleted?
 QVector<double> qstr2vectord (QString str)
 {
   QVector<double> pts;
   QStringList coords = str.split (",");
-  for (QStringList::iterator p = coords.begin (); p != coords.end (); p += 1)
-    {
-      double pt = (*p).toDouble ();
-      pts.append (pt);
-    }
+  for (auto& p : coords)
+    pts.append (p.toDouble ());
 
   return pts;
 }
@@ -120,6 +119,8 @@ QVector<QPointF> qstr2ptsvector (QString str)
   return pts;
 }
 
+// FIXME: What's the difference between qstr2ptsvector and qstr2ptsvectord?
+// Can one be called from the other to avoid code duplication, or deleted?
 QVector<QPoint> qstr2ptsvectord (QString str)
 {
   QVector<QPoint> pts;
@@ -137,12 +138,9 @@ QVector<QPoint> qstr2ptsvectord (QString str)
 // Extract field arguments in a style-like string, e.g. "bla field(1,34,56) bla"
 QString get_field (QString str, QString field)
 {
-  QString retval;
-  QRegExp rx (field + "\\(([^\\)]*)\\)");
-  int pos = 0;
-  pos = rx.indexIn (str, pos);
-  if (pos > -1)
-    retval = rx.cap (1);
+  QRegularExpression rx (field + "\\(([^\\)]*)\\)");
+  QRegularExpressionMatch match = rx.match (str);
+  QString retval = match.captured (1);
 
   return retval;
 }
@@ -151,18 +149,16 @@ QString get_field (QString str, QString field)
 class octave_polygon
 {
 public:
-  octave_polygon (void)
-  { }
 
   octave_polygon (QPolygonF p)
   { m_polygons.push_back (p); }
 
-  ~octave_polygon (void) { }
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (octave_polygon)
 
-  int count (void) const
+  int count () const
   { return m_polygons.count (); }
 
-  void reset (void)
+  void reset ()
   { m_polygons.clear (); }
 
   QList<QPolygonF> reconstruct (int reconstruct_level)
@@ -173,9 +169,7 @@ public:
       return m_polygons;
 
     // Once a polygon has been merged to another, it is marked unsuded
-    QVector<bool> unused;
-    for (auto it = m_polygons.begin (); it != m_polygons.end (); it++)
-      unused.push_back (false);
+    QVector<bool> unused (m_polygons.count (), false);
 
     bool tryagain = (m_polygons.count () > 1);
 
@@ -451,7 +445,11 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
               painter.save ();
               if (! str.isEmpty ())
                 {
-                  QStringRef tf (&str);
+#if HAVE_QSTRINGVIEW
+                  QStringView tf {str};
+#else
+                  QStringRef tf {&str};
+#endif
                   QTransform  tform =
                     parseTransformationMatrix (tf) * painter.transform ();
                   painter.setTransform (tform);
@@ -481,7 +479,11 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
 
               if (! d.isEmpty ())
                 {
-                  QStringRef data (&d);
+#if HAVE_QSTRINGVIEW
+                  QStringView data {d};
+#else
+                  QStringRef data {&d};
+#endif
                   QPainterPath path;
                   if (! parsePathDataFast (data, path))
                     continue; // Something went wrong, pass
@@ -1007,7 +1009,11 @@ read from stdin\n\
     {
       // Return modified svg document
       QTextStream out (&fout);
+#if HAVE_QTEXTSTREAM_SETENCODING
+      out.setEncoding (QStringConverter::Utf8);
+#else
       out.setCodec ("UTF-8");
+#endif
       out << document.toByteArray ();
     }
 

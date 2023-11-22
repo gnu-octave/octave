@@ -32,19 +32,17 @@ class QPushButton;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class interpreter;
 
 class PushButtonControl : public ButtonControl
 {
 public:
-  PushButtonControl (octave::base_qobject& oct_qobj,
-                     octave::interpreter& interp, const graphics_object& go,
+  PushButtonControl (octave::interpreter& interp, const graphics_object& go,
                      QPushButton *btn);
-  ~PushButtonControl (void);
+  ~PushButtonControl ();
 
   static PushButtonControl *
-  create (octave::base_qobject& oct_qobj, octave::interpreter& interp,
+  create (octave::interpreter& interp,
           const graphics_object& go);
 
 protected:

@@ -1,7 +1,9 @@
 #! /bin/sh
 # Bootstrap this package from checked-out sources.
 
-# Copyright (C) 2003-2022 Free Software Foundation, Inc.
+scriptversion=2023-08-29.21; # UTC
+
+# Copyright (C) 2003-2023 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -26,8 +28,6 @@
 
 # Please report bugs or propose patches to bug-gnulib@gnu.org.
 
-scriptversion=2022-07-29.23; # UTC
-
 me="$0"
 medir=`dirname "$me"`
 
@@ -45,9 +45,16 @@ Optional environment variables:
                            have gnulib sources on your machine, and
                            do not want to waste your bandwidth downloading
                            them again.
-  GNULIB_URL               Cloneable URL of the gnulib repository.
+  GNULIB_URL               URL of the gnulib repository.  The default is
+                           $default_gnulib_url,
+                           which is Gnulib's upstream repository.
 
 Options:
+
+  --pull                   Do phase 1: pull files from network
+  --gen                    Do phase 2: generate from local files.
+                           (The default is to do both phases.)
+
   --gnulib-srcdir=DIRNAME  specify the local directory where gnulib
                            sources reside.  Use this if you already
                            have gnulib sources on your machine, and
@@ -59,11 +66,13 @@ Options:
                            and history on your machine, and do not want
                            to waste your bandwidth downloading them again.
                            Defaults to \$GNULIB_REFDIR
+
   --bootstrap-sync         if this bootstrap script is not identical to
                            the version in the local gnulib sources,
                            update this script, and then restart it with
                            /bin/sh or the shell \$CONFIG_SHELL
   --no-bootstrap-sync      do not check whether bootstrap is out of sync
+
   --copy                   copy files instead of creating symbolic links
   --force                  attempt to bootstrap even if the sources seem
                            not to have been checked out
@@ -118,6 +127,10 @@ EOF
 
 # Parse options.
 
+# Whether to pull and generate.
+pull=false
+gen=false
+
 # Whether to use copies instead of symlinks.
 copy=false
 
@@ -132,10 +145,14 @@ do
     exit;;
   --version)
     set -e
-    echo "bootstrap $scriptversion"
+    echo "bootstrap $scriptversion lib $scriptlibversion"
     echo "$copyright"
     exit 0
     ;;
+  --pull)
+    pull=true;;
+  --gen)
+    gen=true;;
   --gnulib-srcdir=*)
     GNULIB_SRCDIR=${option#--gnulib-srcdir=};;
   --gnulib-refdir=*)
@@ -157,22 +174,21 @@ do
   esac
 done
 
+# Default is to do both.
+$pull || $gen || pull=true gen=true
+
 $use_git || test -n "$GNULIB_SRCDIR" \
-  || die "Error: --no-git requires \$GNULIB_SRCDIR environment variable or --gnulib-srcdir option"
+  || die "Error: --no-git requires \$GNULIB_SRCDIR environment variable" \
+         "or --gnulib-srcdir option"
 test -z "$GNULIB_SRCDIR" || test -d "$GNULIB_SRCDIR" \
-  || die "Error: \$GNULIB_SRCDIR environment variable or --gnulib-srcdir option is specified, but does not denote a directory"
+  || die "Error: \$GNULIB_SRCDIR environment variable or --gnulib-srcdir" \
+         "option is specified, but does not denote a directory"
 
 if test -n "$checkout_only_file" && test ! -r "$checkout_only_file"; then
   die "Bootstrapping from a non-checked-out distribution is risky."
 fi
 
 check_build_prerequisites $use_git
-
-if ! test -f "$medir"/bootstrap-funclib.sh; then
-  # We have only completed the first phase of an upgrade from a bootstrap
-  # version < 2022-07-24. Need to do the second phase now.
-  bootstrap_sync=true
-fi
 
 if $bootstrap_sync; then
   prepare_GNULIB_SRCDIR
@@ -183,25 +199,29 @@ fi
 
 echo "$0: Bootstrapping from checked-out $package sources..."
 
-# Pass GNULIB_SRCDIR to autopull.sh and autogen.sh.
+# Pass GNULIB_SRCDIR and GNULIB_REFDIR to any subsidiary commands that care.
 export GNULIB_SRCDIR
-
-# Pass GNULIB_REFDIR to autopull.sh.
 export GNULIB_REFDIR
 
-if $use_git || test -z "$SKIP_PO"; then
-  "$medir"/autopull.sh \
-      `if $bootstrap_sync; then echo ' --bootstrap-sync'; else echo ' --no-bootstrap-sync'; fi` \
+if $pull && { $use_git || test -z "$SKIP_PO"; }; then
+  autopull \
+      `if $bootstrap_sync; then
+         echo ' --bootstrap-sync'
+       else
+         echo ' --no-bootstrap-sync'
+       fi` \
       `if test -z "$checkout_only_file"; then echo ' --force'; fi` \
       `if ! $use_git; then echo ' --no-git'; fi` \
       `if test -n "$SKIP_PO"; then echo ' --skip-po'; fi` \
-    || die "autopull.sh failed."
+    || die "could not fetch auxiliary files"
 fi
 
-"$medir"/autogen.sh \
+if $gen; then
+ autogen \
     `if $copy; then echo ' --copy'; fi` \
     `if test -z "$checkout_only_file"; then echo ' --force'; fi` \
-  || die "autogen.sh failed."
+  || die "could not generate auxiliary files"
+fi
 
 # ----------------------------------------------------------------------------
 

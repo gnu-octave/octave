@@ -161,13 +161,13 @@ public:
 
   octave_idx_type elem (int i) const { return xelem (i); }
 
-  void chop_trailing_singletons (void)
+  void chop_trailing_singletons ()
   {
     while (m_num_dims > 2 && xelem(m_num_dims-1) == 1)
       m_num_dims--;
   }
 
-  OCTAVE_API void chop_all_singletons (void);
+  OCTAVE_API void chop_all_singletons ();
 
 private:
 
@@ -179,9 +179,9 @@ private:
 
 public:
 
-  static OCTAVE_API octave_idx_type dim_max (void);
+  static OCTAVE_API octave_idx_type dim_max ();
 
-  explicit dim_vector (void)
+  explicit dim_vector ()
     : m_num_dims (2), m_dims (new octave_idx_type [m_num_dims])
   {
     std::fill_n (m_dims, m_num_dims, 0);
@@ -239,7 +239,7 @@ public:
     return *this;
   }
 
-  ~dim_vector (void)
+  ~dim_vector ()
   {
     // Because we define a move constructor and a move assignment
     // operator, m_dims may be a nullptr here.  We should only need to
@@ -254,7 +254,7 @@ public:
   //! elements in the dim_vector including trailing singletons.  It is also
   //! the number of dimensions an Array with this dim_vector would have.
 
-  octave_idx_type ndims (void) const { return m_num_dims; }
+  octave_idx_type ndims () const { return m_num_dims; }
 
   //! Number of dimensions.
   //! Synonymous with ndims().
@@ -263,7 +263,7 @@ public:
   //! instead to avoid confusion.  Array does not have length because of its
   //! odd definition as length of the longest dimension.
 
-  int length (void) const { return ndims (); }
+  int length () const { return ndims (); }
 
   octave_idx_type& operator () (int i) { return elem (i); }
 
@@ -297,31 +297,31 @@ public:
 
   OCTAVE_API std::string str (char sep = 'x') const;
 
-  bool all_zero (void) const
+  bool all_zero () const
   {
     return std::all_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
-  bool empty_2d (void) const
+  bool empty_2d () const
   {
     return ndims () == 2 && (xelem (0) == 0 || xelem (1) == 0);
   }
 
-  bool zero_by_zero (void) const
+  bool zero_by_zero () const
   {
     return ndims () == 2 && xelem (0) == 0 && xelem (1) == 0;
   }
 
-  bool any_zero (void) const
+  bool any_zero () const
   {
     return std::any_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim == 0; });
   }
 
-  OCTAVE_API int num_ones (void) const;
+  OCTAVE_API int num_ones () const;
 
-  bool all_ones (void) const
+  bool all_ones () const
   {
     return (num_ones () == ndims ());
   }
@@ -352,15 +352,15 @@ public:
   //! function that is iterating over an array using octave_idx_type
   //! indices.
 
-  OCTAVE_API octave_idx_type safe_numel (void) const;
+  OCTAVE_API octave_idx_type safe_numel () const;
 
-  bool any_neg (void) const
+  bool any_neg () const
   {
     return std::any_of (m_dims, m_dims + ndims (),
                         [] (octave_idx_type dim) { return dim < 0; });
   }
 
-  OCTAVE_API dim_vector squeeze (void) const;
+  OCTAVE_API dim_vector squeeze () const;
 
   //! This corresponds to cat().
   OCTAVE_API bool concat (const dim_vector& dvb, int dim);
@@ -376,7 +376,7 @@ public:
 
   OCTAVE_API dim_vector redim (int n) const;
 
-  dim_vector as_column (void) const
+  dim_vector as_column () const
   {
     if (ndims () == 2 && xelem (1) == 1)
       return *this;
@@ -384,7 +384,7 @@ public:
       return dim_vector (numel (), 1);
   }
 
-  dim_vector as_row (void) const
+  dim_vector as_row () const
   {
     if (ndims () == 2 && xelem (0) == 1)
       return *this;
@@ -392,12 +392,12 @@ public:
       return dim_vector (1, numel ());
   }
 
-  bool isvector (void) const
+  bool isvector () const
   {
     return (ndims () == 2 && (xelem (0) == 1 || xelem (1) == 1));
   }
 
-  bool is_nd_vector (void) const
+  bool is_nd_vector () const
   {
     int num_non_one = 0;
 
@@ -485,7 +485,7 @@ public:
 
   //! Return cumulative dimensions.
 
-  dim_vector cumulative (void) const
+  dim_vector cumulative () const
   {
     int nd = ndims ();
     dim_vector retval = alloc (nd);
@@ -513,7 +513,7 @@ public:
   friend OCTAVE_API bool
   operator == (const dim_vector& a, const dim_vector& b);
 
-  OCTAVE_API Array<octave_idx_type> as_array (void) const;
+  OCTAVE_API Array<octave_idx_type> as_array () const;
 };
 
 inline bool

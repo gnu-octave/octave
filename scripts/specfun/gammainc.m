@@ -121,7 +121,7 @@ function y = gammainc (x, a, tail = "lower")
       && ! any (strcmpi (tail, {"lower","upper","scaledlower","scaledupper"})))
     error ("gammainc: invalid value for TAIL");
   endif
-  tail = tolower (tail);
+  tail = lower (tail);
 
   ## If any of the arguments is single then the output should be as well.
   if (strcmp (class (x), "single") || strcmp (class (a), "single"))

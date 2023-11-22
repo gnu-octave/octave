@@ -75,8 +75,10 @@ template <typename R>
 class norm_accumulator_p
 {
 public:
-  norm_accumulator_p () { } // we need this one for Array
+
   norm_accumulator_p (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_p)
 
   template <typename U>
   void accum (U val)
@@ -106,8 +108,10 @@ template <typename R>
 class norm_accumulator_mp
 {
 public:
-  norm_accumulator_mp () { } // we need this one for Array
+
   norm_accumulator_mp (R pp) : m_p(pp), m_scl(0), m_sum(1) { }
+
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (norm_accumulator_mp)
 
   template <typename U>
   void accum (U val)
@@ -137,7 +141,10 @@ template <typename R>
 class norm_accumulator_2
 {
 public:
+
   norm_accumulator_2 () : m_scl(0), m_sum(1) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_2)
 
   void accum (R val)
   {
@@ -175,7 +182,11 @@ template <typename R>
 class norm_accumulator_1
 {
 public:
+
   norm_accumulator_1 () : m_sum (0) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_1)
+
   template <typename U>
   void accum (U val)
   {
@@ -193,7 +204,11 @@ template <typename R>
 class norm_accumulator_inf
 {
 public:
+
   norm_accumulator_inf () : m_max (0) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_inf)
+
   template <typename U>
   void accum (U val)
   {
@@ -214,7 +229,11 @@ template <typename R>
 class norm_accumulator_minf
 {
 public:
+
   norm_accumulator_minf () : m_min (numeric_limits<R>::Inf ()) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_minf)
+
   template <typename U>
   void accum (U val)
   {
@@ -235,7 +254,11 @@ template <typename R>
 class norm_accumulator_0
 {
 public:
+
   norm_accumulator_0 () : m_num (0) { }
+
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (norm_accumulator_0)
+
   template <typename U>
   void accum (U val)
   {
@@ -321,29 +344,29 @@ void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 
 // now the dispatchers
 #define DEFINE_DISPATCHER(FCN_NAME, ARG_TYPE, RES_TYPE)         \
-  template <typename T, typename R>                             \
-  RES_TYPE FCN_NAME (const ARG_TYPE& v, R p)                    \
-  {                                                             \
-    RES_TYPE res;                                               \
-    if (p == 2)                                                 \
-      FCN_NAME (v, res, norm_accumulator_2<R> ());              \
-    else if (p == 1)                                            \
-      FCN_NAME (v, res, norm_accumulator_1<R> ());              \
-    else if (lo_ieee_isinf (p))                                 \
-      {                                                         \
-        if (p > 0)                                              \
-          FCN_NAME (v, res, norm_accumulator_inf<R> ());        \
-        else                                                    \
-          FCN_NAME (v, res, norm_accumulator_minf<R> ());       \
-      }                                                         \
-    else if (p == 0)                                            \
-      FCN_NAME (v, res, norm_accumulator_0<R> ());              \
-    else if (p > 0)                                             \
-      FCN_NAME (v, res, norm_accumulator_p<R> (p));             \
-    else                                                        \
-      FCN_NAME (v, res, norm_accumulator_mp<R> (p));            \
-    return res;                                                 \
-  }
+template <typename T, typename R>                             \
+RES_TYPE FCN_NAME (const ARG_TYPE& v, R p)                    \
+{                                                             \
+  RES_TYPE res;                                               \
+  if (p == 2)                                                 \
+    FCN_NAME (v, res, norm_accumulator_2<R> ());              \
+  else if (p == 1)                                            \
+    FCN_NAME (v, res, norm_accumulator_1<R> ());              \
+  else if (lo_ieee_isinf (p))                                 \
+    {                                                         \
+      if (p > 0)                                              \
+        FCN_NAME (v, res, norm_accumulator_inf<R> ());        \
+      else                                                    \
+        FCN_NAME (v, res, norm_accumulator_minf<R> ());       \
+    }                                                         \
+  else if (p == 0)                                            \
+    FCN_NAME (v, res, norm_accumulator_0<R> ());              \
+  else if (p > 0)                                             \
+    FCN_NAME (v, res, norm_accumulator_p<R> (p));             \
+  else                                                        \
+    FCN_NAME (v, res, norm_accumulator_mp<R> (p));            \
+  return res;                                                 \
+}
 
 DEFINE_DISPATCHER (vector_norm, MArray<T>, R)
 DEFINE_DISPATCHER (column_norms, MArray<T>, MArray<R>)
@@ -511,10 +534,6 @@ static int max_norm_iter = 100;
 template <typename MatrixT, typename VectorT, typename R>
 R svd_matrix_norm (const MatrixT& m, R p, VectorT)
 {
-  // NOTE: The octave:: namespace tags are needed for the following
-  // function calls until the deprecated inline functions are removed
-  // from oct-norm.h.
-
   R res = 0;
   if (p == 2)
     {
@@ -522,9 +541,9 @@ R svd_matrix_norm (const MatrixT& m, R p, VectorT)
       res = fact.singular_values () (0, 0);
     }
   else if (p == 1)
-    res = octave::xcolnorms (m, static_cast<R> (1)).max ();
+    res = xcolnorms (m, static_cast<R> (1)).max ();
   else if (lo_ieee_isinf (p) && p > 1)
-    res = octave::xrownorms (m, static_cast<R> (1)).max ();
+    res = xrownorms (m, static_cast<R> (1)).max ();
   else if (p > 1)
     {
       VectorT x;
@@ -541,15 +560,11 @@ R svd_matrix_norm (const MatrixT& m, R p, VectorT)
 template <typename MatrixT, typename VectorT, typename R>
 R matrix_norm (const MatrixT& m, R p, VectorT)
 {
-  // NOTE: The octave:: namespace tags are needed for the following
-  // function calls until the deprecated inline functions are removed
-  // from oct-norm.h.
-
   R res = 0;
   if (p == 1)
-    res = octave::xcolnorms (m, static_cast<R> (1)).max ();
+    res = xcolnorms (m, static_cast<R> (1)).max ();
   else if (lo_ieee_isinf (p) && p > 1)
-    res = octave::xrownorms (m, static_cast<R> (1)).max ();
+    res = xrownorms (m, static_cast<R> (1)).max ();
   else if (p > 1)
     {
       VectorT x;
@@ -565,22 +580,22 @@ R matrix_norm (const MatrixT& m, R p, VectorT)
 // and finally, here's what we've promised in the header file
 
 #define DEFINE_XNORM_FCNS(PREFIX, RTYPE)                                \
-  RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p)                  \
-  {                                                                     \
-    return vector_norm (x, p);                                          \
-  }                                                                     \
-  RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p)                     \
-  {                                                                     \
-    return vector_norm (x, p);                                          \
-  }                                                                     \
-  RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p)                        \
-  {                                                                     \
-    return svd_matrix_norm (x, p, PREFIX##Matrix ());                   \
-  }                                                                     \
-  RTYPE xfrobnorm (const PREFIX##Matrix& x)                             \
-  {                                                                     \
-    return vector_norm (x, static_cast<RTYPE> (2));                     \
-  }
+RTYPE xnorm (const PREFIX##ColumnVector& x, RTYPE p)                  \
+{                                                                     \
+  return vector_norm (x, p);                                          \
+}                                                                     \
+RTYPE xnorm (const PREFIX##RowVector& x, RTYPE p)                     \
+{                                                                     \
+  return vector_norm (x, p);                                          \
+}                                                                     \
+RTYPE xnorm (const PREFIX##Matrix& x, RTYPE p)                        \
+{                                                                     \
+  return svd_matrix_norm (x, p, PREFIX##Matrix ());                   \
+}                                                                     \
+RTYPE xfrobnorm (const PREFIX##Matrix& x)                             \
+{                                                                     \
+  return vector_norm (x, static_cast<RTYPE> (2));                     \
+}
 
 DEFINE_XNORM_FCNS(, double)
 DEFINE_XNORM_FCNS(Complex, double)
@@ -599,38 +614,38 @@ inline void array_norm_2 (const T *v, octave_idx_type n, R& res)
 }
 
 #define DEFINE_XNORM_SPARSE_FCNS(PREFIX, RTYPE)                 \
-  RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p)        \
-  {                                                             \
-    return matrix_norm (x, p, PREFIX##Matrix ());               \
-  }                                                             \
-  RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x)             \
-  {                                                             \
-    RTYPE res;                                                  \
-    array_norm_2 (x.data (), x.nnz (), res);                    \
-    return res;                                                 \
-  }
+RTYPE xnorm (const Sparse##PREFIX##Matrix& x, RTYPE p)        \
+{                                                             \
+  return matrix_norm (x, p, PREFIX##Matrix ());               \
+}                                                             \
+RTYPE xfrobnorm (const Sparse##PREFIX##Matrix& x)             \
+{                                                             \
+  RTYPE res;                                                  \
+  array_norm_2 (x.data (), x.nnz (), res);                    \
+  return res;                                                 \
+}
 
 DEFINE_XNORM_SPARSE_FCNS(, double)
 DEFINE_XNORM_SPARSE_FCNS(Complex, double)
 
 #define DEFINE_COLROW_NORM_FCNS(PREFIX, RPREFIX, RTYPE)         \
-  RPREFIX##RowVector                                            \
-  xcolnorms (const PREFIX##Matrix& m, RTYPE p)                  \
-  {                                                             \
-    return column_norms (m, p);                                 \
-  }                                                             \
-  RPREFIX##ColumnVector                                         \
-  xrownorms (const PREFIX##Matrix& m, RTYPE p)                  \
-  {                                                             \
-    return row_norms (m, p);                                    \
-  }                                                             \
+RPREFIX##RowVector                                            \
+xcolnorms (const PREFIX##Matrix& m, RTYPE p)                  \
+{                                                             \
+  return column_norms (m, p);                                 \
+}                                                             \
+RPREFIX##ColumnVector                                         \
+xrownorms (const PREFIX##Matrix& m, RTYPE p)                  \
+{                                                             \
+  return row_norms (m, p);                                    \
+}                                                             \
 
-DEFINE_COLROW_NORM_FCNS(,, double)
-DEFINE_COLROW_NORM_FCNS(Complex,, double)
+DEFINE_COLROW_NORM_FCNS(, , double)
+DEFINE_COLROW_NORM_FCNS(Complex, , double)
 DEFINE_COLROW_NORM_FCNS(Float, Float, float)
 DEFINE_COLROW_NORM_FCNS(FloatComplex, Float, float)
 
-DEFINE_COLROW_NORM_FCNS(Sparse,, double)
-DEFINE_COLROW_NORM_FCNS(SparseComplex,, double)
+DEFINE_COLROW_NORM_FCNS(Sparse, , double)
+DEFINE_COLROW_NORM_FCNS(SparseComplex, , double)
 
 OCTAVE_END_NAMESPACE(octave)

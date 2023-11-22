@@ -54,14 +54,14 @@ static const char *warning_id_nearly_singular_matrix
 static const char *warning_id_singular_matrix = "Octave:singular-matrix";
 
 void
-err_nan_to_logical_conversion (void)
+err_nan_to_logical_conversion ()
 {
   (*current_liboctave_error_handler)
     ("invalid conversion from NaN to logical");
 }
 
 void
-err_nan_to_character_conversion (void)
+err_nan_to_character_conversion ()
 {
   (*current_liboctave_error_handler)
     ("invalid conversion from NaN to character");
@@ -124,7 +124,7 @@ err_del_index_out_of_range (bool is1d, octave_idx_type idx,
 // offending one, e.g., (<error>), (<error>,_), or (_,<error>,...[x5]...)
 
 std::string
-index_exception::expression (void) const
+index_exception::expression () const
 {
   std::ostringstream buf;
 
@@ -179,7 +179,9 @@ public:
     update_message ();
   }
 
-  void update_message (void)
+  OCTAVE_DEFAULT_COPY_MOVE (invalid_index)
+
+  void update_message ()
   {
     static std::string exp
       = std::to_string (std::numeric_limits<octave_idx_type>::digits);
@@ -190,9 +192,16 @@ public:
   }
 
   // ID of error to throw
-  const char * err_id (void) const
+  const char * err_id () const
   {
     return error_id_invalid_index;
+  }
+
+  index_exception * dup ()
+  {
+    invalid_index *retval = new invalid_index {*this};
+    retval->set_identifier (retval->err_id ());
+    return retval;
   }
 };
 
@@ -247,7 +256,9 @@ public:
     update_message ();
   }
 
-  void update_message (void)
+  OCTAVE_DEFAULT_COPY_MOVE (out_of_range)
+
+  void update_message ()
   {
     set_message (expression () + ": out of bound "
                  + std::to_string (m_extent)
@@ -255,9 +266,16 @@ public:
   }
 
   // ID of error to throw.
-  const char * err_id (void) const
+  const char * err_id () const
   {
     return error_id_index_out_of_bounds;
+  }
+
+  index_exception * dup ()
+  {
+    out_of_range *retval = new out_of_range {*this};
+    retval->set_identifier (retval->err_id ());
+    return retval;
   }
 
 private:
@@ -278,7 +296,7 @@ err_index_out_of_range (int nd, int dim, octave_idx_type idx,
 }
 
 void
-err_invalid_resize (void)
+err_invalid_resize ()
 {
   (*current_liboctave_error_with_id_handler)
     ("Octave:invalid-resize",

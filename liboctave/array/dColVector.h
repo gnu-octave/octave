@@ -37,7 +37,7 @@ ColumnVector : public MArray<double>
 {
 public:
 
-  ColumnVector (void) : MArray<double> (dim_vector (0, 1)) { }
+  ColumnVector () : MArray<double> (dim_vector (0, 1)) { }
 
   explicit ColumnVector (octave_idx_type n)
     : MArray<double> (dim_vector (n, 1)) { }
@@ -59,6 +59,8 @@ public:
     return *this;
   }
 
+  ~ColumnVector () = default;
+
   OCTAVE_API bool operator == (const ColumnVector& a) const;
   OCTAVE_API bool operator != (const ColumnVector& a) const;
 
@@ -72,7 +74,7 @@ public:
 
   OCTAVE_API ColumnVector stack (const ColumnVector& a) const;
 
-  OCTAVE_API RowVector transpose (void) const;
+  OCTAVE_API RowVector transpose () const;
 
   friend OCTAVE_API ColumnVector real (const ComplexColumnVector& a);
   friend OCTAVE_API ColumnVector imag (const ComplexColumnVector& a);
@@ -97,10 +99,10 @@ public:
 
   // other operations
 
-  OCTAVE_API double min (void) const;
-  OCTAVE_API double max (void) const;
+  OCTAVE_API double min () const;
+  OCTAVE_API double max () const;
 
-  OCTAVE_API ColumnVector abs (void) const;
+  OCTAVE_API ColumnVector abs () const;
 
   // i/o
 

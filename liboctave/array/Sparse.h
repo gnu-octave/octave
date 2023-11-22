@@ -76,7 +76,7 @@ class SparseRep : public Alloc
     octave_idx_type m_ncols;
     octave::refcount<octave_idx_type> m_count;
 
-    SparseRep (void)
+    SparseRep ()
       : Alloc (), m_data (T_allocate (1)), m_ridx (idx_type_allocate (1)),
         m_cidx (idx_type_allocate (1)),
         m_nzmax (1), m_nrows (0), m_ncols (0), m_count (1)
@@ -141,19 +141,19 @@ class SparseRep : public Alloc
       std::copy_n (a.m_cidx, m_ncols + 1, m_cidx);
     }
 
-    ~SparseRep (void)
+    ~SparseRep ()
     {
       T_deallocate (m_data, m_nzmax);
       idx_type_deallocate (m_ridx, m_nzmax);
       idx_type_deallocate (m_cidx, m_ncols + 1);
     }
 
-    octave_idx_type nzmax (void) const { return m_nzmax; }
-    octave_idx_type nnz (void) const { return m_cidx[m_ncols]; }
+    octave_idx_type nzmax () const { return m_nzmax; }
+    octave_idx_type nnz () const { return m_cidx[m_ncols]; }
 
-    octave_idx_type rows (void) const { return m_nrows; }
-    octave_idx_type cols (void) const { return m_ncols; }
-    octave_idx_type columns (void) const { return m_ncols; }
+    octave_idx_type rows () const { return m_nrows; }
+    octave_idx_type cols () const { return m_ncols; }
+    octave_idx_type columns () const { return m_ncols; }
 
     OCTAVE_API T& elem (octave_idx_type r, octave_idx_type c);
 
@@ -175,12 +175,12 @@ class SparseRep : public Alloc
 
     OCTAVE_API void change_length (octave_idx_type nz);
 
-    OCTAVE_API bool indices_ok (void) const;
+    OCTAVE_API bool indices_ok () const;
 
-    OCTAVE_API bool any_element_is_nan (void) const;
+    OCTAVE_API bool any_element_is_nan () const;
 
     // Prefer nzmax.
-    octave_idx_type length (void) const { return m_nzmax; }
+    octave_idx_type length () const { return m_nzmax; }
 
     template <typename U, typename A> friend class Sparse;
 
@@ -231,7 +231,7 @@ class SparseRep : public Alloc
 
   //--------------------------------------------------------------------
 
-  void make_unique (void)
+  void make_unique ()
   {
     if (m_rep->m_count > 1)
       {
@@ -252,11 +252,11 @@ protected:
 
 private:
 
-  static OCTAVE_API typename Sparse<T, Alloc>::SparseRep * nil_rep (void);
+  static OCTAVE_API typename Sparse<T, Alloc>::SparseRep * nil_rep ();
 
 public:
 
-  Sparse (void)
+  Sparse ()
     : m_rep (nil_rep ()), m_dimensions (dim_vector (0, 0))
   {
     m_rep->m_count++;
@@ -327,30 +327,30 @@ public:
   // Sparsify a normal matrix
   OCTAVE_API Sparse (const Array<T>& a);
 
-  virtual ~Sparse (void);
+  virtual ~Sparse ();
 
   OCTAVE_API Sparse<T, Alloc>& operator = (const Sparse<T, Alloc>& a);
 
   //! Amount of storage for nonzero elements.
   //! This may differ from the actual number of elements, see nnz().
-  octave_idx_type nzmax (void) const { return m_rep->nzmax (); }
+  octave_idx_type nzmax () const { return m_rep->nzmax (); }
 
   //! Actual number of nonzero terms.
-  octave_idx_type nnz (void) const { return m_rep->nnz (); }
+  octave_idx_type nnz () const { return m_rep->nnz (); }
 
   // Querying the number of elements (incl. zeros) may overflow the index type,
   // so don't do it unless you really need it.
-  octave_idx_type numel (void) const
+  octave_idx_type numel () const
   {
     return m_dimensions.safe_numel ();
   }
 
-  octave_idx_type dim1 (void) const { return m_dimensions(0); }
-  octave_idx_type dim2 (void) const { return m_dimensions(1); }
+  octave_idx_type dim1 () const { return m_dimensions(0); }
+  octave_idx_type dim2 () const { return m_dimensions(1); }
 
-  octave_idx_type rows (void) const { return dim1 (); }
-  octave_idx_type cols (void) const { return dim2 (); }
-  octave_idx_type columns (void) const { return dim2 (); }
+  octave_idx_type rows () const { return dim1 (); }
+  octave_idx_type cols () const { return dim2 (); }
+  octave_idx_type columns () const { return dim2 (); }
 
   octave_idx_type get_row_index (octave_idx_type k) { return ridx (k); }
   octave_idx_type get_col_index (octave_idx_type k)
@@ -361,16 +361,16 @@ public:
     return ret;
   }
 
-  std::size_t byte_size (void) const
+  std::size_t byte_size () const
   {
     return (static_cast<std::size_t> (cols () + 1) * sizeof (octave_idx_type)
             + static_cast<std::size_t> (nzmax ())
             * (sizeof (T) + sizeof (octave_idx_type)));
   }
 
-  dim_vector dims (void) const { return m_dimensions; }
+  dim_vector dims () const { return m_dimensions; }
 
-  Sparse<T, Alloc> squeeze (void) const { return *this; }
+  Sparse<T, Alloc> squeeze () const { return *this; }
 
   OCTAVE_API octave_idx_type
   compute_index (const Array<octave_idx_type>& ra_idx) const;
@@ -565,48 +565,48 @@ public:
   OCTAVE_API Sparse<T, Alloc>&
   insert (const Sparse<T, Alloc>& a, const Array<octave_idx_type>& idx);
 
-  bool issquare (void) const { return (dim1 () == dim2 ()); }
+  bool issquare () const { return (dim1 () == dim2 ()); }
 
-  bool isempty (void) const { return (rows () < 1 || cols () < 1); }
+  bool isempty () const { return (rows () < 1 || cols () < 1); }
 
-  OCTAVE_API Sparse<T, Alloc> transpose (void) const;
+  OCTAVE_API Sparse<T, Alloc> transpose () const;
 
-  T * data (void) { make_unique (); return m_rep->m_data; }
+  T * data () { make_unique (); return m_rep->m_data; }
   T& data (octave_idx_type i) { make_unique (); return m_rep->data (i); }
-  T * xdata (void) { return m_rep->m_data; }
+  T * xdata () { return m_rep->m_data; }
   T& xdata (octave_idx_type i) { return m_rep->data (i); }
 
   T data (octave_idx_type i) const { return m_rep->data (i); }
   // FIXME: shouldn't this be returning const T*?
-  T * data (void) const { return m_rep->m_data; }
+  T * data () const { return m_rep->m_data; }
 
-  octave_idx_type * ridx (void) { make_unique (); return m_rep->m_ridx; }
+  octave_idx_type * ridx () { make_unique (); return m_rep->m_ridx; }
   octave_idx_type& ridx (octave_idx_type i)
   {
     make_unique (); return m_rep->ridx (i);
   }
 
-  octave_idx_type * xridx (void) { return m_rep->m_ridx; }
+  octave_idx_type * xridx () { return m_rep->m_ridx; }
   octave_idx_type& xridx (octave_idx_type i) { return m_rep->ridx (i); }
 
   octave_idx_type ridx (octave_idx_type i) const { return m_rep->cridx (i); }
   // FIXME: shouldn't this be returning const octave_idx_type*?
-  octave_idx_type * ridx (void) const { return m_rep->m_ridx; }
+  octave_idx_type * ridx () const { return m_rep->m_ridx; }
 
-  octave_idx_type * cidx (void) { make_unique (); return m_rep->m_cidx; }
+  octave_idx_type * cidx () { make_unique (); return m_rep->m_cidx; }
   octave_idx_type& cidx (octave_idx_type i)
   {
     make_unique (); return m_rep->cidx (i);
   }
 
-  octave_idx_type * xcidx (void) { return m_rep->m_cidx; }
+  octave_idx_type * xcidx () { return m_rep->m_cidx; }
   octave_idx_type& xcidx (octave_idx_type i) { return m_rep->cidx (i); }
 
   octave_idx_type cidx (octave_idx_type i) const { return m_rep->ccidx (i); }
   // FIXME: shouldn't this be returning const octave_idx_type*?
-  octave_idx_type * cidx (void) const { return m_rep->m_cidx; }
+  octave_idx_type * cidx () const { return m_rep->m_cidx; }
 
-  octave_idx_type ndims (void) const { return m_dimensions.ndims (); }
+  octave_idx_type ndims () const { return m_dimensions.ndims (); }
 
   OCTAVE_API void delete_elements (const octave::idx_vector& i);
 
@@ -649,7 +649,7 @@ public:
   static OCTAVE_API Sparse<T, Alloc>
   cat (int dim, octave_idx_type n, const Sparse<T, Alloc> *sparse_list);
 
-  OCTAVE_API Array<T> array_value (void) const;
+  OCTAVE_API Array<T> array_value () const;
 
   // Generic any/all test functionality with arbitrary predicate.
   template <typename F, bool zero>
@@ -746,9 +746,9 @@ public:
   map (U (&fcn) (const T&)) const
   { return map<U, U (&) (const T&)> (fcn); }
 
-  bool indices_ok (void) const { return m_rep->indices_ok (); }
+  bool indices_ok () const { return m_rep->indices_ok (); }
 
-  bool any_element_is_nan (void) const
+  bool any_element_is_nan () const
   { return m_rep->any_element_is_nan (); }
 };
 

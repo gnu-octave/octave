@@ -119,7 +119,7 @@ void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
         iw[ridx[j]] = j;
 
       jrow = Llist[k];
-      // Iterate over each non-zero element in the actual row.
+      // Iterate over each nonzero element in the actual row.
       while (jrow != -1)
         {
           jjrow = Lfirst[jrow];
@@ -203,7 +203,7 @@ Undocumented internal function.
   // matrix is used to build the output matrix due to that fact.
   if (! args(0).iscomplex ())
     {
-      SparseMatrix sm = Ftril (args(0))(0).sparse_matrix_value ();
+      SparseMatrix sm = Ftril (ovl (args(0)))(0).sparse_matrix_value ();
       ichol_0 <SparseMatrix, double, ichol_mult_real,
               ichol_checkpivot_real> (sm, michol);
       return ovl (sm);
@@ -211,7 +211,7 @@ Undocumented internal function.
   else
     {
       SparseComplexMatrix sm
-        = Ftril (args(0))(0).sparse_complex_matrix_value ();
+        = Ftril (ovl (args(0)))(0).sparse_complex_matrix_value ();
       ichol_0 <SparseComplexMatrix, Complex, ichol_mult_complex,
               ichol_checkpivot_complex> (sm, michol);
       return ovl (sm);
@@ -298,8 +298,8 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
             {
               j = ridx_l[jj];
               // If the element in the j position of the row is zero,
-              // then it will become non-zero, so we add it to the
-              // vector that tracks non-zero elements in the working row.
+              // then it will become nonzero, so we add it to the
+              // vector that tracks nonzero elements in the working row.
               if (! mark[j])
                 {
                   mark[j] = true;
@@ -332,7 +332,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
           ridx_l = ridx_out_l.fortran_vec ();
         }
 
-      // The sorting of the non-zero elements of the working column can be
+      // The sorting of the nonzero elements of the working column can be
       // handled in a couple of ways.  The most efficient two I found, are
       // keeping the elements in an ordered binary search tree dynamically or
       // keep them unsorted in a vector and at the end of the outer iteration
@@ -343,7 +343,7 @@ void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
       ridx_l[total_len] = k;
       w_len = 1;
 
-      // Extract the non-zero elements of working column and
+      // Extract the nonzero elements of working column and
       // drop the elements that are lower than droptol * cols_norm[k].
       for (i = 0; i < ind ; i++)
         {
@@ -436,7 +436,7 @@ Undocumented internal function.
   if (! args(0).iscomplex ())
     {
       SparseMatrix L;
-      SparseMatrix sm_l = Ftril (args(0))(0).sparse_matrix_value ();
+      SparseMatrix sm_l = Ftril (ovl (args(0)))(0).sparse_matrix_value ();
       RowVector sm_col_norms = xcolnorms (sm_l, 1);
       ichol_t <SparseMatrix,
               double, ichol_mult_real, ichol_checkpivot_real>
@@ -448,7 +448,7 @@ Undocumented internal function.
     {
       SparseComplexMatrix L;
       SparseComplexMatrix sm_l
-        = Ftril (args(0))(0).sparse_complex_matrix_value ();
+        = Ftril (ovl (args(0)))(0).sparse_complex_matrix_value ();
       Array <Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
               Complex, ichol_mult_complex, ichol_checkpivot_complex>

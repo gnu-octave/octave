@@ -53,7 +53,7 @@ class tree_statement : public tree
 {
 public:
 
-  tree_statement (void)
+  tree_statement ()
     : m_command (nullptr), m_expression (nullptr),
       m_comment_list (nullptr) { }
 
@@ -63,53 +63,49 @@ public:
   tree_statement (tree_expression *e, comment_list *cl)
     : m_command (nullptr), m_expression (e), m_comment_list (cl) { }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_statement)
 
-  tree_statement (const tree_statement&) = delete;
-
-  tree_statement& operator = (const tree_statement&) = delete;
-
-  ~tree_statement (void);
+  ~tree_statement ();
 
   void set_print_flag (bool print_flag);
 
-  bool print_result (void);
+  bool print_result ();
 
-  bool is_command (void) const { return m_command != nullptr; }
+  bool is_command () const { return m_command != nullptr; }
 
-  bool is_expression (void) const { return m_expression != nullptr; }
+  bool is_expression () const { return m_expression != nullptr; }
 
   void set_breakpoint (const std::string& condition);
 
-  void delete_breakpoint (void);
+  void delete_breakpoint ();
 
-  bool is_breakpoint (void) const;
+  bool is_breakpoint () const;
 
   bool is_active_breakpoint (tree_evaluator& tw) const;
 
   std::string bp_cond () const;
 
-  int line (void) const;
-  int column (void) const;
+  int line () const;
+  int column () const;
 
   void set_location (int l, int c);
 
   void echo_code (const std::string& prefix);
 
-  tree_command * command (void) { return m_command; }
+  tree_command * command () { return m_command; }
 
-  tree_expression * expression (void) { return m_expression; }
+  tree_expression * expression () { return m_expression; }
 
-  comment_list * comment_text (void) { return m_comment_list; }
+  comment_list * comment_text () { return m_comment_list; }
 
-  bool is_null_statement (void) const
+  bool is_null_statement () const
   {
     return ! (m_command || m_expression || m_comment_list);
   }
 
-  bool is_end_of_fcn_or_script (void) const;
+  bool is_end_of_fcn_or_script () const;
 
-  bool is_end_of_file (void) const;
+  bool is_end_of_file () const;
 
   // Allow modification of this statement.  Note that there is no
   // checking.  If you use these, are you sure you know what you are
@@ -144,7 +140,7 @@ class tree_statement_list : public base_list<tree_statement *>
 {
 public:
 
-  tree_statement_list (void)
+  tree_statement_list ()
     : m_function_body (false), m_anon_function_body (false),
       m_script_body (false) { }
 
@@ -152,13 +148,9 @@ public:
     : m_function_body (false), m_anon_function_body (false),
       m_script_body (false) { append (s); }
 
-  // No copying!
+  OCTAVE_DISABLE_COPY_MOVE (tree_statement_list)
 
-  tree_statement_list (const tree_statement_list&) = delete;
-
-  tree_statement_list& operator = (const tree_statement_list&) = delete;
-
-  ~tree_statement_list (void)
+  ~tree_statement_list ()
   {
     while (! empty ())
       {
@@ -168,25 +160,25 @@ public:
       }
   }
 
-  void mark_as_function_body (void) { m_function_body = true; }
+  void mark_as_function_body () { m_function_body = true; }
 
-  void mark_as_anon_function_body (void) { m_anon_function_body = true; }
+  void mark_as_anon_function_body () { m_anon_function_body = true; }
 
-  void mark_as_script_body (void) { m_script_body = true; }
+  void mark_as_script_body () { m_script_body = true; }
 
-  bool is_function_body (void) const { return m_function_body; }
+  bool is_function_body () const { return m_function_body; }
 
-  bool is_anon_function_body (void) const { return m_anon_function_body; }
+  bool is_anon_function_body () const { return m_anon_function_body; }
 
-  bool is_script_body (void) const { return m_script_body; }
+  bool is_script_body () const { return m_script_body; }
 
   int set_breakpoint (int line, const std::string& condition);
 
   void delete_breakpoint (int line);
 
-  octave_value_list list_breakpoints (void);
+  octave_value_list list_breakpoints ();
 
-  std::list<bp_type> breakpoints_and_conds (void);
+  std::list<bp_type> breakpoints_and_conds ();
 
   bp_table::bp_lines add_breakpoint (event_manager& evmgr,
                                      const std::string& file,

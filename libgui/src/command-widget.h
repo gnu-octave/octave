@@ -30,14 +30,16 @@
 
 #include <Qsci/qsciscintilla.h>
 
-#include "octave-qobject.h"
-#include "gui-settings.h"
+// FIXME: We need the following header for the fcn_callback and
+// meth_callback typedefs.  Maybe it would be better to declare those in
+// a separate file because inclding "event-manager.h" pulls in a lot of
+// other unnecessary declarations.
+#include "event-manager.h"
 
 class QsciScintilla;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class command_widget;
 
 class console : public QsciScintilla
@@ -46,15 +48,20 @@ class console : public QsciScintilla
 
 public:
 
-  console (command_widget *p, base_qobject& oct_qobj);
+  console (command_widget *p);
+
+signals:
+
+  void interpreter_event (const fcn_callback& fcn);
+  void interpreter_event (const meth_callback& meth);
 
 public slots:
 
   void cursor_position_changed (int line, int col);
 
-  void text_changed (void);
+  void text_changed ();
 
-  void move_cursor_to_end (void);
+  void move_cursor_to_end ();
 
   void new_command_line (const QString& command = QString ());
 
@@ -68,7 +75,7 @@ private:
 
   void append_string (const QString& string);
 
-  void accept_command_line (void);
+  void accept_command_line ();
 
   int m_command_position;
   int m_cursor_position;
@@ -84,26 +91,27 @@ class command_widget : public QWidget
 
 public:
 
-  command_widget (base_qobject& oct_qobj, QWidget *p);
+  command_widget (QWidget *p);
 
   console * get_console ( ) { return m_console; };
 
   void init_command_prompt ();
 
-  QString prompt (void);
+  QString prompt ();
 
 signals:
 
-  void clear_line_edit (void);
+  void clear_line_edit ();
 
-  void interpreter_pause (void);
-  void interpreter_resume (void);
-  void interpreter_stop (void);
+  void interpreter_pause ();
+  void interpreter_resume ();
+  void interpreter_stop ();
+
+  void update_prompt_signal (const QString& prompt);
+  void new_command_line_signal (const QString& command = QString ());
 
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
-
-  void new_command_line_signal (const QString& command = QString ());
 
 public slots:
 
@@ -113,7 +121,7 @@ public slots:
 
   void insert_interpreter_output (const QString& msg);
 
-  void notice_settings (const gui_settings *settings);
+  void notice_settings ();
 
 private:
 

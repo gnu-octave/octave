@@ -37,7 +37,7 @@ DAE : public base_diff_alg_eqn, public DAEFunc
 {
 public:
 
-  DAE (void)
+  DAE ()
     : base_diff_alg_eqn (), DAEFunc () { }
 
   DAE (const ColumnVector& xx, double tt, DAEFunc& f)
@@ -60,7 +60,7 @@ public:
     return *this;
   }
 
-  virtual ~DAE (void) = default;
+  virtual ~DAE () = default;
 };
 
 #endif

@@ -24,23 +24,15 @@ see <https://www.gnu.org/licenses/>.
 #ifndef QTERMINAL_H
 #define QTERMINAL_H
 
+#include "octave-config.h"
+
 #include <QColor>
 #include <QList>
 #include <QPoint>
 #include <QString>
 #include <QWidget>
 
-// For now, we need to use the following #include and using statement
-// for the signal/slot macros.  Could maybe change later when using
-// Qt5-style signal/slot connections.
-#include "gui-settings.h"
-
-using octave::gui_settings;
-
-namespace octave
-{
-  class base_qobject;
-}
+#include "qt-interpreter-events.h"
 
 class QMenu;
 class QAction;
@@ -51,8 +43,7 @@ class QTerminal : public QWidget
 
 public:
 
-  static QTerminal *
-  create (octave::base_qobject& oct_qobj, QWidget *xparent);
+  static QTerminal * create (QWidget *xparent);
 
   virtual ~QTerminal (void) = default;
 
@@ -116,6 +107,9 @@ signals:
 
   void clear_command_window_request (void);
 
+  void interpreter_event (const octave::fcn_callback& fcn);
+  void interpreter_event (const octave::meth_callback& meth);
+
 public slots:
 
   virtual void copyClipboard (void) = 0;
@@ -126,7 +120,7 @@ public slots:
 
   virtual void handleCustomContextMenuRequested (const QPoint& at);
 
-  void notice_settings (const gui_settings *settings);
+  void notice_settings (void);
 
   virtual void init_terminal_size (void) { }
 
@@ -146,14 +140,13 @@ public slots:
 
 protected:
 
-  QTerminal (octave::base_qobject& oct_qobj, QWidget *xparent = nullptr)
-            : QWidget (xparent), m_octave_qobj (oct_qobj) { }
+  QTerminal (QWidget *xparent = nullptr)
+    : QWidget (xparent)
+  { }
 
-  void construct (octave::base_qobject& oct_qobj);
+  void construct ();
 
 private:
-
-  octave::base_qobject& m_octave_qobj;
 
   QMenu *_contextMenu;
   QAction * _copy_action;

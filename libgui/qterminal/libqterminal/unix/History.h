@@ -24,9 +24,10 @@
 #define HISTORY_H
 
 // Qt
-#include <QtCore/QBitRef>
-#include <QtCore/QHash>
 #include <QtCore>
+
+#include <QBitRef>
+#include <QHash>
 
 // Konsole
 #include "unix/BlockArray.h"

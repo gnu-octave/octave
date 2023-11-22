@@ -287,17 +287,6 @@ extern OCTINTERP_API mxUint64 * mxGetUint64s (const mxArray *p);
 
 extern OCTINTERP_API mxComplexDouble * mxGetComplexDoubles (const mxArray *p);
 extern OCTINTERP_API mxComplexSingle * mxGetComplexSingles (const mxArray *p);
-#if 0
-/* We don't have these yet. */
-extern OCTINTERP_API mxComplexInt8 * mxGetComplexInt8s (const mxArray *p);
-extern OCTINTERP_API mxComplexInt16 * mxGetComplexInt16s (const mxArray *p);
-extern OCTINTERP_API mxComplexInt32 * mxGetComplexInt32s (const mxArray *p);
-extern OCTINTERP_API mxComplexInt64 * mxGetComplexInt64s (const mxArray *p);
-extern OCTINTERP_API mxComplexUint8 * mxGetComplexUint8s (const mxArray *p);
-extern OCTINTERP_API mxComplexUint16 * mxGetComplexUint16s (const mxArray *p);
-extern OCTINTERP_API mxComplexUint32 * mxGetComplexUint32s (const mxArray *p);
-extern OCTINTERP_API mxComplexUint64 * mxGetComplexUint64s (const mxArray *p);
-#endif
 #else
 extern OCTINTERP_API double * mxGetPi (const mxArray *ptr);
 extern OCTINTERP_API void * mxGetImagData (const mxArray *ptr);
@@ -320,17 +309,6 @@ extern OCTINTERP_API int mxSetUint64s (mxArray *p, mxUint64 *d);
 
 extern OCTINTERP_API int mxSetComplexDoubles (mxArray *p, mxComplexDouble *d);
 extern OCTINTERP_API int mxSetComplexSingles (mxArray *p, mxComplexSingle *d);
-#if 0
-/* We don't have these yet. */
-extern OCTINTERP_API int mxSetComplexInt8s (mxArray *p, mxComplexInt8 *d);
-extern OCTINTERP_API int mxSetComplexInt16s (mxArray *p, mxComplexInt16 *d);
-extern OCTINTERP_API int mxSetComplexInt32s (mxArray *p, mxComplexInt32 *d);
-extern OCTINTERP_API int mxSetComplexInt64s (mxArray *p, mxComplexInt64 *d);
-extern OCTINTERP_API int mxSetComplexUint8s (mxArray *p, mxComplexUint8 *d);
-extern OCTINTERP_API int mxSetComplexUint16s (mxArray *p, mxComplexUint16 *d);
-extern OCTINTERP_API int mxSetComplexUint32s (mxArray *p, mxComplexUint32 *d);
-extern OCTINTERP_API int mxSetComplexUint64s (mxArray *p, mxComplexUint64 *d);
-#endif
 #else
 extern OCTINTERP_API void mxSetPi (mxArray *ptr, double *pi);
 extern OCTINTERP_API void mxSetImagData (mxArray *ptr, void *pi);

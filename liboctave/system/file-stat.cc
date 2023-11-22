@@ -50,43 +50,43 @@ OCTAVE_BEGIN_NAMESPACE(sys)
 // initialized, they should throw an exception.
 
 bool
-base_file_stat::is_blk (void) const
+base_file_stat::is_blk () const
 {
   return exists () && is_blk (m_mode);
 }
 
 bool
-base_file_stat::is_chr (void) const
+base_file_stat::is_chr () const
 {
   return exists () && is_chr (m_mode);
 }
 
 bool
-base_file_stat::is_dir (void) const
+base_file_stat::is_dir () const
 {
   return exists () && is_dir (m_mode);
 }
 
 bool
-base_file_stat::is_fifo (void) const
+base_file_stat::is_fifo () const
 {
   return exists () && is_fifo (m_mode);
 }
 
 bool
-base_file_stat::is_lnk (void) const
+base_file_stat::is_lnk () const
 {
   return exists () && is_lnk (m_mode);
 }
 
 bool
-base_file_stat::is_reg (void) const
+base_file_stat::is_reg () const
 {
   return exists () && is_reg (m_mode);
 }
 
 bool
-base_file_stat::is_sock (void) const
+base_file_stat::is_sock () const
 {
   return exists () && is_sock (m_mode);
 }
@@ -134,25 +134,25 @@ base_file_stat::is_sock (mode_t mode)
 }
 
 bool
-base_file_stat::have_struct_stat_st_rdev (void)
+base_file_stat::have_struct_stat_st_rdev ()
 {
   return ::octave_have_struct_stat_st_rdev ();
 }
 
 bool
-base_file_stat::have_struct_stat_st_blksize (void)
+base_file_stat::have_struct_stat_st_blksize ()
 {
   return octave_have_struct_stat_st_blksize ();
 }
 
 bool
-base_file_stat::have_struct_stat_st_blocks (void)
+base_file_stat::have_struct_stat_st_blocks ()
 {
   return octave_have_struct_stat_st_blocks ();
 }
 
 std::string
-base_file_stat::mode_as_string (void) const
+base_file_stat::mode_as_string () const
 {
   char buf[12];
 

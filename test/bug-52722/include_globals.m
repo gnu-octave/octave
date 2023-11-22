@@ -5,4 +5,3 @@ define_globals
 if (! isglobal ("c"))
   error ("global variable 'c' not defined");
 endif
-

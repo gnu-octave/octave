@@ -57,7 +57,7 @@ symbol_table::symbol_table (interpreter& interp)
   install_builtins ();
 }
 
-symbol_scope symbol_table::current_scope (void) const
+symbol_scope symbol_table::current_scope () const
 {
   tree_evaluator& tw = m_interpreter.get_evaluator ();
 
@@ -495,7 +495,7 @@ void symbol_table::clear_dld_function (const std::string& name)
     }
 }
 
-void symbol_table::clear_mex_functions (void)
+void symbol_table::clear_mex_functions ()
 {
   auto p = m_fcn_table.begin ();
 
@@ -578,7 +578,7 @@ void symbol_table::install_built_in_dispatch (const std::string& name,
     error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
 }
 
-std::list<std::string> symbol_table::user_function_names (void)
+std::list<std::string> symbol_table::user_function_names ()
 {
   std::list<std::string> retval;
 
@@ -594,7 +594,7 @@ std::list<std::string> symbol_table::user_function_names (void)
   return retval;
 }
 
-std::list<std::string> symbol_table::built_in_function_names (void)
+std::list<std::string> symbol_table::built_in_function_names ()
 {
   std::list<std::string> retval;
 
@@ -612,7 +612,7 @@ std::list<std::string> symbol_table::built_in_function_names (void)
   return retval;
 }
 
-std::list<std::string> symbol_table::cmdline_function_names (void)
+std::list<std::string> symbol_table::cmdline_function_names ()
 {
   std::list<std::string> retval;
 
@@ -650,7 +650,7 @@ dump_container_map (const std::map<std::string, C<V, A...>>& container_map)
   return octave_value (info_map);
 }
 
-octave_value symbol_table::dump (void) const
+octave_value symbol_table::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "function_info", dump_fcn_table_map () },
@@ -691,7 +691,7 @@ std::list<std::string> symbol_table::parent_classes (const std::string& dispatch
   return retval;
 }
 
-void symbol_table::cleanup (void)
+void symbol_table::cleanup ()
 {
   clear_functions ();
 
@@ -706,7 +706,7 @@ fcn_info *symbol_table::get_fcn_info (const std::string& name)
   return p != m_fcn_table.end () ? &p->second : nullptr;
 }
 
-octave_value symbol_table::dump_fcn_table_map (void) const
+octave_value symbol_table::dump_fcn_table_map () const
 {
   if (m_fcn_table.empty ())
     return octave_value (Matrix ());
@@ -741,8 +741,7 @@ Return a structure with information from the symbol table.
     return symtab.dump ();
   else
     {
-      std::string fname = args(
-                            0).xstring_value ("__dump_symtab_info__: argument must be a function name");
+      std::string fname = args(0).xstring_value ("__dump_symtab_info__: argument must be a function name");
 
       fcn_info *finfo = symtab.get_fcn_info (fname);
 
@@ -762,8 +761,7 @@ Undocumented internal function.
   if (args.length () != 1)
     print_usage ();
 
-  std::string name = args(
-                       0).xstring_value ("__get_cmdline_fcn_txt__: first argument must be function name");
+  std::string name = args(0).xstring_value ("__get_cmdline_fcn_txt__: first argument must be function name");
 
   symbol_table& symtab = interp.get_symbol_table ();
 
@@ -852,4 +850,3 @@ updated to use some other function.
 */
 
 OCTAVE_END_NAMESPACE(octave)
-

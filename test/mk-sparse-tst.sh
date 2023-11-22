@@ -28,15 +28,15 @@
 # Some tests are commented out because they are known to be broken!
 # Search for "# fails"
 
-# ./build-sparse-tests.sh preset
+# ./mk-sparse-tst.sh preset
 #    creates sparse.tst with preset tests.
 #    Use "test sparse.tst" from octave to run the tests.
 #
-# ./build-sparse-tests.sh random
+# ./mk-sparse-tst.sh random
 #    Creates sprandom.tst with randomly generated matrices.
 #    Use "test sprandom.tst" from octave to run the tests.
 
-# build-sparse-tests.sh generates tests for real and complex sparse matrices.
+# mk-sparse-tst.sh generates tests for real and complex sparse matrices.
 # Also, we want to run both fixed tests with known outputs (quick tests)
 # and longer tests with unknown outputs (thorough tests).  This requires
 # two sets of tests -- one which uses preset matrices and another which
@@ -117,14 +117,14 @@ case $1 in
     random) preset=false ;;
     preset) preset=true ;;
     '') preset=true ;;
-    *) echo "build-sparse-tests.sh random|preset" && exit 1 ;;
+    *) echo "mk-sparse-tst.sh random|preset" && exit 1 ;;
 esac
 
 # create initial file
 cat <<EOF
 ## !!! DO NOT EDIT !!!
 ## THIS IS AN AUTOMATICALLY GENERATED FILE
-## modify build-sparse-tests.sh to generate the tests you need.
+## modify mk-sparse-tst.sh to generate the tests you need.
 EOF
 
 
@@ -174,6 +174,33 @@ EOF
 gen_specific() {
 cat <<EOF
 
+%% error handling in constructor
+%!error <Invalid call> sparse ()
+%!error <Invalid call> sparse (1,2,3,4,5,6,7)
+%!warning <input array cast to double>
+%! warning ("on", "Octave:sparse:double-conversion", "local");
+%! s = sparse (single ([1 2]));
+%!error <wrong type argument 'uint8 matrix'>
+%! s = sparse (uint8 ([1 2]));
+%!error <M must be a non-negative integer> sparse ({1}, 2)
+%!error <N must be a non-negative integer> sparse (1, {2})
+%!error <dimensions M and N must be non-negative> sparse (-1, 2)
+%!error <dimensions M and N must be non-negative> sparse (1, -2)
+%!error <dimension mismatch> sparse (1,[2,3],[1,2,3])
+%!error <invalid option: foobar> sparse ([1,1],[1,1],[1,2],"foobar")
+%% negative subscripts are disallowed
+%!error <subscripts must be> sparse ([1,3],[1,-4],[3,5],2,2)
+%!error <subscripts must be> sparse ([1,3],[1,-4],[3,5i],2,2)
+%!error <M must be a non-negative integer> sparse ([1,1],[1,1],[1,2], {1}, 2)
+%!error <N must be a non-negative integer> sparse ([1,1],[1,1],[1,2], 1, {2})
+%!error <dimensions M and N must be non-negative> sparse ([1,1],[1,1],[1,2], -1, 2)
+%!error <dimensions M and N must be non-negative> sparse ([1,1],[1,1],[1,2], 1, -2)
+%!warning <input array cast to double>
+%! warning ("on", "Octave:sparse:double-conversion", "local");
+%! s = sparse ([1,1],[1,1], single ([1,2]), 2, 2);
+%!error <wrong type argument 'uint8 matrix'>
+%! s = sparse ([1,1],[1,1], uint8 ([1,2]), 2, 2);
+
 %!test # segfault test from edd@debian.org
 %! n = 510;
 %! sparse (kron ((1:n)', ones (n,1)), kron (ones (n,1), (1:n)'), ones (n));
@@ -189,12 +216,6 @@ cat <<EOF
 %#!error inv ( sparse ([0,0;0,1+i]) );
 %#!error inv ( sparse ([0,0;0,0]  ) );
 
-%% error handling in constructor
-%!error sparse (1,[2,3],[1,2,3])
-%!error sparse ([1,1],[1,1],[1,2],3,3,"invalid")
-%!error sparse ([1,3],[1,-4],[3,5],2,2)
-%!error sparse ([1,3],[1,-4],[3,5i],2,2)
-%!error sparse (-1,-1,1)
 EOF
 }
 
@@ -251,7 +272,7 @@ EOF
 ##  end
 ##  The test log is appended to sprandomtest.log
 function [passes,total] = test_sprandom
-  warning ("untested --- fix the source in build-sparse-tests.sh");
+  warning ("untested --- fix the source in mk-sparse-tst.sh");
   disp ("appending test output to sprandomtest.log");
   fid = fopen ("sprandomtest.log", "at");
   test ("sprandom.tst", "normal", fid);
@@ -513,8 +534,8 @@ print_real_mapper_test isxdigit 0
 %! wn2s = warning ("query", "Octave:num-to-str");
 %! warning ("off", "Octave:num-to-str");
 %! if (isreal (af))
-%!   assert (tolower (as), as);
-%!   assert (toupper (as), as);
+%!   assert (lower (as), as);
+%!   assert (upper (as), as);
 %! endif
 %! warning (wn2s.state, "Octave:num-to-str");
 
@@ -632,19 +653,35 @@ gen_square_tests() {
 %! assert(det(bs+speye(size(bs))), det(bf+eye(size(bf))), 100*eps*abs(det(bf+eye(size(bf)))));
 
 %!testif HAVE_UMFPACK
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [l,u] = lu (sparse ([1,1;1,1]));
 %! assert (l*u, [1,1;1,1], 10*eps);
 
 %!testif HAVE_UMFPACK
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [l,u] = lu (sparse ([1,1;1,1+i]));
 %! assert (l, sparse ([1,2,2],[1,1,2],1), 10*eps);
 %! assert (u, sparse ([1,1,2],[1,2,2],[1,1,1i]), 10*eps);
 
 %!testif HAVE_UMFPACK   # permuted LU
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U] = lu (bs);
 %! assert (L*U, bs, 1e-10);
 
 %!testif HAVE_UMFPACK   # simple LU + row permutations
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
 %! ## triangularity
@@ -745,10 +782,18 @@ gen_rectangular_tests() {
     gen_matrixreshape_tests
     cat <<EOF
 %!testif HAVE_UMFPACK   # permuted LU
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U] = lu (bs);
 %! assert (L*U, bs, 1e-10);
 
 %!testif HAVE_UMFPACK   # simple LU + row permutations
+%! ## Yes, we want to test lu with fewer than 4 output arguments
+%! ## and sparse input while also avoiding the warning.  So use
+%! ## warning ("off", ...) instead of additional outputs.
+%! warning ("off", "Octave:lu:sparse_input", "local");
 %! [L,U,P] = lu (bs);
 %! assert (P'*L*U, bs, 1e-10);
 %! ## triangularity

@@ -25,7 +25,7 @@
 #include "unix/TerminalCharacterDecoder.h"
 
 // Qt
-#include <QtCore/QTextStream>
+#include <QTextStream>
 
 PlainTextDecoder::PlainTextDecoder()
  : _output(nullptr)

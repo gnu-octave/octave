@@ -177,7 +177,7 @@ octave_value symbol_info_list::varval (const std::string& name) const
   return octave_value ();
 }
 
-std::list<std::string> symbol_info_list::names (void) const
+std::list<std::string> symbol_info_list::names () const
 {
   std::list<std::string> retval;
 

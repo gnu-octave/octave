@@ -33,7 +33,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 void
-event_queue_safe::warn_unhandled_exception (void) const
+event_queue_safe::warn_unhandled_exception () const
 {
   warning ("unhandled exception in event_queue_safe handler.  "
            "It is a bug in Octave for this to happen.  "

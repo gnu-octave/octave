@@ -56,7 +56,7 @@ OCTAVE_VALUE_INT_MATRIX_T
 {
 public:
 
-  OCTAVE_VALUE_INT_MATRIX_T (void)
+  OCTAVE_VALUE_INT_MATRIX_T ()
     : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>> () { }
 
   OCTAVE_VALUE_INT_MATRIX_T (const intNDArray<OCTAVE_INT_T>& nda)
@@ -66,45 +66,45 @@ public:
     : octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
       (intNDArray<OCTAVE_INT_T> (nda)) { }
 
-  ~OCTAVE_VALUE_INT_MATRIX_T (void) = default;
+  ~OCTAVE_VALUE_INT_MATRIX_T () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new OCTAVE_VALUE_INT_MATRIX_T (*this); }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
-  bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
+  bool OCTAVE_TYPE_PREDICATE_FUNCTION () const { return true; }
 
-  bool isinteger (void) const { return true; }
+  bool isinteger () const { return true; }
 
-  builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
+  builtin_type_t builtin_type () const { return OCTAVE_INT_BTYP; }
 
 public:
 
   int8NDArray
-  int8_array_value (void) const { return int8NDArray (m_matrix); }
+  int8_array_value () const { return int8NDArray (m_matrix); }
 
   int16NDArray
-  int16_array_value (void) const { return int16NDArray (m_matrix); }
+  int16_array_value () const { return int16NDArray (m_matrix); }
 
   int32NDArray
-  int32_array_value (void) const { return int32NDArray (m_matrix); }
+  int32_array_value () const { return int32NDArray (m_matrix); }
 
   int64NDArray
-  int64_array_value (void) const { return int64NDArray (m_matrix); }
+  int64_array_value () const { return int64NDArray (m_matrix); }
 
   uint8NDArray
-  uint8_array_value (void) const { return uint8NDArray (m_matrix); }
+  uint8_array_value () const { return uint8NDArray (m_matrix); }
 
   uint16NDArray
-  uint16_array_value (void) const { return uint16NDArray (m_matrix); }
+  uint16_array_value () const { return uint16NDArray (m_matrix); }
 
   uint32NDArray
-  uint32_array_value (void) const { return uint32NDArray (m_matrix); }
+  uint32_array_value () const { return uint32NDArray (m_matrix); }
 
   uint64NDArray
-  uint64_array_value (void) const { return uint64NDArray (m_matrix); }
+  uint64_array_value () const { return uint64NDArray (m_matrix); }
 
   double
   double_value (bool = false) const
@@ -286,17 +286,17 @@ public:
   }
 
   // Use matrix_ref here to clear index cache.
-  void increment (void)
+  void increment ()
   {
     matrix_ref () += OCTAVE_INT_T (1);
   }
 
-  void decrement (void)
+  void decrement ()
   {
     matrix_ref () -= OCTAVE_INT_T (1);
   }
 
-  void changesign (void)
+  void changesign ()
   {
     matrix_ref ().changesign ();
   }
@@ -393,18 +393,18 @@ OCTAVE_VALUE_INT_SCALAR_T
 {
 public:
 
-  OCTAVE_VALUE_INT_SCALAR_T (void)
+  OCTAVE_VALUE_INT_SCALAR_T ()
     : octave_base_int_scalar<OCTAVE_INT_T> () { }
 
   OCTAVE_VALUE_INT_SCALAR_T (const OCTAVE_INT_T& nda)
     : octave_base_int_scalar<OCTAVE_INT_T> (nda) { }
 
-  ~OCTAVE_VALUE_INT_SCALAR_T (void) = default;
+  ~OCTAVE_VALUE_INT_SCALAR_T () = default;
 
-  octave_base_value * clone (void) const
+  octave_base_value * clone () const
   { return new OCTAVE_VALUE_INT_SCALAR_T (*this); }
 
-  octave_base_value * empty_clone (void) const
+  octave_base_value * empty_clone () const
   { return new OCTAVE_VALUE_INT_MATRIX_T (); }
 
   octave_value do_index_op (const octave_value_list& idx,
@@ -427,68 +427,68 @@ public:
     return tmp.index_op (idx, resize_ok);
   }
 
-  bool OCTAVE_TYPE_PREDICATE_FUNCTION (void) const { return true; }
+  bool OCTAVE_TYPE_PREDICATE_FUNCTION () const { return true; }
 
-  bool isinteger (void) const { return true; }
+  bool isinteger () const { return true; }
 
-  builtin_type_t builtin_type (void) const { return OCTAVE_INT_BTYP; }
+  builtin_type_t builtin_type () const { return OCTAVE_INT_BTYP; }
 
 public:
 
   octave_int8
-  int8_scalar_value (void) const { return octave_int8 (scalar); }
+  int8_scalar_value () const { return octave_int8 (scalar); }
 
   octave_int16
-  int16_scalar_value (void) const { return octave_int16 (scalar); }
+  int16_scalar_value () const { return octave_int16 (scalar); }
 
   octave_int32
-  int32_scalar_value (void) const { return octave_int32 (scalar); }
+  int32_scalar_value () const { return octave_int32 (scalar); }
 
   octave_int64
-  int64_scalar_value (void) const { return octave_int64 (scalar); }
+  int64_scalar_value () const { return octave_int64 (scalar); }
 
   octave_uint8
-  uint8_scalar_value (void) const { return octave_uint8 (scalar); }
+  uint8_scalar_value () const { return octave_uint8 (scalar); }
 
   octave_uint16
-  uint16_scalar_value (void) const { return octave_uint16 (scalar); }
+  uint16_scalar_value () const { return octave_uint16 (scalar); }
 
   octave_uint32
-  uint32_scalar_value (void) const { return octave_uint32 (scalar); }
+  uint32_scalar_value () const { return octave_uint32 (scalar); }
 
   octave_uint64
-  uint64_scalar_value (void) const { return octave_uint64 (scalar); }
+  uint64_scalar_value () const { return octave_uint64 (scalar); }
 
   int8NDArray
-  int8_array_value (void) const
+  int8_array_value () const
   { return int8NDArray (dim_vector (1, 1), int8_scalar_value ()); }
 
   int16NDArray
-  int16_array_value (void) const
+  int16_array_value () const
   { return int16NDArray (dim_vector (1, 1), int16_scalar_value ()); }
 
   int32NDArray
-  int32_array_value (void) const
+  int32_array_value () const
   { return int32NDArray (dim_vector (1, 1), int32_scalar_value ()); }
 
   int64NDArray
-  int64_array_value (void) const
+  int64_array_value () const
   { return int64NDArray (dim_vector (1, 1), int64_scalar_value ()); }
 
   uint8NDArray
-  uint8_array_value (void) const
+  uint8_array_value () const
   { return uint8NDArray (dim_vector (1, 1), uint8_scalar_value ()); }
 
   uint16NDArray
-  uint16_array_value (void) const
+  uint16_array_value () const
   { return uint16NDArray (dim_vector (1, 1), uint16_scalar_value ()); }
 
   uint32NDArray
-  uint32_array_value (void) const
+  uint32_array_value () const
   { return uint32NDArray (dim_vector (1, 1), uint32_scalar_value ()); }
 
   uint64NDArray
-  uint64_array_value (void) const
+  uint64_array_value () const
   { return uint64NDArray (dim_vector (1, 1), uint64_scalar_value ()); }
 
   octave_value resize (const dim_vector& dv, bool fill = false) const
@@ -611,12 +611,12 @@ public:
     return retval;
   }
 
-  void increment (void)
+  void increment ()
   {
     scalar += OCTAVE_INT_T (1);
   }
 
-  void decrement (void)
+  void decrement ()
   {
     scalar -= OCTAVE_INT_T (1);
   }

@@ -33,14 +33,10 @@
 #include "PopupMenuControl.h"
 #include "QtHandlesUtils.h"
 
-#include "octave-qobject.h"
-#include "octave-qtutils.h"
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 PopupMenuControl *
-PopupMenuControl::create (octave::base_qobject& oct_qobj,
-                          octave::interpreter& interp,
+PopupMenuControl::create (octave::interpreter& interp,
                           const graphics_object& go)
 {
   Object *parent = parentObject (interp, go);
@@ -50,18 +46,17 @@ PopupMenuControl::create (octave::base_qobject& oct_qobj,
       Container *container = parent->innerContainer ();
 
       if (container)
-        return new PopupMenuControl (oct_qobj, interp, go,
+        return new PopupMenuControl (interp, go,
                                      new QComboBox (container));
     }
 
   return nullptr;
 }
 
-PopupMenuControl::PopupMenuControl (octave::base_qobject& oct_qobj,
-                                    octave::interpreter& interp,
+PopupMenuControl::PopupMenuControl (octave::interpreter& interp,
                                     const graphics_object& go,
                                     QComboBox *box)
-  : BaseControl (oct_qobj, interp, go, box), m_blockUpdate (false)
+  : BaseControl (interp, go, box), m_blockUpdate (false)
 {
   uicontrol::properties& up = properties<uicontrol> ();
 
@@ -73,7 +68,7 @@ PopupMenuControl::PopupMenuControl (octave::base_qobject& oct_qobj,
            this, &PopupMenuControl::currentIndexChanged);
 }
 
-PopupMenuControl::~PopupMenuControl (void)
+PopupMenuControl::~PopupMenuControl ()
 { }
 
 void PopupMenuControl::update (int pId)

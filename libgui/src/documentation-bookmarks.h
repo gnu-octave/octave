@@ -28,15 +28,14 @@
 
 #include <QCheckBox>
 #include <QComboBox>
+#include <QFile>
 #include <QTreeWidget>
 #include <QXmlStreamWriter>
 
 #include "documentation.h"
-#include "octave-qobject.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class base_qobject;
 class documentation;
 
 class documentation_bookmarks : public QWidget
@@ -45,23 +44,23 @@ class documentation_bookmarks : public QWidget
 
 public:
 
-  documentation_bookmarks (
-                           documentation *doc, documentation_browser *browser,
-                           base_qobject& oct_qobj, QWidget *p = nullptr);
+  documentation_bookmarks (documentation *doc,
+                           documentation_browser *browser,
+                           QWidget *p = nullptr);
 
-  ~documentation_bookmarks (void) = default;
+  ~documentation_bookmarks () = default;
 
 public slots:
 
-  void add_bookmark (void);
+  void add_bookmark ();
   void add_folder (bool);
-  void save_settings (gui_settings *settings);
+  void save_settings ();
 
 private slots:
 
   void filter_bookmarks (const QString& pattern);
   void filter_activate (bool state);
-  void update_filter_history (void);
+  void update_filter_history ();
   void handle_double_click (QTreeWidgetItem *item, int col = 0);
   void ctx_menu (const QPoint& xpos);
   void open (bool);
@@ -72,15 +71,15 @@ private slots:
 private:
 
   enum item_role
-    {
-      url_role = Qt::UserRole,
-      tag_role = Qt::UserRole + 1
-    };
+  {
+    url_role = Qt::UserRole,
+    tag_role = Qt::UserRole + 1
+  };
   enum item_tag
-    {
-      bookmark_tag,
-      folder_tag
-    };
+  {
+    bookmark_tag,
+    folder_tag
+  };
 
   void add_bookmark (const QString& title, const QString& url,
                      QTreeWidgetItem *item = nullptr);
@@ -89,28 +88,27 @@ private:
                                bool expanded = true);
 
   /*!
-    Writing to and reading bookmarks from an xbel-file as
-    proposed in the qt example
-    [QXmlStream Bookmarks Example](https://doc.qt.io/qt-5/qtxml-streambookmarks-example.html)
+      Writing to and reading bookmarks from an xbel-file as
+      proposed in the qt example
+      [QXmlStream Bookmarks Example](https://doc.qt.io/qt-5/qtxml-streambookmarks-example.html)
   */
-  void write_bookmarks (void);
+  void write_bookmarks ();
   void write_tree_item (QXmlStreamWriter *xml_writer,
                         const QTreeWidgetItem *item);
-  QString read_bookmarks (void);
+  QString read_bookmarks ();
   void read_next_item (QXmlStreamReader *xml_writer, item_tag tag,
                        QTreeWidgetItem *item = nullptr);
 
   documentation *m_doc;
   documentation_browser *m_browser;
-  base_qobject& m_octave_qobj;
 
   QComboBox *m_filter;
   QTreeWidget *m_tree;
 
   QTreeWidgetItem *m_ctx_menu_item;
 
-  QIcon icon_folder;
-  QIcon icon_bookmark;
+  QIcon m_icon_folder;
+  QIcon m_icon_bookmark;
 
   QWidget *m_filter_widget;
   QCheckBox *m_filter_checkbox;

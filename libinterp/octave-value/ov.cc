@@ -118,7 +118,7 @@ static bool Voptimize_range = true;
 // Octave's value type.
 
 octave_base_value *
-octave_value::nil_rep (void)
+octave_value::nil_rep ()
 {
   static octave_base_value nr;
   return &nr;
@@ -1073,36 +1073,6 @@ octave_value::octave_value (const Array<std::string>& cellstr)
   maybe_mutate ();
 }
 
-// Remove when public constructor that uses this function is removed.
-octave_base_value *
-octave_value::make_range_rep_deprecated (double base, double inc, double limit)
-{
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#  pragma GCC diagnostic push
-#  pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-#endif
-
-  return dynamic_cast<octave_base_value *>
-         (new octave_legacy_range (Range (base, inc, limit)));
-
-#if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
-#  pragma GCC diagnostic pop
-#endif
-}
-
-// Remove when public constructor that uses this function is removed.
-octave_base_value *
-octave_value::make_range_rep_deprecated (const Range& r, bool force_range)
-{
-  if (! force_range && ! r.ok ())
-    error ("invalid range");
-
-  if ((force_range || Voptimize_range))
-    return dynamic_cast<octave_base_value *> (new octave_legacy_range (r));
-  else
-    return dynamic_cast<octave_base_value *> (new octave_matrix (r.matrix_value ()));
-}
-
 octave_value::octave_value (const octave::range<double>& r, bool force_range)
   : m_rep (force_range || Voptimize_range
            ? dynamic_cast<octave_base_value *> (new ov_range<double> (r))
@@ -1111,108 +1081,7 @@ octave_value::octave_value (const octave::range<double>& r, bool force_range)
   maybe_mutate ();
 }
 
-// For now, disable all but range<double>.
-
-#if 0
-
-octave_value::octave_value (const octave::range<float>& r, bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<float> (r))
-           : dynamic_cast<octave_base_value *> (new octave_float_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_int8>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_int8> (r))
-           : dynamic_cast<octave_base_value *> (new octave_int8_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_int16>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_int16> (r))
-           : dynamic_cast<octave_base_value *> (new octave_int16_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_int32>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_int32> (r))
-           : dynamic_cast<octave_base_value *> (new octave_int32_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_int64>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_int64> (r))
-           : dynamic_cast<octave_base_value *> (new octave_int64_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_uint8>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint8> (r))
-           : dynamic_cast<octave_base_value *> (new octave_uint8_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_uint16>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint16> (r))
-           : dynamic_cast<octave_base_value *> (new octave_uint16_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_uint32>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint32> (r))
-           : dynamic_cast<octave_base_value *> (new octave_uint32_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<octave_uint64>& r,
-                            bool force_range)
-  : m_rep (force_range || Voptimize_range
-           ? dynamic_cast<octave_base_value *> (new ov_range<octave_uint64> (r))
-           : dynamic_cast<octave_base_value *> (new octave_uint64_matrix (r.array_value ())))
-{
-  maybe_mutate ();
-}
-
-octave_value::octave_value (const octave::range<char>& r, char type,
-                            bool /*force_range*/)
-#if 0
-  : m_rep (force_range || optimize_range
-           ? dynamic_cast<octave_base_value *> (new octave_char_range (r, type))
-           : dynamic_cast<octave_base_value *> (type == '"'
-               ? new octave_char_matrix_dq_str (r.array_value ())
-               : new octave_char_matrix_sq_str (r.array_value ())))
-#else
-  : m_rep (type == '"'
-           ? new octave_char_matrix_dq_str (r.array_value ())
-           : new octave_char_matrix_sq_str (r.array_value ()))
-#endif
-{
-  maybe_mutate ();
-}
-
-#endif
+// For now, enable only range<double>.
 
 octave_value::octave_value (const octave_map& m)
   : m_rep (new octave_struct (m))
@@ -1248,15 +1117,8 @@ octave_value::octave_value (octave_value::magic_colon)
   : m_rep (new octave_magic_colon ())
 { }
 
-octave_value::octave_value (octave_base_value *new_rep, bool borrow)
-  : m_rep (new_rep)
-{
-  if (borrow)
-    m_rep->count++;
-}
-
 octave_base_value *
-octave_value::clone (void) const
+octave_value::clone () const
 {
   return m_rep->clone ();
 }
@@ -1289,13 +1151,13 @@ octave_value::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& 
 }
 
 void
-octave_value::maybe_mutate (void)
+octave_value::maybe_mutate ()
 {
   octave_base_value *tmp = m_rep->try_narrowing_conversion ();
 
   if (tmp && tmp != m_rep)
     {
-      if (--m_rep->count == 0)
+      if (--m_rep->m_count == 0)
         delete m_rep;
 
       m_rep = tmp;
@@ -1579,6 +1441,13 @@ octave_value::single_subsref (const std::string& type,
 }
 
 octave_value_list
+octave_value::
+simple_subsref (char type, octave_value_list& idx, int nargout)
+{
+  return m_rep->simple_subsref (type, idx, nargout);
+}
+
+octave_value_list
 octave_value::subsref (const std::string& type,
                        const std::list<octave_value_list>& idx, int nargout)
 {
@@ -1618,6 +1487,21 @@ octave_value::next_subsref (int nargout, const std::string& type,
 }
 
 octave_value
+octave_value::maybe_as_trivial_range ()
+{
+  if (m_rep->is_trivial_range ())
+    return *this;
+  if (!is_range ())
+    return *this;
+
+  ov_range<double> range = range_value ();
+  if (!range.could_be_trivial_range ())
+    return *this;
+
+  return range.as_trivial_range ();
+}
+
+octave_value
 octave_value::next_subsref (bool auto_add, const std::string& type,
                             const std::list<octave_value_list>& idx,
                             std::size_t skip)
@@ -1631,6 +1515,34 @@ octave_value::next_subsref (bool auto_add, const std::string& type,
     }
   else
     return *this;
+}
+
+octave_idx_type
+octave_value::end_index (octave_idx_type index_position,
+                         octave_idx_type num_indices) const
+{
+  dim_vector dv = dims ();
+  int ndims = dv.ndims ();
+
+  if (num_indices < ndims)
+    {
+      for (int i = num_indices; i < ndims; i++)
+        dv(num_indices-1) *= dv(i);
+
+      if (num_indices == 1)
+        {
+          ndims = 2;
+          dv.resize (ndims);
+          dv(1) = 1;
+        }
+      else
+        {
+          ndims = num_indices;
+          dv.resize (ndims);
+        }
+    }
+
+  return (index_position < ndims ? dv(index_position) : 1);
 }
 
 octave_value
@@ -1686,7 +1598,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
       octave::type_info::assign_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
-      if (m_rep->count == 1)
+      if (m_rep->m_count == 1)
         {
           int tthis = this->type_id ();
           int trhs = rhs.type_id ();
@@ -1724,7 +1636,7 @@ octave_value::assign (assign_op op, const octave_value& rhs)
 // unresolved const issues that prevent that solution from working.
 
 std::string
-octave_value::get_dims_str (void) const
+octave_value::get_dims_str () const
 {
   octave_value tmp = *this;
 
@@ -1739,7 +1651,7 @@ octave_value::get_dims_str (void) const
 }
 
 octave_idx_type
-octave_value::length (void) const
+octave_value::length () const
 {
   octave_idx_type retval = 0;
 
@@ -1803,19 +1715,19 @@ octave_value::idx_type_value (bool req_int, bool frc_str_conv) const
 }
 
 Cell
-octave_value::cell_value (void) const
+octave_value::cell_value () const
 {
   return m_rep->cell_value ();
 }
 
 octave_map
-octave_value::map_value (void) const
+octave_value::map_value () const
 {
   return m_rep->map_value ();
 }
 
 octave_scalar_map
-octave_value::scalar_map_value (void) const
+octave_value::scalar_map_value () const
 {
   return m_rep->scalar_map_value ();
 }
@@ -1857,7 +1769,7 @@ octave_value::fcn_handle_value (bool silent) const
 }
 
 octave_value_list
-octave_value::list_value (void) const
+octave_value::list_value () const
 {
   return m_rep->list_value ();
 }
@@ -1891,10 +1803,10 @@ octave_value::column_vector_value (bool force_string_conv,
 
 ComplexColumnVector
 octave_value::complex_column_vector_value (bool force_string_conv,
-    bool frc_vec_conv) const
+                                           bool frc_vec_conv) const
 {
   return ComplexColumnVector (complex_vector_value (force_string_conv,
-                              frc_vec_conv));
+                                                    frc_vec_conv));
 }
 
 RowVector
@@ -1910,7 +1822,7 @@ octave_value::complex_row_vector_value (bool force_string_conv,
                                         bool frc_vec_conv) const
 {
   return ComplexRowVector (complex_vector_value (force_string_conv,
-                           frc_vec_conv));
+                                                 frc_vec_conv));
 }
 
 Array<double>
@@ -1920,8 +1832,8 @@ octave_value::vector_value (bool force_string_conv,
   Array<double> retval = array_value (force_string_conv);
 
   return retval.reshape (make_vector_dims (retval.dims (),
-                         force_vector_conversion,
-                         type_name (), "real vector"));
+                                           force_vector_conversion,
+                                           type_name (), "real vector"));
 }
 
 template <typename T>
@@ -1989,8 +1901,8 @@ octave_value::int_vector_value (bool require_int, bool force_string_conv,
     }
 
   return retval.reshape (make_vector_dims (retval.dims (),
-                         force_vector_conversion,
-                         type_name (), "integer vector"));
+                                           force_vector_conversion,
+                                           type_name (), "integer vector"));
 }
 
 template <typename T>
@@ -2008,8 +1920,8 @@ convert_to_octave_idx_type_array (const Array<octave_int<T>>& A)
 
 Array<octave_idx_type>
 octave_value::octave_idx_type_vector_value (bool require_int,
-    bool force_string_conv,
-    bool force_vector_conversion) const
+                                            bool force_string_conv,
+                                            bool force_vector_conversion) const
 {
   Array<octave_idx_type> retval;
 
@@ -2059,8 +1971,8 @@ octave_value::octave_idx_type_vector_value (bool require_int,
     }
 
   return retval.reshape (make_vector_dims (retval.dims (),
-                         force_vector_conversion,
-                         type_name (), "integer vector"));
+                                           force_vector_conversion,
+                                           type_name (), "integer vector"));
 }
 
 Array<Complex>
@@ -2070,25 +1982,25 @@ octave_value::complex_vector_value (bool force_string_conv,
   Array<Complex> retval = complex_array_value (force_string_conv);
 
   return retval.reshape (make_vector_dims (retval.dims (),
-                         force_vector_conversion,
-                         type_name (), "complex vector"));
+                                           force_vector_conversion,
+                                           type_name (), "complex vector"));
 }
 
 FloatColumnVector
 octave_value::float_column_vector_value (bool force_string_conv,
-    bool frc_vec_conv) const
+                                         bool frc_vec_conv) const
 {
   return FloatColumnVector (float_vector_value (force_string_conv,
-                            frc_vec_conv));
+                                                frc_vec_conv));
 }
 
 FloatComplexColumnVector
 octave_value::float_complex_column_vector_value (bool force_string_conv,
-    bool frc_vec_conv) const
+                                                 bool frc_vec_conv) const
 {
   return
     FloatComplexColumnVector (float_complex_vector_value (force_string_conv,
-                              frc_vec_conv));
+                                                          frc_vec_conv));
 }
 
 FloatRowVector
@@ -2096,15 +2008,15 @@ octave_value::float_row_vector_value (bool force_string_conv,
                                       bool frc_vec_conv) const
 {
   return FloatRowVector (float_vector_value (force_string_conv,
-                         frc_vec_conv));
+                                             frc_vec_conv));
 }
 
 FloatComplexRowVector
 octave_value::float_complex_row_vector_value (bool force_string_conv,
-    bool frc_vec_conv) const
+                                              bool frc_vec_conv) const
 {
   return FloatComplexRowVector (float_complex_vector_value (force_string_conv,
-                                frc_vec_conv));
+                                                           frc_vec_conv));
 }
 
 Array<float>
@@ -2114,19 +2026,19 @@ octave_value::float_vector_value (bool force_string_conv,
   Array<float> retval = float_array_value (force_string_conv);
 
   return retval.reshape (make_vector_dims (retval.dims (),
-                         force_vector_conversion,
-                         type_name (), "real vector"));
+                                           force_vector_conversion,
+                                           type_name (), "real vector"));
 }
 
 Array<FloatComplex>
 octave_value::float_complex_vector_value (bool force_string_conv,
-    bool force_vector_conversion) const
+                                          bool force_vector_conversion) const
 {
   Array<FloatComplex> retval = float_complex_array_value (force_string_conv);
 
   return retval.reshape (make_vector_dims (retval.dims (),
-                         force_vector_conversion,
-                         type_name (), "complex vector"));
+                                           force_vector_conversion,
+                                           type_name (), "complex vector"));
 }
 
 // NAME can't always be "x ## FCN" because some of the original
@@ -2214,8 +2126,7 @@ XVALUE_EXTRACTOR (SparseBoolMatrix, xsparse_bool_matrix_value, sparse_bool_matri
 XVALUE_EXTRACTOR (DiagMatrix, xdiag_matrix_value, diag_matrix_value)
 XVALUE_EXTRACTOR (FloatDiagMatrix, xfloat_diag_matrix_value, float_diag_matrix_value)
 XVALUE_EXTRACTOR (ComplexDiagMatrix, xcomplex_diag_matrix_value, complex_diag_matrix_value)
-XVALUE_EXTRACTOR (FloatComplexDiagMatrix, xfloat_complex_diag_matrix_value,
-                  float_complex_diag_matrix_value)
+XVALUE_EXTRACTOR (FloatComplexDiagMatrix, xfloat_complex_diag_matrix_value, float_complex_diag_matrix_value)
 
 XVALUE_EXTRACTOR (PermMatrix, xperm_matrix_value, perm_matrix_value)
 
@@ -2247,21 +2158,7 @@ XVALUE_EXTRACTOR (Array<std::string>, xcellstr_value, cellstr_value)
 
 XVALUE_EXTRACTOR (octave::range<double>, xrange_value, range_value)
 
-// For now, disable all but ov_range<double>.
-
-#if 0
-
-XVALUE_EXTRACTOR (octave::range<float>, xfloat_range_value, float_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_int8>, xint8_range_value, int8_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_int16>, xint16_range_value, int16_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_int32>, xint32_range_value, int32_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_int64>, xint64_range_value, int64_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_uint8>, xuint8_range_value, uint8_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_uint16>, xuint16_range_value, uint16_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_uint32>, xuint32_range_value, uint32_range_value)
-XVALUE_EXTRACTOR (octave::range<octave_uint64>, xuint64_range_value, uint64_range_value)
-
-#endif
+// For now, enable only ov_range<double>.
 
 XVALUE_EXTRACTOR (octave_map, xmap_value, map_value)
 XVALUE_EXTRACTOR (octave_scalar_map, xscalar_map_value, scalar_map_value)
@@ -2273,16 +2170,13 @@ XVALUE_EXTRACTOR (RowVector, xrow_vector_value, row_vector_value)
 XVALUE_EXTRACTOR (ComplexRowVector, xcomplex_row_vector_value, complex_row_vector_value)
 
 XVALUE_EXTRACTOR (FloatColumnVector, xfloat_column_vector_value, float_column_vector_value)
-XVALUE_EXTRACTOR (FloatComplexColumnVector, xfloat_complex_column_vector_value,
-                  float_complex_column_vector_value)
+XVALUE_EXTRACTOR (FloatComplexColumnVector, xfloat_complex_column_vector_value, float_complex_column_vector_value)
 
 XVALUE_EXTRACTOR (FloatRowVector, xfloat_row_vector_value, float_row_vector_value)
-XVALUE_EXTRACTOR (FloatComplexRowVector, xfloat_complex_row_vector_value,
-                  float_complex_row_vector_value)
+XVALUE_EXTRACTOR (FloatComplexRowVector, xfloat_complex_row_vector_value, float_complex_row_vector_value)
 
 XVALUE_EXTRACTOR (Array<int>, xint_vector_value, int_vector_value)
-XVALUE_EXTRACTOR (Array<octave_idx_type>, xoctave_idx_type_vector_value,
-                  octave_idx_type_vector_value)
+XVALUE_EXTRACTOR (Array<octave_idx_type>, xoctave_idx_type_vector_value, octave_idx_type_vector_value)
 
 XVALUE_EXTRACTOR (Array<double>, xvector_value, vector_value)
 XVALUE_EXTRACTOR (Array<Complex>, xcomplex_vector_value, complex_vector_value)
@@ -2301,7 +2195,7 @@ XVALUE_EXTRACTOR (octave_value_list, xlist_value, list_value)
 #undef XVALUE_EXTRACTOR
 
 octave_value
-octave_value::storable_value (void) const
+octave_value::storable_value () const
 {
   octave_value retval = *this;
   if (isnull ())
@@ -2317,19 +2211,19 @@ octave_value::storable_value (void) const
 }
 
 void
-octave_value::make_storable_value (void)
+octave_value::make_storable_value ()
 {
   if (isnull ())
     {
       octave_base_value *rc = m_rep->empty_clone ();
-      if (--m_rep->count == 0)
+      if (--m_rep->m_count == 0)
         delete m_rep;
       m_rep = rc;
     }
   else if (is_magic_int ())
     {
       octave_base_value *rc = new octave_scalar (m_rep->double_value ());
-      if (--m_rep->count == 0)
+      if (--m_rep->m_count == 0)
         delete m_rep;
       m_rep = rc;
     }
@@ -2340,7 +2234,7 @@ octave_value::make_storable_value (void)
 }
 
 float_display_format
-octave_value::get_edit_display_format (void) const
+octave_value::get_edit_display_format () const
 {
   return m_rep->get_edit_display_format ();
 }
@@ -2357,7 +2251,7 @@ void
 octave_value::print_info (std::ostream& os, const std::string& prefix) const
 {
   os << prefix << "type_name: " << type_name () << "\n"
-     << prefix << "count:     " << get_count () << "\n"
+     << prefix << "m_count:     " << get_count () << "\n"
      << prefix << "m_rep info:  ";
 
   m_rep->print_info (os, prefix + ' ');
@@ -2520,7 +2414,7 @@ octave_value::non_const_unary_op (unary_op op)
 
           if (! tmp)
             err_unary_op_conversion_failed
-            (octave_value::unary_op_as_string (op), type_name ());
+              (octave_value::unary_op_as_string (op), type_name ());
 
           octave_base_value *old_rep = m_rep;
           m_rep = tmp;
@@ -2533,14 +2427,14 @@ octave_value::non_const_unary_op (unary_op op)
             {
               f (*m_rep);
 
-              if (old_rep && --old_rep->count == 0)
+              if (old_rep && --old_rep->m_count == 0)
                 delete old_rep;
             }
           else
             {
               if (old_rep)
                 {
-                  if (--m_rep->count == 0)
+                  if (--m_rep->m_count == 0)
                     delete m_rep;
 
                   m_rep = old_rep;
@@ -2559,7 +2453,7 @@ octave_value::non_const_unary_op (unary_op op)
       octave::type_info::non_const_unary_op_fcn f = nullptr;
 
       // Only attempt to operate in-place if this variable is unshared.
-      if (m_rep->count == 1)
+      if (m_rep->m_count == 1)
         {
           octave::type_info& ti = octave::__get_type_info__ ();
 
@@ -2952,7 +2846,7 @@ err_cat_op (const std::string& tn1, const std::string& tn2)
 }
 
 OCTAVE_NORETURN static void
-err_cat_op_conv (void)
+err_cat_op_conv ()
 {
   error ("type conversion failed for concatenation operator");
 }
@@ -3657,21 +3551,7 @@ install_types (octave::type_info& ti)
 
   ov_range<double>::register_type (ti);
 
-  // For now, disable all but ov_range<double>.
-
-#if 0
-
-  ov_range<float>::register_type (ti);
-  ov_range<octave_int8>::register_type (ti);
-  ov_range<octave_int16>::register_type (ti);
-  ov_range<octave_int32>::register_type (ti);
-  ov_range<octave_int64>::register_type (ti);
-  ov_range<octave_uint8>::register_type (ti);
-  ov_range<octave_uint16>::register_type (ti);
-  ov_range<octave_uint32>::register_type (ti);
-  ov_range<octave_uint64>::register_type (ti);
-
-#endif
+  // For now, enable only ov_range<double>.
 
   octave_bool::register_type (ti);
   octave_bool_matrix::register_type (ti);
@@ -3720,6 +3600,7 @@ install_types (octave::type_info& ti)
   octave_lazy_index::register_type (ti);
   octave_oncleanup::register_type (ti);
   octave_java::register_type (ti);
+  octave_trivial_range::register_type (ti);
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -3748,8 +3629,7 @@ decode_subscripts (const char *name, const octave_value& arg,
                    std::string& type_string,
                    std::list<octave_value_list>& idx)
 {
-  const octave_map m =
-    arg.xmap_value ("%s: second argument must be a structure with fields 'type' and 'subs'", name);
+  const octave_map m = arg.xmap_value ("%s: second argument must be a structure with fields 'type' and 'subs'", name);
 
   if (m.nfields () != 2 || ! m.contains ("type") || ! m.contains ("subs"))
     error ("%s: second argument must be a structure with fields 'type' and 'subs'",

@@ -50,7 +50,7 @@ sparse_chol
 {
 public:
 
-  sparse_chol (void);
+  sparse_chol ();
 
   sparse_chol (const chol_type& a, bool natural, bool force);
 
@@ -63,26 +63,26 @@ public:
 
   sparse_chol (const sparse_chol<chol_type>& a) = default;
 
-  virtual ~sparse_chol (void) = default;
+  virtual ~sparse_chol () = default;
 
   sparse_chol<chol_type>&
   operator = (const sparse_chol<chol_type>& a) = default;
 
-  chol_type L (void) const;
+  chol_type L () const;
 
-  chol_type R (void) const { return L ().hermitian (); }
+  chol_type R () const { return L ().hermitian (); }
 
-  octave_idx_type P (void) const;
+  octave_idx_type P () const;
 
-  RowVector perm (void) const;
+  RowVector perm () const;
 
-  SparseMatrix Q (void) const;
+  SparseMatrix Q () const;
 
-  bool is_positive_definite (void) const;
+  bool is_positive_definite () const;
 
-  double rcond (void) const;
+  double rcond () const;
 
-  chol_type inverse (void) const;
+  chol_type inverse () const;
 
 protected:
 

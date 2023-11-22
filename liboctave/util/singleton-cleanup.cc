@@ -32,7 +32,7 @@
 
 singleton_cleanup_list *singleton_cleanup_list::s_instance = nullptr;
 
-singleton_cleanup_list::~singleton_cleanup_list (void)
+singleton_cleanup_list::~singleton_cleanup_list ()
 {
   for (fptr fcn : m_fcn_list)
     {
@@ -41,7 +41,7 @@ singleton_cleanup_list::~singleton_cleanup_list (void)
 }
 
 bool
-singleton_cleanup_list::instance_ok (void)
+singleton_cleanup_list::instance_ok ()
 {
   bool retval = true;
 

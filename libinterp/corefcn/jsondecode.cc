@@ -612,7 +612,7 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
     = use_makeValidName ? new make_valid_name_options (make_valid_name_params)
       : nullptr;
 
-  unwind_action del_opts ([options] (void) { if (options) delete options; });
+  unwind_action del_opts ([options] () { if (options) delete options; });
 
   if (! args(0).is_string ())
     error ("jsondecode: JSON_TXT must be a character string");

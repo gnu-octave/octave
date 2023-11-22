@@ -392,7 +392,7 @@ $CLASS_NAME
 {
 public:
 
-  $CLASS_NAME (void)
+  $CLASS_NAME ()
 _END_EMIT_OPT_CLASS_HEADER_
 
   print '    : ';
@@ -421,9 +421,9 @@ _END_EMIT_OPT_CLASS_HEADER_
       return *this;
     }
 
-  ~$CLASS_NAME (void) { }\n";
+  ~$CLASS_NAME () { }\n";
 
-  print "\n  void init (void)\n    {\n";
+  print "\n  void init ()\n    {\n";
 
   for ($i = 0; $i < $OPT_NUM; $i++)
     {
@@ -452,7 +452,7 @@ _END_EMIT_OPT_CLASS_HEADER_
 
   emit_copy_body ('      ', 'opt');
 
-  print "    }\n\n  void set_default_options (void) { init (); }\n";
+  print "    }\n\n  void set_default_options () { init (); }\n";
 
   for ($i = 0; $i < $OPT_NUM; $i++)
     {
@@ -484,7 +484,7 @@ _END_EMIT_OPT_CLASS_HEADER_
 
   for ($i = 0; $i < $OPT_NUM; $i++)
     {
-      print "  $TYPE[$i] $OPT[$i] (void) const\n    { return $OPTVAR[$i]; }\n\n";
+      print "  $TYPE[$i] $OPT[$i] () const\n    { return $OPTVAR[$i]; }\n\n";
     }
 
   print "private:\n\n";

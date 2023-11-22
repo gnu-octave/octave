@@ -37,7 +37,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-profiler::stats::stats (void)
+profiler::stats::stats ()
   : m_time (0.0), m_calls (0), m_recursive (false),
     m_parents (), m_children ()
 { }
@@ -172,13 +172,13 @@ profiler::tree_node::get_hierarchical (double *total) const
   return retval;
 }
 
-profiler::profiler (void)
+profiler::profiler ()
   : m_known_functions (), m_fcn_index (),
     m_enabled (false), m_call_tree (new tree_node (nullptr, 0)),
     m_active_fcn (nullptr), m_last_time (-1.0)
 { }
 
-profiler::~profiler (void)
+profiler::~profiler ()
 {
   delete m_call_tree;
 }
@@ -253,7 +253,7 @@ profiler::exit_function (const std::string& fcn)
 }
 
 void
-profiler::reset (void)
+profiler::reset ()
 {
   if (enabled ())
     error ("profile: can't reset active profiler");
@@ -272,7 +272,7 @@ profiler::reset (void)
 }
 
 octave_value
-profiler::get_flat (void) const
+profiler::get_flat () const
 {
   octave_value retval;
 
@@ -334,7 +334,7 @@ profiler::get_flat (void) const
 }
 
 octave_value
-profiler::get_hierarchical (void) const
+profiler::get_hierarchical () const
 {
   octave_value retval;
 
@@ -360,7 +360,7 @@ profiler::get_hierarchical (void) const
 }
 
 double
-profiler::query_time (void) const
+profiler::query_time () const
 {
   sys::time now;
 
@@ -372,7 +372,7 @@ profiler::query_time (void) const
 }
 
 void
-profiler::add_current_time (void)
+profiler::add_current_time ()
 {
   if (m_active_fcn)
     {

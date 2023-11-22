@@ -24,9 +24,8 @@
 
 #include <termios.h>
 
-QUnixTerminalImpl::QUnixTerminalImpl(octave::base_qobject& oct_qobj,
-                                     QWidget *p)
-    : QTerminal(oct_qobj, p)
+QUnixTerminalImpl::QUnixTerminalImpl(QWidget *p)
+    : QTerminal(p)
 {
     initialize();
 }

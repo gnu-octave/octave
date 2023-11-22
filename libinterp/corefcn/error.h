@@ -48,18 +48,16 @@ public:
 
   OCTINTERP_API error_system (interpreter& interp);
 
-  error_system (const error_system&) = delete;
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (error_system)
 
-  error_system& operator = (const error_system&) = delete;
-
-  ~error_system (void) = default;
+  ~error_system () = default;
 
   OCTINTERP_API octave_value
   debug_on_error (const octave_value_list& args, int nargout);
 
   void set_debug_on_error (bool flag) { m_debug_on_error = flag; }
 
-  bool debug_on_error (void) const { return m_debug_on_error; }
+  bool debug_on_error () const { return m_debug_on_error; }
 
   bool debug_on_error (bool flag)
   {
@@ -73,7 +71,7 @@ public:
 
   void set_debug_on_caught (bool flag) { m_debug_on_caught = flag; }
 
-  bool debug_on_caught (void) const { return m_debug_on_caught; }
+  bool debug_on_caught () const { return m_debug_on_caught; }
 
   bool debug_on_caught (bool flag)
   {
@@ -87,7 +85,7 @@ public:
 
   void set_debug_on_warning (bool flag) { m_debug_on_warning = flag; }
 
-  bool debug_on_warning (void) const { return m_debug_on_warning; }
+  bool debug_on_warning () const { return m_debug_on_warning; }
 
   bool debug_on_warning (bool flag)
   {
@@ -104,7 +102,7 @@ public:
     m_discard_warning_messages = flag;
   }
 
-  bool discard_warning_messages (void) const
+  bool discard_warning_messages () const
   {
     return m_discard_warning_messages;
   }
@@ -121,7 +119,7 @@ public:
 
   void set_beep_on_error (bool flag) { m_beep_on_error = flag; }
 
-  bool beep_on_error (void) const { return m_beep_on_error; }
+  bool beep_on_error () const { return m_beep_on_error; }
 
   bool beep_on_error (bool flag)
   {
@@ -135,7 +133,7 @@ public:
 
   void set_backtrace_on_warning (bool flag) { m_backtrace_on_warning = flag; }
 
-  bool backtrace_on_warning (void) const { return m_backtrace_on_warning; }
+  bool backtrace_on_warning () const { return m_backtrace_on_warning; }
 
   bool backtrace_on_warning (bool flag)
   {
@@ -149,7 +147,7 @@ public:
 
   void set_verbose_warning (bool flag) { m_verbose_warning = flag; }
 
-  bool verbose_warning (void) const { return m_verbose_warning; }
+  bool verbose_warning () const { return m_verbose_warning; }
 
   bool verbose_warning (bool flag)
   {
@@ -163,7 +161,7 @@ public:
 
   void set_quiet_warning (bool flag) { m_quiet_warning = flag; }
 
-  bool quiet_warning (void) const { return m_quiet_warning; }
+  bool quiet_warning () const { return m_quiet_warning; }
 
   bool quiet_warning (bool flag)
   {
@@ -172,7 +170,7 @@ public:
     return val;
   }
 
-  octave_map warning_options (void) const { return m_warning_options; }
+  octave_map warning_options () const { return m_warning_options; }
 
   void set_warning_options (const octave_map& val)
   { m_warning_options = val; }
@@ -190,7 +188,7 @@ public:
   void set_last_error_message (const std::string& val)
   { m_last_error_message = val; }
 
-  std::string last_error_message (void) const { return m_last_error_message; }
+  std::string last_error_message () const { return m_last_error_message; }
 
   std::string last_error_message (const std::string& s)
   {
@@ -205,7 +203,7 @@ public:
   void set_last_warning_message (const std::string& val)
   { m_last_warning_message = val; }
 
-  std::string last_warning_message (void) const
+  std::string last_warning_message () const
   { return m_last_warning_message; }
 
   std::string last_warning_message (const std::string& s)
@@ -221,7 +219,7 @@ public:
   void set_last_warning_id (const std::string& val)
   { m_last_warning_id = val; }
 
-  std::string last_warning_id (void) const { return m_last_warning_id; }
+  std::string last_warning_id () const { return m_last_warning_id; }
 
   std::string last_warning_id (const std::string& s)
   {
@@ -235,7 +233,7 @@ public:
 
   void set_last_error_id (const std::string& val) { m_last_error_id = val; }
 
-  std::string last_error_id (void) const { return m_last_error_id; }
+  std::string last_error_id () const { return m_last_error_id; }
 
   std::string last_error_id (const std::string& s)
   {
@@ -249,7 +247,7 @@ public:
     m_last_error_stack = val;
   }
 
-  octave_map last_error_stack (void) const { return m_last_error_stack; }
+  octave_map last_error_stack () const { return m_last_error_stack; }
 
   octave_map last_error_stack (const octave_map& new_val)
   {
@@ -305,7 +303,7 @@ public:
 
   OCTINTERP_API octave_scalar_map warning_query (const std::string& id_arg);
 
-  OCTINTERP_API std::string default_warning_state (void);
+  OCTINTERP_API std::string default_warning_state ();
 
   OCTINTERP_API void display_warning_options (std::ostream& os);
 
@@ -314,7 +312,7 @@ public:
 
   OCTINTERP_API void disable_warning (const std::string& id);
 
-  OCTINTERP_API void initialize_default_warning_state (void);
+  OCTINTERP_API void initialize_default_warning_state ();
 
   OCTINTERP_API void interpreter_try (unwind_protect& frame);
 
@@ -333,13 +331,6 @@ public:
   OCTINTERP_API void throw_error (execution_exception& ee);
 
   OCTINTERP_API void save_exception (const execution_exception& ee);
-
-  // FIXME
-  //#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-  OCTAVE_DEPRECATED (7, "second argument is no longer accepted")
-  OCTINTERP_API void display_exception (const execution_exception& ee,
-                                        std::ostream& os) const;
-  //#endif
 
   OCTINTERP_API void display_exception (const execution_exception& ee) const;
 
@@ -572,45 +563,5 @@ extern OCTINTERP_API void disable_warning (const std::string& id);
 extern OCTINTERP_API void interpreter_try (octave::unwind_protect&);
 
 OCTAVE_END_NAMESPACE(octave)
-
-#if defined (OCTAVE_PROVIDE_DEPRECATED_SYMBOLS)
-OCTAVE_DEPRECATED (7, "use 'octave::defun_usage_message' instead")
-inline void defun_usage_message (const std::string& msg)
-{
-  octave::defun_usage_message (msg);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
-inline octave_value_list
-set_warning_state (const std::string& id, const std::string& state)
-{
-  return octave::set_warning_state (id, state);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::set_warning_state' instead")
-inline octave_value_list set_warning_state (const octave_value_list& args)
-{
-  return octave::set_warning_state (args);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::warning_enabled' instead")
-inline int warning_enabled (const std::string& id)
-{
-  return octave::warning_enabled (id);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::disable_warning' instead")
-inline void disable_warning (const std::string& id)
-{
-  octave::disable_warning (id);
-}
-
-OCTAVE_DEPRECATED (7, "use 'octave::interpreter_try' instead")
-inline void interpreter_try (octave::unwind_protect& uwp)
-{
-  octave::interpreter_try (uwp);
-}
-
-#endif
 
 #endif

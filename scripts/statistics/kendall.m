@@ -144,8 +144,8 @@ endfunction
 %! assert (kendall (x,y), 1, 5*eps);
 %! assert (kendall (x,fliplr (y)), -1, 5*eps);
 
-%!assert (kendall (logical (1)), 1)
-%!assert (kendall (single (1)), single (1))
+%!assert (kendall (1), NaN)
+%!assert (kendall (single (1)), single (NaN))
 
 ## Test input validation
 %!error <Invalid call> kendall ()

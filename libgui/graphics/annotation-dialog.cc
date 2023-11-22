@@ -33,19 +33,16 @@
 
 #include "gui-settings.h"
 #include "gui-preferences-gp.h"
-#include "octave-qobject.h"
+#include "gui-settings.h"
 
 #include "QtHandlesUtils.h"
 #include "annotation-dialog.h"
 #include "ui-annotation-dialog.h"
 
-using namespace octave;
-
-annotation_dialog::annotation_dialog (octave::base_qobject& oct_qobj,
-                                      QWidget *p, const octave_value_list& pr):
-  QDialog (p), m_octave_qobj (oct_qobj), ui (new Ui::annotation_dialog)
+annotation_dialog::annotation_dialog (QWidget *p, const octave_value_list& pr):
+  QDialog (p), m_ui (new Ui::annotation_dialog)
 {
-  props = pr;
+  m_props = pr;
 
   init ();
 }
@@ -53,36 +50,34 @@ annotation_dialog::annotation_dialog (octave::base_qobject& oct_qobj,
 void
 annotation_dialog::init ()
 {
-  ui->setupUi (this);
+  m_ui->setupUi (this);
 
-  octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-  octave::gui_settings *settings = rmgr.get_settings ();
+  octave::gui_settings settings;
 
   // restore last geometry
-  if (settings && settings->contains (gp_annotation_geometry.key))
-    restoreGeometry (settings->value (gp_annotation_geometry).toByteArray ());
+  if (settings.contains (gp_annotation_geometry.settings_key ()))
+    restoreGeometry (settings.byte_array_value (gp_annotation_geometry));
 
   // connect signals
-  connect (ui->button_box, &QDialogButtonBox::clicked,
+  connect (m_ui->button_box, &QDialogButtonBox::clicked,
            this, &annotation_dialog::button_clicked);
 
-  connect (ui->edit_string, &QLineEdit::textChanged,
+  connect (m_ui->edit_string, &QLineEdit::textChanged,
            this, &annotation_dialog::edit_string_changed);
 
-  connect (ui->btn_color, &QPushButton::clicked,
+  connect (m_ui->btn_color, &QPushButton::clicked,
            this, &annotation_dialog::prompt_for_color);
 
-  connect (ui->btn_background_color, &QPushButton::clicked,
+  connect (m_ui->btn_background_color, &QPushButton::clicked,
            this, &annotation_dialog::prompt_for_color);
 
-  connect (ui->btn_edge_color, &QPushButton::clicked,
+  connect (m_ui->btn_edge_color, &QPushButton::clicked,
            this, &annotation_dialog::prompt_for_color);
 
   // set gui element to default values
-  ui->cb_fit_box_to_text->setChecked (true);
-  ui->cb_horz_align->setCurrentIndex (ui->cb_horz_align->findText ("left"));
-  ui->cb_vert_align->setCurrentIndex (ui->cb_vert_align->findText ("middle"));
+  m_ui->cb_fit_box_to_text->setChecked (true);
+  m_ui->cb_horz_align->setCurrentIndex (m_ui->cb_horz_align->findText ("left"));
+  m_ui->cb_vert_align->setCurrentIndex (m_ui->cb_vert_align->findText ("middle"));
 
   // set gui elements to any values from input properties
   set_gui_props ();
@@ -90,7 +85,7 @@ annotation_dialog::init ()
 
 annotation_dialog::~annotation_dialog ()
 {
-  delete ui;
+  delete m_ui;
 }
 
 // internal slots
@@ -99,15 +94,12 @@ void
 annotation_dialog::button_clicked (QAbstractButton *button)
 {
   QDialogButtonBox::ButtonRole button_role
-    = ui->button_box->buttonRole (button);
+    = m_ui->button_box->buttonRole (button);
 
-  octave::resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-
-  octave::gui_settings *settings = rmgr.get_settings ();
+  octave::gui_settings settings;
 
   // save position
-  if (settings)
-    settings->setValue (gp_annotation_geometry.key, saveGeometry ());
+  settings.setValue (gp_annotation_geometry.settings_key (), saveGeometry ());
 
   if (button_role == QDialogButtonBox::ApplyRole
       || button_role == QDialogButtonBox::AcceptRole)
@@ -123,83 +115,83 @@ annotation_dialog::button_clicked (QAbstractButton *button)
 octave_value_list
 annotation_dialog::get_properties () const
 {
-  return props;
+  return m_props;
 }
 
 void
 annotation_dialog::get_gui_props ()
 {
   // set props to the values of the gui
-  props = octave_value_list ();
+  m_props = octave_value_list ();
 
   Matrix position(1, 4);
-  position(0) = ui->sb_x->value ();
-  position(1) = ui->sb_y->value ();
-  position(2) = ui->sb_width->value ();
-  position(3) = ui->sb_height->value ();
-  props.append (ovl ("textbox", position));
+  position(0) = m_ui->sb_x->value ();
+  position(1) = m_ui->sb_y->value ();
+  position(2) = m_ui->sb_width->value ();
+  position(3) = m_ui->sb_height->value ();
+  m_props.append (ovl ("textbox", position));
 
-  props.append (ovl ("string", ui->edit_string->text ().toStdString ()));
-  props.append (ovl ("fitboxtotext",
-                     ui->cb_fit_box_to_text->isChecked () ? "on" : "off"));
+  m_props.append (ovl ("string", m_ui->edit_string->text ().toStdString ()));
+  m_props.append (ovl ("fitboxtotext",
+                     m_ui->cb_fit_box_to_text->isChecked () ? "on" : "off"));
 
   // FIXME: only "normalized" units is selectable, change the code below
   //        once more units are added in the UI.
   std::string tmpstr;
-  props.append (ovl ("units", "normalized"));
+  m_props.append (ovl ("units", "normalized"));
 
-  tmpstr = (ui->cb_horz_align->currentIndex () == 0 ? "left" :
-            (ui->cb_horz_align->currentIndex () == 1 ? "center" : "right"));
-  props.append (ovl ("horizontalalignment", tmpstr));
+  tmpstr = (m_ui->cb_horz_align->currentIndex () == 0 ? "left" :
+            (m_ui->cb_horz_align->currentIndex () == 1 ? "center" : "right"));
+  m_props.append (ovl ("horizontalalignment", tmpstr));
 
-  tmpstr = (ui->cb_vert_align->currentIndex () == 0 ? "top" :
-            (ui->cb_horz_align->currentIndex () == 1 ? "middle" : "bottom"));
-  props.append (ovl ("verticalalignment", tmpstr));
+  tmpstr = (m_ui->cb_vert_align->currentIndex () == 0 ? "top" :
+            (m_ui->cb_horz_align->currentIndex () == 1 ? "middle" : "bottom"));
+  m_props.append (ovl ("verticalalignment", tmpstr));
 
-  tmpstr = ui->cb_font_name->currentText ().toStdString ();
-  props.append (ovl ("fontname", tmpstr));
+  tmpstr = m_ui->cb_font_name->currentText ().toStdString ();
+  m_props.append (ovl ("fontname", tmpstr));
 
-  props.append (ovl ("fontsize", ui->sb_font_size->value ()));
-  props.append (ovl ("fontweight",
-                     ui->cb_font_bold->isChecked () ? "bold" : "normal"));
-  props.append (ovl ("fontangle",
-                     ui->cb_font_italic->isChecked () ? "italic" : "normal"));
-  props.append (ovl ("color", Utils::toRgb (ui->btn_color->palette ().
+  m_props.append (ovl ("fontsize", m_ui->sb_font_size->value ()));
+  m_props.append (ovl ("fontweight",
+                     m_ui->cb_font_bold->isChecked () ? "bold" : "normal"));
+  m_props.append (ovl ("fontangle",
+                     m_ui->cb_font_italic->isChecked () ? "italic" : "normal"));
+  m_props.append (ovl ("color", octave::Utils::toRgb (m_ui->btn_color->palette ().
                      color (QPalette::Button))));
 
   // FIXME: only "none" linestyle is selectable, change the code bellow
   //        once more linestyles are added in the UI.
-  props.append (ovl ("linestyle", "none"));
+  m_props.append (ovl ("linestyle", "none"));
 }
 
 void
 annotation_dialog::set_gui_props ()
 {
   // set the gui to the values from the props
-  octave_idx_type len = props.length ();
+  octave_idx_type len = m_props.length ();
 
   for (int i=0; i<len/2; i++)
     {
-      std::string name = props(i*2).string_value ();
+      std::string name = m_props(i*2).string_value ();
 
       if (name == "textbox")
         {
-          Matrix position = props(2*i +1).matrix_value ();
+          Matrix position = m_props(2*i +1).matrix_value ();
           int nels = position.numel ();
           if (nels >= 2)
             {
-              ui->sb_x->setValue (position(0));
-              ui->sb_y->setValue (position(1));
+              m_ui->sb_x->setValue (position(0));
+              m_ui->sb_y->setValue (position(1));
             }
           else
             {
-              ui->sb_x->setValue (0);
-              ui->sb_y->setValue (0);
+              m_ui->sb_x->setValue (0);
+              m_ui->sb_y->setValue (0);
             }
           if (nels >= 4)
             {
-              ui->sb_width->setValue (position(2));
-              ui->sb_height->setValue (position(3));
+              m_ui->sb_width->setValue (position(2));
+              m_ui->sb_height->setValue (position(3));
             }
           // FIXME: Should there be an else branch here?
           // In annotation.m "textbox" is forced to have a 4-elem vector.
@@ -207,65 +199,65 @@ annotation_dialog::set_gui_props ()
       else if (name == "string")
         {
           // FIXME: handle if is array of strings ?
-          ui->edit_string->setText (props(2*i +1).string_value ().c_str ());
+          m_ui->edit_string->setText (m_props(2*i +1).string_value ().c_str ());
         }
       else if (name == "fitboxtotext")
         {
-          ui->cb_fit_box_to_text->setChecked (props(1*i +1).string_value () == "on");
+          m_ui->cb_fit_box_to_text->setChecked (m_props(1*i +1).string_value () == "on");
         }
       else if (name == "units")
         {
-          ui->cb_units->setCurrentIndex
-            (ui->cb_units->findText (props(1*i +1).string_value ().c_str ()));
+          m_ui->cb_units->setCurrentIndex
+            (m_ui->cb_units->findText (m_props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "horizontalalignment")
         {
-          ui->cb_horz_align->setCurrentIndex
-            (ui->cb_horz_align->findText (props(1*i +1).string_value ().c_str ()));
+          m_ui->cb_horz_align->setCurrentIndex
+            (m_ui->cb_horz_align->findText (m_props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "verticalalignment")
         {
-          ui->cb_vert_align->setCurrentIndex
-            (ui->cb_vert_align->findText (props(1*i +1).string_value ().c_str ()));
+          m_ui->cb_vert_align->setCurrentIndex
+            (m_ui->cb_vert_align->findText (m_props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "fontname")
         {
-          ui->cb_vert_align->setCurrentIndex
-            (ui->cb_font_name->findText (props(1*i +1).string_value ().c_str ()));
+          m_ui->cb_vert_align->setCurrentIndex
+            (m_ui->cb_font_name->findText (m_props(1*i +1).string_value ().c_str ()));
         }
       else if (name == "fontsize")
         {
-          ui->sb_font_size->setValue (props(1*i +1).float_value ());
+          m_ui->sb_font_size->setValue (m_props(1*i +1).float_value ());
         }
       else if (name == "fontweight")
         {
-          ui->cb_font_bold->setChecked (props(1*i +1).string_value () == "bold");
+          m_ui->cb_font_bold->setChecked (m_props(1*i +1).string_value () == "bold");
         }
       else if (name == "fontangle")
         {
-          ui->cb_font_italic->setChecked (props(1*i +1).string_value () == "italic");
+          m_ui->cb_font_italic->setChecked (m_props(1*i +1).string_value () == "italic");
         }
       else if (name == "color")
         {
           QColor color;
-          if (props(1*i +1).is_matrix_type ())
-            color = Utils::fromRgb (props(2*i +1).matrix_value ());
+          if (m_props(1*i +1).is_matrix_type ())
+            color = octave::Utils::fromRgb (m_props(2*i +1).matrix_value ());
           else
-            color.setNamedColor (props(2*i +1).string_value ().c_str ());
+            color.setNamedColor (m_props(2*i +1).string_value ().c_str ());
 
           if (color.isValid ())
-            ui->btn_color->setPalette (QPalette (color));
+            m_ui->btn_color->setPalette (QPalette (color));
         }
 
     }
 
-  edit_string_changed (ui->edit_string->text ());
+  edit_string_changed (m_ui->edit_string->text ());
 }
 
 void
 annotation_dialog::edit_string_changed (const QString& str)
 {
-  ui->button_box->button (QDialogButtonBox::Ok)->setEnabled (str.length () > 0);
+  m_ui->button_box->button (QDialogButtonBox::Ok)->setEnabled (str.length () > 0);
 }
 
 void

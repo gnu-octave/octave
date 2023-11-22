@@ -43,13 +43,27 @@ OCTAVE_BEGIN_NAMESPACE(sys)
 
 extern OCTAVE_API int system (const std::string& cmd_str);
 
-extern OCTAVE_API std::string getcwd (void);
+extern OCTAVE_API std::string getcwd ();
 
 extern OCTAVE_API int chdir (const std::string&);
 
 extern OCTAVE_API bool
 get_dirlist (const std::string& dirname, string_vector& dirlist,
              std::string& msg);
+
+extern OCTAVE_API bool
+file_exists (const std::string& filename, bool is_dir = true);
+
+extern OCTAVE_API bool
+file_exists (const std::string& filename, bool is_dir, std::string& msg);
+
+extern OCTAVE_API bool dir_exists (const std::string& dirname);
+
+extern OCTAVE_API bool
+dir_exists (const std::string& dirname, std::string& msg);
+
+extern OCTAVE_API bool
+same_file (const std::string& f, const std::string& g);
 
 extern OCTAVE_API std::FILE *
 fopen (const std::string& name, const std::string& mode);
@@ -73,6 +87,8 @@ extern OCTAVE_API void
 putenv_wrapper (const std::string& name, const std::string& value);
 
 extern OCTAVE_API std::string getenv_wrapper (const std::string&);
+
+extern OCTAVE_API bool isenv_wrapper (const std::string&);
 
 extern OCTAVE_API int unsetenv_wrapper (const std::string&);
 

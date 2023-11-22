@@ -27,6 +27,7 @@
 #  include "config.h"
 #endif
 
+#include <QGuiApplication>
 #include <QScreen>
 
 // This header is only needed for the new terminal widget.
@@ -39,23 +40,26 @@
 
 #include "gui-preferences-cs.h"
 #include "gui-preferences-global.h"
+#include "gui-preferences-sc.h"
+#include "gui-settings.h"
 
-#include "octave-qobject.h"
 #include "terminal-dock-widget.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 terminal_dock_widget::terminal_dock_widget (QWidget *p,
-                                            base_qobject& oct_qobj)
-: octave_dock_widget ("TerminalDockWidget", p, oct_qobj),
-  m_experimental_terminal_widget (oct_qobj.experimental_terminal_widget ())
+                                            bool experimental_terminal_widget)
+  : octave_dock_widget ("TerminalDockWidget", p),
+    m_experimental_terminal_widget (experimental_terminal_widget)
 {
+  init_control_d_shortcut_behavior ();
+
   // FIXME: we could do this in a better way, but improving it doesn't
   // matter much if we will eventually be removing the old terminal.
   if (m_experimental_terminal_widget)
     {
 #if defined (HAVE_QSCINTILLA)
-      command_widget *widget = new command_widget (oct_qobj, this);
+      command_widget *widget = new command_widget (this);
       console *con = widget->get_console ();
 
       connect (this, &terminal_dock_widget::settings_changed,
@@ -68,17 +72,17 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
                widget, &command_widget::insert_interpreter_output);
 
       connect (this, &terminal_dock_widget::execute_command_signal,
-               con, &console::execute_command);
+              con, &console::execute_command);
 
       connect (this, &terminal_dock_widget::new_command_line_signal,
-               con, &console::new_command_line);
+              con, &console::new_command_line);
 
       m_terminal = widget;
 #endif
     }
   else
     {
-      QTerminal *widget = QTerminal::create (oct_qobj, this);
+      QTerminal *widget = QTerminal::create (this);
 
       connect (this, &terminal_dock_widget::settings_changed,
                widget, &QTerminal::notice_settings);
@@ -87,6 +91,12 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
       // dis-/enabling timers.
       connect (this, &terminal_dock_widget::visibilityChanged,
                widget, &QTerminal::handle_visibility_changed);
+
+      connect (widget, QOverload<const fcn_callback&>::of (&QTerminal::interpreter_event),
+               this, QOverload<const fcn_callback&>::of (&terminal_dock_widget::interpreter_event));
+
+      connect (widget, QOverload<const meth_callback&>::of (&QTerminal::interpreter_event),
+               this, QOverload<const meth_callback&>::of (&terminal_dock_widget::interpreter_event));
 
       m_terminal = widget;
     }
@@ -101,16 +111,16 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
 
   // Chose a reasonable size at startup in order to avoid truncated
   // startup messages
-  resource_manager& rmgr = m_octave_qobj.get_resource_manager ();
-  gui_settings *settings = rmgr.get_settings ();
+
+  gui_settings settings;
 
   QFont font = QFont ();
   font.setStyleHint (QFont::TypeWriter);
-  QString default_font = settings->value (global_mono_font).toString ();
+  QString default_font = settings.string_value (global_mono_font);
   font.setFamily
-    (settings->value (cs_font.key, default_font).toString ());
+    (settings.value (cs_font.settings_key (), default_font).toString ());
   font.setPointSize
-    (settings->value (cs_font_size).toInt ());
+    (settings.int_value (cs_font_size));
 
   QFontMetrics metrics(font);
 
@@ -131,29 +141,29 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
     make_window ();
 }
 
-bool terminal_dock_widget::has_focus (void) const
+bool terminal_dock_widget::has_focus () const
 {
   QWidget *w = widget ();
   return w->hasFocus ();
 }
 
-QTerminal * terminal_dock_widget::get_qterminal (void)
+QTerminal * terminal_dock_widget::get_qterminal ()
 {
   return (m_experimental_terminal_widget
           ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
 }
 
 #if defined (HAVE_QSCINTILLA)
-command_widget * terminal_dock_widget::get_command_widget (void)
+command_widget * terminal_dock_widget::get_command_widget ()
 {
   return (m_experimental_terminal_widget
           ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
 }
 #endif
 
-void terminal_dock_widget::notice_settings (const gui_settings *settings)
+void terminal_dock_widget::notice_settings ()
 {
-  emit settings_changed (settings);
+  emit settings_changed ();
 }
 
 void terminal_dock_widget::init_command_prompt ()
@@ -166,6 +176,41 @@ void terminal_dock_widget::init_command_prompt ()
         cmd->init_command_prompt ();
 #endif
     }
+}
+
+void terminal_dock_widget::init_control_d_shortcut_behavior ()
+{
+  gui_settings settings;
+
+  // Reset use of Ctrl-D.  Do this before the call to beginGroup
+  // because sc_main_ctrld.key already begins with the sc_group
+  // prefix.
+  settings.setValue (sc_main_ctrld.settings_key (), false);
+
+  settings.beginGroup (sc_group);
+  const QStringList shortcut_settings_keys = settings.allKeys ();
+  settings.endGroup ();
+
+  for (const auto& settings_key : shortcut_settings_keys)
+    {
+      // Check whether Ctrl+D is used from main window, i.e. is a
+      // global shortcut.
+
+      QString section = get_shortcut_section (settings_key);
+
+      if (section.startsWith ("main_"))
+        {
+          sc_pref scpref = all_shortcut_preferences::value (settings_key);
+
+          QKeySequence actual = QKeySequence (settings.sc_value (scpref));
+
+          if (actual == QKeySequence (Qt::ControlModifier | Qt::Key_D))
+            {
+              settings.setValue (sc_main_ctrld.settings_key (), true);
+              break;
+            }
+        }
+   }
 }
 
 OCTAVE_END_NAMESPACE(octave)

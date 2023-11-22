@@ -82,8 +82,7 @@ is in the upper left corner, by doing:
   if (args.length () != 3)
     print_usage ();
 
-  const Array<octave_idx_type> sel_arg = args(
-      2).xoctave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
+  const Array<octave_idx_type> sel_arg = args(2).xoctave_idx_type_vector_value ("ordschur: SELECT must be an array of integers");
 
   const octave_idx_type sel_n = sel_arg.numel ();
 
@@ -98,10 +97,8 @@ is in the upper left corner, by doing:
 
   octave_value_list retval;
 
-  const bool double_type  = args(0).is_double_type ()
-                            || args(1).is_double_type ();
-  const bool complex_type = args(0).iscomplex ()
-                            || args(1).iscomplex ();
+  const bool double_type = args(0).is_double_type () || args(1).is_double_type ();
+  const bool complex_type = args(0).iscomplex () || args(1).iscomplex ();
 
 #define PREPARE_ARGS(TYPE, TYPE_M, TYPE_COND)                           \
   TYPE ## Matrix U = args(0).x ## TYPE_M ## _value                      \

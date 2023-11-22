@@ -41,15 +41,15 @@ base_mutex
 public:
   friend class mutex;
 
-  base_mutex (void) = default;
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (base_mutex)
 
-  virtual ~base_mutex (void) = default;
+  virtual ~base_mutex () = default;
 
-  virtual void lock (void);
+  virtual void lock ();
 
-  virtual void unlock (void);
+  virtual void unlock ();
 
-  virtual bool try_lock (void);
+  virtual bool try_lock ();
 };
 
 class
@@ -57,25 +57,21 @@ OCTAVE_API
 mutex
 {
 public:
-  mutex (void);
+  mutex ();
 
-  mutex (const mutex& m) = default;
+  OCTAVE_DEFAULT_COPY_MOVE_DELETE (mutex)
 
-  ~mutex (void) = default;
-
-  mutex& operator = (const mutex& m) = default;
-
-  void lock (void)
+  void lock ()
   {
     m_rep->lock ();
   }
 
-  void unlock (void)
+  void unlock ()
   {
     m_rep->unlock ();
   }
 
-  bool try_lock (void)
+  bool try_lock ()
   {
     return m_rep->try_lock ();
   }
@@ -101,21 +97,17 @@ public:
       m_lock_result = m_mutex.try_lock ();
   }
 
-  // No copying.
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (autolock)
 
-  autolock (const autolock&) = delete;
-
-  autolock& operator = (const autolock&) = delete;
-
-  ~autolock (void)
+  ~autolock ()
   {
     if (m_lock_result)
       m_mutex.unlock ();
   }
 
-  bool ok (void) const { return m_lock_result; }
+  bool ok () const { return m_lock_result; }
 
-  operator bool (void) const { return ok (); }
+  operator bool () const { return ok (); }
 
 private:
 
@@ -131,9 +123,9 @@ thread
 {
 public:
 
-  static void init (void);
+  static void init ();
 
-  static bool is_thread (void);
+  static bool is_thread ();
 };
 
 OCTAVE_END_NAMESPACE(octave)

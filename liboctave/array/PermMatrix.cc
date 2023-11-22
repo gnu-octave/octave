@@ -34,7 +34,7 @@
 
 OCTAVE_NORETURN static
 void
-err_invalid_permutation (void)
+err_invalid_permutation ()
 {
   (*current_liboctave_error_handler) ("PermMatrix: invalid permutation vector");
 }
@@ -98,7 +98,7 @@ PermMatrix::checkelem (octave_idx_type i, octave_idx_type j) const
 }
 
 PermMatrix
-PermMatrix::transpose (void) const
+PermMatrix::transpose () const
 {
   octave_idx_type len = Array<octave_idx_type>::numel ();
 
@@ -111,13 +111,13 @@ PermMatrix::transpose (void) const
 }
 
 PermMatrix
-PermMatrix::inverse (void) const
+PermMatrix::inverse () const
 {
   return transpose ();
 }
 
 octave_idx_type
-PermMatrix::determinant (void) const
+PermMatrix::determinant () const
 {
   // Determine the sign of a permutation in linear time.
   // Is this widely known?

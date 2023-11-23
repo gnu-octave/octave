@@ -1187,9 +1187,9 @@ Given a Cholesky@tie{}factorization of a real symmetric or complex Hermitian
 positive definite matrix @w{@var{A} = @var{R}'*@var{R}}, @var{R}@tie{}upper
 triangular, return the Cholesky@tie{}factorization of
 @w{@var{A}(p,p)}, where @w{p} is the permutation @*
-@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*
+@code{p = [1:i-1, circshift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*
  or @*
-@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*
+@code{p = [1:j-1, circshift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*
 
 @seealso{chol, cholupdate, cholinsert, choldelete}
 @end deftypefn */)
@@ -1276,13 +1276,13 @@ triangular, return the Cholesky@tie{}factorization of
 %!test
 %! R = chol (A);
 %!
-%! i = 1;  j = 3;  p = [1:i-1, shift(i:j,-1), j+1:4];
+%! i = 1;  j = 3;  p = [1:i-1, circshift(i:j,-1), j+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
 %! assert (norm (R1'*R1 - A(p,p), Inf), 0, 1e1*eps);
 %!
-%! j = 1;  i = 3;  p = [1:j-1, shift(j:i,+1), i+1:4];
+%! j = 1;  i = 3;  p = [1:j-1, circshift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1) - R1, Inf), 0);
@@ -1291,13 +1291,13 @@ triangular, return the Cholesky@tie{}factorization of
 %!test
 %! R = chol (Ac);
 %!
-%! i = 1;  j = 3;  p = [1:i-1, shift(i:j,-1), j+1:4];
+%! i = 1;  j = 3;  p = [1:i-1, circshift(i:j,-1), j+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
 %! assert (norm (R1'*R1 - Ac(p,p), Inf), 0, 1e1*eps);
 %!
-%! j = 1;  i = 3;  p = [1:j-1, shift(j:i,+1), i+1:4];
+%! j = 1;  i = 3;  p = [1:j-1, circshift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
@@ -1306,13 +1306,13 @@ triangular, return the Cholesky@tie{}factorization of
 %!test
 %! R = chol (single (A));
 %!
-%! i = 1;  j = 3;  p = [1:i-1, shift(i:j,-1), j+1:4];
+%! i = 1;  j = 3;  p = [1:i-1, circshift(i:j,-1), j+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
 %! assert (norm (R1'*R1 - single (A(p,p)), Inf), 0, 1e1* eps ("single"));
 %!
-%! j = 1;  i = 3;  p = [1:j-1, shift(j:i,+1), i+1:4];
+%! j = 1;  i = 3;  p = [1:j-1, circshift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
@@ -1321,13 +1321,13 @@ triangular, return the Cholesky@tie{}factorization of
 %!test
 %! R = chol (single (Ac));
 %!
-%! i = 1;  j = 3;  p = [1:i-1, shift(i:j,-1), j+1:4];
+%! i = 1;  j = 3;  p = [1:i-1, circshift(i:j,-1), j+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);
 %! assert (norm (R1'*R1 - single (Ac(p,p)), Inf), 0, 1e1* eps ("single"));
 %!
-%! j = 1; i = 3; p = [1:j-1, shift(j:i,+1), i+1:4];
+%! j = 1; i = 3; p = [1:j-1, circshift(j:i,+1), i+1:4];
 %! R1 = cholshift (R, i, j);
 %!
 %! assert (norm (triu (R1)-R1, Inf), 0);

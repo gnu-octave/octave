@@ -1923,9 +1923,9 @@ Given a QR@tie{}factorization of a real or complex matrix
 @w{@var{A} = @var{Q}*@var{R}}, @var{Q}@tie{}unitary and
 @var{R}@tie{}upper trapezoidal, return the QR@tie{}factorization
 of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
-@code{p = [1:i-1, shift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*
+@code{p = [1:i-1, circshift(i:j, 1), j+1:n]} if @w{@var{i} < @var{j}} @*
  or @*
-@code{p = [1:j-1, shift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*
+@code{p = [1:j-1, circshift(j:i,-1), i+1:n]} if @w{@var{j} < @var{i}}.  @*
 
 @seealso{qr, qrupdate, qrinsert, qrdelete}
 @end deftypefn */)
@@ -2009,7 +2009,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 /*
 %!test
 %! AA = A.';
-%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
+%! i = 2;  j = 4;  p = [1:i-1, circshift(i:j,-1), j+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
@@ -2017,7 +2017,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %! assert (norm (vec (triu (R) - R), Inf), 0);
 %! assert (norm (vec (Q*R - AA(:,p)), Inf), 0, norm (AA)*1e1*eps);
 %!
-%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, circshift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
@@ -2027,7 +2027,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %!
 %!test
 %! AA = Ac.';
-%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
+%! i = 2;  j = 4;  p = [1:i-1, circshift(i:j,-1), j+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
@@ -2035,7 +2035,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %! assert (norm (vec (triu (R) - R), Inf), 0);
 %! assert (norm (vec (Q*R - AA(:,p)), Inf), 0, norm (AA)*1e1*eps);
 %!
-%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, circshift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
@@ -2045,7 +2045,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 
 %!test
 %! AA = single (A).';
-%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
+%! i = 2;  j = 4;  p = [1:i-1, circshift(i:j,-1), j+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
@@ -2055,7 +2055,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %! assert (norm (vec (Q*R - AA(:,p)), Inf), single (0), ...
 %!         norm (AA)*1e1 * eps ("single"));
 %!
-%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, circshift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
@@ -2067,7 +2067,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %!
 %!test
 %! AA = single (Ac).';
-%! i = 2;  j = 4;  p = [1:i-1, shift(i:j,-1), j+1:5];
+%! i = 2;  j = 4;  p = [1:i-1, circshift(i:j,-1), j+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);
@@ -2077,7 +2077,7 @@ of @w{@var{A}(:,p)}, where @w{p} is the permutation @*
 %! assert (norm (vec (Q*R - AA(:,p)), Inf), single (0), ...
 %!         norm (AA)*1e1 * eps ("single"));
 %!
-%! j = 2;  i = 4;  p = [1:j-1, shift(j:i,+1), i+1:5];
+%! j = 2;  i = 4;  p = [1:j-1, circshift(j:i,+1), i+1:5];
 %!
 %! [Q,R] = qr (AA);
 %! [Q,R] = qrshift (Q, R, i, j);

@@ -1,9 +1,7 @@
 FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_FCN_FILES = \
-  %reldir%/.oct-config \
-  %reldir%/shift.m \
-  %reldir%/sparse_auto_mutate.m
+  %reldir%/.oct-config
 
 %canon_reldir%dir = $(fcnfiledir)/deprecated
 

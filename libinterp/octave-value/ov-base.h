@@ -1010,9 +1010,6 @@ private:
   octave::auto_shlib m_containing_dynamic_library;
 };
 
-OCTAVE_DEPRECATED (8, "Vsparse_auto_mutate is obsolete and is now always false")
-extern OCTINTERP_API bool Vsparse_auto_mutate;
-
 // Utility function to convert C++ arguments used in subsref/subsasgn into an
 // octave_value_list object that can be used to call a function/method in the
 // interpreter.

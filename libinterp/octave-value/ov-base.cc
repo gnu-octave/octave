@@ -99,9 +99,6 @@ std::string btyp_class_name[btyp_num_types+1] =
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_base_value,
                                      "<unknown type>", "unknown");
 
-// DEPRECATED in Octave 8.
-bool Vsparse_auto_mutate = false;
-
 #if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
    // Disable this warning for the use of the "count" member variable in
    // the default constructor.  Push the current state so we can restore

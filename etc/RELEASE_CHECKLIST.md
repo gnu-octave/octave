@@ -24,6 +24,9 @@ Completion Date:
   `etc/HACKING.md`).
 * Bump version numbers in `configure.ac` on default branch (see
   `etc/HACKING.md`).
+* Create new `etc/NEWS.VERSION+1.md` file on default branch by copying
+  `etc/NEWS.VERSION.md` and then removing text so that it is a template file
+  with headings only.
 
 ### ⚙️ Update gnulib to latest version ###
 
@@ -37,10 +40,13 @@ gnulib version.
 
 Completion Date:
 
-* Put out a general call for reports on [Octave Discourse](https://octave.discourse.group/) for all outstanding unreported known bugs.
-* Create Savannah tag `VERSION.0.90` on bug tracker for 1st release candidate.
+* Put out a general call for reports on [Octave Discourse](https://octave.discourse.group/) for all outstanding, but unreported, known bugs.
+* Create Savannah `Release` tag `VERSION.0.90` on bug tracker for 1st release
+  candidate.
 * Mark items that should be fixed for the release with this tag.
-* Bug overview at <https://octave.space/savannah/>.
+* Update Savannah `Planned Release` and `Fixed Release` tags by adding
+  `VERSION.1.0 (current stable)` and `VERSION+1.1.0 (current default)`.
+* Review bug overview at <https://octave.space/savannah/>.
 
 ### 📢 Update GUI translation files ###
 
@@ -50,7 +56,7 @@ Completion Date:
   might change GUI strings.
 * String freeze date:
 * Update language translation files (`*.ts`).  See instructions in
-  `libgui/languages/build_ts/README.md`).
+  `libgui/languages/build_ts/README.md`.
 * Create bug report on Savannah as a centralized location for uploading files
   and tracking status of translations.
 * Call for translations of GUI strings on [Octave Discourse Maintainers](https://octave.discourse.group/c/maintainers/7), CC-ing the translators (see [list of translators](https://hg.savannah.gnu.org/hgweb/octave/file/tip/libgui/languages/translators)).
@@ -70,8 +76,7 @@ Completion Date:
 
     `hg diff | grep ^[-+][^-+] | sed 's/[0-9][0-9][0-9][0-9]-/YYYY-/' | sort -u`
 
-
-* Update dates in any other locations (launch message, citation, MXE files,
+* Update dates in any other locations (`CITATION`, launch message, MXE files,
   etc.).
 * Add any new contributors to `doc/interpreter/contributors.in` who wish to be
   mentioned (don't add them without permission).
@@ -167,10 +172,10 @@ Completion Date:
 * Update web site files: `NEWS-VERSION.html`, `index.in`, `news.in`, and
   `download.in`.
 * Update <https://wiki.octave.org/Release_History> page.
-* Update Savannah bug tracker version info to have new release number.
+* Update Savannah bug tracker `Release` field to have new release number.
 * Update Savannah bug tracker: **OPEN** bugs marked as **WON'T FIX** should be
   marked as **CONFIRMED** (or more appropriate) for the final release.
-* Hide release candidate versions in Savannah.
+* Hide release candidate versions for `Release` field on Savannah.
 
 ### 📢 Announce final release ###
 
@@ -191,9 +196,8 @@ Completion Date:
 
 Completion Date:
 
-* Remove all deprecated functions (either tagged with `OCTAVE_DEPRECATED` in
-  C++ or in the directory `scripts/deprecated` for m-files) scheduled for
-  deletion on default branch.  Check file `etc/NEWS.VERSION-2.md` for list of
-  features that have been deprecated.
-* Create new `etc/NEWS.VERSION+1.md` file by copying `etc/NEWS.VERSION.md` and
-  then removing text so that it is a template file with headings only.
+* Remove all deprecated functions scheduled for deletion on default
+  branch.  These functions are tagged with `OCTAVE_DEPRECATED` in C++ or are
+  m-files located in the directory `scripts/deprecated`.  Check file
+  `etc/NEWS.VERSION-2.md` for list of features that have been deprecated.
+

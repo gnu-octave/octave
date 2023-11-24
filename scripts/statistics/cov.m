@@ -98,7 +98,7 @@
 ##   @math{N}, being used to calculated each element of the covariance matrix.
 ## @end table
 ##
-## Compatibility Note:  Previous versions of @code{cov} treated rows
+## Compatibility Note: Previous versions of @code{cov} treated rows
 ## @var{x} and @var{y} as multivariate random variables.  This version
 ## attempts to maintain full compatibility with @sc{matlab} by treating
 ## @var{x} and @var{y} as two univariate distributions regardless of shape,

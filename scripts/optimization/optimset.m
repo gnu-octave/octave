@@ -125,18 +125,18 @@
 ## @item Updating
 ## @end table
 ##
-## This list can be extended by the user or other loaded Octave packages. An
+## This list can be extended by the user or other loaded Octave packages.  An
 ## updated valid parameters list can be queried using the no-argument form of
 ## @code{optimset}.
 ##
-## Note 1:  Only parameter names from the standard list are considered when
+## Note 1: Only parameter names from the standard list are considered when
 ## matching short parameter names, and @var{par} will always be expanded
 ## to match a standard parameter even if an exact non-standard match exists.
 ## The value of a non-standard parameter that is ambigious with one or more
 ## standard parameters cannot be set by @code{optimset} and can only be set
 ## using @code{setfield} or dot notation for structs.
 ##
-## Note 2:  The optimization options structure is primarily intended for
+## Note 2: The optimization options structure is primarily intended for
 ## manipulation of known parameters by @code{optimset} and @code{optimget}.
 ## Unpredictable behavior on future calls to @code{optimset} or
 ## @code{optimget} can result from creating non-standard or ambiguous

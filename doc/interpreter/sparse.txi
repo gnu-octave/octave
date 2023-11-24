@@ -150,9 +150,9 @@ contents of these three vectors for the above matrix will be
 
 Note that this is the representation of these elements with the first row
 and column assumed to start at zero, while in Octave itself the row and
-column indexing starts at one.  Thus the number of elements in the
-@var{i}-th column is given by @code{@var{cidx} (@var{i} + 1) -
-@var{cidx} (@var{i})}.
+column indexing starts at one.  Thus, the number of elements in the
+@var{i}-th column is given by
+@code{@var{cidx} (@var{i} + 1) - @var{cidx} (@var{i})}.
 
 Although Octave uses a compressed column format, it should be noted
 that compressed row formats are equally possible.  However, in the

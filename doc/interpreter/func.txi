@@ -1987,9 +1987,11 @@ create apparent ambiguities with mathematical and logical expressions that
 use function syntax.  For example, all three of the statements
 
 @example
+@group
 arg1 - arg2
 arg1 -arg2
 arg1-arg2
+@end group
 @end example
 
 @noindent
@@ -1997,7 +1999,7 @@ could be intended by a user to be subtraction operations between
 @code{arg1} and @code{arg2}.  The first two, however, could also have been
 meant as a command syntax call to function @code{arg1}, in the first case
 with options @code{-} and @code{arg2}, and in the second case with option
-@code{-arg2}.
+@option{-arg2}.
 
 Octave uses whitespace to interpret such expressions according to the
 following rules:
@@ -2013,10 +2015,13 @@ arg1 arg2 arg3 ... argn
 
 @item
 Statements without any whitespace are always treated as function syntax:
+
 @example
+@group
 arg1+arg2
 arg1&&arg2||arg3
 arg1+=arg2*arg3
+@end group
 @end example
 
 @item
@@ -2024,20 +2029,26 @@ If the first symbol is a constant (or special-valued named constant pi, i,
 I, j, J, e, NaN, or Inf) followed by a binary operator, the statement is
 treated as function syntax regardless of any whitespace or what follows the
 second symbol:
+
 @example
+@group
 7 -arg2
 pi+ arg2
 j * arg2 -arg3
+@end group
 @end example
 
 @item
 If the first symbol is a function or variable and there is no whitespace
 separating the operator and the second symbol, the statement is treated
 as command syntax:
+
 @example
+@group
 arg1 -arg2
 arg1 &&arg2 ||arg3
 arg1 +=arg2*arg3
+@end group
 @end example
 
 @item
@@ -2045,11 +2056,11 @@ Any other whitespace combination will result in the statement being treated
 as function syntax.
 @end itemize
 
-Note 1:  If a special-valued named constant has been redefined as a
+Note 1: If a special-valued named constant has been redefined as a
 variable, the interpreter will still process the statement with function
 syntax.
 
-Note 2:  Attempting to use a variable as @code{arg1} in a command being
+Note 2: Attempting to use a variable as @code{arg1} in a command being
 processed as command syntax will result in an error.
 
 

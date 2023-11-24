@@ -949,9 +949,8 @@ using the @code{cell2mat} and @code{cell2struct} functions.
 @cindex cs-lists
 
 Comma-separated lists @footnote{Comma-separated lists are also sometimes
-informally referred to as @dfn{cs-lists}.} are the basic argument type
-to all Octave functions - both for input and return arguments.  In the
-example
+referred to as @dfn{cs-lists}.} are the basic argument type to all Octave
+functions---both for input and return arguments.  In the example
 
 @example
 max (@var{a}, @var{b})
@@ -971,14 +970,13 @@ x = [1 0 1 0 0 1 1; 0 0 0 0 0 0 7];
 
 @noindent
 Here, @samp{@var{x}, 2, "last"} is a comma-separated list constituting
-the input arguments of @code{find}.  @code{find} returns a comma
-separated list of output arguments which is assigned element by
-element to the comma-separated list @samp{@var{i}, @var{j}}.
+the input arguments of @code{find}.  @code{find} returns a comma-separated list
+of output arguments which is assigned element by element to the comma-separated
+list @samp{@var{i}, @var{j}}.
 
-Another example of where comma-separated lists are used is in the
-creation of a new array with @code{[]} (@pxref{Matrices}) or the
-creation of a cell array with @code{@{@}} (@pxref{Basic Usage of Cell
-Arrays}).  In the expressions
+Another example of where comma-separated lists are used is in the creation of a
+new array with @code{[]} (@pxref{Matrices}) or the creation of a cell array
+with @code{@{@}} (@pxref{Basic Usage of Cell Arrays}).  In the expressions
 
 @example
 @group

@@ -50,8 +50,8 @@ classdef jupyter_notebook < handle
   ##
   ## @itemize @bullet
   ## @item
-  ## "%plot -f <format>" or "%plot --format <format>": specifies the
-  ## image storage format.  Supported formats are:
+  ## "@code{%plot -f <format>}" or "@code{%plot --format <format>}": specifies
+  ## the image storage format.  Supported formats are:
   ##
   ## @itemize @minus
   ## @item
@@ -67,16 +67,16 @@ classdef jupyter_notebook < handle
   ## @end itemize
   ##
   ## @item
-  ## "%plot -r <number>" or "%plot --resolution <number>": specifies the
-  ## image resolution.
+  ## "@code{%plot -r <number>}" or "@code{%plot --resolution <number>}":
+  ## specifies the image resolution.
   ##
   ## @item
-  ## "%plot -w <number>" or "%plot --width <number>": specifies the
-  ## image width.
+  ## "@code{%plot -w <number>}" or "@code{%plot --width <number>}": specifies
+  ## the image width.
   ##
   ## @item
-  ## "%plot -h <number>" or "%plot --height <number>": specifies the
-  ## image height.
+  ## "@code{%plot -h <number>}" or "@code{%plot --height <number>}": specifies
+  ## the image height.
   ## @end itemize
   ##
   ## Examples:

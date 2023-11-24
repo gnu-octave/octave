@@ -36,12 +36,12 @@
 ## @code{optimget} will attempt to match @var{par} to a standard parameter
 ## and will return that parameter's value if a match is found.  Matching is
 ## case insensitive and is based on character matching at the start of the
-## parameter name. @code{optimget} produces an error if it finds multiple
-## ambiguous matches. If no standard parameter matches are found a warning is
+## parameter name.  @code{optimget} produces an error if it finds multiple
+## ambiguous matches.  If no standard parameter matches are found a warning is
 ## issued.  See @code{optimset} for information about the standard options
 ## list.
 ##
-## Note:  Only parameter names from the standard list are considered when
+## Note: Only parameter names from the standard list are considered when
 ## matching short parameter names, and @var{par} will always be expanded to
 ## match a standard parameter even if an exact non-standard match exists.  The
 ## value of a non-standard parameter that is ambigious with one or more

@@ -435,9 +435,11 @@ the range is not always included in the set of values.  This can be useful
 in some contexts.  For example:
 
 @example
+@group
 ## x is some predefined range or vector or matrix or array
 x(1:2:end) += 1;   # increment all  odd-numbered elements
 x(2:2:end) -= 1;   # decrement all even-numbered elements
+@end group
 @end example
 
 The above code works correctly whether @var{x} has an odd number of elements
@@ -448,9 +450,11 @@ range.  As a result, defining ranges with floating-point values can result
 in pitfalls like these:
 
 @example
+@group
 a = -2
 b = (0.3 - 0.2 - 0.1)
 x = a : b
+@end group
 @end example
 
 Due to floating point rounding, @var{b} may or may not equal zero exactly,
@@ -458,10 +462,13 @@ and if it does not, it may be above zero or below zero, hence the final range
 @var{x} may or may not include zero as its final value.  Similarly:
 
 @example
+@group
 x = 1.80 : 0.05 : 1.90
 y = 1.85 : 0.05 : 1.90
+@end group
 @end example
 
+@noindent
 is not as predictable as it looks.  As of Octave 8.3, the results obtained are
 that @var{x} has three elements (1.80, 1.85, and 1.90), and @var{y} has only
 one element (1.85 but not 1.90).  Thus, when using floating points in ranges,
@@ -469,23 +476,27 @@ changing the start of the range can easily affect the end of the range even
 though the ending value was not touched in the above example.
 
 To avoid such pitfalls with floating-points in ranges, you should use one of
-the following patterns. This change to the previous code:
+the following patterns.  This change to the previous code:
 
 @example
+@group
 x = (0:2) * 0.05 + 1.80
 y = (0:1) * 0.05 + 1.85
+@end group
 @end example
 
+@noindent
 makes it much safer and much more repeatable across platforms, compilers,
 and compiler settings.  If you know the number of elements, you can also use
 the @code{linspace} function (@pxref{Special Utility Matrices}), which will
 include the endpoints of a range.  You can also make judicious use of
-@code{round}, @code{floor}, @code{ceil}, @code{fix}, etc to set the
+@code{round}, @code{floor}, @code{ceil}, @code{fix}, etc.@: to set the
 limits and the increment without getting interference from floating-point
 rounding.  For example, the earlier example can be made safer and much more
 repeatable with one of the following:
 
 @example
+@group
 a = -2
 b = round ((0.3 - 0.2 - 0.1) * 1e12) / 1e12   # rounds to 12 digits
 c = floor (0.3 - 0.2 - 0.1)                   # floors as integer
@@ -493,6 +504,7 @@ d = floor ((0.3 - 0.2 - 0.1) * 1e12) / 1e12   # floors at 12 digits
 x = a : b
 y = a : c
 z = a : d
+@end group
 @end example
 
 When adding a scalar to a range, subtracting a scalar from it (or subtracting a

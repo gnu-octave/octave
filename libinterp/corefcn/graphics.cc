@@ -12134,6 +12134,7 @@ props.color = 'green';
 set (h, props);
 @end group
 @end example
+
 @end itemize
 
 The three syntaxes for setting properties may appear in any combination.

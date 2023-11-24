@@ -47,13 +47,13 @@ extern "C" void dummy_mark_2 (void);
 
 DEFUN (__dummy_mark_1__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __dummy_mark_1__ ()
+@deftypefn {} {} __dummy_mark_1__ ()
 
-Dummy function that calls the c-function void dummy_mark_1 (void)
+Dummy function that calls the C-function @code{void dummy_mark_1 (void)}
 that does nothing.
 
-Usefull for e.g. marking start and end for Callgrind analyzis
-or as an entry point for gdb.
+This is useful for marking start and end for Callgrind analysis or as an entry
+point for @code{gdb}.
 
 @end deftypefn */)
 {
@@ -64,13 +64,13 @@ or as an entry point for gdb.
 
 DEFUN (__dummy_mark_2__, , ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {} __dummy_mark_2__ ()
+@deftypefn {} {} __dummy_mark_2__ ()
 
-Dummy function that calls the c-function void dummy_mark_2 (void)
+Dummy function that calls the C-function @code{void dummy_mark_2 (void)}
 that does nothing.
 
-Usefull for e.g. marking start and end for Callgrind analyzis
-or as an entry point for gdb.
+This is useful for marking start and end for Callgrind analysis or as an entry
+point for @code{gdb}.
 
 @end deftypefn */)
 {
@@ -81,7 +81,7 @@ or as an entry point for gdb.
 
 DEFUN (__vm_clear_cache__, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{val} =} __vm_clear_cache__ ()
+@deftypefn {} {@var{val} =} __vm_clear_cache__ ()
 
 Internal function.
 
@@ -94,16 +94,18 @@ Internal function.
 
 DEFUN (__vm_print_trace__, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{prints_trace} =} __vm_print_trace__ ())
+@deftypefn {} {@var{print_trace} =} __vm_print_trace__ ())
 
 Internal function.
 
-Print a debug trace from the VM. Toggles on or off each call.
+Print a debug trace from the VM@.
 
-There has to be a breakpoint set in some file for the trace
-to actually print anything.
+Toggles on or off each call.
 
-Returns true if a trace will be printed from now on, false otherwise.
+There has to be a breakpoint set in some file for the trace to actually print
+anything.
+
+The return value is true if a trace will be printed and false otherwise.
 
 @end deftypefn */)
 {
@@ -114,11 +116,11 @@ Returns true if a trace will be printed from now on, false otherwise.
 
 DEFUN (__ref_count__, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{count} =} __ref_count__ (@var{obj}))
+@deftypefn {} {@var{count} =} __ref_count__ (@var{obj}))
 
 Internal function.
 
-Returns reference count for an object.
+Return the reference count for an object.
 
 @end deftypefn */)
 {
@@ -134,13 +136,12 @@ Returns reference count for an object.
 
 DEFMETHOD (__vm_is_executing__, interp, , ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{is_executing} =} __vm_is_executing__ ())
+@deftypefn {} {@var{is_executing} =} __vm_is_executing__ ())
 
 Internal function.
 
-Returns true if the VM is executing the function calling __vm_is_executing__ ().
-
-False otherwise.
+Return true if the VM is executing the function calling
+@code{__vm_is_executing__ ()}, and false otherwise.
 
 @end deftypefn */)
 {
@@ -172,27 +173,28 @@ Profile code running in the VM.
 
 @table @code
 @item __vm_profile__ on
-Start the profiler, clearing all previously collected data if there is any.
+Start the profiler.  Any previously collected data is cleared.
 
 @item __vm_profile__ off
-Stop profiling.  The collected data can later be retrieved and examined
-with @code{T = profile ("info")}.
+Stop profiling.  The collected data can be retrieved and examined with
+@code{T = profile ("info")}.
 
 @item __vm_profile__ clear
 Clear all collected profiler data.
 
 @item __vm_profile__ resume
-Restart profiling without clearing the old data.  All newly collected
+Restart profiling without clearing existing data.  All newly collected
 statistics are added to the existing ones.
 
 @item __vm_profile__
-Toggles between profiling and printing the result of the profiler.
+Toggle between profiling and printing the result of the profiler.
 Clears the profiler on each print.
 
 @item __vm_profile__ info
-Prints the profiler data.
+Print the profiler data.
 
-Not that output to a variable is not implemented yet.
+Programming Note: The calling form that returns profiler data in a variable
+is not implemented yet.
 
 @end table
 
@@ -273,7 +275,7 @@ Not that output to a variable is not implemented yet.
 DEFMETHOD (__vm_print_bytecode__, interp, args, ,
   doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_name}))
-@deftypefnx  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_handle}))
+@deftypefnx {} {@var{success} =} __vm_print_bytecode__ (@var{fn_handle}))
 
 Internal function.
 
@@ -348,7 +350,7 @@ Prints the bytecode of a function name or function handle, if any.
 DEFMETHOD (__vm_is_compiled__, interp, args, ,
   doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_name})
-@deftypefnx  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_handle})
+@deftypefnx {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_handle})
 
 Internal function.
 
@@ -412,8 +414,8 @@ False otherwise.
 DEFMETHOD (__vm_compile__, interp, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{success} =} __vm_compile__ (@var{fn_name})
-@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "clear")
-@deftypefnx  {} {@var{success} =} __vm_compile__ (@var{fn_name}, "print")
+@deftypefnx {} {@var{success} =} __vm_compile__ (@var{fn_name}, "clear")
+@deftypefnx {} {@var{success} =} __vm_compile__ (@var{fn_name}, "print")
 
 Internal function.
 
@@ -567,27 +569,25 @@ DEFUN (__vm_enable__, args, nargout,
 @deftypefn  {} {@var{val} =} __vm_enable__ ()
 @deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val})
 @deftypefnx {} {@var{old_val} =} __vm_enable__ (@var{new_val}, "local")
-Query or set whether Octave automatically compiles functions to bytecode
-and executes them in a virtual machine (VM).
+Query or set the internal variable that determines whether Octave automatically
+compiles functions to bytecode and executes them in a virtual machine (VM).
 
-Note that the virtual machine feature is experimental.
+@strong{Warning:} The virtual machine feature is experimental.
 
-The default value is currently false, while the VM is still experimental.
-Users need to explicitly call @code{__vm_enable__ (1)} to enable it.
+The default value is false while the VM is still experimental.
+Users must explicitly call @code{__vm_enable__ (1)} to use it.
 
-When false, Octave uses a traditional tree walker
-to evaluate statements parsed from m-code.  When true, Octave translates parsed
-statements to an intermediate representation that is then evaluated by a
-virtual machine.
+When false, Octave uses a traditional tree walker to evaluate statements parsed
+from m-code.  When true, Octave translates parsed statements to an intermediate
+representation that is then evaluated by a virtual machine.
 
 When called from inside a function with the @qcode{"local"} option, the setting
 is changed locally for the function and any subroutines it calls.  The original
 setting is restored when exiting the function.
 
-Once compiled to bytecode, the function will always be evaluated by the
-VM no matter the state of @qcode{"__vm_enable__"}, until the bytecode is
-cleared, by e.g. @qcode{"clear all"} or an modification to the
-function's m-file.
+Once compiled to bytecode, the function will always be evaluated by the VM
+regardless of the state of @code{__vm_enable__}, until the bytecode is cleared
+by, e.g., @qcode{"clear all"}, or a modification to the function's m-file.
 
 @seealso{__vm_compile__}
 

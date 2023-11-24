@@ -44,12 +44,12 @@
 ## @var{mad} = median (abs (@var{x} - median (@var{x})))
 ## @end example
 ##
-## If @var{x} is a vector, compute @code{mad} for each element in @var{x}. If
+## If @var{x} is a vector, compute @code{mad} for each element in @var{x}.  If
 ## @var{x} is an array the calculation is performed over the first
 ## non-singleton dimension.
 ##
 ## @code{mad} excludes NaN values from calculation similar to using the
-## @qcode{omitnan} option in @code{var}, @code{mean}, and @code{median}.
+## @code{omitnan} option in @code{var}, @code{mean}, and @code{median}.
 ##
 ## The optional argument @var{opt} determines whether mean or median absolute
 ## deviation is calculated.  The default is 0 which corresponds to mean

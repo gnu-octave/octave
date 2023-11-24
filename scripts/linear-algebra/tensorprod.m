@@ -51,7 +51,7 @@
 ## @var{C}.  The specified @var{value} should be the total number of dimensions
 ## of @var{A}.
 ##
-## Matlab Compatibility: Octave does not currently support the
+## @sc{matlab} Compatibility: Octave does not currently support the
 ## @qcode{"@var{property_name}=@var{value}"} syntax for the
 ## @qcode{"NumDimensionsA"} parameter.
 ##

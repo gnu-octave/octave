@@ -475,6 +475,16 @@ octetc_DATA += \
 	rm -f $@-t $@
 	-cd $(srcdir)/%reldir%; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
 	mv $@-t $@
+	[ -s $@ ] || rm -f $@
+	@cd $(srcdir)/%reldir% ; \
+	if ls undocumented_list >/dev/null 2>&1 ; then \
+		echo "Undocumented function check failed"; \
+		echo "Review doc/interpreter/undocumented_list"; \
+		exit 1 ; \
+	else \
+		echo "Undocumented function check passed"; \
+	fi
+
 .PHONY: %reldir%/undocumented_list
 
 SPELLCHECK_FILES = $(MUNGED_TEXI_SRC:.texi=.scheck)

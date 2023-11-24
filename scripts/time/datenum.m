@@ -54,9 +54,9 @@
 ## time component will have the value set to zero.  Formats which do not
 ## specify a date will default to January 1st of the current year.
 ##
-## When passing separate @var{year}, @var{month}, @var{day}, etc. arguments,
-## each may be a scalar or nonscalar array. Nonscalar inputs must all be of
-## the same size. Scalar inputs will be expanded to be the size of the
+## When passing separate @var{year}, @var{month}, @var{day}, etc.@: arguments,
+## each may be a scalar or nonscalar array.  Nonscalar inputs must all be of
+## the same size.  Scalar inputs will be expanded to be the size of the
 ## nonscalar inputs.
 ##
 ## @var{p} is the year at the start of the century to which two-digit years

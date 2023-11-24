@@ -46,7 +46,7 @@
 ## The optional input @var{s} is a scalar defining a scaling factor to use for
 ## the arrows of the field relative to the mesh spacing.  A value of 1.0 will
 ## result in the longest vector exactly filling one grid cube.  A value of 0
-## or "off" disables all scaling.  The default value is 0.9.
+## or @qcode{"off"} disables all scaling.  The default value is 0.9.
 ##
 ## The style to use for the plot can be defined with a line style @var{style}
 ## of the same format as the @code{plot} command.  If a marker is specified

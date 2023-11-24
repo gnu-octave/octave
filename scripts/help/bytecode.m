@@ -28,8 +28,8 @@
 ## Summary of commands related to Octave's bytecode interpreter.
 ##
 ## As of Octave 9, the bytecode interpreter is considered @emph{experimental}.
-## The user is encouraged to test it with that in mind. All bytecode functions,
-## being experimental, may be renamed in future.
+## The user is encouraged to test it with that in mind.  All bytecode
+## functions, being experimental, may be renamed in future.
 ##
 ## To switch on the bytecode interpreter, type: @code{__vm_enable__ (1)}
 ##

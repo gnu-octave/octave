@@ -48,7 +48,7 @@
 ## The special values -Inf and Inf can be used to indicate that either
 ## the lower axis limit or upper axis limit should be automatically calculated.
 ##
-## The current limit calculation "mode" may be one of
+## The current limit calculation @qcode{"mode"} may be one of
 ##
 ## @table @asis
 ## @item @qcode{"auto"} (default)

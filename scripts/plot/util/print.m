@@ -157,7 +157,7 @@
 ## Caution: If Octave was built against Qt version earlier than 5.13,
 ## @option{-svgconvert} may lead to inaccurate rendering of image objects.
 ##
-## @item -polymerge
+## @item  -polymerge
 ## @itemx -nopolymerge
 ## @itemx -polymerge-all
 ##   When using the SVG based backend @option{-svgconvert}, faces are rendered

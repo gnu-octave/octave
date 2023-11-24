@@ -4300,24 +4300,53 @@ visit_cell (tree_cell &m)
 {
   INC_DEPTH ();
   m_unknown_nargout++;
+  
+  octave_idx_type n_cols = 0;
+  octave_idx_type n_rows = 0;
 
+  // Count the amount of rows and columns for an initial guess on the size
+  // of the cell.
   auto p = m.begin ();
-  int n_cols = -1;
+  while (p != m.end ())
+    {
+      // This is a row
+      tree_argument_list *elt = *p++;
+      n_rows++;
 
-  PUSH_CODE (INSTR::PUSH_OV_U64); // number of rows
+      CHECK_NONNULL (elt);
 
-  // Push each row element to operand stack
+      octave_idx_type n_cols_this_row = 0;
+      for (auto it = elt->begin (); it != elt->end (); it++)
+        n_cols_this_row++;
+
+      if (n_cols_this_row > n_cols)
+        n_cols = n_cols_this_row;      
+    }
+
+  if (n_cols < 256 && n_rows < 256)
+    {
+      PUSH_CODE (INSTR::PUSH_CELL);
+      PUSH_CODE (n_rows);
+      PUSH_CODE (n_cols);
+    }
+  else
+    {
+      PUSH_CODE (INSTR::PUSH_CELL_BIG);
+      PUSH_CODE_INT (n_rows);
+      PUSH_CODE_INT (n_cols);
+    }
+
+  // Code to push each row arg to operand stack, with a APPEND_CELL after it.
+  p = m.begin ();
+  octave_idx_type row_i = 0;
   while (p != m.end ())
     {
       // This is a row
       tree_argument_list *elt = *p++;
 
-      PUSH_CODE (INSTR::PUSH_OV_U64); //number of columns
-
-      int n_cols_old = n_cols;
-      n_cols = 0;
       CHECK_NONNULL (elt);
-      for (auto it = elt->begin (); it != elt->end (); it++)
+      octave_idx_type n_cols_this_row = 0;
+      for (auto it = elt->begin (); it != elt->end (); /* ++it in if bellow */)
         {
           // This is an element
           tree_expression *e = *it;
@@ -4328,25 +4357,39 @@ visit_cell (tree_cell &m)
           e->accept (*this);
           DEC_DEPTH ();
           POP_NARGOUT ();
-          n_cols++;
 
-          // We now need to expand the value (if it is an cs list)
-          // and rotate the counters to the top of the stack.
-          //
-          // Expand cslist does that in one opcode.
-          PUSH_CODE (INSTR::EXPAND_CS_LIST);
+          n_cols_this_row++;
+
+          // The last APPEND_CELL in a row need special markers
+          if (++it != elt->end ()) // Not last?
+            {
+              PUSH_CODE (INSTR::APPEND_CELL);
+              PUSH_CODE (0); // 0 => Not last APPEND_CELL in row
+            }
         }
 
-      if (n_cols > n_cols_old)
-        n_cols_old = n_cols;
+      // If there are no args in the row, e.g. 'a = {b;;}', the APPEND_CELL still need something
+      // to grab on the stack, that will not be added to the row.
+      if (n_cols_this_row == 0)
+        PUSH_CODE (INSTR::PUSH_NIL); // Dummy value
 
-      // The amount of rows is on the second position of the stack,
-      // rotate it with the amount of columns and increment the rows.
-      PUSH_CODE (INSTR::ROT);
-      PUSH_CODE (INSTR::INCR_PREFIX);
+      // The APPEND_CELL opcode inserts element into a cell put on the stack by PUSH_CELL.
+      // The opcode after APPEND_CELL tells it whether the APPEND_CELL is the last in a row.
+      PUSH_CODE (INSTR::APPEND_CELL);
+      if (p == m.end ()) // Is this the last row?
+        {
+          if (n_rows == 1)
+            PUSH_CODE (3); // Last column in last row, only one row total
+          else
+            PUSH_CODE (2); // Last column in last row, more than one row total
+        }
+      else if (row_i == 0)
+        PUSH_CODE (4); // Last column in first row, more than one row total
+      else
+        PUSH_CODE (1); // Last column in row, more than one row total
+
+      row_i++;
     }
-
-  PUSH_CODE (INSTR::PUSH_CELL);
 
   maybe_emit_bind_ans_and_disp (m);
 

@@ -61,6 +61,16 @@ Completion Date:
 Completion Date:
 
 * Update copyright statements for all source controlled files.
+
+    Command to update copyright notifications
+
+    `hg locate | xargs sed -i 's/Copyright (C) \([0-9][0-9][0-9][0-9]\)-2023 The Octave Project Developers/Copyright (C) \1-2024 The Octave Project Developers/; s/Copyright (C) 2023 The Octave Project Developers/Copyright (C) 2023-2024 The Octave Project Developers/'`
+
+    Command to check results before checking in
+
+    `hg diff | grep ^[-+][^-+] | sed 's/[0-9][0-9][0-9][0-9]-/YYYY-/' | sort -u`
+
+
 * Update dates in any other locations (launch message, citation, MXE files,
   etc.).
 * Add any new contributors to `doc/interpreter/contributors.in` who wish to be

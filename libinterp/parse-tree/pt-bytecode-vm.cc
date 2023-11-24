@@ -48,6 +48,7 @@
 #include "ov-ref.h"
 #include "ov-range.h"
 #include "ov-inline.h"
+#include "ov-cell.h"
 
 #include "ov-vm.h"
 #include "ov-fcn-handle.h"
@@ -278,9 +279,6 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           PRINT_OP (ROT)
           PRINT_OP (TRANS_LDIV)
           PRINT_OP (HERM_LDIV)
-          PRINT_OP (PUSH_CELL)
-          PRINT_OP (PUSH_OV_U64)
-          PRINT_OP (EXPAND_CS_LIST)
           PRINT_OP (POW_DBL)
           PRINT_OP (POW)
           PRINT_OP (LDIV)
@@ -356,6 +354,11 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (NEQ_CST_DBL)    PCHAR () PCHAR () CASE_END ()
           CASE_START (POW_CST)        PCHAR () PCHAR () CASE_END ()
           CASE_START (POW_CST_DBL)    PCHAR () PCHAR () CASE_END ()
+
+          CASE_START (PUSH_CELL)      PCHAR () PCHAR () CASE_END ()
+          CASE_START (PUSH_CELL_BIG)  PINT () PINT () CASE_END ()
+
+          CASE_START (APPEND_CELL)    PCHAR () CASE_END ()
 
           CASE_START (ASSIGN)                     PSLOT() CASE_END ()
           CASE_START (BIND_ANS)                   PSLOT() CASE_END ()
@@ -976,8 +979,6 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&wordcmd,                                           // WORDCMD,
       &&handle_signals,                                    // HANDLE_SIGNALS,
       &&push_cell,                                         // PUSH_CELL,
-      &&push_ov_u64,                                       // PUSH_OV_U64,
-      &&expand_cs_list,                                    // EXPAND_CS_LIST,
       &&index_cell_id0,                                    // INDEX_CELL_ID_NARGOUT0,
       &&index_cell_id1,                                    // INDEX_CELL_ID_NARGOUT1,
       &&index_cell_idn,                                    // INDEX_CELL_ID_NARGOUTN,
@@ -1089,6 +1090,8 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       &&push_i,
       &&push_e,
       &&index_struct_subcall,
+      &&push_cell_big,
+      &&append_cell,
     };
 
   if (OCTAVE_UNLIKELY (m_profiler_enabled))
@@ -4256,114 +4259,222 @@ push_cst_dbl_2:
 }
 DISPATCH_1BYTEOP ();
 
-push_cell:
+  // The PUSH_CELL and PUSH_CELL_BIG opcodes pushes a cell to the stack which later code will assign
+  // elements to with APPEND_CELL. Two counters for the active column and row are also pushed.
   {
-    // The amount of columns is at the top of the stack as
-    // u64 ov.
-    octave_value &rows_ov = TOP_OV ();
-    octave_value &cols_ov = SEC_OV ();
-    octave_idx_type n_cols = cols_ov.uint64_value ();
-    octave_idx_type n_rows = rows_ov.uint64_value ();
-    STACK_DESTROY (2); // Destroy the cols and rows ov
+    int n_rows;
+    int n_cols;
 
-    // We need to first figure out the size of the Cell
-    // we are creating.
-    // E.g.
-    //      z = cell (1,2,3,0,5);
-    //      {1, z{:}, 2}
-    // Is a 2x1 Cell.
-    // So we can't know the Cell size in advance of the
-    // args are evaluated.
-
-    octave_idx_type n_actual_rows = 0;
-    if (n_cols != 0)
-      n_actual_rows++;
-
-    stack_element *tmp_sp = sp;
-    octave_idx_type n_cols_i = n_cols;
-    for (octave_idx_type i = 0; i < n_rows; i++)
+    if (0)
       {
-        tmp_sp -= n_cols_i;
-
-        if (i != n_rows - 1) // Not last iteration
-          {
-            // We now have a ov with the number of cols on the stack
-            octave_value &cols_i_ov = tmp_sp[-1].ov; tmp_sp--;
-            n_cols_i = cols_i_ov.uint64_value ();
-            if (n_cols_i != 0)
-              n_actual_rows++;
-          }
+push_cell:
+        n_rows = arg0;
+        n_cols = POP_CODE ();
+      }
+    else if (0)
+      {
+push_cell_big:
+        ip--; // Rewind ip so that it points to the first byte after the PUSH_CELL_BIG opcode
+        n_rows = POP_CODE_INT ();
+        n_cols = POP_CODE_INT ();
       }
 
-    Cell cell(n_actual_rows, n_cols);
-    int n_cols_orig = n_cols;
-
-    int row_idx = 0;
-    n_cols_i = n_cols;
-    for (octave_idx_type i = 0; i < n_rows; i++)
-      {
-        if (n_cols_i != 0) // Only add row to cell if the row "exists", i.e. is not e.g. 0x3 sized
-          {
-            for (octave_idx_type j = 0; j < n_cols_i; j++)
-              {
-                cell (n_actual_rows - 1 - row_idx, n_cols_i - 1 - j) = TOP_OV();
-                STACK_DESTROY (1);
-              }
-            row_idx++;
-          }
-
-        if (i != n_rows - 1) // Not last iteration
-          {
-            // We now have a ov with the number of cols on the stack
-            octave_value &cols_i_ov = TOP_OV ();
-            n_cols_i = cols_i_ov.uint64_value ();
-            if (n_cols_i && n_cols_orig != n_cols_i)
-              TODO ("Wrong number of cols in other row");
-
-            n_cols = n_cols_i;
-            STACK_DESTROY (1);
-          }
-      }
+    // The size is a guess. In the end, the size might differ.
+    Cell cell(n_rows, n_cols);
 
     PUSH_OV (cell);
+
+    // The APPEND_CELL opcodes need to keep track of which row and column
+    // they are supposed to add to, since any element can be a cs-list,
+    // and the index to assign to can't be statically decided.
+    PUSH_OV (new octave_int64_scalar {});
+    PUSH_OV (new octave_int64_scalar {});
   }
-  DISPATCH_1BYTEOP ();
-push_ov_u64:
-  {
-    PUSH_OV (octave_int<uint64_t>{});
-  }
-  DISPATCH_1BYTEOP ();
-expand_cs_list:
-  {
-    octave_value cs = TOP_OV ();
-    octave_value cols_ov = SEC_OV (); // n columns
-    octave_value rows_ov = THIRD_OV (); // n rows
+  DISPATCH ();
 
-    if (cs.is_cs_list ())
-      {
-        STACK_DESTROY (3);
+append_cell:
+{
+  // The stack looks like this:
+  // top: Element to add
+  //  -1: Row counter
+  //  -2: Column counter
+  //  -3: The cell to add elements to
 
-        octave_value_list tmp_ovl = cs.list_value ();
+  // Essentially there is an APPEND_CELL opcode after
+  // each element argument. The last APPEND_CELL in a row
+  // has arg0 set to a number to indicate if it is the last
+  // column in the row, with distinction between:
+  //
+  // a middle row == 1
+  // the last row of many == 2
+  // the last row of one == 3
+  // the last row of many == 4
+  //
+  // This is needed since the first row sets how many columns the
+  // other rows need to have and the last rows need to pop the two
+  // counters on the stack.
 
-        for (octave_idx_type i = 0; i < tmp_ovl.length (); i++)
-          {
-            PUSH_OV (tmp_ovl (i));
-            cols_ov.non_const_unary_op (octave_value::unary_op::op_incr);
-          }
-      }
-    else
-      {
-        STACK_DESTROY (3);
+  // Note that 'b = {}; c = {b{:}, b{:}}" makes c size 2x0
+  // while 'b = {}; c = {b{:}}" makes c size 0x0
 
-        cols_ov.non_const_unary_op (octave_value::unary_op::op_incr);
+  int last = arg0;
 
-        PUSH_OV (cs);
-      }
+  // The element we need to insert into the cell
+  octave_value ov = std::move (TOP_OV ());
+  STACK_SHRINK (1);
 
-    PUSH_OV (rows_ov);
-    PUSH_OV (cols_ov);
-  }
-  DISPATCH_1BYTEOP ();
+  // The cell we are adding the element to
+  octave_value &ov_cell = THIRD_OV (); 
+  octave_cell &ovb_cell = REP (octave_cell, ov_cell);
+
+  Cell &cell = ovb_cell.octave_cell::matrix_ref ();
+
+  octave_idx_type n_rows = cell.rows ();
+  octave_idx_type n_cols = cell.cols ();
+
+  // The column counter
+  octave_value &ov_i_col = SEC_OV ();
+  octave_int64_scalar &ovb_i_col = REP (octave_int64_scalar, ov_i_col);
+  auto &i_col = ovb_i_col.octave_int64_scalar::scalar_ref ();
+
+  octave_idx_type i_col_idx = i_col;
+
+  // The row counter
+  octave_value &ov_i_row = TOP_OV ();
+  octave_int64_scalar &ovb_i_row = REP (octave_int64_scalar, ov_i_row);
+  auto &i_row = ovb_i_row.octave_int64_scalar::scalar_ref ();
+
+  octave_idx_type i_row_idx = i_row;
+
+  if (ov.is_cs_list ())
+    {
+      octave_value_list ovl = ov.list_value ();
+      octave_idx_type n = ovl.length ();
+
+      // If we are operating on the first row, increase its size if we
+      // are about to overflow.
+      if (i_row_idx == 0 && i_col_idx + n > n_cols)
+        {
+          cell.resize (dim_vector (n_rows, i_col_idx + n));
+          n_cols = i_col_idx + n;
+        }
+      
+      // If there is room in the row, insert the elements into it.
+      // Note that if there is no room, no element will be added to the cell,
+      // there will be an error after the row's last element's arg is executed.
+      // I.e. all the arg expressions in the row are always executed before
+      // the error.
+      if (i_col_idx + n <= n_cols)
+        {
+          // Insert the elements of the cs-list into to the row of the cell.
+          for (octave_idx_type i = 0; i < n; i++)
+            cell (i_row_idx, i_col_idx + i) = ovl (i);
+        }
+
+      i_col += n;
+      i_col_idx += n;
+    }
+  else if (ov.is_defined ())
+    {
+      // If we are operating on the first row, increase its size if we
+      // are about to overflow.
+      if (i_row_idx == 0 && i_col_idx >= n_cols)
+        {
+          cell.resize (dim_vector (1, i_col_idx + 1));
+          n_cols++;
+        }
+
+      // If there is room in the row, insert the element into it.
+      // Note that if there is no room, no element will be added to the cell,
+      // there will be an error after the row's last element's arg is executed.
+      // I.e. all the arg expressions in the row are always executed before
+      // the error.
+      if (i_col_idx < n_cols)
+        cell (i_row_idx, i_col_idx) = ov;
+
+      i_col = i_col + 1L;
+      i_col_idx++;
+    }
+  else
+    {
+      ; // If the arg is undefined, nothing is added to the row in the cell.
+    }
+
+  if (last == 1) // Last element in a middle row in a cell with multiple rows.
+    {
+      // The amount of columns in a row has to match the first row's.
+      if (i_col_idx && i_col_idx != n_cols)
+        {
+          (*sp++).pee = new execution_exception {"error","","number of columns must match"};
+          (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+          goto unwind;
+        }
+
+      // Prepare for APPEND_CELL to operate on the next row.
+      i_row +=  i_col_idx ? 1L : 0; // Only advance row idx if something was inserted.
+      i_col = 0;
+    }
+  else if (last == 2) // Last element in the last row in a cell with multiple rows.
+    {
+      // The amount of columns in a row has to match the first row's unless
+      // the amount of columns in the current row is zero.
+      if (i_col_idx && i_col_idx != n_cols)
+        {
+          (*sp++).pee = new execution_exception {"error","","number of columns must match"};
+          (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+          goto unwind;
+        }
+
+      if (i_col_idx)
+        i_row_idx += 1; // If this row was not empty
+      else if (n_cols == 0)
+        i_row_idx += 1; // If this row was empty and is supposed to be empty.
+
+      // If all the args for a row were empty, the next row's args were inserted into the empty row,
+      // so there might be trailing empty rows that we need to remove.
+      if (i_row_idx != n_rows)
+        {
+          cell.resize (dim_vector (i_row_idx, n_cols));
+        }
+
+      // Destroy the col and row counters
+      STACK_DESTROY (2);
+      // The cell is now on the top of the stack
+    }
+  else if (last == 3) // Last element in row in a cell with one row
+    {
+      // If a smaller number of columns were inserted than there are arguments
+      // (the amounts of args sets the initial size) we need to shrink the cell
+      if (i_col_idx < n_cols)
+        {
+          // If the row is empty, the resulting cell should be 0x0.
+          //   "b = {}; c = {b{:}}" yields c as a 0x0 cell
+          // but:
+          //   "b = {}; c = {b{:}; b{:}}" yields c as a 2x0 cell
+          cell.resize (dim_vector (i_col_idx ? 1 : 0, i_col_idx));
+        }
+
+      // Destroy the col and row counters
+      STACK_DESTROY (2);
+      // The cell is now on the top of the stack
+    }
+  else if (last == 4) // Last element in the first row, more than one row total
+    {
+      // If a smaller number of columns were inserted than there are arguments
+      // (the amounts of args sets the initial size) we need to shrink the cell
+      if (i_col_idx < n_cols)
+        {
+          cell.resize (dim_vector (n_rows, i_col_idx));
+        }
+
+      // Prepare for APPEND_CELL to operate on the next row
+      i_col = 0;
+      // Always advance to next row, even if first row was empty since
+      // if the first row was empty, all rows need to be empty.
+      i_row += 1L;
+    }
+}
+DISPATCH ();
 
   {
     // TODO: Too much code. Should be broken out?

@@ -58,6 +58,73 @@ function bytecode_cell ()
 
   % Command form function call subref
   __printf_assert__ ("%d ", suby{:});
+
+  % Test making cells dynamically with unpacking of cells
+  a = {1,2};
+  b = {};
+  d = {11; 12};
+
+  c = {a{:}};
+  assert (c, {1, 2});
+
+  c = {d{:}};
+  assert (c, {11, 12});
+
+  c = {a{:}, 3, 4};
+  assert (c, {1, 2, 3, 4});
+
+  c = {b{:}, a{:}, 3, 4, b{:}};
+  assert (c, {1, 2, 3, 4});
+
+  c = {;;; a{:}; 3 4;;;; b{:}};
+  assert (c, {1, 2; 3, 4});
+
+  c = {b{:}};
+  assert (c, {});
+
+  c = {b{:}; b{:}};
+  assert (c, cell (2, 0));
+
+  threw = false;
+  try
+    c = {b{:}; 1 2};
+  catch e
+    assert (regexp (e.message, "number of columns must match"))
+    threw = true;
+  end
+
+  assert (threw)
+
+  threw = false;
+  try
+    c = {1 2 3; a{:}};
+  catch e
+    assert (regexp (e.message, "number of columns must match"))
+    threw = true;
+  end
+
+  assert (threw)
+
+  threw = false;
+  try
+    c = {1 2 3; a{:}; 4 5 6};
+  catch e
+    assert (regexp (e.message, "number of columns must match"))
+    threw = true;
+  end
+
+  assert (threw)
+
+  threw = false;
+  try
+    c = {a{:}; 1 2 3};
+  catch e
+    assert (regexp (e.message, "number of columns must match"))
+    threw = true;
+  end
+
+  assert (threw)
+
 end
 
 function a = suby()

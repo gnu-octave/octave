@@ -61,7 +61,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 DEFUN (qz, args, nargout,
        doc: /* -*- texinfo -*-
-@deftypefn {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B})
+@deftypefn  {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B})
 @deftypefnx {} {[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}] =} qz (@var{A}, @var{B}, @var{opt})
 Compute the QZ@tie{}decomposition of a generalized eigenvalue problem.
 
@@ -81,8 +81,8 @@ There are two calling forms of the function:
 @enumerate
 @item @code{[@var{AA}, @var{BB}, @var{Q}, @var{Z}, @var{V}, @var{W}, @var{lambda}] = qz (@var{A}, @var{B})}
 
-Compute the complex QZ@tie{}decomposition, generalized eigenvectors, and generalized
-eigenvalues.
+Compute the complex QZ@tie{}decomposition, generalized eigenvectors, and
+generalized eigenvalues.
 @tex
 $$ AA = Q^T AZ, BB = Q^T BZ $$
 $$ { \rm diag }(BB)AV = BV{ \rm diag }(AA) $$
@@ -102,20 +102,20 @@ diag (diag (@var{BB})) * @var{W}' * @var{A} = diag (diag (@var{AA})) * @var{W}' 
 
 @end ifnottex
 with @var{AA} and @var{BB} upper triangular, and @var{Q} and @var{Z}
-unitary. The matrices @var{V} and @var{W} respectively contain the right
+unitary.  The matrices @var{V} and @var{W} respectively contain the right
 and left generalized eigenvectors.
 
 @item @code{[@var{AA}, @var{BB}, @var{Z} @{, @var{lambda}@}] = qz (@var{A}, @var{B}, @var{opt})}
 
 The @var{opt} argument must be equal to either @qcode{"real"} or
-@qcode{"complex"}. If it is equal to @qcode{"complex"}, then this
+@qcode{"complex"}.  If it is equal to @qcode{"complex"}, then this
 calling form is equivalent to the first one with only two input
 arguments.
 
 If @var{opt} is equal to @qcode{"real"}, then the real QZ decomposition
-is computed. In particular, @var{AA} is only guaranteed to be
+is computed.  In particular, @var{AA} is only guaranteed to be
 quasi-upper triangular with 1-by-1 and 2-by-2 blocks on the diagonal,
-and @var{Q} and @var{Z} are orthogonal. The identities mentioned above
+and @var{Q} and @var{Z} are orthogonal.  The identities mentioned above
 for right and left generalized eigenvectors are only verified if
 @var{AA} is upper triangular (i.e., when all the generalized eigenvalues
 are real, in which case the real and complex QZ coincide).

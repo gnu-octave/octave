@@ -772,11 +772,9 @@ returns a string containing the value of your path.
 
 DEFUN (isenv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{val} =} isenv (@var{var})
-Check if the environment variable @var{var} exists.
-
-This function returns true if an environment variable with the name @var{var}
-exists.  Otherwise, it returns false.
+@deftypefn {} {@var{tf} =} isenv (@var{var})
+Return true if the variable @var{var} is an environment variable, and false
+otherwise.
 
 For example,
 
@@ -785,7 +783,8 @@ tf = isenv ("PATH")
 @end example
 
 @noindent
-returns true if an environment variable with the name @qcode{"PATH"} exists.
+will typically return true on UNIX systems because @qcode{"PATH"} is an
+environment variable for UNIX.
 @seealso{getenv, setenv, unsetenv}
 @end deftypefn */)
 {
@@ -850,7 +849,8 @@ DEFALIAS (putenv, setenv);
 
 DEFUN (unsetenv, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn {} {@var{status} =} unsetenv (@var{var})
+@deftypefn  {} {} unsetenv ("@var{var}")
+@deftypefnx {} {@var{status} =} unsetenv ("@var{var}")
 Delete the environment variable @var{var}.
 
 Return 0 if the variable was deleted, or did not exist, and -1 if an error

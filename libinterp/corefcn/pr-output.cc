@@ -3936,6 +3936,7 @@ most significant bit first.  For example, @code{pi} is printed like this:
 @end group
 @end example
 
+@noindent
 where spaces have been added for clarity to show the sign bit, the 11-bit
 exponent, and the 52-bit mantissa, in that order.  Together they represent
 @code{pi} as an IEEE 754 double precision floating point number in the normal
@@ -3956,6 +3957,7 @@ For example, the value of @code{pi} in this format on x86-64 is:
 @end group
 @end example
 
+@noindent
 shown here with spaces added for clarity.  Compare with the previous bit string
 from @code{format bit} to see the grouping into bytes and their ordering.
 

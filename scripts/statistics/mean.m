@@ -50,7 +50,7 @@
 ## @end ifnottex
 ##
 ## If @var{x} is an array, then @code{mean(@var{x})} computes the mean along
-## the first nonsingleton dimension of @var{x}.
+## the first non-singleton dimension of @var{x}.
 ##
 ## The optional variable @var{dim} forces @code{mean} to operate over the
 ## specified dimension, which must be a positive integer-valued number.

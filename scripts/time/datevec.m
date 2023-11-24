@@ -37,9 +37,8 @@
 ##
 ## Date number inputs can be either a scalar or nonscalar array.  Date string
 ## inputs can be either a single date string, a two-dimensional character
-## array of dates with each row being an interpretable date string, or a cell
-## string array of any dimension with each cell element containing a single
-## interpretable date string.
+## array of dates with each row being a date string, or a cell string array of
+## any dimension with each cell element containing a single date string.
 ##
 ## @var{v} is a two-dimensional array of date vectors, one date vector per
 ## row.  For array inputs, ordering of @var{v} is based on column major order

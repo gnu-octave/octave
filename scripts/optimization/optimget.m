@@ -44,7 +44,7 @@
 ## Note: Only parameter names from the standard list are considered when
 ## matching short parameter names, and @var{par} will always be expanded to
 ## match a standard parameter even if an exact non-standard match exists.  The
-## value of a non-standard parameter that is ambigious with one or more
+## value of a non-standard parameter that is ambiguous with one or more
 ## standard parameters cannot be returned by @code{optimget} and can only be
 ## accessed using @code{getfield} or dot notation for structs.
 ## @seealso{optimset}

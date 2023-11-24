@@ -70,7 +70,7 @@
 ## @table @asis
 ## @item 0 [default]:
 ##   Normalize with @math{N-1}.  This provides the best unbiased estimator of
-## thecovariance
+## the covariance.
 ##
 ## @item 1:
 ##   Normalize with @math{N}.  This provides the second moment around the
@@ -84,12 +84,12 @@
 ## @table @asis
 ## @item includenan [default]:
 ##   Leave NaN values in @var{x} and @var{y}.  Output will follow the normal
-## rules for handling NaN values in arithemtic operations.
+## rules for handling NaN values in arithmetic operations.
 ##
 ## @item omitrows:
 ##   Rows containing NaN values are trimmed from both @var{x} and @var{y}
-## prior to calculating the covariance.  (A NaN in one variable will remove
-## that row from both @var{x} and @var{y}.)
+## prior to calculating the covariance.  A NaN in one variable will remove
+## that row from both @var{x} and @var{y}.
 ##
 ## @item partialrows:
 ##   Rows containing NaN values are ignored from both @var{x} and @var{y}

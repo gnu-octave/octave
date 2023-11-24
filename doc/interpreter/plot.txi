@@ -2798,18 +2798,19 @@ plot (1:10)
 @subsubsection Hardware vs. Software Rendering
 @cindex opengl rendering slow windows
 
-When using the Octave for Windows installer, the user has the option to select
-between "System OpenGL" and "Software OpenGL" renderers.  This option selects
-whether software rendering is used for the OpenGL graphics toolkits
-(@qcode{"qt"} and @qcode{"fltk"}).  Software rendering can be used to avoid
-rendering and printing issues due to imperfect OpenGL driver implementations
-for diverse graphic cards from different vendors (notably integrated Intel
-graphics).  As a downside, software rendering might be considerably slower
-than hardware accelerated rendering (and it might not work correctly on 32-bit
-platforms or WoW64).  To permanently switch between hardware accelerated
-rendering with your graphics card drivers and software rendering, use the
-"OpenGL Switcher" application from the Start menu while Octave is closed.
-Alternatively, rename the following file while Octave is closed:
+When using the Windows installer for Octave, the user has the option to select
+between "System OpenGL" and "Software OpenGL" renderers.  The choice between
+hardware or software rendering affects the OpenGL graphics toolkits
+(@qcode{"qt"} and @qcode{"fltk"}) only.  Software rendering can be used to
+avoid rendering and printing issues due to imperfect OpenGL driver
+implementations for diverse graphic cards from different vendors (notably
+integrated Intel graphics).  The downside is that software rendering may be
+considerably slower than hardware-accelerated rendering (and it might not work
+correctly on 32-bit platforms or @nospell{WoW64}).  To permanently switch
+between hardware-accelerated rendering with your graphics card drivers and
+software rendering, use the "OpenGL Switcher" application from the Start menu
+while Octave is closed.  Alternatively, rename the following file while Octave
+is closed:
 
 @file{@var{octave-home}\bin\opengl32.dll}
 @*where @var{octave-home} is the directory returned by

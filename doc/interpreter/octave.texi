@@ -625,7 +625,7 @@ Object Groups
 Graphics Toolkits
 
 * Customizing Toolkit Behavior::
-* Hardware vs Software Rendering::
+* Hardware vs. Software Rendering::
 * Precision issues::
 
 Matrix Manipulation

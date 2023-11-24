@@ -2764,7 +2764,7 @@ Data source variables.
 
 @menu
 * Customizing Toolkit Behavior::
-* Hardware vs Software Rendering::
+* Hardware vs. Software Rendering::
 * Precision issues::
 @end menu
 
@@ -2794,8 +2794,8 @@ plot (1:10)
 @end group
 @end example
 
-@node Hardware vs Software Rendering
-@subsubsection Hardware vs Software Rendering
+@node Hardware vs. Software Rendering
+@subsubsection Hardware vs. Software Rendering
 @cindex opengl rendering slow windows
 
 When using the Octave for Windows installer, the user has the option to select
@@ -2804,7 +2804,7 @@ whether software rendering is used for the OpenGL graphics toolkits
 (@qcode{"qt"} and @qcode{"fltk"}).  Software rendering can be used to avoid
 rendering and printing issues due to imperfect OpenGL driver implementations
 for diverse graphic cards from different vendors (notably integrated Intel
-graphics).  As a down-side, software rendering might be considerably slower
+graphics).  As a downside, software rendering might be considerably slower
 than hardware accelerated rendering (and it might not work correctly on 32-bit
 platforms or WoW64).  To permanently switch between hardware accelerated
 rendering with your graphics card drivers and software rendering, use the
@@ -2813,7 +2813,7 @@ Alternatively, rename the following file while Octave is closed:
 
 @file{@var{octave-home}\bin\opengl32.dll}
 @*where @var{octave-home} is the directory returned by
-@ref{XREFOCTAVE_HOME, , @w{@qcode{OCTAVE_HOME}}}, i.e., the directory in which
+@ref{XREFOCTAVE_HOME, , @w{@code{OCTAVE_HOME}}}, i.e., the directory in which
 Octave is installed (the default is
 @file{C:\Program Files\GNU Octave\Octave\Octave-@var{version}\mingw64}).
 Change the file extension to @file{.bak} for hardware rendering or to

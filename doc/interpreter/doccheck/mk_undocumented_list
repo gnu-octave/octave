@@ -115,6 +115,9 @@ exit(1);
 ################################################################################
 # Exception list of functions not requiring a DOCSTRING
 ################################################################################
+# desktop : Remove when terminal widget is no longer experimental
+# bytecode : Remove when VM is no longer experimental
+################################################################################
 __DATA__
 angle
 bessel
@@ -123,9 +126,11 @@ besseli
 besselk
 bessely
 bug_report
+bytecode
 chdir
 dbnext
 debug
+desktop
 end
 exit
 F_DUPFD
@@ -150,7 +155,6 @@ isfinite
 J
 j
 java2mat
-lower
 lstat
 metaclass
 nan
@@ -170,7 +174,8 @@ rticks
 setenv
 slash
 thetaticks
-upper
+tolower
+toupper
 ylabel
 ylim
 ytickangle

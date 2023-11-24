@@ -1840,7 +1840,7 @@ a cell array containing a single entry, this becomes a scalar struct with
 that single entry as the value of the field.  That single entry happens
 to be an empty cell array.
 
-Finally, if the value is a non-scalar cell array, then @code{struct}
+Finally, if the value is a nonscalar cell array, then @code{struct}
 produces a struct @strong{array}.
 @seealso{cell2struct, fieldnames, getfield, setfield, rmfield, isfield,
 orderfields, isstruct, structfun}

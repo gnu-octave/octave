@@ -1577,7 +1577,8 @@ DEFMETHOD (mfile_encoding, interp, args, nargout,
 @deftypefnx {} {@var{old_encoding} =} mfile_encoding (@var{new_encoding})
 Query or set the encoding that is used for reading m-files.
 
-The input and output are strings naming an encoding, e.g., @qcode{"utf-8"}.
+The input and output are strings naming an encoding, e.g.,
+@nospell{@qcode{"utf-8"}}.
 
 This encoding is used by Octave's parser when reading m-files unless a
 different encoding was set for a specific directory containing m-files using

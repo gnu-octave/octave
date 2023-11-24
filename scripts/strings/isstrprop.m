@@ -88,8 +88,8 @@
 ##
 ## @end table
 ##
-## If the option @qcode{'ForceCellOutput'} is given and @var{flag} is true then
-## a cell value is returned rather than a logical array.
+## If the option @nospell{@qcode{'ForceCellOutput'}} is given and @var{flag} is
+## true then a cell value is returned rather than a logical array.
 ##
 ## @seealso{isalpha, isalnum, islower, isupper, isdigit, isxdigit,
 ## isspace, ispunct, iscntrl, isgraph, isprint, isascii}

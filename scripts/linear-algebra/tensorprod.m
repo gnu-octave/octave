@@ -46,14 +46,14 @@
 ## Using the @qcode{"all"} option results in the inner product between @var{A}
 ## and @var{B}.  This requires @code{size (@var{A}) == size (@var{B})}.
 ##
-## Use the property-value pair with the property name @qcode{"NumDimensionsA"}
-## when @var{A} has trailing singleton dimensions that should be transferred to
-## @var{C}.  The specified @var{value} should be the total number of dimensions
-## of @var{A}.
+## Use the property-value pair with the property name
+## @nospell{@qcode{"NumDimensionsA"}} when @var{A} has trailing singleton
+## dimensions that should be transferred to @var{C}.  The specified @var{value}
+## should be the total number of dimensions of @var{A}.
 ##
 ## @sc{matlab} Compatibility: Octave does not currently support the
 ## @qcode{"@var{property_name}=@var{value}"} syntax for the
-## @qcode{"NumDimensionsA"} parameter.
+## @nospell{@qcode{"NumDimensionsA"}} parameter.
 ##
 ## @seealso{kron, dot, mtimes}
 ## @end deftypefn

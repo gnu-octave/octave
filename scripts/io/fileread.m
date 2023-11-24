@@ -34,7 +34,8 @@
 ## @table @asis
 ## @item @qcode{"Encoding"}
 ## Specify encoding used when reading from the file.  This is a character
-## string of a valid encoding identifier.  The default is @qcode{"utf-8"}.
+## string of a valid encoding identifier.  The default is
+## @nospell{@qcode{"utf-8"}}.
 ## @end table
 ##
 ## @seealso{fopen, fread, fscanf, importdata, textscan, type}

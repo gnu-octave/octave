@@ -4392,7 +4392,7 @@ append_cell:
       if (i_col_idx < n_cols)
         cell (i_row_idx, i_col_idx) = ov;
 
-      i_col = i_col + 1L;
+      i_col = i_col + static_cast<octave_int64> (1);
       i_col_idx++;
     }
   else

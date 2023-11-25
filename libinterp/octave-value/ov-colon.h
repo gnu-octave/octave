@@ -76,7 +76,7 @@ public:
   OCTINTERP_API void print_raw (std::ostream& os,
                                 bool pr_as_read_syntax = false) const;
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void)
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }

@@ -75,7 +75,7 @@ public:
     DATA_NLOCALS = 2,
   };
 
-  bytecode_fcn_stack_frame (void) = delete;
+  bytecode_fcn_stack_frame () = delete;
 
   bytecode_fcn_stack_frame (tree_evaluator& tw,
                             octave_user_code *fcn,
@@ -324,13 +324,13 @@ public:
     m_stack_start = m_lazy_data->m_stack_cpy;
   }
 
-  std::size_t size (void) const
+  std::size_t size () const
   {
     return m_orig_size +
       (m_lazy_data ? m_lazy_data->m_extra_slots.size () : 0);
   }
 
-  std::size_t internal_size (void) const
+  std::size_t internal_size () const
   {
     return m_size +
       (m_lazy_data ? m_lazy_data->m_extra_slots.size () : 0);
@@ -1071,7 +1071,7 @@ public:
       }
   }
 
-  bool is_bytecode_fcn_frame (void) const { return true; }
+  bool is_bytecode_fcn_frame () const { return true; }
 
   // E.g. script_stack_frame::get_access_link() need to think the bytecode frame is a user script frame
   // if it executes a script.
@@ -1191,7 +1191,7 @@ public:
     return sym;
   }
 
-  symbol_scope get_scope (void) const
+  symbol_scope get_scope () const
   {
     return m_fcn->scope ();
   }

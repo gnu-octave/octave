@@ -226,7 +226,7 @@ public:
   virtual bool is_user_script_frame () const { return false; }
   virtual bool is_user_fcn_frame () const { return false; }
   virtual bool is_scope_frame () const { return false; }
-  virtual bool is_bytecode_fcn_frame (void) const { return false; }
+  virtual bool is_bytecode_fcn_frame () const { return false; }
 
   virtual void clear_values ();
 

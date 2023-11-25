@@ -236,7 +236,7 @@ public:
   octave_function *
   get_cached_fcn (void *beg, void *end);
 
-  bool has_function_cache (void) const;
+  bool has_function_cache () const;
 
 private:
 
@@ -321,7 +321,7 @@ public:
   get_cached_fcn (const octave_value_list&) { return m_fcn.function_value (); }
 
   bool
-  has_function_cache (void) const { return true; }
+  has_function_cache () const { return true; }
 
 protected:
 
@@ -714,7 +714,7 @@ public:
   get_cached_fcn (void *, void *) { return m_fcn.function_value (); }
 
   // TODO: This is a hack to get uncompiled anonymous functions to be subsrefed in the VM
-  bool has_function_cache (void) const
+  bool has_function_cache () const
   {
     octave_function *fn = m_fcn.function_value ();
     return fn ? fn->is_compiled () : false;

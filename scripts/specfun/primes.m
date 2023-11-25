@@ -58,9 +58,9 @@ function p = primes (n)
 
   cls = class (n);     # if n is not double, store its class
   n = double (n);      # and use only double for internal use.
-  # This conversion is needed for both calculation speed (twice as fast as
-  # integer) and also for the accuracy of the sieve calculation when given
-  # integer input, to avoid unwanted rounding in the sieve lengths.
+  ## This conversion is needed for both calculation speed (twice as fast as
+  ## integer) and also for the accuracy of the sieve calculation when given
+  ## integer input, to avoid unwanted rounding in the sieve lengths.
 
   if (n > flintmax ())
     warning ("primes: input exceeds flintmax.  Results may be inaccurate.");
@@ -107,7 +107,7 @@ function p = primes (n)
     p = sort ([2, 3, 6*find(sievem)-1, 6*find(sievep)+1]);
   endif
 
-  # cast back to the type of the input
+  ## cast back to the type of the input
   p = cast (p, cls);
 
 endfunction

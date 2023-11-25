@@ -77,10 +77,10 @@ function build (builddir, tarballs, verbose)
     else
       arch_abi = getarch ();
       configure_make (desc, build_root, verbose);
-      if exist (fullfile (build_root, "src", "configure"), "file")
+      if (exist (fullfile (build_root, "src", "configure"), "file"))
         unlink (fullfile (build_root, "src", "configure"));
       endif
-      if exist (fullfile (build_root, "src", "Makefile"), "file")
+      if (exist (fullfile (build_root, "src", "Makefile"), "file"))
         unlink (fullfile (build_root, "src", "Makefile"));
       endif
     endif

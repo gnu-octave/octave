@@ -302,6 +302,7 @@ function c = cov (x, varargin)
   endswitch
 endfunction
 
+
 %!test
 %! x = rand (10);
 %! cx1 = cov (x);

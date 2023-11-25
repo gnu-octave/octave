@@ -245,7 +245,7 @@ endfunction
 %! va = {"bottom", "middle", "top"};
 %! x = [0.25 0.5 0.75];
 %! y = x;
-%! for t = 0:30:359;
+%! for t = 0:30:359
 %!   for nh = 1:numel (ha)
 %!     for nv = 1:numel (va)
 %!       text (x(nh), y(nv), "Hello World", ...
@@ -271,7 +271,7 @@ endfunction
 %!                  "facealpha", 0);
 %! colors = jet (9);
 %! ii = 1;
-%! for t = 0:45:359;
+%! for t = 0:45:359
 %!   ii = ii +1;
 %!   text (25, 25, 0, "Vertical Alignment = Bottom", ...
 %!                    "rotation", t, ...

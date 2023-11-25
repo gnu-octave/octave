@@ -158,6 +158,7 @@ function retval = unwrap (x, tol, dim)
 
     endif
   endif
+
 endfunction
 
 
@@ -192,7 +193,9 @@ function x = __fill_nonfinite_columnwise__ (x, nonfinite_loc, zero_padding, szx,
   front_gap_sizes = (sum (nf_front, 1))(any (nf_front, 1))(:);
   x(nf_front) = repelems (x(locs_after), ...
                              [1:numel(front_gap_sizes); front_gap_sizes'])';
+
 endfunction
+
 
 %!shared i, t, r, w, tol
 %! i = 0;

@@ -133,7 +133,7 @@ function retval = ode_event_handler (evt_fcn, t, y, k_vals, ord, flag = "")
           evtcntnew += 1;
         endfor
         ## Sort by time of event
-        if length (idx) > 1
+        if (length (idx) > 1)
           [tnews, idx_sort] = sort (tnews, "ascend");
           idxs = idx(idx_sort);
           ynews = ynews(idx_sort,:);
@@ -144,7 +144,7 @@ function retval = ode_event_handler (evt_fcn, t, y, k_vals, ord, flag = "")
         ## Check for terminal events and remove any events after terminal.
         ## Any events at same time as first terminal event will be retained.
         idx3 = find (terms, 1);          # Find first terminal event by time
-        if ! isempty (idx3)
+        if (! isempty (idx3))
           t_cutoff = tnews(idx3);
           ## Last index to return
           evtcntnew = find (tnews == t_cutoff, 1, "last");

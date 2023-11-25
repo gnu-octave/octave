@@ -32,8 +32,7 @@
 ## but we don't use that here.  Should the calls be fixed or should we
 ## do something with the solver argument here?
 
-function options = odemergeopts (caller, useroptions, options, classes,
-                                 attributes, solver);
+function options = odemergeopts (caller, useroptions, options, classes, attributes, solver)
 
   for [value, key] = options
 

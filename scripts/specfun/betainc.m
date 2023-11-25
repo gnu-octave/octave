@@ -87,7 +87,7 @@ function I = betainc (x, a, b, tail = "lower")
     error ("betainc: all inputs must be real");
   endif
 
-  if ! (isnumeric (x) && isnumeric (a) && isnumeric (b))
+  if (! (isnumeric (x) && isnumeric (a) && isnumeric (b)))
     error ("betainc: all inputs must be numeric");
   endif
 
@@ -124,7 +124,7 @@ function I = betainc (x, a, b, tail = "lower")
     ## For x = 0 or 1, the output always reduces to 0 or 1.  Input validation
     ## ensures all interger inputs must be 0 or 1.
     I = x;
-    return
+    return;
   else
     I = zeros (size (x), class (x));
   endif

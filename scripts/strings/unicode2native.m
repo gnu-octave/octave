@@ -83,7 +83,7 @@ endfunction
 %!testif HAVE_ICONV <*64331>
 %! assert (! isempty (unicode2native ("abc", "")));
 
-# short character arrays with invalid UTF-8
+## short character arrays with invalid UTF-8
 %!testif HAVE_ICONV <*63930>
 %! assert (unicode2native (char (230), 'windows-1252'), uint8 (63));
 %!testif HAVE_ICONV <*63930>
@@ -97,7 +97,7 @@ endfunction
 %! assert (unicode2native (char ([230, 10]), 'windows-1252'),
 %!         uint8 ([63, 10]));
 
-# target encoding with surrogates larger than a byte
+## target encoding with surrogates larger than a byte
 %!testif HAVE_ICONV <*64139>
 %! assert (typecast (unicode2native ('abcde',
 %!                                   ['utf-16', nthargout(3, 'computer'), 'e']),

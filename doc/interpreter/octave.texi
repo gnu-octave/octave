@@ -99,7 +99,8 @@ modified versions.
 @sp 2
 @multitable @columnfractions 0.4 0.025 0.65
 @item
-@flushright @image{octave_logo,2.1in}
+@flushright
+@image{octave_logo,2.1in}
 @end flushright
 @tab
 @c this is a spacer column
@@ -625,7 +626,7 @@ Object Groups
 Graphics Toolkits
 
 * Customizing Toolkit Behavior::
-* Hardware vs. Software Rendering::
+* Hardware vs Software Rendering::
 * Precision issues::
 
 Matrix Manipulation

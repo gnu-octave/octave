@@ -178,7 +178,10 @@ public:
   // You should not use it anywhere else.
   const void * mex_get_data () const;
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    return vm_call_dispatch_type::OCT_SUBSREF;
+  }
 
   octave_value_list
   simple_subsref (char type, octave_value_list& idx, int nargout);

@@ -165,7 +165,10 @@ public:
   bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    return vm_call_dispatch_type::OCT_SUBSREF;
+  }
 
 protected:
 
@@ -292,7 +295,10 @@ public:
 
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    return vm_call_dispatch_type::OCT_SUBSREF;
+  }
 
 protected:
 

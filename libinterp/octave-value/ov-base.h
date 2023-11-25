@@ -811,15 +811,17 @@ public:
   virtual bool vm_need_storable_call (void) const { return false; }
 
   virtual bool vm_need_dispatch_assign_rhs (void) { return true; }
+
   virtual bool vm_need_dispatch_assign_lhs (void) { return true; }
+
   virtual bool vm_need_dispatch_push (void) { return true; }
 
   enum class vm_call_dispatch_type {
-    SUBSREF,
-    FN_LOOKUP,
-    CALL,
-    HANDLE,
-    OBJECT,
+    OCT_SUBSREF,
+    OCT_FN_LOOKUP,
+    OCT_CALL,
+    OCT_HANDLE,
+    OCT_OBJECT,
   };
 
   virtual vm_call_dispatch_type vm_dispatch_call (void);

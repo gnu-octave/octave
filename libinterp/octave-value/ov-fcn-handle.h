@@ -388,8 +388,9 @@ public:
   vm_call_dispatch_type vm_dispatch_call (void)
   {
     if (m_rep->has_function_cache ())
-      return vm_call_dispatch_type::CALL;
-    return vm_call_dispatch_type::SUBSREF;
+      return vm_call_dispatch_type::OCT_CALL;
+
+    return vm_call_dispatch_type::OCT_SUBSREF;
   }
 
   void compile () { m_rep->compile (); }

@@ -469,12 +469,12 @@ octave_scalar::fast_elem_insert_self (void *where, builtin_type_t btyp) const
   // Support inline real->complex conversion.
   if (btyp == btyp_double)
     {
-      *(reinterpret_cast<double *>(where)) = scalar;
+      *(reinterpret_cast<double *> (where)) = scalar;
       return true;
     }
   else if (btyp == btyp_complex)
     {
-      *(reinterpret_cast<Complex *>(where)) = scalar;
+      *(reinterpret_cast<Complex *> (where)) = scalar;
       return true;
     }
   else

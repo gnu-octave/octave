@@ -84,7 +84,7 @@ public:
 
   explicit OCTAVE_API SparseMatrix (const DiagMatrix& a);
 
-  explicit SparseMatrix (const PermMatrix& a) : MSparse<double>(a) { }
+  explicit SparseMatrix (const PermMatrix& a) : MSparse<double> (a) { }
 
   SparseMatrix (octave_idx_type r, octave_idx_type c,
                 octave_idx_type num_nz) : MSparse<double> (r, c, num_nz) { }

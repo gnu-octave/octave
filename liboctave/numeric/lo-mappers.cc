@@ -184,7 +184,7 @@ octave_idx_type
 nint_big (double x)
 {
   static const double out_of_range_top
-    = static_cast<double>(std::numeric_limits<octave_idx_type>::max ())+1.;
+    = static_cast<double> (std::numeric_limits<octave_idx_type>::max ())+1.;
   if (x >= out_of_range_top)
     return std::numeric_limits<octave_idx_type>::max ();
   else if (x < std::numeric_limits<octave_idx_type>::min ())
@@ -198,7 +198,7 @@ octave_idx_type
 nint_big (float x)
 {
   static const float out_of_range_top
-    = static_cast<float>(std::numeric_limits<octave_idx_type>::max ())+1.;
+    = static_cast<float> (std::numeric_limits<octave_idx_type>::max ())+1.;
   if (x >= out_of_range_top)
     return std::numeric_limits<octave_idx_type>::max ();
   else if (x < std::numeric_limits<octave_idx_type>::min ())
@@ -223,7 +223,7 @@ int
 nint (float x)
 {
   static const float out_of_range_top
-    = static_cast<float>(std::numeric_limits<int>::max ()) + 1.;
+    = static_cast<float> (std::numeric_limits<int>::max ()) + 1.;
   if (x >= out_of_range_top)
     return std::numeric_limits<int>::max ();
   else if (x < std::numeric_limits<int>::min ())

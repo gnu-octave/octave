@@ -263,10 +263,10 @@ Sparse<T, Alloc>::Sparse (const Sparse<T, Alloc>& a, const dim_vector& dv)
 {
 
   // Work in unsigned long long to avoid overflow issues with numel
-  unsigned long long a_nel = static_cast<unsigned long long>(a.rows ()) *
-                             static_cast<unsigned long long>(a.cols ());
-  unsigned long long dv_nel = static_cast<unsigned long long>(dv(0)) *
-                              static_cast<unsigned long long>(dv(1));
+  unsigned long long a_nel = static_cast<unsigned long long> (a.rows ()) *
+                             static_cast<unsigned long long> (a.cols ());
+  unsigned long long dv_nel = static_cast<unsigned long long> (dv(0)) *
+                              static_cast<unsigned long long> (dv(1));
 
   if (a_nel != dv_nel)
     (*current_liboctave_error_handler)

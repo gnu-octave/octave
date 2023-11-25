@@ -70,7 +70,7 @@ public:
   explicit MSparse (octave_idx_type r, octave_idx_type c, T val)
     : Sparse<T> (r, c, val) { }
 
-  explicit MSparse (const PermMatrix& a) : Sparse<T>(a) { }
+  explicit MSparse (const PermMatrix& a) : Sparse<T> (a) { }
 
   MSparse (octave_idx_type r, octave_idx_type c, octave_idx_type num_nz)
     : Sparse<T> (r, c, num_nz) { }

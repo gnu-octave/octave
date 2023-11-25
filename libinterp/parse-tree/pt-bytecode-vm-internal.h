@@ -261,7 +261,7 @@ catch (index_exception& ie)                              \
 #define CATCH_INTERRUPT_EXCEPTION \
 catch (interrupt_exception& e)                                          \
   {                                                                     \
-    (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);            \
+    (*sp++).i = static_cast<int> (error_type::INTERRUPT_EXC);           \
     goto unwind;                                                        \
   }                                                                     \
 

@@ -447,8 +447,8 @@ template <typename T, typename ET>
 void
 map_2_xlog2 (const Array<T>& x, Array<T>& f, Array<ET>& e)
 {
-  f = Array<T>(x.dims ());
-  e = Array<ET>(x.dims ());
+  f = Array<T> (x.dims ());
+  e = Array<ET> (x.dims ());
   for (octave_idx_type i = 0; i < x.numel (); i++)
     {
       int exp;

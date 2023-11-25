@@ -604,7 +604,7 @@ public:
     SETOPTR (CURLOPT_HEADERFUNCTION, write_data);
 
     std::ostringstream buf;
-    SETOPTR (CURLOPT_WRITEHEADER, static_cast<void *>(&buf));
+    SETOPTR (CURLOPT_WRITEHEADER, static_cast<void *> (&buf));
 
     perform ();
     if (! good ())

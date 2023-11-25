@@ -660,7 +660,7 @@ octave::string::get_encoding_list ()
           },
         &count);
 
-      if (count == static_cast<size_t>(-1))
+      if (count == static_cast<size_t> (-1))
         {
           encoding_list.push_back ("UTF-8");
           return encoding_list;
@@ -917,9 +917,9 @@ rational_approx (T val, int len)
     len = 10;
 
   static const T out_of_range_top
-    = static_cast<T>(std::numeric_limits<int>::max ()) + 1.;
+    = static_cast<T> (std::numeric_limits<int>::max ()) + 1.;
   static const T out_of_range_bottom
-    = static_cast<T>(std::numeric_limits<int>::min ()) - 1.;
+    = static_cast<T> (std::numeric_limits<int>::min ()) - 1.;
   if (octave::math::isinf (val))
     {
       if (val > 0)

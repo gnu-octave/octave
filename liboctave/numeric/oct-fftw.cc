@@ -867,7 +867,7 @@ fftw::fft (const double *in, Complex *out, std::size_t npts,
                 stride, dist, in, out);
   fftw_plan m_plan = reinterpret_cast<fftw_plan> (vplan);
 
-  fftw_execute_dft_r2c (m_plan, (const_cast<double *>(in)),
+  fftw_execute_dft_r2c (m_plan, (const_cast<double *> (in)),
                         reinterpret_cast<fftw_complex *> (out));
 
   // Need to create other half of the transform.
@@ -891,7 +891,7 @@ fftw::fft (const Complex *in, Complex *out, std::size_t npts,
   fftw_plan m_plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (m_plan,
-                    reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+                    reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
                     reinterpret_cast<fftw_complex *> (out));
 
   return 0;
@@ -910,7 +910,7 @@ fftw::ifft (const Complex *in, Complex *out, std::size_t npts,
   fftw_plan m_plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (m_plan,
-                    reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+                    reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
                     reinterpret_cast<fftw_complex *> (out));
 
   const Complex scale = npts;
@@ -938,7 +938,7 @@ fftw::fftNd (const double *in, Complex *out, const int rank,
                 in, out + offset);
   fftw_plan m_plan = reinterpret_cast<fftw_plan> (vplan);
 
-  fftw_execute_dft_r2c (m_plan, (const_cast<double *>(in)),
+  fftw_execute_dft_r2c (m_plan, (const_cast<double *> (in)),
                         reinterpret_cast<fftw_complex *> (out+ offset));
 
   // Need to create other half of the transform.
@@ -961,7 +961,7 @@ fftw::fftNd (const Complex *in, Complex *out, const int rank,
   fftw_plan m_plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (m_plan,
-                    reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+                    reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
                     reinterpret_cast<fftw_complex *> (out));
 
   return 0;
@@ -980,7 +980,7 @@ fftw::ifftNd (const Complex *in, Complex *out, const int rank,
   fftw_plan m_plan = reinterpret_cast<fftw_plan> (vplan);
 
   fftw_execute_dft (m_plan,
-                    reinterpret_cast<fftw_complex *> (const_cast<Complex *>(in)),
+                    reinterpret_cast<fftw_complex *> (const_cast<Complex *> (in)),
                     reinterpret_cast<fftw_complex *> (out));
 
   const std::size_t npts = dv.numel ();
@@ -1003,7 +1003,7 @@ fftw::fft (const float *in, FloatComplex *out, std::size_t npts,
                 dist, in, out);
   fftwf_plan m_plan = reinterpret_cast<fftwf_plan> (vplan);
 
-  fftwf_execute_dft_r2c (m_plan, (const_cast<float *>(in)),
+  fftwf_execute_dft_r2c (m_plan, (const_cast<float *> (in)),
                          reinterpret_cast<fftwf_complex *> (out));
 
   // Need to create other half of the transform.
@@ -1027,7 +1027,7 @@ fftw::fft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
   fftwf_plan m_plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (m_plan,
-                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
+                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
                      reinterpret_cast<fftwf_complex *> (out));
 
   return 0;
@@ -1047,7 +1047,7 @@ fftw::ifft (const FloatComplex *in, FloatComplex *out, std::size_t npts,
   fftwf_plan m_plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (m_plan,
-                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
+                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
                      reinterpret_cast<fftwf_complex *> (out));
 
   const FloatComplex scale = npts;
@@ -1075,7 +1075,7 @@ fftw::fftNd (const float *in, FloatComplex *out, const int rank,
                 in, out + offset);
   fftwf_plan m_plan = reinterpret_cast<fftwf_plan> (vplan);
 
-  fftwf_execute_dft_r2c (m_plan, (const_cast<float *>(in)),
+  fftwf_execute_dft_r2c (m_plan, (const_cast<float *> (in)),
                          reinterpret_cast<fftwf_complex *> (out+ offset));
 
   // Need to create other half of the transform.
@@ -1098,7 +1098,7 @@ fftw::fftNd (const FloatComplex *in, FloatComplex *out, const int rank,
   fftwf_plan m_plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (m_plan,
-                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
+                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
                      reinterpret_cast<fftwf_complex *> (out));
 
   return 0;
@@ -1117,7 +1117,7 @@ fftw::ifftNd (const FloatComplex *in, FloatComplex *out, const int rank,
   fftwf_plan m_plan = reinterpret_cast<fftwf_plan> (vplan);
 
   fftwf_execute_dft (m_plan,
-                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *>(in)),
+                     reinterpret_cast<fftwf_complex *> (const_cast<FloatComplex *> (in)),
                      reinterpret_cast<fftwf_complex *> (out));
 
   const std::size_t npts = dv.numel ();

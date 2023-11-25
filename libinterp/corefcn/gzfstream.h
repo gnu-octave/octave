@@ -303,7 +303,7 @@ public:
   */
   gzfilebuf *
   rdbuf () const
-  { return const_cast<gzfilebuf *>(&m_sb); }
+  { return const_cast<gzfilebuf *> (&m_sb); }
 
   /**
    *  @brief  Check if file is open.
@@ -390,7 +390,7 @@ public:
   */
   gzfilebuf *
   rdbuf () const
-  { return const_cast<gzfilebuf *>(&m_sb); }
+  { return const_cast<gzfilebuf *> (&m_sb); }
 
   /**
    *  @brief  Check if file is open.
@@ -493,12 +493,12 @@ gzomanip2<T1, T2>::gzomanip2 (gzofstream &(*f)(gzofstream&, T1, T2),
 template <typename T1, typename T2>
 inline gzofstream&
 operator<<(gzofstream& s, const gzomanip2<T1, T2>& m)
-{ return (*m.m_fcn)(s, m.m_val1, m.m_val2); }
+{ return (*m.m_fcn) (s, m.m_val1, m.m_val2); }
 
 // Insert this onto stream to simplify setting of compression level
 inline gzomanip2<int, int>
 setcompression (int l, int s = Z_DEFAULT_STRATEGY)
-{ return gzomanip2<int, int>(&setcompression, l, s); }
+{ return gzomanip2<int, int> (&setcompression, l, s); }
 
 #endif
 

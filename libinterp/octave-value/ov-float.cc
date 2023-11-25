@@ -442,12 +442,12 @@ octave_float_scalar::fast_elem_insert_self (void *where,
   // Support inline real->complex conversion.
   if (btyp == btyp_float)
     {
-      *(reinterpret_cast<float *>(where)) = scalar;
+      *(reinterpret_cast<float *> (where)) = scalar;
       return true;
     }
   else if (btyp == btyp_float_complex)
     {
-      *(reinterpret_cast<FloatComplex *>(where)) = scalar;
+      *(reinterpret_cast<FloatComplex *> (where)) = scalar;
       return true;
     }
   else

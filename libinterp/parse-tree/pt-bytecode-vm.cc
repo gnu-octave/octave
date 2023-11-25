@@ -2427,7 +2427,7 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
 
     switch (ov.vm_dispatch_call ())
       {
-        case octave_base_value::vm_call_dispatch_type::SUBSREF:
+        case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
           {
             // Make an ovl with the args
             octave_value_list ovl;
@@ -2497,7 +2497,7 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
           }
         break;
 
-        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+        case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
           {
             // It is probably a function call
             CHECK_PANIC (ov.is_nil ()); // TODO :Remove
@@ -2510,9 +2510,9 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
               bsp[slot].ov = ov;
           }
           // Fallthrough
-        case octave_base_value::vm_call_dispatch_type::CALL:
-        case octave_base_value::vm_call_dispatch_type::HANDLE:
-        case octave_base_value::vm_call_dispatch_type::OBJECT:
+        case octave_base_value::vm_call_dispatch_type::OCT_CALL:
+        case octave_base_value::vm_call_dispatch_type::OCT_HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OCT_OBJECT:
           {
             CHECK_PANIC (ov.has_function_cache ()); // TODO :Remove
 
@@ -4157,7 +4157,7 @@ wordcmd:
 
     switch (ov.vm_dispatch_call ())
       {
-        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+        case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
           {
             CHECK_PANIC (ov.is_nil ()); // TODO: Remove
 
@@ -4169,9 +4169,9 @@ wordcmd:
               bsp[slot].ov = ov;
           }
           // Fallthrough
-        case octave_base_value::vm_call_dispatch_type::CALL:
-        case octave_base_value::vm_call_dispatch_type::HANDLE:
-        case octave_base_value::vm_call_dispatch_type::OBJECT:
+        case octave_base_value::vm_call_dispatch_type::OCT_CALL:
+        case octave_base_value::vm_call_dispatch_type::OCT_HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OCT_OBJECT:
           {
             octave_function *fcn;
             try
@@ -4224,7 +4224,7 @@ wordcmd:
           }
           break;
 
-        case octave_base_value::vm_call_dispatch_type::SUBSREF:
+        case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
           PANIC ("Invalid dispatch");
       }
   }
@@ -4392,7 +4392,7 @@ append_cell:
       if (i_col_idx < n_cols)
         cell (i_row_idx, i_col_idx) = ov;
 
-      i_col = i_col + 1L;
+      i_col = i_col + static_cast<octave_int64> (1);
       i_col_idx++;
     }
   else
@@ -4513,7 +4513,7 @@ index_cell_id0:
 
     switch (ov.vm_dispatch_call ())
       {
-        case octave_base_value::vm_call_dispatch_type::SUBSREF:
+        case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
           {
             std::list<octave_value_list> idx; // TODO: mallocs!
 
@@ -4587,7 +4587,7 @@ index_cell_id0:
           }
           break;
 
-        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+        case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
           {
             // Put a function cache object in the slot and in the local ov
             ov = octave_value (new octave_fcn_cache (name_data[slot]));
@@ -4597,9 +4597,9 @@ index_cell_id0:
               bsp[slot].ov = ov;
           }
           // Fallthrough
-        case octave_base_value::vm_call_dispatch_type::CALL:
-        case octave_base_value::vm_call_dispatch_type::HANDLE:
-        case octave_base_value::vm_call_dispatch_type::OBJECT:
+        case octave_base_value::vm_call_dispatch_type::OCT_CALL:
+        case octave_base_value::vm_call_dispatch_type::OCT_HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OCT_OBJECT:
           {
             octave_function *fcn;
             try
@@ -5408,7 +5408,8 @@ index_struct_call:
           }
 
         // Should we call the object?
-        if (ov.vm_dispatch_call () == octave_base_value::vm_call_dispatch_type::CALL)
+        if (ov.vm_dispatch_call ()
+            == octave_base_value::vm_call_dispatch_type::OCT_CALL)
           {
             CHECK_PANIC (ov.has_function_cache ());
 
@@ -5696,7 +5697,7 @@ index_obj:
 
     switch (ov.vm_dispatch_call ())
       {
-        case octave_base_value::vm_call_dispatch_type::SUBSREF:
+        case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
           {
             // TODO: subsref should take ovl instead and be chained,
             // or something smarter
@@ -5772,7 +5773,7 @@ index_obj:
           }
         break;
 
-        case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+        case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
           {
             // If the first object is not an identifier we can't look it up for
             // a function call.
@@ -5799,9 +5800,9 @@ index_obj:
               bsp[slot].ov = ov;
           }
         // Fallthrough
-        case octave_base_value::vm_call_dispatch_type::CALL:
-        case octave_base_value::vm_call_dispatch_type::HANDLE:
-        case octave_base_value::vm_call_dispatch_type::OBJECT:
+        case octave_base_value::vm_call_dispatch_type::OCT_CALL:
+        case octave_base_value::vm_call_dispatch_type::OCT_HANDLE:
+        case octave_base_value::vm_call_dispatch_type::OCT_OBJECT:
           {
             octave_function *fcn;
             try
@@ -6680,13 +6681,13 @@ debug: // TODO: Remove
           {
             switch (ov.vm_dispatch_call ())
               {
-                case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+                case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
                   {
                     (*sp++).pee = new execution_exception {"error", "", "invalid undefined value in chained index expression"}; // TODO: Uninformative?
                     (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
                     goto unwind;
                   }
-                case octave_base_value::vm_call_dispatch_type::SUBSREF:
+                case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
                   {
                     octave_value_list ovl;
                     // The operands are on the top of the stack
@@ -6755,9 +6756,9 @@ debug: // TODO: Remove
                   }
                 break;
 
-                case octave_base_value::vm_call_dispatch_type::CALL:
-                case octave_base_value::vm_call_dispatch_type::HANDLE:
-                case octave_base_value::vm_call_dispatch_type::OBJECT:
+                case octave_base_value::vm_call_dispatch_type::OCT_CALL:
+                case octave_base_value::vm_call_dispatch_type::OCT_HANDLE:
+                case octave_base_value::vm_call_dispatch_type::OCT_OBJECT:
                   {
                     CHECK_PANIC (ov.has_function_cache ()); // TODO :Remove
 
@@ -6883,10 +6884,10 @@ debug: // TODO: Remove
 
                 switch (ov.vm_dispatch_call ())
                   {
-                    case octave_base_value::vm_call_dispatch_type::FN_LOOKUP:
+                    case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
                       panic_impossible ();
                       break;
-                    case octave_base_value::vm_call_dispatch_type::SUBSREF:
+                    case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
                       {
                         CHECK_PANIC (! ov.is_function () || ov.is_classdef_meta ()); // TODO: Remove
 
@@ -6938,9 +6939,9 @@ debug: // TODO: Remove
                       }
                     break;
 
-                    case octave_base_value::vm_call_dispatch_type::CALL:
-                    case octave_base_value::vm_call_dispatch_type::HANDLE:
-                    case octave_base_value::vm_call_dispatch_type::OBJECT:
+                    case octave_base_value::vm_call_dispatch_type::OCT_CALL:
+                    case octave_base_value::vm_call_dispatch_type::OCT_HANDLE:
+                    case octave_base_value::vm_call_dispatch_type::OCT_OBJECT:
                       {
                         CHECK_PANIC (ov.is_function ()); // TODO :Remove
 

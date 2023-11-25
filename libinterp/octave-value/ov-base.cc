@@ -969,11 +969,11 @@ octave_base_value::vm_dispatch_call (void)
   bool is_defined = this->is_defined ();
 
   if (! has_function_cache && is_defined)
-    return vm_call_dispatch_type::SUBSREF;
+    return vm_call_dispatch_type::OCT_SUBSREF;
   else if (has_function_cache)
-      return vm_call_dispatch_type::CALL;
+      return vm_call_dispatch_type::OCT_CALL;
   else
-      return vm_call_dispatch_type::FN_LOOKUP;
+      return vm_call_dispatch_type::OCT_FN_LOOKUP;
 }
 
 octave_value_ref *

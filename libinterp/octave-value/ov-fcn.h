@@ -65,7 +65,10 @@ public:
 
   bool has_function_cache (void) const { return true; }
 
-  vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::CALL; }
+  vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    return vm_call_dispatch_type::OCT_CALL;
+  }
 
   octave_function *
   get_cached_fcn (const octave_value_list& args);
@@ -319,7 +322,10 @@ public:
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ()) = 0;
 
-  vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::CALL; }
+  vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    return vm_call_dispatch_type::OCT_CALL;
+  }
 
   octave_function *
   get_cached_fcn (void *, void *) { return function_value (); }

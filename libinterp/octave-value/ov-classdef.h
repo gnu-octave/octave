@@ -230,7 +230,10 @@ public:
 
   OCTINTERP_API std::string file_name () const;
 
-    vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::SUBSREF; }
+  vm_call_dispatch_type vm_dispatch_call (void)
+  {
+    return vm_call_dispatch_type::OCT_SUBSREF;
+  }
 
 private:
 

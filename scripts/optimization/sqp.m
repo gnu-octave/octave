@@ -732,7 +732,7 @@ function res = cf_ub_lb (x, lbidx, ubidx, globals)
     ub = globals.ub - x(ubidx, 1);
   else
     ub = [];
-  end
+  endif
 
   res = [ci; lb; ub];
 

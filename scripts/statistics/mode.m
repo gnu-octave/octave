@@ -88,7 +88,7 @@ function [m, f, c] = mode (x, dim)
         c(:) = NaN (1, 0);
       endif
     endif
-    return
+    return;
   endif
 
   if (dim > nd || sz(dim) == 1)

@@ -446,7 +446,7 @@ function out = conv_interp_pairs (Z, X, Y, XI, YI, kernel, kernel_bounds)
   h_x = (XI - reshape (X(idx_x), size (idx_x))) / spread_x;
   h_y = (YI - reshape (Y(idx_y), size (idx_y))) / spread_y;
 
-  # adjust indexes for padding
+  ## adjust indexes for padding
   idx_x += -kernel_bounds(1) - 1;
   idx_y += -kernel_bounds(1) - 1;
 

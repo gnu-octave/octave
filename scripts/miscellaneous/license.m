@@ -157,7 +157,7 @@ endfunction
 %! list = pkg ("list");
 %! for idx = 1: numel (list)
 %!   name = list{idx}.name;
-%!   if (list{idx}.loaded);
+%!   if (list{idx}.loaded)
 %!     assert ((license ("inuse", name)).feature, name);
 %!   else
 %!     rv = license ("inuse", name);

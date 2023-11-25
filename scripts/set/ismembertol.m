@@ -93,8 +93,7 @@ function [tf, s_idx] = ismembertol (a, s, varargin)
   endif
 
   if (nargin < 3 || ! isnumeric (varargin{1}))
-    # defaut tolerance
-    tol = 1e-6;
+    tol = 1e-6;  # default tolerance
   else
     tol = varargin{1};
     varargin(1) = [];
@@ -163,7 +162,7 @@ function [tf, s_idx] = ismembertol (a, s, varargin)
       endif
       s_idx = reshape (s_idx, sa);
       tf = reshape (tf, sa);
-    else # all_indices
+    else  # all_indices
       s_idx = cell (size(a));
       tf = zeros (size(a));
       C = unique (s_j);
@@ -224,6 +223,7 @@ function [tf, s_idx] = ismembertol (a, s, varargin)
   endif
 
 endfunction
+
 
 %!demo
 %! ## Group random data

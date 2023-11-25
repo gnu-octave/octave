@@ -79,7 +79,7 @@ function bstr = dec2bin (d, len)
   endif
 
   if (all (d >= 0))
-    return
+    return;
   endif
 
   ## If we are here, there are negative inputs, so we need to

@@ -97,12 +97,12 @@ function m = mad (x, opt = 0, dim)
 
     ## First check for special empty case.
     if (isempty (x) && ndims (x) == 2 && size (x) == [0, 0])
-      if  (isa (x, "single"))
+      if (isa (x, "single"))
         m = NaN ("single");
       else
         m = NaN;
       endif
-      return
+      return;
     endif
 
     ## Then find the first non-singleton dimension.
@@ -118,6 +118,7 @@ function m = mad (x, opt = 0, dim)
   m = fcn (abs (x - fcn (x, dim, "omitnan")), dim, "omitnan");
 
 endfunction
+
 
 %!assert (mad (123), 0)
 %!assert (mad (Inf), NaN)

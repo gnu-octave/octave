@@ -532,7 +532,7 @@ endfunction
 %!assert <*42241> (datevec ("08/15/2013", "mm"), [1900, 8, 0, 0, 0, 0])
 %!assert <*42241> (datevec ("08ABC", "mm"), [1900, 8, 0, 0, 0, 0])
 
-# 6 mm/dd
+## 6 mm/dd
 %!assert <*42241> (datevec ("08/15"), [yr, 8, 15, 0, 0, 0])
 %!assert <*42241> (datevec ("08/15", "mm/dd"), [yr, 8, 15, 0, 0, 0])
 %!assert <*42241> (datevec ("08/15/13", "mm/dd"), [yr, 8, 15, 0, 0, 0])

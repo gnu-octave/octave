@@ -97,7 +97,7 @@ function solution = integrate_adaptive (stepper, order, fcn, tspan, x0,
 
   ## Initialize Refine value
   refine = options.Refine;
-  if isempty (refine)
+  if (isempty (refine))
     refine = 1;
   elseif ((refine != round (refine)) || (refine < 1))
     refine = 1;

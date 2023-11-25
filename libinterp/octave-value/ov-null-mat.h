@@ -52,7 +52,7 @@ public:
   static const octave_value instance;
 
   bool isnull () const { return true; }
-  bool vm_need_storable_call (void) const { return true; }
+  bool vm_need_storable_call () const { return true; }
 
   type_conv_info numeric_conversion_function () const;
 
@@ -76,7 +76,7 @@ public:
   bool is_storable () const { return false; }
 
   bool isnull () const { return true; }
-  bool vm_need_storable_call (void) const { return true; }
+  bool vm_need_storable_call () const { return true; }
 
   type_conv_info numeric_conversion_function () const;
 
@@ -100,7 +100,8 @@ public:
   bool is_storable () const { return false; }
 
   bool isnull () const { return true; }
-  bool vm_need_storable_call (void) const { return true; }
+
+  bool vm_need_storable_call () const { return true; }
 
   type_conv_info numeric_conversion_function () const;
 

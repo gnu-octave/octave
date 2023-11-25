@@ -61,11 +61,11 @@ public:
   octave_base_value *
   clone () const { return new octave_fcn_cache (*this); }
 
-  bool is_function_cache (void) const { return true; }
+  bool is_function_cache () const { return true; }
 
-  bool has_function_cache (void) const { return true; }
+  bool has_function_cache () const { return true; }
 
-  vm_call_dispatch_type vm_dispatch_call (void)
+  vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_CALL;
   }
@@ -322,7 +322,7 @@ public:
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ()) = 0;
 
-  vm_call_dispatch_type vm_dispatch_call (void)
+  vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_CALL;
   }
@@ -333,7 +333,7 @@ public:
   octave_function *
   get_cached_fcn (const octave_value_list&) { return function_value (); }
 
-  bool has_function_cache (void) const { return true; }
+  bool has_function_cache () const { return true; }
 
 protected:
 

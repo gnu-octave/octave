@@ -94,7 +94,7 @@ public:
     return m_L;
   }
 
-  cholmod_common *cc (void) const
+  cholmod_common *cc () const
   {
     cholmod_common *ret = const_cast<cholmod_common *> (&m_common);
     return ret;

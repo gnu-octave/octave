@@ -143,9 +143,9 @@ namespace octave
         ONE_OV_ON_STACK,
       };
 
-    bytecode_walker (void) { }
+    bytecode_walker () { }
 
-    virtual ~bytecode_walker (void) = default;
+    virtual ~bytecode_walker () = default;
 
     // The bytecode will be put in this container
     bytecode m_code;

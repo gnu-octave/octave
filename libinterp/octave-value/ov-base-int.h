@@ -136,7 +136,7 @@ public:
 
   octave_base_value * try_narrowing_conversion () { return nullptr; }
 
-  bool is_maybe_function (void) const { return false; }
+  bool is_maybe_function () const { return false; }
 
   bool isreal () const { return true; }
 

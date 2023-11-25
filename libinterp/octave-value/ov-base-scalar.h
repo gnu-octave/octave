@@ -135,7 +135,7 @@ public:
   MatrixType matrix_type (const MatrixType&) const
   { return matrix_type (); }
 
-  bool is_maybe_function (void) const { return false; }
+  bool is_maybe_function () const { return false; }
 
   bool is_scalar_type () const { return true; }
 
@@ -175,11 +175,13 @@ public:
   OCTINTERP_API bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
-  bool vm_need_dispatch_assign_rhs (void) { return false; }
-  bool vm_need_dispatch_assign_lhs (void) { return false; }
-  bool vm_need_dispatch_push (void) { return false; }
+  bool vm_need_dispatch_assign_rhs () { return false; }
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void)
+  bool vm_need_dispatch_assign_lhs () { return false; }
+
+  bool vm_need_dispatch_push () { return false; }
+
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }

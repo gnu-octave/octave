@@ -127,13 +127,13 @@ octave_base_value::empty_clone () const
 // here are not used by the corresponding octave_value functions.  This
 // inconsistency is likely to cause some confusion.
 octave_value
-octave_base_value::storable_value (void)
+octave_base_value::storable_value ()
 {
   return octave_value_factory::make_copy (this);
 }
 
 octave_base_value *
-octave_base_value::make_storable_value (void)
+octave_base_value::make_storable_value ()
 {
   return this;
 }
@@ -158,7 +158,7 @@ octave_base_value::as_double () const
 }
 
 octave_value
-octave_base_value::as_double_or_copy (void)
+octave_base_value::as_double_or_copy ()
 {
   const octave_base_value * cthis = this;
   return cthis->as_double ();
@@ -963,7 +963,7 @@ octave_base_value::function_value (bool silent)
 }
 
 octave_base_value::vm_call_dispatch_type
-octave_base_value::vm_dispatch_call (void)
+octave_base_value::vm_dispatch_call ()
 {
   // This is the fallback way to determine the dispatch type
   // for octave_base_value classes that does not implement vm_dispatch_call ()

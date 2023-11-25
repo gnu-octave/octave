@@ -85,7 +85,8 @@ public:
   bool is_storable () const { return false; }
 
   bool is_magic_int () const { return true; }
-  bool vm_need_storable_call (void) const { return true; }
+
+  bool vm_need_storable_call () const { return true; }
 
   bool is_real_scalar () const { return true; }
 

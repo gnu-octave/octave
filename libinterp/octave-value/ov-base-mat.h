@@ -80,8 +80,10 @@ public:
   octave_value full_value () const { return m_matrix; }
 
   void maybe_economize () { m_matrix.maybe_economize (); }
-  bool vm_need_storable_call (void) const { return true; }
-  bool is_maybe_function (void) const { return false; }
+
+  bool vm_need_storable_call () const { return true; }
+
+  bool is_maybe_function () const { return false; }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -219,7 +221,7 @@ public:
   octave_value
   checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call (void)
+  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }

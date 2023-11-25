@@ -441,7 +441,7 @@ public:
 
   // Returns a copy of a scalar (double), or makes a scalar
   // for other types.
-  octave_value as_double_or_copy (void) const
+  octave_value as_double_or_copy () const
   { return m_rep->as_double_or_copy (); }
 
   octave_value as_double () const { return m_rep->as_double (); }
@@ -1558,17 +1558,17 @@ protected:
 
   octave_value_ref * ref_rep () { return m_rep->ref_rep (); }
 
-  bool is_nil (void) const { return m_rep == nil_rep (); }
+  bool is_nil () const { return m_rep == nil_rep (); }
 
   // True for the types based on ov-base-mat
   bool is_full_num_matrix () const
   { return m_rep->is_full_num_matrix (); }
 
-  bool is_function_cache (void) const
+  bool is_function_cache () const
   { return m_rep->is_function_cache (); }
 
   // function handles might have a function cache embedded
-  bool has_function_cache (void) const
+  bool has_function_cache () const
   { return m_rep->has_function_cache (); }
 
   octave_function * get_cached_fcn (const octave_value_list& args)
@@ -1581,7 +1581,7 @@ protected:
 
   // Returns true if the octave_value is either undefined or
   // or a function.
-  bool is_maybe_function (void) const
+  bool is_maybe_function () const
   { return m_rep->is_maybe_function (); }
 
   bool vm_need_storable_call () const

@@ -303,7 +303,7 @@ public:
   // Will return a copy of it-self when the representation
   // allready is a scalar (.i.e. double). The const variant
   // as_double () would allocate a new octave value.
-  virtual octave_value as_double_or_copy (void);
+  virtual octave_value as_double_or_copy ();
 
   virtual octave_value as_double () const;
   virtual octave_value as_single () const;
@@ -540,14 +540,14 @@ public:
 
   virtual bool is_mex_function () const { return false; }
 
-  virtual bool is_function_cache (void) const { return false; }
+  virtual bool is_function_cache () const { return false; }
 
   // Checks if the ov could be a function. If it is undefined,
   // the name associated with the ov could be a function to call.
-  virtual bool is_maybe_function (void) const
+  virtual bool is_maybe_function () const
   { return !is_defined () || is_function (); }
 
-  virtual bool has_function_cache (void) const { return false; }
+  virtual bool has_function_cache () const { return false; }
 
   virtual octave_function * get_cached_fcn (const octave_value_list&) { return nullptr; }
 
@@ -804,17 +804,17 @@ public:
 
   virtual octave_value dump () const;
 
-  virtual octave_value storable_value (void);
+  virtual octave_value storable_value ();
 
-  virtual octave_base_value * make_storable_value (void);
+  virtual octave_base_value * make_storable_value ();
 
-  virtual bool vm_need_storable_call (void) const { return false; }
+  virtual bool vm_need_storable_call () const { return false; }
 
-  virtual bool vm_need_dispatch_assign_rhs (void) { return true; }
+  virtual bool vm_need_dispatch_assign_rhs () { return true; }
 
-  virtual bool vm_need_dispatch_assign_lhs (void) { return true; }
+  virtual bool vm_need_dispatch_assign_lhs () { return true; }
 
-  virtual bool vm_need_dispatch_push (void) { return true; }
+  virtual bool vm_need_dispatch_push () { return true; }
 
   enum class vm_call_dispatch_type {
     OCT_SUBSREF,
@@ -824,7 +824,7 @@ public:
     OCT_OBJECT,
   };
 
-  virtual vm_call_dispatch_type vm_dispatch_call (void);
+  virtual vm_call_dispatch_type vm_dispatch_call ();
 
   virtual bool is_ref () const { return false; }
 

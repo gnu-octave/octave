@@ -74,7 +74,7 @@ public:
     octave_value subsasgn (const std::string& type, const std::list<octave_value_list>& idx, const octave_value& rhs);
     octave_base_value * unique_clone ();
     bool is_defined () const;
-    bool is_maybe_function (void) const;
+    bool is_maybe_function () const;
 };
 
 class OCTINTERP_API

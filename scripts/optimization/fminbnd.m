@@ -102,7 +102,13 @@ function [x, fval, info, output] = fminbnd (fcn, a, b, options = struct ())
     print_usage ();
   endif
 
-  if (a > b)
+  if (! (isscalar (a) && isfloat (a) && isfinite (a)))
+    error ("Octave:invalid-input-arg",
+           "fminbnd: endpoint A must be a finite floating point scalar");
+  elseif (! (isscalar (b) && isfloat (b) && isfinite (b)))
+    error ("Octave:invalid-input-arg",
+           "fminbnd: endpoint B must be a finite floating point scalar");
+  elseif (a > b)
     error ("Octave:invalid-input-arg",
            "fminbnd: the lower bound cannot be greater than the upper one");
   endif
@@ -331,4 +337,12 @@ endfunction
 %!assert (fminbnd (@(x) x > 0.3, 0, 1) < 0.3)
 %!assert (fminbnd (@(x) sin (x), 0, 0), 0, eps)
 
+## Test input validation
+%!error <Invalid call> fminbnd (1)
+%!error <A must be a finite floating point scalar> fminbnd (1, [2, 3], 4)
+%!error <A must be a finite floating point scalar> fminbnd (1, int8 (2), 3)
+%!error <A must be a finite floating point scalar> fminbnd (1, Inf, 3)
+%!error <B must be a finite floating point scalar> fminbnd (1, 2, [3, 4])
+%!error <B must be a finite floating point scalar> fminbnd (1, 2, int8 (3))
+%!error <B must be a finite floating point scalar> fminbnd (1, 2, Inf)
 %!error <lower bound cannot be greater> fminbnd (@(x) sin (x), 0, -pi)

@@ -1962,15 +1962,7 @@ May be one of
 @item @qcode{"-"}
 Solid line.  [default]
 
-@c Special handling required to avoid '--' becoming single en-dash in Info
-@ifnottex
-
-@item @verb{|"--"|}
-@end ifnottex
-@iftex
-
-@item @code{"--"}
-@end iftex
+@item @qcode{"--"}
 Dashed line.
 
 @item @qcode{":"}
@@ -2764,7 +2756,7 @@ Data source variables.
 
 @menu
 * Customizing Toolkit Behavior::
-* Hardware vs. Software Rendering::
+* Hardware vs Software Rendering::
 * Precision issues::
 @end menu
 
@@ -2794,8 +2786,8 @@ plot (1:10)
 @end group
 @end example
 
-@node Hardware vs. Software Rendering
-@subsubsection Hardware vs. Software Rendering
+@node Hardware vs Software Rendering
+@subsubsection Hardware vs Software Rendering
 @cindex opengl rendering slow windows
 
 When using the Windows installer for Octave, the user has the option to select

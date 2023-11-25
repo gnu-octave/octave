@@ -272,10 +272,10 @@ Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
 
 ### Old release news
 
-- [Octave 8.x](etc/NEWS.8)
-- [Octave 7.x](etc/NEWS.7)
-- [Octave 6.x](etc/NEWS.6)
-- [Octave 5.x](etc/NEWS.5)
+- [Octave 8.x](etc/NEWS.8.md)
+- [Octave 7.x](etc/NEWS.7.md)
+- [Octave 6.x](etc/NEWS.6.md)
+- [Octave 5.x](etc/NEWS.5.md)
 - [Octave 4.x](etc/NEWS.4)
 - [Octave 3.x](etc/NEWS.3)
 - [Octave 2.x](etc/NEWS.2)

@@ -338,7 +338,7 @@ public:
 
   void resize (std::size_t arg)
   {
-    int diff = static_cast<int> (arg) - static_cast<int>(size ());
+    int diff = static_cast<int> (arg) - static_cast<int> (size ());
 
     if (diff > 0)
       internal_resize (internal_size () + diff);
@@ -360,7 +360,7 @@ public:
     // Not ok to resize for scripts. Extra slots should be in the eval frame.
     CHECK_PANIC (!m_fcn->is_user_script ());
 
-    int diff = static_cast<int> (arg) - static_cast<int>(internal_size ());
+    int diff = static_cast<int> (arg) - static_cast<int> (internal_size ());
 
     if (diff > 0)
       {

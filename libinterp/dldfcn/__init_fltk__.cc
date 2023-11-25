@@ -1139,7 +1139,7 @@ private:
         && m_ax_obj.get_properties ().get_tag () != "colorbar")
       {
         axes::properties& ap
-          = dynamic_cast<axes::properties&>(m_ax_obj.get_properties ());
+          = dynamic_cast<axes::properties&> (m_ax_obj.get_properties ());
         ap.set (name, value);
       }
     else // no axes object clicked so far, take currentaxes
@@ -1152,7 +1152,7 @@ private:
             graphics_object go = gh_mgr.get_object (gh);
 
             axes::properties& ap
-              = dynamic_cast<axes::properties&>(go.get_properties ());
+              = dynamic_cast<axes::properties&> (go.get_properties ());
 
             ap.set (name, value);
           }

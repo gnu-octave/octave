@@ -233,7 +233,7 @@ octave_base_scalar<ST>::fast_elem_insert_self (void *where,
   // Don't use builtin_type () here to avoid an extra VM call.
   if (btyp == class_to_btyp<ST>::btyp)
     {
-      *(reinterpret_cast<ST *>(where)) = scalar;
+      *(reinterpret_cast<ST *> (where)) = scalar;
       return true;
     }
   else

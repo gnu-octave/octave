@@ -1614,7 +1614,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::R (bool econ) const
   for (octave_idx_type j = 0; j < nz; j++)
     {
       ret.xridx (j) = N->U->i[j];
-      ret.xdata (j) = reinterpret_cast<Complex *>(N->U->x)[j];
+      ret.xdata (j) = reinterpret_cast<Complex *> (N->U->x)[j];
     }
 
   return ret;
@@ -2079,7 +2079,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>,
         buf[j] = 0.0;
 
       CXSPARSE_ZNAME (_ipvec) (S->pinv,
-                               reinterpret_cast<cs_complex_t *>(Xx),
+                               reinterpret_cast<cs_complex_t *> (Xx),
                                buf, nr);
 
       for (volatile octave_idx_type j = 0; j < nc; j++)
@@ -2625,7 +2625,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix,
       for (octave_idx_type j = nr; j < nbuf; j++)
         buf[j] = 0.0;
 
-      CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *>(Xx),
+      CXSPARSE_ZNAME (_pvec) (S->q, reinterpret_cast<cs_complex_t *> (Xx),
                               buf, nr);
       CXSPARSE_ZNAME (_utsolve) (N->U, buf);
 
@@ -2637,7 +2637,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<SparseComplexMatrix,
         }
 
       CXSPARSE_ZNAME (_pvec) (S->pinv, buf,
-                              reinterpret_cast<cs_complex_t *>(Xx), nc);
+                              reinterpret_cast<cs_complex_t *> (Xx), nc);
 
       for (octave_idx_type j = 0; j < nc; j++)
         {

@@ -47,7 +47,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // This allows safe indexing with char.
 // In C++, char may be (and often is) signed!
-#define ORD(ch) static_cast<unsigned char>(ch)
+#define ORD(ch) static_cast<unsigned char> (ch)
 #define TABSIZE (std::numeric_limits<unsigned char>::max () + 1)
 
 // This is the quick search algorithm, as described at

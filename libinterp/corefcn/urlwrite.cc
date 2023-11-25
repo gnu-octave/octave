@@ -304,7 +304,7 @@ Undocumented internal function.
       if (keys(i) == "Timeout")
         {
           float timeout = object.get (keys(i)).float_value ();
-          options.Timeout = static_cast<long>(timeout * 1000);
+          options.Timeout = static_cast<long> (timeout * 1000);
         }
 
       if (keys(i) == "HeaderFields")

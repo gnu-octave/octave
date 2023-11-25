@@ -152,9 +152,9 @@ sparse_chol<chol_type>::sparse_chol_rep::drop_zeros (const cholmod_sparse *S)
   if (! S)
     return;
 
-  octave_idx_type *Sp = static_cast<octave_idx_type *>(S->p);
-  octave_idx_type *Si = static_cast<octave_idx_type *>(S->i);
-  chol_elt *Sx = static_cast<chol_elt *>(S->x);
+  octave_idx_type *Sp = static_cast<octave_idx_type *> (S->p);
+  octave_idx_type *Si = static_cast<octave_idx_type *> (S->i);
+  chol_elt *Sx = static_cast<chol_elt *> (S->x);
 
   octave_idx_type pdest = 0;
   octave_idx_type ncol = S->ncol;
@@ -314,7 +314,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
                                           m_L->p, &n1, cm);
 
           CHOLMOD_NAME(reallocate_sparse)
-          (static_cast<octave_idx_type *>(m_L->p)[m_minor_p],
+          (static_cast<octave_idx_type *> (m_L->p)[m_minor_p],
            m_L, cm);
 
           m_L->ncol = m_minor_p;
@@ -326,7 +326,7 @@ sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
         {
           m_perm.resize (a_nr);
           for (octave_idx_type i = 0; i < a_nr; i++)
-            m_perm(i) = static_cast<octave_idx_type *>(Lfactor->Perm)[i];
+            m_perm(i) = static_cast<octave_idx_type *> (Lfactor->Perm)[i];
         }
     }
 
@@ -429,12 +429,12 @@ sparse_chol<chol_type>::L () const
   chol_type ret (m->nrow, nc, nnz);
 
   for (octave_idx_type j = 0; j < nc+1; j++)
-    ret.xcidx (j) = static_cast<octave_idx_type *>(m->p)[j];
+    ret.xcidx (j) = static_cast<octave_idx_type *> (m->p)[j];
 
   for (octave_idx_type i = 0; i < nnz; i++)
     {
-      ret.xridx (i) = static_cast<octave_idx_type *>(m->i)[i];
-      ret.xdata (i) = static_cast<chol_elt *>(m->x)[i];
+      ret.xridx (i) = static_cast<octave_idx_type *> (m->i)[i];
+      ret.xdata (i) = static_cast<chol_elt *> (m->x)[i];
     }
 
   return ret;

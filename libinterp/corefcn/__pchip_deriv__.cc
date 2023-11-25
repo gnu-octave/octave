@@ -81,8 +81,8 @@ Undocumented internal function.
               for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
                 {
                   F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
-                                           reinterpret_cast<float const *>(ymat.data ()) + k * inc,
-                                           reinterpret_cast<float *>(dmat.fortran_vec ()) + k * inc,
+                                           reinterpret_cast<float const *> (ymat.data ()) + k * inc,
+                                           reinterpret_cast<float *> (dmat.fortran_vec ()) + k * inc,
                                            incfd, ierr));
 
                   if (ierr < 0)
@@ -90,8 +90,8 @@ Undocumented internal function.
                            OCTAVE_F77_INT_TYPE_FORMAT, ierr);
 
                   F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
-                                           reinterpret_cast<float const *>(ymat.data ()) + 1 + k * inc,
-                                           reinterpret_cast<float *>(dmat.fortran_vec ()) + 1 + k * inc,
+                                           reinterpret_cast<float const *> (ymat.data ()) + 1 + k * inc,
+                                           reinterpret_cast<float *> (dmat.fortran_vec ()) + 1 + k * inc,
                                            incfd, ierr));
 
                   if (ierr < 0)
@@ -164,8 +164,8 @@ Undocumented internal function.
               for (volatile octave_idx_type i = (rows ? nyr : nyc); i > 0; i--)
                 {
                   F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
-                                             reinterpret_cast<double const *>(ymat.data ()) + k * inc,
-                                             reinterpret_cast<double *>(dmat.fortran_vec ()) + k * inc,
+                                             reinterpret_cast<double const *> (ymat.data ()) + k * inc,
+                                             reinterpret_cast<double *> (dmat.fortran_vec ()) + k * inc,
                                              incfd, ierr));
 
                   if (ierr < 0)
@@ -173,8 +173,8 @@ Undocumented internal function.
                            OCTAVE_F77_INT_TYPE_FORMAT, ierr);
 
                   F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
-                                             reinterpret_cast<double const *>(ymat.data ()) + 1 + k * inc,
-                                             reinterpret_cast<double *>(dmat.fortran_vec ()) + 1 + k * inc,
+                                             reinterpret_cast<double const *> (ymat.data ()) + 1 + k * inc,
+                                             reinterpret_cast<double *> (dmat.fortran_vec ()) + 1 + k * inc,
                                              incfd, ierr));
 
                   if (ierr < 0)

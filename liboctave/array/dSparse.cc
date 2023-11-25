@@ -5837,7 +5837,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
                 {
                   octave_idx_type jr = j * b.rows ();
                   for (octave_idx_type i = 0; i < b.rows (); i++)
-                    retval.xelem (i, j) = static_cast<double *>(X->x)[jr + i];
+                    retval.xelem (i, j) = static_cast<double *> (X->x)[jr + i];
                 }
 
               CHOLMOD_NAME(free_dense) (&X, cm);
@@ -6060,13 +6060,13 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
                                                        (X, cm)));
               for (octave_idx_type j = 0;
                    j <= static_cast<octave_idx_type> (X->ncol); j++)
-                retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
+                retval.xcidx (j) = static_cast<octave_idx_type *> (X->p)[j];
               for (octave_idx_type j = 0;
                    j < octave::from_suitesparse_long (CHOLMOD_NAME(nnz) (X, cm));
                    j++)
                 {
-                  retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
-                  retval.xdata (j) = static_cast<double *>(X->x)[j];
+                  retval.xridx (j) = static_cast<octave_idx_type *> (X->i)[j];
+                  retval.xdata (j) = static_cast<double *> (X->x)[j];
                 }
 
               CHOLMOD_NAME(free_sparse) (&X, cm);
@@ -6311,7 +6311,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                 {
                   octave_idx_type jr = j * b.rows ();
                   for (octave_idx_type i = 0; i < b.rows (); i++)
-                    retval.xelem (i, j) = static_cast<Complex *>(X->x)[jr + i];
+                    retval.xelem (i, j) = static_cast<Complex *> (X->x)[jr + i];
                 }
 
               CHOLMOD_NAME(free_dense) (&X, cm);
@@ -6555,13 +6555,13 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                                                        (X, cm)));
               for (octave_idx_type j = 0;
                    j <= static_cast<octave_idx_type> (X->ncol); j++)
-                retval.xcidx (j) = static_cast<octave_idx_type *>(X->p)[j];
+                retval.xcidx (j) = static_cast<octave_idx_type *> (X->p)[j];
               for (octave_idx_type j = 0;
                    j < octave::from_suitesparse_long (CHOLMOD_NAME(nnz) (X, cm));
                    j++)
                 {
-                  retval.xridx (j) = static_cast<octave_idx_type *>(X->i)[j];
-                  retval.xdata (j) = static_cast<Complex *>(X->x)[j];
+                  retval.xridx (j) = static_cast<octave_idx_type *> (X->i)[j];
+                  retval.xdata (j) = static_cast<Complex *> (X->x)[j];
                 }
 
               CHOLMOD_NAME(free_sparse) (&X, cm);

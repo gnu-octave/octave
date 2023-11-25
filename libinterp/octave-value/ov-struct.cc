@@ -1111,7 +1111,7 @@ octave_struct::fast_elem_insert (octave_idx_type n,
       // To avoid copying the scalar struct, it just stores a pointer to
       // itself.
       const octave_scalar_map *sm_ptr;
-      void *here = reinterpret_cast<void *>(&sm_ptr);
+      void *here = reinterpret_cast<void *> (&sm_ptr);
       return (x.get_rep ().fast_elem_insert_self (here, btyp_struct)
               && m_map.fast_elem_insert (n, *sm_ptr));
     }
@@ -1779,7 +1779,7 @@ octave_scalar_struct::fast_elem_insert_self (void *where,
 
   if (btyp == btyp_struct)
     {
-      *(reinterpret_cast<const octave_scalar_map **>(where)) = &m_map;
+      *(reinterpret_cast<const octave_scalar_map **> (where)) = &m_map;
       return true;
     }
   else

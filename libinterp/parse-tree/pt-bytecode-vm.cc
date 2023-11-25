@@ -1137,8 +1137,8 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
 
   // Read the meta data for constructing a stack frame.
   {
-#define N_RETURNS() static_cast<signed char>(code[0])
-#define N_ARGS() static_cast<signed char>(code[1])
+#define N_RETURNS() static_cast<signed char> (code[0])
+#define N_ARGS() static_cast<signed char> (code[1])
 #define N_LOCALS() USHORT_FROM_UCHAR_PTR (code + 2)
 
     int n_returns = static_cast<signed char> (*ip++);
@@ -1340,7 +1340,7 @@ ret:
         if (vararg_defined && !ov_vararg.iscell ())
           {
             (*sp++).pee = new execution_exception {"error","","varargout must be a cell array object"};
-            (*sp++).i = static_cast<int>(error_type::EXECUTION_EXC);
+            (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
             goto unwind;
           }
         if (vararg_defined)
@@ -1560,7 +1560,7 @@ assign_dispath:
       if (lst.empty ())
         {
           // TODO: Need id, name
-          (*sp++).i = static_cast<int>(error_type::INVALID_N_EL_RHS_IN_ASSIGNMENT);
+          (*sp++).i = static_cast<int> (error_type::INVALID_N_EL_RHS_IN_ASSIGNMENT);
           goto unwind;
         }
 
@@ -1570,7 +1570,7 @@ assign_dispath:
   if (ov_rhs.is_undefined ())
     {
       // TODO: Need id, name
-      (*sp++).i = static_cast<int>(error_type::RHS_UNDEF_IN_ASSIGNMENT);
+      (*sp++).i = static_cast<int> (error_type::RHS_UNDEF_IN_ASSIGNMENT);
       goto unwind;
     }
 
@@ -1652,7 +1652,7 @@ jmp_if:
       }
     else
       {
-        (*sp++).i = static_cast<int>(error_type::IF_UNDEFINED);
+        (*sp++).i = static_cast<int> (error_type::IF_UNDEFINED);
         goto unwind;
       }
 
@@ -2015,7 +2015,7 @@ cmd_fcn_or_undef_error:
     if (! ov.is_defined ())
       {
         (*sp++).ps = new std::string {name_data[slot]};
-        (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+        (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
         goto unwind;
       }
 
@@ -2528,7 +2528,7 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
             if (! fcn)
               {
                 (*sp++).ps = new std::string {name_data[slot]};
-                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
                 goto unwind;
               }
             else if (fcn->is_compiled ())
@@ -3593,7 +3593,7 @@ subassign_id:
           {
             // TODO: Need id, name
             // TODO: Make execution_exception like the others instead of its own error_type
-            (*sp++).i = static_cast<int>(error_type::INVALID_N_EL_RHS_IN_ASSIGNMENT);
+            (*sp++).i = static_cast<int> (error_type::INVALID_N_EL_RHS_IN_ASSIGNMENT);
             goto unwind;
           }
 
@@ -3639,7 +3639,7 @@ end_id:
     if (ov.is_undefined ())
       {
         (*sp++).pee = new execution_exception {"error","","invalid use of 'end': may only be used to index existing value"};
-        (*sp++).i = static_cast<int>(error_type::EXECUTION_EXC);
+        (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
         goto unwind;
       }
 
@@ -3681,7 +3681,7 @@ end_obj:
     if (ov.is_undefined ())
       {
         (*sp++).pee = new execution_exception {"error","","invalid use of 'end': may only be used to index existing value"};
-        (*sp++).i = static_cast<int>(error_type::EXECUTION_EXC);
+        (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
         goto unwind;
       }
 
@@ -3749,7 +3749,7 @@ end_x_n:
         if (is_undef && i + 1 == n_ids)
           {
             (*sp++).pee = new execution_exception {"error","","invalid use of 'end': may only be used to index existing value"};
-            (*sp++).i = static_cast<int>(error_type::EXECUTION_EXC);
+            (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
             goto unwind;
           }
         else if (is_undef)
@@ -4185,7 +4185,7 @@ wordcmd:
             if (! fcn)
               {
                 (*sp++).ps = new std::string {name_data[slot]};
-                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
                 goto unwind;
               }
 
@@ -4613,7 +4613,7 @@ index_cell_id0:
             if (! fcn)
               {
                 (*sp++).ps = new std::string {name_data[slot]};
-                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
                 goto unwind;
               }
 
@@ -5070,7 +5070,7 @@ init_global:
           {
             (*sp++).pee = new execution_exception {"error", "",
               "can't make persistent variable '" + name + "' global"};
-            (*sp++).i = static_cast<int>(error_type::EXECUTION_EXC);
+            (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
             goto unwind;
           }
 
@@ -5103,7 +5103,7 @@ init_global:
           {
             (*sp++).pee = new execution_exception {"error", "",
               "can't make global variable '" + name + "' persistent"};
-            (*sp++).i = static_cast<int>(error_type::EXECUTION_EXC);
+            (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
             goto unwind;
           }
 
@@ -5172,7 +5172,7 @@ assign_compound:
       {
         (*sp++).pee = new execution_exception {"error", "",
           "in computed assignment A OP= X, A must be defined first"};
-        (*sp++).i = static_cast<int>(error_type::EXECUTION_EXC);
+        (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
         goto unwind;
       }
 
@@ -5348,7 +5348,7 @@ throw_iferrorobj:
         // Are we unwinding an interrupt exception?
         if (m_unwinding_interrupt)
           {
-            (*sp++).i = static_cast<int>(error_type::INTERRUPT_EXC);
+            (*sp++).i = static_cast<int> (error_type::INTERRUPT_EXC);
             goto unwind;
           }
 
@@ -5435,7 +5435,7 @@ index_struct_call:
             if (! fcn)
               {
                 (*sp++).ps = new std::string {name_data[slot]};
-                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
                 goto unwind;
               }
 
@@ -5780,7 +5780,7 @@ index_obj:
             if (!has_slot)
               {
                 (*sp++).ps = new std::string {"temporary object"};
-                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
                 goto unwind;
               }
 
@@ -5819,7 +5819,7 @@ index_obj:
                   (*sp++).ps = new std::string {name_data[slot]};
                 else
                   (*sp++).ps = new std::string {"temporary object"};
-                (*sp++).i = static_cast<int>(error_type::ID_UNDEFINED);
+                (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
                 goto unwind;
               }
 

@@ -125,5 +125,5 @@ endfunction
 
 ## test input validation
 %!error <Invalid call> isuniform ()
-%!error <V must be a real vector> isuniform (magic (3))
 %!error <V must be a real vector> isuniform ({1, 2, 3})
+%!error <V must be a real vector> isuniform (magic (3))

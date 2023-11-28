@@ -71,7 +71,6 @@ function C = tensorprod (A, B, varargin)
   if (! isfloat (A))
     error ("tensorprod: A must be a single or double precision array");
   endif
-
   if (! isfloat (B))
     error ("tensorprod: B must be a single or double precision array");
   endif
@@ -80,8 +79,7 @@ function C = tensorprod (A, B, varargin)
   NumDimensionsA = 0;
   if (nargin > 2)
     if (strcmpi (varargin{end}, "NumDimensionsA"))
-      error (["tensorprod: a value for the NumDimensionsA property must ", ...
-              "be provided"]);
+      error ("tensorprod: a value for the NumDimensionsA property must be provided");
     elseif (strncmpi (arg = inputname (nargin, false), "NumDimensionsA", 13))
       error ("tensorprod: NumDimensionsA=VALUE syntax is unsupported.  Use syntax 'NumDimensionsA', VALUE");
     endif
@@ -89,14 +87,12 @@ function C = tensorprod (A, B, varargin)
   ## Check for NumDimensionsA property
   if (nargin > 3)
     if (strcmpi (varargin{end-1}, "NumDimensionsA"))
-      if (! (isnumeric (varargin{end}) && isscalar (varargin{end})))
-        error (["tensorprod: value for NumDimensionsA must be a ", ...
-                "numeric scalar"]);
-      elseif (! isindex (varargin{end}))
-        error (["tensorprod: value for NumDimensionsA must be a ", ...
-                "positive integer"]);
-      endif
       NumDimensionsA = varargin{end};
+      if (! (isnumeric (NumDimensionsA) && isscalar (NumDimensionsA)))
+        error ("tensorprod: value for NumDimensionsA must be a numeric scalar");
+      elseif (! isindex (NumDimensionsA))
+        error ("tensorprod: value for NumDimensionsA must be a positive integer");
+      endif
       nargin = nargin - 2;
     endif
   endif
@@ -112,15 +108,14 @@ function C = tensorprod (A, B, varargin)
     ## Calling with dim or "all" option
     if (isnumeric (varargin{1}))
       if (! (isvector (varargin{1}) || isnull (varargin{1})))
-        error ("tensorprod: dim must be a numeric vector of integers or []");
+        error ("tensorprod: DIM must be a numeric vector of integers or []");
       endif
       ## Calling with dim
       dimA = varargin{1}(:).';  # Reshape to row vector
     elseif (ischar (varargin{1}))
       if (strcmpi (varargin{1}, "all"))
         if (! size_equal (A, B))
-          error (["tensorprod: size of A and B must be identical when ", ...
-                  "using the 'all' option"]);
+          error ("tensorprod: size of A and B must be identical when using the 'all' option");
         endif
       else
         error ("tensorprod: unknown option '%s'", varargin{1});
@@ -128,25 +123,23 @@ function C = tensorprod (A, B, varargin)
       ## Calling with "all" option
       dimA = 1:ndims(A);
     else
-      error (["tensorprod: third argument must be a numeric vector of ", ...
-              "integers, [], or 'all'"]);
+      error ("tensorprod: third argument must be a numeric vector of integers, [], or 'all'");
     endif
     dimB = dimA;
   elseif (ndimargs == 2)
     ## Calling with dimA and dimB
-    if (! (isnumeric (varargin{1}) && (isvector (varargin{1}) || ...
-        isnull (varargin{1}))))
-      error("tensorprod: dimA must be a numeric vector of integers or []");
+    if (! (isnumeric (varargin{1})
+           && (isvector (varargin{1}) || isnull (varargin{1}))))
+      error("tensorprod: DIMA must be a numeric vector of integers or []");
     endif
 
-    if (! (isnumeric (varargin{2}) && (isvector (varargin{2}) || ...
-        isnull (varargin{2}))))
-      error ("tensorprod: dimB must be a numeric vector of integers or []");
+    if (! (isnumeric (varargin{2})
+           && (isvector (varargin{2}) || isnull (varargin{2}))))
+      error ("tensorprod: DIMB must be a numeric vector of integers or []");
     endif
 
     if (numel (varargin{1}) != numel (varargin{2}))
-      error (["tensorprod: an equal number of dimensions must be ", ...
-              "matched for A and B"]);
+      error ("tensorprod: an equal number of dimensions must be matched for A and B");
     endif
     dimA = varargin{1}(:).';  # Reshape to row vector
     dimB = varargin{2}(:).';
@@ -162,8 +155,7 @@ function C = tensorprod (A, B, varargin)
           error ("tensorprod: unknown option '%s'", varargin{i});
         endif
       elseif (! isnumeric (varargin{i}))
-        error (["tensorprod: optional arguments must be numeric vectors ", ...
-                "of integers, [], 'all', or 'NumDimensionsA'"]);
+        error ("tensorprod: optional arguments must be numeric vectors of integers, [], 'all', or 'NumDimensionsA'");
       endif
     endfor
     error ("tensorprod: too many dimension inputs given");
@@ -176,8 +168,7 @@ function C = tensorprod (A, B, varargin)
 
   ## Check that the length of matched dimensions are equal
   if (any (size (A, dimA) != size (B, dimB)))
-    error (["tensorprod: matched dimensions of A and B must have the ", ...
-            "same lengths"]);
+    error ("tensorprod: matched dimensions of A and B must have the same lengths");
   endif
 
   ## Find size and ndims of A and B
@@ -190,14 +181,11 @@ function C = tensorprod (A, B, varargin)
   if (NumDimensionsA)
     if (NumDimensionsA < ndimsA)
       if (ndimargs == 1)
-        error (["tensorprod: highest dimension of dim must be less than ", ...
-                "or equal to NumDimensionsA"]);
+        error ("tensorprod: highest dimension of dim must be less than or equal to NumDimensionsA");
       elseif (ndimargs == 2)
-        error (["tensorprod: highest dimension of dimA must be less ", ...
-                "than or equal to NumDimensionsA"]);
+        error ("tensorprod: highest dimension of dimA must be less than or equal to NumDimensionsA");
       else
-        error (["tensorprod: NumDimensionsA cannot be smaller than the ", ...
-                "number of dimensions of A"]);
+        error ("tensorprod: NumDimensionsA cannot be smaller than the number of dimensions of A");
       endif
     elseif (NumDimensionsA > ndimsA)
       sizeA = [sizeA, ones(1, NumDimensionsA - ndimsA)];
@@ -209,12 +197,12 @@ function C = tensorprod (A, B, varargin)
   ## Prepare for A
   remainDimA = [1:ndimsA];
   remainDimA(dimA) = [];   # Dimensions of A to keep
-  newDimOrderA = [remainDimA, dimA]; # New dim order [to_keep, to_contract]
+  newDimOrderA = [remainDimA, dimA];  # New dim order [to_keep, to_contract]
   newSizeA = [prod(sizeA(remainDimA)), prod(sizeA(dimA))]; # Temp. 2D size for A
 
-  ## Prepare for B (See comments for A.  Note that in principle,
-  ## prod (sizeB (dimB)) should always be equal to prod (sizeA (dimA)).  May
-  ## be able to optimize further here.
+  ## Prepare for B (See comments for A.
+  ## FIXME: Note that in principle, prod (sizeB (dimB)) should always be equal
+  ## to prod (sizeA (dimA)).  May be able to optimize further here.
   remainDimB = [1:ndimsB];
   remainDimB(dimB) = [];   # Dimensions of B to keep
   newDimOrderB = [remainDimB, dimB];
@@ -409,17 +397,17 @@ endfunction
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", 1.5)
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", NaN)
 %!error <value for NumDimensionsA must be a positive integer> tensorprod (1, 1, 2, 1, "NumDimensionsA", Inf)
-%!error <dim must be a numeric vector of integers or \[\]> tensorprod (1, 1, ones (2,2))
-%!error <dim must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros (0,0,0))
+%!error <DIM must be a numeric vector of integers or \[\]> tensorprod (1, 1, ones (2,2))
+%!error <DIM must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros (0,0,0))
 %!error <size of A and B must be identical when using the 'all' option> tensorprod (ones (3, 4), ones (4, 3), "all")
 %!error <unknown option 'foo'> tensorprod (1, 1, "foo")
 %!error <third argument must be a numeric vector of integers, \[\], or 'all'> tensorprod (1, 1, {})
-%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, "foo", 1)
-%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, ones (2,2), 1)
-%!error <dimA must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros (0,0,0), 1)
-%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, "bar")
-%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, ones (2,2))
-%!error <dimB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, zeros (0,0,0))
+%!error <DIMA must be a numeric vector of integers or \[\]> tensorprod (1, 1, "foo", 1)
+%!error <DIMA must be a numeric vector of integers or \[\]> tensorprod (1, 1, ones (2,2), 1)
+%!error <DIMA must be a numeric vector of integers or \[\]> tensorprod (1, 1, zeros (0,0,0), 1)
+%!error <DIMB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, "bar")
+%!error <DIMB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, ones (2,2))
+%!error <DIMB must be a numeric vector of integers or \[\]> tensorprod (1, 1, 1, zeros (0,0,0))
 %!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), 1, [1, 2])
 %!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), 1, [])
 %!error <an equal number of dimensions must be matched for A and B> tensorprod (ones (3, 4), ones (4, 3), [], [1, 2])

@@ -257,7 +257,7 @@ setup_community_news::setup_community_news (welcome_wizard *wizard)
   m_checkbox_message->setText
     (tr ("<html><head>\n"
          "</head><body>\n"
-         "<p>Allow Octave to connect to the Octave web site when it starts to display current news and information about the Octave community.</p>\n"
+         "<p>Allow Octave to connect to the Octave web site when it starts in order to display current news and information about the Octave community.</p>\n"
          "</body></html>"));
   m_checkbox_message->setWordWrap (true);
   m_checkbox_message->setOpenExternalLinks (true);
@@ -343,7 +343,7 @@ final_page::final_page (welcome_wizard *wizard)
          "<p>For more information about Octave:</p>\n"
          "<ul>\n"
          "<li>Visit <a href=\"https://octave.org\">https://octave.org</a> (opens in external browser)</li>\n"
-         "<li>Get the documentation online as <a href=\"https://www.gnu.org/software/octave/doc/interpreter/index.html\">html</a>- or <a href=\"https://www.gnu.org/software/octave/octave.pdf\">pdf</a>-document (opens in external browser)</li>\n"
+         "<li>Get the documentation online in <a href=\"https://www.gnu.org/software/octave/doc/interpreter/index.html\">HTML</a> or <a href=\"https://www.gnu.org/software/octave/octave.pdf\">PDF</a> format (links open in external browser)</li>\n"
          "<li>Open the documentation browser of the Octave GUI with the help menu</li>\n"
          "</ul>\n"
          "</body></html>"));

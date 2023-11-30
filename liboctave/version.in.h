@@ -62,7 +62,7 @@ extern OCTAVE_API std::string octave_contrib_statement (bool html = false);
 
 extern OCTAVE_API std::string octave_bugs_statement (bool html = false);
 
-extern OCTAVE_API std::string octave_name_version_and_copyright ();
+extern OCTAVE_API std::string octave_name_version_and_copyright (bool html = false);
 
 extern OCTAVE_API std::string
 octave_name_version_copyright_copying_and_warranty

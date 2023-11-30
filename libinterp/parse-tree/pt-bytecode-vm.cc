@@ -845,8 +845,8 @@ do {                                \
   do {\
     for (unsigned i = 0; i < stack_pad; i++)\
       {\
-        CHECK (m_stack0[i].u == stack_magic_int);\
-        CHECK (m_stack0[i + stack_size].u == stack_magic_int);\
+        CHECK (m_stack0[i].idx == static_cast<octave_idx_type> (stack_magic_int));\
+        CHECK (m_stack0[i + stack_size].idx == static_cast<octave_idx_type> (stack_magic_int));\
       }\
     CHECK (sp <= m_stack + stack_size);\
     CHECK (sp + n <= m_stack + stack_size);\
@@ -3113,10 +3113,10 @@ for_setup:
 
 
     // Push n to the stack
-    (*sp++).i = n;
+    (*sp++).idx = n;
     // Push a counter to the stack, initialized so that it will
     // increment to 0.
-    (*sp++).i = -1;
+    (*sp++).idx = -1;
 
     // For empty rhs just assign it to lhs
     if (! n && ov_range.is_defined ())
@@ -3162,11 +3162,11 @@ for_cond:
     CATCH_EXIT_EXCEPTION
 
     // Increase counter
-    TOP ().i++; // Wraps to zero first iteration
+    TOP ().idx++; // Wraps to zero first iteration
 
     // Check if we done all iterations
     // n is second element on the stack
-    if (TOP ().i == SEC ().i)
+    if (TOP ().idx == SEC ().idx)
       {
         // The after address
         unsigned char b0 = *ip++;
@@ -3183,7 +3183,7 @@ for_cond:
         int slot = arg0;
         ip +=2; // Skip the after address
 
-        octave_idx_type counter = TOP ().i;
+        octave_idx_type counter = TOP ().idx;
 
         octave_value &ov_range = THIRD_OV ();
         octave_value &ov_it = bsp[slot].ov;
@@ -4009,21 +4009,21 @@ for_complex_setup:
   octave_idx_type n = keys.numel ();
 
   // Push n to the stack
-  (*sp++).i = n;
+  (*sp++).idx = n;
   // Push a counter to the stack, initialized so that it will
   // increment to 0.
-  (*sp++).i = -1;
+  (*sp++).idx = -1;
 }
 DISPATCH ();
 
 for_complex_cond:
 {
   // Increase counter
-  TOP ().i++; // Wraps to zero first iteration
+  TOP ().idx++; // Wraps to zero first iteration
 
   // Check if we done all iterations
   // n is second element on the stack
-  if (TOP ().i == SEC ().i)
+  if (TOP ().idx == SEC ().idx)
     {
       // The after address
       unsigned char b0 = arg0;
@@ -4039,7 +4039,7 @@ for_complex_cond:
       ip++; // Skip 2nd part of afteraddress
       int slot_key = POP_CODE_USHORT ();
       int slot_value = POP_CODE_USHORT ();
-      octave_idx_type counter = TOP ().i;
+      octave_idx_type counter = TOP ().idx;
 
       octave_value &ov_rhs = THIRD_OV (); // This is always a struct
       octave_value &ov_key = bsp[slot_key].ov;
@@ -7540,8 +7540,8 @@ vm::vm (tree_evaluator *tw, bytecode &initial_bytecode)
 
   for (unsigned i = 0; i < stack_pad; i++)
     {
-      m_stack0[i].u = stack_magic_int;
-      m_stack0[i + stack_size].u = stack_magic_int;
+      m_stack0[i].idx = static_cast<octave_idx_type> (stack_magic_int);
+      m_stack0[i + stack_size].idx = static_cast<octave_idx_type> (stack_magic_int);
     }
 
   m_sp = m_stack = m_stack0 + stack_pad;

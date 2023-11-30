@@ -316,9 +316,10 @@ union stack_element
   octave_value ov;
   octave_value_vm ov_vm;
   octave_base_value *ovb;
-  uint64_t u;
-  int64_t i;
-  double d;
+  unsigned u;
+  int i;
+
+  octave_idx_type idx;
 
   void *pv;
   const char *pcc;

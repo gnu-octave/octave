@@ -159,16 +159,15 @@ shortcut_edit_dialog::shortcut_edit_dialog
 {
   setAttribute (Qt::WA_DeleteOnClose);
 
-  setWindowTitle (tr ("Enter new Shortcut"));
+  setWindowTitle (tr ("Enter New Shortcut"));
 
   QVBoxLayout *box = new QVBoxLayout (this);
 
   box->setSpacing (2);
   box->setContentsMargins (12, 12, 12, 12);
 
-  QLabel *help = new QLabel (tr ("Apply the desired shortcut or click "
-                                 "on the right button to reset the "
-                                 "shortcut to its default. (%1)")
+  QLabel *help = new QLabel (tr ("Enter custom shortcut\n"
+                                 "Action: %1")
                              .arg (m_settings_key));
 
   help->setWordWrap (true);
@@ -176,7 +175,7 @@ shortcut_edit_dialog::shortcut_edit_dialog
   box->addWidget (help);
 
   QCheckBox *direct
-    = new QCheckBox (tr ("Enter shortcut directly by performing it"));
+    = new QCheckBox (tr ("Enter shortcut by typing it"));
 
   QCheckBox *shift
     = new QCheckBox (tr ("Add Shift modifier\n"
@@ -196,7 +195,7 @@ shortcut_edit_dialog::shortcut_edit_dialog
 
   QGridLayout *grid = new QGridLayout ();
 
-  QLabel *actual = new QLabel (tr ("Actual shortcut"));
+  QLabel *actual = new QLabel (tr ("Actual Shortcut"));
 
   m_edit_actual = new enter_shortcut (this);
   m_edit_actual->setAlignment (Qt::AlignHCenter);
@@ -204,7 +203,7 @@ shortcut_edit_dialog::shortcut_edit_dialog
   grid->addWidget (actual, 0, 0);
   grid->addWidget (m_edit_actual, 0, 1);
 
-  QLabel *def = new QLabel (tr ("Default shortcut"));
+  QLabel *def = new QLabel (tr ("Default Shortcut"));
 
   QLabel *label_default = new QLabel (this);
   label_default->setAlignment (Qt::AlignHCenter);

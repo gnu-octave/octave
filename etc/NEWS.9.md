@@ -36,7 +36,7 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
   factor of "off" which is equivalent to setting it to 0.  When a linestyle
   with a base marker is set suppressing arrowhead display, subsequent
   name-value property pairs in the quiver/quiver3 function call will no longer
-  turn arrowhead display back on (bug #64143).  The linewdith property now also
+  turn arrowhead display back on (bug #64143).  The linewidth property now also
   affects the line width of the base marker.
 
 - Classdefs now support breakpoints inside them.

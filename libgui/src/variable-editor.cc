@@ -174,7 +174,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
     {
       m_dock_action->setIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
                                      + "widget-dock.png"));
-      m_dock_action->setToolTip (tr ("Dock widget"));
+      m_dock_action->setToolTip (tr ("Dock Widget"));
 
       setWindowFlags (Qt::Window);
       setWindowTitle (tr ("Variable Editor: ") + objectName ());
@@ -192,7 +192,7 @@ variable_dock_widget::toplevel_change (bool toplevel)
     {
       m_dock_action->setIcon (QIcon (global_icon_paths.at (ICON_THEME_OCTAVE)
                                      + "widget-undock.png"));
-      m_dock_action->setToolTip (tr ("Undock widget"));
+      m_dock_action->setToolTip (tr ("Undock Widget"));
 
       setFocus ();
 

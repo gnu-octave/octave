@@ -79,7 +79,7 @@ label_dock_widget::label_dock_widget (QWidget *p)
 
   m_dock_action = new QAction
     (settings.icon ("widget-undock", true), "", this);
-  m_dock_action->setToolTip (tr ("Undock widget"));
+  m_dock_action->setToolTip (tr ("Undock Widget"));
   m_dock_button = new QToolButton (m_title_widget);
   m_dock_button->setDefaultAction (m_dock_action);
   m_dock_button->setFocusPolicy (Qt::NoFocus);
@@ -87,7 +87,7 @@ label_dock_widget::label_dock_widget (QWidget *p)
 
   m_close_action = new QAction
     (settings.icon ("widget-close", true), "", this);
-  m_close_action->setToolTip (tr ("Close widget"));
+  m_close_action->setToolTip (tr ("Close Widget"));
   m_close_button = new QToolButton (m_title_widget);
   m_close_button->setDefaultAction (m_close_action);
   m_close_button->setFocusPolicy (Qt::NoFocus);
@@ -231,13 +231,13 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
   connect (m_close_action, &QAction::triggered,
            this, &octave_dock_widget::change_visibility);
 
-  m_close_action->setToolTip (tr ("Hide widget"));
+  m_close_action->setToolTip (tr ("Hide Widget"));
 
   setStyleSheet (qdockwidget_css
                  (global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-close.png",
-                  QString ("Close widget"),
+                  QString ("Close Widget"),
                   global_icon_paths.at (ICON_THEME_OCTAVE) + "widget-undock.png",
-                  QString ("Undock widget"), m_icon_size, "", ""));
+                  QString ("Undock Widget"), m_icon_size, "", ""));
 
   if (widget ())
     widget ()->setToolTip ("");
@@ -312,7 +312,7 @@ octave_dock_widget::make_window (bool widget_was_dragged)
       gui_settings settings;
 
       m_dock_action->setIcon (settings.icon ("widget-dock" + m_icon_color, true));
-      m_dock_action->setToolTip (tr ("Dock widget"));
+      m_dock_action->setToolTip (tr ("Dock Widget"));
     }
   else
     {
@@ -370,7 +370,7 @@ octave_dock_widget::make_widget (bool)
   if (titleBarWidget ())
     {
       m_dock_action->setIcon (settings.icon ("widget-undock" + m_icon_color, true));
-      m_dock_action->setToolTip (tr ("Undock widget"));
+      m_dock_action->setToolTip (tr ("Undock Widget"));
     }
   else
     {
@@ -728,18 +728,18 @@ octave_dock_widget::set_style (bool active)
 
   QString icon_col = m_icon_color;
 
-  QString close_tooltip = "Close widget";
+  QString close_tooltip = "Close Widget";
   QString dock_tooltip;
 
   if (isFloating ())
     {
       dock_icon = "widget-dock";
-      dock_tooltip = "Dock widget";
+      dock_tooltip = "Dock Widget";
     }
   else
     {
       dock_icon = "widget-undock";
-      dock_tooltip = "Undock widget";
+      dock_tooltip = "Undock Widget";
     }
 
 #if defined (Q_OS_MAC)

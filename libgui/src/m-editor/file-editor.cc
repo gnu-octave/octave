@@ -1110,7 +1110,7 @@ void file_editor::check_conflict_save (const QString& saveFileName,
       QMessageBox *msgBox
         = new QMessageBox (QMessageBox::Critical, tr ("Octave Editor"),
                            tr ("File not saved! A file with the selected name\n%1\n"
-                               "is already open in the editor").
+                               "is already open in the editor.").
                            arg (saveFileName),
                            QMessageBox::Ok, nullptr);
 
@@ -1677,7 +1677,7 @@ void file_editor::request_open_file (const QString& openFileName,
                   QMessageBox *msgBox
                     = new QMessageBox (QMessageBox::Critical,
                                        tr ("Octave Editor"),
-                                       tr ("Could not open file\n%1\nfor read: %2.").
+                                       tr ("Could not open file\n%1\nfor reading: %2.").
                                        arg (openFileName).arg (result),
                                        QMessageBox::Ok, this);
 
@@ -1720,7 +1720,7 @@ void file_editor::request_open_file (const QString& openFileName,
                           // error opening the file
                           msgBox = new QMessageBox (QMessageBox::Critical,
                                                     tr ("Octave Editor"),
-                                                    tr ("Could not open file\n%1\nfor write: %2.").
+                                                    tr ("Could not open file\n%1\nfor writing: %2.").
                                                     arg (openFileName).arg (file.errorString ()),
                                                     QMessageBox::Ok, this);
 
@@ -2038,11 +2038,11 @@ void file_editor::construct ()
                   tr ("&Find and Replace..."), SLOT (request_find (bool)));
 
   m_find_next_action
-    = add_action (m_edit_menu, tr ("Find &Next..."),
+    = add_action (m_edit_menu, tr ("Find &Next"),
                   SLOT (request_find_next (bool)));
 
   m_find_previous_action
-    = add_action (m_edit_menu, tr ("Find &Previous..."),
+    = add_action (m_edit_menu, tr ("Find &Previous"),
                   SLOT (request_find_previous (bool)));
 
   m_edit_menu->addSeparator ();
@@ -2301,7 +2301,7 @@ void file_editor::construct ()
   m_run_action
     = add_action (_run_menu,
                   settings.icon ("system-run"),
-                  tr ("Save File and Run / Continue"),
+                  tr ("Save File and Run/Continue"),
                   SLOT (request_run_file (bool)));
 
   m_run_selection_action

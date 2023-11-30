@@ -88,28 +88,28 @@ find_files_dialog::find_files_dialog (QWidget *p)
            this, &find_files_dialog::browse_folders);
 
   m_recurse_dirs_check = new QCheckBox (tr ("Search subdirectories"));
-  m_recurse_dirs_check->setChecked (settings.bool_value (ff_recurse_dirs));
   m_recurse_dirs_check->setToolTip (tr ("Search recursively through directories for matching files"));
+  m_recurse_dirs_check->setChecked (settings.bool_value (ff_recurse_dirs));
 
   m_include_dirs_check = new QCheckBox (tr ("Include directory names"));
-  m_include_dirs_check->setChecked (settings.bool_value (ff_include_dirs));
   m_include_dirs_check->setToolTip (tr ("Include matching directories in search results"));
+  m_include_dirs_check->setChecked (settings.bool_value (ff_include_dirs));
 
-  m_name_case_check = new QCheckBox (tr ("Name case insensitive"));
+  m_name_case_check = new QCheckBox (tr ("Ignore case"));
+  m_name_case_check->setToolTip (tr ("Perform case insensitive match"));
   m_name_case_check->setChecked (settings.bool_value (ff_name_case));
-  m_name_case_check->setToolTip (tr ("Set matching name is case insensitive"));
 
   m_contains_text_check = new QCheckBox (tr ("Contains text:"));
-  m_contains_text_check->setToolTip (tr ("Enter the file content search expression"));
+  m_contains_text_check->setToolTip (tr ("Include only files containing specified text in search results"));
   m_contains_text_check->setChecked (settings.bool_value (ff_check_text));
 
   m_contains_text_edit = new QLineEdit ();
   m_contains_text_edit->setToolTip (tr ("Text to match"));
   m_contains_text_edit->setText (settings.string_value (ff_contains_text));
 
-  m_content_case_check = new QCheckBox (tr ("Text case insensitive"));
+  m_content_case_check = new QCheckBox (tr ("Ignore case"));
+  m_content_case_check->setToolTip (tr ("Perform case insensitive match"));
   m_content_case_check->setChecked (settings.bool_value (ff_content_case));
-  m_content_case_check->setToolTip (tr ("Set text content is case insensitive"));
 
   find_files_model *model = new find_files_model (this);
 
@@ -144,7 +144,7 @@ find_files_dialog::find_files_dialog (QWidget *p)
            this, &find_files_dialog::start_find);
 
   m_stop_button = new QPushButton (tr ("Stop"));
-  m_stop_button->setToolTip (tr ("Stop searching"));
+  m_stop_button->setToolTip (tr ("Stop search"));
   m_stop_button->setEnabled (false);
   connect (m_stop_button, &QPushButton::clicked,
            this, &find_files_dialog::stop_find);
@@ -160,7 +160,7 @@ find_files_dialog::find_files_dialog (QWidget *p)
            this, &find_files_dialog::close);
 
   // name options
-  QGroupBox *name_group = new QGroupBox (tr ("Filename/location"));
+  QGroupBox *name_group = new QGroupBox (tr ("Filename/Location"));
   QGridLayout *name_layout = new QGridLayout;
   name_group->setLayout (name_layout);
 

@@ -92,17 +92,17 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
 {
   setWindowTitle (tr ("Editor: Find and Replace"));
 
-  m_search_label = new QLabel (tr ("Find &what:"));
+  m_search_label = new QLabel (tr ("&Find:"));
   m_search_line_edit = new QComboBox (this);
-  m_search_line_edit->setToolTip (tr ("Enter text to search for"));
+  m_search_line_edit->setToolTip (tr ("Enter search text"));
   m_search_line_edit->setEditable (true);
   m_search_line_edit->setMaxCount (m_mru_length);
   m_search_line_edit->completer ()->setCaseSensitivity (Qt::CaseSensitive);
   m_search_label->setBuddy (m_search_line_edit);
 
-  m_replace_label = new QLabel (tr ("Re&place with:"));
+  m_replace_label = new QLabel (tr ("Re&place:"));
   m_replace_line_edit = new QComboBox (this);
-  m_replace_line_edit->setToolTip (tr ("Enter new text replacing search hits"));
+  m_replace_line_edit->setToolTip (tr ("Enter replacement text"));
   m_replace_line_edit->setEditable (true);
   m_replace_line_edit->setMaxCount (m_mru_length);
   m_replace_line_edit->completer ()->setCaseSensitivity (Qt::CaseSensitive);
@@ -116,8 +116,8 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
   m_from_start_check_box = new QCheckBox (tr ("Search from &start"));
   m_wrap_check_box = new QCheckBox (tr ("&Wrap while searching"));
   m_wrap_check_box->setChecked (true);
-  m_find_next_button = new QPushButton (tr ("&Find Next"));
-  m_find_prev_button = new QPushButton (tr ("Find &Previous"));
+  m_find_next_button = new QPushButton (tr ("Find &Next"));
+  m_find_prev_button = new QPushButton (tr ("Find Pre&vious"));
   m_replace_button = new QPushButton (tr ("&Replace"));
   m_replace_all_button = new QPushButton (tr ("Replace &All"));
 
@@ -135,7 +135,7 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
 
   m_extension = new QWidget (this);
   m_whole_words_check_box = new QCheckBox (tr ("&Whole words"));
-  m_regex_check_box = new QCheckBox (tr ("Regular E&xpressions"));
+  m_regex_check_box = new QCheckBox (tr ("Regular &expressions"));
   m_backward_check_box = new QCheckBox (tr ("Search &backward"));
   m_search_selection_check_box = new QCheckBox (tr ("Search se&lection"));
   m_search_selection_check_box->setCheckable (true);

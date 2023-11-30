@@ -67,13 +67,13 @@ set_path_dialog::set_path_dialog (QWidget *parent)
 
   m_info_label = new QLabel (tr ("All changes take effect immediately."));
 
-  m_add_folder_button = new QPushButton (tr ("Add Folder..."));
+  m_add_folder_button = new QPushButton (tr ("Add Directory..."));
 
   QMenu *add_dir_menu = new QMenu ();
   m_add_folder_button->setMenu (add_dir_menu);
-  add_dir_menu->addAction (tr ("Single Folder"),
+  add_dir_menu->addAction (tr ("Single Directory"),
                            this, &set_path_dialog::add_dir);
-  add_dir_menu->addAction (tr ("Folder With Subfolders"),
+  add_dir_menu->addAction (tr ("Directory With Subdirectories"),
                            this, &set_path_dialog::add_dir_subdirs);
 
   m_move_to_top_button = new QPushButton (tr ("Move to Top"));

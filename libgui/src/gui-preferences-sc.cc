@@ -68,7 +68,7 @@ sc_pref sc_main_edit_preferences (QCoreApplication::translate ("shortcuts", "Pre
 
 // debug
 sc_pref sc_main_debug_step_over (QCoreApplication::translate ("shortcuts", "Step"), sc_main_debug + ":step_over", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F10));
-sc_pref sc_main_debug_step_into (QCoreApplication::translate ("shortcuts", "Step Into"), sc_main_debug + ":step_into", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F11));
+sc_pref sc_main_debug_step_into (QCoreApplication::translate ("shortcuts", "Step In"), sc_main_debug + ":step_into", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F11));
 sc_pref sc_main_debug_step_out (QCoreApplication::translate ("shortcuts", "Step Out"), sc_main_debug + ":step_out", OCTAVE_QT_KEYCOMBINATION (PRE | Qt::ShiftModifier, Qt::Key_F11));
 sc_pref sc_main_debug_continue (QCoreApplication::translate ("shortcuts", "Continue"), sc_main_debug + ":continue", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F5));
 sc_pref sc_main_debug_quit (QCoreApplication::translate ("shortcuts", "Quit Debug Mode"), sc_main_debug + ":quit", OCTAVE_QT_KEYCOMBINATION (PRE | Qt::ShiftModifier, Qt::Key_F5));

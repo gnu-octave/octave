@@ -56,7 +56,7 @@ const QStringList ve_color_names = {
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Background"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Foreground"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Background"),
-  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Alternate Background")
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Alternating Background")
 };
 
 const QStringList ve_save_formats = {

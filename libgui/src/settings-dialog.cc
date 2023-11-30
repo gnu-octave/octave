@@ -1408,7 +1408,7 @@ void settings_dialog::read_workspace_colors ()
   m_ws_enable_colors = new QCheckBox (tr ("Enable attribute colors"));
   style_grid->addWidget (m_ws_enable_colors, row++, column, 1, 4);
 
-  m_ws_hide_tool_tips = new QCheckBox (tr ("Hide tools tips"));
+  m_ws_hide_tool_tips = new QCheckBox (tr ("Hide tool tips"));
   style_grid->addWidget (m_ws_hide_tool_tips, row++, column, 1, 4);
   connect (m_ws_enable_colors, &QCheckBox::toggled,
            m_ws_hide_tool_tips, &QCheckBox::setEnabled);

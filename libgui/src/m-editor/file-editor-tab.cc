@@ -1765,7 +1765,7 @@ int file_editor_tab::check_file_modified (bool remove)
       // modified seems sufficient.  Exit-condition-specific messages could
       // be achieved by making 'available_actions' a function input string.
       QString available_actions =
-        tr ("Do you want to cancel closing, save or discard the changes?");
+        tr ("Do you want to cancel closing, save, or discard the changes?");
 
       QString file;
       if (valid_file_name ())
@@ -2380,7 +2380,7 @@ void file_editor_tab::do_save_file (const QString& file_to_save,
       QMessageBox *msgBox
         = new QMessageBox (QMessageBox::Critical,
                            tr ("Octave Editor"),
-                           tr ("Could not open file %1 for write:\n%2.").
+                           tr ("Could not open file %1 for writing:\n%2.").
                            arg (file_to_save).arg (file.errorString ()),
                            QMessageBox::Ok, nullptr);
       show_dialog (msgBox, false);

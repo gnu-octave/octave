@@ -454,7 +454,7 @@
                 <item>
                  <widget class="QCheckBox" name="cb_cursor_blinking">
                   <property name="text">
-                   <string>Cursor blinking</string>
+                   <string>Blinking cursor</string>
                   </property>
                   <property name="checked">
                    <bool>true</bool>
@@ -2671,7 +2671,7 @@ interference with readline key strokes.</string>
              <item>
               <widget class="QLabel" name="label_21">
                <property name="text">
-                <string>Edit a shortcut by double-clicking in a cell</string>
+                <string>Edit a shortcut by double-clicking in Actual column</string>
                </property>
               </widget>
              </item>

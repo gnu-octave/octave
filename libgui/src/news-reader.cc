@@ -130,7 +130,7 @@ void news_reader::process ()
            "For the latest news, please check\n"
            "<a href=\"https://octave.org/community-news.html\">https://octave.org/community-news.html</a>\n"
            "when you have a connection to the web (link opens in an external browser)\n"
-           "or enable web connections for news in Octave's network settings dialog.\n"
+           "or enable web connections for news in Octave's network settings tab.\n"
            "</p>\n"
            "<p>\n"
            "<small><em>&mdash; The Octave Developers, ") + OCTAVE_RELEASE_DATE + "</em></small>\n"

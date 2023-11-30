@@ -1429,7 +1429,7 @@ void main_window::handle_edit_mfile_request (const QString& fname,
          case 3:
          case 5:
          case 103:
-           message = tr ("%1 is a built-in, compiled or inline\n"
+           message = tr ("%1 is a built-in, compiled, or inline\n"
                          "function and can not be edited.");
            break;
 
@@ -2315,7 +2315,7 @@ void main_window::construct_edit_menu (QMenuBar *p)
   edit_menu->addSeparator ();
 
   m_set_path_action
-    = edit_menu->addAction (tr ("Set Path"));
+    = edit_menu->addAction (tr ("Set Path..."));
 
   m_preferences_action
     = edit_menu->addAction (settings.icon ("preferences-system"),
@@ -2416,7 +2416,7 @@ void main_window::construct_tools_menu (QMenuBar *p)
   m_profiler_stop->setEnabled (false);
 
   m_profiler_show = add_action (tools_menu, QIcon (),
-        tr ("&Show Profile Data"), SLOT (profiler_show ()));
+        tr ("&Show Profiler Data"), SLOT (profiler_show ()));
 }
 
 void main_window::editor_tabs_changed (bool have_tabs, bool is_octave)
@@ -2538,7 +2538,7 @@ void main_window::construct_help_menu (QMenuBar *p)
                                          tr ("Octave Packages"), SLOT (open_octave_packages_page ()));
 
   m_contribute_action = add_action (help_menu, QIcon (),
-                                    tr ("Contribute"), SLOT (open_contribute_page ()));
+                                    tr ("Get Involved"), SLOT (open_contribute_page ()));
 
   m_developer_action = add_action (help_menu, QIcon (),
                                    tr ("Donate to Octave"), SLOT (open_donate_page ()));

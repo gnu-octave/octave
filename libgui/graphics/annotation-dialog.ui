@@ -550,7 +550,7 @@
       <item row="2" column="0" colspan="2">
        <widget class="QLabel" name="label_13">
         <property name="text">
-         <string>Horz alignment</string>
+         <string>Horizontal alignment</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -579,7 +579,7 @@
       <item row="2" column="3" colspan="2">
        <widget class="QLabel" name="label_14">
         <property name="text">
-         <string>Vert alignment</string>
+         <string>Vertical alignment</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -659,6 +659,9 @@
         <property name="text">
          <string>Width</string>
         </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
        </widget>
       </item>
       <item row="0" column="5">
@@ -675,6 +678,9 @@
        <widget class="QLabel" name="label_24">
         <property name="text">
          <string>Height</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>

@@ -157,6 +157,7 @@ void history_dock_widget::ctxMenu (const QPoint& xpos)
                       &history_dock_widget::handle_contextmenu_evaluate);
       menu.addAction (settings.icon ("document-new"), tr ("Create script"), this,
                       &history_dock_widget::handle_contextmenu_create_script);
+      menu.addSeparator ();
     }
   if (m_filter_shown)
     menu.addAction (tr ("Hide filter"), this,

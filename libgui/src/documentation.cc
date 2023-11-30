@@ -150,8 +150,8 @@ documentation::documentation (QWidget *p)
       QMessageBox::warning (this, tr ("Octave Documentation"),
                             tr ("Could not setup the data required for the\n"
                                 "documentation viewer. Maybe the Qt SQlite\n"
-                                "module is missing.\n"
-                                "Only help texts in the Command Window will\n"
+                                "module is missing?\n"
+                                "Only help text in the Command Window will\n"
                                 "be available."));
 #endif
       disconnect (m_help_engine, 0, 0, 0);
@@ -253,7 +253,7 @@ documentation::documentation (QWidget *p)
       QHelpIndexWidget *index = m_help_engine->indexWidget ();
 
       m_filter = new QComboBox (this);
-      m_filter->setToolTip (tr ("Enter text to search the indices"));
+      m_filter->setToolTip (tr ("Enter text to search function index"));
       m_filter->setEditable (true);
       m_filter->setInsertPolicy (QComboBox::NoInsert);
       m_filter->setMaxCount (10);
@@ -454,13 +454,13 @@ void documentation::construct_tool_bar ()
   // Zoom
   m_tool_bar->addSeparator ();
   m_action_zoom_in
-    = add_action (settings.icon ("view-zoom-in"), tr ("Zoom in"),
+    = add_action (settings.icon ("view-zoom-in"), tr ("Zoom In"),
                   SLOT (zoom_in ()), m_doc_browser, m_tool_bar);
   m_action_zoom_out
-    = add_action (settings.icon ("view-zoom-out"), tr ("Zoom out"),
+    = add_action (settings.icon ("view-zoom-out"), tr ("Zoom Out"),
                   SLOT (zoom_out ()), m_doc_browser, m_tool_bar);
   m_action_zoom_original
-    = add_action (settings.icon ("view-zoom-original"), tr ("Zoom original"),
+    = add_action (settings.icon ("view-zoom-original"), tr ("Zoom Original"),
                   SLOT (zoom_original ()), m_doc_browser, m_tool_bar);
 
   // Bookmarks (connect slots later)

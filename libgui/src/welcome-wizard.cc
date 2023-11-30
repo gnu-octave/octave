@@ -319,7 +319,7 @@ final_page::final_page (welcome_wizard *wizard)
   m_message->setText
     (tr ("<html><body>\n"
          "<p>We hope you find Octave to be a useful tool.</p>\n"
-         "<p>If you encounter problems, there are a number of ways to get help, including commercial support options, a mailing list, a wiki, and other community-based support channels.\n"
+         "<p>If you encounter problems, there are a number of ways to get help, including commercial support options, a discussion board, a wiki, and other community-based support channels.\n"
          "You can find more information about each of these by visiting <a href=\"https://octave.org/support.html\">https://octave.org/support.html</a> (opens in external browser).</p>\n"
          "</body></html>"));
   m_message->setWordWrap (true);

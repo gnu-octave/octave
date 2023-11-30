@@ -67,13 +67,16 @@ octave_bugs_statement (bool html)
 }
 
 std::string
-octave_name_version_and_copyright ()
+octave_name_version_and_copyright (bool html)
 {
   // The GNU coding standards say that on the first line printed by
   // --version, the version number should follow the last space on the
   // line.
+  std::string br = (html ? "<br>\n" : "\n");
 
-  return "GNU Octave, version " OCTAVE_VERSION "\n" OCTAVE_COPYRIGHT;
+  return "GNU Octave, version " OCTAVE_VERSION
+         + br
+         + OCTAVE_COPYRIGHT;
 }
 
 std::string
@@ -83,7 +86,7 @@ octave_name_version_copyright_copying_and_warranty
   std::string br = (html ? "<br>\n" : "\n");
   std::string sep = (html ? "\n</p>\n<p>\n" : "\n\n");
 
-  return octave_name_version_and_copyright ()
+  return octave_name_version_and_copyright (html)
          + br
          + "This is free software; see the source code for copying conditions."
          + br

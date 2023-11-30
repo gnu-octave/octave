@@ -57,10 +57,10 @@ extern gui_pref cs_colors[];
 
 const QStringList
 cs_color_names = {
-  QT_TRANSLATE_NOOP ("octave::settings_dialog", "foreground"),
-  QT_TRANSLATE_NOOP ("octave::settings_dialog", "background"),
-  QT_TRANSLATE_NOOP ("octave::settings_dialog", "selection"),
-  QT_TRANSLATE_NOOP ("octave::settings_dialog", "cursor")
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Foreground"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Background"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selection"),
+  QT_TRANSLATE_NOOP ("octave::settings_dialog", "Cursor")
 };
 
 extern gui_pref cs_focus_cmd;

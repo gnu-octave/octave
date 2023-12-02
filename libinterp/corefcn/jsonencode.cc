@@ -75,7 +75,7 @@ encode_numeric (T& writer, const octave_value& obj,
   // Possibly write NULL for non-finite values (-Inf, Inf, NaN, NA)
   else if (ConvertInfAndNaN && ! octave::math::isfinite (value))
     writer.Null ();
-  else if (obj.is_double_type ())
+  else if (obj.isfloat ())
     writer.Double (value);
   else
     error ("jsonencode: unsupported type");

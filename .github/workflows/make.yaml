@@ -772,17 +772,6 @@ jobs:
 
           msystem: ${{ matrix.msystem }}
 
-      - name: install run-time dependency "mesa"
-        # The mesa3d OpenGL driver seems to be needed for correct off-screen
-        # rendering.  But the version from MSYS2 currently crashes Octave on
-        # MINGW32.  See: https://github.com/msys2/MINGW-packages/issues/10876
-        # Without it, `test getframe` "just" fails without crashing Octave.
-        # So, skip installation for MINGW32.
-        if: matrix.msystem != 'MINGW32'
-        env:
-          TARGET_PREFIX: ${{ matrix.target-prefix }}
-        run: pacman --noconfirm -S ${TARGET_PREFIX}-mesa
-
       - name: checkout repository
         uses: actions/checkout@v3
 
@@ -842,8 +831,7 @@ jobs:
           cd .build && ../configure \
             JAVA_HOME="" \
             --disable-docs \
-            ${{ matrix.extra-config-flags }} \
-            gl_cv_have_weak=no
+            ${{ matrix.extra-config-flags }}
 
       - name: build
         # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.

@@ -672,7 +672,7 @@ jobs:
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
         os: [windows-latest]
-        msystem: [MINGW64, CLANG64]
+        msystem: [MINGW64, UCRT64]
         include:
           - msystem: MINGW64
             mingw-prefix: mingw64
@@ -682,21 +682,14 @@ jobs:
             f77: gfortran
             extra-config-flags: ""
             ccache-max: 0.9G
-          - msystem: CLANG64
-            mingw-prefix: clang64
-            target-prefix: mingw-w64-clang-x86_64
-            cc: clang
-            # It looks like we and graphicsmagick++ aren't ready for C++17 yet.
-            cxx: "clang++ -std=gnu++14"
-            f77: flang
-            # Clang seems to require a different set of dllexport attributes than GCC.
-            # autoconf and libtool still need help to correctly invoke flang.
-            extra-config-flags:
-              --disable-lib-visibility-flags
-              --enable-fortran-calling-convention=gfortran
-              ac_cv_f77_compiler_gnu=yes
-              lt_cv_prog_gnu_ld=yes
-            ccache-max: 400M
+          - msystem: UCRT64
+            mingw-prefix: ucrt64
+            target-prefix: mingw-w64-ucrt-x86_64
+            cc: gcc
+            cxx: g++
+            f77: gfortran
+            extra-config-flags: ""
+            ccache-max: 0.9G
 
     env:
       CHERE_INVOKING: 1
@@ -772,17 +765,6 @@ jobs:
 
           msystem: ${{ matrix.msystem }}
 
-      - name: install run-time dependency "mesa"
-        # The mesa3d OpenGL driver seems to be needed for correct off-screen
-        # rendering.  But the version from MSYS2 currently crashes Octave on
-        # MINGW32.  See: https://github.com/msys2/MINGW-packages/issues/10876
-        # Without it, `test getframe` "just" fails without crashing Octave.
-        # So, skip installation for MINGW32.
-        if: matrix.msystem != 'MINGW32'
-        env:
-          TARGET_PREFIX: ${{ matrix.target-prefix }}
-        run: pacman --noconfirm -S ${TARGET_PREFIX}-mesa
-
       - name: checkout repository
         uses: actions/checkout@v3
 
@@ -842,8 +824,7 @@ jobs:
           cd .build && ../configure \
             JAVA_HOME="" \
             --disable-docs \
-            ${{ matrix.extra-config-flags }} \
-            gl_cv_have_weak=no
+            ${{ matrix.extra-config-flags }}
 
       - name: build
         # Spawning processes seems to have a big overhead on this platform. Use a somewhat larger number of parallel processes to compensate for that.
@@ -929,28 +910,6 @@ jobs:
         run:  |
           echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
           [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
-
-      - name: install and compress
-        if: matrix.msystem == 'MINGW64'
-        continue-on-error: true
-        run: |
-          echo "::group::Installing Octave"
-          mkdir -p /c/octave/pkg
-          make -C ./.build DESTDIR=/c/octave/pkg install
-          echo "::endgroup::"
-          echo "::group::Compressing Octave package"
-          cd /c/octave/pkg
-          tar -cvzf octave.tar.gz *
-          echo "::endgroup::"
-
-      - name: upload build artifact
-        if: matrix.msystem == 'MINGW64'
-        continue-on-error: true
-        uses: actions/upload-artifact@v3
-        with:
-          name: ${{ matrix.target-prefix }}-octave-${{ steps.ccache-prepare.outputs.timestamp }}
-          path: C:\octave\pkg\octave.tar.gz
-          retention-days: 7
 
 
   cygwin:

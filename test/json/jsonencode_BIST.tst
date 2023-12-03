@@ -15,8 +15,8 @@
 %! assert (isequal (jsonencode (logical (1)), 'true'));
 %! assert (isequal (jsonencode (logical (0)), 'false'));
 %! assert (isequal (jsonencode (50.025), '50.025'));
-%% FIXME: Uncomment when bug #64960 is fixed
-%!# assert (isequal (jsonencode (single (50.025)), '50.025'));
+%! %% FIXME: Uncomment when bug #64960 is fixed
+%! %% assert (isequal (jsonencode (single (50.025)), '50.025'));
 %! assert (isequal (jsonencode (NaN), 'null'));
 %! assert (isequal (jsonencode (NA), 'null'));    % Octave-only test
 %! assert (isequal (jsonencode (Inf), 'null'));

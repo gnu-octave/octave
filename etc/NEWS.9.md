@@ -59,19 +59,19 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 
 ### Graphics backend
 
-* The FLTK backend is not maintained and its use is discouraged.  The
+- The FLTK backend is not maintained and its use is discouraged.  The
   recommended backend is qt.  Enabling the fltk backend with `graphics_toolkit
   fltk` now emits a warning.
 
-* The `set` function now accepts any combination of name/value pairs, cell
+- The `set` function now accepts any combination of name/value pairs, cell
   array of names / cell array of values, or property structures.  This change
   is Matlab compatible.
 
-* When the `hold` function is used without arguments to toggle the current
+- When the `hold` function is used without arguments to toggle the current
   state, the resulting value is now displayed in the Command Window for
   informational purposes.
 
-* The axes graphics property "TickDir" now accepts the option "none", which
+- The axes graphics property "TickDir" now accepts the option "none", which
   will not draw tick marks but will still draw tick labels.
 
 ### Matlab compatibility

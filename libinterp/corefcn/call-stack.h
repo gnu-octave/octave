@@ -49,7 +49,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class tree_evaluator;
 class symbol_info_list;
 class unwind_protect;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 class vm;
+#endif
 
 class
 OCTINTERP_API
@@ -167,12 +170,16 @@ public:
 
   void push (octave_function *fcn);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   void push (vm &vm, octave_user_function *fcn, int nargout, int nargin);
 
   void push (vm &vm, octave_user_script *fcn, int nargout, int nargin);
 
   void push (vm &vm, octave_user_function *fcn, int nargout, int nargin,
              const std::shared_ptr<stack_frame>& closure_frames);
+
+#endif
 
   void set_location (int l, int c)
   {

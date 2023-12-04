@@ -48,10 +48,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class stack_frame;
 class type_info;
-class vm;
-class bytecode_fcn_stack_frame;
 class scope_stack_frame;
 class base_value_stack_frame;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+class vm;
+class bytecode_fcn_stack_frame;
+#endif
 
 OCTAVE_END_NAMESPACE(octave)
 
@@ -1543,6 +1546,8 @@ public:
 
 protected:
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   // Functions for use by the VM.
   friend class octave_value_ref;
   friend class octave_value_vm;
@@ -1643,7 +1648,9 @@ protected:
   bool
   is_trivial_range () { return m_rep->is_trivial_range (); }
 
-//! The real representation.
+#endif
+
+  //! The real representation.
   octave_base_value *m_rep;
 
   static OCTINTERP_API octave_base_value * nil_rep ();

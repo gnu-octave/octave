@@ -49,13 +49,82 @@
 #include "symrec.h"
 #include "symscope.h"
 #include "variables.h"
-#include <array>
-#include "ov-ref.h"
 
-#include "pt-bytecode-vm.h"
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+#  include "ov-ref.h"
+#  include "pt-bytecode-vm.h"
+#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+// FIXME: There should probably be a display method for the script,
+// fcn, and scope objects and the script and function objects should
+// be responsible for displaying the scopes they contain.
+
+static void display_scope (std::ostream& os, const symbol_scope& scope)
+{
+  if (scope)
+    {
+      os << "scope: " << scope.name () << std::endl;
+
+      if (scope.num_symbols () > 0)
+        {
+          os << "name (frame offset, data offset, storage class):"
+             << std::endl;
+
+          std::list<symbol_record> symbols = scope.symbol_list ();
+
+          for (auto& sym : symbols)
+            {
+              os << "  " << sym.name () << " (" << sym.frame_offset ()
+                 << ", " << sym.data_offset () << ", " << sym.storage_class ()
+                 << ")" << std::endl;
+            }
+        }
+    }
+}
+
+class compiled_fcn_stack_frame;
+class script_stack_frame;
+class user_fcn_stack_frame;
+class scope_stack_frame;
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+class bytecode_fcn_stack_frame;
+#endif
+
+class stack_frame_walker
+{
+protected:
+
+  stack_frame_walker () { }
+
+  virtual ~stack_frame_walker () = default;
+
+public:
+
+  OCTAVE_DISABLE_COPY_MOVE (stack_frame_walker)
+
+  virtual void
+  visit_compiled_fcn_stack_frame (compiled_fcn_stack_frame&) = 0;
+
+  virtual void
+  visit_script_stack_frame (script_stack_frame&) = 0;
+
+  virtual void
+  visit_user_fcn_stack_frame (user_fcn_stack_frame&) = 0;
+
+  virtual void
+  visit_scope_stack_frame (scope_stack_frame&) = 0;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
+  virtual void
+  visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame&) = 0;
+
+#endif
+};
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
 // bytecode_fcn_stack_frame is for the VM.
 //
@@ -1707,6 +1776,25 @@ private:
   int m_nargout;
 };
 
+void bytecode_fcn_stack_frame::display (bool) const
+{
+  std::ostream& os = octave_stdout;
+
+  os << "-- [bytecode_fcn_stack_frame] (" << this << ") --" << std::endl;
+
+  os << "fcn: " << m_fcn->name ()
+     << " (" << m_fcn->type_name () << ")" << std::endl;
+
+  display_scope (os, get_scope ());
+}
+
+void bytecode_fcn_stack_frame::accept (stack_frame_walker& sfw)
+{
+  sfw.visit_bytecode_fcn_stack_frame (*this);
+}
+
+#endif
+
 class compiled_fcn_stack_frame : public stack_frame
 {
 public:
@@ -1780,12 +1868,20 @@ public:
     return m_static_link->varval (sym);
   }
 
-  octave_value& varref (const symbol_record& sym, bool deref_refs)
+  octave_value& varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                        , bool deref_refs
+#endif
+                        )
   {
     // Look in closest stack frame that contains values (either the
     // top scope, or a user-defined function or script).
 
-    return m_static_link->varref (sym, deref_refs);
+    return m_static_link->varref (sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                                  , deref_refs
+#endif
+                                  );
   }
 
   void mark_scope (const symbol_record& sym, scope_flags flag)
@@ -1911,7 +2007,11 @@ public:
 
   octave_value varval (const symbol_record& sym) const;
 
-  octave_value& varref (const symbol_record& sym, bool deref_refs);
+  octave_value& varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                        , bool deref_refs
+#endif
+                        );
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -2000,9 +2100,15 @@ public:
 
   void set_scope_flag (std::size_t data_offset, scope_flags flag)
   {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
     bool was_global = m_flags.at (data_offset) == scope_flags::GLOBAL;
 
+#endif
+
     m_flags.at (data_offset) = flag;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
     bool is_global = flag == scope_flags::GLOBAL;
 
@@ -2029,6 +2135,8 @@ public:
             m_values.at (data_offset) = cpy;
           }
       }
+
+#endif
   }
 
   octave_value get_auto_fcn_var (auto_var_type avt) const
@@ -2056,7 +2164,11 @@ public:
     return m_values.at (data_offset);
   }
 
-  octave_value& varref (std::size_t data_offset, bool)
+  octave_value& varref (std::size_t data_offset
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                        , bool
+#endif
+                        )
   {
     return m_values.at (data_offset);
   }
@@ -2179,7 +2291,11 @@ public:
 
   octave_value varval (const symbol_record& sym) const;
 
-  octave_value& varref (const symbol_record& sym, bool deref_refs);
+  octave_value& varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                        , bool deref_refs
+#endif
+                        );
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -2249,7 +2365,11 @@ public:
 
   octave_value varval (const symbol_record& sym) const;
 
-  octave_value& varref (const symbol_record& sym, bool deref_refs);
+  octave_value& varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                        , bool deref_refs
+#endif
+                        );
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -2261,61 +2381,6 @@ private:
 
   // The scope object associated with this stack frame.
   symbol_scope m_scope;
-};
-
-// FIXME: There should probably be a display method for the script,
-// fcn, and scope objects and the script and function objects should
-// be responsible for displaying the scopes they contain.
-
-static void display_scope (std::ostream& os, const symbol_scope& scope)
-{
-  if (scope)
-    {
-      os << "scope: " << scope.name () << std::endl;
-
-      if (scope.num_symbols () > 0)
-        {
-          os << "name (frame offset, data offset, storage class):"
-             << std::endl;
-
-          std::list<symbol_record> symbols = scope.symbol_list ();
-
-          for (auto& sym : symbols)
-            {
-              os << "  " << sym.name () << " (" << sym.frame_offset ()
-                 << ", " << sym.data_offset () << ", " << sym.storage_class ()
-                 << ")" << std::endl;
-            }
-        }
-    }
-}
-
-class stack_frame_walker
-{
-protected:
-
-  stack_frame_walker () { }
-
-  virtual ~stack_frame_walker () = default;
-
-public:
-
-  OCTAVE_DISABLE_COPY_MOVE (stack_frame_walker)
-
-  virtual void
-  visit_compiled_fcn_stack_frame (compiled_fcn_stack_frame&) = 0;
-
-  virtual void
-  visit_script_stack_frame (script_stack_frame&) = 0;
-
-  virtual void
-  visit_user_fcn_stack_frame (user_fcn_stack_frame&) = 0;
-
-  virtual void
-  visit_scope_stack_frame (scope_stack_frame&) = 0;
-
-  virtual void
-  visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame&) = 0;
 };
 
 class symbol_cleaner : public stack_frame_walker
@@ -2384,6 +2449,8 @@ public:
       alink->accept (*this);
   }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   void visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame& frame)
   {
     clean_frame (frame);
@@ -2393,6 +2460,8 @@ public:
     if (alink)
       alink->accept (*this);
   }
+
+#endif
 
 private:
 
@@ -2634,6 +2703,8 @@ public:
       alink->accept (*this);
   }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   void visit_bytecode_fcn_stack_frame (bytecode_fcn_stack_frame& frame)
   {
     // For scripts, only collect symbol info in the outer most frame
@@ -2645,6 +2716,8 @@ public:
     if (alink)
       alink->accept (*this);
   }
+
+#endif
 
 private:
 
@@ -2808,6 +2881,8 @@ stack_frame *stack_frame::create (tree_evaluator& tw,
   return new scope_stack_frame (tw, scope, index, parent_link, static_link);
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 std::shared_ptr<stack_frame> stack_frame::create_bytecode (
                    tree_evaluator& tw,
                    octave_user_script *fcn,
@@ -2931,6 +3006,8 @@ std::shared_ptr<stack_frame> stack_frame::create_bytecode (
       return new_frame;
     }
 }
+
+#endif
 
 // This function is only implemented and should only be called for
 // user_fcn stack frames.  Anything else indicates an error in the
@@ -3180,7 +3257,11 @@ octave_value stack_frame::varval (std::size_t) const
   panic_impossible ();
 }
 
-octave_value& stack_frame::varref (std::size_t, bool)
+octave_value& stack_frame::varref (std::size_t
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                                   , bool
+#endif
+                                   )
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -3813,7 +3894,11 @@ octave_value script_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& script_stack_frame::varref (const symbol_record& sym, bool deref_refs)
+octave_value& script_stack_frame::varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                                          , bool deref_refs
+#endif
+                                          )
 {
   std::size_t frame_offset;
   std::size_t data_offset;
@@ -3836,7 +3921,11 @@ octave_value& script_stack_frame::varref (const symbol_record& sym, bool deref_r
   switch (frame->get_scope_flag (data_offset))
     {
     case LOCAL:
-      return frame->varref (data_offset, deref_refs);
+      return frame->varref (data_offset
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                            , deref_refs
+#endif
+                            );
 
     case PERSISTENT:
       {
@@ -4145,7 +4234,11 @@ octave_value user_fcn_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& user_fcn_stack_frame::varref (const symbol_record& sym, bool deref_refs)
+octave_value& user_fcn_stack_frame::varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                                            , bool deref_refs
+#endif
+                                            )
 {
   std::size_t frame_offset = sym.frame_offset ();
   std::size_t data_offset = sym.data_offset ();
@@ -4167,7 +4260,11 @@ octave_value& user_fcn_stack_frame::varref (const symbol_record& sym, bool deref
   switch (frame->get_scope_flag (data_offset))
     {
     case LOCAL:
-      return frame->varref (data_offset, deref_refs);
+      return frame->varref (data_offset
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                            , deref_refs
+#endif
+                            );
 
     case PERSISTENT:
       {
@@ -4196,18 +4293,6 @@ void user_fcn_stack_frame::mark_scope (const symbol_record& sym, scope_flags fla
     resize (data_offset+1);
 
   set_scope_flag (data_offset, flag);
-}
-
-void bytecode_fcn_stack_frame::display (bool) const
-{
-  std::ostream& os = octave_stdout;
-
-  os << "-- [bytecode_fcn_stack_frame] (" << this << ") --" << std::endl;
-
-  os << "fcn: " << m_fcn->name ()
-     << " (" << m_fcn->type_name () << ")" << std::endl;
-
-  display_scope (os, get_scope ());
 }
 
 void user_fcn_stack_frame::display (bool follow) const
@@ -4286,10 +4371,13 @@ octave_value scope_stack_frame::varval (const symbol_record& sym) const
     case LOCAL:
       {
         octave_value ov = m_values.at (data_offset);
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
         if (ov.is_ref ())
           return ov.ref_rep ()->deref ();
-        else
-          return ov;
+#endif
+
+        return ov;
       }
     case PERSISTENT:
       return m_scope.persistent_varval (data_offset);
@@ -4301,7 +4389,11 @@ octave_value scope_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& scope_stack_frame::varref (const symbol_record& sym, bool deref_refs)
+octave_value& scope_stack_frame::varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                                         , bool deref_refs
+#endif
+                                         )
 {
   // There is no access link for scope frames, so the frame
   // offset must be zero.
@@ -4316,10 +4408,13 @@ octave_value& scope_stack_frame::varref (const symbol_record& sym, bool deref_re
     case LOCAL:
       {
         octave_value &ov = m_values.at (data_offset);
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
         if (deref_refs && ov.is_ref ())
           return ov.ref_rep ()->ref ();
-        else
-          return ov;
+#endif
+
+        return ov;
       }
     case PERSISTENT:
       return m_scope.persistent_varref (data_offset);
@@ -4359,11 +4454,5 @@ void scope_stack_frame::accept (stack_frame_walker& sfw)
 {
   sfw.visit_scope_stack_frame (*this);
 }
-
-void bytecode_fcn_stack_frame::accept (stack_frame_walker& sfw)
-{
-  sfw.visit_bytecode_fcn_stack_frame (*this);
-}
-
 
 OCTAVE_END_NAMESPACE(octave)

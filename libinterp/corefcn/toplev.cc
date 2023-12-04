@@ -368,6 +368,12 @@ specified option.
         { "ENABLE_64", false },
 #endif
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+        { "ENABLE_BYTECODE_EVALUATOR", true },
+#else
+        { "ENABLE_BYTECODE_EVALUATOR", false },
+#endif
+
 #if defined (OCTAVE_ENABLE_COMMAND_LINE_PUSH_PARSER)
         { "ENABLE_COMMAND_LINE_PUSH_PARSER", true },
 #else

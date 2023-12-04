@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 #include "pt-all.h"
 #include "pt-bytecode-walk.h"
 #include "symrec.h"
@@ -5946,3 +5948,5 @@ visit_continue_command (tree_continue_command&)
 }
 
 std::size_t unwind_data::m_id_cntr = 0;
+
+#endif

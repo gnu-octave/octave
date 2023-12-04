@@ -57,6 +57,9 @@
 #include "pr-output.h"
 #include "pt-arg-list.h"
 #include "pt-assign.h"
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+#  include "pt-bytecode-walk.h"
+#endif
 #include "pt-cmd.h"
 #include "pt-eval.h"
 #include "pt-exp.h"
@@ -64,7 +67,6 @@
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
-#include "pt-bytecode-walk.h"
 #include "stack-frame.h"
 #include "syminfo.h"
 #include "symscope.h"
@@ -230,6 +232,7 @@ public:
   friend bool is_equal_to (const simple_fcn_handle& fh1,
                            const simple_fcn_handle& fh2);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   octave_function *
   get_cached_fcn (const octave_value_list &args);
 
@@ -237,13 +240,16 @@ public:
   get_cached_fcn (void *beg, void *end);
 
   bool has_function_cache () const;
+#endif
 
 private:
 
   octave_value m_fcn;
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   // Only used by the VM via get_cached_fcn() and has_function_cache()
   octave_fcn_cache m_cache;
+#endif
 };
 
 class scoped_fcn_handle : public base_fcn_handle
@@ -314,6 +320,7 @@ public:
   friend bool is_equal_to (const scoped_fcn_handle& fh1,
                            const scoped_fcn_handle& fh2);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   octave_function *
   get_cached_fcn (void *, void *) { return m_fcn.function_value (); }
 
@@ -322,6 +329,7 @@ public:
 
   bool
   has_function_cache () const { return true; }
+#endif
 
 protected:
 
@@ -707,6 +715,7 @@ public:
 
   bool parse (const std::string& fcn_text);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   octave_function *
   get_cached_fcn (const octave_value_list&) { return m_fcn.function_value (); }
 
@@ -719,6 +728,7 @@ public:
     octave_function *fn = m_fcn.function_value ();
     return fn ? fn->is_compiled () : false;
   }
+#endif
 
 protected:
 
@@ -771,8 +781,10 @@ public:
     return m_stack_context;
   }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   // Compile the underlying function to bytecode for the VM.
   void compile ();
+#endif
 
 protected:
 
@@ -991,6 +1003,8 @@ bool is_equal_to (const internal_fcn_handle& fh1,
     return false;
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 // FIXME: Find a way to avoid duplication of code in
 // simple_fcn_handle::call
 
@@ -1207,6 +1221,8 @@ simple_fcn_handle::has_function_cache () const
       return true;
     }
 }
+
+#endif
 
 octave_value_list
 simple_fcn_handle::call (int nargout, const octave_value_list& args)
@@ -2086,8 +2102,10 @@ nested_fcn_handle::call (int nargout, const octave_value_list& args)
 
   octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   if (octave::vm::maybe_compile_or_compiled (oct_usr_fcn))
     return octave::vm::call (tw, nargout, args, oct_usr_fcn, m_stack_context);
+#endif
 
   tw.push_stack_frame (oct_usr_fcn, m_stack_context);
 
@@ -2976,8 +2994,10 @@ anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
 
   octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   if (octave::vm::maybe_compile_or_compiled (oct_usr_fcn, &m_local_vars))
     return octave::vm::call (tw, nargout, args, oct_usr_fcn);
+#endif
 
   tw.push_stack_frame (oct_usr_fcn, m_local_vars, m_stack_context);
 
@@ -2985,6 +3005,8 @@ anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
 
   return oct_usr_fcn->execute (tw, nargout, args);
 }
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
 void anonymous_fcn_handle::compile ()
 {
@@ -3000,6 +3022,8 @@ void anonymous_fcn_handle::compile ()
       usr_code->set_compilation_failed (true);
     }
 }
+
+#endif
 
 octave_value anonymous_fcn_handle::workspace () const
 {

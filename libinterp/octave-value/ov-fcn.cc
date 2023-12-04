@@ -58,9 +58,11 @@ octave_value_list
 octave_function::call (octave::tree_evaluator& tw, int nargout,
                        const octave_value_list& args)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   octave_user_function *usr = this->user_function_value(true);
   if (octave::vm::maybe_compile_or_compiled (usr))
     return octave::vm::call (tw, nargout, args, usr);
+#endif
 
   tw.push_stack_frame (this);
 
@@ -68,6 +70,8 @@ octave_function::call (octave::tree_evaluator& tw, int nargout,
 
   return execute (tw, nargout, args);
 }
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
 bool
 octave_fcn_cache::has_cached_function (void *pbeg, void *pend) const
@@ -264,3 +268,5 @@ call (octave::tree_evaluator& tw,
       //tw.final_index_error (ie, m_expr);
     }
 }
+
+#endif

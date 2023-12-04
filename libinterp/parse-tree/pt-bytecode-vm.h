@@ -358,6 +358,10 @@
 
 #include "octave-config.h"
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
+#include "octave-config.h"
+
 #include <cstddef>
 #include <cstdint>
 #include <vector>
@@ -641,5 +645,7 @@ std::vector<std::pair<int, std::string>>
 opcodes_to_strings (std::vector<unsigned char> &code, std::vector<std::string> &names);
 
 OCTAVE_END_NAMESPACE(octave)
+
+#endif
 
 #endif

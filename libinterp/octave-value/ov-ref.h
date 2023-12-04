@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 #include "ov-base.h"
 #include "ovl.h"
 #include "symscope.h"
@@ -182,5 +184,7 @@ private:
 
     DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
+
+#endif
 
 #endif

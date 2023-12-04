@@ -101,7 +101,11 @@ public:
 
   dim_vector dims () const { return m_map.dims (); }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   octave_value vm_extract_forloop_value (octave_idx_type idx);
+
+#endif
 
   std::size_t byte_size () const;
 
@@ -165,10 +169,14 @@ public:
   bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }
+
+#endif
 
 protected:
 
@@ -295,10 +303,14 @@ public:
 
   bool fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }
+
+#endif
 
 protected:
 

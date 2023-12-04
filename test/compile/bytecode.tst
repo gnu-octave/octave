@@ -32,7 +32,7 @@
 %! clear classes
 
 ## Test binary expressions
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local"); % Disable the vm for the tree_walker run
 %!
 %! clear all % We want all compiled functions to be cleared so that we can run the tree_walker
@@ -50,7 +50,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test subfunctions
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "2 2 2 11 30 10 30 5  0 0 double 1 2 1 2 double 30 11 5  0 0 double 1 2 1 2 double 11 11 12 13 1 1 double 14 1 1 double 11 11 5 13 1 1 double 14 1 1 double 11 3 3 3 2 2 2 313 ret32:1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 ret32:1 ret32:ret32:1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 take32:1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 1 18 59 64 ";
@@ -69,7 +69,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test if:s
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "0 1 2 3 4 5 6 7 8 1 2 yay1 3 5 7 8 1 yay1 3 4 yay2 5 6 7 yay3 ";
@@ -84,7 +84,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test for:s
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "1 2 3 4 4 1 3 5 5 1 4 4 4 3 2 1 1 0.200 0.300 0.400 0.400 0.300 0.200 0.100 0.000 0.000 NaN NaN NaN 1 4 2 2 16 4 3 3 256 3 2 1  double 1 3 size 2 size 1 2 4 size 2 size 1  double q size 1 size 1 w size 1 size 1 e size 1 size 1 char single single 5 1 11 2 12 key:a val:1 1val:1 key:b val:1 3val:2 4val:2 2key:c val:string ";
@@ -99,7 +99,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test while
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "5 4 3 2 1 3 5 4 4 3 3 4 1 2 1 3 2 8 3 1 3 ";
@@ -114,7 +114,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test assign
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "2 3 1 1 2 3 2 3 2 2 6 18 2.000000 2.000000 3.000000 4.000000 5.000000 1 4 double 729.000000 324.000000 182.250000 116.640000 4 1 double 37.000000 81.000000 54.000000 118.000000 2 2 double ";
@@ -129,7 +129,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test unary
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "-1 4 1 2 3 4 1 3 2 4 0 0 ";
@@ -144,7 +144,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test range
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "1 2 3 1 3 5 1 3 5 1 1.1 1.2 1.3 1.4 1 0.9 0.8 0.7 7 7 1 8 10 8 10 8 9 10 11 8 9 10 11 10 8 10 8 -10 -9 -8 -7 -10 -9 -8 -7 ";
@@ -159,7 +159,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test multi assign
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "3 4 2 2 1 2 3 4 1 2 3 4 1 1 3 2 3 4 1 1 1 2 3 4 1 1 1 2 3 4 1 2 3 ";
@@ -174,7 +174,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test subsasgn
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! clear functions  % persistent variables in bytecode_subsasgn
@@ -190,7 +190,7 @@
 %! assert (__prog_output_assert__ (key), "bytecode_subsasgn failed compiled");
 
 ## Test end
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "1 3 2 4 1 5 6 7 2 2 5 5 6 6 1 2 3 4 5 2 2 2 3 3 4 fs 2 3 1 foo oo ";
@@ -205,7 +205,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test matrix
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "1 2 3 4 1 4 1 2 3 4 4 1 1 3 2 4 2 2 1 3 1 3 2 4 2 4 4 2  0 0 a b c d 7 15 10 22 2 2 30 1 1 1 2 3 4 2 4 6 8 3 6 9 12 4 8 12 16 4 4 1 1 1 0.0333333 0.0666667 0.1 0.133333 0.0666667 0.133333 0.2 0.266667 0.1 0.2 0.3 0.4 0.133333 0.266667 0.4 0.533333 4 4 1 0 0 1 2 2 30 1 1 10 14 14 20 2 2 0.0333333 0.0666667 0.1 0.133333 0.0666667 0.133333 0.2 0.266667 0.1 0.2 0.3 0.4 0.133333 0.266667 0.4 0.533333 4 4 2.5 -0.5 2 0 2 2 2 6 4 8 2 2 2 3 4 5 3 4 5 6 4 5 6 7 5 6 7 8 4 4 3 4 5 6 1 4 3 4 5 6 1 4 -1 0 1 2 1 4 2 4 6 8 1 4 0.5 1 1.5 2 1 4 0.5 1 1.5 2 1 4 1 4 9 16 1 4 1 1 1 1 1 4 1 1 1 1 1 4 1 4 27 256 1 4 1 2 3 4 2 4 6 8 3 6 9 12 4 8 12 16 4 4 1 0.5 0.333333 0.25 2 1 0.666667 0.5 3 1.5 1 0.75 4 2 1.33333 1 4 4 1 2 3 4 0.5 1 1.5 2 0.333333 0.666667 1 1.33333 0.25 0.5 0.75 1 4 4 1 4 27 256 4 1 qzwxeca s d  zzxxccz x c  1 258 33264 258 1 33264 ";
@@ -220,7 +220,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test return
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "2 baaar bääär baaaaz bääääz bååååz booz 1 1 2 1 1 1 2 1 silly silly ";
@@ -235,7 +235,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test word list command
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "A B C QWE ";
@@ -250,7 +250,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test do until
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "5 3 5 5 4 4 3 4 1 2 1 3 2 12 3 0 3 ";
@@ -265,7 +265,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test cell
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "a b a b 1 2 b c b c 1 2 char b c c d b d c e 2 2 b d f h j l c e g i k m 6 2 1 2 2 3 1 3 2 4 1 3 1 2 1 3 2 4 2 2 double qwe 1 3 char 1 2 ";
@@ -280,7 +280,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test varargin
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "2 3 1 2 1 1 1 1 1 2 3 4 1 4 4 0 0 0 1 2 3 4 1 3 4 2 3 4 1 3 3 2 2 3 4 1 4 4 1 0 0 1 0 0 0 2 1 1 1 1 2 3 4 1 3 4 2 3 4 1 3 3 2 2 3 4 1 4 4 1 2 1 2 4 1 2 0 0 2 1 nob 0 0 1 noa nob 0 0 0 2 1 2 4 1 2 3 4 3 3 2 1 0 ";
@@ -308,7 +308,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test global variables
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "double 0 0 1 1 1 1 1 2 2 2 400 100 0 1 3 double 1 1 1 2 double 1 2 1 1 11 eclass:double 1 1 3 4 double 1 2 400 100 1 1 1 1 3 4 1 1 5 6 1 1 1 2 double 1 2 1 2 double 1 2 1 1 3 4 eclass:double 1 2 3 4 double 1 2 0 0 1 1 3 4 1 1 5 6 1 0 2 double 2 double 11 2 6 4 5 double 1 5 11 double 1 1 22 double 1 1 33 double 1 1 3 double 1 1 4 double 1 1 10 double 1 1 2 3 double 1 2 3 double 1 1 2 double 1 1 55 double 1 1 7 double 1 1 0 11 12 4 11 12 4 ";
@@ -345,7 +345,7 @@
 %! clear global q;
 
 ## Test switch
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "yay yay2 yay3 yay4 yay5 yay6 yay7 yay8 1 2 3 3 1 3 3 4 4 1 3 3 4 4 2 yoo 2 3 3 1:1 for-end:12:2 3:3 for-end:3breaking:4 ";
@@ -360,7 +360,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test eval (dynamic stack frames)
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "3.000000 1.000000 1.000000 double 4.000000 1.000000 1.000000 double 4.000000 1.000000 1.000000 double 5.000000 4.000000 2.000000 3.000000 1.000000 1.000000 double 4.000000 1.000000 1.000000 double 4.000000 1.000000 1.000000 double 5.000000 4.000000 2.000000 1:11.000000 2:22.000000 3:33.000000 4:3.000000 5:22.000000 6:3.000000 7:3.000000 3 3 2 2 3.000000 3.000000 ";
@@ -375,7 +375,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test evalin and assignin
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! % We want to test all combinations of compiled and uncompiled evalin_1 and 2.
@@ -412,7 +412,7 @@
 %!
 
 ## Test error messages
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! ## Interpreter reference
 %! __vm_enable__ (0, "local");
 %! clear all
@@ -459,7 +459,7 @@
 %!       'operator \+: nonconformant arguments \(op1 is 1x3, op2 is 1x2\)');
 
 ## Test try catch
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "yay yay2 yay3 ooo yay2 yay3 ooo2 ooo2 yay3 yay4 Nested error yay5 yay6 In catch yay7 qwe yay8 Error in subfunction yay9 'asd' undefined near line 87, column 11 yay10 operator *: nonconformant arguments (op1 is 1x2, op2 is 1x3) yay11 yoyo yay12 foo yay12 foo yay12 foo yay13 foo yay13 foo yay13 foo ";
@@ -474,7 +474,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test unwind protect
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "yay1 yay2 yay3 e1 subyyay1 subyyay2 subyyay3 subyyay4 subyyay5 subyyay6 subyyay7 subyyay8 subyyay9 subyyay10 subyyay11 subyyay12 subyyay13 subyyay14 subyyay15 subyyay16 subyyay17 subyyay18 yay4 yay5 yay6 ";
@@ -488,7 +488,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test persistant
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! clear functions  % clear persistent variables in bytecode_persistant
@@ -520,7 +520,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test structs
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "1 2 double 1 1 struct 3 4 ";
@@ -534,7 +534,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test indexing chained objects and strange indexing
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "2 2 3 3 2 cell 1 1 3 3 2 3 22 double 33 3 4 matlab.lang.MemoizedFunction 2 ";
@@ -548,7 +548,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test varargout
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "7 8 1 1 2 1 0 0 0 1 0 1 0 0 0 1 0 ";
@@ -562,7 +562,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test inputname
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "a a b + 1  a a b b aa aa bb bb aa + 1  bb * 3  a + 1  b * 3  aa aa bb bb aa + 1  bb * 3  a a b b a + 1  b * 3  ";
@@ -577,7 +577,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test ans
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "2 5 1 1 1 ";
@@ -591,7 +591,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test using classdef
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! global cdef_foo_ctor_cnt; clear global cdef_foo_ctor_cnt;
@@ -618,7 +618,7 @@
 %! clear global __assert_printf__
 
 ## Test anonymous function handles
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "1 2 12 3 4 4 4 1 2 3 1 2 3 1 2 1 2 11 12 11 12 1 4 4 1 1 1 2 1 2 1 2 3 1 2 3 1 3 1 3 9 0 1 fooo ~101 103 ~101 103 ~110 123 ~101 123 ~010 123 ~000 123 ~011 123 ";
@@ -637,7 +637,7 @@
 
 ## Test compling a function named differently from its
 ## m-file
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! clear all
 %! __vm_enable__ (1, "local");
 %! __vm_compile__ wrongname_fn clear;
@@ -646,14 +646,14 @@
 %! assert (wrongname_fn (77) == 78);
 
 ## Test some misc stuff
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! clear all
 %! __vm_enable__ (1, "local");
 %!
 %! bytecode_misc; % asserts inernally
 
 ## Leak check
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! clear all
 %! __vm_enable__ (1, "local");
 %!
@@ -667,7 +667,7 @@
 %! assert (n_d == __ref_count__ (d))
 
 ## Test scripts
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! __vm_enable__ (0, "local");
 %! clear all
 %! key = "0 1 3 4 5 3 ";
@@ -681,7 +681,7 @@
 %! assert (__prog_output_assert__ (key));
 
 ## Test nested functions.
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! global cdef_bar_cnt
 %! cdef_bar_cnt = 0;
 %!
@@ -701,7 +701,7 @@
 %! clear -global cdef_bar_alive_objs cdef_bar_cnt glb_d glb_e glb_f
 
 ## Test script interaction when called from top scope
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %!
 %! __vm_enable__ (0, "local");
 %! clear all
@@ -788,7 +788,7 @@
 %! clear bytecode_script_topscope_cli_fn
 
 ## Test save() and load() from scripts.
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! clear all
 %!
 %! for use_vm = [true, false] % Test with and without VM

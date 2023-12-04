@@ -26,6 +26,10 @@
 #if ! defined (octave_pt_bytecode_h)
 #define octave_pt_bytecode_h 1
 
+#include "octave-config.h"
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 #include <vector>
 #include <map>
 
@@ -356,5 +360,7 @@ enum class global_type
 extern bool V__vm_enable__;
 
 OCTAVE_END_NAMESPACE(octave)
+
+#endif
 
 #endif

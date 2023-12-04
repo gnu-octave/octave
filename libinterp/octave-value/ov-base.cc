@@ -279,6 +279,8 @@ octave_base_value::index_vector (bool /* require_integers */) const
   octave::err_invalid_index (nm.c_str ());
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 octave_value
 octave_base_value::vm_extract_forloop_value (octave_idx_type idx)
 {
@@ -296,6 +298,8 @@ octave_base_value::maybe_update_double (double)
 {
   return false;
 }
+
+#endif
 
 octave_value
 octave_base_value::simple_subsasgn (char type, octave_value_list& idx,
@@ -959,6 +963,8 @@ octave_base_value::function_value (bool silent)
   return nullptr;
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 octave_base_value::vm_call_dispatch_type
 octave_base_value::vm_dispatch_call ()
 {
@@ -983,6 +989,8 @@ octave_base_value::ref_rep ()
 
   return nullptr;
 }
+
+#endif
 
 octave_user_function *
 octave_base_value::user_function_value (bool silent)
@@ -1446,6 +1454,20 @@ octave_base_value::fast_elem_extract (octave_idx_type) const
   return octave_value ();
 }
 
+bool
+octave_base_value::fast_elem_insert (octave_idx_type, const octave_value&)
+{
+  return false;
+}
+
+bool
+octave_base_value::fast_elem_insert_self (void *, builtin_type_t) const
+{
+  return false;
+}
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 octave_value
 octave_base_value::checked_full_matrix_elem (octave_idx_type) const
 {
@@ -1458,17 +1480,7 @@ octave_base_value::checked_full_matrix_elem (octave_idx_type, octave_idx_type) c
   err_wrong_type_arg ("octave_base_value::checked_full_matrix_elem (octave_idx_type, octave_idx_type)", type_name ());
 }
 
-bool
-octave_base_value::fast_elem_insert (octave_idx_type, const octave_value&)
-{
-  return false;
-}
-
-bool
-octave_base_value::fast_elem_insert_self (void *, builtin_type_t) const
-{
-  return false;
-}
+#endif
 
 static octave_base_value *
 oct_conv_matrix_conv (const octave_base_value&)

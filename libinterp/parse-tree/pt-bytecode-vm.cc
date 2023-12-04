@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 #include <iostream>
 #include <iomanip>
 
@@ -8293,3 +8295,5 @@ extern "C" void dummy_mark_2 (void)
 {
   asm ("");
 }
+
+#endif

@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 #define EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK(ovl,nargout) \
 do {\
   if (nargout <= 1)\
@@ -485,5 +487,7 @@ if (n_returns >= 0 && nargout > n_returns)                                      
     goto unwind;                                                                                  \
   }                                                                                               \
 
+
+#endif
 
 #endif

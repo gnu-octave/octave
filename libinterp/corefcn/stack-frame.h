@@ -104,7 +104,10 @@ class symbol_info_list;
 class unwind_protect;
 
 class stack_frame_walker;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 class vm;
+#endif
 
 class stack_frame
 {
@@ -183,6 +186,8 @@ public:
           const std::shared_ptr<stack_frame>& parent_link,
           const std::shared_ptr<stack_frame>& static_link);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   // Bytecode function stackframe
   static std::shared_ptr<stack_frame>
   create_bytecode (tree_evaluator& tw,
@@ -211,6 +216,7 @@ public:
                    const std::shared_ptr<stack_frame>& parent_link,
                    const std::shared_ptr<stack_frame>& static_link,
                    int nargout, int nargin);
+#endif
 
   stack_frame (const stack_frame& elt) = default;
 
@@ -491,9 +497,18 @@ public:
     return sym ? varval (sym) : octave_value ();
   }
 
-  virtual octave_value& varref (const symbol_record& sym, bool deref_refs = true) = 0;
 
-  virtual octave_value& varref (std::size_t data_offset, bool deref_refs = true);
+  virtual octave_value& varref (const symbol_record& sym
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                                , bool deref_refs = true
+#endif
+                                ) = 0;
+
+  virtual octave_value& varref (std::size_t data_offset
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+                                , bool deref_refs = true
+#endif
+                                );
 
   void assign (const symbol_record& sym, const octave_value& val)
   {
@@ -624,6 +639,8 @@ public:
 
   bool is_closure_context () const { return m_is_closure_context; }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   // The VM needs to tell the bytecode stackframe that it unwinds so
   // that it can check whether to save the stack.
   virtual void vm_unwinds () {}
@@ -632,6 +649,8 @@ public:
   virtual void vm_enter_script () {}
   virtual void vm_exit_script () {}
   virtual void vm_enter_nested () {}
+
+#endif
 
 protected:
 

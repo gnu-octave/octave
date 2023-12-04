@@ -51,6 +51,12 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 
 ### Graphical User Interface
 
+- The Graphical User Interface (GUI) of Octave is now compatible with Qt6.  Qt6
+  is selected by default if the necessary Qt modules are detected and the used
+  compiler is compatible.  Support for building with Qt5 is still available but
+  might be removed in a future version of Octave.  Qt5 is used if configuring
+  with `--with-qt=5` or as a fallback by default if Qt6 cannot be used.
+
 ### Graphics backend
 
 * The FLTK backend is not maintained and its use is discouraged.  The

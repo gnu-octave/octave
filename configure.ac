@@ -1412,11 +1412,11 @@ fi
 
 AC_C_BIGENDIAN()
 
-ENABLE_BYTECODE_EVALUATOR=yes
+ENABLE_BYTECODE_EVALUATOR=no
 AC_ARG_ENABLE([bytecode-evaluator],
-  [AS_HELP_STRING([--disable-bytecode-evaluator],
-    [don't compile *experimental* bytecode evaluator])],
-  [if test "$enableval" = no; then ENABLE_BYTECODE_EVALUATOR=no; fi], [])
+  [AS_HELP_STRING([--enable-bytecode-evaluator],
+    [compile *experimental* bytecode evaluator])],
+  [if test "$enableval" = yes; then ENABLE_BYTECODE_EVALUATOR=yes; fi], [])
 if test $ENABLE_BYTECODE_EVALUATOR = yes; then
   AC_DEFINE(OCTAVE_ENABLE_BYTECODE_EVALUATOR, 1,
     [Define to 1 to build experimental Virtual Machine evaluator.])

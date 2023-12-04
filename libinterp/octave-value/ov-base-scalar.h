@@ -169,11 +169,13 @@ public:
 
   OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 
-  OCTINTERP_API octave_value
-  vm_extract_forloop_value (octave_idx_type idx);
-
   OCTINTERP_API bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
+  OCTINTERP_API octave_value
+  vm_extract_forloop_value (octave_idx_type idx);
 
   bool vm_need_dispatch_assign_rhs () { return false; }
 
@@ -185,6 +187,8 @@ public:
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }
+
+#endif
 
 protected:
 

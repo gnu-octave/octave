@@ -26,9 +26,12 @@
 #if ! defined (octave_pt_bytecode_walk_h)
 #define octave_pt_bytecode_walk_h 1
 
+#include "octave-config.h"
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 #include <map>
 
-#include "octave-config.h"
 #include "pt-walk.h"
 #include "error.h"
 
@@ -438,5 +441,7 @@ namespace octave
     void visit_classdef (tree_classdef&) ERROR_NOT_IMPLEMENTED
   };
 }
+
+#endif
 
 #endif

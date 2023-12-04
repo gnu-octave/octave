@@ -30,7 +30,6 @@
 #include "lo-regexp.h"
 #include "str-vec.h"
 
-#include "pt-bytecode-vm.h"
 #include "builtin-defun-decls.h"
 #include "call-stack.h"
 #include "defun.h"
@@ -42,6 +41,9 @@
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+#  include "pt-bytecode-vm.h"
+#endif
 #include "stack-frame.h"
 #include "syminfo.h"
 #include "symrec.h"
@@ -449,6 +451,7 @@ void call_stack::push (octave_user_script *script)
   m_curr_frame = new_frame_idx;
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
 void call_stack::push (vm &vm, octave_user_script *fcn, int nargout, int nargin)
 {
@@ -512,6 +515,8 @@ void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargi
 
   m_curr_frame = new_frame_idx;
 }
+
+#endif
 
 void call_stack::push (octave_function *fcn)
 {

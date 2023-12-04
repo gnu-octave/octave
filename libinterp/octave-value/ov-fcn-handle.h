@@ -377,6 +377,8 @@ public:
   friend bool
   is_equal_to (const octave_fcn_handle& fh1, const octave_fcn_handle& fh2);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   octave_function *
   get_cached_fcn (void *beg, void *end) { return m_rep->get_cached_fcn (beg, end); }
 
@@ -394,6 +396,9 @@ public:
   }
 
   void compile () { m_rep->compile (); }
+
+#endif
+
 private:
 
   std::shared_ptr<octave::base_fcn_handle> m_rep;

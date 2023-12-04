@@ -574,6 +574,30 @@ octave_base_matrix<MT>::fast_elem_extract (octave_idx_type n) const
 }
 
 template <typename MT>
+bool
+octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
+    const octave_value& x)
+{
+  if (n < m_matrix.numel ())
+    {
+      // Don't use builtin_type () here to avoid an extra VM call.
+      typedef typename MT::element_type ET;
+      const builtin_type_t btyp = class_to_btyp<ET>::btyp;
+      if (btyp == btyp_unknown) // Dead branch?
+        return false;
+
+      // Set up the pointer to the proper place.
+      void *here = reinterpret_cast<void *> (&m_matrix(n));
+      // Ask x to store there if it can.
+      return x.get_rep ().fast_elem_insert_self (here, btyp);
+    }
+  else
+    return false;
+}
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
+template <typename MT>
 octave_value
 octave_base_matrix<MT>::checked_full_matrix_elem (octave_idx_type i) const
 {
@@ -621,24 +645,4 @@ octave_base_matrix<MT>::vm_extract_forloop_value (octave_idx_type counter)
   return arg.index_op (idx).storable_value ();
 }
 
-template <typename MT>
-bool
-octave_base_matrix<MT>::fast_elem_insert (octave_idx_type n,
-    const octave_value& x)
-{
-  if (n < m_matrix.numel ())
-    {
-      // Don't use builtin_type () here to avoid an extra VM call.
-      typedef typename MT::element_type ET;
-      const builtin_type_t btyp = class_to_btyp<ET>::btyp;
-      if (btyp == btyp_unknown) // Dead branch?
-        return false;
-
-      // Set up the pointer to the proper place.
-      void *here = reinterpret_cast<void *> (&m_matrix(n));
-      // Ask x to store there if it can.
-      return x.get_rep ().fast_elem_insert_self (here, btyp);
-    }
-  else
-    return false;
-}
+#endif

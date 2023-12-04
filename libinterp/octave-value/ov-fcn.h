@@ -48,6 +48,8 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Functions.
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 // Class that holds a cached reference to a octave function
 // for use in the bytecode VM.
 class
@@ -133,6 +135,7 @@ private:
   std::string m_fcn_name;
 };
 
+#endif
 
 class
 OCTINTERP_API
@@ -322,6 +325,7 @@ public:
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ()) = 0;
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   vm_call_dispatch_type vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_CALL;
@@ -334,8 +338,9 @@ public:
   get_cached_fcn (const octave_value_list&) { return function_value (); }
 
   bool has_function_cache () const { return true; }
+#endif
 
-protected:
+ protected:
 
   octave_function (const std::string& nm,
                    const std::string& ds = "")

@@ -78,9 +78,12 @@ class octave_user_script;
 class octave_user_code;
 class octave_fcn_handle;
 class octave_value_list;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 class octave_value_ref;
 class octave_fcn_cache;
 class octave_value_vm;
+#endif
 
 enum builtin_type_t
 {
@@ -264,7 +267,10 @@ public:
   };
 
   friend class octave_value;
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   friend class octave_value_vm;
+#endif
 
   octave_base_value ();
 
@@ -808,6 +814,8 @@ public:
 
   virtual octave_base_value * make_storable_value ();
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   virtual bool vm_need_storable_call () const { return false; }
 
   virtual bool vm_need_dispatch_assign_rhs () { return true; }
@@ -841,6 +849,8 @@ public:
   virtual bool maybe_update_double (double d);
 
   virtual bool is_trivial_range () const { return false; };
+
+#endif
 
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t
@@ -931,11 +941,15 @@ public:
   virtual bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   virtual octave_value
   checked_full_matrix_elem (octave_idx_type i) const;
 
   virtual octave_value
   checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
+
+#endif
 
 protected:
 

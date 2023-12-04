@@ -27,9 +27,10 @@
 #  include "config.h"
 #endif
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 #include "ov.h"
 #include "ov-ref.h"
-
 
 #include "interpreter.h"
 #include "interpreter-private.h"
@@ -188,3 +189,5 @@ octave_value_ref_ptr::set_value (octave_value val)
   else
     *m_pov = val;
 }
+
+#endif

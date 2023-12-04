@@ -33,10 +33,14 @@
 #include "variables.h"
 #include "interpreter.h"
 
-#include "pt-bytecode-vm.h"
-#include "pt-bytecode-walk.h"
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+#  include "pt-bytecode-vm.h"
+#  include "pt-bytecode-walk.h"
+#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
 // If TRUE, use VM evaluator rather than tree walker.
 bool V__vm_enable__ = false;
@@ -44,6 +48,8 @@ bool V__vm_enable__ = false;
 // Cleverly hidden in pt-bytecode-vm.cc to prevent inlining here
 extern "C" void dummy_mark_1 (void);
 extern "C" void dummy_mark_2 (void);
+
+#endif
 
 DEFUN (__dummy_mark_1__, , ,
        doc: /* -*- texinfo -*-
@@ -57,9 +63,17 @@ point for @code{gdb}.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   dummy_mark_1 ();
 
   return {};
+
+#else
+
+  err_disabled_feature ("__dummy_mark_1__", "byte-compiled functions");
+
+#endif
 }
 
 DEFUN (__dummy_mark_2__, , ,
@@ -74,9 +88,17 @@ point for @code{gdb}.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   dummy_mark_2 ();
 
   return {};
+
+#else
+
+  err_disabled_feature ("__dummy_mark_2__", "byte-compiled functions");
+
+#endif
 }
 
 DEFUN (__vm_clear_cache__, , ,
@@ -87,9 +109,17 @@ Internal function.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   octave::load_path::signal_clear_fcn_cache ();
 
   return octave_value {true};
+
+#else
+
+  err_disabled_feature ("__vm_clear_cache__", "byte-compiled functions");
+
+#endif
 }
 
 DEFUN (__vm_print_trace__, , ,
@@ -109,9 +139,17 @@ The return value is true if a trace will be printed and false otherwise.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   vm::m_trace_enabled = !vm::m_trace_enabled;
 
   return octave_value {vm::m_trace_enabled};
+
+#else
+
+  err_disabled_feature ("__vm_print_trace__", "byte-compiled functions");
+
+#endif
 }
 
 DEFUN (__ref_count__, args, ,
@@ -145,6 +183,8 @@ Return true if the VM is executing the function calling
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   auto frame = interp.get_evaluator ().get_current_stack_frame ();
   if (!frame)
     error ("Invalid current frame");
@@ -156,6 +196,14 @@ Return true if the VM is executing the function calling
   bool bytecode_running = caller_frame->is_bytecode_fcn_frame ();
 
   return octave_value {bytecode_running};
+
+#else
+
+  octave_unused_parameter (interp);
+
+  err_disabled_feature ("__vm_is_executing__", "byte-compiled functions");
+
+#endif
 }
 
 DEFMETHOD (__vm_profile__, interp, args, ,
@@ -200,6 +248,8 @@ is not implemented yet.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   int nargin = args.length ();
 
   auto &evaler = interp.get_evaluator ();
@@ -270,6 +320,15 @@ is not implemented yet.
     print_usage ();
 
   return octave_value {true};
+
+#else
+
+  octave_unused_parameter (interp);
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("__vm_profile__", "byte-compiled functions");
+
+#endif
 }
 
 DEFMETHOD (__vm_print_bytecode__, interp, args, ,
@@ -283,6 +342,8 @@ Prints the bytecode of a function name or function handle, if any.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   int nargin = args.length ();
 
   if (nargin != 1)
@@ -345,6 +406,15 @@ Prints the bytecode of a function name or function handle, if any.
   print_bytecode (bc);
 
   return octave_value {true};
+
+#else
+
+  octave_unused_parameter (interp);
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("__vm_print_bytecode__", "byte-compiled functions");
+
+#endif
 }
 
 DEFMETHOD (__vm_is_compiled__, interp, args, ,
@@ -360,6 +430,8 @@ False otherwise.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   int nargin = args.length ();
 
   if (nargin != 1)
@@ -409,6 +481,15 @@ False otherwise.
     {
       return octave_value {false};
     }
+
+#else
+
+  octave_unused_parameter (interp);
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("__vm_is_compiled__", "byte-compiled functions");
+
+#endif
 }
 
 DEFMETHOD (__vm_compile__, interp, args, ,
@@ -434,6 +515,8 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   int nargin = args.length ();
 
   if (! nargin)
@@ -562,6 +645,15 @@ The @qcode{"clear"} option removes the bytecode from the function instead.
     }
 
   return octave_value {true};
+
+#else
+
+  octave_unused_parameter (interp);
+  octave_unused_parameter (args);
+
+  err_disabled_feature ("__vm_compile__", "byte-compiled functions");
+
+#endif
 }
 
 DEFUN (__vm_enable__, args, nargout,
@@ -593,8 +685,19 @@ by, e.g., @qcode{"clear all"}, or a modification to the function's m-file.
 
 @end deftypefn */)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
   return set_internal_variable (V__vm_enable__, args, nargout,
                                 "__vm_enable__");
+
+#else
+
+  octave_unused_parameter (args);
+  octave_unused_parameter (nargout);
+
+  err_disabled_feature ("__vm_enable__", "byte-compiled functions");
+
+#endif
 }
 
 OCTAVE_END_NAMESPACE(octave)

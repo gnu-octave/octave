@@ -1119,6 +1119,8 @@ octave_struct::fast_elem_insert (octave_idx_type n,
   return retval;
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 octave_value
 octave_struct::vm_extract_forloop_value (octave_idx_type counter)
 {
@@ -1151,6 +1153,8 @@ octave_struct::vm_extract_forloop_value (octave_idx_type counter)
   idx(iidx) = counter + 1;
   return arg.index_op (idx).storable_value ();
 }
+
+#endif
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(octave_scalar_struct, "scalar struct",
                                     "struct");

@@ -61,11 +61,15 @@ eval_error (const char *msg, const dim_vector& x, const dim_vector& y)
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 tm_row_const::tm_row_const (const stack_element *beg, const stack_element *end)
     : tm_info (beg == end), m_values ()
 {
   init (beg, end);
 }
+
+#endif
 
 void tm_row_const::cellify ()
 {
@@ -229,6 +233,8 @@ void tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
     }
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 // FIXME: This function is mostly a duplicate of
 //
 //   void tm_row_const::init (const tree_argument_list&, tree_evaluator&)
@@ -303,6 +309,8 @@ tm_const::tm_const (const stack_element *beg, const stack_element *end,
 {
   init (beg, end, row_lengths);
 }
+
+#endif
 
 octave_value tm_const::concat (char string_fill_char) const
 {
@@ -509,6 +517,8 @@ void tm_const::init (const tree_matrix& tm)
         eval_error ("vertical dimensions mismatch", m_dv, this_elt_dv);
     }
 }
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
 // FIXME: This function is mostly a duplicate of both of the functions
 //
@@ -764,6 +774,8 @@ void tm_const::init (const stack_element *beg, const stack_element *end,
         eval_error ("vertical dimensions mismatch", m_dv, this_elt_dv);
     }
 }
+
+#endif
 
 octave_value tm_const::char_array_concat (char string_fill_char) const
 {

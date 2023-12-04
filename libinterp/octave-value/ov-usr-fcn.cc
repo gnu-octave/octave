@@ -50,7 +50,10 @@
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
-#include "pt-bytecode-vm.h"
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+#  include "pt-bytecode-vm.h"
+#  include "pt-bytecode-walk.h"
+#endif
 #include "pt-walk.h"
 #include "symtab.h"
 #include "interpreter-private.h"
@@ -61,7 +64,6 @@
 #include "profiler.h"
 #include "variables.h"
 #include "ov-fcn-handle.h"
-#include "pt-bytecode-walk.h"
 
 // Whether to optimize subsasgn method calls.
 static bool Voptimize_subsasgn_calls = true;
@@ -98,6 +100,8 @@ octave_user_code::get_file_info ()
              m_file_name.c_str ());
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+
 void
 octave_user_code::clear_bytecode ()
 {
@@ -111,6 +115,8 @@ octave_user_code::clear_bytecode ()
         sub->clear_bytecode ();
     }
 }
+
+#endif
 
 std::string
 octave_user_code::get_code_line (std::size_t line)
@@ -198,6 +204,7 @@ octave_value_list
 octave_user_script::call (octave::tree_evaluator& tw, int nargout,
                           const octave_value_list& args)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   if (octave::vm::maybe_compile_or_compiled (this))
     {
       // Check that either:
@@ -221,6 +228,7 @@ octave_user_script::call (octave::tree_evaluator& tw, int nargout,
       else
         warning ("Executing compiled scripts in the VM from an un-compiled function is not supported yet");
     }
+#endif
 
   tw.push_stack_frame (this);
 
@@ -521,8 +529,10 @@ octave_value_list
 octave_user_function::call (octave::tree_evaluator& tw, int nargout,
                             const octave_value_list& args)
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   if (octave::vm::maybe_compile_or_compiled (this))
     return octave::vm::call (tw, nargout, args, this);
+#endif
 
   tw.push_stack_frame (this);
 

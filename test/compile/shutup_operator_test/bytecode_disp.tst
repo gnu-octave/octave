@@ -4,7 +4,7 @@
 ## in its own folder to not mess double up for the other
 ## tests.
 
-%!test
+%!testif ENABLE_BYTECODE_EVALUATOR
 %! % Overloading of class-methods seems to stick so we need to clear them since we overload
 %! % double's display. Is this a bug ???
 %! clear classes

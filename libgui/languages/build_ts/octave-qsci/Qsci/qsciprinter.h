@@ -1,6 +1,6 @@
 // This module defines interface to the QsciPrinter class.
 //
-// Copyright (c) 2019 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -64,7 +64,7 @@ public:
     //! area of the page that will be used to draw the text.  This should be
     //! modified if it is necessary to reserve space for any customised text or
     //! graphics.  By default the area is relative to the printable area of the
-    //! page.  Use QPrinter::setFullPage() because calling printRange() if you
+    //! page.  Use QPrinter::setFullPage() before calling printRange() if you
     //! want to try and print over the whole page.  \a pagenr is the number of
     //! the page.  The first page is numbered 1.
     virtual void formatPage(QPainter &painter, bool drawing, QRect &area,
@@ -81,11 +81,19 @@ public:
     //! \sa magnification()
     virtual void setMagnification(int magnification);
 
-    //! Print a range of lines from the Scintilla instance \a qsb.  \a from is
-    //! the first line to print and a negative value signifies the first line
-    //! of text.  \a to is the last line to print and a negative value
-    //! signifies the last line of text.  true is returned if there was no
-    //! error.
+    //! Print a range of lines from the Scintilla instance \a qsb using the
+    //! supplied QPainter \a painter.  \a from is the first line to print and a
+    //! negative value signifies the first line of text.  \a to is the last
+    //! line to print and a negative value signifies the last line of text.
+    //! true is returned if there was no error.
+    virtual int printRange(QsciScintillaBase *qsb, QPainter &painter,
+            int from = -1, int to = -1);
+
+    //! Print a range of lines from the Scintilla instance \a qsb using a
+    //! default QPainter.  \a from is the first line to print and a negative
+    //! value signifies the first line of text.  \a to is the last line to
+    //! print and a negative value signifies the last line of text.  true is
+    //! returned if there was no error.
     virtual int printRange(QsciScintillaBase *qsb, int from = -1, int to = -1);
 
     //! Return the line wrap mode used when printing.  The default is

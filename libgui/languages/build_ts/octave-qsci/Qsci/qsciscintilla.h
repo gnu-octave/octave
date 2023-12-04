@@ -1,7 +1,7 @@
 // This module defines the "official" high-level API of the Qt port of
 // Scintilla.
 //
-// Copyright (c) 2019 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -2242,7 +2242,7 @@ private:
 
     QString wordAtPosition(int position) const;
 
-    ScintillaBytes styleText(const QList<QsciStyledText> &styled_text,
+    QByteArray styleText(const QList<QsciStyledText> &styled_text,
             char **styles, int style_offset = 0);
 
     struct FindState

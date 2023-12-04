@@ -1,63 +1,29 @@
-/****************************************************************************
-**
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
-**
-** This file is part of the QtGui module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2020 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qfilesystemmodel_p.h"
 #include "qfilesystemmodel.h"
+#include <qabstractfileiconprovider.h>
 #include <qlocale.h>
-#include <qmime.h>
+#include <qmimedata.h>
 #include <qurl.h>
 #include <qdebug.h>
-#include <qmessagebox.h>
-#include <qapplication.h>
+#include <QtCore/qcollator.h>
+#if QT_CONFIG(regularexpression)
+#  include <QtCore/qregularexpression.h>
+#endif
+
+#include <algorithm>
 
 #ifdef Q_OS_WIN
-#include <qt_windows.h>
-#endif
-#ifdef Q_OS_WIN32
-#include <QtCore/QVarLengthArray>
+#  include <QtCore/QVarLengthArray>
+#  include <qt_windows.h>
+#  include <shlobj.h>
 #endif
 
 QT_BEGIN_NAMESPACE
 
-#ifndef QT_NO_FILESYSTEMMODEL
+using namespace Qt::StringLiterals;
 
 /*!
     \enum QFileSystemModel::Roles
@@ -74,6 +40,7 @@ QT_BEGIN_NAMESPACE
     \brief The QFileSystemModel class provides a data model for the local filesystem.
 
     \ingroup model-view
+    \inmodule QtGui
 
     This class provides access to the local filesystem, providing functions
     for renaming and removing files and directories, and for creating new
@@ -83,30 +50,30 @@ QT_BEGIN_NAMESPACE
     QFileSystemModel can be accessed using the standard interface provided by
     QAbstractItemModel, but it also provides some convenience functions that are
     specific to a directory model.
-    The fileInfo(), isDir(), name(), and path() functions provide information
+    The fileInfo(), isDir(), fileName() and filePath() functions provide information
     about the underlying files and directories related to items in the model.
     Directories can be created and removed using mkdir(), rmdir().
 
-    \note QFileSystemModel requires an instance of a GUI application.
+    \note QFileSystemModel requires an instance of \l QApplication.
 
     \section1 Example Usage
 
     A directory model that displays the contents of a default directory
     is usually constructed with a parent object:
 
-    \snippet doc/src/snippets/shareddirmodel/main.cpp 2
+    \snippet shareddirmodel/main.cpp 2
 
     A tree view can be used to display the contents of the model
 
-    \snippet doc/src/snippets/shareddirmodel/main.cpp 4
+    \snippet shareddirmodel/main.cpp 4
 
     and the contents of a particular directory can be displayed by
     setting the tree view's root index:
 
-    \snippet doc/src/snippets/shareddirmodel/main.cpp 7
+    \snippet shareddirmodel/main.cpp 7
 
     The view's root index can be used to control how much of a
-    hierarchical model is displayed. QDirModel provides a convenience
+    hierarchical model is displayed. QFileSystemModel provides a convenience
     function that returns a suitable model index for a path to a
     directory within the model.
 
@@ -116,10 +83,9 @@ QT_BEGIN_NAMESPACE
     is called.  This will prevent any unnecessary querying on the file system
     until that point such as listing the drives on Windows.
 
-    Unlike QDirModel, QFileSystemModel uses a separate thread to populate
-    itself so it will not cause the main thread to hang as the file system
-    is being queried.  Calls to rowCount() will return 0 until the model
-    populates a directory.
+    QFileSystemModel uses a separate thread to populate itself so it will not
+    cause the main thread to hang as the file system is being queried.
+    Calls to rowCount() will return 0 until the model populates a directory.
 
     QFileSystemModel keeps a cache with file information. The cache is
     automatically kept up to date using the QFileSystemWatcher.
@@ -128,21 +94,21 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn bool QFileSystemModel::rmdir(const QModelIndex &index) const
+    \fn bool QFileSystemModel::rmdir(const QModelIndex &index)
 
     Removes the directory corresponding to the model item \a index in the
-    file system model and \bold{deletes the corresponding directory from the
+    file system model and \b{deletes the corresponding directory from the
     file system}, returning true if successful. If the directory cannot be
     removed, false is returned.
 
     \warning This function deletes directories from the file system; it does
-    \bold{not} move them to a location where they can be recovered.
+    \b{not} move them to a location where they can be recovered.
 
     \sa remove()
 */
 
 /*!
-    \fn QIcon QFileSystemModel::fileName(const QModelIndex &index) const
+    \fn QString QFileSystemModel::fileName(const QModelIndex &index) const
 
     Returns the file name for the item stored in the model under the given
     \a index.
@@ -161,6 +127,11 @@ QT_BEGIN_NAMESPACE
     Returns the QFileInfo for the item stored in the model under the given
     \a index.
 */
+QFileInfo QFileSystemModel::fileInfo(const QModelIndex &index) const
+{
+    Q_D(const QFileSystemModel);
+    return d->node(index)->fileInfo();
+}
 
 /*!
     \fn void QFileSystemModel::rootPathChanged(const QString &newPath);
@@ -172,7 +143,7 @@ QT_BEGIN_NAMESPACE
     \fn void QFileSystemModel::fileRenamed(const QString &path, const QString &oldName, const QString &newName)
 
     This signal is emitted whenever a file with the \a oldName is successfully
-    renamed to \a newName.  The file is located in in the directory \a path.
+    renamed to \a newName.  The file is located in the directory \a path.
 */
 
 /*!
@@ -184,56 +155,44 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \fn bool QFileSystemModel::remove(const QModelIndex &index) const
+    \fn bool QFileSystemModel::remove(const QModelIndex &index)
 
-    Removes the model item \a index from the file system model and \bold{deletes the
+    Removes the model item \a index from the file system model and \b{deletes the
     corresponding file from the file system}, returning true if successful. If the
     item cannot be removed, false is returned.
 
-    \warning This function deletes files from the file system; it does \bold{not}
+    \warning This function deletes files from the file system; it does \b{not}
     move them to a location where they can be recovered.
 
     \sa rmdir()
 */
 
-bool QFileSystemModel::remove(const QModelIndex &aindex) const
+bool QFileSystemModel::remove(const QModelIndex &aindex)
 {
-    //### TODO optim
-    QString path = filePath(aindex);
-    QFileSystemModelPrivate * d = const_cast<QFileSystemModelPrivate*>(d_func());
-    d->fileInfoGatherer.removePath(path);
-    QDirIterator it(path,
-            QDir::AllDirs | QDir:: Files | QDir::NoDotAndDotDot,
-            QDirIterator::Subdirectories);
-    QStringList children;
-    while (it.hasNext())
-        children.prepend(it.next());
-    children.append(path);
+    Q_D(QFileSystemModel);
 
-    bool error = false;
-    for (int i = 0; i < children.count(); ++i) {
-        QFileInfo info(children.at(i));
-        QModelIndex modelIndex = index(children.at(i));
-        if (info.isDir()) {
-            QDir dir;
-            if (children.at(i) != path)
-                error |= remove(modelIndex);
-            error |= rmdir(modelIndex);
-        } else {
-            error |= QFile::remove(filePath(modelIndex));
-        }
-    }
-    return error;
+    const QString path = d->filePath(aindex);
+    const QFileInfo fileInfo(path);
+#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+    // QTBUG-65683: Remove file system watchers prior to deletion to prevent
+    // failure due to locked files on Windows.
+    const QStringList watchedPaths = d->unwatchPathsAt(aindex);
+#endif // filesystemwatcher && Q_OS_WIN
+    const bool success = (fileInfo.isFile() || fileInfo.isSymLink())
+            ? QFile::remove(path) : QDir(path).removeRecursively();
+#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+    if (!success)
+        d->watchPaths(watchedPaths);
+#endif // filesystemwatcher && Q_OS_WIN
+    return success;
 }
 
 /*!
   Constructs a file system model with the given \a parent.
 */
-QFileSystemModel::QFileSystemModel(QObject *parent)
-    : QAbstractItemModel(*new QFileSystemModelPrivate, parent)
+QFileSystemModel::QFileSystemModel(QObject *parent) :
+    QFileSystemModel(*new QFileSystemModelPrivate, parent)
 {
-    Q_D(QFileSystemModel);
-    d->init();
 }
 
 /*!
@@ -249,9 +208,7 @@ QFileSystemModel::QFileSystemModel(QFileSystemModelPrivate &dd, QObject *parent)
 /*!
   Destroys this file system model.
 */
-QFileSystemModel::~QFileSystemModel()
-{
-}
+QFileSystemModel::~QFileSystemModel() = default;
 
 /*!
     \reimp
@@ -268,11 +225,29 @@ QModelIndex QFileSystemModel::index(int row, int column, const QModelIndex &pare
     Q_ASSERT(parentNode);
 
     // now get the internal pointer for the index
-    QString childName = parentNode->visibleChildren[d->translateVisibleLocation(parentNode, row)];
+    const int i = d->translateVisibleLocation(parentNode, row);
+    if (i >= parentNode->visibleChildren.size())
+        return QModelIndex();
+    const QString &childName = parentNode->visibleChildren.at(i);
     const QFileSystemModelPrivate::QFileSystemNode *indexNode = parentNode->children.value(childName);
     Q_ASSERT(indexNode);
 
     return createIndex(row, column, const_cast<QFileSystemModelPrivate::QFileSystemNode*>(indexNode));
+}
+
+/*!
+    \reimp
+*/
+QModelIndex QFileSystemModel::sibling(int row, int column, const QModelIndex &idx) const
+{
+    if (row == idx.row() && column < columnCount(idx.parent())) {
+        // cheap sibling operation: just adjust the column:
+        return createIndex(row, column, idx.internalPointer());
+    } else {
+        // for anything else: call the default implementation
+        // (this could probably be optimized, too):
+        return QAbstractItemModel::sibling(row, column, idx);
+    }
 }
 
 /*!
@@ -284,10 +259,7 @@ QModelIndex QFileSystemModel::index(const QString &path, int column) const
 {
     Q_D(const QFileSystemModel);
     QFileSystemModelPrivate::QFileSystemNode *node = d->node(path, false);
-    QModelIndex idx = d->index(node);
-    if (idx.column() != column)
-        idx = idx.sibling(idx.row(), column);
-    return idx;
+    return d->index(node, column);
 }
 
 /*!
@@ -308,17 +280,17 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QM
 static QString qt_GetLongPathName(const QString &strShortPath)
 {
     if (strShortPath.isEmpty()
-        || strShortPath == QLatin1String(".") || strShortPath == QLatin1String(".."))
+        || strShortPath == "."_L1 || strShortPath == ".."_L1)
         return strShortPath;
-    if (strShortPath.length() == 2 && strShortPath.endsWith(QLatin1Char(':')))
+    if (strShortPath.length() == 2 && strShortPath.endsWith(u':'))
         return strShortPath.toUpper();
     const QString absPath = QDir(strShortPath).absolutePath();
-    if (absPath.startsWith(QLatin1String("//"))
-        || absPath.startsWith(QLatin1String("\\\\"))) // unc
+    if (absPath.startsWith("//"_L1)
+        || absPath.startsWith("\\\\"_L1)) // unc
         return QDir::fromNativeSeparators(absPath);
-    if (absPath.startsWith(QLatin1Char('/')))
+    if (absPath.startsWith(u'/'))
         return QString();
-    const QString inputString = QLatin1String("\\\\?\\") + QDir::toNativeSeparators(absPath);
+    const QString inputString = "\\\\?\\"_L1 + QDir::toNativeSeparators(absPath);
     QVarLengthArray<TCHAR, MAX_PATH> buffer(MAX_PATH);
     DWORD result = ::GetLongPathName((wchar_t*)inputString.utf16(),
                                      buffer.data(),
@@ -348,7 +320,7 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
 {
     Q_Q(const QFileSystemModel);
     Q_UNUSED(q);
-    if (path.isEmpty() || path == myComputer() || path.startsWith(QLatin1Char(':')))
+    if (path.isEmpty() || path == myComputer() || path.startsWith(u':'))
         return const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
 
     // Construct the nodes up to the new root path if they need to be built
@@ -364,25 +336,33 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
         absolutePath = QDir(longPath).absolutePath();
 
     // ### TODO can we use bool QAbstractFileEngine::caseSensitive() const?
-    QStringList pathElements = absolutePath.split(QLatin1Char('/'), QString::SkipEmptyParts);
+    QStringList pathElements = absolutePath.split(u'/', Qt::SkipEmptyParts);
     if ((pathElements.isEmpty())
-#if (!defined(Q_OS_WIN) || defined(Q_OS_WINCE)) && !defined(Q_OS_SYMBIAN)
-        && QDir::fromNativeSeparators(longPath) != QLatin1String("/")
+#if !defined(Q_OS_WIN)
+        && QDir::fromNativeSeparators(longPath) != "/"_L1
 #endif
         )
         return const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
     QModelIndex index = QModelIndex(); // start with "My Computer"
-#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
-    if (absolutePath.startsWith(QLatin1String("//"))) { // UNC path
-        QString host = QLatin1String("\\\\") + pathElements.first();
+    QString elementPath;
+    QChar separator = u'/';
+    QString trailingSeparator;
+#if defined(Q_OS_WIN)
+    if (absolutePath.startsWith("//"_L1)) { // UNC path
+        QString host = "\\\\"_L1 + pathElements.constFirst();
         if (absolutePath == QDir::fromNativeSeparators(host))
-            absolutePath.append(QLatin1Char('/'));
-        if (longPath.endsWith(QLatin1Char('/')) && !absolutePath.endsWith(QLatin1Char('/')))
-            absolutePath.append(QLatin1Char('/'));
+            absolutePath.append(u'/');
+        if (longPath.endsWith(u'/') && !absolutePath.endsWith(u'/'))
+            absolutePath.append(u'/');
+        if (absolutePath.endsWith(u'/'))
+            trailingSeparator = "\\"_L1;
         int r = 0;
-        QFileSystemModelPrivate::QFileSystemNode *rootNode = const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
-        if (!root.children.contains(host.toLower())) {
-            if (pathElements.count() == 1 && !absolutePath.endsWith(QLatin1Char('/')))
+        auto rootNode = const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
+        auto it = root.children.constFind(host);
+        if (it != root.children.cend()) {
+            host = it.key(); // Normalize case for lookup in visibleLocation()
+        } else {
+            if (pathElements.count() == 1 && !absolutePath.endsWith(u'/'))
                 return rootNode;
             QFileInfo info(host);
             if (!info.exists())
@@ -395,41 +375,52 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
         r = translateVisibleLocation(rootNode, r);
         index = q->index(r, 0, QModelIndex());
         pathElements.pop_front();
-    } else
-#endif
-
-#if (defined(Q_OS_WIN) && !defined(Q_OS_WINCE)) || defined(Q_OS_SYMBIAN)
-    {
-        if (!pathElements.at(0).contains(QLatin1String(":"))) {
-            // The reason we express it like this instead of with anonymous, temporary
-            // variables, is to workaround a compiler crash with Q_CC_NOKIAX86.
+        separator = u'\\';
+        elementPath = host;
+        elementPath.append(separator);
+    } else {
+        if (!pathElements.at(0).contains(u':')) {
             QString rootPath = QDir(longPath).rootPath();
             pathElements.prepend(rootPath);
         }
-        if (pathElements.at(0).endsWith(QLatin1Char('/')))
+        if (pathElements.at(0).endsWith(u'/'))
             pathElements[0].chop(1);
     }
 #else
     // add the "/" item, since it is a valid path element on Unix
-    if (absolutePath[0] == QLatin1Char('/'))
-        pathElements.prepend(QLatin1String("/"));
+    if (absolutePath[0] == u'/')
+        pathElements.prepend("/"_L1);
 #endif
 
     QFileSystemModelPrivate::QFileSystemNode *parent = node(index);
 
-    for (int i = 0; i < pathElements.count(); ++i) {
+    for (int i = 0; i < pathElements.size(); ++i) {
         QString element = pathElements.at(i);
+        if (i != 0)
+            elementPath.append(separator);
+        elementPath.append(element);
+        if (i == pathElements.size() - 1)
+            elementPath.append(trailingSeparator);
 #ifdef Q_OS_WIN
-        // On Windows, "filename......." and "filename" are equivalent Task #133928
-        while (element.endsWith(QLatin1Char('.')))
+        // On Windows, "filename    " and "filename" are equivalent and
+        // "filename  .  " and "filename" are equivalent
+        // "filename......." and "filename" are equivalent Task #133928
+        // whereas "filename  .txt" is still "filename  .txt"
+        // If after stripping the characters there is nothing left then we
+        // just return the parent directory as it is assumed that the path
+        // is referring to the parent
+        while (element.endsWith(u'.') || element.endsWith(u' '))
             element.chop(1);
+        // Only filenames that can't possibly exist will be end up being empty
+        if (element.isEmpty())
+            return parent;
 #endif
         bool alreadyExisted = parent->children.contains(element);
 
         // we couldn't find the path element, we create a new node since we
         // _know_ that the path is valid
         if (alreadyExisted) {
-            if ((parent->children.count() == 0)
+            if ((parent->children.size() == 0)
                 || (parent->caseSensitive()
                     && parent->children.value(element)->fileName != element)
                 || (!parent->caseSensitive()
@@ -441,12 +432,12 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
         if (!alreadyExisted) {
             // Someone might call ::index("file://cookie/monster/doesn't/like/veggies"),
             // a path that doesn't exists, I.E. don't blindly create directories.
-            QFileInfo info(absolutePath);
+            QFileInfo info(elementPath);
             if (!info.exists())
                 return const_cast<QFileSystemModelPrivate::QFileSystemNode*>(&root);
             QFileSystemModelPrivate *p = const_cast<QFileSystemModelPrivate*>(this);
             node = p->addNode(parent, element,info);
-#ifndef QT_NO_FILESYSTEMWATCHER
+#if QT_CONFIG(filesystemwatcher)
             node->populate(fileInfoGatherer.getInfo(info));
 #endif
         } else {
@@ -465,11 +456,8 @@ QFileSystemModelPrivate::QFileSystemNode *QFileSystemModelPrivate::node(const QS
                 p->bypassFilters[node] = 1;
             QString dir = q->filePath(this->index(parent));
             if (!node->hasInformation() && fetch) {
-                Fetching f;
-                f.dir = dir;
-                f.file = element;
-                f.node = node;
-                p->toFetch.append(f);
+                Fetching f = { std::move(dir), std::move(element), node };
+                p->toFetch.append(std::move(f));
                 p->fetchingTimer.start(0, const_cast<QFileSystemModel*>(q));
             }
         }
@@ -487,14 +475,14 @@ void QFileSystemModel::timerEvent(QTimerEvent *event)
     Q_D(QFileSystemModel);
     if (event->timerId() == d->fetchingTimer.timerId()) {
         d->fetchingTimer.stop();
-#ifndef QT_NO_FILESYSTEMWATCHER
-        for (int i = 0; i < d->toFetch.count(); ++i) {
+#if QT_CONFIG(filesystemwatcher)
+        for (int i = 0; i < d->toFetch.size(); ++i) {
             const QFileSystemModelPrivate::QFileSystemNode *node = d->toFetch.at(i).node;
             if (!node->hasInformation()) {
                 d->fileInfoGatherer.fetchExtendedInformation(d->toFetch.at(i).dir,
                                                  QStringList(d->toFetch.at(i).file));
             } else {
-                // qDebug() << "yah!, you saved a little gerbil soul";
+                // qDebug("yah!, you saved a little gerbil soul");
             }
         }
 #endif
@@ -503,8 +491,8 @@ void QFileSystemModel::timerEvent(QTimerEvent *event)
 }
 
 /*!
-    Returns true if the model item \a index represents a directory;
-    otherwise returns false.
+    Returns \c true if the model item \a index represents a directory;
+    otherwise returns \c false.
 */
 bool QFileSystemModel::isDir(const QModelIndex &index) const
 {
@@ -541,14 +529,38 @@ QString QFileSystemModel::type(const QModelIndex &index) const
 }
 
 /*!
-    Returns the date and time when \a index was last modified.
+    Returns the date and time (in local time) when \a index was last modified.
+
+    This is an overloaded function, equivalent to calling:
+    \code
+    lastModified(index, QTimeZone::LocalTime);
+    \endcode
+
+    If \a index is invalid, a default constructed QDateTime is returned.
  */
 QDateTime QFileSystemModel::lastModified(const QModelIndex &index) const
+{
+    return lastModified(index, QTimeZone::LocalTime);
+}
+
+/*!
+    \since 6.6
+    Returns the date and time, in the time zone \a tz, when
+    \a index was last modified.
+
+    Typical arguments for \a tz are \c QTimeZone::UTC or \c QTimeZone::LocalTime.
+    UTC does not require any conversion from the time returned by the native file
+    system API, therefore getting the time in UTC is potentially faster. LocalTime
+    is typically chosen if the time is shown to the user.
+
+    If \a index is invalid, a default constructed QDateTime is returned.
+ */
+QDateTime QFileSystemModel::lastModified(const QModelIndex &index, const QTimeZone &tz) const
 {
     Q_D(const QFileSystemModel);
     if (!index.isValid())
         return QDateTime();
-    return d->node(index)->lastModified();
+    return d->node(index)->lastModified(tz);
 }
 
 /*!
@@ -561,9 +573,9 @@ QModelIndex QFileSystemModel::parent(const QModelIndex &index) const
         return QModelIndex();
 
     QFileSystemModelPrivate::QFileSystemNode *indexNode = d->node(index);
-    Q_ASSERT(indexNode != 0);
-    QFileSystemModelPrivate::QFileSystemNode *parentNode = (indexNode ? indexNode->parent : 0);
-    if (parentNode == 0 || parentNode == &d->root)
+    Q_ASSERT(indexNode != nullptr);
+    QFileSystemModelPrivate::QFileSystemNode *parentNode = indexNode->parent;
+    if (parentNode == nullptr || parentNode == &d->root)
         return QModelIndex();
 
     // get the parent's row
@@ -580,10 +592,10 @@ QModelIndex QFileSystemModel::parent(const QModelIndex &index) const
 
     return the index for node
 */
-QModelIndex QFileSystemModelPrivate::index(const QFileSystemModelPrivate::QFileSystemNode *node) const
+QModelIndex QFileSystemModelPrivate::index(const QFileSystemModelPrivate::QFileSystemNode *node, int column) const
 {
     Q_Q(const QFileSystemModel);
-    QFileSystemModelPrivate::QFileSystemNode *parentNode = (node ? node->parent : 0);
+    QFileSystemModelPrivate::QFileSystemNode *parentNode = (node ? node->parent : nullptr);
     if (node == &root || !parentNode)
         return QModelIndex();
 
@@ -593,7 +605,7 @@ QModelIndex QFileSystemModelPrivate::index(const QFileSystemModelPrivate::QFileS
         return QModelIndex();
 
     int visualRow = translateVisibleLocation(parentNode, parentNode->visibleLocation(node->fileName));
-    return q->createIndex(visualRow, 0, const_cast<QFileSystemNode*>(node));
+    return q->createIndex(visualRow, column, const_cast<QFileSystemNode*>(node));
 }
 
 /*!
@@ -619,6 +631,8 @@ bool QFileSystemModel::hasChildren(const QModelIndex &parent) const
 bool QFileSystemModel::canFetchMore(const QModelIndex &parent) const
 {
     Q_D(const QFileSystemModel);
+    if (!d->setRootPath)
+        return false;
     const QFileSystemModelPrivate::QFileSystemNode *indexNode = d->node(parent);
     return (!indexNode->populatedChildren);
 }
@@ -635,7 +649,9 @@ void QFileSystemModel::fetchMore(const QModelIndex &parent)
     if (indexNode->populatedChildren)
         return;
     indexNode->populatedChildren = true;
+#if QT_CONFIG(filesystemwatcher)
     d->fileInfoGatherer.list(filePath(parent));
+#endif
 }
 
 /*!
@@ -648,10 +664,10 @@ int QFileSystemModel::rowCount(const QModelIndex &parent) const
         return 0;
 
     if (!parent.isValid())
-        return d->root.visibleChildren.count();
+        return d->root.visibleChildren.size();
 
     const QFileSystemModelPrivate::QFileSystemNode *parentNode = d->node(parent);
-    return parentNode->visibleChildren.count();
+    return parentNode->visibleChildren.size();
 }
 
 /*!
@@ -659,7 +675,7 @@ int QFileSystemModel::rowCount(const QModelIndex &parent) const
 */
 int QFileSystemModel::columnCount(const QModelIndex &parent) const
 {
-    return (parent.column() > 0) ? 0 : 4;
+    return (parent.column() > 0) ? 0 : QFileSystemModelPrivate::NumColumns;
 }
 
 /*!
@@ -669,12 +685,16 @@ int QFileSystemModel::columnCount(const QModelIndex &parent) const
  */
 QVariant QFileSystemModel::myComputer(int role) const
 {
+#if QT_CONFIG(filesystemwatcher)
     Q_D(const QFileSystemModel);
+#endif
     switch (role) {
     case Qt::DisplayRole:
-        return d->myComputer();
+        return QFileSystemModelPrivate::myComputer();
+#if QT_CONFIG(filesystemwatcher)
     case Qt::DecorationRole:
-        return d->fileInfoGatherer.iconProvider()->icon(QFileIconProvider::Computer);
+        return d->fileInfoGatherer.iconProvider()->icon(QAbstractFileIconProvider::Computer);
+#endif
     }
     return QVariant();
 }
@@ -690,12 +710,15 @@ QVariant QFileSystemModel::data(const QModelIndex &index, int role) const
 
     switch (role) {
     case Qt::EditRole:
+        if (index.column() == QFileSystemModelPrivate::NameColumn)
+            return d->name(index);
+        Q_FALLTHROUGH();
     case Qt::DisplayRole:
         switch (index.column()) {
-        case 0: return d->displayName(index);
-        case 1: return d->size(index);
-        case 2: return d->type(index);
-        case 3: return d->time(index);
+        case QFileSystemModelPrivate::NameColumn: return d->displayName(index);
+        case QFileSystemModelPrivate::SizeColumn: return d->size(index);
+        case QFileSystemModelPrivate::TypeColumn: return d->type(index);
+        case QFileSystemModelPrivate::TimeColumn: return d->time(index);
         default:
             qWarning("data: invalid display value column %d", index.column());
             break;
@@ -706,20 +729,22 @@ QVariant QFileSystemModel::data(const QModelIndex &index, int role) const
     case FileNameRole:
         return d->name(index);
     case Qt::DecorationRole:
-        if (index.column() == 0) {
+        if (index.column() == QFileSystemModelPrivate::NameColumn) {
             QIcon icon = d->icon(index);
+#if QT_CONFIG(filesystemwatcher)
             if (icon.isNull()) {
                 if (d->node(index)->isDir())
-                    icon = d->fileInfoGatherer.iconProvider()->icon(QFileIconProvider::Folder);
+                    icon = d->fileInfoGatherer.iconProvider()->icon(QAbstractFileIconProvider::Folder);
                 else
-                    icon = d->fileInfoGatherer.iconProvider()->icon(QFileIconProvider::File);
+                    icon = d->fileInfoGatherer.iconProvider()->icon(QAbstractFileIconProvider::File);
             }
+#endif // filesystemwatcher
             return icon;
         }
         break;
     case Qt::TextAlignmentRole:
-        if (index.column() == 1)
-            return Qt::AlignRight;
+        if (index.column() == QFileSystemModelPrivate::SizeColumn)
+            return QVariant(Qt::AlignTrailing | Qt::AlignVCenter);
         break;
     case FilePermissions:
         int p = permissions(index);
@@ -739,9 +764,9 @@ QString QFileSystemModelPrivate::size(const QModelIndex &index) const
     const QFileSystemNode *n = node(index);
     if (n->isDir()) {
 #ifdef Q_OS_MAC
-        return QLatin1String("--");
+        return "--"_L1;
 #else
-        return QLatin1String("");
+        return ""_L1;
 #endif
     // Windows   - ""
     // OS X      - "--"
@@ -753,21 +778,7 @@ QString QFileSystemModelPrivate::size(const QModelIndex &index) const
 
 QString QFileSystemModelPrivate::size(qint64 bytes)
 {
-    // According to the Si standard KB is 1000 bytes, KiB is 1024
-    // but on windows sizes are calculated by dividing by 1024 so we do what they do.
-    const qint64 kb = 1024;
-    const qint64 mb = 1024 * kb;
-    const qint64 gb = 1024 * mb;
-    const qint64 tb = 1024 * gb;
-    if (bytes >= tb)
-        return QFileSystemModel::tr("%1 TB").arg(QLocale().toString(qreal(bytes) / tb, 'f', 3));
-    if (bytes >= gb)
-        return QFileSystemModel::tr("%1 GB").arg(QLocale().toString(qreal(bytes) / gb, 'f', 2));
-    if (bytes >= mb)
-        return QFileSystemModel::tr("%1 MB").arg(QLocale().toString(qreal(bytes) / mb, 'f', 1));
-    if (bytes >= kb)
-        return QFileSystemModel::tr("%1 KB").arg(QLocale().toString(bytes / kb));
-    return QFileSystemModel::tr("%1 bytes").arg(QLocale().toString(bytes));
+    return QLocale::system().formattedDataSize(bytes);
 }
 
 /*!
@@ -777,8 +788,8 @@ QString QFileSystemModelPrivate::time(const QModelIndex &index) const
 {
     if (!index.isValid())
         return QString();
-#ifndef QT_NO_DATESTRING
-    return node(index)->lastModified().toString(Qt::SystemLocaleDate);
+#if QT_CONFIG(datestring)
+    return QLocale::system().toString(node(index)->lastModified(QTimeZone::LocalTime), QLocale::ShortFormat);
 #else
     Q_UNUSED(index);
     return QString();
@@ -803,11 +814,13 @@ QString QFileSystemModelPrivate::name(const QModelIndex &index) const
     if (!index.isValid())
         return QString();
     QFileSystemNode *dirNode = node(index);
-    if (fileInfoGatherer.resolveSymlinks() && !resolvedSymLinks.isEmpty() &&
-        dirNode->isSymLink(/* ignoreNtfsSymLinks = */ true)) {
+    if (
+#if QT_CONFIG(filesystemwatcher)
+        fileInfoGatherer.resolveSymlinks() &&
+#endif
+        !resolvedSymLinks.isEmpty() && dirNode->isSymLink(/* ignoreNtfsSymLinks = */ true)) {
         QString fullPath = QDir::fromNativeSeparators(filePath(index));
-        if (resolvedSymLinks.contains(fullPath))
-            return resolvedSymLinks[fullPath];
+        return resolvedSymLinks.value(fullPath, dirNode->fileName);
     }
     return dirNode->fileName;
 }
@@ -817,10 +830,10 @@ QString QFileSystemModelPrivate::name(const QModelIndex &index) const
 */
 QString QFileSystemModelPrivate::displayName(const QModelIndex &index) const
 {
-#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
+#if defined(Q_OS_WIN)
     QFileSystemNode *dirNode = node(index);
-    if (!dirNode->volumeName.isNull())
-        return dirNode->volumeName + QLatin1String(" (") + name(index) + QLatin1Char(')');
+    if (!dirNode->volumeName.isEmpty())
+        return dirNode->volumeName;
 #endif
     return name(index);
 }
@@ -850,25 +863,30 @@ bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, in
 
     QString newName = value.toString();
     QString oldName = idx.data().toString();
-    if (newName == idx.data().toString())
+    if (newName == oldName)
         return true;
 
-    if (newName.isEmpty()
-        || QDir::toNativeSeparators(newName).contains(QDir::separator())
-        || !QDir(filePath(parent(idx))).rename(oldName, newName)) {
-#ifndef QT_NO_MESSAGEBOX
-        QMessageBox::information(0, QFileSystemModel::tr("Invalid filename"),
-                                QFileSystemModel::tr("<b>The name \"%1\" can not be used.</b><p>Try using another name, with fewer characters or no punctuations marks.")
-                                .arg(newName),
-                                 QMessageBox::Ok);
-#endif // QT_NO_MESSAGEBOX
+    const QString parentPath = filePath(parent(idx));
+
+    if (newName.isEmpty() || QDir::toNativeSeparators(newName).contains(QDir::separator()))
+        return false;
+
+#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+    // QTBUG-65683: Remove file system watchers prior to renaming to prevent
+    // failure due to locked files on Windows.
+    const QStringList watchedPaths = d->unwatchPathsAt(idx);
+#endif // filesystemwatcher && Q_OS_WIN
+    if (!QDir(parentPath).rename(oldName, newName)) {
+#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+        d->watchPaths(watchedPaths);
+#endif
         return false;
     } else {
         /*
             *After re-naming something we don't want the selection to change*
             - can't remove rows and later insert
             - can't quickly remove and insert
-            - index pointer can't change because treeview doesn't use persistant index's
+            - index pointer can't change because treeview doesn't use persistent index's
 
             - if this get any more complicated think of changing it to just
               use layoutChanged
@@ -878,21 +896,19 @@ bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, in
         QFileSystemModelPrivate::QFileSystemNode *parentNode = indexNode->parent;
         int visibleLocation = parentNode->visibleLocation(parentNode->children.value(indexNode->fileName)->fileName);
 
-        d->addNode(parentNode, newName,indexNode->info->fileInfo());
         parentNode->visibleChildren.removeAt(visibleLocation);
-        QFileSystemModelPrivate::QFileSystemNode * oldValue = parentNode->children.value(oldName);
-        parentNode->children[newName] = oldValue;
-        QFileInfo info(d->rootDir, newName);
-        oldValue->fileName = newName;
-        oldValue->parent = parentNode;
-        oldValue->populate(d->fileInfoGatherer.getInfo(info));
-        oldValue->isVisible = true;
-
-        parentNode->children.remove(oldName);
+        std::unique_ptr<QFileSystemModelPrivate::QFileSystemNode> nodeToRename(parentNode->children.take(oldName));
+        nodeToRename->fileName = newName;
+        nodeToRename->parent = parentNode;
+#if QT_CONFIG(filesystemwatcher)
+        nodeToRename->populate(d->fileInfoGatherer.getInfo(QFileInfo(parentPath, newName)));
+#endif
+        nodeToRename->isVisible = true;
+        parentNode->children[newName] = nodeToRename.release();
         parentNode->visibleChildren.insert(visibleLocation, newName);
 
         d->delayedSort();
-        emit fileRenamed(filePath(idx.parent()), oldName, newName);
+        emit fileRenamed(parentPath, oldName, newName);
     }
     return true;
 }
@@ -907,9 +923,8 @@ QVariant QFileSystemModel::headerData(int section, Qt::Orientation orientation, 
         if (section == 0) {
             // ### TODO oh man this is ugly and doesn't even work all the way!
             // it is still 2 pixels off
-            QImage pixmap(16, 1, QImage::Format_Mono);
-            pixmap.fill(0);
-            pixmap.setAlphaChannel(pixmap.createAlphaMask());
+            QImage pixmap(16, 1, QImage::Format_ARGB32_Premultiplied);
+            pixmap.fill(Qt::transparent);
             return pixmap;
         }
         break;
@@ -922,23 +937,27 @@ QVariant QFileSystemModel::headerData(int section, Qt::Orientation orientation, 
 
     QString returnValue;
     switch (section) {
-    case 0: returnValue = tr("Name");
-            break;
-    case 1: returnValue = tr("Size");
-            break;
-    case 2: returnValue =
+    case QFileSystemModelPrivate::NameColumn:
+        returnValue = tr("Name");
+        break;
+    case QFileSystemModelPrivate::SizeColumn:
+        returnValue = tr("Size");
+        break;
+    case QFileSystemModelPrivate::TypeColumn:
+        returnValue =
 #ifdef Q_OS_MAC
-                   tr("Kind", "Match OS X Finder");
+                    tr("Kind", "Match OS X Finder");
 #else
-                   tr("Type", "All other platforms");
+                    tr("Type", "All other platforms");
 #endif
-           break;
+        break;
     // Windows   - Type
     // OS X      - Kind
     // Konqueror - File Type
     // Nautilus  - Type
-    case 3: returnValue = tr("Date Modified");
-            break;
+    case QFileSystemModelPrivate::TimeColumn:
+        returnValue = tr("Date Modified");
+        break;
     default: return QVariant();
     }
     return returnValue;
@@ -962,6 +981,9 @@ Qt::ItemFlags QFileSystemModel::flags(const QModelIndex &index) const
     }
 
     flags |= Qt::ItemIsDragEnabled;
+
+    if (!indexNode->isDir())
+        flags |= Qt::ItemNeverHasChildren;
     if (d->readOnly)
         return flags;
     if ((index.column() == 0) && indexNode->permissions() & QFile::WriteUser) {
@@ -981,84 +1003,6 @@ void QFileSystemModelPrivate::_q_performDelayedSort()
     q->sort(sortColumn, sortOrder);
 }
 
-static inline QChar getNextChar(const QString &s, int location)
-{
-    return (location < s.length()) ? s.at(location) : QChar();
-}
-
-/*!
-    Natural number sort, skips spaces.
-
-    Examples:
-    1, 2, 10, 55, 100
-    01.jpg, 2.jpg, 10.jpg
-
-    Note on the algorithm:
-    Only as many characters as necessary are looked at and at most they all
-    are looked at once.
-
-    Slower then QString::compare() (of course)
-  */
-int QFileSystemModelPrivate::naturalCompare(const QString &s1, const QString &s2,  Qt::CaseSensitivity cs)
-{
-    for (int l1 = 0, l2 = 0; l1 <= s1.count() && l2 <= s2.count(); ++l1, ++l2) {
-        // skip spaces, tabs and 0's
-        QChar c1 = getNextChar(s1, l1);
-        while (c1.isSpace())
-            c1 = getNextChar(s1, ++l1);
-        QChar c2 = getNextChar(s2, l2);
-        while (c2.isSpace())
-            c2 = getNextChar(s2, ++l2);
-
-        if (c1.isDigit() && c2.isDigit()) {
-            while (c1.digitValue() == 0)
-                c1 = getNextChar(s1, ++l1);
-            while (c2.digitValue() == 0)
-                c2 = getNextChar(s2, ++l2);
-
-            int lookAheadLocation1 = l1;
-            int lookAheadLocation2 = l2;
-            int currentReturnValue = 0;
-            // find the last digit, setting currentReturnValue as we go if it isn't equal
-            for (
-                QChar lookAhead1 = c1, lookAhead2 = c2;
-                (lookAheadLocation1 <= s1.length() && lookAheadLocation2 <= s2.length());
-                lookAhead1 = getNextChar(s1, ++lookAheadLocation1),
-                lookAhead2 = getNextChar(s2, ++lookAheadLocation2)
-                ) {
-                bool is1ADigit = !lookAhead1.isNull() && lookAhead1.isDigit();
-                bool is2ADigit = !lookAhead2.isNull() && lookAhead2.isDigit();
-                if (!is1ADigit && !is2ADigit)
-                    break;
-                if (!is1ADigit)
-                    return -1;
-                if (!is2ADigit)
-                    return 1;
-                if (currentReturnValue == 0) {
-                    if (lookAhead1 < lookAhead2) {
-                        currentReturnValue = -1;
-                    } else if (lookAhead1 > lookAhead2) {
-                        currentReturnValue = 1;
-                    }
-                }
-            }
-            if (currentReturnValue != 0)
-                return currentReturnValue;
-        }
-
-        if (cs == Qt::CaseInsensitive) {
-            if (!c1.isLower()) c1 = c1.toLower();
-            if (!c2.isLower()) c2 = c2.toLower();
-        }
-        int r = QString::localeAwareCompare(c1, c2);
-        if (r < 0)
-            return -1;
-        if (r > 0)
-            return 1;
-    }
-    // The two strings are the same (02 == 2) so fall back to the normal sort
-    return QString::compare(s1, s2, cs);
-}
 
 /*
     \internal
@@ -1067,13 +1011,17 @@ int QFileSystemModelPrivate::naturalCompare(const QString &s1, const QString &s2
 class QFileSystemModelSorter
 {
 public:
-    inline QFileSystemModelSorter(int column) : sortColumn(column) {}
+    inline QFileSystemModelSorter(int column) : sortColumn(column)
+    {
+        naturalCompare.setNumericMode(true);
+        naturalCompare.setCaseSensitivity(Qt::CaseInsensitive);
+    }
 
     bool compareNodes(const QFileSystemModelPrivate::QFileSystemNode *l,
                     const QFileSystemModelPrivate::QFileSystemNode *r) const
     {
         switch (sortColumn) {
-        case 0: {
+        case QFileSystemModelPrivate::NameColumn: {
 #ifndef Q_OS_MAC
             // place directories before files
             bool left = l->isDir();
@@ -1081,31 +1029,53 @@ public:
             if (left ^ right)
                 return left;
 #endif
-            return QFileSystemModelPrivate::naturalCompare(l->fileName,
-                                                r->fileName, Qt::CaseInsensitive) < 0;
+            return naturalCompare.compare(l->fileName, r->fileName) < 0;
                 }
-        case 1:
+        case QFileSystemModelPrivate::SizeColumn:
+        {
             // Directories go first
-            if (l->isDir() && !r->isDir())
-                return true;
-            return l->size() < r->size();
-        case 2:
-            return l->type() < r->type();
-        case 3:
-            return l->lastModified() < r->lastModified();
+            bool left = l->isDir();
+            bool right = r->isDir();
+            if (left ^ right)
+                return left;
+
+            qint64 sizeDifference = l->size() - r->size();
+            if (sizeDifference == 0)
+                return naturalCompare.compare(l->fileName, r->fileName) < 0;
+
+            return sizeDifference < 0;
+        }
+        case QFileSystemModelPrivate::TypeColumn:
+        {
+            int compare = naturalCompare.compare(l->type(), r->type());
+            if (compare == 0)
+                return naturalCompare.compare(l->fileName, r->fileName) < 0;
+
+            return compare < 0;
+        }
+        case QFileSystemModelPrivate::TimeColumn:
+        {
+            const QDateTime left = l->lastModified(QTimeZone::UTC);
+            const QDateTime right = r->lastModified(QTimeZone::UTC);
+            if (left == right)
+                return naturalCompare.compare(l->fileName, r->fileName) < 0;
+
+            return left < right;
+        }
         }
         Q_ASSERT(false);
         return false;
     }
 
-    bool operator()(const QPair<QFileSystemModelPrivate::QFileSystemNode*, int> &l,
-                           const QPair<QFileSystemModelPrivate::QFileSystemNode*, int> &r) const
+    bool operator()(const QFileSystemModelPrivate::QFileSystemNode *l,
+                    const QFileSystemModelPrivate::QFileSystemNode *r) const
     {
-        return compareNodes(l.first, r.first);
+        return compareNodes(l, r);
     }
 
 
 private:
+    QCollator naturalCompare;
     int sortColumn;
 };
 
@@ -1118,29 +1088,28 @@ void QFileSystemModelPrivate::sortChildren(int column, const QModelIndex &parent
 {
     Q_Q(QFileSystemModel);
     QFileSystemModelPrivate::QFileSystemNode *indexNode = node(parent);
-    if (indexNode->children.count() == 0)
+    if (indexNode->children.size() == 0)
         return;
 
-    QList<QPair<QFileSystemModelPrivate::QFileSystemNode*, int> > values;
-    QHash<QString, QFileSystemNode *>::const_iterator iterator;
-    int i = 0;
-    for(iterator = indexNode->children.begin() ; iterator != indexNode->children.end() ; ++iterator) {
+    QList<QFileSystemModelPrivate::QFileSystemNode *> values;
+
+    for (auto iterator = indexNode->children.constBegin(), cend = indexNode->children.constEnd(); iterator != cend; ++iterator) {
         if (filtersAcceptsNode(iterator.value())) {
-            values.append(QPair<QFileSystemModelPrivate::QFileSystemNode*, int>((iterator.value()), i));
+            values.append(iterator.value());
         } else {
             iterator.value()->isVisible = false;
         }
-        i++;
     }
     QFileSystemModelSorter ms(column);
-    qStableSort(values.begin(), values.end(), ms);
+    std::sort(values.begin(), values.end(), ms);
     // First update the new visible list
     indexNode->visibleChildren.clear();
     //No more dirty item we reset our internal dirty index
     indexNode->dirtyChildrenIndex = -1;
-    for (int i = 0; i < values.count(); ++i) {
-        indexNode->visibleChildren.append(values.at(i).first->fileName);
-        values.at(i).first->isVisible = true;
+    indexNode->visibleChildren.reserve(values.size());
+    for (QFileSystemNode *node : std::as_const(values)) {
+        indexNode->visibleChildren.append(node->fileName);
+        node->isVisible = true;
     }
 
     if (!disableRecursiveSort) {
@@ -1165,9 +1134,10 @@ void QFileSystemModel::sort(int column, Qt::SortOrder order)
 
     emit layoutAboutToBeChanged();
     QModelIndexList oldList = persistentIndexList();
-    QList<QPair<QFileSystemModelPrivate::QFileSystemNode*, int> > oldNodes;
-    for (int i = 0; i < oldList.count(); ++i) {
-        QPair<QFileSystemModelPrivate::QFileSystemNode*, int> pair(d->node(oldList.at(i)), oldList.at(i).column());
+    QList<QPair<QFileSystemModelPrivate::QFileSystemNode *, int>> oldNodes;
+    oldNodes.reserve(oldList.size());
+    for (const QModelIndex &oldNode : oldList) {
+        QPair<QFileSystemModelPrivate::QFileSystemNode*, int> pair(d->node(oldNode), oldNode.column());
         oldNodes.append(pair);
     }
 
@@ -1180,11 +1150,10 @@ void QFileSystemModel::sort(int column, Qt::SortOrder order)
     d->sortOrder = order;
 
     QModelIndexList newList;
-    for (int i = 0; i < oldNodes.count(); ++i) {
-        QModelIndex idx = d->index(oldNodes.at(i).first);
-        idx = idx.sibling(idx.row(), oldNodes.at(i).second);
-        newList.append(idx);
-    }
+    newList.reserve(oldNodes.size());
+    for (const auto &[node, col]: std::as_const(oldNodes))
+        newList.append(d->index(node, col));
+
     changePersistentIndexList(oldList, newList);
     emit layoutChanged();
 }
@@ -1195,7 +1164,7 @@ void QFileSystemModel::sort(int column, Qt::SortOrder order)
 */
 QStringList QFileSystemModel::mimeTypes() const
 {
-    return QStringList(QLatin1String("text/uri-list"));
+    return QStringList("text/uri-list"_L1);
 }
 
 /*!
@@ -1203,15 +1172,15 @@ QStringList QFileSystemModel::mimeTypes() const
     \a indexes. The format used to describe the items corresponding to the
     indexes is obtained from the mimeTypes() function.
 
-    If the list of indexes is empty, 0 is returned rather than a serialized
-    empty list.
+    If the list of indexes is empty, \nullptr is returned rather than a
+    serialized empty list.
 */
 QMimeData *QFileSystemModel::mimeData(const QModelIndexList &indexes) const
 {
     QList<QUrl> urls;
     QList<QModelIndex>::const_iterator it = indexes.begin();
     for (; it != indexes.end(); ++it)
-        if ((*it).column() == 0)
+        if ((*it).column() == QFileSystemModelPrivate::NameColumn)
             urls << QUrl::fromLocalFile(filePath(*it));
     QMimeData *data = new QMimeData();
     data->setUrls(urls);
@@ -1221,7 +1190,8 @@ QMimeData *QFileSystemModel::mimeData(const QModelIndexList &indexes) const
 /*!
     Handles the \a data supplied by a drag and drop operation that ended with
     the given \a action over the row in the model specified by the \a row and
-    \a column and by the \a parent index.
+    \a column and by the \a parent index. Returns true if the operation was
+    successful.
 
     \sa supportedDropActions()
 */
@@ -1274,6 +1244,121 @@ Qt::DropActions QFileSystemModel::supportedDropActions() const
 }
 
 /*!
+    \reimp
+*/
+QHash<int, QByteArray> QFileSystemModel::roleNames() const
+{
+    auto ret = QAbstractItemModel::roleNames();
+    ret.insert(QFileSystemModel::FileIconRole,
+               QByteArrayLiteral("fileIcon")); // == Qt::decoration
+    ret.insert(QFileSystemModel::FilePathRole, QByteArrayLiteral("filePath"));
+    ret.insert(QFileSystemModel::FileNameRole, QByteArrayLiteral("fileName"));
+    ret.insert(QFileSystemModel::FilePermissions, QByteArrayLiteral("filePermissions"));
+    return ret;
+}
+
+/*!
+    \enum QFileSystemModel::Option
+    \since 5.14
+
+    \value DontWatchForChanges Do not add file watchers to the paths.
+    This reduces overhead when using the model for simple tasks
+    like line edit completion.
+
+    \value DontResolveSymlinks Don't resolve symlinks in the file
+    system model. By default, symlinks are resolved.
+
+    \value DontUseCustomDirectoryIcons Always use the default directory icon.
+    Some platforms allow the user to set a different icon. Custom icon lookup
+    causes a big performance impact over network or removable drives.
+    This sets the QFileIconProvider::DontUseCustomDirectoryIcons
+    option in the icon provider accordingly.
+
+    \sa resolveSymlinks
+*/
+
+/*!
+    \since 5.14
+    Sets the given \a option to be enabled if \a on is true; otherwise,
+    clears the given \a option.
+
+    Options should be set before changing properties.
+
+    \sa options, testOption()
+*/
+void QFileSystemModel::setOption(Option option, bool on)
+{
+    QFileSystemModel::Options previousOptions = options();
+    setOptions(previousOptions.setFlag(option, on));
+}
+
+/*!
+    \since 5.14
+
+    Returns \c true if the given \a option is enabled; otherwise, returns
+    false.
+
+    \sa options, setOption()
+*/
+bool QFileSystemModel::testOption(Option option) const
+{
+    return options().testFlag(option);
+}
+
+/*!
+    \property QFileSystemModel::options
+    \brief the various options that affect the model
+    \since 5.14
+
+    By default, all options are disabled.
+
+    Options should be set before changing properties.
+
+    \sa setOption(), testOption()
+*/
+void QFileSystemModel::setOptions(Options options)
+{
+    const Options changed = (options ^ QFileSystemModel::options());
+
+    if (changed.testFlag(DontResolveSymlinks))
+        setResolveSymlinks(!options.testFlag(DontResolveSymlinks));
+
+#if QT_CONFIG(filesystemwatcher)
+    Q_D(QFileSystemModel);
+    if (changed.testFlag(DontWatchForChanges))
+        d->fileInfoGatherer.setWatching(!options.testFlag(DontWatchForChanges));
+#endif
+
+    if (changed.testFlag(DontUseCustomDirectoryIcons)) {
+        if (auto provider = iconProvider()) {
+            QAbstractFileIconProvider::Options providerOptions = provider->options();
+            providerOptions.setFlag(QAbstractFileIconProvider::DontUseCustomDirectoryIcons,
+                                    options.testFlag(QFileSystemModel::DontUseCustomDirectoryIcons));
+            provider->setOptions(providerOptions);
+        } else {
+            qWarning("Setting QFileSystemModel::DontUseCustomDirectoryIcons has no effect when no provider is used");
+        }
+    }
+}
+
+QFileSystemModel::Options QFileSystemModel::options() const
+{
+    QFileSystemModel::Options result;
+    result.setFlag(DontResolveSymlinks, !resolveSymlinks());
+#if QT_CONFIG(filesystemwatcher)
+    Q_D(const QFileSystemModel);
+    result.setFlag(DontWatchForChanges, !d->fileInfoGatherer.isWatching());
+#else
+    result.setFlag(DontWatchForChanges);
+#endif
+    if (auto provider = iconProvider()) {
+        result.setFlag(DontUseCustomDirectoryIcons,
+                       provider->options().testFlag(QAbstractFileIconProvider::DontUseCustomDirectoryIcons));
+    }
+    return result;
+}
+
+/*!
     Returns the path of the item stored in the model under the
     \a index given.
 */
@@ -1282,11 +1367,20 @@ QString QFileSystemModel::filePath(const QModelIndex &index) const
     Q_D(const QFileSystemModel);
     QString fullPath = d->filePath(index);
     QFileSystemModelPrivate::QFileSystemNode *dirNode = d->node(index);
-    if (dirNode->isSymLink() && d->fileInfoGatherer.resolveSymlinks()
+    if (dirNode->isSymLink()
+#if QT_CONFIG(filesystemwatcher)
+        && d->fileInfoGatherer.resolveSymlinks()
+#endif
         && d->resolvedSymLinks.contains(fullPath)
         && dirNode->isDir()) {
-        QFileInfo resolvedInfo(fullPath);
-        resolvedInfo = resolvedInfo.canonicalFilePath();
+        QFileInfo fullPathInfo(dirNode->fileInfo());
+        if (!dirNode->hasInformation())
+            fullPathInfo = QFileInfo(fullPath);
+        QString canonicalPath = fullPathInfo.canonicalFilePath();
+        auto *canonicalNode = d->node(fullPathInfo.canonicalFilePath(), false);
+        QFileInfo resolvedInfo = canonicalNode->fileInfo();
+        if (!canonicalNode->hasInformation())
+            resolvedInfo = QFileInfo(canonicalPath);
         if (resolvedInfo.exists())
             return resolvedInfo.filePath();
     }
@@ -1310,13 +1404,12 @@ QString QFileSystemModelPrivate::filePath(const QModelIndex &index) const
         idx = idx.parent();
     }
     QString fullPath = QDir::fromNativeSeparators(path.join(QDir::separator()));
-#if !defined(Q_OS_WIN) || defined(Q_OS_WINCE)
-    if ((fullPath.length() > 2) && fullPath[0] == QLatin1Char('/') && fullPath[1] == QLatin1Char('/'))
+#if !defined(Q_OS_WIN)
+    if ((fullPath.size() > 2) && fullPath[0] == u'/' && fullPath[1] == u'/')
         fullPath = fullPath.mid(1);
-#endif
-#if defined(Q_OS_WIN) || defined(Q_OS_SYMBIAN)
-    if (fullPath.length() == 2 && fullPath.endsWith(QLatin1Char(':')))
-        fullPath.append(QLatin1Char('/'));
+#else
+    if (fullPath.length() == 2 && fullPath.endsWith(u':'))
+        fullPath.append(u'/');
 #endif
     return fullPath;
 }
@@ -1337,7 +1430,9 @@ QModelIndex QFileSystemModel::mkdir(const QModelIndex &parent, const QString &na
     d->addNode(parentNode, name, QFileInfo());
     Q_ASSERT(parentNode->children.contains(name));
     QFileSystemModelPrivate::QFileSystemNode *node = parentNode->children[name];
+#if QT_CONFIG(filesystemwatcher)
     node->populate(d->fileInfoGatherer.getInfo(QFileInfo(dir.absolutePath() + QDir::separator() + name)));
+#endif
     d->addVisibleFiles(parentNode, QStringList(name));
     return d->index(node);
 }
@@ -1348,12 +1443,7 @@ QModelIndex QFileSystemModel::mkdir(const QModelIndex &parent, const QString &na
 QFile::Permissions QFileSystemModel::permissions(const QModelIndex &index) const
 {
     Q_D(const QFileSystemModel);
-    QFile::Permissions p = d->node(index)->permissions();
-    if (d->readOnly) {
-        p ^= (QFile::WriteOwner | QFile::WriteUser
-            | QFile::WriteGroup | QFile::WriteOther);
-    }
-    return p;
+    return d->node(index)->permissions();
 }
 
 /*!
@@ -1381,12 +1471,9 @@ QModelIndex QFileSystemModel::setRootPath(const QString &newPath)
 #else
     QString longNewPath = newPath;
 #endif
-    QDir newPathDir(longNewPath);
     //we remove .. and . from the given path if exist
-    if (!newPath.isEmpty()) {
+    if (!newPath.isEmpty())
         longNewPath = QDir::cleanPath(longNewPath);
-        newPathDir.setPath(longNewPath);
-    }
 
     d->setRootPath = true;
 
@@ -1397,14 +1484,23 @@ QModelIndex QFileSystemModel::setRootPath(const QString &newPath)
     if (d->rootDir.path() == longNewPath)
         return d->index(rootPath());
 
-    bool showDrives = (longNewPath.isEmpty() || longNewPath == d->myComputer());
-    if (!showDrives && !newPathDir.exists())
+    auto node = d->node(longNewPath);
+    QFileInfo newPathInfo;
+    if (node && node->hasInformation())
+        newPathInfo = node->fileInfo();
+    else
+        newPathInfo = QFileInfo(longNewPath);
+
+    bool showDrives = (longNewPath.isEmpty() || longNewPath == QFileSystemModelPrivate::myComputer());
+    if (!showDrives && !newPathInfo.exists())
         return d->index(rootPath());
 
     //We remove the watcher on the previous path
-    if (!rootPath().isEmpty() && rootPath() != QLatin1String(".")) {
+    if (!rootPath().isEmpty() && rootPath() != "."_L1) {
         //This remove the watcher for the old rootPath
+#if QT_CONFIG(filesystemwatcher)
         d->fileInfoGatherer.removePath(rootPath());
+#endif
         //This line "marks" the node as dirty, so the next fetchMore
         //call on the path will ask the gatherer to install a watcher again
         //But it doesn't re-fetch everything
@@ -1412,13 +1508,13 @@ QModelIndex QFileSystemModel::setRootPath(const QString &newPath)
     }
 
     // We have a new valid root path
-    d->rootDir = newPathDir;
+    d->rootDir = QDir(longNewPath);
     QModelIndex newRootIndex;
     if (showDrives) {
         // otherwise dir will become '.'
-        d->rootDir.setPath(QLatin1String(""));
+        d->rootDir.setPath(""_L1);
     } else {
-        newRootIndex = d->index(newPathDir.path());
+        newRootIndex = d->index(d->rootDir.path());
     }
     fetchMore(newRootIndex);
     emit rootPathChanged(longNewPath);
@@ -1455,20 +1551,26 @@ QDir QFileSystemModel::rootDirectory() const
 /*!
     Sets the \a provider of file icons for the directory model.
 */
-void QFileSystemModel::setIconProvider(QFileIconProvider *provider)
+void QFileSystemModel::setIconProvider(QAbstractFileIconProvider *provider)
 {
     Q_D(QFileSystemModel);
+#if QT_CONFIG(filesystemwatcher)
     d->fileInfoGatherer.setIconProvider(provider);
+#endif
     d->root.updateIcon(provider, QString());
 }
 
 /*!
     Returns the file icon provider for this directory model.
 */
-QFileIconProvider *QFileSystemModel::iconProvider() const
+QAbstractFileIconProvider *QFileSystemModel::iconProvider() const
 {
+#if QT_CONFIG(filesystemwatcher)
     Q_D(const QFileSystemModel);
     return d->fileInfoGatherer.iconProvider();
+#else
+    return 0;
+#endif
 }
 
 /*!
@@ -1484,9 +1586,11 @@ void QFileSystemModel::setFilter(QDir::Filters filters)
     Q_D(QFileSystemModel);
     if (d->filters == filters)
         return;
+    const bool changingCaseSensitivity =
+        filters.testFlag(QDir::CaseSensitive) != d->filters.testFlag(QDir::CaseSensitive);
     d->filters = filters;
-    // CaseSensitivity might have changed
-    setNameFilters(nameFilters());
+    if (changingCaseSensitivity)
+        d->rebuildNameFilterRegexps();
     d->forceSort = true;
     d->delayedSort();
 }
@@ -1509,20 +1613,30 @@ QDir::Filters QFileSystemModel::filter() const
     \property QFileSystemModel::resolveSymlinks
     \brief Whether the directory model should resolve symbolic links
 
-    This is only relevant on operating systems that support symbolic links.
+    This is only relevant on Windows.
 
-    By default, this property is false.
+    By default, this property is \c true.
+
+    \sa QFileSystemModel::Options
 */
 void QFileSystemModel::setResolveSymlinks(bool enable)
 {
+#if QT_CONFIG(filesystemwatcher)
     Q_D(QFileSystemModel);
     d->fileInfoGatherer.setResolveSymlinks(enable);
+#else
+    Q_UNUSED(enable);
+#endif
 }
 
 bool QFileSystemModel::resolveSymlinks() const
 {
+#if QT_CONFIG(filesystemwatcher)
     Q_D(const QFileSystemModel);
     return d->fileInfoGatherer.resolveSymlinks();
+#else
+    return false;
+#endif
 }
 
 /*!
@@ -1532,7 +1646,7 @@ bool QFileSystemModel::resolveSymlinks() const
     If this property is set to false, the directory model will allow renaming, copying
     and deleting of files and directories.
 
-    This property is true by default
+    This property is \c true by default
 */
 void QFileSystemModel::setReadOnly(bool enable)
 {
@@ -1550,7 +1664,7 @@ bool QFileSystemModel::isReadOnly() const
     \property QFileSystemModel::nameFilterDisables
     \brief Whether files that don't pass the name filter are hidden or disabled
 
-    This property is true by default
+    This property is \c true by default
 */
 void QFileSystemModel::setNameFilterDisables(bool enable)
 {
@@ -1573,8 +1687,7 @@ bool QFileSystemModel::nameFilterDisables() const
 */
 void QFileSystemModel::setNameFilters(const QStringList &filters)
 {
-    // Prep the regexp's ahead of time
-#ifndef QT_NO_REGEXP
+#if QT_CONFIG(regularexpression)
     Q_D(QFileSystemModel);
 
     if (!d->bypassFilters.isEmpty()) {
@@ -1582,10 +1695,9 @@ void QFileSystemModel::setNameFilters(const QStringList &filters)
         d->bypassFilters.clear();
         // We guarantee that rootPath will stick around
         QPersistentModelIndex root(index(rootPath()));
-        QModelIndexList persistantList = persistentIndexList();
-        for (int i = 0; i < persistantList.count(); ++i) {
-            QFileSystemModelPrivate::QFileSystemNode *node;
-            node = d->node(persistantList.at(i));
+        const QModelIndexList persistentList = persistentIndexList();
+        for (const auto &persistentIndex : persistentList) {
+            QFileSystemModelPrivate::QFileSystemNode *node = d->node(persistentIndex);
             while (node) {
                 if (d->bypassFilters.contains(node))
                     break;
@@ -1596,14 +1708,12 @@ void QFileSystemModel::setNameFilters(const QStringList &filters)
         }
     }
 
-    d->nameFilters.clear();
-    const Qt::CaseSensitivity caseSensitive =
-        (filter() & QDir::CaseSensitive) ? Qt::CaseSensitive : Qt::CaseInsensitive;
-    for (int i = 0; i < filters.size(); ++i) {
-        d->nameFilters << QRegExp(filters.at(i), caseSensitive, QRegExp::Wildcard);
-    }
+    d->nameFilters = filters;
+    d->rebuildNameFilterRegexps();
     d->forceSort = true;
     d->delayedSort();
+#else
+    Q_UNUSED(filters);
 #endif
 }
 
@@ -1612,14 +1722,12 @@ void QFileSystemModel::setNameFilters(const QStringList &filters)
 */
 QStringList QFileSystemModel::nameFilters() const
 {
+#if QT_CONFIG(regularexpression)
     Q_D(const QFileSystemModel);
-    QStringList filters;
-#ifndef QT_NO_REGEXP
-    for (int i = 0; i < d->nameFilters.size(); ++i) {
-         filters << d->nameFilters.at(i).pattern();
-    }
+    return d->nameFilters;
+#else
+    return QStringList();
 #endif
-    return filters;
 }
 
 /*!
@@ -1627,20 +1735,27 @@ QStringList QFileSystemModel::nameFilters() const
 */
 bool QFileSystemModel::event(QEvent *event)
 {
+#if QT_CONFIG(filesystemwatcher)
     Q_D(QFileSystemModel);
     if (event->type() == QEvent::LanguageChange) {
         d->root.retranslateStrings(d->fileInfoGatherer.iconProvider(), QString());
         return true;
     }
+#endif
     return QAbstractItemModel::event(event);
 }
 
-bool QFileSystemModel::rmdir(const QModelIndex &aindex) const
+bool QFileSystemModel::rmdir(const QModelIndex &aindex)
 {
     QString path = filePath(aindex);
-    QFileSystemModelPrivate * d = const_cast<QFileSystemModelPrivate*>(d_func());
-    d->fileInfoGatherer.removePath(path);
-    return QDir().rmdir(path);
+    const bool success = QDir().rmdir(path);
+#if QT_CONFIG(filesystemwatcher)
+    if (success) {
+        QFileSystemModelPrivate * d = const_cast<QFileSystemModelPrivate*>(d_func());
+        d->fileInfoGatherer.removePath(path);
+    }
+#endif
+    return success;
 }
 
 /*!
@@ -1652,36 +1767,40 @@ bool QFileSystemModel::rmdir(const QModelIndex &aindex) const
 void QFileSystemModelPrivate::_q_directoryChanged(const QString &directory, const QStringList &files)
 {
     QFileSystemModelPrivate::QFileSystemNode *parentNode = node(directory, false);
-    if (parentNode->children.count() == 0)
+    if (parentNode->children.size() == 0)
         return;
     QStringList toRemove;
-#if defined(Q_OS_SYMBIAN)
-    // Filename case must be exact in qBinaryFind below, so create a list of all lowercase names.
-    QStringList newFiles;
-    for(int i = 0; i < files.size(); i++) {
-        newFiles << files.at(i).toLower();
-    }
-#else
     QStringList newFiles = files;
-#endif
-    qSort(newFiles.begin(), newFiles.end());
-    QHash<QString, QFileSystemNode*>::const_iterator i = parentNode->children.constBegin();
-    while (i != parentNode->children.constEnd()) {
-        QStringList::iterator iterator;
-        iterator = qBinaryFind(newFiles.begin(), newFiles.end(),
-#if defined(Q_OS_SYMBIAN)
-                    i.value()->fileName.toLower());
-#else
-                    i.value()->fileName);
-#endif
-        if (iterator == newFiles.end()) {
+    std::sort(newFiles.begin(), newFiles.end());
+    for (auto i = parentNode->children.constBegin(), cend = parentNode->children.constEnd(); i != cend; ++i) {
+        QStringList::iterator iterator = std::lower_bound(newFiles.begin(), newFiles.end(), i.value()->fileName);
+        if ((iterator == newFiles.end()) || (i.value()->fileName < *iterator))
             toRemove.append(i.value()->fileName);
-        }
-        ++i;
     }
-    for (int i = 0 ; i < toRemove.count() ; ++i )
+    for (int i = 0 ; i < toRemove.size() ; ++i )
         removeNode(parentNode, toRemove[i]);
 }
+
+#if defined(Q_OS_WIN)
+static QString volumeName(const QString &path)
+{
+    IShellItem *item = nullptr;
+    const QString native = QDir::toNativeSeparators(path);
+    HRESULT hr = SHCreateItemFromParsingName(reinterpret_cast<const wchar_t *>(native.utf16()),
+                                             nullptr, IID_IShellItem,
+                                             reinterpret_cast<void **>(&item));
+    if (FAILED(hr))
+        return QString();
+    LPWSTR name = nullptr;
+    hr = item->GetDisplayName(SIGDN_NORMALDISPLAY, &name);
+    if (FAILED(hr))
+        return QString();
+    QString result = QString::fromWCharArray(name);
+    CoTaskMemFree(name);
+    item->Release();
+    return result;
+}
+#endif // Q_OS_WIN
 
 /*!
     \internal
@@ -1694,21 +1813,17 @@ QFileSystemModelPrivate::QFileSystemNode* QFileSystemModelPrivate::addNode(QFile
 {
     // In the common case, itemLocation == count() so check there first
     QFileSystemModelPrivate::QFileSystemNode *node = new QFileSystemModelPrivate::QFileSystemNode(fileName, parentNode);
-#ifndef QT_NO_FILESYSTEMWATCHER
+#if QT_CONFIG(filesystemwatcher)
     node->populate(info);
+#else
+    Q_UNUSED(info);
 #endif
-#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
+#if defined(Q_OS_WIN)
     //The parentNode is "" so we are listing the drives
-    if (parentNode->fileName.isEmpty()) {
-        wchar_t name[MAX_PATH + 1];
-        //GetVolumeInformation requires to add trailing backslash
-        const QString nodeName = fileName + QLatin1String("\\");
-        BOOL success = ::GetVolumeInformation((wchar_t *)(nodeName.utf16()),
-                name, MAX_PATH + 1, NULL, 0, NULL, NULL, 0);
-        if (success && name[0])
-            node->volumeName = QString::fromWCharArray(name);
-    }
+    if (parentNode->fileName.isEmpty())
+        node->volumeName = volumeName(fileName);
 #endif
+    Q_ASSERT(!parentNode->children.contains(fileName));
     parentNode->children.insert(fileName, node);
     return node;
 }
@@ -1740,26 +1855,6 @@ void QFileSystemModelPrivate::removeNode(QFileSystemModelPrivate::QFileSystemNod
         q->endRemoveRows();
 }
 
-/*
-    \internal
-    Helper functor used by addVisibleFiles()
-*/
-class QFileSystemModelVisibleFinder
-{
-public:
-    inline QFileSystemModelVisibleFinder(QFileSystemModelPrivate::QFileSystemNode *node, QFileSystemModelSorter *sorter) : parentNode(node), sorter(sorter) {}
-
-    bool operator()(const QString &, QString r) const
-    {
-        return sorter->compareNodes(parentNode->children.value(name), parentNode->children.value(r));
-    }
-
-    QString name;
-private:
-    QFileSystemModelPrivate::QFileSystemNode *parentNode;
-    QFileSystemModelSorter *sorter;
-};
-
 /*!
     \internal
 
@@ -1774,16 +1869,16 @@ void QFileSystemModelPrivate::addVisibleFiles(QFileSystemNode *parentNode, const
     QModelIndex parent = index(parentNode);
     bool indexHidden = isHiddenByFilter(parentNode, parent);
     if (!indexHidden) {
-        q->beginInsertRows(parent, parentNode->visibleChildren.count() , parentNode->visibleChildren.count() + newFiles.count() - 1);
+        q->beginInsertRows(parent, parentNode->visibleChildren.size() , parentNode->visibleChildren.size() + newFiles.size() - 1);
     }
 
     if (parentNode->dirtyChildrenIndex == -1)
-        parentNode->dirtyChildrenIndex = parentNode->visibleChildren.count();
+        parentNode->dirtyChildrenIndex = parentNode->visibleChildren.size();
 
-    for (int i = 0; i < newFiles.count(); ++i) {
-            parentNode->visibleChildren.append(newFiles.at(i));
-            parentNode->children[newFiles.at(i)]->isVisible = true;
-        }
+    for (const auto &newFile : newFiles) {
+        parentNode->visibleChildren.append(newFile);
+        parentNode->children.value(newFile)->isVisible = true;
+    }
     if (!indexHidden)
       q->endInsertRows();
 }
@@ -1805,7 +1900,7 @@ void QFileSystemModelPrivate::removeVisibleFile(QFileSystemNode *parentNode, int
     if (!indexHidden)
         q->beginRemoveRows(parent, translateVisibleLocation(parentNode, vLocation),
                                        translateVisibleLocation(parentNode, vLocation));
-    parentNode->children[parentNode->visibleChildren.at(vLocation)]->isVisible = false;
+    parentNode->children.value(parentNode->visibleChildren.at(vLocation))->isVisible = false;
     parentNode->visibleChildren.removeAt(vLocation);
     if (!indexHidden)
         q->endRemoveRows();
@@ -1817,17 +1912,19 @@ void QFileSystemModelPrivate::removeVisibleFile(QFileSystemNode *parentNode, int
     The thread has received new information about files,
     update and emit dataChanged if it has actually changed.
  */
-void QFileSystemModelPrivate::_q_fileSystemChanged(const QString &path, const QList<QPair<QString, QFileInfo> > &updates)
+void QFileSystemModelPrivate::_q_fileSystemChanged(const QString &path,
+                                                   const QList<QPair<QString, QFileInfo>> &updates)
 {
+#if QT_CONFIG(filesystemwatcher)
     Q_Q(QFileSystemModel);
-    QVector<QString> rowsToUpdate;
+    QList<QString> rowsToUpdate;
     QStringList newFiles;
     QFileSystemModelPrivate::QFileSystemNode *parentNode = node(path, false);
     QModelIndex parentIndex = index(parentNode);
-    for (int i = 0; i < updates.count(); ++i) {
-        QString fileName = updates.at(i).first;
+    for (const auto &update : updates) {
+        QString fileName = update.first;
         Q_ASSERT(!fileName.isEmpty());
-        QExtendedInformation info = fileInfoGatherer.getInfo(updates.at(i).second);
+        QExtendedInformation info = fileInfoGatherer.getInfo(update.second);
         bool previouslyHere = parentNode->children.contains(fileName);
         if (!previouslyHere) {
             addNode(parentNode, fileName, info.fileInfo());
@@ -1847,10 +1944,6 @@ void QFileSystemModelPrivate::_q_fileSystemChanged(const QString &path, const QL
             node->fileName = fileName;
         }
 
-        if (info.size() == -1 && !info.isSymLink()) {
-            removeNode(parentNode, fileName);
-            continue;
-        }
         if (*node != info ) {
             node->populate(info);
             bypassFilters.remove(node);
@@ -1873,11 +1966,10 @@ void QFileSystemModelPrivate::_q_fileSystemChanged(const QString &path, const QL
     }
 
     // bundle up all of the changed signals into as few as possible.
-    qSort(rowsToUpdate.begin(), rowsToUpdate.end());
+    std::sort(rowsToUpdate.begin(), rowsToUpdate.end());
     QString min;
     QString max;
-    for (int i = 0; i < rowsToUpdate.count(); ++i) {
-        QString value = rowsToUpdate.at(i);
+    for (const QString &value : std::as_const(rowsToUpdate)) {
         //##TODO is there a way to bundle signals with QString as the content of the list?
         /*if (min.isEmpty()) {
             min = value;
@@ -1895,26 +1987,37 @@ void QFileSystemModelPrivate::_q_fileSystemChanged(const QString &path, const QL
         int visibleMin = parentNode->visibleLocation(min);
         int visibleMax = parentNode->visibleLocation(max);
         if (visibleMin >= 0
-            && visibleMin < parentNode->visibleChildren.count()
+            && visibleMin < parentNode->visibleChildren.size()
             && parentNode->visibleChildren.at(visibleMin) == min
             && visibleMax >= 0) {
-            QModelIndex bottom = q->index(translateVisibleLocation(parentNode, visibleMin), 0, parentIndex);
-            QModelIndex top = q->index(translateVisibleLocation(parentNode, visibleMax), 3, parentIndex);
-            emit q->dataChanged(bottom, top);
+            // don't use NumColumns here, a subclass might override columnCount
+            const int lastColumn = q->columnCount(parentIndex) - 1;
+            const QModelIndex top = q->index(translateVisibleLocation(parentNode, visibleMin),
+                                             QFileSystemModelPrivate::NameColumn, parentIndex);
+            const QModelIndex bottom = q->index(translateVisibleLocation(parentNode, visibleMax),
+                                                lastColumn, parentIndex);
+            // We document that emitting dataChanged with indexes that don't have the
+            // same parent is undefined behavior.
+            Q_ASSERT(bottom.parent() == top.parent());
+            emit q->dataChanged(top, bottom);
         }
 
         /*min = QString();
         max = QString();*/
     }
 
-    if (newFiles.count() > 0) {
+    if (newFiles.size() > 0) {
         addVisibleFiles(parentNode, newFiles);
     }
 
-    if (newFiles.count() > 0 || (sortColumn != 0 && rowsToUpdate.count() > 0)) {
+    if (newFiles.size() > 0 || (sortColumn != 0 && rowsToUpdate.size() > 0)) {
         forceSort = true;
         delayedSort();
     }
+#else
+    Q_UNUSED(path);
+    Q_UNUSED(updates);
+#endif // filesystemwatcher
 }
 
 /*!
@@ -1925,35 +2028,77 @@ void QFileSystemModelPrivate::_q_resolvedName(const QString &fileName, const QSt
     resolvedSymLinks[fileName] = resolvedName;
 }
 
+#if QT_CONFIG(filesystemwatcher) && defined(Q_OS_WIN)
+// Remove file system watchers at/below the index and return a list of previously
+// watched files. This should be called prior to operations like rename/remove
+// which might fail due to watchers on platforms like Windows. The watchers
+// should be restored on failure.
+QStringList QFileSystemModelPrivate::unwatchPathsAt(const QModelIndex &index)
+{
+    const QFileSystemModelPrivate::QFileSystemNode *indexNode = node(index);
+    if (indexNode == nullptr)
+        return QStringList();
+    const Qt::CaseSensitivity caseSensitivity = indexNode->caseSensitive()
+        ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    const QString path = indexNode->fileInfo().absoluteFilePath();
+
+    QStringList result;
+    const auto filter = [path, caseSensitivity] (const QString &watchedPath)
+    {
+        const int pathSize = path.size();
+        if (pathSize == watchedPath.size()) {
+            return path.compare(watchedPath, caseSensitivity) == 0;
+        } else if (watchedPath.size() > pathSize) {
+            return watchedPath.at(pathSize) == u'/'
+                && watchedPath.startsWith(path, caseSensitivity);
+        }
+        return false;
+    };
+
+    const QStringList &watchedFiles = fileInfoGatherer.watchedFiles();
+    std::copy_if(watchedFiles.cbegin(), watchedFiles.cend(),
+                 std::back_inserter(result), filter);
+
+    const QStringList &watchedDirectories = fileInfoGatherer.watchedDirectories();
+    std::copy_if(watchedDirectories.cbegin(), watchedDirectories.cend(),
+                 std::back_inserter(result), filter);
+
+    fileInfoGatherer.unwatchPaths(result);
+    return result;
+}
+#endif // filesystemwatcher && Q_OS_WIN
+
+QFileSystemModelPrivate::QFileSystemModelPrivate() = default;
+
+QFileSystemModelPrivate::~QFileSystemModelPrivate() = default;
+
 /*!
     \internal
 */
 void QFileSystemModelPrivate::init()
 {
     Q_Q(QFileSystemModel);
-    qRegisterMetaType<QList<QPair<QString,QFileInfo> > >("QList<QPair<QString,QFileInfo> >");
+
+    delayedSortTimer.setSingleShot(true);
+
+    qRegisterMetaType<QList<QPair<QString, QFileInfo>>>();
+#if QT_CONFIG(filesystemwatcher)
     q->connect(&fileInfoGatherer, SIGNAL(newListOfFiles(QString,QStringList)),
                q, SLOT(_q_directoryChanged(QString,QStringList)));
-    q->connect(&fileInfoGatherer, SIGNAL(updates(QString,QList<QPair<QString,QFileInfo> >)),
-            q, SLOT(_q_fileSystemChanged(QString,QList<QPair<QString,QFileInfo> >)));
+    q->connect(&fileInfoGatherer, SIGNAL(updates(QString,QList<std::pair<QString,QFileInfo>>)), q,
+               SLOT(_q_fileSystemChanged(QString,QList<std::pair<QString,QFileInfo>>)));
     q->connect(&fileInfoGatherer, SIGNAL(nameResolved(QString,QString)),
             q, SLOT(_q_resolvedName(QString,QString)));
     q->connect(&fileInfoGatherer, SIGNAL(directoryLoaded(QString)),
                q, SIGNAL(directoryLoaded(QString)));
+#endif // filesystemwatcher
     q->connect(&delayedSortTimer, SIGNAL(timeout()), q, SLOT(_q_performDelayedSort()), Qt::QueuedConnection);
-
-    QHash<int, QByteArray> roles = q->roleNames();
-    roles.insertMulti(QFileSystemModel::FileIconRole, "fileIcon"); // == Qt::decoration
-    roles.insert(QFileSystemModel::FilePathRole, "filePath");
-    roles.insert(QFileSystemModel::FileNameRole, "fileName");
-    roles.insert(QFileSystemModel::FilePermissions, "filePermissions");
-    q->setRoleNames(roles);
 }
 
 /*!
     \internal
 
-    Returns false if node doesn't pass the filters otherwise true
+    Returns \c false if node doesn't pass the filters otherwise true
 
     QDir::Modified is not supported
     QDir::Drives is not supported
@@ -1978,13 +2123,12 @@ bool QFileSystemModelPrivate::filtersAcceptsNode(const QFileSystemNode *node) co
     const bool hideHidden        = !(filters & QDir::Hidden);
     const bool hideSystem        = !(filters & QDir::System);
     const bool hideSymlinks      = (filters & QDir::NoSymLinks);
-    const bool hideDot           = (filters & QDir::NoDot) || (filters & QDir::NoDotAndDotDot); // ### Qt5: simplify (because NoDotAndDotDot=NoDot|NoDotDot)
-    const bool hideDotDot        = (filters & QDir::NoDotDot) || (filters & QDir::NoDotAndDotDot); // ### Qt5: simplify (because NoDotAndDotDot=NoDot|NoDotDot)
+    const bool hideDot           = (filters & QDir::NoDot);
+    const bool hideDotDot        = (filters & QDir::NoDotDot);
 
-    // Note that we match the behavior of entryList and not QFileInfo on this and this
-    // incompatibility won't be fixed until Qt 5 at least
-    bool isDot    = (node->fileName == QLatin1String("."));
-    bool isDotDot = (node->fileName == QLatin1String(".."));
+    // Note that we match the behavior of entryList and not QFileInfo on this.
+    bool isDot    = (node->fileName == "."_L1);
+    bool isDotDot = (node->fileName == ".."_L1);
     if (   (hideHidden && !(isDot || isDotDot) && node->isHidden())
         || (hideSystem && node->isSystem())
         || (hideDirs && node->isDir())
@@ -2003,28 +2147,47 @@ bool QFileSystemModelPrivate::filtersAcceptsNode(const QFileSystemNode *node) co
 /*
     \internal
 
-    Returns true if node passes the name filters and should be visible.
+    Returns \c true if node passes the name filters and should be visible.
  */
 bool QFileSystemModelPrivate::passNameFilters(const QFileSystemNode *node) const
 {
-#ifndef QT_NO_REGEXP
+#if QT_CONFIG(regularexpression)
     if (nameFilters.isEmpty())
         return true;
 
     // Check the name regularexpression filters
     if (!(node->isDir() && (filters & QDir::AllDirs))) {
-        for (int i = 0; i < nameFilters.size(); ++i) {
-            if (nameFilters.at(i).exactMatch(node->fileName))
-                return true;
-        }
-        return false;
+        const auto matchesNodeFileName = [node](const QRegularExpression &re)
+        {
+            return node->fileName.contains(re);
+        };
+        return std::any_of(nameFiltersRegexps.begin(),
+                           nameFiltersRegexps.end(),
+                           matchesNodeFileName);
     }
+#else
+    Q_UNUSED(node);
 #endif
     return true;
 }
 
+#if QT_CONFIG(regularexpression)
+void QFileSystemModelPrivate::rebuildNameFilterRegexps()
+{
+    nameFiltersRegexps.clear();
+    nameFiltersRegexps.reserve(nameFilters.size());
+    const auto cs = (filters & QDir::CaseSensitive) ? Qt::CaseSensitive : Qt::CaseInsensitive;
+    const auto convertWildcardToRegexp = [cs](const QString &nameFilter)
+    {
+        return QRegularExpression::fromWildcard(nameFilter, cs);
+    };
+    std::transform(nameFilters.constBegin(),
+                   nameFilters.constEnd(),
+                   std::back_inserter(nameFiltersRegexps),
+                   convertWildcardToRegexp);
+}
+#endif
+
 QT_END_NAMESPACE
 
 #include "moc_qfilesystemmodel.cpp"
-
-#endif // QT_NO_FILESYSTEMMODEL

@@ -438,7 +438,7 @@ void symbol_table::clear_function (const std::string& name)
 
 void symbol_table::clear_function_pattern (const std::string& pat)
 {
-  glob_match pattern (pat);
+  symbol_match pattern (pat);
 
   auto p = m_fcn_table.begin ();
 

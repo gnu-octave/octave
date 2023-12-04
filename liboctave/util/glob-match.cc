@@ -59,3 +59,75 @@ glob_match::opts_to_fnmatch_flags (unsigned int xopts) const
 
   return retval;
 }
+
+symbol_match::symbol_match (const std::string& pattern)
+{
+  m_pat = pattern;
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+  m_glob = nullptr;
+#else
+  m_glob {new glob_match (pattern)};
+#endif
+}
+
+bool symbol_match::match (const std::string& sym)
+{
+#if defined (OCTAVE_USE_WINDOWS_API)
+
+  // gnulib's fnmatch replacement is slow on Windows.
+  // We don't need full POSIX compatibility to match symbol patterns.
+  // Glob patterns with '*' or '?' should be good enough.
+  // We also do not need to worry about multi-byte characters because symbols
+  // are ASCII-only.
+  octave_idx_type pat_len = m_pat.length ();
+  octave_idx_type pat_idx = 0;
+  octave_idx_type pat_wildc_idx = -1;
+  octave_idx_type sym_len = sym.length ();
+  octave_idx_type sym_idx = 0;
+  octave_idx_type sym_wildc_idx;
+
+  while (sym_idx < sym_len)
+    {
+      if (pat_idx < pat_len
+          && (m_pat[pat_idx] == '?' || m_pat[pat_idx] == sym[sym_idx]))
+        {
+          // match to '?' or exact match
+          pat_idx++;
+          sym_idx++;
+        }
+      else if (pat_idx < pat_len && m_pat[pat_idx] == '*')
+        {
+          // remember position in pattern and symbol
+          pat_wildc_idx = pat_idx;
+          sym_wildc_idx = sym_idx;
+          pat_idx++;
+        }
+      else if (pat_wildc_idx != -1)
+        {
+          // no match but previous wildcard '*'
+          // revert pat_idx to previous position
+          pat_idx = pat_wildc_idx + 1;
+          // but proceed to next character in symbol and try to match again
+          sym_wildc_idx++;
+          sym_idx = sym_wildc_idx;
+        }
+      else
+        // no exact match and no wildcard
+        return false;
+    }
+
+  // consume potentially trailing '*' in pattern
+  while (pat_idx < pat_len && m_pat[pat_idx] == '*')
+    pat_idx++;
+
+  // check for remaining (unmatched) characters in pattern
+  return pat_idx == pat_len;
+
+#else
+
+  return m_glob->match (sym);
+
+#endif
+}
+

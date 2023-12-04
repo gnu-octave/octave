@@ -113,7 +113,7 @@ matches_patterns (const string_vector& patterns, int pat_idx,
 {
   for (int i = pat_idx; i < num_pat; i++)
     {
-      glob_match pattern (patterns[i]);
+      symbol_match pattern (patterns[i]);
 
       if (pattern.match (name))
         return true;
@@ -1003,7 +1003,7 @@ std::size_t load_save_system::save_fields (std::ostream& os,
     const load_save_format& fmt,
     bool save_as_floats)
 {
-  glob_match pat (pattern);
+  symbol_match pat (pattern);
 
   std::size_t saved = 0;
 

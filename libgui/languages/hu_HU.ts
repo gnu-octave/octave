@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation>Keresés:</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation>Előző keresés</translation>
     </message>
@@ -35,39 +35,9 @@
         <translation>Következő keresés</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation>Keresés</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation>Összetett keresés</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>&lt;b&gt;hasonló&lt;/b&gt; szavak:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation>szavak &lt;b&gt;nélkül&lt;/b&gt;:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation>&lt;b&gt;pontos kifejezés&lt;/b&gt;sel:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation>az &lt;b&gt;összes&lt;/b&gt; szóval:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation>&lt;b&gt;legalább egy&lt;/b&gt; szóval:</translation>
     </message>
 </context>
 <context>
@@ -893,7 +863,7 @@
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
         <source>&amp;Undo</source>
         <translation>&amp;Visszavonás</translation>
     </message>

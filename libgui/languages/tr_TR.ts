@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation>Aranacak:</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation>Önceki arama</translation>
     </message>
@@ -35,39 +35,9 @@
         <translation>Sonraki arama</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation>Ara</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation>Gelişmiş arama</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>şuna &lt;B&gt;benzer&lt;/B&gt; kelimeler:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation>&lt;B&gt;kelimeler&lt;/B&gt; olmadan:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation>tam tabiri &lt;B&gt; ile&lt;/B&gt;:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation>tüm &lt;B&gt;dahili&lt;/B&gt; kelimeler ile:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation>kelimelerin &lt;B&gt; en az biri&lt;/B&gt; ile:</translation>
     </message>
 </context>
 <context>
@@ -903,7 +873,7 @@
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
         <source>&amp;Undo</source>
         <translation>&amp;Geri Al</translation>
     </message>

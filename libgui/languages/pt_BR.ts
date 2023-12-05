@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation>Busque por:</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation>Busca anterior</translation>
     </message>
@@ -35,39 +35,9 @@
         <translation>Próxima busca</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation>Buscar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation>Busca avançada</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>termos &lt;B&gt;similares&lt;/B&gt; a:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation>&lt;B&gt;sem&lt;/B&gt; os termos:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation>com a &lt;B&gt;expressão exata&lt;/B&gt;:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation>com &lt;B&gt;todos&lt;/B&gt; os termos:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation>com &lt;B&gt;pelo menos um&lt;/B&gt; dos termos:</translation>
     </message>
 </context>
 <context>

@@ -1,53 +1,15 @@
-/****************************************************************************
-**
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
-**
-** This file is part of the QtGui module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qerrormessage.h"
-
-#ifndef QT_NO_ERRORMESSAGE
 
 #include "qapplication.h"
 #include "qcheckbox.h"
 #include "qlabel.h"
 #include "qlayout.h"
+#if QT_CONFIG(messagebox)
 #include "qmessagebox.h"
+#endif
 #include "qpushbutton.h"
 #include "qstringlist.h"
 #include "qtextedit.h"
@@ -55,94 +17,99 @@
 #include "qpixmap.h"
 #include "qmetaobject.h"
 #include "qthread.h"
-#include "qqueue.h"
 #include "qset.h"
+
+#include <queue>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef Q_WS_WINCE
-extern bool qt_wince_is_mobile();    //defined in qguifunctions_wince.cpp
-extern bool qt_wince_is_high_dpi();  //defined in qguifunctions_wince.cpp
-
-#include "qguifunctions_wince.h"
-#endif
-
-#if defined(QT_SOFTKEYS_ENABLED)
-#include <qaction.h>
-#endif
-#ifdef Q_WS_S60
-#include "private/qt_s60_p.h"
-#endif
-
 QT_BEGIN_NAMESPACE
+
+using namespace Qt::StringLiterals;
 
 class QErrorMessagePrivate : public QDialogPrivate
 {
     Q_DECLARE_PUBLIC(QErrorMessage)
 public:
+    struct Message {
+        QString content;
+        QString type;
+    };
+
     QPushButton * ok;
     QCheckBox * again;
     QTextEdit * errors;
     QLabel * icon;
-#ifdef QT_SOFTKEYS_ENABLED
-    QAction *okAction;
-#endif
-    QQueue<QPair<QString, QString> > pending;
+    std::queue<Message> pending;
     QSet<QString> doNotShow;
     QSet<QString> doNotShowType;
     QString currentMessage;
     QString currentType;
 
+    bool isMessageToBeShown(const QString &message, const QString &type) const;
     bool nextPending();
     void retranslateStrings();
+
+    void setVisible(bool) override;
+
+private:
+    void initHelper(QPlatformDialogHelper *) override;
+    void helperPrepareShow(QPlatformDialogHelper *) override;
 };
 
+
+void QErrorMessagePrivate::initHelper(QPlatformDialogHelper *helper)
+{
+    Q_Q(QErrorMessage);
+    auto *messageDialogHelper = static_cast<QPlatformMessageDialogHelper *>(helper);
+    QObject::connect(messageDialogHelper, &QPlatformMessageDialogHelper::checkBoxStateChanged, q,
+        [this](Qt::CheckState state) {
+            again->setCheckState(state);
+        }
+    );
+    QObject::connect(messageDialogHelper, &QPlatformMessageDialogHelper::clicked, q,
+        [this](QPlatformDialogHelper::StandardButton, QPlatformDialogHelper::ButtonRole) {
+            Q_Q(QErrorMessage);
+            q->accept();
+        }
+    );
+}
+
+void QErrorMessagePrivate::helperPrepareShow(QPlatformDialogHelper *helper)
+{
+    Q_Q(QErrorMessage);
+    auto *messageDialogHelper = static_cast<QPlatformMessageDialogHelper *>(helper);
+    QSharedPointer<QMessageDialogOptions> options = QMessageDialogOptions::create();
+    options->setText(currentMessage);
+    options->setWindowTitle(q->windowTitle());
+    options->setText(QErrorMessage::tr("An error occurred"));
+    options->setInformativeText(currentMessage);
+    options->setStandardIcon(QMessageDialogOptions::Critical);
+    options->setCheckBox(again->text(), again->checkState());
+    messageDialogHelper->setOptions(options);
+}
+
+namespace {
 class QErrorMessageTextView : public QTextEdit
 {
 public:
     QErrorMessageTextView(QWidget *parent)
         : QTextEdit(parent) { setReadOnly(true); }
 
-    virtual QSize minimumSizeHint() const;
-    virtual QSize sizeHint() const;
+    virtual QSize minimumSizeHint() const override;
+    virtual QSize sizeHint() const override;
 };
+} // unnamed namespace
 
 QSize QErrorMessageTextView::minimumSizeHint() const
 {
-#ifdef Q_WS_WINCE
-    if (qt_wince_is_mobile())
-         if (qt_wince_is_high_dpi())
-            return QSize(200, 200);
-         else
-             return QSize(100, 100);
-    else
-      return QSize(70, 70);
-#else
     return QSize(50, 50);
-#endif
 }
 
 QSize QErrorMessageTextView::sizeHint() const
 {
-#ifdef Q_WS_WINCE
-    if (qt_wince_is_mobile())
-         if (qt_wince_is_high_dpi())
-            return QSize(400, 200);
-         else
-             return QSize(320, 120);
-    else
-      return QSize(300, 100);
-#else
-
-#ifdef Q_WS_S60
-    const int smallerDimension = qMin(S60->screenHeightInPixels, S60->screenWidthInPixels);
-    // In S60 layout data, error messages seem to be one third of the screen height (in portrait) minus two.
-    return QSize(smallerDimension, smallerDimension/3-2);
-#else
     return QSize(250, 75);
-#endif //Q_WS_S60
-#endif //Q_WS_WINCE
 }
 
 /*!
@@ -151,6 +118,7 @@ QSize QErrorMessageTextView::sizeHint() const
     \brief The QErrorMessage class provides an error message display dialog.
 
     \ingroup standard-dialog
+    \inmodule QtWidgets
 
     An error message widget consists of a text label and a checkbox. The
     checkbox lets the user control whether the same error message will be
@@ -164,7 +132,7 @@ QSize QErrorMessageTextView::sizeHint() const
     connecting signals to it.
 
     The static qtHandler() function installs a message handler
-    using qInstallMsgHandler() and creates a QErrorMessage that displays
+    using qInstallMessageHandler() and creates a QErrorMessage that displays
     qDebug(), qWarning() and qFatal() messages. This is most useful in
     environments where no console is available to display warnings and
     error messages.
@@ -178,46 +146,67 @@ QSize QErrorMessageTextView::sizeHint() const
     The \l{dialogs/standarddialogs}{Standard Dialogs} example shows
     how to use QErrorMessage as well as other built-in Qt dialogs.
 
-    \img qerrormessage.png
+    \image qerrormessage.png
 
     \sa QMessageBox, QStatusBar::showMessage(), {Standard Dialogs Example}
 */
 
-static QErrorMessage * qtMessageHandler = 0;
+static QErrorMessage * qtMessageHandler = nullptr;
 
 static void deleteStaticcQErrorMessage() // post-routine
 {
     if (qtMessageHandler) {
         delete qtMessageHandler;
-        qtMessageHandler = 0;
+        qtMessageHandler = nullptr;
     }
 }
 
 static bool metFatal = false;
 
-static void jump(QtMsgType t, const char * m)
+static QString msgType2i18nString(QtMsgType t)
 {
+    static_assert(QtDebugMsg == 0);
+    static_assert(QtWarningMsg == 1);
+    static_assert(QtCriticalMsg == 2);
+    static_assert(QtFatalMsg == 3);
+    static_assert(QtInfoMsg == 4);
+
+    // adjust the array below if any of the above fire...
+
+    const char * const messages[] = {
+        QT_TRANSLATE_NOOP("QErrorMessage", "Debug Message:"),
+        QT_TRANSLATE_NOOP("QErrorMessage", "Warning:"),
+        QT_TRANSLATE_NOOP("QErrorMessage", "Critical Error:"),
+        QT_TRANSLATE_NOOP("QErrorMessage", "Fatal Error:"),
+        QT_TRANSLATE_NOOP("QErrorMessage", "Information:"),
+    };
+    Q_ASSERT(size_t(t) < sizeof messages / sizeof *messages);
+
+    return QCoreApplication::translate("QErrorMessage", messages[t]);
+}
+
+static QtMessageHandler originalMessageHandler = nullptr;
+
+static void jump(QtMsgType t, const QMessageLogContext &context, const QString &m)
+{
+    const auto forwardToOriginalHandler = qScopeGuard([&] {
+       if (originalMessageHandler)
+            originalMessageHandler(t, context, m);
+    });
+
     if (!qtMessageHandler)
         return;
 
-    QString rich;
+    auto *defaultCategory = QLoggingCategory::defaultCategory();
+    if (context.category && defaultCategory
+        && qstrcmp(context.category, defaultCategory->categoryName()) != 0)
+        return;
 
-    switch (t) {
-    case QtDebugMsg:
-    default:
-        rich = QErrorMessage::tr("Debug Message:");
-        break;
-    case QtWarningMsg:
-        rich = QErrorMessage::tr("Warning:");
-        break;
-    case QtFatalMsg:
-        rich = QErrorMessage::tr("Fatal Error:");
-    }
-    rich = QString::fromLatin1("<p><b>%1</b></p>").arg(rich);
-    rich += Qt::convertFromPlainText(QLatin1String(m), Qt::WhiteSpaceNormal);
+    QString rich = "<p><b>"_L1 + msgType2i18nString(t) + "</b></p>"_L1
+                   + Qt::convertFromPlainText(m, Qt::WhiteSpaceNormal);
 
     // ### work around text engine quirk
-    if (rich.endsWith(QLatin1String("</p>")))
+    if (rich.endsWith("</p>"_L1))
         rich.chop(4);
 
     if (!metFatal) {
@@ -237,49 +226,43 @@ static void jump(QtMsgType t, const char * m)
 /*!
     Constructs and installs an error handler window with the given \a
     parent.
+
+    The default \l{Qt::WindowModality} {window modality} of the dialog
+    depends on the platform. The window modality can be overridden via
+    setWindowModality() before calling showMessage().
 */
 
 QErrorMessage::QErrorMessage(QWidget * parent)
     : QDialog(*new QErrorMessagePrivate, parent)
 {
     Q_D(QErrorMessage);
-    QGridLayout * grid = new QGridLayout(this);
+
+#if defined(Q_OS_MACOS)
+    setWindowModality(parent ? Qt::WindowModal : Qt::ApplicationModal);
+#endif
+
     d->icon = new QLabel(this);
-#ifndef QT_NO_MESSAGEBOX
-    d->icon->setPixmap(QMessageBox::standardIcon(QMessageBox::Information));
+    d->errors = new QErrorMessageTextView(this);
+    d->again = new QCheckBox(this);
+    d->ok = new QPushButton(this);
+    QGridLayout * grid = new QGridLayout(this);
+
+    connect(d->ok, SIGNAL(clicked()), this, SLOT(accept()));
+
+    grid->addWidget(d->icon,   0, 0, Qt::AlignTop);
+    grid->addWidget(d->errors, 0, 1);
+    grid->addWidget(d->again,  1, 1, Qt::AlignTop);
+    grid->addWidget(d->ok,     2, 0, 1, 2, Qt::AlignCenter);
+    grid->setColumnStretch(1, 42);
+    grid->setRowStretch(0, 42);
+
+#if QT_CONFIG(messagebox)
+    d->icon->setPixmap(style()->standardPixmap(QStyle::SP_MessageBoxInformation));
     d->icon->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
 #endif
-#ifdef Q_WS_S60
-    //In Symbian, messagebox icons are in LtR UIs on right. Thus, layout needs to switch icon and text columns.
-    const int preferredIconColumn = (QApplication::layoutDirection() == Qt::LeftToRight) ? 1 : 0;
-    const int preferredTextColumn = (QApplication::layoutDirection() == Qt::LeftToRight) ? 0 : 1;
-#else
-    const int preferredIconColumn = 0;
-    const int preferredTextColumn = 1;
-#endif
-    grid->addWidget(d->icon, 0, preferredIconColumn, Qt::AlignTop);
-    d->errors = new QErrorMessageTextView(this);
-    grid->addWidget(d->errors, 0, preferredTextColumn);
-    d->again = new QCheckBox(this);
     d->again->setChecked(true);
-    grid->addWidget(d->again, 1, preferredTextColumn, Qt::AlignTop);
-    d->ok = new QPushButton(this);
-#ifdef QT_SOFTKEYS_ENABLED
-    d->okAction = new QAction(d->ok);
-    d->okAction->setSoftKeyRole(QAction::PositiveSoftKey);
-    connect(d->okAction, SIGNAL(triggered()), this, SLOT(accept()));
-    addAction(d->okAction);
-#endif
-
-
-#if defined(Q_WS_WINCE) || defined(Q_WS_S60)
-    d->ok->setFixedSize(0,0);
-#endif
-    connect(d->ok, SIGNAL(clicked()), this, SLOT(accept()));
     d->ok->setFocus();
-    grid->addWidget(d->ok, 2, 0, 1, 2, Qt::AlignCenter);
-    grid->setColumnStretch(preferredTextColumn, 42);
-    grid->setRowStretch(0, 42);
+
     d->retranslateStrings();
 }
 
@@ -291,11 +274,13 @@ QErrorMessage::QErrorMessage(QWidget * parent)
 QErrorMessage::~QErrorMessage()
 {
     if (this == qtMessageHandler) {
-        qtMessageHandler = 0;
-        QtMsgHandler tmp = qInstallMsgHandler(0);
-        // in case someone else has later stuck in another...
-        if (tmp != jump)
-            qInstallMsgHandler(tmp);
+        qtMessageHandler = nullptr;
+        QtMessageHandler currentMessagHandler = qInstallMessageHandler(nullptr);
+        if (currentMessagHandler != jump)
+            qInstallMessageHandler(currentMessagHandler);
+        else
+            qInstallMessageHandler(originalMessageHandler);
+        originalMessageHandler = nullptr;
     }
 }
 
@@ -305,16 +290,22 @@ QErrorMessage::~QErrorMessage()
 void QErrorMessage::done(int a)
 {
     Q_D(QErrorMessage);
-    if (!d->again->isChecked() && !d->currentMessage.isEmpty() && d->currentType.isEmpty()) {
-        d->doNotShow.insert(d->currentMessage);
-    }
-    if (!d->again->isChecked() && !d->currentType.isEmpty()) {
-        d->doNotShowType.insert(d->currentType);
+    if (!d->again->isChecked()) {
+        if (d->currentType.isEmpty()) {
+            if (!d->currentMessage.isEmpty())
+                d->doNotShow.insert(d->currentMessage);
+        } else {
+            d->doNotShowType.insert(d->currentType);
+        }
     }
     d->currentMessage.clear();
     d->currentType.clear();
-    if (!d->nextPending()) {
-        QDialog::done(a);
+
+    QDialog::done(a);
+
+    if (d->nextPending()) {
+        show();
+    } else {
         if (this == qtMessageHandler && metFatal)
             exit(1);
     }
@@ -325,15 +316,21 @@ void QErrorMessage::done(int a)
     Returns a pointer to a QErrorMessage object that outputs the
     default Qt messages. This function creates such an object, if there
     isn't one already.
+
+    The object will only output log messages of QLoggingCategory::defaultCategory().
+
+    The object will forward all messages to the original message handler.
+
+    \sa qInstallMessageHandler
 */
 
 QErrorMessage * QErrorMessage::qtHandler()
 {
     if (!qtMessageHandler) {
-        qtMessageHandler = new QErrorMessage(0);
+        qtMessageHandler = new QErrorMessage(nullptr);
         qAddPostRoutine(deleteStaticcQErrorMessage); // clean up
-        qtMessageHandler->setWindowTitle(QApplication::applicationName());
-        qInstallMsgHandler(jump);
+        qtMessageHandler->setWindowTitle(QCoreApplication::applicationName());
+        originalMessageHandler = qInstallMessageHandler(jump);
     }
     return qtMessageHandler;
 }
@@ -341,20 +338,27 @@ QErrorMessage * QErrorMessage::qtHandler()
 
 /*! \internal */
 
+bool QErrorMessagePrivate::isMessageToBeShown(const QString &message, const QString &type) const
+{
+    return !message.isEmpty()
+        && (type.isEmpty() ? !doNotShow.contains(message) : !doNotShowType.contains(type));
+}
+
 bool QErrorMessagePrivate::nextPending()
 {
-    while (!pending.isEmpty()) {
-        QPair<QString,QString> pendingMessage = pending.dequeue();
-        QString message = pendingMessage.first;
-        QString type = pendingMessage.second;
-        if (!message.isEmpty() && ((type.isEmpty() && !doNotShow.contains(message)) || (!type.isEmpty() && !doNotShowType.contains(type)))) {
+    while (!pending.empty()) {
+        QString message = std::move(pending.front().content);
+        QString type = std::move(pending.front().type);
+        pending.pop();
+        if (isMessageToBeShown(message, type)) {
 #ifndef QT_NO_TEXTHTMLPARSER
             errors->setHtml(message);
 #else
             errors->setPlainText(message);
 #endif
-            currentMessage = message;
-            currentType = type;
+            currentMessage = std::move(message);
+            currentType = std::move(type);
+            again->setChecked(true);
             return true;
         }
     }
@@ -373,12 +377,7 @@ bool QErrorMessagePrivate::nextPending()
 
 void QErrorMessage::showMessage(const QString &message)
 {
-    Q_D(QErrorMessage);
-    if (d->doNotShow.contains(message))
-        return;
-    d->pending.enqueue(qMakePair(message,QString()));
-    if (!isVisible() && d->nextPending())
-        show();
+    showMessage(message, QString());
 }
 
 /*!
@@ -398,11 +397,28 @@ void QErrorMessage::showMessage(const QString &message)
 void QErrorMessage::showMessage(const QString &message, const QString &type)
 {
     Q_D(QErrorMessage);
-    if (d->doNotShow.contains(message) && d->doNotShowType.contains(type))
+    if (!d->isMessageToBeShown(message, type))
         return;
-     d->pending.push_back(qMakePair(message,type));
+    d->pending.push({message, type});
     if (!isVisible() && d->nextPending())
         show();
+}
+
+void QErrorMessagePrivate::setVisible(bool visible)
+{
+    Q_Q(QErrorMessage);
+    if (q->testAttribute(Qt::WA_WState_ExplicitShowHide) && q->testAttribute(Qt::WA_WState_Hidden) != visible)
+        return;
+
+    if (canBeNativeDialog())
+        setNativeDialogVisible(visible);
+
+    // Update WA_DontShowOnScreen based on whether the native dialog was shown,
+    // so that QDialog::setVisible(visible) below updates the QWidget state correctly,
+    // but skips showing the non-native version.
+    q->setAttribute(Qt::WA_DontShowOnScreen, nativeDialogInUse);
+
+    QDialogPrivate::setVisible(visible);
 }
 
 /*!
@@ -421,17 +437,8 @@ void QErrorMessagePrivate::retranslateStrings()
 {
     again->setText(QErrorMessage::tr("&Show this message again"));
     ok->setText(QErrorMessage::tr("&OK"));
-#ifdef QT_SOFTKEYS_ENABLED
-    okAction->setText(ok->text());
-#endif
 }
-
-/*!
-    \fn void QErrorMessage::message(const QString & message)
-
-    Use showMessage(\a message) instead.
-*/
 
 QT_END_NAMESPACE
 
-#endif // QT_NO_ERRORMESSAGE
+#include "moc_qerrormessage.cpp"

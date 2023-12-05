@@ -1,66 +1,29 @@
-/****************************************************************************
-**
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
-**
-** This file is part of the QtGui module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qpagesetupdialog.h"
 
-#ifndef QT_NO_PRINTDIALOG
 #include <qapplication.h>
 
 #include <private/qprintengine_win_p.h>
-#include <private/qabstractpagesetupdialog_p.h>
+#include "qpagesetupdialog_p.h"
+#include "qprinter.h"
+#include <qpa/qplatformnativeinterface.h>
 
 QT_BEGIN_NAMESPACE
 
-class QPageSetupDialogPrivate : public QAbstractPageSetupDialogPrivate
-{
-};
-
 QPageSetupDialog::QPageSetupDialog(QPrinter *printer, QWidget *parent)
-    : QAbstractPageSetupDialog(*(new QPageSetupDialogPrivate), printer, parent)
+    : QDialog(*(new QPageSetupDialogPrivate(printer)), parent)
 {
+    setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
+    setAttribute(Qt::WA_DontShowOnScreen);
 }
 
 QPageSetupDialog::QPageSetupDialog(QWidget *parent)
-    : QAbstractPageSetupDialog(*(new QPageSetupDialogPrivate), 0, parent)
+    : QDialog(*(new QPageSetupDialogPrivate(0)), parent)
 {
+    setWindowTitle(QCoreApplication::translate("QPrintPreviewDialog", "Page Setup"));
+    setAttribute(Qt::WA_DontShowOnScreen);
 }
 
 int QPageSetupDialog::exec()
@@ -80,7 +43,7 @@ int QPageSetupDialog::exec()
     // we need a temp DEVMODE struct if we don't have a global DEVMODE
     HGLOBAL hDevMode = 0;
     int devModeSize = 0;
-    if (!ep->globalDevMode) {
+    if (!engine->globalDevMode()) {
         devModeSize = sizeof(DEVMODE) + ep->devMode->dmDriverExtra;
         hDevMode = GlobalAlloc(GHND, devModeSize);
         if (hDevMode) {
@@ -90,64 +53,97 @@ int QPageSetupDialog::exec()
         }
         psd.hDevMode = hDevMode;
     } else {
-        psd.hDevMode = ep->devMode;
+        psd.hDevMode = engine->globalDevMode();
     }
 
-    HGLOBAL *tempDevNames = ep->createDevNames();
+    HGLOBAL *tempDevNames = engine->createGlobalDevNames();
     psd.hDevNames = tempDevNames;
 
     QWidget *parent = parentWidget();
     parent = parent ? parent->window() : QApplication::activeWindow();
     Q_ASSERT(!parent ||parent->testAttribute(Qt::WA_WState_Created));
-    psd.hwndOwner = parent ? parent->winId() : 0;
+
+    QWindow *parentWindow = parent ? parent->windowHandle() : 0;
+    psd.hwndOwner = parentWindow ? (HWND)QGuiApplication::platformNativeInterface()->nativeResourceForWindow("handle", parentWindow) : 0;
 
     psd.Flags = PSD_MARGINS;
-    double multiplier = 1;
-    switch (QLocale::system().measurementSystem()) {
-    case QLocale::MetricSystem:
-        psd.Flags |= PSD_INHUNDREDTHSOFMILLIMETERS;
-        multiplier = 1;
+    QPageLayout layout = d->printer->pageLayout();
+    switch (layout.units()) {
+    case QPageLayout::Millimeter:
+    case QPageLayout::Inch:
         break;
-    case QLocale::ImperialSystem:
-        psd.Flags |= PSD_INTHOUSANDTHSOFINCHES;
-        multiplier = 25.4/10;
+    case QPageLayout::Point:
+    case QPageLayout::Pica:
+    case QPageLayout::Didot:
+    case QPageLayout::Cicero:
+        layout.setUnits(QLocale::system().measurementSystem() == QLocale::MetricSystem ? QPageLayout::Millimeter
+                                                                                       : QPageLayout::Inch);
         break;
     }
+    qreal multiplier = 1.0;
+    if (layout.units() == QPageLayout::Millimeter) {
+        psd.Flags |= PSD_INHUNDREDTHSOFMILLIMETERS;
+        multiplier = 100.0;
+    } else { // QPageLayout::Inch)
+        psd.Flags |= PSD_INTHOUSANDTHSOFINCHES;
+        multiplier = 1000.0;
+    }
+    psd.rtMargin.left   = layout.margins().left() * multiplier;
+    psd.rtMargin.top    = layout.margins().top() * multiplier;
+    psd.rtMargin.right  = layout.margins().right() * multiplier;
+    psd.rtMargin.bottom = layout.margins().bottom() * multiplier;
 
-    QRect marginRect = ep->getPageMargins();
-    psd.rtMargin.left   = marginRect.left()   / multiplier;
-    psd.rtMargin.top    = marginRect.top()    / multiplier;
-    psd.rtMargin.right  = marginRect.width()  / multiplier;
-    psd.rtMargin.bottom = marginRect.height() / multiplier;
-
+    QDialog::setVisible(true);
     bool result = PageSetupDlg(&psd);
+    QDialog::setVisible(false);
     if (result) {
-        ep->readDevnames(psd.hDevNames);
-        ep->readDevmode(psd.hDevMode);
-
-        QRect theseMargins = QRect(psd.rtMargin.left   * multiplier,
-                                   psd.rtMargin.top    * multiplier,
-                                   psd.rtMargin.right  * multiplier,
-                                   psd.rtMargin.bottom * multiplier);
-
-        if (theseMargins != marginRect) {
-            ep->setPageMargins(psd.rtMargin.left   * multiplier,
-                               psd.rtMargin.top    * multiplier,
-                               psd.rtMargin.right  * multiplier,
-                               psd.rtMargin.bottom * multiplier);
+        engine->setGlobalDevMode(psd.hDevNames, psd.hDevMode);
+        QPageSize pageSize;
+        // try to read orientation and paper size ID from the dialog's devmode struct
+        if (psd.hDevMode) {
+            DEVMODE *rDevmode = reinterpret_cast<DEVMODE*>(GlobalLock(psd.hDevMode));
+            if (rDevmode->dmFields & DM_ORIENTATION) {
+                layout.setOrientation(rDevmode->dmOrientation == DMORIENT_PORTRAIT
+                                      ? QPageLayout::Portrait : QPageLayout::Landscape);
+            }
+            if (rDevmode->dmFields & DM_PAPERSIZE)
+                pageSize = QPageSize::id(rDevmode->dmPaperSize);
+            GlobalUnlock(rDevmode);
         }
+        // fall back to use our own matching, and assume that paper that's wider than long means landscape
+        if (!pageSize.isValid() || pageSize.id() == QPageSize::Custom) {
+            QSizeF unitSize(psd.ptPaperSize.x / multiplier, psd.ptPaperSize.y / multiplier);
+            if (unitSize.width() > unitSize.height()) {
+                layout.setOrientation(QPageLayout::Landscape);
+                unitSize.transpose();
+            } else {
+                layout.setOrientation(QPageLayout::Portrait);
+            }
+            pageSize = QPageSize(unitSize, layout.units() == QPageLayout::Inch
+                                                           ? QPageSize::Inch : QPageSize::Millimeter);
+        }
+        layout.setPageSize(pageSize);
 
-        ep->updateCustomPaperSize();
+        const QMarginsF margins(psd.rtMargin.left, psd.rtMargin.top, psd.rtMargin.right, psd.rtMargin.bottom);
+        layout.setMargins(margins / multiplier);
+        d->printer->setPageLayout(layout);
 
         // copy from our temp DEVMODE struct
-        if (!ep->globalDevMode && hDevMode) {
+        if (!engine->globalDevMode() && hDevMode) {
+            // Make sure memory is allocated
+            if (ep->ownsDevMode && ep->devMode)
+                free(ep->devMode);
+            ep->devMode = (DEVMODE *) malloc(devModeSize);
+            ep->ownsDevMode = true;
+
+            // Copy
             void *src = GlobalLock(hDevMode);
             memcpy(ep->devMode, src, devModeSize);
             GlobalUnlock(hDevMode);
         }
     }
 
-    if (!ep->globalDevMode && hDevMode)
+    if (!engine->globalDevMode() && hDevMode)
         GlobalFree(hDevMode);
     GlobalFree(tempDevNames);
     done(result);
@@ -162,4 +158,3 @@ void QPageSetupDialog::setVisible(bool visible)
 }
 
 QT_END_NAMESPACE
-#endif

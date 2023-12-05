@@ -1,41 +1,5 @@
-/****************************************************************************
-**
-** Copyright (C) 2016 The Qt Company Ltd.
-** Contact: https://www.qt.io/licensing/
-**
-** This file is part of the QtGui module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see https://www.qt.io/terms-conditions. For further
-** information use the contact form at https://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 3 as published by the Free Software
-** Foundation and appearing in the file LICENSE.LGPL3 included in the
-** packaging of this file. Please review the following information to
-** ensure the GNU Lesser General Public License version 3 requirements
-** will be met: https://www.gnu.org/licenses/lgpl-3.0.html.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 2.0 or (at your option) the GNU General
-** Public license version 3 or any later version approved by the KDE Free
-** Qt Foundation. The licenses are as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL2 and LICENSE.GPL3
-** included in the packaging of this file. Please review the following
-** information to ensure the GNU General Public License requirements will
-** be met: https://www.gnu.org/licenses/gpl-2.0.html and
-** https://www.gnu.org/licenses/gpl-3.0.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
 #include "qplatformtheme.h"
 
@@ -64,6 +28,8 @@ QT_BEGIN_NAMESPACE
     \ingroup qpa
     \brief The QPlatformTheme class allows customizing the UI based on themes.
 
+    See the init_platform function in qguiapplication.cpp for the complete
+    platform initialization process.
 */
 
 /*!
@@ -162,6 +128,30 @@ QT_BEGIN_NAMESPACE
                         if that is not specified.
 
     \value ShowShortcutsInContextMenus (bool) Whether to display shortcut key sequences in context menus.
+
+    \value InteractiveResizeAcrossScreens (bool) Whether using the whole virtual geometry of all the screens
+                        as basis for the resize.
+                        This enum value has been added in Qt 6.2.
+
+    \value ShowDirectoriesFirst (bool) Whether directories should be shown
+           first (before files) in file dialogs.
+           This enum value was added in Qt 6.3.
+
+    \value PreselectFirstFileInDirectory (bool) Whether the first file in a directory
+           should be automatically selected when a file dialog opens.
+           This enum value was added in Qt 6.3.
+
+    \value ButtonPressKeys (QList<Qt::Key>) A list of keys that can be used to press buttons via keyboard input.
+
+    \value SetFocusOnTouchRelease (bool) Whether focus objects (line edits etc) should receive
+           input focus after a touch/mouse release.
+           This enum value has been added in Qt 6.5.
+
+    \value MouseCursorTheme (QString) Name of the mouse cursor theme.
+           This enum value has been added in Qt 6.5.
+
+    \value MouseCursorSize (QSize) Size of the mouse cursor.
+           This enum value has been added in Qt 6.5.
 
     \sa themeHint(), QStyle::pixelMetric()
 */
@@ -286,7 +276,7 @@ const QKeyBinding QPlatformThemePrivate::keyBindings[] = {
     {QKeySequence::MoveToEndOfLine,         0,          Qt::META | Qt::Key_Right,               KB_Mac},
     {QKeySequence::MoveToEndOfLine,         0,          Qt::CTRL | Qt::Key_Right,               KB_Mac },
     {QKeySequence::MoveToEndOfLine,         0,          Qt::Key_End,                            KB_Win | KB_X11},
-    {QKeySequence::MoveToEndOfLine,         0,          Qt::CTRL + Qt::Key_E,                   KB_X11},
+    {QKeySequence::MoveToEndOfLine,         0,          Qt::CTRL | Qt::Key_E,                   KB_X11},
     {QKeySequence::MoveToStartOfBlock,      0,          Qt::META | Qt::Key_A,                   KB_Mac},
     {QKeySequence::MoveToStartOfBlock,      1,          Qt::ALT  | Qt::Key_Up,                  KB_Mac}, //mac only
     {QKeySequence::MoveToEndOfBlock,        0,          Qt::META | Qt::Key_E,                   KB_Mac},
@@ -362,7 +352,61 @@ QPlatformThemePrivate::~QPlatformThemePrivate()
     delete systemPalette;
 }
 
-Q_GUI_EXPORT QPalette qt_fusionPalette();
+Q_GUI_EXPORT QPalette qt_fusionPalette()
+{
+    auto theme = QGuiApplicationPrivate::platformTheme();
+    const bool darkAppearance = theme
+                              ? theme->colorScheme() == Qt::ColorScheme::Dark
+                              : false;
+    const QColor windowText = darkAppearance ? QColor(240, 240, 240) : Qt::black;
+    const QColor backGround = darkAppearance ? QColor(50, 50, 50) : QColor(239, 239, 239);
+    const QColor light = backGround.lighter(150);
+    const QColor mid = (backGround.darker(130));
+    const QColor midLight = mid.lighter(110);
+    const QColor base = darkAppearance ? backGround.darker(140) : Qt::white;
+    const QColor disabledBase(backGround);
+    const QColor dark = backGround.darker(150);
+    const QColor darkDisabled = QColor(209, 209, 209).darker(110);
+    const QColor text = darkAppearance ? windowText : Qt::black;
+    const QColor highlight = QColor(48, 140, 198);
+    const QColor hightlightedText = darkAppearance ? windowText : Qt::white;
+    const QColor disabledText = darkAppearance ? QColor(130, 130, 130) : QColor(190, 190, 190);
+    const QColor button = backGround;
+    const QColor shadow = dark.darker(135);
+    const QColor disabledShadow = shadow.lighter(150);
+    const QColor disabledHighlight(145, 145, 145);
+    QColor placeholder = text;
+    placeholder.setAlpha(128);
+
+    QPalette fusionPalette(windowText, backGround, light, dark, mid, text, base);
+    fusionPalette.setBrush(QPalette::Midlight, midLight);
+    fusionPalette.setBrush(QPalette::Button, button);
+    fusionPalette.setBrush(QPalette::Shadow, shadow);
+    fusionPalette.setBrush(QPalette::HighlightedText, hightlightedText);
+
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::Text, disabledText);
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::WindowText, disabledText);
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::ButtonText, disabledText);
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::Base, disabledBase);
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::Dark, darkDisabled);
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::Shadow, disabledShadow);
+
+    fusionPalette.setBrush(QPalette::Active, QPalette::Highlight, highlight);
+    fusionPalette.setBrush(QPalette::Inactive, QPalette::Highlight, highlight);
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::Highlight, disabledHighlight);
+
+    fusionPalette.setBrush(QPalette::Active, QPalette::Accent, highlight);
+    fusionPalette.setBrush(QPalette::Inactive, QPalette::Accent, highlight);
+    fusionPalette.setBrush(QPalette::Disabled, QPalette::Accent, disabledHighlight);
+
+    fusionPalette.setBrush(QPalette::PlaceholderText, placeholder);
+
+    // Use a more legible light blue on dark backgrounds than the default Qt::blue.
+    if (darkAppearance)
+        fusionPalette.setBrush(QPalette::Link, highlight);
+
+    return fusionPalette;
+}
 
 void QPlatformThemePrivate::initializeSystemPalette()
 {
@@ -397,6 +441,11 @@ QPlatformDialogHelper *QPlatformTheme::createPlatformDialogHelper(DialogType typ
     return nullptr;
 }
 
+Qt::ColorScheme QPlatformTheme::colorScheme() const
+{
+    return Qt::ColorScheme::Unknown;
+}
+
 const QPalette *QPlatformTheme::palette(Palette type) const
 {
     Q_D(const QPlatformTheme);
@@ -410,7 +459,7 @@ const QPalette *QPlatformTheme::palette(Palette type) const
 
 const QFont *QPlatformTheme::font(Font type) const
 {
-    Q_UNUSED(type)
+    Q_UNUSED(type);
     return nullptr;
 }
 
@@ -473,6 +522,16 @@ QVariant QPlatformTheme::themeHint(ThemeHint hint) const
         return QGuiApplicationPrivate::platformIntegration()->styleHint(QPlatformIntegration::UiEffects);
     case QPlatformTheme::ShowShortcutsInContextMenus:
         return QGuiApplicationPrivate::platformIntegration()->styleHint(QPlatformIntegration::ShowShortcutsInContextMenus);
+    case QPlatformTheme::SetFocusOnTouchRelease:
+        return QGuiApplicationPrivate::platformIntegration()->styleHint(QPlatformIntegration::SetFocusOnTouchRelease);
+    case QPlatformTheme::FlickStartDistance:
+        return QGuiApplicationPrivate::platformIntegration()->styleHint(QPlatformIntegration::FlickStartDistance);
+    case QPlatformTheme::FlickMaximumVelocity:
+        return QGuiApplicationPrivate::platformIntegration()->styleHint(QPlatformIntegration::FlickMaximumVelocity);
+    case QPlatformTheme::FlickDeceleration:
+        return QGuiApplicationPrivate::platformIntegration()->styleHint(QPlatformIntegration::FlickDeceleration);
+    case QPlatformTheme::UnderlineShortcut:
+        return QGuiApplicationPrivate::platformIntegration()->styleHint(QPlatformIntegration::UnderlineShortcut);
     default:
         return QPlatformTheme::defaultThemeHint(hint);
     }
@@ -496,7 +555,7 @@ QVariant QPlatformTheme::defaultThemeHint(ThemeHint hint)
     case QPlatformTheme::PasswordMaskDelay:
         return QVariant(int(0));
     case QPlatformTheme::PasswordMaskCharacter:
-        return QVariant(QChar(0x25CF));
+        return QVariant(QChar(u'\x25CF'));
     case QPlatformTheme::StartDragVelocity:
         return QVariant(int(0)); // no limit
     case QPlatformTheme::UseFullScreenForPopupMenu:
@@ -563,7 +622,32 @@ QVariant QPlatformTheme::defaultThemeHint(ThemeHint hint)
         }
     case MouseQuickSelectionThreshold:
         return QVariant(10);
+    case InteractiveResizeAcrossScreens:
+        return true;
+    case ShowDirectoriesFirst:
+        return true;
+    case PreselectFirstFileInDirectory:
+        return false;
+    case ButtonPressKeys:
+        return QVariant::fromValue(QList<Qt::Key>({ Qt::Key_Space, Qt::Key_Select }));
+    case SetFocusOnTouchRelease:
+        return false;
+    case FlickStartDistance:
+        return QVariant(15);
+    case FlickMaximumVelocity:
+        return QVariant(2500);
+    case FlickDeceleration:
+        return QVariant(5000);
+    case MenuBarFocusOnAltPressRelease:
+        return false;
+    case MouseCursorTheme:
+        return QVariant(QString());
+    case MouseCursorSize:
+        return QVariant(QSize(16, 16));
+    case UnderlineShortcut:
+        return true;
     }
+
     return QVariant();
 }
 
@@ -608,21 +692,6 @@ QIconEngine *QPlatformTheme::createIconEngine(const QString &iconName) const
     return new QIconLoaderEngine(iconName);
 }
 
-#if defined(Q_OS_MACX)
-static inline int maybeSwapShortcut(int shortcut)
-{
-    if (qApp->testAttribute(Qt::AA_MacDontSwapCtrlAndMeta)) {
-        uint oldshortcut = shortcut;
-        shortcut &= ~(Qt::CTRL | Qt::META);
-        if (oldshortcut & Qt::CTRL)
-            shortcut |= Qt::META;
-        if (oldshortcut & Qt::META)
-            shortcut |= Qt::CTRL;
-    }
-    return shortcut;
-}
-#endif
-
 #if QT_CONFIG(shortcut)
 // mixed-mode predicate: all of these overloads are actually needed (but not all for every compiler)
 struct ByStandardKey {
@@ -660,12 +729,8 @@ QList<QKeySequence> QPlatformTheme::keyBindings(QKeySequence::StandardKey key) c
         if (!(it->platform & platform))
             continue;
 
-        uint shortcut =
-#if defined(Q_OS_MACX)
-            maybeSwapShortcut(it->shortcut);
-#else
-            it->shortcut;
-#endif
+        uint shortcut = it->shortcut.toCombined();
+
         if (it->priority > 0)
             list.prepend(QKeySequence(shortcut));
         else
@@ -698,7 +763,7 @@ QString QPlatformTheme::standardButtonText(int button) const
 
 QKeySequence QPlatformTheme::standardButtonShortcut(int button) const
 {
-    Q_UNUSED(button)
+    Q_UNUSED(button);
     return QKeySequence();
 }
 #endif // QT_CONFIG(shortcut)
@@ -750,33 +815,38 @@ QString QPlatformTheme::defaultStandardButtonText(int button)
 
 QString QPlatformTheme::removeMnemonics(const QString &original)
 {
-    QString returnText(original.size(), 0);
+    const auto mnemonicInParentheses = [](QStringView text) {
+        /* Format of mnemonics to remove is /\(&[^&]\)/ but accept full-width
+           forms of ( and ) as equivalent, for cross-platform compatibility with
+           MS (and consequent behavior of translators, see QTBUG-110829).
+        */
+        Q_ASSERT(text.size() == 4); // Caller's responsibility.
+        constexpr QChar wideOpen = u'\uff08', wideClose = u'\uff09';
+        if (!text.startsWith(u'(') && !text.startsWith(wideOpen))
+            return false;
+        if (text[1] != u'&' || text[2] == u'&')
+            return false;
+        return text.endsWith(u')') || text.endsWith(wideClose);
+    };
+    QString returnText(original.size(), u'\0');
     int finalDest = 0;
-    int currPos = 0;
-    int l = original.length();
-    while (l) {
-        if (original.at(currPos) == QLatin1Char('&')) {
-            ++currPos;
-            --l;
-            if (l == 0)
+    QStringView text(original);
+    while (!text.isEmpty()) {
+        if (text.startsWith(u'&')) {
+            text = text.sliced(1);
+            if (text.isEmpty())
                 break;
-        } else if (original.at(currPos) == QLatin1Char('(') && l >= 4 &&
-                   original.at(currPos + 1) == QLatin1Char('&') &&
-                   original.at(currPos + 2) != QLatin1Char('&') &&
-                   original.at(currPos + 3) == QLatin1Char(')')) {
-            /* remove mnemonics its format is "\s*(&X)" */
-            int n = 0;
-            while (finalDest > n && returnText.at(finalDest - n - 1).isSpace())
-                ++n;
-            finalDest -= n;
-            currPos += 4;
-            l -= 4;
+        } else if (text.size() >= 4 && mnemonicInParentheses(text.first(4))) {
+            // Advance over the matched mnemonic:
+            text = text.sliced(4);
+            // Also strip any leading space before it:
+            while (finalDest > 0 && returnText.at(finalDest - 1).isSpace())
+                --finalDest;
             continue;
         }
-        returnText[finalDest] = original.at(currPos);
-        ++currPos;
+        returnText[finalDest] = text.front();
+        text = text.sliced(1);
         ++finalDest;
-        --l;
     }
     returnText.truncate(finalDest);
     return returnText;
@@ -795,4 +865,11 @@ unsigned QPlatformThemePrivate::currentKeyPlatforms()
     return result;
 }
 
+QString QPlatformTheme::name() const
+{
+    return d_func()->name;
+}
+
 QT_END_NAMESPACE
+
+#include "moc_qplatformtheme.cpp"

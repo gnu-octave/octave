@@ -1,45 +1,7 @@
-/****************************************************************************
-**
-** Copyright (C) 2015 The Qt Company Ltd.
-** Contact: http://www.qt.io/licensing/
-**
-** This file is part of the QtGui module of the Qt Toolkit.
-**
-** $QT_BEGIN_LICENSE:LGPL$
-** Commercial License Usage
-** Licensees holding valid commercial Qt licenses may use this file in
-** accordance with the commercial license agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and The Qt Company. For licensing terms
-** and conditions see http://www.qt.io/terms-conditions. For further
-** information use the contact form at http://www.qt.io/contact-us.
-**
-** GNU Lesser General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU Lesser
-** General Public License version 2.1 or version 3 as published by the Free
-** Software Foundation and appearing in the file LICENSE.LGPLv21 and
-** LICENSE.LGPLv3 included in the packaging of this file. Please review the
-** following information to ensure the GNU Lesser General Public License
-** requirements will be met: https://www.gnu.org/licenses/lgpl.html and
-** http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
-**
-** As a special exception, The Qt Company gives you certain additional
-** rights. These rights are described in The Qt Company LGPL Exception
-** version 1.1, included in the file LGPL_EXCEPTION.txt in this package.
-**
-** GNU General Public License Usage
-** Alternatively, this file may be used under the terms of the GNU
-** General Public License version 3.0 as published by the Free Software
-** Foundation and appearing in the file LICENSE.GPL included in the
-** packaging of this file.  Please review the following information to
-** ensure the GNU General Public License version 3.0 requirements will be
-** met: http://www.gnu.org/copyleft/gpl.html.
-**
-** $QT_END_LICENSE$
-**
-****************************************************************************/
+// Copyright (C) 2016 The Qt Company Ltd.
+// SPDX-License-Identifier: LicenseRef-Qt-Commercial OR LGPL-3.0-only OR GPL-2.0-only OR GPL-3.0-only
 
-#ifndef QT_NO_PRINTDIALOG
+#include <QtPrintSupport/qtprintsupportglobal.h>
 
 #include "qprintdialog.h"
 
@@ -48,43 +10,39 @@
 #include <qmessagebox.h>
 #include <private/qapplication_p.h>
 
-#include <private/qabstractprintdialog_p.h>
+#include "qabstractprintdialog_p.h"
 #include <private/qprintengine_win_p.h>
-#include <private/qprinter_p.h>
+#include "../kernel/qprinter_p.h"
 
 #if !defined(PD_NOCURRENTPAGE)
 #define PD_NOCURRENTPAGE    0x00800000
-#define PD_RESULT_PRINT	1
-#define PD_RESULT_APPLY	2
+#define PD_RESULT_PRINT 1
+#define PD_RESULT_APPLY 2
 #define START_PAGE_GENERAL  0XFFFFFFFF
 #endif
 
 QT_BEGIN_NAMESPACE
 
-extern void qt_win_eatMouseMove();
+using namespace Qt::StringLiterals;
+
+//extern void qt_win_eatMouseMove();
 
 class QPrintDialogPrivate : public QAbstractPrintDialogPrivate
 {
     Q_DECLARE_PUBLIC(QPrintDialog)
 public:
     QPrintDialogPrivate()
-        : ep(0)
+        : engine(0), ep(0)
     {
     }
 
-    inline void _q_printToFileChanged(int) {}
-    inline void _q_rbPrintRangeToggled(bool) {}
-    inline void _q_printerChanged(int) {}
-    inline void _q_chbPrintLastFirstToggled(bool) {}
-    inline void _q_paperSizeChanged(int) {}
-    inline void _q_btnBrowseClicked() {}
-    inline void _q_btnPropertiesClicked() {}
     int openWindowsPrintDialogModally();
 
+    QWin32PrintEngine *engine;
     QWin32PrintEnginePrivate *ep;
 };
 
-static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWidget *parent,
+static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWindow *parentWindow,
                                     QPrintDialog *pdlg,
                                     QPrintDialogPrivate *d, HGLOBAL *tempDevNames)
 {
@@ -106,21 +64,21 @@ static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWidget *parent,
     pd->Flags = PD_RETURNDC;
     pd->Flags |= PD_USEDEVMODECOPIESANDCOLLATE;
 
-    if (!pdlg->isOptionEnabled(QPrintDialog::PrintSelection))
+    if (!pdlg->testOption(QPrintDialog::PrintSelection))
         pd->Flags |= PD_NOSELECTION;
-    if (pdlg->isOptionEnabled(QPrintDialog::PrintPageRange)) {
+    if (pdlg->testOption(QPrintDialog::PrintPageRange)) {
         pd->nMinPage = pdlg->minPage();
         pd->nMaxPage = pdlg->maxPage();
     }
 
-    if(!pdlg->isOptionEnabled(QPrintDialog::PrintToFile))
+    if (!pdlg->testOption(QPrintDialog::PrintToFile))
         pd->Flags |= PD_DISABLEPRINTTOFILE;
 
-    if (pdlg->isOptionEnabled(QPrintDialog::PrintSelection) && pdlg->printRange() == QPrintDialog::Selection)
+    if (pdlg->testOption(QPrintDialog::PrintSelection) && pdlg->printRange() == QPrintDialog::Selection)
         pd->Flags |= PD_SELECTION;
-    else if (pdlg->isOptionEnabled(QPrintDialog::PrintPageRange) && pdlg->printRange() == QPrintDialog::PageRange)
+    else if (pdlg->testOption(QPrintDialog::PrintPageRange) && pdlg->printRange() == QPrintDialog::PageRange)
         pd->Flags |= PD_PAGENUMS;
-    else if (pdlg->isOptionEnabled(QPrintDialog::PrintCurrentPage) && pdlg->printRange() == QPrintDialog::CurrentPage)
+    else if (pdlg->testOption(QPrintDialog::PrintCurrentPage) && pdlg->printRange() == QPrintDialog::CurrentPage)
         pd->Flags |= PD_CURRENTPAGE;
     else
         pd->Flags |= PD_ALLPAGES;
@@ -131,7 +89,7 @@ static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWidget *parent,
         pd->Flags |= PD_NOPAGENUMS;
 
     // Disable Current Page option if not required as default is Enabled
-    if (!pdlg->isOptionEnabled(QPrintDialog::PrintCurrentPage))
+    if (!pdlg->testOption(QPrintDialog::PrintCurrentPage))
         pd->Flags |= PD_NOCURRENTPAGE;
 
     // Default to showing the General tab first
@@ -143,38 +101,40 @@ static void qt_win_setup_PRINTDLGEX(PRINTDLGEX *pd, QWidget *parent,
 
     if (d->ep->printToFile)
         pd->Flags |= PD_PRINTTOFILE;
-    Q_ASSERT(parent);
-    pd->hwndOwner = parent->window()->winId();
+
+    WId wId = parentWindow ? parentWindow->winId() : 0;
+    //QTBUG-118899 PrintDlg needs valid window handle in hwndOwner
+    //So in case there is no valid handle in the application,
+    //use the desktop as valid handle.
+    pd->hwndOwner = wId != 0 ? HWND(wId) : GetDesktopWindow();
     pd->lpPageRanges[0].nFromPage = qMax(pdlg->fromPage(), pdlg->minPage());
     pd->lpPageRanges[0].nToPage   = (pdlg->toPage() > 0) ? qMin(pdlg->toPage(), pdlg->maxPage()) : 1;
-    pd->nCopies = d->ep->num_copies;
+    pd->nCopies = d->printer->copyCount();
 }
 
 static void qt_win_read_back_PRINTDLGEX(PRINTDLGEX *pd, QPrintDialog *pdlg, QPrintDialogPrivate *d)
 {
     if (pd->Flags & PD_SELECTION) {
         pdlg->setPrintRange(QPrintDialog::Selection);
-        pdlg->setFromTo(0, 0);
+        pdlg->printer()->setPageRanges(QPageRanges());
     } else if (pd->Flags & PD_PAGENUMS) {
         pdlg->setPrintRange(QPrintDialog::PageRange);
         pdlg->setFromTo(pd->lpPageRanges[0].nFromPage, pd->lpPageRanges[0].nToPage);
     } else if (pd->Flags & PD_CURRENTPAGE) {
         pdlg->setPrintRange(QPrintDialog::CurrentPage);
-        pdlg->setFromTo(0, 0);
+       pdlg->printer()->setPageRanges(QPageRanges());
     } else { // PD_ALLPAGES
         pdlg->setPrintRange(QPrintDialog::AllPages);
-        pdlg->setFromTo(0, 0);
+        pdlg->printer()->setPageRanges(QPageRanges());
     }
 
     d->ep->printToFile = (pd->Flags & PD_PRINTTOFILE) != 0;
 
-    d->ep->readDevnames(pd->hDevNames);
-    d->ep->readDevmode(pd->hDevMode);
-    d->ep->updateCustomPaperSize();
+    d->engine->setGlobalDevMode(pd->hDevNames, pd->hDevMode);
 
     if (d->ep->printToFile && d->ep->fileName.isEmpty())
-        d->ep->fileName = d->ep->port;
-    else if (!d->ep->printToFile && d->ep->fileName == QLatin1String("FILE:"))
+        d->ep->fileName = "FILE:"_L1;
+    else if (!d->ep->printToFile && d->ep->fileName == "FILE:"_L1)
         d->ep->fileName.clear();
 }
 
@@ -193,7 +153,9 @@ QPrintDialog::QPrintDialog(QPrinter *printer, QWidget *parent)
     Q_D(QPrintDialog);
     if (!warnIfNotNative(d->printer))
         return;
-    d->ep = static_cast<QWin32PrintEngine *>(d->printer->paintEngine())->d_func();
+    d->engine = static_cast<QWin32PrintEngine *>(d->printer->printEngine());
+    d->ep = static_cast<QWin32PrintEngine *>(d->printer->printEngine())->d_func();
+    setAttribute(Qt::WA_DontShowOnScreen);
 }
 
 QPrintDialog::QPrintDialog(QWidget *parent)
@@ -202,7 +164,9 @@ QPrintDialog::QPrintDialog(QWidget *parent)
     Q_D(QPrintDialog);
     if (!warnIfNotNative(d->printer))
         return;
-    d->ep = static_cast<QWin32PrintEngine *>(d->printer->paintEngine())->d_func();
+    d->engine = static_cast<QWin32PrintEngine *>(d->printer->printEngine());
+    d->ep = static_cast<QWin32PrintEngine *>(d->printer->printEngine())->d_func();
+    setAttribute(Qt::WA_DontShowOnScreen);
 }
 
 QPrintDialog::~QPrintDialog()
@@ -221,22 +185,24 @@ int QPrintDialog::exec()
 int QPrintDialogPrivate::openWindowsPrintDialogModally()
 {
     Q_Q(QPrintDialog);
-    QWidget *parent = q->parentWidget();
-    if (parent)
-        parent = parent->window();
-    else
-        parent = QApplication::activeWindow();
+    QWindow *parentWindow = q->windowHandle() ? q->windowHandle()->transientParent() : nullptr;
+    if (!parentWindow) {
+        QWidget *parent = q->parentWidget();
+        if (parent)
+            parent = parent->window();
+        else
+            parent = QApplication::activeWindow();
 
-    // If there is no window, fall back to the print dialog itself
-    if (parent == 0)
-        parent = q;
+        // If there is no window, fall back to the print dialog itself
+        if (!parent)
+            parent = q;
 
-    QWidget modal_widget;
-    modal_widget.setAttribute(Qt::WA_NoChildEventsForParent, true);
-    modal_widget.setParent(parent, Qt::Window);
-    QApplicationPrivate::enterModal(&modal_widget);
+        parentWindow = parent->windowHandle();
+    }
 
-    HGLOBAL *tempDevNames = ep->createDevNames();
+    q->QDialog::setVisible(true);
+
+    HGLOBAL *tempDevNames = engine->createGlobalDevNames();
 
     bool done;
     bool result;
@@ -247,7 +213,7 @@ int QPrintDialogPrivate::openWindowsPrintDialogModally()
     memset(&pd, 0, sizeof(PRINTDLGEX));
     pd.lStructSize = sizeof(PRINTDLGEX);
     pd.lpPageRanges = &pageRange;
-    qt_win_setup_PRINTDLGEX(&pd, parent, q, this, tempDevNames);
+    qt_win_setup_PRINTDLGEX(&pd, parentWindow, q, this, tempDevNames);
 
     do {
         done = true;
@@ -269,15 +235,15 @@ int QPrintDialogPrivate::openWindowsPrintDialogModally()
         }
 
         if (!done) {
-            QMessageBox::warning(0, QPrintDialog::tr("Print"),
-                                 QPrintDialog::tr("The 'From' value cannot be greater than the 'To' value."),
-                                 QPrintDialog::tr("OK"));
+            QMessageBox::warning(nullptr,
+                                 QPrintDialog::tr("Print"),
+                                 QPrintDialog::tr("The 'From' value cannot be greater than the 'To' value."));
         }
     } while (!done);
 
-    QApplicationPrivate::leaveModal(&modal_widget);
+    q->QDialog::setVisible(false);
 
-    qt_win_eatMouseMove();
+//    qt_win_eatMouseMove();
 
     // write values back...
     if (result && (pd.dwResultAction == PD_RESULT_PRINT
@@ -285,7 +251,7 @@ int QPrintDialogPrivate::openWindowsPrintDialogModally()
     {
         qt_win_read_back_PRINTDLGEX(&pd, q, this);
         // update printer validity
-        printer->d_func()->validPrinter = !ep->name.isEmpty();
+        printer->d_func()->validPrinter = !printer->printerName().isEmpty();
     }
 
     // Cleanup...
@@ -307,12 +273,10 @@ void QPrintDialog::setVisible(bool visible)
     if (!warnIfNotNative(d->printer))
         return;
 
-    ()d->openWindowsPrintDialogModally();
+    (void)d->openWindowsPrintDialogModally();
     return;
 }
 
 QT_END_NAMESPACE
 
 #include "moc_qprintdialog.cpp"
-
-#endif // QT_NO_PRINTDIALOG

@@ -1,6 +1,6 @@
 // This class defines the "official" low-level API.
 //
-// Copyright (c) 2019 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -3845,16 +3845,15 @@ protected:
     //! \internal This helps to work around some Scintilla bugs.
     void setScrollBars();
 
-    //! \internal Qt4, Qt5 portability.
-    typedef QByteArray ScintillaBytes;
-
-#define ScintillaBytesConstData(b)  (b).constData()
-
     //! \internal Convert a QString to encoded bytes.
-    ScintillaBytes textAsBytes(const QString &text) const;
+    QByteArray textAsBytes(const QString &text) const;
 
     //! \internal Convert encoded bytes to a QString.
-    QString bytesAsText(const char *bytes) const;
+    QString bytesAsText(const char *bytes, int size) const;
+
+    //! Give access to the text convertors.
+    friend class QsciAccessibleScintillaBase;
+    friend class QsciLexer;
 
     //! \internal A helper for QsciScintilla::contextMenuEvent().
     bool contextMenuNeeded(int x, int y) const;
@@ -3873,9 +3872,7 @@ private:
     int preeditPos;
     int preeditNrBytes;
     QString preeditString;
-#if QT_VERSION >= 0x050000
     bool clickCausedFocus;
-#endif
 
     void connectHorizontalScrollBar();
     void connectVerticalScrollBar();

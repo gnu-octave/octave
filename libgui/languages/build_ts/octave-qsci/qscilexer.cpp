@@ -1,6 +1,6 @@
 // This module implements the QsciLexer class.
 //
-// Copyright (c) 2019 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -367,7 +367,7 @@ bool QsciLexer::readSettings(QSettings &qs,const char *prefix)
         if (description(i).isEmpty())
             continue;
 
-        key.sprintf("%s/%s/style%d/",prefix,language(),i);
+        key = QString("%1/%2/style%3/").arg(prefix).arg(language()).arg(i);
 
         // Read the foreground colour.
         full_key = key + "color";
@@ -454,7 +454,7 @@ bool QsciLexer::readSettings(QSettings &qs,const char *prefix)
     }
 
     // Read the properties.
-    key.sprintf("%s/%s/properties/",prefix,language());
+    key = QString("%1/%2/properties/").arg(prefix).arg(language());
 
     if (!readProperties(qs,key))
         rc = false;
@@ -462,7 +462,7 @@ bool QsciLexer::readSettings(QSettings &qs,const char *prefix)
     refreshProperties();
 
     // Read the rest.
-    key.sprintf("%s/%s/",prefix,language());
+    key = QString("%1/%2/").arg(prefix).arg(language());
 
     // Read the default foreground colour.
     full_key = key + "defaultcolor";
@@ -569,7 +569,7 @@ bool QsciLexer::writeSettings(QSettings &qs,const char *prefix) const
 
         QColor c;
 
-        key.sprintf("%s/%s/style%d/",prefix,language(),i);
+        key = QString("%1/%2/style%3/").arg(prefix).arg(language()).arg(i);
 
         // Write the foreground colour.
         c = color(i);
@@ -607,13 +607,13 @@ bool QsciLexer::writeSettings(QSettings &qs,const char *prefix) const
     }
 
     // Write the properties.
-    key.sprintf("%s/%s/properties/",prefix,language());
+    key = QString("%1/%2/properties/").arg(prefix).arg(language());
 
     if (!writeProperties(qs,key))
         rc = false;
 
     // Write the rest.
-    key.sprintf("%s/%s/",prefix,language());
+    key = QString("%1/%2/").arg(prefix).arg(language());
 
     // Write the default foreground colour.
     num = (defColor.red() << 16) | (defColor.green() << 8) | defColor.blue();
@@ -728,4 +728,22 @@ void QsciLexer::setPaper(const QColor &c, int style)
 
         emit paperChanged(c, QsciScintillaBase::STYLE_DEFAULT);
     }
+}
+
+
+// Encode a QString as bytes.
+QByteArray QsciLexer::textAsBytes(const QString &text) const
+{
+    Q_ASSERT(attached_editor);
+
+    return attached_editor->textAsBytes(text);
+}
+
+
+// Decode bytes as a QString.
+QString QsciLexer::bytesAsText(const char *bytes, int size) const
+{
+    Q_ASSERT(attached_editor);
+
+    return attached_editor->bytesAsText(bytes, size);
 }

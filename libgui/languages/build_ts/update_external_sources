@@ -1,0 +1,87 @@
+#!/bin/bash
+
+# This scripts updates the external source files from Qt and QScintilla
+# in the subdirectories "octave-qt" and "octave-qsci". These files are
+# later used by the script "update_ts_files" for languages for which
+# without translations provided by Qt and/or QScintilla in order to get
+# the strings to translate
+#
+# Syntax
+# 
+#     update_external_sources  path-to-qt-src  path-to-qsci-src
+#
+# Parameter
+#
+#     path-to-qt-src:   Relative or absolute path to the new Qt
+#                       sources
+#     path-to-qsci-src: Relative or absolute path to the new
+#                       QScintilla sources
+#
+
+if [ $# -ne 2 ]
+then
+  echo
+  echo "Syntax"
+  echo
+  echo "     update_external_sources  path-to-qt-src  path-to-qsci-src"
+  echo
+  echo "Parameter"
+  echo
+  echo "     path-to-qt-src:   Relative or absolute path to the new Qt"
+  echo "                       sources"
+  echo "     path-to-qsci-src: Relative or absolute path to the new"
+  echo "                       QScintilla sources"
+  echo
+  exit
+fi
+
+QT=$1
+QSCI=$2
+
+OCTQT="octave-qt"
+OCTQSCI="octave-qsci"
+
+if [ ! -d $QT ] 
+then
+    echo "Directory $QT does not exist." 
+    exit 1
+fi
+if [ ! -d $QSCI ] 
+then
+    echo "Directory $QSCI does not exist." 
+    exit 1
+fi
+
+echo
+echo "$OCTQT"
+echo
+
+for file in $(find $OCTQT -maxdepth 1 -not -type d)
+do
+    bfile=`basename $file`
+    find $QT -type f -name $bfile -exec cp -v -u "{}" $OCTQT \;
+done
+
+echo
+echo "$OCTQSCI"
+echo
+
+for file in $(find $OCTQSCI -maxdepth 1 -not -type d)
+do
+    bfile=`basename $file`  
+    find $QSCI -type f -name $bfile -exec cp -v -u "{}" $OCTQSCI \;
+done
+
+echo
+echo "$OCTQSCI/Qsci"
+echo
+
+for file in $(find $OCTQSCI/Qsci -maxdepth 1 -not -type d)
+do
+    bfile=`basename $file`
+    find $QSCI -type f -name $bfile -exec cp -v -u "{}" $OCTQSCI/Qsci \;
+done
+
+echo
+echo done
+echo

@@ -1,6 +1,6 @@
 // This defines the interface to the QsciLexer class.
 //
-// Copyright (c) 2019 Riverbank Computing Limited <info@riverbankcomputing.com>
+// Copyright (c) 2023 Riverbank Computing Limited <info@riverbankcomputing.com>
 // 
 // This file is part of QScintilla.
 // 
@@ -317,6 +317,12 @@ protected:
     //! the key of each setting.  true is returned if there is no error.
     //!
     virtual bool writeProperties(QSettings &qs,const QString &prefix) const;
+
+    //! \internal Convert a QString to encoded bytes.
+    QByteArray textAsBytes(const QString &text) const;
+
+    //! \internal Convert encoded bytes to a QString.
+    QString bytesAsText(const char *bytes, int size) const;
 
 private:
     struct StyleData {

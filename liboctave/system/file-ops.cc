@@ -749,7 +749,7 @@ std::string tempnam (const std::string& dir, const std::string& pfx,
   templatename += "XXXXXX";
 
   // create and copy template to char array for call to gen_tempname
-  char tname [templatename.length () + 1];
+  OCTAVE_LOCAL_BUFFER (char, tname, templatename.length () + 1);
 
   strcpy (tname, templatename.c_str ());
 

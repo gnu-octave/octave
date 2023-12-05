@@ -40,6 +40,7 @@
 #include "iconv-wrappers.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
+#include "oct-locbuf.h"
 #include "uniconv-wrappers.h"
 #include "unistr-wrappers.h"
 #include "unwind-prot.h"
@@ -891,7 +892,7 @@ int octave::string::codecvt_u8::do_length
 {
   // return number of external characters that produce MAX internal ones
   std::size_t srclen = end-src;
-  std::size_t offsets[srclen];
+  OCTAVE_LOCAL_BUFFER (std::size_t, offsets, srclen);
   std::size_t lengthp = max;
   octave_u8_conv_from_encoding_offsets (m_enc.c_str (), src, srclen, offsets,
                                         &lengthp);

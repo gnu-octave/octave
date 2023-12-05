@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation>搜索：</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation>向前搜索</translation>
     </message>
@@ -35,39 +35,9 @@
         <translation>向后搜索</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation>搜索</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation>高级搜索</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>&lt;B&gt;相似的&lt;/B&gt;单词：</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation>&lt;B&gt;不包含&lt;/B&gt;单词：</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation>包含&lt;B&gt;精确&lt;/B&gt;的单词：</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation>包含&lt;B&gt;所有&lt;/B&gt;单词：</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation>包含&lt;B&gt;至少一个&lt;/B&gt;单词：</translation>
     </message>
 </context>
 <context>
@@ -893,7 +863,7 @@
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
         <source>&amp;Undo</source>
         <translation>撤销 (&amp;U)</translation>
     </message>
@@ -5708,7 +5678,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">类</translation>
     </message>
     <message>
         <location line="+1"/>

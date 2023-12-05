@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation>Buscar:</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation>Anterior</translation>
     </message>
@@ -35,39 +35,9 @@
         <translation>Siguiente</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation>Buscar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation>Búsqueda avanzada</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>palabras &lt;B&gt;similares&lt;/B&gt; a:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation>&lt;B&gt;sin&lt;/B&gt; las palabras:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation>con &lt;B&gt;la expresión exacta&lt;/B&gt;:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation>con &lt;B&gt;todas&lt;/B&gt; las palabras:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation>con &lt;B&gt;al menos una&lt;/B&gt; de las palabras:</translation>
     </message>
 </context>
 <context>
@@ -476,7 +446,7 @@ be available.</source>
         <location line="+9"/>
         <location line="+52"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Buscar</translation>
     </message>
     <message>
         <location line="-36"/>
@@ -2749,7 +2719,7 @@ en el directorio
     <message>
         <location filename="../src/m-editor/octave-txt-lexer.cc" line="+41"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Valor predeterminado/por defecto</translation>
     </message>
 </context>
 <context>

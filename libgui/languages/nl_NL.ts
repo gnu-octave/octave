@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/dialog.cc" line="+442"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alles selecteren</translation>
     </message>
 </context>
 <context>
@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation>Zoek naar:</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation>Zoek vorige</translation>
     </message>
@@ -35,39 +35,9 @@
         <translation>Zoek volgende</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation>Zoek</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation>Geavanceerd zoeken</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>woorden &lt;B&gt;lijkend&lt;/B&gt; op:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation>&lt;B&gt;zonder&lt;/B&gt; de woorden:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation>met de &lt;B&gt;exacte zin&lt;/B&gt;:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation>met &lt;B&gt;alle&lt;/B&gt; woorden:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation>met &lt;B&gt;minstens een&lt;/B&gt; van de woorden:</translation>
     </message>
 </context>
 <context>
@@ -893,7 +863,7 @@
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
         <source>&amp;Undo</source>
         <translation>&amp;Ongedaan maken</translation>
     </message>
@@ -2998,7 +2968,7 @@ function and can not be edited.</source>
     <message>
         <location line="+5"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alles selecteren</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4848,7 +4818,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+1"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Alles selecteren</translation>
     </message>
     <message>
         <location line="+1"/>

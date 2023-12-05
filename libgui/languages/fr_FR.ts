@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation>Rechercher :</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation>Recherche précédente</translation>
     </message>
@@ -35,39 +35,9 @@
         <translation>Recherche suivante</translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation>Recherche</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation>Recherche avancée</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation>mot &lt;B&gt;similaire&lt;/B&gt; à :</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation>&lt;B&gt;sans&lt;/B&gt; les mots :</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation>contient &lt;B&gt;exactement&lt;/B&gt;:</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation>contient &lt;B&gt;tous&lt;/B&gt; les mots :</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation>contient &lt;B&gt;au moins un&lt;/B&gt; des mots :</translation>
     </message>
 </context>
 <context>
@@ -1418,7 +1388,7 @@ a été supprimé ou renommé. Voulez vous l&apos;enregistrer maintenant ?%2</tr
     <message>
         <location line="+51"/>
         <source>File Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Explorateur de fichiers</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2386,12 +2356,12 @@ function and can not be edited.</source>
     <message>
         <location line="+3"/>
         <source>File Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Explorateur de fichiers</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Espace de travail</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -4218,12 +4188,12 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+1"/>
         <source>File Browser</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Explorateur de fichiers</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Espace de travail</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -4992,7 +4962,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/workspace-view.cc" line="+57"/>
         <source>Workspace</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Espace de travail</translation>
     </message>
     <message>
         <location line="+1"/>

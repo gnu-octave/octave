@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/dialog.cc" line="+442"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全てを選択</translation>
     </message>
 </context>
 <context>
@@ -20,12 +20,12 @@
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation type="unfinished"></translation>
     </message>
@@ -35,39 +35,9 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
         <translation type="unfinished">検索</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -893,7 +863,7 @@
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
         <source>&amp;Undo</source>
         <translation>元に戻す (&amp;U) </translation>
     </message>
@@ -2973,7 +2943,7 @@ function and can not be edited.</source>
     <message>
         <location line="+5"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全てを選択</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -4816,7 +4786,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+1"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">全てを選択</translation>
     </message>
     <message>
         <location line="+1"/>

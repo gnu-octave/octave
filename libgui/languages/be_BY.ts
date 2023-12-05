@@ -10,9 +10,22 @@
     </message>
 </context>
 <context>
+    <name>QApplication</name>
+    <message>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="+2905"/>
+        <source>Application &quot;%1&quot; requires Qt %2, found Qt %3.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Incompatible Qt Library Error</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>QColorDialog</name>
     <message>
-        <location filename="build_ts/octave-qt/qcolordialog.cpp" line="+1367"/>
+        <location filename="build_ts/octave-qt/qcolordialog.cpp" line="+1474"/>
         <source>Hu&amp;e:</source>
         <translation>Ад&amp;ценне:</translation>
     </message>
@@ -47,12 +60,23 @@
         <translation>А&amp;льфа:</translation>
     </message>
     <message>
-        <location line="+101"/>
+        <location line="+1"/>
+        <source>&amp;HTML:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+184"/>
+        <source>Cursor at %1, %2
+Press ESC to cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+28"/>
         <source>Select Color</source>
         <translation>Пазначыць колер</translation>
     </message>
     <message>
-        <location line="+183"/>
+        <location line="+197"/>
         <source>&amp;Basic colors</source>
         <translation>&amp;Базавыя колеры</translation>
     </message>
@@ -66,16 +90,16 @@
         <source>&amp;Add to Custom Colors</source>
         <translation>&amp;Дадаць да сваіх колераў</translation>
     </message>
+    <message>
+        <location line="+3"/>
+        <source>&amp;Pick Screen Color</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QDialog</name>
     <message>
-        <location filename="build_ts/octave-qt/qdialog.cpp" line="+528"/>
-        <source>Done</source>
-        <translation>Выканана</translation>
-    </message>
-    <message>
-        <location line="+133"/>
+        <location filename="build_ts/octave-qt/qdialog.cpp" line="+667"/>
         <source>What&apos;s This?</source>
         <translation>Што гэта?</translation>
     </message>
@@ -83,8 +107,8 @@
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="+1926"/>
-        <location line="+446"/>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-788"/>
+        <location line="+448"/>
         <source>OK</source>
         <translation>Добра</translation>
     </message>
@@ -92,22 +116,37 @@
 <context>
     <name>QErrorMessage</name>
     <message>
-        <location filename="build_ts/octave-qt/qerrormessage.cpp" line="+208"/>
+        <location filename="build_ts/octave-qt/qerrormessage.cpp" line="+86"/>
+        <source>An error occurred</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+91"/>
         <source>Debug Message:</source>
         <translation>Адладачнае паведамленне:</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+1"/>
         <source>Warning:</source>
         <translation>Папярэджанне:</translation>
     </message>
     <message>
-        <location line="+3"/>
+        <location line="+1"/>
+        <source>Critical Error:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
         <source>Fatal Error:</source>
         <translation>Фатальная памылка:</translation>
     </message>
     <message>
-        <location line="+208"/>
+        <location line="+1"/>
+        <source>Information:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+257"/>
         <source>&amp;Show this message again</source>
         <translation>&amp;Паказваць гэтае паведамленне зноў</translation>
     </message>
@@ -120,7 +159,7 @@
 <context>
     <name>QFileDialog</name>
     <message>
-        <location filename="build_ts/octave-qt/qfiledialog.cpp" line="+557"/>
+        <location filename="build_ts/octave-qt/qfiledialog.cpp" line="+566"/>
         <location filename="build_ts/octave-qt/qfiledialog_symbian.cpp" line="+192"/>
         <source>Find Directory</source>
         <translation>Знайсці каталог</translation>
@@ -136,13 +175,7 @@
         <translation>Захаваць як</translation>
     </message>
     <message>
-        <location line="+15"/>
-        <location line="+550"/>
-        <source>All Files (*)</source>
-        <translation>Усе файлы (*)</translation>
-    </message>
-    <message>
-        <location line="-540"/>
+        <location line="+85"/>
         <source>Show </source>
         <translation>Паказаць </translation>
     </message>
@@ -167,44 +200,49 @@
         <translation>&amp;Новы каталог</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <location line="+750"/>
+        <location line="-69"/>
         <source>Directory:</source>
         <translation>Каталог:</translation>
     </message>
     <message>
-        <location line="-748"/>
-        <location line="+754"/>
+        <location line="+3"/>
         <source>File &amp;name:</source>
         <translation>&amp;Назва файла:</translation>
     </message>
     <message>
-        <location line="-13"/>
-        <location line="+55"/>
-        <location line="+1582"/>
+        <location line="+17"/>
+        <location line="+12"/>
         <source>&amp;Open</source>
         <translation>&amp;Адкрыць</translation>
     </message>
     <message>
-        <location line="-1637"/>
-        <location line="+55"/>
+        <location line="+1"/>
         <source>&amp;Save</source>
         <translation>&amp;Захаваць</translation>
     </message>
     <message>
-        <location line="-52"/>
+        <location line="+900"/>
+        <source>All files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+171"/>
         <source>Directories</source>
         <translation>Каталогі</translation>
     </message>
     <message>
-        <location line="+7"/>
-        <location line="+43"/>
+        <location line="+1870"/>
+        <source>Are you sure you want to delete &apos;%1&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2947"/>
         <source>&amp;Choose</source>
         <translation>&amp;Выбраць</translation>
     </message>
     <message>
-        <location line="+789"/>
-        <location line="+866"/>
+        <location line="+2058"/>
+        <location line="+1108"/>
         <source>%1
 Directory not found.
 Please verify the correct directory name was given.</source>
@@ -213,14 +251,14 @@ Please verify the correct directory name was given.</source>
 Пераправерце, ці карэктную назву каталогу вы задалі.</translation>
     </message>
     <message>
-        <location line="-832"/>
+        <location line="-1121"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
         <translation>%1 ужо існуе.
 Замяніць яго?</translation>
     </message>
     <message>
-        <location line="+20"/>
+        <location line="+15"/>
         <source>%1
 File not found.
 Please verify the correct file name was given.</source>
@@ -229,29 +267,30 @@ Please verify the correct file name was given.</source>
 Пераправерце, ці карэктную назву файла вы задалі.</translation>
     </message>
     <message>
-        <location line="+462"/>
+        <location line="+751"/>
         <source>New Folder</source>
         <translation>Новы каталог</translation>
     </message>
     <message>
-        <location line="+128"/>
+        <location line="+130"/>
+        <location line="+5"/>
+        <source>Delete</source>
+        <translation type="unfinished">Выдаліць</translation>
+    </message>
+    <message>
+        <location line="-4"/>
         <source>&apos;%1&apos; is write protected.
 Do you want to delete it anyway?</source>
         <translation>&apos;%1&apos; абаронены ад запісу.
 Выдаліць яго ўсё адно?</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>Are sure you want to delete &apos;%1&apos;?</source>
-        <translation>Сапраўды жадаеце выдаліць &apos;%1&apos;?</translation>
-    </message>
-    <message>
-        <location line="+15"/>
+        <location line="+23"/>
         <source>Could not delete directory.</source>
         <translation>Не выйшла выдаліць каталог.</translation>
     </message>
     <message>
-        <location line="+409"/>
+        <location line="+440"/>
         <source>Recent Places</source>
         <translation>Ранейшыя месцы</translation>
     </message>
@@ -264,53 +303,22 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QFileSystemModel</name>
     <message>
-        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+763"/>
-        <source>%1 TB</source>
-        <translation>%1 ТБ</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>%1 GB</source>
-        <translation>%1 ГБ</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>%1 MB</source>
-        <translation>%1 МБ</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>%1 KB</source>
-        <translation>%1 КБ</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>%1 bytes</source>
-        <translation>%1 байтаў</translation>
-    </message>
-    <message>
         <location filename="../src/files-dock-widget.cc" line="+136"/>
-        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+90"/>
         <source>Invalid filename</source>
         <translation>Памылковая назва файла</translation>
     </message>
     <message>
-        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+1"/>
-        <source>&lt;b&gt;The name &quot;%1&quot; can not be used.&lt;/b&gt;&lt;p&gt;Try using another name, with fewer characters or no punctuations marks.</source>
-        <translation>&lt;b&gt;Назву &quot;%1&quot; нельга выкарыстаць.&lt;/b&gt;&lt;p&gt;Паспрабуйце іншую, з меншай колькасцю сімвалаў або без знакаў прыпынку.</translation>
-    </message>
-    <message>
-        <location line="+64"/>
+        <location filename="build_ts/octave-qt/qfilesystemmodel.cpp" line="+941"/>
         <source>Name</source>
         <translation>Назва</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+3"/>
         <source>Size</source>
         <translation>Памер</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+5"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
         <translation>Тып (Kind)</translation>
@@ -322,7 +330,7 @@ Do you want to delete it anyway?</source>
         <translation>Тып</translation>
     </message>
     <message>
-        <location line="+7"/>
+        <location line="+8"/>
         <source>Date Modified</source>
         <translation>Дата змянення</translation>
     </message>
@@ -330,12 +338,12 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QFontDialog</name>
     <message>
-        <location filename="build_ts/octave-qt/qfontdialog.cpp" line="+183"/>
+        <location filename="build_ts/octave-qt/qfontdialog.cpp" line="+145"/>
         <source>Select Font</source>
         <translation>Пазначыць шрыфт</translation>
     </message>
     <message>
-        <location line="+585"/>
+        <location line="+599"/>
         <source>&amp;Font</source>
         <translation>&amp;Шрыфт</translation>
     </message>
@@ -350,12 +358,12 @@ Do you want to delete it anyway?</source>
         <translation>&amp;Памер</translation>
     </message>
     <message>
-        <location line="+4"/>
+        <location line="+1"/>
         <source>Effects</source>
         <translation>Эфекты</translation>
     </message>
     <message>
-        <location line="+2"/>
+        <location line="+1"/>
         <source>Stri&amp;keout</source>
         <translation>Закрэ&amp;слены</translation>
     </message>
@@ -378,12 +386,12 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+124"/>
+        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
         <source>Search for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="+3"/>
         <source>Previous search</source>
         <translation type="unfinished"></translation>
     </message>
@@ -393,45 +401,15 @@ Do you want to delete it anyway?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
+        <location line="-3"/>
         <source>Search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Advanced search</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QInputDialog</name>
     <message>
-        <location filename="build_ts/octave-qt/qinputdialog.cpp" line="+223"/>
+        <location filename="build_ts/octave-qt/qinputdialog.cpp" line="+203"/>
         <source>Enter a value:</source>
         <translation>Задайце значэнне:</translation>
     </message>
@@ -439,7 +417,7 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QMessageBox</name>
     <message>
-        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-2233"/>
+        <location filename="build_ts/octave-qt/qmessagebox.cpp" line="-2423"/>
         <source>Show Details...</source>
         <translation>Падрабязнасці...</translation>
     </message>
@@ -449,28 +427,18 @@ Do you want to delete it anyway?</source>
         <translation>Схаваць падрабязнасці...</translation>
     </message>
     <message>
-        <location line="+288"/>
-        <location line="+845"/>
-        <source>OK</source>
-        <translation>Добра</translation>
+        <location line="+1843"/>
+        <source>&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across all major desktop operating systems. It is also available for embedded Linux and other embedded and mobile operating systems.&lt;/p&gt;&lt;p&gt;Qt is available under multiple licensing options designed to accommodate the needs of our various users.&lt;/p&gt;&lt;p&gt;Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of GNU (L)GPL.&lt;/p&gt;&lt;p&gt;Qt licensed under GNU (L)GPL is appropriate for the development of Qt&amp;nbsp;applications provided you can comply with the terms and conditions of the respective licenses.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;http://%2/&quot;&gt;%2&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;&lt;p&gt;Copyright (C) %1 The Qt Company Ltd and other contributors.&lt;/p&gt;&lt;p&gt;Qt and the Qt logo are trademarks of The Qt Company Ltd.&lt;/p&gt;&lt;p&gt;Qt is The Qt Company Ltd product developed as an open source project. See &lt;a href=&quot;http://%3/&quot;&gt;%3&lt;/a&gt; for more information.&lt;/p&gt;</source>
+        <extracomment>Leave this text untranslated or include a verbatim copy of it below and note that it is the authoritative version in case of doubt.</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Help</source>
-        <translation>Даведка</translation>
-    </message>
-    <message>
-        <location line="+483"/>
+        <location line="-6"/>
         <source>&lt;h3&gt;About Qt&lt;/h3&gt;&lt;p&gt;This program uses Qt version %1.&lt;/p&gt;</source>
         <translation>&lt;h3&gt;Пра Qt&lt;/h3&gt;&lt;p&gt;Гэтая праграма выкарыстоўва Qt версіі %1.&lt;/p&gt;</translation>
     </message>
     <message>
-        <location line="+5"/>
-        <source>&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across all major desktop operating systems. It is also available for embedded Linux and other embedded and mobile operating systems.&lt;/p&gt;&lt;p&gt;Qt is available under three different licensing options designed to accommodate the needs of our various users.&lt;/p&gt;&lt;p&gt;Qt licensed under our commercial license agreement is appropriate for development of proprietary/commercial software where you do not want to share any source code with third parties or otherwise cannot comply with the terms of the GNU LGPL version 3 or GNU LGPL version 2.1.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU LGPL version 3 is appropriate for the development of Qt&amp;nbsp;applications provided you can comply with the terms and conditions of the GNU LGPL version 3.&lt;/p&gt;&lt;p&gt;Qt licensed under the GNU LGPL version 2.1 is appropriate for the development of Qt&amp;nbsp;applications provided you can comply with the terms and conditions of the GNU LGPL version 2.1.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;http://%2/&quot;&gt;%2&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;&lt;p&gt;Copyright (C) %1 The Qt Company Ltd and other contributors.&lt;/p&gt;&lt;p&gt;Qt and the Qt logo are trademarks of The Qt Company Ltd.&lt;/p&gt;&lt;p&gt;Qt is The Qt Company Ltd product developed as an open source project. See &lt;a href=&quot;http://%3/&quot;&gt;%3&lt;/a&gt; for more information.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+30"/>
+        <location line="+33"/>
         <source>About Qt</source>
         <translation>Пра Qt</translation>
     </message>
@@ -507,45 +475,84 @@ Do you want to delete it anyway?</source>
     </message>
 </context>
 <context>
-    <name>QPPDOptionsModel</name>
-    <message>
-        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="+1238"/>
-        <source>Name</source>
-        <translation>Назва</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Value</source>
-        <translation>Значэнне</translation>
-    </message>
-</context>
-<context>
     <name>QPageSetupWidget</name>
     <message>
-        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="+304"/>
-        <source>Centimeters (cm)</source>
-        <translation>Сантыметры (см)</translation>
-    </message>
-    <message>
-        <location line="+0"/>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="+260"/>
         <source>Millimeters (mm)</source>
         <translation>Міліметры (мм)</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>Inches (in)</source>
         <translation>Цалі (цл)</translation>
     </message>
     <message>
-        <location line="+0"/>
+        <location line="+1"/>
         <source>Points (pt)</source>
         <translation>Пункты (пт)</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Pica (P̸)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Didot (DD)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cicero (CC)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+68"/>
+        <location line="+17"/>
+        <source>Custom</source>
+        <translation type="unfinished">Адмысловы</translation>
+    </message>
+    <message>
+        <location line="+60"/>
+        <source>mm</source>
+        <extracomment>Unit &apos;Millimeter&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>pt</source>
+        <extracomment>Unit &apos;Points&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>in</source>
+        <extracomment>Unit &apos;Inch&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>P̸</source>
+        <extracomment>Unit &apos;Pica&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>DD</source>
+        <extracomment>Unit &apos;Didot&apos;</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>CC</source>
+        <extracomment>Unit &apos;Cicero&apos;</extracomment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QPlatformTheme</name>
     <message>
-        <location filename="build_ts/octave-qt/qplatformtheme.cpp" line="+710"/>
+        <location filename="build_ts/octave-qt/qplatformtheme.cpp" line="+775"/>
         <source>OK</source>
         <translation type="unfinished">Добра</translation>
     </message>
@@ -638,166 +645,11 @@ Do you want to delete it anyway?</source>
 <context>
     <name>QPrintDialog</name>
     <message>
-        <location filename="build_ts/octave-qt/qabstractprintdialog.cpp" line="+116"/>
-        <location line="+13"/>
-        <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+272"/>
+        <location filename="build_ts/octave-qt/qabstractprintdialog.cpp" line="+61"/>
+        <location line="+16"/>
+        <location filename="build_ts/octave-qt/qprintdialog_win.cpp" line="+239"/>
         <source>Print</source>
         <translation>Друк</translation>
-    </message>
-    <message>
-        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="-232"/>
-        <source>A0</source>
-        <translation>A0</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A1</source>
-        <translation>A1</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A2</source>
-        <translation>A2</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A3</source>
-        <translation>A3</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A4</source>
-        <translation>A4</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A5</source>
-        <translation>A5</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A6</source>
-        <translation>A6</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A7</source>
-        <translation>A7</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A8</source>
-        <translation>A8</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>A9</source>
-        <translation>A9</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B0</source>
-        <translation>B0</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B1</source>
-        <translation>B1</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B2</source>
-        <translation>B2</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B3</source>
-        <translation>B3</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B4</source>
-        <translation>B4</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B5</source>
-        <translation>B5</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B6</source>
-        <translation>B6</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B7</source>
-        <translation>B7</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B8</source>
-        <translation>B8</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B9</source>
-        <translation>B9</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>B10</source>
-        <translation>B10</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>C5E</source>
-        <translation>C5E</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>DLE</source>
-        <translation>DLE</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Executive</source>
-        <translation>Executive</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Folio</source>
-        <translation>Folio</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Ledger</source>
-        <translation>Ledger</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Legal</source>
-        <translation>Legal</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Letter</source>
-        <translation>Letter</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Tabloid</source>
-        <translation>Tabloid</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>US Common #10 Envelope</source>
-        <translation>US Common #10 Envelope</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Custom</source>
-        <translation>Адмысловы</translation>
     </message>
     <message>
         <location filename="build_ts/octave-qt/qprintdialog_qws.cpp" line="+148"/>
@@ -980,48 +832,84 @@ Do you want to delete it anyway?</source>
         <translation>Друкаваць бягучую старонку</translation>
     </message>
     <message>
-        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="-844"/>
-        <location line="+68"/>
+        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="+608"/>
+        <source>All Pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Odd Pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Even Pages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <location line="+224"/>
         <source>&amp;Options &gt;&gt;</source>
         <translation>&amp;Настаўленні &gt;&gt;</translation>
     </message>
     <message>
-        <location line="-63"/>
+        <location line="-219"/>
         <source>&amp;Print</source>
         <translation>&amp;Друкаваць</translation>
     </message>
     <message>
-        <location line="+67"/>
+        <location line="+223"/>
         <source>&amp;Options &lt;&lt;</source>
         <translation>&amp;Настаўленні &lt;&lt;</translation>
     </message>
     <message>
-        <location line="+260"/>
+        <location line="+146"/>
+        <source>Invalid Pages Definition</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>%1 does not follow the correct syntax. Please use &apos;,&apos; to separate ranges and pages, &apos;-&apos; to define ranges and make sure ranges do not intersect with each other.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Duplex Settings Conflicts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are conflicts in duplex settings. Do you want to fix them?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+76"/>
         <source>Print to File (PDF)</source>
         <translation>Друк у файл (PDF)</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Print to File (Postscript)</source>
-        <translation>Друк у файл (Postscript)</translation>
+        <location line="+55"/>
+        <source>Write PDF file</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+47"/>
+        <location line="+100"/>
+        <source>Options &apos;Pages Per Sheet&apos; and &apos;Page Set&apos; cannot be used together.
+Please turn one of those options off.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-101"/>
         <source>Local file</source>
         <translation>Лакальны файл</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>Write %1 file</source>
-        <translation>Запісаць %1-файл</translation>
-    </message>
-    <message>
-        <location line="+71"/>
+        <location line="+48"/>
         <source>Print To File ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location line="+78"/>
+        <location line="+22"/>
         <source>%1 is a directory.
 Please choose a different file name.</source>
         <translation>%1 - гэта каталог.
@@ -1047,9 +935,74 @@ Do you want to overwrite it?</source>
         <translation>Значэнне &apos;З&apos; не можа перавышаць значэнне &apos;Да&apos;.</translation>
     </message>
     <message>
-        <location line="+1"/>
-        <source>OK</source>
-        <translation>Добра</translation>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="-155"/>
+        <source>Left to Right, Top to Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Left to Right, Bottom to Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Right to Left, Bottom to Top</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Right to Left, Top to Bottom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Bottom to Top, Left to Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Bottom to Top, Right to Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Top to Bottom, Left to Right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Top to Bottom, Right to Left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>1 (1x1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>2 (2x1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>4 (2x2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>6 (2x3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>9 (3x3)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>16 (4x4)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1057,8 +1010,45 @@ Do you want to overwrite it?</source>
     <message>
         <location filename="build_ts/octave-qt/qabstractpagesetupdialog.cpp" line="+68"/>
         <location line="+12"/>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_unix.cpp" line="+389"/>
+        <location line="+8"/>
+        <location filename="build_ts/octave-qt/qpagesetupdialog_win.cpp" line="+18"/>
+        <location line="+7"/>
         <source>Page Setup</source>
         <translation>Настаўленні старонкі</translation>
+    </message>
+</context>
+<context>
+    <name>QPrintPropertiesDialog</name>
+    <message>
+        <location filename="build_ts/octave-qt/qprintdialog_unix.cpp" line="-961"/>
+        <source>Printer Properties</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Job Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+62"/>
+        <source>Page Setup Conflicts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are conflicts in page setup options. Do you want to fix them?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Advanced Option Conflicts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>There are conflicts in some advanced options. Do you want to fix them?</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1853,7 +1843,7 @@ Do you want to overwrite it?</source>
 <context>
     <name>QsciScintilla</name>
     <message>
-        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4475"/>
+        <location filename="build_ts/octave-qsci/qsciscintilla.cpp" line="+4478"/>
         <source>&amp;Undo</source>
         <translation>&amp;Адрабіць</translation>
     </message>

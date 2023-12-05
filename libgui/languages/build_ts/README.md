@@ -2,7 +2,7 @@
 
 ## Why updating and when?
 
-Before a new release of Octave, the language files  `libgui/languages/*.ts` have to be updated with changed or new strings in the source files in order to add translations aferwards.
+Before a new release of Octave, the language files  `libgui/languages/*.ts` have to be updated with changed or new strings in the source files in order to add translations afterwards.
 
 ## How to update the files
 

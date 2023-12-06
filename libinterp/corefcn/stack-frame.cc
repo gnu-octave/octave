@@ -2141,10 +2141,13 @@ public:
 
   octave_value get_auto_fcn_var (auto_var_type avt) const
   {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
     if (avt != stack_frame::auto_var_type::ARG_NAMES)
       return m_auto_vars.at (avt);
     if (m_parent_link->is_bytecode_fcn_frame ())
       return m_parent_link->get_active_bytecode_call_arg_names ();
+#endif
+
     return m_auto_vars.at (avt);
   }
 

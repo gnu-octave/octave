@@ -38,7 +38,9 @@
 #include "ovl.h"
 #include "pt-arg-list.h"
 #include "pt-bp.h"
-#include "pt-bytecode-vm.h"
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+#  include "pt-bytecode-vm.h"
+#endif
 #include "pt-eval.h"
 #include "pt-exp.h"
 #include "pt-mat.h"

@@ -2209,11 +2209,13 @@ tree_evaluator::get_auto_fcn_var (stack_frame::auto_var_type avt) const
   return m_call_stack.get_auto_fcn_var (avt);
 }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 void
 tree_evaluator::set_active_bytecode_ip (int ip)
 {
   m_call_stack.set_active_bytecode_ip (ip);
 }
+#endif
 
 void
 tree_evaluator::define_parameter_list_from_arg_vector
@@ -4648,8 +4650,10 @@ void tree_evaluator::add_autoload (const std::string& fcn,
 {
   std::string file_name = check_autoload_file (nm);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_INTERPRETER)
   // Signal to load path that the function cache is invalid
   octave::load_path::signal_clear_fcn_cache ();
+#endif
 
   m_autoload_map[fcn] = file_name;
 }
@@ -4659,8 +4663,10 @@ void tree_evaluator::remove_autoload (const std::string& fcn,
 {
   check_autoload_file (nm);
 
+#if defined (OCTAVE_ENABLE_BYTECODE_INTERPRETER)
   // Signal to load path that the function cache is invalid
   octave::load_path::signal_clear_fcn_cache ();
+#endif
 
   // Remove function from symbol table and autoload map.
   symbol_table& symtab = m_interpreter.get_symbol_table ();

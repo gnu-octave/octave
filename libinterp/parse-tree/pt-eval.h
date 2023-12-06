@@ -412,9 +412,11 @@ public:
 
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
-  void set_active_bytecode_ip (int ip);
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+ void set_active_bytecode_ip (int ip);
+#endif
 
-  void define_parameter_list_from_arg_vector
+ void define_parameter_list_from_arg_vector
   (tree_parameter_list *param_list, const octave_value_list& args);
 
   void undefine_parameter_list (tree_parameter_list *param_list);

@@ -321,9 +321,11 @@ public:
 
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   void set_active_bytecode_ip (int ip);
+#endif
 
-private:
+ private:
 
   void get_new_frame_index_and_links
   (std::size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,

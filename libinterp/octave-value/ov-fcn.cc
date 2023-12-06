@@ -40,7 +40,9 @@
 #include "interpreter.h"
 #include "lo-array-errwarn.h"
 
+#if defined (OCTAVE_ENABLE_BYTECODE_INTERPRETER)
 #include "pt-bytecode-walk.h"
+#endif
 
 octave_base_value *
 octave_function::clone () const

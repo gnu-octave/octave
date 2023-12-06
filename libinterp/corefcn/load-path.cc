@@ -251,7 +251,9 @@ m_interpreter (interp), m_package_map (), m_top_level_package (),
 m_dir_info_list (), m_init_dirs (), m_command_line_path ()
 { }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 std::atomic<octave_idx_type> load_path::s_n_updated;
+#endif
 
 void
 load_path::initialize (bool set_initial_path)
@@ -294,7 +296,9 @@ load_path::initialize (bool set_initial_path)
 void
 load_path::clear ()
 {
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   signal_clear_fcn_cache ();
+#endif
 
   m_dir_info_list.clear ();
 
@@ -419,7 +423,9 @@ load_path::update ()
   // preserve the correct directory ordering for new files that
   // have appeared.
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   signal_clear_fcn_cache ();
+#endif
 
   m_top_level_package.clear ();
 

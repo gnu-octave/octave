@@ -232,7 +232,9 @@ public:
   virtual bool is_user_script_frame () const { return false; }
   virtual bool is_user_fcn_frame () const { return false; }
   virtual bool is_scope_frame () const { return false; }
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   virtual bool is_bytecode_fcn_frame () const { return false; }
+#endif
 
   virtual void clear_values ();
 
@@ -469,6 +471,7 @@ public:
     install_variable (sym, value, global);
   }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   virtual octave_value get_active_bytecode_call_arg_names ()
   {
     panic_impossible (); // Only bytecode frame need to implement this
@@ -478,6 +481,7 @@ public:
   {
     panic_impossible (); // Only bytecode frame need to implement this
   }
+#endif
 
   virtual octave_value get_auto_fcn_var (auto_var_type) const = 0;
 

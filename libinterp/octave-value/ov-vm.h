@@ -31,7 +31,7 @@
 #include "ov.h"
 #include "load-path.h"
 
-
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 // octave_value_vm is to be used only by the VM
 // and need to have the same bit representation as
 // an octave_value.
@@ -238,5 +238,7 @@ private:
   std::string m_types;
   octave_value m_obj_to_call;
 };
+
+#endif
 
 #endif

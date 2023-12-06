@@ -51,11 +51,6 @@ class type_info;
 class scope_stack_frame;
 class base_value_stack_frame;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-class vm;
-class bytecode_fcn_stack_frame;
-#endif
-
 OCTAVE_END_NAMESPACE(octave)
 
 class Cell;
@@ -1545,110 +1540,6 @@ public:
   }
 
 protected:
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  // Functions for use by the VM.
-  friend class octave_value_ref;
-  friend class octave_value_vm;
-  friend class octave::vm;
-  friend class octave::bytecode_fcn_stack_frame;
-  friend class octave::scope_stack_frame;
-  friend class octave::base_value_stack_frame;
-  friend class octave_value_ref_ptr;
-
-  bool is_ref () const { return m_rep->is_ref (); }
-
-  bool is_vm_chainargs_wrapper () const { return m_rep->is_vm_chainargs_wrapper (); }
-
-  octave_value_ref * ref_rep () { return m_rep->ref_rep (); }
-
-  bool is_nil () const { return m_rep == nil_rep (); }
-
-  // True for the types based on ov-base-mat
-  bool is_full_num_matrix () const
-  { return m_rep->is_full_num_matrix (); }
-
-  bool is_function_cache () const
-  { return m_rep->is_function_cache (); }
-
-  // function handles might have a function cache embedded
-  bool has_function_cache () const
-  { return m_rep->has_function_cache (); }
-
-  octave_function * get_cached_fcn (const octave_value_list& args)
-  { return m_rep->get_cached_fcn (args); }
-
-  // Arguments need to be pointing to union stack_element:s.
-  // Using void* to avoid polluting namespace.
-  octave_function * get_cached_fcn (void *beg, void *end)
-  { return m_rep->get_cached_fcn (beg, end); }
-
-  // Returns true if the octave_value is either undefined or
-  // or a function.
-  bool is_maybe_function () const
-  { return m_rep->is_maybe_function (); }
-
-  bool vm_need_storable_call () const
-  {
-    return m_rep->vm_need_storable_call ();
-  };
-
-  bool vm_need_dispatch_assign_rhs ()
-  {
-    return m_rep->vm_need_dispatch_assign_rhs ();
-  }
-
-  bool vm_need_dispatch_assign_lhs ()
-  {
-    return m_rep->vm_need_dispatch_assign_lhs ();
-  }
-
-  bool vm_need_dispatch_push ()
-  {
-    return m_rep->vm_need_dispatch_push ();
-  }
-
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
-  {
-    return m_rep->vm_dispatch_call ();
-  }
-
-  void maybe_call_dtor () { m_rep->maybe_call_dtor (); }
-
-  octave_value
-  checked_full_matrix_elem (octave_idx_type n) const
-  { return m_rep->checked_full_matrix_elem (n); }
-
-  octave_value
-  checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const
-  { return m_rep->checked_full_matrix_elem (i, j); }
-
-  octave_value
-  vm_extract_forloop_value (octave_idx_type idx)
-  {
-    return m_rep->vm_extract_forloop_value (idx);
-  }
-
-  double
-  vm_extract_forloop_double (octave_idx_type idx)
-  {
-    return m_rep->vm_extract_forloop_double (idx);
-  }
-
-  bool
-  maybe_update_double (double d)
-  {
-    return m_rep->maybe_update_double (d);
-  }
-
-  octave_value
-  maybe_as_trivial_range ();
-
-  bool
-  is_trivial_range () { return m_rep->is_trivial_range (); }
-
-#endif
 
   //! The real representation.
   octave_base_value *m_rep;

@@ -50,10 +50,6 @@ class tree_evaluator;
 class symbol_info_list;
 class unwind_protect;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-class vm;
-#endif
-
 class
 OCTINTERP_API
 call_stack
@@ -169,17 +165,6 @@ public:
   void push (octave_user_script *script);
 
   void push (octave_function *fcn);
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  void push (vm &vm, octave_user_function *fcn, int nargout, int nargin);
-
-  void push (vm &vm, octave_user_script *fcn, int nargout, int nargin);
-
-  void push (vm &vm, octave_user_function *fcn, int nargout, int nargin,
-             const std::shared_ptr<stack_frame>& closure_frames);
-
-#endif
 
   void set_location (int l, int c)
   {
@@ -321,11 +306,7 @@ public:
 
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  void set_active_bytecode_ip (int ip);
-#endif
-
- private:
+private:
 
   void get_new_frame_index_and_links
   (std::size_t& new_frame_idx, std::shared_ptr<stack_frame>& parent_link,

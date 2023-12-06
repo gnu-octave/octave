@@ -282,28 +282,6 @@ octave_base_value::index_vector (bool /* require_integers */) const
   octave::err_invalid_index (nm.c_str ());
 }
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-octave_value
-octave_base_value::vm_extract_forloop_value (octave_idx_type idx)
-{
-  return fast_elem_extract (idx).as_double_or_copy ();
-}
-
-double
-octave_base_value::vm_extract_forloop_double (octave_idx_type)
-{
-  error ("Type error extracting for loop iterator double value for VM");
-}
-
-bool
-octave_base_value::maybe_update_double (double)
-{
-  return false;
-}
-
-#endif
-
 octave_value
 octave_base_value::simple_subsasgn (char type, octave_value_list& idx,
                                     const octave_value& rhs)
@@ -966,35 +944,6 @@ octave_base_value::function_value (bool silent)
   return nullptr;
 }
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-octave_base_value::vm_call_dispatch_type
-octave_base_value::vm_dispatch_call ()
-{
-  // This is the fallback way to determine the dispatch type
-  // for octave_base_value classes that does not implement vm_dispatch_call ()
-
-  bool has_function_cache = this->has_function_cache ();
-  bool is_defined = this->is_defined ();
-
-  if (! has_function_cache && is_defined)
-    return vm_call_dispatch_type::OCT_SUBSREF;
-  else if (has_function_cache)
-      return vm_call_dispatch_type::OCT_CALL;
-  else
-      return vm_call_dispatch_type::OCT_FN_LOOKUP;
-}
-
-octave_value_ref *
-octave_base_value::ref_rep ()
-{
-  err_wrong_type_arg ("octave_base_value::ref_value()", type_name ());
-
-  return nullptr;
-}
-
-#endif
-
 octave_user_function *
 octave_base_value::user_function_value (bool silent)
 {
@@ -1468,22 +1417,6 @@ octave_base_value::fast_elem_insert_self (void *, builtin_type_t) const
 {
   return false;
 }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-octave_value
-octave_base_value::checked_full_matrix_elem (octave_idx_type) const
-{
-  err_wrong_type_arg ("octave_base_value::checked_full_matrix_elem (octave_idx_type)", type_name ());
-}
-
-octave_value
-octave_base_value::checked_full_matrix_elem (octave_idx_type, octave_idx_type) const
-{
-  err_wrong_type_arg ("octave_base_value::checked_full_matrix_elem (octave_idx_type, octave_idx_type)", type_name ());
-}
-
-#endif
 
 static octave_base_value *
 oct_conv_matrix_conv (const octave_base_value&)

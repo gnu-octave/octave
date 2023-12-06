@@ -57,9 +57,6 @@
 #include "pr-output.h"
 #include "pt-arg-list.h"
 #include "pt-assign.h"
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-#  include "pt-bytecode-walk.h"
-#endif
 #include "pt-cmd.h"
 #include "pt-eval.h"
 #include "pt-exp.h"
@@ -232,24 +229,9 @@ public:
   friend bool is_equal_to (const simple_fcn_handle& fh1,
                            const simple_fcn_handle& fh2);
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  octave_function *
-  get_cached_fcn (const octave_value_list &args);
-
-  octave_function *
-  get_cached_fcn (void *beg, void *end);
-
-  bool has_function_cache () const;
-#endif
-
 private:
 
   octave_value m_fcn;
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  // Only used by the VM via get_cached_fcn() and has_function_cache()
-  octave_fcn_cache m_cache;
-#endif
 };
 
 class scoped_fcn_handle : public base_fcn_handle
@@ -319,17 +301,6 @@ public:
 
   friend bool is_equal_to (const scoped_fcn_handle& fh1,
                            const scoped_fcn_handle& fh2);
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  octave_function *
-  get_cached_fcn (void *, void *) { return m_fcn.function_value (); }
-
-  octave_function *
-  get_cached_fcn (const octave_value_list&) { return m_fcn.function_value (); }
-
-  bool
-  has_function_cache () const { return true; }
-#endif
 
 protected:
 
@@ -715,21 +686,6 @@ public:
 
   bool parse (const std::string& fcn_text);
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  octave_function *
-  get_cached_fcn (const octave_value_list&) { return m_fcn.function_value (); }
-
-  octave_function *
-  get_cached_fcn (void *, void *) { return m_fcn.function_value (); }
-
-  // TODO: This is a hack to get uncompiled anonymous functions to be subsrefed in the VM
-  bool has_function_cache () const
-  {
-    octave_function *fn = m_fcn.function_value ();
-    return fn ? fn->is_compiled () : false;
-  }
-#endif
-
 protected:
 
   // The function we are handling.
@@ -780,11 +736,6 @@ public:
   {
     return m_stack_context;
   }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  // Compile the underlying function to bytecode for the VM.
-  void compile ();
-#endif
 
 protected:
 
@@ -1002,227 +953,6 @@ bool is_equal_to (const internal_fcn_handle& fh1,
   else
     return false;
 }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-// FIXME: Find a way to avoid duplication of code in
-// simple_fcn_handle::call
-
-octave_function *
-simple_fcn_handle::
-get_cached_fcn (const octave_value_list &args)
-{
-  if (m_cache.has_cached_function (args))
-    return m_cache.get_cached_fcn ();
-
-  {
-    // The lookup is done like in call()
-    interpreter& interp = __get_interpreter__ ();
-    symbol_table& symtab = interp.get_symbol_table ();
-
-    octave_value fcn_to_call;
-    octave_value ov_fcn = symtab.find_function (m_name, args);
-
-    if (m_fcn.is_defined ())
-      {
-        // A simple function was found when the handle was created.
-        // Use that unless we find a class method to override it.
-
-        fcn_to_call = m_fcn;
-
-        if (ov_fcn.is_defined ())
-          {
-            octave_function *fcn = ov_fcn.function_value ();
-
-            std::string dispatch_class = fcn->dispatch_class ();
-
-            if (fcn->is_class_method ())
-              {
-                // Function found through lookup is a class method
-                // so use it instead of the simple one found when
-                // the handle was created.
-
-                fcn_to_call = ov_fcn;
-              }
-          }
-      }
-    else
-      {
-        // There was no simple function found when the handle was
-        // created so use the one found here (if any).
-
-        fcn_to_call = ov_fcn;
-      }
-
-
-    if (! fcn_to_call.is_defined ())
-      err_invalid_fcn_handle (m_name);
-
-    m_cache.set_cached_function (fcn_to_call, args, 0);
-
-    return fcn_to_call.function_value ();
-  }
-}
-
-octave_function *
-simple_fcn_handle::
-get_cached_fcn (void *pbeg, void *pend)
-{
-  if (m_cache.has_cached_function (pbeg, pend))
-    return m_cache.get_cached_fcn ();
-
-  octave::stack_element *beg = static_cast<octave::stack_element *> (pbeg);
-  octave::stack_element *end = static_cast<octave::stack_element *> (pend);
-
-  octave_value_list args;
-  while (beg != end)
-    args.append ((beg++)->ov);
-
-  return get_cached_fcn (args); // TODO: Avoid extra call to has_cached_function()
-}
-
-// FIXME: Find a way to avoid duplication of code in
-// simple_fcn_handle::call
-// Like call(), but instead returns true if the call() would end
-// up with another call(), or false if there would be a subsref()
-// or an error on the path to subsref() call.
-bool
-simple_fcn_handle::has_function_cache () const
-{
-  // FIXME: if m_name has a '.' in the name, lookup first component.  If
-  // it is a classdef meta object, then build TYPE and IDX arguments and
-  // make a subsref call using them.
-
-  interpreter& interp = __get_interpreter__ ();
-
-  octave_value fcn_to_call;
-
-  // The following code is similar to part of
-  // tree_evaluator::visit_index_expression but simpler because it
-  // handles a more restricted case.
-
-  symbol_table& symtab = interp.get_symbol_table ();
-
-  std::size_t pos = m_name.find ('.');
-
-  if (pos != std::string::npos)
-    {
-      // FIXME: check to see which of these cases actually work in
-      // Octave and Matlab.  For the last two, assume handle is
-      // created before object is defined as an object.
-      //
-      // We can have one of
-      //
-      //   pkg-list . fcn  (args)
-      //   pkg-list . cls . meth (args)
-      //   class-name . method  (args)
-      //   class-name . static-method  (args)
-      //   object . method  (args)
-      //   object . static-method  (args)
-
-      // Evaluate package elements until we find a function,
-      // classdef object, or classdef_meta object that is not a
-      // package.  An object may only appear as the first element,
-      // then it must be followed directly by a function name.
-
-      std::size_t beg = 0;
-      std::size_t end = pos;
-
-      std::vector<std::string> idx_elts;
-
-      while (true)
-        {
-          end = m_name.find ('.', beg);
-
-          idx_elts.push_back (m_name.substr (beg, end-beg));
-
-          if (end == std::string::npos)
-            break;
-
-          beg = end+1;
-        }
-
-      std::size_t n_elts = idx_elts.size ();
-
-      bool have_object = false;
-      octave_value partial_expr_val;
-
-      // Lazy evaluation.  The first element was not known to be defined
-      // as an object in the scope where the handle was created.  See if
-      // there is a definition in the current scope.
-
-      partial_expr_val = interp.varval (idx_elts[0]);
-
-      if (partial_expr_val.is_defined ())
-        {
-          if (! partial_expr_val.is_classdef_object () || n_elts != 2)
-            return false;
-
-          have_object = true;
-        }
-      else
-        partial_expr_val = symtab.find_function (idx_elts[0], ovl ());
-
-      std::string type;
-      std::list<octave_value_list> arg_list;
-
-      for (std::size_t i = 1; i < n_elts; i++)
-        {
-          if (partial_expr_val.is_package ())
-            {
-              if (have_object)
-                return false;
-
-              type = ".";
-              arg_list.push_back (ovl (idx_elts[i]));
-
-              try
-                {
-                  // Silently ignore extra output values.
-
-                  octave_value_list tmp_list
-                    = partial_expr_val.subsref (type, arg_list, 0);
-
-                  partial_expr_val
-                    = tmp_list.length () ? tmp_list(0) : octave_value ();
-
-                  if (partial_expr_val.is_cs_list ())
-                    return false;
-
-                  arg_list.clear ();
-                }
-              catch (const index_exception&)
-                {
-                  return false;
-                }
-            }
-          else if (have_object || partial_expr_val.is_classdef_meta ())
-            {
-              // Object or class name must be the next to the last
-              // element (it was the previous one, so if this is the
-              // final element, it should be a classdef method,
-              // but we'll let the classdef or classdef_meta subsref
-              // function sort that out.
-              return false;
-            }
-          else
-            return false;
-        }
-
-      // If we get here, we must have a function to call.
-
-      if (! partial_expr_val.is_function ())
-        return false;
-
-      return true;
-    }
-  else
-    {
-      return true;
-    }
-}
-
-#endif
 
 octave_value_list
 simple_fcn_handle::call (int nargout, const octave_value_list& args)
@@ -2101,11 +1831,6 @@ nested_fcn_handle::call (int nargout, const octave_value_list& args)
   tree_evaluator& tw = __get_evaluator__ ();
 
   octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  if (octave::vm::maybe_compile_or_compiled (oct_usr_fcn))
-    return octave::vm::call (tw, nargout, args, oct_usr_fcn, m_stack_context);
-#endif
 
   tw.push_stack_frame (oct_usr_fcn, m_stack_context);
 
@@ -2994,36 +2719,12 @@ anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
 
   octave_user_function *oct_usr_fcn = m_fcn.user_function_value ();
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  if (octave::vm::maybe_compile_or_compiled (oct_usr_fcn, &m_local_vars))
-    return octave::vm::call (tw, nargout, args, oct_usr_fcn);
-#endif
-
   tw.push_stack_frame (oct_usr_fcn, m_local_vars, m_stack_context);
 
   unwind_action act ([&tw] () { tw.pop_stack_frame (); });
 
   return oct_usr_fcn->execute (tw, nargout, args);
 }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-void anonymous_fcn_handle::compile ()
-{
-  octave_user_code *usr_code = user_function_value ();
-
-  try
-    {
-      compile_anon_user_function (*usr_code, false, m_local_vars);
-    }
-  catch (std::exception &e)
-    {
-      warning ("Auto-compilation of anonymous function failed with message %s", e.what ());
-      usr_code->set_compilation_failed (true);
-    }
-}
-
-#endif
 
 octave_value anonymous_fcn_handle::workspace () const
 {

@@ -144,7 +144,6 @@ COREFCN_SRC = \
   %reldir%/coct-hdf5-types.c \
   %reldir%/colamd.cc \
   %reldir%/colloc.cc \
-  %reldir%/compile.cc \
   %reldir%/conv2.cc \
   %reldir%/daspk.cc \
   %reldir%/dasrt.cc \

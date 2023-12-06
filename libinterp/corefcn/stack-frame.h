@@ -105,10 +105,6 @@ class unwind_protect;
 
 class stack_frame_walker;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-class vm;
-#endif
-
 class stack_frame
 {
 public:
@@ -186,38 +182,6 @@ public:
           const std::shared_ptr<stack_frame>& parent_link,
           const std::shared_ptr<stack_frame>& static_link);
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  // Bytecode function stackframe
-  static std::shared_ptr<stack_frame>
-  create_bytecode (tree_evaluator& tw,
-                   octave_user_code *fcn,
-                   vm &vm,
-                   std::size_t index,
-                   const std::shared_ptr<stack_frame>& parent_link,
-                   const std::shared_ptr<stack_frame>& static_link,
-                   int nargout, int nargin);
-
-  static std::shared_ptr<stack_frame>
-  create_bytecode (tree_evaluator& tw,
-                   octave_user_code *fcn,
-                   vm &vm,
-                   std::size_t index,
-                   const std::shared_ptr<stack_frame>& parent_link,
-                   const std::shared_ptr<stack_frame>& static_link,
-                   const std::shared_ptr<stack_frame>& access_link,
-                   int nargout, int nargin);
-
-  static std::shared_ptr<stack_frame>
-  create_bytecode (tree_evaluator& tw,
-                   octave_user_script *fcn,
-                   vm &vm,
-                   std::size_t index,
-                   const std::shared_ptr<stack_frame>& parent_link,
-                   const std::shared_ptr<stack_frame>& static_link,
-                   int nargout, int nargin);
-#endif
-
   stack_frame (const stack_frame& elt) = default;
 
   stack_frame& operator = (const stack_frame& elt) = delete;
@@ -232,9 +196,6 @@ public:
   virtual bool is_user_script_frame () const { return false; }
   virtual bool is_user_fcn_frame () const { return false; }
   virtual bool is_scope_frame () const { return false; }
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  virtual bool is_bytecode_fcn_frame () const { return false; }
-#endif
 
   virtual void clear_values ();
 
@@ -471,18 +432,6 @@ public:
     install_variable (sym, value, global);
   }
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  virtual octave_value get_active_bytecode_call_arg_names ()
-  {
-    panic_impossible (); // Only bytecode frame need to implement this
-  }
-
-  virtual void set_active_bytecode_ip (int)
-  {
-    panic_impossible (); // Only bytecode frame need to implement this
-  }
-#endif
-
   virtual octave_value get_auto_fcn_var (auto_var_type) const = 0;
 
   virtual void set_auto_fcn_var (auto_var_type, const octave_value&) = 0;
@@ -502,17 +451,9 @@ public:
   }
 
 
-  virtual octave_value& varref (const symbol_record& sym
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-                                , bool deref_refs = true
-#endif
-                                ) = 0;
+  virtual octave_value& varref (const symbol_record& sym) = 0;
 
-  virtual octave_value& varref (std::size_t data_offset
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-                                , bool deref_refs = true
-#endif
-                                );
+  virtual octave_value& varref (std::size_t data_offset);
 
   void assign (const symbol_record& sym, const octave_value& val)
   {
@@ -642,19 +583,6 @@ public:
   }
 
   bool is_closure_context () const { return m_is_closure_context; }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  // The VM needs to tell the bytecode stackframe that it unwinds so
-  // that it can check whether to save the stack.
-  virtual void vm_unwinds () {}
-  virtual void vm_dbg_check_scope () {}
-  virtual void vm_clear_for_cache () {}
-  virtual void vm_enter_script () {}
-  virtual void vm_exit_script () {}
-  virtual void vm_enter_nested () {}
-
-#endif
 
 protected:
 

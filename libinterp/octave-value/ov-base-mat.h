@@ -81,14 +81,6 @@ public:
 
   void maybe_economize () { m_matrix.maybe_economize (); }
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  bool vm_need_storable_call () const { return true; }
-
-  bool is_maybe_function () const { return false; }
-
-#endif
-
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
   // functions.
@@ -215,24 +207,6 @@ public:
   // This function exists to support the MEX interface.
   // You should not use it anywhere else.
   const void * mex_get_data () const { return m_matrix.data (); }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  OCTINTERP_API octave_value
-  vm_extract_forloop_value (octave_idx_type idx);
-
-  octave_value
-  checked_full_matrix_elem (octave_idx_type i) const;
-
-  octave_value
-  checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
-
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
-  {
-    return vm_call_dispatch_type::OCT_SUBSREF;
-  }
-
-#endif
 
 protected:
 

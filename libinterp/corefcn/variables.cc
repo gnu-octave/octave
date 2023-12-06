@@ -1235,13 +1235,6 @@ variables.
 
   string_vector argv = args.make_argv ("clear");
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  // FIXME: This action should probably happen in the functions that
-  // are called below, not here.
-  // Mark any function cache in use by the VM as invalid
-  octave::load_path::signal_clear_fcn_cache ();
-#endif
-
   if (argc == 1)
     {
       do_clear_variables (interp, argv, argc, true);

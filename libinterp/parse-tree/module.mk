@@ -15,10 +15,6 @@ PARSE_TREE_INC = \
   %reldir%/pt-assign.h \
   %reldir%/pt-binop.h \
   %reldir%/pt-bp.h \
-  %reldir%/pt-bytecode.h \
-  %reldir%/pt-bytecode-walk.h \
-  %reldir%/pt-bytecode-vm.h \
-  %reldir%/pt-bytecode-vm-internal.h \
   %reldir%/pt-cbinop.h \
   %reldir%/pt-cell.h \
   %reldir%/pt-check.h \
@@ -68,8 +64,6 @@ PARSE_TREE_SRC = \
   %reldir%/pt-assign.cc \
   %reldir%/pt-binop.cc \
   %reldir%/pt-bp.cc \
-  %reldir%/pt-bytecode-walk.cc \
-  %reldir%/pt-bytecode-vm.cc \
   %reldir%/pt-cbinop.cc \
   %reldir%/pt-cell.cc \
   %reldir%/pt-check.cc \

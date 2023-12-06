@@ -48,95 +48,6 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Functions.
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-// Class that holds a cached reference to a octave function
-// for use in the bytecode VM.
-class
-OCTINTERP_API
-octave_fcn_cache : public octave_base_value
-{
-public:
-  octave_fcn_cache (const std::string &name) :m_fcn_name (name) { }
-  octave_fcn_cache () {}
-
-  octave_base_value *
-  clone () const { return new octave_fcn_cache (*this); }
-
-  bool is_function_cache () const { return true; }
-
-  bool has_function_cache () const { return true; }
-
-  vm_call_dispatch_type vm_dispatch_call ()
-  {
-    return vm_call_dispatch_type::OCT_CALL;
-  }
-
-  octave_function *
-  get_cached_fcn (const octave_value_list& args);
-
-  octave_function *
-  get_cached_fcn (void *beg, void *end);
-
-  octave_function *
-  get_cached_fcn () { return m_cached_function.function_value (); }
-
-  octave_value
-  get_cached_obj ();
-
-  octave_value_list
-  call (octave::tree_evaluator& tw,
-        octave_function *fcn,
-        const octave_value_list& args,
-        int nargout);
-
-  void set_cached_function (octave_value ov, const octave_value_list &args, octave_idx_type current_n_updated);
-
-  bool has_cached_function (const octave_value_list &args) const
-  {
-    if (m_n_updated == 0)
-      return false;
-
-    unsigned vec_n = m_cached_args.size ();
-
-    unsigned n_args = args.length ();
-    if (n_args != vec_n)
-      return false;
-
-    for (unsigned i = 0; i < n_args; i++)
-      {
-        if (args (i).type_id () != m_cached_args [i])
-          return false;
-      }
-
-    return true;
-  }
-
-  bool has_cached_function (void *beg, void *end) const;
-
-  octave_function * get_cached_fcn_if_fresh ();
-
-private:
-
-  octave_function * get_cached_fcn_internal (const octave_value_list& args);
-
-  void clear_cached_function ()
-  {
-    m_cached_object = octave_value {};
-    m_cached_function = octave_value {};
-    m_n_updated = 0;
-    m_cached_args.clear ();
-  }
-
-  octave_value m_cached_object;
-  octave_value m_cached_function;
-  std::vector<int> m_cached_args;
-  octave_idx_type m_n_updated = 0;
-  std::string m_fcn_name;
-};
-
-#endif
-
 class
 OCTINTERP_API
 octave_function : public octave_base_value
@@ -324,21 +235,6 @@ public:
   virtual octave_value_list
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ()) = 0;
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  vm_call_dispatch_type vm_dispatch_call ()
-  {
-    return vm_call_dispatch_type::OCT_CALL;
-  }
-
-  octave_function *
-  get_cached_fcn (void *, void *) { return function_value (); }
-
-  octave_function *
-  get_cached_fcn (const octave_value_list&) { return function_value (); }
-
-  bool has_function_cache () const { return true; }
-#endif
 
  protected:
 

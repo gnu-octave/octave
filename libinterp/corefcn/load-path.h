@@ -215,19 +215,7 @@ public:
   static const int OCT_FILE = 2;
   static const int MEX_FILE = 4;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  static octave_idx_type get_weak_n_updated () { return s_n_updated; }
-
-  static void signal_clear_fcn_cache ()
-  {
-    s_n_updated++;
-  }
-#endif
-
 private:
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  static std::atomic<octave_idx_type> s_n_updated;
-#endif
 
   class dir_info
   {

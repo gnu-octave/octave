@@ -50,10 +50,6 @@
 #include "pt-misc.h"
 #include "pt-pr-code.h"
 #include "pt-stmt.h"
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-#  include "pt-bytecode-vm.h"
-#  include "pt-bytecode-walk.h"
-#endif
 #include "pt-walk.h"
 #include "symtab.h"
 #include "interpreter-private.h"
@@ -99,24 +95,6 @@ octave_user_code::get_file_info ()
     warning ("function file '%s' changed since it was parsed",
              m_file_name.c_str ());
 }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-void
-octave_user_code::clear_bytecode ()
-{
-  m_bytecode = octave::bytecode {};
-
-  auto subs = subfunctions ();
-  for (auto kv : subs)
-    {
-      octave_user_function *sub = kv.second.user_function_value ();
-      if (sub)
-        sub->clear_bytecode ();
-    }
-}
-
-#endif
 
 std::string
 octave_user_code::get_code_line (std::size_t line)
@@ -204,32 +182,6 @@ octave_value_list
 octave_user_script::call (octave::tree_evaluator& tw, int nargout,
                           const octave_value_list& args)
 {
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  if (octave::vm::maybe_compile_or_compiled (this))
-    {
-      // Check that either:
-      //     * There is an eval frame and that it is the top scope or a bytecode frame
-      //     * The caller is top scope or a bytecode frame
-      // , to allow executing the script in the VM. I.e. don't execute scripts in the VM
-      // if the caller is an user function that is not compiled.
-
-      // TODO: "octave_value varval (std::size_t data_offset) const" and "varref" would need to
-      // follow ref_rep() like scope_stack_frame::varref() does for having un-compiled functions
-      // as an eval frame, but that might maybe degrade performance somewhat of the evaluator.
-
-      auto frame = tw.current_user_frame ();
-      auto access_frame = frame->access_link ();
-
-      bool access_frame_is_vm_or_top = access_frame && (access_frame->is_scope_frame () || access_frame->is_bytecode_fcn_frame ());
-      bool caller_is_vm_or_top = frame->is_scope_frame () || frame->is_bytecode_fcn_frame ();
-
-      if (access_frame_is_vm_or_top || caller_is_vm_or_top)
-        return octave::vm::call (tw, nargout, args, this);
-      else
-        warning ("Executing compiled scripts in the VM from an un-compiled function is not supported yet");
-    }
-#endif
-
   tw.push_stack_frame (this);
 
   octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });
@@ -529,11 +481,6 @@ octave_value_list
 octave_user_function::call (octave::tree_evaluator& tw, int nargout,
                             const octave_value_list& args)
 {
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  if (octave::vm::maybe_compile_or_compiled (this))
-    return octave::vm::call (tw, nargout, args, this);
-#endif
-
   tw.push_stack_frame (this);
 
   octave::unwind_action act ([&tw] () { tw.pop_stack_frame (); });

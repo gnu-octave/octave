@@ -1486,25 +1486,6 @@ octave_value::next_subsref (int nargout, const std::string& type,
     return *this;
 }
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-octave_value
-octave_value::maybe_as_trivial_range ()
-{
-  if (m_rep->is_trivial_range ())
-    return *this;
-  if (!is_range ())
-    return *this;
-
-  ov_range<double> range = range_value ();
-  if (!range.could_be_trivial_range ())
-    return *this;
-
-  return range.as_trivial_range ();
-}
-
-#endif
-
 octave_value
 octave_value::next_subsref (bool auto_add, const std::string& type,
                             const std::list<octave_value_list>& idx,

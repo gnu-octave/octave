@@ -43,7 +43,6 @@ code.
 * Function Application::       Applying functions to arrays, cells, and structs
 * Accumulation::               Accumulation functions
 * Memoization::                Memoization techniques
-* Bytecode interpreter::       Bytecode interpreter
 * Miscellaneous Techniques::   Other techniques for speeding up code
 * Examples::
 @end menu
@@ -628,15 +627,6 @@ The function @code{clearAllMemoizedCaches} clears the memoization tables when
 they are no longer needed.
 
 @DOCSTRING(clearAllMemoizedCaches)
-
-@node Bytecode interpreter
-@section Bytecode interpreter
-
-Octave's bytecode interpreter allows faster execution of existing code.
-Beginning with Octave version 9 the bytecode interpreter is built-in by
-default.  However, it is still considered experimental and the related
-functions are not explicitly documented in this manual.  Instead, the command
-@code{bytecode} describes how to invoke it.
 
 @node Miscellaneous Techniques
 @section Miscellaneous Techniques

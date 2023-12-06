@@ -41,9 +41,6 @@
 #include "ov-fcn.h"
 #include "ov-usr-fcn.h"
 #include "pager.h"
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-#  include "pt-bytecode-vm.h"
-#endif
 #include "stack-frame.h"
 #include "syminfo.h"
 #include "symrec.h"
@@ -451,73 +448,6 @@ void call_stack::push (octave_user_script *script)
   m_curr_frame = new_frame_idx;
 }
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-void call_stack::push (vm &vm, octave_user_script *fcn, int nargout, int nargin)
-{
-  std::size_t new_frame_idx;
-  std::shared_ptr<stack_frame> parent_link;
-  std::shared_ptr<stack_frame> static_link;
-
-  get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
-
-  std::shared_ptr<stack_frame> new_frame =
-    stack_frame::create_bytecode (
-       m_evaluator,
-       fcn,
-       vm,
-       new_frame_idx, // ??? index
-       parent_link,
-       static_link,
-       nargout,
-       nargin);
-
-  m_cs.push_back (new_frame);
-
-  m_curr_frame = new_frame_idx;
-}
-
-void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargin,
-                       const std::shared_ptr<stack_frame>& closure_frames)
-{
-  std::size_t new_frame_idx;
-  std::shared_ptr<stack_frame> parent_link;
-  std::shared_ptr<stack_frame> static_link;
-
-  get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
-
-  std::shared_ptr<stack_frame> new_frame
-    = stack_frame::create_bytecode (m_evaluator, fcn, vm,
-                                    new_frame_idx,
-                                    parent_link, static_link, closure_frames,
-                                    nargout, nargin);
-
-  m_cs.push_back (new_frame);
-
-  m_curr_frame = new_frame_idx;
-}
-
-void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargin)
-{
-  std::size_t new_frame_idx;
-  std::shared_ptr<stack_frame> parent_link;
-  std::shared_ptr<stack_frame> static_link;
-
-  get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
-
-  std::shared_ptr<stack_frame> new_frame
-    = stack_frame::create_bytecode (m_evaluator, fcn, vm,
-                                    new_frame_idx, // ??? index
-                                    parent_link, static_link,
-                                    nargout, nargin);
-
-  m_cs.push_back (new_frame);
-
-  m_curr_frame = new_frame_idx;
-}
-
-#endif
-
 void call_stack::push (octave_function *fcn)
 {
   std::size_t new_frame_idx;
@@ -563,11 +493,7 @@ std::size_t call_stack::find_current_user_frame () const
   std::shared_ptr<stack_frame> frm = m_cs[user_frame];
 
   if (! (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
-         || frm->is_scope_frame ()
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-         || frm->is_bytecode_fcn_frame()
-#endif
-         ))
+         || frm->is_scope_frame ()))
     {
       frm = frm->static_link ();
 
@@ -607,11 +533,7 @@ std::size_t call_stack::dbupdown (std::size_t start, int n, bool verbose)
 
   if (! (frm && (frm->is_user_fcn_frame ()
                  || frm->is_user_script_frame ()
-                 || frm->is_scope_frame ()
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-                 || frm->is_bytecode_fcn_frame ()
-#endif
-                 )))
+                 || frm->is_scope_frame ())))
     error ("call_stack::dbupdown: invalid initial frame in call stack!");
 
   // Use index into the call stack to begin the search.  At this point
@@ -647,11 +569,7 @@ std::size_t call_stack::dbupdown (std::size_t start, int n, bool verbose)
       frm = m_cs[xframe];
 
       if (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
-          || frm->is_scope_frame ()
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-          || frm->is_bytecode_fcn_frame ()
-#endif
-          )
+          || frm->is_scope_frame ())
         {
           last_good_frame = xframe;
 
@@ -735,11 +653,7 @@ std::list<std::shared_ptr<stack_frame>>
       std::shared_ptr<stack_frame> frm = m_cs[n];
 
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame ()
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-          || frm->is_bytecode_fcn_frame()
-#endif
-          )
+          || frm->is_scope_frame ())
         {
           if (frm->index () == curr_frame)
             curr_user_frame = frames.size ();
@@ -774,11 +688,7 @@ call_stack::backtrace_info (octave_idx_type& curr_user_frame,
   for (const auto& frm : frames)
     {
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame ()
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-          || frm->is_bytecode_fcn_frame()
-#endif
-          )
+          || frm->is_scope_frame ())
         {
           retval.push_back (frame_info (frm->fcn_file_name (),
                                         frm->fcn_name (print_subfn),
@@ -816,11 +726,7 @@ octave_map call_stack::backtrace (octave_idx_type& curr_user_frame,
   for (const auto& frm : frames)
     {
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame ()
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-          || frm->is_bytecode_fcn_frame()
-#endif
-          )
+          || frm->is_scope_frame ())
         {
           file(k) = frm->fcn_file_name ();
           name(k) = frm->fcn_name (print_subfn);
@@ -1258,14 +1164,6 @@ call_stack::set_nargout (int nargout)
 {
   m_cs[m_curr_frame]->set_nargout (nargout);
 }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-void
-call_stack::set_active_bytecode_ip (int ip)
-{
-  m_cs[m_curr_frame]->set_active_bytecode_ip (ip);
-}
-#endif
 
 octave_value call_stack::get_auto_fcn_var (stack_frame::auto_var_type avt) const
 {

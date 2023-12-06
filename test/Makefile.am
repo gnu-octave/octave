@@ -115,8 +115,6 @@ include classdef-debug/module.mk
 include classdef-multiple-inheritance/module.mk
 include classes/module.mk
 include colon-op/module.mk
-include compile-bench/module.mk
-include compile/module.mk
 include ctor-vs-method/module.mk
 include fcn-handle/module.mk
 include file-encoding/module.mk
@@ -149,11 +147,6 @@ endef
 
 check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests)
-
-if AMCOND_ENABLE_BYTECODE_EVALUATOR
-check-bytecode-evaluator: $(BUILT_SOURCES) $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
-	$(AM_V_at)$(call run-octave-tests,__vm_enable__ (1))
-endif
 
 COVERAGE_DIR = coverage
 COVERAGE_INFO = $(COVERAGE_DIR)/$(PACKAGE).info

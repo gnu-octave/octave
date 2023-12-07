@@ -251,8 +251,6 @@ m_interpreter (interp), m_package_map (), m_top_level_package (),
 m_dir_info_list (), m_init_dirs (), m_command_line_path ()
 { }
 
-std::atomic<octave_idx_type> load_path::s_n_updated;
-
 void
 load_path::initialize (bool set_initial_path)
 {
@@ -294,8 +292,6 @@ load_path::initialize (bool set_initial_path)
 void
 load_path::clear ()
 {
-  signal_clear_fcn_cache ();
-
   m_dir_info_list.clear ();
 
   m_top_level_package.clear ();
@@ -418,8 +414,6 @@ load_path::update ()
   // I don't see a better way to do this because we need to
   // preserve the correct directory ordering for new files that
   // have appeared.
-
-  signal_clear_fcn_cache ();
 
   m_top_level_package.clear ();
 

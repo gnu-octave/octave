@@ -47,10 +47,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class tree_evaluator;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-union stack_element;
-#endif
-
 // Evaluate tree_matrix objects and convert them to octave_value
 // arrays (full and sparse numeric, char, cell, struct, class and
 // anything else that works like an array).  Use a separate class
@@ -161,10 +157,6 @@ public:
     init (row, tw);
   }
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  tm_row_const (const stack_element *beg, const stack_element *end);
-#endif
-
   tm_row_const (const tm_row_const&) = default;
 
   tm_row_const& operator = (const tm_row_const&) = delete;
@@ -190,10 +182,6 @@ private:
   void init_element (const octave_value&, bool&);
 
   void init (const tree_argument_list&, tree_evaluator& tw);
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  void init (const stack_element *beg, const stack_element *end);
-#endif
 };
 
 class tm_const : public tm_info
@@ -210,14 +198,6 @@ public:
   {
     init (tm);
   }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  tm_const (const stack_element *beg, const stack_element *end,
-            octave_idx_type n_rows, tree_evaluator& tw);
-
-  tm_const (const stack_element *beg, const stack_element *end,
-            const std::vector<int>& row_lengths, tree_evaluator& tw);
-#endif
 
   OCTAVE_DISABLE_COPY_MOVE (tm_const)
 
@@ -236,14 +216,6 @@ private:
   std::list<tm_row_const> m_tm_rows;
 
   void init (const tree_matrix& tm);
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  void init (const stack_element *beg, const stack_element *end,
-             octave_idx_type row_length);
-
-  void init (const stack_element *beg, const stack_element *end,
-             const std::vector<int>& row_lengths);
-#endif
 
   octave_value char_array_concat (char string_fill_char) const;
 

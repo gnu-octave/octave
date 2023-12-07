@@ -230,15 +230,6 @@ public:
 
   OCTINTERP_API std::string file_name () const;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  vm_call_dispatch_type vm_dispatch_call ()
-  {
-    return vm_call_dispatch_type::OCT_SUBSREF;
-  }
-
-#endif
-
 private:
 
   octave::cdef_meta_object m_object;

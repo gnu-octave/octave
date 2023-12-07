@@ -62,19 +62,11 @@ class interpreter;
 class push_parser;
 class unwind_protect;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-class vm;
-#endif
-
 // How to evaluate the code that the parse trees represent.
 
 class OCTINTERP_API tree_evaluator : public tree_walker
 {
 public:
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  friend class vm;
-#endif
 
   enum echo_state
   {
@@ -143,9 +135,6 @@ public:
       m_silent_functions (false), m_string_fill_char (' '), m_PS4 ("+ "),
       m_dbstep_flag (0), m_break_on_next_stmt (false), m_echo (ECHO_OFF),
       m_echo_state (false), m_echo_file_name (),
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-      m_vm_dbg_profile_echo (false), m_vm_profiler_active (false),
-#endif
       m_echo_file_pos (1),
       m_echo_files (), m_in_top_level_repl (false),
       m_server_mode (false), m_in_loop_command (false),
@@ -412,9 +401,7 @@ public:
 
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
-  void set_active_bytecode_ip (int ip);
-
-  void define_parameter_list_from_arg_vector
+ void define_parameter_list_from_arg_vector
   (tree_parameter_list *param_list, const octave_value_list& args);
 
   void undefine_parameter_list (tree_parameter_list *param_list);
@@ -449,18 +436,6 @@ public:
   void push_stack_frame (octave_user_script *script);
 
   void push_stack_frame (octave_function *fcn);
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  void push_stack_frame (vm &vm, octave_user_function *fcn, int nargout, int nargin);
-
-  void push_stack_frame (vm &vm, octave_user_script *fcn, int nargout, int nargin);
-
-  void push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin);
-
-  void push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin, const std::shared_ptr<stack_frame>& closure_frames);
-
-#endif
 
   void pop_stack_frame ();
 
@@ -853,9 +828,6 @@ public:
     int old_val = m_echo;
     m_echo = val;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-    update_vm_dbgprofecho_flag ();
-#endif
     return old_val;
   }
 
@@ -882,16 +854,6 @@ public:
   {
     m_echo_file_pos = pos;
   }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  void vm_set_profiler_active (bool val)
-  {
-    m_vm_profiler_active = val;
-    update_vm_dbgprofecho_flag ();
-  }
-
-  bool vm_dbgprofecho_flag () { return m_vm_dbg_profile_echo; }
-#endif
 
  private:
 
@@ -1007,22 +969,6 @@ public:
   bool m_echo_state;
 
   std::string m_echo_file_name;
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  // The VM needs to keep know if the evaluation is in a debug, echo or profiler
-  // state.
-  bool m_vm_dbg_profile_echo; // Set to true if either echo, dbg or vm profiler active
-  bool m_vm_profiler_active; // VM specific profiler flag
-
-  // Set m_vm_dbg_profile_echo to its proper state. Need to be done after each update to
-  // the underlying flags.
-  void update_vm_dbgprofecho_flag ()
-  {
-    m_vm_dbg_profile_echo = m_debug_mode || m_echo || m_vm_profiler_active;
-  }
-
-#endif
 
   // Next line to echo, counting from 1.  We use int here because the
   // parser does.  It also initializes line and column numbers to the

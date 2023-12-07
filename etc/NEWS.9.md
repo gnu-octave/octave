@@ -3,14 +3,6 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 
 ### General improvements
 
-- Octave now has an experimental bytecode interpreter for m-code.  Speedups
-  from 2X to 40X have been observed for different kinds of m-code.  This
-  feature is considered experimental for now.  M-code that cannot yet be
-  handled by the bytecode interpreter falls back automatically to the existing
-  tree-walker interpreter.  User tests of the bytecode interpreter are
-  encouraged.  To learn more, type `bytecode` or `help bytecode` at the Octave
-  prompt.
-
 - `oruntests`: The current directory now changes to the directory
   containing the files with the tests for the duration of the test.  This
   aligns the behavior of this function with Octave's test suite.  This also

@@ -79,12 +79,6 @@ class octave_user_code;
 class octave_fcn_handle;
 class octave_value_list;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-class octave_value_ref;
-class octave_fcn_cache;
-class octave_value_vm;
-#endif
-
 enum builtin_type_t
 {
   btyp_double,
@@ -267,10 +261,6 @@ public:
   };
 
   friend class octave_value;
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  friend class octave_value_vm;
-#endif
 
   octave_base_value ();
 
@@ -814,44 +804,6 @@ public:
 
   virtual octave_base_value * make_storable_value ();
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  virtual bool vm_need_storable_call () const { return false; }
-
-  virtual bool vm_need_dispatch_assign_rhs () { return true; }
-
-  virtual bool vm_need_dispatch_assign_lhs () { return true; }
-
-  virtual bool vm_need_dispatch_push () { return true; }
-
-  enum class vm_call_dispatch_type {
-    OCT_SUBSREF,
-    OCT_FN_LOOKUP,
-    OCT_CALL,
-    OCT_HANDLE,
-    OCT_OBJECT,
-  };
-
-  virtual vm_call_dispatch_type vm_dispatch_call ();
-
-  virtual bool is_ref () const { return false; }
-
-  virtual bool is_vm_chainargs_wrapper () const { return false; }
-
-  virtual octave_value_ref * ref_rep ();
-
-  virtual octave_value
-  vm_extract_forloop_value (octave_idx_type idx);
-
-  virtual double
-  vm_extract_forloop_double (octave_idx_type idx);
-
-  virtual bool maybe_update_double (double d);
-
-  virtual bool is_trivial_range () const { return false; };
-
-#endif
-
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t
   {
@@ -940,16 +892,6 @@ public:
   // calls, which is basically the theoretical minimum.
   virtual bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  virtual octave_value
-  checked_full_matrix_elem (octave_idx_type i) const;
-
-  virtual octave_value
-  checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
-
-#endif
 
 protected:
 

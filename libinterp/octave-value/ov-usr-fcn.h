@@ -36,9 +36,6 @@
 #include "ov-typeinfo.h"
 #include "symscope.h"
 #include "unwind-prot.h"
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-#  include "pt-bytecode.h"
-#endif
 
 class string_vector;
 
@@ -122,29 +119,7 @@ public:
 
   octave_value dump () const;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  void set_bytecode (octave::bytecode &bytecode)
-  {
-    m_bytecode = bytecode;
-  }
-
-  void clear_bytecode ();
-
-  bool is_compiled () const { return m_bytecode.m_code.size (); }
-
-  octave::bytecode &get_bytecode () { return m_bytecode; }
-
-  bool compilation_failed () { return m_compilation_failed; }
-  void set_compilation_failed (bool val) { m_compilation_failed = val; }
-#endif
-
 protected:
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  bool m_compilation_failed = false;
-
-  octave::bytecode m_bytecode;
-#endif
 
   void get_file_info ();
 

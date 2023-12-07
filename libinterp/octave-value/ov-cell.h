@@ -178,15 +178,6 @@ public:
   // You should not use it anywhere else.
   const void * mex_get_data () const;
 
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
-  {
-    return vm_call_dispatch_type::OCT_SUBSREF;
-  }
-
-#endif
-
   octave_value_list
   simple_subsref (char type, octave_value_list& idx, int nargout);
 

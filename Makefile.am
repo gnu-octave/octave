@@ -349,11 +349,6 @@ run-octave: run-octave.in build-aux/subst-script-vals.sh
 	$(AM_V_GEN)$(call simple-filter-rule,build-aux/subst-script-vals.sh) && \
 	chmod a+rx $@
 
-if AMCOND_ENABLE_BYTECODE_EVALUATOR
-check-bytecode-evaluator:
-	$(MAKE) -C test check-bytecode-evaluator
-endif
-
 octave-config.h: config.h build-aux/mk-octave-config-h.sh
 	$(AM_V_GEN)$(SHELL) $(srcdir)/build-aux/mk-octave-config-h.sh $< > $@-t && \
 	$(simple_move_if_change_rule)

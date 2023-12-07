@@ -72,10 +72,6 @@
 #include "unwind-prot.h"
 #include "utils.h"
 #include "variables.h"
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-#  include "pt-bytecode-vm.h"
-#  include "pt-bytecode-walk.h"
-#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -1370,19 +1366,12 @@ tree_evaluator::reset_debug_state ()
                   || m_dbstep_flag != 0
                   || m_break_on_next_stmt
                   || in_debug_repl ());
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  update_vm_dbgprofecho_flag ();
-#endif
 }
 
 void
 tree_evaluator::reset_debug_state (bool mode)
 {
   m_debug_mode = mode;
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  update_vm_dbgprofecho_flag ();
-#endif
 }
 
 void
@@ -2210,12 +2199,6 @@ tree_evaluator::get_auto_fcn_var (stack_frame::auto_var_type avt) const
 }
 
 void
-tree_evaluator::set_active_bytecode_ip (int ip)
-{
-  m_call_stack.set_active_bytecode_ip (ip);
-}
-
-void
 tree_evaluator::define_parameter_list_from_arg_vector
   (tree_parameter_list *param_list, const octave_value_list& args)
 {
@@ -2477,36 +2460,6 @@ void tree_evaluator::push_stack_frame (octave_function *fcn)
 {
   m_call_stack.push (fcn);
 }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-
-void tree_evaluator::push_stack_frame (vm &vm, octave_user_function *fcn, int nargout, int nargin)
-{
-  m_call_stack.push (vm, fcn, nargout, nargin);
-}
-
-void tree_evaluator::push_stack_frame (vm &vm, octave_user_script *fcn, int nargout, int nargin)
-{
-  m_call_stack.push (vm, fcn, nargout, nargin);
-}
-
-void tree_evaluator::push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin)
-{
-  if (fcn->is_user_function ())
-    m_call_stack.push (vm, static_cast<octave_user_function*> (fcn), nargout, nargin);
-  else
-    m_call_stack.push (vm, static_cast<octave_user_script*> (fcn), nargout, nargin);
-}
-
-void tree_evaluator::push_stack_frame (vm &vm, octave_user_code *fcn, int nargout, int nargin,
-                                       const std::shared_ptr<stack_frame>& closure_frames)
-{
-
-  CHECK_PANIC (fcn->is_user_function ());
-  m_call_stack.push (vm, static_cast<octave_user_function*> (fcn), nargout, nargin, closure_frames);
-}
-
-#endif
 
 void tree_evaluator::pop_stack_frame ()
 {
@@ -4646,21 +4599,13 @@ tree_evaluator::reverse_lookup_autoload (const std::string& nm) const
 void tree_evaluator::add_autoload (const std::string& fcn,
                                    const std::string& nm)
 {
-  std::string file_name = check_autoload_file (nm);
-
-  // Signal to load path that the function cache is invalid
-  octave::load_path::signal_clear_fcn_cache ();
-
-  m_autoload_map[fcn] = file_name;
+  m_autoload_map[fcn] = check_autoload_file (nm);
 }
 
 void tree_evaluator::remove_autoload (const std::string& fcn,
                                       const std::string& nm)
 {
   check_autoload_file (nm);
-
-  // Signal to load path that the function cache is invalid
-  octave::load_path::signal_clear_fcn_cache ();
 
   // Remove function from symbol table and autoload map.
   symbol_table& symtab = m_interpreter.get_symbol_table ();
@@ -5008,11 +4953,6 @@ tree_evaluator::echo (const octave_value_list& args, int)
 
   if (cleanup_pushed)
     maybe_set_echo_state ();
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  // Since m_echo might have changed value we need to call this
-  update_vm_dbgprofecho_flag ();
-#endif
 
   return octave_value ();
 }

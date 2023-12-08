@@ -9,6 +9,8 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 ### Matlab compatibility
 
+- `height` and `width` are now aliases for the `rows` and `columns` functions.
+
 ### Alphabetical list of new functions added in Octave 10
 
 ### Deprecated functions, properties, and operators

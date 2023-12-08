@@ -148,11 +148,37 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
+      - name: check with bytecode interpreter
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
+
+      - name: display test suite log with bytecode interpreter
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without bytecode interpreter
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-bci.log"
+          diff -urN ./test-suite.log ./test-suite-bci.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
+
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run:  |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-bci.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite-bci.log)" ] || exit 1
           echo No unknown failing tests.
 
       - name: test history file creation
@@ -355,7 +381,7 @@ jobs:
         run: |
           mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
           XDG_RUNTIME_DIR=$RUNNER_TEMP \
-            xvfb-run -a make -C ./.build check-vm | tee ./test-suite-bci.log
+            xvfb-run -a make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
 
       - name: display test suite log with bytecode interpreter
         continue-on-error: true
@@ -587,11 +613,37 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
+      - name: check with bytecode interpreter
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
+          make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
+
+      - name: display test suite log with bytecode interpreter
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without bytecode interpreter
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-bci.log"
+          diff -urN ./test-suite.log ./test-suite-bci.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
+
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-bci.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite-bci.log)" ] || exit 1
           echo No unknown failing tests.
 
       - name: test history file creation
@@ -825,11 +877,37 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
+      - name: check with bytecode interpreter
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
+          make -C ./.build check-bytecode-evaluator RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite-bci.log
+
+      - name: display test suite log with bytecode interpreter
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without bytecode interpreter
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-bci.log"
+          diff -urN ./test-suite.log ./test-suite-bci.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
+
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-bci.log)" ] || echo "::warning::At least one test failed with bytecode interpreter"
+          [ -z "$(grep -e "REGRESSION" ./test-suite-bci.log)" ] || echo "::warning::At least one regression in test suite with bytecode interpreter"
           echo Finished analyzing test suite results.
 
       - name: test history file creation
@@ -1076,11 +1154,38 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
+      - name: check with bytecode interpreter
+        timeout-minutes: 60
+        run: |
+          mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
+          export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
+          EGREP="grep -E" make -C ./.build check-bytecode-evaluatorm | tee ./test-suite-bci.log
+
+      - name: display test suite log with bytecode interpreter
+        continue-on-error: true
+        # Displaying the log shouldn't take long. Cancel the step if it does.
+        timeout-minutes: 5
+        run: cat ./.build/test/fntests.log
+
+      - name: difference between logs with and without bytecode interpreter
+        continue-on-error: true
+        run: |
+          echo "::group::diff test-suite.log"
+          echo "diff -urN ./test-suite.log ./test-suite-bci.log"
+          diff -urN ./test-suite.log ./test-suite-bci.log || true
+          echo "::endgroup::"
+          echo "::group::diff fntests.log"
+          echo "diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log"
+          diff -urN ./.build/test/fntests-no-bci.log ./.build/test/fntests.log || true
+          echo "::endgroup::"
+
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
           [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
           [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite-bci.log)" ] || echo "::warning::At least one test failed with bytecode interpreter"
+          [ -z "$(grep -e "REGRESSION" ./test-suite-bci.log)" ] || echo "::warning::At least one regression in test suite with bytecode interpreter"
           echo Finished analyzing test suite results.
 
       - name: test history file creation

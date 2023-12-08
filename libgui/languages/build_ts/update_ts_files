@@ -13,7 +13,10 @@ SEARCH_PATH_QT="build_ts/octave-qt"
 SEARCH_PATH_QSCI="build_ts/octave-qsci"
 
 # The directory with translations provided by Qt and QScintilla
-QT_LANG_DIR=/usr/share/qt6/translations
+# FIXME: This constant should not be hardcoded.  Probably best if
+# it could be picked up from the configuration such as HAVE_QTX in config.h.
+QT_VERSION="qt5"
+QT_LANG_DIR=/usr/share/$QT_VERSION/translations
 
 # Now update all ts files
 for file in $(ls -b1 *.ts)
@@ -30,7 +33,7 @@ do
   # Look for translations provided by Qt and QScintilla and extend the search
   # path if no existing translations are found. In this case we have to scan
   # the locally collected source files.
-  if [ $xx_yy != "en_US" ]; then  # No trnaslation required for en_US
+  if [ $xx_yy != "en_US" ]; then  # No translation required for en_US
     # Look for Qt translations
     if [ "`ls $QT_LANG_DIR | grep -i qt_$xx.qm | wc -l`" -eq 0 ] &&
        [ "`ls $QT_LANG_DIR | grep -i qt_$xx_yy.qm | wc -l`" -eq 0 ]; then
@@ -55,7 +58,7 @@ do
   ANS=${ANS:-n}
   if [ $ANS = "y" ]; then
     echo
-    lupdate -qt5 -no-obsolete -locations relative $SEARCH_PATH -ts $file
+    lupdate -$QT_VERSION -no-obsolete -locations relative $SEARCH_PATH -ts $file
   fi
 
 done

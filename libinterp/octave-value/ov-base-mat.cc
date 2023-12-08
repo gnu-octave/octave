@@ -324,8 +324,6 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
 
   int nd = m_matrix.ndims ();
 
-  MT mrhs (dim_vector (1, 1), rhs);
-
   // If we catch an indexing error in index_vector, we flag an error in
   // index k.  Ensure it is the right value before each idx_vector call.
   // Same variable as used in the for loop in the default case.
@@ -348,7 +346,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
             if (i.is_scalar () && i(0) < m_matrix.numel ())
               m_matrix(i(0)) = rhs;
             else
-              m_matrix.assign (i, mrhs);
+              {
+                MT mrhs (dim_vector (1, 1), rhs);
+                m_matrix.assign (i, mrhs);
+              }
           }
           break;
 
@@ -364,7 +365,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
                 && i(0) < m_matrix.rows () && j(0) < m_matrix.columns ())
               m_matrix(i(0), j(0)) = rhs;
             else
-              m_matrix.assign (i, j, mrhs);
+              {
+                MT mrhs (dim_vector (1, 1), rhs);
+                m_matrix.assign (i, j, mrhs);
+              }
           }
           break;
 
@@ -396,7 +400,10 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
                 m_matrix(j) = rhs;
               }
             else
-              m_matrix.assign (idx_vec, mrhs);
+              {
+                MT mrhs (dim_vector (1, 1), rhs);
+                m_matrix.assign (idx_vec, mrhs);
+              }
           }
           break;
         }

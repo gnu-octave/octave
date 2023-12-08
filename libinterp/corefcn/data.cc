@@ -3008,6 +3008,8 @@ This is equivalent to @code{size (@var{A}, 1)}.
   return ovl ((octave_value (args(0)).size ())(0));
 }
 
+DEFALIAS (height, rows);
+
 /*
 %!assert (rows (ones (2,5)), 2)
 %!assert (rows (ones (5,2)), 5)
@@ -3052,6 +3054,8 @@ This is equivalent to @code{size (@var{A}, 2)}.
 
   return ovl ((octave_value (args(0)).size ())(1));
 }
+
+DEFALIAS (width, columns);
 
 DEFUN (sum, args, ,
        doc: /* -*- texinfo -*-

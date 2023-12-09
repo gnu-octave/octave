@@ -455,3 +455,248 @@ endfunction
 %! polar (theta, rho);
 %! set (gca, "rtick", 0.2:0.2:1);
 %! title ("polar() plot");
+
+
+## Test correct handle type (line) returned by polar.
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!  hax = gca ();
+%!  h = polar (hax, 1, 2);
+%!  h_data = get (h);
+%!  assert (h_data.parent, hax);
+%!  assert (h_data.type, "line");
+%!
+%!  h = polar (hax, [1 2 3; 4 5 6], [1 2 3; 4 5 6]);
+%!  h_data = get (h);
+%!  assert (numel (h_data), 3);
+%!  assert (h_data(1).parent, hax);
+%!  assert (isequal (h_data.parent));
+%!  assert (all (strcmp ({h_data.type}, "line")));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Test scalar/vector/matrix data inputs
+%!test # Scalar inputs
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   h = polar (hax, 0, 0);
+%!   linedata = get (h);
+%!   assert (linedata.xdata, 0);
+%!   assert (linedata.ydata, 0);
+%!   assert (linedata.zdata, []);
+%!   h = polar (hax, 1, 2);
+%!   linedata = get (h);
+%!   assert (linedata.xdata, 2 * cos (1), eps);
+%!   assert (linedata.ydata, 2 * sin (1), eps);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test # Vector inputs and orientation independence
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   h = polar (hax, [1 2 3], [4 5 6]);
+%!   linedata = get (h);
+%!   assert (linedata.xdata, [4 5 6] .* cos ([1 2 3]), eps);
+%!   assert (linedata.ydata, [4 5 6] .* sin ([1 2 3]), eps);
+%!   assert (linedata.zdata, []);
+%!   h = polar (hax, [1 2 3], [4 5 6]');
+%!   linedata = get (h);
+%!   assert (linedata.xdata, [4 5 6] .* cos ([1 2 3]), eps);
+%!   assert (linedata.ydata, [4 5 6] .* sin ([1 2 3]), eps);
+%!   assert (linedata.zdata, []);
+%!   h = polar (hax, [1 2 3]', [4 5 6]);
+%!   linedata = get (h);
+%!   assert (linedata.xdata, [4 5 6] .* cos ([1 2 3]), eps);
+%!   assert (linedata.ydata, [4 5 6] .* sin ([1 2 3]), eps);
+%!   assert (linedata.zdata, []);
+%!   h = polar (hax, [1 2 3]', [4 5 6]');
+%!   linedata = get (h);
+%!   assert (linedata.xdata, [4 5 6] .* cos ([1 2 3]), eps);
+%!   assert (linedata.ydata, [4 5 6] .* sin ([1 2 3]), eps);
+%!   assert (linedata.zdata, []);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test # Matrix inputs
+%! t = [1 2 3; 4 5 6];
+%! r = [7 8 9; 10 11 12];
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   h = polar (hax, t, r);
+%!   linedata = get (h);
+%!   assert (numel (linedata), 3);
+%!   assert (vertcat (linedata.xdata)', r .* cos (t), eps);
+%!   assert (vertcat (linedata.ydata)', r .* sin (t), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test # Mixed Vector/matrix inputs
+%! tv1 = [1 2];
+%! tv2 = [1 2 3];
+%! tm = [1 2 3; 4 5 6];
+%! rv1 = [7 8];
+%! rv2 = [7 8 9];
+%! rm = [7 8 9; 10 11 12];
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!
+%!   h = polar (hax, tv1, rm);
+%!   linedata = get (h);
+%!   assert (numel (linedata), 3);
+%!   assert (vertcat (linedata.xdata)', rm .* cos (tv1'), eps);
+%!   assert (vertcat (linedata.ydata)', rm .* sin (tv1'), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%!
+%!   h = polar (hax, tv1', rm); # Verify orientation independence.
+%!   linedata = get (h);
+%!   assert (numel (linedata), 3);
+%!   assert (vertcat (linedata.xdata)', rm .* cos (tv1'), eps);
+%!   assert (vertcat (linedata.ydata)', rm .* sin (tv1'), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%!
+%!   h = polar (hax, tv2, rm);
+%!   linedata = get (h);
+%!   assert (numel (linedata), 2);
+%!   assert (vertcat (linedata.xdata), rm .* cos (tv2), eps);
+%!   assert (vertcat (linedata.ydata), rm .* sin (tv2), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%!
+%!   h = polar (hax, tv2', rm); # Verify orientation independence.
+%!   linedata = get (h);
+%!   assert (numel (linedata), 2);
+%!   assert (vertcat (linedata.xdata), rm .* cos (tv2), eps);
+%!   assert (vertcat (linedata.ydata), rm .* sin (tv2), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+
+%!   h = polar (hax, tm, rv1);
+%!   linedata = get (h);
+%!   assert (numel (linedata), 3);
+%!   assert (vertcat (linedata.xdata)', rv1' .* cos (tm), eps);
+%!   assert (vertcat (linedata.ydata)', rv1' .* sin (tm), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%!
+%!   h = polar (hax, tm, rv1'); # Verify orientation independence.
+%!   linedata = get (h);
+%!   assert (vertcat (linedata.xdata)', rv1' .* cos (tm), eps);
+%!   assert (vertcat (linedata.ydata)', rv1' .* sin (tm), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%!
+%!   h = polar (hax, tm, rv2);
+%!   linedata = get (h);
+%!   assert (numel (linedata), 2);
+%!   assert (vertcat (linedata.xdata), rv2 .* cos (tm), eps);
+%!   assert (vertcat (linedata.ydata), rv2 .* sin (tm), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%!
+%!   h = polar (hax, tm, rv2'); # Verify orientation independence.
+%!   linedata = get (h);
+%!   assert (numel (linedata), 2);
+%!   assert (vertcat (linedata.xdata), rv2 .* cos (tm), eps);
+%!   assert (vertcat (linedata.ydata), rv2 .* sin (tm), eps);
+%!   assert (isempty (vertcat (linedata.zdata)));
+%!
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+## Check that complex input produces identical output to (theta,rho) input
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   h = polar (hax, [1+2i, 3+4i]);
+%!   haxcplx = get (hax);
+%!   linecplx = get (h);
+%!   h = polar (hax, [1, 3], [2, 4]);
+%!   haxtr = get (hax);
+%!   linetr = get (h);
+%!
+%!   haxtr.children = []; # Clear child handles that should be unique.
+%!   haxtr.xlabel= [];
+%!   haxtr.ylabel= [];
+%!   haxtr.zlabel= [];
+%!   haxtr.title= [];
+%!   haxcplx.children = [];
+%!   haxcplx.xlabel = [];
+%!   haxcplx.ylabel = [];
+%!   haxcplx.zlabel = [];
+%!   haxcplx.title = [];
+%!
+%!   assert (isequaln (haxcplx, haxtr)); # Check parent objects.
+%!   assert (isequaln (linecplx, linetr)); # Check actual data objects.
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+##Test rtick, ttick being properly set
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   polar (hax, [1 2 3], [4 5 6]);
+%!   haxdata = get (hax);
+%!   assert (haxdata.rtick, [2 4 6]);
+%!   assert (haxdata.ttick, [0:30:330]);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+##Test FMT string inputs
+%!test
+%! hf = figure ("visible", "off");
+%! hax = gca ();
+%! unwind_protect
+%!   h = polar (hax, [1 2 3], [4 5 6]);
+%!   linedata = get (h);
+%!   assert (linedata.color, [0 0.447 0.741], eps);
+%!   assert (linedata.marker, "none");
+%!   assert (linedata.linestyle, "-");
+%!   h = polar (hax, [1 2 3], [4 5 6], "r");
+%!   linedata = get (h);
+%!   assert (linedata.color, [1 0 0]);
+%!   assert (linedata.marker, "none");
+%!   assert (linedata.linestyle, "-");
+%!   h = polar (hax, [1 2 3], [4 5 6], "--");
+%!   linedata = get (h);
+%!   assert (linedata.color, [0 0.447 0.741], eps);
+%!   assert (linedata.marker, "none");
+%!   assert (linedata.linestyle, "--");
+%!   h = polar (hax, [1 2 3], [4 5 6], "*--r");
+%!   linedata = get (h);
+%!   assert (linedata.color, [1 0 0], eps);
+%!   assert (linedata.marker, "*");
+%!   assert (linedata.linestyle, "--");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+##Test input validation
+%!error <Invalid call> polar ()
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = gca ();
+%!   fail ("polar (hax, 1, 2, 3)", "FMT argument must be a string");
+%!   fail ("polar (hax, cat (3, 1, 2, 3), [1 2 3])", "THETA and RHO must be 2-D objects");
+%!   fail ("polar (hax, [1 2 3], cat (3, 1, 2, 3))", "THETA and RHO must be 2-D objects");
+%!   fail ("polar (hax, 1, [1 2 3])", "Can't plot constant THETA with varying RHO");
+%!   fail ("polar (hax, [1 2 3], 1)", "THETA and RHO vector lengths must match");
+%!   fail ("polar (hax, [1 2 3],[1 2])", "THETA and RHO vector lengths must match");
+%!   fail ("polar (hax, [1 2 3], [1 2; 3 4])", "THETA vector and RHO matrix sizes must match");
+%!   fail ("polar (hax, [1 2; 3 4], [1 2 3])", "THETA matrix and RHO vector sizes must match");
+%!   fail ("polar (hax, [1 2; 3 4], [1 2 3; 4 5 6])", "THETA and RHO matrix dimensions must match");
+%!   h = polar (hax, 1, 2); # Generates line object handle.
+%!   fail ("polar (h, 1, 2)", "first argument must be axes handle");
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect

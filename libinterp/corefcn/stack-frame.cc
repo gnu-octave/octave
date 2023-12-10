@@ -760,7 +760,7 @@ private:
           {
             std::string pattern = m_patterns[j];
 
-            glob_match pat (pattern);
+            symbol_match pat (pattern);
 
             for (const auto& sym : symbols)
               {
@@ -1005,7 +1005,7 @@ private:
           {
             std::string pattern = m_patterns[j];
 
-            glob_match pat (pattern);
+            symbol_match pat (pattern);
 
             for (const auto& sym : symbols)
               {

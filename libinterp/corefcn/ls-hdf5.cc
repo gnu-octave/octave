@@ -1117,7 +1117,7 @@ read_hdf5_data (std::istream& is, const std::string& /* filename */,
 
       for (int i = argv_idx; i < argc; i++)
         {
-          glob_match pattern (argv[i]);
+          symbol_match pattern (argv[i]);
           if (pattern.match (std::string (&var_name[0])))
             {
               found = true;

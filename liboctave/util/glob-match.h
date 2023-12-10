@@ -96,4 +96,36 @@ private:
   int opts_to_fnmatch_flags (unsigned int xopts) const;
 };
 
+class
+OCTAVE_API
+symbol_match
+{
+
+// This class is meant to provide a performant implementation for symbol
+// matching on all platforms.  For Windows, that is done by manually
+// implementing matching rules for '*' and '?' wildcards.  On other platforms,
+// the matching is deferred to `fnmatch`.  That means that the matching rules
+// differ depending on the platform.  To write cross-platform compatible code
+// with this class, do not use [] groups or ranges, named character classes,
+// collating symbols, or equivalence class expressions.
+
+public:
+
+  symbol_match (const std::string& pattern);
+
+  symbol_match (const symbol_match&) = default;
+
+  symbol_match& operator = (const symbol_match&) = default;
+
+  ~symbol_match () = default;
+
+  bool match (const std::string& sym);
+
+private:
+
+  std::string m_pat;
+
+  std::unique_ptr<glob_match> m_glob;
+};
+
 #endif

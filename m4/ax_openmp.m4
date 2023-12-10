@@ -67,10 +67,10 @@
 #   modified version of the Autoconf Macro, you may extend this special
 #   exception to the GPL to apply to your modified version as well.
 
-#serial 13
+#serial 14
 
 AC_DEFUN([AX_OPENMP], [
-AC_PREREQ([2.59]) dnl for _AC_LANG_PREFIX
+AC_PREREQ([2.69]) dnl for _AC_LANG_PREFIX
 
 AC_CACHE_CHECK([for OpenMP flag of _AC_LANG compiler], ax_cv_[]_AC_LANG_ABBREV[]_openmp, [save[]_AC_LANG_PREFIX[]FLAGS=$[]_AC_LANG_PREFIX[]FLAGS
 ax_cv_[]_AC_LANG_ABBREV[]_openmp=unknown
@@ -101,7 +101,7 @@ parallel_fill(int * data, int n)
 }
 
 int
-main()
+main(void)
 {
   int arr[100000];
   omp_set_num_threads(2);

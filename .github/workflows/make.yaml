@@ -174,6 +174,9 @@ jobs:
         # Use emulated shell as default
         shell: alpine.sh {0}
 
+    env:
+      LIBGL_ALWAYS_SOFTWARE: "1"
+
     steps:
       - name: get CPU information
         shell: bash

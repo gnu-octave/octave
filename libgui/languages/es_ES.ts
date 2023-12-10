@@ -2,42 +2,11 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="es">
 <context>
-    <name>ListDialog</name>
-    <message>
-        <location filename="../src/dialog.cc" line="+442"/>
-        <source>Select All</source>
-        <translation type="unfinished">Seleccionar todo</translation>
-    </message>
-</context>
-<context>
     <name>QFileSystemModel</name>
     <message>
         <location filename="../src/files-dock-widget.cc" line="+136"/>
         <source>Invalid filename</source>
         <translation>Nombre de fichero no válido</translation>
-    </message>
-</context>
-<context>
-    <name>QHelpSearchQueryWidget</name>
-    <message>
-        <location filename="build_ts/octave-qt/qhelpsearchquerywidget.cpp" line="+77"/>
-        <source>Search for:</source>
-        <translation>Buscar:</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Previous search</source>
-        <translation>Anterior</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Next search</source>
-        <translation>Siguiente</translation>
-    </message>
-    <message>
-        <location line="-3"/>
-        <source>Search</source>
-        <translation>Buscar</translation>
     </message>
 </context>
 <context>
@@ -363,7 +332,15 @@
     </message>
 </context>
 <context>
-    <name>command_widget</name>
+    <name>octave::ListDialog</name>
+    <message>
+        <location filename="../src/dialog.cc" line="+442"/>
+        <source>Select All</source>
+        <translation type="unfinished">Seleccionar todo</translation>
+    </message>
+</context>
+<context>
+    <name>octave::command_widget</name>
     <message>
         <location filename="../src/command-widget.cc" line="+59"/>
         <source>Pause</source>
@@ -381,7 +358,7 @@
     </message>
 </context>
 <context>
-    <name>community_news</name>
+    <name>octave::community_news</name>
     <message>
         <location filename="../src/community-news.cc" line="+69"/>
         <source>Octave Community News</source>
@@ -389,7 +366,7 @@
     </message>
 </context>
 <context>
-    <name>documentation</name>
+    <name>octave::documentation</name>
     <message>
         <location filename="../src/documentation.cc" line="+136"/>
         <location line="+14"/>
@@ -515,7 +492,7 @@ be available.</source>
     </message>
 </context>
 <context>
-    <name>documentation_bookmarks</name>
+    <name>octave::documentation_bookmarks</name>
     <message>
         <location filename="../src/documentation-bookmarks.cc" line="+101"/>
         <source>
@@ -621,7 +598,7 @@ no es un fichero XBEL versión 1 válido.</translation>
     </message>
 </context>
 <context>
-    <name>documentation_dock_widget</name>
+    <name>octave::documentation_dock_widget</name>
     <message>
         <location filename="../src/documentation-dock-widget.cc" line="+40"/>
         <source>Documentation</source>
@@ -634,7 +611,7 @@ no es un fichero XBEL versión 1 válido.</translation>
     </message>
 </context>
 <context>
-    <name>dw_main_window</name>
+    <name>octave::dw_main_window</name>
     <message>
         <location filename="../src/dw-main-window.cc" line="+53"/>
         <source>&amp;Close</source>
@@ -662,7 +639,7 @@ no es un fichero XBEL versión 1 válido.</translation>
     </message>
 </context>
 <context>
-    <name>external_editor_interface</name>
+    <name>octave::external_editor_interface</name>
     <message>
         <location filename="../src/external-editor-interface.cc" line="+68"/>
         <location line="+46"/>
@@ -685,7 +662,7 @@ Do you want to open the preferences?</source>
     </message>
 </context>
 <context>
-    <name>file_editor</name>
+    <name>octave::file_editor</name>
     <message>
         <location filename="../src/m-editor/file-editor.cc" line="+190"/>
         <source>Continue</source>
@@ -1132,7 +1109,7 @@ for writing: %2.</source>
     </message>
 </context>
 <context>
-    <name>file_editor_tab</name>
+    <name>octave::file_editor_tab</name>
     <message>
         <location filename="../src/m-editor/file-editor-tab.cc" line="+160"/>
         <source>line:</source>
@@ -1384,7 +1361,7 @@ ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
     </message>
 </context>
 <context>
-    <name>files_dock_widget</name>
+    <name>octave::files_dock_widget</name>
     <message>
         <location filename="../src/files-dock-widget.cc" line="-4"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
@@ -1641,7 +1618,7 @@ ha sido eliminado o renombrado. ¿Desea salvarlo ahora?%2</translation>
     </message>
 </context>
 <context>
-    <name>final_page</name>
+    <name>octave::final_page</name>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+307"/>
         <source>Enjoy!</source>
@@ -1686,7 +1663,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     </message>
 </context>
 <context>
-    <name>find_dialog</name>
+    <name>octave::find_dialog</name>
     <message>
         <location filename="../src/m-editor/find-dialog.cc" line="+93"/>
         <source>Editor: Find and Replace</source>
@@ -1804,7 +1781,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     </message>
 </context>
 <context>
-    <name>find_files_dialog</name>
+    <name>octave::find_files_dialog</name>
     <message>
         <location filename="../src/find-files-dialog.cc" line="+61"/>
         <source>Find Files</source>
@@ -1944,7 +1921,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     </message>
 </context>
 <context>
-    <name>find_files_model</name>
+    <name>octave::find_files_model</name>
     <message>
         <location filename="../src/find-files-model.cc" line="+93"/>
         <source>Filename</source>
@@ -1957,7 +1934,7 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     </message>
 </context>
 <context>
-    <name>gui_settings</name>
+    <name>octave::gui_settings</name>
     <message>
         <location filename="../src/gui-settings.cc" line="+775"/>
         <source>Error %1 creating the settings file
@@ -1975,7 +1952,7 @@ Octave GUI must be closed now.</source>
     </message>
 </context>
 <context>
-    <name>history_dock_widget</name>
+    <name>octave::history_dock_widget</name>
     <message>
         <location filename="../src/history-dock-widget.cc" line="+53"/>
         <source>Browse and search the command history.</source>
@@ -2028,7 +2005,7 @@ Octave GUI must be closed now.</source>
     </message>
 </context>
 <context>
-    <name>initial_page</name>
+    <name>octave::initial_page</name>
     <message>
         <location filename="../src/welcome-wizard.cc" line="-185"/>
         <source>Welcome to Octave!</source>
@@ -2059,7 +2036,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     </message>
 </context>
 <context>
-    <name>label_dock_widget</name>
+    <name>octave::label_dock_widget</name>
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+82"/>
         <source>Undock Widget</source>
@@ -2072,7 +2049,7 @@ Pulse &apos;Siguiente&apos; para crear un archivo de configuración e iniciar Oc
     </message>
 </context>
 <context>
-    <name>main_window</name>
+    <name>octave::main_window</name>
     <message>
         <location filename="../src/main-window.cc" line="+155"/>
         <source>Profiler</source>
@@ -2466,7 +2443,7 @@ function and can not be edited.</source>
     </message>
 </context>
 <context>
-    <name>news_reader</name>
+    <name>octave::news_reader</name>
     <message>
         <location filename="../src/news-reader.cc" line="+106"/>
         <source>&lt;html&gt;
@@ -2510,6 +2487,235 @@ or enable web connections for news in Octave&apos;s network settings tab.
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
         <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>octave::octave_dock_widget</name>
+    <message>
+        <location filename="../src/octave-dock-widget.cc" line="+144"/>
+        <source>Hide Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+81"/>
+        <source>Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+58"/>
+        <source>Undock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>octave::octave_qscintilla</name>
+    <message>
+        <location filename="../src/m-editor/octave-qscintilla.cc" line="+299"/>
+        <source>Help on</source>
+        <translation type="unfinished">Ayuda sobre</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Documentation on</source>
+        <translation type="unfinished">Documentación sobre</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Edit</source>
+        <translation type="unfinished">Editar</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>dbstop if ...</source>
+        <translation type="unfinished">dbstop en caso de...</translation>
+    </message>
+    <message>
+        <location line="+524"/>
+        <source>Octave Editor</source>
+        <translation type="unfinished">Editor de Octave</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Creating temporary files failed.
+Make sure you have write access to temp. directory
+%1
+
+&quot;Run Selection&quot; requires temporary files.</source>
+        <translation type="unfinished">Falló la creación de ficheros temporales.
+Asegúrese de que tiene permiso de escritura
+en el directorio
+%1
+
+&quot;Ejecutar selección&quot; requiere ficheros temporales.</translation>
+    </message>
+    <message>
+        <location line="+306"/>
+        <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
+        <translation type="unfinished">Presione &apos;%1&apos; para reemplazar todos los casos de &apos;%2&apos; con &apos;%3&apos;.</translation>
+    </message>
+</context>
+<context>
+    <name>octave::octave_txt_lexer</name>
+    <message>
+        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+41"/>
+        <source>Default</source>
+        <translation type="unfinished">Valor predeterminado/por defecto</translation>
+    </message>
+</context>
+<context>
+    <name>octave::qt_interpreter_events</name>
+    <message>
+        <location filename="../src/qt-interpreter-events.cc" line="+338"/>
+        <location line="+5"/>
+        <location line="+2"/>
+        <source>Create</source>
+        <translation type="unfinished">Crear</translation>
+    </message>
+    <message>
+        <location line="-7"/>
+        <location line="+31"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+    <message>
+        <location line="-28"/>
+        <source>File
+%1
+does not exist. Do you want to create it?</source>
+        <translation type="unfinished">El archivo
+%1
+no existe. ¿Desea crearlo?</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Octave Editor</source>
+        <translation type="unfinished">Editor de Octave</translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
+        <translation type="unfinished">El archivo %1 no existe en las rutas de trabajo (path). Para ejecutar o depurar la función que está editando tiene que cambiar al directorio %2 o agregarlo a las rutas de trabajo.</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
+        <translation type="unfinished">Existe un archivo con el mismo nombre que %1 en la ruta de trabajo (path). Para ejecutar o depurar la función que se está editando cambie al directorio %2.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Change Directory or Add Directory to Load Path</source>
+        <translation type="unfinished">Cambiar directorio o agregar directorio a la ruta de trabajo (path)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&amp;Change Directory</source>
+        <translation type="unfinished">&amp;Cambiar directorio</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Add Directory to Load Path</source>
+        <translation type="unfinished">&amp;Agregar directorio a ruta de trabajo (path)</translation>
+    </message>
+</context>
+<context>
+    <name>octave::release_notes</name>
+    <message>
+        <location filename="../src/release-notes.cc" line="+84"/>
+        <source>The release notes file &apos;%1&apos; is empty.</source>
+        <translation type="unfinished">El archivo de notas de versión %1 está vacío.</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>The release notes file &apos;%1&apos; cannot be read.</source>
+        <translation type="unfinished">El archivo de notas de versión %1 no se puede leer.</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Octave Release Notes</source>
+        <translation type="unfinished">Notas de la versión de Octave</translation>
+    </message>
+</context>
+<context>
+    <name>octave::set_path_dialog</name>
+    <message>
+        <location filename="../src/set-path-dialog.cc" line="+64"/>
+        <source>Set Path</source>
+        <translation type="unfinished">Asignar rutas de trabajo (path)</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>All changes take effect immediately.</source>
+        <translation type="unfinished">Todos los cambios tienen efecto inmediato.</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Add Directory...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Single Directory</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Directory With Subdirectories</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Move to Top</source>
+        <translation type="unfinished">Mover al inicio</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move to Bottom</source>
+        <translation type="unfinished">Mover al final</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Up</source>
+        <translation type="unfinished">Mover arriba</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Move Down</source>
+        <translation type="unfinished">Mover abajo</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Remove</source>
+        <translation type="unfinished">Eliminar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Reload</source>
+        <translation type="unfinished">Recargar</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save</source>
+        <translation type="unfinished">Guardar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Revert</source>
+        <translation type="unfinished">Deshacer</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Revert Last Change</source>
+        <translation type="unfinished">Deshacer el último cambio</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Revert All Changes</source>
+        <translation type="unfinished">Deshacer todos los cambios</translation>
+    </message>
+    <message>
+        <location line="+90"/>
+        <source>Open Directory</source>
+        <translation type="unfinished">Abrir directorio</translation>
     </message>
 </context>
 <context>
@@ -2625,6 +2831,552 @@ depends on currently selected mode.</source>
         <source>&amp;Reload default styles</source>
         <translation>&amp;Recarga el estilo por defecto</translation>
     </message>
+    <message>
+        <location filename="../src/settings-dialog.cc" line="-945"/>
+        <source>Loading current preferences ... </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <location line="+6"/>
+        <location line="+1049"/>
+        <source>System setting</source>
+        <translation type="unfinished">Configuración del sistema</translation>
+    </message>
+    <message>
+        <location line="-795"/>
+        <source>IBeam Cursor</source>
+        <translation type="unfinished">Cursor IBeam</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Block Cursor</source>
+        <translation type="unfinished">Cursor de bloque</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Underline Cursor</source>
+        <translation type="unfinished">Cursor de subrayado</translation>
+    </message>
+    <message>
+        <location line="+176"/>
+        <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
+        <translation type="unfinished">Color de la línea resaltada actual (por defecto, magenta (255,0,255))</translation>
+    </message>
+    <message>
+        <location line="+63"/>
+        <source>Set Octave Startup Directory</source>
+        <translation type="unfinished">Ajuste del directorio de inicio de Octave</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Set File Browser Startup Directory</source>
+        <translation type="unfinished">Ajuste del directorio de inicio del explorador de archivos</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Applying preferences ... </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+86"/>
+        <location line="+21"/>
+        <location line="+1069"/>
+        <source>Failed to open %1 as Octave shortcut file</source>
+        <translation type="unfinished">Fallo al abrir %1 como fichero de atajos de teclado de Octave</translation>
+    </message>
+    <message>
+        <location line="-428"/>
+        <source>Enable attribute colors</source>
+        <translation type="unfinished">Activar atributor de color</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Hide tool tips</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+360"/>
+        <source>Import shortcuts from file...</source>
+        <translation type="unfinished">Importar atajos de teclado desde archivo...</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+6"/>
+        <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
+        <translation type="unfinished">Archivo de acceso directo de Octave (*.osc);;Todos los archivos (*)</translation>
+    </message>
+    <message>
+        <location line="-1"/>
+        <source>Export shortcuts to file...</source>
+        <translation type="unfinished">Exportar atajos de teclado a archivo...</translation>
+    </message>
+    <message>
+        <location line="+31"/>
+        <source>Overwriting Shortcuts</source>
+        <translation type="unfinished">Sobrescribir atajos de teclado</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>You are about to overwrite all shortcuts.
+Would you like to save the current shortcut set or cancel the action?</source>
+        <translation type="unfinished">Está a punto de sobrescribir todos los atajos de teclado.
+¿Le gustaría salvar el conjunto actual o cancelar esta acción?</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Don&apos;t save</source>
+        <translation type="unfinished">No guardar</translation>
+    </message>
+    <message>
+        <location line="+33"/>
+        <source>Octave GUI preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>octave::setup_community_news</name>
+    <message>
+        <location filename="../src/welcome-wizard.cc" line="+45"/>
+        <source>Community News</source>
+        <translation type="unfinished">Noticias de la comunidad</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Previous</source>
+        <translation type="unfinished">Anterior</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Next</source>
+        <translation type="unfinished">Siguiente</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Cancel</source>
+        <translation type="unfinished">Cancelar</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;When Octave starts, it will optionally check the Octave web site for current news and information about the Octave community.
+The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p&gt;
+&lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu, or by visiting
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Al momento de iniciar Octave, de manera opcional se hará una revisón al sitio web de Octave para buscar noticias e información acerca de la comunidad de Octave.
+Esto ocurrirá como máximo una vez al día y las noticias sólo serán desplegadas si existen cambios recientes desde la última visita al sitio web.&lt;/p&gt;
+&lt;p&gt;También se puede acceder a las noticias presionando &quot;Noticias de la comunidad&quot; en el menú &quot;Ayuda&quot;, o visitando
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Allow Octave to connect to the Octave web site when it starts in order to display current news and information about the Octave community.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>octave::shortcut_edit_dialog</name>
+    <message>
+        <location filename="../src/shortcuts-tree-widget.cc" line="+162"/>
+        <source>Enter New Shortcut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Enter custom shortcut
+Action: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Enter shortcut by typing it</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Add Shift modifier
+(allows one to enter number keys)</source>
+        <translation type="unfinished">Añadir el modificador Shift
+(permite introducir teclas numéricas)</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Actual Shortcut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Default Shortcut</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Set to default</source>
+        <translation type="unfinished">Establecer como por defecto</translation>
+    </message>
+    <message>
+        <location line="+104"/>
+        <source>Double Shortcut</source>
+        <translation type="unfinished">Acceso directo doble</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>The chosen shortcut
+  &quot;%1&quot;
+is already used for the action
+  &quot;%2&quot;.
+Do you want to use the shortcut and remove it from the previous action?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>octave::shortcuts_tree_widget</name>
+    <message>
+        <location line="+33"/>
+        <source>Global</source>
+        <translation type="unfinished">Global</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <location line="+49"/>
+        <source>File Menu</source>
+        <translation type="unfinished">Menú archivo</translation>
+    </message>
+    <message>
+        <location line="-46"/>
+        <location line="+49"/>
+        <source>Edit Menu</source>
+        <translation type="unfinished">Menú editar</translation>
+    </message>
+    <message>
+        <location line="-46"/>
+        <location line="+52"/>
+        <source>Debug Menu</source>
+        <translation type="unfinished">Menú depuración</translation>
+    </message>
+    <message>
+        <location line="-49"/>
+        <source>Tools Menu</source>
+        <translation type="unfinished">Menú de herramientas</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Window Menu</source>
+        <translation type="unfinished">Menú ventana</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location line="+49"/>
+        <source>Help Menu</source>
+        <translation type="unfinished">Menú ayuda</translation>
+    </message>
+    <message>
+        <location line="-46"/>
+        <source>News Menu</source>
+        <translation type="unfinished">Menú noticias</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Handling of Dock Widgets</source>
+        <translation type="unfinished">Manejo de widgets acoplados</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Tab Handling in Dock Widgets</source>
+        <translation type="unfinished">Manejo de pestañas en widgets acoplados</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Find &amp; Replace in Dock Widgets</source>
+        <translation type="unfinished">Buscar y reemplazar en widgets acoplados</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Zooming in Editor and Documentation</source>
+        <translation type="unfinished">Zoom en el editor y documentación</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Editor</source>
+        <translation type="unfinished">Editor</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>View Menu</source>
+        <translation type="unfinished">Menú ver</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Run Menu</source>
+        <translation type="unfinished">Menú ejecutar</translation>
+    </message>
+    <message>
+        <location line="+13"/>
+        <source>Documentation Viewer</source>
+        <translation type="unfinished">Visor de documentación</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Browser</source>
+        <translation type="unfinished">Explorador</translation>
+    </message>
+    <message>
+        <location line="+109"/>
+        <source>item %1 not found in shortcut settings dialog</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>octave::terminal_dock_widget</name>
+    <message>
+        <location filename="../src/terminal-dock-widget.cc" line="+107"/>
+        <source>Command Window</source>
+        <translation type="unfinished">Ventana de comandos</translation>
+    </message>
+</context>
+<context>
+    <name>octave::variable_dock_widget</name>
+    <message>
+        <location filename="../src/variable-editor.cc" line="+177"/>
+        <source>Dock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Variable Editor: </source>
+        <translation type="unfinished">Editor de variables: </translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Undock Widget</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Restore geometry</source>
+        <translation type="unfinished">Restablecer geometría</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Redock</source>
+        <translation type="unfinished">Reacoplar</translation>
+    </message>
+</context>
+<context>
+    <name>octave::variable_editor</name>
+    <message>
+        <location line="+918"/>
+        <source>Variable Editor</source>
+        <translation type="unfinished">Editor de variables</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Edit variables.</source>
+        <translation type="unfinished">Editar variables.</translation>
+    </message>
+    <message>
+        <location line="+553"/>
+        <source>Variable Editor Toolbar</source>
+        <translation type="unfinished">Barra de herramientas de editor de variables</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Save</source>
+        <translation type="unfinished">Guardar</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Save variable to a file</source>
+        <translation type="unfinished">Guardar variable en un archivo</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location line="+5"/>
+        <location line="+6"/>
+        <source>Save in format ...</source>
+        <translation type="unfinished">Guardar en formato ...</translation>
+    </message>
+    <message>
+        <location line="-5"/>
+        <source>Save variable to a file in different format</source>
+        <translation type="unfinished">Guardar variable en fichero en formato...</translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>Cut</source>
+        <translation type="unfinished">Cortar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Cut data to clipboard</source>
+        <translation type="unfinished">Cortar datos al portapapeles</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy</source>
+        <translation type="unfinished">Copiar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Copy data to clipboard</source>
+        <translation type="unfinished">Copiar datos al portapapeles</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Paste</source>
+        <translation type="unfinished">Pegar</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Paste clipboard into variable data</source>
+        <translation type="unfinished">Pegar portapapeles a variable de datos</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <location line="+6"/>
+        <location line="+7"/>
+        <source>Plot</source>
+        <translation type="unfinished">Dibujar</translation>
+    </message>
+    <message>
+        <location line="-11"/>
+        <source>Plot Selected Data</source>
+        <translation type="unfinished">Dibujar datos seleccionados</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Plot selected data</source>
+        <translation type="unfinished">Dibujar datos seleccionados</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Up</source>
+        <translation type="unfinished">Arriba</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Go one level up in variable hierarchy</source>
+        <translation type="unfinished">Ir un nivel hacia arriba en jerarquía de variables</translation>
+    </message>
+</context>
+<context>
+    <name>octave::variable_editor_stack</name>
+    <message>
+        <location line="-1260"/>
+        <source>Save Variable %1 As</source>
+        <translation type="unfinished">Guardar variable %1 como</translation>
+    </message>
+</context>
+<context>
+    <name>octave::variable_editor_view</name>
+    <message>
+        <location line="+142"/>
+        <source>Cut</source>
+        <translation type="unfinished">Cortar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Copy</source>
+        <translation type="unfinished">Copiar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Paste</source>
+        <translation type="unfinished">Pegar</translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>Clear</source>
+        <translation type="unfinished">Limpiar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Delete</source>
+        <translation type="unfinished">Eliminar</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Variable from Selection</source>
+        <translation type="unfinished">Variable de la selección</translation>
+    </message>
+    <message>
+        <location line="+18"/>
+        <source>Transpose</source>
+        <translation type="unfinished">Trasponer</translation>
+    </message>
+    <message>
+        <location line="+56"/>
+        <source> columns</source>
+        <translation type="unfinished"> columnas</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> column</source>
+        <translation type="unfinished"> columna</translation>
+    </message>
+    <message>
+        <location line="+52"/>
+        <source> rows</source>
+        <translation type="unfinished"> filas</translation>
+    </message>
+    <message>
+        <location line="+0"/>
+        <source> row</source>
+        <translation type="unfinished"> fila</translation>
+    </message>
+</context>
+<context>
+    <name>octave::welcome_wizard</name>
+    <message>
+        <location filename="../src/welcome-wizard.cc" line="-190"/>
+        <source>Welcome to GNU Octave</source>
+        <translation type="unfinished">Bienvenido a GNU Octave</translation>
+    </message>
+</context>
+<context>
+    <name>octave::workspace_model</name>
+    <message>
+        <location filename="../src/workspace-model.cc" line="+49"/>
+        <source>Name</source>
+        <translation type="unfinished">Nombre</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Class</source>
+        <translation type="unfinished">Clase</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Dimension</source>
+        <translation type="unfinished">Dimensión</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Value</source>
+        <translation type="unfinished">Valor</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Attribute</source>
+        <translation type="unfinished">Atributo</translation>
+    </message>
+    <message>
+        <location line="+83"/>
+        <source>Right click to copy, rename, or display</source>
+        <translation type="unfinished">Clic con el botón derecho para copiar, renombrar o mostrar</translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <location line="+2"/>
+        <source>complex</source>
+        <translation type="unfinished">complejo</translation>
+    </message>
 </context>
 <context>
     <name>octave::workspace_view</name>
@@ -2648,234 +3400,70 @@ depends on currently selected mode.</source>
         <source>Attribute</source>
         <translation>Atributo</translation>
     </message>
-</context>
-<context>
-    <name>octave_dock_widget</name>
     <message>
-        <location filename="../src/octave-dock-widget.cc" line="+144"/>
-        <source>Hide Widget</source>
-        <translation type="unfinished"></translation>
+        <location filename="../src/workspace-view.cc" line="+57"/>
+        <source>Workspace</source>
+        <translation type="unfinished">Espacio de trabajo</translation>
     </message>
     <message>
-        <location line="+81"/>
-        <source>Dock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+58"/>
-        <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>octave_qscintilla</name>
-    <message>
-        <location filename="../src/m-editor/octave-qscintilla.cc" line="+299"/>
-        <source>Help on</source>
-        <translation type="unfinished">Ayuda sobre</translation>
+        <location line="+1"/>
+        <source>View the variables in the active workspace.</source>
+        <translation type="unfinished">Ver variables en el espacio de trabajo activo.</translation>
     </message>
     <message>
         <location line="+2"/>
-        <source>Documentation on</source>
-        <translation type="unfinished">Documentación sobre</translation>
+        <source>Enter text to filter the workspace</source>
+        <translation type="unfinished">Introduzca texto para filtrar el espacio de trabajo</translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Filter</source>
+        <translation type="unfinished">Filtrar</translation>
+    </message>
+    <message>
+        <location line="+122"/>
+        <source>View the variables in the active workspace.&lt;br&gt;</source>
+        <translation type="unfinished">Ver las variables del espacio de trabajo activo.&lt;br&gt;</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Colors for variable attributes:</source>
+        <translation type="unfinished">Colores para los atributos de variable:</translation>
+    </message>
+    <message>
+        <location line="+156"/>
+        <source>Open in Variable Editor</source>
+        <translation type="unfinished">Abrir en el editor de variables</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Edit</source>
-        <translation type="unfinished">Editar</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>dbstop if ...</source>
-        <translation type="unfinished">dbstop en caso de...</translation>
-    </message>
-    <message>
-        <location line="+524"/>
-        <source>Octave Editor</source>
-        <translation type="unfinished">Editor de Octave</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Creating temporary files failed.
-Make sure you have write access to temp. directory
-%1
-
-&quot;Run Selection&quot; requires temporary files.</source>
-        <translation type="unfinished">Falló la creación de ficheros temporales.
-Asegúrese de que tiene permiso de escritura
-en el directorio
-%1
-
-&quot;Ejecutar selección&quot; requiere ficheros temporales.</translation>
-    </message>
-    <message>
-        <location line="+306"/>
-        <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
-        <translation type="unfinished">Presione &apos;%1&apos; para reemplazar todos los casos de &apos;%2&apos; con &apos;%3&apos;.</translation>
-    </message>
-</context>
-<context>
-    <name>octave_txt_lexer</name>
-    <message>
-        <location filename="../src/m-editor/octave-txt-lexer.cc" line="+41"/>
-        <source>Default</source>
-        <translation type="unfinished">Valor predeterminado/por defecto</translation>
-    </message>
-</context>
-<context>
-    <name>qt_interpreter_events</name>
-    <message>
-        <location filename="../src/qt-interpreter-events.cc" line="+338"/>
-        <location line="+5"/>
-        <location line="+2"/>
-        <source>Create</source>
-        <translation type="unfinished">Crear</translation>
-    </message>
-    <message>
-        <location line="-7"/>
-        <location line="+31"/>
-        <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
-    </message>
-    <message>
-        <location line="-28"/>
-        <source>File
-%1
-does not exist. Do you want to create it?</source>
-        <translation type="unfinished">El archivo
-%1
-no existe. ¿Desea crearlo?</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Octave Editor</source>
-        <translation type="unfinished">Editor de Octave</translation>
-    </message>
-    <message>
-        <location line="+19"/>
-        <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation type="unfinished">El archivo %1 no existe en las rutas de trabajo (path). Para ejecutar o depurar la función que está editando tiene que cambiar al directorio %2 o agregarlo a las rutas de trabajo.</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation type="unfinished">Existe un archivo con el mismo nombre que %1 en la ruta de trabajo (path). Para ejecutar o depurar la función que se está editando cambie al directorio %2.</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Change Directory or Add Directory to Load Path</source>
-        <translation type="unfinished">Cambiar directorio o agregar directorio a la ruta de trabajo (path)</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>&amp;Change Directory</source>
-        <translation type="unfinished">&amp;Cambiar directorio</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>&amp;Add Directory to Load Path</source>
-        <translation type="unfinished">&amp;Agregar directorio a ruta de trabajo (path)</translation>
-    </message>
-</context>
-<context>
-    <name>release_notes</name>
-    <message>
-        <location filename="../src/release-notes.cc" line="+84"/>
-        <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">El archivo de notas de versión %1 está vacío.</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">El archivo de notas de versión %1 no se puede leer.</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>Octave Release Notes</source>
-        <translation type="unfinished">Notas de la versión de Octave</translation>
-    </message>
-</context>
-<context>
-    <name>set_path_dialog</name>
-    <message>
-        <location filename="../src/set-path-dialog.cc" line="+64"/>
-        <source>Set Path</source>
-        <translation type="unfinished">Asignar rutas de trabajo (path)</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>All changes take effect immediately.</source>
-        <translation type="unfinished">Todos los cambios tienen efecto inmediato.</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Add Directory...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Single Directory</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Directory With Subdirectories</source>
-        <translation type="unfinished"></translation>
+        <source>Copy name</source>
+        <translation type="unfinished">Copiar nombre</translation>
     </message>
     <message>
         <location line="+3"/>
-        <source>Move to Top</source>
-        <translation type="unfinished">Mover al inicio</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Move to Bottom</source>
-        <translation type="unfinished">Mover al final</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Move Up</source>
-        <translation type="unfinished">Mover arriba</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Move Down</source>
-        <translation type="unfinished">Mover abajo</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Remove</source>
-        <translation type="unfinished">Eliminar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Reload</source>
-        <translation type="unfinished">Recargar</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Revert</source>
-        <translation type="unfinished">Deshacer</translation>
+        <source>Copy value</source>
+        <translation type="unfinished">Copiar valor</translation>
     </message>
     <message>
         <location line="+4"/>
-        <source>Revert Last Change</source>
-        <translation type="unfinished">Deshacer el último cambio</translation>
+        <source>Rename</source>
+        <translation type="unfinished">Renombrar</translation>
     </message>
     <message>
-        <location line="+2"/>
-        <source>Revert All Changes</source>
-        <translation type="unfinished">Deshacer todos los cambios</translation>
+        <location line="+8"/>
+        <source>Only top-level symbols may be renamed</source>
+        <translation type="unfinished">Sólo los símbolos de nivel superior pueden ser renombrados</translation>
     </message>
     <message>
-        <location line="+90"/>
-        <source>Open Directory</source>
-        <translation type="unfinished">Abrir directorio</translation>
+        <location line="+22"/>
+        <source>Hide filter</source>
+        <translation type="unfinished">Ocultar la ventana de filtrado</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Show filter</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3801,209 +4389,6 @@ con las combinaciones de teclas de readline.</translation>
         <source>Password:</source>
         <translation>Contraseña:</translation>
     </message>
-    <message>
-        <location filename="../src/settings-dialog.cc" line="-945"/>
-        <source>Loading current preferences ... </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+43"/>
-        <location line="+6"/>
-        <location line="+1049"/>
-        <source>System setting</source>
-        <translation type="unfinished">Configuración del sistema</translation>
-    </message>
-    <message>
-        <location line="-795"/>
-        <source>IBeam Cursor</source>
-        <translation type="unfinished">Cursor IBeam</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Block Cursor</source>
-        <translation type="unfinished">Cursor de bloque</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Underline Cursor</source>
-        <translation type="unfinished">Cursor de subrayado</translation>
-    </message>
-    <message>
-        <location line="+176"/>
-        <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished">Color de la línea resaltada actual (por defecto, magenta (255,0,255))</translation>
-    </message>
-    <message>
-        <location line="+63"/>
-        <source>Set Octave Startup Directory</source>
-        <translation type="unfinished">Ajuste del directorio de inicio de Octave</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Set File Browser Startup Directory</source>
-        <translation type="unfinished">Ajuste del directorio de inicio del explorador de archivos</translation>
-    </message>
-    <message>
-        <location line="+30"/>
-        <source>Applying preferences ... </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+86"/>
-        <location line="+21"/>
-        <location line="+1069"/>
-        <source>Failed to open %1 as Octave shortcut file</source>
-        <translation type="unfinished">Fallo al abrir %1 como fichero de atajos de teclado de Octave</translation>
-    </message>
-    <message>
-        <location line="-428"/>
-        <source>Enable attribute colors</source>
-        <translation type="unfinished">Activar atributor de color</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Hide tool tips</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+360"/>
-        <source>Import shortcuts from file...</source>
-        <translation type="unfinished">Importar atajos de teclado desde archivo...</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <location line="+6"/>
-        <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-        <translation type="unfinished">Archivo de acceso directo de Octave (*.osc);;Todos los archivos (*)</translation>
-    </message>
-    <message>
-        <location line="-1"/>
-        <source>Export shortcuts to file...</source>
-        <translation type="unfinished">Exportar atajos de teclado a archivo...</translation>
-    </message>
-    <message>
-        <location line="+31"/>
-        <source>Overwriting Shortcuts</source>
-        <translation type="unfinished">Sobrescribir atajos de teclado</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>You are about to overwrite all shortcuts.
-Would you like to save the current shortcut set or cancel the action?</source>
-        <translation type="unfinished">Está a punto de sobrescribir todos los atajos de teclado.
-¿Le gustaría salvar el conjunto actual o cancelar esta acción?</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Don&apos;t save</source>
-        <translation type="unfinished">No guardar</translation>
-    </message>
-    <message>
-        <location line="+33"/>
-        <source>Octave GUI preferences</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>setup_community_news</name>
-    <message>
-        <location filename="../src/welcome-wizard.cc" line="+45"/>
-        <source>Community News</source>
-        <translation type="unfinished">Noticias de la comunidad</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Previous</source>
-        <translation type="unfinished">Anterior</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Next</source>
-        <translation type="unfinished">Siguiente</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Cancel</source>
-        <translation type="unfinished">Cancelar</translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>&lt;html&gt;&lt;body&gt;
-&lt;p&gt;When Octave starts, it will optionally check the Octave web site for current news and information about the Octave community.
-The check will happen at most once each day and news will only be displayed if there is something new since the last time you viewed the news.&lt;/p&gt;
-&lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu, or by visiting
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
-&lt;p&gt;Al momento de iniciar Octave, de manera opcional se hará una revisón al sitio web de Octave para buscar noticias e información acerca de la comunidad de Octave.
-Esto ocurrirá como máximo una vez al día y las noticias sólo serán desplegadas si existen cambios recientes desde la última visita al sitio web.&lt;/p&gt;
-&lt;p&gt;También se puede acceder a las noticias presionando &quot;Noticias de la comunidad&quot; en el menú &quot;Ayuda&quot;, o visitando
-&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;</translation>
-    </message>
-    <message>
-        <location line="+30"/>
-        <source>&lt;html&gt;&lt;head&gt;
-&lt;/head&gt;&lt;body&gt;
-&lt;p&gt;Allow Octave to connect to the Octave web site when it starts in order to display current news and information about the Octave community.&lt;/p&gt;
-&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>shortcut_edit_dialog</name>
-    <message>
-        <location filename="../src/shortcuts-tree-widget.cc" line="+162"/>
-        <source>Enter New Shortcut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+7"/>
-        <source>Enter custom shortcut
-Action: %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Enter shortcut by typing it</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Add Shift modifier
-(allows one to enter number keys)</source>
-        <translation type="unfinished">Añadir el modificador Shift
-(permite introducir teclas numéricas)</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Actual Shortcut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Default Shortcut</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Set to default</source>
-        <translation type="unfinished">Establecer como por defecto</translation>
-    </message>
-    <message>
-        <location line="+104"/>
-        <source>Double Shortcut</source>
-        <translation type="unfinished">Acceso directo doble</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>The chosen shortcut
-  &quot;%1&quot;
-is already used for the action
-  &quot;%2&quot;.
-Do you want to use the shortcut and remove it from the previous action?</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>shortcuts</name>
@@ -4620,417 +5005,6 @@ Do you want to use the shortcut and remove it from the previous action?</source>
         <location line="+1"/>
         <source>Bookmark this Page</source>
         <translation type="unfinished">Marcar esta página como favorita</translation>
-    </message>
-</context>
-<context>
-    <name>shortcuts_tree_widget</name>
-    <message>
-        <location filename="../src/shortcuts-tree-widget.cc" line="+33"/>
-        <source>Global</source>
-        <translation type="unfinished">Global</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <location line="+49"/>
-        <source>File Menu</source>
-        <translation type="unfinished">Menú archivo</translation>
-    </message>
-    <message>
-        <location line="-46"/>
-        <location line="+49"/>
-        <source>Edit Menu</source>
-        <translation type="unfinished">Menú editar</translation>
-    </message>
-    <message>
-        <location line="-46"/>
-        <location line="+52"/>
-        <source>Debug Menu</source>
-        <translation type="unfinished">Menú depuración</translation>
-    </message>
-    <message>
-        <location line="-49"/>
-        <source>Tools Menu</source>
-        <translation type="unfinished">Menú de herramientas</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Window Menu</source>
-        <translation type="unfinished">Menú ventana</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <location line="+49"/>
-        <source>Help Menu</source>
-        <translation type="unfinished">Menú ayuda</translation>
-    </message>
-    <message>
-        <location line="-46"/>
-        <source>News Menu</source>
-        <translation type="unfinished">Menú noticias</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Handling of Dock Widgets</source>
-        <translation type="unfinished">Manejo de widgets acoplados</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Tab Handling in Dock Widgets</source>
-        <translation type="unfinished">Manejo de pestañas en widgets acoplados</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Find &amp; Replace in Dock Widgets</source>
-        <translation type="unfinished">Buscar y reemplazar en widgets acoplados</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Zooming in Editor and Documentation</source>
-        <translation type="unfinished">Zoom en el editor y documentación</translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
-    </message>
-    <message>
-        <location line="+10"/>
-        <source>View Menu</source>
-        <translation type="unfinished">Menú ver</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Run Menu</source>
-        <translation type="unfinished">Menú ejecutar</translation>
-    </message>
-    <message>
-        <location line="+13"/>
-        <source>Documentation Viewer</source>
-        <translation type="unfinished">Visor de documentación</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Browser</source>
-        <translation type="unfinished">Explorador</translation>
-    </message>
-    <message>
-        <location line="+109"/>
-        <source>item %1 not found in shortcut settings dialog</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>terminal_dock_widget</name>
-    <message>
-        <location filename="../src/terminal-dock-widget.cc" line="+107"/>
-        <source>Command Window</source>
-        <translation type="unfinished">Ventana de comandos</translation>
-    </message>
-</context>
-<context>
-    <name>variable_dock_widget</name>
-    <message>
-        <location filename="../src/variable-editor.cc" line="+177"/>
-        <source>Dock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Variable Editor: </source>
-        <translation type="unfinished">Editor de variables: </translation>
-    </message>
-    <message>
-        <location line="+15"/>
-        <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location line="+22"/>
-        <source>Restore geometry</source>
-        <translation type="unfinished">Restablecer geometría</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Redock</source>
-        <translation type="unfinished">Reacoplar</translation>
-    </message>
-</context>
-<context>
-    <name>variable_editor</name>
-    <message>
-        <location line="+918"/>
-        <source>Variable Editor</source>
-        <translation type="unfinished">Editor de variables</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Edit variables.</source>
-        <translation type="unfinished">Editar variables.</translation>
-    </message>
-    <message>
-        <location line="+553"/>
-        <source>Variable Editor Toolbar</source>
-        <translation type="unfinished">Barra de herramientas de editor de variables</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Save</source>
-        <translation type="unfinished">Guardar</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Save variable to a file</source>
-        <translation type="unfinished">Guardar variable en un archivo</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <location line="+5"/>
-        <location line="+6"/>
-        <source>Save in format ...</source>
-        <translation type="unfinished">Guardar en formato ...</translation>
-    </message>
-    <message>
-        <location line="-5"/>
-        <source>Save variable to a file in different format</source>
-        <translation type="unfinished">Guardar variable en fichero en formato...</translation>
-    </message>
-    <message>
-        <location line="+20"/>
-        <source>Cut</source>
-        <translation type="unfinished">Cortar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Cut data to clipboard</source>
-        <translation type="unfinished">Cortar datos al portapapeles</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Copy</source>
-        <translation type="unfinished">Copiar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Copy data to clipboard</source>
-        <translation type="unfinished">Copiar datos al portapapeles</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Paste</source>
-        <translation type="unfinished">Pegar</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Paste clipboard into variable data</source>
-        <translation type="unfinished">Pegar portapapeles a variable de datos</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <location line="+6"/>
-        <location line="+7"/>
-        <source>Plot</source>
-        <translation type="unfinished">Dibujar</translation>
-    </message>
-    <message>
-        <location line="-11"/>
-        <source>Plot Selected Data</source>
-        <translation type="unfinished">Dibujar datos seleccionados</translation>
-    </message>
-    <message>
-        <location line="+5"/>
-        <source>Plot selected data</source>
-        <translation type="unfinished">Dibujar datos seleccionados</translation>
-    </message>
-    <message>
-        <location line="+17"/>
-        <source>Up</source>
-        <translation type="unfinished">Arriba</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Go one level up in variable hierarchy</source>
-        <translation type="unfinished">Ir un nivel hacia arriba en jerarquía de variables</translation>
-    </message>
-</context>
-<context>
-    <name>variable_editor_stack</name>
-    <message>
-        <location line="-1260"/>
-        <source>Save Variable %1 As</source>
-        <translation type="unfinished">Guardar variable %1 como</translation>
-    </message>
-</context>
-<context>
-    <name>variable_editor_view</name>
-    <message>
-        <location line="+142"/>
-        <source>Cut</source>
-        <translation type="unfinished">Cortar</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Copy</source>
-        <translation type="unfinished">Copiar</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Paste</source>
-        <translation type="unfinished">Pegar</translation>
-    </message>
-    <message>
-        <location line="+6"/>
-        <source>Clear</source>
-        <translation type="unfinished">Limpiar</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Delete</source>
-        <translation type="unfinished">Eliminar</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Variable from Selection</source>
-        <translation type="unfinished">Variable de la selección</translation>
-    </message>
-    <message>
-        <location line="+18"/>
-        <source>Transpose</source>
-        <translation type="unfinished">Trasponer</translation>
-    </message>
-    <message>
-        <location line="+56"/>
-        <source> columns</source>
-        <translation type="unfinished"> columnas</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source> column</source>
-        <translation type="unfinished"> columna</translation>
-    </message>
-    <message>
-        <location line="+52"/>
-        <source> rows</source>
-        <translation type="unfinished"> filas</translation>
-    </message>
-    <message>
-        <location line="+0"/>
-        <source> row</source>
-        <translation type="unfinished"> fila</translation>
-    </message>
-</context>
-<context>
-    <name>welcome_wizard</name>
-    <message>
-        <location filename="../src/welcome-wizard.cc" line="-190"/>
-        <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">Bienvenido a GNU Octave</translation>
-    </message>
-</context>
-<context>
-    <name>workspace_model</name>
-    <message>
-        <location filename="../src/workspace-model.cc" line="+49"/>
-        <source>Name</source>
-        <translation type="unfinished">Nombre</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Class</source>
-        <translation type="unfinished">Clase</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Dimension</source>
-        <translation type="unfinished">Dimensión</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Value</source>
-        <translation type="unfinished">Valor</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Attribute</source>
-        <translation type="unfinished">Atributo</translation>
-    </message>
-    <message>
-        <location line="+83"/>
-        <source>Right click to copy, rename, or display</source>
-        <translation type="unfinished">Clic con el botón derecho para copiar, renombrar o mostrar</translation>
-    </message>
-    <message>
-        <location line="+30"/>
-        <location line="+2"/>
-        <source>complex</source>
-        <translation type="unfinished">complejo</translation>
-    </message>
-</context>
-<context>
-    <name>workspace_view</name>
-    <message>
-        <location filename="../src/workspace-view.cc" line="+57"/>
-        <source>Workspace</source>
-        <translation type="unfinished">Espacio de trabajo</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>View the variables in the active workspace.</source>
-        <translation type="unfinished">Ver variables en el espacio de trabajo activo.</translation>
-    </message>
-    <message>
-        <location line="+2"/>
-        <source>Enter text to filter the workspace</source>
-        <translation type="unfinished">Introduzca texto para filtrar el espacio de trabajo</translation>
-    </message>
-    <message>
-        <location line="+9"/>
-        <source>Filter</source>
-        <translation type="unfinished">Filtrar</translation>
-    </message>
-    <message>
-        <location line="+122"/>
-        <source>View the variables in the active workspace.&lt;br&gt;</source>
-        <translation type="unfinished">Ver las variables del espacio de trabajo activo.&lt;br&gt;</translation>
-    </message>
-    <message>
-        <location line="+1"/>
-        <source>Colors for variable attributes:</source>
-        <translation type="unfinished">Colores para los atributos de variable:</translation>
-    </message>
-    <message>
-        <location line="+156"/>
-        <source>Open in Variable Editor</source>
-        <translation type="unfinished">Abrir en el editor de variables</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Copy name</source>
-        <translation type="unfinished">Copiar nombre</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Copy value</source>
-        <translation type="unfinished">Copiar valor</translation>
-    </message>
-    <message>
-        <location line="+4"/>
-        <source>Rename</source>
-        <translation type="unfinished">Renombrar</translation>
-    </message>
-    <message>
-        <location line="+8"/>
-        <source>Only top-level symbols may be renamed</source>
-        <translation type="unfinished">Sólo los símbolos de nivel superior pueden ser renombrados</translation>
-    </message>
-    <message>
-        <location line="+22"/>
-        <source>Hide filter</source>
-        <translation type="unfinished">Ocultar la ventana de filtrado</translation>
-    </message>
-    <message>
-        <location line="+3"/>
-        <source>Show filter</source>
-        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

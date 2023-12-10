@@ -231,6 +231,7 @@ jobs:
             m4
             git
             ccache
+            coreutils
             gfortran
             flex
             gperf

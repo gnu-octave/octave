@@ -67,7 +67,7 @@ symbol_match::symbol_match (const std::string& pattern)
 #if defined (OCTAVE_USE_WINDOWS_API)
   m_glob = nullptr;
 #else
-  m_glob {new glob_match (pattern)};
+  m_glob = std::unique_ptr<glob_match> {new glob_match {pattern}};
 #endif
 }
 

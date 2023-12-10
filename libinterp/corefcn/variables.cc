@@ -948,7 +948,7 @@ name_matches_any_pattern (const std::string& nm, const string_vector& argv,
             }
           else
             {
-              glob_match pattern (patstr);
+              symbol_match pattern (patstr);
 
               if (pattern.match (nm))
                 {
@@ -1161,7 +1161,8 @@ Match zero or more characters.
 Match the list of characters specified by @var{list}.  If the first character
 is @code{!} or @code{^}, match all characters except those specified by
 @var{list}.  For example, the pattern @code{[a-zA-Z]} will match all lowercase
-and uppercase alphabetic characters.
+and uppercase alphabetic characters.  On Windows, square brackets are matched
+literally and are not used to group characters.
 @end table
 
 For example, the command

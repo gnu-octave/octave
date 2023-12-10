@@ -911,7 +911,7 @@ void call_stack::clear_global_variable (const std::string& name)
 
 void call_stack::clear_global_variable_pattern (const std::string& pattern)
 {
-  glob_match pat (pattern);
+  symbol_match pat (pattern);
 
   for (auto& nm_ov : m_global_values)
     {
@@ -1135,7 +1135,7 @@ octave_value call_stack::do_global_who_two (const string_vector& patterns,
         }
       else
         {
-          glob_match pat (pattern);
+          symbol_match pat (pattern);
 
           for (auto& nm_ov : m_global_values)
             {

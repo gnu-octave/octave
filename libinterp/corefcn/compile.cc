@@ -43,7 +43,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
 // If TRUE, use VM evaluator rather than tree walker.
-bool V__vm_enable__ = false;
+bool V__vm_enable__ = true;
 
 // Cleverly hidden in pt-bytecode-vm.cc to prevent inlining here
 extern "C" void dummy_mark_1 (void);

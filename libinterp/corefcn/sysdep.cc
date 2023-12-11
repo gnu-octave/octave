@@ -731,6 +731,9 @@ DEFUN (clc, , ,
 @deftypefn  {} {} clc ()
 @deftypefnx {} {} home ()
 Clear the terminal screen and move the cursor to the upper left corner.
+
+Programming Note: @code{home} is an alias for @code{clc} and can be used
+interchangeably.
 @end deftypefn */)
 {
   bool skip_redisplay = true;

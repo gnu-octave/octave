@@ -1089,7 +1089,8 @@ any m-files defined on the next line.
 Using @code{dbstep out} will cause execution to continue until the current
 function returns.
 
-@code{dbnext} is an alias for @code{dbstep}.
+Programming Note: @code{dbnext} is an alias for @code{dbstep} and can be used
+interchangeably.
 @seealso{dbcont, dbquit}
 @end deftypefn */)
 {

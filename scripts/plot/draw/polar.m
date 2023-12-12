@@ -173,7 +173,7 @@ function rtick = __calc_rtick__ (hax, maxr)
   set (hax, "xlim", [-maxr maxr], "ylim", [-maxr maxr]);
 
   xtick = get (hax, "xtick");
-  minidx = find (xtick > 0, 1);
+  minidx = find (xtick >= 0, 1);
   maxidx = find (xtick >= maxr, 1);
   if (! isempty (maxidx))
     rtick = xtick(minidx:maxidx);
@@ -333,9 +333,9 @@ function __update_polar_grid__ (hax, ~, hg)
   delete (get (hg, "children"));
 
   rtick = unique (get (hax, "rtick")(:)');
-  rtick = rtick(rtick > 0);
+  rtick = rtick(rtick >= 0);
   if (isempty (rtick))
-    rtick = [0.5, 1];
+    rtick = [0, 0.5, 1];
   endif
 
   ttick = unique (get (hax, "ttick")(:)');
@@ -638,14 +638,14 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-##Test rtick, ttick being properly set
-%!test
+##Test rtick, ttick being set - including the unlabeled 0 (bug #64991)
+%!test <*64991>
 %! hf = figure ("visible", "off");
 %! hax = gca ();
 %! unwind_protect
 %!   polar (hax, [1 2 3], [4 5 6]);
 %!   haxdata = get (hax);
-%!   assert (haxdata.rtick, [2 4 6]);
+%!   assert (haxdata.rtick, [0 2 4 6]);
 %!   assert (haxdata.ttick, [0:30:330]);
 %! unwind_protect_cleanup
 %!   close (hf);

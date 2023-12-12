@@ -7,6 +7,11 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 ### Graphics backend
 
+- `polar` plots now include the center tick mark value, typically 0, in
+the 'rtick' parameter when the plot is created.  Subsequent modifications
+to 'rtick' by `rticks` still only includes the center tick mark value if
+it is specified.
+
 ### Matlab compatibility
 
 - `height` and `width` are now aliases for the `rows` and `columns` functions.

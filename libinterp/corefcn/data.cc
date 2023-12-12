@@ -2998,8 +2998,8 @@ Return the number of rows of @var{A}.
 
 This is equivalent to @code{size (@var{A}, 1)}.
 
-Programming Note: @code{height} is an alias for @code{rows} and either name
-can be used in Octave.
+Programming Note: @code{height} is an alias for @code{rows} and can be
+used interchangeably.
 
 @seealso{columns, size, length, numel, isscalar, isvector, ismatrix}
 @end deftypefn */)
@@ -3050,8 +3050,8 @@ Return the number of columns of @var{A}.
 
 This is equivalent to @code{size (@var{A}, 2)}.
 
-Programming Note: @code{width} is an alias for @code{columns} and either name
-can be used in Octave.
+Programming Note: @code{width} is an alias for @code{columns} and can be
+used interchangeably.
 
 @seealso{rows, size, length, numel, isscalar, isvector, ismatrix}
 @end deftypefn */)

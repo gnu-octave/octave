@@ -2993,9 +2993,14 @@ for empty matrices @code{nnz} will report 0, but @code{nzmax} will report 1.
 DEFUN (rows, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{nr} =} rows (@var{A})
+@deftypefnx () {@var{nr} =} height (@var{A})
 Return the number of rows of @var{A}.
 
 This is equivalent to @code{size (@var{A}, 1)}.
+
+Programming Note: @code{height} is an alias for @code{rows} and either name
+can be used in Octave.
+
 @seealso{columns, size, length, numel, isscalar, isvector, ismatrix}
 @end deftypefn */)
 {
@@ -3040,9 +3045,14 @@ DEFALIAS (height, rows);
 DEFUN (columns, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{nc} =} columns (@var{A})
+@deftypefnx {} {@var{nc} =} width (@var{A})
 Return the number of columns of @var{A}.
 
 This is equivalent to @code{size (@var{A}, 2)}.
+
+Programming Note: @code{width} is an alias for @code{columns} and either name
+can be used in Octave.
+
 @seealso{rows, size, length, numel, isscalar, isvector, ismatrix}
 @end deftypefn */)
 {
@@ -3333,6 +3343,9 @@ DEFUN (islogical, args, ,
 @deftypefn  {} {@var{tf} =} islogical (@var{x})
 @deftypefnx {} {@var{tf} =} isbool (@var{x})
 Return true if @var{x} is a logical object.
+
+Programming Note: @code{isbool} is an alias for @code{islogical} and can be
+used interchangeably.
 @seealso{ischar, isfloat, isinteger, isstring, isnumeric, isa}
 @end deftypefn */)
 {
@@ -8032,6 +8045,9 @@ result(! mask) = fval(! mask);
 
 @var{mask} can also be arbitrary numeric type, in which case it is first
 converted to logical.
+
+Programming Note: @code{ifelse} is an alias for @code{merge} and can be used
+interchangeably.
 @seealso{logical, diff}
 @end deftypefn */)
 {

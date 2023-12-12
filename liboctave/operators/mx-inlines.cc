@@ -501,8 +501,8 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
                  void (*op2) (std::size_t, R *, const X *, Y),
                  const char *opname)
 {
-  dim_vector dx = x.dims ();
-  dim_vector dy = y.dims ();
+  const dim_vector &dx = x.dims ();
+  const dim_vector &dy = y.dims ();
   if (dx == dy)
     {
       Array<R> r (dx);
@@ -544,8 +544,8 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
                   void (*op1) (std::size_t, R *, X),
                   const char *opname)
 {
-  dim_vector dr = r.dims ();
-  dim_vector dx = x.dims ();
+  const dim_vector &dr = r.dims ();
+  const dim_vector &dx = x.dims ();
   if (dr == dx)
     op (r.numel (), r.fortran_vec (), x.data ());
   else if (is_valid_inplace_bsxfun (opname, dr, dx))

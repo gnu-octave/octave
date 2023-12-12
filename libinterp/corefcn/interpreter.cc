@@ -149,9 +149,8 @@ DEFMETHOD (quit, interp, args, ,
 @deftypefnx {} {} quit ("force")
 @deftypefnx {} {} quit (@var{status})
 @deftypefnx {} {} quit (@var{status}, "force")
+@deftypefnx {} {} exit (@dots{})
 Quit the current Octave session.
-
-The @code{exit} function is an alias for @code{quit}.
 
 If the optional integer value @var{status} is supplied, pass that value to
 the operating system as Octave's exit status.  The default value is zero.
@@ -173,6 +172,9 @@ process.
 
 If the optional argument @qcode{"force"} is provided, no confirmation is
 requested, and the execution of the @file{finish.m} file is skipped.
+
+Programming Note: @code{exit} is an alias for @code{quit} and can be used
+interchangeably.
 @seealso{atexit}
 @end deftypefn */)
 {

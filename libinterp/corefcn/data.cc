@@ -3333,6 +3333,9 @@ DEFUN (islogical, args, ,
 @deftypefn  {} {@var{tf} =} islogical (@var{x})
 @deftypefnx {} {@var{tf} =} isbool (@var{x})
 Return true if @var{x} is a logical object.
+
+Programming Note: @code{isbool} is an alias for @code{islogical} and can be
+used interchangeably.
 @seealso{ischar, isfloat, isinteger, isstring, isnumeric, isa}
 @end deftypefn */)
 {
@@ -8032,6 +8035,9 @@ result(! mask) = fval(! mask);
 
 @var{mask} can also be arbitrary numeric type, in which case it is first
 converted to logical.
+
+Programming Note: @code{ifelse} is an alias for @code{merge} and can be used
+interchangeably.
 @seealso{logical, diff}
 @end deftypefn */)
 {

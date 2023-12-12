@@ -61,7 +61,8 @@ If called with a sparse matrix, then in general @var{x} will be a full
 matrix requiring significantly more storage.  Avoid forming the inverse of a
 sparse matrix if possible.
 
-@code{inverse} is an alias and may be used identically in place of @code{inv}.
+Programming Note: @code{inverse} is an alias for @code{inv} and can be used
+interchangeably.
 @seealso{ldivide, rdivide, pinv}
 @end deftypefn */)
 {

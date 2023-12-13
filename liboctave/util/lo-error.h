@@ -46,13 +46,11 @@ liboctave_warning_with_id (const char *id, const char *fmt, ...);
 
 typedef void (*liboctave_error_handler) (const char *, ...);
 
-typedef void (*liboctave_error_with_id_handler) (const char *, const char *,
-                                                 ...);
+typedef void (*liboctave_error_with_id_handler) (const char *, const char *, ...);
 
 typedef void (*liboctave_warning_handler) (const char *, ...);
 
-typedef void (*liboctave_warning_with_id_handler) (const char *, const char *,
-                                                   ...);
+typedef void (*liboctave_warning_with_id_handler) (const char *, const char *, ...);
 
 /* Would be nice to make these pointers private, but we want to share
    them among all the liboctave classes. */

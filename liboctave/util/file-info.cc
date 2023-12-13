@@ -72,7 +72,8 @@ file_info::get_lines (std::size_t line, std::size_t num_lines) const
 
 // Read entire file called fname and return the contents as a string
 
-std::string file_info::snarf_file (const std::string& fname)
+std::string
+file_info::snarf_file (const std::string& fname)
 {
   std::string retval;
 
@@ -103,7 +104,8 @@ std::string file_info::snarf_file (const std::string& fname)
   return retval;
 }
 
-std::vector<std::size_t> file_info::get_line_offsets (const std::string& buf)
+std::vector<std::size_t>
+file_info::get_line_offsets (const std::string& buf)
 {
   std::deque<std::size_t> tmp_offsets;
 

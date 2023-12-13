@@ -42,24 +42,28 @@ bool octave_lvalue::is_defined () const
   return ! is_black_hole () && m_frame->is_defined (m_sym);
 }
 
-bool octave_lvalue::is_undefined () const
+bool
+octave_lvalue::is_undefined () const
 {
   return ! is_defined ();
 }
 
-void octave_lvalue::define (const octave_value& v)
+void
+octave_lvalue::define (const octave_value& v)
 {
   m_frame->assign (m_sym, v);
 }
 
-void octave_lvalue::assign (octave_value::assign_op op,
-                            const octave_value& rhs)
+void
+octave_lvalue::assign (octave_value::assign_op op,
+                       const octave_value& rhs)
 {
   if (! is_black_hole ())
     m_frame->assign (op, m_sym, m_type, m_idx, rhs);
 }
 
-octave_idx_type octave_lvalue::numel () const
+octave_idx_type
+octave_lvalue::numel () const
 {
   // Return 1 if there is no index because without an index there
   // should be no way to have a cs-list here.  Cs-lists may be passed
@@ -168,8 +172,9 @@ octave_idx_type octave_lvalue::numel () const
     }
 }
 
-void octave_lvalue::set_index (const std::string& t,
-                               const std::list<octave_value_list>& i)
+void
+octave_lvalue::set_index (const std::string& t,
+                          const std::list<octave_value_list>& i)
 {
   if (! m_idx.empty ())
     error ("invalid index expression in assignment");
@@ -178,7 +183,8 @@ void octave_lvalue::set_index (const std::string& t,
   m_idx = i;
 }
 
-bool octave_lvalue::index_is_empty () const
+bool
+octave_lvalue::index_is_empty () const
 {
   bool retval = false;
 
@@ -192,7 +198,8 @@ bool octave_lvalue::index_is_empty () const
   return retval;
 }
 
-bool octave_lvalue::index_is_colon () const
+bool
+octave_lvalue::index_is_colon () const
 {
   bool retval = false;
 
@@ -206,13 +213,15 @@ bool octave_lvalue::index_is_colon () const
   return retval;
 }
 
-void octave_lvalue::unary_op (octave_value::unary_op op)
+void
+octave_lvalue::unary_op (octave_value::unary_op op)
 {
   if (! is_black_hole ())
     m_frame->non_const_unary_op (op, m_sym, m_type, m_idx);
 }
 
-octave_value octave_lvalue::value () const
+octave_value
+octave_lvalue::value () const
 {
   return (is_black_hole ()
           ? octave_value () : m_frame->value (m_sym, m_type, m_idx));

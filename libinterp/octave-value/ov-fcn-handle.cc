@@ -829,20 +829,23 @@ protected:
 extern bool is_equal_to (const anonymous_fcn_handle& fh1,
                          const anonymous_fcn_handle& fh2);
 
-static void err_invalid_fcn_handle (const std::string& name)
+static void
+err_invalid_fcn_handle (const std::string& name)
 {
   error ("invalid function handle, unable to find function for @%s",
          name.c_str ());
 }
 
-octave_value base_fcn_handle::make_weak_nested_handle () const
+octave_value
+base_fcn_handle::make_weak_nested_handle () const
 {
   std::string type_str = type ();
   error ("invalid conversion from %s handle to weak nestead handle",
          type_str.c_str ());
 }
 
-octave_value base_fcn_handle::make_weak_anonymous_handle () const
+octave_value
+base_fcn_handle::make_weak_anonymous_handle () const
 {
   std::string type_str = type ();
   error ("invalid conversion from %s handle to weak anonymous handle",
@@ -940,7 +943,8 @@ base_fcn_handle::load_hdf5 (octave_hdf5_id&, octave_hdf5_id&, octave_hdf5_id&)
   return true;
 }
 
-void base_fcn_handle::warn_load (const char *file_type) const
+void
+base_fcn_handle::warn_load (const char *file_type) const
 {
   std::string obj_type = type ();
 
@@ -950,7 +954,8 @@ void base_fcn_handle::warn_load (const char *file_type) const
    obj_type.c_str (), file_type);
 }
 
-void base_fcn_handle::warn_save (const char *file_type) const
+void
+base_fcn_handle::warn_save (const char *file_type) const
 {
   std::string obj_type = type ();
 
@@ -960,7 +965,8 @@ void base_fcn_handle::warn_save (const char *file_type) const
    obj_type.c_str (), file_type);
 }
 
-void base_fcn_handle::unimplemented (const char *op, const char *fmt) const
+void
+base_fcn_handle::unimplemented (const char *op, const char *fmt) const
 {
   std::string htype = type ();
 
@@ -982,7 +988,8 @@ internal_fcn_handle::call (int nargout, const octave_value_list& args)
   return interp.feval (m_fcn, args, nargout);
 }
 
-octave_scalar_map internal_fcn_handle::info ()
+octave_scalar_map
+internal_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -993,8 +1000,9 @@ octave_scalar_map internal_fcn_handle::info ()
   return m;
 }
 
-bool is_equal_to (const internal_fcn_handle& fh1,
-                  const internal_fcn_handle& fh2)
+bool
+is_equal_to (const internal_fcn_handle& fh1,
+             const internal_fcn_handle& fh2)
 {
   if (fh1.m_name == fh2.m_name
       && fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
@@ -1410,7 +1418,8 @@ simple_fcn_handle::call (int nargout, const octave_value_list& args)
   return interp.feval (fcn_to_call, args, nargout);
 }
 
-octave_function *simple_fcn_handle::function_value (bool)
+octave_function *
+simple_fcn_handle::function_value (bool)
 {
   // FIXME: Shouldn't the lookup rules here match those used in the
   // call method?
@@ -1429,7 +1438,8 @@ octave_function *simple_fcn_handle::function_value (bool)
   return m_fcn.is_defined () ? m_fcn.function_value () : nullptr;
 }
 
-octave_user_function *simple_fcn_handle::user_function_value (bool)
+octave_user_function *
+simple_fcn_handle::user_function_value (bool)
 {
   // FIXME: Shouldn't the lookup rules here match those used in the
   // call method?
@@ -1448,7 +1458,8 @@ octave_user_function *simple_fcn_handle::user_function_value (bool)
   return m_fcn.is_defined () ? m_fcn.user_function_value () : nullptr;
 }
 
-octave_value simple_fcn_handle::fcn_val ()
+octave_value
+simple_fcn_handle::fcn_val ()
 {
   if (m_fcn.is_defined ())
     return m_fcn;
@@ -1464,7 +1475,8 @@ octave_value simple_fcn_handle::fcn_val ()
   return m_fcn;
 }
 
-octave_scalar_map simple_fcn_handle::info ()
+octave_scalar_map
+simple_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -1476,7 +1488,8 @@ octave_scalar_map simple_fcn_handle::info ()
   return m;
 }
 
-bool simple_fcn_handle::save_ascii (std::ostream& os)
+bool
+simple_fcn_handle::save_ascii (std::ostream& os)
 {
   os << "# octaveroot: " << config::octave_exec_home () << "\n";
 
@@ -1491,7 +1504,8 @@ bool simple_fcn_handle::save_ascii (std::ostream& os)
   return true;
 }
 
-bool simple_fcn_handle::load_ascii (std::istream& is)
+bool
+simple_fcn_handle::load_ascii (std::istream& is)
 {
   // FIXME: If m_file is not empty, try to load the file and define
   // the function?  Is it an error if that fails?  Or should this job
@@ -1500,7 +1514,8 @@ bool simple_fcn_handle::load_ascii (std::istream& is)
   return is.good ();
 }
 
-bool simple_fcn_handle::save_binary (std::ostream& os, bool)
+bool
+simple_fcn_handle::save_binary (std::ostream& os, bool)
 {
   std::ostringstream nmbuf;
 
@@ -1518,14 +1533,16 @@ bool simple_fcn_handle::save_binary (std::ostream& os, bool)
   return true;
 }
 
-bool simple_fcn_handle::load_binary (std::istream& is, bool,
-                                     mach_info::float_format)
+bool
+simple_fcn_handle::load_binary (std::istream& is, bool,
+                                mach_info::float_format)
 {
   return is.good ();
 }
 
-bool simple_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                   bool)
+bool
+simple_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                              bool)
 {
 #if defined (HAVE_HDF5)
 
@@ -1674,9 +1691,10 @@ bool simple_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #endif
 }
 
-bool simple_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
-                                   octave_hdf5_id& space_hid,
-                                   octave_hdf5_id& type_hid)
+bool
+simple_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
+                              octave_hdf5_id& space_hid,
+                              octave_hdf5_id& type_hid)
 {
 #if defined (HAVE_HDF5)
 
@@ -1699,14 +1717,16 @@ bool simple_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
 #endif
 }
 
-void simple_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
-                                   int current_print_indent_level) const
+void
+simple_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
+                              int current_print_indent_level) const
 {
   octave_print_internal (os, '@' + m_name, pr_as_read_syntax,
                          current_print_indent_level);
 }
 
-bool is_equal_to (const simple_fcn_handle& fh1, const simple_fcn_handle& fh2)
+bool
+is_equal_to (const simple_fcn_handle& fh1, const simple_fcn_handle& fh2)
 {
   if (fh1.m_name == fh2.m_name)
     {
@@ -1758,7 +1778,8 @@ scoped_fcn_handle::call (int nargout, const octave_value_list& args)
   return interp.feval (m_fcn, args, nargout);
 }
 
-octave_scalar_map scoped_fcn_handle::info ()
+octave_scalar_map
+scoped_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -1771,7 +1792,8 @@ octave_scalar_map scoped_fcn_handle::info ()
   return m;
 }
 
-bool scoped_fcn_handle::save_ascii (std::ostream& os)
+bool
+scoped_fcn_handle::save_ascii (std::ostream& os)
 {
   os << "# octaveroot: " << config::octave_exec_home () << "\n";
 
@@ -1789,7 +1811,8 @@ bool scoped_fcn_handle::save_ascii (std::ostream& os)
   return os.good ();
 }
 
-bool scoped_fcn_handle::load_ascii (std::istream& is)
+bool
+scoped_fcn_handle::load_ascii (std::istream& is)
 {
   octave_cell ov_cell;
   ov_cell.load_ascii (is);
@@ -1805,7 +1828,8 @@ bool scoped_fcn_handle::load_ascii (std::istream& is)
   return is.good ();
 }
 
-bool scoped_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
+bool
+scoped_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
 {
   std::ostringstream nmbuf;
 
@@ -1825,8 +1849,9 @@ bool scoped_fcn_handle::save_binary (std::ostream& os, bool save_as_floats)
   return os.good ();
 }
 
-bool scoped_fcn_handle::load_binary (std::istream& is, bool swap,
-                                     mach_info::float_format fmt)
+bool
+scoped_fcn_handle::load_binary (std::istream& is, bool swap,
+                                mach_info::float_format fmt)
 {
   octave_cell ov_cell;
   ov_cell.load_binary (is, swap, fmt);
@@ -1842,8 +1867,9 @@ bool scoped_fcn_handle::load_binary (std::istream& is, bool swap,
   return is.good ();
 }
 
-bool scoped_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
-                                   bool)
+bool
+scoped_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
+                              bool)
 {
 #if defined (HAVE_HDF5)
 
@@ -1868,9 +1894,10 @@ bool scoped_fcn_handle::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 #endif
 }
 
-bool scoped_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
-                                   octave_hdf5_id& space_hid,
-                                   octave_hdf5_id& type_hid)
+bool
+scoped_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
+                              octave_hdf5_id& space_hid,
+                              octave_hdf5_id& type_hid)
 {
 #if defined (HAVE_HDF5)
 
@@ -1895,15 +1922,17 @@ bool scoped_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
 #endif
 }
 
-void scoped_fcn_handle::print_raw (std::ostream& os,
-                                   bool pr_as_read_syntax,
-                                   int current_print_indent_level) const
+void
+scoped_fcn_handle::print_raw (std::ostream& os,
+                              bool pr_as_read_syntax,
+                              int current_print_indent_level) const
 {
   octave_print_internal (os, '@' + m_name, pr_as_read_syntax,
                          current_print_indent_level);
 }
 
-bool is_equal_to (const scoped_fcn_handle& fh1, const scoped_fcn_handle& fh2)
+bool
+is_equal_to (const scoped_fcn_handle& fh1, const scoped_fcn_handle& fh2)
 {
   if (fh1.m_name == fh2.m_name
       && fh2.m_parentage == fh2.m_parentage
@@ -1913,7 +1942,8 @@ bool is_equal_to (const scoped_fcn_handle& fh1, const scoped_fcn_handle& fh2)
     return false;
 }
 
-void scoped_fcn_handle::find_function ()
+void
+scoped_fcn_handle::find_function ()
 {
   // Since a scoped function is not visible by itself, try to load the
   // file named in m_file then find and define the scoped function.
@@ -1970,7 +2000,8 @@ void scoped_fcn_handle::find_function ()
     }
 }
 
-octave_scalar_map base_nested_fcn_handle::info ()
+octave_scalar_map
+base_nested_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -1991,7 +2022,8 @@ octave_scalar_map base_nested_fcn_handle::info ()
 // Is it an error if that fails?  Or should this job always be
 // deferred until the handle is used?
 
-bool base_nested_fcn_handle::save_ascii (std::ostream& os)
+bool
+base_nested_fcn_handle::save_ascii (std::ostream& os)
 {
   unimplemented ("save", "text");
 
@@ -2000,7 +2032,8 @@ bool base_nested_fcn_handle::save_ascii (std::ostream& os)
   return true;
 }
 
-bool base_nested_fcn_handle::load_ascii (std::istream& is)
+bool
+base_nested_fcn_handle::load_ascii (std::istream& is)
 {
   unimplemented ("load", "text");
 
@@ -2009,8 +2042,9 @@ bool base_nested_fcn_handle::load_ascii (std::istream& is)
   return true;
 }
 
-bool base_nested_fcn_handle::save_binary (std::ostream& os,
-    bool save_as_floats)
+bool
+base_nested_fcn_handle::save_binary (std::ostream& os,
+                                     bool save_as_floats)
 {
   unimplemented ("save", "binary");
 
@@ -2020,8 +2054,9 @@ bool base_nested_fcn_handle::save_binary (std::ostream& os,
   return true;
 }
 
-bool base_nested_fcn_handle::load_binary (std::istream& is, bool swap,
-    mach_info::float_format fmt)
+bool
+base_nested_fcn_handle::load_binary (std::istream& is, bool swap,
+                                     mach_info::float_format fmt)
 {
   unimplemented ("load", "binary");
 
@@ -2032,8 +2067,9 @@ bool base_nested_fcn_handle::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-bool base_nested_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
-                                        const char *name, bool)
+bool
+base_nested_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
+                                   const char *name, bool)
 {
 #if defined (HAVE_HDF5)
 
@@ -2056,9 +2092,10 @@ bool base_nested_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
 #endif
 }
 
-bool base_nested_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
-                                        octave_hdf5_id& space_hid,
-                                        octave_hdf5_id& type_hid)
+bool
+base_nested_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
+                                   octave_hdf5_id& space_hid,
+                                   octave_hdf5_id& type_hid)
 {
 #if defined (HAVE_HDF5)
 
@@ -2081,15 +2118,17 @@ bool base_nested_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
 #endif
 }
 
-void base_nested_fcn_handle::print_raw (std::ostream& os,
-                                        bool pr_as_read_syntax,
-                                        int current_print_indent_level) const
+void
+base_nested_fcn_handle::print_raw (std::ostream& os,
+                                   bool pr_as_read_syntax,
+                                   int current_print_indent_level) const
 {
   octave_print_internal (os, '@' + m_name, pr_as_read_syntax,
                          current_print_indent_level);
 }
 
-octave_value nested_fcn_handle::make_weak_nested_handle () const
+octave_value
+nested_fcn_handle::make_weak_nested_handle () const
 {
   return octave_value (new octave_fcn_handle
                        (new weak_nested_fcn_handle (*this)));
@@ -2114,12 +2153,14 @@ nested_fcn_handle::call (int nargout, const octave_value_list& args)
   return oct_usr_fcn->execute (tw, nargout, args);
 }
 
-octave_value nested_fcn_handle::workspace () const
+octave_value
+nested_fcn_handle::workspace () const
 {
   return m_stack_context->workspace ();
 }
 
-bool is_equal_to (const nested_fcn_handle& fh1, const nested_fcn_handle& fh2)
+bool
+is_equal_to (const nested_fcn_handle& fh1, const nested_fcn_handle& fh2)
 {
   if (fh1.m_name == fh2.m_name
       && fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
@@ -2144,15 +2185,17 @@ weak_nested_fcn_handle::call (int nargout, const octave_value_list& args)
   return oct_usr_fcn->execute (tw, nargout, args);
 }
 
-octave_value weak_nested_fcn_handle::workspace () const
+octave_value
+weak_nested_fcn_handle::workspace () const
 {
   std::shared_ptr<stack_frame> frames = m_stack_context.lock ();
 
   return frames ? frames->workspace () : octave_value ();
 }
 
-bool is_equal_to (const weak_nested_fcn_handle& fh1,
-                  const weak_nested_fcn_handle& fh2)
+bool
+is_equal_to (const weak_nested_fcn_handle& fh1,
+             const weak_nested_fcn_handle& fh2)
 {
   if (fh1.m_name == fh2.m_name
       && fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
@@ -2212,7 +2255,8 @@ class_simple_fcn_handle::call (int nargout, const octave_value_list& args)
   return interp.feval (fcn_name (), args, nargout);
 }
 
-octave_scalar_map class_simple_fcn_handle::info ()
+octave_scalar_map
+class_simple_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -2229,7 +2273,8 @@ octave_scalar_map class_simple_fcn_handle::info ()
 // function?  Is it an error if that fails?  Or should this job always
 // be deferred until the handle is used?
 
-bool class_simple_fcn_handle::save_ascii (std::ostream& os)
+bool
+class_simple_fcn_handle::save_ascii (std::ostream& os)
 {
   unimplemented ("save", "text");
 
@@ -2238,7 +2283,8 @@ bool class_simple_fcn_handle::save_ascii (std::ostream& os)
   return true;
 }
 
-bool class_simple_fcn_handle::load_ascii (std::istream& is)
+bool
+class_simple_fcn_handle::load_ascii (std::istream& is)
 {
   unimplemented ("load", "text");
 
@@ -2247,8 +2293,9 @@ bool class_simple_fcn_handle::load_ascii (std::istream& is)
   return true;
 }
 
-bool class_simple_fcn_handle::save_binary (std::ostream& os,
-    bool save_as_floats)
+bool
+class_simple_fcn_handle::save_binary (std::ostream& os,
+                                      bool save_as_floats)
 {
   unimplemented ("save", "binary");
 
@@ -2258,8 +2305,9 @@ bool class_simple_fcn_handle::save_binary (std::ostream& os,
   return true;
 }
 
-bool class_simple_fcn_handle::load_binary (std::istream& is, bool swap,
-    mach_info::float_format fmt)
+bool
+class_simple_fcn_handle::load_binary (std::istream& is, bool swap,
+                                      mach_info::float_format fmt)
 {
   unimplemented ("load", "binary");
 
@@ -2270,8 +2318,9 @@ bool class_simple_fcn_handle::load_binary (std::istream& is, bool swap,
   return true;
 }
 
-bool class_simple_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
-    const char *name, bool)
+bool
+class_simple_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
+                                    const char *name, bool)
 {
 #if defined (HAVE_HDF5)
 
@@ -2294,9 +2343,10 @@ bool class_simple_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
 #endif
 }
 
-bool class_simple_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
-    octave_hdf5_id& space_hid,
-    octave_hdf5_id& type_hid)
+bool
+class_simple_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
+                                    octave_hdf5_id& space_hid,
+                                    octave_hdf5_id& type_hid)
 {
 #if defined (HAVE_HDF5)
 
@@ -2319,16 +2369,18 @@ bool class_simple_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
 #endif
 }
 
-void class_simple_fcn_handle::print_raw (std::ostream& os,
-    bool pr_as_read_syntax,
-    int current_print_indent_level) const
+void
+class_simple_fcn_handle::print_raw (std::ostream& os,
+                                    bool pr_as_read_syntax,
+                                    int current_print_indent_level) const
 {
   octave_print_internal (os, '@' + m_name, pr_as_read_syntax,
                          current_print_indent_level);
 }
 
-bool is_equal_to (const class_simple_fcn_handle& fh1,
-                  const class_simple_fcn_handle& fh2)
+bool
+is_equal_to (const class_simple_fcn_handle& fh1,
+             const class_simple_fcn_handle& fh2)
 {
   // FIXME: Also need to check object values are equivalent?
 
@@ -2341,7 +2393,8 @@ bool is_equal_to (const class_simple_fcn_handle& fh1,
 
 const std::string base_anonymous_fcn_handle::anonymous ("@<anonymous>");
 
-octave_scalar_map base_anonymous_fcn_handle::info ()
+octave_scalar_map
+base_anonymous_fcn_handle::info ()
 {
   octave_scalar_map m;
 
@@ -2357,7 +2410,8 @@ octave_scalar_map base_anonymous_fcn_handle::info ()
   return m;
 }
 
-bool base_anonymous_fcn_handle::save_ascii (std::ostream& os)
+bool
+base_anonymous_fcn_handle::save_ascii (std::ostream& os)
 {
   // FIXME: can we ensure that m_fcn is always defined?
 
@@ -2385,7 +2439,8 @@ bool base_anonymous_fcn_handle::save_ascii (std::ostream& os)
   return true;
 }
 
-bool base_anonymous_fcn_handle::load_ascii (std::istream& is)
+bool
+base_anonymous_fcn_handle::load_ascii (std::istream& is)
 {
   octave::skip_preceeding_newline (is);
 
@@ -2443,8 +2498,9 @@ bool base_anonymous_fcn_handle::load_ascii (std::istream& is)
   return false;
 }
 
-bool base_anonymous_fcn_handle::save_binary (std::ostream& os,
-    bool save_as_floats)
+bool
+base_anonymous_fcn_handle::save_binary (std::ostream& os,
+                                        bool save_as_floats)
 {
   // FIXME: can we ensure that m_fcn is always defined?
 
@@ -2484,8 +2540,9 @@ bool base_anonymous_fcn_handle::save_binary (std::ostream& os,
   return true;
 }
 
-bool base_anonymous_fcn_handle::load_binary (std::istream& is, bool swap,
-    mach_info::float_format fmt)
+bool
+base_anonymous_fcn_handle::load_binary (std::istream& is, bool swap,
+                                        mach_info::float_format fmt)
 {
   // Read extra characters in m_name as the number of local variable
   // values in this anonymous function.
@@ -2551,9 +2608,10 @@ bool base_anonymous_fcn_handle::load_binary (std::istream& is, bool swap,
   return false;
 }
 
-bool base_anonymous_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
-    const char *name,
-    bool save_as_floats)
+bool
+base_anonymous_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
+                                      const char *name,
+                                      bool save_as_floats)
 {
 #if defined (HAVE_HDF5)
 
@@ -2718,9 +2776,10 @@ bool base_anonymous_fcn_handle::save_hdf5 (octave_hdf5_id loc_id,
 #endif
 }
 
-bool base_anonymous_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
-    octave_hdf5_id& space_hid,
-    octave_hdf5_id& type_hid)
+bool
+base_anonymous_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
+                                      octave_hdf5_id& space_hid,
+                                      octave_hdf5_id& type_hid)
 {
 #if defined (HAVE_HDF5)
 
@@ -2884,7 +2943,8 @@ bool base_anonymous_fcn_handle::load_hdf5 (octave_hdf5_id& group_hid,
 #endif
 }
 
-void base_anonymous_fcn_handle::print_raw (std::ostream& os, bool, int) const
+void
+base_anonymous_fcn_handle::print_raw (std::ostream& os, bool, int) const
 {
   tree_print_code tpc (os);
 
@@ -2925,7 +2985,8 @@ void base_anonymous_fcn_handle::print_raw (std::ostream& os, bool, int) const
   tpc.print_fcn_handle_body (e);
 }
 
-bool base_anonymous_fcn_handle::parse (const std::string& fcn_text)
+bool
+base_anonymous_fcn_handle::parse (const std::string& fcn_text)
 {
   // FIXME: If evaluation of the string gives us an anonymous function
   // handle object, then why extract the function and create a new
@@ -2981,7 +3042,8 @@ anonymous_fcn_handle::anonymous_fcn_handle (const octave_value& fcn,
     m_stack_context->mark_closure_context ();
 }
 
-octave_value anonymous_fcn_handle::make_weak_anonymous_handle () const
+octave_value
+anonymous_fcn_handle::make_weak_anonymous_handle () const
 {
   return octave_value (new octave_fcn_handle
                        (new weak_anonymous_fcn_handle (*this)));
@@ -3025,7 +3087,8 @@ void anonymous_fcn_handle::compile ()
 
 #endif
 
-octave_value anonymous_fcn_handle::workspace () const
+octave_value
+anonymous_fcn_handle::workspace () const
 {
   octave_scalar_map local_vars_map;
 
@@ -3054,8 +3117,9 @@ octave_value anonymous_fcn_handle::workspace () const
   return retval;
 }
 
-bool is_equal_to (const anonymous_fcn_handle& fh1,
-                  const anonymous_fcn_handle& fh2)
+bool
+is_equal_to (const anonymous_fcn_handle& fh1,
+             const anonymous_fcn_handle& fh2)
 {
   if (fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())
     return fh1.m_fcn.is_copy_of (fh2.m_fcn);
@@ -3079,7 +3143,8 @@ weak_anonymous_fcn_handle::call (int nargout, const octave_value_list& args)
   return oct_usr_fcn->execute (tw, nargout, args);
 }
 
-octave_value weak_anonymous_fcn_handle::workspace () const
+octave_value
+weak_anonymous_fcn_handle::workspace () const
 {
   octave_scalar_map local_vars_map;
 
@@ -3112,8 +3177,9 @@ octave_value weak_anonymous_fcn_handle::workspace () const
   return retval;
 }
 
-bool is_equal_to (const weak_anonymous_fcn_handle& fh1,
-                  const weak_anonymous_fcn_handle& fh2)
+bool
+is_equal_to (const weak_anonymous_fcn_handle& fh1,
+             const weak_anonymous_fcn_handle& fh2)
 {
   if (fh1.m_name == fh2.m_name
       && fh1.m_fcn.is_defined () && fh2.m_fcn.is_defined ())

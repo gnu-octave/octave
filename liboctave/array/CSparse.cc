@@ -7421,7 +7421,8 @@ SparseComplexMatrix::sumsq (int dim) const
 #undef COL_EXPR
 }
 
-SparseMatrix SparseComplexMatrix::abs () const
+SparseMatrix
+SparseComplexMatrix::abs () const
 {
   octave_idx_type nz = nnz ();
   octave_idx_type nc = cols ();

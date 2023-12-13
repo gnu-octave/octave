@@ -217,7 +217,8 @@ sc_pref sc_doc_go_back (QCoreApplication::translate ("shortcuts", "Go Back one P
 sc_pref sc_doc_go_next (QCoreApplication::translate ("shortcuts", "Go Forward one Page"), sc_doc + ":go_next", QKeySequence::Forward);
 sc_pref sc_doc_bookmark (QCoreApplication::translate ("shortcuts", "Bookmark this Page"), sc_doc + ":bookmark", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_D));
 
-QString get_shortcut_section (const QString& key)
+QString
+get_shortcut_section (const QString& key)
 {
   QString section;
 

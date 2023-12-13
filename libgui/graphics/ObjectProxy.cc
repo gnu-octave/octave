@@ -40,7 +40,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 ObjectProxy::ObjectProxy (Object *obj)
-: QObject (), m_object (nullptr)
+  : QObject (), m_object (nullptr)
 {
   init (obj);
 }

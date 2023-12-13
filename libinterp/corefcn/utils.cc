@@ -88,7 +88,8 @@ bool valid_identifier (const char *s)
   return true;
 }
 
-bool valid_identifier (const std::string& s)
+bool
+valid_identifier (const std::string& s)
 {
   return valid_identifier (s.c_str ());
 }
@@ -292,7 +293,8 @@ For more documentation, see @code{matlab.lang.makeValidName}.
 
 // Return TRUE if F and G are both names for the same file.
 
-bool same_file (const std::string& f, const std::string& g)
+bool
+same_file (const std::string& f, const std::string& g)
 {
   return sys::same_file (f, g);
 }
@@ -406,8 +408,9 @@ return true.
 %!error <arrays .* must be the same size> is_same_file ({"1", "2"}, {"1"; "2"})
 */
 
-int almost_match (const std::string& std, const std::string& s,
-                  int min_match_len, int case_sens)
+int
+almost_match (const std::string& std, const std::string& s,
+              int min_match_len, int case_sens)
 {
   int stdlen = std.length ();
   int slen = s.length ();
@@ -421,9 +424,10 @@ int almost_match (const std::string& std, const std::string& s,
 
 // Ugh.
 
-int keyword_almost_match (const char *const *std, int *min_len,
-                          const std::string& s,
-                          int min_toks_to_match, int max_toks)
+int
+keyword_almost_match (const char *const *std, int *min_len,
+                      const std::string& s,
+                      int min_toks_to_match, int max_toks)
 {
   int status = 0;
   int tok_count = 0;
@@ -509,8 +513,9 @@ done:
 
 // See if the given file is in the path.
 
-std::string search_path_for_file (const std::string& path,
-                                  const string_vector& names)
+std::string
+search_path_for_file (const std::string& path,
+                      const string_vector& names)
 {
   directory_path p (path);
 
@@ -519,8 +524,9 @@ std::string search_path_for_file (const std::string& path,
 
 // Find all locations of the given file in the path.
 
-string_vector search_path_for_all_files (const std::string& path,
-    const string_vector& names)
+string_vector
+search_path_for_all_files (const std::string& path,
+                           const string_vector& names)
 {
   directory_path p (path);
 
@@ -534,7 +540,8 @@ string_vector search_path_for_all_files (const std::string& path,
   return sv;
 }
 
-static string_vector make_absolute (const string_vector& sv)
+static string_vector
+make_absolute (const string_vector& sv)
 {
   octave_idx_type len = sv.numel ();
 
@@ -687,7 +694,8 @@ If no files are found, return an empty cell array.
 %!error file_in_path (path (), "plot.m", "bar")
 */
 
-std::string file_in_path (const std::string& name, const std::string& suffix)
+std::string
+file_in_path (const std::string& name, const std::string& suffix)
 {
   std::string nm = name;
 
@@ -699,9 +707,10 @@ std::string file_in_path (const std::string& name, const std::string& suffix)
   return sys::env::make_absolute (lp.find_file (nm));
 }
 
-std::string find_data_file_in_load_path  (const std::string& fcn,
-    const std::string& file,
-    bool require_regular_file)
+std::string
+find_data_file_in_load_path  (const std::string& fcn,
+                              const std::string& file,
+                              bool require_regular_file)
 {
   std::string fname = file;
 
@@ -736,7 +745,8 @@ std::string find_data_file_in_load_path  (const std::string& fcn,
 // See if there is a function file in the path.
 // If so, return the full path to the file.
 
-std::string fcn_file_in_path (const std::string& name)
+std::string
+fcn_file_in_path (const std::string& name)
 {
   std::string retval;
 
@@ -774,7 +784,8 @@ std::string fcn_file_in_path (const std::string& name)
 // See if there is a directory called "name" in the path and if it
 // contains a Contents.m file.  If so, return the full path to this file.
 
-std::string contents_file_in_path (const std::string& dir)
+std::string
+contents_file_in_path (const std::string& dir)
 {
   std::string retval;
 
@@ -794,7 +805,8 @@ std::string contents_file_in_path (const std::string& dir)
 
 // Replace backslash escapes in a string with the real values.
 
-std::string do_string_escapes (const std::string& s)
+std::string
+do_string_escapes (const std::string& s)
 {
   std::string retval;
 
@@ -975,7 +987,8 @@ Escape sequences begin with a leading backslash
 %!warning <unrecognized escape sequence> do_string_escapes ('\G');
 */
 
-const char * undo_string_escape (char c)
+const char *
+undo_string_escape (char c)
 {
   switch (c)
     {
@@ -1019,7 +1032,8 @@ const char * undo_string_escape (char c)
     }
 }
 
-std::string undo_string_escapes (const std::string& s)
+std::string
+undo_string_escapes (const std::string& s)
 {
   std::string retval;
 
@@ -1297,8 +1311,9 @@ Return a structure containing the system-dependent errno values.
 %!error errno_list ("foo")
 */
 
-static void check_dimensions (octave_idx_type& nr, octave_idx_type& nc,
-                              const char *warnfor)
+static void
+check_dimensions (octave_idx_type& nr, octave_idx_type& nc,
+                  const char *warnfor)
 {
   if (nr < 0 || nc < 0)
     {
@@ -1310,7 +1325,8 @@ static void check_dimensions (octave_idx_type& nr, octave_idx_type& nc,
     }
 }
 
-void check_dimensions (dim_vector& dim, const char *warnfor)
+void
+check_dimensions (dim_vector& dim, const char *warnfor)
 {
   bool neg = false;
 
@@ -1328,8 +1344,9 @@ void check_dimensions (dim_vector& dim, const char *warnfor)
                      "%s: converting negative dimension to zero", warnfor);
 }
 
-void get_dimensions (const octave_value& a, const char *warn_for,
-                     dim_vector& dim)
+void
+get_dimensions (const octave_value& a, const char *warn_for,
+                dim_vector& dim)
 {
   // We support dimensions to be specified by a vector, even if it's empty.
   // If the vector is empty, the final dimensions end up being 0x0.
@@ -1357,8 +1374,9 @@ void get_dimensions (const octave_value& a, const char *warn_for,
   check_dimensions (dim, warn_for);
 }
 
-void get_dimensions (const octave_value& a, const char *warn_for,
-                     octave_idx_type& nr, octave_idx_type& nc)
+void
+get_dimensions (const octave_value& a, const char *warn_for,
+                octave_idx_type& nr, octave_idx_type& nc)
 {
   if (a.is_scalar_type ())
     {
@@ -1380,9 +1398,10 @@ void get_dimensions (const octave_value& a, const char *warn_for,
   check_dimensions (nr, nc, warn_for);
 }
 
-void get_dimensions (const octave_value& a, const octave_value& b,
-                     const char *warn_for, octave_idx_type& nr,
-                     octave_idx_type& nc)
+void
+get_dimensions (const octave_value& a, const octave_value& b,
+                const char *warn_for, octave_idx_type& nr,
+                octave_idx_type& nc)
 {
   nr = (a.isempty () ? 0 : a.idx_type_value (true));
   nc = (b.isempty () ? 0 : b.idx_type_value (true));
@@ -1390,8 +1409,9 @@ void get_dimensions (const octave_value& a, const octave_value& b,
   check_dimensions (nr, nc, warn_for);
 }
 
-octave_idx_type dims_to_numel (const dim_vector& dims,
-                               const octave_value_list& idx_arg)
+octave_idx_type
+dims_to_numel (const dim_vector& dims,
+               const octave_value_list& idx_arg)
 {
   octave_idx_type retval;
 
@@ -1429,7 +1449,8 @@ octave_idx_type dims_to_numel (const dim_vector& dims,
   return retval;
 }
 
-Matrix identity_matrix (octave_idx_type nr, octave_idx_type nc)
+Matrix
+identity_matrix (octave_idx_type nr, octave_idx_type nc)
 {
   Matrix m (nr, nc, 0.0);
 
@@ -1444,7 +1465,8 @@ Matrix identity_matrix (octave_idx_type nr, octave_idx_type nc)
   return m;
 }
 
-FloatMatrix float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
+FloatMatrix
+float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
 {
   FloatMatrix m (nr, nc, 0.0);
 
@@ -1459,7 +1481,8 @@ FloatMatrix float_identity_matrix (octave_idx_type nr, octave_idx_type nc)
   return m;
 }
 
-std::size_t format (std::ostream& os, const char *fmt, ...)
+std::size_t
+format (std::ostream& os, const char *fmt, ...)
 {
   std::size_t retval;
 
@@ -1473,7 +1496,8 @@ std::size_t format (std::ostream& os, const char *fmt, ...)
   return retval;
 }
 
-std::size_t vformat (std::ostream& os, const char *fmt, va_list args)
+std::size_t
+vformat (std::ostream& os, const char *fmt, va_list args)
 {
   std::string s = vasprintf (fmt, args);
 
@@ -1482,7 +1506,8 @@ std::size_t vformat (std::ostream& os, const char *fmt, va_list args)
   return s.length ();
 }
 
-std::string vasprintf (const char *fmt, va_list args)
+std::string
+vasprintf (const char *fmt, va_list args)
 {
   std::string retval;
 
@@ -1499,7 +1524,8 @@ std::string vasprintf (const char *fmt, va_list args)
   return retval;
 }
 
-std::string asprintf (const char *fmt, ...)
+std::string
+asprintf (const char *fmt, ...)
 {
   std::string retval;
 
@@ -1518,7 +1544,8 @@ std::string asprintf (const char *fmt, ...)
 // won't respond to SIGINT.  Maybe there is a better way than
 // breaking this up into multiple shorter intervals?
 
-void sleep (double seconds, bool do_graphics_events)
+void
+sleep (double seconds, bool do_graphics_events)
 {
   if (seconds <= 0)
     return;

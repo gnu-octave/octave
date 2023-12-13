@@ -3014,9 +3014,10 @@ max (const FloatMatrix& a, const FloatMatrix& b)
   return result;
 }
 
-FloatMatrix linspace (const FloatColumnVector& x1,
-                      const FloatColumnVector& x2,
-                      octave_idx_type n)
+FloatMatrix
+linspace (const FloatColumnVector& x1,
+          const FloatColumnVector& x2,
+          octave_idx_type n)
 
 {
   octave_idx_type m = x1.numel ();

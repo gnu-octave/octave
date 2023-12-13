@@ -147,9 +147,10 @@ static void dif (octave_idx_type nt, double *root, double *dif1,
 //   dif3   : one dimensional vector containing the third derivative
 //            of the node polynomial at the zeros
 
-static bool jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
-                   double alpha, double beta, double *dif1, double *dif2,
-                   double *dif3, double *root)
+static bool
+jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
+       double alpha, double beta, double *dif1, double *dif2,
+       double *dif3, double *root)
 {
   assert (n0 == 0 || n0 == 1);
   assert (n1 == 0 || n1 == 1);
@@ -308,9 +309,10 @@ static bool jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 //
 //   vect   : one dimensional vector of computed weights
 
-static void dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
-                   octave_idx_type i, octave_idx_type id, double *dif1,
-                   double *dif2, double *dif3, double *root, double *vect)
+static void
+dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
+       octave_idx_type i, octave_idx_type id, double *dif1,
+       double *dif2, double *dif3, double *root, double *vect)
 {
   assert (n0 == 0 || n0 == 1);
   assert (n1 == 0 || n1 == 1);
@@ -377,12 +379,14 @@ static void dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
 
 // Error handling.
 
-void CollocWt::error (const char *msg)
+void
+CollocWt::error (const char *msg)
 {
   (*current_liboctave_error_handler) ("CollocWt: fatal error '%s'", msg);
 }
 
-CollocWt& CollocWt::set_left (double val)
+CollocWt&
+CollocWt::set_left (double val)
 {
   if (val >= m_rb)
     error ("CollocWt: left bound greater than right bound");
@@ -392,7 +396,8 @@ CollocWt& CollocWt::set_left (double val)
   return *this;
 }
 
-CollocWt& CollocWt::set_right (double val)
+CollocWt&
+CollocWt::set_right (double val)
 {
   if (val <= m_lb)
     error ("CollocWt: right bound less than left bound");
@@ -402,7 +407,8 @@ CollocWt& CollocWt::set_right (double val)
   return *this;
 }
 
-void CollocWt::init ()
+void
+CollocWt::init ()
 {
   // Check for possible errors.
 
@@ -479,7 +485,8 @@ void CollocWt::init ()
   m_initialized = 1;
 }
 
-std::ostream& operator << (std::ostream& os, const CollocWt& a)
+std::ostream&
+operator << (std::ostream& os, const CollocWt& a)
 {
   if (a.left_included ())
     os << "left  boundary is included\n";

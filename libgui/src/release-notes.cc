@@ -106,7 +106,8 @@ release_notes::release_notes ()
   move (20, 20);  // move to the top left corner
 }
 
-void release_notes::display ()
+void
+release_notes::display ()
 {
   if (! isVisible ())
     show ();

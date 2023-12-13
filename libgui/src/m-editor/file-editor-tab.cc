@@ -133,7 +133,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   m_last_modified = QDateTime::currentDateTimeUtc();
 
   connect (m_edit_area, SIGNAL (cursorPositionChanged (int, int)),
-           this, SLOT (handle_cursor_moved (int,int)));
+           this, SLOT (handle_cursor_moved (int, int)));
 
   connect (m_edit_area, SIGNAL (SCN_CHARADDED (int)),
            this, SLOT (handle_char_added (int)));
@@ -293,7 +293,8 @@ file_editor_tab::~file_editor_tab ()
     }
 }
 
-void file_editor_tab::set_encoding (const QString& new_encoding)
+void
+file_editor_tab::set_encoding (const QString& new_encoding)
 {
   if (new_encoding.isEmpty ())
     return;
@@ -304,7 +305,8 @@ void file_editor_tab::set_encoding (const QString& new_encoding)
     set_modified (true);
 }
 
-void file_editor_tab::closeEvent (QCloseEvent *e)
+void
+file_editor_tab::closeEvent (QCloseEvent *e)
 {
   int save_dialog = check_file_modified (true);
   if ((save_dialog == QMessageBox::Cancel) ||
@@ -322,12 +324,14 @@ void file_editor_tab::closeEvent (QCloseEvent *e)
     }
 }
 
-void file_editor_tab::set_current_directory (const QString& dir)
+void
+file_editor_tab::set_current_directory (const QString& dir)
 {
   m_ced = dir;
 }
 
-void file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
+void
+file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
 {
   // Search for a function with that name in the current file
   // This is done first because local functions and subfunctions have priority
@@ -366,7 +370,7 @@ void file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
       // reg expr. found: it is an internal function
       m_edit_area->setCursorPosition (line, match.capturedStart ());
       m_edit_area->SendScintilla (2232, line);     // SCI_ENSUREVISIBLE
-      // SCI_VISIBLEFROMDOCLINE
+                                                   // SCI_VISIBLEFROMDOCLINE
       int vis_line = m_edit_area->SendScintilla (2220, line);
       m_edit_area->SendScintilla (2613, vis_line); // SCI_SETFIRSTVISIBLELINE
       return;
@@ -378,7 +382,8 @@ void file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
 // If "dbstop if ..." selected from context menu, create a conditional
 // breakpoint.  The default condition is (a) the existing condition if there
 // is already a breakpoint, (b) any selected text, or (c) empty
-void file_editor_tab::handle_context_menu_break_condition (int linenr)
+void
+file_editor_tab::handle_context_menu_break_condition (int linenr)
 {
   // Ensure editor line numbers match Octave core's line numbers.
   // Give users the option to save modifications if necessary.
@@ -422,8 +427,9 @@ void file_editor_tab::handle_context_menu_break_condition (int linenr)
 // to add the breakpoint in the editor tab or a signal to display a
 // new dialog.
 
-void file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
-                                        const QString& cond)
+void
+file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
+                                   const QString& cond)
 {
   bool ok;
   QString new_cond
@@ -507,7 +513,8 @@ void file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
     }
 }
 
-void file_editor_tab::set_file_name (const QString& fileName)
+void
+file_editor_tab::set_file_name (const QString& fileName)
 {
   // update tracked file if we really have a file on disk
   QStringList trackedFiles = m_file_system_watcher.files ();
@@ -539,7 +546,8 @@ void file_editor_tab::set_file_name (const QString& fileName)
 
 // valid_file_name (file): checks whether "file" names a file.
 // By default, "file" is empty; then m_file_name is checked
-bool file_editor_tab::valid_file_name (const QString& file)
+bool
+file_editor_tab::valid_file_name (const QString& file)
 {
   if (file.isEmpty ())
     {
@@ -552,7 +560,8 @@ bool file_editor_tab::valid_file_name (const QString& file)
   return true;
 }
 
-void file_editor_tab::enable_file_watcher (bool do_enable)
+void
+file_editor_tab::enable_file_watcher (bool do_enable)
 {
   if (do_enable)
     m_file_system_watcher.addPath (m_file_name);
@@ -565,7 +574,8 @@ void file_editor_tab::enable_file_watcher (bool do_enable)
 // not match what Octave core is interpreting in the
 // file on disk.  This function gives the user the option
 // to save before creating the breakpoint.
-bool file_editor_tab::unchanged_or_saved ()
+bool
+file_editor_tab::unchanged_or_saved ()
 {
   bool retval = true;
   if (m_edit_area->isModified () || ! valid_file_name ())
@@ -586,8 +596,9 @@ bool file_editor_tab::unchanged_or_saved ()
 
 // Toggle a breakpoint at the editor_linenr or, if this was called by
 // a click with CTRL pressed, toggle a bookmark at that point.
-void file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
-                                             Qt::KeyboardModifiers state)
+void
+file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
+                                        Qt::KeyboardModifiers state)
 {
   if (margin == 1)
     {
@@ -614,7 +625,8 @@ void file_editor_tab::handle_margin_clicked (int margin, int editor_linenr,
     }
 }
 
-void file_editor_tab::update_lexer ()
+void
+file_editor_tab::update_lexer ()
 {
   // Create a new lexer
   QsciLexer *lexer = nullptr;
@@ -725,7 +737,8 @@ void file_editor_tab::update_lexer ()
 //    a) the lexer changes,
 //    b) the settings have changed, or
 //    c) a package was loaded/unloaded
-void file_editor_tab::update_lexer_settings (bool update_apis_only)
+void
+file_editor_tab::update_lexer_settings (bool update_apis_only)
 {
   QsciLexer *lexer = m_edit_area->lexer ();
 
@@ -938,9 +951,9 @@ void file_editor_tab::update_lexer_settings (bool update_apis_only)
   QColor current_line_bg
     = settings.color_value (ed_highlight_current_line_color, mode);
   if (current_line_bg == settings_color_no_change)
-     bgm = interpolate_color (bg, fg, 0.5, 0.1);  // It is the "auto" color
-   else
-     bgm = current_line_bg;  // Specific color given
+    bgm = interpolate_color (bg, fg, 0.5, 0.1);  // It is the "auto" color
+  else
+    bgm = current_line_bg;  // Specific color given
 
   m_edit_area->setCaretLineBackgroundColor (bgm);
 
@@ -972,7 +985,8 @@ void file_editor_tab::update_lexer_settings (bool update_apis_only)
 }
 
 // function for adding entries to the octave lexer's APIs
-void file_editor_tab::handle_add_octave_apis (const QStringList& api_entries)
+void
+file_editor_tab::handle_add_octave_apis (const QStringList& api_entries)
 {
   for (int idx = 0; idx < api_entries.size (); idx++)
     m_lexer_apis->add (api_entries.at (idx));
@@ -980,7 +994,8 @@ void file_editor_tab::handle_add_octave_apis (const QStringList& api_entries)
   emit api_entries_added ();
 }
 
-void file_editor_tab::handle_api_entries_added ()
+void
+file_editor_tab::handle_api_entries_added ()
 {
   // disconnect slot for saving prepared info if already connected
   disconnect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
@@ -997,13 +1012,15 @@ void file_editor_tab::handle_api_entries_added ()
   m_lexer_apis->prepare ();  // prepare apis info
 }
 
-void file_editor_tab::save_apis_info ()
+void
+file_editor_tab::save_apis_info ()
 {
   m_lexer_apis->savePrepared (m_prep_apis_file);
 }
 
 // slot for fetab_set_focus: sets the focus to the current edit area
-void file_editor_tab::set_focus (const QWidget *ID)
+void
+file_editor_tab::set_focus (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1011,7 +1028,8 @@ void file_editor_tab::set_focus (const QWidget *ID)
   emit edit_area_changed (m_edit_area); // update the edit area in find dlg
 }
 
-void file_editor_tab::context_help (const QWidget *ID, bool doc)
+void
+file_editor_tab::context_help (const QWidget *ID, bool doc)
 {
   if (ID != this)
     return;
@@ -1019,7 +1037,8 @@ void file_editor_tab::context_help (const QWidget *ID, bool doc)
   m_edit_area->context_help_doc (doc);
 }
 
-void file_editor_tab::context_edit (const QWidget *ID)
+void
+file_editor_tab::context_edit (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1027,7 +1046,8 @@ void file_editor_tab::context_edit (const QWidget *ID)
   m_edit_area->context_edit ();
 }
 
-void file_editor_tab::save_file (const QWidget *ID)
+void
+file_editor_tab::save_file (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1035,8 +1055,9 @@ void file_editor_tab::save_file (const QWidget *ID)
   save_file (m_file_name);
 }
 
-void file_editor_tab::save_file (const QWidget *ID, const QString& fileName,
-                                 bool remove_on_success)
+void
+file_editor_tab::save_file (const QWidget *ID, const QString& fileName,
+                            bool remove_on_success)
 {
   if (ID != this)
     return;
@@ -1044,7 +1065,8 @@ void file_editor_tab::save_file (const QWidget *ID, const QString& fileName,
   save_file (fileName, remove_on_success);
 }
 
-void file_editor_tab::save_file_as (const QWidget *ID)
+void
+file_editor_tab::save_file_as (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1052,7 +1074,8 @@ void file_editor_tab::save_file_as (const QWidget *ID)
   save_file_as ();
 }
 
-void file_editor_tab::print_file (const QWidget *ID)
+void
+file_editor_tab::print_file (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1067,7 +1090,8 @@ void file_editor_tab::print_file (const QWidget *ID)
   delete printer;
 }
 
-void file_editor_tab::run_file (const QWidget *ID, bool step_into)
+void
+file_editor_tab::run_file (const QWidget *ID, bool step_into)
 {
   if (ID != this)
     return;
@@ -1103,7 +1127,8 @@ void file_editor_tab::run_file (const QWidget *ID, bool step_into)
   emit run_file_signal (info);
 }
 
-void file_editor_tab::context_run (const QWidget *ID)
+void
+file_editor_tab::context_run (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1111,7 +1136,8 @@ void file_editor_tab::context_run (const QWidget *ID)
   m_edit_area->context_run ();
 }
 
-void file_editor_tab::toggle_bookmark (const QWidget *ID)
+void
+file_editor_tab::toggle_bookmark (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1127,7 +1153,8 @@ void file_editor_tab::toggle_bookmark (const QWidget *ID)
 
 // Move the text cursor to the closest bookmark
 // after the current line.
-void file_editor_tab::next_bookmark (const QWidget *ID)
+void
+file_editor_tab::next_bookmark (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1148,7 +1175,8 @@ void file_editor_tab::next_bookmark (const QWidget *ID)
 
 // Move the text cursor to the closest bookmark
 // before the current line.
-void file_editor_tab::previous_bookmark (const QWidget *ID)
+void
+file_editor_tab::previous_bookmark (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1168,7 +1196,8 @@ void file_editor_tab::previous_bookmark (const QWidget *ID)
   m_edit_area->setCursorPosition (prevline, 0);
 }
 
-QString file_editor_tab::get_all_bookmarks ()
+QString
+file_editor_tab::get_all_bookmarks ()
 {
   QString bmlist;
   int line = 0;
@@ -1188,7 +1217,8 @@ QString file_editor_tab::get_all_bookmarks ()
   return bmlist;
 }
 
-void file_editor_tab::remove_bookmark (const QWidget *ID)
+void
+file_editor_tab::remove_bookmark (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1206,7 +1236,8 @@ file_editor_tab::handle_request_add_breakpoint (int line,
   add_breakpoint_event (line, condition);
 }
 
-void file_editor_tab::handle_request_remove_breakpoint (int line)
+void
+file_editor_tab::handle_request_remove_breakpoint (int line)
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1220,7 +1251,8 @@ void file_editor_tab::handle_request_remove_breakpoint (int line)
      });
 }
 
-void file_editor_tab::toggle_breakpoint (const QWidget *ID)
+void
+file_editor_tab::toggle_breakpoint (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1239,7 +1271,8 @@ void file_editor_tab::toggle_breakpoint (const QWidget *ID)
 
 // Move the text cursor to the closest breakpoint (conditional or unconditional)
 // after the current line.
-void file_editor_tab::next_breakpoint (const QWidget *ID)
+void
+file_editor_tab::next_breakpoint (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1261,7 +1294,8 @@ void file_editor_tab::next_breakpoint (const QWidget *ID)
 
 // Move the text cursor to the closest breakpoint (conditional or unconditional)
 // before the current line.
-void file_editor_tab::previous_breakpoint (const QWidget *ID)
+void
+file_editor_tab::previous_breakpoint (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1281,7 +1315,8 @@ void file_editor_tab::previous_breakpoint (const QWidget *ID)
   m_edit_area->setCursorPosition (prevline, 0);
 }
 
-void file_editor_tab::remove_all_breakpoints (const QWidget *ID)
+void
+file_editor_tab::remove_all_breakpoints (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1299,8 +1334,9 @@ void file_editor_tab::remove_all_breakpoints (const QWidget *ID)
      });
 }
 
-void file_editor_tab::scintilla_command (const QWidget *ID,
-                                         unsigned int sci_msg)
+void
+file_editor_tab::scintilla_command (const QWidget *ID,
+                                    unsigned int sci_msg)
 {
   if (ID != this)
     return;
@@ -1308,8 +1344,9 @@ void file_editor_tab::scintilla_command (const QWidget *ID,
   m_edit_area->SendScintilla (sci_msg);
 }
 
-void file_editor_tab::comment_selected_text (const QWidget *ID,
-                                             bool input_str)
+void
+file_editor_tab::comment_selected_text (const QWidget *ID,
+                                        bool input_str)
 {
   if (ID != this)
     return;
@@ -1317,7 +1354,8 @@ void file_editor_tab::comment_selected_text (const QWidget *ID,
   do_comment_selected_text (true, input_str);
 }
 
-void file_editor_tab::uncomment_selected_text (const QWidget *ID)
+void
+file_editor_tab::uncomment_selected_text (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1325,7 +1363,8 @@ void file_editor_tab::uncomment_selected_text (const QWidget *ID)
   do_comment_selected_text (false);
 }
 
-void file_editor_tab::indent_selected_text (const QWidget *ID)
+void
+file_editor_tab::indent_selected_text (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1333,7 +1372,8 @@ void file_editor_tab::indent_selected_text (const QWidget *ID)
   do_indent_selected_text (true);
 }
 
-void file_editor_tab::unindent_selected_text (const QWidget *ID)
+void
+file_editor_tab::unindent_selected_text (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1341,7 +1381,8 @@ void file_editor_tab::unindent_selected_text (const QWidget *ID)
   do_indent_selected_text (false);
 }
 
-void file_editor_tab::smart_indent_line_or_selected_text (const QWidget *ID)
+void
+file_editor_tab::smart_indent_line_or_selected_text (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1349,8 +1390,9 @@ void file_editor_tab::smart_indent_line_or_selected_text (const QWidget *ID)
   do_smart_indent_line_or_selected_text ();
 }
 
-void file_editor_tab::convert_eol (const QWidget *ID,
-                                   QsciScintilla::EolMode eol_mode)
+void
+file_editor_tab::convert_eol (const QWidget *ID,
+                              QsciScintilla::EolMode eol_mode)
 {
   if (ID != this)
     return;
@@ -1360,7 +1402,8 @@ void file_editor_tab::convert_eol (const QWidget *ID,
   update_eol_indicator ();
 }
 
-void file_editor_tab::zoom_in (const QWidget *ID)
+void
+file_editor_tab::zoom_in (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1369,7 +1412,8 @@ void file_editor_tab::zoom_in (const QWidget *ID)
   auto_margin_width ();
 }
 
-void file_editor_tab::zoom_out (const QWidget *ID)
+void
+file_editor_tab::zoom_out (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1378,7 +1422,8 @@ void file_editor_tab::zoom_out (const QWidget *ID)
   auto_margin_width ();
 }
 
-void file_editor_tab::zoom_normal (const QWidget *ID)
+void
+file_editor_tab::zoom_normal (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1387,7 +1432,8 @@ void file_editor_tab::zoom_normal (const QWidget *ID)
   auto_margin_width ();
 }
 
-void file_editor_tab::add_breakpoint_event (int line, const QString& cond)
+void
+file_editor_tab::add_breakpoint_event (int line, const QString& cond)
 {
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
@@ -1421,7 +1467,8 @@ void file_editor_tab::add_breakpoint_event (int line, const QString& cond)
      });
 }
 
-void file_editor_tab::handle_remove_next (int remove_line)
+void
+file_editor_tab::handle_remove_next (int remove_line)
 {
   // Store some info breakpoint
   if (m_breakpoint_info.remove_next)
@@ -1431,7 +1478,8 @@ void file_editor_tab::handle_remove_next (int remove_line)
     }
 }
 
-void file_editor_tab::goto_line (const QWidget *ID, int line)
+void
+file_editor_tab::goto_line (const QWidget *ID, int line)
 {
   if (ID != this)
     return;
@@ -1461,7 +1509,8 @@ void file_editor_tab::goto_line (const QWidget *ID, int line)
   center_current_line (false);  // only center line if at top or bottom
 }
 
-void file_editor_tab::move_match_brace (const QWidget *ID, bool select)
+void
+file_editor_tab::move_match_brace (const QWidget *ID, bool select)
 {
   if (ID != this)
     return;
@@ -1472,7 +1521,8 @@ void file_editor_tab::move_match_brace (const QWidget *ID, bool select)
     m_edit_area->moveToMatchingBrace ();
 }
 
-void file_editor_tab::show_auto_completion (const QWidget *ID)
+void
+file_editor_tab::show_auto_completion (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -1499,7 +1549,8 @@ void file_editor_tab::show_auto_completion (const QWidget *ID)
     }
 }
 
-void file_editor_tab::do_indent_selected_text (bool indent)
+void
+file_editor_tab::do_indent_selected_text (bool indent)
 {
   // FIXME:
   m_edit_area->beginUndoAction ();
@@ -1536,7 +1587,8 @@ void file_editor_tab::do_indent_selected_text (bool indent)
   m_edit_area->endUndoAction ();
 }
 
-void file_editor_tab::do_smart_indent_line_or_selected_text ()
+void
+file_editor_tab::do_smart_indent_line_or_selected_text ()
 {
   m_edit_area->beginUndoAction ();
 
@@ -1563,7 +1615,8 @@ void file_editor_tab::do_smart_indent_line_or_selected_text ()
   m_edit_area->endUndoAction ();
 }
 
-void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
+void
+file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
 {
   QRegularExpression rxc;
   QString ws = "^(?:[ \\t]*)";
@@ -1712,7 +1765,8 @@ void file_editor_tab::do_comment_selected_text (bool comment, bool input_str)
   m_edit_area->endUndoAction ();
 }
 
-void file_editor_tab::update_window_title (bool modified)
+void
+file_editor_tab::update_window_title (bool modified)
 {
   QString title ("");
   QString tooltip ("");
@@ -1729,7 +1783,8 @@ void file_editor_tab::update_window_title (bool modified)
   emit file_name_changed (title, tooltip, modified);
 }
 
-void file_editor_tab::handle_copy_available (bool enableCopy)
+void
+file_editor_tab::handle_copy_available (bool enableCopy)
 {
   m_copy_available = enableCopy;
   emit editor_state_changed (m_copy_available, m_is_octave_file,
@@ -1737,7 +1792,8 @@ void file_editor_tab::handle_copy_available (bool enableCopy)
 }
 
 // show_dialog: shows a modal or non modal dialog depending on input arg
-void file_editor_tab::show_dialog (QDialog *dlg, bool modal)
+void
+file_editor_tab::show_dialog (QDialog *dlg, bool modal)
 {
   dlg->setAttribute (Qt::WA_DeleteOnClose);
   if (modal)
@@ -1749,7 +1805,8 @@ void file_editor_tab::show_dialog (QDialog *dlg, bool modal)
     }
 }
 
-int file_editor_tab::check_file_modified (bool remove)
+int
+file_editor_tab::check_file_modified (bool remove)
 {
   int decision = QMessageBox::Yes;
   if (m_edit_area->isModified ())
@@ -1802,12 +1859,14 @@ int file_editor_tab::check_file_modified (bool remove)
   return decision;
 }
 
-void file_editor_tab::set_modified (bool modified)
+void
+file_editor_tab::set_modified (bool modified)
 {
   m_edit_area->setModified (modified);
 }
 
-void file_editor_tab::recover_from_exit ()
+void
+file_editor_tab::recover_from_exit ()
 {
   // reset the possibly still existing read only state
   m_edit_area->setReadOnly (false);
@@ -1819,7 +1878,8 @@ void file_editor_tab::recover_from_exit ()
   check_restore_breakpoints ();
 }
 
-void file_editor_tab::check_restore_breakpoints ()
+void
+file_editor_tab::check_restore_breakpoints ()
 {
   if (! m_bp_lines.isEmpty ())
     {
@@ -1839,7 +1899,8 @@ void file_editor_tab::check_restore_breakpoints ()
     }
 }
 
-QString file_editor_tab::load_file (const QString& fileName)
+QString
+file_editor_tab::load_file (const QString& fileName)
 {
   // get the absolute path
   QFileInfo file_info = QFileInfo (fileName);
@@ -1977,7 +2038,8 @@ QString file_editor_tab::load_file (const QString& fileName)
   return QString ();
 }
 
-void file_editor_tab::handle_decode_warning_answer (QAbstractButton *btn)
+void
+file_editor_tab::handle_decode_warning_answer (QAbstractButton *btn)
 {
   QString txt = btn->text ();
 
@@ -2034,12 +2096,14 @@ void file_editor_tab::handle_decode_warning_answer (QAbstractButton *btn)
   m_edit_area->setReadOnly (false);
 }
 
-void file_editor_tab::handle_current_enc_changed (const QString& enc)
+void
+file_editor_tab::handle_current_enc_changed (const QString& enc)
 {
   m_new_encoding = enc;
 }
 
-QsciScintilla::EolMode file_editor_tab::detect_eol_mode ()
+QsciScintilla::EolMode
+file_editor_tab::detect_eol_mode ()
 {
   QByteArray text = m_edit_area->text ().toLatin1 ();
 
@@ -2077,7 +2141,8 @@ QsciScintilla::EolMode file_editor_tab::detect_eol_mode ()
   return eol_mode;
 }
 
-void file_editor_tab::update_eol_indicator ()
+void
+file_editor_tab::update_eol_indicator ()
 {
   switch (m_edit_area->eolMode ())
     {
@@ -2093,7 +2158,8 @@ void file_editor_tab::update_eol_indicator ()
     }
 }
 
-void file_editor_tab::update_breakpoints ()
+void
+file_editor_tab::update_breakpoints ()
 {
   if (m_file_name.isEmpty ())
     return;
@@ -2127,7 +2193,8 @@ void file_editor_tab::update_breakpoints ()
      });
 }
 
-void file_editor_tab::update_breakpoints_handler (const octave_value_list& argout)
+void
+file_editor_tab::update_breakpoints_handler (const octave_value_list& argout)
 {
   octave_map dbg = argout(0).map_value ();
   octave_idx_type n_dbg = dbg.numel ();
@@ -2144,7 +2211,8 @@ void file_editor_tab::update_breakpoints_handler (const octave_value_list& argou
     }
 }
 
-void file_editor_tab::new_file (const QString& commands)
+void
+file_editor_tab::new_file (const QString& commands)
 {
   update_window_title (false); // window title (no modification)
 
@@ -2162,10 +2230,11 @@ void file_editor_tab::new_file (const QString& commands)
   m_edit_area->setModified (!commands.isEmpty ());
 }
 
-void file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
-                                               const QString& base_name,
-                                               bool remove_on_success,
-                                               bool restore_breakpoints)
+void
+file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
+    const QString& base_name,
+    bool remove_on_success,
+    bool restore_breakpoints)
 {
   int ans = QMessageBox::question (nullptr, tr ("Debug or Save"),
                                    tr ("This file is currently being executed.\n"
@@ -2211,9 +2280,10 @@ void file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
     }
 }
 
-void file_editor_tab::save_file (const QString& saveFileName,
-                                 bool remove_on_success,
-                                 bool restore_breakpoints)
+void
+file_editor_tab::save_file (const QString& saveFileName,
+                            bool remove_on_success,
+                            bool restore_breakpoints)
 {
   // If it is a new file with no name, signal that saveFileAs
   // should be performed.
@@ -2341,9 +2411,10 @@ void file_editor_tab::save_file (const QString& saveFileName,
                               restore_breakpoints);
 }
 
-void file_editor_tab::do_save_file (const QString& file_to_save,
-                                    bool remove_on_success,
-                                    bool restore_breakpoints)
+void
+file_editor_tab::do_save_file (const QString& file_to_save,
+                               bool remove_on_success,
+                               bool restore_breakpoints)
 {
   QSaveFile file (file_to_save);
 
@@ -2498,7 +2569,8 @@ void file_editor_tab::do_save_file (const QString& file_to_save,
     }
 }
 
-void file_editor_tab::save_file_as (bool remove_on_success)
+void
+file_editor_tab::save_file_as (bool remove_on_success)
 {
   // Simply put up the file chooser dialog box with a slot connection
   // then return control to the system waiting for a file selection.
@@ -2590,7 +2662,8 @@ void file_editor_tab::save_file_as (bool remove_on_success)
   show_dialog (fileDialog, ! valid_file_name ());
 }
 
-void file_editor_tab::handle_save_as_filter_selected (const QString& filter)
+void
+file_editor_tab::handle_save_as_filter_selected (const QString& filter)
 {
   // On some systems, the filterSelected signal is emitted without user
   // action and with  an empty filter string when the file dialog is shown.
@@ -2610,7 +2683,8 @@ void file_editor_tab::handle_save_as_filter_selected (const QString& filter)
     file_dialog->setDefaultSuffix ("");  // not found, clear default
 }
 
-bool file_editor_tab::check_valid_identifier (QString file_name)
+bool
+file_editor_tab::check_valid_identifier (QString file_name)
 {
   QFileInfo file = QFileInfo (file_name);
   QString base_name = file.baseName ();
@@ -2633,7 +2707,8 @@ bool file_editor_tab::check_valid_identifier (QString file_name)
   return false;
 }
 
-bool file_editor_tab::check_valid_codec ()
+bool
+file_editor_tab::check_valid_codec ()
 {
   QString editor_text = m_edit_area->text ();
 
@@ -2692,7 +2767,8 @@ bool file_editor_tab::check_valid_codec ()
   return can_encode;
 }
 
-void file_editor_tab::handle_save_file_as_answer (const QString& save_file_name)
+void
+file_editor_tab::handle_save_file_as_answer (const QString& save_file_name)
 {
   QString saveFileName = save_file_name;
   QFileInfo file (saveFileName);
@@ -2713,10 +2789,10 @@ void file_editor_tab::handle_save_file_as_answer (const QString& save_file_name)
   if (file_dialog->testOption (QFileDialog::DontConfirmOverwrite) && file.exists ())
     {
       int ans = QMessageBox::question (file_dialog,
-                            tr ("Octave Editor"),
-                            tr ("%1\n already exists\n"
-                                "Do you want to overwrite it?").arg (saveFileName),
-                            QMessageBox::Yes | QMessageBox::No);
+                                       tr ("Octave Editor"),
+                                       tr ("%1\n already exists\n"
+                                           "Do you want to overwrite it?").arg (saveFileName),
+                                       QMessageBox::Yes | QMessageBox::No);
       if (ans != QMessageBox::Yes)
         {
           // Try again, if edit area is read only, remove on success
@@ -2739,7 +2815,8 @@ void file_editor_tab::handle_save_file_as_answer (const QString& save_file_name)
     }
 }
 
-void file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
+void
+file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
 {
   // saveFileName == m_file_name can not happen, because we only can get here
   // when we close a tab and m_file_name is not a valid filename yet
@@ -2751,13 +2828,15 @@ void file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileN
     emit editor_check_conflict_save (saveFileName, true);
 }
 
-void file_editor_tab::handle_save_file_as_answer_cancel ()
+void
+file_editor_tab::handle_save_file_as_answer_cancel ()
 {
   // User canceled, allow editing again.
   m_edit_area->setReadOnly (false);
 }
 
-void file_editor_tab::file_has_changed (const QString&, bool do_close)
+void
+file_editor_tab::file_has_changed (const QString&, bool do_close)
 {
   bool file_exists = QFile::exists (m_file_name);
 
@@ -2852,7 +2931,8 @@ void file_editor_tab::file_has_changed (const QString&, bool do_close)
     }
 }
 
-void file_editor_tab::notice_settings (bool init)
+void
+file_editor_tab::notice_settings (bool init)
 {
   gui_settings settings;
 
@@ -2953,8 +3033,8 @@ void file_editor_tab::notice_settings (bool init)
 
   m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETHSCROLLBAR,
                               settings.bool_value (ed_show_hscroll_bar));
-  m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH,-1);
-  m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING,true);
+  m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTH, -1);
+  m_edit_area->SendScintilla (QsciScintillaBase::SCI_SETSCROLLWIDTHTRACKING, true);
 
   update_window_title (m_edit_area->isModified ());
 
@@ -3021,7 +3101,8 @@ void file_editor_tab::notice_settings (bool init)
 
 }
 
-void file_editor_tab::auto_margin_width ()
+void
+file_editor_tab::auto_margin_width ()
 {
   m_edit_area->setMarginWidth (2, "1" + QString::number (m_edit_area->lines ()));
 }
@@ -3031,12 +3112,14 @@ void file_editor_tab::auto_margin_width ()
 // the tab really was closed (for canceling exiting octave).
 // When emitting a signal, only the return value from the last slot
 // goes back to the sender
-bool file_editor_tab::conditional_close ()
+bool
+file_editor_tab::conditional_close ()
 {
   return close ();
 }
 
-void file_editor_tab::change_editor_state (const QWidget *ID)
+void
+file_editor_tab::change_editor_state (const QWidget *ID)
 {
   if (ID != this)
     return;
@@ -3045,7 +3128,8 @@ void file_editor_tab::change_editor_state (const QWidget *ID)
                              m_edit_area->isModified ());
 }
 
-void file_editor_tab::handle_file_reload_answer (int decision)
+void
+file_editor_tab::handle_file_reload_answer (int decision)
 {
   if (decision == QMessageBox::Yes)
     {
@@ -3059,7 +3143,8 @@ void file_editor_tab::handle_file_reload_answer (int decision)
     }
 }
 
-void file_editor_tab::handle_file_resave_answer (int decision)
+void
+file_editor_tab::handle_file_resave_answer (int decision)
 {
   // check decision of user in dialog
   if (decision == QMessageBox::Save)
@@ -3078,7 +3163,8 @@ void file_editor_tab::handle_file_resave_answer (int decision)
     }
 }
 
-void file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
+void
+file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
 {
   if (ID != this || ID == nullptr)
     return;
@@ -3152,7 +3238,8 @@ void file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
     }
 }
 
-void file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
+void
+file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
 {
   if (ID != this || ID == nullptr)
     return;
@@ -3161,9 +3248,10 @@ void file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
     emit remove_position_via_debugger_linenr (line);
 }
 
-void file_editor_tab::do_breakpoint_marker (bool insert,
-                                            const QWidget *ID, int line,
-                                            const QString& cond)
+void
+file_editor_tab::do_breakpoint_marker (bool insert,
+                                       const QWidget *ID, int line,
+                                       const QString& cond)
 {
   if (ID != this || ID == nullptr)
     return;
@@ -3217,7 +3305,8 @@ void file_editor_tab::do_breakpoint_marker (bool insert,
     }
 }
 
-void file_editor_tab::center_current_line (bool always)
+void
+file_editor_tab::center_current_line (bool always)
 {
   long int visible_lines
     = m_edit_area->SendScintilla (QsciScintillaBase::SCI_LINESONSCREEN);
@@ -3244,13 +3333,15 @@ void file_editor_tab::center_current_line (bool always)
     }
 }
 
-void file_editor_tab::handle_lines_changed ()
+void
+file_editor_tab::handle_lines_changed ()
 {
   // the related signal is emitted before cursor-move-signal!
   m_lines_changed = true;
 }
 
-void file_editor_tab::handle_cursor_moved (int line, int col)
+void
+file_editor_tab::handle_cursor_moved (int line, int col)
 {
   // Cursor has moved, first check wether an autocompletion list
   // is active or if it was closed. Scintilla provides signals for
@@ -3281,7 +3372,8 @@ void file_editor_tab::handle_cursor_moved (int line, int col)
                                o_line, m_ind_char_width);
 }
 
-void file_editor_tab::update_rowcol_indicator (int line, int col)
+void
+file_editor_tab::update_rowcol_indicator (int line, int col)
 {
   m_line = line;
   m_col  = col;
@@ -3293,7 +3385,8 @@ void file_editor_tab::update_rowcol_indicator (int line, int col)
 // It is used for handling line breaking if this is desired.
 // The related signal is emitted after the signal for a moved cursor
 // such that m_col and m_line can not be used for current position.
-void file_editor_tab::handle_char_added (int)
+void
+file_editor_tab::handle_char_added (int)
 {
   if (m_line_break)
     {
@@ -3357,7 +3450,8 @@ void file_editor_tab::handle_char_added (int)
 }
 
 // Slot handling a double click into the text area
-void file_editor_tab::handle_double_click (int, int, int modifier)
+void
+file_editor_tab::handle_double_click (int, int, int modifier)
 {
   if (! modifier)
     {
@@ -3431,7 +3525,8 @@ void file_editor_tab::handle_double_click (int, int, int modifier)
     }
 }
 
-QString file_editor_tab::get_function_name ()
+QString
+file_editor_tab::get_function_name ()
 {
   QRegularExpression rxfun1 {"^[\t ]*function[^=]+=([^\\(]+)\\([^\\)]*\\)[\t ]*$"};
   QRegularExpression rxfun2 {"^[\t ]*function[\t ]+([^\\(]+)\\([^\\)]*\\)[\t ]*$"};

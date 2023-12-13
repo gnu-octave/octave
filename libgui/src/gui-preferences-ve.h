@@ -51,7 +51,8 @@ const int ve_colors_count = 5;
 
 extern gui_pref ve_colors[];
 
-const QStringList ve_color_names = {
+const QStringList ve_color_names =
+{
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Foreground"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Background"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selected Foreground"),
@@ -59,7 +60,8 @@ const QStringList ve_color_names = {
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Alternating Background")
 };
 
-const QStringList ve_save_formats = {
+const QStringList ve_save_formats =
+{
   "ascii",
   "binary",
   "float-binary",
@@ -74,7 +76,8 @@ const QStringList ve_save_formats = {
 
 // The following list is a relation between save format and fiel extension.
 // The format string are case insensitive.
-const QStringList ve_save_formats_ext = {
+const QStringList ve_save_formats_ext =
+{
   "-ascii",       "dat",
   "-hdf5",        "h5",
   "-text",        "txt",

@@ -334,7 +334,7 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
 
 static octave_idx_type
 calc_degrees (octave_idx_type N, octave_idx_type *cidx, octave_idx_type *ridx,
-            octave_idx_type *cidx2, octave_idx_type *ridx2, octave_idx_type *D)
+              octave_idx_type *cidx2, octave_idx_type *ridx2, octave_idx_type *D)
 {
   octave_idx_type max_deg = 0;
   for (octave_idx_type i = 0; i < N; i++)

@@ -153,7 +153,8 @@ workspace_view::workspace_view (QWidget *p)
     make_window ();
 }
 
-void workspace_view::setModel (workspace_model *model)
+void
+workspace_view::setModel (workspace_model *model)
 {
   m_filter_model.setSourceModel (model);
   m_filter_model.setFilterKeyColumn(0);
@@ -231,7 +232,8 @@ workspace_view::save_settings ()
   octave_dock_widget::save_settings ();
 }
 
-void workspace_view::set_filter_focus (bool focus)
+void
+workspace_view::set_filter_focus (bool focus)
 {
   if (focus)
     {

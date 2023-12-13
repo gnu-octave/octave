@@ -78,7 +78,8 @@ qt_application::qt_application (int argc, char **argv)
   sysdep_init ();
 }
 
-bool qt_application::start_gui_p () const
+bool
+qt_application::start_gui_p () const
 {
   // Note: this function is not needed if using the experimental
   // terminal widget, so return a dummy value of false in that case.
@@ -86,7 +87,8 @@ bool qt_application::start_gui_p () const
   return experimental_terminal_widget () ? false : m_options.gui ();
 }
 
-int qt_application::execute ()
+int
+qt_application::execute ()
 {
   octave_block_interrupt_signal ();
 

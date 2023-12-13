@@ -71,7 +71,8 @@ PopupMenuControl::PopupMenuControl (octave::interpreter& interp,
 PopupMenuControl::~PopupMenuControl ()
 { }
 
-void PopupMenuControl::update (int pId)
+void
+PopupMenuControl::update (int pId)
 {
   uicontrol::properties& up = properties<uicontrol> ();
   QComboBox *box = qWidget<QComboBox> ();

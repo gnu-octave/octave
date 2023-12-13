@@ -58,13 +58,15 @@ history_dock_widget::history_dock_widget (QWidget *p)
     make_window ();
 }
 
-void history_dock_widget::set_history (const QStringList& hist)
+void
+history_dock_widget::set_history (const QStringList& hist)
 {
   m_history_model->setStringList (hist);
   m_history_list_view->scrollToBottom ();
 }
 
-void history_dock_widget::append_history (const QString& hist_entry)
+void
+history_dock_widget::append_history (const QString& hist_entry)
 {
   QStringList lst = m_history_model->stringList ();
   lst.append (hist_entry);
@@ -80,12 +82,14 @@ void history_dock_widget::append_history (const QString& hist_entry)
     m_history_list_view->scrollToBottom ();
 }
 
-void history_dock_widget::clear_history ()
+void
+history_dock_widget::clear_history ()
 {
   m_history_model->setStringList (QStringList ());
 }
 
-void history_dock_widget::save_settings ()
+void
+history_dock_widget::save_settings ()
 {
   gui_settings settings;
 
@@ -102,7 +106,8 @@ void history_dock_widget::save_settings ()
   octave_dock_widget::save_settings ();
 }
 
-void history_dock_widget::update_filter_history ()
+void
+history_dock_widget::update_filter_history ()
 {
   QString text = m_filter->currentText ();   // get current text
   int index = m_filter->findText (text);     // and its actual index
@@ -114,7 +119,8 @@ void history_dock_widget::update_filter_history ()
   m_filter->setCurrentIndex (0);
 }
 
-void history_dock_widget::set_filter_focus (bool focus)
+void
+history_dock_widget::set_filter_focus (bool focus)
 {
   if (focus)
     {
@@ -128,7 +134,8 @@ void history_dock_widget::set_filter_focus (bool focus)
     }
 }
 
-void history_dock_widget::filter_activate (bool state)
+void
+history_dock_widget::filter_activate (bool state)
 {
   m_filter->setEnabled (state);
   m_sort_filter_proxy_model.setDynamicSortFilter (state);
@@ -141,7 +148,8 @@ void history_dock_widget::filter_activate (bool state)
   set_filter_focus (state);
 }
 
-void history_dock_widget::ctxMenu (const QPoint& xpos)
+void
+history_dock_widget::ctxMenu (const QPoint& xpos)
 {
   QMenu menu (this);
 
@@ -169,12 +177,14 @@ void history_dock_widget::ctxMenu (const QPoint& xpos)
   menu.exec (m_history_list_view->mapToGlobal (xpos));
 }
 
-void history_dock_widget::handle_double_click (QModelIndex modelIndex)
+void
+history_dock_widget::handle_double_click (QModelIndex modelIndex)
 {
   emit command_double_clicked (modelIndex.data ().toString ());
 }
 
-void history_dock_widget::handle_contextmenu_copy (bool)
+void
+history_dock_widget::handle_contextmenu_copy (bool)
 {
   QString text;
   QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
@@ -193,7 +203,8 @@ void history_dock_widget::handle_contextmenu_copy (bool)
   QApplication::clipboard ()->setText (text);
 }
 
-void history_dock_widget::handle_contextmenu_evaluate (bool)
+void
+history_dock_widget::handle_contextmenu_evaluate (bool)
 {
   QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
   QModelIndexList rows = selectionModel->selectedRows ();
@@ -202,7 +213,8 @@ void history_dock_widget::handle_contextmenu_evaluate (bool)
       emit command_double_clicked (it.data ().toString ());
 }
 
-void history_dock_widget::handle_contextmenu_create_script (bool)
+void
+history_dock_widget::handle_contextmenu_create_script (bool)
 {
   QString text;
   QItemSelectionModel *selectionModel = m_history_list_view->selectionModel ();
@@ -224,7 +236,8 @@ void history_dock_widget::handle_contextmenu_create_script (bool)
     emit command_create_script (text);
 }
 
-void history_dock_widget::handle_contextmenu_filter ()
+void
+history_dock_widget::handle_contextmenu_filter ()
 {
   m_filter_shown = ! m_filter_shown;
   m_filter_widget->setVisible (m_filter_shown);
@@ -232,7 +245,8 @@ void history_dock_widget::handle_contextmenu_filter ()
   set_filter_focus (m_filter_shown && m_filter_checkbox->isChecked ()) ;
 }
 
-void history_dock_widget::copyClipboard ()
+void
+history_dock_widget::copyClipboard ()
 {
   if (m_history_list_view->hasFocus ())
     handle_contextmenu_copy (true);
@@ -244,7 +258,8 @@ void history_dock_widget::copyClipboard ()
     }
 }
 
-void history_dock_widget::pasteClipboard ()
+void
+history_dock_widget::pasteClipboard ()
 {
   if (m_filter->lineEdit ()->hasFocus ())
     {
@@ -255,7 +270,8 @@ void history_dock_widget::pasteClipboard ()
     }
 }
 
-void history_dock_widget::selectAll ()
+void
+history_dock_widget::selectAll ()
 {
   if (m_filter->lineEdit ()->hasFocus ())
     m_filter->lineEdit ()->selectAll ();
@@ -264,7 +280,8 @@ void history_dock_widget::selectAll ()
     m_history_list_view->selectAll ();
 }
 
-void history_dock_widget::handle_visibility (bool visible)
+void
+history_dock_widget::handle_visibility (bool visible)
 {
   octave_dock_widget::handle_visibility (visible);
 
@@ -275,7 +292,8 @@ void history_dock_widget::handle_visibility (bool visible)
     }
 }
 
-void history_dock_widget::construct ()
+void
+history_dock_widget::construct ()
 {
   m_history_model = new QStringListModel ();
   m_sort_filter_proxy_model.setSourceModel (m_history_model);
@@ -352,7 +370,8 @@ void history_dock_widget::construct ()
   m_history_list_view->setTextElideMode (Qt::ElideRight);
 }
 
-void history_dock_widget::notice_settings ()
+void
+history_dock_widget::notice_settings ()
 {
   gui_settings settings;
 

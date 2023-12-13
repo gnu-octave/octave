@@ -569,9 +569,9 @@ permutation information.
 
 */
 
-static
-bool check_lu_dims (const octave_value& l, const octave_value& u,
-                    const octave_value& p)
+static bool
+check_lu_dims (const octave_value& l, const octave_value& u,
+               const octave_value& p)
 {
   octave_idx_type m = l.rows ();
   octave_idx_type k = u.rows ();

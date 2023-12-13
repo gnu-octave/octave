@@ -129,8 +129,8 @@ find_files_dialog::find_files_dialog (QWidget *p)
   m_file_list->sortByColumn (settings.int_value (ff_sort_files_by_column),
                              static_cast<Qt::SortOrder>
                              (settings.uint_value (ff_sort_files_by_order)));
-              // FIXME: use value<Qt::SortOrder> instead of static cast after
-              //        dropping support of Qt 5.4
+  // FIXME: use value<Qt::SortOrder> instead of static cast after
+  //        dropping support of Qt 5.4
 
   connect (m_file_list, &QTableView::doubleClicked,
            this, &find_files_dialog::item_double_clicked);
@@ -205,7 +205,8 @@ find_files_dialog::~find_files_dialog ()
   delete m_dir_iterator;
 }
 
-void find_files_dialog::save_settings ()
+void
+find_files_dialog::save_settings ()
 {
   gui_settings settings;
 
@@ -231,13 +232,15 @@ void find_files_dialog::save_settings ()
   settings.sync ();
 }
 
-void find_files_dialog::set_search_dir (const QString& dir)
+void
+find_files_dialog::set_search_dir (const QString& dir)
 {
   stop_find ();
   m_start_dir_edit->setText (dir);
 }
 
-void find_files_dialog::start_find ()
+void
+find_files_dialog::start_find ()
 {
   stop_find ();
 
@@ -279,7 +282,8 @@ void find_files_dialog::start_find ()
   m_timer->start (0);
 }
 
-void find_files_dialog::stop_find ()
+void
+find_files_dialog::stop_find ()
 {
   m_timer->stop ();
 
@@ -302,7 +306,8 @@ void find_files_dialog::stop_find ()
   m_status_bar->showMessage (res_str);
 }
 
-void find_files_dialog::browse_folders ()
+void
+find_files_dialog::browse_folders ()
 {
   int opts = 0;  // No options by default.
 
@@ -322,7 +327,8 @@ void find_files_dialog::browse_folders ()
     m_start_dir_edit->setText (dir);
 }
 
-void find_files_dialog::item_double_clicked (const QModelIndex& idx)
+void
+find_files_dialog::item_double_clicked (const QModelIndex& idx)
 {
   find_files_model *m = static_cast<find_files_model *> (m_file_list->model ());
 
@@ -343,7 +349,8 @@ void find_files_dialog::item_double_clicked (const QModelIndex& idx)
     }
 }
 
-void find_files_dialog::look_for_files ()
+void
+find_files_dialog::look_for_files ()
 {
   if (m_dir_iterator && m_dir_iterator->hasNext ())
     {
@@ -361,13 +368,15 @@ void find_files_dialog::look_for_files ()
     }
 }
 
-void find_files_dialog::handle_done (int)
+void
+find_files_dialog::handle_done (int)
 {
   // make sure we stopped processing
   stop_find ();
 }
 
-bool find_files_dialog::is_match (const QFileInfo& info)
+bool
+find_files_dialog::is_match (const QFileInfo& info)
 {
   bool match = true;
   if (info.isDir ())

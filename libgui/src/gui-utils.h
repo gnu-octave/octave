@@ -51,9 +51,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   @return New color as QColor
 */
 
-  extern OCTGUI_API QColor
-  interpolate_color (const QColor& col1, const QColor& col2,
-                     double fs, double fv);
+extern OCTGUI_API QColor
+interpolate_color (const QColor& col1, const QColor& col2,
+                   double fs, double fv);
 
 /*!
   Get the screen geometry of the actual screen.

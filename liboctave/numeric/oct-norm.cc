@@ -274,7 +274,8 @@ private:
 // OK, we're armed :) Now let's go for the fun
 
 template <typename T, typename R, typename ACC>
-inline void vector_norm (const Array<T>& v, R& res, ACC acc)
+inline void
+vector_norm (const Array<T>& v, R& res, ACC acc)
 {
   for (octave_idx_type i = 0; i < v.numel (); i++)
     acc.accum (v(i));
@@ -284,7 +285,8 @@ inline void vector_norm (const Array<T>& v, R& res, ACC acc)
 
 // dense versions
 template <typename T, typename R, typename ACC>
-void column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
+void
+column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (1, m.columns ()));
   for (octave_idx_type j = 0; j < m.columns (); j++)
@@ -298,7 +300,8 @@ void column_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 }
 
 template <typename T, typename R, typename ACC>
-void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
+void
+row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (m.rows (), 1));
   std::vector<ACC> acci (m.rows (), acc);
@@ -314,7 +317,8 @@ void row_norms (const MArray<T>& m, MArray<R>& res, ACC acc)
 
 // sparse versions
 template <typename T, typename R, typename ACC>
-void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
+void
+column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (1, m.columns ()));
   for (octave_idx_type j = 0; j < m.columns (); j++)
@@ -328,7 +332,8 @@ void column_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 }
 
 template <typename T, typename R, typename ACC>
-void row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
+void
+row_norms (const MSparse<T>& m, MArray<R>& res, ACC acc)
 {
   res = MArray<R> (dim_vector (m.rows (), 1));
   std::vector<ACC> acci (m.rows (), acc);
@@ -452,7 +457,8 @@ higham_subp (const ColVectorT& y, const ColVectorT& col,
 
 // the p-dual element (should work for both real and complex)
 template <typename T, typename R>
-inline T elem_dual_p (T x, R p)
+inline T
+elem_dual_p (T x, R p)
 {
   return math::signum (x) * std::pow (std::abs (x), p-1);
 }
@@ -462,7 +468,8 @@ inline T elem_dual_p (T x, R p)
 // does not support multiplication with column/row vectors.
 // the dual vector
 template <typename VectorT, typename R>
-VectorT dual_p (const VectorT& x, R p, R q)
+VectorT
+dual_p (const VectorT& x, R p, R q)
 {
   VectorT res (x.dims ());
   for (octave_idx_type i = 0; i < x.numel (); i++)
@@ -472,8 +479,9 @@ VectorT dual_p (const VectorT& x, R p, R q)
 
 // Higham's hybrid method
 template <typename MatrixT, typename VectorT, typename R>
-R higham (const MatrixT& m, R p, R tol, int maxiter,
-          VectorT& x)
+R
+higham (const MatrixT& m, R p, R tol, int maxiter,
+        VectorT& x)
 {
   x.resize (m.columns (), 1);
   // the OSE part
@@ -532,7 +540,8 @@ static int max_norm_iter = 100;
 
 // version with SVD for dense matrices
 template <typename MatrixT, typename VectorT, typename R>
-R svd_matrix_norm (const MatrixT& m, R p, VectorT)
+R
+svd_matrix_norm (const MatrixT& m, R p, VectorT)
 {
   R res = 0;
   if (p == 2)
@@ -558,7 +567,8 @@ R svd_matrix_norm (const MatrixT& m, R p, VectorT)
 
 // SVD-free version for sparse matrices
 template <typename MatrixT, typename VectorT, typename R>
-R matrix_norm (const MatrixT& m, R p, VectorT)
+R
+matrix_norm (const MatrixT& m, R p, VectorT)
 {
   R res = 0;
   if (p == 1)

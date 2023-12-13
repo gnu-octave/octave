@@ -144,7 +144,8 @@ template class octave_base_matrix<Cell>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 
-void octave_cell::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
+void
+octave_cell::break_closure_cycles (const std::shared_ptr<octave::stack_frame>& frame)
 {
   for (octave_idx_type i = 0; i < m_matrix.numel (); i++)
     m_matrix(i).break_closure_cycles (frame);

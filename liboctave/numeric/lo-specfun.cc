@@ -1463,8 +1463,10 @@ biry (const FloatComplexNDArray& z, bool deriv, bool scaled,
 }
 
 // Real and complex Dawson function (= scaled erfi) from Faddeeva package
-double dawson (double x) { return Faddeeva::Dawson (x); }
-float dawson (float x) { return Faddeeva::Dawson (x); }
+double
+dawson (double x) { return Faddeeva::Dawson (x); }
+float
+dawson (float x) { return Faddeeva::Dawson (x); }
 
 Complex
 dawson (const Complex& x)
@@ -1616,7 +1618,8 @@ erfc (const FloatComplex& x)
 // different input domain of erfcinv.  See the notes for erfinv for an
 // explanation.
 
-static double do_erfcinv (double x, bool refine)
+static double
+do_erfcinv (double x, bool refine)
 {
   // Coefficients of rational approximation.
   static const double a[] =
@@ -1690,19 +1693,23 @@ static double do_erfcinv (double x, bool refine)
   return y;
 }
 
-double erfcinv (double x)
+double
+erfcinv (double x)
 {
   return do_erfcinv (x, true);
 }
 
-float erfcinv (float x)
+float
+erfcinv (float x)
 {
   return do_erfcinv (x, false);
 }
 
 // Real and complex scaled complementary error function from Faddeeva pkg.
-double erfcx (double x) { return Faddeeva::erfcx (x); }
-float erfcx (float x) { return Faddeeva::erfcx (x); }
+double
+erfcx (double x) { return Faddeeva::erfcx (x); }
+float
+erfcx (float x) { return Faddeeva::erfcx (x); }
 
 Complex
 erfcx (const Complex& x)
@@ -1720,8 +1727,10 @@ erfcx (const FloatComplex& x)
 }
 
 // Real and complex imaginary error function from Faddeeva package
-double erfi (double x) { return Faddeeva::erfi (x); }
-float erfi (float x) { return Faddeeva::erfi (x); }
+double
+erfi (double x) { return Faddeeva::erfi (x); }
+float
+erfi (float x) { return Faddeeva::erfi (x); }
 
 Complex
 erfi (const Complex& x)
@@ -1746,7 +1755,8 @@ erfi (const FloatComplex& x)
 // order method.  For single precision, the accuracy is already OK, so
 // we skip it to get faster evaluation.
 
-static double do_erfinv (double x, bool refine)
+static double
+do_erfinv (double x, bool refine)
 {
   // Coefficients of rational approximation.
   static const double a[] =
@@ -1809,12 +1819,14 @@ static double do_erfinv (double x, bool refine)
   return y;
 }
 
-double erfinv (double x)
+double
+erfinv (double x)
 {
   return do_erfinv (x, true);
 }
 
-float erfinv (float x)
+float
+erfinv (float x)
 {
   return do_erfinv (x, false);
 }
@@ -2045,8 +2057,10 @@ xpsi (T z)
 }
 
 // explicit instantiations
-double psi (double z) { return xpsi (z); }
-float psi (float z) { return xpsi (z); }
+double
+psi (double z) { return xpsi (z); }
+float
+psi (float z) { return xpsi (z); }
 
 template <typename T>
 std::complex<T>
@@ -2094,8 +2108,10 @@ xpsi (const std::complex<T>& z)
 }
 
 // explicit instantiations
-Complex psi (const Complex& z) { return xpsi (z); }
-FloatComplex psi (const FloatComplex& z) { return xpsi (z); }
+Complex
+psi (const Complex& z) { return xpsi (z); }
+FloatComplex
+psi (const FloatComplex& z) { return xpsi (z); }
 
 template <typename T>
 static inline void
@@ -2152,8 +2168,10 @@ xpsi (octave_idx_type n, T z)
   return ans;
 }
 
-double psi (octave_idx_type n, double z) { return xpsi (n, z); }
-float psi (octave_idx_type n, float z) { return xpsi (n, z); }
+double
+psi (octave_idx_type n, double z) { return xpsi (n, z); }
+float
+psi (octave_idx_type n, float z) { return xpsi (n, z); }
 
 Complex
 rc_lgamma (double x)
@@ -2193,14 +2211,16 @@ rc_lgamma (float x)
     return result;
 }
 
-Complex rc_log1p (double x)
+Complex
+rc_log1p (double x)
 {
   return (x < -1.0
           ? Complex (std::log (-(1.0 + x)), M_PI)
           : Complex (log1p (x)));
 }
 
-FloatComplex rc_log1p (float x)
+FloatComplex
+rc_log1p (float x)
 {
   return (x < -1.0f
           ? FloatComplex (std::log (-(1.0f + x)), M_PI)

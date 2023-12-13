@@ -893,7 +893,7 @@ public:
   bool vm_dbgprofecho_flag () { return m_vm_dbg_profile_echo; }
 #endif
 
- private:
+private:
 
   template <typename T>
   void execute_range_loop (const range<T>& rng, int line,

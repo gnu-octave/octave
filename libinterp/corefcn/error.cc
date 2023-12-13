@@ -420,7 +420,8 @@ error_system::make_stack_frame_list (const octave_map& stack)
 // enabled, and 2 if the given ID should be an error instead of a
 // warning.
 
-int error_system::warning_enabled (const std::string& id)
+int
+error_system::warning_enabled (const std::string& id)
 {
   int retval = 0;
 
@@ -492,7 +493,8 @@ int error_system::warning_enabled (const std::string& id)
   return retval;
 }
 
-void error_system::vusage (const char *id, const char *fmt, va_list args)
+void
+error_system::vusage (const char *id, const char *fmt, va_list args)
 {
   std::string str_id = id ? id : "";
   std::string message = format_message (fmt, args);
@@ -500,8 +502,9 @@ void error_system::vusage (const char *id, const char *fmt, va_list args)
   throw_error ("usage", str_id, message);
 }
 
-void error_system::vwarning (const char *name, const char *id,
-                             const char *fmt, va_list args)
+void
+error_system::vwarning (const char *name, const char *id,
+                        const char *fmt, va_list args)
 {
   flush_stdout ();
 
@@ -561,8 +564,9 @@ void error_system::vwarning (const char *name, const char *id,
     }
 }
 
-void error_system::error_1 (execution_exception& ee, const char *id,
-                            const char *fmt, va_list args)
+void
+error_system::error_1 (execution_exception& ee, const char *id,
+                       const char *fmt, va_list args)
 {
   ee.set_identifier (id);
   ee.set_message (format_message (fmt, args));
@@ -570,8 +574,9 @@ void error_system::error_1 (execution_exception& ee, const char *id,
   throw_error (ee);
 }
 
-void error_system::error_1 (const char *id, const char *fmt,
-                            va_list args)
+void
+error_system::error_1 (const char *id, const char *fmt,
+                       va_list args)
 {
   std::string message = format_message (fmt, args);
 
@@ -580,7 +585,8 @@ void error_system::error_1 (const char *id, const char *fmt,
   throw_error ("error", id, message);
 }
 
-void error_system::vwarning (const char *id, const char *fmt, va_list args)
+void
+error_system::vwarning (const char *id, const char *fmt, va_list args)
 {
   int warn_opt = warning_enabled (id);
 
@@ -594,9 +600,10 @@ void error_system::vwarning (const char *id, const char *fmt, va_list args)
     vwarning ("warning", id, fmt, args);
 }
 
-void error_system::rethrow_error (const std::string& id,
-                                  const std::string& msg,
-                                  const octave_map& stack)
+void
+error_system::rethrow_error (const std::string& id,
+                             const std::string& msg,
+                             const octave_map& stack)
 {
   std::list<frame_info> stack_info;
 
@@ -623,7 +630,8 @@ void error_system::rethrow_error (const std::string& id,
   throw_error (ee);
 }
 
-void error_system::vpanic (const char *fmt, va_list args)
+void
+error_system::vpanic (const char *fmt, va_list args)
 {
   // Is there any point in trying to write the panic message to the
   // diary?
@@ -633,7 +641,8 @@ void error_system::vpanic (const char *fmt, va_list args)
   abort ();
 }
 
-void error_system::panic (const char *fmt, ...)
+void
+error_system::panic (const char *fmt, ...)
 {
   va_list args;
   va_start (args, fmt);
@@ -641,7 +650,8 @@ void error_system::panic (const char *fmt, ...)
   va_end (args);
 }
 
-octave_scalar_map error_system::warning_query (const std::string& id_arg)
+octave_scalar_map
+error_system::warning_query (const std::string& id_arg)
 {
   octave_scalar_map retval;
 
@@ -697,7 +707,8 @@ octave_scalar_map error_system::warning_query (const std::string& id_arg)
   return retval;
 }
 
-std::string error_system::default_warning_state ()
+std::string
+error_system::default_warning_state ()
 {
   std::string retval = "on";
 
@@ -720,7 +731,8 @@ std::string error_system::default_warning_state ()
   return retval;
 }
 
-void error_system::display_warning_options (std::ostream& os)
+void
+error_system::display_warning_options (std::ostream& os)
 {
   octave_map opts = warning_options ();
 
@@ -760,8 +772,9 @@ void error_system::display_warning_options (std::ostream& os)
   os << std::endl;
 }
 
-void error_system::set_warning_option (const std::string& state,
-                                       const std::string& ident)
+void
+error_system::set_warning_option (const std::string& state,
+                                  const std::string& ident)
 {
   std::string all_state = default_warning_state ();
 
@@ -824,12 +837,14 @@ void error_system::set_warning_option (const std::string& state,
   warning_options (opts);
 }
 
-void error_system::disable_warning (const std::string& id)
+void
+error_system::disable_warning (const std::string& id)
 {
   set_warning_option ("off", id);
 }
 
-void error_system::initialize_default_warning_state ()
+void
+error_system::initialize_default_warning_state ()
 {
   warning_options (init_warning_options ("on"));
 
@@ -849,7 +864,8 @@ void error_system::initialize_default_warning_state ()
   disable_warning ("Octave:variable-switch-label");
 }
 
-void error_system::interpreter_try (unwind_protect& frame)
+void
+error_system::interpreter_try (unwind_protect& frame)
 {
   frame.protect_var (m_debug_on_error);
   m_debug_on_error = false;
@@ -861,10 +877,11 @@ void error_system::interpreter_try (unwind_protect& frame)
   // caught.
 }
 
-void error_system::throw_error (const std::string& err_type,
-                                const std::string& id,
-                                const std::string& message,
-                                const std::list<frame_info>& stack_info_arg)
+void
+error_system::throw_error (const std::string& err_type,
+                           const std::string& id,
+                           const std::string& message,
+                           const std::list<frame_info>& stack_info_arg)
 {
   std::list<frame_info> stack_info = stack_info_arg;
 
@@ -885,12 +902,14 @@ void error_system::throw_error (const std::string& err_type,
   throw_error (ex);
 }
 
-void error_system::throw_error (execution_exception& ex)
+void
+error_system::throw_error (execution_exception& ex)
 {
   throw ex;
 }
 
-void error_system::save_exception (const execution_exception& ee)
+void
+error_system::save_exception (const execution_exception& ee)
 {
   last_error_id (ee.identifier ());
   std::string message = ee.message ();
@@ -901,7 +920,8 @@ void error_system::save_exception (const execution_exception& ee)
   last_error_stack (make_stack_map (ee.stack_info ()));
 }
 
-void error_system::display_exception (const execution_exception& ee) const
+void
+error_system::display_exception (const execution_exception& ee) const
 {
   // FIXME: How should we handle beep_on_error?
 

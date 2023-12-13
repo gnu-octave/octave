@@ -166,7 +166,8 @@ symbol_info::display_line (std::ostream& os,
 
 // FIXME: should we be using std::map<symbol_info> instead of a list?
 
-octave_value symbol_info_list::varval (const std::string& name) const
+octave_value
+symbol_info_list::varval (const std::string& name) const
 {
   for (const auto& syminfo : m_lst)
     {
@@ -177,7 +178,8 @@ octave_value symbol_info_list::varval (const std::string& name) const
   return octave_value ();
 }
 
-std::list<std::string> symbol_info_list::names () const
+std::list<std::string>
+symbol_info_list::names () const
 {
   std::list<std::string> retval;
 
@@ -328,8 +330,9 @@ symbol_info_list::print_descriptor (std::ostream& os,
   os << param_buf.str ();
 }
 
-void symbol_info_list::display (std::ostream& os,
-                                const std::string& format) const
+void
+symbol_info_list::display (std::ostream& os,
+                           const std::string& format) const
 {
   if (! m_lst.empty ())
     {

@@ -79,7 +79,8 @@ dw_main_window::dw_main_window (QWidget *p)
 }
 
 // Re-implementing the popup menu of the main window
-QMenu *dw_main_window::createPopupMenu ()
+QMenu *
+dw_main_window::createPopupMenu ()
 {
   QList<QAction *> new_actions = QList<QAction *> ();
   new_actions.append (m_close_action);
@@ -101,9 +102,10 @@ QMenu *dw_main_window::createPopupMenu ()
 }
 
 // Adding an action to the main window
-QAction * dw_main_window::add_action (QMenu *menu, const QIcon& icon,
-                                      const QString& text, const char *member,
-                                      QWidget *receiver)
+QAction *
+dw_main_window::add_action (QMenu *menu, const QIcon& icon,
+                            const QString& text, const char *member,
+                            QWidget *receiver)
 {
   QAction *a;
   QWidget *r = this;
@@ -127,7 +129,8 @@ QAction * dw_main_window::add_action (QMenu *menu, const QIcon& icon,
 }
 
 // Update the settings
-void dw_main_window::notice_settings ()
+void
+dw_main_window::notice_settings ()
 {
   gui_settings settings;
 
@@ -142,7 +145,8 @@ void dw_main_window::notice_settings ()
 // Slots for handling actions
 
 // Close current widget
-void dw_main_window::request_close ()
+void
+dw_main_window::request_close ()
 {
   for (int i = 0; i < m_dw_list.length (); i++)
     {
@@ -157,7 +161,8 @@ void dw_main_window::request_close ()
 }
 
 // Close other widgets
-void dw_main_window::request_close_other ()
+void
+dw_main_window::request_close_other ()
 {
   for (int i = m_dw_list.length () - 1; i >= 0; i--)
     {
@@ -167,26 +172,30 @@ void dw_main_window::request_close_other ()
 }
 
 // Close all widgets
-void dw_main_window::request_close_all ()
+void
+dw_main_window::request_close_all ()
 {
   for (int i = m_dw_list.length () - 1; i >= 0; i--)
     m_dw_list.at (i)->close ();
 }
 
 // Switch to left widget
-void dw_main_window::request_switch_left ()
+void
+dw_main_window::request_switch_left ()
 {
   request_switch (-1);
 }
 
 // Switch to right widget
-void dw_main_window::request_switch_right ()
+void
+dw_main_window::request_switch_right ()
 {
   request_switch (1);
 }
 
 // Switch to left/right widget
-void dw_main_window::request_switch (int direction)
+void
+dw_main_window::request_switch (int direction)
 {
   int active = -1, next;
 
@@ -215,7 +224,8 @@ void dw_main_window::request_switch (int direction)
 }
 
 // Reimplemented Event
-bool dw_main_window::event (QEvent *ev)
+bool
+dw_main_window::event (QEvent *ev)
 {
   if (ev->type () == QEvent::ChildAdded
       || ev->type () == QEvent::ChildRemoved)

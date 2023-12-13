@@ -2261,7 +2261,8 @@ octave_value::print_info (std::ostream& os, const std::string& prefix) const
   m_rep->print_info (os, prefix + ' ');
 }
 
-bool octave_value::load_ascii (std::istream& is)
+bool
+octave_value::load_ascii (std::istream& is)
 {
   bool status = m_rep->load_ascii (is);
 
@@ -2271,8 +2272,9 @@ bool octave_value::load_ascii (std::istream& is)
 
   return status;
 }
-bool octave_value::load_binary (std::istream& is, bool swap,
-                                octave::mach_info::float_format fmt)
+bool
+octave_value::load_binary (std::istream& is, bool swap,
+                           octave::mach_info::float_format fmt)
 {
   bool status = m_rep->load_binary (is, swap, fmt);
 
@@ -2283,7 +2285,8 @@ bool octave_value::load_binary (std::istream& is, bool swap,
   return status;
 }
 
-bool octave_value::load_hdf5 (octave_hdf5_id loc_id, const char *name)
+bool
+octave_value::load_hdf5 (octave_hdf5_id loc_id, const char *name)
 {
   bool status = m_rep->load_hdf5 (loc_id, name);
 

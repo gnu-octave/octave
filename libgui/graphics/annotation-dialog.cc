@@ -133,7 +133,7 @@ annotation_dialog::get_gui_props ()
 
   m_props.append (ovl ("string", m_ui->edit_string->text ().toStdString ()));
   m_props.append (ovl ("fitboxtotext",
-                     m_ui->cb_fit_box_to_text->isChecked () ? "on" : "off"));
+                       m_ui->cb_fit_box_to_text->isChecked () ? "on" : "off"));
 
   // FIXME: only "normalized" units is selectable, change the code below
   //        once more units are added in the UI.
@@ -153,11 +153,11 @@ annotation_dialog::get_gui_props ()
 
   m_props.append (ovl ("fontsize", m_ui->sb_font_size->value ()));
   m_props.append (ovl ("fontweight",
-                     m_ui->cb_font_bold->isChecked () ? "bold" : "normal"));
+                       m_ui->cb_font_bold->isChecked () ? "bold" : "normal"));
   m_props.append (ovl ("fontangle",
-                     m_ui->cb_font_italic->isChecked () ? "italic" : "normal"));
+                       m_ui->cb_font_italic->isChecked () ? "italic" : "normal"));
   m_props.append (ovl ("color", octave::Utils::toRgb (m_ui->btn_color->palette ().
-                     color (QPalette::Button))));
+                       color (QPalette::Button))));
 
   // FIXME: only "none" linestyle is selectable, change the code bellow
   //        once more linestyles are added in the UI.

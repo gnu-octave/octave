@@ -42,7 +42,7 @@
 
 class octave_value_factory
 {
-  public:
+public:
 
   static octave_value make (double d)
   {

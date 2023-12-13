@@ -59,7 +59,8 @@ rand::rand ()
   initialize_mersenne_twister ();
 }
 
-bool rand::instance_ok ()
+bool
+rand::instance_ok ()
 {
   bool retval = true;
 
@@ -72,7 +73,8 @@ bool rand::instance_ok ()
   return retval;
 }
 
-double rand::do_seed ()
+double
+rand::do_seed ()
 {
   union d2i { double d; int32_t i[2]; };
   union d2i u;
@@ -108,7 +110,8 @@ force_to_fit_range (int32_t i, int32_t lo, int32_t hi)
   return i;
 }
 
-void rand::do_seed (double s)
+void
+rand::do_seed (double s)
 {
   m_use_old_generators = true;
 
@@ -135,18 +138,21 @@ void rand::do_seed (double s)
   F77_FUNC (setsd, SETSD) (i0, i1);
 }
 
-void rand::do_reset ()
+void
+rand::do_reset ()
 {
   m_use_old_generators = true;
   initialize_ranlib_generators ();
 }
 
-uint32NDArray rand::do_state (const std::string& d)
+uint32NDArray
+rand::do_state (const std::string& d)
 {
   return m_rand_states[d.empty () ? m_current_distribution : get_dist_id (d)];
 }
 
-void rand::do_state (const uint32NDArray& s, const std::string& d)
+void
+rand::do_state (const uint32NDArray& s, const std::string& d)
 {
   m_use_old_generators = false;
 
@@ -167,7 +173,8 @@ void rand::do_state (const uint32NDArray& s, const std::string& d)
     m_rand_states[old_dist] = saved_state;
 }
 
-void rand::do_reset (const std::string& d)
+void
+rand::do_reset (const std::string& d)
 {
   m_use_old_generators = false;
 
@@ -187,7 +194,8 @@ void rand::do_reset (const std::string& d)
     m_rand_states[old_dist] = saved_state;
 }
 
-std::string rand::do_distribution ()
+std::string
+rand::do_distribution ()
 {
   std::string retval;
 
@@ -222,7 +230,8 @@ std::string rand::do_distribution ()
   return retval;
 }
 
-void rand::do_distribution (const std::string& d)
+void
+rand::do_distribution (const std::string& d)
 {
   int id = get_dist_id (d);
 
@@ -255,35 +264,40 @@ void rand::do_distribution (const std::string& d)
     }
 }
 
-void rand::do_uniform_distribution ()
+void
+rand::do_uniform_distribution ()
 {
   switch_to_generator (uniform_dist);
 
   F77_FUNC (setcgn, SETCGN) (uniform_dist);
 }
 
-void rand::do_normal_distribution ()
+void
+rand::do_normal_distribution ()
 {
   switch_to_generator (normal_dist);
 
   F77_FUNC (setcgn, SETCGN) (normal_dist);
 }
 
-void rand::do_exponential_distribution ()
+void
+rand::do_exponential_distribution ()
 {
   switch_to_generator (expon_dist);
 
   F77_FUNC (setcgn, SETCGN) (expon_dist);
 }
 
-void rand::do_poisson_distribution ()
+void
+rand::do_poisson_distribution ()
 {
   switch_to_generator (poisson_dist);
 
   F77_FUNC (setcgn, SETCGN) (poisson_dist);
 }
 
-void rand::do_gamma_distribution ()
+void
+rand::do_gamma_distribution ()
 {
   switch_to_generator (gamma_dist);
 
@@ -291,7 +305,8 @@ void rand::do_gamma_distribution ()
 }
 
 template <>
-OCTAVE_API double rand::uniform<double> ()
+OCTAVE_API double
+rand::uniform<double> ()
 {
   double retval;
 
@@ -304,7 +319,8 @@ OCTAVE_API double rand::uniform<double> ()
 }
 
 template <>
-OCTAVE_API double rand::normal<double> ()
+OCTAVE_API double
+rand::normal<double> ()
 {
   double retval;
 
@@ -317,7 +333,8 @@ OCTAVE_API double rand::normal<double> ()
 }
 
 template <>
-OCTAVE_API double rand::exponential<double> ()
+OCTAVE_API double
+rand::exponential<double> ()
 {
   double retval;
 
@@ -330,7 +347,8 @@ OCTAVE_API double rand::exponential<double> ()
 }
 
 template <>
-OCTAVE_API double rand::poisson<double> (double a)
+OCTAVE_API double
+rand::poisson<double> (double a)
 {
   double retval;
 
@@ -352,7 +370,8 @@ OCTAVE_API double rand::poisson<double> (double a)
 }
 
 template <>
-OCTAVE_API double rand::gamma<double> (double a)
+OCTAVE_API double
+rand::gamma<double> (double a)
 {
   double retval;
 
@@ -452,7 +471,8 @@ OCTAVE_API float rand::gamma<float> (float a)
 }
 
 template <typename T>
-T rand::do_scalar (T a)
+T
+rand::do_scalar (T a)
 {
   T retval = 0;
 
@@ -516,7 +536,8 @@ rand::do_vector<double> (octave_idx_type, double);
 template OCTAVE_API Array<float>
 rand::do_vector<float> (octave_idx_type, float);
 
-NDArray rand::do_nd_array (const dim_vector& dims, double a)
+NDArray
+rand::do_nd_array (const dim_vector& dims, double a)
 {
   NDArray retval;
 
@@ -530,7 +551,8 @@ NDArray rand::do_nd_array (const dim_vector& dims, double a)
   return retval;
 }
 
-FloatNDArray rand::do_float_nd_array (const dim_vector& dims, float a)
+FloatNDArray
+rand::do_float_nd_array (const dim_vector& dims, float a)
 {
   FloatNDArray retval;
 
@@ -549,7 +571,8 @@ FloatNDArray rand::do_float_nd_array (const dim_vector& dims, float a)
 // technique used below will cycle monthly, but it does seem to
 // work ok to give fairly different seeds each time Octave starts.
 
-void rand::initialize_ranlib_generators ()
+void
+rand::initialize_ranlib_generators ()
 {
   sys::localtime tm;
   int stored_distribution = m_current_distribution;
@@ -569,7 +592,8 @@ void rand::initialize_ranlib_generators ()
   F77_FUNC (setcgn, SETCGN) (stored_distribution);
 }
 
-void rand::initialize_mersenne_twister ()
+void
+rand::initialize_mersenne_twister ()
 {
   uint32NDArray s;
 
@@ -598,7 +622,8 @@ void rand::initialize_mersenne_twister ()
   set_internal_state (m_rand_states[m_current_distribution]);
 }
 
-uint32NDArray rand::get_internal_state ()
+uint32NDArray
+rand::get_internal_state ()
 {
   uint32NDArray s (dim_vector (MT_N + 1, 1));
 
@@ -607,12 +632,14 @@ uint32NDArray rand::get_internal_state ()
   return s;
 }
 
-void rand::save_state ()
+void
+rand::save_state ()
 {
   m_rand_states[m_current_distribution] = get_internal_state ();
 }
 
-int rand::get_dist_id (const std::string& d)
+int
+rand::get_dist_id (const std::string& d)
 {
   int retval = unknown_dist;
 
@@ -633,7 +660,8 @@ int rand::get_dist_id (const std::string& d)
   return retval;
 }
 
-void rand::set_internal_state (const uint32NDArray& s)
+void
+rand::set_internal_state (const uint32NDArray& s)
 {
   octave_idx_type len = s.numel ();
 
@@ -645,7 +673,8 @@ void rand::set_internal_state (const uint32NDArray& s)
     init_mersenne_twister (sdata, len);
 }
 
-void rand::switch_to_generator (int dist)
+void
+rand::switch_to_generator (int dist)
 {
   if (dist != m_current_distribution)
     {
@@ -655,7 +684,8 @@ void rand::switch_to_generator (int dist)
     }
 }
 
-void rand::fill (octave_idx_type len, double *v, double a)
+void
+rand::fill (octave_idx_type len, double *v, double a)
 {
   if (len < 1)
     return;
@@ -723,7 +753,8 @@ void rand::fill (octave_idx_type len, double *v, double a)
   return;
 }
 
-void rand::fill (octave_idx_type len, float *v, float a)
+void
+rand::fill (octave_idx_type len, float *v, float a)
 {
   if (len < 1)
     return;

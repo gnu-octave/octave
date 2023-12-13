@@ -4167,7 +4167,8 @@ opengl_renderer::draw_texture_image (const octave_value cdata, Matrix x,
 #endif
 }
 
-void opengl_renderer::draw (const Matrix& hlist, bool toplevel)
+void
+opengl_renderer::draw (const Matrix& hlist, bool toplevel)
 {
   int len = hlist.numel ();
 
@@ -4768,7 +4769,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
         m_glfcns.glBegin (GL_POLYGON);
         for (double ang = 0; ang < 2*M_PI; ang += ang_step)
-          m_glfcns.glVertex2d (sz/6* cos (ang), sz/6*sin (ang));
+          m_glfcns.glVertex2d (sz/6*cos (ang), sz/6*sin (ang));
         m_glfcns.glEnd ();
       }
       break;
@@ -4790,7 +4791,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
 
         m_glfcns.glBegin (filled ? GL_POLYGON : GL_LINE_LOOP);
         for (double ang = 0; ang < 2*M_PI; ang += ang_step)
-          m_glfcns.glVertex2d (sz/2* cos (ang), sz/2*sin (ang));
+          m_glfcns.glVertex2d (sz/2*cos (ang), sz/2*sin (ang));
         m_glfcns.glEnd ();
       }
       break;
@@ -4840,7 +4841,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
           {
             ang = (-0.5 + double (i+1) / 5) * M_PI;
             r = 1.0 - (dr * fmod (double (i+1), 2.0));
-            m_glfcns.glVertex2d (sz/2*r* cos (ang), sz/2*r*sin (ang));
+            m_glfcns.glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
           }
         m_glfcns.glEnd ();
       }
@@ -4855,7 +4856,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
           {
             ang = (0.5 + double (i+1) / 6.0) * M_PI;
             r = 1.0 - (dr * fmod (double (i+1), 2.0));
-            m_glfcns.glVertex2d (sz/2*r* cos (ang), sz/2*r*sin (ang));
+            m_glfcns.glVertex2d (sz/2*r*cos (ang), sz/2*r*sin (ang));
           }
         m_glfcns.glEnd ();
       }

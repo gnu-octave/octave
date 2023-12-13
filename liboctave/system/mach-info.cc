@@ -57,33 +57,38 @@ static float_format get_float_format ()
     }
 }
 
-static bool is_big_endian ()
+static bool
+is_big_endian ()
 {
   return octave_is_big_endian ();
 }
 
-float_format native_float_format ()
+float_format
+native_float_format ()
 {
   static float_format fmt = get_float_format ();
 
   return fmt;
 }
 
-bool words_big_endian ()
+bool
+words_big_endian ()
 {
   static bool big_endian = is_big_endian ();
 
   return big_endian;
 }
 
-bool words_little_endian ()
+bool
+words_little_endian ()
 {
   static bool little_endian = ! is_big_endian ();
 
   return little_endian;
 }
 
-float_format string_to_float_format (const std::string& s)
+float_format
+string_to_float_format (const std::string& s)
 {
   float_format retval = flt_fmt_unknown;
 
@@ -102,7 +107,8 @@ float_format string_to_float_format (const std::string& s)
   return retval;
 }
 
-std::string float_format_as_string (float_format flt_fmt)
+std::string
+float_format_as_string (float_format flt_fmt)
 {
   std::string retval = "unknown";
 

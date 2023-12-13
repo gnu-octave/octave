@@ -291,7 +291,8 @@ variable_dock_widget::handle_focus_change (QWidget *old, QWidget *now)
     }
 }
 
-void variable_dock_widget::resizeEvent (QResizeEvent *)
+void
+variable_dock_widget::resizeEvent (QResizeEvent *)
 {
   if (m_frame)
     m_frame->resize (size ());
@@ -1063,7 +1064,8 @@ HoverToolButton::HoverToolButton (QWidget *parent)
   installEventFilter (this);
 }
 
-bool HoverToolButton::eventFilter (QObject *obj, QEvent *ev)
+bool
+HoverToolButton::eventFilter (QObject *obj, QEvent *ev)
 {
   if (ev->type () == QEvent::HoverEnter)
     emit hovered_signal ();
@@ -1079,7 +1081,8 @@ ReturnFocusToolButton::ReturnFocusToolButton (QWidget *parent)
   installEventFilter (this);
 }
 
-bool ReturnFocusToolButton::eventFilter (QObject *obj, QEvent *ev)
+bool
+ReturnFocusToolButton::eventFilter (QObject *obj, QEvent *ev)
 {
 
   if (ev->type () == QEvent::MouseButtonRelease && isDown ())
@@ -1103,7 +1106,8 @@ ReturnFocusMenu::ReturnFocusMenu (QWidget *parent)
   installEventFilter (this);
 }
 
-bool ReturnFocusMenu::eventFilter (QObject *obj, QEvent *ev)
+bool
+ReturnFocusMenu::eventFilter (QObject *obj, QEvent *ev)
 {
   if (ev->type () == QEvent::MouseButtonRelease && underMouse ())
     {
@@ -1175,7 +1179,8 @@ variable_editor::variable_editor (QWidget *p)
     make_window ();
 }
 
-void variable_editor::focusInEvent (QFocusEvent *ev)
+void
+variable_editor::focusInEvent (QFocusEvent *ev)
 {
   octave_dock_widget::focusInEvent (ev);
 
@@ -1222,7 +1227,7 @@ variable_editor::~variable_editor ()
   for (long long int i = 0; i < m_variables.size (); i++)
     {
       if (m_variables.at (i) != nullptr)
-        disconnect (m_variables.at (i), SIGNAL (destroyed (QObject*)), 0, 0);
+        disconnect (m_variables.at (i), SIGNAL (destroyed (QObject *)), 0, 0);
     }
 }
 
@@ -1620,7 +1625,8 @@ variable_editor::levelUp ()
 
 // Also updates the font.
 
-void variable_editor::update_colors ()
+void
+variable_editor::update_colors ()
 {
   m_stylesheet = "";
 

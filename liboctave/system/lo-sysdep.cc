@@ -184,7 +184,8 @@ get_dirlist (const std::string& dirname, string_vector& dirlist,
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-static bool check_fseek_ftell_workaround_needed (bool set_nonbuffered_mode)
+static bool
+check_fseek_ftell_workaround_needed (bool set_nonbuffered_mode)
 {
   // To check whether the workaround is needed:
   //
@@ -432,7 +433,8 @@ dir_exists (const std::string& dirname, std::string& msg)
 
 // Return TRUE if FILE1 and FILE2 refer to the same (physical) file.
 
-bool same_file (const std::string& file1, const std::string& file2)
+bool
+same_file (const std::string& file1, const std::string& file2)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
 

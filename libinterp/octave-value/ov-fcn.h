@@ -340,7 +340,7 @@ public:
   bool has_function_cache () const { return true; }
 #endif
 
- protected:
+protected:
 
   octave_function (const std::string& nm,
                    const std::string& ds = "")

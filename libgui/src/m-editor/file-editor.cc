@@ -81,7 +81,8 @@ file_editor_tab_widget::file_editor_tab_widget (QWidget *p, file_editor *fe)
   setMovable (true);
 }
 
-tab_bar *file_editor_tab_widget::get_tab_bar () const
+tab_bar *
+file_editor_tab_widget::get_tab_bar () const
 {
   return qobject_cast<tab_bar *> (tabBar ());
 }
@@ -128,7 +129,8 @@ file_editor::file_editor (QWidget *p)
   setFocusPolicy (Qt::StrongFocus);
 }
 
-void file_editor::focusInEvent (QFocusEvent *e)
+void
+file_editor::focusInEvent (QFocusEvent *e)
 {
   // The focus is transferred to the active tab and its edit
   // area in this focus in event handler. This is to avoid
@@ -142,7 +144,8 @@ void file_editor::focusInEvent (QFocusEvent *e)
 
 // insert global actions, that should also be displayed in the editor window,
 // into the editor's menu and/or toolbar
-void file_editor::insert_global_actions (QList<QAction *> shared_actions)
+void
+file_editor::insert_global_actions (QList<QAction *> shared_actions)
 {
   // actions/menus that have to be added to the toolbar or the menu
   QAction *open_action = shared_actions.at (OPEN_ACTION);
@@ -177,7 +180,8 @@ void file_editor::insert_global_actions (QList<QAction *> shared_actions)
   m_edit_menu->insertAction (m_find_action, m_find_files_action);
 }
 
-void file_editor::handle_enter_debug_mode ()
+void
+file_editor::handle_enter_debug_mode ()
 {
   gui_settings settings;
 
@@ -192,7 +196,8 @@ void file_editor::handle_enter_debug_mode ()
   emit enter_debug_mode_signal ();
 }
 
-void file_editor::handle_exit_debug_mode ()
+void
+file_editor::handle_exit_debug_mode ()
 {
   gui_settings settings;
   settings.set_shortcut (m_run_action, sc_edit_run_run_file);
@@ -201,7 +206,8 @@ void file_editor::handle_exit_debug_mode ()
   emit exit_debug_mode_signal ();
 }
 
-void file_editor::check_actions ()
+void
+file_editor::check_actions ()
 {
   // Do not include shared actions not only related to the editor
   bool have_tabs = m_tab_widget->count () > 0;
@@ -252,7 +258,8 @@ void file_editor::check_actions ()
 // 1. At startup, when the editor has to be (really) visible
 //    (Here we can not use the visibility changed signal)
 // 2. When the editor becomes visible when octave is running
-void file_editor::empty_script (bool startup, bool visible)
+void
+file_editor::empty_script (bool startup, bool visible)
 {
 
   if (startup)
@@ -316,7 +323,8 @@ void file_editor::empty_script (bool startup, bool visible)
   request_new_file ("");
 }
 
-void file_editor::restore_session ()
+void
+file_editor::restore_session ()
 {
   gui_settings settings;
 
@@ -355,7 +363,8 @@ void file_editor::restore_session ()
         continue;
 
       session_data item = { 0, -1, sessionFileNames.at (n),
-                            QString (), QString (), QString ()};
+                            QString (), QString (), QString ()
+                          };
       if (do_lines)
         item.line = session_lines.at (n).toInt ();
       if (do_index)
@@ -377,7 +386,8 @@ void file_editor::restore_session ()
                        s_data.at (n).bookmarks);
 }
 
-void file_editor::activate ()
+void
+file_editor::activate ()
 {
   if (m_no_focus)
     return;  // No focus for the editor if external open/close request
@@ -388,7 +398,8 @@ void file_editor::activate ()
   reset_focus ();
 }
 
-void file_editor::set_focus (QWidget *fet)
+void
+file_editor::set_focus (QWidget *fet)
 {
   setFocus ();
 
@@ -399,7 +410,8 @@ void file_editor::set_focus (QWidget *fet)
 
 // function enabling/disabling the menu accelerators depending on the
 // focus of the editor
-void file_editor::enable_menu_shortcuts (bool enable)
+void
+file_editor::enable_menu_shortcuts (bool enable)
 {
   // Hide or show the find dialog together with the focus of the
   // editor widget depending on the overall visibility of the find dialog.
@@ -438,7 +450,8 @@ void file_editor::enable_menu_shortcuts (bool enable)
 // Save open files for restoring in next session
 // (even if last session will not be restored next time)
 // together with encoding and the tab index
-void file_editor::save_session ()
+void
+file_editor::save_session ()
 {
   gui_settings settings;
 
@@ -481,7 +494,8 @@ void file_editor::save_session ()
   settings.sync ();
 }
 
-bool file_editor::check_closing ()
+bool
+file_editor::check_closing ()
 {
   // When the application or the editor is closing and the user wants to
   // close all files, in the latter case all editor tabs are checked whether
@@ -531,7 +545,8 @@ bool file_editor::check_closing ()
   return true;
 }
 
-void file_editor::handle_tab_ready_to_close ()
+void
+file_editor::handle_tab_ready_to_close ()
 {
   if (m_closing_canceled)
     return;
@@ -566,7 +581,8 @@ void file_editor::handle_tab_ready_to_close ()
   setVisible (vis);
 }
 
-void file_editor::request_new_file (const QString& commands)
+void
+file_editor::request_new_file (const QString& commands)
 {
   // Custom editor? If yes, we can only call the editor without passing
   // some initial contents and even without being sure a new file is opened
@@ -583,14 +599,16 @@ void file_editor::request_new_file (const QString& commands)
   activate ();                              // focus editor and new tab
 }
 
-void file_editor::request_close_file (bool)
+void
+file_editor::request_close_file (bool)
 {
   file_editor_tab *editor_tab
     = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
   editor_tab->conditional_close ();
 }
 
-void file_editor::request_close_all_files (bool)
+void
+file_editor::request_close_all_files (bool)
 {
   file_editor_tab *editor_tab;
 
@@ -602,7 +620,8 @@ void file_editor::request_close_all_files (bool)
     }
 }
 
-void file_editor::request_close_other_files (bool)
+void
+file_editor::request_close_other_files (bool)
 {
   file_editor_tab *editor_tab;
   QWidget *tabID = m_tab_widget->currentWidget ();
@@ -619,7 +638,8 @@ void file_editor::request_close_other_files (bool)
     }
 }
 
-void file_editor::copy_full_file_path (bool)
+void
+file_editor::copy_full_file_path (bool)
 {
   file_editor_tab *editor_tab
     = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
@@ -629,7 +649,8 @@ void file_editor::copy_full_file_path (bool)
 }
 
 // open a file from the mru list
-void file_editor::request_mru_open_file (QAction *action)
+void
+file_editor::request_mru_open_file (QAction *action)
 {
   if (action)
     {
@@ -638,49 +659,58 @@ void file_editor::request_mru_open_file (QAction *action)
     }
 }
 
-void file_editor::request_print_file (bool)
+void
+file_editor::request_print_file (bool)
 {
   emit fetab_print_file (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_redo (bool)
+void
+file_editor::request_redo (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_REDO);
 }
 
-void file_editor::request_cut (bool)
+void
+file_editor::request_cut (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_CUT);
 }
 
-void file_editor::request_context_help (bool)
+void
+file_editor::request_context_help (bool)
 {
   emit fetab_context_help (m_tab_widget->currentWidget (), false);
 }
 
-void file_editor::request_context_doc (bool)
+void
+file_editor::request_context_doc (bool)
 {
   emit fetab_context_help (m_tab_widget->currentWidget (), true);
 }
 
-void file_editor::request_context_edit (bool)
+void
+file_editor::request_context_edit (bool)
 {
   emit fetab_context_edit (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_save_file (bool)
+void
+file_editor::request_save_file (bool)
 {
   emit fetab_save_file (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_save_file_as (bool)
+void
+file_editor::request_save_file_as (bool)
 {
   emit fetab_save_file_as (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_run_file (bool)
+void
+file_editor::request_run_file (bool)
 {
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
@@ -715,166 +745,196 @@ void file_editor::request_run_file (bool)
      });
 }
 
-void file_editor::request_step_into_file ()
+void
+file_editor::request_step_into_file ()
 {
   emit fetab_run_file (m_tab_widget->currentWidget (), true);
 }
 
-void file_editor::request_context_run (bool)
+void
+file_editor::request_context_run (bool)
 {
   emit fetab_context_run (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_toggle_bookmark (bool)
+void
+file_editor::request_toggle_bookmark (bool)
 {
   emit fetab_toggle_bookmark (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_next_bookmark (bool)
+void
+file_editor::request_next_bookmark (bool)
 {
   emit fetab_next_bookmark (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_previous_bookmark (bool)
+void
+file_editor::request_previous_bookmark (bool)
 {
   emit fetab_previous_bookmark (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_remove_bookmark (bool)
+void
+file_editor::request_remove_bookmark (bool)
 {
   emit fetab_remove_bookmark (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_move_match_brace (bool)
+void
+file_editor::request_move_match_brace (bool)
 {
   emit fetab_move_match_brace (m_tab_widget->currentWidget (), false);
 }
 
-void file_editor::request_sel_match_brace (bool)
+void
+file_editor::request_sel_match_brace (bool)
 {
   emit fetab_move_match_brace (m_tab_widget->currentWidget (), true);
 }
 
 // FIXME: What should this do with conditional breakpoints?
-void file_editor::request_toggle_breakpoint (bool)
+void
+file_editor::request_toggle_breakpoint (bool)
 {
   emit fetab_toggle_breakpoint (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_next_breakpoint (bool)
+void
+file_editor::request_next_breakpoint (bool)
 {
   emit fetab_next_breakpoint (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_previous_breakpoint (bool)
+void
+file_editor::request_previous_breakpoint (bool)
 {
   emit fetab_previous_breakpoint (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_remove_breakpoint (bool)
+void
+file_editor::request_remove_breakpoint (bool)
 {
   emit fetab_remove_all_breakpoints (m_tab_widget->currentWidget ());
 }
 
 // slots for Edit->Commands actions
-void file_editor::request_delete_start_word (bool)
+void
+file_editor::request_delete_start_word (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELWORDLEFT);
 }
 
-void file_editor::request_delete_end_word (bool)
+void
+file_editor::request_delete_end_word (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELWORDRIGHT);
 }
 
-void file_editor::request_delete_start_line (bool)
+void
+file_editor::request_delete_start_line (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELLINELEFT);
 }
 
-void file_editor::request_delete_end_line (bool)
+void
+file_editor::request_delete_end_line (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELLINERIGHT);
 }
 
-void file_editor::request_delete_line (bool)
+void
+file_editor::request_delete_line (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINEDELETE);
 }
 
-void file_editor::request_copy_line (bool)
+void
+file_editor::request_copy_line (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINECOPY);
 }
 
-void file_editor::request_cut_line (bool)
+void
+file_editor::request_cut_line (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINECUT);
 }
 
-void file_editor::request_duplicate_selection (bool)
+void
+file_editor::request_duplicate_selection (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_SELECTIONDUPLICATE);
 }
 
-void file_editor::request_transpose_line (bool)
+void
+file_editor::request_transpose_line (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINETRANSPOSE);
 }
 
-void file_editor::request_comment_selected_text (bool)
+void
+file_editor::request_comment_selected_text (bool)
 {
   emit fetab_comment_selected_text (m_tab_widget->currentWidget (), false);
 }
 
-void file_editor::request_uncomment_selected_text (bool)
+void
+file_editor::request_uncomment_selected_text (bool)
 {
   emit fetab_uncomment_selected_text (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_comment_var_selected_text (bool)
+void
+file_editor::request_comment_var_selected_text (bool)
 {
   emit fetab_comment_selected_text (m_tab_widget->currentWidget (), true);
 }
 
 // slots for Edit->Format actions
-void file_editor::request_upper_case (bool)
+void
+file_editor::request_upper_case (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_UPPERCASE);
 }
 
-void file_editor::request_lower_case (bool)
+void
+file_editor::request_lower_case (bool)
 {
   emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LOWERCASE);
 }
 
-void file_editor::request_indent_selected_text (bool)
+void
+file_editor::request_indent_selected_text (bool)
 {
   emit fetab_indent_selected_text (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_unindent_selected_text (bool)
+void
+file_editor::request_unindent_selected_text (bool)
 {
   emit fetab_unindent_selected_text (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_smart_indent_line_or_selected_text ()
+void
+file_editor::request_smart_indent_line_or_selected_text ()
 {
   emit fetab_smart_indent_line_or_selected_text (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_conv_eol_windows (bool)
+void
+file_editor::request_conv_eol_windows (bool)
 {
   emit fetab_convert_eol (m_tab_widget->currentWidget (),
                           QsciScintilla::EolWindows);
@@ -886,14 +946,16 @@ file_editor::request_conv_eol_unix (bool)
                           QsciScintilla::EolUnix);
 }
 
-void file_editor::request_conv_eol_mac (bool)
+void
+file_editor::request_conv_eol_mac (bool)
 {
   emit fetab_convert_eol (m_tab_widget->currentWidget (),
                           QsciScintilla::EolMac);
 }
 
 // Slot for initially creating and showing the find dialog
-void file_editor::request_find (bool)
+void
+file_editor::request_find (bool)
 {
   // Create the dialog
   find_create ();
@@ -909,7 +971,8 @@ void file_editor::request_find (bool)
 
 // This method creates the find dialog.
 
-void file_editor::find_create ()
+void
+file_editor::find_create ()
 {
   if (m_find_dialog)
     m_find_dialog->close ();
@@ -959,31 +1022,36 @@ void file_editor::find_create ()
   m_find_dialog->set_visible (true);
 }
 
-void file_editor::request_find_next (bool)
+void
+file_editor::request_find_next (bool)
 {
   if (m_find_dialog)
     m_find_dialog->find_next ();
 }
 
-void file_editor::request_find_previous (bool)
+void
+file_editor::request_find_previous (bool)
 {
   if (m_find_dialog)
     m_find_dialog->find_prev ();
 }
 
-void file_editor::request_goto_line (bool)
+void
+file_editor::request_goto_line (bool)
 {
   emit fetab_goto_line (m_tab_widget->currentWidget ());
 }
 
-void file_editor::request_completion (bool)
+void
+file_editor::request_completion (bool)
 {
   emit fetab_completion (m_tab_widget->currentWidget ());
 }
 
-void file_editor::handle_file_name_changed (const QString& fname,
-                                            const QString& tip,
-                                            bool modified)
+void
+file_editor::handle_file_name_changed (const QString& fname,
+                                       const QString& tip,
+                                       bool modified)
 {
   QObject *fileEditorTab = sender ();
   if (fileEditorTab)
@@ -1009,7 +1077,8 @@ void file_editor::handle_file_name_changed (const QString& fname,
     }
 }
 
-void file_editor::handle_tab_close_request (int index)
+void
+file_editor::handle_tab_close_request (int index)
 {
   file_editor_tab *editor_tab
     = static_cast<file_editor_tab *> (m_tab_widget->widget (index));
@@ -1042,15 +1111,17 @@ file_editor::handle_tab_remove_request ()
 }
 
 // context menu of edit area
-void file_editor::active_tab_changed (int index)
+void
+file_editor::active_tab_changed (int index)
 {
   emit fetab_change_request (m_tab_widget->widget (index));
   activate ();
 }
 
-void file_editor::handle_editor_state_changed (bool copy_available,
-                                               bool is_octave_file,
-                                               bool is_modified)
+void
+file_editor::handle_editor_state_changed (bool copy_available,
+    bool is_octave_file,
+    bool is_modified)
 {
   // In case there is some scenario where traffic could be coming from
   // all the file editor tabs, just process info from the current active tab.
@@ -1075,8 +1146,9 @@ void file_editor::handle_editor_state_changed (bool copy_available,
   m_undo_action_enabled = m_undo_action->isEnabled ();
 }
 
-void file_editor::handle_mru_add_file (const QString& file_name,
-                                       const QString& encoding)
+void
+file_editor::handle_mru_add_file (const QString& file_name,
+                                  const QString& encoding)
 {
   int index;
   while ((index = m_mru_files.indexOf (file_name)) >= 0)
@@ -1091,8 +1163,9 @@ void file_editor::handle_mru_add_file (const QString& file_name,
   mru_menu_update ();
 }
 
-void file_editor::check_conflict_save (const QString& saveFileName,
-                                       bool remove_on_success)
+void
+file_editor::check_conflict_save (const QString& saveFileName,
+                                  bool remove_on_success)
 {
   // Check whether this file is already open in the editor.
   file_editor_tab *tab = find_tab_widget (saveFileName);
@@ -1151,14 +1224,16 @@ void file_editor::check_conflict_save (const QString& saveFileName,
   emit fetab_save_file (saveFileWidget, saveFileName, remove_on_success);
 }
 
-void file_editor::handle_insert_debugger_pointer_request (const QString& file,
-                                                          int line)
+void
+file_editor::handle_insert_debugger_pointer_request (const QString& file,
+    int line)
 {
   request_open_file (file, QString (), line, true); // default encoding
 }
 
-void file_editor::handle_delete_debugger_pointer_request (const QString& file,
-                                                          int line)
+void
+file_editor::handle_delete_debugger_pointer_request (const QString& file,
+    int line)
 {
   if (! file.isEmpty ())
     {
@@ -1177,23 +1252,26 @@ void file_editor::handle_delete_debugger_pointer_request (const QString& file,
     }
 }
 
-void file_editor::handle_update_breakpoint_marker_request (bool insert,
-                                                           const QString& file,
-                                                           int line,
-                                                           const QString& cond)
+void
+file_editor::handle_update_breakpoint_marker_request (bool insert,
+    const QString& file,
+    int line,
+    const QString& cond)
 {
   request_open_file (file, QString (), line, false, true, insert, cond);
 }
 
-void file_editor::handle_edit_file_request (const QString& file)
+void
+file_editor::handle_edit_file_request (const QString& file)
 {
   request_open_file (file);
 }
 
 // Slot used for signals indicating that a file was changed/renamed or
 // is going to be deleted/renamed
-void file_editor::handle_file_remove (const QString& old_name,
-                                      const QString& new_name)
+void
+file_editor::handle_file_remove (const QString& old_name,
+                                 const QString& new_name)
 {
   // Clear old list of file data and declare a structure for file data
   m_tmp_closed_files.clear ();
@@ -1255,7 +1333,8 @@ void file_editor::handle_file_remove (const QString& old_name,
 }
 
 // Slot for signal indicating that a file was renamed
-void file_editor::handle_file_renamed (bool load_new)
+void
+file_editor::handle_file_renamed (bool load_new)
 {
   m_no_focus = true;  // Remember for not focussing editor
 
@@ -1286,7 +1365,8 @@ void file_editor::handle_file_renamed (bool load_new)
   m_tmp_closed_files.clear ();
 }
 
-void file_editor::notice_settings ()
+void
+file_editor::notice_settings ()
 {
   gui_settings settings;
 
@@ -1393,7 +1473,8 @@ void file_editor::notice_settings ()
   emit fetab_settings_changed ();
 }
 
-void file_editor::set_shortcuts ()
+void
+file_editor::set_shortcuts ()
 {
   // Shortcuts also available in the main window, as well as the related
   // shortcuts, are defined in main_window and added to the editor
@@ -1487,7 +1568,8 @@ void file_editor::set_shortcuts ()
 // This slot is a reimplementation of the virtual slot in octave_dock_widget.
 // We need this for creating an empty script when the editor has no open
 // files and is made visible.
-void file_editor::handle_visibility (bool visible)
+void
+file_editor::handle_visibility (bool visible)
 {
   octave_dock_widget::handle_visibility (visible);
 
@@ -1506,7 +1588,8 @@ void file_editor::handle_visibility (bool visible)
 
 // This slot is a reimplementation of the virtual slot in octave_dock_widget.
 // We need this for updating the parent of the find dialog
-void file_editor::toplevel_change (bool)
+void
+file_editor::toplevel_change (bool)
 {
   if (m_find_dialog)
     {
@@ -1519,34 +1602,39 @@ void file_editor::toplevel_change (bool)
     }
 }
 
-void file_editor::update_octave_directory (const QString& dir)
+void
+file_editor::update_octave_directory (const QString& dir)
 {
   m_ced = dir;
   emit fetab_set_directory (m_ced);  // for save dialog
 }
 
-void file_editor::copyClipboard ()
+void
+file_editor::copyClipboard ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_COPY);
 }
 
-void file_editor::pasteClipboard ()
+void
+file_editor::pasteClipboard ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_PASTE);
 }
 
-void file_editor::selectAll ()
+void
+file_editor::selectAll ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_SELECTALL);
 }
 
-void file_editor::do_undo ()
+void
+file_editor::do_undo ()
 {
   if (editor_tab_has_focus ())
     emit fetab_scintilla_command (m_tab_widget->currentWidget (),
@@ -1555,12 +1643,13 @@ void file_editor::do_undo ()
 
 // Open a file, if not already open, and mark the current execution location
 // and/or a breakpoint with condition cond.
-void file_editor::request_open_file (const QString& openFileName,
-                                     const QString& encoding,
-                                     int line, bool debug_pointer,
-                                     bool breakpoint_marker, bool insert,
-                                     const QString& cond, int index,
-                                     const QString& bookmarks)
+void
+file_editor::request_open_file (const QString& openFileName,
+                                const QString& encoding,
+                                int line, bool debug_pointer,
+                                bool breakpoint_marker, bool insert,
+                                const QString& cond, int index,
+                                const QString& bookmarks)
 {
   gui_settings settings;
 
@@ -1761,72 +1850,86 @@ void file_editor::request_open_file (const QString& openFileName,
     }
 }
 
-void file_editor::request_preferences (bool)
+void
+file_editor::request_preferences (bool)
 {
   emit request_settings_dialog ("editor");
 }
 
-void file_editor::request_styles_preferences (bool)
+void
+file_editor::request_styles_preferences (bool)
 {
   emit request_settings_dialog ("editor_styles");
 }
 
-void file_editor::show_line_numbers (bool)
+void
+file_editor::show_line_numbers (bool)
 {
   toggle_preference (ed_show_line_numbers);
 }
 
-void file_editor::show_white_space (bool)
+void
+file_editor::show_white_space (bool)
 {
   toggle_preference (ed_show_white_space);
 }
 
-void file_editor::show_eol_chars (bool)
+void
+file_editor::show_eol_chars (bool)
 {
   toggle_preference (ed_show_eol_chars);
 }
 
-void file_editor::show_indent_guides (bool)
+void
+file_editor::show_indent_guides (bool)
 {
   toggle_preference (ed_show_indent_guides);
 }
 
-void file_editor::show_long_line (bool)
+void
+file_editor::show_long_line (bool)
 {
   toggle_preference (ed_long_line_marker);
 }
 
-void file_editor::show_toolbar (bool)
+void
+file_editor::show_toolbar (bool)
 {
   toggle_preference (ed_show_toolbar);
 }
 
-void file_editor::show_statusbar (bool)
+void
+file_editor::show_statusbar (bool)
 {
   toggle_preference (ed_show_edit_status_bar);
 }
 
-void file_editor::show_hscrollbar (bool)
+void
+file_editor::show_hscrollbar (bool)
 {
   toggle_preference (ed_show_hscroll_bar);
 }
 
-void file_editor::zoom_in (bool)
+void
+file_editor::zoom_in (bool)
 {
   emit fetab_zoom_in (m_tab_widget->currentWidget ());
 }
 
-void file_editor::zoom_out (bool)
+void
+file_editor::zoom_out (bool)
 {
   emit fetab_zoom_out (m_tab_widget->currentWidget ());
 }
 
-void file_editor::zoom_normal (bool)
+void
+file_editor::zoom_normal (bool)
 {
   emit fetab_zoom_normal (m_tab_widget->currentWidget ());
 }
 
-void file_editor::create_context_menu (QMenu *menu)
+void
+file_editor::create_context_menu (QMenu *menu)
 {
   // remove all standard actions from scintilla
   QList<QAction *> all_actions = menu->actions ();
@@ -1853,7 +1956,8 @@ void file_editor::create_context_menu (QMenu *menu)
   menu->addAction (m_run_selection_action);
 }
 
-void file_editor::edit_status_update (bool undo, bool redo)
+void
+file_editor::edit_status_update (bool undo, bool redo)
 {
   if (m_undo_action)
     m_undo_action->setEnabled (undo);
@@ -1861,7 +1965,8 @@ void file_editor::edit_status_update (bool undo, bool redo)
 }
 
 // handler for the close event
-void file_editor::closeEvent (QCloseEvent *e)
+void
+file_editor::closeEvent (QCloseEvent *e)
 {
   gui_settings settings;
 
@@ -1887,7 +1992,8 @@ void file_editor::closeEvent (QCloseEvent *e)
   octave_dock_widget::closeEvent (e);
 }
 
-void file_editor::dragEnterEvent (QDragEnterEvent *e)
+void
+file_editor::dragEnterEvent (QDragEnterEvent *e)
 {
   if (e->mimeData ()->hasUrls ())
     {
@@ -1895,7 +2001,8 @@ void file_editor::dragEnterEvent (QDragEnterEvent *e)
     }
 }
 
-void file_editor::dropEvent (QDropEvent *e)
+void
+file_editor::dropEvent (QDropEvent *e)
 {
   if (e->mimeData ()->hasUrls ())
     {
@@ -1904,7 +2011,8 @@ void file_editor::dropEvent (QDropEvent *e)
     }
 }
 
-bool file_editor::is_editor_console_tabbed ()
+bool
+file_editor::is_editor_console_tabbed ()
 {
   // FIXME: is there a way to do this job that doesn't require casting
   // the parent to a main_window object?
@@ -1927,7 +2035,8 @@ bool file_editor::is_editor_console_tabbed ()
   return false;
 }
 
-void file_editor::construct ()
+void
+file_editor::construct ()
 {
   QWidget *editor_widget = new QWidget (this);
 
@@ -2417,7 +2526,8 @@ void file_editor::construct ()
 }
 
 // Slot when autocompletion list was cancelled
-void file_editor::handle_autoc_cancelled ()
+void
+file_editor::handle_autoc_cancelled ()
 {
   // List was cancelled but somehow still active and blocking the
   // edit area from accepting shortcuts. Only after another keypress
@@ -2441,7 +2551,8 @@ void file_editor::handle_autoc_cancelled ()
     qsci->undo ();
 }
 
-file_editor_tab *file_editor::reset_focus ()
+file_editor_tab *
+file_editor::reset_focus ()
 {
   // Reset the focus of the tab and the related edit area
   file_editor_tab *f
@@ -2650,8 +2761,9 @@ file_editor::make_file_editor_tab (const QString& directory)
   return f;
 }
 
-void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
-                                       int index)
+void
+file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
+                                  int index)
 {
   if (index == -1)
     m_tab_widget->addTab (f, fn);
@@ -2663,7 +2775,8 @@ void file_editor::add_file_editor_tab (file_editor_tab *f, const QString& fn,
   check_actions ();
 }
 
-void file_editor::mru_menu_update ()
+void
+file_editor::mru_menu_update ()
 {
   int num_files = qMin (m_mru_files.size (), int (MaxMRUFiles));
 
@@ -2702,14 +2815,15 @@ void file_editor::mru_menu_update ()
   settings.sync ();
 }
 
-bool file_editor::call_custom_editor (const QString& file_name, int line)
+bool
+file_editor::call_custom_editor (const QString& file_name, int line)
 {
   // Check if the user wants to use a custom file editor.
 
   gui_settings settings;
 
   if (settings.value (global_use_custom_editor.settings_key (),
-                       global_use_custom_editor.def ()).toBool ())
+                      global_use_custom_editor.def ()).toBool ())
     {
       // use the external editor interface for handling the call
       emit request_open_file_external (file_name, line);
@@ -2724,7 +2838,8 @@ bool file_editor::call_custom_editor (const QString& file_name, int line)
   return false;
 }
 
-void file_editor::toggle_preference (const gui_pref& preference)
+void
+file_editor::toggle_preference (const gui_pref& preference)
 {
   gui_settings settings;
 
@@ -2734,8 +2849,9 @@ void file_editor::toggle_preference (const gui_pref& preference)
 }
 
 // Function for closing the files in a removed directory
-void file_editor::handle_dir_remove (const QString& old_name,
-                                     const QString& new_name)
+void
+file_editor::handle_dir_remove (const QString& old_name,
+                                const QString& new_name)
 {
   QDir old_dir (old_name);
   removed_file_data f_data;
@@ -2802,7 +2918,8 @@ void file_editor::handle_dir_remove (const QString& old_name,
     }
 }
 
-bool file_editor::editor_tab_has_focus ()
+bool
+file_editor::editor_tab_has_focus ()
 {
   QWidget *foc_w = focusWidget ();
   if (foc_w && foc_w->inherits ("octave::octave_qscintilla"))
@@ -2811,7 +2928,8 @@ bool file_editor::editor_tab_has_focus ()
 }
 
 // Check whether this file is already open in the editor.
-file_editor_tab *file_editor::find_tab_widget (const QString& file)
+file_editor_tab *
+file_editor::find_tab_widget (const QString& file)
 {
   std::string std_file = file.toStdString ();
 
@@ -2835,16 +2953,18 @@ file_editor_tab *file_editor::find_tab_widget (const QString& file)
   return nullptr;
 }
 
-QAction * file_editor::add_action (QMenu *menu, const QString& text,
-                                   const char *member,
-                                   QWidget *receiver)
+QAction *
+file_editor::add_action (QMenu *menu, const QString& text,
+                         const char *member,
+                         QWidget *receiver)
 {
   return add_action (menu, QIcon (), text, member, receiver);
 }
 
-QAction * file_editor::add_action (QMenu *menu, const QIcon& icon,
-                                   const QString& text, const char *member,
-                                   QWidget *receiver)
+QAction *
+file_editor::add_action (QMenu *menu, const QIcon& icon,
+                         const QString& text, const char *member,
+                         QWidget *receiver)
 {
   QAction *a;
   QWidget *r = this;
@@ -2866,7 +2986,8 @@ QAction * file_editor::add_action (QMenu *menu, const QIcon& icon,
   return a;
 }
 
-QMenu* file_editor::add_menu (QMenuBar *p, QString name)
+QMenu *
+file_editor::add_menu (QMenuBar *p, QString name)
 {
   QMenu *menu = p->addMenu (name);
 

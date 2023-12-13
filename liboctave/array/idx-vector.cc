@@ -49,19 +49,22 @@ OCTAVE_NORETURN static void err_invalid_range ()
   (*current_liboctave_error_handler) ("invalid range used as index");
 }
 
-OCTAVE_NORETURN static void err_index_out_of_range ()
+OCTAVE_NORETURN static void
+err_index_out_of_range ()
 {
   (*current_liboctave_error_handler)
     ("internal error: idx_vector index out of range");
 }
 
-idx_vector::idx_vector_rep *idx_vector::nil_rep ()
+idx_vector::idx_vector_rep *
+idx_vector::nil_rep ()
 {
   static idx_vector_rep ivr;
   return &ivr;
 }
 
-Array<octave_idx_type> idx_vector::idx_base_rep::as_array ()
+Array<octave_idx_type>
+idx_vector::idx_base_rep::as_array ()
 {
   (*current_liboctave_error_handler)
     ("internal error: as_array not allowed for this index class");
@@ -94,7 +97,8 @@ idx_vector::idx_colon_rep::sort_idx (Array<octave_idx_type>&)
     ("internal error: idx_colon_rep::sort_idx");
 }
 
-std::ostream& idx_vector::idx_colon_rep::print (std::ostream& os) const
+std::ostream&
+idx_vector::idx_colon_rep::print (std::ostream& os) const
 {
   return os << ':';
 }
@@ -154,7 +158,8 @@ idx_vector::idx_range_rep::checkelem (octave_idx_type i) const
   return m_start + i*m_step;
 }
 
-idx_vector::idx_base_rep *idx_vector::idx_range_rep::sort_uniq_clone (bool)
+idx_vector::idx_base_rep *
+idx_vector::idx_range_rep::sort_uniq_clone (bool)
 {
   if (m_step < 0)
     return new idx_range_rep (m_start + (m_len - 1)*m_step, m_len, -m_step, DIRECT);
@@ -185,19 +190,22 @@ idx_vector::idx_range_rep::sort_idx (Array<octave_idx_type>& idx)
     }
 }
 
-std::ostream& idx_vector::idx_range_rep::print (std::ostream& os) const
+std::ostream&
+idx_vector::idx_range_rep::print (std::ostream& os) const
 {
   os << m_start << ':' << m_step << ':' << m_start + m_len *m_step;
   return os;
 }
 
-range<double> idx_vector::idx_range_rep::unconvert () const
+range<double>
+idx_vector::idx_range_rep::unconvert () const
 {
   return range<double>::make_n_element_range
          (static_cast<double> (m_start+1), static_cast<double> (m_step), m_len);
 }
 
-Array<octave_idx_type> idx_vector::idx_range_rep::as_array ()
+Array<octave_idx_type>
+idx_vector::idx_range_rep::as_array ()
 {
   Array<octave_idx_type> retval (dim_vector (1, m_len));
   for (octave_idx_type i = 0; i < m_len; i++)
@@ -206,7 +214,8 @@ Array<octave_idx_type> idx_vector::idx_range_rep::as_array ()
   return retval;
 }
 
-inline octave_idx_type convert_index (octave_idx_type i, octave_idx_type& ext)
+inline octave_idx_type
+convert_index (octave_idx_type i, octave_idx_type& ext)
 {
   if (i <= 0)
     err_invalid_index (i-1);
@@ -217,7 +226,8 @@ inline octave_idx_type convert_index (octave_idx_type i, octave_idx_type& ext)
   return i - 1;
 }
 
-inline octave_idx_type convert_index (double x, octave_idx_type& ext)
+inline octave_idx_type
+convert_index (double x, octave_idx_type& ext)
 {
   octave_idx_type i = static_cast<octave_idx_type> (x);
 
@@ -227,13 +237,15 @@ inline octave_idx_type convert_index (double x, octave_idx_type& ext)
   return convert_index (i, ext);
 }
 
-inline octave_idx_type convert_index (float x, octave_idx_type& ext)
+inline octave_idx_type
+convert_index (float x, octave_idx_type& ext)
 {
   return convert_index (static_cast<double> (x), ext);
 }
 
 template <typename T>
-inline octave_idx_type convert_index (octave_int<T> x, octave_idx_type& ext)
+inline octave_idx_type
+convert_index (octave_int<T> x, octave_idx_type& ext)
 {
   octave_idx_type i = octave_int<octave_idx_type> (x).value ();
 
@@ -274,17 +286,20 @@ idx_vector::idx_scalar_rep::sort_idx (Array<octave_idx_type>& idx)
   return this;
 }
 
-std::ostream& idx_vector::idx_scalar_rep::print (std::ostream& os) const
+std::ostream&
+idx_vector::idx_scalar_rep::print (std::ostream& os) const
 {
   return os << m_data;
 }
 
-double idx_vector::idx_scalar_rep::unconvert () const
+double
+idx_vector::idx_scalar_rep::unconvert () const
 {
   return m_data + 1;
 }
 
-Array<octave_idx_type> idx_vector::idx_scalar_rep::as_array ()
+Array<octave_idx_type>
+idx_vector::idx_scalar_rep::as_array ()
 {
   return Array<octave_idx_type> (dim_vector (1, 1), m_data);
 }
@@ -566,7 +581,8 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
   return new_rep.release ();
 }
 
-std::ostream& idx_vector::idx_vector_rep::print (std::ostream& os) const
+std::ostream&
+idx_vector::idx_vector_rep::print (std::ostream& os) const
 {
   os << '[';
 
@@ -581,7 +597,8 @@ std::ostream& idx_vector::idx_vector_rep::print (std::ostream& os) const
   return os;
 }
 
-Array<double> idx_vector::idx_vector_rep::unconvert () const
+Array<double>
+idx_vector::idx_vector_rep::unconvert () const
 {
   Array<double> retval (m_orig_dims);
   for (octave_idx_type i = 0; i < m_len; i++)
@@ -589,7 +606,8 @@ Array<double> idx_vector::idx_vector_rep::unconvert () const
   return retval;
 }
 
-Array<octave_idx_type> idx_vector::idx_vector_rep::as_array ()
+Array<octave_idx_type>
+idx_vector::idx_vector_rep::as_array ()
 {
   if (m_aowner)
     return *m_aowner;
@@ -653,7 +671,8 @@ idx_vector::idx_mask_rep::~idx_mask_rep ()
     delete [] m_data;
 }
 
-octave_idx_type idx_vector::idx_mask_rep::xelem (octave_idx_type n) const
+octave_idx_type
+idx_vector::idx_mask_rep::xelem (octave_idx_type n) const
 {
   if (n == m_lsti + 1)
     {
@@ -670,7 +689,8 @@ octave_idx_type idx_vector::idx_mask_rep::xelem (octave_idx_type n) const
   return m_lste;
 }
 
-octave_idx_type idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
+octave_idx_type
+idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
 {
   if (n < 0 || n >= m_len)
     err_invalid_index (n);
@@ -678,7 +698,8 @@ octave_idx_type idx_vector::idx_mask_rep::checkelem (octave_idx_type n) const
   return xelem (n);
 }
 
-std::ostream& idx_vector::idx_mask_rep::print (std::ostream& os) const
+std::ostream&
+idx_vector::idx_mask_rep::print (std::ostream& os) const
 {
   os << '[';
 
@@ -693,7 +714,8 @@ std::ostream& idx_vector::idx_mask_rep::print (std::ostream& os) const
   return os;
 }
 
-Array<bool> idx_vector::idx_mask_rep::unconvert () const
+Array<bool>
+idx_vector::idx_mask_rep::unconvert () const
 {
   if (m_aowner)
     return *m_aowner;
@@ -706,7 +728,8 @@ Array<bool> idx_vector::idx_mask_rep::unconvert () const
     }
 }
 
-Array<octave_idx_type> idx_vector::idx_mask_rep::as_array ()
+Array<octave_idx_type>
+idx_vector::idx_mask_rep::as_array ()
 {
   if (m_aowner)
     return m_aowner->find ().reshape (m_orig_dims);
@@ -746,8 +769,9 @@ idx_vector::idx_vector (const Array<bool>& bnda)
     m_rep = new idx_mask_rep (bnda, nnz);
 }
 
-bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
-                               octave_idx_type nj)
+bool
+idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
+                          octave_idx_type nj)
 {
   bool reduced = false;
 
@@ -914,8 +938,9 @@ bool idx_vector::maybe_reduce (octave_idx_type n, const idx_vector& j,
   return reduced;
 }
 
-bool idx_vector::is_cont_range (octave_idx_type n, octave_idx_type& l,
-                                octave_idx_type& u) const
+bool
+idx_vector::is_cont_range (octave_idx_type n, octave_idx_type& l,
+                           octave_idx_type& u) const
 {
   bool res = false;
 
@@ -967,7 +992,8 @@ bool idx_vector::is_cont_range (octave_idx_type n, octave_idx_type& l,
   return res;
 }
 
-octave_idx_type idx_vector::increment () const
+octave_idx_type
+idx_vector::increment () const
 {
   octave_idx_type retval = 0;
 
@@ -996,7 +1022,8 @@ octave_idx_type idx_vector::increment () const
   return retval;
 }
 
-const octave_idx_type *idx_vector::raw ()
+const octave_idx_type *
+idx_vector::raw ()
 {
   if (m_rep->idx_class () != class_vector)
     *this = idx_vector (as_array (), extent (0));
@@ -1008,7 +1035,8 @@ const octave_idx_type *idx_vector::raw ()
   return r->get_data ();
 }
 
-void idx_vector::copy_data (octave_idx_type *m_data) const
+void
+idx_vector::copy_data (octave_idx_type *m_data) const
 {
   octave_idx_type m_len = m_rep->length (0);
 
@@ -1065,7 +1093,8 @@ void idx_vector::copy_data (octave_idx_type *m_data) const
     }
 }
 
-idx_vector idx_vector::complement (octave_idx_type n) const
+idx_vector
+idx_vector::complement (octave_idx_type n) const
 {
   idx_vector retval;
   if (extent (n) > n)
@@ -1095,7 +1124,8 @@ idx_vector idx_vector::complement (octave_idx_type n) const
   return retval;
 }
 
-bool idx_vector::is_permutation (octave_idx_type n) const
+bool
+idx_vector::is_permutation (octave_idx_type n) const
 {
   bool retval = false;
 
@@ -1123,7 +1153,8 @@ bool idx_vector::is_permutation (octave_idx_type n) const
   return retval;
 }
 
-idx_vector idx_vector::inverse_permutation (octave_idx_type n) const
+idx_vector
+idx_vector::inverse_permutation (octave_idx_type n) const
 {
   assert (n == length (n));
 
@@ -1157,7 +1188,8 @@ idx_vector idx_vector::inverse_permutation (octave_idx_type n) const
   return retval;
 }
 
-idx_vector idx_vector::unmask () const
+idx_vector
+idx_vector::unmask () const
 {
   if (idx_class () == class_mask)
     {
@@ -1180,9 +1212,10 @@ idx_vector idx_vector::unmask () const
     return *this;
 }
 
-void idx_vector::unconvert (idx_class_type& iclass,
-                            double& scalar, range<double>& range,
-                            Array<double>& array, Array<bool>& mask) const
+void
+idx_vector::unconvert (idx_class_type& iclass,
+                       double& scalar, range<double>& range,
+                       Array<double>& array, Array<bool>& mask) const
 {
   iclass = idx_class ();
   switch (iclass)
@@ -1224,12 +1257,14 @@ void idx_vector::unconvert (idx_class_type& iclass,
     }
 }
 
-Array<octave_idx_type> idx_vector::as_array () const
+Array<octave_idx_type>
+idx_vector::as_array () const
 {
   return m_rep->as_array ();
 }
 
-bool idx_vector::isvector () const
+bool
+idx_vector::isvector () const
 {
   return idx_class () != class_vector || orig_dimensions ().isvector ();
 }
@@ -1244,7 +1279,8 @@ idx_vector::freeze (octave_idx_type z_len, const char *, bool resize_ok)
   return length (z_len);
 }
 
-octave_idx_type idx_vector::ones_count () const
+octave_idx_type
+idx_vector::ones_count () const
 {
   octave_idx_type n = 0;
 

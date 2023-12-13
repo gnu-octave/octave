@@ -64,91 +64,104 @@ interpreter& __get_interpreter__ ()
   return *interp;
 }
 
-dynamic_loader& __get_dynamic_loader__ ()
+dynamic_loader&
+__get_dynamic_loader__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_dynamic_loader ();
 }
 
-error_system& __get_error_system__ ()
+error_system&
+__get_error_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_error_system ();
 }
 
-gh_manager& __get_gh_manager__ ()
+gh_manager&
+__get_gh_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_gh_manager ();
 }
 
-help_system& __get_help_system__ ()
+help_system&
+__get_help_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_help_system ();
 }
 
-input_system& __get_input_system__ ()
+input_system&
+__get_input_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_input_system ();
 }
 
-output_system& __get_output_system__ ()
+output_system&
+__get_output_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_output_system ();
 }
 
-load_path& __get_load_path__ ()
+load_path&
+__get_load_path__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_load_path ();
 }
 
-load_save_system& __get_load_save_system__ ()
+load_save_system&
+__get_load_save_system__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_load_save_system ();
 }
 
-event_manager& __get_event_manager__ ()
+event_manager&
+__get_event_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_event_manager ();
 }
 
-type_info& __get_type_info__ ()
+type_info&
+__get_type_info__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_type_info ();
 }
 
-symbol_table& __get_symbol_table__ ()
+symbol_table&
+__get_symbol_table__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_symbol_table ();
 }
 
-symbol_scope __get_current_scope__ ()
+symbol_scope
+__get_current_scope__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_current_scope ();
 }
 
-symbol_scope __require_current_scope__ ()
+symbol_scope
+__require_current_scope__ ()
 {
   symbol_scope scope = __get_current_scope__ ();
 
@@ -158,42 +171,48 @@ symbol_scope __require_current_scope__ ()
   return scope;
 }
 
-tree_evaluator& __get_evaluator__ ()
+tree_evaluator&
+__get_evaluator__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_evaluator ();
 }
 
-bp_table& __get_bp_table__ ()
+bp_table&
+__get_bp_table__ ()
 {
   tree_evaluator& tw = __get_evaluator__ ();
 
   return tw.get_bp_table ();
 }
 
-child_list& __get_child_list__ ()
+child_list&
+__get_child_list__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_child_list ();
 }
 
-cdef_manager& __get_cdef_manager__ ()
+cdef_manager&
+__get_cdef_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_cdef_manager ();
 }
 
-display_info& __get_display_info__ ()
+display_info&
+__get_display_info__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 
   return interp.get_display_info ();
 }
 
-gtk_manager& __get_gtk_manager__ ()
+gtk_manager&
+__get_gtk_manager__ ()
 {
   interpreter& interp = __get_interpreter__ ();
 

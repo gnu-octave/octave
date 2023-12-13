@@ -125,12 +125,14 @@ asin (const FloatComplex& x)
     return y;
 }
 
-double frexp (double x, int *expptr)
+double
+frexp (double x, int *expptr)
 {
   return octave_frexp_wrapper (x, expptr);
 }
 
-float frexp (float x, int *expptr)
+float
+frexp (float x, int *expptr)
 {
   return octave_frexpf_wrapper (x, expptr);
 }
@@ -175,8 +177,10 @@ log2 (const FloatComplex& x, int& exp)
   return (ax != lax) ? (x / ax) * lax : x;
 }
 
-bool negative_sign (double x) { return __lo_ieee_signbit (x); }
-bool negative_sign (float x) { return __lo_ieee_float_signbit (x); }
+bool
+negative_sign (double x) { return __lo_ieee_signbit (x); }
+bool
+negative_sign (float x) { return __lo_ieee_float_signbit (x); }
 
 // Sometimes you need a large integer, but not always.
 

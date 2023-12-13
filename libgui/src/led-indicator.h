@@ -37,11 +37,11 @@ class led_indicator: public QLabel
 public:
 
   enum led_state
-    {
-      LED_STATE_NO = -1,
-      LED_STATE_INACTIVE,
-      LED_STATE_ACTIVE
-    };
+  {
+    LED_STATE_NO = -1,
+    LED_STATE_INACTIVE,
+    LED_STATE_ACTIVE
+  };
 
   led_indicator (led_state initial_state = LED_STATE_INACTIVE,
                  QWidget *parent = 0);

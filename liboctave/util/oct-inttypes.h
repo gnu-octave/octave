@@ -124,7 +124,7 @@ class octave_int_cmp_op
   {
     // Promote to int?
     static const bool s_pint = (sizeof (T1) < sizeof (int)
-                              && sizeof (T2) < sizeof (int));
+                                && sizeof (T2) < sizeof (int));
 
     static const bool s_t1sig = std::numeric_limits<T1>::is_signed;
     static const bool s_t2sig = std::numeric_limits<T2>::is_signed;
@@ -258,7 +258,8 @@ public:
                                                                 \
   template <typename xop>                                       \
   static OCTAVE_API bool external_mop (T, double)
-                                                                              OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_CMP_OPS (int64_t);
+
+  OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_CMP_OPS (int64_t);
   OCTAVE_DECLARE_EXTERNAL_LONG_DOUBLE_INT_CMP_OPS (uint64_t);
 
 #endif

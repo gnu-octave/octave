@@ -664,7 +664,8 @@ FloatComplexNDArray& operator *= (FloatComplexNDArray& a, float s)
   return a;
 }
 
-FloatComplexNDArray& operator /= (FloatComplexNDArray& a, float s)
+FloatComplexNDArray&
+operator /= (FloatComplexNDArray& a, float s)
 {
   if (a.is_shared ())
     a = a / s;

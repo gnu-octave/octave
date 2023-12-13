@@ -649,7 +649,8 @@ ComplexNDArray& operator *= (ComplexNDArray& a, double s)
   return a;
 }
 
-ComplexNDArray& operator /= (ComplexNDArray& a, double s)
+ComplexNDArray&
+operator /= (ComplexNDArray& a, double s)
 {
   if (a.is_shared ())
     return a = a / s;

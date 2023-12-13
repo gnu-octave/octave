@@ -459,47 +459,52 @@ qt_graphics_toolkit::create_object (double handle)
     }
 }
 
-void qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
-                                             const std::string& nm)
+void
+qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
+                                        const std::string& nm)
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
   gh_mgr.post_callback (h, nm);
 }
 
-void qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
-                                             const std::string& nm,
-                                             const octave_value& data)
+void
+qt_graphics_toolkit::gh_callback_event (const graphics_handle& h,
+                                        const std::string& nm,
+                                        const octave_value& data)
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
   gh_mgr.post_callback (h, nm, data);
 }
 
-void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
-                                        const std::string& nm,
-                                        const octave_value& value)
+void
+qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
+                                   const std::string& nm,
+                                   const octave_value& value)
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
   gh_mgr.post_set (h, nm, value);
 }
 
-void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
-                                        const std::string& nm,
-                                        const octave_value& value,
-                                        bool notify_toolkit)
+void
+qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
+                                   const std::string& nm,
+                                   const octave_value& value,
+                                   bool notify_toolkit)
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 
   gh_mgr.post_set (h, nm, value, notify_toolkit);
 }
 
-void qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
-                                        const std::string& nm,
-                                        const octave_value& value,
-                                        bool notify_toolkit,
-                                        bool redraw_figure)
+void
+qt_graphics_toolkit::gh_set_event (const graphics_handle& h,
+                                   const std::string& nm,
+                                   const octave_value& value,
+                                   bool notify_toolkit,
+                                   bool redraw_figure)
 {
   gh_manager& gh_mgr = m_interpreter.get_gh_manager ();
 

@@ -197,7 +197,7 @@ Array<T, Alloc>::compute_index (octave_idx_type i, octave_idx_type j) const
 template <typename T, typename Alloc>
 octave_idx_type
 Array<T, Alloc>::compute_index (octave_idx_type i, octave_idx_type j,
-                         octave_idx_type k) const
+                                octave_idx_type k) const
 {
   return ::compute_index (i, j, k, m_dimensions);
 }
@@ -266,7 +266,7 @@ Array<T, Alloc>::checkelem (octave_idx_type i, octave_idx_type j) const
 template <typename T, typename Alloc>
 typename Array<T, Alloc>::crefT
 Array<T, Alloc>::checkelem (octave_idx_type i, octave_idx_type j,
-                     octave_idx_type k) const
+                            octave_idx_type k) const
 {
   return elem (compute_index (i, j, k));
 }
@@ -1067,7 +1067,7 @@ Array<T, Alloc>::index (const octave::idx_vector& i, bool resize_ok, const T& rf
 template <typename T, typename Alloc>
 Array<T, Alloc>
 Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j,
-                 bool resize_ok, const T& rfv) const
+                        bool resize_ok, const T& rfv) const
 {
   Array<T, Alloc> tmp = *this;
   if (resize_ok)
@@ -1095,7 +1095,7 @@ Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j
 template <typename T, typename Alloc>
 Array<T, Alloc>
 Array<T, Alloc>::index (const Array<octave::idx_vector>& ia,
-                 bool resize_ok, const T& rfv) const
+                        bool resize_ok, const T& rfv) const
 {
   Array<T, Alloc> tmp = *this;
   if (resize_ok)
@@ -1173,7 +1173,7 @@ Array<T, Alloc>::assign (const octave::idx_vector& i, const Array<T, Alloc>& rhs
 template <typename T, typename Alloc>
 void
 Array<T, Alloc>::assign (const octave::idx_vector& i, const octave::idx_vector& j,
-                  const Array<T, Alloc>& rhs, const T& rfv)
+                         const Array<T, Alloc>& rhs, const T& rfv)
 {
   bool initial_dims_all_zero = m_dimensions.all_zero ();
 
@@ -1277,7 +1277,7 @@ Array<T, Alloc>::assign (const octave::idx_vector& i, const octave::idx_vector& 
 template <typename T, typename Alloc>
 void
 Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
-                  const Array<T, Alloc>& rhs, const T& rfv)
+                         const Array<T, Alloc>& rhs, const T& rfv)
 {
   int ial = ia.numel ();
 
@@ -2760,7 +2760,8 @@ Array<T, Alloc>::print_info (std::ostream& os, const std::string& prefix) const
 }
 
 template <typename T, typename Alloc>
-bool Array<T, Alloc>::optimize_dimensions (const dim_vector& dv)
+bool
+Array<T, Alloc>::optimize_dimensions (const dim_vector& dv)
 {
   bool retval = m_dimensions == dv;
   if (retval)
@@ -2770,7 +2771,8 @@ bool Array<T, Alloc>::optimize_dimensions (const dim_vector& dv)
 }
 
 template <typename T, typename Alloc>
-void Array<T, Alloc>::instantiation_guard ()
+void
+Array<T, Alloc>::instantiation_guard ()
 {
   // This guards against accidental implicit instantiations.
   // Array<T, Alloc> instances should always be explicit and use INSTANTIATE_ARRAY.

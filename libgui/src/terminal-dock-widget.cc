@@ -72,10 +72,10 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
                widget, &command_widget::insert_interpreter_output);
 
       connect (this, &terminal_dock_widget::execute_command_signal,
-              con, &console::execute_command);
+               con, &console::execute_command);
 
       connect (this, &terminal_dock_widget::new_command_line_signal,
-              con, &console::new_command_line);
+               con, &console::new_command_line);
 
       m_terminal = widget;
 #endif
@@ -141,32 +141,37 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
     make_window ();
 }
 
-bool terminal_dock_widget::has_focus () const
+bool
+terminal_dock_widget::has_focus () const
 {
   QWidget *w = widget ();
   return w->hasFocus ();
 }
 
-QTerminal * terminal_dock_widget::get_qterminal ()
+QTerminal *
+terminal_dock_widget::get_qterminal ()
 {
   return (m_experimental_terminal_widget
           ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
 }
 
 #if defined (HAVE_QSCINTILLA)
-command_widget * terminal_dock_widget::get_command_widget ()
+command_widget *
+terminal_dock_widget::get_command_widget ()
 {
   return (m_experimental_terminal_widget
           ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
 }
 #endif
 
-void terminal_dock_widget::notice_settings ()
+void
+terminal_dock_widget::notice_settings ()
 {
   emit settings_changed ();
 }
 
-void terminal_dock_widget::init_command_prompt ()
+void
+terminal_dock_widget::init_command_prompt ()
 {
   if (m_experimental_terminal_widget)
     {
@@ -178,7 +183,8 @@ void terminal_dock_widget::init_command_prompt ()
     }
 }
 
-void terminal_dock_widget::init_control_d_shortcut_behavior ()
+void
+terminal_dock_widget::init_control_d_shortcut_behavior ()
 {
   gui_settings settings;
 
@@ -210,7 +216,7 @@ void terminal_dock_widget::init_control_d_shortcut_behavior ()
               break;
             }
         }
-   }
+    }
 }
 
 OCTAVE_END_NAMESPACE(octave)

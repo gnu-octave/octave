@@ -108,9 +108,9 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
   m_replace_line_edit->completer ()->setCaseSensitivity (Qt::CaseSensitive);
   m_replace_label->setBuddy (m_replace_line_edit);
 
-   int width = QFontMetrics (m_search_line_edit->font ()).averageCharWidth();
-   m_search_line_edit->setFixedWidth (20*width);
-   m_replace_line_edit->setFixedWidth (20*width);
+  int width = QFontMetrics (m_search_line_edit->font ()).averageCharWidth();
+  m_search_line_edit->setFixedWidth (20*width);
+  m_replace_line_edit->setFixedWidth (20*width);
 
   m_case_check_box = new QCheckBox (tr ("Match &case"));
   m_from_start_check_box = new QCheckBox (tr ("Search from &start"));
@@ -203,7 +203,8 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
 }
 
 // The edit_area has changed: update relevant data of the file dialog
-void find_dialog::update_edit_area (octave_qscintilla *edit_area)
+void
+find_dialog::update_edit_area (octave_qscintilla *edit_area)
 {
   m_edit_area = edit_area;
   m_search_selection_check_box->setEnabled (edit_area->hasSelectedText ());
@@ -213,7 +214,8 @@ void find_dialog::update_edit_area (octave_qscintilla *edit_area)
            Qt::UniqueConnection);
 }
 
-void find_dialog::save_settings ()
+void
+find_dialog::save_settings ()
 {
   gui_settings settings;
 
@@ -260,7 +262,8 @@ void find_dialog::save_settings ()
   settings.sync ();
 }
 
-void find_dialog::restore_settings (QPoint ed_bottom_right)
+void
+find_dialog::restore_settings (QPoint ed_bottom_right)
 {
   gui_settings settings;
 
@@ -305,7 +308,8 @@ void find_dialog::restore_settings (QPoint ed_bottom_right)
 }
 
 // set text of "search from start" depending on backward search
-void find_dialog::handle_backward_search_changed (int backward)
+void
+find_dialog::handle_backward_search_changed (int backward)
 {
   if (backward)
     m_from_start_check_box->setText (tr ("Search from end"));
@@ -314,7 +318,8 @@ void find_dialog::handle_backward_search_changed (int backward)
 }
 
 // search text has changed: reset the search
-void find_dialog::handle_search_text_changed ()
+void
+find_dialog::handle_search_text_changed ()
 {
   // Return if nothing has changed
   if (m_search_line_edit->currentText () == m_search_line_edit->itemText (0))
@@ -327,7 +332,8 @@ void find_dialog::handle_search_text_changed ()
 }
 
 // replaced text has changed: reset the search
-void find_dialog::handle_replace_text_changed ()
+void
+find_dialog::handle_replace_text_changed ()
 {
   // Return if nothing has changed
   if (m_replace_line_edit->currentText () == m_replace_line_edit->itemText (0))
@@ -337,7 +343,8 @@ void find_dialog::handle_replace_text_changed ()
 }
 
 // Update the mru list
-void find_dialog::mru_update (QComboBox *mru)
+void
+find_dialog::mru_update (QComboBox *mru)
 {
   // Remove possible empty entries from the mru list
   int index;
@@ -363,13 +370,15 @@ void find_dialog::mru_update (QComboBox *mru)
   mru->setCurrentIndex (0);
 }
 
-void find_dialog::handle_sel_search_changed (int selected)
+void
+find_dialog::handle_sel_search_changed (int selected)
 {
   m_from_start_check_box->setEnabled (! selected);
   m_find_result_available = false;
 }
 
-void find_dialog::handle_selection_changed (bool has_selected)
+void
+find_dialog::handle_selection_changed (bool has_selected)
 {
   if (m_rep_active)
     return;
@@ -379,7 +388,8 @@ void find_dialog::handle_selection_changed (bool has_selected)
 }
 
 // initialize search text with selected text if this is in one single line
-void find_dialog::init_search_text ()
+void
+find_dialog::init_search_text ()
 {
   if (m_edit_area && m_edit_area->hasSelectedText ())
     {
@@ -398,17 +408,20 @@ void find_dialog::init_search_text ()
   m_find_next_button->setDefault (true);
 }
 
-void find_dialog::find_next ()
+void
+find_dialog::find_next ()
 {
   find (! m_backward_check_box->isChecked ());
 }
 
-void find_dialog::find_prev ()
+void
+find_dialog::find_prev ()
 {
   find (m_backward_check_box->isChecked ());
 }
 
-void find_dialog::find (bool forward)
+void
+find_dialog::find (bool forward)
 {
   if (! m_edit_area)
     return;
@@ -561,7 +574,8 @@ void find_dialog::find (bool forward)
 
 }
 
-void find_dialog::do_replace ()
+void
+find_dialog::do_replace ()
 {
   if (m_edit_area)
     {
@@ -580,7 +594,8 @@ void find_dialog::do_replace ()
     }
 }
 
-void find_dialog::replace ()
+void
+find_dialog::replace ()
 {
   if (m_edit_area)
     {
@@ -594,7 +609,8 @@ void find_dialog::replace ()
     }
 }
 
-void find_dialog::replace_all ()
+void
+find_dialog::replace_all ()
 {
   int line, col;
 
@@ -629,19 +645,22 @@ void find_dialog::replace_all ()
     }
 }
 
-void find_dialog::no_matches_message ()
+void
+find_dialog::no_matches_message ()
 {
   QMessageBox msg_box (QMessageBox::Information, tr ("Find Result"),
                        tr ("No more matches found"), QMessageBox::Ok, this);
   msg_box.exec ();
 }
 
-void find_dialog::reject ()
+void
+find_dialog::reject ()
 {
   close ();
 }
 
-void find_dialog::closeEvent (QCloseEvent *e)
+void
+find_dialog::closeEvent (QCloseEvent *e)
 {
   save_settings ();
   e->accept ();
@@ -649,7 +668,8 @@ void find_dialog::closeEvent (QCloseEvent *e)
 
 // Show and hide with (re-)storing position, otherwise there is always
 // a small shift each time the dialog is shown again
-void find_dialog::set_visible (bool visible)
+void
+find_dialog::set_visible (bool visible)
 {
   if (visible)
     {

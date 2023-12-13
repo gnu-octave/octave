@@ -42,7 +42,8 @@ anon_fcn_validator::anon_fcn_validator (tree_parameter_list *,
   expr->accept (*this);
 }
 
-void anon_fcn_validator::visit_postfix_expression (tree_postfix_expression& expr)
+void
+anon_fcn_validator::visit_postfix_expression (tree_postfix_expression& expr)
 {
   octave_value::unary_op op = expr.op_type ();
 
@@ -52,7 +53,8 @@ void anon_fcn_validator::visit_postfix_expression (tree_postfix_expression& expr
     tree_walker::visit_postfix_expression (expr);
 }
 
-void anon_fcn_validator::visit_prefix_expression (tree_prefix_expression& expr)
+void
+anon_fcn_validator::visit_prefix_expression (tree_prefix_expression& expr)
 {
   octave_value::unary_op op = expr.op_type ();
 
@@ -62,17 +64,20 @@ void anon_fcn_validator::visit_prefix_expression (tree_prefix_expression& expr)
     tree_walker::visit_prefix_expression (expr);
 }
 
-void anon_fcn_validator::visit_multi_assignment (tree_multi_assignment& expr)
+void
+anon_fcn_validator::visit_multi_assignment (tree_multi_assignment& expr)
 {
   error (expr);
 }
 
-void anon_fcn_validator::visit_simple_assignment (tree_simple_assignment& expr)
+void
+anon_fcn_validator::visit_simple_assignment (tree_simple_assignment& expr)
 {
   error (expr);
 }
 
-void anon_fcn_validator::error (tree_expression& expr)
+void
+anon_fcn_validator::error (tree_expression& expr)
 {
   m_ok = false;
   m_line = expr.line ();

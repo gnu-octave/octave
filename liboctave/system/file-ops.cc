@@ -228,7 +228,8 @@ char dev_sep_char ()
 #endif
 }
 
-char dir_sep_char ()
+char
+dir_sep_char ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return '\\';
@@ -237,7 +238,8 @@ char dir_sep_char ()
 #endif
 }
 
-std::string dir_sep_str ()
+std::string
+dir_sep_str ()
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return R"(\)";
@@ -246,7 +248,8 @@ std::string dir_sep_str ()
 #endif
 }
 
-std::string dir_sep_chars ()
+std::string
+dir_sep_chars ()
 {
 #if defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM)
   return R"(/\)";
@@ -263,7 +266,8 @@ string_vector tilde_additional_prefixes = default_prefixes;
 
 string_vector tilde_additional_suffixes = default_suffixes;
 
-bool is_dev_sep (char c)
+bool
+is_dev_sep (char c)
 {
 #if (defined (OCTAVE_HAVE_WINDOWS_FILESYSTEM) && ! defined (OCTAVE_HAVE_POSIX_FILESYSTEM))
   return c == dev_sep_char ();
@@ -274,13 +278,15 @@ bool is_dev_sep (char c)
 #endif
 }
 
-bool is_dir_sep (char c)
+bool
+is_dir_sep (char c)
 {
   std::string tmp = dir_sep_chars ();
   return tmp.find (c) != std::string::npos;
 }
 
-std::string tilde_expand (const std::string& name)
+std::string
+tilde_expand (const std::string& name)
 {
   if (name.find ('~') == std::string::npos)
     return std::string (name);
@@ -336,7 +342,8 @@ std::string tilde_expand (const std::string& name)
     }
 }
 
-string_vector tilde_expand (const string_vector& names)
+string_vector
+tilde_expand (const string_vector& names)
 {
   int n = names.numel ();
 
@@ -348,7 +355,8 @@ string_vector tilde_expand (const string_vector& names)
   return retval;
 }
 
-std::string concat (const std::string& dir, const std::string& file)
+std::string
+concat (const std::string& dir, const std::string& file)
 {
   return dir.empty ()
          ? file
@@ -357,14 +365,16 @@ std::string concat (const std::string& dir, const std::string& file)
             : dir + dir_sep_char () + file);
 }
 
-std::string dirname (const std::string& path)
+std::string
+dirname (const std::string& path)
 {
   std::size_t ipos = path.find_last_of (dir_sep_chars ());
 
   return (ipos != std::string::npos) ? path.substr (0, ipos) : "";
 }
 
-std::string tail (const std::string& path)
+std::string
+tail (const std::string& path)
 {
   std::size_t ipos = path.find_last_of (dir_sep_chars ());
 
@@ -376,7 +386,8 @@ std::string tail (const std::string& path)
   return path.substr (ipos);
 }
 
-std::string native_separator_path (const std::string& path)
+std::string
+native_separator_path (const std::string& path)
 {
   std::string retval;
 
@@ -405,7 +416,8 @@ int mkdir (const std::string& nm, mode_t md)
   return mkdir (nm, md, msg);
 }
 
-int mkdir (const std::string& name, mode_t mode, std::string& msg)
+int
+mkdir (const std::string& name, mode_t mode, std::string& msg)
 {
   msg = "";
 
@@ -417,13 +429,15 @@ int mkdir (const std::string& name, mode_t mode, std::string& msg)
   return status;
 }
 
-int recursive_mkdir (const std::string& name, mode_t mode)
+int
+recursive_mkdir (const std::string& name, mode_t mode)
 {
   std::string msg;
   return recursive_mkdir (name, mode, msg);
 }
 
-int recursive_mkdir (const std::string& name, mode_t mode, std::string& msg)
+int
+recursive_mkdir (const std::string& name, mode_t mode, std::string& msg)
 {
   int status;
 
@@ -470,13 +484,15 @@ int recursive_mkdir (const std::string& name, mode_t mode, std::string& msg)
   return mkdir (name, mode, msg);
 }
 
-int mkfifo (const std::string& nm, mode_t md)
+int
+mkfifo (const std::string& nm, mode_t md)
 {
   std::string msg;
   return mkfifo (nm, md, msg);
 }
 
-int mkfifo (const std::string& name, mode_t mode, std::string& msg)
+int
+mkfifo (const std::string& name, mode_t mode, std::string& msg)
 {
   msg = "";
 
@@ -488,14 +504,16 @@ int mkfifo (const std::string& name, mode_t mode, std::string& msg)
   return status;
 }
 
-int link (const std::string& old_name, const std::string& new_name)
+int
+link (const std::string& old_name, const std::string& new_name)
 {
   std::string msg;
   return link (old_name, new_name, msg);
 }
 
-int link (const std::string& old_name, const std::string& new_name,
-          std::string& msg)
+int
+link (const std::string& old_name, const std::string& new_name,
+      std::string& msg)
 {
   msg = "";
 
@@ -509,14 +527,16 @@ int link (const std::string& old_name, const std::string& new_name,
   return status;
 }
 
-int symlink (const std::string& old_name, const std::string& new_name)
+int
+symlink (const std::string& old_name, const std::string& new_name)
 {
   std::string msg;
   return symlink (old_name, new_name, msg);
 }
 
-int symlink (const std::string& old_name, const std::string& new_name,
-             std::string& msg)
+int
+symlink (const std::string& old_name, const std::string& new_name,
+         std::string& msg)
 {
   msg = "";
 
@@ -530,13 +550,15 @@ int symlink (const std::string& old_name, const std::string& new_name,
   return status;
 }
 
-int readlink (const std::string& path, std::string& result)
+int
+readlink (const std::string& path, std::string& result)
 {
   std::string msg;
   return readlink (path, result, msg);
 }
 
-int readlink (const std::string& path, std::string& result, std::string& msg)
+int
+readlink (const std::string& path, std::string& result, std::string& msg)
 {
   int status = -1;
 
@@ -556,14 +578,16 @@ int readlink (const std::string& path, std::string& result, std::string& msg)
   return status;
 }
 
-int rename (const std::string& from, const std::string& to)
+int
+rename (const std::string& from, const std::string& to)
 {
   std::string msg;
   return rename (from, to, msg);
 }
 
-int rename (const std::string& from, const std::string& to,
-            std::string& msg)
+int
+rename (const std::string& from, const std::string& to,
+        std::string& msg)
 {
   int status = -1;
 
@@ -603,13 +627,15 @@ int rename (const std::string& from, const std::string& to,
   return status;
 }
 
-int rmdir (const std::string& name)
+int
+rmdir (const std::string& name)
 {
   std::string msg;
   return rmdir (name, msg);
 }
 
-int rmdir (const std::string& name, std::string& msg)
+int
+rmdir (const std::string& name, std::string& msg)
 {
   msg = "";
 
@@ -625,13 +651,15 @@ int rmdir (const std::string& name, std::string& msg)
 
 // And a version that works recursively.
 
-int recursive_rmdir (const std::string& name)
+int
+recursive_rmdir (const std::string& name)
 {
   std::string msg;
   return recursive_rmdir (name, msg);
 }
 
-int recursive_rmdir (const std::string& name, std::string& msg)
+int
+recursive_rmdir (const std::string& name, std::string& msg)
 {
   msg = "";
 
@@ -689,18 +717,21 @@ int recursive_rmdir (const std::string& name, std::string& msg)
   return status;
 }
 
-int umask (mode_t mode)
+int
+umask (mode_t mode)
 {
   return octave_umask_wrapper (mode);
 }
 
-int unlink (const std::string& name)
+int
+unlink (const std::string& name)
 {
   std::string msg;
   return unlink (name, msg);
 }
 
-int unlink (const std::string& name, std::string& msg)
+int
+unlink (const std::string& name, std::string& msg)
 {
   msg = "";
 
@@ -714,14 +745,16 @@ int unlink (const std::string& name, std::string& msg)
   return status;
 }
 
-std::string tempnam (const std::string& dir, const std::string& pfx)
+std::string
+tempnam (const std::string& dir, const std::string& pfx)
 {
   std::string msg;
   return tempnam (dir, pfx, msg);
 }
 
-std::string tempnam (const std::string& dir, const std::string& pfx,
-                     std::string& msg)
+std::string
+tempnam (const std::string& dir, const std::string& pfx,
+         std::string& msg)
 {
   msg = "";
 
@@ -761,13 +794,15 @@ std::string tempnam (const std::string& dir, const std::string& pfx,
   return retval;
 }
 
-std::string canonicalize_file_name (const std::string& name)
+std::string
+canonicalize_file_name (const std::string& name)
 {
   std::string msg;
   return canonicalize_file_name (name, msg);
 }
 
-std::string canonicalize_file_name (const std::string& name, std::string& msg)
+std::string
+canonicalize_file_name (const std::string& name, std::string& msg)
 {
   msg = "";
 

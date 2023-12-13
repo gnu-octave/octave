@@ -222,12 +222,14 @@ octave_lazy_index::as_uint64 () const
 
 static const std::string value_save_tag ("index_value");
 
-bool octave_lazy_index::save_ascii (std::ostream& os)
+bool
+octave_lazy_index::save_ascii (std::ostream& os)
 {
   return save_text_data (os, make_value (), value_save_tag, false, 0);
 }
 
-bool octave_lazy_index::load_ascii (std::istream& is)
+bool
+octave_lazy_index::load_ascii (std::istream& is)
 {
   bool dummy;
 
@@ -240,14 +242,16 @@ bool octave_lazy_index::load_ascii (std::istream& is)
   return true;
 }
 
-bool octave_lazy_index::save_binary (std::ostream& os, bool save_as_floats)
+bool
+octave_lazy_index::save_binary (std::ostream& os, bool save_as_floats)
 {
   return save_binary_data (os, make_value (), value_save_tag,
                            "", false, save_as_floats);
 }
 
-bool octave_lazy_index::load_binary (std::istream& is, bool swap,
-                                     octave::mach_info::float_format fmt)
+bool
+octave_lazy_index::load_binary (std::istream& is, bool swap,
+                                octave::mach_info::float_format fmt)
 {
   bool dummy;
   std::string doc;

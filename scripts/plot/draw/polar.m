@@ -557,7 +557,7 @@ endfunction
 %!   assert (vertcat (linedata.ydata)', rm .* sin (tv1'), eps);
 %!   assert (isempty (vertcat (linedata.zdata)));
 %!
-%!   h = polar (hax, tv1', rm); # Verify orientation independence.
+%!   h = polar (hax, tv1', rm);  # Verify orientation independence.
 %!   linedata = get (h);
 %!   assert (numel (linedata), 3);
 %!   assert (vertcat (linedata.xdata)', rm .* cos (tv1'), eps);
@@ -571,13 +571,13 @@ endfunction
 %!   assert (vertcat (linedata.ydata), rm .* sin (tv2), eps);
 %!   assert (isempty (vertcat (linedata.zdata)));
 %!
-%!   h = polar (hax, tv2', rm); # Verify orientation independence.
+%!   h = polar (hax, tv2', rm);  # Verify orientation independence.
 %!   linedata = get (h);
 %!   assert (numel (linedata), 2);
 %!   assert (vertcat (linedata.xdata), rm .* cos (tv2), eps);
 %!   assert (vertcat (linedata.ydata), rm .* sin (tv2), eps);
 %!   assert (isempty (vertcat (linedata.zdata)));
-
+%!
 %!   h = polar (hax, tm, rv1);
 %!   linedata = get (h);
 %!   assert (numel (linedata), 3);
@@ -585,7 +585,7 @@ endfunction
 %!   assert (vertcat (linedata.ydata)', rv1' .* sin (tm), eps);
 %!   assert (isempty (vertcat (linedata.zdata)));
 %!
-%!   h = polar (hax, tm, rv1'); # Verify orientation independence.
+%!   h = polar (hax, tm, rv1');  # Verify orientation independence.
 %!   linedata = get (h);
 %!   assert (vertcat (linedata.xdata)', rv1' .* cos (tm), eps);
 %!   assert (vertcat (linedata.ydata)', rv1' .* sin (tm), eps);
@@ -598,7 +598,7 @@ endfunction
 %!   assert (vertcat (linedata.ydata), rv2 .* sin (tm), eps);
 %!   assert (isempty (vertcat (linedata.zdata)));
 %!
-%!   h = polar (hax, tm, rv2'); # Verify orientation independence.
+%!   h = polar (hax, tm, rv2');  # Verify orientation independence.
 %!   linedata = get (h);
 %!   assert (numel (linedata), 2);
 %!   assert (vertcat (linedata.xdata), rv2 .* cos (tm), eps);
@@ -621,7 +621,7 @@ endfunction
 %!   haxtr = get (hax);
 %!   linetr = get (h);
 %!
-%!   haxtr.children = []; # Clear child handles that should be unique.
+%!   haxtr.children = [];  # Clear child handles that should be unique.
 %!   haxtr.xlabel= [];
 %!   haxtr.ylabel= [];
 %!   haxtr.zlabel= [];
@@ -632,8 +632,8 @@ endfunction
 %!   haxcplx.zlabel = [];
 %!   haxcplx.title = [];
 %!
-%!   assert (isequaln (haxcplx, haxtr)); # Check parent objects.
-%!   assert (isequaln (linecplx, linetr)); # Check actual data objects.
+%!   assert (isequaln (haxcplx, haxtr));    # Check parent objects.
+%!   assert (isequaln (linecplx, linetr));  # Check actual data objects.
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
@@ -651,7 +651,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-##Test FMT string inputs
+## Test FMT string inputs
 %!test
 %! hf = figure ("visible", "off");
 %! hax = gca ();
@@ -680,7 +680,7 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-##Test input validation
+## Test input validation
 %!error <Invalid call> polar ()
 %!test
 %! hf = figure ("visible", "off");
@@ -695,7 +695,7 @@ endfunction
 %!   fail ("polar (hax, [1 2 3], [1 2; 3 4])", "THETA vector and RHO matrix sizes must match");
 %!   fail ("polar (hax, [1 2; 3 4], [1 2 3])", "THETA matrix and RHO vector sizes must match");
 %!   fail ("polar (hax, [1 2; 3 4], [1 2 3; 4 5 6])", "THETA and RHO matrix dimensions must match");
-%!   h = polar (hax, 1, 2); # Generates line object handle.
+%!   h = polar (hax, 1, 2);  # Generates line object handle.
 %!   fail ("polar (h, 1, 2)", "first argument must be axes handle");
 %! unwind_protect_cleanup
 %!   close (hf);

@@ -139,7 +139,7 @@ public:
   // of elements is numel () * nfields ().
   octave_idx_type numel () const
   {
-    dim_vector dv = dims ();
+    const dim_vector& dv = dims ();
     return dv.numel ();
   }
 

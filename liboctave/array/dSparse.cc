@@ -193,7 +193,7 @@ SparseMatrix
 SparseMatrix::max (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseMatrix result;
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 
@@ -344,7 +344,7 @@ SparseMatrix
 SparseMatrix::min (Array<octave_idx_type>& idx_arg, int dim) const
 {
   SparseMatrix result;
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   octave_idx_type nr = dv(0);
   octave_idx_type nc = dv(1);
 

@@ -454,7 +454,7 @@ bool
 octave_base_matrix<MT>::is_true () const
 {
   bool retval = false;
-  dim_vector dv = m_matrix.dims ();
+  const dim_vector& dv = m_matrix.dims ();
   int nel = dv.numel ();
 
   if (nel > 0)
@@ -479,7 +479,7 @@ template <typename MT>
 bool
 octave_base_matrix<MT>::print_as_scalar () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   return (dv.all_ones () || dv.any_zero ());
 }

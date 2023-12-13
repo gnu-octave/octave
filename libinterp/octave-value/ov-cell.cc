@@ -111,7 +111,7 @@ octave_base_matrix<Cell>::edit_display (const float_display_format&,
   octave_value val = m_matrix(i, j);
 
   std::string tname = val.type_name ();
-  dim_vector dv = val.dims ();
+  const dim_vector& dv = val.dims ();
   std::string dimstr = dv.str ();
   return "[" + dimstr + " " + tname + "]";
 }
@@ -752,7 +752,7 @@ octave_cell::print_raw (std::ostream& os, bool) const
   else
     {
       indent (os);
-      dim_vector dv = m_matrix.dims ();
+      const dim_vector& dv = m_matrix.dims ();
       os << '{' << dv.str () << " Cell Array}";
       newline (os);
     }
@@ -788,7 +788,7 @@ octave_cell::short_disp (std::ostream& os) const
 bool
 octave_cell::save_ascii (std::ostream& os)
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () > 2)
     {
       os << "# ndims: " << dv.ndims () << "\n";
@@ -941,7 +941,7 @@ octave_cell::load_ascii (std::istream& is)
 bool
 octave_cell::save_binary (std::ostream& os, bool save_as_floats)
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 1)
     return false;
 
@@ -1052,7 +1052,7 @@ octave_cell::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 {
 #if defined (HAVE_HDF5)
 
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);

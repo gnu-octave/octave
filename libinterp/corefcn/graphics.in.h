@@ -4899,7 +4899,7 @@ public:
 
     Matrix get_auto_xdata ()
     {
-      dim_vector dv = get_cdata ().dims ();
+      const dim_vector& dv = get_cdata ().dims ();
       Matrix data;
       if (dv(1) > 0.)
         {
@@ -4911,7 +4911,7 @@ public:
 
     Matrix get_auto_ydata ()
     {
-      dim_vector dv = get_cdata ().dims ();
+      const dim_vector& dv = get_cdata ().dims ();
       Matrix data;
       if (dv(0) > 0.)
         {

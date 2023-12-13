@@ -88,7 +88,7 @@ void tm_row_const::cellify ()
     {
       octave_quit ();
 
-      dim_vector this_elt_dv = val.dims ();
+      const dim_vector& this_elt_dv = val.dims ();
 
       if (! this_elt_dv.zero_by_zero ())
         {
@@ -111,7 +111,7 @@ tm_row_const::init_element (const octave_value& val, bool& first_elem)
 
   m_class_name = get_concat_class (m_class_name, this_elt_class_name);
 
-  dim_vector this_elt_dv = val.dims ();
+  const dim_vector& this_elt_dv = val.dims ();
 
   if (! this_elt_dv.zero_by_zero ())
     {
@@ -207,7 +207,7 @@ tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
     {
       octave_quit ();
 
-      dim_vector this_elt_dv = val.dims ();
+      const dim_vector& this_elt_dv = val.dims ();
 
       if (! this_elt_dv.zero_by_zero ())
         {
@@ -399,7 +399,7 @@ tm_const::init (const tree_matrix& tm)
       std::string this_elt_class_name = elt.class_name ();
       m_class_name = get_concat_class (m_class_name, this_elt_class_name);
 
-      dim_vector this_elt_dv = elt.dims ();
+      const dim_vector& this_elt_dv = elt.dims ();
 
       m_all_empty = false;
 

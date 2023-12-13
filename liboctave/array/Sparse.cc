@@ -271,7 +271,7 @@ Sparse<T, Alloc>::Sparse (const Sparse<T, Alloc>& a, const dim_vector& dv)
     (*current_liboctave_error_handler)
       ("Sparse::Sparse (const Sparse&, const dim_vector&): dimension mismatch");
 
-  dim_vector old_dims = a.dims ();
+  const dim_vector& old_dims = a.dims ();
   octave_idx_type new_nzmax = a.nnz ();
   octave_idx_type new_nr = dv(0);
   octave_idx_type new_nc = dv(1);

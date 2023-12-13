@@ -1259,8 +1259,8 @@ elem_xpow (const NDArray& a, const NDArray& b)
 {
   octave_value retval;
 
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {
@@ -1342,8 +1342,8 @@ elem_xpow (const NDArray& a, const Complex& b)
 octave_value
 elem_xpow (const NDArray& a, const ComplexNDArray& b)
 {
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {
@@ -1437,8 +1437,8 @@ elem_xpow (const ComplexNDArray& a, double b)
 octave_value
 elem_xpow (const ComplexNDArray& a, const NDArray& b)
 {
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {
@@ -1482,8 +1482,8 @@ elem_xpow (const ComplexNDArray& a, const Complex& b)
 octave_value
 elem_xpow (const ComplexNDArray& a, const ComplexNDArray& b)
 {
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {
@@ -2579,8 +2579,8 @@ elem_xpow (const FloatNDArray& a, const FloatNDArray& b)
 {
   octave_value retval;
 
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {
@@ -2662,8 +2662,8 @@ elem_xpow (const FloatNDArray& a, const FloatComplex& b)
 octave_value
 elem_xpow (const FloatNDArray& a, const FloatComplexNDArray& b)
 {
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {
@@ -2757,8 +2757,8 @@ elem_xpow (const FloatComplexNDArray& a, float b)
 octave_value
 elem_xpow (const FloatComplexNDArray& a, const FloatNDArray& b)
 {
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {
@@ -2802,8 +2802,8 @@ elem_xpow (const FloatComplexNDArray& a, const FloatComplex& b)
 octave_value
 elem_xpow (const FloatComplexNDArray& a, const FloatComplexNDArray& b)
 {
-  dim_vector a_dims = a.dims ();
-  dim_vector b_dims = b.dims ();
+  const dim_vector& a_dims = a.dims ();
+  const dim_vector& b_dims = b.dims ();
 
   if (a_dims != b_dims)
     {

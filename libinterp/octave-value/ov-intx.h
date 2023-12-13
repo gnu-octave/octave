@@ -146,7 +146,7 @@ public:
   matrix_value (bool = false) const
   {
     Matrix retval;
-    dim_vector dv = dims ();
+    const dim_vector& dv = dims ();
     if (dv.ndims () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
 
@@ -163,7 +163,7 @@ public:
   float_matrix_value (bool = false) const
   {
     FloatMatrix retval;
-    dim_vector dv = dims ();
+    const dim_vector& dv = dims ();
     if (dv.ndims () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
 
@@ -180,7 +180,7 @@ public:
   complex_matrix_value (bool = false) const
   {
     ComplexMatrix retval;
-    dim_vector dv = dims ();
+    const dim_vector& dv = dims ();
     if (dv.ndims () > 2)
       error ("invalid conversion of %s to Matrix", type_name ().c_str ());
 
@@ -197,7 +197,7 @@ public:
   float_complex_matrix_value (bool = false) const
   {
     FloatComplexMatrix retval;
-    dim_vector dv = dims ();
+    const dim_vector& dv = dims ();
     if (dv.ndims () > 2)
       error ("invalid conversion of %s to FloatMatrix", type_name ().c_str ());
 

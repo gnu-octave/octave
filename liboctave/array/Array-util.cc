@@ -617,7 +617,7 @@ ind2sub (const dim_vector& dv, const octave::idx_vector& idx)
     {
       OCTAVE_LOCAL_BUFFER (Array<octave_idx_type>, rdata, n);
 
-      dim_vector odv = idx.orig_dimensions ();
+      const dim_vector& odv = idx.orig_dimensions ();
       for (octave_idx_type j = 0; j < n; j++)
         rdata[j] = Array<octave_idx_type> (odv);
 

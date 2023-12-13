@@ -2543,11 +2543,11 @@ opengl_renderer::draw_surface (const surface::properties& props)
 
   NDArray c;
   const NDArray vn = props.get_vertexnormals ().array_value ();
-  dim_vector vn_dims = vn.dims ();
+  const dim_vector& vn_dims = vn.dims ();
   bool has_vertex_normals = (vn_dims(0) == zr && vn_dims(1) == zc
                              && vn_dims(2) == 3);
   const NDArray fn = props.get_facenormals ().array_value ();
-  dim_vector fn_dims = fn.dims ();
+  const dim_vector& fn_dims = fn.dims ();
   bool has_face_normals = (fn_dims(0) == zr - 1 && fn_dims(1) == zc - 1
                            && fn_dims(2) == 3);
 

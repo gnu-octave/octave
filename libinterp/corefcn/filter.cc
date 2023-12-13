@@ -68,7 +68,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
   if (norm == static_cast<T> (0.0))
     error ("filter: the first element of A must be nonzero");
 
-  dim_vector x_dims = x.dims ();
+  const dim_vector& x_dims = x.dims ();
   if (dim < 0 || dim > x_dims.ndims ())
     error ("filter: DIM must be a valid dimension");
 
@@ -239,7 +239,7 @@ template <typename T>
 MArray<T>
 filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, int dim = -1)
 {
-  dim_vector x_dims = x.dims ();
+  const dim_vector& x_dims = x.dims ();
 
   if (dim < 0)
     dim = x_dims.first_non_singleton ();
@@ -369,7 +369,7 @@ H(z) = ---------------------
     print_usage ();
 
   int dim;
-  dim_vector x_dims = args(2).dims ();
+  const dim_vector& x_dims = args(2).dims ();
 
   if (nargin == 5)
     {

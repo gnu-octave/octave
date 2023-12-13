@@ -1573,7 +1573,7 @@ do_mx_cum_op (const Array<T>& src, int dim,
                                  octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
-  dim_vector dims = src.dims ();
+  const dim_vector& dims = src.dims ();
   get_extent_triplet (dims, dim, l, n, u);
 
   // Cumulative operation doesn't reduce the array size.
@@ -1633,7 +1633,7 @@ do_mx_cumminmax_op (const Array<R>& src, int dim,
                                              octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
-  dim_vector dims = src.dims ();
+  const dim_vector& dims = src.dims ();
   get_extent_triplet (dims, dim, l, n, u);
 
   Array<R> ret (dims);
@@ -1649,7 +1649,7 @@ do_mx_cumminmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
                                              octave_idx_type, octave_idx_type, octave_idx_type))
 {
   octave_idx_type l, n, u;
-  dim_vector dims = src.dims ();
+  const dim_vector& dims = src.dims ();
   get_extent_triplet (dims, dim, l, n, u);
 
   Array<R> ret (dims);

@@ -191,7 +191,7 @@ octave_value_list::all_scalars () const
 
   for (octave_idx_type i = 0; i < n; i++)
     {
-      dim_vector dv = elem(i).dims ();
+      const dim_vector& dv = elem(i).dims ();
       if (! dv.all_ones ())
         return false;
     }

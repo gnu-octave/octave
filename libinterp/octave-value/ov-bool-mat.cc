@@ -237,7 +237,7 @@ octave_bool_matrix::print_raw (std::ostream& os,
 bool
 octave_bool_matrix::save_ascii (std::ostream& os)
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () > 2)
     {
       NDArray tmp = array_value ();
@@ -348,7 +348,7 @@ bool
 octave_bool_matrix::save_binary (std::ostream& os, bool /* save_as_floats */)
 {
 
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 1)
     return false;
 
@@ -430,7 +430,7 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5)
 
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);

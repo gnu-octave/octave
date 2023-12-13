@@ -245,7 +245,7 @@ bool
 octave_base_sparse<T>::is_true () const
 {
   bool retval = false;
-  dim_vector dv = matrix.dims ();
+  const dim_vector& dv = matrix.dims ();
   octave_idx_type nel = dv.numel ();
   octave_idx_type nz = nnz ();
 
@@ -274,7 +274,7 @@ template <typename T>
 bool
 octave_base_sparse<T>::print_as_scalar () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   return (dv.all_ones () || dv.any_zero ());
 }
@@ -400,7 +400,7 @@ template <typename T>
 bool
 octave_base_sparse<T>::save_ascii (std::ostream& os)
 {
-  dim_vector dv = this->dims ();
+  const dim_vector& dv = this->dims ();
 
   // Ensure that additional memory is deallocated
   matrix.maybe_compress ();

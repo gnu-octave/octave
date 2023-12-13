@@ -134,7 +134,7 @@ octave_class::octave_class (const octave_map& m, const std::string& id,
               // distribute the elements of the parent object to
               // the elements of MAP.
 
-              dim_vector parent_dims = parent.dims ();
+              const dim_vector& parent_dims = parent.dims ();
 
               m_map.resize (parent_dims);
 
@@ -331,7 +331,7 @@ octave_class::size ()
     }
   else
     {
-      dim_vector dv = dims ();
+      const dim_vector& dv = dims ();
 
       int nd = dv.ndims ();
 

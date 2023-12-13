@@ -170,7 +170,7 @@ ComplexNDArray
 airy (const ComplexNDArray& z, bool deriv, bool scaled,
       Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = z.dims ();
+  const dim_vector& dv = z.dims ();
   octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
@@ -228,7 +228,7 @@ FloatComplexNDArray
 airy (const FloatComplexNDArray& z, bool deriv, bool scaled,
       Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = z.dims ();
+  const dim_vector& dv = z.dims ();
   octave_idx_type nel = dv.numel ();
   FloatComplexNDArray retval (dv);
 
@@ -643,7 +643,7 @@ static inline ComplexNDArray
 do_bessel (dptr f, const char *, double alpha, const ComplexNDArray& x,
            bool scaled, Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = x.dims ();
+  const dim_vector& dv = x.dims ();
   octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
@@ -659,7 +659,7 @@ static inline ComplexNDArray
 do_bessel (dptr f, const char *, const NDArray& alpha, const Complex& x,
            bool scaled, Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = alpha.dims ();
+  const dim_vector& dv = alpha.dims ();
   octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
@@ -675,7 +675,7 @@ static inline ComplexNDArray
 do_bessel (dptr f, const char *fn, const NDArray& alpha,
            const ComplexNDArray& x, bool scaled, Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = x.dims ();
+  const dim_vector& dv = x.dims ();
   ComplexNDArray retval;
 
   if (dv != alpha.dims ())
@@ -1185,7 +1185,7 @@ static inline FloatComplexNDArray
 do_bessel (fptr f, const char *, float alpha, const FloatComplexNDArray& x,
            bool scaled, Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = x.dims ();
+  const dim_vector& dv = x.dims ();
   octave_idx_type nel = dv.numel ();
   FloatComplexNDArray retval (dv);
 
@@ -1201,7 +1201,7 @@ static inline FloatComplexNDArray
 do_bessel (fptr f, const char *, const FloatNDArray& alpha,
            const FloatComplex& x, bool scaled, Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = alpha.dims ();
+  const dim_vector& dv = alpha.dims ();
   octave_idx_type nel = dv.numel ();
   FloatComplexNDArray retval (dv);
 
@@ -1218,7 +1218,7 @@ do_bessel (fptr f, const char *fn, const FloatNDArray& alpha,
            const FloatComplexNDArray& x, bool scaled,
            Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = x.dims ();
+  const dim_vector& dv = x.dims ();
   FloatComplexNDArray retval;
 
   if (dv != alpha.dims ())
@@ -1392,7 +1392,7 @@ ComplexNDArray
 biry (const ComplexNDArray& z, bool deriv, bool scaled,
       Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = z.dims ();
+  const dim_vector& dv = z.dims ();
   octave_idx_type nel = dv.numel ();
   ComplexNDArray retval (dv);
 
@@ -1450,7 +1450,7 @@ FloatComplexNDArray
 biry (const FloatComplexNDArray& z, bool deriv, bool scaled,
       Array<octave_idx_type>& ierr)
 {
-  dim_vector dv = z.dims ();
+  const dim_vector& dv = z.dims ();
   octave_idx_type nel = dv.numel ();
   FloatComplexNDArray retval (dv);
 

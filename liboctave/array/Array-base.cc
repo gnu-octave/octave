@@ -749,7 +749,7 @@ Array<T, Alloc>::index (const octave::idx_vector& i) const
           // Indexed object and index are both vectors.  Set result size
           // and orientation as above.
 
-          dim_vector dv = dims ();
+          const dim_vector& dv = dims ();
 
           result_dims = dv.make_nd_vector (idx_len);
         }
@@ -777,7 +777,7 @@ Array<T, Alloc>
 Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j) const
 {
   // Get dimensions, allowing Fortran indexing in the 2nd dim.
-  dim_vector dv = m_dimensions.redim (2);
+  const dim_vector& dv = m_dimensions.redim (2);
   octave_idx_type r = dv(0);
   octave_idx_type c = dv(1);
   Array<T, Alloc> retval;
@@ -1072,7 +1072,7 @@ Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j
   Array<T, Alloc> tmp = *this;
   if (resize_ok)
     {
-      dim_vector dv = m_dimensions.redim (2);
+      const dim_vector& dv = m_dimensions.redim (2);
       octave_idx_type r = dv(0);
       octave_idx_type c = dv(1);
       octave_idx_type rx = i.extent (r);
@@ -1101,7 +1101,7 @@ Array<T, Alloc>::index (const Array<octave::idx_vector>& ia,
   if (resize_ok)
     {
       int ial = ia.numel ();
-      dim_vector dv = m_dimensions.redim (ial);
+      const dim_vector& dv = m_dimensions.redim (ial);
       dim_vector dvx = dim_vector::alloc (ial);
       for (int i = 0; i < ial; i++)
         dvx(i) = ia(i).extent (dv(i));
@@ -1898,7 +1898,7 @@ Array<T, Alloc>::sort (Array<octave_idx_type>& sidx, int dim,
 
   Array<T, Alloc> m (dims ());
 
-  dim_vector dv = m.dims ();
+  const dim_vector& dv = m.dims ();
 
   if (m.numel () < 1)
     {
@@ -2540,7 +2540,7 @@ template <typename T, typename Alloc>
 Array<T, Alloc>
 Array<T, Alloc>::diag (octave_idx_type k) const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   octave_idx_type nd = dv.ndims ();
   Array<T, Alloc> d;
 
@@ -2685,7 +2685,7 @@ Array<T, Alloc>::cat (int dim, octave_idx_type n, const Array<T, Alloc> *array_l
     {
       for (octave_idx_type i = 0; i < n; i++)
         {
-          dim_vector dv = array_list[i].dims ();
+          const dim_vector& dv = array_list[i].dims ();
 
           if (dv.zero_by_zero ())
             istart++;
@@ -2791,7 +2791,7 @@ template <typename T, typename Alloc>
 std::ostream&
 operator << (std::ostream& os, const Array<T, Alloc>& a)
 {
-  dim_vector a_dims = a.dims ();
+  const dim_vector& a_dims = a.dims ();
 
   int n_dims = a_dims.ndims ();
 

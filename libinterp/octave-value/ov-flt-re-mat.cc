@@ -328,7 +328,7 @@ octave_value
 octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   octave_idx_type nel = dv.numel ();
 
   charNDArray chm (dv);
@@ -370,7 +370,7 @@ octave_float_matrix::convert_to_str_internal (bool, bool, char type) const
 bool
 octave_float_matrix::save_ascii (std::ostream& os)
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   if (dv.ndims () > 2)
     {
@@ -475,7 +475,7 @@ octave_float_matrix::load_ascii (std::istream& is)
 bool
 octave_float_matrix::save_binary (std::ostream& os, bool)
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 1)
     return false;
 
@@ -584,7 +584,7 @@ octave_float_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name, bool)
 
 #if defined (HAVE_HDF5)
 
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);

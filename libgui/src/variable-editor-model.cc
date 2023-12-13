@@ -179,7 +179,7 @@ base_ve_model::edit_display_sub (const octave_value& elt, int role) const
     }
   else
     {
-      dim_vector dv = elt.dims ();
+      const dim_vector& dv = elt.dims ();
       str = "[" + dv.str () + " " + elt.class_name () + "]";
     }
 
@@ -294,7 +294,7 @@ base_ve_model::make_description_text () const
       if (! lbl_txt.isEmpty ())
         lbl_txt += " ";
 
-      dim_vector dv = m_value.dims ();
+      const dim_vector& dv = m_value.dims ();
 
       lbl_txt += ("["
                   + QString::fromStdString (dv.str ())

@@ -1835,7 +1835,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
     {
       jclass_ref mcls (jni_env, find_octave_class (jni_env,
                        "org/octave/Matrix"));
-      dim_vector dims = val.dims ();
+      const dim_vector& dims = val.dims ();
       jintArray_ref iv (jni_env, jni_env->NewIntArray (dims.ndims ()));
       jint *iv_data = jni_env->GetIntArrayElements (jintArray (iv), nullptr);
 

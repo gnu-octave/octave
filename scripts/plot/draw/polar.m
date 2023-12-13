@@ -333,9 +333,9 @@ function __update_polar_grid__ (hax, ~, hg)
   delete (get (hg, "children"));
 
   rtick = unique (get (hax, "rtick")(:)');
-  rtick = rtick(rtick >= 0);
+  rtick = rtick(rtick > 0);
   if (isempty (rtick))
-    rtick = [0, 0.5, 1];
+    rtick = [0.5, 1];
   endif
 
   ttick = unique (get (hax, "ttick")(:)');

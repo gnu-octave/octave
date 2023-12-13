@@ -1433,7 +1433,8 @@ add_hdf5_data (octave_hdf5_id loc_id, const octave_value& tc,
     goto error_cleanup;
 
   // attach the type of the variable
-  type_id = H5Tcopy (H5T_C_S1); H5Tset_size (type_id, t.length () + 1);
+  type_id = H5Tcopy (H5T_C_S1);
+  H5Tset_size (type_id, t.length () + 1);
   if (type_id < 0)
     goto error_cleanup;
 

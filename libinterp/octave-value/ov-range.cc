@@ -979,7 +979,7 @@ ov_range<T>::as_mxArray (bool interleaved) const
 }
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA  (octave_trivial_range,
-                                     "trivial range", "double");
+                                      "trivial range", "double");
 
 template <typename T>
 bool

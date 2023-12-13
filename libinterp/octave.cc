@@ -239,7 +239,8 @@ cmdline_options::cmdline_options (int argc, char **argv)
                                     argc-octave_optind_wrapper ());
 }
 
-octave_value cmdline_options::as_octave_value () const
+octave_value
+cmdline_options::as_octave_value () const
 {
   octave_scalar_map m;
 
@@ -324,25 +325,29 @@ application::intern_argv (const string_vector& args)
     }
 }
 
-bool application::forced_interactive ()
+bool
+application::forced_interactive ()
 {
   return s_instance ? s_instance->m_options.forced_interactive () : false;
 }
 
 // Provided for convenience.  Will be removed once we eliminate the
 // old terminal widget.
-bool application::experimental_terminal_widget () const
+bool
+application::experimental_terminal_widget () const
 {
   return (s_instance
           ? s_instance->m_options.experimental_terminal_widget () : false);
 }
 
-bool application::interpreter_initialized ()
+bool
+application::interpreter_initialized ()
 {
   return m_interpreter ? m_interpreter->initialized () : false;
 }
 
-interpreter& application::create_interpreter ()
+interpreter&
+application::create_interpreter ()
 {
   if (! m_interpreter)
     m_interpreter = std::unique_ptr<interpreter> (new interpreter (this));
@@ -350,23 +355,27 @@ interpreter& application::create_interpreter ()
   return *m_interpreter;
 }
 
-void application::initialize_interpreter ()
+void
+application::initialize_interpreter ()
 {
   if (m_interpreter)
     m_interpreter->initialize ();
 }
 
-int application::execute_interpreter ()
+int
+application::execute_interpreter ()
 {
   return m_interpreter ? m_interpreter->execute () : -1;
 }
 
-void application::delete_interpreter ()
+void
+application::delete_interpreter ()
 {
   m_interpreter.reset ();
 }
 
-void application::init ()
+void
+application::init ()
 {
   if (s_instance)
     throw std::runtime_error
@@ -420,7 +429,8 @@ void application::init ()
   sysdep_init ();
 }
 
-int cli_application::execute ()
+int
+cli_application::execute ()
 {
   interpreter& interp = create_interpreter ();
 

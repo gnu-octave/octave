@@ -50,7 +50,7 @@ Factorial (octave_idx_type n)
 //
 template <typename T>
 static inline Array<T>
-GetPerms (const Array<T> &ar_in, bool uniq_v, bool do_sort = false)
+GetPerms (const Array<T>& ar_in, bool uniq_v, bool do_sort = false)
 {
   octave_idx_type m = ar_in.numel ();
   double nr = Factorial (m);
@@ -123,7 +123,7 @@ GetPerms (const Array<T> &ar_in, bool uniq_v, bool do_sort = false)
 
 template <typename T>
 static inline Array<T>
-GetPermsNoSort (const Array<T> &ar_in, bool uniq_v = false)
+GetPermsNoSort (const Array<T>& ar_in, bool uniq_v = false)
 {
   octave_idx_type m = ar_in.numel ();
   double nr = Factorial (m);
@@ -256,8 +256,8 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
     }
 
   if (! (args (0).is_matrix_type () || args (0).is_range ()
-      || args (0).iscell () || args (0).is_scalar_type ()
-      || args (0).isstruct ()))
+         || args (0).iscell () || args (0).is_scalar_type ()
+         || args (0).isstruct ()))
     {
       error ("perms: INPUT must be a matrix, a range, a cell array, "
              "a struct or a scalar.");

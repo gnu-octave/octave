@@ -363,7 +363,7 @@ octave_bool_matrix::save_binary (std::ostream& os, bool /* save_as_floats */)
 
   const bool *mtmp = m_matrix.data ();
   octave_idx_type nel = m_matrix.numel ();
-  os.write (reinterpret_cast<const char*> (mtmp), nel);
+  os.write (reinterpret_cast<const char *> (mtmp), nel);
 
   return true;
 }
@@ -465,7 +465,7 @@ octave_bool_matrix::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
   retval = H5Dwrite (data_hid, H5T_NATIVE_HBOOL, octave_H5S_ALL, octave_H5S_ALL,
                      octave_H5P_DEFAULT,
-                     reinterpret_cast<const char*> (mtmp)) >= 0;
+                     reinterpret_cast<const char *> (mtmp)) >= 0;
 
   H5Dclose (data_hid);
   H5Sclose (space_hid);

@@ -92,7 +92,8 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
   return retval;
 }
 
-octave_value xcolnorms (const octave_value& x, const octave_value& p)
+octave_value
+xcolnorms (const octave_value& x, const octave_value& p)
 {
   octave_value retval;
 
@@ -131,7 +132,8 @@ octave_value xcolnorms (const octave_value& x, const octave_value& p)
   return retval;
 }
 
-octave_value xrownorms (const octave_value& x, const octave_value& p)
+octave_value
+xrownorms (const octave_value& x, const octave_value& p)
 {
   octave_value retval;
 
@@ -170,7 +172,8 @@ octave_value xrownorms (const octave_value& x, const octave_value& p)
   return retval;
 }
 
-octave_value xfrobnorm (const octave_value& x)
+octave_value
+xfrobnorm (const octave_value& x)
 {
   octave_value retval;
 

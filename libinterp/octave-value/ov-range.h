@@ -57,7 +57,7 @@ class octave_trivial_range : public octave_base_value
 public:
 
   octave_trivial_range (octave_idx_type numel, int base, int incr)
-      : m_numel (numel), m_base (base), m_increment(incr) { }
+    : m_numel (numel), m_base (base), m_increment(incr) { }
 
   octave_trivial_range () {};
 

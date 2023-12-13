@@ -41,15 +41,17 @@ settings::settings ()
     m_lexer_debug_flag (false)
 { }
 
-octave_value settings::display_tokens (const octave_value_list& args,
-                                       int nargout)
+octave_value
+settings::display_tokens (const octave_value_list& args,
+                          int nargout)
 {
   return set_internal_variable (m_display_tokens, args, nargout,
                                 "__display_tokens__");
 }
 
-octave_value settings::lexer_debug_flag (const octave_value_list& args,
-    int nargout)
+octave_value
+settings::lexer_debug_flag (const octave_value_list& args,
+                            int nargout)
 {
   return set_internal_variable (m_lexer_debug_flag, args, nargout,
                                 "__lexer_debug_flag__");

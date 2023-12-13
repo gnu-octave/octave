@@ -243,7 +243,8 @@ octave_char_matrix::as_mxArray (bool interleaved) const
 // there's no need to fuck around.  The exceptions are isascii and
 // toascii, which are not C++.  Oddly enough, all those character
 // functions are int (*) (int), even in C++.  Wicked!
-static inline int xisascii (int c)
+static inline int
+xisascii (int c)
 {
 #if defined (HAVE_ISASCII)
   return isascii (c);

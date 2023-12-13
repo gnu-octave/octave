@@ -121,7 +121,8 @@ tree_classdef_superclass_list::~tree_classdef_superclass_list ()
 
 // Classdef property
 
-std::string check_for_doc_string (comment_list *comments)
+std::string
+check_for_doc_string (comment_list *comments)
 {
   // If the comment list ends in a block comment or full-line comment,
   // then it is the doc string for this property.
@@ -149,14 +150,16 @@ tree_classdef_property::~tree_classdef_property ()
   delete m_comments;
 }
 
-tree_identifier *tree_classdef_property::ident ()
+tree_identifier *
+tree_classdef_property::ident ()
 {
   tree_expression *id_expr = m_av->identifier_expression ();
 
   return dynamic_cast<tree_identifier *> (id_expr);
 }
 
-tree_expression *tree_classdef_property::expression ()
+tree_expression *
+tree_classdef_property::expression ()
 {
   return m_av->initializer_expression ();
 }

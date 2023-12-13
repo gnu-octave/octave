@@ -65,7 +65,7 @@ void
 octave_classdef::register_type (octave::type_info& ti)
 {
   s_t_id = ti.register_type (octave_classdef::s_t_name, "<unknown>",
-                           octave_value (new octave_classdef ()));
+                             octave_value (new octave_classdef ()));
 }
 
 octave_value_list
@@ -120,14 +120,14 @@ octave_classdef::subsref (const std::string& type,
           // and the caller to subsref accepts more that one output, return
           // the elements as a comma-separated list so that we can pass it to the
           // evaluator
-          if (retval.length () > 1 && (nargout < 0 || nargout >1))
+          if (retval.length () > 1 && (nargout < 0 || nargout > 1))
             {
-              if (nargout <= 0 || nargout>=retval.length())
+              if (nargout <= 0 || nargout >= retval.length ())
                 // Take the whole list
                 retval = octave_value (retval);
               else
                 // Take nargout elements of the list
-                retval = octave_value(retval.slice(0,nargout));
+                retval = octave_value (retval.slice (0, nargout));
             }
 
           return retval;
@@ -439,7 +439,8 @@ octave_classdef::metaclass_query (const std::string& cls)
   return octave::to_ov (octave::lookup_class (cls));
 }
 
-bool octave_classdef_meta::is_classdef_method (const std::string& cname) const
+bool
+octave_classdef_meta::is_classdef_method (const std::string& cname) const
 {
   bool retval = false;
 
@@ -458,7 +459,8 @@ bool octave_classdef_meta::is_classdef_method (const std::string& cname) const
   return retval;
 }
 
-bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) const
+bool
+octave_classdef_meta::is_classdef_constructor (const std::string& cname) const
 {
   bool retval = false;
 
@@ -478,7 +480,8 @@ bool octave_classdef_meta::is_classdef_constructor (const std::string& cname) co
   return retval;
 }
 
-std::string octave_classdef_meta::doc_string (const std::string& meth_name) const
+std::string
+octave_classdef_meta::doc_string (const std::string& meth_name) const
 {
   if (m_object.is_class ())
     {
@@ -496,7 +499,8 @@ std::string octave_classdef_meta::doc_string (const std::string& meth_name) cons
   return "";
 }
 
-std::string octave_classdef_meta::file_name () const
+std::string
+octave_classdef_meta::file_name () const
 {
   if (m_object.is_class ())
     {
@@ -615,7 +619,8 @@ octave_classdef_superclass_ref::execute (octave::tree_evaluator& tw,
   return retval;
 }
 
-bool octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluator& tw,
+bool
+octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluator& tw,
     const std::string& nm)
 {
   octave_function *of = tw.current_function ();

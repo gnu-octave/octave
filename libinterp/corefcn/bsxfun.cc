@@ -130,7 +130,8 @@ do_bsxfun_real_pow (const octave_value& x, const octave_value& y)
     return octave_value (bsxfun_pow (xa, ya));
 }
 
-static void maybe_fill_table ()
+static void
+maybe_fill_table ()
 {
   static bool filled = false;
   if (filled)

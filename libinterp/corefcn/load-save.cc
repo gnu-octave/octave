@@ -670,11 +670,12 @@ load_save_system::parse_save_options (const std::string& arg,
   return parse_save_options (argv, fmt, append, save_as_floats, use_zlib);
 }
 
-void load_save_system::save_vars (const string_vector& argv, int argv_idx,
-                                  int argc, std::ostream& os,
-                                  const load_save_format& fmt,
-                                  bool save_as_floats,
-                                  bool write_header_info)
+void
+load_save_system::save_vars (const string_vector& argv, int argv_idx,
+                             int argc, std::ostream& os,
+                             const load_save_format& fmt,
+                             bool save_as_floats,
+                             bool write_header_info)
 {
   if (write_header_info)
     write_header (os, fmt);
@@ -729,7 +730,8 @@ void load_save_system::save_vars (const string_vector& argv, int argv_idx,
     }
 }
 
-void load_save_system::dump_octave_core ()
+void
+load_save_system::dump_octave_core ()
 {
   if (m_crash_dumps_octave_core)
     {
@@ -822,8 +824,9 @@ void load_save_system::dump_octave_core ()
     }
 }
 
-void load_save_system::write_header (std::ostream& os,
-                                     const load_save_format& fmt)
+void
+load_save_system::write_header (std::ostream& os,
+                                const load_save_format& fmt)
 {
   switch (fmt.type ())
     {
@@ -907,10 +910,11 @@ void load_save_system::write_header (std::ostream& os,
 // Save variables with names matching PATTERN on stream OS in the
 // format specified by FMT.
 
-std::size_t load_save_system::save_vars (std::ostream& os,
-    const std::string& pattern,
-    const load_save_format& fmt,
-    bool save_as_floats)
+std::size_t
+load_save_system::save_vars (std::ostream& os,
+                             const std::string& pattern,
+                             const load_save_format& fmt,
+                             bool save_as_floats)
 {
   tree_evaluator& tw = m_interpreter.get_evaluator ();
 
@@ -928,11 +932,12 @@ std::size_t load_save_system::save_vars (std::ostream& os,
   return saved;
 }
 
-void load_save_system::do_save (std::ostream& os, const octave_value& tc,
-                                const std::string& name,
-                                const std::string& help,
-                                bool global, const load_save_format& fmt,
-                                bool save_as_floats)
+void
+load_save_system::do_save (std::ostream& os, const octave_value& tc,
+                           const std::string& name,
+                           const std::string& help,
+                           bool global, const load_save_format& fmt,
+                           bool save_as_floats)
 {
   switch (fmt.type ())
     {
@@ -977,10 +982,11 @@ void load_save_system::do_save (std::ostream& os, const octave_value& tc,
 
 // Save the info from SR on stream OS in the format specified by FMT.
 
-void load_save_system::do_save (std::ostream& os,
-                                const symbol_info& syminfo,
-                                const load_save_format& fmt,
-                                bool save_as_floats)
+void
+load_save_system::do_save (std::ostream& os,
+                           const symbol_info& syminfo,
+                           const load_save_format& fmt,
+                           bool save_as_floats)
 {
   octave_value val = syminfo.value ();
 
@@ -997,11 +1003,12 @@ void load_save_system::do_save (std::ostream& os,
 // save fields of a scalar structure STR matching PATTERN on stream OS
 // in the format specified by FMT.
 
-std::size_t load_save_system::save_fields (std::ostream& os,
-    const octave_scalar_map& m,
-    const std::string& pattern,
-    const load_save_format& fmt,
-    bool save_as_floats)
+std::size_t
+load_save_system::save_fields (std::ostream& os,
+                               const octave_scalar_map& m,
+                               const std::string& pattern,
+                               const load_save_format& fmt,
+                               bool save_as_floats)
 {
   symbol_match pat (pattern);
 
@@ -1023,10 +1030,11 @@ std::size_t load_save_system::save_fields (std::ostream& os,
   return saved;
 }
 
-void load_save_system::dump_octave_core (std::ostream& os,
-    const char *fname,
-    const load_save_format& fmt,
-    bool save_as_floats)
+void
+load_save_system::dump_octave_core (std::ostream& os,
+                                    const char *fname,
+                                    const load_save_format& fmt,
+                                    bool save_as_floats)
 {
   write_header (os, fmt);
 
@@ -1063,7 +1071,8 @@ void load_save_system::dump_octave_core (std::ostream& os,
 // Install a variable with name NAME and the value VAL in the
 // symbol table.  If GLOBAL is TRUE, make the variable global.
 
-void load_save_system::install_loaded_variable (const std::string& name,
+void
+load_save_system::install_loaded_variable (const std::string& name,
     const octave_value& val,
     bool global,
     const std::string& /*doc*/)
@@ -1071,7 +1080,8 @@ void load_save_system::install_loaded_variable (const std::string& name,
   m_interpreter.install_variable (name, val, global);
 }
 
-std::string load_save_system::init_save_header_format ()
+std::string
+load_save_system::init_save_header_format ()
 {
   return
     (std::string ("# Created by Octave " OCTAVE_VERSION

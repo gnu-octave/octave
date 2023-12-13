@@ -69,7 +69,7 @@ void
 octave_class::register_type (octave::type_info& ti)
 {
   s_t_id = ti.register_type (octave_class::s_t_name, "<unknown>",
-                           octave_value (new octave_class ()));
+                             octave_value (new octave_class ()));
 }
 
 octave_class::octave_class (const octave_map& m, const std::string& id,
@@ -494,14 +494,14 @@ octave_class::subsref (const std::string& type,
           // and the caller to subsref accepts more that one output, return
           // the elements as a comma-separated list so that we can pass it to the
           // evaluator
-          if (retval.length () > 1 && (nargout < 0 || nargout >1))
+          if (retval.length () > 1 && (nargout < 0 || nargout > 1))
             {
-              if (nargout <= 0 || nargout>=retval.length())
+              if (nargout <= 0 || nargout >= retval.length ())
                 // Take the whole list
                 retval = octave_value (retval);
               else
                 // Take nargout elements of the list
-                retval = octave_value(retval.slice(0,nargout));
+                retval = octave_value (retval.slice (0, nargout));
             }
         }
       else
@@ -1446,7 +1446,8 @@ octave_class::save_hdf5 (octave_hdf5_id loc_id, const char *name,
     goto error_cleanup;
 
   // Add the class name to the group
-  type_hid = H5Tcopy (H5T_C_S1); H5Tset_size (type_hid, m_c_name.length () + 1);
+  type_hid = H5Tcopy (H5T_C_S1);
+  H5Tset_size (type_hid, m_c_name.length () + 1);
   if (type_hid < 0)
     goto error_cleanup;
 

@@ -163,7 +163,7 @@ public:
   virtual bool
   has_function_cache () const { return false; }
 
-  virtual void compile () {}
+  virtual void compile () { }
 
 protected:
 

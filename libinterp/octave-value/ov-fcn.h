@@ -236,7 +236,7 @@ public:
   execute (octave::tree_evaluator& tw, int nargout = 0,
            const octave_value_list& args = octave_value_list ()) = 0;
 
- protected:
+protected:
 
   octave_function (const std::string& nm,
                    const std::string& ds = "")

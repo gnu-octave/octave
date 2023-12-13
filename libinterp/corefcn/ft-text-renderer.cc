@@ -812,7 +812,8 @@ ft_text_renderer::set_mode (int m)
     }
 }
 
-bool is_opaque (const FT_GlyphSlot& glyph, const int x, const int y)
+bool
+is_opaque (const FT_GlyphSlot& glyph, const int x, const int y)
 {
   // Borrowed from https://stackoverflow.com/questions/14800827/
                          //    indexing-pixels-in-a-monochrome-freetype-glyph-buffer

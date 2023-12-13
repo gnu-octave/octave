@@ -55,8 +55,9 @@ static int readline_event_hook ()
   return 0;
 }
 
-void interpreter_events::display_exception (const execution_exception& ee,
-    bool beep)
+void
+interpreter_events::display_exception (const execution_exception& ee,
+                                       bool beep)
 {
   if (beep)
     std::cerr << "\a";
@@ -94,7 +95,8 @@ event_manager::connect_link (const std::shared_ptr<interpreter_events>& obj)
   m_instance = obj;
 }
 
-bool event_manager::enable ()
+bool
+event_manager::enable ()
 {
   bool retval = m_link_enabled;
 
@@ -106,7 +108,8 @@ bool event_manager::enable ()
   return retval;
 }
 
-void event_manager::process_events (bool disable_flag)
+void
+event_manager::process_events (bool disable_flag)
 {
   if (enabled ())
     {
@@ -121,7 +124,8 @@ void event_manager::process_events (bool disable_flag)
     }
 }
 
-void event_manager::discard_events ()
+void
+event_manager::discard_events ()
 {
   if (enabled ())
     {
@@ -133,13 +137,15 @@ void event_manager::discard_events ()
     }
 }
 
-void event_manager::push_event_queue ()
+void
+event_manager::push_event_queue ()
 {
   std::shared_ptr<event_queue> evq (new event_queue ());
   m_gui_event_queue.push (evq);
 }
 
-void event_manager::pop_event_queue ()
+void
+event_manager::pop_event_queue ()
 {
   // FIXME: Should we worry about the possibility of events remaining
   // in the queue when we pop back to the previous queue?  If so, then
@@ -154,7 +160,8 @@ void event_manager::pop_event_queue ()
   m_gui_event_queue.pop ();
 }
 
-void event_manager::post_event (const fcn_callback& fcn)
+void
+event_manager::post_event (const fcn_callback& fcn)
 {
   if (enabled ())
     {
@@ -163,7 +170,8 @@ void event_manager::post_event (const fcn_callback& fcn)
     }
 }
 
-void event_manager::post_event (const meth_callback& meth)
+void
+event_manager::post_event (const meth_callback& meth)
 {
   if (enabled ())
     {
@@ -172,7 +180,8 @@ void event_manager::post_event (const meth_callback& meth)
     }
 }
 
-void event_manager::set_workspace ()
+void
+event_manager::set_workspace ()
 {
   if (enabled ())
     {
@@ -183,7 +192,8 @@ void event_manager::set_workspace ()
     }
 }
 
-void event_manager::set_history ()
+void
+event_manager::set_history ()
 {
   if (enabled ())
     m_instance->set_history (command_history::list ());

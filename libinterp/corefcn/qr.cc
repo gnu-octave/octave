@@ -1265,8 +1265,9 @@ orthogonal basis of @code{span (A)}.
 */
 
 static
-bool check_qr_dims (const octave_value& q, const octave_value& r,
-                    bool allow_ecf = false)
+bool
+check_qr_dims (const octave_value& q, const octave_value& r,
+               bool allow_ecf = false)
 {
   octave_idx_type m = q.rows ();
   octave_idx_type k = r.rows ();
@@ -1276,7 +1277,8 @@ bool check_qr_dims (const octave_value& q, const octave_value& r,
 }
 
 static
-bool check_index (const octave_value& i, bool vector_allowed = false)
+bool
+check_index (const octave_value& i, bool vector_allowed = false)
 {
   return ((i.isreal () || i.isinteger ())
           && (i.is_scalar_type () || vector_allowed));

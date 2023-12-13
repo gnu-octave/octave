@@ -2366,7 +2366,7 @@ public:
   OCTINTERP_API void
   get_children_of_type (const caseless_str& type, bool get_invisible,
                         bool traverse,
-                        std::list<graphics_object> &children_list) const;
+                        std::list<graphics_object>& children_list) const;
 
   void set_modified (const octave_value& val) { set___modified__ (val); }
 
@@ -3498,10 +3498,10 @@ public:
 
     for (int i = 0; i < r; i++)
       {
-        retval(i,0) = m_sx.scale (m(i,0));
-        retval(i,1) = m_sy.scale (m(i,1));
+        retval(i, 0) = m_sx.scale (m(i, 0));
+        retval(i, 1) = m_sy.scale (m(i, 1));
         if (has_z)
-          retval(i,2) = m_sz.scale (m(i,2));
+          retval(i, 2) = m_sz.scale (m(i, 2));
       }
 
     return retval;

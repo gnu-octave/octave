@@ -37,12 +37,14 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-inline double max (double a, double b, double c)
+inline double
+max (double a, double b, double c)
 {
   return (a > b) ? (a > c ? a : c) : (b > c ? b : c);
 }
 
-inline double min (double a, double b, double c)
+inline double
+min (double a, double b, double c)
 {
   return (a < b) ? (a < c ? a : c) : (b < c ? b : c);
 }

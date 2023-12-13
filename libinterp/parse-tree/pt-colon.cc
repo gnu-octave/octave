@@ -51,7 +51,8 @@ tree_colon_expression::dup (symbol_scope& scope) const
   return new_ce;
 }
 
-octave_value tree_colon_expression::evaluate (tree_evaluator& tw, int)
+octave_value
+tree_colon_expression::evaluate (tree_evaluator& tw, int)
 {
   octave_value val;
 

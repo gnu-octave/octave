@@ -2112,8 +2112,9 @@ octave_print_diag_matrix_internal (std::ostream& os, const DMT& m,
 }
 
 template <typename NDA_T, typename ELT_T, typename MAT_T>
-void print_nd_array (std::ostream& os, const NDA_T& nda,
-                     bool pr_as_read_syntax)
+void
+print_nd_array (std::ostream& os, const NDA_T& nda,
+                bool pr_as_read_syntax)
 {
 
   if (nda.isempty ())
@@ -3449,7 +3450,7 @@ Note that the output from @code{fdisp} always ends with a newline.
 
 DEFMETHOD (display, interp, args, ,
            classes: cell char double function_handle int8 int16 int32 int64 logical single struct uint8 uint16 uint32 uint64
-       doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} display (@var{obj})
 Display the contents of the object @var{obj} prepended by its name.
 

@@ -639,17 +639,19 @@ octave_map::do_cat (int dim, octave_idx_type n, const octave_map *map_list,
 }
 
 // This is just a wrapper.
-void permute_to_correct_order1 (const octave_scalar_map& ref,
-                                const octave_scalar_map& src,
-                                octave_scalar_map& dest,
-                                Array<octave_idx_type>& perm)
+void
+permute_to_correct_order1 (const octave_scalar_map& ref,
+                           const octave_scalar_map& src,
+                           octave_scalar_map& dest,
+                           Array<octave_idx_type>& perm)
 {
   dest = src.orderfields (ref, perm);
 }
 
 // In non-scalar case, we also promote empty structs without fields.
-void permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
-                                octave_map& dest, Array<octave_idx_type>& perm)
+void
+permute_to_correct_order1 (const octave_map& ref, const octave_map& src,
+                           octave_map& dest, Array<octave_idx_type>& perm)
 {
   if (src.nfields () == 0 && src.isempty ())
     dest = octave_map (src.dims (), ref.keys ());

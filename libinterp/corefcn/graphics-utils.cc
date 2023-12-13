@@ -75,7 +75,8 @@ xget (const graphics_handle& h, const caseless_str& pname)
   return go.get (pname);
 }
 
-bool isfigure (double val)
+bool
+isfigure (double val)
 {
   gh_manager& gh_mgr = octave::__get_gh_manager__ ();
 

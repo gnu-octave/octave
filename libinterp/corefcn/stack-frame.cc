@@ -1053,50 +1053,55 @@ private:
   std::set<std::string> m_found_names;
 };
 
-stack_frame *stack_frame::create (tree_evaluator& tw, octave_function *fcn,
-                                  std::size_t index,
-                                  const std::shared_ptr<stack_frame>& parent_link,
-                                  const std::shared_ptr<stack_frame>& static_link)
+stack_frame *
+stack_frame::create (tree_evaluator& tw, octave_function *fcn,
+                     std::size_t index,
+                     const std::shared_ptr<stack_frame>& parent_link,
+                     const std::shared_ptr<stack_frame>& static_link)
 {
   return new compiled_fcn_stack_frame (tw, fcn, index,
                                        parent_link, static_link);
 }
 
-stack_frame *stack_frame::create (tree_evaluator& tw,
-                                  octave_user_script *script,
-                                  std::size_t index,
-                                  const std::shared_ptr<stack_frame>& parent_link,
-                                  const std::shared_ptr<stack_frame>& static_link)
+stack_frame *
+stack_frame::create (tree_evaluator& tw,
+                     octave_user_script *script,
+                     std::size_t index,
+                     const std::shared_ptr<stack_frame>& parent_link,
+                     const std::shared_ptr<stack_frame>& static_link)
 {
   return new script_stack_frame (tw, script, index, parent_link, static_link);
 }
 
-stack_frame *stack_frame::create (tree_evaluator& tw,
-                                  octave_user_function *fcn, std::size_t index,
-                                  const std::shared_ptr<stack_frame>& parent_link,
-                                  const std::shared_ptr<stack_frame>& static_link,
-                                  const std::shared_ptr<stack_frame>& access_link)
+stack_frame *
+stack_frame::create (tree_evaluator& tw,
+                     octave_user_function *fcn, std::size_t index,
+                     const std::shared_ptr<stack_frame>& parent_link,
+                     const std::shared_ptr<stack_frame>& static_link,
+                     const std::shared_ptr<stack_frame>& access_link)
 {
   return new user_fcn_stack_frame (tw, fcn, index,
                                    parent_link, static_link, access_link);
 }
 
-stack_frame *stack_frame::create (tree_evaluator& tw,
-                                  octave_user_function *fcn, std::size_t index,
-                                  const std::shared_ptr<stack_frame>& parent_link,
-                                  const std::shared_ptr<stack_frame>& static_link,
-                                  const local_vars_map& local_vars,
-                                  const std::shared_ptr<stack_frame>& access_link)
+stack_frame *
+stack_frame::create (tree_evaluator& tw,
+                     octave_user_function *fcn, std::size_t index,
+                     const std::shared_ptr<stack_frame>& parent_link,
+                     const std::shared_ptr<stack_frame>& static_link,
+                     const local_vars_map& local_vars,
+                     const std::shared_ptr<stack_frame>& access_link)
 {
   return new user_fcn_stack_frame (tw, fcn, index,
                                    parent_link, static_link, local_vars,
                                    access_link);
 }
 
-stack_frame *stack_frame::create (tree_evaluator& tw,
-                                  const symbol_scope& scope, std::size_t index,
-                                  const std::shared_ptr<stack_frame>& parent_link,
-                                  const std::shared_ptr<stack_frame>& static_link)
+stack_frame *
+stack_frame::create (tree_evaluator& tw,
+                     const symbol_scope& scope, std::size_t index,
+                     const std::shared_ptr<stack_frame>& parent_link,
+                     const std::shared_ptr<stack_frame>& static_link)
 {
   return new scope_stack_frame (tw, scope, index, parent_link, static_link);
 }
@@ -1105,7 +1110,8 @@ stack_frame *stack_frame::create (tree_evaluator& tw,
 // user_fcn stack frames.  Anything else indicates an error in the
 // implementation, but we'll simply warn if that happens.
 
-void stack_frame::clear_values ()
+void
+stack_frame::clear_values ()
 {
   warning ("invalid call to stack_frame::clear_values; please report");
 }
@@ -1132,10 +1138,11 @@ stack_frame::make_symbol_info_list (const std::list<symbol_record>& symrec_list)
   return symbol_stats;
 }
 
-octave_value stack_frame::who (const string_vector& patterns,
-                               bool have_regexp, bool return_list,
-                               bool verbose, const std::string& whos_line_fmt,
-                               const std::string& msg)
+octave_value
+stack_frame::who (const string_vector& patterns,
+                  bool have_regexp, bool return_list,
+                  bool verbose, const std::string& whos_line_fmt,
+                  const std::string& msg)
 {
   symbol_info_accumulator sym_inf_accum (patterns, have_regexp);
 
@@ -1174,7 +1181,8 @@ octave_value stack_frame::who (const string_vector& patterns,
 // Return first occurrence of variables in current stack frame and any
 // parent frames reachable through access links.
 
-symbol_info_list stack_frame::all_variables ()
+symbol_info_list
+stack_frame::all_variables ()
 {
   symbol_info_accumulator sia (true, true);
 
@@ -1183,7 +1191,8 @@ symbol_info_list stack_frame::all_variables ()
   return sia.symbol_info ();
 }
 
-octave_value stack_frame::workspace ()
+octave_value
+stack_frame::workspace ()
 {
   std::list<octave_scalar_map> ws_list;
 
@@ -1221,7 +1230,8 @@ octave_value stack_frame::workspace ()
 // FIXME: Should this function also find any variables in parent
 // scopes accessible through access_links?
 
-std::list<std::string> stack_frame::variable_names () const
+std::list<std::string>
+stack_frame::variable_names () const
 {
   std::list<std::string> retval;
 
@@ -1240,7 +1250,8 @@ std::list<std::string> stack_frame::variable_names () const
   return retval;
 }
 
-symbol_info_list stack_frame::glob_symbol_info (const std::string& pattern)
+symbol_info_list
+stack_frame::glob_symbol_info (const std::string& pattern)
 {
   symbol_info_accumulator sia (pattern, false);
 
@@ -1249,7 +1260,8 @@ symbol_info_list stack_frame::glob_symbol_info (const std::string& pattern)
   return sia.symbol_info ();
 }
 
-symbol_info_list stack_frame::regexp_symbol_info (const std::string& pattern)
+symbol_info_list
+stack_frame::regexp_symbol_info (const std::string& pattern)
 {
   symbol_info_accumulator sia (pattern, true);
 
@@ -1258,7 +1270,8 @@ symbol_info_list stack_frame::regexp_symbol_info (const std::string& pattern)
   return sia.symbol_info ();
 }
 
-std::size_t stack_frame::size () const
+std::size_t
+stack_frame::size () const
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -1267,7 +1280,8 @@ std::size_t stack_frame::size () const
   panic_impossible ();
 }
 
-void stack_frame::resize (std::size_t)
+void
+stack_frame::resize (std::size_t)
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -1276,7 +1290,8 @@ void stack_frame::resize (std::size_t)
   panic_impossible ();
 }
 
-stack_frame::scope_flags stack_frame::get_scope_flag (std::size_t) const
+stack_frame::scope_flags
+stack_frame::get_scope_flag (std::size_t) const
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -1285,7 +1300,8 @@ stack_frame::scope_flags stack_frame::get_scope_flag (std::size_t) const
   panic_impossible ();
 }
 
-void stack_frame::set_scope_flag (std::size_t, scope_flags)
+void
+stack_frame::set_scope_flag (std::size_t, scope_flags)
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -1294,8 +1310,9 @@ void stack_frame::set_scope_flag (std::size_t, scope_flags)
   panic_impossible ();
 }
 
-void stack_frame::install_variable (const symbol_record& sym,
-                                    const octave_value& value, bool global)
+void
+stack_frame::install_variable (const symbol_record& sym,
+                               const octave_value& value, bool global)
 {
   if (global && ! is_global (sym))
     {
@@ -1340,7 +1357,8 @@ void stack_frame::install_variable (const symbol_record& sym,
     assign (sym, value);
 }
 
-octave_value stack_frame::varval (std::size_t) const
+octave_value
+stack_frame::varval (std::size_t) const
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -1349,7 +1367,8 @@ octave_value stack_frame::varval (std::size_t) const
   panic_impossible ();
 }
 
-octave_value& stack_frame::varref (std::size_t)
+octave_value&
+stack_frame::varref (std::size_t)
 {
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
@@ -1358,56 +1377,64 @@ octave_value& stack_frame::varref (std::size_t)
   panic_impossible ();
 }
 
-void stack_frame::clear_objects ()
+void
+stack_frame::clear_objects ()
 {
   symbol_cleaner sc (true, true);
 
   accept (sc);
 }
 
-void stack_frame::clear_variable (const std::string& name)
+void
+stack_frame::clear_variable (const std::string& name)
 {
   symbol_cleaner sc (name);
 
   accept (sc);
 }
 
-void stack_frame::clear_variable_pattern (const std::string& pattern)
+void
+stack_frame::clear_variable_pattern (const std::string& pattern)
 {
   symbol_cleaner sc (pattern);
 
   accept (sc);
 }
 
-void stack_frame::clear_variable_pattern (const string_vector& patterns)
+void
+stack_frame::clear_variable_pattern (const string_vector& patterns)
 {
   symbol_cleaner sc (patterns);
 
   accept (sc);
 }
 
-void stack_frame::clear_variable_regexp (const std::string& pattern)
+void
+stack_frame::clear_variable_regexp (const std::string& pattern)
 {
   symbol_cleaner sc (pattern, true);
 
   accept (sc);
 }
 
-void stack_frame::clear_variable_regexp (const string_vector& patterns)
+void
+stack_frame::clear_variable_regexp (const string_vector& patterns)
 {
   symbol_cleaner sc (patterns, true);
 
   accept (sc);
 }
 
-void stack_frame::clear_variables ()
+void
+stack_frame::clear_variables ()
 {
   symbol_cleaner sc;
 
   accept (sc);
 }
 
-void stack_frame::display_stopped_in_message (std::ostream& os) const
+void
+stack_frame::display_stopped_in_message (std::ostream& os) const
 {
   if (index () == 0)
     os << "at top level" << std::endl;
@@ -1423,7 +1450,8 @@ void stack_frame::display_stopped_in_message (std::ostream& os) const
     }
 }
 
-void stack_frame::display (bool follow) const
+void
+stack_frame::display (bool follow) const
 {
   std::ostream& os = octave_stdout;
 
@@ -1470,7 +1498,8 @@ void stack_frame::display (bool follow) const
     }
 }
 
-void compiled_fcn_stack_frame::display (bool follow) const
+void
+compiled_fcn_stack_frame::display (bool follow) const
 {
   std::ostream& os = octave_stdout;
 
@@ -1481,7 +1510,8 @@ void compiled_fcn_stack_frame::display (bool follow) const
      << " (" << m_fcn->type_name () << ")" << std::endl;
 }
 
-void compiled_fcn_stack_frame::accept (stack_frame_walker& sfw)
+void
+compiled_fcn_stack_frame::accept (stack_frame_walker& sfw)
 {
   sfw.visit_compiled_fcn_stack_frame (*this);
 }
@@ -1500,14 +1530,16 @@ script_stack_frame::script_stack_frame (tree_evaluator& tw,
   set_script_offsets ();
 }
 
-std::size_t script_stack_frame::get_num_symbols (octave_user_script *script)
+std::size_t
+script_stack_frame::get_num_symbols (octave_user_script *script)
 {
   symbol_scope script_scope = script->scope ();
 
   return script_scope.num_symbols ();
 }
 
-void script_stack_frame::set_script_offsets ()
+void
+script_stack_frame::set_script_offsets ()
 {
   // Set frame and data offsets inside stack frame based on enclosing
   // scope(s).
@@ -1612,7 +1644,8 @@ void script_stack_frame::set_script_offsets_internal
     }
 }
 
-void script_stack_frame::resize_and_update_script_offsets (const symbol_record& sym)
+void
+script_stack_frame::resize_and_update_script_offsets (const symbol_record& sym)
 {
   std::size_t data_offset = sym.data_offset ();
 
@@ -1655,7 +1688,8 @@ script_stack_frame::get_access_link (const std::shared_ptr<stack_frame>& static_
   return alink;
 }
 
-unwind_protect *script_stack_frame::unwind_protect_frame ()
+unwind_protect *
+script_stack_frame::unwind_protect_frame ()
 {
   if (! m_unwind_protect_frame)
     m_unwind_protect_frame = new unwind_protect ();
@@ -1663,7 +1697,8 @@ unwind_protect *script_stack_frame::unwind_protect_frame ()
   return m_unwind_protect_frame;
 }
 
-symbol_record script_stack_frame::lookup_symbol (const std::string& name) const
+symbol_record
+script_stack_frame::lookup_symbol (const std::string& name) const
 {
   symbol_scope scope = get_scope ();
 
@@ -1686,7 +1721,8 @@ symbol_record script_stack_frame::lookup_symbol (const std::string& name) const
   return new_sym;
 }
 
-symbol_record script_stack_frame::insert_symbol (const std::string& name)
+symbol_record
+script_stack_frame::insert_symbol (const std::string& name)
 {
   // If the symbols is already in the immediate scope, there is
   // nothing more to do.
@@ -1794,9 +1830,10 @@ script_stack_frame::get_val_offsets_internal (const symbol_record& script_sr,
   return found;
 }
 
-bool script_stack_frame::get_val_offsets (const symbol_record& sym,
-    std::size_t& frame_offset,
-    std::size_t& data_offset) const
+bool
+script_stack_frame::get_val_offsets (const symbol_record& sym,
+                                     std::size_t& frame_offset,
+                                     std::size_t& data_offset) const
 {
   data_offset = sym.data_offset ();
   frame_offset = sym.frame_offset ();
@@ -1843,7 +1880,8 @@ bool script_stack_frame::get_val_offsets (const symbol_record& sym,
   return true;
 }
 
-void script_stack_frame::get_val_offsets_with_insert (const symbol_record& sym,
+void
+script_stack_frame::get_val_offsets_with_insert (const symbol_record& sym,
     std::size_t& frame_offset,
     std::size_t& data_offset)
 {
@@ -1936,7 +1974,8 @@ script_stack_frame::scope_flag (const symbol_record& sym) const
   return frame->get_scope_flag (data_offset);
 }
 
-octave_value script_stack_frame::varval (const symbol_record& sym) const
+octave_value
+script_stack_frame::varval (const symbol_record& sym) const
 {
   std::size_t frame_offset;
   std::size_t data_offset;
@@ -1982,7 +2021,8 @@ octave_value script_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& script_stack_frame::varref (const symbol_record& sym)
+octave_value&
+script_stack_frame::varref (const symbol_record& sym)
 {
   std::size_t frame_offset;
   std::size_t data_offset;
@@ -2021,8 +2061,9 @@ octave_value& script_stack_frame::varref (const symbol_record& sym)
   error ("internal error: invalid switch case");
 }
 
-void script_stack_frame::mark_scope (const symbol_record& sym,
-                                     scope_flags flag)
+void
+script_stack_frame::mark_scope (const symbol_record& sym,
+                                scope_flags flag)
 {
   std::size_t data_offset = sym.data_offset ();
 
@@ -2045,7 +2086,8 @@ void script_stack_frame::mark_scope (const symbol_record& sym,
   frame->set_scope_flag (data_offset, flag);
 }
 
-void script_stack_frame::display (bool follow) const
+void
+script_stack_frame::display (bool follow) const
 {
   std::ostream& os = octave_stdout;
 
@@ -2070,12 +2112,14 @@ void script_stack_frame::display (bool follow) const
   display_scope (os, get_scope ());
 }
 
-void script_stack_frame::accept (stack_frame_walker& sfw)
+void
+script_stack_frame::accept (stack_frame_walker& sfw)
 {
   sfw.visit_script_stack_frame (*this);
 }
 
-void base_value_stack_frame::display (bool follow) const
+void
+base_value_stack_frame::display (bool follow) const
 {
   std::ostream& os = octave_stdout;
 
@@ -2147,7 +2191,8 @@ user_fcn_stack_frame::get_access_link (octave_user_function *fcn,
   return alink;
 }
 
-void user_fcn_stack_frame::clear_values ()
+void
+user_fcn_stack_frame::clear_values ()
 {
   symbol_scope fcn_scope = m_fcn->scope ();
 
@@ -2181,7 +2226,8 @@ void user_fcn_stack_frame::clear_values ()
     }
 }
 
-unwind_protect *user_fcn_stack_frame::unwind_protect_frame ()
+unwind_protect *
+user_fcn_stack_frame::unwind_protect_frame ()
 {
   if (! m_unwind_protect_frame)
     m_unwind_protect_frame = new unwind_protect ();
@@ -2189,7 +2235,8 @@ unwind_protect *user_fcn_stack_frame::unwind_protect_frame ()
   return m_unwind_protect_frame;
 }
 
-symbol_record user_fcn_stack_frame::lookup_symbol (const std::string& name) const
+symbol_record
+user_fcn_stack_frame::lookup_symbol (const std::string& name) const
 {
   const stack_frame *frame = this;
 
@@ -2209,7 +2256,8 @@ symbol_record user_fcn_stack_frame::lookup_symbol (const std::string& name) cons
   return symbol_record ();
 }
 
-symbol_record user_fcn_stack_frame::insert_symbol (const std::string& name)
+symbol_record
+user_fcn_stack_frame::insert_symbol (const std::string& name)
 {
   // If the symbols is already in the immediate scope, there is
   // nothing more to do.
@@ -2273,7 +2321,8 @@ user_fcn_stack_frame::scope_flag (const symbol_record& sym) const
   return frame->get_scope_flag (data_offset);
 }
 
-octave_value user_fcn_stack_frame::varval (const symbol_record& sym) const
+octave_value
+user_fcn_stack_frame::varval (const symbol_record& sym) const
 {
   std::size_t frame_offset = sym.frame_offset ();
   std::size_t data_offset = sym.data_offset ();
@@ -2314,7 +2363,8 @@ octave_value user_fcn_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& user_fcn_stack_frame::varref (const symbol_record& sym)
+octave_value&
+user_fcn_stack_frame::varref (const symbol_record& sym)
 {
   std::size_t frame_offset = sym.frame_offset ();
   std::size_t data_offset = sym.data_offset ();
@@ -2352,7 +2402,8 @@ octave_value& user_fcn_stack_frame::varref (const symbol_record& sym)
   error ("internal error: invalid switch case");
 }
 
-void user_fcn_stack_frame::mark_scope (const symbol_record& sym, scope_flags flag)
+void
+user_fcn_stack_frame::mark_scope (const symbol_record& sym, scope_flags flag)
 {
   std::size_t frame_offset = sym.frame_offset ();
 
@@ -2367,7 +2418,8 @@ void user_fcn_stack_frame::mark_scope (const symbol_record& sym, scope_flags fla
   set_scope_flag (data_offset, flag);
 }
 
-void user_fcn_stack_frame::display (bool follow) const
+void
+user_fcn_stack_frame::display (bool follow) const
 {
   std::ostream& os = octave_stdout;
 
@@ -2380,12 +2432,14 @@ void user_fcn_stack_frame::display (bool follow) const
   display_scope (os, get_scope ());
 }
 
-void user_fcn_stack_frame::accept (stack_frame_walker& sfw)
+void
+user_fcn_stack_frame::accept (stack_frame_walker& sfw)
 {
   sfw.visit_user_fcn_stack_frame (*this);
 }
 
-void user_fcn_stack_frame::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
+void
+user_fcn_stack_frame::break_closure_cycles (const std::shared_ptr<stack_frame>& frame)
 {
   for (auto& val : m_values)
     val.break_closure_cycles (frame);
@@ -2394,7 +2448,8 @@ void user_fcn_stack_frame::break_closure_cycles (const std::shared_ptr<stack_fra
     m_access_link->break_closure_cycles (frame);
 }
 
-symbol_record scope_stack_frame::insert_symbol (const std::string& name)
+symbol_record
+scope_stack_frame::insert_symbol (const std::string& name)
 {
   // There is no access link for scope frames, so there is no other
   // frame to search in and the offset must be zero.
@@ -2428,7 +2483,8 @@ scope_stack_frame::scope_flag (const symbol_record& sym) const
   return get_scope_flag (data_offset);
 }
 
-octave_value scope_stack_frame::varval (const symbol_record& sym) const
+octave_value
+scope_stack_frame::varval (const symbol_record& sym) const
 {
   // There is no access link for scope frames, so the frame
   // offset must be zero.
@@ -2453,7 +2509,8 @@ octave_value scope_stack_frame::varval (const symbol_record& sym) const
   error ("internal error: invalid switch case");
 }
 
-octave_value& scope_stack_frame::varref (const symbol_record& sym)
+octave_value&
+scope_stack_frame::varref (const symbol_record& sym)
 {
   // There is no access link for scope frames, so the frame
   // offset must be zero.
@@ -2478,8 +2535,9 @@ octave_value& scope_stack_frame::varref (const symbol_record& sym)
   error ("internal error: invalid switch case");
 }
 
-void scope_stack_frame::mark_scope (const symbol_record& sym,
-                                    scope_flags flag)
+void
+scope_stack_frame::mark_scope (const symbol_record& sym,
+                               scope_flags flag)
 {
   // There is no access link for scope frames, so the frame
   // offset must be zero.
@@ -2492,7 +2550,8 @@ void scope_stack_frame::mark_scope (const symbol_record& sym,
   set_scope_flag (data_offset, flag);
 }
 
-void scope_stack_frame::display (bool follow) const
+void
+scope_stack_frame::display (bool follow) const
 {
   std::ostream& os = octave_stdout;
 
@@ -2502,7 +2561,8 @@ void scope_stack_frame::display (bool follow) const
   display_scope (os, m_scope);
 }
 
-void scope_stack_frame::accept (stack_frame_walker& sfw)
+void
+scope_stack_frame::accept (stack_frame_walker& sfw)
 {
   sfw.visit_scope_stack_frame (*this);
 }

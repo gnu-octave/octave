@@ -274,7 +274,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
               const ColumnVector perm = args(2).xvector_value ("matrix_type: Invalid permutation vector PERM");
 
               octave_idx_type len = perm.numel ();
-              dim_vector dv = args(0).dims ();
+              const dim_vector& dv = args(0).dims ();
 
               if (len != dv(0))
                 error ("matrix_type: Invalid permutation vector PERM");
@@ -411,7 +411,7 @@ LU@tie{}factorization.  Once the matrix has been factorized,
               const ColumnVector perm = args(2).xvector_value ("matrix_type: Invalid permutation vector PERM");
 
               octave_idx_type len = perm.numel ();
-              dim_vector dv = args(0).dims ();
+              const dim_vector& dv = args(0).dims ();
 
               if (len != dv(0))
                 error ("matrix_type: Invalid permutation vector PERM");

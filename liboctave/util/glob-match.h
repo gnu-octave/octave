@@ -113,11 +113,30 @@ public:
 
   symbol_match (const std::string& pattern);
 
-  symbol_match (const symbol_match&) = default;
+  symbol_match (const symbol_match&);
 
-  symbol_match& operator = (const symbol_match&) = default;
+  symbol_match& operator = (const symbol_match& in)
+  {
+    if (this == &in)
+      return *this;
+
+    m_pat = in.m_pat;
+
+    if (m_glob)
+      m_glob->set_pattern (m_pat);
+
+    return *this;
+  }
 
   ~symbol_match () = default;
+
+  void set_pattern (const std::string& p)
+  {
+    m_pat = p;
+
+    if (m_glob)
+      m_glob->set_pattern (m_pat);
+  }
 
   bool match (const std::string& sym);
 

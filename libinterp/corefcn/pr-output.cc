@@ -2124,7 +2124,7 @@ print_nd_array (std::ostream& os, const NDA_T& nda,
 
       int ndims = nda.ndims ();
 
-      dim_vector dims = nda.dims ();
+      const dim_vector& dims = nda.dims ();
 
       Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
 
@@ -2712,7 +2712,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
     {
       int ndims = nda.ndims ();
 
-      dim_vector dims = nda.dims ();
+      const dim_vector& dims = nda.dims ();
 
       Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
 
@@ -2954,7 +2954,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
 
       Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
 
-      dim_vector dims = nda.dims ();
+      const dim_vector& dims = nda.dims ();
 
       octave_idx_type m = 1;
 
@@ -3023,7 +3023,7 @@ octave_print_internal_template (std::ostream& os, const intNDArray<T>& nda,
     {
       int ndims = nda.ndims ();
 
-      dim_vector dims = nda.dims ();
+      const dim_vector& dims = nda.dims ();
 
       Array<octave_idx_type> ra_idx (dim_vector (ndims, 1), 0);
 

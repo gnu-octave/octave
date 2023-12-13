@@ -241,7 +241,7 @@ decode_object_array (const rapidjson::Value& val,
   if (same_field_names)
     {
       octave_map struct_array;
-      dim_vector struct_array_dims = dim_vector (struct_cell.numel (), 1);
+      const dim_vector& struct_array_dims = dim_vector (struct_cell.numel (), 1);
 
       if (field_names.numel ())
         {
@@ -300,7 +300,7 @@ decode_array_of_arrays (const rapidjson::Value& val,
   bool is_struct = cell(0).isstruct ();
   string_vector field_names = is_struct ? cell(0).map_value ().fieldnames ()
                               : string_vector ();
-  dim_vector sub_array_dims = cell(0).dims ();
+  const dim_vector& sub_array_dims = cell(0).dims ();
   octave_idx_type sub_array_ndims = cell(0).ndims ();
   octave_idx_type cell_numel = cell.numel ();
   for (octave_idx_type i = 0; i < cell_numel; ++i)

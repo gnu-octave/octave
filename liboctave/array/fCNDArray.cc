@@ -57,7 +57,7 @@ FloatComplexNDArray::FloatComplexNDArray (const charNDArray& a)
 FloatComplexNDArray
 FloatComplexNDArray::fourier (int dim) const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
@@ -88,7 +88,7 @@ FloatComplexNDArray::fourier (int dim) const
 FloatComplexNDArray
 FloatComplexNDArray::ifourier (int dim) const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   if (dim > dv.ndims () || dim < 0)
     return FloatComplexNDArray ();
@@ -119,7 +119,7 @@ FloatComplexNDArray::ifourier (int dim) const
 FloatComplexNDArray
 FloatComplexNDArray::fourier2d () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 2)
     return FloatComplexNDArray ();
 
@@ -139,7 +139,7 @@ FloatComplexNDArray::fourier2d () const
 FloatComplexNDArray
 FloatComplexNDArray::ifourier2d () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 2)
     return FloatComplexNDArray ();
 
@@ -159,7 +159,7 @@ FloatComplexNDArray::ifourier2d () const
 FloatComplexNDArray
 FloatComplexNDArray::fourierNd () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int rank = dv.ndims ();
 
   const FloatComplex *in (data ());
@@ -174,7 +174,7 @@ FloatComplexNDArray::fourierNd () const
 FloatComplexNDArray
 FloatComplexNDArray::ifourierNd () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int rank = dv.ndims ();
 
   const FloatComplex *in (data ());
@@ -520,8 +520,8 @@ FloatComplexNDArray&
 FloatComplexNDArray::insert (const NDArray& a,
                              octave_idx_type r, octave_idx_type c)
 {
-  dim_vector a_dv = a.dims ();
-  dim_vector dv = dims ();
+  const dim_vector& a_dv = a.dims ();
+  const dim_vector& dv = dims ();
 
   int n = a_dv.ndims ();
 

@@ -44,8 +44,8 @@ do_bsxfun_op (const Array<X>& x, const Array<Y>& y,
               void (*op_vs) (std::size_t, R *, const X *, Y))
 {
   int nd = std::max (x.ndims (), y.ndims ());
-  dim_vector dvx = x.dims ().redim (nd);
-  dim_vector dvy = y.dims ().redim (nd);
+  const dim_vector& dvx = x.dims ().redim (nd);
+  const dim_vector& dvy = y.dims ().redim (nd);
 
   // Construct the result dimensions.
   dim_vector dvr;
@@ -143,7 +143,7 @@ do_inplace_bsxfun_op (Array<R>& r, const Array<X>& x,
                       void (*op_vv) (std::size_t, R *, const X *),
                       void (*op_vs) (std::size_t, R *, X))
 {
-  dim_vector dvr = r.dims ();
+  const dim_vector& dvr = r.dims ();
   dim_vector dvx = x.dims ();
   octave_idx_type nd = r.ndims ();
   dvx = dvx.redim (nd);

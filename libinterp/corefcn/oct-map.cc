@@ -1334,7 +1334,7 @@ octave_map::concat (const octave_map& rb, const Array<octave_idx_type>& ra_idx)
     }
   else
     {
-      dim_vector dv = dims ();
+      const dim_vector& dv = dims ();
 
       if (dv.all_zero ())
         *this = rb;

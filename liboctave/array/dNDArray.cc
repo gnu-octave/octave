@@ -99,7 +99,7 @@ NDArray::NDArray (const charNDArray& a)
 ComplexNDArray
 NDArray::fourier (int dim) const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
@@ -130,7 +130,7 @@ NDArray::fourier (int dim) const
 ComplexNDArray
 NDArray::ifourier (int dim) const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   if (dim > dv.ndims () || dim < 0)
     return ComplexNDArray ();
@@ -160,7 +160,7 @@ NDArray::ifourier (int dim) const
 ComplexNDArray
 NDArray::fourier2d () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 2)
     return ComplexNDArray ();
 
@@ -180,7 +180,7 @@ NDArray::fourier2d () const
 ComplexNDArray
 NDArray::ifourier2d () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 2)
     return ComplexNDArray ();
 
@@ -199,7 +199,7 @@ NDArray::ifourier2d () const
 ComplexNDArray
 NDArray::fourierNd () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int rank = dv.ndims ();
 
   const double *in (data ());
@@ -214,7 +214,7 @@ NDArray::fourierNd () const
 ComplexNDArray
 NDArray::ifourierNd () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int rank = dv.ndims ();
 
   ComplexNDArray tmp (*this);

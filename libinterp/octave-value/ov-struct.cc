@@ -634,7 +634,7 @@ octave_struct::print_raw (std::ostream& os, bool) const
       increment_indent_level ();
 
       indent (os);
-      dim_vector dv = dims ();
+      const dim_vector& dv = dims ();
       os << dv.str () << " struct array containing the fields:";
       newline (os);
 
@@ -727,7 +727,7 @@ octave_struct::edit_display (const float_display_format&,
     }
 
   std::string tname = val.type_name ();
-  dim_vector dv = val.dims ();
+  const dim_vector& dv = val.dims ();
   std::string dimstr = dv.str ();
   return "[" + dimstr + " " + tname + "]";
 }
@@ -845,7 +845,7 @@ octave_struct::save_binary (std::ostream& os, bool save_as_floats)
 
   octave_idx_type nf = m.nfields ();
 
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 1)
     return false;
 
@@ -1419,7 +1419,7 @@ octave_scalar_struct::print_raw (std::ostream& os, bool) const
             {
               indent (os);
               os << key;
-              dim_vector dv = val.dims ();
+              const dim_vector& dv = val.dims ();
               os << ": " << dv.str () << ' ' << val.type_name ();
               newline (os);
             }
@@ -1480,7 +1480,7 @@ octave_scalar_struct::edit_display (const float_display_format&,
   octave_value val = m_map.contents (r);
 
   std::string tname = val.type_name ();
-  dim_vector dv = val.dims ();
+  const dim_vector& dv = val.dims ();
   std::string dimstr = dv.str ();
   return "[" + dimstr + " " + tname + "]";
 }
@@ -1897,7 +1897,7 @@ orderfields, isstruct, structfun}
     {
       if (args(i).iscell ())
         {
-          dim_vector argdims (args(i).dims ());
+          const dim_vector& argdims = args(i).dims ();
 
           if (! scalar (argdims))
             {

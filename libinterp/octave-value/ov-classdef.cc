@@ -396,7 +396,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
           else
             {
               octave_value val = prop.get_value (m_object, false);
-              dim_vector dims = val.dims ();
+              const dim_vector& dims = val.dims ();
 
               os << std::setw (max_len+2) << nm << ": ";
               if (val.is_string ())

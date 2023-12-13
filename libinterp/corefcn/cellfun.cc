@@ -197,7 +197,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
 
       for (octave_idx_type count = 0; count < k; count++)
         {
-          dim_vector dv = f_args.elem (count).dims ();
+          const dim_vector& dv = f_args.elem (count).dims ();
           if (d < dv.ndims ())
             result(count) = static_cast<double> (dv(d));
           else
@@ -1789,7 +1789,7 @@ do_object2cell (const octave_value& obj, const Array<int>& dimv)
   if (! dimv.isempty ())
     error ("num2cell (A, dim) not implemented for class objects");
 
-  dim_vector dv = get_object_dims (array);
+  const dim_vector& dv = get_object_dims (array);
 
   retval.resize (dv);
 

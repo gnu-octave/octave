@@ -442,7 +442,7 @@ octave_perm_matrix::as_mxArray (bool interleaved) const
 bool
 octave_perm_matrix::print_as_scalar () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   return (dv.all_ones () || dv.any_zero ());
 }

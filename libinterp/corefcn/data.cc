@@ -2006,7 +2006,7 @@ do_cat (const octave_value_list& xargs, int dim, std::string fname)
               // the right type.
               tmp = cat_op (tmp, args(j), ra_idx);
 
-              dim_vector dv_tmp = args(j).dims ();
+              const dim_vector& dv_tmp = args(j).dims ();
 
               if (dim >= dv_len)
                 {
@@ -2927,11 +2927,11 @@ or no argument, @code{size_equal} returns true.
 
   if (nargin >= 1)
     {
-      dim_vector a_dims = args(0).dims ();
+      const dim_vector& a_dims = args(0).dims ();
 
       for (int i = 1; i < nargin; ++i)
         {
-          dim_vector b_dims = args(i).dims ();
+          const dim_vector& b_dims = args(i).dims ();
 
           if (a_dims != b_dims)
             return ovl (false);
@@ -5673,9 +5673,9 @@ is returned.
   octave_value arg_1 = args(0);
   octave_value arg_2 = args(1);
 
-  dim_vector sz1 = arg_1.dims ();
+  const dim_vector& sz1 = arg_1.dims ();
   bool isvector1 = sz1.ndims () == 2 && (sz1(0) == 1 || sz1(1) == 1);
-  dim_vector sz2 = arg_2.dims ();
+  const dim_vector& sz2 = arg_2.dims ();
   bool isvector2 = sz2.ndims () == 2 && (sz2(0) == 1 || sz2(1) == 1);
 
   if (! isvector1 || ! isvector2)
@@ -7877,7 +7877,7 @@ do_accumdim_sum (const idx_vector& idx, const NDT& vals,
   else if (idx.extent (n) > n)
     error ("accumdim: index out of range");
 
-  dim_vector vals_dim = vals.dims ();
+  const dim_vector& vals_dim = vals.dims ();
   dim_vector rdv = vals_dim;
 
   if (dim < 0)
@@ -7961,7 +7961,7 @@ do_merge (const Array<bool>& mask,
           const NDT& tval, const NDT& fval)
 {
   typedef typename NDT::element_type T;
-  dim_vector dv = mask.dims ();
+  const dim_vector& dv = mask.dims ();
   NDT retval (dv);
 
   bool tscl = tval.numel () == 1;

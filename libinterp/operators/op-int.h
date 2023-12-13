@@ -702,8 +702,8 @@
   static octave_value                                           \
   elem_xpow (const T1 ## NDArray& a, const T2 ## NDArray& b)    \
   {                                                             \
-    dim_vector a_dims = a.dims ();                              \
-    dim_vector b_dims = b.dims ();                              \
+    const dim_vector& a_dims = a.dims ();                       \
+    const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
         if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
@@ -723,8 +723,8 @@
   static octave_value                                           \
   elem_xpow (const T1 ## NDArray& a, const NDArray& b)          \
   {                                                             \
-    dim_vector a_dims = a.dims ();                              \
-    dim_vector b_dims = b.dims ();                              \
+    const dim_vector& a_dims = a.dims ();                       \
+    const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
         if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
@@ -744,8 +744,8 @@
   static octave_value                                           \
   elem_xpow (const NDArray& a, const T2 ## NDArray& b)          \
   {                                                             \
-    dim_vector a_dims = a.dims ();                              \
-    dim_vector b_dims = b.dims ();                              \
+    const dim_vector& a_dims = a.dims ();                       \
+    const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
         if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
@@ -765,8 +765,8 @@
   static octave_value                                           \
   elem_xpow (const T1 ## NDArray& a, const FloatNDArray& b)     \
   {                                                             \
-    dim_vector a_dims = a.dims ();                              \
-    dim_vector b_dims = b.dims ();                              \
+    const dim_vector& a_dims = a.dims ();                       \
+    const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
         if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \
@@ -786,8 +786,8 @@
   static octave_value                                           \
   elem_xpow (const FloatNDArray& a, const T2 ## NDArray& b)     \
   {                                                             \
-    dim_vector a_dims = a.dims ();                              \
-    dim_vector b_dims = b.dims ();                              \
+    const dim_vector& a_dims = a.dims ();                       \
+    const dim_vector& b_dims = b.dims ();                       \
     if (a_dims != b_dims)                                       \
       {                                                         \
         if (! is_valid_bsxfun ("operator .^", a_dims, b_dims))  \

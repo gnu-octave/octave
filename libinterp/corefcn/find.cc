@@ -451,7 +451,7 @@ b = sparse (i, j, v, sz(1), sz(2));
 
           octave_value result = arg.index_vector ().unmask ();
 
-          dim_vector dv = result.dims ();
+          const dim_vector& dv = result.dims ();
 
           retval(0) = (dv.all_zero () || dv.isvector ()
                        ? result : result.reshape (dv.as_column ()));

@@ -577,7 +577,7 @@ public:
         m_dims = static_cast<mwSize *> (mxArray::malloc (m_ndims
                                         * sizeof (mwSize)));
 
-        dim_vector dv = m_val.dims ();
+        const dim_vector& dv = m_val.dims ();
 
         for (mwIndex i = 0; i < m_ndims; i++)
           m_dims[i] = dv(i);
@@ -1870,7 +1870,7 @@ public:
   {
     octave_value retval;
 
-    dim_vector dv = dims_to_dim_vector ();
+    const dim_vector& dv = dims_to_dim_vector ();
 
     switch (get_class_id ())
       {
@@ -2189,7 +2189,7 @@ public:
 
     octave_value retval;
 
-    dim_vector dv = dims_to_dim_vector ();
+    const dim_vector& dv = dims_to_dim_vector ();
 
     switch (get_class_id ())
       {
@@ -2361,7 +2361,7 @@ public:
   {
     octave_value retval;
 
-    dim_vector dv = dims_to_dim_vector ();
+    const dim_vector& dv = dims_to_dim_vector ();
 
     switch (get_class_id ())
       {
@@ -2545,7 +2545,7 @@ public:
 
     octave_value retval;
 
-    dim_vector dv = dims_to_dim_vector ();
+    const dim_vector& dv = dims_to_dim_vector ();
 
     switch (get_class_id ())
       {
@@ -2822,7 +2822,7 @@ public:
 
   octave_value as_octave_value (void) const
   {
-    dim_vector dv = dims_to_dim_vector ();
+    const dim_vector& dv = dims_to_dim_vector ();
 
     string_vector keys (m_fields, m_nfields);
 
@@ -2925,7 +2925,7 @@ public:
 
   octave_value as_octave_value (void) const
   {
-    dim_vector dv = dims_to_dim_vector ();
+    const dim_vector& dv = dims_to_dim_vector ();
 
     Cell c (dv);
 

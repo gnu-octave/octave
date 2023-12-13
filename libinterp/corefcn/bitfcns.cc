@@ -89,8 +89,8 @@ bitopxx (const OP& op, const std::string& fname,
 
   bool is_scalar_op = (nelx == 1 || nely == 1);
 
-  dim_vector dvx = x.dims ();
-  dim_vector dvy = y.dims ();
+  const dim_vector& dvx = x.dims ();
+  const dim_vector& dvy = y.dims ();
 
   bool is_array_op = (dvx == dvy);
 
@@ -475,8 +475,8 @@ bitshift (float a, int n, int64_t mask)
                                                                         \
   bool is_scalar_op = (m_nel == 1 || n_nel == 1);                       \
                                                                         \
-  dim_vector m_dv = m.dims ();                                          \
-  dim_vector n_dv = n.dims ();                                          \
+  const dim_vector& m_dv = m.dims ();                                   \
+  const dim_vector& n_dv = n.dims ();                                   \
                                                                         \
   bool is_array_op = (m_dv == n_dv);                                    \
                                                                         \

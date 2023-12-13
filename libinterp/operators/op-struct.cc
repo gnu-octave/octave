@@ -70,7 +70,7 @@ oct_catop_struct_matrix (const octave_base_value& a1,
   OCTAVE_CAST_BASE_VALUE (const octave_matrix&, v2, a2);
 
   NDArray tmp = v2.array_value ();
-  dim_vector dv = tmp.dims ();
+  const dim_vector& dv = tmp.dims ();
 
   if (! dv.all_zero ())
     error ("invalid concatenation of structure with matrix");
@@ -87,7 +87,7 @@ oct_catop_matrix_struct (const octave_base_value& a1,
   OCTAVE_CAST_BASE_VALUE (const octave_struct&, v2, a2);
 
   NDArray tmp = v1.array_value ();
-  dim_vector dv = tmp.dims ();
+  const dim_vector& dv = tmp.dims ();
 
   if (! dv.all_zero ())
     error ("invalid concatenation of structure with matrix");

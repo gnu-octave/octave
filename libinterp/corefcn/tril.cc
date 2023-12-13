@@ -208,7 +208,7 @@ do_trilu (const std::string& name,
 
   octave_value arg = args(0);
 
-  dim_vector dims = arg.dims ();
+  const dim_vector& dims = arg.dims ();
   if (dims.ndims () != 2)
     error ("%s: need a 2-D matrix", name.c_str ());
   else if (k < -dims(0))

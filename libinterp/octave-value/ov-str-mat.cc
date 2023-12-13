@@ -312,7 +312,7 @@ octave_char_matrix_str::edit_display (const float_display_format&,
     }
 
   std::string tname = type_name ();
-  dim_vector dv = m_matrix.dims ();
+  const dim_vector& dv = m_matrix.dims ();
   std::string dimstr = dv.str ();
   return "[" + dimstr + " " + tname + "]";
 }
@@ -320,7 +320,7 @@ octave_char_matrix_str::edit_display (const float_display_format&,
 bool
 octave_char_matrix_str::save_ascii (std::ostream& os)
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () > 2)
     {
       charNDArray tmp = char_array_value ();
@@ -472,7 +472,7 @@ bool
 octave_char_matrix_str::save_binary (std::ostream& os,
                                      bool /* save_as_floats */)
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   if (dv.ndims () < 1)
     return false;
 
@@ -572,7 +572,7 @@ octave_char_matrix_str::save_hdf5 (octave_hdf5_id loc_id, const char *name,
 
 #if defined (HAVE_HDF5)
 
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);

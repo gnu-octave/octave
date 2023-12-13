@@ -117,7 +117,7 @@ ind = sub2ind ([3, 3], s1, s2)
   if (nargin < 2)
     print_usage ();
 
-  dim_vector dv = get_dim_vector (args(0), "sub2ind");
+  const dim_vector& dv = get_dim_vector (args(0), "sub2ind");
 
   Array<idx_vector> idxa (dim_vector (nargin-1, 1));
 

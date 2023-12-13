@@ -9,8 +9,8 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 - `polar` plots now include the center tick mark value, typically 0, in
 the 'rtick' parameter when the plot is created.  Subsequent modifications
-to 'rtick' by `rticks` still only includes the center tick mark value if
-it is specified.
+to 'rtick' by the function `rticks` will only include the center tick mark
+value if it is specified.
 
 ### Matlab compatibility
 

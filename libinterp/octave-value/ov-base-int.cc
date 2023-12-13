@@ -160,7 +160,7 @@ octave_value
 octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 {
   octave_value retval;
-  dim_vector dv = this->dims ();
+  const dim_vector& dv = this->dims ();
   octave_idx_type nel = dv.numel ();
 
   charNDArray chm (dv);
@@ -288,7 +288,7 @@ template <typename T>
 bool
 octave_base_int_matrix<T>::save_ascii (std::ostream& os)
 {
-  dim_vector dv = this->dims ();
+  const dim_vector& dv = this->dims ();
 
   os << "# ndims: " << dv.ndims () << "\n";
 
@@ -334,7 +334,7 @@ template <typename T>
 bool
 octave_base_int_matrix<T>::save_binary (std::ostream& os, bool)
 {
-  dim_vector dv = this->dims ();
+  const dim_vector& dv = this->dims ();
   if (dv.ndims () < 1)
     return false;
 
@@ -434,7 +434,7 @@ octave_base_int_matrix<T>::save_hdf5_internal (octave_hdf5_id loc_id,
 #if defined (HAVE_HDF5)
 
   hid_t save_type_hid = save_type;
-  dim_vector dv = this->dims ();
+  const dim_vector& dv = this->dims ();
   int empty = save_hdf5_empty (loc_id, name, dv);
   if (empty)
     return (empty > 0);

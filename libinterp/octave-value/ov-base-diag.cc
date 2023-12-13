@@ -553,7 +553,7 @@ template <typename DMT, typename MT>
 bool
 octave_base_diag<DMT, MT>::print_as_scalar () const
 {
-  dim_vector dv = dims ();
+  const dim_vector& dv = dims ();
 
   return (dv.all_ones () || dv.any_zero ());
 }

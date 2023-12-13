@@ -1579,7 +1579,7 @@ array_property::validate (const octave_value& v)
 
   if (xok && m_size_constraints.size () > 0)
     {
-      dim_vector vdims = v.dims ();
+      const dim_vector& vdims = v.dims ();
       int vlen = vdims.ndims ();
 
       xok = false;

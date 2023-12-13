@@ -317,7 +317,7 @@ encode_array (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN,
     {
       octave_idx_type idx;
       octave_idx_type ndims = array.ndims ();
-      dim_vector dims = array.dims ();
+      const dim_vector& dims = array.dims ();
 
       // In this case, we already have a vector. So,  we transform it to 2-D
       // vector in order to be detected by "isvector" in the recursive call

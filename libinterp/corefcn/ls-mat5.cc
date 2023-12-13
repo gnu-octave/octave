@@ -2114,7 +2114,7 @@ static uint16_t *
 maybe_convert_to_u16 (const charNDArray& chm, std::size_t& n16_str)
 {
   uint16_t *u16_str;
-  dim_vector dv = chm.dims ();
+  const dim_vector& dv = chm.dims ();
 
   if (chm.ndims () == 2 && dv(0) == 1)
     {
@@ -2328,7 +2328,7 @@ save_mat5_binary_element (std::ostream& os,
   std::string cname = tc.class_name ();
   std::size_t max_namelen = 63;
 
-  dim_vector dv = tc.dims ();
+  const dim_vector& dv = tc.dims ();
   int nd = tc.ndims ();
   int dim_len = 4*nd;
 

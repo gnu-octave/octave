@@ -117,7 +117,7 @@ and 16.15), Dover, 1965.
           // u is matrix, m is scalar
           ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: U must be a scalar or matrix");
 
-          dim_vector sz_u = u.dims ();
+          const dim_vector& sz_u = u.dims ();
 
           ComplexNDArray sn (sz_u), cn (sz_u), dn (sz_u);
           NDArray err (sz_u);
@@ -139,7 +139,7 @@ and 16.15), Dover, 1965.
     {
       NDArray m = args(1).xarray_value ("ellipj: M must be a scalar or matrix");
 
-      dim_vector sz_m = m.dims ();
+      const dim_vector& sz_m = m.dims ();
 
       if (u_arg.is_scalar_type ())
         {
@@ -193,7 +193,7 @@ and 16.15), Dover, 1965.
               // u is real array, m is array
               NDArray u = u_arg.xarray_value ("ellipj: U must be a scalar or matrix");
 
-              dim_vector sz_u = u.dims ();
+              const dim_vector& sz_u = u.dims ();
 
               if (sz_u.ndims () == 2 && sz_m.ndims () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)
@@ -241,7 +241,7 @@ and 16.15), Dover, 1965.
               // u is complex array, m is array
               ComplexNDArray u = u_arg.xcomplex_array_value ("ellipj: U must be a scalar or matrix");
 
-              dim_vector sz_u = u.dims ();
+              const dim_vector& sz_u = u.dims ();
 
               if (sz_u.ndims () == 2 && sz_m.ndims () == 2
                   && sz_u(1) == 1 && sz_m(0) == 1)

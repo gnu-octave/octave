@@ -173,8 +173,8 @@ template <typename U, typename T, typename R, typename F>
 Array<U>
 binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
 {
-  dim_vector xad = xa.dims ();
-  dim_vector yad = ya.dims ();
+  const dim_vector& xad = xa.dims ();
+  const dim_vector& yad = ya.dims ();
   if (xa.numel () == 1)
     return binmap<U, T, R, F> (xa(0), ya, fcn);
   else if (ya.numel () == 1)

@@ -83,7 +83,8 @@ private:
 };
 
 // String conversion functions+QVector<double> qstr2vectorf (QString str)
-QVector<double> qstr2vectorf (QString str)
+QVector<double>
+qstr2vectorf (QString str)
 {
   QVector<double> pts;
   QStringList coords = str.split (",");
@@ -95,7 +96,8 @@ QVector<double> qstr2vectorf (QString str)
 
 // FIXME: What's the difference between qstr2vectorf and qstr2vectord?
 // Can one be called from the other to avoid code duplication, or deleted?
-QVector<double> qstr2vectord (QString str)
+QVector<double>
+qstr2vectord (QString str)
 {
   QVector<double> pts;
   QStringList coords = str.split (",");
@@ -105,7 +107,8 @@ QVector<double> qstr2vectord (QString str)
   return pts;
 }
 
-QVector<QPointF> qstr2ptsvector (QString str)
+QVector<QPointF>
+qstr2ptsvector (QString str)
 {
   QVector<QPointF> pts;
   str = str.trimmed ();
@@ -121,7 +124,8 @@ QVector<QPointF> qstr2ptsvector (QString str)
 
 // FIXME: What's the difference between qstr2ptsvector and qstr2ptsvectord?
 // Can one be called from the other to avoid code duplication, or deleted?
-QVector<QPoint> qstr2ptsvectord (QString str)
+QVector<QPoint>
+qstr2ptsvectord (QString str)
 {
   QVector<QPoint> pts;
   str = str.trimmed ();
@@ -136,7 +140,8 @@ QVector<QPoint> qstr2ptsvectord (QString str)
 }
 
 // Extract field arguments in a style-like string, e.g. "bla field(1,34,56) bla"
-QString get_field (QString str, QString field)
+QString
+get_field (QString str, QString field)
 {
   QRegularExpression rx (field + "\\(([^\\)]*)\\)");
   QRegularExpressionMatch match = rx.match (str);
@@ -331,12 +336,13 @@ private:
   QList<QPolygonF> m_polygons;
 };
 
-void draw (QDomElement& parent_elt, pdfpainter& painter)
+void
+draw (QDomElement& parent_elt, pdfpainter& painter)
 {
   QDomNodeList nodes = parent_elt.childNodes ();
 
   static QString clippath_id;
-  static QMap< QString, QVector<QPoint> > clippath;
+  static QMap< QString, QVector<QPoint>> clippath;
 
   // tspan elements must have access to the font and position extracted from
   // their parent text element
@@ -726,8 +732,9 @@ void draw (QDomElement& parent_elt, pdfpainter& painter)
 // Append a list of reconstructed child polygons to a QDomElement and remove
 // the original nodes
 
-void replace_polygons (QDomElement& parent_elt, QList<QDomNode> orig,
-                       QList<QPolygonF> polygons)
+void
+replace_polygons (QDomElement& parent_elt, QList<QDomNode> orig,
+                  QList<QPolygonF> polygons)
 {
   if (! orig.count () || (orig.count () == polygons.count ()))
     return;
@@ -757,7 +764,8 @@ void replace_polygons (QDomElement& parent_elt, QList<QDomNode> orig,
     parent_elt.removeChild (orig.at (ii));
 }
 
-void reconstruct_polygons (QDomElement& parent_elt, int reconstruct_level)
+void
+reconstruct_polygons (QDomElement& parent_elt, int reconstruct_level)
 {
   QDomNodeList nodes = parent_elt.childNodes ();
   QColor current_color;
@@ -765,7 +773,7 @@ void reconstruct_polygons (QDomElement& parent_elt, int reconstruct_level)
   octave_polygon current_polygon;
 
   // Collection of child nodes to be removed and polygons to be added
-  QList< QPair<QList<QDomNode>,QList<QPolygonF> > > collection;
+  QList< QPair<QList<QDomNode>, QList<QPolygonF>>> collection;
 
   for (int ii = 0; ii < nodes.count (); ii++)
     {
@@ -797,7 +805,7 @@ void reconstruct_polygons (QDomElement& parent_elt, int reconstruct_level)
                   // Reconstruct the previous series of triangles
                   QList<QPolygonF> polygons
                     = current_polygon.reconstruct (reconstruct_level);
-                  collection.push_back (QPair<QList<QDomNode>,QList<QPolygonF> >
+                  collection.push_back (QPair<QList<QDomNode>, QList<QPolygonF>>
                                         (replaced_nodes, polygons));
 
                   replaced_nodes.clear ();
@@ -816,7 +824,7 @@ void reconstruct_polygons (QDomElement& parent_elt, int reconstruct_level)
           if (current_polygon.count ())
             {
               QList<QPolygonF> polygons = current_polygon.reconstruct (reconstruct_level);
-              collection.push_back (QPair<QList<QDomNode>,QList<QPolygonF> >
+              collection.push_back (QPair<QList<QDomNode>, QList<QPolygonF>>
                                     (replaced_nodes, polygons));
               replaced_nodes.clear ();
               current_polygon.reset ();
@@ -826,15 +834,16 @@ void reconstruct_polygons (QDomElement& parent_elt, int reconstruct_level)
     }
 
   // Finish
-  collection.push_back (QPair<QList<QDomNode>,QList<QPolygonF> >
-                          (replaced_nodes,
-                           current_polygon.reconstruct (reconstruct_level)));
+  collection.push_back (QPair<QList<QDomNode>, QList<QPolygonF>>
+                        (replaced_nodes,
+                         current_polygon.reconstruct (reconstruct_level)));
 
   for (int ii = 0; ii < collection.count (); ii++)
     replace_polygons (parent_elt, collection[ii].first, collection[ii].second);
 }
 
-void add_custom_properties (QDomElement& parent_elt)
+void
+add_custom_properties (QDomElement& parent_elt)
 {
   QDomNodeList nodes = parent_elt.childNodes ();
 

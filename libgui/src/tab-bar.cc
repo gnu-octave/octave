@@ -39,36 +39,42 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 //
 
 tab_bar::tab_bar (QWidget *p)
-: QTabBar (p), m_context_menu (new QMenu (this))
+  : QTabBar (p), m_context_menu (new QMenu (this))
 { }
 
-void tab_bar::set_rotated (int rotated)
+void
+tab_bar::set_rotated (int rotated)
 {
   m_rotated = rotated;
 }
 
 // slots for tab navigation
-void tab_bar::switch_left_tab ()
+void
+tab_bar::switch_left_tab ()
 {
   switch_tab (-1);
 }
 
-void tab_bar::switch_right_tab ()
+void
+tab_bar::switch_right_tab ()
 {
   switch_tab (1);
 }
 
-void tab_bar::move_tab_left ()
+void
+tab_bar::move_tab_left ()
 {
   switch_tab (-1, true);
 }
 
-void tab_bar::move_tab_right ()
+void
+tab_bar::move_tab_right ()
 {
   switch_tab (1, true);
 }
 
-void tab_bar::switch_tab (int direction, bool movetab)
+void
+tab_bar::switch_tab (int direction, bool movetab)
 {
   int tabs = count ();
 
@@ -91,7 +97,8 @@ void tab_bar::switch_tab (int direction, bool movetab)
     setCurrentIndex (new_pos);
 }
 
-void tab_bar::sort_tabs_alph ()
+void
+tab_bar::sort_tabs_alph ()
 {
   QString current_title = tabText (currentIndex ());
   int tab_with_focus = 0;
@@ -133,7 +140,8 @@ void tab_bar::sort_tabs_alph ()
 // https://stackoverflow.com/a/50579369
 
 // Reimplemented size hint allowing rotated tabs
-QSize tab_bar::tabSizeHint (int idx) const
+QSize
+tab_bar::tabSizeHint (int idx) const
 {
   QSize s = QTabBar::tabSizeHint (idx);
   if (m_rotated)
@@ -143,7 +151,8 @@ QSize tab_bar::tabSizeHint (int idx) const
 }
 
 // Reimplemented paint event allowing rotated tabs
-void tab_bar::paintEvent(QPaintEvent *e)
+void
+tab_bar::paintEvent(QPaintEvent *e)
 {
   // Just process the original event if not rotated
   if (! m_rotated)
@@ -175,7 +184,8 @@ void tab_bar::paintEvent(QPaintEvent *e)
 }
 
 // Reimplement mouse event for filtering out the desired mouse clicks
-void tab_bar::mousePressEvent (QMouseEvent *me)
+void
+tab_bar::mousePressEvent (QMouseEvent *me)
 {
   QPoint click_pos;
   int clicked_idx = -1;
@@ -273,7 +283,8 @@ void tab_bar::mousePressEvent (QMouseEvent *me)
 }
 
 // Slot if a menu entry in the context menu is activated
-void tab_bar::ctx_menu_activated (QAction *a)
+void
+tab_bar::ctx_menu_activated (QAction *a)
 {
   // If the index of the activated action is in the range of
   // the current tabs, set the related current tab. The basic actions

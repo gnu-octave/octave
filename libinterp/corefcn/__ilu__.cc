@@ -183,10 +183,11 @@ Undocumented internal function.
 }
 
 template <typename octave_matrix_t, typename T>
-void ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
-                octave_matrix_t& L, octave_matrix_t& U, T *cols_norm,
-                T *rows_norm, const T droptol = 0,
-                const std::string milu = "off")
+void
+ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
+           octave_matrix_t& L, octave_matrix_t& U, T *cols_norm,
+           T *rows_norm, const T droptol = 0,
+           const std::string milu = "off")
 {
   // Map the strings into chars for faster comparing inside loops
   char opt;
@@ -523,11 +524,12 @@ Undocumented internal function.
 // case IKJ version is used and column pivoting is performed.
 
 template <typename octave_matrix_t, typename T>
-void ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
-             octave_idx_type nnz_u, octave_idx_type nnz_l, T *cols_norm,
-             Array <octave_idx_type>& perm_vec, const T droptol = T(0),
-             const T thresh = T(0), const  std::string milu = "off",
-             const double udiag = 0)
+void
+ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
+        octave_idx_type nnz_u, octave_idx_type nnz_l, T *cols_norm,
+        Array <octave_idx_type>& perm_vec, const T droptol = T(0),
+        const T thresh = T(0), const  std::string milu = "off",
+        const double udiag = 0)
 {
   char opt;
   enum {OFF, ROW, COL};

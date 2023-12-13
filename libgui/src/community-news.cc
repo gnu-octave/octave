@@ -53,8 +53,9 @@ community_news::community_news (QWidget *parent, const QString& base_url,
   construct (base_url, page, serial);
 }
 
-void community_news::construct (const QString& base_url, const QString& page,
-                                int serial)
+void
+community_news::construct (const QString& base_url, const QString& page,
+                           int serial)
 {
   m_browser = new QTextBrowser (this);
 
@@ -114,12 +115,14 @@ void community_news::construct (const QString& base_url, const QString& page,
   worker_thread->start ();
 }
 
-void community_news::set_news (const QString& news)
+void
+community_news::set_news (const QString& news)
 {
   m_browser->setHtml (news);
 }
 
-void community_news::display ()
+void
+community_news::display ()
 {
   if (! isVisible ())
     show ();

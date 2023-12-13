@@ -189,7 +189,8 @@ void
 Object::beingDeleted ()
 { }
 
-void Object::objectDestroyed (QObject *obj)
+void
+Object::objectDestroyed (QObject *obj)
 {
   if (obj && obj == m_qobject)
     m_qobject = nullptr;

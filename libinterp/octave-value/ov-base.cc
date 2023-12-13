@@ -63,7 +63,8 @@
 #include "variables.h"
 #include "ov-inline.h"
 
-builtin_type_t btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
+builtin_type_t
+btyp_mixed_numeric (builtin_type_t x, builtin_type_t y)
 {
   builtin_type_t retval = btyp_unknown;
 

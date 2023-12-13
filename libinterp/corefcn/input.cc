@@ -385,7 +385,8 @@ generate_completion (const std::string& text, int state)
   return retval;
 }
 
-static int internal_input_event_hook_fcn ()
+static int
+internal_input_event_hook_fcn ()
 {
   octave_quit ();
 
@@ -408,7 +409,8 @@ input_system::input_system (interpreter& interp)
     m_initialized (false)
 { }
 
-void input_system::initialize (bool line_editing)
+void
+input_system::initialize (bool line_editing)
 {
   if (m_initialized)
     return;
@@ -534,7 +536,8 @@ input_system::mfile_encoding (const octave_value_list& args, int nargout)
 }
 
 // Get part of the directory that would be added to the load path
-static std::string load_path_dir (const std::string& dir)
+static std::string
+load_path_dir (const std::string& dir)
 {
   std::string lp_dir = dir;
 
@@ -569,7 +572,8 @@ static std::string load_path_dir (const std::string& dir)
   return lp_dir;
 }
 
-std::string input_system::dir_encoding (const std::string& dir)
+std::string
+input_system::dir_encoding (const std::string& dir)
 {
   std::string enc = m_mfile_encoding;
   // use canonicalized path as key
@@ -582,8 +586,9 @@ std::string input_system::dir_encoding (const std::string& dir)
   return enc;
 }
 
-void input_system::set_dir_encoding (const std::string& dir,
-                                     std::string& enc)
+void
+input_system::set_dir_encoding (const std::string& dir,
+                                std::string& enc)
 {
   // use lower case
   std::transform (enc.begin (), enc.end (), enc.begin (), ::tolower);
@@ -629,7 +634,8 @@ input_system::auto_repeat_debug_command (const octave_value_list& args,
                                 "auto_repeat_debug_command");
 }
 
-bool input_system::yes_or_no (const std::string& prompt)
+bool
+input_system::yes_or_no (const std::string& prompt)
 {
   std::string prompt_string = prompt + "(yes or no) ";
 
@@ -648,7 +654,8 @@ bool input_system::yes_or_no (const std::string& prompt)
     }
 }
 
-std::string input_system::interactive_input (const std::string& s, bool& eof)
+std::string
+input_system::interactive_input (const std::string& s, bool& eof)
 {
   Vlast_prompt_time.stamp ();
 
@@ -745,17 +752,20 @@ input_system::get_user_input (const octave_value_list& args, int nargout)
   return retval;
 }
 
-bool input_system::have_input_event_hooks () const
+bool
+input_system::have_input_event_hooks () const
 {
   return ! m_input_event_hook_functions.empty ();
 }
 
-void input_system::add_input_event_hook (const hook_function& hook_fcn)
+void
+input_system::add_input_event_hook (const hook_function& hook_fcn)
 {
   m_input_event_hook_functions.insert (hook_fcn.id (), hook_fcn);
 }
 
-bool input_system::remove_input_event_hook (const std::string& hook_fcn_id)
+bool
+input_system::remove_input_event_hook (const std::string& hook_fcn_id)
 {
   hook_function_list::iterator p
     = m_input_event_hook_functions.find (hook_fcn_id);
@@ -767,12 +777,14 @@ bool input_system::remove_input_event_hook (const std::string& hook_fcn_id)
   return true;
 }
 
-void input_system::clear_input_event_hooks ()
+void
+input_system::clear_input_event_hooks ()
 {
   m_input_event_hook_functions.clear ();
 }
 
-void input_system::run_input_event_hooks ()
+void
+input_system::run_input_event_hooks ()
 {
   m_input_event_hook_functions.run ();
 }
@@ -792,7 +804,8 @@ input_system::gnu_readline (const std::string& s, bool& eof) const
   return retval;
 }
 
-std::string base_reader::octave_gets (const std::string& prompt, bool& eof)
+std::string
+base_reader::octave_gets (const std::string& prompt, bool& eof)
 {
   octave_quit ();
 

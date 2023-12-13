@@ -45,7 +45,8 @@ extern void install_ops (type_info& ti);
 // FIXME: we should also store all class names and provide a
 // way to list them (calling class with nargin == 0?).
 
-static NDArray as_nd_array (const Array<int>& x)
+static NDArray
+as_nd_array (const Array<int>& x)
 {
   NDArray retval (x.dims ());
 
@@ -55,7 +56,8 @@ static NDArray as_nd_array (const Array<int>& x)
   return retval;
 }
 
-static boolNDArray as_bool_nd_array (const Array<void *>& x)
+static boolNDArray
+as_bool_nd_array (const Array<void *>& x)
 {
   boolNDArray retval (x.dims ());
 
@@ -87,10 +89,11 @@ type_info::type_info (int init_tab_sz)
   install_ops (*this);
 }
 
-int type_info::register_type (const std::string& t_name,
-                              const std::string& /* c_name */,
-                              const octave_value& val,
-                              bool abort_on_duplicate)
+int
+type_info::register_type (const std::string& t_name,
+                          const std::string& /* c_name */,
+                          const octave_value& val,
+                          bool abort_on_duplicate)
 {
   int i = 0;
 
@@ -161,9 +164,10 @@ int type_info::register_type (const std::string& t_name,
   return i;
 }
 
-bool type_info::register_unary_class_op (octave_value::unary_op op,
-    type_info::unary_class_op_fcn f,
-    bool abort_on_duplicate)
+bool
+type_info::register_unary_class_op (octave_value::unary_op op,
+                                    type_info::unary_class_op_fcn f,
+                                    bool abort_on_duplicate)
 {
   if (lookup_unary_class_op (op))
     {
@@ -186,8 +190,9 @@ bool type_info::register_unary_class_op (octave_value::unary_op op,
   return false;
 }
 
-bool type_info::register_unary_op (octave_value::unary_op op, int t,
-                                   unary_op_fcn f, bool abort_on_duplicate)
+bool
+type_info::register_unary_op (octave_value::unary_op op, int t,
+                              unary_op_fcn f, bool abort_on_duplicate)
 {
   if (lookup_unary_op (op, t))
     {
@@ -264,10 +269,11 @@ type_info::register_binary_class_op (octave_value::binary_op op,
   return false;
 }
 
-bool type_info::register_binary_op (octave_value::binary_op op,
-                                    int t1, int t2,
-                                    type_info::binary_op_fcn f,
-                                    bool abort_on_duplicate)
+bool
+type_info::register_binary_op (octave_value::binary_op op,
+                               int t1, int t2,
+                               type_info::binary_op_fcn f,
+                               bool abort_on_duplicate)
 {
   if (lookup_binary_op (op, t1, t2))
     {
@@ -319,10 +325,11 @@ type_info::register_binary_class_op (octave_value::compound_binary_op op,
   return false;
 }
 
-bool type_info::register_binary_op (octave_value::compound_binary_op op,
-                                    int t1, int t2,
-                                    type_info::binary_op_fcn f,
-                                    bool abort_on_duplicate)
+bool
+type_info::register_binary_op (octave_value::compound_binary_op op,
+                               int t1, int t2,
+                               type_info::binary_op_fcn f,
+                               bool abort_on_duplicate)
 {
   if (lookup_binary_op (op, t1, t2))
     {
@@ -348,8 +355,9 @@ bool type_info::register_binary_op (octave_value::compound_binary_op op,
   return false;
 }
 
-bool type_info::register_cat_op (int t1, int t2, type_info::cat_op_fcn f,
-                                 bool abort_on_duplicate)
+bool
+type_info::register_cat_op (int t1, int t2, type_info::cat_op_fcn f,
+                            bool abort_on_duplicate)
 {
   if (lookup_cat_op (t1, t2))
     {
@@ -372,10 +380,11 @@ bool type_info::register_cat_op (int t1, int t2, type_info::cat_op_fcn f,
   return false;
 }
 
-bool type_info::register_assign_op (octave_value::assign_op op,
-                                    int t_lhs, int t_rhs,
-                                    type_info::assign_op_fcn f,
-                                    bool abort_on_duplicate)
+bool
+type_info::register_assign_op (octave_value::assign_op op,
+                               int t_lhs, int t_rhs,
+                               type_info::assign_op_fcn f,
+                               bool abort_on_duplicate)
 {
   if (lookup_assign_op (op, t_lhs, t_rhs))
     {
@@ -401,9 +410,10 @@ bool type_info::register_assign_op (octave_value::assign_op op,
   return false;
 }
 
-bool type_info::register_assignany_op (octave_value::assign_op op, int t_lhs,
-                                       type_info::assignany_op_fcn f,
-                                       bool abort_on_duplicate)
+bool
+type_info::register_assignany_op (octave_value::assign_op op, int t_lhs,
+                                  type_info::assignany_op_fcn f,
+                                  bool abort_on_duplicate)
 {
   if (lookup_assignany_op (op, t_lhs))
     {
@@ -427,9 +437,10 @@ bool type_info::register_assignany_op (octave_value::assign_op op, int t_lhs,
   return false;
 }
 
-bool type_info::register_pref_assign_conv (int t_lhs, int t_rhs,
-    int t_result,
-    bool abort_on_duplicate)
+bool
+type_info::register_pref_assign_conv (int t_lhs, int t_rhs,
+                                      int t_result,
+                                      bool abort_on_duplicate)
 {
   if (lookup_pref_assign_conv (t_lhs, t_rhs) >= 0)
     {
@@ -453,9 +464,10 @@ bool type_info::register_pref_assign_conv (int t_lhs, int t_rhs,
   return false;
 }
 
-bool type_info::register_widening_op (int t, int t_result,
-                                      octave_base_value::type_conv_fcn f,
-                                      bool abort_on_duplicate)
+bool
+type_info::register_widening_op (int t, int t_result,
+                                 octave_base_value::type_conv_fcn f,
+                                 bool abort_on_duplicate)
 {
   if (lookup_widening_op (t, t_result))
     {
@@ -478,7 +490,8 @@ bool type_info::register_widening_op (int t, int t_result,
   return false;
 }
 
-octave_value type_info::lookup_type (const std::string& nm)
+octave_value
+type_info::lookup_type (const std::string& nm)
 {
   octave_value retval;
 
@@ -776,21 +789,24 @@ int register_type (const std::string& t_name, const std::string& c_name,
   return type_info.register_type (t_name, c_name, val);
 }
 
-octave_value lookup_type (const std::string& nm)
+octave_value
+lookup_type (const std::string& nm)
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 
   return type_info.lookup_type (nm);
 }
 
-unary_class_op_fcn lookup_unary_class_op (octave_value::unary_op op)
+unary_class_op_fcn
+lookup_unary_class_op (octave_value::unary_op op)
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 
   return type_info.lookup_unary_class_op (op);
 }
 
-unary_op_fcn lookup_unary_op (octave_value::unary_op op, int t)
+unary_op_fcn
+lookup_unary_op (octave_value::unary_op op, int t)
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 
@@ -837,7 +853,8 @@ lookup_binary_op (octave_value::compound_binary_op op, int t1, int t2)
   return type_info.lookup_binary_op (op, t1, t2);
 }
 
-cat_op_fcn lookup_cat_op (int t1, int t2)
+cat_op_fcn
+lookup_cat_op (int t1, int t2)
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 
@@ -860,7 +877,8 @@ lookup_assignany_op (octave_value::assign_op op, int t_lhs)
   return type_info.lookup_assignany_op (op, t_lhs);
 }
 
-int lookup_pref_assign_conv (int t_lhs, int t_rhs)
+int
+lookup_pref_assign_conv (int t_lhs, int t_rhs)
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 
@@ -875,14 +893,16 @@ lookup_widening_op (int t, int t_result)
   return type_info.lookup_widening_op (t, t_result);
 }
 
-string_vector installed_type_names ()
+string_vector
+installed_type_names ()
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 
   return type_info.installed_type_names ();
 }
 
-octave_scalar_map installed_type_info ()
+octave_scalar_map
+installed_type_info ()
 {
   octave::type_info& type_info = octave::__get_type_info__ ();
 

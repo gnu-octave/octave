@@ -54,7 +54,8 @@ enter_shortcut::enter_shortcut (QWidget *p) : QLineEdit (p)
 }
 
 // new keyPressEvent
-void enter_shortcut::keyPressEvent (QKeyEvent *e)
+void
+enter_shortcut::keyPressEvent (QKeyEvent *e)
 {
   if (! m_direct_shortcut)
     {
@@ -85,7 +86,8 @@ void enter_shortcut::keyPressEvent (QKeyEvent *e)
 }
 
 // slot for checkbox whether the shortcut is directly entered or not
-void enter_shortcut::handle_direct_shortcut (int state)
+void
+enter_shortcut::handle_direct_shortcut (int state)
 {
   if (state)
     m_direct_shortcut = true;  // the shortcut is directly entered
@@ -94,7 +96,8 @@ void enter_shortcut::handle_direct_shortcut (int state)
 }
 
 // slot for checkbox whether the shift modifier should be added
-void enter_shortcut::handle_shift_modifier (int state)
+void
+enter_shortcut::handle_shift_modifier (int state)
 {
   if (state)
     m_shift_modifier = true;  // the shortcut is directly entered
@@ -117,37 +120,44 @@ tree_widget_shortcut_item::tree_widget_shortcut_item
   set_actual_text (actual_text);
 }
 
-QString tree_widget_shortcut_item::settings_key () const
+QString
+tree_widget_shortcut_item::settings_key () const
 {
   return m_settings_key;
 }
 
-QString tree_widget_shortcut_item::description () const
+QString
+tree_widget_shortcut_item::description () const
 {
   return text (DESCRIPTION_COLUMN);
 }
 
-void tree_widget_shortcut_item::set_description (const QString& text)
+void
+tree_widget_shortcut_item::set_description (const QString& text)
 {
   setText (DESCRIPTION_COLUMN, text);
 }
 
-QString tree_widget_shortcut_item::default_text () const
+QString
+tree_widget_shortcut_item::default_text () const
 {
   return text (DEFAULT_COLUMN);
 }
 
-void tree_widget_shortcut_item::set_default_text (const QString& text)
+void
+tree_widget_shortcut_item::set_default_text (const QString& text)
 {
   setText (DEFAULT_COLUMN, text);
 }
 
-QString tree_widget_shortcut_item::actual_text () const
+QString
+tree_widget_shortcut_item::actual_text () const
 {
   return text (ACTUAL_COLUMN);
 }
 
-void tree_widget_shortcut_item::set_actual_text (const QString& text)
+void
+tree_widget_shortcut_item::set_actual_text (const QString& text)
 {
   setText (ACTUAL_COLUMN, text);
 }
@@ -262,7 +272,8 @@ shortcut_edit_dialog::shortcut_edit_dialog
   setFocusProxy (m_edit_actual);
 }
 
-void shortcut_edit_dialog::finished (int result)
+void
+shortcut_edit_dialog::finished (int result)
 {
   if (result == QDialog::Rejected)
     return;
@@ -273,7 +284,7 @@ void shortcut_edit_dialog::finished (int result)
   // organized the sections as child groups instead of using a colon in
   // the settings key to separate the section from the shortcut name.
 
- // Note that m_settings_key doesn't begin with the sc_group prefix.
+  // Note that m_settings_key doesn't begin with the sc_group prefix.
 
   QString my_section = get_shortcut_section (m_settings_key);
   QString actual_text = m_edit_actual->text ();
@@ -333,7 +344,8 @@ void shortcut_edit_dialog::finished (int result)
   m_shortcut_item->set_actual_text (actual_text);
 }
 
-void shortcut_edit_dialog::set_default_shortcut ()
+void
+shortcut_edit_dialog::set_default_shortcut ()
 {
   // Just remove user-set value so that the default will be used.
   m_edit_actual->setText ("");
@@ -504,8 +516,9 @@ shortcuts_tree_widget::edit_selection (QTreeWidgetItem *item, int col)
   dialog->show ();
 }
 
-void shortcuts_tree_widget::update_widget_value (const QString& settings_key,
-                                                 const QString& sc_text)
+void
+shortcuts_tree_widget::update_widget_value (const QString& settings_key,
+    const QString& sc_text)
 {
   tree_widget_shortcut_item *item = get_item (settings_key);
 
@@ -546,8 +559,9 @@ shortcuts_tree_widget::get_item (const QString& settings_key)
   return item;
 }
 
-void shortcuts_tree_widget::update_settings_value (gui_settings& settings,
-                                                   const QString& settings_key)
+void
+shortcuts_tree_widget::update_settings_value (gui_settings& settings,
+    const QString& settings_key)
 {
   tree_widget_shortcut_item *item = get_item (settings_key);
 
@@ -557,7 +571,8 @@ void shortcuts_tree_widget::update_settings_value (gui_settings& settings,
 
 // Refresh the tree view with values from the settings object.
 
-void shortcuts_tree_widget::import_shortcuts (gui_settings& settings)
+void
+shortcuts_tree_widget::import_shortcuts (gui_settings& settings)
 {
   settings.beginGroup (sc_group);
 
@@ -609,7 +624,8 @@ void shortcuts_tree_widget::import_shortcuts (gui_settings& settings)
 
 // Export all shortcuts from the tree view to the settings object.
 
-void shortcuts_tree_widget::export_shortcuts (gui_settings& settings)
+void
+shortcuts_tree_widget::export_shortcuts (gui_settings& settings)
 {
   settings.beginGroup (sc_group);
 
@@ -654,7 +670,8 @@ void shortcuts_tree_widget::export_shortcuts (gui_settings& settings)
 // Clear all user-defined settings from the tree widget and the
 // application settings.
 
-void shortcuts_tree_widget::set_default_shortcuts ()
+void
+shortcuts_tree_widget::set_default_shortcuts ()
 {
   gui_settings settings;
 
@@ -701,7 +718,8 @@ void shortcuts_tree_widget::set_default_shortcuts ()
 // For each key found in application settings object, transfer
 // corresponding setting to the application settings object.
 
-void shortcuts_tree_widget::write_settings ()
+void
+shortcuts_tree_widget::write_settings ()
 {
   gui_settings settings;
 

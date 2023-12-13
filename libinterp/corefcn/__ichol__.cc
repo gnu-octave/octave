@@ -52,12 +52,14 @@ Complex ichol_mult_complex (Complex a, Complex b)
   return a * b;
 }
 
-double ichol_mult_real (double a, double b)
+double
+ichol_mult_real (double a, double b)
 {
   return a * b;
 }
 
-bool ichol_checkpivot_complex (Complex pivot)
+bool
+ichol_checkpivot_complex (Complex pivot)
 {
   if (fabs (pivot.imag ()) > std::numeric_limits<double>::epsilon())
     error ("ichol: non-real pivot encountered.  The matrix must be Hermitian.");
@@ -67,7 +69,8 @@ bool ichol_checkpivot_complex (Complex pivot)
   return true;
 }
 
-bool ichol_checkpivot_real (double pivot)
+bool
+ichol_checkpivot_real (double pivot)
 {
   if (pivot < 0)
     error ("ichol: negative pivot encountered");
@@ -77,7 +80,8 @@ bool ichol_checkpivot_real (double pivot)
 
 template <typename octave_matrix_t, typename T, T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
-void ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
+void
+ichol_0 (octave_matrix_t& sm, const std::string michol = "off")
 {
   const octave_idx_type n = sm.cols ();
   octave_idx_type j1, jend, j2, jrow, jjrow, j, jw, i, k, jj, r;
@@ -220,8 +224,9 @@ Undocumented internal function.
 
 template <typename octave_matrix_t, typename T,  T (*ichol_mult) (T, T),
           bool (*ichol_checkpivot) (T)>
-void ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
-              const T droptol, const std::string michol = "off")
+void
+ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
+         const T droptol, const std::string michol = "off")
 {
 
   const octave_idx_type n = sm.cols ();

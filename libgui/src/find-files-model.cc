@@ -42,7 +42,8 @@ public:
 
   find_file_less_than (int ord) { m_sortorder = ord; }
 
-  QVariant getValue (const QFileInfo& f) const
+  QVariant
+  getValue (const QFileInfo& f) const
   {
     QVariant val;
 
@@ -65,13 +66,15 @@ public:
     return val;
   }
 
-  bool lessThan (const QVariant& left, const QVariant& right) const
+  bool
+  lessThan (const QVariant& left, const QVariant& right) const
   {
     return
       left.toString ().compare (right.toString (), Qt::CaseInsensitive) < 0;
   }
 
-  bool operator () (const QFileInfo& left, const QFileInfo& right) const
+  bool
+  operator () (const QFileInfo& left, const QFileInfo& right) const
   {
     QVariant leftval = getValue (left);
     QVariant rightval = getValue (right);
@@ -95,7 +98,8 @@ find_files_model::find_files_model (QObject *p)
   m_sortorder = 0;
 }
 
-void find_files_model::clear ()
+void
+find_files_model::clear ()
 {
   beginResetModel ();
 
@@ -104,7 +108,8 @@ void find_files_model::clear ()
   endResetModel ();
 }
 
-void find_files_model::addFile (const QFileInfo& info)
+void
+find_files_model::addFile (const QFileInfo& info)
 {
   beginInsertRows (QModelIndex (), m_files.size (), m_files.size ());
 
@@ -125,17 +130,20 @@ void find_files_model::addFile (const QFileInfo& info)
   endInsertRows ();
 }
 
-int find_files_model::rowCount (const QModelIndex&) const
+int
+find_files_model::rowCount (const QModelIndex&) const
 {
   return m_files.size ();
 }
 
-int find_files_model::columnCount (const QModelIndex&) const
+int
+find_files_model::columnCount (const QModelIndex&) const
 {
   return m_columnNames.size ();
 }
 
-QVariant find_files_model::data (const QModelIndex& idx, int role) const
+QVariant
+find_files_model::data (const QModelIndex& idx, int role) const
 {
   QVariant retval;
 
@@ -173,15 +181,17 @@ QVariant find_files_model::data (const QModelIndex& idx, int role) const
   return retval;
 }
 
-QVariant find_files_model::headerData (int section,
-                                       Qt::Orientation orientation,
-                                       int role) const
+QVariant
+find_files_model::headerData (int section,
+                              Qt::Orientation orientation,
+                              int role) const
 {
   return ((orientation == Qt::Horizontal && role == Qt::DisplayRole)
           ? m_columnNames[section] : QVariant ());
 }
 
-void find_files_model::sort (int column, Qt::SortOrder order)
+void
+find_files_model::sort (int column, Qt::SortOrder order)
 {
   if (column >= 0)
     {
@@ -204,12 +214,14 @@ void find_files_model::sort (int column, Qt::SortOrder order)
     }
 }
 
-QFileInfo find_files_model::fileInfo (const QModelIndex& p) const
+QFileInfo
+find_files_model::fileInfo (const QModelIndex& p) const
 {
   return p.isValid () ? m_files[p.row ()] : QFileInfo ();
 }
 
-QIcon find_files_model::fileIcon (const QModelIndex& p) const
+QIcon
+find_files_model::fileIcon (const QModelIndex& p) const
 {
   QFileIconProvider icon_provider;
 

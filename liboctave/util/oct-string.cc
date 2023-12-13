@@ -898,11 +898,11 @@ int octave::string::codecvt_u8::do_length
                                         &lengthp);
   std::size_t ext_char;
   for (ext_char = 0; ext_char < srclen; ext_char++)
-  {
-    if (offsets[ext_char] != static_cast<size_t> (-1)
-        && offsets[ext_char] >= max)
-      break;
-  }
+    {
+      if (offsets[ext_char] != static_cast<size_t> (-1)
+          && offsets[ext_char] >= max)
+        break;
+    }
 
   return ext_char;
 }

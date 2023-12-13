@@ -57,8 +57,8 @@ public:
 
   virtual void has_extra_interrupt (bool extra) = 0;
 
-  virtual QList<QAction*> get_hotspot_actions (const QPoint&)
-  { return QList<QAction*> (); }
+  virtual QList<QAction *> get_hotspot_actions (const QPoint&)
+  { return QList<QAction *> (); }
 
   enum CursorType
   {

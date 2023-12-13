@@ -963,7 +963,8 @@ load_path::execute_pkg_del (const std::string& dir)
   execute_pkg_add_or_del (dir, "PKG_DEL");
 }
 
-void load_path::rehash ()
+void
+load_path::rehash ()
 {
   update ();
 
@@ -980,8 +981,9 @@ void load_path::rehash ()
   Vlast_prompt_time.stamp ();
 }
 
-void load_path::execute_pkg_add_or_del (const std::string& dir,
-                                        const std::string& script_file)
+void
+load_path::execute_pkg_add_or_del (const std::string& dir,
+                                   const std::string& script_file)
 {
   if (! octave_interpreter_ready)
     return;

@@ -250,7 +250,8 @@ namespace KeyMap
     return keyMapper;
   }
 
-  std::string qKeyToKeyString (int key)
+  std::string
+  qKeyToKeyString (int key)
   {
     static const QMap<int, std::string> keyMapper = makeKeyMapper ();
 

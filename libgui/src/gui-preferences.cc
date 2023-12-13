@@ -39,30 +39,34 @@ gui_pref::gui_pref (const QString& settings_key, const QVariant& def,
 
 all_gui_preferences *all_gui_preferences::s_instance = nullptr;
 
-void all_gui_preferences::insert (const QString& settings_key,
-                                  const gui_pref& pref)
+void
+all_gui_preferences::insert (const QString& settings_key,
+                             const gui_pref& pref)
 {
   ensure_instance ();
 
   s_instance->do_insert (settings_key, pref);
 }
 
-const gui_pref all_gui_preferences::value (const QString& settings_key)
+const gui_pref
+all_gui_preferences::value (const QString& settings_key)
 {
   ensure_instance ();
 
   return s_instance->do_value (settings_key);
 }
 
-QStringList all_gui_preferences::keys ()
+QStringList
+all_gui_preferences::keys ()
 {
   ensure_instance ();
 
   return s_instance->do_keys ();
 }
 
-void all_gui_preferences::do_insert (const QString& settings_key,
-                                     const gui_pref& pref)
+void
+all_gui_preferences::do_insert (const QString& settings_key,
+                                const gui_pref& pref)
 {
   m_hash.insert (settings_key, pref);
 }
@@ -73,12 +77,14 @@ all_gui_preferences::do_value (const QString& settings_key) const
   return m_hash.value (settings_key);
 }
 
-QStringList all_gui_preferences::do_keys () const
+QStringList
+all_gui_preferences::do_keys () const
 {
   return m_hash.keys ();
 }
 
-void all_gui_preferences::ensure_instance ()
+void
+all_gui_preferences::ensure_instance ()
 {
   if (! s_instance)
     s_instance = new all_gui_preferences ();
@@ -108,7 +114,8 @@ sc_pref::sc_pref (const QString& description, const QString& settings_key,
   all_shortcut_preferences::insert (settings_key, *this);
 }
 
-QKeySequence sc_pref::def_value () const
+QKeySequence
+sc_pref::def_value () const
 {
   QKeySequence key_seq = QKeySequence ();
 
@@ -120,37 +127,42 @@ QKeySequence sc_pref::def_value () const
   return key_seq;
 }
 
-QString sc_pref::def_text () const
+QString
+sc_pref::def_text () const
 {
   return def_value ().toString ();
 }
 
 all_shortcut_preferences *all_shortcut_preferences::s_instance = nullptr;
 
-void all_shortcut_preferences::insert (const QString& settings_key,
-                                       const sc_pref& scpref)
+void
+all_shortcut_preferences::insert (const QString& settings_key,
+                                  const sc_pref& scpref)
 {
   ensure_instance ();
 
   s_instance->do_insert (settings_key, scpref);
 }
 
-const sc_pref all_shortcut_preferences::value (const QString& settings_key)
+const sc_pref
+all_shortcut_preferences::value (const QString& settings_key)
 {
   ensure_instance ();
 
   return s_instance->do_value (settings_key);
 }
 
-QStringList all_shortcut_preferences::keys ()
+QStringList
+all_shortcut_preferences::keys ()
 {
   ensure_instance ();
 
   return s_instance->do_keys ();
 }
 
-void all_shortcut_preferences::do_insert (const QString& settings_key,
-                                          const sc_pref& scpref)
+void
+all_shortcut_preferences::do_insert (const QString& settings_key,
+                                     const sc_pref& scpref)
 {
   m_hash.insert (settings_key, scpref);
 }
@@ -161,12 +173,14 @@ all_shortcut_preferences::do_value (const QString& settings_key) const
   return m_hash.value (settings_key);
 }
 
-QStringList all_shortcut_preferences::do_keys () const
+QStringList
+all_shortcut_preferences::do_keys () const
 {
   return m_hash.keys ();
 }
 
-void all_shortcut_preferences::ensure_instance ()
+void
+all_shortcut_preferences::ensure_instance ()
 {
   if (! s_instance)
     s_instance = new all_shortcut_preferences ();

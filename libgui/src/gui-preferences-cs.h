@@ -56,7 +56,8 @@ const unsigned int cs_colors_count = 4;
 extern gui_pref cs_colors[];
 
 const QStringList
-cs_color_names = {
+cs_color_names =
+{
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Foreground"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Background"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Selection"),

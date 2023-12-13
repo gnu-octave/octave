@@ -4125,62 +4125,74 @@ mxGetImagData (const mxArray *ptr)
   return ptr->get_imag_data ();
 }
 
-mxDouble * mxGetDoubles (const mxArray *ptr)
+mxDouble *
+mxGetDoubles (const mxArray *ptr)
 {
   return ptr->get_doubles ();
 }
 
-mxSingle * mxGetSingles (const mxArray *ptr)
+mxSingle *
+mxGetSingles (const mxArray *ptr)
 {
   return ptr->get_singles ();
 }
 
-mxInt8 * mxGetInt8s (const mxArray *ptr)
+mxInt8 *
+mxGetInt8s (const mxArray *ptr)
 {
   return ptr->get_int8s ();
 }
 
-mxInt16 * mxGetInt16s (const mxArray *ptr)
+mxInt16 *
+mxGetInt16s (const mxArray *ptr)
 {
   return ptr->get_int16s ();
 }
 
-mxInt32 * mxGetInt32s (const mxArray *ptr)
+mxInt32 *
+mxGetInt32s (const mxArray *ptr)
 {
   return ptr->get_int32s ();
 }
 
-mxInt64 * mxGetInt64s (const mxArray *ptr)
+mxInt64 *
+mxGetInt64s (const mxArray *ptr)
 {
   return ptr->get_int64s ();
 }
 
-mxUint8 * mxGetUint8s (const mxArray *ptr)
+mxUint8 *
+mxGetUint8s (const mxArray *ptr)
 {
   return ptr->get_uint8s ();
 }
 
-mxUint16 * mxGetUint16s (const mxArray *ptr)
+mxUint16 *
+mxGetUint16s (const mxArray *ptr)
 {
   return ptr->get_uint16s ();
 }
 
-mxUint32 * mxGetUint32s (const mxArray *ptr)
+mxUint32 *
+mxGetUint32s (const mxArray *ptr)
 {
   return ptr->get_uint32s ();
 }
 
-mxUint64 * mxGetUint64s (const mxArray *ptr)
+mxUint64 *
+mxGetUint64s (const mxArray *ptr)
 {
   return ptr->get_uint64s ();
 }
 
-mxComplexDouble * mxGetComplexDoubles (const mxArray *ptr)
+mxComplexDouble *
+mxGetComplexDoubles (const mxArray *ptr)
 {
   return ptr->get_complex_doubles ();
 }
 
-mxComplexSingle * mxGetComplexSingles (const mxArray *ptr)
+mxComplexSingle *
+mxGetComplexSingles (const mxArray *ptr)
 {
   return ptr->get_complex_singles ();
 }
@@ -4198,62 +4210,74 @@ mxSetData (mxArray *ptr, void *pr)
   ptr->set_data (maybe_unmark (pr));
 }
 
-int mxSetDoubles (mxArray *ptr, mxDouble *data)
+int
+mxSetDoubles (mxArray *ptr, mxDouble *data)
 {
   return ptr->set_doubles (maybe_unmark (data));
 }
 
-int mxSetSingles (mxArray *ptr, mxSingle *data)
+int
+mxSetSingles (mxArray *ptr, mxSingle *data)
 {
   return ptr->set_singles (maybe_unmark (data));
 }
 
-int mxSetInt8s (mxArray *ptr, mxInt8 *data)
+int
+mxSetInt8s (mxArray *ptr, mxInt8 *data)
 {
   return ptr->set_int8s (maybe_unmark (data));
 }
 
-int mxSetInt16s (mxArray *ptr, mxInt16 *data)
+int
+mxSetInt16s (mxArray *ptr, mxInt16 *data)
 {
   return ptr->set_int16s (maybe_unmark (data));
 }
 
-int mxSetInt32s (mxArray *ptr, mxInt32 *data)
+int
+mxSetInt32s (mxArray *ptr, mxInt32 *data)
 {
   return ptr->set_int32s (maybe_unmark (data));
 }
 
-int mxSetInt64s (mxArray *ptr, mxInt64 *data)
+int
+mxSetInt64s (mxArray *ptr, mxInt64 *data)
 {
   return ptr->set_int64s (maybe_unmark (data));
 }
 
-int mxSetUint8s (mxArray *ptr, mxUint8 *data)
+int
+mxSetUint8s (mxArray *ptr, mxUint8 *data)
 {
   return ptr->set_uint8s (maybe_unmark (data));
 }
 
-int mxSetUint16s (mxArray *ptr, mxUint16 *data)
+int
+mxSetUint16s (mxArray *ptr, mxUint16 *data)
 {
   return ptr->set_uint16s (maybe_unmark (data));
 }
 
-int mxSetUint32s (mxArray *ptr, mxUint32 *data)
+int
+mxSetUint32s (mxArray *ptr, mxUint32 *data)
 {
   return ptr->set_uint32s (maybe_unmark (data));
 }
 
-int mxSetUint64s (mxArray *ptr, mxUint64 *data)
+int
+mxSetUint64s (mxArray *ptr, mxUint64 *data)
 {
   return ptr->set_uint64s (maybe_unmark (data));
 }
 
-int mxSetComplexDoubles (mxArray *ptr, mxComplexDouble *data)
+int
+mxSetComplexDoubles (mxArray *ptr, mxComplexDouble *data)
 {
   return ptr->set_complex_doubles (maybe_unmark (data));
 }
 
-int mxSetComplexSingles (mxArray *ptr, mxComplexSingle *data)
+int
+mxSetComplexSingles (mxArray *ptr, mxComplexSingle *data)
 {
   return ptr->set_complex_singles (maybe_unmark (data));
 }

@@ -527,7 +527,7 @@ octave_dock_widget::handle_settings ()
 
   m_recent_float_geom
     = settings.value (dw_float_geometry.settings_key ().arg (objectName ()),
-                       default_floating_size).toRect ();
+                      default_floating_size).toRect ();
 
   adjust_to_screen (m_recent_float_geom, default_floating_size);
 
@@ -601,7 +601,8 @@ octave_dock_widget::save_settings ()
   settings.sync ();
 }
 
-bool octave_dock_widget::eventFilter (QObject *obj, QEvent *e)
+bool
+octave_dock_widget::eventFilter (QObject *obj, QEvent *e)
 {
   // Ignore double clicks into window decoration elements
   if (e->type () == QEvent::NonClientAreaMouseButtonDblClick)
@@ -657,7 +658,8 @@ octave_dock_widget::change_visibility (bool)
   emit active_changed (false);
 }
 
-void octave_dock_widget::activate ()
+void
+octave_dock_widget::activate ()
 {
   if (! isVisible ())
     setVisible (true);
@@ -667,7 +669,8 @@ void octave_dock_widget::activate ()
   raise ();
 }
 
-void octave_dock_widget::handle_visibility (bool visible)
+void
+octave_dock_widget::handle_visibility (bool visible)
 {
   if (visible)
     {

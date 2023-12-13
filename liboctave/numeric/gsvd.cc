@@ -53,7 +53,8 @@ static bool gsvd_initialized = false;
 #define xSTRINGIZE(x) #x
 #define STRINGIZE(x) xSTRINGIZE(x)
 
-static void initialize_gsvd ()
+static void
+initialize_gsvd ()
 {
   if (gsvd_initialized)
     return;

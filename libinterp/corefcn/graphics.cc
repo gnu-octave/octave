@@ -8611,8 +8611,8 @@ axes::update_axis_limits (const std::string& axis_type)
   m_properties.update_transform ();
 }
 
-inline
-double force_in_range (double x, double lower, double upper)
+inline double
+force_in_range (double x, double lower, double upper)
 {
   if (x < lower)
     return lower;
@@ -9503,7 +9503,8 @@ patch::properties::update_fvc ()
 }
 
 // core coplanar tester
-bool is_coplanar (const Matrix& cov)
+bool
+is_coplanar (const Matrix& cov)
 {
   // Accuracy note: this test will also accept single precision input (although
   // stored in double precision).  This is because the error threshold is

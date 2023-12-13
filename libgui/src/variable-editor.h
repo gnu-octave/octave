@@ -394,7 +394,7 @@ private:
 
   void construct_tool_bar ();
 
-  QList<variable_dock_widget*> m_variables;
+  QList<variable_dock_widget *> m_variables;
 
   QString m_current_focus_vname;
 

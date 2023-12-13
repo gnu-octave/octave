@@ -886,7 +886,8 @@ The original variable value is restored when exiting the function.
                                 "optimize_subsasgn_calls");
 }
 
-static bool val_in_table (const Matrix& table, double val)
+static bool
+val_in_table (const Matrix& table, double val)
 {
   if (table.isempty ())
     return false;
@@ -895,7 +896,8 @@ static bool val_in_table (const Matrix& table, double val)
   return (i > 0 && table(i-1) == val);
 }
 
-static bool isargout1 (int nargout, const Matrix& ignored, double k)
+static bool
+isargout1 (int nargout, const Matrix& ignored, double k)
 {
   if (k != math::fix (k) || k <= 0)
     error ("isargout: K must be a positive integer");

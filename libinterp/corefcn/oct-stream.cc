@@ -4250,8 +4250,8 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
 {
   T value = T ();
 
-    is >> std::ws;  // skip through whitespace and advance stream pointer
-    std::streampos pos = is.tellg ();
+  is >> std::ws;  // skip through whitespace and advance stream pointer
+  std::streampos pos = is.tellg ();
 
   switch (fmt.type)
     {
@@ -4266,7 +4266,7 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
 
     case 'i':
       {
-          int c1 = is.get ();
+        int c1 = is.get ();
 
         if (c1 != std::istream::traits_type::eof ())
           {
@@ -4315,33 +4315,33 @@ octave_scan_1 (std::istream& is, const scanf_format_elt& fmt,
       break;
     }
 
-    std::ios::iostate status = is.rdstate ();
-    if (! (status & std::ios::failbit))
-      {
-        // Copy the converted value if the stream is in a good state
-        *valptr = value;
-      }
-    else
-      {
-        if (value != T ())
-          {
-            // If conversion produces an integer that overflows, failbit is set
-            // but value is nonzero.  We want to treat this case as success,
-            // so clear  failbit from the stream state to keep going.
-            // FIXME: Maybe set error state on octave stream?  Matlab does
-            // *not* indicate an error message on overflow.
-            is.clear (status & ~std::ios::failbit);
-            *valptr = value;
-          }
-        else
-          {
-            // True error.
-            // Reset stream to original position, clear eof bit, pass status on.
-            is.clear ();
-            is.seekg (pos);
-            is.setstate (status & ~std::ios_base::eofbit);
-          }
-      }
+  std::ios::iostate status = is.rdstate ();
+  if (! (status & std::ios::failbit))
+    {
+      // Copy the converted value if the stream is in a good state
+      *valptr = value;
+    }
+  else
+    {
+      if (value != T ())
+        {
+          // If conversion produces an integer that overflows, failbit is set
+          // but value is nonzero.  We want to treat this case as success,
+          // so clear  failbit from the stream state to keep going.
+          // FIXME: Maybe set error state on octave stream?  Matlab does
+          // *not* indicate an error message on overflow.
+          is.clear (status & ~std::ios::failbit);
+          *valptr = value;
+        }
+      else
+        {
+          // True error.
+          // Reset stream to original position, clear eof bit, pass status on.
+          is.clear ();
+          is.seekg (pos);
+          is.setstate (status & ~std::ios_base::eofbit);
+        }
+    }
 
   return is;
 }
@@ -4397,7 +4397,8 @@ octave_scan (std::istream& is, const scanf_format_elt& fmt, T *valptr)
 
 template <>
 std::istream&
-octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double *valptr)
+octave_scan<>
+(std::istream& is, const scanf_format_elt& fmt, double *valptr)
 {
   double& ref = *valptr;
 
@@ -4409,20 +4410,20 @@ octave_scan<> (std::istream& is, const scanf_format_elt& fmt, double *valptr)
     case 'E':
     case 'G':
       {
-          is >> std::ws;  // skip through whitespace and advance stream pointer
-          if (is.good ())
+        is >> std::ws;  // skip through whitespace and advance stream pointer
+        if (is.good ())
           {
-              std::streampos pos = is.tellg ();
+            std::streampos pos = is.tellg ();
 
             ref = read_value<double> (is);
 
-              std::ios::iostate status = is.rdstate ();
-              if (status & std::ios::failbit)
-                {
-                  is.clear ();
-                  is.seekg (pos);
-                  is.setstate (status & ~std::ios_base::eofbit);
-                }
+            std::ios::iostate status = is.rdstate ();
+            if (status & std::ios::failbit)
+              {
+                is.clear ();
+                is.seekg (pos);
+                is.setstate (status & ~std::ios_base::eofbit);
+              }
           }
       }
       break;
@@ -5040,10 +5041,10 @@ base_stream::do_scanf (scanf_format_list& fmt_list,
 
                   // If it looks like we have a matching failure, then
                   // reset the failbit in the stream state.
-                    if (is.rdstate () & std::ios::failbit)
+                  if (is.rdstate () & std::ios::failbit)
                     {
                       is.clear (is.rdstate () & (~std::ios::failbit));
-                        error (who, "format failed to match");
+                      error (who, "format failed to match");
                     }
 
                   // FIXME: is this the right thing to do?
@@ -7405,7 +7406,8 @@ stream_list::~stream_list ()
   clear ();
 }
 
-int stream_list::insert (stream& os)
+int
+stream_list::insert (stream& os)
 {
   // Insert item with key corresponding to file-descriptor.
 
@@ -7445,7 +7447,8 @@ err_invalid_file_id (int fid, const std::string& who)
     ::error ("%s: invalid stream number = %d", who.c_str (), fid);
 }
 
-stream stream_list::lookup (int fid, const std::string& who) const
+stream
+stream_list::lookup (int fid, const std::string& who) const
 {
   stream retval;
 
@@ -7468,15 +7471,17 @@ stream stream_list::lookup (int fid, const std::string& who) const
   return retval;
 }
 
-stream stream_list::lookup (const octave_value& fid,
-                            const std::string& who) const
+stream
+stream_list::lookup (const octave_value& fid,
+                     const std::string& who) const
 {
   int i = get_file_number (fid);
 
   return lookup (i, who);
 }
 
-int stream_list::remove (int fid, const std::string& who)
+int
+stream_list::remove (int fid, const std::string& who)
 {
   // Can't remove stdin (std::cin), stdout (std::cout), or stderr (std::cerr).
   if (fid < 3)
@@ -7500,7 +7505,8 @@ int stream_list::remove (int fid, const std::string& who)
   return 0;
 }
 
-int stream_list::remove (const octave_value& fid, const std::string& who)
+int
+stream_list::remove (const octave_value& fid, const std::string& who)
 {
   int retval = -1;
 
@@ -7520,7 +7526,8 @@ int stream_list::remove (const octave_value& fid, const std::string& who)
   return retval;
 }
 
-void stream_list::clear (bool flush)
+void
+stream_list::clear (bool flush)
 {
   if (flush)
     {
@@ -7561,7 +7568,8 @@ void stream_list::clear (bool flush)
   m_lookup_cache = m_list.end ();
 }
 
-string_vector stream_list::get_info (int fid) const
+string_vector
+stream_list::get_info (int fid) const
 {
   string_vector retval (4);
 
@@ -7593,7 +7601,8 @@ string_vector stream_list::get_info (int fid) const
   return retval;
 }
 
-string_vector stream_list::get_info (const octave_value& fid) const
+string_vector
+stream_list::get_info (const octave_value& fid) const
 {
   int conv_err = 0;
 
@@ -7608,7 +7617,8 @@ string_vector stream_list::get_info (const octave_value& fid) const
   return get_info (int_fid);
 }
 
-std::string stream_list::list_open_files () const
+std::string
+stream_list::list_open_files () const
 {
   std::ostringstream buf;
 
@@ -7640,7 +7650,8 @@ std::string stream_list::list_open_files () const
   return buf.str ();
 }
 
-octave_value stream_list::open_file_numbers () const
+octave_value
+stream_list::open_file_numbers () const
 {
   Matrix retval (1, m_list.size (), 0.0);
 
@@ -7658,7 +7669,8 @@ octave_value stream_list::open_file_numbers () const
   return retval;
 }
 
-int stream_list::get_file_number (const octave_value& fid) const
+int
+stream_list::get_file_number (const octave_value& fid) const
 {
   int retval = -1;
 
@@ -7698,17 +7710,20 @@ int stream_list::get_file_number (const octave_value& fid) const
   return retval;
 }
 
-octave_value stream_list::stdin_file () const
+octave_value
+stream_list::stdin_file () const
 {
   return octave_value (m_stdin_file);
 }
 
-octave_value stream_list::stdout_file () const
+octave_value
+stream_list::stdout_file () const
 {
   return octave_value (m_stdout_file);
 }
 
-octave_value stream_list::stderr_file () const
+octave_value
+stream_list::stderr_file () const
 {
   return octave_value (m_stderr_file);
 }

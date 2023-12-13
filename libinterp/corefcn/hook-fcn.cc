@@ -49,7 +49,8 @@ hook_function::hook_function (const octave_value& f, const octave_value& d)
     error ("invalid hook function");
 }
 
-void named_hook_function::eval (const octave_value_list& initial_args)
+void
+named_hook_function::eval (const octave_value_list& initial_args)
 {
   octave_value_list args = initial_args;
 
@@ -61,7 +62,8 @@ void named_hook_function::eval (const octave_value_list& initial_args)
   interp.feval (m_name, args, 0);
 }
 
-void fcn_handle_hook_function::eval (const octave_value_list& initial_args)
+void
+fcn_handle_hook_function::eval (const octave_value_list& initial_args)
 {
   octave_value_list args = initial_args;
 

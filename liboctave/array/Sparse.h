@@ -56,7 +56,7 @@ protected:
   // The real representation of all Sparse arrays.
   //--------------------------------------------------------------------
 
-class SparseRep : public Alloc
+  class SparseRep : public Alloc
   {
   public:
 
@@ -290,8 +290,8 @@ public:
   Sparse (const dim_vector& dv, octave_idx_type nz,
           T *ptr, octave_idx_type *ridx, octave_idx_type *cidx,
           const Alloc& xallocator = Alloc ())
-  : m_rep (new typename Sparse<T, Alloc>::SparseRep (dv, nz, ptr, ridx, cidx, xallocator)),
-    m_dimensions (dv)
+    : m_rep (new typename Sparse<T, Alloc>::SparseRep (dv, nz, ptr, ridx, cidx, xallocator)),
+      m_dimensions (dv)
   { }
 
   // Both SparseMatrix and SparseBoolMatrix need this ctor, and this

@@ -93,7 +93,8 @@ enum
 }  ;
 
 const QStringList
-global_icon_paths = {
+global_icon_paths =
+{
   "",
   ":/icons/octave/128x128/",
   ":/icons/tango/128x128/",
@@ -103,7 +104,8 @@ global_icon_paths = {
 extern gui_pref global_icon_theme_index;
 
 const QStringList
-global_all_icon_themes = {
+global_all_icon_themes =
+{
   "",
   "octave",
   "tango",
@@ -111,7 +113,8 @@ global_all_icon_themes = {
 };
 
 const QStringList
-global_all_icon_theme_names = {
+global_all_icon_theme_names =
+{
   "System",
   "Octave",
   "Tango"
@@ -126,7 +129,8 @@ enum
   EXTRA_STYLE_FUSION_DARK = 0
 }  ;
 const QStringList
-global_extra_styles = {
+global_extra_styles =
+{
   "Fusion-Dark"
 };
 
@@ -173,7 +177,8 @@ extern gui_pref global_proxy_user;
 extern gui_pref global_proxy_pass;
 
 const QStringList
-global_proxy_all_types = {
+global_proxy_all_types =
+{
   "HttpProxy",
   "Socks5Proxy",
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Environment Variables")

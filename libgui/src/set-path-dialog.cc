@@ -172,13 +172,15 @@ set_path_dialog::set_path_dialog (QWidget *parent)
   restoreGeometry (settings.value(pd_geometry.settings_key ()).toByteArray());
 }
 
-void set_path_dialog::update_model ()
+void
+set_path_dialog::update_model ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   m->path_to_model ();
 }
 
-void set_path_dialog::add_dir_common (bool subdirs)
+void
+set_path_dialog::add_dir_common (bool subdirs)
 {
   QString dir
     = QFileDialog::getExistingDirectory (this, tr ("Open Directory"),
@@ -203,17 +205,20 @@ void set_path_dialog::add_dir_common (bool subdirs)
     }
 }
 
-void set_path_dialog::add_dir()
+void
+set_path_dialog::add_dir()
 {
   add_dir_common (false);
 }
 
-void set_path_dialog::add_dir_subdirs ()
+void
+set_path_dialog::add_dir_subdirs ()
 {
   add_dir_common (true);
 }
 
-void set_path_dialog::rm_dir ()
+void
+set_path_dialog::rm_dir ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -223,7 +228,8 @@ void set_path_dialog::rm_dir ()
   selmodel->clearSelection ();
 }
 
-void set_path_dialog::move_dir_up ()
+void
+set_path_dialog::move_dir_up ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -243,7 +249,8 @@ void set_path_dialog::move_dir_up ()
   m_path_list->scrollTo (m->index (min_row));
 }
 
-void set_path_dialog::move_dir_down ()
+void
+set_path_dialog::move_dir_down ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -263,7 +270,8 @@ void set_path_dialog::move_dir_down ()
   m_path_list->scrollTo (m->index (max_row));
 }
 
-void set_path_dialog::move_dir_top ()
+void
+set_path_dialog::move_dir_top ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -278,7 +286,8 @@ void set_path_dialog::move_dir_top ()
   m_path_list->scrollTo (m->index (0));
 }
 
-void set_path_dialog::move_dir_bottom ()
+void
+set_path_dialog::move_dir_bottom ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
@@ -295,14 +304,16 @@ void set_path_dialog::move_dir_bottom ()
   m_path_list->scrollTo (m->index (row_count - 1));
 }
 
-void set_path_dialog::save_settings ()
+void
+set_path_dialog::save_settings ()
 {
   gui_settings settings;
 
   settings.setValue (pd_geometry.settings_key (), saveGeometry ());
 }
 
-void set_path_dialog::closeEvent (QCloseEvent *e)
+void
+set_path_dialog::closeEvent (QCloseEvent *e)
 {
   save_settings ();
 

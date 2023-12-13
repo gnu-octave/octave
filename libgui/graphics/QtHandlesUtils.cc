@@ -85,7 +85,8 @@ namespace Utils
     return v;
   }
 
-  Cell toCellString (const QStringList& l)
+  Cell
+  toCellString (const QStringList& l)
   {
     QStringList tmp = l;
 
@@ -384,7 +385,7 @@ namespace Utils
 #if defined (Q_OS_MAC)
       modList.push_back ("command");
 #else
-    modList.push_back ("control");
+      modList.push_back ("control");
 #endif
     if (mods & Qt::AltModifier)
       modList.push_back ("alt");

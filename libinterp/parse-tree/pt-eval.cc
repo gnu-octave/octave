@@ -144,7 +144,8 @@ private:
 // with the corresponding tree_evaluator functions or do they need to
 // remain separate?  They perform nearly the same functions.
 
-int debugger::server_loop ()
+int
+debugger::server_loop ()
 {
   // Process events from the event queue.
 
@@ -257,7 +258,8 @@ int debugger::server_loop ()
   return exit_status;
 }
 
-void debugger::repl (const std::string& prompt_arg)
+void
+debugger::repl (const std::string& prompt_arg)
 {
   unwind_protect frame;
 
@@ -503,7 +505,8 @@ void debugger::repl (const std::string& prompt_arg)
     }
 }
 
-bool debugger::quitting_debugger () const
+bool
+debugger::quitting_debugger () const
 {
   if (m_execution_mode == EX_QUIT)
     {
@@ -531,7 +534,8 @@ bool debugger::quitting_debugger () const
   return false;
 }
 
-bool tree_evaluator::at_top_level () const
+bool
+tree_evaluator::at_top_level () const
 {
   return m_call_stack.at_top_level ();
 }
@@ -572,8 +576,9 @@ tree_evaluator::mfilename (const std::string& opt) const
   return fname;
 }
 
-void tree_evaluator::parse_and_execute (const std::string& input,
-                                        bool& incomplete_parse)
+void
+tree_evaluator::parse_and_execute (const std::string& input,
+                                   bool& incomplete_parse)
 {
   incomplete_parse = false;
 
@@ -636,7 +641,8 @@ void tree_evaluator::parse_and_execute (const std::string& input,
   evmgr.pre_input_event ();
 }
 
-void tree_evaluator::get_line_and_eval ()
+void
+tree_evaluator::get_line_and_eval ()
 {
   std::mutex mtx;
   std::unique_lock<std::mutex> lock (mtx);
@@ -728,7 +734,8 @@ void tree_evaluator::get_line_and_eval ()
     }
 }
 
-int tree_evaluator::repl ()
+int
+tree_evaluator::repl ()
 {
   // The big loop.  Read, Eval, Print, Loop.  Normally user
   // interaction at the command line in a terminal session, but we may
@@ -869,7 +876,8 @@ int tree_evaluator::repl ()
   return exit_status;
 }
 
-int tree_evaluator::server_loop ()
+int
+tree_evaluator::server_loop ()
 {
   // Process events from the event queue.
 
@@ -977,8 +985,9 @@ int tree_evaluator::server_loop ()
   return m_exit_status;
 }
 
-void tree_evaluator::eval (std::shared_ptr<tree_statement_list>& stmt_list,
-                           bool interactive)
+void
+tree_evaluator::eval (std::shared_ptr<tree_statement_list>& stmt_list,
+                      bool interactive)
 {
   try
     {
@@ -1082,8 +1091,9 @@ tree_evaluator::eval_string (const std::string& eval_str, bool silent,
   return retval;
 }
 
-octave_value tree_evaluator::eval_string (const std::string& eval_str,
-                                          bool silent, int& parse_status)
+octave_value
+tree_evaluator::eval_string (const std::string& eval_str,
+                             bool silent, int& parse_status)
 {
   octave_value retval;
 
@@ -1095,26 +1105,29 @@ octave_value tree_evaluator::eval_string (const std::string& eval_str,
   return retval;
 }
 
-octave_value_list tree_evaluator::eval_string (const octave_value& arg,
-                                               bool silent, int& parse_status,
-                                               int nargout)
+octave_value_list
+tree_evaluator::eval_string (const octave_value& arg,
+                             bool silent, int& parse_status,
+                             int nargout)
 {
   std::string s = arg.xstring_value ("eval: expecting string argument");
 
   return eval_string (s, silent, parse_status, nargout);
 }
 
-octave_value_list tree_evaluator::eval (const std::string& try_code,
-                                        int nargout)
+octave_value_list
+tree_evaluator::eval (const std::string& try_code,
+                      int nargout)
 {
   int parse_status = 0;
 
   return eval_string (try_code, nargout > 0, parse_status, nargout);
 }
 
-octave_value_list tree_evaluator::eval (const std::string& try_code,
-                                        const std::string& catch_code,
-                                        int nargout)
+octave_value_list
+tree_evaluator::eval (const std::string& try_code,
+                      const std::string& catch_code,
+                      int nargout)
 {
   octave_value_list retval;
 
@@ -1159,9 +1172,10 @@ octave_value_list tree_evaluator::eval (const std::string& try_code,
   return retval;
 }
 
-octave_value_list tree_evaluator::evalin (const std::string& context,
-                                          const std::string& try_code,
-                                          int nargout)
+octave_value_list
+tree_evaluator::evalin (const std::string& context,
+                        const std::string& try_code,
+                        int nargout)
 {
   unwind_action act ([=] (std::size_t frm)
                      {
@@ -1180,10 +1194,11 @@ octave_value_list tree_evaluator::evalin (const std::string& context,
   return eval_string (try_code, nargout > 0, parse_status, nargout);
 }
 
-octave_value_list tree_evaluator::evalin (const std::string& context,
-                                          const std::string& try_code,
-                                          const std::string& catch_code,
-                                          int nargout)
+octave_value_list
+tree_evaluator::evalin (const std::string& context,
+                        const std::string& try_code,
+                        const std::string& catch_code,
+                        int nargout)
 {
   octave_value_list retval;
 
@@ -1908,7 +1923,8 @@ tree_evaluator::is_defined (const symbol_record& sym) const
   return frame->is_defined (sym);
 }
 
-bool tree_evaluator::is_global (const std::string& name) const
+bool
+tree_evaluator::is_global (const std::string& name) const
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -1934,9 +1950,10 @@ tree_evaluator::varval (const std::string& name) const
   return frame->varval (name);
 }
 
-void tree_evaluator::install_variable (const std::string& name,
-                                       const octave_value& value,
-                                       bool global)
+void
+tree_evaluator::install_variable (const std::string& name,
+                                  const octave_value& value,
+                                  bool global)
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -2241,7 +2258,7 @@ tree_evaluator::undefine_parameter_list (tree_parameter_list *param_list)
 
 // END is documented in op-kw-docs.
 DEFMETHOD (end, interp, args, ,
-         doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn {} {} end
 Last element of an array or the end of any @code{for}, @code{parfor},
 @code{if}, @code{do}, @code{while}, @code{function}, @code{switch},
@@ -2266,9 +2283,9 @@ Example:
 @seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}
 @end deftypefn */)
 {
-tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
-return tw.evaluate_end_expression (args);
+  return tw.evaluate_end_expression (args);
 }
 
 /*
@@ -2433,35 +2450,41 @@ tree_evaluator::switch_case_label_matches (tree_switch_case *expr,
   return false;
 }
 
-void tree_evaluator::push_stack_frame (const symbol_scope& scope)
+void
+tree_evaluator::push_stack_frame (const symbol_scope& scope)
 {
   m_call_stack.push (scope);
 }
 
-void tree_evaluator::push_stack_frame (octave_user_function *fcn,
-                                       const std::shared_ptr<stack_frame>& closure_frames)
+void
+tree_evaluator::push_stack_frame (octave_user_function *fcn,
+                                  const std::shared_ptr<stack_frame>& closure_frames)
 {
   m_call_stack.push (fcn, closure_frames);
 }
 
-void tree_evaluator::push_stack_frame (octave_user_function *fcn,
-                                       const stack_frame::local_vars_map& local_vars,
-                                       const std::shared_ptr<stack_frame>& closure_frames)
+void
+tree_evaluator::push_stack_frame (octave_user_function *fcn,
+                                  const stack_frame::local_vars_map& local_vars,
+                                  const std::shared_ptr<stack_frame>& closure_frames)
 {
   m_call_stack.push (fcn, local_vars, closure_frames);
 }
 
-void tree_evaluator::push_stack_frame (octave_user_script *script)
+void
+tree_evaluator::push_stack_frame (octave_user_script *script)
 {
   m_call_stack.push (script);
 }
 
-void tree_evaluator::push_stack_frame (octave_function *fcn)
+void
+tree_evaluator::push_stack_frame (octave_function *fcn)
 {
   m_call_stack.push (fcn);
 }
 
-void tree_evaluator::pop_stack_frame ()
+void
+tree_evaluator::pop_stack_frame ()
 {
   m_call_stack.pop ();
 }
@@ -2472,84 +2495,100 @@ tree_evaluator::pop_return_stack_frame ()
   return m_call_stack.pop_return ();
 }
 
-int tree_evaluator::current_line () const
+int
+tree_evaluator::current_line () const
 {
   return m_call_stack.current_line ();
 }
 
-int tree_evaluator::current_column () const
+int
+tree_evaluator::current_column () const
 {
   return m_call_stack.current_column ();
 }
 
-int tree_evaluator::debug_user_code_line () const
+int
+tree_evaluator::debug_user_code_line () const
 {
   return m_call_stack.debug_user_code_line ();
 }
 
-int tree_evaluator::debug_user_code_column () const
+int
+tree_evaluator::debug_user_code_column () const
 {
   return m_call_stack.debug_user_code_column ();
 }
 
-void tree_evaluator::debug_where (std::ostream& os) const
+void
+tree_evaluator::debug_where (std::ostream& os) const
 {
   std::shared_ptr<stack_frame> frm = m_call_stack.current_user_frame ();
 
   frm->display_stopped_in_message (os);
 }
 
-octave_user_code * tree_evaluator::current_user_code () const
+octave_user_code *
+tree_evaluator::current_user_code () const
 {
   return m_call_stack.current_user_code ();
 }
 
-unwind_protect * tree_evaluator::curr_fcn_unwind_protect_frame ()
+unwind_protect *
+tree_evaluator::curr_fcn_unwind_protect_frame ()
 {
   return m_call_stack.curr_fcn_unwind_protect_frame ();
 }
 
-octave_user_code * tree_evaluator::debug_user_code () const
+octave_user_code *
+tree_evaluator::debug_user_code () const
 {
   return m_call_stack.debug_user_code ();
 }
 
-octave_function * tree_evaluator::current_function (bool skip_first) const
+octave_function *
+tree_evaluator::current_function (bool skip_first) const
 {
   return m_call_stack.current_function (skip_first);
 }
 
-octave_function * tree_evaluator::caller_function () const
+octave_function *
+tree_evaluator::caller_function () const
 {
   return m_call_stack.current_function (true);
 }
 
-bool tree_evaluator::goto_frame (std::size_t n, bool verbose)
+bool
+tree_evaluator::goto_frame (std::size_t n, bool verbose)
 {
   return m_call_stack.goto_frame (n, verbose);
 }
 
-void tree_evaluator::goto_caller_frame ()
+void
+tree_evaluator::goto_caller_frame ()
 {
   m_call_stack.goto_caller_frame ();
 }
 
-void tree_evaluator::goto_base_frame ()
+void
+tree_evaluator::goto_base_frame ()
 {
   m_call_stack.goto_base_frame ();
 }
 
-void tree_evaluator::restore_frame (std::size_t n)
+void
+tree_evaluator::restore_frame (std::size_t n)
 {
   return m_call_stack.restore_frame (n);
 }
 
-std::string tree_evaluator::get_dispatch_class () const
+std::string
+tree_evaluator::get_dispatch_class () const
 {
   return m_call_stack.get_dispatch_class ();
 }
 
-void tree_evaluator::set_dispatch_class (const std::string& class_name)
+void
+tree_evaluator::set_dispatch_class (const std::string& class_name)
 {
   m_call_stack.set_dispatch_class (class_name);
 }
@@ -2585,7 +2624,8 @@ tree_evaluator::backtrace_info (octave_idx_type& curr_user_frame,
   return m_call_stack.backtrace_info (curr_user_frame, print_subfn);
 }
 
-std::list<frame_info> tree_evaluator::backtrace_info () const
+std::list<frame_info>
+tree_evaluator::backtrace_info () const
 {
   return m_call_stack.backtrace_info ();
 }
@@ -2597,17 +2637,20 @@ tree_evaluator::backtrace (octave_idx_type& curr_user_frame,
   return m_call_stack.backtrace (curr_user_frame, print_subfn);
 }
 
-octave_map tree_evaluator::backtrace () const
+octave_map
+tree_evaluator::backtrace () const
 {
   return m_call_stack.backtrace ();
 }
 
-octave_map tree_evaluator::empty_backtrace () const
+octave_map
+tree_evaluator::empty_backtrace () const
 {
   return m_call_stack.empty_backtrace ();
 }
 
-std::string tree_evaluator::backtrace_message () const
+std::string
+tree_evaluator::backtrace_message () const
 {
   std::list<frame_info> frames = backtrace_info ();
 
@@ -2635,29 +2678,34 @@ std::string tree_evaluator::backtrace_message () const
   return buf.str ();
 }
 
-void tree_evaluator::push_dummy_scope (const std::string& name)
+void
+tree_evaluator::push_dummy_scope (const std::string& name)
 {
   symbol_scope dummy_scope (name + "$dummy");
 
   m_call_stack.push (dummy_scope);
 }
 
-void tree_evaluator::pop_scope ()
+void
+tree_evaluator::pop_scope ()
 {
   m_call_stack.pop ();
 }
 
-symbol_scope tree_evaluator::get_top_scope () const
+symbol_scope
+tree_evaluator::get_top_scope () const
 {
   return m_call_stack.top_scope ();
 }
 
-symbol_scope tree_evaluator::get_current_scope () const
+symbol_scope
+tree_evaluator::get_current_scope () const
 {
   return m_call_stack.current_scope ();
 }
 
-void tree_evaluator::mlock (bool skip_first) const
+void
+tree_evaluator::mlock (bool skip_first) const
 {
   octave_function *fcn = m_call_stack.current_function (skip_first);
 
@@ -2673,7 +2721,8 @@ void tree_evaluator::mlock (bool skip_first) const
   fcn->lock ();
 }
 
-void tree_evaluator::munlock (bool skip_first) const
+void
+tree_evaluator::munlock (bool skip_first) const
 {
   octave_function *fcn = m_call_stack.current_function (skip_first);
 
@@ -2689,7 +2738,8 @@ void tree_evaluator::munlock (bool skip_first) const
   fcn->unlock ();
 }
 
-bool tree_evaluator::mislocked (bool skip_first) const
+bool
+tree_evaluator::mislocked (bool skip_first) const
 {
   octave_function *fcn = m_call_stack.current_function (skip_first);
 
@@ -2705,12 +2755,14 @@ tree_evaluator::max_stack_depth (const octave_value_list& args, int nargout)
   return m_call_stack.max_stack_depth (args, nargout);
 }
 
-void tree_evaluator::display_call_stack () const
+void
+tree_evaluator::display_call_stack () const
 {
   m_call_stack.display ();
 }
 
-octave_value tree_evaluator::find (const std::string& name)
+octave_value
+tree_evaluator::find (const std::string& name)
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -2734,7 +2786,8 @@ octave_value tree_evaluator::find (const std::string& name)
   return symtab.fcn_table_find (name, ovl ());
 }
 
-void tree_evaluator::clear_objects ()
+void
+tree_evaluator::clear_objects ()
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -2742,7 +2795,8 @@ void tree_evaluator::clear_objects ()
   frame->clear_objects ();
 }
 
-void tree_evaluator::clear_variable (const std::string& name)
+void
+tree_evaluator::clear_variable (const std::string& name)
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -2750,7 +2804,8 @@ void tree_evaluator::clear_variable (const std::string& name)
   frame->clear_variable (name);
 }
 
-void tree_evaluator::clear_variable_pattern (const std::string& pattern)
+void
+tree_evaluator::clear_variable_pattern (const std::string& pattern)
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -2758,7 +2813,8 @@ void tree_evaluator::clear_variable_pattern (const std::string& pattern)
   frame->clear_variable_pattern (pattern);
 }
 
-void tree_evaluator::clear_variable_regexp (const std::string& pattern)
+void
+tree_evaluator::clear_variable_regexp (const std::string& pattern)
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -2766,7 +2822,8 @@ void tree_evaluator::clear_variable_regexp (const std::string& pattern)
   frame->clear_variable_regexp (pattern);
 }
 
-void tree_evaluator::clear_variables ()
+void
+tree_evaluator::clear_variables ()
 {
   std::shared_ptr<stack_frame> frame
     = m_call_stack.get_current_stack_frame ();
@@ -2774,7 +2831,8 @@ void tree_evaluator::clear_variables ()
   frame->clear_variables ();
 }
 
-void tree_evaluator::clear_global_variable (const std::string& name)
+void
+tree_evaluator::clear_global_variable (const std::string& name)
 {
   m_call_stack.clear_global_variable (name);
 }
@@ -2785,17 +2843,20 @@ tree_evaluator::clear_global_variable_pattern (const std::string& pattern)
   m_call_stack.clear_global_variable_pattern (pattern);
 }
 
-void tree_evaluator::clear_global_variable_regexp(const std::string& pattern)
+void
+tree_evaluator::clear_global_variable_regexp(const std::string& pattern)
 {
   m_call_stack.clear_global_variable_regexp (pattern);
 }
 
-void tree_evaluator::clear_global_variables ()
+void
+tree_evaluator::clear_global_variables ()
 {
   m_call_stack.clear_global_variables ();
 }
 
-void tree_evaluator::clear_all (bool force)
+void
+tree_evaluator::clear_all (bool force)
 {
   // FIXME: should this also clear objects?
 
@@ -2807,7 +2868,8 @@ void tree_evaluator::clear_all (bool force)
   symtab.clear_functions (force);
 }
 
-void tree_evaluator::clear_symbol (const std::string& name)
+void
+tree_evaluator::clear_symbol (const std::string& name)
 {
   // FIXME: are we supposed to do both here?
 
@@ -2818,7 +2880,8 @@ void tree_evaluator::clear_symbol (const std::string& name)
   symtab.clear_function (name);
 }
 
-void tree_evaluator::clear_symbol_pattern (const std::string& pattern)
+void
+tree_evaluator::clear_symbol_pattern (const std::string& pattern)
 {
   // FIXME: are we supposed to do both here?
 
@@ -2829,7 +2892,8 @@ void tree_evaluator::clear_symbol_pattern (const std::string& pattern)
   symtab.clear_function_pattern (pattern);
 }
 
-void tree_evaluator::clear_symbol_regexp (const std::string& pattern)
+void
+tree_evaluator::clear_symbol_regexp (const std::string& pattern)
 {
   // FIXME: are we supposed to do both here?
 
@@ -2840,17 +2904,20 @@ void tree_evaluator::clear_symbol_regexp (const std::string& pattern)
   symtab.clear_function_regexp (pattern);
 }
 
-std::list<std::string> tree_evaluator::global_variable_names () const
+std::list<std::string>
+tree_evaluator::global_variable_names () const
 {
   return m_call_stack.global_variable_names ();
 }
 
-std::list<std::string> tree_evaluator::top_level_variable_names () const
+std::list<std::string>
+tree_evaluator::top_level_variable_names () const
 {
   return m_call_stack.top_level_variable_names ();
 }
 
-std::list<std::string> tree_evaluator::variable_names () const
+std::list<std::string>
+tree_evaluator::variable_names () const
 {
   return m_call_stack.variable_names ();
 }
@@ -3257,7 +3324,8 @@ tree_evaluator::visit_complex_for_command (tree_complex_for_command& cmd)
     }
 }
 
-void tree_evaluator::visit_spmd_command (tree_spmd_command& cmd)
+void
+tree_evaluator::visit_spmd_command (tree_spmd_command& cmd)
 {
   // For now, we just execute the commands serially.
 
@@ -4371,7 +4439,8 @@ tree_evaluator::visit_metaclass_query (tree_metaclass_query&)
   panic_impossible ();
 }
 
-void tree_evaluator::bind_ans (const octave_value& val, bool print)
+void
+tree_evaluator::bind_ans (const octave_value& val, bool print)
 {
   static std::string ans = "ans";
 
@@ -4536,7 +4605,8 @@ tree_evaluator::top_scope_symbol_info () const
   return m_call_stack.top_scope_symbol_info ();
 }
 
-octave_map tree_evaluator::get_autoload_map () const
+octave_map
+tree_evaluator::get_autoload_map () const
 {
   Cell fcn_names (dim_vector (m_autoload_map.size (), 1));
   Cell file_names (dim_vector (m_autoload_map.size (), 1));
@@ -4558,7 +4628,8 @@ octave_map tree_evaluator::get_autoload_map () const
   return m;
 }
 
-std::string tree_evaluator::lookup_autoload (const std::string& nm) const
+std::string
+tree_evaluator::lookup_autoload (const std::string& nm) const
 {
   std::string retval;
 
@@ -4574,7 +4645,8 @@ std::string tree_evaluator::lookup_autoload (const std::string& nm) const
   return retval;
 }
 
-std::list<std::string> tree_evaluator::autoloaded_functions () const
+std::list<std::string>
+tree_evaluator::autoloaded_functions () const
 {
   std::list<std::string> names;
 
@@ -4596,14 +4668,16 @@ tree_evaluator::reverse_lookup_autoload (const std::string& nm) const
   return names;
 }
 
-void tree_evaluator::add_autoload (const std::string& fcn,
-                                   const std::string& nm)
+void
+tree_evaluator::add_autoload (const std::string& fcn,
+                              const std::string& nm)
 {
   m_autoload_map[fcn] = check_autoload_file (nm);
 }
 
-void tree_evaluator::remove_autoload (const std::string& fcn,
-                                      const std::string& nm)
+void
+tree_evaluator::remove_autoload (const std::string& fcn,
+                                 const std::string& nm)
 {
   check_autoload_file (nm);
 
@@ -4640,8 +4714,9 @@ tree_evaluator::string_fill_char (const octave_value_list& args, int nargout)
 // variable being indexed, if any, then issue an error.  (Will this also
 // be needed by pt-lvalue, which calls subsref?)
 
-void tree_evaluator::final_index_error (index_exception& ie,
-                                        const tree_expression *expr)
+void
+tree_evaluator::final_index_error (index_exception& ie,
+                                   const tree_expression *expr)
 {
   std::string extra_message;
 
@@ -4810,7 +4885,8 @@ tree_evaluator::push_echo_state_cleanup (unwind_protect& frame)
              m_echo_state, m_echo_file_name, m_echo_file_pos);
 }
 
-bool tree_evaluator::maybe_push_echo_state_cleanup ()
+bool
+tree_evaluator::maybe_push_echo_state_cleanup ()
 {
   // This function is expected to be called from ECHO, which would be
   // the top of the call stack.  If the caller of ECHO is a
@@ -4957,19 +5033,22 @@ tree_evaluator::echo (const octave_value_list& args, int)
   return octave_value ();
 }
 
-bool tree_evaluator::in_debug_repl () const
+bool
+tree_evaluator::in_debug_repl () const
 {
   return (m_debugger_stack.empty ()
           ? false : m_debugger_stack.top()->in_debug_repl ());
 }
 
-void tree_evaluator::dbcont ()
+void
+tree_evaluator::dbcont ()
 {
   if (! m_debugger_stack.empty ())
     m_debugger_stack.top()->dbcont ();
 }
 
-void tree_evaluator::dbquit (bool all)
+void
+tree_evaluator::dbquit (bool all)
 {
   if (! m_debugger_stack.empty ())
     m_debugger_stack.top()->dbquit (all);
@@ -5078,7 +5157,8 @@ tree_evaluator::PS4 (const octave_value_list& args, int nargout)
   return set_internal_variable (m_PS4, args, nargout, "PS4");
 }
 
-bool tree_evaluator::echo_this_file (const std::string& file, int type) const
+bool
+tree_evaluator::echo_this_file (const std::string& file, int type) const
 {
   if ((type & m_echo) == ECHO_SCRIPTS)
     {
@@ -5111,7 +5191,8 @@ bool tree_evaluator::echo_this_file (const std::string& file, int type) const
   return false;
 }
 
-void tree_evaluator::echo_code (int line)
+void
+tree_evaluator::echo_code (int line)
 {
   std::string prefix = command_editor::decode_prompt_string (m_PS4);
 
@@ -5132,7 +5213,8 @@ void tree_evaluator::echo_code (int line)
 }
 
 // Decide if it's time to quit a for or while loop.
-bool tree_evaluator::quit_loop_now ()
+bool
+tree_evaluator::quit_loop_now ()
 {
   octave_quit ();
 
@@ -5149,11 +5231,12 @@ bool tree_evaluator::quit_loop_now ()
   return quit;
 }
 
-void tree_evaluator::bind_auto_fcn_vars (const string_vector& arg_names,
-                                         const Matrix& ignored_outputs,
-                                         int nargin, int nargout,
-                                         bool takes_varargs,
-                                         const octave_value_list& va_args)
+void
+tree_evaluator::bind_auto_fcn_vars (const string_vector& arg_names,
+                                    const Matrix& ignored_outputs,
+                                    int nargin, int nargout,
+                                    bool takes_varargs,
+                                    const octave_value_list& va_args)
 {
   set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (arg_names));
   set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
@@ -5205,7 +5288,7 @@ tree_evaluator::check_autoload_file (const std::string& nm) const
 }
 
 DEFMETHOD (max_recursion_depth, interp, args, nargout,
-         doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} max_recursion_depth ()
 @deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val})
 @deftypefnx {} {@var{old_val} =} max_recursion_depth (@var{new_val}, "local")
@@ -5222,9 +5305,9 @@ The original variable value is restored when exiting the function.
 @seealso{max_stack_depth}
 @end deftypefn */)
 {
-tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
-return tw.max_recursion_depth (args, nargout);
+  return tw.max_recursion_depth (args, nargout);
 }
 
 /*
@@ -5240,7 +5323,7 @@ return tw.max_recursion_depth (args, nargout);
 */
 
 DEFMETHOD (whos_line_format, interp, args, nargout,
-         doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} whos_line_format ()
 @deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val})
 @deftypefnx {} {@var{old_val} =} whos_line_format (@var{new_val}, "local")
@@ -5315,13 +5398,13 @@ The original variable value is restored when exiting the function.
 @seealso{whos}
 @end deftypefn */)
 {
-tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
-return tw.whos_line_format (args, nargout);
+  return tw.whos_line_format (args, nargout);
 }
 
 DEFMETHOD (silent_functions, interp, args, nargout,
-         doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} silent_functions ()
 @deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val})
 @deftypefnx {} {@var{old_val} =} silent_functions (@var{new_val}, "local")
@@ -5337,9 +5420,9 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
-return tw.silent_functions (args, nargout);
+  return tw.silent_functions (args, nargout);
 }
 
 /*
@@ -5355,7 +5438,7 @@ return tw.silent_functions (args, nargout);
 */
 
 DEFMETHOD (string_fill_char, interp, args, nargout,
-         doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} string_fill_char ()
 @deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val})
 @deftypefnx {} {@var{old_val} =} string_fill_char (@var{new_val}, "local")
@@ -5380,9 +5463,9 @@ variable is changed locally for the function and any subroutines it calls.
 The original variable value is restored when exiting the function.
 @end deftypefn */)
 {
-tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
-return tw.string_fill_char (args, nargout);
+  return tw.string_fill_char (args, nargout);
 }
 
 /*
@@ -5404,7 +5487,7 @@ return tw.string_fill_char (args, nargout);
 */
 
 DEFMETHOD (PS4, interp, args, nargout,
-         doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{val} =} PS4 ()
 @deftypefnx {} {@var{old_val} =} PS4 (@var{new_val})
 @deftypefnx {} {@var{old_val} =} PS4 (@var{new_val}, "local")
@@ -5420,11 +5503,11 @@ The original variable value is restored when exiting the function.
 @seealso{echo, PS1, PS2}
 @end deftypefn */)
 {
-return interp.PS4 (args, nargout);
+  return interp.PS4 (args, nargout);
 }
 
 DEFMETHOD (echo, interp, args, nargout,
-         doc: /* -*- texinfo -*-
+           doc: /* -*- texinfo -*-
 @deftypefn  {} {} echo
 @deftypefnx {} {} echo on
 @deftypefnx {} {} echo off
@@ -5464,9 +5547,9 @@ With no arguments, @code{echo} toggles the current echo state.
 @seealso{PS4}
 @end deftypefn */)
 {
-tree_evaluator& tw = interp.get_evaluator ();
+  tree_evaluator& tw = interp.get_evaluator ();
 
-return tw.echo (args, nargout);
+  return tw.echo (args, nargout);
 }
 
 /*

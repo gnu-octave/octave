@@ -357,9 +357,10 @@ documentation::~documentation ()
     }
 }
 
-QAction * documentation::add_action (const QIcon& icon, const QString& text,
-                                     const char *member, QWidget *receiver,
-                                     QToolBar *tool_bar)
+QAction *
+documentation::add_action (const QIcon& icon, const QString& text,
+                           const char *member, QWidget *receiver,
+                           QToolBar *tool_bar)
 {
   QAction *a;
   QWidget *r = this;
@@ -380,7 +381,8 @@ QAction * documentation::add_action (const QIcon& icon, const QString& text,
   return a;
 }
 
-void documentation::construct_tool_bar ()
+void
+documentation::construct_tool_bar ()
 {
   // Home, Previous, Next
   gui_settings settings;
@@ -470,7 +472,8 @@ void documentation::construct_tool_bar ()
                   tr ("Bookmark current page"), nullptr, nullptr, m_tool_bar);
 }
 
-void documentation::global_search ()
+void
+documentation::global_search ()
 {
   if (! m_help_engine)
     return;
@@ -508,12 +511,14 @@ void documentation::global_search ()
   m_help_engine->searchEngine ()->search (queries);
 }
 
-void documentation::global_search_started ()
+void
+documentation::global_search_started ()
 {
   qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
 }
 
-void documentation::global_search_finished (int)
+void
+documentation::global_search_finished (int)
 {
   if (! m_help_engine)
     return;
@@ -586,7 +591,8 @@ void documentation::global_search_finished (int)
   qApp->restoreOverrideCursor();
 }
 
-void documentation::handle_search_result_clicked (const QUrl& url)
+void
+documentation::handle_search_result_clicked (const QUrl& url)
 {
   // Open url with matching text
   m_doc_browser->handle_index_clicked (url);
@@ -612,7 +618,8 @@ void documentation::handle_search_result_clicked (const QUrl& url)
     }
 }
 
-void documentation::select_all_occurrences (const QString& text)
+void
+documentation::select_all_occurrences (const QString& text)
 {
   // Get highlight background and text color
   QPalette pal = QApplication::palette ();
@@ -640,7 +647,8 @@ void documentation::select_all_occurrences (const QString& text)
   m_doc_browser->moveCursor (QTextCursor::Start);
 }
 
-void documentation::notice_settings ()
+void
+documentation::notice_settings ()
 {
   gui_settings settings;
 
@@ -673,7 +681,8 @@ void documentation::notice_settings ()
   m_doc_browser->notice_settings ();
 }
 
-void documentation::save_settings ()
+void
+documentation::save_settings ()
 {
   gui_settings settings;
 
@@ -681,7 +690,8 @@ void documentation::save_settings ()
   m_bookmarks->save_settings ();
 }
 
-void documentation::copyClipboard ()
+void
+documentation::copyClipboard ()
 {
   if (m_doc_browser->hasFocus ())
     {
@@ -689,11 +699,14 @@ void documentation::copyClipboard ()
     }
 }
 
-void documentation::pasteClipboard () { }
+void
+documentation::pasteClipboard () { }
 
-void documentation::selectAll () { }
+void
+documentation::selectAll () { }
 
-void documentation::load_index ()
+void
+documentation::load_index ()
 {
   m_indexed = true;
 
@@ -707,7 +720,8 @@ void documentation::load_index ()
   m_help_engine->contentWidget ()->expandToDepth (0);
 }
 
-void documentation::load_ref (const QString& ref_name)
+void
+documentation::load_ref (const QString& ref_name)
 {
   if (! m_help_engine || ref_name.isEmpty ())
     return;
@@ -773,7 +787,8 @@ void documentation::load_ref (const QString& ref_name)
     }
 }
 
-void documentation::activate_find ()
+void
+documentation::activate_find ()
 {
   if (m_find_line_edit->parentWidget ()->isVisible ())
     {
@@ -788,7 +803,8 @@ void documentation::activate_find ()
     }
 }
 
-void documentation::filter_update (const QString& expression)
+void
+documentation::filter_update (const QString& expression)
 {
   if (! m_help_engine)
     return;
@@ -800,7 +816,8 @@ void documentation::filter_update (const QString& expression)
   m_help_engine->indexWidget ()->filterIndices(expression, wildcard);
 }
 
-void documentation::filter_update_history ()
+void
+documentation::filter_update_history ()
 {
   QString text = m_filter->currentText ();   // get current text
   int index = m_filter->findText (text);     // and its actual index
@@ -812,12 +829,14 @@ void documentation::filter_update_history ()
   m_filter->setCurrentIndex (0);
 }
 
-void documentation::find_backward ()
+void
+documentation::find_backward ()
 {
   find (true);
 }
 
-void documentation::find (bool backward)
+void
+documentation::find (bool backward)
 {
   if (! m_help_engine)
     return;
@@ -841,7 +860,8 @@ void documentation::find (bool backward)
   record_anchor_position ();
 }
 
-void documentation::find_forward_from_anchor (const QString& text)
+void
+documentation::find_forward_from_anchor (const QString& text)
 {
   if (! m_help_engine)
     return;
@@ -860,7 +880,8 @@ void documentation::find_forward_from_anchor (const QString& text)
     }
 }
 
-void documentation::record_anchor_position ()
+void
+documentation::record_anchor_position ()
 {
   if (! m_help_engine)
     return;
@@ -868,7 +889,8 @@ void documentation::record_anchor_position ()
   m_search_anchor_position = m_doc_browser->textCursor ().position ();
 }
 
-void documentation::handle_cursor_position_change ()
+void
+documentation::handle_cursor_position_change ()
 {
   if (! m_help_engine)
     return;
@@ -877,7 +899,8 @@ void documentation::handle_cursor_position_change ()
     record_anchor_position ();
 }
 
-void documentation::registerDoc (const QString& qch)
+void
+documentation::registerDoc (const QString& qch)
 {
   if (m_help_engine)
     {
@@ -906,7 +929,8 @@ void documentation::registerDoc (const QString& qch)
     }
 }
 
-void documentation::unregisterDoc (const QString& qch)
+void
+documentation::unregisterDoc (const QString& qch)
 {
   if (! m_help_engine)
     return;
@@ -921,7 +945,8 @@ void documentation::unregisterDoc (const QString& qch)
     }
 }
 
-void documentation::update_history_menus ()
+void
+documentation::update_history_menus ()
 {
   if (m_prev_pages_count != m_doc_browser->backwardHistoryCount ())
     {
@@ -938,7 +963,8 @@ void documentation::update_history_menus ()
     }
 }
 
-void documentation::update_history (int new_count, QAction **actions)
+void
+documentation::update_history (int new_count, QAction **actions)
 {
   // Which menu has to be updated?
   int prev_next = -1;
@@ -976,14 +1002,16 @@ void documentation::update_history (int new_count, QAction **actions)
     }
 }
 
-void documentation::open_hist_url (QAction *a)
+void
+documentation::open_hist_url (QAction *a)
 {
   m_doc_browser->setSource (a->data ().toUrl ());
 }
 
 // Utility functions
 
-QString documentation::title_and_anchor (const QString& title, const QUrl& url)
+QString
+documentation::title_and_anchor (const QString& title, const QUrl& url)
 {
   QString retval = title;
   QString u = url.toString ();
@@ -1037,7 +1065,8 @@ documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
   // Make sure we have access to one of the monospace fonts listed in
   // octave.css for rendering formated code blocks
   QStringList fonts = {"Fantasque Sans Mono", "FreeMono", "Courier New",
-                       "Cousine", "Courier"};
+                       "Cousine", "Courier"
+                      };
 
   bool load_default_font = true;
 
@@ -1058,7 +1087,8 @@ documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
                                 + sys::file_ops::dir_sep_str ());
 
       QStringList default_fonts = {"FreeMono", "FreeMonoBold",
-                                   "FreeMonoBoldOblique", "FreeMonoOblique"};
+                                   "FreeMonoBoldOblique", "FreeMonoOblique"
+                                  };
 
       for (int i = 0; i < default_fonts.size (); ++i)
         {
@@ -1069,8 +1099,8 @@ documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
     }
 }
 
-void documentation_browser::handle_index_clicked (const QUrl& url,
-                                                  const QString&)
+void
+documentation_browser::handle_index_clicked (const QUrl& url, const QString&)
 {
   if (url.scheme () == "qthelp")
     setSource (url);
@@ -1078,7 +1108,8 @@ void documentation_browser::handle_index_clicked (const QUrl& url,
     QDesktopServices::openUrl (url);
 }
 
-void documentation_browser::notice_settings ()
+void
+documentation_browser::notice_settings ()
 {
   gui_settings settings;
 
@@ -1090,7 +1121,8 @@ void documentation_browser::notice_settings ()
     }
 }
 
-QVariant documentation_browser::loadResource (int type, const QUrl& url)
+QVariant
+documentation_browser::loadResource (int type, const QUrl& url)
 {
   if (m_help_engine && url.scheme () == "qthelp")
     return QVariant (m_help_engine->fileData(url));
@@ -1098,7 +1130,8 @@ QVariant documentation_browser::loadResource (int type, const QUrl& url)
     return QTextBrowser::loadResource(type, url);
 }
 
-void documentation_browser::save_settings ()
+void
+documentation_browser::save_settings ()
 {
   gui_settings settings;
 
@@ -1107,7 +1140,8 @@ void documentation_browser::save_settings ()
   settings.sync ();
 }
 
-void documentation_browser::zoom_in ()
+void
+documentation_browser::zoom_in ()
 {
   if (m_zoom_level < max_zoom_level)
     {
@@ -1116,7 +1150,8 @@ void documentation_browser::zoom_in ()
     }
 }
 
-void documentation_browser::zoom_out ()
+void
+documentation_browser::zoom_out ()
 {
   if (m_zoom_level > min_zoom_level)
     {
@@ -1125,13 +1160,15 @@ void documentation_browser::zoom_out ()
     }
 }
 
-void documentation_browser::zoom_original ()
+void
+documentation_browser::zoom_original ()
 {
   zoomIn (- m_zoom_level);
   m_zoom_level = 0;
 }
 
-void documentation_browser::wheelEvent (QWheelEvent *we)
+void
+documentation_browser::wheelEvent (QWheelEvent *we)
 {
   if (we->modifiers () == Qt::ControlModifier)
     {

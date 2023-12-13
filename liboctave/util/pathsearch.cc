@@ -47,12 +47,14 @@ directory_path::directory_path (const std::string& s)
     init ();
 }
 
-std::list<std::string> directory_path::elements ()
+std::list<std::string>
+directory_path::elements ()
 {
   return m_initialized ? m_path_elements : std::list<std::string> ();
 }
 
-std::list<std::string> directory_path::all_directories ()
+std::list<std::string>
+directory_path::all_directories ()
 {
   std::list<std::string> retval;
 
@@ -70,12 +72,14 @@ std::list<std::string> directory_path::all_directories ()
   return retval;
 }
 
-std::string directory_path::find_first (const std::string& nm)
+std::string
+directory_path::find_first (const std::string& nm)
 {
   return m_initialized ? kpse_path_search (m_expanded_path, nm) : "";
 }
 
-std::list<std::string> directory_path::find_all (const std::string& nm)
+std::list<std::string>
+directory_path::find_all (const std::string& nm)
 {
   return (m_initialized
           ? kpse_all_path_search (m_expanded_path, nm)
@@ -97,7 +101,8 @@ directory_path::find_all_first_of (const std::list<std::string>& names)
           : std::list<std::string> ());
 }
 
-void directory_path::init ()
+void
+directory_path::init ()
 {
   static bool octave_kpse_initialized = false;
 
@@ -119,12 +124,14 @@ void directory_path::init ()
   m_initialized = true;
 }
 
-char directory_path::path_sep_char ()
+char
+directory_path::path_sep_char ()
 {
   return SEPCHAR;
 }
 
-std::string directory_path::path_sep_str ()
+std::string
+directory_path::path_sep_str ()
 {
   return SEPCHAR_STR;
 }

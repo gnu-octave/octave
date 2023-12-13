@@ -57,14 +57,16 @@ symbol_table::symbol_table (interpreter& interp)
   install_builtins ();
 }
 
-symbol_scope symbol_table::current_scope () const
+symbol_scope
+symbol_table::current_scope () const
 {
   tree_evaluator& tw = m_interpreter.get_evaluator ();
 
   return tw.get_current_scope ();
 }
 
-bool symbol_table::is_built_in_function_name (const std::string& name)
+bool
+symbol_table::is_built_in_function_name (const std::string& name)
 {
   octave_value val = find_built_in_function (name);
 
@@ -122,8 +124,9 @@ symbol_table::find_private_function (const std::string& dir_name,
 // FIXME: this function only finds legacy class methods, not
 // classdef methods.
 
-octave_value symbol_table::find_method (const std::string& name,
-                                        const std::string& dispatch_type)
+octave_value
+symbol_table::find_method (const std::string& name,
+                           const std::string& dispatch_type)
 {
   if (name.empty ())
     return octave_value ();
@@ -145,7 +148,8 @@ octave_value symbol_table::find_method (const std::string& name,
     }
 }
 
-octave_value symbol_table::find_built_in_function (const std::string& name)
+octave_value
+symbol_table::find_built_in_function (const std::string& name)
 {
   fcn_table_const_iterator p = m_fcn_table.find (name);
 
@@ -164,7 +168,8 @@ octave_value symbol_table::find_built_in_function (const std::string& name)
     }
 }
 
-octave_value symbol_table::find_autoload (const std::string& name)
+octave_value
+symbol_table::find_autoload (const std::string& name)
 {
   if (name.empty ())
     return octave_value ();
@@ -307,7 +312,8 @@ symbol_table::find_user_function (const std::string& name)
     }
 }
 
-octave_value symbol_table::find_cmdline_function (const std::string& name)
+octave_value
+symbol_table::find_cmdline_function (const std::string& name)
 {
   if (name.empty ())
     return octave_value ();
@@ -329,8 +335,9 @@ octave_value symbol_table::find_cmdline_function (const std::string& name)
     }
 }
 
-void symbol_table::install_cmdline_function (const std::string& name,
-    const octave_value& fcn)
+void
+symbol_table::install_cmdline_function (const std::string& name,
+                                        const octave_value& fcn)
 {
   auto p = m_fcn_table.find (name);
 
@@ -353,9 +360,10 @@ void symbol_table::install_cmdline_function (const std::string& name,
 // Install local function FCN named NAME.  FILE_NAME is the name of
 // the file containing the local function.
 
-void symbol_table::install_local_function (const std::string& name,
-    const octave_value& fcn,
-    const std::string& file_name)
+void
+symbol_table::install_local_function (const std::string& name,
+                                      const octave_value& fcn,
+                                      const std::string& file_name)
 {
   auto p = m_fcn_table.find (name);
 
@@ -375,8 +383,9 @@ void symbol_table::install_local_function (const std::string& name,
     }
 }
 
-void symbol_table::install_user_function (const std::string& name,
-    const octave_value& fcn)
+void
+symbol_table::install_user_function (const std::string& name,
+                                     const octave_value& fcn)
 {
   auto p = m_fcn_table.find (name);
 
@@ -398,7 +407,8 @@ void symbol_table::install_user_function (const std::string& name,
 
 // FIXME: should we ensure that FCN really is a built-in function
 // object?
-void symbol_table::install_built_in_function (const std::string& name,
+void
+symbol_table::install_built_in_function (const std::string& name,
     const octave_value& fcn)
 {
   auto p = m_fcn_table.find (name);
@@ -423,7 +433,8 @@ void symbol_table::install_built_in_function (const std::string& name,
 // function with default values so that it will work properly with
 // unwind_protect.
 
-void symbol_table::clear_functions (bool force)
+void
+symbol_table::clear_functions (bool force)
 {
   auto p = m_fcn_table.begin ();
 
@@ -431,12 +442,14 @@ void symbol_table::clear_functions (bool force)
     (p++)->second.clear (force);
 }
 
-void symbol_table::clear_function (const std::string& name)
+void
+symbol_table::clear_function (const std::string& name)
 {
   clear_user_function (name);
 }
 
-void symbol_table::clear_function_pattern (const std::string& pat)
+void
+symbol_table::clear_function_pattern (const std::string& pat)
 {
   symbol_match pattern (pat);
 
@@ -451,7 +464,8 @@ void symbol_table::clear_function_pattern (const std::string& pat)
     }
 }
 
-void symbol_table::clear_function_regexp (const std::string& pat)
+void
+symbol_table::clear_function_regexp (const std::string& pat)
 {
   regexp pattern (pat);
 
@@ -466,7 +480,8 @@ void symbol_table::clear_function_regexp (const std::string& pat)
     }
 }
 
-void symbol_table::clear_user_function (const std::string& name)
+void
+symbol_table::clear_user_function (const std::string& name)
 {
   auto p = m_fcn_table.find (name);
 
@@ -482,7 +497,8 @@ void symbol_table::clear_user_function (const std::string& name)
 }
 
 // This clears oct and mex files, including autoloads.
-void symbol_table::clear_dld_function (const std::string& name)
+void
+symbol_table::clear_dld_function (const std::string& name)
 {
   auto p = m_fcn_table.find (name);
 
@@ -495,7 +511,8 @@ void symbol_table::clear_dld_function (const std::string& name)
     }
 }
 
-void symbol_table::clear_mex_functions ()
+void
+symbol_table::clear_mex_functions ()
 {
   auto p = m_fcn_table.begin ();
 
@@ -507,8 +524,9 @@ void symbol_table::clear_mex_functions ()
 // inferior to SUP_CLASS.  Return FALSE if INF_CLASS is currently
 // marked as superior to SUP_CLASS.
 
-bool symbol_table::set_class_relationship (const std::string& sup_class,
-    const std::string& inf_class)
+bool
+symbol_table::set_class_relationship (const std::string& sup_class,
+                                      const std::string& inf_class)
 {
   if (is_superiorto (inf_class, sup_class))
     return false;
@@ -534,7 +552,8 @@ bool symbol_table::set_class_relationship (const std::string& sup_class,
 //  else
 //    // No relation.
 
-bool symbol_table::is_superiorto (const std::string& a, const std::string& b)
+bool
+symbol_table::is_superiorto (const std::string& a, const std::string& b)
 {
   class_precedence_table_const_iterator p = m_class_precedence_table.find (a);
   // If a has no entry in the precedence table, return false
@@ -546,8 +565,9 @@ bool symbol_table::is_superiorto (const std::string& a, const std::string& b)
   return (q != inferior_classes.end ());
 }
 
-void symbol_table::alias_built_in_function (const std::string& alias,
-    const std::string& name)
+void
+symbol_table::alias_built_in_function (const std::string& alias,
+                                       const std::string& name)
 {
   octave_value fcn = find_built_in_function (name);
 
@@ -563,7 +583,8 @@ void symbol_table::alias_built_in_function (const std::string& alias,
     panic ("alias: '%s' is undefined", name.c_str ());
 }
 
-void symbol_table::install_built_in_dispatch (const std::string& name,
+void
+symbol_table::install_built_in_dispatch (const std::string& name,
     const std::string& klass)
 {
   auto p = m_fcn_table.find (name);
@@ -578,7 +599,8 @@ void symbol_table::install_built_in_dispatch (const std::string& name,
     error ("install_built_in_dispatch: '%s' is undefined", name.c_str ());
 }
 
-std::list<std::string> symbol_table::user_function_names ()
+std::list<std::string>
+symbol_table::user_function_names ()
 {
   std::list<std::string> retval;
 
@@ -594,7 +616,8 @@ std::list<std::string> symbol_table::user_function_names ()
   return retval;
 }
 
-std::list<std::string> symbol_table::built_in_function_names ()
+std::list<std::string>
+symbol_table::built_in_function_names ()
 {
   std::list<std::string> retval;
 
@@ -612,7 +635,8 @@ std::list<std::string> symbol_table::built_in_function_names ()
   return retval;
 }
 
-std::list<std::string> symbol_table::cmdline_function_names ()
+std::list<std::string>
+symbol_table::cmdline_function_names ()
 {
   std::list<std::string> retval;
 
@@ -650,7 +674,8 @@ dump_container_map (const std::map<std::string, C<V, A...>>& container_map)
   return octave_value (info_map);
 }
 
-octave_value symbol_table::dump () const
+octave_value
+symbol_table::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "function_info", dump_fcn_table_map () },
@@ -661,13 +686,15 @@ octave_value symbol_table::dump () const
   return octave_value (m);
 }
 
-void symbol_table::add_to_parent_map (const std::string& classname,
-                                      const std::list<std::string>& parent_list)
+void
+symbol_table::add_to_parent_map (const std::string& classname,
+                                 const std::list<std::string>& parent_list)
 {
   m_parent_map[classname] = parent_list;
 }
 
-std::list<std::string> symbol_table::parent_classes (const std::string& dispatch_type)
+std::list<std::string>
+symbol_table::parent_classes (const std::string& dispatch_type)
 {
   std::list<std::string> retval;
 
@@ -691,7 +718,8 @@ std::list<std::string> symbol_table::parent_classes (const std::string& dispatch
   return retval;
 }
 
-void symbol_table::cleanup ()
+void
+symbol_table::cleanup ()
 {
   clear_functions ();
 
@@ -700,13 +728,15 @@ void symbol_table::cleanup ()
   m_parent_map.clear ();
 }
 
-fcn_info *symbol_table::get_fcn_info (const std::string& name)
+fcn_info *
+symbol_table::get_fcn_info (const std::string& name)
 {
   auto p = m_fcn_table.find (name);
   return p != m_fcn_table.end () ? &p->second : nullptr;
 }
 
-octave_value symbol_table::dump_fcn_table_map () const
+octave_value
+symbol_table::dump_fcn_table_map () const
 {
   if (m_fcn_table.empty ())
     return octave_value (Matrix ());

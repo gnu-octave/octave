@@ -200,7 +200,8 @@ main_window::main_window (base_qobject& oct_qobj)
 
 main_window::~main_window () { }
 
-void main_window::adopt_dock_widgets ()
+void
+main_window::adopt_dock_widgets ()
 {
   adopt_terminal_widget ();
   adopt_documentation_widget ();
@@ -213,7 +214,8 @@ void main_window::adopt_dock_widgets ()
   m_previous_dock = m_command_window;
 }
 
-void main_window::adopt_terminal_widget ()
+void
+main_window::adopt_terminal_widget ()
 {
   m_command_window = m_octave_qobj.terminal_widget (this);
 
@@ -271,14 +273,16 @@ void main_window::adopt_terminal_widget ()
     }
 }
 
-void main_window::adopt_documentation_widget ()
+void
+main_window::adopt_documentation_widget ()
 {
   m_doc_browser_window = m_octave_qobj.documentation_widget (this);
 
   make_dock_widget_connections (m_doc_browser_window);
 }
 
-void main_window::adopt_file_browser_widget ()
+void
+main_window::adopt_file_browser_widget ()
 {
   m_file_browser_window = m_octave_qobj.file_browser_widget (this);
 
@@ -306,7 +310,8 @@ void main_window::adopt_file_browser_widget ()
            this, &main_window::find_files);
 }
 
-void main_window::adopt_history_widget ()
+void
+main_window::adopt_history_widget ()
 {
   m_history_window = m_octave_qobj.history_widget (this);
 
@@ -319,7 +324,8 @@ void main_window::adopt_history_widget ()
            this, &main_window::execute_command_in_terminal);
 }
 
-void main_window::adopt_workspace_widget ()
+void
+main_window::adopt_workspace_widget ()
 {
   m_workspace_window = m_octave_qobj.workspace_widget (this);
 
@@ -329,7 +335,8 @@ void main_window::adopt_workspace_widget ()
            this, &main_window::execute_command_in_terminal);
 }
 
-void main_window::adopt_editor_widget ()
+void
+main_window::adopt_editor_widget ()
 {
   interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
@@ -437,14 +444,16 @@ void main_window::adopt_editor_widget ()
            m_active_editor, SLOT (handle_edit_file_request (const QString&)));
 }
 
-void main_window::adopt_variable_editor_widget ()
+void
+main_window::adopt_variable_editor_widget ()
 {
   m_variable_editor_window = m_octave_qobj.variable_editor_widget (this);
 
   make_dock_widget_connections (m_variable_editor_window);
 }
 
-void main_window::make_dock_widget_connections (octave_dock_widget *dw)
+void
+main_window::make_dock_widget_connections (octave_dock_widget *dw)
 {
   connect (this, &main_window::init_window_menu,
            dw, &octave_dock_widget::init_window_menu_entry);
@@ -468,17 +477,20 @@ void main_window::make_dock_widget_connections (octave_dock_widget *dw)
            dw, &octave_dock_widget::save_settings);
 }
 
-bool main_window::command_window_has_focus () const
+bool
+main_window::command_window_has_focus () const
 {
   return m_command_window->has_focus ();
 }
 
-void main_window::focus_command_window ()
+void
+main_window::focus_command_window ()
 {
   m_command_window->activate ();
 }
 
-void main_window::focus_window (const QString& win_name)
+void
+main_window::focus_window (const QString& win_name)
 {
   if (win_name == "command")
     m_command_window->activate ();
@@ -490,7 +502,8 @@ void main_window::focus_window (const QString& win_name)
     m_file_browser_window->activate ();
 }
 
-bool main_window::confirm_shutdown ()
+bool
+main_window::confirm_shutdown ()
 {
   bool closenow = true;
 
@@ -518,7 +531,8 @@ bool main_window::confirm_shutdown ()
 }
 
 // catch focus changes and determine the active dock widget
-void main_window::focus_changed (QWidget *, QWidget *new_widget)
+void
+main_window::focus_changed (QWidget *, QWidget *new_widget)
 {
   // If there is no new widget or the new widget is a menu bar
   // (when pressing <alt>), we can return immediately and reset the
@@ -631,17 +645,20 @@ void main_window::focus_changed (QWidget *, QWidget *new_widget)
     }
 }
 
-void main_window::request_reload_settings ()
+void
+main_window::request_reload_settings ()
 {
   emit settings_changed ();
 }
 
-void main_window::report_status_message (const QString& statusMessage)
+void
+main_window::report_status_message (const QString& statusMessage)
 {
   m_status_bar->showMessage (statusMessage, 1000);
 }
 
-void main_window::handle_save_workspace_request ()
+void
+main_window::handle_save_workspace_request ()
 {
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   int opts = 0;  // No options by default.
@@ -667,7 +684,8 @@ void main_window::handle_save_workspace_request ()
     }
 }
 
-void main_window::handle_load_workspace_request (const QString& file_arg)
+void
+main_window::handle_load_workspace_request (const QString& file_arg)
 {
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   int opts = 0;  // No options by default.
@@ -701,7 +719,8 @@ void main_window::handle_load_workspace_request (const QString& file_arg)
     }
 }
 
-void main_window::handle_open_any_request (const QString& file_arg)
+void
+main_window::handle_open_any_request (const QString& file_arg)
 {
   if (! file_arg.isEmpty ())
     {
@@ -725,7 +744,8 @@ void main_window::handle_open_any_request (const QString& file_arg)
     }
 }
 
-void main_window::handle_clear_workspace_request ()
+void
+main_window::handle_clear_workspace_request ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
@@ -736,7 +756,8 @@ void main_window::handle_clear_workspace_request ()
      });
 }
 
-void main_window::handle_clear_command_window_request ()
+void
+main_window::handle_clear_command_window_request ()
 {
   emit interpreter_event
     ([] ()
@@ -748,7 +769,8 @@ void main_window::handle_clear_command_window_request ()
      });
 }
 
-void main_window::handle_clear_history_request ()
+void
+main_window::handle_clear_history_request ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
@@ -761,7 +783,8 @@ void main_window::handle_clear_history_request ()
      });
 }
 
-void main_window::handle_undo_request ()
+void
+main_window::handle_undo_request ()
 {
   if (command_window_has_focus ())
     {
@@ -778,8 +801,9 @@ void main_window::handle_undo_request ()
     emit undo_signal ();
 }
 
-void main_window::modify_path (const QStringList& dir_list,
-                               bool rm, bool subdirs)
+void
+main_window::modify_path (const QStringList& dir_list,
+                          bool rm, bool subdirs)
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -806,12 +830,14 @@ void main_window::modify_path (const QStringList& dir_list,
     });
 }
 
-void main_window::edit_mfile (const QString& name, int line)
+void
+main_window::edit_mfile (const QString& name, int line)
 {
   handle_edit_mfile_request (name, QString (), QString (), line);
 }
 
-void main_window::file_remove_proxy (const QString& o, const QString& n)
+void
+main_window::file_remove_proxy (const QString& o, const QString& n)
 {
   interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
@@ -832,33 +858,39 @@ void main_window::file_remove_proxy (const QString& o, const QString& n)
   qt_link->wake_all ();
 }
 
-void main_window::open_online_documentation_page ()
+void
+main_window::open_online_documentation_page ()
 {
   QDesktopServices::openUrl
     (QUrl ("https://octave.org/doc/interpreter/index.html"));
 }
 
-void main_window::open_bug_tracker_page ()
+void
+main_window::open_bug_tracker_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://octave.org/bugs.html"));
 }
 
-void main_window::open_octave_packages_page ()
+void
+main_window::open_octave_packages_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://packages.octave.org/index.html"));
 }
 
-void main_window::open_contribute_page ()
+void
+main_window::open_contribute_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://octave.org/contribute.html"));
 }
 
-void main_window::open_donate_page ()
+void
+main_window::open_donate_page ()
 {
   QDesktopServices::openUrl (QUrl ("https://octave.org/donate.html"));
 }
 
-void main_window::process_settings_dialog_request (const QString& desired_tab)
+void
+main_window::process_settings_dialog_request (const QString& desired_tab)
 {
   if (m_settings_dlg)  // m_settings_dlg is a guarded pointer!
     {
@@ -874,7 +906,8 @@ void main_window::process_settings_dialog_request (const QString& desired_tab)
            this, &main_window::request_reload_settings);
 }
 
-void main_window::show_about_octave ()
+void
+main_window::show_about_octave ()
 {
   std::string message
     = octave_name_version_copyright_copying_warranty_and_bugs (true);
@@ -883,7 +916,8 @@ void main_window::show_about_octave ()
                       QString::fromStdString (message));
 }
 
-void main_window::notice_settings (bool update_by_worker)
+void
+main_window::notice_settings (bool update_by_worker)
 {
   gui_settings settings;
 
@@ -894,7 +928,7 @@ void main_window::notice_settings (bool update_by_worker)
   if (preferred_style == global_style.def ().toString ())
     preferred_style = m_default_style;
 
-  QApplication* qapp = m_octave_qobj.qapplication();
+  QApplication *qapp = m_octave_qobj.qapplication();
 
   if (preferred_style == global_extra_styles.at (EXTRA_STYLE_FUSION_DARK))
     {
@@ -991,7 +1025,8 @@ void main_window::notice_settings (bool update_by_worker)
 
 }
 
-QPalette main_window::getFusionDarkPalette()
+QPalette
+main_window::getFusionDarkPalette()
 {
   QPalette darkPalette;
   darkPalette.setColor(QPalette::Window, QColor(53, 53, 53));
@@ -1018,7 +1053,8 @@ QPalette main_window::getFusionDarkPalette()
   return darkPalette;
 }
 
-void main_window::prepare_to_exit ()
+void
+main_window::prepare_to_exit ()
 {
   // Find files dialog is constructed dynamically, not at time of main_window
   // construction.  Connecting it to qApp aboutToQuit signal would have
@@ -1036,12 +1072,14 @@ void main_window::prepare_to_exit ()
   m_active_dock = nullptr;
 }
 
-void main_window::go_to_previous_widget ()
+void
+main_window::go_to_previous_widget ()
 {
   m_previous_dock->activate ();
 }
 
-void main_window::update_octave_directory (const QString& dir)
+void
+main_window::update_octave_directory (const QString& dir)
 {
   // Remove existing entry, if any, then add new directory at top and
   // mark it as the current directory.  Finally, update the file list
@@ -1056,7 +1094,8 @@ void main_window::update_octave_directory (const QString& dir)
   m_current_directory_combo_box->setCurrentIndex (0);
 }
 
-void main_window::browse_for_directory ()
+void
+main_window::browse_for_directory ()
 {
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   int opts = QFileDialog::ShowDirsOnly;
@@ -1078,7 +1117,8 @@ void main_window::browse_for_directory ()
   focus_command_window ();
 }
 
-void main_window::set_current_working_directory (const QString& dir)
+void
+main_window::set_current_working_directory (const QString& dir)
 {
   // Change to dir if it is an existing directory.
 
@@ -1098,7 +1138,8 @@ void main_window::set_current_working_directory (const QString& dir)
     }
 }
 
-void main_window::change_directory_up ()
+void
+main_window::change_directory_up ()
 {
   set_current_working_directory ("..");
 }
@@ -1107,7 +1148,8 @@ void main_window::change_directory_up ()
 // combobox to change to a new directory or a directory that is already
 // in the drop down list.
 
-void main_window::accept_directory_line_edit ()
+void
+main_window::accept_directory_line_edit ()
 {
   // Get new directory name, and change to it if it is new.  Otherwise,
   // the combo box will trigger the "activated" signal to change to the
@@ -1121,7 +1163,8 @@ void main_window::accept_directory_line_edit ()
     set_current_working_directory (dir);
 }
 
-void main_window::execute_command_in_terminal (const QString& command)
+void
+main_window::execute_command_in_terminal (const QString& command)
 {
   if (m_octave_qobj.experimental_terminal_widget ())
     {
@@ -1147,7 +1190,8 @@ void main_window::execute_command_in_terminal (const QString& command)
   focus_console_after_command ();
 }
 
-void main_window::run_file_in_terminal (const QFileInfo& info)
+void
+main_window::run_file_in_terminal (const QFileInfo& info)
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1191,7 +1235,8 @@ void main_window::run_file_in_terminal (const QFileInfo& info)
   focus_console_after_command ();
 }
 
-void main_window::handle_new_figure_request ()
+void
+main_window::handle_new_figure_request ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
@@ -1203,7 +1248,8 @@ void main_window::handle_new_figure_request ()
      });
 }
 
-void main_window::handle_enter_debugger ()
+void
+main_window::handle_enter_debugger ()
 {
   setWindowTitle ("Octave (Debugging)");
 
@@ -1214,7 +1260,8 @@ void main_window::handle_enter_debugger ()
   m_debug_quit->setEnabled (true);
 }
 
-void main_window::handle_exit_debugger ()
+void
+main_window::handle_exit_debugger ()
 {
   setWindowTitle ("Octave");
 
@@ -1225,7 +1272,8 @@ void main_window::handle_exit_debugger ()
   m_debug_quit->setEnabled (false);
 }
 
-void main_window::debug_continue ()
+void
+main_window::debug_continue ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1239,7 +1287,8 @@ void main_window::debug_continue ()
      });
 }
 
-void main_window::debug_step_into ()
+void
+main_window::debug_step_into ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1253,7 +1302,8 @@ void main_window::debug_step_into ()
      });
 }
 
-void main_window::debug_step_over ()
+void
+main_window::debug_step_over ()
 {
   if (m_debug_quit->isEnabled ())
     {
@@ -1278,7 +1328,8 @@ void main_window::debug_step_over ()
     }
 }
 
-void main_window::debug_step_out ()
+void
+main_window::debug_step_out ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1292,7 +1343,8 @@ void main_window::debug_step_out ()
      });
 }
 
-void main_window::debug_quit ()
+void
+main_window::debug_quit ()
 {
   emit interpreter_event
     ([] (interpreter& interp)
@@ -1311,7 +1363,8 @@ void main_window::debug_quit ()
 // These are moved from editor to here for also using them when octave
 // is built without qscintilla
 //
-void main_window::request_open_file ()
+void
+main_window::request_open_file ()
 {
   // Open file isn't a file_editor_tab or editor function since the file
   // might be opened in an external editor.  Hence, functionality is here.
@@ -1320,7 +1373,7 @@ void main_window::request_open_file ()
 
   bool is_internal = m_editor_window
                      && ! settings.value (global_use_custom_editor.settings_key (),
-                                           global_use_custom_editor.def ()).toBool ();
+                                          global_use_custom_editor.def ()).toBool ();
 
   // Create a NonModal message.
   QWidget *p = this;
@@ -1347,13 +1400,15 @@ void main_window::request_open_file ()
 }
 
 // Create a new script
-void main_window::request_new_script (const QString& commands)
+void
+main_window::request_new_script (const QString& commands)
 {
   emit new_file_signal (commands);
 }
 
 // Create a new function and open it
-void main_window::request_new_function (bool)
+void
+main_window::request_new_function (bool)
 {
   bool ok;
   // Get the name of the new function: Parent of the input dialog is the
@@ -1364,7 +1419,7 @@ void main_window::request_new_function (bool)
   gui_settings settings;
 
   if (! p || settings.value (global_use_custom_editor.settings_key (),
-                              global_use_custom_editor.def ()).toBool ())
+                             global_use_custom_editor.def ()).toBool ())
     p = this;
   QString new_name = QInputDialog::getText (p, tr ("New Function"),
                                             tr ("New function name:\n"), QLineEdit::Normal, "", &ok);
@@ -1387,10 +1442,11 @@ void main_window::request_new_function (bool)
     }
 }
 
-void main_window::handle_edit_mfile_request (const QString& fname,
-                                             const QString& ffile,
-                                             const QString& curr_dir,
-                                             int line)
+void
+main_window::handle_edit_mfile_request (const QString& fname,
+                                        const QString& ffile,
+                                        const QString& curr_dir,
+                                        int line)
 {
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
@@ -1488,7 +1544,8 @@ void main_window::handle_edit_mfile_request (const QString& fname,
      });
 }
 
-void main_window::warning_function_not_found (const QString& message)
+void
+main_window::warning_function_not_found (const QString& message)
 {
   QMessageBox *msgBox = new QMessageBox (QMessageBox::Critical,
                                          tr ("Octave Editor"),
@@ -1498,8 +1555,9 @@ void main_window::warning_function_not_found (const QString& message)
   msgBox->show ();
 }
 
-void main_window::handle_insert_debugger_pointer_request (const QString& file,
-                                                          int line)
+void
+main_window::handle_insert_debugger_pointer_request (const QString& file,
+    int line)
 {
   bool cmd_focus = command_window_has_focus ();
 
@@ -1509,8 +1567,9 @@ void main_window::handle_insert_debugger_pointer_request (const QString& file,
     focus_command_window ();
 }
 
-void main_window::handle_delete_debugger_pointer_request (const QString& file,
-                                                          int line)
+void
+main_window::handle_delete_debugger_pointer_request (const QString& file,
+    int line)
 {
   bool cmd_focus = command_window_has_focus ();
 
@@ -1520,10 +1579,11 @@ void main_window::handle_delete_debugger_pointer_request (const QString& file,
     focus_command_window ();
 }
 
-void main_window::handle_update_breakpoint_marker_request (bool insert,
-                                                           const QString& file,
-                                                           int line,
-                                                           const QString& cond)
+void
+main_window::handle_update_breakpoint_marker_request (bool insert,
+    const QString& file,
+    int line,
+    const QString& cond)
 {
   bool cmd_focus = command_window_has_focus ();
 
@@ -1533,7 +1593,8 @@ void main_window::handle_update_breakpoint_marker_request (bool insert,
     focus_command_window ();
 }
 
-void main_window::read_settings ()
+void
+main_window::read_settings ()
 {
   gui_settings settings;
 
@@ -1549,12 +1610,14 @@ void main_window::read_settings ()
   emit settings_changed ();
 }
 
-void main_window::init_terminal_size ()
+void
+main_window::init_terminal_size ()
 {
   emit init_terminal_size_signal ();
 }
 
-void main_window::set_window_layout ()
+void
+main_window::set_window_layout ()
 {
   gui_settings settings;
 
@@ -1651,7 +1714,8 @@ void main_window::set_window_layout ()
   show ();
 }
 
-void main_window::write_settings ()
+void
+main_window::write_settings ()
 {
   gui_settings settings;
 
@@ -1667,7 +1731,8 @@ void main_window::write_settings ()
   settings.sync ();
 }
 
-void main_window::copyClipboard ()
+void
+main_window::copyClipboard ()
 {
   if (m_current_directory_combo_box->hasFocus ())
     {
@@ -1682,7 +1747,8 @@ void main_window::copyClipboard ()
     emit copyClipboard_signal ();
 }
 
-void main_window::pasteClipboard ()
+void
+main_window::pasteClipboard ()
 {
   if (m_current_directory_combo_box->hasFocus ())
     {
@@ -1698,7 +1764,8 @@ void main_window::pasteClipboard ()
     emit pasteClipboard_signal ();
 }
 
-void main_window::selectAll ()
+void
+main_window::selectAll ()
 {
   if (m_current_directory_combo_box->hasFocus ())
     {
@@ -1712,8 +1779,9 @@ void main_window::selectAll ()
     emit selectAll_signal ();
 }
 
-void main_window::handle_gui_status_update (const QString& feature,
-                                            const QString& status)
+void
+main_window::handle_gui_status_update (const QString& feature,
+                                       const QString& status)
 {
   // Put actions that are required for updating a gui features here
 
@@ -1727,7 +1795,8 @@ void main_window::handle_gui_status_update (const QString& feature,
     }
 }
 
-void main_window::handle_octave_ready ()
+void
+main_window::handle_octave_ready ()
 {
   // actions after the startup files are executed
 
@@ -1807,7 +1876,8 @@ void main_window::handle_octave_ready ()
   focus_command_window ();  // make sure that the command window has focus
 }
 
-void main_window::handle_set_path_dialog_request ()
+void
+main_window::handle_set_path_dialog_request ()
 {
   if (m_set_path_dlg)  // m_set_path_dlg is a guarded pointer!
     return;
@@ -1843,7 +1913,8 @@ void main_window::handle_set_path_dialog_request ()
   m_set_path_dlg->update_model ();
 }
 
-void main_window::find_files (const QString& start_dir)
+void
+main_window::find_files (const QString& start_dir)
 {
 
   if (! m_find_files_dlg)
@@ -1873,7 +1944,8 @@ void main_window::find_files (const QString& start_dir)
 
 }
 
-void main_window::set_screen_size (int ht, int wd)
+void
+main_window::set_screen_size (int ht, int wd)
 {
   emit interpreter_event
     ([=] ()
@@ -1884,7 +1956,8 @@ void main_window::set_screen_size (int ht, int wd)
      });
 }
 
-void main_window::clipboard_has_changed ()
+void
+main_window::clipboard_has_changed ()
 {
   if (m_clipboard->text ().isEmpty ())
     {
@@ -1898,12 +1971,14 @@ void main_window::clipboard_has_changed ()
     }
 }
 
-void main_window::clear_clipboard ()
+void
+main_window::clear_clipboard ()
 {
   m_clipboard->clear (QClipboard::Clipboard);
 }
 
-void main_window::disable_menu_shortcuts (bool disable)
+void
+main_window::disable_menu_shortcuts (bool disable)
 {
   QHash<QMenu *, QStringList>::const_iterator i = m_hash_menu_text.constBegin ();
 
@@ -1914,7 +1989,8 @@ void main_window::disable_menu_shortcuts (bool disable)
     }
 }
 
-void main_window::restore_create_file_setting ()
+void
+main_window::restore_create_file_setting ()
 {
   // restore the new files creation setting
 
@@ -1925,7 +2001,8 @@ void main_window::restore_create_file_setting ()
               this, SLOT (restore_create_file_setting ()));
 }
 
-void main_window::set_file_encoding (const QString& new_encoding)
+void
+main_window::set_file_encoding (const QString& new_encoding)
 {
   m_file_encoding = new_encoding;
 }
@@ -1933,13 +2010,15 @@ void main_window::set_file_encoding (const QString& new_encoding)
 // The following slot is called after files have been selected in the
 // open file dialog, possibly with a new selected encoding stored in
 // m_file_encoding
-void main_window::request_open_files (const QStringList& open_file_names)
+void
+main_window::request_open_files (const QStringList& open_file_names)
 {
   for (int i = 0; i < open_file_names.count (); i++)
     emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
 }
 
-void main_window::profiler_session ()
+void
+main_window::profiler_session ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1949,7 +2028,8 @@ void main_window::profiler_session ()
       });
 }
 
-void main_window::profiler_session_resume ()
+void
+main_window::profiler_session_resume ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1959,7 +2039,8 @@ void main_window::profiler_session_resume ()
       });
 }
 
-void main_window::profiler_stop ()
+void
+main_window::profiler_stop ()
 {
   emit interpreter_event
     ([=] (interpreter& interp)
@@ -1969,7 +2050,8 @@ void main_window::profiler_stop ()
       });
 }
 
-void main_window::handle_profiler_status_update (bool active)
+void
+main_window::handle_profiler_status_update (bool active)
 {
   m_profiler_start->setEnabled (! active);
   m_profiler_resume->setEnabled (! active);
@@ -1981,7 +2063,8 @@ void main_window::handle_profiler_status_update (bool active)
   m_profiler_status_indicator->set_state (state);
 }
 
-void main_window::profiler_show ()
+void
+main_window::profiler_show ()
 {
   // Do not use a separate interpreter event as in the other
   // profiler slots since the output of the command "profshow"
@@ -1990,7 +2073,8 @@ void main_window::profiler_show ()
   execute_command_in_terminal ("profshow");
 }
 
-void main_window::closeEvent (QCloseEvent *e)
+void
+main_window::closeEvent (QCloseEvent *e)
 {
   write_settings ();
 
@@ -2023,7 +2107,8 @@ void main_window::closeEvent (QCloseEvent *e)
     e->ignore ();
 }
 
-void main_window::construct_central_widget ()
+void
+main_window::construct_central_widget ()
 {
   // Create and set the central widget.  QMainWindow takes ownership of
   // the widget (pointer) so there is no need to delete the object upon
@@ -2039,7 +2124,8 @@ void main_window::construct_central_widget ()
 
 // Main subroutine of the constructor
 
-void main_window::construct ()
+void
+main_window::construct ()
 {
   setWindowIcon (QIcon (dw_icon_set_names["NONE"]));
 
@@ -2086,7 +2172,8 @@ void main_window::construct ()
   configure_shortcuts ();
 }
 
-void main_window::construct_octave_qt_link ()
+void
+main_window::construct_octave_qt_link ()
 {
   interpreter_qobject *interp_qobj = m_octave_qobj.interpreter_qobj ();
 
@@ -2129,9 +2216,10 @@ void main_window::construct_octave_qt_link ()
            this, &main_window::update_gui_lexer_signal);
 }
 
-QAction* main_window::add_action (QMenu *menu, const QIcon& icon,
-                                  const QString& text, const char *member,
-                                  const QWidget *receiver)
+QAction *
+main_window::add_action (QMenu *menu, const QIcon& icon,
+                         const QString& text, const char *member,
+                         const QWidget *receiver)
 {
   QAction *a;
 
@@ -2145,7 +2233,8 @@ QAction* main_window::add_action (QMenu *menu, const QIcon& icon,
   return a;
 }
 
-QMenu* main_window::m_add_menu (QMenuBar *p, QString name)
+QMenu *
+main_window::m_add_menu (QMenuBar *p, QString name)
 {
   QMenu *menu = p->addMenu (name);
 
@@ -2163,7 +2252,8 @@ QMenu* main_window::m_add_menu (QMenuBar *p, QString name)
   return menu;
 }
 
-void main_window::construct_menu_bar ()
+void
+main_window::construct_menu_bar ()
 {
   QMenuBar *menu_bar = menuBar ();
 
@@ -2184,7 +2274,8 @@ void main_window::construct_menu_bar ()
 #if defined (HAVE_QSCINTILLA)
   // call the editor to add actions which should also be available in the
   // editor's menu and tool bar
-  QList<QAction *> shared_actions = {
+  QList<QAction *> shared_actions =
+  {
     m_new_script_action,
     m_new_function_action,
     m_open_action,
@@ -2198,7 +2289,8 @@ void main_window::construct_menu_bar ()
 #endif
 }
 
-void main_window::construct_file_menu (QMenuBar *p)
+void
+main_window::construct_file_menu (QMenuBar *p)
 {
   QMenu *file_menu = m_add_menu (p, tr ("&File"));
 
@@ -2245,7 +2337,8 @@ void main_window::construct_file_menu (QMenuBar *p)
            SLOT (request_open_file (const QString&, const QString&, int)));
 }
 
-void main_window::construct_new_menu (QMenu *p)
+void
+main_window::construct_new_menu (QMenu *p)
 {
   QMenu *new_menu = p->addMenu (tr ("New"));
 
@@ -2264,7 +2357,8 @@ void main_window::construct_new_menu (QMenu *p)
                   SLOT (handle_new_figure_request ()), this);
 }
 
-void main_window::construct_edit_menu (QMenuBar *p)
+void
+main_window::construct_edit_menu (QMenuBar *p)
 {
   QMenu *edit_menu = m_add_menu (p, tr ("&Edit"));
 
@@ -2352,9 +2446,10 @@ void main_window::construct_edit_menu (QMenuBar *p)
 
 }
 
-QAction * main_window::construct_debug_menu_item (const char *icon,
-                                                  const QString& item,
-                                                  const char *member)
+QAction *
+main_window::construct_debug_menu_item (const char *icon,
+                                        const QString& item,
+                                        const char *member)
 {
   gui_settings settings;
 
@@ -2371,7 +2466,8 @@ QAction * main_window::construct_debug_menu_item (const char *icon,
   return action;
 }
 
-void main_window::construct_debug_menu (QMenuBar *p)
+void
+main_window::construct_debug_menu (QMenuBar *p)
 {
   m_debug_menu = m_add_menu (p, tr ("De&bug"));
 
@@ -2401,25 +2497,27 @@ void main_window::construct_debug_menu (QMenuBar *p)
                                  SLOT (debug_quit ()));
 }
 
-void main_window::construct_tools_menu (QMenuBar *p)
+void
+main_window::construct_tools_menu (QMenuBar *p)
 {
   QMenu *tools_menu = m_add_menu (p, tr ("&Tools"));
 
   m_profiler_start = add_action (tools_menu, QIcon (),
-        tr ("Start &Profiler Session"), SLOT (profiler_session ()));
+                                 tr ("Start &Profiler Session"), SLOT (profiler_session ()));
 
   m_profiler_resume = add_action (tools_menu, QIcon (),
-        tr ("&Resume Profiler Session"), SLOT (profiler_session_resume ()));
+                                  tr ("&Resume Profiler Session"), SLOT (profiler_session_resume ()));
 
   m_profiler_stop = add_action (tools_menu, QIcon (),
-        tr ("&Stop Profiler"), SLOT (profiler_stop ()));
+                                tr ("&Stop Profiler"), SLOT (profiler_stop ()));
   m_profiler_stop->setEnabled (false);
 
   m_profiler_show = add_action (tools_menu, QIcon (),
-        tr ("&Show Profiler Data"), SLOT (profiler_show ()));
+                                tr ("&Show Profiler Data"), SLOT (profiler_show ()));
 }
 
-void main_window::editor_tabs_changed (bool have_tabs, bool is_octave)
+void
+main_window::editor_tabs_changed (bool have_tabs, bool is_octave)
 {
   // Set state of actions which depend on the existence of editor tabs
   m_editor_has_tabs = have_tabs;
@@ -2427,10 +2525,11 @@ void main_window::editor_tabs_changed (bool have_tabs, bool is_octave)
   m_debug_step_over->setEnabled (have_tabs && is_octave);
 }
 
-QAction * main_window::construct_window_menu_item (QMenu *p,
-                                                   const QString& item,
-                                                   bool checkable,
-                                                   QWidget *widget)
+QAction *
+main_window::construct_window_menu_item (QMenu *p,
+    const QString& item,
+    bool checkable,
+    QWidget *widget)
 {
   QAction *action = p->addAction (QIcon (), item);
 
@@ -2464,7 +2563,8 @@ QAction * main_window::construct_window_menu_item (QMenu *p,
   return action;
 }
 
-void main_window::construct_window_menu (QMenuBar *p)
+void
+main_window::construct_window_menu (QMenuBar *p)
 {
   QMenu *window_menu = m_add_menu (p, tr ("&Window"));
 
@@ -2515,7 +2615,7 @@ void main_window::construct_window_menu (QMenuBar *p)
   window_menu->addSeparator ();
 
   m_previous_dock_action = add_action (window_menu, QIcon (),
-                                         tr ("Previous Widget"), SLOT (go_to_previous_widget ()));
+                                       tr ("Previous Widget"), SLOT (go_to_previous_widget ()));
 
   window_menu->addSeparator ();
 
@@ -2523,7 +2623,8 @@ void main_window::construct_window_menu (QMenuBar *p)
                                        tr ("Reset Default Window Layout"), SLOT (reset_windows ()));
 }
 
-void main_window::construct_help_menu (QMenuBar *p)
+void
+main_window::construct_help_menu (QMenuBar *p)
 {
   QMenu *help_menu = m_add_menu (p, tr ("&Help"));
 
@@ -2549,7 +2650,8 @@ void main_window::construct_help_menu (QMenuBar *p)
                                       tr ("About Octave"), SLOT (show_about_octave ()));
 }
 
-void main_window::construct_documentation_menu (QMenu *p)
+void
+main_window::construct_documentation_menu (QMenu *p)
 {
   QMenu *doc_menu = p->addMenu (tr ("Documentation"));
 
@@ -2560,7 +2662,8 @@ void main_window::construct_documentation_menu (QMenu *p)
                                     tr ("Online"), SLOT (open_online_documentation_page ()));
 }
 
-void main_window::construct_news_menu (QMenuBar *p)
+void
+main_window::construct_news_menu (QMenuBar *p)
 {
   QMenu *news_menu = m_add_menu (p, tr ("&News"));
 
@@ -2581,7 +2684,8 @@ void main_window::construct_news_menu (QMenuBar *p)
   m_current_news_action->setShortcutContext (Qt::ApplicationShortcut);
 }
 
-void main_window::construct_tool_bar ()
+void
+main_window::construct_tool_bar ()
 {
   m_main_tool_bar = addToolBar (tr ("Toolbar"));
   m_main_tool_bar->setStyleSheet (m_main_tool_bar->styleSheet ()
@@ -2646,7 +2750,8 @@ void main_window::construct_tool_bar ()
            this, &main_window::handle_undo_request);
 }
 
-void main_window::focus_console_after_command ()
+void
+main_window::focus_console_after_command ()
 {
   gui_settings settings;
 
@@ -2654,7 +2759,8 @@ void main_window::focus_console_after_command ()
     focus_command_window ();
 }
 
-void main_window::configure_shortcuts ()
+void
+main_window::configure_shortcuts ()
 {
   gui_settings settings;
 
@@ -2729,7 +2835,8 @@ void main_window::configure_shortcuts ()
   settings.set_shortcut (m_current_news_action, sc_main_news_community_news, enable);
 }
 
-QList<octave_dock_widget *> main_window::dock_widget_list ()
+QList<octave_dock_widget *>
+main_window::dock_widget_list ()
 {
   QList<octave_dock_widget *> list = QList<octave_dock_widget *> ();
   list.append (static_cast<octave_dock_widget *> (m_command_window));
@@ -2744,7 +2851,8 @@ QList<octave_dock_widget *> main_window::dock_widget_list ()
   return list;
 }
 
-void main_window::update_default_encoding (const QString& default_encoding)
+void
+main_window::update_default_encoding (const QString& default_encoding)
 {
   m_default_encoding = default_encoding;
   std::string mfile_encoding = m_default_encoding.toStdString ();
@@ -2760,7 +2868,8 @@ void main_window::update_default_encoding (const QString& default_encoding)
      });
 }
 
-void main_window::resize_dock (QDockWidget *dw, int width, int height)
+void
+main_window::resize_dock (QDockWidget *dw, int width, int height)
 {
   // resizeDockWidget was added to Qt in Qt 5.6
   if (width >= 0)
@@ -2770,7 +2879,8 @@ void main_window::resize_dock (QDockWidget *dw, int width, int height)
 }
 
 // The default main window size relative to the desktop size
-void main_window::set_default_geometry ()
+void
+main_window::set_default_geometry ()
 {
   int win_x, win_y;
   get_screen_geometry (win_x, win_y);
@@ -2779,7 +2889,8 @@ void main_window::set_default_geometry ()
   resize (2*win_x/3, 7*win_y/8);
 }
 
-void main_window::reset_windows ()
+void
+main_window::reset_windows ()
 {
   // Slot for resetting the window layout to the default one
   hide ();
@@ -2802,7 +2913,8 @@ void main_window::reset_windows ()
 // Create the default layout of the main window. Do not use
 // restoreState () and restoreGeometry () with default values since
 // this might lead to problems when the Qt version changes
-void main_window::do_reset_windows (bool show, bool save, bool force_all)
+void
+main_window::do_reset_windows (bool show, bool save, bool force_all)
 {
   // Set main window default geometry and store its width for
   // later resizing the command window

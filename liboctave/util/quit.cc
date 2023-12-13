@@ -78,7 +78,8 @@ std::string execution_exception::stack_trace () const
   return buf.str ();
 }
 
-void execution_exception::display (std::ostream& os) const
+void
+execution_exception::display (std::ostream& os) const
 {
   if (! m_message.empty ())
     {
@@ -113,7 +114,7 @@ octave_handle_signal ()
   sig_atomic_t curr_interrupt_state = octave_interrupt_state.load ();
 
   while (curr_interrupt_state > 0 &&
-    ! octave_interrupt_state.compare_exchange_weak (curr_interrupt_state, -1))
+         ! octave_interrupt_state.compare_exchange_weak (curr_interrupt_state, -1))
     ;
 
   if (curr_interrupt_state > 0)

@@ -116,7 +116,8 @@ private:
 
 // Clear all reasons to stop, other than breakpoints.
 
-void bp_table::dbclear_all_signals ()
+void
+bp_table::dbclear_all_signals ()
 {
   interpreter& interp = m_evaluator.get_interpreter ();
   error_system& es = interp.get_error_system ();
@@ -136,7 +137,8 @@ void bp_table::dbclear_all_signals ()
 // Process the "warn", "errs", "caught" and "intr" fields for a call of
 // "dbstop (p)".
 
-void bp_table::dbstop_process_map_args (const octave_map& mv)
+void
+bp_table::dbstop_process_map_args (const octave_map& mv)
 {
   interpreter& interp = m_evaluator.get_interpreter ();
   error_system& es = interp.get_error_system ();
@@ -231,11 +233,12 @@ void bp_table::dbstop_process_map_args (const octave_map& mv)
 // to stop only when condition is true.
 // Record in m_bp_set that fname contains a breakpoint.
 
-bool bp_table::add_breakpoint_1 (octave_user_code *fcn,
-                                 const std::string& fcn_ident,
-                                 const bp_table::bp_lines& line,
-                                 const std::string& condition,
-                                 bp_table::bp_lines& retval)
+bool
+bp_table::add_breakpoint_1 (octave_user_code *fcn,
+                            const std::string& fcn_ident,
+                            const bp_table::bp_lines& line,
+                            const std::string& condition,
+                            bp_table::bp_lines& retval)
 {
   bool found = false;
 
@@ -279,7 +282,8 @@ bool bp_table::add_breakpoint_1 (octave_user_code *fcn,
 // it is odd that the former is not flagged by "is_assignment_expression".
 // Throws an exception if not valid.
 
-bool bp_table::condition_valid (const std::string& cond)
+bool
+bp_table::condition_valid (const std::string& cond)
 {
   if (cond.length () > 0)
     {
@@ -339,12 +343,13 @@ enum dbstop_args
 // be a class name.  Otherwise it should be a function name.
 // Also execute "if [error|warning|interrupt|naninf]" clauses.
 
-void bp_table::parse_dbfunction_params (const char *who,
-                                        const octave_value_list& args,
-                                        std::string& fcn_name,
-                                        std::string& class_name,
-                                        bp_table::bp_lines& lines,
-                                        std::string& cond)
+void
+bp_table::parse_dbfunction_params (const char *who,
+                                   const octave_value_list& args,
+                                   std::string& fcn_name,
+                                   std::string& class_name,
+                                   bp_table::bp_lines& lines,
+                                   std::string& cond)
 {
   int nargin = args.length ();
   fcn_name = "";
@@ -552,8 +557,9 @@ void bp_table::parse_dbfunction_params (const char *who,
 %! assert (s.errs, {"Octave:undefined-function"});
 */
 
-void bp_table::set_stop_flag (const char *who, const std::string& condition,
-                              bool on_off)
+void
+bp_table::set_stop_flag (const char *who, const std::string& condition,
+                         bool on_off)
 {
   interpreter& interp = m_evaluator.get_interpreter ();
   error_system& es = interp.get_error_system ();
@@ -568,11 +574,12 @@ void bp_table::set_stop_flag (const char *who, const std::string& condition,
     error ("%s: internal error in set_stop_flag", who);
 }
 
-void bp_table::process_id_list (const char *who,
-                                const std::string& condition,
-                                const octave_value_list& args,
-                                int nargin, int& pos, bool on_off,
-                                std::set<std::string>& id_list)
+void
+bp_table::process_id_list (const char *who,
+                           const std::string& condition,
+                           const octave_value_list& args,
+                           int nargin, int& pos, bool on_off,
+                           std::set<std::string>& id_list)
 {
   pos++;
 
@@ -609,9 +616,10 @@ void bp_table::process_id_list (const char *who,
 // line number LINENO of the source file.
 // If END_LINE != 0, *END_LINE is set to last line of the returned function.
 
-static octave_user_code * find_fcn_by_line (octave_user_code *main_fcn,
-                                            int lineno,
-                                            int *end_line = nullptr)
+static octave_user_code *
+find_fcn_by_line (octave_user_code *main_fcn,
+                  int lineno,
+                  int *end_line = nullptr)
 {
   octave_user_code *retval = nullptr;
   octave_user_code *next_fcn = nullptr;  // 1st function starting after lineno
@@ -671,9 +679,10 @@ static octave_user_code * find_fcn_by_line (octave_user_code *main_fcn,
 
 // Given function identifier fcn_ident, find the subfunction at line and create
 // a breakpoint there.  Put the system into debug_mode.
-int bp_table::add_breakpoint_in_function (const std::string& fcn_ident,
-                                          int line,
-                                          const std::string& condition)
+int
+bp_table::add_breakpoint_in_function (const std::string& fcn_ident,
+                                      int line,
+                                      const std::string& condition)
 {
   bp_lines line_info;
   line_info.insert (line);
@@ -692,7 +701,7 @@ class user_code_provider
 {
 public:
   user_code_provider (const std::string& who, const std::string& fcn_ident,
-                      octave_user_code* pfcn, bool silent = false)
+                      octave_user_code *pfcn, bool silent = false)
     : m_fcn (nullptr), m_is_valid (false)
   {
     m_fcn = pfcn;
@@ -837,9 +846,10 @@ bp_table::add_breakpoints_in_function (const std::string& fcn_ident,
   return retval;
 }
 
-int bp_table::add_breakpoint_in_file (const std::string& file,
-                                      int line,
-                                      const std::string& condition)
+int
+bp_table::add_breakpoint_in_file (const std::string& file,
+                                  int line,
+                                  const std::string& condition)
 {
   // Duplicates what the GUI was doing previously, but this action
   // should not be specific to the GUI.
@@ -880,9 +890,10 @@ bp_table::add_breakpoints_in_file (const std::string& file,
   return add_breakpoints_in_function (fcn_ident, lines, condition);
 }
 
-int bp_table::remove_breakpoint_1 (octave_user_code *fcn,
-                                   const std::string& fcn_ident,
-                                   const bp_table::bp_lines& lines)
+int
+bp_table::remove_breakpoint_1 (octave_user_code *fcn,
+                               const std::string& fcn_ident,
+                               const bp_table::bp_lines& lines)
 {
   int retval = 0;
 
@@ -1096,7 +1107,8 @@ bp_table::remove_all_breakpoints_from_file (const std::string& file,
   return remove_all_breakpoints_from_function (info.fcn (), silent);
 }
 
-void bp_table::remove_all_breakpoints ()
+void
+bp_table::remove_all_breakpoints ()
 {
   // Odd loop structure required because delete will invalidate
   // m_bp_set iterators.
@@ -1111,7 +1123,8 @@ void bp_table::remove_all_breakpoints ()
   m_evaluator.reset_debug_state ();
 }
 
-std::string find_bkpt_list (octave_value_list slist, std::string match)
+std::string
+find_bkpt_list (octave_value_list slist, std::string match)
 {
   std::string retval;
 
@@ -1158,7 +1171,7 @@ bp_table::get_breakpoint_list (const octave_value_list& fname_list)
                     {
                       const std::list<bp_type>& bp
                         = cmds->breakpoints_and_conds ();
-                      if(!bp.empty())
+                      if (!bp.empty())
                         it = all_bkpts.insert (it, bp.cbegin (),
                                                bp.cend ());
                     }
@@ -1218,7 +1231,8 @@ bp_table::get_breakpoint_list (const octave_value_list& fname_list)
 // "errs" field will have a row per ID.  If dbstop if error is false, there
 // is no "errs" field.  The "warn" field is set similarly by dbstop if warning
 
-octave_map bp_table::stop_on_err_warn_status (bool to_screen)
+octave_map
+bp_table::stop_on_err_warn_status (bool to_screen)
 {
   octave_map retval;
 

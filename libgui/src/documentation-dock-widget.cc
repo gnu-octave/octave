@@ -46,33 +46,39 @@ documentation_dock_widget::documentation_dock_widget (QWidget *p)
     make_window ();
 }
 
-void documentation_dock_widget::notice_settings ()
+void
+documentation_dock_widget::notice_settings ()
 {
   m_docs->notice_settings ();
 }
 
-void documentation_dock_widget::save_settings ()
+void
+documentation_dock_widget::save_settings ()
 {
   m_docs->save_settings ();
   octave_dock_widget::save_settings ();
 }
 
-void documentation_dock_widget::copyClipboard ()
+void
+documentation_dock_widget::copyClipboard ()
 {
   m_docs->copyClipboard ();
 }
 
-void documentation_dock_widget::pasteClipboard ()
+void
+documentation_dock_widget::pasteClipboard ()
 {
   m_docs->pasteClipboard ();
 }
 
-void documentation_dock_widget::selectAll ()
+void
+documentation_dock_widget::selectAll ()
 {
   m_docs->selectAll ();
 }
 
-void documentation_dock_widget::showDoc (const QString& name)
+void
+documentation_dock_widget::showDoc (const QString& name)
 {
   // show the doc pane without focus for carrying on typing in the console
   if (! isVisible ())
@@ -83,12 +89,14 @@ void documentation_dock_widget::showDoc (const QString& name)
   m_docs->load_ref (name);
 }
 
-void documentation_dock_widget::registerDoc (const QString& name)
+void
+documentation_dock_widget::registerDoc (const QString& name)
 {
   m_docs->registerDoc (name);
 }
 
-void documentation_dock_widget::unregisterDoc (const QString& name)
+void
+documentation_dock_widget::unregisterDoc (const QString& name)
 {
   m_docs->unregisterDoc (name);
 }

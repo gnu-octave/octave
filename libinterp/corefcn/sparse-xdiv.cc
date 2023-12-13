@@ -294,7 +294,8 @@ xdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 }
 
 template <typename RT, typename SM, typename DM>
-RT do_rightdiv_sm_dm (const SM& a, const DM& d)
+RT
+do_rightdiv_sm_dm (const SM& a, const DM& d)
 {
   const octave_idx_type d_nr = d.rows ();
 
@@ -561,7 +562,8 @@ xleftdiv (const SparseComplexMatrix& a, const SparseComplexMatrix& b,
 }
 
 template <typename RT, typename DM, typename SM>
-RT do_leftdiv_dm_sm (const DM& d, const SM& a)
+RT
+do_leftdiv_dm_sm (const DM& d, const SM& a)
 {
   const octave_idx_type a_nr = a.rows ();
   const octave_idx_type a_nc = a.cols ();

@@ -180,7 +180,8 @@ w32_init ()
 
 #endif
 
-void set_application_id ()
+void
+set_application_id ()
 {
 #if defined (__MINGW32__) || defined (_MSC_VER)
 
@@ -382,7 +383,8 @@ MSVC_init ()
 
 // Return TRUE if NAME refers to an existing drive letter or UNC share
 
-bool drive_or_unc_share (const std::string& name)
+bool
+drive_or_unc_share (const std::string& name)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
   std::size_t len = name.length ();
@@ -431,7 +433,8 @@ bool drive_or_unc_share (const std::string& name)
 #endif
 }
 
-void sysdep_init ()
+void
+sysdep_init ()
 {
   // Use a function from libgomp to force loading of OpenMP library.
   // Otherwise, a dynamically loaded library making use of OpenMP such
@@ -449,7 +452,8 @@ void sysdep_init ()
 #endif
 }
 
-void sysdep_cleanup ()
+void
+sysdep_cleanup ()
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
   // Let us fail immediately without displaying any dialog.
@@ -469,7 +473,8 @@ void sysdep_cleanup ()
 //         etc. are NOT disabled.
 // It doesn't matter whether an input \n is mapped to \r, or vice versa.
 
-void raw_mode (bool on, bool wait)
+void
+raw_mode (bool on, bool wait)
 {
   static bool curr_on = false;
 
@@ -617,7 +622,8 @@ void raw_mode (bool on, bool wait)
   curr_on = on;
 }
 
-FILE * popen (const char *command, const char *mode)
+FILE *
+popen (const char *command, const char *mode)
 {
 #if defined (__MINGW32__) || defined (_MSC_VER)
   std::wstring wcommand = sys::u8_to_wstring (command);
@@ -633,7 +639,8 @@ FILE * popen (const char *command, const char *mode)
 #endif
 }
 
-int pclose (FILE *f)
+int
+pclose (FILE *f)
 {
 #if defined (__MINGW32__) || defined (_MSC_VER)
   return ::_pclose (f);
@@ -644,7 +651,8 @@ int pclose (FILE *f)
 
 // Read one character from the terminal.
 
-int kbhit (bool wait)
+int
+kbhit (bool wait)
 {
 #if defined (HAVE__KBHIT) && defined (HAVE__GETCH)
   // This essentially means we are on a Windows system.
@@ -688,7 +696,8 @@ int kbhit (bool wait)
   return c;
 }
 
-std::string get_P_tmpdir ()
+std::string
+get_P_tmpdir ()
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
 

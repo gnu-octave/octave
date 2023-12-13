@@ -44,7 +44,8 @@ void tree_walker::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
     expression->accept (*this);
 }
 
-void tree_walker::visit_argument_list (tree_argument_list& lst)
+void
+tree_walker::visit_argument_list (tree_argument_list& lst)
 {
   auto p = lst.begin ();
 
@@ -57,7 +58,8 @@ void tree_walker::visit_argument_list (tree_argument_list& lst)
     }
 }
 
-void tree_walker::visit_arguments_block (tree_arguments_block& blk)
+void
+tree_walker::visit_arguments_block (tree_arguments_block& blk)
 {
   tree_args_block_attribute_list *attribute_list = blk.attribute_list ();
 
@@ -70,7 +72,8 @@ void tree_walker::visit_arguments_block (tree_arguments_block& blk)
     validation_list->accept (*this);
 }
 
-void tree_walker::visit_args_block_attribute_list (tree_args_block_attribute_list& lst)
+void
+tree_walker::visit_args_block_attribute_list (tree_args_block_attribute_list& lst)
 {
   tree_identifier *attribute = lst.attribute ();
 
@@ -78,7 +81,8 @@ void tree_walker::visit_args_block_attribute_list (tree_args_block_attribute_lis
     attribute->accept (*this);
 }
 
-void tree_walker::visit_args_block_validation_list (tree_args_block_validation_list& lst)
+void
+tree_walker::visit_args_block_validation_list (tree_args_block_validation_list& lst)
 {
   for (auto *elt : lst)
     {
@@ -87,7 +91,8 @@ void tree_walker::visit_args_block_validation_list (tree_args_block_validation_l
     }
 }
 
-void tree_walker::visit_arg_validation (tree_arg_validation& val)
+void
+tree_walker::visit_arg_validation (tree_arg_validation& val)
 {
   tree_expression *arg_name = val.identifier_expression ();
 
@@ -115,7 +120,8 @@ void tree_walker::visit_arg_validation (tree_arg_validation& val)
     default_value->accept (*this);
 }
 
-void tree_walker::visit_arg_size_spec (tree_arg_size_spec& spec)
+void
+tree_walker::visit_arg_size_spec (tree_arg_size_spec& spec)
 {
   tree_argument_list *size_args = spec.size_args ();
 
@@ -123,7 +129,8 @@ void tree_walker::visit_arg_size_spec (tree_arg_size_spec& spec)
     size_args->accept (*this);
 }
 
-void tree_walker::visit_arg_validation_fcns (tree_arg_validation_fcns& spec)
+void
+tree_walker::visit_arg_validation_fcns (tree_arg_validation_fcns& spec)
 {
   tree_argument_list *fcn_args = spec.fcn_args ();
 
@@ -131,7 +138,8 @@ void tree_walker::visit_arg_validation_fcns (tree_arg_validation_fcns& spec)
     fcn_args->accept (*this);
 }
 
-void tree_walker::visit_binary_expression (tree_binary_expression& expr)
+void
+tree_walker::visit_binary_expression (tree_binary_expression& expr)
 {
   tree_expression *op1 = expr.lhs ();
 
@@ -144,22 +152,26 @@ void tree_walker::visit_binary_expression (tree_binary_expression& expr)
     op2->accept (*this);
 }
 
-void tree_walker::visit_boolean_expression (tree_boolean_expression& expr)
+void
+tree_walker::visit_boolean_expression (tree_boolean_expression& expr)
 {
   visit_binary_expression (expr);
 }
 
-void tree_walker::visit_compound_binary_expression (tree_compound_binary_expression& expr)
+void
+tree_walker::visit_compound_binary_expression (tree_compound_binary_expression& expr)
 {
   visit_binary_expression (expr);
 }
 
-void tree_walker::visit_break_command (tree_break_command&)
+void
+tree_walker::visit_break_command (tree_break_command&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_colon_expression (tree_colon_expression& expr)
+void
+tree_walker::visit_colon_expression (tree_colon_expression& expr)
 {
   tree_expression *op1 = expr.base ();
 
@@ -177,12 +189,14 @@ void tree_walker::visit_colon_expression (tree_colon_expression& expr)
     op2->accept (*this);
 }
 
-void tree_walker::visit_continue_command (tree_continue_command&)
+void
+tree_walker::visit_continue_command (tree_continue_command&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_decl_command (tree_decl_command& cmd)
+void
+tree_walker::visit_decl_command (tree_decl_command& cmd)
 {
   tree_decl_init_list *init_list = cmd.initializer_list ();
 
@@ -190,7 +204,8 @@ void tree_walker::visit_decl_command (tree_decl_command& cmd)
     init_list->accept (*this);
 }
 
-void tree_walker::visit_decl_elt (tree_decl_elt& cmd)
+void
+tree_walker::visit_decl_elt (tree_decl_elt& cmd)
 {
   tree_identifier *id = cmd.ident ();
 
@@ -203,7 +218,8 @@ void tree_walker::visit_decl_elt (tree_decl_elt& cmd)
     expr->accept (*this);
 }
 
-void tree_walker::visit_decl_init_list (tree_decl_init_list& lst)
+void
+tree_walker::visit_decl_init_list (tree_decl_init_list& lst)
 {
   // FIXME: tree_decl_elt is not derived from tree, so should it
   // really have an accept method?
@@ -215,7 +231,8 @@ void tree_walker::visit_decl_init_list (tree_decl_init_list& lst)
     }
 }
 
-void tree_walker::visit_simple_for_command (tree_simple_for_command& cmd)
+void
+tree_walker::visit_simple_for_command (tree_simple_for_command& cmd)
 {
   tree_expression *lhs = cmd.left_hand_side ();
 
@@ -238,7 +255,8 @@ void tree_walker::visit_simple_for_command (tree_simple_for_command& cmd)
     list->accept (*this);
 }
 
-void tree_walker::visit_complex_for_command (tree_complex_for_command& cmd)
+void
+tree_walker::visit_complex_for_command (tree_complex_for_command& cmd)
 {
   tree_argument_list *lhs = cmd.left_hand_side ();
 
@@ -256,7 +274,8 @@ void tree_walker::visit_complex_for_command (tree_complex_for_command& cmd)
     list->accept (*this);
 }
 
-void tree_walker::visit_spmd_command (tree_spmd_command& cmd)
+void
+tree_walker::visit_spmd_command (tree_spmd_command& cmd)
 {
   tree_statement_list *body = cmd.body ();
 
@@ -264,7 +283,8 @@ void tree_walker::visit_spmd_command (tree_spmd_command& cmd)
     body->accept (*this);
 }
 
-void tree_walker::visit_octave_user_script (octave_user_script& fcn)
+void
+tree_walker::visit_octave_user_script (octave_user_script& fcn)
 {
   tree_statement_list *cmd_list = fcn.body ();
 
@@ -272,7 +292,8 @@ void tree_walker::visit_octave_user_script (octave_user_script& fcn)
     cmd_list->accept (*this);
 }
 
-void tree_walker::visit_octave_user_function (octave_user_function& fcn)
+void
+tree_walker::visit_octave_user_function (octave_user_function& fcn)
 {
   tree_statement_list *cmd_list = fcn.body ();
 
@@ -280,7 +301,8 @@ void tree_walker::visit_octave_user_function (octave_user_function& fcn)
     cmd_list->accept (*this);
 }
 
-void tree_walker::visit_function_def (tree_function_def& fdef)
+void
+tree_walker::visit_function_def (tree_function_def& fdef)
 {
   octave_value fcn = fdef.function ();
 
@@ -290,12 +312,14 @@ void tree_walker::visit_function_def (tree_function_def& fdef)
     f->accept (*this);
 }
 
-void tree_walker::visit_identifier (tree_identifier&)
+void
+tree_walker::visit_identifier (tree_identifier&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_if_clause (tree_if_clause& cmd)
+void
+tree_walker::visit_if_clause (tree_if_clause& cmd)
 {
   tree_expression *expr = cmd.condition ();
 
@@ -308,7 +332,8 @@ void tree_walker::visit_if_clause (tree_if_clause& cmd)
     list->accept (*this);
 }
 
-void tree_walker::visit_if_command (tree_if_command& cmd)
+void
+tree_walker::visit_if_command (tree_if_command& cmd)
 {
   tree_if_command_list *list = cmd.cmd_list ();
 
@@ -316,7 +341,8 @@ void tree_walker::visit_if_command (tree_if_command& cmd)
     list->accept (*this);
 }
 
-void tree_walker::visit_if_command_list (tree_if_command_list& lst)
+void
+tree_walker::visit_if_command_list (tree_if_command_list& lst)
 {
   auto p = lst.begin ();
 
@@ -329,7 +355,8 @@ void tree_walker::visit_if_command_list (tree_if_command_list& lst)
     }
 }
 
-void tree_walker::visit_switch_case (tree_switch_case& cs)
+void
+tree_walker::visit_switch_case (tree_switch_case& cs)
 {
   tree_expression *label = cs.case_label ();
 
@@ -342,7 +369,8 @@ void tree_walker::visit_switch_case (tree_switch_case& cs)
     list->accept (*this);
 }
 
-void tree_walker::visit_switch_case_list (tree_switch_case_list& lst)
+void
+tree_walker::visit_switch_case_list (tree_switch_case_list& lst)
 {
   auto p = lst.begin ();
 
@@ -355,7 +383,8 @@ void tree_walker::visit_switch_case_list (tree_switch_case_list& lst)
     }
 }
 
-void tree_walker::visit_switch_command (tree_switch_command& cmd)
+void
+tree_walker::visit_switch_command (tree_switch_command& cmd)
 {
   tree_expression *expr = cmd.switch_value ();
 
@@ -368,7 +397,8 @@ void tree_walker::visit_switch_command (tree_switch_command& cmd)
     list->accept (*this);
 }
 
-void tree_walker::visit_index_expression (tree_index_expression& expr)
+void
+tree_walker::visit_index_expression (tree_index_expression& expr)
 {
   tree_expression *e = expr.expression ();
 
@@ -421,7 +451,8 @@ void tree_walker::visit_index_expression (tree_index_expression& expr)
     }
 }
 
-void tree_walker::visit_matrix (tree_matrix& lst)
+void
+tree_walker::visit_matrix (tree_matrix& lst)
 {
   auto p = lst.begin ();
 
@@ -434,7 +465,8 @@ void tree_walker::visit_matrix (tree_matrix& lst)
     }
 }
 
-void tree_walker::visit_cell (tree_cell& lst)
+void
+tree_walker::visit_cell (tree_cell& lst)
 {
   auto p = lst.begin ();
 
@@ -447,7 +479,8 @@ void tree_walker::visit_cell (tree_cell& lst)
     }
 }
 
-void tree_walker::visit_multi_assignment (tree_multi_assignment& expr)
+void
+tree_walker::visit_multi_assignment (tree_multi_assignment& expr)
 {
   tree_argument_list *lhs = expr.left_hand_side ();
 
@@ -460,22 +493,26 @@ void tree_walker::visit_multi_assignment (tree_multi_assignment& expr)
     rhs->accept (*this);
 }
 
-void tree_walker::visit_no_op_command (tree_no_op_command&)
+void
+tree_walker::visit_no_op_command (tree_no_op_command&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_constant (tree_constant&)
+void
+tree_walker::visit_constant (tree_constant&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_fcn_handle (tree_fcn_handle&)
+void
+tree_walker::visit_fcn_handle (tree_fcn_handle&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_parameter_list (tree_parameter_list& lst)
+void
+tree_walker::visit_parameter_list (tree_parameter_list& lst)
 {
   auto p = lst.begin ();
 
@@ -488,7 +525,8 @@ void tree_walker::visit_parameter_list (tree_parameter_list& lst)
     }
 }
 
-void tree_walker::visit_postfix_expression (tree_postfix_expression& expr)
+void
+tree_walker::visit_postfix_expression (tree_postfix_expression& expr)
 {
   tree_expression *e = expr.operand ();
 
@@ -496,7 +534,8 @@ void tree_walker::visit_postfix_expression (tree_postfix_expression& expr)
     e->accept (*this);
 }
 
-void tree_walker::visit_prefix_expression (tree_prefix_expression& expr)
+void
+tree_walker::visit_prefix_expression (tree_prefix_expression& expr)
 {
   tree_expression *e = expr.operand ();
 
@@ -504,12 +543,14 @@ void tree_walker::visit_prefix_expression (tree_prefix_expression& expr)
     e->accept (*this);
 }
 
-void tree_walker::visit_return_command (tree_return_command&)
+void
+tree_walker::visit_return_command (tree_return_command&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_simple_assignment (tree_simple_assignment& expr)
+void
+tree_walker::visit_simple_assignment (tree_simple_assignment& expr)
 {
   tree_expression *lhs = expr.left_hand_side ();
 
@@ -522,7 +563,8 @@ void tree_walker::visit_simple_assignment (tree_simple_assignment& expr)
     rhs->accept (*this);
 }
 
-void tree_walker::visit_statement (tree_statement& stmt)
+void
+tree_walker::visit_statement (tree_statement& stmt)
 {
   tree_command *cmd = stmt.command ();
 
@@ -537,7 +579,8 @@ void tree_walker::visit_statement (tree_statement& stmt)
     }
 }
 
-void tree_walker::visit_statement_list (tree_statement_list& lst)
+void
+tree_walker::visit_statement_list (tree_statement_list& lst)
 {
   for (tree_statement *elt : lst)
     {
@@ -546,7 +589,8 @@ void tree_walker::visit_statement_list (tree_statement_list& lst)
     }
 }
 
-void tree_walker::visit_try_catch_command (tree_try_catch_command& cmd)
+void
+tree_walker::visit_try_catch_command (tree_try_catch_command& cmd)
 {
   tree_statement_list *try_code = cmd.body ();
 
@@ -564,7 +608,8 @@ void tree_walker::visit_try_catch_command (tree_try_catch_command& cmd)
     catch_code->accept (*this);
 }
 
-void tree_walker::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
+void
+tree_walker::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
   tree_statement_list *unwind_protect_code = cmd.body ();
 
@@ -577,7 +622,8 @@ void tree_walker::visit_unwind_protect_command (tree_unwind_protect_command& cmd
     cleanup_code->accept (*this);
 }
 
-void tree_walker::visit_while_command (tree_while_command& cmd)
+void
+tree_walker::visit_while_command (tree_while_command& cmd)
 {
   tree_expression *expr = cmd.condition ();
 
@@ -590,7 +636,8 @@ void tree_walker::visit_while_command (tree_while_command& cmd)
     list->accept (*this);
 }
 
-void tree_walker::visit_do_until_command (tree_do_until_command& cmd)
+void
+tree_walker::visit_do_until_command (tree_do_until_command& cmd)
 {
   tree_statement_list *list = cmd.body ();
 
@@ -603,17 +650,20 @@ void tree_walker::visit_do_until_command (tree_do_until_command& cmd)
     expr->accept (*this);
 }
 
-void tree_walker::visit_superclass_ref (tree_superclass_ref&)
+void
+tree_walker::visit_superclass_ref (tree_superclass_ref&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_metaclass_query (tree_metaclass_query&)
+void
+tree_walker::visit_metaclass_query (tree_metaclass_query&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_classdef_attribute (tree_classdef_attribute& attr)
+void
+tree_walker::visit_classdef_attribute (tree_classdef_attribute& attr)
 {
   tree_identifier *id = attr.ident ();
 
@@ -626,7 +676,8 @@ void tree_walker::visit_classdef_attribute (tree_classdef_attribute& attr)
     expr->accept (*this);
 }
 
-void tree_walker::visit_classdef_attribute_list (tree_classdef_attribute_list& lst)
+void
+tree_walker::visit_classdef_attribute_list (tree_classdef_attribute_list& lst)
 {
   for (auto *elt : lst)
     {
@@ -635,12 +686,14 @@ void tree_walker::visit_classdef_attribute_list (tree_classdef_attribute_list& l
     }
 }
 
-void tree_walker::visit_classdef_superclass (tree_classdef_superclass&)
+void
+tree_walker::visit_classdef_superclass (tree_classdef_superclass&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_classdef_superclass_list (tree_classdef_superclass_list& lst)
+void
+tree_walker::visit_classdef_superclass_list (tree_classdef_superclass_list& lst)
 {
   for (auto *elt : lst)
     {
@@ -649,13 +702,15 @@ void tree_walker::visit_classdef_superclass_list (tree_classdef_superclass_list&
     }
 }
 
-void tree_walker::visit_classdef_property (tree_classdef_property&)
+void
+tree_walker::visit_classdef_property (tree_classdef_property&)
 {
   // FIXME: Should we operate on the tree_arg_validation object or the
   // identifier and expression parts separately?
 }
 
-void tree_walker::visit_classdef_property_list (tree_classdef_property_list& lst)
+void
+tree_walker::visit_classdef_property_list (tree_classdef_property_list& lst)
 {
   for (auto *elt : lst)
     {
@@ -664,7 +719,8 @@ void tree_walker::visit_classdef_property_list (tree_classdef_property_list& lst
     }
 }
 
-void tree_walker::visit_classdef_properties_block (tree_classdef_properties_block& blk)
+void
+tree_walker::visit_classdef_properties_block (tree_classdef_properties_block& blk)
 {
   tree_classdef_property_list *property_list = blk.element_list ();
 
@@ -672,7 +728,8 @@ void tree_walker::visit_classdef_properties_block (tree_classdef_properties_bloc
     property_list->accept (*this);
 }
 
-void tree_walker::visit_classdef_methods_list (tree_classdef_methods_list& lst)
+void
+tree_walker::visit_classdef_methods_list (tree_classdef_methods_list& lst)
 {
   for (auto ov_meth : lst)
     {
@@ -683,7 +740,8 @@ void tree_walker::visit_classdef_methods_list (tree_classdef_methods_list& lst)
     }
 }
 
-void tree_walker::visit_classdef_methods_block (tree_classdef_methods_block& blk)
+void
+tree_walker::visit_classdef_methods_block (tree_classdef_methods_block& blk)
 {
   tree_classdef_methods_list *methods_list = blk.element_list ();
 
@@ -691,12 +749,14 @@ void tree_walker::visit_classdef_methods_block (tree_classdef_methods_block& blk
     methods_list->accept (*this);
 }
 
-void tree_walker::visit_classdef_event (tree_classdef_event&)
+void
+tree_walker::visit_classdef_event (tree_classdef_event&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_classdef_events_list (tree_classdef_events_list& lst)
+void
+tree_walker::visit_classdef_events_list (tree_classdef_events_list& lst)
 {
   for (auto *elt : lst)
     {
@@ -705,7 +765,8 @@ void tree_walker::visit_classdef_events_list (tree_classdef_events_list& lst)
     }
 }
 
-void tree_walker::visit_classdef_events_block (tree_classdef_events_block& blk)
+void
+tree_walker::visit_classdef_events_block (tree_classdef_events_block& blk)
 {
   tree_classdef_events_list *events_list = blk.element_list ();
 
@@ -713,12 +774,14 @@ void tree_walker::visit_classdef_events_block (tree_classdef_events_block& blk)
     events_list->accept (*this);
 }
 
-void tree_walker::visit_classdef_enum (tree_classdef_enum&)
+void
+tree_walker::visit_classdef_enum (tree_classdef_enum&)
 {
   // Nothing to do.
 }
 
-void tree_walker::visit_classdef_enum_list (tree_classdef_enum_list& lst)
+void
+tree_walker::visit_classdef_enum_list (tree_classdef_enum_list& lst)
 {
   for (auto *elt : lst)
     {
@@ -727,7 +790,8 @@ void tree_walker::visit_classdef_enum_list (tree_classdef_enum_list& lst)
     }
 }
 
-void tree_walker::visit_classdef_enum_block (tree_classdef_enum_block& blk)
+void
+tree_walker::visit_classdef_enum_block (tree_classdef_enum_block& blk)
 {
   tree_classdef_enum_list *enum_list = blk.element_list ();
 
@@ -735,7 +799,8 @@ void tree_walker::visit_classdef_enum_block (tree_classdef_enum_block& blk)
     enum_list->accept (*this);
 }
 
-void tree_walker::visit_classdef_body (tree_classdef_body& body)
+void
+tree_walker::visit_classdef_body (tree_classdef_body& body)
 {
   for (auto *elt : body.properties_list ())
     {
@@ -763,7 +828,8 @@ void tree_walker::visit_classdef_body (tree_classdef_body& body)
     }
 }
 
-void tree_walker::visit_classdef (tree_classdef& cdef)
+void
+tree_walker::visit_classdef (tree_classdef& cdef)
 {
   tree_classdef_attribute_list *attribute_list = cdef.attribute_list ();
 

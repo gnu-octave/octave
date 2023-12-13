@@ -51,7 +51,8 @@ symbol_record symbol_scope_rep::insert_local (const std::string& name)
   return sym;
 }
 
-void symbol_scope_rep::insert_symbol_record (symbol_record& sr)
+void
+symbol_scope_rep::insert_symbol_record (symbol_record& sr)
 {
   std::size_t data_offset = num_symbols ();
   std::string name = sr.name ();
@@ -61,7 +62,8 @@ void symbol_scope_rep::insert_symbol_record (symbol_record& sr)
   m_symbols[name] = sr;
 }
 
-symbol_record symbol_scope_rep::insert (const std::string& name)
+symbol_record
+symbol_scope_rep::insert (const std::string& name)
 {
   table_iterator p = m_symbols.find (name);
 
@@ -92,7 +94,8 @@ symbol_record symbol_scope_rep::insert (const std::string& name)
     return p->second;
 }
 
-std::list<octave_value> symbol_scope_rep::localfunctions () const
+std::list<octave_value>
+symbol_scope_rep::localfunctions () const
 {
   std::list<octave_value> retval;
 
@@ -159,7 +162,8 @@ symbol_scope_rep::dump_symbols_map () const
   return octave_value (info_map);
 }
 
-std::list<symbol_record> symbol_scope_rep::symbol_list () const
+std::list<symbol_record>
+symbol_scope_rep::symbol_list () const
 {
   std::list<symbol_record> retval;
 
@@ -271,7 +275,8 @@ symbol_scope_rep::is_relative (const std::shared_ptr<symbol_scope_rep>& scope) c
   return false;
 }
 
-void symbol_scope_rep::mark_as_variable (const std::string& nm)
+void
+symbol_scope_rep::mark_as_variable (const std::string& nm)
 {
   table_iterator p = m_symbols.find (nm);
 
@@ -279,13 +284,15 @@ void symbol_scope_rep::mark_as_variable (const std::string& nm)
     p->second.mark_as_variable ();
 }
 
-void symbol_scope_rep::mark_as_variables (const std::list<std::string>& lst)
+void
+symbol_scope_rep::mark_as_variables (const std::list<std::string>& lst)
 {
   for (const auto& nm : lst)
     mark_as_variable (nm);
 }
 
-bool symbol_scope_rep::is_variable (const std::string& nm) const
+bool
+symbol_scope_rep::is_variable (const std::string& nm) const
 {
   table_const_iterator p = m_symbols.find (nm);
 
@@ -304,7 +311,8 @@ bool symbol_scope_rep::is_variable (const std::string& nm) const
   return false;
 }
 
-void symbol_scope_rep::update_nest ()
+void
+symbol_scope_rep::update_nest ()
 {
   auto t_parent = m_parent.lock ();
 
@@ -335,9 +343,10 @@ void symbol_scope_rep::update_nest ()
     scope_obj.update_nest ();
 }
 
-bool symbol_scope_rep::look_nonlocal (const std::string& name,
-                                      std::size_t offset,
-                                      symbol_record& result)
+bool
+symbol_scope_rep::look_nonlocal (const std::string& name,
+                                 std::size_t offset,
+                                 symbol_record& result)
 {
   offset++;
 
@@ -370,7 +379,8 @@ bool symbol_scope_rep::look_nonlocal (const std::string& name,
   return false;
 }
 
-std::list<octave_value> symbol_scope::localfunctions () const
+std::list<octave_value>
+symbol_scope::localfunctions () const
 {
   if (! m_rep)
     return std::list<octave_value> ();

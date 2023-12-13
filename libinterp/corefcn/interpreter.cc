@@ -322,12 +322,14 @@ temporary_file_list::~temporary_file_list ()
   cleanup ();
 }
 
-void temporary_file_list::insert (const std::string& file)
+void
+temporary_file_list::insert (const std::string& file)
 {
   m_files.insert (file);
 }
 
-void temporary_file_list::cleanup ()
+void
+temporary_file_list::cleanup ()
 {
   while (! m_files.empty ())
     {
@@ -342,7 +344,8 @@ void temporary_file_list::cleanup ()
 // The time we last time we changed directories.
 sys::time Vlast_chdir_time = 0.0;
 
-static void initialize_version_info ()
+static void
+initialize_version_info ()
 {
   octave_value_list args (4);
 
@@ -354,12 +357,14 @@ static void initialize_version_info ()
   F__version_info__ (args);
 }
 
-static void xerbla_abort ()
+static void
+xerbla_abort ()
 {
   error ("Fortran procedure terminated by call to XERBLA");
 }
 
-static void initialize_xerbla_error_handler ()
+static void
+initialize_xerbla_error_handler ()
 {
   // The idea here is to force xerbla to be referenced so that we will
   // link to our own version instead of the one provided by the BLAS
@@ -410,7 +415,8 @@ lo_error_with_id_handler (const char *id, const char *fmt, ...)
   throw execution_exception ();
 }
 
-static void initialize_error_handlers ()
+static void
+initialize_error_handlers ()
 {
   set_liboctave_error_handler (lo_error_handler);
   set_liboctave_error_with_id_handler (lo_error_with_id_handler);
@@ -636,14 +642,16 @@ interpreter::~interpreter ()
   delete m_gh_manager;
 }
 
-void interpreter::intern_nargin (octave_idx_type nargs)
+void
+interpreter::intern_nargin (octave_idx_type nargs)
 {
   m_evaluator.set_auto_fcn_var (stack_frame::NARGIN, nargs);
 }
 
 // Read the history file unless a command-line option inhibits that.
 
-void interpreter::initialize_history (bool read_history_file)
+void
+interpreter::initialize_history (bool read_history_file)
 {
   if (! m_history_initialized)
     {
@@ -671,7 +679,8 @@ void interpreter::initialize_history (bool read_history_file)
 // Set the initial path to the system default unless command-line
 // option says to leave it empty.
 
-void interpreter::initialize_load_path (bool set_initial_path)
+void
+interpreter::initialize_load_path (bool set_initial_path)
 {
   if (! m_load_path_initialized)
     {
@@ -707,7 +716,8 @@ void interpreter::initialize_load_path (bool set_initial_path)
 
 // This may be called separately from execute
 
-void interpreter::initialize ()
+void
+interpreter::initialize ()
 {
   if (m_initialized)
     return;
@@ -760,7 +770,8 @@ void interpreter::initialize ()
 // Note: this function is currently only used with the new
 // experimental terminal widget.
 
-void interpreter::get_line_and_eval ()
+void
+interpreter::get_line_and_eval ()
 {
   m_evaluator.get_line_and_eval ();
 }
@@ -798,8 +809,9 @@ private:
   std::thread m_thread;
 };
 
-void interpreter::parse_and_execute (const std::string& input,
-                                     bool& incomplete_parse)
+void
+interpreter::parse_and_execute (const std::string& input,
+                                bool& incomplete_parse)
 {
   m_evaluator.parse_and_execute (input, incomplete_parse);
 }
@@ -807,7 +819,8 @@ void interpreter::parse_and_execute (const std::string& input,
 // FIXME: this function is intended to be executed only once.  Should
 // we enforce that restriction?
 
-int interpreter::execute ()
+int
+interpreter::execute ()
 {
   int exit_status = 0;
 
@@ -934,7 +947,8 @@ int interpreter::execute ()
     }                                                                   \
   while (0)
 
-void interpreter::shutdown ()
+void
+interpreter::shutdown ()
 {
   // Attempt to prevent more than one call to shutdown.
 
@@ -1044,7 +1058,8 @@ void interpreter::shutdown ()
   // OCTAVE_SAFE_CALL (singleton_cleanup_list::cleanup, ());
 }
 
-void interpreter::execute_atexit_fcns ()
+void
+interpreter::execute_atexit_fcns ()
 {
   // Prevent atexit functions from adding new functions to the list.
   m_executing_atexit = true;
@@ -1061,7 +1076,8 @@ void interpreter::execute_atexit_fcns ()
     }
 }
 
-void interpreter::display_startup_message () const
+void
+interpreter::display_startup_message () const
 {
   bool inhibit_startup_message = false;
 
@@ -1080,7 +1096,8 @@ void interpreter::display_startup_message () const
 // occurs when reading any of them, but don't exit early because of an
 // exception.
 
-int interpreter::execute_startup_files ()
+int
+interpreter::execute_startup_files ()
 {
   bool read_site_files = m_read_site_files;
   bool read_init_files = m_read_init_files;
@@ -1228,7 +1245,8 @@ int interpreter::execute_startup_files ()
 
 // Execute any code specified with --eval 'CODE'
 
-int interpreter::execute_eval_option_code ()
+int
+interpreter::execute_eval_option_code ()
 {
   if (! m_app_context)
     return 0;
@@ -1261,7 +1279,8 @@ int interpreter::execute_eval_option_code ()
   return parse_status;
 }
 
-int interpreter::execute_command_line_file ()
+int
+interpreter::execute_command_line_file ()
 {
   if (! m_app_context)
     return 0;
@@ -1310,29 +1329,34 @@ int interpreter::execute_command_line_file ()
   return safe_source_file (fname, context, verbose, require_file);
 }
 
-int interpreter::main_loop ()
+int
+interpreter::main_loop ()
 {
   command_editor::add_event_hook (release_unreferenced_dynamic_libraries);
 
   return m_evaluator.repl ();
 }
 
-int interpreter::server_loop ()
+int
+interpreter::server_loop ()
 {
   return m_evaluator.server_loop ();
 }
 
-tree_evaluator& interpreter::get_evaluator ()
+tree_evaluator&
+interpreter::get_evaluator ()
 {
   return m_evaluator;
 }
 
-stream_list& interpreter::get_stream_list ()
+stream_list&
+interpreter::get_stream_list ()
 {
   return m_stream_list;
 }
 
-url_handle_manager& interpreter::get_url_handle_manager ()
+url_handle_manager&
+interpreter::get_url_handle_manager ()
 {
   return m_url_handle_manager;
 }
@@ -1360,12 +1384,14 @@ interpreter::require_current_scope (const std::string& who) const
   return scope;
 }
 
-profiler& interpreter::get_profiler ()
+profiler&
+interpreter::get_profiler ()
 {
   return m_evaluator.get_profiler ();
 }
 
-int interpreter::chdir (const std::string& dir)
+int
+interpreter::chdir (const std::string& dir)
 {
   std::string xdir = sys::file_ops::tilde_expand (dir);
 
@@ -1387,22 +1413,26 @@ int interpreter::chdir (const std::string& dir)
   return cd_ok;
 }
 
-void interpreter::mlock (bool skip_first) const
+void
+interpreter::mlock (bool skip_first) const
 {
   m_evaluator.mlock (skip_first);
 }
 
-void interpreter::munlock (bool skip_first) const
+void
+interpreter::munlock (bool skip_first) const
 {
   m_evaluator.munlock (skip_first);
 }
 
-bool interpreter::mislocked (bool skip_first) const
+bool
+interpreter::mislocked (bool skip_first) const
 {
   return m_evaluator.mislocked (skip_first);
 }
 
-void interpreter::munlock (const char *nm)
+void
+interpreter::munlock (const char *nm)
 {
   if (! nm)
     error ("munlock: invalid value for NAME");
@@ -1410,7 +1440,8 @@ void interpreter::munlock (const char *nm)
   munlock (std::string (nm));
 }
 
-void interpreter::munlock (const std::string& nm)
+void
+interpreter::munlock (const std::string& nm)
 {
   octave_value val = m_symbol_table.find_function (nm);
 
@@ -1423,7 +1454,8 @@ void interpreter::munlock (const std::string& nm)
     }
 }
 
-bool interpreter::mislocked (const char *nm)
+bool
+interpreter::mislocked (const char *nm)
 {
   if (! nm)
     error ("mislocked: invalid value for NAME");
@@ -1431,7 +1463,8 @@ bool interpreter::mislocked (const char *nm)
   return mislocked (std::string (nm));
 }
 
-bool interpreter::mislocked (const std::string& nm)
+bool
+interpreter::mislocked (const std::string& nm)
 {
   bool retval = false;
 
@@ -1448,55 +1481,63 @@ bool interpreter::mislocked (const std::string& nm)
   return retval;
 }
 
-std::string interpreter::mfilename (const std::string& opt) const
+std::string
+interpreter::mfilename (const std::string& opt) const
 {
   return m_evaluator.mfilename (opt);
 }
 
-octave_value_list interpreter::eval_string (const std::string& eval_str,
-    bool silent, int& parse_status,
-    int nargout)
+octave_value_list
+interpreter::eval_string (const std::string& eval_str,
+                          bool silent, int& parse_status,
+                          int nargout)
 {
   return m_evaluator.eval_string (eval_str, silent, parse_status, nargout);
 }
 
-octave_value interpreter::eval_string (const std::string& eval_str,
-                                       bool silent, int& parse_status)
+octave_value
+interpreter::eval_string (const std::string& eval_str,
+                          bool silent, int& parse_status)
 {
   return m_evaluator.eval_string (eval_str, silent, parse_status);
 }
 
-octave_value_list interpreter::eval_string (const octave_value& arg,
-    bool silent, int& parse_status,
-    int nargout)
+octave_value_list
+interpreter::eval_string (const octave_value& arg,
+                          bool silent, int& parse_status,
+                          int nargout)
 {
   return m_evaluator.eval_string (arg, silent, parse_status, nargout);
 }
 
-octave_value_list interpreter::eval (const std::string& try_code,
-                                     int nargout)
+octave_value_list
+interpreter::eval (const std::string& try_code,
+                   int nargout)
 {
   return m_evaluator.eval (try_code, nargout);
 }
 
-octave_value_list interpreter::eval (const std::string& try_code,
-                                     const std::string& catch_code,
-                                     int nargout)
+octave_value_list
+interpreter::eval (const std::string& try_code,
+                   const std::string& catch_code,
+                   int nargout)
 {
   return m_evaluator.eval (try_code, catch_code, nargout);
 }
 
-octave_value_list interpreter::evalin (const std::string& context,
-                                       const std::string& try_code,
-                                       int nargout)
+octave_value_list
+interpreter::evalin (const std::string& context,
+                     const std::string& try_code,
+                     int nargout)
 {
   return m_evaluator.evalin (context, try_code, nargout);
 }
 
-octave_value_list interpreter::evalin (const std::string& context,
-                                       const std::string& try_code,
-                                       const std::string& catch_code,
-                                       int nargout)
+octave_value_list
+interpreter::evalin (const std::string& context,
+                     const std::string& try_code,
+                     const std::string& catch_code,
+                     int nargout)
 {
   return m_evaluator.evalin (context, try_code, catch_code, nargout);
 }
@@ -1510,16 +1551,18 @@ octave_value_list interpreter::evalin (const std::string& context,
 //! @return A list of output values.  The length of the list is not
 //!         necessarily the same as @c nargout.
 
-octave_value_list interpreter::feval (const char *name,
-                                      const octave_value_list& args,
-                                      int nargout)
+octave_value_list
+interpreter::feval (const char *name,
+                    const octave_value_list& args,
+                    int nargout)
 {
   return feval (std::string (name), args, nargout);
 }
 
-octave_value_list interpreter::feval (const std::string& name,
-                                      const octave_value_list& args,
-                                      int nargout)
+octave_value_list
+interpreter::feval (const std::string& name,
+                    const octave_value_list& args,
+                    int nargout)
 {
   octave_value fcn = m_symbol_table.find_function (name, args);
 
@@ -1531,9 +1574,10 @@ octave_value_list interpreter::feval (const std::string& name,
   return of->call (m_evaluator, nargout, args);
 }
 
-octave_value_list interpreter::feval (octave_function *fcn,
-                                      const octave_value_list& args,
-                                      int nargout)
+octave_value_list
+interpreter::feval (octave_function *fcn,
+                    const octave_value_list& args,
+                    int nargout)
 {
   if (fcn)
     return fcn->call (m_evaluator, nargout, args);
@@ -1541,9 +1585,10 @@ octave_value_list interpreter::feval (octave_function *fcn,
   return octave_value_list ();
 }
 
-octave_value_list interpreter::feval (const octave_value& val,
-                                      const octave_value_list& args,
-                                      int nargout)
+octave_value_list
+interpreter::feval (const octave_value& val,
+                    const octave_value_list& args,
+                    int nargout)
 {
   // FIXME: do we really want to silently return an empty ovl if
   // the function object is undefined?  It's essentially what the
@@ -1596,8 +1641,9 @@ octave_value_list interpreter::feval (const octave_value& val,
 //! @return A list of output values.  The length of the list is not
 //!         necessarily the same as @c nargout.
 
-octave_value_list interpreter::feval (const octave_value_list& args,
-                                      int nargout)
+octave_value_list
+interpreter::feval (const octave_value_list& args,
+                    int nargout)
 {
   if (args.length () == 0)
     error ("feval: first argument must be a string, inline function, or a function handle");
@@ -1609,195 +1655,232 @@ octave_value_list interpreter::feval (const octave_value_list& args,
   return feval (f_arg, tmp_args, nargout);
 }
 
-octave_value interpreter::make_function_handle (const std::string& name)
+octave_value
+interpreter::make_function_handle (const std::string& name)
 {
   return m_evaluator.make_fcn_handle (name);
 }
 
-void interpreter::install_variable (const std::string& name,
-                                    const octave_value& value, bool global)
+void
+interpreter::install_variable (const std::string& name,
+                               const octave_value& value, bool global)
 {
   m_evaluator.install_variable (name, value, global);
 }
 
-octave_value interpreter::global_varval (const std::string& name) const
+octave_value
+interpreter::global_varval (const std::string& name) const
 {
   return m_evaluator.global_varval (name);
 }
 
-void interpreter::global_assign (const std::string& name,
-                                 const octave_value& val)
+void
+interpreter::global_assign (const std::string& name,
+                            const octave_value& val)
 {
   m_evaluator.global_assign (name, val);
 }
 
-octave_value interpreter::top_level_varval (const std::string& name) const
+octave_value
+interpreter::top_level_varval (const std::string& name) const
 {
   return m_evaluator.top_level_varval (name);
 }
 
-void interpreter::top_level_assign (const std::string& name,
-                                    const octave_value& val)
+void
+interpreter::top_level_assign (const std::string& name,
+                               const octave_value& val)
 {
   m_evaluator.top_level_assign (name, val);
 }
 
-bool interpreter::is_variable (const std::string& name) const
+bool
+interpreter::is_variable (const std::string& name) const
 {
   return m_evaluator.is_variable (name);
 }
 
-bool interpreter::is_local_variable (const std::string& name) const
+bool
+interpreter::is_local_variable (const std::string& name) const
 {
   return m_evaluator.is_local_variable (name);
 }
 
-octave_value interpreter::varval (const std::string& name) const
+octave_value
+interpreter::varval (const std::string& name) const
 {
   return m_evaluator.varval (name);
 }
 
-void interpreter::assign (const std::string& name,
-                          const octave_value& val)
+void
+interpreter::assign (const std::string& name,
+                     const octave_value& val)
 {
   m_evaluator.assign (name, val);
 }
 
-void interpreter::assignin (const std::string& context,
-                            const std::string& name,
-                            const octave_value& val)
+void
+interpreter::assignin (const std::string& context,
+                       const std::string& name,
+                       const octave_value& val)
 {
   m_evaluator.assignin (context, name, val);
 }
 
-void interpreter::source_file (const std::string& file_name,
-                               const std::string& context, bool verbose,
-                               bool require_file)
+void
+interpreter::source_file (const std::string& file_name,
+                          const std::string& context, bool verbose,
+                          bool require_file)
 {
   m_evaluator.source_file (file_name, context, verbose, require_file);
 }
 
-bool interpreter::at_top_level () const
+bool
+interpreter::at_top_level () const
 {
   return m_evaluator.at_top_level ();
 }
 
-bool interpreter::isglobal (const std::string& name) const
+bool
+interpreter::isglobal (const std::string& name) const
 {
   return m_evaluator.is_global (name);
 }
 
-octave_value interpreter::find (const std::string& name)
+octave_value
+interpreter::find (const std::string& name)
 {
   return m_evaluator.find (name);
 }
 
-void interpreter::clear_all (bool force)
+void
+interpreter::clear_all (bool force)
 {
   m_evaluator.clear_all (force);
 }
 
-void interpreter::clear_objects ()
+void
+interpreter::clear_objects ()
 {
   m_evaluator.clear_objects ();
 }
 
-void interpreter::clear_variable (const std::string& name)
+void
+interpreter::clear_variable (const std::string& name)
 {
   m_evaluator.clear_variable (name);
 }
 
-void interpreter::clear_variable_pattern (const std::string& pattern)
+void
+interpreter::clear_variable_pattern (const std::string& pattern)
 {
   m_evaluator.clear_variable_pattern (pattern);
 }
 
-void interpreter::clear_variable_regexp (const std::string& pattern)
+void
+interpreter::clear_variable_regexp (const std::string& pattern)
 {
   m_evaluator.clear_variable_regexp (pattern);
 }
 
-void interpreter::clear_variables ()
+void
+interpreter::clear_variables ()
 {
   m_evaluator.clear_variables ();
 }
 
-void interpreter::clear_global_variable (const std::string& name)
+void
+interpreter::clear_global_variable (const std::string& name)
 {
   m_evaluator.clear_global_variable (name);
 }
 
-void interpreter::clear_global_variable_pattern (const std::string& pattern)
+void
+interpreter::clear_global_variable_pattern (const std::string& pattern)
 {
   m_evaluator.clear_global_variable_pattern (pattern);
 }
 
-void interpreter::clear_global_variable_regexp (const std::string& pattern)
+void
+interpreter::clear_global_variable_regexp (const std::string& pattern)
 {
   m_evaluator.clear_global_variable_regexp (pattern);
 }
 
-void interpreter::clear_global_variables ()
+void
+interpreter::clear_global_variables ()
 {
   m_evaluator.clear_global_variables ();
 }
 
-void interpreter::clear_functions (bool force)
+void
+interpreter::clear_functions (bool force)
 {
   m_symbol_table.clear_functions (force);
 }
 
-void interpreter::clear_function (const std::string& name)
+void
+interpreter::clear_function (const std::string& name)
 {
   m_symbol_table.clear_function (name);
 }
 
-void interpreter::clear_symbol (const std::string& name)
+void
+interpreter::clear_symbol (const std::string& name)
 {
   m_evaluator.clear_symbol (name);
 }
 
-void interpreter::clear_function_pattern (const std::string& pat)
+void
+interpreter::clear_function_pattern (const std::string& pat)
 {
   m_symbol_table.clear_function_pattern (pat);
 }
 
-void interpreter::clear_function_regexp (const std::string& pat)
+void
+interpreter::clear_function_regexp (const std::string& pat)
 {
   m_symbol_table.clear_function_regexp (pat);
 }
 
-void interpreter::clear_symbol_pattern (const std::string& pat)
+void
+interpreter::clear_symbol_pattern (const std::string& pat)
 {
   return m_evaluator.clear_symbol_pattern (pat);
 }
 
-void interpreter::clear_symbol_regexp (const std::string& pat)
+void
+interpreter::clear_symbol_regexp (const std::string& pat)
 {
   return m_evaluator.clear_symbol_regexp (pat);
 }
 
-std::list<std::string> interpreter::global_variable_names ()
+std::list<std::string>
+interpreter::global_variable_names ()
 {
   return m_evaluator.global_variable_names ();
 }
 
-std::list<std::string> interpreter::top_level_variable_names ()
+std::list<std::string>
+interpreter::top_level_variable_names ()
 {
   return m_evaluator.top_level_variable_names ();
 }
 
-std::list<std::string> interpreter::variable_names ()
+std::list<std::string>
+interpreter::variable_names ()
 {
   return m_evaluator.variable_names ();
 }
 
-std::list<std::string> interpreter::user_function_names ()
+std::list<std::string>
+interpreter::user_function_names ()
 {
   return m_symbol_table.user_function_names ();
 }
 
-std::list<std::string> interpreter::autoloaded_functions () const
+std::list<std::string>
+interpreter::autoloaded_functions () const
 {
   return m_evaluator.autoloaded_functions ();
 }
@@ -1805,7 +1888,8 @@ std::list<std::string> interpreter::autoloaded_functions () const
 // May be used to send an interrupt signal to the the interpreter from
 // another thread (for example, the GUI).
 
-void interpreter::interrupt ()
+void
+interpreter::interrupt ()
 {
   static int sigint = 0;
   static bool first = true;
@@ -1833,7 +1917,8 @@ void interpreter::interrupt ()
   octave_kill_wrapper (pid, sigint);
 }
 
-void interpreter::pause ()
+void
+interpreter::pause ()
 {
   // FIXME: To be reliable, these tree_evaluator functions must be
   // made thread safe.
@@ -1842,7 +1927,8 @@ void interpreter::pause ()
   m_evaluator.reset_debug_state ();
 }
 
-void interpreter::stop ()
+void
+interpreter::stop ()
 {
   // FIXME: To be reliable, these tree_evaluator functions must be
   // made thread safe.
@@ -1853,7 +1939,8 @@ void interpreter::stop ()
     interrupt ();
 }
 
-void interpreter::resume ()
+void
+interpreter::resume ()
 {
   // FIXME: To be reliable, these tree_evaluator functions must be
   // made thread safe.
@@ -1865,69 +1952,82 @@ void interpreter::resume ()
     m_evaluator.dbcont ();
 }
 
-octave_value interpreter::PS1 (const octave_value_list& args, int nargout)
+octave_value
+interpreter::PS1 (const octave_value_list& args, int nargout)
 {
   return m_input_system.PS1 (args, nargout);
 }
 
-std::string interpreter::PS1 () const
+std::string
+interpreter::PS1 () const
 {
   return m_input_system.PS1 ();
 }
 
-std::string interpreter::PS1 (const std::string& s)
+std::string
+interpreter::PS1 (const std::string& s)
 {
   return m_input_system.PS1 (s);
 }
 
-void interpreter::set_PS1 (const std::string& s)
+void
+interpreter::set_PS1 (const std::string& s)
 {
   m_input_system.set_PS1 (s);
 }
 
-octave_value interpreter::PS2 (const octave_value_list& args, int nargout)
+octave_value
+interpreter::PS2 (const octave_value_list& args, int nargout)
 {
   return m_input_system.PS2 (args, nargout);
 }
 
-std::string interpreter::PS2 () const
+std::string
+interpreter::PS2 () const
 {
   return m_input_system.PS2 ();
 }
 
-std::string interpreter::PS2 (const std::string& s)
+std::string
+interpreter::PS2 (const std::string& s)
 {
   return m_input_system.PS2 (s);
 }
 
-void interpreter::set_PS2 (const std::string& s)
+void
+interpreter::set_PS2 (const std::string& s)
 {
   m_input_system.set_PS2 (s);
 }
 
-octave_value interpreter::PS4 (const octave_value_list& args, int nargout)
+octave_value
+interpreter::PS4 (const octave_value_list& args, int nargout)
 {
   return m_evaluator.PS4 (args, nargout);
 }
 
-std::string interpreter::PS4 () const
+std::string
+interpreter::PS4 () const
 {
   return m_evaluator.PS4 ();
 }
 
-std::string interpreter::PS4 (const std::string& s)
+std::string
+interpreter::PS4 (const std::string& s)
 {
   return m_evaluator.PS4 (s);
 }
 
-void interpreter::set_PS4 (const std::string& s)
+void
+interpreter::set_PS4 (const std::string& s)
 {
   m_evaluator.set_PS4 (s);
 }
 
 // Provided for convenience.  Will be removed once we eliminate the
 // old terminal widget.
-bool interpreter::experimental_terminal_widget () const
+bool
+interpreter::experimental_terminal_widget () const
 {
   if (! m_app_context)
     return false;
@@ -1938,27 +2038,32 @@ bool interpreter::experimental_terminal_widget () const
   return options.experimental_terminal_widget ();
 }
 
-void interpreter::add_debug_watch_expression (const std::string& expr)
+void
+interpreter::add_debug_watch_expression (const std::string& expr)
 {
   m_evaluator.add_debug_watch_expression (expr);
 }
 
-void interpreter::remove_debug_watch_expression (const std::string& expr)
+void
+interpreter::remove_debug_watch_expression (const std::string& expr)
 {
   m_evaluator.remove_debug_watch_expression (expr);
 }
 
-void interpreter::clear_debug_watch_expressions ()
+void
+interpreter::clear_debug_watch_expressions ()
 {
   m_evaluator.clear_debug_watch_expressions ();
 }
 
-std::set<std::string> interpreter::debug_watch_expressions () const
+std::set<std::string>
+interpreter::debug_watch_expressions () const
 {
   return m_evaluator.debug_watch_expressions ();
 }
 
-void interpreter::handle_exception (const execution_exception& ee)
+void
+interpreter::handle_exception (const execution_exception& ee)
 {
   m_error_system.save_exception (ee);
 
@@ -1970,7 +2075,8 @@ void interpreter::handle_exception (const execution_exception& ee)
   recover_from_exception ();
 }
 
-void interpreter::recover_from_exception ()
+void
+interpreter::recover_from_exception ()
 {
   if (octave_interrupt_state)
     m_event_manager.interpreter_interrupted ();
@@ -1982,17 +2088,20 @@ void interpreter::recover_from_exception ()
   catch_interrupts ();
 }
 
-void interpreter::mark_for_deletion (const std::string& file)
+void
+interpreter::mark_for_deletion (const std::string& file)
 {
   m_tmp_files.insert (file);
 }
 
-void interpreter::cleanup_tmp_files ()
+void
+interpreter::cleanup_tmp_files ()
 {
   m_tmp_files.cleanup ();
 }
 
-void interpreter::quit (int exit_status, bool force, bool confirm)
+void
+interpreter::quit (int exit_status, bool force, bool confirm)
 {
   if (! force)
     {
@@ -2034,7 +2143,8 @@ void interpreter::quit (int exit_status, bool force, bool confirm)
   throw exit_exception (exit_status);
 }
 
-void interpreter::add_atexit_fcn (const std::string& fname)
+void
+interpreter::add_atexit_fcn (const std::string& fname)
 {
   if (m_executing_atexit)
     return;
@@ -2042,7 +2152,8 @@ void interpreter::add_atexit_fcn (const std::string& fname)
   m_atexit_fcns.push_front (fname);
 }
 
-bool interpreter::remove_atexit_fcn (const std::string& fname)
+bool
+interpreter::remove_atexit_fcn (const std::string& fname)
 {
   bool found = false;
 
@@ -2062,7 +2173,8 @@ bool interpreter::remove_atexit_fcn (const std::string& fname)
 
 // What internal options get configured by --traditional.
 
-void interpreter::maximum_braindamage ()
+void
+interpreter::maximum_braindamage ()
 {
   PS1 (">> ");
   PS2 ("");
@@ -2092,7 +2204,8 @@ void interpreter::maximum_braindamage ()
   m_error_system.disable_warning ("Octave:possible-matlab-short-circuit-operator");
 }
 
-void interpreter::execute_pkg_add (const std::string& dir)
+void
+interpreter::execute_pkg_add (const std::string& dir)
 {
   try
     {
@@ -2113,9 +2226,10 @@ void interpreter::execute_pkg_add (const std::string& dir)
 // commands from a file before we have entered the main loop in
 // toplev.cc.
 
-int interpreter::safe_source_file (const std::string& file_name,
-                                   const std::string& context,
-                                   bool verbose, bool require_file)
+int
+interpreter::safe_source_file (const std::string& file_name,
+                               const std::string& context,
+                               bool verbose, bool require_file)
 {
   try
     {

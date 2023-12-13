@@ -197,8 +197,7 @@ Sparse<T, Alloc>::SparseRep::any_element_is_nan () const
 
 template <typename T, typename Alloc>
 OCTAVE_API
-Sparse<T, Alloc>::Sparse (octave_idx_type nr, octave_idx_type nc,
-                                        T val)
+Sparse<T, Alloc>::Sparse (octave_idx_type nr, octave_idx_type nc, T val)
   : m_rep (nullptr), m_dimensions (dim_vector (nr, nc))
 {
   if (val != T ())
@@ -774,8 +773,8 @@ Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type n)
 template <typename T, typename Alloc>
 OCTAVE_API
 T
-Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type i,
-                                             octave_idx_type j) const
+Sparse<T, Alloc>::range_error (const char *fcn,
+                               octave_idx_type i, octave_idx_type j) const
 {
   (*current_liboctave_error_handler)
     ("%s (%" OCTAVE_IDX_TYPE_FORMAT ", %" OCTAVE_IDX_TYPE_FORMAT "): "
@@ -785,8 +784,8 @@ Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type i,
 template <typename T, typename Alloc>
 OCTAVE_API
 T&
-Sparse<T, Alloc>::range_error (const char *fcn, octave_idx_type i,
-                                             octave_idx_type j)
+Sparse<T, Alloc>::range_error (const char *fcn,
+                               octave_idx_type i, octave_idx_type j)
 {
   (*current_liboctave_error_handler)
     ("%s (%" OCTAVE_IDX_TYPE_FORMAT ", %" OCTAVE_IDX_TYPE_FORMAT "): "
@@ -797,7 +796,7 @@ template <typename T, typename Alloc>
 OCTAVE_API
 T
 Sparse<T, Alloc>::range_error (const char *fcn,
-                                             const Array<octave_idx_type>& ra_idx) const
+                               const Array<octave_idx_type>& ra_idx) const
 {
   std::ostringstream buf;
 
@@ -2031,8 +2030,7 @@ Sparse<T, Alloc>::assign (const octave::idx_vector& idx,
 template <typename T, typename Alloc>
 OCTAVE_API
 void
-Sparse<T, Alloc>::assign (const octave::idx_vector& idx,
-                                        const T& rhs)
+Sparse<T, Alloc>::assign (const octave::idx_vector& idx, const T& rhs)
 {
   // FIXME: Converting the RHS and forwarding to the sparse matrix
   // assignment function is simpler, but it might be good to have a

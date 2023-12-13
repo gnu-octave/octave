@@ -61,7 +61,8 @@ static const int AUTO_WIDTH = 75;
 
 #define AUTO_HEIGHT (tp.get_fontsize () * 2 - 1)
 
-static QSize realQSizeForTable (QTableWidget *t)
+static QSize
+realQSizeForTable (QTableWidget *t)
 {
   int w = t->verticalHeader ()->width () + 4;
   for (int i = 0; i < t->columnCount (); i++)
@@ -329,8 +330,8 @@ qStringValueFor (octave_value val, std::string format = "")
 #undef FORMAT_UINT_VALUE
 #undef FORMAT_INT_VALUE
 
-static QTableWidgetItem * itemFor (octave_value val, std::string format = "",
-                                   bool enabled = false)
+static QTableWidgetItem *
+itemFor (octave_value val, std::string format = "", bool enabled = false)
 {
   QTableWidgetItem *retval = new QTableWidgetItem ();
   std::pair<Qt::AlignmentFlag, QString> flag_and_text =

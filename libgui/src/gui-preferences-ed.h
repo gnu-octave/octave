@@ -133,7 +133,8 @@ const QString
 ed_last_comment_str ("editor/oct_last_comment_str");
 
 const QStringList
-ed_comment_strings = {
+ed_comment_strings =
+{
   "##",
   "#",
   "%",
@@ -159,7 +160,8 @@ extern gui_pref ed_session_bookmarks;
 
 // Tabs
 const QStringList
-ed_tab_position_names = {
+ed_tab_position_names =
+{
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Top"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Bottom"),
   QT_TRANSLATE_NOOP ("octave::settings_dialog", "Left"),

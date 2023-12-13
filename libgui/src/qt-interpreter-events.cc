@@ -133,13 +133,15 @@ qt_interpreter_events::qt_interpreter_events (base_qobject& oct_qobj)
            this, &qt_interpreter_events::gui_preference_slot);
 }
 
-void qt_interpreter_events::start_gui (bool gui_app)
+void
+qt_interpreter_events::start_gui (bool gui_app)
 {
   if (m_octave_qobj.experimental_terminal_widget ())
     emit start_gui_signal (gui_app);
 }
 
-void qt_interpreter_events::close_gui ()
+void
+qt_interpreter_events::close_gui ()
 {
   if (m_octave_qobj.experimental_terminal_widget ())
     emit close_gui_signal ();
@@ -246,72 +248,85 @@ qt_interpreter_events::question_dialog (const std::string& msg,
   return answer.toStdString ();
 }
 
-void qt_interpreter_events::update_path_dialog ()
+void
+qt_interpreter_events::update_path_dialog ()
 {
   emit update_path_dialog_signal ();
 }
 
-void qt_interpreter_events::show_preferences ()
+void
+qt_interpreter_events::show_preferences ()
 {
   emit show_preferences_signal ();
 }
 
-void qt_interpreter_events::apply_preferences ()
+void
+qt_interpreter_events::apply_preferences ()
 {
   emit apply_new_settings ();
 }
 
-void qt_interpreter_events::show_terminal_window ()
+void
+qt_interpreter_events::show_terminal_window ()
 {
   emit show_terminal_window_signal ();
 }
 
-bool qt_interpreter_events::show_documentation (const std::string& file)
+bool
+qt_interpreter_events::show_documentation (const std::string& file)
 {
   emit show_documentation_signal (QString::fromStdString (file));
 
   return true;
 }
 
-void qt_interpreter_events::show_file_browser ()
+void
+qt_interpreter_events::show_file_browser ()
 {
   emit show_file_browser_signal ();
 }
 
-void qt_interpreter_events::show_command_history ()
+void
+qt_interpreter_events::show_command_history ()
 {
   emit show_command_history_signal ();
 }
 
-void qt_interpreter_events::show_workspace ()
+void
+qt_interpreter_events::show_workspace ()
 {
   emit show_workspace_signal ();
 }
 
-void qt_interpreter_events::show_community_news (int serial)
+void
+qt_interpreter_events::show_community_news (int serial)
 {
   emit show_community_news_signal (serial);
 }
 
-void qt_interpreter_events::show_release_notes ()
+void
+qt_interpreter_events::show_release_notes ()
 {
   emit show_release_notes_signal ();
 }
 
-bool qt_interpreter_events::edit_file (const std::string& file)
+bool
+qt_interpreter_events::edit_file (const std::string& file)
 {
   emit edit_file_signal (QString::fromStdString (file));
 
   return true;
 }
 
-void qt_interpreter_events::edit_variable (const std::string& expr,
-                                           const octave_value& val)
+void
+qt_interpreter_events::edit_variable (const std::string& expr,
+                                      const octave_value& val)
 {
   emit edit_variable_signal (QString::fromStdString (expr), val);
 }
 
-bool qt_interpreter_events::confirm_shutdown ()
+bool
+qt_interpreter_events::confirm_shutdown ()
 {
   QMutexLocker autolock (&m_mutex);
 
@@ -323,7 +338,8 @@ bool qt_interpreter_events::confirm_shutdown ()
   return m_result.toBool ();
 }
 
-bool qt_interpreter_events::prompt_new_edit_file (const std::string& file)
+bool
+qt_interpreter_events::prompt_new_edit_file (const std::string& file)
 {
   gui_settings settings;
 
@@ -392,7 +408,8 @@ qt_interpreter_events::debug_cd_or_addpath_error (const std::string& file,
   return retval;
 }
 
-uint8NDArray qt_interpreter_events::get_named_icon (const std::string& name)
+uint8NDArray
+qt_interpreter_events::get_named_icon (const std::string& name)
 {
   QMutexLocker autolock (&m_mutex);
 
@@ -435,7 +452,8 @@ uint8NDArray qt_interpreter_events::get_named_icon (const std::string& name)
   return retval;
 }
 
-void qt_interpreter_events::get_named_icon_slot (const QString& name)
+void
+qt_interpreter_events::get_named_icon_slot (const QString& name)
 {
   QMutexLocker autolock (&m_mutex);
 
@@ -466,14 +484,16 @@ qt_interpreter_events::gui_preference (const std::string& key,
   return pref.toStdString ();
 }
 
-bool qt_interpreter_events::copy_image_to_clipboard (const std::string& file)
+bool
+qt_interpreter_events::copy_image_to_clipboard (const std::string& file)
 {
   emit copy_image_to_clipboard_signal (QString::fromStdString (file), true);
 
   return true;
 }
 
-void qt_interpreter_events::focus_window (const std::string win_name)
+void
+qt_interpreter_events::focus_window (const std::string win_name)
 {
   emit focus_window_signal (QString::fromStdString (win_name));
 }
@@ -484,17 +504,20 @@ void qt_interpreter_events::execute_command_in_terminal
   emit execute_command_in_terminal_signal (QString::fromStdString (command));
 }
 
-void qt_interpreter_events::register_documentation (const std::string& file)
+void
+qt_interpreter_events::register_documentation (const std::string& file)
 {
   emit register_documentation_signal (QString::fromStdString (file));
 }
 
-void qt_interpreter_events::unregister_documentation (const std::string& file)
+void
+qt_interpreter_events::unregister_documentation (const std::string& file)
 {
   emit unregister_documentation_signal (QString::fromStdString (file));
 }
 
-void qt_interpreter_events::interpreter_output (const std::string& msg)
+void
+qt_interpreter_events::interpreter_output (const std::string& msg)
 {
   if (m_octave_qobj.experimental_terminal_widget ()
       && m_octave_qobj.have_terminal_window ())
@@ -506,8 +529,9 @@ void qt_interpreter_events::interpreter_output (const std::string& msg)
     }
 }
 
-void qt_interpreter_events::display_exception (const execution_exception& ee,
-                                               bool beep)
+void
+qt_interpreter_events::display_exception (const execution_exception& ee,
+    bool beep)
 {
   if (m_octave_qobj.experimental_terminal_widget ()
       && m_octave_qobj.have_terminal_window ())
@@ -528,25 +552,29 @@ void qt_interpreter_events::display_exception (const execution_exception& ee,
     }
 }
 
-void qt_interpreter_events::gui_status_update (const std::string& feature,
-                                               const std::string& status)
+void
+qt_interpreter_events::gui_status_update (const std::string& feature,
+    const std::string& status)
 {
   emit gui_status_update_signal (QString::fromStdString (feature),
                                  QString::fromStdString (status));
 }
 
-void qt_interpreter_events::update_gui_lexer ()
+void
+qt_interpreter_events::update_gui_lexer ()
 {
   emit update_gui_lexer_signal (true);
 }
 
-void qt_interpreter_events::directory_changed (const std::string& dir)
+void
+qt_interpreter_events::directory_changed (const std::string& dir)
 {
   emit directory_changed_signal (QString::fromStdString (dir));
 }
 
-void qt_interpreter_events::file_remove (const std::string& old_name,
-                                         const std::string& new_name)
+void
+qt_interpreter_events::file_remove (const std::string& old_name,
+                                    const std::string& new_name)
 {
   QMutexLocker autolock (&m_mutex);
 
@@ -558,14 +586,16 @@ void qt_interpreter_events::file_remove (const std::string& old_name,
   wait ();
 }
 
-void qt_interpreter_events::file_renamed (bool load_new)
+void
+qt_interpreter_events::file_renamed (bool load_new)
 {
   emit file_renamed_signal (load_new);
 }
 
-void qt_interpreter_events::set_workspace (bool top_level, bool debug,
-                                           const symbol_info_list& syminfo,
-                                           bool update_variable_editor)
+void
+qt_interpreter_events::set_workspace (bool top_level, bool debug,
+                                      const symbol_info_list& syminfo,
+                                      bool update_variable_editor)
 {
   if (! top_level && ! debug)
     return;
@@ -576,17 +606,20 @@ void qt_interpreter_events::set_workspace (bool top_level, bool debug,
     emit refresh_variable_editor_signal ();
 }
 
-void qt_interpreter_events::clear_workspace ()
+void
+qt_interpreter_events::clear_workspace ()
 {
   emit clear_workspace_signal ();
 }
 
-void qt_interpreter_events::update_prompt (const std::string& prompt)
+void
+qt_interpreter_events::update_prompt (const std::string& prompt)
 {
   emit update_prompt_signal (QString::fromStdString (prompt));
 }
 
-void qt_interpreter_events::set_history (const string_vector& hist)
+void
+qt_interpreter_events::set_history (const string_vector& hist)
 {
   QStringList qt_hist;
 
@@ -596,25 +629,30 @@ void qt_interpreter_events::set_history (const string_vector& hist)
   emit set_history_signal (qt_hist);
 }
 
-void qt_interpreter_events::append_history (const std::string& hist_entry)
+void
+qt_interpreter_events::append_history (const std::string& hist_entry)
 {
   emit append_history_signal (QString::fromStdString (hist_entry));
 }
 
-void qt_interpreter_events::clear_history ()
+void
+qt_interpreter_events::clear_history ()
 {
   emit clear_history_signal ();
 }
 
-void qt_interpreter_events::pre_input_event ()
+void
+qt_interpreter_events::pre_input_event ()
 { }
 
-void qt_interpreter_events::post_input_event ()
+void
+qt_interpreter_events::post_input_event ()
 { }
 
-void qt_interpreter_events::enter_debugger_event (const std::string& /*fcn_name*/,
-                                                  const std::string& fcn_file_name,
-                                                  int line)
+void
+qt_interpreter_events::enter_debugger_event (const std::string& /*fcn_name*/,
+    const std::string& fcn_file_name,
+    int line)
 {
   if (fcn_file_name.empty ())
     return;
@@ -631,17 +669,19 @@ qt_interpreter_events::execute_in_debugger_event (const std::string& file,
   delete_debugger_pointer (file, line);
 }
 
-void qt_interpreter_events::exit_debugger_event ()
+void
+qt_interpreter_events::exit_debugger_event ()
 {
   emit exit_debugger_signal ();
 }
 
 // Display (if @insert true) or remove the appropriate symbol for a breakpoint
 // in @file at @line with condition @cond.
-void qt_interpreter_events::update_breakpoint (bool insert,
-                                               const std::string& file,
-                                               int line,
-                                               const std::string& cond)
+void
+qt_interpreter_events::update_breakpoint (bool insert,
+    const std::string& file,
+    int line,
+    const std::string& cond)
 {
   emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
                                         line, QString::fromStdString (cond));

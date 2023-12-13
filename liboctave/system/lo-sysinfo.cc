@@ -160,7 +160,8 @@ std::string blas_version ()
   return retval;
 }
 
-std::string lapack_version ()
+std::string
+lapack_version ()
 {
   std::string retval = "unknown LAPACK";
 

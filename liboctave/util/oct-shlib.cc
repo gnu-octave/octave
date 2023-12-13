@@ -62,12 +62,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 std::list<dynamic_library> possibly_unreferenced_dynamic_libraries;
 
-void dynamic_library::delete_later ()
+void
+dynamic_library::delete_later ()
 {
   possibly_unreferenced_dynamic_libraries.push_back (*this);
 }
 
-int release_unreferenced_dynamic_libraries ()
+int
+release_unreferenced_dynamic_libraries ()
 {
   possibly_unreferenced_dynamic_libraries.clear ();
 

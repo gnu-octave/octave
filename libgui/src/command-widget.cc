@@ -100,7 +100,8 @@ command_widget::command_widget (QWidget *p)
 
 }
 
-void command_widget::init_command_prompt ()
+void
+command_widget::init_command_prompt ()
 {
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
@@ -129,22 +130,26 @@ void command_widget::init_command_prompt ()
      });
 }
 
-void command_widget::update_prompt (const QString& prompt)
+void
+command_widget::update_prompt (const QString& prompt)
 {
   m_prompt = prompt;
 }
 
-QString command_widget::prompt ()
+QString
+command_widget::prompt ()
 {
   return m_prompt;
 }
 
-void command_widget::insert_interpreter_output (const QString& msg)
+void
+command_widget::insert_interpreter_output (const QString& msg)
 {
   m_console->append (msg);
 }
 
-void command_widget::process_input_line (const QString& input_line)
+void
+command_widget::process_input_line (const QString& input_line)
 {
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
@@ -180,7 +185,8 @@ void command_widget::process_input_line (const QString& input_line)
 
 }
 
-void command_widget::notice_settings ()
+void
+command_widget::notice_settings ()
 {
   gui_settings settings;
 
@@ -201,7 +207,7 @@ void command_widget::notice_settings ()
   QColor bgc = settings.color_value (cs_colors[1], mode);
 
   m_console->setStyleSheet (QString ("color: %1; background-color:%2;")
-                                   .arg (fgc.name ()).arg (bgc.name ()));
+                            .arg (fgc.name ()).arg (bgc.name ()));
 }
 
 // The console itself using QScintilla.
@@ -231,7 +237,8 @@ console::console (command_widget *p)
 }
 
 // Prepare a new command line with the current prompt
-void console::new_command_line (const QString& command)
+void
+console::new_command_line (const QString& command)
 {
   if (! text (lines () -1).isEmpty ())
     append ("\n");
@@ -239,14 +246,15 @@ void console::new_command_line (const QString& command)
   append_string (m_command_widget->prompt ());
 
   int line, index;
-  getCursorPosition (&line,&index);
+  getCursorPosition (&line, &index);
   m_command_position = positionFromLineIndex (line, index);
 
   append_string (command);
 }
 
 // Accept the current command line (or block)
-void console::accept_command_line ()
+void
+console::accept_command_line ()
 {
   QString input_line = text (lines () - 1);
 
@@ -264,7 +272,8 @@ void console::accept_command_line ()
 }
 
 // Execute a command
-void console::execute_command (const QString& command)
+void
+console::execute_command (const QString& command)
 {
   if (command.trimmed ().isEmpty ())
     return;
@@ -274,7 +283,8 @@ void console::execute_command (const QString& command)
 }
 
 // Append a string and update the curdor püosition
-void console::append_string (const QString& string)
+void
+console::append_string (const QString& string)
 {
   setReadOnly (false);
   append (string);
@@ -286,7 +296,8 @@ void console::append_string (const QString& string)
 }
 
 // Cursor position changed: Are we in the command line or not?
-void console::cursor_position_changed (int line, int col)
+void
+console::cursor_position_changed (int line, int col)
 {
   m_cursor_position = positionFromLineIndex (line, col);
   if (m_cursor_position < m_command_position)
@@ -308,7 +319,8 @@ void console::cursor_position_changed (int line, int col)
 
 // User attempted to type on read only mode: move cursor at end and allow
 // editing
-void console::move_cursor_to_end ()
+void
+console::move_cursor_to_end ()
 {
   if ((! m_last_key_string.isEmpty ()) && (m_last_key_string.at (0).isPrint ()))
     {
@@ -319,13 +331,15 @@ void console::move_cursor_to_end ()
 
 // Text has changed: is cursor still in "writable" area?
 // This signal seems to be emitted before cursor position changed.
-void console::text_changed ()
+void
+console::text_changed ()
 {
   m_text_changed = true;
 }
 
 // Re-implement key event
-void console::keyPressEvent (QKeyEvent *e)
+void
+console::keyPressEvent (QKeyEvent *e)
 {
   if (e->key () == Qt::Key_Return)
     // On "return", accept the current command line

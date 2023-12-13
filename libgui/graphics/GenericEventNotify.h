@@ -66,9 +66,8 @@ public:
   virtual void eventNotifyAfter (QObject *obj, QEvent *evt) = 0;
 };
 
-inline
-bool GenericEventNotifySender::notifyReceiversBefore (QObject *obj,
-                                                      QEvent *evt)
+inline bool
+GenericEventNotifySender::notifyReceiversBefore (QObject *obj, QEvent *evt)
 {
   for (auto *r : m_receivers)
     if (r->eventNotifyBefore (obj, evt))
@@ -77,9 +76,8 @@ bool GenericEventNotifySender::notifyReceiversBefore (QObject *obj,
   return false;
 }
 
-inline
-void GenericEventNotifySender::notifyReceiversAfter (QObject *obj,
-                                                     QEvent *evt)
+inline void
+GenericEventNotifySender::notifyReceiversAfter (QObject *obj, QEvent *evt)
 {
   for (auto *r : m_receivers)
     r->eventNotifyAfter (obj, evt);

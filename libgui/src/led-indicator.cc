@@ -35,13 +35,14 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 led_indicator::led_indicator (led_state initial_state, QWidget *p)
-: QLabel (p)
+  : QLabel (p)
 {
   setFixedSize(12, 12);
   set_state (initial_state);
 }
 
-void led_indicator::set_state (led_state state)
+void
+led_indicator::set_state (led_state state)
 {
   QColor col (Qt::gray);
 
@@ -63,7 +64,8 @@ void led_indicator::set_state (led_state state)
   setStyleSheet (style_sheet (col));
 }
 
-QString led_indicator::style_sheet (const QColor& col)
+QString
+led_indicator::style_sheet (const QColor& col)
 {
   QColor col_light = interpolate_color (col, QColor (Qt::white), 0.25, 0.9);
 

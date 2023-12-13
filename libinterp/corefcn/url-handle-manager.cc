@@ -43,7 +43,8 @@ make_handle_fraction ()
   return (rand () + 1.0) / maxrand;
 }
 
-url_handle url_handle_manager::get_handle ()
+url_handle
+url_handle_manager::get_handle ()
 {
   url_handle retval;
 
@@ -68,7 +69,8 @@ url_handle url_handle_manager::get_handle ()
   return retval;
 }
 
-void url_handle_manager::free (const url_handle& h)
+void
+url_handle_manager::free (const url_handle& h)
 {
   if (h.ok ())
     {

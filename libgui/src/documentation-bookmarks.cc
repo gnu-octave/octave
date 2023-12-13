@@ -82,9 +82,9 @@ documentation_bookmarks::documentation_bookmarks (documentation *doc,
 
   // Define the icons for the tree view
   m_icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirClosedIcon),
-                         QIcon::Normal, QIcon::Off);
+                           QIcon::Normal, QIcon::Off);
   m_icon_folder.addPixmap (style ()->standardPixmap(QStyle::SP_DirOpenIcon),
-                         QIcon::Normal, QIcon::On);
+                           QIcon::Normal, QIcon::On);
   m_icon_bookmark.addPixmap (style ()->standardPixmap(QStyle::SP_FileIcon));
 
   // Setup and read the bookmarkfile
@@ -154,7 +154,8 @@ documentation_bookmarks::documentation_bookmarks (documentation *doc,
 }
 
 // Slot for adding the current page as a bookmark
-void documentation_bookmarks::add_bookmark ()
+void
+documentation_bookmarks::add_bookmark ()
 {
   QUrl url = m_browser->historyUrl (0);
 
@@ -179,17 +180,18 @@ void documentation_bookmarks::add_bookmark ()
 }
 
 // Function for actually adding a bookmark to the tree
-void documentation_bookmarks::add_bookmark (const QString& title,
-                                            const QString& url,
-                                            QTreeWidgetItem* item)
+void
+documentation_bookmarks::add_bookmark (const QString& title,
+                                       const QString& url,
+                                       QTreeWidgetItem *item)
 {
   // Create new bookmark
   QTreeWidgetItem *new_item = new QTreeWidgetItem (QStringList (title));
   new_item->setData (0, tag_role, QVariant (bookmark_tag));
   new_item->setData (0, url_role, QVariant (url));
   new_item->setFlags ((new_item->flags () & (~Qt::ItemIsDropEnabled))
-                                          | Qt::ItemIsEditable
-                                          | Qt::ItemIsDragEnabled);
+                      | Qt::ItemIsEditable
+                      | Qt::ItemIsDragEnabled);
   new_item->setIcon (0, m_icon_bookmark);
 
   // Insert as top level or child item
@@ -202,7 +204,8 @@ void documentation_bookmarks::add_bookmark (const QString& title,
 }
 
 // Slot for adding a folder from the context menu
-void documentation_bookmarks::add_folder (bool)
+void
+documentation_bookmarks::add_folder (bool)
 {
   QTreeWidgetItem *parent_item = nullptr;
 
@@ -225,14 +228,15 @@ void documentation_bookmarks::add_folder (bool)
 }
 
 // Function for actually adding a folder to the tree
-QTreeWidgetItem* documentation_bookmarks::add_folder (const QString& folder,
-                                          QTreeWidgetItem *item, bool expanded)
+QTreeWidgetItem *
+documentation_bookmarks::add_folder (const QString& folder,
+                                     QTreeWidgetItem *item, bool expanded)
 {
   QTreeWidgetItem *new_folder = new QTreeWidgetItem (QStringList (folder));
   new_folder->setData (0, tag_role, QVariant (folder_tag));
   new_folder->setFlags (new_folder->flags() | Qt::ItemIsEditable
-                                            | Qt::ItemIsDragEnabled
-                                            | Qt::ItemIsDropEnabled);
+                        | Qt::ItemIsDragEnabled
+                        | Qt::ItemIsDropEnabled);
   new_folder->setChildIndicatorPolicy (QTreeWidgetItem::DontShowIndicatorWhenChildless);
   new_folder->setIcon (0, m_icon_folder);
   new_folder->setExpanded (expanded);
@@ -246,7 +250,8 @@ QTreeWidgetItem* documentation_bookmarks::add_folder (const QString& folder,
   return new_folder;
 }
 
-void documentation_bookmarks::filter_bookmarks (const QString& pattern)
+void
+documentation_bookmarks::filter_bookmarks (const QString& pattern)
 {
   QTreeWidgetItemIterator it (m_tree);
 
@@ -271,7 +276,8 @@ void documentation_bookmarks::filter_bookmarks (const QString& pattern)
     }
 }
 
-void documentation_bookmarks::filter_activate (bool state)
+void
+documentation_bookmarks::filter_activate (bool state)
 {
   m_filter->setEnabled (state);
 
@@ -282,7 +288,8 @@ void documentation_bookmarks::filter_activate (bool state)
   filter_bookmarks (pattern);
 }
 
-void documentation_bookmarks::update_filter_history ()
+void
+documentation_bookmarks::update_filter_history ()
 {
   QString text = m_filter->currentText ();   // get current text
   int index = m_filter->findText (text);     // and its actual index
@@ -294,7 +301,8 @@ void documentation_bookmarks::update_filter_history ()
   m_filter->setCurrentIndex (0);
 }
 
-void documentation_bookmarks::handle_double_click (QTreeWidgetItem *item, int)
+void
+documentation_bookmarks::handle_double_click (QTreeWidgetItem *item, int)
 {
   int tag = item->data (0, tag_role).toInt ();
 
@@ -313,7 +321,8 @@ void documentation_bookmarks::handle_double_click (QTreeWidgetItem *item, int)
     }
 }
 
-void documentation_bookmarks::ctx_menu (const QPoint& xpos)
+void
+documentation_bookmarks::ctx_menu (const QPoint& xpos)
 {
   QMenu menu (this);
 
@@ -345,7 +354,8 @@ void documentation_bookmarks::ctx_menu (const QPoint& xpos)
   menu.exec (m_tree->mapToGlobal (xpos));
 }
 
-void documentation_bookmarks::open (bool)
+void
+documentation_bookmarks::open (bool)
 {
   QList<QTreeWidgetItem *> items = m_tree->selectedItems ();
 
@@ -353,7 +363,8 @@ void documentation_bookmarks::open (bool)
     handle_double_click (items.at (0));
 }
 
-void documentation_bookmarks::edit (bool)
+void
+documentation_bookmarks::edit (bool)
 {
   QList<QTreeWidgetItem *> items = m_tree->selectedItems ();
 
@@ -361,7 +372,8 @@ void documentation_bookmarks::edit (bool)
     m_tree->editItem (items.at (0));
 }
 
-void documentation_bookmarks::remove (bool)
+void
+documentation_bookmarks::remove (bool)
 {
   QList<QTreeWidgetItem *> items = m_tree->selectedItems ();
 
@@ -370,13 +382,15 @@ void documentation_bookmarks::remove (bool)
       m_tree->takeTopLevelItem (m_tree->indexOfTopLevelItem (it));
 }
 
-void documentation_bookmarks::show_filter (bool)
+void
+documentation_bookmarks::show_filter (bool)
 {
   m_filter_shown = ! m_filter_shown;
   m_filter_widget->setVisible (m_filter_shown);
 }
 
-void documentation_bookmarks::save_settings ()
+void
+documentation_bookmarks::save_settings ()
 {
   // Write the bookmarks to the xbel-file
   write_bookmarks ();
@@ -395,7 +409,8 @@ void documentation_bookmarks::save_settings ()
   settings.sync ();
 }
 
-void documentation_bookmarks::write_bookmarks ()
+void
+documentation_bookmarks::write_bookmarks ()
 {
   if (! m_xbel_file.open (QFile::WriteOnly | QFile::Text))
     {
@@ -424,8 +439,9 @@ void documentation_bookmarks::write_bookmarks ()
   m_xbel_file.close ();
 }
 
-void documentation_bookmarks::write_tree_item (QXmlStreamWriter* xml_writer,
-                                               const QTreeWidgetItem *item)
+void
+documentation_bookmarks::write_tree_item (QXmlStreamWriter *xml_writer,
+    const QTreeWidgetItem *item)
 {
   switch (item->data (0, tag_role).toInt ())
     {
@@ -448,7 +464,8 @@ void documentation_bookmarks::write_tree_item (QXmlStreamWriter* xml_writer,
     }
 }
 
-QString documentation_bookmarks::read_bookmarks ()
+QString
+documentation_bookmarks::read_bookmarks ()
 {
   QString error_message;
 
@@ -497,8 +514,9 @@ QString documentation_bookmarks::read_bookmarks ()
   return error_message;
 }
 
-void documentation_bookmarks::read_next_item (QXmlStreamReader *xml_reader,
-                                              item_tag tag, QTreeWidgetItem *item)
+void
+documentation_bookmarks::read_next_item (QXmlStreamReader *xml_reader,
+    item_tag tag, QTreeWidgetItem *item)
 {
   QString title (tr ("Unknown title"));
   if (tag == folder_tag)

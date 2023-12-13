@@ -265,7 +265,8 @@ history_system::history_system (interpreter& interp)
     m_timestamp_format_string (default_timestamp_format ())
 { }
 
-void history_system::initialize (bool read_history_file)
+void
+history_system::initialize (bool read_history_file)
 {
   command_history::initialize (read_history_file, default_file (),
                                default_size (),
@@ -276,7 +277,8 @@ void history_system::initialize (bool read_history_file)
   evmgr.set_history (command_history::list ());
 }
 
-void history_system::write_timestamp ()
+void
+history_system::write_timestamp ()
 {
   sys::localtime now;
 
@@ -315,8 +317,9 @@ history_system::timestamp_format_string (const octave_value_list& args,
 // means read file, arg of -q means don't number lines.  Arg of N
 // means only display that many items.
 
-string_vector history_system::do_history (const octave_value_list& args,
-    int nargout)
+string_vector
+history_system::do_history (const octave_value_list& args,
+                            int nargout)
 {
   bool numbered_output = nargout == 0;
 
@@ -443,7 +446,8 @@ string_vector history_system::do_history (const octave_value_list& args,
   return hlist;
 }
 
-void history_system::do_edit_history (const octave_value_list& args)
+void
+history_system::do_edit_history (const octave_value_list& args)
 {
   std::string name = mk_tmp_hist_file (args, false, "edit_history");
 
@@ -506,7 +510,8 @@ void history_system::do_edit_history (const octave_value_list& args)
   source_file (name);
 }
 
-void history_system::do_run_history (const octave_value_list& args)
+void
+history_system::do_run_history (const octave_value_list& args)
 {
   std::string name = mk_tmp_hist_file (args, false, "run_history");
 
@@ -524,7 +529,8 @@ void history_system::do_run_history (const octave_value_list& args)
   source_file (name);
 }
 
-std::string history_system::default_file ()
+std::string
+history_system::default_file ()
 {
   std::string file;
 
@@ -550,7 +556,8 @@ std::string history_system::default_file ()
   return file;
 }
 
-int history_system::default_size ()
+int
+history_system::default_size ()
 {
   int size = 1000;
 
@@ -567,7 +574,8 @@ int history_system::default_size ()
   return size;
 }
 
-std::string history_system::default_timestamp_format ()
+std::string
+history_system::default_timestamp_format ()
 {
   return
     "# Octave " OCTAVE_VERSION ", %a %b %d %H:%M:%S %Y %Z <"

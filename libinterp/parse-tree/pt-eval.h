@@ -401,7 +401,7 @@ public:
 
   octave_value get_auto_fcn_var (stack_frame::auto_var_type avt) const;
 
- void define_parameter_list_from_arg_vector
+  void define_parameter_list_from_arg_vector
   (tree_parameter_list *param_list, const octave_value_list& args);
 
   void undefine_parameter_list (tree_parameter_list *param_list);
@@ -855,7 +855,7 @@ public:
     m_echo_file_pos = pos;
   }
 
- private:
+private:
 
   template <typename T>
   void execute_range_loop (const range<T>& rng, int line,

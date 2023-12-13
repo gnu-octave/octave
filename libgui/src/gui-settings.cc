@@ -71,54 +71,64 @@ QString gui_settings::file_name () const
   return fileName ();
 }
 
-QString gui_settings::directory_name () const
+QString
+gui_settings::directory_name () const
 {
   QFileInfo sfile (fileName ());
 
   return sfile.absolutePath ();
 }
 
-bool gui_settings::bool_value (const gui_pref& pref) const
+bool
+gui_settings::bool_value (const gui_pref& pref) const
 {
   return value (pref).toBool ();
 }
 
-QByteArray gui_settings::byte_array_value (const gui_pref& pref) const
+QByteArray
+gui_settings::byte_array_value (const gui_pref& pref) const
 {
   return value (pref).toByteArray ();
 }
 
-QColor gui_settings::color_value (const gui_pref& pref) const
+QColor
+gui_settings::color_value (const gui_pref& pref) const
 {
   return value (pref).value<QColor> ();
 }
 
-QDateTime gui_settings::date_time_value (const gui_pref& pref) const
+QDateTime
+gui_settings::date_time_value (const gui_pref& pref) const
 {
   return value (pref).toDateTime ();
 }
 
-int gui_settings::int_value (const gui_pref& pref) const
+int
+gui_settings::int_value (const gui_pref& pref) const
 {
   return value (pref).toInt ();
 }
 
-QString gui_settings::string_value (const gui_pref& pref) const
+QString
+gui_settings::string_value (const gui_pref& pref) const
 {
   return value (pref).toString ();
 }
 
-QStringList gui_settings::string_list_value (const gui_pref& pref) const
+QStringList
+gui_settings::string_list_value (const gui_pref& pref) const
 {
   return value (pref).toStringList ();
 }
 
-uint gui_settings::uint_value (const gui_pref& pref) const
+uint
+gui_settings::uint_value (const gui_pref& pref) const
 {
   return value (pref).toUInt ();
 }
 
-QColor gui_settings::get_color_value (const QVariant& def, int mode) const
+QColor
+gui_settings::get_color_value (const QVariant& def, int mode) const
 {
   QColor default_color;
 
@@ -136,8 +146,8 @@ QColor gui_settings::get_color_value (const QVariant& def, int mode) const
       // the application's palette
       default_color = QApplication::palette ().color
                       (static_cast<QPalette::ColorRole> (def.toInt ()));
-                // FIXME: use value<QPalette::ColorRole> instead of static cast after
-                //        dropping support of Qt 5.4
+      // FIXME: use value<QPalette::ColorRole> instead of static cast after
+      //        dropping support of Qt 5.4
     }
 
   if ((mode == 1) && (default_color != settings_color_no_change))
@@ -158,7 +168,8 @@ QColor gui_settings::get_color_value (const QVariant& def, int mode) const
   return default_color;
 }
 
-QColor gui_settings::color_value (const gui_pref& pref, int mode) const
+QColor
+gui_settings::color_value (const gui_pref& pref, int mode) const
 {
   QColor default_color = get_color_value (pref.def (), mode);
 
@@ -166,8 +177,9 @@ QColor gui_settings::color_value (const gui_pref& pref, int mode) const
                 QVariant (default_color)).value<QColor> ();
 }
 
-void gui_settings::set_color_value (const gui_pref& pref,
-                                    const QColor& color, int mode)
+void
+gui_settings::set_color_value (const gui_pref& pref,
+                               const QColor& color, int mode)
 {
   int m = mode;
   if (m > 1)
@@ -177,7 +189,8 @@ void gui_settings::set_color_value (const gui_pref& pref,
             QVariant (color));
 }
 
-QString gui_settings::sc_value (const sc_pref& scpref) const
+QString
+gui_settings::sc_value (const sc_pref& scpref) const
 {
   QKeySequence key_seq = sc_def_value (scpref);
 
@@ -187,13 +200,14 @@ QString gui_settings::sc_value (const sc_pref& scpref) const
                 key_seq.toString ()).toString ();
 }
 
-QKeySequence gui_settings::sc_def_value (const sc_pref& scpref) const
+QKeySequence
+gui_settings::sc_def_value (const sc_pref& scpref) const
 {
   return scpref.def_value ();
 }
 
-void gui_settings::set_shortcut (QAction *action, const sc_pref& scpref,
-                                 bool enable)
+void
+gui_settings::set_shortcut (QAction *action, const sc_pref& scpref, bool enable)
 {
   if (! enable)
     {
@@ -211,7 +225,8 @@ void gui_settings::set_shortcut (QAction *action, const sc_pref& scpref,
               << " not found in settings";
 }
 
-void gui_settings::shortcut (QShortcut *sc, const sc_pref& scpref)
+void
+gui_settings::shortcut (QShortcut *sc, const sc_pref& scpref)
 {
   QString shortcut = sc_value (scpref);
 
@@ -222,7 +237,8 @@ void gui_settings::shortcut (QShortcut *sc, const sc_pref& scpref)
               << " not found in settings";
 }
 
-void gui_settings::config_icon_theme ()
+void
+gui_settings::config_icon_theme ()
 {
   int theme_index;
 
@@ -267,8 +283,9 @@ void gui_settings::config_icon_theme ()
   setValue (global_icon_fallbacks.settings_key (), icon_fallbacks);
 }
 
-QIcon gui_settings::icon (const QString& icon_name, bool octave_only,
-                          const QString& icon_alt_name)
+QIcon
+gui_settings::icon (const QString& icon_name, bool octave_only,
+                    const QString& icon_alt_name)
 {
   if (octave_only)
     return QIcon (global_icon_paths.at (ICON_THEME_OCTAVE) + icon_name + ".png");
@@ -288,11 +305,12 @@ QIcon gui_settings::icon (const QString& icon_name, bool octave_only,
         return QIcon (icon_file);
     }
 
-    //QIcon::setThemeName (current_theme);
-    return QIcon ();
+  //QIcon::setThemeName (current_theme);
+  return QIcon ();
 }
 
-QString gui_settings::get_default_font_family ()
+QString
+gui_settings::get_default_font_family ()
 {
   // Get all available fixed width fonts from the Qt font database.
 
@@ -349,7 +367,8 @@ QString gui_settings::get_default_font_family ()
   return default_family;
 }
 
-QStringList gui_settings::get_default_font ()
+QStringList
+gui_settings::get_default_font ()
 {
   QString default_family = get_default_font_family ();
 
@@ -379,7 +398,8 @@ QStringList gui_settings::get_default_font ()
   return result;
 }
 
-QString gui_settings::get_gui_translation_dir ()
+QString
+gui_settings::get_gui_translation_dir ()
 {
   // get environment variable for the locale dir (e.g. from run-octave)
   std::string dldir = sys::env::getenv ("OCTAVE_LOCALE_DIR");
@@ -388,9 +408,10 @@ QString gui_settings::get_gui_translation_dir ()
   return QString::fromStdString (dldir);
 }
 
-void gui_settings::config_translators (QTranslator *qt_tr,
-                                       QTranslator *qsci_tr,
-                                       QTranslator *gui_tr)
+void
+gui_settings::config_translators (QTranslator *qt_tr,
+                                  QTranslator *qsci_tr,
+                                  QTranslator *gui_tr)
 {
   bool loaded;
 
@@ -437,7 +458,8 @@ void gui_settings::config_translators (QTranslator *qt_tr,
 }
 
 #if defined (HAVE_QSCINTILLA)
-int gui_settings::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
+int
+gui_settings::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
 {
   int max_style = 0;
   int actual_style = 0;
@@ -458,7 +480,8 @@ int gui_settings::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
  * @param attr QFont with the desired attributes
  * @param base QFont with desired family and size
  */
-static QFont copy_font_attributes (const QFont& attr, const QFont& base)
+static QFont
+copy_font_attributes (const QFont& attr, const QFont& base)
 {
   QFont dest (base);
 
@@ -470,7 +493,8 @@ static QFont copy_font_attributes (const QFont& attr, const QFont& base)
 }
 
 #if defined (HAVE_QSCINTILLA)
-void gui_settings::read_lexer_settings (QsciLexer *lexer, int mode, int def)
+void
+gui_settings::read_lexer_settings (QsciLexer *lexer, int mode, int def)
 {
   // Test whether the settings for lexer is already contained in the
   // given gui settings file. If yes, load them, if not copy them from the
@@ -539,8 +563,9 @@ void gui_settings::read_lexer_settings (QsciLexer *lexer, int mode, int def)
 }
 #endif
 
-bool gui_settings::update_settings_key (const QString& old_key,
-                                        const QString& new_key)
+bool
+gui_settings::update_settings_key (const QString& old_key,
+                                   const QString& new_key)
 {
   if (contains (old_key))
     {
@@ -553,7 +578,8 @@ bool gui_settings::update_settings_key (const QString& old_key,
   return false;
 }
 
-void gui_settings::update_network_settings ()
+void
+gui_settings::update_network_settings ()
 {
   QNetworkProxy proxy;
 
@@ -614,7 +640,7 @@ void gui_settings::update_network_settings ()
           while (! proxy_url.isValid () && count < env_vars.size ())
             {
               proxy_url = QUrl (QString::fromStdString
-                                  (sys::env::getenv (env_vars[count])));
+                                (sys::env::getenv (env_vars[count])));
               count++;
             }
 
@@ -654,7 +680,8 @@ void gui_settings::update_network_settings ()
 }
 
 // initialize a given combo box with available text encodings
-void gui_settings::combo_encoding (QComboBox *combo, const QString& current)
+void
+gui_settings::combo_encoding (QComboBox *combo, const QString& current)
 {
   std::vector<std::string> encoding_list {string::get_encoding_list ()};
 
@@ -717,7 +744,8 @@ void gui_settings::combo_encoding (QComboBox *combo, const QString& current)
   combo->setMaxVisibleItems (12);
 }
 
-void gui_settings::reload ()
+void
+gui_settings::reload ()
 {
   // Declare some empty options, which may be set at first startup for
   // writing them into the newly created settings file
@@ -758,7 +786,8 @@ void gui_settings::reload ()
   setValue (global_mono_font.settings_key (), get_default_font_family ());
 }
 
-void gui_settings::check ()
+void
+gui_settings::check ()
 {
   if (status () == QSettings::NoError)
     {

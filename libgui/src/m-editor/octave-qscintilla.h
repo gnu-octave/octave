@@ -50,11 +50,11 @@ public:
   ~octave_qscintilla () = default;
 
   enum
-    {
-      ST_NONE = 0,
-      ST_LINE_COMMENT,
-      ST_BLOCK_COMMENT
-    };
+  {
+    ST_NONE = 0,
+    ST_LINE_COMMENT,
+    ST_BLOCK_COMMENT
+  };
 
   virtual void contextMenuEvent (QContextMenuEvent *e);
   virtual void setCursorPosition (int line, int col);

@@ -42,7 +42,8 @@ interpreter_qobject::interpreter_qobject (base_qobject& oct_qobj)
   : QObject (), m_octave_qobj (oct_qobj), m_interpreter (nullptr)
 { }
 
-void interpreter_qobject::execute ()
+void
+interpreter_qobject::execute ()
 {
   // The Octave application context owns the interpreter.
 
@@ -108,7 +109,8 @@ void interpreter_qobject::execute ()
   emit shutdown_finished (exit_status);
 }
 
-void interpreter_qobject::interpreter_event (const fcn_callback& fcn)
+void
+interpreter_qobject::interpreter_event (const fcn_callback& fcn)
 {
   if (! m_interpreter)
     return;
@@ -118,7 +120,8 @@ void interpreter_qobject::interpreter_event (const fcn_callback& fcn)
   evmgr.post_event (fcn);
 }
 
-void interpreter_qobject::interpreter_event (const meth_callback& meth)
+void
+interpreter_qobject::interpreter_event (const meth_callback& meth)
 {
   if (! m_interpreter)
     return;
@@ -128,7 +131,8 @@ void interpreter_qobject::interpreter_event (const meth_callback& meth)
   evmgr.post_event (meth);
 }
 
-void interpreter_qobject::interrupt ()
+void
+interpreter_qobject::interrupt ()
 {
   if (! m_interpreter)
     return;
@@ -139,7 +143,8 @@ void interpreter_qobject::interrupt ()
   m_interpreter->interrupt ();
 }
 
-void interpreter_qobject::pause ()
+void
+interpreter_qobject::pause ()
 {
   // FIXME: Should we make this action work with the old terminal
   // widget?
@@ -156,7 +161,8 @@ void interpreter_qobject::pause ()
     }
 }
 
-void interpreter_qobject::stop ()
+void
+interpreter_qobject::stop ()
 {
   // FIXME: Should we make this action work with the old terminal
   // widget?
@@ -173,7 +179,8 @@ void interpreter_qobject::stop ()
     }
 }
 
-void interpreter_qobject::resume ()
+void
+interpreter_qobject::resume ()
 {
   // FIXME: Should we make this action work with the old terminal
   // widget?
@@ -193,7 +200,8 @@ void interpreter_qobject::resume ()
     }
 }
 
-qt_interpreter_events *interpreter_qobject::qt_link ()
+qt_interpreter_events *
+interpreter_qobject::qt_link ()
 {
   return m_octave_qobj.qt_link ();
 }

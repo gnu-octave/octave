@@ -103,7 +103,8 @@ void tm_row_const::cellify ()
     }
 }
 
-void tm_row_const::init_element (const octave_value& val, bool& first_elem)
+void
+tm_row_const::init_element (const octave_value& val, bool& first_elem)
 {
   std::string this_elt_class_name
     = val.isobject () ? "class" : val.class_name ();
@@ -167,7 +168,8 @@ void tm_row_const::init_element (const octave_value& val, bool& first_elem)
 // The common parts should be factored out into a single function that
 // is used by the others.
 
-void tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
+void
+tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
 {
   bool first_elem = true;
 
@@ -222,7 +224,8 @@ void tm_row_const::init (const tree_argument_list& row, tree_evaluator& tw)
     }
 }
 
-octave_value tm_const::concat (char string_fill_char) const
+octave_value
+tm_const::concat (char string_fill_char) const
 {
   if (m_tm_rows.empty ())
     return Matrix ();
@@ -313,7 +316,8 @@ octave_value tm_const::concat (char string_fill_char) const
 // The common parts should be factored out into a single function that
 // is used by the others.
 
-void tm_const::init (const tree_matrix& tm)
+void
+tm_const::init (const tree_matrix& tm)
 {
   bool first_elem = true;
   bool first_elem_is_struct = false;
@@ -428,7 +432,8 @@ void tm_const::init (const tree_matrix& tm)
     }
 }
 
-octave_value tm_const::char_array_concat (char string_fill_char) const
+octave_value
+tm_const::char_array_concat (char string_fill_char) const
 {
   char type = (m_all_dq_strings ? '"' : '\'');
 
@@ -439,7 +444,8 @@ octave_value tm_const::char_array_concat (char string_fill_char) const
   return octave_value (result, type);
 }
 
-octave_value tm_const::class_concat () const
+octave_value
+tm_const::class_concat () const
 {
   octave_value retval;
 
@@ -472,7 +478,8 @@ octave_value tm_const::class_concat () const
   return retval;
 }
 
-octave_value tm_const::generic_concat () const
+octave_value
+tm_const::generic_concat () const
 {
   // The line below might seem crazy, since we take a copy of the
   // first argument, resize it to be empty and then resize it to be
@@ -575,7 +582,8 @@ octave_value tm_const::generic_concat () const
 // character arrays just to handle string_fill_char.
 
 template <typename TYPE>
-void tm_const::array_concat_internal (TYPE& result) const
+void
+tm_const::array_concat_internal (TYPE& result) const
 {
   octave_idx_type r = 0;
   octave_idx_type c = 0;
@@ -608,7 +616,8 @@ void tm_const::array_concat_internal (TYPE& result) const
 }
 
 template <typename TYPE>
-TYPE tm_const::array_concat () const
+TYPE
+tm_const::array_concat () const
 {
   typedef typename TYPE::element_type ELT_T;
 
@@ -657,7 +666,8 @@ TYPE tm_const::array_concat () const
 }
 
 template <typename TYPE>
-TYPE tm_const::sparse_array_concat () const
+TYPE
+tm_const::sparse_array_concat () const
 {
   if (m_dv.any_zero ())
     return TYPE (m_dv);
@@ -691,7 +701,8 @@ TYPE tm_const::sparse_array_concat () const
 }
 
 template <typename MAP>
-octave_map tm_const::map_concat () const
+octave_map
+tm_const::map_concat () const
 {
   if (m_dv.any_zero ())
     return octave_map (m_dv);

@@ -33,8 +33,8 @@
 #include <QVBoxLayout>
 
 #if defined (OCTAVE_USE_WINDOWS_API)
-  #define WIN32_LEAN_AND_MEAN
-  #include <windows.h>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 #endif
 
 #include "gui-preferences-dw.h"
@@ -91,7 +91,8 @@ welcome_wizard::welcome_wizard (QWidget *p)
 #endif
 }
 
-void welcome_wizard::adjust_size ()
+void
+welcome_wizard::adjust_size ()
 {
   // Get adjusted size for the current page
   adjustSize ();
@@ -106,12 +107,14 @@ void welcome_wizard::adjust_size ()
     m_max_width = sz.width ();
 }
 
-void welcome_wizard::handle_web_connect_option (int state)
+void
+welcome_wizard::handle_web_connect_option (int state)
 {
   m_allow_web_connect_state = state == Qt::Checked;
 }
 
-void welcome_wizard::show_page ()
+void
+welcome_wizard::show_page ()
 {
   delete m_current_page;
   delete layout ();
@@ -124,21 +127,24 @@ void welcome_wizard::show_page ()
   new_layout->addWidget (m_current_page);
 }
 
-void welcome_wizard::previous_page ()
+void
+welcome_wizard::previous_page ()
 {
   --m_page_list_iterator;
 
   show_page ();
 }
 
-void welcome_wizard::next_page ()
+void
+welcome_wizard::next_page ()
 {
   ++m_page_list_iterator;
 
   show_page ();
 }
 
-void welcome_wizard::accept ()
+void
+welcome_wizard::accept ()
 {
   // Create default settings file.
 

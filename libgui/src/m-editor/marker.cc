@@ -36,7 +36,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 marker::marker (QsciScintilla *area, int original_linenr,
                 editor_markers type, int editor_linenr,
                 const QString& condition)
-: QObject ()
+  : QObject ()
 {
   construct (area, original_linenr, type, editor_linenr, condition);
 }
@@ -48,9 +48,10 @@ marker::marker (QsciScintilla *area, int original_linenr,
   construct (area, original_linenr, type, original_linenr - 1, condition);
 }
 
-void marker::construct (QsciScintilla *area, int original_linenr,
-                        editor_markers type, int editor_linenr,
-                        const QString& condition)
+void
+marker::construct (QsciScintilla *area, int original_linenr,
+                   editor_markers type, int editor_linenr,
+                   const QString& condition)
 {
   m_edit_area = area;
   m_original_linenr = original_linenr;
@@ -59,7 +60,8 @@ void marker::construct (QsciScintilla *area, int original_linenr,
   m_condition = condition;
 }
 
-void marker::handle_remove_via_original_linenr (int linenr)
+void
+marker::handle_remove_via_original_linenr (int linenr)
 {
   if (m_original_linenr == linenr)
     {
@@ -68,7 +70,8 @@ void marker::handle_remove_via_original_linenr (int linenr)
     }
 }
 
-void marker::handle_request_remove_via_editor_linenr (int linenr)
+void
+marker::handle_request_remove_via_editor_linenr (int linenr)
 {
   // Get line number from the edit area and if it matches
   // the requested line number, remove.
@@ -81,14 +84,16 @@ void marker::handle_request_remove_via_editor_linenr (int linenr)
     }
 }
 
-void marker::handle_remove ()
+void
+marker::handle_remove ()
 {
   m_edit_area->markerDeleteHandle (m_mhandle);
   delete this;
 }
 
-void marker::handle_find_translation (int linenr, int& translation_linenr,
-                                      marker *&bp)
+void
+marker::handle_find_translation (int linenr, int& translation_linenr,
+                                 marker *&bp)
 {
   if (m_original_linenr == linenr)
     {
@@ -97,8 +102,9 @@ void marker::handle_find_translation (int linenr, int& translation_linenr,
     }
 }
 
-void marker::handle_find_just_before (int linenr, int& original_linenr,
-                                      int& editor_linenr)
+void
+marker::handle_find_just_before (int linenr, int& original_linenr,
+                                 int& editor_linenr)
 {
   if (m_original_linenr < linenr && m_original_linenr >= original_linenr)
     {
@@ -107,8 +113,9 @@ void marker::handle_find_just_before (int linenr, int& original_linenr,
     }
 }
 
-void marker::handle_find_just_after (int linenr, int& original_linenr,
-                                     int& editor_linenr)
+void
+marker::handle_find_just_after (int linenr, int& original_linenr,
+                                int& editor_linenr)
 {
   if (m_original_linenr > linenr && m_original_linenr <= original_linenr)
     {
@@ -117,14 +124,15 @@ void marker::handle_find_just_after (int linenr, int& original_linenr,
     }
 }
 
-void marker::handle_report_editor_linenr (QIntList& lines,
-                                          QStringList& conditions)
+void
+marker::handle_report_editor_linenr (QIntList& lines, QStringList& conditions)
 {
   lines << m_edit_area->markerLine (m_mhandle);
   conditions << m_condition;
 }
 
-void marker::handle_marker_line_deleted (int mhandle)
+void
+marker::handle_marker_line_deleted (int mhandle)
 {
   // FUTURE SUPPORT: There really should be a signal in QsciScintilla
   // called markerLineDeleted (int mhandle) because there is no way
@@ -144,7 +152,8 @@ void marker::handle_marker_line_deleted (int mhandle)
     }
 }
 
-void marker::handle_marker_line_undeleted (int mhandle)
+void
+marker::handle_marker_line_undeleted (int mhandle)
 {
   // FUTURE SUPPORT: There really should be a signal in QsciScintilla
   // called markerLineUndeleted (int mhandle) because there is no way

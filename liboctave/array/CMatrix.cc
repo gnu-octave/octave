@@ -3625,9 +3625,10 @@ max (const ComplexMatrix& a, const ComplexMatrix& b)
   return result;
 }
 
-ComplexMatrix linspace (const ComplexColumnVector& x1,
-                        const ComplexColumnVector& x2,
-                        octave_idx_type n)
+ComplexMatrix
+linspace (const ComplexColumnVector& x1,
+          const ComplexColumnVector& x2,
+          octave_idx_type n)
 {
   octave_idx_type m = x1.numel ();
 

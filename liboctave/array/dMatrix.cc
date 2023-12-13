@@ -3008,9 +3008,10 @@ max (const Matrix& a, const Matrix& b)
   return result;
 }
 
-Matrix linspace (const ColumnVector& x1,
-                 const ColumnVector& x2,
-                 octave_idx_type n)
+Matrix
+linspace (const ColumnVector& x1,
+          const ColumnVector& x2,
+          octave_idx_type n)
 
 {
   octave_idx_type m = x1.numel ();

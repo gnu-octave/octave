@@ -149,8 +149,9 @@ MArray<T>::idx_max (const octave::idx_vector& idx, const MArray<T>& vals)
 }
 
 template <typename T>
-void MArray<T>::idx_add_nd (const octave::idx_vector& idx,
-                            const MArray<T>& vals, int dim)
+void
+MArray<T>::idx_add_nd (const octave::idx_vector& idx,
+                       const MArray<T>& vals, int dim)
 {
   int nd = std::max (this->ndims (), vals.ndims ());
   if (dim < 0)
@@ -373,7 +374,8 @@ operator - (const MArray<T>& a)
 }
 
 template <typename T>
-void MArray<T>::instantiation_guard ()
+void
+MArray<T>::instantiation_guard ()
 {
   // This guards against accidental implicit instantiations.
   // Array<T, Alloc> instances should always be explicit and use INSTANTIATE_ARRAY.

@@ -37,12 +37,14 @@ void child_list::remove (pid_t pid)
   m_list.remove_if ([pid] (const child& oc) { return oc.m_pid == pid; });
 }
 
-void child_list::child_list::insert (pid_t pid, child::child_event_handler f)
+void
+child_list::child_list::insert (pid_t pid, child::child_event_handler f)
 {
   m_list.append (child (pid, f));
 }
 
-void child_list::reap ()
+void
+child_list::reap ()
 {
   // Mark the record for PID invalid.
 
@@ -70,7 +72,8 @@ void child_list::reap ()
 
 // Wait on our children and record any changes in their status.
 
-bool child_list::wait ()
+bool
+child_list::wait ()
 {
   bool retval = false;
 

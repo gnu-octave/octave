@@ -46,7 +46,8 @@ extern template class Array<octave_idx_type>;
 // Specialize bool sorting (aka stable partitioning).
 
 template <bool desc>
-static void do_bool_partition (bool *data, octave_idx_type nel)
+static void
+do_bool_partition (bool *data, octave_idx_type nel)
 {
   octave_idx_type k = 0;
   for (octave_idx_type i = 0; i < nel; i++)
@@ -57,8 +58,9 @@ static void do_bool_partition (bool *data, octave_idx_type nel)
 }
 
 template <bool desc>
-static void do_bool_partition (bool *data, octave_idx_type *idx,
-                               octave_idx_type nel)
+static void
+do_bool_partition (bool *data, octave_idx_type *idx,
+                   octave_idx_type nel)
 {
   // FIXME: This is essentially a simple bucket sort.
   // Can it be efficiently done by std::partition?

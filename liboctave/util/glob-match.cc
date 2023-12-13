@@ -71,7 +71,8 @@ symbol_match::symbol_match (const std::string& pattern)
 #endif
 }
 
-bool symbol_match::match (const std::string& sym)
+bool
+symbol_match::match (const std::string& sym)
 {
 #if defined (OCTAVE_USE_WINDOWS_API)
 

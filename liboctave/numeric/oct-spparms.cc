@@ -39,7 +39,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 sparse_params *sparse_params::s_instance = nullptr;
 
-bool sparse_params::instance_ok ()
+bool
+sparse_params::instance_ok ()
 {
   bool retval = true;
 
@@ -52,56 +53,66 @@ bool sparse_params::instance_ok ()
   return retval;
 }
 
-void sparse_params::defaults ()
+void
+sparse_params::defaults ()
 {
   if (instance_ok ())
     s_instance->do_defaults ();
 }
 
-void sparse_params::tight ()
+void
+sparse_params::tight ()
 {
   if (instance_ok ())
     s_instance->do_tight ();
 }
 
-string_vector sparse_params::get_keys ()
+string_vector
+sparse_params::get_keys ()
 {
   return instance_ok () ? s_instance->do_get_keys () : string_vector ();
 }
 
-ColumnVector sparse_params::get_vals ()
+ColumnVector
+sparse_params::get_vals ()
 {
   return instance_ok () ? s_instance->do_get_vals () : ColumnVector ();
 }
 
-bool sparse_params::set_vals (const Array<double>& vals)
+bool
+sparse_params::set_vals (const Array<double>& vals)
 {
   return instance_ok () ? s_instance->do_set_vals (vals) : false;
 }
 
-bool sparse_params::set_key (const std::string& key, const double& val)
+bool
+sparse_params::set_key (const std::string& key, const double& val)
 {
   return instance_ok () ? s_instance->do_set_key (key, val) : false;
 }
 
-double sparse_params::get_key (const std::string& key)
+double
+sparse_params::get_key (const std::string& key)
 {
   return (instance_ok ()
           ? s_instance->do_get_key (key) : numeric_limits<double>::NaN ());
 }
 
-double sparse_params::get_bandden ()
+double
+sparse_params::get_bandden ()
 {
   return instance_ok () ? s_instance->do_get_bandden () : 0.0;
 }
 
-void sparse_params::print_info (std::ostream& os, const std::string& prefix)
+void
+sparse_params::print_info (std::ostream& os, const std::string& prefix)
 {
   if (instance_ok ())
     s_instance->do_print_info (os, prefix);
 }
 
-void sparse_params::do_defaults ()
+void
+sparse_params::do_defaults ()
 {
   m_params(0) = 0;      // spumoni
   m_params(1) = 1;      // ths_rel
@@ -118,7 +129,8 @@ void sparse_params::do_defaults ()
   m_params(12) = 0.001; // sym_tol
 }
 
-void sparse_params::do_tight ()
+void
+sparse_params::do_tight ()
 {
   m_params(0) = 0;      // spumoni
   m_params(1) = 1;      // ths_rel
@@ -135,7 +147,8 @@ void sparse_params::do_tight ()
   m_params(12) = 0.001; // sym_tol
 }
 
-void sparse_params::init_keys ()
+void
+sparse_params::init_keys ()
 {
   m_keys(0) = "spumoni";
   m_keys(1) = "ths_rel";
@@ -152,12 +165,14 @@ void sparse_params::init_keys ()
   m_keys(12) = "sym_tol";
 }
 
-double sparse_params::do_get_bandden ()
+double
+sparse_params::do_get_bandden ()
 {
   return m_params(10);
 }
 
-bool sparse_params::do_set_vals (const Array<double>& vals)
+bool
+sparse_params::do_set_vals (const Array<double>& vals)
 {
   octave_idx_type len = vals.numel ();
 
@@ -171,7 +186,8 @@ bool sparse_params::do_set_vals (const Array<double>& vals)
   return true;
 }
 
-bool sparse_params::do_set_key (const std::string& key, const double& val)
+bool
+sparse_params::do_set_key (const std::string& key, const double& val)
 {
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
     {
@@ -185,7 +201,8 @@ bool sparse_params::do_set_key (const std::string& key, const double& val)
   return false;
 }
 
-double sparse_params::do_get_key (const std::string& key)
+double
+sparse_params::do_get_key (const std::string& key)
 {
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
     {
@@ -196,8 +213,9 @@ double sparse_params::do_get_key (const std::string& key)
   return numeric_limits<double>::NaN ();
 }
 
-void sparse_params::do_print_info (std::ostream& os,
-                                   const std::string& prefix) const
+void
+sparse_params::do_print_info (std::ostream& os,
+                              const std::string& prefix) const
 {
   for (int i = 0; i < OCTAVE_SPARSE_CONTROLS_SIZE; i++)
     os << prefix << m_keys(i) << ": " << m_params(i) << "\n";

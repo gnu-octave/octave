@@ -72,7 +72,8 @@ T xtfloor (T x, T ct)
 }
 
 template <typename T>
-bool xteq (T u, T v, T ct = 3 * std::numeric_limits<T>::epsilon ())
+bool
+xteq (T u, T v, T ct = 3 * std::numeric_limits<T>::epsilon ())
 {
   T tu = std::abs (u);
   T tv = std::abs (v);
@@ -81,7 +82,8 @@ bool xteq (T u, T v, T ct = 3 * std::numeric_limits<T>::epsilon ())
 }
 
 template <typename T>
-octave_idx_type xnumel_internal (T base, T limit, T inc)
+octave_idx_type
+xnumel_internal (T base, T limit, T inc)
 {
   octave_idx_type retval = -1;
   if (! math::isfinite (base) || ! math::isfinite (inc)
@@ -133,7 +135,8 @@ octave_idx_type xnumel_internal (T base, T limit, T inc)
 }
 
 template <typename T>
-bool xall_elements_are_ints (T base, T inc, T final_val, octave_idx_type nel)
+bool
+xall_elements_are_ints (T base, T inc, T final_val, octave_idx_type nel)
 {
   // If the range is empty or NaN then there are no elements so there
   // can be no int elements.

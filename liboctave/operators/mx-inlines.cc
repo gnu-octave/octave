@@ -44,7 +44,8 @@
 // Provides some commonly repeated, basic loop templates.
 
 template <typename R, typename S>
-inline void mx_inline_fill (std::size_t n, R *r, S s)
+inline void
+mx_inline_fill (std::size_t n, R *r, S s)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = s;
@@ -178,13 +179,15 @@ logical_value (const octave_int<T>& x)
 }
 
 template <typename X>
-void mx_inline_not (std::size_t n, bool *r, const X *x)
+void
+mx_inline_not (std::size_t n, bool *r, const X *x)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = ! logical_value (x[i]);
 }
 
-inline void mx_inline_not2 (std::size_t n, bool *r)
+inline void
+mx_inline_not2 (std::size_t n, bool *r)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = ! r[i];
@@ -306,7 +309,7 @@ mx_inline_any_positive (std::size_t n, const T *x)
 
 template <typename T>
 inline bool
-mx_inline_all_real (std::size_t n, const std::complex<T>* x)
+mx_inline_all_real (std::size_t n, const std::complex<T> *x)
 {
   for (std::size_t i = 0; i < n; i++)
     {
@@ -318,14 +321,16 @@ mx_inline_all_real (std::size_t n, const std::complex<T>* x)
 }
 
 template <typename T>
-inline void mx_inline_real (std::size_t n, T *r, const std::complex<T>* x)
+inline void
+mx_inline_real (std::size_t n, T *r, const std::complex<T> *x)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = x[i].real ();
 }
 
 template <typename T>
-inline void mx_inline_imag (std::size_t n, T *r, const std::complex<T>* x)
+inline void
+mx_inline_imag (std::size_t n, T *r, const std::complex<T> *x)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = x[i].imag ();
@@ -442,14 +447,16 @@ mx_inline_pow (std::size_t n, R *r, X x, const Y *y)
 // Arbitrary function appliers.
 // The function is a template parameter to enable inlining.
 template <typename R, typename X, R fcn (X x)>
-inline void mx_inline_map (std::size_t n, R *r, const X *x)
+inline void
+mx_inline_map (std::size_t n, R *r, const X *x)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = fcn (x[i]);
 }
 
 template <typename R, typename X, R fcn (const X& x)>
-inline void mx_inline_map (std::size_t n, R *r, const X *x)
+inline void
+mx_inline_map (std::size_t n, R *r, const X *x)
 {
   for (std::size_t i = 0; i < n; i++)
     r[i] = fcn (x[i]);
@@ -586,7 +593,8 @@ do_mx_check (const Array<T>& a,
 // NOTE: we don't use std::norm because it typically does some heavyweight
 // magic to avoid underflows, which we don't need here.
 template <typename T>
-inline T cabsq (const std::complex<T>& c)
+inline T
+cabsq (const std::complex<T>& c)
 {
   return c.real () * c.real () + c.imag () * c.imag ();
 }
@@ -1436,9 +1444,10 @@ void mx_inline_diff (const T *v, T *r, octave_idx_type n,
 }
 
 template <typename T>
-void mx_inline_diff (const T *v, T *r,
-                     octave_idx_type m, octave_idx_type n,
-                     octave_idx_type order)
+void
+mx_inline_diff (const T *v, T *r,
+                octave_idx_type m, octave_idx_type n,
+                octave_idx_type order)
 {
   switch (order)
     {
@@ -1691,8 +1700,9 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
 // SIAM J. Sci. Computing, Vol. 26, 2005
 
 template <typename T>
-inline void twosum_accum (T& s, T& e,
-                          const T& x)
+inline void
+twosum_accum (T& s, T& e,
+              const T& x)
 {
   T s1 = s + x;
   T t = s1 - s;

@@ -2849,7 +2849,8 @@ FloatComplexMatrix::sumsq (int dim) const
   return FloatComplexNDArray::sumsq (dim);
 }
 
-FloatMatrix FloatComplexMatrix::abs () const
+FloatMatrix
+FloatComplexMatrix::abs () const
 {
   return FloatComplexNDArray::abs ();
 }
@@ -3655,9 +3656,10 @@ max (const FloatComplexMatrix& a, const FloatComplexMatrix& b)
   return result;
 }
 
-FloatComplexMatrix linspace (const FloatComplexColumnVector& x1,
-                             const FloatComplexColumnVector& x2,
-                             octave_idx_type n)
+FloatComplexMatrix
+linspace (const FloatComplexColumnVector& x1,
+          const FloatComplexColumnVector& x2,
+          octave_idx_type n)
 
 {
   octave_idx_type m = x1.numel ();

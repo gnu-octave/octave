@@ -103,13 +103,13 @@ octave_name_version_copyright_copying_warranty_and_bugs
 {
   std::string sep = (html ? "\n</p>\n<p>\n" : "\n");
   std::string msg =
-        (html ? "<p>\n" : "")
-        + octave_name_version_copyright_copying_and_warranty (html, extra_info)
-        + (html ? "" : "\n")               + sep
-        + octave_www_statement (html)      + sep
-        + octave_bugs_statement (html)     + sep
-        + octave_contrib_statement (html)  + sep
-        + (html ? "\n</p>" : "");
+    (html ? "<p>\n" : "")
+    + octave_name_version_copyright_copying_and_warranty (html, extra_info)
+    + (html ? "" : "\n")               + sep
+    + octave_www_statement (html)      + sep
+    + octave_bugs_statement (html)     + sep
+    + octave_contrib_statement (html)  + sep
+    + (html ? "\n</p>" : "");
 
   return msg;
 }

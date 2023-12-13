@@ -49,7 +49,8 @@ static double xlgamma (double x)
 /* ---- pprsc.c from Stadloeber's winrand --- */
 
 /* flogfak(k) = ln(k!) */
-static double flogfak (double k)
+static double
+flogfak (double k)
 {
 #define C0  9.18938533204672742e-01
 #define C1  8.33333333333333333e-02
@@ -115,12 +116,14 @@ static double flogfak (double k)
  *                                                                *
  ******************************************************************/
 
-static double f (double k, double l_nu, double c_pm)
+static double
+f (double k, double l_nu, double c_pm)
 {
   return exp (k * l_nu - flogfak (k) - c_pm);
 }
 
-static double pprsc (double my)
+static double
+pprsc (double my)
 {
   static double my_last = -1.0;
   static double m,  k2, k4, k1, k5;
@@ -395,7 +398,9 @@ poisson_rejection (double lambda, T *p, std::size_t n)
  * and large enough. */
 
 /* Generate a set of poisson numbers with the same distribution */
-template <typename T> void rand_poisson (T L_arg, octave_idx_type n, T *p)
+template <typename T>
+void
+rand_poisson (T L_arg, octave_idx_type n, T *p)
 {
   double L = L_arg;
   octave_idx_type i;
@@ -430,7 +435,9 @@ template void rand_poisson<double> (double, octave_idx_type, double *);
 template void rand_poisson<float> (float, octave_idx_type, float *);
 
 /* Generate one poisson variate */
-template <typename T> T rand_poisson (T L_arg)
+template <typename T>
+T
+rand_poisson (T L_arg)
 {
   double L = L_arg;
   T ret;

@@ -52,26 +52,30 @@ bool is_int_or_inf_or_nan (double x)
   return math::isnan (x) || math::x_nint (x) == x;
 }
 
-bool too_large_for_float (double x)
+bool
+too_large_for_float (double x)
 {
   return (math::isfinite (x)
           && fabs (x) > std::numeric_limits<float>::max ());
 }
 
-bool too_large_for_float (const Complex& x)
+bool
+too_large_for_float (const Complex& x)
 {
   return (too_large_for_float (x.real ())
           || too_large_for_float (x.imag ()));
 }
 
-bool is_int_or_inf_or_nan (float x)
+bool
+is_int_or_inf_or_nan (float x)
 {
   return math::isnan (x) || math::x_nint (x) == x;
 }
 
 // Save a string.
 
-char * strsave (const char *s)
+char *
+strsave (const char *s)
 {
   if (! s)
     return nullptr;
@@ -82,13 +86,15 @@ char * strsave (const char *s)
   return tmp;
 }
 
-std::string fgets (FILE *f)
+std::string
+fgets (FILE *f)
 {
   bool eof;
   return fgets (f, eof);
 }
 
-std::string fgets (FILE *f, bool& eof)
+std::string
+fgets (FILE *f, bool& eof)
 {
   eof = false;
 
@@ -162,13 +168,15 @@ std::string fgets (FILE *f, bool& eof)
   return retval;
 }
 
-std::string fgetl (FILE *f)
+std::string
+fgetl (FILE *f)
 {
   bool eof;
   return fgetl (f, eof);
 }
 
-std::string fgetl (FILE *f, bool& eof)
+std::string
+fgetl (FILE *f, bool& eof)
 {
   std::string retval = fgets (f, eof);
 
@@ -432,7 +440,8 @@ write_value<octave_uint64> (std::ostream& os, const octave_uint64& value);
 // Note: precision is supposed to be managed outside of this function by
 // setting stream parameters.
 
-template <> OCTAVE_API void
+template <>
+OCTAVE_API void
 write_value (std::ostream& os, const double& value)
 {
   if (lo_ieee_is_NA (value))
@@ -445,7 +454,8 @@ write_value (std::ostream& os, const double& value)
     os << value;
 }
 
-template <> OCTAVE_API void
+template <>
+OCTAVE_API void
 write_value (std::ostream& os, const Complex& value)
 {
   os << '(';
@@ -458,7 +468,8 @@ write_value (std::ostream& os, const Complex& value)
 // Note: precision is supposed to be managed outside of this function by
 // setting stream parameters.
 
-template <> OCTAVE_API void
+template <>
+OCTAVE_API void
 write_value (std::ostream& os, const float& value)
 {
   if (lo_ieee_is_NA (value))
@@ -471,7 +482,8 @@ write_value (std::ostream& os, const float& value)
     os << value;
 }
 
-template <> OCTAVE_API void
+template <>
+OCTAVE_API void
 write_value (std::ostream& os, const FloatComplex& value)
 {
   os << '(';
@@ -483,40 +495,43 @@ write_value (std::ostream& os, const FloatComplex& value)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
-  bool int_multiply_overflow (int a, int b, int *r)
+  bool
+  int_multiply_overflow (int a, int b, int *r)
   {
     return octave_i_multiply_overflow_wrapper (a, b, r);
   }
 
-  bool int_multiply_overflow (long int a, long int b, long int *r)
+  bool
+  int_multiply_overflow (long int a, long int b, long int *r)
   {
     return octave_li_multiply_overflow_wrapper (a, b, r);
   }
 
 #if defined (OCTAVE_HAVE_LONG_LONG_INT)
-  bool int_multiply_overflow (long long int a, long long int b,
-                              long long int *r)
+  bool
+  int_multiply_overflow (long long int a, long long int b, long long int *r)
   {
     return octave_lli_multiply_overflow_wrapper (a, b, r);
   }
 #endif
 
-  bool int_multiply_overflow (unsigned int a, unsigned int b,
-                              unsigned int *r)
+  bool
+  int_multiply_overflow (unsigned int a, unsigned int b, unsigned int *r)
   {
     return octave_ui_multiply_overflow_wrapper (a, b, r);
   }
 
-  bool int_multiply_overflow (unsigned long int a, unsigned long int b,
-                              unsigned long int *r)
+  bool
+  int_multiply_overflow (unsigned long int a, unsigned long int b,
+                         unsigned long int *r)
   {
     return octave_uli_multiply_overflow_wrapper (a, b, r);
   }
 
 #if defined (OCTAVE_HAVE_UNSIGNED_LONG_LONG_INT)
-  bool int_multiply_overflow (unsigned long long int a,
-                              unsigned long long int b,
-                              unsigned long long int *r)
+  bool
+  int_multiply_overflow (unsigned long long int a, unsigned long long int b,
+                         unsigned long long int *r)
   {
     return octave_ulli_multiply_overflow_wrapper (a, b, r);
   }

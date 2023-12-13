@@ -71,6 +71,17 @@ symbol_match::symbol_match (const std::string& pattern)
 #endif
 }
 
+symbol_match::symbol_match (const symbol_match& in)
+{
+  m_pat = in.m_pat;
+
+#if defined (OCTAVE_USE_WINDOWS_API)
+  m_glob = nullptr;
+#else
+  m_glob = std::unique_ptr<glob_match> {new glob_match {m_pat}};
+#endif
+}
+
 bool
 symbol_match::match (const std::string& sym)
 {

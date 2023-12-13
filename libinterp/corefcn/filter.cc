@@ -74,7 +74,7 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
 
   octave_idx_type x_len = x_dims(dim);
 
-  dim_vector si_dims = si.dims ();
+  const dim_vector& si_dims = si.dims ();
   octave_idx_type si_len = si_dims(0);
 
   if (si_len != ab_len - 1)

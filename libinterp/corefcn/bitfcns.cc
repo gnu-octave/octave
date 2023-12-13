@@ -475,8 +475,8 @@ bitshift (float a, int n, int64_t mask)
                                                                         \
   bool is_scalar_op = (m_nel == 1 || n_nel == 1);                       \
                                                                         \
-  const dim_vector& m_dv = m.dims ();                                          \
-  const dim_vector& n_dv = n.dims ();                                          \
+  const dim_vector& m_dv = m.dims ();                                   \
+  const dim_vector& n_dv = n.dims ();                                   \
                                                                         \
   bool is_array_op = (m_dv == n_dv);                                    \
                                                                         \

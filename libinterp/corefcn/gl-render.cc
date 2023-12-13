@@ -180,7 +180,7 @@ opengl_texture::create (opengl_functions& glfcns, const octave_value& data)
 {
   opengl_texture retval (glfcns);
 
-  dim_vector dv (data.dims ());
+  const dim_vector& dv = data.dims ();
 
   // Expect RGB data
   if (dv.ndims () == 3 && (dv(2) == 3 || dv(2) == 4))
@@ -4090,7 +4090,7 @@ opengl_renderer::draw_texture_image (const octave_value cdata, Matrix x,
 {
 #if defined (HAVE_OPENGL)
 
-  dim_vector dv (cdata.dims ());
+  const dim_vector& dv = cdata.dims ();
   int h = dv(0);
   int w = dv(1);
   double x0, x1, y0, y1;

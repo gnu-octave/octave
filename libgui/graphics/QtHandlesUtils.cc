@@ -285,7 +285,7 @@ namespace Utils
   QImage
   makeImageFromCData (const octave_value& v, int width, int height)
   {
-    dim_vector dv (v.dims ());
+    const dim_vector& dv = v.dims ();
 
     if (dv.ndims () == 3 && dv(2) == 3)
       {

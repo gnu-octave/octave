@@ -1236,7 +1236,7 @@ void
 gl2ps_renderer::draw_image (const image::properties& props)
 {
   octave_value cdata = props.get_color_data ();
-  dim_vector dv (cdata.dims ());
+  const dim_vector& dv = cdata.dims ();
   int h = dv(0);
   int w = dv(1);
 

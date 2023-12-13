@@ -57,8 +57,8 @@ DEFUNOP (transpose, char_matrix_str)
   CONCAT2(oct_binop_, name) (const octave_base_value& a1,               \
                              const octave_base_value& a2)               \
   {                                                                     \
-    const dim_vector& a1_dims = a1.dims ();                                    \
-    const dim_vector& a2_dims = a2.dims ();                                    \
+    const dim_vector& a1_dims = a1.dims ();                             \
+    const dim_vector& a2_dims = a2.dims ();                             \
                                                                         \
     bool a1_is_scalar = a1_dims.all_ones ();                            \
     bool a2_is_scalar = a2_dims.all_ones ();                            \

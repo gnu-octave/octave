@@ -1860,7 +1860,7 @@ orderfields, isstruct, structfun}
     {
       if (args(i).iscell ())
         {
-          dim_vector argdims (args(i).dims ());
+          const dim_vector& argdims = args(i).dims ();
 
           if (! scalar (argdims))
             {

@@ -1330,13 +1330,10 @@ ret:
       }
     sp -= n_dtor;
 
-    if (is_varargout)
+    if (OCTAVE_UNLIKELY (is_varargout))
       {
-        n_returns_callee--; // Assume empty varargout
-
-        // Expand the cell array and push the elements to the stack
-        octave_value ov_vararg = std::move (sp[-1].ov);
-        STACK_DESTROY (1);
+        // Check that varargout is a cell or undefined
+        octave_value &ov_vararg = sp[-1].ov;
 
         bool vararg_defined = ov_vararg.is_defined ();
         if (vararg_defined && !ov_vararg.iscell ())
@@ -1344,23 +1341,6 @@ ret:
             (*sp++).pee = new execution_exception {"error","","varargout must be a cell array object"};
             (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
             goto unwind;
-          }
-        if (vararg_defined)
-          {
-            // Push the cell array elements to the stack
-            Cell cell_vararg = ov_vararg.cell_value ();
-            for (int i = 0; i < cell_vararg.numel (); i++)
-              {
-                octave_value &arg = cell_vararg(i);
-                PUSH_OV (std::move (arg));
-                n_returns_callee++;
-              }
-          }
-        // Only push an empty varargout if we are returning to another bytecode function
-        else if (bsp != rsp)
-          {
-            n_returns_callee++;
-            PUSH_OV ();
           }
       }
 
@@ -1388,17 +1368,53 @@ ret:
         int j;
         // nargout 0 should still give one return value, if there is one
         int n_root_wanted = std::max (root_nargout, 1);
-        for (j = 1; j < n_returns_callee && j < (n_root_wanted + 1); j++)
+
+        if (is_varargout)
           {
-            if (OCTAVE_UNLIKELY (bsp[j].ov.is_ref ()))
-              ret.append (bsp[j].ov.ref_rep ()->deref ());
-            else
-              ret.append (std::move (bsp[j].ov));
-            bsp[j].ov.~octave_value ();
+            CHECK_PANIC(n_returns_callee >= 2);
+
+            octave_value ov_vararg = sp[-1].ov; // varargout on the top of the stack
+
+            bool vararg_defined = ov_vararg.is_defined ();
+
+            for (j = 1; j < n_returns_callee - 1 && j < n_root_wanted + 1; j++)
+              {
+                if (OCTAVE_UNLIKELY (bsp[j].ov.is_ref ()))
+                  ret.append (bsp[j].ov.ref_rep ()->deref ());
+                else
+                  ret.append (std::move (bsp[j].ov));
+                bsp[j].ov.~octave_value ();
+              }
+            // Append varargout to ret
+            if (vararg_defined && j < n_root_wanted + 1)
+              {
+                // Push the cell array elements to the stack
+                Cell cell_vararg = ov_vararg.cell_value ();
+                for (int i = 0; i < cell_vararg.numel () && j + i < n_root_wanted + 1; i++)
+                  {
+                    octave_value &arg = cell_vararg(i);
+                    ret.append (std::move (arg));
+                  }
+              }
+
+            // Destroy varargout and rest of return values, if any
+            for (; j < n_returns_callee; j++)
+              bsp[j].ov.~octave_value ();
           }
-        // Destroy rest of return values, if any
-        for (; j < n_returns_callee; j++)
-          bsp[j].ov.~octave_value ();
+        else
+          {
+            for (j = 1; j < n_returns_callee && j < (n_root_wanted + 1); j++)
+              {
+                if (OCTAVE_UNLIKELY (bsp[j].ov.is_ref ()))
+                  ret.append (bsp[j].ov.ref_rep ()->deref ());
+                else
+                  ret.append (std::move (bsp[j].ov));
+                bsp[j].ov.~octave_value ();
+              }
+            // Destroy rest of return values, if any
+            for (; j < n_returns_callee; j++)
+              bsp[j].ov.~octave_value ();
+          }
 
         //Note: Stack frame object popped by caller
         CHECK_STACK (0);
@@ -1454,8 +1470,53 @@ ret:
     // Renaming variables to keep my sanity.
     int n_args_caller_expects = caller_nval_back;
     int n_args_callee_has = n_returns_callee - 1; // Exclude %nargout
-    int n_args_to_move = std::min (n_args_caller_expects, n_args_callee_has);
     int n_args_actually_moved = 0;
+
+    if (OCTAVE_UNLIKELY (is_varargout))
+      {
+        // Expand the cell array and push the elements to the end of the callee stack
+        octave_value ov_vararg = std::move (caller_stack_end[n_args_callee_has].ov);
+
+        n_args_callee_has--; // Assume empty varargout
+
+        bool vararg_defined = ov_vararg.is_defined ();
+
+        if (vararg_defined)
+          {
+            // Push the cell array elements to the stack
+            Cell cell_vararg = ov_vararg.cell_value ();
+            octave_idx_type n = cell_vararg.numel ();
+
+            octave_idx_type n_to_push;
+            // Atleast one (for 'ans') and deduct the amount of args already on the stack
+            n_to_push = std::max (1, n_args_caller_expects) - n_args_callee_has;
+            // Can't be negative
+            n_to_push = n_to_push < 0 ? 0 : n_to_push;
+            // Can't push more than amount of elements in cell
+            n_to_push = std::min (n , n_to_push);
+
+            CHECK_STACK_N (n_to_push);
+
+            int i = 0;
+            for (; i < n_to_push; i++)
+              {
+                octave_value &arg = cell_vararg(i);
+                // Construct octave_value with placement new, in the end of the callee stack
+                new (&caller_stack_end[n_args_callee_has + 1 + i].ov) octave_value (std::move (arg)); // +1 for %nargout
+              }
+
+            n_args_callee_has += i;
+          }
+        else if (n_args_caller_expects)
+          {
+            // Push an empty varargout
+            new (&caller_stack_end[n_args_callee_has + 1].ov) octave_value {};
+
+            n_args_callee_has++;
+          }
+      }
+
+    int n_args_to_move = std::min (n_args_caller_expects, n_args_callee_has);
 
     // If no return values is requested but there exists return values,
     // we need to push one to be able to write it to ans.

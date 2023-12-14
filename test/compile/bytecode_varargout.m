@@ -51,9 +51,39 @@ function bytecode_varargout ()
     __printf_assert__ ("%d ", a);
 
     [~, ~, ~] = sub_return_isargout (3);
+
+    % Check that 40000 return values wont cause a stack overflow
+    ans = 0;
+    suby1 (40000); % returns [varargout] => [1 2 3 ... n]
+    assert (ans == 1)
+
+    ans = 0;
+    suby2 (40000); % returns [a b varargout] => [1 2 3 ... n]
+    assert (ans == 1)
+
+    % Check dropping return values
+    [a b c] = suby1 (10);
+    assert (all ([a b c] == [1 2 3]))
+    [a b c] = suby2 (10);
+    assert (all ([a b c] == [1 2 3]))
+
+    % Check too few return values
+    threw = false;
+    try
+        [a b c] = suby1 (2);
+    catch
+        threw = true;
+    end
+    assert (threw);
+
+    % Bug #65029, stack overflowed when deal returned
+    nlay = 20000;
+    a = struct ("aa", {1:nlay});
+    tmp = {1:nlay};
+    [a(1:nlay).aa] = deal (tmp{:});
 end
 
-function [a b c ] = sub_return_isargout (n)
+function [a b c] = sub_return_isargout (n)
     b = 0; c = 0;
     a = isargout (n);
 end
@@ -63,3 +93,11 @@ function varargout = suby1(n)
         varargout{i} = i;
     end
 end
+
+function [a b varargout] = suby2(n)
+    a = 1; b = 2;
+    for i = 1:n-2
+        varargout{i} = i + 2;
+    end
+end
+

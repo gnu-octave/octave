@@ -38,10 +38,12 @@ FCN_FILE_DIRS += \
   %reldir%/orient.m \
   %reldir%/pbaspect.m \
   %reldir%/rticks.m \
+  %reldir%/rticklabels.m \
   %reldir%/shading.m \
   %reldir%/specular.m \
   %reldir%/text.m \
   %reldir%/thetaticks.m \
+  %reldir%/tticklabels.m \
   %reldir%/title.m \
   %reldir%/view.m \
   %reldir%/whitebg.m \

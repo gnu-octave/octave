@@ -140,7 +140,9 @@ jobs:
 
       - name: check
         timeout-minutes: 60
-        run: XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check | tee ./test-suite.log
+        run: |
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
+            make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log
         continue-on-error: true
@@ -152,7 +154,8 @@ jobs:
         timeout-minutes: 60
         run: |
           mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
-          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
+            make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
 
       - name: display test suite log with bytecode interpreter
         continue-on-error: true
@@ -371,8 +374,8 @@ jobs:
       - name: check
         timeout-minutes: 60
         run: |
-          XDG_RUNTIME_DIR=$RUNNER_TEMP \
-            xvfb-run -a make -C ./.build check | tee ./test-suite.log
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
+            make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log
         continue-on-error: true
@@ -384,8 +387,8 @@ jobs:
         timeout-minutes: 60
         run: |
           mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
-          XDG_RUNTIME_DIR=$RUNNER_TEMP \
-            xvfb-run -a make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a \
+            make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
 
       - name: display test suite log with bytecode interpreter
         continue-on-error: true
@@ -609,7 +612,7 @@ jobs:
         timeout-minutes: 60
         run: |
           echo 'makeinfo_program ("/usr/local/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
-          make -C ./.build check | tee ./test-suite.log
+          make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log
         continue-on-error: true
@@ -873,7 +876,7 @@ jobs:
           echo "makeinfo_program (sprintf ('%s && cd %s && perl makeinfo', [s=nthargout(2, @system, 'cygpath -w /usr/bin')](1:2), strtrim (s)));" \
             >> ./scripts/startup/site-rcfile
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
-          make -C ./.build check RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite.log
+          make -C ./.build check-tree-evaluator RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite.log
 
       - name: display test suite log
         continue-on-error: true
@@ -1150,7 +1153,7 @@ jobs:
 
         run: |
           export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
-          EGREP="grep -E" make -C ./.build check | tee ./test-suite.log
+          EGREP="grep -E" make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log
         continue-on-error: true

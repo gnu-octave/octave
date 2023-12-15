@@ -32,14 +32,17 @@
 ## When called without an argument, return a cell array of strings of the
 ## current rtick labels.
 ##
-## When called with the argument @var{tickval} being a cell array of strings
-## or a vector of numbers, the labels will change to match these values.
-## Note that the center point of the plots made by @code{polar }are never
-## labeled, so the first specified label will be applied to the second rtick
-## location.  If fewer labels are specified than the current number of ticks,
-## those labels will be applied to the innermost tick labels, and blank labels
-## will be appended to the remainder.  If the specified label count exceeds the
-## number of tick labels, excess labels are ignored.
+## When called with the argument @var{tickval} being a vector of numbers or
+## a cell array of strings and/or numbers, the labels will be changed to
+## match these new values. Note that the center point of the plots made by
+## @code{polar} are never labeled, so the first specified label will be
+## applied to the second rtick location and subesquent labels will progress
+## outward.
+##
+## If fewer labels are specified than the current number of tick marks, those
+## labels will be applied starting with the innermost tick labels, and blank
+## labels will be appended to the remainder.  If the specified label count
+## exceeds the number of tick labels, the excess labels are ignored.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
@@ -74,7 +77,7 @@ function labels = rticklabels (varargin)
     ## Single remaining input must be tick labels and should be a numeric
     ## vector or a cell vector of numbers and strings.
 
-    ## error if trying to request and set values simultaneously
+    ## Error if trying to request and set values simultaneously.
     if (nargout > 0)
       error ("rticklabels: cannot set and return labels simultaneously");
     endif
@@ -82,7 +85,7 @@ function labels = rticklabels (varargin)
     returnlabels = false;
     arg = varargin{1};
 
-    if isnumeric (arg)
+    if (isnumeric (arg))
       ## All inputs handled the same way as cells. (:) permits nonvectors.
       cellarg_num = ones (1, numel (arg));
       cellarg_char = zeros (1, numel (arg));
@@ -100,7 +103,7 @@ function labels = rticklabels (varargin)
               "containing numbers and strings"]);
     endif
 
-  ## Finish converting TICVAL into a cellstr
+  ## Finish converting TICVAL into a cellstr.
 
   ## Convert numeric elements to characters and make it a 1-D cell array.
   arg(cellarg_num) = cellfun (@num2str, arg(cellarg_num), ...
@@ -135,7 +138,7 @@ function labels = rticklabels (varargin)
     nr--;
   endif
 
-  ## rtick and ttick object ordering
+  ## rtick and ttick object ordering:
   ##  1:nt = text handles containing theta labels (reverse order)
   ##  nt+1:2*nt = line object handles for ttick radial grid lines
   ##  2*nt+1:2*nt+nr = text handles containing nr rtick labels (reverse order)

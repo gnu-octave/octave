@@ -32,13 +32,15 @@
 ## When called without an argument, return a cell array of strings of the
 ## current ttick labels.
 ##
-## When called with the argument @var{tickval} being a cell array of strings
-## or a vector of numbers, the labels will change to match these values.
+## When called with the argument @var{tickval} being a vector of numbers or
+## a cell array of strings and/or numbers, the labels will be changed to
+## match these new values.  Values will be applied starting with the
+## zero-degree tick mark and will progress counter-clockwise.
 ##
-## If fewer labels are specified than the current number of ticks,
-## those labels will be applied to the innermost tick labels, and blank labels
-## will be appended to the remainder.  If the specified label count exceeds the
-## number of tick labels, excess labels are ignored.
+## If fewer labels are specified than the current number of theta tick marks,
+## those labels will be applied starting at the zero-degree tick mark and
+## blank labels will be appended to the remainder.  If the specified label
+## count exceeds the number of tick labels, the excess labels are ignored.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on
 ## this axis rather than the current axes returned by @code{gca}.
@@ -54,7 +56,7 @@
 ## @end deftypefn
 
 ## FIXME:  Octave's polar plot implementation does not currently create the
-##         properties rticklabel, rticklabelmode, and rtickmode.  Fully
+##         properties tticklabel, tticklabelmode, and ttickmode.  Fully
 ##         implemented versions of those proporties could simplify much of the
 ##         code below, which could then mimick much the behavior of the
 ##         equivalent Cartesian functions.
@@ -73,7 +75,7 @@ function labels = tticklabels (varargin)
     ## Single remaining input must be tick labels and should be a numeric
     ## vector or a cell vector of numbers and strings.
 
-    ## error if trying to request and set values simultaneously
+    ## Error if trying to request and set values simultaneously.
     if (nargout > 0)
       error ("tticklabels: cannot set and return labels simultaneously");
     endif
@@ -81,7 +83,7 @@ function labels = tticklabels (varargin)
     returnlabels = false;
     arg = varargin{1};
 
-    if isnumeric (arg)
+    if (isnumeric (arg))
       ## All inputs handled the same way as cells. (:) permits nonvectors.
       cellarg_num = ones (1, numel (arg));
       cellarg_char = zeros (1, numel (arg));
@@ -99,7 +101,7 @@ function labels = tticklabels (varargin)
               "containing numbers and strings"]);
     endif
 
-  ## Finish converting TICVAL into a cellstr
+  ## Finish converting TICVAL into a cellstr.
 
   ## Convert numeric elements to characters and make it a 1-D cell array.
   arg(cellarg_num) = cellfun (@num2str, arg(cellarg_num), ...
@@ -117,14 +119,14 @@ function labels = tticklabels (varargin)
   ## Error if hax does not point to a polar plot with theta elements.
   if (isempty (polarhandle))
     error ("tticklabels: tticklabels can only be used on a polar plot");
-  elseif (! isfield (get (hax), "rtick") )
+  elseif (! isfield (get (hax), "ttick") )
     error ("tticklabels: ttick property not defined for current axes");
   endif
 
   ## Get theta curves count.
   nt = numel (get (hax, "ttick"));
 
-  ## rtick and ttick object ordering
+  ## rtick and ttick object ordering:
   ##  1:nt = text handles containing theta labels (reverse order)
   ##  nt+1:2*nt = line object handles for ttick radial grid lines
   ##  2*nt+1:2*nt+nr = text handles containing nr rtick labels (reverse order)

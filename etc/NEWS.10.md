@@ -12,11 +12,16 @@ the 'rtick' parameter when the plot is created.  Subsequent modifications
 to 'rtick' by the function `rticks` will only include the center tick mark
 value if it is specified.
 
+- `
+
 ### Matlab compatibility
 
 - `height` and `width` are now aliases for the `rows` and `columns` functions.
 
 ### Alphabetical list of new functions added in Octave 10
+
+* `rticklabels`
+* `tticklabels`
 
 ### Deprecated functions, properties, and operators
 

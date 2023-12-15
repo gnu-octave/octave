@@ -352,6 +352,9 @@ run-octave: run-octave.in build-aux/subst-script-vals.sh
 if AMCOND_ENABLE_BYTECODE_EVALUATOR
 check-bytecode-evaluator:
 	$(MAKE) -C test check-bytecode-evaluator
+
+check-tree-evaluator:
+	$(MAKE) -C test check-tree-evaluator
 endif
 
 octave-config.h: config.h build-aux/mk-octave-config-h.sh

@@ -153,6 +153,9 @@ check-local: $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETE
 if AMCOND_ENABLE_BYTECODE_EVALUATOR
 check-bytecode-evaluator: $(BUILT_SOURCES) $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
 	$(AM_V_at)$(call run-octave-tests,__vm_enable__ (1))
+
+check-tree-evaluator: $(BUILT_SOURCES) $(GENERATED_TEST_FILES) $(MEX_TEST_FUNCTIONS) | $(OCTAVE_INTERPRETER_TARGETS) $(octave_dirstamp)
+	$(AM_V_at)$(call run-octave-tests,__vm_enable__ (0))
 endif
 
 COVERAGE_DIR = coverage

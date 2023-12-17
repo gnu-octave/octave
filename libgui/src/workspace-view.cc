@@ -297,22 +297,13 @@ workspace_view::header_contextmenu_requested (const QPoint& mpos)
       action->setChecked (settings.value (ws_columns_shown_keys.at (i), true).toBool ());
     }
 
-  // FIXME: We could use
-  //
-  //   connect (&m_sig_mapper, QOverload<int>::of (&QSignalMapper::mapped),
-  //            this, &workspace_view::toggle_header);
-  //
-  // but referring to QSignalMapper::mapped will generate deprecated
-  // function warnings from GCC.  We could also use
-  //
-  //   connect (&m_sig_mapper, &QSignalMapper::mappedInt,
-  //            this, &workspace_view::toggle_header);
-  //
-  // but the function mappedInt was not introduced until Qt 5.15 so
-  // we'll need a feature test.
-
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+  connect (&sig_mapper, &QSignalMapper::mappedInt,
+           this, &workspace_view::toggle_header);
+#else
   connect (&sig_mapper, SIGNAL (mapped (int)),
            this, SLOT (toggle_header (int)));
+#endif
 
   menu.exec (m_view->mapToGlobal (mpos));
 }

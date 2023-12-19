@@ -352,8 +352,10 @@ interchangeably.
 %! assert (xinv, Inf (2,2));
 %! assert (rcond, 0);
 ## Matrix of all Inf
-%!warning <rcond = > assert (inv (Inf (2,2)), NaN (2,2))
-%!test
+%!xtest <65054>
+%! fail ("A = inv (Inf (2,2))", "warning", "matrix singular");
+%! assert (A, NaN (2,2));
+%!xtest <65054>
 %! [xinv, rcond] = inv (Inf (2,2));
 %! assert (xinv, NaN (2,2));
 %! assert (rcond, NaN);

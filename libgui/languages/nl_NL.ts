@@ -976,13 +976,13 @@
         <location line="-21"/>
         <location filename="../graphics/ui-annotation-dialog.h" line="-3"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>horizontale uitlijning</translation>
     </message>
     <message>
         <location line="+29"/>
         <location filename="../graphics/ui-annotation-dialog.h" line="+5"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>verticale uitlijning</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1086,7 +1086,7 @@
     <message>
         <location filename="../src/dialog.cc" line="+442"/>
         <source>Select All</source>
-        <translation type="unfinished">Alles selecteren</translation>
+        <translation>Alles selecteren</translation>
     </message>
 </context>
 <context>
@@ -1094,17 +1094,17 @@
     <message>
         <location filename="../src/command-widget.cc" line="+59"/>
         <source>Pause</source>
-        <translation type="unfinished">Pauze</translation>
+        <translation>Pauze</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop</source>
-        <translation type="unfinished">Stop</translation>
+        <translation>Stop</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Doorgaan</translation>
+        <translation>Doorgaan</translation>
     </message>
 </context>
 <context>
@@ -1112,7 +1112,7 @@
     <message>
         <location filename="../src/community-news.cc" line="+69"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Octave Community Nieuws</translation>
+        <translation>Octave Community Nieuws</translation>
     </message>
 </context>
 <context>
@@ -1122,14 +1122,14 @@
         <location line="+14"/>
         <location line="+748"/>
         <source>Octave Documentation</source>
-        <translation type="unfinished">Octave documentatie</translation>
+        <translation>Octave documentatie</translation>
     </message>
     <message>
         <location line="-761"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished">Kon de help collectie niet naar een tijdelijk
+        <translation>Kon de help collectie niet naar een tijdelijk
 bestand kopiëren. De zoekfunctie kan beïnvloed zijn.
 %1</translation>
     </message>
@@ -1140,105 +1140,106 @@ documentation viewer. Maybe the Qt SQlite
 module is missing?
 Only help text in the Command Window will
 be available.</source>
-        <translation type="unfinished"></translation>
+	<translation>kon de data voor documentatie browser niet installeren, misschien ontbreekt de Qt SQlite module? Alleen de hulp tekst in het commando venster is beschikbaar
+	</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Find:</source>
-        <translation type="unfinished">Zoek:</translation>
+        <translation>Zoek:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished">Zoek voorwaarts</translation>
+        <translation>Zoek voorwaarts</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished">Zoek achterwaarts</translation>
+        <translation>Zoek achterwaarts</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Contents</source>
-        <translation type="unfinished">Inhoud</translation>
+        <translation>Inhoud</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Enter text to search function index</source>
-        <translation type="unfinished"></translation>
+        <translation>voer de tekst in voor de functie index</translation>
     </message>
     <message>
         <location line="+9"/>
         <location line="+52"/>
         <source>Search</source>
-        <translation type="unfinished">Zoek</translation>
+        <translation>Zoek</translation>
     </message>
     <message>
         <location line="-36"/>
         <source>Function Index</source>
-        <translation type="unfinished">Functie-index</translation>
+        <translation>Functie-index</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Bookmarks</source>
-        <translation type="unfinished">Bladwijzers</translation>
+        <translation>Bladwijzers</translation>
     </message>
     <message>
         <location line="+87"/>
         <source>Go home</source>
-        <translation type="unfinished">Naar begin</translation>
+        <translation>Naar begin</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Go back</source>
-        <translation type="unfinished">Ga terug</translation>
+        <translation>Ga terug</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Previous pages</source>
-        <translation type="unfinished">Voorgaande pagina&apos;s</translation>
+        <translation>Voorgaande pagina&apos;s</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Go forward</source>
-        <translation type="unfinished">Ga vooruit</translation>
+        <translation>Ga vooruit</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Next pages</source>
-        <translation type="unfinished">Volgende pagina&apos;s</translation>
+        <translation>Volgende pagina&apos;s</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Find</source>
-        <translation type="unfinished">Zoek</translation>
+        <translation>Zoek</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Inzoomen</translation>
+        <translation>Inzoomen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Uitzoomen</translation>
+        <translation>Uitzoomen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom Original</source>
-        <translation type="unfinished"></translation>
+        <translation>naar begin zoom</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Bookmark current page</source>
-        <translation type="unfinished">Bladwijzer naar huidige pagina</translation>
+        <translation>Bladwijzer naar huidige pagina</translation>
     </message>
     <message>
         <location line="+429"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished">Kan help bestand %1 niet registreren.</translation>
+        <translation>Kan help bestand %1 niet registreren.</translation>
     </message>
 </context>
 <context>
@@ -1247,63 +1248,63 @@ be available.</source>
         <location filename="../src/documentation-bookmarks.cc" line="+101"/>
         <source>
 No documentation bookmarks loaded!</source>
-        <translation type="unfinished">
+	<translation>
 Geen documentatie bladwijzers geladen!</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave: Loading Documentation Bookmarks</source>
-        <translation type="unfinished">Octave: documentatie bladwijzers inlezen</translation>
+        <translation>Octave: documentatie bladwijzers inlezen</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation type="unfinished">Tekst om te zoeken in bladwijzers</translation>
+        <translation>Tekst om te zoeken in bladwijzers</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>New Folder</source>
-        <translation type="unfinished">Nieuwe map</translation>
+        <translation>Nieuwe map</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Open</translation>
+        <translation>&amp;Open</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">He&amp;rnoem</translation>
+        <translation>He&amp;rnoem</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished">&amp;Verwijder</translation>
+        <translation>&amp;Verwijder</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add Folder</source>
-        <translation type="unfinished">M&amp;ap toevoegen</translation>
+        <translation>M&amp;ap toevoegen</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Hide &amp;Filter</source>
-        <translation type="unfinished">Verberg &amp;filter</translation>
+        <translation>Verberg &amp;filter</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Filter</source>
-        <translation type="unfinished">Toon &amp;filter</translation>
+        <translation>Toon &amp;filter</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Octave: Saving Documentation Bookmarks</source>
-        <translation type="unfinished">Octave: Documentatie bladwijzers bewaren</translation>
+        <translation>Octave: Documentatie bladwijzers bewaren</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1312,7 +1313,7 @@ Geen documentatie bladwijzers geladen!</translation>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation type="unfinished">Kan bestand %1
+        <translation>Kan bestand %1
 %2.
 
 Documentatie bladwijzers niet opgeslagen!
@@ -1322,14 +1323,14 @@ Documentatie bladwijzers niet opgeslagen!
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation type="unfinished">Kan bestand %1 niet lezen:
+        <translation>Kan bestand %1 niet lezen:
 %2.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No start element found in %1.
 Invalid bookmark file?</source>
-        <translation type="unfinished">Geen begin gevonden in %1.
+        <translation>Geen begin gevonden in %1.
 Ongeldig bladwijzerbestand?</translation>
     </message>
     <message>
@@ -1337,14 +1338,14 @@ Ongeldig bladwijzerbestand?</translation>
         <source>The file
 %1
 is not a valid XBEL file version 1.0.</source>
-        <translation type="unfinished">Het bestand 
+        <translation>Het bestand 
         %1
 is geen geldig XBEL versie 1.0 bestand.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Unknown title</source>
-        <translation type="unfinished">Onbekende titel</translation>
+        <translation>Onbekende titel</translation>
     </message>
 </context>
 <context>
@@ -1352,12 +1353,12 @@ is geen geldig XBEL versie 1.0 bestand.</translation>
     <message>
         <location filename="../src/documentation-dock-widget.cc" line="+40"/>
         <source>Documentation</source>
-        <translation type="unfinished">Documentatie</translation>
+        <translation>Documentatie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>See the documentation for help.</source>
-        <translation type="unfinished">Kijk in de documentatie voor hulp.</translation>
+        <translation>Kijk in de documentatie voor hulp.</translation>
     </message>
 </context>
 <context>
@@ -1365,27 +1366,27 @@ is geen geldig XBEL versie 1.0 bestand.</translation>
     <message>
         <location filename="../src/dw-main-window.cc" line="+53"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Sluit bestand</translation>
+        <translation>&amp;Sluit bestand</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished">Sluit &amp;Alle</translation>
+        <translation>Sluit &amp;Alle</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close &amp;Other</source>
-        <translation type="unfinished">Sluit &amp;Andere</translation>
+        <translation>Sluit &amp;Andere</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switch to &amp;Left Widget</source>
-        <translation type="unfinished">Schakel naar &amp;Linker widget</translation>
+        <translation>Schakel naar &amp;Linker widget</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Switch to &amp;Right Widget</source>
-        <translation type="unfinished">Schakel naar &amp;Rechter widget</translation>
+        <translation>Schakel naar &amp;Rechter widget</translation>
     </message>
 </context>
 <context>
@@ -1394,20 +1395,20 @@ is geen geldig XBEL versie 1.0 bestand.</translation>
         <location filename="../src/external-editor-interface.cc" line="+68"/>
         <location line="+46"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="-45"/>
         <source>Could not start custom file editor
 %1</source>
-        <translation type="unfinished">Kon externe editor niet starten
+        <translation>Kon externe editor niet starten
 %1</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>There is no custom editor configured yet.
 Do you want to open the preferences?</source>
-        <translation type="unfinished">Er is nog geen externe editor ingesteld.
+        <translation>Er is nog geen externe editor ingesteld.
 Wilt u de voorkeursinstellingen aanpassen?</translation>
     </message>
 </context>
@@ -1416,12 +1417,12 @@ Wilt u de voorkeursinstellingen aanpassen?</translation>
     <message>
         <location filename="../src/m-editor/file-editor.cc" line="+190"/>
         <source>Continue</source>
-        <translation type="unfinished">Doorgaan</translation>
+        <translation>Doorgaan</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Save File and Run</source>
-        <translation type="unfinished">Sla Bestand op en Voer uit</translation>
+        <translation>Sla Bestand op en Voer uit</translation>
     </message>
     <message>
         <location line="+912"/>
@@ -1430,432 +1431,440 @@ Wilt u de voorkeursinstellingen aanpassen?</translation>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="-610"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor.</source>
-        <translation type="unfinished"></translation>
+	<translation>
+		Bestand niet opgeslagen! Een bestand met de geselecteerde naam %s
+		is al geopend in the editor
+	</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>The associated file editor tab has disappeared.</source>
-        <translation type="unfinished">Het bijbehorende tabblad in de editor is verdwenen.</translation>
+        <translation>Het bijbehorende tabblad in de editor is verdwenen.</translation>
     </message>
     <message>
         <location line="+540"/>
         <source>Could not open file
 %1
 for reading: %2.</source>
-        <translation type="unfinished"></translation>
+	<translation>kon bestand
+		%1
+niet openen voor lezen: %2.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Bestand
+        <translation>Bestand
 %1
 bestaat niet. Wilt u het aanmaken?</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Create</source>
-        <translation type="unfinished">Maak nieuw</translation>
+        <translation>Maak nieuw</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Could not open file
 %1
 for writing: %2.</source>
-        <translation type="unfinished"></translation>
+	<translation>
+Kon bestand
+%1
+niet openen voor schrijven: %2.</translation>
     </message>
     <message>
         <location line="+250"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Bestand</translation>
+        <translation>&amp;Bestand</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Recent Editor Files</source>
-        <translation type="unfinished">&amp;Recent geopend</translation>
+        <translation>&amp;Recent geopend</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Edit Function</source>
-        <translation type="unfinished">&amp;Pas Functie Aan</translation>
+        <translation>&amp;Pas Functie Aan</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Save File</source>
-        <translation type="unfinished">Op&amp;slaan</translation>
+        <translation>Op&amp;slaan</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save File &amp;As...</source>
-        <translation type="unfinished">Opslaan &amp;als...</translation>
+        <translation>Opslaan &amp;als...</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Sluit bestand</translation>
+        <translation>&amp;Sluit bestand</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close All</source>
-        <translation type="unfinished">Alle bestanden sluiten</translation>
+        <translation>Alle bestanden sluiten</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close Other Files</source>
-        <translation type="unfinished">Andere bestanden sluiten</translation>
+        <translation>Andere bestanden sluiten</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Print...</source>
-        <translation type="unfinished">Afdrukken...</translation>
+        <translation>Afdrukken...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">B&amp;ewerken</translation>
+        <translation>B&amp;ewerken</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">He&amp;rhalen</translation>
+        <translation>He&amp;rhalen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Kni&amp;ppen</translation>
+        <translation>Kni&amp;ppen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Find and Replace...</source>
-        <translation type="unfinished">&amp;Zoek en Vervang...</translation>
+        <translation>&amp;Zoek en Vervang...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek &amp; volgende</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Find &amp;Previous</source>
-        <translation type="unfinished">Vori&amp;ge zoeken</translation>
+        <translation>Vori&amp;ge zoeken</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Commands</source>
-        <translation type="unfinished">&amp;Opdrachten</translation>
+        <translation>&amp;Opdrachten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete Line</source>
-        <translation type="unfinished">Verwijder regel</translation>
+        <translation>Verwijder regel</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Copy Line</source>
-        <translation type="unfinished">Kopieer regel</translation>
+        <translation>Kopieer regel</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Cut Line</source>
-        <translation type="unfinished">Knip regel</translation>
+        <translation>Knip regel</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished">Wis tot begin van woord</translation>
+        <translation>Wis tot begin van woord</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished">Wis tot einde van woord</translation>
+        <translation>Wis tot einde van woord</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished">Wis tot begin van regel</translation>
+        <translation>Wis tot begin van regel</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished">Wis tot einde van regel</translation>
+        <translation>Wis tot einde van regel</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Duplicate Selection/Line</source>
-        <translation type="unfinished">Dubbele Selectie/Regel</translation>
+        <translation>Dubbele Selectie/Regel</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Transpose Line</source>
-        <translation type="unfinished">Transponeer regel</translation>
+        <translation>Transponeer regel</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Show Completion List</source>
-        <translation type="unfinished">&amp;Toon aanvullijst</translation>
+        <translation>&amp;Toon aanvullijst</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Format</source>
-        <translation type="unfinished">&amp;Formaat</translation>
+        <translation>&amp;Formaat</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Uppercase Selection</source>
-        <translation type="unfinished">&amp;Hoofdletters</translation>
+        <translation>&amp;Hoofdletters</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Lowercase Selection</source>
-        <translation type="unfinished">Kleine &amp;letters</translation>
+        <translation>Kleine &amp;letters</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Comment</source>
-        <translation type="unfinished">Zet om naar &amp;commentaar</translation>
+        <translation>Zet om naar &amp;commentaar</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Uncomment</source>
-        <translation type="unfinished">Zet om &amp;naar code</translation>
+        <translation>Zet om &amp;naar code</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Comment (Choosing String)</source>
-        <translation type="unfinished">Commentaar (kies string)</translation>
+        <translation>Commentaar (kies string)</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Indent Selection Rigidly</source>
-        <translation type="unfinished">Laat selectie &amp;inspringen</translation>
+        <translation>Laat selectie &amp;inspringen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        <translation type="unfinished">Laat selectie &amp;terug inspringen</translation>
+        <translation>Laat selectie &amp;terug inspringen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Indent Code</source>
-        <translation type="unfinished">Code laten inspringen</translation>
+        <translation>Code laten inspringen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished">Zet regeleindes om naar &amp;Windows (CRLF)</translation>
+        <translation>Zet regeleindes om naar &amp;Windows (CRLF)</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Convert Line Endings to &amp;Unix (LF)</source>
-        <translation type="unfinished">Zet regeleindes om naar &amp;Unix (LF)</translation>
+        <translation>Zet regeleindes om naar &amp;Unix (LF)</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-        <translation type="unfinished">Zet regeleindes om naar Legacy &amp;Mac (CR)</translation>
+        <translation>Zet regeleindes om naar Legacy &amp;Mac (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Navi&amp;gation</source>
-        <translation type="unfinished">Navi&amp;geer</translation>
+        <translation>Navi&amp;geer</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Go &amp;to Line...</source>
-        <translation type="unfinished">Ga naar &amp;regel...</translation>
+        <translation>Ga naar &amp;regel...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Move to Matching Brace</source>
-        <translation type="unfinished"></translation>
+        <translation>Spring naar bijbehorende accolade</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Select to Matching Brace</source>
-        <translation type="unfinished">Selecteer tot bijbehorende accolade</translation>
+        <translation>Selecteer tot bijbehorende accolade</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Next Bookmark</source>
-        <translation type="unfinished">Volge&amp;nde bladwijzer</translation>
+        <translation>Volge&amp;nde bladwijzer</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Pre&amp;vious Bookmark</source>
-        <translation type="unfinished">&amp;Vorige bladwijzer</translation>
+        <translation>&amp;Vorige bladwijzer</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation type="unfinished">&amp;Bladwijzer invoegen</translation>
+        <translation>&amp;Bladwijzer invoegen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Remove All Bookmarks</source>
-        <translation type="unfinished">Alle bladwijzers ve&amp;rwijderen</translation>
+        <translation>Alle bladwijzers ve&amp;rwijderen</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Preferences...</source>
-        <translation type="unfinished">&amp;Voorkeuren...</translation>
+        <translation>&amp;Voorkeuren...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Styles Preferences...</source>
-        <translation type="unfinished">&amp;Stijlvoorkeuren...</translation>
+        <translation>&amp;Stijlvoorkeuren...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;View</source>
-        <translation type="unfinished">&amp;Weergave</translation>
+        <translation>&amp;Weergave</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Editor</source>
-        <translation type="unfinished">&amp;Editor</translation>
+        <translation>&amp;Editor</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Line Numbers</source>
-        <translation type="unfinished">Toon rege&amp;lnummers</translation>
+        <translation>Toon rege&amp;lnummers</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Whitespace Characters</source>
-        <translation type="unfinished">Toon &amp;witruimte-tekens</translation>
+        <translation>Toon &amp;witruimte-tekens</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show Line &amp;Endings</source>
-        <translation type="unfinished">Toon &amp;regeleindes</translation>
+        <translation>Toon &amp;regeleindes</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Indentation Guides</source>
-        <translation type="unfinished">Toon &amp;inspringraster</translation>
+        <translation>Toon &amp;inspringraster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show Long Line &amp;Marker</source>
-        <translation type="unfinished">Toon lange-regel &amp;markering</translation>
+        <translation>Toon lange-regel &amp;markering</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Show &amp;Toolbar</source>
-        <translation type="unfinished">Toon &amp;Taakbalk</translation>
+        <translation>Toon &amp;Taakbalk</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Statusbar</source>
-        <translation type="unfinished">Toon &amp;Statusbalk</translation>
+        <translation>Toon &amp;Statusbalk</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Horizontal Scrollbar</source>
-        <translation type="unfinished">Toon &amp;Horizontale Schuifbalk</translation>
+        <translation>Toon &amp;Horizontale Schuifbalk</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Zoom &amp;In</source>
-        <translation type="unfinished">&amp;Inzoomen</translation>
+        <translation>&amp;Inzoomen</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Zoom &amp;Out</source>
-        <translation type="unfinished">&amp;Uitzoomen</translation>
+        <translation>&amp;Uitzoomen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Normal Size</source>
-        <translation type="unfinished">&amp;Normale grootte</translation>
+        <translation>&amp;Normale grootte</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Sort Tabs Alphabetically</source>
-        <translation type="unfinished">Tabs alfabetisch &amp;sorteren</translation>
+        <translation>Tabs alfabetisch &amp;sorteren</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Debug</source>
-        <translation type="unfinished">&amp;Debuggen</translation>
+        <translation>&amp;Debuggen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation type="unfinished">Toggle &amp;onderbrekingspunt</translation>
+        <translation>Toggle &amp;onderbrekingspunt</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Next Breakpoint</source>
-        <translation type="unfinished">Volge&amp;nd onderbrekingspunt</translation>
+        <translation>Volge&amp;nd onderbrekingspunt</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation type="unfinished">&amp;Vorig onderbrekingspunt</translation>
+        <translation>&amp;Vorig onderbrekingspunt</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Remove All Breakpoints</source>
-        <translation type="unfinished">Verwijde&amp;r alle onderbrekingspunten</translation>
+        <translation>Verwijde&amp;r alle onderbrekingspunten</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Run</source>
-        <translation type="unfinished">Uitvoe&amp;ren</translation>
+        <translation>Uitvoe&amp;ren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run/Continue</source>
-        <translation type="unfinished"></translation>
+	<translation>Sla bestand op en voer uit/ga door</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Run &amp;Selection</source>
-        <translation type="unfinished">Geselecteerde tekst &amp;uitvoeren</translation>
+        <translation>Geselecteerde tekst &amp;uitvoeren</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Help</translation>
+        <translation>&amp;Help</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Help on Keyword</source>
-        <translation type="unfinished">&amp;Hulp bij sleutelwoord</translation>
+        <translation>&amp;Hulp bij sleutelwoord</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation type="unfinished">&amp;Documentatie bij sleutelwoord</translation>
+        <translation>&amp;Documentatie bij sleutelwoord</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Recent Files</source>
-        <translation type="unfinished">Recente bestanden</translation>
+        <translation>Recente bestanden</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Copy Full File &amp;Path</source>
-        <translation type="unfinished">Volledig &amp;pad kopiëren</translation>
+        <translation>Volledig &amp;pad kopiëren</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
+        <translation>Editor</translation>
     </message>
 </context>
 <context>
@@ -1863,32 +1872,32 @@ for writing: %2.</source>
     <message>
         <location filename="../src/m-editor/file-editor-tab.cc" line="+160"/>
         <source>line:</source>
-        <translation type="unfinished">regel:</translation>
+        <translation>regel:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>col:</source>
-        <translation type="unfinished">kolom:</translation>
+        <translation>kolom:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>encoding:</source>
-        <translation type="unfinished">codering:</translation>
+        <translation>codering:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>eol:</source>
-        <translation type="unfinished">eol:</translation>
+        <translation>eol:</translation>
     </message>
     <message>
         <location line="+253"/>
         <source>Breakpoint condition</source>
-        <translation type="unfinished">Onderbrekingspunt voorwaarde</translation>
+        <translation>Onderbrekingspunt voorwaarde</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>ERROR: </source>
-        <translation type="unfinished">FOUT: </translation>
+        <translation>FOUT: </translation>
     </message>
     <message>
         <location line="+73"/>
@@ -1903,47 +1912,47 @@ for writing: %2.</source>
         <location line="+85"/>
         <location line="+36"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="-2263"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
-        <translation type="unfinished">Kan geen onderbrekingspunt instellen in een veranderd of nog niet benoemd bestand.
+        <translation>Kan geen onderbrekingspunt instellen in een veranderd of nog niet benoemd bestand.
 Opslaan en onderbrekingspunt toevoegen, of Terug?</translation>
     </message>
     <message>
         <location line="+878"/>
         <source>Goto line</source>
-        <translation type="unfinished">Ga naar regel</translation>
+        <translation>Ga naar regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Line number</source>
-        <translation type="unfinished">Regelnummer</translation>
+        <translation>Regelnummer</translation>
     </message>
     <message>
         <location line="+128"/>
         <source>Comment selected text</source>
-        <translation type="unfinished">Geselecteerde tekst omzetten naar commentaar</translation>
+        <translation>Geselecteerde tekst omzetten naar commentaar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Comment string to use:
 </source>
-        <translation type="unfinished">Te gebruiken commentaar string:
+        <translation>Te gebruiken commentaar string:
 </translation>
     </message>
     <message>
         <location line="+139"/>
         <location line="+53"/>
         <source>&lt;unnamed&gt;</source>
-        <translation type="unfinished">&lt;naamloos&gt;</translation>
+        <translation>&lt;naamloos&gt;</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Do you want to cancel closing, save, or discard the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wilt u afsluiten, opslaan afbreken of de wijzigingen kwijt raken?</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1952,7 +1961,7 @@ Opslaan en onderbrekingspunt toevoegen, of Terug?</translation>
   %1
 
 is about to be closed but has been modified.  %2</source>
-        <translation type="unfinished">Het bestand
+        <translation>Het bestand
 
   %1
 
@@ -1962,7 +1971,9 @@ dat zou worden gesloten is ondertussen gewijzigd.  %2</translation>
         <location line="+148"/>
         <source>Unable to read file &apos;%1&apos;
 with selected encoding &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+	<translation>kan bestand &apos;%1&apos; niet lezen met de geselecteerd karakter codering
+               &apos;%2&apos;: %3
+	</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1971,7 +1982,7 @@ with selected encoding &apos;%2&apos;: %3</source>
 with the selected encoding %2.
 
 Modifying and saving the file might cause data loss!</source>
-        <translation type="unfinished">Er was een probleem met het lezen van bestand
+        <translation>Er was een probleem met het lezen van bestand
 
   %1
  
@@ -1982,24 +1993,24 @@ Het wijzigen en opslaan van het bestand kan leiden tot gegevensverlies!</transla
     <message>
         <location line="+10"/>
         <source>&amp;Edit anyway</source>
-        <translation type="unfinished">&amp;Bewerk evengoed</translation>
+        <translation>&amp;Bewerk evengoed</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+44"/>
         <source>Chan&amp;ge encoding</source>
-        <translation type="unfinished">&amp;Verander codering</translation>
+        <translation>&amp;Verander codering</translation>
     </message>
     <message>
         <location line="-42"/>
         <location line="+35"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Sluit bestand</translation>
+        <translation>&amp;Sluit bestand</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Select new default encoding</source>
-        <translation type="unfinished">Kies nieuwe standaard codering</translation>
+        <translation>Kies nieuwe standaard codering</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2008,7 +2019,7 @@ for reloading the current file.
 
 This does not change the default encoding.
 </source>
-        <translation type="unfinished">Kies een andere codering
+        <translation>Kies een andere codering
 om het bestand opnieuw mee te lezen.
 
 Dit heeft geen invloed op de standaard codering.
@@ -2017,37 +2028,39 @@ Dit heeft geen invloed op de standaard codering.
     <message>
         <location line="+172"/>
         <source>Debug or Save</source>
-        <translation type="unfinished">Debug of Opslaan</translation>
+        <translation>Debug of Opslaan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>This file is currently being executed.
 Quit debugging and save?</source>
-        <translation type="unfinished">Dit bestand wordt momenteel uitgevoerd.
+        <translation>Dit bestand wordt momenteel uitgevoerd.
 Debuggen afsluiten en opslaan?</translation>
     </message>
     <message>
         <location line="+212"/>
         <source>Could not open file %1 for writing:
 %2.</source>
-        <translation type="unfinished"></translation>
+	<translation>kon bestand %1 niet openen voor schrijven:
+	%2.
+	</translation>
     </message>
     <message>
         <location line="+111"/>
         <source>The changes could not be saved to the file
 %1</source>
-        <translation type="unfinished">De wijzigingen konden niet worden opgeslagen in bestand
+        <translation>De wijzigingen konden niet worden opgeslagen in bestand
         %1</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Octave Files (*.m)</source>
-        <translation type="unfinished">Octave bestanden (*.m)</translation>
+        <translation>Octave bestanden (*.m)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Alle bestanden (*)</translation>
+        <translation>Alle bestanden (*)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2058,7 +2071,7 @@ If you keep this filename, you will not be able to
 call your script using its name as an Octave command.
 
 Do you want to choose another name?</source>
-        <translation type="unfinished">&quot;%1&quot;
+        <translation>&quot;%1&quot;
 is geen geldige identifier.
 
 Als je deze bestandsnaam houdt, kan je dit script 
@@ -2073,7 +2086,7 @@ with the selected encoding %1.
 Using it would result in data loss!
 
 Please select another one!</source>
-        <translation type="unfinished">De huidige inhoud van de editor kan niet
+        <translation>De huidige inhoud van de editor kan niet
 worden gecodeerd met de huidige codering %1.
 Toch toepassen zou leiden tot gegevensverlies!
 
@@ -2084,21 +2097,21 @@ Kies s.v.p.een andere!</translation>
         <source>%1
  already exists
 Do you want to overwrite it?</source>
-        <translation type="unfinished">%1
+        <translation>%1
  bestaat al.
 Wil je het overschrijven?</translation>
     </message>
     <message>
         <location line="+85"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation type="unfinished">Het lijkt erop dat &apos;%1&apos; is gewijzigd door een ander programma. Wil je het opnieuw laden?</translation>
+        <translation>Het lijkt erop dat &apos;%1&apos; is gewijzigd door een ander programma. Wil je het opnieuw laden?</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
-        <translation type="unfinished">
+        <translation>
 
 Opgelet: Het bestand in de editor is gewijzigd!</translation>
     </message>
@@ -2107,7 +2120,7 @@ Opgelet: Het bestand in de editor is gewijzigd!</translation>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>
-        <translation type="unfinished">Het lijkt er op dat bestand
+        <translation>Het lijkt er op dat bestand
 %1
 is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     </message>
@@ -2117,223 +2130,223 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location filename="../src/files-dock-widget.cc" line="-4"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished">Kon bestand &quot;%1&quot; niet hernoemen
+        <translation>Kon bestand &quot;%1&quot; niet hernoemen
  naar &quot;%2&quot;.</translation>
     </message>
     <message>
         <location line="+51"/>
         <source>File Browser</source>
-        <translation type="unfinished">Bestandsbrowser</translation>
+        <translation>Bestandsbrowser</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse your files</source>
-        <translation type="unfinished">Verken bestanden</translation>
+        <translation>Verken bestanden</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>File size</source>
-        <translation type="unfinished">Bestandsgrootte</translation>
+        <translation>Bestandsgrootte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished">Bestandstype</translation>
+        <translation>Bestandstype</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished">Laatst gewijzigd</translation>
+        <translation>Laatst gewijzigd</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished">Toon verborgen bestanden</translation>
+        <translation>Toon verborgen bestanden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Alternerende regelkleuren</translation>
+        <translation>Alternerende regelkleuren</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Voer pad- of bestandsnaam in</translation>
+        <translation>Voer pad- of bestandsnaam in</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>One directory up</source>
-        <translation type="unfinished">Eén mapniveau omhoog</translation>
+        <translation>Eén mapniveau omhoog</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Toon Octave werkmap</translation>
+        <translation>Toon Octave werkmap</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Ga naar huidige Octave map</translation>
+        <translation>Ga naar huidige Octave map</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Stel Octave map in</translation>
+        <translation>Stel Octave map in</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Stel huidige browser map in als Octave map</translation>
+        <translation>Stel huidige browser map in als Octave map</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Bewerkingen op huidige map</translation>
+        <translation>Bewerkingen op huidige map</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Toon home directory</translation>
+        <translation>Toon home directory</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Stel browser map in...</translation>
+        <translation>Stel browser map in...</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+422"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Zoek bestanden...</translation>
+        <translation>Zoek bestanden...</translation>
     </message>
     <message>
         <location line="-418"/>
         <location line="+430"/>
         <source>New File...</source>
-        <translation type="unfinished">Nieuw bestand...</translation>
+        <translation>Nieuw bestand...</translation>
     </message>
     <message>
         <location line="-427"/>
         <location line="+429"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Nieuwe map...</translation>
+        <translation>Nieuwe map...</translation>
     </message>
     <message>
         <location line="-377"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished">Dubbelklik om map te openen, rechts-klik voor andere opties</translation>
+        <translation>Dubbelklik om map te openen, rechts-klik voor andere opties</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Rename...</source>
-        <translation type="unfinished">Hernoemen...</translation>
+        <translation>Hernoemen...</translation>
     </message>
     <message>
         <location line="+304"/>
         <source>Open</source>
-        <translation type="unfinished">Open</translation>
+        <translation>Open</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Openen in Systeem Bestandsverkenner</translation>
+        <translation>Openen in Systeem Bestandsverkenner</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Openen in Tekstverwerker</translation>
+        <translation>Openen in Tekstverwerker</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Kopieer selectie naar klembord</translation>
+        <translation>Kopieer selectie naar klembord</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run</source>
-        <translation type="unfinished">Voer uit</translation>
+        <translation>Voer uit</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Load Data</source>
-        <translation type="unfinished">Lees data in</translation>
+        <translation>Lees data in</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Stel huidige map in</translation>
+        <translation>Stel huidige map in</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished">Aan zoekpad toevoegen</translation>
+        <translation>Aan zoekpad toevoegen</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished">Geselecteerde directories</translation>
+        <translation>Geselecteerde directories</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished">Geselecteerde directories en subdirectories</translation>
+        <translation>Geselecteerde directories en subdirectories</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished">Uit zoekpad verwijderen</translation>
+        <translation>Uit zoekpad verwijderen</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Delete...</source>
-        <translation type="unfinished">Weggooien...</translation>
+        <translation>Weggooien...</translation>
     </message>
     <message>
         <location line="+132"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Wis bestand/map</translation>
+        <translation>Wis bestand/map</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished">Weet je zeker dat je alle %1 bestanden wil wissen?</translation>
+        <translation>Weet je zeker dat je alle %1 bestanden wil wissen?</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">Weet u zeker dat u dit wilt verwijderen
+        <translation>Weet u zeker dat u dit wilt verwijderen
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">Kan een niet-lege map niet wissen</translation>
+        <translation>Kan een niet-lege map niet wissen</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished">Fout bij verwijderen</translation>
+        <translation>Fout bij verwijderen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished">Kon bestand &quot;%1&quot; niet verwijderen.</translation>
+        <translation>Kon bestand &quot;%1&quot; niet verwijderen.</translation>
     </message>
     <message>
         <location line="+186"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished">Stel file browser map in</translation>
+        <translation>Stel file browser map in</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Create File</source>
-        <translation type="unfinished">Maak nieuw bestand</translation>
+        <translation>Maak nieuw bestand</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2341,18 +2354,18 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Maak nieuw bestand in 
+        <translation>Maak nieuw bestand in 
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">New file.txt</translation>
+        <translation>New file.txt</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Maak nieuwe map</translation>
+        <translation>Maak nieuwe map</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2360,13 +2373,13 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">Maak nieuwe map in
+        <translation>Maak nieuwe map in
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Nieuwe map</translation>
+        <translation>Nieuwe map</translation>
     </message>
 </context>
 <context>
@@ -2374,22 +2387,22 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+307"/>
         <source>Enjoy!</source>
-        <translation type="unfinished">Veel plezier!</translation>
+        <translation>Veel plezier!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Previous</source>
-        <translation type="unfinished">Vorige</translation>
+        <translation>Vorige</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Finish</source>
-        <translation type="unfinished">Voltooien</translation>
+        <translation>Voltooien</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2398,7 +2411,13 @@ is gewist of hernoemd. Wil je het nu opslaan?%2</translation>
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a discussion board, a wiki, and other community-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+	<translation>
+        &lt;html&gt;&lt;body&gt;
+&lt;p&gt;We hopen dat u Octave nuttig vindt.&lt;/p&gt;
+&lt;p&gt;Als u problemen ondervindt zijn er meerdere manieren om hulp te krijgen, waaronder commerciele opties, an discussie site, een wiki en andere door de gebruikers gemeenschap ondersteunde platforms.
+U kunt meer informatie over elk van deze mogelijkheden vinden op &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opent in externe browser).&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+	</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2411,7 +2430,17 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+	<translation>
+        &lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Voor meer informatie over Octave:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Visit &lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; (opent in externe browser)&lt;/li&gt;
+&lt;li&gt;Verkrijg de documentatie online&lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;HTML&lt;/a&gt; of &lt;a href=&quot;https://www.gnu.org/software/octave/octave.pdf&quot;&gt;PDF&lt;/a&gt; formaat (link opent in externe browser)&lt;/li&gt;
+&lt;li&gt;Open de documentatie browser of het Octave GUI in het help menu&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;
+	</translation>
     </message>
 </context>
 <context>
@@ -2419,117 +2448,117 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location filename="../src/m-editor/find-dialog.cc" line="+93"/>
         <source>Editor: Find and Replace</source>
-        <translation type="unfinished">Editor: bewerk en vervang</translation>
+        <translation>Editor: bewerk en vervang</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Zoek:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter search text</source>
-        <translation type="unfinished"></translation>
+        <translation>voer zoek tekst in</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Re&amp;place:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ver&amp;vang:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter replacement text</source>
-        <translation type="unfinished"></translation>
+        <translation>voer vervangende tekst in</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Match &amp;case</source>
-        <translation type="unfinished">&amp;Hoofdlettergevoelig</translation>
+        <translation>&amp;Hoofdlettergevoelig</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search from &amp;start</source>
-        <translation type="unfinished">Zoek vanaf het &amp;begin</translation>
+        <translation>Zoek vanaf het &amp;begin</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Wrap while searching</source>
-        <translation type="unfinished">Na bestandseinde &amp;doorgaan aan begin</translation>
+        <translation>Na bestandseinde &amp;doorgaan aan begin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find &amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>zoek &amp;Volgend</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Pre&amp;vious</source>
-        <translation type="unfinished"></translation>
+        <translation>Zoek Vo&amp;rige</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Replace</source>
-        <translation type="unfinished">Ve&amp;rvang</translation>
+        <translation>Ve&amp;rvang</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Replace &amp;All</source>
-        <translation type="unfinished">&amp;Alles vervangen</translation>
+        <translation>&amp;Alles vervangen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;More...</source>
-        <translation type="unfinished">&amp;Meer...</translation>
+        <translation>&amp;Meer...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Whole words</source>
-        <translation type="unfinished">Hele &amp;woorden</translation>
+        <translation>Hele &amp;woorden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Regular &amp;expressions</source>
-        <translation type="unfinished"></translation>
+        <translation>Reguliere &amp;expressies</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search &amp;backward</source>
-        <translation type="unfinished">&amp;Terug zoeken</translation>
+        <translation>&amp;Terug zoeken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search se&amp;lection</source>
-        <translation type="unfinished">In se&amp;lectie zoeken</translation>
+        <translation>In se&amp;lectie zoeken</translation>
     </message>
     <message>
         <location line="+171"/>
         <source>Search from end</source>
-        <translation type="unfinished">Vanaf einde terug zoeken</translation>
+        <translation>Vanaf einde terug zoeken</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Search from start</source>
-        <translation type="unfinished">Zoeken vanaf begin</translation>
+        <translation>Zoeken vanaf begin</translation>
     </message>
     <message>
         <location line="+306"/>
         <source>Replace Result</source>
-        <translation type="unfinished">Resultaat vervangen</translation>
+        <translation>Resultaat vervangen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 items replaced</source>
-        <translation type="unfinished">%1 vervangingen</translation>
+        <translation>%1 vervangingen</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Find Result</source>
-        <translation type="unfinished">Zoek resultaat</translation>
+        <translation>Zoek resultaat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>No more matches found</source>
-        <translation type="unfinished">Geen overeenkomsten meer gevonden</translation>
+        <translation>Geen overeenkomsten meer gevonden</translation>
     </message>
 </context>
 <context>
@@ -2537,139 +2566,139 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location filename="../src/find-files-dialog.cc" line="+61"/>
         <source>Find Files</source>
-        <translation type="unfinished">Zoek bestanden</translation>
+        <translation>Zoek bestanden</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Named:</source>
-        <translation type="unfinished">Genaamd:</translation>
+        <translation>Genaamd:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter the filename search expression</source>
-        <translation type="unfinished">Geef bestandsnaam-zoekpatroon op</translation>
+        <translation>Geef bestandsnaam-zoekpatroon op</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Start in:</source>
-        <translation type="unfinished">Begin in:</translation>
+        <translation>Begin in:</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Enter the start directory</source>
-        <translation type="unfinished">Geef startmap op</translation>
+        <translation>Geef startmap op</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation type="unfinished">Bladeren...</translation>
+        <translation>Bladeren...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse for start directory</source>
-        <translation type="unfinished">Blader naar begin map</translation>
+        <translation>Blader naar begin map</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Search subdirectories</source>
-        <translation type="unfinished">Zoek in submappen</translation>
+        <translation>Zoek in submappen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search recursively through directories for matching files</source>
-        <translation type="unfinished">Zoek ook in onderliggende mappen naar overeenkomende bestanden</translation>
+        <translation>Zoek ook in onderliggende mappen naar overeenkomende bestanden</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Include directory names</source>
-        <translation type="unfinished">Inclusief submappen</translation>
+        <translation>Inclusief submappen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Include matching directories in search results</source>
-        <translation type="unfinished">Neem overeenkomende mappen mee in zoekresultaten</translation>
+        <translation>Neem overeenkomende mappen mee in zoekresultaten</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+12"/>
         <source>Ignore case</source>
-        <translation type="unfinished"></translation>
+        <translation>Negeer case</translation>
     </message>
     <message>
         <location line="-11"/>
         <location line="+12"/>
         <source>Perform case insensitive match</source>
-        <translation type="unfinished"></translation>
+        <translation>doe een case gevoelige match</translation>
     </message>
     <message>
         <location line="-9"/>
         <source>Contains text:</source>
-        <translation type="unfinished">Met tekst:</translation>
+        <translation>Met tekst:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Include only files containing specified text in search results</source>
-        <translation type="unfinished"></translation>
+        <translation>alleen bestanden met de gespecificeerde tekst in de zoek resultaten</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Text to match</source>
-        <translation type="unfinished">Overeen te komen tekst</translation>
+        <translation>Overeen te komen tekst</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Search results</source>
-        <translation type="unfinished">Zoekresultaten</translation>
+        <translation>Zoekresultaten</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Idle.</source>
-        <translation type="unfinished">Niet bezig.</translation>
+        <translation>Niet bezig.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find</source>
-        <translation type="unfinished">Zoek</translation>
+        <translation>Zoek</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Start search for matching files</source>
-        <translation type="unfinished">Begin met zoeken naar overeenkomende bestanden</translation>
+        <translation>Begin met zoeken naar overeenkomende bestanden</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Stop</source>
-        <translation type="unfinished">Stop</translation>
+        <translation>Stop</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop search</source>
-        <translation type="unfinished"></translation>
+        <translation>Stop zoeken</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Filename/Location</source>
-        <translation type="unfinished"></translation>
+	<translation>bestandnaam/locatie</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>File contents</source>
-        <translation type="unfinished">Inhoud van bestand</translation>
+        <translation>Inhoud van bestand</translation>
     </message>
     <message>
         <location line="+98"/>
         <source>Searching...</source>
-        <translation type="unfinished">Bezig met zoeken...</translation>
+        <translation>Bezig met zoeken...</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>%1 match (es)</source>
-        <translation type="unfinished">%1 overeenkomst(-en)</translation>
+        <translation>%1 overeenkomst(-en)</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Set search directory</source>
-        <translation type="unfinished">Stel zoekmap in</translation>
+        <translation>Stel zoekmap in</translation>
     </message>
 </context>
 <context>
@@ -2677,12 +2706,12 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location filename="../src/find-files-model.cc" line="+93"/>
         <source>Filename</source>
-        <translation type="unfinished">Bestandsnaam</translation>
+        <translation>Bestandsnaam</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Directory</source>
-        <translation type="unfinished">Map</translation>
+        <translation>Map</translation>
     </message>
 </context>
 <context>
@@ -2695,12 +2724,18 @@ Make sure you have read and write permissions to
 %3
 
 Octave GUI must be closed now.</source>
-        <translation type="unfinished"></translation>
+	<translation>
+		Fout %1 bij aanmaken van settings file
+		%2
+		controleer dat je lees en schrijfpermissie hebt in
+		%3
+		Octave GUI moet nu gesloten worden
+	</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Octave Critical Error</source>
-        <translation type="unfinished">Octave Kritieke Fout</translation>
+        <translation>Octave Kritieke Fout</translation>
     </message>
 </context>
 <context>
@@ -2708,52 +2743,52 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/history-dock-widget.cc" line="+53"/>
         <source>Browse and search the command history.</source>
-        <translation type="unfinished">Bladeren en zoeken door de opdrachtgeschiedenis.</translation>
+        <translation>Bladeren en zoeken door de opdrachtgeschiedenis.</translation>
     </message>
     <message>
         <location line="+101"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Evaluate</source>
-        <translation type="unfinished">Werk uit</translation>
+        <translation>Werk uit</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Create script</source>
-        <translation type="unfinished">Nieuw script</translation>
+        <translation>Nieuw script</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Hide filter</source>
-        <translation type="unfinished">Verberg filter</translation>
+        <translation>Verberg filter</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished">Toon filter</translation>
+        <translation>Toon filter</translation>
     </message>
     <message>
         <location line="+121"/>
         <source>Double-click a command to transfer it to the Command Window.</source>
-        <translation type="unfinished">Dubbelklik op een opdracht om het naar Opdrachtvenster te kopiëren.</translation>
+        <translation>Dubbelklik op een opdracht om het naar Opdrachtvenster te kopiëren.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Enter text to filter the command history</source>
-        <translation type="unfinished">Geef zoekpatroon voor filteren van opdrachtgeschiedenis</translation>
+        <translation>Geef zoekpatroon voor filteren van opdrachtgeschiedenis</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Command History</source>
-        <translation type="unfinished">Opdrachtgeschiedenis</translation>
+        <translation>Opdrachtgeschiedenis</translation>
     </message>
 </context>
 <context>
@@ -2761,17 +2796,17 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="-185"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Welkom bij Octave!</translation>
+        <translation>Welkom bij Octave!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Next</source>
-        <translation type="unfinished">Volgende</translation>
+        <translation>Volgende</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2780,7 +2815,7 @@ Octave GUI must be closed now.</source>
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
 &lt;p&gt;The configuration file is stored in&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
+        <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Het lijkt erop dat je de grafische interface van Octave voor het eerst gebruikt op deze computer.
 Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te starten.&lt;/p&gt;
 &lt;p&gt;Het configuratiebestand is opgeslagen in&lt;br&gt;%1.&lt;/p&gt;
@@ -2792,12 +2827,12 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+82"/>
         <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Undock widget</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Close Widget</source>
-        <translation type="unfinished">Sluit widget</translation>
+        <translation>Sluit widget</translation>
     </message>
 </context>
 <context>
@@ -2805,393 +2840,394 @@ Klik &apos;Volgende&apos; om een configuratiebestand aan te maken en Octave te s
     <message>
         <location filename="../src/main-window.cc" line="+155"/>
         <source>Profiler</source>
-        <translation type="unfinished">Profiler</translation>
+        <translation>Profiler</translation>
     </message>
     <message>
         <location line="+347"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Are you sure you want to exit Octave?</source>
-        <translation type="unfinished">Zeker weten dat je Octave wil afsluiten?</translation>
+        <translation>Zeker weten dat je Octave wil afsluiten?</translation>
     </message>
     <message>
         <location line="+152"/>
         <source>Save Workspace As</source>
-        <translation type="unfinished">Sla Werkruimte Op Als</translation>
+        <translation>Sla Werkruimte Op Als</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Load Workspace</source>
-        <translation type="unfinished">Werkruimte laden</translation>
+        <translation>Werkruimte laden</translation>
     </message>
     <message>
         <location line="+199"/>
         <location line="+1667"/>
         <source>About Octave</source>
-        <translation type="unfinished">Over Octave</translation>
+        <translation>Over Octave</translation>
     </message>
     <message>
         <location line="-1479"/>
         <location line="+1555"/>
         <source>Browse directories</source>
-        <translation type="unfinished">Blader door mappen</translation>
+        <translation>Blader door mappen</translation>
     </message>
     <message>
         <location line="-1295"/>
         <source>Octave Files (*.m);;All Files (*)</source>
-        <translation type="unfinished">Octave bestanden (*.m);;Alle bestanden (*)</translation>
+        <translation>Octave bestanden (*.m);;Alle bestanden (*)</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>New Function</source>
-        <translation type="unfinished">Nieuwe Functie</translation>
+        <translation>Nieuwe Functie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New function name:
 </source>
-        <translation type="unfinished">Naam van nieuwe functie:
+        <translation>Naam van nieuwe functie:
 </translation>
     </message>
     <message>
         <location line="+62"/>
         <source>%1 is a built-in, compiled, or inline
 function and can not be edited.</source>
-        <translation type="unfinished"></translation>
+	<translation>%1 is een ingebouwde gecompileerde
+           of inline functie, en kan niet worden bewerkt</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Can not find function %1</source>
-        <translation type="unfinished">Kan functie %1 niet vinden</translation>
+        <translation>Kan functie %1 niet vinden</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="+709"/>
         <source>&amp;File</source>
-        <translation type="unfinished">&amp;Bestand</translation>
+        <translation>&amp;Bestand</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Open...</source>
-        <translation type="unfinished">Open...</translation>
+        <translation>Open...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open an existing file in editor</source>
-        <translation type="unfinished">Open een bestaand bestand in de editor</translation>
+        <translation>Open een bestaand bestand in de editor</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Load Workspace...</source>
-        <translation type="unfinished">Werkruimte laden...</translation>
+        <translation>Werkruimte laden...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save Workspace As...</source>
-        <translation type="unfinished">Sla Werkruimte Op Als...</translation>
+        <translation>Sla Werkruimte Op Als...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Exit</source>
-        <translation type="unfinished">Afsluiten</translation>
+        <translation>Afsluiten</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>New</source>
-        <translation type="unfinished">Nieuw</translation>
+        <translation>Nieuw</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>New Script</source>
-        <translation type="unfinished">Nieuw script</translation>
+        <translation>Nieuw script</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>New Function...</source>
-        <translation type="unfinished">Nieuwe functie...</translation>
+        <translation>Nieuwe functie...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>New Figure</source>
-        <translation type="unfinished">Nieuwe figuur</translation>
+        <translation>Nieuwe figuur</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">B&amp;ewerken</translation>
+        <translation>B&amp;ewerken</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Undo</source>
-        <translation type="unfinished">Ongedaan maken</translation>
+        <translation>Ongedaan maken</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Paste</source>
-        <translation type="unfinished">Plakken</translation>
+        <translation>Plakken</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Select All</source>
-        <translation type="unfinished">Alles selecteren</translation>
+        <translation>Alles selecteren</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished">Wis klembord</translation>
+        <translation>Wis klembord</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Zoek bestanden...</translation>
+        <translation>Zoek bestanden...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Clear Command Window</source>
-        <translation type="unfinished">Veeg opdrachtvenster schoon</translation>
+        <translation>Veeg opdrachtvenster schoon</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear Command History</source>
-        <translation type="unfinished">Wis opdrachtgeschiedenis</translation>
+        <translation>Wis opdrachtgeschiedenis</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear Workspace</source>
-        <translation type="unfinished">Wis werkruimte</translation>
+        <translation>Wis werkruimte</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set Path...</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet pad ...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Preferences...</source>
-        <translation type="unfinished">Voorkeuren...</translation>
+        <translation>Voorkeuren...</translation>
     </message>
     <message>
         <location line="+54"/>
         <source>De&amp;bug</source>
-        <translation type="unfinished">De&amp;buggen</translation>
+        <translation>De&amp;buggen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Step</source>
-        <translation type="unfinished">Volgende opdracht</translation>
+        <translation>Volgende opdracht</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step In</source>
-        <translation type="unfinished">Stap In</translation>
+        <translation>Stap In</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        <translation type="unfinished">Stap naar buiten</translation>
+        <translation>Stap naar buiten</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Continue</source>
-        <translation type="unfinished">Doorgaan</translation>
+        <translation>Doorgaan</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Verlaat debug modus</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished">Gereedschappen</translation>
+        <translation>Gereedschappen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation type="unfinished">Profiler</translation>
+        <translation>Profiler</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation type="unfinished">Profiler sessie he&amp;rvatten</translation>
+        <translation>Profiler sessie he&amp;rvatten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Stop Profiler</source>
-        <translation type="unfinished">Profiler &amp;stoppen</translation>
+        <translation>Profiler &amp;stoppen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profiler Data</source>
-        <translation type="unfinished"></translation>
+        <translation>Toon profiler data</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>&amp;Window</source>
-        <translation type="unfinished">&amp;Venster</translation>
+        <translation>&amp;Venster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command Window</source>
-        <translation type="unfinished">Toon opdrachtvenster</translation>
+        <translation>Toon opdrachtvenster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command History</source>
-        <translation type="unfinished">Toon opdrachtgeschiedenis</translation>
+        <translation>Toon opdrachtgeschiedenis</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show File Browser</source>
-        <translation type="unfinished">Toon bestandsbrowser</translation>
+        <translation>Toon bestandsbrowser</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Workspace</source>
-        <translation type="unfinished">Toon werkruimte</translation>
+        <translation>Toon werkruimte</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Editor</source>
-        <translation type="unfinished">Toon editor</translation>
+        <translation>Toon editor</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Documentation</source>
-        <translation type="unfinished">Toon documentatie</translation>
+        <translation>Toon documentatie</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Variable Editor</source>
-        <translation type="unfinished">Toon Variable Editor</translation>
+        <translation>Toon Variable Editor</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Command Window</source>
-        <translation type="unfinished">Opdrachtvenster</translation>
+        <translation>Opdrachtvenster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command History</source>
-        <translation type="unfinished">Opdrachtgeschiedenis</translation>
+        <translation>Opdrachtgeschiedenis</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>File Browser</source>
-        <translation type="unfinished">Bestandsbrowser</translation>
+        <translation>Bestandsbrowser</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Workspace</source>
-        <translation type="unfinished">Werkruimte</translation>
+        <translation>Werkruimte</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+44"/>
         <source>Documentation</source>
-        <translation type="unfinished">Documentatie</translation>
+        <translation>Documentatie</translation>
     </message>
     <message>
         <location line="-41"/>
         <source>Variable Editor</source>
-        <translation type="unfinished">Variable Editor</translation>
+        <translation>Variable Editor</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous Widget</source>
-        <translation type="unfinished">Voorgaande widget</translation>
+        <translation>Voorgaande widget</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Herstel default window layout</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Help</translation>
+        <translation>&amp;Help</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Probleem rapporteren</translation>
+        <translation>Probleem rapporteren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Packages</source>
-        <translation type="unfinished">Octave packages</translation>
+        <translation>Octave packages</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Get Involved</source>
-        <translation type="unfinished"></translation>
+        <translation>Wordt betrokkenn</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Donate to Octave</source>
-        <translation type="unfinished">Doneer aan Octave</translation>
+        <translation>Doneer aan Octave</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>On Disk</source>
-        <translation type="unfinished">Op schijf</translation>
+        <translation>Op schijf</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Online</source>
-        <translation type="unfinished">Online</translation>
+        <translation>Online</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;News</source>
-        <translation type="unfinished">&amp;Nieuws</translation>
+        <translation>&amp;Nieuws</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished">Release notes</translation>
+        <translation>Release notes</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Community News</source>
-        <translation type="unfinished">Community Nieuws</translation>
+        <translation>Community Nieuws</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Toolbar</source>
-        <translation type="unfinished">Werkbalk</translation>
+        <translation>Werkbalk</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Enter directory name</source>
-        <translation type="unfinished">Geef mapnaam op</translation>
+        <translation>Geef mapnaam op</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Current Directory: </source>
-        <translation type="unfinished">Huidige map: </translation>
+        <translation>Huidige map: </translation>
     </message>
     <message>
         <location line="+7"/>
         <source>One directory up</source>
-        <translation type="unfinished">Eén mapniveau omhoog</translation>
+        <translation>Eén mapniveau omhoog</translation>
     </message>
 </context>
 <context>
@@ -3210,7 +3246,7 @@ when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished">&lt;html&gt;
+        <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
 De Octave community nieuwsbron lijkt niet bereikbaar te zijn.
@@ -3238,7 +3274,18 @@ or enable web connections for news in Octave&apos;s network settings tab.
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+De Octave community nieuwsbron lijkt niet bereikbaar te zijn.
+&lt;/p&gt;
+&lt;p&gt;
+Kijk voor het laatste nieuws op
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
+wanneer je een internetverbinding hebt (link opent in een nieuw scherm).
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; De Octave Ontwikkelaars, </translation>
     </message>
 </context>
 <context>
@@ -3246,17 +3293,17 @@ or enable web connections for news in Octave&apos;s network settings tab.
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+144"/>
         <source>Hide Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Verberg Widget</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Dock Widget</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Unock Widget</translation>
     </message>
 </context>
 <context>
@@ -3264,27 +3311,27 @@ or enable web connections for news in Octave&apos;s network settings tab.
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+299"/>
         <source>Help on</source>
-        <translation type="unfinished">Help over</translation>
+        <translation>Help over</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Documentation on</source>
-        <translation type="unfinished">Documentatie over</translation>
+        <translation>Documentatie over</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Edit</source>
-        <translation type="unfinished">Edit</translation>
+        <translation>Edit</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>dbstop if ...</source>
-        <translation type="unfinished">dbstop als ...</translation>
+        <translation>dbstop als ...</translation>
     </message>
     <message>
         <location line="+524"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3293,7 +3340,7 @@ Make sure you have write access to temp. directory
 %1
 
 &quot;Run Selection&quot; requires temporary files.</source>
-        <translation type="unfinished">Het aanmaken van tijdelijke bestanden is mislukt.
+        <translation>Het aanmaken van tijdelijke bestanden is mislukt.
 Zorg dat je schrijfrechten hebt in tijdelijke (temp) map.
 %1
 
@@ -3302,7 +3349,7 @@ Zorg dat je schrijfrechten hebt in tijdelijke (temp) map.
     <message>
         <location line="+306"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
-        <translation type="unfinished">Druk op &apos;%1&apos; om alle voorkomens van &apos;%2&apos; te vervangen door &apos;%3&apos;.</translation>
+        <translation>Druk op &apos;%1&apos; om alle voorkomens van &apos;%2&apos; te vervangen door &apos;%3&apos;.</translation>
     </message>
 </context>
 <context>
@@ -3310,7 +3357,7 @@ Zorg dat je schrijfrechten hebt in tijdelijke (temp) map.
     <message>
         <location filename="../src/m-editor/octave-txt-lexer.cc" line="+41"/>
         <source>Default</source>
-        <translation type="unfinished">Standaardtekst</translation>
+        <translation>Standaardtekst</translation>
     </message>
 </context>
 <context>
@@ -3320,52 +3367,52 @@ Zorg dat je schrijfrechten hebt in tijdelijke (temp) map.
         <location line="+5"/>
         <location line="+2"/>
         <source>Create</source>
-        <translation type="unfinished">Maak nieuw</translation>
+        <translation>Maak nieuw</translation>
     </message>
     <message>
         <location line="-7"/>
         <location line="+31"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Bestand
+        <translation>Bestand
 %1
 bestaat niet. Wilt u het aanmaken?</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Octave Editor</translation>
+        <translation>Octave Editor</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation type="unfinished">Het bestand %1 bestaat niet in het zoekpad.  Om de functie uit te voeren of te debuggen moet je naar de map %2 of die map aan het zoekpad toevoegen.</translation>
+        <translation>Het bestand %1 bestaat niet in het zoekpad.  Om de functie uit te voeren of te debuggen moet je naar de map %2 of die map aan het zoekpad toevoegen.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation type="unfinished">Het bestand %1 is afgedekt door een ander bestand met dezelfde naam in het zoekpad. Om de functie die je nu bewerkt uit te voeren of te debuggen moet je naar de map %2.</translation>
+        <translation>Het bestand %1 is afgedekt door een ander bestand met dezelfde naam in het zoekpad. Om de functie die je nu bewerkt uit te voeren of te debuggen moet je naar de map %2.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        <translation type="unfinished">Ga naar andere map of Voeg map toe aan zoekpad</translation>
+        <translation>Ga naar andere map of Voeg map toe aan zoekpad</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Change Directory</source>
-        <translation type="unfinished">&amp;Ga naar andere map</translation>
+        <translation>&amp;Ga naar andere map</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Add Directory to Load Path</source>
-        <translation type="unfinished">&amp;Voeg map toe aan zoekpad</translation>
+        <translation>&amp;Voeg map toe aan zoekpad</translation>
     </message>
 </context>
 <context>
@@ -3373,17 +3420,17 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location filename="../src/release-notes.cc" line="+84"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">Bestand met release notes &apos;%1&apos; is leeg.</translation>
+        <translation>Bestand met release notes &apos;%1&apos; is leeg.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">Bestand met release notes &apos;%1&apos; kan niet worden gelezen.</translation>
+        <translation>Bestand met release notes &apos;%1&apos; kan niet worden gelezen.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Octave Release Notes</translation>
+        <translation>Octave Release Notes</translation>
     </message>
 </context>
 <context>
@@ -3391,82 +3438,82 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location filename="../src/set-path-dialog.cc" line="+64"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet Pad</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>All changes take effect immediately.</source>
-        <translation type="unfinished">Alle wijzigingen gaan direct in.</translation>
+        <translation>Alle wijzigingen gaan direct in.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Directory...</source>
-        <translation type="unfinished"></translation>
+        <translation>Voeg Directory toe ...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Single Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Enkele Directory</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Directory With Subdirectories</source>
-        <translation type="unfinished"></translation>
+        <translation>Directory met Subdirectories</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move to Top</source>
-        <translation type="unfinished">Verschuif naar bovenaan</translation>
+        <translation>Verschuif naar bovenaan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to Bottom</source>
-        <translation type="unfinished">Verschuif naar onderaan&gt;</translation>
+        <translation>Verschuif naar onderaan&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Up</source>
-        <translation type="unfinished">Verschuif omhoog</translation>
+        <translation>Verschuif omhoog</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Down</source>
-        <translation type="unfinished">Verschuif omlaag</translation>
+        <translation>Verschuif omlaag</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished">Verwijder</translation>
+        <translation>Verwijder</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reload</source>
-        <translation type="unfinished">Opnieuw laden</translation>
+        <translation>Opnieuw laden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished">Bewaar</translation>
+        <translation>Bewaar</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert</source>
-        <translation type="unfinished">Ongedaan maken</translation>
+        <translation>Ongedaan maken</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Revert Last Change</source>
-        <translation type="unfinished">Laatste bewerking ongedaan maken</translation>
+        <translation>Laatste bewerking ongedaan maken</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert All Changes</source>
-        <translation type="unfinished">Alle bewerkingen ongedaan maken</translation>
+        <translation>Alle bewerkingen ongedaan maken</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Open Directory</source>
-        <translation type="unfinished">Map openen</translation>
+        <translation>Map openen</translation>
     </message>
 </context>
 <context>
@@ -3506,12 +3553,12 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location line="+1"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Selectie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Cursor</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ve.h" line="+1"/>
@@ -3526,7 +3573,7 @@ bestaat niet. Wilt u het aanmaken?</translation>
     <message>
         <location line="+1"/>
         <source>Alternating Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Afwisselende Achtergrond</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+75"/>
@@ -3558,19 +3605,20 @@ bestaat niet. Wilt u het aanmaken?</translation>
         <source>Switch to a second set of colors.
 Useful for defining light/dark modes.
 Discards non-applied current changes!</source>
-        <translation type="unfinished"></translation>
+	<translation>Schakel naar een tweede kleuren palet
+		Bruikbaar voor lichte/donkere modus. Niet opgeslagen veranderingen gaan verloren!</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Reload the default colors,
 depends on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Herlaadt de standaard kleuren, hangt af van de nu geselecteerde modus</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Reload the default style values,
 depends on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Herlaad de standaard stijl waarden, hang af van de nu geselecteerde modus</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -3585,104 +3633,104 @@ depends on currently selected mode.</source>
     <message>
         <location filename="../src/settings-dialog.cc" line="-945"/>
         <source>Loading current preferences ... </source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige instelling aan het laden ...</translation>
     </message>
     <message>
         <location line="+43"/>
         <location line="+6"/>
         <location line="+1049"/>
         <source>System setting</source>
-        <translation type="unfinished">Systeeminstelling</translation>
+        <translation>Systeeminstelling</translation>
     </message>
     <message>
         <location line="-795"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished">I-balkje</translation>
+        <translation>I-balkje</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished">Blokje</translation>
+        <translation>Blokje</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished">Liggend streepje</translation>
+        <translation>Liggend streepje</translation>
     </message>
     <message>
         <location line="+176"/>
         <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished">Kleur van uitgelichte huidige regel (magenta (255,0,255) for automatic color)</translation>
+        <translation>Kleur van uitgelichte huidige regel (magenta (255,0,255) for automatic color)</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>Set Octave Startup Directory</source>
-        <translation type="unfinished">Octave opstartmap</translation>
+        <translation>Octave opstartmap</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set File Browser Startup Directory</source>
-        <translation type="unfinished">Stel bestandsbrowser opstartmap in</translation>
+        <translation>Stel bestandsbrowser opstartmap in</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Applying preferences ... </source>
-        <translation type="unfinished"></translation>
+        <translation>Voorkeuren aan het toepassen</translation>
     </message>
     <message>
         <location line="+86"/>
         <location line="+21"/>
         <location line="+1069"/>
         <source>Failed to open %1 as Octave shortcut file</source>
-        <translation type="unfinished">Kon %1 niet openen als Octave snelkoppelingenbestand</translation>
+        <translation>Kon %1 niet openen als Octave snelkoppelingenbestand</translation>
     </message>
     <message>
         <location line="-428"/>
         <source>Enable attribute colors</source>
-        <translation type="unfinished">Zet attribuutkleuren aan</translation>
+        <translation>Zet attribuutkleuren aan</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide tool tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Verberg tool tips</translation>
     </message>
     <message>
         <location line="+360"/>
         <source>Import shortcuts from file...</source>
-        <translation type="unfinished">Importeer snelkoppelingen uit bestand...</translation>
+        <translation>Importeer snelkoppelingen uit bestand...</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+6"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-        <translation type="unfinished">Octave Sneltoetsbestanden (*.osc);;Alle bestanden (*)</translation>
+        <translation>Octave Sneltoetsbestanden (*.osc);;Alle bestanden (*)</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Export shortcuts to file...</source>
-        <translation type="unfinished">Exporteer snelkoppelingen naar bestand...</translation>
+        <translation>Exporteer snelkoppelingen naar bestand...</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Overwriting Shortcuts</source>
-        <translation type="unfinished">Overschrijf Sneltoetsen</translation>
+        <translation>Overschrijf Sneltoetsen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
-        <translation type="unfinished">Je staat op het punt om alle sneltoetsen te overschrijven.
+        <translation>Je staat op het punt om alle sneltoetsen te overschrijven.
 Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Don&apos;t save</source>
-        <translation type="unfinished">Niet opslaan</translation>
+        <translation>Niet opslaan</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Octave GUI preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave GUI voorkeuren</translation>
     </message>
 </context>
 <context>
@@ -3690,22 +3738,22 @@ Wil je de huidige sneltoetsen opslaan of annuleren?</translation>
     <message>
         <location filename="../src/welcome-wizard.cc" line="+45"/>
         <source>Community News</source>
-        <translation type="unfinished">Community Nieuws</translation>
+        <translation>Community Nieuws</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous</source>
-        <translation type="unfinished">Vorige</translation>
+        <translation>Vorige</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next</source>
-        <translation type="unfinished">Volgende</translation>
+        <translation>Volgende</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished">Annuleren</translation>
+        <translation>Annuleren</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3715,7 +3763,7 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu, or by visiting
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
+        <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Wanneer Octave start zal het optioneel de Octave web site nakijken voor nieuws en informatie over de Octave community.
 Dit zal hooguit eenmaal daags geschieden en nieuws wordt alleen weergegeven als er iets nieuws is sinds u voor het laatst het nieuws hebt gezien.&lt;/p&gt;
 &lt;p&gt;U kunt het nieuws ook bekijken door het &quot;Community News&quot; item in het &quot;Help&quot; Menu te selecteren, of door een bezoek te brengen aan
@@ -3728,7 +3776,12 @@ Dit zal hooguit eenmaal daags geschieden en nieuws wordt alleen weergegeven als 
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts in order to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+	<translation>
+        &lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Sta Octave toe bij het starten te verbinden met de Octave web site zodat actueel nieuws en informmatie over de Octave community getoond kan worden.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;
+	</translation>
     </message>
 </context>
 <context>
@@ -3736,45 +3789,45 @@ Dit zal hooguit eenmaal daags geschieden en nieuws wordt alleen weergegeven als 
     <message>
         <location filename="../src/shortcuts-tree-widget.cc" line="+162"/>
         <source>Enter New Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Voer nieuwe sneltoets in</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Enter custom shortcut
 Action: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Voer aangepaste sneltoets in</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enter shortcut by typing it</source>
-        <translation type="unfinished"></translation>
+        <translation>Voer sneltoets in door die te typen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add Shift modifier
 (allows one to enter number keys)</source>
-        <translation type="unfinished">Voeg Shift toe
+        <translation>Voeg Shift toe
 (kan cijfertoets mee worden aangegeven)</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Actual Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Huidige Sneltoets</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Default Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Standaard Sneltoets</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Set to default</source>
-        <translation type="unfinished">Zet terug naar standaard</translation>
+        <translation>Zet terug naar standaard</translation>
     </message>
     <message>
         <location line="+104"/>
         <source>Double Shortcut</source>
-        <translation type="unfinished">Verdubbel Sneltoets</translation>
+        <translation>Verdubbel Sneltoets</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3783,7 +3836,7 @@ Action: %1</source>
 is already used for the action
   &quot;%2&quot;.
 Do you want to use the shortcut and remove it from the previous action?</source>
-        <translation type="unfinished"></translation>
+        <translation>Wil je de sneltoets gebruiken hem niet meer koppelen aan de vorige actie?</translation>
     </message>
 </context>
 <context>
@@ -3791,96 +3844,96 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+33"/>
         <source>Global</source>
-        <translation type="unfinished">Globaal</translation>
+        <translation>Globaal</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+49"/>
         <source>File Menu</source>
-        <translation type="unfinished">Bestandsmenu</translation>
+        <translation>Bestandsmenu</translation>
     </message>
     <message>
         <location line="-46"/>
         <location line="+49"/>
         <source>Edit Menu</source>
-        <translation type="unfinished">Edit menu</translation>
+        <translation>Edit menu</translation>
     </message>
     <message>
         <location line="-46"/>
         <location line="+52"/>
         <source>Debug Menu</source>
-        <translation type="unfinished">Debug menu</translation>
+        <translation>Debug menu</translation>
     </message>
     <message>
         <location line="-49"/>
         <source>Tools Menu</source>
-        <translation type="unfinished">Gereedschappen Menu</translation>
+        <translation>Gereedschappen Menu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Window Menu</source>
-        <translation type="unfinished">Venster menu</translation>
+        <translation>Venster menu</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+49"/>
         <source>Help Menu</source>
-        <translation type="unfinished">Hulp menu</translation>
+        <translation>Hulp menu</translation>
     </message>
     <message>
         <location line="-46"/>
         <source>News Menu</source>
-        <translation type="unfinished">Nieuws menu</translation>
+        <translation>Nieuws menu</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Handling of Dock Widgets</source>
-        <translation type="unfinished">Gebruik van Dock widgets</translation>
+        <translation>Gebruik van Dock widgets</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tab Handling in Dock Widgets</source>
-        <translation type="unfinished">Tabbladgebruik in gedockte widgets</translation>
+        <translation>Tabbladgebruik in gedockte widgets</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp; Replace in Dock Widgets</source>
-        <translation type="unfinished">Zoek &amp; Vervang in dock widgets</translation>
+        <translation>Zoek &amp; Vervang in dock widgets</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zooming in Editor and Documentation</source>
-        <translation type="unfinished">Inzoomen in Editor en Documentatie</translation>
+        <translation>Inzoomen in Editor en Documentatie</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>View Menu</source>
-        <translation type="unfinished">View menu</translation>
+        <translation>View menu</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Run Menu</source>
-        <translation type="unfinished">Uitvoeren menu</translation>
+        <translation>Uitvoeren menu</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Documentation Viewer</source>
-        <translation type="unfinished">Documentatie browser</translation>
+        <translation>Documentatie browser</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Browser</source>
-        <translation type="unfinished">Browser</translation>
+        <translation>Browser</translation>
     </message>
     <message>
         <location line="+109"/>
         <source>item %1 not found in shortcut settings dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>item %1 niet gevonden in sneltoets instelling dialoog</translation>
     </message>
 </context>
 <context>
@@ -3888,7 +3941,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/terminal-dock-widget.cc" line="+107"/>
         <source>Command Window</source>
-        <translation type="unfinished">Opdrachtvenster</translation>
+        <translation>Opdrachtvenster</translation>
     </message>
 </context>
 <context>
@@ -3896,27 +3949,27 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/variable-editor.cc" line="+177"/>
         <source>Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Dock Widget</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable Editor: </source>
-        <translation type="unfinished">Variable Editor: </translation>
+        <translation>Variable Editor: </translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Undock Widget</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Restore geometry</source>
-        <translation type="unfinished">Herstel geometrie</translation>
+        <translation>Herstel geometrie</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Redock</source>
-        <translation type="unfinished">Terug docken</translation>
+        <translation>Terug docken</translation>
     </message>
 </context>
 <context>
@@ -3924,96 +3977,96 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+918"/>
         <source>Variable Editor</source>
-        <translation type="unfinished">Variable Editor</translation>
+        <translation>Variable Editor</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit variables.</source>
-        <translation type="unfinished">Variabelen bewerken.</translation>
+        <translation>Variabelen bewerken.</translation>
     </message>
     <message>
         <location line="+553"/>
         <source>Variable Editor Toolbar</source>
-        <translation type="unfinished">Variable Editor Werkbalk</translation>
+        <translation>Variable Editor Werkbalk</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save</source>
-        <translation type="unfinished">Bewaar</translation>
+        <translation>Bewaar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Save variable to a file</source>
-        <translation type="unfinished">Sla variable in een bestand op</translation>
+        <translation>Sla variable in een bestand op</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+5"/>
         <location line="+6"/>
         <source>Save in format ...</source>
-        <translation type="unfinished">Bewaar in format ...</translation>
+        <translation>Bewaar in format ...</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Save variable to a file in different format</source>
-        <translation type="unfinished">Bewaar variabele in ander format</translation>
+        <translation>Bewaar variabele in ander format</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Cut</source>
-        <translation type="unfinished">Knippen</translation>
+        <translation>Knippen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cut data to clipboard</source>
-        <translation type="unfinished">Knip data naar klembord</translation>
+        <translation>Knip data naar klembord</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy data to clipboard</source>
-        <translation type="unfinished">Kopieer data naar klembord</translation>
+        <translation>Kopieer data naar klembord</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Paste</source>
-        <translation type="unfinished">Plakken</translation>
+        <translation>Plakken</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Paste clipboard into variable data</source>
-        <translation type="unfinished">Plak klembord in Variable Editor</translation>
+        <translation>Plak klembord in Variable Editor</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+6"/>
         <location line="+7"/>
         <source>Plot</source>
-        <translation type="unfinished">Plot</translation>
+        <translation>Plot</translation>
     </message>
     <message>
         <location line="-11"/>
         <source>Plot Selected Data</source>
-        <translation type="unfinished">Plot geselecteerde gegevens</translation>
+        <translation>Plot geselecteerde gegevens</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Plot selected data</source>
-        <translation type="unfinished">Plot geselecteerde gegevens</translation>
+        <translation>Plot geselecteerde gegevens</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Up</source>
-        <translation type="unfinished">Omhoog</translation>
+        <translation>Omhoog</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go one level up in variable hierarchy</source>
-        <translation type="unfinished">Ga een niveau omhoog in variabele hiërarchie</translation>
+        <translation>Ga een niveau omhoog in variabele hiërarchie</translation>
     </message>
 </context>
 <context>
@@ -4021,7 +4074,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="-1260"/>
         <source>Save Variable %1 As</source>
-        <translation type="unfinished">Sla variable %1 op als</translation>
+        <translation>Sla variable %1 op als</translation>
     </message>
 </context>
 <context>
@@ -4029,57 +4082,57 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+142"/>
         <source>Cut</source>
-        <translation type="unfinished">Knippen</translation>
+        <translation>Knippen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Paste</source>
-        <translation type="unfinished">Plakken</translation>
+        <translation>Plakken</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Clear</source>
-        <translation type="unfinished">Wis</translation>
+        <translation>Wis</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Verwijderen</translation>
+        <translation>Verwijderen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Variable from Selection</source>
-        <translation type="unfinished">Variabele uit selectie</translation>
+        <translation>Variabele uit selectie</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Transpose</source>
-        <translation type="unfinished">Transponeren</translation>
+        <translation>Transponeren</translation>
     </message>
     <message>
         <location line="+56"/>
         <source> columns</source>
-        <translation type="unfinished"> kolommen</translation>
+        <translation> kolommen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> column</source>
-        <translation type="unfinished"> kolom</translation>
+        <translation> kolom</translation>
     </message>
     <message>
         <location line="+52"/>
         <source> rows</source>
-        <translation type="unfinished"> rijen</translation>
+        <translation> rijen</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> row</source>
-        <translation type="unfinished"> rij</translation>
+        <translation> rij</translation>
     </message>
 </context>
 <context>
@@ -4087,7 +4140,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="-190"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">Welkom bij GNU Octave</translation>
+        <translation>Welkom bij GNU Octave</translation>
     </message>
 </context>
 <context>
@@ -4095,38 +4148,38 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/workspace-model.cc" line="+49"/>
         <source>Name</source>
-        <translation type="unfinished">Naam</translation>
+        <translation>Naam</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished">Klasse</translation>
+        <translation>Klasse</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Dimensie</translation>
+        <translation>Dimensie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Waarde</translation>
+        <translation>Waarde</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Eigenschap</translation>
+        <translation>Eigenschap</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>Right click to copy, rename, or display</source>
-        <translation type="unfinished">Klik rechts om te kopiëren, hernoemen of weergeven</translation>
+        <translation>Klik rechts om te kopiëren, hernoemen of weergeven</translation>
     </message>
     <message>
         <location line="+30"/>
         <location line="+2"/>
         <source>complex</source>
-        <translation type="unfinished">complex</translation>
+        <translation>complex</translation>
     </message>
 </context>
 <context>
@@ -4154,67 +4207,67 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/workspace-view.cc" line="+57"/>
         <source>Workspace</source>
-        <translation type="unfinished">Werkruimte</translation>
+        <translation>Werkruimte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>View the variables in the active workspace.</source>
-        <translation type="unfinished">Bekijk de variabelen in de huidige werkruimte.</translation>
+        <translation>Bekijk de variabelen in de huidige werkruimte.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter text to filter the workspace</source>
-        <translation type="unfinished">Geef patroon voor filteren van werkruimte</translation>
+        <translation>Geef patroon voor filteren van werkruimte</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Filter</source>
-        <translation type="unfinished">Filter</translation>
+        <translation>Filter</translation>
     </message>
     <message>
         <location line="+122"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
-        <translation type="unfinished">Bekijk variabelen in actieve werkruimte.&lt;br&gt;</translation>
+        <translation>Bekijk variabelen in actieve werkruimte.&lt;br&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Colors for variable attributes:</source>
-        <translation type="unfinished">Kleuren voor eigenschappen van variabelen:</translation>
+        <translation>Kleuren voor eigenschappen van variabelen:</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>Open in Variable Editor</source>
-        <translation type="unfinished">Toon in Variable Editor</translation>
+        <translation>Toon in Variable Editor</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy name</source>
-        <translation type="unfinished">Kopieer naam</translation>
+        <translation>Kopieer naam</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy value</source>
-        <translation type="unfinished">Kopieer waarde</translation>
+        <translation>Kopieer waarde</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Rename</source>
-        <translation type="unfinished">Hernoemen</translation>
+        <translation>Hernoemen</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Only top-level symbols may be renamed</source>
-        <translation type="unfinished">Alleen symbolen uit het bovenste niveau mogen hernoemd worden</translation>
+        <translation>Alleen symbolen uit het bovenste niveau mogen hernoemd worden</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Hide filter</source>
-        <translation type="unfinished">Verberg filter</translation>
+        <translation>Verberg filter</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished">Toon filter</translation>
+        <translation>Toon filter</translation>
     </message>
 </context>
 <context>
@@ -4599,7 +4652,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
         <location line="+323"/>
         <location filename="../src/ui-settings-dialog.h" line="+16"/>
         <source>Blinking cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Knipprende cursor</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4857,7 +4910,9 @@ Do you want to use the shortcut and remove it from the previous action?</source>
         <location line="+848"/>
         <location filename="../src/ui-settings-dialog.h" line="+64"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - close dialog and apply settings&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apply - &lt;/span&gt;apply settings but leave dialog open&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancel - &lt;/span&gt;close dialog and discard changes not yet applied&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; reload settings discarding changes not yet applied&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+	<translation>
+        &lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - sluit dialoog and pas instellingen toe&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apply - &lt;/span&gt;pas instellingen toe, maar laat dialoog open&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancel - &lt;/span&gt;sluit dialoog en bewaar niet opgeslagen wijzigingen niet&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; herlaad de instellingen, niet opgeslagen wijzigingen gaan verloren&lt;/body&gt;&lt;/html&gt;
+	</translation>
     </message>
     <message>
         <location line="-2247"/>
@@ -5099,7 +5154,7 @@ interference with readline key strokes.</source>
         <location line="+69"/>
         <location filename="../src/ui-settings-dialog.h" line="+13"/>
         <source>Edit a shortcut by double-clicking in Actual column</source>
-        <translation type="unfinished"></translation>
+        <translation>Bewerk een sneltoets door te dubbel klikken in the Actual kolom</translation>
     </message>
     <message>
         <location line="+61"/>
@@ -5143,616 +5198,616 @@ interference with readline key strokes.</source>
     <message>
         <location filename="../src/gui-preferences-sc.cc" line="+42"/>
         <source>Undock/Dock Widget</source>
-        <translation type="unfinished">Undock/Dock widget</translation>
+        <translation>Undock/Dock widget</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close Widget</source>
-        <translation type="unfinished">Sluit widget</translation>
+        <translation>Sluit widget</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>New File</source>
-        <translation type="unfinished">Nieuw bestand</translation>
+        <translation>Nieuw bestand</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Function</source>
-        <translation type="unfinished">Nieuwe Functie</translation>
+        <translation>Nieuwe Functie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Figure</source>
-        <translation type="unfinished">Nieuwe figuur</translation>
+        <translation>Nieuwe figuur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open File</source>
-        <translation type="unfinished">Open bestand</translation>
+        <translation>Open bestand</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Load Workspace</source>
-        <translation type="unfinished">Werkruimte laden</translation>
+        <translation>Werkruimte laden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save Workspace As</source>
-        <translation type="unfinished">Sla Werkruimte Op Als</translation>
+        <translation>Sla Werkruimte Op Als</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Exit Octave</source>
-        <translation type="unfinished">Octave afsluiten</translation>
+        <translation>Octave afsluiten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopiëren</translation>
+        <translation>Kopiëren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Paste</source>
-        <translation type="unfinished">Plakken</translation>
+        <translation>Plakken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Undo</source>
-        <translation type="unfinished">Ongedaan maken</translation>
+        <translation>Ongedaan maken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select All</source>
-        <translation type="unfinished">Alles selecteren</translation>
+        <translation>Alles selecteren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished">Wis klembord</translation>
+        <translation>Wis klembord</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find in Files</source>
-        <translation type="unfinished">Zoek in bestanden</translation>
+        <translation>Zoek in bestanden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Command Window</source>
-        <translation type="unfinished">Veeg opdrachtvenster schoon</translation>
+        <translation>Veeg opdrachtvenster schoon</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Command History</source>
-        <translation type="unfinished">Wis opdrachtgeschiedenis</translation>
+        <translation>Wis opdrachtgeschiedenis</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Workspace</source>
-        <translation type="unfinished">Wis werkruimte</translation>
+        <translation>Wis werkruimte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Path</source>
-        <translation type="unfinished"></translation>
+        <translation>Zet Pad</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+118"/>
         <source>Preferences</source>
-        <translation type="unfinished">Voorkeuren</translation>
+        <translation>Voorkeuren</translation>
     </message>
     <message>
         <location line="-115"/>
         <source>Step</source>
-        <translation type="unfinished">Volgende opdracht</translation>
+        <translation>Volgende opdracht</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Step In</source>
-        <translation type="unfinished">Stap In</translation>
+        <translation>Stap In</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Step Out</source>
-        <translation type="unfinished">Stap naar buiten</translation>
+        <translation>Stap naar buiten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Doorgaan</translation>
+        <translation>Doorgaan</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Verlaat Debug modus</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start/Stop Profiler Session</source>
-        <translation type="unfinished">Profiler sessie starten of stoppen</translation>
+        <translation>Profiler sessie starten of stoppen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation type="unfinished">Profiler sessie hervatten</translation>
+        <translation>Profiler sessie hervatten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Profile Data</source>
-        <translation type="unfinished">Profiler resultaten tonen</translation>
+        <translation>Profiler resultaten tonen</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show Command Window</source>
-        <translation type="unfinished">Toon opdrachtvenster</translation>
+        <translation>Toon opdrachtvenster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Command History</source>
-        <translation type="unfinished">Toon opdrachtgeschiedenis</translation>
+        <translation>Toon opdrachtgeschiedenis</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show File Browser</source>
-        <translation type="unfinished">Toon bestandsbrowser</translation>
+        <translation>Toon bestandsbrowser</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Workspace</source>
-        <translation type="unfinished">Toon werkruimte</translation>
+        <translation>Toon werkruimte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Editor</source>
-        <translation type="unfinished">Toon editor</translation>
+        <translation>Toon editor</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Documentation</source>
-        <translation type="unfinished">Toon documentatie</translation>
+        <translation>Toon documentatie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Variable Editor</source>
-        <translation type="unfinished">Toon Variable Editor</translation>
+        <translation>Toon Variable Editor</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command Window</source>
-        <translation type="unfinished">Opdrachtvenster</translation>
+        <translation>Opdrachtvenster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command History</source>
-        <translation type="unfinished">Opdrachtgeschiedenis</translation>
+        <translation>Opdrachtgeschiedenis</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File Browser</source>
-        <translation type="unfinished">Bestandsbrowser</translation>
+        <translation>Bestandsbrowser</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Workspace</source>
-        <translation type="unfinished">Werkruimte</translation>
+        <translation>Werkruimte</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Editor</source>
-        <translation type="unfinished">Editor</translation>
+        <translation>Editor</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Documentation</source>
-        <translation type="unfinished">Documentatie</translation>
+        <translation>Documentatie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Variable Editor</source>
-        <translation type="unfinished">Variable Editor</translation>
+        <translation>Variable Editor</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Widget</source>
-        <translation type="unfinished">Voorgaande widget</translation>
+        <translation>Voorgaande widget</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished"></translation>
+        <translation>Herstel de standaard Window Layout</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show On-disk Documentation</source>
-        <translation type="unfinished">Toon Documentatie op schijf</translation>
+        <translation>Toon Documentatie op schijf</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Online Documentation</source>
-        <translation type="unfinished">Toon on-line documentatie</translation>
+        <translation>Toon on-line documentatie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Probleem rapporteren</translation>
+        <translation>Probleem rapporteren</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Packages</source>
-        <translation type="unfinished">Octave packages</translation>
+        <translation>Octave packages</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Contribute to Octave</source>
-        <translation type="unfinished">Doneer aan Octave project</translation>
+        <translation>Doneer aan Octave project</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished">Octave Ontwikkelaar Resources</translation>
+        <translation>Octave Ontwikkelaar Resources</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>About Octave</source>
-        <translation type="unfinished">Over Octave</translation>
+        <translation>Over Octave</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished">Release notes</translation>
+        <translation>Release notes</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Community News</source>
-        <translation type="unfinished">Community Nieuws</translation>
+        <translation>Community Nieuws</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close Tab</source>
-        <translation type="unfinished">Tabblad sluiten</translation>
+        <translation>Tabblad sluiten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close All Tabs</source>
-        <translation type="unfinished">Alle tabbladen sluiten</translation>
+        <translation>Alle tabbladen sluiten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished">Andere tabbladen sluiten</translation>
+        <translation>Andere tabbladen sluiten</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switch to Left Tab</source>
-        <translation type="unfinished">Wissel naar Linker Tabblad</translation>
+        <translation>Wissel naar Linker Tabblad</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switch to Right Tab</source>
-        <translation type="unfinished">Wissel naar Rechter Tabblad</translation>
+        <translation>Wissel naar Rechter Tabblad</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Tab Left</source>
-        <translation type="unfinished">Verplaats Tabblad naar Links</translation>
+        <translation>Verplaats Tabblad naar Links</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Tab Right</source>
-        <translation type="unfinished">Verplaats Tabblad naar Rechts</translation>
+        <translation>Verplaats Tabblad naar Rechts</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Inzoomen</translation>
+        <translation>Inzoomen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Uitzoomen</translation>
+        <translation>Uitzoomen</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+2"/>
         <source>Zoom Normal</source>
-        <translation type="unfinished">Zoomen naar standaard</translation>
+        <translation>Zoomen naar standaard</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Edit Function</source>
-        <translation type="unfinished">Bewerk functie</translation>
+        <translation>Bewerk functie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save File</source>
-        <translation type="unfinished">Bewaar bestand</translation>
+        <translation>Bewaar bestand</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save File As</source>
-        <translation type="unfinished">Bewaar bestand als</translation>
+        <translation>Bewaar bestand als</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print</source>
-        <translation type="unfinished">Afdrukken</translation>
+        <translation>Afdrukken</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished">Opnieuw</translation>
+        <translation>Opnieuw</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cut</source>
-        <translation type="unfinished">Knippen</translation>
+        <translation>Knippen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find and Replace</source>
-        <translation type="unfinished">Zoek en vervang</translation>
+        <translation>Zoek en vervang</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Next</source>
-        <translation type="unfinished">Volgende zoeken</translation>
+        <translation>Volgende zoeken</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Previous</source>
-        <translation type="unfinished">Zoek Vorige</translation>
+        <translation>Zoek Vorige</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished">Wis tot begin van woord</translation>
+        <translation>Wis tot begin van woord</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished">Wis tot einde van woord</translation>
+        <translation>Wis tot einde van woord</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished">Wis tot begin van regel</translation>
+        <translation>Wis tot begin van regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished">Wis tot einde van regel</translation>
+        <translation>Wis tot einde van regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Line</source>
-        <translation type="unfinished">Verwijder regel</translation>
+        <translation>Verwijder regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Line</source>
-        <translation type="unfinished">Kopieer regel</translation>
+        <translation>Kopieer regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cut Line</source>
-        <translation type="unfinished">Knip regel</translation>
+        <translation>Knip regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Selection/Line</source>
-        <translation type="unfinished">Dubbele Selectie/Regel</translation>
+        <translation>Dubbele Selectie/Regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Transpose Line</source>
-        <translation type="unfinished">Transponeer regel</translation>
+        <translation>Transponeer regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Completion List</source>
-        <translation type="unfinished">Toon aanvullijst</translation>
+        <translation>Toon aanvullijst</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Comment Selection</source>
-        <translation type="unfinished">Maak commentaar van selectie</translation>
+        <translation>Maak commentaar van selectie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Uncomment Selection</source>
-        <translation type="unfinished">Maak code van selectie</translation>
+        <translation>Maak code van selectie</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Comment Selection (Choosing String)</source>
-        <translation type="unfinished">Commentaar selectie (String kiezen</translation>
+        <translation>Commentaar selectie (String kiezen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Uppercase Selection</source>
-        <translation type="unfinished">Zet selectie om naar hoofdletters</translation>
+        <translation>Zet selectie om naar hoofdletters</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lowercase Selection</source>
-        <translation type="unfinished">Zet selectie om naar kleine letters</translation>
+        <translation>Zet selectie om naar kleine letters</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+3"/>
         <source>Indent Selection Rigidly</source>
-        <translation type="unfinished">Selectie aten inspringen</translation>
+        <translation>Selectie aten inspringen</translation>
     </message>
     <message>
         <location line="-2"/>
         <location line="+3"/>
         <source>Unindent Selection Rigidly</source>
-        <translation type="unfinished">Selectie terug laten inspringen</translation>
+        <translation>Selectie terug laten inspringen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Indent Code</source>
-        <translation type="unfinished">Code laten inspringen</translation>
+        <translation>Code laten inspringen</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Windows</source>
-        <translation type="unfinished">Zet regeleindes om naar Windows</translation>
+        <translation>Zet regeleindes om naar Windows</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Convert Line Endings to Unix</source>
-        <translation type="unfinished">Zet regeleindes om naar Unix</translation>
+        <translation>Zet regeleindes om naar Unix</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Convert Line Endings to Mac</source>
-        <translation type="unfinished">Zet regeleindes om naar Mac</translation>
+        <translation>Zet regeleindes om naar Mac</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Goto Line</source>
-        <translation type="unfinished">Ga naar regel</translation>
+        <translation>Ga naar regel</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to Matching Brace</source>
-        <translation type="unfinished"></translation>
+        <translation>Ga naar bijbehorende accolade</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select to Matching Brace</source>
-        <translation type="unfinished">Selecteer tot bijbehorende accolade</translation>
+        <translation>Selecteer tot bijbehorende accolade</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Toggle Bookmark</source>
-        <translation type="unfinished">Schakel bladwijzer aan of uit</translation>
+        <translation>Schakel bladwijzer aan of uit</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next Bookmark</source>
-        <translation type="unfinished">Volgende bladwijzer</translation>
+        <translation>Volgende bladwijzer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Bookmark</source>
-        <translation type="unfinished">Vorige bladwijzer</translation>
+        <translation>Vorige bladwijzer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove All Bookmark</source>
-        <translation type="unfinished">Alle bladwijzers verwijderen</translation>
+        <translation>Alle bladwijzers verwijderen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Styles Preferences</source>
-        <translation type="unfinished">Stijlvoorkeuren</translation>
+        <translation>Stijlvoorkeuren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Line Numbers</source>
-        <translation type="unfinished">Toon regelnummers</translation>
+        <translation>Toon regelnummers</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Whitespace Characters</source>
-        <translation type="unfinished">Toon witruimte-tekens</translation>
+        <translation>Toon witruimte-tekens</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Line Endings</source>
-        <translation type="unfinished">Toon regeleindes</translation>
+        <translation>Toon regeleindes</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Indentation Guides</source>
-        <translation type="unfinished">Toon inspringlijnen</translation>
+        <translation>Toon inspringlijnen</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Long Line Marker</source>
-        <translation type="unfinished">Toon lange regelmarkering</translation>
+        <translation>Toon lange regelmarkering</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished">Toon Taakbalk</translation>
+        <translation>Toon Taakbalk</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Statusbar</source>
-        <translation type="unfinished">Toon Statusbalk</translation>
+        <translation>Toon Statusbalk</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Horizontal Scrollbar</source>
-        <translation type="unfinished">Toon Horizontale Schuifbalk</translation>
+        <translation>Toon Horizontale Schuifbalk</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sort Tabs Alphabetically</source>
-        <translation type="unfinished">Tabs alfabetisch sorteren</translation>
+        <translation>Tabs alfabetisch sorteren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Toggle Breakpoint</source>
-        <translation type="unfinished">Toggle onderbrekingspunt</translation>
+        <translation>Toggle onderbrekingspunt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next Breakpoint</source>
-        <translation type="unfinished">Volgend onderbrekingspunt</translation>
+        <translation>Volgend onderbrekingspunt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Breakpoint</source>
-        <translation type="unfinished">Vorig onderbrekingspunt</translation>
+        <translation>Vorig onderbrekingspunt</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove All Breakpoints</source>
-        <translation type="unfinished">Wis alle onderbrekingspunten</translation>
+        <translation>Wis alle onderbrekingspunten</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Run File</source>
-        <translation type="unfinished">Voer bestand uit</translation>
+        <translation>Voer bestand uit</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Selection</source>
-        <translation type="unfinished">Voer selectie uit</translation>
+        <translation>Voer selectie uit</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Help on Keyword</source>
-        <translation type="unfinished">Hulp voor sleutelwoorden</translation>
+        <translation>Hulp voor sleutelwoorden</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Document on Keyword</source>
-        <translation type="unfinished">Documentatie bij Sleutelwoord</translation>
+        <translation>Documentatie bij Sleutelwoord</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Go to Homepage</source>
-        <translation type="unfinished">Ga naar homepage</translation>
+        <translation>Ga naar homepage</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Go Back one Page</source>
-        <translation type="unfinished">Ga een pagina terug</translation>
+        <translation>Ga een pagina terug</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Go Forward one Page</source>
-        <translation type="unfinished">Ga een pagina vooruit</translation>
+        <translation>Ga een pagina vooruit</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bookmark this Page</source>
-        <translation type="unfinished">Bladwijzer naar deze pagina</translation>
+        <translation>Bladwijzer naar deze pagina</translation>
     </message>
 </context>
 </TS>

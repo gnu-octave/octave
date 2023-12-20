@@ -390,11 +390,11 @@ module is missing?
 Only help text in the Command Window will
 be available.</source>
         <translation>Die für den Browser der Dokumentation
-erforderlichen Datenkonnten nicht
+erforderlichen Daten konnten nicht
 eingerichtet werden. Möglicherweise fehlt
 das Qt SQlite Modul.
-Nur die Hilfetexte im Kommandofenster
-werden verfügbar sein.</translation>
+Hilfetexte sind nur im Kommandofenster
+verfügbar.</translation>
     </message>
     <message>
         <location line="+33"/>
@@ -421,7 +421,7 @@ werden verfügbar sein.</translation>
     <message>
         <location line="+11"/>
         <source>Enter text to search function index</source>
-        <translation>Texteingabe für die Suche im Funktions Index</translation>
+        <translation>Texteingabe für die Suche im Funktions-Index</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -692,7 +692,7 @@ Jetzt die Einstellungen öffnen?</translation>
 %1
 is already open in the editor.</source>
         <translation>Die Datei wurde nicht gespeichert!
-Eine Datei mit dem Name
+Eine Datei mit dem Namen
 %1
 ist bereits im Editor geöffnet.</translation>
     </message>
@@ -737,7 +737,7 @@ existiert nicht. Soll sie erzeugt werden?</translation>
 for writing: %2.</source>
         <translation>Die Datei
 %1
-konnte nicht zum Schreiben geöffent werden:
+konnte nicht zum Schreiben geöffnet werden:
 %2</translation>
     </message>
     <message>
@@ -1297,7 +1297,7 @@ Debuggen abbrechen und speichern?</translation>
 %2.</source>
         <translation>Die Datei
 %1
-kann nicht zum Schreiben geöffent werden:
+kann nicht zum Schreiben geöffnet werden:
 %2.</translation>
     </message>
     <message>
@@ -1976,7 +1976,12 @@ Make sure you have read and write permissions to
 %3
 
 Octave GUI must be closed now.</source>
-        <translation></translation>
+        <translation>Fehler %1 beim Erstellen der Einstellungsdatei
+%2
+Lese- und Schreibrechte benötigt für den Ordner
+%3
+
+Octave GUI muss geschlossen werden.</translation>
     </message>
     <message>
         <location line="+5"/>
@@ -2528,7 +2533,7 @@ Web-Verbindungen zur Anzeige der neuesten Nachrichten aus der Octave Community s
 &lt;p&gt;
 Für die neuesten Nachrichten siehe
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;,
-wenn eine Verbindung zu web besteht (öffent im externen Browser)
+wenn eine Verbindung zum Web besteht (öffnet im externen Browser)
 oder Web-Verbindungen für Nachrichten müssen im Octave Einstellungsdialog, Reiter Netzwerkseinstellungen, aktiviert werden.
 &lt;/p&gt;
 &lt;p&gt;
@@ -2545,7 +2550,7 @@ oder Web-Verbindungen für Nachrichten müssen im Octave Einstellungsdialog, Rei
     <message>
         <location line="+81"/>
         <source>Dock Widget</source>
-        <translation>Fesnter ankoppeln</translation>
+        <translation>Fenster ankoppeln</translation>
     </message>
     <message>
         <location line="+58"/>
@@ -2869,7 +2874,7 @@ aktuellen Farbschemas laden.</translation>
         <source>Reload the default style values,
 depends on currently selected mode.</source>
         <translation>Standardstile in Abhängigkeit des
-akteullen Schemas laden.</translation>
+aktuellen Schemas laden.</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -2926,7 +2931,7 @@ akteullen Schemas laden.</translation>
     <message>
         <location line="+30"/>
         <source>Applying preferences ... </source>
-        <translation></translation>
+        <translation>Einstellungen werden angewendet...</translation>
     </message>
     <message>
         <location line="+86"/>
@@ -3029,7 +3034,7 @@ Die Überprüfung erfolgt höchstens einmal am Tag, und nur Neuigkeiten werden a
 &lt;/body&gt;&lt;/html&gt;</source>
         <translation>&lt;html&gt;&lt;head&gt;
 &lt;/head&gt;&lt;body&gt;
-&lt;p&gt;Octave erlauben, sich beim Start mit der Webseite von Octave zu verbinden, um die neuesten Nachrichten und Informatione aus der Octave Community anzuzeigen.&lt;/p&gt;
+&lt;p&gt;Octave erlauben, sich beim Start mit der Webseite von Octave zu verbinden, um die neuesten Nachrichten und Informationen aus der Octave Community anzuzeigen.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
@@ -3088,10 +3093,10 @@ is already used for the action
 Do you want to use the shortcut and remove it from the previous action?</source>
         <translation>Das ausgewählte Tastenkürzel
   &quot;%1&quot;
-wird bereits für für die Aktion
+wird bereits für die Aktion
   &quot;%2&quot;
 verwendet. Soll das Tastenkürzel trotzdem verwendet und für die
-bisherigen Aktion deaktiviert werden?</translation>
+bisherige Aktion deaktiviert werden?</translation>
     </message>
 </context>
 <context>
@@ -4463,7 +4468,7 @@ Tastenkürzeln zu vermeiden.</translation>
     <message>
         <location line="+1"/>
         <source>Close Widget</source>
-        <translation>Fenster Schließen</translation>
+        <translation>Fenster schließen</translation>
     </message>
     <message>
         <location line="+5"/>

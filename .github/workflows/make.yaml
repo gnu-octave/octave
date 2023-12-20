@@ -1166,7 +1166,7 @@ jobs:
         run: |
           mv ./.build/test/fntests.log ./.build/test/fntests-no-bci.log
           export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
-          EGREP="grep -E" make -C ./.build check-bytecode-evaluatorm | tee ./test-suite-bci.log
+          EGREP="grep -E" make -C ./.build check-bytecode-evaluator | tee ./test-suite-bci.log
 
       - name: display test suite log with bytecode interpreter
         continue-on-error: true

@@ -57,9 +57,7 @@ template <typename T> OCTARRAY_API MArray<T> product (const MArray<T>&, const MA
 
 //! Template for N-dimensional array classes with like-type math operators.
 template <typename T>
-class
-OCTARRAY_API
-MArray : public Array<T>
+class OCTARRAY_API MArray : public Array<T>
 {
 public:
 

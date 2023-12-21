@@ -38,9 +38,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-class
-OCTAVE_API
-base_file_stat
+class OCTAVE_API base_file_stat
 {
 public:
 
@@ -208,9 +206,7 @@ protected:
   long m_blocks;
 };
 
-class
-OCTAVE_API
-file_stat : public base_file_stat
+class OCTAVE_API file_stat : public base_file_stat
 {
 public:
 
@@ -269,9 +265,7 @@ private:
   void update_internal (bool force = false);
 };
 
-class
-OCTAVE_API
-file_fstat : public base_file_stat
+class OCTAVE_API file_fstat : public base_file_stat
 {
 public:
 

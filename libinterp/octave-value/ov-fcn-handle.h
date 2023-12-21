@@ -182,9 +182,7 @@ protected:
 
 OCTAVE_END_NAMESPACE(octave)
 
-class
-OCTINTERP_API
-octave_fcn_handle : public octave_base_value
+class OCTINTERP_API octave_fcn_handle : public octave_base_value
 {
 public:
 

@@ -44,9 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(math)
 // of the matrix type.
 
 template <typename chol_type>
-class
-OCTAVE_API
-sparse_chol
+class OCTAVE_API sparse_chol
 {
 public:
 

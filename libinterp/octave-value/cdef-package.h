@@ -42,16 +42,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
-class
-OCTINTERP_API
-cdef_package : public cdef_meta_object
+class OCTINTERP_API cdef_package : public cdef_meta_object
 {
   friend class cdef_class;
 
 private:
 
-  class
-  cdef_package_rep : public cdef_meta_object_rep
+  class cdef_package_rep : public cdef_meta_object_rep
   {
   public:
 

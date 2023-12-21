@@ -38,9 +38,7 @@
 #include "ov.h"
 #include "Cell.h"
 
-class
-OCTINTERP_API
-octave_value_list
+class OCTINTERP_API octave_value_list
 {
 public:
 

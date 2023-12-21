@@ -32,8 +32,7 @@
 #include "base-de.h"
 #include "dMatrix.h"
 
-class
-ODE : public base_diff_eqn, public ODEFunc
+class ODE : public base_diff_eqn, public ODEFunc
 {
 public:
 

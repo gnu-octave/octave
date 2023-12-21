@@ -34,9 +34,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class mutex;
 
-class
-OCTAVE_API
-base_mutex
+class OCTAVE_API base_mutex
 {
 public:
   friend class mutex;
@@ -52,9 +50,7 @@ public:
   virtual bool try_lock ();
 };
 
-class
-OCTAVE_API
-mutex
+class OCTAVE_API mutex
 {
 public:
   mutex ();
@@ -80,9 +76,7 @@ protected:
   std::shared_ptr<base_mutex> m_rep;
 };
 
-class
-OCTAVE_API
-autolock
+class OCTAVE_API autolock
 {
 public:
   autolock (const mutex& m, bool block = true)
@@ -117,9 +111,7 @@ private:
 };
 
 
-class
-OCTAVE_API
-thread
+class OCTAVE_API thread
 {
 public:
 

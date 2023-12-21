@@ -44,8 +44,7 @@
 #include "ov-uint8.h"
 
 template <typename T>
-class
-octave_value_range_traits
+class octave_value_range_traits
 {
 public:
   typedef T scalar_type;
@@ -53,8 +52,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<bool>
+class octave_value_range_traits<bool>
 {
 public:
   typedef octave_bool scalar_type;
@@ -62,8 +60,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<float>
+class octave_value_range_traits<float>
 {
 public:
   typedef octave_float_scalar scalar_type;
@@ -71,8 +68,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<double>
+class octave_value_range_traits<double>
 {
 public:
   typedef octave_scalar scalar_type;
@@ -80,8 +76,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_int8>
+class octave_value_range_traits<octave_int8>
 {
 public:
   typedef octave_int8_scalar scalar_type;
@@ -89,8 +84,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_int16>
+class octave_value_range_traits<octave_int16>
 {
 public:
   typedef octave_int16_scalar scalar_type;
@@ -98,8 +92,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_int32>
+class octave_value_range_traits<octave_int32>
 {
 public:
   typedef octave_int32_scalar scalar_type;
@@ -107,8 +100,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_int64>
+class octave_value_range_traits<octave_int64>
 {
 public:
   typedef octave_int64_scalar scalar_type;
@@ -116,8 +108,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_uint8>
+class octave_value_range_traits<octave_uint8>
 {
 public:
   typedef octave_uint8_scalar scalar_type;
@@ -125,8 +116,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_uint16>
+class octave_value_range_traits<octave_uint16>
 {
 public:
   typedef octave_uint16_scalar scalar_type;
@@ -134,8 +124,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_uint32>
+class octave_value_range_traits<octave_uint32>
 {
 public:
   typedef octave_uint32_scalar scalar_type;
@@ -143,8 +132,7 @@ public:
 };
 
 template <>
-class
-octave_value_range_traits<octave_uint64>
+class octave_value_range_traits<octave_uint64>
 {
 public:
   typedef octave_uint64_scalar scalar_type;

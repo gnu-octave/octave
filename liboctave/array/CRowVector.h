@@ -32,9 +32,7 @@
 #include "dRowVector.h"
 #include "mx-defs.h"
 
-class
-OCTAVE_API
-ComplexRowVector : public MArray<Complex>
+class OCTAVE_API ComplexRowVector : public MArray<Complex>
 {
   friend class ComplexColumnVector;
 

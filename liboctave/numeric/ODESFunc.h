@@ -32,8 +32,7 @@
 
 #include "dMatrix.h"
 
-class
-ODESFunc
+class ODESFunc
 {
 public:
 

@@ -60,8 +60,7 @@ base_mutex::try_lock ()
 
 #if defined (OCTAVE_USE_WINDOWS_API)
 
-class
-w32_mutex : public base_mutex
+class w32_mutex : public base_mutex
 {
 public:
   w32_mutex ()
@@ -110,8 +109,7 @@ thread::is_thread ()
 
 #elif defined (HAVE_PTHREAD_H)
 
-class
-pthread_mutex : public base_mutex
+class pthread_mutex : public base_mutex
 {
 public:
 

@@ -35,9 +35,7 @@
 #include "ov-typeinfo.h"
 #include "ovl.h"
 
-class
-OCTINTERP_API
-octave_perm_matrix : public octave_base_value
+class OCTINTERP_API octave_perm_matrix : public octave_base_value
 {
 public:
   octave_perm_matrix () : m_matrix (), m_dense_cache () { }

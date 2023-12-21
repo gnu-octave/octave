@@ -88,9 +88,7 @@
 //! that rep points to the beginning of dims to grant faster access
 //! (reinterpret_cast is assumed to be an inexpensive operation).
 
-class
-OCTAVE_API
-dim_vector
+class OCTAVE_API dim_vector
 {
 private:
 

@@ -48,9 +48,7 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Functions.
 
-class
-OCTINTERP_API
-octave_function : public octave_base_value
+class OCTINTERP_API octave_function : public octave_base_value
 {
 public:
 

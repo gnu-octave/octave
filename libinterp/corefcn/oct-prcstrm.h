@@ -40,8 +40,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-octave_iprocstream : public octave::stdiostream
+class octave_iprocstream : public octave::stdiostream
 {
 public:
 
@@ -64,8 +63,7 @@ protected:
   ~octave_iprocstream ();
 };
 
-class
-octave_oprocstream : public octave::stdiostream
+class octave_oprocstream : public octave::stdiostream
 {
 public:
 

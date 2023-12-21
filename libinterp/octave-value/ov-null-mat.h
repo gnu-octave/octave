@@ -41,9 +41,7 @@
 
 // The special [] value.
 
-class
-OCTINTERP_API
-octave_null_matrix : public octave_matrix
+class OCTINTERP_API octave_null_matrix : public octave_matrix
 {
   octave_null_matrix () : octave_matrix () { }
 
@@ -63,9 +61,7 @@ private:
 
 // The special "" value
 
-class
-OCTINTERP_API
-octave_null_str : public octave_char_matrix_str
+class OCTINTERP_API octave_null_str : public octave_char_matrix_str
 {
   octave_null_str () : octave_char_matrix_str () { }
 
@@ -87,9 +83,7 @@ private:
 
 // The special '' value
 
-class
-OCTINTERP_API
-octave_null_sq_str : public octave_char_matrix_sq_str
+class OCTINTERP_API octave_null_sq_str : public octave_char_matrix_sq_str
 {
   octave_null_sq_str () : octave_char_matrix_sq_str () { }
 

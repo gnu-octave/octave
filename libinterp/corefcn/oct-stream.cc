@@ -239,8 +239,7 @@ expand_char_class (const std::string& s)
   return retval;
 }
 
-class
-scanf_format_elt
+class scanf_format_elt
 {
 public:
 
@@ -284,8 +283,7 @@ public:
   std::string char_class;
 };
 
-class
-scanf_format_list
+class scanf_format_list
 {
 public:
 
@@ -747,8 +745,7 @@ scanf_format_list::all_numeric_conversions ()
     return false;
 }
 
-class
-printf_format_elt
+class printf_format_elt
 {
 public:
 
@@ -788,8 +785,7 @@ public:
   char modifier;
 };
 
-class
-printf_format_list
+class printf_format_list
 {
 public:
 
@@ -1213,8 +1209,7 @@ init_inf_nan ()
 // of the buffer and the buffer is refilled.  This also allows cheap
 // seek and tell operations within a "fast read" block.
 
-class
-delimited_stream
+class delimited_stream
 {
 public:
 
@@ -1636,8 +1631,7 @@ delimited_stream::getline (std::string& out, char delim)
 
 // A single conversion specifier, such as %f or %c.
 
-class
-textscan_format_elt
+class textscan_format_elt
 {
 public:
 
@@ -1691,8 +1685,7 @@ public:
 
 class textscan;
 
-class
-textscan_format_list
+class textscan_format_list
 {
 public:
 
@@ -1802,9 +1795,7 @@ private:
 //   textscan scanner ();
 //   scanner.scan (...);
 
-class
-OCTINTERP_API
-textscan
+class OCTINTERP_API textscan
 {
 public:
 
@@ -5481,8 +5472,7 @@ base_stream::flush ()
   return retval;
 }
 
-class
-printf_value_cache
+class printf_value_cache
 {
 public:
 

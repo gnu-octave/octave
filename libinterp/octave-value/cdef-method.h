@@ -39,16 +39,13 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTINTERP_API
-cdef_method : public cdef_meta_object
+class OCTINTERP_API cdef_method : public cdef_meta_object
 {
   friend class cdef_class;
 
 private:
 
-  class
-  cdef_method_rep : public cdef_meta_object_rep
+  class cdef_method_rep : public cdef_meta_object_rep
   {
   public:
 

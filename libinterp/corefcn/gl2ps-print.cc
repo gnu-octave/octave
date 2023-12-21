@@ -57,9 +57,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTINTERP_API
-gl2ps_renderer : public opengl_renderer
+class OCTINTERP_API gl2ps_renderer : public opengl_renderer
 {
 public:
 

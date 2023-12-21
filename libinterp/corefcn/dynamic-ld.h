@@ -39,13 +39,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
-class
-dynamic_loader
+class dynamic_loader
 {
 private:
 
-  class
-  shlibs_list
+  class shlibs_list
   {
   public:
 

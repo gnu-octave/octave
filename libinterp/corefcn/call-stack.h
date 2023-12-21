@@ -50,9 +50,7 @@ class tree_evaluator;
 class symbol_info_list;
 class unwind_protect;
 
-class
-OCTINTERP_API
-call_stack
+class OCTINTERP_API call_stack
 {
 public:
 

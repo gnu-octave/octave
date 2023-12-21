@@ -37,8 +37,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-procbuf : public c_file_ptr_buf
+class procbuf : public c_file_ptr_buf
 {
 public:
 

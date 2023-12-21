@@ -50,8 +50,7 @@
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-class
-Range
+class Range
 {
 public:
 

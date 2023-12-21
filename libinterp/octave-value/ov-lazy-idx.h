@@ -33,9 +33,7 @@
 // Lazy indices that stay in idx_vector form until the conversion to NDArray is
 // actually needed.
 
-class
-OCTINTERP_API
-octave_lazy_index : public octave_base_value
+class OCTINTERP_API octave_lazy_index : public octave_base_value
 {
 public:
 

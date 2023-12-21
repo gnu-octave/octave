@@ -56,8 +56,7 @@ command_history *command_history::s_instance = nullptr;
 
 #if defined (USE_READLINE)
 
-class
-gnu_history : public command_history
+class gnu_history : public command_history
 {
 public:
 

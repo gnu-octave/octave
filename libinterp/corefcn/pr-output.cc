@@ -2784,8 +2784,7 @@ octave_print_internal (std::ostream& os, const Array<std::string>& nda,
 }
 
 template <typename T>
-class
-octave_print_conv
+class octave_print_conv
 {
 public:
   typedef T print_conv_type;

@@ -176,8 +176,7 @@ get_region_range (const octave_value& region)
   return output;
 }
 
-class
-image_region
+class image_region
 {
 public:
 

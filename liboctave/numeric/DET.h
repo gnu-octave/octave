@@ -34,8 +34,7 @@
 #include "oct-cmplx.h"
 
 template <typename T>
-class
-base_det
+class base_det
 {
 public:
 

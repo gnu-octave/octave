@@ -32,8 +32,7 @@
 
 #include "MSparse.h"
 
-class
-MatrixType
+class MatrixType
 {
 public:
   enum matrix_type

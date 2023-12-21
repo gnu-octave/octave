@@ -30,8 +30,7 @@
 
 #include "mx-fwd.h"
 
-class
-ODEFunc
+class ODEFunc
 {
 public:
 

@@ -35,9 +35,7 @@
 #include "Array.h"
 #include "DASSL-opts.h"
 
-class
-OCTAVE_API
-DASSL : public DAE, public DASSL_options
+class OCTAVE_API DASSL : public DAE, public DASSL_options
 {
 public:
 

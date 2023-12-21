@@ -11591,8 +11591,7 @@ base_graphics_object::get_factory_default (const caseless_str& name) const
   return parent_go.get_factory_default (type () + name);
 }
 
-class
-callback_event : public base_graphics_event
+class callback_event : public base_graphics_event
 {
 public:
   callback_event (const graphics_handle& h, const std::string& name,
@@ -11628,8 +11627,7 @@ private:
   octave_value m_callback_data;
 };
 
-class
-mcode_event : public base_graphics_event
+class mcode_event : public base_graphics_event
 {
 public:
   mcode_event (const graphics_handle& h, const std::string& cmd,
@@ -11662,8 +11660,7 @@ private:
   std::string m_mcode;
 };
 
-class
-function_event : public base_graphics_event
+class function_event : public base_graphics_event
 {
 public:
 
@@ -11687,8 +11684,7 @@ private:
   void *m_function_data;
 };
 
-class
-set_event : public base_graphics_event
+class set_event : public base_graphics_event
 {
 public:
   set_event (const graphics_handle& h, const std::string& name,

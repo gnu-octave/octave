@@ -32,8 +32,7 @@
 
 #include "dColVector.h"
 
-class
-base_diff_eqn
+class base_diff_eqn
 {
 public:
 

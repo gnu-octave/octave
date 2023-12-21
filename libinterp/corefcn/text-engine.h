@@ -51,9 +51,7 @@ class text_element_color;
 
 class text_processor;
 
-class
-OCTINTERP_API
-text_element
+class OCTINTERP_API text_element
 {
 public:
 
@@ -64,9 +62,7 @@ public:
   virtual void accept (text_processor& p) = 0;
 };
 
-class
-OCTINTERP_API
-text_element_string : public text_element
+class OCTINTERP_API text_element_string : public text_element
 {
 public:
 
@@ -84,9 +80,7 @@ private:
   std::string m_str;
 };
 
-class
-OCTINTERP_API
-text_element_symbol : public text_element
+class OCTINTERP_API text_element_symbol : public text_element
 {
 public:
 
@@ -109,9 +103,7 @@ private:
   int m_symbol;
 };
 
-class
-OCTINTERP_API
-text_element_list
+class OCTINTERP_API text_element_list
   : public text_element, public base_list<text_element *>
 {
 public:
@@ -137,9 +129,7 @@ public:
   void accept (text_processor& p);
 };
 
-class
-OCTINTERP_API
-text_element_subscript : public text_element
+class OCTINTERP_API text_element_subscript : public text_element
 {
 public:
 
@@ -164,9 +154,7 @@ private:
   text_element *m_elem;
 };
 
-class
-OCTINTERP_API
-text_element_superscript : public text_element
+class OCTINTERP_API text_element_superscript : public text_element
 {
 public:
 
@@ -191,9 +179,7 @@ private:
   text_element *m_elem;
 };
 
-class
-OCTINTERP_API
-text_element_combined : public text_element_list
+class OCTINTERP_API text_element_combined : public text_element_list
 {
 public:
 
@@ -209,9 +195,7 @@ public:
   void accept (text_processor& p);
 };
 
-class
-OCTINTERP_API
-text_element_fontstyle : public text_element
+class OCTINTERP_API text_element_fontstyle : public text_element
 {
 public:
 
@@ -239,9 +223,7 @@ private:
   fontstyle m_style;
 };
 
-class
-OCTINTERP_API
-text_element_fontname : public text_element
+class OCTINTERP_API text_element_fontname : public text_element
 {
 public:
 
@@ -261,9 +243,7 @@ private:
   std::string m_name;
 };
 
-class
-OCTINTERP_API
-text_element_fontsize : public text_element
+class OCTINTERP_API text_element_fontsize : public text_element
 {
 public:
 
@@ -283,9 +263,7 @@ private:
   double m_size;
 };
 
-class
-OCTINTERP_API
-text_element_color : public text_element
+class OCTINTERP_API text_element_color : public text_element
 {
 public:
 
@@ -328,9 +306,7 @@ private:
   Matrix m_rgb;
 };
 
-class
-OCTINTERP_API
-text_processor
+class OCTINTERP_API text_processor
 {
 public:
 
@@ -389,9 +365,7 @@ TEXT_ELEMENT_ACCEPT(text_element_fontname)
 TEXT_ELEMENT_ACCEPT(text_element_fontsize)
 TEXT_ELEMENT_ACCEPT(text_element_color)
 
-class
-OCTINTERP_API
-text_parser
+class OCTINTERP_API text_parser
 {
 public:
 
@@ -406,9 +380,7 @@ public:
                               const caseless_str& interpreter);
 };
 
-class
-OCTINTERP_API
-text_parser_none : public text_parser
+class OCTINTERP_API text_parser_none : public text_parser
 {
 public:
 
@@ -425,9 +397,7 @@ public:
   }
 };
 
-class
-OCTINTERP_API
-text_parser_tex : public text_parser
+class OCTINTERP_API text_parser_tex : public text_parser
 {
 public:
 

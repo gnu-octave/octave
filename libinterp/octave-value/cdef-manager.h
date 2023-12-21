@@ -39,9 +39,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
-class
-OCTINTERP_API
-cdef_manager
+class OCTINTERP_API cdef_manager
 {
 public:
 

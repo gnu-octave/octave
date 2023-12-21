@@ -45,9 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // The actual base class is cdef_class_base, which is declared after
 // cdef_object, such that it can contain cdef_object objects.
 
-class
-OCTINTERP_API
-cdef_object_rep
+class OCTINTERP_API cdef_object_rep
 {
 public:
 
@@ -198,9 +196,7 @@ private:
   }
 };
 
-class
-OCTINTERP_API
-cdef_object
+class OCTINTERP_API cdef_object
 {
 public:
 
@@ -350,9 +346,7 @@ private:
   cdef_object_rep *m_rep;
 };
 
-class
-OCTINTERP_API
-cdef_object_base : public cdef_object_rep
+class OCTINTERP_API cdef_object_base : public cdef_object_rep
 {
 public:
 
@@ -388,9 +382,7 @@ private:
   cdef_object m_klass;
 };
 
-class
-OCTINTERP_API
-cdef_object_array : public cdef_object_base
+class OCTINTERP_API cdef_object_array : public cdef_object_base
 {
 public:
 
@@ -456,9 +448,7 @@ private:
   { }
 };
 
-class
-OCTINTERP_API
-cdef_object_scalar : public cdef_object_base
+class OCTINTERP_API cdef_object_scalar : public cdef_object_base
 {
 public:
 
@@ -543,9 +533,7 @@ protected:
   { }
 };
 
-class
-OCTINTERP_API
-handle_cdef_object : public cdef_object_scalar
+class OCTINTERP_API handle_cdef_object : public cdef_object_scalar
 {
 public:
 
@@ -579,9 +567,7 @@ protected:
   { }
 };
 
-class
-OCTINTERP_API
-value_cdef_object : public cdef_object_scalar
+class OCTINTERP_API value_cdef_object : public cdef_object_scalar
 {
 public:
 
@@ -610,9 +596,7 @@ private:
   { }
 };
 
-class
-OCTINTERP_API
-cdef_meta_object_rep : public handle_cdef_object
+class OCTINTERP_API cdef_meta_object_rep : public handle_cdef_object
 {
 public:
 
@@ -658,9 +642,7 @@ protected:
   { }
 };
 
-class
-OCTINTERP_API
-cdef_meta_object : public cdef_object
+class OCTINTERP_API cdef_meta_object : public cdef_object
 {
 public:
 

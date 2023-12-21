@@ -44,8 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(math)
 // of the matrix type.
 
 template <typename SPARSE_T>
-class
-sparse_qr
+class sparse_qr
 {
 public:
 

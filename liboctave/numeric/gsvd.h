@@ -33,9 +33,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 OCTAVE_BEGIN_NAMESPACE(math)
 
 template <typename T>
-class
-OCTAVE_API
-gsvd
+class OCTAVE_API gsvd
 {
 public:
 

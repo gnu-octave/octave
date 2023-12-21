@@ -36,9 +36,7 @@
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 
-class
-OCTAVE_API
-Matrix : public NDArray
+class OCTAVE_API Matrix : public NDArray
 {
 public:
 

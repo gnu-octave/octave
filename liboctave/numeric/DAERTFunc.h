@@ -30,8 +30,7 @@
 
 #include "DAEFunc.h"
 
-class
-DAERTFunc : public DAEFunc
+class DAERTFunc : public DAEFunc
 {
 public:
 

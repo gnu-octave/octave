@@ -51,9 +51,7 @@ struct weboptions
   std::string CertificateFilename;
 };
 
-class
-OCTAVE_API
-base_url_transfer
+class OCTAVE_API base_url_transfer
 {
 public:
 
@@ -160,9 +158,7 @@ protected:
   std::ostream *m_curr_ostream;
 };
 
-class
-OCTAVE_API
-url_transfer
+class OCTAVE_API url_transfer
 {
 public:
 

@@ -34,8 +34,7 @@
 #include "boolNDArray.h"
 
 template <typename T>
-class
-intNDArray : public MArray<T>
+class intNDArray : public MArray<T>
 {
 public:
 

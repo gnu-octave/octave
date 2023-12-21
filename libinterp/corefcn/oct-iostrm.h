@@ -34,8 +34,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-base_iostream : public base_stream
+class base_iostream : public base_stream
 {
 public:
 
@@ -79,8 +78,7 @@ private:
   virtual const char * stream_type () const = 0;
 };
 
-class
-istream : public base_iostream
+class istream : public base_iostream
 {
 public:
 
@@ -113,8 +111,7 @@ private:
   const char * stream_type () const { return "istream"; }
 };
 
-class
-ostream : public base_iostream
+class ostream : public base_iostream
 {
 public:
 

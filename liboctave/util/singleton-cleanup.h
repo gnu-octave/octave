@@ -30,9 +30,7 @@
 
 #include <set>
 
-class
-OCTAVE_API
-singleton_cleanup_list
+class OCTAVE_API singleton_cleanup_list
 {
 protected:
 

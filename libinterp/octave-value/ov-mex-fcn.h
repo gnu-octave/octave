@@ -47,8 +47,7 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Dynamically-linked functions.
 
-class
-octave_mex_function : public octave_function
+class octave_mex_function : public octave_function
 {
 public:
 

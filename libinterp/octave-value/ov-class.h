@@ -50,8 +50,7 @@ class octave_value_list;
 
 // Data structures.
 
-class
-octave_class : public octave_base_value
+class octave_class : public octave_base_value
 {
 public:
 

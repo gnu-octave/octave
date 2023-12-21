@@ -33,9 +33,7 @@
 #include "Array.h"
 #include "str-vec.h"
 
-class
-OCTAVE_API
-glob_match
+class OCTAVE_API glob_match
 {
 public:
 
@@ -96,9 +94,7 @@ private:
   int opts_to_fnmatch_flags (unsigned int xopts) const;
 };
 
-class
-OCTAVE_API
-symbol_match
+class OCTAVE_API symbol_match
 {
 
 // This class is meant to provide a performant implementation for symbol

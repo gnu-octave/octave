@@ -45,9 +45,7 @@
 // base int matrix values.
 
 template <typename T>
-class
-OCTINTERP_API
-octave_base_int_matrix : public octave_base_matrix<T>
+class OCTINTERP_API octave_base_int_matrix : public octave_base_matrix<T>
 {
 public:
 
@@ -117,9 +115,7 @@ protected:
 // base int scalar values.
 
 template <typename T>
-class
-OCTINTERP_API
-octave_base_int_scalar : public octave_base_scalar<T>
+class OCTINTERP_API octave_base_int_scalar : public octave_base_scalar<T>
 {
 public:
 

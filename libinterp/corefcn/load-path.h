@@ -41,9 +41,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTINTERP_API
-load_path
+class OCTINTERP_API load_path
 {
 public:
 

@@ -37,9 +37,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTAVE_API
-unwind_protect : public action_container
+class OCTAVE_API unwind_protect : public action_container
 {
 public:
 
@@ -92,9 +90,7 @@ protected:
 // of seeing an exception (or interrupt) in the cleanup actions.
 // Not that we can do much about it, but at least we won't crash.
 
-class
-OCTAVE_API
-unwind_protect_safe : public unwind_protect
+class OCTAVE_API unwind_protect_safe : public unwind_protect
 {
 private:
 

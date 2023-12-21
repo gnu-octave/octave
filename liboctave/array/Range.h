@@ -45,8 +45,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // in ov.cc.
 
 template <typename T>
-class
-range<T, typename std::enable_if<std::is_floating_point<T>::value>::type>
+class range<T, typename std::enable_if<std::is_floating_point<T>::value>::type>
 {
 public:
 

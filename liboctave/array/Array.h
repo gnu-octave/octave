@@ -124,9 +124,7 @@
 //!   - Cell: Array<octave_value>, equivalent to an Octave cell.
 
 template <typename T, typename Alloc>
-class
-OCTARRAY_TEMPLATE_API
-Array
+class OCTARRAY_TEMPLATE_API Array
 {
 protected:
 

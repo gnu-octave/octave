@@ -2090,8 +2090,7 @@ class octave_inline;
 // The following class can be removed once the
 // octave_value::function_value method is removed.
 
-class
-octave_inline_fcn : public octave_function
+class octave_inline_fcn : public octave_function
 {
 public:
 
@@ -2129,8 +2128,7 @@ private:
 //   return class_name () == "inline";
 // }
 
-class
-octave_inline : public octave_class
+class octave_inline : public octave_class
 {
 public:
 

@@ -37,9 +37,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTAVE_API
-fftw_planner
+class OCTAVE_API fftw_planner
 {
 protected:
 
@@ -179,9 +177,7 @@ private:
   int m_nthreads;
 };
 
-class
-OCTAVE_API
-float_fftw_planner
+class OCTAVE_API float_fftw_planner
 {
 protected:
 
@@ -321,9 +317,7 @@ private:
   int m_nthreads;
 };
 
-class
-OCTAVE_API
-fftw
+class OCTAVE_API fftw
 {
 public:
 

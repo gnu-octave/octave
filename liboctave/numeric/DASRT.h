@@ -34,8 +34,7 @@
 #include "DASRT-opts.h"
 #include "dMatrix.h"
 
-class
-DASRT_result
+class DASRT_result
 {
 public:
 
@@ -72,9 +71,7 @@ private:
   ColumnVector m_t;
 };
 
-class
-OCTAVE_API
-DASRT : public DAERT, public DASRT_options
+class OCTAVE_API DASRT : public DAERT, public DASRT_options
 {
 public:
 

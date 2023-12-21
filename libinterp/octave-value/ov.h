@@ -69,9 +69,7 @@ class octave_fcn_cache;
 #include "oct-stream.h"
 #include "ov-base.h"
 
-class
-OCTINTERP_API
-octave_value
+class OCTINTERP_API octave_value
 {
 public:
 

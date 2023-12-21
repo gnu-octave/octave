@@ -30,8 +30,7 @@
 
 #include "base-de.h"
 
-class
-base_diff_alg_eqn : public base_diff_eqn
+class base_diff_alg_eqn : public base_diff_eqn
 {
 public:
 

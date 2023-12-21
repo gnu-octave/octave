@@ -59,8 +59,7 @@ OCTAVE_BEGIN_NAMESPACE(sys)
 
 class base_tm;
 
-class
-time
+class time
 {
 public:
 
@@ -193,8 +192,7 @@ operator + (const time& t1, const time& t2)
                t1.usec () + t2.usec ());
 }
 
-class
-base_tm
+class base_tm
 {
 public:
 
@@ -306,8 +304,7 @@ protected:
   OCTAVE_API void init (void *p);
 };
 
-class
-localtime : public base_tm
+class localtime : public base_tm
 {
 public:
 
@@ -333,8 +330,7 @@ private:
   OCTAVE_API void init (const time& ot);
 };
 
-class
-gmtime : public base_tm
+class gmtime : public base_tm
 {
 public:
 
@@ -351,8 +347,7 @@ private:
   OCTAVE_API void init (const time& ot);
 };
 
-class
-strptime : public base_tm
+class strptime : public base_tm
 {
 public:
 
@@ -375,8 +370,7 @@ private:
   OCTAVE_API void init (const std::string& str, const std::string& fmt);
 };
 
-class
-cpu_time
+class cpu_time
 {
 public:
 
@@ -422,8 +416,7 @@ private:
   { }
 };
 
-class
-resource_usage
+class resource_usage
 {
 public:
 

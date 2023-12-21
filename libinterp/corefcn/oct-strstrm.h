@@ -35,8 +35,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-base_strstream : public base_stream
+class base_strstream : public base_stream
 {
 public:
 
@@ -73,8 +72,7 @@ public:
   virtual void clear () = 0;
 };
 
-class
-istrstream : public base_strstream
+class istrstream : public base_strstream
 {
 public:
 
@@ -133,8 +131,7 @@ private:
   std::istringstream m_istream;
 };
 
-class
-ostrstream : public base_strstream
+class ostrstream : public base_strstream
 {
 public:
 

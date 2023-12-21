@@ -44,8 +44,7 @@
 
 // class to compute optimal work space size (lwork) for DGEJSV and SGEJSV
 template<typename T>
-class
-gejsv_lwork
+class gejsv_lwork
 {
 public:
 

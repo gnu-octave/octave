@@ -40,8 +40,7 @@ extern char * get_comment_text_c_str ();
 
 extern void save_comment_text (const std::string& text);
 
-class
-comment_elt
+class comment_elt
 {
 public:
 
@@ -93,8 +92,7 @@ private:
   comment_type m_type;
 };
 
-class
-comment_list : public base_list<comment_elt>
+class comment_list : public base_list<comment_elt>
 {
 public:
 

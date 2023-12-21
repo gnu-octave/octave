@@ -39,8 +39,7 @@
 #include "ov-uint64.h"
 
 template <typename T>
-class
-octave_value_int_traits
+class octave_value_int_traits
 {
 public:
   typedef T scalar_type;

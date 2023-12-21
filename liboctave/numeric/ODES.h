@@ -31,8 +31,7 @@
 #include "ODESFunc.h"
 #include "base-de.h"
 
-class
-ODES : public base_diff_eqn, public ODESFunc
+class ODES : public base_diff_eqn, public ODESFunc
 {
 public:
 

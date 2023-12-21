@@ -41,9 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class interpreter;
 class oprocstream;
 
-class
-OCTINTERP_API
-pager_buf : public std::stringbuf
+class OCTINTERP_API pager_buf : public std::stringbuf
 {
 public:
 
@@ -66,9 +64,7 @@ private:
   std::size_t m_diary_skip;
 };
 
-class
-OCTINTERP_API
-pager_stream : public std::ostream
+class OCTINTERP_API pager_stream : public std::ostream
 {
 public:
 
@@ -91,9 +87,7 @@ private:
   pager_buf *m_pb;
 };
 
-class
-OCTINTERP_API
-diary_buf : public std::stringbuf
+class OCTINTERP_API diary_buf : public std::stringbuf
 {
 public:
 
@@ -105,9 +99,7 @@ protected:
   int sync ();
 };
 
-class
-OCTINTERP_API
-diary_stream : public std::ostream
+class OCTINTERP_API diary_stream : public std::ostream
 {
 public:
 

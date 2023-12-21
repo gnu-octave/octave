@@ -43,8 +43,7 @@ class type_info;
 
 OCTAVE_END_NAMESPACE(octave)
 
-class
-octave_classdef : public octave_base_value
+class octave_classdef : public octave_base_value
 {
 public:
 

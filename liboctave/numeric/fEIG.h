@@ -35,9 +35,7 @@
 #include "fCColVector.h"
 #include "fCMatrix.h"
 
-class
-OCTAVE_API
-FloatEIG
+class OCTAVE_API FloatEIG
 {
   friend class FloatMatrix;
   friend class FloatComplexMatrix;

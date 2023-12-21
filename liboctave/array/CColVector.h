@@ -31,9 +31,7 @@
 #include "MArray.h"
 #include "mx-defs.h"
 
-class
-OCTAVE_API
-ComplexColumnVector : public MArray<Complex>
+class OCTAVE_API ComplexColumnVector : public MArray<Complex>
 {
   friend class ComplexMatrix;
   friend class ComplexRowVector;

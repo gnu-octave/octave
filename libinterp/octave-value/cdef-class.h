@@ -48,14 +48,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class interpreter;
 class tree_classdef;
 
-class
-OCTINTERP_API
-cdef_class : public cdef_meta_object
+class OCTINTERP_API cdef_class : public cdef_meta_object
 {
 private:
 
-  class
-  cdef_class_rep : public cdef_meta_object_rep
+  class cdef_class_rep : public cdef_meta_object_rep
   {
   public:
     cdef_class_rep ()

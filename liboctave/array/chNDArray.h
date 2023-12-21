@@ -34,9 +34,7 @@
 #include "mx-op-decl.h"
 #include "str-vec.h"
 
-class
-OCTAVE_API
-charNDArray : public Array<char>
+class OCTAVE_API charNDArray : public Array<char>
 {
 public:
 

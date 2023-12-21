@@ -47,9 +47,7 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Builtin functions.
 
-class
-OCTINTERP_API
-octave_builtin : public octave_function
+class OCTINTERP_API octave_builtin : public octave_function
 {
 public:
 

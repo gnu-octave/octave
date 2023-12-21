@@ -31,9 +31,7 @@
 #include "mach-info.h"
 #include "oct-inttypes-fwd.h"
 
-class
-OCTAVE_API
-oct_data_conv
+class OCTAVE_API oct_data_conv
 {
 public:
 

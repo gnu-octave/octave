@@ -32,8 +32,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-process_execution_result
+class process_execution_result
 {
 public:
 

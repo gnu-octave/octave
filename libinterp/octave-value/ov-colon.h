@@ -44,8 +44,7 @@ class octave_value_list;
 
 // A type to represent ':' as used for indexing.
 
-class
-octave_magic_colon : public octave_base_value
+class octave_magic_colon : public octave_base_value
 {
 public:
 

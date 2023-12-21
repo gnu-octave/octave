@@ -34,8 +34,7 @@
 
 #include "oct-map.h"
 
-class
-octave_errno
+class octave_errno
 {
 protected:
 

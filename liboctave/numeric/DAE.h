@@ -31,9 +31,7 @@
 #include "DAEFunc.h"
 #include "base-dae.h"
 
-class
-OCTAVE_API
-DAE : public base_diff_alg_eqn, public DAEFunc
+class OCTAVE_API DAE : public base_diff_alg_eqn, public DAEFunc
 {
 public:
 

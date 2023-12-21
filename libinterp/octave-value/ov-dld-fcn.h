@@ -41,9 +41,7 @@ class octave_value_list;
 
 // Dynamically-linked functions.
 
-class
-OCTINTERP_API
-octave_dld_function : public octave_builtin
+class OCTINTERP_API octave_dld_function : public octave_builtin
 {
 public:
 

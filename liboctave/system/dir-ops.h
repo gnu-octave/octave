@@ -36,9 +36,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-class
-OCTAVE_API
-dir_entry
+class OCTAVE_API dir_entry
 {
 
   // NOTE: This class cannot be used safely cross-platform (Windows) with

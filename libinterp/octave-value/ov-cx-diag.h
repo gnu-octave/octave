@@ -35,8 +35,7 @@
 
 // Real diagonal matrix values.
 
-class
-octave_complex_diag_matrix
+class octave_complex_diag_matrix
   : public octave_base_diag<ComplexDiagMatrix, ComplexMatrix>
 {
 public:

@@ -12,8 +12,6 @@ the 'rtick' parameter when the plot is created.  Subsequent modifications
 to 'rtick' by the function `rticks` will only include the center tick mark
 value if it is specified.
 
-- `
-
 ### Matlab compatibility
 
 - `height` and `width` are now aliases for the `rows` and `columns` functions.
@@ -33,6 +31,15 @@ major release after 10):
 
         Function               | Replacement
         -----------------------|------------------
+
+- Core
+
+        Function                              | Replacement
+        --------------------------------------|------------------
+        symbol_record_rep::mark_as_variable   | symbol_record_rep::mark_variable
+        symbol_record_rep::unmark_as_variable | symbol_record_rep::unmark_variable
+        symbol_record::mark_as_variable       | symbol_record::mark_variable
+        symbol_record::unmark_as_variable     | symbol_record::unmark_variable
 
 The following features were deprecated in Octave 8 and have been removed
 from Octave 10.

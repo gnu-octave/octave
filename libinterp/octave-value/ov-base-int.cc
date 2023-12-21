@@ -177,8 +177,8 @@ octave_base_int_matrix<T>::convert_to_str_internal (bool, bool, char type) const
 
       val_type ival = tmp.value ();
 
-      static const bool is_signed = std::numeric_limits<val_type>::is_signed;
-      static const bool can_be_larger_than_uchar_max
+      static constexpr bool is_signed = std::numeric_limits<val_type>::is_signed;
+      static constexpr bool can_be_larger_than_uchar_max
         = octave_base_int_helper_traits<val_type>::can_be_larger_than_uchar_max;
 
       if (octave_base_int_helper<val_type, is_signed,
@@ -578,8 +578,8 @@ octave_base_int_scalar<T>::convert_to_str_internal (bool, bool, char type) const
 
   val_type ival = tmp.value ();
 
-  static const bool is_signed = std::numeric_limits<val_type>::is_signed;
-  static const bool can_be_larger_than_uchar_max
+  static constexpr bool is_signed = std::numeric_limits<val_type>::is_signed;
+  static constexpr bool can_be_larger_than_uchar_max
     = octave_base_int_helper_traits<val_type>::can_be_larger_than_uchar_max;
 
   if (octave_base_int_helper<val_type, is_signed,

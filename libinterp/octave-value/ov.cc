@@ -2957,9 +2957,8 @@ check_colon_operand (const octave_value& val, const char *op_str)
 
   double dval = val.double_value ();
   double intpart;
-  static const double out_of_range_top
-    = static_cast<double> (std::numeric_limits<typename T::val_type>::max ())
-      + 1.;
+  static constexpr double out_of_range_top
+    = static_cast<double> (std::numeric_limits<typename T::val_type>::max ()) + 1.0;
 
   if (dval >= out_of_range_top
       || dval < std::numeric_limits<typename T::val_type>::min ()
@@ -2994,8 +2993,7 @@ integer_difference (ST a, ST b)
   // Map to unsigned.
   // Idea from https://stackoverflow.com/questions/10589559
 
-  static const UT offset
-    = UT (0) - static_cast<UT> (std::numeric_limits<ST>::min ());
+  static const UT offset = UT (0) - static_cast<UT> (std::numeric_limits<ST>::min ());
 
   UT au = static_cast<UT> (a) + offset;
   UT bu = static_cast<UT> (b) + offset;
@@ -3133,8 +3131,8 @@ range_numel (T base, double increment, T limit)
       || (increment < 0 && base < limit))
     return 0;
 
-  static const double out_of_range_top
-    = static_cast<double> (std::numeric_limits<UT>::max ()) + 1.;
+  static constexpr double out_of_range_top
+    = static_cast<double> (std::numeric_limits<UT>::max ()) + 1.0;
 
   double abs_increment = std::abs (increment);
 

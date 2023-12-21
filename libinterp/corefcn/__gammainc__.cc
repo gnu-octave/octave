@@ -71,7 +71,7 @@ Continued fraction for incomplete gamma function.
 
       // Initialize variables used in algorithm
       static const float tiny = math::exp2 (-50.0f);
-      static const float eps = std::numeric_limits<float>::epsilon();
+      static constexpr float eps = std::numeric_limits<float>::epsilon();
       float y, Cj, Dj, bj, aj, Deltaj;
       int j, maxit;
       maxit = 200;
@@ -126,7 +126,7 @@ Continued fraction for incomplete gamma function.
 
       // Initialize variables used in algorithm
       static const double tiny = math::exp2 (-100.0);
-      static const double eps = std::numeric_limits<double>::epsilon();
+      static constexpr double eps = std::numeric_limits<double>::epsilon();
       double y, Cj, Dj, bj, aj, Deltaj;
       int j, maxit;
       maxit = 200;

@@ -187,29 +187,29 @@ negative_sign (float x) { return __lo_ieee_float_signbit (x); }
 octave_idx_type
 nint_big (double x)
 {
-  static const double out_of_range_top
-    = static_cast<double> (std::numeric_limits<octave_idx_type>::max ())+1.;
+  static constexpr double out_of_range_top
+    = static_cast<double> (std::numeric_limits<octave_idx_type>::max ()) + 1.0;
+
   if (x >= out_of_range_top)
     return std::numeric_limits<octave_idx_type>::max ();
   else if (x < std::numeric_limits<octave_idx_type>::min ())
     return std::numeric_limits<octave_idx_type>::min ();
   else
-    return static_cast<octave_idx_type> ((x > 0.0) ? (x + 0.5)
-                                         : (x - 0.5));
+    return static_cast<octave_idx_type> ((x > 0.0) ? (x + 0.5) : (x - 0.5));
 }
 
 octave_idx_type
 nint_big (float x)
 {
-  static const float out_of_range_top
-    = static_cast<float> (std::numeric_limits<octave_idx_type>::max ())+1.;
+  static constexpr float out_of_range_top
+    = static_cast<float> (std::numeric_limits<octave_idx_type>::max ()) + 1.0;
+
   if (x >= out_of_range_top)
     return std::numeric_limits<octave_idx_type>::max ();
   else if (x < std::numeric_limits<octave_idx_type>::min ())
     return std::numeric_limits<octave_idx_type>::min ();
   else
-    return static_cast<octave_idx_type> ((x > 0.0f) ? (x + 0.5f)
-                                         : (x - 0.5f));
+    return static_cast<octave_idx_type> ((x > 0.0f) ? (x + 0.5f) : (x - 0.5f));
 }
 
 int
@@ -226,8 +226,9 @@ nint (double x)
 int
 nint (float x)
 {
-  static const float out_of_range_top
-    = static_cast<float> (std::numeric_limits<int>::max ()) + 1.;
+  static constexpr float out_of_range_top
+    = static_cast<float> (std::numeric_limits<int>::max ()) + 1.0;
+
   if (x >= out_of_range_top)
     return std::numeric_limits<int>::max ();
   else if (x < std::numeric_limits<int>::min ())

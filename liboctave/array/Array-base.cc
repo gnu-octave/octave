@@ -951,8 +951,8 @@ Array<T, Alloc>::resize1 (octave_idx_type n, const T& rfv)
         }
       else
         {
-          static const octave_idx_type max_stack_chunk = 1024;
-          octave_idx_type nn = n + std::min (nx, max_stack_chunk);
+          static const octave_idx_type MAX_STACK_CHUNK = 1024;
+          octave_idx_type nn = n + std::min (nx, MAX_STACK_CHUNK);
           Array<T, Alloc> tmp (Array<T, Alloc> (dim_vector (nn, 1)), dv, 0, n);
           T *dest = tmp.fortran_vec ();
 
@@ -2196,11 +2196,11 @@ Array<T, Alloc>::lookup (const Array<T, Alloc>& values, sortmode mode) const
 
   // This determines the split ratio between the O(M*log2(N)) and O(M+N)
   // algorithms.
-  static const double ratio = 1.0;
+  static const double RATIO = 1.0;
   sortmode vmode = UNSORTED;
 
   // Attempt the O(M+N) algorithm if M is large enough.
-  if (nval > ratio * n / octave::math::log2 (n + 1.0))
+  if (nval > RATIO * n / octave::math::log2 (n + 1.0))
     {
       vmode = values.issorted ();
       // The table must not contain a NaN.

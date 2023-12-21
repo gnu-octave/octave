@@ -150,9 +150,9 @@ Sparse<T, Alloc>::SparseRep::change_length (octave_idx_type nz)
   // Always preserve space for 1 element.
   nz = (nz > 0 ? nz : 1);
 
-  // Skip reallocation if we have less than 1/frac extra elements to discard.
-  static const int frac = 5;
-  if (nz > m_nzmax || nz < m_nzmax - m_nzmax/frac)
+  // Skip reallocation if we have less than 1/FRAC extra elements to discard.
+  static const int FRAC = 5;
+  if (nz > m_nzmax || nz < m_nzmax - m_nzmax/FRAC)
     {
       // Reallocate.
       octave_idx_type min_nzmax = std::min (nz, m_nzmax);

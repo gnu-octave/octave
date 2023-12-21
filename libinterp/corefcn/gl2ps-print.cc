@@ -1522,10 +1522,10 @@ gl2ps_renderer::draw_pixels (int w, int h, const uint8_t *data)
 
   OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
-  static const float maxval = std::numeric_limits<uint8_t>::max ();
+  static constexpr float MAXVAL = std::numeric_limits<uint8_t>::max ();
 
   for (int i = 0; i < 3*w*h; i++)
-    tmp_data[i] = data[i] / maxval;
+    tmp_data[i] = data[i] / MAXVAL;
 
   draw_pixels (w, h, tmp_data);
 }
@@ -1537,10 +1537,10 @@ gl2ps_renderer::draw_pixels (int w, int h, const uint16_t *data)
 
   OCTAVE_LOCAL_BUFFER (float, tmp_data, static_cast<size_t> (3)*w*h);
 
-  static const float maxval = std::numeric_limits<uint16_t>::max ();
+  static constexpr float MAXVAL = std::numeric_limits<uint16_t>::max ();
 
   for (int i = 0; i < 3*w*h; i++)
-    tmp_data[i] = data[i] / maxval;
+    tmp_data[i] = data[i] / MAXVAL;
 
   draw_pixels (w, h, tmp_data);
 }

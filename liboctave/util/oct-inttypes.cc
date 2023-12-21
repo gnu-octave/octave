@@ -538,8 +538,8 @@ template <>
 OCTAVE_API octave_int64
 operator - (const double& x, const octave_int64& y)
 {
-  static const bool twosc = (std::numeric_limits<int64_t>::min ()
-                             < -std::numeric_limits<int64_t>::max ());
+  static constexpr bool twosc = (std::numeric_limits<int64_t>::min ()
+                                 < -std::numeric_limits<int64_t>::max ());
   // In case of symmetric integers (not two's complement), this will probably
   // be eliminated at compile time.
   if (twosc && y.value () == std::numeric_limits<int64_t>::min ())

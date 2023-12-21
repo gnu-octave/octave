@@ -65,7 +65,7 @@ Continued fraction expansion for the exponential integral.
 
       // Initialize variables used in algorithm
       static const FloatComplex tiny = math::exp2 (-50.0f);
-      static const float eps = std::numeric_limits<float>::epsilon ();
+      static constexpr float eps = std::numeric_limits<float>::epsilon ();
       const FloatComplex cone (1.0, 0.0);
       const FloatComplex czero (0.0, 0.0);
       const int maxit = 100;
@@ -123,7 +123,7 @@ Continued fraction expansion for the exponential integral.
 
       // Initialize variables used in algorithm
       static const Complex tiny = math::exp2 (-100.0);
-      static const double eps = std::numeric_limits<double>::epsilon ();
+      static constexpr double eps = std::numeric_limits<double>::epsilon ();
       const Complex cone (1.0, 0.0);
       const Complex czero (0.0, 0.0);
       const int maxit = 200;

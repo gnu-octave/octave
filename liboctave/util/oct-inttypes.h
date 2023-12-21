@@ -123,16 +123,16 @@ class octave_int_cmp_op
   class prom
   {
     // Promote to int?
-    static const bool s_pint = (sizeof (T1) < sizeof (int)
-                                && sizeof (T2) < sizeof (int));
+    static constexpr bool s_pint = (sizeof (T1) < sizeof (int)
+                                    && sizeof (T2) < sizeof (int));
 
-    static const bool s_t1sig = std::numeric_limits<T1>::is_signed;
-    static const bool s_t2sig = std::numeric_limits<T2>::is_signed;
+    static constexpr bool s_t1sig = std::numeric_limits<T1>::is_signed;
+    static constexpr bool s_t2sig = std::numeric_limits<T2>::is_signed;
 
-    static const bool s_psig
+    static constexpr bool s_psig
       = (s_pint || (sizeof (T2) > sizeof (T1) && s_t2sig) || s_t1sig);
 
-    static const int s_psize
+    static constexpr int s_psize
       = (s_pint
          ? sizeof (int)
          : (sizeof (T2) > sizeof (T1) ? sizeof (T2) : sizeof (T1)));
@@ -185,8 +185,8 @@ public:
   {                                                     \
   public:                                               \
                                                         \
-    static const bool ltval = (0 OP 1);                 \
-    static const bool gtval = (1 OP 0);                 \
+    static constexpr bool ltval = (0 OP 1);             \
+    static constexpr bool gtval = (1 OP 0);             \
                                                         \
     template <typename T>                               \
     static bool op (T x, T y) { return x OP y; }        \
@@ -209,8 +209,8 @@ public:
   {                                             \
   public:                                       \
                                                 \
-    static const bool ltval = VALUE;            \
-    static const bool gtval = VALUE;            \
+    static constexpr bool ltval = VALUE;        \
+    static constexpr bool gtval = VALUE;        \
                                                 \
     template <typename T>                       \
       static bool op (T, T) { return VALUE; }   \
@@ -357,16 +357,16 @@ public:
     // An exhaustive test whether the max and/or min check can be
     // omitted.
 
-    static const bool t_is_signed = std::numeric_limits<T>::is_signed;
-    static const bool s_is_signed = std::numeric_limits<S>::is_signed;
+    static constexpr bool t_is_signed = std::numeric_limits<T>::is_signed;
+    static constexpr bool s_is_signed = std::numeric_limits<S>::is_signed;
 
-    static const int t_size = sizeof (T);
-    static const int s_size = sizeof (S);
+    static constexpr int t_size = sizeof (T);
+    static constexpr int s_size = sizeof (S);
 
-    static const bool omit_chk_min
+    static constexpr bool omit_chk_min
       = (! s_is_signed || (t_is_signed && t_size >= s_size));
 
-    static const bool omit_chk_max
+    static constexpr bool omit_chk_max
       = (t_size > s_size
          || (t_size == s_size && (! t_is_signed || s_is_signed)));
 

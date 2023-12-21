@@ -261,13 +261,13 @@ static bool
 is_completing_dirfns ()
 {
   static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
-  static const std::size_t dirfns_commands_length = 4;
+  static const std::size_t DIRFNS_COMMANDS_LENGTH = 4;
 
   bool retval = false;
 
   std::string line = command_editor::get_line_buffer ();
 
-  for (std::size_t i = 0; i < dirfns_commands_length; i++)
+  for (std::size_t i = 0; i < DIRFNS_COMMANDS_LENGTH; i++)
     {
       int index = line.find (dirfns_commands[i] + ' ');
 

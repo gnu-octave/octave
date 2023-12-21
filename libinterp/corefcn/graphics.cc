@@ -7364,9 +7364,9 @@ axes::properties::calc_tick_sep (double lo, double hi)
 
   magform ((hi - lo) / ticint, a, b);
 
-  static constexpr double SQRT_2 = sqrt (2.0);
-  static constexpr double SQRT_10 = sqrt (10.0);
-  static constexpr double SQRT_50 = sqrt (50.0);
+  static const double SQRT_2 = sqrt (2.0);
+  static const double SQRT_10 = sqrt (10.0);
+  static const double SQRT_50 = sqrt (50.0);
 
   if (a < SQRT_2)
     x = 1;

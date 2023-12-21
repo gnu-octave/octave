@@ -166,8 +166,7 @@ public:
   octave_base_value *m_rep;
 };
 
-class
-octave_cached_value : public octave_base_value
+class octave_cached_value : public octave_base_value
 {
 public:
 

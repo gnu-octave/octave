@@ -32,8 +32,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-preserve_stream_state
+class preserve_stream_state
 {
 public:
 

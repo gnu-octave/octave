@@ -56,8 +56,7 @@ class tree_walker;
 
 OCTAVE_END_NAMESPACE(octave)
 
-class
-octave_user_code : public octave_function
+class octave_user_code : public octave_function
 {
 protected:
 
@@ -171,8 +170,7 @@ protected:
 
 // Scripts.
 
-class
-octave_user_script : public octave_user_code
+class octave_user_script : public octave_user_code
 {
 public:
 
@@ -224,8 +222,7 @@ private:
 
 // User-defined functions.
 
-class
-octave_user_function : public octave_user_code
+class octave_user_function : public octave_user_code
 {
 public:
 

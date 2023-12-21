@@ -40,8 +40,7 @@
 #include "dMatrix.h"
 #include "dNDArray.h"
 
-class
-SparseMatrix : public MSparse<double>
+class SparseMatrix : public MSparse<double>
 {
 public:
 

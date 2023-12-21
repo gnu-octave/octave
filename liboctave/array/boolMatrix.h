@@ -33,9 +33,7 @@
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 
-class
-OCTAVE_API
-boolMatrix : public boolNDArray
+class OCTAVE_API boolMatrix : public boolNDArray
 {
 public:
 

@@ -39,9 +39,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTAVE_API
-regexp
+class OCTAVE_API regexp
 {
 public:
 

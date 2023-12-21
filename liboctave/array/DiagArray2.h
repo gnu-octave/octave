@@ -37,9 +37,7 @@
 // produce unexpected results.
 
 template <typename T>
-class
-OCTAVE_API
-DiagArray2 : protected Array<T>
+class OCTAVE_API DiagArray2 : protected Array<T>
 {
 protected:
   octave_idx_type m_d1, m_d2;

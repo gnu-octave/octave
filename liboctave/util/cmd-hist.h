@@ -34,9 +34,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTAVE_API
-command_history
+class OCTAVE_API command_history
 {
 protected:
 

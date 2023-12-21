@@ -37,9 +37,7 @@
 #include "mx-op-decl.h"
 #include "oct-cmplx.h"
 
-class
-OCTAVE_API
-ComplexMatrix : public ComplexNDArray
+class OCTAVE_API ComplexMatrix : public ComplexNDArray
 {
 public:
 

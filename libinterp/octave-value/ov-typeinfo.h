@@ -39,9 +39,7 @@ class string_vector;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTINTERP_API
-type_info
+class OCTINTERP_API type_info
 {
 public:
 

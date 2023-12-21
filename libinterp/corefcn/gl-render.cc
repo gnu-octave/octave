@@ -339,8 +339,7 @@ opengl_texture::create (opengl_functions& glfcns, const octave_value& data)
   return retval;
 }
 
-class
-opengl_tessellator
+class opengl_tessellator
 {
 public:
 #if defined (HAVE_FRAMEWORK_OPENGL) && defined (HAVE_GLUTESSCALLBACK_THREEDOTS)
@@ -508,8 +507,7 @@ private:
   std::shared_ptr<vertex_data_rep> m_rep;
 };
 
-class
-opengl_renderer::patch_tessellator : public opengl_tessellator
+class opengl_renderer::patch_tessellator : public opengl_tessellator
 {
 public:
 
@@ -675,8 +673,7 @@ private:
 
 #else
 
-class
-opengl_renderer::patch_tessellator
+class opengl_renderer::patch_tessellator
 {
   // Dummy class.
 };

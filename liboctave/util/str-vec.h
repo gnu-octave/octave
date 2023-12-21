@@ -34,9 +34,7 @@
 
 #include "Array.h"
 
-class
-OCTAVE_API
-string_vector
+class OCTAVE_API string_vector
 {
 public:
 

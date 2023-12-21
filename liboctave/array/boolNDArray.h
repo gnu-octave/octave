@@ -33,9 +33,7 @@
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 
-class
-OCTAVE_API
-boolNDArray : public Array<bool>
+class OCTAVE_API boolNDArray : public Array<bool>
 {
 public:
 

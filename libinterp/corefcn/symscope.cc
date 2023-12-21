@@ -281,7 +281,7 @@ symbol_scope_rep::mark_as_variable (const std::string& nm)
   table_iterator p = m_symbols.find (nm);
 
   if (p != m_symbols.end ())
-    p->second.mark_as_variable ();
+    p->second.mark_variable ();
 }
 
 void

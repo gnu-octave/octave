@@ -37,9 +37,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTAVE_API
-command_editor
+class OCTAVE_API command_editor
 {
 protected:
 

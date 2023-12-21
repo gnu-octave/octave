@@ -38,8 +38,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-dynamic_library
+class dynamic_library
 {
 public: // FIXME: make this class private?
 

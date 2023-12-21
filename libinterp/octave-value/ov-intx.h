@@ -49,9 +49,7 @@
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 
-class
-OCTINTERP_API
-OCTAVE_VALUE_INT_MATRIX_T
+class OCTINTERP_API OCTAVE_VALUE_INT_MATRIX_T
   : public octave_base_int_matrix<intNDArray<OCTAVE_INT_T>>
 {
 public:
@@ -386,9 +384,7 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
-class
-OCTINTERP_API
-OCTAVE_VALUE_INT_SCALAR_T
+class OCTINTERP_API OCTAVE_VALUE_INT_SCALAR_T
   : public octave_base_int_scalar<OCTAVE_INT_T>
 {
 public:

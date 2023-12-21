@@ -36,8 +36,7 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 template <typename BUF_T, typename STREAM_T, typename FILE_T>
-class
-tstdiostream : public base_stream
+class tstdiostream : public base_stream
 {
 public:
 
@@ -119,8 +118,7 @@ protected:
   int m_fnum;
 };
 
-class
-stdiostream
+class stdiostream
   : public tstdiostream<c_file_ptr_buf, io_c_file_ptr_stream, FILE *>
 {
 public:
@@ -152,8 +150,7 @@ protected:
 
 #if defined (HAVE_ZLIB)
 
-class
-zstdiostream
+class zstdiostream
   : public tstdiostream<c_zfile_ptr_buf, io_c_zfile_ptr_stream, gzFile>
 {
 public:

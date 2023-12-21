@@ -31,9 +31,7 @@
 #include "MArray.h"
 #include "mx-defs.h"
 
-class
-OCTAVE_API
-FloatRowVector : public MArray<float>
+class OCTAVE_API FloatRowVector : public MArray<float>
 {
 public:
 

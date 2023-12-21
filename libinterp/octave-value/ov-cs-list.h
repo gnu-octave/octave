@@ -43,8 +43,7 @@
 
 // Lists.
 
-class
-octave_cs_list : public octave_base_value
+class octave_cs_list : public octave_base_value
 {
 public:
 

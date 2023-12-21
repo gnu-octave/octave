@@ -239,9 +239,7 @@ DEF_BTYP_TRAITS (btyp_char, char);
 // they need (if they are derived from octave_base_value instead of
 // octave_value).
 
-class
-OCTINTERP_API
-octave_base_value
+class OCTINTERP_API octave_base_value
 {
 public:
 
@@ -1006,9 +1004,7 @@ private:
   DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA
 };
 
-class
-OCTINTERP_API
-octave_base_dld_value : public octave_base_value
+class OCTINTERP_API octave_base_dld_value : public octave_base_value
 {
 public:
 

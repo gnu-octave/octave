@@ -48,8 +48,7 @@ class octave_value_list;
 
 // Character matrix values.
 
-class
-octave_bool_matrix : public octave_base_matrix<boolNDArray>
+class octave_bool_matrix : public octave_base_matrix<boolNDArray>
 {
 public:
 

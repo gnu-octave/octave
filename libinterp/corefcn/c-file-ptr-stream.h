@@ -37,8 +37,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-c_file_ptr_buf : public std::streambuf
+class c_file_ptr_buf : public std::streambuf
 {
 public:
 
@@ -106,8 +105,7 @@ private:
 // FIXME: the following three classes could probably share some code...
 
 template <typename STREAM_T, typename FILE_T, typename BUF_T>
-class
-c_file_ptr_stream : public STREAM_T
+class c_file_ptr_stream : public STREAM_T
 {
 public:
 
@@ -148,8 +146,7 @@ typedef c_file_ptr_stream<std::iostream, FILE *, c_file_ptr_buf>
 
 #if defined (HAVE_ZLIB)
 
-class
-c_zfile_ptr_buf : public std::streambuf
+class c_zfile_ptr_buf : public std::streambuf
 {
 public:
 

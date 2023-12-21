@@ -93,8 +93,7 @@ private:
 // enforce that restriction.
 
 template <typename T>
-class
-ov_range : public octave_base_value
+class ov_range : public octave_base_value
 {
 public:
 

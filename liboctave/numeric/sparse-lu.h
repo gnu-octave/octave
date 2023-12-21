@@ -44,9 +44,7 @@ OCTAVE_BEGIN_NAMESPACE(math)
 // of the matrix type.
 
 template <typename lu_type>
-class
-OCTAVE_API
-sparse_lu
+class OCTAVE_API sparse_lu
 {
 public:
 

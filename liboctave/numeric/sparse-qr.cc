@@ -45,13 +45,11 @@ OCTAVE_BEGIN_NAMESPACE(math)
 
 #if defined (HAVE_CXSPARSE)
 template <typename SPARSE_T>
-class
-cxsparse_types
+class cxsparse_types
 { };
 
 template <>
-class
-cxsparse_types<SparseMatrix>
+class cxsparse_types<SparseMatrix>
 {
 public:
   typedef CXSPARSE_DNAME (s) symbolic_type;
@@ -59,8 +57,7 @@ public:
 };
 
 template <>
-class
-cxsparse_types<SparseComplexMatrix>
+class cxsparse_types<SparseComplexMatrix>
 {
 public:
   typedef CXSPARSE_ZNAME (s) symbolic_type;
@@ -3072,16 +3069,14 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseMatrix,
 // Bateman's original code.
 
 template <typename SPARSE_T>
-class
-cxsparse_defaults
+class cxsparse_defaults
 {
 public:
   enum { order = -1 };
 };
 
 template <>
-class
-cxsparse_defaults<SparseMatrix>
+class cxsparse_defaults<SparseMatrix>
 {
 public:
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
@@ -3092,8 +3087,7 @@ public:
 };
 
 template <>
-class
-cxsparse_defaults<SparseComplexMatrix>
+class cxsparse_defaults<SparseComplexMatrix>
 {
 public:
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))

@@ -761,7 +761,7 @@ idx_vector::idx_vector (const Array<bool>& bnda)
   : m_rep (nullptr)
 {
   // Convert only if it means saving at least half the memory.
-  static const int factor = (2 * sizeof (octave_idx_type));
+  static constexpr int factor = (2 * sizeof (octave_idx_type));
   octave_idx_type nnz = bnda.nnz ();
   if (nnz <= bnda.numel () / factor)
     m_rep = new idx_vector_rep (bnda, nnz);

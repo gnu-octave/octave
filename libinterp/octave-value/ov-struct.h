@@ -45,8 +45,7 @@ class octave_value_list;
 
 // Data structures.
 
-class
-octave_struct : public octave_base_value
+class octave_struct : public octave_base_value
 {
 public:
 
@@ -188,8 +187,7 @@ private:
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };
 
-class
-octave_scalar_struct : public octave_base_value
+class octave_scalar_struct : public octave_base_value
 {
 public:
 

@@ -35,8 +35,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-fstream : public base_stream
+class fstream : public base_stream
 {
 public:
 

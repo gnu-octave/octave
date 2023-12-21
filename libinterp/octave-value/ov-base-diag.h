@@ -43,9 +43,7 @@
 // Real matrix values.
 
 template <typename DMT, typename MT>
-class
-OCTINTERP_API
-octave_base_diag : public octave_base_value
+class OCTINTERP_API octave_base_diag : public octave_base_value
 {
 
 public:

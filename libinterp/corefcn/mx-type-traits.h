@@ -32,8 +32,7 @@
 #include "oct-inttypes-fwd.h"
 
 template <typename T>
-class
-mx_type_traits
+class mx_type_traits
 {
 public:
   static const mxClassID mx_class;
@@ -41,8 +40,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<bool>
+class mx_type_traits<bool>
 {
 public:
   static const mxClassID mx_class = mxLOGICAL_CLASS;
@@ -50,8 +48,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<char>
+class mx_type_traits<char>
 {
 public:
   static const mxClassID mx_class = mxCHAR_CLASS;
@@ -59,8 +56,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<double>
+class mx_type_traits<double>
 {
 public:
   static const mxClassID mx_class = mxDOUBLE_CLASS;
@@ -68,8 +64,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<float>
+class mx_type_traits<float>
 {
 public:
   static const mxClassID mx_class = mxSINGLE_CLASS;
@@ -77,8 +72,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_int8>
+class mx_type_traits<octave_int8>
 {
 public:
   static const mxClassID mx_class = mxINT8_CLASS;
@@ -86,8 +80,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_uint8>
+class mx_type_traits<octave_uint8>
 {
 public:
   static const mxClassID mx_class = mxUINT8_CLASS;
@@ -95,8 +88,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_int16>
+class mx_type_traits<octave_int16>
 {
 public:
   static const mxClassID mx_class = mxINT16_CLASS;
@@ -104,8 +96,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_uint16>
+class mx_type_traits<octave_uint16>
 {
 public:
   static const mxClassID mx_class = mxUINT16_CLASS;
@@ -113,8 +104,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_int32>
+class mx_type_traits<octave_int32>
 {
 public:
   static const mxClassID mx_class = mxINT32_CLASS;
@@ -122,8 +112,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_uint32>
+class mx_type_traits<octave_uint32>
 {
 public:
   static const mxClassID mx_class = mxUINT32_CLASS;
@@ -131,8 +120,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_int64>
+class mx_type_traits<octave_int64>
 {
 public:
   static const mxClassID mx_class = mxINT64_CLASS;
@@ -140,8 +128,7 @@ public:
 };
 
 template <>
-class
-mx_type_traits<octave_uint64>
+class mx_type_traits<octave_uint64>
 {
 public:
   static const mxClassID mx_class = mxUINT64_CLASS;

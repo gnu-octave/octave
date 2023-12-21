@@ -41,9 +41,7 @@
 #include "oct-cmplx.h"
 #include "mx-fwd.h"
 
-class
-OCTAVE_API
-SparseComplexMatrix : public MSparse<Complex>
+class OCTAVE_API SparseComplexMatrix : public MSparse<Complex>
 {
 public:
 

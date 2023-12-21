@@ -34,9 +34,7 @@
 #include "dRowVector.h"
 #include "mx-defs.h"
 
-class
-OCTAVE_API
-DiagMatrix : public MDiagArray2<double>
+class OCTAVE_API DiagMatrix : public MDiagArray2<double>
 {
 public:
 

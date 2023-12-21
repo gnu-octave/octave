@@ -35,9 +35,7 @@
 
 // Real diagonal matrix values.
 
-class
-OCTINTERP_API
-octave_float_complex_diag_matrix
+class OCTINTERP_API octave_float_complex_diag_matrix
   : public octave_base_diag<FloatComplexDiagMatrix, FloatComplexMatrix>
 {
 public:

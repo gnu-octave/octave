@@ -36,9 +36,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(sys)
 
-class
-OCTAVE_API
-password
+class OCTAVE_API password
 {
 public:
 

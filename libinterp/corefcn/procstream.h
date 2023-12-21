@@ -37,9 +37,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTINTERP_API
-procstreambase : virtual public std::ios
+class OCTINTERP_API procstreambase : virtual public std::ios
 {
 public:
 
@@ -80,9 +78,7 @@ private:
   }
 };
 
-class
-OCTINTERP_API
-iprocstream : public std::istream, public procstreambase
+class OCTINTERP_API iprocstream : public std::istream, public procstreambase
 {
 public:
 
@@ -111,9 +107,7 @@ public:
   }
 };
 
-class
-OCTINTERP_API
-oprocstream : public std::ostream, public procstreambase
+class OCTINTERP_API oprocstream : public std::ostream, public procstreambase
 {
 public:
 
@@ -140,9 +134,7 @@ public:
   }
 };
 
-class
-OCTINTERP_API
-procstream : public std::iostream, public procstreambase
+class OCTINTERP_API procstream : public std::iostream, public procstreambase
 {
 public:
 

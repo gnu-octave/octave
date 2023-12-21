@@ -97,8 +97,7 @@ warn_glyph_render (FT_ULong c)
 // Forward declaration
 static void ft_face_destroyed (void *object);
 
-class
-ft_manager
+class ft_manager
 {
 private:
 
@@ -450,9 +449,7 @@ ft_face_destroyed (void *object)
   ft_manager::font_destroyed (reinterpret_cast<FT_Face> (object));
 }
 
-class
-OCTINTERP_API
-ft_text_renderer : public base_text_renderer
+class OCTINTERP_API ft_text_renderer : public base_text_renderer
 {
 public:
 

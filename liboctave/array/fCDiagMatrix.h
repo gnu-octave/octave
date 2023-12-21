@@ -36,9 +36,7 @@
 #include "fRowVector.h"
 #include "mx-defs.h"
 
-class
-OCTAVE_API
-FloatComplexDiagMatrix : public MDiagArray2<FloatComplex>
+class OCTAVE_API FloatComplexDiagMatrix : public MDiagArray2<FloatComplex>
 {
 public:
 

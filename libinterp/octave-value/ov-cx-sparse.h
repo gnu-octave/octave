@@ -47,9 +47,7 @@
 
 class octave_value_list;
 
-class
-OCTINTERP_API
-octave_sparse_complex_matrix : public octave_base_sparse<SparseComplexMatrix>
+class OCTINTERP_API octave_sparse_complex_matrix : public octave_base_sparse<SparseComplexMatrix>
 {
 public:
 

@@ -508,8 +508,7 @@ octave_print_internal (std::ostream& os, const octave_value& ov,
                        bool pr_as_read_syntax = false);
 
 template <typename T>
-class
-pr_engineering_float
+class pr_engineering_float
 {
 public:
 
@@ -529,8 +528,7 @@ public:
 };
 
 template <typename T>
-class
-pr_formatted_float
+class pr_formatted_float
 {
 public:
 
@@ -546,8 +544,7 @@ public:
 };
 
 template <typename T>
-class
-pr_rational_float
+class pr_rational_float
 {
 public:
 

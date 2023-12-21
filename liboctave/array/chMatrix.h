@@ -36,9 +36,7 @@
 #include "mx-op-decl.h"
 #include "str-vec.h"
 
-class
-OCTAVE_API
-charMatrix : public charNDArray
+class OCTAVE_API charMatrix : public charNDArray
 {
   friend class ComplexMatrix;
 

@@ -179,9 +179,7 @@ struct deletable_facet : Facet
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (deletable_facet)
 };
 
-class
-OCTAVE_API
-codecvt_u8 : public std::codecvt<char, char, std::mbstate_t>
+class OCTAVE_API codecvt_u8 : public std::codecvt<char, char, std::mbstate_t>
 {
 public:
 

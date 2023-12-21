@@ -33,9 +33,7 @@
 #include "Array.h"
 #include "LSODE-opts.h"
 
-class
-OCTAVE_API
-LSODE : public ODE, public LSODE_options
+class OCTAVE_API LSODE : public ODE, public LSODE_options
 {
 public:
 

@@ -261,13 +261,13 @@ static bool
 is_completing_dirfns ()
 {
   static std::string dirfns_commands[] = {"cd", "isfile", "isfolder", "ls"};
-  static const std::size_t dirfns_commands_length = 4;
+  static const std::size_t DIRFNS_COMMANDS_LENGTH = 4;
 
   bool retval = false;
 
   std::string line = command_editor::get_line_buffer ();
 
-  for (std::size_t i = 0; i < dirfns_commands_length; i++)
+  for (std::size_t i = 0; i < DIRFNS_COMMANDS_LENGTH; i++)
     {
       int index = line.find (dirfns_commands[i] + ' ');
 
@@ -889,8 +889,7 @@ base_reader::octave_gets (const std::string& prompt, bool& eof)
   return retval;
 }
 
-class
-terminal_reader : public base_reader
+class terminal_reader : public base_reader
 {
 public:
 
@@ -912,8 +911,7 @@ private:
   static const std::string s_in_src;
 };
 
-class
-file_reader : public base_reader
+class file_reader : public base_reader
 {
 public:
 
@@ -942,8 +940,7 @@ private:
   static const std::string s_in_src;
 };
 
-class
-eval_string_reader : public base_reader
+class eval_string_reader : public base_reader
 {
 public:
 

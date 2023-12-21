@@ -33,9 +33,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTAVE_API
-directory_path
+class OCTAVE_API directory_path
 {
 public:
 

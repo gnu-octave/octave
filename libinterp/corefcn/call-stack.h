@@ -54,9 +54,7 @@ class unwind_protect;
 class vm;
 #endif
 
-class
-OCTINTERP_API
-call_stack
+class OCTINTERP_API call_stack
 {
 public:
 

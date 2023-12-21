@@ -288,9 +288,7 @@ public:
 //! This class provides thread-safe communication between the
 //! interpreter and a GUI.
 
-class
-OCTINTERP_API
-event_manager
+class OCTINTERP_API event_manager
 {
 public:
 

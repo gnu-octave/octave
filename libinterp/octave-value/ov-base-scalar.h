@@ -44,9 +44,7 @@
 // Real scalar values.
 
 template <typename ST>
-class
-OCTINTERP_API
-octave_base_scalar : public octave_base_value
+class OCTINTERP_API octave_base_scalar : public octave_base_value
 {
 public:
 

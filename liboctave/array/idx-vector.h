@@ -54,9 +54,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // as templates implementing "early dispatch", i.e., hoisting the checks
 // for index type out of loops.
 
-class
-OCTAVE_API
-idx_vector
+class OCTAVE_API idx_vector
 {
 public:
 

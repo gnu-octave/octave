@@ -32,8 +32,7 @@
 #include "DAERTFunc.h"
 #include "base-dae.h"
 
-class
-DAERT : public base_diff_alg_eqn, public DAERTFunc
+class DAERT : public base_diff_alg_eqn, public DAERTFunc
 {
 public:
 

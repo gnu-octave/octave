@@ -37,9 +37,7 @@
 
 class octave_value_list;
 
-class
-OCTINTERP_API
-Cell : public Array<octave_value>
+class OCTINTERP_API Cell : public Array<octave_value>
 {
 public:
 

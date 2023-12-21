@@ -30,8 +30,7 @@
 
 #include "mx-fwd.h"
 
-class
-DAEFunc
+class DAEFunc
 {
 public:
 

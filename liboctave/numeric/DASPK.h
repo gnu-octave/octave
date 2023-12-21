@@ -35,9 +35,7 @@
 
 #include "mx-fwd.h"
 
-class
-OCTAVE_API
-DASPK : public DAE, public DASPK_options
+class OCTAVE_API DASPK : public DAE, public DASPK_options
 {
 public:
 

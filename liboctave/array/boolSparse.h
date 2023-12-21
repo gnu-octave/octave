@@ -35,9 +35,7 @@
 #include "boolNDArray.h"
 #include "mx-fwd.h"
 
-class
-OCTAVE_API
-SparseBoolMatrix : public Sparse<bool>
+class OCTAVE_API SparseBoolMatrix : public Sparse<bool>
 {
 public:
 

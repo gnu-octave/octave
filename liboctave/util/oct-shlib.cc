@@ -173,8 +173,7 @@ dynamic_library::dynlib_rep dynamic_library::s_nil_rep;
 
 #if defined (HAVE_DLOPEN_API)
 
-class
-octave_dlopen_shlib : public dynamic_library::dynlib_rep
+class octave_dlopen_shlib : public dynamic_library::dynlib_rep
 {
 public:
 
@@ -275,8 +274,7 @@ octave_dlopen_shlib::search (const std::string& name,
 
 #elif defined (HAVE_LOADLIBRARY_API)
 
-class
-octave_w32_shlib: public dynamic_library::dynlib_rep
+class octave_w32_shlib: public dynamic_library::dynlib_rep
 {
 public:
 

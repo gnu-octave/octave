@@ -7364,20 +7364,20 @@ axes::properties::calc_tick_sep (double lo, double hi)
 
   magform ((hi - lo) / ticint, a, b);
 
-  static const double sqrt_2 = sqrt (2.0);
-  static const double sqrt_10 = sqrt (10.0);
-  static const double sqrt_50 = sqrt (50.0);
+  static const double SQRT_2 = sqrt (2.0);
+  static const double SQRT_10 = sqrt (10.0);
+  static const double SQRT_50 = sqrt (50.0);
 
-  if (a < sqrt_2)
+  if (a < SQRT_2)
     x = 1;
-  else if (a < sqrt_10)
+  else if (a < SQRT_10)
     x = 2;
-  else if (a < sqrt_50)
+  else if (a < SQRT_50)
     x = 5;
   else
     x = 10;
 
-  return x * std::pow (10., b);
+  return x * std::pow (10.0, b);
 }
 
 // Attempt to make "nice" limits from the actual max and min of the data.
@@ -11591,8 +11591,7 @@ base_graphics_object::get_factory_default (const caseless_str& name) const
   return parent_go.get_factory_default (type () + name);
 }
 
-class
-callback_event : public base_graphics_event
+class callback_event : public base_graphics_event
 {
 public:
   callback_event (const graphics_handle& h, const std::string& name,
@@ -11628,8 +11627,7 @@ private:
   octave_value m_callback_data;
 };
 
-class
-mcode_event : public base_graphics_event
+class mcode_event : public base_graphics_event
 {
 public:
   mcode_event (const graphics_handle& h, const std::string& cmd,
@@ -11662,8 +11660,7 @@ private:
   std::string m_mcode;
 };
 
-class
-function_event : public base_graphics_event
+class function_event : public base_graphics_event
 {
 public:
 
@@ -11687,8 +11684,7 @@ private:
   void *m_function_data;
 };
 
-class
-set_event : public base_graphics_event
+class set_event : public base_graphics_event
 {
 public:
   set_event (const graphics_handle& h, const std::string& name,

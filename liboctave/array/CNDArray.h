@@ -33,9 +33,7 @@
 #include "mx-defs.h"
 #include "mx-op-decl.h"
 
-class
-OCTAVE_API
-ComplexNDArray : public MArray<Complex>
+class OCTAVE_API ComplexNDArray : public MArray<Complex>
 {
 public:
 

@@ -61,7 +61,7 @@ struct cquad_ival
 };
 
 // Define relative tolerance used when deciding to drop an interval.
-static const double DROP_RELTOL = std::numeric_limits<double>::epsilon () * 10;
+static constexpr double DROP_RELTOL = std::numeric_limits<double>::epsilon () * 10;
 
 // Some constants and matrices that we'll need.
 

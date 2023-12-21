@@ -35,8 +35,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-event_queue : public action_container
+class event_queue : public action_container
 {
 public:
 
@@ -88,8 +87,7 @@ protected:
 // possibility of seeing an exception (or interrupt) in the cleanup actions.
 // Not that we can do much about it, but at least we won't crash.
 
-class
-event_queue_safe : public event_queue
+class event_queue_safe : public event_queue
 {
 public:
 

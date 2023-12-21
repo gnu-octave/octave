@@ -36,9 +36,7 @@
 #include "dRowVector.h"
 #include "mx-defs.h"
 
-class
-OCTAVE_API
-ComplexDiagMatrix : public MDiagArray2<Complex>
+class OCTAVE_API ComplexDiagMatrix : public MDiagArray2<Complex>
 {
 public:
 

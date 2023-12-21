@@ -36,9 +36,7 @@ typedef float (*float_integrand_fcn) (float x);
 
 #include "Quad-opts.h"
 
-class
-OCTAVE_API
-Quad : public Quad_options
+class OCTAVE_API Quad : public Quad_options
 {
 public:
 
@@ -118,9 +116,7 @@ protected:
   float_integrand_fcn m_ff;
 };
 
-class
-OCTAVE_API
-DefQuad : public Quad
+class OCTAVE_API DefQuad : public Quad
 {
 public:
 
@@ -159,9 +155,7 @@ private:
   ColumnVector m_singularities;
 };
 
-class
-OCTAVE_API
-IndefQuad : public Quad
+class OCTAVE_API IndefQuad : public Quad
 {
 public:
 
@@ -189,9 +183,7 @@ private:
   IntegralType m_type;
 };
 
-class
-OCTAVE_API
-FloatDefQuad : public Quad
+class OCTAVE_API FloatDefQuad : public Quad
 {
 public:
 
@@ -230,9 +222,7 @@ private:
   FloatColumnVector m_singularities;
 };
 
-class
-OCTAVE_API
-FloatIndefQuad : public Quad
+class OCTAVE_API FloatIndefQuad : public Quad
 {
 public:
 

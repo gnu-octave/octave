@@ -41,9 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 class base_text_renderer;
 class text_element;
 
-class
-OCTINTERP_API
-text_renderer
+class OCTINTERP_API text_renderer
 {
 public:
 

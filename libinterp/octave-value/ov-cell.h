@@ -46,8 +46,7 @@ class octave_value_list;
 
 // Cells.
 
-class
-octave_cell : public octave_base_matrix<Cell>
+class octave_cell : public octave_base_matrix<Cell>
 {
 public:
 

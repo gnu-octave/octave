@@ -69,8 +69,7 @@ static mutex event_hook_lock;
 
 #if defined (USE_READLINE)
 
-class
-gnu_readline : public command_editor
+class gnu_readline : public command_editor
 {
 public:
 
@@ -929,8 +928,7 @@ gnu_readline::command_completer (const char *text, int, int)
 
 #endif
 
-class
-default_command_editor : public command_editor
+class default_command_editor : public command_editor
 {
 public:
 

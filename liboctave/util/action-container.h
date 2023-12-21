@@ -56,8 +56,7 @@ struct atomic_traits<std::atomic<T>>
 
 OCTAVE_END_NAMESPACE(util)
 
-class
-action_container
+class action_container
 {
 public:
 

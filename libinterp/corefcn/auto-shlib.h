@@ -37,9 +37,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // time.  When deriving new classes, you can either use it as a field or
 // as a parent (with multiple inheritance).
 
-class
-OCTINTERP_API
-auto_shlib : public dynamic_library
+class OCTINTERP_API auto_shlib : public dynamic_library
 {
 public:
 

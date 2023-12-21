@@ -52,9 +52,7 @@ OCTAVE_END_NAMESPACE(octave)
 
 // Class that holds a cached reference to a octave function
 // for use in the bytecode VM.
-class
-OCTINTERP_API
-octave_fcn_cache : public octave_base_value
+class OCTINTERP_API octave_fcn_cache : public octave_base_value
 {
 public:
   octave_fcn_cache (const std::string &name) :m_fcn_name (name) { }
@@ -137,9 +135,7 @@ private:
 
 #endif
 
-class
-OCTINTERP_API
-octave_function : public octave_base_value
+class OCTINTERP_API octave_function : public octave_base_value
 {
 public:
 

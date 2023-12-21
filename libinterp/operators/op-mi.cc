@@ -67,10 +67,10 @@ oct_unop_unsigned_uminus (const octave_base_value& a)
 
   uint64_t ival = val.value ();
 
-  static const uint64_t max_val
+  static constexpr uint64_t max_val
     = static_cast<uint64_t> (std::numeric_limits<int64_t>::max ());
 
-  static const uint64_t max_val_p1 = max_val + 1;
+  static constexpr uint64_t max_val_p1 = max_val + 1;
 
   if (ival <= max_val)
     {
@@ -84,7 +84,7 @@ oct_unop_unsigned_uminus (const octave_base_value& a)
       // should return int8(-128) but converting directly to int8 and
       // negating will not return the correct result.
 
-      static const int64_t min_signed_ival
+      static constexpr int64_t min_signed_ival
         = std::numeric_limits<int64_t>::min ();
 
       return octave_value (new octave_magic_int (min_signed_ival));

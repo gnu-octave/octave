@@ -40,8 +40,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-base_text_renderer : public text_processor
+class base_text_renderer : public text_processor
 {
 public:
 

@@ -35,9 +35,7 @@
 #include "CColVector.h"
 #include "CMatrix.h"
 
-class
-OCTAVE_API
-EIG
+class OCTAVE_API EIG
 {
   friend class Matrix;
   friend class ComplexMatrix;

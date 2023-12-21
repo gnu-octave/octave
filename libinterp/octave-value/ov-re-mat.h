@@ -48,9 +48,7 @@ class octave_value_list;
 
 // Real matrix values.
 
-class
-OCTINTERP_API
-octave_matrix : public octave_base_matrix<NDArray>
+class OCTINTERP_API octave_matrix : public octave_base_matrix<NDArray>
 {
 public:
 

@@ -38,9 +38,7 @@ class octave_value;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class
-OCTINTERP_API
-profiler
+class OCTINTERP_API profiler
 {
 public:
 

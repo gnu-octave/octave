@@ -6681,9 +6681,7 @@ set_property_in_handle (double handle, const std::string& property,
 
 class graphics_event;
 
-class
-OCTINTERP_API
-base_graphics_event
+class OCTINTERP_API base_graphics_event
 {
 public:
   enum priority { INTERRUPT, QUEUE, CANCEL };
@@ -6710,9 +6708,7 @@ private:
   int m_busyaction;
 };
 
-class
-OCTINTERP_API
-graphics_event
+class OCTINTERP_API graphics_event
 {
 public:
 

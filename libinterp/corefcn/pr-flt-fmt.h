@@ -44,9 +44,7 @@ extern OCTINTERP_API int output_precision ();
 
 extern OCTINTERP_API void set_output_prec (int prec);
 
-class
-OCTINTERP_API
-float_format
+class OCTINTERP_API float_format
 {
 public:
 
@@ -205,9 +203,7 @@ private:
   int m_sp;
 };
 
-class
-OCTINTERP_API
-float_display_format
+class OCTINTERP_API float_display_format
 {
 public:
 

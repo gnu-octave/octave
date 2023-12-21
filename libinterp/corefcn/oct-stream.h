@@ -63,9 +63,7 @@ class printf_format_list;
 
 // Provide an interface for Octave streams.
 
-class
-OCTINTERP_API
-base_stream
+class OCTINTERP_API base_stream
 {
   friend class stream;
 
@@ -297,9 +295,7 @@ private:
   invalid_operation (const std::string& who, const char *rw);
 };
 
-class
-OCTINTERP_API
-stream
+class OCTINTERP_API stream
 {
 public:
 
@@ -499,9 +495,7 @@ private:
                  mach_info::float_format ffmt);
 };
 
-class
-OCTINTERP_API
-stream_list
+class OCTINTERP_API stream_list
 {
 public:
 

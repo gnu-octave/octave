@@ -46,9 +46,7 @@
 class octave_sparse_bool_matrix;
 
 template <typename T>
-class
-OCTINTERP_API
-octave_base_sparse : public octave_base_value
+class OCTINTERP_API octave_base_sparse : public octave_base_value
 {
 public:
 

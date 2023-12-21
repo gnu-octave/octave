@@ -47,10 +47,10 @@
 #include "ovl.h"
 #include "utils.h"
 
-static const octave_idx_type idx_max
+static constexpr octave_idx_type idx_max
   = std::numeric_limits<octave_idx_type>::max () - 1;
 
-static const double idx_max_dbl = double (idx_max);
+static constexpr double idx_max_dbl = double (idx_max);
 
 static bool
 read_cell_spec (std::istream& is, octave_idx_type& row, octave_idx_type& col)

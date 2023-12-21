@@ -917,10 +917,11 @@ rational_approx (T val, int len)
   if (len <= 0)
     len = 10;
 
-  static const T out_of_range_top
-    = static_cast<T> (std::numeric_limits<int>::max ()) + 1.;
-  static const T out_of_range_bottom
-    = static_cast<T> (std::numeric_limits<int>::min ()) - 1.;
+  static constexpr T out_of_range_top
+    = static_cast<T> (std::numeric_limits<int>::max ()) + 1.0;
+  static constexpr T out_of_range_bottom
+    = static_cast<T> (std::numeric_limits<int>::min ()) - 1.0;
+
   if (octave::math::isinf (val))
     {
       if (val > 0)

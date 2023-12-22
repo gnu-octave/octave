@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2014-2023 The Octave Project Developers
+## Copyright (C) 2014-2024 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -2297,7 +2297,7 @@ endfunction
 function str = warn_autogen ()
   str = "@c DO NOT EDIT!  Generated automatically by genpropdoc.m.\n\
 \n\
-@c Copyright (C) 2014-2023 The Octave Project Developers\n\
+@c Copyright (C) 2014-2024 The Octave Project Developers\n\
 @c\n\
 @c This file is part of Octave.\n\
 @c\n\

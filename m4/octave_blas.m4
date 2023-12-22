@@ -1,6 +1,6 @@
 dnl --------------------------------------------------------------------
 dnl
-dnl Copyright (C) 2022-2023 The Octave Project Developers
+dnl Copyright (C) 2022-2024 The Octave Project Developers
 dnl
 dnl See the file COPYRIGHT.md in the top-level directory of this
 dnl distribution or <https://octave.org/copyright/>.

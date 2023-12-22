@@ -1,6 +1,6 @@
 /*
 
-Copyright (C) 2011-2023 The Octave Project Developers
+Copyright (C) 2011-2024 The Octave Project Developers
 
 This file is part of QConsole.
 

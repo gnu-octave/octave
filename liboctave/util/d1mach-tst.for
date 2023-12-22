@@ -1,4 +1,4 @@
-c Copyright (C) 1996-2023 The Octave Project Developers
+c Copyright (C) 1996-2024 The Octave Project Developers
 c
 c See the file COPYRIGHT.md in the top-level directory of this
 c distribution or <https://octave.org/copyright/>.

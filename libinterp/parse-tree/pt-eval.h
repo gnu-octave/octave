@@ -1063,6 +1063,25 @@ private:
   int m_num_indices;
 };
 
+class quit_debug_exception
+{
+public:
+
+  quit_debug_exception (bool all = false) : m_all (all) { }
+
+  quit_debug_exception (const quit_debug_exception&) = default;
+
+  quit_debug_exception& operator = (const quit_debug_exception&) = default;
+
+  ~quit_debug_exception () = default;
+
+  bool all () const { return m_all; }
+
+private:
+
+  bool m_all;
+};
+
 OCTAVE_END_NAMESPACE(octave)
 
 #endif

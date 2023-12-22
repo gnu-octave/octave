@@ -81,25 +81,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Normal evaluator.
 
-class quit_debug_exception
-{
-public:
-
-  quit_debug_exception (bool all = false) : m_all (all) { }
-
-  quit_debug_exception (const quit_debug_exception&) = default;
-
-  quit_debug_exception& operator = (const quit_debug_exception&) = default;
-
-  ~quit_debug_exception () = default;
-
-  bool all () const { return m_all; }
-
-private:
-
-  bool m_all;
-};
-
 class debugger
 {
 public:

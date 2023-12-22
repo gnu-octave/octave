@@ -347,6 +347,7 @@ enum class error_type
   RHS_UNDEF_IN_ASSIGNMENT,
   BAD_ALLOC,
   EXIT_EXCEPTION,
+  DEBUG_QUIT,
 };
 
 enum class global_type

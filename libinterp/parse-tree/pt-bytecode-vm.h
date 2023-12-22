@@ -589,6 +589,8 @@ class vm
     // Execution exception
     int m_exit_status;
     bool m_safe_to_return;
+    // Debug quit
+    bool m_debug_quit_all;
   };
 
   error_data

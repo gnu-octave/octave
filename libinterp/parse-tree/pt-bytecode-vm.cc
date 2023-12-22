@@ -4855,14 +4855,17 @@ unwind:
     // Save current exception to the error system in handle_error ()
     error_data errdat = handle_error (et);
 
-    // Only run unwind_protect code if the exception is the interrupt or OOM exception.
+    // Run only unwind_protect code if the exception is the interrupt exception.
     // I.e. no 'throw ... catch' code.
     bool only_unwind_protect = et == error_type::INTERRUPT_EXC;
 
     while (1)
       {
-        // Find unwind entry for current value of the instruction pointer
-        unwind_entry *entry = find_unwind_entry_for_current_state (only_unwind_protect);
+        // Find unwind entry for current value of the instruction pointer, unless we are dealing
+        // with a debug quit exception in which case no unwind entry is used.
+        unwind_entry *entry = nullptr;
+        if (et != error_type::DEBUG_QUIT)
+          entry = find_unwind_entry_for_current_state (only_unwind_protect);
 
         unwind_entry_type type = unwind_entry_type::INVALID;
         if (entry)
@@ -5017,6 +5020,8 @@ unwind:
     // Rethrow exceptions out of the VM
     if (et == error_type::INTERRUPT_EXC)
       throw interrupt_exception {};
+    else if (et == error_type::DEBUG_QUIT)
+      throw quit_debug_exception {errdat.m_debug_quit_all};
     else if (et == error_type::EXIT_EXCEPTION)
       throw exit_exception (errdat.m_exit_status, errdat.m_safe_to_return);
     else
@@ -6433,6 +6438,12 @@ bail_echo:
             CATCH_EXECUTION_EXCEPTION
             CATCH_BAD_ALLOC
             CATCH_EXIT_EXCEPTION
+            catch (const quit_debug_exception &qde)
+              {
+                (*sp++).i = qde.all ();
+                (*sp++).i = static_cast<int>(error_type::DEBUG_QUIT);
+                goto unwind;
+              }
           }
       }
   }
@@ -7150,6 +7161,13 @@ vm::handle_error (error_type error_type)
       execution_exception e {"error", "", "value on right hand side of assignment is undefined"};
 
       es.save_exception (e);
+
+      break;
+    }
+    case error_type::DEBUG_QUIT:
+    {
+      ret.m_debug_quit_all = m_sp[-1].i;
+      m_sp--;
 
       break;
     }
@@ -8256,7 +8274,14 @@ vm::call (tree_evaluator& tw, int nargout, const octave_value_list& xargs,
 
     tw.pop_stack_frame ();
     throw;
+  } catch (const quit_debug_exception &qde) {
+    if (vm.m_dbg_proper_return == false)
+      panic ("quit debug exception escaping the vm");
+
+    tw.pop_stack_frame ();
+    throw;
   }
+
 
   tw.pop_stack_frame ();
   return ret;

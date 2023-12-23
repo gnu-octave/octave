@@ -786,8 +786,14 @@ erfc (@var{y}) == @var{x}
 ## backward - loss of accuracy
 %!assert (erfcinv (erfc ([-3 -1 -0.4 0.7 1.3 2.8])),
 %!        [-3 -1 -0.4 0.7 1.3 2.8], -1e-12)
-%!assert (erfcinv (erfc (single ([-3 -1 -0.4 0.7 1.3 2.8]))),
-%!        single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
+%!testif ; ! ispc ()
+%! assert (erfcinv (erfc (single ([-3 -1 -0.4 0.7 1.3 2.8]))),
+%!         single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
+%!testif ; ispc ()  <65075>
+%! ## Same test code as above, but intended for test statistics with the UCRT.
+%! ## The deviations are twice as high with it.
+%! assert (erfcinv (erfc (single ([-3 -1 -0.4 0.7 1.3 2.8]))),
+%!         single ([-3 -1 -0.4 0.7 1.3 2.8]), -1e-4)
 ## exceptional
 %!assert (erfcinv ([2, 0, -0.1, 2.1]), [-Inf, Inf, NaN, NaN])
 %!error erfcinv (1+2i)

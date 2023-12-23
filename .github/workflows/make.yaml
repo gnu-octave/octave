@@ -796,8 +796,8 @@ jobs:
       - name: analyze test suite results
         # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
         run: |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || (echo "::warning::At least one test failed" && exit 1)
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || (echo "::warning::At least one regression in test suite" && exit 1)
           echo Finished analyzing test suite results.
 
       - name: test history file creation

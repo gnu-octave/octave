@@ -29,7 +29,8 @@
 ## Create color colormap.  This colormap is completely white.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -45,7 +46,7 @@ function map = white (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
   map = ones (n, 3);
@@ -60,3 +61,21 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+%!assert (size (white ()), [256, 3])
+%!assert (size (white (16)), [16, 3])
+%!assert (all ((white ()(:)) == 1), true)
+
+%!assert (white (1), [1, 1, 1])
+%!assert (white (true), double ([1, 1, 1]))
+%!assert (white (char (1)), double ([1, 1, 1]))
+%!assert (white (int32 (1)), double ([1, 1, 1]))
+%!assert (white (0), zeros (0, 3))
+%!assert (white (-1), zeros (0, 3))
+
+
+## Input validation
+%!error <function called with too many inputs> white (1, 2)
+%!error <N must be a scalar> white ("foo")
+%!error <N must be a scalar> white ([1, 2, 3])
+%!error <N must be a scalar> white ({1, 2, 3})

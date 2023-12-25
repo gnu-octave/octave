@@ -29,7 +29,8 @@
 ## Create color colormap.  This colormap varies from magenta to yellow.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -45,7 +46,7 @@ function map = spring (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
 
@@ -70,3 +71,23 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+
+%!assert (size (spring ()), [256, 3])
+%!assert (size (spring (16)), [16, 3])
+%!assert (all ((spring ()(:, 1)) == 1), true)
+%!assert (spring (11)(:,2:3), [[0:0.1:1]; [1:-0.1:0]]', eps)
+
+%!assert (spring (1), [1, 0, 1])
+%!assert (spring (true), double ([1, 0, 1]))
+%!assert (spring (char (1)), double ([1, 0, 1]))
+%!assert (spring (int32 (1)), double ([1, 0, 1]))
+
+%!assert (spring (0), zeros (0, 3))
+%!assert (spring (-1), zeros (0, 3))
+
+## Input validation
+%!error <function called with too many inputs> spring (1, 2)
+%!error <N must be a scalar> spring ("foo")
+%!error <N must be a scalar> spring ([1, 2, 3])
+%!error <N must be a scalar> spring ({1, 2, 3})

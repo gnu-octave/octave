@@ -32,7 +32,8 @@
 ## This colormap gives a sepia tone when used on grayscale images.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -48,11 +49,13 @@ function map = pink (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
   if (n == 1)
     map = sqrt ([1/3, 1/3, 1/3]);
+%!assert (pink (-1), zeros (0, 3))
+
   elseif (n == 2)
     map = sqrt ([1/3, 1/3, 1/6
                   1    1    1 ]);
@@ -88,3 +91,29 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+
+%!assert (size (pink ()), [256, 3])
+%!assert (size (pink (16)), [16, 3])
+
+%!assert (pink (1), sqrt ([1/3, 1/3, 1/3]), eps)
+%!assert (pink (true), double (sqrt ([1/3, 1/3, 1/3])), eps)
+%!assert (pink (char (1)), double (sqrt ([1/3, 1/3, 1/3])), eps)
+%!assert (pink (int32 (1)), double (sqrt ([1/3, 1/3, 1/3])), eps)
+%!assert (pink (2), sqrt ([1/3, 1/3, 1/6; 1, 1, 1]))
+
+%!assert (pink (0), zeros (0, 3))
+%!assert (pink()(end,:), [1 1 1], eps)
+
+%!test
+%! a = sqrt ([1/3, 0,   0;
+%!            5/9, 5/9, 2/9;
+%!            7/9, 7/9, 11/18;
+%!            1,   1,   1]);
+%! assert (pink (4), a, eps)
+
+## Input validation
+%!error <function called with too many inputs> pink (1, 2)
+%!error <N must be a scalar> pink ("foo")
+%!error <N must be a scalar> pink ([1, 2, 3])
+%!error <N must be a scalar> pink ({1, 2, 3})

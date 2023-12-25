@@ -35,7 +35,8 @@
 ## @code{hsv2rgb ([(0:N-1)'/N, ones(N,2)])}.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -51,7 +52,7 @@ function map = hsv (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
 
@@ -75,3 +76,22 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+%!assert (size (hsv ()), [256, 3])
+%!assert (size (hsv (16)), [16, 3])
+
+%!assert (hsv (1), [1, 0, 0])
+%!assert (hsv (true), double ([1, 0, 0]))
+%!assert (hsv (char (1)), double ([1, 0, 0]))
+%!assert (hsv (int32 (1)), double ([1, 0, 0]))
+
+%!assert (hsv (0), zeros (0, 3))
+%!assert (hsv (-1), zeros (0, 3))
+
+%!assert (hsv (6)(:), [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1]')
+
+## Input validation
+%!error <function called with too many inputs> hsv (1, 2)
+%!error <N must be a scalar> hsv ("foo")
+%!error <N must be a scalar> hsv ([1, 2, 3])
+%!error <N must be a scalar> hsv ({1, 2, 3})

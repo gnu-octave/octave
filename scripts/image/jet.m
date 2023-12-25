@@ -30,7 +30,8 @@
 ## cyan, green, yellow, red, to dark red.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ##
 ## Programming Note: The @code{jet} colormap is not perceptually uniform.
 ## Try the @code{viridis} colormap if that is important.  For a drop-in
@@ -51,7 +52,7 @@ function map = jet (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
   if (n == 1)
@@ -110,3 +111,29 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+
+%!assert (size (jet ()), [256, 3])
+%!assert (size (jet (16)), [16, 3])
+
+%!assert (jet (1), [0, 1, 1])
+%!assert (jet (true), double ([0, 1, 1]))
+%!assert (jet (char (1)), double ([0, 1, 1]))
+%!assert (jet (int32 (1)), double ([0, 1, 1]))
+%!assert (jet (2), [0, 0, 1; 0, 1, 1])
+
+%!assert (jet (0), zeros (0, 3))
+%!assert (jet (-1), zeros (0, 3))
+
+%!test
+%! a = zeros(15, 3);
+%! a([3:13],2) = [0.25, 0.5, 0.75, 1, 1, 1, 1, 1, 0.75, 0.5, 0.25];
+%! a([7:15], 1) = a([3:11], 2);
+%! a(:,3) = flipud (a(:,1));
+%! assert (jet (15), a, eps)
+
+## Input validation
+%!error <function called with too many inputs> jet (1, 2)
+%!error <N must be a scalar> jet ("foo")
+%!error <N must be a scalar> jet ([1, 2, 3])
+%!error <N must be a scalar> jet ({1, 2, 3})

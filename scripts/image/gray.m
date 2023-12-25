@@ -30,7 +30,8 @@
 ## of gray.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -46,7 +47,7 @@ function map = gray (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
 
@@ -69,3 +70,23 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+
+%!assert (size (gray ()), [256, 3])
+%!assert (size (gray (16)), [16, 3])
+
+%!assert (gray (1), [0, 0, 0])
+%!assert (gray (true), double ([0, 0, 0]))
+%!assert (gray (char (1)), double ([0, 0, 0]))
+%!assert (gray (int32 (1)), double ([0, 0, 0]))
+
+%!assert (gray (0), zeros (0, 3))
+%!assert (gray (-1), zeros (0, 3))
+
+%!assert (gray (11), [0:.1:1]' .* [1, 1, 1], eps)
+
+## Input validation
+%!error <function called with too many inputs> gray (1, 2)
+%!error <N must be a scalar> gray ("foo")
+%!error <N must be a scalar> gray ([1, 2, 3])
+%!error <N must be a scalar> gray ({1, 2, 3})

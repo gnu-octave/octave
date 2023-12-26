@@ -30,7 +30,8 @@
 ## red, orange, yellow, to white.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -46,7 +47,7 @@ function map = hot (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
   if (n == 1)
@@ -86,3 +87,36 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+%!assert (size (hot ()), [256, 3])
+%!assert (size (hot (16)), [16, 3])
+
+%!assert (hot (1), [1, 1, 1])
+%!assert (hot (true), double ([1, 1, 1]))
+%!assert (hot (char (1)), double ([1, 1, 1]))
+%!assert (hot (int32 (1)), double ([1, 1, 1]))
+%!assert (hot (2), [1, 1, 1/2; 1, 1, 1])
+%!assert (hot (3), [1, 0, 0; 1, 1, 0; 1 1 1])
+
+%!assert (hot (0), zeros (0, 3))
+%!assert (hot (-1), zeros (0, 3))
+
+%!test
+%! a = [0.25, 0,    0;
+%!      0.50, 0,    0;
+%!      0.75, 0,    0;
+%!      1,    0,    0;
+%!      1,    0.25, 0;
+%!      1,    0.50, 0;
+%!      1,    0.75, 0;
+%!      1,    1,    0;
+%!      1,    1,    1/3;
+%!      1,    1,    2/3;
+%!      1,    1,    1];
+%! assert (hot (11), a, eps);
+
+## Input validation
+%!error <function called with too many inputs> hot (1, 2)
+%!error <N must be a scalar> hot ("foo")
+%!error <N must be a scalar> hot ([1, 2, 3])
+%!error <N must be a scalar> hot ({1, 2, 3})

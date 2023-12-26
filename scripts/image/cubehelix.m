@@ -40,7 +40,8 @@
 ## @end example
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ##
 ## Reference: Green, D. A., 2011,
 ## @cite{A @nospell{colour} scheme for the display of astronomical intensity
@@ -61,7 +62,7 @@ function map = cubehelix (n, start = 0.5, rots = -1.5, hue = 1, gamma = 1)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
 
@@ -96,3 +97,34 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+
+%!assert (size (cubehelix ()), [256, 3])
+%!assert (size (cubehelix (16)), [16, 3])
+
+%!assert (cubehelix (1), [0,0,0])
+%!assert (cubehelix (true), double ([0,0,0]))
+%!assert (cubehelix (char (1)), double ([0,0,0]))
+%!assert (cubehelix (int32 (1)), double ([0,0,0]))
+
+%!assert (cubehelix (0), zeros (0, 3))
+%!assert (cubehelix (-1), zeros (0, 3))
+
+%!assert (cubehelix (2), [0, 0, 0; 1, 1, 1])
+%!assert ([cubehelix]([1,end],:), [0, 0, 0; 1, 1, 1])
+
+%!shared a
+%! a = [0,                   0,                   0;
+%!      0.17004232121057959, 0.43679759647517287, 0.22372555555555556;
+%!      0.82995767878942041, 0.56320240352482713, 0.77627444444444445;
+%!      1,                   1,                   1];
+
+%!assert (cubehelix (4), a, eps)
+
+%!shared  # Clear shared varibles to avoid echo on unrelated test errors.
+
+## Input validation
+%!error <function called with too many inputs> cubehelix (1, 2, 3, 4 ,5 ,6)
+%!error <N must be a scalar> cubehelix ("foo")
+%!error <N must be a scalar> cubehelix ([1, 2, 3])
+%!error <N must be a scalar> cubehelix ({1, 2, 3})

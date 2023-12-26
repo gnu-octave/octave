@@ -24,12 +24,12 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} rose (@var{th})
-## @deftypefnx {} {} rose (@var{th}, @var{nbins})
-## @deftypefnx {} {} rose (@var{th}, @var{bins})
+## @deftypefn  {} {} rose (@var{theta})
+## @deftypefnx {} {} rose (@var{theta}, @var{nbins})
+## @deftypefnx {} {} rose (@var{theta}, @var{bins})
 ## @deftypefnx {} {} rose (@var{hax}, @dots{})
 ## @deftypefnx {} {@var{h} =} rose (@dots{})
-## @deftypefnx {} {[@var{thout} @var{rout}] =} rose (@dots{})
+## @deftypefnx {} {[@var{th} @var{r}] =} rose (@dots{})
 ## Plot an angular histogram.
 ##
 ## With one vector argument, @var{th}, plot the histogram with 20 angular bins.
@@ -59,16 +59,19 @@
 ## @end group
 ## @end example
 ##
-## Programming Note: When specifying bin centers with the @var{bins} input,
-## the edges for bins 2 to N-1 are spaced so that @code{@var{bins}(i)} is
-## centered between the edges.  The final edge is drawn halfway between bin N
-## and bin 1.  This guarantees that all input @var{th} will be placed into one
-## of the bins, but also means that for some combinations bin 1 and bin N may
-## not be centered on the user's given values.
 ## @seealso{hist, polar}
 ## @end deftypefn
 
-function [thout, rout] = rose (varargin)
+## Programming note: Ranges are calculated in degrees and then converted to
+## radians because the use of integers prevents accumulation of small errors
+## that result when using floating point directly.
+## The histogram counts are calculated using histc().  See the documentation.
+## The final count from histc() contains any values *exactly* equal to the
+## last bin edge which is always 2*pi.  Because the input mapping of
+## "mod (th, 2*pi)" changes any 2*pi values to 0, this last bin should always
+## be zero and can be safely deleted.
+
+function [th, r] = rose (varargin)
 
   [hax, varargin, nargin] = __plt_get_axis_arg__ ("rose", varargin{:});
 
@@ -76,49 +79,62 @@ function [thout, rout] = rose (varargin)
     print_usage ();
   endif
 
-  th = varargin{1};
-  ## Force theta to [0,2*pi] range
-  th = atan2 (sin (th), cos (th));
-  th(th < 0) += 2*pi;
+  ## Force theta to range [0,2*pi)
+  th = mod (varargin{1}, 2*pi);
 
   custom_bins = false;
   if (nargin == 1)
-    bins = [1/40 : 1/20 : 1] * 2*pi;
+    bins = [9 : 18 : 360] / 180 * pi;  
   else
     bins = varargin{2};
     if (isscalar (bins))
-      bins = [0.5/bins : 1/bins : 1] * 2*pi;
+      bins = [180/bins : 360/bins : 360] / 180 * pi;
     else
       custom_bins = true;
-      ## Force angles to [0,2*pi] range
-      bins = atan2 (sin (bins), cos (bins));
-      bins(bins < 0) += 2*pi;
-      bins = unique (bins);
+      ## Force custom bins to [0,2*pi) range
+      bins = mod (bins, 2*pi);
+      bins = unique (bins);  # de-duplicate and sort bins
+      bins = bins(:).';      # Force row vector
     endif
   endif
-  if (numel (bins) < 3)
-    warning ("rose: bin sizes >= pi will not plot correctly");
+
+  binedge = bins(1:end-1) + diff (bins) / 2;  # halfway between bin centers
+  if (! custom_bins)
+    counts = histc (th, [0, binedge, 2*pi]);  # Add implicit edges at 0, 2*pi
+    if (isrow (counts))
+      counts = counts(:);
+    endif
+    ## FIXME: Remove in Octave 11 if no bug reports filed
+    if (any (counts(end,:)))
+      error ("rose: internal error, histc returned count for theta == 2*pi, please file a bug report");
+    endif
+    counts(end,:) = [];            # remove temporary bin
+  else
+    last_binedge = bins(end) + diff ([bins(end), 2*pi+bins(1)]) / 2;
+    if (last_binedge >= 2*pi)
+      counts = histc (th, [0, last_binedge - 2*pi, binedge, 2*pi]);
+    else
+      counts = histc (th, [0, binedge, last_binedge, 2*pi]);
+    endif
+    if (isrow (counts))
+      counts = counts(:);
+    endif
+    counts(end-1,:) += counts(1,:);  # Combine counts for first, last bin
+    ## FIXME: Remove in Octave 11 if no bug reports filed
+    if (any (counts(end,:)))
+      error ("rose: internal error, histc returned count for theta == 2*pi, please file a bug report");
+    endif
+    counts([1,end], :) = [];         # remove temporary bins
   endif
 
-  [counts, binctr] = hist (th, bins);
-  binctr = binctr(:).';    # Force row vector
-  if (isvector (counts))
-    counts = counts(:);
-  endif
-
-  binedge = binctr(1:end-1) + diff (binctr) / 2;
   binedge = [binedge ; zeros(size(binedge)); zeros(size(binedge)); binedge];
   binedge = binedge(:);
   if (! custom_bins)
-    ## Add in implicit edges at 0 and 2*pi
+    ## Add implicit edges at 0 and 2*pi
     th = [0; 0; binedge; 2*pi ; 0];
   else
-    ## Add in final edge
-    last_bin_edge = binctr(end) + diff ([binctr(end), (2*pi+binctr(1))])/2;
-    if ((binedge(end) + last_bin_edge)/2 != binctr(end))
-      warning ("rose: bin 1 and bin %d are not centered", numel (binctr));
-    endif
-    th = [0; last_bin_edge; binedge; last_bin_edge; 0];
+    ## Add final edge for custom bin
+    th = [0; last_binedge; binedge; last_binedge; 0];
   endif
 
   r = zeros (4 * rows (counts), columns (counts));
@@ -126,6 +142,10 @@ function [thout, rout] = rose (varargin)
   r(3:4:end, :) = counts;
 
   if (nargout < 2)
+    if (any (diff (bins) >= pi))
+      warning ("rose: bin sizes >= pi will not plot correctly");
+    endif
+
     oldfig = [];
     if (! isempty (hax))
       oldfig = get (0, "currentfigure");
@@ -140,11 +160,8 @@ function [thout, rout] = rose (varargin)
     end_unwind_protect
 
     if (nargout > 0)
-      thout = htmp;
+      th = htmp;
     endif
-  else
-    thout = th;
-    rout = r;
   endif
 
 endfunction
@@ -165,10 +182,30 @@ endfunction
 %! rose ([0, 2, 3, 5], [0, pi/2, pi, 3*pi/2]);
 %! title ("rose() angular histogram plot with specified bins");
 
+## Test mapping inputs to [0, 2*pi), 2*pi mapped to bin 1.
+%!test
+%! [t, r] = rose ([1:1:360]/180*pi + 2*pi);
+%! assert (diff (t(2:4:end)), 2*pi/20 * ones (19, 1));
+%! assert (r(2:4:end), 18*ones (20, 1));
+
+## Custom # of bins, values exactly at 0 and 2*pi go to bin 1
+%!test
+%! [t,r] = rose ([0, 2*pi], 4);
+%! assert (size (t), [16, 1]);
+%! assert (size (r), [16, 1]);
+%! assert ([t(2); t(3:4:end)], [0; pi/2; pi; 3*pi/2; 2*pi]);
+%! assert (r(2:4:end), [2; 0; 0; 0]);
+
+## Custom bins, synthesized bin1 cut-off is exactly 36 degrees 
+%!test
+%! [t,r] = rose (deg2rad ([35, 36]), pi * [1/2, 1, 1.5, 1.9]);
+%! assert (r(2:4:end), [1; 0; 0; 1]);
+
+## Custom bins, synthesized bin1 cut-off is exactly -36 degrees 
+%!test
+%! [t,r] = rose (deg2rad ([-36, -37, 360]), pi * [1/10, 1/2, 1, 1.5]);
+%! assert (r(2:4:end), [0; 0; 1; 2]);
+
 ## Test input validation
 %!error <Invalid call> rose ()
 %!error <Invalid call> rose (1,2,3)
-%!warning <bin sizes .= pi will not plot correctly>
-%! [th, r] = rose ([1 2 2 4 4 4], 2);
-%!warning <bin 1 and bin 3 are not centered>
-%! [th, r] = rose ([1 2 2 4 4 4], [1 2 3]);

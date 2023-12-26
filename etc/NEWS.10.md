@@ -16,6 +16,9 @@ value if it is specified.
 
 - `height` and `width` are now aliases for the `rows` and `columns` functions.
 
+- All colormaps now default to a size of 256 colors. (The previous default
+size was 64.
+
 ### Alphabetical list of new functions added in Octave 10
 
 * `rticklabels`

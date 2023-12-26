@@ -31,7 +31,8 @@
 ## uniform.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -51,7 +52,7 @@ function map = turbo (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
 
@@ -325,3 +326,30 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+
+%!assert (size (turbo ()), [256, 3])
+%!assert (size (turbo (16)), [16, 3])
+
+%!assert (turbo(0), zeros (0, 3))
+%!assert (turbo(-1), zeros (0, 3))
+
+%!shared a
+%! a = [0.18995, 0.07176, 0.23217;
+%!      0.10342, 0.89600, 0.71500;
+%!      0.98000, 0.73000, 0.22161;
+%!      0.47960, 0.01583, 0.01055];
+
+%!assert (turbo (1), a(4,:))
+%!assert (turbo (true), double (a(4,:)))
+%!assert (turbo (char (1)), double (a(4,:)))
+%!assert (turbo (int32 (1)), double (a(4,:)))
+%!assert (turbo (4), a, eps)
+
+%!shared  # Clear shared varibles to avoid echo on unrelated test errors.
+
+## Input validation
+%!error <function called with too many inputs> turbo (1, 2)
+%!error <N must be a scalar> turbo ("foo")
+%!error <N must be a scalar> turbo ([1, 2, 3])
+%!error <N must be a scalar> turbo ({1, 2, 3})

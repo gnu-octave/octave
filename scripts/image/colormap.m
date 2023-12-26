@@ -32,7 +32,9 @@
 ## @deftypefnx {} {} colormap @var{map_name}
 ## Query or set the current colormap.
 ##
-## With no input arguments, @code{colormap} returns the current color map.
+## With no input arguments, @code{colormap} returns the current color map.  If
+## there is no current figure, a new figure will be opened and the default
+## color map will be returned.
 ##
 ## @code{colormap (@var{map})} sets the current colormap to @var{map}.  The
 ## colormap should be an @var{n} row by 3 column matrix.  The columns
@@ -40,7 +42,7 @@
 ## must be between 0 and 1 inclusive.  The new colormap is returned.
 ##
 ## @code{colormap (@qcode{"default"})} restores the default colormap (the
-## @code{viridis} map with 64 entries).  The default colormap is returned.
+## @code{viridis} map with 256 entries).  The default colormap is returned.
 ##
 ## The map may also be specified by a string, @var{map_name}, which
 ## is the name of a function that returns a colormap.
@@ -108,7 +110,7 @@ function cmap = colormap (varargin)
     if (ischar (map))
       map = lower (map);
       if (strcmp (map, "default"))
-        map = viridis (64);
+        map = viridis (256);
       else
         try
           map = feval (map);
@@ -169,9 +171,9 @@ endfunction
 %!   cmap = (get (gcf, "colormap"));
 %!   assert (cmap, cmaptst);
 %!   colormap ("default");
-%!   assert (colormap (), viridis (64));
+%!   assert (colormap (), viridis (256));
 %!   colormap ("ocean");
-%!   assert (colormap, ocean (64));
+%!   assert (colormap, ocean (256));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

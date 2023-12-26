@@ -30,7 +30,8 @@
 ## blue, green, to yellow.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -50,9 +51,10 @@ function map = viridis (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
+
   ## FIXME: Is there no algorithmic definition of the viridis colormap?
   persistent viridi = [0.26700401  0.00487433  0.32941519
                        0.26851048  0.00960483  0.33542652
@@ -325,3 +327,29 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+%!assert (size (viridis ()), [256, 3])
+%!assert (size (viridis (16)), [16, 3])
+
+%!assert (viridis (0), zeros (0, 3))
+%!assert (viridis (-1), zeros (0, 3))
+
+%!shared a
+%! a = [0.26700401, 0.00487433, 0.32941519;
+%!      0.19063135, 0.40706148, 0.55608907;
+%!      0.20803045, 0.71870095, 0.47287330;
+%!      0.99324789, 0.90615657, 0.14393620];
+
+%!assert (viridis (1), a(4,:))
+%!assert (viridis (true), double (a(4,:)))
+%!assert (viridis (char (1)), double (a(4,:)))
+%!assert (viridis (int32 (1)), double (a(4,:)))
+%!assert (viridis (4), a, eps)
+
+%!shared  # Clear shared varibles to avoid echo on unrelated test errors.
+
+## Input validation
+%!error <function called with too many inputs> viridis (1, 2)
+%!error <N must be a scalar> viridis ("foo")
+%!error <N must be a scalar> viridis ([1, 2, 3])
+%!error <N must be a scalar> viridis ({1, 2, 3})

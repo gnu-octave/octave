@@ -30,7 +30,8 @@
 ## of blue.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
@@ -46,7 +47,7 @@ function map = ocean (n)
     if (! isempty (hf))
       n = rows (get (hf, "colormap"));
     else
-      n = 64;
+      n = 256;
     endif
   endif
 
@@ -78,3 +79,31 @@ endfunction
 %!  rgbplot (cmap, "composite");
 %! subplot (2, 1, 2);
 %!  rgbplot (cmap);
+
+
+%!assert (size (ocean ()), [256, 3])
+%!assert (size (ocean (16)), [16, 3])
+
+%!assert (ocean (1), [0, 0, 0])
+%!assert (ocean (true), double ([0, 0, 0]))
+%!assert (ocean (char (1)), double ([0, 0, 0]))
+%!assert (ocean (int32 (1)), double ([0, 0, 0]))
+
+%!assert (ocean (0), zeros (0, 3))
+%!assert (ocean (-1), zeros (0, 3))
+
+%!assert (ocean()(1,:), [0, 0, 0])
+%!assert (ocean()(end,:), [1, 1, 1])
+
+%!test
+%! a = zeros (11, 3);
+%! a([9:11],1) = [1/3, 2/3, 1];
+%! a([6:11], 2) = 1/6:1/6:1;
+%! a(:, 3) = 0:.1:1;
+%! assert (ocean (11), a, eps)
+
+## Input validation
+%!error <function called with too many inputs> ocean (1, 2)
+%!error <N must be a scalar> ocean ("foo")
+%!error <N must be a scalar> ocean ([1, 2, 3])
+%!error <N must be a scalar> ocean ({1, 2, 3})

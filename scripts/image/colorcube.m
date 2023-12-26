@@ -34,16 +34,25 @@
 ## blue, and gray.
 ##
 ## The argument @var{n} must be a scalar.
-## If unspecified, the length of the current colormap, or 64, is used.
+## If @var{n} is not specified the length of the current colormap is used.  If
+## there is no current colormap the default value of 256 is used.
 ## @seealso{colormap}
 ## @end deftypefn
 
 function map = colorcube (n)
 
-  if (nargin == 0)
-    n = rows (colormap);
-  elseif (! isscalar (n))
-    error ("colorcube: N must be a scalar");
+  if (nargin == 1)
+    if (! isscalar (n))
+      error ("colorcube: N must be a scalar");
+    endif
+    n = double (n);
+  else
+    hf = get (0, "currentfigure");
+    if (! isempty (hf))
+      n = rows (get (hf, "colormap"));
+    else
+      n = 256;
+    endif
   endif
 
   if (n < 9)
@@ -99,3 +108,38 @@ endfunction
 %! axis ([1, 64, 0, 1], "xy");
 %! set (gca, "xtick", []);
 %! colormap (colorcube (64));
+
+
+%!assert (size (colorcube ()), [256, 3])
+%!assert (size (colorcube (16)), [16, 3])
+
+%!assert (colorcube (1), [0, 0, 0])
+%!assert (colorcube (true), double ([0, 0, 0]))
+%!assert (colorcube (char (1)), double ([0, 0, 0]))
+%!assert (colorcube (int32 (1)), double ([0, 0, 0]))
+
+%!assert (colorcube (0), zeros (0, 3))
+%!assert (colorcube (-1), zeros (0, 3))
+
+%!assert (colorcube (8), gray (8))
+
+%!test
+%! a = [1,   1,   0;
+%!      0,   1,   1;
+%!      1,   0,   1;
+%!      0.5, 0,   0;
+%!      1,   0,   0;
+%!      0,   0.5, 0;
+%!      0,   1,   0;
+%!      0,   0,   0.5;
+%!      0,   0,   1;
+%!      0,   0,   0;
+%!      0.5, 0.5, 0.5;
+%!      1,   1,   1];
+%! assert (colorcube (12), a, eps)
+
+## Input validation
+%!error <function called with too many inputs> colorcube (1, 2)
+%!error <N must be a scalar> colorcube ("foo")
+%!error <N must be a scalar> colorcube ([1, 2, 3])
+%!error <N must be a scalar> colorcube ({1, 2, 3})

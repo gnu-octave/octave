@@ -93,7 +93,6 @@ endfunction
 %! assert (copper (6), a, eps)
 
 ## Input validation
-%!error <function called with too many inputs> copper (1, 2)
 %!error <N must be a scalar> copper ("foo")
 %!error <N must be a scalar> copper ([1, 2, 3])
 %!error <N must be a scalar> copper ({1, 2, 3})

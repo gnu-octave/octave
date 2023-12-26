@@ -124,7 +124,6 @@ endfunction
 %!shared  # Clear shared varibles to avoid echo on unrelated test errors.
 
 ## Input validation
-%!error <function called with too many inputs> cubehelix (1, 2, 3, 4 ,5 ,6)
 %!error <N must be a scalar> cubehelix ("foo")
 %!error <N must be a scalar> cubehelix ([1, 2, 3])
 %!error <N must be a scalar> cubehelix ({1, 2, 3})

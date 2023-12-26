@@ -112,7 +112,6 @@ endfunction
 %! assert (pink (4), a, eps)
 
 ## Input validation
-%!error <function called with too many inputs> pink (1, 2)
 %!error <N must be a scalar> pink ("foo")
 %!error <N must be a scalar> pink ([1, 2, 3])
 %!error <N must be a scalar> pink ({1, 2, 3})

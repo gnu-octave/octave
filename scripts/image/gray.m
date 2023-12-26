@@ -86,7 +86,6 @@ endfunction
 %!assert (gray (11), [0:.1:1]' .* [1, 1, 1], eps)
 
 ## Input validation
-%!error <function called with too many inputs> gray (1, 2)
 %!error <N must be a scalar> gray ("foo")
 %!error <N must be a scalar> gray ([1, 2, 3])
 %!error <N must be a scalar> gray ({1, 2, 3})

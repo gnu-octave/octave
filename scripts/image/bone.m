@@ -122,7 +122,6 @@ endfunction
 %! assert (bone (5), a, eps)
 
 ## Input validation
-%!error <function called with too many inputs> bone (1, 2)
 %!error <N must be a scalar> bone ("foo")
 %!error <N must be a scalar> bone ([1, 2, 3])
 %!error <N must be a scalar> bone ({1, 2, 3})

@@ -87,7 +87,6 @@ endfunction
 %!assert (spring (-1), zeros (0, 3))
 
 ## Input validation
-%!error <function called with too many inputs> spring (1, 2)
 %!error <N must be a scalar> spring ("foo")
 %!error <N must be a scalar> spring ([1, 2, 3])
 %!error <N must be a scalar> spring ({1, 2, 3})

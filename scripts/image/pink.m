@@ -54,8 +54,6 @@ function map = pink (n)
   endif
   if (n == 1)
     map = sqrt ([1/3, 1/3, 1/3]);
-%!assert (pink (-1), zeros (0, 3))
-
   elseif (n == 2)
     map = sqrt ([1/3, 1/3, 1/6
                   1    1    1 ]);
@@ -103,6 +101,7 @@ endfunction
 %!assert (pink (2), sqrt ([1/3, 1/3, 1/6; 1, 1, 1]))
 
 %!assert (pink (0), zeros (0, 3))
+%!assert (pink (-1), zeros (0, 3))
 %!assert (pink()(end,:), [1 1 1], eps)
 
 %!test

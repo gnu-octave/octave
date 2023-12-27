@@ -6,7 +6,7 @@
     <message>
         <location filename="../src/files-dock-widget.cc" line="+136"/>
         <source>Invalid filename</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçersiz dosya adı</translation>
     </message>
 </context>
 <context>
@@ -986,13 +986,13 @@
         <location line="-21"/>
         <location filename="../graphics/ui-annotation-dialog.h" line="-3"/>
         <source>Horizontal alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Yatay hizalama</translation>
     </message>
     <message>
         <location line="+29"/>
         <location filename="../graphics/ui-annotation-dialog.h" line="+5"/>
         <source>Vertical alignment</source>
-        <translation type="unfinished"></translation>
+        <translation>Dikey hizalama</translation>
     </message>
     <message>
         <location line="+11"/>
@@ -1096,7 +1096,7 @@
     <message>
         <location filename="../src/dialog.cc" line="+442"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tümünü Seç</translation>
     </message>
 </context>
 <context>
@@ -1104,17 +1104,17 @@
     <message>
         <location filename="../src/command-widget.cc" line="+59"/>
         <source>Pause</source>
-        <translation type="unfinished">Duraklat</translation>
+        <translation>Duraklat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Durdur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Devam</translation>
+        <translation>Devam</translation>
     </message>
 </context>
 <context>
@@ -1122,7 +1122,7 @@
     <message>
         <location filename="../src/community-news.cc" line="+69"/>
         <source>Octave Community News</source>
-        <translation type="unfinished">Octave Topluluk Haberleri</translation>
+        <translation>Octave Topluluk Haberleri</translation>
     </message>
 </context>
 <context>
@@ -1132,14 +1132,14 @@
         <location line="+14"/>
         <location line="+748"/>
         <source>Octave Documentation</source>
-        <translation type="unfinished">Octave Belgelendirmeleri</translation>
+        <translation>Octave Belgelendirmeleri</translation>
     </message>
     <message>
         <location line="-761"/>
         <source>Could not copy help collection to temporary
 file. Search capabilities may be affected.
 %1</source>
-        <translation type="unfinished">Yardım koleksiyonu geçici olarak kopyalanamadı
+        <translation>Yardım koleksiyonu geçici olarak kopyalanamadı
 dosya. Arama yetenekleri etkilenebilir.
 %1</translation>
     </message>
@@ -1150,105 +1150,109 @@ documentation viewer. Maybe the Qt SQlite
 module is missing?
 Only help text in the Command Window will
 be available.</source>
-        <translation type="unfinished"></translation>
+        <translation>için gerekli veriler ayarlanamadı.
+belge görüntüleyici. Belki Qt SQlite
+modül eksik mi?
+Yalnızca Komut Penceresindeki yardım metni
+kullanılabilir.</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Find:</source>
-        <translation type="unfinished">Bul:</translation>
+        <translation>Bul:</translation>
     </message>
     <message>
         <location line="+7"/>
         <location line="+1"/>
         <source>Search forward</source>
-        <translation type="unfinished">İleriye doğru ara</translation>
+        <translation>İleriye doğru ara</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+1"/>
         <source>Search backward</source>
-        <translation type="unfinished">Geriye doğru ara</translation>
+        <translation>Geriye doğru ara</translation>
     </message>
     <message>
         <location line="+44"/>
         <source>Contents</source>
-        <translation type="unfinished">İçindekiler</translation>
+        <translation>İçindekiler</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Enter text to search function index</source>
-        <translation type="unfinished"></translation>
+        <translation>Arama işlevi dizinine metin girin</translation>
     </message>
     <message>
         <location line="+9"/>
         <location line="+52"/>
         <source>Search</source>
-        <translation type="unfinished">Ara</translation>
+        <translation>Ara</translation>
     </message>
     <message>
         <location line="-36"/>
         <source>Function Index</source>
-        <translation type="unfinished">İşlev İndeksi</translation>
+        <translation>İşlev Dizini</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Bookmarks</source>
-        <translation type="unfinished">Yer İmleri</translation>
+        <translation>Yer İmleri</translation>
     </message>
     <message>
         <location line="+87"/>
         <source>Go home</source>
-        <translation type="unfinished">Anasayfaya git</translation>
+        <translation>Ana sayfaya git</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Go back</source>
-        <translation type="unfinished">Geri git</translation>
+        <translation>Geri git</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Previous pages</source>
-        <translation type="unfinished">Önceki sayfalar</translation>
+        <translation>Önceki sayfalar</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Go forward</source>
-        <translation type="unfinished">İleri git</translation>
+        <translation>İleri git</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Next pages</source>
-        <translation type="unfinished">Sonraki sayfalar</translation>
+        <translation>Sonraki sayfalar</translation>
     </message>
     <message>
         <location line="+37"/>
         <source>Find</source>
-        <translation type="unfinished">Bul</translation>
+        <translation>Bul</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Yaklaştır</translation>
+        <translation>Yaklaştır</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Uzaklaştır</translation>
+        <translation>Uzaklaştır</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom Original</source>
-        <translation type="unfinished"></translation>
+        <translation>Orijinali Yakınlaştır</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Bookmark current page</source>
-        <translation type="unfinished">Geçerli sayfayı işaretle</translation>
+        <translation>Geçerli sayfayı işaretle</translation>
     </message>
     <message>
         <location line="+429"/>
         <source>Unable to register help file %1.</source>
-        <translation type="unfinished">%1 yardım dosyası kaydedilemiyor.</translation>
+        <translation>%1 yardım dosyası kaydedilemiyor.</translation>
     </message>
 </context>
 <context>
@@ -1257,63 +1261,63 @@ be available.</source>
         <location filename="../src/documentation-bookmarks.cc" line="+101"/>
         <source>
 No documentation bookmarks loaded!</source>
-        <translation type="unfinished">
-Hiçbir belge yer imi yüklenmedi!</translation>
+        <translation>
+Hiçbir belge yerimi yüklenmedi!</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave: Loading Documentation Bookmarks</source>
-        <translation type="unfinished">Octave: Dokümantasyon Yer İmlerini Yükleme</translation>
+        <translation>Octave: Dokümantasyon Yer İmlerini Yükleme</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Enter text to search the bookmarks</source>
-        <translation type="unfinished">Yer imlerini aramak için metni girin</translation>
+        <translation>Yer imlerini aramak için metni girin</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Süzgeç</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>New Folder</source>
-        <translation type="unfinished">Yeni Klasör</translation>
+        <translation>Yeni Klasör</translation>
     </message>
     <message>
         <location line="+105"/>
         <source>&amp;Open</source>
-        <translation type="unfinished">&amp;Aç</translation>
+        <translation>&amp;Aç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Rename</source>
-        <translation type="unfinished">&amp;Yeniden Adlandır</translation>
+        <translation>&amp;Yeniden Adlandır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remo&amp;ve</source>
-        <translation type="unfinished">Kald&amp;ır</translation>
+        <translation>Kald&amp;ır</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Add Folder</source>
-        <translation type="unfinished">&amp;Klasör Ekle</translation>
+        <translation>&amp;Klasör Ekle</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Hide &amp;Filter</source>
-        <translation type="unfinished">Filtreyi &amp;Gizle</translation>
+        <translation>Filtreyi &amp;Gizle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Filter</source>
-        <translation type="unfinished">Filtreyi &amp;Göster</translation>
+        <translation>Filtreyi &amp;Göster</translation>
     </message>
     <message>
         <location line="+60"/>
         <source>Octave: Saving Documentation Bookmarks</source>
-        <translation type="unfinished">Octave: Dokümantasyon Yer İmlerini Kaydetme</translation>
+        <translation>Octave: Dokümantasyon Yer İmlerini Kaydetme</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -1322,7 +1326,7 @@ Hiçbir belge yer imi yüklenmedi!</translation>
 
 Documentation bookmarks are not saved!
 </source>
-        <translation type="unfinished">%1 dosyası yazılamıyor:
+        <translation>%1 dosyası yazılamıyor:
 %2.
 
 Dokümantasyon yer imleri kaydedilmez!
@@ -1332,14 +1336,14 @@ Dokümantasyon yer imleri kaydedilmez!
         <location line="+55"/>
         <source>Unable to read file %1:
 %2.</source>
-        <translation type="unfinished">%1 dosyası okunamıyor:
+        <translation>%1 dosyası okunamıyor:
 %2.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>No start element found in %1.
 Invalid bookmark file?</source>
-        <translation type="unfinished">%1 içinde başlangıç öğesi bulunamadı.
+        <translation>%1 içinde başlangıç öğesi bulunamadı.
 Geçersiz yer imi dosyası?</translation>
     </message>
     <message>
@@ -1347,12 +1351,14 @@ Geçersiz yer imi dosyası?</translation>
         <source>The file
 %1
 is not a valid XBEL file version 1.0.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya
+%1
+geçerli bir XBEL dosyası sürüm 1.0 değil.</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Unknown title</source>
-        <translation type="unfinished">Bilinmeyen başlık</translation>
+        <translation>Bilinmeyen başlık</translation>
     </message>
 </context>
 <context>
@@ -1360,12 +1366,12 @@ is not a valid XBEL file version 1.0.</source>
     <message>
         <location filename="../src/documentation-dock-widget.cc" line="+40"/>
         <source>Documentation</source>
-        <translation type="unfinished">Belgelendirme</translation>
+        <translation>Belgelendirme</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>See the documentation for help.</source>
-        <translation type="unfinished">Yardım için belgelere bakın.</translation>
+        <translation>Yardım için belgelere bakın.</translation>
     </message>
 </context>
 <context>
@@ -1373,27 +1379,27 @@ is not a valid XBEL file version 1.0.</source>
     <message>
         <location filename="../src/dw-main-window.cc" line="+53"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Kapat</translation>
+        <translation>&amp;Kapat</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close &amp;All</source>
-        <translation type="unfinished">&amp;Tümünü Kapat</translation>
+        <translation>&amp;Tümünü Kapat</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close &amp;Other</source>
-        <translation type="unfinished">&amp;Diğerlerini Kapat</translation>
+        <translation>&amp;Diğerlerini Kapat</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Switch to &amp;Left Widget</source>
-        <translation type="unfinished">&amp;Soldaki araca Geç</translation>
+        <translation>&amp;Soldaki araca Geç</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Switch to &amp;Right Widget</source>
-        <translation type="unfinished">&amp;Sağdaki araca Geç</translation>
+        <translation>&amp;Sağdaki araca Geç</translation>
     </message>
 </context>
 <context>
@@ -1402,20 +1408,20 @@ is not a valid XBEL file version 1.0.</source>
         <location filename="../src/external-editor-interface.cc" line="+68"/>
         <location line="+46"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Oktave Düzenleyici</translation>
+        <translation>Oktave Düzenleyici</translation>
     </message>
     <message>
         <location line="-45"/>
         <source>Could not start custom file editor
 %1</source>
-        <translation type="unfinished">Özel dosya düzenleyicisi başlatılamadı
+        <translation>Özel dosya düzenleyicisi başlatılamadı
 %1</translation>
     </message>
     <message>
         <location line="+46"/>
         <source>There is no custom editor configured yet.
 Do you want to open the preferences?</source>
-        <translation type="unfinished">Henüz yapılandırılmış özel bir düzenleyici yok.
+        <translation>Henüz yapılandırılmış özel bir düzenleyici yok.
 Tercihleri açmak istiyor musunuz?</translation>
     </message>
 </context>
@@ -1424,12 +1430,12 @@ Tercihleri açmak istiyor musunuz?</translation>
     <message>
         <location filename="../src/m-editor/file-editor.cc" line="+190"/>
         <source>Continue</source>
-        <translation type="unfinished">Devam</translation>
+        <translation>Devam</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Save File and Run</source>
-        <translation type="unfinished">Dosyayı Kaydet ve Çalıştır</translation>
+        <translation>Dosyayı Kaydet ve Çalıştır</translation>
     </message>
     <message>
         <location line="+912"/>
@@ -1438,432 +1444,438 @@ Tercihleri açmak istiyor musunuz?</translation>
         <location line="+18"/>
         <location line="+25"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Oktave Düzenleyici</translation>
+        <translation>Oktave Düzenleyici</translation>
     </message>
     <message>
         <location line="-610"/>
         <source>File not saved! A file with the selected name
 %1
 is already open in the editor.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya kaydedilmedi! Seçilen ada sahip bir dosya
+%1
+düzenleyicide zaten açık.</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>The associated file editor tab has disappeared.</source>
-        <translation type="unfinished">İlişkili dosya düzenleyici sekmesi kayboldu.</translation>
+        <translation>İlişkili dosya düzenleyici sekmesi kayboldu.</translation>
     </message>
     <message>
         <location line="+540"/>
         <source>Could not open file
 %1
 for reading: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya açılamadı
+%1
+okumak için: %2.</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Dosya
+        <translation>Dosya
 %1
 mevcut değil. Onu oluşturmak ister misin?</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Create</source>
-        <translation type="unfinished">Oluştur</translation>
+        <translation>Oluştur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>İptal</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Could not open file
 %1
 for writing: %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya açılamadı
+%1
+yazmak için: %2.</translation>
     </message>
     <message>
         <location line="+250"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dosya</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Recent Editor Files</source>
-        <translation type="unfinished">&amp;Son Düzenleyici Dosyaları</translation>
+        <translation>&amp;Son Düzenleyici Dosyaları</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Edit Function</source>
-        <translation type="unfinished">İşlevi &amp;Düzenle</translation>
+        <translation>İşlevi &amp;Düzenle</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Save File</source>
-        <translation type="unfinished">Dosyayı &amp;Kaydet</translation>
+        <translation>Dosyayı &amp;Kaydet</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save File &amp;As...</source>
-        <translation type="unfinished">Dosyayı &amp;Farklı Kaydet...</translation>
+        <translation>Dosyayı &amp;Farklı Kaydet...</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Kapat</translation>
+        <translation>&amp;Kapat</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close All</source>
-        <translation type="unfinished">Tümünü Kapat</translation>
+        <translation>Tümünü Kapat</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Close Other Files</source>
-        <translation type="unfinished">Diğer Dosyaları Kapat</translation>
+        <translation>Diğer Dosyaları Kapat</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Print...</source>
-        <translation type="unfinished">Yazdır...</translation>
+        <translation>Yazdır...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Düzenle</translation>
+        <translation>&amp;Düzenle</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Redo</source>
-        <translation type="unfinished">&amp;Yinele</translation>
+        <translation>&amp;Yinele</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Cu&amp;t</source>
-        <translation type="unfinished">Ke&amp;s</translation>
+        <translation>Ke&amp;s</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Find and Replace...</source>
-        <translation type="unfinished">&amp;Bul ve Değiştir...</translation>
+        <translation>&amp;Bul ve Değiştir...</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sonraki Bul</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Find &amp;Previous</source>
-        <translation type="unfinished">&amp;Öncekini Bul</translation>
+        <translation>&amp;Öncekini Bul</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Commands</source>
-        <translation type="unfinished">&amp;Komutlar</translation>
+        <translation>&amp;Komutlar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete Line</source>
-        <translation type="unfinished">Satırı Sil</translation>
+        <translation>Satırı Sil</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Copy Line</source>
-        <translation type="unfinished">Satırı Kopyala</translation>
+        <translation>Satırı Kopyala</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Cut Line</source>
-        <translation type="unfinished">Satır Kes</translation>
+        <translation>Satır Kes</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished">Kelimenin Başını Sil</translation>
+        <translation>Kelimenin Başını Sil</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished">Kelimenin Sonuna Kadar Sil</translation>
+        <translation>Kelimenin Sonuna Kadar Sil</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished">Satırın Başına Kadar Sil</translation>
+        <translation>Satırın Başına Kadar Sil</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished">Satırın Sonuna Kadar Sil</translation>
+        <translation>Satırın Sonuna Kadar Sil</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Duplicate Selection/Line</source>
-        <translation type="unfinished">Yinelenen Seçim/Satır</translation>
+        <translation>Yinelenen Seçim/Satır</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Transpose Line</source>
-        <translation type="unfinished">Satırı Aktar</translation>
+        <translation>Satırı Aktar</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Show Completion List</source>
-        <translation type="unfinished">Tamamlama Listesini &amp;Göster</translation>
+        <translation>Tamamlama Listesini &amp;Göster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Format</source>
-        <translation type="unfinished">&amp;Biçim</translation>
+        <translation>&amp;Biçim</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Uppercase Selection</source>
-        <translation type="unfinished">&amp;Büyük Harf Seçimi</translation>
+        <translation>&amp;Büyük Harf Seçimi</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Lowercase Selection</source>
-        <translation type="unfinished">&amp;Küçük Harf Seçimi</translation>
+        <translation>&amp;Küçük Harf Seçimi</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Comment</source>
-        <translation type="unfinished">&amp;Açıklama</translation>
+        <translation>&amp;Açıklama</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Uncomment</source>
-        <translation type="unfinished">&amp;Açıklamayı geri al</translation>
+        <translation>&amp;Açıklamayı geri al</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Comment (Choosing String)</source>
-        <translation type="unfinished">Yorum (Dize Seçme)</translation>
+        <translation>Yorum (Dize Seçme)</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Indent Selection Rigidly</source>
-        <translation type="unfinished">Sert &amp;Girinti Seçimi</translation>
+        <translation>&amp;Seçimi Kesin Olarak Girintilendir</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Unindent Selection Rigidly</source>
-        <translation type="unfinished">&amp;Seçimi Katı Şekilde Çöz</translation>
+        <translation>&amp;Seçimi Kesin olarak Girintiden Kaldır</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Indent Code</source>
-        <translation type="unfinished">Girinti Kodu</translation>
+        <translation>Girinti Kodu</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Convert Line Endings to &amp;Windows (CRLF)</source>
-        <translation type="unfinished">Satır Sonlarını &amp;Windows&apos;a (CRLF) Dönüştür</translation>
+        <translation>Satır Sonlarını &amp;Windows&apos;a (CRLF) Dönüştür</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Convert Line Endings to &amp;Unix (LF)</source>
-        <translation type="unfinished">Satır Uçlarını &amp;Unix&apos;e (LF) Dönüştür</translation>
+        <translation>Satır Sonlarını &amp;Unix&apos;e (LF) Dönüştür</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Convert Line Endings to Legacy &amp;Mac (CR)</source>
-        <translation type="unfinished">Satır Sonlarını Eski &amp;Mac&apos;e Dönüştür (CR)</translation>
+        <translation>Satır Sonlarını Eski &amp;Mac&apos;e Dönüştür (CR)</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Navi&amp;gation</source>
-        <translation type="unfinished">Gezi&amp;nme</translation>
+        <translation>Gezi&amp;nme</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Go &amp;to Line...</source>
-        <translation type="unfinished">&amp;Satıra Git...</translation>
+        <translation>&amp;Satıra Git...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Move to Matching Brace</source>
-        <translation type="unfinished">Eşleşen Ayraca Taşı</translation>
+        <translation>Eşleşen Ayraca Taşı</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Select to Matching Brace</source>
-        <translation type="unfinished">Eşleşen Ayraç Seçin</translation>
+        <translation>Eşleşen Ayraç Seçin</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Next Bookmark</source>
-        <translation type="unfinished">&amp;Sonraki Yer İşareti</translation>
+        <translation>&amp;Sonraki Yer İşareti</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Pre&amp;vious Bookmark</source>
-        <translation type="unfinished">&amp;Önceki Yer İşareti</translation>
+        <translation>&amp;Önceki Yer İşareti</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Bookmark</source>
-        <translation type="unfinished">&amp;Yer İşaretini Değiştir</translation>
+        <translation>&amp;Yer İşaretini Değiştir</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Remove All Bookmarks</source>
-        <translation type="unfinished">Tüm Yer İşaretlerini &amp;Kaldır</translation>
+        <translation>Tüm Yer İşaretlerini &amp;Kaldır</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>&amp;Preferences...</source>
-        <translation type="unfinished">&amp;Tercihler...</translation>
+        <translation>&amp;Tercihler...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Styles Preferences...</source>
-        <translation type="unfinished">&amp;Stil Tercihleri...</translation>
+        <translation>&amp;Stil Tercihleri...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;View</source>
-        <translation type="unfinished">&amp;Görünüm</translation>
+        <translation>&amp;Görünüm</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Editor</source>
-        <translation type="unfinished">&amp;Düzenleyici</translation>
+        <translation>&amp;Düzenleyici</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show &amp;Line Numbers</source>
-        <translation type="unfinished">&amp;Satır Numaralarını Göster</translation>
+        <translation>&amp;Satır Numaralarını Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Whitespace Characters</source>
-        <translation type="unfinished">&amp;Boşluk Karakterlerini Göster</translation>
+        <translation>&amp;Boşluk Karakterlerini Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show Line &amp;Endings</source>
-        <translation type="unfinished">Satır &amp;Sonlarını Göster</translation>
+        <translation>Satır &amp;Sonlarını Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Indentation Guides</source>
-        <translation type="unfinished">Girinti &amp;Kılavuzlarını Göster</translation>
+        <translation>Girinti &amp;Kılavuzlarını Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show Long Line &amp;Marker</source>
-        <translation type="unfinished">Uzun Çizgi &amp;İşaretleyiciyi Göster</translation>
+        <translation>Uzun Çizgi &amp;İşaretleyiciyi Göster</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Show &amp;Toolbar</source>
-        <translation type="unfinished">&amp;Araç Çubuğunu Göster</translation>
+        <translation>&amp;Araç Çubuğunu Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Statusbar</source>
-        <translation type="unfinished">&amp;Durum çubuğunu Göster</translation>
+        <translation>&amp;Durum çubuğunu Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Show &amp;Horizontal Scrollbar</source>
-        <translation type="unfinished">&amp;Yatay Kaydırma Çubuğunu Göster</translation>
+        <translation>&amp;Yatay Kaydırma Çubuğunu Göster</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Zoom &amp;In</source>
-        <translation type="unfinished">&amp;Yaklaştır</translation>
+        <translation>&amp;Yaklaştır</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Zoom &amp;Out</source>
-        <translation type="unfinished">&amp;Uzaklaş</translation>
+        <translation>&amp;Uzaklaş</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Normal Size</source>
-        <translation type="unfinished">&amp;Normal Boyut</translation>
+        <translation>&amp;Normal Boyut</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Sort Tabs Alphabetically</source>
-        <translation type="unfinished">Sekmeleri Alfabetik Olarak &amp;Sırala</translation>
+        <translation>Sekmeleri Alfabetik Olarak &amp;Sırala</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>&amp;Debug</source>
-        <translation type="unfinished">&amp;Hata Ayıklama</translation>
+        <translation>&amp;Hata Ayıklama</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Toggle &amp;Breakpoint</source>
-        <translation type="unfinished">&amp;Kesme Noktasını Değiştir</translation>
+        <translation>&amp;Kesme Noktasını Değiştir</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Next Breakpoint</source>
-        <translation type="unfinished">&amp;Sonraki Kesme Noktası</translation>
+        <translation>&amp;Sonraki Kesme Noktası</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Pre&amp;vious Breakpoint</source>
-        <translation type="unfinished">Önc&amp;eki Kesme Noktası</translation>
+        <translation>Önc&amp;eki Kesme Noktası</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Remove All Breakpoints</source>
-        <translation type="unfinished">Tüm Kesme Noktalarını &amp;Kaldır</translation>
+        <translation>Tüm Kesme Noktalarını &amp;Kaldır</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>&amp;Run</source>
-        <translation type="unfinished">&amp;Çalıştır</translation>
+        <translation>&amp;Çalıştır</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save File and Run/Continue</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosyayı Kaydet ve Çalıştır/Devam Et</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Run &amp;Selection</source>
-        <translation type="unfinished">&amp;Seçimi Çalıştır</translation>
+        <translation>&amp;Seçimi Çalıştır</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Yardım</translation>
+        <translation>&amp;Yardım</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Help on Keyword</source>
-        <translation type="unfinished">Anahtar Kelime &amp;Yardımı</translation>
+        <translation>Anahtar Kelime &amp;Yardımı</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Documentation on Keyword</source>
-        <translation type="unfinished">Anahtar Kelime ile ilgili &amp;Belgeler</translation>
+        <translation>Anahtar Kelime ile ilgili &amp;Belgeler</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Recent Files</source>
-        <translation type="unfinished">Son Dosyalar</translation>
+        <translation>Son Dosyalar</translation>
     </message>
     <message>
         <location line="+49"/>
         <source>Copy Full File &amp;Path</source>
-        <translation type="unfinished">Tam Dosya Yolunu &amp;Kopyala</translation>
+        <translation>Tam Dosya Yolunu &amp;Kopyala</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Editor</source>
-        <translation type="unfinished">Düzenleyici</translation>
+        <translation>Düzenleyici</translation>
     </message>
 </context>
 <context>
@@ -1871,32 +1883,32 @@ for writing: %2.</source>
     <message>
         <location filename="../src/m-editor/file-editor-tab.cc" line="+160"/>
         <source>line:</source>
-        <translation type="unfinished">satır:</translation>
+        <translation>satır:</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>col:</source>
-        <translation type="unfinished">col:</translation>
+        <translation>col:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>encoding:</source>
-        <translation type="unfinished">kodlanıyor:</translation>
+        <translation>kodlanıyor:</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>eol:</source>
-        <translation type="unfinished">eol:</translation>
+        <translation>eol:</translation>
     </message>
     <message>
         <location line="+253"/>
         <source>Breakpoint condition</source>
-        <translation type="unfinished">Kesme Noktası durumu</translation>
+        <translation>Kesme Noktası durumu</translation>
     </message>
     <message>
         <location line="+70"/>
         <source>ERROR: </source>
-        <translation type="unfinished">HATA: </translation>
+        <translation>HATA: </translation>
     </message>
     <message>
         <location line="+73"/>
@@ -1911,47 +1923,47 @@ for writing: %2.</source>
         <location line="+85"/>
         <location line="+36"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Oktave Düzenleyici</translation>
+        <translation>Oktave Düzenleyici</translation>
     </message>
     <message>
         <location line="-2263"/>
         <source>Cannot add breakpoint to modified or unnamed file.
 Save and add breakpoint, or cancel?</source>
-        <translation type="unfinished">Değiştirilmiş veya adlandırılmamış dosyaya kesme noktası eklenemez.
+        <translation>Değiştirilmiş veya adlandırılmamış dosyaya kesme noktası eklenemez.
 Kesme noktası kaydedip eklemek mi yoksa iptalmi edilsin?</translation>
     </message>
     <message>
         <location line="+878"/>
         <source>Goto line</source>
-        <translation type="unfinished">Satıra git</translation>
+        <translation>Satıra git</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Line number</source>
-        <translation type="unfinished">Satır numarası</translation>
+        <translation>Satır numarası</translation>
     </message>
     <message>
         <location line="+128"/>
         <source>Comment selected text</source>
-        <translation type="unfinished">Seçili metni yorumla</translation>
+        <translation>Seçili metni yorumla</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Comment string to use:
 </source>
-        <translation type="unfinished">Kullanılacak yorum dizesi:
+        <translation>Kullanılacak yorum dizesi:
 </translation>
     </message>
     <message>
         <location line="+139"/>
         <location line="+53"/>
         <source>&lt;unnamed&gt;</source>
-        <translation type="unfinished">&lt;isimsiz&gt;</translation>
+        <translation>&lt;isimsiz&gt;</translation>
     </message>
     <message>
         <location line="-6"/>
         <source>Do you want to cancel closing, save, or discard the changes?</source>
-        <translation type="unfinished"></translation>
+        <translation>Kapatmayı iptal etmek, kaydetmek veya değişiklikleri silmek istiyor musunuz?</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1960,7 +1972,7 @@ Kesme noktası kaydedip eklemek mi yoksa iptalmi edilsin?</translation>
   %1
 
 is about to be closed but has been modified.  %2</source>
-        <translation type="unfinished">Dosya
+        <translation>Dosya
 
    %1
 
@@ -1970,7 +1982,8 @@ kapatılmak üzere ancak değiştirildi.  %2</translation>
         <location line="+148"/>
         <source>Unable to read file &apos;%1&apos;
 with selected encoding &apos;%2&apos;: %3</source>
-        <translation type="unfinished"></translation>
+        <translation>&apos;%1&apos; dosyası okunamıyor
+seçilen kodlama &apos;%2&apos; ile: %3</translation>
     </message>
     <message>
         <location line="+10"/>
@@ -1979,7 +1992,7 @@ with selected encoding &apos;%2&apos;: %3</source>
 with the selected encoding %2.
 
 Modifying and saving the file might cause data loss!</source>
-        <translation type="unfinished">Dosyayı okurken sorunlar oluştu
+        <translation>Dosyayı okurken sorunlar oluştu
 %1
 seçilen kodlama %2 ile.
 
@@ -1988,24 +2001,24 @@ Dosyayı değiştirmek ve kaydetmek veri kaybına neden olabilir!</translation>
     <message>
         <location line="+10"/>
         <source>&amp;Edit anyway</source>
-        <translation type="unfinished">Yine de &amp;düzenle</translation>
+        <translation>Yine de &amp;düzenle</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+44"/>
         <source>Chan&amp;ge encoding</source>
-        <translation type="unfinished">Kodlamayı değiş&amp;tir</translation>
+        <translation>Kodlamayı değiş&amp;tir</translation>
     </message>
     <message>
         <location line="-42"/>
         <location line="+35"/>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Kapat</translation>
+        <translation>&amp;Kapat</translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Select new default encoding</source>
-        <translation type="unfinished">Yeni varsayılan kodlamayı seçin</translation>
+        <translation>Yeni varsayılan kodlamayı seçin</translation>
     </message>
     <message>
         <location line="+3"/>
@@ -2014,7 +2027,7 @@ for reloading the current file.
 
 This does not change the default encoding.
 </source>
-        <translation type="unfinished">Lütfen yeni bir kodlama seçin
+        <translation>Lütfen yeni bir kodlama seçin
 mevcut dosyayı yeniden yüklemek için.
 
 Bu, varsayılan kodlamayı değiştirmez.
@@ -2023,36 +2036,38 @@ Bu, varsayılan kodlamayı değiştirmez.
     <message>
         <location line="+172"/>
         <source>Debug or Save</source>
-        <translation type="unfinished">Hata Ayıklama veya Kaydetme</translation>
+        <translation>Hata Ayıklama veya Kaydetme</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>This file is currently being executed.
 Quit debugging and save?</source>
-        <translation type="unfinished">Bu dosya şu anda yürütülüyor.
+        <translation>Bu dosya şu anda yürütülüyor.
 Hata ayıklamadan çıkılsın ve kaydedilsin mi?</translation>
     </message>
     <message>
         <location line="+212"/>
         <source>Could not open file %1 for writing:
 %2.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 dosyası yazmak için açılamadı:
+%2.</translation>
     </message>
     <message>
         <location line="+111"/>
         <source>The changes could not be saved to the file
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Değişiklikler dosyaya kaydedilemedi
+%1</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Octave Files (*.m)</source>
-        <translation type="unfinished">Octave Dosyaları (*.m)</translation>
+        <translation>Octave Dosyaları (*.m)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>All Files (*)</source>
-        <translation type="unfinished">Tüm Dosyalar (*)</translation>
+        <translation>Tüm Dosyalar (*)</translation>
     </message>
     <message>
         <location line="+97"/>
@@ -2063,7 +2078,7 @@ If you keep this filename, you will not be able to
 call your script using its name as an Octave command.
 
 Do you want to choose another name?</source>
-        <translation type="unfinished">&quot;%1&quot;
+        <translation>&quot;%1&quot;
 geçerli bir tanımlayıcı değil.
 
 Bu dosya adını saklarsanız, yapamazsınız
@@ -2078,7 +2093,7 @@ with the selected encoding %1.
 Using it would result in data loss!
 
 Please select another one!</source>
-        <translation type="unfinished">Mevcut düzenleyici içeriği kodlanamaz
+        <translation>Mevcut düzenleyici içeriği kodlanamaz
 seçilen kodlama %1 ile.
 Bunu kullanmak veri kaybına neden olur!
 
@@ -2089,30 +2104,30 @@ Lütfen başka bir tane seçin!</translation>
         <source>%1
  already exists
 Do you want to overwrite it?</source>
-        <translation type="unfinished">%1
+        <translation>%1
   zaten var
 Üzerine yazmak istiyor musunuz?</translation>
     </message>
     <message>
         <location line="+85"/>
         <source>It seems that &apos;%1&apos; has been modified by another application. Do you want to reload it?</source>
-        <translation type="unfinished">Görünüşe göre &apos;%1&apos; başka bir uygulama tarafından değiştirilmiş. Yeniden yüklemek ister misin?</translation>
+        <translation>Görünüşe göre &apos;%1&apos; başka bir uygulama tarafından değiştirilmiş. Yeniden yüklemek ister misin?</translation>
     </message>
     <message>
         <location line="+29"/>
         <source>
 
 Warning: The contents in the editor is modified!</source>
-        <translation type="unfinished">
+        <translation>
 
-Uyarı: Editördeki içerik değiştirildi!</translation>
+Uyarı: Düzenleyicideki içerik değiştirildi!</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>It seems that the file
 %1
 has been deleted or renamed. Do you want to save it now?%2</source>
-        <translation type="unfinished">Görünüşe göre dosya
+        <translation>Görünüşe göre dosya
 %1
 silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</translation>
     </message>
@@ -2122,223 +2137,223 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
     <message>
         <location filename="../src/files-dock-widget.cc" line="-4"/>
         <source>Could not rename file &quot;%1&quot; to &quot;%2&quot;.</source>
-        <translation type="unfinished">&quot;%1&quot; dosyası &quot;%2&quot; olarak yeniden adlandırılamadı.</translation>
+        <translation>&quot;%1&quot; dosyası &quot;%2&quot; olarak yeniden adlandırılamadı.</translation>
     </message>
     <message>
         <location line="+51"/>
         <source>File Browser</source>
-        <translation type="unfinished">Dosya Gezgini</translation>
+        <translation>Dosya Gezgini</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse your files</source>
-        <translation type="unfinished">Dosyalarınıza göz atın</translation>
+        <translation>Dosyalarınıza göz atın</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>File size</source>
-        <translation type="unfinished">Dosya boyutu</translation>
+        <translation>Dosya boyutu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File type</source>
-        <translation type="unfinished">Dosya türü</translation>
+        <translation>Dosya türü</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Date modified</source>
-        <translation type="unfinished">Değiştirilme tarihi</translation>
+        <translation>Değiştirilme tarihi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show hidden</source>
-        <translation type="unfinished">Gizlileri göster</translation>
+        <translation>Gizlileri göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Alternating row colors</source>
-        <translation type="unfinished">Alternatif satır renkleri</translation>
+        <translation>Alternatif satır renkleri</translation>
     </message>
     <message>
         <location line="+26"/>
         <source>Enter the path or filename</source>
-        <translation type="unfinished">Yolu veya dosya adını girin</translation>
+        <translation>Yolu veya dosya adını girin</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>One directory up</source>
-        <translation type="unfinished">Bir dizin yukarı</translation>
+        <translation>Bir dizin yukarı</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Octave directory</source>
-        <translation type="unfinished">Oktave dizinini göster</translation>
+        <translation>Oktave dizinini göster</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go to current Octave directory</source>
-        <translation type="unfinished">Mevcut Octave dizinine git</translation>
+        <translation>Mevcut Octave dizinine git</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Set Octave directory</source>
-        <translation type="unfinished">Oktave dizinini ayarla</translation>
+        <translation>Oktave dizinini ayarla</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Set Octave directory to current browser directory</source>
-        <translation type="unfinished">Octave dizinini mevcut tarayıcı dizinine ayarlayın</translation>
+        <translation>Octave dizinini mevcut tarayıcı dizinine ayarlayın</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Actions on current directory</source>
-        <translation type="unfinished">Mevcut dizindeki eylemler</translation>
+        <translation>Mevcut dizindeki eylemler</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Home Directory</source>
-        <translation type="unfinished">Ana Dizini Göster</translation>
+        <translation>Ana Dizini Göster</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Set Browser Directory...</source>
-        <translation type="unfinished">Tarayıcı Dizini Ayarla...</translation>
+        <translation>Tarayıcı Dizini Ayarla...</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+422"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Dosyaları Bul...</translation>
+        <translation>Dosyaları Bul...</translation>
     </message>
     <message>
         <location line="-418"/>
         <location line="+430"/>
         <source>New File...</source>
-        <translation type="unfinished">Yeni Dosya...</translation>
+        <translation>Yeni Dosya...</translation>
     </message>
     <message>
         <location line="-427"/>
         <location line="+429"/>
         <source>New Directory...</source>
-        <translation type="unfinished">Yeni Dizin...</translation>
+        <translation>Yeni Dizin...</translation>
     </message>
     <message>
         <location line="-377"/>
         <source>Double-click to open file/folder, right click for alternatives</source>
-        <translation type="unfinished">Dosya/klasörü açmak için çift tıklayın, alternatifler için sağ tıklayın</translation>
+        <translation>Dosya/klasörü açmak için çift tıklayın, alternatifler için sağ tıklayın</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Rename...</source>
-        <translation type="unfinished">Yeniden adlandır...</translation>
+        <translation>Yeniden adlandır...</translation>
     </message>
     <message>
         <location line="+304"/>
         <source>Open</source>
-        <translation type="unfinished">Aç</translation>
+        <translation>Aç</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in System File Explorer</source>
-        <translation type="unfinished">Sistem Dosya Gezgini&apos;nde Aç</translation>
+        <translation>Sistem Dosya Gezgini&apos;nde Aç</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Open in Text Editor</source>
-        <translation type="unfinished">Metin düzenleyicide aç</translation>
+        <translation>Metin düzenleyicide aç</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy Selection to Clipboard</source>
-        <translation type="unfinished">Seçimi Panoya Kopyala</translation>
+        <translation>Seçimi Panoya Kopyala</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Run</source>
-        <translation type="unfinished">Çalıştır</translation>
+        <translation>Çalıştır</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Load Data</source>
-        <translation type="unfinished">Veri yükle</translation>
+        <translation>Veri Yükle</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Set Current Directory</source>
-        <translation type="unfinished">Mevcut Dizini Ayarla</translation>
+        <translation>Mevcut Dizini Ayarla</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add to Path</source>
-        <translation type="unfinished">Yola Ekle</translation>
+        <translation>Yola Ekle</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+7"/>
         <source>Selected Directories</source>
-        <translation type="unfinished">Seçilen Dizinler</translation>
+        <translation>Seçilen Dizinler</translation>
     </message>
     <message>
         <location line="-5"/>
         <location line="+7"/>
         <source>Selected Directories and Subdirectories</source>
-        <translation type="unfinished">Seçilen Dizinler ve Alt Dizinler</translation>
+        <translation>Seçilen Dizinler ve Alt Dizinler</translation>
     </message>
     <message>
         <location line="-4"/>
         <source>Remove from Path</source>
-        <translation type="unfinished">Yoldan Kaldır</translation>
+        <translation>Yoldan Kaldır</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Delete...</source>
-        <translation type="unfinished">Sil...</translation>
+        <translation>Sil...</translation>
     </message>
     <message>
         <location line="+132"/>
         <location line="+11"/>
         <location line="+17"/>
         <source>Delete file/directory</source>
-        <translation type="unfinished">Dosyayı/dizini sil</translation>
+        <translation>Dosyayı/dizini sil</translation>
     </message>
     <message>
         <location line="-27"/>
         <source>Are you sure you want to delete all %1 selected files?
 </source>
-        <translation type="unfinished">Seçilen %1 dosyanın tümünü silmek istediğinizden emin misiniz?
+        <translation>Seçilen %1 dosyanın tümünü silmek istediğinizden emin misiniz?
 </translation>
     </message>
     <message>
         <location line="+11"/>
         <source>Are you sure you want to delete
 </source>
-        <translation type="unfinished">Silmek istediğine emin misin
+        <translation>Silmek istediğine emin misin
 </translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Can not delete a directory that is not empty</source>
-        <translation type="unfinished">Boş olmayan bir dizin silinemez</translation>
+        <translation>Boş olmayan bir dizin silinemez</translation>
     </message>
     <message>
         <location line="+12"/>
         <source>Deletion error</source>
-        <translation type="unfinished">Silme hatası</translation>
+        <translation>Silme hatası</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Could not delete file &quot;%1&quot;.</source>
-        <translation type="unfinished">&quot;%1&quot; dosyası silinemedi.</translation>
+        <translation>&quot;%1&quot; dosyası silinemedi.</translation>
     </message>
     <message>
         <location line="+186"/>
         <source>Set directory of file browser</source>
-        <translation type="unfinished">Dosya tarayıcısının dizinini ayarlayın</translation>
+        <translation>Dosya tarayıcısının dizinini ayarlayın</translation>
     </message>
     <message>
         <location line="+25"/>
         <source>Create File</source>
-        <translation type="unfinished">Dosya Oluştur</translation>
+        <translation>Dosya Oluştur</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2346,18 +2361,18 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">İçinde dosya oluştur
+        <translation>İçinde dosya oluştur
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New File.txt</source>
-        <translation type="unfinished">Yeni Dosya.txt</translation>
+        <translation>Yeni Dosya.txt</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Create Directory</source>
-        <translation type="unfinished">Dizin Oluşturun</translation>
+        <translation>Dizin Oluşturun</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -2365,13 +2380,13 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 </source>
         <comment>String ends with 
 !</comment>
-        <translation type="unfinished">İçinde klasör oluştur
+        <translation>İçinde klasör oluştur
 </translation>
     </message>
     <message>
         <location line="+2"/>
         <source>New Directory</source>
-        <translation type="unfinished">Yeni Dizin</translation>
+        <translation>Yeni Dizin</translation>
     </message>
 </context>
 <context>
@@ -2379,22 +2394,22 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
     <message>
         <location filename="../src/welcome-wizard.cc" line="+307"/>
         <source>Enjoy!</source>
-        <translation type="unfinished">Zevkli!</translation>
+        <translation>Zevkli!</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Previous</source>
-        <translation type="unfinished">Önceki</translation>
+        <translation>Önceki</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Finish</source>
-        <translation type="unfinished">Bitir</translation>
+        <translation>Bitir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>İptal</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -2403,7 +2418,11 @@ silindi veya yeniden adlandırıldı. Şimdi kaydetmek istiyor musunuz?%2</trans
 &lt;p&gt;If you encounter problems, there are a number of ways to get help, including commercial support options, a discussion board, a wiki, and other community-based support channels.
 You can find more information about each of these by visiting &lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (opens in external browser).&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;body&gt;
+&lt;p&gt;Octave&apos;i faydalı bir araç olarak bulacağınızı umuyoruz.&lt;/p&gt;
+&lt;p&gt;Sorunla karşılaşırsanız, ticari destek seçenekleri, tartışma panosu, wiki ve diğer topluluğa dayalı destek kanalları dahil olmak üzere yardım almanın çeşitli yolları vardır.
+&lt;a href=&quot;https://octave.org/support.html&quot;&gt;https://octave.org/support.html&lt;/a&gt; (harici tarayıcıda açılır) adresini ziyaret ederek bunların her biri hakkında daha fazla bilgi bulabilirsiniz. .&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="+21"/>
@@ -2416,7 +2435,15 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
 &lt;li&gt;Open the documentation browser of the Octave GUI with the help menu&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Octav hakkında daha fazla bilgi için:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://octave.org&quot;&gt;https://octave.org&lt;/a&gt; adresini ziyaret edin (harici tarayıcıda açılır)&lt;/li&gt;
+&lt;li&gt;Belgeleri çevrimiçi olarak &lt;a href=&quot;https://www.gnu.org/software/octave/doc/interpreter/index.html&quot;&gt;HTML&lt;/a&gt; veya &lt;a href=&quot;https:/ adresinden edinin /www.gnu.org/software/octave/octave.pdf&quot;&gt;PDF&lt;/a&gt; biçimi (bağlantılar harici tarayıcıda açılır)&lt;/li&gt;
+&lt;li&gt;Yardım menüsünü kullanarak Octave GUI&apos;nin dokümantasyon tarayıcısını açın&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -2424,117 +2451,117 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location filename="../src/m-editor/find-dialog.cc" line="+93"/>
         <source>Editor: Find and Replace</source>
-        <translation type="unfinished">Düzenleyici: Bul ve Değiştir</translation>
+        <translation>Düzenleyici: Bul ve Değiştir</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Find:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Bul:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter search text</source>
-        <translation type="unfinished"></translation>
+        <translation>Arama metnini girin</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Re&amp;place:</source>
-        <translation type="unfinished"></translation>
+        <translation>De&amp;ğiştir:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter replacement text</source>
-        <translation type="unfinished"></translation>
+        <translation>Değiştirme metnini girin</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Match &amp;case</source>
-        <translation type="unfinished">&amp;Büyük/küçük harf eşleştir</translation>
+        <translation>&amp;Büyük/küçük harf eşleştir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search from &amp;start</source>
-        <translation type="unfinished">&amp;Başlangıçta ara</translation>
+        <translation>&amp;Başlangıçta ara</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Wrap while searching</source>
-        <translation type="unfinished">&amp;Arama sırasında sarın</translation>
+        <translation>&amp;Arama sırasında sarın</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find &amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Sonraki Bul</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Pre&amp;vious</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Öncekini Bul</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Replace</source>
-        <translation type="unfinished">&amp;Değiştir</translation>
+        <translation>&amp;Değiştir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Replace &amp;All</source>
-        <translation type="unfinished">&amp;Tümünü Değiştir</translation>
+        <translation>&amp;Tümünü Değiştir</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;More...</source>
-        <translation type="unfinished">&amp;Daha...</translation>
+        <translation>&amp;Daha...</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>&amp;Whole words</source>
-        <translation type="unfinished">&amp;Bütün kelimeler</translation>
+        <translation>&amp;Bütün kelimeler</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Regular &amp;expressions</source>
-        <translation type="unfinished"></translation>
+        <translation>Düzenli &amp;ifadeler</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search &amp;backward</source>
-        <translation type="unfinished">&amp;Geriye doğru ara</translation>
+        <translation>&amp;Geriye doğru ara</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search se&amp;lection</source>
-        <translation type="unfinished">Arama se&amp;çimi</translation>
+        <translation>Arama se&amp;çimi</translation>
     </message>
     <message>
         <location line="+171"/>
         <source>Search from end</source>
-        <translation type="unfinished">Sonundan ara</translation>
+        <translation>Sonundan ara</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Search from start</source>
-        <translation type="unfinished">Baştan ara</translation>
+        <translation>Baştan ara</translation>
     </message>
     <message>
         <location line="+306"/>
         <source>Replace Result</source>
-        <translation type="unfinished">Sonucu Değiştir</translation>
+        <translation>Sonucu Değiştir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>%1 items replaced</source>
-        <translation type="unfinished">%1 öğe değiştirildi</translation>
+        <translation>%1 öğe değiştirildi</translation>
     </message>
     <message>
         <location line="+14"/>
         <source>Find Result</source>
-        <translation type="unfinished">Sonuç Bulundu</translation>
+        <translation>Sonuç Bulundu</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>No more matches found</source>
-        <translation type="unfinished">Başka eşleşme bulunamadı</translation>
+        <translation>Başka eşleşme bulunamadı</translation>
     </message>
 </context>
 <context>
@@ -2542,139 +2569,139 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location filename="../src/find-files-dialog.cc" line="+61"/>
         <source>Find Files</source>
-        <translation type="unfinished">Dosyaları Bul</translation>
+        <translation>Dosyaları Bul</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Named:</source>
-        <translation type="unfinished">Adlandırılmış:</translation>
+        <translation>Adlandırılmış:</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter the filename search expression</source>
-        <translation type="unfinished">Dosya adı arama ifadesini girin</translation>
+        <translation>Dosya adı arama ifadesini girin</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Start in:</source>
-        <translation type="unfinished">Başla:</translation>
+        <translation>Başla:</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Enter the start directory</source>
-        <translation type="unfinished">Başlangıç dizinini girin</translation>
+        <translation>Başlangıç dizinini girin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Browse...</source>
-        <translation type="unfinished">Gözat...</translation>
+        <translation>Gözat...</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Browse for start directory</source>
-        <translation type="unfinished">Başlangıç dizinine göz atın</translation>
+        <translation>Başlangıç dizinine göz atın</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Search subdirectories</source>
-        <translation type="unfinished">Alt dizinlerde ara</translation>
+        <translation>Alt dizinlerde ara</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Search recursively through directories for matching files</source>
-        <translation type="unfinished">Eşleşen dosyalar için dizinlerde yinelemeli olarak arama yapın</translation>
+        <translation>Eşleşen dosyalar için dizinlerde yinelemeli olarak arama yapın</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Include directory names</source>
-        <translation type="unfinished">Dizin adlarını dahil et</translation>
+        <translation>Dizin adlarını dahil et</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Include matching directories in search results</source>
-        <translation type="unfinished">Eşleşen dizinleri arama sonuçlarına dahil et</translation>
+        <translation>Eşleşen dizinleri arama sonuçlarına dahil et</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+12"/>
         <source>Ignore case</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyük/küçük harf durumunu yoksay</translation>
     </message>
     <message>
         <location line="-11"/>
         <location line="+12"/>
         <source>Perform case insensitive match</source>
-        <translation type="unfinished"></translation>
+        <translation>Büyük/küçük harfe duyarlı olmayan eşleşme gerçekleştirin</translation>
     </message>
     <message>
         <location line="-9"/>
         <source>Contains text:</source>
-        <translation type="unfinished">Metin içerir:</translation>
+        <translation>Metin içerir:</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Include only files containing specified text in search results</source>
-        <translation type="unfinished"></translation>
+        <translation>Arama sonuçlarına yalnızca belirtilen metni içeren dosyaları dahil et</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Text to match</source>
-        <translation type="unfinished">Eşleştirilecek metin</translation>
+        <translation>Eşleştirilecek metin</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Search results</source>
-        <translation type="unfinished">Arama Sonuçları</translation>
+        <translation>Arama sonuçları</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Idle.</source>
-        <translation type="unfinished">Boşta.</translation>
+        <translation>Boşta.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Find</source>
-        <translation type="unfinished">Bul</translation>
+        <translation>Bul</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Start search for matching files</source>
-        <translation type="unfinished">Eşleşen dosyaları aramaya başlayın</translation>
+        <translation>Eşleşen dosyaları aramaya başlayın</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Stop</source>
-        <translation type="unfinished"></translation>
+        <translation>Durdur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Stop search</source>
-        <translation type="unfinished"></translation>
+        <translation>Aramayı durdur</translation>
     </message>
     <message>
         <location line="+16"/>
         <source>Filename/Location</source>
-        <translation type="unfinished"></translation>
+        <translation>Dosya adı/Konum</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>File contents</source>
-        <translation type="unfinished">Dosya içeriği</translation>
+        <translation>Dosya içeriği</translation>
     </message>
     <message>
         <location line="+98"/>
         <source>Searching...</source>
-        <translation type="unfinished">Aranıyor...</translation>
+        <translation>Aranıyor...</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>%1 match (es)</source>
-        <translation type="unfinished">%1 eşleşme</translation>
+        <translation>%1 eşleşme</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Set search directory</source>
-        <translation type="unfinished">Arama dizinini ayarlayın</translation>
+        <translation>Arama dizinini ayarlayın</translation>
     </message>
 </context>
 <context>
@@ -2682,12 +2709,12 @@ You can find more information about each of these by visiting &lt;a href=&quot;h
     <message>
         <location filename="../src/find-files-model.cc" line="+93"/>
         <source>Filename</source>
-        <translation type="unfinished">Dosya Adı</translation>
+        <translation>Dosya Adı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Directory</source>
-        <translation type="unfinished">Dizin</translation>
+        <translation>Dizin</translation>
     </message>
 </context>
 <context>
@@ -2700,12 +2727,17 @@ Make sure you have read and write permissions to
 %3
 
 Octave GUI must be closed now.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ayarlar dosyasını oluştururken %1 hatası
+%2
+Okuma ve yazma izinlerine sahip olduğunuzdan emin olun.
+%3
+
+Octave GUI&apos;nin şimdi kapatılması gerekiyor.</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Octave Critical Error</source>
-        <translation type="unfinished">Oktave Kritik Hata</translation>
+        <translation>Oktave Kritik Hata</translation>
     </message>
 </context>
 <context>
@@ -2713,52 +2745,52 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/history-dock-widget.cc" line="+53"/>
         <source>Browse and search the command history.</source>
-        <translation type="unfinished">Komut geçmişine göz atın ve arayın.</translation>
+        <translation>Komut geçmişine göz atın ve arayın.</translation>
     </message>
     <message>
         <location line="+101"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopyala</translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Evaluate</source>
-        <translation type="unfinished">Değerlendirme</translation>
+        <translation>Değerlendirme</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Create script</source>
-        <translation type="unfinished">Komut dosyası oluştur</translation>
+        <translation>Komut dosyası oluştur</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Hide filter</source>
-        <translation type="unfinished">Filtreyi gizle</translation>
+        <translation>Filtreyi gizle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished">Filtreyi göster</translation>
+        <translation>Filtreyi göster</translation>
     </message>
     <message>
         <location line="+121"/>
         <source>Double-click a command to transfer it to the Command Window.</source>
-        <translation type="unfinished">Komut Penceresine aktarmak için bir komutu çift tıklayın.</translation>
+        <translation>Komut Penceresine aktarmak için bir komutu çift tıklayın.</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Enter text to filter the command history</source>
-        <translation type="unfinished">Komut geçmişini filtrelemek için metin girin</translation>
+        <translation>Komut geçmişini filtrelemek için metin girin</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Süzgeç</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Command History</source>
-        <translation type="unfinished">Komut Geçmişi</translation>
+        <translation>Komut Geçmişi</translation>
     </message>
 </context>
 <context>
@@ -2766,17 +2798,17 @@ Octave GUI must be closed now.</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="-185"/>
         <source>Welcome to Octave!</source>
-        <translation type="unfinished">Octave&apos;e hoş geldiniz!</translation>
+        <translation>Octave&apos;e hoş geldiniz!</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Next</source>
-        <translation type="unfinished">Sonraki</translation>
+        <translation>Sonraki</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>İptal</translation>
     </message>
     <message>
         <location line="+9"/>
@@ -2785,7 +2817,7 @@ Octave GUI must be closed now.</source>
 Click &apos;Next&apos; to create a configuration file and launch Octave.&lt;/p&gt;
 &lt;p&gt;The configuration file is stored in&lt;br&gt;%1.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
+        <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Bu bilgisayarda Octave grafik arayüzünü ilk kez kullanıyor görünüyorsunuz.
 Bir yapılandırma dosyası oluşturmak ve Octave&apos;ı başlatmak için &apos;İleri&apos;yi tıklayın.&lt;/p&gt;
 &lt;p&gt;Yapılandırma dosyası şurada saklanır:&lt;br&gt;%1.&lt;/p&gt;
@@ -2797,12 +2829,12 @@ Bir yapılandırma dosyası oluşturmak ve Octave&apos;ı başlatmak için &apos
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+82"/>
         <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlantıyı Kaldırma Aracı</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Close Widget</source>
-        <translation type="unfinished">Aracı kapat</translation>
+        <translation>Aracı kapat</translation>
     </message>
 </context>
 <context>
@@ -2810,393 +2842,394 @@ Bir yapılandırma dosyası oluşturmak ve Octave&apos;ı başlatmak için &apos
     <message>
         <location filename="../src/main-window.cc" line="+155"/>
         <source>Profiler</source>
-        <translation type="unfinished">Profil oluşturucu</translation>
+        <translation>Profil oluşturucu</translation>
     </message>
     <message>
         <location line="+347"/>
         <source>Octave</source>
-        <translation type="unfinished">Octave</translation>
+        <translation>Octave</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Are you sure you want to exit Octave?</source>
-        <translation type="unfinished">Octave&apos;den çıkmak istediğinizden emin misiniz?</translation>
+        <translation>Octave&apos;den çıkmak istediğinizden emin misiniz?</translation>
     </message>
     <message>
         <location line="+152"/>
         <source>Save Workspace As</source>
-        <translation type="unfinished">Çalışma Alanını Farklı Kaydet</translation>
+        <translation>Çalışma Alanını Farklı Kaydet</translation>
     </message>
     <message>
         <location line="+28"/>
         <source>Load Workspace</source>
-        <translation type="unfinished">Çalışma Alanını Yükle</translation>
+        <translation>Çalışma Alanını Yükle</translation>
     </message>
     <message>
         <location line="+199"/>
         <location line="+1667"/>
         <source>About Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave Hakkında</translation>
     </message>
     <message>
         <location line="-1479"/>
         <location line="+1555"/>
         <source>Browse directories</source>
-        <translation type="unfinished">Dizinlere göz atın</translation>
+        <translation>Dizinlere göz atın</translation>
     </message>
     <message>
         <location line="-1295"/>
         <source>Octave Files (*.m);;All Files (*)</source>
-        <translation type="unfinished">Octave Dosyaları (*.m);;Tüm Dosyalar (*)</translation>
+        <translation>Octave Dosyaları (*.m);;Tüm Dosyalar (*)</translation>
     </message>
     <message>
         <location line="+39"/>
         <source>New Function</source>
-        <translation type="unfinished">Yeni İşlev</translation>
+        <translation>Yeni İşlev</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New function name:
 </source>
-        <translation type="unfinished">Yeni işlev adı:
+        <translation>Yeni işlev adı:
 </translation>
     </message>
     <message>
         <location line="+62"/>
         <source>%1 is a built-in, compiled, or inline
 function and can not be edited.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 yerleşik, derlenmiş veya satır içidir
+işlevdir ve düzenlenemez.</translation>
     </message>
     <message>
         <location line="+41"/>
         <source>Can not find function %1</source>
-        <translation type="unfinished">%1 işlevi bulunamıyor</translation>
+        <translation>%1 işlevi bulunamıyor</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Oktave Düzenleyici</translation>
+        <translation>Oktave Düzenleyici</translation>
     </message>
     <message>
         <location line="+709"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Dosya</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Open...</source>
-        <translation type="unfinished">Aç...</translation>
+        <translation>Aç...</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Open an existing file in editor</source>
-        <translation type="unfinished">Düzenleyicide mevcut bir dosyayı açın</translation>
+        <translation>Düzenleyicide mevcut bir dosyayı açın</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Load Workspace...</source>
-        <translation type="unfinished">Çalışma Alanını Yükle...</translation>
+        <translation>Çalışma Alanını Yükle...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Save Workspace As...</source>
-        <translation type="unfinished">Çalışma Alanını Farklı Kaydet...</translation>
+        <translation>Çalışma Alanını Farklı Kaydet...</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Exit</source>
-        <translation type="unfinished">Çık</translation>
+        <translation>Çık</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>New</source>
-        <translation type="unfinished">Yeni</translation>
+        <translation>Yeni</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>New Script</source>
-        <translation type="unfinished">Yeni Komut Dosyası</translation>
+        <translation>Yeni Komut Dosyası</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>New Function...</source>
-        <translation type="unfinished">Yeni İşlev...</translation>
+        <translation>Yeni İşlev...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>New Figure</source>
-        <translation type="unfinished">Yeni Şekil</translation>
+        <translation>Yeni Şekil</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished">&amp;Düzenle</translation>
+        <translation>&amp;Düzenle</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Geri Al</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopyala</translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Paste</source>
-        <translation type="unfinished">Yapıştır</translation>
+        <translation>Yapıştır</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tümünü Seçin</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished">Panoyu Temizle</translation>
+        <translation>Panoyu Temizle</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Find Files...</source>
-        <translation type="unfinished">Dosyaları Bul...</translation>
+        <translation>Dosyaları Bul...</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Clear Command Window</source>
-        <translation type="unfinished">Komut Penceresini Temizle</translation>
+        <translation>Komut Penceresini Temizle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear Command History</source>
-        <translation type="unfinished">Komut Geçmişini Temizle</translation>
+        <translation>Komut Geçmişini Temizle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Clear Workspace</source>
-        <translation type="unfinished">Çalışma Alanını Temizle</translation>
+        <translation>Çalışma Alanını Temizle</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set Path...</source>
-        <translation type="unfinished"></translation>
+        <translation>Yolu Ayarla...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Preferences...</source>
-        <translation type="unfinished">Ayarlar...</translation>
+        <translation>Tercihler...</translation>
     </message>
     <message>
         <location line="+54"/>
         <source>De&amp;bug</source>
-        <translation type="unfinished">Hata &amp;Ayıklama</translation>
+        <translation>Hata &amp;Ayıklama</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Step</source>
-        <translation type="unfinished">Adım</translation>
+        <translation>Adım</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step In</source>
-        <translation type="unfinished">İçeri Gir</translation>
+        <translation>Adım Atın</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Step Out</source>
-        <translation type="unfinished">Dışarı Çık</translation>
+        <translation>Dışarı Çık</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Continue</source>
-        <translation type="unfinished">Devam</translation>
+        <translation>Devam</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished">Hata Ayıklama Modundan Çık</translation>
+        <translation>Hata Ayıklama Modundan Çık</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>&amp;Tools</source>
-        <translation type="unfinished">&amp;Araçlar</translation>
+        <translation>&amp;Araçlar</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start &amp;Profiler Session</source>
-        <translation type="unfinished">Profil &amp;Oluşturucu Oturumunu Başlatın</translation>
+        <translation>Profil &amp;Oluşturucu Oturumunu Başlatın</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Resume Profiler Session</source>
-        <translation type="unfinished">&amp;Profil Oturumunu Sürdür</translation>
+        <translation>&amp;Profil Oturumunu Sürdür</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>&amp;Stop Profiler</source>
-        <translation type="unfinished">&amp;Profil Oluşturucuyu Durdur</translation>
+        <translation>&amp;Profil Oluşturucuyu Durdur</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>&amp;Show Profiler Data</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Profil Oluşturucu Verilerini Göster</translation>
     </message>
     <message>
         <location line="+50"/>
         <source>&amp;Window</source>
-        <translation type="unfinished">&amp;Pencere</translation>
+        <translation>&amp;Pencere</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command Window</source>
-        <translation type="unfinished">Komut Penceresini Göster</translation>
+        <translation>Komut Penceresini Göster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Command History</source>
-        <translation type="unfinished">Komut Geçmişini Göster</translation>
+        <translation>Komut Geçmişini Göster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show File Browser</source>
-        <translation type="unfinished">Dosya Tarayıcısını Göster</translation>
+        <translation>Dosya Tarayıcısını Göster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Workspace</source>
-        <translation type="unfinished">Çalışma Alanını Göster</translation>
+        <translation>Çalışma Alanını Göster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Editor</source>
-        <translation type="unfinished">Düzenleyiciyi Göster</translation>
+        <translation>Düzenleyiciyi Göster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Belgelendirmeyi Göster</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Variable Editor</source>
-        <translation type="unfinished">Değişken Düzenleyiciyi Göster</translation>
+        <translation>Değişken Düzenleyiciyi Göster</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Command Window</source>
-        <translation type="unfinished">Komut Penceresi</translation>
+        <translation>Komut Penceresi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Command History</source>
-        <translation type="unfinished">Komut Geçmişi</translation>
+        <translation>Komut Geçmişi</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>File Browser</source>
-        <translation type="unfinished">Dosya Gezgini</translation>
+        <translation>Dosya Gezgini</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Workspace</source>
-        <translation type="unfinished">Çalışma Alanı</translation>
+        <translation>Çalışma Alanı</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Editor</source>
-        <translation type="unfinished">Düzenleyici</translation>
+        <translation>Düzenleyici</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+44"/>
         <source>Documentation</source>
-        <translation type="unfinished">Belgelendirme</translation>
+        <translation>Belgelendirme</translation>
     </message>
     <message>
         <location line="-41"/>
         <source>Variable Editor</source>
-        <translation type="unfinished">Değişken Düzenleyici</translation>
+        <translation>Değişken Düzenleyici</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous Widget</source>
-        <translation type="unfinished">Önceki Araçlar</translation>
+        <translation>Önceki Araçlar</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Varsayılan Pencere Düzenini Sıfırla</translation>
+        <translation>Varsayılan Pencere Düzenini Sıfırla</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;Help</source>
-        <translation type="unfinished">&amp;Yardım</translation>
+        <translation>&amp;Yardım</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Hata Bildir</translation>
+        <translation>Hata Bildir</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Octave Packages</source>
-        <translation type="unfinished">Oktave Paketleri</translation>
+        <translation>Oktave Paketleri</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Get Involved</source>
-        <translation type="unfinished"></translation>
+        <translation>Katılın</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Donate to Octave</source>
-        <translation type="unfinished">Octave&apos;a Bağış Yapın</translation>
+        <translation>Octave&apos;a Bağış Yapın</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>On Disk</source>
-        <translation type="unfinished">Diskte</translation>
+        <translation>Diskte</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Online</source>
-        <translation type="unfinished">Çevrimiçi</translation>
+        <translation>Çevrimiçi</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>&amp;News</source>
-        <translation type="unfinished">&amp;Yenilikler</translation>
+        <translation>&amp;Yenilikler</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished">Sürüm Notları</translation>
+        <translation>Sürüm Notları</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Community News</source>
-        <translation type="unfinished">Topluluk Haberleri</translation>
+        <translation>Topluluk Haberleri</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Toolbar</source>
-        <translation type="unfinished">Araç çubuğu</translation>
+        <translation>Araç çubuğu</translation>
     </message>
     <message>
         <location line="+21"/>
         <source>Enter directory name</source>
-        <translation type="unfinished">Dizin adını girin</translation>
+        <translation>Dizin adını girin</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Current Directory: </source>
-        <translation type="unfinished">Mevcut Dizin: </translation>
+        <translation>Mevcut Dizin: </translation>
     </message>
     <message>
         <location line="+7"/>
         <source>One directory up</source>
-        <translation type="unfinished">Bir dizin yukarı</translation>
+        <translation>Bir dizin yukarı</translation>
     </message>
 </context>
 <context>
@@ -3215,7 +3248,7 @@ when you have a connection to the web (link opens in an external browser).
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished">&lt;html&gt;
+        <translation>&lt;html&gt;
 &lt;body&gt;
 &lt;p&gt;
 Octave&apos;ın topluluk haber kaynağı kullanılamıyor gibi görünüyor.
@@ -3243,7 +3276,19 @@ or enable web connections for news in Octave&apos;s network settings tab.
 &lt;/p&gt;
 &lt;p&gt;
 &lt;small&gt;&lt;em&gt;&amp;mdash; The Octave Developers, </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;
+&lt;body&gt;
+&lt;p&gt;
+En son Octave Topluluğu haberlerini görüntülemek için web&apos;e bağlanma devre dışı bırakıldı.
+&lt;/p&gt;
+&lt;p&gt;
+En son haberler için lütfen kontrol edin
+&lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;
+web bağlantınız olduğunda (bağlantı harici bir tarayıcıda açılır)
+veya Octave&apos;ın ağ ayarları sekmesinden haberler için web bağlantılarını etkinleştirin.
+&lt;/p&gt;
+&lt;p&gt;
+&lt;small&gt;&lt;em&gt;&amp;mdash; Octave Geliştiricileri, </translation>
     </message>
 </context>
 <context>
@@ -3251,17 +3296,17 @@ or enable web connections for news in Octave&apos;s network settings tab.
     <message>
         <location filename="../src/octave-dock-widget.cc" line="+144"/>
         <source>Hide Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Aracı Gizle</translation>
     </message>
     <message>
         <location line="+81"/>
         <source>Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Panel Aracı</translation>
     </message>
     <message>
         <location line="+58"/>
         <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlantıyı Kaldırma Aracı</translation>
     </message>
 </context>
 <context>
@@ -3269,27 +3314,27 @@ or enable web connections for news in Octave&apos;s network settings tab.
     <message>
         <location filename="../src/m-editor/octave-qscintilla.cc" line="+299"/>
         <source>Help on</source>
-        <translation type="unfinished">Yardım</translation>
+        <translation>Yardım açık</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Documentation on</source>
-        <translation type="unfinished">Belgeler</translation>
+        <translation>Belgelendirme açık</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Edit</source>
-        <translation type="unfinished">Düzenle</translation>
+        <translation>Düzenle</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>dbstop if ...</source>
-        <translation type="unfinished">dbstop eğer ...</translation>
+        <translation>dbstop eğer ...</translation>
     </message>
     <message>
         <location line="+524"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Oktave Düzenleyici</translation>
+        <translation>Oktave Düzenleyici</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3298,7 +3343,7 @@ Make sure you have write access to temp. directory
 %1
 
 &quot;Run Selection&quot; requires temporary files.</source>
-        <translation type="unfinished">Geçici dosyalar oluşturulamadı.
+        <translation>Geçici dosyalar oluşturulamadı.
 Temp&apos;ye yazma erişiminiz olduğundan emin olun. dizin
 %1
 
@@ -3307,7 +3352,7 @@ Temp&apos;ye yazma erişiminiz olduğundan emin olun. dizin
     <message>
         <location line="+306"/>
         <source>Press &apos;%1&apos; to replace all occurrences of &apos;%2&apos; with &apos;%3&apos;.</source>
-        <translation type="unfinished">Tüm &apos;%2&apos; oluşumlarını &apos;%3&apos; ile değiştirmek için &apos;%1&apos; tuşuna basın.</translation>
+        <translation>Tüm &apos;%2&apos; oluşumlarını &apos;%3&apos; ile değiştirmek için &apos;%1&apos; tuşuna basın.</translation>
     </message>
 </context>
 <context>
@@ -3315,7 +3360,7 @@ Temp&apos;ye yazma erişiminiz olduğundan emin olun. dizin
     <message>
         <location filename="../src/m-editor/octave-txt-lexer.cc" line="+41"/>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan</translation>
     </message>
 </context>
 <context>
@@ -3325,52 +3370,52 @@ Temp&apos;ye yazma erişiminiz olduğundan emin olun. dizin
         <location line="+5"/>
         <location line="+2"/>
         <source>Create</source>
-        <translation type="unfinished">Oluştur</translation>
+        <translation>Oluştur</translation>
     </message>
     <message>
         <location line="-7"/>
         <location line="+31"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>İptal</translation>
     </message>
     <message>
         <location line="-28"/>
         <source>File
 %1
 does not exist. Do you want to create it?</source>
-        <translation type="unfinished">Dosya
+        <translation>Dosya
 %1
 mevcut değil. Onu oluşturmak ister misin?</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Octave Editor</source>
-        <translation type="unfinished">Oktave Düzenleyici</translation>
+        <translation>Oktave Düzenleyici</translation>
     </message>
     <message>
         <location line="+19"/>
         <source>The file %1 does not exist in the load path.  To run or debug the function you are editing, you must either change to the directory %2 or add that directory to the load path.</source>
-        <translation type="unfinished">%1 dosyası yükleme yolunda mevcut değil.  Düzenlediğiniz işlevi çalıştırmak veya hatalarını ayıklamak için, %2 dizinine geçmelisiniz veya bu dizini yükleme yoluna eklemelisiniz.</translation>
+        <translation>%1 dosyası yükleme yolunda mevcut değil.  Düzenlediğiniz işlevi çalıştırmak veya hatalarını ayıklamak için, %2 dizinine geçmelisiniz veya bu dizini yükleme yoluna eklemelisiniz.</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>The file %1 is shadowed by a file with the same name in the load path. To run or debug the function you are editing, change to the directory %2.</source>
-        <translation type="unfinished">%1 dosyası, yükleme yolunda aynı ada sahip bir dosya tarafından gölgeleniyor. Düzenlediğiniz işlevi çalıştırmak veya hata ayıklamak için %2 dizinine geçin.</translation>
+        <translation>%1 dosyası, yükleme yolunda aynı ada sahip bir dosya tarafından gölgeleniyor. Düzenlediğiniz işlevi çalıştırmak veya hata ayıklamak için %2 dizinine geçin.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Change Directory or Add Directory to Load Path</source>
-        <translation type="unfinished">Dizini Değiştirin veya Yolu Yüklemek İçin Dizin Ekleyin</translation>
+        <translation>Dizini Değiştirin veya Yolu Yüklemek İçin Dizin Ekleyin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>&amp;Change Directory</source>
-        <translation type="unfinished">Dizini &amp;Değiştir</translation>
+        <translation>Dizini &amp;Değiştir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>&amp;Add Directory to Load Path</source>
-        <translation type="unfinished">Yükleme Yoluna Dizin &amp;Ekle</translation>
+        <translation>Yükleme Yoluna Dizin &amp;Ekle</translation>
     </message>
 </context>
 <context>
@@ -3378,17 +3423,17 @@ mevcut değil. Onu oluşturmak ister misin?</translation>
     <message>
         <location filename="../src/release-notes.cc" line="+84"/>
         <source>The release notes file &apos;%1&apos; is empty.</source>
-        <translation type="unfinished">&apos;%1&apos; sürüm notları dosyası boş.</translation>
+        <translation>&apos;%1&apos; sürüm notları dosyası boş.</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>The release notes file &apos;%1&apos; cannot be read.</source>
-        <translation type="unfinished">&apos;%1&apos; sürüm notları dosyası okunamıyor.</translation>
+        <translation>&apos;%1&apos; sürüm notları dosyası okunamıyor.</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Octave Release Notes</source>
-        <translation type="unfinished">Octave Sürüm Notları</translation>
+        <translation>Octave Sürüm Notları</translation>
     </message>
 </context>
 <context>
@@ -3396,82 +3441,82 @@ mevcut değil. Onu oluşturmak ister misin?</translation>
     <message>
         <location filename="../src/set-path-dialog.cc" line="+64"/>
         <source>Set Path</source>
-        <translation type="unfinished">Yolu Ayarla</translation>
+        <translation>Yolu Ayarla</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>All changes take effect immediately.</source>
-        <translation type="unfinished">Tüm değişiklikler hemen yürürlüğe girer.</translation>
+        <translation>Tüm değişiklikler anında geçerli olur.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Add Directory...</source>
-        <translation type="unfinished"></translation>
+        <translation>Dizin Ekle...</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Single Directory</source>
-        <translation type="unfinished"></translation>
+        <translation>Tek Dizin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Directory With Subdirectories</source>
-        <translation type="unfinished"></translation>
+        <translation>Alt Dizinli Dizin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move to Top</source>
-        <translation type="unfinished">Yukarı Taşı</translation>
+        <translation>Yukarı Taşı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to Bottom</source>
-        <translation type="unfinished">En Alta Taşı</translation>
+        <translation>En Alta Taşı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Up</source>
-        <translation type="unfinished">Yukarı Taşı</translation>
+        <translation>Yukarı Taşı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Down</source>
-        <translation type="unfinished">Aşağı Taşı</translation>
+        <translation>Aşağı Taşı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove</source>
-        <translation type="unfinished">Kaldır</translation>
+        <translation>Kaldır</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Reload</source>
-        <translation type="unfinished">Tekrar Yükle</translation>
+        <translation>Tekrar Yükle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save</source>
-        <translation type="unfinished">Kaydet</translation>
+        <translation>Kaydet</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert</source>
-        <translation type="unfinished">Geri Al</translation>
+        <translation>Geri Al</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Revert Last Change</source>
-        <translation type="unfinished">Son Değişikliği Geri Al</translation>
+        <translation>Son Değişikliği Geri Al</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Revert All Changes</source>
-        <translation type="unfinished">Tüm Değişiklikleri Geri Al</translation>
+        <translation>Tüm Değişiklikleri Geri Al</translation>
     </message>
     <message>
         <location line="+90"/>
         <source>Open Directory</source>
-        <translation type="unfinished">Dizin Aç</translation>
+        <translation>Dizin Aç</translation>
     </message>
 </context>
 <context>
@@ -3511,12 +3556,12 @@ mevcut değil. Onu oluşturmak ister misin?</translation>
     <message>
         <location line="+1"/>
         <source>Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçim</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>İmleç</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ve.h" line="+1"/>
@@ -3531,7 +3576,7 @@ mevcut değil. Onu oluşturmak ister misin?</translation>
     <message>
         <location line="+1"/>
         <source>Alternating Background</source>
-        <translation type="unfinished"></translation>
+        <translation>Alternatif Arka Plan</translation>
     </message>
     <message>
         <location filename="../src/gui-preferences-ws.h" line="+75"/>
@@ -3563,19 +3608,23 @@ mevcut değil. Onu oluşturmak ister misin?</translation>
         <source>Switch to a second set of colors.
 Useful for defining light/dark modes.
 Discards non-applied current changes!</source>
-        <translation type="unfinished"></translation>
+        <translation>İkinci bir renk grubuna geçin.
+Açık/karanlık modlarını tanımlamak için kullanışlıdır.
+Uygulanmayan mevcut değişiklikleri iptal eder!</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>Reload the default colors,
 depends on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan renkleri yeniden yükleyin,
+o anda seçili olan moda bağlıdır.</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Reload the default style values,
 depends on currently selected mode.</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan renkleri yeniden yükleyin,
+Şu anda oluşan moda bağlıdır.</translation>
     </message>
     <message>
         <location line="-13"/>
@@ -3590,104 +3639,104 @@ depends on currently selected mode.</source>
     <message>
         <location filename="../src/settings-dialog.cc" line="-945"/>
         <source>Loading current preferences ... </source>
-        <translation type="unfinished"></translation>
+        <translation>Mevcut tercihler yükleniyor ... </translation>
     </message>
     <message>
         <location line="+43"/>
         <location line="+6"/>
         <location line="+1049"/>
         <source>System setting</source>
-        <translation type="unfinished">Sistem ayarı</translation>
+        <translation>Sistem ayarları</translation>
     </message>
     <message>
         <location line="-795"/>
         <source>IBeam Cursor</source>
-        <translation type="unfinished">Işınlama İmleci</translation>
+        <translation>Işınlama İmleci</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Block Cursor</source>
-        <translation type="unfinished">İmleci Engelle</translation>
+        <translation>İmleci Engelle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Underline Cursor</source>
-        <translation type="unfinished">İmleç Altı Çizili</translation>
+        <translation>İmleç Altı Çizili</translation>
     </message>
     <message>
         <location line="+176"/>
         <source>Color of highlighted current line (magenta (255,0,255) for automatic color)</source>
-        <translation type="unfinished"></translation>
+        <translation>Vurgulanan mevcut satırın rengi (otomatik renk için macenta (255,0,255)</translation>
     </message>
     <message>
         <location line="+63"/>
         <source>Set Octave Startup Directory</source>
-        <translation type="unfinished">Octave Başlangıç Dizinini Ayarla</translation>
+        <translation>Octave Başlangıç Dizinini Ayarla</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Set File Browser Startup Directory</source>
-        <translation type="unfinished">Dosya Tarayıcı Başlangıç Dizinini Ayarlayın</translation>
+        <translation>Dosya Tarayıcı Başlangıç Dizinini Ayarlayın</translation>
     </message>
     <message>
         <location line="+30"/>
         <source>Applying preferences ... </source>
-        <translation type="unfinished"></translation>
+        <translation>Tercihler uygulanıyor ... </translation>
     </message>
     <message>
         <location line="+86"/>
         <location line="+21"/>
         <location line="+1069"/>
         <source>Failed to open %1 as Octave shortcut file</source>
-        <translation type="unfinished">%1 Oktave kısayol dosyası olarak açılamadı</translation>
+        <translation>%1 Oktave kısayol dosyası olarak açılamadı</translation>
     </message>
     <message>
         <location line="-428"/>
         <source>Enable attribute colors</source>
-        <translation type="unfinished">Öznitelik renklerini etkinleştir</translation>
+        <translation>Öznitelik renklerini etkinleştir</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Hide tool tips</source>
-        <translation type="unfinished"></translation>
+        <translation>Araç ipuçlarını gizle</translation>
     </message>
     <message>
         <location line="+360"/>
         <source>Import shortcuts from file...</source>
-        <translation type="unfinished">Kısayolları dosyadan içe aktar...</translation>
+        <translation>Kısayolları dosyadan içe aktar...</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+6"/>
         <source>Octave Shortcut Files (*.osc);;All Files (*)</source>
-        <translation type="unfinished">Oktave Kısayol Dosyaları (*.osc);;Tüm Dosyalar (*)</translation>
+        <translation>Oktave Kısayol Dosyaları (*.osc);;Tüm Dosyalar (*)</translation>
     </message>
     <message>
         <location line="-1"/>
         <source>Export shortcuts to file...</source>
-        <translation type="unfinished">Kısayolları dosyaya aktar...</translation>
+        <translation>Kısayolları dosyaya aktar...</translation>
     </message>
     <message>
         <location line="+31"/>
         <source>Overwriting Shortcuts</source>
-        <translation type="unfinished">Kısayolların Üzerine Yazma</translation>
+        <translation>Kısayolların Üzerine Yazma</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>You are about to overwrite all shortcuts.
 Would you like to save the current shortcut set or cancel the action?</source>
-        <translation type="unfinished">Tüm kısayolların üzerine yazmak üzeresiniz.
+        <translation>Tüm kısayolların üzerine yazmak üzeresiniz.
 Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Don&apos;t save</source>
-        <translation type="unfinished">Kaydetme</translation>
+        <translation>Kaydetme</translation>
     </message>
     <message>
         <location line="+33"/>
         <source>Octave GUI preferences</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave Arayüz tercihleri</translation>
     </message>
 </context>
 <context>
@@ -3695,22 +3744,22 @@ Mevcut kısayol kümesini kaydetmek mi yoksa eylemi iptal etmek mi istersiniz?</
     <message>
         <location filename="../src/welcome-wizard.cc" line="+45"/>
         <source>Community News</source>
-        <translation type="unfinished">Topluluk Haberleri</translation>
+        <translation>Topluluk Haberleri</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Previous</source>
-        <translation type="unfinished">Önceki</translation>
+        <translation>Önceki</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next</source>
-        <translation type="unfinished">Sonraki</translation>
+        <translation>Sonraki</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>İptal</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -3720,7 +3769,7 @@ The check will happen at most once each day and news will only be displayed if t
 &lt;p&gt;You may also view the news by selecting the &quot;Community News&quot; item in the &quot;Help&quot; menu, or by visiting
 &lt;a href=&quot;https://octave.org/community-news.html&quot;&gt;https://octave.org/community-news.html&lt;/a&gt;.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished">&lt;html&gt;&lt;body&gt;
+        <translation>&lt;html&gt;&lt;body&gt;
 &lt;p&gt;Octave başladığında, Octave topluluğu hakkında güncel haberler ve bilgiler için isteğe bağlı olarak Octave web sitesini kontrol edecektir.
 Kontrol her gün en fazla bir kez yapılacak ve haberler yalnızca haberleri son görüntülemenizden bu yana yeni bir şey olması durumunda gösterilecektir.&lt;/p&gt;
 &lt;p&gt;&quot;Yardım&quot; menüsünde &quot;Topluluk Haberleri&quot; öğesini seçerek veya şu adresi ziyaret ederek de haberleri görüntüleyebilirsiniz:
@@ -3733,7 +3782,10 @@ Kontrol her gün en fazla bir kez yapılacak ve haberler yalnızca haberleri son
 &lt;/head&gt;&lt;body&gt;
 &lt;p&gt;Allow Octave to connect to the Octave web site when it starts in order to display current news and information about the Octave community.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head&gt;
+&lt;/head&gt;&lt;body&gt;
+&lt;p&gt;Octave topluluğuyla ilgili güncel haberleri ve bilgileri görüntülemek için Octave&apos;in, başladığında Octave web sitesine bağlanmasına izin verin.&lt;/p&gt;
+&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
 </context>
 <context>
@@ -3741,44 +3793,46 @@ Kontrol her gün en fazla bir kez yapılacak ve haberler yalnızca haberleri son
     <message>
         <location filename="../src/shortcuts-tree-widget.cc" line="+162"/>
         <source>Enter New Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Yeni Kısayolu Girin</translation>
     </message>
     <message>
         <location line="+7"/>
         <source>Enter custom shortcut
 Action: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Özel kısayolu girin
+Eylem: %1</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Enter shortcut by typing it</source>
-        <translation type="unfinished"></translation>
+        <translation>Kısayolu yazarak girin</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Add Shift modifier
 (allows one to enter number keys)</source>
-        <translation type="unfinished"></translation>
+        <translation>Çalışma değiştirici ekle
+(sayı tuşlarını girmenize olanak sağlar)</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Actual Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Güncel Kısayol</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Default Shortcut</source>
-        <translation type="unfinished"></translation>
+        <translation>Varsayılan Kısayol</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Set to default</source>
-        <translation type="unfinished">Varsayılan olarak ayarla</translation>
+        <translation>Varsayılan olarak ayarla</translation>
     </message>
     <message>
         <location line="+104"/>
         <source>Double Shortcut</source>
-        <translation type="unfinished">Çift Kısayol</translation>
+        <translation>Çift Kısayol</translation>
     </message>
     <message>
         <location line="+1"/>
@@ -3787,7 +3841,11 @@ Action: %1</source>
 is already used for the action
   &quot;%2&quot;.
 Do you want to use the shortcut and remove it from the previous action?</source>
-        <translation type="unfinished"></translation>
+        <translation>Seçilen kısayol
+   &quot;%1&quot;
+eylem için zaten kullanılıyor
+   &quot;%2&quot;.
+Kısayolu kullanmak ve onu önceki eylemden kaldırmak istiyor musunuz?</translation>
     </message>
 </context>
 <context>
@@ -3795,96 +3853,96 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+33"/>
         <source>Global</source>
-        <translation type="unfinished">Evrensel</translation>
+        <translation>Genel</translation>
     </message>
     <message>
         <location line="+4"/>
         <location line="+49"/>
         <source>File Menu</source>
-        <translation type="unfinished">Dosya menüsü</translation>
+        <translation>Dosya menüsü</translation>
     </message>
     <message>
         <location line="-46"/>
         <location line="+49"/>
         <source>Edit Menu</source>
-        <translation type="unfinished">Düzenle Menüsü</translation>
+        <translation>Düzenle Menüsü</translation>
     </message>
     <message>
         <location line="-46"/>
         <location line="+52"/>
         <source>Debug Menu</source>
-        <translation type="unfinished">Hata Ayıklama Menüsü</translation>
+        <translation>Hata Ayıklama Menüsü</translation>
     </message>
     <message>
         <location line="-49"/>
         <source>Tools Menu</source>
-        <translation type="unfinished">Araçlar Menüsü</translation>
+        <translation>Araçlar Menüsü</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Window Menu</source>
-        <translation type="unfinished">Pencere Menüsü</translation>
+        <translation>Pencere Menüsü</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+49"/>
         <source>Help Menu</source>
-        <translation type="unfinished">Yardım Menüsü</translation>
+        <translation>Yardım Menüsü</translation>
     </message>
     <message>
         <location line="-46"/>
         <source>News Menu</source>
-        <translation type="unfinished">Haber Menüsü</translation>
+        <translation>Haber Menüsü</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Handling of Dock Widgets</source>
-        <translation type="unfinished">Dock Araçların kullanımı</translation>
+        <translation>Panel Araçların kullanımı</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Tab Handling in Dock Widgets</source>
-        <translation type="unfinished">Dock Araçların`da Sekme İşleme</translation>
+        <translation>Panel Araçların`da Sekme İşleme</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Find &amp; Replace in Dock Widgets</source>
-        <translation type="unfinished">Dock Araçların`da Bul ve Değiştir</translation>
+        <translation>Panel Araçların`da Bul ve Değiştir</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zooming in Editor and Documentation</source>
-        <translation type="unfinished">Yaklaştırma Düzenleyicisi ve Belgelendirmesi</translation>
+        <translation>Yaklaştırma Düzenleyicisi ve Belgelendirmesi</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Editor</source>
-        <translation type="unfinished">Düzenleyici</translation>
+        <translation>Düzenleyici</translation>
     </message>
     <message>
         <location line="+10"/>
         <source>View Menu</source>
-        <translation type="unfinished">Menüyü Görüntüle</translation>
+        <translation>Menüyü Görüntüle</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Run Menu</source>
-        <translation type="unfinished">Çalıştır Menüsü</translation>
+        <translation>Çalıştır Menüsü</translation>
     </message>
     <message>
         <location line="+13"/>
         <source>Documentation Viewer</source>
-        <translation type="unfinished">Belge Görüntüleyici</translation>
+        <translation>Belge Görüntüleyici</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Browser</source>
-        <translation type="unfinished">Gözat</translation>
+        <translation>Gözat</translation>
     </message>
     <message>
         <location line="+109"/>
         <source>item %1 not found in shortcut settings dialog</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 öğesi kısayol ayarları iletişim kutusunda bulunamadı</translation>
     </message>
 </context>
 <context>
@@ -3892,7 +3950,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/terminal-dock-widget.cc" line="+107"/>
         <source>Command Window</source>
-        <translation type="unfinished">Komut Penceresi</translation>
+        <translation>Komut Penceresi</translation>
     </message>
 </context>
 <context>
@@ -3900,27 +3958,27 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/variable-editor.cc" line="+177"/>
         <source>Dock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Panel Aracı</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Variable Editor: </source>
-        <translation type="unfinished">Değişken Düzenleyici: </translation>
+        <translation>Değişken Düzenleyici: </translation>
     </message>
     <message>
         <location line="+15"/>
         <source>Undock Widget</source>
-        <translation type="unfinished"></translation>
+        <translation>Bağlantıyı Kaldırma Aracı</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Restore geometry</source>
-        <translation type="unfinished">Geometriyi geri yükle</translation>
+        <translation>Geometriyi geri yükle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Redock</source>
-        <translation type="unfinished">Redock</translation>
+        <translation>Yineleme</translation>
     </message>
 </context>
 <context>
@@ -3928,96 +3986,96 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+918"/>
         <source>Variable Editor</source>
-        <translation type="unfinished">Değişken Düzenleyici</translation>
+        <translation>Değişken Düzenleyici</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Edit variables.</source>
-        <translation type="unfinished">Değişkenleri düzenleyin.</translation>
+        <translation>Değişkenleri düzenleyin.</translation>
     </message>
     <message>
         <location line="+553"/>
         <source>Variable Editor Toolbar</source>
-        <translation type="unfinished">Değişken Düzenleyici Araç Çubuğu</translation>
+        <translation>Değişken Düzenleyici Araç Çubuğu</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Save</source>
-        <translation type="unfinished">Kaydet</translation>
+        <translation>Kaydet</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Save variable to a file</source>
-        <translation type="unfinished">Değişkeni bir dosyaya kaydedin</translation>
+        <translation>Değişkeni bir dosyaya kaydedin</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+5"/>
         <location line="+6"/>
         <source>Save in format ...</source>
-        <translation type="unfinished">Formatta kaydet ...</translation>
+        <translation>Biçimde kaydet ...</translation>
     </message>
     <message>
         <location line="-5"/>
         <source>Save variable to a file in different format</source>
-        <translation type="unfinished">Değişkeni farklı biçimde bir dosyaya kaydedin</translation>
+        <translation>Değişkeni farklı biçimde bir dosyaya kaydedin</translation>
     </message>
     <message>
         <location line="+20"/>
         <source>Cut</source>
-        <translation type="unfinished">Kes</translation>
+        <translation>Kes</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Cut data to clipboard</source>
-        <translation type="unfinished">Verileri panoya kesin</translation>
+        <translation>Verileri panoya kesin</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopyala</translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Copy data to clipboard</source>
-        <translation type="unfinished">Verileri panoya kopyala</translation>
+        <translation>Verileri panoya kopyala</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Paste</source>
-        <translation type="unfinished">Yapıştır</translation>
+        <translation>Yapıştır</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Paste clipboard into variable data</source>
-        <translation type="unfinished">Panoyu değişken verilere yapıştırın</translation>
+        <translation>Panoyu değişken verilere yapıştırın</translation>
     </message>
     <message>
         <location line="+8"/>
         <location line="+6"/>
         <location line="+7"/>
         <source>Plot</source>
-        <translation type="unfinished">Arsa</translation>
+        <translation>Grafik</translation>
     </message>
     <message>
         <location line="-11"/>
         <source>Plot Selected Data</source>
-        <translation type="unfinished">Seçilen Verilerin Grafiğini Çizin</translation>
+        <translation>Seçilen Verilerin Grafiği</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Plot selected data</source>
-        <translation type="unfinished">Seçili verilerin grafiğini çizin</translation>
+        <translation>Seçilen Verilerin Grafiği</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>Up</source>
-        <translation type="unfinished">Yukarı</translation>
+        <translation>Yukarı</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Go one level up in variable hierarchy</source>
-        <translation type="unfinished">Değişken hiyerarşisinde bir seviye yukarı çıkın</translation>
+        <translation>Değişken hiyerarşisinde bir seviye yukarı çıkın</translation>
     </message>
 </context>
 <context>
@@ -4025,7 +4083,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="-1260"/>
         <source>Save Variable %1 As</source>
-        <translation type="unfinished">%1 Değişkenini Farklı Kaydet</translation>
+        <translation>%1 Değişkenini Farklı Kaydet</translation>
     </message>
 </context>
 <context>
@@ -4033,57 +4091,57 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location line="+142"/>
         <source>Cut</source>
-        <translation type="unfinished">Kes</translation>
+        <translation>Kes</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopyala</translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Paste</source>
-        <translation type="unfinished">Yapıştır</translation>
+        <translation>Yapıştır</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Clear</source>
-        <translation type="unfinished">Temizle</translation>
+        <translation>Temizle</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Delete</source>
-        <translation type="unfinished">Sil</translation>
+        <translation>Sil</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Variable from Selection</source>
-        <translation type="unfinished">Seçimden Değişken</translation>
+        <translation>Seçimden Değişken</translation>
     </message>
     <message>
         <location line="+18"/>
         <source>Transpose</source>
-        <translation type="unfinished">Aktar</translation>
+        <translation>Aktar</translation>
     </message>
     <message>
         <location line="+56"/>
         <source> columns</source>
-        <translation type="unfinished"> sütunlar</translation>
+        <translation> sütunlar</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> column</source>
-        <translation type="unfinished"> sütun</translation>
+        <translation> sütun</translation>
     </message>
     <message>
         <location line="+52"/>
         <source> rows</source>
-        <translation type="unfinished"> satırlar</translation>
+        <translation> satırlar</translation>
     </message>
     <message>
         <location line="+0"/>
         <source> row</source>
-        <translation type="unfinished"> satır</translation>
+        <translation> satır</translation>
     </message>
 </context>
 <context>
@@ -4091,7 +4149,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/welcome-wizard.cc" line="-190"/>
         <source>Welcome to GNU Octave</source>
-        <translation type="unfinished">GNU Octave&apos;e hoş geldiniz</translation>
+        <translation>GNU Octave&apos;e Hoş geldiniz</translation>
     </message>
 </context>
 <context>
@@ -4099,38 +4157,38 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/workspace-model.cc" line="+49"/>
         <source>Name</source>
-        <translation type="unfinished">İsim</translation>
+        <translation>İsim</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Class</source>
-        <translation type="unfinished">Sınıf</translation>
+        <translation>Sınıf</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Dimension</source>
-        <translation type="unfinished">Boyut</translation>
+        <translation>Boyut</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Value</source>
-        <translation type="unfinished">Değer</translation>
+        <translation>Değer</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Attribute</source>
-        <translation type="unfinished">Öznitelik</translation>
+        <translation>Öznitelik</translation>
     </message>
     <message>
         <location line="+83"/>
         <source>Right click to copy, rename, or display</source>
-        <translation type="unfinished">Kopyalamak, yeniden adlandırmak veya görüntülemek için sağ tıklayın</translation>
+        <translation>Kopyalamak, yeniden adlandırmak veya görüntülemek için sağ tıklayın</translation>
     </message>
     <message>
         <location line="+30"/>
         <location line="+2"/>
         <source>complex</source>
-        <translation type="unfinished">karmaşık</translation>
+        <translation>karmaşık</translation>
     </message>
 </context>
 <context>
@@ -4158,67 +4216,67 @@ Do you want to use the shortcut and remove it from the previous action?</source>
     <message>
         <location filename="../src/workspace-view.cc" line="+57"/>
         <source>Workspace</source>
-        <translation type="unfinished">Çalışma Alanı</translation>
+        <translation>Çalışma Alanı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>View the variables in the active workspace.</source>
-        <translation type="unfinished">Etkin çalışma alanındaki değişkenleri görüntüleyin.</translation>
+        <translation>Etkin çalışma alanındaki değişkenleri görüntüleyin.</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Enter text to filter the workspace</source>
-        <translation type="unfinished">Çalışma alanını filtrelemek için metin girin</translation>
+        <translation>Çalışma alanını filtrelemek için metin girin</translation>
     </message>
     <message>
         <location line="+9"/>
         <source>Filter</source>
-        <translation type="unfinished"></translation>
+        <translation>Süzgeç</translation>
     </message>
     <message>
         <location line="+122"/>
         <source>View the variables in the active workspace.&lt;br&gt;</source>
-        <translation type="unfinished">Etkin çalışma alanındaki değişkenleri görüntüleyin.&lt;b&gt;</translation>
+        <translation>Etkin çalışma alanındaki değişkenleri görüntüleyin.&lt;b&gt;</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Colors for variable attributes:</source>
-        <translation type="unfinished">Değişken nitelikler için renkler:</translation>
+        <translation>Değişken nitelikler için renkler:</translation>
     </message>
     <message>
         <location line="+156"/>
         <source>Open in Variable Editor</source>
-        <translation type="unfinished">Değişken Düzenleyicide Aç</translation>
+        <translation>Değişken Düzenleyicide Aç</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy name</source>
-        <translation type="unfinished">Adını Kopyala</translation>
+        <translation>Adını Kopyala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy value</source>
-        <translation type="unfinished">Değeri kopyala</translation>
+        <translation>Değeri kopyala</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Rename</source>
-        <translation type="unfinished">Yeniden adlandır</translation>
+        <translation>Yeniden adlandır</translation>
     </message>
     <message>
         <location line="+8"/>
         <source>Only top-level symbols may be renamed</source>
-        <translation type="unfinished">Yalnızca üst düzey semboller yeniden adlandırılabilir</translation>
+        <translation>Yalnızca üst düzey semboller yeniden adlandırılabilir</translation>
     </message>
     <message>
         <location line="+22"/>
         <source>Hide filter</source>
-        <translation type="unfinished">Filtreyi gizle</translation>
+        <translation>Filtreyi gizle</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show filter</source>
-        <translation type="unfinished">Filtreyi göster</translation>
+        <translation>Filtreyi göster</translation>
     </message>
 </context>
 <context>
@@ -4687,7 +4745,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
         <location line="-41"/>
         <location filename="../src/ui-settings-dialog.h" line="-2"/>
         <source>Dock widgets window icons</source>
-        <translation type="unfinished"></translation>
+        <translation>Panel Araç&apos;ları pencere simgeleri</translation>
     </message>
     <message>
         <location line="+7"/>
@@ -4699,13 +4757,13 @@ Do you want to use the shortcut and remove it from the previous action?</source>
         <location line="+43"/>
         <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Icon theme (requires restart)</source>
-        <translation type="unfinished"></translation>
+        <translation>Simge teması (yeniden başlatma gerektirir)</translation>
     </message>
     <message>
         <location line="+323"/>
         <location filename="../src/ui-settings-dialog.h" line="+16"/>
         <source>Blinking cursor</source>
-        <translation type="unfinished"></translation>
+        <translation>Yanıp sönen imleç</translation>
     </message>
     <message>
         <location line="+57"/>
@@ -4753,7 +4811,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
         <location line="+79"/>
         <location filename="../src/ui-settings-dialog.h" line="+2"/>
         <source>Highlight current line (color adjustable below with editor styles)</source>
-        <translation type="unfinished"></translation>
+        <translation>Geçerli satırı vurgula (renk aşağıda düzenleyici stilleriyle ayarlanabilir)</translation>
     </message>
     <message>
         <location line="+14"/>
@@ -4971,7 +5029,7 @@ Do you want to use the shortcut and remove it from the previous action?</source>
         <location line="+232"/>
         <location filename="../src/ui-settings-dialog.h" line="+17"/>
         <source>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Ok&lt;/span&gt; - close dialog and apply settings&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Apply - &lt;/span&gt;apply settings but leave dialog open&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Cancel - &lt;/span&gt;close dialog and discard changes not yet applied&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Reset -&lt;/span&gt; reload settings discarding changes not yet applied&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Tamam&lt;/span&gt; - iletişim kutusunu kapat ve ayarları uygula&lt;br&gt;&lt;span style=&quot; font-weight:600 ;&quot;&gt;Uygula - &lt;/span&gt;ayarları uygular ancak iletişim kutusunu açık bırakır&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;İptal - &lt;/span&gt;iletişim kutusunu kapatır ve henüz uygulanmamış değişiklikleri atar&lt;br&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Sıfırla -&lt;/span&gt; henüz uygulanmamış değişiklikleri atarak ayarları yeniden yükleyin&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location line="-227"/>
@@ -5087,7 +5145,7 @@ okuma satırı tuş vuruşlarına müdahale.</translation>
         <location line="+4"/>
         <location filename="../src/ui-settings-dialog.h" line="+3"/>
         <source>Disable menu accelerators of main window menus when Command Window has focus</source>
-        <translation type="unfinished"></translation>
+        <translation>Komut Penceresi odaklandığında ana pencere menülerinin menü hızlandırıcılarını devre dışı bırak</translation>
     </message>
     <message>
         <location line="+50"/>
@@ -5105,7 +5163,7 @@ okuma satırı tuş vuruşlarına müdahale.</translation>
         <location line="+29"/>
         <location filename="../src/ui-settings-dialog.h" line="+9"/>
         <source>Edit a shortcut by double-clicking in Actual column</source>
-        <translation type="unfinished"></translation>
+        <translation>Gerçek sütununa çift tıklayarak bir kısayolu düzenleyin</translation>
     </message>
     <message>
         <location line="+61"/>
@@ -5149,616 +5207,616 @@ okuma satırı tuş vuruşlarına müdahale.</translation>
     <message>
         <location filename="../src/gui-preferences-sc.cc" line="+42"/>
         <source>Undock/Dock Widget</source>
-        <translation type="unfinished">Undock/Dock Widget</translation>
+        <translation>Bağlantıyı Kaldırma/Yerleştirme Aracı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close Widget</source>
-        <translation type="unfinished">Aracı kapat</translation>
+        <translation>Aracı kapat</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>New File</source>
-        <translation type="unfinished">Yeni Dosya</translation>
+        <translation>Yeni Dosya</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Function</source>
-        <translation type="unfinished">Yeni İşlev</translation>
+        <translation>Yeni İşlev</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>New Figure</source>
-        <translation type="unfinished">Yeni Şekil</translation>
+        <translation>Yeni Şekil</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Open File</source>
-        <translation type="unfinished">Dosya Aç</translation>
+        <translation>Dosya Aç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Load Workspace</source>
-        <translation type="unfinished">Çalışma Alanını Yükle</translation>
+        <translation>Çalışma Alanını Yükle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save Workspace As</source>
-        <translation type="unfinished">Çalışma Alanını Farklı Kaydet</translation>
+        <translation>Çalışma Alanını Farklı Kaydet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Exit Octave</source>
-        <translation type="unfinished">Oktave`dan Çık</translation>
+        <translation>Oktave`dan Çık</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Copy</source>
-        <translation type="unfinished">Kopyala</translation>
+        <translation>Kopyala</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Paste</source>
-        <translation type="unfinished">Yapıştır</translation>
+        <translation>Yapıştır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Undo</source>
-        <translation type="unfinished"></translation>
+        <translation>Geri Al</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select All</source>
-        <translation type="unfinished"></translation>
+        <translation>Tümünü Seç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Clipboard</source>
-        <translation type="unfinished">Panoyu Temizle</translation>
+        <translation>Panoyu Temizle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find in Files</source>
-        <translation type="unfinished">Dosyalarda Bul</translation>
+        <translation>Dosyalarda Bul</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Command Window</source>
-        <translation type="unfinished">Komut Penceresini Temizle</translation>
+        <translation>Komut Penceresini Temizle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Command History</source>
-        <translation type="unfinished">Komut Geçmişini Temizle</translation>
+        <translation>Komut Geçmişini Temizle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Clear Workspace</source>
-        <translation type="unfinished">Çalışma Alanını Temizle</translation>
+        <translation>Çalışma Alanını Temizle</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Set Path</source>
-        <translation type="unfinished">Yolu Ayarla</translation>
+        <translation>Yolu Ayarla</translation>
     </message>
     <message>
         <location line="+1"/>
         <location line="+118"/>
         <source>Preferences</source>
-        <translation type="unfinished">Seçenekler</translation>
+        <translation>Seçenekler</translation>
     </message>
     <message>
         <location line="-115"/>
         <source>Step</source>
-        <translation type="unfinished">Adım</translation>
+        <translation>Adım</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Step In</source>
-        <translation type="unfinished">İçeri Gir</translation>
+        <translation>İçeri Gir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Step Out</source>
-        <translation type="unfinished">Dışarı Çık</translation>
+        <translation>Dışarı Çık</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Continue</source>
-        <translation type="unfinished">Devam</translation>
+        <translation>Devam</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Quit Debug Mode</source>
-        <translation type="unfinished">Hata Ayıklama Modundan Çık</translation>
+        <translation>Hata Ayıklama Modundan Çık</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Start/Stop Profiler Session</source>
-        <translation type="unfinished">Profil Oluşturucu Oturumunu Başlat/Durdur</translation>
+        <translation>Profil Oluşturucu Oturumunu Başlat/Durdur</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Resume Profiler Session</source>
-        <translation type="unfinished">Profil Oluşturucu Oturumunu Sürdür</translation>
+        <translation>Profil Oluşturucu Oturumunu Sürdür</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Profile Data</source>
-        <translation type="unfinished">Profil Verilerini Göster</translation>
+        <translation>Profil Verilerini Göster</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Show Command Window</source>
-        <translation type="unfinished">Komut Penceresini Göster</translation>
+        <translation>Komut Penceresini Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Command History</source>
-        <translation type="unfinished">Komut Geçmişini Göster</translation>
+        <translation>Komut Geçmişini Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show File Browser</source>
-        <translation type="unfinished">Dosya Tarayıcısını Göster</translation>
+        <translation>Dosya Tarayıcısını Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Workspace</source>
-        <translation type="unfinished">Çalışma Alanını Göster</translation>
+        <translation>Çalışma Alanını Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Editor</source>
-        <translation type="unfinished">Düzenleyiciyi Göster</translation>
+        <translation>Düzenleyiciyi Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Documentation</source>
-        <translation type="unfinished"></translation>
+        <translation>Belgelendirmeyi Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Variable Editor</source>
-        <translation type="unfinished">Değişken Düzenleyiciyi Göster</translation>
+        <translation>Değişken Düzenleyiciyi Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command Window</source>
-        <translation type="unfinished">Komut Penceresi</translation>
+        <translation>Komut Penceresi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Command History</source>
-        <translation type="unfinished">Komut Geçmişi</translation>
+        <translation>Komut Geçmişi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>File Browser</source>
-        <translation type="unfinished">Dosya Gezgini</translation>
+        <translation>Dosya Gezgini</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Workspace</source>
-        <translation type="unfinished">Çalışma Alanı</translation>
+        <translation>Çalışma Alanı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Editor</source>
-        <translation type="unfinished">Düzenleyici</translation>
+        <translation>Düzenleyici</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Documentation</source>
-        <translation type="unfinished">Belgelendirme</translation>
+        <translation>Belgelendirme</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Variable Editor</source>
-        <translation type="unfinished">Değişken Düzenleyici</translation>
+        <translation>Değişken Düzenleyici</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Widget</source>
-        <translation type="unfinished">Önceki Araçlar</translation>
+        <translation>Önceki Araçlar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Reset Default Window Layout</source>
-        <translation type="unfinished">Varsayılan Pencere Düzenini Sıfırla</translation>
+        <translation>Varsayılan Pencere Düzenini Sıfırla</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show On-disk Documentation</source>
-        <translation type="unfinished">Disk Üzerindeki Belgeleri Göster</translation>
+        <translation>Disk Üzerindeki Belgeleri Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Online Documentation</source>
-        <translation type="unfinished">Çevrimiçi Belgeleri Göster</translation>
+        <translation>Çevrimiçi Belgeleri Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Report Bug</source>
-        <translation type="unfinished">Hata Bildir</translation>
+        <translation>Hata Bildir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Packages</source>
-        <translation type="unfinished">Oktave Paketleri</translation>
+        <translation>Oktave Paketleri</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Contribute to Octave</source>
-        <translation type="unfinished">Oktave`ya Katkıda Bulun</translation>
+        <translation>Oktave`ya Katkıda Bulun</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Octave Developer Resources</source>
-        <translation type="unfinished">Octave Geliştirici Kaynakları</translation>
+        <translation>Octave Geliştirici Kaynakları</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>About Octave</source>
-        <translation type="unfinished"></translation>
+        <translation>Octave Hakkında</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Release Notes</source>
-        <translation type="unfinished">Sürüm Notları</translation>
+        <translation>Sürüm Notları</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Community News</source>
-        <translation type="unfinished">Topluluk Haberleri</translation>
+        <translation>Topluluk Haberleri</translation>
     </message>
     <message>
         <location line="+5"/>
         <source>Close Tab</source>
-        <translation type="unfinished">Sekmeyi Kapat</translation>
+        <translation>Sekmeyi Kapat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close All Tabs</source>
-        <translation type="unfinished">Tüm Sekmeleri Kapat</translation>
+        <translation>Tüm Sekmeleri Kapat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Close Other Tabs</source>
-        <translation type="unfinished">Diğer Sekmeleri Kapat</translation>
+        <translation>Diğer Sekmeleri Kapat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switch to Left Tab</source>
-        <translation type="unfinished">Sol Sekmeye Geç</translation>
+        <translation>Sol Sekmeye Geç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Switch to Right Tab</source>
-        <translation type="unfinished">Sağ Sekmeye Geç</translation>
+        <translation>Sağ Sekmeye Geç</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Tab Left</source>
-        <translation type="unfinished">Sekmeyi Sola Taşı</translation>
+        <translation>Sekmeyi Sola Taşı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move Tab Right</source>
-        <translation type="unfinished">Sekmeyi Sağa Taşı</translation>
+        <translation>Sekmeyi Sağa Taşı</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Zoom In</source>
-        <translation type="unfinished">Yaklaştır</translation>
+        <translation>Yaklaştır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Zoom Out</source>
-        <translation type="unfinished">Uzaklaştır</translation>
+        <translation>Uzaklaştır</translation>
     </message>
     <message>
         <location line="+2"/>
         <location line="+2"/>
         <source>Zoom Normal</source>
-        <translation type="unfinished">Yaklaştırma Normal</translation>
+        <translation>Yaklaştırma Normal</translation>
     </message>
     <message>
         <location line="+6"/>
         <source>Edit Function</source>
-        <translation type="unfinished">Düzenleme İşlevi</translation>
+        <translation>Düzenleme İşlevi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save File</source>
-        <translation type="unfinished">Dosyayı Kaydet</translation>
+        <translation>Dosyayı Kaydet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Save File As</source>
-        <translation type="unfinished">Dosyayı Farklı Kaydet</translation>
+        <translation>Dosyayı Farklı Kaydet</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Print</source>
-        <translation type="unfinished">Yazdır</translation>
+        <translation>Yazdır</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Redo</source>
-        <translation type="unfinished">Yinele</translation>
+        <translation>Yinele</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cut</source>
-        <translation type="unfinished">Kes</translation>
+        <translation>Kes</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find and Replace</source>
-        <translation type="unfinished">Bul ve Değiştir</translation>
+        <translation>Bul ve Değiştir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Next</source>
-        <translation type="unfinished">Sonraki Bul</translation>
+        <translation>Sonraki Bul</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Find Previous</source>
-        <translation type="unfinished">Öncekini Bul</translation>
+        <translation>Öncekini Bul</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to Start of Word</source>
-        <translation type="unfinished">Kelimenin Başını Sil</translation>
+        <translation>Kelimenin Başını Sil</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to End of Word</source>
-        <translation type="unfinished">Kelimenin Sonuna Kadar Sil</translation>
+        <translation>Kelimenin Sonuna Kadar Sil</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to Start of Line</source>
-        <translation type="unfinished">Satırın Başına Kadar Sil</translation>
+        <translation>Satırın Başına Kadar Sil</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete to End of Line</source>
-        <translation type="unfinished">Satırın Sonuna Kadar Sil</translation>
+        <translation>Satırın Sonuna Kadar Sil</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Delete Line</source>
-        <translation type="unfinished">Satırı Sil</translation>
+        <translation>Satırı Sil</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Copy Line</source>
-        <translation type="unfinished">Satırı Kopyala</translation>
+        <translation>Satırı Kopyala</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Cut Line</source>
-        <translation type="unfinished">Satır Kes</translation>
+        <translation>Satır Kes</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Duplicate Selection/Line</source>
-        <translation type="unfinished">Yinelenen Seçim/Satır</translation>
+        <translation>Yinelenen Seçim/Satır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Transpose Line</source>
-        <translation type="unfinished">Satırı Aktar</translation>
+        <translation>Satırı Aktar</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Completion List</source>
-        <translation type="unfinished">Tamamlama Listesini Göster</translation>
+        <translation>Tamamlama Listesini Göster</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Comment Selection</source>
-        <translation type="unfinished">Yorum Seçimi</translation>
+        <translation>Yorum Seçimi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Uncomment Selection</source>
-        <translation type="unfinished">Açıklamayı Kaldır Seçimi</translation>
+        <translation>Seçimin Yorumunu Kaldır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Comment Selection (Choosing String)</source>
-        <translation type="unfinished">Yorum Seçimi (Dize Seçme)</translation>
+        <translation>Yorum Seçimi (Dize Seçme)</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Uppercase Selection</source>
-        <translation type="unfinished">Büyük Harf Seçimi</translation>
+        <translation>Büyük Harf Seçimi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Lowercase Selection</source>
-        <translation type="unfinished">Küçük Harf Seçimi</translation>
+        <translation>Küçük Harf Seçimi</translation>
     </message>
     <message>
         <location line="+3"/>
         <location line="+3"/>
         <source>Indent Selection Rigidly</source>
-        <translation type="unfinished">Sert Girinti Seçimi</translation>
+        <translation>Seçimi Kesin Olarak Girintilendirin</translation>
     </message>
     <message>
         <location line="-2"/>
         <location line="+3"/>
         <source>Unindent Selection Rigidly</source>
-        <translation type="unfinished">Seçimi Katı Şekilde Çöz</translation>
+        <translation>Seçimi Kesin olarak Girintiden Kaldır</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Indent Code</source>
-        <translation type="unfinished">Girinti Kodu</translation>
+        <translation>Girinti Kodu</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Convert Line Endings to Windows</source>
-        <translation type="unfinished">Satır Sonlarını Windows&apos;a Dönüştür</translation>
+        <translation>Satır Sonlarını Windows&apos;a Dönüştür</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Convert Line Endings to Unix</source>
-        <translation type="unfinished">Satır Sonlarını Unix&apos;e Dönüştür</translation>
+        <translation>Satır Sonlarını Unix&apos;e Dönüştür</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Convert Line Endings to Mac</source>
-        <translation type="unfinished">Satır Sonlarını Mac&apos;e Dönüştür</translation>
+        <translation>Satır Sonlarını Mac&apos;e Dönüştür</translation>
     </message>
     <message>
         <location line="+2"/>
         <source>Goto Line</source>
-        <translation type="unfinished">Satıra Git</translation>
+        <translation>Satıra Git</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Move to Matching Brace</source>
-        <translation type="unfinished">Eşleşen Ayraca Taşı</translation>
+        <translation>Eşleşen Ayraca Taşı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Select to Matching Brace</source>
-        <translation type="unfinished">Eşleşen Ayraç Seçin</translation>
+        <translation>Eşleşen Ayraç Seçin</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Toggle Bookmark</source>
-        <translation type="unfinished">Yer İşaretini Değiştir</translation>
+        <translation>Yer İşaretini Değiştir</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next Bookmark</source>
-        <translation type="unfinished">Sonraki Yer İmi</translation>
+        <translation>Sonraki Yer İmi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Bookmark</source>
-        <translation type="unfinished">Önceki Yer İmi</translation>
+        <translation>Önceki Yer İmi</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove All Bookmark</source>
-        <translation type="unfinished">Tüm Yer İşaretlerini Kaldır</translation>
+        <translation>Tüm Yer İşaretlerini Kaldır</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Styles Preferences</source>
-        <translation type="unfinished">Stil Tercihleri</translation>
+        <translation>Stil Tercihleri</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Show Line Numbers</source>
-        <translation type="unfinished">Satır Numaralarını Göster</translation>
+        <translation>Satır Numaralarını Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Whitespace Characters</source>
-        <translation type="unfinished">Boşluk Karakterlerini Göster</translation>
+        <translation>Boşluk Karakterlerini Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Line Endings</source>
-        <translation type="unfinished">Satır Sonlarını Göster</translation>
+        <translation>Satır Sonlarını Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Indentation Guides</source>
-        <translation type="unfinished">Girinti Kılavuzlarını Göster</translation>
+        <translation>Girinti Kılavuzlarını Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Long Line Marker</source>
-        <translation type="unfinished">Uzun Çizgi İşaretleyiciyi Göster</translation>
+        <translation>Uzun Çizgi İşaretleyiciyi Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Toolbar</source>
-        <translation type="unfinished">Araç Çubuğunu Göster</translation>
+        <translation>Araç Çubuğunu Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Statusbar</source>
-        <translation type="unfinished">Durum çubuğunu göster</translation>
+        <translation>Durum çubuğunu göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Show Horizontal Scrollbar</source>
-        <translation type="unfinished">Yatay Kaydırma Çubuğunu Göster</translation>
+        <translation>Yatay Kaydırma Çubuğunu Göster</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Sort Tabs Alphabetically</source>
-        <translation type="unfinished">Sekmeleri Alfabetik Olarak Sırala</translation>
+        <translation>Sekmeleri Alfabetik Olarak Sırala</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Toggle Breakpoint</source>
-        <translation type="unfinished">Kesme Noktasını Aç/Kapat</translation>
+        <translation>Kesme Noktasını Aç/Kapat</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Next Breakpoint</source>
-        <translation type="unfinished">Sonraki Kesme Noktası</translation>
+        <translation>Sonraki Kesme Noktası</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Previous Breakpoint</source>
-        <translation type="unfinished">Önceki Kesme Noktası</translation>
+        <translation>Önceki Kesme Noktası</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Remove All Breakpoints</source>
-        <translation type="unfinished">Tüm Kesme Noktalarını Kaldır</translation>
+        <translation>Tüm Kesme Noktalarını Kaldır</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Run File</source>
-        <translation type="unfinished">Dosyayı Çalıştır</translation>
+        <translation>Dosyayı Çalıştır</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Run Selection</source>
-        <translation type="unfinished">Seçimi Çalıştır</translation>
+        <translation>Seçimi Çalıştır</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Help on Keyword</source>
-        <translation type="unfinished">Anahtar Kelime Yardımı</translation>
+        <translation>Anahtar Kelime Yardımı</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Document on Keyword</source>
-        <translation type="unfinished">Anahtar Kelime Belgesi</translation>
+        <translation>Anahtar Kelime Belgesi</translation>
     </message>
     <message>
         <location line="+4"/>
         <source>Go to Homepage</source>
-        <translation type="unfinished">Ana sayfaya Git</translation>
+        <translation>Ana sayfaya Git</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Go Back one Page</source>
-        <translation type="unfinished">Go Back one Page</translation>
+        <translation>Bir Sayfa Geriye Git</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Go Forward one Page</source>
-        <translation type="unfinished">Bir Sayfa İleri Git</translation>
+        <translation>Bir Sayfa İleri Git</translation>
     </message>
     <message>
         <location line="+1"/>
         <source>Bookmark this Page</source>
-        <translation type="unfinished">Bu sayfayı işaretle</translation>
+        <translation>Bu sayfayı işaretle</translation>
     </message>
 </context>
 </TS>

@@ -739,7 +739,7 @@ ComplexMatrix::inverse () const
   octave_idx_type info;
   double rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 ComplexMatrix
@@ -747,7 +747,7 @@ ComplexMatrix::inverse (octave_idx_type& info) const
 {
   double rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 ComplexMatrix
@@ -763,14 +763,14 @@ ComplexMatrix::inverse (MatrixType& mattype) const
 {
   octave_idx_type info;
   double rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 ComplexMatrix
 ComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 {
   double rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 ComplexMatrix

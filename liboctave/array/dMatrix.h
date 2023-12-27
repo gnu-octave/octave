@@ -169,8 +169,8 @@ public:
   OCTAVE_API Matrix inverse () const;
   OCTAVE_API Matrix inverse (octave_idx_type& info) const;
   OCTAVE_API Matrix
-  inverse (octave_idx_type& info, double& rcon, bool force = false,
-           bool calc_cond = true) const;
+  inverse (octave_idx_type& info, double& rcon,
+           bool force = false, bool calc_cond = true) const;
 
   OCTAVE_API Matrix inverse (MatrixType& mattype) const;
   OCTAVE_API Matrix inverse (MatrixType& mattype, octave_idx_type& info) const;

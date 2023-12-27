@@ -453,7 +453,7 @@ Matrix::inverse () const
   octave_idx_type info;
   double rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 Matrix
@@ -461,12 +461,12 @@ Matrix::inverse (octave_idx_type& info) const
 {
   double rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 Matrix
-Matrix::inverse (octave_idx_type& info, double& rcon, bool force,
-                 bool calc_cond) const
+Matrix::inverse (octave_idx_type& info, double& rcon,
+                 bool force, bool calc_cond) const
 {
   MatrixType mattype (*this);
   return inverse (mattype, info, rcon, force, calc_cond);
@@ -477,14 +477,14 @@ Matrix::inverse (MatrixType& mattype) const
 {
   octave_idx_type info;
   double rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 Matrix
 Matrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 {
   double rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 Matrix

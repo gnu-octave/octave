@@ -459,7 +459,7 @@ FloatMatrix::inverse () const
   octave_idx_type info;
   float rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatMatrix
@@ -467,12 +467,12 @@ FloatMatrix::inverse (octave_idx_type& info) const
 {
   float rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatMatrix
-FloatMatrix::inverse (octave_idx_type& info, float& rcon, bool force,
-                      bool calc_cond) const
+FloatMatrix::inverse (octave_idx_type& info, float& rcon,
+                      bool force, bool calc_cond) const
 {
   MatrixType mattype (*this);
   return inverse (mattype, info, rcon, force, calc_cond);
@@ -483,14 +483,14 @@ FloatMatrix::inverse (MatrixType& mattype) const
 {
   octave_idx_type info;
   float rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatMatrix
 FloatMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 {
   float rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatMatrix

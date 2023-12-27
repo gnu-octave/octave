@@ -133,7 +133,6 @@ endfunction
 %! assert (jet (15), a, eps)
 
 ## Input validation
-%!error <function called with too many inputs> jet (1, 2)
 %!error <N must be a scalar> jet ("foo")
 %!error <N must be a scalar> jet ([1, 2, 3])
 %!error <N must be a scalar> jet ({1, 2, 3})

@@ -742,7 +742,7 @@ FloatComplexMatrix::inverse () const
   octave_idx_type info;
   float rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatComplexMatrix
@@ -750,7 +750,7 @@ FloatComplexMatrix::inverse (octave_idx_type& info) const
 {
   float rcon;
   MatrixType mattype (*this);
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatComplexMatrix
@@ -766,14 +766,14 @@ FloatComplexMatrix::inverse (MatrixType& mattype) const
 {
   octave_idx_type info;
   float rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatComplexMatrix
 FloatComplexMatrix::inverse (MatrixType& mattype, octave_idx_type& info) const
 {
   float rcon;
-  return inverse (mattype, info, rcon, 0, 0);
+  return inverse (mattype, info, rcon, false, false);
 }
 
 FloatComplexMatrix

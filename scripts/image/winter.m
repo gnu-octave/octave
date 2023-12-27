@@ -87,7 +87,6 @@ endfunction
 %!assert (winter (11), [zeros(1,11); [0:0.1:1]; [1:-0.05:0.5]]', eps)
 
 ## Input validation
-%!error <function called with too many inputs> winter (1, 2)
 %!error <N must be a scalar> winter ("foo")
 %!error <N must be a scalar> winter ([1, 2, 3])
 %!error <N must be a scalar> winter ({1, 2, 3})

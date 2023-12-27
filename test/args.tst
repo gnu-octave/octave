@@ -33,6 +33,8 @@
 %!endfunction
 %!test
 %! f;
+%!error <function called with too many inputs> f (1)
+%!error <function called with too many outputs> y = f ()
 
 ## one input with two possible inputs
 %!function f (x, y)
@@ -41,6 +43,8 @@
 %!endfunction
 %!test
 %! f (1);
+%!error <function called with too many inputs> f (1, 2, 3)
+%!error <function called with too many outputs> y = f ()
 
 ## no inputs, one of multiple outputs
 %!function [x, y] = f ()
@@ -50,6 +54,8 @@
 %!endfunction
 %!test
 %! assert (f (), 2);
+%!error <function called with too many inputs> f (1)
+%!error <function called with too many outputs> [x, y, z] = f ()
 
 ## one of multiple inputs, one of multiple outputs
 %!function [x, y] = f (a, b)
@@ -59,6 +65,8 @@
 %!endfunction
 %!test
 %! assert (f (1), 1);
+%!error <function called with too many inputs> f (1, 2, 3)
+%!error <function called with too many outputs> [x, y, z] = f ()
 
 ########################################
 ## Varargin, varargout

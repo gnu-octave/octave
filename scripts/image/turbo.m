@@ -349,7 +349,6 @@ endfunction
 %!shared  # Clear shared varibles to avoid echo on unrelated test errors.
 
 ## Input validation
-%!error <function called with too many inputs> turbo (1, 2)
 %!error <N must be a scalar> turbo ("foo")
 %!error <N must be a scalar> turbo ([1, 2, 3])
 %!error <N must be a scalar> turbo ({1, 2, 3})

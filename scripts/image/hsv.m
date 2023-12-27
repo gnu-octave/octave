@@ -91,7 +91,6 @@ endfunction
 %!assert (hsv (6)(:), [1, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1]')
 
 ## Input validation
-%!error <function called with too many inputs> hsv (1, 2)
 %!error <N must be a scalar> hsv ("foo")
 %!error <N must be a scalar> hsv ([1, 2, 3])
 %!error <N must be a scalar> hsv ({1, 2, 3})

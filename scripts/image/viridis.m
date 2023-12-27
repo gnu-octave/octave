@@ -349,7 +349,6 @@ endfunction
 %!shared  # Clear shared varibles to avoid echo on unrelated test errors.
 
 ## Input validation
-%!error <function called with too many inputs> viridis (1, 2)
 %!error <N must be a scalar> viridis ("foo")
 %!error <N must be a scalar> viridis ([1, 2, 3])
 %!error <N must be a scalar> viridis ({1, 2, 3})

@@ -87,7 +87,6 @@ endfunction
 %!assert (summer (11), [[0:0.1:1]; [0.5:0.05:1]; 0.4 * ones(1,11)]', eps)
 
 ## Input validation
-%!error <function called with too many inputs> summer (1, 2)
 %!error <N must be a scalar> summer ("foo")
 %!error <N must be a scalar> summer ([1, 2, 3])
 %!error <N must be a scalar> summer ({1, 2, 3})

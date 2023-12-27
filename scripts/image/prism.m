@@ -88,7 +88,6 @@ endfunction
 %! assert (prism (3*nr), [a;a;a]);
 
 ## Input validation
-%!error <function called with too many inputs> prism (1, 2)
 %!error <N must be a scalar> prism ("foo")
 %!error <N must be a scalar> prism ([1, 2, 3])
 %!error <N must be a scalar> prism ({1, 2, 3})

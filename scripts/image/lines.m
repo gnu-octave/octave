@@ -96,7 +96,6 @@ endfunction
 %! assert (lines (3*nr), [a;a;a]);
 
 ## Input validation
-%!error <function called with too many inputs> lines (1, 2)
 %!error <N must be a scalar> lines ("foo")
 %!error <N must be a scalar> lines ([1, 2, 3])
 %!error <N must be a scalar> lines ({1, 2, 3})

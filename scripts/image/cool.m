@@ -87,7 +87,6 @@ endfunction
 %!assert (cool (11), [[0:0.1:1]; [1:-0.1:0]; ones(1,11)]', eps)
 
 ## Input validation
-%!error <function called with too many inputs> cool (1, 2)
 %!error <N must be a scalar> cool ("foo")
 %!error <N must be a scalar> cool ([1, 2, 3])
 %!error <N must be a scalar> cool ({1, 2, 3})

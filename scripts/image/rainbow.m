@@ -100,7 +100,6 @@ endfunction
 %!assert (rainbow (6)(:), [1, 1, 1, 0, 0, 2/3, 0, 0.5, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1]', 3*eps)
 
 ## Input validation
-%!error <function called with too many inputs> rainbow (1, 2)
 %!error <N must be a scalar> rainbow ("foo")
 %!error <N must be a scalar> rainbow ([1, 2, 3])
 %!error <N must be a scalar> rainbow ({1, 2, 3})

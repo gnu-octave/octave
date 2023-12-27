@@ -99,7 +99,6 @@ endfunction
 %! assert (flag (12), a, eps)
 
 ## Input validation
-%!error <function called with too many inputs> flag (1, 2)
 %!error <N must be a scalar> flag ("foo")
 %!error <N must be a scalar> flag ([1, 2, 3])
 %!error <N must be a scalar> flag ({1, 2, 3})

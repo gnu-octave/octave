@@ -139,7 +139,6 @@ endfunction
 %! assert (colorcube (12), a, eps)
 
 ## Input validation
-%!error <function called with too many inputs> colorcube (1, 2)
 %!error <N must be a scalar> colorcube ("foo")
 %!error <N must be a scalar> colorcube ([1, 2, 3])
 %!error <N must be a scalar> colorcube ({1, 2, 3})

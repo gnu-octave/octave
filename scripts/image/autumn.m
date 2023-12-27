@@ -88,7 +88,6 @@ endfunction
 %!assert (autumn (11), [ones(1,11); [0:0.1:1]; zeros(1,11)]', eps)
 
 ## Input validation
-%!error <function called with too many inputs> autumn (1, 2)
 %!error <N must be a scalar> autumn ("foo")
 %!error <N must be a scalar> autumn ([1, 2, 3])
 %!error <N must be a scalar> autumn ({1, 2, 3})

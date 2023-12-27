@@ -75,7 +75,6 @@ endfunction
 
 
 ## Input validation
-%!error <function called with too many inputs> white (1, 2)
 %!error <N must be a scalar> white ("foo")
 %!error <N must be a scalar> white ([1, 2, 3])
 %!error <N must be a scalar> white ({1, 2, 3})

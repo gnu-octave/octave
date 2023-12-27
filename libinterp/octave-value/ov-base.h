@@ -178,55 +178,61 @@ DEF_BTYP_TRAITS (btyp_char, char);
 
 #define OCTAVE_EMPTY_CPP_ARG /* empty */
 
-#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA                    \
+#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA                          \
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (OCTAVE_EMPTY_CPP_ARG)
 
-#define DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA       \
+#define DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA                     \
   DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(virtual)
 
-#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(VIRTUAL)                  \
-  public:                                                               \
+#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(VIRTUAL)                \
+  public:                                                             \
     VIRTUAL int type_id () const { return s_t_id; }                   \
     VIRTUAL std::string type_name () const { return s_t_name; }       \
     VIRTUAL std::string class_name () const { return s_c_name; }      \
     static int static_type_id () { return s_t_id; }                   \
     static std::string static_type_name () { return s_t_name; }       \
     static std::string static_class_name () { return s_c_name; }      \
-    static void register_type ();                                   \
-    static void register_type (octave::type_info&);                     \
-                                                                        \
-  private:                                                              \
-    static int s_t_id;                                                    \
-    static const std::string s_t_name;                                    \
+    static void register_type ();                                     \
+    static void register_type (octave::type_info&);                   \
+                                                                      \
+  private:                                                            \
+    static int s_t_id;                                                \
+    static const std::string s_t_name;                                \
     static const std::string s_c_name;
 
-#define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS(cls, type)           \
-  template <> void cls<type>::register_type ();                     \
-  template <> void cls<type>::register_type (octave::type_info&);       \
-  template <> int cls<type>::s_t_id;                                      \
-  template <> const std::string cls<type>::s_t_name;                      \
+#define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS(cls, type)         \
+  template <> void cls<type>::register_type ();                       \
+  template <> void cls<type>::register_type (octave::type_info&);     \
+  template <> int cls<type>::s_t_id;                                  \
+  template <> const std::string cls<type>::s_t_name;                  \
   template <> const std::string cls<type>::s_c_name;
 
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL(tspec, t, n, c)    \
-  tspec int t::s_t_id (-1);                                               \
-  tspec const std::string t::s_t_name (n);                                \
-  tspec const std::string t::s_c_name (c);                                \
-  tspec void t::register_type ()                                    \
-  {                                                                     \
-    octave::type_info& type_info = octave::__get_type_info__ ();        \
-                                                                        \
-    register_type (type_info);                                          \
-  }                                                                     \
-  tspec void t::register_type (octave::type_info& ti)                   \
-  {                                                                     \
-    octave_value v (new t ());                                          \
-    s_t_id = ti.register_type (t::s_t_name, t::s_c_name, v);                  \
+// FIXME: The 'new' operator below creates an 8-byte memory leak for every
+// registered data type (of which there are 58 built-in to Octave, plus any
+// user-defined data types).  The problem is user-defined types creating
+// a crash on exit (see bug #53156).  See also the FIXME note in function
+// register_type() in ov-typeinfo.cc.
+
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL(tspec, t, n, c)  \
+  tspec int t::s_t_id (-1);                                           \
+  tspec const std::string t::s_t_name (n);                            \
+  tspec const std::string t::s_c_name (c);                            \
+  tspec void t::register_type ()                                      \
+  {                                                                   \
+    octave::type_info& type_info = octave::__get_type_info__ ();      \
+                                                                      \
+    register_type (type_info);                                        \
+  }                                                                   \
+  tspec void t::register_type (octave::type_info& ti)                 \
+  {                                                                   \
+    octave_value v = (new t ());                                      \
+    s_t_id = ti.register_type (t::s_t_name, t::s_c_name, v);          \
   }
 
-#define DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)           \
+#define DEFINE_TEMPLATE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)         \
   DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL (template <>, t, n, c)
 
-#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)            \
+#define DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA(t, n, c)                  \
   DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA_INTERNAL ( , t, n, c)
 
 // A base value type, so that derived types only have to redefine what

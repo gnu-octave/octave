@@ -164,8 +164,8 @@ filter (MArray<T>& b, MArray<T>& a, MArray<T>& x, MArray<T>& si,
       // is common to both branches can be pulled out here without affecting
       // correctness or speed.
 
-      T *py = y.fortran_vec ();
-      T *psi = si.fortran_vec ();
+      T *py = y.rwdata ();
+      T *psi = si.rwdata ();
       const T *pb = b.data ();
       const T *px = x.data ();
       psi += si_offset;

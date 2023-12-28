@@ -574,7 +574,7 @@ sub2ind (const dim_vector& dv, const Array<octave::idx_vector>& idxa)
           // Initialized inside the loop so that each call to
           // idx_vector::loop operates from the beginning of IDX_VEC.
 
-          octave_idx_type *idx_vec = idx.fortran_vec ();
+          octave_idx_type *idx_vec = idx.rwdata ();
 
           if (i < len - 1)
             {

@@ -505,7 +505,7 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
         return false;
 
       ComplexNDArray m(dv);
-      Complex *im = m.fortran_vec ();
+      Complex *im = m.rwdata ();
       read_doubles (is, reinterpret_cast<double *> (im),
                     static_cast<save_type> (tmp), 2 * dv.numel (), swap, fmt);
 
@@ -525,7 +525,7 @@ octave_complex_matrix::load_binary (std::istream& is, bool swap,
       if (! is.read (reinterpret_cast<char *> (&tmp), 1))
         return false;
       ComplexMatrix m (nr, nc);
-      Complex *im = m.fortran_vec ();
+      Complex *im = m.rwdata ();
       octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_doubles (is, reinterpret_cast<double *> (im),
                     static_cast<save_type> (tmp), 2*len, swap, fmt);
@@ -703,7 +703,7 @@ octave_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   ComplexNDArray m (dv);
-  Complex *reim = m.fortran_vec ();
+  Complex *reim = m.rwdata ();
   if (H5Dread (data_hid, complex_type, octave_H5S_ALL, octave_H5S_ALL,
                octave_H5P_DEFAULT, reim)
       >= 0)

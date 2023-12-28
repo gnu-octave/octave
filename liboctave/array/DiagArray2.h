@@ -166,7 +166,8 @@ public:
 
   const T * data () const { return Array<T>::data (); }
 
-  T * fortran_vec () { return Array<T>::fortran_vec (); }
+  T * rwdata () { return Array<T>::rwdata (); }
+  inline T * fortran_vec () { return rwdata (); }
 
   void print_info (std::ostream& os, const std::string& prefix) const
   { Array<T>::print_info (os, prefix); }

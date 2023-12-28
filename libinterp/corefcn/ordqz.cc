@@ -345,18 +345,18 @@ Note: The keywords are compatible with the ones from @code{qr}.
 
       F77_XFCN (ztgsen, ZTGSEN,
                 (ijob, wantq, wantz,
-                 select.fortran_vec (), nn,
-                 F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (alpha.fortran_vec ()),
-                 F77_DBLE_CMPLX_ARG (beta.fortran_vec ()),
-                 F77_DBLE_CMPLX_ARG (cqq.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (czz.fortran_vec ()), nn,
+                 select.rwdata (), nn,
+                 F77_DBLE_CMPLX_ARG (caa.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (cbb.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (alpha.rwdata ()),
+                 F77_DBLE_CMPLX_ARG (beta.rwdata ()),
+                 F77_DBLE_CMPLX_ARG (cqq.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (czz.rwdata ()), nn,
                  mm,
                  pl, pr,
                  nullptr,
-                 F77_DBLE_CMPLX_ARG (work3.fortran_vec ()), lrwork3,
-                 iwork.fortran_vec (), liwork,
+                 F77_DBLE_CMPLX_ARG (work3.rwdata ()), lrwork3,
+                 iwork.rwdata (), liwork,
                  info));
       if (info != 0)
         error_with_id ("Octave:ordqz:ztgsen_failed",
@@ -395,8 +395,8 @@ Note: The keywords are compatible with the ones from @code{qr}.
               F77_INT ihi = 2;
               F77_INT lwork = 4;
               F77_INT info = 0;
-              double *aa_vec = aa.fortran_vec ();
-              double *bb_vec = bb.fortran_vec ();
+              double *aa_vec = aa.rwdata ();
+              double *bb_vec = bb.rwdata ();
 
               F77_XFCN (dhgeqz, DHGEQZ,
                         (F77_CONST_CHAR_ARG2 (&qz_job, 1),
@@ -466,19 +466,19 @@ Note: The keywords are compatible with the ones from @code{qr}.
 
       F77_XFCN (dtgsen, DTGSEN,
                 (ijob, wantq, wantz,
-                 select.fortran_vec (), nn,
-                 aa.fortran_vec (), nn,
-                 bb.fortran_vec (), nn,
-                 alphar.fortran_vec (),
-                 alphai.fortran_vec (),
-                 beta.fortran_vec (),
-                 qq.fortran_vec (), nn,
-                 zz.fortran_vec (), nn,
+                 select.rwdata (), nn,
+                 aa.rwdata (), nn,
+                 bb.rwdata (), nn,
+                 alphar.rwdata (),
+                 alphai.rwdata (),
+                 beta.rwdata (),
+                 qq.rwdata (), nn,
+                 zz.rwdata (), nn,
                  mm,
                  pl, pr,
                  nullptr,
-                 rwork3.fortran_vec (), lrwork3,
-                 iwork.fortran_vec (), liwork,
+                 rwork3.rwdata (), lrwork3,
+                 iwork.rwdata (), liwork,
                  info));
       if (info != 0)
         error("ordqz: failed to reorder eigenvalues");

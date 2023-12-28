@@ -1222,7 +1222,7 @@ opengl_renderer::get_pixels (int width, int height)
   uint8NDArray pix(dim_vector (3, width, height), 0);
 
   m_glfcns.glReadPixels(0, 0, width, height, GL_RGB, GL_UNSIGNED_BYTE,
-                        pix.fortran_vec ());
+                        pix.rwdata ());
 
   // Permute and flip data
   Array<octave_idx_type> perm (dim_vector (3, 1));
@@ -3461,7 +3461,7 @@ opengl_renderer::draw_patch (const patch::properties& props)
                       vertex_data::vertex_data_rep *vv
                         = vdata[i+j*fr].get_rep ();
 
-                      tess.add_vertex (vv->m_coords.fortran_vec (), vv);
+                      tess.add_vertex (vv->m_coords.rwdata (), vv);
                     }
 
                   if (count_f(i) > 0)
@@ -3501,7 +3501,7 @@ opengl_renderer::draw_patch (const patch::properties& props)
                             }
                         }
 
-                      tess.add_vertex (vv->m_coords.fortran_vec (), vv);
+                      tess.add_vertex (vv->m_coords.rwdata (), vv);
                     }
 
                   tess.end_contour ();
@@ -3631,7 +3631,7 @@ opengl_renderer::draw_patch (const patch::properties& props)
                     {
                       vertex_data::vertex_data_rep *vv
                         = vdata[i+j*fr].get_rep ();
-                      tess.add_vertex (vv->m_coords.fortran_vec (), vv);
+                      tess.add_vertex (vv->m_coords.rwdata (), vv);
                     }
 
                   tess.end_contour ();

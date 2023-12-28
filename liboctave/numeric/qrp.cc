@@ -74,8 +74,8 @@ qrp<Matrix>::init (const Matrix& a, type qr_type)
     {
       // workspace query.
       double rlwork;
-      F77_XFCN (dgeqp3, DGEQP3, (m, n, afact.fortran_vec (),
-                                 m, jpvt.fortran_vec (), tau,
+      F77_XFCN (dgeqp3, DGEQP3, (m, n, afact.rwdata (),
+                                 m, jpvt.rwdata (), tau,
                                  &rlwork, -1, info));
 
       // allocate buffer and do the job.
@@ -83,8 +83,8 @@ qrp<Matrix>::init (const Matrix& a, type qr_type)
       lwork = std::max (lwork, static_cast<F77_INT> (1));
       OCTAVE_LOCAL_BUFFER (double, work, lwork);
 
-      F77_XFCN (dgeqp3, DGEQP3, (m, n, afact.fortran_vec (),
-                                 m, jpvt.fortran_vec (), tau,
+      F77_XFCN (dgeqp3, DGEQP3, (m, n, afact.rwdata (),
+                                 m, jpvt.rwdata (), tau,
                                  work, lwork, info));
     }
   else
@@ -145,8 +145,8 @@ qrp<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
     {
       // workspace query.
       float rlwork;
-      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.fortran_vec (),
-                                 m, jpvt.fortran_vec (), tau,
+      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.rwdata (),
+                                 m, jpvt.rwdata (), tau,
                                  &rlwork, -1, info));
 
       // allocate buffer and do the job.
@@ -154,8 +154,8 @@ qrp<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
       lwork = std::max (lwork, static_cast<F77_INT> (1));
       OCTAVE_LOCAL_BUFFER (float, work, lwork);
 
-      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.fortran_vec (),
-                                 m, jpvt.fortran_vec (), tau,
+      F77_XFCN (sgeqp3, SGEQP3, (m, n, afact.rwdata (),
+                                 m, jpvt.rwdata (), tau,
                                  work, lwork, info));
     }
   else
@@ -219,8 +219,8 @@ qrp<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
       // workspace query.
       Complex clwork;
       F77_XFCN (zgeqp3, ZGEQP3, (m, n,
-                                 F77_DBLE_CMPLX_ARG (afact.fortran_vec ()),
-                                 m, jpvt.fortran_vec (),
+                                 F77_DBLE_CMPLX_ARG (afact.rwdata ()),
+                                 m, jpvt.rwdata (),
                                  F77_DBLE_CMPLX_ARG (tau),
                                  F77_DBLE_CMPLX_ARG (&clwork),
                                  -1, rwork, info));
@@ -231,8 +231,8 @@ qrp<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
       OCTAVE_LOCAL_BUFFER (Complex, work, lwork);
 
       F77_XFCN (zgeqp3, ZGEQP3, (m, n,
-                                 F77_DBLE_CMPLX_ARG (afact.fortran_vec ()),
-                                 m, jpvt.fortran_vec (),
+                                 F77_DBLE_CMPLX_ARG (afact.rwdata ()),
+                                 m, jpvt.rwdata (),
                                  F77_DBLE_CMPLX_ARG (tau),
                                  F77_DBLE_CMPLX_ARG (work),
                                  lwork, rwork, info));
@@ -298,8 +298,8 @@ qrp<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
       // workspace query.
       FloatComplex clwork;
       F77_XFCN (cgeqp3, CGEQP3, (m, n,
-                                 F77_CMPLX_ARG (afact.fortran_vec ()),
-                                 m, jpvt.fortran_vec (),
+                                 F77_CMPLX_ARG (afact.rwdata ()),
+                                 m, jpvt.rwdata (),
                                  F77_CMPLX_ARG (tau),
                                  F77_CMPLX_ARG (&clwork),
                                  -1, rwork, info));
@@ -310,8 +310,8 @@ qrp<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
       OCTAVE_LOCAL_BUFFER (FloatComplex, work, lwork);
 
       F77_XFCN (cgeqp3, CGEQP3, (m, n,
-                                 F77_CMPLX_ARG (afact.fortran_vec ()),
-                                 m, jpvt.fortran_vec (),
+                                 F77_CMPLX_ARG (afact.rwdata ()),
+                                 m, jpvt.rwdata (),
                                  F77_CMPLX_ARG (tau),
                                  F77_CMPLX_ARG (work),
                                  lwork, rwork, info));

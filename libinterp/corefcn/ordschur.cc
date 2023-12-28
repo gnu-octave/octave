@@ -130,10 +130,10 @@ is in the upper left corner, by doing:
 
           F77_XFCN (ztrsen, ztrsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
-                     sel.data (), n, F77_DBLE_CMPLX_ARG (S.fortran_vec ()), n,
-                     F77_DBLE_CMPLX_ARG (U.fortran_vec ()), n,
-                     F77_DBLE_CMPLX_ARG (w.fortran_vec ()), m, cond1, cond2,
-                     F77_DBLE_CMPLX_ARG (work.fortran_vec ()), n,
+                     sel.data (), n, F77_DBLE_CMPLX_ARG (S.rwdata ()), n,
+                     F77_DBLE_CMPLX_ARG (U.rwdata ()), n,
+                     F77_DBLE_CMPLX_ARG (w.rwdata ()), m, cond1, cond2,
+                     F77_DBLE_CMPLX_ARG (work.rwdata ()), n,
                      info));
 
           PREPARE_OUTPUT()
@@ -146,9 +146,9 @@ is in the upper left corner, by doing:
 
           F77_XFCN (dtrsen, dtrsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
-                     sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
-                     w.fortran_vec (), wi.fortran_vec (), m, cond1, cond2,
-                     work.fortran_vec (), n, iwork.fortran_vec (), n, info));
+                     sel.data (), n, S.rwdata (), n, U.rwdata (), n,
+                     w.rwdata (), wi.rwdata (), m, cond1, cond2,
+                     work.rwdata (), n, iwork.rwdata (), n, info));
 
           PREPARE_OUTPUT ()
         }
@@ -161,10 +161,10 @@ is in the upper left corner, by doing:
 
           F77_XFCN (ctrsen, ctrsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
-                     sel.data (), n, F77_CMPLX_ARG (S.fortran_vec ()), n,
-                     F77_CMPLX_ARG (U.fortran_vec ()), n,
-                     F77_CMPLX_ARG (w.fortran_vec ()), m, cond1, cond2,
-                     F77_CMPLX_ARG (work.fortran_vec ()), n,
+                     sel.data (), n, F77_CMPLX_ARG (S.rwdata ()), n,
+                     F77_CMPLX_ARG (U.rwdata ()), n,
+                     F77_CMPLX_ARG (w.rwdata ()), m, cond1, cond2,
+                     F77_CMPLX_ARG (work.rwdata ()), n,
                      info));
 
           PREPARE_OUTPUT ()
@@ -177,9 +177,9 @@ is in the upper left corner, by doing:
 
           F77_XFCN (strsen, strsen,
                     (F77_CONST_CHAR_ARG ("N"), F77_CONST_CHAR_ARG ("V"),
-                     sel.data (), n, S.fortran_vec (), n, U.fortran_vec (), n,
-                     w.fortran_vec (), wi.fortran_vec (), m, cond1, cond2,
-                     work.fortran_vec (), n, iwork.fortran_vec (), n, info));
+                     sel.data (), n, S.rwdata (), n, U.rwdata (), n,
+                     w.rwdata (), wi.rwdata (), m, cond1, cond2,
+                     work.rwdata (), n, iwork.rwdata (), n, info));
 
           PREPARE_OUTPUT ()
         }

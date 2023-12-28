@@ -296,7 +296,7 @@ octave_diag_matrix::load_binary (std::istream& is, bool swap,
     }
 
   DiagMatrix m (r, c);
-  double *re = m.fortran_vec ();
+  double *re = m.rwdata ();
   octave_idx_type len = m.length ();
   read_doubles (is, re, static_cast<save_type> (tmp), len, swap, fmt);
 

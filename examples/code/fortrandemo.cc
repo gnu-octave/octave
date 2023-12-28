@@ -15,7 +15,7 @@ DEFUN_DLD (fortrandemo, args, , "Fortran Demo")
 
   NDArray a = args(0).array_value ();
 
-  double *av = a.fortran_vec ();
+  double *av = a.rwdata ();
   octave_idx_type na = a.numel ();
 
   OCTAVE_LOCAL_BUFFER (char, ctmp, 128);

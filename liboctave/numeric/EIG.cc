@@ -53,21 +53,21 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
   F77_INT info = 0;
 
   Matrix atmp = a;
-  double *tmp_data = atmp.fortran_vec ();
+  double *tmp_data = atmp.rwdata ();
 
   Array<double> wr (dim_vector (n, 1));
-  double *pwr = wr.fortran_vec ();
+  double *pwr = wr.rwdata ();
 
   Array<double> wi (dim_vector (n, 1));
-  double *pwi = wi.fortran_vec ();
+  double *pwi = wi.rwdata ();
 
   F77_INT tnvr = (calc_rev ? n : 0);
   Matrix vr (tnvr, tnvr);
-  double *pvr = vr.fortran_vec ();
+  double *pvr = vr.rwdata ();
 
   F77_INT tnvl = (calc_lev ? n : 0);
   Matrix vl (tnvl, tnvl);
-  double *pvl = vl.fortran_vec ();
+  double *pvl = vl.rwdata ();
 
   F77_INT lwork = -1;
   double dummy_work;
@@ -76,15 +76,15 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
   F77_INT ihi;
 
   Array<double> scale (dim_vector (n, 1));
-  double *pscale = scale.fortran_vec ();
+  double *pscale = scale.rwdata ();
 
   double abnrm;
 
   Array<double> rconde (dim_vector (n, 1));
-  double *prconde = rconde.fortran_vec ();
+  double *prconde = rconde.rwdata ();
 
   Array<double> rcondv (dim_vector (n, 1));
-  double *prcondv = rcondv.fortran_vec ();
+  double *prcondv = rcondv.rwdata ();
 
   F77_INT dummy_iwork;
 
@@ -106,7 +106,7 @@ EIG::init (const Matrix& a, bool calc_rev, bool calc_lev, bool balance)
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.fortran_vec ();
+  double *pwork = work.rwdata ();
 
   F77_XFCN (dgeevx, DGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -186,10 +186,10 @@ EIG::symmetric_init (const Matrix& a, bool calc_rev, bool calc_lev)
   F77_INT info = 0;
 
   Matrix atmp = a;
-  double *tmp_data = atmp.fortran_vec ();
+  double *tmp_data = atmp.rwdata ();
 
   ColumnVector wr (n);
-  double *pwr = wr.fortran_vec ();
+  double *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   double dummy_work;
@@ -205,7 +205,7 @@ EIG::symmetric_init (const Matrix& a, bool calc_rev, bool calc_lev)
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.fortran_vec ();
+  double *pwork = work.rwdata ();
 
   F77_XFCN (dsyev, DSYEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -245,39 +245,39 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
   F77_INT info = 0;
 
   ComplexMatrix atmp = a;
-  Complex *tmp_data = atmp.fortran_vec ();
+  Complex *tmp_data = atmp.rwdata ();
 
   ComplexColumnVector wr (n);
-  Complex *pw = wr.fortran_vec ();
+  Complex *pw = wr.rwdata ();
 
   F77_INT nvr = (calc_rev ? n : 0);
   ComplexMatrix vrtmp (nvr, nvr);
-  Complex *pvr = vrtmp.fortran_vec ();
+  Complex *pvr = vrtmp.rwdata ();
 
   F77_INT nvl = (calc_lev ? n : 0);
   ComplexMatrix vltmp (nvl, nvl);
-  Complex *pvl = vltmp.fortran_vec ();
+  Complex *pvl = vltmp.rwdata ();
 
   F77_INT lwork = -1;
   Complex dummy_work;
 
   F77_INT lrwork = 2*n;
   Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.fortran_vec ();
+  double *prwork = rwork.rwdata ();
 
   F77_INT ilo;
   F77_INT ihi;
 
   Array<double> scale (dim_vector (n, 1));
-  double *pscale = scale.fortran_vec ();
+  double *pscale = scale.rwdata ();
 
   double abnrm;
 
   Array<double> rconde (dim_vector (n, 1));
-  double *prconde = rconde.fortran_vec ();
+  double *prconde = rconde.rwdata ();
 
   Array<double> rcondv (dim_vector (n, 1));
-  double *prcondv = rcondv.fortran_vec ();
+  double *prcondv = rcondv.rwdata ();
 
   F77_XFCN (zgeevx, ZGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -299,7 +299,7 @@ EIG::init (const ComplexMatrix& a, bool calc_rev, bool calc_lev, bool balance)
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.fortran_vec ();
+  Complex *pwork = work.rwdata ();
 
   F77_XFCN (zgeevx, ZGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -340,17 +340,17 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_rev, bool calc_lev)
   F77_INT info = 0;
 
   ComplexMatrix atmp = a;
-  Complex *tmp_data = atmp.fortran_vec ();
+  Complex *tmp_data = atmp.rwdata ();
 
   ColumnVector wr (n);
-  double *pwr = wr.fortran_vec ();
+  double *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   Complex dummy_work;
 
   F77_INT lrwork = 3*n;
   Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.fortran_vec ();
+  double *prwork = rwork.rwdata ();
 
   F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -365,7 +365,7 @@ EIG::hermitian_init (const ComplexMatrix& a, bool calc_rev, bool calc_lev)
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.fortran_vec ();
+  Complex *pwork = work.rwdata ();
 
   F77_XFCN (zheev, ZHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -410,7 +410,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
   F77_INT info = 0;
 
   Matrix tmp = b;
-  double *tmp_data = tmp.fortran_vec ();
+  double *tmp_data = tmp.rwdata ();
 
   if (! force_qz)
     {
@@ -424,27 +424,27 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
     }
 
   Matrix atmp = a;
-  double *atmp_data = atmp.fortran_vec ();
+  double *atmp_data = atmp.rwdata ();
 
   Matrix btmp = b;
-  double *btmp_data = btmp.fortran_vec ();
+  double *btmp_data = btmp.rwdata ();
 
   Array<double> ar (dim_vector (n, 1));
-  double *par = ar.fortran_vec ();
+  double *par = ar.rwdata ();
 
   Array<double> ai (dim_vector (n, 1));
-  double *pai = ai.fortran_vec ();
+  double *pai = ai.rwdata ();
 
   Array<double> beta (dim_vector (n, 1));
-  double *pbeta = beta.fortran_vec ();
+  double *pbeta = beta.rwdata ();
 
   F77_INT tnvr = (calc_rev ? n : 0);
   Matrix vr (tnvr, tnvr);
-  double *pvr = vr.fortran_vec ();
+  double *pvr = vr.rwdata ();
 
   F77_INT tnvl = (calc_lev ? n : 0);
   Matrix vl (tnvl, tnvl);
-  double *pvl = vl.fortran_vec ();
+  double *pvl = vl.rwdata ();
 
   F77_INT lwork = -1;
   double dummy_work;
@@ -463,7 +463,7 @@ EIG::init (const Matrix& a, const Matrix& b, bool calc_rev, bool calc_lev,
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.fortran_vec ();
+  double *pwork = work.rwdata ();
 
   F77_XFCN (dggev, DGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -547,13 +547,13 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_rev,
   F77_INT info = 0;
 
   Matrix atmp = a;
-  double *atmp_data = atmp.fortran_vec ();
+  double *atmp_data = atmp.rwdata ();
 
   Matrix btmp = b;
-  double *btmp_data = btmp.fortran_vec ();
+  double *btmp_data = btmp.rwdata ();
 
   ColumnVector wr (n);
-  double *pwr = wr.fortran_vec ();
+  double *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   double dummy_work;
@@ -571,7 +571,7 @@ EIG::symmetric_init (const Matrix& a, const Matrix& b, bool calc_rev,
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.fortran_vec ();
+  double *pwork = work.rwdata ();
 
   F77_XFCN (dsygv, DSYGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -617,7 +617,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
   F77_INT info = 0;
 
   ComplexMatrix tmp = b;
-  Complex *tmp_data = tmp.fortran_vec ();
+  Complex *tmp_data = tmp.rwdata ();
 
   if (! force_qz)
     {
@@ -631,31 +631,31 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
     }
 
   ComplexMatrix atmp = a;
-  Complex *atmp_data = atmp.fortran_vec ();
+  Complex *atmp_data = atmp.rwdata ();
 
   ComplexMatrix btmp = b;
-  Complex *btmp_data = btmp.fortran_vec ();
+  Complex *btmp_data = btmp.rwdata ();
 
   ComplexColumnVector alpha (n);
-  Complex *palpha = alpha.fortran_vec ();
+  Complex *palpha = alpha.rwdata ();
 
   ComplexColumnVector beta (n);
-  Complex *pbeta = beta.fortran_vec ();
+  Complex *pbeta = beta.rwdata ();
 
   F77_INT nvr = (calc_rev ? n : 0);
   ComplexMatrix vrtmp (nvr, nvr);
-  Complex *pvr = vrtmp.fortran_vec ();
+  Complex *pvr = vrtmp.rwdata ();
 
   F77_INT nvl = (calc_lev ? n : 0);
   ComplexMatrix vltmp (nvl, nvl);
-  Complex *pvl = vltmp.fortran_vec ();
+  Complex *pvl = vltmp.rwdata ();
 
   F77_INT lwork = -1;
   Complex dummy_work;
 
   F77_INT lrwork = 8*n;
   Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.fortran_vec ();
+  double *prwork = rwork.rwdata ();
 
   F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -675,7 +675,7 @@ EIG::init (const ComplexMatrix& a, const ComplexMatrix& b, bool calc_rev,
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.fortran_vec ();
+  Complex *pwork = work.rwdata ();
 
   F77_XFCN (zggev, ZGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -725,20 +725,20 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
   F77_INT info = 0;
 
   ComplexMatrix atmp = a;
-  Complex *atmp_data = atmp.fortran_vec ();
+  Complex *atmp_data = atmp.rwdata ();
 
   ComplexMatrix btmp = b;
-  Complex *btmp_data = btmp.fortran_vec ();
+  Complex *btmp_data = btmp.rwdata ();
 
   ColumnVector wr (n);
-  double *pwr = wr.fortran_vec ();
+  double *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   Complex dummy_work;
 
   F77_INT lrwork = 3*n;
   Array<double> rwork (dim_vector (lrwork, 1));
-  double *prwork = rwork.fortran_vec ();
+  double *prwork = rwork.rwdata ();
 
   F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -754,7 +754,7 @@ EIG::hermitian_init (const ComplexMatrix& a, const ComplexMatrix& b,
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.fortran_vec ();
+  Complex *pwork = work.rwdata ();
 
   F77_XFCN (zhegv, ZHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),

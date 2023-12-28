@@ -74,7 +74,7 @@ MArray<T>::idx_add (const octave::idx_vector& idx, T val)
   octave_quit ();
 
   octave_idx_type len = idx.length (n);
-  idx.loop (len, _idxadds_helper<T> (this->fortran_vec (), val));
+  idx.loop (len, _idxadds_helper<T> (this->rwdata (), val));
 }
 
 template <typename T>
@@ -92,7 +92,7 @@ MArray<T>::idx_add (const octave::idx_vector& idx, const MArray<T>& vals)
   octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.numel ());
-  idx.loop (len, _idxadda_helper<T> (this->fortran_vec (), vals.data ()));
+  idx.loop (len, _idxadda_helper<T> (this->rwdata (), vals.data ()));
 }
 
 template <typename T, T op (typename ref_param<T>::type,
@@ -125,7 +125,7 @@ MArray<T>::idx_min (const octave::idx_vector& idx, const MArray<T>& vals)
   octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.numel ());
-  idx.loop (len, _idxbinop_helper<T, octave::math::min> (this->fortran_vec (),
+  idx.loop (len, _idxbinop_helper<T, octave::math::min> (this->rwdata (),
                                                          vals.data ()));
 }
 
@@ -144,7 +144,7 @@ MArray<T>::idx_max (const octave::idx_vector& idx, const MArray<T>& vals)
   octave_quit ();
 
   octave_idx_type len = std::min (idx.length (n), vals.numel ());
-  idx.loop (len, _idxbinop_helper<T, octave::math::max> (this->fortran_vec (),
+  idx.loop (len, _idxbinop_helper<T, octave::math::max> (this->rwdata (),
                                                          vals.data ()));
 }
 
@@ -180,7 +180,7 @@ MArray<T>::idx_add_nd (const octave::idx_vector& idx,
   if (ddv != sdv)
     (*current_liboctave_error_handler) ("accumdim: dimension mismatch");
 
-  T *dst = Array<T>::fortran_vec ();
+  T *dst = Array<T>::rwdata ();
   const T *src = vals.data ();
   octave_idx_type len = idx.length (ns);
 

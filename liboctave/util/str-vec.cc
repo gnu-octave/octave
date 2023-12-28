@@ -78,7 +78,7 @@ string_vector::sort (bool make_uniq)
 {
   // Don't use Array<std::string>::sort () to allow sorting in place.
   octave_sort<std::string> lsort;
-  lsort.sort (m_data.fortran_vec (), numel ());
+  lsort.sort (m_data.rwdata (), numel ());
 
   if (make_uniq)
     uniq ();

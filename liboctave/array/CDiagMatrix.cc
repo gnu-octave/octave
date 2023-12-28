@@ -345,7 +345,7 @@ ComplexDiagMatrix::inverse (octave_idx_type& info) const
   else if (z_count > 0)
     {
       info = -1;
-      element_type *data = retval.fortran_vec ();
+      element_type *data = retval.rwdata ();
       std::fill (data, data + len, octave::numeric_limits<double>::Inf ());
     }
 
@@ -396,7 +396,7 @@ ComplexDiagMatrix::operator += (const DiagMatrix& a)
   if (r == 0 || c == 0)
     return *this;
 
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+  Complex *d = rwdata (); // Ensures only one reference to my privates!
 
   mx_inline_add2 (length (), d, a.data ());
   return *this;

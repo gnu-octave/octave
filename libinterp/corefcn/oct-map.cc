@@ -151,7 +151,7 @@ octave_fields::equal_up_to_order (const octave_fields& other,
   if (perm.numel () != n)
     perm.clear (1, n);
 
-  return equal_up_to_order (other, perm.fortran_vec ());
+  return equal_up_to_order (other, perm.rwdata ());
 }
 
 string_vector

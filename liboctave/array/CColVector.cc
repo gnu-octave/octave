@@ -262,7 +262,7 @@ ComplexColumnVector::operator += (const ColumnVector& a)
   if (len == 0)
     return *this;
 
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+  Complex *d = rwdata (); // Ensures only one reference to my privates!
 
   mx_inline_add2 (len, d, a.data ());
   return *this;
@@ -281,7 +281,7 @@ ComplexColumnVector::operator -= (const ColumnVector& a)
   if (len == 0)
     return *this;
 
-  Complex *d = fortran_vec (); // Ensures only one reference to my privates!
+  Complex *d = rwdata (); // Ensures only one reference to my privates!
 
   mx_inline_sub2 (len, d, a.data ());
   return *this;
@@ -317,7 +317,7 @@ operator * (const ComplexMatrix& m, const ComplexColumnVector& a)
         retval.fill (0.0);
       else
         {
-          Complex *y = retval.fortran_vec ();
+          Complex *y = retval.rwdata ();
 
           F77_XFCN (zgemv, ZGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                    nr, nc, 1.0,

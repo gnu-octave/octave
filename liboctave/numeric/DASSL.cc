@@ -272,16 +272,16 @@ DASSL::do_integrate (double tout)
       DASSL_options::m_reset = false;
     }
 
-  double *px = m_x.fortran_vec ();
-  double *pxdot = m_xdot.fortran_vec ();
+  double *px = m_x.rwdata ();
+  double *pxdot = m_xdot.rwdata ();
 
-  F77_INT *pinfo = m_info.fortran_vec ();
+  F77_INT *pinfo = m_info.rwdata ();
 
-  double *prel_tol = m_rel_tol.fortran_vec ();
-  double *pabs_tol = m_abs_tol.fortran_vec ();
+  double *prel_tol = m_rel_tol.rwdata ();
+  double *pabs_tol = m_abs_tol.rwdata ();
 
-  double *prwork = m_rwork.fortran_vec ();
-  F77_INT *piwork = m_iwork.fortran_vec ();
+  double *prwork = m_rwork.rwdata ();
+  F77_INT *piwork = m_iwork.rwdata ();
 
   double *dummy = nullptr;
   F77_INT *idummy = nullptr;

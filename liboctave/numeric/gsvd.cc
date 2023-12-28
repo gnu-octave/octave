@@ -253,7 +253,7 @@ gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq, F77_INT m,
              F77_CONST_CHAR_ARG2 (&jobv, 1),
              F77_CONST_CHAR_ARG2 (&jobq, 1),
              m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              u, nrow_u, v, nrow_v, q, nrow_q,
              work, lwork, iwork, info
              F77_CHAR_ARG_LEN (1)
@@ -267,7 +267,7 @@ gsvd<Matrix>::ggsvd (char& jobu, char& jobv, char& jobq, F77_INT m,
              F77_CONST_CHAR_ARG2 (&jobv, 1),
              F77_CONST_CHAR_ARG2 (&jobq, 1),
              m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              u, nrow_u, v, nrow_v, q, nrow_q,
              work, iwork, info
              F77_CHAR_ARG_LEN (1)
@@ -297,7 +297,7 @@ gsvd<FloatMatrix>::ggsvd (char& jobu, char& jobv, char& jobq, F77_INT m,
              F77_CONST_CHAR_ARG2 (&jobv, 1),
              F77_CONST_CHAR_ARG2 (&jobq, 1),
              m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              u, nrow_u, v, nrow_v, q, nrow_q,
              work, lwork, iwork, info
              F77_CHAR_ARG_LEN (1)
@@ -311,7 +311,7 @@ gsvd<FloatMatrix>::ggsvd (char& jobu, char& jobv, char& jobq, F77_INT m,
              F77_CONST_CHAR_ARG2 (&jobv, 1),
              F77_CONST_CHAR_ARG2 (&jobq, 1),
              m, n, p, k, l, tmp_dataA, m1, tmp_dataB, p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              u, nrow_u, v, nrow_v, q, nrow_q,
              work, iwork, info
              F77_CHAR_ARG_LEN (1)
@@ -345,7 +345,7 @@ gsvd<ComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
              m, n, p, k, l,
              F77_DBLE_CMPLX_ARG (tmp_dataA), m1,
              F77_DBLE_CMPLX_ARG (tmp_dataB), p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              F77_DBLE_CMPLX_ARG (u), nrow_u,
              F77_DBLE_CMPLX_ARG (v), nrow_v,
              F77_DBLE_CMPLX_ARG (q), nrow_q,
@@ -364,7 +364,7 @@ gsvd<ComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
              m, n, p, k, l,
              F77_DBLE_CMPLX_ARG (tmp_dataA), m1,
              F77_DBLE_CMPLX_ARG (tmp_dataB), p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              F77_DBLE_CMPLX_ARG (u), nrow_u,
              F77_DBLE_CMPLX_ARG (v), nrow_v,
              F77_DBLE_CMPLX_ARG (q), nrow_q,
@@ -404,7 +404,7 @@ gsvd<FloatComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
              m, n, p, k, l,
              F77_CMPLX_ARG (tmp_dataA), m1,
              F77_CMPLX_ARG (tmp_dataB), p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              F77_CMPLX_ARG (u), nrow_u,
              F77_CMPLX_ARG (v), nrow_v,
              F77_CMPLX_ARG (q), nrow_q,
@@ -423,7 +423,7 @@ gsvd<FloatComplexMatrix>::ggsvd (char& jobu, char& jobv, char& jobq,
              m, n, p, k, l,
              F77_CMPLX_ARG (tmp_dataA), m1,
              F77_CMPLX_ARG (tmp_dataB), p1,
-             alpha.fortran_vec (), beta.fortran_vec (),
+             alpha.rwdata (), beta.rwdata (),
              F77_CMPLX_ARG (u), nrow_u,
              F77_CMPLX_ARG (v), nrow_v,
              F77_CMPLX_ARG (q), nrow_q,
@@ -482,10 +482,10 @@ gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
   F77_INT p = to_f77_int (b.rows ());
 
   T atmp = a;
-  P *tmp_dataA = atmp.fortran_vec ();
+  P *tmp_dataA = atmp.rwdata ();
 
   T btmp = b;
-  P *tmp_dataB = btmp.fortran_vec ();
+  P *tmp_dataB = btmp.rwdata ();
 
   char jobu = 'U';
   char jobv = 'V';
@@ -523,17 +523,17 @@ gsvd<T>::gsvd (const T& a, const T& b, gsvd::Type gsvd_type)
   if (jobu != 'N')
     m_left_smA.resize (nrow_u, m);
 
-  P *u = m_left_smA.fortran_vec ();
+  P *u = m_left_smA.rwdata ();
 
   if (jobv != 'N')
     m_left_smB.resize (nrow_v, p);
 
-  P *v = m_left_smB.fortran_vec ();
+  P *v = m_left_smB.rwdata ();
 
   if (jobq != 'N')
     m_right_sm.resize (nrow_q, n);
 
-  P *q = m_right_sm.fortran_vec ();
+  P *q = m_right_sm.rwdata ();
 
   real_matrix alpha (n, 1);
   real_matrix beta (n, 1);

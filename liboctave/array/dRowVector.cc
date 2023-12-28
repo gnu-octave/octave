@@ -190,7 +190,7 @@ operator * (const RowVector& v, const Matrix& a)
       F77_INT ld = a_nr;
 
       retval.resize (a_nc);
-      double *y = retval.fortran_vec ();
+      double *y = retval.rwdata ();
 
       F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
                                a_nr, a_nc, 1.0, a.data (),

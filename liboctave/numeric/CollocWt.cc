@@ -426,23 +426,23 @@ CollocWt::init ()
     return;
 
   Array<double> dif1 (dim_vector (nt, 1));
-  double *pdif1 = dif1.fortran_vec ();
+  double *pdif1 = dif1.rwdata ();
 
   Array<double> dif2 (dim_vector (nt, 1));
-  double *pdif2 = dif2.fortran_vec ();
+  double *pdif2 = dif2.rwdata ();
 
   Array<double> dif3 (dim_vector (nt, 1));
-  double *pdif3 = dif3.fortran_vec ();
+  double *pdif3 = dif3.rwdata ();
 
   Array<double> vect (dim_vector (nt, 1));
-  double *pvect = vect.fortran_vec ();
+  double *pvect = vect.rwdata ();
 
   m_r.resize (nt, 1);
   m_q.resize (nt, 1);
   m_A.resize (nt, nt);
   m_B.resize (nt, nt);
 
-  double *pr = m_r.fortran_vec ();
+  double *pr = m_r.rwdata ();
 
   // Compute roots.
 
@@ -479,7 +479,7 @@ CollocWt::init ()
   // Gaussian quadrature weights.
 
   id = 3;
-  double *pq = m_q.fortran_vec ();
+  double *pq = m_q.rwdata ();
   dfopr (m_n, m_inc_left, m_inc_right, id, id, pdif1, pdif2, pdif3, pr, pq);
 
   m_initialized = 1;

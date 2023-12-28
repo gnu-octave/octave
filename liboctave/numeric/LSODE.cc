@@ -301,12 +301,12 @@ LSODE::do_integrate (double tout)
       LSODE_options::m_reset = false;
     }
 
-  double *px = m_x.fortran_vec ();
+  double *px = m_x.rwdata ();
 
-  double *pabs_tol = m_abs_tol.fortran_vec ();
+  double *pabs_tol = m_abs_tol.rwdata ();
 
-  F77_INT *piwork = m_iwork.fortran_vec ();
-  double *prwork = m_rwork.fortran_vec ();
+  F77_INT *piwork = m_iwork.rwdata ();
+  double *prwork = m_rwork.rwdata ();
 
   F77_INT tmp_istate = octave::to_f77_int (m_istate);
 

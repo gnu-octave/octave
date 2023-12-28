@@ -65,9 +65,9 @@ gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
   OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
 
   m_balanced_mat = a;
-  double *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  double *p_balanced_mat = m_balanced_mat.rwdata ();
   m_balanced_mat2 = b;
-  double *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
+  double *p_balanced_mat2 = m_balanced_mat2.rwdata ();
 
   char job = balance_job[0];
 
@@ -85,8 +85,8 @@ gepbalance<Matrix>::init (const Matrix& a, const Matrix& b,
       m_balancing_mat2.elem (i, i) = 1.0;
     }
 
-  double *p_balancing_mat = m_balancing_mat.fortran_vec ();
-  double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+  double *p_balancing_mat = m_balancing_mat.rwdata ();
+  double *p_balancing_mat2 = m_balancing_mat2.rwdata ();
 
   // first left
   F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -131,9 +131,9 @@ gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
   OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
 
   m_balanced_mat = a;
-  float *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  float *p_balanced_mat = m_balanced_mat.rwdata ();
   m_balanced_mat2 = b;
-  float *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
+  float *p_balanced_mat2 = m_balanced_mat2.rwdata ();
 
   char job = balance_job[0];
 
@@ -151,8 +151,8 @@ gepbalance<FloatMatrix>::init (const FloatMatrix& a, const FloatMatrix& b,
       m_balancing_mat2.elem (i, i) = 1.0;
     }
 
-  float *p_balancing_mat = m_balancing_mat.fortran_vec ();
-  float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+  float *p_balancing_mat = m_balancing_mat.rwdata ();
+  float *p_balancing_mat2 = m_balancing_mat2.rwdata ();
 
   // first left
   F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -198,9 +198,9 @@ gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
   OCTAVE_LOCAL_BUFFER (double, pwork, 6 * n);
 
   m_balanced_mat = a;
-  Complex *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  Complex *p_balanced_mat = m_balanced_mat.rwdata ();
   m_balanced_mat2 = b;
-  Complex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
+  Complex *p_balanced_mat2 = m_balanced_mat2.rwdata ();
 
   char job = balance_job[0];
 
@@ -219,8 +219,8 @@ gepbalance<ComplexMatrix>::init (const ComplexMatrix& a,
       m_balancing_mat2.elem (i, i) = 1.0;
     }
 
-  double *p_balancing_mat = m_balancing_mat.fortran_vec ();
-  double *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+  double *p_balancing_mat = m_balancing_mat.rwdata ();
+  double *p_balancing_mat2 = m_balancing_mat2.rwdata ();
 
   // first left
   F77_XFCN (dggbak, DGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),
@@ -269,9 +269,9 @@ gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
   OCTAVE_LOCAL_BUFFER (float, pwork, 6 * n);
 
   m_balanced_mat = a;
-  FloatComplex *p_balanced_mat = m_balanced_mat.fortran_vec ();
+  FloatComplex *p_balanced_mat = m_balanced_mat.rwdata ();
   m_balanced_mat2 = b;
-  FloatComplex *p_balanced_mat2 = m_balanced_mat2.fortran_vec ();
+  FloatComplex *p_balanced_mat2 = m_balanced_mat2.rwdata ();
 
   char job = balance_job[0];
 
@@ -290,8 +290,8 @@ gepbalance<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
       m_balancing_mat2.elem (i, i) = 1.0;
     }
 
-  float *p_balancing_mat = m_balancing_mat.fortran_vec ();
-  float *p_balancing_mat2 = m_balancing_mat2.fortran_vec ();
+  float *p_balancing_mat = m_balancing_mat.rwdata ();
+  float *p_balancing_mat2 = m_balancing_mat2.rwdata ();
 
   // first left
   F77_XFCN (sggbak, SGGBAK, (F77_CONST_CHAR_ARG2 (&job, 1),

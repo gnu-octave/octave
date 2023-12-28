@@ -231,7 +231,7 @@ octave_complex_diag_matrix::load_binary (std::istream& is, bool swap,
     }
 
   ComplexDiagMatrix m (r, c);
-  Complex *im = m.fortran_vec ();
+  Complex *im = m.rwdata ();
   octave_idx_type len = m.length ();
   read_doubles (is, reinterpret_cast<double *> (im),
                 static_cast<save_type> (tmp), 2 * len, swap, fmt);

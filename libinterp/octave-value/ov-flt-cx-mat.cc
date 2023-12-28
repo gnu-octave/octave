@@ -470,7 +470,7 @@ octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
         return false;
 
       FloatComplexNDArray m(dv);
-      FloatComplex *im = m.fortran_vec ();
+      FloatComplex *im = m.rwdata ();
       read_floats (is, reinterpret_cast<float *> (im),
                    static_cast<save_type> (tmp), 2 * dv.numel (), swap, fmt);
 
@@ -490,7 +490,7 @@ octave_float_complex_matrix::load_binary (std::istream& is, bool swap,
       if (! is.read (reinterpret_cast<char *> (&tmp), 1))
         return false;
       FloatComplexMatrix m (nr, nc);
-      FloatComplex *im = m.fortran_vec ();
+      FloatComplex *im = m.rwdata ();
       octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_floats (is, reinterpret_cast<float *> (im),
                    static_cast<save_type> (tmp), 2*len, swap, fmt);
@@ -656,7 +656,7 @@ octave_float_complex_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   FloatComplexNDArray m (dv);
-  FloatComplex *reim = m.fortran_vec ();
+  FloatComplex *reim = m.rwdata ();
   if (H5Dread (data_hid, complex_type, octave_H5S_ALL, octave_H5S_ALL,
                octave_H5P_DEFAULT, reim)
       >= 0)

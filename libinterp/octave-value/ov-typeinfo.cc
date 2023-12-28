@@ -151,11 +151,11 @@ type_info::register_type (const std::string& t_name,
 
   m_types (i) = t_name;
 
-  // Yes, this object is intentionally not deleted in the destructor
+  // FIXME: This object is intentionally *not deleted* in the destructor
   // so that we avoid a crash on exit for user-defined data types.
-  // See bug #53156.  If that problem is properly fixed, then this
-  // could be stored as an object instead of a pointer to an object
-  // allocated with new.
+  // See bug #53156.  However, this creates a memory leak (not a big one).
+  // If that problem is properly fixed, then this could be stored as an object
+  // instead of a pointer to an object allocated with new.
 
   m_vals(i) = new octave_value (val);
 

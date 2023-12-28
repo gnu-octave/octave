@@ -471,7 +471,7 @@ do_mx_unary_op (const Array<X>& x,
                 void (*op) (std::size_t, R *, const X *))
 {
   Array<R> r (x.dims ());
-  op (r.numel (), r.fortran_vec (), x.data ());
+  op (r.numel (), r.rwdata (), x.data ());
   return r;
 }
 
@@ -496,7 +496,7 @@ inline Array<R>&
 do_mx_inplace_op (Array<R>& r,
                   void (*op) (std::size_t, R *))
 {
-  op (r.numel (), r.fortran_vec ());
+  op (r.numel (), r.rwdata ());
   return r;
 }
 
@@ -513,7 +513,7 @@ do_mm_binary_op (const Array<X>& x, const Array<Y>& y,
   if (dx == dy)
     {
       Array<R> r (dx);
-      op (r.numel (), r.fortran_vec (), x.data (), y.data ());
+      op (r.numel (), r.rwdata (), x.data (), y.data ());
       return r;
     }
   else if (is_valid_bsxfun (opname, dx, dy))
@@ -530,7 +530,7 @@ do_ms_binary_op (const Array<X>& x, const Y& y,
                  void (*op) (std::size_t, R *, const X *, Y))
 {
   Array<R> r (x.dims ());
-  op (r.numel (), r.fortran_vec (), x.data (), y);
+  op (r.numel (), r.rwdata (), x.data (), y);
   return r;
 }
 
@@ -540,7 +540,7 @@ do_sm_binary_op (const X& x, const Array<Y>& y,
                  void (*op) (std::size_t, R *, X, const Y *))
 {
   Array<R> r (y.dims ());
-  op (r.numel (), r.fortran_vec (), x, y.data ());
+  op (r.numel (), r.rwdata (), x, y.data ());
   return r;
 }
 
@@ -554,7 +554,7 @@ do_mm_inplace_op (Array<R>& r, const Array<X>& x,
   const dim_vector &dr = r.dims ();
   const dim_vector &dx = x.dims ();
   if (dr == dx)
-    op (r.numel (), r.fortran_vec (), x.data ());
+    op (r.numel (), r.rwdata (), x.data ());
   else if (is_valid_inplace_bsxfun (opname, dr, dx))
     do_inplace_bsxfun_op (r, x, op, op1);
   else
@@ -568,7 +568,7 @@ inline Array<R>&
 do_ms_inplace_op (Array<R>& r, const X& x,
                   void (*op) (std::size_t, R *, X))
 {
-  op (r.numel (), r.fortran_vec (), x);
+  op (r.numel (), r.rwdata (), x);
   return r;
 }
 
@@ -1561,7 +1561,7 @@ do_mx_red_op (const Array<T>& src, int dim,
   dims.chop_trailing_singletons ();
 
   Array<R> ret (dims);
-  mx_red_op (src.data (), ret.fortran_vec (), l, n, u);
+  mx_red_op (src.data (), ret.rwdata (), l, n, u);
 
   return ret;
 }
@@ -1578,7 +1578,7 @@ do_mx_cum_op (const Array<T>& src, int dim,
 
   // Cumulative operation doesn't reduce the array size.
   Array<R> ret (dims);
-  mx_cum_op (src.data (), ret.fortran_vec (), l, n, u);
+  mx_cum_op (src.data (), ret.rwdata (), l, n, u);
 
   return ret;
 }
@@ -1598,7 +1598,7 @@ do_mx_minmax_op (const Array<R>& src, int dim,
   dims.chop_trailing_singletons ();
 
   Array<R> ret (dims);
-  mx_minmax_op (src.data (), ret.fortran_vec (), l, n, u);
+  mx_minmax_op (src.data (), ret.rwdata (), l, n, u);
 
   return ret;
 }
@@ -1620,7 +1620,7 @@ do_mx_minmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
   Array<R> ret (dims);
   if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
 
-  mx_minmax_op (src.data (), ret.fortran_vec (), idx.fortran_vec (),
+  mx_minmax_op (src.data (), ret.rwdata (), idx.rwdata (),
                 l, n, u);
 
   return ret;
@@ -1637,7 +1637,7 @@ do_mx_cumminmax_op (const Array<R>& src, int dim,
   get_extent_triplet (dims, dim, l, n, u);
 
   Array<R> ret (dims);
-  mx_cumminmax_op (src.data (), ret.fortran_vec (), l, n, u);
+  mx_cumminmax_op (src.data (), ret.rwdata (), l, n, u);
 
   return ret;
 }
@@ -1655,7 +1655,7 @@ do_mx_cumminmax_op (const Array<R>& src, Array<octave_idx_type>& idx, int dim,
   Array<R> ret (dims);
   if (idx.dims () != dims) idx = Array<octave_idx_type> (dims);
 
-  mx_cumminmax_op (src.data (), ret.fortran_vec (), idx.fortran_vec (),
+  mx_cumminmax_op (src.data (), ret.rwdata (), idx.rwdata (),
                    l, n, u);
 
   return ret;
@@ -1689,7 +1689,7 @@ do_mx_diff_op (const Array<R>& src, int dim, octave_idx_type order,
     }
 
   Array<R> ret (dims);
-  mx_diff_op (src.data (), ret.fortran_vec (), l, n, u, order);
+  mx_diff_op (src.data (), ret.rwdata (), l, n, u, order);
 
   return ret;
 }

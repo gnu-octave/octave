@@ -44,6 +44,12 @@ major release after 10):
         symbol_record::mark_as_variable       | symbol_record::mark_variable
         symbol_record::unmark_as_variable     | symbol_record::unmark_variable
 
+- A new method `rwdata ()` provides direct read/write access (a pointer) to the
+data in a liboctave `Array` object (or its derived classes such as `Matrix`).
+Historically, the method `fortran_vec ()` provided this access, but the name
+is unclear, and it is recommended to use `rwdata ()` in any new code.  There
+are no plans to deprecate `fortran_vec`.
+
 The following features were deprecated in Octave 8 and have been removed
 from Octave 10.
 

@@ -212,7 +212,7 @@ lin_interpn (int n, MT *X, const DMT V, MT *Y, DT extrapval)
   OCTAVE_LOCAL_BUFFER (octave_idx_type, scale, n);
 
   const DT *v = V.data ();
-  DT *vi = Vi.fortran_vec ();
+  DT *vi = Vi.rwdata ();
   octave_idx_type Ni = Vi.numel ();
 
   // offset in memory of each dimension

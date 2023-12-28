@@ -356,7 +356,7 @@ Undocumented internal function.
 
   Matrix C = args(0).xmatrix_value ("__glpk__: invalid value of C");
 
-  double *c = C.fortran_vec ();
+  double *c = C.rwdata ();
   Array<int> rn;
   Array<int> cn;
   ColumnVector a;
@@ -417,7 +417,7 @@ Undocumented internal function.
   //             for each constraint in the constraint matrix.
   Matrix B = args(2).xmatrix_value ("__glpk__: invalid value of B");
 
-  double *b = B.fortran_vec ();
+  double *b = B.rwdata ();
 
   // 4th Input.  An array of length mrowsc containing the lower
   //             bound on each of the variables.
@@ -426,7 +426,7 @@ Undocumented internal function.
   if (LB.numel () < mrowsc)
     error ("__glpk__: invalid dimensions for LB");
 
-  double *lb = LB.fortran_vec ();
+  double *lb = LB.rwdata ();
 
   // LB argument, default: Free
   Array<int> freeLB (dim_vector (mrowsc, 1));
@@ -448,7 +448,7 @@ Undocumented internal function.
   if (UB.numel () < mrowsc)
     error ("__glpk__: invalid dimensions for UB");
 
-  double *ub = UB.fortran_vec ();
+  double *ub = UB.rwdata ();
 
   Array<int> freeUB (dim_vector (mrowsc, 1));
   for (int i = 0; i < mrowsc; i++)
@@ -466,7 +466,7 @@ Undocumented internal function.
   //             in the constraint matrix.
   charMatrix CTYPE = args(5).xchar_matrix_value ("__glpk__: invalid value of CTYPE");
 
-  char *ctype = CTYPE.fortran_vec ();
+  char *ctype = CTYPE.rwdata ();
 
   // 7th Input.  A column array containing the types of the variables.
   charMatrix VTYPE = args(6).xchar_matrix_value ("__glpk__: invalid value of VARTYPE");
@@ -611,13 +611,13 @@ Undocumented internal function.
   double time = 0.0;
   int status = -1;
 
-  int errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.fortran_vec (),
-                     cn.fortran_vec (), a.fortran_vec (), b, ctype,
-                     freeLB.fortran_vec (), lb, freeUB.fortran_vec (),
-                     ub, vartype.fortran_vec (), isMIP, lpsolver,
-                     save_pb, scale, par, xmin.fortran_vec (), fmin,
-                     status, lambda.fortran_vec (),
-                     redcosts.fortran_vec (), time);
+  int errnum = glpk (sense, mrowsc, mrowsA, c, nz, rn.rwdata (),
+                     cn.rwdata (), a.rwdata (), b, ctype,
+                     freeLB.rwdata (), lb, freeUB.rwdata (),
+                     ub, vartype.rwdata (), isMIP, lpsolver,
+                     save_pb, scale, par, xmin.rwdata (), fmin,
+                     status, lambda.rwdata (),
+                     redcosts.rwdata (), time);
 
   octave_scalar_map extra;
 

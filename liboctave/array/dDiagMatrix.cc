@@ -268,7 +268,7 @@ DiagMatrix::inverse (octave_idx_type& info) const
   else if (z_count > 0)
     {
       info = -1;
-      element_type *data = retval.fortran_vec ();
+      element_type *data = retval.rwdata ();
       std::fill (data, data + len, octave::numeric_limits<double>::Inf ());
     }
 

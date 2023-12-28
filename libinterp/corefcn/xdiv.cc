@@ -713,7 +713,7 @@ mdm_div_impl (const MT& a, const DMT& d)
   typedef typename MT::element_type T;
   const T *aa = a.data ();
   const S *dd = d.data ();
-  T *xx = x.fortran_vec ();
+  T *xx = x.rwdata ();
 
   for (octave_idx_type j = 0; j < l; j++)
     {
@@ -797,7 +797,7 @@ dmm_leftdiv_impl (const DMT& d, const MT& a)
   typedef typename MT::element_type T;
   const T *aa = a.data ();
   const S *dd = d.data ();
-  T *xx = x.fortran_vec ();
+  T *xx = x.rwdata ();
 
   for (octave_idx_type j = 0; j < n; j++)
     {
@@ -878,7 +878,7 @@ dmdm_div_impl (const MT& a, const DMT& d)
   typedef typename MT::element_type T;
   const T *aa = a.data ();
   const S *dd = d.data ();
-  T *xx = x.fortran_vec ();
+  T *xx = x.rwdata ();
 
   for (octave_idx_type i = 0; i < lk; i++)
     xx[i] = (dd[i] != S () ? aa[i] / dd[i] : T ());
@@ -953,7 +953,7 @@ dmdm_leftdiv_impl (const DMT& d, const MT& a)
   typedef typename MT::element_type T;
   const T *aa = a.data ();
   const S *dd = d.data ();
-  T *xx = x.fortran_vec ();
+  T *xx = x.rwdata ();
 
   for (octave_idx_type i = 0; i < lk; i++)
     xx[i] = (dd[i] != S () ? aa[i] / dd[i] : T ());

@@ -64,8 +64,8 @@ aepbalance<Matrix>::aepbalance (const Matrix& a, bool noperm, bool noscal)
   F77_INT info, t_ilo, t_ihi;
 
   F77_XFCN (dgebal, DGEBAL, (F77_CONST_CHAR_ARG2 (&m_job, 1), n,
-                             m_balanced_mat.fortran_vec (), n,
-                             t_ilo, t_ihi, m_scale.fortran_vec (), info
+                             m_balanced_mat.rwdata (), n,
+                             t_ilo, t_ihi, m_scale.rwdata (), info
                              F77_CHAR_ARG_LEN (1)));
 
   m_ilo = t_ilo;
@@ -91,7 +91,7 @@ aepbalance<Matrix>::balancing_matrix () const
   F77_XFCN (dgebak, DGEBAK, (F77_CONST_CHAR_ARG2 (&m_job, 1),
                              F77_CONST_CHAR_ARG2 (&side, 1),
                              n, t_ilo, t_ihi, m_scale.data (), n,
-                             balancing_mat.fortran_vec (), n, info
+                             balancing_mat.rwdata (), n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
@@ -116,8 +116,8 @@ aepbalance<FloatMatrix>::aepbalance (const FloatMatrix& a, bool noperm,
   F77_INT info, t_ilo, t_ihi;
 
   F77_XFCN (sgebal, SGEBAL, (F77_CONST_CHAR_ARG2 (&m_job, 1), n,
-                             m_balanced_mat.fortran_vec (), n, t_ilo,
-                             t_ihi, m_scale.fortran_vec (), info
+                             m_balanced_mat.rwdata (), n, t_ilo,
+                             t_ihi, m_scale.rwdata (), info
                              F77_CHAR_ARG_LEN (1)));
 
   m_ilo = t_ilo;
@@ -143,7 +143,7 @@ aepbalance<FloatMatrix>::balancing_matrix () const
   F77_XFCN (sgebak, SGEBAK, (F77_CONST_CHAR_ARG2 (&m_job, 1),
                              F77_CONST_CHAR_ARG2 (&side, 1),
                              n, t_ilo, t_ihi, m_scale.data (), n,
-                             balancing_mat.fortran_vec (), n, info
+                             balancing_mat.rwdata (), n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));
 
@@ -169,8 +169,8 @@ aepbalance<ComplexMatrix>::aepbalance (const ComplexMatrix& a, bool noperm,
 
   F77_XFCN (zgebal, ZGEBAL,
             (F77_CONST_CHAR_ARG2 (&m_job, 1), n,
-             F77_DBLE_CMPLX_ARG (m_balanced_mat.fortran_vec ()),
-             n, t_ilo, t_ihi, m_scale.fortran_vec (), info
+             F77_DBLE_CMPLX_ARG (m_balanced_mat.rwdata ()),
+             n, t_ilo, t_ihi, m_scale.rwdata (), info
              F77_CHAR_ARG_LEN (1)));
 
   m_ilo = t_ilo;
@@ -197,7 +197,7 @@ aepbalance<ComplexMatrix>::balancing_matrix () const
             (F77_CONST_CHAR_ARG2 (&m_job, 1),
              F77_CONST_CHAR_ARG2 (&side, 1),
              n, t_ilo, t_ihi, m_scale.data (), n,
-             F77_DBLE_CMPLX_ARG (balancing_mat.fortran_vec ()),
+             F77_DBLE_CMPLX_ARG (balancing_mat.rwdata ()),
              n, info
              F77_CHAR_ARG_LEN (1)
              F77_CHAR_ARG_LEN (1)));
@@ -223,8 +223,8 @@ aepbalance<FloatComplexMatrix>::aepbalance (const FloatComplexMatrix& a,
   F77_INT info, t_ilo, t_ihi;
 
   F77_XFCN (cgebal, CGEBAL, (F77_CONST_CHAR_ARG2 (&m_job, 1), n,
-                             F77_CMPLX_ARG (m_balanced_mat.fortran_vec ()),
-                             n, t_ilo, t_ihi, m_scale.fortran_vec (), info
+                             F77_CMPLX_ARG (m_balanced_mat.rwdata ()),
+                             n, t_ilo, t_ihi, m_scale.rwdata (), info
                              F77_CHAR_ARG_LEN (1)));
 
   m_ilo = t_ilo;
@@ -250,7 +250,7 @@ aepbalance<FloatComplexMatrix>::balancing_matrix () const
   F77_XFCN (cgebak, CGEBAK, (F77_CONST_CHAR_ARG2 (&m_job, 1),
                              F77_CONST_CHAR_ARG2 (&side, 1),
                              n, t_ilo, t_ihi, m_scale.data (), n,
-                             F77_CMPLX_ARG (balancing_mat.fortran_vec ()),
+                             F77_CMPLX_ARG (balancing_mat.rwdata ()),
                              n, info
                              F77_CHAR_ARG_LEN (1)
                              F77_CHAR_ARG_LEN (1)));

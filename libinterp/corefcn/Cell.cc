@@ -72,7 +72,7 @@ Cell::Cell (const std::list<std::string>& sl)
     {
       resize (dim_vector (n, 1));
 
-      octave_value *dst = fortran_vec ();
+      octave_value *dst = rwdata ();
       auto p = sl.begin ();
 
       for (octave_idx_type i = 0; i < n; i++)
@@ -85,7 +85,7 @@ Cell::Cell (const Array<std::string>& sa)
 {
   octave_idx_type n = sa.numel ();
 
-  octave_value *dst = fortran_vec ();
+  octave_value *dst = rwdata ();
   const std::string *src = sa.data ();
 
   for (octave_idx_type i = 0; i < n; i++)
@@ -344,7 +344,7 @@ Cell
 Cell::map (ctype_mapper fcn) const
 {
   Cell retval (dims ());
-  octave_value *r = retval.fortran_vec ();
+  octave_value *r = retval.rwdata ();
 
   const octave_value *p = data ();
 

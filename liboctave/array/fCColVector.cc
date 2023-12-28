@@ -265,7 +265,7 @@ FloatComplexColumnVector::operator += (const FloatColumnVector& a)
   if (len == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
+  FloatComplex *d = rwdata (); // Ensures only 1 reference to my privates!
 
   mx_inline_add2 (len, d, a.data ());
   return *this;
@@ -284,7 +284,7 @@ FloatComplexColumnVector::operator -= (const FloatColumnVector& a)
   if (len == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
+  FloatComplex *d = rwdata (); // Ensures only 1 reference to my privates!
 
   mx_inline_sub2 (len, d, a.data ());
   return *this;
@@ -320,7 +320,7 @@ operator * (const FloatComplexMatrix& m, const FloatComplexColumnVector& a)
         retval.fill (0.0);
       else
         {
-          FloatComplex *y = retval.fortran_vec ();
+          FloatComplex *y = retval.rwdata ();
 
           F77_XFCN (cgemv, CGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                    nr, nc, 1.0f, F77_CONST_CMPLX_ARG (m.data ()), nr,

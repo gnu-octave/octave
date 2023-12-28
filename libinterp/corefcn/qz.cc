@@ -219,8 +219,8 @@ compatibility with @sc{matlab}.
   // Initialize Q, Z to identity matrix if either is needed
   if (comp_q == 'V' || comp_z == 'V')
     {
-      double *QQptr = QQ.fortran_vec ();
-      double *ZZptr = ZZ.fortran_vec ();
+      double *QQptr = QQ.rwdata ();
+      double *ZZptr = ZZ.rwdata ();
       std::fill_n (QQptr, QQ.numel (), 0.0);
       std::fill_n (ZZptr, ZZ.numel (), 0.0);
       for (F77_INT i = 0; i < nn; i++)
@@ -254,10 +254,10 @@ compatibility with @sc{matlab}.
 
       F77_XFCN (zggbal, ZGGBAL,
                 (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                 nn, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()),
-                 nn, ilo, ihi, lscale.fortran_vec (),
-                 rscale.fortran_vec (), work.fortran_vec (), info
+                 nn, F77_DBLE_CMPLX_ARG (caa.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (cbb.rwdata ()),
+                 nn, ilo, ihi, lscale.rwdata (),
+                 rscale.rwdata (), work.rwdata (), info
                  F77_CHAR_ARG_LEN (1)));
     }
   else
@@ -269,9 +269,9 @@ compatibility with @sc{matlab}.
 
       F77_XFCN (dggbal, DGGBAL,
                 (F77_CONST_CHAR_ARG2 (&bal_job, 1),
-                 nn, aa.fortran_vec (), nn, bb.fortran_vec (),
-                 nn, ilo, ihi, lscale.fortran_vec (),
-                 rscale.fortran_vec (), work.fortran_vec (), info
+                 nn, aa.rwdata (), nn, bb.rwdata (),
+                 nn, ilo, ihi, lscale.rwdata (),
+                 rscale.rwdata (), work.rwdata (), info
                  F77_CHAR_ARG_LEN (1)));
     }
 
@@ -294,10 +294,10 @@ compatibility with @sc{matlab}.
       F77_XFCN (zgghrd, ZGGHRD,
                 (F77_CONST_CHAR_ARG2 (&comp_q, 1),
                  F77_CONST_CHAR_ARG2 (&comp_z, 1),
-                 nn, ilo, ihi, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()),
-                 nn, F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (CZ.fortran_vec ()), nn, info
+                 nn, ilo, ihi, F77_DBLE_CMPLX_ARG (caa.rwdata ()),
+                 nn, F77_DBLE_CMPLX_ARG (cbb.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (CQ.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (CZ.rwdata ()), nn, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
@@ -308,14 +308,14 @@ compatibility with @sc{matlab}.
                  F77_CONST_CHAR_ARG2 (&comp_q, 1),
                  F77_CONST_CHAR_ARG2 (&comp_z, 1),
                  nn, ilo, ihi,
-                 F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (xalpha.fortran_vec ()),
-                 F77_DBLE_CMPLX_ARG (xbeta.fortran_vec ()),
-                 F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (CZ.fortran_vec ()), nn,
-                 F77_DBLE_CMPLX_ARG (cwork.fortran_vec ()), nn,
-                 rwork.fortran_vec (), info
+                 F77_DBLE_CMPLX_ARG (caa.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (cbb.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (xalpha.rwdata ()),
+                 F77_DBLE_CMPLX_ARG (xbeta.rwdata ()),
+                 F77_DBLE_CMPLX_ARG (CQ.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (CZ.rwdata ()), nn,
+                 F77_DBLE_CMPLX_ARG (cwork.rwdata ()), nn,
+                 rwork.rwdata (), info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
@@ -327,7 +327,7 @@ compatibility with @sc{matlab}.
                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
                      F77_CONST_CHAR_ARG2 ("L", 1),
                      nn, ilo, ihi, lscale.data (), rscale.data (),
-                     nn, F77_DBLE_CMPLX_ARG (CQ.fortran_vec ()), nn, info
+                     nn, F77_DBLE_CMPLX_ARG (CQ.rwdata ()), nn, info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
         }
@@ -339,7 +339,7 @@ compatibility with @sc{matlab}.
                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
                      F77_CONST_CHAR_ARG2 ("R", 1),
                      nn, ilo, ihi, lscale.data (), rscale.data (),
-                     nn, F77_DBLE_CMPLX_ARG (CZ.fortran_vec ()), nn, info
+                     nn, F77_DBLE_CMPLX_ARG (CZ.rwdata ()), nn, info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
         }
@@ -391,9 +391,9 @@ compatibility with @sc{matlab}.
       F77_XFCN (dgghrd, DGGHRD,
                 (F77_CONST_CHAR_ARG2 (&comp_q, 1),
                  F77_CONST_CHAR_ARG2 (&comp_z, 1),
-                 nn, ilo, ihi, aa.fortran_vec (),
-                 nn, bb.fortran_vec (), nn, QQ.fortran_vec (), nn,
-                 ZZ.fortran_vec (), nn, info
+                 nn, ilo, ihi, aa.rwdata (),
+                 nn, bb.rwdata (), nn, QQ.rwdata (), nn,
+                 ZZ.rwdata (), nn, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
 
@@ -405,10 +405,10 @@ compatibility with @sc{matlab}.
                 (F77_CONST_CHAR_ARG2 (&qz_job, 1),
                  F77_CONST_CHAR_ARG2 (&comp_q, 1),
                  F77_CONST_CHAR_ARG2 (&comp_z, 1),
-                 nn, ilo, ihi, aa.fortran_vec (), nn, bb.fortran_vec (),
-                 nn, alphar.fortran_vec (), alphai.fortran_vec (),
-                 betar.fortran_vec (), QQ.fortran_vec (), nn,
-                 ZZ.fortran_vec (), nn, work.fortran_vec (), nn, info
+                 nn, ilo, ihi, aa.rwdata (), nn, bb.rwdata (),
+                 nn, alphar.rwdata (), alphai.rwdata (),
+                 betar.rwdata (), QQ.rwdata (), nn,
+                 ZZ.rwdata (), nn, work.rwdata (), nn, info
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)
                  F77_CHAR_ARG_LEN (1)));
@@ -419,7 +419,7 @@ compatibility with @sc{matlab}.
                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
                      F77_CONST_CHAR_ARG2 ("L", 1),
                      nn, ilo, ihi, lscale.data (), rscale.data (),
-                     nn, QQ.fortran_vec (), nn, info
+                     nn, QQ.rwdata (), nn, info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
 
@@ -436,7 +436,7 @@ compatibility with @sc{matlab}.
                     (F77_CONST_CHAR_ARG2 (&bal_job, 1),
                      F77_CONST_CHAR_ARG2 ("R", 1),
                      nn, ilo, ihi, lscale.data (), rscale.data (),
-                     nn, ZZ.fortran_vec (), nn, info
+                     nn, ZZ.rwdata (), nn, info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
 
@@ -469,12 +469,12 @@ compatibility with @sc{matlab}.
           F77_XFCN (ztgevc, ZTGEVC,
                     (F77_CONST_CHAR_ARG2 (&side, 1),
                      F77_CONST_CHAR_ARG2 (&howmany, 1),
-                     select, nn, F77_DBLE_CMPLX_ARG (caa.fortran_vec ()), nn,
-                     F77_DBLE_CMPLX_ARG (cbb.fortran_vec ()),
-                     nn, F77_DBLE_CMPLX_ARG (CVL.fortran_vec ()), nn,
-                     F77_DBLE_CMPLX_ARG (CVR.fortran_vec ()), nn, nn,
-                     m, F77_DBLE_CMPLX_ARG (cwork2.fortran_vec ()),
-                     rwork2.fortran_vec (), info
+                     select, nn, F77_DBLE_CMPLX_ARG (caa.rwdata ()), nn,
+                     F77_DBLE_CMPLX_ARG (cbb.rwdata ()),
+                     nn, F77_DBLE_CMPLX_ARG (CVL.rwdata ()), nn,
+                     F77_DBLE_CMPLX_ARG (CVR.rwdata ()), nn, nn,
+                     m, F77_DBLE_CMPLX_ARG (cwork2.rwdata ()),
+                     rwork2.rwdata (), info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
         }
@@ -491,9 +491,9 @@ compatibility with @sc{matlab}.
           F77_XFCN (dtgevc, DTGEVC,
                     (F77_CONST_CHAR_ARG2 (&side, 1),
                      F77_CONST_CHAR_ARG2 (&howmany, 1),
-                     select, nn, aa.fortran_vec (), nn, bb.fortran_vec (),
-                     nn, VL.fortran_vec (), nn, VR.fortran_vec (), nn, nn,
-                     m, work.fortran_vec (), info
+                     select, nn, aa.rwdata (), nn, bb.rwdata (),
+                     nn, VL.rwdata (), nn, VR.rwdata (), nn, nn,
+                     m, work.rwdata (), info
                      F77_CHAR_ARG_LEN (1)
                      F77_CHAR_ARG_LEN (1)));
         }

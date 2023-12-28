@@ -123,10 +123,10 @@ and 16.15), Dover, 1965.
           NDArray err (sz_u);
 
           const Complex *pu = u.data ();
-          Complex *psn = sn.fortran_vec ();
-          Complex *pcn = cn.fortran_vec ();
-          Complex *pdn = dn.fortran_vec ();
-          double *perr = err.fortran_vec ();
+          Complex *psn = sn.rwdata ();
+          Complex *pcn = cn.rwdata ();
+          Complex *pdn = dn.rwdata ();
+          double *perr = err.rwdata ();
           octave_idx_type nel = u.numel ();
 
           for (octave_idx_type i = 0; i < nel; i++)
@@ -153,10 +153,10 @@ and 16.15), Dover, 1965.
               NDArray err (sz_m);
 
               const double *pm = m.data ();
-              double *psn = sn.fortran_vec ();
-              double *pcn = cn.fortran_vec ();
-              double *pdn = dn.fortran_vec ();
-              double *perr = err.fortran_vec ();
+              double *psn = sn.rwdata ();
+              double *pcn = cn.rwdata ();
+              double *pdn = dn.rwdata ();
+              double *perr = err.rwdata ();
               octave_idx_type nel = m.numel ();
 
               for (octave_idx_type i = 0; i < nel; i++)
@@ -173,10 +173,10 @@ and 16.15), Dover, 1965.
               NDArray err (sz_m);
 
               const double *pm = m.data ();
-              Complex *psn = sn.fortran_vec ();
-              Complex *pcn = cn.fortran_vec ();
-              Complex *pdn = dn.fortran_vec ();
-              double *perr = err.fortran_vec ();
+              Complex *psn = sn.rwdata ();
+              Complex *pcn = cn.rwdata ();
+              Complex *pdn = dn.rwdata ();
+              double *perr = err.rwdata ();
               octave_idx_type nel = m.numel ();
 
               for (octave_idx_type i = 0; i < nel; i++)
@@ -222,10 +222,10 @@ and 16.15), Dover, 1965.
 
                   const double *pu = u.data ();
                   const double *pm = m.data ();
-                  double *psn = sn.fortran_vec ();
-                  double *pcn = cn.fortran_vec ();
-                  double *pdn = dn.fortran_vec ();
-                  double *perr = err.fortran_vec ();
+                  double *psn = sn.rwdata ();
+                  double *pcn = cn.rwdata ();
+                  double *pdn = dn.rwdata ();
+                  double *perr = err.rwdata ();
                   octave_idx_type nel = m.numel ();
 
                   for (octave_idx_type i = 0; i < nel; i++)
@@ -270,10 +270,10 @@ and 16.15), Dover, 1965.
 
                   const Complex *pu = u.data ();
                   const double  *pm = m.data ();
-                  Complex *psn = sn.fortran_vec ();
-                  Complex *pcn = cn.fortran_vec ();
-                  Complex *pdn = dn.fortran_vec ();
-                  double *perr = err.fortran_vec ();
+                  Complex *psn = sn.rwdata ();
+                  Complex *pcn = cn.rwdata ();
+                  Complex *pdn = dn.rwdata ();
+                  double *perr = err.rwdata ();
                   octave_idx_type nel = m.numel ();
 
                   for (octave_idx_type i = 0; i < nel; i++)

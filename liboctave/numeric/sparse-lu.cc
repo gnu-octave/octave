@@ -415,7 +415,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
 
   // Setup the control parameters
   Matrix Control (UMFPACK_CONTROL, 1);
-  double *control = Control.fortran_vec ();
+  double *control = Control.rwdata ();
   umfpack_defaults<lu_elt_type> (control);
 
   double tmp = sparse_params::get_key ("spumoni");
@@ -466,7 +466,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
 
   void *Symbolic;
   Matrix Info (1, UMFPACK_INFO);
-  double *info = Info.fortran_vec ();
+  double *info = Info.rwdata ();
   int status = umfpack_qsymbolic<lu_elt_type> (nr, nc, Ap, Ai, Ax, nullptr,
                &Symbolic, control, info);
 
@@ -552,10 +552,10 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a, const Matrix& piv_thres,
               double *Rx = m_R.data ();
 
               m_P.resize (dim_vector (nr, 1));
-              octave_idx_type *p = m_P.fortran_vec ();
+              octave_idx_type *p = m_P.rwdata ();
 
               m_Q.resize (dim_vector (nc, 1));
-              octave_idx_type *q = m_Q.fortran_vec ();
+              octave_idx_type *q = m_Q.rwdata ();
 
               octave_idx_type do_recip;
               status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,
@@ -633,7 +633,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
 
   // Setup the control parameters
   Matrix Control (UMFPACK_CONTROL, 1);
-  double *control = Control.fortran_vec ();
+  double *control = Control.rwdata ();
   umfpack_defaults<lu_elt_type> (control);
 
   double tmp = sparse_params::get_key ("spumoni");
@@ -691,7 +691,7 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
 
   void *Symbolic;
   Matrix Info (1, UMFPACK_INFO);
-  double *info = Info.fortran_vec ();
+  double *info = Info.rwdata ();
   int status;
 
   // Null loop so that qinit is immediately deallocated when not needed
@@ -790,10 +790,10 @@ sparse_lu<lu_type>::sparse_lu (const lu_type& a,
               double *Rx = m_R.data ();
 
               m_P.resize (dim_vector (nr, 1));
-              octave_idx_type *p = m_P.fortran_vec ();
+              octave_idx_type *p = m_P.rwdata ();
 
               m_Q.resize (dim_vector (nc, 1));
-              octave_idx_type *q = m_Q.fortran_vec ();
+              octave_idx_type *q = m_Q.rwdata ();
 
               octave_idx_type do_recip;
               status = umfpack_get_numeric<lu_elt_type> (Ltp, Ltj, Ltx,

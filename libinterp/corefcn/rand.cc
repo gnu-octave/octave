@@ -318,7 +318,7 @@ gen_matrix:
 
               octave_idx_type len = a.numel ();
               FloatNDArray m (dims);
-              float *v = m.fortran_vec ();
+              float *v = m.rwdata ();
 
               for (octave_idx_type i = 0; i < len; i++)
                 v[i] = rand::float_scalar (a(i));
@@ -342,7 +342,7 @@ gen_matrix:
 
               octave_idx_type len = a.numel ();
               NDArray m (dims);
-              double *v = m.fortran_vec ();
+              double *v = m.rwdata ();
 
               for (octave_idx_type i = 0; i < len; i++)
                 v[i] = rand::scalar (a(i));
@@ -1144,7 +1144,7 @@ likely.
 
   // Generate random numbers.
   NDArray r = rand::nd_array (dim_vector (1, m));
-  double *rvec = r.fortran_vec ();
+  double *rvec = r.rwdata ();
 
   octave_idx_type idx_len = (short_shuffle ? m : n);
   Array<octave_idx_type> idx;
@@ -1161,7 +1161,7 @@ likely.
       idx = Array<octave_idx_type> (dim_vector (1, idx_len));
     }
 
-  octave_idx_type *ivec = idx.fortran_vec ();
+  octave_idx_type *ivec = idx.rwdata ();
 
   for (octave_idx_type i = 0; i < idx_len; i++)
     ivec[i] = i;

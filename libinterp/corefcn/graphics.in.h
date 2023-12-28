@@ -127,7 +127,7 @@ public:
   {
     Matrix retval (m.rows (), m.cols ());
 
-    do_scale (m.data (), retval.fortran_vec (), m.numel ());
+    do_scale (m.data (), retval.rwdata (), m.numel ());
 
     return retval;
   }
@@ -136,7 +136,7 @@ public:
   {
     NDArray retval (m.dims ());
 
-    do_scale (m.data (), retval.fortran_vec (), m.numel ());
+    do_scale (m.data (), retval.rwdata (), m.numel ());
 
     return retval;
   }
@@ -168,7 +168,7 @@ public:
   {
     Matrix retval (m.rows (), m.cols ());
 
-    do_scale (m.data (), retval.fortran_vec (), m.numel ());
+    do_scale (m.data (), retval.rwdata (), m.numel ());
 
     return retval;
   }
@@ -177,7 +177,7 @@ public:
   {
     NDArray retval (m.dims ());
 
-    do_scale (m.data (), retval.fortran_vec (), m.numel ());
+    do_scale (m.data (), retval.rwdata (), m.numel ());
 
     return retval;
   }

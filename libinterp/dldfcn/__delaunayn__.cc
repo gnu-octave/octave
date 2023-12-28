@@ -155,7 +155,7 @@ Undocumented internal function.
   if (n > dim + 1)
     {
       p = p.transpose ();
-      double *pt_array = p.fortran_vec ();
+      double *pt_array = p.rwdata ();
       boolT ismalloc = false;
 
       std::string cmd = "qhull d " + options;

@@ -57,7 +57,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
       octave_idx_type j2 = std::min (std::max (zero, nr + k), nc);
       octave_idx_type n = j1 * nr + ((j2 - j1) * (nr-(j1-k) + nr-(j2-1-k))) / 2;
       Array<T> r (dim_vector (n, 1));
-      T *rvec = r.fortran_vec ();
+      T *rvec = r.rwdata ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_idx_type ii = std::min (std::max (zero, j - k), nr);
@@ -70,7 +70,7 @@ do_tril (const Array<T>& a, octave_idx_type k, bool pack)
   else
     {
       Array<T> r (a.dims ());
-      T *rvec = r.fortran_vec ();
+      T *rvec = r.rwdata ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_idx_type ii = std::min (std::max (zero, j - k), nr);
@@ -100,7 +100,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
       octave_idx_type n
         = ((j2 - j1) * ((j1+1-k) + (j2-k))) / 2 + (nc - j2) * nr;
       Array<T> r (dim_vector (n, 1));
-      T *rvec = r.fortran_vec ();
+      T *rvec = r.rwdata ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_idx_type ii = std::min (std::max (zero, j + 1 - k), nr);
@@ -113,7 +113,7 @@ do_triu (const Array<T>& a, octave_idx_type k, bool pack)
   else
     {
       Array<T> r (a.dims ());
-      T *rvec = r.fortran_vec ();
+      T *rvec = r.rwdata ();
       for (octave_idx_type j = 0; j < nc; j++)
         {
           octave_idx_type ii = std::min (std::max (zero, j + 1 - k), nr);

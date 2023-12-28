@@ -196,7 +196,7 @@ operator * (const FloatMatrix& m, const FloatColumnVector& a)
         retval.fill (0.0);
       else
         {
-          float *y = retval.fortran_vec ();
+          float *y = retval.rwdata ();
 
           F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                    nr, nc, 1.0f, m.data (), nr,

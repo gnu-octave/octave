@@ -144,7 +144,7 @@ due to the limited range of integer objects.
 
           F77_XFCN (cdotc3, CDOTC3, (m, n, k,
                                      F77_CONST_CMPLX_ARG (x.data ()), F77_CONST_CMPLX_ARG (y.data ()),
-                                     F77_CMPLX_ARG (z.fortran_vec ())));
+                                     F77_CMPLX_ARG (z.rwdata ())));
           retval = z;
         }
       else
@@ -156,7 +156,7 @@ due to the limited range of integer objects.
 
           F77_XFCN (zdotc3, ZDOTC3, (m, n, k,
                                      F77_CONST_DBLE_CMPLX_ARG (x.data ()), F77_CONST_DBLE_CMPLX_ARG (y.data ()),
-                                     F77_DBLE_CMPLX_ARG (z.fortran_vec ())));
+                                     F77_DBLE_CMPLX_ARG (z.rwdata ())));
           retval = z;
         }
     }
@@ -170,7 +170,7 @@ due to the limited range of integer objects.
           FloatNDArray z (dimz);
 
           F77_XFCN (sdot3, SDOT3, (m, n, k, x.data (), y.data (),
-                                   z.fortran_vec ()));
+                                   z.rwdata ()));
           retval = z;
         }
       else
@@ -181,7 +181,7 @@ due to the limited range of integer objects.
           NDArray z (dimz);
 
           F77_XFCN (ddot3, DDOT3, (m, n, k, x.data (), y.data (),
-                                   z.fortran_vec ()));
+                                   z.rwdata ()));
           retval = z;
         }
     }
@@ -263,7 +263,7 @@ blkmm_internal (const FloatComplexNDArray& x, const FloatComplexNDArray& y,
   F77_XFCN (cmatm3, CMATM3, (m, n, k, np,
                              F77_CONST_CMPLX_ARG (x.data ()),
                              F77_CONST_CMPLX_ARG (y.data ()),
-                             F77_CMPLX_ARG (z.fortran_vec ())));
+                             F77_CMPLX_ARG (z.rwdata ())));
 }
 
 template <>
@@ -275,7 +275,7 @@ blkmm_internal (const ComplexNDArray& x, const ComplexNDArray& y,
   F77_XFCN (zmatm3, ZMATM3, (m, n, k, np,
                              F77_CONST_DBLE_CMPLX_ARG (x.data ()),
                              F77_CONST_DBLE_CMPLX_ARG (y.data ()),
-                             F77_DBLE_CMPLX_ARG (z.fortran_vec ())));
+                             F77_DBLE_CMPLX_ARG (z.rwdata ())));
 }
 
 template <>
@@ -285,7 +285,7 @@ blkmm_internal (const FloatNDArray& x, const FloatNDArray& y, FloatNDArray& z,
 {
   F77_XFCN (smatm3, SMATM3, (m, n, k, np,
                              x.data (), y.data (),
-                             z.fortran_vec ()));
+                             z.rwdata ()));
 }
 
 template <>
@@ -295,7 +295,7 @@ blkmm_internal (const NDArray& x, const NDArray& y, NDArray& z,
 {
   F77_XFCN (dmatm3, DMATM3, (m, n, k, np,
                              x.data (), y.data (),
-                             z.fortran_vec ()));
+                             z.rwdata ()));
 }
 
 static void

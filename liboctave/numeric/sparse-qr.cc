@@ -717,7 +717,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix& b, bool econ)
 
   // copy QTB into ret
   double *QTB_x = reinterpret_cast<double *> (QTB->x);
-  double *ret_vec = reinterpret_cast<double *> (ret.fortran_vec ());
+  double *ret_vec = reinterpret_cast<double *> (ret.rwdata ());
   for (octave_idx_type j = 0; j < b_nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       ret_vec[j * nr + i] = QTB_x[j * b_nr + i];
@@ -741,7 +741,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix& b, bool econ)
   const double *bvec = b.data ();
 
   Matrix ret (b_nr, b_nc);
-  double *vec = ret.fortran_vec ();
+  double *vec = ret.rwdata ();
 
   if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
@@ -816,7 +816,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::Q (bool econ)
   spqr_error_handler (&m_cc);
 
   double *q_x = reinterpret_cast<double *> (q->x);
-  double *ret_vec = const_cast<double *> (ret.fortran_vec ());
+  double *ret_vec = const_cast<double *> (ret.rwdata ());
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nrows; i++)
       ret_vec[j * nrows + i] = q_x[j * nrows + i];
@@ -835,7 +835,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::Q (bool econ)
   octave_idx_type nc = N->L->n;
   octave_idx_type nr = nrows;
   Matrix ret (nr, nr);
-  double *ret_vec = ret.fortran_vec ();
+  double *ret_vec = ret.rwdata ();
 
   if (nr < 0 || nc < 0)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
@@ -947,7 +947,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
       R2.i = R2_i;
     }
   R2.nz = -1;
-  double *x_vec = const_cast<double *> (x.fortran_vec ());
+  double *x_vec = const_cast<double *> (x.rwdata ());
   suitesparse_integer *E;
   if (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long))
     {
@@ -992,7 +992,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
   const double *bvec = b.data ();
 
   Matrix x (nc, b_nc);
-  double *vec = x.fortran_vec ();
+  double *vec = x.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (double, buf, S->m2);
 
@@ -1051,7 +1051,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<double>, Matrix>
   const double *bvec = b.data ();
 
   Matrix x (nc, b_nc);
-  double *vec = x.fortran_vec ();
+  double *vec = x.rwdata ();
 
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
 
@@ -1279,7 +1279,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>, ComplexMatri
   octave_idx_type b_nr = b.rows ();
 
   ComplexMatrix x (nc, b_nc);
-  Complex *vec = x.fortran_vec ();
+  Complex *vec = x.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (double, Xx, (b_nr > nc ? b_nr : nc));
   OCTAVE_LOCAL_BUFFER (double, Xz, (b_nr > nc ? b_nr : nc));
@@ -1363,7 +1363,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>, ComplexMatri
   octave_idx_type b_nr = b.rows ();
 
   ComplexMatrix x (nc, b_nc);
-  Complex *vec = x.fortran_vec ();
+  Complex *vec = x.rwdata ();
 
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
 
@@ -1656,7 +1656,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C
 
   // copy QTB into ret
   Complex *QTB_x = reinterpret_cast<Complex *> (QTB->x);
-  Complex *ret_vec = reinterpret_cast<Complex *> (ret.fortran_vec ());
+  Complex *ret_vec = reinterpret_cast<Complex *> (ret.rwdata ());
   for (octave_idx_type j = 0; j < b_nc; j++)
     for (octave_idx_type i = 0; i < nr; i++)
       ret_vec[j * nr + i] = QTB_x[j * b_nr + i];
@@ -1678,7 +1678,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C
   const cs_complex_t *bvec
     = reinterpret_cast<const cs_complex_t *> (b.data ());
   ComplexMatrix ret (b_nr, b_nc);
-  Complex *vec = ret.fortran_vec ();
+  Complex *vec = ret.rwdata ();
 
   if (nr < 0 || nc < 0 || nr != b_nr)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
@@ -1754,7 +1754,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (bool econ)
   spqr_error_handler (&m_cc);
 
   Complex *q_x = reinterpret_cast<Complex *> (q->x);
-  Complex *ret_vec = const_cast<Complex *> (ret.fortran_vec ());
+  Complex *ret_vec = const_cast<Complex *> (ret.rwdata ());
 
   for (octave_idx_type j = 0; j < nc; j++)
     for (octave_idx_type i = 0; i < nrows; i++)
@@ -1774,7 +1774,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::Q (bool econ)
   octave_idx_type nc = N->L->n;
   octave_idx_type nr = nrows;
   ComplexMatrix ret (nr, nr);
-  Complex *vec = ret.fortran_vec ();
+  Complex *vec = ret.rwdata ();
 
   if (nr < 0 || nc < 0)
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
@@ -2060,7 +2060,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<double>,
   octave_idx_type b_nr = b.rows ();
 
   ComplexMatrix x (nc, b_nc);
-  cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
+  cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.rwdata ());
 
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
   OCTAVE_LOCAL_BUFFER (Complex, Xx, b_nr);
@@ -2124,7 +2124,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<double>,
   octave_idx_type b_nr = b.rows ();
 
   ComplexMatrix x (nc, b_nc);
-  cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
+  cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.rwdata ());
 
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
 
@@ -2382,7 +2382,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::tall_solve<MArray<Complex>,
 
   ComplexMatrix x (nc, b_nc);
   cs_complex_t *vec = reinterpret_cast<cs_complex_t *>
-                      (x.fortran_vec ());
+                      (x.rwdata ());
 
   OCTAVE_LOCAL_BUFFER (cs_complex_t, buf, S->m2);
 
@@ -2444,7 +2444,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::wide_solve<MArray<Complex>,
                              (b.data ());
 
   ComplexMatrix x (nc, b_nc);
-  cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.fortran_vec ());
+  cs_complex_t *vec = reinterpret_cast<cs_complex_t *> (x.rwdata ());
 
   volatile octave_idx_type nbuf = (nc > S->m2 ? nc : S->m2);
 
@@ -2778,7 +2778,7 @@ sparse_qr<SparseMatrix>::min2norm_solve<MArray<double>, Matrix>
   X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
   spqr_error_handler (&cc);
 
-  double *vec = x.fortran_vec ();
+  double *vec = x.rwdata ();
   for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
     vec[i] = reinterpret_cast<double *> (X->x)[i];
 
@@ -2854,7 +2854,7 @@ sparse_qr<SparseMatrix>::min2norm_solve<MArray<Complex>, ComplexMatrix>
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A, &B, &cc);
   spqr_error_handler (&cc);
 
-  Complex *vec = x.fortran_vec ();
+  Complex *vec = x.rwdata ();
   for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
     vec[i] = reinterpret_cast<Complex *> (X->x)[i];
 
@@ -2928,7 +2928,7 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<Complex>,
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
   spqr_error_handler (&cc);
 
-  Complex *vec = x.fortran_vec ();
+  Complex *vec = x.rwdata ();
   for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
     vec[i] = reinterpret_cast<Complex *> (X->x)[i];
 
@@ -2970,7 +2970,7 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<double>,
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
   spqr_error_handler (&cc);
 
-  Complex *vec = x.fortran_vec ();
+  Complex *vec = x.rwdata ();
 
   for (volatile octave_idx_type i = 0; i < nc * b_nc; i++)
     vec[i] = reinterpret_cast<Complex *> (X->x)[i];

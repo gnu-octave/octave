@@ -220,15 +220,15 @@ ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
 
   // L output arrays
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len_l, 1));
-  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.rwdata ();
   Array <T> data_out_l (dim_vector (max_len_l, 1));
-  T *data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.rwdata ();
 
   // U output arrays
   Array <octave_idx_type> ridx_out_u (dim_vector (max_len_u, 1));
-  octave_idx_type *ridx_u = ridx_out_u.fortran_vec ();
+  octave_idx_type *ridx_u = ridx_out_u.rwdata ();
   Array <T> data_out_u (dim_vector (max_len_u, 1));
-  T *data_u = data_out_u.fortran_vec ();
+  T *data_u = data_out_u.rwdata ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (octave_idx_type, cidx_l, n + 1);
@@ -293,18 +293,18 @@ ilu_crout (octave_matrix_t& sm_l, octave_matrix_t& sm_u,
         {
           max_len_u += (0.1 * max_len_u) > n ? 0.1 * max_len_u : n;
           data_out_u.resize (dim_vector (max_len_u, 1));
-          data_u = data_out_u.fortran_vec ();
+          data_u = data_out_u.rwdata ();
           ridx_out_u.resize (dim_vector (max_len_u, 1));
-          ridx_u = ridx_out_u.fortran_vec ();
+          ridx_u = ridx_out_u.rwdata ();
         }
 
       if ((max_len_l - total_len_l) < n)
         {
           max_len_l += (0.1 * max_len_l) > n ? 0.1 * max_len_l : n;
           data_out_l.resize (dim_vector (max_len_l, 1));
-          data_l = data_out_l.fortran_vec ();
+          data_l = data_out_l.rwdata ();
           ridx_out_l.resize (dim_vector (max_len_l, 1));
-          ridx_l = ridx_out_l.fortran_vec ();
+          ridx_l = ridx_out_l.rwdata ();
         }
 
       // Expand the working row into the U output data structures
@@ -487,8 +487,8 @@ Undocumented internal function.
       RowVector sm_col_norms = xcolnorms (sm);
       ColumnVector sm_row_norms = xrownorms (sm);
       ilu_crout <SparseMatrix, double> (sm_l, sm_u, L, U,
-                                        sm_col_norms.fortran_vec (),
-                                        sm_row_norms.fortran_vec (),
+                                        sm_col_norms.rwdata (),
+                                        sm_row_norms.rwdata (),
                                         droptol, milu);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
@@ -505,8 +505,8 @@ Undocumented internal function.
       Array<Complex> rows_norm = xrownorms (sm);
 
       ilu_crout <SparseComplexMatrix, Complex> (sm_l, sm_u, L, U,
-          cols_norm.fortran_vec (),
-          rows_norm.fortran_vec (),
+          cols_norm.rwdata (),
+          rows_norm.rwdata (),
           Complex (droptol), milu);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
@@ -563,19 +563,19 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
 
   // Extract pointers to the arrays for faster access inside loops
   Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
-  octave_idx_type *cidx_l = cidx_out_l.fortran_vec ();
+  octave_idx_type *cidx_l = cidx_out_l.rwdata ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len_l, 1));
-  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.rwdata ();
   Array <T> data_out_l (dim_vector (max_len_l, 1));
-  T *data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.rwdata ();
 
   // Data for U
   Array <octave_idx_type> cidx_out_u (dim_vector (n + 1, 1));
-  octave_idx_type *cidx_u = cidx_out_u.fortran_vec ();
+  octave_idx_type *cidx_u = cidx_out_u.rwdata ();
   Array <octave_idx_type> ridx_out_u (dim_vector (max_len_u, 1));
-  octave_idx_type *ridx_u = ridx_out_u.fortran_vec ();
+  octave_idx_type *ridx_u = ridx_out_u.rwdata ();
   Array <T> data_out_u (dim_vector (max_len_u, 1));
-  T *data_u = data_out_u.fortran_vec ();
+  T *data_u = data_out_u.rwdata ();
 
   // Working arrays and permutation arrays
   octave_idx_type w_len_u, w_len_l;
@@ -585,7 +585,7 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
   std::set <octave_idx_type>::iterator it, it2;
   OCTAVE_LOCAL_BUFFER (T, w_data, n);
   OCTAVE_LOCAL_BUFFER (octave_idx_type, iperm, n);
-  octave_idx_type *perm = perm_vec.fortran_vec ();
+  octave_idx_type *perm = perm_vec.rwdata ();
   OCTAVE_LOCAL_BUFFER (octave_idx_type, uptr, n);
 
   // Initialize working and permutation arrays
@@ -770,18 +770,18 @@ ilu_tp (octave_matrix_t& sm, octave_matrix_t& L, octave_matrix_t& U,
         {
           max_len_u += (0.1 * max_len_u) > n ? 0.1 * max_len_u : n;
           data_out_u.resize (dim_vector (max_len_u, 1));
-          data_u = data_out_u.fortran_vec ();
+          data_u = data_out_u.rwdata ();
           ridx_out_u.resize (dim_vector (max_len_u, 1));
-          ridx_u = ridx_out_u.fortran_vec ();
+          ridx_u = ridx_out_u.rwdata ();
         }
 
       if ((max_len_l - total_len_l) < n)
         {
           max_len_l += (0.1 * max_len_l) > n ? 0.1 * max_len_l : n;
           data_out_l.resize (dim_vector (max_len_l, 1));
-          data_l = data_out_l.fortran_vec ();
+          data_l = data_out_l.rwdata ();
           ridx_out_l.resize (dim_vector (max_len_l, 1));
-          ridx_l = ridx_out_l.fortran_vec ();
+          ridx_l = ridx_out_l.rwdata ();
         }
 
       // Expand working vector into U.
@@ -935,7 +935,7 @@ Undocumented internal function.
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
 
       ilu_tp <SparseMatrix, double> (sm, L, U, nnz_u, nnz_l,
-                                     rc_norm.fortran_vec (),
+                                     rc_norm.rwdata (),
                                      perm, droptol, thresh, milu, udiag);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));
@@ -976,7 +976,7 @@ Undocumented internal function.
       Array <octave_idx_type> perm (dim_vector (sm.cols (), 1));
 
       ilu_tp <SparseComplexMatrix, Complex>
-      (sm, L, U, nnz_u, nnz_l, rc_norm.fortran_vec (), perm,
+      (sm, L, U, nnz_u, nnz_l, rc_norm.rwdata (), perm,
        Complex (droptol), Complex (thresh), milu, udiag);
 
       SparseMatrix speye (DiagMatrix (L.cols (), L.cols (), 1.0));

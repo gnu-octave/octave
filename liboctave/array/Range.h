@@ -249,7 +249,7 @@ public:
         // Loop over all values in IDX, executing the lambda
         // expression for each index value.
 
-        T *array = retval.fortran_vec ();
+        T *array = retval.rwdata ();
 
         idx.loop (n, [=, &array] (octave_idx_type i)
         {

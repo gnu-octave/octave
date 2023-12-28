@@ -93,7 +93,7 @@ can have any value real or complex value.  However, for polygamma functions
           A ## NDArray psi_z (z.dims ());                       \
                                                                 \
           const E *zv = z.data ();                              \
-          E *psi_zv = psi_z.fortran_vec ();                     \
+          E *psi_zv = psi_z.rwdata ();                     \
           const octave_idx_type n = z.numel ();                 \
           for (octave_idx_type i = 0; i < n; i++)               \
             *psi_zv++ = math::psi (*zv++);              \
@@ -130,7 +130,7 @@ can have any value real or complex value.  However, for polygamma functions
           A ## NDArray psi_z (z.dims ());                               \
                                                                         \
           const E *zv = z.data ();                                      \
-          E *psi_zv = psi_z.fortran_vec ();                             \
+          E *psi_zv = psi_z.rwdata ();                             \
           const octave_idx_type n = z.numel ();                         \
           for (octave_idx_type i = 0; i < n; i++)                       \
             {                                                           \

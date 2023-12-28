@@ -152,25 +152,25 @@ schur<Matrix>::init (const Matrix& a, const std::string& ord,
   if (calc_unitary)
     m_unitary_schur_mat.clear (n, n);
 
-  double *s = m_schur_mat.fortran_vec ();
-  double *q = m_unitary_schur_mat.fortran_vec ();
+  double *s = m_schur_mat.rwdata ();
+  double *q = m_unitary_schur_mat.rwdata ();
 
   Array<double> wr (dim_vector (n, 1));
-  double *pwr = wr.fortran_vec ();
+  double *pwr = wr.rwdata ();
 
   Array<double> wi (dim_vector (n, 1));
-  double *pwi = wi.fortran_vec ();
+  double *pwi = wi.rwdata ();
 
   Array<double> work (dim_vector (lwork, 1));
-  double *pwork = work.fortran_vec ();
+  double *pwork = work.rwdata ();
 
   // BWORK is not referenced for the non-ordered Schur routine.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
   Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.fortran_vec ();
+  F77_INT *pbwork = bwork.rwdata ();
 
   Array<F77_INT> iwork (dim_vector (liwork, 1));
-  F77_INT *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.rwdata ();
 
   F77_XFCN (dgeesx, DGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                              F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -240,25 +240,25 @@ schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
   if (calc_unitary)
     m_unitary_schur_mat.clear (n, n);
 
-  float *s = m_schur_mat.fortran_vec ();
-  float *q = m_unitary_schur_mat.fortran_vec ();
+  float *s = m_schur_mat.rwdata ();
+  float *q = m_unitary_schur_mat.rwdata ();
 
   Array<float> wr (dim_vector (n, 1));
-  float *pwr = wr.fortran_vec ();
+  float *pwr = wr.rwdata ();
 
   Array<float> wi (dim_vector (n, 1));
-  float *pwi = wi.fortran_vec ();
+  float *pwi = wi.rwdata ();
 
   Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.fortran_vec ();
+  float *pwork = work.rwdata ();
 
   // BWORK is not referenced for the non-ordered Schur routine.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
   Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.fortran_vec ();
+  F77_INT *pbwork = bwork.rwdata ();
 
   Array<F77_INT> iwork (dim_vector (liwork, 1));
-  F77_INT *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.rwdata ();
 
   F77_XFCN (sgeesx, SGEESX, (F77_CONST_CHAR_ARG2 (&jobvs, 1),
                              F77_CONST_CHAR_ARG2 (&sort, 1),
@@ -326,22 +326,22 @@ schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
   if (calc_unitary)
     m_unitary_schur_mat.clear (n, n);
 
-  Complex *s = m_schur_mat.fortran_vec ();
-  Complex *q = m_unitary_schur_mat.fortran_vec ();
+  Complex *s = m_schur_mat.rwdata ();
+  Complex *q = m_unitary_schur_mat.rwdata ();
 
   Array<double> rwork (dim_vector (n, 1));
-  double *prwork = rwork.fortran_vec ();
+  double *prwork = rwork.rwdata ();
 
   Array<Complex> w (dim_vector (n, 1));
-  Complex *pw = w.fortran_vec ();
+  Complex *pw = w.rwdata ();
 
   Array<Complex> work (dim_vector (lwork, 1));
-  Complex *pwork = work.fortran_vec ();
+  Complex *pwork = work.rwdata ();
 
   // BWORK is not referenced for non-ordered Schur.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
   Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.fortran_vec ();
+  F77_INT *pbwork = bwork.rwdata ();
 
   F77_XFCN (zgeesx, ZGEESX,
             (F77_CONST_CHAR_ARG2 (&jobvs, 1),
@@ -377,8 +377,8 @@ rsf2csf<ComplexMatrix, Matrix> (const Matrix& s_arg, const Matrix& u_arg)
       OCTAVE_LOCAL_BUFFER (double, sx, n-1);
 
       F77_XFCN (zrsf2csf, ZRSF2CSF,
-                (n, F77_DBLE_CMPLX_ARG (s.fortran_vec ()),
-                 F77_DBLE_CMPLX_ARG (u.fortran_vec ()), c, sx));
+                (n, F77_DBLE_CMPLX_ARG (s.rwdata ()),
+                 F77_DBLE_CMPLX_ARG (u.rwdata ()), c, sx));
     }
 
   return schur<ComplexMatrix> (s, u);
@@ -437,22 +437,22 @@ schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
   if (calc_unitary)
     m_unitary_schur_mat.clear (n, n);
 
-  FloatComplex *s = m_schur_mat.fortran_vec ();
-  FloatComplex *q = m_unitary_schur_mat.fortran_vec ();
+  FloatComplex *s = m_schur_mat.rwdata ();
+  FloatComplex *q = m_unitary_schur_mat.rwdata ();
 
   Array<float> rwork (dim_vector (n, 1));
-  float *prwork = rwork.fortran_vec ();
+  float *prwork = rwork.rwdata ();
 
   Array<FloatComplex> w (dim_vector (n, 1));
-  FloatComplex *pw = w.fortran_vec ();
+  FloatComplex *pw = w.rwdata ();
 
   Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.fortran_vec ();
+  FloatComplex *pwork = work.rwdata ();
 
   // BWORK is not referenced for non-ordered Schur.
   F77_INT ntmp = (ord_char == 'N' || ord_char == 'n') ? 0 : n;
   Array<F77_INT> bwork (dim_vector (ntmp, 1));
-  F77_INT *pbwork = bwork.fortran_vec ();
+  F77_INT *pbwork = bwork.rwdata ();
 
   F77_XFCN (cgeesx, CGEESX,
             (F77_CONST_CHAR_ARG2 (&jobvs, 1),
@@ -490,8 +490,8 @@ rsf2csf<FloatComplexMatrix, FloatMatrix> (const FloatMatrix& s_arg,
       OCTAVE_LOCAL_BUFFER (float, sx, n-1);
 
       F77_XFCN (crsf2csf, CRSF2CSF,
-                (n, F77_CMPLX_ARG (s.fortran_vec ()),
-                 F77_CMPLX_ARG (u.fortran_vec ()), c, sx));
+                (n, F77_CMPLX_ARG (s.rwdata ()),
+                 F77_CMPLX_ARG (u.rwdata ()), c, sx));
     }
 
   return schur<FloatComplexMatrix> (s, u);

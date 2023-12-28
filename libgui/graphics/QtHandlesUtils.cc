@@ -160,7 +160,7 @@ namespace Utils
   toRgb (const QColor& c)
   {
     Matrix rgb (1, 3);
-    double *rgbData = rgb.fortran_vec ();
+    double *rgbData = rgb.rwdata ();
 
 #if HAVE_QCOLOR_FLOAT_TYPE
     float tmp[3];

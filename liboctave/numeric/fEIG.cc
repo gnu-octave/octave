@@ -54,21 +54,21 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   F77_INT info = 0;
 
   FloatMatrix atmp = a;
-  float *tmp_data = atmp.fortran_vec ();
+  float *tmp_data = atmp.rwdata ();
 
   Array<float> wr (dim_vector (n, 1));
-  float *pwr = wr.fortran_vec ();
+  float *pwr = wr.rwdata ();
 
   Array<float> wi (dim_vector (n, 1));
-  float *pwi = wi.fortran_vec ();
+  float *pwi = wi.rwdata ();
 
   volatile F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
-  float *pvr = vr.fortran_vec ();
+  float *pvr = vr.rwdata ();
 
   volatile F77_INT nvl = (calc_lev ? n : 0);
   FloatMatrix vl (nvl, nvl);
-  float *pvl = vl.fortran_vec ();
+  float *pvl = vl.rwdata ();
 
   F77_INT lwork = -1;
   float dummy_work;
@@ -77,15 +77,15 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   F77_INT ihi;
 
   Array<float> scale (dim_vector (n, 1));
-  float *pscale = scale.fortran_vec ();
+  float *pscale = scale.rwdata ();
 
   float abnrm;
 
   Array<float> rconde (dim_vector (n, 1));
-  float *prconde = rconde.fortran_vec ();
+  float *prconde = rconde.rwdata ();
 
   Array<float> rcondv (dim_vector (n, 1));
-  float *prcondv = rcondv.fortran_vec ();
+  float *prcondv = rcondv.rwdata ();
 
   F77_INT dummy_iwork;
 
@@ -107,7 +107,7 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.fortran_vec ();
+  float *pwork = work.rwdata ();
 
   F77_XFCN (sgeevx, SGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 ("N", 1),
@@ -184,10 +184,10 @@ FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
   F77_INT info = 0;
 
   FloatMatrix atmp = a;
-  float *tmp_data = atmp.fortran_vec ();
+  float *tmp_data = atmp.rwdata ();
 
   FloatColumnVector wr (n);
-  float *pwr = wr.fortran_vec ();
+  float *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   float dummy_work;
@@ -203,7 +203,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, bool calc_rev, bool calc_lev)
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.fortran_vec ();
+  float *pwork = work.rwdata ();
 
   F77_XFCN (ssyev, SSYEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -244,39 +244,39 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
   F77_INT info = 0;
 
   FloatComplexMatrix atmp = a;
-  FloatComplex *tmp_data = atmp.fortran_vec ();
+  FloatComplex *tmp_data = atmp.rwdata ();
 
   FloatComplexColumnVector wr (n);
-  FloatComplex *pw = wr.fortran_vec ();
+  FloatComplex *pw = wr.rwdata ();
 
   F77_INT nvr = (calc_rev ? n : 0);
   FloatComplexMatrix vrtmp (nvr, nvr);
-  FloatComplex *pvr = vrtmp.fortran_vec ();
+  FloatComplex *pvr = vrtmp.rwdata ();
 
   F77_INT nvl = (calc_lev ? n : 0);
   FloatComplexMatrix vltmp (nvl, nvl);
-  FloatComplex *pvl = vltmp.fortran_vec ();
+  FloatComplex *pvl = vltmp.rwdata ();
 
   F77_INT lwork = -1;
   FloatComplex dummy_work;
 
   F77_INT lrwork = 2*n;
   Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.fortran_vec ();
+  float *prwork = rwork.rwdata ();
 
   F77_INT ilo;
   F77_INT ihi;
 
   Array<float> scale (dim_vector (n, 1));
-  float *pscale = scale.fortran_vec ();
+  float *pscale = scale.rwdata ();
 
   float abnrm;
 
   Array<float> rconde (dim_vector (n, 1));
-  float *prconde = rconde.fortran_vec ();
+  float *prconde = rconde.rwdata ();
 
   Array<float> rcondv (dim_vector (n, 1));
-  float *prcondv = rcondv.fortran_vec ();
+  float *prcondv = rcondv.rwdata ();
 
   F77_XFCN (cgeevx, CGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -296,7 +296,7 @@ FloatEIG::init (const FloatComplexMatrix& a, bool calc_rev, bool calc_lev,
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.fortran_vec ();
+  FloatComplex *pwork = work.rwdata ();
 
   F77_XFCN (cgeevx, CGEEVX, (F77_CONST_CHAR_ARG2 (balance ? "B" : "N", 1),
                              F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
@@ -337,17 +337,17 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
   F77_INT info = 0;
 
   FloatComplexMatrix atmp = a;
-  FloatComplex *tmp_data = atmp.fortran_vec ();
+  FloatComplex *tmp_data = atmp.rwdata ();
 
   FloatColumnVector wr (n);
-  float *pwr = wr.fortran_vec ();
+  float *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   FloatComplex dummy_work;
 
   F77_INT lrwork = 3*n;
   Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.fortran_vec ();
+  float *prwork = rwork.rwdata ();
 
   F77_XFCN (cheev, CHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -362,7 +362,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a, bool calc_rev,
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.fortran_vec ();
+  FloatComplex *pwork = work.rwdata ();
 
   F77_XFCN (cheev, CHEEV, (F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -407,7 +407,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   F77_INT info = 0;
 
   FloatMatrix tmp = b;
-  float *tmp_data = tmp.fortran_vec ();
+  float *tmp_data = tmp.rwdata ();
   if (! force_qz)
     {
       F77_XFCN (spotrf, SPOTRF, (F77_CONST_CHAR_ARG2 ("L", 1),
@@ -420,27 +420,27 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
     }
 
   FloatMatrix atmp = a;
-  float *atmp_data = atmp.fortran_vec ();
+  float *atmp_data = atmp.rwdata ();
 
   FloatMatrix btmp = b;
-  float *btmp_data = btmp.fortran_vec ();
+  float *btmp_data = btmp.rwdata ();
 
   Array<float> ar (dim_vector (n, 1));
-  float *par = ar.fortran_vec ();
+  float *par = ar.rwdata ();
 
   Array<float> ai (dim_vector (n, 1));
-  float *pai = ai.fortran_vec ();
+  float *pai = ai.rwdata ();
 
   Array<float> beta (dim_vector (n, 1));
-  float *pbeta = beta.fortran_vec ();
+  float *pbeta = beta.rwdata ();
 
   volatile F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
-  float *pvr = vr.fortran_vec ();
+  float *pvr = vr.rwdata ();
 
   volatile F77_INT nvl = (calc_lev ? n : 0);
   FloatMatrix vl (nvl, nvl);
-  float *pvl = vl.fortran_vec ();
+  float *pvl = vl.rwdata ();
 
   F77_INT lwork = -1;
   float dummy_work;
@@ -459,7 +459,7 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.fortran_vec ();
+  float *pwork = work.rwdata ();
 
   F77_XFCN (sggev, SGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -542,13 +542,13 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
   F77_INT info = 0;
 
   FloatMatrix atmp = a;
-  float *atmp_data = atmp.fortran_vec ();
+  float *atmp_data = atmp.rwdata ();
 
   FloatMatrix btmp = b;
-  float *btmp_data = btmp.fortran_vec ();
+  float *btmp_data = btmp.rwdata ();
 
   FloatColumnVector wr (n);
-  float *pwr = wr.fortran_vec ();
+  float *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   float dummy_work;
@@ -566,7 +566,7 @@ FloatEIG::symmetric_init (const FloatMatrix& a, const FloatMatrix& b,
 
   lwork = static_cast<F77_INT> (dummy_work);
   Array<float> work (dim_vector (lwork, 1));
-  float *pwork = work.fortran_vec ();
+  float *pwork = work.rwdata ();
 
   F77_XFCN (ssygv, SSYGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -612,7 +612,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
   F77_INT info = 0;
 
   FloatComplexMatrix tmp = b;
-  FloatComplex *tmp_data = tmp.fortran_vec ();
+  FloatComplex *tmp_data = tmp.rwdata ();
 
   if (! force_qz)
     {
@@ -626,31 +626,31 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
     }
 
   FloatComplexMatrix atmp = a;
-  FloatComplex *atmp_data = atmp.fortran_vec ();
+  FloatComplex *atmp_data = atmp.rwdata ();
 
   FloatComplexMatrix btmp = b;
-  FloatComplex *btmp_data = btmp.fortran_vec ();
+  FloatComplex *btmp_data = btmp.rwdata ();
 
   FloatComplexColumnVector alpha (n);
-  FloatComplex *palpha = alpha.fortran_vec ();
+  FloatComplex *palpha = alpha.rwdata ();
 
   FloatComplexColumnVector beta (n);
-  FloatComplex *pbeta = beta.fortran_vec ();
+  FloatComplex *pbeta = beta.rwdata ();
 
   F77_INT nvr = (calc_rev ? n : 0);
   FloatComplexMatrix vrtmp (nvr, nvr);
-  FloatComplex *pvr = vrtmp.fortran_vec ();
+  FloatComplex *pvr = vrtmp.rwdata ();
 
   F77_INT nvl = (calc_lev ? n : 0);
   FloatComplexMatrix vltmp (nvl, nvl);
-  FloatComplex *pvl = vltmp.fortran_vec ();
+  FloatComplex *pvl = vltmp.rwdata ();
 
   F77_INT lwork = -1;
   FloatComplex dummy_work;
 
   F77_INT lrwork = 8*n;
   Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.fortran_vec ();
+  float *prwork = rwork.rwdata ();
 
   F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -667,7 +667,7 @@ FloatEIG::init (const FloatComplexMatrix& a, const FloatComplexMatrix& b,
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.fortran_vec ();
+  FloatComplex *pwork = work.rwdata ();
 
   F77_XFCN (cggev, CGGEV, (F77_CONST_CHAR_ARG2 (calc_lev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
@@ -716,20 +716,20 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
   F77_INT info = 0;
 
   FloatComplexMatrix atmp = a;
-  FloatComplex *atmp_data = atmp.fortran_vec ();
+  FloatComplex *atmp_data = atmp.rwdata ();
 
   FloatComplexMatrix btmp = b;
-  FloatComplex *btmp_data = btmp.fortran_vec ();
+  FloatComplex *btmp_data = btmp.rwdata ();
 
   FloatColumnVector wr (n);
-  float *pwr = wr.fortran_vec ();
+  float *pwr = wr.rwdata ();
 
   F77_INT lwork = -1;
   FloatComplex dummy_work;
 
   F77_INT lrwork = 3*n;
   Array<float> rwork (dim_vector (lrwork, 1));
-  float *prwork = rwork.fortran_vec ();
+  float *prwork = rwork.rwdata ();
 
   F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),
@@ -745,7 +745,7 @@ FloatEIG::hermitian_init (const FloatComplexMatrix& a,
 
   lwork = static_cast<F77_INT> (dummy_work.real ());
   Array<FloatComplex> work (dim_vector (lwork, 1));
-  FloatComplex *pwork = work.fortran_vec ();
+  FloatComplex *pwork = work.rwdata ();
 
   F77_XFCN (chegv, CHEGV, (1, F77_CONST_CHAR_ARG2 (calc_rev ? "V" : "N", 1),
                            F77_CONST_CHAR_ARG2 ("U", 1),

@@ -340,7 +340,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
             for (octave_idx_type i = 0; i < nr - 1; i++)
               c.xelem (i) = dtmp[i] - 1;
             nc_new = dtmp[nr - 1];
-            read_mat_binary_data (is, data.fortran_vec (), prec, nr - 1,
+            read_mat_binary_data (is, data.rwdata (), prec, nr - 1,
                                   swap, flt_fmt);
             read_mat_binary_data (is, dtmp, prec, 1, swap, flt_fmt);
 
@@ -353,7 +353,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
       {
         Matrix re (nr, nc);
 
-        read_mat_binary_data (is, re.fortran_vec (), prec, dlen, swap, flt_fmt);
+        read_mat_binary_data (is, re.rwdata (), prec, dlen, swap, flt_fmt);
 
         if (! is)
           error ("load: reading matrix data for '%s'", name);
@@ -362,7 +362,7 @@ read_mat_binary_data (std::istream& is, const std::string& filename,
           {
             Matrix im (nr, nc);
 
-            read_mat_binary_data (is, im.fortran_vec (), prec, dlen, swap,
+            read_mat_binary_data (is, im.rwdata (), prec, dlen, swap,
                                   flt_fmt);
 
             if (! is)

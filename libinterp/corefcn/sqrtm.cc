@@ -68,7 +68,7 @@ sqrtm_utri_inplace (Matrix& T)
   // given in Higham's paper.
 
   const octave_idx_type n = T.rows ();
-  element_type *Tp = T.fortran_vec ();
+  element_type *Tp = T.rwdata ();
   for (octave_idx_type j = 0; j < n; j++)
     {
       element_type *colj = Tp + n*j;

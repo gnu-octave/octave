@@ -380,7 +380,7 @@ FloatComplexDiagMatrix::operator += (const FloatDiagMatrix& a)
   if (r == 0 || c == 0)
     return *this;
 
-  FloatComplex *d = fortran_vec (); // Ensures only 1 reference to my privates!
+  FloatComplex *d = rwdata (); // Ensures only 1 reference to my privates!
 
   mx_inline_add2 (length (), d, a.data ());
   return *this;

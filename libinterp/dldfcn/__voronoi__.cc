@@ -164,7 +164,7 @@ Undocumented internal function.
 
   std::string cmd = "qhull v" + options;
 
-  int exitcode = qh_new_qhull (qh, dim, num_points, points.fortran_vec (),
+  int exitcode = qh_new_qhull (qh, dim, num_points, points.rwdata (),
                                ismalloc, &cmd[0], outfile, errfile);
 
   unwind_action free_memory ([qh] () { free_qhull_memory (qh); });

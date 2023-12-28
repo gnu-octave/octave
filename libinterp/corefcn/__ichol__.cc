@@ -254,11 +254,11 @@ ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
   max_len = sm.nnz ();
   max_len += (0.1 * max_len) > n ? 0.1 * max_len : n;
   Array <octave_idx_type> cidx_out_l (dim_vector (n + 1, 1));
-  octave_idx_type *cidx_l = cidx_out_l.fortran_vec ();
+  octave_idx_type *cidx_l = cidx_out_l.rwdata ();
   Array <octave_idx_type> ridx_out_l (dim_vector (max_len, 1));
-  octave_idx_type *ridx_l = ridx_out_l.fortran_vec ();
+  octave_idx_type *ridx_l = ridx_out_l.rwdata ();
   Array <T> data_out_l (dim_vector (max_len, 1));
-  T *data_l = data_out_l.fortran_vec ();
+  T *data_l = data_out_l.rwdata ();
 
   // Working arrays
   OCTAVE_LOCAL_BUFFER (T, w_data, n);
@@ -332,9 +332,9 @@ ichol_t (const octave_matrix_t& sm, octave_matrix_t& L, const T *cols_norm,
         {
           max_len += (0.1 * max_len) > n ? 0.1 * max_len : n;
           data_out_l.resize (dim_vector (max_len, 1));
-          data_l = data_out_l.fortran_vec ();
+          data_l = data_out_l.rwdata ();
           ridx_out_l.resize (dim_vector (max_len, 1));
-          ridx_l = ridx_out_l.fortran_vec ();
+          ridx_l = ridx_out_l.rwdata ();
         }
 
       // The sorting of the nonzero elements of the working column can be
@@ -445,7 +445,7 @@ Undocumented internal function.
       RowVector sm_col_norms = xcolnorms (sm_l, 1);
       ichol_t <SparseMatrix,
               double, ichol_mult_real, ichol_checkpivot_real>
-              (sm_l, L, sm_col_norms.fortran_vec (), droptol, michol);
+              (sm_l, L, sm_col_norms.rwdata (), droptol, michol);
 
       return ovl (L);
     }
@@ -457,7 +457,7 @@ Undocumented internal function.
       Array <Complex> cols_norm = xcolnorms (sm_l, 1);
       ichol_t <SparseComplexMatrix,
               Complex, ichol_mult_complex, ichol_checkpivot_complex>
-              (sm_l, L, cols_norm.fortran_vec (),
+              (sm_l, L, cols_norm.rwdata (),
                Complex (droptol), michol);
 
       return ovl (L);

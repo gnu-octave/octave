@@ -218,7 +218,7 @@ octave_float_diag_matrix::load_binary (std::istream& is, bool swap,
     }
 
   FloatDiagMatrix m (r, c);
-  float *re = m.fortran_vec ();
+  float *re = m.rwdata ();
   octave_idx_type len = m.length ();
   read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
 

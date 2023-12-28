@@ -147,7 +147,7 @@ The author of the code itself is Timothy A. Davis
 
   OCTAVE_LOCAL_BUFFER (suitesparse_integer, P, n_col);
   Matrix xinfo (AMD_INFO, 1);
-  double *Info = xinfo.fortran_vec ();
+  double *Info = xinfo.rwdata ();
 
   // FIXME: how can we manage the memory allocation of amd
   //        in a cleaner manner?

@@ -82,7 +82,7 @@ Undocumented internal function.
                 {
                   F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
                                            reinterpret_cast<float const *> (ymat.data ()) + k * inc,
-                                           reinterpret_cast<float *> (dmat.fortran_vec ()) + k * inc,
+                                           reinterpret_cast<float *> (dmat.rwdata ()) + k * inc,
                                            incfd, ierr));
 
                   if (ierr < 0)
@@ -91,7 +91,7 @@ Undocumented internal function.
 
                   F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
                                            reinterpret_cast<float const *> (ymat.data ()) + 1 + k * inc,
-                                           reinterpret_cast<float *> (dmat.fortran_vec ()) + 1 + k * inc,
+                                           reinterpret_cast<float *> (dmat.rwdata ()) + 1 + k * inc,
                                            incfd, ierr));
 
                   if (ierr < 0)
@@ -124,7 +124,7 @@ Undocumented internal function.
                 {
                   F77_XFCN (pchim, PCHIM, (nx, xvec.data (),
                                            ymat.data () + k * inc,
-                                           dmat.fortran_vec () + k * inc,
+                                           dmat.rwdata () + k * inc,
                                            incfd, ierr));
 
                   k++;
@@ -165,7 +165,7 @@ Undocumented internal function.
                 {
                   F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
                                              reinterpret_cast<double const *> (ymat.data ()) + k * inc,
-                                             reinterpret_cast<double *> (dmat.fortran_vec ()) + k * inc,
+                                             reinterpret_cast<double *> (dmat.rwdata ()) + k * inc,
                                              incfd, ierr));
 
                   if (ierr < 0)
@@ -174,7 +174,7 @@ Undocumented internal function.
 
                   F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
                                              reinterpret_cast<double const *> (ymat.data ()) + 1 + k * inc,
-                                             reinterpret_cast<double *> (dmat.fortran_vec ()) + 1 + k * inc,
+                                             reinterpret_cast<double *> (dmat.rwdata ()) + 1 + k * inc,
                                              incfd, ierr));
 
                   if (ierr < 0)
@@ -207,7 +207,7 @@ Undocumented internal function.
                 {
                   F77_XFCN (dpchim, DPCHIM, (nx, xvec.data (),
                                              ymat.data () + k * inc,
-                                             dmat.fortran_vec () + k * inc,
+                                             dmat.rwdata () + k * inc,
                                              incfd, ierr));
                   k++;
 

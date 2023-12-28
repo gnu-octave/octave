@@ -382,7 +382,7 @@ read_mat5_integer_data (std::istream& is, int *m,
                                                                         \
     octave_idx_type n = re.numel ();                                    \
     tmp_pos = is.tellg ();                                              \
-    read_mat5_integer_data (is, re.fortran_vec (), n, swap,             \
+    read_mat5_integer_data (is, re.rwdata (), n, swap,             \
                             static_cast<enum mat5_data_type> (type));   \
                                                                         \
     if (! is)                                                           \
@@ -401,7 +401,7 @@ read_mat5_integer_data (std::istream& is, int *m,
                  retval.c_str ());                                      \
                                                                         \
         n = im.numel ();                                                \
-        read_mat5_binary_data (is, im.fortran_vec (), n, swap,          \
+        read_mat5_binary_data (is, im.rwdata (), n, swap,          \
                                static_cast<enum mat5_data_type> (type), flt_fmt); \
                                                                         \
         if (! is)                                                       \
@@ -808,7 +808,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
         if (imag)
           {
             re = NDArray (dim_vector (nnz, 1));
-            data = re.fortran_vec ();
+            data = re.rwdata ();
           }
 
         tmp_pos = is.tellg ();
@@ -832,7 +832,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: reading sparse matrix data for '%s'",
                      retval.c_str ());
 
-            read_mat5_binary_data (is, im.fortran_vec (), nnz, swap,
+            read_mat5_binary_data (is, im.rwdata (), nnz, swap,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
@@ -1325,7 +1325,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         octave_idx_type n = re.numel ();
         tmp_pos = is.tellg ();
-        read_mat5_binary_data (is, re.fortran_vec (), n, swap,
+        read_mat5_binary_data (is, re.rwdata (), n, swap,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
@@ -1345,7 +1345,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: reading matrix data for '%s'", retval.c_str ());
 
             n = im.numel ();
-            read_mat5_binary_data (is, im.fortran_vec (), n, swap,
+            read_mat5_binary_data (is, im.rwdata (), n, swap,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 
@@ -1382,7 +1382,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
 
         octave_idx_type n = re.numel ();
         tmp_pos = is.tellg ();
-        read_mat5_binary_data (is, re.fortran_vec (), n, swap,
+        read_mat5_binary_data (is, re.rwdata (), n, swap,
                                static_cast<enum mat5_data_type> (type),
                                flt_fmt);
 
@@ -1415,7 +1415,7 @@ read_mat5_binary_element (std::istream& is, const std::string& filename,
               error ("load: reading matrix data for '%s'", retval.c_str ());
 
             n = im.numel ();
-            read_mat5_binary_data (is, im.fortran_vec (), n, swap,
+            read_mat5_binary_data (is, im.rwdata (), n, swap,
                                    static_cast<enum mat5_data_type> (type),
                                    flt_fmt);
 

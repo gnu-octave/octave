@@ -495,8 +495,8 @@ IDA::jacdense_impl (realtype t, realtype cj,
     jac = (*m_jacdcell) (m_dfdy, m_dfdyp, cj);
 
   octave_f77_int_type num_jac = to_f77_int (jac.numel ());
-  std::copy (jac.fortran_vec (),
-             jac.fortran_vec () + num_jac,
+  std::copy (jac.rwdata (),
+             jac.rwdata () + num_jac,
              SUNDenseMatrix_Data (JJ));
 }
 

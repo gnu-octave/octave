@@ -508,7 +508,7 @@ Array<T, Alloc>::permute (const Array<octave_idx_type>& perm_vec_arg, bool inv) 
   if (numel () > 0)
     {
       rec_permute_helper rh (dv, perm_vec);
-      rh.permute (data (), retval.fortran_vec ());
+      rh.permute (data (), retval.rwdata ());
     }
 
   return retval;
@@ -765,7 +765,7 @@ Array<T, Alloc>::index (const octave::idx_vector& i) const
           retval = Array<T, Alloc> (result_dims);
 
           if (idx_len != 0)
-            i.index (data (), n, retval.fortran_vec ());
+            i.index (data (), n, retval.rwdata ());
         }
     }
 
@@ -811,7 +811,7 @@ Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j
               // Don't use resize to avoid useless initialization for POD types.
               retval = Array<T, Alloc> (dim_vector (il, jl));
 
-              ii.index (data (), n, retval.fortran_vec ());
+              ii.index (data (), n, retval.rwdata ());
             }
         }
       else
@@ -820,7 +820,7 @@ Array<T, Alloc>::index (const octave::idx_vector& i, const octave::idx_vector& j
           retval = Array<T, Alloc> (dim_vector (il, jl));
 
           const T *src = data ();
-          T *dest = retval.fortran_vec ();
+          T *dest = retval.rwdata ();
 
           for (octave_idx_type k = 0; k < jl; k++)
             dest += i.index (src + r * j.xelem (k), r, dest);
@@ -884,7 +884,7 @@ Array<T, Alloc>::index (const Array<octave::idx_vector>& ia) const
               retval = Array<T, Alloc> (rdv);
 
               // Do it.
-              rh.index (data (), retval.fortran_vec ());
+              rh.index (data (), retval.rwdata ());
             }
         }
     }
@@ -954,7 +954,7 @@ Array<T, Alloc>::resize1 (octave_idx_type n, const T& rfv)
           static const octave_idx_type MAX_STACK_CHUNK = 1024;
           octave_idx_type nn = n + std::min (nx, MAX_STACK_CHUNK);
           Array<T, Alloc> tmp (Array<T, Alloc> (dim_vector (nn, 1)), dv, 0, n);
-          T *dest = tmp.fortran_vec ();
+          T *dest = tmp.rwdata ();
 
           std::copy_n (data (), nx, dest);
           dest[nx] = rfv;
@@ -965,7 +965,7 @@ Array<T, Alloc>::resize1 (octave_idx_type n, const T& rfv)
   else if (n != nx)
     {
       Array<T, Alloc> tmp = Array<T, Alloc> (dv);
-      T *dest = tmp.fortran_vec ();
+      T *dest = tmp.rwdata ();
 
       octave_idx_type n0 = std::min (n, nx);
       octave_idx_type n1 = n - n0;
@@ -988,7 +988,7 @@ Array<T, Alloc>::resize2 (octave_idx_type r, octave_idx_type c, const T& rfv)
   if (r != rx || c != cx)
     {
       Array<T, Alloc> tmp = Array<T, Alloc> (dim_vector (r, c));
-      T *dest = tmp.fortran_vec ();
+      T *dest = tmp.rwdata ();
 
       octave_idx_type r0 = std::min (r, rx);
       octave_idx_type r1 = r - r0;
@@ -1035,7 +1035,7 @@ Array<T, Alloc>::resize (const dim_vector& dv, const T& rfv)
       rec_resize_helper rh (dv, m_dimensions.redim (dvl));
 
       // Do it.
-      rh.resize_fill (data (), tmp.fortran_vec (), rfv);
+      rh.resize_fill (data (), tmp.rwdata (), rfv);
       *this = tmp;
     }
 }
@@ -1163,9 +1163,9 @@ Array<T, Alloc>::assign (const octave::idx_vector& i, const Array<T, Alloc>& rhs
   else
     {
       if (rhl == 1)
-        i.fill (rhs(0), n, fortran_vec ());
+        i.fill (rhs(0), n, rwdata ());
       else
-        i.assign (rhs.data (), n, fortran_vec ());
+        i.assign (rhs.data (), n, rwdata ());
     }
 }
 
@@ -1243,7 +1243,7 @@ Array<T, Alloc>::assign (const octave::idx_vector& i, const octave::idx_vector& 
           octave::idx_vector ii (i);
 
           const T *src = rhs.data ();
-          T *dest = fortran_vec ();
+          T *dest = rwdata ();
 
           // Try reduction first.
           if (ii.maybe_reduce (r, j, c))
@@ -1367,9 +1367,9 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
 
               // Do it.
               if (isfill)
-                rh.fill (rhs(0), fortran_vec ());
+                rh.fill (rhs(0), rwdata ());
               else
-                rh.assign (rhs.data (), fortran_vec ());
+                rh.assign (rhs.data (), rwdata ());
             }
         }
       else
@@ -1429,7 +1429,7 @@ Array<T, Alloc>::delete_elements (const octave::idx_vector& i)
           octave_idx_type m = n + l - u;
           Array<T, Alloc> tmp (dim_vector (col_vec ? m : 1, ! col_vec ? m : 1));
           const T *src = data ();
-          T *dest = tmp.fortran_vec ();
+          T *dest = tmp.rwdata ();
           std::copy_n (src, l, dest);
           std::copy (src + u, src + n, dest + l);
           *this = tmp;
@@ -1482,7 +1482,7 @@ Array<T, Alloc>::delete_elements (int dim, const octave::idx_vector& i)
           // Special case deleting a contiguous range.
           Array<T, Alloc> tmp = Array<T, Alloc> (rdv);
           const T *src = data ();
-          T *dest = tmp.fortran_vec ();
+          T *dest = tmp.rwdata ();
           l *= dl; u *= dl; n *= dl;
           for (octave_idx_type k = 0; k < du; k++)
             {
@@ -1633,7 +1633,7 @@ Array<T, Alloc>::transpose () const
 
       // Reuse the implementation used for permuting.
 
-      rec_permute_helper::blk_trans (data (), result.fortran_vec (), nr, nc);
+      rec_permute_helper::blk_trans (data (), result.rwdata (), nr, nc);
 
       return result;
     }
@@ -1761,7 +1761,7 @@ Array<T, Alloc>::hermitian (T (*fcn) (const T&)) const
 
 template <typename T, typename Alloc>
 T *
-Array<T, Alloc>::fortran_vec ()
+Array<T, Alloc>::rwdata ()
 {
   make_unique ();
 
@@ -1800,7 +1800,7 @@ Array<T, Alloc>::sort (int dim, sortmode mode) const
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
-  T *v = m.fortran_vec ();
+  T *v = m.rwdata ();
   const T *ov = data ();
 
   octave_sort<T> lsort;
@@ -1913,13 +1913,13 @@ Array<T, Alloc>::sort (Array<octave_idx_type>& sidx, int dim,
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
-  T *v = m.fortran_vec ();
+  T *v = m.rwdata ();
   const T *ov = data ();
 
   octave_sort<T> lsort;
 
   sidx = Array<octave_idx_type> (dv);
-  octave_idx_type *vi = sidx.fortran_vec ();
+  octave_idx_type *vi = sidx.rwdata ();
 
   if (mode != UNSORTED)
     lsort.set_compare (mode);
@@ -2087,7 +2087,7 @@ Array<T, Alloc>::sort_rows_idx (sortmode mode) const
 
   idx = Array<octave_idx_type> (dim_vector (r, 1));
 
-  lsort.sort_rows (data (), idx.fortran_vec (), r, c);
+  lsort.sort_rows (data (), idx.rwdata (), r, c);
 
   return idx;
 }
@@ -2211,9 +2211,9 @@ Array<T, Alloc>::lookup (const Array<T, Alloc>& values, sortmode mode) const
 
   if (vmode != UNSORTED)
     lsort.lookup_sorted (data (), n, values.data (), nval,
-                         idx.fortran_vec (), vmode != mode);
+                         idx.rwdata (), vmode != mode);
   else
-    lsort.lookup (data (), n, values.data (), nval, idx.fortran_vec ());
+    lsort.lookup (data (), n, values.data (), nval, idx.rwdata ());
 
   return idx;
 }
@@ -2250,7 +2250,7 @@ Array<T, Alloc>::find (octave_idx_type n, bool backward) const
         cnt += src[i] != zero;
 
       retval.clear (cnt, 1);
-      octave_idx_type *dest = retval.fortran_vec ();
+      octave_idx_type *dest = retval.rwdata ();
       for (octave_idx_type i = 0; i < nel; i++)
         if (src[i] != zero) *dest++ = i;
     }
@@ -2275,7 +2275,7 @@ Array<T, Alloc>::find (octave_idx_type n, bool backward) const
             }
           if (k < n)
             retval.resize2 (k, 1);
-          octave_idx_type *rdata = retval.fortran_vec ();
+          octave_idx_type *rdata = retval.rwdata ();
           std::reverse (rdata, rdata + k);
         }
       else
@@ -2400,7 +2400,7 @@ Array<T, Alloc>::nth_element (const octave::idx_vector& n, int dim) const
   for (int i = 0; i < dim; i++)
     stride *= dv(i);
 
-  T *v = m.fortran_vec ();
+  T *v = m.rwdata ();
   const T *ov = data ();
 
   OCTAVE_LOCAL_BUFFER (T, buf, ns);

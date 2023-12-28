@@ -169,7 +169,7 @@ PermMatrix::pos_power (octave_idx_type m) const
 
   const octave_idx_type *p = data ();
   Array<octave_idx_type> res_pvec (dim_vector (n, 1), -1);
-  octave_idx_type *q = res_pvec.fortran_vec ();
+  octave_idx_type *q = res_pvec.rwdata ();
 
   for (octave_idx_type ics = 0; ics < n; ics++)
     {

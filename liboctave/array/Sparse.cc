@@ -1998,10 +1998,10 @@ Sparse<T, Alloc>::assign (const octave::idx_vector& idx,
               // Disassembly our matrix...
               Array<octave_idx_type> new_ri (dim_vector (new_nz, 1));
               Array<T> new_data (dim_vector (new_nz, 1));
-              std::copy_n (tmp.ridx (), nz, new_ri.fortran_vec ());
-              std::copy_n (tmp.data (), nz, new_data.fortran_vec ());
+              std::copy_n (tmp.ridx (), nz, new_ri.rwdata ());
+              std::copy_n (tmp.data (), nz, new_data.rwdata ());
               // ... insert new data (densified) ...
-              idx.copy_data (new_ri.fortran_vec () + nz);
+              idx.copy_data (new_ri.rwdata () + nz);
               new_data.assign (octave::idx_vector (nz, new_nz), rhs.array_value ());
               // ... reassembly.
               *this = Sparse<T, Alloc> (new_data, new_ri, 0, nr, nc, false);

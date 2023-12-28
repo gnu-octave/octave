@@ -7970,7 +7970,7 @@ do_merge (const Array<bool>& mask,
   if ((! tscl && tval.dims () != dv) || (! fscl && fval.dims () != dv))
     error ("merge: MASK, TVAL, and FVAL dimensions must match");
 
-  T *rv = retval.fortran_vec ();
+  T *rv = retval.rwdata ();
   octave_idx_type n = retval.numel ();
 
   const T *tv = tval.data ();
@@ -8351,7 +8351,7 @@ do_repelems (const Array<T>& src, const Array<octave_idx_type>& rep)
     }
 
   retval.clear (1, l);
-  T *dest = retval.fortran_vec ();
+  T *dest = retval.rwdata ();
   l = 0;
   for (octave_idx_type i = 0; i < n; i++)
     {

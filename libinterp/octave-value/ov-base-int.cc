@@ -394,7 +394,7 @@ octave_base_int_matrix<T>::load_binary (std::istream& is, bool swap,
 
   T m (dv);
 
-  if (! is.read (reinterpret_cast<char *> (m.fortran_vec ()), m.byte_size ()))
+  if (! is.read (reinterpret_cast<char *> (m.rwdata ()), m.byte_size ()))
     return false;
 
   if (swap)
@@ -537,7 +537,7 @@ octave_base_int_matrix<T>::load_hdf5_internal (octave_hdf5_id loc_id,
 
   T m (dv);
   if (H5Dread (data_hid, save_type_hid, octave_H5S_ALL, octave_H5S_ALL,
-               octave_H5P_DEFAULT, m.fortran_vec ()) >= 0)
+               octave_H5P_DEFAULT, m.rwdata ()) >= 0)
     {
       retval = true;
       this->m_matrix = m;

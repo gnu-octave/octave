@@ -300,7 +300,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
   const octave_idx_type def_elem = frameidx(0);
 
   T img       = T (dim_vector (nRows, nCols, 1, nFrames));
-  P *img_fvec = img.fortran_vec ();
+  P *img_fvec = img.rwdata ();
 
   const octave_idx_type row_start = region.row_start ();
   const octave_idx_type col_start = region.col_start ();
@@ -358,7 +358,7 @@ read_indexed_images (const std::vector<Magick::Image>& imvec,
               const double *amap_fvec = amap.data ();
 
               NDArray alpha (dim_vector (nRows, nCols, 1, nFrames));
-              double *alpha_fvec = alpha.fortran_vec ();
+              double *alpha_fvec = alpha.rwdata ();
 
               // GraphicsMagick stores the alpha values inverted, i.e.,
               // 1 for transparent and 0 for opaque so we fix that here.
@@ -526,7 +526,7 @@ read_images (std::vector<Magick::Image>& imvec,
     case Magick::GrayscaleType:         // Grayscale image
       {
         img = T (dim_vector (nRows, nCols, 1, nFrames));
-        P *img_fvec = img.fortran_vec ();
+        P *img_fvec = img.rwdata ();
 
         octave_idx_type idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
@@ -554,8 +554,8 @@ read_images (std::vector<Magick::Image>& imvec,
       {
         img = T (dim_vector (nRows, nCols, 1, nFrames));
         T alpha (dim_vector (nRows, nCols, 1, nFrames));
-        P *img_fvec = img.fortran_vec ();
-        P *a_fvec   = alpha.fortran_vec ();
+        P *img_fvec = img.rwdata ();
+        P *a_fvec   = alpha.rwdata ();
 
         octave_idx_type idx = 0;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
@@ -586,7 +586,7 @@ read_images (std::vector<Magick::Image>& imvec,
     case Magick::TrueColorType:         // Truecolor image
       {
         img = T (dim_vector (nRows, nCols, 3, nFrames));
-        P *img_fvec = img.fortran_vec ();
+        P *img_fvec = img.rwdata ();
 
         const octave_idx_type frame_stride = color_stride * 3;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
@@ -624,8 +624,8 @@ read_images (std::vector<Magick::Image>& imvec,
       {
         img = T (dim_vector (nRows, nCols, 3, nFrames));
         T alpha (dim_vector (nRows, nCols, 1, nFrames));
-        P *img_fvec = img.fortran_vec ();
-        P *a_fvec   = alpha.fortran_vec ();
+        P *img_fvec = img.rwdata ();
+        P *a_fvec   = alpha.rwdata ();
 
         const octave_idx_type frame_stride = color_stride * 3;
 
@@ -667,7 +667,7 @@ read_images (std::vector<Magick::Image>& imvec,
     case Magick::ColorSeparationType:  // Cyan/Magenta/Yellow/Black (CMYK) image
       {
         img = T (dim_vector (nRows, nCols, 4, nFrames));
-        P *img_fvec = img.fortran_vec ();
+        P *img_fvec = img.rwdata ();
 
         const octave_idx_type frame_stride = color_stride * 4;
         for (octave_idx_type frame = 0; frame < nFrames; frame++)
@@ -707,8 +707,8 @@ read_images (std::vector<Magick::Image>& imvec,
       {
         img = T (dim_vector (nRows, nCols, 4, nFrames));
         T alpha (dim_vector (nRows, nCols, 1, nFrames));
-        P *img_fvec = img.fortran_vec ();
-        P *a_fvec   = alpha.fortran_vec ();
+        P *img_fvec = img.rwdata ();
+        P *a_fvec   = alpha.rwdata ();
 
         const octave_idx_type frame_stride = color_stride * 4;
 
@@ -968,7 +968,7 @@ img_float2uint (const T& img)
   typedef typename T::element_type P;
   uint32NDArray out (img.dims ());
 
-  octave_uint32 *out_fvec = out.fortran_vec ();
+  octave_uint32 *out_fvec = out.rwdata ();
   const P       *img_fvec = img.data ();
 
   const octave_uint32 max = octave_uint32::max ();
@@ -2089,7 +2089,7 @@ Use @code{imfinfo} instead.
         // be all zeros.  So rather than send a matrix of zeros, we will
         // check for that, and send an empty vector instead.
         RowVector chromaticities (8);
-        double *chroma_fvec = chromaticities.fortran_vec ();
+        double *chroma_fvec = chromaticities.rwdata ();
         img.chromaWhitePoint    (&chroma_fvec[0], &chroma_fvec[1]);
         img.chromaRedPrimary    (&chroma_fvec[2], &chroma_fvec[3]);
         img.chromaGreenPrimary  (&chroma_fvec[4], &chroma_fvec[5]);

@@ -190,7 +190,7 @@ operator * (const FloatRowVector& v, const FloatMatrix& a)
       F77_INT ld = a_nr;
 
       retval.resize (a_nc);
-      float *y = retval.fortran_vec ();
+      float *y = retval.rwdata ();
 
       F77_XFCN (sgemv, SGEMV, (F77_CONST_CHAR_ARG2 ("T", 1),
                                a_nr, a_nc, 1.0, a.data (),

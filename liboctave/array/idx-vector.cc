@@ -536,7 +536,7 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
     {
       // Use standard sort via octave_sort.
       idx.clear (m_orig_dims);
-      octave_idx_type *idx_data = idx.fortran_vec ();
+      octave_idx_type *idx_data = idx.rwdata ();
       for (octave_idx_type i = 0; i < m_len; i++)
         idx_data[i] = i;
 
@@ -557,7 +557,7 @@ idx_vector::idx_vector_rep::sort_idx (Array<octave_idx_type>& idx)
         cnt[m_data[i]]++;
 
       idx.clear (m_orig_dims);
-      octave_idx_type *idx_data = idx.fortran_vec ();
+      octave_idx_type *idx_data = idx.rwdata ();
 
       octave_idx_type *new_data = new octave_idx_type [m_len];
       new_rep->m_data = new_data;
@@ -617,12 +617,12 @@ idx_vector::idx_vector_rep::as_array ()
 
       if (m_data)
         {
-          std::memcpy (retval.fortran_vec (), m_data, m_len* sizeof (octave_idx_type));
+          std::memcpy (retval.rwdata (), m_data, m_len* sizeof (octave_idx_type));
           // Delete the old copy and share the m_data instead to save memory.
           delete [] m_data;
         }
 
-      m_data = retval.fortran_vec ();
+      m_data = retval.rwdata ();
       m_aowner = new Array<octave_idx_type> (retval);
 
       return retval;
@@ -1108,7 +1108,7 @@ idx_vector::complement (octave_idx_type n) const
       octave_idx_type m_ext = r->extent (0);
       Array<bool> mask (dim_vector (n, 1));
       const bool *m_data = r->get_data ();
-      bool *ndata = mask.fortran_vec ();
+      bool *ndata = mask.rwdata ();
       for (octave_idx_type i = 0; i < m_ext; i++)
         ndata[i] = ! m_data[i];
       std::fill_n (ndata + m_ext, n - m_ext, true);
@@ -1117,7 +1117,7 @@ idx_vector::complement (octave_idx_type n) const
   else
     {
       Array<bool> mask (dim_vector (n, 1), true);
-      fill (false, length (n), mask.fortran_vec ());
+      fill (false, length (n), mask.rwdata ());
       retval = idx_vector (mask);
     }
 

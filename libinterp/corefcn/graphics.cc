@@ -408,7 +408,7 @@ viridis_colormap ()
   // It would be nice if Matrix had a ctor allowing to do the
   // following without a copy
   Matrix cmap (256, 3, 0.0);
-  std::copy (cmapv, cmapv + (256*3), cmap.fortran_vec ());
+  std::copy (cmapv, cmapv + (256*3), cmap.rwdata ());
   return cmap;
 }
 
@@ -1222,7 +1222,7 @@ convert_cdata (const base_properties& props, const octave_value& cdata,
   octave_idx_type lda = a.numel () / static_cast<octave_idx_type> (3);
   octave_idx_type nc = cmap.rows ();
 
-  double *av = a.fortran_vec ();
+  double *av = a.rwdata ();
   const double *cmapv = cmap.data ();
 
   double clim_0 = clim(0);
@@ -5760,7 +5760,7 @@ unit_cube ()
   };
   Matrix m (4, 8);
 
-  memcpy (m.fortran_vec (), data, sizeof (double)*32);
+  memcpy (m.rwdata (), data, sizeof (double)*32);
 
   return m;
 }
@@ -5770,7 +5770,7 @@ cam2xform (const Array<double>& m)
 {
   ColumnVector retval (4, 1.0);
 
-  memcpy (retval.fortran_vec (), m.data (), sizeof (double)*3);
+  memcpy (retval.rwdata (), m.data (), sizeof (double)*3);
 
   return retval;
 }

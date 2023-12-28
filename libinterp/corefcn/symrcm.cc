@@ -206,7 +206,7 @@ find_starting_node (octave_idx_type N, const octave_idx_type *ridx,
 
   OCTAVE_LOCAL_BUFFER (CMK_Node, Q, N+1);
   boolNDArray btmp (dim_vector (1, N), false);
-  bool *visit = btmp.fortran_vec ();
+  bool *visit = btmp.rwdata ();
 
   octave_idx_type qh = 0;
   octave_idx_type qt = 0;
@@ -512,7 +512,7 @@ Mathematics, ISBN 0-13-165274-5, 1981.
   // that have degree==0 and build a CC of the graph.
 
   boolNDArray btmp (dim_vector (1, N), false);
-  bool *visit = btmp.fortran_vec ();
+  bool *visit = btmp.rwdata ();
 
   octave_quit ();
 

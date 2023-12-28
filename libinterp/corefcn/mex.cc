@@ -1955,7 +1955,7 @@ protected:
 
     Array<ELT_T> val (dv);
 
-    ELT_T *ptr = val.fortran_vec ();
+    ELT_T *ptr = val.rwdata ();
 
     mwSize nel = get_number_of_elements ();
 
@@ -1981,7 +1981,7 @@ protected:
 
     ARRAY_T val (dv);
 
-    ARRAY_ELT_T *ptr = val.fortran_vec ();
+    ARRAY_ELT_T *ptr = val.rwdata ();
 
     mwSize nel = get_number_of_elements ();
 
@@ -2244,7 +2244,7 @@ private:
 
     Array<std::complex<T>> val (dv);
 
-    std::complex<T> *ptr = val.fortran_vec ();
+    std::complex<T> *ptr = val.rwdata ();
 
     T *ppi = static_cast<T *> (m_pi);
 
@@ -2834,7 +2834,7 @@ public:
       {
         Cell c (dv);
 
-        octave_value *p = c.fortran_vec ();
+        octave_value *p = c.rwdata ();
 
         mwIndex k = 0;
         for (mwIndex j = i; j < ntot; j += m_nfields)
@@ -2931,7 +2931,7 @@ public:
 
     mwSize nel = get_number_of_elements ();
 
-    octave_value *p = c.fortran_vec ();
+    octave_value *p = c.rwdata ();
 
     for (mwIndex i = 0; i < nel; i++)
       p[i] = mxArray::as_octave_value (m_data[i]);

@@ -155,8 +155,8 @@ protected:
       std::copy_n (d, len, m_data);
     }
 
-    // Use new instead of setting data to 0 so that fortran_vec and
-    // data always return valid addresses, even for zero-size arrays.
+    // Use new instead of setting data to 0 so that rwdata() and data()
+    // always return valid addresses, even for zero-size arrays.
 
     ArrayRep ()
       : Alloc (), m_data (allocate (0)), m_len (0), m_count (1) { }
@@ -658,10 +658,17 @@ public:
   OCTARRAY_API Array<T, Alloc> transpose () const;
   OCTARRAY_API Array<T, Alloc> hermitian (T (*fcn) (const T&) = nullptr) const;
 
+  // Use for direct read-only access to Array data.
   OCTARRAY_OVERRIDABLE_FUNC_API const T * data () const
   { return m_slice_data; }
 
-  OCTARRAY_API T * fortran_vec ();
+  // Use for direct read-write access to Array data.
+  OCTARRAY_API T * rwdata ();
+
+  // Alias for direct read-write access to Array data.
+  // FIXME: It is recommended to use rwdata() in future code for clarity.
+  inline OCTARRAY_API T * fortran_vec ()
+  { return rwdata (); }
 
   OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared () const
   { return m_rep->m_count > 1; }
@@ -861,7 +868,7 @@ public:
     const T *m = data ();
 
     Array<U, A> result (dims ());
-    U *p = result.fortran_vec ();
+    U *p = result.rwdata ();
 
     octave_idx_type i;
     for (i = 0; i < len - 3; i += 4)

@@ -391,7 +391,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
         m_matrix = tmp;
       else
         {
-          char *ftmp = tmp.fortran_vec ();
+          char *ftmp = tmp.rwdata ();
 
           octave::skip_preceeding_newline (is);
 
@@ -423,7 +423,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
           // buffer so that we can properly handle
           // embedded NUL characters.
           charMatrix tmp (1, len);
-          char *ptmp = tmp.fortran_vec ();
+          char *ptmp = tmp.rwdata ();
 
           if (len > 0 && ! is.read (ptmp, len))
             error ("load: failed to load string constant");
@@ -451,7 +451,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
           // Use this instead of a C-style character buffer so
           // that we can properly handle embedded NUL characters.
           charMatrix tmp (1, len);
-          char *ptmp = tmp.fortran_vec ();
+          char *ptmp = tmp.rwdata ();
 
           if (len > 0 && ! is.read (ptmp, len))
             error ("load: failed to load string constant");
@@ -529,7 +529,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
         }
 
       charNDArray m(dv);
-      char *tmp = m.fortran_vec ();
+      char *tmp = m.rwdata ();
       is.read (tmp, dv.numel ());
 
       if (! is)
@@ -549,7 +549,7 @@ octave_char_matrix_str::load_binary (std::istream& is, bool swap,
           if (swap)
             swap_bytes<4> (&len);
           charMatrix btmp (1, len);
-          char *pbtmp = btmp.fortran_vec ();
+          char *pbtmp = btmp.rwdata ();
           if (! is.read (pbtmp, len))
             return false;
           if (len > max_len)
@@ -680,7 +680,7 @@ octave_char_matrix_str::load_hdf5 (octave_hdf5_id loc_id, const char *name)
         }
 
       charNDArray m (dv);
-      char *str = m.fortran_vec ();
+      char *str = m.rwdata ();
       if (H5Dread (data_hid, H5T_NATIVE_CHAR, octave_H5S_ALL, octave_H5S_ALL,
                    octave_H5P_DEFAULT, str) >= 0)
         {

@@ -545,7 +545,7 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
         return false;
 
       FloatNDArray m(dv);
-      float *re = m.fortran_vec ();
+      float *re = m.rwdata ();
       read_floats (is, re, static_cast<save_type> (tmp), dv.numel (),
                    swap, fmt);
 
@@ -565,7 +565,7 @@ octave_float_matrix::load_binary (std::istream& is, bool swap,
       if (! is.read (reinterpret_cast<char *> (&tmp), 1))
         return false;
       FloatMatrix m (nr, nc);
-      float *re = m.fortran_vec ();
+      float *re = m.rwdata ();
       octave_idx_type len = static_cast<octave_idx_type> (nr) * nc;
       read_floats (is, re, static_cast<save_type> (tmp), len, swap, fmt);
 
@@ -698,7 +698,7 @@ octave_float_matrix::load_hdf5 (octave_hdf5_id loc_id, const char *name)
     }
 
   FloatNDArray m (dv);
-  float *re = m.fortran_vec ();
+  float *re = m.rwdata ();
   if (H5Dread (data_hid, H5T_NATIVE_FLOAT, octave_H5S_ALL, octave_H5S_ALL,
                octave_H5P_DEFAULT, re) >= 0)
     {

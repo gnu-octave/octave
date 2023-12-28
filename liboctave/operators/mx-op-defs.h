@@ -440,7 +440,7 @@
       octave::err_nonconformant ("operator *", m_nr, m_nc, dm_nr, dm_nc);       \
                                                                         \
     r = R (m_nr, dm_nc);                                                \
-    R::element_type *rd = r.fortran_vec ();                             \
+    R::element_type *rd = r.rwdata ();                             \
     const M::element_type *md = m.data ();                              \
     const DM::element_type *dd = dm.data ();                            \
                                                                         \
@@ -512,7 +512,7 @@
       octave::err_nonconformant ("operator *", dm_nr, dm_nc, m_nr, m_nc);       \
                                                                         \
     r = R (dm_nr, m_nc);                                                \
-    R::element_type *rd = r.fortran_vec ();                             \
+    R::element_type *rd = r.rwdata ();                             \
     const M::element_type *md = m.data ();                              \
     const DM::element_type *dd = dm.data ();                            \
                                                                         \
@@ -553,7 +553,7 @@
     r.resize (dm1_nr, dm1_nc);                                          \
                                                                         \
     if (dm1_nr > 0 && dm1_nc > 0)                                       \
-      F (dm1.length (), r.fortran_vec (), dm1.data (), dm2.data ());    \
+      F (dm1.length (), r.rwdata (), dm1.data (), dm2.data ());    \
                                                                         \
     return r;                                                           \
   }

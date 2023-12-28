@@ -173,7 +173,7 @@ static void
 dmsolve_insert (MArray<T>& a, const MArray<T>& b, const octave_idx_type *Q,
                 octave_idx_type r, octave_idx_type c)
 {
-  T *ax = a.fortran_vec ();
+  T *ax = a.rwdata ();
 
   const T *bx = b.data ();
 
@@ -299,7 +299,7 @@ dmsolve_permute (MArray<RT>& a, const MArray<T>& b, const octave_idx_type *p)
 
   a.resize (dim_vector (b_nr, b_nc));
 
-  RT *Btx = a.fortran_vec ();
+  RT *Btx = a.rwdata ();
 
   for (octave_idx_type j = 0; j < b_nc; j++)
     {

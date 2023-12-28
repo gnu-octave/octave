@@ -49,7 +49,7 @@ NDArray::NDArray (const Array<octave_idx_type>& a, bool zero_based,
 {
   const octave_idx_type *pa = a.data ();
   resize (a.dims ());
-  double *ptmp = fortran_vec ();
+  double *ptmp = rwdata ();
   if (negative_to_nan)
     {
       double nan_val = lo_ieee_nan_value ();
@@ -117,7 +117,7 @@ NDArray::fourier (int dim) const
 
   const double *in (data ());
   ComplexNDArray retval (dv);
-  Complex *out (retval.fortran_vec ());
+  Complex *out (retval.rwdata ());
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
@@ -147,7 +147,7 @@ NDArray::ifourier (int dim) const
   octave_idx_type dist = (stride == 1 ? n : 1);
 
   ComplexNDArray retval (*this);
-  Complex *out (retval.fortran_vec ());
+  Complex *out (retval.rwdata ());
 
   // Need to be careful here about the distance between fft's
   for (octave_idx_type k = 0; k < nloop; k++)
@@ -167,7 +167,7 @@ NDArray::fourier2d () const
   dim_vector dv2 (dv(0), dv(1));
   const double *in = data ();
   ComplexNDArray retval (dv);
-  Complex *out = retval.fortran_vec ();
+  Complex *out = retval.rwdata ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
   octave_idx_type dist = dv(0) * dv(1);
 
@@ -186,7 +186,7 @@ NDArray::ifourier2d () const
 
   dim_vector dv2 (dv(0), dv(1));
   ComplexNDArray retval (*this);
-  Complex *out = retval.fortran_vec ();
+  Complex *out = retval.rwdata ();
   octave_idx_type howmany = numel () / dv(0) / dv(1);
   octave_idx_type dist = dv(0) * dv(1);
 
@@ -204,7 +204,7 @@ NDArray::fourierNd () const
 
   const double *in (data ());
   ComplexNDArray retval (dv);
-  Complex *out (retval.fortran_vec ());
+  Complex *out (retval.rwdata ());
 
   octave::fftw::fftNd (in, out, rank, dv);
 
@@ -218,9 +218,9 @@ NDArray::ifourierNd () const
   int rank = dv.ndims ();
 
   ComplexNDArray tmp (*this);
-  Complex *in (tmp.fortran_vec ());
+  Complex *in (tmp.rwdata ());
   ComplexNDArray retval (dv);
-  Complex *out (retval.fortran_vec ());
+  Complex *out (retval.rwdata ());
 
   octave::fftw::ifftNd (in, out, rank, dv);
 

@@ -97,16 +97,16 @@ DefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                        double& abserr)
 {
   F77_INT npts = octave::to_f77_int (m_singularities.numel () + 2);
-  double *points = m_singularities.fortran_vec ();
+  double *points = m_singularities.rwdata ();
   double result = 0.0;
 
   F77_INT leniw = 183*npts - 122;
   Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.rwdata ();
 
   F77_INT lenw = 2*leniw - npts;
   Array<double> work (dim_vector (lenw, 1));
-  double *pwork = work.fortran_vec ();
+  double *pwork = work.rwdata ();
 
   user_fcn = m_f;
   F77_INT last;
@@ -147,11 +147,11 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_INT leniw = 128;
   Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.rwdata ();
 
   F77_INT lenw = 8*leniw;
   Array<double> work (dim_vector (lenw, 1));
-  double *pwork = work.fortran_vec ();
+  double *pwork = work.rwdata ();
 
   user_fcn = m_f;
   F77_INT last;
@@ -214,16 +214,16 @@ FloatDefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
                             float& abserr)
 {
   F77_INT npts = octave::to_f77_int (m_singularities.numel () + 2);
-  float *points = m_singularities.fortran_vec ();
+  float *points = m_singularities.rwdata ();
   float result = 0.0;
 
   F77_INT leniw = 183*npts - 122;
   Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.rwdata ();
 
   F77_INT lenw = 2*leniw - npts;
   Array<float> work (dim_vector (lenw, 1));
-  float *pwork = work.fortran_vec ();
+  float *pwork = work.rwdata ();
 
   float_user_fcn = m_ff;
   F77_INT last;
@@ -264,11 +264,11 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
 
   F77_INT leniw = 128;
   Array<F77_INT> iwork (dim_vector (leniw, 1));
-  F77_INT *piwork = iwork.fortran_vec ();
+  F77_INT *piwork = iwork.rwdata ();
 
   F77_INT lenw = 8*leniw;
   Array<float> work (dim_vector (lenw, 1));
-  float *pwork = work.fortran_vec ();
+  float *pwork = work.rwdata ();
 
   float_user_fcn = m_ff;
   F77_INT last;

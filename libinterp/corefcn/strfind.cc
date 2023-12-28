@@ -365,7 +365,7 @@ qs_replace (const Array<char>& str, const Array<char>& pat,
               ret.clear (dim_vector (1, retsiz));
               const char *src = str.data ();
               const char *reps = rep.data ();
-              char *dest = ret.fortran_vec ();
+              char *dest = ret.rwdata ();
 
               octave_idx_type k = 0;
               for (octave_idx_type i = 0; i < nidx; i++)

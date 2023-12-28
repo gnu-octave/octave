@@ -116,7 +116,7 @@ binmap (const T& x, const Array<R>& ya, F fcn)
   const R *y = ya.data ();
 
   Array<U> result (ya.dims ());
-  U *p = result.fortran_vec ();
+  U *p = result.rwdata ();
 
   octave_idx_type i;
   for (i = 0; i < len - 3; i += 4)
@@ -147,7 +147,7 @@ binmap (const Array<T>& xa, const R& y, F fcn)
   const R *x = xa.data ();
 
   Array<U> result (xa.dims ());
-  U *p = result.fortran_vec ();
+  U *p = result.rwdata ();
 
   octave_idx_type i;
   for (i = 0; i < len - 3; i += 4)
@@ -197,7 +197,7 @@ binmap (const Array<T>& xa, const Array<R>& ya, F fcn, const char *name)
   const T *y = ya.data ();
 
   Array<U> result (xa.dims ());
-  U *p = result.fortran_vec ();
+  U *p = result.rwdata ();
 
   octave_idx_type i;
   for (i = 0; i < len - 3; i += 4)

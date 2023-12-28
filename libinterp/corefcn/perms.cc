@@ -101,7 +101,7 @@ GetPerms (const Array<T>& ar_in, bool uniq_v, bool do_sort = false)
   // Set up result array
   octave_idx_type n = static_cast<octave_idx_type> (nr);
   Array<T> res (dim_vector (n, m));
-  T *Res = res.fortran_vec ();
+  T *Res = res.rwdata ();
 
   // Do the actual job
   octave_idx_type i = 0;
@@ -165,7 +165,7 @@ GetPermsNoSort (const Array<T>& ar_in, bool uniq_v = false)
   // Set up result array
   octave_idx_type n = static_cast<octave_idx_type> (nr);
   Array<T> res (dim_vector (n, m));
-  T *Res = res.fortran_vec ();
+  T *Res = res.rwdata ();
 
   // Do the actual job
   octave_idx_type i = 0;

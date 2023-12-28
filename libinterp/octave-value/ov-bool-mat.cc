@@ -414,7 +414,7 @@ octave_bool_matrix::load_binary (std::istream& is, bool swap,
   if (! is.read (htmp, nel))
     return false;
   boolNDArray m(dv);
-  bool *mtmp = m.fortran_vec ();
+  bool *mtmp = m.rwdata ();
   for (octave_idx_type i = 0; i < nel; i++)
     mtmp[i] = (htmp[i] ? 1 : 0);
   m_matrix = m;

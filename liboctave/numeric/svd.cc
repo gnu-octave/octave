@@ -705,7 +705,7 @@ svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
     }
 
   T atmp = a;
-  P *tmp_data = atmp.fortran_vec ();
+  P *tmp_data = atmp.rwdata ();
 
   F77_INT min_mn = (m < n ? m : n);
 
@@ -744,10 +744,10 @@ svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
   if (! (jobu == 'N' || jobu == 'O'))
     m_left_sm.resize (m, ncol_u);
 
-  P *u = m_left_sm.fortran_vec ();
+  P *u = m_left_sm.rwdata ();
 
   m_sigma.resize (nrow_s, ncol_s);
-  DM_P *s_vec = m_sigma.fortran_vec ();
+  DM_P *s_vec = m_sigma.rwdata ();
 
   if (! (jobv == 'N' || jobv == 'O'))
     {
@@ -757,7 +757,7 @@ svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
         m_right_sm.resize (nrow_vt, n);
     }
 
-  P *vt = m_right_sm.fortran_vec ();
+  P *vt = m_right_sm.rwdata ();
 
   // Query _GESVD for the correct dimension of WORK.
 
@@ -798,11 +798,11 @@ svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
           std::swap (jobu, jobv);
 
           atmp = atmp.hermitian ();
-          tmp_data = atmp.fortran_vec ();
+          tmp_data = atmp.rwdata ();
 
           // Swap pointers of U and V.
-          u  = m_right_sm.fortran_vec ();
-          vt = m_left_sm.fortran_vec ();
+          u  = m_right_sm.rwdata ();
+          vt = m_left_sm.rwdata ();
         }
 
       // translate jobu and jobv from gesvd to gejsv.

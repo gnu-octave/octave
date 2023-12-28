@@ -88,7 +88,7 @@ base64_decode (const std::string& str)
     {
       octave_idx_type len = (outlen * sizeof (char)) / sizeof (double);
       retval.resize (dim_vector (1, len));
-      std::copy (out, out + len, retval.fortran_vec ());
+      std::copy (out, out + len, retval.rwdata ());
       ::free (out);
     }
 
@@ -116,7 +116,7 @@ base64_decode_bytes (const std::string& str)
       ("base64_decode: memory allocation error");
 
   retval.resize (dim_vector (1, outlen));
-  std::copy (out, out + outlen, retval.fortran_vec ());
+  std::copy (out, out + outlen, retval.rwdata ());
   ::free (out);
 
   return retval;

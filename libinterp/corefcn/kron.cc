@@ -64,7 +64,7 @@ kron (const MArray<R>& a, const MArray<T>& b)
   octave_idx_type ncb = b.cols ();
 
   MArray<T> c (dim_vector (nra*nrb, nca*ncb));
-  T *cv = c.fortran_vec ();
+  T *cv = c.rwdata ();
 
   for (octave_idx_type ja = 0; ja < nca; ja++)
     {

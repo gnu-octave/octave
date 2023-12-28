@@ -538,7 +538,7 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
             {
               Matrix tmp = sigma * b.transpose () * b;
               const double *pB = permB.data ();
-              double *p = AminusSigmaB.fortran_vec ();
+              double *p = AminusSigmaB.rwdata ();
 
               if (permB.numel ())
                 {
@@ -557,7 +557,7 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
         }
       else
         {
-          double *p = AminusSigmaB.fortran_vec ();
+          double *p = AminusSigmaB.rwdata ();
 
           for (octave_idx_type i = 0; i < n; i++)
             p[i*(n+1)] -= sigma;
@@ -720,7 +720,7 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
             {
               ComplexMatrix tmp = sigma * b.hermitian () * b;
               const double *pB = permB.data ();
-              Complex *p = AminusSigmaB.fortran_vec ();
+              Complex *p = AminusSigmaB.rwdata ();
 
               if (permB.numel ())
                 {
@@ -739,7 +739,7 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
         }
       else
         {
-          Complex *p = AminusSigmaB.fortran_vec ();
+          Complex *p = AminusSigmaB.rwdata ();
 
           for (octave_idx_type i = 0; i < n; i++)
             p[i*(n+1)] -= sigma;
@@ -892,7 +892,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -908,7 +908,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -917,7 +917,7 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   OCTAVE_LOCAL_BUFFER (double, v, n * p);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n);
-  double *presid = resid.fortran_vec ();
+  double *presid = resid.rwdata ();
 
   do
     {
@@ -1000,13 +1000,13 @@ EigsRealSymmetricMatrix (const M& m, const std::string typ,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   eig_vec.resize (n, k);
-  double *z = eig_vec.fortran_vec ();
+  double *z = eig_vec.rwdata ();
 
   eig_val.resize (k);
-  double *d = eig_val.fortran_vec ();
+  double *d = eig_val.rwdata ();
 
   F77_FUNC (dseupd, DSEUPD)
   (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
@@ -1159,7 +1159,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
     bmat = 'G';
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -1175,7 +1175,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -1193,7 +1193,7 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   OCTAVE_LOCAL_BUFFER (double, v, n * p);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n);
-  double *presid = resid.fortran_vec ();
+  double *presid = resid.rwdata ();
 
   do
     {
@@ -1312,13 +1312,13 @@ EigsRealSymmetricMatrixShift (const M& m, double sigma,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   eig_vec.resize (n, k);
-  double *z = eig_vec.fortran_vec ();
+  double *z = eig_vec.rwdata ();
 
   eig_val.resize (k);
-  double *d = eig_val.fortran_vec ();
+  double *d = eig_val.rwdata ();
 
   F77_FUNC (dseupd, DSEUPD)
   (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
@@ -1512,7 +1512,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -1528,7 +1528,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -1537,7 +1537,7 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   OCTAVE_LOCAL_BUFFER (double, v, n * p);
   OCTAVE_LOCAL_BUFFER (double, workl, lwork);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n);
-  double *presid = resid.fortran_vec ();
+  double *presid = resid.rwdata ();
 
   do
     {
@@ -1685,13 +1685,13 @@ EigsRealSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   eig_vec.resize (n, k);
-  double *z = eig_vec.fortran_vec ();
+  double *z = eig_vec.rwdata ();
 
   eig_val.resize (k);
-  double *d = eig_val.fortran_vec ();
+  double *d = eig_val.rwdata ();
 
   F77_FUNC (dseupd, DSEUPD)
   (rvec, F77_CONST_CHAR_ARG2 ("A", 1), sel, d, z, n, sigma,
@@ -1869,7 +1869,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -1885,7 +1885,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -1894,7 +1894,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   OCTAVE_LOCAL_BUFFER (double, v, n * (p + 1));
   OCTAVE_LOCAL_BUFFER (double, workl, lwork + 1);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n + 1);
-  double *presid = resid.fortran_vec ();
+  double *presid = resid.rwdata ();
 
   do
     {
@@ -1981,7 +1981,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
@@ -1991,7 +1991,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
   //   [vecs, vals, f] = eigs (A, 1)
 
   Matrix eig_vec2 (n, k + 1, 0.0);
-  double *z = eig_vec2.fortran_vec ();
+  double *z = eig_vec2.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (double, dr, k + 1);
   OCTAVE_LOCAL_BUFFER (double, di, k + 1);
@@ -2013,7 +2013,7 @@ EigsRealNonSymmetricMatrix (const M& m, const std::string typ,
     k = ip(4);
 
   eig_val.resize (k);
-  Complex *d = eig_val.fortran_vec ();
+  Complex *d = eig_val.rwdata ();
 
   if (info2 == 0)
     {
@@ -2196,7 +2196,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     bmat = 'G';
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -2212,7 +2212,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -2230,7 +2230,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   OCTAVE_LOCAL_BUFFER (double, v, n * (p + 1));
   OCTAVE_LOCAL_BUFFER (double, workl, lwork + 1);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n + 1);
-  double *presid = resid.fortran_vec ();
+  double *presid = resid.rwdata ();
 
   do
     {
@@ -2354,7 +2354,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
@@ -2364,7 +2364,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
   //   [vecs, vals, f] = eigs (A, 1)
 
   Matrix eig_vec2 (n, k + 1, 0.0);
-  double *z = eig_vec2.fortran_vec ();
+  double *z = eig_vec2.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (double, dr, k + 1);
   OCTAVE_LOCAL_BUFFER (double, di, k + 1);
@@ -2386,7 +2386,7 @@ EigsRealNonSymmetricMatrixShift (const M& m, double sigmar,
     k = ip(4);
 
   eig_val.resize (k);
-  Complex *d = eig_val.fortran_vec ();
+  Complex *d = eig_val.rwdata ();
 
   if (info2 == 0)
     {
@@ -2617,7 +2617,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -2633,7 +2633,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -2642,7 +2642,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   OCTAVE_LOCAL_BUFFER (double, v, n * (p + 1));
   OCTAVE_LOCAL_BUFFER (double, workl, lwork + 1);
   OCTAVE_LOCAL_BUFFER (double, workd, 3 * n + 1);
-  double *presid = resid.fortran_vec ();
+  double *presid = resid.rwdata ();
 
   do
     {
@@ -2794,7 +2794,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   // FIXME: initialize eig_vec2 to zero; apparently dneupd can skip
   // the assignment to elements of Z that represent imaginary parts.
@@ -2804,7 +2804,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
   //   [vecs, vals, f] = eigs (A, 1)
 
   Matrix eig_vec2 (n, k + 1, 0.0);
-  double *z = eig_vec2.fortran_vec ();
+  double *z = eig_vec2.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (double, dr, k + 1);
   OCTAVE_LOCAL_BUFFER (double, di, k + 1);
@@ -2826,7 +2826,7 @@ EigsRealNonSymmetricFunc (EigsFunc fcn, octave_idx_type n_arg,
     k = ip(4);
 
   eig_val.resize (k);
-  Complex *d = eig_val.fortran_vec ();
+  Complex *d = eig_val.rwdata ();
 
   if (info2 == 0)
     {
@@ -3038,7 +3038,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -3054,7 +3054,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -3064,7 +3064,7 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   OCTAVE_LOCAL_BUFFER (Complex, workl, lwork);
   OCTAVE_LOCAL_BUFFER (Complex, workd, 3 * n);
   OCTAVE_LOCAL_BUFFER (double, rwork, p);
-  Complex *presid = cresid.fortran_vec ();
+  Complex *presid = cresid.rwdata ();
 
   do
     {
@@ -3147,13 +3147,13 @@ EigsComplexNonSymmetricMatrix (const M& m, const std::string typ,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   eig_vec.resize (n, k);
-  Complex *z = eig_vec.fortran_vec ();
+  Complex *z = eig_vec.rwdata ();
 
   eig_val.resize (k+1);
-  Complex *d = eig_val.fortran_vec ();
+  Complex *d = eig_val.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (Complex, workev, 2 * p);
 
@@ -3317,7 +3317,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
     bmat = 'G';
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -3333,7 +3333,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -3352,7 +3352,7 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   OCTAVE_LOCAL_BUFFER (Complex, workl, lwork);
   OCTAVE_LOCAL_BUFFER (Complex, workd, 3 * n);
   OCTAVE_LOCAL_BUFFER (double, rwork, p);
-  Complex *presid = cresid.fortran_vec ();
+  Complex *presid = cresid.rwdata ();
 
   do
     {
@@ -3473,13 +3473,13 @@ EigsComplexNonSymmetricMatrixShift (const M& m, Complex sigma,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   eig_vec.resize (n, k);
-  Complex *z = eig_vec.fortran_vec ();
+  Complex *z = eig_vec.rwdata ();
 
   eig_val.resize (k+1);
-  Complex *d = eig_val.fortran_vec ();
+  Complex *d = eig_val.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (Complex, workev, 2 * p);
 
@@ -3688,7 +3688,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
     }
 
   Array<F77_INT> ip (dim_vector (11, 1));
-  F77_INT *iparam = ip.fortran_vec ();
+  F77_INT *iparam = ip.rwdata ();
 
   ip(0) = 1; //ishift
   ip(1) = 0;   // ip(1) not referenced
@@ -3704,7 +3704,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
   // ip(7) to ip(10) return values
 
   Array<F77_INT> iptr (dim_vector (14, 1));
-  F77_INT *ipntr = iptr.fortran_vec ();
+  F77_INT *ipntr = iptr.rwdata ();
 
   F77_INT ido = 0;
   int iter = 0;
@@ -3714,7 +3714,7 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
   OCTAVE_LOCAL_BUFFER (Complex, workl, lwork);
   OCTAVE_LOCAL_BUFFER (Complex, workd, 3 * n);
   OCTAVE_LOCAL_BUFFER (double, rwork, p);
-  Complex *presid = cresid.fortran_vec ();
+  Complex *presid = cresid.rwdata ();
 
   do
     {
@@ -3863,13 +3863,13 @@ EigsComplexNonSymmetricFunc (EigsComplexFunc fcn, octave_idx_type n_arg,
   // is just workspace for ARPACK, so use int type to
   // avoid problems.
   Array<F77_INT> s (dim_vector (p, 1));
-  F77_INT *sel = s.fortran_vec ();
+  F77_INT *sel = s.rwdata ();
 
   eig_vec.resize (n, k);
-  Complex *z = eig_vec.fortran_vec ();
+  Complex *z = eig_vec.rwdata ();
 
   eig_val.resize (k+1);
-  Complex *d = eig_val.fortran_vec ();
+  Complex *d = eig_val.rwdata ();
 
   OCTAVE_LOCAL_BUFFER (Complex, workev, 2 * p);
 

@@ -523,7 +523,7 @@ rand::do_vector (octave_idx_type n, T a)
     {
       retval.clear (n, 1);
 
-      fill (retval.numel (), retval.fortran_vec (), a);
+      fill (retval.numel (), retval.rwdata (), a);
     }
   else if (n < 0)
     (*current_liboctave_error_handler) ("rand: invalid negative argument");
@@ -545,7 +545,7 @@ rand::do_nd_array (const dim_vector& dims, double a)
     {
       retval.clear (dims);
 
-      fill (retval.numel (), retval.fortran_vec (), a);
+      fill (retval.numel (), retval.rwdata (), a);
     }
 
   return retval;
@@ -560,7 +560,7 @@ rand::do_float_nd_array (const dim_vector& dims, float a)
     {
       retval.clear (dims);
 
-      fill (retval.numel (), retval.fortran_vec (), a);
+      fill (retval.numel (), retval.rwdata (), a);
     }
 
   return retval;
@@ -627,7 +627,7 @@ rand::get_internal_state ()
 {
   uint32NDArray s (dim_vector (MT_N + 1, 1));
 
-  get_mersenne_twister_state (reinterpret_cast<uint32_t *> (s.fortran_vec ()));
+  get_mersenne_twister_state (reinterpret_cast<uint32_t *> (s.rwdata ()));
 
   return s;
 }

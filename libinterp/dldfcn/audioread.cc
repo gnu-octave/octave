@@ -128,7 +128,7 @@ is stored in the audio file.
 
   Matrix audio (items, info.channels);
 
-  double *paudio = audio.fortran_vec ();
+  double *paudio = audio.rwdata ();
 
   data += start * info.channels;
 

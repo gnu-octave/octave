@@ -351,9 +351,9 @@ do_extended_gcd (const octave_value& a, const octave_value& b,
       bool inca = aa.numel () != 1;
       bool incb = bb.numel () != 1;
 
-      T *gptr = gg.fortran_vec ();
-      T *xptr = xx.fortran_vec ();
-      T *yptr = yy.fortran_vec ();
+      T *gptr = gg.rwdata ();
+      T *xptr = xx.rwdata ();
+      T *yptr = yy.rwdata ();
 
       octave_idx_type n = gg.numel ();
       for (octave_idx_type i = 0; i < n; i++)

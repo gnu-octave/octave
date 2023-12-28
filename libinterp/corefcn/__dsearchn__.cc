@@ -57,9 +57,9 @@ Undocumented internal function.
   octave_idx_type nxi = xi.columns ();
 
   ColumnVector idx (nxi);
-  double *pidx = idx.fortran_vec ();
+  double *pidx = idx.rwdata ();
   ColumnVector dist (nxi);
-  double *pdist = dist.fortran_vec ();
+  double *pdist = dist.rwdata ();
 
 #define DIST(dd, y, yi, m)                      \
   dd = 0.0;                                     \

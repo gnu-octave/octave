@@ -1443,7 +1443,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
           const JAVA_TYPE ## Array jarr = reinterpret_cast<JAVA_TYPE ## Array> (jobj); \
           const jsize len = jni_env->GetArrayLength (jarr); \
           OCTAVE_ID ## NDArray d (dim_vector (len, 1)); \
-          JAVA_TYPE *buffer = reinterpret_cast<JAVA_TYPE *> (d.fortran_vec ()); \
+          JAVA_TYPE *buffer = reinterpret_cast<JAVA_TYPE *> (d.rwdata ()); \
           jni_env->Get ## JAVA_TYPE_CAP ## ArrayRegion (jarr, 0, len, buffer); \
           retval = d; \
           break; \
@@ -1496,7 +1496,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                                        (jni_env->CallObjectMethod (jobj,
                                            mID)));
                   jni_env->GetDoubleArrayRegion (dv, 0, m.numel (),
-                                                 m.fortran_vec ());
+                                                 m.rwdata ());
                   retval = m;
                   break;
                 }
@@ -1512,7 +1512,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                                              mID)));
                       jni_env->GetByteArrayRegion (dv, 0, m.numel (),
                                                    reinterpret_cast<jbyte *>
-                                                   (m.fortran_vec ()));
+                                                   (m.rwdata ()));
                       retval = m;
                       break;
                     }
@@ -1526,7 +1526,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                                              mID)));
                       jni_env->GetByteArrayRegion (dv, 0, m.numel (),
                                                    reinterpret_cast<jbyte *>
-                                                   (m.fortran_vec ()));
+                                                   (m.rwdata ()));
                       retval = m;
                       break;
                     }
@@ -1543,7 +1543,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                                             mID)));
                       jni_env->GetIntArrayRegion (dv, 0, m.numel (),
                                                   reinterpret_cast<jint *>
-                                                  (m.fortran_vec ()));
+                                                  (m.rwdata ()));
                       retval = m;
                       break;
                     }
@@ -1557,7 +1557,7 @@ box (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                                             mID)));
                       jni_env->GetIntArrayRegion (dv, 0, m.numel (),
                                                   reinterpret_cast<jint *>
-                                                  (m.fortran_vec ()));
+                                                  (m.rwdata ()));
                       retval = m;
                       break;
                     }
@@ -1612,7 +1612,7 @@ box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                 {
                   Matrix m (1, len);
                   jni_env->GetDoubleArrayRegion (jarr, 0, len,
-                                                 m.fortran_vec ());
+                                                 m.rwdata ());
                   retval = m;
                 }
               else
@@ -1647,7 +1647,7 @@ box_more (JNIEnv *jni_env, void *jobj_arg, void *jcls_arg)
                           m.resize (cols, rows);
                         }
                       jni_env->GetDoubleArrayRegion
-                      (row, 0, cols, m.fortran_vec () + r * cols);
+                      (row, 0, cols, m.rwdata () + r * cols);
                     }
                   retval = m.transpose ();
                 }
@@ -1825,7 +1825,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
     {
       Matrix m = val.matrix_value ();
       jdoubleArray dv = jni_env->NewDoubleArray (m.numel ());
-      jni_env->SetDoubleArrayRegion (dv, 0, m.numel (), m.fortran_vec ());
+      jni_env->SetDoubleArrayRegion (dv, 0, m.numel (), m.rwdata ());
       jobj = dv;
       jcls = jni_env->GetObjectClass (jobj);
     }
@@ -1849,7 +1849,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           NDArray m = val.array_value ();
           jdoubleArray_ref dv (jni_env, jni_env->NewDoubleArray (m.numel ()));
           jni_env->SetDoubleArrayRegion (jdoubleArray (dv), 0, m.numel (),
-                                         m.fortran_vec ());
+                                         m.rwdata ());
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([D[I)V");
           jobj = jni_env->NewObject (jclass (mcls), mID, jdoubleArray (dv),
                                      jintArray (iv));
@@ -1861,7 +1861,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.numel ()));
           jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.numel (),
                                        reinterpret_cast<jbyte *>
-                                       (m.fortran_vec ()));
+                                       (m.rwdata ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
           jobj = jni_env->NewObject
                  (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
@@ -1873,7 +1873,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           jbyteArray_ref bv (jni_env, jni_env->NewByteArray (m.numel ()));
           jni_env->SetByteArrayRegion (jbyteArray (bv), 0, m.numel (),
                                        reinterpret_cast<jbyte *>
-                                       (m.fortran_vec ()));
+                                       (m.rwdata ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([B[I)V");
           jobj = jni_env->NewObject
                  (jclass (mcls), mID, jbyteArray (bv), jintArray (iv));
@@ -1885,7 +1885,7 @@ unbox (JNIEnv *jni_env, const octave_value& val, jobject_ref& jobj,
           jintArray_ref v (jni_env, jni_env->NewIntArray (m.numel ()));
           jni_env->SetIntArrayRegion (jintArray (v), 0, m.numel (),
                                       reinterpret_cast<jint *>
-                                      (m.fortran_vec ()));
+                                      (m.rwdata ()));
           jmethodID mID = jni_env->GetMethodID (mcls, "<init>", "([I[I)V");
           jobj = jni_env->NewObject
                  (jclass (mcls), mID, jintArray (v), jintArray (iv));

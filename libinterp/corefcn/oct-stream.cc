@@ -4447,7 +4447,7 @@ do_scanf_conv (std::istream& is, const scanf_format_elt& fmt,
       else
         mval.resize (max_size, 1, 0.0);
 
-      data = mval.fortran_vec ();
+      data = mval.rwdata ();
     }
 
   if (! discard)
@@ -4687,7 +4687,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
                       else                                              \
                         mval.resize (max_size, 1, 0.0);                 \
                                                                         \
-                      data = mval.fortran_vec ();                       \
+                      data = mval.rwdata ();                       \
                     }                                                   \
                                                                         \
                   data[data_index++] = static_cast<unsigned char>       \
@@ -4789,7 +4789,7 @@ base_stream::do_scanf (scanf_format_list& fmt_list,
       max_size = 32;
     }
 
-  double *data = mval.fortran_vec ();
+  double *data = mval.rwdata ();
 
   if (isp)
     {
@@ -4851,7 +4851,7 @@ base_stream::do_scanf (scanf_format_list& fmt_list,
                   else
                     mval.resize (max_size, 1, 0.0);
 
-                  data = mval.fortran_vec ();
+                  data = mval.rwdata ();
                 }
 
               std::string fmt = elt->text;
@@ -6400,7 +6400,7 @@ convert_and_copy (std::list<void *>& input_buf_list,
 
   DST_T conv (dim_vector (nr, nc));
 
-  dst_elt_type *conv_data = conv.fortran_vec ();
+  dst_elt_type *conv_data = conv.rwdata ();
 
   octave_idx_type j = 0;
 

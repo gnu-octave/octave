@@ -397,7 +397,7 @@ octave_perm_matrix::load_binary (std::istream& is, bool swap,
 
   MArray<octave_idx_type> m (dim_vector (sz, 1));
 
-  if (! is.read (reinterpret_cast<char *> (m.fortran_vec ()), m.byte_size ()))
+  if (! is.read (reinterpret_cast<char *> (m.rwdata ()), m.byte_size ()))
     return false;
 
   if (swap)

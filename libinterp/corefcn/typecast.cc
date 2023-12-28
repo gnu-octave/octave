@@ -81,7 +81,7 @@ reinterpret_copy (const void *data, octave_idx_type byte_size,
     error ("typecast: incorrect number of input values to make output value");
 
   ArrayType retval (get_vec_dims (old_dims, n));
-  T *dest = retval.fortran_vec ();
+  T *dest = retval.rwdata ();
   std::memcpy (dest, data, n * sizeof (T));
 
   return retval;
@@ -100,7 +100,7 @@ reinterpret_int_copy (const void *data, octave_idx_type byte_size,
     error ("typecast: incorrect number of input values to make output value");
 
   ArrayType retval (get_vec_dims (old_dims, n));
-  VT *dest = reinterpret_cast<VT *> (retval.fortran_vec ());
+  VT *dest = reinterpret_cast<VT *> (retval.rwdata ());
   std::memcpy (dest, data, n * sizeof (VT));
 
   return retval;
@@ -323,7 +323,7 @@ do_bitpack (const boolNDArray& bitp)
   ArrayType retval (get_vec_dims (bitp.dims (), n));
 
   const bool *bits = bitp.data ();
-  char *packed = reinterpret_cast<char *> (retval.fortran_vec ());
+  char *packed = reinterpret_cast<char *> (retval.rwdata ());
 
   octave_idx_type m = n * sizeof (T);
 
@@ -471,7 +471,7 @@ do_bitunpack (const ArrayType& array)
   boolNDArray retval (get_vec_dims (array.dims (), n));
 
   const char *packed = reinterpret_cast<const char *> (array.data ());
-  bool *bits = retval.fortran_vec ();
+  bool *bits = retval.rwdata ();
 
   octave_idx_type m = n / std::numeric_limits<unsigned char>::digits;
 

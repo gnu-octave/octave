@@ -180,7 +180,7 @@ convolve (const MArray<T>& a, const MArray<R>& b,
 
   convolve_nd<T, R> (a.data (), adims, adims.cumulative (),
                      b.data (), bdims, bdims.cumulative (),
-                     c.fortran_vec (), cdims.cumulative (),
+                     c.rwdata (), cdims.cumulative (),
                      nd, ct == convn_valid);
 
   if (ct == convn_same)

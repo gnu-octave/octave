@@ -196,7 +196,7 @@ operator * (const Matrix& m, const ColumnVector& a)
         retval.fill (0.0);
       else
         {
-          double *y = retval.fortran_vec ();
+          double *y = retval.rwdata ();
 
           F77_XFCN (dgemv, DGEMV, (F77_CONST_CHAR_ARG2 ("N", 1),
                                    nr, nc, 1.0, m.data (), nr,

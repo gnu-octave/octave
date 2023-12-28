@@ -41,13 +41,15 @@
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 Container::Container (QWidget *xparent, octave::interpreter& interp)
-  : ContainerBase (xparent), m_interpreter (interp),  m_canvas (nullptr)
+  : ContainerBase (xparent), m_interpreter (interp), m_canvas (nullptr)
 {
   setFocusPolicy (Qt::ClickFocus);
 }
 
 Container::~Container ()
-{ }
+{
+  delete m_canvas;
+}
 
 Canvas *
 Container::canvas (const graphics_handle& gh, bool xcreate)

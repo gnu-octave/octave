@@ -34,14 +34,13 @@
 
 // Usage message
 static const char *usage_string =
-  "octave [-HVWdfhiqvx] [--debug] [--doc-cache-file file] [--echo-commands]\n\
-       [--eval CODE] [--exec-path path] [--experimental-terminal-widget]\n\
-       [--gui] [--help] [--image-path path] [--info-file file]\n\
+  "octave [-HVWdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
+       [--experimental-terminal-widget] [--gui] [--help] [--info-file file]\n\
        [--info-program prog] [--interactive] [--line-editing] [--no-gui]\n\
        [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
-       [--no-site-file] [--no-window-system] [--norc] [-p path]\n\
-       [--path path] [--persist] [--server] [--silent] [--traditional]\n\
-       [--verbose] [--version] [file]";
+       [--no-site-file] [--no-window-system] [--norc] [--path path]\n\
+       [--persist] [--server] [--silent] [--traditional] [--verbose]\n\
+       [--version] [file]";
 
 // Usage message with extra help.
 
@@ -55,17 +54,13 @@ Usage: octave [options] [FILE]\n\
 \n\
 Options:\n\
 \n\
-  --built-in-docstrings-file FILE Use docs for built-ins from FILE.\n\
   --debug, -d             Enter parser debugging mode.\n\
-  --doc-cache-file FILE   Use doc cache file FILE.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
   --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
-  --exec-path PATH        Set path for executing subprograms.\n\
   --experimental-terminal-widget\n\
                           Use new experimental terminal widget in the GUI.\n\
   --gui                   Start the graphical user interface.\n\
   --help, -h,             Print short help message and exit.\n\
-  --image-path PATH       Add PATH to head of image search path.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
@@ -82,7 +77,6 @@ Options:\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --server                Enter server mode at startup.\n\
   --silent, --quiet, -q   Don't print message at startup.\n\
-  --texi-macros-file FILE Use Texinfo macros in FILE for makeinfo command.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
   --verbose, -V           Enable verbose output in some cases.\n\
   --version, -v           Print version number and exit.\n\

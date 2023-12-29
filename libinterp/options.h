@@ -59,23 +59,30 @@ static const char *short_opts = "+HWVdfhip:qvx";
 #define TRADITIONAL_OPTION 20
 struct octave_getopt_options long_opts[] =
 {
+  // Alias for --traditional, not displayed in help
   { "braindead",                octave_no_arg,       nullptr, TRADITIONAL_OPTION },
+  // Option for developers, not displayed in help
   { "built-in-docstrings-file", octave_required_arg, nullptr, BUILT_IN_DOCSTRINGS_FILE_OPTION },
   { "debug",                    octave_no_arg,       nullptr, 'd' },
+  // Option for developers, not displayed in help
   { "doc-cache-file",           octave_required_arg, nullptr, DOC_CACHE_FILE_OPTION },
   { "echo-commands",            octave_no_arg,       nullptr, 'x' },
   { "eval",                     octave_required_arg, nullptr, EVAL_OPTION },
+  // Option for developers, not displayed in help
   { "exec-path",                octave_required_arg, nullptr, EXEC_PATH_OPTION },
   { "experimental-terminal-widget", octave_no_arg,   nullptr, EXPERIMENTAL_TERMINAL_WIDGET_OPTION },
+  // Alias for --gui, not displayed in help, eventually will be deprecated
   { "force-gui",                octave_no_arg,       nullptr, GUI_OPTION },
   { "gui",                      octave_no_arg,       nullptr, GUI_OPTION },
   { "help",                     octave_no_arg,       nullptr, 'h' },
+  // Option for developers, not displayed in help
   { "image-path",               octave_required_arg, nullptr, IMAGE_PATH_OPTION },
   { "info-file",                octave_required_arg, nullptr, INFO_FILE_OPTION },
   { "info-program",             octave_required_arg, nullptr, INFO_PROG_OPTION },
   { "interactive",              octave_no_arg,       nullptr, 'i' },
   { "line-editing",             octave_no_arg,       nullptr, LINE_EDITING_OPTION },
   { "no-gui",                   octave_no_arg,       nullptr, NO_GUI_OPTION },
+  // Option for developers, not displayed in help
   { "no-gui-libs",              octave_no_arg,       nullptr, NO_GUI_LIBS_OPTION },
   { "no-history",               octave_no_arg,       nullptr, 'H' },
   { "no-init-file",             octave_no_arg,       nullptr, NO_INIT_FILE_OPTION },
@@ -89,6 +96,7 @@ struct octave_getopt_options long_opts[] =
   { "quiet",                    octave_no_arg,       nullptr, 'q' },
   { "server",                   octave_no_arg,       nullptr, SERVER_OPTION },
   { "silent",                   octave_no_arg,       nullptr, 'q' },
+  // Option for developers, not displayed in help
   { "texi-macros-file",         octave_required_arg, nullptr, TEXI_MACROS_FILE_OPTION },
   { "traditional",              octave_no_arg,       nullptr, TRADITIONAL_OPTION },
   { "verbose",                  octave_no_arg,       nullptr, 'V' },

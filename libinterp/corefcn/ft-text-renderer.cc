@@ -259,8 +259,15 @@ private:
             font_map.assign ("weight", weights);
             font_map.assign ("suitable", suitable);
 
+            // Free up memory within libfontconfig 
             if (fs)
               FcFontSetDestroy (fs);
+            if (pat)  // Supposed to be freed by FcFontSetDestroy above, but isn't.
+              FcPatternDestroy (pat);
+            if (os)
+              FcObjectSetDestroy (os);
+            if (minimal_charset)
+              FcCharSetDestroy (minimal_charset);
           }
 #endif
       }

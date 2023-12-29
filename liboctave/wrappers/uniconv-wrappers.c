@@ -84,7 +84,7 @@ octave_u8_conv_to_encoding_intern (const char *tocode,
   char *ret = u8_conv_to_encoding (tocode, handler, cu8_str, padlen,
                                    offsets, NULL, lengthp);
 
-  if (srclen > padlen)
+  if (srclen < padlen)
     free ((void *) u8_str);
 
   // FIXME: This assumes that "\0" is converted to a single byte.  This might

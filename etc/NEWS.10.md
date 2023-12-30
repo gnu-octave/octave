@@ -3,6 +3,12 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 ### General improvements
 
+- Three short form aliases have been added for long form options when starting
+`octave`.
+  * `-e CODE` for `--eval CODE`
+  * `-g` for `--gui`
+  * `-G` for `--no-gui`
+
 ### Graphical User Interface
 
 ### Graphics backend

@@ -34,7 +34,7 @@
 
 // Usage message
 static const char *usage_string =
-  "octave [-HVWdfhiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
+  "octave [-GHVWdefghiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
        [--experimental-terminal-widget] [--gui] [--help] [--info-file file]\n\
        [--info-program prog] [--interactive] [--line-editing] [--no-gui]\n\
        [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
@@ -56,16 +56,16 @@ Options:\n\
 \n\
   --debug, -d             Enter parser debugging mode.\n\
   --echo-commands, -x     Echo commands as they are executed.\n\
-  --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
+  --eval,-e CODE          Evaluate CODE.  Exit when done unless --persist.\n\
   --experimental-terminal-widget\n\
                           Use new experimental terminal widget in the GUI.\n\
-  --gui                   Start the graphical user interface.\n\
+  --gui, -g               Start the graphical user interface.\n\
   --help, -h,             Print short help message and exit.\n\
   --info-file FILE        Use top-level info file FILE.\n\
   --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
   --line-editing          Force readline use for command-line editing.\n\
-  --no-gui                Disable the graphical user interface.\n\
+  --no-gui, -G            Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-init-path          Don't initialize function search path.\n\

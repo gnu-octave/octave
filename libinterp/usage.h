@@ -35,11 +35,11 @@
 // Usage message
 static const char *usage_string =
   "octave [-GHVWefghiqvx] [--echo-commands] [--eval CODE]\n\
-       [--experimental-terminal-widget] [--gui] [--help] [--info-file file]\n\
-       [--info-program prog] [--interactive] [--line-editing] [--no-gui]\n\
-       [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
-       [--no-site-file] [--no-window-system] [--norc] [--path path]\n\
-       [--persist] [--server] [--silent] [--traditional] [--verbose]\n\
+       [--experimental-terminal-widget] [--gui] [--help] [--interactive]\n\
+       [--line-editing] [--no-gui] [--no-history] [--no-init-file]\n\
+       [--no-init-path] [--no-line-editing] [--no-site-file]\n\
+       [--no-window-system] [--norc] [--path path] [--persist] [--server]\n\
+       [--silent] [--traditional] [--verbose]\n\
        [--version] [file]";
 
 // Usage message with extra help.
@@ -65,8 +65,6 @@ Options:\n\
                           Use new experimental terminal widget in the GUI.\n\
   --gui, -g               Start the graphical user interface.\n\
   --help, -h,             Print short help message and exit.\n\
-  --info-file FILE        Use top-level info file FILE.\n\
-  --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
   --line-editing          Force readline use for command-line editing.\n\
   --no-gui, -G            Disable the graphical user interface.\n\

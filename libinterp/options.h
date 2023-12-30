@@ -77,7 +77,9 @@ struct octave_getopt_options long_opts[] =
   { "help",                     octave_no_arg,       nullptr, 'h' },
   // Option for developers, not displayed in help
   { "image-path",               octave_required_arg, nullptr, IMAGE_PATH_OPTION },
+  // Option for developers, not displayed in help
   { "info-file",                octave_required_arg, nullptr, INFO_FILE_OPTION },
+  // Option for developers, not displayed in help
   { "info-program",             octave_required_arg, nullptr, INFO_PROG_OPTION },
   { "interactive",              octave_no_arg,       nullptr, 'i' },
   { "line-editing",             octave_no_arg,       nullptr, LINE_EDITING_OPTION },

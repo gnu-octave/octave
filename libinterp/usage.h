@@ -34,7 +34,7 @@
 
 // Usage message
 static const char *usage_string =
-  "octave [-GHVWdefghiqvx] [--debug] [--echo-commands] [--eval CODE]\n\
+  "octave [-GHVWefghiqvx] [--echo-commands] [--eval CODE]\n\
        [--experimental-terminal-widget] [--gui] [--help] [--info-file file]\n\
        [--info-program prog] [--interactive] [--line-editing] [--no-gui]\n\
        [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
@@ -53,10 +53,14 @@ octave_print_verbose_usage_and_exit ()
 Usage: octave [options] [FILE]\n\
 \n\
 Options:\n\
-\n\
-  --debug, -d             Enter parser debugging mode.\n\
+\n"
+// FIXME: Disabled debug option for parser 2023-12-29.
+// Uncomment and restore code if Octave adds capability to
+// immediately enter debug mode for a script.
+//--debug, -d             Enter debugging mode.\n\ //
+"\
   --echo-commands, -x     Echo commands as they are executed.\n\
-  --eval,-e CODE          Evaluate CODE.  Exit when done unless --persist.\n\
+  --eval, -e CODE         Evaluate CODE.  Exit when done unless --persist.\n\
   --experimental-terminal-widget\n\
                           Use new experimental terminal widget in the GUI.\n\
   --gui, -g               Start the graphical user interface.\n\

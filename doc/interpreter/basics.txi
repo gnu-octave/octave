@@ -73,13 +73,14 @@ Specify the name of the file containing documentation strings for the
 built-in functions of Octave.  This value is normally correct and should
 only need to be specified in extraordinary situations.
 
-@item  --debug
-@itemx -d
-@cindex @sortas{options, Octave command --debug} @ @ @code{--debug}
-@cindex @sortas{options, Octave command -d} @ @ @code{-d}
-Enter parser debugging mode.  Using this option will cause Octave's
-parser to print a lot of information about the commands it reads, and is
-probably only useful if you are actually trying to debug the parser.
+@c FIXME: Disabled debug option for parser 2023-12-29.
+@c Uncomment and restore code if Octave adds capability to
+@c immediately enter debug mode for a script.
+@c @item  --debug
+@c @itemx -d
+@c @cindex @sortas{options, Octave command --debug} @ @ @code{--debug}
+@c @cindex @sortas{options, Octave command -d} @ @ @code{-d}
+@c Enter debugging mode.
 
 @item --doc-cache-file @var{filename}
 @cindex @sortas{options, Octave command --doc-cache-file} @ @ @code{--doc-cache-file @var{filename}}

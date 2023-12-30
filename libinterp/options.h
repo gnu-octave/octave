@@ -60,7 +60,10 @@ struct octave_getopt_options long_opts[] =
   { "braindead",                octave_no_arg,       nullptr, TRADITIONAL_OPTION },
   // Option for developers, not displayed in help
   { "built-in-docstrings-file", octave_required_arg, nullptr, BUILT_IN_DOCSTRINGS_FILE_OPTION },
-  { "debug",                    octave_no_arg,       nullptr, 'd' },
+  // FIXME: Disabled debug option for parser 2023-12-29.
+  // Uncomment and restore code if Octave adds capability to
+  // immediately enter debug mode for a script.
+  // { "debug",                    octave_no_arg,       nullptr, 'd' },
   // Option for developers, not displayed in help
   { "doc-cache-file",           octave_required_arg, nullptr, DOC_CACHE_FILE_OPTION },
   { "echo-commands",            octave_no_arg,       nullptr, 'x' },

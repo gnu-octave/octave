@@ -101,10 +101,11 @@ cmdline_options::cmdline_options (int argc, char **argv)
           m_verbose_flag = true;
           break;
 
-        case 'd':
-          // This is the same as yydebug in parse.y.
-          octave_debug++;
-          break;
+        // FIXME: Disabled debug option for parser 2023-12-29.
+        // However, uncomment and restore option if Octave adds a debug option
+        // to immediately enter debug mode for a script.
+        // case 'd':
+        //   break;
 
         case 'e':
           if (octave_optarg_wrapper ())

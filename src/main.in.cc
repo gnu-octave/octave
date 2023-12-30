@@ -326,9 +326,9 @@ main (int argc, char **argv)
           break;
 
         case 'g':
+          // option "--gui"
           // If we see this option, then we fork and exec octave with the
-          // --gui option, while continuing to handle signals in the
-          // terminal.
+          // --gui option, while continuing to handle signals in the terminal.
           // Do not copy the arg now, since we still not know if the gui
           // should really be launched.  Just store the index.
           start_gui = true;

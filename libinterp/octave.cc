@@ -85,6 +85,10 @@ cmdline_options::cmdline_options (int argc, char **argv)
           octave_print_terse_usage_and_exit ();
           break;
 
+        case 'G':
+          m_gui = false;
+          break;
+
         case 'H':
           m_read_history_file = false;
           break;
@@ -97,14 +101,30 @@ cmdline_options::cmdline_options (int argc, char **argv)
           m_verbose_flag = true;
           break;
 
-        case 'd':
-          // This is the same as yydebug in parse.y.
-          octave_debug++;
+        // FIXME: Disabled debug option for parser 2023-12-29.
+        // However, uncomment and restore option if Octave adds a debug option
+        // to immediately enter debug mode for a script.
+        // case 'd':
+        //   break;
+
+        case 'e':
+          if (octave_optarg_wrapper ())
+            {
+              if (m_code_to_eval.empty ())
+                m_code_to_eval = octave_optarg_wrapper ();
+              else
+                m_code_to_eval += (std::string (" ")
+                                   + octave_optarg_wrapper ());
+            }
           break;
 
         case 'f':
           m_read_init_files = false;
           m_read_site_files = false;
+          break;
+
+        case 'g':
+          m_gui = true;
           break;
 
         case 'h':
@@ -142,17 +162,6 @@ cmdline_options::cmdline_options (int argc, char **argv)
             m_doc_cache_file = octave_optarg_wrapper ();
           break;
 
-        case EVAL_OPTION:
-          if (octave_optarg_wrapper ())
-            {
-              if (m_code_to_eval.empty ())
-                m_code_to_eval = octave_optarg_wrapper ();
-              else
-                m_code_to_eval += (std::string (" ")
-                                   + octave_optarg_wrapper ());
-            }
-          break;
-
         case EXEC_PATH_OPTION:
           if (octave_optarg_wrapper ())
             m_exec_path = octave_optarg_wrapper ();
@@ -162,10 +171,6 @@ cmdline_options::cmdline_options (int argc, char **argv)
 #if defined (HAVE_QSCINTILLA)
           m_experimental_terminal_widget = true;
 #endif
-          break;
-
-        case GUI_OPTION:
-          m_gui = true;
           break;
 
         case IMAGE_PATH_OPTION:
@@ -185,10 +190,6 @@ cmdline_options::cmdline_options (int argc, char **argv)
 
         case LINE_EDITING_OPTION:
           m_forced_line_editing = m_line_editing = true;
-          break;
-
-        case NO_GUI_OPTION:
-          m_gui = false;
           break;
 
         case NO_INIT_FILE_OPTION:

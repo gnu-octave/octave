@@ -73,13 +73,14 @@ Specify the name of the file containing documentation strings for the
 built-in functions of Octave.  This value is normally correct and should
 only need to be specified in extraordinary situations.
 
-@item  --debug
-@itemx -d
-@cindex @sortas{options, Octave command --debug} @ @ @code{--debug}
-@cindex @sortas{options, Octave command -d} @ @ @code{-d}
-Enter parser debugging mode.  Using this option will cause Octave's
-parser to print a lot of information about the commands it reads, and is
-probably only useful if you are actually trying to debug the parser.
+@c FIXME: Disabled debug option for parser 2023-12-29.
+@c Uncomment and restore code if Octave adds capability to
+@c immediately enter debug mode for a script.
+@c @item  --debug
+@c @itemx -d
+@c @cindex @sortas{options, Octave command --debug} @ @ @code{--debug}
+@c @cindex @sortas{options, Octave command -d} @ @ @code{-d}
+@c Enter debugging mode.
 
 @item --doc-cache-file @var{filename}
 @cindex @sortas{options, Octave command --doc-cache-file} @ @ @code{--doc-cache-file @var{filename}}
@@ -95,7 +96,8 @@ function.
 @cindex @sortas{options, Octave command -x} @ @ @code{-x}
 Echo commands as they are executed.
 
-@item --eval @var{code}
+@item  --eval @var{code}
+@itemx -e @var{code}
 @cindex @sortas{options, Octave command --eval} @ @ @code{--eval @var{code}}
 Evaluate @var{code} and exit when finished unless @option{--persist} is also
 specified.
@@ -108,7 +110,8 @@ specified on the command line will override any value of
 in the system or user startup files that call the
 @w{@env{EXEC_PATH}} function.
 
-@item --gui
+@item  --gui
+@itemx -g
 @cindex @sortas{options, Octave command --gui} @ @ @code{--gui}
 Start the graphical user interface (GUI).
 
@@ -153,7 +156,8 @@ remote shell command or inside an Emacs shell buffer.
 @cindex @sortas{options, Octave command --line-editing} @ @ @code{--line-editing}
 Force readline use for command-line editing.
 
-@item --no-gui
+@item  --no-gui
+@itemx -G
 @cindex @sortas{options, Octave command --no-gui} @ @ @code{--no-gui}
 Disable the graphical user interface (GUI) and use the command line
 interface (CLI) instead.  This is the default behavior, but this option

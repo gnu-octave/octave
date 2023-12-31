@@ -34,14 +34,13 @@
 
 // Usage message
 static const char *usage_string =
-  "octave [-HVWdfhiqvx] [--debug] [--doc-cache-file file] [--echo-commands]\n\
-       [--eval CODE] [--exec-path path] [--experimental-terminal-widget]\n\
-       [--gui] [--help] [--image-path path] [--info-file file]\n\
-       [--info-program prog] [--interactive] [--line-editing] [--no-gui]\n\
-       [--no-history] [--no-init-file] [--no-init-path] [--no-line-editing]\n\
-       [--no-site-file] [--no-window-system] [--norc] [-p path]\n\
-       [--path path] [--persist] [--server] [--silent] [--traditional]\n\
-       [--verbose] [--version] [file]";
+  "octave [-GHVWefghiqvx] [--echo-commands] [--eval CODE]\n\
+       [--experimental-terminal-widget] [--gui] [--help] [--interactive]\n\
+       [--line-editing] [--no-gui] [--no-history] [--no-init-file]\n\
+       [--no-init-path] [--no-line-editing] [--no-site-file]\n\
+       [--no-window-system] [--norc] [--path path] [--persist] [--server]\n\
+       [--silent] [--traditional] [--verbose]\n\
+       [--version] [file]";
 
 // Usage message with extra help.
 
@@ -54,23 +53,21 @@ octave_print_verbose_usage_and_exit ()
 Usage: octave [options] [FILE]\n\
 \n\
 Options:\n\
-\n\
-  --built-in-docstrings-file FILE Use docs for built-ins from FILE.\n\
-  --debug, -d             Enter parser debugging mode.\n\
-  --doc-cache-file FILE   Use doc cache file FILE.\n\
+\n"
+// FIXME: Disabled debug option for parser 2023-12-29.
+// Uncomment and restore code if Octave adds capability to
+// immediately enter debug mode for a script.
+//--debug, -d             Enter debugging mode.\n\ //
+"\
   --echo-commands, -x     Echo commands as they are executed.\n\
-  --eval CODE             Evaluate CODE.  Exit when done unless --persist.\n\
-  --exec-path PATH        Set path for executing subprograms.\n\
+  --eval, -e CODE         Evaluate CODE.  Exit when done unless --persist.\n\
   --experimental-terminal-widget\n\
                           Use new experimental terminal widget in the GUI.\n\
-  --gui                   Start the graphical user interface.\n\
+  --gui, -g               Start the graphical user interface.\n\
   --help, -h,             Print short help message and exit.\n\
-  --image-path PATH       Add PATH to head of image search path.\n\
-  --info-file FILE        Use top-level info file FILE.\n\
-  --info-program PROGRAM  Use PROGRAM for reading info files.\n\
   --interactive, -i       Force interactive behavior.\n\
   --line-editing          Force readline use for command-line editing.\n\
-  --no-gui                Disable the graphical user interface.\n\
+  --no-gui, -G            Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
   --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-init-path          Don't initialize function search path.\n\
@@ -82,7 +79,6 @@ Options:\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --server                Enter server mode at startup.\n\
   --silent, --quiet, -q   Don't print message at startup.\n\
-  --texi-macros-file FILE Use Texinfo macros in FILE for makeinfo command.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
   --verbose, -V           Enable verbose output in some cases.\n\
   --version, -v           Print version number and exit.\n\

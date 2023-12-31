@@ -314,7 +314,8 @@ main (int argc, char **argv)
           file = octave_cli;
           break;
 
-        case NO_GUI_OPTION:
+        case 'G':
+          // option "--no-gui"
           // If we see this option, then we can just exec octave; we don't
           // have to create a child process and wait for it to exit.  But do
           // exec "octave-gui", not "octave-cli", because even if the
@@ -324,10 +325,10 @@ main (int argc, char **argv)
           new_argv[k++] = argv[old_optind];
           break;
 
-        case GUI_OPTION:
+        case 'g':
+          // option "--gui"
           // If we see this option, then we fork and exec octave with the
-          // --gui option, while continuing to handle signals in the
-          // terminal.
+          // --gui option, while continuing to handle signals in the terminal.
           // Do not copy the arg now, since we still not know if the gui
           // should really be launched.  Just store the index.
           start_gui = true;
@@ -354,7 +355,8 @@ main (int argc, char **argv)
           new_argv[k++] = argv[old_optind];
           break;
 
-        case EVAL_OPTION:
+        case 'e':
+          // option "--eval"
           eval_code = true;
           for (int i = old_optind; i < next_optind; i++)
             new_argv[k++] = argv[i];

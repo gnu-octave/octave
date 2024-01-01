@@ -1625,7 +1625,11 @@ The allowed values for radio (string) properties can be retrieved
 programmatically or displayed using the one or two argument calling form of the
 @code{set} function.  @xref{XREFset, , set}.
 
-In the following documentation default values are enclosed in @{ @}.
+Any properties marked as either unused or unimlplemented in the following
+documentation are accepted without error by Octave.  Values for those properties
+are stored in the object but have no effect on the object.
+
+Default property values are enclosed in @{ @}.
 
 @node Root Properties
 @subsubsection Root Properties

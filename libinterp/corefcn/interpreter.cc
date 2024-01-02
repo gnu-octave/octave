@@ -456,7 +456,7 @@ interpreter::interpreter (application *app_context)
     m_interactive (false),
     m_read_site_files (true),
     m_read_init_files (m_app_context != nullptr),
-    m_verbose (false),
+    m_init_trace (false),
     m_traditional (false),
     m_inhibit_startup_message (false),
     m_load_path_initialized (false),
@@ -1101,7 +1101,7 @@ interpreter::execute_startup_files ()
 {
   bool read_site_files = m_read_site_files;
   bool read_init_files = m_read_init_files;
-  bool verbose = m_verbose;
+  bool trace = m_init_trace;
   bool inhibit_startup_message = m_inhibit_startup_message;
 
   if (m_app_context)
@@ -1110,11 +1110,11 @@ interpreter::execute_startup_files ()
 
       read_site_files = options.read_site_files ();
       read_init_files = options.read_init_files ();
-      verbose = options.verbose_flag ();
+      trace = options.init_trace ();
       inhibit_startup_message = options.inhibit_startup_message ();
     }
 
-  verbose = (verbose && ! inhibit_startup_message);
+  trace = (trace && ! inhibit_startup_message);
 
   bool require_file = false;
 
@@ -1130,13 +1130,13 @@ interpreter::execute_startup_files ()
       // $(prefix)/share/octave/$(version)/m/octaverc (if it exists).
 
       int status = safe_source_file (config::local_site_defaults_file (),
-                                     context, verbose, require_file);
+                                     context, trace, require_file);
 
       if (status)
         exit_status = status;
 
       status = safe_source_file (config::site_defaults_file (),
-                                 context, verbose, require_file);
+                                 context, trace, require_file);
 
       if (status)
         exit_status = status;
@@ -1179,7 +1179,7 @@ interpreter::execute_startup_files ()
 
       if (! cfg_rc.empty ())
         {
-          int status = safe_source_file (cfg_rc, context, verbose,
+          int status = safe_source_file (cfg_rc, context, trace,
                                          require_file);
 
           if (status)
@@ -1205,7 +1205,7 @@ interpreter::execute_startup_files ()
 
       if (! home_rc.empty ())
         {
-          int status = safe_source_file (home_rc, context, verbose,
+          int status = safe_source_file (home_rc, context, trace,
                                          require_file);
 
           if (status)
@@ -1229,7 +1229,7 @@ interpreter::execute_startup_files ()
           if (local_rc.empty ())
             local_rc = sys::env::make_absolute (initfile);
 
-          int status = safe_source_file (local_rc, context, verbose,
+          int status = safe_source_file (local_rc, context, trace,
                                          require_file);
 
           if (status)
@@ -1237,7 +1237,7 @@ interpreter::execute_startup_files ()
         }
     }
 
-  if (m_interactive && verbose)
+  if (m_interactive && trace)
     std::cout << std::endl;
 
   return exit_status;

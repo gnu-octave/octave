@@ -145,6 +145,11 @@ specified on the command line will override any value of
 commands in the system or user startup files that use the
 @code{info_program} function.
 
+@item  --init-trace
+@cindex @sortas{options, Octave command --init-trace} @ @ @code{--init-trace}
+Print the name of each configuration as it is read and executed during
+initialization.
+
 @item  --interactive
 @itemx -i
 @cindex @sortas{options, Octave command --interactive} @ @ @code{--interactive}
@@ -276,12 +281,6 @@ Note that this does not enable the @code{Octave:language-extension}
 warning, which you might want if you want to be told about writing code
 that works in Octave but not @sc{matlab} (@pxref{XREFwarning,,warning},
 @ref{XREFwarning_ids,,warning_ids}).
-
-@item  --verbose
-@itemx -V
-@cindex @sortas{options, Octave command --verbose} @ @ @code{--verbose}
-@cindex @sortas{options, Octave command -V} @ @ @code{-V}
-Turn on verbose output.
 
 @item  --version
 @itemx -v

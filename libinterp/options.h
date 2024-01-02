@@ -81,6 +81,8 @@ struct octave_getopt_options long_opts[] =
   { "info-file",                octave_required_arg, nullptr, INFO_FILE_OPTION },
   // Option for developers, not displayed in help
   { "info-program",             octave_required_arg, nullptr, INFO_PROG_OPTION },
+  // Option for developers, not displayed in help
+  { "init-trace",               octave_no_arg,       nullptr, 'V' },
   { "interactive",              octave_no_arg,       nullptr, 'i' },
   { "line-editing",             octave_no_arg,       nullptr, LINE_EDITING_OPTION },
   { "no-gui",                   octave_no_arg,       nullptr, 'G' },
@@ -101,6 +103,7 @@ struct octave_getopt_options long_opts[] =
   // Option for developers, not displayed in help
   { "texi-macros-file",         octave_required_arg, nullptr, TEXI_MACROS_FILE_OPTION },
   { "traditional",              octave_no_arg,       nullptr, TRADITIONAL_OPTION },
+  // Alias for --init-trace, not displayed in help, eventually will be deprecated
   { "verbose",                  octave_no_arg,       nullptr, 'V' },
   { "version",                  octave_no_arg,       nullptr, 'v' },
   { nullptr,                    0,                   nullptr, 0 }

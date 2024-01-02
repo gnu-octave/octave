@@ -98,7 +98,7 @@ cmdline_options::cmdline_options (int argc, char **argv)
           break;
 
         case 'V':
-          m_verbose_flag = true;
+          m_init_trace = true;
           break;
 
         // FIXME: Disabled debug option for parser 2023-12-29.
@@ -261,7 +261,9 @@ cmdline_options::as_octave_value () const
   m.assign ("server", server ());
   m.assign ("set_initial_path", set_initial_path ());
   m.assign ("traditional", traditional ());
-  m.assign ("verbose_flag", verbose_flag ());
+  m.assign ("init_trace", init_trace ());
+  // FIXME: --verbose deprecated in Octave 10.  Remove in Octave 12.
+  m.assign ("verbose", init_trace ());
   m.assign ("code_to_eval", code_to_eval ());
   m.assign ("command_line_path", string_vector (command_line_path ()));
   m.assign ("docstrings_file", docstrings_file ());

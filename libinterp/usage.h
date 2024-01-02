@@ -39,8 +39,7 @@ static const char *usage_string =
        [--line-editing] [--no-gui] [--no-history] [--no-init-file]\n\
        [--no-init-path] [--no-line-editing] [--no-site-file]\n\
        [--no-window-system] [--norc] [--path path] [--persist] [--server]\n\
-       [--silent] [--traditional] [--verbose]\n\
-       [--version] [file]";
+       [--silent] [--traditional] [--version] [file]";
 
 // Usage message with extra help.
 
@@ -80,7 +79,6 @@ Options:\n\
   --server                Enter server mode at startup.\n\
   --silent, --quiet, -q   Don't print message at startup.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
-  --verbose, -V           Enable verbose output in some cases.\n\
   --version, -v           Print version number and exit.\n\
 \n\
   FILE                    Execute commands from FILE.  Exit when done\n\

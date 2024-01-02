@@ -72,7 +72,10 @@ public:
   bool server () const { return m_server; }
   bool set_initial_path () const { return m_set_initial_path; }
   bool traditional () const { return m_traditional; }
-  bool verbose_flag () const { return m_verbose_flag; }
+
+  OCTAVE_DEPRECATED (10, "cmdline_options::verbose is deprecated, use init_trace")
+  bool verbose () const { return m_init_trace; }
+  bool init_trace () const { return m_init_trace; }
   std::string code_to_eval () const { return m_code_to_eval; }
   std::list<std::string> command_line_path () const
   { return m_command_line_path; }
@@ -104,7 +107,9 @@ public:
   void server (bool arg) { m_server = arg; }
   void set_initial_path (bool arg) { m_set_initial_path = arg; }
   void traditional (bool arg) { m_traditional = arg; }
-  void verbose_flag (bool arg) { m_verbose_flag = arg; }
+  OCTAVE_DEPRECATED (10, "cmdline_options::verbose is deprecated, use init_trace")
+  void verbose (bool arg) { m_init_trace = arg; }
+  void init_trace (bool arg) { m_init_trace = arg; }
   void code_to_eval (const std::string& arg) { m_code_to_eval = arg; }
   void command_line_path (const std::list<std::string>& arg)
   { m_command_line_path = arg; }
@@ -182,9 +187,10 @@ private:
   // (--traditional)
   bool m_traditional = false;
 
-  // If TRUE, print verbose info in some cases.
-  // (--verbose; -V)
-  bool m_verbose_flag = false;
+  // If TRUE, print trace of files read during initialization
+  // (--init-trace, --verbose; -V)
+  // FIXME: --verbose and -V will eventually be deprecated and removed.
+  bool m_init_trace = false;
 
   // The code to evaluate at startup
   // (--eval CODE)

@@ -182,9 +182,15 @@ public:
     m_read_init_files = flag;
   }
 
+  void init_trace (bool flag)
+  {
+    m_init_trace = flag;
+  }
+
+  OCTAVE_DEPRECATED (10, "interpreter::verbose is deprecated, use init_trace")
   void verbose (bool flag)
   {
-    m_verbose = flag;
+    init_trace (flag);
   }
 
   void traditional (bool flag)
@@ -640,7 +646,7 @@ private:
 
   bool m_read_init_files;
 
-  bool m_verbose;
+  bool m_init_trace;
 
   bool m_traditional;
 

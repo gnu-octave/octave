@@ -412,6 +412,18 @@ viridis_colormap ()
   return cmap;
 }
 
+/*
+## Test default colormap returns as 256 color viridis
+%!test
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   assert (get (hax, "colormap"), viridis (256), eps);   
+%! unwind_protect_cleanup
+%!   delete (hf);
+%! end_unwind_protect
+*/
+
 static double
 default_screendepth ()
 {

@@ -67,12 +67,17 @@ public:
   bool no_window_system () const { return m_no_window_system; }
   bool persist () const { return m_persist; }
   bool read_history_file () const { return m_read_history_file; }
-  bool read_init_files () const { return m_read_init_files; }
   bool read_site_files () const { return m_read_site_files; }
+  bool read_user_files () const { return m_read_user_files; }
+  OCTAVE_DEPRECATED (10, "cmdline_options::read_init_files is deprecated, use read_user_files")
+  bool read_init_files () const { return m_read_user_files; }
   bool server () const { return m_server; }
   bool set_initial_path () const { return m_set_initial_path; }
   bool traditional () const { return m_traditional; }
-  bool verbose_flag () const { return m_verbose_flag; }
+
+  OCTAVE_DEPRECATED (10, "cmdline_options::verbose is deprecated, use init_trace")
+  bool verbose () const { return m_init_trace; }
+  bool init_trace () const { return m_init_trace; }
   std::string code_to_eval () const { return m_code_to_eval; }
   std::list<std::string> command_line_path () const
   { return m_command_line_path; }
@@ -99,12 +104,18 @@ public:
   void no_window_system (bool arg) { m_no_window_system = arg; }
   void persist (bool arg) { m_persist = arg; }
   void read_history_file (bool arg) { m_read_history_file = arg; }
-  void read_init_files (bool arg) { m_read_init_files = arg; }
+  // FIXME: Alias for read_user_files() introduced in Octave 10.
+  // Remove at some point in the future.
   void read_site_files (bool arg) { m_read_site_files = arg; }
+  void read_user_files (bool arg) { m_read_user_files = arg; }
+  OCTAVE_DEPRECATED (10, "cmdline_options::read_init_files is deprecated, use read_user_files")
+  void read_init_files (bool arg) { read_user_files (arg); }
   void server (bool arg) { m_server = arg; }
   void set_initial_path (bool arg) { m_set_initial_path = arg; }
   void traditional (bool arg) { m_traditional = arg; }
-  void verbose_flag (bool arg) { m_verbose_flag = arg; }
+  OCTAVE_DEPRECATED (10, "cmdline_options::verbose is deprecated, use init_trace")
+  void verbose (bool arg) { m_init_trace = arg; }
+  void init_trace (bool arg) { m_init_trace = arg; }
   void code_to_eval (const std::string& arg) { m_code_to_eval = arg; }
   void command_line_path (const std::list<std::string>& arg)
   { m_command_line_path = arg; }
@@ -163,11 +174,11 @@ private:
   bool m_read_history_file = true;
 
   // TRUE means we read ~/.octaverc and ./.octaverc.
-  // (--norc; --no-init-file; -f)
-  bool m_read_init_files = true;
+  // (--no-init-user; --no-init-file; --norc; -f)
+  bool m_read_user_files = true;
 
   // TRUE means we read the site-wide octaverc files.
-  // (--norc; --no-site-file; -f)
+  // (--no-init-site; --no-site-file; --norc; -f)
   bool m_read_site_files = true;
 
   // If TRUE, start the command server.
@@ -182,9 +193,10 @@ private:
   // (--traditional)
   bool m_traditional = false;
 
-  // If TRUE, print verbose info in some cases.
-  // (--verbose; -V)
-  bool m_verbose_flag = false;
+  // If TRUE, print trace of files read during initialization
+  // (--init-trace, --verbose; -V)
+  // FIXME: --verbose and -V will eventually be deprecated and removed.
+  bool m_init_trace = false;
 
   // The code to evaluate at startup
   // (--eval CODE)

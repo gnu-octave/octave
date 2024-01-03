@@ -177,14 +177,26 @@ public:
     m_read_site_files = flag;
   }
 
-  void read_init_files (bool flag)
+  void read_user_files (bool flag)
   {
-    m_read_init_files = flag;
+    m_read_user_files = flag;
   }
 
+  OCTAVE_DEPRECATED (10, "interpreter::read_init_files is deprecated, use read_user_files")
+  void read_init_files (bool flag)
+  {
+    read_user_files (flag);
+  }
+
+  void init_trace (bool flag)
+  {
+    m_init_trace = flag;
+  }
+
+  OCTAVE_DEPRECATED (10, "interpreter::verbose is deprecated, use init_trace")
   void verbose (bool flag)
   {
-    m_verbose = flag;
+    init_trace (flag);
   }
 
   void traditional (bool flag)
@@ -638,9 +650,9 @@ private:
 
   bool m_read_site_files;
 
-  bool m_read_init_files;
+  bool m_read_user_files;
 
-  bool m_verbose;
+  bool m_init_trace;
 
   bool m_traditional;
 

@@ -36,11 +36,10 @@
 static const char *usage_string =
   "octave [-GHVWefghiqvx] [--echo-commands] [--eval CODE]\n\
        [--experimental-terminal-widget] [--gui] [--help] [--interactive]\n\
-       [--line-editing] [--no-gui] [--no-history] [--no-init-file]\n\
-       [--no-init-path] [--no-line-editing] [--no-site-file]\n\
-       [--no-window-system] [--norc] [--path path] [--persist] [--server]\n\
-       [--silent] [--traditional] [--verbose]\n\
-       [--version] [file]";
+       [--line-editing] [--no-gui] [--no-history] [--no-init-all]\n\
+       [--no-init-path] [--no-init-site] [--no-init-user]\n\
+       [--no-line-editing] [--no-window-system] [--path path] [--persist]\n\
+       [--quiet] [--server] [--traditional] [--version] [file]";
 
 // Usage message with extra help.
 
@@ -69,18 +68,18 @@ Options:\n\
   --line-editing          Force readline use for command-line editing.\n\
   --no-gui, -G            Disable the graphical user interface.\n\
   --no-history, -H        Don't save commands to the history list\n\
-  --no-init-file          Don't read the ~/.octaverc or .octaverc files.\n\
+  --no-init-all, --norc, -f\n\
+                          Don't read any initialization files.\n\
   --no-init-path          Don't initialize function search path.\n\
+  --no-init-site          Don't read the site-wide octaverc files.\n\
+  --no-init-user          Don't read the ~/.octaverc or .octaverc files.\n\
   --no-line-editing       Don't use readline for command-line editing.\n\
-  --no-site-file          Don't read the site-wide octaverc file.\n\
   --no-window-system, -W  Disable window system, including graphics.\n\
-  --norc, -f              Don't read any initialization files.\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --server                Enter server mode at startup.\n\
-  --silent, --quiet, -q   Don't print message at startup.\n\
+  --quiet, --silent, -q   Don't print message at startup.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
-  --verbose, -V           Enable verbose output in some cases.\n\
   --version, -v           Print version number and exit.\n\
 \n\
   FILE                    Execute commands from FILE.  Exit when done\n\

@@ -516,7 +516,7 @@ static std::string help_msg =
   "\n"
   "  -v, --verbose           Echo commands as they are executed.\n"
   "\n"
-  "  --silent                Ignored.  Intended to suppress output from\n"
+  "  --quiet                 Ignored.  Intended to suppress output from\n"
   "                          compiler steps.\n"
   "\n"
   "  FILE                    Compile or link FILE.  Recognized file types are:\n"
@@ -799,7 +799,8 @@ main (int argc, char **sys_argv)
         {
           verbose = true;
         }
-      else if (arg == "-silent" ||  arg == "--silent")
+      else if (arg == "-silent" || arg == "--silent"
+               || arg == "-quiet" || arg == "--quiet")
         {
           // Ignored for now.
         }

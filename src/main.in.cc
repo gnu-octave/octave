@@ -363,7 +363,7 @@ main (int argc, char **argv)
           break;
 
         case 'q':
-          // options "--silent" or "--quiet"
+          // options "--quiet" or "--silent"
           warn_display = false;
           new_argv[k++] = argv[old_optind];
           break;

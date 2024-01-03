@@ -34,7 +34,7 @@
 ################################################################################
 # Get a list from Octave of all visible functions
 @octave_output = <<`_END_OCT_SCRIPT_`;
-../../run-octave --norc --silent --no-history --eval '\
+../../run-octave --norc --quiet --no-history --eval '\
   funclist = vertcat (__list_functions__ , __builtins__); \
   funclist = funclist(! strncmp (funclist, \"meta.\", 5)) \
   disp ("#!-separator-!#") \

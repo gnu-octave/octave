@@ -132,7 +132,7 @@ include pkg/module.mk
 # run-octave (optional-prepare-commands)
 
 define run-octave-tests
-  ( $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --no-init-file --silent \
+  ( $(SHELL) ../run-octave $(RUN_OCTAVE_OPTIONS) --no-init-file --quiet  \
       --no-history -p $(abs_top_builddir)/test/mex \
       $(abs_top_srcdir)/test/fntests.m $(abs_top_srcdir)/test "$(1)" ) && \
   if $(AM_V_P); then \

@@ -98,7 +98,7 @@ cmdline_options::cmdline_options (int argc, char **argv)
           break;
 
         case 'V':
-          m_verbose_flag = true;
+          m_init_trace = true;
           break;
 
         // FIXME: Disabled debug option for parser 2023-12-29.
@@ -119,7 +119,7 @@ cmdline_options::cmdline_options (int argc, char **argv)
           break;
 
         case 'f':
-          m_read_init_files = false;
+          m_read_user_files = false;
           m_read_site_files = false;
           break;
 
@@ -192,8 +192,8 @@ cmdline_options::cmdline_options (int argc, char **argv)
           m_forced_line_editing = m_line_editing = true;
           break;
 
-        case NO_INIT_FILE_OPTION:
-          m_read_init_files = false;
+        case NO_INIT_USER_OPTION:
+          m_read_user_files = false;
           break;
 
         case NO_INIT_PATH_OPTION:
@@ -204,7 +204,7 @@ cmdline_options::cmdline_options (int argc, char **argv)
           m_line_editing = false;
           break;
 
-        case NO_SITE_FILE_OPTION:
+        case NO_INIT_SITE_OPTION:
           m_read_site_files = false;
           break;
 
@@ -256,12 +256,16 @@ cmdline_options::as_octave_value () const
   m.assign ("no_window_system", no_window_system ());
   m.assign ("persist", persist ());
   m.assign ("read_history_file", read_history_file ());
-  m.assign ("read_init_files", read_init_files ());
+  // FIXME: read_init_files deprecated in Octave 10 in favor of read_user_files
+  m.assign ("read_init_files", read_user_files ());
+  m.assign ("read_user_files", read_user_files ());
   m.assign ("read_site_files", read_site_files ());
   m.assign ("server", server ());
   m.assign ("set_initial_path", set_initial_path ());
   m.assign ("traditional", traditional ());
-  m.assign ("verbose_flag", verbose_flag ());
+  m.assign ("init_trace", init_trace ());
+  // FIXME: --verbose deprecated in Octave 10.  Remove in Octave 12.
+  m.assign ("verbose", init_trace ());
   m.assign ("code_to_eval", code_to_eval ());
   m.assign ("command_line_path", string_vector (command_line_path ()));
   m.assign ("docstrings_file", docstrings_file ());
@@ -469,12 +473,12 @@ Return the command line arguments passed to Octave.
 For example, if you invoked Octave using the command
 
 @example
-octave --no-line-editing --silent
+octave --no-line-editing --quiet
 @end example
 
 @noindent
 @code{argv} would return a cell array of strings with the elements
-@option{--no-line-editing} and @option{--silent}.
+@option{--no-line-editing} and @option{--quiet}.
 
 If you write an executable Octave script, @code{argv} will return the list
 of arguments passed to the script.  @xref{Executable Octave Programs}, for

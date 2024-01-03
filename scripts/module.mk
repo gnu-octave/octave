@@ -151,7 +151,7 @@ check-missing-semicolon:
 	    ! $(GREP) -q -E '^  *\<function\>' $$m || continue; \
 	    ! (echo $$m | $(GREP) -q __splinefit__.m) || continue; \
 	    echo "source ('$$m');"; \
-	  done ) | $(SHELL) run-octave --norc --silent --no-history
+	  done ) | $(SHELL) run-octave --norc --quiet --no-history
 .PHONY: check-missing-semicolon
 
 ## Include m-files in list of sources when building tag files.

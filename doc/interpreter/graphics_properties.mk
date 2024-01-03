@@ -11,7 +11,7 @@ GRAPH_PROP_TEXI_SRC= \
 
 define gen-propdoc-texi
   rm -f $@-t $@ && \
-  $(top_builddir)/run-octave -disable-asan --norc --silent --no-history --path $(srcdir)/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
+  $(top_builddir)/run-octave -disable-asan --norc --quiet --no-history --path $(srcdir)/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
   mv $@-t $@
 endef
 

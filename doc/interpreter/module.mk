@@ -26,7 +26,7 @@ $(GRAPH_PROP_TEXI_SRC): | $(OCTAVE_INTERPRETER_TARGETS)
 
 define gen-propdoc-texi
   rm -f $@-t $@ && \
-  $(SHELL) run-octave -disable-asan --norc --silent --no-history --path $(srcdir)/doc/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
+  $(SHELL) run-octave -disable-asan --norc --quiet --no-history --path $(srcdir)/doc/interpreter --eval "genpropdoc ('$(1)');" > $@-t && \
   mv $@-t $@
 endef
 

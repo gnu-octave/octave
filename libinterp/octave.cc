@@ -473,12 +473,12 @@ Return the command line arguments passed to Octave.
 For example, if you invoked Octave using the command
 
 @example
-octave --no-line-editing --silent
+octave --no-line-editing --quiet
 @end example
 
 @noindent
 @code{argv} would return a cell array of strings with the elements
-@option{--no-line-editing} and @option{--silent}.
+@option{--no-line-editing} and @option{--quiet}.
 
 If you write an executable Octave script, @code{argv} will return the list
 of arguments passed to the script.  @xref{Executable Octave Programs}, for

@@ -39,7 +39,7 @@ static const char *usage_string =
        [--line-editing] [--no-gui] [--no-history] [--no-init-all]\n\
        [--no-init-path] [--no-init-site] [--no-init-user]\n\
        [--no-line-editing] [--no-window-system] [--path path] [--persist]\n\
-       [--server] [--silent] [--traditional] [--version] [file]";
+       [--quiet] [--server] [--traditional] [--version] [file]";
 
 // Usage message with extra help.
 
@@ -78,7 +78,7 @@ Options:\n\
   --path PATH, -p PATH    Add PATH to head of function search path.\n\
   --persist               Go interactive after --eval or reading from FILE.\n\
   --server                Enter server mode at startup.\n\
-  --silent, --quiet, -q   Don't print message at startup.\n\
+  --quiet, --silent, -q   Don't print message at startup.\n\
   --traditional           Set variables for closer MATLAB compatibility.\n\
   --version, -v           Print version number and exit.\n\
 \n\

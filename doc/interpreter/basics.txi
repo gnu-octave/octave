@@ -227,11 +227,11 @@ of the path functions.
 Go to interactive mode after @option{--eval} or reading from a file
 named on the command line.
 
-@item  --silent
-@itemx --quiet
+@item  --quiet
+@itemx --silent
 @itemx -q
-@cindex @sortas{options, Octave command --silent} @ @ @code{--silent}
 @cindex @sortas{options, Octave command --quiet} @ @ @code{--quiet}
+@cindex @sortas{options, Octave command --silent} @ @ @code{--silent}
 @cindex @sortas{options, Octave command -q} @ @ @code{-q}
 Don't print the usual greeting and version message at startup.
 
@@ -390,7 +390,7 @@ preferred location for configuration changes.
 
 A message will be displayed as each of the startup files is read if you
 invoke Octave with the @option{--verbose} option but without the
-@option{--silent} option.
+@option{--quiet} option.
 
 The startup files are always processed in the system's locale charset
 (independent of the m-file encoding that is set, for example, in the GUI

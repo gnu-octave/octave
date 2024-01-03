@@ -119,7 +119,7 @@ cmdline_options::cmdline_options (int argc, char **argv)
           break;
 
         case 'f':
-          m_read_init_files = false;
+          m_read_user_files = false;
           m_read_site_files = false;
           break;
 
@@ -192,8 +192,8 @@ cmdline_options::cmdline_options (int argc, char **argv)
           m_forced_line_editing = m_line_editing = true;
           break;
 
-        case NO_INIT_FILE_OPTION:
-          m_read_init_files = false;
+        case NO_INIT_USER_OPTION:
+          m_read_user_files = false;
           break;
 
         case NO_INIT_PATH_OPTION:
@@ -204,7 +204,7 @@ cmdline_options::cmdline_options (int argc, char **argv)
           m_line_editing = false;
           break;
 
-        case NO_SITE_FILE_OPTION:
+        case NO_INIT_SITE_OPTION:
           m_read_site_files = false;
           break;
 
@@ -256,7 +256,9 @@ cmdline_options::as_octave_value () const
   m.assign ("no_window_system", no_window_system ());
   m.assign ("persist", persist ());
   m.assign ("read_history_file", read_history_file ());
-  m.assign ("read_init_files", read_init_files ());
+  // FIXME: read_init_files deprecated in Octave 10 in favor of read_user_files
+  m.assign ("read_init_files", read_user_files ());
+  m.assign ("read_user_files", read_user_files ());
   m.assign ("read_site_files", read_site_files ());
   m.assign ("server", server ());
   m.assign ("set_initial_path", set_initial_path ());

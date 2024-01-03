@@ -9,6 +9,12 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   * `-g` for `--gui`
   * `-G` for `--no-gui`
 
+- Three long form options have been introduced for clarity.
+  * `--no-init-user` : Don't read user configuration files ~/.octaverc or
+    .octaverc files at startup.
+  * `--no-init-site` : Don't read site-wide configuration files at startup.
+  * `--no-init-all` : Don't read any configuration files at startup.
+
 ### Graphical User Interface
 
 ### Graphics backend

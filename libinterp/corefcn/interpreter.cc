@@ -455,7 +455,7 @@ interpreter::interpreter (application *app_context)
     m_gh_manager (nullptr),
     m_interactive (false),
     m_read_site_files (true),
-    m_read_init_files (m_app_context != nullptr),
+    m_read_user_files (m_app_context != nullptr),
     m_init_trace (false),
     m_traditional (false),
     m_inhibit_startup_message (false),
@@ -1100,7 +1100,7 @@ int
 interpreter::execute_startup_files ()
 {
   bool read_site_files = m_read_site_files;
-  bool read_init_files = m_read_init_files;
+  bool read_user_files = m_read_user_files;
   bool trace = m_init_trace;
   bool inhibit_startup_message = m_inhibit_startup_message;
 
@@ -1109,7 +1109,7 @@ interpreter::execute_startup_files ()
       const cmdline_options& options = m_app_context->options ();
 
       read_site_files = options.read_site_files ();
-      read_init_files = options.read_init_files ();
+      read_user_files = options.read_user_files ();
       trace = options.init_trace ();
       inhibit_startup_message = options.inhibit_startup_message ();
     }
@@ -1142,7 +1142,7 @@ interpreter::execute_startup_files ()
         exit_status = status;
     }
 
-  if (read_init_files)
+  if (read_user_files)
     {
       // Try to execute commands from the Matlab compatible startup.m file
       // if it exists anywhere in the load path when starting Octave.

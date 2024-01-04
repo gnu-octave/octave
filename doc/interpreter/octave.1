@@ -32,49 +32,58 @@
 .fi
 ..
 .\" --------------------------------------------------------------------
-.TH OCTAVE 1 "19 October 2012" "GNU Octave"
+.TH OCTAVE 1 "3 January 2024" "GNU Octave"
 .SH NAME
-octave \- A high-level interactive language for numerical computations.
+octave \- A high-level interactive programming language for numerical
+computations.
 .SH SYNOPSIS
-\fBoctave\fP [\fIoptions\fP]... [\fIfile\fP]
+\fBoctave\fP [\fIoptions\fP]\|.\|.\|.\& [\fIfile\fP]
 .SH DESCRIPTION
-Octave is a high-level language, primarily intended for numerical
-computations.  It provides a convenient command line interface for
-solving linear and nonlinear problems numerically.
+Octave is a high-level interactive scientific programming language.  It has a
+powerful mathematics-oriented syntax for solving problems numerically, as well
+as built-in 2-D/3-D plotting and visualization tools.  Octave provides an
+integrated development environment in either graphical or command-line form.
+Programs may also be run in batch mode to process data without interaction.
 .SH OPTIONS
-The complete set of command-line options for \fBoctave\fP is available by
+A list of the most useful command-line options for \fBoctave\fP is available by
 running the following command from the shell.
 .Vb
 
-    octave \-\-help
+.B    octave \-\-help
 .Ve
 .SH DOCUMENTATION
 The primary documentation for Octave is written using Texinfo, the GNU
-documentation system, which allows the same source files to be used to
-produce online and printed versions of the manual.
+documentation system, which allows the same source files to be used to produce
+online and printed versions of the manual.
 .PP
-You can read the online copy of the Octave documentation by issuing
-the following command from within \fBoctave\fP.
+You can read the built-in copy of the Octave documentation by issuing the
+following command from within \fBoctave\fP.
 .Vb
 
-    octave:1> doc
+    octave:1> \fBdoc\fP
 
 .Ve
-The Info files may also be read with a stand-alone program such as
-\fBinfo\fP or \fBxinfo\fP.  HTML, Postscript, or PDF versions of the
-documentation are installed on many systems as well.
+The Info files may also be read with a stand-alone program such as \fBinfo\fP
+or \fBxinfo\fP.  HTML, Postscript, or PDF versions of the documentation are
+installed on many systems as well.  The latest version of the documentation is
+available at
+.UR https://\:docs.octave.org/\:latest
+.UE .
 .SH BUGS
-The Octave project maintains a bug tracker at https://bugs.octave.org.
+The Octave project maintains a bug tracker at 
+.UR https://\:bugs.octave.org
+.UE .
 Before submitting a new item please read the instructions at
-https://www.octave.org/bugs.html on how to submit a useful report.
+.UR https://\:www.octave.org/\:bugs.html
+.UE \ on how to submit a useful report.
 .SH FILES
-Upon startup Octave looks for four initialization files.  Each file
-may contain any number of valid Octave commands.
+Upon startup Octave looks for four initialization files.  Each file may contain
+any number of valid Octave commands.
 .TP
 \fIoctave-home\fP/share/octave/site/m/startup/octaverc
 Site-wide initialization file which changes options for all users.
 \fIoctave-home\fP is the directory where Octave was installed such as
-\fB/usr/local\fP.
+\fI/usr/local\fP.
 .TP
 \fIoctave-home\fP/share/octave/\fIversion\fP/m/startup/octaverc
 Site-wide initialization file for Octave version \fIversion\fP.
@@ -85,4 +94,8 @@ User's personal initialization file.
 \&\.octaverc
 Project-specific initialization file located in the current directory.
 .SH AUTHOR
-John W. Eaton <jwe@octave.org>
+John W. Eaton and many others.  The list of contributors to the Octave project
+may be shown with \fBinfo octave Acknowledgements\fP.  The list is also
+available online at
+.UR https://\:docs.octave.org/\:latest/\:Acknowledgements.html
+.UE .

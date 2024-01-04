@@ -1238,7 +1238,7 @@ interpreter::execute_startup_files ()
     }
 
   if (m_interactive && trace)
-    std::cout << std::endl;
+    octave_stdout << std::endl;
 
   return exit_status;
 }

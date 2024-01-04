@@ -2187,7 +2187,10 @@ tree_evaluator::source_file (const std::string& file_name,
   code->call (*this, 0, octave_value_list ());
 
   if (verbose)
-    octave_stdout << "done." << std::endl;
+    {
+      octave_stdout << "done." << std::endl;
+      octave_stdout.flush ();
+    }
 }
 
 void

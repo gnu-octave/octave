@@ -45,7 +45,7 @@ function status = mex (varargin)
   [out, sts] = mkoctfile ("--mex", varargin{:});
 
   if (! isempty (out))
-    printf ("%s", out);
+    printf ("%s\n", out);
   endif
   if (nargout > 0)
     status = sts;

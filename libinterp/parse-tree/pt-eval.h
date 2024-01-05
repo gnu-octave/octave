@@ -346,6 +346,8 @@ public:
 
   Matrix ignored_fcn_outputs () const;
 
+  std::string inputname (int n, bool ids_only = true) const;
+
   octave_value make_fcn_handle (const std::string& nm);
 
   octave_value evaluate (tree_decl_elt *);

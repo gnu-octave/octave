@@ -455,6 +455,8 @@ public:
 
   virtual octave_value& varref (std::size_t data_offset);
 
+  virtual std::string inputname (int n, bool ids_only) const;
+
   void assign (const symbol_record& sym, const octave_value& val)
   {
     octave_value& lhs = varref (sym);

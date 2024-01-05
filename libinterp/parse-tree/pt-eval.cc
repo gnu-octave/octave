@@ -1485,6 +1485,13 @@ tree_evaluator::ignored_fcn_outputs () const
   return retval;
 }
 
+std::string tree_evaluator::inputname (int n, bool ids_only) const
+{
+  std::shared_ptr<stack_frame> frame = m_call_stack.current_user_frame ();
+
+  return frame->inputname (n, ids_only);
+}
+
 // If NAME is an operator (like "+", "-", ...), convert it to the
 // corresponding function name ("plus", "minus", ...).
 
@@ -5563,6 +5570,118 @@ With no arguments, @code{echo} toggles the current echo state.
 %!error echo ("off", "invalid")
 %!error echo ("on", "invalid")
 %!error echo ("on", "all", "all")
+*/
+
+/*
+FIXME: Actually, it probably *isn't* worth fixing, but there is one small
+difference between Octave and Matlab.
+
+If inputname is not called from a function, Matlab walks up the stack until it
+finds some valid code and then works from there.  This could be relevant for
+mex files or anonymous functions.
+
+fcn = @(x) inputname (x);
+a = 1:4;
+arrayfun (fcn, a, 'uniformoutput', false)
+% output is {'fcn', 'a', '', ''}
+*/
+DEFMETHOD (inputname, interp, args, ,
+           doc: /* -*- texinfo -*-
+@deftypefn  {} {@var{namestr} =} inputname (@var{n})
+@deftypefnx {} {@var{namestr} =} inputname (@var{n}, @var{ids_only})
+Return the name of the @var{n}-th argument to the calling function.
+
+If the argument is not a simple variable name, return an empty string.
+Examples which will return @qcode{""} are numbers (@code{5.1}), expressions
+(@code{@var{y}/2}), and cell or structure indexing (@code{@var{c}@{1@}} or
+@code{@var{s}.@var{field}}).
+
+@code{inputname} is only useful within a function.  When used at the command
+line or within a script it always returns an empty string.
+
+By default, return an empty string if the @var{n}-th argument is not a valid
+variable name.  If the optional argument @var{ids_only} is false, return the
+text of the argument even if it is not a valid variable name.  This is an
+Octave extension that allows the programmer to view exactly how the function
+was invoked even when the inputs are complex expressions.
+@seealso{nargin, narginchk}
+@end deftypefn */)
+{
+  int nargin = args.length ();
+
+  if (nargin < 1)
+    print_usage ();
+
+  dim_vector dims = args(0).dims ();
+  if (! dims.all_ones ())
+    error ("inputname: N must be a scalar index");
+
+  int n = args(0).xint_value ("inputname: N must be a scalar index");
+
+  if (n < 1)
+    error ("inputname: N must be a scalar index");
+
+  bool ids_only = true;
+
+  if (nargin == 2)
+    ids_only = args(1).xbool_value ("inputname: IDS_ONLY must be a logical value");
+
+  // Use zero-based indexing internally.
+  return ovl (interp.inputname (n-1, ids_only));
+}
+
+/*
+%!function name = __iname1__ (arg1, arg2, arg3)
+%!  name = inputname (1);
+%!endfunction
+
+%!function name = __iname1_ID__ (arg1, arg2, arg3)
+%!  name = inputname (1, false);
+%!endfunction
+
+%!function name = __iname2__ (arg1, arg2, arg3)
+%!  name = inputname (2);
+%!endfunction
+
+%!function names = __iname3__ (arg1, arg2, arg3)
+%!  names = cell (1, 3);
+%!  for i = 1:3
+%!    names{i} = inputname (i);
+%!  endfor
+%!endfunction
+
+%!test
+%! assert (__iname1__ ('xvar'), "");
+%! xvar = 1;
+%! assert (__iname1__ (xvar), "xvar");
+
+%!test
+%! xvar = 1;  yvar = 2;
+%! assert (__iname2__ (xvar), "");
+%! assert (__iname2__ (xvar, yvar), "yvar");
+
+%!test
+%! xvar = 1;  yvar = 2;
+%! assert (__iname3__ (xvar), {"xvar", "", ""});
+%! assert (__iname3__ (xvar, yvar), {"xvar", "yvar", ""});
+%! assert (__iname3__ (xvar, 3, yvar), {"xvar", "", "yvar"});
+
+## Test numbers, expressions, indexing operations
+%!test
+%! assert (__iname1__ (1.0), "");
+%! x = 1;
+%! assert (__iname1__ (x / 2), "");
+%! assert (__iname1__ (Inf), "");
+
+%!test
+%! assert (__iname1_ID__ (1.0), "1.0");
+%! x = 1;
+%! assert (__iname1_ID__ (x / 2), "x / 2");
+%! assert (__iname1_ID__ (Inf), "Inf");
+
+%!error <Invalid call> inputname ()
+%!error <N must be a scalar> inputname (ones (2,2))
+%!error <N must be a scalar index> inputname (-1)
 */
 
 OCTAVE_END_NAMESPACE(octave)

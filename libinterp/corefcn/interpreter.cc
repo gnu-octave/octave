@@ -1655,6 +1655,12 @@ interpreter::feval (const octave_value_list& args,
   return feval (f_arg, tmp_args, nargout);
 }
 
+std::string
+interpreter::inputname (int n, bool ids_only) const
+{
+  return m_evaluator.inputname (n, ids_only);
+}
+
 octave_value
 interpreter::make_function_handle (const std::string& name)
 {

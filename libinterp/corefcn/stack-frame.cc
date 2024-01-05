@@ -190,6 +190,14 @@ public:
     return m_static_link->varref (sym);
   }
 
+  std::string inputname (int n, bool ids_only) const
+  {
+    // Look in closest stack frame that contains values (either the
+    // top scope, or a user-defined function or script).
+
+    return m_static_link->inputname (n, ids_only);
+  }
+
   void mark_scope (const symbol_record& sym, scope_flags flag)
   {
     // Look in closest stack frame that contains values (either the
@@ -314,6 +322,11 @@ public:
   octave_value varval (const symbol_record& sym) const;
 
   octave_value& varref (const symbol_record& sym);
+
+  std::string inputname (int n, bool ids_only) const
+  {
+    return m_access_link->inputname (n, ids_only);
+  }
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -551,6 +564,8 @@ public:
 
   octave_value& varref (const symbol_record& sym);
 
+  std::string inputname (int n, bool ids_only) const;
+
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
   void display (bool follow = true) const;
@@ -620,6 +635,14 @@ public:
   octave_value varval (const symbol_record& sym) const;
 
   octave_value& varref (const symbol_record& sym);
+
+  std::string inputname (int, bool) const
+  {
+    if (m_index == 0)
+      error ("invalid call to inputname outside of a function");
+
+    return "";
+  }
 
   void mark_scope (const symbol_record& sym, scope_flags flag);
 
@@ -1373,6 +1396,15 @@ stack_frame::varref (std::size_t)
   // This function should only be called for user_fcn_stack_frame or
   // scope_stack_frame objects.  Anything else indicates an error in
   // the implementation.
+
+  panic_impossible ();
+}
+
+std::string
+stack_frame::inputname (int, bool) const
+{
+  // This function should only be called for user_fcn_stack_frame.
+  // Anything else indicates an error in the implementation.
 
   panic_impossible ();
 }
@@ -2400,6 +2432,25 @@ user_fcn_stack_frame::varref (const symbol_record& sym)
     }
 
   error ("internal error: invalid switch case");
+}
+
+std::string
+user_fcn_stack_frame::inputname (int n, bool ids_only) const
+{
+  std::string name;
+
+  Array<std::string> arg_names
+    = m_auto_vars.at (stack_frame::ARG_NAMES).cellstr_value ();
+
+  if (n >= 0 && n < arg_names.numel ())
+    {
+      name = arg_names(n);
+
+      if (ids_only && ! m_static_link->is_variable (name))
+        name = "";
+    }
+
+  return name;
 }
 
 void

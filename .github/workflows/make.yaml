@@ -329,8 +329,12 @@ jobs:
           cd .build && ../configure
 
       - name: build
+        # Parallel make seems to fail intermittently when creating the figures
+        # for the manual. The error message says it fails to connect to a
+        # display. Maybe an xvfb issue?
+        # Use single job make for now which seems to work more reliably.
         run: |
-          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build all -j2 V=1
+          XDG_RUNTIME_DIR=$RUNNER_TEMP xvfb-run -a make -C ./.build all V=1
 
       - name: ccache status
         run: ccache -s

@@ -413,12 +413,12 @@ viridis_colormap ()
 }
 
 /*
-## Test default colormap returns as 256 color viridis
+## Test default colormap returns a 256-color viridis map
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   hax = axes ("parent", hf);
-%!   assert (get (hax, "colormap"), viridis (256), eps);   
+%!   assert (get (hax, "colormap"), viridis (256));
 %! unwind_protect_cleanup
 %!   delete (hf);
 %! end_unwind_protect

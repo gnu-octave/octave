@@ -405,6 +405,8 @@ public:
 
   octave_value_list feval (const octave_value_list& args, int nargout = 0);
 
+  std::string inputname (int n, bool ids_only = true) const;
+
   octave_value make_function_handle (const std::string& name);
 
   void install_variable (const std::string& name, const octave_value& value,

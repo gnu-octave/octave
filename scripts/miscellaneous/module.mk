@@ -34,7 +34,6 @@ FCN_FILE_DIRS += \
   %reldir%/gunzip.m \
   %reldir%/info.m \
   %reldir%/inputParser.m \
-  %reldir%/inputname.m \
   %reldir%/isdeployed.m \
   %reldir%/isfile.m \
   %reldir%/isfolder.m \

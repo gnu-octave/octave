@@ -667,7 +667,7 @@ public:
 
   // Alias for direct read-write access to Array data.
   // FIXME: It is recommended to use rwdata() in future code for clarity.
-  inline OCTARRAY_API T * fortran_vec ()
+  inline T * fortran_vec ()
   { return rwdata (); }
 
   OCTARRAY_OVERRIDABLE_FUNC_API bool is_shared () const

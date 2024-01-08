@@ -1065,6 +1065,14 @@ public:
     return varref_internal (local_offset, deref_refs);
   }
 
+  std::string inputname (int /*n*/, bool /*ids_only*/) const
+  {
+    // FIXME:  To make inputname work properly, this function must be
+    // defined.
+
+    return "";
+  }
+
   void mark_scope (const symbol_record& sym,
                    scope_flags flag)
   {

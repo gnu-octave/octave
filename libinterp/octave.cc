@@ -246,7 +246,7 @@ cmdline_options::as_octave_value () const
   octave_scalar_map m;
 
   m.assign ("sys_argc", sys_argc ());
-  m.assign ("sys_argv", Cell (string_vector (sys_argv ())));
+  m.assign ("sys_argv", Cell (all_args ()));
   m.assign ("echo_commands", echo_commands ());
   m.assign ("forced_interactive", forced_interactive ());
   m.assign ("forced_line_editing", forced_line_editing ());

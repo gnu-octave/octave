@@ -417,6 +417,7 @@ void
 IDA::set_up (const ColumnVector& y)
 {
   N_Vector yy = ColToNVec (y, m_num);
+  octave::unwind_action act ([&yy] () { N_VDestroy_Serial (yy); });
 
   if (m_havejacsparse)
     {
@@ -457,7 +458,6 @@ IDA::set_up (const ColumnVector& y)
     }
   else
     {
-
       m_sunJacMatrix = SUNDenseMatrix (m_num, m_num OCTAVE_SUNCONTEXT);
       if (! m_sunJacMatrix)
         error ("Unable to create dense Jacobian for Sundials");
@@ -472,7 +472,6 @@ IDA::set_up (const ColumnVector& y)
 
       if (m_havejac && IDASetJacFn (m_mem, IDA::jacdense) != 0)
         error ("Unable to set dense Jacobian function");
-
     }
 }
 
@@ -594,8 +593,11 @@ IDA::initialize ()
 #  endif
 
   N_Vector yy = ColToNVec (m_y0, m_num);
-
   N_Vector yyp = ColToNVec (m_yp0, m_num);
+  octave::unwind_action act ([&yy, &yyp] ()
+                             { N_VDestroy_Serial (yy);
+                               N_VDestroy_Serial (yyp);
+                             });
 
   IDA::set_userdata ();
 
@@ -607,11 +609,10 @@ void
 IDA::set_tolerance (ColumnVector& abstol, realtype reltol)
 {
   N_Vector abs_tol = ColToNVec (abstol, m_num);
+  octave::unwind_action act ([&abs_tol] () { N_VDestroy_Serial (abs_tol); });
 
   if (IDASVtolerances (m_mem, reltol, abs_tol) != 0)
     error ("IDA: Tolerance not set");
-
-  N_VDestroy_Serial (abs_tol);
 }
 
 void
@@ -643,8 +644,11 @@ IDA::integrate (const octave_idx_type numt, const ColumnVector& tspan,
   realtype tend = tspan(numt-1);
 
   N_Vector yyp = ColToNVec (yp, m_num);
-
   N_Vector yy = ColToNVec (y, m_num);
+  octave::unwind_action act ([&yyp, &yy] ()
+                             { N_VDestroy_Serial (yyp);
+                               N_VDestroy_Serial (yy);
+                             });
 
   // Initialize OutputFcn
   if (haveoutputfcn)
@@ -755,6 +759,7 @@ IDA::integrate (const octave_idx_type numt, const ColumnVector& tspan,
         {
           // Interpolate in tend
           N_Vector dky = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
+          octave::unwind_action act ([&dky] () { N_VDestroy_Serial (dky); });
 
           if (IDAGetDky (m_mem, tend, 0, dky) != 0)
             error ("IDA failed to interpolate y");
@@ -778,14 +783,11 @@ IDA::integrate (const octave_idx_type numt, const ColumnVector& tspan,
                                      olddir, cont, temp, tout(cont-1),
                                      yold, num_event_args);
             }
-
-          N_VDestroy_Serial (dky);
         }
 
       // Cleanup plotter
       status = IDA::outputfun (output_fcn, haveoutputsel, yout, tend, tend,
                                outputsel, "done");
-
     }
 
   // Index of Events (ie) variable must use 1-based indexing
@@ -922,8 +924,11 @@ IDA::interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
   bool status = false;
 
   N_Vector dky = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
-
   N_Vector dkyp = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
+  octave::unwind_action act ([&dky, &dkyp] ()
+                             { N_VDestroy_Serial (dky);
+                               N_VDestroy_Serial (dkyp);
+                             });
 
   ColumnVector yout (m_num);
   ColumnVector ypout (m_num);
@@ -970,8 +975,6 @@ IDA::interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
                              oldisterminal, olddir, cont, temp,
                              tout(cont-1), yold, num_event_args);
     }
-
-  N_VDestroy_Serial (dky);
 
   return status;
 }

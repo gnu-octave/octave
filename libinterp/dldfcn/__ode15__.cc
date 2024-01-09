@@ -759,7 +759,7 @@ IDA::integrate (const octave_idx_type numt, const ColumnVector& tspan,
         {
           // Interpolate in tend
           N_Vector dky = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
-          octave::unwind_action act ([&dky] () { N_VDestroy_Serial (dky); });
+          octave::unwind_action act2 ([&dky] () { N_VDestroy_Serial (dky); });
 
           if (IDAGetDky (m_mem, tend, 0, dky) != 0)
             error ("IDA failed to interpolate y");

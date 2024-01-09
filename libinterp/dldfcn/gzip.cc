@@ -445,6 +445,7 @@ private:
     {
       if (deflateEnd (m_strm) != Z_OK)
         throw std::runtime_error ("failed to close zlib stream");
+      delete m_strm;
       m_strm = nullptr;
 
       // We have no error handling for failing to close source, let

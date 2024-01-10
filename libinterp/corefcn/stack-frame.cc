@@ -1065,12 +1065,22 @@ public:
     return varref_internal (local_offset, deref_refs);
   }
 
-  std::string inputname (int /*n*/, bool /*ids_only*/) const
+  std::string inputname (int n, bool ids_only) const
   {
-    // FIXME:  To make inputname work properly, this function must be
-    // defined.
+    std::string name;
 
-    return "";
+    octave_value ov_arg_names = get_auto_fcn_var (stack_frame::ARG_NAMES);
+    Array<std::string> arg_names = ov_arg_names.cellstr_value ();
+
+    if (n >= 0 && n < arg_names.numel ())
+      {
+        name = arg_names(n);
+
+        if (ids_only && ! m_static_link->is_variable (name))
+          name = "";
+      }
+
+    return name;
   }
 
   void mark_scope (const symbol_record& sym,
@@ -4375,8 +4385,18 @@ user_fcn_stack_frame::inputname (int n, bool ids_only) const
 {
   std::string name;
 
-  Array<std::string> arg_names
-    = m_auto_vars.at (stack_frame::ARG_NAMES).cellstr_value ();
+  Array<std::string> arg_names;
+
+  auto parent_frame = parent_link ();
+
+  if (parent_frame && parent_frame->is_bytecode_fcn_frame ())
+    {
+      // The bytecode interpreter does not set ARG_NAMES for called non bytecode functions,
+      // since the bytecode interpreter looks up ARG_NAMES in the calling stack frame.
+      arg_names = parent_frame->get_active_bytecode_call_arg_names ().cellstr_value ();
+    }
+  else
+    arg_names = m_auto_vars.at (stack_frame::ARG_NAMES).cellstr_value ();
 
   if (n >= 0 && n < arg_names.numel ())
     {

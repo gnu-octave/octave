@@ -181,7 +181,8 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       z3 = z(tri(:,3));
 
       ## Calculate norm vector.
-      N = cross ([x2-x1, y2-y1, z2-z1], [x3-x1, y3-y1, z3-z1]);
+      N = cross ([x2-x1, y2-y1, z2-z1], [x3-x1, y3-y1, z3-z1], 2);
+
       ## Normalize.
       N = diag (norm (N, "rows")) \ N;
 
@@ -329,6 +330,15 @@ endfunction
 %! zz2 = 2*(xx.^2 + yy.^2);
 %! zz2(isnan (zz)) = NaN;
 %! assert (zz, zz2, 100*eps);
+
+%!testif HAVE_QHULL <*65146> # Ensure correct output for 3-point queries.
+%! xi = [1 2 3];
+%! a = griddata (xi, xi, xi .* xi', xi, xi, "linear");
+%! assert (a, [1, 4, 9]', 10*eps);
+%! a = griddata (xi, xi, xi .* xi', xi', xi', "linear");
+%! assert (a, [1, 4, 9]', 10*eps);
+%! a = griddata (xi, xi, xi .* xi', [xi; xi], [xi; xi], "linear");
+%! assert (a, [1, 4, 9; 1, 4, 9], 10*eps);
 
 ## Test input validation
 %!error <Invalid call> griddata ()

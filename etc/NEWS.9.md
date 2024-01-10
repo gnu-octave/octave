@@ -241,7 +241,7 @@ Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
 ----------------------------------------------------
 
 - Bugfixes to `whos -file`, `urlread`, `mat2cell`, `set`, `savepath`,
-  `loadpath` and the general interpreter stack-handling.
+  `loadpath`, `griddata`, and the general interpreter stack-handling.
 
 - Better input validation for `sparse`, `speye`.
 

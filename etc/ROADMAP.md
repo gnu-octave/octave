@@ -11,11 +11,15 @@ This document is different from a wishlist of features, such as those
 present on the Octave wiki, in that this document lists names of people
 willing to work on specific activities, whether they are contributors writing code
 themselves, or existing Octave maintainers soliciting / reviewing / accepting code
-from new contributors. For new contributors, this is a way to get your contribution
+from new contributors.
+
+* For new contributors, this is a way to get your contribution
 reviewed and merged into the Octave codebase with more confidence, and a way
-to work with a more experienced Octave developer so you can become an Octave
-developer over time too. For existing maintainers, this is a way keep getting
-new developers and contributors in, and helps Octave development scale.
+to work with a more experienced Octave developer on a named activity so you too
+can become an Octave developer over time.
+
+* For existing maintainers, this is a way to get new developers and
+contributors in, which helps Octave development scale.
 
 If you want to take ownership of some activity below, or create a new activity,
 please edit the list as necessary, add your name, and post about it on Discourse.
@@ -37,15 +41,18 @@ get more priority.
 - HDF5 compatibility with Matlab: (LEAD?)
   - Deprecate Octave's native savefile formats in favor of Matlab-compatible HDF5.
   - Decide how to handle backwards compatibility with older savefiles.
+  - Needs h5read/h5write as well as v7.3 MAT-file load/save support.
   - Influenced by classdef decision above.
+  - Note: Examine Nelson's implementation.
   - Target: Octave 10.
 
 - String class "foo" as distinct from array of characters 'foo'. (LEAD?)
   - See https://octave.discourse.group/t/implementation-of-a-string-class/1089
-  - Depends on HDF5.
+  - Depends on HDF5. 
+  - Note: Examine Nelson's implementation.
   - Target: Octave 10.
 
-- Hashmap containers.  (LEAD? GUILLAUME?)
+- Dictionaries (aka associative arrays / hashmaps).  (LEAD? GUILLAUME?)
   - See https://octave.discourse.group/t/adding-hashmaps-to-octave/3306
   - Depends on HDF5 and string.
   - Target: Octave 10.
@@ -79,6 +86,7 @@ get more priority.
   - Target: Octave 11.
 
 - Assess OpenGL role and improvements.  (RIK?)
+  - May possibly need a paid consultant.
   - Target: Octave 11
 
 - Replace GLPK with more performant solver for LP / MILP. (ARUN)

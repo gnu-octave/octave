@@ -782,10 +782,31 @@
 %!   end
 %! end
 %!
+%! %% Test that nargin is set properly
+%!
+%! __vm_enable__ (0, "local");
+%! clear all
+%! bytecode_script_nargin_call_recursive = true; % The script calls it self once if this symbol is true
+%! bytecode_script_nargin_expected_value = nargin; % The expected value of nargin
+%! bytecode_script_nargin;
+%!
+%! % Call in top scope, to check that Octave cli start options set nargin to whatever the user started Octave with
+%! evalin ("base", "bytecode_script_nargin_call_recursive = true; bytecode_script_nargin_expected_value = nargin; bytecode_script_nargin;");
+%!
+%! % Call in function
+%! eval ("function foo (a,b) bytecode_script_nargin_expected_value = nargin; bytecode_script_nargin; end; foo (1, 2);")
+%!
+%! __vm_enable__ (1, "local");
+%! clear all
+%! bytecode_script_nargin_call_recursive = true;
+%! bytecode_script_nargin_expected_value = nargin;
+%! bytecode_script_nargin;
+%!
+%! evalin ("base", "bytecode_script_nargin_call_recursive = true; bytecode_script_nargin_expected_value = nargin; bytecode_script_nargin;");
+%! eval ("function foo (a,b) bytecode_script_nargin_expected_value = nargin; bytecode_script_nargin; end; foo (1, 2);")
+%!
 %! %% Cleanup after the tests
-%! clear global bytecode_script_topscope_call_self
-%! clear global bytecode_script_topscope_place
-%! clear bytecode_script_topscope_cli_fn
+%! clear all
 
 ## Test save() and load() from scripts.
 %!testif ENABLE_BYTECODE_EVALUATOR

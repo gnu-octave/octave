@@ -1519,6 +1519,9 @@ public:
     auto eval_frame = access_link ();
     auto parent_frame = static_link ();
 
+    // Set nargin to match the value of nargin in the eval frame
+    set_nargin (eval_frame->get_auto_fcn_var (stack_frame::NARGIN).int_value()); // TODO: Kinda wasteful fn calls
+
     bool caller_is_eval_frame = eval_frame == parent_frame;
     bool eval_frame_is_bytecode = eval_frame->is_bytecode_fcn_frame ();
 

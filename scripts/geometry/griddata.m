@@ -40,9 +40,10 @@
 ## @code{meshgrid} and @var{z} is a 2-D matrix matching the resulting size of
 ## the X-Y grid.
 ##
-## The interpolation points are (@var{xi}, @var{yi}).  If, and only if,
-## @var{xi} is a row vector and @var{yi} is a column vector, then
-## @code{meshgrid} will be used to create a mesh of interpolation points.
+## The interpolation points are (@var{xi}, @var{yi}).  If either @var{xi} or
+## @var{y} is a row vector and the other is a column vector, then
+## @code{meshgrid (@var{xi}, @var{yi})} will be used to create a mesh of
+## interpolation points.
 ##
 ## For 3-D interpolation, the inputs @var{x}, @var{y}, and @var{z} define the
 ## points where the function @code{@var{v} = f (@var{x}, @var{y}, @var{z})}
@@ -50,6 +51,10 @@
 ## the same length, or if they are of unequal length, then they are expanded to
 ## a 3-D grid with @code{meshgrid}.  The size of the input @var{v} must match
 ## the size of the original data, either as a vector or a matrix.
+##
+## The outputs @var{zi} (for 2-D) or @var{vi} (for 3-D) will contain the
+## interpolated values of @var{z} or @var{v}, respectively, with the output
+## size matching that of the interpolation points.
 ##
 ## The optional input interpolation @var{method} can be @qcode{"nearest"},
 ## @qcode{"linear"}, or for 2-D data @qcode{"v4"}.  When the method is
@@ -110,18 +115,15 @@ function [rx, ry, rz] = griddata (x, y, z, varargin)
       error ("griddata: lengths of X, Y must match the columns and rows of Z");
     endif
 
-    ## Meshgrid xi and yi if they are a row and column vector, but not
-    ## if they are simply vectors of the same size (for compatibility).
-    if (isrow (xi) && iscolumn (yi))
+    ## Meshgrid xi and yi if one is a row vector and the other is a column
+    ## vector, but not if they are vectors with the same orientation.
+    if ((isrow (xi) && iscolumn (yi)) || (iscolumn (xi) && isrow (yi)))
       [xi, yi] = meshgrid (xi, yi);
-    elseif (isvector (xi) && isvector (yi))
-      ## Otherwise, convert to column vectors
-      xi = xi(:);
-      yi = yi(:);
-    endif
-
-    if (! size_equal (xi, yi))
-      error ("griddata: XI and YI must be vectors or matrices of same size");
+    else
+      ## Ensure vector and matrix query point inputs are identically sized.
+      if (! size_equal (xi, yi))
+        error ("griddata: XI and YI must be vectors or matrices of same size");
+      endif
     endif
 
     if (nargin == 6)
@@ -334,11 +336,35 @@ endfunction
 %!testif HAVE_QHULL <*65146> # Ensure correct output for 3-point queries.
 %! xi = [1 2 3];
 %! a = griddata (xi, xi, xi .* xi', xi, xi, "linear");
-%! assert (a, [1, 4, 9]', 10*eps);
+%! assert (a, [1, 4, 9], 10*eps);
 %! a = griddata (xi, xi, xi .* xi', xi', xi', "linear");
 %! assert (a, [1, 4, 9]', 10*eps);
 %! a = griddata (xi, xi, xi .* xi', [xi; xi], [xi; xi], "linear");
 %! assert (a, [1, 4, 9; 1, 4, 9], 10*eps);
+
+## Verify output orientation for various input vector shape combinations
+%!testif HAVE_QHULL <*65134>
+%! x = [1:10];
+%! y = [1:10];
+%! z = x .* y';
+%! xi = [1, 5, 10];
+%! yi = [1, 5];
+%! [xx, yy, vv] = griddata (x, y, z, xi, xi, 'nearest'); # Row, Row
+%! assert (xx, xi);
+%! assert (yy, xi);
+%! assert (size (vv), [1, 3]);
+%! [xx, yy, vv] = griddata (x, y, z, xi', xi', 'nearest'); # Col, Col
+%! assert (xx, xi');
+%! assert (yy, xi');
+%! assert (size (vv), [3, 1]);
+%! [xx, yy, vv] = griddata (x, y, z, xi, yi', 'nearest'); # Row, Col
+%! assert (xx, [xi; xi]);
+%! assert (yy, [yi', yi', yi']);
+%! assert (vv, [1, 5, 10; 5, 25, 50]);
+%! [xx, yy, vv] = griddata (x, y, z, xi', yi, 'nearest'); # Col, Row
+%! assert (xx, [xi; xi]);
+%! assert (yy, [yi', yi', yi']);
+%! assert (vv, [1, 5, 10; 5, 25, 50]);
 
 ## Test input validation
 %!error <Invalid call> griddata ()
@@ -354,6 +380,8 @@ endfunction
 %!error <the columns and rows of Z> griddata (1:4, 1:3, ones (3,5), 1:3, 1:3)
 %!error <XI and YI .* matrices of same size> griddata (1:3, 1:3, 1:3, 1:4, 1:3)
 %!error <XI and YI .* matrices of same size> griddata (1:3, 1:3, 1:3, 1:3, 1:4)
+%!error <XI and YI .* matrices of same size> griddata (1:3, 1:3, 1:3, [1:4]', [1:3]')
+%!error <XI and YI .* matrices of same size> griddata (1:3, 1:3, 1:3, [1:3]', [1:4]')
 %!error <METHOD must be a string> griddata (1,2,3,4,5, {"linear"})
 %!error <"cubic" .* not yet implemented> griddata (1,2,3,4,5, "cubic")
 %!error <"natural" .* not yet implemented> griddata (1,2,3,4,5, "natural")

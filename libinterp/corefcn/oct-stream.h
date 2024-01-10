@@ -79,7 +79,10 @@ public:
 
   OCTAVE_DISABLE_COPY_MOVE (base_stream)
 
-  virtual ~base_stream () = default;
+  virtual ~base_stream ()
+  {
+    delete m_conv_ostream;
+  }
 
   // The remaining functions are not specific to input or output only,
   // and must be provided by the derived classes.

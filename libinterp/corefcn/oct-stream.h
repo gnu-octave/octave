@@ -79,10 +79,7 @@ public:
 
   OCTAVE_DISABLE_COPY_MOVE (base_stream)
 
-  virtual ~base_stream ()
-  {
-    delete m_conv_ostream;
-  }
+  virtual ~base_stream () = default;
 
   // The remaining functions are not specific to input or output only,
   // and must be provided by the derived classes.
@@ -124,20 +121,19 @@ public:
       return output_stream ();
 
     if (m_conv_ostream)
-      return m_conv_ostream;
+      return m_conv_ostream.get ();
 
     // wrap the output stream with encoding conversion facet
     std::ostream *os = output_stream ();
     if (os && *os)
       {
-        convfacet_u8 *facet = new convfacet_u8 (m_encoding);
-        std::wbuffer_convert<convfacet_u8, char> *converter
-          = new std::wbuffer_convert<convfacet_u8, char> (os->rdbuf (),
-              facet);
-        m_conv_ostream = new std::ostream (converter);
+        m_converter
+          = std::make_unique<std::wbuffer_convert<convfacet_u8, char>>
+            (os->rdbuf (), new convfacet_u8 (m_encoding));
+        m_conv_ostream = std::make_unique<std::ostream> (m_converter.get ());
       }
 
-    return (m_conv_ostream ? m_conv_ostream : output_stream ());
+    return (m_conv_ostream ? m_conv_ostream.get () : output_stream ());
   }
 
   // Return TRUE if this stream is open.
@@ -211,15 +207,12 @@ private:
   // encoding conversion facet
   typedef string::deletable_facet<string::codecvt_u8> convfacet_u8;
 
-  // FIXME: Identified by compiler as unused private field.
-  // Commented out 10/29/2022.
-  // If there are no repercussions, delete entirely.
-  // std::wbuffer_convert<convfacet_u8, char> *m_converter;
+  std::unique_ptr<std::wbuffer_convert<convfacet_u8, char>> m_converter;
 
   // wrappers for encoding conversion
-  // std::istream *m_conv_istream;
+  // std::unique_ptr<std::istream> m_conv_istream;
 
-  std::ostream *m_conv_ostream;
+  std::unique_ptr<std::ostream> m_conv_ostream;
 
   // TRUE if an error has occurred.
   bool m_fail;

@@ -238,11 +238,7 @@ public:
   {
     if (&s != this)
       {
-        if (m_rep)
-          {
-            delete m_rep;
-            m_rep = nullptr;
-          }
+        delete m_rep;
 
         m_rep = s.m_rep->clone ();
       }
@@ -252,11 +248,7 @@ public:
 
   scaler& operator = (const std::string& s)
   {
-    if (m_rep)
-      {
-        delete m_rep;
-        m_rep = nullptr;
-      }
+    delete m_rep;
 
     if (s == "log")
       m_rep = new log_scaler ();

@@ -77,12 +77,9 @@ public:
 
   virtual void delete_breakpoint ()
   {
-    if (m_bp_cond)
-      {
-        delete m_bp_cond;
+    delete m_bp_cond;
 
-        m_bp_cond = nullptr;
-      }
+    m_bp_cond = nullptr;
   }
 
   bool meets_bp_condition (tree_evaluator& tw) const;

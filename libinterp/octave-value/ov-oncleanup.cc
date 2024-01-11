@@ -205,13 +205,32 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 DEFUN (onCleanup, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{obj} =} onCleanup (@var{function})
-Create a special object that executes a given function upon destruction.
+Create a special object that executes a given @var{function} upon destruction.
 
 If the object is copied to multiple variables (or cell or struct array
-elements) or returned from a function, @var{function} will be executed after
-clearing the last copy of the object.  Note that if multiple local onCleanup
-variables are created, the order in which they are called is unspecified.
-For similar functionality @xref{The unwind_protect Statement}.
+elements) or returned from a function, then @var{function} will be executed
+only after the last copy of the object is cleared.
+
+The input @var{function} is a handle to a function.  The handle may point to an
+anonymous function in order to directly place commands in the @code{onCleanup}
+call.
+
+Programming Note: If multiple local @code{onCleanup} variables are created, the
+order in which they are called is unspecified.  For similar functionality
+@xref{The unwind_protect Statement}.
+
+Example
+
+@example
+@group
+octave:1> trigger = onCleanup (@@() disp ('onCleanup was executed'));
+octave:2> clear trigger
+onCleanup was executed
+octave:3 
+@end group
+@end example
+
+@seealso{unwind_protect, try}
 @end deftypefn */)
 {
   if (args.length () != 1)

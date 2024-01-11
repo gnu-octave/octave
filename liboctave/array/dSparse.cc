@@ -55,12 +55,7 @@
 
 #include "Sparse-perm-op-defs.h"
 
-// Define whether to use a basic QR solver or one that uses a Dulmange
-// Mendelsohn factorization to separate the problem into under-determined,
-// well-determined and over-determined parts and solves them separately
-#if ! defined (USE_QRSOLVE)
-#  include "sparse-dmsolve.h"
-#endif
+#include "sparse-dmsolve.h"
 
 SparseMatrix::SparseMatrix (const SparseBoolMatrix& a)
   : MSparse<double> (a.rows (), a.cols (), a.nnz ())
@@ -6748,11 +6743,7 @@ SparseMatrix::solve (MatrixType& mattype, const Matrix& b, octave_idx_type& err,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<Matrix, SparseMatrix, Matrix> (*this, b, err);
-#endif
     }
 
   return retval;
@@ -6812,12 +6803,8 @@ SparseMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<SparseMatrix, SparseMatrix, SparseMatrix>
                (*this, b, err);
-#endif
     }
 
   return retval;
@@ -6877,12 +6864,8 @@ SparseMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<ComplexMatrix, SparseMatrix, ComplexMatrix>
                (*this, b, err);
-#endif
     }
 
   return retval;
@@ -6942,12 +6925,8 @@ SparseMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<SparseComplexMatrix, SparseMatrix, SparseComplexMatrix>
                (*this, b, err);
-#endif
     }
 
   return retval;

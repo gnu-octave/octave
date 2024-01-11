@@ -209,6 +209,10 @@ public:
 
 private:
 
+  void load_translator (QTranslator *tr, const QLocale& locale, const QString& filename, const QString& prefix, const QString& directory) const;
+
+  void load_translator (QTranslator *tr, const QString& prefix, const QString& language, const QString& directory) const;
+
   void check ();
 };
 

@@ -388,12 +388,23 @@ QString gui_settings::get_gui_translation_dir ()
   return QString::fromStdString (dldir);
 }
 
+void gui_settings::load_translator (QTranslator *tr, const QLocale& locale, const QString& filename, const QString& prefix, const QString& directory) const
+{
+  if (! tr->load (locale, filename, prefix, directory))
+    qWarning () << "failed to load translator for locale" << locale.name () << "from file" << filename << "with prefix" << prefix << "from directory" << directory;
+}
+
+void gui_settings::load_translator (QTranslator *tr, const QString& prefix, const QString& language, const QString& directory) const
+{
+  if (! tr->load (prefix + language, directory))
+    if (! tr->load (prefix + language.toLower (), directory))
+      qWarning () << "failed to load translator file" << (prefix + language) << "or" << (prefix + language.toLower ()) << "from directory" << directory;
+}
+
 void gui_settings::config_translators (QTranslator *qt_tr,
                                        QTranslator *qsci_tr,
                                        QTranslator *gui_tr)
 {
-  bool loaded;
-
   QString qt_trans_dir
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     = QLibraryInfo::path (QLibraryInfo::TranslationsPath);
@@ -416,24 +427,17 @@ void gui_settings::config_translators (QTranslator *qt_tr,
       // the suitable translation files
       QLocale sys_locale = QLocale::system ();
 
-      qt_tr->load (sys_locale, "qt", "_", qt_trans_dir);
-      qsci_tr->load (sys_locale, "qscintilla", "_", qt_trans_dir);
-      gui_tr->load (sys_locale, "", "", get_gui_translation_dir ());
+      load_translator (qt_tr, sys_locale, "qt", "_", qt_trans_dir);
+      load_translator (qsci_tr, sys_locale, "qscintilla", "_", qt_trans_dir);
+      load_translator (gui_tr, sys_locale, "", "", get_gui_translation_dir ());
     }
   else
     {
       // load the translation files depending on the given locale name
-      loaded = qt_tr->load ("qt_" + language, qt_trans_dir);
-      if (! loaded)  // try lower case
-        qt_tr->load ("qt_" + language.toLower (), qt_trans_dir);
-
-      loaded = qsci_tr->load ("qscintilla_" + language, qt_trans_dir);
-      if (! loaded)  // try lower case
-        qsci_tr->load ("qscintilla_" + language.toLower (), qt_trans_dir);
-
-      gui_tr->load (language, get_gui_translation_dir ());
+      load_translator (qt_tr, "qt_", language, qt_trans_dir);
+      load_translator (qsci_tr, "qscintilla_", language, qt_trans_dir);
+      load_translator (gui_tr, "", language, get_gui_translation_dir ());
     }
-
 }
 
 #if defined (HAVE_QSCINTILLA)

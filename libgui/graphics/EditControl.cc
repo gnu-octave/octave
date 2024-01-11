@@ -47,7 +47,7 @@ EditControl::create (octave::interpreter& interp, const graphics_object& go)
 
       if (container)
         {
-          uicontrol::properties& up = Utils::properties<uicontrol> (go);
+          const uicontrol::properties& up = Utils::properties<uicontrol> (go);
 
           if ((up.get_max () - up.get_min ()) > 1)
             return new EditControl (interp, go,

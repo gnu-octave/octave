@@ -6623,6 +6623,76 @@ minimum norm solution is computed.
   return binary_op_defun_body (octave_value::op_ldiv, args);
 }
 
+/*
+################################################################################
+## Series of tests for memory leaks in function
+## sparse_qr<SPARSE_T>min2norm_solve<RHS_T, RET_T> (A, b)
+## in sparse-qr.cc.
+################################################################################
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=real full>, <RET=Matrix>, (real sparse, real full)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
+%! x0 = mldivide (A, ones (m,1));
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=real sparse>, <RET=SparseMatrix>, (real sparse, real sparse)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
+%! b = sparse (ones (m,1));
+%! x0 = mldivide (A, b);
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=complex full>, <RET=ComplexMatrix>, (real sparse, complex full)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
+%! b = ones (m,1) + i;
+%! x0 = mldivide (A, b);
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=complex sparse>, <RET=SparseComplexMatrix>, (real sparse, complex sparse)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
+%! b = sparse (ones (m, 1) + i);
+%! x0 = A \ b;
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=complex sparse>, <RET=SparseComplexMatrix>, (real sparse, complex sparse)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1), -ones(mn,1)],[-1,0,1], m, n);
+%! b = sparse (ones (m, 1) + i);
+%! x0 = A \ b;
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=complex full>, <RET=ComplexMatrix>, (complex sparse, complex full)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1) + i, -ones(mn,1)],[-1,0,1], m, n);
+%! b = ones (m, 1) + i;
+%! x0 = A \ b;
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=real full>, <RET=ComplexMatrix>, (complex sparse, real full)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1) + i, -ones(mn,1)],[-1,0,1], m, n);
+%! b = ones (m, 1);
+%! x0 = A \ b;
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=complex sparse>, <RET=SparseComplexMatrix>, (complex sparse, complex sparse)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1) + i, -ones(mn,1)],[-1,0,1], m, n);
+%! b = sparse (ones (m, 1) + i);
+%! x0 = A \ b;
+
+%!testif HAVE_SPQR, HAVE_CHOLMOD
+%! # <RHS=real sparse>, <RET=SparseComplexMatrix>, (complex sparse, real sparse)
+%! m = 11; n = 10; mn = max (m ,n);
+%! A = spdiags ([ones(mn,1), 10*ones(mn,1) + i, -ones(mn,1)],[-1,0,1], m, n);
+%! b = sparse (ones (m, 1));
+%! x0 = A \ b;
+
+*/
+
 DEFUN (lt, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{TF} =} lt (@var{A}, @var{B})

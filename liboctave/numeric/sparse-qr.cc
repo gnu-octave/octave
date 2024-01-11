@@ -43,6 +43,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 OCTAVE_BEGIN_NAMESPACE(math)
 
+#if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
+// Decide once at runtime whether Octave must workaround SuiteSparse library.
+static const bool octave_suitesparse_ptr_size_mismatch
+  = (sizeof (octave_idx_type) != sizeof (SuiteSparse_long));
+
+static const bool suitesparse_integer_long_mismatch
+  = (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long));
+#endif
+
 #if defined (HAVE_CXSPARSE)
 template <typename SPARSE_T>
 class cxsparse_types
@@ -216,10 +225,10 @@ sparse_qr<SPARSE_T>::sparse_qr_rep::E () const
 
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-// Convert real sparse octave matrix to real sparse cholmod matrix.
+// Convert octave real sparse matrix to cholmod real sparse matrix.
 // Returns a "shallow" copy of a.
 static cholmod_sparse
-ros2rcs (const SparseMatrix& a)
+ors2crs (const SparseMatrix& a)
 {
   cholmod_sparse A;
 
@@ -237,7 +246,7 @@ ros2rcs (const SparseMatrix& a)
   A.dtype = CHOLMOD_DOUBLE;
   A.nz = nullptr;
   A.z = nullptr;
-  if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
+  if (! octave_suitesparse_ptr_size_mismatch)
     {
       A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
       A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
@@ -260,10 +269,10 @@ ros2rcs (const SparseMatrix& a)
   return A;
 }
 
-// Convert complex sparse octave matrix to complex sparse cholmod matrix.
+// Convert octave complex sparse matrix to cholmod complex sparse matrix.
 // Returns a "shallow" copy of a.
 static cholmod_sparse
-cos2ccs (const SparseComplexMatrix& a)
+ocs2ccs (const SparseComplexMatrix& a)
 {
   cholmod_sparse A;
 
@@ -281,7 +290,7 @@ cos2ccs (const SparseComplexMatrix& a)
   A.dtype = CHOLMOD_DOUBLE;
   A.nz = nullptr;
   A.z = nullptr;
-  if (sizeof (octave_idx_type) == sizeof (SuiteSparse_long))
+  if (! octave_suitesparse_ptr_size_mismatch)
     {
       A.p = reinterpret_cast<SuiteSparse_long *> (a.cidx ());
       A.i = reinterpret_cast<SuiteSparse_long *> (a.ridx ());
@@ -305,10 +314,10 @@ cos2ccs (const SparseComplexMatrix& a)
   return A;
 }
 
-// Convert real dense octave matrix to complex dense cholmod matrix.
+// Convert octave real dense matrix to cholmod complex dense matrix.
 // Returns a "deep" copy of a.
 static cholmod_dense *
-rod2ccd (const MArray<double>& a, cholmod_common *cc1)
+ord2ccd (const MArray<double>& a, cholmod_common *cc1)
 {
   cholmod_dense *A
     = cholmod_l_allocate_dense (a.rows (), a.cols (), a.rows(),
@@ -323,10 +332,10 @@ rod2ccd (const MArray<double>& a, cholmod_common *cc1)
   return A;
 }
 
-// Convert real dense octave matrix to real dense cholmod matrix.
+// Convert octave real dense matrix to cholmod real dense matrix.
 // Returns a "shallow" copy of a.
 static cholmod_dense
-rod2rcd (const MArray<double>& a)
+ord2crd (const MArray<double>& a)
 {
   cholmod_dense A;
 
@@ -342,10 +351,10 @@ rod2rcd (const MArray<double>& a)
   return A;
 }
 
-// Convert complex dense octave matrix to complex dense cholmod matrix.
+// Convert octave complex dense matrix to cholmod complex dense matrix.
 // Returns a "shallow" copy of a.
 static cholmod_dense
-cod2ccd (const ComplexMatrix& a)
+ocd2ccd (const ComplexMatrix& a)
 {
   cholmod_dense A;
 
@@ -361,10 +370,10 @@ cod2ccd (const ComplexMatrix& a)
   return A;
 }
 
-// Convert real sparse cholmod matrix to real sparse octave matrix.
+// Convert cholmod real sparse matrix to octave real sparse matrix.
 // Returns a "shallow" copy of y.
 static SparseMatrix
-rcs2ros (cholmod_sparse *y, const cholmod_common *cc1)
+crs2ors (cholmod_sparse *y, const cholmod_common *cc1)
 {
   octave_idx_type nrow = from_size_t (y->nrow);
   octave_idx_type ncol = from_size_t (y->ncol);
@@ -388,10 +397,10 @@ rcs2ros (cholmod_sparse *y, const cholmod_common *cc1)
   return ret;
 }
 
-// Convert complex sparse cholmod matrix to complex sparse octave matrix.
+// Convert cholmod complex sparse matrix to octave complex sparse matrix.
 // Returns a "deep" copy of a.
 static SparseComplexMatrix
-ccs2cos (cholmod_sparse *a, cholmod_common *cc1)
+ccs2ocs (cholmod_sparse *a, cholmod_common *cc1)
 {
   octave_idx_type nrow = from_size_t (a->nrow);
   octave_idx_type ncol = from_size_t (a->ncol);
@@ -413,10 +422,10 @@ ccs2cos (cholmod_sparse *a, cholmod_common *cc1)
   return ret;
 }
 
-// Convert real sparse octave matrix to complex sparse cholmod matrix.
+// Convert octave real sparse matrix to cholmod complex sparse matrix.
 // Returns a "deep" copy of a.
 static cholmod_sparse *
-ros2ccs (const SparseMatrix& a, cholmod_common *cc)
+ors2ccs (const SparseMatrix& a, cholmod_common *cc)
 {
   cholmod_sparse *A
     = cholmod_l_allocate_sparse (a.rows (), a.cols (), a.nnz (), 0, 1, 0,
@@ -513,14 +522,14 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::sparse_qr_rep
       ("ordering %d is not supported by SPQR", order);
 
   cholmod_l_start (&m_cc);
-  cholmod_sparse A = ros2rcs (a);
+  cholmod_sparse A = ors2crs (a);
 
   SuiteSparseQR<double> (order, static_cast<double> (SPQR_DEFAULT_TOL),
                          static_cast<SuiteSparse_long> (A.nrow),
                          &A, &m_R, &m_E, &m_H, &m_HPinv, &m_Htau, &m_cc);
   spqr_error_handler (&m_cc);
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
@@ -590,7 +599,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::V () const
 {
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 
-  return rcs2ros (m_H, &m_cc);
+  return crs2ors (m_H, &m_cc);
 
 #elif defined (HAVE_CXSPARSE)
 
@@ -709,7 +718,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::C (const Matrix& b, bool econ)
       ("sparse_qr: matrix dimension with negative size");
 
   cholmod_dense *QTB;  // Q' * B
-  cholmod_dense B = rod2rcd (b);
+  cholmod_dense B = ord2crd (b);
 
   QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
                                      &m_cc);
@@ -910,12 +919,11 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
     (*current_liboctave_error_handler) ("matrix dimension mismatch");
 
   cholmod_dense *QTB;  // Q' * B
-  cholmod_dense B = rod2rcd (b);
+  cholmod_dense B = ord2crd (b);
 
   // FIXME: Process b column by column as in the CXSPARSE version below.
   // This avoids a large dense matrix Q' * B in memory.
-  QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
-                                     &m_cc);
+  QTB = SuiteSparseQR_qmult<double> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B, &m_cc);
 
   spqr_error_handler (&m_cc);
 
@@ -927,7 +935,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
   R2.x = reinterpret_cast<double *> (m_R->x);
   suitesparse_integer *R2_p;
   suitesparse_integer *R2_i;
-  if (sizeof (suitesparse_integer) == sizeof (SuiteSparse_long))
+  if (! suitesparse_integer_long_mismatch)
     {
       R2.p = reinterpret_cast<suitesparse_integer *> (m_R->p);
       R2.i = reinterpret_cast<suitesparse_integer *> (m_R->i);
@@ -949,7 +957,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
   R2.nz = -1;
   double *x_vec = const_cast<double *> (x.rwdata ());
   suitesparse_integer *E;
-  if (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long))
+  if (suitesparse_integer_long_mismatch)
     {
       E = new suitesparse_integer [ncols];
       for (octave_idx_type i = 0; i < ncols; i++)
@@ -969,7 +977,7 @@ sparse_qr<SparseMatrix>::sparse_qr_rep::tall_solve<MArray<double>, Matrix>
        &x_vec[j * ncols], ncols);
     }
 
-  if (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long))
+  if (suitesparse_integer_long_mismatch)
     {
       delete [] R2_p;
       delete [] R2_i;
@@ -1451,7 +1459,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
       ("ordering %d is not supported by SPQR", order);
 
   cholmod_l_start (&m_cc);
-  cholmod_sparse A = cos2ccs (a);
+  cholmod_sparse A = ocs2ccs (a);
 
   SuiteSparseQR<Complex> (order, static_cast<double> (SPQR_DEFAULT_TOL),
                           static_cast<SuiteSparse_long> (A.nrow),
@@ -1459,7 +1467,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::sparse_qr_rep
                           &m_HPinv, &m_Htau, &m_cc);
   spqr_error_handler (&m_cc);
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
@@ -1648,7 +1656,7 @@ sparse_qr<SparseComplexMatrix>::sparse_qr_rep::C
       ("matrix dimension with negative size");
 
   cholmod_dense *QTB;  // Q' * B
-  cholmod_dense B = cod2ccd (b);
+  cholmod_dense B = ocd2ccd (b);
 
   QTB = SuiteSparseQR_qmult<Complex> (SPQR_QTX, m_H, m_Htau, m_HPinv, &B,
                                       &m_cc);
@@ -2771,8 +2779,8 @@ sparse_qr<SparseMatrix>::min2norm_solve<MArray<double>, Matrix>
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse A = ros2rcs (a);
-  cholmod_dense B = rod2rcd (b);
+  cholmod_sparse A = ors2crs (a);
+  cholmod_dense B = ord2crd (b);
   cholmod_dense *X;
 
   X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
@@ -2783,7 +2791,7 @@ sparse_qr<SparseMatrix>::min2norm_solve<MArray<double>, Matrix>
     xdata[i] = reinterpret_cast<double *> (X->x)[i];
   info = 0;
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
@@ -2806,17 +2814,17 @@ sparse_qr<SparseMatrix>::min2norm_solve<SparseMatrix, SparseMatrix>
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse A = ros2rcs (a);
-  cholmod_sparse B = ros2rcs (b);
+  cholmod_sparse A = ors2crs (a);
+  cholmod_sparse B = ors2crs (b);
   cholmod_sparse *X;
 
   X = SuiteSparseQR_min2norm<double> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
   spqr_error_handler (&cc);
 
-  x = rcs2ros (X, &cc);
+  x = crs2ors (X, &cc);
   info = 0;
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
@@ -2843,8 +2851,8 @@ sparse_qr<SparseMatrix>::min2norm_solve<MArray<Complex>, ComplexMatrix>
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse *A = ros2ccs (a, &cc);
-  cholmod_dense B = cod2ccd (b);
+  cholmod_sparse *A = ors2ccs (a, &cc);
+  cholmod_dense B = ocd2ccd (b);
   cholmod_dense *X;
 
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A, &B, &cc);
@@ -2873,17 +2881,17 @@ sparse_qr<SparseMatrix>::min2norm_solve<SparseComplexMatrix, SparseComplexMatrix
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse *A = ros2ccs (a, &cc);
-  cholmod_sparse B = cos2ccs (b);
+  cholmod_sparse *A = ors2ccs (a, &cc);
+  cholmod_sparse B = ocs2ccs (b);
   cholmod_sparse *X;
 
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, A, &B, &cc);
   spqr_error_handler (&cc);
 
-  SparseComplexMatrix ret = ccs2cos (X, &cc);
+  SparseComplexMatrix ret = ccs2ocs (X, &cc);
   info = 0;
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (B.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (B.i);
@@ -2909,8 +2917,8 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<Complex>, ComplexMatrix>
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse A = cos2ccs (a);
-  cholmod_dense B = cod2ccd (b);
+  cholmod_sparse A = ocs2ccs (a);
+  cholmod_dense B = ocd2ccd (b);
   cholmod_dense *X;
 
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
@@ -2921,7 +2929,7 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<Complex>, ComplexMatrix>
     xdata[i] = reinterpret_cast<Complex *> (X->x)[i];
   info = 0;
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
@@ -2934,6 +2942,8 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<Complex>, ComplexMatrix>
 
 // FIXME: 2024/01/07: This template specialization does not appear to be
 // reachable from current Octave code calling qrsolve from sparse-dmsolve.cc.
+// It remains because liboctave may be used by other C++ code besides the
+// Octave interpreter.
 template <>
 template <>
 OCTAVE_API ComplexMatrix
@@ -2948,8 +2958,8 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<double>, ComplexMatrix>
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse A = cos2ccs (a);
-  cholmod_dense *B = rod2ccd (b, &cc);
+  cholmod_sparse A = ocs2ccs (a);
+  cholmod_dense *B = ord2ccd (b, &cc);
   cholmod_dense *X;
 
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
@@ -2960,7 +2970,7 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<MArray<double>, ComplexMatrix>
     xdata[i] = reinterpret_cast<Complex *> (X->x)[i];
   info = 0;
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
@@ -2983,17 +2993,17 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseComplexMatrix, SparseComple
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse A = cos2ccs (a);
-  cholmod_sparse B = cos2ccs (b);
+  cholmod_sparse A = ocs2ccs (a);
+  cholmod_sparse B = ocs2ccs (b);
   cholmod_sparse *X;
 
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, &B, &cc);
   spqr_error_handler (&cc);
 
-  SparseComplexMatrix ret = ccs2cos (X, &cc);
+  SparseComplexMatrix ret = ccs2ocs (X, &cc);
   info = 0;
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);
@@ -3008,6 +3018,8 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseComplexMatrix, SparseComple
 
 // FIXME: 2024/01/07: This template specialization does not appear to be
 // reachable from current Octave code calling qrsolve from sparse-dmsolve.cc.
+// It remains because liboctave may be used by other C++ code besides the
+// Octave interpreter.
 template <>
 template <>
 OCTAVE_API SparseComplexMatrix
@@ -3019,17 +3031,17 @@ sparse_qr<SparseComplexMatrix>::min2norm_solve<SparseMatrix, SparseComplexMatrix
   cholmod_common cc;
 
   cholmod_l_start (&cc);
-  cholmod_sparse A = cos2ccs (a);
-  cholmod_sparse *B = ros2ccs (b, &cc);
+  cholmod_sparse A = ocs2ccs (a);
+  cholmod_sparse *B = ors2ccs (b, &cc);
   cholmod_sparse *X;
 
   X = SuiteSparseQR_min2norm<Complex> (order, SPQR_DEFAULT_TOL, &A, B, &cc);
   spqr_error_handler (&cc);
 
-  SparseComplexMatrix ret = ccs2cos (X, &cc);
+  SparseComplexMatrix ret = ccs2ocs (X, &cc);
   info = 0;
 
-  if (sizeof (octave_idx_type) != sizeof (SuiteSparse_long))
+  if (octave_suitesparse_ptr_size_mismatch)
     {
       delete [] reinterpret_cast<SuiteSparse_long *> (A.p);
       delete [] reinterpret_cast<SuiteSparse_long *> (A.i);

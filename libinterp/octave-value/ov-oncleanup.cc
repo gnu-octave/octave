@@ -226,11 +226,10 @@ Example
 octave:1> trigger = onCleanup (@@() disp ('onCleanup was executed'));
 octave:2> clear trigger
 onCleanup was executed
-octave:3 
+octave:3
 @end group
 @end example
 
-@seealso{unwind_protect, try}
 @end deftypefn */)
 {
   if (args.length () != 1)

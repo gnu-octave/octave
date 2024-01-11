@@ -69,8 +69,13 @@ namespace Utils
 
   template <typename T>
   inline typename T::properties&
-  properties (graphics_object obj)
+  properties (graphics_object& obj)
   { return dynamic_cast<typename T::properties&> (obj.get_properties ()); }
+
+  template <typename T>
+  inline const typename T::properties&
+  properties (const graphics_object& obj)
+  { return dynamic_cast<const typename T::properties&> (obj.get_properties ()); }
 
   QImage makeImageFromCData (const octave_value& v, int width = -1,
                              int height = -1);

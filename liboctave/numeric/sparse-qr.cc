@@ -45,10 +45,10 @@ OCTAVE_BEGIN_NAMESPACE(math)
 
 #if (defined (HAVE_SPQR) && defined (HAVE_CHOLMOD))
 // Decide once at runtime whether Octave must workaround SuiteSparse library.
-static const bool octave_suitesparse_ptr_size_mismatch
+static constexpr bool octave_suitesparse_ptr_size_mismatch
   = (sizeof (octave_idx_type) != sizeof (SuiteSparse_long));
 
-static const bool suitesparse_integer_long_mismatch
+static constexpr bool suitesparse_integer_long_mismatch
   = (sizeof (suitesparse_integer) != sizeof (SuiteSparse_long));
 #endif
 

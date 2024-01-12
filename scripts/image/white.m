@@ -37,8 +37,8 @@
 function map = white (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("white: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("white: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -75,6 +75,6 @@ endfunction
 
 
 ## Input validation
-%!error <N must be a scalar> white ("foo")
-%!error <N must be a scalar> white ([1, 2, 3])
-%!error <N must be a scalar> white ({1, 2, 3})
+%!error <N must be a scalar integer> white ("foo")
+%!error <N must be a scalar integer> white ([1, 2, 3])
+%!error <N must be a scalar integer> white ({1, 2, 3})

@@ -38,8 +38,8 @@
 function map = copper (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("copper: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("copper: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -93,6 +93,6 @@ endfunction
 %! assert (copper (6), a, eps)
 
 ## Input validation
-%!error <N must be a scalar> copper ("foo")
-%!error <N must be a scalar> copper ([1, 2, 3])
-%!error <N must be a scalar> copper ({1, 2, 3})
+%!error <N must be a scalar integer> copper ("foo")
+%!error <N must be a scalar integer> copper ([1, 2, 3])
+%!error <N must be a scalar integer> copper ({1, 2, 3})

@@ -42,8 +42,8 @@
 function map = viridis (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("viridis: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("viridis: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -349,6 +349,6 @@ endfunction
 %!shared  # Clear shared varibles to avoid echo on unrelated test errors.
 
 ## Input validation
-%!error <N must be a scalar> viridis ("foo")
-%!error <N must be a scalar> viridis ([1, 2, 3])
-%!error <N must be a scalar> viridis ({1, 2, 3})
+%!error <N must be a scalar integer> viridis ("foo")
+%!error <N must be a scalar integer> viridis ([1, 2, 3])
+%!error <N must be a scalar integer> viridis ({1, 2, 3})

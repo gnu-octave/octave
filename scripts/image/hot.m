@@ -38,8 +38,8 @@
 function map = hot (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("hot: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("hot: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -116,6 +116,6 @@ endfunction
 %! assert (hot (11), a, eps);
 
 ## Input validation
-%!error <N must be a scalar> hot ("foo")
-%!error <N must be a scalar> hot ([1, 2, 3])
-%!error <N must be a scalar> hot ({1, 2, 3})
+%!error <N must be a scalar integer> hot ("foo")
+%!error <N must be a scalar integer> hot ([1, 2, 3])
+%!error <N must be a scalar integer> hot ({1, 2, 3})

@@ -106,7 +106,7 @@ function movie (varargin)
       error ("movie: N must be a nonzero integer");
     endif
 
-    if (! isscalar (n))
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
       idx = n(2:end)(:)';
       n = n(1);
       if (! isindex (idx, numel (mov)))

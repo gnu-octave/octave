@@ -43,8 +43,8 @@
 function map = jet (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("jet: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("jet: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -133,6 +133,6 @@ endfunction
 %! assert (jet (15), a, eps)
 
 ## Input validation
-%!error <N must be a scalar> jet ("foo")
-%!error <N must be a scalar> jet ([1, 2, 3])
-%!error <N must be a scalar> jet ({1, 2, 3})
+%!error <N must be a scalar integer> jet ("foo")
+%!error <N must be a scalar integer> jet ([1, 2, 3])
+%!error <N must be a scalar integer> jet ({1, 2, 3})

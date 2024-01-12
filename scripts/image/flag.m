@@ -38,8 +38,8 @@
 function map = flag (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("flag: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("flag: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -99,6 +99,6 @@ endfunction
 %! assert (flag (12), a, eps)
 
 ## Input validation
-%!error <N must be a scalar> flag ("foo")
-%!error <N must be a scalar> flag ([1, 2, 3])
-%!error <N must be a scalar> flag ({1, 2, 3})
+%!error <N must be a scalar integer> flag ("foo")
+%!error <N must be a scalar integer> flag ([1, 2, 3])
+%!error <N must be a scalar integer> flag ({1, 2, 3})

@@ -972,28 +972,33 @@ fcn_info::fcn_info_rep::find_method (const std::string& dispatch_type)
   auto q = class_methods.find (dispatch_type);
 
   if (q == class_methods.end ())
-    {
-      octave_value val = load_class_method (dispatch_type);
-
-      if (val.is_defined ())
-        return val;
-    }
+    retval = load_class_method (dispatch_type);
   else
     {
-      octave_value& fval = q->second;
+      retval = q->second;
 
-      if (fval.is_defined ())
-        out_of_date_check (fval, dispatch_type);
+      if (retval.is_defined ())
+        out_of_date_check (retval, dispatch_type);
 
-      if (fval.is_defined ())
-        return fval;
-      else
-        {
-          octave_value val = load_class_method (dispatch_type);
+      if (! retval.is_defined ())
+        retval = load_class_method (dispatch_type);
+    }
 
-          if (val.is_defined ())
-            return val;
-        }
+  // Ignore any classdef constructors that were found by
+  // load_class_method above, either for dispatch_type or any
+  // superclasses of that class.
+
+  // FIXME: Maybe there is a better way of managing classdef
+  // constructors (which may actually be octave_classdef_meta objects)
+  // so they don't appear in both the class_methods and
+  // class_constructors maps?
+
+  if (retval.is_classdef_meta ())
+    {
+      octave_function *fcn = retval.function_value ();
+
+      if (fcn && fcn->is_classdef_constructor (dispatch_type))
+        retval = octave_value ();
     }
 
   return retval;

@@ -111,8 +111,8 @@ function [c, ia, ib] = intersect (a, b, varargin)
     else
       c = [a; b];
       ## FIXME: Is there a way to avoid a call to sort?
-      [c_ind, sort_ind] = sort (ic(match));
-      c = c(c_ind, :);
+      [c_idx, sort_idx] = sort (ic(match));
+      c = c(c_idx, :);
     endif
     len_a = rows (a);
   else
@@ -133,8 +133,8 @@ function [c, ia, ib] = intersect (a, b, varargin)
     else
       c = [a(:); b(:)];
       ## FIXME: Is there a way to avoid a call to sort?
-      [c_ind, sort_ind] = sort (ic(match));
-      c = c(c_ind);
+      [c_idx, sort_idx] = sort (ic(match));
+      c = c(c_idx);
     endif
 
     ## Adjust output orientation for Matlab compatibility
@@ -149,7 +149,7 @@ function [c, ia, ib] = intersect (a, b, varargin)
     if (! optsorted)
       ## FIXME: Is there a way to avoid a call to sort?
       ia = sort (ia);
-      ib_ind(sort_ind) = 1:numel(sort_ind);
+      ib_ind(sort_idx) = 1:numel(sort_idx);
       ## Change ordering to conform to unsorted c
       ib(ib_ind) = ib;
     endif

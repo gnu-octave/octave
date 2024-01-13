@@ -31,6 +31,12 @@ value if it is specified.
 - All colormaps now default to a size of 256 colors. (The previous default
 size was 64.
 
+- `griddata` output size more consistently matches the input interpolation
+points when they are input as vectors.  When they are same-orientation vectors,
+the outputs will be the same size as those vectors.  When either is a row
+vector and the other is a column vector, the interpolating points are processed
+through meshgrid and the output is a matrix the same size as the meshgrid.
+
 ### Alphabetical list of new functions added in Octave 10
 
 * `rticklabels`

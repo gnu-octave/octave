@@ -41,8 +41,8 @@
 function map = rainbow (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("rainbow: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("rainbow: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -100,6 +100,6 @@ endfunction
 %!assert (rainbow (6)(:), [1, 1, 1, 0, 0, 2/3, 0, 0.5, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1]', 3*eps)
 
 ## Input validation
-%!error <N must be a scalar> rainbow ("foo")
-%!error <N must be a scalar> rainbow ([1, 2, 3])
-%!error <N must be a scalar> rainbow ({1, 2, 3})
+%!error <N must be a scalar integer> rainbow ("foo")
+%!error <N must be a scalar integer> rainbow ([1, 2, 3])
+%!error <N must be a scalar integer> rainbow ({1, 2, 3})

@@ -27,7 +27,7 @@
 ## saving sparse matrices to MAT files when using 64-bit indexing since
 ## that is not implemented yet.
 
-%!function [ret, files] = testls (input)
+%!function [ret, files] = testls (input, t_pfix)
 %!  ## flag a1 global so as to test the storage of global flags
 %!  global a1;
 %!
@@ -81,9 +81,7 @@
 %!
 %!  ret = 0;
 %!
-%!  files = cellfun (@fullfile, {P_tmpdir},
-%!                   {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"},
-%!                   "UniformOutput", false);
+%!  files = fullfile (t_pfix, {"text.mat", "binary.mat", "mat5.mat", "mat7.mat"});
 %!  opts = {"-z -text", "-z -binary", "-z -mat", "-v7"};
 %!  tols = {2*eps, 0, 0, 0};
 %!
@@ -192,15 +190,21 @@
 
 %!testif HAVE_ZLIB
 %!
-%! [save_status, save_files] = testls (0);
-%! [load_status, load_files] = testls (1);
+%! ## Random prefix for files
+%! t_pfix = tempname ();
+%! mkdir (t_pfix);
 %!
-%! for f = [save_files, load_files]
-%!   sts = unlink (f{1});
-%! endfor
+%! unwind_protect
+%!   [save_status, save_files] = testls (0, t_pfix);
+%!   [load_status, load_files] = testls (1, t_pfix);
+%! unwind_protect_cleanup
+%!   ## cleanup after test
+%!   confirm_recursive_rmdir (false, "local");
+%!   rmdir (t_pfix, "s");
+%!   clear -global a1;
+%! end_unwind_protect
 %!
 %! assert (save_status && load_status);
-%! clear -global a1;  # cleanup after test
 
 %!testif HAVE_HDF5
 %!

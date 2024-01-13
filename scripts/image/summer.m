@@ -37,8 +37,8 @@
 function map = summer (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("summer: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("summer: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -87,6 +87,6 @@ endfunction
 %!assert (summer (11), [[0:0.1:1]; [0.5:0.05:1]; 0.4 * ones(1,11)]', eps)
 
 ## Input validation
-%!error <N must be a scalar> summer ("foo")
-%!error <N must be a scalar> summer ([1, 2, 3])
-%!error <N must be a scalar> summer ({1, 2, 3})
+%!error <N must be a scalar integer> summer ("foo")
+%!error <N must be a scalar integer> summer ([1, 2, 3])
+%!error <N must be a scalar integer> summer ({1, 2, 3})

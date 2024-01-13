@@ -38,8 +38,8 @@
 function map = bone (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("bone: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("bone: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -122,6 +122,6 @@ endfunction
 %! assert (bone (5), a, eps)
 
 ## Input validation
-%!error <N must be a scalar> bone ("foo")
-%!error <N must be a scalar> bone ([1, 2, 3])
-%!error <N must be a scalar> bone ({1, 2, 3})
+%!error <N must be a scalar integer> bone ("foo")
+%!error <N must be a scalar integer> bone ([1, 2, 3])
+%!error <N must be a scalar integer> bone ({1, 2, 3})

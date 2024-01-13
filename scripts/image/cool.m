@@ -37,8 +37,8 @@
 function map = cool (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("cool: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("cool: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -87,6 +87,6 @@ endfunction
 %!assert (cool (11), [[0:0.1:1]; [1:-0.1:0]; ones(1,11)]', eps)
 
 ## Input validation
-%!error <N must be a scalar> cool ("foo")
-%!error <N must be a scalar> cool ([1, 2, 3])
-%!error <N must be a scalar> cool ({1, 2, 3})
+%!error <N must be a scalar integer> cool ("foo")
+%!error <N must be a scalar integer> cool ([1, 2, 3])
+%!error <N must be a scalar integer> cool ({1, 2, 3})

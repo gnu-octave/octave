@@ -38,8 +38,8 @@
 function map = prism (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("prism: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("prism: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -88,6 +88,6 @@ endfunction
 %! assert (prism (3*nr), [a;a;a]);
 
 ## Input validation
-%!error <N must be a scalar> prism ("foo")
-%!error <N must be a scalar> prism ([1, 2, 3])
-%!error <N must be a scalar> prism ({1, 2, 3})
+%!error <N must be a scalar integer> prism ("foo")
+%!error <N must be a scalar integer> prism ([1, 2, 3])
+%!error <N must be a scalar integer> prism ({1, 2, 3})

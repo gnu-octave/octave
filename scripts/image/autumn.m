@@ -38,8 +38,8 @@
 function map = autumn (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("autumn: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("autumn: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -88,6 +88,6 @@ endfunction
 %!assert (autumn (11), [ones(1,11); [0:0.1:1]; zeros(1,11)]', eps)
 
 ## Input validation
-%!error <N must be a scalar> autumn ("foo")
-%!error <N must be a scalar> autumn ([1, 2, 3])
-%!error <N must be a scalar> autumn ({1, 2, 3})
+%!error <N must be a scalar integer> autumn ("foo")
+%!error <N must be a scalar integer> autumn ([1, 2, 3])
+%!error <N must be a scalar integer> autumn ({1, 2, 3})

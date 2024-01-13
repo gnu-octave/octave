@@ -37,8 +37,8 @@
 function map = spring (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("spring: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("spring: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -87,6 +87,6 @@ endfunction
 %!assert (spring (-1), zeros (0, 3))
 
 ## Input validation
-%!error <N must be a scalar> spring ("foo")
-%!error <N must be a scalar> spring ([1, 2, 3])
-%!error <N must be a scalar> spring ({1, 2, 3})
+%!error <N must be a scalar integer> spring ("foo")
+%!error <N must be a scalar integer> spring ([1, 2, 3])
+%!error <N must be a scalar integer> spring ({1, 2, 3})

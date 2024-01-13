@@ -40,8 +40,8 @@
 function map = pink (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("pink: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("pink: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -112,6 +112,6 @@ endfunction
 %! assert (pink (4), a, eps)
 
 ## Input validation
-%!error <N must be a scalar> pink ("foo")
-%!error <N must be a scalar> pink ([1, 2, 3])
-%!error <N must be a scalar> pink ({1, 2, 3})
+%!error <N must be a scalar integer> pink ("foo")
+%!error <N must be a scalar integer> pink ([1, 2, 3])
+%!error <N must be a scalar integer> pink ({1, 2, 3})

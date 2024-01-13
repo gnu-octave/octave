@@ -63,12 +63,7 @@
 
 #include "Sparse-perm-op-defs.h"
 
-// Define whether to use a basic QR solver or one that uses a Dulmange
-// Mendelsohn factorization to separate the problem into under-determined,
-// well-determined and over-determined parts and solves them separately
-#if ! defined (USE_QRSOLVE)
-#  include "sparse-dmsolve.h"
-#endif
+#include "sparse-dmsolve.h"
 
 SparseComplexMatrix::SparseComplexMatrix (const SparseMatrix& a)
   : MSparse<Complex> (a)
@@ -6756,12 +6751,8 @@ SparseComplexMatrix::solve (MatrixType& mattype, const Matrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<ComplexMatrix, SparseComplexMatrix, Matrix>
                (*this, b, err);
-#endif
     }
 
   return retval;
@@ -6821,12 +6812,8 @@ SparseComplexMatrix::solve (MatrixType& mattype, const SparseMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<SparseComplexMatrix, SparseComplexMatrix, SparseMatrix>
                (*this, b, err);
-#endif
     }
 
   return retval;
@@ -6886,12 +6873,8 @@ SparseComplexMatrix::solve (MatrixType& mattype, const ComplexMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<ComplexMatrix, SparseComplexMatrix, ComplexMatrix>
                (*this, b, err);
-#endif
     }
 
   return retval;
@@ -6952,12 +6935,8 @@ SparseComplexMatrix::solve (MatrixType& mattype, const SparseComplexMatrix& b,
   if (singular_fallback && mattype.type (false) == MatrixType::Rectangular)
     {
       rcond = 1.;
-#if defined (USE_QRSOLVE)
-      retval = qrsolve (*this, b, err);
-#else
       retval = dmsolve<SparseComplexMatrix, SparseComplexMatrix,
       SparseComplexMatrix> (*this, b, err);
-#endif
     }
 
   return retval;

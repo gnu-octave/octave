@@ -140,8 +140,7 @@ void
 octave_user_code::cache_function_text (const std::string& text,
                                        const octave::sys::time& timestamp)
 {
-  if (m_file_info)
-    delete m_file_info;
+  delete m_file_info;
 
   if (timestamp > time_parsed ())
     warning ("help text for function is newer than function");

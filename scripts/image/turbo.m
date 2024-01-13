@@ -43,8 +43,8 @@
 function map = turbo (n)
 
   if (nargin == 1)
-    if (! isscalar (n))
-      error ("turbo: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("turbo: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -349,6 +349,6 @@ endfunction
 %!shared  # Clear shared varibles to avoid echo on unrelated test errors.
 
 ## Input validation
-%!error <N must be a scalar> turbo ("foo")
-%!error <N must be a scalar> turbo ([1, 2, 3])
-%!error <N must be a scalar> turbo ({1, 2, 3})
+%!error <N must be a scalar integer> turbo ("foo")
+%!error <N must be a scalar integer> turbo ([1, 2, 3])
+%!error <N must be a scalar integer> turbo ({1, 2, 3})

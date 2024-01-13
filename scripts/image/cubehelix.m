@@ -53,8 +53,8 @@
 function map = cubehelix (n, start = 0.5, rots = -1.5, hue = 1, gamma = 1)
 
   if (nargin > 0)
-    if (! isscalar (n))
-      error ("cubehelix: N must be a scalar");
+    if (! (isscalar (n) && isreal (n) && n == fix (n)))
+      error ("cubehelix: N must be a scalar integer");
     endif
     n = double (n);
   else
@@ -124,6 +124,6 @@ endfunction
 %!shared  # Clear shared varibles to avoid echo on unrelated test errors.
 
 ## Input validation
-%!error <N must be a scalar> cubehelix ("foo")
-%!error <N must be a scalar> cubehelix ([1, 2, 3])
-%!error <N must be a scalar> cubehelix ({1, 2, 3})
+%!error <N must be a scalar integer> cubehelix ("foo")
+%!error <N must be a scalar integer> cubehelix ([1, 2, 3])
+%!error <N must be a scalar integer> cubehelix ({1, 2, 3})

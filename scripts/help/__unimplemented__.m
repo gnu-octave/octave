@@ -548,7 +548,7 @@ function txt = __unimplemented__ (fcn)
              "@url{https://www.octave.org/missing.html} to learn how ", ...
              "you can contribute missing functionality."];
     endif
-    txt = __makeinfo__ (txt);
+    txt = __makeinfo__ (txt, "plain text");
   endif
 
   if (nargout == 0)

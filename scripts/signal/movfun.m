@@ -261,11 +261,10 @@ function y = movfun (fcn, x, wlen, varargin)
     endswitch
   endif
 
-  ## FIXME: Validation doesn't seem to work correctly (noted 12/16/2018).
   ## Validate that outdim makes sense
-  fout = fcn (zeros (length (win), 1, class (x)));  # output for window
-  yclass = class (fout);                    # record class of fcn output
-  noutdim = length (fout);                  # number of output dimensions
+  fout = fcn (x(1:length (win))(:));  # output for window (see bug #55984)
+  yclass = class (fout);              # record class of fcn output
+  noutdim = length (fout);            # number of output dimensions
   if (! isempty (outdim))
     if (max (outdim) > noutdim)
       error ("Octave:invalid-input-arg", ...

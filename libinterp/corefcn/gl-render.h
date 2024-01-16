@@ -144,7 +144,7 @@ protected:
                                  double lim1, double lim2,
                                  double p1, double p1N, double p2, double p2N,
                                  double dx, double dy, double dz,
-                                 int xyz, bool doubleside);
+                                 int xyz, bool doubleside, bool tickdir_both);
 
   virtual void render_ticktexts (const Matrix& ticks,
                                  const string_vector& ticklabels,

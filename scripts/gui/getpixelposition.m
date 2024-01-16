@@ -37,7 +37,7 @@
 ## is computed relative to the enclosing figure object.
 ##
 ## The return value @var{pos} is a 4-element vector with values
-## @code{[ lower_left_X, lower_left_Y, width, height ]}.
+## @code{[lower_left_X, lower_left_Y, width, height]}.
 ##
 ## @seealso{get}
 ## @end deftypefn
@@ -48,23 +48,24 @@ function pos = getpixelposition (h, rel_to_fig = false)
     print_usage ();
   endif
 
-  if (! isscalar (h) || ! ishghandle (h))
+  if (! (isscalar (h) && ishghandle (h)))
     error ("getpixelposition: H must be a scalar graphics handle");
   endif
 
-  if (! any (strcmp (get (h, "type"), {"uibuttongroup", "uicontrol", ...
-                                       "uitable", "uipanel", ...
-                                       "axes", "figure"})))
+  if (! any (strcmp (get (h, "type"),
+                     {"uibuttongroup", "uicontrol", "uitable", "uipanel", ...
+                      "axes", "figure"})))
     pos = zeros (1, 4);
     return;
   endif
 
   pos = __get_position__ (h, "pixels");
 
-  if (rel_to_fig)
-    while (! isfigure (h))
-      h = get (h, "parent");
-      pos(1:2) += __get_position__ (h, "pixels")(1:2);
+  if (rel_to_fig && ! isfigure (h))
+    hpar = get (h, "parent");
+    while (! isfigure (hpar))
+      pos(1:2) += __get_position__ (hpar, "pixels")(1:2);
+      hpar = get (hpar, "parent");
     endwhile
   endif
 

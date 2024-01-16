@@ -1490,14 +1490,13 @@ z data.";
         s.doc = "Color of the text.  @xref{Colors, ,colorspec}.";
         s.valid = valid_color;
 
-      case "displayname"
       case "edgecolor"
         s.doc = "Color of the outline of the background area.  \
 @xref{Colors, , colorspec}.";
         s.valid = valid_color;
 
       case "editing"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Interactive text editing");
 
       case "extent"
         s.doc = "Vector @code{[x0 y0 width height]} indicating the size \
@@ -1526,6 +1525,10 @@ and location of the text string.";
         s.doc = doc_fontweight;
 
       case "horizontalalignment"
+        s.doc = "Specifies the horizontal location of the point set by the \
+@ref{XREFtextposition, , @w{@qcode{\"position\"} property}} relative to the \
+text.";
+
       case "interpreter"
         s.doc = "Control the way the @qcode{\"string\"} property is \
 interpreted.\n\
@@ -1560,7 +1563,19 @@ measured in degrees.";
         s.valid = valid_string;
 
       case "units"
+        s.doc = "Sets the measurement unit or method applied to the \
+@ref{XREFtextposition, , @w{@qcode{\"position\"} and \
+@ref{XREFtextextent, , @w{@qcode{\"extent\"} properties.  The default \
+option \"data\" uses the same units and limits as the data plotted in the \
+figure.  The \"normalized\" option applies a unitless 0 to 1 scale to the \
+limits along each axis of the displayed data.";
+
       case "verticalalignment"
+        s.doc = "Specifies the vertical location of the point set by the \
+@ref{XREFtextposition, , @w{@qcode{\"position\"} property}} relative to the \
+text.  Note that \"top\" and \"bottom\" align to the edge of the text \
+box while \"cap\" and \"baseline\" refer to the edges of the text itself.";
+
     endswitch
 
   ## Image properties
@@ -1579,9 +1594,20 @@ measured in degrees.";
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "cdata"
-        s.valid = "matrix";
+        s.doc = "Color data for the image object.  Data is either stored as \
+a 2-D matrix where each element's value determines that pixel's color \
+according to the current colormap, or as a 3-D array where the third \
+dimension contains separate red, blue, and green components for each pixel.";
+        s.valid = "array";
 
       case "cdatamapping"
+        s.doc = "Sets the method for mapping data from the \
+@ref{XREFimagecdata, , @w{@qcode{\"cdata\"} property}} to the current \
+colormap.  \"Direct\" mapping selects the color using the \"cdata\" value \
+as an index to the current colormap.  \"Scaled\" mapping scales the \
+\"cdata\" values to the range specified in the \
+@ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+
       case "displayname"
         s.doc = "Text for the legend entry corresponding to this image.";
         s.valid = valid_cellstring;
@@ -1630,10 +1656,30 @@ view.  @qcode{\"unlit\"}: Faces with normals pointing away from the point of \
 view are unlit.";
 
       case "cdata"
-        s.valid = "matrix";
+        s.doc = "Color data values for __objname__ vertices. Data is stored \
+either as a 2-D matrix the same size as \
+@ref{XREFsurfacezdata, , @w{@qcode{\"zdata\"}}} where each element's value \
+determines that vertex's color according to the current colormap, or as a \
+3-D array where the third dimension contains separate red, blue, and green \
+components for each vertex.";
+        s.valid = "array";
 
       case "cdatamapping"
+        s.doc = "Sets the method for mapping data from the \
+@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"} property}} to the current \
+colormap.  \"Direct\" mapping selects the color using the \"cdata\" value \
+as an index to the current colormap.  \"Scaled\" mapping scales the \
+\"cdata\" values to the range specified in the \
+@ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+
       case "cdatasource"
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"} property}}.  Data is \
+transferred into \"cdata\" using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+
       case "diffusestrength"
         s.doc = "Strength of the diffuse reflection.  Value between 0.0 (no \
 diffuse reflection) and 1.0 (full diffuse reflection).";
@@ -1647,6 +1693,18 @@ diffuse reflection) and 1.0 (full diffuse reflection).";
         s.valid = "scalar";
 
       case "edgecolor"
+        s.doc = "Color of the edges of the __objname__ object, specified as \
+either a valid color specification or one of \"none\", \"flat\", or \
+\"interp\".  \"flat\" and \"interp\" will set either a single color for \
+each edge or a color interpolated betweeen two adjacent vertices using the \
+color value data stored in \
+@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"}}}.  \
+@xref{Colors, , colorspec}.";
+        s.valid = packopt ({valid_color,
+                            "@qcode{\"none\"}", ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"interp\"}"});
+
       case "edgelighting"
         s.doc = "When set to a value other than @qcode{\"none\"}, the edges \
 of the object are drawn with light and shadow effects.  Supported values are \
@@ -1669,6 +1727,18 @@ rendering layered transparent faces.";
                             "@qcode{\"texturemap\"}"});
 
       case "facecolor"
+        s.doc = "Color of the faces of the __objname__ object, specified as \
+either a valid color specification or one of \"none\", \"flat\", or \
+\"interp\".  \"flat\" and \"interp\" will set either a single color for \
+each face or a color interpolated across the face's vertices using the \
+color value data stored in \
+@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"}}}.  \
+@xref{Colors, , colorspec}.";
+        s.valid = packopt ({valid_color,
+                            "@qcode{\"none\"}", ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"interp\"}"});
+
       case "facelighting"
         s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
 of the object are drawn with light and shadow effects.  Supported values are \
@@ -1688,7 +1758,6 @@ the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 @code{facelighting} property are set to @qcode{\"flat\"} and at least one \
 @code{light} object is present and visible in the same axes.";
 
-      case "interpreter"
       case "linestyle"
         s.doc = "@xref{Line Styles}.";
 
@@ -1712,6 +1781,9 @@ the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
         s.valid = "scalar";
 
       case "meshstyle"
+        s.doc = "Specifies whether to display the edges associated with the \
+        surface data's rows, columns, or both.";
+
       case "specularcolorreflectance"
         s.doc = "Reflectance for specular color.  Value between 0.0 (color \
 of underlying face) and 1.0 (color of light source).";
@@ -1739,17 +1811,41 @@ or @code{facelighting} property are set to @qcode{\"gouraud\"} and at least \
 one @code{light} object is present and visible in the same axes.";
 
       case "xdata"
+        s.doc = "Data for the x-coordinate.";
         s.valid = "matrix";
 
       case "xdatasource"
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFsurfacexdata, , @w{@qcode{\"xdata\"} property}}.  Data is \
+transferred into \"xdata\" using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+
       case "ydata"
+        s.doc = "Data for the y-coordinate.";
         s.valid = "matrix";
 
       case "ydatasource"
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFsurfaceydata, , @w{@qcode{\"ydata\"} property}}.  Data is \
+transferred into \"ydata\" using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+
       case "zdata"
+        s.doc = "Data for the z-coordinate.";
         s.valid = "matrix";
 
       case "zdatasource"
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFsurfacezdata, , @w{@qcode{\"zdata\"} property}}.  Data is \
+transferred into \"zdata\" using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+
     endswitch
 
   ## Patch properties
@@ -2570,9 +2666,3 @@ function str = print_options (val, default)
   endif
 
 endfunction
-
-
-## FIXME: Are these BIST tests even executed with "make check"?
-## Test input validation
-%!error genpropdoc ()
-%!error <unknown object foo> genpropdoc ("foo")

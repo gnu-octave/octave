@@ -84,6 +84,8 @@ function s = getdoc (objname, field, base)
   ##   "__prop__"    : replaced by the current property name;
   ##   "__modemsg__" : replaced by a message explaining that
   ##                   the propmode will be toggled to "manual".
+  ##   "__fcnmsg__"  : replaced by a message explaining where to find
+  ##                   documentation on the form of a callback function.
   ##   You may also cross reference properties using the label format
   ##   OBJNAMEPROPERTY, e.g, "@xref{XREFaxescolor, , axes color property}."
   ##
@@ -148,7 +150,7 @@ text rendering.";
   if (strcmp (objname, "base"))
     switch (field)
       case "beingdeleted"
-        s.doc  = "Property indicating that a function has initiatd deletion \
+        s.doc  = "Property indicating that a function has initiated deletion \
 of the object.  __prop__ is set to true until the object no longer exists.";
 
       case "busyaction"
@@ -230,7 +232,7 @@ will determine how they are processed.  \
 
       case "selectionhighlight"
         s.doc = "If __prop__ is @qcode{\"on\"}, then the __objname__'s \
-selection state is visually highlighted";
+selection state is visually highlighted.";
 
       case "tag"
         s.doc = "A user-defined string to label the graphics object.";
@@ -238,7 +240,7 @@ selection state is visually highlighted";
 
       case "type"
         s.doc = "Class name of the graphics object.  __prop__ is \
-always @qcode{\"__objname__\"}";
+always @qcode{\"__objname__\"}.";
         s.valid = valid_string;
         s.printdefault = false;
 
@@ -306,7 +308,7 @@ scripts.  @xref{XREFecho, , @w{echo function}}.";
 
       case "fixedwidthfontname"
         s.doc = "Name of the fixed-width font that will be used for \
-graphics objects with the @qcode{fontname} property set to \"FixedWidth\"";
+graphics objects when the @qcode{fontname} property is set to \"FixedWidth\".";
         s.valid = valid_string;
 
       case "format"
@@ -349,13 +351,13 @@ recursively.  \
 
       case "screenpixelsperinch"
         s.doc = "The screen resolution of the primary display in units of \
-pixels per inch";
+pixels per inch.";
         s.valid = "double";
         s.printdefault = false;
 
       case "screensize"
-        s.doc = "Size of the primary display represented as the four element \
-vector [left, bottom, width, height]";
+        s.doc = "Size of the primary display represented as the four-element \
+vector [left, bottom, width, height].";
         s.valid = valid_4elvec;
         s.printdefault = false;
 
@@ -436,7 +438,8 @@ only if the figure's callback @code{windowbuttonmotionfcn} is defined\n\
         s.valid = valid_string;
 
       case "graphicssmoothing"
-        s.doc = "Use smoothing techniques to reduce the appearance of jagged lines.";
+        s.doc = "Use smoothing techniques to reduce the appearance of jagged \
+lines.";
 
       case "innerposition"
         s.doc = "The @qcode{\"innerposition\"} property is the same as the \
@@ -447,12 +450,14 @@ only if the figure's callback @code{windowbuttonmotionfcn} is defined\n\
         s.doc = "Assign the next lowest unused integer as the Figure number.";
 
       case "inverthardcopy"
-        s.doc = "Replace the figure and axes background color with white when printing.";
+        s.doc = "Replace the figure and axes background color with white when \
+printing.";
 
       case "keypressfcn"
         s.doc = "Callback function executed when a keystroke event \
-happens while the figure has focus. The actual key that was pressed \
-can be retrieved using the second argument 'evt' of the function.  __fcnmsg__";
+happens while the figure has focus.  The actual key that was pressed \
+can be retrieved using the second argument 'evt' of the function.\
+\n\n__fcnmsg__";
         s.valid = valid_fcn;
 
       case "keyreleasefcn"
@@ -552,7 +557,7 @@ the @code{screenpixelsperinch} property of the root object.";
         s.doc = "Name of the mouse pointer shape associated with the canvas \
 of the figure.  When __prop__ is \"custom\", the shape is determined by \
 the @code{pointershapecdata} property.\n\n\
-__prop__ has no effect when the figure is in zoom, pan, or rotate mode. \
+__prop__ has no effect when the figure is in zoom, pan, or rotate mode.  \
 In this case, Octave automatically uses a pointer shape appropriate \
 to the mode.";
 
@@ -604,7 +609,7 @@ Left-click.\n\
 @item alt:\n\
 Right-click or Ctrl+Left-click.\n\
 @item extend:\n\
-Shitf+Left-click, Middle click, or combined Left-click and Right-click.\n\
+Shift+Left-click, Middle click, or combined Left-click and Right-click.\n\
 @item open:\n\
 Double Left-click.\n\
 @end table";
@@ -677,11 +682,12 @@ The event name which is \"WindowScrollWheel\".\n\
         s.doc = "The window style of a figure.  One of the following values:\n\
 @table @code\n\
 @item normal\n\
-Set the window style as non modal.\n\
+The window may be unselected and other windows may be shown in front of the \
+window.\n\
 @item modal\n\
-Set the window as modal so that it will stay on top of all normal figures.\n\
+The window will stay on top of all normal figures until it is dismissed.\n\
 @item docked\n\
-Setting the window style as docked currently does not dock the window.\n\
+Unimplemented.\n\
 @end table\n\
 \n\
 Changing modes of a visible figure may cause the figure to close and reopen.";
@@ -716,61 +722,61 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
 
       case "boxstyle"
         s.doc = "For 3-D axes, control whether the @qcode{\"full\"} \
-box is drawn or only the 3 @qcode{\"back\"} axes";
+box is drawn or only the 3 @qcode{\"back\"} axes.";
 
       case "cameraposition"
-        s.doc = "Coordinates of the camera position viewing the __objname__. \
+        s.doc = "Coordinates of the camera position viewing the __objname__.  \
         __modemsg__.";
         s.valid = valid_3elvec;
 
       case "camerapositionmode"
-        s.doc = "Current state of the camera position specification, whether \
+        s.doc = "Current state of the camera position property, whether \
 automatically set according to the @ref{XREFview, , view function}, or \
 manually set with the \
 @ref{XREFaxescameraposition, , @w{@qcode{\"cameraposition\"} property}}.";
 
       case "cameratarget"
         s.doc = "Coordinates of the point at which the viewing camera is \
-aimed. __modemsg__.";
+aimed.  __modemsg__.";
         s.valid = valid_3elvec;
 
       case "cameratargetmode"
-        s.doc = "Current state of camera target selection, either manually \
+        s.doc = "Current state of camera target property, either manually \
 set with the \
 @ref{XREFaxescameratarget, , @w{@qcode{\"cameratarget\"} property}} or \
 automatically positioned at the center of the axes plot area.";
 
       case "cameraupvector"
         s.doc = "A 3-element vector defining the upward direction of the \
-current view.  Note that the default is [0 1 0] for 2-D plots and[0 0 1] for \
-3-D plots. __modemsg__.";
+current view.  Note that the default is [0 1 0] for 2-D plots and [0 0 1] for \
+3-D plots.  __modemsg__.";
         s.valid = valid_3elvec;
 
       case "cameraupvectormode"
-        s.doc = "Current state of camera up vector selection, set to manual \
-when with the \
+        s.doc = "Current state of camera up vector property, set to manual \
+when the \
 @ref{XREFaxescameraupvector, , @w{@qcode{\"cameraupvector\"} property}} is \
 used to change the vector from the 2-D or 3-D default values.";
 
       case "cameraviewangle"
         s.doc = "The camera's field of view defined as an angle between 0 \
-and 180 degrees. __modemsg__.";
+and 180 degrees.  __modemsg__.";
         s.valid = "scalar";
 
       case "cameraviewanglemode"
-        s.doc = "Current state of the camera view angle secetion, either \
+        s.doc = "Current state of the camera view angle property, either \
 manually set with the \
 @ref{XREFaxescameraviewangle, , @w{@qcode{\"cameraviewangle\"} property}} \
 or automatically set by Octave to include all visible objects.";
 
       case "clim"
-        s.doc = "Define the limits for the color axis of __objname__ \
-children using the @qcode{cdata} property. \
-__modemsg__.  @xref{XREFpcolor, , @w{pcolor function}}.";
+        s.doc = "Define limits for the color axis of __objname__ \
+children that have the @qcode{cdata} property.  \
+__modemsg__.";
         s.valid = valid_2elvec;
 
       case "climmode"
-        s.doc = "Current state of the color limit selection mode, either \
+        s.doc = "Current state of the color limit mode, either \
 manually set by the \
 @ref{XREFaxesclim, , @w{@qcode{\"clim\"} property}} or automatically set by \
 Octave to the minimum and maximum @qcode{cdata} values of __objname__'s \
@@ -881,7 +887,7 @@ automatically set by Octave to the default value.";
 
       case "labelfontsizemultiplier"
         s.doc = "Ratio between the x/y/zlabel fontsize and the tick \
-label fontsize";
+label fontsize.";
 
       case "layer"
         s.doc = "Control whether the axes is drawn below child graphics \
@@ -891,7 +897,7 @@ objects (ticks, labels, etc.@: covered by plotted objects) or above.";
         s.doc = sprintf (doc_notimpl, "Tiled and gridded chart layout");
 
       case "legend"
-        s.doc = [sprintf(doc_notimpl, "Legend proprety control"), "  Use \
+        s.doc = [sprintf(doc_notimpl, "Legend property control"), "  Use \
 the @ref{XREFlegend, , legend function} to set legend properties."];
 
       case "linestyleorder"
@@ -903,7 +909,7 @@ for all subsequent lines."];
         s.doc = sprintf (doc_notimpl, "Linestyle order selection");
 
       case "linewidth"
-        s.doc = "Width of the main axes lines";
+        s.doc = "Width of the main axes lines.";
 
       case "minorgridalpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
@@ -963,7 +969,7 @@ fit the data in the current view.";
 
       case "position"
         if (strcmp (objname, "legend"))
-          s.doc = "Specify the position of the legend excluding its title. \
+          s.doc = "Specify the position of the legend excluding its title.  \
 The four elements of the vector are the coordinates of the lower left corner \
 and width and height of the legend.  Changing this property also \
 switches the @qcode{\"location\"} to @qcode{\"none\"}.";
@@ -997,7 +1003,7 @@ adjustment");
       case "tickdir"
         s.doc = "Control whether axes tick marks project \"in\" to the plot \
 box or \"out\".  The value \"none\" means no tick marks will be drawn, \
-although tick labels will still be rendered.  __modemsg__. Note that the \
+although tick labels will still be rendered.  __modemsg__.  Note that the \
 default is \"in\" for 2-D and \"out\" for 3-D plots.";
 
       case "tickdirmode"
@@ -1025,8 +1031,7 @@ around the axes that enclose labels and title annotations.";
         s.valid = valid_handle;
 
       case "titlefontsizemultiplier"
-        s.doc = "Ratio between the title fontsize and the tick \
-label fontsize";
+        s.doc = "Ratio between the title fontsize and the tick label fontsize.";
         s.valid = "positive scalar";
 
       case "titlefontweight"
@@ -1046,14 +1051,14 @@ label fontsize";
 
       case "view"
         s.doc = "Two-element vector @code{[azimuth elevation]} specifying \
-the viewpoint for three-dimensional plots";
+the viewpoint for three-dimensional plots.";
         s.valid = valid_2elvec;
 
       case "xaxis"
         s.doc = [sprintf(doc_notimpl, "Axes Ruler objects")];
 
       case "xaxislocation"
-        s.doc = "Control the x axis location.";
+        s.doc = "Control the x-axis location.";
 
       case "xcolor"
         s.doc = "Color of the x-axis.  @xref{Colors, , colorspec}.  \
@@ -1061,7 +1066,7 @@ __modemsg__.";
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
 
       case "xcolormode"
-        s.doc = "Current state of the setting for determining what color is \
+        s.doc = "Current state of the setting determining the color that is \
  applied to the x-axis grid lines.  If set to \"auto\" and/or the \
 @ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
 to \"manual\", the x-axis grid color will be defined by the \
@@ -1086,19 +1091,19 @@ for the x-axis.  __modemsg__.   @xref{XREFxlim, , @w{xlim function}}.";
         s.valid = valid_2elvec;
 
       case "xlimitmethod"
-        s.doc = "Method used to determine the x axis limits when the \
+        s.doc = "Method used to determine the x-axis limits when the \
 @code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
 @qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
 value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
-objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
-margin of about 7%% of the data extent is added around the objects. \
+objects in the axes, while with value @qcode{\"padded\"}, an additional \
+margin of about 7%% of the data extent is added around the objects.  \
 @xref{XREFaxis, , @w{axis function}}.";
 
       case "xlimmode"
         s.doc = "Current state of the x-axis limit selection method, either \
 manually set with the @ref{XREFaxesxlim, , @w{@qcode{\"xlim\"} property}} \
 or automatically set to span the plotted data according to the \
-@ref{XREFaxesxlimitmethod, , @w{@qcode{\"xlimitmethod\"} property}}";
+@ref{XREFaxesxlimitmethod, , @w{@qcode{\"xlimitmethod\"} property}}.";
 
       case "xminorgrid"
         s.doc = "Control whether minor x grid lines are displayed.";
@@ -1107,7 +1112,7 @@ or automatically set to span the plotted data according to the \
         s.doc = "Control whether minor x tick marks are displayed.";
 
       case "xscale"
-        s.doc = "Set the x-axis to a linear or logarathmic scale.";
+        s.doc = "Set the x-axis to a linear or logarithmic scale.";
 
       case "xtick"
         s.doc = "Position of x tick marks.  __modemsg__.";
@@ -1121,7 +1126,7 @@ or automatically set to span the plotted data according to the \
       case "xticklabelmode"
         s.doc = "Setting to determine whether the xtick labels are set \
 automatically by Octave or manually using the \
-@ref{XREFaxesxticklabel, , @w{@qcode{\"xticklabel\"} property}}";
+@ref{XREFaxesxticklabel, , @w{@qcode{\"xticklabel\"} property}}.";
 
       case "xticklabelrotation"
         s.doc = [sprintf(doc_notimpl, "Axis label rotation")];
@@ -1129,7 +1134,7 @@ automatically by Octave or manually using the \
       case "xtickmode"
         s.doc = "Setting to determine whether the xtick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesxtick, , @w{@qcode{\"xtick\"} property}}";
+@ref{XREFaxesxtick, , @w{@qcode{\"xtick\"} property}}.";
 
       case "yaxis"
         s.doc = [sprintf(doc_notimpl, "Axes Ruler objects")];
@@ -1142,7 +1147,7 @@ spacing are set automatically by Octave or manually using the \
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
 
       case "ycolormode"
-        s.doc = "Current state of the setting for determining what color is \
+        s.doc = "Current state of the setting determining the color that is \
  applied to the y-axis grid lines.  If set to \"auto\" and/or the \
 @ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
 to \"manual\", the y-axis grid color will be defined by the \
@@ -1167,19 +1172,19 @@ for the y-axis.  __modemsg__.  @xref{XREFylim, , @w{ylim function}}.";
         s.valid = valid_2elvec;
 
       case "ylimitmethod"
-        s.doc = "Method used to determine the y axis limits when the \
+        s.doc = "Method used to determine the y-axis limits when the \
 @code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
 @qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
 value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
-objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
-margin of about 7%% of the data extent is added around the objects. \
+objects in the axes, while with value @qcode{\"padded\"}, an additional \
+margin of about 7%% of the data extent is added around the objects.  \
 @xref{XREFaxis, , @w{axis function}}.";
 
       case "ylimmode"
         s.doc = "Current state of the y-axis limit selection method, either \
 manually set with the @ref{XREFaxesylim, , @w{@qcode{\"ylim\"} property}} \
 or automatically set to span the plotted data according to the \
-@ref{XREFaxesylimitmethod, , @w{@qcode{\"ylimitmethod\"} property}}";
+@ref{XREFaxesylimitmethod, , @w{@qcode{\"ylimitmethod\"} property}}.";
 
       case "yminorgrid"
         s.doc = "Control whether minor y grid lines are displayed.";
@@ -1188,7 +1193,7 @@ or automatically set to span the plotted data according to the \
         s.doc = "Control whether minor y tick marks are displayed.";
 
       case "yscale"
-        s.doc = "Set the y-axis to a linear or logarathmic scale.";
+        s.doc = "Set the y-axis to a linear or logarithmic scale.";
 
       case "ytick"
         s.doc = "Position of y tick marks.  __modemsg__.";
@@ -1202,7 +1207,7 @@ or automatically set to span the plotted data according to the \
       case "yticklabelmode"
         s.doc = "Setting to determine whether the ytick labels are set \
 automatically by Octave or manually using the \
-@ref{XREFaxesyticklabel, , @w{@qcode{\"yticklabel\"} property}}";
+@ref{XREFaxesyticklabel, , @w{@qcode{\"yticklabel\"} property}}.";
 
       case "yticklabelrotation"
         s.doc = [sprintf(doc_notimpl, "Axis label rotation")];
@@ -1210,7 +1215,7 @@ automatically by Octave or manually using the \
       case "ytickmode"
         s.doc = "Setting to determine whether the ytick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesytick, , @w{@qcode{\"ytick\"} property}}";
+@ref{XREFaxesytick, , @w{@qcode{\"ytick\"} property}}.";
 
       case "zaxis"
         s.doc = [sprintf(doc_notimpl, "Axes Ruler objects")];
@@ -1220,7 +1225,7 @@ spacing are set automatically by Octave or manually using the \
         s.valid = packopt ({markdef(valid_color), "@qcode{\"none\"}"});
 
       case "zcolormode"
-        s.doc = "Current state of the setting for determining what color is \
+        s.doc = "Current state of the setting determining the color that is \
  applied to the z-axis grid lines.  If set to \"auto\" and/or the \
 @ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
 to \"manual\", the z-axis grid color will be defined by the \
@@ -1245,19 +1250,19 @@ for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.valid = valid_2elvec;
 
       case "zlimitmethod"
-        s.doc = "Method used to determine the z axis limits when the \
+        s.doc = "Method used to determine the z-axis limits when the \
 @code{xlimmode} property is @qcode{\"auto\"}.  The default value, \
 @qcode{\"tickaligned\"} makes limits align with the closest ticks.  With \
 value @qcode{\"tight\"} the limits are adjusted to enclose all the graphics \
-objects in the axes, while with value @qcode{\"padded\"}, an additionnal \
-margin of about 7%% of the data extent is added around the objects. \
+objects in the axes, while with value @qcode{\"padded\"}, an additional \
+margin of about 7%% of the data extent is added around the objects.  \
 @xref{XREFaxis, , @w{axis function}}.";
 
       case "zlimmode"
         s.doc = "Current state of the z-axis limit selection method, either \
 manually set with the @ref{XREFaxeszlim, , @w{@qcode{\"zlim\"} property}} \
 or automatically set to span the plotted data according to the \
-@ref{XREFaxeszlimitmethod, , @w{@qcode{\"zlimitmethod\"} property}}";
+@ref{XREFaxeszlimitmethod, , @w{@qcode{\"zlimitmethod\"} property}}.";
 
       case "zminorgrid"
         s.doc = "Control whether minor z grid lines are displayed.";
@@ -1266,7 +1271,7 @@ or automatically set to span the plotted data according to the \
         s.doc = "Control whether minor z tick marks are displayed.";
 
       case "zscale"
-        s.doc = "Set the z-axis to a linear or logarathmic scale.";
+        s.doc = "Set the z-axis to a linear or logarithmic scale.";
 
       case "ztick"
         s.doc = "Position of z tick marks.  __modemsg__.";
@@ -1280,7 +1285,7 @@ or automatically set to span the plotted data according to the \
       case "zticklabelmode"
         s.doc = "Setting to determine whether the ztick labels are set \
 automatically by Octave or manually using the \
-@ref{XREFaxeszticklabel, , @w{@qcode{\"zticklabel\"} property}}";
+@ref{XREFaxeszticklabel, , @w{@qcode{\"zticklabel\"} property}}.";
 
       case "zticklabelrotation"
         s.doc = [sprintf(doc_notimpl, "Axis label rotation")];
@@ -1288,7 +1293,7 @@ automatically by Octave or manually using the \
       case "ztickmode"
         s.doc = "Setting to determine whether the ztick locations and \
 spacing are set automatically by Octave or manually using the \
-@ref{XREFaxesztick, , @w{@qcode{\"ztick\"} property}}";
+@ref{XREFaxesztick, , @w{@qcode{\"ztick\"} property}}.";
 
       ## Legend specific properties
       case "autoupdate"
@@ -1335,7 +1340,7 @@ May be @qcode{\"icon\"} or @qcode{\"label\"} depending on which part of \
 the item is clicked.\n\
 @item SelectionType\n\
 One of @qcode{\"normal\"}, @qcode{\"extend\"}, @qcode{\"open\"}, or \
-@qcode{\"alt\"}. \
+@qcode{\"alt\"}.  \
 @xref{XREFfigureselectiontype, , @w{Figure @qcode{\"selectiontype\"}}}.\n\
 @item Source\n\
 Handle of the legend object.\n\
@@ -1347,8 +1352,9 @@ Name is @qcode{\"ItemHit\"}.\n\
         s.doc = "Control the location of the legend.";
 
       case "numcolumns"
-        s.doc = "Control the number of columns used in the layout of the legend items. \
- For example:\n\
+        s.doc = "Control the number of columns used in the layout of the \
+legend items.  \
+For example:\n\
 @example\n\
 @group\n\
 figure ();\n\
@@ -1415,7 +1421,7 @@ right of their corresponding icon.";
         s.doc = "Width of the line object measured in points.";
 
       case "linejoin"
-        s.doc = "Control the shape of the junction of line segments. \
+        s.doc = "Control the shape of the junction of line segments.  \
 This property currently only affects the printed output.";
 
       case "marker"
@@ -1614,13 +1620,14 @@ of @code{[1 rows(image)]}.";
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "ambientstrength"
-        s.doc = "Strength of the ambient light. Value between 0.0 and 1.0";
+        s.doc = "Strength of the ambient light.  Value between 0.0 and 1.0.";
         s.valid = "scalar";
 
       case "backfacelighting"
-        s.doc = "@qcode{\"lit\"}: The normals are used as is for lighting. \
-@qcode{\"reverselit\"}: The normals are always oriented towards the point of view. \
-@qcode{\"unlit\"}: Faces with normals pointing away from the point of view are unlit.";
+        s.doc = "@qcode{\"lit\"}: The normals are used as is for lighting.  \
+@qcode{\"reverselit\"}: The normals are always oriented towards the point of \
+view.  @qcode{\"unlit\"}: Faces with normals pointing away from the point of \
+view are unlit.";
 
       case "cdata"
         s.valid = "matrix";
@@ -1628,8 +1635,8 @@ of @code{[1 rows(image)]}.";
       case "cdatamapping"
       case "cdatasource"
       case "diffusestrength"
-        s.doc = "Strength of the diffuse reflex. Value between 0.0 (no \
-diffuse reflex) and 1.0 (full diffuse reflex).";
+        s.doc = "Strength of the diffuse reflection.  Value between 0.0 (no \
+diffuse reflection) and 1.0 (full diffuse reflection).";
         s.valid = "scalar";
 
       case "displayname"
@@ -1643,9 +1650,9 @@ diffuse reflex) and 1.0 (full diffuse reflex).";
       case "edgelighting"
         s.doc = "When set to a value other than @qcode{\"none\"}, the edges \
 of the object are drawn with light and shadow effects.  Supported values are \
-@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (faceted look), and \
 @qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
-the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facealpha"
@@ -1653,9 +1660,9 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 double values are supported at present where a value of 0 means complete \
 transparency and a value of 1 means solid faces without transparency.  Setting \
 the property to @qcode{\"flat\"}, @qcode{\"interp\"} or @qcode{\"texturemap\"} \
-causes the faces to not being rendered.  Additionally, the faces are not sorted \
-from back to front which might lead to unexpected results when rendering \
-layered transparent faces.";
+causes the faces to not being rendered.  Additionally, the faces are not \
+sorted from back to front which might lead to unexpected results when \
+rendering layered transparent faces.";
         s.valid = packopt ({"scalar", ...
                             "@qcode{\"flat\"}", ...
                             "@qcode{\"interp\"}", ...
@@ -1665,9 +1672,9 @@ layered transparent faces.";
       case "facelighting"
         s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
 of the object are drawn with light and shadow effects.  Supported values are \
-@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (faceted look), and \
 @qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
-the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facenormals"
@@ -1706,18 +1713,18 @@ the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
 
       case "meshstyle"
       case "specularcolorreflectance"
-        s.doc = "Reflectance for specular color. Value between 0.0 (color \
+        s.doc = "Reflectance for specular color.  Value between 0.0 (color \
 of underlying face) and 1.0 (color of light source).";
         s.valid = "scalar";
 
       case "specularexponent"
-        s.doc = "Exponent for the specular reflex. The lower the value, \
-the more the reflex is spread out.";
+        s.doc = "Exponent for the specular reflection.  The lower the value, \
+the more the reflection is spread out.";
         s.valid = "scalar";
 
       case "specularstrength"
-        s.doc = "Strength of the specular reflex. Value between 0.0 (no \
-specular reflex) and 1.0 (full specular reflex).";
+        s.doc = "Strength of the specular reflection.  Value between 0.0 (no \
+specular reflection) and 1.0 (full specular reflection).";
         s.valid = "scalar";
 
       case "vertexnormals"
@@ -1757,13 +1764,14 @@ one @code{light} object is present and visible in the same axes.";
         s.doc = sprintf (doc_notimpl, "Transparency");
 
       case "ambientstrength"
-        s.doc = "Strength of the ambient light. Value between 0.0 and 1.0";
+        s.doc = "Strength of the ambient light.  Value between 0.0 and 1.0.";
         s.valid = "scalar";
 
       case "backfacelighting"
-        s.doc =  "@qcode{\"lit\"}: The normals are used as is for lighting. \
-@qcode{\"reverselit\"}: The normals are always oriented towards the point of view. \
-@qcode{\"unlit\"}: Faces with normals pointing away from the point of view are unlit.";
+        s.doc =  "@qcode{\"lit\"}: The normals are used as is for lighting.  \
+@qcode{\"reverselit\"}: The normals are always oriented towards the point of \
+view.  @qcode{\"unlit\"}: Faces with normals pointing away from the point of \
+view are unlit.";
 
       case "cdata"
         s.doc = "Data defining the patch object color.\n\
@@ -1780,8 +1788,8 @@ it defines the color at each vertex.";
         s.valid = valid_scalmat;
 
       case "diffusestrength"
-        s.doc = "Strength of the diffuse reflex. Value between 0.0 (no \
-diffuse reflex) and 1.0 (full diffuse reflex).";
+        s.doc = "Strength of the diffuse reflection.  Value between 0.0 (no \
+diffuse reflection) and 1.0 (full diffuse reflection).";
         s.valid = "scalar";
 
       case "displayname"
@@ -1795,9 +1803,9 @@ diffuse reflex) and 1.0 (full diffuse reflex).";
       case "edgelighting"
         s.doc = "When set to a value other than @qcode{\"none\"}, the edges \
 of the object are drawn with light and shadow effects.  Supported values are \
-@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (faceted look), and \
 @qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
-the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facealpha"
@@ -1814,7 +1822,7 @@ faces.";
 
       case "facecolor"
         ## Don't provide a default value, and mark colorspec with
-        ## braces, this forces the default rgb triplet to be displayed
+        ## braces, this forces the default RGB triplet to be displayed
         s.valid = packopt ({markdef(valid_color), ...
                             "@qcode{\"none\"}", ...
                             "@qcode{\"flat\"}", ...
@@ -1822,10 +1830,10 @@ faces.";
 
       case "facelighting"
         s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
-of the object are drawn with light and shadow effects. Supported values are \
-@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (facetted look) and \
+of the object are drawn with light and shadow effects.  Supported values are \
+@qcode{\"none\"} (no lighting effects), @qcode{\"flat\"} (faceted look), and \
 @qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
-the vertices). @qcode{\"phong\"} is deprecated and has the same effect as \
+the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
 
       case "facenormals"
@@ -1873,13 +1881,13 @@ of underlying face) and 1.0 (color of light source).";
         s.valid = "scalar";
 
       case "specularexponent"
-        s.doc = "Exponent for the specular reflex.  The lower the value, \
-the more the reflex is spread out.";
+        s.doc = "Exponent for the specular reflection.  The lower the value, \
+the more the reflection is spread out.";
         s.valid = "scalar";
 
       case "specularstrength"
-        s.doc = "Strength of the specular reflex.  Value between 0.0 (no \
-specular reflex) and 1.0 (full specular reflex).";
+        s.doc = "Strength of the specular reflection.  Value between 0.0 (no \
+specular reflection) and 1.0 (full specular reflection).";
         s.valid = "scalar";
 
       case "vertexnormals"
@@ -1935,7 +1943,8 @@ it defines the color of each one of the N scatter markers.";
 
 
       case "displayname"
-        s.doc = "Text of the legend entry corresponding to this scatter object.";
+        s.doc = "Text of the legend entry corresponding to this scatter \
+object.";
 
       case "linewidth"
         s.doc = "Line width of the edge of the markers.";
@@ -1972,7 +1981,7 @@ transparent markers or in combination with other transparent objects.";
         s.doc = "Color of the face of the markers.  @qcode{\"none\"} means \
 that the faces are transparent, @qcode{\"flat\"} means that the value from \
 @code{cdata} is used, and @qcode{\"auto\"} uses the @code{color} property of \
-the ancestor axes. @xref{XREFlinemarkerfacecolor, , \
+the ancestor axes.  @xref{XREFlinemarkerfacecolor, , \
 @w{line markerfacecolor property}}.";
         s.valid = packopt ({markdef("@qcode{\"none\"}"), ...
                             "@qcode{\"flat\"}", ...
@@ -1980,7 +1989,7 @@ the ancestor axes. @xref{XREFlinemarkerfacecolor, , \
                             valid_color});
 
       case "seriesindex"
-        s.doc = "Each scatter object in the same axes is asigned an \
+        s.doc = "Each scatter object in the same axes is assigned an \
 incrementing integer.  This corresponds to the index into the \
 @code{colororder} of the ancestor axes that is used if @code{cdatamode} is \
 set to @qcode{\"auto\"}.";
@@ -1989,7 +1998,7 @@ set to @qcode{\"auto\"}.";
         s.doc = sprintf (doc_notimpl, "Data from workspace variables");
 
       case "sizedata"
-        s.doc = "Size of the area of the marker. A scalar value applies to \
+        s.doc = "Size of the area of the marker.  A scalar value applies to \
 all markers.  If @code{cdata} is an N-by-1 vector, it defines the color of \
 each one of the N scatter markers.";
         s.valid =  packopt ({"[]", "scalar", "vector"});
@@ -2326,7 +2335,7 @@ function strout = expand_doc (strin, field, objname)
   strout = strrep (strout, "__prop__", ["@code{" field "}"]);
 
   modemsg = "Setting @code{%s} also forces the @code{%smode} \
-property to be set to @qcode{\"manual\"}";
+property to be set to @qcode{\"manual\"}.";
   modemsg = sprintf (modemsg, field, field);
   strout = strrep (strout, "__modemsg__", modemsg);
   fcnmsg = "For information on how to write graphics listener \
@@ -2527,6 +2536,9 @@ function str = warn_autogen ()
 \n\
 @c Copyright (C) 2014-2024 The Octave Project Developers\n\
 @c\n\
+@c See the file COPYRIGHT.md in the top-level directory of this\n\
+@c distribution or <https://octave.org/copyright/>.\n\
+@c\n\
 @c This file is part of Octave.\n\
 @c\n\
 @c Octave is free software: you can redistribute it and/or modify it\n\
@@ -2559,6 +2571,8 @@ function str = print_options (val, default)
 
 endfunction
 
+
+## FIXME: Are these BIST tests even executed with "make check"?
 ## Test input validation
 %!error genpropdoc ()
 %!error <unknown object foo> genpropdoc ("foo")

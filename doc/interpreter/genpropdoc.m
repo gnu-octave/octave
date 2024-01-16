@@ -1001,10 +1001,11 @@ adjustment");
         s.doc = sprintf (doc_notimpl, "Child display order control");
 
       case "tickdir"
-        s.doc = "Control whether axes tick marks project \"in\" to the plot \
-box or \"out\".  The value \"none\" means no tick marks will be drawn, \
-although tick labels will still be rendered.  __modemsg__.  Note that the \
-default is \"in\" for 2-D and \"out\" for 3-D plots.";
+        s.doc = "Control whether axes tick marks project @qcode{\"in\"} to \
+the plot box or @qcode{\"out\"}.  The value @qcode{\"both\"} will draw tick \
+marks both in and out.  The value @qcode{\"none\"} means no tick marks will be \
+drawn, although tick labels will still be rendered.  __modemsg__.  Note that \
+the default is @qcode{\"in\"} for 2-D and @qcode{\"out\"} for 3-D plots.";
 
       case "tickdirmode"
         s.doc = "Current state of the tickdir mode, either manually set by \

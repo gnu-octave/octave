@@ -6189,7 +6189,7 @@ axes::properties::update_ticklength ()
   else if (tickdir == "out")
     ticksign = 1;
   else if (tickdir == "both")
-    ticksign = 2;
+    ticksign = 1;
   else  // tickdir == "none"
     ticksign = 0;
 

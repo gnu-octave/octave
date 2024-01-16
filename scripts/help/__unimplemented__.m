@@ -36,14 +36,13 @@
 ## @seealso{missing_function_hook}
 ## @end deftypefn
 
-
 function txt = __unimplemented__ (fcn)
 
   if (nargin < 1)
     print_usage ();
   endif
 
-  is_matlab_function = true;
+  print_contribute_msg = true;
 
   ## Some smarter cases, add more as needed.
   switch (fcn)
@@ -52,42 +51,48 @@ function txt = __unimplemented__ (fcn)
              "See @url{https://octave.sourceforge.io/video/}."];
 
     case "funm"
-      txt = ["funm is not currently part of core Octave.  ", ...
+      txt = ["@code{funm} is not currently part of core Octave.  ", ...
              "See the linear-algebra package at ", ...
              "@url{https://octave.sourceforge.io/linear-algebra/}."];
+      print_contribute_msg = false;
 
     case "griddedInterpolant"
-      txt = ["griddedInterpolant is not implemented.  ", ...
-             "Consider using griddata."];
+      txt = ["@code{griddedInterpolant} is not implemented.  ", ...
+             "Consider using @code{griddata}."];
 
     case "linprog"
-      txt = ["Octave does not currently provide linprog.  ", ...
+      txt = ["Octave does not currently provide @code{linprog}.  ", ...
              "Linear programming problems may be solved using @code{glpk}.  ", ...
              "Try @code{help glpk} for more info."];
 
     case "matlabrc"
-      txt = ["matlabrc is not implemented.  ", ...
-             "Octave uses the file '.octaverc' instead."];
+      txt = ["@file{matlabrc} is not implemented.  ", ...
+             "Octave uses the file @file{.octaverc} instead."];
+      print_contribute_msg = false;
 
     case {"ode113", "ode23t", "ode23tb"}
-      txt = ["Octave provides lsode and ode15i, ode15s, ode23, ode23s, ", ...
-             "and ode45 for solving differential equations.  For more", ...
-             "information try @code{help lsode}, @code{help ode45}.  ", ...
+      txt = ["Octave provides @code{lsode}, and @code{ode15i}, ", ...
+             "@code{ode15s}, @code{ode23}, @code{ode23s}, @code{ode45}", ...
+             "for solving differential equations.  For more information", ...
+             "try @code{help lsode} or @code{help ode45}.  ", ...
              "Further specialized ODE solvers are provided by the odepkg ", ...
              "package.  See @url{https://wiki.octave.org/Odepkg}."];
 
     case "polarplot"
-      txt = ["polarplot is not implemented.  Consider using polar."];
+      txt = ["@code{polarplot} is not implemented.  ", ...
+             "Consider using @code{polar}."];
 
     case "startup"
-      txt = ["'startup.m' is a user startup and configuration script.  ", ...
-             "Try @code{doc startup} for more information."];
+      txt = ["@file{startup.m} is a user startup and configuration script.", ...
+             "  Try @code{doc startup} for more information."];
+      print_contribute_msg = false;
 
     case {"xlsread", "xlsfinfo", "xlswrite", "wk1read", "wk1finfo", "wk1write"}
       txt = ["Functions for spreadsheet style I/O ", ...
              "(.xls .xlsx .sxc .ods .dbf .wk1 etc.) " , ...
              "are provided in the io package. ", ...
              "See @url{https://octave.sourceforge.io/io/}."];
+      print_contribute_msg = false;
 
     ## control system
     case {"absorbDelay", "allmargin", "append", "augstate", "balreal", ...
@@ -126,7 +131,9 @@ function txt = __unimplemented__ (fcn)
           "tfdata", "thiran", "timeoptions", "totaldelay", "tzero", ...
           "updateSystem", "upsample", "xperm", "zero", "zgrid", "zpk", ...
           "zpkdata"}
-      txt = check_package (fcn, "control");
+      txt = check_package (fcn, "control", ...
+                           {"frd", "iddata", "lti", "ss", "tf", "poly"});
+      print_contribute_msg = false;
 
     ## communications
     case {"algdeintrlv", "algintrlv", "alignsignals", "amdemod", "ammod", ...
@@ -163,6 +170,7 @@ function txt = __unimplemented__ (fcn)
           "supportPackageInstaller", "symerr", "syndtable", "varlms", ...
           "vec2mat", "vitdec", "wgn"}
       txt = check_package (fcn, "communications");
+      print_contribute_msg = false;
 
     ## dicom
     case {"addContour", "convertToInfo", "dicomanon", "dicomBrowser", ...
@@ -172,8 +180,9 @@ function txt = __unimplemented__ (fcn)
           "images.dicom.decodeUID", "images.dicom.parseDICOMDIR", "isdicom", ...
           "plotContour"}
       txt = check_package (fcn, "dicom");
+      print_contribute_msg = false;
 
-    ## finance
+    ## financial
     case {"abs2active", "accrfrac", "acrubond", "acrudisc", "active2abs", ...
           "addEquality", "addGroupRatio", "addGroups", "addInequality", ...
           "adline", "adosc", "amortize", "annurate", "annuterm", ...
@@ -267,9 +276,10 @@ function txt = __unimplemented__ (fcn)
           "willad", "willpctr", "wrkdydif", "x2mdate", "xirr", "year", ...
           "yeardays", "yearfrac", "ylddisc", "yldmat", "yldtbill", ...
           "zbtprice", "zbtyield", "zero2disc", "zero2fwd", "zero2pyld"}
-      txt = check_package (fcn, "financial");
+      txt = check_package (fcn, "financial", {"diffusion", "drift", "sde"});
+      print_contribute_msg = false;
 
-    ## image processing
+    ## image
     case {"activecontour", "adapthisteq", "affine2d", "affine3d", ...
           "analyze75info", "analyze75read", "applycform", "applylut", ...
           "axes2pix", "bestblk", "blockproc", "bwarea", "bwareaopen", ...
@@ -328,9 +338,10 @@ function txt = __unimplemented__ (fcn)
           "tonemap", "translate", "truesize", "viscircles", "warp", ...
           "watershed", "whitepoint", "wiener2", "xyz2double", "xyz2uint16", ...
           "ycbcr2rgb"}
-      txt = check_package (fcn, "image");
+      txt = check_package (fcn, "image", {"imref2d", "imref3d", "strel"});
+      print_contribute_msg = false;
 
-    ## signal processing
+    ## signal
     case {"ac2poly", "ac2rc", "angle", "arburg", "arcov", "armcov", ...
           "aryule", "bandpower", "barthannwin", "besselap", "besself", ...
           "bilinear", "bitrevorder", "blackmanharris", "bohmanwin", ...
@@ -375,6 +386,7 @@ function txt = __unimplemented__ (fcn)
           "xcorr2", "xcov", "yulewalk", "zerophase", "zp2sos", "zp2ss", ...
           "zp2tf", "zplane"}
       txt = check_package (fcn, "signal");
+      print_contribute_msg = false;
 
     ## statistics
     case {"addedvarplot", "addlevels", "addTerms", "adtest", "andrewsplot", ...
@@ -489,7 +501,9 @@ function txt = __unimplemented__ (fcn)
           "wblrnd", "wblstat", "welch_test", "wienrnd", "wilcoxon_test", ...
           "wishrnd", "x2fx", "xlsread", "xptread", "ztest", "z_test", ...
           "z_test_2"}
-      txt = check_package (fcn, "statistics");
+      txt = check_package (fcn, "statistics", ...
+                           {"ClassificationKNN", "cvpartition", "RegressionGAM"});
+      print_contribute_msg = false;
 
     ## symbolic
     case {"argnames", "bernoulli", "catalan", "charpoly", "chebyshevT", ...
@@ -506,30 +520,35 @@ function txt = __unimplemented__ (fcn)
           "solve", "ssinint", "sym", "sym2poly", "symfun", "sympref", ...
           "syms", "symvar", "triangularPulse", "vpa", "vpasolve", ...
           "whittakerM", "whittakerW", "zeta"}
-      classes = {"sym", "symfun"};
-      txt = check_package (fcn, "symbolic", classes);
+      txt = check_package (fcn, "symbolic", ...
+                           {"double", "logical", "sym", "symfun"});
+      print_contribute_msg = false;
 
-    ## optimization
+    ## optim(ization)
     case {"bintprog", "color", "fgoalattain", "fmincon", "fminimax", ...
           "fminsearch", "fseminf", "fzmult", "gangstr", "ktrlink", ...
           "linprog", "lsqcurvefit", "lsqlin", "lsqnonlin", "optimoptions", ...
           "optimtool", "quadprog"}
       txt = check_package (fcn, "optim");
+      print_contribute_msg = false;
 
     otherwise
+      ## Not in any package, check against list of core Matlab functions
       if (ismember (fcn, missing_functions ()))
-        txt = ["The '" fcn "' function is not yet implemented in Octave."];
+        txt = sprintf ("The @code{%s} function is not yet implemented in Octave.", fcn);
       else
-        is_matlab_function = false;
         txt = "";
       endif
+
   endswitch
 
-  if (is_matlab_function)
-    txt = [txt, "\n\n@noindent\nPlease read ", ...
-           "@url{https://www.octave.org/missing.html} to learn how ", ...
-           "you can contribute missing functionality."];
-    txt = __makeinfo__ (txt);
+  if (txt)
+    if (print_contribute_msg)
+      txt = [txt, "\n\n@noindent\nPlease read ", ...
+             "@url{https://www.octave.org/missing.html} to learn how ", ...
+             "you can contribute missing functionality."];
+    endif
+    txt = __makeinfo__ (txt, "plain text");
   endif
 
   if (nargout == 0)
@@ -538,19 +557,16 @@ function txt = __unimplemented__ (fcn)
 
 endfunction
 
-function txt = check_package (fcn, name, classes)
-
-  if (nargin < 3)
-    classes = {};
-  endif
+function txt = check_package (fcn, name, classes = {})
 
   txt = sprintf ("The '%s' function belongs to the %s package from Octave Forge",
                  fcn, name);
 
   [~, status] = pkg ("describe", name);
   switch (lower (status{1}))
+
     case "loaded",
-      for i = 1:length (classes)
+      for i = 1:numel (classes)
         cls = classes{i};
         try
           meths = methods (cls);
@@ -558,21 +574,27 @@ function txt = check_package (fcn, name, classes)
           meths = {};
         end_try_catch
         if (any (strcmp (fcn, meths)))
-          txt = sprintf (["'%s' is a method of class '%s'; it must be ", ...
-                          "called with a '%s' argument (see 'help @@%s/%s')."],
+          txt = sprintf (["@code{%s} is a method of class @code{%s}; ", ...
+                          "it must be called by prepending '%s/' ", ...
+                          "to the method name (type @code{help @@%s/%s})."],
                          fcn, cls, cls, cls, fcn);
           return;
         endif
       endfor
+      ## FIXME: This code is probably unreachable if package contains the list
+      ## of implemented functions, rather than the list from Matlab.
       txt = sprintf ("%s but has not yet been implemented.", txt);
+
     case "not loaded",
-      txt = sprintf (["%s which you have installed but not loaded.  To ", ...
-                      "load the package, run 'pkg load %s' from the ", ...
-                      "Octave prompt."], txt, name);
+      txt = sprintf (["%s which you have installed, but not loaded.  ", ...
+                      "To load the package, type @w{@code{pkg load %s}} ", ...
+                      "from the Octave prompt."], txt, name);
+
     otherwise
       ## this includes "not installed" and anything else if pkg changes
-      ## the output of describe
-      txt = sprintf ("%s which seems to not be installed in your system.", txt);
+      ## the output of describe.
+      txt = sprintf ("%s which seems not to be installed on your system.", txt);
+
   endswitch
 
 endfunction
@@ -1336,7 +1358,7 @@ endfunction
 
 %!test
 %! str = __unimplemented__ ("matlabrc");
-%! assert (regexp (str, "matlabrc is not implemented\.  Octave uses the file .\.octaverc. instead\."));
+%! assert (regexp (str, ".matlabrc. is not implemented\.  Octave uses the file .\.octaverc..instead\."));
 
 %!test
 %! str = __unimplemented__ ("MException");

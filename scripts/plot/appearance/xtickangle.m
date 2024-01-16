@@ -39,8 +39,15 @@
 ## If the first argument @var{hax} is an axes handle, then operate on this axes
 ## rather than the current axes returned by @code{gca}.
 ##
-## Programming Note: Requesting a return value while also setting a specified
+## Programming Notes:
+## @enumerate
+## @item
+## The @qcode{"XTickLabelRotation"} property is currently unimplemented in
+## Octave.  The property can be set and queried, but has no effect on the plot.
+## @item
+## Requesting a return value while also setting a specified
 ## rotation will result in an error.
+## @end enumerate
 ##
 ## @seealso{ytickangle, ztickangle, get, set}
 ## @end deftypefn

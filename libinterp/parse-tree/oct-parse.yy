@@ -5498,34 +5498,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_lexer.m_allow_command_syntax = false;
   }
 
-  // FIXME: this function partially duplicates do_dbtype in debug.cc.
-  static std::string
-  get_file_line (const std::string& name, int line)
-  {
-    // NAME should be an absolute file name and the file should exist.
-
-    std::ifstream fs = sys::ifstream (name.c_str (), std::ios::in);
-
-    std::string text;
-
-    if (fs)
-      {
-        int i = 1;
-
-        do
-          {
-            if (! std::getline (fs, text))
-              {
-                text = "";
-                break;
-              }
-          }
-        while (i++ < line);
-      }
-
-    return text;
-  }
-
   void
   base_parser::bison_error (const std::string& str)
   {
@@ -5543,55 +5515,50 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     std::ostringstream output_buf;
 
-    if (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
-        || m_lexer.m_reading_classdef_file)
-      output_buf << "parse error near line " << err_line
-                 << " of file " << m_lexer.m_fcn_file_full_name;
-    else
-      output_buf << "parse error:";
-
-    if (str != "parse error")
-      output_buf << "\n\n  " << str;
-
-    output_buf << "\n\n";
-
-    std::string curr_line;
-
-    if (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
-        || m_lexer.m_reading_classdef_file)
-      curr_line = get_file_line (m_lexer.m_fcn_file_full_name, err_line);
-    else
-      curr_line = m_lexer.m_current_input_line;
+    bool in_file = (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
+                    || m_lexer.m_reading_classdef_file);
 
     // Adjust the error column for display because it is 1-based in the
     // lexer for easier reporting.
     err_col--;
 
-    if (! curr_line.empty ())
+    if (in_file)
       {
-        // FIXME: we could do better if we just cached lines from the
-        // input file in a list.  See also functions for managing input
-        // buffers in lex.ll.
-
-        std::size_t len = curr_line.length ();
-
-        if (curr_line[len-1] == '\n')
-          curr_line.resize (len-1);
-
-        // Print the line, maybe with a pointer near the error token.
-
-        output_buf << ">>> " << curr_line << "\n";
-
-        if (err_col == 0)
-          err_col = len;
-
-        for (int i = 0; i < err_col + 3; i++)
-          output_buf << " ";
-
-        output_buf << "^";
+        output_buf << str
+                   << " near line " << err_line << ", column " << err_col << "\n"
+                   << "error: called from\n"
+                   << "    " << m_lexer.m_fcn_file_name
+                   << " at line " << err_line << " column " << err_col << "\n";
       }
+    else
+      {
+        // On command line, point directly to error
+        output_buf << str << "\n\n";
+        std::string curr_line = m_lexer.m_current_input_line;
 
-    output_buf << "\n";
+        if (! curr_line.empty ())
+          {
+            // FIXME: we could do better if we just cached lines from the
+            // input file in a list.  See also functions for managing input
+            // buffers in lex.ll.
+            std::size_t len = curr_line.length ();
+
+            if (curr_line[len-1] == '\n')
+              curr_line.resize (len-1);
+
+            // Print the line, maybe with a pointer near the error token.
+            output_buf << ">>> " << curr_line << "\n";
+
+            if (err_col == 0)
+              err_col = len;
+
+            for (int i = 0; i < err_col + 3; i++)
+              output_buf << " ";
+
+            output_buf << "^" << "\n";
+          }
+
+      }
 
     m_parse_error_msg = output_buf.str ();
   }

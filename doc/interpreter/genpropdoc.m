@@ -1564,8 +1564,8 @@ measured in degrees.";
 
       case "units"
         s.doc = "Sets the measurement unit or method applied to the \
-@ref{XREFtextposition, , @w{@qcode{\"position\"} and \
-@ref{XREFtextextent, , @w{@qcode{\"extent\"} properties.  The default \
+@ref{XREFtextposition, , @w{@qcode{\"position\"}}} and \
+@ref{XREFtextextent, , @w{@qcode{\"extent\"}}} properties.  The default \
 option \"data\" uses the same units and limits as the data plotted in the \
 figure.  The \"normalized\" option applies a unitless 0 to 1 scale to the \
 limits along each axis of the displayed data.";

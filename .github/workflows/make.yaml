@@ -163,6 +163,17 @@ jobs:
           echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
           [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
 
+      - name: install
+        run: |
+          sudo make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" \
+            ./embedded
+
 
   alpine:
     runs-on: ubuntu-latest
@@ -282,6 +293,8 @@ jobs:
           test -d ~/.ccache || mkdir ~/.ccache
           echo "max_size = 1G" >> ~/.ccache/ccache.conf
           echo "compression = true" >> ~/.ccache/ccache.conf
+          ccache --version
+          ccache -p
           ccache -s
           echo "/usr/lib/ccache/bin" >> $GITHUB_PATH
 
@@ -374,6 +387,16 @@ jobs:
         run:  |
           echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
           [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          sudo make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" ./embedded
 
 
   macos:
@@ -581,6 +604,18 @@ jobs:
           echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
           [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
 
+      - name: install
+        run: |
+          mkdir -p /Users/runner/usr
+          make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          cd examples/code
+          PATH="/Users/runner/usr/bin:$PATH" CXX="${CXX} ${{ matrix.cxx-compiler-flags }}" \
+            mkoctfile --link-stand-alone embedded.cc -o embedded
+          ./embedded
+
 
   mingw:
     runs-on: ${{ matrix.os }}
@@ -738,6 +773,7 @@ jobs:
         # FIXME: Fix building with Java support. Override JAVA_HOME for now.
         # FIXME: How do we get a working TeX environment in MSYS2? Disable building the documentation for now.
         run: |
+          echo $PATH
           which $CC
           echo $CC --version
           $CC --version
@@ -811,6 +847,19 @@ jobs:
         run:  |
           echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
           [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          mkdir -p /c/octave/pkg
+          make -C ./.build DESTDIR=/c/octave/pkg install
+
+      - name: test stand-alone executable
+        run: |
+          cd examples/code
+          export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
+          export PATH="/c/octave/pkg/${{ matrix.mingw-prefix }}/bin:$PATH"
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          ./embedded.exe
 
 
   cygwin:
@@ -968,6 +1017,7 @@ jobs:
         # FIXME: Fix building with Java support.  Override JAVA_HOME for now.
         # FIXME: How do we get a working TeX environment in Cygwin?  Disable building the documentation for now.
         run: |
+          echo $PATH
           which $CC
           echo $CC --version
           $CC --version
@@ -1040,3 +1090,14 @@ jobs:
         run: |
           echo "history_file (make_absolute_filename ('./a/b/c/history')); disp ('test')" | ./.build/run-octave -i
           [ -f ./a/b/c/history ] || echo "::warning::Creating history file failed"
+
+      - name: install
+        run: |
+          make -C ./.build install
+
+      - name: test stand-alone executable
+        run: |
+          export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
+          cd examples/code
+          mkoctfile --link-stand-alone embedded.cc -o embedded
+          ./embedded.exe

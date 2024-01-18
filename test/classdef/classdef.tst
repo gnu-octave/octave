@@ -80,7 +80,7 @@
 %! obj = obj.move_element_to_end (2);
 %! assert (isequal (obj.element, [1 3 2]));
 
-%!error <parse error> plist_t1
+%!error <syntax error> plist_t1
 %!assert (strcmp (class (plist_t2), 'plist_t2'))
 %!assert (strcmp (class (plist_t3), 'plist_t3'))
 

@@ -129,10 +129,14 @@ public:
     std::ostream *os = output_stream ();
     if (os && *os)
       {
+        // FIXME: Using std::make_unique could simplify the following
+        //        expressions once we require C++14.
         m_converter
-          = std::make_unique<std::wbuffer_convert<convfacet_u8, char>>
-            (os->rdbuf (), new convfacet_u8 (m_encoding));
-        m_conv_ostream = std::make_unique<std::ostream> (m_converter.get ());
+          = std::unique_ptr<std::wbuffer_convert<convfacet_u8, char>>
+            (new std::wbuffer_convert<convfacet_u8, char>
+             (os->rdbuf (), new convfacet_u8 (m_encoding)));
+        m_conv_ostream = std::unique_ptr<std::ostream>
+                         (new std::ostream (m_converter.get ()));
       }
 
     return (m_conv_ostream ? m_conv_ostream.get () : output_stream ());

@@ -612,7 +612,7 @@ jobs:
       - name: test stand-alone executable
         run: |
           cd examples/code
-          PATH="/Users/runner/usr/bin:$PATH" CXX="${CXX} ${{ matrix.cxx-compiler-flags }}" \
+          PATH="/Users/runner/usr/bin:$PATH" CXX="${CXX} -std=gnu++11" \
             mkoctfile --link-stand-alone embedded.cc -o embedded
           ./embedded
 

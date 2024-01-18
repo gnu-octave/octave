@@ -5525,10 +5525,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (in_file)
       {
         output_buf << str
-                   << " near line " << err_line << ", column " << err_col << "\n"
-                   << "error: called from\n"
-                   << "    " << m_lexer.m_fcn_file_name
-                   << " at line " << err_line << " column " << err_col << "\n";
+                   << " near line " << err_line << ", column " << err_col << "\n";
       }
     else
       {
@@ -5620,7 +5617,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
 
     if (status != 0)
-      parse_error ("%s", m_parse_error_msg.c_str ());
+      parse_error_with_id ("Octave:parse-error", "%s", m_parse_error_msg.c_str ());
 
     return status;
   }
@@ -5692,7 +5689,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     while (status == YYPUSH_MORE || ! m_lexer.at_end_of_buffer ());
 
     if (status != 0)
-      parse_error ("%s", m_parse_error_msg.c_str ());
+      parse_error_with_id ("Octave:parse-error", "%s", m_parse_error_msg.c_str ());
 
     return status;
   }

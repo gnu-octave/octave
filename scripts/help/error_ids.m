@@ -46,6 +46,9 @@
 ## @item Octave:invalid-input-arg
 ## Indicates that a function was called with invalid input arguments.
 ##
+## @item Octave:parse-error
+## The interpreter failed to parse (read) specified code.
+##
 ## @item Octave:undefined-function
 ## Indicates a call to a function that is not defined.  The function may exist
 ## but Octave is unable to find it in the search path.

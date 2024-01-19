@@ -412,8 +412,7 @@ public:
 
   octave_value_list
   convert_return_list_to_const_vector
-  (tree_parameter_list *ret_list, int nargout,
-   const Matrix& ignored_outputs, const Cell& varargout);
+  (tree_parameter_list *ret_list, int nargout, const Cell& varargout);
 
   bool eval_decl_elt (tree_decl_elt *elt);
 

@@ -68,7 +68,7 @@
 ## @var{USV} = nthargout ([1:3], @@svd, hilb (5));
 ## @end example
 ##
-## @seealso{nargin, nargout, varargin, varargout, isargout}
+## @seealso{nargin, nargout, varargin, varargout}
 ## @end deftypefn
 
 function arg = nthargout (n, varargin)

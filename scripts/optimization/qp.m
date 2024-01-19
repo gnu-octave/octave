@@ -437,10 +437,10 @@ function [x, obj, INFO, lambda] = qp (x0, H, varargin)
     x = x0;
     lambda = [];
   endif
-  if (isargout (2))
+  if (nargout > 1)
     obj = 0.5 * x' * H * x + q' * x;
   endif
-  if (isargout (3))
+  if (nargout > 2)
     INFO.solveiter = iter;
     INFO.info = info;
   endif

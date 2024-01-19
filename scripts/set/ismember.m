@@ -88,7 +88,7 @@ function [tf, s_idx] = ismember (a, s, varargin)
     [real_argout{:}] = ismember (real (a), real (s), varargin{:});
     [imag_argout{:}] = ismember (imag (a), imag (s), varargin{:});
     tf = real_argout{1} & imag_argout{1};
-    if (isargout (2))
+    if (nargout > 1)
       s_idx = zeros (size (real_argout{2}));
       s_idx(tf) = min (real_argout{2}(tf), imag_argout{2}(tf));
     endif

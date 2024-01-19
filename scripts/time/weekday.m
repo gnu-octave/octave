@@ -73,7 +73,7 @@ function [d, s] = weekday (d, format = "short")
   ## Make Saturdays a 7 and not a 0.
   d(! d) = 7;
 
-  if (isargout (2))
+  if (nargout > 1)
     if (strcmpi (format, "long"))
       names = {"Sunday" "Monday" "Tuesday" "Wednesday" "Thursday" ...
                "Friday" "Saturday"};

@@ -237,7 +237,7 @@ function [cest, v] = condest (varargin)
   [Ainv_norm, v, w] = normest1 (Ainvfcn, t, [], varargin{4:end});
 
   cest = Anorm * Ainv_norm;
-  if (isargout (2))
+  if (nargout > 1)
     v = w / norm (w, 1);
   endif
 

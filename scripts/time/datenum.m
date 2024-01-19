@@ -240,7 +240,7 @@ function [days, secs] = datenum (year, month = [], day = [], hour = 0, minute = 
   days = day + (hour + (minute + second/60)/60)/24;
 
   ## Output seconds if asked so that etime can be more accurate
-  if (isargout (2))
+  if (nargout > 1)
     secs = day*86400 + hour*3600 + minute*60 + second;
   endif
 

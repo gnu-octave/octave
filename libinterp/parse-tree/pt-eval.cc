@@ -2339,8 +2339,7 @@ tree_evaluator::convert_to_const_vector (tree_argument_list *args)
 
 octave_value_list
 tree_evaluator::convert_return_list_to_const_vector
-  (tree_parameter_list *ret_list, int nargout, const Matrix& ignored_outputs,
-   const Cell& varargout)
+(tree_parameter_list *ret_list, int nargout, const Cell& varargout)
 {
   octave_idx_type vlen = varargout.numel ();
   int len = ret_list->length ();
@@ -2351,9 +2350,6 @@ tree_evaluator::convert_return_list_to_const_vector
   else
     {
       int i = 0;
-      int k = 0;
-      int num_ignored = ignored_outputs.numel ();
-      int ignored = num_ignored > 0 ? ignored_outputs(k) - 1 : -1;
 
       if (nargout <= len)
         {
@@ -2365,14 +2361,10 @@ tree_evaluator::convert_return_list_to_const_vector
               if (nargout == 0 && ! is_defined (elt->ident ()))
                 break;
 
-              if (ignored >= 0 && i == ignored)
-                {
-                  i++;
-                  k++;
-                  ignored = k < num_ignored ? ignored_outputs(k) - 1 : -1;
-                }
-              else
-                retval(i++) = evaluate (elt);
+              if (is_defined (elt->ident ()))
+                retval(i) = evaluate (elt);
+
+              i++;
 
               if (i == nout)
                 break;
@@ -2386,14 +2378,10 @@ tree_evaluator::convert_return_list_to_const_vector
 
           for (tree_decl_elt *elt : *ret_list)
             {
-              if (ignored >= 0 && i == ignored)
-                {
-                  i++;
-                  k++;
-                  ignored = k < num_ignored ? ignored_outputs(k) - 1 : -1;
-                }
-              else
-                retval(i++) = evaluate (elt);
+              if (is_defined (elt->ident ()))
+                retval(i) = evaluate (elt);
+
+              i++;
             }
 
           for (octave_idx_type j = 0; j < vlen; j++)
@@ -3748,9 +3736,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
             varargout = varargout_varval.xcell_value ("varargout must be a cell array object");
         }
 
-      retval = convert_return_list_to_const_vector (ret_list, nargout,
-                                                    ignored_outputs,
-                                                    varargout);
+      retval = convert_return_list_to_const_vector (ret_list, nargout, varargout);
     }
 
   return retval;

@@ -5525,7 +5525,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (in_file)
       {
         output_buf << str
-                   << " near line " << err_line << ", column " << err_col << "\n";
+                   << " near line " << err_line << ", column " << err_col
+                   << " in file " << m_lexer.m_fcn_file_full_name << "\n";
       }
     else
       {

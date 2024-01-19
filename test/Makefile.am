@@ -32,6 +32,7 @@ TEST_FILES += \
   bug-55322.tst \
   bug-59950.tst \
   bug-61201.tst \
+  bug-65153.tst \
   colormaps.tst \
   command.tst \
   complex.tst \

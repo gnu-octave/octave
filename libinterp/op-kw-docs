@@ -873,14 +873,14 @@ Begin the cleanup section of an unwind_protect block.
 -*- texinfo -*-
 @deftypefn {} {} varargin
 Pass an arbitrary number of arguments into a function.
-@seealso{varargout, nargin, isargout, nargout, nthargout}
+@seealso{varargout, nargin, nargout, nthargout}
 @end deftypefn
 varargout
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-
 @deftypefn {} {} varargout
 Pass an arbitrary number of arguments out of a function.
-@seealso{varargin, nargin, isargout, nargout, nthargout}
+@seealso{varargin, nargin, nargout, nthargout}
 @end deftypefn
 while
 @c libinterp/parse-tree/oct-parse.yy

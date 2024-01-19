@@ -179,7 +179,7 @@ function [y0_new, yp0_new, resnorm] = decic (fcn, t0,
 
   y0_new(! fixed_y0)   = x(1:nl);
   yp0_new(! fixed_yp0) = x(nl+1:nl+nu);
-  if (isargout (3))
+  if (nargout > 2)
     resnorm = fcn (t0, y0_new, yp0_new);
   endif
 

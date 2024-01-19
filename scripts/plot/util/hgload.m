@@ -79,7 +79,7 @@ function [h, old_prop] = hgload (filename, prop_struct = struct ())
 
   ## Override properties of top-level objects
   calc_old_prop = false;
-  if (isargout (2))
+  if (nargout > 1)
     calc_old_prop = true;
     old_prop = repmat ({[]}, 1, numel (hg));
   endif

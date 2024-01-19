@@ -231,7 +231,7 @@ function [y, i, j] = unique (x, varargin)
   endif
 
   ## Calculate j output (3rd output)
-  if (isargout (3))
+  if (nargout > 2)
     j = i;  # cheap way to copy dimensions
     j(i) = cumsum ([1; ! match(:)]);
     if (! optsorted)
@@ -245,7 +245,7 @@ function [y, i, j] = unique (x, varargin)
   endif
 
   ## Calculate i output (2nd output)
-  if (isargout (2))
+  if (nargout > 1)
     if (optsorted)
       idx = find (match);
       if (! optlegacy && optfirst)

@@ -137,10 +137,8 @@ function [beta, sigma, r] = ols (y, x)
     beta = u \ (u' \ (x' * y));
   endif
 
-  if (isargout (2) || isargout (3))
+  if (nargout > 1)
     r = y - x * beta;
-  endif
-  if (isargout (2))
 
     ## z is of full rank, avoid the SVD in rnk
     if (p == 0)

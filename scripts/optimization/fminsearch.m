@@ -178,7 +178,7 @@ function [x, fval, exitflag, output] = fminsearch (varargin)
 
   [x, exitflag, output] = nmsmax (fcn, x0, options, varargin{:});
 
-  if (isargout (2))
+  if (nargout > 1)
     fval = feval (fcn, x);
   endif
 

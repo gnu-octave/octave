@@ -70,7 +70,7 @@ function [b, r] = deconv (y, a)
     r = y;
   endif
 
-  if (isargout (2))
+  if (nargout > 1)
     if (ly >= la)
       r = [zeros(ly - la + 1, 1); r(1:la - 1)];
       ## Respect the orientation of Y

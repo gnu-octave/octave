@@ -211,20 +211,20 @@ function [x, minval, exitflag, output, lambda] = pqpnonneg (c, d, x0 = [],
   ## LH12: complete.
 
   ## Generate the additional output arguments.
-  if (isargout (2))
+  if (nargout > 1)
     minval = 1/2*(x'*c*x) + d'*x;
   endif
-  if (isargout (3))
+  if (nargout > 2)
     if (iter >= max_iter)
       exitflag = 0;
     else
       exitflag = iter;
     endif
   endif
-  if (isargout (4))
+  if (nargout > 3)
     output = struct ("algorithm", "nnls-pqp", "iterations", iter);
   endif
-  if (isargout (5))
+  if (nargout > 4)
     lambda = zeros (size (x));
     lambda (setdiff (1:numel(x), p)) = w;
   endif

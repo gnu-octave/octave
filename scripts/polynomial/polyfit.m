@@ -157,7 +157,7 @@ function [p, s, mu] = polyfit (x, y, n)
   p = r \ (q' * y);
   p(k) = p;
 
-  if (isargout (2))
+  if (nargout > 1)
     yf = v*p;
     if (y_is_row_vector)
       s.yf = yf.';

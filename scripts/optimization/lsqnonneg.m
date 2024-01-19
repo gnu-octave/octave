@@ -204,23 +204,23 @@ function [x, resnorm, residual, exitflag, output, lambda] = lsqnonneg (c, d, x0 
   ## LH12: complete.
 
   ## Generate the additional output arguments.
-  if (isargout (2))
+  if (nargout > 1)
     resnorm = norm (c*x - d) ^ 2;
   endif
-  if (isargout (3))
+  if (nargout > 2)
     residual = d - c*x;
   endif
-  if (isargout (4))
+  if (nargout > 3)
     if (iter >= max_iter)
       exitflag = 0;
     else
       exitflag = iter;
     endif
   endif
-  if (isargout (5))
+  if (nargout > 4)
     output = struct ("algorithm", "nnls", "iterations", iter);
   endif
-  if (isargout (6))
+  if (nargout > 5)
     lambda = zeros (size (x));
     lambda (setdiff (1:numel(x), p)) = w;
   endif

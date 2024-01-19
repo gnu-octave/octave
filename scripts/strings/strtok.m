@@ -134,10 +134,10 @@ function [tok, rem] = strtok (str, delim)
       tmp = [tmp{:}];
     endif
     tok(midx) = tmp(1:2:end);
-    if (isargout (2))
+    if (nargout > 1)
       rem = cell (size (str));
       rem(eidx) = {""};
-      rem (midx) = tmp(2:2:end);
+      rem(midx) = tmp(2:2:end);
     endif
   endif
 

@@ -1451,6 +1451,40 @@ tree_evaluator::dbupdown (int n, bool verbose)
   m_debug_frame = m_call_stack.dbupdown (n, verbose);
 }
 
+Matrix
+tree_evaluator::ignored_fcn_outputs () const
+{
+  Matrix retval;
+
+  const std::list<octave_lvalue> *lvalues = m_lvalue_list;
+
+  if (! lvalues)
+    return retval;
+
+  octave_idx_type nbh = 0;
+
+  for (const auto& lval : *lvalues)
+    nbh += lval.is_black_hole ();
+
+  if (nbh > 0)
+    {
+      retval.resize (1, nbh);
+
+      octave_idx_type k = 0;
+      octave_idx_type l = 0;
+
+      for (const auto& lval : *lvalues)
+        {
+          if (lval.is_black_hole ())
+            retval(l++) = k+1;
+
+          k += lval.numel ();
+        }
+    }
+
+  return retval;
+}
+
 // If NAME is an operator (like "+", "-", ...), convert it to the
 // corresponding function name ("plus", "minus", ...).
 
@@ -3519,6 +3553,9 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
 
   octave_value_list args (xargs);
 
+  // FIXME: this probably shouldn't be a double-precision matrix.
+  Matrix ignored_outputs = ignored_fcn_outputs ();
+
   octave_value_list ret_args;
 
   int nargin = args.length ();
@@ -3581,8 +3618,8 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
         }
     }
 
-  bind_auto_fcn_vars (xargs.name_tags (), nargin, nargout,
-                      user_function.takes_varargs (),
+  bind_auto_fcn_vars (xargs.name_tags (), ignored_outputs, nargin,
+                      nargout, user_function.takes_varargs (),
                       user_function.all_va_args (args));
 
   // For classdef constructor, pre-populate the output arguments
@@ -5182,11 +5219,13 @@ tree_evaluator::quit_loop_now ()
 
 void
 tree_evaluator::bind_auto_fcn_vars (const string_vector& arg_names,
+                                    const Matrix& ignored_outputs,
                                     int nargin, int nargout,
                                     bool takes_varargs,
                                     const octave_value_list& va_args)
 {
   set_auto_fcn_var (stack_frame::ARG_NAMES, Cell (arg_names));
+  set_auto_fcn_var (stack_frame::IGNORED, ignored_outputs);
   set_auto_fcn_var (stack_frame::NARGIN, nargin);
   set_auto_fcn_var (stack_frame::NARGOUT, nargout);
   set_auto_fcn_var (stack_frame::SAVED_WARNING_STATES, octave_value ());
@@ -5508,13 +5547,5 @@ With no arguments, @code{echo} toggles the current echo state.
 %!error echo ("on", "invalid")
 %!error echo ("on", "all", "all")
 */
-
-// DEPRECATED in Octave 9.
-
-Matrix
-tree_evaluator::ignored_fcn_outputs () const
-{
-  return Matrix ();
-}
 
 OCTAVE_END_NAMESPACE(octave)

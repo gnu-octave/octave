@@ -790,7 +790,7 @@ will return -2, because @code{imread} has two outputs and the second is
 
 Programming Note.  @code{nargout} does not work for built-in functions and
 returns -1 for all anonymous functions.
-@seealso{nargin, varargout, nthargout}
+@seealso{nargin, varargout, isargout, nthargout}
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -886,27 +886,39 @@ The original variable value is restored when exiting the function.
 }
 
 static bool
-isargout1 (int nargout, double k)
+val_in_table (const Matrix& table, double val)
+{
+  if (table.isempty ())
+    return false;
+
+  octave_idx_type i = table.lookup (val, ASCENDING);
+  return (i > 0 && table(i-1) == val);
+}
+
+static bool
+isargout1 (int nargout, const Matrix& ignored, double k)
 {
   if (k != math::fix (k) || k <= 0)
     error ("isargout: K must be a positive integer");
 
-  return k == 1 || k <= nargout;
+  return (k == 1 || k <= nargout) && ! val_in_table (ignored, k);
 }
-
-// LEGACY FUNCTION as of Octave 9.
 
 DEFMETHOD (isargout, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {@var{tf} =} isargout (@var{k})
-This function is obsolete and may be removed from a future version of
-Octave.  Inside a function and now always returns true for @var{k} in
-the range @code{1:min (1, nargout)}.
+Within a function, return a logical value indicating whether the argument
+@var{k} will be assigned to a variable on output.
 
-@var{k} can also be an array, in which case the function works
-element-by-element and a logical array is returned.
+If the result is false, the argument has been ignored during the function
+call through the use of the tilde (~) special output argument.  Functions
+can use @code{isargout} to avoid performing unnecessary calculations for
+outputs which are unwanted.
 
-At the top level, @code{isargout} returns an error.
+If @var{k} is outside the range @code{1:max (nargout)}, the function returns
+false.  @var{k} can also be an array, in which case the function works
+element-by-element and a logical array is returned.  At the top level,
+@code{isargout} returns an error.
 @seealso{nargout, varargout, nthargout}
 @end deftypefn */)
 {
@@ -925,11 +937,16 @@ At the top level, @code{isargout} returns an error.
   if (tmp.is_defined ())
     nargout1 = tmp.int_value ();
 
+  Matrix ignored;
+  tmp = tw.get_auto_fcn_var (stack_frame::IGNORED);
+  if (tmp.is_defined ())
+    ignored = tmp.matrix_value ();
+
   if (args(0).is_scalar_type ())
     {
       double k = args(0).double_value ();
 
-      return ovl (isargout1 (nargout1, k));
+      return ovl (isargout1 (nargout1, ignored, k));
     }
   else if (args(0).isnumeric ())
     {
@@ -937,7 +954,7 @@ At the top level, @code{isargout} returns an error.
 
       boolNDArray r (ka.dims ());
       for (octave_idx_type i = 0; i < ka.numel (); i++)
-        r(i) = isargout1 (nargout1, ka(i));
+        r(i) = isargout1 (nargout1, ignored, ka(i));
 
       return ovl (r);
     }
@@ -949,50 +966,72 @@ At the top level, @code{isargout} returns an error.
 
 /*
 %!function [x, y] = try_isargout ()
-%!  global isargout_global
-%!  isargout_global = [isargout(1), isargout(2)];
-%!  x = 1;
-%!  y = 2;
+%!  if (isargout (1))
+%!    if (isargout (2))
+%!      x = 1; y = 2;
+%!    else
+%!      x = -1;
+%!    endif
+%!  else
+%!    if (isargout (2))
+%!      y = -2;
+%!    else
+%!      error ("no outputs requested");
+%!    endif
+%!  endif
+%!endfunction
+%!
+%!function [a, b] = try_isargout2 (x, y)
+%!  a = y;
+%!  b = {isargout(1), isargout(2), x};
 %!endfunction
 %!
 %!test
-%! global isargout_global
-%! unwind_protect
-%!   [x, y] = try_isargout ();
-%!   assert ([x, y], [1, 2]);
-%!   assert (isargout_global, [true, true]);
-%! unwind_protect_cleanup
-%!   clear -global isargout_global
-%! end_unwind_protect
+%! [x, y] = try_isargout ();
+%! assert ([x, y], [1, 2]);
 %!
 %!test
-%! global isargout_global
-%! unwind_protect
-%!   [x, ~] = try_isargout ();
-%!   assert (x, 1);
-%!   assert (isargout_global, [true, true]);
-%! unwind_protect_cleanup
-%!   clear -global isargout_global
-%! end_unwind_protect
+%! [x, ~] = try_isargout ();
+%! assert (x, -1);
 %!
 %!test
-%! global isargout_global
-%! unwind_protect
-%!   [~, y] = try_isargout ();
-%!   assert (y, 2);
-%!   assert (isargout_global, [true, true]);
-%! unwind_protect_cleanup
-%!   clear -global isargout_global
-%! end_unwind_protect
+%! [~, y] = try_isargout ();
+%! assert (y, -2);
 %!
+%!error [~, ~] = try_isargout ()
+%!
+## Check to see that isargout isn't sticky:
 %!test
-%! global isargout_global
-%! unwind_protect
-%!   [~, ~] = try_isargout ()
-%!   assert (isargout_global, [true, true]);
-%! unwind_protect_cleanup
-%!   clear -global isargout_global
-%! end_unwind_protect
+%! [x, y] = try_isargout ();
+%! assert ([x, y], [1, 2]);
+%!
+## It should work without ():
+%!test
+%! [~, y] = try_isargout;
+%! assert (y, -2);
+%!
+## It should work in function handles, anonymous functions, and cell
+## arrays of handles or anonymous functions.
+%!test
+%! fh = @try_isargout;
+%! af = @() try_isargout;
+%! c = {fh, af};
+%! [~, y] = fh ();
+%! assert (y, -2);
+%! [~, y] = af ();
+%! assert (y, -2);
+%! [~, y] = c{1}();
+%! assert (y, -2);
+%! [~, y] = c{2}();
+%! assert (y, -2);
+%!
+## Nesting, anyone?
+%!test
+%! [~, b] = try_isargout2 (try_isargout, rand);
+%! assert (b, {0, 1, -1});
+%!test
+%! [~, b] = try_isargout2 ({try_isargout, try_isargout}, rand);
+%! assert (b, {0, 1, {-1, -1}});
 */
 
 OCTAVE_END_NAMESPACE(octave)

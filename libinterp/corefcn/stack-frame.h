@@ -130,6 +130,7 @@ public:
   enum auto_var_type
   {
     ARG_NAMES,
+    IGNORED,
     NARGIN,
     NARGOUT,
     SAVED_WARNING_STATES,

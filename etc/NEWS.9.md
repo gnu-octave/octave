@@ -173,12 +173,6 @@ after 9):
 
         Function               | Replacement
         -----------------------|------------------
-        isargout               | none (see below)
-
-    * The implementation of `isargout` has been the source of a number of bugs
-      and was inefficient, even for functions that did not use it.  It may be
-      removed in a future version of Octave.  Until then, `isargout(k)` will
-      return true for k in the range `1:min (1, nargout)`.
 
 - Properties
 

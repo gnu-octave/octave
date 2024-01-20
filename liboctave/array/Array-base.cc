@@ -528,13 +528,13 @@ public:
     : m_n (ia.numel ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
       m_cdim (m_dim + m_n), m_idx (new octave::idx_vector [m_n])
   {
-    assert (m_n > 0 && (dv.ndims () == std::max (m_n, 2)));
+    assert (m_n > 0 && dv.ndims () == std::max (m_n, static_cast<octave_idx_type> (2)));
 
     m_dim[0] = dv(0);
     m_cdim[0] = 1;
     m_idx[0] = ia(0);
 
-    for (int i = 1; i < m_n; i++)
+    for (octave_idx_type i = 1; i < m_n; i++)
       {
         // Try reduction...
         if (m_idx[m_top].maybe_reduce (m_dim[m_top], ia(i), dv(i)))
@@ -575,7 +575,7 @@ private:
 
   // Recursive N-D indexing
   template <typename T>
-  T * do_index (const T *src, T *dest, int lev) const
+  T * do_index (const T *src, T *dest, octave_idx_type lev) const
   {
     if (lev == 0)
       dest += m_idx[0].index (src, m_dim[0], dest);
@@ -592,7 +592,7 @@ private:
 
   // Recursive N-D indexed assignment
   template <typename T>
-  const T * do_assign (const T *src, T *dest, int lev) const
+  const T * do_assign (const T *src, T *dest, octave_idx_type lev) const
   {
     if (lev == 0)
       src += m_idx[0].assign (src, m_dim[0], dest);
@@ -609,7 +609,7 @@ private:
 
   // Recursive N-D indexed assignment
   template <typename T>
-  void do_fill (const T& val, T *dest, int lev) const
+  void do_fill (const T& val, T *dest, octave_idx_type lev) const
   {
     if (lev == 0)
       m_idx[0].fill (val, m_dim[0], dest);
@@ -627,8 +627,8 @@ private:
   // CDIM occupies the last half of the space allocated for dim to
   // avoid a double allocation.
 
-  int m_n;
-  int m_top;
+  octave_idx_type m_n;
+  octave_idx_type m_top;
   octave_idx_type *m_dim;
   octave_idx_type *m_cdim;
   octave::idx_vector *m_idx;

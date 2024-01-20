@@ -344,7 +344,7 @@ public:
     SC_OTHER      // command-line input or eval string
   };
 
-  OCTAVE_DEPRECATED (9, "tree_evaluator::ignored_fcn_outputs is obsolete and now always returns an empty Matrix object");
+  OCTAVE_DEPRECATED (9, "tree_evaluator::ignored_fcn_outputs is obsolete and now always returns an empty Matrix object")
   Matrix ignored_fcn_outputs () const;
 
   octave_value make_fcn_handle (const std::string& nm);

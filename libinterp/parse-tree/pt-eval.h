@@ -355,7 +355,6 @@ public:
     SC_OTHER      // command-line input or eval string
   };
 
-  OCTAVE_DEPRECATED (9, "tree_evaluator::ignored_fcn_outputs is obsolete and now always returns an empty Matrix object");
   Matrix ignored_fcn_outputs () const;
 
   std::string inputname (int n, bool ids_only = true) const;
@@ -927,7 +926,8 @@ private:
   bool quit_loop_now ();
 
   void bind_auto_fcn_vars (const string_vector& arg_names,
-                           int nargin, int nargout, bool takes_varargs,
+                           const Matrix& ignored_outputs, int nargin,
+                           int nargout, bool takes_varargs,
                            const octave_value_list& va_args);
 
   std::string check_autoload_file (const std::string& nm) const;

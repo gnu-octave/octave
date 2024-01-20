@@ -628,6 +628,25 @@ parse error:
 @end group
 @end example
 
+Functions may take advantage of ignored outputs to reduce the number of
+calculations performed.  To do so, use the @code{isargout} function to query
+whether the output argument is wanted.  For example:
+
+@example
+@group
+function [out1, out2] = long_function (x, y, z)
+  if (isargout (1))
+    ## Long calculation
+    @dots{}
+    out1 = result;
+  endif
+  @dots{}
+endfunction
+@end group
+@end example
+
+@DOCSTRING(isargout)
+
 @node Default Arguments
 @section Default Arguments
 @cindex default arguments

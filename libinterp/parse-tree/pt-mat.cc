@@ -47,6 +47,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 octave_value
 tree_matrix::evaluate (tree_evaluator& tw, int)
 {
+  unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
+  {
+    tw.set_lvalue_list (lvl);
+  }, tw.lvalue_list ());
+
+  tw.set_lvalue_list (nullptr);
+
   tm_const tmp (*this, tw);
 
   return tmp.concat (tw.string_fill_char ());

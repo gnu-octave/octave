@@ -11,35 +11,28 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
   encouraged.  To learn more, type `bytecode` or `help bytecode` at the Octave
   prompt.
 
-- `oruntests`: The current directory now changes to the directory
-  containing the files with the tests for the duration of the test.  This
-  aligns the behavior of this function with Octave's test suite.  This also
-  means that the file encoding specified in the `.oct-config` file for the
-  respective directory is taken into account for the tests.
-
 - `dec2base`, `dec2bin`, and `dec2hex` have all been overhauled.  All three
   functions now accommodate negative inputs and fractional inputs, and repeated
   code between the functions has been reduced or eliminated.  Previously only
   `dec2bin` and `dec2hex` accepted negative inputs but `dec2base` did not, and
-  none of the three accepted fractional inputs.  But now, `dec2base (100*pi,
-  16, 4, 6)`, for example, returns a base-16 string with four places for the
-  integer part and six places for the fractional part.  Omitting the number of
-  decimal places (the fourth input) retains old behavior for backward
-  compatibility, except that non-integer inputs will no longer produce
-  errors.
+  none of the three accepted fractional inputs.  Now, `dec2base (100*pi, 16, 4,
+  6)`, for example, returns a base-16 string with four places for the integer
+  part and six places for the fractional part.  Omitting the number of decimal
+  places (the fourth input) retains old behavior for backward compatibility,
+  except that non-integer inputs will no longer produce errors.
 
 - `quiver` and `quiver3` now properly plot non-float numeric inputs by
-  internally recasting them to 'double' (bug #59695).  Both functions now honor
+  internally casting them to 'double' (bug #59695).  Both functions now honor
   a previously ignored scaling factor input when there is only a single arrow
   (bug #39552), and `quiver3` no longer produces an error when a scaling factor
-  is input without x and y inputs. Both functions now also accept a scale
+  is given without x and y inputs.  Both functions now also accept a scale
   factor of "off" which is equivalent to setting it to 0.  When a linestyle
   with a base marker is set suppressing arrowhead display, subsequent
-  name-value property pairs in the quiver/quiver3 function call will no longer
-  turn arrowhead display back on (bug #64143).  The linewidth property now also
-  affects the line width of the base marker.
+  name-value property pairs in the `quiver`/`quiver3` function call will no
+  longer turn arrowhead display back on (bug #64143).  The linewidth property
+  now also affects the line width of the base marker.
 
-- Classdefs now support breakpoints inside them.
+- Classdef files now support breakpoints inside them.
 
 - The `inputParser` function has been re-architected for a 60% performance
   improvement.
@@ -49,13 +42,19 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 - The `audiowrite` function now supports writing to MPEG audio
   formats---including MP3---if the `sndfile` library supports it.
 
+- `oruntests`: The current directory now changes to the directory
+  containing the files with the tests for the duration of the test.  This
+  aligns the behavior of this function with Octave's test suite.  This also
+  means that the file encoding specified in the `.oct-config` file for the
+  respective directory is taken into account for the tests.
+
 ### Graphical User Interface
 
 - The Graphical User Interface (GUI) of Octave is now compatible with Qt6.  Qt6
   is selected by default if the necessary Qt modules are detected and the used
   compiler is compatible.  Support for building with Qt5 is still available but
   might be removed in a future version of Octave.  Qt5 is used if configuring
-  with `--with-qt=5` or as a fallback by default if Qt6 cannot be used.
+  with `--with-qt=5` or as a fallback if Qt6 cannot be used.
 
 ### Graphics backend
 
@@ -81,13 +80,14 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
   is now set to true by default which may change the behavior of existing code.
 
 - Overhauled `mean`, `median`, `var`, and `std` functions have been imported
-  from statistics package v1.5.4 to compatibly implement 'nanflag' (bug
-  #50571), 'all' (bug #58116), and 'vecdim' (bug #58089) options, preserve
+  from statistics package v1.5.4 to compatibly implement 'nanflag'
+  (bug #50571), 'all' (bug #58116), and 'vecdim' (bug #58089) options, preserve
   output class, and match expected output behavior for empty (bug #50583) and
-  sparse inputs (bug #63291).  Both `median` and `mean` can handle large int
-  values without overflow or precision concerns (bug #54567), and `mean` avoids
-  errors due to limits of single precision by processing as doubles (bug
-  #63848).  `median` has also adopted the 'outtype' option from `mean`.
+  sparse inputs (bug #63291).  Both `median` and `mean` can handle large
+  integer values without overflow or precision concerns (bug #54567), and
+  `mean` avoids errors due to limits of single precision by processing as
+  doubles (bug #63848).  `median` has also adopted the 'outtype' option from
+  `mean`.
 
 - Code such as `A = ones (3, 3); A(:, :, 1) = []` is now Matlab compatible.
 
@@ -98,7 +98,7 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 
 - `mode` now produces Matlab compatible output for empty inputs (bug #50583).
 
-- `linspace` and `logspace` now handle `inf` inputs in a Matlab compatible way.
+- `linspace` and `logspace` now handle `Inf` inputs in a Matlab compatible way.
 
 - `normalize` now produces Matlab compatible output for inputs containing NaN
   values (bug #50571).
@@ -115,15 +115,15 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
   columnwise covariance calculation can obtain the previous results using
   `cov([x,y])(1:nx, nx+1:end)`, where nx = columns(x).
 
-- `qz` now handles input and output arguments in a Matlab compatible way. It
+- `qz` now handles input and output arguments in a Matlab compatible way.  It
   always computes the complex QZ decomposition if there are only two input
   arguments, and it accepts an optional third input argument 'real' or
-  'complex' to select the type of decomposition. The output arguments are
+  'complex' to select the type of decomposition.  The output arguments are
   always in the same order independently of the input arguments, and the
   generalized eigenvalues are no longer returned (one can use the `ordeig`
-  function for that purpose). The optional reordering of the generalized
-  eigenvalues has been removed (one can use the `ordqz`
-  function for that purpose).
+  function for that purpose).  The optional reordering of the generalized
+  eigenvalues has been removed (one can use the `ordqz` function for that
+  purpose).
 
 - `pcolor` now sets the axes limits to be just large enough to display the
   plotted data (equivalent of `axis tight`).
@@ -159,8 +159,8 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
   double-quoted strings (e.g., "foo") representing character vectors as
   opposed to string objects, then start replacing all double-quoted strings
   with single-quoted strings in your code over time (e.g., replace "foo" with
-  'foo'). Single-quoted strings are expected to retain current behavior.
-  Further, if your code relies on backslash escape sequence interpretation in
+  'foo').  Single-quoted strings will retain their current behavior.  Further,
+  if your code relies on backslash escape sequence interpretation in
   double-quoted strings (except in special cases like the `printf` family),
   that code may need to change as well.
 
@@ -173,17 +173,14 @@ Summary of important user-visible changes for version 9 (yyyy-mm-dd):
 
 ### Deprecated functions, properties, and operators
 
-The following functions and properties have been deprecated in Octave 9
-and will be removed from Octave 11 (or whatever version is the second
-major release after 9):
+The following functions and properties have been deprecated in Octave 9 and
+will be removed from Octave 11 (or whatever version is the second major release
+after 9):
 
 - Functions
 
         Function               | Replacement
         -----------------------|------------------
-        isargout               | none (see below)
-
-    * The implementation of `isargout` has been the source of a number of bugs and was inefficient, even for functions that did not use it.  It may be removed in a future version of Octave.  Until then, `isargout(k)` will return true for k in the range `1:min (1, nargout)`.
 
 - Properties
 
@@ -196,17 +193,19 @@ major release after 9):
 - Core
 
     * The `idx_vector::bool()` function is obsolete and always returns true.
-Any uses can simply be removed from existing code with no loss of function.
+      Any uses can simply be removed from existing code with no loss of
+      function.
 
     * The `all_ok(const Array<octave::idx_vector>&)` function in `Array-util.h`
-is obsolete and always returns true.  Any uses can simply be removed from
-existing code with no loss of function.
+      is obsolete and always returns true.  Any uses can simply be removed from
+      existing code with no loss of function.
 
     * The member variable `octave_base_value::count` is deprecated and will be
-removed from Octave 11.  Replace all instances with the new name `m_count`.
+      removed from Octave 11.  Replace all instances with the new name
+      `m_count`.
 
-The following features were deprecated in Octave 7 and have been removed
-from Octave 9.
+The following features were deprecated in Octave 7 and have been removed from
+Octave 9.
 
 - Functions
 
@@ -231,22 +230,22 @@ from Octave 9.
 
 - Interpreter
 
-    * The use of `'...'` for line continuations *inside* double-quoted
-    strings has been removed.  Use `'\'` for line continuations inside strings
-    instead.
+    * The use of `'...'` for line continuations *inside* double-quoted strings
+      has been removed.  Use `'\'` for line continuations inside strings
+      instead.
 
     * The use of `'\'` as a line continuation *outside* of double-quoted
-    strings has been removed.  Use `'...'` for line continuations instead.
+      strings has been removed.  Use `'...'` for line continuations instead.
 
     * Support for trailing whitespace after a `'\'` line continuation has been
-    removed.  Delete unnecessary trailing whitespace.
+      removed.  Delete unnecessary trailing whitespace.
 
-- For plot functions, the use of numbers to select line colors in
-  shorthand formats was an undocumented feature that was removed in Octave 9.
+- For plot functions, the use of numbers to select line colors in shorthand
+  formats was an undocumented feature that was removed in Octave 9.
 
 - The environment variable used by `mkoctfile` for linker flags is now
-  `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6
-  and has been removed.
+  `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6 and has
+  been removed.
 
 Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
 ----------------------------------------------------

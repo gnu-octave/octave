@@ -1010,18 +1010,29 @@ element-by-element and a logical array is returned.  At the top level,
 %! [~, y] = try_isargout;
 %! assert (y, -2);
 %!
-## It should work in function handles, anonymous functions, and cell
-## arrays of handles or anonymous functions.
+## It should work in function handles,
+%!test
+%! fh = @try_isargout;
+%! [~, y] = fh ();
+%! assert (y, -2);
+%!
+## anonymous functions,
+%!test
+%! af = @() try_isargout;
+%! [~, y] = af ();
+%! assert (y, -2);
+%!
+## and cell arrays of handles or anonymous functions.
 %!test
 %! fh = @try_isargout;
 %! af = @() try_isargout;
 %! c = {fh, af};
-%! [~, y] = fh ();
-%! assert (y, -2);
-%! [~, y] = af ();
-%! assert (y, -2);
 %! [~, y] = c{1}();
 %! assert (y, -2);
+%!test
+%! fh = @try_isargout;
+%! af = @() try_isargout;
+%! c = {fh, af};
 %! [~, y] = c{2}();
 %! assert (y, -2);
 %!

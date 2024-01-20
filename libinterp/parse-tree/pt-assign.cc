@@ -207,8 +207,6 @@ tree_multi_assignment::evaluate_n (tree_evaluator& tw, int)
                                          ? rhs_val1(0).list_value ()
                                          : rhs_val1);
 
-      tw.set_lvalue_list (nullptr);
-
       octave_idx_type k = 0;
 
       octave_idx_type n = rhs_val.length ();

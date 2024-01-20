@@ -3556,6 +3556,14 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
   // FIXME: this probably shouldn't be a double-precision matrix.
   Matrix ignored_outputs = ignored_fcn_outputs ();
 
+  unwind_protect frame;
+
+  if (! user_function.is_anonymous_function ())
+    {
+      frame.protect_var (m_lvalue_list);
+      m_lvalue_list = nullptr;
+    }
+
   octave_value_list ret_args;
 
   int nargin = args.length ();

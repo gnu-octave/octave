@@ -52,9 +52,6 @@
 #include "ovl.h"
 #include "oct-hdf5.h"
 #include "ops.h"
-#include "ov-base.h"
-#include "ov-base-mat.h"
-#include "ov-base-mat.cc"
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-re-mat.h"
@@ -64,8 +61,6 @@
 #include "ls-oct-text.h"
 #include "ls-hdf5.h"
 #include "ls-utils.h"
-
-template class octave_base_matrix<boolNDArray>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool_matrix,
                                      "bool matrix", "logical");

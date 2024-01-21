@@ -42,21 +42,12 @@
 #include "ov-bool.h"
 #include "ov-bool-mat.h"
 #include "ov-base.h"
-#include "ov-base-scalar.h"
-#include "ov-base-scalar.cc"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
 #include "pr-output.h"
 
 #include "ls-oct-text.h"
 #include "ls-hdf5.h"
-
-// Prevent implicit instantiations on some systems (Windows, others?)
-// that can lead to duplicate definitions of static data members.
-
-extern template class octave_base_scalar<double>;
-
-template class octave_base_scalar<bool>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_bool, "bool", "logical");
 

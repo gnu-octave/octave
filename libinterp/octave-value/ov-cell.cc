@@ -48,8 +48,6 @@
 #include "oct-hdf5.h"
 #include "unwind-prot.h"
 #include "utils.h"
-#include "ov-base-mat.h"
-#include "ov-base-mat.cc"
 #include "ov-fcn-handle.h"
 #include "ov-re-mat.h"
 #include "ov-scalar.h"
@@ -62,85 +60,6 @@
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-// Cell is able to handle octave_value indexing by itself, so just forward
-// everything.
-
-template <>
-octave_value
-octave_base_matrix<Cell>::do_index_op (const octave_value_list& idx,
-                                       bool resize_ok)
-{
-  return m_matrix.index (idx, resize_ok);
-}
-
-template <>
-void
-octave_base_matrix<Cell>::assign (const octave_value_list& idx, const Cell& rhs)
-{
-  m_matrix.assign (idx, rhs);
-}
-
-template <>
-void
-octave_base_matrix<Cell>::assign (const octave_value_list& idx,
-                                  octave_value rhs)
-{
-  // FIXME: Really?
-  if (rhs.iscell ())
-    m_matrix.assign (idx, rhs.cell_value ());
-  else
-    m_matrix.assign (idx, Cell (rhs));
-}
-
-template <>
-void
-octave_base_matrix<Cell>::delete_elements (const octave_value_list& idx)
-{
-  m_matrix.delete_elements (idx);
-}
-
-// FIXME: this list of specializations is becoming so long that we should
-// really ask whether octave_cell should inherit from octave_base_matrix at all.
-
-template <>
-std::string
-octave_base_matrix<Cell>::edit_display (const float_display_format&,
-                                        octave_idx_type i,
-                                        octave_idx_type j) const
-{
-  octave_value val = m_matrix(i, j);
-
-  std::string tname = val.type_name ();
-  const dim_vector& dv = val.dims ();
-  std::string dimstr = dv.str ();
-  return "[" + dimstr + " " + tname + "]";
-}
-
-template <>
-octave_value
-octave_base_matrix<Cell>::fast_elem_extract (octave_idx_type n) const
-{
-  if (n < m_matrix.numel ())
-    return Cell (m_matrix(n));
-  else
-    return octave_value ();
-}
-
-template <>
-bool
-octave_base_matrix<Cell>::fast_elem_insert (octave_idx_type n,
-    const octave_value& x)
-{
-  const octave_cell *xrep = dynamic_cast<const octave_cell *> (&x.get_rep ());
-
-  bool retval = xrep && xrep->m_matrix.numel () == 1 && n < m_matrix.numel ();
-  if (retval)
-    m_matrix(n) = xrep->m_matrix(0);
-
-  return retval;
-}
-
-template class octave_base_matrix<Cell>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_cell, "cell", "cell");
 

@@ -48,14 +48,9 @@
 #include "unistr-wrappers.h"
 
 #include "mxarray.h"
-#include "ov-base.h"
-#include "ov-base-mat.h"
-#include "ov-base-mat.cc"
 #include "ov-ch-mat.h"
 #include "errwarn.h"
 #include "pr-output.h"
-
-template class octave_base_matrix<charNDArray>;
 
 octave::idx_vector
 octave_char_matrix::index_vector (bool /* require_integers */) const
@@ -324,7 +319,7 @@ octave_char_matrix::map (unary_mapper_t umap) const
         std::size_t output_length = in_m.numel ();                             \
         charNDArray ch_array = charNDArray (in_m.dims ());                     \
         const uint8_t *in = reinterpret_cast<const uint8_t *> (in_m.data ());  \
-        uint8_t *buf = reinterpret_cast<uint8_t *> (ch_array.rwdata ());  \
+        uint8_t *buf = reinterpret_cast<uint8_t *> (ch_array.rwdata ());       \
         U8_FCN (in, m_matrix.numel (), nullptr, buf, &output_length);          \
         if (output_length != static_cast<std::size_t> (m_matrix.numel ()))     \
           {                                                                    \

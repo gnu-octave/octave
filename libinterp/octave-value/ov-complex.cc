@@ -43,8 +43,6 @@
 #include "ov-complex.h"
 #include "ov-flt-complex.h"
 #include "ov-base.h"
-#include "ov-base-scalar.h"
-#include "ov-base-scalar.cc"
 #include "ov-cx-mat.h"
 #include "ov-scalar.h"
 #include "errwarn.h"
@@ -53,14 +51,6 @@
 
 #include "ls-oct-text.h"
 #include "ls-hdf5.h"
-
-// Prevent implicit instantiations on some systems (Windows, others?)
-// that can lead to duplicate definitions of static data members.
-
-extern template class octave_base_scalar<double>;
-extern template class octave_base_scalar<FloatComplex>;
-
-template class octave_base_scalar<Complex>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex,
                                      "complex scalar", "double");

@@ -46,8 +46,6 @@
 #  define HDF5_SAVE_TYPE 0
 #endif
 
-#include "ov-base-int.h"
-#include "ov-base-int.cc"
 #include "ov-uint16.h"
 #include "pr-output.h"
 #include "variables.h"
@@ -60,21 +58,8 @@
 octave_hdf5_id octave_uint16_matrix::s_hdf5_save_type = HDF5_SAVE_TYPE;
 octave_hdf5_id octave_uint16_scalar::s_hdf5_save_type = HDF5_SAVE_TYPE;
 
-// Prevent implicit instantiations on some systems (Windows, others?)
-// that can lead to duplicate definitions of static data members.
-
-extern template class octave_base_scalar<double>;
-
-template class octave_base_matrix<uint16NDArray>;
-
-template class octave_base_int_matrix<uint16NDArray>;
-
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint16_matrix,
                                      "uint16 matrix", "uint16");
-
-template class octave_base_scalar<octave_uint16>;
-
-template class octave_base_int_scalar<octave_uint16>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint16_scalar,
                                      "uint16 scalar", "uint16");

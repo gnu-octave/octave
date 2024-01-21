@@ -192,20 +192,21 @@ DEF_BTYP_TRAITS (btyp_char, char);
     static int static_type_id () { return s_t_id; }                   \
     static std::string static_type_name () { return s_t_name; }       \
     static std::string static_class_name () { return s_c_name; }      \
-    static void register_type ();                                     \
-    static void register_type (octave::type_info&);                   \
+    OCTINTERP_API static void register_type ();                       \
+    OCTINTERP_API static void register_type (octave::type_info&);     \
                                                                       \
   private:                                                            \
-    static int s_t_id;                                                \
-    static const std::string s_t_name;                                \
-    static const std::string s_c_name;
+    static OCTINTERP_API int s_t_id;                                  \
+    static OCTINTERP_API const std::string s_t_name;                  \
+    static OCTINTERP_API const std::string s_c_name;
 
 #define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS(cls, type)         \
-  template <> void cls<type>::register_type ();                       \
-  template <> void cls<type>::register_type (octave::type_info&);     \
-  template <> int cls<type>::s_t_id;                                  \
-  template <> const std::string cls<type>::s_t_name;                  \
-  template <> const std::string cls<type>::s_c_name;
+  template <> OCTINTERP_API void cls<type>::register_type ();         \
+  template <> OCTINTERP_API void                                      \
+  OCTINTERP_API cls<type>::register_type (octave::type_info&);        \
+  template <> OCTINTERP_API int cls<type>::s_t_id;                    \
+  template <> OCTINTERP_API const std::string cls<type>::s_t_name;    \
+  template <> OCTINTERP_API const std::string cls<type>::s_c_name;
 
 // FIXME: The 'new' operator below creates an 8-byte memory leak for every
 // registered data type (of which there are 58 built-in to Octave, plus any
@@ -266,7 +267,7 @@ public:
 
   friend class octave_value;
 
-  octave_base_value ();
+  OCTINTERP_API octave_base_value ();
 
   octave_base_value (const octave_base_value&) : octave_base_value () { }
 
@@ -277,7 +278,7 @@ public:
   clone () const { return new octave_base_value (*this); }
 
   // Empty clone.
-  virtual octave_base_value *
+  virtual OCTINTERP_API octave_base_value *
   empty_clone () const;
 
   // Unique clone.  Usually clones, but may be overridden to fake the
@@ -296,76 +297,77 @@ public:
   numeric_demotion_function () const
   { return type_conv_info (); }
 
-  virtual octave_value squeeze () const;
+  virtual OCTINTERP_API octave_value squeeze () const;
 
-  virtual octave_value full_value () const;
+  virtual OCTINTERP_API octave_value full_value () const;
 
   // Will return a copy of it-self when the representation
   // allready is a scalar (.i.e. double). The const variant
   // as_double () would allocate a new octave value.
-  virtual octave_value as_double_or_copy ();
+  virtual OCTINTERP_API octave_value as_double_or_copy ();
 
-  virtual octave_value as_double () const;
-  virtual octave_value as_single () const;
+  virtual OCTINTERP_API octave_value as_double () const;
+  virtual OCTINTERP_API octave_value as_single () const;
 
-  virtual octave_value as_int8 () const;
-  virtual octave_value as_int16 () const;
-  virtual octave_value as_int32 () const;
-  virtual octave_value as_int64 () const;
+  virtual OCTINTERP_API octave_value as_int8 () const;
+  virtual OCTINTERP_API octave_value as_int16 () const;
+  virtual OCTINTERP_API octave_value as_int32 () const;
+  virtual OCTINTERP_API octave_value as_int64 () const;
 
-  virtual octave_value as_uint8 () const;
-  virtual octave_value as_uint16 () const;
-  virtual octave_value as_uint32 () const;
-  virtual octave_value as_uint64 () const;
+  virtual OCTINTERP_API octave_value as_uint8 () const;
+  virtual OCTINTERP_API octave_value as_uint16 () const;
+  virtual OCTINTERP_API octave_value as_uint32 () const;
+  virtual OCTINTERP_API octave_value as_uint64 () const;
 
   virtual octave_base_value * try_narrowing_conversion ()
   { return nullptr; }
 
   virtual void maybe_economize () { }
 
-  virtual Matrix size ();
+  virtual OCTINTERP_API Matrix size ();
 
-  virtual octave_idx_type xnumel (const octave_value_list&);
+  virtual OCTINTERP_API octave_idx_type xnumel (const octave_value_list&);
 
   // FIXME: Do we really need all three of these versions of subsref?
 
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx);
 
-  virtual octave_value_list
+  virtual OCTINTERP_API octave_value_list
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,
            int nargout);
 
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
   subsref (const std::string& type,
            const std::list<octave_value_list>& idx,
            bool auto_add);
 
-  virtual octave_value_list
+  virtual OCTINTERP_API octave_value_list
   simple_subsref (char type, octave_value_list& idx, int nargout);
 
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
   do_index_op (const octave_value_list& idx, bool resize_ok = false);
 
   virtual void assign (const std::string&, const octave_value&) { }
 
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
   subsasgn (const std::string& type,
             const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
   simple_subsasgn (char type, octave_value_list& idx,
                    const octave_value& rhs);
 
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
   undef_subsasgn (const std::string& type,
                   const std::list<octave_value_list>& idx,
                   const octave_value& rhs);
 
-  virtual octave::idx_vector index_vector (bool require_integers = false) const;
+  virtual OCTINTERP_API octave::idx_vector
+  index_vector (bool require_integers = false) const;
 
   virtual dim_vector dims () const { return dim_vector (); }
 
@@ -390,21 +392,23 @@ public:
 
   virtual std::size_t byte_size () const { return 0; }
 
-  virtual octave_idx_type nnz () const;
+  virtual OCTINTERP_API octave_idx_type nnz () const;
 
-  virtual octave_idx_type nzmax () const;
+  virtual OCTINTERP_API octave_idx_type nzmax () const;
 
-  virtual octave_idx_type nfields () const;
+  virtual OCTINTERP_API octave_idx_type nfields () const;
 
-  virtual octave_value reshape (const dim_vector&) const;
+  virtual OCTINTERP_API octave_value reshape (const dim_vector&) const;
 
-  virtual octave_value permute (const Array<int>& vec, bool = false) const;
+  virtual OCTINTERP_API octave_value
+  permute (const Array<int>& vec, bool = false) const;
 
-  virtual octave_value resize (const dim_vector&, bool fill = false) const;
+  virtual OCTINTERP_API octave_value
+  resize (const dim_vector&, bool fill = false) const;
 
-  virtual MatrixType matrix_type () const;
+  virtual OCTINTERP_API MatrixType matrix_type () const;
 
-  virtual MatrixType matrix_type (const MatrixType& typ) const;
+  virtual OCTINTERP_API MatrixType matrix_type (const MatrixType& typ) const;
 
   virtual bool is_defined () const { return false; }
 
@@ -464,9 +468,9 @@ public:
 
   virtual bool is_all_va_args () const { return false; }
 
-  virtual octave_value all (int = 0) const;
+  virtual OCTINTERP_API octave_value all (int = 0) const;
 
-  virtual octave_value any (int = 0) const;
+  virtual OCTINTERP_API octave_value any (int = 0) const;
 
   virtual builtin_type_t builtin_type () const { return btyp_unknown; }
 
@@ -555,27 +559,33 @@ public:
 
   virtual void erase_subfunctions () { }
 
-  virtual short int short_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API short int
+  short_value (bool = false, bool = false) const;
 
-  virtual unsigned short int ushort_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API unsigned short int
+  ushort_value (bool = false, bool = false) const;
 
-  virtual int int_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API int
+  int_value (bool = false, bool = false) const;
 
-  virtual unsigned int uint_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API unsigned int
+  uint_value (bool = false, bool = false) const;
 
-  virtual int nint_value (bool = false) const;
+  virtual OCTINTERP_API int nint_value (bool = false) const;
 
-  virtual long int long_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API long int
+  long_value (bool = false, bool = false) const;
 
-  virtual unsigned long int ulong_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API unsigned long int
+  ulong_value (bool = false, bool = false) const;
 
-  virtual int64_t int64_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API int64_t int64_value (bool = false, bool = false) const;
 
-  virtual uint64_t uint64_value (bool = false, bool = false) const;
+  virtual OCTINTERP_API uint64_t uint64_value (bool = false, bool = false) const;
 
-  virtual double double_value (bool = false) const;
+  virtual OCTINTERP_API double double_value (bool = false) const;
 
-  virtual float float_value (bool = false) const;
+  virtual OCTINTERP_API float float_value (bool = false) const;
 
   virtual double scalar_value (bool frc_str_conv = false) const
   { return double_value (frc_str_conv); }
@@ -583,110 +593,110 @@ public:
   virtual float float_scalar_value (bool frc_str_conv = false) const
   { return float_value (frc_str_conv); }
 
-  virtual Cell cell_value () const;
+  virtual OCTINTERP_API Cell cell_value () const;
 
-  virtual Matrix matrix_value (bool = false) const;
+  virtual OCTINTERP_API Matrix matrix_value (bool = false) const;
 
-  virtual FloatMatrix float_matrix_value (bool = false) const;
+  virtual OCTINTERP_API FloatMatrix float_matrix_value (bool = false) const;
 
-  virtual NDArray array_value (bool = false) const;
+  virtual OCTINTERP_API NDArray array_value (bool = false) const;
 
-  virtual FloatNDArray float_array_value (bool = false) const;
+  virtual OCTINTERP_API FloatNDArray float_array_value (bool = false) const;
 
-  virtual Complex complex_value (bool = false) const;
+  virtual OCTINTERP_API Complex complex_value (bool = false) const;
 
-  virtual FloatComplex float_complex_value (bool = false) const;
+  virtual OCTINTERP_API FloatComplex float_complex_value (bool = false) const;
 
-  virtual ComplexMatrix complex_matrix_value (bool = false) const;
+  virtual OCTINTERP_API ComplexMatrix complex_matrix_value (bool = false) const;
 
-  virtual FloatComplexMatrix float_complex_matrix_value (bool = false) const;
+  virtual OCTINTERP_API FloatComplexMatrix float_complex_matrix_value (bool = false) const;
 
-  virtual ComplexNDArray complex_array_value (bool = false) const;
+  virtual OCTINTERP_API ComplexNDArray complex_array_value (bool = false) const;
 
-  virtual FloatComplexNDArray float_complex_array_value (bool = false) const;
+  virtual OCTINTERP_API FloatComplexNDArray float_complex_array_value (bool = false) const;
 
-  virtual bool bool_value (bool = false) const;
+  virtual OCTINTERP_API bool bool_value (bool = false) const;
 
-  virtual boolMatrix bool_matrix_value (bool = false) const;
+  virtual OCTINTERP_API boolMatrix bool_matrix_value (bool = false) const;
 
-  virtual boolNDArray bool_array_value (bool = false) const;
+  virtual OCTINTERP_API boolNDArray bool_array_value (bool = false) const;
 
-  virtual charMatrix char_matrix_value (bool force = false) const;
+  virtual OCTINTERP_API charMatrix char_matrix_value (bool force = false) const;
 
-  virtual charNDArray char_array_value (bool = false) const;
+  virtual OCTINTERP_API charNDArray char_array_value (bool = false) const;
 
-  virtual SparseMatrix sparse_matrix_value (bool = false) const;
+  virtual OCTINTERP_API SparseMatrix sparse_matrix_value (bool = false) const;
 
-  virtual SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
+  virtual OCTINTERP_API SparseComplexMatrix sparse_complex_matrix_value (bool = false) const;
 
-  virtual SparseBoolMatrix sparse_bool_matrix_value (bool = false) const;
+  virtual OCTINTERP_API SparseBoolMatrix sparse_bool_matrix_value (bool = false) const;
 
-  virtual DiagMatrix diag_matrix_value (bool = false) const;
+  virtual OCTINTERP_API DiagMatrix diag_matrix_value (bool = false) const;
 
-  virtual FloatDiagMatrix float_diag_matrix_value (bool = false) const;
+  virtual OCTINTERP_API FloatDiagMatrix float_diag_matrix_value (bool = false) const;
 
-  virtual ComplexDiagMatrix complex_diag_matrix_value (bool = false) const;
+  virtual OCTINTERP_API ComplexDiagMatrix complex_diag_matrix_value (bool = false) const;
 
-  virtual FloatComplexDiagMatrix
+  virtual OCTINTERP_API FloatComplexDiagMatrix
   float_complex_diag_matrix_value (bool = false) const;
 
-  virtual PermMatrix perm_matrix_value () const;
+  virtual OCTINTERP_API PermMatrix perm_matrix_value () const;
 
-  virtual octave_int8 int8_scalar_value () const;
+  virtual OCTINTERP_API octave_int8 int8_scalar_value () const;
 
-  virtual octave_int16 int16_scalar_value () const;
+  virtual OCTINTERP_API octave_int16 int16_scalar_value () const;
 
-  virtual octave_int32 int32_scalar_value () const;
+  virtual OCTINTERP_API octave_int32 int32_scalar_value () const;
 
-  virtual octave_int64 int64_scalar_value () const;
+  virtual OCTINTERP_API octave_int64 int64_scalar_value () const;
 
-  virtual octave_uint8 uint8_scalar_value () const;
+  virtual OCTINTERP_API octave_uint8 uint8_scalar_value () const;
 
-  virtual octave_uint16 uint16_scalar_value () const;
+  virtual OCTINTERP_API octave_uint16 uint16_scalar_value () const;
 
-  virtual octave_uint32 uint32_scalar_value () const;
+  virtual OCTINTERP_API octave_uint32 uint32_scalar_value () const;
 
-  virtual octave_uint64 uint64_scalar_value () const;
+  virtual OCTINTERP_API octave_uint64 uint64_scalar_value () const;
 
-  virtual int8NDArray int8_array_value () const;
+  virtual OCTINTERP_API int8NDArray int8_array_value () const;
 
-  virtual int16NDArray int16_array_value () const;
+  virtual OCTINTERP_API int16NDArray int16_array_value () const;
 
-  virtual int32NDArray int32_array_value () const;
+  virtual OCTINTERP_API int32NDArray int32_array_value () const;
 
-  virtual int64NDArray int64_array_value () const;
+  virtual OCTINTERP_API int64NDArray int64_array_value () const;
 
-  virtual uint8NDArray uint8_array_value () const;
+  virtual OCTINTERP_API uint8NDArray uint8_array_value () const;
 
-  virtual uint16NDArray uint16_array_value () const;
+  virtual OCTINTERP_API uint16NDArray uint16_array_value () const;
 
-  virtual uint32NDArray uint32_array_value () const;
+  virtual OCTINTERP_API uint32NDArray uint32_array_value () const;
 
-  virtual uint64NDArray uint64_array_value () const;
+  virtual OCTINTERP_API uint64NDArray uint64_array_value () const;
 
-  virtual string_vector string_vector_value (bool pad = false) const;
+  virtual OCTINTERP_API string_vector string_vector_value (bool pad = false) const;
 
-  virtual std::string string_value (bool force = false) const;
+  virtual OCTINTERP_API std::string string_value (bool force = false) const;
 
-  virtual Array<std::string> cellstr_value () const;
+  virtual OCTINTERP_API Array<std::string> cellstr_value () const;
 
-  virtual octave::range<double> range_value () const;
+  virtual OCTINTERP_API octave::range<double> range_value () const;
 
   // For now, enable only range<double>.
 
-  virtual octave_map map_value () const;
+  virtual OCTINTERP_API octave_map map_value () const;
 
-  virtual octave_scalar_map scalar_map_value () const;
+  virtual OCTINTERP_API octave_scalar_map scalar_map_value () const;
 
-  virtual string_vector map_keys () const;
+  virtual OCTINTERP_API string_vector map_keys () const;
 
-  virtual bool isfield (const std::string&) const;
+  virtual OCTINTERP_API bool isfield (const std::string&) const;
 
-  virtual std::size_t nparents () const;
+  virtual OCTINTERP_API std::size_t nparents () const;
 
-  virtual std::list<std::string> parent_class_name_list () const;
+  virtual OCTINTERP_API std::list<std::string> parent_class_name_list () const;
 
-  virtual string_vector parent_class_names () const;
+  virtual OCTINTERP_API string_vector parent_class_names () const;
 
   virtual octave_base_value * find_parent_class (const std::string&)
   { return nullptr; }
@@ -697,72 +707,74 @@ public:
   virtual bool is_instance_of (const std::string&) const
   { return false; }
 
-  virtual octave_classdef * classdef_object_value (bool silent = false);
+  virtual OCTINTERP_API octave_classdef * classdef_object_value (bool silent = false);
 
-  virtual octave_function * function_value (bool silent = false);
+  virtual OCTINTERP_API octave_function * function_value (bool silent = false);
 
-  virtual octave_user_function * user_function_value (bool silent = false);
+  virtual OCTINTERP_API octave_user_function * user_function_value (bool silent = false);
 
-  virtual octave_user_script * user_script_value (bool silent = false);
+  virtual OCTINTERP_API octave_user_script * user_script_value (bool silent = false);
 
-  virtual octave_user_code * user_code_value (bool silent = false);
+  virtual OCTINTERP_API octave_user_code * user_code_value (bool silent = false);
 
-  virtual octave_fcn_handle * fcn_handle_value (bool silent = false);
+  virtual OCTINTERP_API octave_fcn_handle * fcn_handle_value (bool silent = false);
 
-  virtual octave_value_list list_value () const;
+  virtual OCTINTERP_API octave_value_list list_value () const;
 
-  virtual octave_value convert_to_str (bool pad = false, bool force = false,
-                                       char type = '\'') const;
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
+  convert_to_str (bool pad = false, bool force = false, char type = '\'') const;
+  virtual OCTINTERP_API octave_value
   convert_to_str_internal (bool pad, bool force, char type) const;
 
-  virtual void convert_to_row_or_column_vector ();
+  virtual OCTINTERP_API void convert_to_row_or_column_vector ();
 
   // The following extractor functions don't perform any implicit type
   // conversions.
 
-  virtual std::string xstring_value () const;
+  virtual OCTINTERP_API std::string xstring_value () const;
 
   virtual bool print_as_scalar () const { return false; }
 
-  virtual void print (std::ostream& os, bool pr_as_read_syntax = false);
+  virtual OCTINTERP_API void
+  print (std::ostream& os, bool pr_as_read_syntax = false);
 
-  virtual void
+  virtual OCTINTERP_API void
   print_raw (std::ostream& os, bool pr_as_read_syntax = false) const;
 
-  virtual bool
+  virtual OCTINTERP_API bool
   print_name_tag (std::ostream& os, const std::string& name) const;
 
-  virtual void
+  virtual OCTINTERP_API void
   print_with_name (std::ostream& output_buf, const std::string& name,
                    bool print_padding = true);
 
   virtual void short_disp (std::ostream& os) const { os << "..."; }
 
-  virtual float_display_format get_edit_display_format () const;
+  virtual OCTINTERP_API float_display_format get_edit_display_format () const;
 
   virtual std::string edit_display (const float_display_format&,
                                     octave_idx_type, octave_idx_type) const
   { return "#VAL"; }
 
-  virtual void print_info (std::ostream& os, const std::string& prefix) const;
+  virtual OCTINTERP_API void
+  print_info (std::ostream& os, const std::string& prefix) const;
 
-  virtual bool save_ascii (std::ostream& os);
+  virtual OCTINTERP_API bool save_ascii (std::ostream& os);
 
-  virtual bool load_ascii (std::istream& is);
+  virtual OCTINTERP_API bool load_ascii (std::istream& is);
 
-  virtual bool save_binary (std::ostream& os, bool save_as_floats);
+  virtual OCTINTERP_API bool save_binary (std::ostream& os, bool save_as_floats);
 
-  virtual bool load_binary (std::istream& is, bool swap,
-                            octave::mach_info::float_format fmt);
+  virtual OCTINTERP_API bool
+  load_binary (std::istream& is, bool swap, octave::mach_info::float_format fmt);
 
-  virtual bool
+  virtual OCTINTERP_API bool
   save_hdf5 (octave_hdf5_id loc_id, const char *name, bool save_as_floats);
 
-  virtual bool
+  virtual OCTINTERP_API bool
   load_hdf5 (octave_hdf5_id loc_id, const char *name);
 
-  virtual int
+  virtual OCTINTERP_API int
   write (octave::stream& os, int block_size,
          oct_data_conv::data_type output_type, int skip,
          octave::mach_info::float_format flt_fmt) const;
@@ -773,28 +785,29 @@ public:
 
   virtual const octave_idx_type * mex_get_jc () const { return nullptr; }
 
-  virtual mxArray * as_mxArray (bool interleaved) const;
+  virtual OCTINTERP_API mxArray * as_mxArray (bool interleaved) const;
 
-  virtual octave_value diag (octave_idx_type k = 0) const;
+  virtual OCTINTERP_API octave_value diag (octave_idx_type k = 0) const;
 
-  virtual octave_value diag (octave_idx_type m, octave_idx_type n) const;
+  virtual OCTINTERP_API octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
-  virtual octave_value sort (octave_idx_type dim = 0,
-                             sortmode mode = ASCENDING) const;
-  virtual octave_value sort (Array<octave_idx_type>& sidx,
-                             octave_idx_type dim = 0,
-                             sortmode mode = ASCENDING) const;
+  virtual OCTINTERP_API octave_value
+  sort (octave_idx_type dim = 0, sortmode mode = ASCENDING) const;
 
-  virtual sortmode issorted (sortmode mode = UNSORTED) const;
+  virtual OCTINTERP_API octave_value
+  sort (Array<octave_idx_type>& sidx, octave_idx_type dim = 0,
+        sortmode mode = ASCENDING) const;
 
-  virtual Array<octave_idx_type>
+  virtual OCTINTERP_API sortmode issorted (sortmode mode = UNSORTED) const;
+
+  virtual OCTINTERP_API Array<octave_idx_type>
   sort_rows_idx (sortmode mode = ASCENDING) const;
 
-  virtual sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
+  virtual OCTINTERP_API sortmode is_sorted_rows (sortmode mode = UNSORTED) const;
 
-  virtual void lock ();
+  virtual OCTINTERP_API void lock ();
 
-  virtual void unlock ();
+  virtual OCTINTERP_API void unlock ();
 
   virtual bool islocked () const { return false; }
 
@@ -802,11 +815,11 @@ public:
 
   virtual void maybe_call_dtor () { }
 
-  virtual octave_value dump () const;
+  virtual OCTINTERP_API octave_value dump () const;
 
-  virtual octave_value storable_value ();
+  virtual OCTINTERP_API octave_value storable_value ();
 
-  virtual octave_base_value * make_storable_value ();
+  virtual OCTINTERP_API octave_base_value * make_storable_value ();
 
   // Standard mappers.  Register new ones here.
   enum unary_mapper_t
@@ -875,26 +888,26 @@ public:
     num_unary_mappers = umap_unknown
   };
 
-  virtual octave_value map (unary_mapper_t) const;
+  virtual OCTINTERP_API octave_value map (unary_mapper_t) const;
 
   // These are fast indexing & assignment shortcuts for extracting
   // or inserting a single scalar from/to an array.
 
   // Extract the n-th element, aka val(n).  Result is undefined if val is not
   // an array type or n is out of range.  Never error.
-  virtual octave_value
+  virtual OCTINTERP_API octave_value
   fast_elem_extract (octave_idx_type n) const;
 
   // Assign the n-th element, aka val(n) = x.  Returns false if val is not an
   // array type, x is not a matching scalar type, or n is out of range.
   // Never error.
-  virtual bool
+  virtual OCTINTERP_API bool
   fast_elem_insert (octave_idx_type n, const octave_value& x);
 
   // This is a helper for the above, to be overridden in scalar types.  The
   // whole point is to handle the insertion efficiently with just *two* VM
   // calls, which is basically the theoretical minimum.
-  virtual bool
+  virtual OCTINTERP_API bool
   fast_elem_insert_self (void *where, builtin_type_t btyp) const;
 
 protected:
@@ -952,7 +965,7 @@ private:
   DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA
 };
 
-class OCTINTERP_API octave_base_dld_value : public octave_base_value
+class OCTINTERP_TEMPLATE_API octave_base_dld_value : public octave_base_value
 {
 public:
 

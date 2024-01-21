@@ -48,6 +48,8 @@ class octave_value_list;
 
 // Real scalar values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<double>;
+
 class OCTINTERP_API octave_scalar : public octave_base_scalar<double>
 {
 public:

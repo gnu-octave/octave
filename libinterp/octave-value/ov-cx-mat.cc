@@ -50,8 +50,6 @@
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
-#include "ov-base-mat.h"
-#include "ov-base-mat.cc"
 #include "ov-complex.h"
 #include "ov-cx-mat.h"
 #include "ov-flt-cx-mat.h"
@@ -64,8 +62,6 @@
 #include "ls-hdf5.h"
 #include "ls-utils.h"
 
-
-template class octave_base_matrix<ComplexNDArray>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_complex_matrix,
                                      "complex matrix", "double");

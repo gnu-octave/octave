@@ -47,6 +47,8 @@ class octave_value_list;
 
 // Complex scalar values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<Complex>;
+
 class OCTINTERP_API octave_complex : public octave_base_scalar<Complex>
 {
 public:

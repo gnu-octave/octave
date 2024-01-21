@@ -46,6 +46,8 @@ class octave_value_list;
 
 // Cells.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<Cell>;
+
 class octave_cell : public octave_base_matrix<Cell>
 {
 public:

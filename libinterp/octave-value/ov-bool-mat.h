@@ -48,6 +48,8 @@ class octave_value_list;
 
 // Character matrix values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<boolNDArray>;
+
 class octave_bool_matrix : public octave_base_matrix<boolNDArray>
 {
 public:

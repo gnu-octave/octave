@@ -336,7 +336,7 @@ of a matrix, two arguments of type @code{octave_idx_type} defining the number
 of rows and columns in the matrix.
 @end deftypefn
 
-@deftypefn {Method} {T*} fortran_vec ()
+@deftypefn {Method} {T *} fortran_vec ()
 This method returns a pointer to the underlying data of the matrix or array so
 that it can be manipulated directly, either within Octave or by an external
 library.
@@ -989,10 +989,93 @@ extern "C"
 @end group
 @end example
 
-Calling Fortran code, however, can pose more difficulties.  This is due to
-differences in the manner in which compilers treat the linking of Fortran code
-with C or C++ code.  Octave supplies several macros that allow consistent
-behavior across a number of compilers.
+When calling functions that are implemented in Fortran code, some pecularities
+have to be taken into account.  Symbol names in Fortran are case-insensitive,
+and depending on the used Fortran compiler, function names are either exported
+with all lower-case or with all upper-case characters.  Additionally, some
+compilers append none, one or two underscores "@code{_}" at the end of
+exported function names.  This is called "name-mangling".
+
+Octave supplies macros that allow writing code that automatically handles the
+name-mangling for a number of different Fortran compilers.  These macros are
+@code{F77_FUNC} and @code{F77_FUNC_}.  The former should be used for Fortran
+functions that do not contain any underscores in their name.  The latter should
+be used for Fortran functions with underscores in their names.  Both macros
+take two arguments: The first is the Fortran function name in all lower-case
+characters.  The second is the same Fortran function name in all upper-case
+characters.
+
+Additionally to the name-mangling, different compilers are using different
+calling conventions for some types.  Octave defines the following preprocessor
+macros to allow writing code that can be used with different Fortran calling
+conventions.
+
+Note that we don't attempt to handle Fortran functions, we always use 
+subroutine wrappers for them and pass the return value as an extra argument.
+
+Use the following macros to pass character strings from C to Fortran:
+
+@example
+@group
+  F77_CHAR_ARG(x)
+  F77_CONST_CHAR_ARG(x)
+  F77_CXX_STRING_ARG(x)
+  F77_CHAR_ARG_LEN(l)
+  F77_CHAR_ARG_DECL
+  F77_CONST_CHAR_ARG_DECL
+  F77_CHAR_ARG_LEN_DECL
+@end group
+@end example
+
+Use the following macros to write C-language functions that accept
+Fortran-style character strings:
+
+@example
+@group
+  F77_CHAR_ARG_DEF(s, len)
+  F77_CONST_CHAR_ARG_DEF(s, len)
+  F77_CHAR_ARG_LEN_DEF(len)
+  F77_CHAR_ARG_USE(s)
+  F77_CHAR_ARG_LEN_USE(s, len)
+@end group
+@end example
+
+Use the following macros for Fortran types in C++ code:
+
+@table @code
+@item F77_INT4
+Equivalent to Fortran @code{INTEGER*4} type
+
+@item F77_DBLE
+Equivalent to Fortran @code{DOUBLE PRECISION} type
+
+@item F77_REAL
+Equivalent to Fortran @code{REAL} type
+
+@item F77_CMPLX
+Equivalent to Fortran @code{COMPLEX} type
+
+@item F77_DBLE_CMPLX
+Equivalent to Fortran @code{DOUBLE COMPLEX} type
+
+@item F77_LOGICAL
+Equivalent to Fortran @code{LOGICAL} type
+
+@item F77_RET_T
+Return type of a C++ function that acts like a Fortran subroutine.
+@end table
+
+Use the following macros to return from C-language functions that are supposed
+to act like Fortran subroutines.  @code{F77_NORETURN} is intended to be used as
+the last statement of such a function that has been tagged with a
+@qcode{"noreturn"} attribute.
+
+@example
+@group
+  F77_RETURN(retval)
+  F77_NORETURN(retval)
+@end group
+@end example
 
 The underlying Fortran code should use the @code{XSTOPX} function to replace
 the Fortran @code{STOP} function.  @code{XSTOPX} uses the Octave exception
@@ -1000,20 +1083,8 @@ handler to treat failing cases in the Fortran code explicitly.  Note that
 Octave supplies its own replacement @sc{blas} @code{XERBLA} function, which
 uses @code{XSTOPX}.
 
-If the code calls @code{XSTOPX}, then the @w{@code{F77_XFCN}} macro should be
-used to call the underlying Fortran function.  The Fortran exception state can
-then be checked with the global variable @code{f77_exception_encountered}.  If
-@code{XSTOPX} will not be called, then the @w{@code{F77_FCN}} macro should be
-used instead to call the Fortran code.
-
-There is no great harm in using @w{@code{F77_XFCN}} in all cases, except that
-for Fortran code that is short running and executes a large number of times,
-there is potentially an overhead in doing so.  However, if @w{@code{F77_FCN}}
-is used with code that calls @code{XSTOP}, Octave can generate a segmentation
-fault.
-
-An example of the inclusion of a Fortran function in an oct-file is given in
-the following example, where the C++ wrapper is
+The following example shows the inclusion of a Fortran function in an oct-file,
+where the C++ wrapper is
 
 @example
 @EXAMPLEFILE(fortrandemo.cc)

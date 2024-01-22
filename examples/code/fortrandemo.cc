@@ -20,8 +20,8 @@ DEFUN_DLD (fortrandemo, args, , "Fortran Demo")
 
   OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
-  F77_XFCN (fortransub, FORTRANSUB,
-            (na, av, ctmp F77_CHAR_ARG_LEN (128)));
+  F77_FUNC (fortransub, FORTRANSUB)
+            (na, av, ctmp F77_CHAR_ARG_LEN (128));
 
   return ovl (a, std::string (ctmp));
 }

@@ -165,6 +165,10 @@ public:
 
   virtual void compile () { }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+  virtual std::shared_ptr<octave::stack_frame> get_closure_frame () { return nullptr; }
+#endif
+
 protected:
 
   void warn_load (const char *file_type) const;
@@ -387,6 +391,8 @@ public:
 
   vm_call_dispatch_type vm_dispatch_call ()
   {
+    if (m_rep->is_nested () || m_rep->is_anonymous ())
+      return vm_call_dispatch_type::OCT_NESTED_HANDLE;
     if (m_rep->has_function_cache ())
       return vm_call_dispatch_type::OCT_CALL;
 
@@ -394,6 +400,9 @@ public:
   }
 
   void compile () { m_rep->compile (); }
+
+  std::shared_ptr<octave::stack_frame>
+  get_closure_frame () { return m_rep->get_closure_frame (); }
 
 #endif
 

@@ -1570,7 +1570,8 @@ ret:
     // If the pointer is not shared, stash it in a cache which is used
     // to avoid having to allocate shared pointers each frame push.
     // If it is a closure context, there might be weak pointers to it from function handles.
-    if (fp.unique () && m_frame_ptr_cache.size () < 8 && !fp->is_closure_context ())
+    if (fp.unique () && m_frame_ptr_cache.size () < 8 && ! fp->is_closure_context () 
+        && fp->is_user_fcn_frame ())
       {
         fp->vm_clear_for_cache ();
         m_frame_ptr_cache.push_back (std::move (fp));
@@ -2628,6 +2629,15 @@ index_math_ufun_id1_dispatch: // Escape dispatch for index_math_ufun_id1 special
               }
           }
         break;
+
+        case octave_base_value::vm_call_dispatch_type::OCT_NESTED_HANDLE:
+          {
+            (*sp++).i = n_args_on_stack;
+            (*sp++).i = nargout;
+            (*sp++).i = nargout; // "caller_nvalback". Caller wants as many values returned as it wants the callee to produce
+            (*sp++).i = slot;
+            goto make_nested_handle_call;
+          }
       }
   }
   DISPATCH ();
@@ -4288,6 +4298,7 @@ wordcmd:
           break;
 
         case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
+        case octave_base_value::vm_call_dispatch_type::OCT_NESTED_HANDLE:
           PANIC ("Invalid dispatch");
       }
   }
@@ -4713,6 +4724,16 @@ index_cell_id0:
 
               }
           }
+          break;
+
+        case octave_base_value::vm_call_dispatch_type::OCT_NESTED_HANDLE:
+          {
+            (*sp++).i = n_args_on_stack;
+            (*sp++).i = nargout;
+            (*sp++).i = nargout; // "caller_nvalback". Caller wants as many values returned as it wants the callee to produce
+            (*sp++).i = slot;
+            goto make_nested_handle_call;
+          }
       }
   }
   DISPATCH ();
@@ -4894,6 +4915,243 @@ m_output_ignore_data->push_frame (*this);
   }
   DISPATCH ();
 
+// Not an opcode. Some opcodes jump here to handle nested handle function calls
+make_nested_handle_call:
+{
+  // Restore values from the stack
+  int slot = (*--sp).i;
+  int caller_nvalback = (*--sp).i;
+  int nargout = (*--sp).i;
+  int n_args_on_stack = (*--sp).i;
+
+  octave_value &ov = (sp[-1 - n_args_on_stack]).ov;
+
+  octave_function *fcn;
+  try
+    {
+      stack_element *first_arg = &sp[-n_args_on_stack];
+      stack_element *end_arg = &sp[0];
+      fcn = ov.get_cached_fcn (first_arg, end_arg);
+    }
+  CATCH_EXECUTION_EXCEPTION
+
+  if (! fcn)
+    {
+      (*sp++).ps = new std::string {name_data[slot]};
+      (*sp++).i = static_cast<int> (error_type::ID_UNDEFINED);
+      goto unwind;
+    }
+
+  if (fcn->is_compiled ())
+    {
+      octave_user_code *usr_fcn = static_cast<octave_user_code *> (fcn);
+
+      // The code bellow is like MAKE_BYTECODE_CALL, but with support for setting an access frame from the handle
+      if (sp + stack_min_for_new_call >= m_stack + stack_size)
+        {
+          (*sp++).pee = new execution_exception {"error","","VM is running out of stack space"};
+          (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+          goto unwind;
+        }
+      /* We are now going to call another function */
+      /* compiled to bytecode */
+
+      m_tw->set_active_bytecode_ip (ip - code);
+      stack_element *first_arg = sp - n_args_on_stack;
+
+      /* Push address to first arg (or would one would have been */
+      /* if there are no args), so we can restore the sp at return */
+      (*sp++).pse = first_arg;
+
+      /* Push unwind data */
+      (*sp++).pud = unwind_data;
+
+      /* Push code */
+      (*sp++).puc = code;
+
+      /* Push data */
+      (*sp++).pov = data;
+
+      /* Push id names */
+      (*sp++).ps = name_data;
+
+      /* Push bsp */
+      (*sp++).pse = bsp;
+
+      /* Push the instruction pointer */
+      (*sp++).puc = ip;
+
+      /* The amount of return values the caller actually wants. Not necesserely the */
+      /* same as the amount of return values the caller wants the callee to produce. */
+      /* (last on caller stack) */
+      (*sp++).u = caller_nvalback;
+
+      /* set callee bsp */
+      m_sp = bsp = sp;
+
+      /* Push nargout (first on callee stack) */
+      (*sp++).u = nargout;
+
+      /* Set the new data, code etc */
+      bytecode &bc = usr_fcn->get_bytecode ();
+      if (OCTAVE_UNLIKELY (m_profiler_enabled))
+        {
+          auto p = vm::m_vm_profiler;
+          if (p)
+            {
+              std::string caller_name = data[2].string_value (); /* profiler_name () querried at compile time */
+              p->enter_fn (caller_name, bc);
+            }
+        }
+      m_data = data = bc.m_data.data ();
+      m_code = code = bc.m_code.data ();
+      m_name_data = name_data = bc.m_ids.data ();
+      m_unwind_data = unwind_data = &bc.m_unwind_data;
+
+
+      /* Set the ip to 0 */
+      ip = code;
+      int n_returns_callee = static_cast<signed char> (*ip++); /* Negative for varargout */
+      if (OCTAVE_UNLIKELY (n_returns_callee < 0))
+        {
+          if (n_returns_callee == -128) /* Anonymous function */
+            n_returns_callee = 1;
+          else
+            n_returns_callee = -n_returns_callee;
+        }
+      int n_args_callee = static_cast<signed char> (*ip++); /* Negative for varargin */
+      int n_locals_callee = POP_CODE_USHORT ();
+
+      if (n_args_callee < 0)
+      {
+        sp[0].pv = static_cast<void*> (usr_fcn);
+        goto varargin_call;
+      }
+
+      /* Construct return values - note nargout */
+      /* is allready pushed as a uint64 */
+      for (int ii = 1; ii < n_returns_callee; ii++)
+        PUSH_OV ();
+
+      int n_args_on_callee_stack = 0;
+      bool all_too_many_args = false;
+      /* Move the args to the new stack */
+      for (int ii = 0; ii < n_args_on_stack; ii++)
+        {
+          octave_value &arg = first_arg[ii].ov;
+
+          if (arg.is_cs_list ())
+            {
+              octave_value_list args = arg.list_value ();
+              octave_idx_type n_el = args.length ();
+              if (n_el + n_args_on_callee_stack > 512)
+                {
+                  all_too_many_args = true;
+                }
+              else
+                {
+                  for (int j = 0; j < n_el; j++)
+                    {
+                      PUSH_OV (args (j));
+                      n_args_on_callee_stack++;
+                    }
+                }
+            }
+          else
+            {
+              PUSH_OV (std::move (arg));
+              n_args_on_callee_stack++;
+            }
+          /* Destroy the args */
+          arg.~octave_value ();
+        }
+      /* Construct missing args */
+      for (int ii = n_args_on_callee_stack; ii < n_args_callee; ii++)
+        PUSH_OV ();
+
+      /* Construct locals */
+      int n_locals_to_ctor =
+        n_locals_callee - n_args_callee - n_returns_callee;
+      for (int ii = 0; ii < n_locals_to_ctor; ii++)
+        PUSH_OV ();
+
+      try
+        {
+          octave_fcn_handle *h = ov.fcn_handle_value();
+          CHECK_PANIC (h);
+          CHECK_PANIC (h->is_nested () || h->is_anonymous ());
+          auto closure_frame = h->get_closure_frame ();
+
+          m_tw->push_stack_frame(*this, usr_fcn, nargout, n_args_on_callee_stack, closure_frame);
+        }
+      CATCH_STACKPUSH_EXECUTION_EXCEPTION /* Sets m_could_not_push_frame to true */
+      CATCH_STACKPUSH_BAD_ALLOC
+
+      if (OCTAVE_UNLIKELY (m_output_ignore_data))
+        {
+          /* Called fn needs to know about ignored outputs .e.g. [~, a] = foo() */
+          m_output_ignore_data->push_frame (*this);
+        }
+
+      /* "auto var" in the frame object. This is needed if nargout() etc are called */
+      set_nargout (nargout);
+
+      if (all_too_many_args)
+        {
+          std::string fn_name = unwind_data->m_name;
+          (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call",
+                                                fn_name + ": function called with over 512 inputs."
+                                                " Consider using varargin."};
+          (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+          goto unwind;
+        }
+      if (n_args_on_callee_stack > n_args_callee)
+        {
+          std::string fn_name = unwind_data->m_name;
+          (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call",
+                                                fn_name + ": function called with too many inputs"};
+          (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+          goto unwind;
+        }
+      /* N_RETURNS is negative for varargout */
+      int n_returns = N_RETURNS () - 1; /* %nargout in N_RETURNS */
+      if (n_returns >= 0 && nargout > n_returns)
+        {
+          std::string fn_name = unwind_data->m_name;
+          (*sp++).pee = new execution_exception {"error", "Octave:invalid-fun-call",
+                                                fn_name + ": function called with too many outputs"};
+          (*sp++).i = static_cast<int> (error_type::EXECUTION_EXC);
+          goto unwind;
+        }
+
+      // Now dispatch to first instruction in the
+      // called function
+    }
+  else
+    {
+      // Make an ovl with the args
+      octave_value_list ovl;
+      // The operands are on the top of the stack
+      POP_STACK_RANGE_TO_OVL (ovl, sp - n_args_on_stack, sp);
+
+      try
+        {
+          m_tw->set_active_bytecode_ip (ip - code);
+          octave_value_list ret = ov.simple_subsref ('(', ovl, nargout);
+          ovl.clear ();
+
+          STACK_DESTROY (1);
+          EXPAND_CSLIST_PUSH_N_OVL_ELEMENTS_TO_STACK (ret, nargout);
+        }
+      CATCH_INTERRUPT_EXCEPTION
+      CATCH_INDEX_EXCEPTION_WITH_MAYBE_NAME(slot != 0)
+      CATCH_EXECUTION_EXCEPTION
+      CATCH_BAD_ALLOC
+      CATCH_EXIT_EXCEPTION
+    }
+}
+DISPATCH ();
+
 unwind:
   {
     ip--; // Rewind ip to after the opcode (i.e. arg0's position in the code)
@@ -5000,7 +5258,8 @@ unwind:
         if (!m_could_not_push_frame)
           {
             auto sf = m_tw->get_current_stack_frame ();
-            sf->vm_exit_script (); // Just returns for non-scripts
+            if (sf->is_user_script_frame ())
+              sf->vm_exit_script ();
             sf->vm_unwinds ();
           }
 
@@ -5765,6 +6024,8 @@ index_obj:
 
     switch (ov.vm_dispatch_call ())
       {
+        case octave_base_value::vm_call_dispatch_type::OCT_NESTED_HANDLE:
+          PANIC ("Invalid dispatch");
         case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
           {
             // TODO: subsref should take ovl instead and be chained,
@@ -6755,6 +7016,24 @@ debug: // TODO: Remove
           {
             switch (ov.vm_dispatch_call ())
               {
+                case octave_base_value::vm_call_dispatch_type::OCT_NESTED_HANDLE:
+                  {
+                    // The last iteration the caller wants as many returned on the stack
+                    // as it wants the callee to produce.
+                    // In any other iteration the caller wants one value returned, but still
+                    // wants the callee to produce nargout number of return values.
+                    int caller_nvalback;
+                    if (i + 1 != n)
+                      caller_nvalback = 1;
+                    else
+                      caller_nvalback = nargout;
+                    
+                    (*sp++).i = n_args_on_stack;
+                    (*sp++).i = nargout;
+                    (*sp++).i = caller_nvalback;
+                    (*sp++).i = 0;
+                    goto make_nested_handle_call;
+                  }
                 case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
                   {
                     (*sp++).pee = new execution_exception {"error", "", "invalid undefined value in chained index expression"}; // TODO: Uninformative?
@@ -6958,8 +7237,9 @@ debug: // TODO: Remove
 
                 switch (ov.vm_dispatch_call ())
                   {
+                    case octave_base_value::vm_call_dispatch_type::OCT_NESTED_HANDLE:
                     case octave_base_value::vm_call_dispatch_type::OCT_FN_LOOKUP:
-                      panic_impossible ();
+                      PANIC ("Invalid dispatch");
                       break;
                     case octave_base_value::vm_call_dispatch_type::OCT_SUBSREF:
                       {
@@ -8254,7 +8534,10 @@ vm::maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map
       try
         {
           if (fn->is_anonymous_function ())
-            octave::compile_anon_user_function (*fn, false, *locals);
+            {
+              CHECK_PANIC (locals);
+              octave::compile_anon_user_function (*fn, false, *locals);
+            }
           else
             octave::compile_user_function (*fn, false);
 

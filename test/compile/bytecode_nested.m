@@ -363,6 +363,20 @@ function bytecode_nested ()
   nested_18 ();    % Call normally. Caused problem since "is_closure_frame ()" was used improperly.
   subby2 (); % The slot value for subby2 was cloned and caused an internal error "ov.is_nil()" check to trigger
   call_handle0 (h5); % Test calling from another frame too.
+
+  a = length ([1 2]);
+
+  ## Test calling through C++ code
+  function b = nested19 (c)
+    b = length (c);
+  end
+
+  c = {1, 2};
+  d = cellfun (@(x) nested19 (x), c);
+  d = cellfun (@nested19, c);
+
+  ## misc test
+  misc_nested;
 end
 
 function subby
@@ -422,3 +436,66 @@ function retval = sub_nestandanon(x)
 
   retval(2) = f2(x);
 endfunction
+
+function misc_nested ()
+  ## The behaviour here is kinda strange, but the bytecode interpreter
+  ## need to do what the tree_evaluator does.
+
+  function nested1 ()
+    global a
+    global b
+    global c
+  
+    b = 1;
+    c = 2;
+  
+    function nested2 ()
+      assert (! isglobal ("a"))
+      assert (isglobal ("b"))
+      assert (b == 1)
+      assert (! isglobal ("c"))
+
+      b = 3;
+      bb = 3;
+
+      clear global a
+      clear global b
+      clear global c
+
+      clear global aa
+      clear global bb
+      clear global cc
+
+      assert (! isglobal ("a"))
+      assert (isglobal ("b")) % Yupp, should still be global
+      assert (! isglobal ("c"))
+
+      assert (! exist ("a"))
+      assert (! exist ("b"))
+      assert (! exist ("c"))
+
+      assert (! exist ("aa"))
+      assert (! exist ("bb"))
+      assert (! exist ("cc"))
+    end
+
+    nested2 ();
+
+    assert (! isglobal ("a"))
+    assert (  isglobal ("b")) % Yupp, should still be global
+    assert (! isglobal ("c"))
+
+    assert (! exist ("a"))
+    assert (! exist ("b"))
+    assert (! exist ("c"))
+
+    clear global a
+    clear global b
+    clear global c
+    assert (! isglobal ("a"))
+    assert (! isglobal ("b"))
+    assert (! isglobal ("c"))
+  end
+
+  nested1
+end

@@ -135,34 +135,34 @@ octave_value_ref_persistent::ref ()
 octave_value &
 octave_value_ref_vmlocal::ref ()
 {
-  return m_frame->varref (m_sym);
+  return m_frame->varref (m_sym.data_offset ());
 }
 
 octave_value
 octave_value_ref_vmlocal::deref ()
 {
-  return m_frame->varval (m_sym);
+  return m_frame->varval (m_sym.data_offset ());
 }
 
 void
 octave_value_ref_vmlocal::set_value (octave_value val)
 {
-  m_frame->varref (m_sym) = val;
+  m_frame->varref (m_sym.data_offset ()) = val;
 }
 
 octave::stack_frame::scope_flags
 octave_value_ref_vmlocal::get_scope_flag ()
 {
-  return m_frame->scope_flag (m_sym);
+  return m_frame->get_scope_flag (m_sym.data_offset ());
 }
 
 void
 octave_value_ref_vmlocal::mark_globalness_in_owning_frame (bool should_be_global)
 {
   if (should_be_global)
-    m_frame->mark_global (m_sym);
+    m_frame->set_scope_flag (m_sym.data_offset (), octave::stack_frame::scope_flags::GLOBAL);
   else
-    m_frame->unmark_global (m_sym);
+    m_frame->set_scope_flag (m_sym.data_offset (), octave::stack_frame::scope_flags::LOCAL);
 }
 
 octave_value &

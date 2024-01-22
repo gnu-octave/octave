@@ -75,6 +75,14 @@ void octave::compile_anon_user_function (octave_user_code &ufn, bool do_print, s
       bw.m_anon_local_values = &locals;
       bw.m_is_anon = true; // Flag used during compilation
 
+      // We need to insert all the locals into the scope object. The tree_evaluator
+      // does this as part of pushing the frame object, but just do it here once instead.
+      auto scope = ufn.scope ();
+      for (auto it : locals)
+        {
+          scope.insert (it.first);
+        }
+
       ufn.accept (bw);
 
       if (do_print)
@@ -2871,28 +2879,26 @@ visit_octave_user_function (octave_user_function& fcn)
       // of frame offset by checking the size is one.
       CHECK (m_code.m_unwind_data.m_external_frame_offset_to_internal.size () == 1);
 
+      auto scope = fcn.scope ();
+
       for (auto kv : *m_anon_local_values)
         {
           std::string name = kv.first;
 
-          // Nested anonymous functions leads to local variables that need to be stored
-          // in all outer anonymous function scopes. I.e. the local is in m_anon_local_values
-          // but not in m_map_locals_to_slot.
-          //
-          // These variables are given "fake" frame offset and data offset so they are accessable.
-          // They are fake in as much, that the scope object does not have the offsets registered
-          // and they are only lookup-able by name. But the resulting symbol_record (with the fake offsets)
-          // is usable. E.g. tree_evaluator::evaluate_anon_fcn_handle() needs this.
+          // Add slots for the locals provided by the scope of the anonymous function
           if (m_map_locals_to_slot.find (name) == m_map_locals_to_slot.end ())
             {
               int slot_added = add_id_to_table (name);
 
-              // Fake frame offset of one
-              m_code.m_unwind_data.m_external_frame_offset_to_internal.resize (2);
-              // Increasing number for fake external offset
-              int fake_external_offset = m_code.m_unwind_data.m_external_frame_offset_to_internal[1].size ();
-              m_code.m_unwind_data.m_external_frame_offset_to_internal[1][fake_external_offset] = slot_added;
+              auto sym = scope.find_symbol (name);
 
+              CHECK_PANIC (sym.is_valid ());
+              CHECK_PANIC (sym.frame_offset () == 0);
+
+              // Increasing number for fake external offset
+              int external_offset = sym.data_offset ();
+
+              m_code.m_unwind_data.m_external_frame_offset_to_internal[0][external_offset] = slot_added;
               m_code.m_unwind_data.m_map_user_locals_names_to_slot.insert ({name, slot_added});
             }
 

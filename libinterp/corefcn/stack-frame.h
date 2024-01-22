@@ -199,23 +199,34 @@ public:
                    int nargout, int nargin);
 
   static std::shared_ptr<stack_frame>
-  create_bytecode (tree_evaluator& tw,
-                   octave_user_code *fcn,
-                   vm &vm,
-                   std::size_t index,
-                   const std::shared_ptr<stack_frame>& parent_link,
-                   const std::shared_ptr<stack_frame>& static_link,
-                   const std::shared_ptr<stack_frame>& access_link,
-                   int nargout, int nargin);
+  create_bytecode_nested (tree_evaluator& tw,
+                          octave_user_code *fcn,
+                          vm &vm,
+                          std::size_t index,
+                          const std::shared_ptr<stack_frame>& parent_link,
+                          const std::shared_ptr<stack_frame>& static_link,
+                          const std::shared_ptr<stack_frame>& access_link,
+                          int nargout, int nargin);
 
   static std::shared_ptr<stack_frame>
-  create_bytecode (tree_evaluator& tw,
-                   octave_user_script *fcn,
-                   vm &vm,
-                   std::size_t index,
-                   const std::shared_ptr<stack_frame>& parent_link,
-                   const std::shared_ptr<stack_frame>& static_link,
-                   int nargout, int nargin);
+  create_bytecode_anon (tree_evaluator& tw,
+                        octave_user_code *fcn,
+                        vm &vm,
+                        std::size_t index,
+                        const std::shared_ptr<stack_frame>& parent_link,
+                        const std::shared_ptr<stack_frame>& static_link,
+                        const std::shared_ptr<stack_frame>& access_link,
+                        int nargout, int nargin);
+
+  static std::shared_ptr<stack_frame>
+  create_bytecode_script (tree_evaluator& tw,
+                          octave_user_script *fcn,
+                          vm &vm,
+                          std::size_t index,
+                          const std::shared_ptr<stack_frame>& parent_link,
+                          const std::shared_ptr<stack_frame>& static_link,
+                          int nargout, int nargin);
+
 #endif
 
   stack_frame (const stack_frame& elt) = default;
@@ -646,11 +657,10 @@ public:
   // The VM needs to tell the bytecode stackframe that it unwinds so
   // that it can check whether to save the stack.
   virtual void vm_unwinds () {}
-  virtual void vm_dbg_check_scope () {}
   virtual void vm_clear_for_cache () {}
-  virtual void vm_enter_script () {}
-  virtual void vm_exit_script () {}
-  virtual void vm_enter_nested () {}
+  virtual void vm_enter_script () { panic_impossible (); }
+  virtual void vm_exit_script () { panic_impossible (); }
+  virtual void vm_enter_nested () { panic_impossible (); }
 
 #endif
 

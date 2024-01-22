@@ -402,6 +402,17 @@ public:
   void print_raw (std::ostream&, bool pr_as_read_syntax,
                   int current_print_indent_level) const;
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+  octave_function *
+  get_cached_fcn (void *, void *) { return m_fcn.function_value (); }
+
+  octave_function *
+  get_cached_fcn (const octave_value_list&) { return m_fcn.function_value (); }
+
+  bool
+  has_function_cache () const { return true; }
+#endif
+
 protected:
 
   // The function we are handling.
@@ -471,6 +482,11 @@ public:
     return m_stack_context;
   }
 
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+  std::shared_ptr<octave::stack_frame>
+  get_closure_frame () { return m_stack_context; }
+#endif
+
 protected:
 
   // Pointer to closure stack frames.
@@ -502,6 +518,11 @@ public:
 
   friend bool is_equal_to (const weak_nested_fcn_handle& fh1,
                            const weak_nested_fcn_handle& fh2);
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+  std::shared_ptr<octave::stack_frame>
+  get_closure_frame () { return m_stack_context.lock (); }
+#endif
 
 protected:
 
@@ -784,6 +805,9 @@ public:
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
   // Compile the underlying function to bytecode for the VM.
   void compile ();
+
+  std::shared_ptr<octave::stack_frame>
+  get_closure_frame () { return m_stack_context; }
 #endif
 
 protected:
@@ -819,6 +843,11 @@ public:
 
   friend bool is_equal_to (const weak_anonymous_fcn_handle& fh1,
                            const weak_anonymous_fcn_handle& fh2);
+
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
+  std::shared_ptr<octave::stack_frame>
+  get_closure_frame () { return m_stack_context.lock (); }
+#endif
 
 protected:
 

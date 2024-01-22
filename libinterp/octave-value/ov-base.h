@@ -834,6 +834,7 @@ public:
     OCT_CALL,
     OCT_HANDLE,
     OCT_OBJECT,
+    OCT_NESTED_HANDLE,
   };
 
   virtual vm_call_dispatch_type vm_dispatch_call ();

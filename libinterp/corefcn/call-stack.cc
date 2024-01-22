@@ -481,7 +481,7 @@ void call_stack::push (vm &vm, octave_user_script *fcn, int nargout, int nargin)
   get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
   std::shared_ptr<stack_frame> new_frame =
-    stack_frame::create_bytecode (
+    stack_frame::create_bytecode_script (
        m_evaluator,
        fcn,
        vm,
@@ -505,11 +505,21 @@ void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargi
 
   get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
-  std::shared_ptr<stack_frame> new_frame
-    = stack_frame::create_bytecode (m_evaluator, fcn, vm,
-                                    new_frame_idx,
-                                    parent_link, static_link, closure_frames,
-                                    nargout, nargin);
+  std::shared_ptr<stack_frame> new_frame;
+
+  if (fcn->is_nested_function ())
+    new_frame = stack_frame::create_bytecode_nested (m_evaluator, fcn, vm,
+                                           new_frame_idx,
+                                           parent_link, static_link, closure_frames,
+                                           nargout, nargin);
+  else
+    {
+      CHECK_PANIC (fcn->is_anonymous_function ());
+      new_frame = stack_frame::create_bytecode_anon (m_evaluator, fcn, vm,
+                                                     new_frame_idx,
+                                                     parent_link, static_link, closure_frames,
+                                                     nargout, nargin);
+    }
 
   m_cs.push_back (new_frame);
 
@@ -524,15 +534,42 @@ void call_stack::push (vm &vm, octave_user_function *fcn, int nargout, int nargi
 
   get_new_frame_index_and_links (new_frame_idx, parent_link, static_link);
 
-  std::shared_ptr<stack_frame> new_frame
-    = stack_frame::create_bytecode (m_evaluator, fcn, vm,
-                                    new_frame_idx, // ??? index
-                                    parent_link, static_link,
-                                    nargout, nargin);
+  if (fcn->is_nested_function())
+    {
+      std::shared_ptr<stack_frame> new_frame
+        = stack_frame::create_bytecode_nested (m_evaluator, fcn, vm,
+                                               new_frame_idx, // ??? index
+                                               parent_link, static_link, nullptr,
+                                               nargout, nargin);
 
-  m_cs.push_back (new_frame);
+      m_cs.push_back (new_frame);
 
-  m_curr_frame = new_frame_idx;
+      m_curr_frame = new_frame_idx;
+    }
+  else if (fcn->is_anonymous_function())
+    {
+      std::shared_ptr<stack_frame> new_frame
+        = stack_frame::create_bytecode (m_evaluator, fcn, vm,
+                                        new_frame_idx, // ??? index
+                                        parent_link, static_link,
+                                        nargout, nargin);
+
+      m_cs.push_back (new_frame);
+
+      m_curr_frame = new_frame_idx;
+    }
+  else
+    {
+      std::shared_ptr<stack_frame> new_frame
+        = stack_frame::create_bytecode (m_evaluator, fcn, vm,
+                                        new_frame_idx, // ??? index
+                                        parent_link, static_link,
+                                        nargout, nargin);
+
+      m_cs.push_back (new_frame);
+
+      m_curr_frame = new_frame_idx;
+    }
 }
 
 #endif
@@ -585,7 +622,7 @@ call_stack::find_current_user_frame () const
   std::shared_ptr<stack_frame> frm = m_cs[user_frame];
 
   if (! (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
-         || frm->is_scope_frame () || frm->is_bytecode_fcn_frame()))
+         || frm->is_scope_frame ()))
     {
       frm = frm->static_link ();
 
@@ -627,8 +664,7 @@ call_stack::dbupdown (std::size_t start, int n, bool verbose)
 
   if (! (frm && (frm->is_user_fcn_frame ()
                  || frm->is_user_script_frame ()
-                 || frm->is_scope_frame ()
-                 || frm->is_bytecode_fcn_frame ())))
+                 || frm->is_scope_frame ())))
     error ("call_stack::dbupdown: invalid initial frame in call stack!");
 
   // Use index into the call stack to begin the search.  At this point
@@ -664,7 +700,7 @@ call_stack::dbupdown (std::size_t start, int n, bool verbose)
       frm = m_cs[xframe];
 
       if (frm->is_user_fcn_frame () || frm->is_user_script_frame ()
-          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame ())
+          || frm->is_scope_frame ())
         {
           last_good_frame = xframe;
 
@@ -751,7 +787,7 @@ std::list<std::shared_ptr<stack_frame>>
       std::shared_ptr<stack_frame> frm = m_cs[n];
 
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame())
+          || frm->is_scope_frame ())
         {
           if (frm->index () == curr_frame)
             curr_user_frame = frames.size ();
@@ -786,7 +822,7 @@ call_stack::backtrace_info (octave_idx_type& curr_user_frame,
   for (const auto& frm : frames)
     {
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame())
+          || frm->is_scope_frame ())
         {
           retval.push_back (frame_info (frm->fcn_file_name (),
                                         frm->fcn_name (print_subfn),
@@ -826,7 +862,7 @@ call_stack::backtrace (octave_idx_type& curr_user_frame,
   for (const auto& frm : frames)
     {
       if (frm->is_user_script_frame () || frm->is_user_fcn_frame ()
-          || frm->is_scope_frame () || frm->is_bytecode_fcn_frame())
+          || frm->is_scope_frame ())
         {
           file(k) = frm->fcn_file_name ();
           name(k) = frm->fcn_name (print_subfn);

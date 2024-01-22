@@ -39,7 +39,6 @@
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-base-scalar.h"
-#include "ov-inline.h"
 #include "pr-output.h"
 
 template <typename MT>

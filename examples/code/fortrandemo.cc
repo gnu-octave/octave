@@ -4,7 +4,7 @@
 extern "C"
 {
   F77_RET_T
-  F77_FUNC (fortransub, FORTSUB)
+  F77_FUNC (fortransub, FORTRANSUB)
     (const F77_INT&, F77_DBLE*, F77_CHAR_ARG_DECL F77_CHAR_ARG_LEN_DECL);
 }
 
@@ -20,7 +20,7 @@ DEFUN_DLD (fortrandemo, args, , "Fortran Demo")
 
   OCTAVE_LOCAL_BUFFER (char, ctmp, 128);
 
-  F77_XFCN (fortransub, FORTSUB,
+  F77_XFCN (fortransub, FORTRANSUB,
             (na, av, ctmp F77_CHAR_ARG_LEN (128)));
 
   return ovl (a, std::string (ctmp));

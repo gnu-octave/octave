@@ -39,7 +39,9 @@
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-base-scalar.h"
+#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 #include "ov-inline.h"
+#endif
 #include "pr-output.h"
 
 template <typename MT>

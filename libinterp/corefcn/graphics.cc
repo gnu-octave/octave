@@ -1415,6 +1415,11 @@ color_values::str2rgb (const std::string& str_arg)
         {
           retval = false;
         }
+      catch (const std::invalid_argument&)
+        {
+          retval = false;
+        }
+
     }
   else if (str[0] == '#' && len == 4)
     {
@@ -1428,6 +1433,10 @@ color_values::str2rgb (const std::string& str_arg)
                        / 15.0;
         }
       catch (const octave::execution_exception&)
+        {
+          retval = false;
+        }
+      catch (const std::invalid_argument&)
         {
           retval = false;
         }

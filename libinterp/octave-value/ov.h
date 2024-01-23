@@ -72,11 +72,14 @@ class octave_user_function;
 class octave_fcn_handle;
 class octave_value_list;
 class octave_fcn_cache;
+class octave_nil_value;
 
 #include "mxtypes.h"
 
 #include "oct-stream.h"
 #include "ov-base.h"
+
+OCTINTERP_API extern octave_nil_value octave_value_nilrep;
 
 class OCTINTERP_API octave_value
 {
@@ -352,7 +355,7 @@ public:
     // operator, rep may be a nullptr here.  We should only need to
     // protect the move assignment operator in a similar way.
 
-    if (m_rep && --m_rep->m_count == 0 && m_rep != nil_rep ())
+    if (m_rep && --m_rep->m_count == 0)
       delete m_rep;
   }
 
@@ -362,7 +365,7 @@ public:
       {
         octave_base_value *r = m_rep->unique_clone ();
 
-        if (--m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (--m_rep->m_count == 0)
           delete m_rep;
 
         m_rep = r;
@@ -378,7 +381,7 @@ public:
       {
         octave_base_value *r = m_rep->unique_clone ();
 
-        if (--m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (--m_rep->m_count == 0)
           delete m_rep;
 
         m_rep = r;
@@ -397,7 +400,7 @@ public:
   {
     if (m_rep != a.m_rep)
       {
-        if (--m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (--m_rep->m_count == 0)
           delete m_rep;
 
         m_rep = a.m_rep;
@@ -415,7 +418,7 @@ public:
 
     if (this != &a)
       {
-        if (m_rep && --m_rep->m_count == 0 && m_rep != nil_rep ())
+        if (m_rep && --m_rep->m_count == 0)
           delete m_rep;
 
         m_rep = a.m_rep;
@@ -1658,7 +1661,10 @@ protected:
   //! The real representation.
   octave_base_value *m_rep;
 
-  static OCTINTERP_API octave_base_value * nil_rep ();
+  static OCTINTERP_API octave_base_value * nil_rep ()
+  {
+    return reinterpret_cast<octave_base_value*> (&octave_value_nilrep);
+  }
 
 private:
 

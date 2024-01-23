@@ -1612,10 +1612,10 @@ single_type_concat (Sparse<T>& result,
                     const octave_value_list& args,
                     int dim)
 {
-  int n_args = args.length ();
+  octave_idx_type n_args = args.length ();
   OCTAVE_LOCAL_BUFFER (Sparse<T>, sparse_list, n_args);
 
-  for (int j = 0; j < n_args; j++)
+  for (octave_idx_type j = 0; j < n_args; j++)
     {
       octave_quit ();
 

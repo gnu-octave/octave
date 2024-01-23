@@ -3919,7 +3919,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (! m_function_scopes.name_current_scope (id_name))
       {
         bison_error ("duplicate subfunction or nested function name",
-                     id->line (), id->column ());
+                     id->line (), id->column () + 1);
 
         delete id;
         return nullptr;

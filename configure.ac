@@ -305,10 +305,10 @@ AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
-ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no
+ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes
 AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
-  [AS_HELP_STRING([--enable-std-pmr-polymorphic-allocator],
-    [build libraries requiring std::pmr::polymorphic_allocator if possible.  This allows more efficient transfer of arrays at the .mex file interface.  That also means that all libraries including Octave headers (e.g., .oct files) must be able to compile with that C++17 feature.])],
+  [AS_HELP_STRING([--disable-std-pmr-polymorphic-allocator],
+    [build libraries that do not require support for std::pmr::polymorphic_allocator.  This prevents more efficient transfer of arrays at the .mex file interface.  With enabled std::pmr::polymorphic_allocator, sources including Octave headers (e.g., for .oct files) must conform to C++17.])],
   [case $enableval in
      yes) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes ;;
      no) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no ;;

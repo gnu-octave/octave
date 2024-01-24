@@ -199,6 +199,10 @@ GLWidget::drawZoomBox (const QPoint& p1, const QPoint& p2)
   double borderalpha = 0.9;
   double borderwidth = 1.5;
 
+  begin_rendering ();
+
+  unwind_action reset_current ([=] () { end_rendering (); });
+
   m_renderer.draw_zoom_box (width (), height (),
                             p1.x (), p1.y (), p2.x (), p2.y (),
                             overlaycolor, overlayalpha,

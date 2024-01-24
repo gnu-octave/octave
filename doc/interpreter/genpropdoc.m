@@ -3162,10 +3162,6 @@ function def = getdefault (h, objname, field)
 endfunction
 
 function str = printdoc (objname, obj, is_prop_subset)
-##  ## Sort fields so that they appear in alphabetic order in the manual
-##  fields = sort (fieldnames (obj));
-##  nf = numel (fields);
-
   ## File header and beginning of properties table
   str = warn_autogen ();
   if (strcmp (objname, "root"))

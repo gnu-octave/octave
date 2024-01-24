@@ -76,8 +76,7 @@ Completion Date:
 
     `hg diff | grep ^[-+][^-+] | sed 's/[0-9][0-9][0-9][0-9]-/YYYY-/' | sort -u`
 
-* Update dates in any other locations (`CITATION`, launch message, MXE files,
-  etc.).
+* Update dates in any other locations (`CITATION`, MXE `README.html` file).
 * Add any new contributors to `doc/interpreter/contributors.in` who wish to be
   mentioned (don't add them without permission).
 
@@ -125,8 +124,11 @@ Bug overview at <https://octave.space/savannah/>.
 * Use software tools to check quality of Octave code.
   * Check for memory leaks by configuring with
     `--enable-address-sanitizer-flags` and compiling with
-    `-fsanitize=undefined`, `-fno-omit-frame-pointer` in `CFLAGS`, `CXXFLAGS`,
-    and `LDFLAGS`.
+    `-g -O0 -fno-optimize-sibling-calls` in `CFLAGS`, `CXXFLAGS`, and
+    `LDFLAGS`.
+  * Check for bad memory accesses by compiling with
+    `-g -O0 -fsanitize=undefined -fno-omit-frame-pointer
+    -fno-optimize-sibling-calls` in `CFLAGS`, `CXXFLAGS`, and `LDFLAGS`.
   * Update static code analysis results.
       * For `clang`, do `scan-build make -j<N> all` and then `scan-view`.
       * See [PVS static analyzer - 5.0 Release](https://wiki.octave.org/PVS_static_analyzer_-_5.0_Release).
@@ -165,7 +167,8 @@ Completion Date:
 * Create `hg tag` in repository with release candidate version number
   (`release-VERSION-1-0`).
 * Update `etc/NEWS.VERSION.md` (final release date in Summary header).
-* Update `CITATION` (version, year, URL).
+* Update `CITATION` (version, year, URL) if not already done as part of "GPL
+  License activities.
 * Update `etc/icons/org.octave.Octave.appdata.xml` (version number and release
   date).
 * Upload all tarballs to <https://ftp.gnu.org/gnu/octave/>.

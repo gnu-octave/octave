@@ -166,7 +166,7 @@
 ## @end deftypefn
 
 ## Author: Markus Bergholz <markuman@gmail.com>
-## Author: Nicholas R. Jankowski <jankowskin@asme.org>
+## Author: Nicholas R. Jankowski <jankowski.nicholas@gmail.com>
 
 ## As a U.S. government employee, Nicholas R. Jankowski makes no claim
 ## of copyright.

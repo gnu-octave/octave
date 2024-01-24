@@ -67,6 +67,11 @@ get more priority.
   - Performance experiments.
   - Target: Octave 10
 
+- New command window widget.  (LEAD?)
+  - Background: https://wiki.octave.org/GUI_terminal_widget
+  - Discussion: https://octave.discourse.group/t/new-command-window-widget/501
+  - Target: Octave 11
+
 - Graph theory routines (ARUN)
   - These need a full overhaul and in some cases ground-up implementation.
   - Matlab switched to graph objects some versions ago, as opposed to the

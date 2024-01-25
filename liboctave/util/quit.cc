@@ -100,7 +100,7 @@ execution_exception::display (std::ostream& os) const
 OCTAVE_END_NAMESPACE(octave)
 
 extern "C" OCTAVE_API void
-octave_quit_c ()
+octave_quit_c (void)
 {
   octave_quit ();
 }

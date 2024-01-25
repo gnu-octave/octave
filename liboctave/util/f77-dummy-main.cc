@@ -37,7 +37,7 @@
 
 extern "C"
 int
-F77_DUMMY_MAIN ()
+F77_DUMMY_MAIN (void)
 {
   assert (0);
 

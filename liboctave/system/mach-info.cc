@@ -33,9 +33,9 @@
 
 extern "C"
 {
-  int octave_get_float_format ();
+  int octave_get_float_format (void);
 
-  int octave_is_big_endian ();
+  int octave_is_big_endian (void);
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)

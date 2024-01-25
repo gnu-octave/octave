@@ -104,7 +104,7 @@ public:
   {
     // FIXME: Can m_curr_frame ever be invalid?
     return (m_curr_frame < m_cs.size ()
-            ? m_cs[m_curr_frame]->get_scope () : symbol_scope ());
+            ? m_cs[m_curr_frame]->get_scope () : symbol_scope::invalid ());
   }
 
   bool at_top_level () const

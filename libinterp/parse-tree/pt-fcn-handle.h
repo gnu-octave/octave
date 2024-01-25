@@ -95,8 +95,8 @@ public:
 
   tree_anon_fcn_handle (int l = -1, int c = -1)
     : tree_expression (l, c), m_parameter_list (nullptr),
-      m_expression (nullptr), m_scope (), m_parent_scope (),
-      m_file_name ()
+      m_expression (nullptr), m_scope (symbol_scope::anonymous ()),
+      m_parent_scope (symbol_scope::invalid ()), m_file_name ()
   { }
 
   tree_anon_fcn_handle (tree_parameter_list *pl, tree_expression *ex,

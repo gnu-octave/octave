@@ -117,29 +117,12 @@ static bool Voptimize_range = true;
 
 // Octave's value type.
 
-// Special class to do as a nil value that never reaches
-// a count of 0 so we don't need to check for for "nil_rep()"
-// pointer when deleting octave_base_value:s in the octave_value
-// destructor.
-class octave_nil_value : octave_base_value
+octave_base_value *
+octave_value::nil_rep ()
 {
-public:
-  octave_nil_value ()
-  {
-    m_count++; // Also increased in octave_base_value()
-  }
-
-  // A clone of the nil value just returns itself since there can be only
-  // one nil value.
-  octave_base_value *
-  clone () const
-  {
-    octave_value_nilrep.m_count++;
-    return &octave_value_nilrep;
-  }
-};
-
-octave_nil_value octave_value_nilrep;
+  static octave_base_value nr;
+  return &nr;
+}
 
 std::string
 octave_value::unary_op_as_string (unary_op op)

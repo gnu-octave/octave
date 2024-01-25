@@ -33,7 +33,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "lo-ieee.h"
 #include "mx-base.h"
 #include "str-vec.h"
 
@@ -81,8 +80,8 @@ public:
   octave_value any (int = 0) const
   {
     return (scalar != FloatComplex (0, 0)
-            && ! (lo_ieee_isnan (scalar.real ())
-                  || lo_ieee_isnan (scalar.imag ())));
+            && ! (octave::math::isnan (scalar.real ())
+                  || octave::math::isnan (scalar.imag ())));
   }
 
   builtin_type_t builtin_type () const { return btyp_float_complex; }

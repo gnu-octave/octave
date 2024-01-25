@@ -72,28 +72,44 @@ typedef union
 extern OCTAVE_API void octave_ieee_init (void);
 
 #if defined (__cplusplus)
+OCTAVE_DEPRECATED (10, "use std::isnan instead")
 inline int __lo_ieee_isnan (double x) { return std::isnan (x); }
+OCTAVE_DEPRECATED (10, "use std::isfinite instead")
 inline int __lo_ieee_isfinite (double x) { return std::isfinite (x); }
+OCTAVE_DEPRECATED (10, "use std::isinf instead")
 inline int __lo_ieee_isinf (double x) { return std::isinf (x); }
 
+OCTAVE_DEPRECATED (10, "use std::signbit instead")
 inline int __lo_ieee_signbit (double x) { return std::signbit (x); }
 
+OCTAVE_DEPRECATED (10, "use std::isnan instead")
 inline int __lo_ieee_float_isnan (float x) { return std::isnan (x); }
+OCTAVE_DEPRECATED (10, "use std::isfinite instead")
 inline int __lo_ieee_float_isfinite (float x) { return std::isfinite (x); }
+OCTAVE_DEPRECATED (10, "use std::isinf instead")
 inline int __lo_ieee_float_isinf (float x) { return std::isinf (x); }
 
+OCTAVE_DEPRECATED (10, "use std::signbit instead")
 inline int __lo_ieee_float_signbit (float x) { return std::signbit (x); }
 #else
+OCTAVE_DEPRECATED (10, "use isnan instead")
 inline int __lo_ieee_isnan (double x) { return isnan (x); }
+OCTAVE_DEPRECATED (10, "use isfinite instead")
 inline int __lo_ieee_isfinite (double x) { return isfinite (x); }
+OCTAVE_DEPRECATED (10, "use isinf instead")
 inline int __lo_ieee_isinf (double x) { return isinf (x); }
 
+OCTAVE_DEPRECATED (10, "use signbit instead")
 inline int __lo_ieee_signbit (double x) { return signbit (x); }
 
+OCTAVE_DEPRECATED (10, "use isnan instead")
 inline int __lo_ieee_float_isnan (float x) { return isnan (x); }
+OCTAVE_DEPRECATED (10, "use isfinite instead")
 inline int __lo_ieee_float_isfinite (float x) { return isfinite (x); }
+OCTAVE_DEPRECATED (10, "use isinf instead")
 inline int __lo_ieee_float_isinf (float x) { return isinf (x); }
 
+OCTAVE_DEPRECATED (10, "use signbit instead")
 inline int __lo_ieee_float_signbit (float x) { return signbit (x); }
 #endif
 

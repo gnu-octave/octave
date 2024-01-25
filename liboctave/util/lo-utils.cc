@@ -446,9 +446,9 @@ write_value (std::ostream& os, const double& value)
 {
   if (lo_ieee_is_NA (value))
     os << "NA";
-  else if (lo_ieee_isnan (value))
+  else if (math::isnan (value))
     os << "NaN";
-  else if (lo_ieee_isinf (value))
+  else if (math::isinf (value))
     os << (value < 0 ? "-Inf" : "Inf");
   else
     os << value;
@@ -474,9 +474,9 @@ write_value (std::ostream& os, const float& value)
 {
   if (lo_ieee_is_NA (value))
     os << "NA";
-  else if (lo_ieee_isnan (value))
+  else if (math::isnan (value))
     os << "NaN";
-  else if (lo_ieee_isinf (value))
+  else if (math::isinf (value))
     os << (value < 0 ? "-Inf" : "Inf");
   else
     os << value;

@@ -137,10 +137,6 @@ public:
     octave_value_nilrep.m_count++;
     return &octave_value_nilrep;
   }
-
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-  vm_call_dispatch_type vm_dispatch_call (void) { return vm_call_dispatch_type::OCT_FN_LOOKUP; }
-#endif
 };
 
 octave_nil_value octave_value_nilrep;

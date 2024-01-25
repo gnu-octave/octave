@@ -81,10 +81,7 @@ tree_anon_fcn_handle::dup (symbol_scope&) const
   symbol_scope af_scope = m_scope;
   symbol_scope af_parent_scope = m_parent_scope;
 
-  symbol_scope new_scope;
-
-  if (af_scope)
-    new_scope = af_scope.dup ();
+  symbol_scope new_scope = af_scope ? af_scope.dup () : symbol_scope::invalid ();
 
   // FIXME: if new scope is nullptr, then we are in big trouble here...
 

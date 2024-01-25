@@ -59,7 +59,7 @@ octave_user_code : public octave_function
 protected:
 
   octave_user_code (const std::string& fnm = "", const std::string& nm = "",
-                    const octave::symbol_scope& scope = octave::symbol_scope (),
+                    const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
                     octave::tree_statement_list *cmds = nullptr,
                     const std::string& ds = "")
     : octave_function (nm, ds), m_scope (scope), m_file_name (fnm),
@@ -154,12 +154,12 @@ public:
   octave_user_script ();
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      const octave::symbol_scope& scope = octave::symbol_scope (),
+                      const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
                       octave::tree_statement_list *cmds = nullptr,
                       const std::string& ds = "");
 
   octave_user_script (const std::string& fnm, const std::string& nm,
-                      const octave::symbol_scope& scope = octave::symbol_scope (),
+                      const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
                       const std::string& ds = "");
 
   OCTAVE_DISABLE_COPY_MOVE (octave_user_script)
@@ -204,7 +204,7 @@ octave_user_function : public octave_user_code
 {
 public:
 
-  octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope (),
+  octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
                         octave::tree_parameter_list *pl = nullptr,
                         octave::tree_parameter_list *rl = nullptr,
                         octave::tree_statement_list *cl = nullptr);

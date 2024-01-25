@@ -2146,7 +2146,7 @@ If @var{name} is omitted, return a list of keywords.
 
     return (sz > 1
             ? m_frame_stack[1]
-            : (sz == 1 ? m_frame_stack[0] : symbol_scope ()));
+            : (sz == 1 ? m_frame_stack[0] : symbol_scope::invalid ()));
   }
 
   lexical_feedback::~lexical_feedback ()

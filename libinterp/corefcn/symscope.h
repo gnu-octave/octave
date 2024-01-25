@@ -371,14 +371,23 @@ class symbol_scope
 {
 public:
 
-  // Create a valid but possibly unnamed scope.
+  symbol_scope () = delete;
+
+  // Create a valid but possibly anonymous scope.  If NAME is empty, the
+  // scope is anonymous, but it is better to state that intent clearly
+  // by using the symbol_scope::anonymous function instead.
   symbol_scope (const std::string& name)
     : m_rep (new symbol_scope_rep (name))
   { }
 
-  // NEW_REP must be dynamically allocated or nullptr.  If it is
-  // nullptr, the scope is invalid.
-  symbol_scope (const std::shared_ptr<symbol_scope_rep> new_rep = nullptr)
+  // FIXME: is there a way to make the following constructor private and
+  // not expose the symbol_scope_rep object in the interface (see the
+  // parent_scope, primary_parent_scope, and get_rep functions)?
+
+  // If NEW_REP is nullptr, the scope is invalid.  But if you wish to
+  // create an invalid scope, it is probably better to state that intent
+  // clearly by using the symbol_scope::invalid function instead.
+  symbol_scope (const std::shared_ptr<symbol_scope_rep> new_rep)
     : m_rep (new_rep)
   { }
 
@@ -388,9 +397,19 @@ public:
 
   ~symbol_scope () = default;
 
+  static symbol_scope invalid ()
+  {
+    return symbol_scope (std::shared_ptr<symbol_scope_rep> (nullptr));
+  }
+
+  static symbol_scope anonymous ()
+  {
+    return symbol_scope ("");
+  }
+
   bool is_valid () const { return bool (m_rep); }
 
-  explicit operator bool () const { return bool (m_rep); }
+  explicit operator bool () const { return is_valid (); }
 
   std::size_t num_symbols () const
   {

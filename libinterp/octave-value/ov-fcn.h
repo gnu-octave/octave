@@ -80,14 +80,14 @@ public:
   virtual std::string parent_fcn_name () const { return ""; }
 
   virtual octave::symbol_scope parent_fcn_scope () const
-  { return octave::symbol_scope (); }
+  { return octave::symbol_scope::invalid (); }
 
   virtual std::list<std::string> parent_fcn_names () const
   { return std::list<std::string> (); }
 
   virtual void mark_fcn_file_up_to_date (const octave::sys::time&) { }
 
-  virtual octave::symbol_scope scope () { return octave::symbol_scope (); }
+  virtual octave::symbol_scope scope () { return octave::symbol_scope::invalid (); }
 
   virtual octave::sys::time time_parsed () const
   { return octave::sys::time (static_cast<OCTAVE_TIME_T> (0)); }

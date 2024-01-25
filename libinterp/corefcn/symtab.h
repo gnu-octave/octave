@@ -85,12 +85,12 @@ public:
 
   octave_value
   builtin_find (const std::string& name,
-                const symbol_scope& search_scope = symbol_scope ());
+                const symbol_scope& search_scope = symbol_scope::invalid ());
 
   octave_value
   fcn_table_find (const std::string& name,
                   const octave_value_list& args = ovl (),
-                  const symbol_scope& search_scope = symbol_scope ());
+                  const symbol_scope& search_scope = symbol_scope::invalid ());
 
   // If NAME is of the form @CLASS/FUNCTION, call
   //
@@ -102,7 +102,7 @@ public:
 
   octave_value
   find_function (const std::string& name,
-                 const symbol_scope& search_scope = symbol_scope ());
+                 const symbol_scope& search_scope = symbol_scope::invalid ());
 
   // NAME should just be function name; dispatch type determined
   // from types of ARGS.
@@ -110,7 +110,7 @@ public:
   octave_value
   find_function (const std::string& name,
                  const octave_value_list& args,
-                 const symbol_scope& search_scope = symbol_scope ());
+                 const symbol_scope& search_scope = symbol_scope::invalid ());
 
   octave_value find_user_function (const std::string& name);
 

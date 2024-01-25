@@ -1835,7 +1835,7 @@ classdef_beg    : CLASSDEF
                       }
 
                     // Create invalid parent scope.
-                    lexer.m_symtab_context.push (octave::symbol_scope ());
+                    lexer.m_symtab_context.push (octave::symbol_scope::anonymous ());
                     lexer.m_parsing_classdef = true;
                     lexer.m_parsing_classdef_decl = true;
                     lexer.m_classdef_element_names_are_keywords = true;
@@ -2453,7 +2453,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   public:
 
     parse_tree_validator ()
-      : m_scope (), m_error_list ()
+      : m_scope (symbol_scope::anonymous ()), m_error_list ()
     { }
 
     OCTAVE_DISABLE_COPY_MOVE (parse_tree_validator)
@@ -2614,7 +2614,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   symbol_scope
   base_parser::parent_scope_info::parent_scope () const
   {
-    return size () > 1 ? m_info[size()-2].first : symbol_scope ();
+    return size () > 1 ? m_info[size()-2].first : symbol_scope::invalid ();
   }
 
   std::string
@@ -2633,7 +2633,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     : m_endfunction_found (false), m_autoloading (false),
       m_fcn_file_from_relative_lookup (false),
       m_parsing_subfunctions (false), m_parsing_local_functions (false),
-      m_max_fcn_depth (-1), m_curr_fcn_depth (-1), m_primary_fcn_scope (),
+      m_max_fcn_depth (-1), m_curr_fcn_depth (-1),
+      m_primary_fcn_scope (symbol_scope::invalid ()),
       m_curr_class_name (), m_curr_package_name (), m_function_scopes (*this),
       m_primary_fcn (), m_subfunction_names (), m_classdef_object (),
       m_stmt_list (), m_lexer (lxr), m_parser_state (yypstate_new ())
@@ -2664,7 +2665,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_parsing_local_functions = false;
     m_max_fcn_depth = -1;
     m_curr_fcn_depth = -1;
-    m_primary_fcn_scope = symbol_scope ();
+    m_primary_fcn_scope = symbol_scope::invalid ();
     m_curr_class_name = "";
     m_curr_package_name = "";
     m_function_scopes.clear ();
@@ -4772,7 +4773,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             // Create a dummy function that is used until the real method
             // is loaded.
 
-            retval = new octave_user_function (symbol_scope (), pl);
+            retval = new octave_user_function (symbol_scope::anonymous (), pl);
 
             retval->stash_function_name (mname);
 

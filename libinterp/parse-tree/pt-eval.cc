@@ -3339,10 +3339,8 @@ tree_evaluator::evaluate_anon_fcn_handle (tree_anon_fcn_handle& afh)
   // FIXME: should CMD_LIST be limited to a single expression?
   // I think that is what Matlab does.
 
-  symbol_scope new_scope;
   symbol_scope scope = afh.scope ();
-  if (scope)
-    new_scope = scope.dup ();
+  symbol_scope new_scope = scope ? scope.dup () : symbol_scope::invalid ();
 
   tree_parameter_list *param_list = afh.parameter_list ();
   tree_parameter_list *param_list_dup

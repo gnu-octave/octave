@@ -496,51 +496,39 @@ OCTAVE_FORMAT_PRINTF (1, 2)
 OCTAVE_NORETURN
 extern OCTINTERP_API void panic (const char *fmt, ...);
 
+// To allow the __FILE__ and __LINE__ macros to work as expected, the
+// panic_impossible, panic_if, panic_unless, error_impossible, error_if,
+// and error_unless symbols must be defined as macros.
+
 #define panic_impossible()                                              \
-  panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+  ::panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
 
-inline void
-panic_if (bool cond)
-{
-#ifndef NDEBUG
-  if (cond)
-    panic_impossible ();
-  else
-    return;
-
+#if defined (NDEBUG)
+#  define panic_if(cond)
 #else
-  octave_unused_parameter (cond);
+#  define panic_if(cond) do { if (cond) panic_impossible (); } while (0)
 #endif
-}
 
-inline void
-panic_unless (bool cond)
-{
-  panic_if (! cond);
-}
+#if defined (NDEBUG)
+#  define panic_unless(cond)
+#else
+#  define panic_unless(cond) panic_if (! (cond))
+#endif
 
 #define error_impossible()                                              \
-  error ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+  ::error ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
 
-inline void
-error_if (bool cond)
-{
-#ifndef NDEBUG
-  if (cond)
-    error_impossible ();
-  else
-    return;
-
+#if defined (NDEBUG)
+#  define error_if(cond)
 #else
-  octave_unused_parameter (cond);
+#  define error_if(cond) do { if (cond) error_impossible (); } while (0)
 #endif
-}
 
-inline void
-error_unless (bool cond)
-{
-  error_if (! cond);
-}
+#if defined (NDEBUG)
+#  define error_unless(cond)
+#else
+#  define error_unless(cond) error_if (! (cond))
+#endif
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 

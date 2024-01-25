@@ -84,6 +84,7 @@ include bug-48693/module.mk
 include bug-49379/module.mk
 include bug-50014/module.mk
 include bug-50035/module.mk
+include bug-50395/module.mk
 include bug-50716/module.mk
 include bug-50831/module.mk
 include bug-51192/module.mk

@@ -148,13 +148,6 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
-      - name: analyze test suite results
-        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
-        run:  |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
-          echo No unknown failing tests.
-
       - name: test history file creation
         # see bug #62365
         # Pipe to an interactive session to trigger appending the command to
@@ -169,10 +162,19 @@ jobs:
 
       - name: test stand-alone executable
         run: |
+          unset CC
+          unset CXX
           cd examples/code
           mkoctfile --link-stand-alone embedded.cc -o embedded
           LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" \
             ./embedded
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          echo No unknown failing tests.
 
 
   alpine:
@@ -371,15 +373,6 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
-      - name: analyze test suite results
-        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
-        run:  |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] \
-            || echo "::warning::At least one test failed"
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] \
-            || echo "::warning::At least one regression in test suite"
-          echo Finished analyzing test suite results.
-
       - name: test history file creation
         # see bug #62365
         # Pipe to an interactive session to trigger appending the command to
@@ -397,6 +390,15 @@ jobs:
           cd examples/code
           mkoctfile --link-stand-alone embedded.cc -o embedded
           LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" ./embedded
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run:  |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] \
+            || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] \
+            || echo "::warning::At least one regression in test suite"
+          echo Finished analyzing test suite results.
 
 
   macos:
@@ -589,13 +591,6 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
-      - name: analyze test suite results
-        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
-        run: |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
-          echo No unknown failing tests.
-
       - name: test history file creation
         # see bug #62365
         # Pipe to an interactive session to trigger appending the command to
@@ -611,10 +606,19 @@ jobs:
 
       - name: test stand-alone executable
         run: |
+          unset CC
+          unset CXX
           cd examples/code
-          PATH="/Users/runner/usr/bin:$PATH" CXX="${CXX} -std=gnu++11" \
+          PATH="/Users/runner/usr/bin:$PATH" \
             mkoctfile --link-stand-alone embedded.cc -o embedded
           ./embedded
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run: |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || exit 1
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || exit 1
+          echo No unknown failing tests.
 
 
   mingw:
@@ -842,13 +846,6 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
-      - name: analyze test suite results
-        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
-        run: |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
-          echo Finished analyzing test suite results.
-
       - name: test history file creation
         # see bug #62365
         # Pipe to an interactive session to trigger appending the command to
@@ -865,11 +862,20 @@ jobs:
       - name: test stand-alone executable
         continue-on-error: ${{ matrix.allow-error }}
         run: |
-          cd examples/code
+          unset CC
+          unset CXX
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
           export PATH="/c/octave/pkg/${{ matrix.mingw-prefix }}/bin:$PATH"
+          cd examples/code
           mkoctfile --link-stand-alone embedded.cc -o embedded
           ./embedded.exe
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run: |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          echo Finished analyzing test suite results.
 
       - name: compress build artifact
         if: matrix.msystem == 'MINGW64'
@@ -1102,13 +1108,6 @@ jobs:
         timeout-minutes: 5
         run: cat ./.build/test/fntests.log
 
-      - name: analyze test suite results
-        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
-        run: |
-          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
-          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
-          echo Finished analyzing test suite results.
-
       - name: test history file creation
         # see bug #62365
         # Pipe to an interactive session to trigger appending the command to
@@ -1123,7 +1122,16 @@ jobs:
 
       - name: test stand-alone executable
         run: |
+          unset CC
+          unset CXX
           export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
           cd examples/code
           mkoctfile --link-stand-alone embedded.cc -o embedded
           ./embedded.exe
+
+      - name: analyze test suite results
+        # Make sure the test summary lists 0 "FAIL"s and no "REGRESSION"
+        run: |
+          [ -n "$(grep -e "FAIL\s*0" ./test-suite.log)" ] || echo "::warning::At least one test failed"
+          [ -z "$(grep -e "REGRESSION" ./test-suite.log)" ] || echo "::warning::At least one regression in test suite"
+          echo Finished analyzing test suite results.

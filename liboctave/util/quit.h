@@ -48,7 +48,7 @@ class frame_info
 {
 public:
 
-  frame_info (void) = default;
+  frame_info () = default;
 
   frame_info (const std::string& file_name, const std::string& fcn_name,
               int line, int column)
@@ -60,15 +60,15 @@ public:
 
   frame_info& operator = (const frame_info&) = default;
 
-  ~frame_info (void) = default;
+  ~frame_info () = default;
 
-  std::string file_name (void) const { return m_file_name; }
+  std::string file_name () const { return m_file_name; }
 
-  std::string fcn_name (void) const { return m_fcn_name; }
+  std::string fcn_name () const { return m_fcn_name; }
 
-  int line (void) const { return m_line; }
+  int line () const { return m_line; }
 
-  int column (void) const { return m_column; }
+  int column () const { return m_column; }
 
 private:
 
@@ -107,35 +107,35 @@ public:
 
   execution_exception& operator = (const execution_exception&) = default;
 
-  ~execution_exception (void) = default;
+  ~execution_exception () = default;
 
   void set_err_type (const std::string& et)
   {
     m_err_type = et;
   }
 
-  std::string err_type (void) const { return m_err_type; }
+  std::string err_type () const { return m_err_type; }
 
-  virtual std::string stack_trace (void) const;
+  virtual std::string stack_trace () const;
 
   void set_identifier (const std::string& id)
   {
     m_id = id;
   }
 
-  virtual std::string identifier (void) const { return m_id; }
+  virtual std::string identifier () const { return m_id; }
 
   void set_message (const std::string& msg)
   {
     m_message = msg;
   }
 
-  std::string message (void) const { return m_message; }
+  std::string message () const { return m_message; }
 
   // Provided for std::exception interface.
-  const char * what (void) const noexcept { return m_message.c_str (); }
+  const char * what () const noexcept { return m_message.c_str (); }
 
-  virtual stack_info_type stack_info (void) const
+  virtual stack_info_type stack_info () const
   {
     return m_stack_info;
   }
@@ -169,11 +169,11 @@ public:
 
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (exit_exception)
 
-  const char * what (void) const noexcept { return "exit exception"; }
+  const char * what () const noexcept { return "exit exception"; }
 
-  int exit_status (void) const { return m_exit_status; }
+  int exit_status () const { return m_exit_status; }
 
-  bool safe_to_return (void) const { return m_safe_to_return; }
+  bool safe_to_return () const { return m_safe_to_return; }
 
 private:
 
@@ -186,15 +186,15 @@ class interrupt_exception : public std::exception
 {
 public:
 
-  interrupt_exception (void) = default;
+  interrupt_exception () = default;
 
   interrupt_exception (const interrupt_exception&) = default;
 
   interrupt_exception& operator = (const interrupt_exception&) = default;
 
-  ~interrupt_exception (void) = default;
+  ~interrupt_exception () = default;
 
-  const char * what (void) const noexcept { return "interrupt exception"; }
+  const char * what () const noexcept { return "interrupt exception"; }
 };
 
 OCTAVE_END_NAMESPACE(octave)
@@ -234,7 +234,7 @@ extern OCTAVE_API void octave_handle_signal (void);
 
 #if defined (__cplusplus)
 
-inline void octave_quit (void)
+inline void octave_quit ()
 {
   bool expected = true;
 
@@ -286,8 +286,8 @@ extern OCTAVE_API void octave_quit_c (void);
 /* These should only be declared for C++ code, and should also be
    outside of any extern "C" block.  */
 
-extern OCTAVE_API void (*octave_signal_hook) (void);
-extern OCTAVE_API void (*octave_interrupt_hook) (void);
+extern OCTAVE_API void (*octave_signal_hook) ();
+extern OCTAVE_API void (*octave_interrupt_hook) ();
 
 #endif
 

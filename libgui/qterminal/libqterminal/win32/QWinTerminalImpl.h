@@ -50,7 +50,7 @@ class QWinTerminalImpl : public QTerminal
 
 public:
   QWinTerminalImpl (QWidget *parent);
-  ~QWinTerminalImpl (void);
+  ~QWinTerminalImpl ();
 
   void setTerminalFont (const QFont& font);
   void setSize (int columns, int lines);
@@ -68,14 +68,14 @@ public:
   void has_extra_interrupt (bool);
 
 public slots:
-  void copyClipboard (void);
-  void pasteClipboard (void);
-  void selectAll (void);
-  void blinkCursorEvent (void);
-  void init_terminal_size (void);
+  void copyClipboard ();
+  void pasteClipboard ();
+  void selectAll ();
+  void blinkCursorEvent ();
+  void init_terminal_size ();
 
 signals:
-  void terminated (void);
+  void terminated ();
   void titleChanged (const QString&);
 
 protected:
@@ -87,7 +87,7 @@ protected:
   void focusInEvent (QFocusEvent *);
   void focusOutEvent (QFocusEvent *);
   void keyPressEvent (QKeyEvent *);
-  virtual void start (void);
+  virtual void start ();
   void mouseMoveEvent (QMouseEvent *event);
   void mousePressEvent (QMouseEvent *event);
   void mouseReleaseEvent (QMouseEvent *event);
@@ -102,9 +102,9 @@ protected:
 private slots:
   void horizontalScrollValueChanged (int value);
   void verticalScrollValueChanged (int value);
-  void monitorConsole (void);
-  void updateSelection (void);
-  void tripleClickTimeout (void);
+  void monitorConsole ();
+  void updateSelection ();
+  void tripleClickTimeout ();
 
 private:
   QConsolePrivate *d;

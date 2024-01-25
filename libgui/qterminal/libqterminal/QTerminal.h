@@ -45,7 +45,7 @@ public:
 
   static QTerminal * create (QWidget *xparent);
 
-  virtual ~QTerminal (void) = default;
+  virtual ~QTerminal () = default;
 
   virtual void setTerminalFont (const QFont& font) = 0;
 
@@ -91,7 +91,7 @@ signals:
 
   void report_status_message (const QString&);
 
-  void interrupt_signal (void);
+  void interrupt_signal ();
 
   void edit_mfile_request (const QString&, int);
 
@@ -105,36 +105,36 @@ signals:
 
   void set_screen_size_signal (int, int);
 
-  void clear_command_window_request (void);
+  void clear_command_window_request ();
 
   void interpreter_event (const octave::fcn_callback& fcn);
   void interpreter_event (const octave::meth_callback& meth);
 
 public slots:
 
-  virtual void copyClipboard (void) = 0;
+  virtual void copyClipboard () = 0;
 
-  virtual void pasteClipboard (void) = 0;
+  virtual void pasteClipboard () = 0;
 
-  virtual void selectAll (void) = 0;
+  virtual void selectAll () = 0;
 
   virtual void handleCustomContextMenuRequested (const QPoint& at);
 
-  void notice_settings (void);
+  void notice_settings ();
 
-  virtual void init_terminal_size (void) { }
+  virtual void init_terminal_size () { }
 
-  void terminal_interrupt (void) { emit interrupt_signal (); }
+  void terminal_interrupt () { emit interrupt_signal (); }
 
-  void run_selection (void);
+  void run_selection ();
 
-  void edit_file (void);
+  void edit_file ();
 
-  void edit_selected (void);
+  void edit_selected ();
 
-  void help_on_expression (void);
+  void help_on_expression ();
 
-  void doc_on_expression (void);
+  void doc_on_expression ();
 
   virtual void handle_visibility_changed (bool) { };
 

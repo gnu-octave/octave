@@ -67,6 +67,20 @@ get more priority.
   - Performance experiments.
   - Target: Octave 10
 
+- New command window widget.  (LEAD?)
+  - In Octave 9, this widget is available but experimental. It can be invoked
+    with the runtime argument `--experimental-terminal-widget`. To make it
+    production quality (i.e., not experimental), the following features and
+    more need to be added:
+    - readline-like command line editing: recall history with up/down arrow keys
+    - capture output written to stdout/stderr
+    - a pager to enable `more on` to work
+    - search the contents of the command window
+    - clear the command window for `clc`
+  - Background: https://wiki.octave.org/GUI_terminal_widget
+  - Discussion: https://octave.discourse.group/t/new-command-window-widget/501
+  - Target: Octave 11
+
 - Graph theory routines (ARUN)
   - These need a full overhaul and in some cases ground-up implementation.
   - Matlab switched to graph objects some versions ago, as opposed to the

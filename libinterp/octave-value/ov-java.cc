@@ -104,7 +104,7 @@ public:
   java_local_ref (JNIEnv *env, T obj)
     : m_jobj (obj), m_detached (false), m_env (env) { }
 
-  ~java_local_ref (void) { release (); }
+  ~java_local_ref () { release (); }
 
   T& operator = (T obj)
   {
@@ -119,7 +119,7 @@ public:
   operator bool () const { return (m_jobj != 0); }
   operator T () { return m_jobj; }
 
-  void detach (void) { m_detached = true; }
+  void detach () { m_detached = true; }
 
 protected:
 
@@ -129,11 +129,11 @@ protected:
 
 private:
 
-  java_local_ref (void)
+  java_local_ref ()
     : m_jobj (0), m_detached (false), m_env (0)
   { }
 
-  void release (void)
+  void release ()
   {
     if (m_env && m_jobj && ! m_detached)
       m_env->DeleteLocalRef (m_jobj);

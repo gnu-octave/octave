@@ -442,7 +442,7 @@ static inline void maybe_disown_ptr (void *ptr);
   RET_TYPE FCN_NAME ARG_LIST const { request_mutation (); return RET_VAL; }
 
 #define GET_DATA_METHOD(RT, FCN_NAME, ID, COMPLEXITY)                   \
-  RT * FCN_NAME (void) const { return get_data<RT> (ID, COMPLEXITY); }
+  RT * FCN_NAME () const { return get_data<RT> (ID, COMPLEXITY); }
 
 class mxArray_octave_value : public mxArray_base
 {
@@ -461,9 +461,9 @@ public:
 
   mxArray_octave_value& operator = (const mxArray_octave_value&) = delete;
 
-  mxArray_base * dup (void) const { return new mxArray_octave_value (*this); }
+  mxArray_base * dup () const { return new mxArray_octave_value (*this); }
 
-  mxArray * as_mxArray (void) const
+  mxArray * as_mxArray () const
   {
     mxArray *retval = m_val.as_mxArray (m_interleaved);
 
@@ -500,62 +500,62 @@ public:
     return retval;
   }
 
-  ~mxArray_octave_value (void)
+  ~mxArray_octave_value ()
   {
     mxFree (m_class_name);
     mxFree (m_dims);
   }
 
-  bool is_octave_value (void) const { return true; }
+  bool is_octave_value () const { return true; }
 
-  int iscell (void) const { return m_val.iscell (); }
+  int iscell () const { return m_val.iscell (); }
 
-  int is_char (void) const { return m_val.is_string (); }
+  int is_char () const { return m_val.is_string (); }
 
-  int is_complex (void) const { return m_val.iscomplex (); }
+  int is_complex () const { return m_val.iscomplex (); }
 
-  int is_double (void) const { return m_val.is_double_type (); }
+  int is_double () const { return m_val.is_double_type (); }
 
-  int is_function_handle (void) const { return m_val.is_function_handle (); }
+  int is_function_handle () const { return m_val.is_function_handle (); }
 
-  int is_int16 (void) const { return m_val.is_int16_type (); }
+  int is_int16 () const { return m_val.is_int16_type (); }
 
-  int is_int32 (void) const { return m_val.is_int32_type (); }
+  int is_int32 () const { return m_val.is_int32_type (); }
 
-  int is_int64 (void) const { return m_val.is_int64_type (); }
+  int is_int64 () const { return m_val.is_int64_type (); }
 
-  int is_int8 (void) const { return m_val.is_int8_type (); }
+  int is_int8 () const { return m_val.is_int8_type (); }
 
-  int is_logical (void) const { return m_val.islogical (); }
+  int is_logical () const { return m_val.islogical (); }
 
-  int is_numeric (void) const { return m_val.isnumeric (); }
+  int is_numeric () const { return m_val.isnumeric (); }
 
-  int is_single (void) const { return m_val.is_single_type (); }
+  int is_single () const { return m_val.is_single_type (); }
 
-  int is_sparse (void) const { return m_val.issparse (); }
+  int is_sparse () const { return m_val.issparse (); }
 
-  int is_struct (void) const { return m_val.isstruct (); }
+  int is_struct () const { return m_val.isstruct (); }
 
-  int is_uint16 (void) const { return m_val.is_uint16_type (); }
+  int is_uint16 () const { return m_val.is_uint16_type (); }
 
-  int is_uint32 (void) const { return m_val.is_uint32_type (); }
+  int is_uint32 () const { return m_val.is_uint32_type (); }
 
-  int is_uint64 (void) const { return m_val.is_uint64_type (); }
+  int is_uint64 () const { return m_val.is_uint64_type (); }
 
-  int is_uint8 (void) const { return m_val.is_uint8_type (); }
+  int is_uint8 () const { return m_val.is_uint8_type (); }
 
-  int is_range (void) const { return m_val.is_range (); }
+  int is_range () const { return m_val.is_range (); }
 
-  int isreal (void) const { return m_val.isreal (); }
+  int isreal () const { return m_val.isreal (); }
 
-  int is_logical_scalar_true (void) const
+  int is_logical_scalar_true () const
   {
     return (is_logical_scalar () && m_val.is_true ());
   }
 
-  mwSize get_m (void) const { return m_val.rows (); }
+  mwSize get_m () const { return m_val.rows (); }
 
-  mwSize get_n (void) const
+  mwSize get_n () const
   {
     mwSize n = 1;
 
@@ -568,7 +568,7 @@ public:
     return n;
   }
 
-  mwSize * get_dimensions (void) const
+  mwSize * get_dimensions () const
   {
     if (! m_dims)
       {
@@ -586,7 +586,7 @@ public:
     return m_dims;
   }
 
-  mwSize get_number_of_dimensions (void) const
+  mwSize get_number_of_dimensions () const
   {
     // Force m_dims and m_ndims to be cached.
     get_dimensions ();
@@ -599,11 +599,11 @@ public:
 
   MUTATION_METHOD (int, set_dimensions, (mwSize *, mwSize), 0)
 
-  mwSize get_number_of_elements (void) const { return m_val.numel (); }
+  mwSize get_number_of_elements () const { return m_val.numel (); }
 
-  int isempty (void) const { return m_val.isempty (); }
+  int isempty () const { return m_val.isempty (); }
 
-  bool is_scalar (void) const
+  bool is_scalar () const
   {
     // Force m_dims and m_ndims to be cached.
     get_dimensions ();
@@ -611,7 +611,7 @@ public:
     return m_ndims == 2 && m_dims[0] == 1 && m_dims[1] == 1;
   }
 
-  mxClassID get_class_id (void) const
+  mxClassID get_class_id () const
   {
     m_id = mxUNKNOWN_CLASS;
 
@@ -651,7 +651,7 @@ public:
     return m_id;
   }
 
-  const char * get_class_name (void) const
+  const char * get_class_name () const
   {
     if (! m_class_name)
       {
@@ -703,7 +703,7 @@ public:
   // Not allowed.
   VOID_MUTATION_METHOD (set_cell, (mwIndex, mxArray *))
 
-  double get_scalar (void) const
+  double get_scalar () const
   {
     if (m_val.issparse ())
       {
@@ -723,7 +723,7 @@ public:
       return m_val.scalar_value (true);
   }
 
-  void * get_data (void) const
+  void * get_data () const
   {
     // Casting away const required for MEX interface.
 
@@ -784,7 +784,7 @@ public:
   GET_DATA_METHOD (mxComplexSingle, get_complex_singles,
                    mxDOUBLE_CLASS, mxCOMPLEX);
 
-  void * get_imag_data (void) const
+  void * get_imag_data () const
   {
     void *retval = nullptr;
 
@@ -816,7 +816,7 @@ public:
   // Not allowed.
   VOID_MUTATION_METHOD (set_imag_data, (void *))
 
-  mwIndex * get_ir (void) const
+  mwIndex * get_ir () const
   {
     // Casting away const required for MEX interface.
 
@@ -824,7 +824,7 @@ public:
     return static_cast<mwIndex *> (maybe_mark_foreign (ptr));
   }
 
-  mwIndex * get_jc (void) const
+  mwIndex * get_jc () const
   {
     // Casting away const required for MEX interface.
 
@@ -832,7 +832,7 @@ public:
     return static_cast<mwIndex *> (maybe_mark_foreign (ptr));
   }
 
-  mwSize get_nzmax (void) const { return m_val.nzmax (); }
+  mwSize get_nzmax () const { return m_val.nzmax (); }
 
   // Not allowed.
   VOID_MUTATION_METHOD (set_ir, (mwIndex *))
@@ -854,7 +854,7 @@ public:
   // Not allowed.
   VOID_MUTATION_METHOD (set_field_by_number, (mwIndex, int, mxArray *))
 
-  int get_number_of_fields (void) const { return m_val.nfields (); }
+  int get_number_of_fields () const { return m_val.nfields (); }
 
   CONST_MUTATION_METHOD (const char *, get_field_name_by_number, (int), nullptr)
 
@@ -883,7 +883,7 @@ public:
     return retval;
   }
 
-  char * array_to_string (void) const
+  char * array_to_string () const
   {
     // FIXME: this is supposed to handle multi-byte character strings.
 
@@ -919,7 +919,7 @@ public:
     return calc_single_subscript_internal (m_ndims, m_dims, nsubs, subs);
   }
 
-  std::size_t get_element_size (void) const
+  std::size_t get_element_size () const
   {
     // Force m_id to be cached.
     get_class_id ();
@@ -947,9 +947,9 @@ public:
       }
   }
 
-  bool mutation_needed (void) const { return m_mutate_flag; }
+  bool mutation_needed () const { return m_mutate_flag; }
 
-  void request_mutation (void) const
+  void request_mutation () const
   {
     if (m_mutate_flag)
       panic_impossible ();
@@ -957,9 +957,9 @@ public:
     m_mutate_flag = true;
   }
 
-  mxArray * mutate (void) const { return as_mxArray (); }
+  mxArray * mutate () const { return as_mxArray (); }
 
-  octave_value as_octave_value (void) const { return m_val; }
+  octave_value as_octave_value () const { return m_val; }
 
 protected:
 
@@ -1009,33 +1009,33 @@ public:
 
   mxArray_matlab& operator = (const mxArray_matlab&) = delete;
 
-  ~mxArray_matlab (void)
+  ~mxArray_matlab ()
   {
     mxFree (m_class_name);
     mxFree (m_dims);
   }
 
-  int iscell (void) const { return m_id == mxCELL_CLASS; }
+  int iscell () const { return m_id == mxCELL_CLASS; }
 
-  int is_char (void) const { return m_id == mxCHAR_CLASS; }
+  int is_char () const { return m_id == mxCHAR_CLASS; }
 
-  int is_complex (void) const { return m_is_complex; }
+  int is_complex () const { return m_is_complex; }
 
-  int is_double (void) const { return m_id == mxDOUBLE_CLASS; }
+  int is_double () const { return m_id == mxDOUBLE_CLASS; }
 
-  int is_function_handle (void) const { return m_id == mxFUNCTION_CLASS; }
+  int is_function_handle () const { return m_id == mxFUNCTION_CLASS; }
 
-  int is_int16 (void) const { return m_id == mxINT16_CLASS; }
+  int is_int16 () const { return m_id == mxINT16_CLASS; }
 
-  int is_int32 (void) const { return m_id == mxINT32_CLASS; }
+  int is_int32 () const { return m_id == mxINT32_CLASS; }
 
-  int is_int64 (void) const { return m_id == mxINT64_CLASS; }
+  int is_int64 () const { return m_id == mxINT64_CLASS; }
 
-  int is_int8 (void) const { return m_id == mxINT8_CLASS; }
+  int is_int8 () const { return m_id == mxINT8_CLASS; }
 
-  int is_logical (void) const { return m_id == mxLOGICAL_CLASS; }
+  int is_logical () const { return m_id == mxLOGICAL_CLASS; }
 
-  int is_numeric (void) const
+  int is_numeric () const
   {
     return (m_id == mxDOUBLE_CLASS || m_id == mxSINGLE_CLASS
             || m_id == mxINT8_CLASS || m_id == mxUINT8_CLASS
@@ -1044,29 +1044,29 @@ public:
             || m_id == mxINT64_CLASS || m_id == mxUINT64_CLASS);
   }
 
-  int is_single (void) const { return m_id == mxSINGLE_CLASS; }
+  int is_single () const { return m_id == mxSINGLE_CLASS; }
 
-  int is_sparse (void) const { return 0; }
+  int is_sparse () const { return 0; }
 
-  int is_struct (void) const { return m_id == mxSTRUCT_CLASS; }
+  int is_struct () const { return m_id == mxSTRUCT_CLASS; }
 
-  int is_uint16 (void) const { return m_id == mxUINT16_CLASS; }
+  int is_uint16 () const { return m_id == mxUINT16_CLASS; }
 
-  int is_uint32 (void) const { return m_id == mxUINT32_CLASS; }
+  int is_uint32 () const { return m_id == mxUINT32_CLASS; }
 
-  int is_uint64 (void) const { return m_id == mxUINT64_CLASS; }
+  int is_uint64 () const { return m_id == mxUINT64_CLASS; }
 
-  int is_uint8 (void) const { return m_id == mxUINT8_CLASS; }
+  int is_uint8 () const { return m_id == mxUINT8_CLASS; }
 
-  int is_logical_scalar_true (void) const
+  int is_logical_scalar_true () const
   {
     return (is_logical_scalar ()
             && static_cast<mxLogical *> (get_data ())[0] != 0);
   }
 
-  mwSize get_m (void) const { return m_dims[0]; }
+  mwSize get_m () const { return m_dims[0]; }
 
-  mwSize get_n (void) const
+  mwSize get_n () const
   {
     mwSize n = 1;
 
@@ -1076,9 +1076,9 @@ public:
     return n;
   }
 
-  mwSize * get_dimensions (void) const { return m_dims; }
+  mwSize * get_dimensions () const { return m_dims; }
 
-  mwSize get_number_of_dimensions (void) const { return m_ndims; }
+  mwSize get_number_of_dimensions () const { return m_ndims; }
 
   void set_m (mwSize m) { m_dims[0] = m; }
 
@@ -1110,7 +1110,7 @@ public:
       }
   }
 
-  mwSize get_number_of_elements (void) const
+  mwSize get_number_of_elements () const
   {
     mwSize retval = m_dims[0];
 
@@ -1120,16 +1120,16 @@ public:
     return retval;
   }
 
-  int isempty (void) const { return get_number_of_elements () == 0; }
+  int isempty () const { return get_number_of_elements () == 0; }
 
-  bool is_scalar (void) const
+  bool is_scalar () const
   {
     return m_ndims == 2 && m_dims[0] == 1 && m_dims[1] == 1;
   }
 
-  mxClassID get_class_id (void) const { return m_id; }
+  mxClassID get_class_id () const { return m_id; }
 
-  const char * get_class_name (void) const
+  const char * get_class_name () const
   {
     switch (m_id)
       {
@@ -1171,77 +1171,77 @@ public:
     err_invalid_type ("set_cell");
   }
 
-  double get_scalar (void) const
+  double get_scalar () const
   {
     err_invalid_type ("get_scalar");
   }
 
-  void * get_data (void) const
+  void * get_data () const
   {
     err_invalid_type ("get_data");
   }
 
-  mxDouble * get_doubles (void) const
+  mxDouble * get_doubles () const
   {
     err_invalid_type ("get_doubles");
   }
 
-  mxSingle * get_singles (void) const
+  mxSingle * get_singles () const
   {
     err_invalid_type ("get_singles");
   }
 
-  mxInt8 * get_int8s (void) const
+  mxInt8 * get_int8s () const
   {
     err_invalid_type ("get_int8s");
   }
 
-  mxInt16 * get_int16s (void) const
+  mxInt16 * get_int16s () const
   {
     err_invalid_type ("get_int16s");
   }
 
-  mxInt32 * get_int32s (void) const
+  mxInt32 * get_int32s () const
   {
     err_invalid_type ("get_int32s");
   }
 
-  mxInt64 * get_int64s (void) const
+  mxInt64 * get_int64s () const
   {
     err_invalid_type ("get_int64s");
   }
 
-  mxUint8 * get_uint8s (void) const
+  mxUint8 * get_uint8s () const
   {
     err_invalid_type ("get_uint8s");
   }
 
-  mxUint16 * get_uint16s (void) const
+  mxUint16 * get_uint16s () const
   {
     err_invalid_type ("get_uint16s");
   }
 
-  mxUint32 * get_uint32s (void) const
+  mxUint32 * get_uint32s () const
   {
     err_invalid_type ("get_uint32s");
   }
 
-  mxUint64 * get_uint64s (void) const
+  mxUint64 * get_uint64s () const
   {
     err_invalid_type ("get_uint64s");
   }
 
-  mxComplexDouble * get_complex_doubles (void) const
+  mxComplexDouble * get_complex_doubles () const
   {
     err_invalid_type ("get_complex_doubles");
   }
 
-  mxComplexSingle * get_complex_singles (void) const
+  mxComplexSingle * get_complex_singles () const
   {
     err_invalid_type ("get_complex_singles");
   }
 
-  void * get_imag_data (void) const
+  void * get_imag_data () const
   {
     err_invalid_type ("get_imag_data");
   }
@@ -1316,17 +1316,17 @@ public:
     err_invalid_type ("set_imag_data");
   }
 
-  mwIndex * get_ir (void) const
+  mwIndex * get_ir () const
   {
     err_invalid_type ("get_ir");
   }
 
-  mwIndex * get_jc (void) const
+  mwIndex * get_jc () const
   {
     err_invalid_type ("get_jc");
   }
 
-  mwSize get_nzmax (void) const
+  mwSize get_nzmax () const
   {
     err_invalid_type ("get_nzmax");
   }
@@ -1367,7 +1367,7 @@ public:
     err_invalid_type ("set_field_by_number");
   }
 
-  int get_number_of_fields (void) const
+  int get_number_of_fields () const
   {
     err_invalid_type ("get_number_of_fields");
   }
@@ -1387,7 +1387,7 @@ public:
     err_invalid_type ("get_string");
   }
 
-  char * array_to_string (void) const
+  char * array_to_string () const
   {
     err_invalid_type ("array_to_string");
   }
@@ -1397,7 +1397,7 @@ public:
     return calc_single_subscript_internal (m_ndims, m_dims, nsubs, subs);
   }
 
-  std::size_t get_element_size (void) const
+  std::size_t get_element_size () const
   {
     switch (m_id)
       {
@@ -1493,7 +1493,7 @@ protected:
   void set_complexity (bool is_complex) { m_is_complex = is_complex; }
 
   dim_vector
-  dims_to_dim_vector (void) const
+  dims_to_dim_vector () const
   {
     mwSize nd = get_number_of_dimensions ();
 
@@ -1605,17 +1605,17 @@ public:
 
   mxArray_base_full& operator = (const mxArray_base_full&) = delete;
 
-  mxArray_base * dup (void) const
+  mxArray_base * dup () const
   {
     return new mxArray_base_full (*this);
   }
 
-  ~mxArray_base_full (void)
+  ~mxArray_base_full ()
   {
     mxFree (m_pr);
   }
 
-  double get_scalar (void) const
+  double get_scalar () const
   {
     // FIXME: how does this work for interleaved complex arrays?
 
@@ -1678,7 +1678,7 @@ public:
     return retval;
   }
 
-  void * get_data (void) const { return m_pr; }
+  void * get_data () const { return m_pr; }
 
   void set_data (void *pr) { m_pr = pr; }
 
@@ -1687,62 +1687,62 @@ public:
   // definitions in the mxArray_separate_full class that override these
   // functions.
 
-  mxDouble * get_doubles (void) const
+  mxDouble * get_doubles () const
   {
     return static_cast<mxDouble *> (m_pr);
   }
 
-  mxSingle * get_singles (void) const
+  mxSingle * get_singles () const
   {
     return static_cast<mxSingle *> (m_pr);
   }
 
-  mxInt8 * get_int8s (void) const
+  mxInt8 * get_int8s () const
   {
     return static_cast<mxInt8 *> (m_pr);
   }
 
-  mxInt16 * get_int16s (void) const
+  mxInt16 * get_int16s () const
   {
     return static_cast<mxInt16 *> (m_pr);
   }
 
-  mxInt32 * get_int32s (void) const
+  mxInt32 * get_int32s () const
   {
     return static_cast<mxInt32 *> (m_pr);
   }
 
-  mxInt64 * get_int64s (void) const
+  mxInt64 * get_int64s () const
   {
     return static_cast<mxInt64 *> (m_pr);
   }
 
-  mxUint8 * get_uint8s (void) const
+  mxUint8 * get_uint8s () const
   {
     return static_cast<mxUint8 *> (m_pr);
   }
 
-  mxUint16 * get_uint16s (void) const
+  mxUint16 * get_uint16s () const
   {
     return static_cast<mxUint16 *> (m_pr);
   }
 
-  mxUint32 * get_uint32s (void) const
+  mxUint32 * get_uint32s () const
   {
     return static_cast<mxUint32 *> (m_pr);
   }
 
-  mxUint64 * get_uint64s (void) const
+  mxUint64 * get_uint64s () const
   {
     return static_cast<mxUint64 *> (m_pr);
   }
 
-  mxComplexDouble * get_complex_doubles (void) const
+  mxComplexDouble * get_complex_doubles () const
   {
     return static_cast<mxComplexDouble *> (m_pr);
   }
 
-  mxComplexSingle * get_complex_singles (void) const
+  mxComplexSingle * get_complex_singles () const
   {
     return static_cast<mxComplexSingle *> (m_pr);
   }
@@ -1845,7 +1845,7 @@ public:
     return retval;
   }
 
-  char * array_to_string (void) const
+  char * array_to_string () const
   {
     // FIXME: this is supposed to handle multi-byte character strings.
 
@@ -1866,7 +1866,7 @@ public:
     return buf;
   }
 
-  octave_value as_octave_value (void) const
+  octave_value as_octave_value () const
   {
     octave_value retval;
 
@@ -2043,14 +2043,14 @@ public:
 
   mxArray_interleaved_full& operator = (const mxArray_interleaved_full&) = delete;
 
-  mxArray_base * dup (void) const
+  mxArray_base * dup () const
   {
     return new mxArray_interleaved_full (*this);
   }
 
-  ~mxArray_interleaved_full (void) = default;
+  ~mxArray_interleaved_full () = default;
 
-  void * get_imag_data (void) const { panic_impossible (); }
+  void * get_imag_data () const { panic_impossible (); }
 
   void set_imag_data (void */*pi*/) { panic_impossible (); }
 
@@ -2113,17 +2113,17 @@ public:
 
   mxArray_separate_full& operator = (const mxArray_separate_full&) = delete;
 
-  mxArray_base * dup (void) const
+  mxArray_base * dup () const
   {
     return new mxArray_separate_full (*this);
   }
 
-  ~mxArray_separate_full (void)
+  ~mxArray_separate_full ()
   {
     mxFree (m_pi);
   }
 
-  void * get_imag_data (void) const { return m_pi; }
+  void * get_imag_data () const { return m_pi; }
 
   void set_imag_data (void *pi)
   {
@@ -2132,30 +2132,30 @@ public:
     set_complexity (m_pi != nullptr);
   }
 
-  mxDouble * get_doubles (void) const { panic_impossible (); }
-  mxSingle * get_singles (void) const { panic_impossible (); }
-  mxInt8 * get_int8s (void) const { panic_impossible (); }
-  mxInt16 * get_int16s (void) const { panic_impossible (); }
-  mxInt32 * get_int32s (void) const { panic_impossible (); }
-  mxInt64 * get_int64s (void) const { panic_impossible (); }
-  mxUint8 * get_uint8s (void) const { panic_impossible (); }
-  mxUint16 * get_uint16s (void) const { panic_impossible (); }
-  mxUint32 * get_uint32s (void) const { panic_impossible (); }
-  mxUint64 * get_uint64s (void) const { panic_impossible (); }
+  mxDouble * get_doubles () const { panic_impossible (); }
+  mxSingle * get_singles () const { panic_impossible (); }
+  mxInt8 * get_int8s () const { panic_impossible (); }
+  mxInt16 * get_int16s () const { panic_impossible (); }
+  mxInt32 * get_int32s () const { panic_impossible (); }
+  mxInt64 * get_int64s () const { panic_impossible (); }
+  mxUint8 * get_uint8s () const { panic_impossible (); }
+  mxUint16 * get_uint16s () const { panic_impossible (); }
+  mxUint32 * get_uint32s () const { panic_impossible (); }
+  mxUint64 * get_uint64s () const { panic_impossible (); }
 
-  mxComplexDouble * get_complex_doubles (void) const { panic_impossible (); }
-  mxComplexSingle * get_complex_singles (void) const { panic_impossible (); }
+  mxComplexDouble * get_complex_doubles () const { panic_impossible (); }
+  mxComplexSingle * get_complex_singles () const { panic_impossible (); }
 
   // We don't have complex integer types, but for separate storage they
   // still would not work.
-  mxComplexInt8 * get_complex_int8s (void) const { panic_impossible (); }
-  mxComplexInt16 * get_complex_int16s (void) const { panic_impossible (); }
-  mxComplexInt32 * get_complex_int32s (void) const { panic_impossible (); }
-  mxComplexInt64 * get_complex_int64s (void) const { panic_impossible (); }
-  mxComplexUint8 * get_complex_uint8s (void) const { panic_impossible (); }
-  mxComplexUint16 * get_complex_uint16s (void) const { panic_impossible (); }
-  mxComplexUint32 * get_complex_uint32s (void) const { panic_impossible (); }
-  mxComplexUint64 * get_complex_uint64s (void) const { panic_impossible (); }
+  mxComplexInt8 * get_complex_int8s () const { panic_impossible (); }
+  mxComplexInt16 * get_complex_int16s () const { panic_impossible (); }
+  mxComplexInt32 * get_complex_int32s () const { panic_impossible (); }
+  mxComplexInt64 * get_complex_int64s () const { panic_impossible (); }
+  mxComplexUint8 * get_complex_uint8s () const { panic_impossible (); }
+  mxComplexUint16 * get_complex_uint16s () const { panic_impossible (); }
+  mxComplexUint32 * get_complex_uint32s () const { panic_impossible (); }
+  mxComplexUint64 * get_complex_uint64s () const { panic_impossible (); }
 
   int set_doubles (mxDouble *) { panic_impossible (); }
   int set_singles (mxSingle *) { panic_impossible (); }
@@ -2182,7 +2182,7 @@ public:
   int set_complex_uint32s (mxComplexUint32 *) { panic_impossible (); }
   int set_complex_uint64s (mxComplexUint64 *) { panic_impossible (); }
 
-  octave_value as_octave_value (void) const
+  octave_value as_octave_value () const
   {
     if (! is_complex ())
       return mxArray_base_full::as_octave_value ();
@@ -2301,30 +2301,30 @@ public:
 
   mxArray_base_sparse& operator = (const mxArray_base_sparse&) = delete;
 
-  mxArray_base * dup (void) const
+  mxArray_base * dup () const
   {
     return new mxArray_base_sparse (*this);
   }
 
-  ~mxArray_base_sparse (void)
+  ~mxArray_base_sparse ()
   {
     mxFree (m_ir);
     mxFree (m_jc);
     mxFree (m_pr);
   }
 
-  int is_sparse (void) const { return 1; }
+  int is_sparse () const { return 1; }
 
-  void * get_data (void) const { return m_pr; }
+  void * get_data () const { return m_pr; }
 
   void set_data (void *pr) { m_pr = pr; }
 
-  mxDouble * get_doubles (void) const
+  mxDouble * get_doubles () const
   {
     return static_cast<mxDouble *> (m_pr);
   }
 
-  mxComplexDouble * get_complex_doubles (void) const
+  mxComplexDouble * get_complex_doubles () const
   {
     return static_cast<mxComplexDouble *> (m_pr);
   }
@@ -2341,11 +2341,11 @@ public:
     return 0;
   }
 
-  mwIndex * get_ir (void) const { return m_ir; }
+  mwIndex * get_ir () const { return m_ir; }
 
-  mwIndex * get_jc (void) const { return m_jc; }
+  mwIndex * get_jc () const { return m_jc; }
 
-  mwSize get_nzmax (void) const { return m_nzmax; }
+  mwSize get_nzmax () const { return m_nzmax; }
 
   void set_ir (mwIndex *ir) { m_ir = ir; }
 
@@ -2357,7 +2357,7 @@ public:
     m_nzmax = (nzmax > 0 ? nzmax : 1);
   }
 
-  octave_value as_octave_value (void) const
+  octave_value as_octave_value () const
   {
     octave_value retval;
 
@@ -2469,14 +2469,14 @@ public:
 
   mxArray_interleaved_sparse& operator = (const mxArray_interleaved_sparse&) = delete;
 
-  mxArray_base * dup (void) const
+  mxArray_base * dup () const
   {
     return new mxArray_interleaved_sparse (*this);
   }
 
-  ~mxArray_interleaved_sparse (void) = default;
+  ~mxArray_interleaved_sparse () = default;
 
-  void * get_imag_data (void) const { panic_impossible (); }
+  void * get_imag_data () const { panic_impossible (); }
 
   void set_imag_data (void */*pi*/) { panic_impossible (); }
 };
@@ -2514,17 +2514,17 @@ public:
 
   mxArray_separate_sparse& operator = (const mxArray_separate_sparse&) = delete;
 
-  mxArray_base * dup (void) const
+  mxArray_base * dup () const
   {
     return new mxArray_separate_sparse (*this);
   }
 
-  ~mxArray_separate_sparse (void)
+  ~mxArray_separate_sparse ()
   {
     mxFree (m_pi);
   }
 
-  void * get_imag_data (void) const { return m_pi; }
+  void * get_imag_data () const { return m_pi; }
 
   void set_imag_data (void *pi)
   {
@@ -2532,13 +2532,13 @@ public:
     set_complexity (m_pi != nullptr);
   }
 
-  mxDouble * get_doubles (void) const { panic_impossible (); }
-  mxComplexDouble * get_complex_doubles (void) const { panic_impossible (); }
+  mxDouble * get_doubles () const { panic_impossible (); }
+  mxComplexDouble * get_complex_doubles () const { panic_impossible (); }
 
   int set_doubles (mxDouble *) { panic_impossible (); }
   int set_complex_doubles (mxComplexDouble *) { panic_impossible (); }
 
-  octave_value as_octave_value (void) const
+  octave_value as_octave_value () const
   {
     if (! is_complex ())
       return mxArray_base_sparse::as_octave_value ();
@@ -2668,9 +2668,9 @@ public:
       m_fields[i] = mxArray::strsave (keys[i]);
   }
 
-  mxArray_base * dup (void) const { return new mxArray_struct (*this); }
+  mxArray_base * dup () const { return new mxArray_struct (*this); }
 
-  ~mxArray_struct (void)
+  ~mxArray_struct ()
   {
     for (int i = 0; i < m_nfields; i++)
       mxFree (m_fields[i]);
@@ -2793,7 +2793,7 @@ public:
 
   void set_field_by_number (mwIndex index, int key_num, mxArray *val);
 
-  int get_number_of_fields (void) const { return m_nfields; }
+  int get_number_of_fields () const { return m_nfields; }
 
   const char * get_field_name_by_number (int key_num) const
   {
@@ -2816,11 +2816,11 @@ public:
     return retval;
   }
 
-  void * get_data (void) const { return m_data; }
+  void * get_data () const { return m_data; }
 
   void set_data (void *data) { m_data = static_cast<mxArray **> (data); }
 
-  octave_value as_octave_value (void) const
+  octave_value as_octave_value () const
   {
     const dim_vector& dv = dims_to_dim_vector ();
 
@@ -2900,9 +2900,9 @@ public:
 
   mxArray_cell& operator = (const mxArray_cell&) = delete;
 
-  mxArray_base * dup (void) const { return new mxArray_cell (*this); }
+  mxArray_base * dup () const { return new mxArray_cell (*this); }
 
-  ~mxArray_cell (void)
+  ~mxArray_cell ()
   {
     mwSize nel = get_number_of_elements ();
 
@@ -2919,11 +2919,11 @@ public:
 
   void set_cell (mwIndex idx, mxArray *val);
 
-  void * get_data (void) const { return m_data; }
+  void * get_data () const { return m_data; }
 
   void set_data (void *data) { m_data = static_cast<mxArray **> (data); }
 
-  octave_value as_octave_value (void) const
+  octave_value as_octave_value () const
   {
     const dim_vector& dv = dims_to_dim_vector ();
 
@@ -3018,7 +3018,7 @@ mxArray::mxArray (bool interleaved, mwSize m, mwSize n)
   : m_rep (new mxArray_cell (interleaved, m, n)), m_name (nullptr)
 { }
 
-mxArray::~mxArray (void)
+mxArray::~mxArray ()
 {
   mxFree (m_name);
 
@@ -3043,7 +3043,7 @@ mxArray::as_octave_value (const mxArray *ptr, bool null_is_empty)
 }
 
 octave_value
-mxArray::as_octave_value (void) const
+mxArray::as_octave_value () const
 {
   return m_rep->as_octave_value ();
 }
@@ -3131,7 +3131,7 @@ mxArray::create_rep (bool interleaved, mxClassID id, mwSize m, mwSize n,
 }
 
 void
-mxArray::maybe_mutate (void) const
+mxArray::maybe_mutate () const
 {
   if (m_rep->is_octave_value ())
     {
@@ -3165,7 +3165,7 @@ public:
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (mex)
 
-  ~mex (void)
+  ~mex ()
   {
     // We can't use mex::free here because it modifies memlist.
     while (! m_memlist.empty ())
@@ -3189,7 +3189,7 @@ public:
     mxFree (m_fname);
   }
 
-  const char * function_name (void) const
+  const char * function_name () const
   {
     if (! m_fname)
       {
@@ -3414,7 +3414,7 @@ public:
     return inlist;
   }
 
-  octave_mex_function& current_mex_function (void) const
+  octave_mex_function& current_mex_function () const
   {
     return m_curr_mex_fcn;
   }
@@ -3575,19 +3575,19 @@ mxIsNaN (const double v)
 }
 
 double
-mxGetEps (void)
+mxGetEps ()
 {
   return std::numeric_limits<double>::epsilon ();
 }
 
 double
-mxGetInf (void)
+mxGetInf ()
 {
   return lo_ieee_inf_value ();
 }
 
 double
-mxGetNaN (void)
+mxGetNaN ()
 {
   return lo_ieee_nan_value ();
 }
@@ -4541,7 +4541,7 @@ OCTAVE_END_NAMESPACE(octave)
 // C interface to mex functions:
 
 const char *
-mexFunctionName (void)
+mexFunctionName ()
 {
   return mex_context ? mex_context->function_name () : "unknown";
 }
@@ -4985,7 +4985,7 @@ mexMakeMemoryPersistent (void *ptr)
 }
 
 int
-mexAtExit (void (*f) (void))
+mexAtExit (void (*f) ())
 {
   if (mex_context)
     {
@@ -5032,7 +5032,7 @@ mexIsGlobal (const mxArray *ptr)
 }
 
 int
-mexIsLocked (void)
+mexIsLocked ()
 {
   int retval = 0;
 
@@ -5051,7 +5051,7 @@ mexIsLocked (void)
 std::map<std::string, int> mex_lock_count;
 
 void
-mexLock (void)
+mexLock ()
 {
   if (mex_context)
     {
@@ -5090,7 +5090,7 @@ mexSet (double handle, const char *property, mxArray *val)
 }
 
 void
-mexUnlock (void)
+mexUnlock ()
 {
   if (mex_context)
     {

@@ -37,7 +37,7 @@ extern "C"
 #    include <dlfcn.h>
 #  else
   extern void * dlopen (const char *, int);
-  extern const char * dlerror (void);
+  extern const char * dlerror ();
   extern void * dlsym (void *, const char *);
   extern int dlclose (void *);
 #  endif

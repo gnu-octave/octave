@@ -31,7 +31,7 @@ see <https://www.gnu.org/licenses/>.
 class QConsoleColors : public QMap<int, QColor>
 {
 public:
-  QConsoleColors (void);
+  QConsoleColors ();
 };
 
 //////////////////////////////////////////////////////////////////////////////

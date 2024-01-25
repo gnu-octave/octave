@@ -27,7 +27,7 @@ see <https://www.gnu.org/licenses/>.
 
 //////////////////////////////////////////////////////////////////////////////
 
-QConsoleColors::QConsoleColors (void)
+QConsoleColors::QConsoleColors ()
     : QMap<int, QColor> ()
 {
   (*this)[0]  = Qt::white;

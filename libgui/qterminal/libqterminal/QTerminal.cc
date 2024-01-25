@@ -204,7 +204,7 @@ void QTerminal::doc_on_expression ()
 }
 
 void
-QTerminal::notice_settings (void)
+QTerminal::notice_settings ()
 {
   octave::gui_settings settings;
 
@@ -278,7 +278,7 @@ QTerminal::notice_settings (void)
 }
 
 void
-QTerminal::construct (void)
+QTerminal::construct ()
 {
   octave::gui_settings settings;
 

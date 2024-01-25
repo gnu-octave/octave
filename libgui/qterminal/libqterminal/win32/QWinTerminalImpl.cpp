@@ -77,7 +77,7 @@ class QConsoleView : public QWidget
 {
 public:
   QConsoleView (QWinTerminalImpl *parent = 0) : QWidget (parent), q (parent) { }
-  ~QConsoleView (void) { }
+  ~QConsoleView () { }
 
 protected:
   void paintEvent (QPaintEvent *event) { q->viewPaintEvent (this, event); }
@@ -95,7 +95,7 @@ public:
   QConsoleThread (QWinTerminalImpl *console) : QThread (console), q (console) { }
 
 protected:
-  void run (void)
+  void run ()
     { q->start (); }
 
 private:
@@ -180,21 +180,21 @@ public:
     };
 
   QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd = QString ());
-  ~QConsolePrivate (void);
+  ~QConsolePrivate ();
 
   void updateConsoleSize (bool sync = false, bool allow_smaller_width = false);
-  void syncConsoleParameters (void);
+  void syncConsoleParameters ();
   void grabConsoleBuffer (CHAR_INFO* buf = 0);
-  void updateHorizontalScrollBar (void);
-  void updateVerticalScrollBar (void);
+  void updateHorizontalScrollBar ();
+  void updateVerticalScrollBar ();
   void setHorizontalScrollValue (int value);
   void setVerticalScrollValue (int value);
   void updateConsoleView (bool grab = true);
-  void monitorConsole (void);
-  void startCommand (void);
+  void monitorConsole ();
+  void startCommand ();
   void sendConsoleText (const QString& s);
-  QRect cursorRect (void);
-  QRect boundingRect (void);
+  QRect cursorRect ();
+  QRect boundingRect ();
   void selectAll ();
   void selectWord (const QPoint& cellPos);
   void selectLine (const QPoint& cellPos);
@@ -206,14 +206,14 @@ public:
                         const char *devName);
 
   QPoint posToCell (const QPoint& pt);
-  QString getSelection (void);
-  void updateSelection (void);
-  void clearSelection (void);
+  QString getSelection ();
+  void updateSelection ();
+  void clearSelection ();
 
-  QColor backgroundColor (void) const;
-  QColor foregroundColor (void) const;
-  QColor selectionColor (void) const;
-  QColor cursorColor (void) const;
+  QColor backgroundColor () const;
+  QColor foregroundColor () const;
+  QColor selectionColor () const;
+  QColor cursorColor () const;
 
   void setBackgroundColor (const QColor& color);
   void setForegroundColor (const QColor& color);
@@ -435,8 +435,8 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd)
   QObject::connect (m_verticalScrollBar, SIGNAL (valueChanged (int)),
                     q, SLOT (verticalScrollValueChanged (int)));
 
-  QObject::connect (m_consoleWatcher, SIGNAL (timeout (void)),
-                    q, SLOT (monitorConsole (void)));
+  QObject::connect (m_consoleWatcher, SIGNAL (timeout ()),
+                    q, SLOT (monitorConsole ()));
 
   m_consoleWatcher->start ();
 
@@ -445,15 +445,15 @@ QConsolePrivate::QConsolePrivate (QWinTerminalImpl *parent, const QString& cmd)
   else
     {
       m_consoleThread = new QConsoleThread (q);
-      QObject::connect (m_consoleThread, SIGNAL (finished (void)),
-                        q, SIGNAL (terminated (void)));
+      QObject::connect (m_consoleThread, SIGNAL (finished ()),
+                        q, SIGNAL (terminated ()));
       m_consoleThread->start ();
     }
 }
 
 //////////////////////////////////////////////////////////////////////////////
 
-QConsolePrivate::~QConsolePrivate (void)
+QConsolePrivate::~QConsolePrivate ()
 {
   if (m_consoleThread && m_consoleThread->isRunning () && m_process)
     {
@@ -505,7 +505,7 @@ QPoint QConsolePrivate::posToCell (const QPoint& p)
                                / m_charSize.height ()));
 }
 
-QString QConsolePrivate::getSelection (void)
+QString QConsolePrivate::getSelection ()
 {
   QString selection;
 
@@ -566,7 +566,7 @@ QString QConsolePrivate::getSelection (void)
   return selection;
 }
 
-void QConsolePrivate::updateSelection (void)
+void QConsolePrivate::updateSelection ()
 {
   QPoint begin = m_beginSelection;
   QPoint end = m_endSelection;
@@ -579,29 +579,29 @@ void QConsolePrivate::updateSelection (void)
   m_consoleView->update ();
 }
 
-void QConsolePrivate::clearSelection (void)
+void QConsolePrivate::clearSelection ()
 {
   m_beginSelection = m_endSelection = QPoint ();
 
   m_consoleView->update ();
 }
 
-QColor QConsolePrivate::backgroundColor (void) const
+QColor QConsolePrivate::backgroundColor () const
 {
   return m_colors[0];
 }
 
-QColor QConsolePrivate::foregroundColor (void) const
+QColor QConsolePrivate::foregroundColor () const
 {
   return m_colors[7];
 }
 
-QColor QConsolePrivate::selectionColor (void) const
+QColor QConsolePrivate::selectionColor () const
 {
   return m_selectionColor;
 }
 
-QColor QConsolePrivate::cursorColor (void) const
+QColor QConsolePrivate::cursorColor () const
 {
   return m_cursorColor.isValid () ? m_cursorColor : foregroundColor ();
 }
@@ -1088,7 +1088,7 @@ void QConsolePrivate::updateConsoleSize (bool sync, bool allow_smaller_width)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::syncConsoleParameters (void)
+void QConsolePrivate::syncConsoleParameters ()
 {
   CONSOLE_SCREEN_BUFFER_INFO sbi;
   HANDLE hStdOut = m_stdOut;
@@ -1154,7 +1154,7 @@ void QConsolePrivate::grabConsoleBuffer (CHAR_INFO* buf)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::updateHorizontalScrollBar (void)
+void QConsolePrivate::updateHorizontalScrollBar ()
 {
   m_horizontalScrollBar->setMinimum (0);
   if (m_bufferSize.width () > m_consoleRect.width ())
@@ -1172,7 +1172,7 @@ void QConsolePrivate::updateHorizontalScrollBar (void)
        m_horizontalScrollBar->pageStep ());
 }
 
-void QConsolePrivate::updateVerticalScrollBar (void)
+void QConsolePrivate::updateVerticalScrollBar ()
 {
   m_verticalScrollBar->setMinimum (0);
   if (m_bufferSize.height () > m_consoleRect.height ())
@@ -1266,7 +1266,7 @@ void QConsolePrivate::updateConsoleView (bool grab)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::monitorConsole (void)
+void QConsolePrivate::monitorConsole ()
 {
   CONSOLE_SCREEN_BUFFER_INFO sbi;
   HANDLE hStdOut = GetStdHandle (STD_OUTPUT_HANDLE);
@@ -1362,7 +1362,7 @@ void QConsolePrivate::monitorConsole (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QConsolePrivate::startCommand (void)
+void QConsolePrivate::startCommand ()
 {
   QString cmd = m_command;
 
@@ -1469,7 +1469,7 @@ void QConsolePrivate::sendConsoleText (const QString& s)
 }
 
 QRect
-QConsolePrivate::cursorRect (void)
+QConsolePrivate::cursorRect ()
 {
   // The actual character width might be fractional (with non-integer scaling -
   // high DPI).  But m_charSize.width () is integer.
@@ -1492,7 +1492,7 @@ QConsolePrivate::cursorRect (void)
 }
 
 QRect
-QConsolePrivate::boundingRect (void)
+QConsolePrivate::boundingRect ()
 {
   // This is slightly larger than cursorRect to make sure the entirety of a
   // character is redrawn.
@@ -1524,7 +1524,7 @@ QWinTerminalImpl::QWinTerminalImpl (QWidget *parent)
 
 //////////////////////////////////////////////////////////////////////////////
 
-QWinTerminalImpl::~QWinTerminalImpl (void)
+QWinTerminalImpl::~QWinTerminalImpl ()
 {
   delete d;
 }
@@ -1632,7 +1632,7 @@ void QWinTerminalImpl::viewPaintEvent (QConsoleView *w, QPaintEvent *event)
   d->drawText (p, cx1, cy1, cx2, cy2, ch);
 }
 
-void QWinTerminalImpl::blinkCursorEvent (void)
+void QWinTerminalImpl::blinkCursorEvent ()
 {
   if (d->m_hasBlinkingCursor)
     d->m_cursorBlinking = ! d->m_cursorBlinking;
@@ -1665,7 +1665,7 @@ void QWinTerminalImpl::setBlinkingCursorState (bool blink)
 
 // Reset width of console buffer and terminal window to be the same.
 
-void QWinTerminalImpl::init_terminal_size (void)
+void QWinTerminalImpl::init_terminal_size ()
 {
   d->updateConsoleSize (true, true);
 }
@@ -1697,12 +1697,12 @@ void QWinTerminalImpl::verticalScrollValueChanged (int value)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::monitorConsole (void)
+void QWinTerminalImpl::monitorConsole ()
 {
   d->monitorConsole ();
 }
 
-void QWinTerminalImpl::updateSelection (void)
+void QWinTerminalImpl::updateSelection ()
 {
   d->updateSelection ();
 }
@@ -1761,7 +1761,7 @@ void QWinTerminalImpl::keyPressEvent (QKeyEvent *event)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::start (void)
+void QWinTerminalImpl::start ()
 {
   d->startCommand ();
 }
@@ -1862,7 +1862,7 @@ void QWinTerminalImpl::copyClipboard ()
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::pasteClipboard (void)
+void QWinTerminalImpl::pasteClipboard ()
 {
   if(!hasFocus()) return;
 
@@ -1882,7 +1882,7 @@ void QWinTerminalImpl::pasteClipboard (void)
 
 //////////////////////////////////////////////////////////////////////////////
 
-void QWinTerminalImpl::selectAll (void)
+void QWinTerminalImpl::selectAll ()
 {
   if(!hasFocus()) return;
 

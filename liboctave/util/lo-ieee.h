@@ -67,7 +67,7 @@ typedef union
   unsigned int word;
 } lo_ieee_float;
 
-extern OCTAVE_API void octave_ieee_init (void);
+extern OCTAVE_API void octave_ieee_init ();
 
 inline int __lo_ieee_isnan (double x) { return std::isnan (x); }
 inline int __lo_ieee_isfinite (double x) { return std::isfinite (x); }
@@ -75,9 +75,9 @@ inline int __lo_ieee_isinf (double x) { return std::isinf (x); }
 
 extern OCTAVE_API int __lo_ieee_is_NA (double);
 
-extern OCTAVE_API double lo_ieee_inf_value (void);
-extern OCTAVE_API double lo_ieee_na_value (void);
-extern OCTAVE_API double lo_ieee_nan_value (void);
+extern OCTAVE_API double lo_ieee_inf_value ();
+extern OCTAVE_API double lo_ieee_na_value ();
+extern OCTAVE_API double lo_ieee_nan_value ();
 
 inline int __lo_ieee_signbit (double x) { return std::signbit (x); }
 
@@ -87,9 +87,9 @@ inline int __lo_ieee_float_isinf (float x) { return std::isinf (x); }
 
 extern OCTAVE_API int __lo_ieee_float_is_NA (float);
 
-extern OCTAVE_API float lo_ieee_float_inf_value (void);
-extern OCTAVE_API float lo_ieee_float_na_value (void);
-extern OCTAVE_API float lo_ieee_float_nan_value (void);
+extern OCTAVE_API float lo_ieee_float_inf_value ();
+extern OCTAVE_API float lo_ieee_float_na_value ();
+extern OCTAVE_API float lo_ieee_float_nan_value ();
 
 inline int __lo_ieee_float_signbit (float x) { return std::signbit (x); }
 

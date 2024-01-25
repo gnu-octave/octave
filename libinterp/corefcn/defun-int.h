@@ -40,7 +40,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 class interpreter;
 
-extern OCTINTERP_API void print_usage (void);
+extern OCTINTERP_API void print_usage ();
 
 extern OCTINTERP_API void print_usage (const std::string&);
 
@@ -62,14 +62,14 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
                       const dynamic_library& shl, bool relative = false);
 
 // Gets the shlib of the currently executing DLD function, if any.
-extern OCTINTERP_API dynamic_library get_current_shlib (void);
+extern OCTINTERP_API dynamic_library get_current_shlib ();
 
 OCTAVE_END_NAMESPACE(octave)
 
 // Some of these functions are widely used, so maybe we should avoid
 // deprecating them for now?
 
-inline void print_usage (void)
+inline void print_usage ()
 {
   octave::print_usage ();
 }
@@ -110,7 +110,7 @@ install_mex_function (void *fptr, bool fmex, const std::string& name,
 }
 
 // Gets the shlib of the currently executing DLD function, if any.
-inline octave::dynamic_library get_current_shlib (void)
+inline octave::dynamic_library get_current_shlib ()
 {
   return octave::get_current_shlib ();
 }

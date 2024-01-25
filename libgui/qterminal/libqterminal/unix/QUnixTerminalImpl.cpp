@@ -57,7 +57,7 @@ void QUnixTerminalImpl::initialize()
     connect(m_terminalView, SIGNAL(customContextMenuRequested(QPoint)),
             this, SLOT(handleCustomContextMenuRequested(QPoint)));
 
-    connect (m_terminalView, SIGNAL (interrupt_signal (void)),
+    connect (m_terminalView, SIGNAL (interrupt_signal ()),
              this, SLOT (terminal_interrupt ()));
 
 #ifdef Q_OS_MAC

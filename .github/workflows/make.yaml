@@ -169,6 +169,8 @@ jobs:
 
       - name: test stand-alone executable
         run: |
+          unset CC
+          unset CXX
           cd examples/code
           mkoctfile --link-stand-alone embedded.cc -o embedded
           LD_LIBRARY_PATH="/usr/local/lib/octave/$(octave --eval "disp(version())")" \
@@ -611,8 +613,10 @@ jobs:
 
       - name: test stand-alone executable
         run: |
+          unset CC
+          unset CXX
           cd examples/code
-          PATH="/Users/runner/usr/bin:$PATH" CXX="${CXX} -std=gnu++11" \
+          PATH="/Users/runner/usr/bin:$PATH" \
             mkoctfile --link-stand-alone embedded.cc -o embedded
           ./embedded
 
@@ -855,9 +859,11 @@ jobs:
 
       - name: test stand-alone executable
         run: |
-          cd examples/code
+          unset CC
+          unset CXX
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
           export PATH="/c/octave/pkg/${{ matrix.mingw-prefix }}/bin:$PATH"
+          cd examples/code
           mkoctfile --link-stand-alone embedded.cc -o embedded
           ./embedded.exe
 
@@ -1097,6 +1103,8 @@ jobs:
 
       - name: test stand-alone executable
         run: |
+          unset CC
+          unset CXX
           export PATH=$(echo "$PATH" | sed -e "s|/usr/lib/ccache/bin:||g")
           cd examples/code
           mkoctfile --link-stand-alone embedded.cc -o embedded

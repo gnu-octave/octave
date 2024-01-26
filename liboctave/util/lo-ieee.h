@@ -129,25 +129,17 @@ extern OCTAVE_API float lo_ieee_float_nan_value (void);
 }
 #endif
 
-#define lo_ieee_isnan(x)                                \
-  (sizeof (x) == sizeof (float)                         \
-   ? __lo_ieee_float_isnan (x) : __lo_ieee_isnan (x))
+#define lo_ieee_isnan(x) __lo_ieee_isnan (x)
 
-#define lo_ieee_isfinite(x)                                   \
-  (sizeof (x) == sizeof (float)                               \
-   ? __lo_ieee_float_isfinite (x) : __lo_ieee_isfinite (x))
+#define lo_ieee_isfinite(x) __lo_ieee_isfinite (x)
 
-#define lo_ieee_isinf(x)                                \
-  (sizeof (x) == sizeof (float)                         \
-   ? __lo_ieee_float_isinf (x) : __lo_ieee_isinf (x))
+#define lo_ieee_isinf(x) __lo_ieee_isinf (x)
 
 #define lo_ieee_is_NA(x)                                \
   (sizeof (x) == sizeof (float)                         \
    ? __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
 
-#define lo_ieee_signbit(x)                                      \
-  (sizeof (x) == sizeof (float)                                 \
-   ? __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))
+#define lo_ieee_signbit(x) __lo_ieee_signbit (x)
 
 #if defined (__cplusplus)
 

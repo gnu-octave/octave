@@ -129,10 +129,6 @@ extern OCTAVE_API float lo_ieee_float_nan_value (void);
   (sizeof (x) == sizeof (float)                         \
    ? __lo_ieee_float_is_NA (x) : __lo_ieee_is_NA (x))
 
-#define lo_ieee_is_NaN_or_NA(x)                                         \
-  (sizeof (x) == sizeof (float)                                         \
-   ? __lo_ieee_float_is_NaN_or_NA (x) : __lo_ieee_is_NaN_or_NA (x))
-
 #define lo_ieee_signbit(x)                                      \
   (sizeof (x) == sizeof (float)                                 \
    ? __lo_ieee_float_signbit (x) : __lo_ieee_signbit (x))

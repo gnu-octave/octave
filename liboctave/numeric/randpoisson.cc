@@ -36,6 +36,7 @@
 #include "f77-fcn.h"
 #include "lo-error.h"
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "randmtzig.h"
 #include "randpoisson.h"
 
@@ -404,7 +405,7 @@ rand_poisson (T L_arg, octave_idx_type n, T *p)
 {
   double L = L_arg;
   octave_idx_type i;
-  if (L < 0.0 || lo_ieee_isinf (L))
+  if (L < 0.0 || math::isinf (L))
     {
       for (i=0; i<n; i++)
         p[i] = numeric_limits<T>::NaN ();
@@ -461,7 +462,7 @@ rand_poisson (T L_arg)
       /* numerical recipes */
       poisson_rejection<T> (L, &ret, 1);
     }
-  else if (lo_ieee_isinf (L))
+  else if (math::isinf (L))
     {
       /* FIXME: R uses NaN, but the normal approximation suggests that
        * limit should be Inf.  Which is correct? */

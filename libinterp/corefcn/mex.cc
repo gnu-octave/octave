@@ -47,7 +47,6 @@
 #include <string>
 
 #include "f77-fcn.h"
-#include "lo-ieee.h"
 #include "oct-locbuf.h"
 #include "quit.h"
 
@@ -3559,19 +3558,19 @@ mxArray_cell::set_cell (mwIndex idx, mxArray *val)
 bool
 mxIsFinite (const double v)
 {
-  return lo_ieee_isfinite (v) != 0;
+  return octave::math::isfinite (v) != 0;
 }
 
 bool
 mxIsInf (const double v)
 {
-  return lo_ieee_isinf (v) != 0;
+  return octave::math::isinf (v) != 0;
 }
 
 bool
 mxIsNaN (const double v)
 {
-  return lo_ieee_isnan (v) != 0;
+  return octave::math::isnan (v) != 0;
 }
 
 double

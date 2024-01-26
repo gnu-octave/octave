@@ -178,9 +178,9 @@ log2 (const FloatComplex& x, int& exp)
 }
 
 bool
-negative_sign (double x) { return __lo_ieee_signbit (x); }
+negative_sign (double x) { return signbit (x); }
 bool
-negative_sign (float x) { return __lo_ieee_float_signbit (x); }
+negative_sign (float x) { return signbit (x); }
 
 // Sometimes you need a large integer, but not always.
 

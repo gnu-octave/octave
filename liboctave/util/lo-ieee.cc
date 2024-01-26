@@ -60,7 +60,7 @@ __lo_ieee_is_NA (double x)
 {
   lo_ieee_double t;
   t.value = x;
-  return (__lo_ieee_isnan (x) && t.word[lo_ieee_hw] == LO_IEEE_NA_HW
+  return (std::isnan (x) && t.word[lo_ieee_hw] == LO_IEEE_NA_HW
           && t.word[lo_ieee_lw] == LO_IEEE_NA_LW) ? 1 : 0;
 }
 
@@ -93,7 +93,7 @@ __lo_ieee_float_is_NA (float x)
 {
   lo_ieee_float t;
   t.value = x;
-  return (__lo_ieee_float_isnan (x) && (t.word == LO_IEEE_NA_FLOAT)) ? 1 : 0;
+  return (std::isnan (x) && (t.word == LO_IEEE_NA_FLOAT)) ? 1 : 0;
 }
 
 float

@@ -476,6 +476,29 @@ octave_classdef_meta::is_classdef_constructor (const std::string& cname) const
             retval = true;
         }
     }
+  else if (m_object.is_method ())
+    {
+      octave::cdef_method meth (m_object);
+
+      if (meth.is_constructor ())
+        {
+          std::string meth_name = meth.get_name ();
+
+          // Only consider METH to be a constructor if the dispatch
+          // class CNAME is the same as or derived from the class of
+          // METH.
+
+          if (cname == meth_name)
+            retval = true;
+          else
+            {
+              octave::cdef_class meth_cls = octave::lookup_class (meth_name, false, false);
+              octave::cdef_class dispatch_cls = octave::lookup_class (cname, false, false);
+
+              retval = octave::is_superclass (meth_cls, dispatch_cls);
+            }
+        }
+    }
 
   return retval;
 }

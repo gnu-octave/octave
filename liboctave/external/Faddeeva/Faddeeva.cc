@@ -184,10 +184,7 @@ typedef std::complex<double> cmplx;
 #  define FADDEEVA_RE(name) Faddeeva::name
 
 // isnan/isinf were introduced in C++11
-#  if defined (lo_ieee_isnan) && defined (lo_ieee_isinf)
-#    define isnan lo_ieee_isnan
-#    define isinf lo_ieee_isinf
-#  elif (__cplusplus < 201103L) && (!defined(HAVE_ISNAN) || !defined(HAVE_ISINF))
+#  if (__cplusplus < 201103L) && (!defined(HAVE_ISNAN) || !defined(HAVE_ISINF))
 static inline bool my_isnan(double x) { return x != x; }
 #    define isnan my_isnan
 static inline bool my_isinf(double x) { return 1/x == 0.; }

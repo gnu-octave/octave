@@ -87,6 +87,7 @@ Dirichlet(a1,...,ak) for ai > 0
 #include <cmath>
 
 #include "lo-ieee.h"
+#include "lo-mappers.h"
 #include "randgamma.h"
 #include "randmtzig.h"
 
@@ -100,7 +101,7 @@ template <typename T> void rand_gamma (T a, octave_idx_type n, T *r)
   const T c = 1./std::sqrt (9.*d);
 
   /* Handle invalid cases */
-  if (a <= 0 || lo_ieee_isinf (a))
+  if (a <= 0 || math::isinf (a))
     {
       for (i=0; i < n; i++)
         r[i] = numeric_limits<T>::NaN ();

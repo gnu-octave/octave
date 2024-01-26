@@ -1546,7 +1546,7 @@ pr_float (std::ostream& os, const float_display_format& fmt,
   if (! bank_format)
     {
       T i = cval.imag ();
-      if (! (hex_format || bit_format) && lo_ieee_signbit (i))
+      if (! (hex_format || bit_format) && std::signbit (i))
         {
           os << " - ";
           i = -i;

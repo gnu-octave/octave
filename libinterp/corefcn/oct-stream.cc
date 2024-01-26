@@ -110,7 +110,7 @@ convert_to_valid_int (const octave_value& tc, int& conv_err)
 
   if (! conv_err)
     {
-      if (! lo_ieee_isnan (dval))
+      if (! math::isnan (dval))
         {
           int ival = math::nint (dval);
 
@@ -131,7 +131,7 @@ get_size (double d, const std::string& who)
 {
   octave_idx_type retval = -1;
 
-  if (lo_ieee_isnan (d))
+  if (math::isnan (d))
     ::error ("%s: NaN invalid as size specification", who.c_str ());
 
   if (math::isinf (d))
@@ -5817,7 +5817,7 @@ base_stream::do_numeric_printf_conv (std::ostream& os,
         }
 
       const char *tval;
-      if (lo_ieee_isinf (dval))
+      if (math::isinf (dval))
         {
           if (elt->flags.find ('+') != std::string::npos)
             tval = (dval < 0 ? "-Inf" : "+Inf");

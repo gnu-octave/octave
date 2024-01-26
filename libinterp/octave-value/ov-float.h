@@ -33,7 +33,6 @@
 #include <iosfwd>
 #include <string>
 
-#include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "lo-utils.h"
 #include "mx-base.h"
@@ -81,7 +80,7 @@ public:
   { return octave::idx_vector (scalar); }
 
   octave_value any (int = 0) const
-  { return (scalar != 0 && ! lo_ieee_isnan (scalar)); }
+  { return (scalar != 0 && ! octave::math::isnan (scalar)); }
 
   builtin_type_t builtin_type () const { return btyp_float; }
 

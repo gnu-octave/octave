@@ -7186,7 +7186,7 @@ SparseMatrix::any_element_is_negative (bool neg_zero) const
   if (neg_zero)
     {
       for (octave_idx_type i = 0; i < nel; i++)
-        if (lo_ieee_signbit (data (i)))
+        if (octave::math::signbit (data (i)))
           return true;
     }
   else

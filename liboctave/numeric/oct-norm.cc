@@ -357,7 +357,7 @@ RES_TYPE FCN_NAME (const ARG_TYPE& v, R p)                    \
     FCN_NAME (v, res, norm_accumulator_2<R> ());              \
   else if (p == 1)                                            \
     FCN_NAME (v, res, norm_accumulator_1<R> ());              \
-  else if (lo_ieee_isinf (p))                                 \
+  else if (math::isinf (p))                                   \
     {                                                         \
       if (p > 0)                                              \
         FCN_NAME (v, res, norm_accumulator_inf<R> ());        \
@@ -551,7 +551,7 @@ svd_matrix_norm (const MatrixT& m, R p, VectorT)
     }
   else if (p == 1)
     res = xcolnorms (m, static_cast<R> (1)).max ();
-  else if (lo_ieee_isinf (p) && p > 1)
+  else if (math::isinf (p) && p > 1)
     res = xrownorms (m, static_cast<R> (1)).max ();
   else if (p > 1)
     {
@@ -573,7 +573,7 @@ matrix_norm (const MatrixT& m, R p, VectorT)
   R res = 0;
   if (p == 1)
     res = xcolnorms (m, static_cast<R> (1)).max ();
-  else if (lo_ieee_isinf (p) && p > 1)
+  else if (math::isinf (p) && p > 1)
     res = xrownorms (m, static_cast<R> (1)).max ();
   else if (p > 1)
     {

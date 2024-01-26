@@ -75,6 +75,7 @@ include bug-36025/module.mk
 include bug-38236/module.mk
 include bug-38691/module.mk
 include bug-41723/module.mk
+include bug-44643/module.mk
 include bug-44940/module.mk
 include bug-45351/module.mk
 include bug-46660/module.mk
@@ -83,6 +84,7 @@ include bug-48693/module.mk
 include bug-49379/module.mk
 include bug-50014/module.mk
 include bug-50035/module.mk
+include bug-50395/module.mk
 include bug-50716/module.mk
 include bug-50831/module.mk
 include bug-51192/module.mk
@@ -110,6 +112,7 @@ include bug-60882/module.mk
 include bug-61105/module.mk
 include bug-61191/module.mk
 include bug-63841/module.mk
+include bug-65037/module.mk
 include class-concat/module.mk
 include classdef/module.mk
 include classdef-debug/module.mk

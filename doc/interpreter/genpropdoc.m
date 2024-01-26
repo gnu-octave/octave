@@ -121,6 +121,7 @@ function s = getdoc (objname, field, base)
   valid_4elvec = "four-element vector";
   valid_vecmat = packopt ({"vector", "matrix"});
   valid_scalmat = packopt ({"scalar", "matrix"});
+  valid_scalmatarr = packopt ({"scalar", "matrix", "array"});
 
   doc_notimpl = "%s is not yet implemented for __objname__ objects.  \
 __prop__ is unused.";
@@ -209,7 +210,7 @@ is deleted.\n\n__fcnmsg__";
 
       case "handlevisibility"
         s.doc = "If __prop__ is @qcode{\"off\"}, the __objname__'s \
-handle is not visible in its parent's \"children\" property.";
+handle is not visible in its parent's @qcode{\"children\"} property.";
         s.category = "Parent/Children";
 
       case "hittest"
@@ -284,23 +285,20 @@ not rendered on screen.";
     switch (field)
       ## Overridden shared properties
       case {"beingdeleted", "busyaction", "buttondownfcn", ...
-            "clipping", "createfcn", "deletefcn", "handlevisibility", ...
-            "hittest", "interruptible", "selected", ...
+            "clipping", "createfcn", "deletefcn", ...
+            "hittest", "interruptible", "pickableparts", "selected", ...
             "selectionhighlight", "uicontextmenu", "visible"}
         s.doc = doc_unused;
+        s.category = "Unused";
+
+      case "handlevisibility"
+        s.doc = "The root object handle is always visible.  Changing this \
+setting to @qcode{\"callback\"} or @qcode{\"off\"} has no effect.";
         ## Use base category.
 
       case "parent"
         s.doc = "Root object has no parent graphics object.  __prop__ \
 is always empty.";
-        ## Use base category.
-
-      case "hittest"
-        s.doc = doc_unused;
-        ## Use base category.
-
-      case "pickableparts"
-        s.doc = doc_unused;
         ## Use base category.
 
       ## Specific properties
@@ -339,7 +337,8 @@ scripts.  @xref{XREFecho, , @w{echo function}}.";
 
       case "fixedwidthfontname"
         s.doc = "Name of the fixed-width font that will be used for \
-graphics objects when the @qcode{fontname} property is set to \"FixedWidth\".";
+graphics objects when the @qcode{\"fontname\"} property is set to \
+@qcode{\"FixedWidth\"}.";
         s.valid = valid_string;
         s.category = "Command Window Display";
 
@@ -363,12 +362,15 @@ monitor is stored in __prop__ which is the same information stored in the \
         s.category = "Screen Information";
 
       case "pointerlocation"
-        s.doc = doc_unused;
+        s.doc = [sprintf(doc_notimpl, "Global pointer location \
+        tracking"), "  __prop__ for __objname__ objects will always be \
+        [0 0]."];
         s.valid = valid_2elvec;
         s.category = "Pointer Information";
 
       case "pointerwindow"
-        s.doc = doc_unused;
+        s.doc = [sprintf(doc_notimpl, "Pointer window tracking"), ...
+        "  __prop__ value for __objname__ objects will always be 0."];
         s.valid = valid_handle;
         s.category = "Pointer Information";
 
@@ -411,13 +413,9 @@ are visible in their parents' children list, regardless of the value of their \
   elseif (strcmp (objname, "figure"))
     switch (field)
       ## Overridden shared properties
-      case "clipping"
+      case {"clipping", "pickableparts"}
         s.doc = doc_unused;
-        ## Use base category.
-
-      case "pickableparts"
-        s.doc = doc_unused;
-        ## Use base category.
+        s.category = "Unused";
 
       ## Specific properties
       case "alphamap"
@@ -457,7 +455,7 @@ figure.";
         s.category = "Object Identification";
 
       case "currentpoint"
-        s.doc = "A 1-by-2 matrix which holds the coordinates of the point \
+        s.doc = "A 1-by-2 vector which holds the coordinates of the point \
 over which the mouse pointer was when a mouse event occurred.  The X and Y \
 coordinates are in units defined by the figure's @code{units} property \
 and their origin is the lower left corner of the plotting area.\n\
@@ -554,8 +552,8 @@ decide what to do with axes already present in the figure.  \
         s.category = "Object Identification";
 
       case "numbertitle"
-        s.doc = "Display \"Figure\" followed by the numerical figure handle \
-value in the figure title bar.";
+        s.doc = "Display @qcode{\"Figure\"} followed by the numerical figure \
+handle value in the figure title bar.";
         s.category = "Appearance";
 
       case "outerposition"
@@ -619,15 +617,15 @@ the @code{screenpixelsperinch} property of the root object.";
 
       case "pointer"
         s.doc = "Name of the mouse pointer shape associated with the canvas \
-of the figure.  When __prop__ is \"custom\", the shape is determined by \
-the @code{pointershapecdata} property.\n\n\
+of the figure.  When __prop__ is @qcode{\"custom\"}, the shape is determined \
+by the @code{pointershapecdata} property.\n\n\
 __prop__ has no effect when the figure is in zoom, pan, or rotate mode.  \
 In this case, Octave automatically uses a pointer shape appropriate \
 to the mode.";
         s.category = "Mouse Interaction";
 
       case "pointershapecdata"
-        s.doc ="m-by-m matrix defining a custom pointer.  Each \
+        s.doc = "m-by-m matrix defining a custom pointer.  Each \
 element defines a pixel with the element (1,1) representing the \
 top-left pixel.  A value of 1 is colored black, a value of 2 is colored white, \
 and all other values are rendered as transparent.";
@@ -635,8 +633,9 @@ and all other values are rendered as transparent.";
         s.category = "Mouse Interaction";
 
       case "pointershapehotspot"
-        s.doc ="For custom pointers only __prop__ defines the row and column \
-of the pixel in @code{pointershapecdata} that is used as the pointer location.";
+        s.doc = "For custom pointers only __prop__ defines the row and \
+column of the pixel in @code{pointershapecdata} that is used as the pointer \
+location.";
         s.valid = valid_2elvec;
         s.category = "Mouse Interaction";
 
@@ -650,7 +649,7 @@ and width and height of the figure.  \
 
       case "renderer"
         s.doc = "Rendering engine used for printing when @code{renderermode} \
-is \"manual\".  __modemsg__.";
+is @qcode{\"manual\"}.  __modemsg__.";
         s.category = "Printing/Saving";
 
       case "renderermode"
@@ -751,7 +750,7 @@ scrolling up.\n\
 @item VerticalScrollAmount:\n\
 The number of lines a wheel step should scroll.  This value is always 3.\n\
 @item EventName:\n\
-The event name which is \"WindowScrollWheel\".\n\
+The event name which is @qcode{\"WindowScrollWheel\"}.\n\
 @end table\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;
@@ -783,7 +782,7 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
     switch (field)
       ## Overridden shared properties
       case "clipping"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Axes-children clipping control");
         ## Use base category.
 
       ## Specific properties
@@ -804,13 +803,13 @@ Changing modes of a visible figure may cause the figure to close and reopen.";
         s.category = "Color and Transparency";
 
       case "ambientlightcolor"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Uniform background axes lighting");
         s.category = "Color and Transparency";
 
       case "box"
         s.doc = "Control whether the __objname__ has a surrounding box.";
         if (strcmp (objname, "legend"))
-          s.category = "Legend Outline Appearance";
+          s.category = "Legend Appearance";
         else
           s.category = "Axes Box Appearance";
         endif
@@ -821,8 +820,8 @@ box is drawn or only the 3 @qcode{\"back\"} axes.";
         s.category = "Axes Box Appearance";
 
       case "cameraposition"
-        s.doc = "Coordinates of the camera position viewing the __objname__.  \
-        __modemsg__.";
+        s.doc = "Coordinates of the camera position viewing the \
+__objname__.  __modemsg__.";
         s.valid = valid_3elvec;
         s.category = "Camera and View Controls";
 
@@ -889,7 +888,7 @@ children.";
         s.category = "Color and Transparency";
 
       case "clippingstyle"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Axes-children clipping control");
         s.category = "Display";
 
       case "color"
@@ -897,10 +896,11 @@ children.";
 @xref{Colors, , colorspec}.";
         s.valid = valid_color;
         if (strcmp (objname, "legend"))
-          s.category = "Legend Item Appearance";
+          s.category = "Legend Appearance";
         else
           s.category = "Axes Box Appearance";
         endif
+
       case "colormap"
         s.doc = "A matrix containing the RGB color map for this __objname__ \
 object.";
@@ -908,14 +908,16 @@ object.";
         s.category = "Color and Transparency";
 
       case "colororder"
-        s.doc = "RGB values used by plot function for automatic line \
-coloring.";
+        s.doc = "RGB values used by plot function for child object coloring.";
         s.valid = "N-by-3 RGB matrix";
-        s.category = "Automatic Line Properties";
+        s.category = "Automatic Child Properties";
 
       case "colororderindex"
-        s.doc = doc_unused;
-        s.category = "Automatic Line Properties";
+        s.doc = "Index of the next color from the \
+@ref{XREFaxescolororder, , @w{@qcode{\"colororder\"} property}} to be used \
+by Axes-child objects.";
+        s.valid = "integer";
+        s.category = "Automatic Child Properties";
 
       case "colorscale"
         s.doc = sprintf (doc_notimpl, "Automatic linear/log color scaling");
@@ -1018,8 +1020,8 @@ automatically set by Octave to the default value.";
         s.category = "Callback Execution";
 
       case "labelfontsizemultiplier"
-        s.doc = "Ratio between the x/y/zlabel fontsize and the tick \
-label fontsize.";
+        s.doc = "Ratio between the x/y/zlabel fontsize and the tick label \
+fontsize.";
         s.category = "Text Appearance";
 
       case "layer"
@@ -1037,17 +1039,23 @@ the @ref{XREFlegend, , legend function} to set legend properties."];
         s.category = "Text Appearance";
 
       case "linestyleorder"
-        s.doc = [sprintf(doc_notimpl, "Linestyle order specification"), "  \
-The first linestyle specified in the __prop__ vector will be the style used \
-for all subsequent lines."];
-        s.category = "Automatic Line Properties";
+        s.doc = "List of linestyles to be used in order by axes child \
+objects, specified as a cell array of line specification strings.  Note that \
+the linestyle is only incremented after cycling through the full \
+@ref{XREFaxescolororder, , @w{@qcode{\"colororder\"}}} list.  \
+@xref{Line Styles}."
+        s.category = "Automatic Child Properties";
 
       case "linestyleorderindex"
-        s.doc = sprintf (doc_notimpl, "Linestyle order selection");
-        s.category = "Automatic Line Properties";
+        s.doc = "Index of the next linestyle from the \
+@ref{XREFaxeslinestyleorder, , @w{@qcode{\"linestyleorder\"} property}} to \
+be used by Axes-child objects.";
+        s.valid = "whole number scalar";
+        s.category = "Automatic Child Properties";
 
       case "linewidth"
         s.doc = "Width of the main axes lines.";
+        s.valid = "scalar";
         s.category = "Axes Box Appearance";
 
       case "minorgridalpha"
@@ -1089,9 +1097,12 @@ is typically controlled using the @code{hold} function.  \
         s.category = "Object Identification";
 
       case "nextseriesindex"
-        s.doc = sprintf (doc_notimpl, "LineStyleOrder and ColorOrder index \
-selection");
-        s.category = "Automatic Line Properties";
+        s.doc = "Current index value into the \
+@ref{XREFaxescolororder, , @w{\"colororder\"}} and \
+@ref{XREFaxeslinestyleorder, , @w{\"linestyleorder\"}} \
+properties, indicating the item that will be used by the next child object";
+        s.valid = "whole number scalar";
+        s.category = "Automatic Child Properties";
 
       case "outerposition"
         s.doc = "Specify the position of the plot including titles, \
@@ -1106,8 +1117,7 @@ height to be 0.4 and 0.5 respectively.  \
         s.category = "Position";
 
       case "plotboxaspectratio"
-        s.doc = "@xref{XREFpbaspect, , pbaspect function}.  \
-__modemsg__.";
+        s.doc = "@xref{XREFpbaspect, , pbaspect function}.  __modemsg__.";
         s.category = "Position";
 
       case "plotboxaspectratiomode"
@@ -1157,10 +1167,12 @@ adjustment");
         s.category = "Parent/Children";
 
       case "tickdir"
-        s.doc = "Control whether axes tick marks project \"in\" to the plot \
-box or \"out\".  The value \"none\" means no tick marks will be drawn, \
-although tick labels will still be rendered.  __modemsg__.  Note that the \
-default is \"in\" for 2-D and \"out\" for 3-D plots.";
+        s.doc = "Control whether axes tick marks project @qcode{\"in\"} to \
+the plot box or @qcode{\"out\"}.  The value @qcode{\"both\"} will draw tick \
+marks both in and out.  The value @qcode{\"none\"} means no tick marks will \
+be drawn, although tick labels will still be rendered.  __modemsg__.  Note \
+that the default is @qcode{\"in\"} for 2-D and @qcode{\"out\"} for 3-D \
+plots.";
         s.category = "Axes Box Appearance";
 
       case "tickdirmode"
@@ -1171,7 +1183,7 @@ automatically set to the default for the current view.";
 
       case "ticklabelinterpreter"
         s.doc = "Control the way x/y/zticklabel properties are interpreted.\n\
-@xref{Use of the \"interpreter\" Property, , @w{Use of the \"interpreter\" Property}}.";
+@xref{Use of the \"interpreter\" Property, , @w{Use of the @qcode{\"interpreter\"} Property}}.";
         s.category = "Text Appearance";
 
       case "ticklength"
@@ -1181,8 +1193,8 @@ length of the tickmarks relative to the longest visible axis.";
         s.category = "Axes Box Appearance";
 
       case "tightinset"
-        s.doc = "Size of the @code{[left bottom right top]} margins \
-around the axes that enclose labels and title annotations.";
+        s.doc = "Size of the @code{[left bottom right top]} margins around \
+the axes that enclose labels and title annotations.";
         s.valid = valid_4elvec;
         s.printdefault = false;
         s.category = "Text Appearance";
@@ -1193,7 +1205,8 @@ around the axes that enclose labels and title annotations.";
         s.category = "Object Identification";
 
       case "titlefontsizemultiplier"
-        s.doc = "Ratio between the title fontsize and the tick label fontsize.";
+        s.doc = "Ratio between the title fontsize and the tick label \
+fontsize.";
         s.valid = "positive scalar";
         s.category = "Text Appearance";
 
@@ -1208,7 +1221,7 @@ around the axes that enclose labels and title annotations.";
       case "units"
         if (strcmp (objname, "legend"))
           s.doc = "Units used to interpret the @qcode{\"position\"}, \
- property.";
+property.";
         else
           s.doc = "Units used to interpret the @qcode{\"position\"}, \
 @qcode{\"outerposition\"}, and @qcode{\"tightinset\"} properties.";
@@ -1237,17 +1250,17 @@ __modemsg__.";
 
       case "xcolormode"
         s.doc = "Current state of the setting determining the color that is \
- applied to the x-axis grid lines.  If set to \"auto\" and/or the \
+applied to the x-axis grid lines.  If set to @qcode{\"auto\"} and/or the \
 @ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
-to \"manual\", the x-axis grid color will be defined by the \
+to @qcode{\"manual\"}, the x-axis grid color will be defined by the \
 @ref{XREFaxesgridcolor, , @w{@qcode{\"gridcolor\"} property}}.  Otherwise \
 the x-axis grid color will be defined by the \
 @ref{XREFaxesxcolor, , @w{@qcode{\"xcolor\"} property}}.";
         s.category = "Axes Box Appearance";
 
       case "xdir"
-        s.doc = "Direction of the x axis: @qcode{\"normal\"} is left \
-to right in default 2-D and 3-D views.";
+        s.doc = "Direction of the x axis: @qcode{\"normal\"} is left to \
+right in default 2-D and 3-D views.";
         s.category = "Axes Box Appearance";
 
       case "xgrid"
@@ -1288,7 +1301,7 @@ or automatically set to span the plotted data according to the \
 
       case "xminortick"
         s.doc = "Control whether minor x tick marks are displayed.";
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       case "xscale"
         s.doc = "Set the x-axis to a linear or logarithmic scale.";
@@ -1298,7 +1311,7 @@ or automatically set to span the plotted data according to the \
         s.doc = "Position of x tick marks.  __modemsg__.";
         s.valid = "vector";
         s.printdefault = false;
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       case "xticklabel"
         s.doc = "Labels of x tick marks.  __modemsg__.";
@@ -1319,7 +1332,7 @@ automatically by Octave or manually using the \
         s.doc = "Setting to determine whether the xtick locations and \
 spacing are set automatically by Octave or manually using the \
 @ref{XREFaxesxtick, , @w{@qcode{\"xtick\"} property}}.";
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       case "yaxis"
         s.doc = [sprintf(doc_notimpl, "Axes Ruler objects")];
@@ -1336,9 +1349,9 @@ spacing are set automatically by Octave or manually using the \
 
       case "ycolormode"
         s.doc = "Current state of the setting determining the color that is \
- applied to the y-axis grid lines.  If set to \"auto\" and/or the \
+applied to the y-axis grid lines.  If set to @qcode{\"auto\"} and/or the \
 @ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
-to \"manual\", the y-axis grid color will be defined by the \
+to @qcode{\"manual\"}, the y-axis grid color will be defined by the \
 @ref{XREFaxesgridcolor, , @w{@qcode{\"gridcolor\"} property}}.  Otherwise \
 the y-axis grid color will be defined by the \
 @ref{XREFaxesycolor, , @w{@qcode{\"ycolor\"} property}}.";
@@ -1397,7 +1410,7 @@ or automatically set to span the plotted data according to the \
         s.doc = "Position of y tick marks.  __modemsg__.";
         s.valid = "vector";
         s.printdefault = false;
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       case "yticklabel"
         s.doc = "Labels of y tick marks.  __modemsg__.";
@@ -1418,7 +1431,7 @@ automatically by Octave or manually using the \
         s.doc = "Setting to determine whether the ytick locations and \
 spacing are set automatically by Octave or manually using the \
 @ref{XREFaxesytick, , @w{@qcode{\"ytick\"} property}}.";
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       case "zaxis"
         s.doc = [sprintf(doc_notimpl, "Axes Ruler objects")];
@@ -1431,9 +1444,9 @@ spacing are set automatically by Octave or manually using the \
 
       case "zcolormode"
         s.doc = "Current state of the setting determining the color that is \
- applied to the z-axis grid lines.  If set to \"auto\" and/or the \
+applied to the z-axis grid lines.  If set to @qcode{\"auto\"} and/or the \
 @ref{XREFaxesgridcolormode, , @w{@qcode{\"gridcolormode\"} property}} is set \
-to \"manual\", the z-axis grid color will be defined by the \
+to @qcode{\"manual\"}, the z-axis grid color will be defined by the \
 @ref{XREFaxesgridcolor, , @w{@qcode{\"gridcolor\"} property}}.  Otherwise \
 the z-axis grid color will be defined by the \
 @ref{XREFaxeszcolor, , @w{@qcode{\"zcolor\"} property}}.";
@@ -1482,7 +1495,7 @@ or automatically set to span the plotted data according to the \
 
       case "zminortick"
         s.doc = "Control whether minor z tick marks are displayed.";
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       case "zscale"
         s.doc = "Set the z-axis to a linear or logarithmic scale.";
@@ -1492,7 +1505,7 @@ or automatically set to span the plotted data according to the \
         s.doc = "Position of z tick marks.  __modemsg__.";
         s.valid = "vector";
         s.printdefault = false;
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       case "zticklabel"
         s.doc = "Labels of z tick marks.  __modemsg__.";
@@ -1513,7 +1526,7 @@ automatically by Octave or manually using the \
         s.doc = "Setting to determine whether the ztick locations and \
 spacing are set automatically by Octave or manually using the \
 @ref{XREFaxesztick, , @w{@qcode{\"ztick\"} property}}.";
-        s.category = "Axes Grid Appearance";
+        s.category = "Axes Box Appearance";
 
       ## Legend specific properties
       case "autoupdate"
@@ -1535,18 +1548,12 @@ legend (\"autoupdate\", \"off\");\n\
 plot ((1:10) * 3);\n\
 @end group\n\
 @end example";
-        s.category = "Legend Item Appearance";
+        s.category = "Layout";
 
       case "edgecolor"
         s.doc = "Control the color of the legend outline.";
         s.valid = valid_color;
-        s.category = "Legend Outline Appearance";
-
-      case "interpreter"
-        s.doc = "Control if and eventually how labels strings are interpreted \
-before rendering.\n\
-@xref{Use of the \"interpreter\" Property, , @w{Use of the \"interpreter\" Property}}.";
-        s.category = "Text Appearance";
+        s.category = "Legend Appearance";
 
       case "itemhitfcn"
         s.doc = "Callback function which is executed when a legend item \
@@ -1589,12 +1596,12 @@ legend (\"numcolumns\", 3);\n\
 @end example\n\
 __modemsg__.";
         s.valid = "scalar integer";
-        s.category = "Legend Item Appearance";
+        s.category = "Layout";
 
       case "orientation"
         s.doc = "Control whether the legend items are arranged vertically \
 (column-wise) or horizontally (row-wise).";
-        s.category = "Legend Item Appearance";
+        s.category = "Layout";
 
       case "string"
         s.doc = "List of labels for the legend items.  For example:\n\
@@ -1631,7 +1638,7 @@ right of their corresponding icon.";
     switch (field)
       ## Overridden shared properties
       case "children"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Child objects for lines");
         ## Use base category.
 
       ## Specific properties
@@ -1643,7 +1650,7 @@ right of their corresponding icon.";
       case "displayname"
         s.doc = "Text for the legend entry corresponding to this line.";
         s.valid = valid_cellstring;
-        s.category = "Line Appearance";
+        s.category = "Legend Options";
 
       case "linestyle"
         s.doc = "@xref{Line Styles}.";
@@ -1651,6 +1658,7 @@ right of their corresponding icon.";
 
       case "linewidth"
         s.doc = "Width of the line object measured in points.";
+        s.valid = "scalar";
         s.category = "Line Appearance";
 
       case "linejoin"
@@ -1685,35 +1693,35 @@ can also be set to any color.  @xref{Colors, , colorspec}.";
       case "xdata"
         s.doc = "Vector of x data to be plotted.";
         s.valid = "vector";
-        s.category = "Line Data";
+        s.category = "Coordinate Data";
 
       case "xdatasource"
         s.doc = "Name of a vector in the current base workspace to use as \
 x data.";
         s.valid = valid_string;
-        s.category = "Line Data";
+        s.category = "Coordinate Data";
 
       case "ydata"
         s.doc = "Vector of y data to be plotted.";
         s.valid = "vector";
-        s.category = "Line Data";
+        s.category = "Coordinate Data";
 
       case "ydatasource"
         s.doc = "Name of a vector in the current base workspace to use as \
 y data.";
         s.valid = valid_string;
-        s.category = "Line Data";
+        s.category = "Coordinate Data";
 
       case "zdata"
         s.doc = "Vector of z data to be plotted.";
         s.valid = "vector";
-        s.category = "Line Data";
+        s.category = "Coordinate Data";
 
       case "zdatasource"
         s.doc = "Name of a vector in the current base workspace to use as \
 z data.";
         s.valid = valid_string;
-        s.category = "Line Data";
+        s.category = "Coordinate Data";
 
     endswitch
 
@@ -1722,13 +1730,12 @@ z data.";
     switch (field)
       ## Overridden shared properties
       case "children"
-        s.doc = doc_unused;
+        s.doc = ["__objname__ objects have no child objects.  ", doc_unused];
         ## Use base category.
 
       ## Specific properties
       case "backgroundcolor"
-        s.doc = "Color of the background area.  \
-@xref{Colors, , colorspec}.";
+        s.doc = "Color of the background area.  @xref{Colors, , colorspec}.";
         s.valid = valid_color;
         s.category = "Text Box Appearance";
 
@@ -1748,8 +1755,8 @@ z data.";
         s.category = "Text Appearance";
 
       case "extent"
-        s.doc = "Vector @code{[x0 y0 width height]} indicating the size \
-and location of the text string.";
+        s.doc = "Vector @code{[x0 y0 width height]} indicating the size and \
+location of the text string.";
         s.valid = valid_4elvec;
         s.printdefault = false;
         s.category = "Position";
@@ -1789,15 +1796,15 @@ text.";
       case "interpreter"
         s.doc = "Control the way the @qcode{\"string\"} property is \
 interpreted.\n\
-@xref{Use of the \"interpreter\" Property, , @w{Use of the \"interpreter\" Property}}.";
+@xref{Use of the \"interpreter\" Property, , @w{Use of the @qcode{\"interpreter\"} Property}}.";
         s.category = "Text Appearance";
 
       case "linestyle"
-        s.doc = "Style of the outline.  @xref{Line Styles}.";
+        s.doc = "Style of the text box outline.  @xref{Line Styles}.";
         s.category = "Text Box Appearance";
 
       case "linewidth"
-        s.doc = "Width of the outline.";
+        s.doc = "Width of the text box outline.";
         s.valid = "scalar";
         s.category = "Text Box Appearance";
 
@@ -1816,13 +1823,13 @@ position of the text anchor as defined by @code{verticalalignment} and \
         s.category = "Position";
 
       case "rotation"
-        s.doc = "The angle of rotation for the displayed text, \
-measured in degrees.";
+        s.doc = "The angle of rotation for the displayed text, measured in \
+degrees.";
         s.valid = "scalar";
         s.category = "Position";
 
       case "string"
-        s.doc = "The text object string content.";
+        s.doc = "The __objname__ object string content.";
         s.valid = valid_string;
         s.category = "Text Appearance";
 
@@ -1830,16 +1837,17 @@ measured in degrees.";
         s.doc = "Sets the measurement unit or method applied to the \
 @ref{XREFtextposition, , @w{@qcode{\"position\"}}} and \
 @ref{XREFtextextent, , @w{@qcode{\"extent\"}}} properties.  The default \
-option \"data\" uses the same units and limits as the data plotted in the \
-figure.  The \"normalized\" option applies a unitless 0 to 1 scale to the \
-limits along each axis of the displayed data.";
+option @qcode{\"data\"} uses the same units and limits as the data plotted in \
+the figure.  The @qcode{\"normalized\"} option applies a unitless 0 to 1 scale \
+to the limits along each axis of the displayed data.";
         s.category = "Position";
 
       case "verticalalignment"
         s.doc = "Specifies the vertical location of the point set by the \
 @ref{XREFtextposition, , @w{@qcode{\"position\"} property}} relative to the \
-text.  Note that \"top\" and \"bottom\" align to the edge of the text \
-box while \"cap\" and \"baseline\" refer to the edges of the text itself.";
+text.  Note that @qcode{\"top\"} and @qcode{\"bottom\"} align to the edge of \
+the text box while @qcode{\"cap\"} and @qcode{\"baseline\"} refer to the edges \
+of the text itself.";
         s.category = "Position";
 
     endswitch
@@ -1849,7 +1857,7 @@ box while \"cap\" and \"baseline\" refer to the edges of the text itself.";
     switch (field)
       ## Overridden shared properties
       case "children"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Child objects of Images");
         ## Use base category.
 
       ## Specific properties
@@ -1873,16 +1881,16 @@ dimension contains separate red, blue, and green components for each pixel.";
       case "cdatamapping"
         s.doc = "Sets the method for mapping data from the \
 @ref{XREFimagecdata, , @w{@qcode{\"cdata\"} property}} to the current \
-colormap.  \"Direct\" mapping selects the color using the \"cdata\" value \
-as an index to the current colormap.  \"Scaled\" mapping scales the \
-\"cdata\" values to the range specified in the \
-@ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+colormap.  @qcode{\"Direct\"} mapping selects the color using the \
+@qcode{\"cdata\"} value as an index to the current colormap.  \
+@qcode{\"Scaled\"} mapping scales the @qcode{\"cdata\"} values to the range \
+specified in the @ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
         s.category = "Image Data";
 
       case "displayname"
         s.doc = "Text for the legend entry corresponding to this image.";
         s.valid = valid_cellstring;
-        s.category = "Text Appearance";
+        s.category = "Legend Options";
 
       case "xdata"
         s.doc = "Two-element vector @code{[xfirst xlast]} specifying the x \
@@ -1909,7 +1917,7 @@ of @code{[1 rows(image)]}.";
     switch (field)
       ## Overridden shared properties
       case "children"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Child objects for Surfaces");
         ## Use base category.
 
       ## Specific properties
@@ -1947,17 +1955,17 @@ components for each vertex.";
       case "cdatamapping"
         s.doc = "Sets the method for mapping data from the \
 @ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"} property}} to the current \
-colormap.  \"Direct\" mapping selects the color using the \"cdata\" value \
-as an index to the current colormap.  \"Scaled\" mapping scales the \
-\"cdata\" values to the range specified in the \
-@ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+colormap.  @qcode{\"Direct\"} mapping selects the color using the \
+@qcode{\"cdata\"} value as an index to the current colormap.  \
+@qcode{\"Scale\"} mapping scales the @qcode{\"cdata\"} values to the range \
+specified in the @ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
         s.category = "Color and Transparency";
 
       case "cdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
 @ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"} property}}.  Data is \
-transferred into \"cdata\" using the \
+transferred into @qcode{\"cdata\"} using the \
 @xref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Color and Transparency";
@@ -1970,7 +1978,7 @@ diffuse reflection) and 1.0 (full diffuse reflection).";
 
       case "displayname"
         s.doc = "Text for the legend entry corresponding to this surface.";
-        s.category = "Text Appearance";
+        s.category = "Legend Options";
 
       case "edgealpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
@@ -1979,11 +1987,11 @@ diffuse reflection) and 1.0 (full diffuse reflection).";
 
       case "edgecolor"
         s.doc = "Color of the edges of the __objname__ object, specified as \
-either a valid color specification or one of \"none\", \"flat\", or \
-\"interp\".  \"flat\" and \"interp\" will set either a single color for \
-each edge or a color interpolated between two adjacent vertices using the \
-color value data stored in \
-@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"}}}.  \
+either a valid color specification or one of @qcode{\"none\"}, \
+@qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
+@qcode{\"interp\"} will set either a single color for each edge or a color \
+interpolated between two adjacent vertices using the color value data stored \
+in @ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"}}}.  \
 @xref{Colors, , colorspec}.";
         s.valid = packopt ({valid_color, ...
                             "@qcode{\"none\"}", ...
@@ -2016,10 +2024,10 @@ rendering layered transparent faces.";
 
       case "facecolor"
         s.doc = "Color of the faces of the __objname__ object, specified as \
-either a valid color specification or one of \"none\", \"flat\", or \
-\"interp\".  \"flat\" and \"interp\" will set either a single color for \
-each face or a color interpolated across the face's vertices using the \
-color value data stored in \
+either a valid color specification or one of @qcode{\"none\"}, \
+@qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
+@qcode{\"interp\"} will set either a single color for each face or a color \
+interpolated across the face's vertices using the color value data stored in \
 @ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"}}}.  \
 @xref{Colors, , colorspec}.";
         s.valid = packopt ({valid_color, ...
@@ -2056,6 +2064,7 @@ the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 
       case "linewidth"
         s.doc = "@xref{XREFlinelinewidth, , @w{line linewidth property}}.";
+        s.valid = "scalar";
         s.category = "Outline Appearance";
 
       case "marker"
@@ -2117,44 +2126,44 @@ one @code{light} object is present and visible in the same axes.";
       case "xdata"
         s.doc = "Data for the x-coordinate.";
         s.valid = "matrix";
-        s.category = "Surface Data";
+        s.category = "Coordinate Data";
 
       case "xdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
 @ref{XREFsurfacexdata, , @w{@qcode{\"xdata\"} property}}.  Data is \
-transferred into \"xdata\" using the \
+transferred into @qcode{\"xdata\"} using the \
 @xref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
-        s.category = "Surface Data";
+        s.category = "Coordinate Data";
 
       case "ydata"
         s.doc = "Data for the y-coordinate.";
         s.valid = "matrix";
-        s.category = "Surface Data";
+        s.category = "Coordinate Data";
 
       case "ydatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
 @ref{XREFsurfaceydata, , @w{@qcode{\"ydata\"} property}}.  Data is \
-transferred into \"ydata\" using the \
+transferred into @qcode{\"ydata\"} using the \
 @xref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
-        s.category = "Surface Data";
+        s.category = "Coordinate Data";
 
       case "zdata"
         s.doc = "Data for the z-coordinate.";
         s.valid = "matrix";
-        s.category = "Surface Data";
+        s.category = "Coordinate Data";
 
       case "zdatasource"
         s.doc = "The name of a workspace variable that contains data that \
 will be used for the \
 @ref{XREFsurfacezdata, , @w{@qcode{\"zdata\"} property}}.  Data is \
-transferred into \"zdata\" using the \
+transferred into @qcode{\"zdata\"} using the \
 @xref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
-        s.category = "Surface Data";
+        s.category = "Coordinate Data";
 
     endswitch
 
@@ -2163,13 +2172,13 @@ transferred into \"zdata\" using the \
     switch (field)
       ## Overridden shared properties
       case "children"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Child objects for Patch objects");
         ## Use base category.
 
       ## Specific properties
       case "alphadatamapping"
         s.doc = sprintf (doc_notimpl, "Transparency");
-        s.category = "Patch Appearance";
+        s.category = "Color and Transparency";
 
       case "ambientstrength"
         s.doc = "Strength of the ambient light.  Value between 0.0 and 1.0.";
@@ -2184,7 +2193,8 @@ view are unlit.";
         s.category = "Lighting";
 
       case "cdata"
-        s.doc = "Data defining the patch object color.\n\
+        s.doc = "Data defining patch object color relative to it's \
+x/y/z-coordinate data.\n\
 Patch color can be defined for faces or for vertices.\n\
 \n\
 If @code{cdata} is a scalar index into the current colormap or a RGB triplet, \
@@ -2193,13 +2203,21 @@ it defines the color of all faces.\n\
 If @code{cdata} is an N-by-1 vector of indices or an N-by-3 (RGB) matrix, \
 it defines the color of each one of the N faces.\n\
 \n\
-If @code{cdata} is an N-by-M or an N-by-M-by-3 (RGB) matrix, \
+If @code{cdata} is an N-by-M matrix or an N-by-M-by-3 (RGB) array, \
 it defines the color at each vertex.";
-        s.valid = valid_scalmat;
-        s.category = "Patch Appearance";
+        s.valid = valid_scalmatarr;
+        s.category = "Color and Transparency";
 
       case "cdatamapping"
-        s.category = "Patch Appearance";
+        s.doc = "Sets the method for mapping data from the \
+@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} or \
+@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} property to the current \
+colormap.  @qcode{\"Direct\"} mapping selects the color using the \
+@qcode{\"cdata\"} or @qcode{\"facevertexcdata\"} value as an index to the \
+current colormap.  @qcode{\"Scaled\"} mapping scales the @qcode{\"cdata\"} \
+or @qcode{\"facevertexcdata\"} values to the range \
+specified in the @ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
+        s.category = "Color and Transparency";
 
       case "diffusestrength"
         s.doc = "Strength of the diffuse reflection.  Value between 0.0 (no \
@@ -2209,7 +2227,7 @@ diffuse reflection) and 1.0 (full diffuse reflection).";
 
       case "displayname"
         s.doc = "Text of the legend entry corresponding to this patch.";
-        s.category = "Text Appearance";
+        s.category = "Legend Options";
 
       case "edgealpha"
         s.doc = sprintf (doc_notimpl, "Transparency");
@@ -2217,6 +2235,17 @@ diffuse reflection) and 1.0 (full diffuse reflection).";
         s.category = "Outline Appearance";
 
       case "edgecolor"
+        s.doc = "Color of the edges of the __objname__ object, specified as \
+either a valid color specification or one of @qcode{\"none\"}, \
+@qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
+@qcode{\"interp\"} will set either a single color for each edge or a color \
+interpolated between edge's vertices using the color value data stored in \
+@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}}.  \
+@xref{Colors, , colorspec}.";
+        s.valid = packopt ({valid_color, ...
+                            "@qcode{\"none\"}", ...
+                            "@qcode{\"flat\"}", ...
+                            "@qcode{\"interp\"}"});
         s.category = "Outline Appearance";
 
       case "edgelighting"
@@ -2239,16 +2268,24 @@ faces.";
         s.valid = packopt ({"scalar", ...
                             "@qcode{\"flat\"}", ...
                             "@qcode{\"interp\"}"});
-        s.category = "Face Appearance";
+        s.category = "Color and Transparency";
 
       case "facecolor"
+        s.doc = "Color of the faces of the __objname__ object, specified as \
+either a valid color specification or one of @qcode{\"none\"}, \
+@qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
+@qcode{\"interp\"} will set either a single color for each face or a color interpolated across the face's vertices using the \
+color value data stored in either the \
+@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} or \
+@ref{XREFpatchfacevertexcdata, , @w{@qcode{\"facevertexcdata\"}}} properties.  \
+@xref{Colors, , colorspec}.";
         ## Don't provide a default value, and mark colorspec with
         ## braces, this forces the default RGB triplet to be displayed
         s.valid = packopt ({markdef(valid_color), ...
                             "@qcode{\"none\"}", ...
                             "@qcode{\"flat\"}", ...
                             "@qcode{\"interp\"}"});
-        s.category = "Face Appearance";
+        s.category = "Color and Transparency";
 
       case "facelighting"
         s.doc = "When set to a value other than @qcode{\"none\"}, the faces \
@@ -2257,37 +2294,57 @@ of the object are drawn with light and shadow effects.  Supported values are \
 @qcode{\"gouraud\"} (linear interpolation of the lighting effects between \
 the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 @qcode{\"gouraud\"}.";
-        s.category = "Face Appearance";
+        s.category = "Color and Transparency";
 
       case "facenormals"
         s.doc = "Face normals are used for lighting the edges or faces if the \
 @code{edgelighting} or @code{facelighting} properties are set to \
 @qcode{\"flat\"}.  __modemsg__";
-        s.category = "Face Appearance";
+        s.category = "Lighting";
 
       case "facenormalsmode"
         s.doc = "If this property is set to @qcode{\"auto\"}, \
 @code{facenormals} are automatically calculated if the @code{edgelighting} or \
 @code{facelighting} property are set to @qcode{\"flat\"} and at least one \
 @code{light} object is present and visible in the same axes.";
-        s.category = "Face Appearance";
+        s.category = "Lighting";
 
       case "faces"
+        s.doc = "__objname__ faces connectivity list stored as an M x N \
+matrix, with each of the M faces defined by a row of up to N  vectices, \
+and each element contains the row index of a vertex stored in the \
+@ref{XREFpatchvertices, , @w{vertices property}}.  Faces with fewer than N \
+vertices use NaN values to fill empty row elemnets.";
         s.valid = valid_vecmat;
-        s.category = "Patch Data";
+        s.category = "Coordinate Data";
 
       case "facevertexalphadata"
-        s.doc = sprintf (doc_notimpl, "Transparency");
-        s.valid = valid_scalmat;
-        s.category = "Patch Appearance";
+        s.doc = sprintf (doc_notimpl, "Face-Vertex transparency control");
+        s.category = "Color and Transparency";
 
       case "facevertexcdata"
-        s.category = "Patch Data";
+        s.doc = "Data defining the patch object color relative to the \
+patch's face-vertex data.\n\
+Patch color can be defined for faces or for vertices.\n\
+\n\
+If @code{facevertexcdata} is a scalar index into the current colormap or a RGB \
+triplet, it defines the color of all faces.\n\
+\n\
+If @code{facevertexcdata} is an N-by-1 vector of indices or an N-by-3 (RGB) \
+matrix, it defines the color of each one of the N faces.\n\
+\n\
+If @code{facevertexcdata} is an M-by-1 vector of indices or an M-by-3 (RGB) \
+matrix, it defines the color at each one of the M vertices.";
+        s.valid = valid_scalmat;
+        s.category = "Color and Transparency";
 
       case "linestyle"
+        s.doc = "@xref{Line Styles}.";
         s.category = "Outline Appearance";
 
       case "linewidth"
+        s.doc = "@xref{XREFlinelinewidth, , @w{line linewidth property}}.";
+        s.valid = "scalar";
         s.category = "Outline Appearance";
 
       case "marker"
@@ -2341,20 +2398,27 @@ one @code{light} object is present and visible in the same axes.";
         s.category = "Lighting";
 
       case "vertices"
+        s.doc = "__objname__ vertex list stored as an N x 3 matrix, with \
+each row containing the x, y, and z coordinates of the vector, and used \
+with the @ref{XREFpatchfaces, , @w{faces property}} to define patch \
+structure.";
         s.valid = valid_vecmat;
-        s.category = "Patch Data";
+        s.category = "Coordinate Data";
 
       case "xdata"
+        s.doc = "__objname__ vertex x-coordinates.";
         s.valid = valid_vecmat;
-        s.category = "Patch Data";
+        s.category = "Coordinate Data";
 
       case "ydata"
+        s.doc = "__objname__ vertex y-coordinates.";
         s.valid = valid_vecmat;
-        s.category = "Patch Data";
+        s.category = "Coordinate Data";
 
       case "zdata"
+        s.doc = "__objname__ vertex z-coordinates.";
         s.valid = valid_vecmat;
-        s.category = "Patch Data";
+        s.category = "Coordinate Data";
 
     endswitch
 
@@ -2363,22 +2427,14 @@ one @code{light} object is present and visible in the same axes.";
     switch (field)
       ## Overridden shared properties
       case "children"
-        s.doc = doc_unused;
+        s.doc = sprintf (doc_notimpl, "Child objects for Scatter plots");
         ## Use base category.
 
       ## Specific properties
       case "annotation"
-        s.category = "Text Appearance";
-
-      case "cdatamode"
-        s.doc = "If @code{cdatamode} is @qcode{\"auto\"}, @code{cdata} is set \
-to the color from the @code{colororder} of the ancestor axes corresponding to \
-the @code{seriesindex}.";
-        s.category = "Scatter Color Data";
-
-      case "cdatasource"
-        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
-        s.category = "Scatter Color Data";
+        s.doc = sprintf (doc_notimpl, "Legend appearance toggling from within \
+        the __objname__ object");
+        s.category = "Legend Options";
 
       case "cdata"
         s.doc = "Data defining the scatter object color.\n\
@@ -2389,31 +2445,52 @@ it defines the color of all scatter markers.\n\
 If @code{cdata} is an N-by-1 vector of indices or an N-by-3 (RGB) matrix, \
 it defines the color of each one of the N scatter markers.";
         s.valid = valid_scalmat;
-        s.category = "Scatter Color Data";
+        s.category = "Color Data";
+
+      case "cdatamode"
+        s.doc = "If @code{cdatamode} is @qcode{\"auto\"}, @code{cdata} is set \
+to the color from the @code{colororder} of the ancestor axes corresponding to \
+the @code{seriesindex}.";
+        s.category = "Color Data";
+
+      case "cdatasource"
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"} property}}.  Data is \
+transferred into @qcode{\"cdata\"} using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+        s.category = "Color Data";
 
       case "datatiptemplate"
+        s.doc = sprintf (doc_notimpl, "Data tip objects");
         s.category = "Mouse Interaction";
 
       case "displayname"
         s.doc = "Text of the legend entry corresponding to this scatter \
 object.";
-        s.category = "Text Appearance";
+        s.category = "Legend Options";
 
       case "latitudedata"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Geographic coordinate scatter plotting");
+        s.category = "Coordinate Data";
 
       case "latitudedatasource"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Geographic coordinate scatter plotting");
+        s.category = "Coordinate Data";
 
       case "linewidth"
         s.doc = "Line width of the edge of the markers.";
+        s.valid = "scalar";
         s.category = "Marker Appearance";
 
       case "longitudedata"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Geographic coordinate scatter plotting");
+        s.category = "Coordinate Data";
 
       case "longitudedatasource"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Geographic coordinate scatter plotting");
+        s.category = "Coordinate Data";
 
       case "marker"
         s.doc = "@xref{XREFlinemarker, , @w{line marker property}}.";
@@ -2460,17 +2537,19 @@ the ancestor axes.  @xref{XREFlinemarkerfacecolor, , \
         s.category = "Marker Appearance";
 
       case "rdata"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Polar coordinates for scatter plotting");
+        s.category = "Coordinate Data";
 
       case "rdatasource"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Polar coordinates for scatter plotting");
+        s.category = "Coordinate Data";
 
       case "seriesindex"
         s.doc = "Each scatter object in the same axes is assigned an \
 incrementing integer.  This corresponds to the index into the \
 @code{colororder} of the ancestor axes that is used if @code{cdatamode} is \
 set to @qcode{\"auto\"}.";
-        s.category = "Scatter Color Data";
+        s.category = "Color Data";
 
       case "sizedata"
         s.doc = "Size of the area of the marker.  A scalar value applies to \
@@ -2484,38 +2563,55 @@ each one of the N scatter markers.";
         s.category = "Marker Appearance";
 
       case "thetadata"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Polar coordinates for scatter plotting");
+        s.category = "Coordinate Data";
 
       case "thetadatasource"
-        s.category = "Scatter Plot Data";
+        s.doc = sprintf (doc_notimpl, "Polar coordinates for scatter plotting");
+        s.category = "Coordinate Data";
 
       case "xdata"
         s.doc = "Vector with the x coordinates of the scatter object.";
         s.valid = "vector";
-        s.category = "Scatter Plot Data";
+        s.category = "Coordinate Data";
 
         case "xdatasource"
-        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
-        s.category = "Scatter Plot Data";
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFscatterxdata, , @w{@qcode{\"xdata\"} property}}.  Data is \
+transferred into @qcode{\"xdata\"} using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+        s.category = "Coordinate Data";
 
       case "ydata"
         s.doc = "Vector with the y coordinates of the scatter object.";
         s.valid = "vector";
-        s.category = "Scatter Plot Data";
+        s.category = "Coordinate Data";
 
       case "ydatasource"
-        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
-        s.category = "Scatter Plot Data";
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFscatterydata, , @w{@qcode{\"ydata\"} property}}.  Data is \
+transferred into @qcode{\"ydata\"} using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+        s.category = "Coordinate Data";
 
       case "zdata"
         s.doc = "For 3D data, vector with the y coordinates of the scatter \
 object.";
         s.valid = packopt ({"[]", "vector"});
-        s.category = "Scatter Plot Data";
+        s.category = "Coordinate Data";
 
       case "zdatasource"
-        s.doc = sprintf (doc_notimpl, "Data from workspace variables");
-        s.category = "Scatter Plot Data";
+        s.doc = "The name of a workspace variable that contains data that \
+will be used for the \
+@ref{XREFscatterzdata, , @w{@qcode{\"zdata\"} property}}.  Data is \
+transferred into @qcode{\"zdata\"} using the \
+@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+        s.valid = valid_string;
+        s.category = "Coordinate Data";
 
     endswitch
 
@@ -2524,7 +2620,7 @@ object.";
     switch (field)
       ## Overridden shared properties
       case "children"
-        s.doc = doc_unused;
+        s.doc = ["__objname__ objects have no child objects.  ", doc_unused];
         ## Use base category.
 
       ## Specific properties
@@ -2617,25 +2713,25 @@ point source (@qcode{\"local\"}).";
 
       case "fontangle"
         s.doc = doc_fontangle;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontsize"
         s.doc = doc_fontsize;
         s.valid = "scalar";
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontunits"
         s.doc = doc_fontunits;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "foregroundcolor"
         s.category = "Appearance";
@@ -2661,10 +2757,10 @@ point source (@qcode{\"local\"}).";
         s.category = "Callback Execution";
 
       case "title"
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "titleposition"
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "units"
         s.category = "Position";
@@ -2688,25 +2784,25 @@ point source (@qcode{\"local\"}).";
 
       case "fontangle"
         s.doc = doc_fontangle;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontsize"
         s.doc = doc_fontsize;
         s.valid = "scalar";
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontunits"
         s.doc = doc_fontunits;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "foregroundcolor"
         s.category = "Appearance";
@@ -2738,10 +2834,10 @@ point source (@qcode{\"local\"}).";
         s.category = "Appearance";
 
       case "title"
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "titleposition"
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "units"
         s.category = "Position";
@@ -2778,31 +2874,31 @@ indicate the size of the rectangle enclosing all lines.";
 
       case "fontangle"
         s.doc = doc_fontangle;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontsize"
         s.doc = doc_fontsize;
         s.valid = "scalar";
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontunits"
         s.doc = doc_fontunits;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "foregroundcolor"
         s.category = "Appearance";
 
       case "horizontalalignment"
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "keypressfcn"
         s.category = "Callback Execution";
@@ -2823,7 +2919,7 @@ indicate the size of the rectangle enclosing all lines.";
         s.category = "Control Options";
 
       case "string"
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "style"
         s.category = "Appearance";
@@ -2838,7 +2934,7 @@ indicate the size of the rectangle enclosing all lines.";
         s.category = "Control Options";
 
       case "verticalalignment"
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
     endswitch
 
@@ -2882,25 +2978,25 @@ indicate the size of the rectangle enclosing all lines.";
 
       case "fontangle"
         s.doc = doc_fontangle;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontname"
         s.doc = doc_fontname;
         s.valid = valid_string;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontsize"
         s.doc = doc_fontsize;
         s.valid = "scalar";
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontunits"
         s.doc = doc_fontunits;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "fontweight"
         s.doc = doc_fontweight;
-        s.category = "Annotation";
+        s.category = "Text Appearance";
 
       case "foregroundcolor"
         s.category = "Appearance";
@@ -2918,7 +3014,7 @@ indicate the size of the rectangle enclosing all lines.";
         s.category = "Table Operation";
 
       case "rowname"
-        s.category = "Annotation";
+        s.category = "Table Data";
 
       case "rowstriping"
         s.category = "Appearance";
@@ -2966,7 +3062,7 @@ indicate the size of the rectangle enclosing all lines.";
         s.category = "Appearance";
 
       case "tooltipstring"
-        s.category = "Annotation";
+        s.category = "Mouse Interaction";
 
     endswitch
 
@@ -3004,7 +3100,7 @@ indicate the size of the rectangle enclosing all lines.";
         s.category = "Toggle Operation";
 
       case "tooltipstring"
-        s.category = "Annotation";
+        s.category = "Mouse Interaction";
 
     endswitch
   endif

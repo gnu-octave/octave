@@ -154,7 +154,7 @@ namespace octave
     bytecode m_code;
     // The bytecode need its own scope object that will
     // be written back to the octave_user_function object
-    symbol_scope m_scope;
+    symbol_scope m_scope = symbol_scope::invalid ();
 
     bool m_varargout = false;
     bool m_is_script = false;

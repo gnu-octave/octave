@@ -127,7 +127,7 @@ public:
 
 private:
     int m_offset;
-    octave::symbol_scope m_scope;
+    octave::symbol_scope m_scope = octave::symbol_scope::invalid ();
 
     DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
 };

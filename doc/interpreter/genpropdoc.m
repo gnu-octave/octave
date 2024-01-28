@@ -1043,7 +1043,7 @@ the @ref{XREFlegend, , legend function} to set legend properties."];
 objects, specified as a cell array of line specification strings.  Note that \
 the linestyle is only incremented after cycling through the full \
 @ref{XREFaxescolororder, , @w{@qcode{\"colororder\"}}} list.  \
-@xref{Line Styles}."
+@xref{Line Styles}.";
         s.category = "Automatic Child Properties";
 
       case "linestyleorderindex"
@@ -1220,7 +1220,7 @@ fontsize.";
 
       case "units"
         if (strcmp (objname, "legend"))
-          s.doc = "Units used to interpret the @qcode{\"position\"}, \
+          s.doc = "Units used to interpret the @qcode{\"position\"} \
 property.";
         else
           s.doc = "Units used to interpret the @qcode{\"position\"}, \
@@ -1966,7 +1966,7 @@ specified in the @ref{XREFaxesclim, , @w{@qcode{\"clim\"} axes property}}.";
 will be used for the \
 @ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"} property}}.  Data is \
 transferred into @qcode{\"cdata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Color and Transparency";
 
@@ -2133,7 +2133,7 @@ one @code{light} object is present and visible in the same axes.";
 will be used for the \
 @ref{XREFsurfacexdata, , @w{@qcode{\"xdata\"} property}}.  Data is \
 transferred into @qcode{\"xdata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2147,7 +2147,7 @@ transferred into @qcode{\"xdata\"} using the \
 will be used for the \
 @ref{XREFsurfaceydata, , @w{@qcode{\"ydata\"} property}}.  Data is \
 transferred into @qcode{\"ydata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2161,7 +2161,7 @@ transferred into @qcode{\"ydata\"} using the \
 will be used for the \
 @ref{XREFsurfacezdata, , @w{@qcode{\"zdata\"} property}}.  Data is \
 transferred into @qcode{\"zdata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2274,11 +2274,11 @@ faces.";
         s.doc = "Color of the faces of the __objname__ object, specified as \
 either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
-@qcode{\"interp\"} will set either a single color for each face or a color interpolated across the face's vertices using the \
-color value data stored in either the \
-@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} or \
-@ref{XREFpatchfacevertexcdata, , @w{@qcode{\"facevertexcdata\"}}} properties.  \
-@xref{Colors, , colorspec}.";
+@qcode{\"interp\"} will set either a single color for each face or a color \
+interpolated across the face's vertices using the color value data stored in \
+either the @ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} or \
+@ref{XREFpatchfacevertexcdata, , @w{@qcode{\"facevertexcdata\"}}} \
+properties.  @xref{Colors, , colorspec}.";
         ## Don't provide a default value, and mark colorspec with
         ## braces, this forces the default RGB triplet to be displayed
         s.valid = packopt ({markdef(valid_color), ...
@@ -2458,7 +2458,7 @@ the @code{seriesindex}.";
 will be used for the \
 @ref{XREFpatchcdata, , @w{@qcode{\"cdata\"} property}}.  Data is \
 transferred into @qcode{\"cdata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Color Data";
 
@@ -2580,7 +2580,7 @@ each one of the N scatter markers.";
 will be used for the \
 @ref{XREFscatterxdata, , @w{@qcode{\"xdata\"} property}}.  Data is \
 transferred into @qcode{\"xdata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2594,7 +2594,7 @@ transferred into @qcode{\"xdata\"} using the \
 will be used for the \
 @ref{XREFscatterydata, , @w{@qcode{\"ydata\"} property}}.  Data is \
 transferred into @qcode{\"ydata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2609,7 +2609,7 @@ object.";
 will be used for the \
 @ref{XREFscatterzdata, , @w{@qcode{\"zdata\"} property}}.  Data is \
 transferred into @qcode{\"zdata\"} using the \
-@xref{XREFrefreshdata, , @w{refreshdata function}}.";
+@ref{XREFrefreshdata, , @w{refreshdata function}}.";
         s.valid = valid_string;
         s.category = "Coordinate Data";
 
@@ -2651,30 +2651,52 @@ point source (@qcode{\"local\"}).";
 
       ## Specific properties
       case "accelerator"
+        s.doc = "A character that when pressed together with CTRL will \
+execute this menu entry (e.g., @qcode{\"x\"} for @code{CTRL+x}).";
+        s.valid = "character";
         s.category = "Keyboard Interaction";
 
       case "callback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever this menu item is selected.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "checked"
+        s.doc = "Sets whether or not a mark appears at this menu entry.";
         s.category = "Menu Options";
 
       case "enable"
+        s.doc = "Sets whether this menu entry is active or is grayed out.";
         s.category = "Menu Options";
 
       case "foregroundcolor"
+        s.doc = "The color value of the text for this menu entry.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "menuselectedfcn"
+        s.doc = "Function that is called when this menu item is executed.  \
+__fcnmsg__";
+        s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "position"
+        s.doc = "A scalar value containing the relative menu position from \
+the left or top depending on the orientation of the menu.";
+        s.valid = "scalar";
         s.category = "Position";
 
       case "separator"
+        s.doc = "State indicating whether a separator line will be drawn \
+above the current menu position.";
         s.category = "Appearance";
 
       case "text"
+        s.doc = "The text for this menu entry.  A @qcode{\"&\"} character \
+can be used to mark the \
+@ref{XREFuimenuaccelerator, , @w{@qcode{\"accelerator\"} key}}";
+        s.valid = "string";
         s.category = "Menu Options";
 
     endswitch
@@ -2689,9 +2711,14 @@ point source (@qcode{\"local\"}).";
 
       ## Specific properties
       case "callback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever this item is selected.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "position"
+        s.doc = sprintf (doc_notimpl, "Manually setting location for \
+uicontextmenu to appear");
         s.category = "Position";
 
     endswitch
@@ -2702,13 +2729,18 @@ point source (@qcode{\"local\"}).";
       ## Overridden shared properties
 
       ## Specific properties
-      case "backgroundcolor"
+    case "backgroundcolor"
+        s.doc = "The color value of the background of this panel.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "bordertype"
+        s.doc = "Sets whether or not a line border will surround the panel.";
         s.category = "Appearance";
 
       case "borderwidth"
+        s.doc = "The width of the the line border in pixels.";
+        s.valid = "whole number scalar";
         s.category = "Appearance";
 
       case "fontangle"
@@ -2734,12 +2766,19 @@ point source (@qcode{\"local\"}).";
         s.category = "Text Appearance";
 
       case "foregroundcolor"
+        s.doc = "The color value of the title text for this panel.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "highlightcolor"
+        s.doc = "The color value of the line bordering this panel.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "position"
+        s.doc = "Size of the panel represented as the four-element vector \
+[left, bottom, width, height].";
+        s.valid = valid_4elvec;
         s.category = "Position";
 
       case "resizefcn"
@@ -2748,21 +2787,30 @@ point source (@qcode{\"local\"}).";
         s.category = "Callback Execution";
 
       case "shadowcolor"
+        s.doc = "The color value of the line surrounding the border line \
+around this panel.  @xref{Colors, , colorspec}.";
+        s.valid = valid_color;
+
         s.category = "Appearance";
 
       case "sizechangedfcn"
-        s.doc = "Callback triggered when the uipanel size is changed.\
+        s.doc = "Callback triggered when the panel size is changed.\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "title"
+        s.doc = "The text for the panel title.";
+        s.valid = "string";
         s.category = "Text Appearance";
 
       case "titleposition"
+        s.doc = "Relative position of the title within the panel.";
         s.category = "Text Appearance";
 
       case "units"
+        s.doc = "Unit of measurement used to interpret the \
+@qcode{\"position\"} property.";
         s.category = "Position";
 
     endswitch
@@ -2774,12 +2822,18 @@ point source (@qcode{\"local\"}).";
 
       ## Specific properties
       case "backgroundcolor"
+        s.doc = "The color value of the background of this buttongroup.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "bordertype"
+        s.doc = "Sets whether or not a line border will surround the \
+buttongroup.";
         s.category = "Appearance";
 
       case "borderwidth"
+        s.doc = "The width of the the line border in pixels.";
+        s.valid = "whole number scalar";
         s.category = "Appearance";
 
       case "fontangle"
@@ -2805,12 +2859,19 @@ point source (@qcode{\"local\"}).";
         s.category = "Text Appearance";
 
       case "foregroundcolor"
+        s.doc = "The color value of the title text for this buttongroup.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "highlightcolor"
+        s.doc = "The color value of the line bordering this buttongroup.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "position"
+        s.doc = "Size of the buttongroup represented as the four-element \
+vector [left, bottom, width, height].";
+        s.valid = valid_4elvec;
         s.category = "Position";
 
       case "resizefcn"
@@ -2819,28 +2880,43 @@ point source (@qcode{\"local\"}).";
         s.category = "Callback Execution";
 
       case "selectedobject"
+        s.doc = "Graphic handle of the currently selected item in the \
+buttongroup.";
         s.category = "Button Group Operation";
 
       case "selectionchangedfcn"
+        s.doc = "Callback triggered when the selected item within the \
+buttongroup is changed.\
+\n\n__fcnmsg__";
+        s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "shadowcolor"
+        s.doc = "The color value of the line surrounding the border line \
+around this buttongroup.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "sizechangedfcn"
-        s.doc = "Callback triggered when the uibuttongroup size is changed.\
+        s.doc = "Callback triggered when the buttongroup size is changed.\
 \n\n__fcnmsg__";
         s.valid = valid_fcn;
         s.category = "Appearance";
 
       case "title"
+        s.doc = "The text for the buttongroup title.";
+        s.valid = "string";
         s.category = "Text Appearance";
 
       case "titleposition"
+        s.doc = "Relative position of the title within the buttongroup.";
         s.category = "Text Appearance";
 
       case "units"
+        s.doc = "Unit of measurement used to interpret the \
+@qcode{\"position\"} property.";
         s.category = "Position";
+
 
     endswitch
 
@@ -2851,20 +2927,30 @@ point source (@qcode{\"local\"}).";
 
       ## Specific properties
       case "backgroundcolor"
+        s.doc = "The color value of the background of this control object.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "callback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever this control is activated.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "cdata"
+        s.doc = "Image data used to represent the control object, stored as \
+a M x N x 3 RGB array.";
+        s.valid = "array";
         s.category = "Appearance";
 
       case "enable"
+        s.doc = "Sets whether this control object is active or is grayed \
+out.";
         s.category = "Control Options";
 
       case "extent"
         s.doc = "Size of the text string associated to the uicontrol \
- returned in the form @code{[0 0 width height]} (the two first elements \
+returned in the form @code{[0 0 width height]} (the two first elements \
 are always zero).\n\n\
 For multi-line strings the returned @code{width} and @code{height} \
 indicate the size of the rectangle enclosing all lines.";
@@ -2895,45 +2981,101 @@ indicate the size of the rectangle enclosing all lines.";
         s.category = "Text Appearance";
 
       case "foregroundcolor"
+        s.doc = "The color value of the text for this control object.  \
+@xref{Colors, , colorspec}.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "horizontalalignment"
+        s.doc = "Specifies the horizontal justification of the text within \
+the uicontrol object.";
         s.category = "Text Appearance";
 
       case "keypressfcn"
+        s.doc = "Function that is executed when a key is pressed and \
+the control object has focus.\n\n__fcnmsg__";
+        s.valid = valid_fcn;
         s.category = "Callback Execution";
 
       case "listboxtop"
+        s.doc = "The index of the string option that will appear at the top of \
+\"listbox\" controls ";
+        s.valid = "scalar";
         s.category = "Control Options";
 
       case "max"
+        s.doc = "The maximum control value, whose effect on the control is \
+dependent on the control type. For @qcode{\"checkbox\"}, \
+@qcode{\"togglebutton\"}, and @qcode{\"radiobutton\"} controls, the \
+@qcode{\"max\"} value is assigned to the @qcode{\"value\"} property when the \
+control object is selected  For @qcode{\"slider\"} controls, @qcode{\"max\"} \
+defines the maximum value of the slider.  For @qcode{\"edit\"} and \
+@qcode{\"listbox\"} controls, if @code{Max - Min > 1}, then the control will \
+permit multiple line entries or list item selections, respectively.";
+        s.valid = "scalar";
         s.category = "Control Options";
 
       case "min"
+        s.doc = "The minimum control value, whose effect on the control is \
+dependent on the control type. For @qcode{\"checkbox\"}, \
+@qcode{\"togglebutton\"}, and @qcode{\"radiobutton\"} controls, the \
+@qcode{\"min\"} value is assigned to the @qcode{\"value\"} property when the \
+control object is not selected  For @qcode{\"slider\"} controls, \
+@qcode{\"min\"} defines the minimum value of the slider.  For \
+@qcode{\"edit\"} and @qcode{\"listbox\"} controls, if @code{Max - Min > 1}, \
+then the control will permit multiple line entries or list item selections, \
+respectively.";
+        s.valid = "scalar";
         s.category = "Control Options";
 
       case "position"
+        s.doc = "Size of the control object represented as the four-element \
+vector [left, bottom, width, height].";
+        s.valid = valid_4elvec;
         s.category = "Position";
 
       case "sliderstep"
+        s.doc = "The fractional step size, measured relative to the \
+@code{Min - Max} span of the slider, that the slider moves when the user \
+clicks on the object.  @qcode{\"sliderstep\"} is specified as a two-element \
+vector consisting of @code{[minor major]}, where @qcode{\"minor\"} is the \
+step size for clicking on the slider arrows, and @qcode{\"major\"} is the \
+step size for clicking within the slider bar.";
+        s.valid = valid_2elvec;
         s.category = "Control Options";
 
       case "string"
+        s.doc = "The text appearing with the control object.";
+        s.valid = "string";
         s.category = "Text Appearance";
 
       case "style"
+        s.doc = "The type of control object created.  For a complete \
+description of available control styles, see the \
+@ref{XREFuicontrol, , @w{@qcode{\"uicontrol\"} function}}";
         s.category = "Appearance";
 
       case "tooltipstring"
+        s.doc = "A text string that appears in a tooltip when the mouse \
+pointer hovers over the control object.";
+        s.valid = "string";
         s.category = "Mouse Interaction";
 
       case "units"
+        s.doc = "Unit of measurement used to interpret the \
+@qcode{\"position\"} property.";
         s.category = "Position";
 
       case "value"
+        s.doc = "A numerical value associated with the current state of the \
+control object, with the meaning of the value dependent on the \"style\" of \
+the control object.";
+        s.valid = "scalar";
         s.category = "Control Options";
 
       case "verticalalignment"
+        s.doc = "Specifies the vertical position of the text in the \
+uicontrol object.";
         s.category = "Text Appearance";
 
     endswitch
@@ -2945,33 +3087,68 @@ indicate the size of the rectangle enclosing all lines.";
 
       ## Specific properties
       case "backgroundcolor"
+        s.doc = "Color of the background of the table specified as a \
+3-element RBG vector.  If __prop__ has multiple rows, the colors cycle \
+repeatedly if the \
+@ref{XREFuitablerowstriping, , @qcode{\"rowstriping\"} property} is on.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "celleditcallback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever a table cell is edited.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "cellselectioncallback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever a table cell is selected.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "columneditable"
+        s.doc = "A logical indicator of whether the columns are editable.  \
+It consists of either a 1 x N vector of logical values where true or false \
+indicate the corresponding column is or is not editable, respectively, or \
+an empty logical array indicating that no column is editable.";
+        s.valid = "logical row vector";
         s.category = "Table Operation";
 
       case "columnformat"
+        s.doc = "The display format for numeric data in each column.  \
+Valid formats include @qcode{\"char\"}, @qcode{\"logical\"}, \
+@qcode{\"numeric\"}, or a valid format setting from the \
+@ref{XREFformat, , format function}";
         s.category = "Table Data";
 
       case "columnname"
+        s.doc = "Column names specified as either @qcode{\"numbered\"} or a \
+1 x N cell string vector containing the names to be used for each column \
+heading.";
         s.category = "Table Data";
 
-        case "columnwidth"
+      case "columnwidth"
+        s.doc = "Setting for determining width of each column, valid \
+options including:  @qcode{\"auto\"}, @qcode{\"fit\"}, evenly divided \
+multiples specified as @qcode{\"1x\"}, @qcode{\"2x\"}, etc., or a 1 x N cell \
+vector where each element corresponds to one of N table columns, and \
+containing any of the above options or a fixed width specified in pixels.";
         s.category = "Table Data";
 
       case "data"
+        s.doc = "The data contained in the table specified as either a \
+2-D numeric, logical, or cell array.";
+        s.valid = "matrix";
         s.category = "Table Data";
 
       case "enable"
+        s.doc = "Sets whether this table object is active or is grayed out.";
         s.category = "Table Operation";
 
       case "extent"
+        s.doc = "A for element vector indicating the size of the table.  \
+The first two elements of the array are always zero, while the third and \
+fourth elements contain the height and width of the table.";
         s.valid = valid_4elvec;
         s.printdefault = false;
         s.category = "Position";
@@ -2999,30 +3176,56 @@ indicate the size of the rectangle enclosing all lines.";
         s.category = "Text Appearance";
 
       case "foregroundcolor"
+        s.doc = "Color of the data text in this table.  \
+@xref{Colors, , colorspec}.";
+        s.valid = valid_color;
         s.category = "Appearance";
 
       case "keypressfcn"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever a key is pressed in this table object.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "keyreleasefcn"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever a key is released in this table object.";
         s.category = "Callback Execution";
 
       case "position"
+        s.doc = "The position and size of the table.  The four elements of \
+the vector are the coordinates of the lower left corner and width and height \
+of the figure.  @xref{XREFuitableunits, , @w{units property}}.";
+        s.valid = valid_4elvec;
         s.category = "Position";
 
       case "rearrangeablecolumns"
+        s.doc = "Indicates whether or not the ability to move columns by \
+clicking and dragging the column headers.";
         s.category = "Table Operation";
 
       case "rowname"
+        s.doc = "Row names specified as either @qcode{\"numbered\"} or a \
+N x 1 cell string vector containing the names to be used for each row \
+heading.";
         s.category = "Table Data";
 
       case "rowstriping"
+        s.doc = "Setting to indicate whether the table background color \
+will use different colors for each row.  Colors are drawn from the \
+@ref{XREFuitablebackgroundcolor, , @qcode{\"backgroundcolor\"} property} in \
+a repeating pattern.";
         s.category = "Appearance";
 
       case "tooltipstring"
+        s.doc = "A text string that appears in a tooltip when the mouse \
+pointer hovers over the table object.";
+        s.valid = "string";
         s.category = "Mouse Interaction";
 
       case "units"
+        s.doc = "Unit of measurement used to interpret the \
+@qcode{\"position\"} property.";
         s.category = "Position";
 
     endswitch
@@ -3047,21 +3250,37 @@ indicate the size of the rectangle enclosing all lines.";
 
       ## Specific properties
       case "__named_icon__"
+        s.doc = "The name of an bundled icon file to use as the image for \
+the pushtool object.";
+        s.valid = "string";
         s.category = "Appearance";
 
       case "cdata"
+        s.doc = "Image data used to represent the pushtool object, stored as \
+a M x N x 3 RGB array.";
+        s.valid = "array";
         s.category = "Appearance";
 
       case "clickedcallback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever this control object is clicked.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "enable"
-        s.category = "Operation";
+              s.doc = "Sets whether this pushtool object is active or is \
+grayed out.";
+        s.category = "Pushtool Operation";
 
       case "separator"
+        s.doc = "State indicating whether a separator line will be drawn \
+next to the current pushtool position.";
         s.category = "Appearance";
 
       case "tooltipstring"
+        s.doc = "A text string that appears in a tooltip when the mouse \
+pointer hovers over the pushtool object.";
+        s.valid = "string";
         s.category = "Mouse Interaction";
 
     endswitch
@@ -3075,31 +3294,55 @@ indicate the size of the rectangle enclosing all lines.";
         ## Use base category.
 
       ## Specific properties
-      case ""
+      case "__named_icon__"
+        s.doc = "The name of an bundled icon file to use as the image for \
+the toggletool object.";
+        s.valid = "string";
         s.category = "Appearance";
 
       case "cdata"
+        s.doc = "Image data used to represent the toggletool object, stored \
+as a M x N x 3 RGB array.";
+        s.valid = "array";
         s.category = "Appearance";
 
       case "clickedcallback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever this control object is clicked.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "enable"
+        s.doc = "Sets whether this toggletool object is active or is grayed \
+out.";
         s.category = "Toggle Operation";
 
       case "offcallback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever this control object is toggled off.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "oncallback"
+        s.doc = "A string consisting of a valid Octave expression that will \
+be executed whenever this control object is toggled on.";
+        s.valid = "string";
         s.category = "Callback Execution";
 
       case "separator"
+        s.doc = "Setting to draw a vertical line to the left of the \
+toggletool.";
         s.category = "Appearance";
 
       case "state"
+        s.doc = "The current @qcode{\"on\"} or @qcode{\"off\"} state of the \
+toggletool object.";
         s.category = "Toggle Operation";
 
       case "tooltipstring"
+        s.doc = "A text string that appears in a tooltip when the mouse \
+pointer hovers over the toggletool object.";
+        s.valid = "string";
         s.category = "Mouse Interaction";
 
     endswitch

@@ -232,24 +232,15 @@ help_system::raw_help (const std::string& nm, bool& symbol_found) const
   return h;
 }
 
-std::string
-help_system::which (const std::string& name,
-                    std::string& type) const
+bool
+help_system::get_which_info_from_fcn (const std::string& name, const octave_value& ov_fcn, std::string& file, std::string& type) const
 {
-  std::string file;
-
-  if (name.empty ())
-    return file;
-
+  file = "";
   type = "";
 
-  symbol_table& symtab = m_interpreter.get_symbol_table ();
-
-  octave_value val = symtab.find_function (name);
-
-  if (val.is_defined ())
+  if (ov_fcn.is_function ())
     {
-      octave_function *fcn = val.function_value ();
+      octave_function *fcn = ov_fcn.function_value ();
 
       if (fcn)
         {
@@ -269,11 +260,10 @@ help_system::which (const std::string& name,
             }
           else
             {
-
               file = fcn->fcn_file_name ();
 
               if (! file.empty ())
-                type = val.is_user_script () ? "script" : "function";
+                type = ov_fcn.is_user_script () ? "script" : "function";
               else
                 {
                   if (fcn->is_user_function ())
@@ -285,6 +275,8 @@ help_system::which (const std::string& name,
                     }
                 }
             }
+
+          return true;
         }
       else
         {
@@ -293,23 +285,146 @@ help_system::which (const std::string& name,
           load_path& lp = m_interpreter.get_load_path ();
 
           file = lp.find_fcn_file (name);
+
+          if (file.empty ())
+            return false;
         }
     }
 
-  if (file.empty ())
+  return false;
+}
+
+// FIXME: There is a lot of duplication between the following function
+// and help_system::raw_help_from_symbol_table.  Some refactoring would
+// probably be useful.
+
+std::string
+help_system::which (const std::string& name,
+                    std::string& type) const
+{
+  std::string file;
+
+  if (name.empty ())
+    return file;
+
+  type = "";
+
+  symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+  size_t pos = name.find ('.');
+
+  if (pos == std::string::npos)
     {
-      // File query.
+      // Simple name.  If not found, continue looking for packages and
+      // classes.
 
-      load_path& lp = m_interpreter.get_load_path ();
+      octave_value ov_fcn = symtab.find_function (name);
 
-      // For compatibility: "file." queries "file".
-      if (name.size () > 1 && name[name.size () - 1] == '.')
-        file = lp.find_file (name.substr (0, name.size () - 1));
-      else
-        file = lp.find_file (name);
-
-      file = sys::env::make_absolute (file);
+      if (get_which_info_from_fcn (name, ov_fcn, file, type))
+        return file;
     }
+
+  // NAME contains '.' and must match the following pattern:
+  //
+  //   (package.)*(package|classname).(property|method)*
+  //
+  // Start by looking up the full name.  It could be either a package or
+  // a class and we are done.  Otherwise, strip the final component and
+  // lookup that name.  If it is a package, look for a function.  If it
+  // is a class, look for a property or method.
+
+  cdef_manager& cdm = m_interpreter.get_cdef_manager ();
+
+  // FIXME: In the following search we may load classes.  Is that really
+  // what we want, or should we just search the loadpath for
+  // +pkga/+pkgb/classname/file.m, etc. and attempt to extract help text
+  // without actually installing packages and classes into the fcn_info
+  // table?
+
+  // Is NAME a class?
+
+  cdef_class cls = cdm.find_class (name, false, true);
+
+  if (cls.ok ())
+    {
+      // FIXME: Return documentation for the class or the class
+      // constructor?
+
+      file = cls.file_name ();
+      type = "classdef class";
+
+      return file;
+    }
+
+  cdef_package pkg = cdm.find_package (name, false, true);
+
+  if (pkg.ok ())
+    {
+      // FIXME: How to get the fill name of a package?
+      file = pkg.get_name ();
+      type = "package";
+
+      return file;
+    }
+
+  // Strip final component (might be a property or method name).
+
+  pos = name.rfind ('.');
+  std::string prefix = name.substr (0, pos);
+  std::string nm = name.substr (pos+1);
+
+  // Is PREFIX the name of a class?
+
+  cls = cdm.find_class (prefix, false, true);
+
+  if (cls.ok ())
+    {
+      // FIXME: Should we only find public methods here?
+
+      octave_value ov_meth = cls.get_method (nm);
+
+      if (get_which_info_from_fcn (nm, ov_meth, file, type))
+        return file;
+
+      // FIXME: Should we only find public properties here?
+
+      cdef_property prop = cls.find_property (nm);
+
+      if (prop.ok ())
+        {
+          file = cls.file_name ();
+          type = "class property";
+
+          return file;
+        }
+    }
+
+  // Or is PREFIX the name of a package?
+
+  pkg = cdm.find_package (prefix, false, true);
+
+  if (pkg.ok ())
+    {
+      octave_value ov_fcn = pkg.find (nm);
+
+      if (get_which_info_from_fcn (nm, ov_fcn, file, type))
+        return file;
+    }
+
+  // File query.
+
+  load_path& lp = m_interpreter.get_load_path ();
+
+  // For compatibility: "file." queries "file".
+  if (name.size () > 1 && name[name.size () - 1] == '.')
+    file = lp.find_file (name.substr (0, name.size () - 1));
+  else
+    file = lp.find_file (name);
+
+  file = sys::env::make_absolute (file);
+
+  if (! file.empty ())
+    type = "file";
 
   return file;
 }
@@ -545,49 +660,166 @@ help_system::local_functions () const
   return retval;
 }
 
-bool
-help_system::raw_help_from_symbol_table (const std::string& nm,
-    std::string& h, std::string& w,
-    bool& symbol_found) const
+static bool
+get_help_from_fcn (const std::string& fcn_nm, const octave_value& ov_fcn, std::string& help, std::string& what, bool& symbol_found)
 {
-  std::string meth_nm;
+  symbol_found = false;
 
-  symbol_table& symtab = m_interpreter.get_symbol_table ();
+  help = "";
+  what = "";
 
-  octave_value val = symtab.find_function (nm);
-
-  if (! val.is_defined ())
+  if (ov_fcn.is_function ())
     {
-      std::size_t pos = nm.rfind ('.');
+      octave_function *fcn = ov_fcn.function_value ();
 
-      if (pos != std::string::npos)
-        {
-          meth_nm = nm.substr (pos+1);
+      help = fcn->doc_string (fcn_nm);
+      what = fcn->fcn_file_name ();
 
-          val = symtab.find_function (nm.substr (0, pos));
-        }
+      if (what.empty ())
+        what = fcn->is_user_function () ? "command-line function" : "built-in function";
+
+      symbol_found = true;
     }
 
-  if (val.is_defined ())
-    {
-      octave_function *fcn = val.function_value ();
+  return symbol_found;
+}
 
-      if (fcn)
+// FIXME: There is a lot of duplication between the following function
+// and help_system::which.  Some refactoring would probably be useful.
+
+bool
+help_system::raw_help_from_symbol_table (const std::string& name, std::string& help, std::string& what, bool& symbol_found) const
+{
+  symbol_table& symtab = m_interpreter.get_symbol_table ();
+
+  size_t pos = name.find ('.');
+
+  if (pos == std::string::npos)
+    {
+      // Simple name.  If not found, continue looking for packages and
+      // classes.
+
+      octave_value ov_fcn = symtab.find_function (name);
+
+      // FIXME: it seems like there is a lot of potential for confusion
+      // because is_function can also return true for
+      // octave_classdef_meta objects.
+
+      if (! ov_fcn.is_classdef_meta ()
+          && get_help_from_fcn (name, ov_fcn, help, what, symbol_found))
+        return true;
+    }
+
+  // If NAME does not contain '.', then it should be a package or a
+  // class name.
+  //
+  // If NAME contains '.' it should match the following pattern:
+  //
+  //   (package.)*(package|classname).(property|method)*
+  //
+  // Start by looking up the full name.  It could be either a package or
+  // a class and we are done.  Otherwise, strip the final component and
+  // lookup that name.  If it is a package, look for a function.  If it
+  // is a class, look for a property or method.
+
+  cdef_manager& cdm = m_interpreter.get_cdef_manager ();
+
+  // FIXME: In the following search we may load classes.  Is that really
+  // what we want, or should we just search the loadpath for
+  // +pkga/+pkgb/classname/file.m, etc. and attempt to extract help text
+  // without actually installing packages and classes into the fcn_info
+  // table?
+
+  // Is NAME a class?
+
+  cdef_class cls = cdm.find_class (name, false, true);
+
+  if (cls.ok ())
+    {
+      // Is the class documented?
+
+      help = cls.doc_string ();
+
+      if (! help.empty ())
         {
-          // FCN may actually be a classdef_meta object.
+          what = "class";
 
           symbol_found = true;
+          return true;
+        }
 
-          h = fcn->doc_string (meth_nm);
+      // Look for constructor.
 
-          w = fcn->fcn_file_name ();
+      pos = name.rfind ('.');
+      std::string nm = name.substr (pos+1);
 
-          if (w.empty ())
-            w = fcn->is_user_function () ? "command-line function"
-                : "built-in function";
+      octave_value ov_meth = cls.get_method (nm);
+
+      if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
+        {
+          what = "constructor";
 
           return true;
         }
+    }
+
+  cdef_package pkg = cdm.find_package (name, false, true);
+
+  if (pkg.ok ())
+    {
+      help = "package " + name;
+      what = "package";
+
+      symbol_found = true;
+      return true;
+    }
+
+  // Strip final component (might be a property or method name).
+
+  pos = name.rfind ('.');
+  std::string prefix = name.substr (0, pos);
+  std::string nm = name.substr (pos+1);
+
+  // Is PREFIX the name of a class?
+
+  cls = cdm.find_class (prefix, false, true);
+
+  if (cls.ok ())
+    {
+      // FIXME: Should we only find public methods here?
+
+      octave_value ov_meth = cls.get_method (nm);
+
+      if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
+        return true;
+
+      // FIXME: Should we only find public properties here?
+
+      cdef_property prop = cls.find_property (nm);
+
+      if (prop.ok ())
+        {
+          // FIXME: is it supposed to be possible to document
+          // properties?
+
+          help = prop.doc_string ();
+          what = "class property";
+
+          symbol_found = true;
+          return true;
+        }
+    }
+
+  // Or is PREFIX the name of a package?
+
+  pkg = cdm.find_package (prefix, false, true);
+
+  if (pkg.ok ())
+    {
+      octave_value ov_fcn = pkg.find (nm);
+
+      if (get_help_from_fcn (nm, ov_fcn, help, what, symbol_found))
+        return true;
     }
 
   return false;

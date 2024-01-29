@@ -87,6 +87,11 @@
 ##
 ## @end table
 ##
+## Note:  For the @qcode{"edit"} and @qcode{"listbox"} styles, the single or 
+## multiple line/selection behavior is determined by the @qcode{"Min"} and
+## @qcode{"Max"} properties, permitting multiple lines/selections when the 
+## values are set such that @w{@code{Max - Min > 1}}.
+##
 ## Examples:
 ##
 ## @example

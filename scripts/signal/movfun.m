@@ -178,23 +178,25 @@ function y = movfun (fcn, x, wlen, varargin)
   valid_bc = {"shrink", "discard", "fill", "same", "periodic"};
 
   ## Parse input arguments
-  parser = inputParser ();
-  parser.FunctionName = "movfun";
-  parser.addParamValue ("Endpoints", "shrink", ...
-    @(x) any (strcmpi (x, valid_bc)) || (isnumeric (x) && isscalar (x)));
-  parser.addParamValue ("dim", [], ...
-    @(d) isempty (d) || (isscalar (d) && isindex (d, ndims (x))));
-  parser.addParamValue ("nancond", "includenan", ...
-    @(x) any (strcmpi (x, {"includenan", "omitnan"})));
-  parser.addParamValue ("outdim", [], ...
-    @(d) isempty (d) || (isvector (d) && isindex (d)));
+  persistent parser;
+  if isempty (parser)
+    parser = inputParser ();
+    parser.FunctionName = "movfun";
+    parser.addParamValue ("Endpoints", "shrink", ...
+      @(x) any (strcmpi (x, valid_bc)) || (isnumeric (x) && isscalar (x)));
+    parser.addParamValue ("dim", [], ...
+      @(d) isempty (d) || (isscalar (d) && isindex (d, ndims (x))));
+    parser.addParamValue ("nancond", "includenan", ...
+      @(x) any (strcmpi (x, {"includenan", "omitnan"})));
+    parser.addParamValue ("outdim", [], ...
+      @(d) isempty (d) || (isvector (d) && isindex (d)));
+  endif
 
   parser.parse (varargin{:});
   bc      = parser.Results.Endpoints;   # boundary condition
   dim     = parser.Results.dim;         # dimension to be used as input
   nancond = parser.Results.nancond;     # whether NaN are ignored or not
   outdim  = parser.Results.outdim;      # selected output dimension of fcn
-  clear parser
   ## End parse input arguments
 
   if (isempty (x))

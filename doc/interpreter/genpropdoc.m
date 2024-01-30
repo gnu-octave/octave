@@ -3522,11 +3522,25 @@ function str = printdoc (objname, obj, is_prop_subset)
   idx = strcmp (categories, "Unused");
   categories = [categories(!idx); categories(idx)];
 
+  ## Add links to categories at the top
+  str = sprintf ("%s\n\nCategories:\n\n", str);
+
+  for ii = 1:numel (categories);
+    str = sprintf ("%s@ref{XREF%s%s, , @w{%s}} %s", str, ...
+                   objname, strrep (categories{ii}, " ", ""), categories{ii});
+    if (ii < numel (categories))
+      str = sprintf ("%s| ", str);
+    endif
+  endfor
+
   idx = [];
   for ii = 1:numel (categories)
     fields = sort (allfields(strcmp (allcategories, categories{ii})));
     nf = numel (fields);
     str = sprintf ("%s\n\n@subsubheading %s", str, categories{ii});
+    str = sprintf ("%s\n@anchor{XREF%s%s}\n@prindex %s %s\n", str, ...
+                   objname, strrep (categories{ii}, " ", ""), ...
+                   objname, strrep (categories{ii}, " ", ""));
     str = sprintf ("%s\n\n@table @asis", str);
 
     for jj = 1:nf

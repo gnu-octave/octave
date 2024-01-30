@@ -82,6 +82,11 @@
 ## but no more than two singleton dimensions.
 ##
 ## @item
+## If either @var{x} or @var{y} is a scalar and the other is a vector, a
+## series of points are plotted at the coordinates defined by the scalar and
+## each element of the vector.
+##
+## @item
 ## If both arguments are vectors, the elements of @var{y} are plotted versus
 ## the elements of @var{x}.
 ##

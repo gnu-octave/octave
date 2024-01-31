@@ -1128,6 +1128,8 @@ cdef_class::make_meta_class (interpreter& interp,
 
                   cdef_property prop = cdm.make_property (retval, prop_name);
 
+                  prop.doc_string (prop_p->doc_string ());
+
 #if DEBUG_TRACE
                   std::cerr << "property: " << prop_p->ident ()->name ()
                             << std::endl;

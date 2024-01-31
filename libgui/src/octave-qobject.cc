@@ -976,13 +976,6 @@ base_qobject::close_gui ()
         });
 
       m_app_context.gui_running (false);
-
-      if (m_main_window)
-        {
-          m_main_window->deleteLater ();
-
-          m_main_window = nullptr;
-        }
     }
 }
 

@@ -34,10 +34,17 @@
 ## @var{ya} and @var{yb} may be scalar functions of @var{x}, allowing for
 ## integration over non-rectangular domains.
 ##
-## @var{f} is a function handle, inline function, or string containing the name
-## of the function to evaluate.  The function @var{f} must be of the form
-## @math{z = f(x,y)} where @var{x} is a vector and @var{y} is a scalar.  It
-## should return a vector of the same length and orientation as @var{x}.
+## @var{f} is a function handle, inline function, or string containing the
+## name of the function to evaluate.  The function @var{f} must be of the form
+## @math{z = f(x,y)}, and all operations must be vectorized such that @var{x}
+## and @var{y} accept array inputs and return array outputs of the same size.
+## (It can be assumed that @var{x} and @var{y} will either be same-size arrays
+## or one will be a scalar.)  The underlying integrators will input arrays of
+## integration points into @var{f} and/or use internal vector expansions to
+## speed computation that can produce unpredictable results if @var{f} is not
+## restricted to elementwise operations.  For integrands where this is
+## unavoidable, the @qcode("Vectorized") option described below may produce
+## more reliable results.
 ##
 ## Additional optional parameters can be specified using
 ## @qcode{"@var{property}", @var{value}} pairs.  Valid properties are:
@@ -60,9 +67,10 @@
 ## @item Vectorized
 ## Enable or disable vectorized integration.  A value of @code{false} forces
 ## Octave to use only scalar inputs when calling the integrand, which enables
-## integrands @math{f(x,y)} that have not been vectorized and only accept
-## @var{x} and @var{y} as scalars to be used.  The default value is
-## @code{true}.
+## integrands @math{f(x,y)} that have not been vectorized or only accept
+## scalar values of @var{x} or @var{y}.  The default value is @code{true}.
+## Note that this is achieved by wrapping @math{f(x,y)} with the function
+## @code{arrayfun}, which may significantly decrease computation speed.
 ## @end table
 ##
 ## Adaptive quadrature is used to minimize the estimate of error until the
@@ -95,7 +103,7 @@
 ## @end example
 ##
 ## The result is a volume, which for this constant-value integrand, is just
-## @code{@var{Length} * @var{Width} * @var{Height}}.
+## @w{@code{@var{Length} * @var{Width} * @var{Height}}}.
 ##
 ## Example 2 : integrate a triangular region in x-y plane
 ##
@@ -108,9 +116,34 @@
 ## @end group
 ## @end example
 ##
-## The result is a volume, which for this constant-value integrand, is the
-## Triangle Area x Height or
-## @code{1/2 * @var{Base} * @var{Width} * @var{Height}}.
+## The result is a volume, which for this constant-value integrand
+## @w{@math{@var{f} = 2}}, is the Triangle Area x Height or
+## @w{@code{1/2 * @var{Base} * @var{Width} * @var{Height}}}.
+##
+## Example 3 : integrate a non-vectorized function over a square region
+##
+## @example
+## @group
+## @var{f} = @@(@var{x},@var{y}) sinc (@var{x}) * sinc (@var{y}));
+## @var{q} = integral2 (@var{f}, -1, 1, -1, 1)
+##   @result{} @var{q} =  12.328  (incorrect)
+## @var{q} = integral2 (@var{f}, -1, 1, -1, 1, "Vectorized", false)
+##   @result{} @var{q} =  1.390 (correct)
+## @var{f} = @@(@var{x},@var{y}) sinc (@var{x}) .* sinc (@var{y});
+## @var{q} = integral2 (@var{f}, -1, 1, -1, 1)
+##   @result{} @var{q} =  1.390  (correct)
+## @end group
+## @end example
+##
+## The first result is incorrect as the non-elementwise operator between the
+## sinc functions in @var{f} create unintended matrix multiplications between
+## the internal integration arrays used by @code{integral2}.  In the second
+## result, setting @qcode{"Vectorized"} to false forces @code{integral2} to
+## perform scalar internal operations to compute the integral, resulting in
+## the correct numerical result at the cost of about a 20x increase in
+## computation time. In the third result, vectorizing the integrand @var{f}
+## using the elementwise multiplication operator gets the correct result
+## without increasing computation time.
 ##
 ## Programming Notes: If there are singularities within the integration region
 ## it is best to split the integral and place the singularities on the

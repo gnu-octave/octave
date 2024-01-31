@@ -61,7 +61,7 @@
 ##
 ## @item Vectorized
 ## Option to disable vectorized integration, forcing Octave to use only scalar
-## inputs when calling the integrand.  The default value is @var{false}.
+## inputs when calling the integrand.  The default value is @var{true}.
 ##
 ## @item FailurePlot
 ## If @code{quad2d} fails to converge to the desired error tolerance before

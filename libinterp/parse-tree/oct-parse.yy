@@ -1845,11 +1845,11 @@ classdef_beg    : CLASSDEF
                   }
                 ;
 
-classdef        : classdef_beg attr_list identifier opt_sep stash_comment superclass_list stash_comment class_body END
+classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list stash_comment class_body END
                   {
                     OCTAVE_YYUSE ($4);
 
-                    octave::comment_list *lc = $5;
+                    octave::comment_list *lc = $2;
                     octave::comment_list *tc = lexer.get_comment ();
 
                     if (lexer.m_classdef_help_text.empty () && $7 && ! $7->empty ())
@@ -1860,10 +1860,10 @@ classdef        : classdef_beg attr_list identifier opt_sep stash_comment superc
 
                     lexer.m_parsing_classdef = false;
 
-                    if (! ($$ = parser.make_classdef ($1, $2, $3, $6, $8, $9,
+                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $8, $9,
                                                       lc, tc)))
                       {
-                        // make_classdef deleted $2, $3, $6, $8, LC, and
+                        // make_classdef deleted $3, $4, $6, $8, LC, and
                         // TC.
                         YYABORT;
                       }

@@ -635,6 +635,10 @@ public:
 
   virtual bool is_package () const { return false; }
 
+  void doc_string (const std::string& txt) { m_doc_string = txt; }
+
+  std::string doc_string () const { return m_doc_string; }
+
   virtual octave_value_list
   meta_subsref (const std::string& /* type */,
                 const std::list<octave_value_list>& /* idx */,
@@ -651,6 +655,8 @@ public:
   }
 
 protected:
+
+  std::string m_doc_string;
 
   // Restricted copying!
   cdef_meta_object_rep (const cdef_meta_object_rep& obj)
@@ -684,6 +690,10 @@ public:
   bool is_method () const { return get_rep ()->is_method (); }
 
   bool is_package () const { return get_rep ()->is_package (); }
+
+  void doc_string (const std::string& txt) { get_rep ()->doc_string (txt); }
+
+  std::string doc_string () const { return get_rep ()->doc_string (); }
 
   octave_value_list
   meta_subsref (const std::string& type,

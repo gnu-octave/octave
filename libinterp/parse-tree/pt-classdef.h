@@ -679,13 +679,14 @@ class tree_classdef : public tree_command
 {
 public:
 
-  tree_classdef (const symbol_scope& scope,
+  tree_classdef (const symbol_scope& scope, const std::string& help_text,
                  tree_classdef_attribute_list *a, tree_identifier *i,
                  tree_classdef_superclass_list *sc,
                  tree_classdef_body *b, comment_list *lc,
                  comment_list *tc, const std::string& pn = "",
                  const std::string& fn = "", int l = -1, int c = -1)
-    : tree_command (l, c), m_scope (scope), m_attr_list (a), m_id (i),
+    : tree_command (l, c), m_scope (scope), m_help_text (help_text),
+      m_attr_list (a), m_id (i),
       m_supclass_list (sc), m_element_list (b), m_lead_comm (lc),
       m_trail_comm (tc), m_pack_name (pn), m_file_name (fn)
   { }
@@ -726,7 +727,7 @@ public:
 
   std::string doc_string () const
   {
-    return m_element_list ? m_element_list->doc_string () : "";
+    return m_help_text;
   }
 
   void accept (tree_walker& tw)
@@ -741,6 +742,8 @@ private:
   // (for example).  Used again when computing the meta class object.
 
   symbol_scope m_scope;
+
+  std::string m_help_text;
 
   tree_classdef_attribute_list *m_attr_list;
 

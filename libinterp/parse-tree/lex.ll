@@ -2205,6 +2205,7 @@ If @var{name} is omitted, return a list of keywords.
     m_string_text = "";
     m_current_input_line = "";
     m_comment_text = "";
+    m_classdef_help_text = "";
     m_help_text = "";
     m_function_text = "";
     m_fcn_file_name = "";

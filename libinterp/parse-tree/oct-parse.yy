@@ -1652,19 +1652,17 @@ function_end    : END
                   }
                 ;
 
-function        : function_beg stash_comment fcn_name
-                  opt_param_list opt_sep function_body function_end
+function        : function_beg stash_comment fcn_name opt_param_list opt_sep stash_comment function_body function_end
                   {
                     OCTAVE_YYUSE ($5);
 
-                    $$ = parser.make_function ($1, nullptr, $3, $4, $6, $7, $2);
+                    $$ = parser.make_function ($1, nullptr, $3, $4, $7, $8, $2, $6);
                   }
-                | function_beg stash_comment return_list '=' fcn_name
-                  opt_param_list opt_sep function_body function_end
+                | function_beg stash_comment return_list '=' fcn_name opt_param_list opt_sep stash_comment function_body function_end
                   {
                     OCTAVE_YYUSE ($4, $7);
 
-                    $$ = parser.make_function ($1, $3, $5, $6, $8, $9, $2);
+                    $$ = parser.make_function ($1, $3, $5, $6, $9, $10, $2, $8);
                   }
                 ;
 
@@ -1834,6 +1832,9 @@ classdef_beg    : CLASSDEF
                         YYABORT;
                       }
 
+                    lexer.m_classdef_help_text = lexer.m_help_text;
+                    lexer.m_help_text = "";
+
                     // Create invalid parent scope.
                     lexer.m_symtab_context.push (octave::symbol_scope::anonymous ());
                     lexer.m_parsing_classdef = true;
@@ -1844,19 +1845,25 @@ classdef_beg    : CLASSDEF
                   }
                 ;
 
-classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list class_body END
+classdef        : classdef_beg attr_list identifier opt_sep stash_comment superclass_list stash_comment class_body END
                   {
-                    OCTAVE_YYUSE ($5);
+                    OCTAVE_YYUSE ($4);
 
-                    octave::comment_list *lc = $2;
+                    octave::comment_list *lc = $5;
                     octave::comment_list *tc = lexer.get_comment ();
+
+                    if (lexer.m_classdef_help_text.empty () && $7 && ! $7->empty ())
+                      {
+                        const octave::comment_elt& elt = $7->front ();
+                        lexer.m_classdef_help_text = elt.text ();
+                      }
 
                     lexer.m_parsing_classdef = false;
 
-                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $7, $8,
+                    if (! ($$ = parser.make_classdef ($1, $2, $3, $6, $8, $9,
                                                       lc, tc)))
                       {
-                        // make_classdef deleted $3, $4, $6, $7, LC, and
+                        // make_classdef deleted $2, $3, $6, $8, LC, and
                         // TC.
                         YYABORT;
                       }
@@ -2010,6 +2017,8 @@ properties_block
 
 properties_beg  : PROPERTIES
                   {
+                    lexer.m_help_text = "";
+
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -2086,6 +2095,8 @@ methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
 
 methods_beg     : METHODS
                   {
+                    lexer.m_help_text = "";
+
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -2170,6 +2181,8 @@ events_block    : events_beg stash_comment opt_sep attr_list events_list END
 
 events_beg      : EVENTS
                   {
+                    lexer.m_help_text = "";
+
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -2222,6 +2235,8 @@ enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
 
 enumeration_beg : ENUMERATION
                   {
+                    lexer.m_help_text = "";
+
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -3948,8 +3963,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                               tree_parameter_list *param_list,
                               tree_statement_list *body,
                               tree_statement *end_fcn_stmt,
-                              comment_list *lc)
+                              comment_list *lc, comment_list *bc)
   {
+    // If we are looking at a classdef method and there is a comment
+    // prior to the function keyword and another after, choose the one
+    // inside the function definition for compatibility with Matlab.
+
+    if (m_lexer.m_parsing_classdef && ! m_lexer.m_help_text.empty () && bc && ! bc->empty ())
+      {
+        const octave::comment_elt& elt = bc->front ();
+        m_lexer.m_help_text = elt.text ();
+      }
+
+
     int l = fcn_tok->line ();
     int c = fcn_tok->column ();
 
@@ -4378,8 +4404,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               body = new tree_classdef_body ();
 
             retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (),
+                                        m_lexer.m_classdef_help_text,
                                         a, id, sc, body, lc, tc,
                                         m_curr_package_name, full_name, l, c);
+
+            m_lexer.m_classdef_help_text = "";
           }
         else
           {

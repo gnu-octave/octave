@@ -158,10 +158,6 @@ private:
 
     bool is_meta_class () const { return m_meta; }
 
-    void doc_string (const std::string& txt) { m_doc_string = txt; }
-
-    std::string doc_string () const { return m_doc_string; }
-
     void file_name (const std::string& nm) { m_file_name = nm; }
 
     std::string file_name () const { return m_file_name; }
@@ -190,8 +186,6 @@ private:
     // (not used yet)
 
     std::string m_directory;
-
-    std::string m_doc_string;
 
     std::string m_file_name;
 
@@ -401,10 +395,6 @@ public:
   void mark_as_meta_class () { get_rep ()->mark_as_meta_class (); }
 
   bool is_meta_class () const { return get_rep ()->is_meta_class (); }
-
-  void doc_string (const std::string& txt) { get_rep ()->doc_string (txt); }
-
-  std::string doc_string () const { return get_rep ()->doc_string (); }
 
   void file_name (const std::string& nm) { get_rep ()->file_name (nm); }
 

@@ -389,7 +389,7 @@ public:
   make_function (token *fcn_tok, tree_parameter_list *ret_list,
                  tree_identifier *id, tree_parameter_list *param_list,
                  tree_statement_list *body, tree_statement *end_fcn_stmt,
-                 comment_list *lc);
+                 comment_list *lc, comment_list *bc);
 
   // Begin defining a function.
   OCTINTERP_API octave_user_function *

@@ -187,6 +187,8 @@ private:
     return old_val;
   }
 
+  bool get_which_info_from_fcn (const std::string& name, const octave_value& ov_fcn, std::string& file, std::string& type) const;
+
   string_vector local_functions () const;
 
   bool raw_help_from_symbol_table (const std::string& nm,

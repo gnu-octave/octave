@@ -3688,6 +3688,11 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
               m_call_stack.set_location (stmt->line (), stmt->column ());
 
               retval = expr->evaluate_n (*this, nargout);
+
+              // Don't allow a comma-separated list to escape (see bug #64783).
+
+              if (nargout <= 1 && retval.length () == 1 && retval(0).is_cs_list ())
+                retval = retval(0).list_value ();
             }
         }
       else

@@ -70,6 +70,7 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       endif
       test ("", "explain", fid);
       puts ("\nIntegrated test scripts:\n\n");
+      printf ("%101s\n", "[ CPU    /  CLOCK ]");
       for i = 1:length (fcndirs)
         [p, n, xf, xb, sk, rtsk, rgrs] = run_test_dir (fid, fcndirs{i}, false);
         dp += p;
@@ -213,8 +214,12 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
           if (has_tests (ffnm))
             tmp = reduce_test_file_name (ffnm, topbuilddir, topsrcdir);
             print_test_file_name (tmp);
+            cpu_tm = cputime ();
+            tic ();
             [p, n, xf, xb, sk, rtsk, rgrs] = test (ffnm, "quiet", fid);
-            print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs);
+            clock_tm = toc ();
+            cpu_tm = cputime () - cpu_tm;
+            print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs, cpu_tm, clock_tm);
             dp += p;
             dn += n;
             dxf += xf;
@@ -256,11 +261,11 @@ function print_test_file_name (nm)
 
 endfunction
 
-function fail_info = print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
+function fail_info = print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs, cpu_tm, clock_tm)
 
   if (nargin == 1)
     ## The summary info struct just contains info about failures, not
-    ## skipped tests.
+    ## skipped tests or timings.
     info = p;
     p = info.pass;
     n = info.ntst;
@@ -269,10 +274,15 @@ function fail_info = print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs)
     sk = 0;
     rtsk = 0;
     rgrs = info.rgrs;
+    cpu_tm = 0;
+    clock_tm = 0;
   endif
 
   if ((n + sk + rtsk + rgrs) > 0)
     printf (" pass %4d/%-4d", p, n);
+    if (cpu_tm != 0 || clock_tm != 0)
+      printf (" [%6.3fs / %6.3fs]", cpu_tm, clock_tm);
+    endif
     nfail = n - p - xf - xb - rgrs;
     if (nfail > 0)
       printf ("\n%72s %3d", "FAIL ", nfail);

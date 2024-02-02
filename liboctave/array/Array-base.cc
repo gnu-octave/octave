@@ -210,6 +210,13 @@ Array<T, Alloc>::compute_index (const Array<octave_idx_type>& ra_idx) const
 }
 
 template <typename T, typename Alloc>
+octave_idx_type
+Array<T, Alloc>::compute_index_unchecked (const Array<octave_idx_type>& ra_idx) const
+{
+  return m_dimensions.compute_index (ra_idx.data (), ra_idx.numel ());
+}
+
+template <typename T, typename Alloc>
 T&
 Array<T, Alloc>::checkelem (octave_idx_type n)
 {
@@ -1124,6 +1131,13 @@ Array<T, Alloc>::index (const Array<octave::idx_vector>& ia,
 }
 
 template <typename T, typename Alloc>
+Array<T, Alloc>
+Array<T, Alloc>::index (const Array<octave::idx_vector>& ia, bool resize_ok) const
+{
+  return index (ia, resize_ok, resize_fill_value ());
+}
+
+template <typename T, typename Alloc>
 void
 Array<T, Alloc>::assign (const octave::idx_vector& i, const Array<T, Alloc>& rhs, const T& rfv)
 {
@@ -1392,6 +1406,14 @@ Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
             }
         }
     }
+}
+
+template <typename T, typename Alloc>
+void
+Array<T, Alloc>::assign (const Array<octave::idx_vector>& ia,
+                         const Array<T, Alloc>& rhs)
+{
+  assign (ia, rhs, resize_fill_value ());
 }
 
 /*

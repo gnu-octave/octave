@@ -123,6 +123,9 @@
 //!   - string_vector: Array<std::string> with 1 column
 //!   - Cell: Array<octave_value>, equivalent to an Octave cell.
 
+// forward declare template with visibility attributes
+template <typename T, typename Alloc> class OCTARRAY_API Array;
+
 template <typename T, typename Alloc>
 class OCTARRAY_TEMPLATE_API Array
 {
@@ -511,11 +514,8 @@ public:
   OCTARRAY_API octave_idx_type
   compute_index (const Array<octave_idx_type>& ra_idx) const;
 
-  OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type
-  compute_index_unchecked (const Array<octave_idx_type>& ra_idx) const
-  {
-    return m_dimensions.compute_index (ra_idx.data (), ra_idx.numel ());
-  }
+  OCTARRAY_API octave_idx_type
+  compute_index_unchecked (const Array<octave_idx_type>& ra_idx) const;
 
   // No checking, even for multiple references, ever.
 
@@ -731,11 +731,8 @@ public:
   OCTARRAY_API Array<T, Alloc>
   index (const Array<octave::idx_vector>& ia, bool resize_ok,
          const T& rfv) const;
-  OCTARRAY_OVERRIDABLE_FUNC_API Array<T, Alloc>
-  index (const Array<octave::idx_vector>& ia, bool resize_ok) const
-  {
-    return index (ia, resize_ok, resize_fill_value ());
-  }
+  OCTARRAY_API Array<T, Alloc>
+  index (const Array<octave::idx_vector>& ia, bool resize_ok) const;
   //@}
 
   //@{
@@ -760,11 +757,8 @@ public:
 
   OCTARRAY_API void
   assign (const Array<octave::idx_vector>& ia, const Array<T, Alloc>& rhs, const T& rfv);
-  OCTARRAY_OVERRIDABLE_FUNC_API void
-  assign (const Array<octave::idx_vector>& ia, const Array<T, Alloc>& rhs)
-  {
-    assign (ia, rhs, resize_fill_value ());
-  }
+  OCTARRAY_API void
+  assign (const Array<octave::idx_vector>& ia, const Array<T, Alloc>& rhs);
   //@}
 
   //@{

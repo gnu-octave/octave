@@ -1847,7 +1847,7 @@ classdef_beg    : CLASSDEF
 
 classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list stash_comment class_body END
                   {
-                    OCTAVE_YYUSE ($4);
+                    OCTAVE_YYUSE ($5);
 
                     octave::comment_list *lc = $2;
                     octave::comment_list *tc = lexer.get_comment ();

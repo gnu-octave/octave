@@ -30,7 +30,7 @@ main ()
       //     {
       //       std::cerr << "Octave interpreter initialization failed!"
       //                 << std::endl;
-      //       exit (status);
+      //       exit (1);
       //     }
       //
       // You may skip this step if you don't need to do anything

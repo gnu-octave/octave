@@ -6350,7 +6350,7 @@ context of the function that called the present function
 
 DEFMETHOD (feval, interp, args, nargout,
            doc: /* -*- texinfo -*-
-@deftypefn {} {} feval (@var{name}, @dots{})
+@deftypefn {} {@var{retval} =} feval (@var{name}, @dots{})
 Evaluate the function named @var{name}.
 
 Any arguments after the first are passed as inputs to the named function.

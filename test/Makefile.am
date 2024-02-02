@@ -17,6 +17,7 @@ $(DIRSTAMP_FILES):
 
 TEST_FILES += \
   fntests.m \
+  anonymous-function.tst \
   args.tst \
   bug-31371.tst \
   bug-40117.tst \

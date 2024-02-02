@@ -2288,6 +2288,31 @@ Example:
  @result{} 6
 @end group
 @end example
+
+Programming notes:
+@enumerate
+@item
+The @code{end} keyword cannot be used within @code{subsref},
+@code{subsasgn}, or @code{substruct} for manual indexing operations.
+
+@item
+For custom classes, to enable use of @code{end} in indexing expressions it
+must be overloaded with a function definition such as:
+   @example
+   @group
+   function last_index = end (obj, end_dim, ndim_obj)
+     if (end_dim == ndim_obj)
+       last_index = prod (size (obj)(end_dim:ndim_obj));
+     else
+       last_index = size (obj, end_dim);
+     endif
+   endfunction
+   @end group
+   @end example
+For more information see
+@ref{Object Oriented Programming, , Object Oriented Programming}.
+@end enumerate
+
 @seealso{for, parfor, if, do, while, function, switch, try, unwind_protect}
 @end deftypefn */)
 {

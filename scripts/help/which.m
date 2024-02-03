@@ -24,7 +24,8 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {} which name @dots{}
+## @deftypefn  {} {} which @var{name} @dots{}
+## @deftypefnx {} {[@var{str}, @dots{}] =} which ('@var{name}', @dots{})
 ## Display the type of each @var{name}.
 ##
 ## If @var{name} is defined from a function file, the full name of the file is

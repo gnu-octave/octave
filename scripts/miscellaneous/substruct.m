@@ -47,6 +47,9 @@
 ##   @result{}   7   8   9
 ## @end group
 ## @end example
+##
+## Note: The keyword @code{end} cannot be used within @code{subsref} or
+## @code{subsasgn} for indexing assignments.
 ## @seealso{subsref, subsasgn}
 ## @end deftypefn
 

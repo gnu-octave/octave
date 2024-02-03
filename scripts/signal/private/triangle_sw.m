@@ -24,21 +24,21 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn {} {@var{retval} =} triangle_sw (@var{n}, @var{b})
+## @deftypefn {} {@var{c} =} triangle_sw (@var{n}, @var{b})
 ## Triangular spectral window.
 ##
 ## Subfunction used for spectral density estimation.
 ## @seealso{spectral_xdf}
 ## @end deftypefn
 
-function retval = triangle_sw (n, b)
+function c = triangle_sw (n, b)
 
-  retval = zeros (n,1);
-  retval(1) = 1 / b;
+  c = zeros (n,1);
+  c(1) = 1 / b;
 
   l = (2:n)' - 1;
   l = 2 * pi * l / n;
 
-  retval(2:n) = b * (sin (l / (2*b)) ./ sin (l / 2)).^2;
+  c(2:n) = b * (sin (l / (2*b)) ./ sin (l / 2)).^2;
 
 endfunction

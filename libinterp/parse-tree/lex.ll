@@ -454,8 +454,9 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->m_filepos.next_line ();
     curr_lexer->m_looking_for_object_index = false;
-    curr_lexer->m_at_beginning_of_statement = true;
     curr_lexer->pop_start_state ();
+    curr_lexer->m_comment_uses_hash_char = yytext[0] == '#';
+    curr_lexer->finish_comment (octave::comment_elt::end_of_line);
 
     return curr_lexer->handle_token ('\n');
   }
@@ -734,6 +735,8 @@ ANY_INCLUDING_NL (.|{NL})
 
     if (curr_lexer->m_block_comment_nesting_level)
       curr_lexer->m_comment_text = "\n";
+    else
+      curr_lexer->check_comment_for_hash_char (yytext, yyleng);
 
     curr_lexer->m_block_comment_nesting_level++;
 
@@ -758,7 +761,10 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->m_block_comment_nesting_level > 1)
       curr_lexer->m_comment_text = "\n";
     else
-      curr_lexer->finish_comment (octave::comment_elt::block);
+      {
+        curr_lexer->check_comment_for_hash_char (yytext, yyleng);
+        curr_lexer->finish_comment (octave::comment_elt::block);
+      }
 
     curr_lexer->m_block_comment_nesting_level--;
 
@@ -844,8 +850,25 @@ ANY_INCLUDING_NL (.|{NL})
 
     bool have_space = (i > 0);
 
-    while (i < yyleng && (yytext[i] == '#' || yytext[i] == '%'))
-      i++;
+    bool first = true;
+
+    while (i < yyleng)
+      {
+        char c = yytext[i];
+
+        if (c == '#' || c == '%')
+          {
+            if (first && c == '#')
+              {
+                curr_lexer->m_comment_uses_hash_char = true;
+                first = false;
+              }
+
+            i++;
+          }
+        else
+          break;
+      }
 
     curr_lexer->m_comment_text += &yytext[i];
 
@@ -2191,6 +2214,7 @@ If @var{name} is omitted, return a list of keywords.
     m_reading_script_file = false;
     m_reading_classdef_file = false;
     m_buffer_function_text = false;
+    m_comment_uses_hash_char = false;
     m_bracketflag = 0;
     m_braceflag = 0;
     m_looping = 0;
@@ -2202,11 +2226,11 @@ If @var{name} is omitted, return a list of keywords.
     m_filepos = filepos (1, 1);
     m_tok_beg = filepos ();
     m_tok_end = filepos ();
+    m_classdef_doc_string.reset ();
+    m_doc_string.reset ();
     m_string_text = "";
     m_current_input_line = "";
     m_comment_text = "";
-    m_classdef_help_text = "";
-    m_help_text = "";
     m_function_text = "";
     m_fcn_file_name = "";
     m_fcn_file_full_name = "";
@@ -3286,11 +3310,19 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       mark_previous_token_trailing_space ();
 
     bool have_comment = false;
+    bool first = true;
     while (offset < yylng)
       {
         char c = yytxt[offset];
+
         if (c == '#' || c == '%')
           {
+            if (first && c == '#')
+              {
+                m_comment_uses_hash_char = true;
+                first = false;
+              }
+
             have_comment = true;
             offset++;
           }
@@ -3323,17 +3355,17 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (typ != octave::comment_elt::end_of_line
         && m_nesting_level.none ()
-        && m_help_text.empty () && ! m_comment_text.empty ()
+        && m_doc_string.empty () && ! m_comment_text.empty ()
         && ! copyright && ! looks_like_shebang (m_comment_text))
-      m_help_text = m_comment_text;
+      m_doc_string = comment_elt (m_comment_text, typ, m_comment_uses_hash_char);
 
     if (copyright)
       typ = comment_elt::copyright;
 
-    m_comment_buf.append (m_comment_text, typ);
+    m_comment_buf.append (m_comment_text, typ, m_comment_uses_hash_char);
 
     m_comment_text = "";
-
+    m_comment_uses_hash_char = false;
     m_at_beginning_of_statement = true;
   }
 
@@ -3541,6 +3573,19 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     m_at_beginning_of_statement = false;
 
     return count_token_internal (NAME);
+  }
+
+  void
+  base_lexer::check_comment_for_hash_char (const char *txt, std::size_t len)
+  {
+    if (m_comment_uses_hash_char)
+      return;
+
+    std::size_t i = 0;
+    while (i < len && is_space_or_tab (txt[i]))
+      i++;
+
+    m_comment_uses_hash_char = txt[i] == '#';
   }
 
   void

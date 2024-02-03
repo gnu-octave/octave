@@ -8545,8 +8545,9 @@ vm::maybe_compile_or_compiled (octave_user_code *fn, stack_frame::local_vars_map
         }
       catch (std::exception &e)
         {
-          warning ("auto-compilation of %s failed with message %s", fn->name().c_str (), e.what ());
-          fn->set_compilation_failed(true);
+          warning_with_id ("Octave:bytecode-compilation",
+                           "auto-compilation of %s failed with message %s",
+                           fn->name().c_str (), e.what ());
           return false;
         }
     }

@@ -148,6 +148,11 @@
 ## the others.
 ## By default, the @code{Octave:charmat-truncated} warning is enabled.
 ##
+## @item Octave:bytecode-compilation
+## If the @code{Octave:bytecode-compilation} warning is enabled, a warning is
+## printed when the bytecode compiler encounters unsupported code constructs.
+## By default, the @code{Octave:bytecode-compilation} warning is enabled.
+##
 ## @item Octave:classdef-to-struct
 ## If the @code{Octave:classdef-to-struct} warning is enabled, a warning
 ## is issued when a classdef object is forcibly converted into a struct with

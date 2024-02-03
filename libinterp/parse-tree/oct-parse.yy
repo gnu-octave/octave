@@ -3962,11 +3962,25 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                               tree_statement *end_fcn_stmt,
                               comment_list *lc, comment_list *bc)
   {
-    // If we are looking at a classdef method and there is a comment
-    // prior to the function keyword and another after, choose the one
-    // inside the function definition for compatibility with Matlab.
+    // FIXME: maybe choose which comment to used by checking whether
+    // any language extensions are noticed in the entire source file,
+    // not just in the comments that are candidates to become the
+    // function doc string.
 
-    if (m_lexer.m_parsing_classdef && ! m_lexer.m_doc_string.empty () && bc && ! bc->empty ())
+    // If we are looking at a classdef method and there is a comment
+    // prior to the function keyword and another after, then
+    //
+    //   * Choose the one outside the function definition if either of
+    //     the comments use hash '#' characters.  This is the preferred
+    //     Octave style.
+    //
+    //   * Choose the one inside the function definition if both
+    //     comments use percent '%' characters.  This is
+    //     Matlab-compatible behavior.
+
+    if (m_lexer.m_parsing_classdef && ! m_lexer.m_doc_string.empty ()
+        && bc && ! bc->empty () && ! m_lexer.m_doc_string.uses_hash_char ()
+        && ! bc->front().uses_hash_char ())
       m_lexer.m_doc_string = bc->front ();
 
     int l = fcn_tok->line ();

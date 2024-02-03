@@ -3704,6 +3704,9 @@ Note that this is the same as writing @code{val(:, 1:2)}.
 
 If @var{idx} is an empty structure array with fields @samp{type} and
 @samp{subs}, return @var{val}.
+
+The keyword @code{end} cannot be used within @code{subsref} for indexing
+assignments.
 @seealso{subsasgn, substruct}
 @end deftypefn */)
 {
@@ -3753,6 +3756,9 @@ Note that this is the same as writing @code{val(:, 1:2) = 0}.
 
 If @var{idx} is an empty structure array with fields @samp{type} and
 @samp{subs}, return @var{rhs}.
+
+The keyword @code{end} cannot be used within @code{subsasgn} for indexing
+assignments.
 @seealso{subsref, substruct, optimize_subsasgn_calls}
 @end deftypefn */)
 {

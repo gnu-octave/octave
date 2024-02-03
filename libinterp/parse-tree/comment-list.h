@@ -54,11 +54,12 @@ public:
     copyright
   };
 
-  comment_elt (const std::string& s = "", comment_type t = unknown)
-    : m_text (s), m_type (t) { }
+  comment_elt (const std::string& s = "", comment_type t = unknown, bool uses_hash_char = false)
+    : m_text (s), m_type (t), m_uses_hash_char (uses_hash_char) { }
 
   comment_elt (const comment_elt& oc)
-    : m_text (oc.m_text), m_type (oc.m_type) { }
+    : m_text (oc.m_text), m_type (oc.m_type), m_uses_hash_char (oc.m_uses_hash_char)
+  { }
 
   comment_elt& operator = (const comment_elt& oc)
   {
@@ -66,10 +67,13 @@ public:
       {
         m_text = oc.m_text;
         m_type = oc.m_type;
+        m_uses_hash_char = oc.m_uses_hash_char;
       }
 
     return *this;
   }
+
+  bool empty () const { return m_text.empty (); }
 
   std::string text () const { return m_text; }
 
@@ -80,6 +84,14 @@ public:
   bool is_end_of_line () const { return m_type == end_of_line; }
   bool is_doc_string () const { return m_type == doc_string; }
   bool is_copyright () const { return m_type == copyright; }
+  bool uses_hash_char () const { return m_uses_hash_char; }
+
+  void reset ()
+  {
+    m_text = "";
+    m_type = unknown;
+    m_uses_hash_char = false;
+  }
 
   ~comment_elt () = default;
 
@@ -90,6 +102,10 @@ private:
 
   // The type of comment.
   comment_type m_type;
+
+  // TRUE means a line comment uses '#' or a block comment used at least
+  // one '#' delimiter.
+  bool m_uses_hash_char;
 };
 
 class comment_list : public base_list<comment_elt>
@@ -102,8 +118,9 @@ public:
   { base_list<comment_elt>::append (elt); }
 
   void append (const std::string& s,
-               comment_elt::comment_type t = comment_elt::unknown)
-  { append (comment_elt (s, t)); }
+               comment_elt::comment_type t = comment_elt::unknown,
+               bool uses_hash_char = false)
+  { append (comment_elt (s, t, uses_hash_char)); }
 
   comment_list * dup () const;
 };

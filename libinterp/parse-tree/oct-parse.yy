@@ -1832,8 +1832,8 @@ classdef_beg    : CLASSDEF
                         YYABORT;
                       }
 
-                    lexer.m_classdef_help_text = lexer.m_help_text;
-                    lexer.m_help_text = "";
+                    lexer.m_classdef_doc_string = lexer.m_doc_string;
+                    lexer.m_doc_string.reset ();
 
                     // Create invalid parent scope.
                     lexer.m_symtab_context.push (octave::symbol_scope::anonymous ());
@@ -1847,16 +1847,13 @@ classdef_beg    : CLASSDEF
 
 classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list stash_comment class_body END
                   {
-                    OCTAVE_YYUSE ($4);
+                    OCTAVE_YYUSE ($5);
 
                     octave::comment_list *lc = $2;
                     octave::comment_list *tc = lexer.get_comment ();
 
-                    if (lexer.m_classdef_help_text.empty () && $7 && ! $7->empty ())
-                      {
-                        const octave::comment_elt& elt = $7->front ();
-                        lexer.m_classdef_help_text = elt.text ();
-                      }
+                    if (lexer.m_classdef_doc_string.empty () && $7 && ! $7->empty ())
+                      lexer.m_classdef_doc_string = $7->front ();
 
                     lexer.m_parsing_classdef = false;
 
@@ -2017,7 +2014,7 @@ properties_block
 
 properties_beg  : PROPERTIES
                   {
-                    lexer.m_help_text = "";
+                    lexer.m_doc_string.reset ();
 
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
@@ -2095,7 +2092,7 @@ methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
 
 methods_beg     : METHODS
                   {
-                    lexer.m_help_text = "";
+                    lexer.m_doc_string.reset ();
 
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
@@ -2181,7 +2178,7 @@ events_block    : events_beg stash_comment opt_sep attr_list events_list END
 
 events_beg      : EVENTS
                   {
-                    lexer.m_help_text = "";
+                    lexer.m_doc_string.reset ();
 
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
@@ -2235,7 +2232,7 @@ enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
 
 enumeration_beg : ENUMERATION
                   {
-                    lexer.m_help_text = "";
+                    lexer.m_doc_string.reset ();
 
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
@@ -3909,10 +3906,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     octave_user_script *script
       = new octave_user_script (m_lexer.m_fcn_file_full_name,
                                 m_lexer.m_fcn_file_name, script_scope,
-                                cmds, m_lexer.m_help_text);
+                                cmds, m_lexer.m_doc_string.text ());
 
     m_lexer.m_symtab_context.pop ();
-    m_lexer.m_help_text = "";
+    m_lexer.m_doc_string.reset ();
 
     sys::time now;
 
@@ -3965,16 +3962,26 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                               tree_statement *end_fcn_stmt,
                               comment_list *lc, comment_list *bc)
   {
+    // FIXME: maybe choose which comment to used by checking whether
+    // any language extensions are noticed in the entire source file,
+    // not just in the comments that are candidates to become the
+    // function doc string.
+
     // If we are looking at a classdef method and there is a comment
-    // prior to the function keyword and another after, choose the one
-    // inside the function definition for compatibility with Matlab.
+    // prior to the function keyword and another after, then
+    //
+    //   * Choose the one outside the function definition if either of
+    //     the comments use hash '#' characters.  This is the preferred
+    //     Octave style.
+    //
+    //   * Choose the one inside the function definition if both
+    //     comments use percent '%' characters.  This is
+    //     Matlab-compatible behavior.
 
-    if (m_lexer.m_parsing_classdef && ! m_lexer.m_help_text.empty () && bc && ! bc->empty ())
-      {
-        const octave::comment_elt& elt = bc->front ();
-        m_lexer.m_help_text = elt.text ();
-      }
-
+    if (m_lexer.m_parsing_classdef && ! m_lexer.m_doc_string.empty ()
+        && bc && ! bc->empty () && ! m_lexer.m_doc_string.uses_hash_char ()
+        && ! bc->front().uses_hash_char ())
+      m_lexer.m_doc_string = bc->front ();
 
     int l = fcn_tok->line ();
     int c = fcn_tok->column ();
@@ -4106,16 +4113,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                  id_name.c_str (), m_lexer.m_fcn_file_full_name.c_str ());
       }
 
-    // Record help text for functions other than nested functions.
+    // Record doc string for functions other than nested functions.
     // We cannot currently record help for nested functions (bug #46008)
     // because the doc_string of the outermost function is read first,
     // whereas this function is called for the innermost function first.
-    // We could have a stack of help_text in lexer.
-    if (! m_lexer.m_help_text.empty () && m_curr_fcn_depth == 0)
+    // We could have a stack of doc_string objects in lexer.
+    if (! m_lexer.m_doc_string.empty () && m_curr_fcn_depth == 0)
       {
-        fcn->document (m_lexer.m_help_text);
-
-        m_lexer.m_help_text = "";
+        fcn->document (m_lexer.m_doc_string.text ());
+        m_lexer.m_doc_string.reset ();
       }
 
     if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
@@ -4404,11 +4410,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               body = new tree_classdef_body ();
 
             retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (),
-                                        m_lexer.m_classdef_help_text,
+                                        m_lexer.m_classdef_doc_string.text (),
                                         a, id, sc, body, lc, tc,
                                         m_curr_package_name, full_name, l, c);
 
-            m_lexer.m_classdef_help_text = "";
+            m_lexer.m_classdef_doc_string.reset ();
           }
         else
           {

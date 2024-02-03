@@ -288,6 +288,7 @@ public:
       m_reading_script_file (false),
       m_reading_classdef_file (false),
       m_buffer_function_text (false),
+      m_comment_uses_hash_char (false),
       m_bracketflag (0),
       m_braceflag (0),
       m_looping (0),
@@ -299,11 +300,11 @@ public:
       m_filepos (1, 1),
       m_tok_beg (),
       m_tok_end (),
+      m_classdef_doc_string (),
+      m_doc_string (),
       m_string_text (),
       m_current_input_line (),
       m_comment_text (),
-      m_classdef_help_text (),
-      m_help_text (),
       m_function_text (),
       m_fcn_file_name (),
       m_fcn_file_full_name (),
@@ -435,6 +436,10 @@ public:
   // parsing.
   bool m_buffer_function_text;
 
+  // TRUE means a line comment uses '#' or a block comment used at least
+  // one '#' delimiter.
+  bool m_comment_uses_hash_char;
+
   // square bracket level count.
   int m_bracketflag;
 
@@ -470,20 +475,21 @@ public:
   filepos m_tok_beg;
   filepos m_tok_end;
 
+  // Pending doc string for classdef object.
+  comment_elt m_classdef_doc_string;
+
+  // Pending doc string for functions.
+  comment_elt m_doc_string;
+
   // The current character string text.
   std::string m_string_text;
 
   // The current line of input.
   std::string m_current_input_line;
 
-  // The current comment text.
+  // The text of the current comment, used to gather comment lines
+  // before storing in m_comment_buf.
   std::string m_comment_text;
-
-  // The current classdef help text.
-  std::string m_classdef_help_text;
-
-  // The current help text.
-  std::string m_help_text;
 
   // The text of functions entered on the command line.
   std::string m_function_text;
@@ -570,12 +576,12 @@ public:
 
     ~comment_buffer () { delete m_comment_list; }
 
-    void append (const std::string& s, comment_elt::comment_type t)
+    void append (const std::string& s, comment_elt::comment_type t, bool uses_hash_char)
     {
       if (! m_comment_list)
         m_comment_list = new comment_list ();
 
-      m_comment_list->append (s, t);
+      m_comment_list->append (s, t, uses_hash_char);
     }
 
     // Caller is expected to delete the returned value.
@@ -673,6 +679,8 @@ public:
   int handle_fq_identifier ();
 
   int handle_identifier ();
+
+  void check_comment_for_hash_char (const char *txt, std::size_t len);
 
   void maybe_warn_separator_insert (char sep);
 

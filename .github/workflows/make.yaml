@@ -464,7 +464,7 @@ jobs:
 
       matrix:
         # For available GitHub-hosted runners, see: https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [macos-13]
+        os: [macos-14]
         # Most (or all) homebrew packages are compiled with clang and link
         # against libc++.  So we also use clang to avoid issues with symbols
         # that don't match.
@@ -482,8 +482,8 @@ jobs:
             cxx: "clang++"
             # Qt6 doesn't install pkg-config files on macOS. See: https://bugreports.qt.io/browse/QTBUG-86080
             # So, we need to provide the necessary flags manually.
-            qt-cppflags: "-I/usr/local/opt/qt@6/include/QtCore -I/usr/local/opt/qt@6/include/QtGui -I/usr/local/opt/qt@6/include/QtHelp -I/usr/local/opt/qt@6/include/QtNetwork -I/usr/local/opt/qt@6/include/QtOpenGL -I/usr/local/opt/qt@6/include/QtOpenGLWidgets -I/usr/local/opt/qt@6/include/QtPrintSupport -I/usr/local/opt/qt@6/include/QtSql -I/usr/local/opt/qt@6/include/QtWidgets -I/usr/local/opt/qt@6/include/QtXml -I/usr/local/opt/qt@6/include/QtCore5Compat"
-            qt-ldflags: "-F/usr/local/opt/qt@6/Frameworks"
+            qt-cppflags: "-I${HOMEBREW_PREFIX}/opt/qt@6/include/QtCore -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtGui -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtHelp -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtNetwork -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtOpenGL -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtOpenGLWidgets -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtPrintSupport -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtSql -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtWidgets -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtXml -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtCore5Compat"
+            qt-ldflags: "-F${HOMEBREW_PREFIX}/opt/qt@6/Frameworks"
             qt-libs: "-framework QtCore -framework QtGui -framework QtHelp -framework QtNetwork -framework QtOpenGL -framework QtOpenGLWidgets -framework QtPrintSupport -framework QtSql -framework QtWidgets -framework QtXml -framework QtCore5Compat"
 
     env:
@@ -525,11 +525,13 @@ jobs:
             ccache gnu-sed openjdk pkg-config \
             automake autoconf bison gettext icoutils librsvg mactex-no-gui
           eval "$(/usr/libexec/path_helper)"
+          HOMEBREW_PREFIX=$(brew --prefix)
+          echo "HOMEBREW_PREFIX=$(brew --prefix)" >> $GITHUB_ENV
           echo "/Library/TeX/texbin" >> $GITHUB_PATH
-          echo "/usr/local/opt/qt@${{ matrix.qt }}/bin" >> $GITHUB_PATH
-          echo "/usr/local/opt/texinfo/bin" >> $GITHUB_PATH
-          echo "/usr/local/opt/bison/bin" >> $GITHUB_PATH
-          echo "/usr/local/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/bin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/texinfo/bin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/bison/bin" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/gnu-sed/libexec/gnubin" >> $GITHUB_PATH
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -556,7 +558,7 @@ jobs:
           test -d /Users/runner/Library/Preferences/ccache || mkdir /Users/runner/Library/Preferences/ccache
           echo "max_size = 0.9G" >> /Users/runner/Library/Preferences/ccache/ccache.conf
           ccache -s
-          echo "$(brew --prefix)/opt/ccache/libexec" >> $GITHUB_PATH
+          echo "${HOMEBREW_PREFIX}/opt/ccache/libexec" >> $GITHUB_PATH
 
       - name: bootstrap
         run: GNULIB_URL=https://github.com/coreutils/gnulib.git ./bootstrap
@@ -590,18 +592,18 @@ jobs:
           cd .build && ../configure \
             CXX="${CXX} ${{ matrix.cxx-compiler-flags }}" \
             F77="ccache gfortran" \
-            CPPFLAGS="-I/usr/local/opt/gettext/include -I/usr/local/opt/icu4c/include -I/usr/local/opt/qt@${{ matrix.qt }}/include -I/usr/local/opt/readline/include -I/usr/local/opt/sqlite/include $MY_CPPFLAGS" \
+            CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include -I${HOMEBREW_PREFIX}/opt/icu4c/include -I${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/include -I${HOMEBREW_PREFIX}/opt/readline/include -I${HOMEBREW_PREFIX}/opt/sqlite/include $MY_CPPFLAGS -I${HOMEBREW_PREFIX}/include" \
             CXXFLAGS="-O2 -g" \
-            LDFLAGS="-L/usr/local/lib -L/usr/local/opt/bison/lib -L/usr/local/opt/gettext/lib -L/usr/local/opt/icu4c/lib -L/usr/local/opt/readline/lib -L/usr/local/opt/sqlite/lib $MY_LDFLAGS" \
-            PKG_CONFIG_PATH="/usr/local/opt/openblas/lib/pkgconfig:/usr/local/opt/icu4c/lib/pkgconfig:/usr/local/opt/qt@${{ matrix.qt }}/lib/pkgconfig" \
+            LDFLAGS="-L${HOMEBREW_PREFIX}/opt/bison/lib -L${HOMEBREW_PREFIX}/opt/gettext/lib -L${HOMEBREW_PREFIX}/opt/icu4c/lib -L${HOMEBREW_PREFIX}/opt/readline/lib -L${HOMEBREW_PREFIX}/opt/sqlite/lib $MY_LDFLAGS -L${HOMEBREW_PREFIX}/lib" \
+            PKG_CONFIG_PATH="${HOMEBREW_PREFIX}/opt/openblas/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/icu4c/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/lib/pkgconfig" \
             --with-qt=${{ matrix.qt }} \
             QCOLLECTIONGENERATOR="qhelpgenerator" \
             QT_CPPFLAGS="${{ matrix.qt-cppflags }}" \
             QT_LDFLAGS="${{ matrix.qt-ldflags }}" \
             QT_LIBS="${{ matrix.qt-libs }}" \
             --with-x=no \
-            --with-blas="-L/usr/local/opt/openblas/lib -lopenblas" \
-            --with-java-homedir="/usr/local/opt/openjdk" \
+            --with-blas="-L${HOMEBREW_PREFIX}/opt/openblas/lib -lopenblas" \
+            --with-java-homedir="${HOMEBREW_PREFIX}/opt/openjdk" \
             --prefix="${HOME}/usr"
 
       - name: build
@@ -627,7 +629,7 @@ jobs:
         continue-on-error: true
         timeout-minutes: 60
         run: |
-          echo 'makeinfo_program ("/usr/local/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
+          echo 'makeinfo_program ("${HOMEBREW_PREFIX}/opt/texinfo/bin/makeinfo");' >> ./scripts/startup/site-rcfile
           make -C ./.build check-tree-evaluator | tee ./test-suite.log
 
       - name: display test suite log

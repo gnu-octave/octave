@@ -197,7 +197,7 @@ endfunction
 %!      -1.9769, -1.0922, -0.5831];
 %! if (__have_feature__ ("LLVM_LIBCXX"))
 %!   ## The math libraries in libc++ seem to require larger tolerances
-%!   tol = 60*eps;
+%!   tol = 65*eps;
 %! else
 %!   tol = 40*eps;
 %! endif

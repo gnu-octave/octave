@@ -114,7 +114,7 @@ file_editor::file_editor (QWidget *p)
 
   m_find_dialog = nullptr;
 
-  m_closed = false;
+  m_closed = true;
   m_no_focus = false;
   m_editor_ready = false;
 
@@ -324,8 +324,12 @@ file_editor::empty_script (bool startup, bool visible)
 }
 
 void
-file_editor::restore_session ()
+file_editor::restore_session (bool visible)
 {
+
+  if (! visible)
+    return;
+
   gui_settings settings;
 
   //restore previous session
@@ -1580,7 +1584,7 @@ file_editor::handle_visibility (bool visible)
     {
       m_closed = false;
 
-      restore_session ();
+      restore_session (visible);
     }
 
   empty_script (false, visible);

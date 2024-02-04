@@ -71,7 +71,7 @@ public:
 
   virtual void empty_script (bool, bool) = 0;
 
-  virtual void restore_session () = 0;
+  virtual void restore_session (bool) = 0;
 
   virtual void enable_menu_shortcuts (bool enable) = 0;
 

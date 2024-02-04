@@ -1836,7 +1836,10 @@ main_window::handle_octave_ready ()
       // This can not be done when the editor is created because all functions
       // must be known for the lexer's auto completion information
       m_editor_window->empty_script (true, false);
-      m_editor_window->restore_session ();
+      bool ed_visible =
+        settings.value (dw_is_visible.settings_key ().arg (m_editor_window->objectName ()),
+                        dw_is_visible.def ()).toBool ();
+      m_editor_window->restore_session (ed_visible);
 #endif
     }
 

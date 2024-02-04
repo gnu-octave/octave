@@ -124,7 +124,7 @@ public:
 
   void check_actions ();
   void empty_script (bool startup, bool visible);
-  void restore_session ();
+  void restore_session (bool visible = true);
 
 signals:
 

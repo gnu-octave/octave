@@ -1832,9 +1832,6 @@ classdef_beg    : CLASSDEF
                         YYABORT;
                       }
 
-                    lexer.m_classdef_doc_string = lexer.m_doc_string;
-                    lexer.m_doc_string.reset ();
-
                     // Create invalid parent scope.
                     lexer.m_symtab_context.push (octave::symbol_scope::anonymous ());
                     lexer.m_parsing_classdef = true;
@@ -1845,23 +1842,15 @@ classdef_beg    : CLASSDEF
                   }
                 ;
 
-classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list stash_comment class_body END
+classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list stash_comment class_body stash_comment END
                   {
                     OCTAVE_YYUSE ($5);
 
-                    octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
-
-                    if (lexer.m_classdef_doc_string.empty () && $7 && ! $7->empty ())
-                      lexer.m_classdef_doc_string = $7->front ();
-
                     lexer.m_parsing_classdef = false;
 
-                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $8, $9,
-                                                      lc, tc)))
+                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $8, $10, $2, $7, $9)))
                       {
-                        // make_classdef deleted $3, $4, $6, $8, LC, and
-                        // TC.
+                        // make_classdef deleted $2, $3, $4, $6, $7, $8, $9
                         YYABORT;
                       }
                   }
@@ -2014,8 +2003,6 @@ properties_block
 
 properties_beg  : PROPERTIES
                   {
-                    lexer.m_doc_string.reset ();
-
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -2092,8 +2079,6 @@ methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
 
 methods_beg     : METHODS
                   {
-                    lexer.m_doc_string.reset ();
-
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -2178,8 +2163,6 @@ events_block    : events_beg stash_comment opt_sep attr_list events_list END
 
 events_beg      : EVENTS
                   {
-                    lexer.m_doc_string.reset ();
-
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -2232,8 +2215,6 @@ enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
 
 enumeration_beg : ENUMERATION
                   {
-                    lexer.m_doc_string.reset ();
-
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
                   }
@@ -2291,7 +2272,9 @@ anon_fcn_begin  : // empty
                 ;
 
 stash_comment   : // empty
-                  { $$ = lexer.get_comment (); }
+                  {
+                    $$ = lexer.get_comment ();
+                  }
                 ;
 
 parse_error     : LEXICAL_ERROR
@@ -3892,6 +3875,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   base_parser::make_script (tree_statement_list *cmds,
                             tree_statement *end_script)
   {
+    // Any comments at the beginning of a script file should be
+    // attached to the first statement in the file or the END_SCRIPT
+    // statement created by the parser.
+
     if (! cmds)
       cmds = new tree_statement_list ();
 
@@ -3903,13 +3890,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     script_scope.cache_fcn_file_name (m_lexer.m_fcn_file_full_name);
     script_scope.cache_dir_name (m_lexer.m_dir_name);
 
+    // First non-copyright comment in classdef body, before first
+    // properties, methods, etc. block.
+
+    tree_statement *first_stmt = cmds->front ();
+    comment_list *leading_comments = first_stmt->comment_text ();
+
+    std::string doc_string;
+    if (leading_comments)
+      doc_string = leading_comments->find_doc_string ();
+
     octave_user_script *script
       = new octave_user_script (m_lexer.m_fcn_file_full_name,
                                 m_lexer.m_fcn_file_name, script_scope,
-                                cmds, m_lexer.m_doc_string.text ());
+                                cmds, doc_string);
 
     m_lexer.m_symtab_context.pop ();
-    m_lexer.m_doc_string.reset ();
 
     sys::time now;
 
@@ -3962,10 +3958,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                               tree_statement *end_fcn_stmt,
                               comment_list *lc, comment_list *bc)
   {
-    // FIXME: maybe choose which comment to used by checking whether
-    // any language extensions are noticed in the entire source file,
-    // not just in the comments that are candidates to become the
-    // function doc string.
+    // First non-copyright comments found above and below function keyword.
+    comment_elt leading_doc_comment;
+    comment_elt body_doc_comment;
+
+    if (lc)
+      leading_doc_comment = lc->find_doc_comment ();
+
+    if (bc)
+      body_doc_comment = bc->find_doc_comment ();
+
+    // Choose which comment to use for doc string.
+
+    // For ordinary functions, use the first comment that isn't empty.
 
     // If we are looking at a classdef method and there is a comment
     // prior to the function keyword and another after, then
@@ -3978,16 +3983,25 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     //     comments use percent '%' characters.  This is
     //     Matlab-compatible behavior.
 
-    if (m_lexer.m_parsing_classdef && ! m_lexer.m_doc_string.empty ()
-        && bc && ! bc->empty () && ! m_lexer.m_doc_string.uses_hash_char ()
-        && ! bc->front().uses_hash_char ())
-      m_lexer.m_doc_string = bc->front ();
+    // FIXME: maybe choose which comment to used by checking whether
+    // any language extensions are noticed in the entire source file,
+    // not just in the comments that are candidates to become the
+    // function doc string.
+
+    std::string doc_string;
+
+    if (leading_doc_comment.empty ()
+        || (m_lexer.m_parsing_classdef && ! body_doc_comment.empty ()
+            && (! (leading_doc_comment.uses_hash_char () || body_doc_comment.uses_hash_char ()))))
+      doc_string = body_doc_comment.text ();
+    else
+      doc_string = leading_doc_comment.text ();
 
     int l = fcn_tok->line ();
     int c = fcn_tok->column ();
 
     octave_user_function *tmp_fcn
-      = start_function (id, param_list, body, end_fcn_stmt);
+      = start_function (id, param_list, body, end_fcn_stmt, doc_string);
 
     tree_function_def *retval = finish_function (ret_list, tmp_fcn, lc, l, c);
 
@@ -4002,7 +4016,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   base_parser::start_function (tree_identifier *id,
                                tree_parameter_list *param_list,
                                tree_statement_list *body,
-                               tree_statement *end_fcn_stmt)
+                               tree_statement *end_fcn_stmt,
+                               const std::string& doc_string)
   {
     // We'll fill in the return list later.
 
@@ -4118,11 +4133,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // because the doc_string of the outermost function is read first,
     // whereas this function is called for the innermost function first.
     // We could have a stack of doc_string objects in lexer.
-    if (! m_lexer.m_doc_string.empty () && m_curr_fcn_depth == 0)
-      {
-        fcn->document (m_lexer.m_doc_string.text ());
-        m_lexer.m_doc_string.reset ();
-      }
+    if (! doc_string.empty () && m_curr_fcn_depth == 0)
+      fcn->document (doc_string);
+
 
     if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
         && ! m_parsing_subfunctions)
@@ -4367,7 +4380,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                               tree_identifier *id,
                               tree_classdef_superclass_list *sc,
                               tree_classdef_body *body, token *end_tok,
-                              comment_list *lc, comment_list *tc)
+                              comment_list *lc, comment_list *bc, comment_list *tc)
   {
     tree_classdef *retval = nullptr;
 
@@ -4394,6 +4407,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         delete sc;
         delete body;
         delete lc;
+        delete bc;
         delete tc;
 
         bison_error ("invalid classdef definition, the class name must match the filename", l, c);
@@ -4406,15 +4420,26 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             int l = tok_val->line ();
             int c = tok_val->column ();
 
+            // First non-copyright comments found above and below
+            // function keyword are candidates for the documentation
+            // string.  Use the first one that is not empty.
+
+            std::string doc_string;
+
+            if (lc)
+              doc_string = lc->find_doc_string ();
+
+            if (doc_string.empty () && bc)
+              doc_string = bc->find_doc_string ();
+
             if (! body)
               body = new tree_classdef_body ();
 
-            retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (),
-                                        m_lexer.m_classdef_doc_string.text (),
-                                        a, id, sc, body, lc, tc,
-                                        m_curr_package_name, full_name, l, c);
+            // FIXME - pass body comment to tree_classdef constructor.
 
-            m_lexer.m_classdef_doc_string.reset ();
+            retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (),
+                                        doc_string, a, id, sc, body, lc, tc,
+                                        m_curr_package_name, full_name, l, c);
           }
         else
           {
@@ -4423,6 +4448,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             delete sc;
             delete body;
             delete lc;
+            delete bc;
             delete tc;
 
             end_token_error (end_tok, token::switch_end);

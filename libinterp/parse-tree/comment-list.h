@@ -50,7 +50,6 @@ public:
     block,
     full_line,
     end_of_line,
-    doc_string,
     copyright
   };
 
@@ -82,7 +81,6 @@ public:
   bool is_block () const { return m_type == block; }
   bool is_full_line () const { return m_type == full_line; }
   bool is_end_of_line () const { return m_type == end_of_line; }
-  bool is_doc_string () const { return m_type == doc_string; }
   bool is_copyright () const { return m_type == copyright; }
   bool uses_hash_char () const { return m_uses_hash_char; }
 
@@ -123,6 +121,25 @@ public:
   { append (comment_elt (s, t, uses_hash_char)); }
 
   comment_list * dup () const;
+
+  // Documentation for functions is typically the first block of
+  // comments that doesn't look like a copyright statement.
+  comment_elt find_doc_comment () const
+  {
+    for (const auto& elt : *this)
+      {
+        // FIXME: should we also omit end-of-line comments?
+        if (! elt.is_copyright ())
+          return elt;
+      }
+
+    return comment_elt ();
+  }
+
+  std::string find_doc_string () const
+  {
+    return find_doc_comment().text ();
+  }
 };
 
 OCTAVE_END_NAMESPACE(octave)

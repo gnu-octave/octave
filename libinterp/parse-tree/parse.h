@@ -394,7 +394,8 @@ public:
   // Begin defining a function.
   OCTINTERP_API octave_user_function *
   start_function (tree_identifier *id, tree_parameter_list *param_list,
-                  tree_statement_list *body, tree_statement *end_function);
+                  tree_statement_list *body, tree_statement *end_function,
+                  const std::string& doc_string);
 
   // Create a no-op statement for end_function.
   OCTINTERP_API tree_statement *
@@ -456,7 +457,7 @@ public:
   make_classdef (token *tok_val, tree_classdef_attribute_list *a,
                  tree_identifier *id, tree_classdef_superclass_list *sc,
                  tree_classdef_body *body, token *end_tok,
-                 comment_list *lc, comment_list *tc);
+                 comment_list *lc, comment_list *bc, comment_list *tc);
 
   OCTINTERP_API tree_classdef_properties_block *
   make_classdef_properties_block (token *tok_val,

@@ -300,8 +300,6 @@ public:
       m_filepos (1, 1),
       m_tok_beg (),
       m_tok_end (),
-      m_classdef_doc_string (),
-      m_doc_string (),
       m_string_text (),
       m_current_input_line (),
       m_comment_text (),
@@ -474,12 +472,6 @@ public:
   // character strings.
   filepos m_tok_beg;
   filepos m_tok_end;
-
-  // Pending doc string for classdef object.
-  comment_elt m_classdef_doc_string;
-
-  // Pending doc string for functions.
-  comment_elt m_doc_string;
 
   // The current character string text.
   std::string m_string_text;

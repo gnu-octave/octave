@@ -2226,8 +2226,6 @@ If @var{name} is omitted, return a list of keywords.
     m_filepos = filepos (1, 1);
     m_tok_beg = filepos ();
     m_tok_end = filepos ();
-    m_classdef_doc_string.reset ();
-    m_doc_string.reset ();
     m_string_text = "";
     m_current_input_line = "";
     m_comment_text = "";
@@ -3351,15 +3349,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   void
   base_lexer::finish_comment (comment_elt::comment_type typ)
   {
-    bool copyright = looks_like_copyright (m_comment_text);
-
-    if (typ != octave::comment_elt::end_of_line
-        && m_nesting_level.none ()
-        && m_doc_string.empty () && ! m_comment_text.empty ()
-        && ! copyright && ! looks_like_shebang (m_comment_text))
-      m_doc_string = comment_elt (m_comment_text, typ, m_comment_uses_hash_char);
-
-    if (copyright)
+    if (looks_like_copyright (m_comment_text))
       typ = comment_elt::copyright;
 
     m_comment_buf.append (m_comment_text, typ, m_comment_uses_hash_char);

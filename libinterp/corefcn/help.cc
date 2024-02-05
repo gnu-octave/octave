@@ -751,16 +751,27 @@ help_system::raw_help_from_symbol_table (const std::string& name, std::string& h
       // Look for constructor.
 
       pos = name.rfind ('.');
-      std::string nm = name.substr (pos+1);
 
-      octave_value ov_meth = cls.get_method (nm);
-
-      if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
+      if (pos != std::string::npos)
         {
-          what = "constructor";
+          std::string nm = name.substr (pos+1);
 
-          return true;
+          octave_value ov_meth = cls.get_method (nm);
+
+          if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
+            {
+              what = "constructor";
+              return true;
+            }
         }
+
+      // We found a class but no doc string for it or its constructor.
+      // Create a generic doc string.
+
+      help = name + " is an undocumented class";
+      what = "class";
+      symbol_found = true;
+      return true;
     }
 
   cdef_package pkg = cdm.find_package (name, false, true);

@@ -341,7 +341,7 @@ application::experimental_terminal_widget () const
 }
 
 bool
-application::interpreter_initialized ()
+application::interpreter_is_initialized () const
 {
   return m_interpreter ? m_interpreter->is_initialized () : false;
 }

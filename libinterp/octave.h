@@ -278,7 +278,13 @@ public:
 
   bool is_octave_program () const { return m_is_octave_program; }
 
-  bool interpreter_initialized ();
+  bool interpreter_is_initialized () const;
+
+  OCTAVE_DEPRECATED (9, "use octave::interpreter_is_initialized instead")
+  bool interpreter_initialized ()
+  {
+    return interpreter_is_initialized ();
+  }
 
   virtual interpreter& create_interpreter ();
 

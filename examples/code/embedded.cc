@@ -26,7 +26,7 @@ main ()
       //
       //   interpreter.initialize ();
       //
-      //   if (! interpreter.initialized ())
+      //   if (! interpreter.is_initialized ())
       //     {
       //       std::cerr << "Octave interpreter initialization failed!"
       //                 << std::endl;

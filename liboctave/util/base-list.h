@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#warning "using <base-list.h> is discouraged - use <list> instead"
+
 #include <cstdlib>
 
 #include <list>

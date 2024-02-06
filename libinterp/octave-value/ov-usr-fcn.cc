@@ -266,7 +266,7 @@ octave_user_function::octave_user_function
     m_lead_comm (), m_trail_comm (),
     m_location_line (0), m_location_column (0),
     m_system_fcn_file (false),
-    m_num_named_args (m_param_list ? m_param_list->length () : 0),
+    m_num_named_args (m_param_list ? m_param_list->size () : 0),
     m_subfunction (false), m_inline_function (false),
     m_anonymous_function (false), m_nested_function (false),
     m_class_constructor (none), m_class_method (none)
@@ -557,7 +557,7 @@ octave::tree_expression *
 octave_user_function::special_expr ()
 {
   panic_unless (is_special_expr ());
-  panic_if (m_cmd_list->length () != 1);
+  panic_if (m_cmd_list->size () != 1);
 
   octave::tree_statement *stmt = m_cmd_list->front ();
   return stmt->expression ();
@@ -569,8 +569,8 @@ octave_user_function::subsasgn_optimization_ok ()
   bool retval = false;
   if (Voptimize_subsasgn_calls
       && m_param_list && m_ret_list
-      && m_param_list->length () > 0 && ! m_param_list->varargs_only ()
-      && m_ret_list->length () == 1 && ! m_ret_list->takes_varargs ())
+      && m_param_list->size () > 0 && ! m_param_list->varargs_only ()
+      && m_ret_list->size () == 1 && ! m_ret_list->takes_varargs ())
     {
       octave::tree_identifier *par1 = m_param_list->front ()->ident ();
       octave::tree_identifier *ret1 = m_ret_list->front ()->ident ();
@@ -774,7 +774,7 @@ Programming Note: @code{nargin} does not work on compiled functions
 
       tree_parameter_list *m_param_list = ufcn->parameter_list ();
 
-      retval = (m_param_list ? m_param_list->length () : 0);
+      retval = (m_param_list ? m_param_list->size () : 0);
       if (ufcn->takes_varargs ())
         retval = -1 - retval;
     }
@@ -896,7 +896,7 @@ returns -1 for all anonymous functions.
 
       tree_parameter_list *m_ret_list = ufcn->return_list ();
 
-      retval = (m_ret_list ? m_ret_list->length () : 0);
+      retval = (m_ret_list ? m_ret_list->size () : 0);
 
       if (ufcn->takes_var_return ())
         retval = -1 - retval;

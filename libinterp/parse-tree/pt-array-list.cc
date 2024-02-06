@@ -69,7 +69,7 @@ tree_array_list::copy_base (const tree_array_list& array_list,
                             symbol_scope& scope)
 {
   for (const tree_argument_list *elt : array_list)
-    append (elt ? elt->dup (scope) : nullptr);
+    push_back (elt ? elt->dup (scope) : nullptr);
 
   copy_base (*this);
 }

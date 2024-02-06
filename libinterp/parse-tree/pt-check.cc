@@ -85,7 +85,7 @@ tree_checker::visit_complex_for_command (tree_complex_for_command& cmd)
 
   if (lhs)
     {
-      int len = lhs->length ();
+      int len = lhs->size ();
 
       if (len == 0 || len > 2)
         errmsg ("invalid number of output arguments in for command",

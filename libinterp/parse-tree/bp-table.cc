@@ -305,7 +305,7 @@ bp_table::condition_valid (const std::string& cond)
                    "condition is not empty, but has nothing to evaluate");
           else
             {
-              if (stmt_list->length () == 1
+              if (stmt_list->size () == 1
                   && (stmt = stmt_list->front ())
                   && stmt->is_expression ())
                 {

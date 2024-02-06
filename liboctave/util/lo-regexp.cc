@@ -48,7 +48,6 @@
 #endif
 
 #include "Matrix.h"
-#include "base-list.h"
 #include "lo-error.h"
 #include "oct-locbuf.h"
 #include "quit.h"

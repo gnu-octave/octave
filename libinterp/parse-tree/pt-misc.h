@@ -28,7 +28,8 @@
 
 #include "octave-config.h"
 
-#include "base-list.h"
+#include <list>
+
 #include "pt-decl.h"
 #include "pt-walk.h"
 
@@ -42,7 +43,7 @@ class tree_index_expression;
 // parameters in a function definition.  Elements are identifiers
 // only.
 
-class tree_parameter_list : public base_list<tree_decl_elt *>
+class tree_parameter_list : public std::list<tree_decl_elt *>
 {
 public:
 
@@ -59,13 +60,13 @@ public:
   tree_parameter_list (in_or_out io, tree_decl_elt *t)
     : m_in_or_out (io), m_marked_for_varargs (0)
   {
-    append (t);
+    push_back (t);
   }
 
   tree_parameter_list (in_or_out io, tree_identifier *id)
     : m_in_or_out (io), m_marked_for_varargs (0)
   {
-    append (new tree_decl_elt (id));
+    push_back (new tree_decl_elt (id));
   }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_parameter_list)

@@ -30,7 +30,6 @@
 #include <list>
 #include <sstream>
 
-#include "base-list.h"
 #include "oct-locbuf.h"
 #include "quit.h"
 #include "lo-regexp.h"

@@ -36,8 +36,6 @@ class octave_value;
 #include "pt-walk.h"
 #include "pt-id.h"
 
-#include "base-list.h"
-
 #include <list>
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -165,16 +163,16 @@ private:
   bool m_neg;
 };
 
-class tree_classdef_attribute_list : public base_list<tree_classdef_attribute *>
+class tree_classdef_attribute_list : public std::list<tree_classdef_attribute *>
 {
 public:
 
   tree_classdef_attribute_list () { }
 
-  tree_classdef_attribute_list (tree_classdef_attribute *a) { append (a); }
+  tree_classdef_attribute_list (tree_classdef_attribute *a) { push_back (a); }
 
-  tree_classdef_attribute_list (const base_list<tree_classdef_attribute *>& a)
-    : base_list<tree_classdef_attribute *> (a)
+  tree_classdef_attribute_list (const std::list<tree_classdef_attribute *>& a)
+    : std::list<tree_classdef_attribute *> (a)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_classdef_attribute_list)
@@ -212,7 +210,7 @@ private:
 };
 
 class tree_classdef_superclass_list
-  : public base_list<tree_classdef_superclass *>
+  : public std::list<tree_classdef_superclass *>
 {
 public:
 
@@ -220,11 +218,11 @@ public:
 
   tree_classdef_superclass_list (tree_classdef_superclass *sc)
   {
-    append (sc);
+    push_back (sc);
   }
 
-  tree_classdef_superclass_list (const base_list<tree_classdef_superclass *>& a)
-    : base_list<tree_classdef_superclass *> (a)
+  tree_classdef_superclass_list (const std::list<tree_classdef_superclass *>& a)
+    : std::list<tree_classdef_superclass *> (a)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_classdef_superclass_list)
@@ -319,16 +317,16 @@ private:
   std::string m_doc_string;
 };
 
-class tree_classdef_property_list : public base_list<tree_classdef_property *>
+class tree_classdef_property_list : public std::list<tree_classdef_property *>
 {
 public:
 
   tree_classdef_property_list () { }
 
-  tree_classdef_property_list (tree_classdef_property *p) { append (p); }
+  tree_classdef_property_list (tree_classdef_property *p) { push_back (p); }
 
-  tree_classdef_property_list (const base_list<tree_classdef_property *>& a)
-    : base_list<tree_classdef_property *> (a) { }
+  tree_classdef_property_list (const std::list<tree_classdef_property *>& a)
+    : std::list<tree_classdef_property *> (a) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_classdef_property_list)
 
@@ -362,16 +360,16 @@ public:
   }
 };
 
-class tree_classdef_methods_list : public base_list<octave_value>
+class tree_classdef_methods_list : public std::list<octave_value>
 {
 public:
 
   tree_classdef_methods_list () { }
 
-  tree_classdef_methods_list (const octave_value& f) { append (f); }
+  tree_classdef_methods_list (const octave_value& f) { push_back (f); }
 
-  tree_classdef_methods_list (const base_list<octave_value>& a)
-    : base_list<octave_value> (a) { }
+  tree_classdef_methods_list (const std::list<octave_value>& a)
+    : std::list<octave_value> (a) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_classdef_methods_list)
 
@@ -442,16 +440,16 @@ private:
   std::string m_doc_string;
 };
 
-class tree_classdef_events_list : public base_list<tree_classdef_event *>
+class tree_classdef_events_list : public std::list<tree_classdef_event *>
 {
 public:
 
   tree_classdef_events_list () { }
 
-  tree_classdef_events_list (tree_classdef_event *e) { append (e); }
+  tree_classdef_events_list (tree_classdef_event *e) { push_back (e); }
 
-  tree_classdef_events_list (const base_list<tree_classdef_event *>& a)
-    : base_list<tree_classdef_event *> (a)
+  tree_classdef_events_list (const std::list<tree_classdef_event *>& a)
+    : std::list<tree_classdef_event *> (a)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_classdef_events_list)
@@ -527,16 +525,16 @@ private:
   std::string m_doc_string;
 };
 
-class tree_classdef_enum_list : public base_list<tree_classdef_enum *>
+class tree_classdef_enum_list : public std::list<tree_classdef_enum *>
 {
 public:
 
   tree_classdef_enum_list () { }
 
-  tree_classdef_enum_list (tree_classdef_enum *e) { append (e); }
+  tree_classdef_enum_list (tree_classdef_enum *e) { push_back (e); }
 
-  tree_classdef_enum_list (const base_list<tree_classdef_enum *>& a)
-    : base_list<tree_classdef_enum *> (a)
+  tree_classdef_enum_list (const std::list<tree_classdef_enum *>& a)
+    : std::list<tree_classdef_enum *> (a)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_classdef_enum_list)
@@ -607,24 +605,28 @@ public:
 
   ~tree_classdef_body ();
 
-  void append (tree_classdef_properties_block *pb)
+  tree_classdef_body * append (tree_classdef_properties_block *pb)
   {
     m_properties_lst.push_back (pb);
+    return this;
   }
 
-  void append (tree_classdef_methods_block *mb)
+  tree_classdef_body * append (tree_classdef_methods_block *mb)
   {
     m_methods_lst.push_back (mb);
+    return this;
   }
 
-  void append (tree_classdef_events_block *evb)
+  tree_classdef_body * append (tree_classdef_events_block *evb)
   {
     m_events_lst.push_back (evb);
+    return this;
   }
 
-  void append (tree_classdef_enum_block *enb)
+  tree_classdef_body * append (tree_classdef_enum_block *enb)
   {
     m_enum_lst.push_back (enb);
+    return this;
   }
 
   std::list<tree_classdef_properties_block *> properties_list ()

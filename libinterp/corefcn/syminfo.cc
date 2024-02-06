@@ -169,7 +169,7 @@ symbol_info::display_line (std::ostream& os,
 octave_value
 symbol_info_list::varval (const std::string& name) const
 {
-  for (const auto& syminfo : m_lst)
+  for (const auto& syminfo : *this)
     {
       if (name == syminfo.name ())
         return syminfo.value ();
@@ -183,7 +183,7 @@ symbol_info_list::names () const
 {
   std::list<std::string> retval;
 
-  for (const auto& syminfo : m_lst)
+  for (const auto& syminfo : *this)
     retval.push_back (syminfo.name ());
 
   return retval;
@@ -193,7 +193,7 @@ octave_map
 symbol_info_list::map_value (const std::string& caller_function_name,
                              int nesting_level) const
 {
-  std::size_t len = m_lst.size ();
+  std::size_t len = size ();
 
   Cell name_info (len, 1);
   Cell size_info (len, 1);
@@ -207,7 +207,7 @@ symbol_info_list::map_value (const std::string& caller_function_name,
 
   std::size_t j = 0;
 
-  for (const auto& syminfo : m_lst)
+  for (const auto& syminfo : *this)
     {
       octave_scalar_map ni;
 
@@ -334,7 +334,7 @@ void
 symbol_info_list::display (std::ostream& os,
                            const std::string& format) const
 {
-  if (! m_lst.empty ())
+  if (! empty ())
     {
       std::size_t bytes = 0;
       std::size_t elements = 0;
@@ -345,7 +345,7 @@ symbol_info_list::display (std::ostream& os,
 
       octave_stdout << "\n";
 
-      for (const auto& syminfo : m_lst)
+      for (const auto& syminfo : *this)
         {
           syminfo.display_line (os, params);
 
@@ -403,7 +403,7 @@ symbol_info_list::parse_whos_line_format (const std::string& format) const
   // Calculating necessary spacing for name column,
   // bytes column, elements column and class column
 
-  for (const auto& syminfo : m_lst)
+  for (const auto& syminfo : *this)
     {
       std::stringstream ss1, ss2;
       std::string str;
@@ -511,7 +511,7 @@ symbol_info_list::parse_whos_line_format (const std::string& format) const
               int first = param.first_parameter_length;
               int total = param.parameter_length;
 
-              for (const auto& syminfo : m_lst)
+              for (const auto& syminfo : *this)
                 {
                   octave_value val = syminfo.value ();
                   std::string dims_str = val.get_dims_str ();

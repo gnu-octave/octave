@@ -2997,7 +2997,7 @@ base_anonymous_fcn_handle::print_raw (std::ostream& os, bool, int) const
 
   tree_statement_list *b = f->body ();
 
-  panic_if (b->length () != 1);
+  panic_if (b->size () != 1);
 
   tree_statement *s = b->front ();
 

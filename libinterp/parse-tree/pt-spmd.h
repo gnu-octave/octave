@@ -28,7 +28,6 @@
 
 #include "octave-config.h"
 
-#include "base-list.h"
 #include "pt-cmd.h"
 #include "pt-walk.h"
 

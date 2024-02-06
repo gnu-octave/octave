@@ -3110,7 +3110,7 @@ stack_frame::make_symbol_info_list (const std::list<symbol_record>& symrec_list)
       symbol_info syminf (sym.name (), value, sym.is_formal (),
                           is_global (sym), is_persistent (sym));
 
-      symbol_stats.append (syminf);
+      symbol_stats.push_back (syminf);
     }
 
   return symbol_stats;

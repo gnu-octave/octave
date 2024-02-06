@@ -707,7 +707,7 @@ tree_print_code::visit_multi_assignment (tree_multi_assignment& expr)
 
   if (lhs)
     {
-      int len = lhs->length ();
+      int len = lhs->size ();
 
       if (len > 1)
         {
@@ -781,7 +781,7 @@ tree_print_code::visit_parameter_list (tree_parameter_list& lst)
     }
   else
     {
-      int len = lst.length ();
+      int len = lst.size ();
       if (lst.takes_varargs ())
         len++;
 
@@ -817,7 +817,7 @@ tree_print_code::visit_parameter_list (tree_parameter_list& lst)
     }
   else
     {
-      int len = lst.length ();
+      int len = lst.size ();
       if (lst.takes_varargs ())
         len++;
 

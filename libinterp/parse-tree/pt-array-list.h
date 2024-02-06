@@ -28,7 +28,8 @@
 
 #include "octave-config.h"
 
-#include "base-list.h"
+#include <list>
+
 #include "pt-arg-list.h"
 #include "pt-exp.h"
 
@@ -40,20 +41,20 @@ class tree_walker;
 // Base class for cell arrays and matrices.
 
 class tree_array_list : public tree_expression,
-  public base_list<tree_argument_list *>
+  public std::list<tree_argument_list *>
 {
 public:
 
-  typedef base_list<tree_argument_list *>::iterator iterator;
-  typedef base_list<tree_argument_list *>::const_iterator const_iterator;
+  typedef std::list<tree_argument_list *>::iterator iterator;
+  typedef std::list<tree_argument_list *>::const_iterator const_iterator;
 
 protected:
 
   tree_array_list (tree_argument_list *row = nullptr, int l = -1, int c = -1)
-    : tree_expression (l, c), base_list<tree_argument_list *> ()
+    : tree_expression (l, c), std::list<tree_argument_list *> ()
   {
     if (row)
-      append (row);
+      push_back (row);
   }
 
 public:

@@ -219,9 +219,15 @@ public:
     return m_evaluator.in_top_level_repl ();
   }
 
-  bool initialized () const
+  bool is_initialized () const
   {
     return m_initialized;
+  }
+
+  OCTAVE_DEPRECATED (9, "use octave::is_initialized instead")
+  bool initialized () const
+  {
+    return is_initialized ();
   }
 
   void interrupt_all_in_process_group (bool b)

@@ -28,10 +28,10 @@
 
 #include "octave-config.h"
 
+#include <list>
 #include <memory>
 #include <string>
 
-#include "base-list.h"
 #include "caseless-str.h"
 #include "dMatrix.h"
 
@@ -104,14 +104,14 @@ private:
 };
 
 class OCTINTERP_API text_element_list
-  : public text_element, public base_list<text_element *>
+  : public text_element, public std::list<text_element *>
 {
 public:
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE (text_element_list)
 
   text_element_list (text_element *e)
-    : text_element (), base_list<text_element*> ()
+    : text_element (), std::list<text_element*> ()
   {
     push_back (e);
   }

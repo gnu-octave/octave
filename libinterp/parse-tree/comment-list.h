@@ -28,9 +28,8 @@
 
 #include "octave-config.h"
 
+#include <list>
 #include <string>
-
-#include "base-list.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -106,19 +105,23 @@ private:
   bool m_uses_hash_char;
 };
 
-class comment_list : public base_list<comment_elt>
+class comment_list : public std::list<comment_elt>
 {
 public:
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (comment_list)
 
   void append (const comment_elt& elt)
-  { base_list<comment_elt>::append (elt); }
+  {
+    push_back (elt);
+  }
 
   void append (const std::string& s,
                comment_elt::comment_type t = comment_elt::unknown,
                bool uses_hash_char = false)
-  { append (comment_elt (s, t, uses_hash_char)); }
+  {
+    push_back (comment_elt (s, t, uses_hash_char));
+  }
 
   comment_list * dup () const;
 

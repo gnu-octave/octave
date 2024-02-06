@@ -54,7 +54,7 @@ octave_oncleanup::octave_oncleanup (const octave_value& f)
         {
           octave::tree_parameter_list *pl = uptr->parameter_list ();
 
-          if (pl != nullptr && pl->length () > 0)
+          if (pl != nullptr && pl->size () > 0)
             warning ("onCleanup: cleanup action takes parameters");
         }
     }

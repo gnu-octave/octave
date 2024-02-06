@@ -656,7 +656,7 @@ octave_classdef_superclass_ref::is_constructed_object (octave::tree_evaluator& t
         {
           octave::tree_parameter_list *ret_list = uf->return_list ();
 
-          if (ret_list && ret_list->length () == 1)
+          if (ret_list && ret_list->size () == 1)
             return (ret_list->front ()->name () == nm);
         }
     }

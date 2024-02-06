@@ -40,7 +40,7 @@ void child_list::remove (pid_t pid)
 void
 child_list::child_list::insert (pid_t pid, child::child_event_handler f)
 {
-  m_list.append (child (pid, f));
+  m_list.push_back (child (pid, f));
 }
 
 void

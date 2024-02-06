@@ -28,7 +28,8 @@
 
 #include "octave-config.h"
 
-#include "base-list.h"
+#include <list>
+
 #include "comment-list.h"
 #include "pt-cmd.h"
 #include "pt-walk.h"
@@ -86,13 +87,13 @@ private:
   comment_list *m_lead_comm;
 };
 
-class tree_if_command_list : public base_list<tree_if_clause *>
+class tree_if_command_list : public std::list<tree_if_clause *>
 {
 public:
 
   tree_if_command_list () { }
 
-  tree_if_command_list (tree_if_clause *t) { append (t); }
+  tree_if_command_list (tree_if_clause *t) { push_back (t); }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_if_command_list)
 
@@ -201,13 +202,13 @@ private:
   comment_list *m_lead_comm;
 };
 
-class tree_switch_case_list : public base_list<tree_switch_case *>
+class tree_switch_case_list : public std::list<tree_switch_case *>
 {
 public:
 
   tree_switch_case_list () { }
 
-  tree_switch_case_list (tree_switch_case *t) { append (t); }
+  tree_switch_case_list (tree_switch_case *t) { push_back (t); }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_switch_case_list)
 

@@ -2528,7 +2528,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   static LIST_T *
   list_append (LIST_T *list, ELT_T elt)
   {
-    list->append (elt);
+    list->push_back (elt);
     return list;
   }
 
@@ -3453,7 +3453,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         int l = for_tok->line ();
         int c = for_tok->column ();
 
-        if (lhs->length () == 1)
+        if (lhs->size () == 1)
           {
             tree_expression *tmp = lhs->remove_front ();
 
@@ -3882,7 +3882,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (! cmds)
       cmds = new tree_statement_list ();
 
-    cmds->append (end_script);
+    cmds->push_back (end_script);
 
     symbol_scope script_scope = m_lexer.m_symtab_context.curr_scope ();
 
@@ -4036,7 +4036,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (! body)
       body = new tree_statement_list ();
 
-    body->append (end_fcn_stmt);
+    body->push_back (end_fcn_stmt);
 
     octave_user_function *fcn
       = new octave_user_function (m_lexer.m_symtab_context.curr_scope (),
@@ -4784,28 +4784,28 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   base_parser::append_classdef_properties_block (tree_classdef_body *body,
                                                  tree_classdef_properties_block *block)
   {
-    return list_append (body, block);
+    return body->append (block);
   }
 
   tree_classdef_body *
   base_parser::append_classdef_methods_block (tree_classdef_body *body,
                                               tree_classdef_methods_block *block)
   {
-    return list_append (body, block);
+    return body->append (block);
   }
 
   tree_classdef_body *
   base_parser::append_classdef_events_block (tree_classdef_body *body,
                                              tree_classdef_events_block *block)
   {
-    return list_append (body, block);
+    return body->append (block);
   }
 
   tree_classdef_body *
   base_parser::append_classdef_enum_block (tree_classdef_body *body,
                                            tree_classdef_enum_block *block)
   {
-    return list_append (body, block);
+    return body->append (block);
   }
 
   octave_user_function*
@@ -4997,10 +4997,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         if (expr->is_index_expression ())
           {
-            tree_index_expression *tmp
-              = dynamic_cast<tree_index_expression *> (expr);
+            retval = dynamic_cast<tree_index_expression *> (expr);
 
-            retval = tmp->append (args, type);
+            retval->append (args, type);
           }
         else
           retval = new tree_index_expression (expr, args, l, c, type);
@@ -5025,10 +5024,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (expr->is_index_expression ())
       {
-        tree_index_expression *tmp
-          = dynamic_cast<tree_index_expression *> (expr);
+        retval = dynamic_cast<tree_index_expression *> (expr);
 
-        retval = tmp->append (elt);
+        retval->append (elt);
       }
     else
       retval = new tree_index_expression (expr, elt, l, c);
@@ -5054,10 +5052,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (expr->is_index_expression ())
       {
-        tree_index_expression *tmp
-          = dynamic_cast<tree_index_expression *> (expr);
+        retval = dynamic_cast<tree_index_expression *> (expr);
 
-        retval = list_append (tmp, elt);
+        retval->append (elt);
       }
     else
       retval = new tree_index_expression (expr, elt, l, c);
@@ -5176,7 +5173,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     std::string va_type = (type == tree_parameter_list::in
                            ? "varargin" : "varargout");
 
-    std::size_t len = lst->length ();
+    std::size_t len = lst->size ();
 
     if (len > 0)
       {

@@ -28,13 +28,13 @@
 
 #include "octave-config.h"
 
+#include <list>
+
 #include "pt-arg-list.h"
 #include "pt-cmd.h"
 #include "pt-exp.h"
 #include "pt-id.h"
 #include "pt-walk.h"
-
-#include "base-list.h"
 
 // FIXME: We could maybe re-think the naming of some of these objects
 // before releasing a version that contains these new classes...
@@ -153,16 +153,16 @@ private:
 };
 
 class tree_args_block_validation_list
-  : public base_list<tree_arg_validation *>
+  : public std::list<tree_arg_validation *>
 {
 public:
 
   tree_args_block_validation_list () { }
 
-  tree_args_block_validation_list (tree_arg_validation *a) { append (a); }
+  tree_args_block_validation_list (tree_arg_validation *a) { push_back (a); }
 
-  tree_args_block_validation_list (const base_list<tree_arg_validation *>& a)
-    : base_list<tree_arg_validation *> (a)
+  tree_args_block_validation_list (const std::list<tree_arg_validation *>& a)
+    : std::list<tree_arg_validation *> (a)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_args_block_validation_list)

@@ -1050,7 +1050,7 @@ tree_evaluator::eval_string (const std::string& eval_str, bool silent,
             {
               tree_statement *stmt = nullptr;
 
-              if (stmt_list->length () == 1
+              if (stmt_list->size () == 1
                   && (stmt = stmt_list->front ())
                   && stmt->is_expression ())
                 {
@@ -2369,7 +2369,7 @@ tree_evaluator::convert_return_list_to_const_vector
 (tree_parameter_list *ret_list, int nargout, const Cell& varargout)
 {
   octave_idx_type vlen = varargout.numel ();
-  int len = ret_list->length ();
+  int len = ret_list->size ();
 
   // Special case.  Will do a shallow copy.
   if (len == 0)
@@ -3626,7 +3626,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
   if (param_list)
     {
       takes_varargs = param_list->takes_varargs ();
-      max_inputs = param_list->length ();
+      max_inputs = param_list->size ();
     }
 
   if (! takes_varargs && nargin > max_inputs)
@@ -3647,7 +3647,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
 
   if (ret_list && ! ret_list->takes_varargs ())
     {
-      int max_outputs = ret_list->length ();
+      int max_outputs = ret_list->size ();
 
       if (nargout > max_outputs)
         {
@@ -3702,7 +3702,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
 
       if (user_function.is_special_expr ())
         {
-          panic_if (cmd_list->length () != 1);
+          panic_if (cmd_list->size () != 1);
 
           tree_statement *stmt = cmd_list->front ();
 
@@ -4795,7 +4795,7 @@ tree_evaluator::make_value_list (tree_argument_list *args,
       unwind_protect_var<const std::list<octave_lvalue> *>
         upv (m_lvalue_list, nullptr);
 
-      int len = args->length ();
+      int len = args->size ();
 
       unwind_protect_var<int> upv2 (m_index_position);
       unwind_protect_var<int> upv3 (m_num_indices);

@@ -368,7 +368,7 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
       if (is_var && is_word_list_cmd ())
         {
           bool maybe_binary_op = false;
-          if ((*p_args) && (*p_args)->length () > 0)
+          if ((*p_args) && (*p_args)->size () > 0)
             {
               // check if first character of first argument might be (the
               // start of) a binary operator
@@ -393,7 +393,7 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
 
           tree_argument_list *al = *p_args;
 
-          if (al && al->length () > 0)
+          if (al && al->size () > 0)
             {
               unwind_action act ([&tw] (const std::list<octave_lvalue> *lvl)
               {

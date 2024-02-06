@@ -57,7 +57,7 @@ tree_cell::evaluate (tree_evaluator& tw, int)
   }, tw.lvalue_list ());
   tw.set_lvalue_list (nullptr);
 
-  octave_idx_type nr = length ();
+  octave_idx_type nr = size ();
   octave_idx_type nc = -1;
 
   Cell val;

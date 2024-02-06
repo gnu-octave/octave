@@ -28,10 +28,9 @@
 
 #include "octave-config.h"
 
-#include <string>
 #include <iosfwd>
-
-#include "base-list.h"
+#include <list>
+#include <string>
 
 #include "ov.h"
 
@@ -88,7 +87,7 @@ private:
   bool m_is_persistent;
 };
 
-class OCTINTERP_API symbol_info_list : public base_list<symbol_info>
+class OCTINTERP_API symbol_info_list : public std::list<symbol_info>
 {
 public:
 

@@ -31,7 +31,6 @@
 #include <list>
 #include <string>
 
-#include "base-list.h"
 #include "oct-lvalue.h"
 #include "pt-cmd.h"
 #include "pt-id.h"
@@ -105,13 +104,13 @@ private:
   tree_expression *m_expr;
 };
 
-class tree_decl_init_list : public base_list<tree_decl_elt *>
+class tree_decl_init_list : public std::list<tree_decl_elt *>
 {
 public:
 
   tree_decl_init_list () { }
 
-  tree_decl_init_list (tree_decl_elt *t) { append (t); }
+  tree_decl_init_list (tree_decl_elt *t) { push_back (t); }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_decl_init_list)
 

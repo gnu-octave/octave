@@ -1142,7 +1142,7 @@ call_stack::do_global_who_two (const string_vector& patterns,
                   symbol_info syminf (nm, value, is_formal, is_global,
                                       is_persistent);
 
-                  symbol_stats.append (syminf);
+                  symbol_stats.push_back (syminf);
                 }
               else
                 symbol_names.push_back (nm);

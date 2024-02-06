@@ -35,7 +35,6 @@ class octave_value_list;
 
 #include "str-vec.h"
 
-#include "base-list.h"
 #include "pt-walk.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -47,7 +46,7 @@ class tree_expression;
 // Argument lists.  Used to hold the list of expressions that are the
 // arguments in a function call or index expression.
 
-class tree_argument_list : public base_list<tree_expression *>
+class tree_argument_list : public std::list<tree_expression *>
 {
 public:
 
@@ -59,7 +58,7 @@ public:
 
   tree_argument_list (tree_expression *t)
     : m_list_includes_magic_tilde (false), m_simple_assign_lhs (false)
-  { append (t); }
+  { push_back (t); }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_argument_list)
 
@@ -83,7 +82,7 @@ public:
     return retval;
   }
 
-  void append (const element_type& s);
+  void push_back (const element_type& s);
 
   void mark_as_simple_assign_lhs () { m_simple_assign_lhs = true; }
 

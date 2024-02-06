@@ -30,9 +30,9 @@
 
 #include <csignal>
 
-#include <sys/types.h>
+#include <list>
 
-#include "base-list.h"
+#include <sys/types.h>
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -88,7 +88,7 @@ public:
 
 private:
 
-  base_list<child> m_list;
+  std::list<child> m_list;
 };
 
 OCTAVE_END_NAMESPACE(octave)

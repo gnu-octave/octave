@@ -31,8 +31,8 @@
 class octave_value_list;
 
 #include <deque>
+#include <list>
 
-#include "base-list.h"
 #include "bp-table.h"
 #include "pt.h"
 #include "pt-walk.h"
@@ -136,7 +136,7 @@ private:
 
 // A list of statements to evaluate.
 
-class tree_statement_list : public base_list<tree_statement *>
+class tree_statement_list : public std::list<tree_statement *>
 {
 public:
 
@@ -146,7 +146,7 @@ public:
 
   tree_statement_list (tree_statement *s)
     : m_function_body (false), m_anon_function_body (false),
-      m_script_body (false) { append (s); }
+      m_script_body (false) { push_back (s); }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_statement_list)
 

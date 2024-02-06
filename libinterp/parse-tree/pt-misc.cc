@@ -73,7 +73,7 @@ tree_parameter_list::dup (symbol_scope& scope) const
   new_list->m_marked_for_varargs = m_marked_for_varargs;
 
   for (const tree_decl_elt *elt : *this)
-    new_list->append (elt->dup (scope));
+    new_list->push_back (elt->dup (scope));
 
   return new_list;
 }

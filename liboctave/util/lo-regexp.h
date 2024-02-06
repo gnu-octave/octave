@@ -34,7 +34,6 @@
 
 #include "Array.h"
 #include "Matrix.h"
-#include "base-list.h"
 #include "str-vec.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -194,16 +193,16 @@ public:
     double m_end;
   };
 
-  class match_data : public base_list<match_element>
+  class match_data : public std::list<match_element>
   {
   public:
 
     match_data ()
-      : base_list<match_element> (), m_named_pats ()
+      : std::list<match_element> (), m_named_pats ()
     { }
 
     match_data (const std::list<match_element>& l, const string_vector& np)
-      : base_list<match_element> (l), m_named_pats (np)
+      : std::list<match_element> (l), m_named_pats (np)
     { }
 
     OCTAVE_DEFAULT_COPY_MOVE_DELETE (match_data)

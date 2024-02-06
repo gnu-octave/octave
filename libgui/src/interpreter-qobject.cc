@@ -71,7 +71,7 @@ void interpreter_qobject::execute ()
           interp.PS2 ("");
         }
 
-      if (interp.initialized ())
+      if (interp.is_initialized ())
         {
           // The interpreter should be completely ready at this point so let
           // the GUI know.

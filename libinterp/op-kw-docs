@@ -421,6 +421,26 @@ f (2, 2)
 Object Oriented Programming for a detailed description.)
 @seealso{function, functions, func2str, str2func}
 @end deftypefn
+__FILE__
+@c libinterp/parse-tree/lex.ll
+-*- texinfo -*-
+@deftypefn {} {} __FILE__
+When the lexer recognizes the @qcode{"__FILE__"} keyword it returns a
+character array containing the full name and path of the file that is being
+executed. @qcode{"__FILE__"} will return @code{stdin} if called from the
+command line.
+@seealso{__LINE__}
+@end deftypefn
+__LINE__
+@c libinterp/parse-tree/lex.ll
+-*- texinfo -*-
+@deftypefn {} {} __LINE__
+When the lexer recognizes the @qcode{"__LINE__"} keyword it returns a numeric
+value containing the current input line number of the function or file being
+executed.  @qcode{"__LINE__"} will return @code{1} if called from the command
+line.
+@seealso{__FILE__}
+@end deftypefn
 break
 @c libinterp/parse-tree/oct-parse.yy
 -*- texinfo -*-

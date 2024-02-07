@@ -2266,7 +2266,6 @@ tree_evaluator::undefine_parameter_list (tree_parameter_list *param_list)
     }
 }
 
-// END is documented in op-kw-docs.
 DEFMETHOD (end, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn {} {} end
@@ -2300,17 +2299,17 @@ The @code{end} keyword cannot be used within @code{subsref},
 @item
 For custom classes, to enable use of @code{end} in indexing expressions it
 must be overloaded with a function definition such as:
-   @example
-   @group
-   function last_index = end (obj, end_dim, ndim_obj)
-     if (end_dim == ndim_obj)
-       last_index = prod (size (obj)(end_dim:ndim_obj));
-     else
-       last_index = size (obj, end_dim);
-     endif
-   endfunction
-   @end group
-   @end example
+@example
+@group
+function last_index = end (obj, end_dim, ndim_obj)
+  if (end_dim == ndim_obj)
+    last_index = prod (size (obj)(end_dim:ndim_obj));
+  else
+    last_index = size (obj, end_dim);
+  endif
+endfunction
+@end group
+@end example
 For more information see
 @ref{Object Oriented Programming, , Object Oriented Programming}.
 @end enumerate

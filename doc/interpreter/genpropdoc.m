@@ -474,7 +474,7 @@ only if the figure's callback @code{windowbuttonmotionfcn} is defined\n\
 
       case "dockcontrols"
         s.doc = sprintf (doc_notimpl, "Interactive figure docking");
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "filename"
         s.doc = "The filename used when saving the plot figure.";
@@ -490,7 +490,7 @@ lines.";
         s.doc = "The @qcode{\"innerposition\"} property is the same as the \
 @ref{XREFfigureposition, , @w{@qcode{\"position\"} property}}.";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "integerhandle"
         s.doc = "Assign the next lowest unused integer as the Figure number.";
@@ -563,7 +563,7 @@ The four elements of the vector are the coordinates of the lower left corner \
 and width and height of the figure.  \
 @xref{XREFfigureunits, , @w{units property}}.";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "paperorientation"
         s.doc = "The value for the @code{papersize}, and @code{paperposition} \
@@ -645,7 +645,7 @@ The four elements of the vector are the coordinates of the lower left corner \
 and width and height of the figure.  \
 @xref{XREFfigureunits, , @w{units property}}.";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "renderer"
         s.doc = "Rendering engine used for printing when @code{renderermode} \
@@ -701,7 +701,7 @@ based on the value of the @code{menubar} property.";
       case "units"
         s.doc = "The unit used to compute the @code{position} and \
 @code{outerposition} properties.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "windowbuttondownfcn"
         s.doc = "@xref{XREFfigurewindowbuttonupfcn, , \
@@ -1114,11 +1114,11 @@ left corner of the axes at @math{(0.2, 0.3)} and the width and \
 height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesposition, , @w{position property}}.";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "plotboxaspectratio"
         s.doc = "@xref{XREFpbaspect, , pbaspect function}.  __modemsg__.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "plotboxaspectratiomode"
         s.doc = "Current state of the plot box aspect ratio mode, either \
@@ -1126,7 +1126,7 @@ manually set by the \
 @ref{XREFaxesdataaspectratio, , @w{@qcode{\"dataaspectratio\"} property}} or \
 automatically set by Octave in combination with other display properties to \
 fit the data in the current view.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "position"
         if (strcmp (objname, "legend"))
@@ -1147,7 +1147,7 @@ height to be 0.4 and 0.5 respectively.  \
 @xref{XREFaxesouterposition, , @w{outerposition property}}.";
         endif
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "positionconstraint"
         s.doc = "Specify which of @qcode{\"innerposition\"} or \
@@ -1155,7 +1155,7 @@ height to be 0.4 and 0.5 respectively.  \
 annotations extent changes.  \
 @xref{XREFaxesinnerposition, , @w{@qcode{\"innerposition\"} property}}, \
 and @ref{XREFaxesouterposition, , @w{@qcode{\"outerposition\"} property}}.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "projection"
         s.doc = sprintf (doc_notimpl, "Orthographic/perspective projection \
@@ -1226,7 +1226,7 @@ property.";
           s.doc = "Units used to interpret the @qcode{\"position\"}, \
 @qcode{\"outerposition\"}, and @qcode{\"tightinset\"} properties.";
         endif
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "view"
         s.doc = "Two-element vector @code{[azimuth elevation]} specifying \
@@ -1581,7 +1581,7 @@ Name is @qcode{\"ItemHit\"}.\n\
 
       case "location"
         s.doc = "Control the location of the legend.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "numcolumns"
         s.doc = "Control the number of columns used in the layout of the \
@@ -1759,7 +1759,7 @@ z data.";
 location of the text string.";
         s.valid = valid_4elvec;
         s.printdefault = false;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "fontangle"
         s.doc = doc_fontangle;
@@ -1791,7 +1791,7 @@ location of the text string.";
         s.doc = "Specifies the horizontal location of the point set by the \
 @ref{XREFtextposition, , @w{@qcode{\"position\"} property}} relative to the \
 text.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "interpreter"
         s.doc = "Control the way the @qcode{\"string\"} property is \
@@ -1820,13 +1820,13 @@ of the @qcode{\"fontunits\"} property.";
 position of the text anchor as defined by @code{verticalalignment} and \
 @code{horizontalalignment}.";
         s.valid = valid_3elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "rotation"
         s.doc = "The angle of rotation for the displayed text, measured in \
 degrees.";
         s.valid = "scalar";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "string"
         s.doc = "The __objname__ object string content.";
@@ -1840,7 +1840,7 @@ degrees.";
 option @qcode{\"data\"} uses the same units and limits as the data plotted in \
 the figure.  The @qcode{\"normalized\"} option applies a unitless 0 to 1 scale \
 to the limits along each axis of the displayed data.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "verticalalignment"
         s.doc = "Specifies the vertical location of the point set by the \
@@ -1848,7 +1848,7 @@ to the limits along each axis of the displayed data.";
 text.  Note that @qcode{\"top\"} and @qcode{\"bottom\"} align to the edge of \
 the text box while @qcode{\"cap\"} and @qcode{\"baseline\"} refer to the edges \
 of the text itself.";
-        s.category = "Position";
+        s.category = "Object Position";
 
     endswitch
 
@@ -2685,7 +2685,7 @@ __fcnmsg__";
         s.doc = "A scalar value containing the relative menu position from \
 the left or top depending on the orientation of the menu.";
         s.valid = "scalar";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "separator"
         s.doc = "State indicating whether a separator line will be drawn \
@@ -2719,7 +2719,7 @@ be executed whenever this item is selected.";
       case "position"
         s.doc = sprintf (doc_notimpl, "Manually setting location for \
 uicontextmenu to appear");
-        s.category = "Position";
+        s.category = "Object Position";
 
     endswitch
 
@@ -2779,7 +2779,7 @@ uicontextmenu to appear");
         s.doc = "Size of the panel represented as the four-element vector \
 [left, bottom, width, height].";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "resizefcn"
         s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
@@ -2811,7 +2811,7 @@ around this panel.  @xref{Colors, , colorspec}.";
       case "units"
         s.doc = "Unit of measurement used to interpret the \
 @qcode{\"position\"} property.";
-        s.category = "Position";
+        s.category = "Object Position";
 
     endswitch
 
@@ -2872,7 +2872,7 @@ buttongroup.";
         s.doc = "Size of the buttongroup represented as the four-element \
 vector [left, bottom, width, height].";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "resizefcn"
         s.doc = "__prop__ is deprecated.  Use @code{sizechangedfcn} instead.";
@@ -2915,7 +2915,7 @@ around this buttongroup.";
       case "units"
         s.doc = "Unit of measurement used to interpret the \
 @qcode{\"position\"} property.";
-        s.category = "Position";
+        s.category = "Object Position";
 
 
     endswitch
@@ -3032,7 +3032,7 @@ respectively.";
         s.doc = "Size of the control object represented as the four-element \
 vector [left, bottom, width, height].";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "sliderstep"
         s.doc = "The fractional step size, measured relative to the \
@@ -3064,7 +3064,7 @@ pointer hovers over the control object.";
       case "units"
         s.doc = "Unit of measurement used to interpret the \
 @qcode{\"position\"} property.";
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "value"
         s.doc = "A numerical value associated with the current state of the \
@@ -3151,7 +3151,7 @@ The first two elements of the array are always zero, while the third and \
 fourth elements contain the height and width of the table.";
         s.valid = valid_4elvec;
         s.printdefault = false;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "fontangle"
         s.doc = doc_fontangle;
@@ -3197,7 +3197,7 @@ be executed whenever a key is released in this table object.";
 the vector are the coordinates of the lower left corner and width and height \
 of the figure.  @xref{XREFuitableunits, , @w{units property}}.";
         s.valid = valid_4elvec;
-        s.category = "Position";
+        s.category = "Object Position";
 
       case "rearrangeablecolumns"
         s.doc = "Indicates whether or not the ability to move columns by \
@@ -3226,7 +3226,7 @@ pointer hovers over the table object.";
       case "units"
         s.doc = "Unit of measurement used to interpret the \
 @qcode{\"position\"} property.";
-        s.category = "Position";
+        s.category = "Object Position";
 
     endswitch
 
@@ -3526,8 +3526,7 @@ function str = printdoc (objname, obj, is_prop_subset)
   str = sprintf ("%s\n\nCategories:\n\n", str);
 
   for ii = 1:numel (categories);
-    str = sprintf ("%s@ref{XREF%s%s, , @w{%s}} %s", str, ...
-                   objname, strrep (categories{ii}, " ", ""), categories{ii});
+    str = sprintf ("%s@ref{XREF%scategory%s, , @w{%s}} ", str, objname, strrep (categories{ii}, " ", ""), categories{ii});
     if (ii < numel (categories))
       str = sprintf ("%s| ", str);
     endif
@@ -3538,7 +3537,7 @@ function str = printdoc (objname, obj, is_prop_subset)
     fields = sort (allfields(strcmp (allcategories, categories{ii})));
     nf = numel (fields);
     str = sprintf ("%s\n\n@subsubheading %s", str, categories{ii});
-    str = sprintf ("%s\n@anchor{XREF%s%s}\n@prindex %s %s\n", str, ...
+    str = sprintf ("%s\n@anchor{XREF%scategory%s}\n@prindex %s %s\n", str, ...
                    objname, strrep (categories{ii}, " ", ""), ...
                    objname, strrep (categories{ii}, " ", ""));
     str = sprintf ("%s\n\n@table @asis", str);

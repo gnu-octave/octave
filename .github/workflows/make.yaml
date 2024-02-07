@@ -1087,6 +1087,11 @@ jobs:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
 
+      - name: rebase binaries
+        run: |
+          find ${GITHUB_WORKSPACE}/.build -name "*.oct" -or -name "*.dll" -or -name "*.exe" | tee binaries.list
+          rebase -O -T binaries.list
+
       - name: check
         # Continuing on error in this step means that jobs will be "green" even
         # if the test suite crashes.  But if we don't continue, we'll loose the

@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         run: |
@@ -150,7 +150,7 @@ jobs:
           msystem: ${{ matrix.msystem }}
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: bootstrap
         run: ./bootstrap

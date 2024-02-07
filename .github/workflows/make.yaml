@@ -51,7 +51,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         env:
@@ -80,7 +80,7 @@ jobs:
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -133,7 +133,7 @@ jobs:
 
       - name: save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ~/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -197,7 +197,7 @@ jobs:
           cat /proc/cpuinfo
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         uses: jirutka/setup-alpine@v1
@@ -281,7 +281,7 @@ jobs:
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           # location of the ccache of the chroot in the root file system
           path: /home/runner/rootfs/alpine-latest-x86/home/runner/.ccache
@@ -356,7 +356,7 @@ jobs:
 
       - name: save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: /home/runner/rootfs/alpine-latest-x86/home/runner/.ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -447,7 +447,7 @@ jobs:
 
     steps:
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install dependencies
         # This step sometimes takes long and still recovers. But sometimes it
@@ -497,7 +497,7 @@ jobs:
 
       - name: restore ccache
         # setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         id: restore-ccache
         with:
           path: /Users/runner/Library/Caches/ccache
@@ -569,7 +569,7 @@ jobs:
 
       - name: save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: /Users/runner/Library/Caches/ccache
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -743,7 +743,7 @@ jobs:
           msystem: ${{ matrix.msystem }}
 
       - name: checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: prepare ccache
         # create key with human readable timestamp
@@ -756,7 +756,7 @@ jobs:
 
       - name: restore ccache
         # Setup the github cache used to maintain the ccache from one job to the next
-        uses: actions/cache/restore@v3
+        uses: actions/cache/restore@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -815,7 +815,7 @@ jobs:
 
       - name: save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3
+        uses: actions/cache/save@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -889,7 +889,7 @@ jobs:
       - name: upload build artifact
         if: matrix.msystem == 'MINGW64'
         continue-on-error: true
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.target-prefix }}-octave-${{ steps.ccache-prepare.outputs.timestamp }}
           path: C:\octave\pkg\octave.tar.gz
@@ -929,10 +929,10 @@ jobs:
       - name: checkout repository
         # This must be done before installing Cygwin because their git is
         # incompatible with this action.
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: install Cygwin build environment
-        uses: cygwin/cygwin-install-action@v2
+        uses: cygwin/cygwin-install-action@v4
         with:
           # The packages are listed in (alphabetically sorted) blocks:
           # The first block is for mandatory dependencies.
@@ -1015,7 +1015,7 @@ jobs:
 
       - name: restore ccache
         # Setup a github cache used to maintain the ccache from one run to the next
-        uses: actions/cache/restore@v3.2.2
+        uses: actions/cache/restore@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}
@@ -1082,7 +1082,7 @@ jobs:
 
       - name: save ccache
         # Save the cache after we are done (successfully) building
-        uses: actions/cache/save@v3.2.2
+        uses: actions/cache/save@v4
         with:
           path: ${{ steps.ccache-prepare.outputs.ccachedir }}
           key: ${{ steps.ccache-prepare.outputs.key }}

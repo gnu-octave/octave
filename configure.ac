@@ -27,7 +27,7 @@ dnl
 
 ### Initialize Autoconf
 AC_PREREQ([2.65])
-AC_INIT([GNU Octave], [9.0.90], [https://octave.org/bugs.html], [octave],
+AC_INIT([GNU Octave], [9.0.91], [https://octave.org/bugs.html], [octave],
         [https://www.gnu.org/software/octave/])
 
 ### Declare version numbers
@@ -41,7 +41,7 @@ dnl AC_INIT requires it to be static, not computed from shell variables.
 
 OCTAVE_MAJOR_VERSION=9
 OCTAVE_MINOR_VERSION=0
-OCTAVE_PATCH_VERSION=90
+OCTAVE_PATCH_VERSION=91
 
 dnl PACKAGE_VERSION is set by the AC_INIT VERSION argument.
 OCTAVE_VERSION="$PACKAGE_VERSION"

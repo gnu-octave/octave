@@ -2722,7 +2722,9 @@ in the Nth argument.  The number of rows, dimension 1, is returned in the
 first argument, the number of columns, dimension 2, is returned in the
 second argument, etc.  If there are more dimensions in @var{A} than there are
 output arguments, @code{size} returns the total number of elements in the
-remaining dimensions in the final output argument.
+remaining dimensions in the final output argument.  If the requested dimension
+@var{dim} is greater than the number of dimensions in @var{A}, @code{size}
+returns 1 (not 0).
 
 Example 1: single row vector output
 
@@ -2759,6 +2761,15 @@ Example 4: number of output arguments < number of dimensions
 [nr, remainder] = size (ones (2, 3, 4, 5))
     @result{} nr = 2
     @result{} remainder = 60
+@end group
+@end example
+
+Example 5: number of elements in dimension > number of actual dimensions
+
+@example
+@group
+sz4 = size (ones (2, 3), 4)
+    @result{} sz4 = 1
 @end group
 @end example
 

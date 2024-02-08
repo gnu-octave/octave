@@ -34,7 +34,7 @@
 ##
 ## @table @code
 ## @item profile on
-## Start the profiler, clearing all previously collected data if there is any.
+## Start the profiler.  Any previously collected data is cleared.
 ##
 ## @item profile off
 ## Stop profiling.  The collected data can later be retrieved and examined
@@ -61,8 +61,9 @@
 ## index into the @code{FunctionTable} identifying the function it corresponds
 ## to as well as data fields for number of calls and time spent at this level
 ## in the call tree.
-## @seealso{profshow, profexplore}
 ## @end table
+##
+## @seealso{profshow, profexplore}
 ## @end deftypefn
 
 function retval = profile (arg)

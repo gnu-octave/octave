@@ -223,6 +223,8 @@ A(end:-1:1)       # reversal of A => [4, 3, 2, 1]
 @end group
 @end example
 
+For more inforamtion see the @ref{XREFend, , @qcode{"end" keyword}}.
+
 @menu
 * Advanced Indexing::
 @end menu

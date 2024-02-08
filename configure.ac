@@ -3382,15 +3382,19 @@ Octave is now configured for $canonical_host_type
   Build Java interface:                 $build_java
   Build static libraries:               $STATIC_LIBS
   Build shared libraries:               $SHARED_LIBS
+  Use library visibility flags:         $ENABLE_LIB_VISIBILITY_FLAGS
   Dynamic Linking API:                  $DL_API_MSG
   Include support for GNU readline:     $USE_READLINE
   Use push parser in command line REPL: $ENABLE_COMMAND_LINE_PUSH_PARSER
   64-bit array dims and indexing:       $ENABLE_64
   64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
+  Use std::pmr::polymorphic_allocator:  $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR
   OpenMP SMP multithreading:            $ENABLE_OPENMP
   Truncate intermediate FP results:     $ENABLE_FLOAT_TRUNCATE
   Build cross tools:                    $cross_tools
   Build docs:                           $ENABLE_DOCS
+  Embed Mercurial ID in libraries:      $ENABLE_HG_ID
+  Install build logs:                   $install_build_logs
 ])
 
 warn_msg_printed=false

@@ -104,9 +104,12 @@ point for @code{gdb}.
 DEFUN (__vm_clear_cache__, , ,
   doc: /* -*- texinfo -*-
 @deftypefn {} {@var{val} =} __vm_clear_cache__ ()
-
 Internal function.
 
+Clear cache of bytecode-compiled functions.
+
+@c FIXME: Use seealso macro when functions are no longer experimental.
+See also: __vm_compile__.
 @end deftypefn */)
 {
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
@@ -124,15 +127,14 @@ Internal function.
 
 DEFUN (__vm_print_trace__, , ,
   doc: /* -*- texinfo -*-
-@deftypefn {} {@var{print_trace} =} __vm_print_trace__ ())
-
+@deftypefn {} {@var{print_trace} =} __vm_print_trace__ ()
 Internal function.
 
 Print a debug trace from the VM@.
 
-Toggles on or off each call.
+The print state toggles on or off with each call to the function.
 
-There has to be a breakpoint set in some file for the trace to actually print
+There must be a breakpoint set in an m-file for the trace to actually print
 anything.
 
 The return value is true if a trace will be printed and false otherwise.
@@ -154,12 +156,10 @@ The return value is true if a trace will be printed and false otherwise.
 
 DEFUN (__ref_count__, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn {} {@var{count} =} __ref_count__ (@var{obj}))
-
+@deftypefn {} {@var{count} =} __ref_count__ (@var{obj})
 Internal function.
 
 Return the reference count for an object.
-
 @end deftypefn */)
 {
   int nargin = args.length ();
@@ -174,13 +174,14 @@ Return the reference count for an object.
 
 DEFMETHOD (__vm_is_executing__, interp, , ,
   doc: /* -*- texinfo -*-
-@deftypefn {} {@var{is_executing} =} __vm_is_executing__ ())
-
+@deftypefn {} {@var{tf} =} __vm_is_executing__ ()
 Internal function.
 
 Return true if the VM is executing the function calling
 @code{__vm_is_executing__ ()}, and false otherwise.
 
+@c FIXME: Use seealso macro when functions are no longer experimental.
+See also: __vm_enable__.
 @end deftypefn */)
 {
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
@@ -214,7 +215,6 @@ DEFMETHOD (__vm_profile__, interp, args, ,
 @deftypefnx {} {} __vm_profile__ clear
 @deftypefnx {} {@var{T} =} __vm_profile__ ("info")
 @deftypefnx {} {} __vm_profile__
-
 Internal function.
 
 Profile code running in the VM.
@@ -241,10 +241,10 @@ Clears the profiler on each print.
 @item __vm_profile__ info
 Print the profiler data.
 
+@end table
+
 Programming Note: The calling form that returns profiler data in a variable
 is not implemented yet.
-
-@end table
 
 @end deftypefn */)
 {
@@ -333,13 +333,14 @@ is not implemented yet.
 
 DEFMETHOD (__vm_print_bytecode__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __vm_print_bytecode__ (@var{fn_name}))
-@deftypefnx {} {@var{success} =} __vm_print_bytecode__ (@var{fn_handle}))
-
+@deftypefn  {} {@var{code} =} __vm_print_bytecode__ (@var{fcn_name})
+@deftypefnx {} {@var{code} =} __vm_print_bytecode__ (@var{fcn_handle})
 Internal function.
 
-Prints the bytecode of a function name or function handle, if any.
+Print the bytecode of a function name or function handle.
 
+@c FIXME: Use seealso macro when functions are no longer experimental.
+See also: __vm_compile__.
 @end deftypefn */)
 {
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
@@ -419,15 +420,15 @@ Prints the bytecode of a function name or function handle, if any.
 
 DEFMETHOD (__vm_is_compiled__, interp, args, ,
   doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_name})
-@deftypefnx {} {@var{is_compiled} =} __vm_is_compiled__ (@var{fn_handle})
-
+@deftypefn  {} {@var{tf} =} __vm_is_compiled__ (@var{fcn_name})
+@deftypefnx {} {@var{tf} =} __vm_is_compiled__ (@var{fcn_handle})
 Internal function.
 
-Returns true if the specified function name or function handle is compiled.
+Return true if the specified function name or function handle has been
+compiled to bytecode, and false otherwise.
 
-False otherwise.
-
+@c FIXME: Use seealso macro when functions are no longer experimental.
+See also: __vm_compile__.
 @end deftypefn */)
 {
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
@@ -494,25 +495,27 @@ False otherwise.
 
 DEFMETHOD (__vm_compile__, interp, args, ,
        doc: /* -*- texinfo -*-
-@deftypefn  {} {@var{success} =} __vm_compile__ (@var{fn_name})
-@deftypefnx {} {@var{success} =} __vm_compile__ (@var{fn_name}, "clear")
-@deftypefnx {} {@var{success} =} __vm_compile__ (@var{fn_name}, "print")
-
+@deftypefn  {} {@var{status} =} __vm_compile__ (@var{fcn_name})
+@deftypefnx {} {@var{status} =} __vm_compile__ (@var{fcn_name}, "print")
+@deftypefnx {} {@var{status} =} __vm_compile__ (@var{fcn_name}, "clear")
 Internal function.
 
 Compile the specified function to bytecode.
 
-The compiled function and its subfunctions will be executed
-by the VM when called.
-
-Returns true on success, otherwise false.
-
-Don't recompile or clear the bytecode of a running function with __vm_compile__.
+The compiled function and its subfunctions will be executed by the VM when
+called.
 
 The @qcode{"print"} option prints the bytecode after compilation.
 
-The @qcode{"clear"} option removes the bytecode from the function instead.
+The @qcode{"clear"} option removes the bytecode from the VM instead.
 
+Return true on success, and false otherwise.
+
+@strong{Note:}: Do not recompile or clear the bytecode of a running function
+with @code{__vm_compile__}.
+
+@c FIXME: Use seealso macro when functions are no longer experimental.
+See also: __vm_print_bytecode__, __vm_clear_cache__.
 @end deftypefn */)
 {
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
@@ -666,8 +669,8 @@ compiles functions to bytecode and executes them in a virtual machine (VM).
 
 @strong{Warning:} The virtual machine feature is experimental.
 
-The default value is false while the VM is still experimental.
-Users must explicitly call @code{__vm_enable__ (1)} to use it.
+The default value is false while the VM is still experimental.  Users must
+explicitly call @code{__vm_enable__ (1)} to use it.
 
 When false, Octave uses a traditional tree walker to evaluate statements parsed
 from m-code.  When true, Octave translates parsed statements to an intermediate
@@ -681,8 +684,8 @@ Once compiled to bytecode, the function will always be evaluated by the VM
 regardless of the state of @code{__vm_enable__}, until the bytecode is cleared
 by, e.g., @qcode{"clear all"}, or a modification to the function's m-file.
 
-@seealso{__vm_compile__}
-
+@c FIXME: Use seealso macro when functions are no longer experimental.
+See also: __vm_compile__.
 @end deftypefn */)
 {
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)

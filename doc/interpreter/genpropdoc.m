@@ -3523,10 +3523,10 @@ function str = printdoc (objname, obj, is_prop_subset)
   categories = [categories(!idx); categories(idx)];
 
   ## Add links to categories at the top
-  str = sprintf ("%s\n\nCategories:\n\n", str);
+  str = sprintf ("%s\n\n@subsubheading Categories:\n\n", str);
 
   for ii = 1:numel (categories);
-    str = sprintf ("%s@ref{XREF%scategory%s, , @w{%s}} ", str, objname, strrep (categories{ii}, " ", ""), categories{ii});
+    str = sprintf ("%s@ref{XREF%scategory%s, , @w{%s}}@: ", str, objname, strrep (categories{ii}, " ", ""), categories{ii});
     if (ii < numel (categories))
       str = sprintf ("%s| ", str);
     endif

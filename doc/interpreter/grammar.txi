@@ -38,58 +38,58 @@ or function names:
 
 @subsubheading Categories:
 
-@ref{XREFkwcategoryUtilityFunctions,,@w{Utility Functions}} |
-@ref{XREFkwcategoryVariableDeclaration,,@w{Variable Declaration}} |
-@ref{XREFkwcategoryFunctionDefinition,,@w{Function Definition}} |
-@ref{XREFkwcategoryControlStructures,,@w{Control Statements}} |
-@ref{XREFkwcategoryIteratingStructures,,@w{Iterating Structures}} |
-@ref{XREFkwcategoryClassdefStructures,,@w{Classdef Structures}} |
-@ref{XREFkwcategoryExecutionEnvironment,,@w{Execution Environment}}
+@ref{XREFkwcategoryUtilityFunctions,,@w{Utility Functions}}@: |
+@ref{XREFkwcategoryVariableDeclaration,,@w{Variable Declaration}}@: |
+@ref{XREFkwcategoryFunctionDefinition,,@w{Function Definition}}@: |
+@ref{XREFkwcategoryControlStructures,,@w{Control Statements}}@: |
+@ref{XREFkwcategoryIteratingStructures,,@w{Iterating Structures}}@: |
+@ref{XREFkwcategoryClassdefStructures,,@w{Classdef Structures}}@: |
+@ref{XREFkwcategoryExecutionEnvironment,,@w{Execution Environment}}@:
 
 @subsubheading Alphabetical listing:
 
-@ref{XREF__FILE__,,__FILE__} |
-@ref{XREF__LINE__,,__LINE__} |
-@ref{XREFbreak,,break} |
-@ref{XREFcase,,case} |
-@ref{XREFcatch,,catch} |
-@ref{XREFclassdef,,classdef} |
-@ref{XREFcontinue,,continue} |
-@ref{XREFdo,,do} |
-@ref{XREFelse,,else} |
-@ref{XREFelseif,,elseif} |
-@ref{XREFend,,end} |
-@ref{XREFend_try_catch,,end_try_catch} |
-@ref{XREFend_unwind_protect,,end_unwind_protect} |
-@ref{XREFendclassdef,,endclassdef} |
-@ref{XREFendenumeration,,endenumeration} |
-@ref{XREFendevents,,endevents} |
-@ref{XREFendfor,,endfor} |
-@ref{XREFendfunction,,endfunction} |
-@ref{XREFendif,,endif} |
-@ref{XREFendmethods,,endmethods} |
-@ref{XREFendparfor,,endparfor} |
-@ref{XREFendproperties,,endproperties} |
-@ref{XREFendswitch,,endswitch} |
-@ref{XREFendwhile,,endwhile} |
-@ref{XREFenumeration,,endenumeration} |
-@ref{XREFevents,,events} |
-@ref{XREFfor,,for} |
-@ref{XREFfunction,,function} |
-@ref{XREFglobal,,global} |
-@ref{XREFif,,if} |
-@ref{XREFkwpropertymethods,,methods} |
-@ref{XREFotherwise,,otherwise} |
-@ref{XREFparfor,,parfor} |
-@ref{XREFpersistent,,persistent} |
-@ref{XREFkwpropertyproperties,,properties} |
-@ref{XREFreturn,,return} |
-@ref{XREFswitch,,switch} |
-@ref{XREFtry,,try} |
-@ref{XREFuntil,,until} |
-@ref{XREFunwind_protect,,unwind_protect} |
-@ref{XREFunwind_protect_cleanup,,unwind_protect_cleanup} |
-@ref{XREFwhile,,while}
+@ref{XREF__FILE__,,__FILE__}@: |
+@ref{XREF__LINE__,,__LINE__}@: |
+@ref{XREFbreak,,break}@: |
+@ref{XREFcase,,case}@: |
+@ref{XREFcatch,,catch}@: |
+@ref{XREFclassdef,,classdef}@: |
+@ref{XREFcontinue,,continue}@: |
+@ref{XREFdo,,do}@: |
+@ref{XREFelse,,else}@: |
+@ref{XREFelseif,,elseif}@: |
+@ref{XREFend,,end}@: |
+@ref{XREFend_try_catch,,end_try_catch}@: |
+@ref{XREFend_unwind_protect,,end_unwind_protect}@: |
+@ref{XREFendclassdef,,endclassdef}@: |
+@ref{XREFendenumeration,,endenumeration}@: |
+@ref{XREFendevents,,endevents}@: |
+@ref{XREFendfor,,endfor}@: |
+@ref{XREFendfunction,,endfunction}@: |
+@ref{XREFendif,,endif}@: |
+@ref{XREFendmethods,,endmethods}@: |
+@ref{XREFendparfor,,endparfor}@: |
+@ref{XREFendproperties,,endproperties}@: |
+@ref{XREFendswitch,,endswitch}@: |
+@ref{XREFendwhile,,endwhile}@: |
+@ref{XREFenumeration,,endenumeration}@: |
+@ref{XREFevents,,events}@: |
+@ref{XREFfor,,for}@: |
+@ref{XREFfunction,,function}@: |
+@ref{XREFglobal,,global}@: |
+@ref{XREFif,,if}@: |
+@ref{XREFkwpropertymethods,,methods}@: |
+@ref{XREFotherwise,,otherwise}@: |
+@ref{XREFparfor,,parfor}@: |
+@ref{XREFpersistent,,persistent}@: |
+@ref{XREFkwpropertyproperties,,properties}@: |
+@ref{XREFreturn,,return}@: |
+@ref{XREFswitch,,switch}@: |
+@ref{XREFtry,,try}@: |
+@ref{XREFuntil,,until}@: |
+@ref{XREFunwind_protect,,unwind_protect}@: |
+@ref{XREFunwind_protect_cleanup,,unwind_protect_cleanup}@: |
+@ref{XREFwhile,,while}@:
 
 @subheading Utility Functions:
 @anchor{XREFkwcategoryUtilityFunctions}

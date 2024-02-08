@@ -33,30 +33,153 @@ Octave's language.
 @section Keywords
 @cindex keywords
 
-The following identifiers are keywords, and may not be used as variable
+The identifiers below are keywords, and may not be used as variable
 or function names:
 
-@multitable @columnfractions .33 .33 .33
-@item @code{__FILE__} @tab @code{__LINE__} @tab @code{break}
-@item @code{case} @tab @code{catch} @tab @code{classdef}
-@item @code{continue} @tab @code{do} @tab @code{else}
-@item @code{elseif} @tab @code{end} @tab @code{end_try_catch}
-@item @code{end_unwind_protect} @tab @code{endclassdef} @tab @code{endenumeration}
-@item @code{endevents} @tab @code{endfor} @tab @code{endfunction}
-@item @code{endif} @tab @code{endmethods} @tab @code{endparfor}
-@item @code{endproperties} @tab @code{endswitch} @tab @code{endwhile}
-@item @code{enumeration} @tab @code{events} @tab @code{for}
-@item @code{function} @tab @code{global} @tab @code{if}
-@item @code{methods} @tab @code{otherwise} @tab @code{parfor}
-@item @code{persistent} @tab @code{properties} @tab @code{return}
-@item @code{switch} @tab @code{try} @tab @code{until}
-@item @code{unwind_protect} @tab @code{unwind_protect_cleanup} @tab @code{while}
-@end multitable
+@subsubheading Categories:
 
+@ref{XREFkwcategoryUtilityFunctions, , @w{Utility Functions}} |
+@ref{XREFkwcategoryVariableDeclaration, , @w{Variable Declaration}} |
+@ref{XREFkwcategoryFunctionDefinition, , @w{Function Definition}} |
+@ref{XREFkwcategoryControlStructures, , @w{Control Statements}} |
+@ref{XREFkwcategoryIteratingStructures, , @w{Iterating Structures}} |
+@ref{XREFkwcategoryClassdefStructures, , @w{Classdef Structures}} |
+@ref{XREFkwcategoryExecutionEnvironment, , @w{Execution Environment}}
+
+
+@subsubheading Alphabetical listing:
+
+@ref{XREF__FILE__, __FILE__} |
+@ref{XREF__LINE__, __LINE__} |
+@ref{XREFbreak, , break} |
+@ref{XREFcase, , case} |
+@ref{XREFcatch, , catch} |
+@ref{XREFclassdef, , classdef} |
+@ref{XREFcontinue, , continue} |
+@ref{XREFdo, , do} |
+@ref{XREFelse, , else} |
+@ref{XREFelseif, , elseif} |
+@ref{XREFend, , end} |
+@ref{XREFend_try_catch, , end_try_catch} |
+@ref{XREFend_unwind_protect, , end_unwind_protect} |
+@ref{XREFendclassdef, , endclassdef} |
+@ref{XREFendenumeration, , endenumeration} |
+@ref{XREFendevents, , endevents} |
+@ref{XREFendfor, , endfor} |
+@ref{XREFendfunction, , endfunction} |
+@ref{XREFendif, , endif} |
+@ref{XREFendmethods, , endmethods} |
+@ref{XREFendparfor, , endparfor} |
+@ref{XREFendproperties, , endproperties} |
+@ref{XREFendswitch, , endswitch} |
+@ref{XREFendwhile, , endwhile} |
+@ref{XREFenumeration, , endenumeration} |
+@ref{XREFevents, , events} |
+@ref{XREFfor, , for} |
+@ref{XREFfunction, , function} |
+@ref{XREFglobal, , global} |
+@ref{XREFif, , if} |
+@ref{XREFkwpropertymethods, , methods} |
+@ref{XREFotherwise, , otherwise} |
+@ref{XREFparfor, , parfor} |
+@ref{XREFpersistent, , persistent} |
+@ref{XREFkwpropertyproperties, , properties} |
+@ref{XREFreturn, , return} |
+@ref{XREFswitch, , switch} |
+@ref{XREFtry, , try} |
+@ref{XREFuntil, , until} |
+@ref{XREFunwind_protect, , unwind_protect} |
+@ref{XREFunwind_protect_cleanup, , unwind_protect_cleanup} |
+@ref{XREFwhile, , while}
+
+
+@subheading Utility Functions:
+@anchor{XREFkwcategoryUtilityFunctions}
 The function @code{iskeyword} can be used to quickly check whether an
 identifier is reserved by Octave.
 
 @DOCSTRING(iskeyword)
+
+
+@subheading Variable Declaration:
+@anchor{XREFkwcategoryVariableDeclaration}
+@DOCSTRING(global)
+@DOCSTRING(persistent)
+
+
+@subheading Function Definition:
+@anchor{XREFkwcategoryFunctionDefinition}
+@DOCSTRING(function)
+@DOCSTRING(endfunction)
+@DOCSTRING(end)
+@DOCSTRING(return)
+
+
+@subheading Control Statements:
+@anchor{XREFkwcategoryControlStructures}
+@DOCSTRING(if)
+@DOCSTRING(else)
+@DOCSTRING(elseif)
+@DOCSTRING(endif)
+@DOCSTRING(switch)
+@DOCSTRING(case)
+@DOCSTRING(otherwise)
+@DOCSTRING(endswitch)
+@DOCSTRING(try)
+@DOCSTRING(catch)
+@DOCSTRING(end_try_catch)
+@DOCSTRING(unwind_protect)
+@DOCSTRING(unwind_protect_cleanup)
+@DOCSTRING(end_unwind_protect)
+
+
+@subheading Iterating Structures:
+@anchor{XREFkwcategoryIteratingStructures}
+@DOCSTRING(for)
+@DOCSTRING(endfor)
+@DOCSTRING(while)
+@DOCSTRING(endwhile)
+@DOCSTRING(do)
+@DOCSTRING(until)
+@DOCSTRING(parfor)
+@DOCSTRING(endparfor)
+@DOCSTRING(break)
+@DOCSTRING(continue)
+
+
+@subheading Classdef Structures:
+@anchor{XREFkwcategoryClassdefStructures}
+@DOCSTRING(classdef)
+@DOCSTRING(endclassdef)
+@c methods definition must be manually created to avoid
+@c collision with function of same name
+@deftypefn {} {} properties @anchor{XREFkwpropertyproperties}
+Mark the beginning of a block of properties in a classdef definition.  Note
+that @ref{XREFproperties, , the function @qcode{"properties"}} is a function
+that lists the properties of a classdef class or object.
+@seealso{@ref{XREFendproperties, , endproperties}}
+@end deftypefn
+@DOCSTRING(endproperties)
+@c methods definition must be manually created to avoid
+@c collision with function of same name
+@deftypefn {} {} methods @anchor{XREFkwpropertymethods}
+Mark the beginning of a block of methods in a classdef definition.  Note that
+@ref{XREFmethods, , the function @qcode{"methods"}} is a function that lists
+the methods of a class or object.
+@seealso{@ref{XREFendmethods, , endmethods}}
+@end deftypefn
+@DOCSTRING(endmethods)
+@DOCSTRING(events)
+@DOCSTRING(endevents)
+@DOCSTRING(enumeration)
+@DOCSTRING(endenumeration)
+
+
+@subheading Execution Environment:
+@anchor{XREFkwcategoryExecutionEnvironment}
+@DOCSTRING(__FILE__)
+@DOCSTRING(__LINE__)
+
 
 @node Parser
 @section Parser

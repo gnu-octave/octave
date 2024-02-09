@@ -1089,7 +1089,7 @@ jobs:
 
       - name: rebase binaries
         run: |
-          find ${GITHUB_WORKSPACE}/.build -name "*.oct" -or -name "*.dll" -or -name "*.exe" | tee binaries.list
+          find ${GITHUB_WORKSPACE}/.build -name "*.oct" -or -name "*.dll" | tee binaries.list
           rebase -O -T binaries.list
 
       - name: check

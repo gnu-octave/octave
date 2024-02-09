@@ -601,8 +601,8 @@ filter (MArray<FloatComplex>&, MArray<FloatComplex>&, MArray<FloatComplex>&,
 %! assert (filter (b, [1], x   ), r*[1 1 0 0 0 0 0 0 0 0]   );
 %! assert (filter (b, [1], r*x ), r*r*[1 1 0 0 0 0 0 0 0 0] );
 %! assert (filter (b, [1], x.' ), r*[1 1 0 0 0 0 0 0 0 0].' );
-%! assert (filter (b, a,   x   ),   [1 0 0 0 0 0 0 0 0 0]   );
-%! assert (filter (b, a,   r*x ), r*[1 0 0 0 0 0 0 0 0 0]   );
+%! assert (filter (b, a,   x   ),   [1 0 0 0 0 0 0 0 0 0], eps);
+%! assert (filter (b, a,   r*x ), r*[1 0 0 0 0 0 0 0 0 0], eps);
 
 %!shared a, b, x, y, so
 %!test

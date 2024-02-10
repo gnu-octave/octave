@@ -1073,9 +1073,14 @@ void documentation_browser::handle_index_clicked (const QUrl& url,
                                                   const QString&)
 {
   if (url.scheme () == "qthelp")
-    setSource (url);
+    {
+      // URL wihtin the help system, replace #XREF by #index-
+      QString u = url.toString ();
+      u.replace ("#XREF", "#index-");
+      setSource (QUrl (u));
+    }
   else
-    QDesktopServices::openUrl (url);
+    QDesktopServices::openUrl (url);  // URL outside help system
 }
 
 void documentation_browser::notice_settings ()

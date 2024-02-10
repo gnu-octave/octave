@@ -46,7 +46,7 @@ or function names:
 @ref{XREFkwcategoryClassdefStructures,,@w{Classdef Structures}}@: |
 @ref{XREFkwcategoryExecutionEnvironment,,@w{Execution Environment}}@:
 
-@subsubheading Alphabetical listing:
+@subsubheading Alphabetical keyword listing:
 
 @ref{XREF__FILE__,,__FILE__}@: |
 @ref{XREF__LINE__,,__LINE__}@: |
@@ -91,22 +91,19 @@ or function names:
 @ref{XREFunwind_protect_cleanup,,unwind_protect_cleanup}@: |
 @ref{XREFwhile,,while}@:
 
-@subheading Utility Functions:
-@anchor{XREFkwcategoryUtilityFunctions}
+@anchor{XREFkwcategoryUtilityFunctions}@subheading Utility Functions:
 The function @code{iskeyword} can be used to quickly check whether an
 identifier is reserved by Octave.
 
 @DOCSTRING(iskeyword)
 
-@subheading Variable Declaration:
-@anchor{XREFkwcategoryVariableDeclaration}
+@anchor{XREFkwcategoryVariableDeclaration}@subheading Variable Declaration:
 
 @DOCSTRING(global)
 
 @DOCSTRING(persistent)
 
-@subheading Function Definition:
-@anchor{XREFkwcategoryFunctionDefinition}
+@anchor{XREFkwcategoryFunctionDefinition}@subheading Function Definition:
 
 @DOCSTRING(function)
 
@@ -116,8 +113,7 @@ identifier is reserved by Octave.
 
 @DOCSTRING(return)
 
-@subheading Control Statements:
-@anchor{XREFkwcategoryControlStructures}
+@anchor{XREFkwcategoryControlStructures}@subheading Control Statements:
 
 @DOCSTRING(if)
 
@@ -147,8 +143,7 @@ identifier is reserved by Octave.
 
 @DOCSTRING(end_unwind_protect)
 
-@subheading Iterating Structures:
-@anchor{XREFkwcategoryIteratingStructures}
+@anchor{XREFkwcategoryIteratingStructures}@subheading Iterating Structures:
 
 @DOCSTRING(for)
 
@@ -170,8 +165,7 @@ identifier is reserved by Octave.
 
 @DOCSTRING(continue)
 
-@subheading Classdef Structures:
-@anchor{XREFkwcategoryClassdefStructures}
+@anchor{XREFkwcategoryClassdefStructures}@subheading Classdef Structures:
 
 @DOCSTRING(classdef)
 
@@ -182,7 +176,7 @@ identifier is reserved by Octave.
 @anchor{XREFkwpropertyproperties}
 @deftypefn {} {} properties
 Mark the beginning of a block of properties in a classdef definition.  Note
-that @ref{XREFproperties, , the function @qcode{"properties"}} is a function
+that the @ref{XREFproperties, , function @qcode{"properties"}} is a function
 that lists the properties of a classdef class or object.
 @seealso{@ref{XREFendproperties, , endproperties}}
 @end deftypefn
@@ -194,7 +188,7 @@ that lists the properties of a classdef class or object.
 @anchor{XREFkwpropertymethods}
 @deftypefn {} {} methods
 Mark the beginning of a block of methods in a classdef definition.  Note that
-@ref{XREFmethods, , the function @qcode{"methods"}} is a function that lists
+the @ref{XREFmethods, , function @qcode{"methods"}} is a function that lists
 the methods of a class or object.
 @seealso{@ref{XREFendmethods, , endmethods}}
 @end deftypefn
@@ -209,8 +203,7 @@ the methods of a class or object.
 
 @DOCSTRING(endenumeration)
 
-@subheading Execution Environment:
-@anchor{XREFkwcategoryExecutionEnvironment}
+@anchor{XREFkwcategoryExecutionEnvironment}@subheading Execution Environment:
 
 @DOCSTRING(__FILE__)
 

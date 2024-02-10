@@ -3536,11 +3536,12 @@ function str = printdoc (objname, obj, is_prop_subset)
   for ii = 1:numel (categories)
     fields = sort (allfields(strcmp (allcategories, categories{ii})));
     nf = numel (fields);
-    str = sprintf ("%s\n\n@subsubheading %s", str, categories{ii});
-    str = sprintf ("%s\n@anchor{XREF%scategory%s}\n@prindex %s %s\n", str, ...
-                   objname, strrep (categories{ii}, " ", ""), ...
+    str = sprintf ("%s\n\n@anchor{XREF%scategory%s}", str, ...
                    objname, strrep (categories{ii}, " ", ""));
-    str = sprintf ("%s\n\n@table @asis", str);
+    str = sprintf ("%s@subsubheading %s\n", str, categories{ii});
+    str = sprintf ("%s@prindex %s %s\n", str, ...
+                   objname, strrep (categories{ii}, " ", ""));
+    str = sprintf ("%s\n@table @asis", str);
 
     for jj = 1:nf
       field = fields{jj};

@@ -56,8 +56,6 @@ function lnb = betaln (a, b)
 
   if (! isreal (a) || ! isreal (b))
     error ("betaln: A and B must be real");
-  elseif (! size_equal (a, b) && numel (a) != 1 && numel (b) != 1)
-    error ("betaln: A and B must have consistent sizes");
   endif
 
   lnb = gammaln (a) + gammaln (b) - gammaln (a + b);
@@ -72,6 +70,3 @@ endfunction
 %!error <Invalid call> betaln (1)
 %!error <A and B must be real> betaln (1i, 2)
 %!error <A and B must be real> betaln (2, 1i)
-%!error <A and B must have consistent sizes> betaln ([1 2], [1 2 3])
-%!error <A and B must have consistent sizes> betaln ([1 2 3], [1 2])
-%!error <A and B must have consistent sizes> betaln ([1 2 3], [1 2 3]')

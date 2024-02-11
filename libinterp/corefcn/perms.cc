@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <numeric>
 
 #include "defun.h"
 #include "error.h"
@@ -48,119 +49,83 @@ Factorial (octave_idx_type n)
 //
 // Use C++ template to cater for the different octave array classes.
 //
+
+// FIXME: To allow comparison between all supported template types, we need
+// to use either "if constexpr" (supported in C++17) or template specialisation
+// (supported in C++11).  Currently (2024), Octave stipulates the usage of
+// C++11, so the (slightly more complex) template specialization is used.
+// Once Octave moves to C++17 or beyond, the following code snippet is
+// preferrable and the comparison templates can be removed:
+// bool isequal;
+// if constexpr (std::is_same<T, octave_value>::value)
+//   isEqual = Ar[i].is_equal (Ar[j]);
+// else
+//   isEqual =  (Ar[i] == Ar[j]);
+
 template <typename T>
-static inline Array<T>
-GetPerms (const Array<T>& ar_in, bool uniq_v, bool do_sort = false)
+bool is_equal_T (T a, T b)
 {
-  octave_idx_type m = ar_in.numel ();
-  double nr = Factorial (m);
-
-  // Setup index vector filled from 0..m-1
-  OCTAVE_LOCAL_BUFFER (int, myvidx, m);
-  for (int i = 0; i < m; i++)
-    myvidx[i] = i;
-
-  // Interim array to sort ar_in for octave sort order and to implement
-  // "unique".
-  Array<T> ar (ar_in);
-
-  if (uniq_v)
-    {
-      ar = ar.sort (ar.dims () (1) > ar.dims () (0) ? 1 : 0, ASCENDING);
-      const T *Ar = ar.data ();
-      int ctr = 0;
-      int N_el = 1;
-
-      // Number of same elements where we need to remove permutations
-      // Number of unique permutations is n! / (n_el1! * n_el2! * ...)
-      for (octave_idx_type i = 0; i < m - 1; i++)
-        {
-          myvidx[i] = ctr;
-          if (Ar[i + 1] != Ar[i])
-            {
-              nr /= Factorial (N_el);
-              ctr = i + 1;  // index of next different element
-              N_el = 1;
-            }
-          else
-            N_el++;
-        }
-      myvidx[m - 1] = ctr;
-      nr /= Factorial (N_el);
-    }
-  else if (do_sort)
-    {
-      ar = ar.sort (ar.dims () (1) > ar.dims () (0) ? 1 : 0, ASCENDING);
-    }
-
-  // Sort vector indices for inverse lexicographic order later.
-  std::sort (myvidx, myvidx + m, std::greater<int> ());
-
-  const T *Ar = ar.data ();
-
-  // Set up result array
-  octave_idx_type n = static_cast<octave_idx_type> (nr);
-  Array<T> res (dim_vector (n, m));
-  T *Res = res.rwdata ();
-
-  // Do the actual job
-  octave_idx_type i = 0;
-  std::sort (myvidx, myvidx + m, std::greater<int> ());
-  do
-    {
-      for (octave_idx_type j = 0; j < m; j++)
-        Res[i + j * n] = Ar[myvidx[j]];
-      i++;
-    }
-  while (std::next_permutation (myvidx, myvidx + m, std::greater<int> ()));
-
-  return res;
+  return a == b;
 }
 
-// Template for non-numerical types (e.g. Cell) without sorting.
-// The C++ compiler complains as the provided type octave_value does not
-// support the test of equality via '==' in the above template.
+template <>
+bool is_equal_T<octave_value> (octave_value a, octave_value b)
+{
+  return a.is_equal (b);
+}
 
 template <typename T>
 static inline Array<T>
-GetPermsNoSort (const Array<T>& ar_in, bool uniq_v = false)
+GetPerms (const Array<T>& ar_in, bool uniq_v = false)
 {
   octave_idx_type m = ar_in.numel ();
-  double nr = Factorial (m);
+  double nr;  // number of rows of resulting array
 
   // Setup index vector filled from 0..m-1
-  OCTAVE_LOCAL_BUFFER (int, myvidx, m);
-  for (int i = 0; i < m; i++)
-    myvidx[i] = i;
+  OCTAVE_LOCAL_BUFFER (octave_idx_type, myvidx, m);
+  std::iota (&myvidx[0], &myvidx[m], 0);
 
   const T *Ar = ar_in.data ();
 
   if (uniq_v)
     {
-      // Mutual Comparison using is_equal to detect duplicated values
-      int N_el = 1;
+      // Mutual Comparison is used to detect duplicated values.
+      // Using sort would be possible for numerical values and be of
+      // O(n*log (n)) complexity instead of O(n*(n -1) / 2).  But sort
+      // is not supported for the octave_value container (structs/cells).
+      // Moreover, sort requires overhead for creating, filling, and sorting
+      // the intermediate array which would need to be post-processed.
+      // In practice, and because n must be very small, mutual comparison is
+      // typically faster and consumes less memory.
+
+      octave_idx_type N_el = 1;
+      double denom = 1.0;
       // Number of unique permutations is n! / (n_el1! * n_el2! * ...)
       for (octave_idx_type i = 0; i < m - 1; i++)
         {
           for (octave_idx_type j = i + 1; j < m; j++)
             {
-              if (myvidx[j] > myvidx[i] && Ar[i].is_equal (Ar[j]))
+              bool isequal = is_equal_T<T>(Ar[i], Ar[j]);
+              if (myvidx[j] > myvidx[i] && isequal)
                 {
                   myvidx[j] = myvidx[i];  // not yet processed...
                   N_el++;
                 }
               else
                 {
-                  nr /= Factorial (N_el);
+                  denom *= Factorial (N_el);
                   N_el = 1;
                 }
             }
         }
-      nr /= Factorial (N_el);
+      denom *= Factorial (N_el);
+      nr = Factorial (m) / denom;
     }
+  else
+    nr = Factorial (m);
 
   // Sort vector indices for inverse lexicographic order later.
-  std::sort (myvidx, myvidx + m, std::greater<int> ());
+  std::sort (myvidx, myvidx + m, std::greater<octave_idx_type> ());
 
   // Set up result array
   octave_idx_type n = static_cast<octave_idx_type> (nr);
@@ -259,8 +224,8 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
          || args (0).iscell () || args (0).is_scalar_type ()
          || args (0).isstruct ()))
     {
-      error ("perms: INPUT must be a matrix, a range, a cell array, "
-             "a struct or a scalar.");
+      error ("perms: V must be a matrix, range, cell array, "
+             "struct, or a scalar.");
     }
 
   std::string clname = args (0).class_name ();
@@ -291,7 +256,7 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
   else if (clname == "uint64")
     retval = GetPerms<octave_uint64> (args (0).uint64_array_value (), uniq_v);
   else if (clname == "cell")
-    retval = GetPermsNoSort<octave_value> (args (0).cell_value (), uniq_v);
+    retval = GetPerms<octave_value> (args (0).cell_value (), uniq_v);
   else if (clname == "struct")
     {
       const octave_map map_in (args (0).map_value ());
@@ -312,7 +277,7 @@ Programming Note: If the @qcode{"unique"} option is not used, the length of
             {
               for (octave_idx_type i = 0; i < fn.numel (); i++)
                 {
-                  out.assign (fn (i), GetPermsNoSort<octave_value>
+                  out.assign (fn (i), GetPerms<octave_value>
                                       (map_in.contents (fn (i)), uniq_v));
                 }
             }

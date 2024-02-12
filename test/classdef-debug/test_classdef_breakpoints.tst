@@ -10,22 +10,40 @@
 %!  endif
 %!endfunction
 
-## Add breakpoints in different member functions using line numbers.
 %!test <*46451>
-%! dbstop classdef_breakpoints 13 7 10;
-%! assert_dbstatus ([7, 10, 13]);
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
+%!                                                     "false");
+%! endif
+%! unwind_protect
+%!   ## Add breakpoints in different member functions using line numbers.
+%!   dbstop classdef_breakpoints 13 7 10;
+%!   assert_dbstatus ([7, 10, 13]);
+%!
+%!   ## Remove one breakpoint and confirm the others remain.
+%!   dbclear classdef_breakpoints 10;
+%!   assert_dbstatus ([7, 13]);
+%!
+%!   ## Clear all breakpoints, none should be left.
+%!   dbclear classdef_breakpoints;
+%!   assert_dbstatus ([]);
+%! unwind_protect_cleanup
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
+%!   endif
+%! end_unwind_protect
 
-## Remove one breakpoint and confirm the others remain.
-%!test <*46451>
-%! dbclear classdef_breakpoints 10;
-%! assert_dbstatus ([7, 13]);
-
-## Add breakpoint in local function.
 %!test <46451>
-%! dbstop classdef_breakpoints 19;
-%! assert_dbstatus ([7, 13, 20]);
-
-## Clear all breakpoints, none should be left.
-%!test <*46451>
-%! dbclear classdef_breakpoints;
-%! assert_dbstatus ([]);
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
+%!                                                     "false");
+%! endif
+%! unwind_protect
+%!   ## Add breakpoint in local function.
+%!   dbstop classdef_breakpoints 19;
+%!   assert_dbstatus ([7, 13, 20]);
+%! unwind_protect_cleanup
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
+%!   endif
+%! end_unwind_protect

@@ -58,9 +58,9 @@ Factorial (octave_idx_type n)
 // preferrable and the comparison templates can be removed:
 // bool isequal;
 // if constexpr (std::is_same<T, octave_value>::value)
-//   isEqual = Ar[i].is_equal (Ar[j]);
+//   isequal = Ar[i].is_equal (Ar[j]);
 // else
-//   isEqual =  (Ar[i] == Ar[j]);
+//   isequal = (Ar[i] == Ar[j]);
 
 template <typename T>
 bool is_equal_T (T a, T b)
@@ -105,7 +105,7 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
         {
           for (octave_idx_type j = i + 1; j < m; j++)
             {
-              bool isequal = is_equal_T<T>(Ar[i], Ar[j]);
+              bool isequal = is_equal_T<T> (Ar[i], Ar[j]);
               if (myvidx[j] > myvidx[i] && isequal)
                 {
                   myvidx[j] = myvidx[i];  // not yet processed...

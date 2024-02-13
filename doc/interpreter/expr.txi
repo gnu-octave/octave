@@ -1233,6 +1233,7 @@ variable @code{message}:
 thing = "food"
 predicate = "good"
 message = [ "this " , thing , " is " , predicate ]
+@result{} "this food is good"
 @end group
 @end example
 
@@ -1264,9 +1265,9 @@ to hold at the moment.  In the following program fragment, the variable
 
 @example
 @group
-octave:13> foo = 1
+>> foo = 1
 foo = 1
-octave:13> foo = "bar"
+>> foo = "bar"
 foo = bar
 @end group
 @end example
@@ -1280,13 +1281,148 @@ that are referenced by the indices to the scalar value.  For example, if
 @code{a} is a matrix with at least two columns,
 
 @example
-@group
 a(:, 2) = 5
-@end group
 @end example
 
 @noindent
 sets all the elements in the second column of @code{a} to 5.
+
+When an assignment sets the value of a vector, matrix, or array element at a
+position or dimension outside of that variable's current size, the array size
+will be increased to accommodate the new values:
+
+@example
+@group
+>> a = [1, 2, 3]
+a = 1 2 3
+>> a(4) = 4
+a = 1 2 3 4
+>> a(2, :) = [5, 6, 7, 8]
+a =
+   1   2   3   4
+   5   6   7   8
+@end group
+@end example
+
+Attempting to increase the size of an array such that the desired output size
+is ambiguous will result in an error:
+
+@example
+@group
+>> a(9) = 10
+@print{} error: Invalid resizing operation or ambiguous assignment to an
+out-of-bounds array element
+@end group
+@end example
+
+This is because adding the 9th element creates an ambiguity in the desired
+array position for the value 10, each possibility requiring a different array
+size expansion to accommodate the assignment.
+
+Assignments may be made with fewer specified elements than would be required to
+fill the newly expanded array as long as the assignment is unambiguous.  In
+these cases the array will be automatically padded with @i{null} values:
+@example
+@group
+>> a = [1, 2]
+a =   1   2
+>> a(4) = 5
+a =   1   2   0   5
+>> a(3, :) = [6, 7, 8, 9]
+a =
+   1   2   0   5
+   0   0   0   0
+   6   7   8   9
+>> a(4, 5) = 10
+a =
+    1    2    0    5    0
+    0    0    0    0    0
+    6    7    8    9    0
+    0    0    0    0   10
+@end group
+@end example
+
+For all built-in types, the @i{null} value will be appropriate to that object
+type.
+
+Numeric arrays:
+@example
+@group
+>> a = int32 ([1, 2])
+a = 1, 2
+>> a(4) = 5
+a = 1 2 0 5
+@end group
+@end example
+
+Logical arrays:
+@example
+@group
+>> a = [true, false, true]
+a = 1 0 1
+>> d(5) = true
+d = 1 0 1 0 1
+@end group
+@end example
+
+Character arrays:
+@example
+@group
+>> a = "abc"
+a = abc
+>> a(5) = "d"
+a = abcd
+>> double (a)
+ans = 97 98 99 0 100
+@end group
+@end example
+
+Cell arrays:
+@example
+@group
+>> e = @{1, "foo", [3, 4]@};
+>> e(5) = "bar"
+e =
+@{
+  [1,1] = 1
+  [1,2] = foo
+  [1,3] =
+
+     3   4
+
+  [1,4] = [](0x0)
+  [1,5] = bar
+@}
+@end group
+@end example
+
+Struct arrays:
+@example
+@group
+>> a = struct("foo",1,"bar",2);
+>> a(3) = struct("foo",3,"bar",9)
+a =
+
+  1x3 struct array containing the fields:
+
+    foo
+    bar
+
+>> a.foo
+ans = 1
+ans = [](0x0)
+ans = 3
+>> a.bar
+ans = 2
+ans = [](0x0)
+ans = 9
+@end group
+@end example
+
+Note that Octave currently is unable to concatenate arbitrary object types
+into arrays.  Such behavior must be explicitly defined within the object class
+or attempts at concatenation will result in an error.
+@xref{Object Oriented Programming}
 
 Assigning an empty matrix @samp{[]} works in most cases to allow you to
 delete rows or columns of matrices and vectors.  @xref{Empty Matrices}.
@@ -1305,6 +1441,28 @@ A (:, 1:2:5) = []
 
 @noindent
 deletes the first, third, and fifth columns.
+
+Deleting part of an array object will necessarily resize the object.  When the
+deletion allows for consistent size reduction across a dimension, e.g., one
+element of a vector, or one row or column of a matrix, the size along that
+dimension will be reduced while preserving dimensionality.  If, however,
+dimensionality cannot be maintained, the object will be reshaped into a vector
+following column-wise element ordering:
+
+@example
+@group
+>> a = [1, 2, 3, 4; 5, 6, 7, 8]
+a =
+   1   2   3   4
+   5   6   7   8
+>> a(:, 3) = []
+a =
+   1   2   4
+   5   6   8
+>> a(4) = []
+a = 1 5 2 4 8
+@end group
+@end example
 
 An assignment is an expression, so it has a value.  Thus, @code{z = 1}
 as an expression has the value 1.  One consequence of this is that you

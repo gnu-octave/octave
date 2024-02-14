@@ -379,15 +379,15 @@ m_unwind_data = unwind_data = &bc.m_unwind_data;                                
                                                                                                   \
 /* Set the ip to 0 */                                                                             \
 ip = code;                                                                                        \
-int n_returns_callee = static_cast<signed char> (*ip++); /* Negative for varargout */             \
+int n_returns_callee = POP_CODE_SHORT (); /* Negative for varargout */                            \
 if (OCTAVE_UNLIKELY (n_returns_callee < 0))                                                       \
   {                                                                                               \
-    if (n_returns_callee == -128) /* Anonymous function */                                        \
+    if (n_returns_callee == -32768) /* Anonymous function */                                      \
       n_returns_callee = 1;                                                                       \
     else                                                                                          \
       n_returns_callee = -n_returns_callee;                                                       \
   }                                                                                               \
-int n_args_callee = static_cast<signed char> (*ip++); /* Negative for varargin */                 \
+int n_args_callee = POP_CODE_SHORT (); /* Negative for varargin */                                \
 int n_locals_callee = POP_CODE_USHORT ();                                                         \
                                                                                                   \
 if (n_args_callee < 0)                                                                            \

@@ -76,6 +76,7 @@ static bool ov_need_stepwise_subsrefs (octave_value &ov);
 static void copy_many_args_to_caller (octave::stack_element *sp, octave::stack_element *caller_stack_end,
                                       int n_args_to_move, int n_args_caller_expects);
 static int lhs_assign_numel (octave_value &ov, const std::string& type, const std::list<octave_value_list>& idx);
+static int pop_code_short (unsigned char *ip);
 
 #define TODO(msg) error("Not done yet %d: " msg, __LINE__)
 #define ERR(msg) error("VM error %d: " msg, __LINE__)
@@ -122,7 +123,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
   bool wide_opext_active = false;
 
   // Skip some framedata
-  p += 4;
+  p += 6;
 
   std::vector<std::pair<int, std::string>> v_pair_row_str;
 
@@ -574,9 +575,9 @@ octave::print_bytecode(bytecode &bc)
   cout << "\t" << bc.m_data[1].string_value () << "\n\n"; // function type
 
   cout << "frame:\n";
-  cout << "\t.n_return " << to_string (*p++) << "\n";
-  cout << "\t.n_args " << to_string (*p++) << "\n";
-  cout << "\t.n_locals " << to_string (*p++) << "\n\n";
+  cout << "\t.n_return " << to_string (pop_code_short (p + 2)) << "\n";
+  cout << "\t.n_args " << to_string (pop_code_short (p + 4)) << "\n"; 
+  cout << "\t.n_locals " << to_string (pop_code_short (p + 6)) << "\n\n";
 
   cout << "slots:\n";
   int idx = 0;
@@ -649,7 +650,19 @@ static int pop_code_ushort (unsigned char *ip)
   return ans;
 }
 
-
+static int pop_code_short (unsigned char *ip)
+{
+  short ans;
+  ip -= 2;
+#ifdef WORDS_BIGENDIAN
+  ans = *ip++ << 8;
+  ans |= *ip++;
+#else
+  ans = *ip++;
+  ans |= *ip++ << 8;
+#endif
+  return ans;
+}
 
 // Debug functions easy to break out into in gdb. Called by __dummy_mark_1__() in Octave
 extern "C" void dummy_mark_1 (void);
@@ -658,6 +671,7 @@ extern "C" void dummy_mark_2 (void);
 #define POP_CODE() *ip++
 #define POP_CODE_INT() (ip++,ip++,ip++,ip++,pop_code_int (ip))
 #define POP_CODE_USHORT() (ip++, ip++, pop_code_ushort (ip))
+#define POP_CODE_SHORT() (ip++, ip++, pop_code_short (ip))
 
 #define PUSH_OV(ov) \
   do {                           \
@@ -1139,13 +1153,13 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
 
   // Read the meta data for constructing a stack frame.
   {
-#define N_RETURNS() static_cast<signed char> (code[0])
-#define N_ARGS() static_cast<signed char> (code[1])
-#define N_LOCALS() USHORT_FROM_UCHAR_PTR (code + 2)
+#define N_RETURNS() pop_code_short (&code[2])
+#define N_ARGS() pop_code_short (&code[4])
+#define N_LOCALS() USHORT_FROM_UCHAR_PTR (code + 4)
 
-    int n_returns = static_cast<signed char> (*ip++);
+    int n_returns = POP_CODE_SHORT ();
     // n_args is negative for varargin calls
-    int n_args = static_cast<signed char> (*ip++);
+    int n_args = POP_CODE_SHORT ();
     int n_locals = POP_CODE_USHORT (); // Note: An arg and return can share slot
 
     bool is_varargin = n_args < 0;
@@ -1157,7 +1171,7 @@ vm::execute_code (const octave_value_list &root_args, int root_nargout)
       n_args = -n_args;
     if (OCTAVE_UNLIKELY (n_returns < 0))  // Negative for varargout and anonymous functions
       {
-        if (n_returns != -128)
+        if (n_returns != -32768)
           n_returns = -n_returns;
         else
           n_returns = 1;
@@ -3367,7 +3381,7 @@ assign_n:
                         ignored = tmp.matrix_value ();
 
                         int n_returns = N_RETURNS ();
-                        if (n_returns == -128)
+                        if (n_returns == -32768)
                           n_returns = 1;
                         else if (n_returns < 0)
                           n_returns = -n_returns;
@@ -3419,7 +3433,7 @@ assign_n:
                     ignored = tmp.matrix_value ();
 
                     int n_returns = N_RETURNS ();
-                    if (n_returns == -128)
+                    if (n_returns == -32768)
                       n_returns = 1;
                     else if (n_returns < 0)
                       n_returns = -n_returns;
@@ -4763,15 +4777,15 @@ varargin_call:
 
     octave_user_function *usr_fcn = static_cast<octave_user_function *> (sp[0].pv);
 
-    int n_returns_callee = static_cast<signed char> (ip[-4]);
+    int n_returns_callee = pop_code_short (&ip[-4]);
     if (OCTAVE_UNLIKELY (n_returns_callee < 0))
       {
-        if (n_returns_callee == -128) /* Anonymous function */
+        if (n_returns_callee == -32768) /* Anonymous function */
           n_returns_callee = 1;
         else
           n_returns_callee = -n_returns_callee;
       }
-    int n_args_callee = -static_cast<signed char> (ip[-3]); // Note: Minus
+    int n_args_callee = -pop_code_short (&ip[-2]);; // Note: Minus to make it positive
     int n_locals_callee = USHORT_FROM_UCHAR_PTR (ip - 2);
 
     int nargout = sp[-1].i;
@@ -5009,15 +5023,15 @@ make_nested_handle_call:
 
       /* Set the ip to 0 */
       ip = code;
-      int n_returns_callee = static_cast<signed char> (*ip++); /* Negative for varargout */
+      int n_returns_callee = POP_CODE_SHORT (); /* Negative for varargout */
       if (OCTAVE_UNLIKELY (n_returns_callee < 0))
         {
-          if (n_returns_callee == -128) /* Anonymous function */
+          if (n_returns_callee == -32768) /* Anonymous function */
             n_returns_callee = 1;
           else
             n_returns_callee = -n_returns_callee;
         }
-      int n_args_callee = static_cast<signed char> (*ip++); /* Negative for varargin */
+      int n_args_callee = POP_CODE_SHORT (); /* Negative for varargin */
       int n_locals_callee = POP_CODE_USHORT ();
 
       if (n_args_callee < 0)
@@ -6426,7 +6440,7 @@ ret_anon:
     // variables on the VM stack if it is referenced from somewhere else.
     m_tw->get_current_stack_frame ()->vm_unwinds ();
 
-    panic_unless (N_RETURNS () == -128);
+    panic_unless (N_RETURNS () == -32768);
 
     int n_returns_callee = bsp[0].i; // Nargout on stack
     if (n_returns_callee == 0)

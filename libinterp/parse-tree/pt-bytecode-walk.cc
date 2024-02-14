@@ -2411,10 +2411,10 @@ visit_octave_user_script (octave_user_script& fcn)
   tree_statement_list *cmd_list = fcn.body ();
 
   // The first instruction is the amount of return variables.
-  PUSH_CODE (1); // Only the dummy return '%nargout'
+  PUSH_CODE_SHORT (1); // Only the dummy return '%nargout'
 
   // The second instruction is the amount of arguments
-  PUSH_CODE (0);
+  PUSH_CODE_SHORT (0);
 
   // The third is the amount of locals, which need to be set
   // after compiling the function. So we need to store the offset
@@ -2597,17 +2597,20 @@ visit_octave_user_function (octave_user_function& fcn)
   // so add one to size if 'm_varargout' is true
   int n_returns = returns ? returns->size () + m_varargout: 0;
 
+  if (n_returns > 32767)
+    error ("The bytecode compiler only supports up to 32767 named return values. Consider using varargout");
+
   // The first instruction is the amount of return variables. Negative for varargout.
   // Anonymous functions have no return parameter list specified. For those we set
-  // the amount of returns to magic number -128.
+  // the amount of returns to magic number -32768.
   if (!returns)
     {
       m_code.m_unwind_data.m_is_anon = true;
       CHECK (m_is_anon); // m_is_anon is set by compile_anon_user_function ()
-      PUSH_CODE (-128);
+      PUSH_CODE_SHORT (-32768);
     }
   else
-    PUSH_CODE (m_varargout ? -(n_returns + 1) : (n_returns + 1)); // +1 for native '%nargout' on the stack.
+    PUSH_CODE_SHORT (m_varargout ? -(n_returns + 1) : (n_returns + 1)); // +1 for native '%nargout' on the stack.
 
   // Check if the last parameter is "varargin"
   // If that is the case, we need to mess with the stacks
@@ -2622,7 +2625,9 @@ visit_octave_user_function (octave_user_function& fcn)
 
   // The second instruction is the amount of arguments
   int n_paras = v_paras.size ();
-  PUSH_CODE (is_varargin ? -n_paras : n_paras);
+  if (n_paras > 32767)
+    error ("The bytecode compiler only supports up to 32767 named arguments. Consider using varargin");
+  PUSH_CODE_SHORT (is_varargin ? -n_paras : n_paras);
 
   // The third is the amount of locals, which need to be set
   // after compiling the function. So we need to store the offset

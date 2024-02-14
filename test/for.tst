@@ -130,15 +130,15 @@
 %! __printf_assert__ ("\n");
 %! assert (__prog_output_assert__ ("1234"));
 
-%!test <*50893>
+%!test <*55622>
 %! cnt = 0;
 %! for k = zeros (0,3)
 %!   cnt++;
 %! endfor
-%! assert (cnt, 0);
-%! assert (k, zeros (0,3));
+%! assert (cnt, 3);
+%! assert (k, zeros (0,1));
 
-%!test <*50893>
+%!test <*55622>
 %! cnt = 0;
 %! for k = zeros (3,0)
 %!   cnt++;
@@ -159,8 +159,24 @@
 %! for k = cell (0,3)
 %!   cnt++;
 %! endfor
+%! assert (cnt, 3);
+%! assert (k, cell (0,1));
+
+%!test <*55622>
+%! cnt = 0;
+%! for k = zeros (1,2,3);
+%!   cnt++;
+%! endfor
+%! assert (cnt, 6);
+%! assert (k, 0);
+
+%!test <*55622>
+%! cnt = 0;
+%! for k = zeros (1,2,0);
+%!   cnt++;
+%! endfor
 %! assert (cnt, 0);
-%! assert (k, cell (0,3));
+%! assert (k, zeros (1,0));
 
 %!test <*45143>
 %! warning ("on", "Octave:infinite-loop", "local");

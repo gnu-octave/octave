@@ -541,7 +541,7 @@ The @qcode{"warn"} field is set similarly by @code{dbstop if warning}.
 %!test
 %! if (isguirunning ())
 %!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
-%!                                                     "0");
+%!                                                     "false");
 %! endif
 %! unwind_protect
 %!   dbclear all;   # Clear out breakpoints before test

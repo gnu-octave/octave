@@ -3249,7 +3249,7 @@ tree_evaluator::visit_simple_for_command (tree_simple_for_command& cmd)
       if (rhs.ndims () > 2)
         arg = arg.reshape (dv);
 
-      if (nrows > 0 && steps > 0)
+      if (steps > 0)
         {
           octave_value_list idx;
           octave_idx_type iidx;

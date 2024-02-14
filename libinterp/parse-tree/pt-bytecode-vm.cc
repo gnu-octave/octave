@@ -332,7 +332,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (POP_N_INTS)     PCHAR () CASE_END ()
           CASE_START (DUP_MOVE)       PCHAR () CASE_END ()
 
-          CASE_START (INDEX_STRUCT_SUBCALL) PCHAR ()  PCHAR () PCHAR () PCHAR () PCHAR_AS_CHAR () CASE_END ()
+          CASE_START (INDEX_STRUCT_SUBCALL) PCHAR ()  PCHAR () PCHAR () PSHORT () PCHAR_AS_CHAR () CASE_END ()
 
           CASE_START (MUL_CST)        PCHAR () PCHAR () CASE_END ()
           CASE_START (MUL_CST_DBL)    PCHAR () PCHAR () CASE_END ()
@@ -418,7 +418,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (INDEX_ID1_MATHY_UFUN)   PCHAR () PSLOT () PCHAR () CASE_END ()
 
-          CASE_START (INDEX_OBJ)              PCHAR () PCHAR () PWSLOT () PCHAR () PCHAR () CASE_END ()
+          CASE_START (INDEX_OBJ)              PCHAR () PCHAR () PWSLOT () PSHORT () PCHAR () CASE_END ()
 
           CASE_START (FOR_COND) PSLOT () PSHORT () CASE_END ()
 
@@ -444,7 +444,7 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
           CASE_START (INDEX_STRUCT_CALL)
             PCHAR ()
             PWSLOT ()
-            PCHAR ()
+            PSHORT ()
             PCHAR_AS_CHAR ()
           CASE_END ()
 
@@ -452,8 +452,8 @@ octave::opcodes_to_strings (std::vector<unsigned char> &v_code, std::vector<std:
 
           CASE_START (END_OBJ) PSLOT () PCHAR () PCHAR () CASE_END ()
 
-          CASE_START (WORDCMD_NX) PSLOT () PCHAR () CASE_END ()
-          CASE_START (WORDCMD) PSLOT () PCHAR () PCHAR () CASE_END ()
+          CASE_START (WORDCMD_NX) PSLOT () PSHORT () CASE_END ()
+          CASE_START (WORDCMD) PSLOT () PCHAR () PSHORT () CASE_END ()
 
           CASE_START (SET_IGNORE_OUTPUTS)
             PCHAR ()
@@ -4213,14 +4213,14 @@ herm_ldiv:
 wordcmd_nx:
         slot = arg0;
         nargout = bsp[0].i;
-        n_args_on_stack = *ip++;
+        n_args_on_stack = POP_CODE_USHORT ();
       }
     else if (0)
       {
 wordcmd:
         slot = arg0;
         nargout = *ip++;
-        n_args_on_stack = *ip++;
+        n_args_on_stack = POP_CODE_USHORT ();
       }
 
     // The object to index is before the args on the stack
@@ -5709,7 +5709,7 @@ index_struct_call:
 
     int nargout = arg0;
     int slot = POP_CODE_USHORT ();
-    int n_args_on_stack = POP_CODE ();
+    int n_args_on_stack = POP_CODE_USHORT ();
     char type = POP_CODE ();
 
     // The object being indexed is on the stack under the arguments
@@ -5774,9 +5774,9 @@ index_struct_call:
                   {
                      // Skip the following subsref. Need to check for nargout extension.
                     if (*ip == static_cast<unsigned char> (INSTR::EXT_NARGOUT))
-                      ip += 7; // Skip EXT_NARGOUT + STRUCT_INDEX_SUBCALL
+                      ip += 8; // Skip EXT_NARGOUT + STRUCT_INDEX_SUBCALL
                     else
-                      ip += 6; // Skip STRUCT_INDEX_SUBCALL
+                      ip += 7; // Skip STRUCT_INDEX_SUBCALL
                     retval = fcn->call (*m_tw, nargout, ovl);
                   }
                 else
@@ -6014,7 +6014,7 @@ index_obj:
     int nargout = arg0;
     int has_slot = *ip++;
     int slot = POP_CODE_USHORT ();
-    int n_args_on_stack = *ip++;
+    int n_args_on_stack = POP_CODE_USHORT ();
     char type = *ip++;
 
     // The object to index is before the args on the stack
@@ -7008,7 +7008,7 @@ debug: // TODO: Remove
       }
     int i = *ip++;
     int n = *ip++;
-    int n_args_on_stack = *ip++;
+    int n_args_on_stack = POP_CODE_USHORT ();
     char type = *ip++;
 
     // The object to index is before the args on the stack

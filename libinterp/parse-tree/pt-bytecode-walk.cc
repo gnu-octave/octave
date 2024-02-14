@@ -3711,7 +3711,7 @@ visit_simple_assignment (tree_simple_assignment& expr)
               PUSH_CODE (1); // nargout
               PUSH_CODE (0); // "has slot"
               PUSH_WSLOT (0); // The w/e slot
-              PUSH_CODE (n_args_in_part);
+              PUSH_CODE_SHORT (n_args_in_part);
               PUSH_CODE (type);
               // Write the new active subexpression back to the slot
               MAYBE_PUSH_WIDE_OPEXT (active_idx_slot);
@@ -5193,6 +5193,8 @@ simple_visit_index_expression (tree_index_expression& expr)
 
   tree_argument_list *args = *arg_lists_it;
 
+  bool many_args = args ? args->size () > 255 : false;
+
   if (is_wordcmd)
     {
       CHECK (e->is_identifier ());
@@ -5207,7 +5209,7 @@ simple_visit_index_expression (tree_index_expression& expr)
           // The vm need the name of the identifier for function lookups
           PUSH_SLOT (slot);
           // Push nargin
-          PUSH_CODE (args ? args->size () : 0);
+          PUSH_CODE_SHORT (args ? args->size () : 0);
         }
       else
         {
@@ -5216,10 +5218,10 @@ simple_visit_index_expression (tree_index_expression& expr)
           PUSH_SLOT (slot);
           PUSH_CODE (nargout);
           // Push nargin
-          PUSH_CODE (args ? args->size () : 0);
+          PUSH_CODE_SHORT (args ? args->size () : 0);
         }
     }
-  else if (e->is_identifier () && !(type == '.' && !struct_is_id_dot_id))
+  else if (! many_args && e->is_identifier () && !(type == '.' && !struct_is_id_dot_id))
     {
       std::string id_name = e->name ();
       int slot = SLOT (id_name);
@@ -5323,19 +5325,28 @@ simple_visit_index_expression (tree_index_expression& expr)
     }
   else
     {
-      // We are not indexing an id, but e.g.:
+      // We either indexing an temporary object, e.g.
       // (foo).()
-      // I.e. a temporary object.
+      // or an id with more than 255 arguments.
+
+      int slot =  0;
+
+      if (e->is_identifier ())
+        {
+          std::string id_name = e->name ();
+          slot = SLOT (id_name);
+        }
+
       MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
       PUSH_CODE (INSTR::INDEX_OBJ);
       PUSH_CODE (nargout); // This is arg0, not used if EXT_NARGOUT is used
-      PUSH_CODE (0); // "has slot"
-      PUSH_WSLOT (0); // The w/e slot TODO: Remove?
+      PUSH_CODE (slot != 0); // "has slot"
+      PUSH_WSLOT (slot);
       // Push nargin
       if (type == '.')
-        PUSH_CODE (1); // Nargin always one for struct indexing
+        PUSH_CODE_SHORT (1); // Nargin always one for struct indexing
       else
-        PUSH_CODE (args ? args->size () : 0);
+        PUSH_CODE_SHORT (args ? args->size () : 0);
       PUSH_CODE (type);
     }
 
@@ -5538,7 +5549,7 @@ visit_index_expression (tree_index_expression& expr)
         PUSH_WSLOT (0); // slot ignored
       }
 
-    PUSH_CODE (v_n_args[0]);
+    PUSH_CODE_SHORT (v_n_args[0]);
     PUSH_CODE (v_types[0]); // '.', '(' or '{'
 
     // The first subcall (INDEX_STRUCT_CALL) checks the identifier to see if it is function that should be called.
@@ -5555,7 +5566,7 @@ visit_index_expression (tree_index_expression& expr)
       PUSH_CODE (1);
     PUSH_CODE (0);
     PUSH_CODE (v_n_args.size ());
-    PUSH_CODE (v_n_args[0]);
+    PUSH_CODE_SHORT (v_n_args[0]);
     PUSH_CODE (v_types[0]);
   }
 
@@ -5585,7 +5596,7 @@ visit_index_expression (tree_index_expression& expr)
         PUSH_CODE (last ? nargout : 1);
       PUSH_CODE (cntr);
       PUSH_CODE (v_n_args.size ());
-      PUSH_CODE (v_n_args[cntr]);
+      PUSH_CODE_SHORT (v_n_args[cntr]);
       PUSH_CODE (v_types[cntr]);
     }
 

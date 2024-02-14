@@ -131,6 +131,21 @@ function bytecode_anon_handles ()
   end
 
   assert (threw);
+
+  # bug 65308
+  f = @(x) [x{:}]; # The cs-list "escaped" the matrix' claws
+  threw = false;
+  try
+    [a, b] = f({5,9}); # The bug made a=5 and b=9
+  catch ex
+    assert (strfind (ex.message, "element number 2 undefined in return list"))
+    threw = true;
+  end
+
+  assert (threw)
+
+  a = f({5,9});
+  assert (a == [5,9])
 end
 
 function [x, y, z] = try_isargout ()

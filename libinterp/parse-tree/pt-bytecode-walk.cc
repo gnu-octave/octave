@@ -5539,7 +5539,8 @@ visit_index_expression (tree_index_expression& expr)
         arg_name_entry.m_obj_name = first_expression->name ();
 
         int slot = SLOT (first_expression->name ());
-        MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
+        if (! m1_magic_nargout)
+          MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
         PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
         // nargout=1 because this is followed by more index operations
         PUSH_CODE (1); // Note, 1, not -1. Since there is no subsref in INDEX_STRUCT_CALL
@@ -5547,7 +5548,8 @@ visit_index_expression (tree_index_expression& expr)
       }
     else
       {
-        MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
+        if (! m1_magic_nargout)
+          MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
         PUSH_CODE (INSTR::INDEX_STRUCT_CALL);
         // nargout=1 because this is followed by more index operations
         PUSH_CODE (1); // Note, 1, not -1.
@@ -5562,7 +5564,8 @@ visit_index_expression (tree_index_expression& expr)
     //
     // If it is, the following opcode is skipped for '(' type calls since those eat the args, whereas it is executed
     // for '{' or '.' types.
-    MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
+    if (! m1_magic_nargout)
+      MAYBE_PUSH_ANON_NARGOUT_OPEXT (nargout);
     PUSH_CODE (INSTR::INDEX_STRUCT_SUBCALL);
     if (m1_magic_nargout)
       PUSH_CODE (-1);

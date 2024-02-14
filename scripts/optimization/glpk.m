@@ -652,6 +652,22 @@ endfunction
 %!   assert (A(i,:) * xmin <= b(i));
 %! endfor
 
+%!testif HAVE_GLPK
+%! sense = 1;
+%! c = [-1, -1]';
+%! A = [1, 0; 0, 1];
+%! b = [1, 1]';
+%! ctype = ['D', 'D']';
+%! lb = [-1, -1]';
+%! ub = [];
+%! vartype = ['I', 'I']';
+%! param.msglev = 0;
+%! [xmin, fmin, errnum, extra] = glpk (c, A, b, lb, ub, ctype, vartype, ...
+%!   sense, param);
+%! assert (fmin, c' * xmin);
+%! for i = 1:2
+%!   assert (A(i,:) * xmin <= b(i));
+%! endfor
 
 %!testif HAVE_GLPK
 %! sense = 1;

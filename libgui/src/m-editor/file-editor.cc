@@ -723,7 +723,7 @@ file_editor::request_run_file (bool)
   QPointer<file_editor> this_fe (this);
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([=, this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -2614,7 +2614,7 @@ file_editor::make_file_editor_tab (const QString& directory)
            this, &file_editor::handle_mru_add_file);
 
   connect (f, &file_editor_tab::request_open_file,
-           this, [=] (const QString& fname, const QString& encoding) { request_open_file (fname, encoding); });
+           this, [this] (const QString& fname, const QString& encoding) { request_open_file (fname, encoding); });
 
   connect (f, &file_editor_tab::edit_area_changed,
            this, &file_editor::edit_area_changed);

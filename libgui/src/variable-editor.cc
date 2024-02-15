@@ -465,7 +465,7 @@ variable_editor_stack::save (const QString& format)
 
   // No format given, test save default options
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([=, this] (interpreter& interp)
       {
         // INTERPRETER THREAD
 

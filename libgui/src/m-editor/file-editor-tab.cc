@@ -246,7 +246,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
            this, SLOT (handle_copy_available (bool)));
 
   connect (&m_file_system_watcher, &QFileSystemWatcher::fileChanged,
-           this, [=] (const QString& path) { file_has_changed (path); });
+           this, [this] (const QString& path) { file_has_changed (path); });
 
   connect (this, &file_editor_tab::maybe_remove_next,
            this, &file_editor_tab::handle_remove_next);
@@ -448,7 +448,7 @@ file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
       QPointer<file_editor_tab> this_fetab (this);
 
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([=, this] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -853,7 +853,7 @@ file_editor_tab::update_lexer_settings (bool update_apis_only)
               QPointer<file_editor_tab> this_fetab (this);
 
               emit interpreter_event
-                ([=] (interpreter& interp)
+                ([=, this] (interpreter& interp)
                  {
                    // INTERPRETER THREAD
 
@@ -1240,7 +1240,7 @@ void
 file_editor_tab::handle_request_remove_breakpoint (int line)
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([=, this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1322,7 +1322,7 @@ file_editor_tab::remove_all_breakpoints (const QWidget *ID)
     return;
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([=, this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1442,7 +1442,7 @@ file_editor_tab::add_breakpoint_event (int line, const QString& cond)
   QPointer<file_editor_tab> this_fetab (this);
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([=, this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -2173,7 +2173,7 @@ file_editor_tab::update_breakpoints ()
   QPointer<file_editor_tab> this_fetab (this);
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([=, this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -2251,7 +2251,7 @@ file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
       QPointer<file_editor_tab> this_fetab (this);
 
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([=, this] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -2320,7 +2320,7 @@ file_editor_tab::save_file (const QString& saveFileName,
       QPointer<file_editor_tab> this_fetab (this);
 
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([=, this] (interpreter& interp)
          {
            // INTERPRETER THREAD
 

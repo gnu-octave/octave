@@ -305,7 +305,7 @@ set_path_model::path_to_model ()
   QPointer<set_path_model> this_spm (this);
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([=, this] (interpreter& interp)
     {
       // INTERPRETER THREAD
 

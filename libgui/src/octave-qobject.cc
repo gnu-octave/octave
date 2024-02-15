@@ -622,7 +622,7 @@ base_qobject::workspace_widget (main_window *mw)
 
       connect (m_workspace_widget,
                &workspace_view::copy_variable_value_to_clipboard,
-               [=] (const QString& var_name) {
+               [=, this] (const QString& var_name) {
                  emit interpreter_event
                    ([=] (interpreter& interp)
                     {
@@ -645,7 +645,7 @@ base_qobject::workspace_widget (main_window *mw)
                });
 
       connect (m_workspace_widget, &workspace_view::rename_variable_signal,
-               [=] (const QString& old_name, const QString& new_name) {
+               [=, this] (const QString& old_name, const QString& new_name) {
                  emit interpreter_event
                    ([=] (interpreter& interp) {
                      // INTERPRETER THREAD
@@ -670,7 +670,7 @@ base_qobject::workspace_widget (main_window *mw)
                });
 
       connect (m_workspace_widget, &workspace_view::edit_variable_signal,
-               [=] (const QString& var_name) {
+               [=, this] (const QString& var_name) {
                  emit interpreter_event
                    ([=] (interpreter& interp) {
                      // INTERPRETER THREAD

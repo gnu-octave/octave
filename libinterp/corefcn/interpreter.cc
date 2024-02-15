@@ -705,8 +705,7 @@ interpreter::initialize_load_path (bool set_initial_path)
       unwind_action restore_add_hook (&load_path::set_add_hook, &m_load_path,
                                       m_load_path.get_add_hook ());
 
-      m_load_path.set_add_hook ([=] (const std::string& dir)
-      { this->execute_pkg_add (dir); });
+      m_load_path.set_add_hook ([=, this] (const std::string& dir) { this->execute_pkg_add (dir); });
 
       m_load_path.initialize (set_initial_path);
 

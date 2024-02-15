@@ -86,7 +86,8 @@ function s = hdl2struct (h)
       nsp -= 1;
     endwhile
 
-    if (strcmp (s.type, "axes") && isempty (get (h, "tag")))
+    if (strcmp (s.type, "axes") ...
+        && ! any (strcmp (get (h, "tag"), {'colorbar', 'legend'})))
       ## look for legends and colorbars among axes brothers and add them
       ## to the children list
       try

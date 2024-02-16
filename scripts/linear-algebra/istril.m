@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn {} {@var{tf} =} istril (@var{A})
-## Return true if @var{A} is a lower triangular matrix.
+## Return true if @var{A} is a lower triangular numeric matrix.
 ##
 ## A lower triangular matrix has nonzero entries only on the main diagonal and
 ## below.

@@ -251,7 +251,7 @@ public:
 
         T *array = retval.rwdata ();
 
-        idx.loop (n, [=, &array] (octave_idx_type i)
+        idx.loop (n, [this, &array] (octave_idx_type i)
         {
           if (i == 0)
             // Required for proper NaN handling.

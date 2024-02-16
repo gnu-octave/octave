@@ -577,13 +577,7 @@ sub2ind (const dim_vector& dv, const Array<octave::idx_vector>& idxa)
           octave_idx_type *idx_vec = idx.rwdata ();
 
           if (i < len - 1)
-            {
-              octave_idx_type n = dvx(i);
-
-              idxa(i).loop (clen, [=, &idx_vec] (octave_idx_type k) {
-                (*idx_vec++ *= n) += k;
-              });
-            }
+            idxa(i).loop (clen, [n = dvx(i), &idx_vec] (octave_idx_type k) { (*idx_vec++ *= n) += k; });
           else
             idxa(i).copy_data (idx_vec);
         }

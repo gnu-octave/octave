@@ -245,8 +245,8 @@ std::string load_path::s_sys_path;
 load_path::abs_dir_cache_type load_path::s_abs_dir_cache;
 
 load_path::load_path (interpreter& interp)
-  : m_add_hook ([=] (const std::string& dir) { this->execute_pkg_add (dir); }),
-m_remove_hook ([=] (const std::string& dir) { this->execute_pkg_del (dir); }),
+  : m_add_hook ([this] (const std::string& dir) { this->execute_pkg_add (dir); }),
+m_remove_hook ([this] (const std::string& dir) { this->execute_pkg_del (dir); }),
 m_interpreter (interp), m_package_map (), m_top_level_package (),
 m_dir_info_list (), m_init_dirs (), m_command_line_path ()
 { }

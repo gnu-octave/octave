@@ -344,7 +344,7 @@ octave_qscintilla::contextmenu_help_doc (bool documentation)
       std::string name = m_word_at_cursor.toStdString ();
 
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([name] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -938,7 +938,7 @@ octave_qscintilla::contextmenu_run (bool)
 
   // Add commands to the history
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([tmp_hist] (interpreter& interp)
       {
         // INTERPRETER THREAD
 
@@ -965,7 +965,7 @@ octave_qscintilla::contextmenu_run (bool)
 
   // Let the interpreter execute the tmp file
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this, this_oq, tmp_file, tmp_hist, show_dbg_file] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1103,7 +1103,7 @@ void octave_qscintilla::ctx_menu_run_finished
     tmp_hist->remove ();
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([dbg, auto_repeat] (interpreter& interp)
      {
        // INTERPRETER THREAD
        if (dbg)

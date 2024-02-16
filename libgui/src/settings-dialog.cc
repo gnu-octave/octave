@@ -579,7 +579,7 @@ settings_dialog::read_settings (bool first)
       connect (cb_color_mode, &QCheckBox::stateChanged,
                this, &settings_dialog::update_editor_lexers);
       connect (pb_reload_default_colors, &QPushButton::clicked,
-               [=] () { update_editor_lexers (settings_reload_default_colors_flag); });
+               [this] () { update_editor_lexers (settings_reload_default_colors_flag); });
 
       // finally read the lexer colors using the update slot
       update_editor_lexers ();
@@ -1489,7 +1489,7 @@ settings_dialog::read_workspace_colors ()
   connect (cb_color_mode, &QCheckBox::stateChanged,
            this, &settings_dialog::update_workspace_colors);
   connect (pb_reload_default_colors, &QPushButton::clicked,
-           [=] () { update_workspace_colors (settings_reload_default_colors_flag); });
+           [this] () { update_workspace_colors (settings_reload_default_colors_flag); });
 }
 
 void
@@ -1604,7 +1604,7 @@ settings_dialog::read_terminal_colors ()
   connect (cb_color_mode, &QCheckBox::stateChanged,
            this, &settings_dialog::update_terminal_colors);
   connect (pb_reload_default_colors, &QPushButton::clicked,
-           [=] () { update_terminal_colors (settings_reload_default_colors_flag); });
+           [this] () { update_terminal_colors (settings_reload_default_colors_flag); });
 }
 
 void
@@ -1717,7 +1717,7 @@ settings_dialog::read_varedit_colors ()
   connect (cb_color_mode, &QCheckBox::stateChanged,
            this, &settings_dialog::update_varedit_colors);
   connect (pb_reload_default_colors, &QPushButton::clicked,
-           [=] () { update_varedit_colors (settings_reload_default_colors_flag); });
+           [this] () { update_varedit_colors (settings_reload_default_colors_flag); });
 }
 
 void

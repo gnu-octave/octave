@@ -101,7 +101,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 DEFUN (isnull, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn {} {@var{tf} =} isnull (@var{x})
-Return true if @var{x} is a special null matrix, string, or single quoted
+Return true if @var{x} is a special null array, string, or single quoted
 string.
 
 Indexed assignment with such a null value on the right-hand side should delete

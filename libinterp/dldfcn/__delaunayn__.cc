@@ -174,7 +174,7 @@ Undocumented internal function.
       if (! errfile)
         error ("__delaunayn__: unable to redirect Qhull errors to /dev/null");
 
-      unwind_action close_errfile ([=] () { std::fclose (errfile); });
+      unwind_action close_errfile ([errfile] () { std::fclose (errfile); });
 
       qhT context = { };
       qhT *qh = &context;

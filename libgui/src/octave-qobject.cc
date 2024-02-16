@@ -152,7 +152,7 @@ octave_qapplication::notify (QObject *receiver, QEvent *ev)
   catch (execution_exception& ee)
     {
       emit interpreter_event
-        ([=] ()
+        ([ee] ()
          {
            // INTERPRETER THREAD
            throw ee;
@@ -584,7 +584,7 @@ base_qobject::history_widget (main_window *mw)
                m_history_widget, &history_dock_widget::clear_history);
 
       emit interpreter_event
-        ([=] (interpreter& interp) {
+        ([] (interpreter& interp) {
           // INTERPRETER THREAD
 
           event_manager& xevmgr = interp.get_event_manager ();
@@ -622,9 +622,9 @@ base_qobject::workspace_widget (main_window *mw)
 
       connect (m_workspace_widget,
                &workspace_view::copy_variable_value_to_clipboard,
-               [=] (const QString& var_name) {
+               [this] (const QString& var_name) {
                  emit interpreter_event
-                   ([=] (interpreter& interp)
+                   ([var_name] (interpreter& interp)
                     {
                       // INTERPRETER THREAD
 
@@ -645,9 +645,9 @@ base_qobject::workspace_widget (main_window *mw)
                });
 
       connect (m_workspace_widget, &workspace_view::rename_variable_signal,
-               [=] (const QString& old_name, const QString& new_name) {
+               [this] (const QString& old_name, const QString& new_name) {
                  emit interpreter_event
-                   ([=] (interpreter& interp) {
+                   ([old_name, new_name] (interpreter& interp) {
                      // INTERPRETER THREAD
 
                      symbol_scope scope = interp.get_current_scope ();
@@ -670,9 +670,9 @@ base_qobject::workspace_widget (main_window *mw)
                });
 
       connect (m_workspace_widget, &workspace_view::edit_variable_signal,
-               [=] (const QString& var_name) {
+               [this] (const QString& var_name) {
                  emit interpreter_event
-                   ([=] (interpreter& interp) {
+                   ([var_name] (interpreter& interp) {
                      // INTERPRETER THREAD
 
                      std::string name = var_name.toStdString ();
@@ -685,7 +685,7 @@ base_qobject::workspace_widget (main_window *mw)
                });
 
       emit interpreter_event
-        ([=] (interpreter& interp) {
+        ([] (interpreter& interp) {
           // INTERPRETER THREAD
 
           event_manager& xevmgr = interp.get_event_manager ();
@@ -936,7 +936,7 @@ void
 base_qobject::execute_command (const QString& command)
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([command] (interpreter& interp)
     {
       // INTERPRETER THREAD
 
@@ -963,7 +963,7 @@ base_qobject::close_gui ()
       // returning to the command line?
 
       interpreter_event
-        ([=] (interpreter& interp)
+        ([] (interpreter& interp)
         {
           // INTERPRETER THREAD
 

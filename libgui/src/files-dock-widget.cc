@@ -171,9 +171,7 @@ public:
     // actually restrict the selection, we have to post the modification at
     // the end of the event loop.
     // QTimer allows this easily with 0 as timeout.
-    QTimer::singleShot (0, [=] () {
-      line_edit->setSelection (0, select_len);
-    });
+    QTimer::singleShot (0, [line_edit, select_len] () { line_edit->setSelection (0, select_len); });
   }
 };
 
@@ -677,7 +675,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
           QMenu *add_path_menu = menu.addMenu (tr ("Add to Path"));
 
           add_path_menu->addAction (tr ("Selected Directories"),
-                                    this, [=] (bool checked) { contextmenu_add_to_path (checked); });
+                                    this, [this] (bool checked) { contextmenu_add_to_path (checked); });
           add_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
                                     this, &files_dock_widget::contextmenu_add_to_path_subdirs);
 

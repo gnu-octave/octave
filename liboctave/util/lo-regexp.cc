@@ -368,16 +368,15 @@ regexp::match (const std::string& buffer) const
       octave_quit ();
 
 #if defined (HAVE_PCRE2)
-      pcre2_match_data *m_data
+      pcre2_match_data *tmp_match_data
         = pcre2_match_data_create_from_pattern (re, nullptr);
 
-      unwind_action cleanup_match_data
-      ([=] () { pcre2_match_data_free (m_data); });
+      unwind_action cleanup_match_data ([tmp_match_data] () { pcre2_match_data_free (tmp_match_data); });
 
       int matches = pcre2_match (re, reinterpret_cast<PCRE2_SPTR> (buffer.c_str ()),
                                  buffer.length (), idx,
                                  PCRE2_NO_UTF_CHECK | (idx ? PCRE2_NOTBOL : 0),
-                                 m_data, nullptr);
+                                 tmp_match_data, nullptr);
 
       if (matches < 0 && matches != PCRE2_ERROR_NOMATCH)
         (*current_liboctave_error_handler)
@@ -387,7 +386,7 @@ regexp::match (const std::string& buffer) const
       if (matches == PCRE2_ERROR_NOMATCH)
         break;
 
-      OCTAVE_PCRE_SIZE *ovector = pcre2_get_ovector_pointer (m_data);
+      OCTAVE_PCRE_SIZE *ovector = pcre2_get_ovector_pointer (tmp_match_data);
 #else
       int matches = pcre_exec (re, nullptr, buffer.c_str (),
                                buffer.length (), idx,

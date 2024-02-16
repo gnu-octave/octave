@@ -465,7 +465,7 @@ variable_editor_stack::save (const QString& format)
 
   // No format given, test save default options
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this, this_ves, format_string] (interpreter& interp)
       {
         // INTERPRETER THREAD
 
@@ -520,7 +520,7 @@ variable_editor_stack::do_save (const QString& format, const QString& save_opts)
 
   // Let the interpreter thread do the saving
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([file, name, format] (interpreter& interp)
       {
         // INTERPRETER THREAD
 
@@ -1308,7 +1308,7 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   connect (this, &variable_editor::level_up_signal,
            stack, &variable_editor_stack::levelUp);
   connect (this, &variable_editor::save_signal,
-           stack, [=] () { stack->save (); });
+           stack, [stack] () { stack->save (); });
 
   variable_editor_view *edit_view = stack->edit_view ();
 

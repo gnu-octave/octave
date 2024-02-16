@@ -90,7 +90,7 @@ is stored in the audio file.
     error ("audioread: failed to open input file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  unwind_action close_open_file ([=] () { sf_close (file); });
+  unwind_action close_open_file ([file] () { sf_close (file); });
 
   // FIXME: It would be nicer to use a C++ expandable data container and
   // read a file of unknown length into memory in chunks and determine the
@@ -441,7 +441,7 @@ Comment.
     error ("audiowrite: failed to open output file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  unwind_action close_open_file ([=] () { sf_close (file); });
+  unwind_action close_open_file ([file] () { sf_close (file); });
 
   sf_command (file, SFC_SET_NORM_DOUBLE, nullptr, SF_TRUE);
   sf_command (file, SFC_SET_CLIPPING, nullptr, SF_TRUE) ;
@@ -644,7 +644,7 @@ Audio bit rate.  Unused, only present for compatibility with @sc{matlab}.
     error ("audioinfo: failed to open input file '%s': %s",
            filename.c_str (), sf_strerror (file));
 
-  unwind_action close_open_file ([=] () { sf_close (file); });
+  unwind_action close_open_file ([file] () { sf_close (file); });
 
   octave_scalar_map result;
 

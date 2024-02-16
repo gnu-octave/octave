@@ -1107,7 +1107,7 @@ file_reader::get_input (const std::string& /*prompt*/, bool& eof)
                "converting from codepage '%s' to UTF-8: %s",
                encoding.c_str (), std::strerror (errno));
 
-      unwind_action free_utf8_str ([=] () { ::free (utf8_str); });
+      unwind_action free_utf8_str ([utf8_str] () { ::free (utf8_str); });
 
       src_str = std::string (reinterpret_cast<char *> (utf8_str), length);
     }

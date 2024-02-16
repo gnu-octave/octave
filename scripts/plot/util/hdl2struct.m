@@ -51,7 +51,7 @@ function s = hdl2struct (h)
     s.special = [];
 
     ## Process, in reverse order, all children except for
-    ## legends, colorbars, uimenu, and hggroup children
+    ## legends, colorbars, uimenu, and hggroup children.
     ii = 0;
     allkids = get (h, "children");
     if (! strcmp (s.type, "hggroup"))
@@ -71,7 +71,7 @@ function s = hdl2struct (h)
     endif
 
     ## Add non "children" children objects (title, xlabel, ...) and
-    ## hggroup children and tag them in "special"
+    ## hggroup children and tag them in "special".
     if (strcmp (s.type, "hggroup"))
       special = allkids;
     else
@@ -86,9 +86,10 @@ function s = hdl2struct (h)
       nsp -= 1;
     endwhile
 
-    if (strcmp (s.type, "axes") && isempty (get (h, "tag")))
-      ## look for legends and colorbars among axes brothers and add them
-      ## to the children list
+    if (strcmp (s.type, "axes") ...
+        && ! any (strcmp (get (h, "tag"), {'colorbar', 'legend'})))
+      ## Look for legends and colorbars among axes brothers and add them
+      ## to the children list.
       try
         lg = get (h, "__legend_handle__");
       catch
@@ -145,13 +146,8 @@ function propstruct = getprops (h)
   persistent excluded;
 
   if (isempty (excluded))
-    excluded = cell2struct (repmat ({[]}, 1, 17),
-                            {"beingdeleted", "busyaction", "buttondownfcn", ...
-                             "children", "clipping", "contextmenu", ...
-                             "createfcn", "deletefcn", "handlevisibility", ...
-                             "hittest", "interruptible", "parent", ...
-                             "selected" , "selectionhighlight", ...
-                             "selectedobject", "type", "uicontextmenu"}, 2);
+    excluded = cell2struct (repmat ({[]}, 1, 4),
+                            {"beingdeleted", "children", "parent", "type"}, 2);
   endif
 
   obj = get (h);
@@ -172,6 +168,7 @@ function propstruct = getprops (h)
   endfor
 
 endfunction
+
 
 ## FIXME: need validation tests
 

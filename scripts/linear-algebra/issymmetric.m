@@ -28,8 +28,8 @@
 ## @deftypefnx {} {@var{tf} =} issymmetric (@var{A}, @var{tol})
 ## @deftypefnx {} {@var{tf} =} issymmetric (@var{A}, @qcode{"skew"})
 ## @deftypefnx {} {@var{tf} =} issymmetric (@var{A}, @qcode{"skew"}, @var{tol})
-## Return true if @var{A} is a symmetric or skew-symmetric matrix within the
-## tolerance specified by @var{tol}.
+## Return true if @var{A} is a symmetric or skew-symmetric numeric matrix
+## within the tolerance specified by @var{tol}.
 ##
 ## The default tolerance is zero (uses faster code).
 ##

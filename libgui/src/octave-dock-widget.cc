@@ -215,7 +215,7 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
   connect (this, &octave_dock_widget::queue_make_window,
            this, &octave_dock_widget::make_window, Qt::QueuedConnection);
   connect (this, &octave_dock_widget::queue_make_widget,
-           this, [=] () { make_widget (); }, Qt::QueuedConnection);
+           this, [this] () { make_widget (); }, Qt::QueuedConnection);
 
   gui_settings settings;
 

@@ -675,7 +675,7 @@ main_window::handle_save_workspace_request ()
   if (! file.isEmpty ())
     {
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([file] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -704,7 +704,7 @@ main_window::handle_load_workspace_request (const QString& file_arg)
   if (! file.isEmpty ())
     {
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([file] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -727,7 +727,7 @@ main_window::handle_open_any_request (const QString& file_arg)
       std::string file = file_arg.toStdString ();
 
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([file] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -806,7 +806,7 @@ main_window::modify_path (const QStringList& dir_list,
                           bool rm, bool subdirs)
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([dir_list, subdirs, rm] (interpreter& interp)
     {
       // INTERPRETER THREAD
 
@@ -1129,7 +1129,7 @@ main_window::set_current_working_directory (const QString& dir)
   if (fileInfo.exists () && fileInfo.isDir ())
     {
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([xdir] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -1173,7 +1173,7 @@ main_window::execute_command_in_terminal (const QString& command)
   else
     {
       emit interpreter_event
-        ([=] ()
+        ([command] ()
          {
            // INTERPRETER THREAD
 
@@ -1194,7 +1194,7 @@ void
 main_window::run_file_in_terminal (const QFileInfo& info)
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([info] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1276,7 +1276,7 @@ void
 main_window::debug_continue ()
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1291,7 +1291,7 @@ void
 main_window::debug_step_into ()
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1310,7 +1310,7 @@ main_window::debug_step_over ()
       // We are in debug mode, just call dbstep.
 
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([this] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -1332,7 +1332,7 @@ void
 main_window::debug_step_out ()
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1455,7 +1455,7 @@ main_window::handle_edit_mfile_request (const QString& fname,
   QPointer<main_window> this_mw (this);
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this, this_mw, fname, ffile, curr_dir, line] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1855,7 +1855,7 @@ main_window::handle_octave_ready ()
       QPointer<main_window> this_mw (this);
 
       emit interpreter_event
-        ([=] (interpreter& interp)
+        ([this, this_mw] (interpreter& interp)
         {
           // INTERPRETER_THREAD
 
@@ -1951,7 +1951,7 @@ void
 main_window::set_screen_size (int ht, int wd)
 {
   emit interpreter_event
-    ([=] ()
+    ([ht, wd] ()
      {
        // INTERPRETER THREAD
 
@@ -2024,7 +2024,7 @@ void
 main_window::profiler_session ()
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([] (interpreter& interp)
       {
         // INTERPRETER THREAD
         F__profiler_enable__ (interp, ovl (true));
@@ -2035,7 +2035,7 @@ void
 main_window::profiler_session_resume ()
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([] (interpreter& interp)
       {
         // INTERPRETER THREAD
         F__profiler_enable__ (interp, ovl (true));
@@ -2046,7 +2046,7 @@ void
 main_window::profiler_stop ()
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([] (interpreter& interp)
       {
         // INTERPRETER THREAD
         F__profiler_enable__ (interp, ovl (false));
@@ -2150,7 +2150,7 @@ main_window::construct ()
 
   // Default argument requires wrapper.
   connect (this, &main_window::settings_changed,
-           this, [=] () { notice_settings (); });
+           this, [this] () { notice_settings (); });
 
   // Connections for signals from the interpreter thread where the slot
   // should be executed by the gui thread
@@ -2201,7 +2201,7 @@ main_window::construct_octave_qt_link ()
            this, &main_window::handle_exit_debugger);
 
   connect (qt_link, &qt_interpreter_events::show_preferences_signal,
-           this, [=] () { process_settings_dialog_request (); });
+           this, [this] () { process_settings_dialog_request (); });
 
   connect (qt_link, &qt_interpreter_events::insert_debugger_pointer_signal,
            this, &main_window::handle_insert_debugger_pointer_request);
@@ -2419,7 +2419,7 @@ main_window::construct_edit_menu (QMenuBar *p)
                             tr ("Preferences..."));
 
   connect (m_find_files_action, &QAction::triggered,
-           this, [=] () { find_files (); });
+           this, [this] () { find_files (); });
 
   connect (m_clear_command_window_action, &QAction::triggered,
            this, &main_window::handle_clear_command_window_request);
@@ -2442,7 +2442,7 @@ main_window::construct_edit_menu (QMenuBar *p)
 #endif
 
   connect (m_preferences_action, &QAction::triggered,
-           this, [=] () { process_settings_dialog_request (); });
+           this, [this] () { process_settings_dialog_request (); });
 
   connect (m_set_path_action, &QAction::triggered,
            this, &main_window::handle_set_path_dialog_request);
@@ -2672,17 +2672,13 @@ main_window::construct_news_menu (QMenuBar *p)
 
   m_release_notes_action
     = news_menu->addAction (QIcon (), tr ("Release Notes"),
-                            [=] () {
-                              emit show_release_notes_signal ();
-                            });
+                            [this] () { emit show_release_notes_signal (); });
   addAction (m_release_notes_action);
   m_release_notes_action->setShortcutContext (Qt::ApplicationShortcut);
 
   m_current_news_action
     = news_menu->addAction (QIcon (), tr ("Community News"),
-                            [=] () {
-                              emit show_community_news_signal (-1);
-                            });
+                            [this] () { emit show_community_news_signal (-1); });
   addAction (m_current_news_action);
   m_current_news_action->setShortcutContext (Qt::ApplicationShortcut);
 }
@@ -2863,7 +2859,7 @@ main_window::update_default_encoding (const QString& default_encoding)
     mfile_encoding = "SYSTEM";
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([mfile_encoding] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -2910,7 +2906,7 @@ main_window::reset_windows ()
   // connections so that the event loop can do what it needs to do.
   // But I haven't been able to find the magic sequence.
 
-  QTimer::singleShot (250, this, [=] () { do_reset_windows (true, true, true); });
+  QTimer::singleShot (250, this, [this] () { do_reset_windows (true, true, true); });
 }
 
 // Create the default layout of the main window. Do not use

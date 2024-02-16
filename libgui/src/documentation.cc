@@ -184,7 +184,7 @@ documentation::documentation (QWidget *p)
   QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
   m_find_line_edit = new QLineEdit (find_footer);
   connect (m_find_line_edit, &QLineEdit::returnPressed,
-           this, [=] () { find (); });
+           this, [this] () { find (); });
   connect (m_find_line_edit, &QLineEdit::textEdited,
            this, &documentation::find_forward_from_anchor);
   QToolButton *forward_button = new QToolButton (find_footer);
@@ -195,7 +195,7 @@ documentation::documentation (QWidget *p)
 
   forward_button->setIcon (settings.icon ("go-down"));
   connect (forward_button, &QToolButton::pressed,
-           this, [=] () { find (); });
+           this, [this] () { find (); });
   QToolButton *backward_button = new QToolButton (find_footer);
   backward_button->setText (tr ("Search backward"));
   backward_button->setToolTip (tr ("Search backward"));
@@ -220,7 +220,7 @@ documentation::documentation (QWidget *p)
 
   m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
   connect (m_findnext_shortcut, &QShortcut::activated,
-           this, [=] () { find (); });
+           this, [this] () { find (); });
   m_findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
   connect (m_findprev_shortcut, &QShortcut::activated,
            this, &documentation::find_backward);
@@ -246,8 +246,7 @@ documentation::documentation (QWidget *p)
 
       connect (m_help_engine->contentWidget (),
                &QHelpContentWidget::linkActivated,
-               m_doc_browser, [=] (const QUrl& url) {
-                 m_doc_browser->handle_index_clicked (url); });
+               m_doc_browser, [this] (const QUrl& url) { m_doc_browser->handle_index_clicked (url); });
 
       // Index
       QHelpIndexWidget *index = m_help_engine->indexWidget ();
@@ -283,8 +282,7 @@ documentation::documentation (QWidget *p)
 #if defined (HAVE_NEW_QHELPINDEXWIDGET_API)
       connect (m_help_engine->indexWidget (),
                &QHelpIndexWidget::documentActivated,
-               this, [=] (const QHelpLink &link) {
-                 m_doc_browser->handle_index_clicked (link.url); });
+               this, [this] (const QHelpLink &link) { m_doc_browser->handle_index_clicked (link.url); });
 #else
       connect (m_help_engine->indexWidget (),
                &QHelpIndexWidget::linkActivated,
@@ -302,7 +300,7 @@ documentation::documentation (QWidget *p)
       navi->addTab (m_bookmarks, tr ("Bookmarks"));
 
       connect (m_action_bookmark, &QAction::triggered,
-               m_bookmarks, [=] () { m_bookmarks->add_bookmark (); });
+               m_bookmarks, [this] () { m_bookmarks->add_bookmark (); });
 
       // Search
       QHelpSearchEngine *search_engine = m_help_engine->searchEngine ();
@@ -1060,7 +1058,7 @@ documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
 {
   setOpenLinks (false);
   connect (this, &documentation_browser::anchorClicked,
-           this, [=] (const QUrl& url) { handle_index_clicked (url); });
+           this, [this] (const QUrl& url) { handle_index_clicked (url); });
 
   // Make sure we have access to one of the monospace fonts listed in
   // octave.css for rendering formated code blocks

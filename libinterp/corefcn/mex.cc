@@ -1940,7 +1940,7 @@ protected:
 
     if (current_mx_memory_resource == &the_mx_deleting_memory_resource)
       {
-        octave::unwind_action act ([this] () { maybe_disown_ptr (m_pr); });
+        octave::unwind_action act ([=] () { maybe_disown_ptr (m_pr); });
 
         return octave_value (Array<ELT_T> (ppr, dv, current_mx_memory_resource));
       }
@@ -2392,7 +2392,7 @@ protected:
 
     if (current_mx_memory_resource == &the_mx_deleting_memory_resource)
       {
-        octave::unwind_action act ([this] ()
+        octave::unwind_action act ([=] ()
         {
           maybe_disown_ptr (m_pr);
           maybe_disown_ptr (m_ir);

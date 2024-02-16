@@ -965,7 +965,7 @@ octave_qscintilla::contextmenu_run (bool)
 
   // Let the interpreter execute the tmp file
   emit interpreter_event
-  ([=, this] (interpreter& interp)
+    ([=] (interpreter& interp)
      {
        // INTERPRETER THREAD
 

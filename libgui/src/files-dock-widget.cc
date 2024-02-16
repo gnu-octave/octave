@@ -315,9 +315,6 @@ files_dock_widget::files_dock_widget (QWidget *p)
   QModelIndex rootPathIndex
     = m_file_system_model->setRootPath (startup_dir.absolutePath ());
 
-  m_file_icon_provider = new QFileIconProvider ();
-  m_file_system_model->setIconProvider (m_file_icon_provider);
-
   // Attach the model to the QTreeView and set the root index
   m_file_tree_view = new FileTreeViewer (container);
   m_file_tree_view->setSelectionMode (QAbstractItemView::ExtendedSelection);
@@ -680,7 +677,7 @@ files_dock_widget::contextmenu_requested (const QPoint& mpos)
           QMenu *add_path_menu = menu.addMenu (tr ("Add to Path"));
 
           add_path_menu->addAction (tr ("Selected Directories"),
-                                    this, [this] (bool checked) { contextmenu_add_to_path (checked); });
+                                    this, [=] (bool checked) { contextmenu_add_to_path (checked); });
           add_path_menu->addAction (tr ("Selected Directories and Subdirectories"),
                                     this, &files_dock_widget::contextmenu_add_to_path_subdirs);
 

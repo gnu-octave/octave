@@ -1136,7 +1136,7 @@ audioplayer::playblocking ()
   start = get_sample_number ();
   end = get_end_sample ();
 
-  unwind_action stop_audioplayer ([this] () { stop (); });
+  unwind_action stop_audioplayer ([=] () { stop (); });
 
   for (unsigned int i = start; i < end; i += buffer_size)
     {
@@ -1816,7 +1816,7 @@ audiorecorder::recordblocking (float seconds)
 
   unsigned int frames = seconds * get_fs ();
 
-  unwind_action stop_audiorecorder ([this] () { stop (); });
+  unwind_action stop_audiorecorder ([=] () { stop (); });
 
   for (unsigned int i = 0; i < frames; i += buffer_size)
     {

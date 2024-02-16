@@ -1177,7 +1177,7 @@ tree_evaluator::evalin (const std::string& context,
                         const std::string& try_code,
                         int nargout)
 {
-  unwind_action act ([this] (std::size_t frm)
+  unwind_action act ([=] (std::size_t frm)
                      {
                        m_call_stack.restore_frame (frm);
                      }, m_call_stack.current_frame ());
@@ -1202,7 +1202,7 @@ tree_evaluator::evalin (const std::string& context,
 {
   octave_value_list retval;
 
-  unwind_action act1 ([this] (std::size_t frm)
+  unwind_action act1 ([=] (std::size_t frm)
                       {
                         m_call_stack.restore_frame (frm);
                       }, m_call_stack.current_frame ());
@@ -1429,7 +1429,7 @@ tree_evaluator::enter_debugger (const std::string& prompt)
 
   m_debugger_stack.push (dbgr);
 
-  frame.add ([this] ()
+  frame.add ([=] ()
              {
                delete m_debugger_stack.top ();
                m_debugger_stack.pop ();
@@ -2017,7 +2017,7 @@ tree_evaluator::assignin (const std::string& context,
   // by getting a reference to the caller or base stack frame and
   // calling assign on that?
 
-  unwind_action act ([this] (std::size_t frm)
+  unwind_action act ([=] (std::size_t frm)
                      {
                        m_call_stack.restore_frame (frm);
                      }, m_call_stack.current_frame ());
@@ -5134,7 +5134,7 @@ tree_evaluator::evaluate_end_expression (const octave_value_list& args)
           // evaluate the partial expression that the special "end"
           // token applies to in the calling stack frame.
 
-          unwind_action act ([this] (std::size_t frm)
+          unwind_action act ([=] (std::size_t frm)
                              {
                                m_call_stack.restore_frame (frm);
                              }, m_call_stack.current_frame ());

@@ -1054,7 +1054,7 @@ call_stack::do_who (int argc, const string_vector& argv,
 
       push (tmp_scope);
 
-      unwind_action restore_scope ([this] () { pop (); });
+      unwind_action restore_scope ([=] () { pop (); });
 
       interpreter& interp = m_evaluator.get_interpreter ();
 

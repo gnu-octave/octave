@@ -110,7 +110,7 @@ command_widget::init_command_prompt ()
   QPointer<command_widget> this_cw (this);
 
   emit interpreter_event
-    ([=, this] (interpreter& interp)
+    ([=] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -158,7 +158,7 @@ command_widget::process_input_line (const QString& input_line)
   QPointer<command_widget> this_cw (this);
 
   emit interpreter_event
-    ([=, this] (interpreter& interp)
+    ([=] (interpreter& interp)
      {
        // INTERPRETER THREAD
 

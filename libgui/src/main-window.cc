@@ -1276,7 +1276,7 @@ void
 main_window::debug_continue ()
 {
   emit interpreter_event
-    ([this] (interpreter& interp)
+    ([=] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1291,7 +1291,7 @@ void
 main_window::debug_step_into ()
 {
   emit interpreter_event
-    ([this] (interpreter& interp)
+    ([=] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1310,7 +1310,7 @@ main_window::debug_step_over ()
       // We are in debug mode, just call dbstep.
 
       emit interpreter_event
-        ([this] (interpreter& interp)
+        ([=] (interpreter& interp)
          {
            // INTERPRETER THREAD
 
@@ -1332,7 +1332,7 @@ void
 main_window::debug_step_out ()
 {
   emit interpreter_event
-    ([this] (interpreter& interp)
+    ([=] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1455,7 +1455,7 @@ main_window::handle_edit_mfile_request (const QString& fname,
   QPointer<main_window> this_mw (this);
 
   emit interpreter_event
-    ([=, this] (interpreter& interp)
+    ([=] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1855,7 +1855,7 @@ main_window::handle_octave_ready ()
       QPointer<main_window> this_mw (this);
 
       emit interpreter_event
-        ([=, this] (interpreter& interp)
+        ([=] (interpreter& interp)
         {
           // INTERPRETER_THREAD
 
@@ -2150,7 +2150,7 @@ main_window::construct ()
 
   // Default argument requires wrapper.
   connect (this, &main_window::settings_changed,
-           this, [this] () { notice_settings (); });
+           this, [=] () { notice_settings (); });
 
   // Connections for signals from the interpreter thread where the slot
   // should be executed by the gui thread
@@ -2201,7 +2201,7 @@ main_window::construct_octave_qt_link ()
            this, &main_window::handle_exit_debugger);
 
   connect (qt_link, &qt_interpreter_events::show_preferences_signal,
-           this, [this] () { process_settings_dialog_request (); });
+           this, [=] () { process_settings_dialog_request (); });
 
   connect (qt_link, &qt_interpreter_events::insert_debugger_pointer_signal,
            this, &main_window::handle_insert_debugger_pointer_request);
@@ -2419,7 +2419,7 @@ main_window::construct_edit_menu (QMenuBar *p)
                             tr ("Preferences..."));
 
   connect (m_find_files_action, &QAction::triggered,
-           this, [this] () { find_files (); });
+           this, [=] () { find_files (); });
 
   connect (m_clear_command_window_action, &QAction::triggered,
            this, &main_window::handle_clear_command_window_request);
@@ -2442,7 +2442,7 @@ main_window::construct_edit_menu (QMenuBar *p)
 #endif
 
   connect (m_preferences_action, &QAction::triggered,
-           this, [this] () { process_settings_dialog_request (); });
+           this, [=] () { process_settings_dialog_request (); });
 
   connect (m_set_path_action, &QAction::triggered,
            this, &main_window::handle_set_path_dialog_request);
@@ -2672,7 +2672,7 @@ main_window::construct_news_menu (QMenuBar *p)
 
   m_release_notes_action
     = news_menu->addAction (QIcon (), tr ("Release Notes"),
-                            [this] () {
+                            [=] () {
                               emit show_release_notes_signal ();
                             });
   addAction (m_release_notes_action);
@@ -2680,7 +2680,7 @@ main_window::construct_news_menu (QMenuBar *p)
 
   m_current_news_action
     = news_menu->addAction (QIcon (), tr ("Community News"),
-                            [this] () {
+                            [=] () {
                               emit show_community_news_signal (-1);
                             });
   addAction (m_current_news_action);
@@ -2910,7 +2910,7 @@ main_window::reset_windows ()
   // connections so that the event loop can do what it needs to do.
   // But I haven't been able to find the magic sequence.
 
-  QTimer::singleShot (250, this, [this] () { do_reset_windows (true, true, true); });
+  QTimer::singleShot (250, this, [=] () { do_reset_windows (true, true, true); });
 }
 
 // Create the default layout of the main window. Do not use

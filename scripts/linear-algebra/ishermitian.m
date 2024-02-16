@@ -28,8 +28,8 @@
 ## @deftypefnx {} {@var{tf} =} ishermitian (@var{A}, @var{tol})
 ## @deftypefnx {} {@var{tf} =} ishermitian (@var{A}, @qcode{"skew"})
 ## @deftypefnx {} {@var{tf} =} ishermitian (@var{A}, @qcode{"skew"}, @var{tol})
-## Return true if @var{A} is a Hermitian or skew-Hermitian matrix within the
-## tolerance specified by @var{tol}.
+## Return true if @var{A} is a Hermitian or skew-Hermitian numeric matrix
+## within the tolerance specified by @var{tol}.
 ##
 ## The default tolerance is zero (uses faster code).
 ##

@@ -3872,7 +3872,7 @@ DEFUN (isscalar, args, ,
 @deftypefn {} {@var{tf} =} isscalar (@var{x})
 Return true if @var{x} is a scalar.
 
-A scalar is an object with two dimensions for which @code{size (@var{x})}
+A scalar is a single element object of any type for which @code{size (@var{x})}
 returns @w{@code{[1, 1]}}.
 @seealso{isvector, ismatrix, size}
 @end deftypefn */)
@@ -3911,9 +3911,9 @@ DEFUN (isvector, args, ,
 @deftypefn {} {@var{tf} =} isvector (@var{x})
 Return true if @var{x} is a vector.
 
-A vector is a 2-D object where one of the dimensions is equal to 1 (either
-@nospell{1xN} or @nospell{Nx1}).  As a consequence of this definition, a 1x1
-object (a scalar) is also a vector.
+A vector is a 2-D array of any type where one of the dimensions is equal to 1
+(either @nospell{1xN} or @nospell{Nx1}).  As a consequence of this definition,
+a 1x1 object (a scalar) is also a vector.
 @seealso{isscalar, ismatrix, iscolumn, isrow, size}
 @end deftypefn */)
 {
@@ -3952,7 +3952,7 @@ DEFUN (isrow, args, ,
 @deftypefn {} {@var{tf} =} isrow (@var{x})
 Return true if @var{x} is a row vector.
 
-A row vector is a 2-D object for which @code{size (@var{x})} returns
+A row vector is a 2-D array of any type for which @code{size (@var{x})} returns
 @w{@code{[1, N]}} with non-negative N.
 @seealso{iscolumn, isscalar, isvector, ismatrix, size}
 @end deftypefn */)
@@ -4001,8 +4001,8 @@ DEFUN (iscolumn, args, ,
 @deftypefn {} {@var{tf} =} iscolumn (@var{x})
 Return true if @var{x} is a column vector.
 
-A column vector is a 2-D object for which @code{size (@var{x})} returns
-@w{@code{[N, 1]}} with non-negative N.
+A column vector is a 2-D array of any type for which @code{size (@var{x})}
+returns @w{@code{[N, 1]}} with non-negative N.
 @seealso{isrow, isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {
@@ -4050,7 +4050,7 @@ DEFUN (ismatrix, args, ,
 @deftypefn {} {@var{tf} =} ismatrix (@var{x})
 Return true if @var{x} is a 2-D array.
 
-A matrix is an object with two dimensions (@code{ndims (@var{x}) == 2}) for
+A matrix is an array of any type where @code{ndims (@var{x}) == 2} and for
 which @code{size (@var{x})} returns @w{@code{[M, N]}} with non-negative M and
 N.
 @seealso{isscalar, isvector, iscell, isstruct, issparse, isa}
@@ -4099,8 +4099,8 @@ DEFUN (issquare, args, ,
 @deftypefn {} {@var{tf} =} issquare (@var{x})
 Return true if @var{x} is a 2-D square array.
 
-A square array is a 2-D object for which @code{size (@var{x})} returns
-@w{@code{[N, N]}} where N is a non-negative integer.
+A square array is a 2-D array of any type for which @code{size (@var{x})}
+returns @w{@code{[N, N]}} where N is a non-negative integer.
 @seealso{isscalar, isvector, ismatrix, size}
 @end deftypefn */)
 {

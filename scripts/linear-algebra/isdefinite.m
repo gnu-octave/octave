@@ -26,8 +26,8 @@
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{tf} =} isdefinite (@var{A})
 ## @deftypefnx {} {@var{tf} =} isdefinite (@var{A}, @var{tol})
-## Return true if @var{A} is symmetric positive definite matrix within the
-## tolerance specified by @var{tol}.
+## Return true if @var{A} is symmetric positive definite numeric matrix within
+## the tolerance specified by @var{tol}.
 ##
 ## If @var{tol} is omitted, use a tolerance of
 ## @code{100 * eps * norm (@var{A}, "fro")}.

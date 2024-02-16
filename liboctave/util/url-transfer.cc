@@ -349,7 +349,7 @@ public:
     SETOPT (CURLOPT_HTTPGET, 1);
   }
 
-  OCTAVE_DISABLE_COPY_MOVE (curl_transfer);
+  OCTAVE_DISABLE_COPY_MOVE (curl_transfer)
 
   ~curl_transfer ()
   {

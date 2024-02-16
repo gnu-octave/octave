@@ -342,7 +342,7 @@ lu<Matrix>::update (const Matrix& u, const Matrix& v)
   if (u_nr != m || v_nr != n || u_nc != v_nc)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       ColumnVector utmp = u.column (i);
       ColumnVector vtmp = v.column (i);
@@ -408,7 +408,7 @@ lu<Matrix>::update_piv (const Matrix& u, const Matrix& v)
 
   OCTAVE_LOCAL_BUFFER (double, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       ColumnVector utmp = u.column (i);
       ColumnVector vtmp = v.column (i);
@@ -497,7 +497,7 @@ lu<FloatMatrix>::update (const FloatMatrix& u, const FloatMatrix& v)
   if (u_nr != m || v_nr != n || u_nc != v_nc)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       FloatColumnVector utmp = u.column (i);
       FloatColumnVector vtmp = v.column (i);
@@ -564,7 +564,7 @@ lu<FloatMatrix>::update_piv (const FloatMatrix& u, const FloatMatrix& v)
 
   OCTAVE_LOCAL_BUFFER (float, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       FloatColumnVector utmp = u.column (i);
       FloatColumnVector vtmp = v.column (i);
@@ -655,7 +655,7 @@ lu<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
   if (u_nr != m || v_nr != n || u_nc != v_nc)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       ComplexColumnVector utmp = u.column (i);
       ComplexColumnVector vtmp = v.column (i);
@@ -728,7 +728,7 @@ lu<ComplexMatrix>::update_piv (const ComplexMatrix& u,
 
   OCTAVE_LOCAL_BUFFER (Complex, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       ComplexColumnVector utmp = u.column (i);
       ComplexColumnVector vtmp = v.column (i);
@@ -824,7 +824,7 @@ lu<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
   if (u_nr != m || v_nr != n || u_nc != v_nc)
     (*current_liboctave_error_handler) ("luupdate: dimensions mismatch");
 
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       FloatComplexColumnVector utmp = u.column (i);
       FloatComplexColumnVector vtmp = v.column (i);
@@ -895,7 +895,7 @@ lu<FloatComplexMatrix>::update_piv (const FloatComplexMatrix& u,
 
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, m);
   for (F77_INT i = 0; i < m; i++) m_ipvt(i) += 1; // increment
-  for (volatile F77_INT i = 0; i < u_nc; i++)
+  for (F77_INT i = 0; i < u_nc; i++)
     {
       FloatComplexColumnVector utmp = u.column (i);
       FloatComplexColumnVector vtmp = v.column (i);

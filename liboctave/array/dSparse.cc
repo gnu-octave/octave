@@ -3606,7 +3606,7 @@ SparseMatrix::trisolve (MatrixType& mattype, const Matrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Tridiagonal_Hermitian)
@@ -3843,15 +3843,15 @@ SparseMatrix::trisolve (MatrixType& mattype, const SparseMatrix& b,
             {
               rcond = 1.0;
               char job = 'N';
-              volatile octave_idx_type x_nz = b.nnz ();
+              octave_idx_type x_nz = b.nnz ();
               octave_idx_type b_nc = b.cols ();
               retval = SparseMatrix (nr, b_nc, x_nz);
               retval.xcidx (0) = 0;
-              volatile octave_idx_type ii = 0;
+              octave_idx_type ii = 0;
 
               OCTAVE_LOCAL_BUFFER (double, work, nr);
 
-              for (volatile octave_idx_type j = 0; j < b_nc; j++)
+              for (octave_idx_type j = 0; j < b_nc; j++)
                 {
                   for (octave_idx_type i = 0; i < nr; i++)
                     work[i] = 0.;
@@ -3926,7 +3926,7 @@ SparseMatrix::trisolve (MatrixType& mattype, const ComplexMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Tridiagonal_Hermitian)
@@ -4176,12 +4176,12 @@ SparseMatrix::trisolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
               // Take a first guess that the number of nonzero terms
               // will be as many as in b
-              volatile octave_idx_type x_nz = b.nnz ();
-              volatile octave_idx_type ii = 0;
+              octave_idx_type x_nz = b.nnz ();
+              octave_idx_type ii = 0;
               retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
               retval.xcidx (0) = 0;
-              for (volatile octave_idx_type j = 0; j < b_nc; j++)
+              for (octave_idx_type j = 0; j < b_nc; j++)
                 {
 
                   for (F77_INT i = 0; i < b_nr; i++)
@@ -4283,7 +4283,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const Matrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
@@ -4552,7 +4552,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
@@ -4649,12 +4649,12 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
 
                   // Take a first guess that the number of nonzero terms
                   // will be as many as in b
-                  volatile octave_idx_type x_nz = b.nnz ();
-                  volatile octave_idx_type ii = 0;
+                  octave_idx_type x_nz = b.nnz ();
+                  octave_idx_type ii = 0;
                   retval = SparseMatrix (b_nr, b_nc, x_nz);
 
                   retval.xcidx (0) = 0;
-                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                  for (octave_idx_type j = 0; j < b_nc; j++)
                     {
                       for (F77_INT i = 0; i < b_nr; i++)
                         Bx[i] = b.elem (i, j);
@@ -4810,15 +4810,15 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
               if (err == 0)
                 {
                   char job = 'N';
-                  volatile octave_idx_type x_nz = b.nnz ();
+                  octave_idx_type x_nz = b.nnz ();
                   octave_idx_type b_nc = b.cols ();
                   retval = SparseMatrix (nr, b_nc, x_nz);
                   retval.xcidx (0) = 0;
-                  volatile octave_idx_type ii = 0;
+                  octave_idx_type ii = 0;
 
                   OCTAVE_LOCAL_BUFFER (double, work, nr);
 
-                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                  for (octave_idx_type j = 0; j < b_nc; j++)
                     {
                       for (octave_idx_type i = 0; i < nr; i++)
                         work[i] = 0.;
@@ -4892,7 +4892,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
@@ -4993,7 +4993,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
 
                   retval.resize (b_nr, b_nc);
 
-                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                  for (octave_idx_type j = 0; j < b_nc; j++)
                     {
                       for (F77_INT i = 0; i < b_nr; i++)
                         {
@@ -5157,7 +5157,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
                   OCTAVE_LOCAL_BUFFER (double, Bz, nr);
                   OCTAVE_LOCAL_BUFFER (double, Bx, nr);
 
-                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                  for (octave_idx_type j = 0; j < b_nc; j++)
                     {
                       for (octave_idx_type i = 0; i < nr; i++)
                         {
@@ -5216,7 +5216,7 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Banded_Hermitian)
@@ -5317,12 +5317,12 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
 
                   // Take a first guess that the number of nonzero terms
                   // will be as many as in b
-                  volatile octave_idx_type x_nz = b.nnz ();
-                  volatile octave_idx_type ii = 0;
+                  octave_idx_type x_nz = b.nnz ();
+                  octave_idx_type ii = 0;
                   retval = SparseComplexMatrix (b_nr, b_nc, x_nz);
 
                   retval.xcidx (0) = 0;
-                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                  for (octave_idx_type j = 0; j < b_nc; j++)
                     {
 
                       for (F77_INT i = 0; i < b_nr; i++)
@@ -5504,17 +5504,17 @@ SparseMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               if (err == 0)
                 {
                   char job = 'N';
-                  volatile octave_idx_type x_nz = b.nnz ();
+                  octave_idx_type x_nz = b.nnz ();
                   F77_INT b_nr = octave::to_f77_int (b.rows ());
                   octave_idx_type b_nc = b.cols ();
                   retval = SparseComplexMatrix (nr, b_nc, x_nz);
                   retval.xcidx (0) = 0;
-                  volatile octave_idx_type ii = 0;
+                  octave_idx_type ii = 0;
 
                   OCTAVE_LOCAL_BUFFER (double, Bx, nr);
                   OCTAVE_LOCAL_BUFFER (double, Bz, nr);
 
-                  for (volatile octave_idx_type j = 0; j < b_nc; j++)
+                  for (octave_idx_type j = 0; j < b_nc; j++)
                     {
                       for (octave_idx_type i = 0; i < nr; i++)
                         {
@@ -5729,7 +5729,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const Matrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)
@@ -5940,7 +5940,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)
@@ -6203,7 +6203,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)
@@ -6435,7 +6435,7 @@ SparseMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Hermitian)

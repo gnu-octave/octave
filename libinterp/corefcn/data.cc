@@ -3872,7 +3872,7 @@ DEFUN (isscalar, args, ,
 @deftypefn {} {@var{tf} =} isscalar (@var{x})
 Return true if @var{x} is a scalar.
 
-A scalar is a single element object of any type for which @code{size (@var{x})}
+A scalar is a single-element object of any type for which @code{size (@var{x})}
 returns @w{@code{[1, 1]}}.
 @seealso{isvector, ismatrix, size}
 @end deftypefn */)

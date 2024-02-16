@@ -425,7 +425,7 @@ public:
   {
     struct curl_slist *slist = nullptr;
 
-    unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
+    unwind_action cleanup_slist ([slist] () { curl_slist_free_all (slist); });
 
     std::string cmd = "rnfr " + oldname;
     slist = curl_slist_append (slist, cmd.c_str ());
@@ -597,7 +597,7 @@ public:
 
     struct curl_slist *slist = nullptr;
 
-    unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
+    unwind_action cleanup_slist ([slist] () { curl_slist_free_all (slist); });
 
     slist = curl_slist_append (slist, "pwd");
     SETOPTR (CURLOPT_POSTQUOTE, slist);
@@ -688,7 +688,7 @@ public:
   {
     struct curl_slist *slist = nullptr;
 
-    unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
+    unwind_action cleanup_slist ([slist] () { curl_slist_free_all (slist); });
 
     if (param.numel () >= 2)
       {
@@ -715,7 +715,7 @@ public:
 
     SETOPT (CURLOPT_URL, m_host_or_url.c_str ());
 
-    unwind_action cleanup_mime ([=] () { curl_mime_free (mime); });
+    unwind_action cleanup_mime ([mime] () { curl_mime_free (mime); });
 
     if (param.numel () >= 2)
       {
@@ -890,7 +890,7 @@ private:
   {
     struct curl_slist *slist = nullptr;
 
-    unwind_action cleanup_slist ([=] () { curl_slist_free_all (slist); });
+    unwind_action cleanup_slist ([slist] () { curl_slist_free_all (slist); });
 
     std::string cmd = action + ' ' + file_or_dir;
 

@@ -1008,7 +1008,7 @@ variable_editor_model::setData (const QModelIndex& idx,
   QPointer<variable_editor_model> this_vem (this);
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this, this_vem, expr, nm, idx] (interpreter& interp)
     {
       // INTERPRETER THREAD
 
@@ -1163,7 +1163,7 @@ variable_editor_model::eval_expr_event (const QString& expr_arg)
   std::string expr = expr_arg.toStdString ();
 
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this, expr] (interpreter& interp)
     {
       // INTERPRETER THREAD
 
@@ -1235,7 +1235,7 @@ void
 variable_editor_model::update_data_cache ()
 {
   emit interpreter_event
-    ([=] (interpreter& interp)
+    ([this] (interpreter& interp)
     {
       // INTERPRETER_THREAD
 

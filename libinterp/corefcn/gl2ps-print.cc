@@ -404,7 +404,7 @@ gl2ps_renderer::draw (const graphics_object& go, const std::string& print_cmd)
       if (! tmpf)
         error ("gl2ps_renderer::draw: couldn't open temporary file for printing");
 
-      frame.add ([=] () { std::fclose (tmpf); });
+      frame.add ([tmpf] () { std::fclose (tmpf); });
 
       // Reset buffsize, unless this is 2nd pass of a texstandalone print.
       if (m_term.find ("tex") == std::string::npos)
@@ -1621,7 +1621,7 @@ gl2ps_print (opengl_functions& glfcns, const graphics_object& fig,
         error (R"(print: failed to open pipe "%s")", stream.c_str ());
 
       // Need octave:: qualifier here to avoid ambiguity.
-      frame.add ([=] () { octave::pclose (m_fp); });
+      frame.add ([m_fp] () { octave::pclose (m_fp); });
     }
   else
     {
@@ -1632,7 +1632,7 @@ gl2ps_print (opengl_functions& glfcns, const graphics_object& fig,
       if (! m_fp)
         error (R"(gl2ps_print: failed to create file "%s")", stream.c_str ());
 
-      frame.add ([=] () { std::fclose (m_fp); });
+      frame.add ([m_fp] () { std::fclose (m_fp); });
     }
 
   gl2ps_renderer rend (glfcns, m_fp, term);

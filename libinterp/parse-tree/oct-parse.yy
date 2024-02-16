@@ -5827,7 +5827,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         return octave_value ();
       }
 
-    unwind_action act ([=] () { ::fclose (ffile); });
+    unwind_action act ([ffile] () { ::fclose (ffile); });
 
     // get the encoding for this folder
     input_system& input_sys = interp.get_input_system ();
@@ -6659,7 +6659,7 @@ s = evalc ("t = 42"), t
   // the eval, then the message is stored in the exception object and we
   // will display it later, after the buffers have been restored.
 
-  unwind_action act ([=] ()
+  unwind_action act ([old_out_buf, old_err_buf] ()
                              {
                                octave_stdout.rdbuf (old_out_buf);
                                std::cerr.rdbuf (old_err_buf);

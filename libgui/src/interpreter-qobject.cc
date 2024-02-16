@@ -191,7 +191,7 @@ interpreter_qobject::resume ()
       // interpreter is paused.
 
       interpreter_event
-        ([=] (interpreter& interp)
+        ([] (interpreter& interp)
         {
           // INTERPRETER THREAD
 

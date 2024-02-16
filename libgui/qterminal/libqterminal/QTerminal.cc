@@ -195,7 +195,7 @@ void QTerminal::doc_on_expression ()
   std::string expr = m_doc_selected_action->data ().toString ().toStdString ();
 
   emit interpreter_event
-    ([=] (octave::interpreter& interp)
+    ([expr] (octave::interpreter& interp)
      {
        // INTERPRETER THREAD
 

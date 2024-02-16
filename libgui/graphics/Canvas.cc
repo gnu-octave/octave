@@ -902,7 +902,7 @@ Canvas::canvasMouseReleaseEvent (QMouseEvent *event)
                   props.prepend (figObj.get_handle ().as_octave_value ());
 
                   emit interpreter_event
-                    ([=] (octave::interpreter& interp)
+                    ([this, props] (octave::interpreter& interp)
                      {
                        // INTERPRETER THREAD
 

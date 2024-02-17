@@ -509,7 +509,8 @@ LuAminusSigmaB (const SparseMatrix& m, const SparseMatrix& b,
     }
 
   double rcond = (minU / maxU);
-  volatile double rcond_plus_one = rcond + 1.0;
+  // Prevent use of extra precision.
+  double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();
@@ -591,7 +592,8 @@ LuAminusSigmaB (const Matrix& m, const Matrix& b,
     }
 
   double rcond = (minU / maxU);
-  volatile double rcond_plus_one = rcond + 1.0;
+  // Prevent use of extra precision.
+  double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();
@@ -691,7 +693,8 @@ LuAminusSigmaB (const SparseComplexMatrix& m, const SparseComplexMatrix& b,
     }
 
   double rcond = (minU / maxU);
-  volatile double rcond_plus_one = rcond + 1.0;
+  // Prevent use of extra precision.
+  double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();
@@ -773,7 +776,8 @@ LuAminusSigmaB (const ComplexMatrix& m, const ComplexMatrix& b,
     }
 
   double rcond = (minU / maxU);
-  volatile double rcond_plus_one = rcond + 1.0;
+  // Prevent use of extra precision.
+  double rcond_plus_one = rcond + 1.0;
 
   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
     warn_convergence ();

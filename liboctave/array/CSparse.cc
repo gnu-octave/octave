@@ -1723,7 +1723,8 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const Matrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -2005,7 +2006,8 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const SparseMatrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -2234,7 +2236,8 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -2516,7 +2519,8 @@ SparseComplexMatrix::utsolve (MatrixType& mattype, const SparseComplexMatrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -2765,7 +2769,8 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const Matrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -3066,7 +3071,8 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseMatrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -3318,7 +3324,8 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -3618,7 +3625,8 @@ SparseComplexMatrix::ltsolve (MatrixType& mattype, const SparseComplexMatrix& b,
             octave::warn_singular_matrix (rcond);
         }
 
-      volatile double rcond_plus_one = rcond + 1.0;
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
         {
@@ -4405,7 +4413,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const Matrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
@@ -4538,7 +4547,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const Matrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
@@ -4674,7 +4684,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
@@ -4840,7 +4851,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const SparseMatrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
@@ -5015,7 +5027,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
@@ -5145,7 +5158,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const ComplexMatrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {

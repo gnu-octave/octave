@@ -1605,7 +1605,8 @@ FloatComplexMatrix::utsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  volatile float rcond_plus_one = rcon + 1.0;
+                  // Prevent use of extra precision.
+                  float rcond_plus_one = rcon + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
@@ -1707,7 +1708,8 @@ FloatComplexMatrix::ltsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  volatile float rcond_plus_one = rcon + 1.0;
+                  // Prevent use of extra precision.
+                  float rcond_plus_one = rcon + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
@@ -1803,7 +1805,8 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  volatile float rcond_plus_one = rcon + 1.0;
+                  // Prevent use of extra precision.
+                  float rcond_plus_one = rcon + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
@@ -1898,7 +1901,8 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  volatile float rcond_plus_one = rcon + 1.0;
+                  // Prevent use of extra precision.
+                  float rcond_plus_one = rcon + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {

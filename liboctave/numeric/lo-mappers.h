@@ -310,7 +310,7 @@ mod (T x, T y)
           T n = std::floor (q);
 
           // Prevent use of extra precision.
-          volatile T tmp = y * n;
+          T tmp = y * n;
 
           retval = x - tmp;
         }
@@ -343,7 +343,7 @@ rem (T x, T y)
           T n = std::trunc (q);
 
           // Prevent use of extra precision.
-          volatile T tmp = y * n;
+          T tmp = y * n;
 
           retval = x - tmp;
         }

@@ -3090,11 +3090,9 @@ for_setup:
         // The iteration is column wise for these, so change
         // n to the amount of columns rather then elements.
         dim_vector dv = ov_range.dims ().redim (2);
-        int n_rows = dv (0);
-        if (n_rows)
-          n = dv(1);
-        else
-          n = 0; // A e.g. 0x3 sized Cell gives no iterations, not 3
+        n = dv(1);
+        if (ov_range.ndims () > 2)
+          ov_range = ov_range.reshape (dv);
       }
     else if (ov_range.is_scalar_type () || ov_range.is_undefined ())
       ;

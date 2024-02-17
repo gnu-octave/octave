@@ -203,8 +203,7 @@ respond_to_pending_signals ()
               || (have_sigcld && sig == sigcld))
             {
               // FIXME: should we block or ignore?
-              volatile interrupt_handler saved_interrupt_handler
-                = ignore_interrupts ();
+              interrupt_handler saved_interrupt_handler = ignore_interrupts ();
 
               void *context = octave_block_child ();
 
@@ -346,8 +345,7 @@ ignore_interrupts ()
 }
 
 interrupt_handler
-set_interrupt_handler (const volatile interrupt_handler& h,
-                       bool restart_syscalls)
+set_interrupt_handler (const interrupt_handler& h, bool restart_syscalls)
 {
   interrupt_handler retval;
 

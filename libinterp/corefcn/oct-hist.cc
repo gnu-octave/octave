@@ -463,8 +463,7 @@ history_system::do_edit_history (const octave_value_list& args)
   // Ignore interrupts while we are off editing commands.  Should we
   // maybe avoid using system()?
 
-  volatile interrupt_handler old_interrupt_handler
-    = ignore_interrupts ();
+  interrupt_handler old_interrupt_handler = ignore_interrupts ();
 
   int status = sys::system (cmd);
 

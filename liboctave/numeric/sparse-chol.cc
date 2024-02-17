@@ -211,7 +211,7 @@ octave_idx_type
 sparse_chol<chol_type>::sparse_chol_rep::init (const chol_type& a,
     bool natural, bool force)
 {
-  volatile octave_idx_type info = 0;
+  octave_idx_type info = 0;
 
 #if defined (HAVE_CHOLMOD)
 

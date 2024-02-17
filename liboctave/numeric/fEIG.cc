@@ -62,11 +62,11 @@ FloatEIG::init (const FloatMatrix& a, bool calc_rev, bool calc_lev,
   Array<float> wi (dim_vector (n, 1));
   float *pwi = wi.rwdata ();
 
-  volatile F77_INT nvr = (calc_rev ? n : 0);
+  F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
   float *pvr = vr.rwdata ();
 
-  volatile F77_INT nvl = (calc_lev ? n : 0);
+  F77_INT nvl = (calc_lev ? n : 0);
   FloatMatrix vl (nvl, nvl);
   float *pvl = vl.rwdata ();
 
@@ -434,11 +434,11 @@ FloatEIG::init (const FloatMatrix& a, const FloatMatrix& b, bool calc_rev,
   Array<float> beta (dim_vector (n, 1));
   float *pbeta = beta.rwdata ();
 
-  volatile F77_INT nvr = (calc_rev ? n : 0);
+  F77_INT nvr = (calc_rev ? n : 0);
   FloatMatrix vr (nvr, nvr);
   float *pvr = vr.rwdata ();
 
-  volatile F77_INT nvl = (calc_lev ? n : 0);
+  F77_INT nvl = (calc_lev ? n : 0);
   FloatMatrix vl (nvl, nvl);
   float *pvl = vl.rwdata ();
 

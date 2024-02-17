@@ -364,11 +364,7 @@ profiler::query_time () const
 {
   sys::time now;
 
-  // FIXME: is this volatile declaration really needed?
-  // See bug #34210 for additional details.
-  volatile double dnow = now.double_value ();
-
-  return dnow;
+  return now.double_value ();
 }
 
 void

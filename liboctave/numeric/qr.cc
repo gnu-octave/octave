@@ -524,7 +524,7 @@ qr<Matrix>::update (const Matrix& u, const Matrix& v)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
   OCTAVE_LOCAL_BUFFER (double, w, 2*k);
-  for (volatile F77_INT i = 0; i < u_cols; i++)
+  for (F77_INT i = 0; i < u_cols; i++)
     {
       ColumnVector utmp = u.column (i);
       ColumnVector vtmp = v.column (i);
@@ -615,7 +615,7 @@ qr<Matrix>::insert_col (const Matrix& u, const Array<octave_idx_type>& j)
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, w, kmax);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           ColumnVector utmp = u.column (jsi(i));
@@ -687,7 +687,7 @@ qr<Matrix>::delete_col (const Array<octave_idx_type>& j)
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, w, k);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           F77_INT js_elt = to_f77_int (js(ii));
@@ -938,7 +938,7 @@ qr<FloatMatrix>::update (const FloatMatrix& u, const FloatMatrix& v)
     (*current_liboctave_error_handler) ("qrupdate: dimensions mismatch");
 
   OCTAVE_LOCAL_BUFFER (float, w, 2*k);
-  for (volatile F77_INT i = 0; i < u_cols; i++)
+  for (F77_INT i = 0; i < u_cols; i++)
     {
       FloatColumnVector utmp = u.column (i);
       FloatColumnVector vtmp = v.column (i);
@@ -1031,7 +1031,7 @@ qr<FloatMatrix>::insert_col (const FloatMatrix& u,
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, w, kmax);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           FloatColumnVector utmp = u.column (jsi(i));
@@ -1103,7 +1103,7 @@ qr<FloatMatrix>::delete_col (const Array<octave_idx_type>& j)
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, w, k);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           F77_INT js_elt = to_f77_int (js(ii));
@@ -1371,7 +1371,7 @@ qr<ComplexMatrix>::update (const ComplexMatrix& u, const ComplexMatrix& v)
 
   OCTAVE_LOCAL_BUFFER (Complex, w, k);
   OCTAVE_LOCAL_BUFFER (double, rw, k);
-  for (volatile F77_INT i = 0; i < u_cols; i++)
+  for (F77_INT i = 0; i < u_cols; i++)
     {
       ComplexColumnVector utmp = u.column (i);
       ComplexColumnVector vtmp = v.column (i);
@@ -1468,7 +1468,7 @@ qr<ComplexMatrix>::insert_col (const ComplexMatrix& u,
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, rw, kmax);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           ComplexColumnVector utmp = u.column (jsi(i));
@@ -1544,7 +1544,7 @@ qr<ComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (double, rw, k);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           F77_INT js_elt = to_f77_int (js(ii));
@@ -1814,7 +1814,7 @@ qr<FloatComplexMatrix>::update (const FloatComplexMatrix& u,
 
   OCTAVE_LOCAL_BUFFER (FloatComplex, w, k);
   OCTAVE_LOCAL_BUFFER (float, rw, k);
-  for (volatile F77_INT i = 0; i < u_cols; i++)
+  for (F77_INT i = 0; i < u_cols; i++)
     {
       FloatComplexColumnVector utmp = u.column (i);
       FloatComplexColumnVector vtmp = v.column (i);
@@ -1909,7 +1909,7 @@ qr<FloatComplexMatrix>::insert_col (const FloatComplexMatrix& u,
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, rw, kmax);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           F77_INT js_elt = to_f77_int (js(ii));
@@ -1983,7 +1983,7 @@ qr<FloatComplexMatrix>::delete_col (const Array<octave_idx_type>& j)
       F77_INT ldr = to_f77_int (m_r.rows ());
 
       OCTAVE_LOCAL_BUFFER (float, rw, k);
-      for (volatile F77_INT i = 0; i < nj; i++)
+      for (F77_INT i = 0; i < nj; i++)
         {
           F77_INT ii = i;
           F77_INT js_elt = to_f77_int (js(ii));

@@ -77,7 +77,7 @@ extern OCTINTERP_API interrupt_handler catch_interrupts ();
 extern OCTINTERP_API interrupt_handler ignore_interrupts ();
 
 extern OCTINTERP_API interrupt_handler
-set_interrupt_handler (const volatile interrupt_handler& h,
+set_interrupt_handler (const interrupt_handler& h,
                        bool restart_syscalls = true);
 
 // TRUE means we should try to enter the debugger on SIGINT.

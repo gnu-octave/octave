@@ -103,9 +103,9 @@ procbuf::open (const char *command, int mode)
 
   int pipe_fds[2];
 
-  volatile int child_std_end = (mode & std::ios::in) ? 1 : 0;
+  int child_std_end = (mode & std::ios::in) ? 1 : 0;
 
-  volatile int parent_end, child_end;
+  int parent_end, child_end;
 
   if (is_open ())
     return nullptr;

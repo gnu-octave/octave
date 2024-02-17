@@ -4473,7 +4473,7 @@ call_mex (octave_mex_function& mex_fcn, const octave_value_list& args,
   // Use at least 1 for nargout since even for zero specified args,
   // still want to be able to return an ans.
 
-  volatile int nargout = nargout_arg;
+  int nargout = nargout_arg;
 
   int nargin = args.length ();
   OCTAVE_LOCAL_BUFFER (mxArray *, argin, nargin);

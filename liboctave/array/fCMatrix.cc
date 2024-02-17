@@ -1209,7 +1209,7 @@ FloatComplexMatrix::determinant (MatrixType& mattype,
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
 
-  volatile int typ = mattype.type ();
+  int typ = mattype.type ();
 
   // Even though the matrix is marked as singular (Rectangular), we may
   // still get a useful number from the LU factorization, because it always
@@ -1370,7 +1370,7 @@ FloatComplexMatrix::rcond (MatrixType& mattype) const
     rcon = octave::numeric_limits<float>::Inf ();
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ == MatrixType::Unknown)
         typ = mattype.type (*this);
@@ -1546,7 +1546,7 @@ FloatComplexMatrix::utsolve (MatrixType& mattype, const FloatComplexMatrix& b,
     retval = FloatComplexMatrix (nc, b_nc, FloatComplex (0.0, 0.0));
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
@@ -1648,7 +1648,7 @@ FloatComplexMatrix::ltsolve (MatrixType& mattype, const FloatComplexMatrix& b,
     retval = FloatComplexMatrix (nc, b_nc, FloatComplex (0.0, 0.0));
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
@@ -1750,7 +1750,7 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
     retval = FloatComplexMatrix (nc, b_nc, FloatComplex (0.0, 0.0));
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       // Calculate the norm of the matrix for later use when determining rcon.
       float anorm = -1.0;
@@ -2320,7 +2320,7 @@ FloatComplexMatrix::lssolve (const FloatComplexMatrix& b, octave_idx_type& info,
     retval = FloatComplexMatrix (n, b_nc, FloatComplex (0.0, 0.0));
   else
     {
-      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT minmn = (m < n ? m : n);
       F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
@@ -2550,7 +2550,7 @@ FloatComplexMatrix::lssolve (const FloatComplexColumnVector& b,
     retval = FloatComplexColumnVector (n, FloatComplex (0.0, 0.0));
   else
     {
-      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT minmn = (m < n ? m : n);
       F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 

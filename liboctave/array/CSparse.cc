@@ -3661,7 +3661,7 @@ SparseComplexMatrix::trisolve (MatrixType& mattype, const Matrix& b,
   else
     {
       // Print spparms("spumoni") info if requested
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
       mattype.info ();
 
       if (typ == MatrixType::Tridiagonal_Hermitian)

@@ -1206,7 +1206,7 @@ ComplexMatrix::determinant (MatrixType& mattype,
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
 
-  volatile int typ = mattype.type ();
+  int typ = mattype.type ();
 
   // Even though the matrix is marked as singular (Rectangular), we may
   // still get a useful number from the LU factorization, because it always
@@ -1367,7 +1367,7 @@ ComplexMatrix::rcond (MatrixType& mattype) const
     rcon = octave::numeric_limits<double>::Inf ();
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ == MatrixType::Unknown)
         typ = mattype.type (*this);
@@ -1544,7 +1544,7 @@ ComplexMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
     retval = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ != MatrixType::Permuted_Upper && typ != MatrixType::Upper)
         (*current_liboctave_error_handler) ("incorrect matrix type");
@@ -1642,7 +1642,7 @@ ComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
     retval = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ != MatrixType::Permuted_Lower && typ != MatrixType::Lower)
         (*current_liboctave_error_handler) ("incorrect matrix type");
@@ -1740,7 +1740,7 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
     retval = ComplexMatrix (nc, b_nc, Complex (0.0, 0.0));
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       // Calculate the norm of the matrix for later use when determining rcon.
       double anorm = -1.0;
@@ -2294,7 +2294,7 @@ ComplexMatrix::lssolve (const ComplexMatrix& b, octave_idx_type& info,
     retval = ComplexMatrix (n, b_nc, Complex (0.0, 0.0));
   else
     {
-      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT minmn = (m < n ? m : n);
       F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 
@@ -2521,7 +2521,7 @@ ComplexMatrix::lssolve (const ComplexColumnVector& b, octave_idx_type& info,
     retval = ComplexColumnVector (n, Complex (0.0, 0.0));
   else
     {
-      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT minmn = (m < n ? m : n);
       F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 

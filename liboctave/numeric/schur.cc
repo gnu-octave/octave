@@ -133,7 +133,7 @@ schur<Matrix>::init (const Matrix& a, const std::string& ord,
       || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  volatile double_selector selector = nullptr;
+  double_selector selector = nullptr;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana;
   else if (ord_char == 'D' || ord_char == 'd')
@@ -221,7 +221,7 @@ schur<FloatMatrix>::init (const FloatMatrix& a, const std::string& ord,
       || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  volatile float_selector selector = nullptr;
+  float_selector selector = nullptr;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana;
   else if (ord_char == 'D' || ord_char == 'd')
@@ -309,7 +309,7 @@ schur<ComplexMatrix>::init (const ComplexMatrix& a, const std::string& ord,
       || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  volatile complex_selector selector = nullptr;
+  complex_selector selector = nullptr;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana;
   else if (ord_char == 'D' || ord_char == 'd')
@@ -420,7 +420,7 @@ schur<FloatComplexMatrix>::init (const FloatComplexMatrix& a,
       || ord_char == 'a' || ord_char == 'd')
     sort = 'S';
 
-  volatile float_complex_selector selector = nullptr;
+  float_complex_selector selector = nullptr;
   if (ord_char == 'A' || ord_char == 'a')
     selector = select_ana;
   else if (ord_char == 'D' || ord_char == 'd')

@@ -899,7 +899,7 @@ FloatMatrix::determinant (MatrixType& mattype,
   if (nr != nc)
     (*current_liboctave_error_handler) ("matrix must be square");
 
-  volatile int typ = mattype.type ();
+  int typ = mattype.type ();
 
   // Even though the matrix is marked as singular (Rectangular), we may
   // still get a useful number from the LU factorization, because it always
@@ -1055,7 +1055,7 @@ FloatMatrix::rcond (MatrixType& mattype) const
     rcon = octave::numeric_limits<float>::Inf ();
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ == MatrixType::Unknown)
         typ = mattype.type (*this);
@@ -1225,7 +1225,7 @@ FloatMatrix::utsolve (MatrixType& mattype, const FloatMatrix& b,
     retval = FloatMatrix (nc, b_nc, 0.0);
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ == MatrixType::Permuted_Upper || typ == MatrixType::Upper)
         {
@@ -1328,7 +1328,7 @@ FloatMatrix::ltsolve (MatrixType& mattype, const FloatMatrix& b,
     retval = FloatMatrix (nc, b_nc, 0.0);
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       if (typ == MatrixType::Permuted_Lower || typ == MatrixType::Lower)
         {
@@ -1430,7 +1430,7 @@ FloatMatrix::fsolve (MatrixType& mattype, const FloatMatrix& b,
     retval = FloatMatrix (nc, b_nc, 0.0);
   else
     {
-      volatile int typ = mattype.type ();
+      int typ = mattype.type ();
 
       // Calculate the norm of the matrix for later use when determining rcon.
       float anorm = -1.0;
@@ -1970,7 +1970,7 @@ FloatMatrix::lssolve (const FloatMatrix& b, octave_idx_type& info,
     retval = FloatMatrix (n, b_nc, 0.0);
   else
     {
-      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT minmn = (m < n ? m : n);
       F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
       if (m != n)
@@ -2191,7 +2191,7 @@ FloatMatrix::lssolve (const FloatColumnVector& b, octave_idx_type& info,
     retval = FloatColumnVector (n, 0.0);
   else
     {
-      volatile F77_INT minmn = (m < n ? m : n);
+      F77_INT minmn = (m < n ? m : n);
       F77_INT maxmn = (m > n ? m : n);
       rcon = -1.0;
 

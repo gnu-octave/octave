@@ -419,9 +419,3 @@ typedef OCTAVE_F77_INT_TYPE octave_f77_int_type;
 #if defined (OCTAVE_ENABLE_OPENMP)
 #  define HAVE_OPENMP 1
 #endif
-
-#if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
-#  define OCTAVE_FLOAT_TRUNCATE volatile
-#else
-#  define OCTAVE_FLOAT_TRUNCATE
-#endif

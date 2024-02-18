@@ -46,12 +46,12 @@
    template <typename T>                                                     \
    bool operator OP (const std::complex<T>& a, const std::complex<T>& b)     \
    {                                                                         \
-     OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a);                        \
-     OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b);                        \
+     const T ax = std::abs (a);                                              \
+     const T bx = std::abs (b);                                              \
      if (ax == bx)                                                           \
        {                                                                     \
-         OCTAVE_FLOAT_TRUNCATE const T ay = std::arg (a);                    \
-         OCTAVE_FLOAT_TRUNCATE const T by = std::arg (b);                    \
+         const T ay = std::arg (a);                                          \
+         const T by = std::arg (b);                                          \
          if (ay == static_cast<T> (-M_PI))                                   \
            {                                                                 \
              if (by != static_cast<T> (-M_PI))                               \
@@ -69,11 +69,11 @@
    template <typename T>                                                     \
    bool operator OP (const std::complex<T>& a, T b)                          \
    {                                                                         \
-     OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a);                        \
-     OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b);                        \
+     const T ax = std::abs (a);                                              \
+     const T bx = std::abs (b);                                              \
      if (ax == bx)                                                           \
        {                                                                     \
-         OCTAVE_FLOAT_TRUNCATE const T ay = std::arg (a);                    \
+         const T ay = std::arg (a);                                          \
          if (ay == static_cast<T> (-M_PI))                                   \
            return static_cast<T> (M_PI) OP 0;                                \
          return ay OP 0;                                                     \
@@ -84,11 +84,11 @@
    template <typename T>                                                     \
    bool operator OP (T a, const std::complex<T>& b)                          \
    {                                                                         \
-     OCTAVE_FLOAT_TRUNCATE const T ax = std::abs (a);                        \
-     OCTAVE_FLOAT_TRUNCATE const T bx = std::abs (b);                        \
+     const T ax = std::abs (a);                                              \
+     const T bx = std::abs (b);                                              \
      if (ax == bx)                                                           \
        {                                                                     \
-         OCTAVE_FLOAT_TRUNCATE const T by = std::arg (b);                    \
+         const T by = std::arg (b);                                          \
          if (by == static_cast<T> (-M_PI))                                   \
            return 0 OP static_cast<T> (M_PI);                                \
          return 0 OP by;                                                     \
@@ -116,12 +116,12 @@
      bool operator OP<float> (const std::complex<float>& a,                  \
                               const std::complex<float>& b)                  \
      {                                                                       \
-       OCTAVE_FLOAT_TRUNCATE const float ax = std::abs (a);                  \
-       OCTAVE_FLOAT_TRUNCATE const float bx = std::abs (b);                  \
+       const float ax = std::abs (a);                                        \
+       const float bx = std::abs (b);                                        \
        if (ax == bx)                                                         \
          {                                                                   \
-           OCTAVE_FLOAT_TRUNCATE const float ay = std::arg (a);              \
-           OCTAVE_FLOAT_TRUNCATE const float by = std::arg (b);              \
+           const float ay = std::arg (a);                                    \
+           const float by = std::arg (b);                                    \
            if (ay == -A_PI)                                                  \
              {                                                               \
                if (by != -A_PI)                                              \
@@ -139,11 +139,11 @@
      template <> OCTAVE_API                                                  \
      bool operator OP<float> (const std::complex<float>& a, float b)         \
      {                                                                       \
-       OCTAVE_FLOAT_TRUNCATE const float ax = std::abs (a);                  \
-       OCTAVE_FLOAT_TRUNCATE const float bx = std::abs (b);                  \
+       const float ax = std::abs (a);                                        \
+       const float bx = std::abs (b);                                        \
        if (ax == bx)                                                         \
          {                                                                   \
-           OCTAVE_FLOAT_TRUNCATE const float ay = std::arg (a);              \
+           const float ay = std::arg (a);                                    \
            if (ay == -A_PI)                                                  \
              return static_cast<float> (M_PI) OP 0;                          \
            return ay OP 0;                                                   \
@@ -154,11 +154,11 @@
      template <> OCTAVE_API                                                  \
      bool operator OP<float> (float a, const std::complex<float>& b)         \
      {                                                                       \
-       OCTAVE_FLOAT_TRUNCATE const float ax = std::abs (a);                  \
-       OCTAVE_FLOAT_TRUNCATE const float bx = std::abs (b);                  \
+       const float ax = std::abs (a);                                        \
+       const float bx = std::abs (b);                                        \
        if (ax == bx)                                                         \
          {                                                                   \
-           OCTAVE_FLOAT_TRUNCATE const float by = std::arg (b);              \
+           const float by = std::arg (b);                                    \
            if (by == -A_PI)                                                  \
              return 0 OP static_cast<float> (M_PI);                          \
            return 0 OP by;                                                   \

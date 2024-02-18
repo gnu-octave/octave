@@ -1274,8 +1274,8 @@ Matrix::utsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
           if (info != 0)
             info = -2;
 
-          // FIXME: Why calculate this, rather than just compare to 0.0?
-          volatile double rcond_plus_one = rcon + 1.0;
+          // Prevent use of extra precision.
+          double rcond_plus_one = rcon + 1.0;
 
           if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
             {
@@ -1372,7 +1372,8 @@ Matrix::ltsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
           if (info != 0)
             info = -2;
 
-          volatile double rcond_plus_one = rcon + 1.0;
+          // Prevent use of extra precision.
+          double rcond_plus_one = rcon + 1.0;
 
           if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
             {
@@ -1460,7 +1461,8 @@ Matrix::fsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                   if (info != 0)
                     info = -2;
 
-                  volatile double rcond_plus_one = rcon + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcon + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {
@@ -1549,7 +1551,8 @@ Matrix::fsolve (MatrixType& mattype, const Matrix& b, octave_idx_type& info,
                   if (info != 0)
                     info = -2;
 
-                  volatile double rcond_plus_one = rcon + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcon + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
                     {

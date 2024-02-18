@@ -386,12 +386,6 @@ specified option.
         { "ENABLE_DOCS", false },
 #endif
 
-#if defined (OCTAVE_ENABLE_FLOAT_TRUNCATE)
-        { "ENABLE_FLOAT_TRUNCATE", true },
-#else
-        { "ENABLE_FLOAT_TRUNCATE", false },
-#endif
-
 #if defined (OCTAVE_ENABLE_OPENMP)
         { "ENABLE_OPENMP", true },
 #else

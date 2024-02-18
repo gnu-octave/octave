@@ -944,28 +944,6 @@ AC_SUBST(MKOCTFILE_CXX)
 AC_SUBST(MKOCTFILE_F77)
 AC_SUBST(MKOCTFILE_RANLIB)
 
-### Enable float truncation to work around issues with x87 co-processors
-
-dnl When compiling math for x87, problems may arise in some code comparing
-dnl floating-point intermediate results.  The root cause is the extra precision
-dnl (~80 bits) of x87 co-processor registers versus the IEEE standard 64 bits.
-dnl Generally, storing the result in a local volatile variable forces a
-dnl truncation back to 64 bits, but it also degrades performance.
-dnl However, this performance degradation is very minimal, if indeed measurable.
-dnl Therefore, it has been enabled for all platforms and compilers.
-dnl Reported bugs indicate that --enable-float-truncate is required for MinGW
-dnl and Cygwin platforms and for GCC compilers >= 5.0.  It should not be
-dnl necessary for non-x87 targets or when using modern SSE math.
-ENABLE_FLOAT_TRUNCATE=yes
-AC_ARG_ENABLE([float-truncate],
-  [AS_HELP_STRING([--disable-float-truncate],
-    [truncate intermediate FP results])],
-  [if test "$enableval" = no; then ENABLE_FLOAT_TRUNCATE=no; fi], [])
-if test $ENABLE_FLOAT_TRUNCATE = yes; then
-  AC_DEFINE(OCTAVE_ENABLE_FLOAT_TRUNCATE, 1,
-    [Define to 1 to truncate intermediate FP results.])
-fi
-
 ### Enable internal checks
 
 ## The checks slow down the execution and are redundant,

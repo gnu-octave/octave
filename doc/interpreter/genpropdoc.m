@@ -402,9 +402,9 @@ are visible in their parents' children list, regardless of the value of their \
 
       case "units"
         s.doc = "The unit type used for the \
-@ref{XREFrootmonitorpositions, , @w{@qcode{\"monitorpositions\"}}}, \
-@ref{XREFrootpointerlocation, , @w{@qcode{\"pointerlocation\"}}}, and \
-@ref{XREFrootscreensize, , @w{@qcode{\"screensize\"}}} properties.";
+@ref{XREFrootmonitorpositions, , @qcode{\"monitorpositions\"}}, \
+@ref{XREFrootpointerlocation, , @qcode{\"pointerlocation\"}}, and \
+@ref{XREFrootscreensize, , @qcode{\"screensize\"}} properties.";
         s.category = "Screen Information";
 
     endswitch
@@ -695,12 +695,14 @@ Double Left-click.\n\
       case "toolbar"
         s.doc = "Control the display of the toolbar (along the bottom of the \
 menubar) and the status bar.  When set to @qcode{\"auto\"}, the display is \
-based on the value of the @code{menubar} property.";
+based on the value of the @ref{XREFfiguremenubar,,@qcode{\"menubar\"}} \
+property.";
         s.category = "Mouse Interaction";
 
       case "units"
-        s.doc = "The unit used to compute the @code{position} and \
-@code{outerposition} properties.";
+        s.doc = "The unit used to compute the \
+@ref{XREFfigureposition,,position} and \
+@ref{XREFfigureouterposition,,outerposition} properties.";
         s.category = "Object Position";
 
       case "windowbuttondownfcn"
@@ -1042,7 +1044,7 @@ the @ref{XREFlegend, , legend function} to set legend properties."];
         s.doc = "List of linestyles to be used in order by axes child \
 objects, specified as a cell array of line specification strings.  Note that \
 the linestyle is only incremented after cycling through the full \
-@ref{XREFaxescolororder, , @w{@qcode{\"colororder\"}}} list.  \
+@ref{XREFaxescolororder, , @qcode{\"colororder\"}} list.  \
 @xref{Line Styles}.";
         s.category = "Automatic Child Properties";
 
@@ -1098,8 +1100,8 @@ is typically controlled using the @code{hold} function.  \
 
       case "nextseriesindex"
         s.doc = "Current index value into the \
-@ref{XREFaxescolororder, , @w{\"colororder\"}} and \
-@ref{XREFaxeslinestyleorder, , @w{\"linestyleorder\"}} \
+@ref{XREFaxescolororder, , \"colororder\"} and \
+@ref{XREFaxeslinestyleorder, , \"linestyleorder\"} \
 properties, indicating the item that will be used by the next child object";
         s.valid = "whole number scalar";
         s.category = "Automatic Child Properties";
@@ -1835,8 +1837,8 @@ degrees.";
 
       case "units"
         s.doc = "Sets the measurement unit or method applied to the \
-@ref{XREFtextposition, , @w{@qcode{\"position\"}}} and \
-@ref{XREFtextextent, , @w{@qcode{\"extent\"}}} properties.  The default \
+@ref{XREFtextposition, , @qcode{\"position\"}} and \
+@ref{XREFtextextent, , @qcode{\"extent\"}} properties.  The default \
 option @qcode{\"data\"} uses the same units and limits as the data plotted in \
 the figure.  The @qcode{\"normalized\"} option applies a unitless 0 to 1 scale \
 to the limits along each axis of the displayed data.";
@@ -1945,7 +1947,7 @@ view are unlit.";
       case "cdata"
         s.doc = "Color data values for __objname__ vertices. Data is stored \
 either as a 2-D matrix the same size as \
-@ref{XREFsurfacezdata, , @w{@qcode{\"zdata\"}}} where each element's value \
+@ref{XREFsurfacezdata, , @qcode{\"zdata\"}} where each element's value \
 determines that vertex's color according to the current colormap, or as a \
 3-D array where the third dimension contains separate red, blue, and green \
 components for each vertex.";
@@ -1991,7 +1993,7 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each edge or a color \
 interpolated between two adjacent vertices using the color value data stored \
-in @ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"}}}.  \
+in @ref{XREFsurfacecdata, , @qcode{\"cdata\"}}.  \
 @xref{Colors, , colorspec}.";
         s.valid = packopt ({valid_color, ...
                             "@qcode{\"none\"}", ...
@@ -2028,7 +2030,7 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each face or a color \
 interpolated across the face's vertices using the color value data stored in \
-@ref{XREFsurfacecdata, , @w{@qcode{\"cdata\"}}}.  \
+@ref{XREFsurfacecdata, , @qcode{\"cdata\"}}.  \
 @xref{Colors, , colorspec}.";
         s.valid = packopt ({valid_color, ...
                             "@qcode{\"none\"}", ...
@@ -2210,8 +2212,8 @@ it defines the color at each vertex.";
 
       case "cdatamapping"
         s.doc = "Sets the method for mapping data from the \
-@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} or \
-@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} property to the current \
+@ref{XREFpatchcdata, , @qcode{\"cdata\"}} or \
+@ref{XREFpatchcdata, , @qcode{\"cdata\"}} property to the current \
 colormap.  @qcode{\"Direct\"} mapping selects the color using the \
 @qcode{\"cdata\"} or @qcode{\"facevertexcdata\"} value as an index to the \
 current colormap.  @qcode{\"Scaled\"} mapping scales the @qcode{\"cdata\"} \
@@ -2240,7 +2242,7 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each edge or a color \
 interpolated between edge's vertices using the color value data stored in \
-@ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}}.  \
+@ref{XREFpatchcdata, , @qcode{\"cdata\"}}.  \
 @xref{Colors, , colorspec}.";
         s.valid = packopt ({valid_color, ...
                             "@qcode{\"none\"}", ...
@@ -2276,8 +2278,8 @@ either a valid color specification or one of @qcode{\"none\"}, \
 @qcode{\"flat\"}, or @qcode{\"interp\"}.  @qcode{\"flat\"} and \
 @qcode{\"interp\"} will set either a single color for each face or a color \
 interpolated across the face's vertices using the color value data stored in \
-either the @ref{XREFpatchcdata, , @w{@qcode{\"cdata\"}}} or \
-@ref{XREFpatchfacevertexcdata, , @w{@qcode{\"facevertexcdata\"}}} \
+either the @ref{XREFpatchcdata, , @qcode{\"cdata\"}} or \
+@ref{XREFpatchfacevertexcdata, , @qcode{\"facevertexcdata\"}} \
 properties.  @xref{Colors, , colorspec}.";
         ## Don't provide a default value, and mark colorspec with
         ## braces, this forces the default RGB triplet to be displayed

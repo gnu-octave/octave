@@ -171,7 +171,7 @@ identifier is reserved by Octave.
 
 @DOCSTRING(endclassdef)
 
-@c methods definition must be manually created to avoid
+@c properties definition must be manually created to avoid
 @c collision with function of the same name.
 @anchor{XREFkwpropertyproperties}
 @deftypefn {} {} properties

@@ -239,7 +239,7 @@ check_fseek_ftell_workaround_needed (bool set_nonbuffered_mode)
       return false;
     }
 
-  unwind_action act ([] ()
+  unwind_action act ([fptr, tmpname] ()
   {
     std::fclose (fptr);
     sys::unlink (tmpname);

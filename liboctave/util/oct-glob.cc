@@ -184,7 +184,7 @@ find_files (std::list<std::string>& dirlist, const std::string& dir,
   if (h_find == INVALID_HANDLE_VALUE)
     return;
 
-  unwind_action close_h_find ([] () { FindClose (h_find); });
+  unwind_action close_h_find ([h_find] () { FindClose (h_find); });
 
   // find all files that match pattern
   do

@@ -171,9 +171,13 @@ identifier is reserved by Octave.
 
 @DOCSTRING(endclassdef)
 
-@c methods definition must be manually created to avoid
+@c properties definition must be manually created to avoid
 @c collision with function of the same name.
 @anchor{XREFkwpropertyproperties}
+@html
+<span style="display:block; margin-top:-4.5ex;">&nbsp;</span>
+@end html
+
 @deftypefn {} {} properties
 Mark the beginning of a block of properties in a classdef definition.  Note
 that the @ref{XREFproperties, , function @qcode{"properties"}} is a function
@@ -186,6 +190,10 @@ that lists the properties of a classdef class or object.
 @c methods definition must be manually created to avoid
 @c collision with function of the same name.
 @anchor{XREFkwpropertymethods}
+@html
+<span style="display:block; margin-top:-4.5ex;">&nbsp;</span>
+@end html
+
 @deftypefn {} {} methods
 Mark the beginning of a block of methods in a classdef definition.  Note that
 the @ref{XREFmethods, , function @qcode{"methods"}} is a function that lists

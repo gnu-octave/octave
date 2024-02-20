@@ -226,7 +226,7 @@ octave_exception
 
 extern OCTAVE_API std::atomic<int> octave_interrupt_state;
 
-extern OCTAVE_API volatile std::atomic<bool> octave_signal_caught;
+extern OCTAVE_API std::atomic<bool> octave_signal_caught;
 
 #endif
 

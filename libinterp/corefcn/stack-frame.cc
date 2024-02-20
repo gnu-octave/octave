@@ -30,6 +30,7 @@
 #include <iostream>
 
 #include "lo-regexp.h"
+#include "lo-sysdep.h"
 #include "str-vec.h"
 
 #include "defun.h"
@@ -48,6 +49,7 @@
 #include "syminfo.h"
 #include "symrec.h"
 #include "symscope.h"
+#include "utils.h"
 #include "variables.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -1480,6 +1482,24 @@ stack_frame::display_stopped_in_message (std::ostream& os) const
 
       os << " [" << fcn_file_name () << "] " << std::endl;
     }
+}
+
+void
+stack_frame::debug_list (std::ostream& os, int num_lines) const
+{
+  std::string file_name = fcn_file_name ();
+
+  int target_line = line ();
+  int start = std::max (target_line - num_lines/2, 0);
+  int end = target_line + num_lines/2;
+
+  display_file_lines (os, fcn_file_name (), start, end, target_line, "-->", "dblist");
+}
+
+void
+stack_frame::debug_type (std::ostream& os, int start_line, int end_line) const
+{
+  display_file_lines (os, fcn_file_name (), start_line, end_line, -1, "", "dbtype");
 }
 
 void

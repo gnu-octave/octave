@@ -164,9 +164,9 @@ DEFMETHOD (EDITOR, interp, args, nargout,
 @deftypefnx {} {@var{old_val} =} EDITOR (@var{new_val}, "local")
 Query or set the internal variable that specifies the default text editor.
 
-The default value is taken from the environment variable @w{@env{EDITOR}}
+The default value is taken from the environment variable @w{@env{EDITOR}}@
 when Octave starts.  If the environment variable is not initialized,
-@w{@env{EDITOR}} will be set to @qcode{"emacs"}.
+@w{@env{EDITOR}}@ will be set to @qcode{"emacs"}.
 
 When called from inside a function with the @qcode{"local"} option, the
 variable is changed locally for the function and any subroutines it calls.

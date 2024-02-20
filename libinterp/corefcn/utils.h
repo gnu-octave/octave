@@ -135,6 +135,9 @@ extern OCTINTERP_API std::string contents_file_in_path (const std::string&);
 
 extern OCTINTERP_API std::string fcn_file_in_path (const std::string&);
 
+extern OCTINTERP_API void
+display_file_lines (std::ostream& os, const std::string& file_name, int start, int end, int target_line, const std::string& marker, const std::string& who);
+
 extern OCTINTERP_API std::string do_string_escapes (const std::string& s);
 
 extern OCTINTERP_API const char * undo_string_escape (char c);

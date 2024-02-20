@@ -56,7 +56,8 @@ may be indexed in one of three ways:
 @ref{XREFLinearIndexing,,Linear Indexing}, and
 @ref{XREFLogicalIndexing,,Logical Indexing}.
 
-@anchor{XREFComponentIndexing} @subheading Component Indexing
+@anchor{XREFComponentIndexing}
+@subheading Component Indexing
 @cindex Component Indexing
 Component indices may be scalars, vectors, ranges, or the special operator
 @samp{:}, which selects entire rows, columns, or higher-dimensional slices.
@@ -217,7 +218,8 @@ A(end:-1:1)       # reversal of A => [4, 3, 2, 1]
 
 For more information see the @ref{XREFend, , @qcode{"end" keyword}}.
 
-@anchor{XREFLinearIndexing}@subheading Linear Indexing
+@anchor{XREFLinearIndexing}
+@subheading Linear Indexing
 @cindex Linear Indexing
 It is permissible to use a 1-D index with a multi-dimensional object.  This is
 also called @dfn{linear indexing}.  In this case, the elements of the
@@ -236,7 +238,8 @@ A([1, 2, 2, 1]) # result includes repeated elements: ans = [1, 4, 4, 1]
 @end group
 @end example
 
-@anchor{XREFLogicalIndexing}@subheading Logical Indexing
+@anchor{XREFLogicalIndexing}
+@subheading Logical Indexing
 @cindex Logical Indexing
 Logical values can also be used to index matrices and cell arrays.
 When indexing with a logical array the result will be a vector containing

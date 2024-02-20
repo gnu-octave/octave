@@ -307,12 +307,11 @@ function.
 The @code{xlim}, @code{ylim}, and @code{zlim} functions may be used to
 get or set individual axis limits.  Each has the same form.
 
-@c Add cross-references and function index entries for other limit functions.
-@anchor{XREFylim}
-@anchor{XREFzlim}
-@findex ylim
-@findex zlim
 @DOCSTRING(xlim)
+
+@DOCSTRING(ylim)
+
+@DOCSTRING(zlim)
 
 The @code{xticks}, @code{yticks}, @code{zticks}, @code{rticks}, and
 @code{thetaticks} functions may be used to get or set the tick mark locations
@@ -321,15 +320,15 @@ options are not currently available for @code{rticks}, and @code{thetaticks}.
 
 @c FIXME: Update this section if polarplot and polar axes changes change the
 @c        associated axis properties.
-@anchor{XREFyticks}
-@anchor{XREFzticks}
-@anchor{XREFrticks}
-@anchor{XREFthetaticks}
-@findex yticks
-@findex zticks
-@findex rticks
-@findex thetaticks
 @DOCSTRING(xticks)
+
+@DOCSTRING(yticks)
+
+@DOCSTRING(zticks)
+
+@DOCSTRING(rticks)
+
+@DOCSTRING(thetaticks)
 
 The @code{xticklabels}, @code{yticklabels}, and @code{zticklabels} functions
 may be used to get or set the label assigned to each tick location and the
@@ -338,21 +337,21 @@ labeling mode on the respective axis.  Each has the same form.
 @c FIXME: Update this section if polarplot and polar axes changes change the
 @c        associated axis properties.
 @c        Matlab also implements rticklabels and thetaticklabels.
-@anchor{XREFyticklabels}
-@anchor{XREFzticklabels}
-@findex yticklabels
-@findex zticklabels
 @DOCSTRING(xticklabels)
+
+@DOCSTRING(yticklabels)
+
+@DOCSTRING(zticklabels)
 
 The @code{xtickangle}, @code{ytickangle}, and @code{ztickangle} functions
 may be used to get or set the rotation angle of labels for the respective axis.
 Each has the same form.
 
-@anchor{XREFytickangle}
-@anchor{XREFztickangle}
-@findex ytickangle
-@findex ztickangle
 @DOCSTRING(xtickangle)
+
+@DOCSTRING(ytickangle)
+
+@DOCSTRING(ztickangle)
 
 @node Two-dimensional Function Plotting
 @subsubsection Two-dimensional Function Plotting
@@ -604,12 +603,11 @@ are drawn in an invisible axes, on top of every other axes.
 
 @DOCSTRING(text)
 
-@c Add cross-references and function index entries for other label functions.
-@anchor{XREFylabel}
-@anchor{XREFzlabel}
-@findex ylabel
-@findex zlabel
 @DOCSTRING(xlabel)
+
+@DOCSTRING(ylabel)
+
+@DOCSTRING(zlabel)
 
 @DOCSTRING(clabel)
 
@@ -2304,9 +2302,8 @@ function is called.
 @DOCSTRING(refreshdata)
 
 @anchor{XREFlinkdata}
-@c add the description of the linkdata function here when it is written
-@c remove the explicit anchor when you add the corresponding @DOCSTRING
-@c command
+@c FIXME: Add the description of the linkdata function here when it is written.
+@c Remove the explicit anchor when you add the corresponding @DOCSTRING command.
 
 @node Area Series
 @subsubsection Area Series

@@ -433,7 +433,6 @@ along with a warning.
 @section Variable-length Return Lists
 @cindex variable-length return lists
 @cindex @code{varargout}
-
 @anchor{XREFvarargout}
 
 It is possible to return a variable number of output arguments from a
@@ -478,7 +477,6 @@ and is handled the same as any other parameter name.
 @section Variable-length Argument Lists
 @cindex variable-length argument lists
 @cindex @code{varargin}
-
 @anchor{XREFvarargin}
 
 Sometimes the number of input arguments is not known when the function

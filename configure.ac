@@ -3382,7 +3382,6 @@ Octave is now configured for $canonical_host_type
   64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
   Use std::pmr::polymorphic_allocator:  $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR
   OpenMP SMP multithreading:            $ENABLE_OPENMP
-  Truncate intermediate FP results:     $ENABLE_FLOAT_TRUNCATE
   Include support for GNU readline:     $USE_READLINE
   Use push parser in command line REPL: $ENABLE_COMMAND_LINE_PUSH_PARSER
   Build cross tools:                    $cross_tools

@@ -885,7 +885,7 @@ installation of Octave.
 @itemize @bullet
 @item
 On some @nospell{SCO} systems, @code{info} fails to compile if
-@w{@code{HAVE_TERMIOS_H}} is defined in @file{config.h}.  Simply
+@w{@code{HAVE_TERMIOS_H}}@ is defined in @file{config.h}.  Simply
 removing the definition from @file{info/config.h} should allow it to
 compile.
 
@@ -910,7 +910,7 @@ On some DEC alpha systems there may be a problem with the @code{libdxml}
 library, resulting in floating point errors and/or segmentation faults
 in the linear algebra routines called by Octave.  If you encounter such
 problems, then you should modify the configure script so that
-@w{@code{SPECIAL_MATH_LIB}} is not set to @code{-ldxml}.
+@w{@code{SPECIAL_MATH_LIB}}@ is not set to @code{-ldxml}.
 
 @item
 On FreeBSD systems Octave may hang while initializing some internal
@@ -956,10 +956,10 @@ warning: ANSI C++ prohibits conversion from `(int)'
 while compiling @file{sighandlers.cc}, you may need to edit some files
 in the @code{gcc} include subdirectory to add proper prototypes for
 functions there.  For example, @nospell{Ultrix} 4.2 needs proper declarations
-for the @code{signal} function and the @w{@code{SIG_IGN}} macro in the file
+for the @code{signal} function and the @w{@code{SIG_IGN}}@ macro in the file
 @file{signal.h}.
 
-On some systems the @w{@code{SIG_IGN}} macro is defined to be something
+On some systems the @w{@code{SIG_IGN}}@ macro is defined to be something
 like this:
 
 @example
@@ -975,8 +975,8 @@ when it should really be something like:
 
 @noindent
 to match the prototype declaration for the @code{signal} function.  This
-change should also be made for the @w{@code{SIG_DFL}} and
-@w{@code{SIG_ERR}} symbols.  It may be necessary to change the
+change should also be made for the @w{@code{SIG_DFL}}@ and
+@w{@code{SIG_ERR}}@ symbols.  It may be necessary to change the
 definitions in @file{sys/signal.h} as well.
 
 The @code{gcc} @code{fixincludes} and @code{fixproto} scripts should
@@ -1040,7 +1040,7 @@ these files without @option{-g}.
 @item
 Some people have reported that calls to system() and the pager do not
 work on @nospell{SunOS} systems.  This is apparently due to having
-@w{@code{G_HAVE_SYS_WAIT}} defined to be 0 instead of 1 when compiling
+@w{@code{G_HAVE_SYS_WAIT}}@ defined to be 0 instead of 1 when compiling
 @code{libg++}.
 
 @item

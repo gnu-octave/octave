@@ -37,10 +37,10 @@
 ## arguments or as 2-element vector.  The viewpoint can also be specified with
 ## Cartesian coordinates @var{x}, @var{y}, and @var{z}.
 ##
-## The call @code{view (2)} sets the viewpoint to @w{@var{azimuth} = 0}
+## The call @code{view (2)} sets the viewpoint to @w{@var{azimuth} = 0}@
 ## and @w{@var{elevation} = 90}, which is the default for 2-D graphs.
 ##
-## The call @code{view (3)} sets the viewpoint to @w{@var{azimuth} = -37.5}
+## The call @code{view (3)} sets the viewpoint to @w{@var{azimuth} = -37.5}@
 ## and @w{@var{elevation} = 30}, which is the default for 3-D graphs.
 ##
 ## If the first argument @var{hax} is an axes handle, then operate on

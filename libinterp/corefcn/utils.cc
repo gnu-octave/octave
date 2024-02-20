@@ -803,6 +803,35 @@ contents_file_in_path (const std::string& dir)
   return retval;
 }
 
+void
+display_file_lines (std::ostream& os, const std::string& file_name, int start, int end, int target_line, const std::string& marker, const std::string& who)
+{
+  std::ifstream fs = octave::sys::ifstream (file_name.c_str (), std::ios::in);
+
+  if (! fs)
+    os << who << ": unable to open '" << file_name << "' for reading!\n";
+  else
+    {
+      int line_num = 1;
+      std::string text;
+
+      while (std::getline (fs, text) && line_num <= end)
+        {
+          if (line_num >= start)
+            {
+              os << line_num;
+
+              if (line_num == target_line)
+                os << marker;
+
+              os << "\t" << text << "\n";
+            }
+
+          line_num++;
+        }
+    }
+}
+
 // Replace backslash escapes in a string with the real values.
 
 std::string

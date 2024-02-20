@@ -491,6 +491,10 @@ public:
 
   void debug_where (std::ostream& os) const;
 
+  void debug_list (std::ostream& os, int num_lines) const;
+
+  void debug_type (std::ostream& os, int start_line, int end_line) const;
+
   octave_user_code * current_user_code () const;
 
   unwind_protect * curr_fcn_unwind_protect_frame ();

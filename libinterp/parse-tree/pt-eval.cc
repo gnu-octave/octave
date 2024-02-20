@@ -2577,6 +2577,28 @@ tree_evaluator::debug_where (std::ostream& os) const
   frm->display_stopped_in_message (os);
 }
 
+void
+tree_evaluator::debug_list (std::ostream& os, int num_lines) const
+{
+  std::shared_ptr<stack_frame> frm = m_call_stack.current_user_frame ();
+
+  if (! (frm->is_user_script_frame () || frm->is_user_fcn_frame ()))
+    error ("dblist: must be inside a user function or script to use dblist\n");
+
+  frm->debug_list (os, num_lines);
+}
+
+void
+tree_evaluator::debug_type (std::ostream& os, int start_line, int end_line) const
+{
+  std::shared_ptr<stack_frame> frm = m_call_stack.current_user_frame ();
+
+  if (! (frm->is_user_script_frame () || frm->is_user_fcn_frame ()))
+    error ("dbtype: must be inside a user function or script to use dbtype\n");
+
+  frm->debug_type (os, start_line, end_line);
+}
+
 octave_user_code *
 tree_evaluator::current_user_code () const
 {

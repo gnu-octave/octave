@@ -627,6 +627,15 @@ public:
 
   void display_stopped_in_message (std::ostream& os) const;
 
+  void debug_where (std::ostream& os) const
+  {
+    display_stopped_in_message (os);
+  }
+
+  void debug_list (std::ostream& os, int num_lines) const;
+
+  void debug_type (std::ostream& os, int start_line, int end_line) const;
+
   virtual void mark_scope (const symbol_record&, scope_flags) = 0;
 
   virtual void display (bool follow = true) const;

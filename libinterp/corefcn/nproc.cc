@@ -55,7 +55,7 @@ processors available to the current process.
 
 @item overridable
 same as @code{current}, but overridable through the
-@w{@env{OMP_NUM_THREADS}} environment variable.
+@w{@env{OMP_NUM_THREADS}}@ environment variable.
 @end table
 @end deftypefn */)
 {

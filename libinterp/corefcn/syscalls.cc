@@ -426,7 +426,7 @@ Asynchronous I/O.
 
 @item F_SETFL
 Set the file status flags for @var{fid} to the value specified by @var{arg}.
- The only flags that can be changed are @w{@code{O_APPEND}} and
+The only flags that can be changed are @w{@code{O_APPEND}}@ and
 @w{@code{O_NONBLOCK}}.
 @end vtable
 
@@ -824,7 +824,7 @@ File number of the file.
 @item mode
 File mode, as an integer.  Use the functions @w{@code{S_ISREG}},
 @w{@code{S_ISDIR}}, @w{@code{S_ISCHR}}, @w{@code{S_ISBLK}},
-@w{@code{S_ISFIFO}}, @w{@code{S_ISLNK}}, or @w{@code{S_ISSOCK}} to extract
+@w{@code{S_ISFIFO}}, @w{@code{S_ISLNK}}, or @w{@code{S_ISSOCK}}@ to extract
 information from this value.
 
 @item modestr

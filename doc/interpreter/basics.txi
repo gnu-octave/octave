@@ -85,7 +85,7 @@ probably only useful if you are actually trying to debug the parser.
 @cindex @sortas{options, Octave command --doc-cache-file} @ @ @code{--doc-cache-file @var{filename}}
 Specify the name of the documentation cache file to use.  The value of
 @var{filename} specified on the command line will override any value of
-@w{@env{OCTAVE_DOC_CACHE_FILE}} found in the environment, but not any commands
+@w{@env{OCTAVE_DOC_CACHE_FILE}}@ found in the environment, but not any commands
 in the system or user startup files that use the @code{doc_cache_file}
 function.
 
@@ -104,9 +104,9 @@ specified.
 @cindex @sortas{options, Octave command --exec-path} @ @ @code{--exec-path @var{path}}
 Specify the path to search for programs to run.  The value of @var{path}
 specified on the command line will override any value of
-@w{@env{OCTAVE_EXEC_PATH}} found in the environment, but not any commands
+@w{@env{OCTAVE_EXEC_PATH}}@ found in the environment, but not any commands
 in the system or user startup files that call the
-@w{@env{EXEC_PATH}} function.
+@w{@env{EXEC_PATH}}@ function.
 
 @item --gui
 @cindex @sortas{options, Octave command --gui} @ @ @code{--gui}
@@ -122,15 +122,15 @@ Print short help message and exit.
 @cindex @sortas{options, Octave command --image-path} @ @ @code{--image-path @var{path}}
 Add path to the head of the search path for images.  The value of
 @var{path} specified on the command line will override any value of
-@w{@env{OCTAVE_IMAGE_PATH}} found in the environment, but not any commands
-in the system or user startup files that call the @w{@env{IMAGE_PATH}}
+@w{@env{OCTAVE_IMAGE_PATH}}@ found in the environment, but not any commands
+in the system or user startup files that call the @w{@env{IMAGE_PATH}}@
 function.
 
 @item --info-file @var{filename}
 @cindex @sortas{options, Octave command --info-file} @ @ @code{--info-file @var{filename}}
 Specify the name of the info file to use.  The value of @var{filename}
 specified on the command line will override any value of
-@w{@env{OCTAVE_INFO_FILE}} found in the environment, but not any commands
+@w{@env{OCTAVE_INFO_FILE}}@ found in the environment, but not any commands
 in the system or user startup files that use the @code{info_file}
 function.
 
@@ -138,7 +138,7 @@ function.
 @cindex @sortas{options, Octave command --info-program} @ @ @code{--info-program @var{program}}
 Specify the name of the info program to use.  The value of @var{program}
 specified on the command line will override any value of
-@w{@env{OCTAVE_INFO_PROGRAM}} found in the environment, but not any
+@w{@env{OCTAVE_INFO_PROGRAM}}@ found in the environment, but not any
 commands in the system or user startup files that use the
 @code{info_program} function.
 
@@ -206,7 +206,7 @@ and @option{--no-site-file}.
 @cindex @sortas{options, Octave command -p} @ @ @code{-p @var{path}}
 Add path to the head of the search path for function files.  The
 value of @var{path} specified on the command line will override any value
-of @w{@env{OCTAVE_PATH}} found in the environment, but not any commands in the
+of @w{@env{OCTAVE_PATH}}@ found in the environment, but not any commands in the
 system or user startup files that set the internal load path through one
 of the path functions.
 

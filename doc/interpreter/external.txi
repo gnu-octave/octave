@@ -172,14 +172,14 @@ not used, and
 @item The string to use for the help text of the function.
 @end enumerate
 
-The return type of functions defined with @w{@code{DEFUN_DLD}} is always
+The return type of functions defined with @w{@code{DEFUN_DLD}}@ is always
 @code{octave_value_list}.
 
 There are a couple of important considerations in the choice of function name.
 First, it must be a valid Octave function name and so must be a sequence of
 letters, digits, and underscores not starting with a digit.  Second, as Octave
 uses the function name to define the filename it attempts to find the function
-in, the function name in the @w{@code{DEFUN_DLD}} macro must match the filename
+in, the function name in the @w{@code{DEFUN_DLD}}@ macro must match the filename
 of the oct-file.  Therefore, the above function should be in a file
 @file{helloworld.cc}, and would be compiled to an oct-file using the command
 
@@ -189,9 +189,9 @@ mkoctfile helloworld.cc
 
 This will create a file called @file{helloworld.oct} that is the compiled
 version of the function.  It should be noted that it is perfectly acceptable to
-have more than one @w{@code{DEFUN_DLD}} function in a source file.  However,
+have more than one @w{@code{DEFUN_DLD}}@ function in a source file.  However,
 there must either be a symbolic link to the oct-file for each of the functions
-defined in the source code with the @w{@code{DEFUN_DLD}} macro or the
+defined in the source code with the @w{@code{DEFUN_DLD}}@ macro or the
 @code{autoload} (@ref{Function Files}) function should be used.
 
 The rest of the function shows how to find the number of input arguments, how
@@ -348,7 +348,7 @@ are of interest only for matrices such as @code{transpose}, @code{hermitian},
 @code{solve}, etc.
 
 The typical way to extract a matrix or array from the input arguments of
-@w{@code{DEFUN_DLD}} function is as follows
+@w{@code{DEFUN_DLD}}@ function is as follows
 
 @example
 @group
@@ -874,10 +874,10 @@ The conversion to an @code{octave_value} is handled by the sparse
 
 Global variables allow variables in the global scope to be accessed.  Global
 variables can be accessed within oct-files by using the support functions
-@w{@code{global_varval}} and @w{@code{global_assign}} from the current
+@w{@code{global_varval}}@ and @w{@code{global_assign}}@ from the current
 interpreter's symbol table.  Both functions take as first argument a string
 representing the variable name to be obtained or assigned.  The second
-argument of @w{@code{global_assign}} is the value to be assigned.  An
+argument of @w{@code{global_assign}}@ is the value to be assigned.  An
 example of the use of these two functions is
 
 @example
@@ -1120,7 +1120,7 @@ error: fortrandemo: fortransub: divide by zero
 Allocating memory within an oct-file might seem easy, as the C++ new/delete
 operators can be used.  However, in that case great care must be taken to avoid
 memory leaks.  The preferred manner in which to allocate memory for use locally
-is to use the @w{@code{OCTAVE_LOCAL_BUFFER}} macro.  An example of its use is
+is to use the @w{@code{OCTAVE_LOCAL_BUFFER}}@ macro.  An example of its use is
 
 @example
 OCTAVE_LOCAL_BUFFER (double, tmp, len)
@@ -1194,19 +1194,19 @@ for (octave_idx_type i = 0; i < a.nelem (); i++)
 @end group
 @end example
 
-The presence of the @w{@code{OCTAVE_QUIT}} macro in the inner loop allows
+The presence of the @w{@code{OCTAVE_QUIT}}@ macro in the inner loop allows
 Octave to detect and acknowledge a @key{Control-C} key sequence.  Without this
 macro, the user must either wait for the oct-file function to return before the
 interrupt is processed, or the user must press @key{Control-C} three times
 which will force Octave to exit completely.
 
-The @w{@code{OCTAVE_QUIT}} macro does impose a very small performance penalty;
+The @w{@code{OCTAVE_QUIT}}@ macro does impose a very small performance penalty;
 For loops that are known to be small it may not make sense to include
 @w{@code{OCTAVE_QUIT}}.
 
 When creating an oct-file that uses an external library, the function might
 spend a significant portion of its time in the external library.  It is not
-generally possible to use the @w{@code{OCTAVE_QUIT}} macro in this case.  The
+generally possible to use the @w{@code{OCTAVE_QUIT}}@ macro in this case.  The
 alternative code in this case is
 
 @example
@@ -1221,7 +1221,7 @@ The disadvantage of this is that if the foreign code allocates any memory
 internally, then this memory might be lost during an interrupt, without being
 deallocated.  Therefore, ideally Octave itself should allocate any memory that
 is needed by the foreign code, with either the @nospell{@code{fortran_vec}}
-method or the @w{@code{OCTAVE_LOCAL_BUFFER}} macro.
+method or the @w{@code{OCTAVE_LOCAL_BUFFER}}@ macro.
 
 The Octave @code{unwind_protect} mechanism (@ref{The unwind_protect Statement})
 can also be used in oct-files.  In conjunction with the exception handling of
@@ -1251,7 +1251,7 @@ The warning for division by zero (and in fact all warnings) are disabled in the
 @subsection Documentation and Testing of Oct-Files
 
 The documentation for an oct-file is contained in the fourth string parameter
-of the @w{@code{DEFUN_DLD}} macro.  This string can be formatted in the same
+of the @w{@code{DEFUN_DLD}}@ macro.  This string can be formatted in the same
 manner as the help strings for user functions, however there are some issues
 that are particular to the formatting of help strings within oct-files.
 
@@ -2163,7 +2163,7 @@ on Unix-like systems or that is pointed to from the registry keys at
 @file{HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\JRE} or
 @file{HKEY_LOCAL_MACHINE\SOFTWARE\JavaSoft\Java Runtime Environment} on
 Windows.  The default path to the JVM can be overridden by setting the
-environment variable @w{@env{JAVA_HOME}} to the path where the JVM is
+environment variable @w{@env{JAVA_HOME}}@ to the path where the JVM is
 installed.  On Windows that might be, for example,
 @file{C:\Program Files\Java\jre-10.0.2}.  Make sure that you select a directory
 that contains the JVM with a @nospell{bit-ness} that matches Octave's.

@@ -91,19 +91,22 @@ or function names:
 @ref{XREFunwind_protect_cleanup,,unwind_protect_cleanup}@: |
 @ref{XREFwhile,,while}@:
 
-@anchor{XREFkwcategoryUtilityFunctions}@subheading Utility Functions:
+@anchor{XREFkwcategoryUtilityFunctions}
+@subheading Utility Functions:
 The function @code{iskeyword} can be used to quickly check whether an
 identifier is reserved by Octave.
 
 @DOCSTRING(iskeyword)
 
-@anchor{XREFkwcategoryVariableDeclaration}@subheading Variable Declaration:
+@anchor{XREFkwcategoryVariableDeclaration}
+@subheading Variable Declaration:
 
 @DOCSTRING(global)
 
 @DOCSTRING(persistent)
 
-@anchor{XREFkwcategoryFunctionDefinition}@subheading Function Definition:
+@anchor{XREFkwcategoryFunctionDefinition}
+@subheading Function Definition:
 
 @DOCSTRING(function)
 
@@ -113,7 +116,8 @@ identifier is reserved by Octave.
 
 @DOCSTRING(return)
 
-@anchor{XREFkwcategoryControlStructures}@subheading Control Statements:
+@anchor{XREFkwcategoryControlStructures}
+@subheading Control Statements:
 
 @DOCSTRING(if)
 
@@ -143,7 +147,8 @@ identifier is reserved by Octave.
 
 @DOCSTRING(end_unwind_protect)
 
-@anchor{XREFkwcategoryIteratingStructures}@subheading Iterating Structures:
+@anchor{XREFkwcategoryIteratingStructures}
+@subheading Iterating Structures:
 
 @DOCSTRING(for)
 
@@ -165,7 +170,8 @@ identifier is reserved by Octave.
 
 @DOCSTRING(continue)
 
-@anchor{XREFkwcategoryClassdefStructures}@subheading Classdef Structures:
+@anchor{XREFkwcategoryClassdefStructures}
+@subheading Classdef Structures:
 
 @DOCSTRING(classdef)
 
@@ -211,7 +217,8 @@ the methods of a class or object.
 
 @DOCSTRING(endenumeration)
 
-@anchor{XREFkwcategoryExecutionEnvironment}@subheading Execution Environment:
+@anchor{XREFkwcategoryExecutionEnvironment}
+@subheading Execution Environment:
 
 @DOCSTRING(__FILE__)
 

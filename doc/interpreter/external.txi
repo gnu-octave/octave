@@ -158,7 +158,7 @@ most of the definitions necessary for a C++ oct-file.  Note that
 @file{octave/oct.h} is a C++ header and cannot be directly @code{#include}'ed
 in a C source file, nor any other language.
 
-Included by @file{oct.h} is a definition for the macro @w{@code{DEFUN_DLD}}
+Included by @file{oct.h} is a definition for the macro @w{@code{DEFUN_DLD}}@
 which creates a dynamically loaded function.  This macro takes four arguments:
 
 @enumerate 1

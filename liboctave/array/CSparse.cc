@@ -5297,7 +5297,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
@@ -5467,7 +5468,8 @@ SparseComplexMatrix::bsolve (MatrixType& mattype, const SparseComplexMatrix& b,
                   if (err != 0)
                     err = -2;
 
-                  volatile double rcond_plus_one = rcond + 1.0;
+                  // Prevent use of extra precision.
+                  double rcond_plus_one = rcond + 1.0;
 
                   if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                     {
@@ -5630,7 +5632,9 @@ SparseComplexMatrix::factorize (octave_idx_type& err, double& rcond,
         rcond = Info (UMFPACK_RCOND);
       else
         rcond = 1.;
-      volatile double rcond_plus_one = rcond + 1.0;
+
+      // Prevent use of extra precision.
+      double rcond_plus_one = rcond + 1.0;
 
       if (status == UMFPACK_WARNING_singular_matrix
           || rcond_plus_one == 1.0 || octave::math::isnan (rcond))
@@ -5780,7 +5784,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const Matrix& b,
             }
           else
             {
-              volatile double rcond_plus_one = rcond + 1.0;
+              // Prevent use of extra precision.
+              double rcond_plus_one = rcond + 1.0;
 
               if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
@@ -6029,7 +6034,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseMatrix& b,
             }
           else
             {
-              volatile double rcond_plus_one = rcond + 1.0;
+              // Prevent use of extra precision.
+              double rcond_plus_one = rcond + 1.0;
 
               if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
@@ -6311,7 +6317,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
             }
           else
             {
-              volatile double rcond_plus_one = rcond + 1.0;
+              // Prevent use of extra precision.
+              double rcond_plus_one = rcond + 1.0;
 
               if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
@@ -6539,7 +6546,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
             }
           else
             {
-              volatile double rcond_plus_one = rcond + 1.0;
+              // Prevent use of extra precision.
+              double rcond_plus_one = rcond + 1.0;
 
               if (rcond_plus_one == 1.0 || octave::math::isnan (rcond))
                 {
@@ -6674,7 +6682,8 @@ SparseComplexMatrix::fsolve (MatrixType& mattype, const SparseComplexMatrix& b,
               retval.maybe_compress ();
 
               rcond = Info (UMFPACK_RCOND);
-              volatile double rcond_plus_one = rcond + 1.0;
+              // Prevent use of extra precision.
+              double rcond_plus_one = rcond + 1.0;
 
               if (status == UMFPACK_WARNING_singular_matrix
                   || rcond_plus_one == 1.0 || octave::math::isnan (rcond))

@@ -756,10 +756,10 @@ DEFMETHOD (fseek, interp, args, ,
 Set the file pointer to the location @var{offset} within the file @var{fid}.
 
 The pointer is positioned @var{offset} characters from the @var{origin}, which
-may be one of the predefined variables @w{@qcode{SEEK_SET}} (beginning),
-@w{@qcode{SEEK_CUR}} (current position), or @w{@qcode{SEEK_END}} (end of file)
+may be one of the predefined variables @w{@qcode{SEEK_SET}}@ (beginning),
+@w{@qcode{SEEK_CUR}}@ (current position), or @w{@qcode{SEEK_END}}@ (end of file)
 or strings @nospell{@qcode{"bof"}}, @nospell{@qcode{"cof"}}, or
-@nospell{@qcode{"eof"}}.  If @var{origin} is omitted, @w{@qcode{SEEK_SET}} is
+@nospell{@qcode{"eof"}}.  If @var{origin} is omitted, @w{@qcode{SEEK_SET}}@ is
 assumed.  @var{offset} may be positive, negative, or zero but not all
 combinations of @var{origin} and @var{offset} can be realized.
 
@@ -3108,7 +3108,7 @@ these are replaced with a string that makes the filename unique.  The file
 is then created with mode read/write and permissions that are system
 dependent (on GNU/Linux systems, the permissions will be 0600 for versions
 of glibc 2.0.7 and later).  The file is opened in binary mode and with the
-@w{@code{O_EXCL}} flag.
+@w{@code{O_EXCL}}@ flag.
 
 If the optional argument @var{delete} is supplied and is true, the file will
 be deleted automatically when Octave exits.

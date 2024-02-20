@@ -137,9 +137,9 @@
 ## purposes only.  Except for @samp{OCTAVE_HOME} and @samp{OCTAVE_EXEC_HOME},
 ## users may not override these variables.
 ##
-## If @w{@env{OCTAVE_HOME}} or @w{@env{OCTAVE_EXEC_HOME}} are set in the
+## If @w{@env{OCTAVE_HOME}}@ or @w{@env{OCTAVE_EXEC_HOME}}@ are set in the
 ## environment, then other variables are adjusted accordingly with
-## @w{@env{OCTAVE_HOME}} or @w{@env{OCTAVE_EXEC_HOME}} substituted for the
+## @w{@env{OCTAVE_HOME}}@ or @w{@env{OCTAVE_EXEC_HOME}}@ substituted for the
 ## original value of the directory specified by the @option{--prefix} or
 ## @option{--exec-prefix} options that were used when Octave was configured.
 ##

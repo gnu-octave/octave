@@ -38,7 +38,7 @@
 
 std::atomic<sig_atomic_t> octave_interrupt_state{0};
 
-volatile std::atomic<bool> octave_signal_caught{false};
+std::atomic<bool> octave_signal_caught{false};
 
 void (*octave_signal_hook) () = nullptr;
 void (*octave_interrupt_hook) () = nullptr;

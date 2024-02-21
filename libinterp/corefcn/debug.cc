@@ -628,19 +628,19 @@ DEFMETHOD (dbtype, interp, args, ,
 @deftypefn  {} {} dbtype
 @deftypefnx {} {} dbtype @var{lineno}
 @deftypefnx {} {} dbtype @var{startl:endl}
-@deftypefnx {} {} dbtype @var{startl:end}
+@deftypefnx {} {} dbtype @var{startl}:end
 @deftypefnx {} {} dbtype @var{fcn}
 @deftypefnx {} {} dbtype @var{fcn} @var{lineno}
 @deftypefnx {} {} dbtype @var{fcn} @var{startl:endl}
-@deftypefnx {} {} dbtype @var{fcn} @var{startl:end}
+@deftypefnx {} {} dbtype @var{fcn} @var{startl}:end
 Display a script file with line numbers.
 
 When called with no arguments in debugging mode, display the script file
 currently being debugged.
 
 An optional range specification can be used to list only a portion of the
-file.  The special keyword @qcode{"end"} is a valid line number
-specification for the last line of the file.
+file.  The special keyword @qcode{"end"} is a valid line number specification
+for the last line of the file.
 
 When called with the name of a function, list that script file with line
 numbers.
@@ -1164,8 +1164,9 @@ DEFMETHOD (dbquit, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbquit
 @deftypefnx {} {} dbquit all
-Quit debugging mode immediately without further code execution.  With no
-arguments, exit the current debugging level.  With argument @code{all},
+Quit debugging mode immediately without further code execution.
+
+With no arguments, exit the current debugging level.  With argument @code{all},
 exit all debugging levels and return to the Octave prompt.
 @seealso{dbcont, dbstep}
 @end deftypefn */)

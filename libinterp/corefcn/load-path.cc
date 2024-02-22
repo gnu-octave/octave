@@ -178,19 +178,24 @@ in_path_list (const std::string& path_list, const std::string& path)
 //!
 //! Path patterns that need to be checked for modifications:
 //!
-//!    private/
+//! @code{.unparsed}
+//! private/
 //!
-//!    @class/
-//!    @class/private/
+//! @class/
+//! @class/private/
 //!
-//!    +namespace/
-//!    +namespace/private/
-//!    +namespace/@class/
-//!    +namespace/@class/private/
+//! +namespace/
+//! +namespace/private/
+//!
+//! +namespace/@class/
+//! +namespace/@class/private/
+//! @endcode
 //!
 //! Recursion into sub-namespaces:
 //!
-//!    +namespace/+subnamespace/<like above>
+//! @code{.unparsed}
+//! +namespace/+subnamespace/<like above>
+//! @endcode
 //!
 //! @return true if directory contains modified subdirectories
 

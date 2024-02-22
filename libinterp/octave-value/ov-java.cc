@@ -403,7 +403,7 @@ read_classpath_txt (const std::string& filepath)
 //! Return the initial classpath.
 //!
 //! The initial classpath starts with a pointer to @c octave.jar which is
-//! located in the initial java directory given by #java_init_dir().
+//! located in the initial java directory given by #initial_java_dir().
 //!
 //! @attention This is nowhere documented and also the script
 //! @c javaclasspath.m drops this.  On the other hand, this is vital because
@@ -657,7 +657,7 @@ get_jvm_lib_path_from_registry ()
 //! - '-Xrs'
 //!
 //! Further options are read from the file @c java.opts in the directory given
-//! by #java_init_dir().
+//! by #initial_java_dir().
 //!
 //! Note that #initial_class_path() determines the initial classpath.  This
 //! is the static classpath which cannot be changed.  Elements of the dynamic
@@ -1336,6 +1336,7 @@ convert_to_string (JNIEnv *jni_env, jobject m_java_object, bool force,
 //! @c Integer, @c Long, @c Short, @c Float, or @c Double, then it will be
 //! converted using the @c java.lang.Number.doubleValue() method.
 //!
+//! @param jni_env JNI environment pointer.
 //! @param jobj Java object being returned to Octave
 //! @return @c true if @c jobj shall be converted into a numeric value
 //!         automatically, @c false otherwise

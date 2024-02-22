@@ -1417,7 +1417,13 @@ tree_evaluator::enter_debugger (const std::string& prompt)
 
   // Go up to the nearest user code frame.
 
-  frame.protect_var (m_debug_frame);
+  tree_evaluator& tw = m_interpreter.get_evaluator ();
+
+  frame.add ([&tw, saved_frame = m_debug_frame] ()
+  {
+    if (! tw.dbstep_flag ())
+      tw.debug_frame (saved_frame);
+  });
 
   m_debug_frame = m_call_stack.dbupdown (0);
 

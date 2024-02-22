@@ -750,7 +750,7 @@ HAVE_DOT               = YES
 # This tag requires that the tag HAVE_DOT is set to YES.
 # Some of our dependency graphs are really huge...
 
-DOT_GRAPH_MAX_NODES    = 100
+DOT_GRAPH_MAX_NODES    = 300
 
 # If the DOT_CLEANUP tag is set to YES, doxygen will remove the intermediate dot
 # files that are used to generate the various graphs.

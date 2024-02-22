@@ -115,14 +115,14 @@ public:
   uint uint_value (const gui_pref& pref) const;
 
   /*!
-    Reading a color from the given QVaraitn @p def taking different
+    Reading a color from the given QVariant @p def taking different
     color modes into account. The default value for a second color mode
     @p mode=1 is deterimined from the standard default value @p mode=0
     by inverting the lightness
       \f{eqnarray*}{
          H_1 &=& H_0\\
          S_1 &=& S_0\\
-         L_1 &=& 1.0 - 0.85 L_0    L_0 > 0.3
+         L_1 &=& 1.0 - 0.85 L_0    L_0 > 0.3\\
          L_1 &=& 1.0 - 0.70 L_0    L_0 < 0.3
       \f}
 

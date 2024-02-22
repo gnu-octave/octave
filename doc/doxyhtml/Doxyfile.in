@@ -390,7 +390,9 @@ INPUT                  = @abs_top_srcdir@/src/ \
 
 # The EXCLUDE tag is used to exclude files and/or directories that would
 # otherwise be included by the INPUT tag.
-#EXCLUDE                =
+EXCLUDE                = @abs_top_srcdir@/libgui/kb-layouts \
+                         @abs_top_srcdir@/libgui/languages \
+                         @abs_top_srcdir@/libgui/qterminal/libqterminal/unix
 
 # This tag is used to exclude files and/or directories that would otherwise be
 # included by the INPUT tag using a pattern rather than an exact name as

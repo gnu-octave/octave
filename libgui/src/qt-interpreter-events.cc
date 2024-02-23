@@ -675,13 +675,14 @@ qt_interpreter_events::exit_debugger_event ()
   emit exit_debugger_signal ();
 }
 
-// Display (if @insert true) or remove the appropriate symbol for a breakpoint
-// in @file at @line with condition @cond.
+//! Display (if @c insert true) or remove the appropriate symbol for a
+//! breakpoint in @c file at @c line with condition @c cond.
+
 void
 qt_interpreter_events::update_breakpoint (bool insert,
-    const std::string& file,
-    int line,
-    const std::string& cond)
+                                          const std::string& file,
+                                          int line,
+                                          const std::string& cond)
 {
   emit update_breakpoint_marker_signal (insert, QString::fromStdString (file),
                                         line, QString::fromStdString (cond));

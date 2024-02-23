@@ -147,7 +147,7 @@ ALWAYS_DETAILED_SEC    = NO
 # operators of the base classes will not be shown.
 # The default value is: NO.
 
-INLINE_INHERITED_MEMB  = YES
+INLINE_INHERITED_MEMB  = NO
 
 # If the FULL_PATH_NAMES tag is set to YES, doxygen will prepend the full path
 # before files name in the file list and in the header files. If set to NO the
@@ -271,7 +271,7 @@ EXTRACT_ALL            = YES
 # be included in the documentation.
 # The default value is: NO.
 
-EXTRACT_PRIVATE        = YES
+EXTRACT_PRIVATE        = NO
 
 # If the EXTRACT_PACKAGE tag is set to YES, all members with package or internal
 # scope will be included in the documentation.
@@ -283,7 +283,7 @@ EXTRACT_PACKAGE        = NO
 # included in the documentation.
 # The default value is: NO.
 
-EXTRACT_STATIC         = YES
+EXTRACT_STATIC         = NO
 
 # If the EXTRACT_LOCAL_CLASSES tag is set to YES, classes (and structs) defined
 # locally in source files will be included in the documentation. If set to NO,
@@ -291,7 +291,7 @@ EXTRACT_STATIC         = YES
 # for Java sources.
 # The default value is: YES.
 
-EXTRACT_LOCAL_CLASSES  = YES
+EXTRACT_LOCAL_CLASSES  = NO
 
 
 # If this flag is set to YES, the members of anonymous namespaces will be
@@ -384,13 +384,12 @@ SHOW_NAMESPACES        = YES
 INPUT                  = @abs_top_srcdir@/src/ \
                          @abs_top_srcdir@/liboctave/ \
                          @abs_top_srcdir@/libinterp \
-                         @abs_top_srcdir@/libgui \
                          @abs_top_srcdir@/doc/doxyhtml/pages \
                          @abs_top_builddir@/doc/doxyhtml/pages
 
 # The EXCLUDE tag is used to exclude files and/or directories that would
 # otherwise be included by the INPUT tag.
-#EXCLUDE                =
+EXCLUDE                =
 
 # This tag is used to exclude files and/or directories that would otherwise be
 # included by the INPUT tag using a pattern rather than an exact name as
@@ -715,7 +714,39 @@ PREDEFINED             = HAVE_ARPACK=1 \
                          HAVE_QT=1 \
                          HAVE_UMFPACK=1 \
                          HAVE_X_WINDOWS=1 \
-                         HAVE_ZLIB=1
+                         HAVE_ZLIB=1 \
+                         OCTARRAY_API= \
+                         OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTARRAY_EXCEPTION_API= \
+                         OCTARRAY_EXTERN_TEMPLATE_API= \
+                         OCTARRAY_OVERRIDABLE_FUNC_API= \
+                         OCTARRAY_TEMPLATE_API= \
+                         OCTAVE_API= \
+                         OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTAVE_EXCEPTION_API= \
+                         OCTAVE_EXPORT= \
+                         OCTAVE_EXTERN_TEMPLATE_API= \
+                         OCTAVE_IMPORT= \
+                         OCTAVE_OVERRIDABLE_FUNC_API= \
+                         OCTAVE_TEMPLATE_API= \
+                         OCTGRAPHICS_API= \
+                         OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTGRAPHICS_EXCEPTION_API= \
+                         OCTGRAPHICS_EXTERN_TEMPLATE_API= \
+                         OCTGRAPHICS_OVERRIDABLE_FUNC_API= \
+                         OCTGRAPHICS_TEMPLATE_API= \
+                         OCTGUI_API= \
+                         OCTGUI_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTGUI_EXCEPTION_API= \
+                         OCTGUI_EXTERN_TEMPLATE_API= \
+                         OCTGUI_OVERRIDABLE_FUNC_API= \
+                         OCTGUI_TEMPLATE_API= \
+                         OCTINTERP_API= \
+                         OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTINTERP_EXCEPTION_API= \
+                         OCTINTERP_EXTERN_TEMPLATE_API= \
+                         OCTINTERP_OVERRIDABLE_FUNC_API= \
+                         OCTINTERP_TEMPLATE_API
 
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool
@@ -734,7 +765,7 @@ HIDE_UNDOC_RELATIONS   = NO
 # set to NO
 # The default value is: NO.
 
-HAVE_DOT               = YES
+HAVE_DOT               = NO
 
 
 # The DOT_GRAPH_MAX_NODES tag can be used to set the maximum number of nodes
@@ -748,7 +779,7 @@ HAVE_DOT               = YES
 # This tag requires that the tag HAVE_DOT is set to YES.
 # Some of our dependency graphs are really huge...
 
-DOT_GRAPH_MAX_NODES    = 100
+DOT_GRAPH_MAX_NODES    = 300
 
 # If the DOT_CLEANUP tag is set to YES, doxygen will remove the intermediate dot
 # files that are used to generate the various graphs.

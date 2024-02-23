@@ -717,7 +717,39 @@ PREDEFINED             = HAVE_ARPACK=1 \
                          HAVE_QT=1 \
                          HAVE_UMFPACK=1 \
                          HAVE_X_WINDOWS=1 \
-                         HAVE_ZLIB=1
+                         HAVE_ZLIB=1 \
+                         OCTARRAY_API= \
+                         OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTARRAY_EXCEPTION_API= \
+                         OCTARRAY_EXTERN_TEMPLATE_API= \
+                         OCTARRAY_OVERRIDABLE_FUNC_API= \
+                         OCTARRAY_TEMPLATE_API= \
+                         OCTAVE_API= \
+                         OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTAVE_EXCEPTION_API= \
+                         OCTAVE_EXPORT= \
+                         OCTAVE_EXTERN_TEMPLATE_API= \
+                         OCTAVE_IMPORT= \
+                         OCTAVE_OVERRIDABLE_FUNC_API= \
+                         OCTAVE_TEMPLATE_API= \
+                         OCTGRAPHICS_API= \
+                         OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTGRAPHICS_EXCEPTION_API= \
+                         OCTGRAPHICS_EXTERN_TEMPLATE_API= \
+                         OCTGRAPHICS_OVERRIDABLE_FUNC_API= \
+                         OCTGRAPHICS_TEMPLATE_API= \
+                         OCTGUI_API= \
+                         OCTGUI_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTGUI_EXCEPTION_API= \
+                         OCTGUI_EXTERN_TEMPLATE_API= \
+                         OCTGUI_OVERRIDABLE_FUNC_API= \
+                         OCTGUI_TEMPLATE_API= \
+                         OCTINTERP_API= \
+                         OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API= \
+                         OCTINTERP_EXCEPTION_API= \
+                         OCTINTERP_EXTERN_TEMPLATE_API= \
+                         OCTINTERP_OVERRIDABLE_FUNC_API= \
+                         OCTINTERP_TEMPLATE_API
 
 #---------------------------------------------------------------------------
 # Configuration options related to the dot tool

@@ -736,7 +736,7 @@ HIDE_UNDOC_RELATIONS   = NO
 # set to NO
 # The default value is: NO.
 
-HAVE_DOT               = YES
+HAVE_DOT               = NO
 
 
 # The DOT_GRAPH_MAX_NODES tag can be used to set the maximum number of nodes

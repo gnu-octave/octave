@@ -39,6 +39,8 @@ the outputs will be the same size as those vectors.  When either is a row
 vector and the other is a column vector, the interpolating points are processed
 through meshgrid and the output is a matrix the same size as the meshgrid.
 
+- Enable the third output for `unique` with the `stable` sort option.
+
 ### Alphabetical list of new functions added in Octave 10
 
 * `rticklabels`

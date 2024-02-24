@@ -84,9 +84,6 @@
 ## outputs @var{i}, @var{j} will follow the shape of the input @var{x} rather
 ## than always being column vectors.
 ##
-## The third output, @var{j}, has not been implemented yet when the sort
-## order is @qcode{"stable"}.
-##
 ## @seealso{uniquetol, union, intersect, setdiff, setxor, ismember}
 ## @end deftypefn
 
@@ -189,8 +186,8 @@ function [y, i, j] = unique (x, varargin)
   ## Calculate y output
   if (optrows)
     if (nargout > 1 || ! optsorted)
-      [y, i] = sortrows (x);
-      i = i(:);
+      [y, j] = sortrows (x);
+      j = j(:);
     else
       y = sortrows (x);
     endif
@@ -199,7 +196,7 @@ function [y, i, j] = unique (x, varargin)
       y(match,:) = [];
     else
       y = x;
-      y(i([false; match]), :) = [];
+      y(j([false; match]), :) = [];
     endif
   else
     if (isvector (x))
@@ -208,8 +205,8 @@ function [y, i, j] = unique (x, varargin)
       y = x(:);
     endif
     if (nargout > 1 || ! optsorted)
-      [y, i] = sort (y);
-      i = i(:);
+      [y, j] = sort (y);
+      j = j(:);
     else
       y = sort (y);
     endif
@@ -226,40 +223,76 @@ function [y, i, j] = unique (x, varargin)
       else
         y = x(:);
       endif
-      y(i([false; match(:)])) = [];
+      y(j([false; match(:)])) = [];
     endif
   endif
 
-  ## Calculate j output (3rd output)
-  if (nargout > 2)
-    j = i;  # cheap way to copy dimensions
-    j(i) = cumsum ([1; ! match(:)]);
-    if (! optsorted)
-      warning ("unique: third output J is not yet implemented");
-      j = [];
-    endif
 
-    if (optlegacy && isrowvec)
-      j = j.';
-    endif
-  endif
-
-  ## Calculate i output (2nd output)
+  ## Calculate i and j outputs (2nd and 3rd outputs)
   if (nargout > 1)
+
     if (optsorted)
+
       idx = find (match);
+
       if (! optlegacy && optfirst)
         idx += 1;   # in-place is faster than other forms of increment
       endif
+
+      i = j;
       i(idx) = [];
+
+      if (nargout > 2)
+        j(j) = cumsum (! [false; match(:)]);
+      endif
+
     else
-      i([false; match(:)]) = [];
-      ## FIXME: Is there a way to avoid a call to sort?
-      i = sort (i);
+
+      ## Get inverse of sort index j so that sort(x)(k) = x(j)(k) = x.
+      k = j;  # cheap way to copy dimensions
+      k(j) = 1:n;
+
+      ## Generate logical index of sorted unique value locations.
+      uniquex = ! [false; match(:)];
+
+      ## Remap unique locations to unsorted x, such that y = x(i).
+      i = find (uniquex(k));
+
+      if (nargout > 2)
+        ## Example of index mappings to obtain i and j ('stable').
+        ## x = [40,20,40,20,20,30,10]'     # input data, n = 7, m = 4
+        ## x(j) = [10,20,20,20,30,40,40]'  # sorted x
+        ## j =   [7,2,4,5,6,1,3]'          # sort index, x(j) = sort(x)
+        ## k = [6,2,7,3,4,5,1]'            # inverse idx of j, sort(x)(k) = x
+        ## y = [40,20,30,10]'              # unique x preserving ordering
+        ## uniquex = [1,1,0,0,1,1,0]'      # logical sorted idx of unique x vals
+        ## i = [1,2,6,7]'                  # unique output index, y = x(i)
+        ## u = [1,2,5,6]'                  # linear idx of unique x(j) elems.
+        ## l = [1,2,2,2,5,6,6]'            # unique elem. in full sort(x)
+        ## l(k) = [6,2,6,2,2,5,1]'         # l mapped back to unsorted x
+        ## j(l(k)) =  [1,2,1,2,2,6,7]'     # unique elem. mapped to x idx
+        ## p(i) = [1,2,#,#,#,3,4]'         # map between i and j(l(k))
+
+        ni = numel (i);
+
+        u = find (uniquex); # Linear index of unique elements of sort(x)
+        l = u(cumsum (uniquex)); # Expand u for all elements in sort(x)
+
+        p = j; # cheap way to copy dimensions
+        p(i) = 1:ni; # set p to contain the vector positions of i.
+
+        j = p(j(l(k))); # Replace j with 3rd output mapping y->x.
+
+      endif
     endif
 
     if (optlegacy && isrowvec)
       i = i.';
+
+      if (nargout > 2)
+        j = j.';
+      endif
+
     endif
   endif
 
@@ -302,11 +335,10 @@ endfunction
 %! assert (j, [1;1;2;3;3;3;4]);
 
 %!test
-%! [y,i,~] = unique ([4,4,2,2,2,3,1], "stable");
+%! [y,i,j] = unique ([4,4,2,2,2,3,1], "stable");
 %! assert (y, [4,2,3,1]);
 %! assert (i, [1;3;6;7]);
-%! ## FIXME: 'j' input not calculated with stable
-%! ##assert (j, []);
+%! assert (j, [1;1;2;2;2;3;4]);
 
 %!test
 %! [y,i,j] = unique ([1,1,2,3,3,3,4]', "last");
@@ -335,11 +367,10 @@ endfunction
 
 %!test
 %! A = [4,5,6; 1,2,3; 4,5,6];
-%! [y,i,~] = unique (A, "rows", "stable");
+%! [y,i,j] = unique (A, "rows", "stable");
 %! assert (y, [4,5,6; 1,2,3]);
 %! assert (A(i,:), y);
-%! ## FIXME: 'j' output not calculated correctly with "stable"
-%! ##assert (y(j,:), A);
+%! assert (y(j,:), A);
 
 ## Test "legacy" option
 %!test
@@ -354,6 +385,60 @@ endfunction
 %! assert (y, [0 0 0; 1 4 5; 5 5 5; 7 9 7]);
 %! assert (i, [2; 5; 4; 3]);
 %! assert (j, [4; 1; 4; 3; 2]);
+
+%!test <*65176>
+%! a = [3 2 1 2; 1 2 2 1];
+%! [o1, o2, o3] = unique (a);
+%! assert ({o1, o2, o3}, {[1;2;3], [2;3;1], [3;1;2;2;1;2;2;1]});
+%! [o1, o2, o3] = unique (a, "stable");
+%! assert ({o1, o2, o3}, {[3;1;2], [1;2;3], [1;2;3;3;2;3;3;2]})
+
+%!test <*65176>
+%! a = [4,2,4,2,2,3,1];
+%! [o1, o2, o3] = unique (a);
+%! assert ({o1, o2, o3}, {[1,2,3,4], [7;2;6;1], [4;2;4;2;2;3;1]});
+%! [o1, o2, o3] = unique (a, "stable");
+%! assert ({o1, o2, o3}, {[4,2,3,1], [1;2;6;7], [1;2;1;2;2;3;4]})
+
+%!test <*65176>
+%! a = [3 2 1 2; 2 1 2 1];
+%! [o1, o2, o3] = unique (a(1,:), "rows");
+%! assert ({o1, o2, o3}, {a(1,:), 1, 1});
+%! [o1, o2, o3] = unique (a(1,:), "rows", "stable");
+%! assert ({o1, o2, o3}, {a(1,:), 1, 1});
+%! [o1, o2, o3] = unique (a, "rows");
+%! assert ({o1, o2, o3}, {[a(2,:); a(1,:)], [2;1], [2;1]});
+%! [o1, o2, o3] = unique (a, "rows", "stable");
+%! assert ({o1, o2, o3}, {a, [1;2], [1;2]});
+%! [o1, o2, o3] = unique ([a;a], "rows");
+%! assert ({o1, o2, o3}, {[a(2,:); a(1,:)], [2;1], [2;1;2;1]});
+%! [o1, o2, o3] = unique ([a;a], "rows", "stable");
+%! assert ({o1, o2, o3}, {a, [1;2], [1;2;1;2]});
+
+
+%!test <*65176>
+%! a = gallery ("integerdata", [-100, 100], 6, 6);
+%! a = [a(2,:); a(1:5,:); a(2:6,:)];
+%! [o1, o2, o3] = unique (a);
+%! assert ({o1, o1(o3), o2, o3}, {a(:)(o2), a(:), ...
+%! [26;22;34;45;57; 6;11;17;33;28;35;15;56; 2;59; 4;66; ...
+%!  16;50;49;27;24;37;44;48;39;38;13;23; 5;12;46;55; 1], ...
+%! [34;14;34;16;30; 6;34;16;30; 6; 7;31;28;31;12;18; 8;31;12;18; 8; 2;29; ...
+%!  22;29; 1;21;10;29; 1;21;10; 9; 3;11; 3;23;27;26; 3;23;27;26;24; 4;32; ...
+%!  4; 25;20;19; 4;25;20;19;33;13; 5;13;15; 2;24;13;15; 2;24;17]});
+%! [o1, o2, o3] = unique (a, "stable");
+%! assert ({o1, o1(o3), o2, o3}, {a(:)(o2), a(:), ...
+%! [ 1; 2; 4; 5; 6;11;12;13;15;16;17;22;23;24;26;27;28; ...
+%!  33;34;35;37;38;39;44;45;46;48;49;50;55;56;57;59;66], ...
+%! [ 1; 2; 1; 3; 4; 5; 1; 3; 4; 5; 6; 7; 8; 7; 9;10;11; 7; 9;10;11;12;13; ...
+%!  14;13;15;16;17;13;15;16;17;18;19;20;19;21;22;23;19;21;22;23;24;25;26;...
+%!  25;27;28;29;25;27;28;29;30;31;32;31;33;12;24;31;33;12;24;34]});
+%! [o1, o2, o3] = unique (a, "rows");
+%! assert ({o1, o1(o3,:), o2, o3}, {a(o2,:), a, ...
+%! [6;11;2;4;5;1], [6;3;6;4;5;1;6;4;5;1;2]});
+%! [o1, o2, o3] = unique (a, "rows", "stable");
+%! assert ({o1, o1(o3,:), o2, o3}, {a(o2,:), a, ...
+%! [1;2;4;5;6;11], [1;2;1;3;4;5;1;3;4;5;6]});
 
 ## Test input validation
 %!error <Invalid call> unique ()
@@ -376,6 +461,4 @@ endfunction
 %!error <invalid option> unique ({"a", "b", "c"}, "rows", "UnknownOption2")
 %!error <invalid option> unique ({"a", "b", "c"}, "UnknownOption1", "last")
 %!warning <"rows" is ignored for cell arrays> unique ({"1"}, "rows");
-%!warning <third output J is not yet implemented>
-%! [y,i,j] = unique ([2,1], "stable");
-%! assert (j, []);
+

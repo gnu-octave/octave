@@ -6228,6 +6228,7 @@ set_ignore_outputs:
     if (!m_output_ignore_data)
       {
         m_output_ignore_data = new output_ignore_data;
+        m_output_ignore_data->push_frame (*this);
       }
 
     int n_ignored = arg0;
@@ -7801,8 +7802,7 @@ void vm::set_nargin (int nargin)
 void vm::caller_ignores_output ()
 {
   m_output_ignore_data = new output_ignore_data;
-  m_output_ignore_data->m_v_lvalue_list.back () = m_tw->lvalue_list ();
-  m_output_ignore_data->m_v_owns_lvalue_list.back () = false;
+  m_output_ignore_data->push_frame (*this);
   m_output_ignore_data->m_external_root_ignorer = true;
 }
 
@@ -8458,32 +8458,33 @@ vm::output_ignore_data::push_frame (vm &vm)
 {
   vm.m_tw->set_auto_fcn_var (stack_frame::IGNORED, m_ov_pending_ignore_matrix);
   m_ov_pending_ignore_matrix = {}; // Clear ignore matrix so that the next call wont ignore anything
-  m_v_lvalue_list.push_back (vm.m_tw->lvalue_list ()); // Will be restored in output_ignore_data::pop_frame ()
-  m_v_owns_lvalue_list.push_back (false); // Caller owns the current lvalue
 
-  vm.m_tw->set_lvalue_list (nullptr); // There is not lvalue list set for the new frame
+  m_v_lvalue_list_parents.push_back (vm.m_tw->lvalue_list ()); // Will be restored in output_ignore_data::pop_frame ()
+  vm.m_tw->set_lvalue_list (nullptr); // There is no lvalue list set for the new frame
+
+  m_v_lvalue_list_childs.push_back (nullptr);
 }
 
 void
 vm::output_ignore_data::clear_ignore (vm &vm)
 {
-  CHECK_PANIC (m_v_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_lvalue_list_parents.size ());
+  CHECK_PANIC (m_v_lvalue_list_childs.size () == m_v_lvalue_list_parents.size ());
 
   // If the output_ignore_data object owns the current lvalue list
   // we need to free it.
   auto *current_lval_list = vm.m_tw->lvalue_list ();
 
-  bool owns_lval_list = m_v_owns_lvalue_list.back ();
-  m_v_owns_lvalue_list.back () = false;
-
-  if (owns_lval_list)
-    delete current_lval_list;
-
   // Restore the prior lvalue list in the tree walker
-  vm.m_tw->set_lvalue_list (m_v_lvalue_list.back ());
-  m_v_lvalue_list.back () = nullptr;
+  vm.m_tw->set_lvalue_list (m_v_lvalue_list_parents.back ());
+
+  // Assert that the lvalue list we gave the child frame is the same on we get back
+  if (current_lval_list)
+    CHECK_PANIC(m_v_lvalue_list_childs.back () == current_lval_list);
+
+  delete m_v_lvalue_list_childs.back ();
+
+  m_v_lvalue_list_childs.back () = nullptr;
 
   m_ov_pending_ignore_matrix = {};
 }
@@ -8491,39 +8492,39 @@ vm::output_ignore_data::clear_ignore (vm &vm)
 void
 vm::output_ignore_data::pop_frame (vm &vm)
 {
-  CHECK_PANIC (m_v_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_lvalue_list_parents.size ());
+  CHECK_PANIC (m_v_lvalue_list_childs.size () == m_v_lvalue_list_parents.size ());
 
   // If the output_ignore_data object owns the current lvalue list
   // we need to free it.
   auto *current_lval_list = vm.m_tw->lvalue_list ();
 
-  bool owns_lval_list = m_v_owns_lvalue_list.back ();
-  m_v_owns_lvalue_list.pop_back ();
+  // Assert that the lvalue list we gave the child frame is the same on we get back
+  if (current_lval_list && m_v_lvalue_list_childs.back ())
+    CHECK_PANIC(m_v_lvalue_list_childs.back () == current_lval_list);
 
-  if (owns_lval_list)
-    delete current_lval_list;
+  delete m_v_lvalue_list_childs.back ();
+
+  m_v_lvalue_list_childs.pop_back ();
 
   // Restore the prior lvalue list in the tree walker
-  vm.m_tw->set_lvalue_list (m_v_lvalue_list.back ());
-  m_v_lvalue_list.pop_back ();
+  vm.m_tw->set_lvalue_list (m_v_lvalue_list_parents.back ());
+  m_v_lvalue_list_parents.pop_back ();
 }
 
 void
 vm::output_ignore_data::set_ignore_anon (vm &vm, octave_value ignore_matrix)
 {
   CHECK_PANIC (m_ov_pending_ignore_matrix.is_nil ());
-  CHECK_PANIC (m_v_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_lvalue_list_parents.size ());
+  CHECK_PANIC (m_v_lvalue_list_childs.size () == m_v_lvalue_list_parents.size ());
 
   // For anonymous functions we propagate the current ignore matrix and lvalue list to the callee.
 
   m_ov_pending_ignore_matrix = ignore_matrix;
   // Since the caller owns the lvalue list, we need to note not to delete the lvalue list when popping
   // the callee frame.
-  vm.m_tw->set_lvalue_list (m_v_lvalue_list.back ());
+  vm.m_tw->set_lvalue_list (m_v_lvalue_list_parents.back ());
 }
 
 void
@@ -8531,13 +8532,14 @@ vm::output_ignore_data::set_ignore (vm &vm, octave_value ignore_matrix,
                                     std::list<octave_lvalue> *new_lval_list)
 {
   CHECK_PANIC (m_ov_pending_ignore_matrix.is_nil ());
-  CHECK_PANIC (m_v_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size ());
-  CHECK_PANIC (m_v_owns_lvalue_list.size () == m_v_lvalue_list.size ());
+  CHECK_PANIC (m_v_lvalue_list_parents.size ());
+  CHECK_PANIC (m_v_lvalue_list_childs.size () == m_v_lvalue_list_parents.size ());
 
   m_ov_pending_ignore_matrix = ignore_matrix;
-  m_v_owns_lvalue_list.back () = true;
-  m_v_lvalue_list.back () = vm.m_tw->lvalue_list ();
+
+  CHECK_PANIC (m_v_lvalue_list_childs.back () == nullptr);
+  m_v_lvalue_list_childs.back () = new_lval_list;
+
   vm.m_tw->set_lvalue_list (new_lval_list);
 }
 

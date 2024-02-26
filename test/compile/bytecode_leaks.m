@@ -6,6 +6,17 @@ function [a b] = bytecode_leaks (c, d)
   cc = c;
   b = d;
 
+  # bug #65240
+  # Using ignored return values in two stack frames in a row,
+  # resulted in that the stack frame was not destroyed.
+  [~, qq] = suby9();
+  try
+    # Unwinding the bytecode stack into topscope with an ignore output
+    # caused issues in the first patch proposal for bug #65240
+    evalin ("base","[~] = (@() error ('qwe'))()");
+  catch
+  end
+
   e = 1+1;
   refs_e = __ref_count__ (e);
   suby1(e);
@@ -165,4 +176,13 @@ end
 
 function suby8(a)
   eval ("g = a;");
+end
+
+function [a b] = suby9()
+  [~, b] = suby10 ();
+end
+
+function [a, b] = suby10 ()
+  a = 1;
+  b = 2;
 end

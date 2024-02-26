@@ -520,22 +520,19 @@ class vm
   //
   struct output_ignore_data {
     octave_value m_ov_pending_ignore_matrix;
-    std::vector<const std::list<octave::octave_lvalue>*> m_v_lvalue_list;
-    std::vector<bool> m_v_owns_lvalue_list; // If true, should call delete on active lvalue list
+    std::vector<const std::list<octave::octave_lvalue>*> m_v_lvalue_list_parents;
+    std::vector<const std::list<octave::octave_lvalue>*> m_v_lvalue_list_childs;
+
     // A sanity check flag. Set to true if the first ignorer is calling from outside the VM
     bool m_external_root_ignorer = false;
 
-    output_ignore_data ()
-    {
-      m_v_lvalue_list.push_back (nullptr);
-      m_v_owns_lvalue_list.push_back (false);
-    }
+    output_ignore_data () = default;
 
     static void maybe_delete_ignore_data (vm &vm, unsigned target_depth)
     {
       if (!vm.m_output_ignore_data)
         return;
-      if (vm.m_output_ignore_data->m_v_owns_lvalue_list.size () > target_depth)
+      if (vm.m_output_ignore_data->m_v_lvalue_list_parents.size () > target_depth)
         return;
 
       delete vm.m_output_ignore_data;
@@ -549,26 +546,6 @@ class vm
                      std::list<octave_lvalue> *new_lval_list);
 
     void set_ignore_anon (vm &vm, octave_value ignore_matrix);
-
-    octave_value get_and_null_ignore_matrix ()
-    {
-      octave_value ret = m_ov_pending_ignore_matrix;
-      m_ov_pending_ignore_matrix = {};
-
-      return ret;
-    }
-
-    octave_value get_ignore_matrix ()
-    {
-      return m_ov_pending_ignore_matrix;
-    }
-
-    const std::list<octave::octave_lvalue>* pop_lvalue_list ()
-    {
-      auto *p = m_v_lvalue_list.back ();
-      m_v_lvalue_list.pop_back ();
-      return p;
-    }
   };
 
   output_ignore_data *m_output_ignore_data = nullptr;

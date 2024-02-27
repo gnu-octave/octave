@@ -27,6 +27,8 @@
 #  include "config.h"
 #endif
 
+#include <map>
+
 #include <QApplication>
 #include <QClipboard>
 #include <QCompleter>
@@ -39,6 +41,8 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QMessageBox>
+#include <QMimeDatabase>
+#include <QMimeType>
 #include <QProcess>
 #include <QSizePolicy>
 #include <QStyledItemDelegate>
@@ -174,6 +178,56 @@ public:
     QTimer::singleShot (0, [line_edit, select_len] () { line_edit->setSelection (0, select_len); });
   }
 };
+
+class cache_file_icon_provider : public QFileIconProvider
+{
+public:
+  cache_file_icon_provider ()
+  {
+    m_null_icon = QIcon ();
+    m_file_icon = m_file_icon_provider.icon (QFileIconProvider::File);
+    m_folder_icon = m_file_icon_provider.icon (QFileIconProvider::Folder);
+  }
+
+  QIcon icon (IconType ict) const
+  {
+    if (ict == QFileIconProvider::File)
+      return m_file_icon;
+    else if (ict == QFileIconProvider::Folder)
+      return m_folder_icon;
+    else
+      return m_null_icon;
+  }
+  
+  QIcon icon (const QFileInfo &fi) const
+  {
+    static bool no_platform_theme = QIcon::themeName ().isEmpty ();
+
+    if (no_platform_theme)
+      return m_file_icon_provider.icon (fi);
+
+    QMimeType mime_type = m_db.mimeTypeForFile (fi.absoluteFilePath ());
+    QString icon_name = mime_type.iconName ();
+    auto mime_type_iter = m_icon_cache.find (icon_name);
+    if (mime_type_iter != m_icon_cache.end ())
+      return mime_type_iter->second;
+
+    QIcon icon = QIcon::fromTheme (icon_name);
+    m_icon_cache.insert ({icon_name, icon});
+    return icon;
+  }
+
+private:
+  QIcon m_null_icon;
+  QIcon m_file_icon;
+  QIcon m_folder_icon;
+
+  QFileIconProvider m_file_icon_provider;
+  QMimeDatabase m_db;
+  static std::map<QString, QIcon> m_icon_cache;
+};
+
+std::map<QString, QIcon> cache_file_icon_provider::m_icon_cache;
 
 files_dock_widget::files_dock_widget (QWidget *p)
   : octave_dock_widget ("FilesDockWidget", p)
@@ -312,6 +366,9 @@ files_dock_widget::files_dock_widget (QWidget *p)
     (QDir::System | QDir::NoDotAndDotDot | QDir::AllEntries);
   QModelIndex rootPathIndex
     = m_file_system_model->setRootPath (startup_dir.absolutePath ());
+
+  m_file_icon_provider = new cache_file_icon_provider ();
+  m_file_system_model->setIconProvider (m_file_icon_provider);
 
   // Attach the model to the QTreeView and set the root index
   m_file_tree_view = new FileTreeViewer (container);

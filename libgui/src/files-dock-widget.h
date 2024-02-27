@@ -29,6 +29,7 @@
 #include <QAction>
 #include <QComboBox>
 #include <QDate>
+#include <QFileIconProvider>
 #include <QFileSystemModel>
 #include <QList>
 #include <QListView>
@@ -210,6 +211,7 @@ private:
   //! The file system model.
 
   QFileSystemModel *m_file_system_model;
+  QFileIconProvider *m_file_icon_provider;
 
   //! The file system view.
   //!@{

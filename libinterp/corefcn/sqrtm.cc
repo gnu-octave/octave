@@ -79,7 +79,7 @@ sqrtm_utri_inplace (T& m)
         break;
     }
 
-  element_type *mp = m.fortran_vec ();
+  element_type *mp = m.rwdata ();
   if (diagonal)
     {
       // shortcut for diagonal Schur matrices

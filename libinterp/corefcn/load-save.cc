@@ -1642,12 +1642,13 @@ name of the file.
 Force Octave to assume the file is in Octave's binary format.
 
 @item -hdf5
-Force Octave to assume the file is in @sc{hdf5} format.
-(@sc{hdf5} is a free, portable binary format developed by the National
-Center for Supercomputing Applications at the University of Illinois.)
-Note that Octave can only read @sc{hdf5} files that were created by itself with
-@code{save}.  This format is only available if Octave was built with a link to
-the @sc{hdf5} libraries.
+Force Octave to assume the file is in @sc{hdf5} format.  (@sc{hdf5} is a free,
+portable binary format developed by the National Center for Supercomputing
+Applications at the University of Illinois.)  Note that Octave can only
+read @sc{hdf5} files that were created by itself with @code{save} or with
+@sc{matlab}'s @code{-v7.3} option (which saves in @sc{hdf5} format). This
+format is only available if Octave was built with a link to the @sc{hdf5}
+libraries.
 
 @item -import
 This option is accepted for backward compatibility but is ignored.
@@ -1660,7 +1661,10 @@ Force Octave to assume the file is in Octave's text format.
 @item  -v7.3
 @itemx -V7.3
 @itemx -7.3
-Octave does @strong{not} yet implement @sc{matlab}'s v7.3 binary data format.
+Force Octave to assume the file is in @sc{matlab}'s v7.3 binary data format.
+As the v7.3 format is an HDF5 based format, those files often can also be
+opened with the @qcode{"-hdf5"} option.  Note that Octave @strong{can not}
+currently save in this format.  
 
 @item  -v7
 @itemx -V7
@@ -1754,10 +1758,10 @@ Use this format @strong{only} if you know that all the values to be saved can
 be represented in single precision.
 
 @item -hdf5
-Save the data in @sc{hdf5} format.
-(HDF5 is a free, portable, binary format developed by the National Center for
-Supercomputing Applications at the University of Illinois.) This format is only
-available if Octave was built with a link to the @sc{hdf5} libraries.
+Save the data in @sc{hdf5} format.  (HDF5 is a free, portable, binary format
+developed by the National Center for Supercomputing Applications at the
+University of Illinois.) This format is only available if Octave was built
+with a link to the @sc{hdf5} libraries.
 
 @item -float-hdf5
 Save the data in @sc{hdf5} format but using only single precision.  Use this
@@ -1770,7 +1774,8 @@ Save the data in Octave's text data format.  (default)
 @item  -v7.3
 @itemx -V7.3
 @itemx -7.3
-Octave does @strong{not} yet implement @sc{matlab}'s v7.3 binary data format.
+Octave does @strong{not} yet implement saving in @sc{matlab}'s v7.3 binary
+data format.
 
 @item  -v7
 @itemx -V7

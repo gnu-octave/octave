@@ -1530,9 +1530,6 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                         lexer.m_symtab_context.pop ();
 
                         delete $3;
-
-                        if (! parser.validate_primary_fcn ())
-                          YYABORT;
                       }
                     else
                       {
@@ -1541,10 +1538,10 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                                              $4->beg_pos (), $4->end_pos ());
 
                         parser.make_script ($3, end_of_script);
-
-                        if (! parser.validate_primary_fcn ())
-                          YYABORT;
                       }
+
+                    if (! parser.validate_primary_fcn ())
+                      YYABORT;
 
                     $$ = nullptr;
                   }

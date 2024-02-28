@@ -434,6 +434,13 @@ input           : simple_list '\n'
                     else
                       YYACCEPT;
                   }
+                | file
+                  {
+                    lexer.m_end_of_input = true;
+
+                    $$ = $1;
+                    YYACCEPT;
+                  }
                 | parse_error
                   {
                     $$ = nullptr;
@@ -1037,8 +1044,6 @@ command         : declaration
                 | except_command
                   { $$ = $1; }
                 | function
-                  { $$ = $1; }
-                | file
                   { $$ = $1; }
                 ;
 

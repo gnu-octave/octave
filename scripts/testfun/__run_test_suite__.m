@@ -68,6 +68,8 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
       if (fid < 0)
         error ("__run_test_suite__: could not open %s for writing", logfile);
       endif
+      tot_cpu_tm = cputime ();
+      tot_tic_tag = tic ();
       test ("", "explain", fid);
       puts ("\nIntegrated test scripts:\n\n");
       printf ("%101s\n", "[ CPU    /  CLOCK ]");
@@ -92,6 +94,9 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
         drtsk += rtsk;
         drgrs += rgrs;
       endfor
+      tot_clock_tm = toc (tot_tic_tag);
+      tot_cpu_tm = cputime () - tot_cpu_tm;
+      printf ("%80s  [%6.1fs / %6.1fs]", "total time (CPU / CLOCK)", tot_cpu_tm, tot_clock_tm);
       if (! isempty (summary_failure_info))
         puts ("\nFailure Summary:\n\n");
         for i = 1:numel (summary_failure_info)
@@ -215,9 +220,9 @@ function [pass, fail, xfail, xbug, skip, rtskip, regress] = __run_test_suite__ (
             tmp = reduce_test_file_name (ffnm, topbuilddir, topsrcdir);
             print_test_file_name (tmp);
             cpu_tm = cputime ();
-            tic ();
+            tic_tag = tic ();
             [p, n, xf, xb, sk, rtsk, rgrs] = test (ffnm, "quiet", fid);
-            clock_tm = toc ();
+            clock_tm = toc (tic_tag);
             cpu_tm = cputime () - cpu_tm;
             print_pass_fail (p, n, xf, xb, sk, rtsk, rgrs, cpu_tm, clock_tm);
             dp += p;

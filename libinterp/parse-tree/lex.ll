@@ -2491,12 +2491,14 @@ looks_like_shebang (const std::string& s)
 
     if (m_block_comment_nesting_level != 0)
       {
-        warning ("block comment unterminated at end of input");
 
         if ((m_reading_fcn_file || m_reading_script_file || m_reading_classdef_file)
             && ! m_fcn_file_name.empty ())
-          warning ("near line %d of file '%s.m'",
-                   m_filepos.line (), m_fcn_file_name.c_str ());
+          error ("block comment unterminated at end of input\n"
+                 "near line %d of file '%s.m'",
+                 m_filepos.line () - 1, m_fcn_file_name.c_str ());
+        else
+          error ("block comment unterminated at end of input");
       }
 
     token *tok_val = new token (END_OF_INPUT, m_tok_beg, m_tok_end);

@@ -1876,7 +1876,11 @@ of the text itself.";
         s.doc = "Color data for the image object.  Data is either stored as \
 a 2-D matrix where each element's value determines that pixel's color \
 according to the current colormap, or as a 3-D array where the third \
-dimension contains separate red, blue, and green components for each pixel.";
+dimension contains separate red, blue, and green components for each pixel.  \
+For RGB arrays, the values that map to minimum to a maximum color value \
+depend on the class of @qcode{\"cdata\"}.  Floating point and logical values \
+range from 0 to 1 while integer value range from @code{intmin} to \
+@code{intmax} for that integer class.";
         s.valid = "array";
         s.category = "Image Data";
 

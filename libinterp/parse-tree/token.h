@@ -71,52 +71,34 @@ public:
     while_end,
   };
 
+public:
+
   token (int tv, const filepos& beg_pos, const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (generic_token),
-      m_tok_info (), m_orig_text ()
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv)
   { }
 
-  token (int tv, bool is_kw, const filepos& beg_pos,
-         const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv),
-      m_type_tag (is_kw ? keyword_token : generic_token), m_tok_info (),
-      m_orig_text ()
+  token (int tv, bool is_kw, const filepos& beg_pos, const filepos& end_pos)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (is_kw ? keyword_token : generic_token)
   { }
 
-  token (int tv, const char *s, const filepos& beg_pos,
-         const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token),
-      m_tok_info (s), m_orig_text ()
+  token (int tv, const char *s, const filepos& beg_pos, const filepos& end_pos)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token), m_tok_info (s)
   { }
 
-  token (int tv, const std::string& s, const filepos& beg_pos,
-         const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token),
-      m_tok_info (s), m_orig_text ()
+  token (int tv, const std::string& s, const filepos& beg_pos, const filepos& end_pos)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token), m_tok_info (s)
   { }
 
-  token (int tv, const octave_value& val, const std::string& s,
-         const filepos& beg_pos, const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (numeric_token),
-      m_tok_info (val), m_orig_text (s)
+  token (int tv, const octave_value& val, const std::string& s, const filepos& beg_pos, const filepos& end_pos)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (numeric_token), m_tok_info (val), m_orig_text (s)
   { }
 
   token (int tv, end_tok_type t, const filepos& beg_pos, const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (ettype_token),
-      m_tok_info (t), m_orig_text ()
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (ettype_token), m_tok_info (t)
   { }
 
-  token (int tv, const std::string& meth, const std::string& cls,
-         const filepos& beg_pos, const filepos& end_pos)
-    : m_maybe_cmd (false), m_tspc (false), m_beg_pos (beg_pos),
-      m_end_pos (end_pos), m_tok_val (tv), m_type_tag (scls_name_token),
-      m_tok_info (meth, cls), m_orig_text ()
+  token (int tv, const std::string& meth, const std::string& cls, const filepos& beg_pos, const filepos& end_pos)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (scls_name_token), m_tok_info (meth, cls)
   { }
 
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (token)
@@ -159,16 +141,16 @@ public:
 
 private:
 
-  bool m_maybe_cmd;
+  bool m_maybe_cmd {false};
 
-  bool m_tspc;
+  bool m_tspc {false};
 
   filepos m_beg_pos;
   filepos m_end_pos;
 
   int m_tok_val;
 
-  token_type m_type_tag;
+  token_type m_type_tag {generic_token};
 
   class superclass_info
   {
@@ -197,55 +179,57 @@ private:
     std::string m_class_name;
   };
 
-  typedef std::variant<std::string, octave_value, end_tok_type, superclass_info> tok_info_variant;
-
-  class tok_info : public tok_info_variant
+  class tok_info
   {
   public:
 
-    tok_info (const char *s) : tok_info_variant (std::string (s)) { }
+    tok_info (const char *s) : m_value (std::string (s)) { }
 
-    tok_info (const std::string& str) : tok_info_variant (str) { }
+    tok_info (const std::string& str) : m_value (str) { }
 
-    tok_info (const octave_value& num) : tok_info_variant (octave_value (num)) { }
+    tok_info (const octave_value& num) : m_value (octave_value (num)) { }
 
-    tok_info (end_tok_type et) : tok_info_variant (et) { }
+    tok_info (end_tok_type et) : m_value (et) { }
 
-    tok_info (const std::string& meth, const std::string& cls) : tok_info_variant (superclass_info (meth, cls)) { }
+    tok_info (const std::string& meth, const std::string& cls) : m_value (superclass_info (meth, cls)) { }
 
     OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (tok_info)
 
     std::string text () const
     {
-      panic_unless (std::holds_alternative<std::string> (*this));
-      return std::get<std::string> (*this);
+      panic_unless (std::holds_alternative<std::string> (m_value));
+      return std::get<std::string> (m_value);
     }
 
     octave_value number () const
     {
-      panic_unless (std::holds_alternative<octave_value> (*this));
-      return std::get<octave_value> (*this);
+      panic_unless (std::holds_alternative<octave_value> (m_value));
+      return std::get<octave_value> (m_value);
     }
 
     token::end_tok_type ettype () const
     {
-      panic_unless (std::holds_alternative<end_tok_type> (*this));
-      return std::get<end_tok_type> (*this);
+      panic_unless (std::holds_alternative<end_tok_type> (m_value));
+      return std::get<end_tok_type> (m_value);
     }
 
     std::string
     superclass_method_name () const
     {
-      panic_unless (std::holds_alternative<superclass_info> (*this));
-      return std::get<superclass_info> (*this).method_name ();
+      panic_unless (std::holds_alternative<superclass_info> (m_value));
+      return std::get<superclass_info> (m_value).method_name ();
     }
 
     std::string
     superclass_class_name () const
     {
-      panic_unless (std::holds_alternative<superclass_info> (*this));
-      return std::get<superclass_info> (*this).class_name ();
+      panic_unless (std::holds_alternative<superclass_info> (m_value));
+      return std::get<superclass_info> (m_value).class_name ();
     }
+
+  private:
+
+    std::variant<std::string, octave_value, end_tok_type, superclass_info> m_value;
   };
 
   tok_info m_tok_info;

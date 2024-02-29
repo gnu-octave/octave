@@ -197,55 +197,57 @@ private:
     std::string m_class_name;
   };
 
-  typedef std::variant<std::string, octave_value, end_tok_type, superclass_info> tok_info_variant;
-
-  class tok_info : public tok_info_variant
+  class tok_info
   {
   public:
 
-    tok_info (const char *s) : tok_info_variant (std::string (s)) { }
+    tok_info (const char *s) : m_value (std::string (s)) { }
 
-    tok_info (const std::string& str) : tok_info_variant (str) { }
+    tok_info (const std::string& str) : m_value (str) { }
 
-    tok_info (const octave_value& num) : tok_info_variant (octave_value (num)) { }
+    tok_info (const octave_value& num) : m_value (octave_value (num)) { }
 
-    tok_info (end_tok_type et) : tok_info_variant (et) { }
+    tok_info (end_tok_type et) : m_value (et) { }
 
-    tok_info (const std::string& meth, const std::string& cls) : tok_info_variant (superclass_info (meth, cls)) { }
+    tok_info (const std::string& meth, const std::string& cls) : m_value (superclass_info (meth, cls)) { }
 
     OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (tok_info)
 
     std::string text () const
     {
-      panic_unless (std::holds_alternative<std::string> (*this));
-      return std::get<std::string> (*this);
+      panic_unless (std::holds_alternative<std::string> (m_value));
+      return std::get<std::string> (m_value);
     }
 
     octave_value number () const
     {
-      panic_unless (std::holds_alternative<octave_value> (*this));
-      return std::get<octave_value> (*this);
+      panic_unless (std::holds_alternative<octave_value> (m_value));
+      return std::get<octave_value> (m_value);
     }
 
     token::end_tok_type ettype () const
     {
-      panic_unless (std::holds_alternative<end_tok_type> (*this));
-      return std::get<end_tok_type> (*this);
+      panic_unless (std::holds_alternative<end_tok_type> (m_value));
+      return std::get<end_tok_type> (m_value);
     }
 
     std::string
     superclass_method_name () const
     {
-      panic_unless (std::holds_alternative<superclass_info> (*this));
-      return std::get<superclass_info> (*this).method_name ();
+      panic_unless (std::holds_alternative<superclass_info> (m_value));
+      return std::get<superclass_info> (m_value).method_name ();
     }
 
     std::string
     superclass_class_name () const
     {
-      panic_unless (std::holds_alternative<superclass_info> (*this));
-      return std::get<superclass_info> (*this).class_name ();
+      panic_unless (std::holds_alternative<superclass_info> (m_value));
+      return std::get<superclass_info> (m_value).class_name ();
     }
+
+  private:
+
+    std::variant<std::string, octave_value, end_tok_type, superclass_info> m_value;
   };
 
   tok_info m_tok_info;

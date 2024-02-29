@@ -991,10 +991,8 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
-        curr_lexer->push_token (new octave::token (DQ_STRING,
-                                                   curr_lexer->m_string_text,
-                                                   curr_lexer->m_tok_beg,
-                                                   curr_lexer->m_tok_end));
+        octave::token *tok = new octave::token (DQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+        curr_lexer->push_token (tok);
 
         curr_lexer->m_string_text = "";
 
@@ -1013,10 +1011,8 @@ ANY_INCLUDING_NL (.|{NL})
     if (result > 0xff)
       {
         // Use location of octal digits for error token.
-        octave::token *tok
-          = new octave::token (LEXICAL_ERROR,
-                               "invalid octal escape sequence in character string",
-                               curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+        std::string msg {"invalid octal escape sequence in character string"};
+        octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
 
         curr_lexer->push_token (tok);
 
@@ -1121,10 +1117,8 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->lexer_debug ("<DQ_STRING_START>{NL}");
 
     // Use current file position for error token.
-    octave::token *tok
-      = new octave::token (LEXICAL_ERROR,
-                           "unterminated character string constant",
-                           curr_lexer->m_filepos, curr_lexer->m_filepos);
+    std::string msg {"unterminated character string constant"};
+    octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
     curr_lexer->push_token (tok);
 
@@ -1158,10 +1152,9 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
-        curr_lexer->push_token (new octave::token (SQ_STRING,
-                                                   curr_lexer->m_string_text,
-                                                   curr_lexer->m_tok_beg,
-                                                   curr_lexer->m_tok_end));
+        octave::token *tok = new octave::token (SQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+
+        curr_lexer->push_token (tok);
 
         curr_lexer->m_string_text = "";
 
@@ -1180,10 +1173,8 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->lexer_debug ("<SQ_STRING_START>{NL}");
 
     // Use current file position for error token.
-    octave::token *tok
-      = new octave::token (LEXICAL_ERROR,
-                           "unterminated character string constant",
-                           curr_lexer->m_filepos, curr_lexer->m_filepos);
+    std::string msg {"unterminated character string constant"};
+    octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
     curr_lexer->push_token (tok);
 
@@ -1421,17 +1412,15 @@ ANY_INCLUDING_NL (.|{NL})
                 octave::token *tok;
 
                 if (octave::iskeyword (ident))
-                  tok = new octave::token (LEXICAL_ERROR,
-                                           "function handles may not refer to keywords",
-                                           curr_lexer->m_tok_beg,
-                                           curr_lexer->m_tok_end);
+                  {
+                    std::string msg {"function handles may not refer to keywords"};
+                    tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+                  }
                 else
                   {
                     curr_lexer->m_looking_for_object_index = true;
 
-                    tok = new octave::token (FCN_HANDLE, ident,
-                                             curr_lexer->m_tok_beg,
-                                             curr_lexer->m_tok_end);
+                    tok = new octave::token (FCN_HANDLE, ident, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
                   }
 
                 curr_lexer->push_token (tok);
@@ -1475,10 +1464,8 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_filepos.next_line ();
 
         // Use current file position for error token.
-        octave::token *tok
-          = new octave::token (LEXICAL_ERROR,
-                               "unexpected internal lexer error",
-                               curr_lexer->m_filepos, curr_lexer->m_filepos);
+        std::string msg {"unexpected internal lexer error"};
+        octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
@@ -1881,9 +1868,8 @@ ANY_INCLUDING_NL (.|{NL})
             << "' (ASCII " << c << ")";
 
         // Use current file position for error token.
-        octave::token *tok
-          = new octave::token (LEXICAL_ERROR, buf.str (),
-                               curr_lexer->m_filepos, curr_lexer->m_filepos);
+        std::string msg {"unexpected internal lexer error"};
+        octave::token *tok = new octave::token (LEXICAL_ERROR, buf.str (), msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
         curr_lexer->push_token (tok);
 
@@ -2673,14 +2659,12 @@ looks_like_shebang (const std::string& s)
         break;
 
       case end_try_catch_kw:
-        tok_val = new token (kw->tok, token::try_catch_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::try_catch_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case end_unwind_protect_kw:
-        tok_val = new token (kw->tok, token::unwind_protect_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::unwind_protect_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2690,8 +2674,7 @@ looks_like_shebang (const std::string& s)
         break;
 
       case endfunction_kw:
-        tok_val = new token (kw->tok, token::function_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::function_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2719,39 +2702,33 @@ looks_like_shebang (const std::string& s)
 #if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
         return 0;
 #else
-        tok_val = new token (kw->tok, token::arguments_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::arguments_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 #endif
 
       case endclassdef_kw:
-        tok_val = new token (kw->tok, token::classdef_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::classdef_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endenumeration_kw:
-        tok_val = new token (kw->tok, token::enumeration_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::enumeration_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endevents_kw:
-        tok_val = new token (kw->tok, token::events_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::events_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endmethods_kw:
-        tok_val = new token (kw->tok, token::methods_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::methods_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endproperties_kw:
-        tok_val = new token (kw->tok, token::properties_end, m_tok_beg,
-                             m_tok_end);
+        tok_val = new token (kw->tok, token::properties_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2863,8 +2840,7 @@ looks_like_shebang (const std::string& s)
           if ((m_reading_fcn_file || m_reading_script_file
                || m_reading_classdef_file)
               && ! m_fcn_file_full_name.empty ())
-            tok_val = new token (kw->tok, m_fcn_file_full_name,
-                                 m_tok_beg, m_tok_end);
+            tok_val = new token (kw->tok, m_fcn_file_full_name, m_tok_beg, m_tok_end);
           else
             tok_val = new token (kw->tok, "stdin", m_tok_beg, m_tok_end);
         }
@@ -3043,10 +3019,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (bytes < 0)
       {
-        token *tok
-          = new token (LEXICAL_ERROR,
-                       "too many digits for binary constant",
-                       m_tok_beg, m_tok_end);
+        std::string msg {"too many digits for binary constant"};
+        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
 
         push_token (tok);
 
@@ -3251,10 +3225,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (bytes < 0)
       {
-        token *tok
-          = new token (LEXICAL_ERROR,
-                       "too many digits for hexadecimal constant",
-                       m_tok_beg, m_tok_end);
+        std::string msg {"too many digits for hexadecimal constant"};
+        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
 
         push_token (tok);
 
@@ -3416,10 +3388,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (iskeyword (meth) || fq_identifier_contains_keyword (cls))
       {
-        token *tok
-          = new token (LEXICAL_ERROR,
-                       "method, class, and package names may not be keywords",
-                       m_tok_beg, m_tok_end);
+        std::string msg {"method, class, and package names may not be keywords"};
+        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
 
         push_token (tok);
 
@@ -3449,9 +3419,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (fq_identifier_contains_keyword (cls))
       {
-        token *tok = new token (LEXICAL_ERROR,
-                                "class and package names may not be keywords",
-                                m_tok_beg, m_tok_end);
+        std::string msg {"class and package names may not be keywords"};
+        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
+
         push_token (tok);
 
         return count_token_internal (LEXICAL_ERROR);
@@ -3477,10 +3447,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (fq_identifier_contains_keyword (txt))
       {
-        token *tok
-          = new token (LEXICAL_ERROR,
-                       "function, method, class, and package names may not be keywords",
-                       m_tok_beg, m_tok_end);
+        std::string msg {"function, method, class, and package names may not be keywords"};
+        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
 
         push_token (tok);
 

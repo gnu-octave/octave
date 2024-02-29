@@ -93,8 +93,7 @@ PARSE_TREE_SRC = \
   %reldir%/pt-tm-const.cc \
   %reldir%/pt-unop.cc \
   %reldir%/pt-walk.cc \
-  %reldir%/pt.cc \
-  %reldir%/token.cc
+  %reldir%/pt.cc
 
 ## Special rules for sources which must be built before rest of compilation.
 

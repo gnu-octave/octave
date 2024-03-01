@@ -302,6 +302,14 @@ AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
 
 ### Determine which C++ compiler to use (we expect to find g++ or clang++).
 
+# AC_PROG_CXX attempts to find the compiler flags for activating support for
+# C++11.  As of autoconf version 2.71, the source code that it uses for that
+# test includes parts that are invalid in C++20.
+# We are using AX_CXX_COMPILE_STDCXX to determine the potentially needed flags
+# for the C++ version that Octave requires.  So, skip the (unnecessary and
+# broken) test for C++11 in AC_PROG_CXX by setting the following (undocumented)
+# flag:
+ac_cv_prog_cxx_cxx11=""
 AC_PROG_CXX
 AC_PROG_CXXCPP
 

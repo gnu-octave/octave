@@ -669,9 +669,9 @@ public:
 
   int handle_superclass_identifier ();
 
-  int handle_meta_identifier ();
+  token * make_meta_identifier_token ();
 
-  int handle_fq_identifier ();
+  token * make_fq_identifier_token ();
 
   int handle_identifier ();
 

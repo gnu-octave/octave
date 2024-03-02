@@ -1194,14 +1194,11 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->update_token_positions (yyleng);
 
-    int tok_id = curr_lexer->handle_fq_identifier ();
+    octave::token *tok = curr_lexer->make_fq_identifier_token ();
 
-    if (tok_id >= 0)
-      {
-        curr_lexer->m_looking_for_object_index = true;
+    curr_lexer->push_token (tok);
 
-        return curr_lexer->count_token_internal (tok_id);
-      }
+    return curr_lexer->count_token_internal (tok->token_id ());
   }
 
 <FQ_IDENT_START>{S}+ {
@@ -1355,14 +1352,11 @@ ANY_INCLUDING_NL (.|{NL})
       {
         curr_lexer->update_token_positions (yyleng);
 
-        int tok_id = curr_lexer->handle_meta_identifier ();
+        octave::token *tok = curr_lexer->make_meta_identifier_token ();
 
-        if (tok_id >= 0)
-          {
-            curr_lexer->m_looking_for_object_index = true;
+        curr_lexer->push_token (tok);
 
-            return curr_lexer->count_token_internal (tok_id);
-          }
+        return curr_lexer->count_token_internal (tok->token_id ());
       }
   }
 
@@ -3420,8 +3414,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     return count_token_internal (SUPERCLASSREF);
   }
 
-  int
-  base_lexer::handle_meta_identifier ()
+  token *
+  base_lexer::make_meta_identifier_token ()
   {
     std::string txt = flex_yytext ();
 
@@ -3434,25 +3428,27 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     // Token positions should have already been updated before this
     // function is called.
 
+    token *tok;
+
     if (fq_identifier_contains_keyword (cls))
       {
         std::string msg {"class and package names may not be keywords"};
-        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
+        tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
+      }
+    else
+      {
+        m_looking_for_object_index = true;
 
-        push_token (tok);
+        tok = new token (METAQUERY, cls, m_tok_beg, m_tok_end);
 
-        return count_token_internal (LEXICAL_ERROR);
+        m_filepos.increment_column (flex_yyleng ());
       }
 
-    push_token (new token (METAQUERY, cls, m_tok_beg, m_tok_end));
-
-    m_filepos.increment_column (flex_yyleng ());
-
-    return METAQUERY;
+    return tok;
   }
 
-  int
-  base_lexer::handle_fq_identifier ()
+  token *
+  base_lexer::make_fq_identifier_token ()
   {
     std::string txt = flex_yytext ();
 
@@ -3462,21 +3458,23 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     // Token positions should have already been updated before this
     // function is called.
 
+    token *tok;
+
     if (fq_identifier_contains_keyword (txt))
       {
         std::string msg {"function, method, class, and package names may not be keywords"};
-        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
+        tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
+      }
+    else
+      {
+        m_looking_for_object_index = true;
 
-        push_token (tok);
+        tok = new token (FQ_IDENT, txt, m_tok_beg, m_tok_end);
 
-        return count_token_internal (LEXICAL_ERROR);
+        m_filepos.increment_column (flex_yyleng ());
       }
 
-    push_token (new token (FQ_IDENT, txt, m_tok_beg, m_tok_end));
-
-    m_filepos.increment_column (flex_yyleng ());
-
-    return FQ_IDENT;
+    return tok;
   }
 
   // Figure out exactly what kind of token to return when we have seen

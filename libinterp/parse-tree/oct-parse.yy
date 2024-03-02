@@ -1278,7 +1278,7 @@ spmd_command    : SPMD stash_comment opt_sep opt_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_spmd_command ($1, $4, $5, lc, tc)))
                       {
@@ -1710,7 +1710,7 @@ arguments_block : arguments_beg stash_comment opt_sep args_attr_list
                     OCTAVE_YYUSE ($3, $6);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_arguments_block ($1, $4, $5, $7, lc, tc)))
                       {
@@ -1991,7 +1991,7 @@ properties_block
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_properties_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2067,7 +2067,7 @@ methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_methods_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2151,7 +2151,7 @@ events_block    : events_beg stash_comment opt_sep attr_list events_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_events_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2203,7 +2203,7 @@ enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_enum_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2275,7 +2275,7 @@ anon_fcn_begin  : // empty
 
 stash_comment   : // empty
                   {
-                    $$ = lexer.get_comment ();
+                    $$ = lexer.get_comment_list ();
                   }
                 ;
 
@@ -3299,7 +3299,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::unwind_protect_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = unwind_tok->line ();
         int c = unwind_tok->column ();
@@ -3333,7 +3333,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::try_catch_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = try_tok->line ();
         int c = try_tok->column ();
@@ -3389,7 +3389,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::while_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         m_lexer.m_looping--;
 
@@ -3419,7 +3419,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     maybe_warn_assign_as_truth_value (expr);
 
-    comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+    comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
     m_lexer.m_looping--;
 
@@ -3448,7 +3448,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         expr->mark_as_for_cmd_expr ();
 
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         m_lexer.m_looping--;
 
@@ -3596,7 +3596,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::if_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = if_tok->line ();
         int c = if_tok->column ();
@@ -3670,7 +3670,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::switch_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = switch_tok->line ();
         int c = switch_tok->column ();
@@ -4044,7 +4044,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       = new octave_user_function (m_lexer.m_symtab_context.curr_scope (),
                                   param_list, nullptr, body);
 
-    comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+    comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
     fcn->stash_trailing_comment (tc);
     fcn->stash_fcn_end_location (end_fcn_stmt->line (),
@@ -5485,7 +5485,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_statement *
   base_parser::make_statement (T *arg)
   {
-    comment_list *comment = m_lexer.get_comment ();
+    comment_list *comment = m_lexer.get_comment_list ();
 
     return new tree_statement (arg, comment);
   }

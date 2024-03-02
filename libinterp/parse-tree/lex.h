@@ -578,7 +578,7 @@ public:
 
     // Caller is expected to delete the returned value.
 
-    comment_list * get_comment ()
+    comment_list * get_comment_list ()
     {
       comment_list *retval = m_comment_list;
 
@@ -658,7 +658,7 @@ public:
 
   void finish_comment (comment_elt::comment_type typ);
 
-  comment_list * get_comment () { return m_comment_buf.get_comment (); }
+  comment_list * get_comment_list () { return m_comment_buf.get_comment_list (); }
 
   int handle_close_bracket (int bracket_type);
 

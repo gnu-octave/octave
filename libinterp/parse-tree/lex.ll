@@ -992,11 +992,10 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_at_beginning_of_statement = false;
 
         octave::token *tok = new octave::token (DQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
-        curr_lexer->push_token (tok);
 
         curr_lexer->m_string_text = "";
 
-        return curr_lexer->count_token_internal (DQ_STRING);
+        return curr_lexer->handle_token (tok);
       }
   }
 
@@ -1014,9 +1013,7 @@ ANY_INCLUDING_NL (.|{NL})
         std::string msg {"invalid octal escape sequence in character string"};
         octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
 
-        curr_lexer->push_token (tok);
-
-        return curr_lexer->count_token_internal (LEXICAL_ERROR);
+        return curr_lexer->handle_token (tok);
       }
     else
       curr_lexer->m_string_text += static_cast<unsigned char> (result);
@@ -1120,11 +1117,9 @@ ANY_INCLUDING_NL (.|{NL})
     std::string msg {"unterminated character string constant"};
     octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
-    curr_lexer->push_token (tok);
-
     curr_lexer->m_filepos.next_line ();
 
-    return curr_lexer->count_token_internal (LEXICAL_ERROR);
+    return curr_lexer->handle_token (tok);
   }
 
 %{
@@ -1154,11 +1149,9 @@ ANY_INCLUDING_NL (.|{NL})
 
         octave::token *tok = new octave::token (SQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
 
-        curr_lexer->push_token (tok);
-
         curr_lexer->m_string_text = "";
 
-        return curr_lexer->count_token_internal (SQ_STRING);
+        return curr_lexer->handle_token (tok);
       }
   }
 
@@ -1176,11 +1169,9 @@ ANY_INCLUDING_NL (.|{NL})
     std::string msg {"unterminated character string constant"};
     octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
-    curr_lexer->push_token (tok);
-
     curr_lexer->m_filepos.next_line ();
 
-    return curr_lexer->count_token_internal (LEXICAL_ERROR);
+    return curr_lexer->handle_token (tok);
   }
 
 %{
@@ -1196,9 +1187,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     octave::token *tok = curr_lexer->make_fq_identifier_token ();
 
-    curr_lexer->push_token (tok);
-
-    return curr_lexer->count_token_internal (tok->token_id ());
+    return curr_lexer->handle_token (tok);
   }
 
 <FQ_IDENT_START>{S}+ {
@@ -1354,9 +1343,7 @@ ANY_INCLUDING_NL (.|{NL})
 
         octave::token *tok = curr_lexer->make_meta_identifier_token ();
 
-        curr_lexer->push_token (tok);
-
-        return curr_lexer->count_token_internal (tok->token_id ());
+        return curr_lexer->handle_token (tok);
       }
   }
 
@@ -1417,9 +1404,7 @@ ANY_INCLUDING_NL (.|{NL})
                     tok = new octave::token (FCN_HANDLE, ident, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
                   }
 
-                curr_lexer->push_token (tok);
-
-                return curr_lexer->count_token_internal (tok->token_id ());
+                return curr_lexer->handle_token (tok);
               }
           }
       }
@@ -1461,9 +1446,7 @@ ANY_INCLUDING_NL (.|{NL})
         std::string msg {"unexpected internal lexer error"};
         octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
-        curr_lexer->push_token (tok);
-
-        return curr_lexer->count_token_internal (LEXICAL_ERROR);
+        return curr_lexer->handle_token (tok);
       }
   }
 
@@ -1865,11 +1848,9 @@ ANY_INCLUDING_NL (.|{NL})
         std::string msg {"unexpected internal lexer error"};
         octave::token *tok = new octave::token (LEXICAL_ERROR, buf.str (), msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
 
-        curr_lexer->push_token (tok);
-
         curr_lexer->m_filepos.increment_column ();
 
-        return curr_lexer->count_token_internal (LEXICAL_ERROR);
+        return curr_lexer->handle_token (tok);
       }
   }
 
@@ -2502,9 +2483,7 @@ looks_like_shebang (const std::string& s)
 
     token *tok = new token (END_OF_INPUT, m_tok_beg, m_tok_end);
 
-    push_token (tok);
-
-    return count_token_internal (END_OF_INPUT);
+    return handle_token (tok);
   }
 
   char *
@@ -3033,9 +3012,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         std::string msg {"too many digits for binary constant"};
         token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
 
-        push_token (tok);
-
-        return count_token_internal (LEXICAL_ERROR);
+        return handle_token (tok);
       }
 
     // FIXME: is there a better way?  Can uintmax_t be anything other
@@ -3063,9 +3040,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     update_token_positions (flex_yyleng ());
 
-    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end);
 
-    return count_token_internal (NUMBER);
+    return handle_token (tok);
   }
 
   static uint64_t
@@ -3184,9 +3161,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
                   ? octave_value (Complex (0.0, value))
                   : octave_value (value));
 
-    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end);
 
-    return count_token_internal (NUMBER);
+    return handle_token (tok);
   }
 
   template <>
@@ -3239,9 +3216,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         std::string msg {"too many digits for hexadecimal constant"};
         token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
 
-        push_token (tok);
-
-        return count_token_internal (LEXICAL_ERROR);
+        return handle_token (tok);
       }
 
     // Assert here because if yytext doesn't contain a valid number, we
@@ -3259,9 +3234,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     update_token_positions (flex_yyleng ());
 
-    push_token (new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end));
+    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end);
 
-    return count_token_internal (NUMBER);
+    return handle_token (tok);
   }
 
   void
@@ -3402,16 +3377,14 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         std::string msg {"method, class, and package names may not be keywords"};
         token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
 
-        push_token (tok);
-
-        return count_token_internal (LEXICAL_ERROR);
+        return handle_token (tok);
       }
 
-    push_token (new token (SUPERCLASSREF, meth, cls, m_tok_beg, m_tok_end));
+    token *tok = new token (SUPERCLASSREF, meth, cls, m_tok_beg, m_tok_end);
 
     m_filepos.increment_column (flex_yyleng ());
 
-    return count_token_internal (SUPERCLASSREF);
+    return handle_token (tok);
   }
 
   token *
@@ -3494,11 +3467,11 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (m_looking_at_indirect_ref)
       {
-        push_token (new token (STRUCT_ELT, ident, m_tok_beg, m_tok_end));
+        token *tok = new token (STRUCT_ELT, ident, m_tok_beg, m_tok_end);
 
         m_looking_for_object_index = true;
 
-        return STRUCT_ELT;
+        return handle_token (tok);
       }
 
     // If ident is a keyword token, then make_keyword_token will set
@@ -3516,9 +3489,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
         // The call to make_keyword_token set m_at_beginning_of_statement.
 
-        push_token (tok);
-
-        return count_token_internal (tok->token_id ());
+        return handle_token (tok);
       }
 
     tok = new token (NAME, ident, m_tok_beg, m_tok_end);
@@ -3540,8 +3511,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
               || ident == "NaN" || ident == "nan"))
       tok->mark_may_be_command ();
 
-    push_token (tok);
-
     // The magic end index can't be indexed.
 
     if (ident != "end")
@@ -3549,7 +3518,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     m_at_beginning_of_statement = false;
 
-    return count_token_internal (NAME);
+    return handle_token (tok);
   }
 
   void
@@ -3938,7 +3907,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     update_token_positions (flex_yyleng ());
 
-    push_token (new token (tok_id, m_tok_beg, m_tok_end));
+    token *tok = new token (tok_id, m_tok_beg, m_tok_end);
 
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = bos;
@@ -3962,7 +3931,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         break;
       }
 
-    return count_token_internal (tok_id);
+    return handle_token (tok);
   }
 
   // When a command argument boundary is detected, push out the current
@@ -3972,14 +3941,12 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   int
   base_lexer::finish_command_arg ()
   {
-    int tok_id = SQ_STRING;
-
-    token *tok = new token (tok_id, m_string_text, m_tok_beg, m_tok_end);
+    token *tok = new token (SQ_STRING, m_string_text, m_tok_beg, m_tok_end);
 
     m_string_text = "";
     m_command_arg_paren_count = 0;
 
-    return handle_token (tok_id, tok);
+    return handle_token (tok);
   }
 
   int
@@ -3988,19 +3955,21 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     if (! tok)
       tok = new token (tok_id, m_tok_beg, m_tok_end);
 
+    return handle_token (tok);
+  }
+
+  int
+  base_lexer::handle_token (token *tok)
+  {
     push_token (tok);
 
-    return count_token_internal (tok_id);
+    return count_token_internal (tok->token_id ());
   }
 
   int
   base_lexer::count_token (int tok_id)
   {
-    token *tok = new token (tok_id, m_tok_beg, m_tok_end);
-
-    push_token (tok);
-
-    return count_token_internal (tok_id);
+    return handle_token (new token (tok_id, m_tok_beg, m_tok_end));
   }
 
   int

@@ -647,7 +647,7 @@ public:
 
   bool inside_any_object_index ();
 
-  int make_keyword_token (const std::string& s);
+  token * make_keyword_token (const std::string& s);
 
   bool fq_identifier_contains_keyword (const std::string& s);
 

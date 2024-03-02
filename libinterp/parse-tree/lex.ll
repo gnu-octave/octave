@@ -2621,7 +2621,7 @@ looks_like_shebang (const std::string& s)
     return retval;
   }
 
-  int
+  token *
   base_lexer::make_keyword_token (const std::string& s)
   {
     // Token positions should have already been updated before this
@@ -2632,7 +2632,7 @@ looks_like_shebang (const std::string& s)
     const octave_kw *kw = octave_kw_hash::in_word_set (s.c_str (), slen);
 
     if (! kw)
-      return 0;
+      return nullptr;
 
     bool previous_at_bos = m_at_beginning_of_statement;
 
@@ -2670,7 +2670,7 @@ looks_like_shebang (const std::string& s)
                       || m_parsed_function_name.top ())))
           {
             m_at_beginning_of_statement = previous_at_bos;
-            return 0;
+            return nullptr;
           }
 
         tok = new token (kw->tok_id, token::simple_end, m_tok_beg, m_tok_end);
@@ -2719,7 +2719,7 @@ looks_like_shebang (const std::string& s)
 
       case endarguments_kw:
 #if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
-        return 0;
+        return nullptr;
 #else
         tok = new token (kw->tok_id, token::arguments_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
@@ -2778,7 +2778,7 @@ looks_like_shebang (const std::string& s)
         if (! m_maybe_classdef_get_set_method)
           {
             m_at_beginning_of_statement = previous_at_bos;
-            return 0;
+            return nullptr;
           }
         break;
 
@@ -2791,7 +2791,7 @@ looks_like_shebang (const std::string& s)
         if (! m_classdef_element_names_are_keywords)
           {
             m_at_beginning_of_statement = previous_at_bos;
-            return 0;
+            return nullptr;
           }
         // fall through ...
 
@@ -2838,10 +2838,10 @@ looks_like_shebang (const std::string& s)
 
       case arguments_kw:
 #if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
-        return 0;
+        return nullptr;
 #else
         if (! m_arguments_is_keyword)
-          return 0;
+          return nullptr;
         break;
 #endif
 
@@ -2880,9 +2880,7 @@ looks_like_shebang (const std::string& s)
     if (! tok)
       tok = new token (kw->tok_id, true, m_tok_beg, m_tok_end);
 
-    push_token (tok);
-
-    return kw->tok_id;
+    return tok;
   }
 
 /*
@@ -3509,21 +3507,23 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     // m_at_beginning_of_statement.  For example, if tok is an IF
     // token, then m_at_beginning_of_statement will be false.
 
-    int kw_token = make_keyword_token (ident);
+    token *tok = make_keyword_token (ident);
 
     // If we have a regular keyword, return it.
     // Keywords can be followed by identifiers.
 
-    if (kw_token)
+    if (tok)
       {
         m_looking_for_object_index = false;
 
         // The call to make_keyword_token set m_at_beginning_of_statement.
 
-        return count_token_internal (kw_token);
+        push_token (tok);
+
+        return count_token_internal (tok->token_id ());
       }
 
-    token *tok = new token (NAME, ident, m_tok_beg, m_tok_end);
+    tok = new token (NAME, ident, m_tok_beg, m_tok_end);
 
     // For compatibility with Matlab, the following symbols are
     // handled specially so that things like

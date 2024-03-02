@@ -325,9 +325,12 @@ public:
 
   void reset ();
 
-  int previous_token_value () const;
+  int previous_token_id () const;
+  token * previous_token ();
+  const token * previous_token () const;
 
-  bool previous_token_value_is (int tok_val) const;
+  bool previous_token_is (int tok_id) const;
+  bool previous_token_is (const token *tok) const;
 
   void mark_previous_token_trailing_space ();
 
@@ -692,7 +695,7 @@ public:
 
   std::size_t pending_token_count () const;
 
-  void display_token (int tok);
+  void display_token (int tok_id);
 
   void fatal_error (const char *msg);
 
@@ -733,19 +736,19 @@ public:
 
   void display_start_state () const;
 
-  bool maybe_unput_comma_before_unary_op (int tok);
+  bool maybe_unput_comma_before_unary_op (int tok_id);
 
-  int handle_op (int tok, bool bos = false, bool compat = true);
+  int handle_op (int tok_id, bool bos = false, bool compat = true);
 
   int finish_command_arg ();
 
-  int handle_token (int tok, token *tok_val = nullptr);
+  int handle_token (int tok_id, token *tok = nullptr);
 
-  int count_token (int tok);
+  int count_token (int tok_id);
 
-  int count_token_internal (int tok);
+  int count_token_internal (int tok_id);
 
-  int show_token (int tok);
+  int show_token (int tok_id);
 
 protected:
 

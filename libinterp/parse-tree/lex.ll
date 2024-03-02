@@ -168,22 +168,22 @@ and after the nested call.
 #define YY_FATAL_ERROR(msg)                     \
    (yyget_extra (yyscanner))->fatal_error (msg)
 
-#define CMD_OR_OP(PATTERN, TOK, COMPAT)                                 \
-   do                                                                   \
-     {                                                                  \
-       curr_lexer->lexer_debug (PATTERN);                               \
-                                                                        \
-       if (curr_lexer->looks_like_command_arg ())                       \
-         {                                                              \
-           yyless (0);                                                  \
-           curr_lexer->push_start_state (COMMAND_START);                \
-         }                                                              \
-       else                                                             \
-         return curr_lexer->handle_op (TOK, false, COMPAT);             \
-     }                                                                  \
+#define CMD_OR_OP(PATTERN, TOK_ID, COMPAT)                      \
+   do                                                           \
+     {                                                          \
+       curr_lexer->lexer_debug (PATTERN);                       \
+                                                                \
+       if (curr_lexer->looks_like_command_arg ())               \
+         {                                                      \
+           yyless (0);                                          \
+           curr_lexer->push_start_state (COMMAND_START);        \
+         }                                                      \
+       else                                                     \
+         return curr_lexer->handle_op (TOK_ID, false, COMPAT);  \
+     }                                                          \
    while (0)
 
-#define CMD_OR_UNARY_OP(PATTERN, TOK, COMPAT)                           \
+#define CMD_OR_UNARY_OP(PATTERN, TOK_ID, COMPAT)                        \
    do                                                                   \
      {                                                                  \
        curr_lexer->lexer_debug (PATTERN);                               \
@@ -196,17 +196,17 @@ and after the nested call.
                curr_lexer->push_start_state (COMMAND_START);            \
              }                                                          \
            else                                                         \
-             return curr_lexer->handle_op (TOK, false, COMPAT);         \
+             return curr_lexer->handle_op (TOK_ID, false, COMPAT);      \
          }                                                              \
        else                                                             \
          {                                                              \
-           if (curr_lexer->maybe_unput_comma_before_unary_op (TOK))     \
+           if (curr_lexer->maybe_unput_comma_before_unary_op (TOK_ID))  \
              {                                                          \
                yyless (0);                                              \
                curr_lexer->xunput (',');                                \
              }                                                          \
            else                                                         \
-             return curr_lexer->handle_op (TOK, false, COMPAT);         \
+             return curr_lexer->handle_op (TOK_ID, false, COMPAT);      \
          }                                                              \
      }                                                                  \
    while (0)
@@ -225,57 +225,57 @@ and after the nested call.
      }                                                  \
    while (0)
 
-// If we are at the end of the buffer, ask for more input.
-// If we are at the end of the file, deal with it.
-// Otherwise, just keep going with the text from the current buffer.
-#define HANDLE_STRING_CONTINUATION                      \
-   do                                                   \
-     {                                                  \
-       curr_lexer->m_filepos.next_line ();              \
-                                                        \
-       HANDLE_EOB_OR_EOF (-1);                          \
-     }                                                  \
+   // If we are at the end of the buffer, ask for more input.
+   // If we are at the end of the file, deal with it.
+   // Otherwise, just keep going with the text from the current buffer.
+#define HANDLE_STRING_CONTINUATION              \
+   do                                           \
+     {                                          \
+       curr_lexer->m_filepos.next_line ();      \
+                                                \
+       HANDLE_EOB_OR_EOF (-1);                  \
+     }                                          \
    while (0)
 
-#define HANDLE_NUMBER(PATTERN, BASE)                            \
-  do                                                            \
-    {                                                           \
-     curr_lexer->lexer_debug (PATTERN);                         \
-                                                                \
-     if (curr_lexer->previous_token_may_be_command ()           \
-         &&  curr_lexer->space_follows_previous_token ())       \
-       {                                                        \
-         yyless (0);                                            \
-         curr_lexer->push_start_state (COMMAND_START);          \
-       }                                                        \
-     else                                                       \
-       {                                                        \
-         int tok = curr_lexer->previous_token_value ();         \
-                                                                \
-         if (curr_lexer->whitespace_is_significant ()           \
-             && curr_lexer->space_follows_previous_token ()     \
-             && ! (tok == '[' || tok == '{'                     \
-                   || curr_lexer->previous_token_is_binop ()))  \
-           {                                                    \
-             yyless (0);                                        \
-             curr_lexer->xunput (',');                          \
-           }                                                    \
-         else                                                   \
-           return curr_lexer->handle_number<BASE> ();           \
-       }                                                        \
-    }                                                           \
-  while (0)
+#define HANDLE_NUMBER(PATTERN, BASE)                                    \
+   do                                                                   \
+     {                                                                  \
+       curr_lexer->lexer_debug (PATTERN);                               \
+                                                                        \
+       if (curr_lexer->previous_token_may_be_command ()                 \
+           &&  curr_lexer->space_follows_previous_token ())             \
+         {                                                              \
+           yyless (0);                                                  \
+           curr_lexer->push_start_state (COMMAND_START);                \
+         }                                                              \
+       else                                                             \
+         {                                                              \
+           int tok_id = curr_lexer->previous_token_id ();               \
+                                                                        \
+           if (curr_lexer->whitespace_is_significant ()                 \
+               && curr_lexer->space_follows_previous_token ()           \
+               && ! (tok_id == '[' || tok_id == '{'                     \
+                     || curr_lexer->previous_token_is_binop ()))        \
+             {                                                          \
+               yyless (0);                                              \
+               curr_lexer->xunput (',');                                \
+             }                                                          \
+           else                                                         \
+             return curr_lexer->handle_number<BASE> ();                 \
+         }                                                              \
+     }                                                                  \
+   while (0)
 
 #define HANDLE_IDENTIFIER(pattern, get_set)                             \
    do                                                                   \
      {                                                                  \
        curr_lexer->lexer_debug (pattern);                               \
                                                                         \
-       int tok = curr_lexer->previous_token_value ();                   \
+       int tok_id = curr_lexer->previous_token_id ();                   \
                                                                         \
        if (curr_lexer->whitespace_is_significant ()                     \
            && curr_lexer->space_follows_previous_token ()               \
-           && ! (tok == '[' || tok == '{'                               \
+           && ! (tok_id == '[' || tok_id == '{'                         \
                  || curr_lexer->previous_token_is_binop ()))            \
          {                                                              \
            yyless (0);                                                  \
@@ -590,9 +590,9 @@ ANY_INCLUDING_NL (.|{NL})
       curr_lexer->warn_language_extension ("bare newline inside parentheses");
     else
       {
-        int tok = curr_lexer->previous_token_value ();
+        int tok_id = curr_lexer->previous_token_id ();
 
-        if (! (tok == ';' || tok == '[' || tok == '{'))
+        if (! (tok_id == ';' || tok_id == '[' || tok_id == '{'))
           curr_lexer->xunput (';');
       }
   }
@@ -655,9 +655,9 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->whitespace_is_significant ()
         && curr_lexer->space_follows_previous_token ())
       {
-        int tok = curr_lexer->previous_token_value ();
+        int tok_id = curr_lexer->previous_token_id ();
 
-        if (! (tok == '[' || tok == '{'
+        if (! (tok_id == '[' || tok_id == '{'
                || curr_lexer->previous_token_is_binop ()))
           unput_comma = true;
       }
@@ -1194,13 +1194,13 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->update_token_positions (yyleng);
 
-    int id_tok = curr_lexer->handle_fq_identifier ();
+    int tok_id = curr_lexer->handle_fq_identifier ();
 
-    if (id_tok >= 0)
+    if (tok_id >= 0)
       {
         curr_lexer->m_looking_for_object_index = true;
 
-        return curr_lexer->count_token_internal (id_tok);
+        return curr_lexer->count_token_internal (tok_id);
       }
   }
 
@@ -1355,13 +1355,13 @@ ANY_INCLUDING_NL (.|{NL})
       {
         curr_lexer->update_token_positions (yyleng);
 
-        int id_tok = curr_lexer->handle_meta_identifier ();
+        int tok_id = curr_lexer->handle_meta_identifier ();
 
-        if (id_tok >= 0)
+        if (tok_id >= 0)
           {
             curr_lexer->m_looking_for_object_index = true;
 
-            return curr_lexer->count_token_internal (id_tok);
+            return curr_lexer->count_token_internal (tok_id);
           }
       }
   }
@@ -1378,11 +1378,11 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
-        int tok_val = curr_lexer->previous_token_value ();
+        int tok_id = curr_lexer->previous_token_id ();
 
         if (curr_lexer->whitespace_is_significant ()
             && curr_lexer->space_follows_previous_token ()
-            && ! (tok_val == '[' || tok_val == '{'
+            && ! (tok_id == '[' || tok_id == '{'
                   || curr_lexer->previous_token_is_binop ()))
           {
             yyless (0);
@@ -1425,7 +1425,7 @@ ANY_INCLUDING_NL (.|{NL})
 
                 curr_lexer->push_token (tok);
 
-                return curr_lexer->count_token_internal (tok->token_value ());
+                return curr_lexer->count_token_internal (tok->token_id ());
               }
           }
       }
@@ -1495,13 +1495,13 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
-        int tok = curr_lexer->previous_token_value ();
+        int tok_id = curr_lexer->previous_token_id ();
 
         if (curr_lexer->whitespace_is_significant ())
           {
             if (curr_lexer->space_follows_previous_token ())
               {
-                if (tok == '[' || tok == '{'
+                if (tok_id == '[' || tok_id == '{'
                     || curr_lexer->previous_token_is_binop ())
                   {
                     curr_lexer->m_filepos.increment_column ();
@@ -1515,7 +1515,7 @@ ANY_INCLUDING_NL (.|{NL})
               }
             else
               {
-                if (tok == '[' || tok == '{'
+                if (tok_id == '[' || tok_id == '{'
                     || curr_lexer->previous_token_is_binop ()
                     || curr_lexer->previous_token_is_keyword ())
                   {
@@ -1531,7 +1531,7 @@ ANY_INCLUDING_NL (.|{NL})
           }
         else
           {
-            if (! tok || tok == '[' || tok == '{' || tok == '('
+            if (! tok_id || tok_id == '[' || tok_id == '{' || tok_id == '('
                 || curr_lexer->previous_token_is_binop ()
                 || curr_lexer->previous_token_is_keyword ())
               {
@@ -1563,13 +1563,13 @@ ANY_INCLUDING_NL (.|{NL})
       }
     else
       {
-        int tok = curr_lexer->previous_token_value ();
+        int tok_id = curr_lexer->previous_token_id ();
 
         if (curr_lexer->whitespace_is_significant ())
           {
             if (curr_lexer->space_follows_previous_token ())
               {
-                if (tok == '[' || tok == '{'
+                if (tok_id == '[' || tok_id == '{'
                     || curr_lexer->previous_token_is_binop ())
                   {
                     curr_lexer->m_filepos.increment_column ();
@@ -1679,9 +1679,9 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->whitespace_is_significant ()
         && curr_lexer->space_follows_previous_token ())
       {
-        int tok = curr_lexer->previous_token_value ();
+        int tok_id = curr_lexer->previous_token_id ();
 
-        if (! (tok == '[' || tok == '{'
+        if (! (tok_id == '[' || tok_id == '{'
                || curr_lexer->previous_token_is_binop ()))
           unput_comma = true;
       }
@@ -1789,9 +1789,9 @@ ANY_INCLUDING_NL (.|{NL})
     if (curr_lexer->whitespace_is_significant ()
         && curr_lexer->space_follows_previous_token ())
       {
-        int tok = curr_lexer->previous_token_value ();
+        int tok_id = curr_lexer->previous_token_id ();
 
-        if (! (tok == '[' || tok == '{'
+        if (! (tok_id == '[' || tok_id == '{'
                || curr_lexer->previous_token_is_binop ()))
           unput_comma = true;
       }
@@ -2231,60 +2231,79 @@ If @var{name} is omitted, return a list of keywords.
     m_tokens.clear ();
   }
 
-  int
-  lexical_feedback::previous_token_value () const
+  token *
+  lexical_feedback::previous_token ()
   {
-    const token *tok = m_tokens.front ();
-    return tok ? tok->token_value () : 0;
+    return m_tokens.front ();
+  }
+
+  const token *
+  lexical_feedback::previous_token () const
+  {
+    return m_tokens.front ();
+  }
+
+  int
+  lexical_feedback::previous_token_id () const
+  {
+    const token *prev_tok = previous_token ();
+    return prev_tok ? prev_tok->token_id () : 0;
   }
 
   bool
-  lexical_feedback::previous_token_value_is (int tok_val) const
+  lexical_feedback::previous_token_is (int tok_id) const
   {
-    const token *tok = m_tokens.front ();
-    return tok ? tok->token_value_is (tok_val) : false;
+    const token *prev_tok = previous_token ();
+    return prev_tok ? prev_tok->token_is (tok_id) : false;
+  }
+
+  bool
+  lexical_feedback::previous_token_is (const token *tok) const
+  {
+    const token *prev_tok = previous_token ();
+    return prev_tok ? prev_tok->token_is (tok) : false;
   }
 
   void
   lexical_feedback::mark_previous_token_trailing_space ()
   {
-    token *tok = m_tokens.front ();
-    if (tok && ! previous_token_value_is ('\n'))
-      tok->mark_trailing_space ();
+    token *prev_tok = previous_token ();
+    if (prev_tok && ! previous_token_is ('\n'))
+      prev_tok->mark_trailing_space ();
   }
 
   bool
   lexical_feedback::space_follows_previous_token () const
   {
-    const token *tok = m_tokens.front ();
-    return tok ? tok->space_follows_token () : false;
+    const token *prev_tok = previous_token ();
+    return prev_tok ? prev_tok->space_follows_token () : false;
   }
 
   bool
   lexical_feedback::previous_token_is_binop () const
   {
-    int tok = previous_token_value ();
+    int tok_id = previous_token_id ();
 
-    return (tok == '+' || tok == '-' || tok == '@' || tok == '~' || tok == '!'
-            || tok == ',' || tok == ';' || tok == '*' || tok == '/'
-            || tok == ':' || tok == '=' || tok == ADD_EQ
-            || tok == AND_EQ || tok == DIV_EQ || tok == EDIV
-            || tok == EDIV_EQ || tok == ELEFTDIV || tok == ELEFTDIV_EQ
-            || tok == EMUL || tok == EMUL_EQ
-            || tok == EPOW || tok == EPOW_EQ || tok == EXPR_AND
-            || tok == EXPR_AND_AND || tok == EXPR_EQ || tok == EXPR_GE
-            || tok == EXPR_GT || tok == EXPR_LE || tok == EXPR_LT
-            || tok == EXPR_NE || tok == EXPR_OR
-            || tok == EXPR_OR_OR || tok == LEFTDIV || tok == LEFTDIV_EQ
-            || tok == MUL_EQ || tok == OR_EQ || tok == POW
-            || tok == POW_EQ || tok == SUB_EQ);
+    return (tok_id == '+' || tok_id == '-' || tok_id == '@' || tok_id == '~' || tok_id == '!'
+            || tok_id == ',' || tok_id == ';' || tok_id == '*' || tok_id == '/'
+            || tok_id == ':' || tok_id == '=' || tok_id == ADD_EQ
+            || tok_id == AND_EQ || tok_id == DIV_EQ || tok_id == EDIV
+            || tok_id == EDIV_EQ || tok_id == ELEFTDIV || tok_id == ELEFTDIV_EQ
+            || tok_id == EMUL || tok_id == EMUL_EQ
+            || tok_id == EPOW || tok_id == EPOW_EQ || tok_id == EXPR_AND
+            || tok_id == EXPR_AND_AND || tok_id == EXPR_EQ || tok_id == EXPR_GE
+            || tok_id == EXPR_GT || tok_id == EXPR_LE || tok_id == EXPR_LT
+            || tok_id == EXPR_NE || tok_id == EXPR_OR
+            || tok_id == EXPR_OR_OR || tok_id == LEFTDIV || tok_id == LEFTDIV_EQ
+            || tok_id == MUL_EQ || tok_id == OR_EQ || tok_id == POW
+            || tok_id == POW_EQ || tok_id == SUB_EQ);
   }
 
   bool
   lexical_feedback::previous_token_is_keyword () const
   {
-    const token *tok = m_tokens.front ();
-    return tok ? tok->iskeyword () : false;
+    const token *prev_tok = previous_token ();
+    return prev_tok ? prev_tok->iskeyword () : false;
   }
 
   void
@@ -2311,8 +2330,8 @@ If @var{name} is omitted, return a list of keywords.
     if (! m_allow_command_syntax)
       return false;
 
-    const token *tok = m_tokens.front ();
-    return tok ? tok->may_be_command () : false;
+    const token *prev_tok = previous_token ();
+    return prev_tok ? prev_tok->may_be_command () : false;
   }
 
 static bool
@@ -2487,9 +2506,9 @@ looks_like_shebang (const std::string& s)
           error ("block comment unterminated at end of input");
       }
 
-    token *tok_val = new token (END_OF_INPUT, m_tok_beg, m_tok_end);
+    token *tok = new token (END_OF_INPUT, m_tok_beg, m_tok_end);
 
-    push_token (tok_val);
+    push_token (tok);
 
     return count_token_internal (END_OF_INPUT);
   }
@@ -2620,7 +2639,7 @@ looks_like_shebang (const std::string& s)
     // May be reset to true for some token types.
     m_at_beginning_of_statement = false;
 
-    token *tok_val = nullptr;
+    token *tok = nullptr;
 
     switch (kw->kw_id)
       {
@@ -2654,47 +2673,47 @@ looks_like_shebang (const std::string& s)
             return 0;
           }
 
-        tok_val = new token (kw->tok, token::simple_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::simple_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case end_try_catch_kw:
-        tok_val = new token (kw->tok, token::try_catch_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::try_catch_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case end_unwind_protect_kw:
-        tok_val = new token (kw->tok, token::unwind_protect_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::unwind_protect_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endfor_kw:
-        tok_val = new token (kw->tok, token::for_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::for_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endfunction_kw:
-        tok_val = new token (kw->tok, token::function_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::function_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endif_kw:
-        tok_val = new token (kw->tok, token::if_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::if_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endparfor_kw:
-        tok_val = new token (kw->tok, token::parfor_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::parfor_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endswitch_kw:
-        tok_val = new token (kw->tok, token::switch_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::switch_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endwhile_kw:
-        tok_val = new token (kw->tok, token::while_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::while_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2702,33 +2721,33 @@ looks_like_shebang (const std::string& s)
 #if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
         return 0;
 #else
-        tok_val = new token (kw->tok, token::arguments_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::arguments_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 #endif
 
       case endclassdef_kw:
-        tok_val = new token (kw->tok, token::classdef_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::classdef_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endenumeration_kw:
-        tok_val = new token (kw->tok, token::enumeration_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::enumeration_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endevents_kw:
-        tok_val = new token (kw->tok, token::events_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::events_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endmethods_kw:
-        tok_val = new token (kw->tok, token::methods_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::methods_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
       case endproperties_kw:
-        tok_val = new token (kw->tok, token::properties_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::properties_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2831,7 +2850,7 @@ looks_like_shebang (const std::string& s)
         break;
 
       case endspmd_kw:
-        tok_val = new token (kw->tok, token::spmd_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::spmd_end, m_tok_beg, m_tok_end);
         m_at_beginning_of_statement = true;
         break;
 
@@ -2840,9 +2859,9 @@ looks_like_shebang (const std::string& s)
           if ((m_reading_fcn_file || m_reading_script_file
                || m_reading_classdef_file)
               && ! m_fcn_file_full_name.empty ())
-            tok_val = new token (kw->tok, m_fcn_file_full_name, m_tok_beg, m_tok_end);
+            tok = new token (kw->tok_id, m_fcn_file_full_name, m_tok_beg, m_tok_end);
           else
-            tok_val = new token (kw->tok, "stdin", m_tok_beg, m_tok_end);
+            tok = new token (kw->tok_id, "stdin", m_tok_beg, m_tok_end);
         }
         break;
 
@@ -2850,7 +2869,7 @@ looks_like_shebang (const std::string& s)
         {
           int l = m_tok_beg.line ();
           octave_value ov_value (static_cast<double> (l));
-          tok_val = new token (kw->tok, ov_value, "", m_tok_beg, m_tok_end);
+          tok = new token (kw->tok_id, ov_value, "", m_tok_beg, m_tok_end);
         }
         break;
 
@@ -2858,12 +2877,12 @@ looks_like_shebang (const std::string& s)
         panic_impossible ();
       }
 
-    if (! tok_val)
-      tok_val = new token (kw->tok, true, m_tok_beg, m_tok_end);
+    if (! tok)
+      tok = new token (kw->tok_id, true, m_tok_beg, m_tok_end);
 
-    push_token (tok_val);
+    push_token (tok);
 
-    return kw->tok;
+    return kw->tok_id;
   }
 
 /*
@@ -3616,7 +3635,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   base_lexer::push_token (token *tok)
   {
     YYSTYPE *lval = yyget_lval (m_scanner);
-    lval->tok_val = tok;
+    lval->tok = tok;
     m_tokens.push (tok);
   }
 
@@ -3624,7 +3643,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   base_lexer::current_token ()
   {
     YYSTYPE *lval = yyget_lval (m_scanner);
-    return lval->tok_val;
+    return lval->tok;
   }
 
   std::size_t
@@ -3634,9 +3653,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   void
-  base_lexer::display_token (int tok)
+  base_lexer::display_token (int tok_id)
   {
-    switch (tok)
+    switch (tok_id)
       {
       case '=': std::cerr << "'='\n"; break;
       case ':': std::cerr << "':'\n"; break;
@@ -3681,9 +3700,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
       case NUMBER:
         {
-          token *tok_val = current_token ();
+          token *tok = current_token ();
           std::cerr << "NUMBER [";
-          octave_value num = tok_val->number ();
+          octave_value num = tok->number ();
           num.print_raw (std::cerr);
           std::cerr << "]\n";
         }
@@ -3691,15 +3710,15 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
       case STRUCT_ELT:
         {
-          token *tok_val = current_token ();
-          std::cerr << "STRUCT_ELT [" << tok_val->text () << "]\n";
+          token *tok = current_token ();
+          std::cerr << "STRUCT_ELT [" << tok->text () << "]\n";
         }
         break;
 
       case NAME:
         {
-          token *tok_val = current_token ();
-          std::cerr << "NAME [" << tok_val->text () << "]\n";
+          token *tok = current_token ();
+          std::cerr << "NAME [" << tok->text () << "]\n";
         }
         break;
 
@@ -3708,10 +3727,10 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       case DQ_STRING:
       case SQ_STRING:
         {
-          token *tok_val = current_token ();
+          token *tok = current_token ();
 
-          std::cerr << (tok == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
-                    << " [" << tok_val->text () << "]\n";
+          std::cerr << (tok_id == DQ_STRING ? "DQ_STRING" : "SQ_STRING")
+                    << " [" << tok->text () << "]\n";
         }
         break;
 
@@ -3752,10 +3771,10 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       case '\t': std::cerr << "TAB\n"; break;
       default:
         {
-          if (tok < 256 && tok > 31)
-            std::cerr << static_cast<char> (tok) << "\n";
+          if (tok_id < 256 && tok_id > 31)
+            std::cerr << static_cast<char> (tok_id) << "\n";
           else
-            std::cerr << "UNKNOWN(" << tok << ")\n";
+            std::cerr << "UNKNOWN(" << tok_id << ")\n";
         }
         break;
       }
@@ -3891,9 +3910,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   bool
-  base_lexer::maybe_unput_comma_before_unary_op (int tok)
+  base_lexer::maybe_unput_comma_before_unary_op (int tok_id)
   {
-    int prev_tok = previous_token_value ();
+    int prev_tok_id = previous_token_id ();
 
     bool unput_comma = false;
 
@@ -3904,9 +3923,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
         bool space_after = is_space_or_tab (c);
 
-        if (! (prev_tok == '[' || prev_tok == '{'
+        if (! (prev_tok_id == '[' || prev_tok_id == '{'
                || previous_token_is_binop ()
-               || ((tok == '+' || tok == '-') && space_after)))
+               || ((tok_id == '+' || tok_id == '-') && space_after)))
           unput_comma = true;
       }
 
@@ -3914,19 +3933,19 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_op (int tok, bool bos, bool compat)
+  base_lexer::handle_op (int tok_id, bool bos, bool compat)
   {
     if (! compat)
       warn_language_extension_operator (flex_yytext ());
 
     update_token_positions (flex_yyleng ());
 
-    push_token (new token (tok, m_tok_beg, m_tok_end));
+    push_token (new token (tok_id, m_tok_beg, m_tok_end));
 
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = bos;
 
-    switch (tok)
+    switch (tok_id)
       {
       case EXPR_LT:
         if (m_parsing_classdef_decl)
@@ -3945,7 +3964,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         break;
       }
 
-    return count_token_internal (tok);
+    return count_token_internal (tok_id);
   }
 
   // When a command argument boundary is detected, push out the current
@@ -3955,61 +3974,61 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   int
   base_lexer::finish_command_arg ()
   {
-    int tok = SQ_STRING;
+    int tok_id = SQ_STRING;
 
-    token *tok_val = new token (tok, m_string_text, m_tok_beg, m_tok_end);
+    token *tok = new token (tok_id, m_string_text, m_tok_beg, m_tok_end);
 
     m_string_text = "";
     m_command_arg_paren_count = 0;
 
-    return handle_token (tok, tok_val);
+    return handle_token (tok_id, tok);
   }
 
   int
-  base_lexer::handle_token (int tok, token *tok_val)
+  base_lexer::handle_token (int tok_id, token *tok)
   {
-    if (! tok_val)
-      tok_val = new token (tok, m_tok_beg, m_tok_end);
+    if (! tok)
+      tok = new token (tok_id, m_tok_beg, m_tok_end);
 
-    push_token (tok_val);
+    push_token (tok);
 
-    return count_token_internal (tok);
+    return count_token_internal (tok_id);
   }
 
   int
-  base_lexer::count_token (int tok)
+  base_lexer::count_token (int tok_id)
   {
-    token *tok_val = new token (tok, m_tok_beg, m_tok_end);
+    token *tok = new token (tok_id, m_tok_beg, m_tok_end);
 
-    push_token (tok_val);
+    push_token (tok);
 
-    return count_token_internal (tok);
+    return count_token_internal (tok_id);
   }
 
   int
-  base_lexer::count_token_internal (int tok)
+  base_lexer::count_token_internal (int tok_id)
   {
-    if (tok != '\n')
+    if (tok_id != '\n')
       increment_token_count ();
 
-    return show_token (tok);
+    return show_token (tok_id);
   }
 
   int
-  base_lexer::show_token (int tok)
+  base_lexer::show_token (int tok_id)
   {
 
     if (display_tokens ())
-      display_token (tok);
+      display_token (tok_id);
 
     if (debug_flag ())
       {
         std::cerr << "R: ";
-        display_token (tok);
+        display_token (tok_id);
         std::cerr << std::endl;
       }
 
-    return tok;
+    return tok_id;
   }
 
   int

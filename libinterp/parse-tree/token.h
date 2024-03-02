@@ -73,32 +73,32 @@ public:
 
 public:
 
-  token (int tv, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_comment_list (lst)
+  token (int id, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_comment_list (lst)
   { }
 
-  token (int tv, bool is_kw, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (is_kw ? keyword_token : generic_token), m_comment_list (lst)
+  token (int id, bool is_kw, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (is_kw ? keyword_token : generic_token), m_comment_list (lst)
   { }
 
-  token (int tv, const char *s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token), m_tok_info (s), m_comment_list (lst)
+  token (int id, const char *s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (string_token), m_tok_info (s), m_comment_list (lst)
   { }
 
-  token (int tv, const std::string& s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (string_token), m_tok_info (s), m_comment_list (lst)
+  token (int id, const std::string& s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (string_token), m_tok_info (s), m_comment_list (lst)
   { }
 
-  token (int tv, const octave_value& val, const std::string& s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (numeric_token), m_tok_info (val), m_orig_text (s), m_comment_list (lst)
+  token (int id, const octave_value& val, const std::string& s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (numeric_token), m_tok_info (val), m_orig_text (s), m_comment_list (lst)
   { }
 
-  token (int tv, end_tok_type t, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (ettype_token), m_tok_info (t), m_comment_list (lst)
+  token (int id, end_tok_type t, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (ettype_token), m_tok_info (t), m_comment_list (lst)
   { }
 
-  token (int tv, const std::string& meth, const std::string& cls, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_val (tv), m_type_tag (scls_name_token), m_tok_info (meth, cls), m_comment_list (lst)
+  token (int id, const std::string& meth, const std::string& cls, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (scls_name_token), m_tok_info (meth, cls), m_comment_list (lst)
   { }
 
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (token)
@@ -109,8 +109,13 @@ public:
   void mark_trailing_space () { m_tspc = true; }
   bool space_follows_token () const { return m_tspc; }
 
-  int token_value () const { return m_tok_val; }
-  bool token_value_is (int tv) const { return tv == m_tok_val; }
+  int token_id () const { return m_tok_id; }
+
+  bool token_is (int id) const { return m_tok_id == id; }
+  bool token_is (const token *tok) const
+  {
+    return tok ? token_is (tok->token_id ()) : false;
+  }
 
   filepos beg_pos () const { return m_beg_pos; }
   filepos end_pos () const { return m_end_pos; }
@@ -148,7 +153,7 @@ private:
   filepos m_beg_pos;
   filepos m_end_pos;
 
-  int m_tok_val;
+  int m_tok_id;
 
   token_type m_type_tag {generic_token};
 

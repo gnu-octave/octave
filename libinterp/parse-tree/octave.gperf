@@ -83,7 +83,7 @@ enum octave_kw_id
 
 %}
 
-struct octave_kw { const char *name; int tok; octave_kw_id kw_id; };
+struct octave_kw { const char *name; int tok_id; octave_kw_id kw_id; };
 
 %%
 arguments, ARGUMENTS, arguments_kw

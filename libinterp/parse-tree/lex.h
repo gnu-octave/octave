@@ -325,9 +325,12 @@ public:
 
   void reset ();
 
-  int previous_token_value () const;
+  int previous_token_id () const;
+  token * previous_token ();
+  const token * previous_token () const;
 
-  bool previous_token_value_is (int tok_val) const;
+  bool previous_token_is (int tok_id) const;
+  bool previous_token_is (const token *tok) const;
 
   void mark_previous_token_trailing_space ();
 
@@ -578,7 +581,7 @@ public:
 
     // Caller is expected to delete the returned value.
 
-    comment_list * get_comment ()
+    comment_list * get_comment_list ()
     {
       comment_list *retval = m_comment_list;
 
@@ -644,7 +647,7 @@ public:
 
   bool inside_any_object_index ();
 
-  int make_keyword_token (const std::string& s);
+  token * make_keyword_token (const std::string& s);
 
   bool fq_identifier_contains_keyword (const std::string& s);
 
@@ -658,7 +661,7 @@ public:
 
   void finish_comment (comment_elt::comment_type typ);
 
-  comment_list * get_comment () { return m_comment_buf.get_comment (); }
+  comment_list * get_comment_list () { return m_comment_buf.get_comment_list (); }
 
   int handle_close_bracket (int bracket_type);
 
@@ -666,9 +669,9 @@ public:
 
   int handle_superclass_identifier ();
 
-  int handle_meta_identifier ();
+  token * make_meta_identifier_token ();
 
-  int handle_fq_identifier ();
+  token * make_fq_identifier_token ();
 
   int handle_identifier ();
 
@@ -692,7 +695,7 @@ public:
 
   std::size_t pending_token_count () const;
 
-  void display_token (int tok);
+  void display_token (int tok_id);
 
   void fatal_error (const char *msg);
 
@@ -733,19 +736,20 @@ public:
 
   void display_start_state () const;
 
-  bool maybe_unput_comma_before_unary_op (int tok);
+  bool maybe_unput_comma_before_unary_op (int tok_id);
 
-  int handle_op (int tok, bool bos = false, bool compat = true);
+  int handle_op (int tok_id, bool bos = false, bool compat = true);
 
   int finish_command_arg ();
 
-  int handle_token (int tok, token *tok_val = nullptr);
+  int handle_token (int tok_id, token *tok = nullptr);
+  int handle_token (token *tok);
 
-  int count_token (int tok);
+  int count_token (int tok_id);
 
-  int count_token_internal (int tok);
+  int count_token_internal (int tok_id);
 
-  int show_token (int tok);
+  int show_token (int tok_id);
 
 protected:
 

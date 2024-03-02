@@ -140,7 +140,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
   int dummy_type;
 
   // The type of the basic tokens returned by the lexer.
-  octave::token *tok_val;
+  octave::token *tok;
 
   // Comment strings that we need to deal with mid-rule.
   octave::comment_list *comment_type;
@@ -202,41 +202,41 @@ static void yyerror (octave::base_parser& parser, const char *s);
 }
 
 // Tokens with line and column information.
-%token <tok_val> '=' ':' '-' '+' '*' '/' '~' '!'
-%token <tok_val> '(' ')' '[' ']' '{' '}' '.' '@'
-%token <tok_val> ',' ';' '\n'
-%token <tok_val> ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ
-%token <tok_val> EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ AND_EQ OR_EQ
-%token <tok_val> EXPR_AND_AND EXPR_OR_OR
-%token <tok_val> EXPR_AND EXPR_OR
-%token <tok_val> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
-%token <tok_val> LEFTDIV EMUL EDIV ELEFTDIV
-%token <tok_val> HERMITIAN TRANSPOSE
-%token <tok_val> PLUS_PLUS MINUS_MINUS POW EPOW
-%token <tok_val> NUMBER
-%token <tok_val> STRUCT_ELT
-%token <tok_val> NAME
-%token <tok_val> END
-%token <tok_val> DQ_STRING SQ_STRING
-%token <tok_val> FOR PARFOR WHILE DO UNTIL
-%token <tok_val> SPMD
-%token <tok_val> IF ELSEIF ELSE
-%token <tok_val> SWITCH CASE OTHERWISE
-%token <tok_val> BREAK CONTINUE FUNC_RET
-%token <tok_val> UNWIND CLEANUP
-%token <tok_val> TRY CATCH
-%token <tok_val> GLOBAL PERSISTENT
-%token <tok_val> FCN_HANDLE
-%token <tok_val> CLASSDEF
-%token <tok_val> PROPERTIES METHODS EVENTS ENUMERATION
-%token <tok_val> METAQUERY
-%token <tok_val> SUPERCLASSREF
-%token <tok_val> FQ_IDENT
-%token <tok_val> GET SET
-%token <tok_val> FCN
-%token <tok_val> ARGUMENTS
-%token <tok_val> LEXICAL_ERROR
-%token <tok_val> END_OF_INPUT
+%token <tok> '=' ':' '-' '+' '*' '/' '~' '!'
+%token <tok> '(' ')' '[' ']' '{' '}' '.' '@'
+%token <tok> ',' ';' '\n'
+%token <tok> ADD_EQ SUB_EQ MUL_EQ DIV_EQ LEFTDIV_EQ POW_EQ
+%token <tok> EMUL_EQ EDIV_EQ ELEFTDIV_EQ EPOW_EQ AND_EQ OR_EQ
+%token <tok> EXPR_AND_AND EXPR_OR_OR
+%token <tok> EXPR_AND EXPR_OR
+%token <tok> EXPR_LT EXPR_LE EXPR_EQ EXPR_NE EXPR_GE EXPR_GT
+%token <tok> LEFTDIV EMUL EDIV ELEFTDIV
+%token <tok> HERMITIAN TRANSPOSE
+%token <tok> PLUS_PLUS MINUS_MINUS POW EPOW
+%token <tok> NUMBER
+%token <tok> STRUCT_ELT
+%token <tok> NAME
+%token <tok> END
+%token <tok> DQ_STRING SQ_STRING
+%token <tok> FOR PARFOR WHILE DO UNTIL
+%token <tok> SPMD
+%token <tok> IF ELSEIF ELSE
+%token <tok> SWITCH CASE OTHERWISE
+%token <tok> BREAK CONTINUE FUNC_RET
+%token <tok> UNWIND CLEANUP
+%token <tok> TRY CATCH
+%token <tok> GLOBAL PERSISTENT
+%token <tok> FCN_HANDLE
+%token <tok> CLASSDEF
+%token <tok> PROPERTIES METHODS EVENTS ENUMERATION
+%token <tok> METAQUERY
+%token <tok> SUPERCLASSREF
+%token <tok> FQ_IDENT
+%token <tok> GET SET
+%token <tok> FCN
+%token <tok> ARGUMENTS
+%token <tok> LEXICAL_ERROR
+%token <tok> END_OF_INPUT
 
 // Other tokens.
 %token <dummy_type> INPUT_FILE
@@ -248,8 +248,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <dummy_type> param_list_beg param_list_end stmt_begin anon_fcn_begin
 %type <dummy_type> parsing_local_fcns parse_error at_first_executable_stmt
 %type <comment_type> stash_comment
-%type <tok_val> function_beg classdef_beg arguments_beg
-%type <tok_val> properties_beg methods_beg events_beg enumeration_beg
+%type <tok> function_beg classdef_beg arguments_beg
+%type <tok> properties_beg methods_beg events_beg enumeration_beg
 %type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
@@ -337,7 +337,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // cases (for example, a new semantic type is added but not handled
 // here).
 
-%destructor { } <tok_val>
+%destructor { } <tok>
 %destructor { } <punct_type>
 %destructor { } <comment_type>
 %destructor { } <>
@@ -1278,7 +1278,7 @@ spmd_command    : SPMD stash_comment opt_sep opt_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_spmd_command ($1, $4, $5, lc, tc)))
                       {
@@ -1710,7 +1710,7 @@ arguments_block : arguments_beg stash_comment opt_sep args_attr_list
                     OCTAVE_YYUSE ($3, $6);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_arguments_block ($1, $4, $5, $7, lc, tc)))
                       {
@@ -1991,7 +1991,7 @@ properties_block
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_properties_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2067,7 +2067,7 @@ methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_methods_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2151,7 +2151,7 @@ events_block    : events_beg stash_comment opt_sep attr_list events_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_events_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2203,7 +2203,7 @@ enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
                     OCTAVE_YYUSE ($3);
 
                     octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment ();
+                    octave::comment_list *tc = lexer.get_comment_list ();
 
                     if (! ($$ = parser.make_classdef_enum_block
                            ($1, $4, $5, $6, lc, tc)))
@@ -2275,7 +2275,7 @@ anon_fcn_begin  : // empty
 
 stash_comment   : // empty
                   {
-                    $$ = lexer.get_comment ();
+                    $$ = lexer.get_comment_list ();
                   }
                 ;
 
@@ -2826,12 +2826,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make a constant.
 
   tree_constant *
-  base_parser::make_constant (token *tok_val)
+  base_parser::make_constant (token *tok)
   {
-    int l = tok_val->line ();
-    int c = tok_val->column ();
+    int l = tok->line ();
+    int c = tok->column ();
 
-    int op = tok_val->token_value ();
+    int op = tok->token_id ();
 
     tree_constant *retval = nullptr;
 
@@ -2846,15 +2846,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
       case NUMBER:
         {
-          retval = new tree_constant (tok_val->number (), l, c);
-          retval->stash_original_text (tok_val->text_rep ());
+          retval = new tree_constant (tok->number (), l, c);
+          retval->stash_original_text (tok->text_rep ());
         }
         break;
 
       case DQ_STRING:
       case SQ_STRING:
         {
-          std::string txt = tok_val->text ();
+          std::string txt = tok->text ();
 
           char delim = op == DQ_STRING ? '"' : '\'';
           octave_value tmp (txt, delim);
@@ -2873,7 +2873,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             txt = undo_string_escapes (txt);
 
           // FIXME: maybe this should also be handled by
-          // tok_val->text_rep () for character strings?
+          // tok->text_rep () for character strings?
           retval->stash_original_text (delim + txt + delim);
         }
         break;
@@ -2895,12 +2895,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make a function handle.
 
   tree_fcn_handle *
-  base_parser::make_fcn_handle (token *tok_val)
+  base_parser::make_fcn_handle (token *tok)
   {
-    int l = tok_val->line ();
-    int c = tok_val->column ();
+    int l = tok->line ();
+    int c = tok->column ();
 
-    tree_fcn_handle *retval = new tree_fcn_handle (tok_val->text (), l, c);
+    tree_fcn_handle *retval = new tree_fcn_handle (tok->text (), l, c);
 
     return retval;
   }
@@ -3055,7 +3055,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   tree_expression *
   base_parser::make_binary_op (int op, tree_expression *op1,
-                               token *tok_val, tree_expression *op2)
+                               token *tok, tree_expression *op2)
   {
     octave_value::binary_op t = octave_value::unknown_binary_op;
 
@@ -3138,8 +3138,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok_val->line ();
-    int c = tok_val->column ();
+    int l = tok->line ();
+    int c = tok->column ();
 
     return maybe_compound_binary_expression (op1, op2, l, c, t);
   }
@@ -3183,7 +3183,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
   tree_expression *
   base_parser::make_boolean_op (int op, tree_expression *op1,
-                                token *tok_val, tree_expression *op2)
+                                token *tok, tree_expression *op2)
   {
     tree_boolean_expression::type t;
 
@@ -3202,8 +3202,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok_val->line ();
-    int c = tok_val->column ();
+    int l = tok->line ();
+    int c = tok->column ();
 
     return new tree_boolean_expression (op1, op2, l, c, t);
   }
@@ -3211,7 +3211,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a prefix expression.
 
   tree_expression *
-  base_parser::make_prefix_op (int op, tree_expression *op1, token *tok_val)
+  base_parser::make_prefix_op (int op, tree_expression *op1, token *tok)
   {
     octave_value::unary_op t = octave_value::unknown_unary_op;
 
@@ -3243,8 +3243,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok_val->line ();
-    int c = tok_val->column ();
+    int l = tok->line ();
+    int c = tok->column ();
 
     return new tree_prefix_expression (op1, l, c, t);
   }
@@ -3252,7 +3252,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a postfix expression.
 
   tree_expression *
-  base_parser::make_postfix_op (int op, tree_expression *op1, token *tok_val)
+  base_parser::make_postfix_op (int op, tree_expression *op1, token *tok)
   {
     octave_value::unary_op t = octave_value::unknown_unary_op;
 
@@ -3279,8 +3279,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok_val->line ();
-    int c = tok_val->column ();
+    int l = tok->line ();
+    int c = tok->column ();
 
     return new tree_postfix_expression (op1, l, c, t);
   }
@@ -3299,7 +3299,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::unwind_protect_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = unwind_tok->line ();
         int c = unwind_tok->column ();
@@ -3333,7 +3333,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::try_catch_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = try_tok->line ();
         int c = try_tok->column ();
@@ -3389,7 +3389,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::while_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         m_lexer.m_looping--;
 
@@ -3419,7 +3419,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     maybe_warn_assign_as_truth_value (expr);
 
-    comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+    comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
     m_lexer.m_looping--;
 
@@ -3448,7 +3448,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         expr->mark_as_for_cmd_expr ();
 
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         m_lexer.m_looping--;
 
@@ -3596,7 +3596,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::if_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = if_tok->line ();
         int c = if_tok->column ();
@@ -3670,7 +3670,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::switch_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         int l = switch_tok->line ();
         int c = switch_tok->column ();
@@ -4044,7 +4044,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       = new octave_user_function (m_lexer.m_symtab_context.curr_scope (),
                                   param_list, nullptr, body);
 
-    comment_list *tc = m_lexer.m_comment_buf.get_comment ();
+    comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
     fcn->stash_trailing_comment (tc);
     fcn->stash_fcn_end_location (end_fcn_stmt->line (),
@@ -4377,7 +4377,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // and the final end token for the classdef block.
 
   tree_classdef *
-  base_parser::make_classdef (token *tok_val,
+  base_parser::make_classdef (token *tok,
                               tree_classdef_attribute_list *a,
                               tree_identifier *id,
                               tree_classdef_superclass_list *sc,
@@ -4419,8 +4419,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         if (end_token_ok (end_tok, token::classdef_end))
           {
-            int l = tok_val->line ();
-            int c = tok_val->column ();
+            int l = tok->line ();
+            int c = tok->column ();
 
             // First non-copyright comments found above and below
             // function keyword are candidates for the documentation
@@ -4470,7 +4470,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // find the doc string for the final property in the list.
 
   tree_classdef_properties_block *
-  base_parser::make_classdef_properties_block (token *tok_val,
+  base_parser::make_classdef_properties_block (token *tok,
                                                tree_classdef_attribute_list *a,
                                                tree_classdef_property_list *plist,
                                                token *end_tok,
@@ -4481,8 +4481,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::properties_end))
       {
-        int l = tok_val->line ();
-        int c = tok_val->column ();
+        int l = tok->line ();
+        int c = tok->column ();
 
         if (plist)
           {
@@ -4549,7 +4549,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // classdef block.
 
   tree_classdef_methods_block *
-  base_parser::make_classdef_methods_block (token *tok_val,
+  base_parser::make_classdef_methods_block (token *tok,
                                             tree_classdef_attribute_list *a,
                                             tree_classdef_methods_list *mlist,
                                             token *end_tok, comment_list *lc,
@@ -4559,8 +4559,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::methods_end))
       {
-        int l = tok_val->line ();
-        int c = tok_val->column ();
+        int l = tok->line ();
+        int c = tok->column ();
 
         if (! mlist)
           mlist = new tree_classdef_methods_list ();
@@ -4590,7 +4590,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // the doc string for the final event in the list.
 
   tree_classdef_events_block *
-  base_parser::make_classdef_events_block (token *tok_val,
+  base_parser::make_classdef_events_block (token *tok,
                                            tree_classdef_attribute_list *a,
                                            tree_classdef_events_list *elist,
                                            token *end_tok,
@@ -4601,8 +4601,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::events_end))
       {
-        int l = tok_val->line ();
-        int c = tok_val->column ();
+        int l = tok->line ();
+        int c = tok->column ();
 
         if (! elist)
           elist = new tree_classdef_events_list ();
@@ -4645,7 +4645,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // list.
 
   tree_classdef_enum_block *
-  base_parser::make_classdef_enum_block (token *tok_val,
+  base_parser::make_classdef_enum_block (token *tok,
                                          tree_classdef_attribute_list *a,
                                          tree_classdef_enum_list *elist,
                                          token *end_tok,
@@ -4656,8 +4656,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::enumeration_end))
       {
-        int l = tok_val->line ();
-        int c = tok_val->column ();
+        int l = tok->line ();
+        int c = tok->column ();
 
         if (! elist)
           elist = new tree_classdef_enum_list ();
@@ -5069,18 +5069,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make a declaration command.
 
   tree_decl_command *
-  base_parser::make_decl_command (int tok, token *tok_val,
+  base_parser::make_decl_command (int tok_id, token *tok,
                                   tree_decl_init_list *lst)
   {
     tree_decl_command *retval = nullptr;
 
-    int l = tok_val->line ();
-    int c = tok_val->column ();
+    int l = tok->line ();
+    int c = tok->column ();
 
     if (lst)
       m_lexer.mark_as_variables (lst->variable_names ());
 
-    switch (tok)
+    switch (tok_id)
       {
       case GLOBAL:
         {
@@ -5485,7 +5485,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_statement *
   base_parser::make_statement (T *arg)
   {
-    comment_list *comment = m_lexer.get_comment ();
+    comment_list *comment = m_lexer.get_comment_list ();
 
     return new tree_statement (arg, comment);
   }
@@ -5698,16 +5698,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         YYSTYPE lval;
 
-        int token = octave_lex (&lval, m_lexer.m_scanner);
+        int tok_id = octave_lex (&lval, m_lexer.m_scanner);
 
-        if (token < 0)
+        if (tok_id < 0)
           {
             // TOKEN == -2 means that the lexer recognized a comment
             // and we should be at the end of the buffer but not the
             // end of the file so we should return 0 to indicate
             // "complete input" instead of -1 to request more input.
 
-            status = (token == -2 ? 0 : -1);
+            status = (tok_id == -2 ? 0 : -1);
 
             if (! eof && m_lexer.at_end_of_buffer ())
               return status;
@@ -5719,7 +5719,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         try
           {
-            status = octave_push_parse (pstate, token, &lval, *this);
+            status = octave_push_parse (pstate, tok_id, &lval, *this);
           }
         catch (execution_exception& e)
           {

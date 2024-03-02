@@ -186,15 +186,6 @@ function h = __img__ (hax, do_new, x, y, img, varargin)
       if (isempty (get (hax, "children")))
         axis (hax, "tight");
       endif
-
-      if (ndims (img) == 3)
-        if (isinteger (img))
-          mn = intmin (img);
-          mx = intmax (img);
-          set (hax, "clim", double ([mn, mx]));
-        endif
-      endif
-
     endif  # ! isempty (img)
 
     set (hax, "view", [0, 90], "ydir", "reverse", "layer", "top", "box", "on");

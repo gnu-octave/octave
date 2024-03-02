@@ -671,8 +671,7 @@
 %! [val, count, msg, pos] = sscanf ('1 2 ', '%f');
 %! assert (val, [1; 2]);
 %! assert (count, 2);
-%! ## FIXME: The message should be empty, but is not.
-%! # assert (msg, '');
+%! assert (msg, '');
 %! assert (pos, 5);
 
 ## Test newline at end of input string
@@ -680,8 +679,7 @@
 %! [val, count, msg, pos] = sscanf ("1 2\n", '%f');
 %! assert (val, [1; 2]);
 %! assert (count, 2);
-%! ## FIXME: The message should be empty, but is not.
-%! # assert (msg, '');
+%! assert (msg, '');
 %! assert (pos, 5);
 
 %!test

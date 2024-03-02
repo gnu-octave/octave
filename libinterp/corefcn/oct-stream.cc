@@ -4400,8 +4400,6 @@ std::istream&
 octave_scan<>
 (std::istream& is, const scanf_format_elt& fmt, double *valptr)
 {
-  double& ref = *valptr;
-
   switch (fmt.type)
     {
     case 'e':
@@ -4411,19 +4409,24 @@ octave_scan<>
     case 'G':
       {
         is >> std::ws;  // skip through whitespace and advance stream pointer
-        if (is.good ())
+
+        std::streampos pos = is.tellg ();
+
+        double value = read_value<double> (is);
+
+        std::ios::iostate status = is.rdstate ();
+        if (! (status & std::ios::failbit))
           {
-            std::streampos pos = is.tellg ();
-
-            ref = read_value<double> (is);
-
-            std::ios::iostate status = is.rdstate ();
-            if (status & std::ios::failbit)
-              {
-                is.clear ();
-                is.seekg (pos);
-                is.setstate (status & ~std::ios_base::eofbit);
-              }
+            // Copy the converted value if the stream is in a good state
+            *valptr = value;
+          }
+        else
+          {
+            // True error.
+            // Reset stream to original position, clear eof bit, pass status on.
+            is.clear ();
+            is.seekg (pos);
+            is.setstate (status & ~std::ios_base::eofbit);
           }
       }
       break;

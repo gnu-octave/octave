@@ -600,7 +600,7 @@
 %! assert (pos, 5);
 
 ## Test '-' within string
-%!test <63383>
+%!test <*63383>
 %! [val, count, msg, pos] = sscanf ('1 2 - 3', '%d');
 %! assert (val, [1; 2]);
 %! assert (count, 2);
@@ -626,7 +626,7 @@
 %! assert (pos, 5);
 
 ## Test '+' within string
-%!test <63383>
+%!test <*63383>
 %! [val, count, msg, pos] = sscanf ('1 2 + 3', '%d');
 %! assert (val, [1; 2]);
 %! assert (count, 2);
@@ -638,7 +638,7 @@
 %! assert (msg, 'sscanf: format failed to match');
 %! assert (pos, 5);
 
-%## Test +NA, -NA, +NAN, -NAN
+## Test +NA, -NA, +NAN, -NAN
 %!test <*63383>
 %! [val, count, msg, pos] = sscanf ('+NA -NA 1 +NAN -NAN', '%f');
 %! assert (val, [NA; NA; 1; NaN; NaN]);
@@ -664,6 +664,24 @@
 %! assert (val, NaN);
 %! assert (count, 1);
 %! assert (msg, '');
+%! assert (pos, 5);
+
+## Test space at end of input string
+%!test <63467>
+%! [val, count, msg, pos] = sscanf ('1 2 ', '%f');
+%! assert (val, [1; 2]);
+%! assert (count, 2);
+%! ## FIXME: The message should be empty, but is not.
+%! # assert (msg, '');
+%! assert (pos, 5);
+
+## Test newline at end of input string
+%!test <65390>
+%! [val, count, msg, pos] = sscanf ("1 2\n", '%f');
+%! assert (val, [1; 2]);
+%! assert (count, 2);
+%! ## FIXME: The message should be empty, but is not.
+%! # assert (msg, '');
 %! assert (pos, 5);
 
 %!test

@@ -1011,9 +1011,7 @@ ANY_INCLUDING_NL (.|{NL})
       {
         // Use location of octal digits for error token.
         std::string msg {"invalid octal escape sequence in character string"};
-        octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
-
-        return curr_lexer->handle_token (tok);
+        return curr_lexer->syntax_error (msg);
       }
     else
       curr_lexer->m_string_text += static_cast<unsigned char> (result);
@@ -1115,11 +1113,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     // Use current file position for error token.
     std::string msg {"unterminated character string constant"};
-    octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
-
-    curr_lexer->m_filepos.next_line ();
-
-    return curr_lexer->handle_token (tok);
+    return curr_lexer->syntax_error (msg, curr_lexer->m_filepos);
   }
 
 %{
@@ -1167,11 +1161,7 @@ ANY_INCLUDING_NL (.|{NL})
 
     // Use current file position for error token.
     std::string msg {"unterminated character string constant"};
-    octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
-
-    curr_lexer->m_filepos.next_line ();
-
-    return curr_lexer->handle_token (tok);
+    return curr_lexer->syntax_error (msg, curr_lexer->m_filepos);
   }
 
 %{
@@ -1185,7 +1175,14 @@ ANY_INCLUDING_NL (.|{NL})
 
     curr_lexer->update_token_positions (yyleng);
 
-    octave::token *tok = curr_lexer->make_fq_identifier_token ();
+    std::string ident = yytext;
+
+    ident.erase (std::remove_if (ident.begin (), ident.end (), is_space_or_tab), ident.end ());
+
+    if (curr_lexer->fq_identifier_contains_keyword (ident))
+      return curr_lexer->syntax_error ("function, method, class, and package names may not be keywords");
+
+    octave::token *tok = curr_lexer->make_fq_identifier_token (ident);
 
     return curr_lexer->handle_token (tok);
   }
@@ -1341,7 +1338,17 @@ ANY_INCLUDING_NL (.|{NL})
       {
         curr_lexer->update_token_positions (yyleng);
 
-        octave::token *tok = curr_lexer->make_meta_identifier_token ();
+        std::string txt = yytext;
+
+        txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab), txt.end ());
+
+        // Eliminate leading '?'
+        std::string cls = txt.substr (1);
+
+        if (curr_lexer->fq_identifier_contains_keyword (cls))
+          return curr_lexer->syntax_error ("class and package names may not be keywords");
+
+        octave::token *tok = curr_lexer->make_meta_identifier_token (cls);
 
         return curr_lexer->handle_token (tok);
       }
@@ -1395,14 +1402,12 @@ ANY_INCLUDING_NL (.|{NL})
                 if (octave::iskeyword (ident))
                   {
                     std::string msg {"function handles may not refer to keywords"};
-                    tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+                    return curr_lexer->syntax_error (msg);
                   }
-                else
-                  {
-                    curr_lexer->m_looking_for_object_index = true;
 
-                    tok = new octave::token (FCN_HANDLE, ident, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
-                  }
+                curr_lexer->m_looking_for_object_index = true;
+
+                tok = new octave::token (FCN_HANDLE, ident, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
 
                 return curr_lexer->handle_token (tok);
               }
@@ -1444,9 +1449,7 @@ ANY_INCLUDING_NL (.|{NL})
 
         // Use current file position for error token.
         std::string msg {"unexpected internal lexer error"};
-        octave::token *tok = new octave::token (LEXICAL_ERROR, msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
-
-        return curr_lexer->handle_token (tok);
+        return curr_lexer->syntax_error (msg, curr_lexer->m_filepos);
       }
   }
 
@@ -1844,13 +1847,9 @@ ANY_INCLUDING_NL (.|{NL})
             << octave::undo_string_escape (static_cast<char> (c))
             << "' (ASCII " << c << ")";
 
-        // Use current file position for error token.
-        std::string msg {"unexpected internal lexer error"};
-        octave::token *tok = new octave::token (LEXICAL_ERROR, buf.str (), msg, curr_lexer->m_filepos, curr_lexer->m_filepos);
+        curr_lexer->update_token_positions (yyleng);
 
-        curr_lexer->m_filepos.increment_column ();
-
-        return curr_lexer->handle_token (tok);
+        return curr_lexer->syntax_error (buf.str ());
       }
   }
 
@@ -2471,14 +2470,13 @@ looks_like_shebang (const std::string& s)
 
     if (m_block_comment_nesting_level != 0)
       {
+        std::string msg {"block comment unterminated at end of input"};
 
         if ((m_reading_fcn_file || m_reading_script_file || m_reading_classdef_file)
             && ! m_fcn_file_name.empty ())
-          error ("block comment unterminated at end of input\n"
-                 "near line %d of file '%s.m'",
-                 m_filepos.line () - 1, m_fcn_file_name.c_str ());
-        else
-          error ("block comment unterminated at end of input");
+          msg += " near line " + std::to_string (m_filepos.line () - 1) + " of file '" + m_fcn_file_name + ".m'";
+
+        syntax_error (msg);
       }
 
     token *tok = new token (END_OF_INPUT, m_tok_beg, m_tok_end);
@@ -3010,9 +3008,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     if (bytes < 0)
       {
         std::string msg {"too many digits for binary constant"};
-        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
-
-        return handle_token (tok);
+        return syntax_error (msg);
       }
 
     // FIXME: is there a better way?  Can uintmax_t be anything other
@@ -3214,9 +3210,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     if (bytes < 0)
       {
         std::string msg {"too many digits for hexadecimal constant"};
-        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
-
-        return handle_token (tok);
+        return syntax_error (msg);
       }
 
     // Assert here because if yytext doesn't contain a valid number, we
@@ -3375,9 +3369,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     if (iskeyword (meth) || fq_identifier_contains_keyword (cls))
       {
         std::string msg {"method, class, and package names may not be keywords"};
-        token *tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
-
-        return handle_token (tok);
+        return syntax_error (msg);
       }
 
     token *tok = new token (SUPERCLASSREF, meth, cls, m_tok_beg, m_tok_end);
@@ -3388,64 +3380,31 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   token *
-  base_lexer::make_meta_identifier_token ()
+  base_lexer::make_meta_identifier_token (const std::string& cls)
   {
-    std::string txt = flex_yytext ();
-
-    txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab),
-               txt.end ());
-
-    // Eliminate leading '?'
-    std::string cls = txt.substr (1);
-
     // Token positions should have already been updated before this
     // function is called.
 
-    token *tok;
+    m_looking_for_object_index = true;
 
-    if (fq_identifier_contains_keyword (cls))
-      {
-        std::string msg {"class and package names may not be keywords"};
-        tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
-      }
-    else
-      {
-        m_looking_for_object_index = true;
+    token *tok = new token (METAQUERY, cls, m_tok_beg, m_tok_end);
 
-        tok = new token (METAQUERY, cls, m_tok_beg, m_tok_end);
-
-        m_filepos.increment_column (flex_yyleng ());
-      }
+    m_filepos.increment_column (flex_yyleng ());
 
     return tok;
   }
 
   token *
-  base_lexer::make_fq_identifier_token ()
+  base_lexer::make_fq_identifier_token (const std::string& ident)
   {
-    std::string txt = flex_yytext ();
-
-    txt.erase (std::remove_if (txt.begin (), txt.end (), is_space_or_tab),
-               txt.end ());
-
     // Token positions should have already been updated before this
     // function is called.
 
-    token *tok;
+    m_looking_for_object_index = true;
 
-    if (fq_identifier_contains_keyword (txt))
-      {
-        std::string msg {"function, method, class, and package names may not be keywords"};
-        tok = new token (LEXICAL_ERROR, msg, m_tok_beg, m_tok_end);
-      }
-    else
-      {
-        m_looking_for_object_index = true;
+    token *tok = new token (FQ_IDENT, ident, m_tok_beg, m_tok_end);
 
-        tok = new token (FQ_IDENT, txt, m_tok_beg, m_tok_end);
-
-        m_filepos.increment_column (flex_yyleng ());
-      }
+    m_filepos.increment_column (flex_yyleng ());
 
     return tok;
   }
@@ -3596,6 +3555,28 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       warning_with_id ("Octave:deprecated-syntax",
                        "%s; near line %d of file '%s'", msg.c_str (),
                        m_filepos.line (), m_fcn_file_full_name.c_str ());
+  }
+
+  int
+  base_lexer::syntax_error (const std::string& msg)
+  {
+    return syntax_error (msg, m_tok_beg, m_tok_end);
+  }
+
+  int
+  base_lexer::syntax_error (const std::string& msg, const filepos& pos)
+  {
+    return syntax_error (msg, pos, pos);
+  }
+
+  int
+  base_lexer::syntax_error (const std::string& msg, const filepos& beg_pos, const filepos& end_pos)
+  {
+    token *tok = new token (LEXICAL_ERROR, msg, beg_pos, end_pos);
+
+    push_token (tok);
+
+    return count_token_internal (tok->token_id ());
   }
 
   void
@@ -3750,7 +3731,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   void
   base_lexer::fatal_error (const char *msg)
   {
-    error ("fatal lexer error: %s", msg);
+    ::error ("fatal lexer error: %s", msg);
   }
 
   bool

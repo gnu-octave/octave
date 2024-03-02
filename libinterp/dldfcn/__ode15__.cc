@@ -121,7 +121,7 @@ SUNLinSol_KLU (N_Vector y, SUNMatrix A)
 #    endif
 #  endif
 
-static inline realtype *
+static inline OCTAVE_SUNREALTYPE *
 nv_data_s (N_Vector& v)
 {
 #  if defined (HAVE_PRAGMA_GCC_DIAGNOSTIC)
@@ -147,26 +147,27 @@ public:
   typedef
   ColumnVector (*DAERHSFuncIDA) (const ColumnVector& x,
                                  const ColumnVector& xdot,
-                                 realtype t, const octave_value& idaf);
+                                 OCTAVE_SUNREALTYPE t,
+                                 const octave_value& idaf);
 
   typedef
   Matrix (*DAEJacFuncDense) (const ColumnVector& x,
-                             const ColumnVector& xdot, realtype t,
-                             realtype cj, const octave_value& idaj);
+                             const ColumnVector& xdot, OCTAVE_SUNREALTYPE t,
+                             OCTAVE_SUNREALTYPE cj, const octave_value& idaj);
 
   typedef
   SparseMatrix (*DAEJacFuncSparse) (const ColumnVector& x,
                                     const ColumnVector& xdot,
-                                    realtype t, realtype cj,
+                                    OCTAVE_SUNREALTYPE t, OCTAVE_SUNREALTYPE cj,
                                     const octave_value& idaj);
 
   typedef
   Matrix (*DAEJacCellDense) (Matrix *dfdy, Matrix *dfdyp,
-                             realtype cj);
+                             OCTAVE_SUNREALTYPE cj);
 
   typedef
   SparseMatrix (*DAEJacCellSparse) (SparseMatrix *dfdy,
-                                    SparseMatrix *dfdyp, realtype cj);
+                                    SparseMatrix *dfdyp, OCTAVE_SUNREALTYPE cj);
 
   //Default
   IDA ()
@@ -179,7 +180,7 @@ public:
   { }
 
 
-  IDA (realtype t, ColumnVector y, ColumnVector yp,
+  IDA (OCTAVE_SUNREALTYPE t, ColumnVector y, ColumnVector yp,
        const octave_value& ida_fcn, DAERHSFuncIDA daefun)
     : m_t0 (t), m_y0 (y), m_yp0 (yp), m_havejac (false), m_havejacfcn (false),
       m_havejacsparse (false), m_mem (nullptr), m_num (), m_ida_fcn (ida_fcn),
@@ -268,21 +269,21 @@ public:
   set_up (const ColumnVector& y);
 
   void
-  set_tolerance (ColumnVector& abstol, realtype reltol);
+  set_tolerance (ColumnVector& abstol, OCTAVE_SUNREALTYPE reltol);
 
   void
-  set_tolerance (realtype abstol, realtype reltol);
+  set_tolerance (OCTAVE_SUNREALTYPE abstol, OCTAVE_SUNREALTYPE reltol);
 
   static int
-  resfun (realtype t, N_Vector yy, N_Vector yyp,
+  resfun (OCTAVE_SUNREALTYPE t, N_Vector yy, N_Vector yyp,
           N_Vector rr, void *user_data);
 
   void
-  resfun_impl (realtype t, N_Vector& yy,
+  resfun_impl (OCTAVE_SUNREALTYPE t, N_Vector& yy,
                N_Vector& yyp, N_Vector& rr);
   static int
-  jacdense (realtype t, realtype cj, N_Vector yy, N_Vector yyp,
-            N_Vector, SUNMatrix JJ, void *user_data, N_Vector,
+  jacdense (OCTAVE_SUNREALTYPE t, OCTAVE_SUNREALTYPE cj, N_Vector yy,
+            N_Vector yyp, N_Vector, SUNMatrix JJ, void *user_data, N_Vector,
             N_Vector, N_Vector)
   {
     IDA *self = static_cast <IDA *> (user_data);
@@ -291,13 +292,13 @@ public:
   }
 
   void
-  jacdense_impl (realtype t, realtype cj,
+  jacdense_impl (OCTAVE_SUNREALTYPE t, OCTAVE_SUNREALTYPE cj,
                  N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ);
 
 #  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
   static int
-  jacsparse (realtype t, realtype cj, N_Vector yy, N_Vector yyp,
-             N_Vector, SUNMatrix Jac, void *user_data, N_Vector,
+  jacsparse (OCTAVE_SUNREALTYPE t, OCTAVE_SUNREALTYPE cj, N_Vector yy,
+             N_Vector yyp, N_Vector, SUNMatrix Jac, void *user_data, N_Vector,
              N_Vector, N_Vector)
   {
     IDA *self = static_cast <IDA *> (user_data);
@@ -306,17 +307,17 @@ public:
   }
 
   void
-  jacsparse_impl (realtype t, realtype cj,
+  jacsparse_impl (OCTAVE_SUNREALTYPE t, OCTAVE_SUNREALTYPE cj,
                   N_Vector& yy, N_Vector& yyp, SUNMatrix& Jac);
 #  endif
 
-  void set_maxstep (realtype maxstep);
+  void set_maxstep (OCTAVE_SUNREALTYPE maxstep);
 
-  void set_initialstep (realtype initialstep);
+  void set_initialstep (OCTAVE_SUNREALTYPE initialstep);
 
   bool
   interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
-               int refine, realtype tend, bool haveoutputfcn,
+               int refine, OCTAVE_SUNREALTYPE tend, bool haveoutputfcn,
                bool haveoutputsel, const octave_value& output_fcn,
                ColumnVector& outputsel, bool haveeventfunction,
                const octave_value& event_fcn, ColumnVector& te,
@@ -327,17 +328,18 @@ public:
 
   bool
   outputfun (const octave_value& output_fcn, bool haveoutputsel,
-             const ColumnVector& output, realtype tout, realtype tend,
-             ColumnVector& outputsel, const std::string& flag);
+             const ColumnVector& output, OCTAVE_SUNREALTYPE tout,
+             OCTAVE_SUNREALTYPE tend, ColumnVector& outputsel,
+             const std::string& flag);
 
 
   bool
   event (const octave_value& event_fcn,
          ColumnVector& te, Matrix& ye, ColumnVector& ie,
-         realtype tsol, const ColumnVector& y, const std::string& flag,
-         const ColumnVector& yp, ColumnVector& oldval,
+         OCTAVE_SUNREALTYPE tsol, const ColumnVector& y,
+         const std::string& flag, const ColumnVector& yp, ColumnVector& oldval,
          ColumnVector& oldisterminal, ColumnVector& olddir,
-         octave_idx_type cont, octave_idx_type& temp, realtype told,
+         octave_idx_type cont, octave_idx_type& temp, OCTAVE_SUNREALTYPE told,
          ColumnVector& yold,
          const octave_idx_type num_event_args);
 
@@ -356,7 +358,7 @@ public:
 
 private:
 
-  realtype m_t0;
+  OCTAVE_SUNREALTYPE m_t0;
   ColumnVector m_y0;
   ColumnVector m_yp0;
   bool m_havejac;
@@ -383,7 +385,7 @@ private:
 };
 
 int
-IDA::resfun (realtype t, N_Vector yy, N_Vector yyp, N_Vector rr,
+IDA::resfun (OCTAVE_SUNREALTYPE t, N_Vector yy, N_Vector yyp, N_Vector rr,
              void *user_data)
 {
   IDA *self = static_cast <IDA *> (user_data);
@@ -392,7 +394,7 @@ IDA::resfun (realtype t, N_Vector yy, N_Vector yyp, N_Vector rr,
 }
 
 void
-IDA::resfun_impl (realtype t, N_Vector& yy,
+IDA::resfun_impl (OCTAVE_SUNREALTYPE t, N_Vector& yy,
                   N_Vector& yyp, N_Vector& rr)
 {
   ColumnVector y = IDA::NVecToCol (yy, m_num);
@@ -401,7 +403,7 @@ IDA::resfun_impl (realtype t, N_Vector& yy,
 
   ColumnVector res = (*m_fcn) (y, yp, t, m_ida_fcn);
 
-  realtype *puntrr = nv_data_s (rr);
+  OCTAVE_SUNREALTYPE *puntrr = nv_data_s (rr);
 
   for (octave_idx_type i = 0; i < m_num; i++)
     puntrr[i] = res(i);
@@ -476,7 +478,7 @@ IDA::set_up (const ColumnVector& y)
 }
 
 void
-IDA::jacdense_impl (realtype t, realtype cj,
+IDA::jacdense_impl (OCTAVE_SUNREALTYPE t, OCTAVE_SUNREALTYPE cj,
                     N_Vector& yy, N_Vector& yyp, SUNMatrix& JJ)
 
 {
@@ -501,8 +503,8 @@ IDA::jacdense_impl (realtype t, realtype cj,
 
 #  if defined (HAVE_SUNDIALS_SUNLINSOL_KLU)
 void
-IDA::jacsparse_impl (realtype t, realtype cj, N_Vector& yy, N_Vector& yyp,
-                     SUNMatrix& Jac)
+IDA::jacsparse_impl (OCTAVE_SUNREALTYPE t, OCTAVE_SUNREALTYPE cj, N_Vector& yy,
+                     N_Vector& yyp, SUNMatrix& Jac)
 
 {
   ColumnVector y = NVecToCol (yy, m_num);
@@ -550,7 +552,7 @@ ColumnVector
 IDA::NVecToCol (N_Vector& v, octave_f77_int_type n)
 {
   ColumnVector data (n);
-  realtype *punt = nv_data_s (v);
+  OCTAVE_SUNREALTYPE *punt = nv_data_s (v);
 
   for (octave_f77_int_type i = 0; i < n; i++)
     data(i) = punt[i];
@@ -563,7 +565,7 @@ IDA::ColToNVec (const ColumnVector& data, octave_f77_int_type n)
 {
   N_Vector v = N_VNew_Serial (n OCTAVE_SUNCONTEXT);
 
-  realtype *punt = nv_data_s (v);
+  OCTAVE_SUNREALTYPE *punt = nv_data_s (v);
 
   for (octave_f77_int_type i = 0; i < n; i++)
     punt[i] = data(i);
@@ -585,7 +587,10 @@ IDA::initialize ()
 {
   m_num = to_f77_int (m_y0.numel ());
 #  if defined (HAVE_SUNDIALS_SUNCONTEXT)
-  if (SUNContext_Create (nullptr, &m_sunContext) < 0)
+#    if ! defined (SUN_COMM_NULL)
+#      define SUN_COMM_NULL nullptr
+#    endif
+  if (SUNContext_Create (SUN_COMM_NULL, &m_sunContext) < 0)
     error ("__ode15__: unable to create context for SUNDIALS");
   m_mem = IDACreate (m_sunContext);
 #  else
@@ -606,7 +611,7 @@ IDA::initialize ()
 }
 
 void
-IDA::set_tolerance (ColumnVector& abstol, realtype reltol)
+IDA::set_tolerance (ColumnVector& abstol, OCTAVE_SUNREALTYPE reltol)
 {
   N_Vector abs_tol = ColToNVec (abstol, m_num);
   octave::unwind_action act ([&abs_tol] () { N_VDestroy_Serial (abs_tol); });
@@ -616,7 +621,7 @@ IDA::set_tolerance (ColumnVector& abstol, realtype reltol)
 }
 
 void
-IDA::set_tolerance (realtype abstol, realtype reltol)
+IDA::set_tolerance (OCTAVE_SUNREALTYPE abstol, OCTAVE_SUNREALTYPE reltol)
 {
   if (IDASStolerances (m_mem, reltol, abstol) != 0)
     error ("IDA: Tolerance not set");
@@ -640,8 +645,8 @@ IDA::integrate (const octave_idx_type numt, const ColumnVector& tspan,
   std::string string = "";
   ColumnVector yold = y;
 
-  realtype tsol = tspan(0);
-  realtype tend = tspan(numt-1);
+  OCTAVE_SUNREALTYPE tsol = tspan(0);
+  OCTAVE_SUNREALTYPE tend = tspan(numt-1);
 
   N_Vector yyp = ColToNVec (yp, m_num);
   N_Vector yy = ColToNVec (y, m_num);
@@ -796,12 +801,12 @@ IDA::integrate (const octave_idx_type numt, const ColumnVector& tspan,
 
 bool
 IDA::event (const octave_value& event_fcn,
-            ColumnVector& te, Matrix& ye, ColumnVector& ie, realtype tsol,
-            const ColumnVector& y, const std::string& flag,
-            const ColumnVector& yp, ColumnVector& oldval,
-            ColumnVector& oldisterminal, ColumnVector& olddir,
-            octave_idx_type cont, octave_idx_type& temp, realtype told,
-            ColumnVector& yold,
+            ColumnVector& te, Matrix& ye, ColumnVector& ie,
+            OCTAVE_SUNREALTYPE tsol, const ColumnVector& y,
+            const std::string& flag, const ColumnVector& yp,
+            ColumnVector& oldval, ColumnVector& oldisterminal,
+            ColumnVector& olddir, octave_idx_type cont, octave_idx_type& temp,
+            OCTAVE_SUNREALTYPE told, ColumnVector& yold,
             const octave_idx_type num_event_args)
 {
   bool status = false;
@@ -911,7 +916,7 @@ IDA::event (const octave_value& event_fcn,
 
 bool
 IDA::interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
-                  int refine, realtype tend, bool haveoutputfcn,
+                  int refine, OCTAVE_SUNREALTYPE tend, bool haveoutputfcn,
                   bool haveoutputsel, const octave_value& output_fcn,
                   ColumnVector& outputsel, bool haveeventfunction,
                   const octave_value& event_fcn, ColumnVector& te,
@@ -920,7 +925,7 @@ IDA::interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
                   octave_idx_type& temp, ColumnVector& yold,
                   const octave_idx_type num_event_args)
 {
-  realtype h = 0, tcur = 0;
+  OCTAVE_SUNREALTYPE h = 0, tcur = 0;
   bool status = false;
 
   N_Vector dky = N_VNew_Serial (m_num OCTAVE_SUNCONTEXT);
@@ -940,9 +945,9 @@ IDA::interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
   if (IDAGetCurrentTime (m_mem, &tcur) != 0)
     error ("IDA failed to return the current time");
 
-  realtype tin = tcur - h;
+  OCTAVE_SUNREALTYPE tin = tcur - h;
 
-  realtype step = h / refine;
+  OCTAVE_SUNREALTYPE step = h / refine;
 
   for (octave_idx_type i = 1;
        i < refine && tin + step * i < tend && status == 0;
@@ -981,8 +986,8 @@ IDA::interpolate (octave_idx_type& cont, Matrix& output, ColumnVector& tout,
 
 bool
 IDA::outputfun (const octave_value& output_fcn, bool haveoutputsel,
-                const ColumnVector& yout, realtype tsol,
-                realtype tend, ColumnVector& outputsel,
+                const ColumnVector& yout, OCTAVE_SUNREALTYPE tsol,
+                OCTAVE_SUNREALTYPE tend, ColumnVector& outputsel,
                 const std::string& flag)
 {
   bool status = false;
@@ -1029,14 +1034,14 @@ IDA::outputfun (const octave_value& output_fcn, bool haveoutputsel,
 }
 
 void
-IDA::set_maxstep (realtype maxstep)
+IDA::set_maxstep (OCTAVE_SUNREALTYPE maxstep)
 {
   if (IDASetMaxStep (m_mem, maxstep) != 0)
     error ("IDA: Max Step not set");
 }
 
 void
-IDA::set_initialstep (realtype initialstep)
+IDA::set_initialstep (OCTAVE_SUNREALTYPE initialstep)
 {
   if (IDASetInitStep (m_mem, initialstep) != 0)
     error ("IDA: Initial Step not set");
@@ -1148,7 +1153,7 @@ static octave_value_list
 do_ode15 (const octave_value& ida_fcn,
           const ColumnVector& tspan,
           const octave_idx_type numt,
-          const realtype t0,
+          const OCTAVE_SUNREALTYPE t0,
           const ColumnVector& y0,
           const ColumnVector& yp0,
           const octave_scalar_map& options,
@@ -1206,7 +1211,7 @@ do_ode15 (const octave_value& ida_fcn,
   dae.initialize ();
 
   // Set tolerances
-  realtype rel_tol = options.getfield ("RelTol").double_value ();
+  OCTAVE_SUNREALTYPE rel_tol = options.getfield ("RelTol").double_value ();
 
   bool haveabstolvec = options.getfield ("haveabstolvec").bool_value ();
 
@@ -1218,20 +1223,20 @@ do_ode15 (const octave_value& ida_fcn,
     }
   else
     {
-      realtype abs_tol = options.getfield ("AbsTol").double_value ();
+      OCTAVE_SUNREALTYPE abs_tol = options.getfield ("AbsTol").double_value ();
 
       dae.set_tolerance (abs_tol, rel_tol);
     }
 
   //Set max step
-  realtype maxstep = options.getfield ("MaxStep").double_value ();
+  OCTAVE_SUNREALTYPE maxstep = options.getfield ("MaxStep").double_value ();
 
   dae.set_maxstep (maxstep);
 
   //Set initial step
   if (! options.getfield ("InitialStep").isempty ())
     {
-      realtype initialstep = options.getfield ("InitialStep").double_value ();
+      OCTAVE_SUNREALTYPE initialstep = options.getfield ("InitialStep").double_value ();
 
       dae.set_initialstep (initialstep);
     }
@@ -1316,7 +1321,7 @@ Undocumented internal function.
 
   octave_idx_type numt = tspan.numel ();
 
-  realtype t0 = tspan(0);
+  OCTAVE_SUNREALTYPE t0 = tspan(0);
 
   if (numt < 2)
     error ("__ode15__: TRANGE must contain at least 2 elements");

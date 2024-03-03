@@ -1999,15 +1999,6 @@ AC_DEFUN([OCTAVE_CHECK_QT_VERSION], [AC_MSG_CHECKING([Qt version $1])
   warn_qt_abstract_item_model=""
   warn_qt_opengl=""
 
-  if test $build_qt_gui = yes && test "$qt_version" -eq 6; then
-    ## Ensure that the C++ compiler fully supports C++17.
-    ## Preferably with GNU extensions if flags are required.
-    if test $HAVE_CXX17 -eq 0; then
-      build_qt_gui=no
-      warn_qt_cxx17="compiler doesn't support C++17; disabling Qt GUI"
-    fi
-  fi
-
   if test $build_qt_gui = yes; then
     ## Check for Qt libraries
     case "$qt_version" in

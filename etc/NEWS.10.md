@@ -88,6 +88,11 @@ from Octave 10.
         shift                  | circshift
         sparse_auto_mutate     | none (see below)
 
+### Build system
+
+- Octave now requires a C++ compiler that is compliant with C++17 (preferably
+with GNU extensions).
+
 
 Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):
 ----------------------------------------------------

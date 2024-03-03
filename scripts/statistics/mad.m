@@ -183,6 +183,29 @@ endfunction
 %!assert (mad (ones (0,2,1,0)), ones (1,2,1,0))
 %!assert (mad (ones (2,0,1,0)), ones (1,0,1,0))
 
+## Test inf handling
+%!assert <*65405> (mad ([-Inf Inf]), NaN)
+%!assert <*65405> (mad ([-Inf Inf], 0), NaN)
+%!assert <*65405> (mad ([-Inf Inf], 1), NaN)
+%!assert <*65405> (mad ([-Inf Inf]', 0), NaN)
+%!assert <*65405> (mad ([-Inf Inf]', 1), NaN)
+%!assert <*65405> (mad ([-Inf Inf]', 0, 1), NaN)
+%!assert <*65405> (mad ([-Inf Inf]', 0, 2), [NaN; NaN])
+%!assert <*65405> (mad ([-Inf Inf]', 0, 3), [NaN; NaN])
+%!assert <*65405> (mad ([-Inf Inf]', 1, 1), NaN)
+%!assert <*65405> (mad ([-Inf Inf]', 1, 2), [NaN; NaN])
+%!assert <*65405> (mad ([-Inf Inf]', 1, 3), [NaN; NaN])
+%!assert <*65405> (mad (Inf(2), 0), [NaN, NaN])
+%!assert <*65405> (mad (Inf(2), 1), [NaN, NaN])
+%!assert <*65405> (mad (Inf(2), 0, 1), [NaN, NaN])
+%!assert <*65405> (mad (Inf(2), 0, 2), [NaN; NaN])
+%!assert <*65405> (mad (Inf(2), 0, 3), NaN(2))
+%!assert <*65405> (mad (Inf(2), 1, 1), [NaN, NaN])
+%!assert <*65405> (mad (Inf(2), 1, 2), [NaN; NaN])
+%!assert <*65405> (mad (Inf(2), 1, 3), NaN(2))
+
+
+
 ## Test input case insensitivity
 %!assert (mad ([1 2 3], 0, "aLL"), 2/3, eps)
 %!assert (mad ([1 2 3], 1, "aLL"), 1)

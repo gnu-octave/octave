@@ -62,7 +62,7 @@
 ## @end example
 ##
 ## @seealso{ezcontour, contourc, contourf, contour3, clabel, meshc, surfc,
-## caxis, colormap, plot}
+## clim, colormap, plot}
 ##
 ## @end deftypefn
 

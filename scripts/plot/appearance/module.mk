@@ -24,8 +24,8 @@ FCN_FILE_DIRS += \
   %reldir%/camup.m \
   %reldir%/camva.m \
   %reldir%/camzoom.m \
-  %reldir%/caxis.m \
   %reldir%/clabel.m \
+  %reldir%/clim.m \
   %reldir%/daspect.m \
   %reldir%/datetick.m \
   %reldir%/diffuse.m \

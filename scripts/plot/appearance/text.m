@@ -280,7 +280,7 @@ endfunction
 %!                    "edgecolor", "k", ...
 %!                    "verticalalignment", "bottom");
 %! endfor
-%! caxis ([-100 100]);
+%! clim ([-100 100]);
 %! title ("Vertically Aligned at Bottom");
 
 %!demo

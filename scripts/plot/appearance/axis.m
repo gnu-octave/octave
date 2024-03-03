@@ -158,7 +158,7 @@
 ## axis ("tic", "labely");
 ## @end example
 ##
-## @seealso{xlim, ylim, zlim, caxis, daspect, pbaspect, box, grid}
+## @seealso{xlim, ylim, zlim, clim, daspect, pbaspect, box, grid}
 ## @end deftypefn
 
 function limits = axis (varargin)
@@ -390,7 +390,7 @@ function limits = __axis__ (ca, varargin)
       endif
 
       if (len > 7)
-        caxis (ca, opt(7:8));
+        clim (ca, opt(7:8));
       endif
 
     else

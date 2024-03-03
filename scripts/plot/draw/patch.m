@@ -42,11 +42,11 @@
 ##
 ## The color argument @var{c} can take many forms.  To create polygons
 ## which all share a single color use a string value (e.g., @qcode{"r"} for
-## red), a scalar value which is scaled by @code{caxis} and indexed into the
+## red), a scalar value which is scaled by @code{clim} and indexed into the
 ## current colormap, or a 3-element RGB vector with the precise TrueColor.
 ##
 ## If @var{c} is a vector of length N then the ith polygon will have a color
-## determined by scaling entry @var{c}(i) according to @code{caxis} and then
+## determined by scaling entry @var{c}(i) according to @code{clim} and then
 ## indexing into the current colormap.  More complicated coloring situations
 ## require directly manipulating patch property/value pairs.
 ##

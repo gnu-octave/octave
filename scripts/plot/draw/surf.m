@@ -42,7 +42,7 @@
 ## of @var{z} correspond to different @var{y} values.
 ##
 ## The color of the surface is computed by linearly scaling the @var{z} values
-## to fit the range of the current colormap.  Use @code{caxis} and/or
+## to fit the range of the current colormap.  Use @code{clim} and/or
 ## change the colormap to control the appearance.
 ##
 ## Optionally, the color of the surface can be specified independently of
@@ -62,7 +62,7 @@
 ## @code{shading} command or by using @code{set} to control surface object
 ## properties.
 ## @seealso{ezsurf, surfc, surfl, surfnorm, trisurf, contour, mesh, surface,
-## meshgrid, hidden, shading, colormap, caxis}
+## meshgrid, hidden, shading, colormap, clim}
 ## @end deftypefn
 
 function h = surf (varargin)

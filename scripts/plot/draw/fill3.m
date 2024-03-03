@@ -40,7 +40,7 @@
 ## is a single color specification such as a @code{plot} format or an
 ## RGB-triple.  In this case the polygon(s) will have one unique color.  If
 ## @var{c} is a vector or matrix then the color data is first scaled using
-## @code{caxis} and then indexed into the current colormap.  A row vector will
+## @code{clim} and then indexed into the current colormap.  A row vector will
 ## color each polygon (a column from matrices @var{x}, @var{y}, and @var{z})
 ## with a single computed color.  A matrix @var{c} of the same size as @var{x},
 ## @var{y}, and @var{z} will compute the color of each vertex and then
@@ -72,7 +72,7 @@
 ## @end group
 ## @end example
 ##
-## @seealso{patch, fill, caxis, colormap}
+## @seealso{patch, fill, clim, colormap}
 ## @end deftypefn
 
 function h = fill3 (varargin)

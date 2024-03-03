@@ -43,6 +43,7 @@ through meshgrid and the output is a matrix the same size as the meshgrid.
 
 ### Alphabetical list of new functions added in Octave 10
 
+* `clim`
 * `rticklabels`
 * `tticklabels`
 

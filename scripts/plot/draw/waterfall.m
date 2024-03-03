@@ -45,7 +45,7 @@
 ## of @var{z} correspond to different @var{y} values.
 ##
 ## The color of the mesh is computed by linearly scaling the @var{z} values
-## to fit the range of the current colormap.  Use @code{caxis} and/or
+## to fit the range of the current colormap.  Use @code{clim} and/or
 ## change the colormap to control the appearance.
 ##
 ## Optionally the color of the mesh can be specified independently of @var{z}
@@ -62,7 +62,7 @@
 ## surface object.
 ##
 ## @seealso{meshz, mesh, meshc, contour, surf, surface, ribbon, meshgrid,
-## hidden, shading, colormap, caxis}
+## hidden, shading, colormap, clim}
 ## @end deftypefn
 
 function h = waterfall (varargin)

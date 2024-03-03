@@ -40,7 +40,7 @@
 ##
 ## The values in @var{c} are scaled to span the range of the current
 ## colormap.  Limits may be placed on the color axis by the command
-## @code{caxis}, or by setting the @code{clim} property of the parent axis.
+## @code{clim}, or by setting the @code{clim} property of the parent axis.
 ##
 ## The face color of each cell of the mesh is determined by interpolating
 ## the values of @var{c} for each of the cell's vertices; Contrast this with
@@ -58,7 +58,7 @@
 ## The optional return value @var{h} is a graphics handle to the created
 ## surface object.
 ##
-## @seealso{caxis, shading, meshgrid, contour, imagesc}
+## @seealso{clim, shading, meshgrid, contour, imagesc}
 ## @end deftypefn
 
 function h = pcolor (varargin)

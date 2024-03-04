@@ -684,6 +684,52 @@ get_help_from_fcn (const std::string& fcn_nm, const octave_value& ov_fcn, std::s
   return symbol_found;
 }
 
+bool
+help_system::raw_help_for_class (const cdef_class& cls,
+                                 const std::string& name,
+                                 std::string& help, std::string& what,
+                                 bool& symbol_found) const
+{
+  if (cls.ok ())
+    {
+      // Is the class documented?
+      help = cls.doc_string ();
+
+      if (! help.empty ())
+        {
+          what = "class";
+
+          symbol_found = true;
+          return true;
+        }
+
+      // Look for constructor.
+      std::size_t pos = name.rfind ('.');
+
+      if (pos != std::string::npos)
+        {
+          std::string nm = name.substr (pos+1);
+
+          octave_value ov_meth = cls.get_method (nm);
+
+          if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
+            {
+              what = "constructor";
+              return true;
+            }
+        }
+
+      // We found a class, but no docstring for it or its constructor.
+      // Create a generic doc string.
+      help = name + " is an undocumented class";
+      what = "class";
+      symbol_found = true;
+      return true;
+    }
+
+  return false;
+}
+
 // FIXME: There is a lot of duplication between the following function
 // and help_system::which.  Some refactoring would probably be useful.
 
@@ -734,45 +780,8 @@ help_system::raw_help_from_symbol_table (const std::string& name, std::string& h
 
   cdef_class cls = cdm.find_class (name, false, true);
 
-  if (cls.ok ())
-    {
-      // Is the class documented?
-
-      help = cls.doc_string ();
-
-      if (! help.empty ())
-        {
-          what = "class";
-
-          symbol_found = true;
-          return true;
-        }
-
-      // Look for constructor.
-
-      pos = name.rfind ('.');
-
-      if (pos != std::string::npos)
-        {
-          std::string nm = name.substr (pos+1);
-
-          octave_value ov_meth = cls.get_method (nm);
-
-          if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
-            {
-              what = "constructor";
-              return true;
-            }
-        }
-
-      // We found a class but no doc string for it or its constructor.
-      // Create a generic doc string.
-
-      help = name + " is an undocumented class";
-      what = "class";
-      symbol_found = true;
-      return true;
-    }
+  if (raw_help_for_class (cls, name, help, what, symbol_found))
+    return true;
 
   cdef_package pkg = cdm.find_package (name, false, true);
 
@@ -795,7 +804,9 @@ help_system::raw_help_from_symbol_table (const std::string& name, std::string& h
 
   cls = cdm.find_class (prefix, false, true);
 
-  if (cls.ok ())
+  bool found_class = cls.ok ();
+
+  if (found_class)
     {
       // FIXME: Should we only find public methods here?
 
@@ -832,6 +843,9 @@ help_system::raw_help_from_symbol_table (const std::string& name, std::string& h
       if (get_help_from_fcn (nm, ov_fcn, help, what, symbol_found))
         return true;
     }
+
+  if (nm == "m" && raw_help_for_class (cls, prefix, help, what, symbol_found))
+    return true;
 
   return false;
 }

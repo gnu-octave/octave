@@ -38,6 +38,7 @@ class octave_value_list;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class cdef_class;
 class interpreter;
 
 class help_system
@@ -190,6 +191,10 @@ private:
   bool get_which_info_from_fcn (const std::string& name, const octave_value& ov_fcn, std::string& file, std::string& type) const;
 
   string_vector local_functions () const;
+
+  bool raw_help_for_class (const cdef_class& cls, const std::string& nm,
+                           std::string& h, std::string& w,
+                           bool& symbol_found) const;
 
   bool raw_help_from_symbol_table (const std::string& nm,
                                    std::string& h, std::string& w,

@@ -1,6 +1,6 @@
 ########################################################################
 ##
-## Copyright (C) 2007-2024 The Octave Project Developers
+## Copyright (C) 2024 The Octave Project Developers
 ##
 ## See the file COPYRIGHT.md in the top-level directory of this
 ## distribution or <https://octave.org/copyright/>.
@@ -24,11 +24,11 @@
 ########################################################################
 
 ## -*- texinfo -*-
-## @deftypefn  {} {} caxis ([cmin cmax])
-## @deftypefnx {} {} caxis ("auto")
-## @deftypefnx {} {} caxis ("manual")
-## @deftypefnx {} {} caxis (@var{hax}, @dots{})
-## @deftypefnx {} {@var{limits} =} caxis ()
+## @deftypefn  {} {} clim ([cmin cmax])
+## @deftypefnx {} {} clim ("auto")
+## @deftypefnx {} {} clim ("manual")
+## @deftypefnx {} {} clim (@var{hax}, @dots{})
+## @deftypefnx {} {@var{limits} =} clim ()
 ## Query or set color axis limits for plots.
 ##
 ## The limits argument should be a 2-element vector specifying the lower and
@@ -55,9 +55,9 @@
 ## @seealso{colormap, axis}
 ## @end deftypefn
 
-function limits = caxis (varargin)
+function limits = clim (varargin)
 
-  [hax, varargin, nargin] = __plt_get_axis_arg__ ("caxis", varargin{:});
+  [hax, varargin, nargin] = __plt_get_axis_arg__ ("clim", varargin{:});
 
   if (nargin > 1)
     print_usage ();
@@ -81,11 +81,11 @@ function limits = caxis (varargin)
         elseif (strcmpi (arg1, "manual"))
           set (hax, "climmode", "manual");
         else
-          error ("caxis: invalid mode '%s'", arg1);
+          error ("clim: invalid mode '%s'", arg1);
         endif
       elseif (isvector (arg1))
         if (numel (arg1) != 2 || ! isnumeric (arg1) || arg1(1) >= arg1(2))
-          error ("caxis: LIMITS must be a numeric 2-element vector where LIM1 < LIM2");
+          error ("clim: LIMITS must be a numeric 2-element vector where LIM1 < LIM2");
         endif
         set (hax, "clim", arg1);
       else
@@ -105,26 +105,26 @@ endfunction
 %! hf = figure ("visible", "off");
 %! hax = gca ();
 %! unwind_protect
-%!   caxis ([e, pi]);
-%!   assert (caxis (), [e, pi]);
-%!   caxis (hax, [-1, 1]);
-%!   assert (caxis (hax), [-1, 1]);
+%!   clim ([e, pi]);
+%!   assert (clim (), [e, pi]);
+%!   clim (hax, [-1, 1]);
+%!   assert (clim (hax), [-1, 1]);
 %!   assert (get (hax, "climmode"), "manual");
-%!   caxis ("auto");
+%!   clim ("auto");
 %!   assert (get (hax, "climmode"), "auto");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
 
 ## Test input validation
-%!error caxis (1,2,3)
+%!error clim (1,2,3)
 %!test
 %! hf = figure ("visible", "off");
 %! unwind_protect
-%!   fail ("caxis ('foo')", "invalid mode 'foo'");
-%!   fail ("caxis ([1 2 3])", "2-element vector");
-%!   fail ("caxis ({1 2 3})", "numeric 2-element vector");
-%!   fail ("caxis ([1 0])", "LIM1 < LIM2");
+%!   fail ("clim ('foo')", "invalid mode 'foo'");
+%!   fail ("clim ([1 2 3])", "2-element vector");
+%!   fail ("clim ({1 2 3})", "numeric 2-element vector");
+%!   fail ("clim ([1 0])", "LIM1 < LIM2");
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

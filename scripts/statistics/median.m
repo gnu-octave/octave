@@ -267,6 +267,12 @@ function m = median (x, varargin)
     return;
   endif
 
+  if (all (isnan (x(:))))
+    ## all NaN input, output single or double NaNs in pre-determined size
+    m = NaN (sz_out, outtype);
+    return;
+  endif
+
   if (szx(dim) == 1)
     ## Operation along singleton dimension - nothing to do
     if (! strcmp (class (x), outtype))
@@ -307,6 +313,7 @@ function m = median (x, varargin)
 
   ## Find column locations of NaNs
   nanfree = ! any (isnan (x), dim);
+
   if (omitnan && nanfree(:))
     ## Don't use omitnan path if no NaNs are present.  Prevents any data types
     ## without a defined NaN from following slower omitnan codepath.
@@ -438,14 +445,14 @@ endfunction
 
 
 %!assert (median (1), 1)
-%!assert (median ([1,2,3]), 2)
-%!assert (median ([1,2,3]'), 2)
-%!assert (median (cat(3,3,1,2)), 2)
-%!assert (median ([3,1,2]), 2)
-%!assert (median ([2,4,6,8]), 5)
-%!assert (median ([8,2,6,4]), 5)
-%!assert (median (single ([1,2,3])), single (2))
-%!assert (median ([1,2], 3), [1,2])
+%!assert (median ([1, 2, 3]), 2)
+%!assert (median ([1, 2, 3]'), 2)
+%!assert (median (cat (3, 3, 1, 2)), 2)
+%!assert (median ([3, 1, 2]), 2)
+%!assert (median ([2, 4, 6, 8]), 5)
+%!assert (median ([8, 2, 6, 4]), 5)
+%!assert (median (single ([1, 2, 3])), single (2))
+%!assert (median ([1, 2], 3), [1, 2])
 
 %!test
 %! x = [1, 2, 3, 4, 5, 6];
@@ -460,39 +467,39 @@ endfunction
 
 ## Test outtype option
 %!test
-%! in = [1 2 3];
+%! in = [1, 2, 3];
 %! out = 2;
 %! assert (median (in, "default"), median (in));
 %! assert (median (in, "default"), out);
 %!test
-%! in = single ([1 2 3]);
+%! in = single ([1, 2, 3]);
 %! out = 2;
 %! assert (median (in, "default"), single (median (in)));
 %! assert (median (in, "default"), single (out));
 %! assert (median (in, "double"), double (out));
 %! assert (median (in, "native"), single (out));
 %!test
-%! in = uint8 ([1 2 3]);
+%! in = uint8 ([1, 2, 3]);
 %! out = 2;
 %! assert (median (in, "default"), double (median (in)));
 %! assert (median (in, "default"), double (out));
 %! assert (median (in, "double"), out);
 %! assert (median (in, "native"), uint8 (out));
 %!test
-%! in = logical ([1 0 1]);
+%! in = logical ([1, 0, 1]);
 %! out = 1;
 %! assert (median (in, "default"), double (median (in)));
 %! assert (median (in, "default"), double (out));
 %! assert (median (in, "double"), double (out));
 %! assert (median (in, "native"), double (out));
 
-## Test single input and optional arguments "all", DIM, "omitnan")
+## Test single input and optional arguments "all", DIM, "omitnan"
 %!test
 %! x = repmat ([2 2.1 2.2 2 NaN; 3 1 2 NaN 5; 1 1.1 1.4 5 3], [1, 1, 4]);
 %! y = repmat ([2 1.1 2 NaN NaN], [1, 1, 4]);
 %! assert (median (x), y);
 %! assert (median (x, 1), y);
-%! y = repmat ([2 1.1 2 3.5 4], [1, 1, 4]);
+%! y = repmat ([2, 1.1, 2, 3.5, 4], [1, 1, 4]);
 %! assert (median (x, "omitnan"), y);
 %! assert (median (x, 1, "omitnan"), y);
 %! y = repmat ([2.05; 2.5; 1.4], [1, 1, 4]);
@@ -508,78 +515,96 @@ endfunction
 %!test
 %! assert (median (true, "all"), logical (1));
 %! assert (median (false), logical (0));
-%! assert (median ([true false true]), true);
-%! assert (median ([true false true], 2), true);
-%! assert (median ([true false true], 1), logical ([1 0 1]));
-%! assert (median ([true false NaN], 1), [1 0 NaN]);
-%! assert (median ([true false NaN], 2), NaN);
-%! assert (median ([true false NaN], 2, "omitnan"), 0.5);
-%! assert (median ([true false NaN], 2, "omitnan", "native"), double(0.5));
+%! assert (median ([true, false, true]), true);
+%! assert (median ([true, false, true], 2), true);
+%! assert (median ([true, false, true], 1), logical ([1 0 1]));
+%! assert (median ([true, false, NaN], 1), [1, 0, NaN]);
+%! assert (median ([true, false, NaN], 2), NaN);
+%! assert (median ([true, false, NaN], 2, "omitnan"), 0.5);
+%! assert (median ([true, false, NaN], 2, "omitnan", "native"), double (0.5));
 
 ## Test dimension indexing with vecdim in n-dimensional arrays
 %!test
-%! x = repmat ([1:20;6:25], [5 2 6 3]);
-%! assert (size (median (x, [3 2])), [10 1 1 3]);
-%! assert (size (median (x, [1 2])), [1 1 6 3]);
-%! assert (size (median (x, [1 2 4])), [1 1 6]);
-%! assert (size (median (x, [1 4 3])), [1 40]);
-%! assert (size (median (x, [1 2 3 4])), [1 1]);
+%! x = repmat ([1:20; 6:25], [5, 2, 6, 3]);
+%! assert (size (median (x, [3, 2])), [10, 1, 1, 3]);
+%! assert (size (median (x, [1, 2])), [1, 1, 6, 3]);
+%! assert (size (median (x, [1, 2, 4])), [1, 1, 6]);
+%! assert (size (median (x, [1, 4, 3])), [1, 40]);
+%! assert (size (median (x, [1, 2, 3, 4])), [1, 1]);
 
 ## Test exceeding dimensions
-%!assert (median (ones (2,2), 3), ones (2,2))
-%!assert (median (ones (2,2,2), 99), ones (2,2,2))
+%!assert (median (ones (2, 2), 3), ones (2, 2))
+%!assert (median (ones (2, 2, 2), 99), ones (2, 2, 2))
 %!assert (median (magic (3), 3), magic (3))
-%!assert (median (magic (3), [1 3]), [4, 5, 6])
-%!assert (median (magic (3), [1 99]), [4, 5, 6])
+%!assert (median (magic (3), [1, 3]), [4, 5, 6])
+%!assert (median (magic (3), [1, 99]), [4, 5, 6])
 
-## Test results with vecdim in n-dimensional arrays and "omitnan"
+## Test results with vecdim in N-dimensional arrays and "omitnan"
 %!test
 %! x = repmat ([2 2.1 2.2 2 NaN; 3 1 2 NaN 5; 1 1.1 1.4 5 3], [1, 1, 4]);
-%! assert (median (x, [3 2]), [NaN NaN 1.4]');
-%! assert (median (x, [3 2], "omitnan"), [2.05 2.5 1.4]');
-%! assert (median (x, [1 3]), [2 1.1 2 NaN NaN]);
-%! assert (median (x, [1 3], "omitnan"), [2 1.1 2 3.5 4]);
+%! assert (median (x, [3, 2]), [NaN, NaN, 1.4]');
+%! assert (median (x, [3, 2], "omitnan"), [2.05, 2.5, 1.4]');
+%! assert (median (x, [1, 3]), [2, 1.1, 2, NaN, NaN]);
+%! assert (median (x, [1, 3], "omitnan"), [2, 1.1, 2, 3.5, 4]);
 
 ## Test empty, NaN, Inf inputs
 %!assert (median (NaN), NaN)
 %!assert (median (NaN, "omitnan"), NaN)
-%!assert (median (NaN (2)), [NaN NaN])
-%!assert (median (NaN (2), "omitnan"), [NaN NaN])
-%!assert (median ([1 NaN 3]), NaN)
-%!assert (median ([1 NaN 3], 1), [1 NaN 3])
-%!assert (median ([1 NaN 3], 2), NaN)
-%!assert (median ([1 NaN 3]'), NaN)
-%!assert (median ([1 NaN 3]', 1), NaN)
-%!assert (median ([1 NaN 3]', 2), [1; NaN; 3])
-%!assert (median ([1 NaN 3], "omitnan"), 2)
-%!assert (median ([1 NaN 3]', "omitnan"), 2)
-%!assert (median ([1 NaN 3], 1, "omitnan"), [1 NaN 3])
-%!assert (median ([1 NaN 3], 2, "omitnan"), 2)
-%!assert (median ([1 NaN 3]', 1, "omitnan"), 2)
-%!assert (median ([1 NaN 3]', 2, "omitnan"), [1; NaN; 3])
-%!assert (median ([1 2 NaN 3]), NaN)
-%!assert (median ([1 2 NaN 3], "omitnan"), 2)
+%!assert (median (NaN (2)), [NaN, NaN])
+%!assert (median (NaN (2), "omitnan"), [NaN, NaN])
+%!assert (median ([1, NaN, 3]), NaN)
+%!assert (median ([1, NaN, 3], 1), [1, NaN, 3])
+%!assert (median ([1, NaN, 3], 2), NaN)
+%!assert (median ([1, NaN, 3]'), NaN)
+%!assert (median ([1, NaN, 3]', 1), NaN)
+%!assert (median ([1, NaN, 3]', 2), [1; NaN; 3])
+%!assert (median ([1, NaN, 3], "omitnan"), 2)
+%!assert (median ([1, NaN, 3]', "omitnan"), 2)
+%!assert (median ([1, NaN, 3], 1, "omitnan"), [1, NaN, 3])
+%!assert (median ([1, NaN, 3], 2, "omitnan"), 2)
+%!assert (median ([1, NaN, 3]', 1, "omitnan"), 2)
+%!assert (median ([1, NaN, 3]', 2, "omitnan"), [1; NaN; 3])
+%!assert (median ([1, 2, NaN, 3]), NaN)
+%!assert (median ([1, 2, NaN, 3], "omitnan"), 2)
 %!assert (median ([1,2,NaN;4,5,6;NaN,8,9]), [NaN, 5, NaN])
 %!assert <*64011> (median ([1,2,NaN;4,5,6;NaN,8,9], "omitnan"), [2.5, 5, 7.5], eps)
-%!assert (median ([1 2 ; NaN 4]), [NaN 3])
-%!assert (median ([1 2 ; NaN 4], "omitnan"), [1 3])
-%!assert (median ([1 2 ; NaN 4], 1, "omitnan"), [1 3])
-%!assert (median ([1 2 ; NaN 4], 2, "omitnan"), [1.5; 4], eps)
-%!assert (median ([1 2 ; NaN 4], 3, "omitnan"), [1 2 ; NaN 4])
-%!assert (median ([NaN 2 ; NaN 4]), [NaN 3])
-%!assert (median ([NaN 2 ; NaN 4], "omitnan"), [NaN 3])
+%!assert (median ([1, 2 ; NaN, 4]), [NaN, 3])
+%!assert (median ([1, 2 ; NaN, 4], "omitnan"), [1, 3])
+%!assert (median ([1, 2 ; NaN, 4], 1, "omitnan"), [1, 3])
+%!assert (median ([1, 2 ; NaN, 4], 2, "omitnan"), [1.5; 4], eps)
+%!assert (median ([1, 2 ; NaN, 4], 3, "omitnan"), [1, 2 ; NaN, 4])
+%!assert (median ([NaN, 2 ; NaN, 4]), [NaN, 3])
+%!assert (median ([NaN, 2 ; NaN, 4], "omitnan"), [NaN, 3])
 %!assert (median (ones (1, 0, 3)), NaN (1, 1, 3))
 
-%!assert (median (NaN("single")), NaN("single"))
-%!assert (median (NaN("single"), "omitnan"), NaN("single"))
-%!assert (median (NaN("single"), "double"), NaN("double"))
-%!assert (median (single([1 2 ; NaN 4])), single([NaN 3]))
-%!assert (median (single([1 2 ; NaN 4]), "double"), double([NaN 3]))
-%!assert (median (single([1 2 ; NaN 4]), "omitnan"), single([1 3]))
-%!assert (median (single([1 2 ; NaN 4]), "omitnan", "double"), double([1 3]))
-%!assert (median (single([NaN 2 ; NaN 4]), "double"), double([NaN 3]))
-%!assert (median (single([NaN 2 ; NaN 4]), "omitnan"), single([NaN 3]))
-%!assert (median (single([NaN 2 ; NaN 4]), "omitnan", "double"), double([NaN 3]))
+## Test all NaN vectors and arrays
+%!assert <*65405> (median ([NaN, NaN], 1, "omitnan"), [NaN, NaN])
+%!assert <*65405> (median ([NaN, NaN], 2, "omitnan"), NaN)
+%!assert <*65405> (median ([NaN, NaN]', 1, "omitnan"), NaN)
+%!assert <*65405> (median ([NaN, NaN]', 2, "omitnan"), [NaN; NaN])
+%!assert <*65405> (median ([NaN, NaN], "omitnan"), NaN)
+%!assert <*65405> (median ([NaN, NaN]', "omitnan"), NaN)
+%!assert <*65405> (median (NaN (1, 9), 1, "omitnan"), NaN (1, 9))
+%!assert <*65405> (median (NaN (1, 9), 2, "omitnan"), NaN)
+%!assert <*65405> (median (NaN (1, 9), 3, "omitnan"), NaN (1, 9))
+%!assert <*65405> (median (NaN (9, 1), 1, "omitnan"), NaN)
+%!assert <*65405> (median (NaN (9, 1), 2, "omitnan"), NaN (9, 1))
+%!assert <*65405> (median (NaN (9, 1), 3, "omitnan"), NaN (9, 1))
+%!assert <*65405> (median (NaN (9, 2), 1, "omitnan"), NaN (1, 2))
+%!assert <*65405> (median (NaN (9, 2), 2, "omitnan"), NaN (9, 1))
+%!assert <*65405> (median (NaN (9, 2), "omitnan"), NaN (1, 2))
+
+## Test single inputs
+%!assert (median (NaN ("single")), NaN ("single"))
+%!assert (median (NaN ("single"), "omitnan"), NaN ("single"))
+%!assert (median (NaN ("single"), "double"), NaN ("double"))
+%!assert (median (single ([1, 2 ; NaN, 4])), single ([NaN, 3]))
+%!assert (median (single ([1, 2 ; NaN, 4]), "double"), double ([NaN, 3]))
+%!assert (median (single ([1, 2 ; NaN, 4]), "omitnan"), single ([1, 3]))
+%!assert (median (single ([1, 2 ; NaN, 4]), "omitnan", "double"), double ([1, 3]))
+%!assert (median (single ([NaN, 2 ; NaN, 4]), "double"), double ([NaN 3]))
+%!assert (median (single ([NaN, 2 ; NaN, 4]), "omitnan"), single ([NaN 3]))
+%!assert (median (single ([NaN, 2 ; NaN, 4]), "omitnan", "double"), double ([NaN 3]))
 
 ## Test omitnan with 2D & 3D inputs to confirm correct sub2ind orientation
 %!test <*64011>
@@ -594,51 +619,51 @@ endfunction
 
 %!assert (median (Inf), Inf)
 %!assert (median (-Inf), -Inf)
-%!assert (median ([-Inf Inf]), NaN)
-%!assert (median ([3 Inf]), Inf)
-%!assert (median ([3 4 Inf]), 4)
-%!assert (median ([Inf 3 4]), 4)
-%!assert (median ([Inf 3 Inf]), Inf)
+%!assert (median ([-Inf, Inf]), NaN)
+%!assert (median ([3, Inf]), Inf)
+%!assert (median ([3, 4, Inf]), 4)
+%!assert (median ([Inf, 3, 4]), 4)
+%!assert (median ([Inf, 3, Inf]), Inf)
 
 %!assert (median ([]), NaN)
-%!assert (median (ones(1,0)), NaN)
-%!assert (median (ones(0,1)), NaN)
-%!assert (median ([], 1), NaN(1,0))
-%!assert (median ([], 2), NaN(0,1))
-%!assert (median ([], 3), NaN(0,0))
-%!assert (median (ones(1,0), 1), NaN(1,0))
-%!assert (median (ones(1,0), 2), NaN(1,1))
-%!assert (median (ones(1,0), 3), NaN(1,0))
-%!assert (median (ones(0,1), 1), NaN(1,1))
-%!assert (median (ones(0,1), 2), NaN(0,1))
-%!assert (median (ones(0,1), 3), NaN(0,1))
-%!assert (median (ones(0,1,0,1), 1), NaN(1,1,0))
-%!assert (median (ones(0,1,0,1), 2), NaN(0,1,0))
-%!assert (median (ones(0,1,0,1), 3), NaN(0,1,1))
-%!assert (median (ones(0,1,0,1), 4), NaN(0,1,0))
+%!assert (median (ones (1, 0)), NaN) 
+%!assert (median (ones (0, 1)), NaN)
+%!assert (median ([], 1), NaN (1, 0))
+%!assert (median ([], 2), NaN (0, 1))
+%!assert (median ([], 3), NaN (0, 0))
+%!assert (median (ones (1, 0), 1), NaN (1, 0))
+%!assert (median (ones (1, 0), 2), NaN (1, 1))
+%!assert (median (ones (1, 0), 3), NaN (1, 0))
+%!assert (median (ones (0, 1), 1), NaN (1, 1))
+%!assert (median (ones (0, 1), 2), NaN (0, 1))
+%!assert (median (ones (0, 1), 3), NaN (0, 1))
+%!assert (median (ones (0, 1, 0, 1), 1), NaN (1, 1, 0))
+%!assert (median (ones (0, 1, 0, 1), 2), NaN (0, 1, 0))
+%!assert (median (ones (0, 1, 0, 1), 3), NaN (0, 1, 1))
+%!assert (median (ones (0, 1, 0, 1), 4), NaN (0, 1, 0))
 
 ## Test complex inputs (should sort by abs(a))
-%!assert (median([1 3 3i 2 1i]), 2)
-%!assert (median([1 2 4i; 3 2i 4]), [2, 1+1i, 2+2i])
+%!assert (median ([1, 3, 3i, 2, 1i]), 2)
+%!assert (median ([1, 2, 4i; 3, 2i, 4]), [2, 1+1i, 2+2i])
 
 ## Test multidimensional arrays
 %!shared a, b, x, y
 %! old_state = rand ("state");
 %! restore_state = onCleanup (@() rand ("state", old_state));
 %! rand ("state", 2);
-%! a = rand (2,3,4,5);
-%! b = rand (3,4,6,5);
+%! a = rand (2, 3, 4, 5);
+%! b = rand (3, 4, 6, 5);
 %! x = sort (a, 4);
 %! y = sort (b, 3);
 %!assert <*35679> (median (a, 4), x(:, :, :, 3))
 %!assert <*35679> (median (b, 3), (y(:, :, 3, :) + y(:, :, 4, :))/2)
-%!shared   ## Clear shared to prevent variable echo for any later test failures
+%!shared   # Clear shared to prevent variable echo for any later test failures
 
-## Test n-dimensional arrays with odd non-NaN data points
+## Test N-dimensional arrays with odd non-NaN data points
 %!test
-%! x = ones(15,1,4);
-%! x([13,15],1,:) = NaN;
-%! assert (median (x, 1, "omitnan"), ones (1,1,4))
+%! x = ones (15, 1, 4);
+%! x([13,15], 1, :) = NaN;
+%! assert (median (x, 1, "omitnan"), ones (1, 1, 4))
 
 ## Test non-floating point types
 %!assert (median ([true, false]), true)
@@ -655,43 +680,43 @@ endfunction
 %!assert <*54567> (median (uint8 ([253, 255])), uint8 (254))
 %!assert <*54567> (median (uint8 ([253, 254])), uint8 (254))
 %!assert <*54567> (median (int8 ([127, 126, 125, 124; 1 3 5 9])), ...
-%!                  int8 ([64 65 65 67]))
+%!                 int8 ([64 65 65 67]))
 %!assert <*54567> (median (int8 ([127, 126, 125, 124; 1 3 5 9]), 2), ...
-%!                  int8 ([126; 4]))
+%!                 int8 ([126; 4]))
 %!assert <*54567> (median (int64 ([intmax("int64"), intmax("int64")-2])), ...
-%!                  intmax ("int64") - 1)
+%!                 intmax ("int64") - 1)
 %!assert <*54567> (median ( ...
 %!                 int64 ([intmax("int64"), intmax("int64")-2; 1 2]), 2), ...
 %!                 int64([intmax("int64") - 1; 2]))
 %!assert <*54567> (median (uint64 ([intmax("uint64"), intmax("uint64")-2])), ...
-%!                  intmax ("uint64") - 1)
+%!                 intmax ("uint64") - 1)
 %!assert <*54567> (median ( ...
 %!                 uint64 ([intmax("uint64"), intmax("uint64")-2; 1 2]), 2), ...
 %!                 uint64([intmax("uint64") - 1; 2]))
 
 ## Test opposite sign int overflow when getting mean of even number of values
 %!assert <*54567> (median (...
-%! [intmin('int8') intmin('int8')+5 intmax('int8')-5 intmax('int8')]), ...
-%! int8(-1))
+%! [intmin('int8'), intmin('int8')+5, intmax('int8')-5, intmax('int8')]), ...
+%! int8 (-1))
 %!assert <*54567> (median ([int8([1 2 3 4]); ...
-%! intmin('int8') intmin('int8')+5 intmax('int8')-5 intmax('int8')], 2), ...
-%! int8([3;-1]))
+%! intmin('int8'), intmin('int8')+5, intmax('int8')-5, intmax('int8')], 2), ...
+%! int8 ([3;-1]))
 %!assert <*54567> (median (...
-%! [intmin('int64') intmin('int64')+5 intmax('int64')-5 intmax('int64')]), ...
-%! int64(-1))
-%!assert <*54567> (median ([int64([1 2 3 4]); ...
-%! intmin('int64') intmin('int64')+5 intmax('int64')-5 intmax('int64')], 2), ...
-%! int64([3;-1]))
+%! [intmin('int64'), intmin('int64')+5, intmax('int64')-5, intmax('int64')]), ...
+%! int64 (-1))
+%!assert <*54567> (median ([int64([1, 2, 3, 4]); ...
+%! intmin('int64'), intmin('int64')+5, intmax('int64')-5, intmax('int64')], 2), ...
+%! int64 ([3;-1]))
 
 ## Test int accuracy loss doing mean of close int64/uint64 values as double
 %!assert <*54567> (median ([intmax("uint64"), intmax("uint64")-2]), ...
-%!  intmax("uint64")-1)
+%!                 intmax ("uint64")-1)
 %!assert <*54567> (median ([intmax("uint64"), intmax("uint64")-2], "default"), ...
-%!  double(intmax("uint64")-1))
+%!                 double (intmax ("uint64")-1))
 %!assert <*54567> (median ([intmax("uint64"), intmax("uint64")-2], "double"), ...
-%!  double(intmax("uint64")-1))
+%!                 double (intmax ("uint64")-1))
 %!assert <*54567> (median ([intmax("uint64"), intmax("uint64")-2], "native"), ...
-%!  intmax("uint64")-1)
+%!                 intmax ("uint64")-1)
 
 ## Test input case insensitivity
 %!assert (median ([1 2 3], "aLL"), 2)

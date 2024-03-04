@@ -302,6 +302,14 @@ AC_DEFINE_UNQUOTED([SHELL_PATH], ["$SHELL_PATH"],
 
 ### Determine which C++ compiler to use (we expect to find g++ or clang++).
 
+# AC_PROG_CXX attempts to find the compiler flags for activating support for
+# C++11.  As of autoconf version 2.71, the source code that it uses for that
+# test includes parts that are invalid in C++20.
+# We are using AX_CXX_COMPILE_STDCXX to determine the potentially needed flags
+# for the C++ version that Octave requires.  So, skip the (unnecessary and
+# broken) test for C++11 in AC_PROG_CXX by setting the following (undocumented)
+# flag:
+ac_cv_prog_cxx_cxx11=""
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
@@ -2341,13 +2349,32 @@ if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
+### Check for SUNDIALS core library and header.
+
+if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  LIBS="$SUNDIALS_CORE_LIBS $LIBS"
+  LDFLAGS="$SUNDIALS_CORE_LDFLAGS $LDFLAGS"
+  CPPFLAGS="$SUNDIALS_CORE_CPPFLAGS $CPPFLAGS"
+  OCTAVE_CHECK_LIB(sundials_core, [SUNDIALS core],
+    [SUNDIALS core library not found.],
+    [sundials_core.h sundials/sundials_core.h], [SUNContext_Create],
+    [], [])
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
+fi
+
 ### Check for SUNDIALS library features, some required, some optional.
 
 if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
 
-  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
-  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
-  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $SUNDIALS_CORE_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $SUNDIALS_CORE_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $SUNDIALS_CORE_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
   if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
     dnl Any of the following tests could determine that SUNDIALS is
     dnl incompatible and should be disabled.  In that event, they all populate
@@ -2359,6 +2386,7 @@ if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
       OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API
     fi
     if test -z "$warn_sundials_disabled"; then
+      OCTAVE_CHECK_SUNDIALS_SUNREALTYPE
       OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE
     fi
     if test -z "$warn_sundials_disabled"; then
@@ -2389,9 +2417,9 @@ if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
     AC_DEFINE(HAVE_SUNDIALS, 1, [Define to 1 if SUNDIALS is available.])
 
     ## Options needed to build with SUNDIALS and its dependencies.
-    SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS"
-    SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_SUNLINSOLKLU_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS"
-    SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS"
+    SUNDIALS_XCPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_SUNLINSOLKLU_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $SUNDIALS_CORE_CPPFLAGS $KLU_CPPFLAGS"
+    SUNDIALS_XLDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_SUNLINSOLKLU_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $SUNDIALS_CORE_LDFLAGS $KLU_LDFLAGS"
+    SUNDIALS_XLIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_SUNLINSOLKLU_LIBS $SUNDIALS_NVECSERIAL_LIBS $SUNDIALS_CORE_LIBS $KLU_LIBS"
   else
     SUNDIALS_IDA_CPPFLAGS=
     SUNDIALS_IDA_LDFLAGS=
@@ -2402,6 +2430,9 @@ if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
     SUNDIALS_NVECSERIAL_CPPFLAGS=
     SUNDIALS_NVECSERIAL_LDFLAGS=
     SUNDIALS_NVECSERIAL_LIBS=
+    SUNDIALS_CORE_CPPFLAGS=
+    SUNDIALS_CORE_LDFLAGS=
+    SUNDIALS_CORE_LIBS=
     SUNDIALS_XCPPFLAGS=
     SUNDIALS_XLDFLAGS=
     SUNDIALS_XLIBS=
@@ -3350,6 +3381,9 @@ Octave is now configured for $canonical_host_type
   SPQR LDFLAGS:                  $SPQR_LDFLAGS
   SPQR libraries:                $SPQR_LIBS
   SuiteSparse config libraries:  $SUITESPARSECONFIG_LIBS
+  SUNDIALS core CPPFLAGS:        $SUNDIALS_CORE_CPPFLAGS
+  SUNDIALS core LDFLAGS:         $SUNDIALS_CORE_LDFLAGS
+  SUNDIALS core libraries:       $SUNDIALS_CORE_LIBS
   SUNDIALS IDA CPPFLAGS:         $SUNDIALS_IDA_CPPFLAGS
   SUNDIALS IDA LDFLAGS:          $SUNDIALS_IDA_LDFLAGS
   SUNDIALS IDA libraries:        $SUNDIALS_IDA_LIBS

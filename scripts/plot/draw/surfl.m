@@ -83,7 +83,7 @@
 ## shading interp;
 ## @end group
 ## @end example
-## @seealso{diffuse, specular, surf, shading, colormap, caxis}
+## @seealso{diffuse, specular, surf, shading, colormap, clim}
 ## @end deftypefn
 
 function h = surfl (varargin)

@@ -55,7 +55,7 @@
 ## and inserts it in the current axes.  The full list of properties is
 ## documented at @ref{Image Properties}.
 ##
-## @seealso{image, imshow, caxis}
+## @seealso{image, imshow, clim}
 ## @end deftypefn
 
 function h = imagesc (varargin)

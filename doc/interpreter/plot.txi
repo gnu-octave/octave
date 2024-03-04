@@ -299,10 +299,10 @@ is done or, alternatively, after calling the @ref{XREFhold, ,hold function}.
 
 @DOCSTRING(axis)
 
-Similarly the axis limits of the colormap can be changed with the caxis
+Similarly the axis limits of the colormap can be changed with the @code{clim}
 function.
 
-@DOCSTRING(caxis)
+@DOCSTRING(clim)
 
 The @code{xlim}, @code{ylim}, and @code{zlim} functions may be used to
 get or set individual axis limits.  Each has the same form.

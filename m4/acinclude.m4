@@ -2333,6 +2333,31 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   fi
 ])
 dnl
+dnl Check whether SUNDIALS IDA uses sunrealtype.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNREALTYPE], [
+  AC_CACHE_CHECK([whether SUNDIALS IDA uses sunrealtype],
+    [octave_cv_sundials_has_sunrealtype],
+    [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
+        #if defined (HAVE_IDA_IDA_H)
+        #  include <ida/ida.h>
+        #endif
+        ]], [[
+        sunrealtype test;
+      ]])],
+      octave_cv_sundials_has_sunrealtype=yes,
+      octave_cv_sundials_has_sunrealtype=no)
+  ])
+  if test $octave_cv_sundials_has_sunrealtype = no; then
+    OCTAVE_SUNREALTYPE=realtype
+  else
+    OCTAVE_SUNREALTYPE=sunrealtype
+  fi
+  AC_SUBST(OCTAVE_SUNREALTYPE)
+  AC_DEFINE_UNQUOTED(OCTAVE_SUNREALTYPE, [$OCTAVE_SUNREALTYPE],
+    [Define to the type used for real numbers by SUNDIALS.])
+])
+dnl
 dnl Check whether SUNDIALS IDA library is configured with double
 dnl precision realtype.
 dnl
@@ -2345,7 +2370,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SIZEOF_REALTYPE], [
         #endif
         #include <assert.h>
         ]], [[
-        static_assert (sizeof (realtype) == sizeof (double),
+        static_assert (sizeof (OCTAVE_SUNREALTYPE) == sizeof (double),
                        "SUNDIALS is not configured for double precision");
       ]])],
       octave_cv_sundials_realtype_is_double=yes,

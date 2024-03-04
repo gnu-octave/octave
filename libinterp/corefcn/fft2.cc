@@ -89,12 +89,12 @@ do_fft2 (const octave_value_list& args, const char *fcn, int type)
   else
     dims(1) = n_cols;
 
-  if (dims.all_zero () || n_rows == 0 || n_cols == 0)
+  if (dims.any_zero ())
     {
       if (arg.is_single_type ())
-        return octave_value (FloatMatrix ());
+        return octave_value (FloatNDArray (dims));
       else
-        return octave_value (Matrix ());
+        return octave_value (NDArray (dims));
     }
 
   if (arg.is_single_type ())
@@ -156,6 +156,15 @@ of @var{A} is treated separately.
   return do_fft2 (args, "fft2", 0);
 }
 
+/*
+%!testif HAVE_FFTW <*65414>
+%! sz = size (fft2 (ones (2, 0, 3)));
+%! assert (sz, [2, 0, 3]);
+
+%!testif HAVE_FFTW <*65414>
+%! sz = size (fft2 (ones (5, 4, 3), 2, 0));
+%! assert (sz, [2, 0, 3]);
+*/
 
 DEFUN (ifft2, args, ,
        doc: /* -*- texinfo -*-
@@ -177,6 +186,14 @@ of @var{B} is treated separately.
 }
 
 /*
+%!testif HAVE_FFTW <*65414>
+%! sz = size (ifft2 (ones (2, 0, 3)));
+%! assert (sz, [2, 0, 3]);
+
+%!testif HAVE_FFTW <*65414>
+%! sz = size (ifft2 (ones (5, 4, 3), 2, 0));
+%! assert (sz, [2, 0, 3]);
+
 ## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 ##         Comalco Research and Technology
 ##         02 May 2000

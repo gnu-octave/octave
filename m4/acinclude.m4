@@ -2293,6 +2293,40 @@ c assume the default integer size is 32-bits.
   ])
 ])
 dnl
+dnl Check for library that exports SUNContext_Create.
+dnl
+AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNCONTEXT_CREATE], [
+  save_LIBS=$LIBS
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $LIBS"
+  dnl Check for SUNContext_Create without linking to libsundials_core.
+  dnl That should succeed for SUNDIALS version 6.
+  AC_CHECK_FUNC([SUNContext_Create])
+  LIBS="$save_LIBS"
+  if test "x$ac_cv_func_SUNContext_Create" != xyes; then
+    ## SUNDIALS version 7 exports SUNContext_Create from libsundials_core
+    save_CPPFLAGS="$CPPFLAGS"
+    save_LDFLAGS="$LDFLAGS"
+    save_LIBS="$LIBS"
+    LIBS="$SUNDIALS_CORE_LIBS $LIBS"
+    LDFLAGS="$SUNDIALS_CORE_LDFLAGS $LDFLAGS"
+    CPPFLAGS="$SUNDIALS_CORE_CPPFLAGS $CPPFLAGS"
+    ## Unset cache variable from previous check
+    unset ac_cv_func_SUNContext_Create
+    OCTAVE_CHECK_LIB(sundials_core, [SUNDIALS core], [],
+      [sundials_core.h sundials/sundials_core.h], [SUNContext_Create],
+      [], [])
+    CPPFLAGS="$save_CPPFLAGS"
+    LDFLAGS="$save_LDFLAGS"
+    LIBS="$save_LIBS"
+  fi
+  if test "x$ac_cv_func_SUNContext_Create" = xyes \
+    || test "x$octave_cv_lib_sundials_core" = xyes; then
+    ## SUNDIALS prior to version 6 does not need SUNContext_Create
+    AC_DEFINE(HAVE_SUNDIALS_SUNCONTEXT, 1,
+      [Define to 1 if SUNDIALS API uses a SUNContext object.])
+  fi
+])
+dnl
 dnl Check whether SUNDIALS libraries provide a compatible interface.
 dnl The current recommended interface was introduced in SUNDIALS version 4.
 dnl The deprecated interface that Octave currently works to be compatible with
@@ -2302,7 +2336,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
   ac_octave_save_LIBS=$LIBS
   LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $LIBS"
   dnl Current API functions present in SUNDIALS version 4
-  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNSparseMatrix_Reallocate SUNContext_Create])
+  AC_CHECK_FUNCS([IDASetJacFn IDASetLinearSolver SUNLinSol_Dense SUNSparseMatrix_Reallocate])
   dnl FIXME: The purpose of the following tests is to detect the deprecated
   dnl API from SUNDIALS version 3, which should only be used if the current
   dnl API tests above failed. For now, always test for ida_direct.h.
@@ -2323,10 +2357,6 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_COMPATIBLE_API], [
     octave_have_sundials_compatible_api=no
   fi
   AC_MSG_RESULT([$octave_have_sundials_compatible_api])
-  if test "x$ac_cv_func_SUNContext_Create" = xyes; then
-    AC_DEFINE(HAVE_SUNDIALS_SUNCONTEXT, 1,
-      [Define to 1 if SUNDIALS' API is using a SUNContext object.])
-  fi
   if test $octave_have_sundials_compatible_api = no; then
     warn_sundials_disabled="SUNDIALS libraries do not provide an API that is compatible with Octave.  The solvers ode15i and ode15s will be disabled."
     OCTAVE_CONFIGURE_WARNING([warn_sundials_disabled])
@@ -2418,7 +2448,15 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
      #  include <ufsparse/klu.h>
      #endif
     ])
+  ## Check for library that exports SUNContext_Create
+  OCTAVE_CHECK_SUNDIALS_SUNCONTEXT_CREATE
   ## Check for current KLU function name first.
+  save_CPPFLAGS="$CPPFLAGS"
+  save_LDFLAGS="$LDFLAGS"
+  save_LIBS="$LIBS"
+  CPPFLAGS="$SUNDIALS_CORE_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$SUNDIALS_CORE_LDFLAGS $LDFLAGS"
+  LIBS="$SUNDIALS_CORE_LIBS $LIBS"
   OCTAVE_CHECK_LIB(sundials_sunlinsolklu, SUNLINSOL_KLU, [],
     [], [SUNLinSol_KLU], [],
     [don't use SUNDIALS SUNLINSOL_KLU library, disable ode15i and ode15s sparse Jacobian],
@@ -2445,9 +2483,12 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
          #include <sunlinsol/sunlinsol_klu.h>
          #endif
          ]], [[
-         #if defined (HAVE_SUNCONTEXT_CREATE)
+         #if defined (HAVE_SUNDIALS_SUNCONTEXT)
+         #  if ! defined (SUN_COMM_NULL)
+         #    define SUN_COMM_NULL NULL
+         #  endif
            SUNContext *sunContext;
-           if (SUNContext_Create (NULL, sunContext) < 0)
+           if (SUNContext_Create (SUN_COMM_NULL, sunContext) < 0)
              1/0;  // provoke an error
            SUNLinSol_KLU (0, 0, *sunContext);
            SUNContext_Free (sunContext);
@@ -2464,7 +2505,7 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
       [], [SUNKLU], [],
       [don't use SUNDIALS SUNLINSOL_KLU library, disable ode15i and ode15s sparse Jacobian],
       [AC_CHECK_FUNCS([SUNKLU])
-       AC_CACHE_CHECK([whether compiling a program that calls SUNLinSol_KLU works],
+       AC_CACHE_CHECK([whether compiling a program that calls SUNKLU works],
         [octave_cv_sundials_sunlinsol_klu],
         [AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
            #if defined (HAVE_IDA_IDA_H)
@@ -2500,6 +2541,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
     warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinsol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
     OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
+  CPPFLAGS="$save_CPPFLAGS"
+  LDFLAGS="$save_LDFLAGS"
+  LIBS="$save_LIBS"
 ])
 dnl
 dnl Like AC_CONFIG_FILES, but don't touch the output file if it already

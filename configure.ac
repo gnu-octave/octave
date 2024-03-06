@@ -2334,32 +2334,20 @@ if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
-### Check for SUNDIALS core library and header.
-
-if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
-
-  save_CPPFLAGS="$CPPFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
-  LIBS="$SUNDIALS_CORE_LIBS $LIBS"
-  LDFLAGS="$SUNDIALS_CORE_LDFLAGS $LDFLAGS"
-  CPPFLAGS="$SUNDIALS_CORE_CPPFLAGS $CPPFLAGS"
-  OCTAVE_CHECK_LIB(sundials_core, [SUNDIALS core],
-    [SUNDIALS core library not found.],
-    [sundials_core.h sundials/sundials_core.h], [SUNContext_Create],
-    [], [])
-  CPPFLAGS="$save_CPPFLAGS"
-  LDFLAGS="$save_LDFLAGS"
-  LIBS="$save_LIBS"
+if test -n "$SUNDIALS_IDA_LIBS" \
+    && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+  octave_have_sundials_libs=yes
+else
+  octave_have_sundials_libs=no
 fi
 
 ### Check for SUNDIALS library features, some required, some optional.
 
-if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+if test "x$octave_have_sundials_libs" == xyes; then
 
-  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $SUNDIALS_CORE_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
-  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $SUNDIALS_CORE_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
-  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $SUNDIALS_CORE_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
   if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
     dnl Any of the following tests could determine that SUNDIALS is
     dnl incompatible and should be disabled.  In that event, they all populate
@@ -2395,7 +2383,7 @@ dnl FIXME: The test on the sunlinsol_klu.h header is a bit of a kluge.
 dnl How can we do a better job here?  Do we need to disable sundials
 dnl any tests fail, or can we fix __ode15__.cc so that it still partially
 dnl works when some things are missing (for example, KLU)?
-if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+if test "x$octave_have_sundials_libs" == xyes; then
   if test "x$octave_cv_sundials_sunlinsol_dense" = xyes \
       && test "x$octave_cv_sundials_realtype_is_double" = xyes \
       && test "x$octave_have_sundials_compatible_api" = xyes; then

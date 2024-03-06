@@ -669,9 +669,9 @@ public:
 
   int handle_superclass_identifier ();
 
-  token * make_meta_identifier_token ();
+  token * make_meta_identifier_token (const std::string& cls);
 
-  token * make_fq_identifier_token ();
+  token * make_fq_identifier_token (const std::string& ident);
 
   int handle_identifier ();
 
@@ -688,6 +688,10 @@ public:
   void warn_language_extension_operator (const std::string& op);
 
   void warn_deprecated_syntax (const std::string& msg);
+
+  int syntax_error (const std::string& msg);
+  int syntax_error (const std::string& msg, const filepos& pos);
+  int syntax_error (const std::string& msg, const filepos& beg_pos, const filepos& end_pos);
 
   void push_token (token *);
 
@@ -742,10 +746,8 @@ public:
 
   int finish_command_arg ();
 
-  int handle_token (int tok_id, token *tok = nullptr);
+  int handle_token (int tok_id);
   int handle_token (token *tok);
-
-  int count_token (int tok_id);
 
   int count_token_internal (int tok_id);
 

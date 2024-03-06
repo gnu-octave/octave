@@ -76,12 +76,12 @@ do_fftn (const octave_value_list& args, const char *fcn, int type)
         }
     }
 
-  if (dims.all_zero ())
+  if (dims.any_zero ())
     {
       if (arg.is_single_type ())
-        return octave_value (FloatMatrix ());
+        return octave_value (FloatNDArray (dims));
       else
-        return octave_value (Matrix ());
+        return octave_value (NDArray (dims));
     }
 
   if (arg.is_single_type ())
@@ -143,6 +143,16 @@ resized and padded with zeros.
   return do_fftn (args, "fftn", 0);
 }
 
+/*
+%!testif HAVE_FFTW <*65414>
+%! sz = size (fftn (ones (2, 0, 3)));
+%! assert (sz, [2, 0, 3]);
+
+%!testif HAVE_FFTW <*65414>
+%! sz = size (fftn (ones (5, 4, 3), [2, 0, 3]));
+%! assert (sz, [2, 0, 3]);
+*/
+
 DEFUN (ifftn, args, ,
        doc: /* -*- texinfo -*-
 @deftypefn  {} {@var{A} =} ifftn (@var{B})
@@ -161,5 +171,15 @@ resized and padded with zeros.
 {
   return do_fftn (args, "ifftn", 1);
 }
+
+/*
+%!testif HAVE_FFTW <*65414>
+%! sz = size (ifftn (ones (2, 0, 3)));
+%! assert (sz, [2, 0, 3]);
+
+%!testif HAVE_FFTW <*65414>
+%! sz = size (ifftn (ones (5, 4, 3), [2, 0, 3]));
+%! assert (sz, [2, 0, 3]);
+*/
 
 OCTAVE_END_NAMESPACE(octave)

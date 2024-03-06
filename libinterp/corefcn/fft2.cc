@@ -56,11 +56,11 @@ do_fft2 (const octave_value_list& args, const char *fcn, int type)
     {
       double dval = args(1).double_value ();
       if (math::isnan (dval))
-        error ("%s: number of rows (N) cannot be NaN", fcn);
+        error ("%s: number of rows (M) cannot be NaN", fcn);
 
       n_rows = math::nint_big (dval);
       if (n_rows < 0)
-        error ("%s: number of rows (N) must be greater than zero", fcn);
+        error ("%s: number of rows (M) must be greater than zero", fcn);
     }
 
   octave_idx_type n_cols = -1;
@@ -68,11 +68,11 @@ do_fft2 (const octave_value_list& args, const char *fcn, int type)
     {
       double dval = args(2).double_value ();
       if (math::isnan (dval))
-        error ("%s: number of columns (M) cannot be NaN", fcn);
+        error ("%s: number of columns (N) cannot be NaN", fcn);
 
       n_cols = math::nint_big (dval);
       if (n_cols < 0)
-        error ("%s: number of columns (M) must be greater than zero", fcn);
+        error ("%s: number of columns (N) must be greater than zero", fcn);
     }
 
   for (int i = 0; i < dims.ndims (); i++)
@@ -89,12 +89,12 @@ do_fft2 (const octave_value_list& args, const char *fcn, int type)
   else
     dims(1) = n_cols;
 
-  if (dims.all_zero () || n_rows == 0 || n_cols == 0)
+  if (dims.any_zero ())
     {
       if (arg.is_single_type ())
-        return octave_value (FloatMatrix ());
+        return octave_value (FloatNDArray (dims));
       else
-        return octave_value (Matrix ());
+        return octave_value (NDArray (dims));
     }
 
   if (arg.is_single_type ())
@@ -156,6 +156,20 @@ of @var{A} is treated separately.
   return do_fft2 (args, "fft2", 0);
 }
 
+/*
+%!testif HAVE_FFTW <*65414>
+%! sz = size (fft2 (ones (2, 0, 3)));
+%! assert (sz, [2, 0, 3]);
+
+%!testif HAVE_FFTW <*65414>
+%! sz = size (fft2 (ones (5, 4, 3), 2, 0));
+%! assert (sz, [2, 0, 3]);
+
+%!error <number of rows \(M\) cannot be NaN> fft2 (ones (5,4,3), NaN, 2) 
+%!error <number of rows \(M\) .* greater than zero> fft2 (ones (5,4,3), -1, 2) 
+%!error <number of columns \(N\) cannot be NaN> fft2 (ones (5,4,3), 2, NaN) 
+%!error <number of columns \(N\) .* greater than zero> fft2 (ones (5,4,3), 2, -1) 
+*/
 
 DEFUN (ifft2, args, ,
        doc: /* -*- texinfo -*-
@@ -177,6 +191,14 @@ of @var{B} is treated separately.
 }
 
 /*
+%!testif HAVE_FFTW <*65414>
+%! sz = size (ifft2 (ones (2, 0, 3)));
+%! assert (sz, [2, 0, 3]);
+
+%!testif HAVE_FFTW <*65414>
+%! sz = size (ifft2 (ones (5, 4, 3), 2, 0));
+%! assert (sz, [2, 0, 3]);
+
 ## Author: David Billinghurst (David.Billinghurst@riotinto.com.au)
 ##         Comalco Research and Technology
 ##         02 May 2000
@@ -258,6 +280,11 @@ of @var{B} is treated separately.
 %! s = ifft2 (S);
 %!
 %! assert (s, answer, 30* eps ("single"));
+
+%!error <number of rows \(M\) cannot be NaN> ifft2 (ones (5,4,3), NaN, 2) 
+%!error <number of rows \(M\) .* greater than zero> ifft2 (ones (5,4,3), -1, 2) 
+%!error <number of columns \(N\) cannot be NaN> ifft2 (ones (5,4,3), 2, NaN) 
+%!error <number of columns \(N\) .* greater than zero> ifft2 (ones (5,4,3), 2, -1) 
 */
 
 OCTAVE_END_NAMESPACE(octave)

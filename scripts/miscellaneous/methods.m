@@ -60,14 +60,19 @@ function mtds = methods (obj, fullopt)
   endif
 
   if (isobject (obj))
-    ## Call internal C++ function for Octave objects
+    ## Call internal C++ function for Octave objects.
     mtds_list = __methods__ (obj);
   elseif (ischar (obj))
-    ## Could be a classname for an Octave class or Java class.
+    ## CLASSNAME could be an Octave class or Java class.
     ## Try Octave class first.
     [mtds_list, valid] = __methods__ (obj);
     if (! valid)
-      mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
+      ## Try Java class second.
+      try
+        mtds_str = javaMethod ("getMethods", "org.octave.ClassHelper", obj);
+      catch
+        error ("methods: class '%s' not found", obj);
+      end_try_catch
       mtds_list = ostrsplit (mtds_str, ';');
       mtds_list = mtds_list(:);  # return a column vector for compatibility
       havesigs = true;
@@ -158,4 +163,5 @@ endfunction
 ## Test input validation
 %!error <Invalid call> methods ()
 %!error <invalid option> methods ("ftp", "option1")
+%!error <class 'foobar' not found> methods ('foobar')
 %!error <invalid input argument> methods (1)

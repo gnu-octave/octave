@@ -184,6 +184,32 @@ endfunction
 %!assert (mad (ones (2, 0, 1, 0)), ones (1, 0, 1, 0))
 
 ## Test Inf handling
+%!assert (mad ([3, 4, Inf]), Inf)
+%!assert (mad ([Inf, 3, 4]), Inf)
+%!assert (mad ([3, 4, Inf], 0), Inf)
+%!assert (mad ([3, 4, Inf], 0, 1), [0, 0, NaN])
+%!assert (mad ([3, 4, Inf], 0, 2), Inf)
+%!assert (mad ([3, 4, Inf], 0, 3), [0, 0, NaN])
+%!assert (mad ([3, 4, Inf]', 0), Inf)
+%!assert (mad ([3, 4, Inf]', 0, 1), Inf)
+%!assert (mad ([3, 4, Inf]', 0, 2), [0; 0; NaN])
+%!assert (mad ([3, 4, Inf]', 0, 3), [0; 0; NaN])
+
+%!assert (mad ([Inf, 3, 4], 1), 1)
+%!assert (mad ([3, 4, Inf], 1), 1)
+%!assert (mad ([3, 4, Inf], 1, 1), [0, 0, NaN])
+%!assert (mad ([3, 4, Inf], 1, 2), 1)
+%!assert (mad ([3, 4, Inf], 1, 3), [0, 0, NaN])
+%!assert (mad ([3, 4, Inf]', 1), 1)
+%!assert (mad ([3, 4, Inf]', 1, 1), 1)
+%!assert (mad ([3, 4, Inf]', 1, 2), [0; 0; NaN])
+%!assert (mad ([3, 4, Inf]', 1, 3), [0; 0; NaN])
+
+%!assert (mad ([3, Inf, Inf], 1), Inf)
+%!assert (mad ([3, 4, 5, Inf], 1), 1)
+%!assert (mad ([3, 4, Inf, Inf], 1), Inf)
+%!assert (mad ([3, Inf, Inf, Inf], 1), Inf)
+
 %!assert <*65405> (mad ([-Inf, Inf]), NaN)
 %!assert <*65405> (mad ([-Inf, Inf], 0), NaN)
 %!assert <*65405> (mad ([-Inf, Inf], 1), NaN)

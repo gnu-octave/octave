@@ -382,7 +382,10 @@ function m = median (x, varargin)
         m = x(k);
         if (! mod (n, 2))
           ## Even
-          if (any (isa (x, "integer")))
+          if (any (isinf ([x(k), x(k+1)])))
+            ## If either center value is Inf, replace m by +/-Inf or NaN.
+            m = x(k) + x(k+1);
+          elseif (any (isa (x, "integer")))
             ## avoid int overflow issues
             m2 = x(k + 1);
             if (sign (m) != sign (m2))
@@ -625,8 +628,24 @@ endfunction
 %!assert (median ([Inf, 3, 4]), 4)
 %!assert (median ([Inf, 3, Inf]), Inf)
 
+%!assert (median ([1, 2, Inf]), 2)
+%!assert (median ([1, 2, Inf, Inf]), Inf)
+%!assert (median ([1, -Inf, Inf, Inf]), Inf)
+%!assert (median ([-Inf, -Inf, Inf, Inf]), NaN)
+%!assert (median([-Inf, Inf, Inf, Inf]), Inf)
+%!assert (median([-Inf, -Inf, -Inf, Inf]), -Inf)
+%!assert (median([-Inf, -Inf, -Inf, 2]), -Inf)
+%!assert (median([-Inf, -Inf, 1, 2]), -Inf)
+
+%!assert (median ([Inf, Inf, NaN]), NaN)
+%!assert (median ([-Inf, Inf, NaN]), NaN)
+%!assert (median ([Inf, Inf, NaN], "omitnan"), Inf)
+%!assert (median ([-Inf, Inf, NaN], "omitnan"), NaN)
+%!assert (median ([-Inf, Inf, 3, NaN], "omitnan"), 3)
+%!assert (median ([-Inf, Inf, 3, -Inf, NaN], "omitnan"), -Inf)
+
 %!assert (median ([]), NaN)
-%!assert (median (ones (1, 0)), NaN) 
+%!assert (median (ones (1, 0)), NaN)
 %!assert (median (ones (0, 1)), NaN)
 %!assert (median ([], 1), NaN (1, 0))
 %!assert (median ([], 2), NaN (0, 1))

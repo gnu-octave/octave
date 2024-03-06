@@ -87,7 +87,7 @@ function s = getdoc (objname, field, base)
   ##   "__fcnmsg__"  : replaced by a message explaining where to find
   ##                   documentation on the form of a callback function.
   ##   You may also cross reference properties using the label format
-  ##   OBJNAMEPROPERTY, e.g, "@xref{XREFaxescolor, , axes color property}."
+  ##   OBJNAMEPROPERTY, e.g., "@xref{XREFaxescolor, , axes color property}."
   ##
   ## -"valid": string that describes valid values for the current property.
   ##   Use "packopt" function to join options with " | " separator
@@ -1469,7 +1469,7 @@ to top in default 3-D views.";
         s.category = "Text Appearance";
 
       case "zlim"
-        s.doc = "Two-element vector @code{[zmin zmaz]} specifying the limits \
+        s.doc = "Two-element vector @code{[zmin zmax]} specifying the limits \
 for the z-axis.  __modemsg__.  @xref{XREFzlim, , @w{zlim function}}.";
         s.valid = valid_2elvec;
         s.category = "Axes Box Appearance";
@@ -2317,10 +2317,10 @@ the vertices).  @qcode{\"phong\"} is deprecated and has the same effect as \
 
       case "faces"
         s.doc = "__objname__ faces connectivity list stored as an M x N \
-matrix, with each of the M faces defined by a row of up to N  vectices, \
+matrix, with each of the M faces defined by a row of up to N vertices, \
 and each element contains the row index of a vertex stored in the \
 @ref{XREFpatchvertices, , @w{vertices property}}.  Faces with fewer than N \
-vertices use NaN values to fill empty row elemnets.";
+vertices use NaN values to fill empty row elements.";
         s.valid = valid_vecmat;
         s.category = "Coordinate Data";
 
@@ -2745,7 +2745,7 @@ uicontextmenu to appear");
         s.category = "Appearance";
 
       case "borderwidth"
-        s.doc = "The width of the the line border in pixels.";
+        s.doc = "The width of the line border in pixels.";
         s.valid = "whole number scalar";
         s.category = "Appearance";
 
@@ -2838,7 +2838,7 @@ buttongroup.";
         s.category = "Appearance";
 
       case "borderwidth"
-        s.doc = "The width of the the line border in pixels.";
+        s.doc = "The width of the line border in pixels.";
         s.valid = "whole number scalar";
         s.category = "Appearance";
 
@@ -3014,10 +3014,11 @@ the control object has focus.\n\n__fcnmsg__";
 dependent on the control type. For @qcode{\"checkbox\"}, \
 @qcode{\"togglebutton\"}, and @qcode{\"radiobutton\"} controls, the \
 @qcode{\"max\"} value is assigned to the @qcode{\"value\"} property when the \
-control object is selected  For @qcode{\"slider\"} controls, @qcode{\"max\"} \
-defines the maximum value of the slider.  For @qcode{\"edit\"} and \
-@qcode{\"listbox\"} controls, if @code{Max - Min > 1}, then the control will \
-permit multiple line entries or list item selections, respectively.";
+control object is selected.  For @qcode{\"slider\"} controls, \
+@qcode{\"max\"} defines the maximum value of the slider.  For \
+@qcode{\"edit\"} and @qcode{\"listbox\"} controls, if @code{Max - Min > 1}, \
+then the control will permit multiple line entries or list item selections, \
+respectively.";
         s.valid = "scalar";
         s.category = "Control Options";
 
@@ -3026,7 +3027,7 @@ permit multiple line entries or list item selections, respectively.";
 dependent on the control type. For @qcode{\"checkbox\"}, \
 @qcode{\"togglebutton\"}, and @qcode{\"radiobutton\"} controls, the \
 @qcode{\"min\"} value is assigned to the @qcode{\"value\"} property when the \
-control object is not selected  For @qcode{\"slider\"} controls, \
+control object is not selected.  For @qcode{\"slider\"} controls, \
 @qcode{\"min\"} defines the minimum value of the slider.  For \
 @qcode{\"edit\"} and @qcode{\"listbox\"} controls, if @code{Max - Min > 1}, \
 then the control will permit multiple line entries or list item selections, \
@@ -3135,7 +3136,7 @@ heading.";
 
       case "columnwidth"
         s.doc = "Setting for determining width of each column, valid \
-options including:  @qcode{\"auto\"}, @qcode{\"fit\"}, evenly divided \
+options include:  @qcode{\"auto\"}, @qcode{\"fit\"}, evenly divided \
 multiples specified as @qcode{\"1x\"}, @qcode{\"2x\"}, etc., or a 1 x N cell \
 vector where each element corresponds to one of N table columns, and \
 containing any of the above options or a fixed width specified in pixels.";

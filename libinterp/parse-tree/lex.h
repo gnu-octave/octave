@@ -746,10 +746,8 @@ public:
 
   int finish_command_arg ();
 
-  int handle_token (int tok_id, token *tok = nullptr);
+  int handle_token (int tok_id);
   int handle_token (token *tok);
-
-  int count_token (int tok_id);
 
   int count_token_internal (int tok_id);
 

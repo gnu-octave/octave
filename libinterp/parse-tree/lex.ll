@@ -688,7 +688,7 @@ ANY_INCLUDING_NL (.|{NL})
 
         curr_lexer->push_start_state (MATRIX_START);
 
-        return curr_lexer->count_token ('[');
+        return curr_lexer->handle_token ('[');
       }
   }
 
@@ -1389,7 +1389,7 @@ ANY_INCLUDING_NL (.|{NL})
                 curr_lexer->m_looking_at_function_handle++;
                 curr_lexer->m_looking_for_object_index = false;
 
-                return curr_lexer->count_token ('@');
+                return curr_lexer->handle_token ('@');
               }
             else
               {
@@ -1440,7 +1440,7 @@ ANY_INCLUDING_NL (.|{NL})
 
         curr_lexer->m_at_beginning_of_statement = true;
 
-        return curr_lexer->count_token ('\n');
+        return curr_lexer->handle_token ('\n');
       }
     else if (curr_lexer->m_nesting_level.is_bracket_or_brace ())
       {
@@ -1505,7 +1505,7 @@ ANY_INCLUDING_NL (.|{NL})
                 else
                   {
                     curr_lexer->m_filepos.increment_column ();
-                    return curr_lexer->count_token (HERMITIAN);
+                    return curr_lexer->handle_token (HERMITIAN);
                   }
               }
           }
@@ -1521,7 +1521,7 @@ ANY_INCLUDING_NL (.|{NL})
             else
               {
                 curr_lexer->m_filepos.increment_column ();
-                return curr_lexer->count_token (HERMITIAN);
+                return curr_lexer->handle_token (HERMITIAN);
               }
           }
       }
@@ -1711,7 +1711,7 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_nesting_level.anon_fcn_body ();
       }
 
-    return curr_lexer->count_token (')');
+    return curr_lexer->handle_token (')');
   }
 
 "." {
@@ -1796,7 +1796,7 @@ ANY_INCLUDING_NL (.|{NL})
 
         curr_lexer->push_start_state (MATRIX_START);
 
-        return curr_lexer->count_token ('{');
+        return curr_lexer->handle_token ('{');
       }
   }
 
@@ -3335,7 +3335,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     pop_start_state ();
 
-    return count_token (bracket_type);
+    return handle_token (bracket_type);
   }
 
   bool
@@ -3931,12 +3931,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   }
 
   int
-  base_lexer::handle_token (int tok_id, token *tok)
+  base_lexer::handle_token (int tok_id)
   {
-    if (! tok)
-      tok = new token (tok_id, m_tok_beg, m_tok_end);
-
-    return handle_token (tok);
+    return handle_token (new token (tok_id, m_tok_beg, m_tok_end));
   }
 
   int
@@ -3945,12 +3942,6 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     push_token (tok);
 
     return count_token_internal (tok->token_id ());
-  }
-
-  int
-  base_lexer::count_token (int tok_id)
-  {
-    return handle_token (new token (tok_id, m_tok_beg, m_tok_end));
   }
 
   int

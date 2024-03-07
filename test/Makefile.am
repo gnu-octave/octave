@@ -124,6 +124,7 @@ include fcn-handle/module.mk
 include file-encoding/module.mk
 include json/module.mk
 include jupyter-notebook/module.mk
+include load-path/module.mk
 include local-functions/module.mk
 include mex/module.mk
 include nest/module.mk

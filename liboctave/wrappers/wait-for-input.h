@@ -26,13 +26,13 @@
 #if ! defined (octave_wait_for_input_h)
 #define octave_wait_for_input_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API int octave_wait_for_input (int fid);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

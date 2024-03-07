@@ -26,13 +26,13 @@
 #if ! defined (octave_gen_tempname_wrapper_h)
 #define octave_gen_tempname_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API int octave_gen_tempname_wrapper (char *tmpl);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

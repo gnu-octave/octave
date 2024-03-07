@@ -26,7 +26,7 @@
 #if ! defined (octave_math_wrappers_h)
 #define octave_math_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -34,7 +34,7 @@ extern OCTAVE_API double octave_frexp_wrapper (double x, int *expptr);
 
 extern OCTAVE_API float octave_frexpf_wrapper (float x, int *expptr);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

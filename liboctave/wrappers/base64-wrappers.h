@@ -33,7 +33,7 @@
 #  include <stddef.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -44,7 +44,7 @@ extern OCTAVE_API bool
 octave_base64_decode_alloc_wrapper (const char *in, ptrdiff_t inlen,
                                     char **out, ptrdiff_t *outlen);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

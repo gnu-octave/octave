@@ -32,7 +32,7 @@
 #  include <time.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -40,7 +40,7 @@ extern OCTAVE_API int
 octave_nanosleep_wrapper (const struct timespec *requested,
                           struct timespec *remaining);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

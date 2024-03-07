@@ -26,7 +26,7 @@
 #if ! defined (octave_uname_wrapper_h)
 #define octave_uname_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -34,7 +34,7 @@ extern OCTAVE_API int
 octave_uname_wrapper (char **sysname, char **nodename,
                       char **release, char **version, char **machine);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

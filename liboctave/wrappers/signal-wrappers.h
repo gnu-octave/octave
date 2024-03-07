@@ -32,7 +32,7 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -102,7 +102,7 @@ extern OCTAVE_API void octave_block_async_signals (void);
 
 extern OCTAVE_API void octave_unblock_async_signals (void);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

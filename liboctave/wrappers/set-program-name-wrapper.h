@@ -26,14 +26,14 @@
 #if ! defined (octave_set_program_name_wrapper_h)
 #define octave_set_program_name_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API const char *
 octave_set_program_name_wrapper (const char *pname);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

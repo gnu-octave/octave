@@ -26,13 +26,13 @@
 #if ! defined (octave_mkostemp_wrapper_h)
 #define octave_mkostemp_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API int octave_mkostemp_wrapper (char *tmpl);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

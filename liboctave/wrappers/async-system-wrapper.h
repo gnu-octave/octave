@@ -28,13 +28,13 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API pid_t octave_async_system_wrapper (const char *cmd);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

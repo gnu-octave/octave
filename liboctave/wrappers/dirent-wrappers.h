@@ -30,7 +30,7 @@
 #  include <stdbool.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -44,7 +44,7 @@ extern OCTAVE_API int octave_closedir_wrapper (void *dir);
 
 extern OCTAVE_API unsigned int octave_name_max_wrapper (void);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

@@ -26,13 +26,13 @@
 #if ! defined (octave_strdup_wrapper_h)
 #define octave_strdup_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API char * octave_strdup_wrapper (const char *str);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

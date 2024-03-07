@@ -28,7 +28,7 @@
 
 #include "octave-config.h"
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -62,7 +62,7 @@ octave_ulli_multiply_overflow_wrapper (unsigned long long int a,
                                        unsigned long long int *r);
 #  endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

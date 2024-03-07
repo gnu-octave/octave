@@ -32,7 +32,7 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -40,7 +40,7 @@ extern OCTAVE_API pid_t
 octave_popen2 (const char *cmd, char *const *args, bool sync_mode,
                int *fildes, const char **errmsg);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

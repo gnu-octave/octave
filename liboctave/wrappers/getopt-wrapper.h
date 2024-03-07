@@ -26,7 +26,7 @@
 #if ! defined (octave_getopt_wrapper_h)
 #define octave_getopt_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -55,7 +55,7 @@ extern OCTAVE_API int octave_optind_wrapper (void);
 extern OCTAVE_API int octave_get_opterr_wrapper (void);
 extern OCTAVE_API int octave_set_opterr_wrapper (int val);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

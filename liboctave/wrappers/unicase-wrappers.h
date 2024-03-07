@@ -26,7 +26,7 @@
 #if ! defined (octave_unicase_wrappers_h)
 #define octave_unicase_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -40,7 +40,7 @@ octave_u8_toupper_wrapper (const uint8_t *s, size_t n,
                            const char *iso639_language,
                            uint8_t *resultbuf, size_t *lengthp);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

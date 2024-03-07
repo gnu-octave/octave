@@ -26,7 +26,7 @@
 #if ! defined (octave_glob_wrappers_h)
 #define octave_glob_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -59,7 +59,7 @@ extern OCTAVE_API int octave_fnm_noescape_wrapper (void);
 
 extern OCTAVE_API int octave_fnm_period_wrapper (void);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

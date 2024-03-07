@@ -26,13 +26,13 @@
 #if ! defined (octave_localcharset_wrapper_h)
 #define octave_localcharset_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API const char * octave_locale_charset_wrapper (void);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

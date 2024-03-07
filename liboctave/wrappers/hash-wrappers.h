@@ -32,7 +32,7 @@
 #  include <stddef.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -69,7 +69,7 @@ octave_sha384_buffer_wrapper (const char *buf, size_t len, void *res);
 extern OCTAVE_API void *
 octave_sha512_buffer_wrapper (const char *buf, size_t len, void *res);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

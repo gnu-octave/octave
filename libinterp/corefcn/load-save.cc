@@ -1664,7 +1664,7 @@ Force Octave to assume the file is in Octave's text format.
 Force Octave to assume the file is in @sc{matlab}'s v7.3 binary data format.
 As the v7.3 format is an HDF5 based format, those files often can also be
 opened with the @qcode{"-hdf5"} option.  Note that Octave @strong{can not}
-currently save in this format.  
+currently save in this format.
 
 @item  -v7
 @itemx -V7

@@ -200,7 +200,7 @@ public:
     else
       return m_null_icon;
   }
-  
+
   QIcon icon (const QFileInfo &fi) const
   {
     static bool no_platform_theme = QIcon::themeName ().isEmpty ();

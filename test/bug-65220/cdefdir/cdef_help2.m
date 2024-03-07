@@ -54,12 +54,12 @@ classdef cdef_help2
     end
 
     # meth1: method help text ABOVE function
-    # 
+    #
     # Type 'help cdef_help2.meth1'.
     function obj2 = meth1 (obj, n)
       obj2 = n + obj;
     end
-    
+
     function obj2 = meth2 (obj, n)
 
       # meth2: method help text BELOW function

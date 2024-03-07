@@ -752,7 +752,7 @@ point numbers.  So, the result of @code{true*22 - false/6} is @code{22}.
 
 Logical values can also be used to index matrices and cell arrays.
 When indexing with a logical array the result will be a vector containing
-the values corresponding to @code{true} parts of the logical array. 
+the values corresponding to @code{true} parts of the logical array.
 @xref{XREFLogicalIndexing, , Logical Indexing}.
 
 Logical values can also be constructed by

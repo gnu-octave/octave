@@ -165,10 +165,10 @@ of @var{A} is treated separately.
 %! sz = size (fft2 (ones (5, 4, 3), 2, 0));
 %! assert (sz, [2, 0, 3]);
 
-%!error <number of rows \(M\) cannot be NaN> fft2 (ones (5,4,3), NaN, 2) 
-%!error <number of rows \(M\) .* greater than zero> fft2 (ones (5,4,3), -1, 2) 
-%!error <number of columns \(N\) cannot be NaN> fft2 (ones (5,4,3), 2, NaN) 
-%!error <number of columns \(N\) .* greater than zero> fft2 (ones (5,4,3), 2, -1) 
+%!error <number of rows \(M\) cannot be NaN> fft2 (ones (5,4,3), NaN, 2)
+%!error <number of rows \(M\) .* greater than zero> fft2 (ones (5,4,3), -1, 2)
+%!error <number of columns \(N\) cannot be NaN> fft2 (ones (5,4,3), 2, NaN)
+%!error <number of columns \(N\) .* greater than zero> fft2 (ones (5,4,3), 2, -1)
 */
 
 DEFUN (ifft2, args, ,
@@ -281,10 +281,10 @@ of @var{B} is treated separately.
 %!
 %! assert (s, answer, 30* eps ("single"));
 
-%!error <number of rows \(M\) cannot be NaN> ifft2 (ones (5,4,3), NaN, 2) 
-%!error <number of rows \(M\) .* greater than zero> ifft2 (ones (5,4,3), -1, 2) 
-%!error <number of columns \(N\) cannot be NaN> ifft2 (ones (5,4,3), 2, NaN) 
-%!error <number of columns \(N\) .* greater than zero> ifft2 (ones (5,4,3), 2, -1) 
+%!error <number of rows \(M\) cannot be NaN> ifft2 (ones (5,4,3), NaN, 2)
+%!error <number of rows \(M\) .* greater than zero> ifft2 (ones (5,4,3), -1, 2)
+%!error <number of columns \(N\) cannot be NaN> ifft2 (ones (5,4,3), 2, NaN)
+%!error <number of columns \(N\) .* greater than zero> ifft2 (ones (5,4,3), 2, -1)
 */
 
 OCTAVE_END_NAMESPACE(octave)

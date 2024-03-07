@@ -1010,7 +1010,7 @@ calling conventions for some types.  Octave defines the following preprocessor
 macros to allow writing code that can be used with different Fortran calling
 conventions.
 
-Note that we don't attempt to handle Fortran functions, we always use 
+Note that we don't attempt to handle Fortran functions, we always use
 subroutine wrappers for them and pass the return value as an extra argument.
 
 Use the following macros to pass character strings from C to Fortran:

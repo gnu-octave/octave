@@ -26,7 +26,7 @@
 %!test <*65220>
 %! unwind_protect
 %!   addpath ('cdefdir');
-%! 
+%!
 %!   ## Check methods first (bug was disguised if class checked first)
 %!   s = help ('cdef_help1.meth1');
 %!   assert (regexp (s, 'meth1: method help text ABOVE function'));
@@ -50,11 +50,11 @@
 %!   ## Check documentation for entire class
 %!   s = help ('cdef_help1');
 %!   assert (regexp (s, 'class cdef_help1 : class help text ABOVE classdef'));
-%!   
+%!
 %!   ## Check documentation for constructor
 %!   s = help ('cdef_help1.cdef_help1');
 %!   assert (regexp (s, 'cdef_help1: constructor help text BELOW function'));
-%!   
+%!
 %!   ## Check documentation for properties
 %!   s = help ('cdef_help1.prop1');
 %!   assert (regexp (s, 'prop1: property help text ABOVE property'));
@@ -69,7 +69,7 @@
 %!test <*65220>
 %! unwind_protect
 %!   addpath ('cdefdir');
-%! 
+%!
 %!   ## Check methods first (bug was disguised if class checked first)
 %!   s = help ('cdef_help2.meth1');
 %!   assert (regexp (s, 'meth1: method help text ABOVE function'));
@@ -93,11 +93,11 @@
 %!   ## Check documentation for entire class
 %!   s = help ('cdef_help2');
 %!   assert (regexp (s, 'class cdef_help2 : class help text BELOW classdef'));
-%!   
+%!
 %!   ## Check documentation for constructor
 %!   s = help ('cdef_help2.cdef_help2');
 %!   assert (regexp (s, 'cdef_help2: constructor help text ABOVE function'));
-%!   
+%!
 %!   ## Check documentation for properties
 %!   s = help ('cdef_help2.prop1');
 %!   assert (regexp (s, 'prop1: property help text ABOVE property'));

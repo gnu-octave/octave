@@ -84,7 +84,7 @@ function [th, r] = rose (varargin)
 
   custom_bins = false;
   if (nargin == 1)
-    bins = [9 : 18 : 360] / 180 * pi;  
+    bins = [9 : 18 : 360] / 180 * pi;
   else
     bins = varargin{2};
     if (isscalar (bins))
@@ -196,12 +196,12 @@ endfunction
 %! assert ([t(2); t(3:4:end)], [0; pi/2; pi; 3*pi/2; 2*pi]);
 %! assert (r(2:4:end), [2; 0; 0; 0]);
 
-## Custom bins, synthesized bin1 cut-off is exactly 36 degrees 
+## Custom bins, synthesized bin1 cut-off is exactly 36 degrees
 %!test
 %! [t,r] = rose (deg2rad ([35, 36]), pi * [1/2, 1, 1.5, 1.9]);
 %! assert (r(2:4:end), [1; 0; 0; 1]);
 
-## Custom bins, synthesized bin1 cut-off is exactly -36 degrees 
+## Custom bins, synthesized bin1 cut-off is exactly -36 degrees
 %!test
 %! [t,r] = rose (deg2rad ([-36, -37, 360]), pi * [1/10, 1/2, 1, 1.5]);
 %! assert (r(2:4:end), [0; 0; 1; 2]);

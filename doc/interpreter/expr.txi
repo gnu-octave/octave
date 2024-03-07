@@ -52,7 +52,7 @@ combinations of these with various operators.
 An @dfn{index expression} allows you to reference or extract selected
 elements of a vector, a matrix (2-D), or a higher-dimensional array.  Arrays
 may be indexed in one of three ways:
-@ref{XREFComponentIndexing,,Component Indexing}, 
+@ref{XREFComponentIndexing,,Component Indexing},
 @ref{XREFLinearIndexing,,Linear Indexing}, and
 @ref{XREFLogicalIndexing,,Logical Indexing}.
 
@@ -309,7 +309,7 @@ to select a nonexistent 9th element of the array.
 @cindex Chained indexing
 Octave permits the use of repeated (chained) index expressions to extract
 subsets of an array in a single command without the need to use intermediate
-variables.  This can make it easier to write code with either complicated 
+variables.  This can make it easier to write code with either complicated
 indexing operations or using multiple indexing methods. The following example
 shows two equivalent index extraction operations:
 

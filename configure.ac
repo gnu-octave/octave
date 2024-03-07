@@ -313,10 +313,14 @@ ac_cv_prog_cxx_cxx11=""
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
-ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes
+## Ensure that the C++ compiler fully supports C++17.
+## Preferably with GNU extensions if flags are required.
+AX_CXX_COMPILE_STDCXX(17, [], mandatory)
+
+ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no
 AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
   [AS_HELP_STRING([--disable-std-pmr-polymorphic-allocator],
-    [build libraries that do not require support for std::pmr::polymorphic_allocator.  This prevents more efficient transfer of arrays at the .mex file interface.  With enabled std::pmr::polymorphic_allocator, sources including Octave headers (e.g., for .oct files) must conform to C++17.])],
+    [build libraries that do not require support for std::pmr::polymorphic_allocator.  This prevents more efficient transfer of arrays at the .mex file interface.])],
   [case $enableval in
      yes) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes ;;
      no) ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no ;;
@@ -339,34 +343,6 @@ AS_HELP_STRING([--without-qt], [don't use Qt libraries, disable Qt GUI])],
    esac])
 
 ### Determine C++ compiler capabilities.
-
-if test "$QT_VERSIONS" = 6; then
-  ## If QT_VERSIONS is set to 6, require that the C++ compiler fully
-  ## supports C++17.  Preferably with GNU extensions if flags are required.
-  ## We could use "AX_CXX_COMPILE_STDCXX(17, [], mandatory)" in this case.
-  ## But prefer to emit a more helpful error message.
-  AX_CXX_COMPILE_STDCXX(17, [], [])
-  if test "$HAVE_CXX17" = 0; then
-    ## The user explicitly requested Qt6.  But the C++ compiler lacks
-    ## support for C++17.
-    AC_MSG_ERROR([Qt6 requires a compiler that supports C++17.  Configure with "--with-qt=5" or "--without-qt", or use a compiler that supports C++17.])
-  fi
-elif test -z "${QT_VERSIONS+x}" || test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
-  ## If QT_VERSIONS is not explicitly set, check if the C++ compiler fully
-  ## supports C++17 (but don't require it).
-  ## The defaults for the Qt version will depend on the result of this check.
-  AX_CXX_COMPILE_STDCXX(17, [], [])
-else
-  ## Set HAVE_CXX17 to 0 because we don't require it (even if the used
-  ## C++ compiler might technically support C++17).
-  HAVE_CXX17=0
-fi
-
-if test "$HAVE_CXX17" = 0; then
-  ## Ensure that the C++ compiler fully supports C++11.
-  ## Preferably with GNU extensions if flags are required.
-  AX_CXX_COMPILE_STDCXX(11, [], mandatory)
-fi
 
 if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
   OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
@@ -2349,32 +2325,20 @@ if test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
   LIBS="$save_LIBS"
 fi
 
-### Check for SUNDIALS core library and header.
-
-if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
-
-  save_CPPFLAGS="$CPPFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
-  LIBS="$SUNDIALS_CORE_LIBS $LIBS"
-  LDFLAGS="$SUNDIALS_CORE_LDFLAGS $LDFLAGS"
-  CPPFLAGS="$SUNDIALS_CORE_CPPFLAGS $CPPFLAGS"
-  OCTAVE_CHECK_LIB(sundials_core, [SUNDIALS core],
-    [SUNDIALS core library not found.],
-    [sundials_core.h sundials/sundials_core.h], [SUNContext_Create],
-    [], [])
-  CPPFLAGS="$save_CPPFLAGS"
-  LDFLAGS="$save_LDFLAGS"
-  LIBS="$save_LIBS"
+if test -n "$SUNDIALS_IDA_LIBS" \
+    && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+  octave_have_sundials_libs=yes
+else
+  octave_have_sundials_libs=no
 fi
 
 ### Check for SUNDIALS library features, some required, some optional.
 
-if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+if test "x$octave_have_sundials_libs" == xyes; then
 
-  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $SUNDIALS_CORE_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
-  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $SUNDIALS_CORE_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
-  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $SUNDIALS_CORE_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
+  CPPFLAGS="$SUNDIALS_IDA_CPPFLAGS $SUNDIALS_NVECSERIAL_CPPFLAGS $KLU_CPPFLAGS $BLAS_CPPFLAGS $CPPFLAGS"
+  LDFLAGS="$SUNDIALS_IDA_LDFLAGS $SUNDIALS_NVECSERIAL_LDFLAGS $KLU_LDFLAGS $BLAS_LDFLAGS $LDFLAGS"
+  LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $KLU_LIBS $BLAS_LIBS $FLIBS $LIBS"
   if test -z "$warn_sundials_nvecserial" && test -z "$warn_sundials_ida"; then
     dnl Any of the following tests could determine that SUNDIALS is
     dnl incompatible and should be disabled.  In that event, they all populate
@@ -2410,7 +2374,7 @@ dnl FIXME: The test on the sunlinsol_klu.h header is a bit of a kluge.
 dnl How can we do a better job here?  Do we need to disable sundials
 dnl any tests fail, or can we fix __ode15__.cc so that it still partially
 dnl works when some things are missing (for example, KLU)?
-if test -n "$SUNDIALS_IDA_LIBS" && test -n "$SUNDIALS_NVECSERIAL_LIBS"; then
+if test "x$octave_have_sundials_libs" == xyes; then
   if test "x$octave_cv_sundials_sunlinsol_dense" = xyes \
       && test "x$octave_cv_sundials_realtype_is_double" = xyes \
       && test "x$octave_have_sundials_compatible_api" = xyes; then

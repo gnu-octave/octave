@@ -26,7 +26,7 @@
 #if ! defined (octave_strftime_wrapper_h)
 #define octave_strftime_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 #  include <cstddef>
 #  include <ctime>
 #else
@@ -34,7 +34,7 @@
 #  include <time.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -42,7 +42,7 @@ extern OCTAVE_API size_t
 octave_strftime_wrapper (char *buf, size_t len, const char *fmt,
                          const struct tm *t);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

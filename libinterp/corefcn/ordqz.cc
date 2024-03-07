@@ -374,7 +374,7 @@ Note: The keywords are compatible with the ones from @code{qr}.
       k = 0;
       while (k < nn)
         {
-#ifdef DEBUG
+#if defined (DEBUG)
           octave_stdout << "ordqz: k = " << k  << " nn = " << nn << " \n";
 #endif
           if ((k < nn-1 && aa(k+1, k) == 0.0) || k == nn-1)

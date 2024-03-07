@@ -15,7 +15,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   * `--no-init-site` : Don't read site-wide configuration files at startup.
   * `--no-init-all` : Don't read any configuration files at startup.
 
-- `nchoosek` algorithm is now ~2x faster and provides greater precision. 
+- `nchoosek` algorithm is now ~2x faster and provides greater precision.
 
 ### Graphical User Interface
 

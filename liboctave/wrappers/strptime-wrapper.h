@@ -32,14 +32,14 @@
 #  include <time.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API char *
 octave_strptime_wrapper (const char *p, const char *fmt, struct tm *t);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

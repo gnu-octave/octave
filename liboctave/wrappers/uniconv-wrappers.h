@@ -34,7 +34,7 @@
 #  include <stdint.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -87,7 +87,7 @@ extern OCTAVE_API char * u8_from_wchar (const wchar_t *wc);
 
 extern OCTAVE_API wchar_t * u8_to_wchar (const char *u8_char);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

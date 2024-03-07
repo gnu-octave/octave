@@ -48,7 +48,7 @@ get more priority.
 
 - String class "foo" as distinct from array of characters 'foo'. (LEAD?)
   - See https://octave.discourse.group/t/implementation-of-a-string-class/1089
-  - Depends on HDF5. 
+  - Depends on HDF5.
   - Note: Examine Nelson's implementation.
   - Target: Octave 10.
 

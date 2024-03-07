@@ -32,7 +32,7 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -104,7 +104,7 @@ extern OCTAVE_API bool octave_have_fork (void);
 
 extern OCTAVE_API bool octave_have_vfork (void);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

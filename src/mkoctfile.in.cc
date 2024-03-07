@@ -1347,7 +1347,7 @@ main (int argc, char **sys_argv)
     }
   else
     {
-#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
       octave_libs = "-L" + quote_path (vars["OCTLIBDIR"])
                     + ' ' + vars["OCTAVE_LIBS"];
 #endif
@@ -1359,7 +1359,7 @@ main (int argc, char **sys_argv)
            + vars["LDFLAGS"] + ' ' + octave_libs + ' '
            + vars["OCT_LINK_OPTS"] + ' ' + vars["OCT_LINK_DEPS"]);
 
-#if defined (OCTAVE_USE_WINDOWS_API) || defined(CROSS)
+#if defined (OCTAVE_USE_WINDOWS_API) || defined (CROSS)
       if (! f77files.empty () && ! vars["FLIBS"].empty ())
         cmd += ' ' + vars["FLIBS"];
 #endif

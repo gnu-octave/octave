@@ -26,7 +26,7 @@
 #if ! defined (octave_stat_wrappers_h)
 #define octave_stat_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 #  include <ctime>
 #else
 #  include <stdbool.h>
@@ -35,7 +35,7 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -78,7 +78,7 @@ extern OCTAVE_API bool octave_have_struct_stat_st_rdev (void);
 extern OCTAVE_API bool octave_have_struct_stat_st_blksize (void);
 extern OCTAVE_API bool octave_have_struct_stat_st_blocks (void);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

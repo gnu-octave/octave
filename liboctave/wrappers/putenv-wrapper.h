@@ -26,13 +26,13 @@
 #if ! defined (octave_putenv_wrapper_h)
 #define octave_putenv_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API int octave_putenv_wrapper (char *str);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

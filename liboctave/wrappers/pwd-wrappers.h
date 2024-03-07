@@ -28,7 +28,7 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -64,7 +64,7 @@ extern OCTAVE_API void
 octave_from_passwd (const struct passwd *pw,
                     struct octave_passwd_wrapper *oct_pw);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

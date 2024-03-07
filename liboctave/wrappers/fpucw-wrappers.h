@@ -26,7 +26,7 @@
 #if ! defined (octave_fpucw_wrappers_h)
 #define octave_fpucw_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -38,7 +38,7 @@ extern OCTAVE_API unsigned int octave_begin_long_double_rounding (void);
 
 extern OCTAVE_API void octave_end_long_double_rounding (unsigned int);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

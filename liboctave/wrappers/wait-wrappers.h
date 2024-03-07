@@ -32,7 +32,7 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -61,7 +61,7 @@ extern OCTAVE_API int octave_wtermsig_wrapper (int status);
 
 extern OCTAVE_API int octave_wuntraced_wrapper (void);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

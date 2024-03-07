@@ -26,7 +26,7 @@
 #if ! defined (octave_nproc_wrapper_h)
 #define octave_nproc_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -40,7 +40,7 @@ enum octave_nproc_query
 extern OCTAVE_API unsigned long int
 octave_num_processors_wrapper (enum octave_nproc_query);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

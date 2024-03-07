@@ -28,7 +28,7 @@
 
 typedef uint32_t ucs4_t;
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -56,7 +56,7 @@ extern OCTAVE_API bool octave_uc_is_upper_wrapper (ucs4_t uc);
 
 extern OCTAVE_API bool octave_uc_is_xdigit_wrapper (ucs4_t uc);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

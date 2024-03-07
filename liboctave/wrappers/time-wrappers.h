@@ -26,13 +26,13 @@
 #if ! defined (octave_time_wrappers_h)
 #define octave_time_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 #  include <ctime>
 #else
 #  include <time.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -57,7 +57,7 @@ octave_getrusage_wrapper (time_t *usr_sec, time_t *sys_sec,
 extern OCTAVE_API time_t
 octave_mktime_wrapper (struct tm *tp);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

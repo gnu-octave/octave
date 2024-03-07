@@ -120,7 +120,7 @@ password::getpwent ()
 password
 password::getpwent (std::string& msg)
 {
-#if defined HAVE_GETPWENT
+#if defined (HAVE_GETPWENT)
   msg = "";
   return password (octave_getpwent_wrapper (), msg);
 #else

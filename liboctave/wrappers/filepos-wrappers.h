@@ -28,13 +28,13 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 #  include <cstdio>
 #else
 #  include <stdio.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -43,7 +43,7 @@ octave_fseeko_wrapper (FILE *fp, off_t offset, int whence);
 
 extern OCTAVE_API off_t octave_ftello_wrapper (FILE *fp);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

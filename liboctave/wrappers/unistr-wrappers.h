@@ -26,7 +26,7 @@
 #if ! defined (octave_unistr_wrappers_h)
 #define octave_unistr_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -57,7 +57,7 @@ extern OCTAVE_API uint32_t *
 octave_u8_to_u32_wrapper (const uint8_t *src, size_t src_len,
                           uint32_t *result_buf, size_t *lengthp);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

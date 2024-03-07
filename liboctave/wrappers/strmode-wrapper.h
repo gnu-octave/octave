@@ -28,7 +28,7 @@
 
 #include <sys/types.h>
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -36,7 +36,7 @@ extern "C" {
 
 extern OCTAVE_API void octave_strmode_wrapper (mode_t mode, char *buffer);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

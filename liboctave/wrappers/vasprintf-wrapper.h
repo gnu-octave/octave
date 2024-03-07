@@ -26,20 +26,20 @@
 #if ! defined (octave_vasprintf_wrapper_h)
 #define octave_vasprintf_wrapper_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 #  include <cstdarg>
 #else
 #  include <stdarg.h>
 #endif
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
 extern OCTAVE_API int
 octave_vasprintf_wrapper (char **buf, const char *fmt, va_list args);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

@@ -26,7 +26,7 @@
 #if ! defined (octave_iconv_wrappers_h)
 #define octave_iconv_wrappers_h 1
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 extern "C" {
 #endif
 
@@ -44,7 +44,7 @@ octave_iconvlist_wrapper (int (*do_one) (unsigned int namescount,
 extern OCTAVE_API const char *
 octave_iconv_canonicalize_wrapper (const char *name);
 
-#if defined __cplusplus
+#if defined (__cplusplus)
 }
 #endif
 

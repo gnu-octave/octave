@@ -317,7 +317,7 @@ AC_PROG_CXXCPP
 ## Preferably with GNU extensions if flags are required.
 AX_CXX_COMPILE_STDCXX(17, [], mandatory)
 
-ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=no
+ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR=yes
 AC_ARG_ENABLE(std-pmr-polymorphic-allocator,
   [AS_HELP_STRING([--disable-std-pmr-polymorphic-allocator],
     [build libraries that do not require support for std::pmr::polymorphic_allocator.  This prevents more efficient transfer of arrays at the .mex file interface.])],

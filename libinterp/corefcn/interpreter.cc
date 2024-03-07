@@ -1406,6 +1406,10 @@ interpreter::chdir (const std::string& dir)
 
   m_load_path.read_dir_config (".");
   m_load_path.update ();
+  // Updating the last prompt time stamp avoids skipping a fcn-info refresh
+  // so that functions in the new current directory can shadow functions
+  // further back in the load path order.
+  Vlast_prompt_time.stamp ();
 
   m_event_manager.directory_changed (sys::env::get_current_directory ());
 

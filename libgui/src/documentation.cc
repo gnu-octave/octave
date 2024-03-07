@@ -128,7 +128,7 @@ documentation::documentation (QWidget *p)
   if (copy_ok)
     m_help_engine->setCollectionFile (m_collection);
   else
-#ifdef ENABLE_DOCS
+#if defined (ENABLE_DOCS)
     // FIXME: Perhaps a better way to do this would be to keep a count
     // in the GUI preferences file.  After issuing this warning 3 times
     // it would be disabled.  The count would need to be reset when a new
@@ -146,7 +146,7 @@ documentation::documentation (QWidget *p)
 
   if (! m_help_engine->setupData())
     {
-#ifdef ENABLE_DOCS
+#if defined (ENABLE_DOCS)
       QMessageBox::warning (this, tr ("Octave Documentation"),
                             tr ("Could not setup the data required for the\n"
                                 "documentation viewer. Maybe the Qt SQlite\n"

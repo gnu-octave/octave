@@ -211,7 +211,7 @@ static inline double my_copysign(double x, double y) { return x<0 != y<0 ? -x : 
 // gnulib::floor and the system ::floor (and only on ancient OSF systems)
 // has to do with floor(-0), which doesn't occur in the usage below, but
 // the Octave developers prefer that we silence the warning.
-#  ifdef GNULIB_NAMESPACE
+#  if defined (GNULIB_NAMESPACE)
 #    define floor GNULIB_NAMESPACE::floor
 #  endif
 

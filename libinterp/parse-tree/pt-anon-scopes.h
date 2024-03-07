@@ -23,7 +23,7 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if !defined (octave_pt_anon_scopes_h)
+#if ! defined (octave_pt_anon_scopes_h)
 #define octave_pt_anon_scopes_h 1
 
 #include <set>

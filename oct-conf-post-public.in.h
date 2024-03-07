@@ -150,7 +150,7 @@ octave_unused_parameter (const T&)
 #  define OCTAVE_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTAVE_TEMPLATE_API
-#    if defined(__MINGW32__)
+#    if defined (__MINGW32__)
 #      define OCTAVE_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #      define OCTAVE_CLASS_TEMPLATE_INSTANTIATION_API
 #    else
@@ -183,7 +183,7 @@ octave_unused_parameter (const T&)
 #  define OCTINTERP_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTINTERP_TEMPLATE_API
-#    if defined(__MINGW32__)
+#    if defined (__MINGW32__)
 #      define OCTINTERP_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #      define OCTINTERP_CLASS_TEMPLATE_INSTANTIATION_API
 #    else
@@ -216,7 +216,7 @@ octave_unused_parameter (const T&)
 #  define OCTARRAY_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTARRAY_TEMPLATE_API
-#    if defined(__MINGW32__)
+#    if defined (__MINGW32__)
 #      define OCTARRAY_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #      define OCTARRAY_CLASS_TEMPLATE_INSTANTIATION_API
 #    else
@@ -249,7 +249,7 @@ octave_unused_parameter (const T&)
 #  define OCTGRAPHICS_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTGRAPHICS_TEMPLATE_API
-#    if defined(__MINGW32__)
+#    if defined (__MINGW32__)
 #      define OCTGRAPHICS_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #      define OCTGRAPHICS_CLASS_TEMPLATE_INSTANTIATION_API
 #    else
@@ -282,7 +282,7 @@ octave_unused_parameter (const T&)
 #  define OCTGUI_EXCEPTION_API OCTAVE_EXPORT
 #  if defined (_WIN32) || defined (__CYGWIN__)
 #    define OCTGUI_TEMPLATE_API
-#    if defined(__MINGW32__)
+#    if defined (__MINGW32__)
 #      define OCTGUI_EXTERN_TEMPLATE_API OCTAVE_EXPORT
 #      define OCTGUI_CLASS_TEMPLATE_INSTANTIATION_API
 #    else

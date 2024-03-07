@@ -2199,18 +2199,26 @@ view are unlit.";
         s.category = "Lighting";
 
       case "cdata"
-        s.doc = "Data defining patch object color relative to it's \
-x/y/z-coordinate data.\n\
-Patch color can be defined for faces or for vertices.\n\
+        s.doc = "Data defining the patch object color relative to its \
+x/y/z-coordinate data.  Patch color can be defined using indices into the \
+current colormap or as RGB triplets, where the RGB colors are defined along \
+the third dimension. These colors can be separately defined for the entire \
+patch object, for individual faces, or for individual vertices, and is \
+determined by the shape of @qcode{\"cdata\"} as follows:\n\
 \n\
-If @code{cdata} is a scalar index into the current colormap or a RGB triplet, \
-it defines the color of all faces.\n\
+If @qcode{\"cdata\"} is a scalar index into the current colormap or a 1-by-1-by-3 \
+RGB triplet, it defines the color of all faces and edges.\n\
 \n\
-If @code{cdata} is an N-by-1 vector of indices or an N-by-3 (RGB) matrix, \
-it defines the color of each one of the N faces.\n\
+If the patch object has N faces, and @qcode{\"cdata\"} is a 1-by-N vector of \
+colormap indices or a 1-by-N-by-3 RGB array, it defines the color of each \
+face.\n\
 \n\
-If @code{cdata} is an N-by-M matrix or an N-by-M-by-3 (RGB) array, \
-it defines the color at each vertex.";
+If the patch object has N faces and M vertices per face, and @code{cdata} is \
+a M-by-N matrix of colormap indices or a M-by-N-by-3 RGB array, it defines \
+the color at each vertex. (The shape of @qcode{\"cdata\"} should match that of \
+@ref{XREFpatchxdata,,@qcode{\"xdata\"}}, \
+@ref{XREFpatchydata,,@qcode{\"ydata\"}}, and \
+@ref{XREFpatchzdata,,@qcode{\"zdata\"}}.)";
         s.valid = valid_scalmatarr;
         s.category = "Color and Transparency";
 
@@ -2329,18 +2337,23 @@ vertices use NaN values to fill empty row elements.";
         s.category = "Color and Transparency";
 
       case "facevertexcdata"
-        s.doc = "Data defining the patch object color relative to the \
-patch's face-vertex data.\n\
-Patch color can be defined for faces or for vertices.\n\
+        s.doc = "Data defining the patch object color relative to its \
+face-vertex data.  Patch color can be defined using indices into the \
+current colormap or as RGB triplets, where the RGB colors are defined in the \
+rows of @qcode{\"facevertexcdata\"}.  These colors can be separately defined \
+for the entire patch object, for individual faces, or for individual vertices, \
+and is determined by the shape of @qcode{\"facevertexcdata\"} as follows:\n\
 \n\
-If @code{facevertexcdata} is a scalar index into the current colormap or a RGB \
-triplet, it defines the color of all faces.\n\
+If @code{facevertexcdata} is a scalar index into the current colormap or a \
+1-by-3 RGB triplet, it defines the color of all faces and edges.\n\
 \n\
-If @code{facevertexcdata} is an N-by-1 vector of indices or an N-by-3 (RGB) \
-matrix, it defines the color of each one of the N faces.\n\
+If the patch object has N faces, and @code{facevertexcdata} is a N-by-1 column \
+vector of indices or a N-by-3 RGB matrix, it defines the color of each one \
+of the N faces.\n\
 \n\
-If @code{facevertexcdata} is an M-by-1 vector of indices or an M-by-3 (RGB) \
-matrix, it defines the color at each one of the M vertices.";
+If the patch object has M vertices, and @code{facevertexcdata} is a M-by-1 \
+column vector of indices or a M-by-3 RGB matrix, it defines the color at \
+each vertex.";
         s.valid = valid_scalmat;
         s.category = "Color and Transparency";
 

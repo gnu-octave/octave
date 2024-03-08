@@ -881,9 +881,9 @@ searches that reduce the number of matches (e.g., by creatively using set
 complement), and then further processing the return variables (now reduced in
 size) with successive @code{regexp} searches.
 
-Octave's @code{regexp} implementaion is based on the Perl Compatible
+Octave's @code{regexp} implementation is based on the Perl Compatible
 Regular Expressions library (@url{https://www.pcre.org/}).  For a more
-comprehensive list of rexexp operator syntax see the
+comprehensive list of @code{regexp} operator syntax see the
 @url{https://www.pcre.org/current/doc/html/pcre2syntax.html,,
 "PCRE Syntax quick-reference summary"}.
 

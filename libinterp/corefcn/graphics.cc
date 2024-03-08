@@ -9631,6 +9631,15 @@ patch::properties::update_data ()
       return;
     }
 
+  // Check if number of color values matches number of faces or vertices
+  octave_idx_type nfvc = fvc.rows ();
+  if (nfvc > 1 && nfvc != nfaces && nfvc != nvert)
+    {
+      m_bad_data_msg = "number of facevertexcdata values matches "
+                       "neither number of faces nor number of vertices";
+      return;
+    }
+
   // Replace NaNs
   if (idx.any_element_is_inf_or_nan ())
     {
@@ -9697,21 +9706,20 @@ patch::properties::update_data ()
 
   if (fvc.rows () == nfaces || fvc.rows () == 1)
     {
+      // "facevertexcdata" holds color data per face or same color for all
       dv(0) = 1;
       dv(1) = fvc.rows ();
       dv(2) = fvc.columns ();
       cd = fvc.reshape (dv);
     }
-  else
+  else if (! fvc.isempty ())
     {
-      if (! fvc.isempty ())
-        {
-          dv(0) = idx.rows ();
-          dv(1) = nfaces;
-          dv(2) = fvc.columns ();
-          cd.resize (dv);
-          pervertex = true;
-        }
+      // "facevertexcdata" holds color data per vertex
+      dv(0) = idx.rows ();
+      dv(1) = nfaces;
+      dv(2) = fvc.columns ();
+      cd.resize (dv);
+      pervertex = true;
     }
 
   // Build x,y,zdata and eventually per vertex cdata

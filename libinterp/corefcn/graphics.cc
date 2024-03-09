@@ -9664,6 +9664,14 @@ patch::properties::update_fvc ()
       return;
     }
 
+  bool pervertex = false;
+  if (ncv == nv)
+    pervertex = true;
+
+  bool isRGB = false;
+  if (cd.ndims () == 3)
+    isRGB = true;
+
   // Faces and Vertices
   dim_vector dv;
   bool is3D = false;
@@ -9688,6 +9696,20 @@ patch::properties::update_fvc ()
   Matrix vert (dv);
   Matrix idx (nf, nv);
 
+  Matrix fvc;
+  if (pervertex)
+    {
+      // "facevertexcdata" holds color data per vertex
+      fvc.resize (nv * nf, (isRGB ? 3 : 1));
+    }
+  else if (! cd.isempty ())
+    {
+      // "facevertexcdata" holds color data per face
+      dv(0) = ncf;
+      dv(1) = (isRGB ? 3 : 1);
+      fvc = cd.reshape (dv);
+    }
+
   // create list of vertices from x/y/zdata
   // FIXME: It might be possible to share vertices between adjacent faces.
   octave_idx_type kk = 0;
@@ -9700,22 +9722,21 @@ patch::properties::update_fvc ()
           if (is3D)
             vert(kk, 2) = zd(ii, jj);
 
+          if (pervertex)
+            {
+              fvc(kk, 0) = cd(ii, jj, 0);
+              if (isRGB)
+                {
+                  fvc(kk, 1) = cd(ii, jj, 1);
+                  fvc(kk, 2) = cd(ii, jj, 2);
+                }
+            }
+
           idx(jj, ii) = static_cast<double> (kk+1);
 
           kk++;
         }
     }
-
-  // facevertexcdata
-  Matrix fvc;
-  if (cd.ndims () == 3)
-    {
-      dv(0) = cd.rows () * cd.columns ();
-      dv(1) = cd.dims ()(2);
-      fvc = cd.reshape (dv);
-    }
-  else
-    fvc = cd.as_column ();
 
   // FIXME: shouldn't we update facevertexalphadata here ?
 

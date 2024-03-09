@@ -9449,21 +9449,30 @@ patch::properties::update_fvc ()
       return;
     }
 
+  octave_idx_type nv = xd.rows ();
+  octave_idx_type nf = xd.columns ();
+  octave_idx_type ncv = cd.rows ();
+  octave_idx_type ncf = cd.columns ();
+  if ((ncf > 1 || ncv > 1) && ((ncf != nf) || (ncv != 1 && ncv != nv)))
+    {
+      m_bad_data_msg = "cdata does not match number of faces "
+                       "or number of vertices per face";
+      return;
+    }
+
   // Faces and Vertices
   dim_vector dv;
   bool is3D = false;
-  octave_idx_type nr = xd.rows ();
-  octave_idx_type nc = xd.columns ();
-  if (nr == 1 && nc > 1)
+  if (nv == 1 && nf > 1)
     {
-      nr = nc;
-      nc = 1;
+      nv = nf;
+      nf = 1;
       xd = xd.as_column ();
       yd = yd.as_column ();
       zd = zd.as_column ();
     }
 
-  dv(0) = nr * nc;
+  dv(0) = nv * nf;
   if (zd.isempty ())
     dv(1) = 2;
   else
@@ -9473,12 +9482,14 @@ patch::properties::update_fvc ()
     }
 
   Matrix vert (dv);
-  Matrix idx (nc, nr);
+  Matrix idx (nf, nv);
 
+  // create list of vertices from x/y/zdata
+  // FIXME: It might be possible to share vertices between adjacent faces.
   octave_idx_type kk = 0;
-  for (octave_idx_type jj = 0; jj < nc; jj++)
+  for (octave_idx_type jj = 0; jj < nf; jj++)
     {
-      for (octave_idx_type ii = 0; ii < nr; ii++)
+      for (octave_idx_type ii = 0; ii < nv; ii++)
         {
           vert(kk, 0) = xd(ii, jj);
           vert(kk, 1) = yd(ii, jj);

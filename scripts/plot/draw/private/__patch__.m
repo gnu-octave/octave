@@ -118,7 +118,7 @@ function h = __patch__ (p, varargin)
           args{8} = "flat";
         endif
         args{9} = "facevertexcdata";
-        args{10} = c;
+        args{10} = c(:);
       elseif (isrow (c) && numel (c) == 3)
         ## One RGB color
         args{7} = "facecolor";

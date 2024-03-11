@@ -283,10 +283,10 @@ function hglist = bars (hax, ishist, vertical, x, y, xb, yb, width, group, have_
 
       if (vertical)
         h = patch (hax, xb(:,:,i), yb(:,:,i),
-                   "cdata", i*ones (columns (xb),1), "FaceColor", "flat");
+                   "cdata", i, "FaceColor", "flat");
       else
         h = patch (hax, yb(:,:,i), xb(:,:,i),
-                   "cdata", i*ones (columns (yb),1), "FaceColor", "flat");
+                   "cdata", i, "FaceColor", "flat");
       endif
 
       if (! isempty (varargin))

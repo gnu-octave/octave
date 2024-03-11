@@ -62,8 +62,11 @@ Summary of important user-visible changes for version 9 (2024-02-07):
   state, the resulting value is now displayed in the Command Window for
   informational purposes.
 
-- The axes graphics property "TickDir" now accepts the option "none", which
+- The axes graphics property `"TickDir"` now accepts the option `"none"`, which
   will not draw tick marks but will still draw tick labels.
+
+- Stricter checks are performed for valid dimensions of the color data
+  properties `"CData"` and `"FaceVertexCData"` when rendering `patch` objects.
 
 ### Matlab compatibility
 

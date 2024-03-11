@@ -138,7 +138,7 @@ function h = __patch__ (p, varargin)
           ## Per-vertex color
           args{7} = "facecolor";
           args{8} = "interp";
-          args{9} = "facevertexcdata";
+          args{9} = "cdata";
           args{10} = c;
         else
           error ("patch: invalid TrueColor data C");

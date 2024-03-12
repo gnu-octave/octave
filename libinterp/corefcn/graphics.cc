@@ -9653,21 +9653,38 @@ patch::properties::update_fvc ()
       return;
     }
 
+  octave_idx_type nv = xd.rows ();
+  octave_idx_type nf = xd.columns ();
+  octave_idx_type ncv = cd.rows ();
+  octave_idx_type ncf = cd.columns ();
+  if ((ncf > 1 || ncv > 1) && ((ncf != nf) || (ncv != 1 && ncv != nv)))
+    {
+      m_bad_data_msg = "cdata does not match number of faces "
+                       "or number of vertices per face";
+      return;
+    }
+
+  bool pervertex = false;
+  if (ncv == nv)
+    pervertex = true;
+
+  bool isRGB = false;
+  if (cd.ndims () == 3)
+    isRGB = true;
+
   // Faces and Vertices
   dim_vector dv;
   bool is3D = false;
-  octave_idx_type nr = xd.rows ();
-  octave_idx_type nc = xd.columns ();
-  if (nr == 1 && nc > 1)
+  if (nv == 1 && nf > 1)
     {
-      nr = nc;
-      nc = 1;
+      nv = nf;
+      nf = 1;
       xd = xd.as_column ();
       yd = yd.as_column ();
       zd = zd.as_column ();
     }
 
-  dv(0) = nr * nc;
+  dv(0) = nv * nf;
   if (zd.isempty ())
     dv(1) = 2;
   else
@@ -9677,34 +9694,49 @@ patch::properties::update_fvc ()
     }
 
   Matrix vert (dv);
-  Matrix idx (nc, nr);
+  Matrix idx (nf, nv);
 
-  octave_idx_type kk = 0;
-  for (octave_idx_type jj = 0; jj < nc; jj++)
+  Matrix fvc;
+  if (pervertex)
     {
-      for (octave_idx_type ii = 0; ii < nr; ii++)
+      // "facevertexcdata" holds color data per vertex
+      fvc.resize (nv * nf, (isRGB ? 3 : 1));
+    }
+  else if (! cd.isempty ())
+    {
+      // "facevertexcdata" holds color data per face
+      dv(0) = ncf;
+      dv(1) = (isRGB ? 3 : 1);
+      fvc = cd.reshape (dv);
+    }
+
+  // create list of vertices from x/y/zdata
+  // FIXME: It might be possible to share vertices between adjacent faces.
+  octave_idx_type kk = 0;
+  for (octave_idx_type jj = 0; jj < nf; jj++)
+    {
+      for (octave_idx_type ii = 0; ii < nv; ii++)
         {
           vert(kk, 0) = xd(ii, jj);
           vert(kk, 1) = yd(ii, jj);
           if (is3D)
             vert(kk, 2) = zd(ii, jj);
 
+          if (pervertex)
+            {
+              fvc(kk, 0) = cd(ii, jj, 0);
+              if (isRGB)
+                {
+                  fvc(kk, 1) = cd(ii, jj, 1);
+                  fvc(kk, 2) = cd(ii, jj, 2);
+                }
+            }
+
           idx(jj, ii) = static_cast<double> (kk+1);
 
           kk++;
         }
     }
-
-  // facevertexcdata
-  Matrix fvc;
-  if (cd.ndims () == 3)
-    {
-      dv(0) = cd.rows () * cd.columns ();
-      dv(1) = cd.dims ()(2);
-      fvc = cd.reshape (dv);
-    }
-  else
-    fvc = cd.as_column ();
 
   // FIXME: shouldn't we update facevertexalphadata here ?
 
@@ -9835,6 +9867,15 @@ patch::properties::update_data ()
       return;
     }
 
+  // Check if number of color values matches number of faces or vertices
+  octave_idx_type nfvc = fvc.rows ();
+  if (nfvc > 1 && nfvc != nfaces && nfvc != nvert)
+    {
+      m_bad_data_msg = "number of facevertexcdata values matches "
+                       "neither number of faces nor number of vertices";
+      return;
+    }
+
   // Replace NaNs
   if (idx.any_element_is_inf_or_nan ())
     {
@@ -9901,21 +9942,20 @@ patch::properties::update_data ()
 
   if (fvc.rows () == nfaces || fvc.rows () == 1)
     {
+      // "facevertexcdata" holds color data per face or same color for all
       dv(0) = 1;
       dv(1) = fvc.rows ();
       dv(2) = fvc.columns ();
       cd = fvc.reshape (dv);
     }
-  else
+  else if (! fvc.isempty ())
     {
-      if (! fvc.isempty ())
-        {
-          dv(0) = idx.rows ();
-          dv(1) = nfaces;
-          dv(2) = fvc.columns ();
-          cd.resize (dv);
-          pervertex = true;
-        }
+      // "facevertexcdata" holds color data per vertex
+      dv(0) = idx.rows ();
+      dv(1) = nfaces;
+      dv(2) = fvc.columns ();
+      cd.resize (dv);
+      pervertex = true;
     }
 
   // Build x,y,zdata and eventually per vertex cdata

@@ -71,10 +71,25 @@
 ## The optional return value @var{h} is a graphics handle to the created patch
 ## object.
 ##
-## Programming Note: The full list of properties is documented at
-## @ref{Patch Properties}.  Useful patch properties include:
-## @qcode{"cdata"}, @qcode{"edgecolor"}, @qcode{"facecolor"}, @qcode{"faces"},
-## and @qcode{"facevertexcdata"}.
+## Programming Notes:
+## @enumerate
+## @item
+## The full list of properties is documented at @ref{Patch Properties}.
+## Useful patch properties include: @qcode{"cdata"}, @qcode{"edgecolor"},
+## @qcode{"facecolor"}, @qcode{"faces"}, @qcode{"vertices"}, and
+## @qcode{"facevertexcdata"}.
+## @item
+## Properties specifying patch geometry (@qcode{"xdata"}, @qcode{"ydata"},
+## @qcode{"zdata"}, @qcode{"faces"}, @qcode{"vertices"}) should be specified
+## before other properties to avoid unexpected plot outputs or errors.
+## @item
+## Unexpected geometry results can occur from mixing x-y-z and
+## face-vertex forms of defining geometry.
+## @item
+## Unexpected patch color results can occur from using @qcode{"cdata"} color
+## definitons with face-vertex defined geometry or @qcode{"facecentercdata"}
+## color definitions with x-y-z defined geometry.
+## @end enumerate
 ## @seealso{fill, get, set}
 ## @end deftypefn
 

@@ -1,4 +1,4 @@
-Summary of important user-visible changes for version 9 (2024-02-07):
+Summary of important user-visible changes for version 9 (2024-03-12):
 ---------------------------------------------------------------------
 
 ### General improvements

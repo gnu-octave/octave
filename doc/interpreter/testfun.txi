@@ -186,6 +186,12 @@ You can share several variables at the same time:
 %!shared @var{a}, @var{b}
 @end example
 
+Modifications to shared variables persist from one test to the next
+@strong{only} if the test succeeds.  Thus, if one test modifies a shared
+variable, later tests cannot know which value of the shared variable to expect
+because the pass/fail status of earlier tests is unknown.  For this reason, it
+is not recommended to modify shared variables in tests.
+
 You can also share test functions:
 
 @example

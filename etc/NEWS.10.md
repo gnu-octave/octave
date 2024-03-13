@@ -22,6 +22,9 @@ of 2.  The output class now matches the input class for Matlab compatibility.
 The function no longer accepts complex inputs and will emit an error for these
 inputs.
 
+- `jsonencode` now outputs integers and floating point integers without ".0"
+  suffix.
+
 ### Graphical User Interface
 
 ### Graphics backend

@@ -17,6 +17,14 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 
 - `nchoosek` algorithm is now ~2x faster and provides greater precision.
 
+- `nextpow2` algorithm is now more accurate for inputs very close to a power
+of 2.  The output class now matches the input class for Matlab compatibility.
+The function no longer accepts complex inputs and will emit an error for these
+inputs.
+
+- `jsonencode` now outputs integers and floating point integers without ".0"
+  suffix.
+
 ### Graphical User Interface
 
 ### Graphics backend

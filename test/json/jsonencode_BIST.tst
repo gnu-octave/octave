@@ -17,6 +17,8 @@
 %! assert (isequal (jsonencode (50.025), '50.025'));
 %! %% FIXME: Uncomment when bug #64960 is fixed
 %! %% assert (isequal (jsonencode (single (50.025)), '50.025'));
+%! assert (isequal (jsonencode (uint64 (1e6)), '1000000'));
+%! assert (isequal (jsonencode (int64 (-1e6)), '-1000000'));
 %! assert (isequal (jsonencode (NaN), 'null'));
 %! assert (isequal (jsonencode (NA), 'null'));    % Octave-only test
 %! assert (isequal (jsonencode (Inf), 'null'));
@@ -112,6 +114,8 @@
 %!testif HAVE_RAPIDJSON
 %! assert (isequal (jsonencode ([]), '[]'));
 %! assert (isequal (jsonencode ([1, 2, 3, 4]), '[1,2,3,4]'));
+%! % Matlab encodes flints with values above 1e6-1 in scientific notation.  Octave writes integers.
+%! assert (isequal (jsonencode ([1.23e6, 2]), '[1230000,2]'));
 %! assert (isequal (jsonencode ([true; false; true]), '[true,false,true]'));
 
 %% Test arrays

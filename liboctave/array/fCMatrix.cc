@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <cmath>
 #include <complex>
 #include <istream>
 #include <limits>
@@ -734,6 +735,14 @@ norm1 (const FloatComplexMatrix& a)
     }
 
   return anorm;
+}
+
+// Local function to check if matrix is singular based on rcond.
+static inline
+bool
+is_singular (const float rcond)
+{
+  return (std::abs (rcond) <= std::numeric_limits<float>::epsilon ());
 }
 
 FloatComplexMatrix
@@ -1605,10 +1614,7 @@ FloatComplexMatrix::utsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  // Prevent use of extra precision.
-                  float rcond_plus_one = rcon + 1.0;
-
-                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+                  if (is_singular (rcon) || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -1708,10 +1714,7 @@ FloatComplexMatrix::ltsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  // Prevent use of extra precision.
-                  float rcond_plus_one = rcon + 1.0;
-
-                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+                  if (is_singular (rcon) || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -1805,10 +1808,7 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  // Prevent use of extra precision.
-                  float rcond_plus_one = rcon + 1.0;
-
-                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+                  if (is_singular (rcon) || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -1901,10 +1901,7 @@ FloatComplexMatrix::fsolve (MatrixType& mattype, const FloatComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  // Prevent use of extra precision.
-                  float rcond_plus_one = rcon + 1.0;
-
-                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+                  if (is_singular (rcon) || octave::math::isnan (rcon))
                     {
                       if (sing_handler)
                         sing_handler (rcon);

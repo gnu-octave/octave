@@ -65,19 +65,34 @@ encode_numeric (T& writer, const octave_value& obj,
     {
       double value = obj.scalar_value ();
 
-      // Any numeric input from the interpreter will be in double type so in
-      // order to detect ints, we will check if the floor of the input and the
-      // input are equal using fabs (A - B) < epsilon method as it is more
-      // accurate.  If value > 999999, MATLAB will encode it in scientific
-      // notation (double).
-      if (fabs (floor (value) - value) < std::numeric_limits<double>::epsilon ()
-          && fabs (value) <= 999999)
+      // Detect floating point numbers which are actually integers by checking
+      // whether the number and the integer portion of the number are the same
+      // to within eps.
+      // FIXME: If value > 999999, MATLAB will encode it in scientific
+      // notation, but rapidJSON will output all digits.
+      if (fabs (trunc (value) - value) < std::numeric_limits<double>::epsilon ())
+
         writer.Int64 (value);
       // Possibly write NULL for non-finite values (-Inf, Inf, NaN, NA)
       else if (ConvertInfAndNaN && ! octave::math::isfinite (value))
         writer.Null ();
       else
         writer.Double (value);
+    }
+  else if (obj.isinteger ())
+    {
+       if (obj.is_uint64_type ())
+         {
+            uint64_t value = obj.uint64_value ();
+            writer.Uint64 (value);
+         }
+       else
+         {
+            // Write all other integers as 64-bit values and let RapidJSON
+            // determine number of digits to keep.
+            int64_t value = obj.int64_value ();
+            writer.Int64 (value);
+         }
     }
   else if (obj.is_bool_scalar ())
     writer.Bool (obj.bool_value ());
@@ -404,9 +419,10 @@ template <typename T> void
 encode (T& writer, const octave_value& obj, const bool& ConvertInfAndNaN)
 {
   if (obj.is_real_scalar ())
+    // Numeric scalars.
     encode_numeric (writer, obj, ConvertInfAndNaN);
-  // As I checked for scalars, this will detect numeric & logical arrays
   else if (obj.isnumeric () || obj.islogical ())
+    // Numeric and logical arrays.
     encode_array (writer, obj, ConvertInfAndNaN, obj.dims ());
   else if (obj.is_string ())
     encode_string (writer, obj, obj.dims ());

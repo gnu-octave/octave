@@ -28,6 +28,7 @@
 #endif
 
 #include <algorithm>
+#include <cmath>
 #include <complex>
 #include <istream>
 #include <limits>
@@ -731,6 +732,14 @@ norm1 (const ComplexMatrix& a)
     }
 
   return anorm;
+}
+
+// Local function to check if matrix is singular based on rcond.
+static inline
+bool
+is_singular (const double rcond)
+{
+  return (std::abs (rcond) <= std::numeric_limits<double>::epsilon ());
 }
 
 ComplexMatrix
@@ -1603,10 +1612,7 @@ ComplexMatrix::utsolve (MatrixType& mattype, const ComplexMatrix& b,
           if (info != 0)
             info = -2;
 
-          // Prevent use of extra precision.
-          double rcond_plus_one = rcon + 1.0;
-
-          if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+          if (is_singular (rcon) || octave::math::isnan (rcon))
             {
               info = -2;
 
@@ -1702,10 +1708,7 @@ ComplexMatrix::ltsolve (MatrixType& mattype, const ComplexMatrix& b,
           if (info != 0)
             info = -2;
 
-          // Prevent use of extra precision.
-          double rcond_plus_one = rcon + 1.0;
-
-          if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+          if (is_singular (rcon) || octave::math::isnan (rcon))
             {
               info = -2;
 
@@ -1795,10 +1798,7 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  // Prevent use of extra precision.
-                  double rcond_plus_one = rcon + 1.0;
-
-                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+                  if (is_singular (rcon) || octave::math::isnan (rcon))
                     {
                       info = -2;
 
@@ -1891,10 +1891,7 @@ ComplexMatrix::fsolve (MatrixType& mattype, const ComplexMatrix& b,
                   if (info != 0)
                     info = -2;
 
-                  // Prevent use of extra precision.
-                  double rcond_plus_one = rcon + 1.0;
-
-                  if (rcond_plus_one == 1.0 || octave::math::isnan (rcon))
+                  if (is_singular (rcon) || octave::math::isnan (rcon))
                     {
                       if (sing_handler)
                         sing_handler (rcon);

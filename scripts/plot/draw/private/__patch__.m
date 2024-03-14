@@ -176,16 +176,6 @@ function h = __patch__ (p, varargin)
     args = varargin;
   endif
 
-  ## All args now Property/Value pairs.
-  ## Ensure geometry properties come before other properties (see bug #65421).
-  geom_props = {"xdata", "ydata", "zdata", "faces", "vertices"};
-  geom_args = or (cellfun (@strcmpi, {args(1:2:end)}, geom_props, ...
-                           "UniformOutput", false){:});
-  neworder = zeros (size (args));
-  neworder(1:2:end) = [find(geom_args), find(! geom_args)] * 2 - 1;
-  neworder(2:2:end) = neworder(1:2:end) + 1;
-  args = args(neworder);
-
   if (isempty (p))
     p = gca ();
   endif

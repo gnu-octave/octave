@@ -314,24 +314,6 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <*65421>
-%! hf = figure ("visible", "off");
-%! unwind_protect
-%!   h1 = patch ("Vertices",[0, 0; 0, 1; 1, 0;1, 1], ...
-%!             "Faces", [1, 2, 3; 2, 3, 4], "CData", 1);
-%!   h2 = patch ("Vertices",[0, 0; 0, 1; 1, 0;1, 1], "CData", 1, ...
-%!             "Faces", [1, 2, 3; 2, 3, 4]);
-%!   h1_data = get (h1);
-%!   h2_data = get (h2);
-%!   assert ({h1_data.xdata, h1_data.ydata}, ...
-%!                  {[0, 0; 0, 1; 1, 1], [0, 1; 1, 0; 0, 1]});
-%!   assert ({h1_data.xdata,  h1_data.ydata}, {h2_data.xdata, h2_data.ydata});
-%!   assert (h1_data.faces, [1, 2, 3; 4, 5, 6]);
-%!   assert (h1_data.faces, h2_data.faces);
-%! unwind_protect_cleanup
-%!   close (hf);
-%! end_unwind_protect
-
 ## Test input validation
 %!error <invalid color specification C> patch (1, 1, 'x')
 %!error <invalid TrueColor data C> patch (1, 1, rand (1,2,3))

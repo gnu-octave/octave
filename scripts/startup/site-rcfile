@@ -6,19 +6,33 @@
 ## This file contains commands that should be executed each time Octave starts
 ## for every user at this site.
 
-if ispc () && isguirunning () ...
-    && ~strcmp (winqueryreg ("HKEY_CURRENT_USER", 'Console\%%Startup', "DelegationConsole"), ...
-                "{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}")
-  warn_str = ["WARNING: You are using an incompatible Windows configuration!\n", ...
-              "Microsoft's new Terminal App is not compatible with Octave.\n", ...
-              "Please follow the instructions on the following page and set the ", ...
-              "default terminal to \"Windows Console Host\":\n", ...
-              "https://octave.discourse.group/t/4981/"];
-  warning ("octave:terminal-app", warn_str);
-  answer = questdlg ([warn_str, "\n\nWould you like to open that page in your browser?"], ...
-                     "Incompatible Configuration", "Yes", "No", "Yes");
-  if strcmp (answer, "Yes")
-    system ("start https://octave.discourse.group/t/4981/");
+if (ispc () && isguirunning ())
+  try
+    is_windows_console_host = ...
+      strcmp (winqueryreg ("HKEY_CURRENT_USER", 'Console\%%Startup', "DelegationConsole"), ...
+              "{B23D10C0-E52E-411E-9D5B-C09FDF709C7D}");
+  catch
+    ## The above might fail for old versions of Windows 10 where that
+    ## registry key didn't exist.  Assume that the Windows Console Host
+    ## is being used in this case.
+    is_windows_console_host = true;
+  end_try_catch
+
+  if (! is_windows_console_host)
+    warn_str = ["WARNING: You are using an incompatible Windows configuration!\n", ...
+                "Microsoft's new Terminal App is not compatible with Octave.\n", ...
+                "Please follow the instructions on the following page and set the ", ...
+                "default terminal to \"Windows Console Host\":\n", ...
+                "https://octave.discourse.group/t/4981/"];
+    warning ("octave:terminal-app", warn_str);
+    answer = questdlg ([warn_str, "\n\nWould you like to open that page in your browser?"], ...
+                       "Incompatible Configuration", "Yes", "No", "Yes");
+    if (strcmp (answer, "Yes"))
+      system ("start https://octave.discourse.group/t/4981/");
+    endif
+    clear warn_str answer
   endif
-  clear warn_str answer
+
+  clear is_windows_console_host
+
 endif

@@ -1,4 +1,18 @@
-Summary of important user-visible changes for version 9 (2024-02-07):
+Summary of bugs fixed for version 9.2.0 (YYYY-MM-DD):
+-----------------------------------------------------
+
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
+Summary of important user-visible changes for version 9 (2024-03-12):
 ---------------------------------------------------------------------
 
 ### General improvements

@@ -79,6 +79,10 @@
 ## @qcode{"facecolor"}, @qcode{"faces"}, @qcode{"vertices"}, and
 ## @qcode{"facevertexcdata"}.
 ## @item
+## Properties specifying patch geometry (@qcode{"xdata"}, @qcode{"ydata"},
+## @qcode{"zdata"}, @qcode{"faces"}, @qcode{"vertices"}) should be specified
+## before other properties to avoid unexpected plot outputs or errors.
+## @item
 ## Unexpected geometry results can occur from mixing x-y-z and
 ## face-vertex forms of defining geometry.
 ## @item

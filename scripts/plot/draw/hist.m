@@ -82,7 +82,10 @@
 ##
 ## If an output is requested then no plot is made.  Instead, return the values
 ## @var{nn} (numbers of elements) and @var{xx} (bin centers) such that
-## @code{bar (@var{xx}, @var{nn})} will plot the histogram.
+## @code{bar (@var{xx}, @var{nn})} will plot the histogram.  If @var{y} is a
+## vector, @var{nn} and @var{xx} will be row vectors.  If @var{y} is an array,
+## @var{nn} will be an array with one column of element counts for each column
+## in @var{y}, and @var{xx} will be a column vector of bin centers.
 ##
 ## @seealso{histc, bar, pie, rose}
 ## @end deftypefn

@@ -136,6 +136,7 @@ public slots:
 
 private slots:
 
+  void restore_header_state ();
   void headercontextmenu_requested (const QPoint& pos);
   void toggle_header (int col);
 

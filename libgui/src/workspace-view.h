@@ -78,6 +78,7 @@ public slots:
 
 protected slots:
 
+  void restore_header_state ();
   void filter_update (const QString& expression);
   void filter_activate (bool enable);
   void update_filter_history ();

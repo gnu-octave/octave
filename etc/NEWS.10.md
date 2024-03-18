@@ -24,6 +24,10 @@ inputs.
 
 - `jsonencode` now outputs integers and floating point integers without ".0"
   suffix.
+  
+- `hist` now accepts N-dimensional array inputs for input `Y` which is
+  processed in columns as if the array was flattened to a 2-dimensional
+  array.
 
 ### Graphical User Interface
 

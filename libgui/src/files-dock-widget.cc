@@ -406,10 +406,6 @@ files_dock_widget::files_dock_widget (QWidget *p)
      // FIXME: use value<Qt::SortOrder> instead of static cast after
      //        dropping support of Qt 5.4
 
-  if (settings.contains (fb_column_state.settings_key ()))
-    m_file_tree_view->header ()->restoreState
-      (settings.value (fb_column_state.settings_key ()).toByteArray ());
-
   // Set header properties for sorting
   m_file_tree_view->header ()->setSectionsClickable (true);
   m_file_tree_view->header ()->setSectionsMovable (true);
@@ -468,6 +464,23 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   if (! p)
     make_window ();
+
+  // Initialize column order and width of the file browser. From this post,
+  // https://www.qtcentre.org/threads/26675-QTableView-saving-restoring-columns-widths
+  // this might fail if done directly in the constructor. This effect shows
+  // up in the GUI since Qt 6.6.x. As a solution, the following timer ensures
+  // that the header is restored when the event loop is idle.
+  QTimer::singleShot (0, this, SLOT(restore_header_state ()));
+}
+
+void
+files_dock_widget::restore_header_state ()
+{
+  gui_settings settings;
+
+  if (settings.contains (fb_column_state.settings_key ()))
+    m_file_tree_view->header ()->restoreState
+      (settings.value (fb_column_state.settings_key ()).toByteArray ());
 }
 
 void

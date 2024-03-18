@@ -39,6 +39,7 @@
 #include <QMessageBox>
 #include <QPushButton>
 #include <QSignalMapper>
+#include <QTimer>
 #include <QVBoxLayout>
 
 #include "gui-preferences-ws.h"
@@ -107,9 +108,6 @@ workspace_view::workspace_view (QWidget *p)
 
   //enable sorting (setting column and order after model was set)
   m_view->setSortingEnabled (true);
-  // Initialize column order and width of the workspace
-  m_view->horizontalHeader ()->restoreState
-    (settings.value (ws_column_state.settings_key ()).toByteArray ());
 
   // Set header properties for sorting
   m_view->horizontalHeader ()->setSectionsClickable (true);
@@ -151,6 +149,23 @@ workspace_view::workspace_view (QWidget *p)
 
   if (! p)
     make_window ();
+
+  // Initialize column order and width of the workspace. From this post,
+  // https://www.qtcentre.org/threads/26675-QTableView-saving-restoring-columns-widths
+  // this might fail if done directly in the constructor. This effect shows
+  // up in the GUI since Qt 6.6.x. As a solution, the following timer ensures
+  // that the header is restored when the event loop is idle.
+  QTimer::singleShot (0, this, SLOT(restore_header_state ()));
+}
+
+void
+workspace_view::restore_header_state ()
+{
+  gui_settings settings;
+
+  if (settings.contains (ws_column_state.settings_key ()))
+    m_view->horizontalHeader ()->restoreState
+      (settings.value (ws_column_state.settings_key ()).toByteArray ());
 }
 
 void

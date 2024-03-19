@@ -106,6 +106,10 @@ function [nn, xx] = hist (varargin)
     error ("hist: Y must be real-valued");
   endif
 
+  if (ndims (y) > 2)
+    error ("hist: Y must be a 2-D array");
+  endif
+
   arg_is_vector = isvector (y);
   if (arg_is_vector)
     y = y(:);

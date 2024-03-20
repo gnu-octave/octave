@@ -140,11 +140,23 @@ function C = nchoosek (v, k)
         g1 = gcd (C, i);
         g2 = gcd (v - k + i, i/g1);
         C /= g1;
-        C *= (v - k + i)/g2;
-        if (is_int && (C == imax))
+
+        ## In theory and (always for integers) i/(g1 * g2) is identical to 1 by
+        ## design. Or for floats and beyond flintmax, the gcd may not be
+        ## correctly derived by the gcd function and i/(g1 * g2) may not be 1.
+        C_next = C * ((v - k + i)/g2);
+        if (is_int || (i/(g1 * g2) == 1) || ! isinf (C_next))
+          C = C_next;
+          C /= i/(g1 * g2);
+        else
+          C /= i/(g1 * g2);
+          ## We have potential precision loss by dividing (too) early, but
+          ## advantage is that we prevent possible interim overflows
+          C *= (v - k + i)/g2;
+        endif
+        if (is_int && (C == imax)) || (! is_int && isinf (C))
           break;  # Stop here; saturation reached.
         endif
-        C /= i/(g1 * g2);
       else
         C *= (v - k + i);
         C /= i;
@@ -287,6 +299,11 @@ endfunction
 %! x = nchoosek (uint8 (10), uint8 (5));
 %! assert (x, uint8 (252));
 %! assert (class (x), "uint8");
+
+## Floating point number above flintmax
+%!test <*65495>
+%! warning ("off", "Octave:nchoosek:large-output-float", "local");
+%! assert (! isinf (nchoosek (1024, 512)))
 
 ## Test combining rules for integers and floating point
 %!test

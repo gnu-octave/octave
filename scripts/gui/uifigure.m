@@ -37,6 +37,9 @@
 ## @ref{Figure Properties}.  This function differs from @code{figure} in that
 ## the created figure is optimized for application development, rather than
 ## plotting.  This means features such as menubars and toolbars are turned off.
+## This is not perfect replacement for the @sc{matlab} uifigure object as the
+## properties @qcode{"AutoResizeChildren"}, @qcode{"Icon"}, and
+## @qcode{"Scrollable"} are not implemented.
 ## @seealso{uipanel, uibuttongroup}
 ## @end deftypefn
 
@@ -47,33 +50,43 @@
 
 function h = uifigure (varargin)
 
-  if (mod (nargin, 2) != 0)
+  if (rem (nargin, 2) != 0)
     error ("uifigure: PROPERTY/VALUE parameters must occur in pairs");
+  endif
+
+  strfcn = @(s) any (strcmpi (s, {'AutoResizeChildren', 'Icon', 'Scrollable'}));
+  idx = cellfun (strfcn, varargin (1:2:end));
+  if (any (idx))
+    idx = repelem (idx, 2); 
+    props = varargin(idx);  # save special props for applying later
+    varargin(idx) = [];     # remove special props from varargin
   endif
 
   h = __go_figure__ (NaN, "handlevisibility", "off",
                           "numbertitle", "off", "integerhandle", "off",
-                          "menubar", "none", "toolbar", "none");
+                          "menubar", "none", "toolbar", "none",
+                          varargin{:});
 
   ## Add uifigure-specific properties on top of regular figure graphics object
   ## FIXME: There is no implementation behind these properties.
   addproperty ("AutoResizeChildren", h, "boolean", "on");
+  addproperty ("Icon", h, "data", []);
   addproperty ("Scrollable", h, "boolean", "off");
 
-  ## Apply any overrides.
-  if (! isempty (varargin))
-    set (h, varargin{:});
+  ## Set values for special properties added above
+  if (! isempty (props))
+    set (h, props{:});
   endif
 
 endfunction
 
 
 %!test
-%! hf = uifigure ("visible", "off");
+%! hf = uifigure ("visible", "off", "Icon", magic (3));
 %! unwind_protect
 %!   assert (isfigure (hf));
-%!   assert (get (hf, {"numbertitle", "menubar", "scrollable"}),
-%!                    {"off", "none", "off"});
+%!   assert (get (hf, {"numbertitle", "menubar", "icon", "scrollable"}),
+%!                    {"off", "none", magic(3), "off"});
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

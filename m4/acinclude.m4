@@ -2287,17 +2287,17 @@ dnl
 dnl Check for library that exports SUNContext_Create.
 dnl
 AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNCONTEXT_CREATE], [
-  save_LIBS=$LIBS
+  ac_octave_save_LIBS=$LIBS
   LIBS="$SUNDIALS_IDA_LIBS $SUNDIALS_NVECSERIAL_LIBS $LIBS"
   dnl Check for SUNContext_Create without linking to libsundials_core.
   dnl That should succeed for SUNDIALS version 6.
   AC_CHECK_FUNC([SUNContext_Create])
-  LIBS="$save_LIBS"
+  LIBS="$ac_octave_save_LIBS"
   if test "x$ac_cv_func_SUNContext_Create" != xyes; then
     ## SUNDIALS version 7 exports SUNContext_Create from libsundials_core
-    save_CPPFLAGS="$CPPFLAGS"
-    save_LDFLAGS="$LDFLAGS"
-    save_LIBS="$LIBS"
+    ac_octave_save_CPPFLAGS="$CPPFLAGS"
+    ac_octave_save_LDFLAGS="$LDFLAGS"
+    ac_octave_save_LIBS="$LIBS"
     LIBS="$SUNDIALS_CORE_LIBS $LIBS"
     LDFLAGS="$SUNDIALS_CORE_LDFLAGS $LDFLAGS"
     CPPFLAGS="$SUNDIALS_CORE_CPPFLAGS $CPPFLAGS"
@@ -2306,9 +2306,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNCONTEXT_CREATE], [
     OCTAVE_CHECK_LIB(sundials_core, [SUNDIALS core], [],
       [sundials_core.h sundials/sundials_core.h], [SUNContext_Create],
       [], [])
-    CPPFLAGS="$save_CPPFLAGS"
-    LDFLAGS="$save_LDFLAGS"
-    LIBS="$save_LIBS"
+    CPPFLAGS="$ac_octave_save_CPPFLAGS"
+    LDFLAGS="$ac_octave_save_LDFLAGS"
+    LIBS="$ac_octave_save_LIBS"
   fi
   if test "x$ac_cv_func_SUNContext_Create" = xyes \
     || test "x$octave_cv_lib_sundials_core" = xyes; then
@@ -2442,9 +2442,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
   ## Check for library that exports SUNContext_Create
   OCTAVE_CHECK_SUNDIALS_SUNCONTEXT_CREATE
   ## Check for current KLU function name first.
-  save_CPPFLAGS="$CPPFLAGS"
-  save_LDFLAGS="$LDFLAGS"
-  save_LIBS="$LIBS"
+  ac_octave_save_CPPFLAGS="$CPPFLAGS"
+  ac_octave_save_LDFLAGS="$LDFLAGS"
+  ac_octave_save_LIBS="$LIBS"
   CPPFLAGS="$SUNDIALS_CORE_CPPFLAGS $CPPFLAGS"
   LDFLAGS="$SUNDIALS_CORE_LDFLAGS $LDFLAGS"
   LIBS="$SUNDIALS_CORE_LIBS $LIBS"
@@ -2532,9 +2532,9 @@ AC_DEFUN([OCTAVE_CHECK_SUNDIALS_SUNLINSOL_KLU], [
     warn_sundials_sunlinsol_klu="SUNDIALS IDA library not configured with SUNLINSOL_KLU or sunlinsol_klu.h is not usable.  The solvers ode15i and ode15s will not support the sparse Jacobian feature."
     OCTAVE_CONFIGURE_WARNING([warn_sundials_sunlinsol_klu])
   fi
-  CPPFLAGS="$save_CPPFLAGS"
-  LDFLAGS="$save_LDFLAGS"
-  LIBS="$save_LIBS"
+  CPPFLAGS="$ac_octave_save_CPPFLAGS"
+  LDFLAGS="$ac_octave_save_LDFLAGS"
+  LIBS="$ac_octave_save_LIBS"
 ])
 dnl
 dnl Like AC_CONFIG_FILES, but don't touch the output file if it already

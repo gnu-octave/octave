@@ -127,11 +127,19 @@ error message.
   stream_list& streams = interp.get_stream_list ();
 
   stream old_stream = streams.lookup (args(0), "dup2");
-
   stream new_stream = streams.lookup (args(1), "dup2");
 
   int i_old = old_stream.file_number ();
   int i_new = new_stream.file_number ();
+
+  // If the file is not known to Octave, try the operation on the
+  // provided file ID.
+
+  if (i_old < 0)
+    i_old = args(0).int_value (true);
+
+  if (i_new < 0)
+    i_new = args(1).int_value (true);
 
   if (i_old >= 0 && i_new >= 0)
     {
@@ -451,6 +459,13 @@ message.
   int arg = args(2).int_value (true);
 
   // FIXME: Need better checking here?
+
+  // If the file is not known to Octave, try the operation on the
+  // provided file ID.
+
+  if (fid < 0)
+    fid = args(0).int_value (true);
+
   if (fid < 0)
     error ("fcntl: invalid file id");
 
@@ -911,6 +926,12 @@ For example:
       stream_list& streams = interp.get_stream_list ();
 
       int fid = streams.get_file_number (args(0));
+
+      // If the file is not known to Octave, try the operation on the
+      // provided file ID.
+
+      if (fid < 0)
+        fid = args(0).int_value (true);
 
       sys::file_fstat fs (fid);
 

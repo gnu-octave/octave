@@ -210,6 +210,9 @@ public:
 
   ~octave_user_function ();
 
+  // Declared calling form, generated from the parse tree.
+  std::string signature () const;
+
   octave_function * function_value (bool = false) { return this; }
 
   octave_user_function * user_function_value (bool = false) { return this; }

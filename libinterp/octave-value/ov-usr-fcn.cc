@@ -235,6 +235,29 @@ octave_user_function::~octave_user_function ()
   delete m_trail_comm;
 }
 
+std::string
+octave_user_function::signature () const
+{
+  std::ostringstream buf;
+
+  octave::tree_print_code tpc (buf);
+
+  if (m_ret_list)
+    {
+      m_ret_list->accept (tpc);
+      buf << " = ";
+    }
+
+  buf << m_name << " ";
+
+  if (m_param_list)
+    m_param_list->accept (tpc);
+  else
+    buf << " ()";
+
+  return buf.str ();
+}
+
 octave_user_function *
 octave_user_function::define_ret_list (octave::tree_parameter_list *t)
 {

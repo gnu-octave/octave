@@ -748,7 +748,7 @@ help_system::raw_help_for_class (const cdef_class& cls,
       // We found a class, but no docstring for it and there is no
       // constructor explicitly defined.
 
-      help = "default constructor: obj = " + name + "()";
+      help = "default constructor: obj = " + name + " ()";
       what = "constructor";
       symbol_found = true;
       return true;
@@ -840,7 +840,21 @@ help_system::raw_help_from_symbol_table (const std::string& name, std::string& h
       octave_value ov_meth = cls.get_method (nm);
 
       if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
-        return true;
+        {
+          what = "class method";
+          return true;
+        }
+
+      // Found class but no method.  If the NM is the same as the name
+      // of the class, then we have a default constructor.
+
+      if (cls.get_name () == nm)
+        {
+          help = "default constructor: obj = " + nm + " ()";
+          what = "constructor";
+          symbol_found = true;
+          return true;
+        }
 
       // FIXME: Should we only find public properties here?
 

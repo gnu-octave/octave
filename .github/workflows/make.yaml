@@ -428,11 +428,9 @@ jobs:
           - compiler: clang
             cc: "clang"
             cxx: "clang++"
-            # Qt6 doesn't install pkg-config files on macOS. See: https://bugreports.qt.io/browse/QTBUG-86080
-            # So, we need to provide the necessary flags manually.
-            qt-cppflags: "-I${HOMEBREW_PREFIX}/opt/qt@6/include/QtCore -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtGui -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtHelp -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtNetwork -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtOpenGL -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtOpenGLWidgets -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtPrintSupport -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtSql -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtWidgets -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtXml -I${HOMEBREW_PREFIX}/opt/qt@6/include/QtCore5Compat"
-            qt-ldflags: "-F${HOMEBREW_PREFIX}/opt/qt@6/Frameworks"
-            qt-libs: "-framework QtCore -framework QtGui -framework QtHelp -framework QtNetwork -framework QtOpenGL -framework QtOpenGLWidgets -framework QtPrintSupport -framework QtSql -framework QtWidgets -framework QtXml -framework QtCore5Compat"
+            # Qt6 doesn't install pkg-config files on macOS by default. See: https://bugreports.qt.io/browse/QTBUG-86080
+            # Homebrew installs "unofficial" .pc files for it in a non-default location.
+            qt-pkg-config-path: opt/qt@6/libexec/lib/pkgconfig
           - os: macos-13
             qt: "5"
             cc: "clang"
@@ -440,6 +438,7 @@ jobs:
             # SUNDIALS >= 6.5.0 doesn't compile with the default flags determined
             # by the configure script. Set CXX manually to enable building with it.
             cxx-compiler-flags: "-std=gnu++14"
+            qt-pkg-config-path: opt/qt@5/lib/pkgconfig
 
     env:
       CC: ${{ matrix.cc }}
@@ -550,12 +549,9 @@ jobs:
             CPPFLAGS="-I${HOMEBREW_PREFIX}/opt/gettext/include -I${HOMEBREW_PREFIX}/opt/icu4c/include -I${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/include -I${HOMEBREW_PREFIX}/opt/readline/include -I${HOMEBREW_PREFIX}/opt/sqlite/include $MY_CPPFLAGS -I${HOMEBREW_PREFIX}/include" \
             CXXFLAGS="-O2 -g" \
             LDFLAGS="-L${HOMEBREW_PREFIX}/opt/bison/lib -L${HOMEBREW_PREFIX}/opt/gettext/lib -L${HOMEBREW_PREFIX}/opt/icu4c/lib -L${HOMEBREW_PREFIX}/opt/readline/lib -L${HOMEBREW_PREFIX}/opt/sqlite/lib $MY_LDFLAGS -L${HOMEBREW_PREFIX}/lib" \
-            PKG_CONFIG_PATH="${HOMEBREW_PREFIX}/opt/openblas/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/icu4c/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/qt@${{ matrix.qt }}/lib/pkgconfig" \
+            PKG_CONFIG_PATH="${HOMEBREW_PREFIX}/opt/openblas/lib/pkgconfig:${HOMEBREW_PREFIX}/opt/icu4c/lib/pkgconfig:${HOMEBREW_PREFIX}/${{ matrix.qt-pkg-config-path }}" \
             --with-qt=${{ matrix.qt }} \
             QCOLLECTIONGENERATOR="qhelpgenerator" \
-            QT_CPPFLAGS="${{ matrix.qt-cppflags }}" \
-            QT_LDFLAGS="${{ matrix.qt-ldflags }}" \
-            QT_LIBS="${{ matrix.qt-libs }}" \
             --with-x=no \
             --with-blas="-L${HOMEBREW_PREFIX}/opt/openblas/lib -lopenblas" \
             --with-java-homedir="${HOMEBREW_PREFIX}/opt/openjdk" \

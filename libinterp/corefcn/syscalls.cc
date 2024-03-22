@@ -124,25 +124,34 @@ error message.
   if (args.length () != 2)
     print_usage ();
 
-  stream_list& streams = interp.get_stream_list ();
-
-  stream old_stream = streams.lookup (args(0), "dup2");
-
-  stream new_stream = streams.lookup (args(1), "dup2");
-
-  int i_old = old_stream.file_number ();
-  int i_new = new_stream.file_number ();
-
-  if (i_old >= 0 && i_new >= 0)
+  int i_old, i_new;
+  try
     {
-      std::string msg;
+      // Look up FID in Octave's list of open streams.
+      stream_list& streams = interp.get_stream_list ();
 
-      int status = sys::dup2 (i_old, i_new, msg);
+      stream old_stream = streams.lookup (args(0), "dup2");
+      stream new_stream = streams.lookup (args(1), "dup2");
 
-      return ovl (status, msg);
+      i_old = old_stream.file_number ();
+      i_new = new_stream.file_number ();
     }
-  else
+  catch (execution_exception& ee)
+    {
+      // If the FIDs are not known to Octave, try the provided FIDs directly.
+      i_old = args(0).int_value (true);
+      i_new = args(1).int_value (true);
+    }
+
+  if (i_old < 0 || i_new < 0)
+    // Bad FIDs, return error immediately
     return ovl (-1, "");
+
+  std::string msg;
+
+  int status = sys::dup2 (i_old, i_new, msg);
+
+  return ovl (status, msg);
 }
 
 DEFMETHODX ("exec", Fexec, interp, args, ,
@@ -439,20 +448,27 @@ message.
   if (args.length () != 3)
     print_usage ();
 
-  stream_list& streams = interp.get_stream_list ();
+  int fid;
+  try
+    {
+      // Look up FID in Octave's list of open streams.
+      stream_list& streams = interp.get_stream_list ();
+      stream strm = streams.lookup (args(0), "fcntl");
+      fid = strm.file_number ();
+    }
+  catch (execution_exception& ee)
+    {
+      // If the file is not known to Octave, try the provided file ID directly.
+      fid = args(0).int_value (true);
+    }
 
-  stream strm = streams.lookup (args(0), "fcntl");
-
-  int fid = strm.file_number ();
+  if (fid < 0)
+    error ("fcntl: invalid file id FID");
 
   // FIXME: Do we want to use xint_value and throw a warning message
   //        if input validation fails?
   int req = args(1).int_value (true);
   int arg = args(2).int_value (true);
-
-  // FIXME: Need better checking here?
-  if (fid < 0)
-    error ("fcntl: invalid file id");
 
   octave_value_list retval;
   std::string msg;
@@ -908,9 +924,21 @@ For example:
 
   if (args(0).is_scalar_type ())
     {
-      stream_list& streams = interp.get_stream_list ();
+      int fid;
+      try
+        {
+          // Look up FID in Octave's list of open streams.
+          stream_list& streams = interp.get_stream_list ();
+          fid = streams.get_file_number (args(0));
+        }
+      catch (execution_exception& ee)
+        {
+          // If the file is not known to Octave, try provided file ID directly.
+          fid = args(0).int_value (true);
+        }
 
-      int fid = streams.get_file_number (args(0));
+      if (fid < 0)
+        error ("stat: invalid file id FID");
 
       sys::file_fstat fs (fid);
 

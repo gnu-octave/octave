@@ -675,6 +675,20 @@ get_help_from_fcn (const std::string& fcn_nm, const octave_value& ov_fcn, std::s
       help = fcn->doc_string (fcn_nm);
       what = fcn->fcn_file_name ();
 
+      if (help.empty () && ov_fcn.is_user_function ())
+        {
+          octave_user_function *ufcn = ov_fcn.user_function_value ();
+
+          if (ufcn->is_classdef_constructor ())
+            help = "undocumented constructor: ";
+          else if (ufcn->is_classdef_method ())
+            help = "undocumented method: ";
+          else
+            help = "undocumented function: ";
+
+          help += ufcn->signature ();
+        }
+
       if (what.empty ())
         what = fcn->is_user_function () ? "command-line function" : "built-in function";
 
@@ -719,10 +733,23 @@ help_system::raw_help_for_class (const cdef_class& cls,
             }
         }
 
-      // We found a class, but no docstring for it or its constructor.
-      // Create a generic doc string.
-      help = name + " is an undocumented class";
-      what = "class";
+      // No dot in name and class is undocumented.  Look for documented
+      // constructor.
+
+      octave_value ov_meth = cls.get_method (name);
+
+      if (get_help_from_fcn (name, ov_meth, help, what, symbol_found))
+        {
+          what = "constructor";
+          symbol_found = true;
+          return true;
+        }
+
+      // We found a class, but no docstring for it and there is no
+      // constructor explicitly defined.
+
+      help = "default constructor: obj = " + name + " ()";
+      what = "constructor";
       symbol_found = true;
       return true;
     }
@@ -813,7 +840,21 @@ help_system::raw_help_from_symbol_table (const std::string& name, std::string& h
       octave_value ov_meth = cls.get_method (nm);
 
       if (get_help_from_fcn (nm, ov_meth, help, what, symbol_found))
-        return true;
+        {
+          what = "class method";
+          return true;
+        }
+
+      // Found class but no method.  If the NM is the same as the name
+      // of the class, then we have a default constructor.
+
+      if (cls.get_name () == nm)
+        {
+          help = "default constructor: obj = " + nm + " ()";
+          what = "constructor";
+          symbol_found = true;
+          return true;
+        }
 
       // FIXME: Should we only find public properties here?
 

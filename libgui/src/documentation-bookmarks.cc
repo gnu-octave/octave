@@ -340,7 +340,7 @@ documentation_bookmarks::ctx_menu (const QPoint& xpos)
     }
 
   menu.addAction (tr ("&Add Folder"), this,
-                  QOverload<bool>::of (&documentation_bookmarks::add_folder));
+                  qOverload<bool> (&documentation_bookmarks::add_folder));
 
   menu.addSeparator ();
 

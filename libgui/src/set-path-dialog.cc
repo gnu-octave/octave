@@ -120,11 +120,11 @@ set_path_dialog::set_path_dialog (QWidget *parent)
   // Any interpreter_event signal from a set_path_model object is
   // handled the same as for the parent set_path_dialog object.
 
-  connect (model, QOverload<const fcn_callback&>::of (&set_path_model::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&set_path_dialog::interpreter_event));
+  connect (model, qOverload<const fcn_callback&> (&set_path_model::interpreter_event),
+           this, qOverload<const fcn_callback&> (&set_path_dialog::interpreter_event));
 
-  connect (model, QOverload<const meth_callback&>::of (&set_path_model::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&set_path_dialog::interpreter_event));
+  connect (model, qOverload<const meth_callback&> (&set_path_model::interpreter_event),
+           this, qOverload<const meth_callback&> (&set_path_dialog::interpreter_event));
 
   m_path_list = new QListView (this);
   m_path_list->setWordWrap (false);

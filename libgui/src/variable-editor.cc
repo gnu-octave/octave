@@ -1297,11 +1297,11 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
 
   // Any interpreter_event signal from a variable_editor_stack object is
   // handled the same as for the parent variable_editor object.
-  connect (stack, QOverload<const fcn_callback&>::of (&variable_editor_stack::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&variable_editor::interpreter_event));
+  connect (stack, qOverload<const fcn_callback&> (&variable_editor_stack::interpreter_event),
+           this, qOverload<const fcn_callback&> (&variable_editor::interpreter_event));
 
-  connect (stack, QOverload<const meth_callback&>::of (&variable_editor_stack::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&variable_editor::interpreter_event));
+  connect (stack, qOverload<const meth_callback&> (&variable_editor_stack::interpreter_event),
+           this, qOverload<const meth_callback&> (&variable_editor::interpreter_event));
 
   connect (stack, &variable_editor_stack::edit_variable_signal,
            this, &variable_editor::edit_variable);
@@ -1373,11 +1373,11 @@ variable_editor::edit_variable (const QString& name, const octave_value& val)
   // Any interpreter_event signal from a variable_editor_model object is
   // handled the same as for the parent variable_editor object.
 
-  connect (model, QOverload<const fcn_callback&>::of (&variable_editor_model::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&variable_editor::interpreter_event));
+  connect (model, qOverload<const fcn_callback&> (&variable_editor_model::interpreter_event),
+           this, qOverload<const fcn_callback&> (&variable_editor::interpreter_event));
 
-  connect (model, QOverload<const meth_callback&>::of (&variable_editor_model::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&variable_editor::interpreter_event));
+  connect (model, qOverload<const meth_callback&> (&variable_editor_model::interpreter_event),
+           this, qOverload<const meth_callback&> (&variable_editor::interpreter_event));
 
   // Must supply a title for a QLabel to be created.  Calling set_title()
   // more than once will add more QLabels.  Could change octave_dock_widget

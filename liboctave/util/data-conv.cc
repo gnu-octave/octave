@@ -391,8 +391,21 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
         {
           if (s[pos] == '*')
             {
-              block_size = atoi (s.c_str ());
-              s = s.substr (pos+1);
+              try
+                {
+                  block_size = std::stoi (s);
+                  s = s.substr (pos+1);
+                }
+              catch (const std::invalid_argument&)
+                {
+                  (*current_liboctave_error_handler)
+                    ("invalid repeat count in '%s'", s.c_str ());
+                }
+              catch (const std::out_of_range&)
+                {
+                  (*current_liboctave_error_handler)
+                    ("repeat count out of range in '%s'", s.c_str ());
+                }
             }
           else
             (*current_liboctave_error_handler)
@@ -458,8 +471,21 @@ oct_data_conv::string_to_data_type (const std::string& str, int& block_size,
     {
       if (s[pos] == '*')
         {
-          block_size = atoi (s.c_str ());
-          s = s.substr (pos+1);
+          try
+            {
+              block_size = std::stoi (s);
+              s = s.substr (pos+1);
+            }
+          catch (const std::invalid_argument&)
+            {
+              (*current_liboctave_error_handler)
+                ("invalid repeat count in '%s'", s.c_str ());
+            }
+          catch (const std::out_of_range&)
+            {
+              (*current_liboctave_error_handler)
+                ("repeat count out of range in '%s'", s.c_str ());
+            }
         }
       else
         (*current_liboctave_error_handler)

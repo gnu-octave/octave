@@ -485,7 +485,7 @@ message.
       if (status < 0)
         retval = ovl (-1.0, msg);
       else
-        retval = ovl (0.0, "");
+        retval = ovl (status, "");
     }
 
   return retval;

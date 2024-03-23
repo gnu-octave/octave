@@ -437,7 +437,7 @@ settings_dialog::read_settings (bool first)
     {
       proxy_type->addItems (global_proxy_all_types);
       // Connect relevant signals for dis-/enabling some elements
-      connect (proxy_type, QOverload<int>::of (&QComboBox::currentIndexChanged),
+      connect (proxy_type, qOverload<int> (&QComboBox::currentIndexChanged),
                this, &settings_dialog::proxy_items_update);
       connect (use_proxy_server, &QCheckBox::toggled,
                this, &settings_dialog::proxy_items_update);

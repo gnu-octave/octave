@@ -592,6 +592,69 @@ is stopped.
   return ovl ();
 }
 
+static bool
+parse_start_end (const std::string& arg, int& start, int& end, const char *who)
+{
+  start = 0;
+  end = 0;
+
+  std::size_t ind = arg.find (':');
+
+  if (ind != std::string::npos)  // (start:end)
+    {
+      std::string start_str = arg.substr (0, ind);
+      std::string end_str = arg.substr (ind+1);
+
+      try
+        {
+          start = std::stoi (start_str);
+
+          if (end_str == "end")
+            end = std::numeric_limits<int>::max ();
+          else
+            end = std::stoi (end_str);
+        }
+      catch (const std::invalid_argument&)
+        {
+          error ("%s: invalid integer conversion while parsing range '%s'", who, arg.c_str ());
+        }
+      catch (const std::out_of_range&)
+        {
+          error ("%s: integer value out of bounds while parsing range '%s'", who, arg.c_str ());
+        }
+
+      if (std::min (start, end) <= 0)
+        error ("%s: start and end lines must be >= 1\n", who);
+
+      if (start > end)
+        error ("%s: start line must be less than end line\n", who);
+    }
+  else  // (dbtype lineno)
+    {
+      try
+        {
+          int line = std::stoi (arg);
+
+          if (line <= 0)
+            error ("%s: start and end lines must be >= 1\n", who);
+
+          start = line;
+          end = line;
+        }
+      catch (const std::invalid_argument&)
+        {
+          // May be a name instead of a number.
+          return false;
+        }
+      catch (const std::out_of_range&)
+        {
+          error ("%s: integer value out of bounds while parsing '%s'", who, arg.c_str ());
+        }
+    }
+
+  return true;
+}
+
 DEFMETHOD (dbtype, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} dbtype
@@ -633,40 +696,8 @@ numbers.
       {
         std::string arg = argv[1];
 
-        std::size_t ind = arg.find (':');
-
-        if (ind != std::string::npos)  // (dbtype start:end)
-          {
-            std::string start_str = arg.substr (0, ind);
-            std::string end_str = arg.substr (ind + 1);
-
-            start = atoi (start_str.c_str ());
-            if (end_str == "end")
-              end = std::numeric_limits<int>::max ();
-            else
-              end = atoi (end_str.c_str ());
-
-            if (std::min (start, end) <= 0)
-              error ("dbtype: start and end lines must be >= 1\n");
-
-            if (start > end)
-              error ("dbtype: start line must be less than end line\n");
-          }
-        else  // (dbtype fcn) || (dbtype lineno)
-          {
-            int line = atoi (arg.c_str ());
-
-            if (line == 0)  // (dbtype fcn)
-              fcn_name = arg;
-            else  // (dbtype lineno)
-              {
-                if (line <= 0)
-                  error ("dbtype: start and end lines must be >= 1\n");
-
-                start = line;
-                end = line;
-              }
-          }
+        if (! parse_start_end (arg, start, end, "dbtype"))
+          fcn_name = arg;
       }
       break;
 
@@ -674,31 +705,8 @@ numbers.
       {
         fcn_name = argv[1];
 
-        std::string arg = argv[2];
-        std::size_t ind = arg.find (':');
-
-        if (ind != std::string::npos)
-          {
-            std::string start_str = arg.substr (0, ind);
-            std::string end_str = arg.substr (ind + 1);
-
-            start = atoi (start_str.c_str ());
-            if (end_str == "end")
-              end = std::numeric_limits<int>::max ();
-            else
-              end = atoi (end_str.c_str ());
-          }
-        else
-          {
-            start = atoi (arg.c_str ());
-            end = start;
-          }
-
-        if (std::min (start, end) <= 0)
-          error ("dbtype: start and end lines must be >= 1\n");
-
-        if (start > end)
-          error ("dbtype: start line must be less than end line\n");
+        if (! parse_start_end (argv[2], start, end, "dbtype"))
+          error ("dbtype: expecting start:end or location argument, found '%s'", argv[2].c_str ());
       }
       break;
 
@@ -725,6 +733,27 @@ numbers.
   return ovl ();
 }
 
+static int
+parse_integer_argument (const std::string& arg, const char *who)
+{
+  int n = 0;
+
+  try
+    {
+      n = std::stoi (arg);
+    }
+  catch (const std::invalid_argument&)
+    {
+      error ("%s: invalid value of N, found '%s'", arg.c_str (), who);
+    }
+  catch (const std::out_of_range&)
+    {
+      error ("%s: value of N ('%s') is out of range", arg.c_str (), who);
+    }
+
+  return n;
+}
+
 DEFMETHOD (dblist, interp, args, ,
            doc: /* -*- texinfo -*-
 @deftypefn  {} {} dblist
@@ -748,11 +777,7 @@ If unspecified @var{n} defaults to 10 (+/- 5 lines)
       octave_value arg = args(0);
 
       if (arg.is_string ())
-        {
-          std::string s_arg = arg.string_value ();
-
-          n = atoi (s_arg.c_str ());
-        }
+        n = parse_integer_argument (arg.string_value (), "dblist");
       else
         n = args(0).int_value ();
 
@@ -798,7 +823,7 @@ do_dbstack (octave::interpreter& interp, const octave_value_list& args,
               if (s_arg == "-completenames")
                 continue;
 
-              n = atoi (s_arg.c_str ());
+              n = parse_integer_argument (s_arg, "dbstack");
             }
           else
             n = arg.int_value ();
@@ -944,11 +969,7 @@ do_dbupdown (octave::interpreter& interp, const octave_value_list& args,
       octave_value arg = args(0);
 
       if (arg.is_string ())
-        {
-          std::string s_arg = arg.string_value ();
-
-          n = atoi (s_arg.c_str ());
-        }
+        n = parse_integer_argument (arg.string_value (), who.c_str ());
       else
         n = args(0).int_value ();
     }
@@ -1038,10 +1059,10 @@ interchangeably.
         n = -2;
       else
         {
-          n = atoi (arg.c_str ());
+          n = parse_integer_argument (arg, "dbstep");
 
           if (n < 1)
-            error ("dbstep: invalid argument");
+            error ("dbstep: N must be greater than zero");
         }
     }
   else

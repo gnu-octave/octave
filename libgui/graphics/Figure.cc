@@ -122,11 +122,11 @@ Figure::Figure (octave::interpreter& interp,
   m_container = new Container (win, interp);
   win->setCentralWidget (m_container);
 
-  connect (m_container, QOverload<const octave::fcn_callback&>::of (&Container::interpreter_event),
-           this, QOverload<const octave::fcn_callback&>::of (&Figure::interpreter_event));
+  connect (m_container, qOverload<const octave::fcn_callback&> (&Container::interpreter_event),
+           this, qOverload<const octave::fcn_callback&> (&Figure::interpreter_event));
 
-  connect (m_container, QOverload<const octave::meth_callback&>::of (&Container::interpreter_event),
-           this, QOverload<const octave::meth_callback&>::of (&Figure::interpreter_event));
+  connect (m_container, qOverload<const octave::meth_callback&> (&Container::interpreter_event),
+           this, qOverload<const octave::meth_callback&> (&Figure::interpreter_event));
 
   figure::properties& fp = properties<figure> ();
 

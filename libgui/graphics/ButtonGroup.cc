@@ -179,7 +179,7 @@ ButtonGroup::ButtonGroup (octave::interpreter& interp,
     frame->hide ();
 
   connect (m_buttongroup,
-           QOverload<QAbstractButton *>::of (&QButtonGroup::buttonClicked),
+           qOverload<QAbstractButton *> (&QButtonGroup::buttonClicked),
            this, &ButtonGroup::buttonClicked);
 }
 

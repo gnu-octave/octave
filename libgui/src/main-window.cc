@@ -258,7 +258,7 @@ main_window::adopt_terminal_widget ()
                this, &main_window::edit_mfile);
 
       connect (cmd_widget, &QTerminal::request_open_file_signal,
-               this, QOverload<const QString&, const QString&, int>::of (&main_window::open_file_signal));
+               this, qOverload<const QString&, const QString&, int> (&main_window::open_file_signal));
 
       connect (cmd_widget, &QTerminal::set_screen_size_signal,
                this, &main_window::set_screen_size);
@@ -289,7 +289,7 @@ main_window::adopt_file_browser_widget ()
   make_dock_widget_connections (m_file_browser_window);
 
   connect (m_file_browser_window, &files_dock_widget::open_file,
-           this, QOverload<const QString&>::of (&main_window::open_file_signal));
+           this, qOverload<const QString&> (&main_window::open_file_signal));
   connect (m_file_browser_window,
            &files_dock_widget::displayed_directory_changed,
            this, &main_window::set_current_working_directory);
@@ -357,7 +357,7 @@ main_window::adopt_editor_widget ()
            &workspace_model::show_symbol_tooltip);
 
   connect (editor, &file_editor::request_settings_dialog,
-           this, QOverload<const QString&>::of (&main_window::process_settings_dialog_request));
+           this, qOverload<const QString&> (&main_window::process_settings_dialog_request));
 
   connect (editor, &file_editor::request_dbcont_signal,
            this, &main_window::debug_continue);
@@ -1894,11 +1894,11 @@ main_window::handle_set_path_dialog_request ()
   // Any interpreter_event signal from a set_path_dialog object is
   // handled the same as for the main_window object.
 
-  connect (m_set_path_dlg, QOverload<const fcn_callback&>::of (&set_path_dialog::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&main_window::interpreter_event));
+  connect (m_set_path_dlg, qOverload<const fcn_callback&> (&set_path_dialog::interpreter_event),
+           this, qOverload<const fcn_callback&> (&main_window::interpreter_event));
 
-  connect (m_set_path_dlg, QOverload<const meth_callback&>::of (&set_path_dialog::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&main_window::interpreter_event));
+  connect (m_set_path_dlg, qOverload<const meth_callback&> (&set_path_dialog::interpreter_event),
+           this, qOverload<const meth_callback&> (&main_window::interpreter_event));
 
   connect (m_set_path_dlg, &set_path_dialog::modify_path_signal,
            this, &main_window::modify_path);
@@ -1931,7 +1931,7 @@ main_window::find_files (const QString& start_dir)
                m_file_browser_window, &files_dock_widget::set_current_directory);
 
       connect (m_find_files_dlg, &find_files_dialog::file_selected,
-               this, QOverload<const QString&>::of (&main_window::open_file_signal));
+               this, qOverload<const QString&> (&main_window::open_file_signal));
 
       m_find_files_dlg->setWindowModality (Qt::NonModal);
     }
@@ -2166,11 +2166,11 @@ main_window::construct ()
   connect (qt_link, &qt_interpreter_events::file_remove_signal,
            this, &main_window::file_remove_proxy);
 
-  connect (this, QOverload<const fcn_callback&>::of (&main_window::interpreter_event),
-           &m_octave_qobj, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
+  connect (this, qOverload<const fcn_callback&> (&main_window::interpreter_event),
+           &m_octave_qobj, qOverload<const fcn_callback&> (&base_qobject::interpreter_event));
 
-  connect (this, QOverload<const meth_callback&>::of (&main_window::interpreter_event),
-           &m_octave_qobj, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
+  connect (this, qOverload<const meth_callback&> (&main_window::interpreter_event),
+           &m_octave_qobj, qOverload<const meth_callback&> (&base_qobject::interpreter_event));
 
   configure_shortcuts ();
 }

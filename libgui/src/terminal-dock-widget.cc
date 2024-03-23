@@ -92,11 +92,11 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
       connect (this, &terminal_dock_widget::visibilityChanged,
                widget, &QTerminal::handle_visibility_changed);
 
-      connect (widget, QOverload<const fcn_callback&>::of (&QTerminal::interpreter_event),
-               this, QOverload<const fcn_callback&>::of (&terminal_dock_widget::interpreter_event));
+      connect (widget, qOverload<const fcn_callback&> (&QTerminal::interpreter_event),
+               this, qOverload<const fcn_callback&> (&terminal_dock_widget::interpreter_event));
 
-      connect (widget, QOverload<const meth_callback&>::of (&QTerminal::interpreter_event),
-               this, QOverload<const meth_callback&>::of (&terminal_dock_widget::interpreter_event));
+      connect (widget, qOverload<const meth_callback&> (&QTerminal::interpreter_event),
+               this, qOverload<const meth_callback&> (&terminal_dock_widget::interpreter_event));
 
       m_terminal = widget;
     }

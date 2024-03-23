@@ -239,11 +239,11 @@ base_qobject::base_qobject (qt_application& app_context, bool gui_app)
   // Handle any interpreter_event signal from the octave_qapplication
   // object here.
 
-  connect (m_qapplication, QOverload<const fcn_callback&>::of (&octave_qapplication::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
+  connect (m_qapplication, qOverload<const fcn_callback&> (&octave_qapplication::interpreter_event),
+           this, qOverload<const fcn_callback&> (&base_qobject::interpreter_event));
 
-  connect (m_qapplication, QOverload<const meth_callback&>::of (&octave_qapplication::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
+  connect (m_qapplication, qOverload<const meth_callback&> (&octave_qapplication::interpreter_event),
+           this, qOverload<const meth_callback&> (&base_qobject::interpreter_event));
 
   if (m_app_context.experimental_terminal_widget ())
     {

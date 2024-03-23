@@ -232,11 +232,11 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   // Any interpreter_event signal from a file_editor_tab_widget is
   // handled the same as for the parent main_window object.
 
-  connect (m_edit_area, QOverload<const fcn_callback&>::of (&octave_qscintilla::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&file_editor_tab::interpreter_event));
+  connect (m_edit_area, qOverload<const fcn_callback&> (&octave_qscintilla::interpreter_event),
+           this, qOverload<const fcn_callback&> (&file_editor_tab::interpreter_event));
 
-  connect (m_edit_area, QOverload<const meth_callback&>::of (&octave_qscintilla::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&file_editor_tab::interpreter_event));
+  connect (m_edit_area, qOverload<const meth_callback&> (&octave_qscintilla::interpreter_event),
+           this, qOverload<const meth_callback&> (&file_editor_tab::interpreter_event));
 
   // connect modified signal
   connect (m_edit_area, SIGNAL (modificationChanged (bool)),

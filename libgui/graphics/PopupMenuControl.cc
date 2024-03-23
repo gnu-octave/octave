@@ -64,7 +64,7 @@ PopupMenuControl::PopupMenuControl (octave::interpreter& interp,
 
   update (uicontrol::properties::ID_VALUE);
 
-  connect (box, QOverload<int>::of (&QComboBox::activated),
+  connect (box, qOverload<int> (&QComboBox::activated),
            this, &PopupMenuControl::currentIndexChanged);
 }
 

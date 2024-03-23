@@ -90,11 +90,11 @@ command_widget::command_widget (QWidget *p)
   connect (this, &command_widget::new_command_line_signal,
            m_console, &console::new_command_line);
 
-  connect (m_console, QOverload<const fcn_callback&>::of (&console::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&command_widget::interpreter_event));
+  connect (m_console, qOverload<const fcn_callback&> (&console::interpreter_event),
+           this, qOverload<const fcn_callback&> (&command_widget::interpreter_event));
 
-  connect (m_console, QOverload<const meth_callback&>::of (&console::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&command_widget::interpreter_event));
+  connect (m_console, qOverload<const meth_callback&> (&console::interpreter_event),
+           this, qOverload<const meth_callback&> (&command_widget::interpreter_event));
 
   insert_interpreter_output ("\n\n    Welcome to Octave\n\n");
 

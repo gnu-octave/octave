@@ -69,11 +69,11 @@ Container::canvas (const graphics_handle& gh, bool xcreate)
           m_canvas = Canvas::create (m_interpreter, gh, this,
                                      fig.get ("renderer").string_value ());
 
-          connect (m_canvas, QOverload<const octave::fcn_callback&>::of (&Canvas::interpreter_event),
-                   this, QOverload<const octave::fcn_callback&>::of (&Container::interpreter_event));
+          connect (m_canvas, qOverload<const octave::fcn_callback&> (&Canvas::interpreter_event),
+                   this, qOverload<const octave::fcn_callback&> (&Container::interpreter_event));
 
-          connect (m_canvas, QOverload<const octave::meth_callback&>::of (&Canvas::interpreter_event),
-                   this, QOverload<const octave::meth_callback&>::of (&Container::interpreter_event));
+          connect (m_canvas, qOverload<const octave::meth_callback&> (&Canvas::interpreter_event),
+                   this, qOverload<const octave::meth_callback&> (&Container::interpreter_event));
 
           connect (m_canvas,
                    SIGNAL (gh_callback_event (const graphics_handle&,

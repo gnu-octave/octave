@@ -194,11 +194,11 @@ public:
 
   template <typename T> void connect_interpreter_events (T *widget)
   {
-    connect (widget, QOverload<const fcn_callback&>::of (&T::interpreter_event),
-             this, QOverload<const fcn_callback&>::of (&base_qobject::interpreter_event));
+    connect (widget, qOverload<const fcn_callback&> (&T::interpreter_event),
+             this, qOverload<const fcn_callback&> (&base_qobject::interpreter_event));
 
-    connect (widget, QOverload<const meth_callback&>::of (&T::interpreter_event),
-             this, QOverload<const meth_callback&>::of (&base_qobject::interpreter_event));
+    connect (widget, qOverload<const meth_callback&> (&T::interpreter_event),
+             this, qOverload<const meth_callback&> (&base_qobject::interpreter_event));
   }
 
 public slots:

@@ -2629,8 +2629,8 @@ file_editor::make_file_editor_tab (const QString& directory)
   connect (this, &file_editor::fetab_change_request,
            f, &file_editor_tab::change_editor_state);
 
-  connect (this, QOverload<const QWidget *, const QString&, bool>::of (&file_editor::fetab_save_file),
-           f, QOverload<const QWidget *, const QString&, bool>::of (&file_editor_tab::save_file));
+  connect (this, qOverload<const QWidget *, const QString&, bool> (&file_editor::fetab_save_file),
+           f, qOverload<const QWidget *, const QString&, bool> (&file_editor_tab::save_file));
 
   // Signals from the file_editor trivial operations
   connect (this, &file_editor::fetab_recover_from_exit,
@@ -2652,11 +2652,11 @@ file_editor::make_file_editor_tab (const QString& directory)
   connect (this, &file_editor::fetab_context_edit,
            f, &file_editor_tab::context_edit);
 
-  connect (this, QOverload<const QWidget *>::of (&file_editor::fetab_save_file),
-           f, QOverload<const QWidget *>::of (&file_editor_tab::save_file));
+  connect (this, qOverload<const QWidget *> (&file_editor::fetab_save_file),
+           f, qOverload<const QWidget *> (&file_editor_tab::save_file));
 
   connect (this, &file_editor::fetab_save_file_as,
-           f, QOverload<const QWidget *>::of (&file_editor_tab::save_file_as));
+           f, qOverload<const QWidget *> (&file_editor_tab::save_file_as));
 
   connect (this, &file_editor::fetab_print_file,
            f, &file_editor_tab::print_file);
@@ -2756,11 +2756,11 @@ file_editor::make_file_editor_tab (const QString& directory)
   // Any interpreter_event signal from a file_editor_tab_widget is
   // handled the same as for the parent main_window object.
 
-  connect (f, QOverload<const fcn_callback&>::of (&file_editor_tab::interpreter_event),
-           this, QOverload<const fcn_callback&>::of (&file_editor::interpreter_event));
+  connect (f, qOverload<const fcn_callback&> (&file_editor_tab::interpreter_event),
+           this, qOverload<const fcn_callback&> (&file_editor::interpreter_event));
 
-  connect (f, QOverload<const meth_callback&>::of (&file_editor_tab::interpreter_event),
-           this, QOverload<const meth_callback&>::of (&file_editor::interpreter_event));
+  connect (f, qOverload<const meth_callback&> (&file_editor_tab::interpreter_event),
+           this, qOverload<const meth_callback&> (&file_editor::interpreter_event));
 
   return f;
 }

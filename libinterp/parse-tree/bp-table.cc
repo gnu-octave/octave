@@ -370,6 +370,9 @@ bp_table::parse_dbfunction_params (const char *who,
       // allow "in" and "at" to be implicit
       if (args(pos).is_string ())
         {
+          // Default value.
+          tok = dbstop_in;
+
           std::string arg = args(pos).string_value ();
           if (arg == "in")
             {
@@ -386,10 +389,16 @@ bp_table::parse_dbfunction_params (const char *who,
               tok = dbstop_if;
               pos++;
             }
-          else if (atoi (args(pos).string_value ().c_str ()) > 0)
-            tok = dbstop_at;
           else
-            tok = dbstop_in;
+            {
+              try
+                {
+                  if (std::stoi (args(pos).string_value ()) > 0)
+                    tok = dbstop_at;
+                }
+              catch (const std::invalid_argument&) { }
+              catch (const std::out_of_range&) { }
+            }
         }
       else
         tok = dbstop_at;
@@ -431,8 +440,27 @@ bp_table::parse_dbfunction_params (const char *who,
               // FIXME: we really want to distinguish number
               // vs. method name here.
 
-              if (atoi (arg.c_str ()) == 0)
+              // FIXME: I'm not sure what the
+
+              bool int_conv_ok = true;
+
+              try
                 {
+                  if (std::stoi (arg) == 0)
+                    int_conv_ok = false;
+                }
+              catch (const std::invalid_argument&)
+                {
+                  int_conv_ok = false;
+                }
+              catch (const std::out_of_range&)
+                {
+                  int_conv_ok = false;
+                }
+
+              if (! int_conv_ok)
+                {
+                  // Assume we are looking at a function name.
                   // We have class and function names but already
                   // stored the class name in fcn_name.
                   class_name = fcn_name;
@@ -458,12 +486,27 @@ bp_table::parse_dbfunction_params (const char *who,
             {
               if (args(pos).is_string ())
                 {
-                  int line = atoi (args(pos).string_value ().c_str ());
+                  bool skip = false;
 
-                  if (line > 0)
-                    lines.insert (line);
-                  else
-                    break;        // may be "if" or a method name
+                  std::string str = args(pos).string_value ();
+
+                  try
+                    {
+                      int line = std::stoi (str);
+
+                      if (line > 0)
+                        lines.insert (line);
+                      else
+                        break; // may be "if" or a method name
+                    }
+                  catch (const std::invalid_argument&)
+                    {
+                      break; // may be "if" or a method name
+                    }
+                  catch (const std::out_of_range&)
+                    {
+                      error ("dbstop: location value out of range '%s'", str.c_str ());
+                    }
                 }
               else if (args(pos).isnumeric ())
                 {

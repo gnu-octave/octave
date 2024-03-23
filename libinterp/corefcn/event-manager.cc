@@ -362,7 +362,19 @@ Undocumented internal function.
               if (idx != 2)
                 retval(idx++) = str;
               else
-                retval(idx++) = atoi (str.c_str ());
+                {
+                  // FIXME: Should we warn or error on invalid or out of
+                  // range values in STR?  When atoi was used for
+                  // conversion instead of std::stoi we did not.  Was
+                  // that intentional?
+
+                  try
+                    {
+                      retval(idx++) = std::stoi (str);
+                    }
+                  catch (const std::invalid_argument&) { }
+                  catch (const std::out_of_range&) { }
+                }
             }
         }
     }
@@ -377,7 +389,22 @@ Undocumented internal function.
       for (int idx = 0; idx < nel; idx++, it++)
         items.xelem (idx) = *it;
 
-      retval = ovl (items, *it++, atoi (it->c_str ()));
+      auto fpath = *it++;
+
+      int idx = 0;
+
+      // FIXME: Should we warn or error on invalid or out of range
+      // values in *IT?  When atoi was used for conversion instead of
+      // std::stoi we did not.  Was that intentional?
+
+      try
+        {
+          idx = std::stoi (*it);
+        }
+      catch (const std::invalid_argument&) { }
+      catch (const std::out_of_range&) { }
+
+      retval = ovl (items, fpath, idx);
     }
 
   return retval;

@@ -603,9 +603,21 @@ public:
                   {
                     std::string valstr = fltk_label.substr (idx1 + 1, len - 1);
                     fltk_label.erase (idx1, len + 1);
-                    val = atoi (valstr.c_str ());
-                    if (val > 0 && val < 99)
-                      val++;
+
+                    // FIXME: Should we warn or error on invalid or out
+                    // of range values in VALSTR?  When atoi was used
+                    // for conversion instead of std::stoi we did not.
+                    // Was that intentional?
+
+                    try
+                      {
+                        val = std::stoi (valstr);
+
+                        if (val > 0 && val < 99)
+                          val++;
+                      }
+                    catch (const std::invalid_argument&) { }
+                    catch (const std::out_of_range&) { }
                   }
                 std::ostringstream valstream;
                 valstream << val;

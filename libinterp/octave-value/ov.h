@@ -36,6 +36,8 @@
 #include <memory>
 #include <map>
 
+#include "panic.h"
+
 #include "data-conv.h"
 #include "idx-vector.h"
 #include "mach-info.h"
@@ -1697,11 +1699,10 @@ OV_COMP_BINOP_FN (op_mul_herm)
 extern OCTINTERP_API void install_types (octave::type_info&);
 
 // Templated value extractors.
-// FIXME: would be more consistent to use panic_impossible(), rather than
-//        assert(), but including "error.h" leads to compilation errors.
+
 template <typename Value>
 inline Value octave_value_extract (const octave_value&)
-{ assert (false); }
+{ panic_impossible (); }
 
 #define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX)                              \
   template <>                                                           \
@@ -1772,7 +1773,7 @@ DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
   template <>                                                           \
   inline VALUE octave_value_extract<VALUE> (const octave_value&)        \
   {                                                                     \
-    assert (false);                                                     \
+    panic_impossible ();                                                \
     return DEFVAL;                                                      \
   }
 

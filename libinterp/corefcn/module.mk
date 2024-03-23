@@ -79,6 +79,7 @@ COREFCN_INC = \
   %reldir%/oct.h \
   %reldir%/octave-default-image.h \
   %reldir%/pager.h \
+  %reldir%/panic.h \
   %reldir%/pr-flt-fmt.h \
   %reldir%/pr-output.h \
   %reldir%/procstream.h \
@@ -235,6 +236,7 @@ COREFCN_SRC = \
   %reldir%/ordqz.cc \
   %reldir%/ordschur.cc \
   %reldir%/pager.cc \
+  %reldir%/panic.cc \
   %reldir%/perms.cc \
   %reldir%/pinv.cc \
   %reldir%/pow2.cc \

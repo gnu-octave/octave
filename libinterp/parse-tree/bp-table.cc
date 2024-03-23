@@ -486,8 +486,6 @@ bp_table::parse_dbfunction_params (const char *who,
             {
               if (args(pos).is_string ())
                 {
-                  bool skip = false;
-
                   std::string str = args(pos).string_value ();
 
                   try

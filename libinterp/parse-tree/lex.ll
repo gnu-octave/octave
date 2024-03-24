@@ -2358,7 +2358,7 @@ looks_like_shebang (const std::string& s)
     else
       len = max_size > m_chars_left ? m_chars_left : max_size;
 
-    assert (len > 0);
+    panic_unless (len > 0);
     memcpy (buf, m_buffer.c_str () + m_offset, len);
 
     m_chars_left -= len;
@@ -3106,9 +3106,10 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     nread = sscanf (tmptxt, "%lf", &value);
 
-    // If yytext doesn't contain a valid number, we are in deep doo doo.
+    // Panic instead of error because if yytext doesn't contain a valid
+    // number, we are in deep doo doo.
 
-    assert (nread == 1);
+    panic_unless (nread == 1);
 
     octave_value ov_value;
 
@@ -3213,12 +3214,12 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         return syntax_error (msg);
       }
 
-    // Assert here because if yytext doesn't contain a valid number, we
-    // are in deep doo doo.
+    // Panic instead of error here because if yytext doesn't contain a
+    // valid number, we are in deep doo doo.
 
     uintmax_t long_int_val;
     int status = sscanf (yytxt.c_str (), "%jx", &long_int_val);
-    assert (status);
+    panic_unless (status);
 
     octave_value ov_value
       = make_integer_value (long_int_val, unsigned_val, bytes);
@@ -4052,7 +4053,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         // input_buffer::copy_chunk, simply insert the marker directly
         // in BUF.
 
-        assert (max_size > 0);
+        panic_unless (max_size > 0);
 
         buf[0] = static_cast<char> (1);
         status = 1;

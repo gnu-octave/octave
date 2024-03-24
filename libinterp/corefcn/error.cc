@@ -1113,25 +1113,6 @@ parse_error_with_id (const char *id, const char *fmt, ...)
   va_end (args);
 }
 
-OCTAVE_NORETURN
-void
-vpanic (const char *fmt, va_list args)
-{
-  octave::error_system& es = octave::__get_error_system__ ();
-
-  es.vpanic (fmt, args);
-}
-
-OCTAVE_NORETURN
-void
-panic (const char *fmt, ...)
-{
-  va_list args;
-  va_start (args, fmt);
-  vpanic (fmt, args);
-  va_end (args);
-}
-
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 void

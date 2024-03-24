@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
-
 #include <algorithm>
 
 #include "Array.h"
@@ -54,7 +52,7 @@ OCTAVE_API
 void
 qrp<Matrix>::init (const Matrix& a, type qr_type)
 {
-  assert (qr_type != qr<Matrix>::raw);
+  liboctave_panic_if (qr_type == qr<Matrix>::raw);
 
   F77_INT m = to_f77_int (a.rows ());
   F77_INT n = to_f77_int (a.cols ());
@@ -125,7 +123,7 @@ OCTAVE_API
 void
 qrp<FloatMatrix>::init (const FloatMatrix& a, type qr_type)
 {
-  assert (qr_type != qr<FloatMatrix>::raw);
+  liboctave_panic_if (qr_type == qr<FloatMatrix>::raw);
 
   F77_INT m = to_f77_int (a.rows ());
   F77_INT n = to_f77_int (a.cols ());
@@ -196,7 +194,7 @@ OCTAVE_API
 void
 qrp<ComplexMatrix>::init (const ComplexMatrix& a, type qr_type)
 {
-  assert (qr_type != qr<ComplexMatrix>::raw);
+  liboctave_panic_if (qr_type == qr<ComplexMatrix>::raw);
 
   F77_INT m = to_f77_int (a.rows ());
   F77_INT n = to_f77_int (a.cols ());
@@ -275,7 +273,7 @@ OCTAVE_API
 void
 qrp<FloatComplexMatrix>::init (const FloatComplexMatrix& a, type qr_type)
 {
-  assert (qr_type != qr<FloatComplexMatrix>::raw);
+  liboctave_panic_if (qr_type == qr<FloatComplexMatrix>::raw);
 
   F77_INT m = to_f77_int (a.rows ());
   F77_INT n = to_f77_int (a.cols ());

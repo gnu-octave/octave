@@ -27,8 +27,6 @@
 // C++ source files that should have included config.h before including
 // this file.
 
-#include <cassert>
-
 #include <algorithm>
 
 #include "DiagArray2.h"

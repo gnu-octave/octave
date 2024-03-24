@@ -1030,7 +1030,7 @@ idx_vector::raw ()
 
   idx_vector_rep *r = dynamic_cast<idx_vector_rep *> (m_rep);
 
-  assert (r != nullptr);
+  liboctave_panic_unless (r != nullptr);
 
   return r->get_data ();
 }
@@ -1088,7 +1088,7 @@ idx_vector::copy_data (octave_idx_type *m_data) const
       break;
 
     default:
-      assert (false);
+      liboctave_panic_impossible ();
       break;
     }
 }
@@ -1156,7 +1156,7 @@ idx_vector::is_permutation (octave_idx_type n) const
 idx_vector
 idx_vector::inverse_permutation (octave_idx_type n) const
 {
-  assert (n == length (n));
+  liboctave_panic_unless (n == length (n));
 
   idx_vector retval;
 
@@ -1252,7 +1252,7 @@ idx_vector::unconvert (idx_class_type& iclass,
       break;
 
     default:
-      assert (false);
+      liboctave_panic_impossible ();
       break;
     }
 }

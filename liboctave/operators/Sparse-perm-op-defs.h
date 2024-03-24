@@ -112,7 +112,7 @@ SM octinternal_do_mul_sm_rowpm (const SM& a, const octave_idx_type *prow)
           r.xdata (k) = a.data (k_src);
         }
     }
-  assert (k_src == nent);
+  liboctave_panic_unless (k_src == nent);
 
   return r;
 }
@@ -132,7 +132,7 @@ SM octinternal_do_mul_sm_colpm (const SM& a, const octave_idx_type *pcol)
       const octave_idx_type j_src = pcol[j];
       r.xcidx (j+1) = r.xcidx (j) + (a.cidx (j_src+1) - a.cidx (j_src));
     }
-  assert (r.xcidx (nc) == nent);
+  liboctave_panic_unless (r.xcidx (nc) == nent);
 
   octave_idx_type k = 0;
   for (octave_idx_type j = 0; j < nc; ++j)
@@ -147,7 +147,7 @@ SM octinternal_do_mul_sm_colpm (const SM& a, const octave_idx_type *pcol)
           r.xdata (k) = a.data (k_src);
         }
     }
-  assert (k == nent);
+  liboctave_panic_unless (k == nent);
 
   return r;
 }

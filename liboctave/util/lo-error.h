@@ -81,6 +81,24 @@ set_liboctave_warning_handler (liboctave_warning_handler f);
 extern OCTAVE_API void
 set_liboctave_warning_with_id_handler (liboctave_warning_with_id_handler f);
 
+// To allow the __FILE__ and __LINE__ macros to work as expected, the
+// liboctave_panic_impossible, liboctave_panic_if, and
+// liboctave_panic_unless symbols must be defined as macros.
+
+#define liboctave_panic_impossible() (*current_liboctave_error_handler) ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+
+#if defined (NDEBUG)
+#  define liboctave_panic_if(cond)
+#else
+#  define liboctave_panic_if(cond) do { if (cond) liboctave_panic_impossible (); } while (0)
+#endif
+
+#if defined (NDEBUG)
+#  define liboctave_panic_unless(cond)
+#else
+#  define liboctave_panic_unless(cond) liboctave_panic_if (! (cond))
+#endif
+
 #if defined (__cplusplus)
 }
 #endif

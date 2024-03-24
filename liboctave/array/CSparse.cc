@@ -34,6 +34,7 @@
 #include <ostream>
 
 #include "quit.h"
+#include "lo-error.h"
 #include "lo-ieee.h"
 #include "lo-mappers.h"
 #include "f77-fcn.h"
@@ -626,7 +627,7 @@ SparseComplexMatrix::hermitian () const
         retval.xridx (q) = j;
         retval.xdata (q) = conj (data (k));
       }
-  assert (nnz () == retval.xcidx (nr));
+  liboctave_panic_unless (nnz () == retval.xcidx (nr));
   // retval.xcidx[1:nr] holds row entry *end* offsets for rows 0:(nr-1)
   // and retval.xcidx[0:(nr-1)] holds their row entry *start* offsets
 

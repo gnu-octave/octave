@@ -107,7 +107,6 @@
 // C++ source files that should have included config.h before including
 // this file.
 
-#include <cassert>
 #include <algorithm>
 #include <cstring>
 #include <stack>
@@ -1437,7 +1436,7 @@ octave_sort<T>::sort (T *data, octave_idx_type nel, Comp comp)
               n = force;
             }
           /* Push run onto m_pending-runs stack, and maybe merge. */
-          assert (m_ms->m_n < MAX_MERGE_PENDING);
+          liboctave_panic_unless (m_ms->m_n < MAX_MERGE_PENDING);
           m_ms->m_pending[m_ms->m_n].m_base = lo;
           m_ms->m_pending[m_ms->m_n].m_len = n;
           m_ms->m_n++;
@@ -1497,7 +1496,7 @@ octave_sort<T>::sort (T *data, octave_idx_type *idx, octave_idx_type nel,
               n = force;
             }
           /* Push run onto m_pending-runs stack, and maybe merge. */
-          assert (m_ms->m_n < MAX_MERGE_PENDING);
+          liboctave_panic_unless (m_ms->m_n < MAX_MERGE_PENDING);
           m_ms->m_pending[m_ms->m_n].m_base = lo;
           m_ms->m_pending[m_ms->m_n].m_len = n;
           m_ms->m_n++;
@@ -1630,7 +1629,7 @@ octave_sort<T>::sort_rows (const T *data, octave_idx_type *idx,
       octave_idx_type ofs = runs.top ().ofs;
       octave_idx_type nel = runs.top ().nel;
       runs.pop ();
-      assert (nel > 1);
+      liboctave_panic_unless (nel > 1);
 
       T *lbuf = buf + ofs;
       const T *ldata = data + rows*col;
@@ -1705,7 +1704,7 @@ octave_sort<T>::is_sorted_rows (const T *data, octave_idx_type rows,
       if (lo < lastrow)
         {
           // Not the final column.
-          assert (n > 1);
+          liboctave_panic_unless (n > 1);
           const T *hi = lo + n;
           const T *lst = lo;
           for (lo++; lo < hi; lo++)

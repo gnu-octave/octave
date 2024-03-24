@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
 #include <cstdint>
 
 #include <limits>
@@ -98,7 +97,7 @@ rand::do_seed ()
 static int32_t
 force_to_fit_range (int32_t i, int32_t lo, int32_t hi)
 {
-  assert (hi > lo && lo >= 0);
+  liboctave_panic_unless (hi > lo && lo >= 0);
 
   i = (i > 0 ? i : -i);
 

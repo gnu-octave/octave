@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
-
 #include "Array-util.h"
 #include "CMatrix.h"
 #include "dMatrix.h"

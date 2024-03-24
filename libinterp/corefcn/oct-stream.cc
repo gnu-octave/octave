@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
 #include <cctype>
 #include <cstring>
 

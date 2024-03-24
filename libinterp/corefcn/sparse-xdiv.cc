@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
-
 #include "Array-util.h"
 #include "lo-array-errwarn.h"
 #include "oct-cmplx.h"

@@ -35,7 +35,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
 #include <cstdio>
 #include <cstdlib>
 

@@ -6678,7 +6678,7 @@ stream::read (const Array<double>& size, octave_idx_type block_size,
   std::ptrdiff_t input_buf_size
     = static_cast<std::ptrdiff_t> (input_buf_elts) * input_elt_size;
 
-  error_if (input_buf_size < 0);
+  panic_if (input_buf_size < 0);
 
   // Must also work and return correct type object for 0 elements to read.
   std::istream *isp = input_stream ();

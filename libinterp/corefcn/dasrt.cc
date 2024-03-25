@@ -69,7 +69,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  error_unless (x.numel () == xdot.numel ());
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -159,7 +159,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  error_unless (x.numel () == xdot.numel ());
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 

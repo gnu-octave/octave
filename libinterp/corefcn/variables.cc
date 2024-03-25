@@ -768,7 +768,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   int nargin = args.length ();
 
-  error_unless (var < nchoices);
+  panic_unless (var < nchoices);
 
   if (nargout > 0 || nargin == 0)
     retval = choices[var];

@@ -467,7 +467,8 @@ public:
     mxArray *retval = m_val.as_mxArray (m_interleaved);
 
     // RETVAL is assumed to be an mxArray_matlab object.  Should we
-    // error_unless that condition here?
+    // panic_unless that condition here or just check and throw an
+    // error?
 
     if (retval)
       {

@@ -242,7 +242,7 @@ pollardrho (uint64_t n, uint64_t c = 1)
 
       if (g > 1)  // found GCD ==> exit loop properly
         {
-          error_unless (n % g == 0);  // theoretical possibility of GCD error
+          panic_unless (n % g == 0);  // theoretical possibility of GCD error
           return g;
         }
     }

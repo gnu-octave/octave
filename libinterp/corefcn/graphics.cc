@@ -5310,10 +5310,10 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   // Including ones we do don't implement?
 
   // FIXME: This function is probably never called without mode == "reset".
-  //        Verify this is the case with error_unless() (1/6/2017).
+  //        Verify this is the case with panic_unless() (1/6/2017).
   //        If there are reports of problems then figure out what code is
   //        calling it with the mode set to something else.
-  error_unless (mode == "reset");
+  panic_unless (mode == "reset");
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;

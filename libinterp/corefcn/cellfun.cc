@@ -1990,8 +1990,9 @@ static Cell
 do_mat2cell_2d (const Array2D& a, const Array<octave_idx_type> *d, int nd)
 {
   Cell retval;
-  error_unless (nd == 1 || nd == 2);
-  error_unless (a.ndims () == 2);
+
+  panic_unless (nd == 1 || nd == 2);
+  panic_unless (a.ndims () == 2);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
@@ -2047,7 +2048,8 @@ Cell
 do_mat2cell_nd (const ArrayND& a, const Array<octave_idx_type> *d, int nd)
 {
   Cell retval;
-  error_unless (nd >= 1);
+
+  panic_unless (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;
@@ -2129,7 +2131,8 @@ Cell
 do_mat2cell (octave_value& a, const Array<octave_idx_type> *d, int nd)
 {
   Cell retval;
-  error_unless (nd >= 1);
+
+  panic_unless (nd >= 1);
 
   if (mat2cell_mismatch (a.dims (), d, nd))
     return retval;

@@ -8154,7 +8154,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (col1, sl1))
                    - SparseT (retval.index (col2, sl2));
-          error_unless (retval.columns () == k-1);
+          panic_unless (retval.columns () == k-1);
           order--;
           k--;
         }
@@ -8167,7 +8167,7 @@ do_sparse_diff (const SparseT& array, octave_idx_type order,
           idx_vector col1 (':'), col2 (':'), sl1 (1, k), sl2 (0, k-1);
           retval = SparseT (retval.index (sl1, col1))
                    - SparseT (retval.index (sl2, col2));
-          error_unless (retval.rows () == k-1);
+          panic_unless (retval.rows () == k-1);
           order--;
           k--;
         }

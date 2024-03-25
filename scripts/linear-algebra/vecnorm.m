@@ -38,7 +38,7 @@
 ## @ifnottex
 ##
 ## @example
-## @var{p-norm} (@var{A}, @var{p}) = sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})
+## @var{p-norm} (@var{A}, @var{p}) = (sum (abs (@var{A}) .^ @var{p})) ^ (1/@var{p})
 ## @end example
 ##
 ## @end ifnottex

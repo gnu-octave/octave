@@ -633,12 +633,15 @@ error_system::rethrow_error (const std::string& id,
 void
 error_system::vpanic (const char *fmt, va_list args)
 {
-  // Is there any point in trying to write the panic message to the
-  // diary?
+  // Earlier versions of Octave printed a message directly to std::cerr
+  // and called abort.  That might be acceptable behavior for some
+  // programs but for an interactive application like Octave, aborting
+  // the entire program when an internal programming error has been
+  // detected seems unnecessary and certainly provides a much worse user
+  // experience than simply generating an ordinary error message and
+  // attempting to return to the command prompt.
 
-  std::cerr << "panic: " << format_message (fmt, args) << std::endl;
-
-  abort ();
+  ::verror (fmt, args);
 }
 
 void

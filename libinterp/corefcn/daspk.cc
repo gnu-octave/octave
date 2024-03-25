@@ -68,7 +68,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  error_unless (x.numel () == xdot.numel ());
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -119,7 +119,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  error_unless (x.numel () == xdot.numel ());
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 

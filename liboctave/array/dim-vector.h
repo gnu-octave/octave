@@ -30,8 +30,6 @@
 
 #include "octave-config.h"
 
-#include <cassert>
-
 #include <algorithm>
 #include <initializer_list>
 #include <string>

@@ -38,8 +38,8 @@ OCTAVE_NORETURN
 extern OCTINTERP_API void panic (const char *fmt, ...);
 
 // To allow the __FILE__ and __LINE__ macros to work as expected, the
-// panic_impossible, panic_if, panic_unless, error_impossible, error_if,
-// and error_unless symbols must be defined as macros.
+// panic_impossible, panic_if, and panic_unless symbols must be defined
+// as macros.
 
 #define panic_impossible()                                              \
   ::panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)

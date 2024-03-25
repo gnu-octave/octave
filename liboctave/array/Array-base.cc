@@ -35,6 +35,7 @@
 
 #include "Array-util.h"
 #include "Array.h"
+#include "lo-error.h"
 #include "lo-mappers.h"
 #include "oct-locbuf.h"
 
@@ -325,7 +326,7 @@ public:
     : m_n (dv.ndims ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
       m_stride (m_dim + m_n), m_use_blk (false)
   {
-    assert (m_n == perm.numel ());
+    liboctave_panic_unless (m_n == perm.numel ());
 
     // Get cumulative dimensions.
     OCTAVE_LOCAL_BUFFER (octave_idx_type, cdim, m_n+1);
@@ -535,7 +536,7 @@ public:
     : m_n (ia.numel ()), m_top (0), m_dim (new octave_idx_type [2*m_n]),
       m_cdim (m_dim + m_n), m_idx (new octave::idx_vector [m_n])
   {
-    assert (m_n > 0 && dv.ndims () == std::max (m_n, static_cast<octave_idx_type> (2)));
+    liboctave_panic_unless (m_n > 0 && dv.ndims () == std::max (m_n, static_cast<octave_idx_type> (2)));
 
     m_dim[0] = dv(0);
     m_cdim[0] = 1;
@@ -652,7 +653,7 @@ public:
     : m_cext (nullptr), m_sext (nullptr), m_dext (nullptr), m_n (0)
   {
     int l = ndv.ndims ();
-    assert (odv.ndims () == l);
+    liboctave_panic_unless (odv.ndims () == l);
     octave_idx_type ld = 1;
     int i = 0;
     for (; i < l-1 && ndv(i) == odv(i); i++) ld *= ndv(i);
@@ -1644,7 +1645,7 @@ template <typename T, typename Alloc>
 Array<T, Alloc>
 Array<T, Alloc>::transpose () const
 {
-  assert (ndims () == 2);
+  liboctave_panic_unless (ndims () == 2);
 
   octave_idx_type nr = dim1 ();
   octave_idx_type nc = dim2 ();
@@ -1687,7 +1688,7 @@ template <typename T, typename Alloc>
 Array<T, Alloc>
 Array<T, Alloc>::hermitian (T (*fcn) (const T&)) const
 {
-  assert (ndims () == 2);
+  liboctave_panic_unless (ndims () == 2);
 
   if (! fcn)
     fcn = no_op_fcn<T>;

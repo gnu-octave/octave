@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
-
 #include <algorithm>
 #include <unordered_map>
 
@@ -774,7 +772,7 @@ svd<T>::svd (const T& a, svd::Type type, svd::Driver driver)
            work, lwork, info);
   else if (m_driver == svd::Driver::GESDD)
     {
-      assert (jobu == jobv);
+      liboctave_panic_unless (jobu == jobv);
       char jobz = jobu;
 
       std::vector<F77_INT> iwork (8 * std::min (m, n));

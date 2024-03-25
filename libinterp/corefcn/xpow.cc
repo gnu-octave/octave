@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
-
 #include <limits>
 
 #include "Array-util.h"

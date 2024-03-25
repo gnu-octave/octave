@@ -264,7 +264,7 @@ freeze (Array<octave::idx_vector>& ra_idx, const dim_vector& dimensions, int res
 
   int n = ra_idx.numel ();
 
-  assert (n == dimensions.ndims ());
+  liboctave_panic_unless (n == dimensions.ndims ());
 
   retval.resize (n);
 
@@ -337,7 +337,7 @@ all_colon_equiv (const Array<octave::idx_vector>& ra_idx,
 
   int n = frozen_lengths.ndims ();
 
-  assert (idx_n == n);
+  liboctave_panic_unless (idx_n == n);
 
   for (octave_idx_type i = 0; i < n; i++)
     {
@@ -394,7 +394,7 @@ get_ra_idx (octave_idx_type idx, const dim_vector& dims)
   for (int i = 0; i < n_dims; i++)
     retval(i) = 0;
 
-  assert (idx > 0 || idx < dims.numel ());
+  liboctave_panic_unless (idx > 0 || idx < dims.numel ());
 
   for (octave_idx_type i = 0; i < idx; i++)
     increment_index (retval, dims);

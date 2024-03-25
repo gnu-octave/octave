@@ -27,8 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
-
 #include "Array.h"
 #include "Quad.h"
 #include "f77-fcn.h"
@@ -172,7 +170,7 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
       break;
 
     default:
-      assert (0);
+      liboctave_panic_impossible ();
       break;
     }
 
@@ -289,7 +287,7 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
       break;
 
     default:
-      assert (0);
+      liboctave_panic_impossible ();
       break;
     }
 

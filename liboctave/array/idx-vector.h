@@ -28,7 +28,6 @@
 
 #include "octave-config.h"
 
-#include <cassert>
 #include <cstring>
 
 #include <algorithm>
@@ -37,6 +36,7 @@
 
 #include "Array-fwd.h"
 #include "dim-vector.h"
+#include "lo-error.h"
 #include "oct-inttypes.h"
 #include "oct-refcount.h"
 #include "Sparse-fwd.h"
@@ -638,7 +638,7 @@ public:
         break;
 
       default:
-        assert (false);
+        liboctave_panic_impossible ();
         break;
       }
 
@@ -710,7 +710,7 @@ public:
         break;
 
       default:
-        assert (false);
+        liboctave_panic_impossible ();
         break;
       }
 
@@ -782,7 +782,7 @@ public:
         break;
 
       default:
-        assert (false);
+        liboctave_panic_impossible ();
         break;
       }
 
@@ -848,7 +848,7 @@ public:
         break;
 
       default:
-        assert (false);
+        liboctave_panic_impossible ();
         break;
       }
 
@@ -934,7 +934,7 @@ public:
         break;
 
       default:
-        assert (false);
+        liboctave_panic_impossible ();
         break;
       }
 

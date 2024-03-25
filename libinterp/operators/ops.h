@@ -147,7 +147,7 @@ OCTAVE_END_NAMESPACE(octave)
     OCTAVE_CAST_BASE_VALUE (CONCAT2 (octave_, t1)&, v1, a1);            \
     OCTAVE_CAST_BASE_VALUE (const CONCAT2 (octave_, t2)&, v2, a2);      \
                                                                         \
-    error_unless (idx.empty ());                                        \
+    panic_unless (idx.empty ());                                        \
     v1.matrix_ref () op v2.CONCAT2 (f, _value) ();                      \
                                                                         \
     return octave_value ();                                             \
@@ -162,7 +162,7 @@ OCTAVE_END_NAMESPACE(octave)
     OCTAVE_CAST_BASE_VALUE (CONCAT2 (octave_, t1)&, v1, a1);            \
     OCTAVE_CAST_BASE_VALUE (const CONCAT2 (octave_, t2)&, v2, a2);      \
                                                                         \
-    error_unless (idx.empty ());                                        \
+    panic_unless (idx.empty ());                                        \
     fnop (v1.matrix_ref (), v2.CONCAT2 (f, _value) ());                 \
                                                                         \
     return octave_value ();                                             \

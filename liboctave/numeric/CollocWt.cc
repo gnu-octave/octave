@@ -27,7 +27,6 @@
 #  include "config.h"
 #endif
 
-#include <cassert>
 #include <cmath>
 
 #include <limits>
@@ -152,12 +151,12 @@ jcobi (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
        double alpha, double beta, double *dif1, double *dif2,
        double *dif3, double *root)
 {
-  assert (n0 == 0 || n0 == 1);
-  assert (n1 == 0 || n1 == 1);
+  liboctave_panic_unless (n0 == 0 || n0 == 1);
+  liboctave_panic_unless (n1 == 0 || n1 == 1);
 
   octave_idx_type nt = n + n0 + n1;
 
-  assert (nt >= 1);
+  liboctave_panic_unless (nt >= 1);
 
   // -- first evaluation of coefficients in recursion formulas.
   // -- recursion coefficients are stored in dif1 and dif2.
@@ -314,17 +313,17 @@ dfopr (octave_idx_type n, octave_idx_type n0, octave_idx_type n1,
        octave_idx_type i, octave_idx_type id, double *dif1,
        double *dif2, double *dif3, double *root, double *vect)
 {
-  assert (n0 == 0 || n0 == 1);
-  assert (n1 == 0 || n1 == 1);
+  liboctave_panic_unless (n0 == 0 || n0 == 1);
+  liboctave_panic_unless (n1 == 0 || n1 == 1);
 
   octave_idx_type nt = n + n0 + n1;
 
-  assert (nt >= 1);
+  liboctave_panic_unless (nt >= 1);
 
-  assert (id == 1 || id == 2 || id == 3);
+  liboctave_panic_unless (id == 1 || id == 2 || id == 3);
 
   if (id != 3)
-    assert (i >= 0 && i < nt);
+    liboctave_panic_unless (i >= 0 && i < nt);
 
   // Evaluate discretization matrices and Gaussian quadrature weights.
   // Quadrature weights are normalized to sum to one.

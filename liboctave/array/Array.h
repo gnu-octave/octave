@@ -28,7 +28,6 @@
 
 #include "octave-config.h"
 
-#include <cassert>
 #include <cstddef>
 
 #include <algorithm>

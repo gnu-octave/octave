@@ -68,7 +68,7 @@
 
 @ifnottex
 
-Copyright @copyright{} 1996-2023 The Octave Project Developers
+Copyright @copyright{} 1996-2024 The Octave Project Developers
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
@@ -114,7 +114,7 @@ modified versions.
 @author Rik Wehbring
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996-2023 The Octave Project Developers
+Copyright @copyright{} 1996-2024 The Octave Project Developers
 
 This is edition @value{EDITION} of the Octave documentation, and is consistent
 with version @value{VERSION} of Octave.

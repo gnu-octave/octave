@@ -1305,14 +1305,14 @@ ret:
     m_tw->get_current_stack_frame ()->vm_unwinds ();
 
     // Assert that the stack pointer is back where it should be
-    assert (bsp + N_LOCALS() == sp);
+    panic_unless (bsp + N_LOCALS() == sp);
 
     int n_returns_callee = N_RETURNS ();
 
     bool is_varargout = n_returns_callee < 0;
     if (OCTAVE_UNLIKELY (is_varargout))
       n_returns_callee = -n_returns_callee;
-    assert (n_returns_callee > 0);
+    panic_unless (n_returns_callee > 0);
 
     int n_locals_callee = N_LOCALS ();
 
@@ -6417,7 +6417,7 @@ ret_anon:
     // variables on the VM stack if it is referenced from somewhere else.
     m_tw->get_current_stack_frame ()->vm_unwinds ();
 
-    assert (N_RETURNS () == -128);
+    panic_unless (N_RETURNS () == -128);
 
     int n_returns_callee = bsp[0].i; // Nargout on stack
     if (n_returns_callee == 0)
@@ -6429,7 +6429,7 @@ ret_anon:
 
     // Assert that the stack pointer is back where it should be, i.e. that there are between
     // zero and nargout return values.
-    assert (n_ret_on_stack >= 0 && n_ret_on_stack <= n_returns_callee);
+    panic_unless (n_ret_on_stack >= 0 && n_ret_on_stack <= n_returns_callee);
 
     stack_element *first_ret = sp - n_ret_on_stack;
 

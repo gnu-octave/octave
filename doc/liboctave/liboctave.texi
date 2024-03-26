@@ -82,7 +82,7 @@ modified versions.
 @author The Octave Project Developers
 @page
 @vskip 0pt plus 1filll
-Copyright @copyright{} 1996-2023 The Octave Project Developers.
+Copyright @copyright{} 1996-2024 The Octave Project Developers.
 
 This is the first edition of the documentation for Octave's C++ classes,
 and is consistent with version @value{VERSION} of Octave.

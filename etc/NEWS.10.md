@@ -53,6 +53,8 @@ through meshgrid and the output is a matrix the same size as the meshgrid.
 
 - Enable the third output for `unique` with the `stable` sort option.
 
+- `iqr` now provides compatible output for empty inputs.
+
 ### Alphabetical list of new functions added in Octave 10
 
 * `clim`

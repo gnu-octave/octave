@@ -107,7 +107,7 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
 
     if (has_selected_text)
       {
-        QRegularExpression expr {".*\b*(\\w+)\b*.*"};
+        QRegularExpression expr {"(\\w+)"};
         QRegularExpressionMatch match = expr.match (selected_text);
 
         if (match.hasMatch ())

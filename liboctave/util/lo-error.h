@@ -85,18 +85,22 @@ set_liboctave_warning_with_id_handler (liboctave_warning_with_id_handler f);
 // liboctave_panic_impossible, liboctave_panic_if, and
 // liboctave_panic_unless symbols must be defined as macros.
 
-#define liboctave_panic_impossible() (*current_liboctave_error_handler) ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
-
 #if defined (NDEBUG)
-#  define liboctave_panic_if(cond)
+
+#  define liboctave_panic_impossible() do { } while (0)
+
+#  define liboctave_panic_if(cond) do { } while (0)
+
+#  define liboctave_panic_unless(cond) do { } while (0)
+
 #else
+
+#  define liboctave_panic_impossible() (*current_liboctave_error_handler) ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
+
 #  define liboctave_panic_if(cond) do { if (cond) liboctave_panic_impossible (); } while (0)
-#endif
 
-#if defined (NDEBUG)
-#  define liboctave_panic_unless(cond)
-#else
 #  define liboctave_panic_unless(cond) liboctave_panic_if (! (cond))
+
 #endif
 
 #if defined (__cplusplus)

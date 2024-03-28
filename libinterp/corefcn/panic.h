@@ -41,19 +41,23 @@ extern OCTINTERP_API void panic (const char *fmt, ...);
 // panic_impossible, panic_if, and panic_unless symbols must be defined
 // as macros.
 
-#define panic_impossible()                                              \
+#if defined (NDEBUG)
+
+#  define panic_impossible() do { } while (0)
+
+#  define panic_if(cond) do { } while (0)
+
+#  define panic_unless(cond) do { } while (0)
+
+#else
+
+#  define panic_impossible()                                                            \
   ::panic ("impossible state reached in file '%s' at line %d", __FILE__, __LINE__)
 
-#if defined (NDEBUG)
-#  define panic_if(cond)
-#else
 #  define panic_if(cond) do { if (cond) panic_impossible (); } while (0)
-#endif
 
-#if defined (NDEBUG)
-#  define panic_unless(cond)
-#else
 #  define panic_unless(cond) panic_if (! (cond))
+
 #endif
 
 #endif

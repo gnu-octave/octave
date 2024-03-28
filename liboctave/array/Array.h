@@ -131,7 +131,7 @@ class OCTARRAY_TEMPLATE_API Array
 protected:
 
   //! The real representation of all arrays.
-  class ArrayRep : public Alloc
+  class OCTARRAY_TEMPLATE_API ArrayRep : public Alloc
   {
   public:
 
@@ -144,6 +144,7 @@ protected:
     octave_idx_type m_len;
     octave::refcount<octave_idx_type> m_count;
 
+    OCTARRAY_OVERRIDABLE_FUNC_API
     ArrayRep (pointer d, octave_idx_type len)
       : Alloc (), m_data (allocate (len)), m_len (len), m_count (1)
     {
@@ -187,13 +188,16 @@ protected:
 
     ~ArrayRep () { deallocate (m_data, m_len); }
 
-    octave_idx_type numel () const { return m_len; }
+    OCTARRAY_OVERRIDABLE_FUNC_API octave_idx_type numel () const
+    {
+      return m_len;
+    }
 
     // No assignment!
 
     ArrayRep& operator = (const ArrayRep&) = delete;
 
-    pointer allocate (size_t len)
+    OCTARRAY_OVERRIDABLE_FUNC_API pointer allocate (size_t len)
     {
       pointer data = Alloc_traits::allocate (*this, len);
       for (size_t i = 0; i < len; i++)
@@ -201,7 +205,7 @@ protected:
       return data;
     }
 
-    void deallocate (pointer data, size_t len)
+    OCTARRAY_OVERRIDABLE_FUNC_API void deallocate (pointer data, size_t len)
     {
       for (size_t i = 0; i < len; i++)
         T_Alloc_traits::destroy (*this, data+i);

@@ -67,28 +67,41 @@
 
 function z = iqr (x, dim)
 
-  ## input checks
+  ## Perform input checks.
   if (nargin < 1)
     print_usage ();
   elseif (nargin < 2)
     dim = [];
   endif
 
-  if (! (isnumeric (x) || islogical (x)))
-    error ("iqr: X must be a numeric vector or matrix");
-  endif
-
   vecdim_flag = false;
   nd = ndims (x);
   sz = size (x);
+  empty_x = any (sz == 0);
+
+  if (! (empty_x || isnumeric (x) || islogical (x)))
+    error ("iqr: X must be a numeric vector or matrix");
+  endif
 
   if (isempty (dim))
     ## Find first non-singleton dimension.
-    if (max (sz) == 1)
+    if (max (sz) == 1  && ! empty_x)
       dim = 2;
     else
-      dim = find ((sz > 1), 1);
+      dim = find ((sz != 1), 1);
     endif
+
+  if (empty_x)
+    ## Handle empty x with no input dim.
+    if ((ndims (x) == 2 && all (sz == 0)) || iscolumn (x) || isrow (x))
+      z = NaN;
+    else
+      sz(dim) = 1;
+      z = NaN (sz);
+    endif
+    return
+  endif
+
   else
 
     if (isvector (dim) && isnumeric (dim)
@@ -96,6 +109,13 @@ function z = iqr (x, dim)
 
       if (((num_vecdims = numel (dim)) > 1) && all (diff (sort (dim))))
         ## DIM must be 1-D and non repeating.
+
+        if (empty_x)
+          ## Handle empty x with input vecdim.
+          sz(dim(dim <= nd)) = 1;
+          z = NaN (sz);
+          return
+        endif
 
         ## Detect trivial case of DIM being all dimensions (same as "all").
         highest_dim = (max (nd, max (dim)));
@@ -144,13 +164,25 @@ function z = iqr (x, dim)
 
       elseif (! isscalar (dim))
         error ("iqr: vector DIM must contain non-repeating positive integers");
+
+      elseif (empty_x)
+        ## Handle empty x with scalar input dim.
+        sz(dim(dim <= nd)) = 1;
+        z = NaN (sz);
+        return
       endif
 
     elseif (strcmp (lower (dim), "all"))
-      ## "ALL" simplifies to collapsing all elements to single vector
+      ## "ALL" simplifies to collapsing all elements to single vector.
       x = x(:);
       dim = 1;
       sz = size (x);
+
+      if (empty_x)
+        ## Handle empty x with "all" dim input.
+        z = NaN;
+        return
+      endif
 
     else
       error ("iqr: DIM must be a positive integer scalar, vector, or 'all'");
@@ -159,10 +191,10 @@ function z = iqr (x, dim)
   endif
 
   if (((dim > nd) || (sz(dim) == 1)) && all (isfinite (x)))
-    ## shortcut easy zeros
+    ## Shortcut easy zeros.
     z = zeros (sz);
   elseif (iscolumn (x) && (dim == 1))
-    ## detect col vector with quantile/diff dim requirement mismatch
+    ## Detect col vector with quantile/diff dim requirement mismatch.
     z = abs (diff (quantile (x, [0.25, 0.75], 1), [], 2));
   else
     z = abs (diff (quantile (x, [0.25, 0.75], dim), [], dim));
@@ -189,83 +221,113 @@ endfunction
 %!assert (iqr ([1:5; 2:6], "all"), 3)
 
 %!test
-%! x = reshape (1:6, [1 2 3]);
+%! x = reshape (1:6, [1, 2, 3]);
 %! assert (iqr (x), ones (1, 1, 3));
 %! assert (iqr (x, 1), zeros (1, 2, 3));
 %! assert (iqr (x, 2), ones (1, 1, 3));
-%! assert (iqr (x, 3), [3 3]);
+%! assert (iqr (x, 3), [3, 3]);
 
 ## n-D arrays
 %!test
 %! x = magic (4); x = cat (3,x, 2*x, 3*x); x = cat (4, x, 2*x);
-%! y = cat (3, 8*[1 1 1 1], 16*[1 1 1 1], 24*[1 1 1 1]);
+%! y = cat (3, 8*[1, 1, 1, 1], 16*[1, 1, 1, 1], 24*[1, 1, 1, 1]);
 %! assert (iqr (x), cat (4, y, 2*y));
 %! assert (iqr (x, 1), cat (4, y, 2*y));
-%! y = cat (3, 4*[3 1 1 3].', 8*[3 1 1 3].', 12*[3 1 1 3].');
+%! y = cat (3, 4*[3, 1, 1, 3].', 8*[3, 1, 1, 3].', 12*[3, 1, 1, 3].');
 %! assert (iqr (x, 2), cat (4, y, 2*y));
-%! y = [24 3 4.5 19.5; 7.5 16.5 15 12; 13.5 10.5 9, 18; 6 21 22.5 1.5];
+%! y = [24, 3, 4.5, 19.5; 7.5, 16.5, 15, 12; 13.5, 10.5, 9, 18; 6, 21, 22.5, 1.5];
 %! assert (iqr (x, 3), cat (4, y, 2*y));
-%! y = [16 2 3 13; 5 11 10 8; 9 7 6 12; 4 14 15 1];
+%! y = [16, 2, 3, 13; 5, 11, 10, 8; 9, 7, 6, 12; 4, 14, 15, 1];
 %! assert (iqr (x, 4), cat (3, y, 2*y, 3*y));
 %! assert (iqr (x, 5), zeros (size (x)));
 
 ## vector dimensions
-%!assert (iqr (17, [1 8]), 0)
-%!assert (iqr ([[1 2 5]; [2 5 6]], [1 2]), 3)
-%!assert (iqr (cat (3, [1 2 5; 2 5 6], [1 2 5; 2 5 6]), [1 2]), cat(3, 3, 3))
-%!assert (iqr (cat (3, [1 2 5; 2 5 6], [1 2 5; 2 5 6]), [1 2]'), cat(3, 3, 3))
+%!assert (iqr (17, [1, 8]), 0)
+%!assert (iqr ([[1, 2, 5]; [2, 5, 6]], [1, 2]), 3)
+%!assert (iqr (cat (3, [1, 2, 5; 2, 5, 6], [1, 2, 5; 2, 5, 6]), [1, 2]), cat(3, 3, 3))
+%!assert (iqr (cat (3, [1, 2, 5; 2, 5, 6], [1, 2, 5; 2, 5, 6]), [1, 2]'), cat(3, 3, 3))
 %!test
 %! x = magic (4); x = cat (3, x, 2*x, 3*x); x = cat (4, x, 2*x);
 %! y = cat (3, 8, 16, 24);
-%! assert (iqr (x, [1 2]), cat (4, y, 2*y));
-%! y = [14, 18.5, 17.5 19.5];
-%! assert (iqr (x, [1 3]), cat (4, y, 2*y));
-%! y = [10.5 12.5 11.5 15.0000];
-%! assert (iqr (x, [1 4]), cat (3, y, 2*y, 3*y));
-%! assert (iqr (x, [1 5]), iqr (x, 1));
-%! y = [24 13 12 25.5]';
-%! assert (iqr (x, [2 3]), cat (4, y, 2*y));
+%! assert (iqr (x, [1, 2]), cat (4, y, 2*y));
+%! y = [14, 18.5, 17.5, 19.5];
+%! assert (iqr (x, [1, 3]), cat (4, y, 2*y));
+%! y = [10.5, 12.5, 11.5, 15];
+%! assert (iqr (x, [1, 4]), cat (3, y, 2*y, 3*y));
+%! assert (iqr (x, [1, 5]), iqr (x, 1));
+%! y = [24, 13, 12, 25.5]';
+%! assert (iqr (x, [2, 3]), cat (4, y, 2*y));
 %! y = [17.5, 9, 8, 18.5]';
-%! assert (iqr (x, [2 4]), cat (3, y, 2*y, 3*y));
-%! assert (iqr (x, [3 4]), [32 4 6 26; 10 22 20 16; 18 14 12 24; 8 28 30 2]);
-%! assert (iqr (x, [3 4]), iqr (x, [4 3]));
-%! assert (iqr (x, [1 2 3]), cat (4, 17.5, 35));
-%! assert (iqr (x, [2 3 4]), [29.5 19.5 23 31]');
-%! assert (iqr (x, [1 3 4]), [22 28 22 30.5]);
-%! assert (iqr (x, [1 2 4]), cat (3, 11, 22, 33));
-%! assert (iqr (x, [1 2 5]), iqr (x, [1 2]));
-%! assert (iqr (x, [5 6]), zeros (size (x)));
+%! assert (iqr (x, [2, 4]), cat (3, y, 2*y, 3*y));
+%! assert (iqr (x, [3, 4]), [32, 4, 6, 26; 10, 22, 20, 16; 18, 14, 12, 24; 8, 28, 30, 2]);
+%! assert (iqr (x, [3, 4]), iqr (x, [4, 3]));
+%! assert (iqr (x, [1, 2, 3]), cat (4, 17.5, 35));
+%! assert (iqr (x, [2, 3, 4]), [29.5, 19.5, 23, 31]');
+%! assert (iqr (x, [1, 3, 4]), [22, 28, 22, 30.5]);
+%! assert (iqr (x, [1, 2, 4]), cat (3, 11, 22, 33));
+%! assert (iqr (x, [1, 2, 5]), iqr (x, [1, 2]));
+%! assert (iqr (x, [5, 6]), zeros (size (x)));
 
 ## Inf, NaN
 %!assert (iqr (Inf), NaN)
 %!assert (iqr (-Inf), NaN)
 %!assert (iqr (NaN), NaN)
 %!assert (iqr (NaN), NaN)
-%!assert (iqr ([1 2 Inf], 1), [0 0 NaN])
-%!assert (iqr ([1 2 Inf], 2), Inf)
-%!assert (iqr ([1 2 -Inf], 1), [0 0 NaN])
-%!assert (iqr ([1 2 -Inf], 2), Inf)
-%!assert (iqr ([1 2 3 NaN], 1), [0 0 0 NaN])
-%!assert (iqr ([1 2 3 NaN], 2), 1.5)
-%!assert (iqr ([1 NaN 2 3], 2), 1.5)
+%!assert (iqr ([1, 2, Inf], 1), [0, 0, NaN])
+%!assert (iqr ([1, 2, Inf], 2), Inf)
+%!assert (iqr ([1, 2, -Inf], 1), [0, 0, NaN])
+%!assert (iqr ([1, 2, -Inf], 2), Inf)
+%!assert (iqr ([1, 2, 3, NaN], 1), [0, 0, 0, NaN])
+%!assert (iqr ([1, 2, 3, NaN], 2), 1.5)
+%!assert (iqr ([1, NaN, 2, 3], 2), 1.5)
 %!assert (iqr (NaN (2), 1), [NaN, NaN])
 %!assert (iqr (NaN (2), 2), [NaN; NaN])
 %!assert (iqr (NaN (2), 3), NaN (2))
-%!assert (iqr ([[1 2 5], [2 NaN 6]], "all"), 3.5)
+%!assert (iqr ([[1, 2, 5], [2, NaN, 6]], "all"), 3.5)
+
+## Empty inputs
+%!assert <*65531> (iqr ([]), NaN)
+%!assert <*65531> (iqr (ones (0, 1)), NaN)
+%!assert <*65531> (iqr (ones (0, 1), 1), NaN)
+%!assert <*65531> (iqr (ones (0, 1), 2), NaN (0, 1))
+%!assert <*65531> (iqr (ones (0, 1), 3), NaN (0, 1))
+%!assert <*65531> (iqr (ones (1, 0)), NaN)
+%!assert <*65531> (iqr (ones (1, 0), 1), NaN (1, 0))
+%!assert <*65531> (iqr (ones (1, 0), 2), NaN)
+%!assert <*65531> (iqr (ones (1, 0), 3), NaN (1, 0))
+%!assert <*65531> (iqr (ones (1, 0), 9), NaN (1, 0))
+%!assert <*65531> (iqr (ones (1, 1, 0)), NaN)
+%!assert <*65531> (iqr (ones (0, 0, 1, 0)), NaN (1, 0, 1, 0))
+%!assert <*65531> (iqr (ones (1, 1, 1, 0)), NaN)
+%!assert <*65531> (iqr (ones (1, 1, 1, 0), 1), NaN (1, 1, 1, 0))
+%!assert <*65531> (iqr (ones (1, 1, 1, 0), 1), NaN (1, 1, 1, 0))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), 1), NaN (1, 0, 1, 0))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), 2), NaN (0, 1, 1, 0))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), 3), NaN (0, 0, 1, 0))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), 4), NaN (0, 0, 1, 1))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), 9), NaN (0, 0, 1, 0))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), [1, 2]), NaN (1, 1, 1, 0))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), [1, 4]), NaN (1, 0, 1, 1))
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), [1, 9]), NaN (1, 0, 1, 0))
+%!assert <*65531> (iqr ([], "all"), NaN)
+%!assert <*65531> (iqr (ones (0, 1), "all"), NaN)
+%!assert <*65531> (iqr (ones (1, 0), "all"), NaN)
+%!assert <*65531> (iqr (ones (1, 1, 0), "all"), NaN)
+%!assert <*65531> (iqr (ones (0, 0, 1, 0), 'all'), NaN)
 
 ## input validation
-%!error iqr ()
+%!error <Invalid call> iqr ()
 %!error iqr (1, 2, 3)
-%!error <X .* numeric> iqr (['A'; 'B'])
+%!error <X must be a numeric> iqr (['A'; 'B'])
 %!error <DIM .* positive integer> iqr (1, 'A')
 %!error <DIM .* positive integer> iqr (1, 0)
 %!error <DIM .* positive integer> iqr (1, -2)
 %!error <DIM .* positive integer> iqr (1, 1.4)
-%!error <DIM .* positive integer> iqr (1, [1 -2])
-%!error <DIM .* positive integer> iqr (1, [1 1.4])
-%!error <DIM .* positive integer> iqr ([1 2 3], NaN)
-%!error <DIM .* positive integer> iqr ([1 2 3], [2 NaN])
-%!error <DIM .* positive integer> iqr ([1 2 3], Inf)
-%!error <DIM .* positive integer> iqr ([1 2 3], [2 Inf])
-%!error <vector DIM .* non-repeating> iqr ([1 2 3], [1 2 1])
-%!error <DIM .* vector> iqr (1, [1 2; 3 4])
+%!error <DIM .* positive integer> iqr (1, [1, -2])
+%!error <DIM .* positive integer> iqr (1, [1, 1.4])
+%!error <DIM .* positive integer> iqr ([1, 2, 3], NaN)
+%!error <DIM .* positive integer> iqr ([1, 2, 3], [2, NaN])
+%!error <DIM .* positive integer> iqr ([1, 2, 3], Inf)
+%!error <DIM .* positive integer> iqr ([1, 2, 3], [2, Inf])
+%!error <vector DIM .* non-repeating> iqr ([1, 2, 3], [1, 2, 1])
+%!error <DIM .* vector> iqr (1, [1, 2; 3, 4])

@@ -221,7 +221,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok> SPMD
 %token <tok> IF ELSEIF ELSE
 %token <tok> SWITCH CASE OTHERWISE
-%token <tok> BREAK CONTINUE FUNC_RET
+%token <tok> BREAK CONTINUE RETURN
 %token <tok> UNWIND CLEANUP
 %token <tok> TRY CATCH
 %token <tok> GLOBAL PERSISTENT
@@ -232,7 +232,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok> SUPERCLASSREF
 %token <tok> FQ_IDENT
 %token <tok> GET SET
-%token <tok> FCN
+%token <tok> FUNCTION
 %token <tok> ARGUMENTS
 %token <tok> LEXICAL_ERROR
 %token <tok> END_OF_INPUT
@@ -1264,7 +1264,7 @@ jump_command    : BREAK
                     if (! ($$ = parser.make_continue_command ($1)))
                       YYABORT;
                   }
-                | FUNC_RET
+                | RETURN
                   { $$ = parser.make_return_command ($1); }
                 ;
 
@@ -1562,7 +1562,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
 // Function definition
 // ===================
 
-function_beg    : push_fcn_symtab FCN
+function_beg    : push_fcn_symtab FUNCTION
                   {
                     $$ = $2;
                     if (lexer.m_reading_classdef_file

@@ -3695,7 +3695,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       case OTHERWISE: std::cerr << "OTHERWISE\n"; break;
       case BREAK: std::cerr << "BREAK\n"; break;
       case CONTINUE: std::cerr << "CONTINUE\n"; break;
-      case FUNC_RET: std::cerr << "FUNC_RET\n"; break;
+      case RETURN: std::cerr << "RETURN\n"; break;
       case UNWIND: std::cerr << "UNWIND\n"; break;
       case CLEANUP: std::cerr << "CLEANUP\n"; break;
       case TRY: std::cerr << "TRY\n"; break;
@@ -3705,7 +3705,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
       case FCN_HANDLE: std::cerr << "FCN_HANDLE\n"; break;
       case END_OF_INPUT: std::cerr << "END_OF_INPUT\n\n"; break;
       case LEXICAL_ERROR: std::cerr << "LEXICAL_ERROR\n\n"; break;
-      case FCN: std::cerr << "FCN\n"; break;
+      case FUNCTION: std::cerr << "FUNCTION\n"; break;
       case INPUT_FILE: std::cerr << "INPUT_FILE\n"; break;
       case SUPERCLASSREF: std::cerr << "SUPERCLASSREF\n"; break;
       case METAQUERY: std::cerr << "METAQUERY\n"; break;

@@ -108,7 +108,7 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
     if (has_selected_text)
       {
         // Find first word in selected text, trim everything else
-        QRegularExpression expr {"^\\s*(\\w+)"};
+        QRegularExpression expr {"(\\w+)"};
         QRegularExpressionMatch match = expr.match (selected_text);
 
         if (match.hasMatch ())
@@ -116,19 +116,24 @@ QTerminal::handleCustomContextMenuRequested (const QPoint& at)
             QString expr_found = match.captured (1);
 
             m_edit_selected_action->setVisible (true);
-            m_edit_selected_action->setText (tr ("Edit %1").arg (expr_found));
+            m_edit_selected_action->setText (tr ("Edit \"%1\"").arg (expr_found));
             m_edit_selected_action->setData (expr_found);
 
             m_help_selected_action->setVisible (true);
-            m_help_selected_action->setText (tr ("Help on %1").arg (expr_found));
+            m_help_selected_action->setText (tr ("Help on \"%1\"").arg (expr_found));
             m_help_selected_action->setData (expr_found);
+          }
 
-            // Grab all of selected text, but trim leading/trailing whitespace
-            expr.setPattern ("^\\s*(\\w.*)\\s*$");
-            match = expr.match (selected_text);
-            expr_found = match.captured (1);
+        // Grab all of selected text, but trim leading non-word characters
+        // and trailing whitespace
+        expr.setPattern ("(\\w.*)\\s*$");
+        match = expr.match (selected_text);
+        if (match.hasMatch ())
+          {
+            QString expr_found = match.captured (1);
+
             m_doc_selected_action->setVisible (true);
-            m_doc_selected_action->setText (tr ("Documentation on %1")
+            m_doc_selected_action->setText (tr ("Documentation on \"%1\"")
                                             .arg (expr_found));
             m_doc_selected_action->setData (expr_found);
           }

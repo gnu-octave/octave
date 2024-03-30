@@ -5,11 +5,28 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 ### Improvements and fixes
 
+- `hist.m`: Add input validation for `Y` restricting it to 2-D array
+  (bug #65478).
+
 ### GUI
+
+- Use first word for options in right-click menu of command window widget
+  (bug #65518).
+- Set `DontUseNativeDialog` flag as first property in `QFileDialog`.
 
 ### Build system / Tests
 
+- Avoid overriding `save_*` variables from outer scope (bug #65476).
+  This fixes an error that might have lead to overlinking of shared libraries
+  (e.g., `.oct` files). Consider rebuilding shared libraries that have been
+  built with Octave 9.1.0.
+
 ### Documentation
+
+- Describe shape of outputs for `hist` (bug #65471).
+- Simplify programming notes for `patch` objects (bug #65421).
+- `vecnorm.m`: Add missing parenthesis to equation in docstring.
+- Update remaining copyright statements to 2024.
 
 
 Summary of important user-visible changes for version 9 (2024-03-12):

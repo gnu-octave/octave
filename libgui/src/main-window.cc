@@ -1323,20 +1323,23 @@ void main_window::request_open_file ()
                                            global_use_custom_editor.def ()).toBool ();
 
   // Create a NonModal message.
+
   QWidget *p = this;
   if (is_internal)
     p = m_editor_window;
+
   QFileDialog *fileDialog = new QFileDialog (p);
+
+  // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
+  if (! settings.bool_value (global_use_native_dialogs))
+    fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+
   fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
 
   fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
   fileDialog->setViewMode (QFileDialog::Detail);
   fileDialog->setFileMode (QFileDialog::ExistingFiles);
   fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
-
-  // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-  if (! settings.bool_value (global_use_native_dialogs))
-    fileDialog->setOption(QFileDialog::DontUseNativeDialog);
 
   connect (fileDialog, &QFileDialog::filesSelected,
            this, &main_window::request_open_files);

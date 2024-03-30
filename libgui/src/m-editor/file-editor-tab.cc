@@ -2519,6 +2519,21 @@ void file_editor_tab::save_file_as (bool remove_on_success)
   else
     fileDialog = new QFileDialog (this);
 
+  gui_settings settings;
+
+  if (! settings.bool_value (global_use_native_dialogs))
+    {
+      // Qt file dialogs
+      fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+    }
+  else
+    {
+      // Native file dialogs: Test for already existing files is done manually
+      // since native file dialogs might not consider the automatically
+      // appended default extension when checking if the file already exists
+      fileDialog->setOption(QFileDialog::DontConfirmOverwrite);
+    }
+
   // add the possible filters and the default suffix
   QStringList filters;
   filters << tr ("Octave Files (*.m)")
@@ -2554,21 +2569,6 @@ void file_editor_tab::save_file_as (bool remove_on_success)
   fileDialog->setOption (QFileDialog::HideNameFilterDetails, false);
 
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-
-  gui_settings settings;
-
-  if (! settings.bool_value (global_use_native_dialogs))
-    {
-      // Qt file dialogs
-      fileDialog->setOption(QFileDialog::DontUseNativeDialog);
-    }
-  else
-    {
-      // Native file dialogs: Test for already existing files is done manually
-      // since native file dialogs might not consider the automatically
-      // appended default extension when checking if the file already exists
-      fileDialog->setOption(QFileDialog::DontConfirmOverwrite);
-    }
 
   connect (fileDialog, &QFileDialog::filterSelected,
            this, &file_editor_tab::handle_save_as_filter_selected);

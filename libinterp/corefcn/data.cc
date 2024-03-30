@@ -7089,13 +7089,19 @@ ordered lists.
             error (R"(sort: MODE must be either "ascend" or "descend")");
         }
       else
-        dim = args(1).nint_value () - 1;
+        {
+          if (! args(1).is_scalar_type ())
+            error ("sort: DIM must be a positive scalar integer");
+          dim = args(1).nint_value () - 1;
+          if (dim < 0)
+            error ("sort: DIM must be a positive scalar integer");
+        }
     }
 
   if (nargin > 2)
     {
       if (have_sortmode)
-        error ("sort: DIM must be a valid dimension");
+        error ("sort: DIM argument must precede MODE argument");
 
       std::string mode = args(2).xstring_value ("sort: MODE must be a string");
 
@@ -7111,11 +7117,6 @@ ordered lists.
   if (nargin == 1 || have_sortmode)
     {
       dim = dv.first_non_singleton ();
-    }
-  else
-    {
-      if (dim < 0)
-        error ("sort: DIM must be a valid dimension");
     }
 
   octave_value_list retval (return_idx ? 2 : 1);
@@ -7354,8 +7355,15 @@ ordered lists.
 %! [v, i] = sort (a);
 %! assert (i, [1, 4, 2, 5, 3]);
 
-%!error sort ()
-%!error sort (1, 2, 3, 4)
+%!error <Invalid call> sort ()
+%!error <Invalid call> sort (1, 2, 3, 4)
+%!error <MODE must be either "ascend" or "descend"> sort (1, "foobar")
+%!error <DIM must be a positive scalar integer> sort (1, [1 2 3])
+%!error <DIM argument must precede MODE argument> sort (1, "ascend", 1)
+%!error <MODE must be a string> sort (1, 1, 1)
+%!error <MODE must be either "ascend" or "descend"> sort (1, 1, "foobar")
+%!error <DIM must be a positive scalar integer> sort (1, 0)
+
 */
 
 // Sort the rows of the matrix @var{a} according to the order

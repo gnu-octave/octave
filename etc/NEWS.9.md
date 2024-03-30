@@ -273,7 +273,7 @@ Octave 9.
   `LDFLAGS` rather than `LFLAGS`.  `LFLAGS` was deprecated in Octave 6 and has
   been removed.
 
-Summary of bugs fixed for version 9.1.0 (yyyy-mm-dd):
+Summary of bugs fixed for version 9.1.0 (2024-03-12):
 ----------------------------------------------------
 
 - Bugfixes to `whos -file`, `urlread`, `mat2cell`, `set`, `savepath`,

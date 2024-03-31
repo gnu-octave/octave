@@ -172,6 +172,7 @@ along with Octave; see the file COPYING.  If not, see
       or JPEG format. PNG is the preferred format.
     -->
     <screenshot type="default">
+      <caption>Graphical user interface</caption>
       <image>https://www.gnu.org/software/octave/img/screenshot.png</image>
     </screenshot>
   </screenshots>
@@ -192,6 +193,9 @@ along with Octave; see the file COPYING.  If not, see
   <update_contact>maintainers@octave.org</update_contact>
   <project_group>GNU</project_group>
   <developer_name>John W. Eaton and others</developer_name>
+  <developer id="org.octave">
+    <name>John W. Eaton and others</name>
+  </developer>
   <content_rating type="oars-1.0"/>
   <releases>
     <release date="2024-03-14" version="9.1.0"/>

@@ -42,7 +42,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-symbol_record symbol_scope_rep::insert_local (const std::string& name)
+symbol_record symbol_scope::symbol_scope_rep::insert_local (const std::string& name)
 {
   symbol_record sym (name);
 
@@ -52,7 +52,7 @@ symbol_record symbol_scope_rep::insert_local (const std::string& name)
 }
 
 void
-symbol_scope_rep::insert_symbol_record (symbol_record& sr)
+symbol_scope::symbol_scope_rep::insert_symbol_record (symbol_record& sr)
 {
   std::size_t data_offset = num_symbols ();
   std::string name = sr.name ();
@@ -63,7 +63,7 @@ symbol_scope_rep::insert_symbol_record (symbol_record& sr)
 }
 
 symbol_record
-symbol_scope_rep::insert (const std::string& name)
+symbol_scope::symbol_scope_rep::insert (const std::string& name)
 {
   table_iterator p = m_symbols.find (name);
 
@@ -95,7 +95,7 @@ symbol_scope_rep::insert (const std::string& name)
 }
 
 std::list<octave_value>
-symbol_scope_rep::localfunctions () const
+symbol_scope::symbol_scope_rep::localfunctions () const
 {
   std::list<octave_value> retval;
 
@@ -133,7 +133,7 @@ symbol_scope_rep::localfunctions () const
 }
 
 octave_value
-symbol_scope_rep::dump () const
+symbol_scope::symbol_scope_rep::dump () const
 {
   std::map<std::string, octave_value> m
   = {{ "name", m_name },
@@ -148,7 +148,7 @@ symbol_scope_rep::dump () const
 }
 
 octave_value
-symbol_scope_rep::dump_symbols_map () const
+symbol_scope::symbol_scope_rep::dump_symbols_map () const
 {
   std::map<std::string, octave_value> info_map;
 
@@ -163,7 +163,7 @@ symbol_scope_rep::dump_symbols_map () const
 }
 
 std::list<symbol_record>
-symbol_scope_rep::symbol_list () const
+symbol_scope::symbol_scope_rep::symbol_list () const
 {
   std::list<symbol_record> retval;
 
@@ -174,7 +174,7 @@ symbol_scope_rep::symbol_list () const
 }
 
 octave_value
-symbol_scope_rep::find_subfunction (const std::string& name) const
+symbol_scope::symbol_scope_rep::find_subfunction (const std::string& name) const
 {
   subfunctions_const_iterator p = m_subfunctions.find (name);
 
@@ -190,7 +190,7 @@ symbol_scope_rep::find_subfunction (const std::string& name) const
 }
 
 void
-symbol_scope_rep::mark_subfunctions_in_scope_as_private (const std::string& class_name)
+symbol_scope::symbol_scope_rep::mark_subfunctions_in_scope_as_private (const std::string& class_name)
 {
   for (auto& nm_sf : m_subfunctions)
     {
@@ -202,7 +202,7 @@ symbol_scope_rep::mark_subfunctions_in_scope_as_private (const std::string& clas
 }
 
 std::list<std::string>
-symbol_scope_rep::parent_fcn_names () const
+symbol_scope::symbol_scope_rep::parent_fcn_names () const
 {
   std::list<std::string> retval;
 
@@ -219,25 +219,25 @@ symbol_scope_rep::parent_fcn_names () const
 }
 
 void
-symbol_scope_rep::set_parent (const std::shared_ptr<symbol_scope_rep>& parent)
+symbol_scope::symbol_scope_rep::set_parent (const std::shared_ptr<symbol_scope::symbol_scope_rep>& parent)
 {
-  m_parent = std::weak_ptr<symbol_scope_rep> (parent);
+  m_parent = std::weak_ptr<symbol_scope::symbol_scope_rep> (parent);
 }
 
 void
-symbol_scope_rep::set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent)
+symbol_scope::symbol_scope_rep::set_primary_parent (const std::shared_ptr<symbol_scope::symbol_scope_rep>& parent)
 {
-  m_primary_parent = std::weak_ptr<symbol_scope_rep> (parent);
+  m_primary_parent = std::weak_ptr<symbol_scope::symbol_scope_rep> (parent);
 }
 
 void
-symbol_scope_rep::cache_dir_name (const std::string& name)
+symbol_scope::symbol_scope_rep::cache_dir_name (const std::string& name)
 {
   m_dir_name = sys::canonicalize_file_name (name);
 }
 
 bool
-symbol_scope_rep::is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const
+symbol_scope::symbol_scope_rep::is_relative (const std::shared_ptr<symbol_scope::symbol_scope_rep>& scope) const
 {
   if (is_nested ())
     {
@@ -276,7 +276,7 @@ symbol_scope_rep::is_relative (const std::shared_ptr<symbol_scope_rep>& scope) c
 }
 
 void
-symbol_scope_rep::mark_as_variable (const std::string& nm)
+symbol_scope::symbol_scope_rep::mark_as_variable (const std::string& nm)
 {
   table_iterator p = m_symbols.find (nm);
 
@@ -285,14 +285,14 @@ symbol_scope_rep::mark_as_variable (const std::string& nm)
 }
 
 void
-symbol_scope_rep::mark_as_variables (const std::list<std::string>& lst)
+symbol_scope::symbol_scope_rep::mark_as_variables (const std::list<std::string>& lst)
 {
   for (const auto& nm : lst)
     mark_as_variable (nm);
 }
 
 bool
-symbol_scope_rep::is_variable (const std::string& nm) const
+symbol_scope::symbol_scope_rep::is_variable (const std::string& nm) const
 {
   table_const_iterator p = m_symbols.find (nm);
 
@@ -312,7 +312,7 @@ symbol_scope_rep::is_variable (const std::string& nm) const
 }
 
 void
-symbol_scope_rep::update_nest ()
+symbol_scope::symbol_scope_rep::update_nest ()
 {
   auto t_parent = m_parent.lock ();
 
@@ -344,9 +344,9 @@ symbol_scope_rep::update_nest ()
 }
 
 bool
-symbol_scope_rep::look_nonlocal (const std::string& name,
-                                 std::size_t offset,
-                                 symbol_record& result)
+symbol_scope::symbol_scope_rep::look_nonlocal (const std::string& name,
+                                               std::size_t offset,
+                                               symbol_record& result)
 {
   offset++;
 
@@ -388,7 +388,7 @@ symbol_scope::localfunctions () const
   if (is_primary_fcn_scope ())
     return m_rep->localfunctions ();
 
-  std::shared_ptr<symbol_scope_rep> ppsr
+  std::shared_ptr<symbol_scope::symbol_scope_rep> ppsr
     = m_rep->primary_parent_scope_rep ();
 
   if (! ppsr)

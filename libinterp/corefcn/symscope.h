@@ -48,327 +48,327 @@ class octave_user_code;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class symbol_scope;
-
-class symbol_scope_rep
-  : public std::enable_shared_from_this<symbol_scope_rep>
+class OCTINTERP_API symbol_scope
 {
-public:
-
-  typedef std::map<std::string, symbol_record>::const_iterator
-    table_const_iterator;
-  typedef std::map<std::string, symbol_record>::iterator
-    table_iterator;
-
-  typedef std::map<std::string, octave_value>::const_iterator
-    subfunctions_const_iterator;
-  typedef std::map<std::string, octave_value>::iterator
-    subfunctions_iterator;
-
-  symbol_scope_rep (const std::string& name = "", bool add_ans = true)
-    : m_name (name), m_symbols (), m_subfunctions (),
-      m_persistent_values (), m_code (nullptr), m_fcn_name (),
-      m_fcn_file_name (), m_dir_name (), m_parent (),
-      m_primary_parent (), m_children (), m_nesting_depth (0),
-      m_is_static (false), m_is_primary_fcn_scope (false)
-  {
-    // Most scopes have ans as the first symbol, initially undefined.
-    if (add_ans)
-      insert_local ("ans");
-  }
-
-  OCTAVE_DISABLE_COPY_MOVE (symbol_scope_rep)
-
-  ~symbol_scope_rep () = default;
-
-  std::size_t num_symbols () const { return m_symbols.size (); }
-
-  // Simply inserts symbol.  No non-local searching.
-
-  symbol_record insert_local (const std::string& name);
-
-  void insert_symbol_record (symbol_record& sr);
-
-  bool is_nested () const { return m_nesting_depth > 0; }
-
-  std::size_t nesting_depth () const { return m_nesting_depth; }
-
-  void set_nesting_depth (std::size_t depth) { m_nesting_depth = depth; }
-
-  bool is_parent () const { return ! m_children.empty (); }
-
-  bool is_static () const { return m_is_static; }
-
-  void mark_static () { m_is_static = true; }
-
-  std::shared_ptr<symbol_scope_rep> parent_scope_rep () const
-  {
-    return m_parent.lock ();
-  }
-
-  std::shared_ptr<symbol_scope_rep> primary_parent_scope_rep () const
-  {
-    return m_primary_parent.lock ();
-  }
-
-  std::shared_ptr<symbol_scope_rep> dup () const
-  {
-    std::shared_ptr<symbol_scope_rep> new_sid
-      = std::shared_ptr<symbol_scope_rep> (new symbol_scope_rep (m_name));
-
-    for (const auto& nm_sr : m_symbols)
-      new_sid->m_symbols[nm_sr.first] = nm_sr.second.dup ();
-
-    new_sid->m_subfunctions = m_subfunctions;
-    new_sid->m_persistent_values = m_persistent_values;
-    new_sid->m_subfunction_names = m_subfunction_names;
-    new_sid->m_code = m_code;
-    new_sid->m_fcn_name = m_fcn_name;
-    new_sid->m_fcn_file_name = m_fcn_file_name;
-    new_sid->m_dir_name = m_dir_name;
-    new_sid->m_parent = m_parent;
-    new_sid->m_primary_parent = m_primary_parent;
-    new_sid->m_children = m_children;
-    new_sid->m_nesting_depth = m_nesting_depth;
-    new_sid->m_is_static = m_is_static;
-    new_sid->m_is_primary_fcn_scope = m_is_primary_fcn_scope;
-
-    return new_sid;
-  }
-
-  octave_value& persistent_varref (std::size_t data_offset)
-  {
-    return m_persistent_values[data_offset];
-  }
-
-  octave_value persistent_varval (std::size_t data_offset) const
-  {
-    auto p = m_persistent_values.find (data_offset);
-
-    return p == m_persistent_values.end () ? octave_value () : p->second;
-  }
-
-  symbol_record find_symbol (const std::string& name)
-  {
-    auto p = m_symbols.find (name);
-
-    if (p == m_symbols.end ())
-      return insert (name);
-    else
-      return p->second;
-  }
-
-  symbol_record lookup_symbol (const std::string& name) const
-  {
-    auto p = m_symbols.find (name);
-
-    return p == m_symbols.end () ? symbol_record () : p->second;
-  }
-
-  symbol_record insert (const std::string& name);
-
-  void rename (const std::string& old_name, const std::string& new_name)
-  {
-    auto p = m_symbols.find (old_name);
-
-    if (p != m_symbols.end ())
-      {
-        symbol_record sr = p->second;
-
-        sr.rename (new_name);
-
-        m_symbols.erase (p);
-
-        m_symbols[new_name] = sr;
-      }
-  }
-
-  void install_subfunction (const std::string& name,
-                            const octave_value& fval)
-  {
-    m_subfunctions[name] = fval;
-  }
-
-  void install_nestfunction (const std::string& name,
-                             const octave_value& fval,
-                             const symbol_scope& fcn_scope)
-  {
-    m_subfunctions[name] = fval;
-
-    m_children.push_back (fcn_scope);
-  }
-
-  octave_value find_subfunction (const std::string& name) const;
-
-  void lock_subfunctions ()
-  {
-    for (auto& nm_sf : m_subfunctions)
-      nm_sf.second.lock ();
-  }
-
-  void unlock_subfunctions ()
-  {
-    for (auto& nm_sf : m_subfunctions)
-      nm_sf.second.unlock ();
-  }
-
-  // Pairs of name, function objects.
-  std::map<std::string, octave_value> subfunctions () const
-  {
-    return m_subfunctions;
-  }
-
-  void erase_subfunctions ()
-  {
-    m_subfunctions.clear ();
-  }
-
-  void mark_subfunctions_in_scope_as_private (const std::string& class_name);
-
-  bool has_subfunctions () const
-  {
-    return ! m_subfunction_names.empty ();
-  }
-
-  void stash_subfunction_names (const std::list<std::string>& names)
-  {
-    m_subfunction_names = names;
-  }
-
-  std::list<std::string> subfunction_names () const
-  {
-    return m_subfunction_names;
-  }
-
-  std::list<octave_value> localfunctions () const;
-
-  octave_value dump () const;
-
-  std::string name () const { return m_name; }
-
-  void cache_name (const std::string& name) { m_name = name; }
-
-  std::string fcn_name () const { return m_fcn_name; }
-
-  void cache_fcn_name (const std::string& name) { m_fcn_name = name; }
-
-  std::list<std::string> parent_fcn_names () const;
-
-  octave_user_code * user_code () const { return m_code; }
-
-  void set_user_code (octave_user_code *code) { m_code = code; }
-
-  void set_parent (const std::shared_ptr<symbol_scope_rep>& parent);
-
-  void set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent);
-
-  void cache_fcn_file_name (const std::string& name)
-  {
-    m_fcn_file_name = name;
-  }
-
-  std::string fcn_file_name () const { return m_fcn_file_name; }
-
-  void cache_dir_name (const std::string& name);
-
-  std::string dir_name () const { return m_dir_name; }
-
-  void mark_primary_fcn_scope () { m_is_primary_fcn_scope = true; }
-
-  bool is_primary_fcn_scope () const { return m_is_primary_fcn_scope; }
-
-  bool is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const;
-
-  void mark_as_variable (const std::string& nm);
-  void mark_as_variables (const std::list<std::string>& lst);
-
-  bool is_variable (const std::string& nm) const;
-
-  void update_nest ();
-
-  bool look_nonlocal (const std::string& name, std::size_t offset,
-                      symbol_record& result);
-
-  octave_value dump_symbols_map () const;
-
-  const std::map<std::string, symbol_record>& symbols () const
-  {
-    return m_symbols;
-  }
-
-  std::map<std::string, symbol_record>& symbols ()
-  {
-    return m_symbols;
-  }
-
-  std::list<symbol_record> symbol_list () const;
-
 private:
 
-  //! Name for this scope (usually the corresponding filename of the
-  //! function corresponding to the scope).
+  class symbol_scope_rep
+    : public std::enable_shared_from_this<symbol_scope_rep>
+  {
+  public:
 
-  std::string m_name;
+    typedef std::map<std::string, symbol_record>::const_iterator
+      table_const_iterator;
+    typedef std::map<std::string, symbol_record>::iterator
+      table_iterator;
 
-  //! Map from symbol names to symbol info.
+    typedef std::map<std::string, octave_value>::const_iterator
+      subfunctions_const_iterator;
+    typedef std::map<std::string, octave_value>::iterator
+      subfunctions_iterator;
 
-  std::map<std::string, symbol_record> m_symbols;
+    symbol_scope_rep (const std::string& name = "", bool add_ans = true)
+      : m_name (name), m_symbols (), m_subfunctions (),
+        m_persistent_values (), m_code (nullptr), m_fcn_name (),
+        m_fcn_file_name (), m_dir_name (), m_parent (),
+        m_primary_parent (), m_children (), m_nesting_depth (0),
+        m_is_static (false), m_is_primary_fcn_scope (false)
+    {
+      // Most scopes have ans as the first symbol, initially undefined.
+      if (add_ans)
+        insert_local ("ans");
+    }
 
-  //! Map from symbol names to subfunctions.
+    OCTAVE_DISABLE_COPY_MOVE (symbol_scope_rep)
 
-  std::map<std::string, octave_value> m_subfunctions;
+    ~symbol_scope_rep () = default;
 
-  //! Map from data offset to persistent values in this scope.
-  std::map<std::size_t, octave_value> m_persistent_values;
+    std::size_t num_symbols () const { return m_symbols.size (); }
 
-  //! The list of subfunctions (if any) in the order they appear in
-  //! the function file.
+    // Simply inserts symbol.  No non-local searching.
 
-  std::list<std::string> m_subfunction_names;
+    symbol_record insert_local (const std::string& name);
 
-  //! The associated user code (may be null).
+    void insert_symbol_record (symbol_record& sr);
 
-  octave_user_code *m_code;
+    bool is_nested () const { return m_nesting_depth > 0; }
 
-  //! Simple name of the function corresponding to this scope.
+    std::size_t nesting_depth () const { return m_nesting_depth; }
 
-  std::string m_fcn_name;
+    void set_nesting_depth (std::size_t depth) { m_nesting_depth = depth; }
 
-  //! The file name associated with m_code.
+    bool is_parent () const { return ! m_children.empty (); }
 
-  std::string m_fcn_file_name;
+    bool is_static () const { return m_is_static; }
 
-  //! The directory associated with m_code.
+    void mark_static () { m_is_static = true; }
 
-  std::string m_dir_name;
+    std::shared_ptr<symbol_scope_rep> parent_scope_rep () const
+    {
+      return m_parent.lock ();
+    }
 
-  //! Parent of nested function (may be null).
+    std::shared_ptr<symbol_scope_rep> primary_parent_scope_rep () const
+    {
+      return m_primary_parent.lock ();
+    }
 
-  std::weak_ptr<symbol_scope_rep> m_parent;
+    std::shared_ptr<symbol_scope_rep> dup () const
+    {
+      std::shared_ptr<symbol_scope_rep> new_sid
+        = std::shared_ptr<symbol_scope_rep> (new symbol_scope_rep (m_name));
 
-  //! Primary (top) parent of nested function (may be null).  Used
-  //! to determine whether two nested functions are related.
+      for (const auto& nm_sr : m_symbols)
+        new_sid->m_symbols[nm_sr.first] = nm_sr.second.dup ();
 
-  std::weak_ptr<symbol_scope_rep> m_primary_parent;
+      new_sid->m_subfunctions = m_subfunctions;
+      new_sid->m_persistent_values = m_persistent_values;
+      new_sid->m_subfunction_names = m_subfunction_names;
+      new_sid->m_code = m_code;
+      new_sid->m_fcn_name = m_fcn_name;
+      new_sid->m_fcn_file_name = m_fcn_file_name;
+      new_sid->m_dir_name = m_dir_name;
+      new_sid->m_parent = m_parent;
+      new_sid->m_primary_parent = m_primary_parent;
+      new_sid->m_children = m_children;
+      new_sid->m_nesting_depth = m_nesting_depth;
+      new_sid->m_is_static = m_is_static;
+      new_sid->m_is_primary_fcn_scope = m_is_primary_fcn_scope;
 
-  //! Child nested functions.
+      return new_sid;
+    }
 
-  std::vector<symbol_scope> m_children;
+    octave_value& persistent_varref (std::size_t data_offset)
+    {
+      return m_persistent_values[data_offset];
+    }
 
-  //! If true, then this scope belongs to a nested function.
+    octave_value persistent_varval (std::size_t data_offset) const
+    {
+      auto p = m_persistent_values.find (data_offset);
 
-  std::size_t m_nesting_depth;
+      return p == m_persistent_values.end () ? octave_value () : p->second;
+    }
 
-  //! If true then no variables can be added.
+    symbol_record find_symbol (const std::string& name)
+    {
+      auto p = m_symbols.find (name);
 
-  bool m_is_static;
+      if (p == m_symbols.end ())
+        return insert (name);
+      else
+        return p->second;
+    }
 
-  //! If true, this is the scope of a primary function.
-  bool m_is_primary_fcn_scope;
-};
+    symbol_record lookup_symbol (const std::string& name) const
+    {
+      auto p = m_symbols.find (name);
 
-class symbol_scope
-{
+      return p == m_symbols.end () ? symbol_record () : p->second;
+    }
+
+    symbol_record insert (const std::string& name);
+
+    void rename (const std::string& old_name, const std::string& new_name)
+    {
+      auto p = m_symbols.find (old_name);
+
+      if (p != m_symbols.end ())
+        {
+          symbol_record sr = p->second;
+
+          sr.rename (new_name);
+
+          m_symbols.erase (p);
+
+          m_symbols[new_name] = sr;
+        }
+    }
+
+    void install_subfunction (const std::string& name,
+                              const octave_value& fval)
+    {
+      m_subfunctions[name] = fval;
+    }
+
+    void install_nestfunction (const std::string& name,
+                               const octave_value& fval,
+                               const symbol_scope& fcn_scope)
+    {
+      m_subfunctions[name] = fval;
+
+      m_children.push_back (fcn_scope);
+    }
+
+    octave_value find_subfunction (const std::string& name) const;
+
+    void lock_subfunctions ()
+    {
+      for (auto& nm_sf : m_subfunctions)
+        nm_sf.second.lock ();
+    }
+
+    void unlock_subfunctions ()
+    {
+      for (auto& nm_sf : m_subfunctions)
+        nm_sf.second.unlock ();
+    }
+
+    // Pairs of name, function objects.
+    std::map<std::string, octave_value> subfunctions () const
+    {
+      return m_subfunctions;
+    }
+
+    void erase_subfunctions ()
+    {
+      m_subfunctions.clear ();
+    }
+
+    void mark_subfunctions_in_scope_as_private (const std::string& class_name);
+
+    bool has_subfunctions () const
+    {
+      return ! m_subfunction_names.empty ();
+    }
+
+    void stash_subfunction_names (const std::list<std::string>& names)
+    {
+      m_subfunction_names = names;
+    }
+
+    std::list<std::string> subfunction_names () const
+    {
+      return m_subfunction_names;
+    }
+
+    std::list<octave_value> localfunctions () const;
+
+    octave_value dump () const;
+
+    std::string name () const { return m_name; }
+
+    void cache_name (const std::string& name) { m_name = name; }
+
+    std::string fcn_name () const { return m_fcn_name; }
+
+    void cache_fcn_name (const std::string& name) { m_fcn_name = name; }
+
+    std::list<std::string> parent_fcn_names () const;
+
+    octave_user_code * user_code () const { return m_code; }
+
+    void set_user_code (octave_user_code *code) { m_code = code; }
+
+    void set_parent (const std::shared_ptr<symbol_scope_rep>& parent);
+
+    void set_primary_parent (const std::shared_ptr<symbol_scope_rep>& parent);
+
+    void cache_fcn_file_name (const std::string& name)
+    {
+      m_fcn_file_name = name;
+    }
+
+    std::string fcn_file_name () const { return m_fcn_file_name; }
+
+    void cache_dir_name (const std::string& name);
+
+    std::string dir_name () const { return m_dir_name; }
+
+    void mark_primary_fcn_scope () { m_is_primary_fcn_scope = true; }
+
+    bool is_primary_fcn_scope () const { return m_is_primary_fcn_scope; }
+
+    bool is_relative (const std::shared_ptr<symbol_scope_rep>& scope) const;
+
+    void mark_as_variable (const std::string& nm);
+    void mark_as_variables (const std::list<std::string>& lst);
+
+    bool is_variable (const std::string& nm) const;
+
+    void update_nest ();
+
+    bool look_nonlocal (const std::string& name, std::size_t offset,
+                        symbol_record& result);
+
+    octave_value dump_symbols_map () const;
+
+    const std::map<std::string, symbol_record>& symbols () const
+    {
+      return m_symbols;
+    }
+
+    std::map<std::string, symbol_record>& symbols ()
+    {
+      return m_symbols;
+    }
+
+    std::list<symbol_record> symbol_list () const;
+
+  private:
+
+    //! Name for this scope (usually the corresponding filename of the
+    //! function corresponding to the scope).
+
+    std::string m_name;
+
+    //! Map from symbol names to symbol info.
+
+    std::map<std::string, symbol_record> m_symbols;
+
+    //! Map from symbol names to subfunctions.
+
+    std::map<std::string, octave_value> m_subfunctions;
+
+    //! Map from data offset to persistent values in this scope.
+    std::map<std::size_t, octave_value> m_persistent_values;
+
+    //! The list of subfunctions (if any) in the order they appear in
+    //! the function file.
+
+    std::list<std::string> m_subfunction_names;
+
+    //! The associated user code (may be null).
+
+    octave_user_code *m_code;
+
+    //! Simple name of the function corresponding to this scope.
+
+    std::string m_fcn_name;
+
+    //! The file name associated with m_code.
+
+    std::string m_fcn_file_name;
+
+    //! The directory associated with m_code.
+
+    std::string m_dir_name;
+
+    //! Parent of nested function (may be null).
+
+    std::weak_ptr<symbol_scope_rep> m_parent;
+
+    //! Primary (top) parent of nested function (may be null).  Used
+    //! to determine whether two nested functions are related.
+
+    std::weak_ptr<symbol_scope_rep> m_primary_parent;
+
+    //! Child nested functions.
+
+    std::vector<symbol_scope> m_children;
+
+    //! If true, then this scope belongs to a nested function.
+
+    std::size_t m_nesting_depth;
+
+    //! If true then no variables can be added.
+
+    bool m_is_static;
+
+    //! If true, this is the scope of a primary function.
+    bool m_is_primary_fcn_scope;
+  };
+
 public:
 
   symbol_scope () = delete;

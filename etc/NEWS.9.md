@@ -8,6 +8,9 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - `hist.m`: Add input validation for `Y` restricting it to 2-D array
   (bug #65478).
 
+- `cross.m`: Add input validation for 'dim' restricting it to a numeric
+  integer valued scalar.
+
 ### GUI
 
 - Use first word for options in right-click menu of command window widget

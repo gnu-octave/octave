@@ -43,6 +43,7 @@ public:
 
   enum token_type
   {
+    invalid_token,
     generic_token,
     keyword_token,
     string_token,
@@ -72,6 +73,10 @@ public:
   };
 
 public:
+
+  token ()
+    : m_type_tag (invalid_token)
+  { }
 
   token (int id, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
     : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_comment_list (lst)
@@ -153,7 +158,7 @@ private:
   filepos m_beg_pos;
   filepos m_end_pos;
 
-  int m_tok_id;
+  int m_tok_id {-1};
 
   token_type m_type_tag {generic_token};
 

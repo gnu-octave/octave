@@ -30,10 +30,12 @@
 
 #include <string>
 
+#include "comment-list.h"
 #include "ov-fcn.h"
 #include "pt.h"
 #include "pt-bp.h"
 #include "pt-walk.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -57,13 +59,24 @@ class tree_no_op_command : public tree_command
 {
 public:
 
-  tree_no_op_command (const std::string& cmd = "no_op", bool e = false,
-                      int l = -1, int c = -1)
-    : tree_command (l, c), m_eof (e), m_orig_cmd (cmd) { }
+  tree_no_op_command (const std::string& cmd, bool eof, const token& tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_eof (eof), m_tok (tok), m_orig_cmd (cmd) { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_no_op_command)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_no_op_command)
 
   ~tree_no_op_command () = default;
+
+  comment_list leading_comments () const { return m_tok.leading_comments (); }
+
+  void attach_trailing_comments (const comment_list& lst)
+  {
+    m_tok.trailing_comments (lst);
+  }
+
+  comment_list trailing_comments () const
+  {
+    return m_tok.trailing_comments ();
+  }
 
   void accept (tree_walker& tw)
   {
@@ -82,6 +95,9 @@ public:
 private:
 
   bool m_eof;
+
+  // If defined, may be END token or EOF.
+  token m_tok;
 
   std::string m_orig_cmd;
 };

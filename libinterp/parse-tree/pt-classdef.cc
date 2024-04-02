@@ -29,6 +29,7 @@
 
 #include <iostream>
 
+#include "comment-list.h"
 #include "ov.h"
 #include "ov-classdef.h"
 #include "pt-args-block.h"
@@ -121,33 +122,39 @@ tree_classdef_superclass_list::~tree_classdef_superclass_list ()
 
 // Classdef property
 
-std::string
-check_for_doc_string (comment_list *comments)
+static std::string
+check_for_doc_string (const comment_list& comments)
 {
-  // If the comment list ends in a block comment or full-line comment,
-  // then it is the doc string for this property.
-
-  if (comments)
+  if (! comments.empty ())
     {
-      comment_elt last_elt = comments->back ();
+      // If the comment list ends in a block comment or full-line
+      // comment, then it is the doc string for this property.
 
-      if (last_elt.is_block () || last_elt.is_full_line ())
+      comment_elt last_elt = comments.back ();
+
+      if (! last_elt.is_copyright ()
+          && (last_elt.is_block () || last_elt.is_full_line ()))
         return last_elt.text ();
     }
 
   return "";
 }
 
-tree_classdef_property::tree_classdef_property (tree_arg_validation *av,
-    comment_list *comments)
-  : m_av (av), m_comments (comments),
-    m_doc_string (check_for_doc_string (m_comments))
+tree_classdef_property::tree_classdef_property (tree_arg_validation *av)
+  : m_av (av), m_doc_string (check_for_doc_string (leading_comments ()))
 { }
 
 tree_classdef_property::~tree_classdef_property ()
 {
   delete m_av;
-  delete m_comments;
+}
+
+comment_list
+tree_classdef_property::leading_comments ()
+{
+  tree_identifier *id = ident ();
+
+  return id->leading_comments ();
 }
 
 tree_identifier *
@@ -178,21 +185,19 @@ tree_classdef_property_list::~tree_classdef_property_list ()
 
 // Classdef properties_block
 
-// Classdef methods_list
+// Classdef method_list
 
 // Classdef methods_block
 
 // Classdef event
 
-tree_classdef_event::tree_classdef_event (tree_identifier *i,
-    comment_list *comments)
-  : m_id (i), m_comments (comments),
-    m_doc_string (check_for_doc_string (m_comments))
+tree_classdef_event::tree_classdef_event (tree_identifier *i)
+  : m_id (i)
 { }
 
-// Classdef events_list
+// Classdef event_list
 
-tree_classdef_events_list::~tree_classdef_events_list ()
+tree_classdef_event_list::~tree_classdef_event_list ()
 {
   while (! empty ())
     {
@@ -206,11 +211,8 @@ tree_classdef_events_list::~tree_classdef_events_list ()
 
 // Classdef enum
 
-tree_classdef_enum::tree_classdef_enum (tree_identifier *i,
-                                        tree_expression *e,
-                                        comment_list *comments)
-  : m_id (i), m_expr (e), m_comments (comments),
-    m_doc_string (check_for_doc_string (m_comments))
+tree_classdef_enum::tree_classdef_enum (tree_identifier *i, const token& open_paren, tree_expression *e, const token& close_paren)
+  : m_id (i), m_open_paren (open_paren), m_expr (e), m_close_paren (close_paren)
 { }
 
 // Classdef enum_list
@@ -230,82 +232,55 @@ tree_classdef_enum_list::~tree_classdef_enum_list ()
 // Classdef body
 
 tree_classdef_body::tree_classdef_body ()
-  : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst ()
+  : m_property_lst (), m_method_lst (), m_event_lst (), m_enum_lst ()
 { }
 
 tree_classdef_body::tree_classdef_body (tree_classdef_properties_block *pb)
-  : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
-    m_doc_string (pb ? get_doc_string (pb->leading_comment ()) : "")
+  : m_property_lst (), m_method_lst (), m_event_lst (), m_enum_lst ()
 {
   append (pb);
 }
 
 tree_classdef_body::tree_classdef_body (tree_classdef_methods_block *mb)
-  : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
-    m_doc_string (mb ? get_doc_string (mb->leading_comment ()) : "")
+  : m_property_lst (), m_method_lst (), m_event_lst (), m_enum_lst ()
 {
   append (mb);
 }
 
 tree_classdef_body::tree_classdef_body (tree_classdef_events_block *evb)
-  : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
-    m_doc_string (evb ? get_doc_string (evb->leading_comment ()) : "")
+  : m_property_lst (), m_method_lst (), m_event_lst (), m_enum_lst ()
 {
   append (evb);
 }
 
 tree_classdef_body::tree_classdef_body (tree_classdef_enum_block *enb)
-  : m_properties_lst (), m_methods_lst (), m_events_lst (), m_enum_lst (),
-    m_doc_string (enb ? get_doc_string (enb->leading_comment ()) : "")
+  : m_property_lst (), m_method_lst (), m_event_lst (), m_enum_lst ()
 {
   append (enb);
 }
 
-tree_classdef_body::~tree_classdef_body ()
+comment_list
+tree_classdef_body::leading_comments () const
 {
-  while (! m_properties_lst.empty ())
+  if (! m_all_elements.empty ())
     {
-      auto p = m_properties_lst.begin ();
-      delete *p;
-      m_properties_lst.erase (p);
+      tree_base_classdef_block *element = m_all_elements.front ();
+
+      if (element)
+        return element->leading_comments ();
     }
 
-  while (! m_methods_lst.empty ())
-    {
-      auto p = m_methods_lst.begin ();
-      delete *p;
-      m_methods_lst.erase (p);
-    }
-
-  while (! m_events_lst.empty ())
-    {
-      auto p = m_events_lst.begin ();
-      delete *p;
-      m_events_lst.erase (p);
-    }
-
-  while (! m_enum_lst.empty ())
-    {
-      auto p = m_enum_lst.begin ();
-      delete *p;
-      m_enum_lst.erase (p);
-    }
+  return comment_list ();
 }
 
-std::string
-tree_classdef_body::get_doc_string (comment_list *comments) const
+tree_classdef_body::~tree_classdef_body ()
 {
-  // Grab the first comment from the list and use it as the doc string
-  // for this classdef body.
-
-  if (comments)
+  while (! m_all_elements.empty ())
     {
-      comment_elt first_elt = comments->front ();
-
-      return first_elt.text ();
+      auto p = m_all_elements.begin ();
+      delete *p;
+      m_all_elements.erase (p);
     }
-
-  return "";
 }
 
 // Classdef

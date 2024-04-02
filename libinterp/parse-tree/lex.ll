@@ -991,7 +991,7 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
-        octave::token *tok = new octave::token (DQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+        octave::token *tok = new octave::token (DQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end, curr_lexer->get_comment_list ());
 
         curr_lexer->m_string_text = "";
 
@@ -1141,7 +1141,7 @@ ANY_INCLUDING_NL (.|{NL})
         curr_lexer->m_looking_for_object_index = true;
         curr_lexer->m_at_beginning_of_statement = false;
 
-        octave::token *tok = new octave::token (SQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+        octave::token *tok = new octave::token (SQ_STRING, curr_lexer->m_string_text, curr_lexer->m_tok_beg, curr_lexer->m_tok_end, curr_lexer->get_comment_list ());
 
         curr_lexer->m_string_text = "";
 
@@ -1407,7 +1407,7 @@ ANY_INCLUDING_NL (.|{NL})
 
                 curr_lexer->m_looking_for_object_index = true;
 
-                tok = new octave::token (FCN_HANDLE, ident, curr_lexer->m_tok_beg, curr_lexer->m_tok_end);
+                tok = new octave::token (FCN_HANDLE, ident, curr_lexer->m_tok_beg, curr_lexer->m_tok_end, curr_lexer->get_comment_list ());
 
                 return curr_lexer->handle_token (tok);
               }
@@ -2441,7 +2441,7 @@ looks_like_shebang (const std::string& s)
 
     lexical_feedback::reset ();
 
-    m_comment_buf.reset ();
+    m_comment_list.clear ();
   }
 
   void
@@ -2479,7 +2479,7 @@ looks_like_shebang (const std::string& s)
         syntax_error (msg);
       }
 
-    token *tok = new token (END_OF_INPUT, m_tok_beg, m_tok_end);
+    token *tok = new token (END_OF_INPUT, m_tok_beg, m_tok_end, get_comment_list ());
 
     return handle_token (tok);
   }
@@ -2644,47 +2644,47 @@ looks_like_shebang (const std::string& s)
             return nullptr;
           }
 
-        tok = new token (kw->tok_id, token::simple_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::simple_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case end_try_catch_kw:
-        tok = new token (kw->tok_id, token::try_catch_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::try_catch_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case end_unwind_protect_kw:
-        tok = new token (kw->tok_id, token::unwind_protect_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::unwind_protect_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endfor_kw:
-        tok = new token (kw->tok_id, token::for_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::for_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endfunction_kw:
-        tok = new token (kw->tok_id, token::function_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::function_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endif_kw:
-        tok = new token (kw->tok_id, token::if_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::if_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endparfor_kw:
-        tok = new token (kw->tok_id, token::parfor_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::parfor_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endswitch_kw:
-        tok = new token (kw->tok_id, token::switch_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::switch_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endwhile_kw:
-        tok = new token (kw->tok_id, token::while_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::while_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
@@ -2692,33 +2692,33 @@ looks_like_shebang (const std::string& s)
 #if defined (DISABLE_ARGUMENTS_VALIDATION_BLOCK)
         return nullptr;
 #else
-        tok = new token (kw->tok_id, token::arguments_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::arguments_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 #endif
 
       case endclassdef_kw:
-        tok = new token (kw->tok_id, token::classdef_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::classdef_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endenumeration_kw:
-        tok = new token (kw->tok_id, token::enumeration_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::enumeration_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endevents_kw:
-        tok = new token (kw->tok_id, token::events_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::events_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endmethods_kw:
-        tok = new token (kw->tok_id, token::methods_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::methods_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
       case endproperties_kw:
-        tok = new token (kw->tok_id, token::properties_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::properties_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
@@ -2821,7 +2821,7 @@ looks_like_shebang (const std::string& s)
         break;
 
       case endspmd_kw:
-        tok = new token (kw->tok_id, token::spmd_end, m_tok_beg, m_tok_end);
+        tok = new token (kw->tok_id, token::spmd_end, m_tok_beg, m_tok_end, get_comment_list ());
         m_at_beginning_of_statement = true;
         break;
 
@@ -2830,9 +2830,9 @@ looks_like_shebang (const std::string& s)
           if ((m_reading_fcn_file || m_reading_script_file
                || m_reading_classdef_file)
               && ! m_fcn_file_full_name.empty ())
-            tok = new token (kw->tok_id, m_fcn_file_full_name, m_tok_beg, m_tok_end);
+            tok = new token (kw->tok_id, m_fcn_file_full_name, m_tok_beg, m_tok_end, get_comment_list ());
           else
-            tok = new token (kw->tok_id, "stdin", m_tok_beg, m_tok_end);
+            tok = new token (kw->tok_id, "stdin", m_tok_beg, m_tok_end, get_comment_list ());
         }
         break;
 
@@ -2840,7 +2840,7 @@ looks_like_shebang (const std::string& s)
         {
           int l = m_tok_beg.line ();
           octave_value ov_value (static_cast<double> (l));
-          tok = new token (kw->tok_id, ov_value, "", m_tok_beg, m_tok_end);
+          tok = new token (kw->tok_id, ov_value, "", m_tok_beg, m_tok_end, get_comment_list ());
         }
         break;
 
@@ -2849,7 +2849,7 @@ looks_like_shebang (const std::string& s)
       }
 
     if (! tok)
-      tok = new token (kw->tok_id, true, m_tok_beg, m_tok_end);
+            tok = new token (kw->tok_id, true, m_tok_beg, m_tok_end, get_comment_list ());
 
     return tok;
   }
@@ -3036,7 +3036,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     update_token_positions (flex_yyleng ());
 
-    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end);
+    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end, get_comment_list ());
 
     return handle_token (tok);
   }
@@ -3158,7 +3158,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
                   ? octave_value (Complex (0.0, value))
                   : octave_value (value));
 
-    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end);
+    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end, get_comment_list ());
 
     return handle_token (tok);
   }
@@ -3229,7 +3229,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     update_token_positions (flex_yyleng ());
 
-    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end);
+    token *tok = new token (NUMBER, ov_value, yytxt, m_tok_beg, m_tok_end, get_comment_list ());
 
     return handle_token (tok);
   }
@@ -3307,7 +3307,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     if (looks_like_copyright (m_comment_text))
       typ = comment_elt::copyright;
 
-    m_comment_buf.append (m_comment_text, typ, m_comment_uses_hash_char);
+    m_comment_list.append (m_comment_text, typ, m_comment_uses_hash_char);
 
     m_comment_text = "";
     m_comment_uses_hash_char = false;
@@ -3373,7 +3373,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         return syntax_error (msg);
       }
 
-    token *tok = new token (SUPERCLASSREF, meth, cls, m_tok_beg, m_tok_end);
+    token *tok = new token (SUPERCLASSREF, meth, cls, m_tok_beg, m_tok_end, get_comment_list ());
 
     m_filepos.increment_column (flex_yyleng ());
 
@@ -3388,7 +3388,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     m_looking_for_object_index = true;
 
-    token *tok = new token (METAQUERY, cls, m_tok_beg, m_tok_end);
+    token *tok = new token (METAQUERY, cls, m_tok_beg, m_tok_end, get_comment_list ());
 
     m_filepos.increment_column (flex_yyleng ());
 
@@ -3403,7 +3403,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     m_looking_for_object_index = true;
 
-    token *tok = new token (FQ_IDENT, ident, m_tok_beg, m_tok_end);
+    token *tok = new token (FQ_IDENT, ident, m_tok_beg, m_tok_end, get_comment_list ());
 
     m_filepos.increment_column (flex_yyleng ());
 
@@ -3427,7 +3427,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     if (m_looking_at_indirect_ref)
       {
-        token *tok = new token (STRUCT_ELT, ident, m_tok_beg, m_tok_end);
+        token *tok = new token (STRUCT_ELT, ident, m_tok_beg, m_tok_end, get_comment_list ());
 
         m_looking_for_object_index = true;
 
@@ -3452,7 +3452,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         return handle_token (tok);
       }
 
-    tok = new token (NAME, ident, m_tok_beg, m_tok_end);
+    tok = new token (NAME, ident, m_tok_beg, m_tok_end, get_comment_list ());
 
     // For compatibility with Matlab, the following symbols are
     // handled specially so that things like
@@ -3889,7 +3889,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     update_token_positions (flex_yyleng ());
 
-    token *tok = new token (tok_id, m_tok_beg, m_tok_end);
+    token *tok = new token (tok_id, m_tok_beg, m_tok_end, get_comment_list ());
 
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = bos;
@@ -3923,7 +3923,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   int
   base_lexer::finish_command_arg ()
   {
-    token *tok = new token (SQ_STRING, m_string_text, m_tok_beg, m_tok_end);
+    token *tok = new token (SQ_STRING, m_string_text, m_tok_beg, m_tok_end, get_comment_list ());
 
     m_string_text = "";
     m_command_arg_paren_count = 0;

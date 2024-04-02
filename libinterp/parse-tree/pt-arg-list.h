@@ -35,7 +35,9 @@ class octave_value_list;
 
 #include "str-vec.h"
 
+#include "pt-delimiter-list.h"
 #include "pt-walk.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -63,6 +65,12 @@ public:
   OCTAVE_DISABLE_COPY_MOVE (tree_argument_list)
 
   ~tree_argument_list ();
+
+  tree_argument_list * mark_in_delims (const token& open_delim, const token& close_delim)
+  {
+    m_delims.push (open_delim, close_delim);
+    return this;
+  }
 
   bool has_magic_tilde () const
   {
@@ -108,6 +116,8 @@ private:
   bool m_list_includes_magic_tilde;
 
   bool m_simple_assign_lhs;
+
+  tree_delimiter_list m_delims;
 };
 
 OCTAVE_END_NAMESPACE(octave)

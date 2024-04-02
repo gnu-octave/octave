@@ -141,9 +141,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
   // The type of the basic tokens returned by the lexer.
   octave::token *tok;
 
-  // Comment strings that we need to deal with mid-rule.
-  octave::comment_list *comment_type;
-
   // Types for the nonterminals we generate.
   char punct_type;
   octave::tree *tree_type;
@@ -190,10 +187,10 @@ static void yyerror (octave::base_parser& parser, const char *s);
   octave::tree_classdef_property* tree_classdef_property_type;
   octave::tree_classdef_property_list* tree_classdef_property_list_type;
   octave::tree_classdef_properties_block* tree_classdef_properties_block_type;
-  octave::tree_classdef_methods_list* tree_classdef_methods_list_type;
+  octave::tree_classdef_method_list* tree_classdef_method_list_type;
   octave::tree_classdef_methods_block* tree_classdef_methods_block_type;
   octave::tree_classdef_event* tree_classdef_event_type;
-  octave::tree_classdef_events_list* tree_classdef_events_list_type;
+  octave::tree_classdef_event_list* tree_classdef_event_list_type;
   octave::tree_classdef_events_block* tree_classdef_events_block_type;
   octave::tree_classdef_enum* tree_classdef_enum_type;
   octave::tree_classdef_enum_list* tree_classdef_enum_list_type;
@@ -242,12 +239,11 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // %token VARARGIN VARARGOUT
 
 // Nonterminals we construct.
-%type <dummy_type> indirect_ref_op
 %type <dummy_type> push_fcn_symtab push_script_symtab begin_file
-%type <dummy_type> param_list_beg param_list_end stmt_begin anon_fcn_begin
+%type <dummy_type> stmt_begin anon_fcn_begin
 %type <dummy_type> parsing_local_fcns parse_error at_first_executable_stmt
-%type <comment_type> stash_comment
-%type <tok> function_beg classdef_beg arguments_beg
+%type <tok> param_list_beg param_list_end
+%type <tok> function_beg classdef_beg arguments_beg indirect_ref_op
 %type <tok> properties_beg methods_beg events_beg enumeration_beg
 %type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
@@ -275,8 +271,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_classdef_type> classdef
 %type <tree_command_type> file
 %type <tree_if_command_type> if_command
-%type <tree_if_clause_type> elseif_clause else_clause
-%type <tree_if_command_list_type> if_cmd_list1 if_cmd_list
+%type <tree_if_command_list_type> if_clause_list
+%type <tree_if_clause_type> if_clause elseif_clause else_clause
 %type <tree_switch_command_type> switch_command
 %type <tree_switch_case_type> switch_case default_case
 %type <tree_switch_case_list_type> case_list1 case_list
@@ -295,10 +291,10 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_classdef_property_type> class_property
 %type <tree_classdef_property_list_type> property_list property_list1
 %type <tree_classdef_properties_block_type> properties_block
-%type <tree_classdef_methods_list_type> methods_list methods_list1
+%type <tree_classdef_method_list_type> method_list method_list1
 %type <tree_classdef_methods_block_type> methods_block
 %type <tree_classdef_event_type> class_event
-%type <tree_classdef_events_list_type> events_list events_list1
+%type <tree_classdef_event_list_type> event_list event_list1
 %type <tree_classdef_events_block_type> events_block
 %type <tree_classdef_enum_type> class_enum
 %type <tree_classdef_enum_list_type> enum_list enum_list1
@@ -311,7 +307,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_arg_size_spec_type> size_spec
 %type <tree_identifier_type> class_name
 %type <tree_arg_validation_fcns_type> validation_fcns
-%type <tree_expression_type> default_value
 %type <octave_user_function_type> method_decl1
 
 // Precedence and associativity.
@@ -338,7 +333,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 
 %destructor { } <tok>
 %destructor { } <punct_type>
-%destructor { } <comment_type>
 %destructor { } <>
 
 %destructor { delete $$; } <tree_type>
@@ -384,10 +378,10 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %destructor { delete $$; } <tree_classdef_property_type>
 %destructor { delete $$; } <tree_classdef_property_list_type>
 %destructor { delete $$; } <tree_classdef_properties_block_type>
-%destructor { delete $$; } <tree_classdef_methods_list_type>
+%destructor { delete $$; } <tree_classdef_method_list_type>
 %destructor { delete $$; } <tree_classdef_methods_block_type>
 %destructor { delete $$; } <tree_classdef_event_type>
-%destructor { delete $$; } <tree_classdef_events_list_type>
+%destructor { delete $$; } <tree_classdef_event_list_type>
 %destructor { delete $$; } <tree_classdef_events_block_type>
 %destructor { delete $$; } <tree_classdef_enum_type>
 %destructor { delete $$; } <tree_classdef_enum_list_type>
@@ -523,7 +517,7 @@ statement       : expression
 
 word_list_cmd   : identifier word_list
                   {
-                    $$ = parser.make_index_expression ($1, $2, '(');
+                    $$ = parser.make_index_expression ($1, nullptr, $2, nullptr, '(');
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $2.
@@ -536,7 +530,7 @@ word_list_cmd   : identifier word_list
 word_list       : string
                   { $$ = parser.make_argument_list ($1); }
                 | word_list string
-                  { $$ = parser.append_argument_list ($1, $2); }
+                  { $$ = parser.append_argument_list ($1, nullptr, $2); }
                 ;
 
 // ===========
@@ -569,30 +563,26 @@ constant        : NUMBER
                 ;
 
 matrix          : '[' matrix_rows ']'
-                  { $$ = parser.finish_matrix ($2, $1, $3); }
+                  { $$ = parser.finish_matrix ($1, $2, $3); }
                 ;
 
 matrix_rows     : cell_or_matrix_row
                   { $$ = parser.make_matrix ($1); }
                 | matrix_rows ';' cell_or_matrix_row
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_matrix_row ($1, $3);
+                    $$ = parser.append_matrix_row ($1, $2, $3);
                   }
                 ;
 
 cell            : '{' cell_rows '}'
-                  { $$ = parser.finish_cell ($2, $1, $3); }
+                  { $$ = parser.finish_cell ($1, $2, $3); }
                 ;
 
 cell_rows       : cell_or_matrix_row
                   { $$ = parser.make_cell ($1); }
                 | cell_rows ';' cell_or_matrix_row
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_cell_row ($1, $3);
+                    $$ = parser.append_cell_row ($1, $2, $3);
                   }
                 ;
 
@@ -685,9 +675,7 @@ primary_expr    : identifier
                   { $$ = $1; }
                 | '(' expression ')'
                   {
-                    OCTAVE_YYUSE ($1, $3);
-
-                    $$ = $2->mark_in_parens ();
+                    $$ = $2->mark_in_delims (*($1), *($3));
                   }
                 ;
 
@@ -697,9 +685,7 @@ magic_colon     : ':'
 
 magic_tilde     : '~'
                   {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = parser.make_black_hole ();
+                    $$ = parser.make_black_hole ($1);
                   }
                 ;
 
@@ -711,44 +697,35 @@ arg_list        : expression
                   { $$ = parser.make_argument_list ($1); }
                 | arg_list ',' magic_colon
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_argument_list ($1, $3);
+                    $$ = parser.append_argument_list ($1, $2, $3);
                   }
                 | arg_list ',' magic_tilde
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_argument_list ($1, $3);
+                    $$ = parser.append_argument_list ($1, $2, $3);
                   }
                 | arg_list ',' expression
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_argument_list ($1, $3);
+                    $$ = parser.append_argument_list ($1, $2, $3);
                   }
                 ;
 
 indirect_ref_op : '.'
                   {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = 0;
                     lexer.m_looking_at_indirect_ref = true;
+                    $$ = $1;
                   }
                 ;
 
 oper_expr       : primary_expr
                   { $$ = $1; }
                 | oper_expr PLUS_PLUS
-                  { $$ = parser.make_postfix_op (PLUS_PLUS, $1, $2); }
+                  { $$ = parser.make_postfix_op ($1, $2); }
                 | oper_expr MINUS_MINUS
-                  { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
+                  { $$ = parser.make_postfix_op ($1, $2); }
                 | oper_expr '(' ')'
                   {
-                    OCTAVE_YYUSE ($2, $3);
+                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '(');
 
-                    $$ = parser.make_index_expression ($1, nullptr, '(');
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
@@ -757,9 +734,8 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '(' arg_list ')'
                   {
-                    OCTAVE_YYUSE ($2, $4);
+                    $$ = parser.make_index_expression ($1, $2, $3, $4, '(');
 
-                    $$ = parser.make_index_expression ($1, $3, '(');
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
@@ -768,9 +744,8 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '{' '}'
                   {
-                    OCTAVE_YYUSE ($2, $3);
+                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '{');
 
-                    $$ = parser.make_index_expression ($1, nullptr, '{');
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
@@ -779,9 +754,8 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '{' arg_list '}'
                   {
-                    OCTAVE_YYUSE ($2, $4);
+                    $$ = parser.make_index_expression ($1, $2, $3, $4, '{');
 
-                    $$ = parser.make_index_expression ($1, $3, '{');
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
@@ -789,62 +763,57 @@ oper_expr       : primary_expr
                       }
                   }
                 | oper_expr HERMITIAN
-                  { $$ = parser.make_postfix_op (HERMITIAN, $1, $2); }
+                  { $$ = parser.make_postfix_op ($1, $2); }
                 | oper_expr TRANSPOSE
-                  { $$ = parser.make_postfix_op (TRANSPOSE, $1, $2); }
+                  { $$ = parser.make_postfix_op ($1, $2); }
                 | oper_expr indirect_ref_op STRUCT_ELT
-                  { $$ = parser.make_indirect_ref ($1, $3->text ()); }
+                  { $$ = parser.make_indirect_ref ($1, $2, $3); }
                 | oper_expr indirect_ref_op '(' expression ')'
-                  {
-                    OCTAVE_YYUSE ($3, $5);
-
-                    $$ = parser.make_indirect_ref ($1, $4);
-                  }
+                  { $$ = parser.make_indirect_ref ($1, $2, $3, $4, $5); }
                 | PLUS_PLUS oper_expr %prec UNARY
-                  { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | MINUS_MINUS oper_expr %prec UNARY
-                  { $$ = parser.make_prefix_op (MINUS_MINUS, $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '~' oper_expr %prec UNARY
-                  { $$ = parser.make_prefix_op ('~', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '!' oper_expr %prec UNARY
-                  { $$ = parser.make_prefix_op ('!', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '+' oper_expr %prec UNARY
-                  { $$ = parser.make_prefix_op ('+', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '-' oper_expr %prec UNARY
-                  { $$ = parser.make_prefix_op ('-', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | oper_expr POW power_expr
-                  { $$ = parser.make_binary_op (POW, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr EPOW power_expr
-                  { $$ = parser.make_binary_op (EPOW, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr '+' oper_expr
-                  { $$ = parser.make_binary_op ('+', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr '-' oper_expr
-                  { $$ = parser.make_binary_op ('-', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr '*' oper_expr
-                  { $$ = parser.make_binary_op ('*', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr '/' oper_expr
-                  { $$ = parser.make_binary_op ('/', $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr EMUL oper_expr
-                  { $$ = parser.make_binary_op (EMUL, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr EDIV oper_expr
-                  { $$ = parser.make_binary_op (EDIV, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr LEFTDIV oper_expr
-                  { $$ = parser.make_binary_op (LEFTDIV, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | oper_expr ELEFTDIV oper_expr
-                  { $$ = parser.make_binary_op (ELEFTDIV, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 ;
 
 power_expr      : primary_expr
                   { $$ = $1; }
                 | power_expr PLUS_PLUS
-                  { $$ = parser.make_postfix_op (PLUS_PLUS, $1, $2); }
+                  { $$ = parser.make_postfix_op ($1, $2); }
                 | power_expr MINUS_MINUS
-                  { $$ = parser.make_postfix_op (MINUS_MINUS, $1, $2); }
+                  { $$ = parser.make_postfix_op ($1, $2); }
                 | power_expr '(' ')'
                   {
-                    OCTAVE_YYUSE ($2, $3);
+                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '(');
 
-                    $$ = parser.make_index_expression ($1, nullptr, '(');
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
@@ -853,9 +822,8 @@ power_expr      : primary_expr
                   }
                 | power_expr '(' arg_list ')'
                   {
-                    OCTAVE_YYUSE ($2, $4);
+                    $$ = parser.make_index_expression ($1, $2, $3, $4, '(');
 
-                    $$ = parser.make_index_expression ($1, $3, '(');
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
@@ -864,9 +832,8 @@ power_expr      : primary_expr
                   }
                 | power_expr '{' '}'
                   {
-                    OCTAVE_YYUSE ($2, $3);
+                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '{');
 
-                    $$ = parser.make_index_expression ($1, nullptr, '{');
                     if (! $$)
                       {
                         // make_index_expression deleted $1.
@@ -875,9 +842,8 @@ power_expr      : primary_expr
                   }
                 | power_expr '{' arg_list '}'
                   {
-                    OCTAVE_YYUSE ($2, $4);
+                    $$ = parser.make_index_expression ($1, $2, $3, $4, '{');
 
-                    $$ = parser.make_index_expression ($1, $3, '{');
                     if (! $$)
                       {
                         // make_index_expression deleted $1 and $3.
@@ -885,32 +851,26 @@ power_expr      : primary_expr
                       }
                   }
                 | power_expr indirect_ref_op STRUCT_ELT
-                  { $$ = parser.make_indirect_ref ($1, $3->text ()); }
+                  { $$ = parser.make_indirect_ref ($1, $2, $3); }
                 | power_expr indirect_ref_op '(' expression ')'
-                  {
-                    OCTAVE_YYUSE ($3, $5);
-
-                    $$ = parser.make_indirect_ref ($1, $4);
-                  }
+                  { $$ = parser.make_indirect_ref ($1, $2, $3, $4, $5); }
                 | PLUS_PLUS power_expr %prec POW
-                  { $$ = parser.make_prefix_op (PLUS_PLUS, $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | MINUS_MINUS power_expr %prec POW
-                  { $$ = parser.make_prefix_op (MINUS_MINUS, $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '~' power_expr %prec POW
-                  { $$ = parser.make_prefix_op ('~', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '!' power_expr %prec POW
-                  { $$ = parser.make_prefix_op ('!', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '+' power_expr %prec POW
-                  { $$ = parser.make_prefix_op ('+', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 | '-' power_expr %prec POW
-                  { $$ = parser.make_prefix_op ('-', $2, $1); }
+                  { $$ = parser.make_prefix_op ($1, $2); }
                 ;
 
 colon_expr      : oper_expr ':' oper_expr
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.make_colon_expression ($1, $3);
+                    $$ = parser.make_colon_expression ($1, $2, $3);
 
                     if (! $$)
                       {
@@ -920,9 +880,7 @@ colon_expr      : oper_expr ':' oper_expr
                   }
                 | oper_expr ':' oper_expr ':' oper_expr
                   {
-                    OCTAVE_YYUSE ($2, $4);
-
-                    $$ = parser.make_colon_expression ($1, $5, $3);
+                    $$ = parser.make_colon_expression ($1, $2, $3, $4, $5);
 
                     if (! $$)
                       {
@@ -937,25 +895,25 @@ simple_expr     : oper_expr
                 | colon_expr
                   { $$ = $1; }
                 | simple_expr EXPR_LT simple_expr
-                  { $$ = parser.make_binary_op (EXPR_LT, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_LE simple_expr
-                  { $$ = parser.make_binary_op (EXPR_LE, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_EQ simple_expr
-                  { $$ = parser.make_binary_op (EXPR_EQ, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_GE simple_expr
-                  { $$ = parser.make_binary_op (EXPR_GE, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_GT simple_expr
-                  { $$ = parser.make_binary_op (EXPR_GT, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_NE simple_expr
-                  { $$ = parser.make_binary_op (EXPR_NE, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_AND simple_expr
-                  { $$ = parser.make_binary_op (EXPR_AND, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_OR simple_expr
-                  { $$ = parser.make_binary_op (EXPR_OR, $1, $2, $3); }
+                  { $$ = parser.make_binary_op ($1, $2, $3); }
                 | simple_expr EXPR_AND_AND simple_expr
-                  { $$ = parser.make_boolean_op (EXPR_AND_AND, $1, $2, $3); }
+                  { $$ = parser.make_boolean_op ($1, $2, $3); }
                 | simple_expr EXPR_OR_OR simple_expr
-                  { $$ = parser.make_boolean_op (EXPR_OR_OR, $1, $2, $3); }
+                  { $$ = parser.make_boolean_op ($1, $2, $3); }
                 ;
 
 assign_lhs      : simple_expr
@@ -973,31 +931,31 @@ assign_lhs      : simple_expr
                 ;
 
 assign_expr     : assign_lhs '=' expression
-                  { $$ = parser.make_assign_op ('=', $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs ADD_EQ expression
-                  { $$ = parser.make_assign_op (ADD_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs SUB_EQ expression
-                  { $$ = parser.make_assign_op (SUB_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs MUL_EQ expression
-                  { $$ = parser.make_assign_op (MUL_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs DIV_EQ expression
-                  { $$ = parser.make_assign_op (DIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs LEFTDIV_EQ expression
-                  { $$ = parser.make_assign_op (LEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs POW_EQ expression
-                  { $$ = parser.make_assign_op (POW_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs EMUL_EQ expression
-                  { $$ = parser.make_assign_op (EMUL_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs EDIV_EQ expression
-                  { $$ = parser.make_assign_op (EDIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs ELEFTDIV_EQ expression
-                  { $$ = parser.make_assign_op (ELEFTDIV_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs EPOW_EQ expression
-                  { $$ = parser.make_assign_op (EPOW_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs AND_EQ expression
-                  { $$ = parser.make_assign_op (AND_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 | assign_lhs OR_EQ expression
-                  { $$ = parser.make_assign_op (OR_EQ, $1, $2, $3); }
+                  { $$ = parser.make_assign_op ($1, $2, $3); }
                 ;
 
 expression      : simple_expr
@@ -1052,12 +1010,12 @@ command         : declaration
 
 declaration     : GLOBAL decl_init_list
                   {
-                    $$ = parser.make_decl_command (GLOBAL, $1, $2);
+                    $$ = parser.make_decl_command ($1, $2);
                     lexer.m_looking_at_decl_list = false;
                   }
                 | PERSISTENT decl_init_list
                   {
-                    $$ = parser.make_decl_command (PERSISTENT, $1, $2);
+                    $$ = parser.make_decl_command ($1, $2);
                     lexer.m_looking_at_decl_list = false;
                   }
                 ;
@@ -1088,49 +1046,45 @@ select_command  : if_command
 // If statement
 // ============
 
-if_command      : IF stash_comment if_cmd_list END
+if_command      : if_clause_list else_clause END
                   {
-                    if (! ($$ = parser.finish_if_command ($1, $3, $4, $2)))
+                    if (! ($$ = parser.finish_if_command ($1, $2, $3)))
                       {
-                        // finish_if_command deleted $3.
+                        // finish_if_command deleted $1 and $2.
                         YYABORT;
                       }
                   }
                 ;
 
-if_cmd_list     : if_cmd_list1
-                  { $$ = $1; }
-                | if_cmd_list1 else_clause
+if_clause_list  : if_clause
+                  { $$ = parser.start_if_command ($1); }
+                | if_clause_list elseif_clause
                   { $$ = parser.append_if_clause ($1, $2); }
                 ;
 
-if_cmd_list1    : expression stmt_begin opt_sep opt_list
+if_clause       : IF opt_sep expression stmt_begin opt_sep opt_list
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2, $5);
 
-                    parser.maybe_convert_to_braindead_shortcircuit ($1);
-
-                    $$ = parser.start_if_command ($1, $4);
-                  }
-                | if_cmd_list1 elseif_clause
-                  { $$ = parser.append_if_clause ($1, $2); }
-                ;
-
-elseif_clause   : ELSEIF stash_comment opt_sep expression stmt_begin opt_sep opt_list
-                  {
-                    OCTAVE_YYUSE ($3, $6);
-
-                    parser.maybe_convert_to_braindead_shortcircuit ($4);
-
-                    $$ = parser.make_elseif_clause ($1, $4, $7, $2);
+                    $$ = parser.make_if_clause ($1, $3, $6);
                   }
                 ;
 
-else_clause     : ELSE stash_comment opt_sep opt_list
+elseif_clause   : ELSEIF opt_sep expression stmt_begin opt_sep opt_list
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2, $5);
 
-                    $$ = parser.make_else_clause ($1, $2, $4);
+                    $$ = parser.make_if_clause ($1, $3, $6);
+                  }
+                ;
+
+else_clause     : // empty
+                  { $$ = nullptr; }
+                | ELSE opt_sep opt_list
+                  {
+                    OCTAVE_YYUSE ($2);
+
+                    $$ = parser.make_if_clause ($1, nullptr, $3);
                   }
                 ;
 
@@ -1138,13 +1092,13 @@ else_clause     : ELSE stash_comment opt_sep opt_list
 // Switch statement
 // ================
 
-switch_command  : SWITCH stash_comment expression opt_sep case_list END
+switch_command  : SWITCH expression opt_sep case_list END
                   {
-                    OCTAVE_YYUSE ($4);
+                    OCTAVE_YYUSE ($3);
 
-                    if (! ($$ = parser.finish_switch_command ($1, $3, $5, $6, $2)))
+                    if (! ($$ = parser.finish_switch_command ($1, $2, $4, $5)))
                       {
-                        // finish_switch_command deleted $3 adn $5.
+                        // finish_switch_command deleted $2 and $4.
                         YYABORT;
                       }
                   }
@@ -1166,19 +1120,19 @@ case_list1      : switch_case
                   { $$ = parser.append_switch_case ($1, $2); }
                 ;
 
-switch_case     : CASE stash_comment opt_sep expression stmt_begin opt_sep opt_list
+switch_case     : CASE opt_sep expression stmt_begin opt_sep opt_list
                   {
-                    OCTAVE_YYUSE ($3, $6);
+                    OCTAVE_YYUSE ($2, $5);
 
-                    $$ = parser.make_switch_case ($1, $4, $7, $2);
+                    $$ = parser.make_switch_case ($1, $3, $6);
                   }
                 ;
 
-default_case    : OTHERWISE stash_comment opt_sep opt_list
+default_case    : OTHERWISE opt_sep opt_list
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2);
 
-                    $$ = parser.make_default_switch_case ($1, $2, $4);
+                    $$ = parser.make_default_switch_case ($1, $3);
                   }
                 ;
 
@@ -1186,65 +1140,61 @@ default_case    : OTHERWISE stash_comment opt_sep opt_list
 // Looping
 // =======
 
-loop_command    : WHILE stash_comment expression stmt_begin opt_sep opt_list END
+loop_command    : WHILE expression stmt_begin opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($5);
+                    OCTAVE_YYUSE ($4);
 
-                    parser.maybe_convert_to_braindead_shortcircuit ($3);
+                    parser.maybe_convert_to_braindead_shortcircuit ($2);
 
-                    if (! ($$ = parser.make_while_command ($1, $3, $6, $7, $2)))
+                    if (! ($$ = parser.make_while_command ($1, $2, $5, $6)))
                       {
-                        // make_while_command deleted $3 and $6.
+                        // make_while_command deleted $2 and $5.
                         YYABORT;
                       }
                   }
-                | DO stash_comment opt_sep opt_list UNTIL expression
+                | DO opt_sep opt_list UNTIL expression
                   {
-                    OCTAVE_YYUSE ($1, $3);
+                    OCTAVE_YYUSE ($2);
 
-                    $$ = parser.make_do_until_command ($5, $4, $6, $2);
+                    $$ = parser.make_do_until_command ($1, $3, $4, $5);
                   }
-                | FOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
+                | FOR assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($4, $7);
+                    OCTAVE_YYUSE ($6);
 
-                    if (! ($$ = parser.make_for_command (FOR, $1, $3, $5,
-                                                         nullptr, $8, $9, $2)))
+                    if (! ($$ = parser.make_for_command ($1, nullptr, $2, $3, $4, nullptr, nullptr, nullptr, $7, $8)))
+                      {
+                        // make_for_command deleted $2, $4, and $7.
+                        YYABORT;
+                      }
+                  }
+                | FOR '(' assign_lhs '=' expression ')' opt_sep opt_list END
+                  {
+                    OCTAVE_YYUSE ($2, $4, $6, $7);
+
+                    if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, nullptr, nullptr, $6, $8, $9)))
                       {
                         // make_for_command deleted $3, $5, and $8.
                         YYABORT;
                       }
                   }
-                | FOR stash_comment '(' assign_lhs '=' expression ')' opt_sep opt_list END
+                | PARFOR assign_lhs '=' expression stmt_begin opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($3, $5, $7, $8);
+                    OCTAVE_YYUSE ($3, $6);
 
-                    if (! ($$ = parser.make_for_command (FOR, $1, $4, $6,
-                                                         nullptr, $9, $10, $2)))
+                    if (! ($$ = parser.make_for_command ($1, nullptr, $2, $3, $4, nullptr, nullptr, nullptr, $7, $8)))
                       {
-                        // make_for_command deleted $4, $6, and $9.
+                        // make_for_command deleted $2, $4, and $7.
                         YYABORT;
                       }
                   }
-                | PARFOR stash_comment assign_lhs '=' expression stmt_begin opt_sep opt_list END
+                | PARFOR '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($4, $7);
+                    OCTAVE_YYUSE ($2, $4, $6, $8, $9);
 
-                    if (! ($$ = parser.make_for_command (PARFOR, $1, $3, $5,
-                                                         nullptr, $8, $9, $2)))
+                    if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, $6, $7, $8, $10, $11)))
                       {
-                        // make_for_command deleted $3, $5, and $8.
-                        YYABORT;
-                      }
-                  }
-                | PARFOR stash_comment '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
-                  {
-                    OCTAVE_YYUSE ($3, $5, $7, $9, $10);
-
-                    if (! ($$ = parser.make_for_command (PARFOR, $1, $4, $6,
-                                                         $8, $11, $12, $2)))
-                      {
-                        // make_for_command deleted $4, $6, $8, and $11.
+                        // make_for_command deleted $3, $5, $7, and $10.
                         YYABORT;
                       }
                   }
@@ -1272,16 +1222,13 @@ jump_command    : BREAK
 // Parallel execution pool
 // =======================
 
-spmd_command    : SPMD stash_comment opt_sep opt_list END
+spmd_command    : SPMD opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2);
 
-                    octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment_list ();
-
-                    if (! ($$ = parser.make_spmd_command ($1, $4, $5, lc, tc)))
+                    if (! ($$ = parser.make_spmd_command ($1, $3, $4)))
                       {
-                        // make_spmd_command deleted $4, LC, and TC.
+                        // make_spmd_command deleted $3.
                         YYABORT;
                       }
                   }
@@ -1291,36 +1238,33 @@ spmd_command    : SPMD stash_comment opt_sep opt_list END
 // Exceptions
 // ==========
 
-except_command  : UNWIND stash_comment opt_sep opt_list CLEANUP
-                  stash_comment opt_sep opt_list END
+except_command  : UNWIND opt_sep opt_list CLEANUP opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($3, $5, $7);
+                    OCTAVE_YYUSE ($2, $5);
 
-                    if (! ($$ = parser.make_unwind_command ($1, $4, $8, $9, $2, $6)))
+                    if (! ($$ = parser.make_unwind_command ($1, $3, $4, $6, $7)))
                       {
-                        // make_unwind_command deleted $4 and $8.
+                        // make_unwind_command deleted $3 and $6.
                         YYABORT;
                       }
                   }
-                | TRY stash_comment opt_sep opt_list CATCH stash_comment
-                  opt_sep opt_list END
+                | TRY opt_sep opt_list CATCH opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($3, $5, $7);
+                    OCTAVE_YYUSE ($2);
 
-                    if (! ($$ = parser.make_try_command ($1, $4, $7, $8, $9, $2, $6)))
+                    if (! ($$ = parser.make_try_command ($1, $3, $4, $5, $6, $7)))
                       {
-                        // make_try_command deleted $4 and $8.
+                        // make_try_command deleted $3 and $6.
                         YYABORT;
                       }
                   }
-                | TRY stash_comment opt_sep opt_list END
+                | TRY opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2);
 
-                    if (! ($$ = parser.make_try_command ($1, $4, 0, nullptr,
-                                                         $5, $2, nullptr)))
+                    if (! ($$ = parser.make_try_command ($1, $3, nullptr, 0, nullptr, $4)))
                       {
-                        // make_try_command deleted $4.
+                        // make_try_command deleted $3.
                         YYABORT;
                       }
                   }
@@ -1345,9 +1289,6 @@ push_fcn_symtab : // empty
 
 param_list_beg  : '('
                   {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = 0;
                     lexer.m_looking_at_parameter_list = true;
                     lexer.m_arguments_is_keyword = false;
 
@@ -1358,17 +1299,18 @@ param_list_beg  : '('
                         lexer.m_looking_at_function_handle--;
                         lexer.m_looking_at_anon_fcn_args = true;
                       }
+
+                    $$ = $1;
                   }
                 ;
 
 param_list_end  : ')'
                   {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = 0;
                     lexer.m_looking_at_parameter_list = false;
                     lexer.m_arguments_is_keyword = true;
                     lexer.m_looking_for_object_index = false;
+
+                    $$ = $1;
                   }
                 ;
 
@@ -1383,11 +1325,14 @@ param_list      : param_list_beg param_list1 param_list_end
                     if ($2)
                       lexer.mark_as_variables ($2->variable_names ());
 
-                    $$ = $2;
+                    $$ = $2->mark_in_delims (*($1), *($3));
                   }
                 | param_list_beg error
                   {
+                    OCTAVE_YYUSE ($1);
+
                     $$ = nullptr;
+
                     parser.bison_error ("invalid parameter list");
                     YYABORT;
                   }
@@ -1416,9 +1361,7 @@ param_list2     : param_list_elt
                   { $$ = parser.make_parameter_list (octave::tree_parameter_list::in, $1); }
                 | param_list2 ',' param_list_elt
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_parameter_list ($1, $3);
+                    $$ = parser.append_parameter_list ($1, $2, $3);
                   }
                 ;
 
@@ -1434,18 +1377,17 @@ param_list_elt  : decl_elt
 
 return_list     : '[' ']'
                   {
-                    OCTAVE_YYUSE ($1, $2);
-
                     lexer.m_looking_at_return_list = false;
 
-                    $$ = parser.make_parameter_list (octave::tree_parameter_list::out);
+                    octave::tree_parameter_list *tmp = parser.make_parameter_list (octave::tree_parameter_list::out);
+
+                    $$ = tmp->mark_in_delims (*($1), *($2));
                   }
                 | identifier
                   {
                     lexer.m_looking_at_return_list = false;
 
-                    octave::tree_parameter_list *tmp
-                      = parser.make_parameter_list (octave::tree_parameter_list::out, $1);
+                    octave::tree_parameter_list *tmp = parser.make_parameter_list (octave::tree_parameter_list::out, $1);
 
                     // Even though this parameter list can contain only
                     // a single identifier, we still need to validate it
@@ -1461,15 +1403,13 @@ return_list     : '[' ']'
                   }
                 | '[' return_list1 ']'
                   {
-                    OCTAVE_YYUSE ($1, $3);
-
                     lexer.m_looking_at_return_list = false;
 
                     // Check for duplicate parameter names, varargin,
                     // or varargout.
 
                     if (parser.validate_param_list ($2, octave::tree_parameter_list::out))
-                      $$ = $2;
+                      $$ = $2->mark_in_delims (*($1), *($3));
                     else
                       {
                         delete $2;
@@ -1484,9 +1424,7 @@ return_list1    : identifier
                   }
                 | return_list1 ',' identifier
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_parameter_list ($1, $3);
+                    $$ = parser.append_parameter_list ($1, $2, $3);
                   }
                 ;
 
@@ -1533,8 +1471,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                     else
                       {
                         octave::tree_statement *end_of_script
-                          = parser.make_end ("endscript", true,
-                                             $4->beg_pos (), $4->end_pos ());
+                          = parser.make_end ("endscript", true, $4, $4->beg_pos (), $4->end_pos ());
 
                         parser.make_script ($3, end_of_script);
                       }
@@ -1546,12 +1483,12 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                   }
                 | begin_file opt_nl classdef parsing_local_fcns opt_sep opt_fcn_list END_OF_INPUT
                   {
-                    OCTAVE_YYUSE ($2, $5, $7);
+                    OCTAVE_YYUSE ($2, $5);
 
                     // Unused symbol table context.
                     lexer.m_symtab_context.pop ();
 
-                    if (! parser.finish_classdef_file ($3, $6))
+                    if (! parser.finish_classdef_file ($3, $6, $7))
                       YYABORT;
 
                     $$ = nullptr;
@@ -1583,9 +1520,7 @@ fcn_name        : identifier
                   }
                 | GET '.' identifier
                   {
-                    OCTAVE_YYUSE ($1, $2);
-
-                    $$ = $3;
+                    $$ = $3->mark_get_set (*($1), *($2));
 
                     lexer.m_parsed_function_name.top () = true;
                     lexer.m_maybe_classdef_get_set_method = false;
@@ -1594,9 +1529,7 @@ fcn_name        : identifier
                   }
                 | SET '.' identifier
                   {
-                    OCTAVE_YYUSE ($1, $2);
-
-                    $$ = $3;
+                    $$ = $3->mark_get_set (*($1), *($2));
 
                     lexer.m_parsed_function_name.top () = true;
                     lexer.m_maybe_classdef_get_set_method = false;
@@ -1610,8 +1543,7 @@ function_end    : END
                     parser.endfunction_found (true);
 
                     if (parser.end_token_ok ($1, octave::token::function_end))
-                      $$ = parser.make_end ("endfunction", false,
-                                            $1->beg_pos (), $1->end_pos ());
+                      $$ = parser.make_end ("endfunction", false, $1, $1->beg_pos (), $1->end_pos ());
                     else
                       {
                         parser.end_token_error ($1, octave::token::function_end);
@@ -1648,29 +1580,26 @@ function_end    : END
                         YYABORT;
                       }
 
-                    $$ = parser.make_end ("endfunction", true,
-                                          $1->beg_pos (), $1->end_pos ());
+                    $$ = parser.make_end ("endfunction", true, $1, $1->beg_pos (), $1->end_pos ());
                   }
                 ;
 
-function        : function_beg stash_comment fcn_name opt_param_list opt_sep stash_comment function_body function_end
+function        : function_beg fcn_name opt_param_list opt_sep function_body function_end
                   {
-                    OCTAVE_YYUSE ($5);
+                    OCTAVE_YYUSE ($4);
 
-                    $$ = parser.make_function ($1, nullptr, $3, $4, $7, $8, $2, $6);
+                    $$ = parser.make_function ($1, nullptr, nullptr, $2, $3, $5, $6);
                   }
-                | function_beg stash_comment return_list '=' fcn_name opt_param_list opt_sep stash_comment function_body function_end
+                | function_beg return_list '=' fcn_name opt_param_list opt_sep function_body function_end
                   {
-                    OCTAVE_YYUSE ($4, $7);
+                    OCTAVE_YYUSE ($6);
 
-                    $$ = parser.make_function ($1, $3, $5, $6, $9, $10, $2, $8);
+                    $$ = parser.make_function ($1, $2, $3, $4, $5, $7, $8);
                   }
                 ;
 
 function_body   : at_first_executable_stmt opt_list
                   {
-                    OCTAVE_YYUSE ($1);
-
                     $$ = $2;
                   }
                 | function_body1 opt_sep at_first_executable_stmt opt_list
@@ -1684,7 +1613,6 @@ function_body   : at_first_executable_stmt opt_list
 at_first_executable_stmt
                 : // empty
                   {
-                    $$ = 0;
                     lexer.m_arguments_is_keyword = false;
                   }
                 ;
@@ -1703,17 +1631,13 @@ function_body1  : arguments_block
                   }
                 ;
 
-arguments_block : arguments_beg stash_comment opt_sep args_attr_list
-                  args_validation_list opt_sep END
+arguments_block : arguments_beg opt_sep args_attr_list args_validation_list opt_sep END
                   {
-                    OCTAVE_YYUSE ($3, $6);
+                    OCTAVE_YYUSE ($2, $5);
 
-                    octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment_list ();
-
-                    if (! ($$ = parser.make_arguments_block ($1, $4, $5, $7, lc, tc)))
+                    if (! ($$ = parser.make_arguments_block ($1, $3, $4, $6)))
                       {
-                        // make_arguments_block deleted $4, $5, LC, and TC.
+                        // make_arguments_block deleted $3, and $4.
                         YYABORT;
                       }
 
@@ -1732,7 +1656,7 @@ args_attr_list  : // empty
                   { $$ = nullptr; }
                 | '(' identifier ')'
                   {
-                    OCTAVE_YYUSE ($1, $3);
+                    $2->mark_in_delims (*($1), *($3));
 
                     // Error if $$ is nullptr.
                     if  (! ($$ = parser.make_args_attribute_list ($2)))
@@ -1766,21 +1690,29 @@ arg_name          : identifier
                     { $$ = $1; }
                   ;
 
-arg_validation    : size_spec class_name validation_fcns default_value
-                  {
-                    if (! ($$ = parser.make_arg_validation ($1, $2, $3, $4)))
-                      {
-                        // make_arg_validation deleted ...
-                        YYABORT;
-                      }
-                  }
+arg_validation    : size_spec class_name validation_fcns
+                    {
+                      if (! ($$ = parser.make_arg_validation ($1, $2, $3)))
+                        {
+                          // make_arg_validation deleted ...
+                          YYABORT;
+                        }
+                    }
+                  | size_spec class_name validation_fcns '=' expression
+                    {
+                      if (! ($$ = parser.make_arg_validation ($1, $2, $3, $4, $5)))
+                        {
+                          // make_arg_validation deleted ...
+                          YYABORT;
+                        }
+                    }
                 ;
 
 size_spec       : // empty
                   { $$ = nullptr; }
                 | '(' arg_list ')'
                   {
-                    OCTAVE_YYUSE ($1, $3);
+                    $2->mark_in_delims (*($1), *($3));
 
                     if (! ($$ = parser.make_arg_size_spec ($2)))
                       {
@@ -1801,23 +1733,13 @@ validation_fcns : // empty
                   { $$ = nullptr; }
                 | '{' arg_list '}'
                   {
-                    OCTAVE_YYUSE ($1, $3);
+                    $2->mark_in_delims (*($1), *($3));
 
                     if (! ($$ = parser.make_arg_validation_fcns ($2)))
                       {
                         // make_arg_validation_fcns deleted $2.
                         YYABORT;
                       }
-                  }
-                ;
-
-default_value   : // empty
-                  { $$ = nullptr; }
-                | '=' expression
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = $2;
                   }
                 ;
 
@@ -1843,15 +1765,15 @@ classdef_beg    : CLASSDEF
                   }
                 ;
 
-classdef        : classdef_beg stash_comment attr_list identifier opt_sep superclass_list stash_comment class_body stash_comment END
+classdef        : classdef_beg attr_list identifier opt_sep superclass_list class_body END
                   {
-                    OCTAVE_YYUSE ($5);
+                    OCTAVE_YYUSE ($4);
 
                     lexer.m_parsing_classdef = false;
 
-                    if (! ($$ = parser.make_classdef ($1, $3, $4, $6, $8, $10, $2, $7, $9)))
+                    if (! ($$ = parser.make_classdef ($1, $2, $3, $5, $6, $7)))
                       {
-                        // make_classdef deleted $2, $3, $4, $6, $7, $8, $9
+                        // make_classdef deleted $2, $3, $5, $6
                         YYABORT;
                       }
                   }
@@ -1861,9 +1783,9 @@ attr_list       : // empty
                   { $$ = nullptr; }
                 | '(' attr_list1 ')' opt_sep
                   {
-                    OCTAVE_YYUSE ($1, $3, $4);
+                    OCTAVE_YYUSE ($4);
 
-                    $$ = $2;
+                    $$ = $2->mark_in_delims (*($1), *($3));
                   }
                 ;
 
@@ -1871,9 +1793,7 @@ attr_list1      : attr
                   { $$ = parser.make_classdef_attribute_list ($1); }
                 | attr_list1 ',' attr
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_classdef_attribute ($1, $3);
+                    $$ = parser.append_classdef_attribute ($1, $2, $3);
                   }
                 ;
 
@@ -1881,21 +1801,15 @@ attr            : identifier
                   { $$ = parser.make_classdef_attribute ($1); }
                 | identifier '=' expression
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.make_classdef_attribute ($1, $3);
+                    $$ = parser.make_classdef_attribute ($1, $2, $3);
                   }
                 | '~' identifier
                   {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = parser.make_not_classdef_attribute ($2);
+                    $$ = parser.make_not_classdef_attribute ($1, $2);
                   }
                 | '!' identifier
                   {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = parser.make_not_classdef_attribute ($2);
+                    $$ = parser.make_not_classdef_attribute ($1, $2);
                   }
                 ;
 
@@ -1920,15 +1834,11 @@ superclass_list : // empty
 superclass_list1
                 : EXPR_LT superclass
                   {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = parser.make_classdef_superclass_list ($2);
+                    $$ = parser.make_classdef_superclass_list ($1, $2);
                   }
                 | superclass_list1 EXPR_AND superclass
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.append_classdef_superclass ($1, $3);
+                    $$ = parser.append_classdef_superclass ($1, $2, $3);
                   }
                 ;
 
@@ -1985,18 +1895,13 @@ class_body1     : properties_block
                 ;
 
 properties_block
-                : properties_beg stash_comment opt_sep attr_list property_list END
+                : properties_beg opt_sep attr_list property_list END
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2);
 
-                    octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment_list ();
-
-                    if (! ($$ = parser.make_classdef_properties_block
-                           ($1, $4, $5, $6, lc, tc)))
+                    if (! ($$ = parser.make_classdef_properties_block ($1, $3, $4, $5)))
                       {
-                        // make_classdef_properties_block deleted $4,
-                        // $5, LC, and TC.
+                        // make_classdef_properties_block deleted $3 and $4.
                         YYABORT;
                       }
                   }
@@ -2035,18 +1940,18 @@ property_list1
                     // identifier that becomes the next element in the
                     // list.  If the element at the end of the list
                     // doesn't have a doc string, see whether the
-                    // element we are adding is stroing an end-of-line
+                    // element we are adding is storing an end-of-line
                     // comment for us to use.
 
                     octave::tree_classdef_property *last_elt = $1->back ();
 
                     if (! last_elt->have_doc_string ())
                       {
-                        octave::comment_list *cl = $3->comments ();
+                        octave::comment_list comments = $3->leading_comments ();
 
-                        if (cl)
+                        if (! comments.empty ())
                           {
-                            octave::comment_elt elt = cl->front ();
+                            octave::comment_elt elt = comments.front ();
 
                             if (elt.is_end_of_line ())
                               last_elt->doc_string (elt.text ());
@@ -2057,22 +1962,17 @@ property_list1
                   }
                 ;
 
-class_property  : stash_comment identifier arg_validation
-                  { $$ = parser.make_classdef_property ($1, $2, $3); }
+class_property  : identifier arg_validation
+                  { $$ = parser.make_classdef_property ($1, $2); }
                 ;
 
-methods_block   : methods_beg stash_comment opt_sep attr_list methods_list END
+methods_block   : methods_beg opt_sep attr_list method_list END
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2);
 
-                    octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment_list ();
-
-                    if (! ($$ = parser.make_classdef_methods_block
-                           ($1, $4, $5, $6, lc, tc)))
+                    if (! ($$ = parser.make_classdef_methods_block ($1, $3, $4, $5)))
                       {
-                        // make_classdef_methods_block deleted $4, $5,
-                        // LC, and TC.
+                        // make_classdef_methods_block deleted $3 and $4.
                         YYABORT;
                       }
                   }
@@ -2087,7 +1987,7 @@ methods_beg     : METHODS
 
 method_decl1    : identifier
                   {
-                    if (! ($$ = parser.start_classdef_external_method ($1, nullptr)))
+                    if (! ($$ = parser.start_classdef_external_method ($1)))
                       YYABORT;
                   }
                 | identifier param_list
@@ -2097,12 +1997,12 @@ method_decl1    : identifier
                   }
                 ;
 
-method_decl     : stash_comment method_decl1
-                  { $$ = parser.finish_classdef_external_method ($2, nullptr, $1); }
-                | stash_comment return_list '='
+method_decl     : method_decl1
                   {
-                    OCTAVE_YYUSE ($3);
-
+                    $$ = parser.finish_classdef_external_method ($1);
+                  }
+                | return_list '='
+                  {
                     lexer.m_defining_fcn++;
                     lexer.m_parsed_function_name.push (false);
                   }
@@ -2111,7 +2011,7 @@ method_decl     : stash_comment method_decl1
                     lexer.m_defining_fcn--;
                     lexer.m_parsed_function_name.pop ();
 
-                    $$ = parser.finish_classdef_external_method ($5, $2, $1);
+                    $$ = parser.finish_classdef_external_method ($4, $1, $2);
                   }
                 ;
 
@@ -2121,12 +2021,12 @@ method          : method_decl
                   { $$ = $1; }
                 ;
 
-methods_list    : // empty
+method_list     : // empty
                   {
                     lexer.m_classdef_element_names_are_keywords = true;
                     $$ = nullptr;
                   }
-                | methods_list1 opt_sep
+                | method_list1 opt_sep
                   {
                     OCTAVE_YYUSE ($2);
 
@@ -2135,9 +2035,9 @@ methods_list    : // empty
                   }
                 ;
 
-methods_list1   : method
-                  { $$ = parser.make_classdef_methods_list ($1); }
-                | methods_list1 opt_sep method
+method_list1    : method
+                  { $$ = parser.make_classdef_method_list ($1); }
+                | method_list1 opt_sep method
                   {
                     OCTAVE_YYUSE ($2);
 
@@ -2145,18 +2045,13 @@ methods_list1   : method
                   }
                 ;
 
-events_block    : events_beg stash_comment opt_sep attr_list events_list END
+events_block    : events_beg opt_sep attr_list event_list END
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2);
 
-                    octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment_list ();
-
-                    if (! ($$ = parser.make_classdef_events_block
-                           ($1, $4, $5, $6, lc, tc)))
+                    if (! ($$ = parser.make_classdef_events_block ($1, $3, $4, $5)))
                       {
-                        // make_classdef_events_block deleted $4, $5,
-                        // LC, and TC.
+                        // make_classdef_events_block deleted $4 and $5.
                         YYABORT;
                       }
                   }
@@ -2169,12 +2064,12 @@ events_beg      : EVENTS
                   }
                 ;
 
-events_list     : // empty
+event_list      : // empty
                   {
                     lexer.m_classdef_element_names_are_keywords = true;
                     $$ = nullptr;
                   }
-                | events_list1 opt_sep
+                | event_list1 opt_sep
                   {
                     OCTAVE_YYUSE ($2);
 
@@ -2183,9 +2078,9 @@ events_list     : // empty
                   }
                 ;
 
-events_list1    : class_event
-                  { $$ = parser.make_classdef_events_list ($1); }
-                | events_list1 opt_sep class_event
+event_list1     : class_event
+                  { $$ = parser.make_classdef_event_list ($1); }
+                | event_list1 opt_sep class_event
                   {
                     OCTAVE_YYUSE ($2);
 
@@ -2193,22 +2088,17 @@ events_list1    : class_event
                   }
                 ;
 
-class_event     : stash_comment identifier
-                  { $$ = parser.make_classdef_event ($1, $2); }
+class_event     : identifier
+                  { $$ = parser.make_classdef_event ($1); }
                 ;
 
-enum_block      : enumeration_beg stash_comment opt_sep attr_list enum_list END
+enum_block      : enumeration_beg opt_sep attr_list enum_list END
                   {
-                    OCTAVE_YYUSE ($3);
+                    OCTAVE_YYUSE ($2);
 
-                    octave::comment_list *lc = $2;
-                    octave::comment_list *tc = lexer.get_comment_list ();
-
-                    if (! ($$ = parser.make_classdef_enum_block
-                           ($1, $4, $5, $6, lc, tc)))
+                    if (! ($$ = parser.make_classdef_enum_block ($1, $3, $4, $5)))
                       {
-                        // make_classdef_enum_block deleted $4, $5, LC,
-                        // and TC.
+                        // make_classdef_enum_block deleted $3 and $4.
                         YYABORT;
                       }
                   }
@@ -2245,11 +2135,9 @@ enum_list1      : class_enum
                   }
                 ;
 
-class_enum      : stash_comment identifier '(' expression ')'
+class_enum      : identifier '(' expression ')'
                   {
-                    OCTAVE_YYUSE ($3, $5);
-
-                    $$ = parser.make_classdef_enum ($2, $4, $1);
+                    $$ = parser.make_classdef_enum ($1, $2, $3, $4);
                   }
                 ;
 
@@ -2269,12 +2157,6 @@ anon_fcn_begin  : // empty
                     $$ = 0;
                     lexer.m_at_beginning_of_statement = true;
                     lexer.m_parsing_anon_fcn_body = true;
-                  }
-                ;
-
-stash_comment   : // empty
-                  {
-                    $$ = lexer.get_comment_list ();
                   }
                 ;
 
@@ -2529,6 +2411,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   static LIST_T *
   list_append (LIST_T *list, ELT_T elt)
   {
+    list->push_back (elt);
+    return list;
+  }
+
+  template <typename LIST_T, typename ELT_T>
+  static LIST_T *
+  list_append (LIST_T *list, const token& /*sep_tok*/, ELT_T elt)
+  {
+    // FIXME XXX! need to capture SEP_TOK here
     list->push_back (elt);
     return list;
   }
@@ -2886,9 +2777,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_black_hole *
-  base_parser::make_black_hole ()
+  base_parser::make_black_hole (token *tilde)
   {
-    return new tree_black_hole ();
+    return new tree_black_hole (*tilde);
   }
 
   // Make a function handle.
@@ -2973,9 +2864,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a colon expression.
 
   tree_expression *
-  base_parser::make_colon_expression (tree_expression *base,
-                                      tree_expression *limit,
-                                      tree_expression *incr)
+  base_parser::make_colon_expression (tree_expression *base, token *colon_tok, tree_expression *limit)
+  {
+    return make_colon_expression (base, colon_tok, nullptr, nullptr, limit);
+  }
+
+  tree_expression *
+  base_parser::make_colon_expression (tree_expression *base, token *colon_1_tok, tree_expression *incr, token *colon_2_tok, tree_expression *limit)
   {
     tree_expression *retval = nullptr;
 
@@ -2991,8 +2886,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     int l = base->line ();
     int c = base->column ();
 
+    token tmp_colon_2_tok = colon_2_tok ? *colon_2_tok : token ();
+
     tree_colon_expression *expr
-      = new tree_colon_expression (base, limit, incr, l, c);
+      = new tree_colon_expression (base, *colon_1_tok, incr, tmp_colon_2_tok, limit, l, c);
 
     retval = expr;
 
@@ -3053,12 +2950,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a binary expression.
 
   tree_expression *
-  base_parser::make_binary_op (int op, tree_expression *op1,
-                               token *tok, tree_expression *op2)
+  base_parser::make_binary_op (tree_expression *op1, token *op_tok, tree_expression *op2)
   {
     octave_value::binary_op t = octave_value::unknown_binary_op;
 
-    switch (op)
+    switch (op_tok->token_id ())
       {
       case POW:
         t = octave_value::op_pow;
@@ -3137,8 +3033,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok->line ();
-    int c = tok->column ();
+    int l = op_tok->line ();
+    int c = op_tok->column ();
 
     return maybe_compound_binary_expression (op1, op2, l, c, t);
   }
@@ -3181,12 +3077,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a boolean expression.
 
   tree_expression *
-  base_parser::make_boolean_op (int op, tree_expression *op1,
-                                token *tok, tree_expression *op2)
+  base_parser::make_boolean_op (tree_expression *op1, token *op_tok, tree_expression *op2)
   {
     tree_boolean_expression::type t;
 
-    switch (op)
+    switch (op_tok->token_id ())
       {
       case EXPR_AND_AND:
         t = tree_boolean_expression::bool_and;
@@ -3201,8 +3096,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok->line ();
-    int c = tok->column ();
+    int l = op_tok->line ();
+    int c = op_tok->column ();
 
     return new tree_boolean_expression (op1, op2, l, c, t);
   }
@@ -3210,11 +3105,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a prefix expression.
 
   tree_expression *
-  base_parser::make_prefix_op (int op, tree_expression *op1, token *tok)
+  base_parser::make_prefix_op (token *op_tok, tree_expression *op1)
   {
     octave_value::unary_op t = octave_value::unknown_unary_op;
 
-    switch (op)
+    switch (op_tok->token_id ())
       {
       case '~':
       case '!':
@@ -3242,8 +3137,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok->line ();
-    int c = tok->column ();
+    int l = op_tok->line ();
+    int c = op_tok->column ();
 
     return new tree_prefix_expression (op1, l, c, t);
   }
@@ -3251,11 +3146,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a postfix expression.
 
   tree_expression *
-  base_parser::make_postfix_op (int op, tree_expression *op1, token *tok)
+  base_parser::make_postfix_op (tree_expression *op1, token *op_tok)
   {
     octave_value::unary_op t = octave_value::unknown_unary_op;
 
-    switch (op)
+    switch (op_tok->token_id ())
       {
       case HERMITIAN:
         t = octave_value::op_hermitian;
@@ -3278,8 +3173,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = tok->line ();
-    int c = tok->column ();
+    int l = op_tok->line ();
+    int c = op_tok->column ();
 
     return new tree_postfix_expression (op1, l, c, t);
   }
@@ -3287,24 +3182,16 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build an unwind-protect command.
 
   tree_command *
-  base_parser::make_unwind_command (token *unwind_tok,
-                                    tree_statement_list *body,
-                                    tree_statement_list *cleanup_stmts,
-                                    token *end_tok,
-                                    comment_list *lc,
-                                    comment_list *mc)
+  base_parser::make_unwind_command (token *unwind_tok, tree_statement_list *body, token *cleanup_tok, tree_statement_list *cleanup_stmts, token *end_tok)
   {
     tree_command *retval = nullptr;
 
     if (end_token_ok (end_tok, token::unwind_protect_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
-
         int l = unwind_tok->line ();
         int c = unwind_tok->column ();
 
-        retval = new tree_unwind_protect_command (body, cleanup_stmts,
-                                                  lc, mc, tc, l, c);
+        retval = new tree_unwind_protect_command (*unwind_tok, body, *cleanup_tok, cleanup_stmts, *end_tok, l, c);
       }
     else
       {
@@ -3320,24 +3207,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a try-catch command.
 
   tree_command *
-  base_parser::make_try_command (token *try_tok,
-                                 tree_statement_list *body,
-                                 char catch_sep,
-                                 tree_statement_list *cleanup_stmts,
-                                 token *end_tok,
-                                 comment_list *lc,
-                                 comment_list *mc)
+  base_parser::make_try_command (token *try_tok, tree_statement_list *body, token *catch_tok, char catch_sep, tree_statement_list *cleanup_stmts, token *end_tok)
   {
     tree_command *retval = nullptr;
 
     if (end_token_ok (end_tok, token::try_catch_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
-
         int l = try_tok->line ();
         int c = try_tok->column ();
 
         tree_identifier *id = nullptr;
+
+        // Look for exception ID.  Could this be done in the grammar or
+        // does that create another shift-reduce conflict?
 
         if (! catch_sep && cleanup_stmts && ! cleanup_stmts->empty ())
           {
@@ -3359,8 +3241,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               }
           }
 
-        retval = new tree_try_catch_command (body, cleanup_stmts, id,
-                                             lc, mc, tc, l, c);
+        token tmp_catch_tok = catch_tok ? *catch_tok : token ();
+
+        retval = new tree_try_catch_command (*try_tok, body, tmp_catch_tok, id, cleanup_stmts, *end_tok, l, c);
       }
     else
       {
@@ -3376,11 +3259,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a while command.
 
   tree_command *
-  base_parser::make_while_command (token *while_tok,
-                                   tree_expression *expr,
-                                   tree_statement_list *body,
-                                   token *end_tok,
-                                   comment_list *lc)
+  base_parser::make_while_command (token *while_tok, tree_expression *expr, tree_statement_list *body, token *end_tok)
   {
     tree_command *retval = nullptr;
 
@@ -3388,14 +3267,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::while_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
-
         m_lexer.m_looping--;
 
         int l = while_tok->line ();
         int c = while_tok->column ();
 
-        retval = new tree_while_command (expr, body, lc, tc, l, c);
+        retval = new tree_while_command (*while_tok, expr, body, *end_tok, l, c);
       }
     else
       {
@@ -3411,43 +3288,34 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a do-until command.
 
   tree_command *
-  base_parser::make_do_until_command (token *until_tok,
-                                      tree_statement_list *body,
-                                      tree_expression *expr,
-                                      comment_list *lc)
+  base_parser::make_do_until_command (token *do_tok, tree_statement_list *body, token *until_tok, tree_expression *expr)
   {
     maybe_warn_assign_as_truth_value (expr);
-
-    comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
     m_lexer.m_looping--;
 
     int l = until_tok->line ();
     int c = until_tok->column ();
 
-    return new tree_do_until_command (expr, body, lc, tc, l, c);
+    return new tree_do_until_command (*do_tok, body, *until_tok, expr, l, c);
   }
 
   // Build a for command.
 
   tree_command *
-  base_parser::make_for_command (int tok_id, token *for_tok,
-                                 tree_argument_list *lhs,
-                                 tree_expression *expr,
-                                 tree_expression *maxproc,
-                                 tree_statement_list *body,
-                                 token *end_tok,
-                                 comment_list *lc)
+  base_parser::make_for_command (token *for_tok, token *open_paren, tree_argument_list *lhs, token *eq_tok, tree_expression *expr, token *sep_tok, tree_expression *maxproc, token *close_paren, tree_statement_list *body, token *end_tok)
   {
     tree_command *retval = nullptr;
 
-    bool parfor = tok_id == PARFOR;
+    bool parfor = for_tok->token_id () == PARFOR;
+
+    token tmp_open_paren = open_paren ? *open_paren : token ();
+    token tmp_close_paren = close_paren ? *close_paren : token ();
+    token tmp_sep_tok = sep_tok ? *sep_tok : token ();
 
     if (end_token_ok (end_tok, parfor ? token::parfor_end : token::for_end))
       {
         expr->mark_as_for_cmd_expr ();
-
-        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
 
         m_lexer.m_looping--;
 
@@ -3460,8 +3328,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             m_lexer.mark_as_variable (tmp->name ());
 
-            retval = new tree_simple_for_command (parfor, tmp, expr, maxproc,
-                                                  body, lc, tc, l, c);
+            retval = new tree_simple_for_command (parfor, *for_tok, tmp_open_paren, tmp, *eq_tok, expr, tmp_sep_tok, maxproc, tmp_close_paren, body, *end_tok, l, c);
 
             delete lhs;
           }
@@ -3478,8 +3345,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           {
             m_lexer.mark_as_variables (lhs->variable_names ());
 
-            retval = new tree_complex_for_command (lhs, expr, body,
-                                                   lc, tc, l, c);
+            retval = new tree_complex_for_command (*for_tok, lhs, *eq_tok, expr, body, *end_tok, l, c);
           }
       }
     else
@@ -3543,9 +3409,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build an spmd command.
 
   tree_spmd_command *
-  base_parser::make_spmd_command (token *spmd_tok, tree_statement_list *body,
-                                  token *end_tok, comment_list *lc,
-                                  comment_list *tc)
+  base_parser::make_spmd_command (token *spmd_tok, tree_statement_list *body, token *end_tok)
   {
     tree_spmd_command *retval = nullptr;
 
@@ -3554,13 +3418,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         int l = spmd_tok->line ();
         int c = spmd_tok->column ();
 
-        retval = new tree_spmd_command (body, lc, tc, l, c);
+        retval = new tree_spmd_command (body, l, c);
       }
     else
       {
         delete body;
-        delete lc;
-        delete tc;
 
         end_token_error (end_tok, token::spmd_end);
       }
@@ -3571,51 +3433,42 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Start an if command.
 
   tree_if_command_list *
-  base_parser::start_if_command (tree_expression *expr,
-                                 tree_statement_list *list)
+  base_parser::start_if_command (tree_if_clause *clause)
   {
-    maybe_warn_assign_as_truth_value (expr);
-
-    // Line and column will be set in finish_if_command.
-
-    tree_if_clause *t = new tree_if_clause (expr, list);
-
-    return new tree_if_command_list (t);
+    return new tree_if_command_list (clause);
   }
 
   // Finish an if command.
 
   tree_if_command *
-  base_parser::finish_if_command (token *if_tok,
-                                  tree_if_command_list *list,
-                                  token *end_tok,
-                                  comment_list *lc)
+  base_parser::finish_if_command (tree_if_command_list *list, tree_if_clause *else_clause, token *end_tok)
   {
     tree_if_command *retval = nullptr;
 
     if (end_token_ok (end_tok, token::if_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
+        if (else_clause)
+          list_append (list, else_clause);
 
-        int l = if_tok->line ();
-        int c = if_tok->column ();
+        token if_tok = list->if_token ();
 
-        if (list && ! list->empty ())
+        int l = if_tok.line ();
+        int c = if_tok.column ();
+
+        tree_if_clause *elt = list->front ();
+
+        if (elt)
           {
-            tree_if_clause *elt = list->front ();
-
-            if (elt)
-              {
-                elt->line (l);
-                elt->column (c);
-              }
+            elt->line (l);
+            elt->column (c);
           }
 
-        retval = new tree_if_command (list, lc, tc, l, c);
+        retval = new tree_if_command (if_tok, list, *end_tok, l, c);
       }
     else
       {
         delete list;
+        delete else_clause;
 
         end_token_error (end_tok, token::if_end);
       }
@@ -3623,35 +3476,26 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return retval;
   }
 
-  // Build an elseif clause.
+  // Build an if, elseif, or else clause.
 
   tree_if_clause *
-  base_parser::make_elseif_clause (token *elseif_tok,
-                                   tree_expression *expr,
-                                   tree_statement_list *list,
-                                   comment_list *lc)
+  base_parser::make_if_clause (token *tok, tree_expression *expr, tree_statement_list *list)
   {
-    maybe_warn_assign_as_truth_value (expr);
+    if (expr)
+      {
+        maybe_warn_assign_as_truth_value (expr);
 
-    int l = elseif_tok->line ();
-    int c = elseif_tok->column ();
+        maybe_convert_to_braindead_shortcircuit (expr);
+      }
 
-    return new tree_if_clause (expr, list, lc, l, c);
-  }
+    int l = tok->line ();
+    int c = tok->column ();
 
-  tree_if_clause *
-  base_parser::make_else_clause (token *else_tok, comment_list *lc,
-                                 tree_statement_list *list)
-  {
-    int l = else_tok->line ();
-    int c = else_tok->column ();
-
-    return new tree_if_clause (list, lc, l, c);
+    return new tree_if_clause (*tok, expr, list, l, c);
   }
 
   tree_if_command_list *
-  base_parser::append_if_clause (tree_if_command_list *list,
-                                 tree_if_clause *clause)
+  base_parser::append_if_clause (tree_if_command_list *list, tree_if_clause *clause)
   {
     return list_append (list, clause);
   }
@@ -3659,18 +3503,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Finish a switch command.
 
   tree_switch_command *
-  base_parser::finish_switch_command (token *switch_tok,
-                                      tree_expression *expr,
-                                      tree_switch_case_list *list,
-                                      token *end_tok,
-                                      comment_list *lc)
+  base_parser::finish_switch_command (token *switch_tok, tree_expression *expr, tree_switch_case_list *list, token *end_tok)
   {
     tree_switch_command *retval = nullptr;
 
     if (end_token_ok (end_tok, token::switch_end))
       {
-        comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
-
         int l = switch_tok->line ();
         int c = switch_tok->column ();
 
@@ -3685,7 +3523,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               }
           }
 
-        retval = new tree_switch_command (expr, list, lc, tc, l, c);
+        retval = new tree_switch_command (*switch_tok, expr, list, *end_tok, l, c);
       }
     else
       {
@@ -3707,27 +3545,23 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build a switch case.
 
   tree_switch_case *
-  base_parser::make_switch_case (token *case_tok,
-                                 tree_expression *expr,
-                                 tree_statement_list *list,
-                                 comment_list *lc)
+  base_parser::make_switch_case (token *case_tok, tree_expression *expr, tree_statement_list *list)
   {
     maybe_warn_variable_switch_label (expr);
 
     int l = case_tok->line ();
     int c = case_tok->column ();
 
-    return new tree_switch_case (expr, list, lc, l, c);
+    return new tree_switch_case (*case_tok, expr, list, l, c);
   }
 
   tree_switch_case *
-  base_parser::make_default_switch_case (token *default_tok, comment_list *lc,
-                                         tree_statement_list *list)
+  base_parser::make_default_switch_case (token *default_tok, tree_statement_list *list)
   {
     int l = default_tok->line ();
     int c = default_tok->column ();
 
-    return new tree_switch_case (list, lc, l, c);
+    return new tree_switch_case (*default_tok, list, l, c);
   }
 
   tree_switch_case_list *
@@ -3740,12 +3574,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Build an assignment to a variable.
 
   tree_expression *
-  base_parser::make_assign_op (int op, tree_argument_list *lhs,
-                               token *eq_tok, tree_expression *rhs)
+  base_parser::make_assign_op (tree_argument_list *lhs, token *eq_tok, tree_expression *rhs)
   {
     octave_value::assign_op t = octave_value::unknown_assign_op;
 
-    switch (op)
+    switch (eq_tok->token_id ())
       {
       case '=':
         t = octave_value::op_asn_eq;
@@ -3894,12 +3727,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     // First non-copyright comment in classdef body, before first
     // properties, methods, etc. block.
 
-    tree_statement *first_stmt = cmds->front ();
-    comment_list *leading_comments = first_stmt->comment_text ();
+    comment_list leading_comments = cmds->leading_comments ();
 
-    std::string doc_string;
-    if (leading_comments)
-      doc_string = leading_comments->find_doc_string ();
+    std::string doc_string = leading_comments.find_doc_string ();
 
     octave_user_script *script
       = new octave_user_script (m_lexer.m_fcn_file_full_name,
@@ -3951,23 +3781,31 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // for a large mess.  Maybe this could be a bit better organized?
 
   tree_function_def *
-  base_parser::make_function (token *fcn_tok,
-                              tree_parameter_list *ret_list,
-                              tree_identifier *id,
-                              tree_parameter_list *param_list,
-                              tree_statement_list *body,
-                              tree_statement *end_fcn_stmt,
-                              comment_list *lc, comment_list *bc)
+  base_parser::make_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, tree_identifier *id, tree_parameter_list *param_list, tree_statement_list *body, tree_statement *end_fcn_stmt)
   {
     // First non-copyright comments found above and below function keyword.
     comment_elt leading_doc_comment;
     comment_elt body_doc_comment;
 
-    if (lc)
-      leading_doc_comment = lc->find_doc_comment ();
+    comment_list lc = fcn_tok->leading_comments ();
 
-    if (bc)
-      body_doc_comment = bc->find_doc_comment ();
+    if (! lc.empty ())
+      leading_doc_comment = lc.find_doc_comment ();
+
+    if (body)
+      {
+        comment_list bc = body->leading_comments ();
+
+        if (! bc.empty ())
+          body_doc_comment = bc.find_doc_comment ();
+      }
+    else if (end_fcn_stmt)
+      {
+        comment_list ec = end_fcn_stmt->leading_comments ();
+
+        if (! ec.empty ())
+          body_doc_comment = ec.find_doc_comment ();
+      }
 
     // Choose which comment to use for doc string.
 
@@ -4004,7 +3842,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     octave_user_function *tmp_fcn
       = start_function (id, param_list, body, end_fcn_stmt, doc_string);
 
-    tree_function_def *retval = finish_function (ret_list, tmp_fcn, lc, l, c);
+    tree_function_def *retval = finish_function (fcn_tok, ret_list, eq_tok, tmp_fcn, l, c);
 
     recover_from_parsing_function ();
 
@@ -4043,9 +3881,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       = new octave_user_function (m_lexer.m_symtab_context.curr_scope (),
                                   param_list, nullptr, body);
 
-    comment_list *tc = m_lexer.m_comment_buf.get_comment_list ();
-
-    fcn->stash_trailing_comment (tc);
     fcn->stash_fcn_end_location (end_fcn_stmt->line (),
                                  end_fcn_stmt->column ());
 
@@ -4146,20 +3981,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_statement *
-  base_parser::make_end (const std::string& type, bool eof,
+  base_parser::make_end (const std::string& type, bool eof, token *end_tok,
                          const filepos& beg_pos, const filepos& /*end_pos*/)
   {
     int l = beg_pos.line ();
     int c = beg_pos.column ();
 
-    return make_statement (new tree_no_op_command (type, eof, l, c));
+    return make_statement (new tree_no_op_command (type, eof, *end_tok, l, c));
   }
 
   tree_function_def *
-  base_parser::finish_function (tree_parameter_list *ret_list,
-                                octave_user_function *fcn,
-                                comment_list *lc,
-                                int l, int c)
+  base_parser::finish_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, octave_user_function *fcn, int l, int c)
   {
     tree_function_def *retval = nullptr;
 
@@ -4170,6 +4002,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (fcn)
       {
+        fcn->set_fcn_tok (*fcn_tok);
+
+        if (eq_tok)
+          fcn->set_eq_tok (*eq_tok);
+
         std::string fcn_nm = fcn->name ();
         std::string file = fcn->fcn_file_name ();
 
@@ -4182,9 +4019,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         fcn_scope.cache_fcn_name (fcn_nm);
         fcn_scope.cache_fcn_file_name (file);
         fcn_scope.cache_dir_name (m_lexer.m_dir_name);
-
-        if (lc)
-          fcn->stash_leading_comment (lc);
 
         fcn->define_ret_list (ret_list);
 
@@ -4267,11 +4101,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_arguments_block *
-  base_parser::make_arguments_block (token *arguments_tok,
-                                     tree_args_block_attribute_list *attr_list,
-                                     tree_args_block_validation_list *validation_list,
-                                     token *end_tok,
-                                     comment_list *lc, comment_list *tc)
+  base_parser::make_arguments_block (token *arguments_tok, tree_args_block_attribute_list *attr_list, tree_args_block_validation_list *validation_list, token *end_tok)
   {
     tree_arguments_block *retval = nullptr;
 
@@ -4288,9 +4118,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         delete attr_list;
         delete validation_list;
-
-        delete lc;
-        delete tc;
       }
 
     return retval;
@@ -4300,13 +4127,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   base_parser::make_arg_validation (tree_arg_size_spec *size_spec,
                                     tree_identifier *class_name,
                                     tree_arg_validation_fcns *validation_fcns,
+                                    token *eq_tok,
                                     tree_expression *default_value)
   {
     // FIXME: Validate arguments and convert to more specific types
     // (std::string for arg_name and class_name, etc).
 
-    return new tree_arg_validation (size_spec, class_name,
-                                    validation_fcns, default_value);
+    token tmp_eq_tok = eq_tok ? *eq_tok : token ();
+
+    return new tree_arg_validation (size_spec, class_name, validation_fcns, tmp_eq_tok, default_value);
   }
 
   tree_args_block_attribute_list *
@@ -4371,17 +4200,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // and methods, and adding to the list of known objects) and creates
   // a parse tree containing meta information about the class.
 
-  // LC contains comments appearing before the classdef keyword.
-  // TC contains comments appearing between the classdef elements
-  // and the final end token for the classdef block.
-
   tree_classdef *
-  base_parser::make_classdef (token *tok,
-                              tree_classdef_attribute_list *a,
-                              tree_identifier *id,
-                              tree_classdef_superclass_list *sc,
-                              tree_classdef_body *body, token *end_tok,
-                              comment_list *lc, comment_list *bc, comment_list *tc)
+  base_parser::make_classdef (token *cdef_tok, tree_classdef_attribute_list *a, tree_identifier *id, tree_classdef_superclass_list *sc, tree_classdef_body *body, token *end_tok)
   {
     tree_classdef *retval = nullptr;
 
@@ -4407,9 +4227,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         delete id;
         delete sc;
         delete body;
-        delete lc;
-        delete bc;
-        delete tc;
 
         bison_error ("invalid classdef definition, the class name must match the filename", l, c);
 
@@ -4418,29 +4235,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         if (end_token_ok (end_tok, token::classdef_end))
           {
-            int l = tok->line ();
-            int c = tok->column ();
-
-            // First non-copyright comments found above and below
-            // function keyword are candidates for the documentation
-            // string.  Use the first one that is not empty.
-
-            std::string doc_string;
-
-            if (lc)
-              doc_string = lc->find_doc_string ();
-
-            if (doc_string.empty () && bc)
-              doc_string = bc->find_doc_string ();
+            int l = cdef_tok->line ();
+            int c = cdef_tok->column ();
 
             if (! body)
               body = new tree_classdef_body ();
 
-            // FIXME - pass body comment to tree_classdef constructor.
-
-            retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (),
-                                        doc_string, a, id, sc, body, lc, tc,
-                                        m_curr_package_name, full_name, l, c);
+            retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (), *cdef_tok, a, id, sc, body, *end_tok, m_curr_package_name, full_name, l, c);
           }
         else
           {
@@ -4448,9 +4249,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             delete id;
             delete sc;
             delete body;
-            delete lc;
-            delete bc;
-            delete tc;
 
             end_token_error (end_tok, token::switch_end);
           }
@@ -4459,22 +4257,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return retval;
   }
 
-  // LC contains comments appearing before the properties keyword.
-  // If this properties block appears first in the list of classdef
-  // elements, this comment list will be used for the help text for the
-  // classdef block.
-
-  // TC contains comments appearing between the list of properties
-  // and the final end token for the properties block and may be used to
-  // find the doc string for the final property in the list.
-
   tree_classdef_properties_block *
-  base_parser::make_classdef_properties_block (token *tok,
-                                               tree_classdef_attribute_list *a,
-                                               tree_classdef_property_list *plist,
-                                               token *end_tok,
-                                               comment_list *lc,
-                                               comment_list *tc)
+  base_parser::make_classdef_properties_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_property_list *plist, token *end_tok)
   {
     tree_classdef_properties_block *retval = nullptr;
 
@@ -4486,37 +4270,34 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (plist)
           {
             // If the element at the end of the list doesn't have a doc
-            // string, see whether the first element of TC is an
-            // end-of-line comment for us to use.
+            // string, see whether the first element of the comments
+            // attached to the end token is an end-of-line comment for
+            // us to use.
 
-            if (tc)
+            tree_classdef_property *last_elt = plist->back ();
+
+            if (last_elt && ! last_elt->have_doc_string ())
               {
-                tree_classdef_property *last_elt = plist->back ();
+                comment_list comments = end_tok->leading_comments ();
 
-                if (! last_elt->have_doc_string ())
+                if (! comments.empty ())
                   {
-                    comment_elt first_comment_elt = tc->front ();
+                    comment_elt elt = comments.front ();
 
-                    if (first_comment_elt.is_end_of_line ())
-                      {
-                        std::string eol_comment = first_comment_elt.text ();
-
-                        last_elt->doc_string (eol_comment);
-                      }
+                    if (elt.is_end_of_line ())
+                      last_elt->doc_string (elt.text ());
                   }
               }
           }
         else
           plist = new tree_classdef_property_list ();
 
-        retval = new tree_classdef_properties_block (a, plist, lc, tc, l, c);
+        retval = new tree_classdef_properties_block (*tok, a, plist, *end_tok, l, c);
       }
     else
       {
         delete a;
         delete plist;
-        delete lc;
-        delete tc;
 
         end_token_error (end_tok, token::properties_end);
       }
@@ -4531,28 +4312,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_classdef_property *
-  base_parser::make_classdef_property (comment_list *lc, tree_identifier *id,
-                                       tree_arg_validation *av)
+  base_parser::make_classdef_property (tree_identifier *id, tree_arg_validation *av)
   {
     av->arg_name (id);
 
     if (av->size_spec () || av->class_name () || av->validation_fcns ())
       warning ("size, class, and validation function specifications are not yet supported for classdef properties; INCORRECT RESULTS ARE POSSIBLE!");
 
-    return new tree_classdef_property (av, lc);
+    return new tree_classdef_property (av);
   }
 
-  // LC contains comments appearing before the methods keyword.
-  // If this methods block appears first in the list of classdef
-  // elements, this comment list will be used for the help text for the
-  // classdef block.
-
   tree_classdef_methods_block *
-  base_parser::make_classdef_methods_block (token *tok,
-                                            tree_classdef_attribute_list *a,
-                                            tree_classdef_methods_list *mlist,
-                                            token *end_tok, comment_list *lc,
-                                            comment_list *tc)
+  base_parser::make_classdef_methods_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_method_list *mlist, token *end_tok)
   {
     tree_classdef_methods_block *retval = nullptr;
 
@@ -4562,16 +4333,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         int c = tok->column ();
 
         if (! mlist)
-          mlist = new tree_classdef_methods_list ();
+          mlist = new tree_classdef_method_list ();
 
-        retval = new tree_classdef_methods_block (a, mlist, lc, tc, l, c);
+        retval = new tree_classdef_methods_block (*tok, a, mlist, *end_tok, l, c);
       }
     else
       {
         delete a;
         delete mlist;
-        delete lc;
-        delete tc;
 
         end_token_error (end_tok, token::methods_end);
       }
@@ -4579,22 +4348,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return retval;
   }
 
-  // LC contains comments appearing before the events keyword.
-  // If this events block appears first in the list of classdef
-  // elements, this comment list will be used for the help text for the
-  // classdef block.
-
-  // TC contains comments appearing between the list of events and
-  // the final end token for the events block and may be used to find
-  // the doc string for the final event in the list.
-
   tree_classdef_events_block *
-  base_parser::make_classdef_events_block (token *tok,
-                                           tree_classdef_attribute_list *a,
-                                           tree_classdef_events_list *elist,
-                                           token *end_tok,
-                                           comment_list *lc,
-                                           comment_list *tc)
+  base_parser::make_classdef_events_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_event_list *elist, token *end_tok)
   {
     tree_classdef_events_block *retval = nullptr;
 
@@ -4604,16 +4359,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         int c = tok->column ();
 
         if (! elist)
-          elist = new tree_classdef_events_list ();
+          elist = new tree_classdef_event_list ();
 
-        retval = new tree_classdef_events_block (a, elist, lc, tc, l, c);
+        retval = new tree_classdef_events_block (*tok, a, elist, *end_tok, l, c);
       }
     else
       {
         delete a;
         delete elist;
-        delete lc;
-        delete tc;
 
         end_token_error (end_tok, token::events_end);
       }
@@ -4621,35 +4374,20 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return retval;
   }
 
-  tree_classdef_events_list *
-  base_parser::make_classdef_events_list (tree_classdef_event *e)
+  tree_classdef_event_list *
+  base_parser::make_classdef_event_list (tree_classdef_event *e)
   {
-    return new tree_classdef_events_list (e);
+    return new tree_classdef_event_list (e);
   }
 
   tree_classdef_event *
-  base_parser::make_classdef_event (comment_list *lc, tree_identifier *id)
+  base_parser::make_classdef_event (tree_identifier *id)
   {
-    return new tree_classdef_event (id, lc);
+    return new tree_classdef_event (id);
   }
 
-  // LC contains comments appearing before the enumeration keyword.
-  // If this enumeration block appears first in the list of classdef
-  // elements, this comment list will be used for the help text for the
-  // classdef block.
-
-  // TC contains comments appearing between the list of
-  // enumerations and the final end token for the enumeration block and
-  // may be used to find the doc string for the final enumeration in the
-  // list.
-
   tree_classdef_enum_block *
-  base_parser::make_classdef_enum_block (token *tok,
-                                         tree_classdef_attribute_list *a,
-                                         tree_classdef_enum_list *elist,
-                                         token *end_tok,
-                                         comment_list *lc,
-                                         comment_list *tc)
+  base_parser::make_classdef_enum_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_enum_list *elist, token *end_tok)
   {
     tree_classdef_enum_block *retval = nullptr;
 
@@ -4661,14 +4399,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (! elist)
           elist = new tree_classdef_enum_list ();
 
-        retval = new tree_classdef_enum_block (a, elist, lc, tc, l, c);
+        retval = new tree_classdef_enum_block (*tok, a, elist, *end_tok, l, c);
       }
     else
       {
         delete a;
         delete elist;
-        delete lc;
-        delete tc;
 
         end_token_error (end_tok, token::enumeration_end);
       }
@@ -4683,10 +4419,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_classdef_enum *
-  base_parser::make_classdef_enum (tree_identifier *id, tree_expression *expr,
-                                   comment_list *lc)
+  base_parser::make_classdef_enum (tree_identifier *id, token *open_paren, tree_expression *expr, token *close_paren)
   {
-    return new tree_classdef_enum (id, expr, lc);
+    return new tree_classdef_enum (id, *open_paren, expr, *close_paren);
   }
 
   tree_classdef_property_list *
@@ -4696,8 +4431,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return list_append (list, elt);
   }
 
-  tree_classdef_events_list *
-  base_parser::append_classdef_event (tree_classdef_events_list *list,
+  tree_classdef_event_list *
+  base_parser::append_classdef_event (tree_classdef_event_list *list,
                                       tree_classdef_event *elt)
   {
     return list_append (list, elt);
@@ -4711,21 +4446,24 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_classdef_superclass_list *
-  base_parser::make_classdef_superclass_list (tree_classdef_superclass *sc)
+  base_parser::make_classdef_superclass_list (token *lt_tok, tree_classdef_superclass *sc)
   {
+    sc->set_separator (*lt_tok);
+
     return new tree_classdef_superclass_list (sc);
   }
 
   tree_classdef_superclass *
   base_parser::make_classdef_superclass (token *fqident)
   {
-    return new tree_classdef_superclass (fqident->text ());
+    return new tree_classdef_superclass (*fqident);
   }
 
   tree_classdef_superclass_list *
-  base_parser::append_classdef_superclass (tree_classdef_superclass_list *list,
-                                           tree_classdef_superclass *elt)
+  base_parser::append_classdef_superclass (tree_classdef_superclass_list *list, token *and_tok, tree_classdef_superclass *elt)
   {
+    elt->set_separator (*and_tok);
+
     return list_append (list, elt);
   }
 
@@ -4736,25 +4474,29 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_classdef_attribute *
-  base_parser::make_classdef_attribute (tree_identifier *id,
-                                        tree_expression *expr)
+  base_parser::make_classdef_attribute (tree_identifier *id)
+  {
+    return make_classdef_attribute (id, nullptr, nullptr);
+  }
+
+  tree_classdef_attribute *
+  base_parser::make_classdef_attribute (tree_identifier *id, token *eq_tok, tree_expression *expr)
   {
     return (expr
-            ? new tree_classdef_attribute (id, expr)
+            ? new tree_classdef_attribute (id, *eq_tok, expr)
             : new tree_classdef_attribute (id));
   }
 
   tree_classdef_attribute *
-  base_parser::make_not_classdef_attribute (tree_identifier *id)
+  base_parser::make_not_classdef_attribute (token *not_tok, tree_identifier *id)
   {
-    return new tree_classdef_attribute (id, false);
+    return new tree_classdef_attribute (*not_tok, id, false);
   }
 
   tree_classdef_attribute_list *
-  base_parser::append_classdef_attribute (tree_classdef_attribute_list *list,
-                                          tree_classdef_attribute *elt)
+  base_parser::append_classdef_attribute (tree_classdef_attribute_list *list, token *sep_tok, tree_classdef_attribute *elt)
   {
-    return list_append (list, elt);
+    return list_append (list, *sep_tok, elt);
   }
 
   tree_classdef_body *
@@ -4859,17 +4601,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_function_def *
-  base_parser::finish_classdef_external_method (octave_user_function *fcn,
-                                                tree_parameter_list *ret_list,
-                                                comment_list *cl)
+  base_parser::finish_classdef_external_method (octave_user_function *fcn, tree_parameter_list *ret_list, token *eq_tok)
   {
     if (! ret_list)
       ret_list = new tree_parameter_list (tree_parameter_list::out);
 
     fcn->define_ret_list (ret_list);
 
-    if (cl)
-      fcn->stash_leading_comment (cl);
+    if (eq_tok)
+      fcn->set_eq_tok (*eq_tok);
 
     int l = fcn->beginning_line ();
     int c = fcn->beginning_column ();
@@ -4877,8 +4617,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     return new tree_function_def (fcn, l, c);
   }
 
-  tree_classdef_methods_list *
-  base_parser::make_classdef_methods_list (tree_function_def *fcn_def)
+  tree_classdef_method_list *
+  base_parser::make_classdef_method_list (tree_function_def *fcn_def)
   {
     octave_value fcn;
 
@@ -4887,11 +4627,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     delete fcn_def;
 
-    return new tree_classdef_methods_list (fcn);
+    return new tree_classdef_method_list (fcn);
   }
 
-  tree_classdef_methods_list *
-  base_parser::append_classdef_method (tree_classdef_methods_list *list,
+  tree_classdef_method_list *
+  base_parser::append_classdef_method (tree_classdef_method_list *list,
                                        tree_function_def *fcn_def)
   {
     octave_value fcn;
@@ -4907,8 +4647,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   bool
-  base_parser::finish_classdef_file (tree_classdef *cls,
-                                     tree_statement_list *local_fcns)
+  base_parser::finish_classdef_file (tree_classdef *cls, tree_statement_list *local_fcns, token *eof_tok)
   {
     parse_tree_validator validator;
 
@@ -4959,6 +4698,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             std::string nm = fcn->name ();
             std::string file = fcn->fcn_file_name ();
 
+            fcn->attach_trailing_comments (eof_tok->leading_comments ());
+
             symtab.install_local_function (nm, ov_fcn, file);
           }
 
@@ -4975,9 +4716,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make an index expression.
 
   tree_index_expression *
-  base_parser::make_index_expression (tree_expression *expr,
-                                      tree_argument_list *args,
-                                      char type)
+  base_parser::make_index_expression (tree_expression *expr, token *open_delim, tree_argument_list *args, token *close_delim, char type)
   {
     tree_index_expression *retval = nullptr;
 
@@ -4996,14 +4735,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (! expr->is_postfix_indexed ())
           expr->set_postfix_index (type);
 
+        token tmp_open_delim = open_delim ? *open_delim : token ();
+        token tmp_close_delim = close_delim ? *close_delim : token ();
+
         if (expr->is_index_expression ())
           {
             retval = dynamic_cast<tree_index_expression *> (expr);
 
-            retval->append (args, type);
+            retval->append (tmp_open_delim, args, tmp_close_delim, type);
           }
         else
-          retval = new tree_index_expression (expr, args, l, c, type);
+          retval = new tree_index_expression (expr, tmp_open_delim, args, tmp_close_delim, l, c, type);
       }
 
     return retval;
@@ -5012,8 +4754,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make an indirect reference expression.
 
   tree_index_expression *
-  base_parser::make_indirect_ref (tree_expression *expr,
-                                  const std::string& elt)
+  base_parser::make_indirect_ref (tree_expression *expr, token *dot_tok, token *struct_elt_tok)
   {
     tree_index_expression *retval = nullptr;
 
@@ -5027,10 +4768,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         retval = dynamic_cast<tree_index_expression *> (expr);
 
-        retval->append (elt);
+        retval->append (*dot_tok, *struct_elt_tok);
       }
     else
-      retval = new tree_index_expression (expr, elt, l, c);
+      retval = new tree_index_expression (expr, *dot_tok, *struct_elt_tok, l, c);
 
     m_lexer.m_looking_at_indirect_ref = false;
 
@@ -5040,8 +4781,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make an indirect reference expression with dynamic field name.
 
   tree_index_expression *
-  base_parser::make_indirect_ref (tree_expression *expr,
-                                  tree_expression *elt)
+  base_parser::make_indirect_ref (tree_expression *expr, token *dot_tok, token *open_paren, tree_expression *elt, token *close_paren)
   {
     tree_index_expression *retval = nullptr;
 
@@ -5055,10 +4795,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         retval = dynamic_cast<tree_index_expression *> (expr);
 
-        retval->append (elt);
+        retval->append (*dot_tok, *open_paren, elt, *close_paren);
       }
     else
-      retval = new tree_index_expression (expr, elt, l, c);
+      retval = new tree_index_expression (expr, *dot_tok, *open_paren, elt, *close_paren, l, c);
 
     m_lexer.m_looking_at_indirect_ref = false;
 
@@ -5068,8 +4808,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make a declaration command.
 
   tree_decl_command *
-  base_parser::make_decl_command (int tok_id, token *tok,
-                                  tree_decl_init_list *lst)
+  base_parser::make_decl_command (token *tok, tree_decl_init_list *lst)
   {
     tree_decl_command *retval = nullptr;
 
@@ -5079,7 +4818,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (lst)
       m_lexer.mark_as_variables (lst->variable_names ());
 
-    switch (tok_id)
+    switch (tok->token_id ())
       {
       case GLOBAL:
         {
@@ -5287,10 +5026,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Finish building an array_list.
 
   tree_expression *
-  base_parser::finish_array_list (tree_array_list *array_list,
-                                  token */*open_delim*/, token *close_delim)
+  base_parser::finish_array_list (token *open_delim, tree_array_list *array_list, token *close_delim)
   {
     tree_expression *retval = array_list;
+
+    array_list->mark_in_delims (*open_delim, *close_delim);
 
     array_list->set_location (close_delim->line (), close_delim->column ());
 
@@ -5351,11 +5091,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Finish building a matrix list.
 
   tree_expression *
-  base_parser::finish_matrix (tree_matrix *m, token *open_delim,
-                              token *close_delim)
+  base_parser::finish_matrix (token *open_delim, tree_matrix *m, token *close_delim)
   {
     return (m
-            ? finish_array_list (m, open_delim, close_delim)
+            ? finish_array_list (open_delim, m, close_delim)
             : new tree_constant (octave_null_matrix::instance,
                                  close_delim->line (), close_delim->column ()));
   }
@@ -5367,22 +5106,21 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_matrix *
-  base_parser::append_matrix_row (tree_matrix *matrix, tree_argument_list *row)
+  base_parser::append_matrix_row (tree_matrix *matrix, token *sep_tok, tree_argument_list *row)
   {
     if (! matrix)
       return make_matrix (row);
 
-    return row ? list_append (matrix, row) : matrix;
+    return row ? list_append (matrix, *sep_tok, row) : matrix;
   }
 
   // Finish building a cell list.
 
   tree_expression *
-  base_parser::finish_cell (tree_cell *c, token *open_delim,
-                            token *close_delim)
+  base_parser::finish_cell (token *open_delim, tree_cell *c, token *close_delim)
   {
     return (c
-            ? finish_array_list (c, open_delim, close_delim)
+            ? finish_array_list (open_delim, c, close_delim)
             : new tree_constant (octave_value (Cell ()),
                                  close_delim->line (), close_delim->column ()));
   }
@@ -5394,29 +5132,20 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_cell *
-  base_parser::append_cell_row (tree_cell *cell, tree_argument_list *row)
+  base_parser::append_cell_row (tree_cell *cell, token *sep_tok, tree_argument_list *row)
   {
     if (! cell)
       return make_cell (row);
 
-    return row ? list_append (cell, row) : cell;
+    return row ? list_append (cell, *sep_tok, row) : cell;
   }
 
   tree_identifier *
   base_parser::make_identifier (token *ident)
   {
-    // Find the token in the symbol table.
     symbol_scope scope = m_lexer.m_symtab_context.curr_scope ();
 
-    std::string nm = ident->text ();
-
-    symbol_record sr = (scope ? scope.insert (nm) : symbol_record (nm));
-
-
-    int l = ident->line ();
-    int c = ident->column ();
-
-    return new tree_identifier (sr, l, c);
+    return new tree_identifier (scope, *ident);
   }
 
   tree_superclass_ref *
@@ -5484,9 +5213,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_statement *
   base_parser::make_statement (T *arg)
   {
-    comment_list *comment = m_lexer.get_comment_list ();
-
-    return new tree_statement (arg, comment);
+    return new tree_statement (arg);
   }
 
   tree_statement_list *
@@ -5512,10 +5239,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_argument_list *
-  base_parser::append_argument_list (tree_argument_list *list,
-                                     tree_expression *expr)
+  base_parser::append_argument_list (tree_argument_list *list, token *sep_tok, tree_expression *expr)
   {
-    return list_append (list, expr);
+    return list_append (list, *sep_tok, expr);
   }
 
   tree_parameter_list *
@@ -5525,31 +5251,27 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_parameter_list *
-  base_parser::make_parameter_list (tree_parameter_list::in_or_out io,
-                                    tree_decl_elt *t)
+  base_parser::make_parameter_list (tree_parameter_list::in_or_out io, tree_decl_elt *t)
   {
     return new tree_parameter_list (io, t);
   }
 
   tree_parameter_list *
-  base_parser::make_parameter_list (tree_parameter_list::in_or_out io,
-                                    tree_identifier *id)
+  base_parser::make_parameter_list (tree_parameter_list::in_or_out io, tree_identifier *id)
   {
     return new tree_parameter_list (io, id);
   }
 
   tree_parameter_list *
-  base_parser::append_parameter_list (tree_parameter_list *list,
-                                      tree_decl_elt *t)
+  base_parser::append_parameter_list (tree_parameter_list *list, token *sep_tok, tree_decl_elt *t)
   {
-    return list_append (list, t);
+    return list_append (list, *sep_tok, t);
   }
 
   tree_parameter_list *
-  base_parser::append_parameter_list (tree_parameter_list *list,
-                                      tree_identifier *id)
+  base_parser::append_parameter_list (tree_parameter_list *list, token *sep_tok, tree_identifier *id)
   {
-    return list_append (list, new tree_decl_elt (id));
+    return list_append (list, *sep_tok, new tree_decl_elt (id));
   }
 
   void
@@ -5949,8 +5671,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void
   base_parser::maybe_warn_assign_as_truth_value (tree_expression *expr)
   {
-    if (expr->is_assignment_expression ()
-        && expr->paren_count () < 2)
+    if (expr->is_assignment_expression () && expr->delim_count () < 2)
       {
         if (m_lexer.m_fcn_file_full_name.empty ())
           warning_with_id

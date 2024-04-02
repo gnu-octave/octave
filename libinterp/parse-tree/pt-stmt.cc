@@ -57,7 +57,6 @@ tree_statement::~tree_statement ()
 {
   delete m_command;
   delete m_expression;
-  delete m_comment_list;
 }
 
 void
@@ -105,6 +104,14 @@ tree_statement::is_active_breakpoint (tree_evaluator& tw) const
   return m_command ? m_command->is_active_breakpoint (tw)
          : (m_expression ? m_expression->is_active_breakpoint (tw)
             : false);
+}
+
+comment_list
+tree_statement::leading_comments () const
+{
+  return (m_command
+          ? m_command->leading_comments ()
+          : m_expression->leading_comments ());
 }
 
 std::string
@@ -180,6 +187,20 @@ tree_statement::is_end_of_file () const
     }
 
   return retval;
+}
+
+comment_list
+tree_statement_list::leading_comments () const
+{
+  if (! empty ())
+    {
+      tree_statement *elt = front ();
+
+      if (elt)
+        return elt->leading_comments ();
+    }
+
+  return comment_list ();
 }
 
 // Create a "breakpoint" tree-walker, and get it to "walk" this

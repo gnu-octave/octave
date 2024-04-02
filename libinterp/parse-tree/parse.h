@@ -48,7 +48,6 @@ class octave_user_function;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class comment_list;
 class parse_exception;
 class tree;
 class tree_anon_fcn_handle;
@@ -67,9 +66,9 @@ class tree_classdef_body;
 class tree_classdef_enum_block;
 class tree_classdef_enum_list;
 class tree_classdef_events_block;
-class tree_classdef_events_list;
+class tree_classdef_event_list;
 class tree_classdef_methods_block;
-class tree_classdef_methods_list;
+class tree_classdef_method_list;
 class tree_classdef_properties_block;
 class tree_classdef_property_list;
 class tree_classdef_superclass_list;
@@ -236,17 +235,17 @@ public:
   // Build a constant.
   OCTINTERP_API tree_constant * make_constant (token *tok);
 
-  OCTINTERP_API tree_black_hole * make_black_hole ();
+  OCTINTERP_API tree_black_hole * make_black_hole (token *tilde);
 
   OCTINTERP_API tree_matrix * make_matrix (tree_argument_list *row);
 
   OCTINTERP_API tree_matrix *
-  append_matrix_row (tree_matrix *matrix, tree_argument_list *row);
+  append_matrix_row (tree_matrix *matrix, token *sep_tok, tree_argument_list *row);
 
   OCTINTERP_API tree_cell * make_cell (tree_argument_list *row);
 
   OCTINTERP_API tree_cell *
-  append_cell_row (tree_cell *cell, tree_argument_list *row);
+  append_cell_row (tree_cell *cell, token *sep_tok, tree_argument_list *row);
 
   // Build a function handle.
   OCTINTERP_API tree_fcn_handle * make_fcn_handle (token *tok);
@@ -258,13 +257,15 @@ public:
 
   // Build a colon expression.
   OCTINTERP_API tree_expression *
-  make_colon_expression (tree_expression *base, tree_expression *limit,
-                         tree_expression *incr = nullptr);
+  make_colon_expression (tree_expression *base, token *colon_tok, tree_expression *limit);
+
+  // Build a colon expression.
+  OCTINTERP_API tree_expression *
+  make_colon_expression (tree_expression *base, token *colon_1_tok, tree_expression *incr, token *colon_2_tok, tree_expression *limit);
 
   // Build a binary expression.
   OCTINTERP_API tree_expression *
-  make_binary_op (int op, tree_expression *op1, token *tok,
-                  tree_expression *op2);
+  make_binary_op (tree_expression *op1, token *op_tok, tree_expression *op2);
 
   // Maybe convert EXPR to a braindead_shortcircuit expression.
   OCTINTERP_API void
@@ -272,47 +273,35 @@ public:
 
   // Build a boolean expression.
   OCTINTERP_API tree_expression *
-  make_boolean_op (int op, tree_expression *op1, token *tok,
-                   tree_expression *op2);
+  make_boolean_op (tree_expression *op1, token *op_tok, tree_expression *op2);
 
   // Build a prefix expression.
   OCTINTERP_API tree_expression *
-  make_prefix_op (int op, tree_expression *op1, token *tok);
+  make_prefix_op (token *op_tok, tree_expression *op1);
 
   // Build a postfix expression.
   OCTINTERP_API tree_expression *
-  make_postfix_op (int op, tree_expression *op1, token *tok);
+  make_postfix_op (tree_expression *op1, token *op_tok);
 
   // Build an unwind-protect command.
   OCTINTERP_API tree_command *
-  make_unwind_command (token *unwind_tok, tree_statement_list *body,
-                       tree_statement_list *cleanup, token *end_tok,
-                       comment_list *lc, comment_list *mc);
+  make_unwind_command (token *unwind_tok, tree_statement_list *body, token *cleanup_tok, tree_statement_list *cleanup, token *end_tok);
 
   // Build a try-catch command.
   OCTINTERP_API tree_command *
-  make_try_command (token *try_tok, tree_statement_list *body,
-                    char catch_sep, tree_statement_list *cleanup,
-                    token *end_tok, comment_list *lc,
-                    comment_list *mc);
+  make_try_command (token *try_tok, tree_statement_list *body, token *catch_tok, char catch_sep, tree_statement_list *cleanup, token *end_tok);
 
   // Build a while command.
   OCTINTERP_API tree_command *
-  make_while_command (token *while_tok, tree_expression *expr,
-                      tree_statement_list *body, token *end_tok,
-                      comment_list *lc);
+  make_while_command (token *while_tok, tree_expression *expr, tree_statement_list *body, token *end_tok);
 
   // Build a do-until command.
   OCTINTERP_API tree_command *
-  make_do_until_command (token *until_tok, tree_statement_list *body,
-                         tree_expression *expr, comment_list *lc);
+  make_do_until_command (token *do_tok, tree_statement_list *body, token *until_tok, tree_expression *expr);
 
   // Build a for command.
   OCTINTERP_API tree_command *
-  make_for_command (int tok_id, token *for_tok, tree_argument_list *lhs,
-                    tree_expression *expr, tree_expression *maxproc,
-                    tree_statement_list *body, token *end_tok,
-                    comment_list *lc);
+  make_for_command (token *for_tok, token *open_paren, tree_argument_list *lhs, token *eq_tok, tree_expression *expr, token *sep_tok, tree_expression *maxproc, token *close_paren, tree_statement_list *body, token *end_tok);
 
   // Build a break command.
   OCTINTERP_API tree_command * make_break_command (token *break_tok);
@@ -326,55 +315,43 @@ public:
   // Build an spmd command.
 
   OCTINTERP_API tree_spmd_command *
-  make_spmd_command (token *spmd_tok, tree_statement_list *body,
-                     token *end_tok, comment_list *lc, comment_list *tc);
+  make_spmd_command (token *spmd_tok, tree_statement_list *body, token *end_tok);
 
   // Start an if command.
   OCTINTERP_API tree_if_command_list *
-  start_if_command (tree_expression *expr, tree_statement_list *list);
+  start_if_command (tree_if_clause *clause);
 
   // Finish an if command.
   OCTINTERP_API tree_if_command *
-  finish_if_command (token *if_tok, tree_if_command_list *list,
-                     token *end_tok, comment_list *lc);
+  finish_if_command (tree_if_command_list *list, tree_if_clause *else_clause, token *end_tok);
 
   // Build an elseif clause.
   OCTINTERP_API tree_if_clause *
-  make_elseif_clause (token *elseif_tok, tree_expression *expr,
-                      tree_statement_list *list, comment_list *lc);
-
-  OCTINTERP_API tree_if_clause *
-  make_else_clause (token *else_tok, comment_list *lc,
-                    tree_statement_list *list);
+  make_if_clause (token *if_tok, tree_expression *expr, tree_statement_list *list);
 
   OCTINTERP_API tree_if_command_list *
   append_if_clause (tree_if_command_list *list, tree_if_clause *clause);
 
   // Finish a switch command.
   OCTINTERP_API tree_switch_command *
-  finish_switch_command (token *switch_tok, tree_expression *expr,
-                         tree_switch_case_list *list, token *end_tok,
-                         comment_list *lc);
+  finish_switch_command (token *switch_tok, tree_expression *expr, tree_switch_case_list *list, token *end_tok);
 
   OCTINTERP_API tree_switch_case_list *
   make_switch_case_list (tree_switch_case *switch_case);
 
   // Build a switch case.
   OCTINTERP_API tree_switch_case *
-  make_switch_case (token *case_tok, tree_expression *expr,
-                    tree_statement_list *list, comment_list *lc);
+  make_switch_case (token *case_tok, tree_expression *expr, tree_statement_list *list);
 
   OCTINTERP_API tree_switch_case *
-  make_default_switch_case (token *default_tok, comment_list *lc,
-                            tree_statement_list *list);
+  make_default_switch_case (token *default_tok, tree_statement_list *list);
 
   OCTINTERP_API tree_switch_case_list *
   append_switch_case (tree_switch_case_list *list, tree_switch_case *elt);
 
   // Build an assignment to a variable.
   OCTINTERP_API tree_expression *
-  make_assign_op (int op, tree_argument_list *lhs, token *eq_tok,
-                  tree_expression *rhs);
+  make_assign_op (tree_argument_list *lhs, token *eq_tok, tree_expression *rhs);
 
   // Define a script.
   OCTINTERP_API void
@@ -386,10 +363,7 @@ public:
 
   // Define a function.
   OCTINTERP_API tree_function_def *
-  make_function (token *fcn_tok, tree_parameter_list *ret_list,
-                 tree_identifier *id, tree_parameter_list *param_list,
-                 tree_statement_list *body, tree_statement *end_fcn_stmt,
-                 comment_list *lc, comment_list *bc);
+  make_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, tree_identifier *id, tree_parameter_list *param_list, tree_statement_list *body, tree_statement *end_fcn_stmt);
 
   // Begin defining a function.
   OCTINTERP_API octave_user_function *
@@ -399,8 +373,7 @@ public:
 
   // Create a no-op statement for end_function.
   OCTINTERP_API tree_statement *
-  make_end (const std::string& type, bool eof,
-            const filepos& beg_pos, const filepos& end_pos);
+  make_end (const std::string& type, bool eof, token *tok, const filepos& beg_pos, const filepos& end_pos);
 
   // Do most of the work for defining a function.
   OCTINTERP_API octave_user_function *
@@ -408,19 +381,14 @@ public:
 
   // Finish defining a function.
   OCTINTERP_API tree_function_def *
-  finish_function (tree_parameter_list *ret_list,
-                   octave_user_function *fcn, comment_list *lc,
-                   int l, int c);
+  finish_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, octave_user_function *fcn, int l, int c);
 
   OCTINTERP_API tree_statement_list *
   append_function_body (tree_statement_list *body, tree_statement_list *list);
 
   // Make an arguments validation block.
   OCTINTERP_API tree_arguments_block *
-  make_arguments_block (token *arguments_tok,
-                        tree_args_block_attribute_list *attr_list,
-                        tree_args_block_validation_list *validation_list,
-                        token *end_tok, comment_list *lc, comment_list *tc);
+  make_arguments_block (token *arguments_tok, tree_args_block_attribute_list *attr_list, tree_args_block_validation_list *validation_list, token *end_tok);
 
   OCTINTERP_API tree_args_block_attribute_list *
   make_args_attribute_list (tree_identifier *attribute_name);
@@ -430,7 +398,8 @@ public:
   make_arg_validation (tree_arg_size_spec *size_spec,
                        tree_identifier *class_name,
                        tree_arg_validation_fcns *validation_fcns,
-                       tree_expression *default_value);
+                       token *eq_tok = nullptr,
+                       tree_expression *default_value = nullptr);
 
   // Make an argument validation list.
   OCTINTERP_API tree_args_block_validation_list *
@@ -454,94 +423,73 @@ public:
   recover_from_parsing_function ();
 
   OCTINTERP_API tree_classdef *
-  make_classdef (token *tok, tree_classdef_attribute_list *a,
-                 tree_identifier *id, tree_classdef_superclass_list *sc,
-                 tree_classdef_body *body, token *end_tok,
-                 comment_list *lc, comment_list *bc, comment_list *tc);
+  make_classdef (token *tok, tree_classdef_attribute_list *a, tree_identifier *id, tree_classdef_superclass_list *sc, tree_classdef_body *body, token *end_tok);
 
   OCTINTERP_API tree_classdef_properties_block *
-  make_classdef_properties_block (token *tok,
-                                  tree_classdef_attribute_list *a,
-                                  tree_classdef_property_list *plist,
-                                  token *end_tok, comment_list *lc,
-                                  comment_list *tc);
+  make_classdef_properties_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_property_list *plist, token *end_tok);
 
   OCTINTERP_API tree_classdef_property_list *
   make_classdef_property_list (tree_classdef_property *prop);
 
   OCTINTERP_API tree_classdef_property *
-  make_classdef_property (comment_list *lc, tree_identifier *id,
-                          tree_arg_validation *av);
+  make_classdef_property (tree_identifier *id, tree_arg_validation *av);
 
   OCTINTERP_API tree_classdef_property_list *
   append_classdef_property (tree_classdef_property_list *list,
                             tree_classdef_property *elt);
 
   OCTINTERP_API tree_classdef_methods_block *
-  make_classdef_methods_block (token *tok,
-                               tree_classdef_attribute_list *a,
-                               tree_classdef_methods_list *mlist,
-                               token *end_tok, comment_list *lc,
-                               comment_list *tc);
+  make_classdef_methods_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_method_list *mlist, token *end_tok);
 
   OCTINTERP_API tree_classdef_events_block *
-  make_classdef_events_block (token *tok,
-                              tree_classdef_attribute_list *a,
-                              tree_classdef_events_list *elist,
-                              token *end_tok, comment_list *lc,
-                              comment_list *tc);
+  make_classdef_events_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_event_list *elist, token *end_tok);
 
-  OCTINTERP_API tree_classdef_events_list *
-  make_classdef_events_list (tree_classdef_event *e);
+  OCTINTERP_API tree_classdef_event_list *
+  make_classdef_event_list (tree_classdef_event *e);
 
   OCTINTERP_API tree_classdef_event *
-  make_classdef_event (comment_list *lc, tree_identifier *id);
+  make_classdef_event (tree_identifier *id);
 
-  OCTINTERP_API tree_classdef_events_list *
-  append_classdef_event (tree_classdef_events_list *list,
+  OCTINTERP_API tree_classdef_event_list *
+  append_classdef_event (tree_classdef_event_list *list,
                          tree_classdef_event *elt);
 
   OCTINTERP_API tree_classdef_enum_block *
-  make_classdef_enum_block (token *tok,
-                            tree_classdef_attribute_list *a,
-                            tree_classdef_enum_list *elist,
-                            token *end_tok, comment_list *lc,
-                            comment_list *tc);
+  make_classdef_enum_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_enum_list *elist, token *end_tok);
 
   OCTINTERP_API tree_classdef_enum_list *
   make_classdef_enum_list (tree_classdef_enum *e);
 
   OCTINTERP_API tree_classdef_enum *
-  make_classdef_enum (tree_identifier *id, tree_expression *expr,
-                      comment_list *lc);
+  make_classdef_enum (tree_identifier *id, token *open_paren, tree_expression *expr, token *close_paren);
 
   OCTINTERP_API tree_classdef_enum_list *
   append_classdef_enum (tree_classdef_enum_list *list,
                         tree_classdef_enum *elt);
 
   OCTINTERP_API tree_classdef_superclass_list *
-  make_classdef_superclass_list (tree_classdef_superclass *sc);
+  make_classdef_superclass_list (token *lt_tok, tree_classdef_superclass *sc);
 
   OCTINTERP_API tree_classdef_superclass *
   make_classdef_superclass (token *fqident);
 
   OCTINTERP_API tree_classdef_superclass_list *
-  append_classdef_superclass (tree_classdef_superclass_list *list,
-                              tree_classdef_superclass *elt);
+  append_classdef_superclass (tree_classdef_superclass_list *list, token *and_tok, tree_classdef_superclass *elt);
 
   OCTINTERP_API tree_classdef_attribute_list *
   make_classdef_attribute_list (tree_classdef_attribute *attr);
 
   OCTINTERP_API tree_classdef_attribute *
-  make_classdef_attribute (tree_identifier *id,
-                           tree_expression *expr = nullptr);
+  make_classdef_attribute (tree_identifier *id);
 
   OCTINTERP_API tree_classdef_attribute *
-  make_not_classdef_attribute (tree_identifier *id);
+  make_classdef_attribute (tree_identifier *id, token *eq_tok, tree_expression *expr);
+
+  OCTINTERP_API tree_classdef_attribute *
+  make_not_classdef_attribute (token *not_tok, tree_identifier *id);
 
   OCTINTERP_API tree_classdef_attribute_list *
-  append_classdef_attribute (tree_classdef_attribute_list *list,
-                             tree_classdef_attribute *elt);
+  append_classdef_attribute (tree_classdef_attribute_list *list, token *sep_tok, tree_classdef_attribute *elt);
 
   OCTINTERP_API tree_classdef_body *
   make_classdef_body (tree_classdef_properties_block *pb);
@@ -572,41 +520,36 @@ public:
                               tree_classdef_enum_block *block);
 
   OCTINTERP_API octave_user_function *
-  start_classdef_external_method (tree_identifier *id,
-                                  tree_parameter_list *pl);
+  start_classdef_external_method (tree_identifier *id, tree_parameter_list *pl = nullptr);
 
   OCTINTERP_API tree_function_def *
-  finish_classdef_external_method (octave_user_function *fcn,
-                                   tree_parameter_list *ret_list,
-                                   comment_list *cl);
+  finish_classdef_external_method (octave_user_function *fcn, tree_parameter_list *ret_list = nullptr, token *eq_tok = nullptr);
 
-  OCTINTERP_API tree_classdef_methods_list *
-  make_classdef_methods_list (tree_function_def *fcn_def);
+  OCTINTERP_API tree_classdef_method_list *
+  make_classdef_method_list (tree_function_def *fcn_def);
 
-  OCTINTERP_API tree_classdef_methods_list *
-  append_classdef_method (tree_classdef_methods_list *list,
+  OCTINTERP_API tree_classdef_method_list *
+  append_classdef_method (tree_classdef_method_list *list,
                           tree_function_def *fcn_def);
 
   OCTINTERP_API bool
-  finish_classdef_file (tree_classdef *cls,
-                        tree_statement_list *local_fcns);
+  finish_classdef_file (tree_classdef *cls, tree_statement_list *local_fcns, token *eof_tok);
 
   // Make an index expression.
   OCTINTERP_API tree_index_expression *
-  make_index_expression (tree_expression *expr,
-                         tree_argument_list *args, char type);
+  make_index_expression (tree_expression *expr, token *open_paren, tree_argument_list *args, token *close_paren, char type);
 
   // Make an indirect reference expression.
   OCTINTERP_API tree_index_expression *
-  make_indirect_ref (tree_expression *expr, const std::string&);
+  make_indirect_ref (tree_expression *expr, token *dot_tok, token *struct_elt_tok);
 
   // Make an indirect reference expression with dynamic field name.
   OCTINTERP_API tree_index_expression *
-  make_indirect_ref (tree_expression *expr, tree_expression *field);
+  make_indirect_ref (tree_expression *expr, token *dot_tok, token *open_paren, tree_expression *field, token *close_paren);
 
   // Make a declaration command.
   OCTINTERP_API tree_decl_command *
-  make_decl_command (int tok_id, token *tok, tree_decl_init_list *lst);
+  make_decl_command (token *tok, tree_decl_init_list *lst);
 
   OCTINTERP_API tree_decl_init_list *
   make_decl_init_list (tree_decl_elt *elt);
@@ -632,16 +575,15 @@ public:
   // Finish building an array_list (common action for finish_matrix
   // and finish_cell).
   OCTINTERP_API tree_expression *
-  finish_array_list (tree_array_list *a, token *open_delim,
-                     token *close_delim);
+  finish_array_list (token *open_delim, tree_array_list *a, token *close_delim);
 
   // Finish building a matrix list.
   OCTINTERP_API tree_expression *
-  finish_matrix (tree_matrix *m, token *open_delim, token *close_delim);
+  finish_matrix (token *open_delim, tree_matrix *m, token *close_delim);
 
   // Finish building a cell list.
   OCTINTERP_API tree_expression *
-  finish_cell (tree_cell *c, token *open_delim, token *close_delim);
+  finish_cell (token *open_delim, tree_cell *c, token *close_delim);
 
   OCTINTERP_API tree_identifier *
   make_identifier (token *ident);
@@ -673,7 +615,7 @@ public:
   make_argument_list (tree_expression *expr);
 
   OCTINTERP_API tree_argument_list *
-  append_argument_list (tree_argument_list *list, tree_expression *expr);
+  append_argument_list (tree_argument_list *list, token *sep_tok, tree_expression *expr);
 
   OCTINTERP_API tree_parameter_list *
   make_parameter_list (tree_parameter_list::in_or_out io);
@@ -682,14 +624,13 @@ public:
   make_parameter_list (tree_parameter_list::in_or_out io, tree_decl_elt *t);
 
   OCTINTERP_API tree_parameter_list *
-  make_parameter_list (tree_parameter_list::in_or_out io,
-                       tree_identifier *id);
+  make_parameter_list (tree_parameter_list::in_or_out io, tree_identifier *id);
 
   OCTINTERP_API tree_parameter_list *
-  append_parameter_list (tree_parameter_list *list, tree_decl_elt *t);
+  append_parameter_list (tree_parameter_list *list, token *sep_tok, tree_decl_elt *t);
 
   OCTINTERP_API tree_parameter_list *
-  append_parameter_list (tree_parameter_list *list, tree_identifier *id);
+  append_parameter_list (tree_parameter_list *list, token *sep_tok, tree_identifier *id);
 
   // Don't allow parsing command syntax.  If the parser/lexer is
   // reset, this setting is also reset to the default (allow command

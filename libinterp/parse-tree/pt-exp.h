@@ -34,7 +34,9 @@
 class octave_value;
 
 #include "pt.h"
+#include "pt-delimiter-list.h"
 #include "pt-eval.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -48,8 +50,7 @@ class tree_expression : public tree
 public:
 
   tree_expression (int l = -1, int c = -1)
-    : tree (l, c), m_num_parens (0), m_postfix_index_type ('\0'),
-      m_for_cmd_expr (false), m_print_flag (false) { }
+    : tree (l, c), m_postfix_index_type ('\0'), m_for_cmd_expr (false), m_print_flag (false) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_expression)
 
@@ -85,7 +86,14 @@ public:
 
   virtual octave_lvalue lvalue (tree_evaluator&);
 
-  int paren_count () const { return m_num_parens; }
+  // The number of times this expression appears directly inside a set
+  // of delimiters.
+  //
+  //   (([e1]) + e2)  ==> 2 for expression e1
+  //                  ==> 1 for expression ([e1]) + e2
+  //                  ==> 0 for expression e2
+
+  size_t delim_count () const { return m_delims.count (); }
 
   bool is_postfix_indexed () const
   { return (m_postfix_index_type != '\0'); }
@@ -107,9 +115,9 @@ public:
 
   bool is_for_cmd_expr () const { return m_for_cmd_expr; }
 
-  tree_expression * mark_in_parens ()
+  tree_expression * mark_in_delims (const token& open_delim, const token& close_delim)
   {
-    m_num_parens++;
+    m_delims.push (open_delim, close_delim);
     return this;
   }
 
@@ -127,9 +135,9 @@ public:
 
   virtual void copy_base (const tree_expression& e)
   {
-    m_num_parens = e.m_num_parens;
     m_postfix_index_type = e.m_postfix_index_type;
     m_print_flag = e.m_print_flag;
+    m_delims = e.m_delims;
   }
 
   virtual octave_value evaluate (tree_evaluator& tw, int nargout = 1) = 0;
@@ -138,14 +146,6 @@ public:
   evaluate_n (tree_evaluator& tw, int nargout = 1) = 0;
 
 protected:
-
-  // A count of the number of times this expression appears directly
-  // inside a set of parentheses.
-  //
-  //   (((e1)) + e2)  ==> 2 for expression e1
-  //                  ==> 1 for expression ((e1)) + e2
-  //                  ==> 0 for expression e2
-  int m_num_parens;
 
   // The first index type associated with this expression.  This field
   // is 0 (character '\0') if the expression has no associated index.
@@ -158,6 +158,9 @@ protected:
 
   // Print result of rvalue for this expression?
   bool m_print_flag;
+
+  // Tokens for any delimiters surrounding this expression.
+  tree_delimiter_list m_delims;
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -96,10 +96,10 @@ class tree_classdef_superclass_list;
 class tree_classdef_property;
 class tree_classdef_property_list;
 class tree_classdef_properties_block;
-class tree_classdef_methods_list;
+class tree_classdef_method_list;
 class tree_classdef_methods_block;
 class tree_classdef_event;
-class tree_classdef_events_list;
+class tree_classdef_event_list;
 class tree_classdef_events_block;
 class tree_classdef_enum;
 class tree_classdef_enum_list;
@@ -233,13 +233,13 @@ public:
 
   virtual void visit_classdef_properties_block (tree_classdef_properties_block&);
 
-  virtual void visit_classdef_methods_list (tree_classdef_methods_list&);
+  virtual void visit_classdef_method_list (tree_classdef_method_list&);
 
   virtual void visit_classdef_methods_block (tree_classdef_methods_block&);
 
   virtual void visit_classdef_event (tree_classdef_event&);
 
-  virtual void visit_classdef_events_list (tree_classdef_events_list&);
+  virtual void visit_classdef_event_list (tree_classdef_event_list&);
 
   virtual void visit_classdef_events_block (tree_classdef_events_block&);
 

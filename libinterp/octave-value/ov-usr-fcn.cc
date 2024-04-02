@@ -45,6 +45,7 @@
 #include "ov-usr-fcn.h"
 #include "ov.h"
 #include "pager.h"
+#include "pt-cmd.h"
 #include "pt-eval.h"
 #include "pt-jump.h"
 #include "pt-misc.h"
@@ -263,7 +264,6 @@ octave_user_function::octave_user_function
  octave::tree_parameter_list *rl, octave::tree_statement_list *cl)
   : octave_user_code ("", "", scope, cl, ""),
     m_param_list (pl), m_ret_list (rl),
-    m_lead_comm (), m_trail_comm (),
     m_location_line (0), m_location_column (0),
     m_system_fcn_file (false),
     m_num_named_args (m_param_list ? m_param_list->size () : 0),
@@ -279,8 +279,6 @@ octave_user_function::~octave_user_function ()
 {
   delete m_param_list;
   delete m_ret_list;
-  delete m_lead_comm;
-  delete m_trail_comm;
 }
 
 std::string
@@ -312,6 +310,39 @@ octave_user_function::define_ret_list (octave::tree_parameter_list *t)
   m_ret_list = t;
 
   return this;
+}
+
+void
+octave_user_function::attach_trailing_comments (const octave::comment_list& lst)
+{
+  if (m_cmd_list && ! m_cmd_list->empty ())
+    {
+      octave::tree_statement *last_stmt = m_cmd_list->back ();
+
+      octave::tree_command *cmd = last_stmt->command ();
+
+      octave::tree_no_op_command *no_op_cmd = dynamic_cast <octave::tree_no_op_command *> (cmd);
+
+      if (no_op_cmd && (no_op_cmd->is_end_of_fcn_or_script () || no_op_cmd->is_end_of_file ()))
+        no_op_cmd->attach_trailing_comments (lst);
+    }
+}
+
+octave::comment_list octave_user_function::trailing_comments () const
+{
+  if (m_cmd_list && ! m_cmd_list->empty ())
+    {
+      octave::tree_statement *last_stmt = m_cmd_list->back ();
+
+      octave::tree_command *cmd = last_stmt->command ();
+
+      octave::tree_no_op_command *no_op_cmd = dynamic_cast <octave::tree_no_op_command *> (cmd);
+
+      if (no_op_cmd && (no_op_cmd->is_end_of_fcn_or_script () || no_op_cmd->is_end_of_file ()))
+        return no_op_cmd->trailing_comments ();
+    }
+
+  return octave::comment_list ();
 }
 
 // If there is no explicit end statement at the end of the function,

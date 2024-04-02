@@ -722,14 +722,14 @@ tree_walker::visit_classdef_property_list (tree_classdef_property_list& lst)
 void
 tree_walker::visit_classdef_properties_block (tree_classdef_properties_block& blk)
 {
-  tree_classdef_property_list *property_list = blk.element_list ();
+  tree_classdef_property_list *property_list = blk.property_list ();
 
   if (property_list)
     property_list->accept (*this);
 }
 
 void
-tree_walker::visit_classdef_methods_list (tree_classdef_methods_list& lst)
+tree_walker::visit_classdef_method_list (tree_classdef_method_list& lst)
 {
   for (auto ov_meth : lst)
     {
@@ -743,10 +743,10 @@ tree_walker::visit_classdef_methods_list (tree_classdef_methods_list& lst)
 void
 tree_walker::visit_classdef_methods_block (tree_classdef_methods_block& blk)
 {
-  tree_classdef_methods_list *methods_list = blk.element_list ();
+  tree_classdef_method_list *method_list = blk.method_list ();
 
-  if (methods_list)
-    methods_list->accept (*this);
+  if (method_list)
+    method_list->accept (*this);
 }
 
 void
@@ -756,7 +756,7 @@ tree_walker::visit_classdef_event (tree_classdef_event&)
 }
 
 void
-tree_walker::visit_classdef_events_list (tree_classdef_events_list& lst)
+tree_walker::visit_classdef_event_list (tree_classdef_event_list& lst)
 {
   for (auto *elt : lst)
     {
@@ -768,10 +768,10 @@ tree_walker::visit_classdef_events_list (tree_classdef_events_list& lst)
 void
 tree_walker::visit_classdef_events_block (tree_classdef_events_block& blk)
 {
-  tree_classdef_events_list *events_list = blk.element_list ();
+  tree_classdef_event_list *event_list = blk.event_list ();
 
-  if (events_list)
-    events_list->accept (*this);
+  if (event_list)
+    event_list->accept (*this);
 }
 
 void
@@ -793,7 +793,7 @@ tree_walker::visit_classdef_enum_list (tree_classdef_enum_list& lst)
 void
 tree_walker::visit_classdef_enum_block (tree_classdef_enum_block& blk)
 {
-  tree_classdef_enum_list *enum_list = blk.element_list ();
+  tree_classdef_enum_list *enum_list = blk.enum_list ();
 
   if (enum_list)
     enum_list->accept (*this);
@@ -802,20 +802,20 @@ tree_walker::visit_classdef_enum_block (tree_classdef_enum_block& blk)
 void
 tree_walker::visit_classdef_body (tree_classdef_body& body)
 {
-  for (auto *elt : body.properties_list ())
+  for (auto *elt : body.property_list ())
     {
       if (elt)
         elt->accept (*this);
     }
 
-  for (auto *elt : body.methods_list ())
+  for (auto *elt : body.method_list ())
     {
       if (elt)
         elt->accept (*this);
     }
 
 
-  for (auto *elt : body.events_list ())
+  for (auto *elt : body.event_list ())
     {
       if (elt)
         elt->accept (*this);

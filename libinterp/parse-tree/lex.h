@@ -483,7 +483,7 @@ public:
   std::string m_current_input_line;
 
   // The text of the current comment, used to gather comment lines
-  // before storing in m_comment_buf.
+  // before storing in m_comment_list.
   std::string m_comment_text;
 
   // The text of functions entered on the command line.
@@ -559,52 +559,8 @@ public:
     bool m_eof;
   };
 
-  // Collect comment text.
-
-  class comment_buffer
-  {
-  public:
-
-    comment_buffer () : m_comment_list (nullptr) { }
-
-    OCTAVE_DISABLE_COPY_MOVE (comment_buffer)
-
-    ~comment_buffer () { delete m_comment_list; }
-
-    void append (const std::string& s, comment_elt::comment_type t, bool uses_hash_char)
-    {
-      if (! m_comment_list)
-        m_comment_list = new comment_list ();
-
-      m_comment_list->append (s, t, uses_hash_char);
-    }
-
-    // Caller is expected to delete the returned value.
-
-    comment_list * get_comment_list ()
-    {
-      comment_list *retval = m_comment_list;
-
-      m_comment_list = nullptr;
-
-      return retval;
-    }
-
-    void reset ()
-    {
-      delete m_comment_list;
-
-      m_comment_list = nullptr;
-    }
-
-  private:
-
-    comment_list *m_comment_list;
-  };
-
   base_lexer (interpreter& interp)
-    : lexical_feedback (interp), m_scanner (nullptr), m_input_buf (),
-      m_comment_buf ()
+    : lexical_feedback (interp), m_scanner (nullptr), m_input_buf ()
   {
     init ();
   }
@@ -661,7 +617,12 @@ public:
 
   void finish_comment (comment_elt::comment_type typ);
 
-  comment_list * get_comment_list () { return m_comment_buf.get_comment_list (); }
+  comment_list get_comment_list ()
+  {
+    comment_list retval = m_comment_list;
+    m_comment_list.clear ();
+    return retval;
+  }
 
   int handle_close_bracket (int bracket_type);
 
@@ -717,8 +678,8 @@ public:
   // Object that reads and buffers input.
   input_buffer m_input_buf;
 
-  // Object that collects comment text.
-  comment_buffer m_comment_buf;
+  // List of collected comments.
+  comment_list m_comment_list;
 
   virtual std::string input_source () const { return "unknown"; }
 

@@ -35,6 +35,7 @@
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
 #include "symscope.h"
+#include "token.h"
 #include "unwind-prot.h"
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 #  include "pt-bytecode.h"
@@ -248,6 +249,11 @@ public:
 
   octave_user_function * define_ret_list (octave::tree_parameter_list *t);
 
+  void set_fcn_tok (const octave::token& fcn_tok) { m_fcn_tok = fcn_tok; }
+  void set_eq_tok (const octave::token& eq_tok) { m_eq_tok = eq_tok; }
+
+  void attach_trailing_comments (const octave::comment_list& lst);
+
   void stash_fcn_location (int line, int col)
   {
     m_location_line = line;
@@ -269,10 +275,6 @@ public:
   void maybe_relocate_end ();
 
   void stash_parent_fcn_scope (const octave::symbol_scope& ps);
-
-  void stash_leading_comment (octave::comment_list *lc) { m_lead_comm = lc; }
-
-  void stash_trailing_comment (octave::comment_list *tc) { m_trail_comm = tc; }
 
   std::string profiler_name () const;
 
@@ -410,9 +412,8 @@ public:
 
   octave::tree_parameter_list * return_list () { return m_ret_list; }
 
-  octave::comment_list * leading_comment () { return m_lead_comm; }
-
-  octave::comment_list * trailing_comment () { return m_trail_comm; }
+  octave::comment_list leading_comments () const { return m_fcn_tok.leading_comments (); }
+  octave::comment_list trailing_comments () const;
 
   // If is_special_expr is true, retrieve the sigular expression that forms the
   // body.  May be null (even if is_special_expr is true).
@@ -443,11 +444,10 @@ private:
   // this function.
   octave::tree_parameter_list *m_ret_list;
 
-  // The comments preceding the FUNCTION token.
-  octave::comment_list *m_lead_comm;
-
-  // The comments preceding the ENDFUNCTION token.
-  octave::comment_list *m_trail_comm;
+  // FIXME: Should we also be caching the final token (END or EOF) as
+  // m_end_tok?
+  octave::token m_fcn_tok;
+  octave::token m_eq_tok;
 
   // Location where this function was defined.
   int m_location_line;

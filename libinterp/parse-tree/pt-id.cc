@@ -81,8 +81,7 @@ tree_identifier::dup (symbol_scope& scope) const
 
   symbol_record new_sym = scope.find_symbol (name ());
 
-  tree_identifier *new_id
-    = new tree_identifier (new_sym, line (), column ());
+  tree_identifier *new_id = new tree_identifier (new_sym, m_token);
 
   new_id->copy_base (*this);
 

@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 1996-2024 The Octave Project Developers
+// Copyright (C) 2024 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -23,45 +23,37 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if defined (HAVE_CONFIG_H)
-#  include "config.h"
-#endif
+#if ! defined (octave_tree_delimiter_list_h)
+#define octave_tree_delimiter_list_h 1
 
-#include "pt-exp.h"
-#include "pt-select.h"
-#include "pt-stmt.h"
+#include "octave-config.h"
+
+#include <stack>
+
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-// If clauses.
-
-tree_if_clause::~tree_if_clause ()
+class tree_delimiter_list
 {
-  delete m_expr;
-  delete m_list;
-}
+public:
 
-// If.
+  typedef std::pair<token, token> element_type;
 
-tree_if_command::~tree_if_command ()
-{
-  delete m_list;
-}
+  OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (tree_delimiter_list)
 
-// Switch cases.
+    size_t count () const { return m_delimiters.size (); }
 
-tree_switch_case::~tree_switch_case ()
-{
-  delete m_label;
-  delete m_list;
-}
+  void push (const token& open_delim, const token& close_delim)
+  {
+    m_delimiters.push (element_type (open_delim, close_delim));
+  }
 
-// Switch.
+private:
 
-tree_switch_command::~tree_switch_command ()
-{
-  delete m_expr;
-  delete m_list;
-}
+  std::stack<element_type> m_delimiters;
+};
 
 OCTAVE_END_NAMESPACE(octave)
+
+#endif

@@ -35,11 +35,13 @@ class octave_value;
 class octave_value_list;
 class octave_function;
 
+#include "comment-list.h"
 #include "oct-lvalue.h"
 #include "pt-bp.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
 #include "symscope.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -53,12 +55,15 @@ class tree_identifier : public tree_expression
 
 public:
 
-  tree_identifier (int l = -1, int c = -1)
-    : tree_expression (l, c), m_sym () { }
+  tree_identifier (const token& tok)
+    : tree_expression (tok.line (), tok.column ()), m_sym (), m_token (tok)
+  { }
 
-  tree_identifier (const symbol_record& s,
-                   int l = -1, int c = -1)
-    : tree_expression (l, c), m_sym (s) { }
+  tree_identifier (symbol_scope& scope, const token& tok)
+    : tree_expression (tok.line (), tok.column ()),
+      m_sym (scope ? scope.insert (tok.text ()) : symbol_record (tok.text ())),
+      m_token (tok)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_identifier)
 
@@ -67,6 +72,8 @@ public:
   bool is_identifier () const { return true; }
 
   std::string name () const { return m_sym.name (); }
+
+  comment_list leading_comments () const { return m_token.leading_comments (); }
 
   virtual bool is_black_hole () const { return false; }
 
@@ -105,18 +112,38 @@ public:
 
   symbol_record symbol () const { return m_sym; }
 
+  tree_identifier * mark_get_set (const token& get_set_tok, const token& dot_tok)
+  {
+    m_get_set_tok = get_set_tok;
+    m_dot_tok = dot_tok;
+
+    return this;
+  }
+
 protected:
+
+  tree_identifier (symbol_record& sym, const token& tok)
+    : tree_expression (tok.line (), tok.column ()), m_sym (sym), m_token (tok)
+  { }
 
   // The symbol record that this identifier references.
   symbol_record m_sym;
+
+  // These will be defined for get.ID or set.ID function names.
+  token m_get_set_tok;
+  token m_dot_tok;
+
+  // The IDENT token from the lexer.
+  token m_token;
 };
 
 class tree_black_hole : public tree_identifier
 {
 public:
 
-  tree_black_hole (int l = -1, int c = -1)
-    : tree_identifier (l, c) { }
+  tree_black_hole (const token& token)
+    : tree_identifier (token)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_black_hole)
 
@@ -128,7 +155,7 @@ public:
 
   tree_black_hole * dup (symbol_scope&) const
   {
-    return new tree_black_hole;
+    return new tree_black_hole (m_token);
   }
 
   octave_lvalue lvalue (tree_evaluator& tw);

@@ -41,6 +41,8 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class comment_list;
+
 class tree_arg_size_spec
 {
 public:
@@ -102,10 +104,11 @@ public:
   tree_arg_validation (tree_arg_size_spec *size_spec,
                        tree_identifier *class_name,
                        tree_arg_validation_fcns *validation_fcns,
+                       const token& eq_tok,
                        tree_expression *default_value)
     : m_arg_name (nullptr), m_size_spec (size_spec),
       m_class_name (class_name), m_validation_fcns (validation_fcns),
-      m_default_value (default_value)
+      m_eq_tok (eq_tok), m_default_value (default_value)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_arg_validation)
@@ -149,6 +152,7 @@ private:
   tree_arg_size_spec *m_size_spec;
   tree_identifier *m_class_name;
   tree_arg_validation_fcns *m_validation_fcns;
+  token m_eq_tok;
   tree_expression *m_default_value;
 };
 
@@ -211,12 +215,8 @@ class tree_arguments_block : public tree_command
 {
 public:
 
-  tree_arguments_block (tree_args_block_attribute_list *attr_list,
-                        tree_args_block_validation_list *validation_list,
-                        int l = -1, int c = -1)
-    : tree_command (l, c), m_attr_list (attr_list),
-      m_validation_list (validation_list),
-      m_lead_comm (nullptr), m_trail_comm (nullptr)
+  tree_arguments_block (tree_args_block_attribute_list *attr_list, tree_args_block_validation_list *validation_list, int l = -1, int c = -1)
+    : tree_command (l, c), m_attr_list (attr_list), m_validation_list (validation_list)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_arguments_block)
@@ -225,9 +225,6 @@ public:
   {
     delete m_attr_list;
     delete m_validation_list;
-
-    delete m_lead_comm;
-    delete m_trail_comm;
   }
 
   tree_args_block_attribute_list * attribute_list ()
@@ -240,10 +237,6 @@ public:
     return m_validation_list;
   }
 
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
-
   void accept (tree_walker& tw)
   {
     tw.visit_arguments_block (*this);
@@ -254,12 +247,6 @@ private:
   tree_args_block_attribute_list *m_attr_list;
 
   tree_args_block_validation_list *m_validation_list;
-
-  // Comment preceding ARGUMENTS token.
-  comment_list *m_lead_comm;
-
-  // Comment preceding ENDARGUMENTS token.
-  comment_list *m_trail_comm;
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -238,7 +238,7 @@ tree_print_code::visit_decl_elt (tree_decl_elt& cmd)
 void
 tree_print_code::visit_simple_for_command (tree_simple_for_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -281,8 +281,6 @@ tree_print_code::visit_simple_for_command (tree_simple_for_command& cmd)
       decrement_indent_level ();
     }
 
-  print_indented_comment (cmd.trailing_comment ());
-
   indent ();
 
   m_os << (cmd.in_parallel () ? "endparfor" : "endfor");
@@ -291,7 +289,7 @@ tree_print_code::visit_simple_for_command (tree_simple_for_command& cmd)
 void
 tree_print_code::visit_complex_for_command (tree_complex_for_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -324,8 +322,6 @@ tree_print_code::visit_complex_for_command (tree_complex_for_command& cmd)
       decrement_indent_level ();
     }
 
-  print_indented_comment (cmd.trailing_comment ());
-
   indent ();
 
   m_os << "endfor";
@@ -334,7 +330,7 @@ tree_print_code::visit_complex_for_command (tree_complex_for_command& cmd)
 void
 tree_print_code::visit_spmd_command (tree_spmd_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -352,8 +348,6 @@ tree_print_code::visit_spmd_command (tree_spmd_command& cmd)
 
       decrement_indent_level ();
     }
-
-  print_indented_comment (cmd.trailing_comment ());
 
   indent ();
 
@@ -395,11 +389,11 @@ tree_print_code::visit_octave_user_function (octave_user_function& fcn)
 void
 tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
 {
-  comment_list *leading_comment = fcn.leading_comment ();
+  comment_list leading_comments = fcn.leading_comments ();
 
-  if (leading_comment)
+  if (! leading_comments.empty ())
     {
-      print_comment_list (leading_comment);
+      print_comment_list (leading_comments);
       newline ();
     }
 
@@ -430,7 +424,7 @@ tree_print_code::visit_octave_user_function_header (octave_user_function& fcn)
 void
 tree_print_code::visit_octave_user_function_trailer (octave_user_function& fcn)
 {
-  print_indented_comment (fcn.trailing_comment ());
+  print_indented_comment (fcn.trailing_comments ());
 
   newline ();
 }
@@ -486,7 +480,7 @@ tree_print_code::visit_if_clause (tree_if_clause& cmd)
 void
 tree_print_code::visit_if_command (tree_if_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -496,8 +490,6 @@ tree_print_code::visit_if_command (tree_if_command& cmd)
 
   if (list)
     list->accept (*this);
-
-  print_indented_comment (cmd.trailing_comment ());
 
   indent ();
 
@@ -519,7 +511,7 @@ tree_print_code::visit_if_command_list (tree_if_command_list& lst)
         {
           if (! first_elt)
             {
-              print_indented_comment (elt->leading_comment ());
+              print_indented_comment (elt->leading_comments ());
 
               indent ();
 
@@ -566,7 +558,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
         case '(':
           {
             char nc = m_nesting.top ();
-            if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
+            if ((nc == '[' || nc == '{') && expr.delim_count () == 0)
               m_os << '(';
             else
               m_os << " (";
@@ -584,7 +576,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
         case '{':
           {
             char nc = m_nesting.top ();
-            if ((nc == '[' || nc == '{') && expr.paren_count () == 0)
+            if ((nc == '[' || nc == '{') && expr.delim_count () == 0)
               m_os << '{';
             else
               m_os << " {";
@@ -896,7 +888,7 @@ tree_print_code::visit_simple_assignment (tree_simple_assignment& expr)
 void
 tree_print_code::visit_statement (tree_statement& stmt)
 {
-  print_comment_list (stmt.comment_text ());
+  print_comment_list (stmt.leading_comments ());
 
   tree_command *cmd = stmt.command ();
 
@@ -938,7 +930,7 @@ tree_print_code::visit_statement_list (tree_statement_list& lst)
 void
 tree_print_code::visit_switch_case (tree_switch_case& cs)
 {
-  print_comment_list (cs.leading_comment ());
+  print_comment_list (cs.leading_comments ());
 
   indent ();
 
@@ -971,7 +963,7 @@ tree_print_code::visit_switch_case (tree_switch_case& cs)
 void
 tree_print_code::visit_switch_command (tree_switch_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -995,7 +987,7 @@ tree_print_code::visit_switch_command (tree_switch_command& cmd)
       decrement_indent_level ();
     }
 
-  print_indented_comment (cmd.leading_comment ());
+  print_indented_comment (cmd.leading_comments ());
 
   indent ();
 
@@ -1005,7 +997,7 @@ tree_print_code::visit_switch_command (tree_switch_command& cmd)
 void
 tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -1024,8 +1016,6 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
 
       decrement_indent_level ();
     }
-
-  print_indented_comment (cmd.middle_comment ());
 
   indent ();
 
@@ -1050,8 +1040,6 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
       decrement_indent_level ();
     }
 
-  print_indented_comment (cmd.trailing_comment ());
-
   indent ();
 
   m_os << "end_try_catch";
@@ -1060,7 +1048,7 @@ tree_print_code::visit_try_catch_command (tree_try_catch_command& cmd)
 void
 tree_print_code::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -1079,8 +1067,6 @@ tree_print_code::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
       decrement_indent_level ();
     }
 
-  print_indented_comment (cmd.middle_comment ());
-
   indent ();
 
   m_os << "unwind_protect_cleanup";
@@ -1098,8 +1084,6 @@ tree_print_code::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
       decrement_indent_level ();
     }
 
-  print_indented_comment (cmd.trailing_comment ());
-
   indent ();
 
   m_os << "end_unwind_protect";
@@ -1108,7 +1092,7 @@ tree_print_code::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 void
 tree_print_code::visit_while_command (tree_while_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -1132,8 +1116,6 @@ tree_print_code::visit_while_command (tree_while_command& cmd)
       decrement_indent_level ();
     }
 
-  print_indented_comment (cmd.trailing_comment ());
-
   indent ();
 
   m_os << "endwhile";
@@ -1142,7 +1124,7 @@ tree_print_code::visit_while_command (tree_while_command& cmd)
 void
 tree_print_code::visit_do_until_command (tree_do_until_command& cmd)
 {
-  print_comment_list (cmd.leading_comment ());
+  print_comment_list (cmd.leading_comments ());
 
   indent ();
 
@@ -1160,8 +1142,6 @@ tree_print_code::visit_do_until_command (tree_do_until_command& cmd)
 
       decrement_indent_level ();
     }
-
-  print_indented_comment (cmd.trailing_comment ());
 
   indent ();
 
@@ -1247,7 +1227,7 @@ tree_print_code::reset ()
 void
 tree_print_code::print_parens (const tree_expression& expr, const char *txt)
 {
-  int n = expr.paren_count ();
+  int n = expr.delim_count ();
 
   for (int i = 0; i < n; i++)
     m_os << txt;
@@ -1314,26 +1294,23 @@ tree_print_code::print_comment_elt (const comment_elt& elt)
 }
 
 void
-tree_print_code::print_comment_list (comment_list *comment_list)
+tree_print_code::print_comment_list (const comment_list& comment_list)
 {
-  if (comment_list)
+  auto p = comment_list.begin ();
+
+  while (p != comment_list.end ())
     {
-      auto p = comment_list->begin ();
+      comment_elt elt = *p++;
 
-      while (p != comment_list->end ())
-        {
-          comment_elt elt = *p++;
+      print_comment_elt (elt);
 
-          print_comment_elt (elt);
-
-          if (p != comment_list->end ())
-            newline ();
-        }
+      if (p != comment_list.end ())
+        newline ();
     }
 }
 
 void
-tree_print_code::print_indented_comment (comment_list *comment_list)
+tree_print_code::print_indented_comment (const comment_list& comment_list)
 {
   increment_indent_level ();
 

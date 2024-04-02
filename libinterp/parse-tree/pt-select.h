@@ -33,9 +33,11 @@
 #include "comment-list.h"
 #include "pt-cmd.h"
 #include "pt-walk.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class comment_list;
 class tree_expression;
 class tree_statement_list;
 
@@ -45,22 +47,15 @@ class tree_if_clause : public tree
 {
 public:
 
-  tree_if_clause (int l = -1, int c = -1)
-    : tree (l, c), m_expr (nullptr), m_list (nullptr), m_lead_comm (nullptr)
+  tree_if_clause (const token& tok, tree_expression *e, tree_statement_list *sl, int l = -1, int c = -1)
+    : tree (l, c), m_tok (tok), m_expr (e), m_list (sl)
   { }
 
-  tree_if_clause (tree_statement_list *sl, comment_list *lc = nullptr,
-                  int l = -1, int c = -1)
-    : tree (l, c), m_expr (nullptr), m_list (sl), m_lead_comm (lc) { }
-
-  tree_if_clause (tree_expression *e, tree_statement_list *sl,
-                  comment_list *lc = nullptr,
-                  int l = -1, int c = -1)
-    : tree (l, c), m_expr (e), m_list (sl), m_lead_comm (lc) { }
-
-  OCTAVE_DISABLE_COPY_MOVE (tree_if_clause)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_if_clause)
 
   ~tree_if_clause ();
+
+  token if_token () const { return m_tok; }
 
   bool is_else_clause () { return ! m_expr; }
 
@@ -68,7 +63,7 @@ public:
 
   tree_statement_list * commands () { return m_list; }
 
-  comment_list * leading_comment () { return m_lead_comm; }
+  comment_list leading_comments () const { return m_tok.leading_comments (); }
 
   void accept (tree_walker& tw)
   {
@@ -77,14 +72,13 @@ public:
 
 private:
 
+  token m_tok;
+
   // The condition to test.
-  tree_expression *m_expr;
+  tree_expression *m_expr = nullptr;
 
   // The list of statements to evaluate if expr is true.
   tree_statement_list *m_list;
-
-  // Comment preceding ELSE or ELSEIF token.
-  comment_list *m_lead_comm;
 };
 
 class tree_if_command_list : public std::list<tree_if_clause *>
@@ -107,6 +101,17 @@ public:
       }
   }
 
+  token if_token () const
+  {
+    if (! empty ())
+      {
+        tree_if_clause *p = front ();
+        return p->if_token ();
+      }
+
+    return token ();
+  }
+
   void accept (tree_walker& tw)
   {
     tw.visit_if_command_list (*this);
@@ -117,25 +122,21 @@ class tree_if_command : public tree_command
 {
 public:
 
-  tree_if_command (int l = -1, int c = -1)
-    : tree_command (l, c), m_list (nullptr),
-      m_lead_comm (nullptr), m_trail_comm (nullptr)
+  tree_if_command (const token& if_tok, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_if_tok (if_tok), m_end_tok (end_tok)
   { }
 
-  tree_if_command (tree_if_command_list *lst, comment_list *lc,
-                   comment_list *tc, int l = -1, int c = -1)
-    : tree_command (l, c), m_list (lst), m_lead_comm (lc), m_trail_comm (tc)
+  tree_if_command (const token& if_tok, tree_if_command_list *lst, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_if_tok (if_tok), m_list (lst), m_end_tok (end_tok)
   { }
 
-  OCTAVE_DISABLE_COPY_MOVE (tree_if_command)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_if_command)
 
   ~tree_if_command ();
 
   tree_if_command_list * cmd_list () { return m_list; }
 
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
+  comment_list leading_comments () const { return m_if_tok.leading_comments (); }
 
   void accept (tree_walker& tw)
   {
@@ -144,14 +145,12 @@ public:
 
 private:
 
+  token m_if_tok;
+
   // List of if commands (if, elseif, elseif, ... else, endif)
-  tree_if_command_list *m_list;
+  tree_if_command_list *m_list = nullptr;
 
-  // Comment preceding IF token.
-  comment_list *m_lead_comm;
-
-  // Comment preceding ENDIF token.
-  comment_list *m_trail_comm;
+  token m_end_tok;
 };
 
 // Switch.
@@ -160,20 +159,15 @@ class tree_switch_case : public tree
 {
 public:
 
-  tree_switch_case (int l = -1, int c = -1)
-    : tree (l, c), m_label (nullptr), m_list (nullptr), m_lead_comm (nullptr)
+  tree_switch_case (const token& tok, tree_statement_list *sl, int l = -1, int c = -1)
+    : tree (l, c), m_tok (tok), m_list (sl)
   { }
 
-  tree_switch_case (tree_statement_list *sl, comment_list *lc = nullptr,
-                    int l = -1, int c = -1)
-    : tree (l, c), m_label (nullptr), m_list (sl), m_lead_comm (lc) { }
+  tree_switch_case (const token& tok, tree_expression *e, tree_statement_list *sl, int l = -1, int c = -1)
+    : tree (l, c), m_tok (tok), m_label (e), m_list (sl)
+  { }
 
-  tree_switch_case (tree_expression *e, tree_statement_list *sl,
-                    comment_list *lc = nullptr,
-                    int l = -1, int c = -1)
-    : tree (l, c), m_label (e), m_list (sl), m_lead_comm (lc) { }
-
-  OCTAVE_DISABLE_COPY_MOVE (tree_switch_case)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_switch_case)
 
   ~tree_switch_case ();
 
@@ -183,7 +177,7 @@ public:
 
   tree_statement_list * commands () { return m_list; }
 
-  comment_list * leading_comment () { return m_lead_comm; }
+  comment_list leading_comments () const { return m_tok.leading_comments (); }
 
   void accept (tree_walker& tw)
   {
@@ -192,14 +186,13 @@ public:
 
 private:
 
+  token m_tok;
+
   // The case label.
-  tree_expression *m_label;
+  tree_expression *m_label = nullptr;
 
   // The list of statements to evaluate if the label matches.
   tree_statement_list *m_list;
-
-  // Comment preceding CASE or OTHERWISE token.
-  comment_list *m_lead_comm;
 };
 
 class tree_switch_case_list : public std::list<tree_switch_case *>
@@ -232,17 +225,11 @@ class tree_switch_command : public tree_command
 {
 public:
 
-  tree_switch_command (int l = -1, int c = -1)
-    : tree_command (l, c), m_expr (nullptr), m_list (nullptr),
-      m_lead_comm (nullptr), m_trail_comm (nullptr) { }
+  tree_switch_command (const token& switch_tok, tree_expression *e, tree_switch_case_list *lst, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_switch_tok (switch_tok), m_expr (e), m_list (lst), m_end_tok (end_tok)
+  { }
 
-  tree_switch_command (tree_expression *e, tree_switch_case_list *lst,
-                       comment_list *lc, comment_list *tc,
-                       int l = -1, int c = -1)
-    : tree_command (l, c), m_expr (e), m_list (lst), m_lead_comm (lc),
-      m_trail_comm (tc) { }
-
-  OCTAVE_DISABLE_COPY_MOVE (tree_switch_command)
+  OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_switch_command)
 
   ~tree_switch_command ();
 
@@ -250,9 +237,7 @@ public:
 
   tree_switch_case_list * case_list () { return m_list; }
 
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
+  comment_list leading_comments () const { return m_switch_tok.leading_comments (); }
 
   void accept (tree_walker& tw)
   {
@@ -261,17 +246,15 @@ public:
 
 private:
 
+  token m_switch_tok;
+
   // Value on which to switch.
   tree_expression *m_expr;
 
   // List of cases (case 1, case 2, ..., default)
   tree_switch_case_list *m_list;
 
-  // Comment preceding SWITCH token.
-  comment_list *m_lead_comm;
-
-  // Comment preceding ENDSWITCH token.
-  comment_list *m_trail_comm;
+  token m_end_tok;
 };
 
 OCTAVE_END_NAMESPACE(octave)

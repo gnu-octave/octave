@@ -3413,7 +3413,7 @@ tree_evaluator::evaluate_anon_fcn_handle (tree_anon_fcn_handle& afh)
   if (expr)
     {
       tree_expression *expr_dup = expr->dup (new_scope);
-      tree_statement *stmt = new tree_statement (expr_dup, nullptr);
+      tree_statement *stmt = new tree_statement (expr_dup);
       stmt_list = new tree_statement_list (stmt);
     }
 

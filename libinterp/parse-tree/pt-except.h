@@ -43,20 +43,8 @@ class tree_try_catch_command : public tree_command
 {
 public:
 
-  tree_try_catch_command (int l = -1, int c = -1)
-    : tree_command (l, c), m_try_code (nullptr), m_catch_code (nullptr),
-      m_expr_id (nullptr), m_lead_comm (nullptr), m_mid_comm (nullptr),
-      m_trail_comm (nullptr)
-  { }
-
-  tree_try_catch_command (tree_statement_list *tc, tree_statement_list *cc,
-                          tree_identifier *id,
-                          comment_list *cl = nullptr,
-                          comment_list *cm = nullptr,
-                          comment_list *ct = nullptr,
-                          int l = -1, int c = -1)
-    : tree_command (l, c), m_try_code (tc), m_catch_code (cc),
-      m_expr_id (id), m_lead_comm (cl), m_mid_comm (cm), m_trail_comm (ct)
+  tree_try_catch_command (const token try_tok, tree_statement_list *tc, const token catch_tok, tree_identifier *id, tree_statement_list *cc, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_try_tok (try_tok), m_try_code (tc), m_catch_tok (catch_tok), m_expr_id (id), m_catch_code (cc), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_try_catch_command)
@@ -69,12 +57,6 @@ public:
 
   tree_statement_list * cleanup () { return m_catch_code; }
 
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * middle_comment () { return m_mid_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
-
   void accept (tree_walker& tw)
   {
     tw.visit_try_catch_command (*this);
@@ -82,23 +64,20 @@ public:
 
 private:
 
+  token m_try_tok;
+
   // The first block of code to attempt to execute.
   tree_statement_list *m_try_code;
 
-  // The code to execute if an error occurs in the first block.
-  tree_statement_list *m_catch_code;
+  token m_catch_tok;
 
   // Identifier to modify.
   tree_identifier *m_expr_id;
 
-  // Comment preceding TRY token.
-  comment_list *m_lead_comm;
+  // The code to execute if an error occurs in the first block.
+  tree_statement_list *m_catch_code;
 
-  // Comment preceding CATCH token.
-  comment_list *m_mid_comm;
-
-  // Comment preceding END_TRY_CATCH token.
-  comment_list *m_trail_comm;
+  token m_end_tok;
 };
 
 // Simple exception handling.
@@ -107,20 +86,8 @@ class tree_unwind_protect_command : public tree_command
 {
 public:
 
-  tree_unwind_protect_command (int l = -1, int c = -1)
-    : tree_command (l, c),
-      m_unwind_protect_code (nullptr), m_cleanup_code (nullptr),
-      m_lead_comm (nullptr), m_mid_comm (nullptr), m_trail_comm (nullptr)
-  { }
-
-  tree_unwind_protect_command (tree_statement_list *tc,
-                               tree_statement_list *cc,
-                               comment_list *cl = nullptr,
-                               comment_list *cm = nullptr,
-                               comment_list *ct = nullptr,
-                               int l = -1, int c = -1)
-    : tree_command (l, c), m_unwind_protect_code (tc), m_cleanup_code (cc),
-      m_lead_comm (cl), m_mid_comm (cm), m_trail_comm (ct)
+  tree_unwind_protect_command (const token& unwind_tok, tree_statement_list *tc, const token& cleanup_tok, tree_statement_list *cc, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_unwind_tok (unwind_tok), m_unwind_protect_code (tc), m_cleanup_tok (cleanup_tok), m_cleanup_code (cc), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_unwind_protect_command)
@@ -131,12 +98,6 @@ public:
 
   tree_statement_list * cleanup () { return m_cleanup_code; }
 
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * middle_comment () { return m_mid_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
-
   void accept (tree_walker& tw)
   {
     tw.visit_unwind_protect_command (*this);
@@ -144,21 +105,18 @@ public:
 
 private:
 
+  token m_unwind_tok;
+
   // The first body of code to attempt to execute.
   tree_statement_list *m_unwind_protect_code;
+
+  token m_cleanup_tok;
 
   // The body of code to execute no matter what happens in the first
   // body of code.
   tree_statement_list *m_cleanup_code;
 
-  // Comment preceding UNWIND_PROTECT token.
-  comment_list *m_lead_comm;
-
-  // Comment preceding UNWIND_PROTECT_CLEANUP token.
-  comment_list *m_mid_comm;
-
-  // Comment preceding END_UNWIND_PROTECT token.
-  comment_list *m_trail_comm;
+  token m_end_tok;
 };
 
 OCTAVE_END_NAMESPACE(octave)

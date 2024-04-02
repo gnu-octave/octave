@@ -34,9 +34,11 @@
 class octave_value;
 class octave_value_list;
 
+#include "comment-list.h"
 #include "ov.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -63,6 +65,8 @@ public:
   OCTAVE_DISABLE_COPY_MOVE (tree_simple_assignment)
 
   ~tree_simple_assignment ();
+
+  comment_list leading_comments () const { return m_lhs->leading_comments (); }
 
   bool rvalue_ok () const { return true; }
 

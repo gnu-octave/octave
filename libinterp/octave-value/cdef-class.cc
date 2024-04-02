@@ -969,7 +969,7 @@ cdef_class::make_meta_class (interpreter& interp,
 
       // Method blocks
 
-      std::list<tree_classdef_methods_block *> mb_list = b->methods_list ();
+      std::list<tree_classdef_methods_block *> mb_list = b->method_list ();
 
       load_path& lp = interp.get_load_path ();
 
@@ -1083,7 +1083,7 @@ cdef_class::make_meta_class (interpreter& interp,
       //        evaluating default value expressions.
 
       std::list<tree_classdef_properties_block *> pb_list
-        = b->properties_list ();
+        = b->property_list ();
 
       for (auto& pb_p : pb_list)
         {

@@ -195,11 +195,11 @@ private:
 
   void print_parens (const tree_expression& expr, const char *txt);
 
-  void print_comment_list (comment_list *comment_list);
+  void print_comment_list (const comment_list& comment_list);
 
   void print_comment_elt (const comment_elt& comment_elt);
 
-  void print_indented_comment (comment_list *comment_list);
+  void print_indented_comment (const comment_list& comment_list);
 
   // Must create with an output stream!
 

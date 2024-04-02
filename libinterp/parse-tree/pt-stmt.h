@@ -54,14 +54,16 @@ class tree_statement : public tree
 public:
 
   tree_statement ()
-    : m_command (nullptr), m_expression (nullptr),
-      m_comment_list (nullptr) { }
+    : m_command (nullptr), m_expression (nullptr)
+  { }
 
-  tree_statement (tree_command *c, comment_list *cl)
-    : m_command (c), m_expression (nullptr), m_comment_list (cl) { }
+  tree_statement (tree_command *c)
+    : m_command (c), m_expression (nullptr)
+  { }
 
-  tree_statement (tree_expression *e, comment_list *cl)
-    : m_command (nullptr), m_expression (e), m_comment_list (cl) { }
+  tree_statement (tree_expression *e)
+    : m_command (nullptr), m_expression (e)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_statement)
 
@@ -83,6 +85,8 @@ public:
 
   bool is_active_breakpoint (tree_evaluator& tw) const;
 
+  comment_list leading_comments () const;
+
   std::string bp_cond () const;
 
   int line () const;
@@ -96,11 +100,9 @@ public:
 
   tree_expression * expression () { return m_expression; }
 
-  comment_list * comment_text () { return m_comment_list; }
-
   bool is_null_statement () const
   {
-    return ! (m_command || m_expression || m_comment_list);
+    return ! (m_command || m_expression);
   }
 
   bool is_end_of_fcn_or_script () const;
@@ -129,9 +131,6 @@ private:
 
   // Expression to evaluate.
   tree_expression *m_expression;
-
-  // Comment associated with this statement.
-  comment_list *m_comment_list;
 };
 
 // A list of statements to evaluate.
@@ -171,6 +170,8 @@ public:
   bool is_anon_function_body () const { return m_anon_function_body; }
 
   bool is_script_body () const { return m_script_body; }
+
+  comment_list leading_comments () const;
 
   int set_breakpoint (int line, const std::string& condition);
 

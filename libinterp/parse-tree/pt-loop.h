@@ -35,6 +35,7 @@ class octave_value;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class comment_list;
 class tree_argument_list;
 class tree_expression;
 class tree_statement_list;
@@ -45,25 +46,8 @@ class tree_while_command : public tree_command
 {
 public:
 
-  tree_while_command (int l = -1, int c = -1)
-    : tree_command (l, c), m_expr (nullptr), m_list (nullptr),
-      m_lead_comm (nullptr), m_trail_comm (nullptr)
-  { }
-
-  tree_while_command (tree_expression *e,
-                      comment_list *lc = nullptr,
-                      comment_list *tc = nullptr,
-                      int l = -1, int c = -1)
-    : tree_command (l, c), m_expr (e), m_list (nullptr),
-      m_lead_comm (lc), m_trail_comm (tc)
-  { }
-
-  tree_while_command (tree_expression *e, tree_statement_list *lst,
-                      comment_list *lc = nullptr,
-                      comment_list *tc = nullptr,
-                      int l = -1, int c = -1)
-    : tree_command (l, c), m_expr (e), m_list (lst), m_lead_comm (lc),
-      m_trail_comm (tc)
+  tree_while_command (const token& while_tok, tree_expression *expr, tree_statement_list *body, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_while_tok (while_tok), m_expr (expr), m_body (body), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_while_command)
@@ -72,64 +56,60 @@ public:
 
   tree_expression * condition () { return m_expr; }
 
-  tree_statement_list * body () { return m_list; }
-
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
+  tree_statement_list * body () { return m_body; }
 
   void accept (tree_walker& tw)
   {
     tw.visit_while_command (*this);
   }
 
-protected:
+private:
+
+  token m_while_tok;
 
   // Expression to test.
   tree_expression *m_expr;
 
   // List of commands to execute.
-  tree_statement_list *m_list;
+  tree_statement_list *m_body {nullptr};
 
-  // Comment preceding WHILE token.
-  comment_list *m_lead_comm;
-
-  // Comment preceding ENDWHILE token.
-  comment_list *m_trail_comm;
+  token m_end_tok;
 };
 
 // Do-Until.
 
-class tree_do_until_command : public tree_while_command
+class tree_do_until_command : public tree_command
 {
 public:
 
-  tree_do_until_command (int l = -1, int c = -1)
-    : tree_while_command (l, c)
-  { }
-
-  tree_do_until_command (tree_expression *e,
-                         comment_list *lc = nullptr,
-                         comment_list *tc = nullptr,
-                         int l = -1, int c = -1)
-    : tree_while_command (e, lc, tc, l, c)
-  { }
-
-  tree_do_until_command (tree_expression *e, tree_statement_list *lst,
-                         comment_list *lc = nullptr,
-                         comment_list *tc = nullptr,
-                         int l = -1, int c = -1)
-    : tree_while_command (e, lst, lc, tc, l, c)
+  tree_do_until_command (const token& do_tok, tree_statement_list *body, const token& until_tok, tree_expression *expr, int l = -1, int c = -1)
+    : tree_command (l, c), m_do_tok (do_tok), m_body (body), m_until_tok (until_tok), m_expr (expr)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_do_until_command)
 
-  ~tree_do_until_command () = default;
+  ~tree_do_until_command ();
+
+  tree_statement_list * body () { return m_body; }
+
+  tree_expression * condition () { return m_expr; }
 
   void accept (tree_walker& tw)
   {
     tw.visit_do_until_command (*this);
   }
+
+private:
+
+  token m_do_tok;
+
+  // List of commands to execute.
+  tree_statement_list *m_body {nullptr};
+
+  token m_until_tok;
+
+  // Expression to test.
+  tree_expression *m_expr;
 };
 
 // For.
@@ -138,29 +118,19 @@ class tree_simple_for_command : public tree_command
 {
 public:
 
-  tree_simple_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), m_parallel (false), m_lhs (nullptr),
-      m_expr (nullptr), m_maxproc (nullptr), m_list (nullptr),
-      m_lead_comm (nullptr), m_trail_comm (nullptr)
-  { }
-
-  tree_simple_for_command (bool parallel_arg, tree_expression *le,
-                           tree_expression *re,
-                           tree_expression *maxproc_arg,
-                           tree_statement_list *lst,
-                           comment_list *lc = nullptr,
-                           comment_list *tc = nullptr,
-                           int l = -1, int c = -1)
-    : tree_command (l, c), m_parallel (parallel_arg), m_lhs (le),
-      m_expr (re), m_maxproc (maxproc_arg), m_list (lst),
-      m_lead_comm (lc), m_trail_comm (tc)
+  tree_simple_for_command (bool parfor, const token& for_tok, const token& open_paren, tree_expression *le, const token& eq_tok,
+                           tree_expression *re, const token& sep_tok, tree_expression *maxproc_arg, const token& close_paren,
+                           tree_statement_list *body, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_parfor (parfor), m_for_tok (for_tok), m_open_paren (open_paren), m_lhs (le), m_eq_tok (eq_tok),
+      m_expr (re), m_sep_tok (sep_tok), m_maxproc (maxproc_arg), m_close_paren (close_paren),
+      m_body (body), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_simple_for_command)
 
   ~tree_simple_for_command ();
 
-  bool in_parallel () { return m_parallel; }
+  bool in_parallel () { return m_parfor; }
 
   tree_expression * left_hand_side () { return m_lhs; }
 
@@ -168,11 +138,7 @@ public:
 
   tree_expression * maxproc_expr () { return m_maxproc; }
 
-  tree_statement_list * body () { return m_list; }
-
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
+  tree_statement_list * body () { return m_body; }
 
   void accept (tree_walker& tw)
   {
@@ -180,46 +146,44 @@ public:
   }
 
 private:
-  // TRUE means operate in parallel (subject to the value of the
-  // maxproc expression).
-  bool m_parallel;
+
+  // FIXME: it would be better to get this info from FOR_TOK.
+  bool m_parfor {false};
+
+  token m_for_tok;
+
+  token m_open_paren;
 
   // Expression to modify.
   tree_expression *m_lhs;
 
+  token m_eq_tok;
+
   // Expression to evaluate.
   tree_expression *m_expr;
 
+  token m_sep_tok;
+
   // Expression to tell how many processors should be used (only valid
   // if parallel is TRUE).
-  tree_expression *m_maxproc;
+  tree_expression *m_maxproc {nullptr};
+
+  token m_close_paren;
 
   // List of commands to execute.
-  tree_statement_list *m_list;
+  tree_statement_list *m_body;
 
-  // Comment preceding FOR token.
-  comment_list *m_lead_comm;
-
-  // Comment preceding ENDFOR token.
-  comment_list *m_trail_comm;
+  token m_end_tok;
 };
 
 class tree_complex_for_command : public tree_command
 {
 public:
 
-  tree_complex_for_command (int l = -1, int c = -1)
-    : tree_command (l, c), m_lhs (nullptr), m_expr (nullptr),
-      m_list (nullptr), m_lead_comm (nullptr), m_trail_comm (nullptr)
-  { }
-
-  tree_complex_for_command (tree_argument_list *le, tree_expression *re,
-                            tree_statement_list *lst,
-                            comment_list *lc = nullptr,
-                            comment_list *tc = nullptr,
-                            int l = -1, int c = -1)
-    : tree_command (l, c), m_lhs (le), m_expr (re), m_list (lst),
-      m_lead_comm (lc), m_trail_comm (tc)
+  tree_complex_for_command (const token& for_tok, tree_argument_list *le, const token& eq_tok, tree_expression *re,
+                            tree_statement_list *body, const token& end_tok, int l = -1, int c = -1)
+    : tree_command (l, c), m_for_tok (for_tok), m_lhs (le), m_eq_tok (eq_tok), m_expr (re),
+      m_body (body), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_complex_for_command)
@@ -230,11 +194,7 @@ public:
 
   tree_expression * control_expr () { return m_expr; }
 
-  tree_statement_list * body () { return m_list; }
-
-  comment_list * leading_comment () { return m_lead_comm; }
-
-  comment_list * trailing_comment () { return m_trail_comm; }
+  tree_statement_list * body () { return m_body; }
 
   void accept (tree_walker& tw)
   {
@@ -243,20 +203,20 @@ public:
 
 private:
 
+  token m_for_tok;
+
   // Expression to modify.
   tree_argument_list *m_lhs;
+
+  token m_eq_tok;
 
   // Expression to evaluate.
   tree_expression *m_expr;
 
   // List of commands to execute.
-  tree_statement_list *m_list;
+  tree_statement_list *m_body;
 
-  // Comment preceding FOR token.
-  comment_list *m_lead_comm;
-
-  // Comment preceding ENDFOR token.
-  comment_list *m_trail_comm;
+  token m_end_tok;
 };
 
 OCTAVE_END_NAMESPACE(octave)

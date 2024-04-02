@@ -39,7 +39,6 @@ tree_if_clause::~tree_if_clause ()
 {
   delete m_expr;
   delete m_list;
-  delete m_lead_comm;
 }
 
 // If.
@@ -47,8 +46,6 @@ tree_if_clause::~tree_if_clause ()
 tree_if_command::~tree_if_command ()
 {
   delete m_list;
-  delete m_lead_comm;
-  delete m_trail_comm;
 }
 
 // Switch cases.
@@ -57,7 +54,6 @@ tree_switch_case::~tree_switch_case ()
 {
   delete m_label;
   delete m_list;
-  delete m_lead_comm;
 }
 
 // Switch.
@@ -66,8 +62,6 @@ tree_switch_command::~tree_switch_command ()
 {
   delete m_expr;
   delete m_list;
-  delete m_lead_comm;
-  delete m_trail_comm;
 }
 
 OCTAVE_END_NAMESPACE(octave)

@@ -46,19 +46,13 @@ class tree_colon_expression : public tree_expression
 {
 public:
 
-  tree_colon_expression (int l = -1, int c = -1)
-    : tree_expression (l, c), m_base (nullptr), m_limit (nullptr),
-      m_increment (nullptr), m_save_base (false) { }
+  tree_colon_expression (tree_expression *base, const token& colon_1_tok, tree_expression *limit, int l = -1, int c = -1)
+    : tree_expression (l, c), m_base (base), m_colon_1_tok (colon_1_tok), m_limit (limit)
+  { }
 
-  tree_colon_expression (tree_expression *bas, tree_expression *lim,
-                         int l = -1, int c = -1)
-    : tree_expression (l, c), m_base (bas), m_limit (lim),
-      m_increment (nullptr), m_save_base (false) { }
-
-  tree_colon_expression (tree_expression *bas, tree_expression *lim,
-                         tree_expression *inc, int l = -1, int c = -1)
-    : tree_expression (l, c), m_base (bas), m_limit (lim),
-      m_increment (inc), m_save_base (false) { }
+  tree_colon_expression (tree_expression *base, const token& colon_1_tok, tree_expression *increment, const token& colon_2_tok, tree_expression *limit, int l = -1, int c = -1)
+    : tree_expression (l, c), m_base (base), m_colon_1_tok (colon_1_tok), m_increment (increment), m_colon_2_tok (colon_2_tok), m_limit (limit)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_colon_expression)
 
@@ -103,10 +97,12 @@ private:
 
   // The components of the expression.
   tree_expression *m_base;
+  token m_colon_1_tok;
+  tree_expression *m_increment {nullptr};
+  token m_colon_2_tok;
   tree_expression *m_limit;
-  tree_expression *m_increment;
 
-  bool m_save_base;
+  bool m_save_base {false};
 };
 
 OCTAVE_END_NAMESPACE(octave)

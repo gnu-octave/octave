@@ -39,9 +39,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 tree_while_command::~tree_while_command ()
 {
   delete m_expr;
-  delete m_list;
-  delete m_lead_comm;
-  delete m_trail_comm;
+  delete m_body;
+}
+
+// Do-until.
+
+tree_do_until_command::~tree_do_until_command ()
+{
+  delete m_body;
+  delete m_expr;
 }
 
 // For.
@@ -51,18 +57,14 @@ tree_simple_for_command::~tree_simple_for_command ()
   delete m_lhs;
   delete m_expr;
   delete m_maxproc;
-  delete m_list;
-  delete m_lead_comm;
-  delete m_trail_comm;
+  delete m_body;
 }
 
 tree_complex_for_command::~tree_complex_for_command ()
 {
   delete m_lhs;
   delete m_expr;
-  delete m_list;
-  delete m_lead_comm;
-  delete m_trail_comm;
+  delete m_body;
 }
 
 OCTAVE_END_NAMESPACE(octave)

@@ -73,6 +73,14 @@ public:
 
   ~tree_parameter_list ();
 
+  tree_parameter_list * mark_in_delims (const token& open_delim, const token& close_delim)
+  {
+    m_open_delim = open_delim;
+    m_close_delim = close_delim;
+
+    return this;
+  }
+
   void mark_as_formal_parameters ();
 
   void mark_varargs () { m_marked_for_varargs = 1; }
@@ -109,6 +117,9 @@ private:
   // -1: takes varargs only
   // 0: does not take varargs.
   int m_marked_for_varargs;
+
+  token m_open_delim;
+  token m_close_delim;
 };
 
 OCTAVE_END_NAMESPACE(octave)

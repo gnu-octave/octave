@@ -36,6 +36,7 @@ class octave_function;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class comment_list;
 class tree_evaluator;
 class tree_walker;
 
@@ -66,6 +67,9 @@ public:
     m_line_num = l;
     m_column_num = c;
   }
+
+  // FIXME: maybe make this a pure virtual function?
+  virtual comment_list leading_comments () const;
 
   virtual void set_breakpoint (const std::string& condition)
   {

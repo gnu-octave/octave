@@ -55,6 +55,9 @@ through meshgrid and the output is a matrix the same size as the meshgrid.
 
 - `iqr` now provides compatible output for empty inputs.
 
+- `cross` now produces row vector outputs when the inputs are a mix of row
+and column vectors. (bug #61295)
+
 ### Alphabetical list of new functions added in Octave 10
 
 * `clim`

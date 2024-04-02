@@ -68,15 +68,17 @@ function z = cross (x, y, dim)
   nd = ndims (x);
 
   if (nargin < 3 && nd < 3 && ndims (y) < 3)
-    ## COMPATIBILITY -- opposite behavior for cross(row,col)
-    ## Swap x and y in the assignments below to get the matlab behavior.
-    ## Better yet, fix the calling code so that it uses conformant vectors.
+    ## COMPATIBILITY -- mixed row/column vector inputs
+    ## Transpose x and y in the assignments below to get row output to match
+    ## matlab behavior (verified version: 2023b).
+    ## Recommend users instead ensure calling code has matched vectors to
+    ## remove any ambiguity in output form.
     if (columns (x) == 1 && rows (y) == 1)
-      warning ("cross: taking cross product of column by row");
-      y = y.';
-    elseif (rows (x) == 1 && columns (y) == 1)
-      warning ("cross: taking cross product of row by column");
+      warning ("cross: cross product of column by row produces row output");
       x = x.';
+    elseif (rows (x) == 1 && columns (y) == 1)
+      warning ("cross: cross product of row by column produces row output");
+      y = y.';
     endif
   endif
 
@@ -138,6 +140,29 @@ endfunction
 %! assert (cross (x, y, 2), r, eps);
 %! assert (cross (x, y, 1), -r, eps);
 
+%!test
+%! x = [1, 0, 0; 0, 1, 0; 0, 0, 1];
+%! x = cat (3, x, x);
+%! y = [0, 1, 0; 0, 0, 1; 1, 0, 0];
+%! y = cat (3, y, y);
+%! r = [0, 0, 1; 1, 0, 0; 0, 1, 0];
+%! r = cat (3, r, r);
+%! assert (cross (x, y, 2), r, eps);
+%! assert (cross (x, y, 1), -r, eps);
+%! fail ("cross (x, y, 3)", "X and Y must have three elements");
+
+## Test mixed vector inputs
+%!test <*61295>
+%! x = [1, 0, 0];
+%! y = [0, 1, 0];
+%! r = [0, 0, 1];
+%! warning ("off", "all", "local");
+%! assert (cross (x, y), r, eps);
+%! assert (cross (x', y'), r', eps);
+%! assert (cross (x', y), r, eps);
+%! assert (cross (x, y'), r, eps);
+
+
 ## Test input validation
 %!error <Invalid call> cross ()
 %!error <Invalid call> cross (1)
@@ -157,8 +182,8 @@ endfunction
 %!error <DIM must be a positive scalar whole number> cross ([1, 2, 3], [4, 5, 6], 1.5)
 %!error <DIM must be a positive scalar whole number> cross ([1, 2, 3], [4, 5, 6], 2i)
 %!error <X and Y must have the same dimensions> cross ([1, 2, 3], [3, 4])
-%!warning <taking cross product of column by row> cross ([1, 2, 3]', [4, 5, 6]);
-%!warning <taking cross product of row by column> cross ([1, 2, 3], [4, 5, 6]');
+%!warning <cross product of column by row> cross ([1, 2, 3]', [4, 5, 6]);
+%!warning <cross product of row by column> cross ([1, 2, 3], [4, 5, 6]');
 
 %!test
 %! x = cat (3, [1, 1, 1]', [1, 1, 1]');

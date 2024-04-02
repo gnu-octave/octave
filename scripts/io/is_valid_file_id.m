@@ -52,3 +52,14 @@ endfunction
 %!assert (! is_valid_file_id ("not_a_file_id"))
 %!assert (! is_valid_file_id (-1))
 %!assert (! is_valid_file_id (pi))
+%!test <*65543>
+%! unwind_protect
+%!   fid = tmpfile ();
+%!   assert (is_valid_file_id (fid));
+%! unwind_protect_cleanup
+%!   fclose (fid);
+%! end_unwind_protect
+
+## Test input validation
+%!error <Invalid call> is_valid_file_id ()
+

@@ -31,6 +31,7 @@
 #include <string>
 #include <variant>
 
+#include "comment-list.h"
 #include "error.h"
 #include "filepos.h"
 #include "ov.h"
@@ -78,32 +79,32 @@ public:
     : m_type_tag (invalid_token)
   { }
 
-  token (int id, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_comment_list (lst)
+  token (int id, const filepos& beg_pos, const filepos& end_pos, const comment_list& lst = comment_list ())
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_leading_comments (lst)
   { }
 
-  token (int id, bool is_kw, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (is_kw ? keyword_token : generic_token), m_comment_list (lst)
+  token (int id, bool is_kw, const filepos& beg_pos, const filepos& end_pos, const comment_list& lst = comment_list ())
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (is_kw ? keyword_token : generic_token), m_leading_comments (lst)
   { }
 
-  token (int id, const char *s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (string_token), m_tok_info (s), m_comment_list (lst)
+  token (int id, const char *s, const filepos& beg_pos, const filepos& end_pos, const comment_list& lst = comment_list ())
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (string_token), m_tok_info (s), m_leading_comments (lst)
   { }
 
-  token (int id, const std::string& s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (string_token), m_tok_info (s), m_comment_list (lst)
+  token (int id, const std::string& s, const filepos& beg_pos, const filepos& end_pos, const comment_list& lst = comment_list ())
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (string_token), m_tok_info (s), m_leading_comments (lst)
   { }
 
-  token (int id, const octave_value& val, const std::string& s, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (numeric_token), m_tok_info (val), m_orig_text (s), m_comment_list (lst)
+  token (int id, const octave_value& val, const std::string& s, const filepos& beg_pos, const filepos& end_pos, const comment_list& lst = comment_list ())
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (numeric_token), m_tok_info (val), m_orig_text (s), m_leading_comments (lst)
   { }
 
-  token (int id, end_tok_type t, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (ettype_token), m_tok_info (t), m_comment_list (lst)
+  token (int id, end_tok_type t, const filepos& beg_pos, const filepos& end_pos, const comment_list& lst = comment_list ())
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (ettype_token), m_tok_info (t), m_leading_comments (lst)
   { }
 
-  token (int id, const std::string& meth, const std::string& cls, const filepos& beg_pos, const filepos& end_pos, comment_list *lst = nullptr)
-    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (scls_name_token), m_tok_info (meth, cls), m_comment_list (lst)
+  token (int id, const std::string& meth, const std::string& cls, const filepos& beg_pos, const filepos& end_pos, const comment_list& lst = comment_list ())
+    : m_beg_pos (beg_pos), m_end_pos (end_pos), m_tok_id (id), m_type_tag (scls_name_token), m_tok_info (meth, cls), m_leading_comments (lst)
   { }
 
   OCTAVE_DEFAULT_COPY_MOVE_DELETE (token)
@@ -127,6 +128,12 @@ public:
 
   void beg_pos (const filepos& pos) { m_beg_pos = pos; }
   void end_pos (const filepos& pos) { m_end_pos = pos; }
+
+  comment_list leading_comments () const { return m_leading_comments; }
+  comment_list trailing_comments () const { return m_trailing_comments; }
+
+  void leading_comments (const comment_list& lst) { m_leading_comments = lst; }
+  void trailing_comments (const comment_list& lst) { m_trailing_comments = lst; }
 
   // These will probably be removed.
   int line () const { return m_beg_pos.line (); }
@@ -246,7 +253,12 @@ private:
 
   std::string m_orig_text;
 
-  comment_list *m_comment_list;
+  // Comments that appear prior to the token.
+  comment_list m_leading_comments;
+
+  // Comments that appear after the token.  This list is only used to
+  // hold comments that appear after the last token in a file.
+  comment_list m_trailing_comments;
 };
 
 OCTAVE_END_NAMESPACE(octave)

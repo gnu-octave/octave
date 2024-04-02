@@ -23,6 +23,7 @@ PARSE_TREE_INC = \
   %reldir%/pt-colon.h \
   %reldir%/pt-const.h \
   %reldir%/pt-decl.h \
+  %reldir%/pt-delimiter-list.h \
   %reldir%/pt-eval.h \
   %reldir%/pt-except.h \
   %reldir%/pt-exp.h \

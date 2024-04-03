@@ -787,7 +787,7 @@ function str = pprint (argin, err)
   str = [str, "\n  Location  |  Observed  |  Expected  |  Reason\n"];
 
   pos = numel (str);
-  str(end + 1e6) = ' ';
+  str(pos + 100 * numel (err.index)) = ' ';
   for i = 1:numel (err.index)
     leni = numel (err.index{i});
     leno = numel (err.observed{i});
@@ -797,7 +797,7 @@ function str = pprint (argin, err)
             6+fix(leno/2), err.observed{i}, max (6-fix(leno/2), 0), "",
             6+fix(lene/2), err.expected{i}, max (6-fix(lene/2), 0), "",
             err.reason{i});
-    if (pos + numel (tmp) >= numel (str))
+    if (pos + numel (tmp) > numel (str))
       str(end + 1e6) = ' ';
     endif
     str((pos + 1):(pos + numel (tmp))) = tmp;

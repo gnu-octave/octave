@@ -435,7 +435,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,2:11))
 %!test <39314>
-%! assert (convn (a, b, "valid"), c(3:10,3:10,3:10));
+%! assert (all ((convn (a, b, "valid") == c(3:10,3:10,3:10))(:)),
+%!         "central part of convn 'full' differs from convn 'valid'");
 %!
 %!test
 %! old_state = rand ("state");
@@ -447,7 +448,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(2:11,2:11,:))
 %!test <39314>
-%! assert (convn (a, b, "valid"), c(3:10,3:10,:));
+%! assert (all ((convn (a, b, "valid") == c(3:10,3:10,:))(:)),
+%!         "central part of convn 'full' differs from convn 'valid'");
 %!
 %!test
 %! old_state = rand ("state");
@@ -470,7 +472,8 @@ The size of the result is @code{max (size (A) - size (B) + 1, 0)}.
 %! c = convn (a, b, "full");
 %!assert (convn (a, b, "same"), c(3:12,2:16,2:8,2:9,:))
 %!test <39314>
-%! assert (convn (a, b, "valid"), c(4:10,3:15,2:7,3:8,:));
+%! assert (all ((convn (a, b, "valid") == c(4:10,3:15,2:7,3:8,:))(:)),
+%!         "central part of convn 'full' differs from convn 'valid'");
 
 %!test
 %! a = reshape (floor (magic (16) /10), [4 8 4 2]);

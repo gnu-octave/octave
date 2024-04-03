@@ -765,17 +765,17 @@ endfunction
 ## Convert all error indices into tuple format
 function cout = ind2tuple (matsize, erridx)
 
-  cout = cell (numel (erridx), 1);
   tmp = cell (1, numel (matsize));
   [tmp{:}] = ind2sub (matsize, erridx(:));
   subs = [tmp{:}];
   if (numel (matsize) == 2)
-    subs = subs(:, matsize != 1);
+    subs = subs(:, matsize != 1);  # For vectors, use 1-D index
   endif
-  for i = 1:numel (erridx)
-    loc = sprintf ("%d,", subs(i,:));
-    cout{i} = ["(" loc(1:end-1) ")"];
-  endfor
+  fmt = repmat ('%d,', 1, columns (subs));
+  fmt(end) = [];   # delete final extra comma
+  cout = ostrsplit (sprintf (['(' fmt ')', '$'], subs'), '$');
+  cout(end) = [];  # delete extra cell from final '$'
+  cout = cout.';   # return column vector 
 
 endfunction
 

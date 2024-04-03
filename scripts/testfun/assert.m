@@ -771,7 +771,7 @@ function cout = ind2tuple (matsize, erridx)
   if (numel (matsize) == 2)
     subs = subs(:, matsize != 1);  # For vectors, use 1-D index
   endif
-  fmt = repmat ('%d,', 1, columns (subs));
+  fmt = repmat ('%d,', 1, max (columns (subs), 1));
   fmt(end) = [];   # delete final extra comma
   cout = ostrsplit (sprintf (['(' fmt ')', '$'], subs'), '$');
   cout(end) = [];  # delete extra cell from final '$'

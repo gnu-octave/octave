@@ -513,12 +513,12 @@ statement       : expression
 
 word_list_cmd   : identifier word_list
                   {
-                    $$ = parser.make_index_expression ($1, nullptr, $2, nullptr, '(');
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, nullptr, $2, nullptr, '(')))
                       {
                         // make_index_expression deleted $1 and $2.
                         YYABORT;
                       }
+
                     $$->mark_word_list_cmd ();
                   }
                 ;
@@ -565,9 +565,7 @@ matrix          : '[' matrix_rows ']'
 matrix_rows     : cell_or_matrix_row
                   { $$ = parser.make_matrix ($1); }
                 | matrix_rows ';' cell_or_matrix_row
-                  {
-                    $$ = parser.append_matrix_row ($1, $2, $3);
-                  }
+                  { $$ = parser.append_matrix_row ($1, $2, $3); }
                 ;
 
 cell            : '{' cell_rows '}'
@@ -577,9 +575,7 @@ cell            : '{' cell_rows '}'
 cell_rows       : cell_or_matrix_row
                   { $$ = parser.make_cell ($1); }
                 | cell_rows ';' cell_or_matrix_row
-                  {
-                    $$ = parser.append_cell_row ($1, $2, $3);
-                  }
+                  { $$ = parser.append_cell_row ($1, $2, $3); }
                 ;
 
 // tree_argument_list objects can't be empty or have leading or trailing
@@ -630,8 +626,7 @@ fcn_handle      : FCN_HANDLE
 
 anon_fcn_handle : '@' param_list anon_fcn_begin expression
                   {
-                    $$ = parser.make_anon_fcn_handle ($1, $2, $4);
-                    if (! $$)
+                    if (! ($$ = parser.make_anon_fcn_handle ($1, $2, $4)))
                       {
                         // make_anon_fcn_handle deleted $2 and $4.
                         YYABORT;
@@ -647,6 +642,7 @@ anon_fcn_handle : '@' param_list anon_fcn_begin expression
                     lexer.m_parsing_anon_fcn_body = false;
 
                     $$ = nullptr;
+
                     parser.bison_error ("anonymous function bodies must be single expressions");
                     YYABORT;
                   }
@@ -670,9 +666,7 @@ primary_expr    : identifier
                 | superclass_identifier
                   { $$ = $1; }
                 | '(' expression ')'
-                  {
-                    $$ = $2->mark_in_delims (*($1), *($3));
-                  }
+                  { $$ = $2->mark_in_delims (*($1), *($3)); }
                 ;
 
 magic_colon     : ':'
@@ -680,9 +674,7 @@ magic_colon     : ':'
                 ;
 
 magic_tilde     : '~'
-                  {
-                    $$ = parser.make_black_hole ($1);
-                  }
+                  { $$ = parser.make_black_hole ($1); }
                 ;
 
 arg_list        : expression
@@ -692,17 +684,11 @@ arg_list        : expression
                 | magic_tilde
                   { $$ = parser.make_argument_list ($1); }
                 | arg_list ',' magic_colon
-                  {
-                    $$ = parser.append_argument_list ($1, $2, $3);
-                  }
+                  { $$ = parser.append_argument_list ($1, $2, $3); }
                 | arg_list ',' magic_tilde
-                  {
-                    $$ = parser.append_argument_list ($1, $2, $3);
-                  }
+                  { $$ = parser.append_argument_list ($1, $2, $3); }
                 | arg_list ',' expression
-                  {
-                    $$ = parser.append_argument_list ($1, $2, $3);
-                  }
+                  { $$ = parser.append_argument_list ($1, $2, $3); }
                 ;
 
 indirect_ref_op : '.'
@@ -720,9 +706,7 @@ oper_expr       : primary_expr
                   { $$ = parser.make_postfix_op ($1, $2); }
                 | oper_expr '(' ')'
                   {
-                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '(');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, nullptr, $3, '(')))
                       {
                         // make_index_expression deleted $1.
                         YYABORT;
@@ -730,9 +714,7 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '(' arg_list ')'
                   {
-                    $$ = parser.make_index_expression ($1, $2, $3, $4, '(');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, $3, $4, '(')))
                       {
                         // make_index_expression deleted $1 and $3.
                         YYABORT;
@@ -740,9 +722,7 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '{' '}'
                   {
-                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '{');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, nullptr, $3, '{')))
                       {
                         // make_index_expression deleted $1.
                         YYABORT;
@@ -750,9 +730,7 @@ oper_expr       : primary_expr
                   }
                 | oper_expr '{' arg_list '}'
                   {
-                    $$ = parser.make_index_expression ($1, $2, $3, $4, '{');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, $3, $4, '{')))
                       {
                         // make_index_expression deleted $1 and $3.
                         YYABORT;
@@ -808,9 +786,7 @@ power_expr      : primary_expr
                   { $$ = parser.make_postfix_op ($1, $2); }
                 | power_expr '(' ')'
                   {
-                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '(');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, nullptr, $3, '(')))
                       {
                         // make_index_expression deleted $1.
                         YYABORT;

@@ -35,9 +35,7 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-anon_fcn_validator::anon_fcn_validator (tree_parameter_list *,
-                                        tree_expression *expr)
-  : m_ok (true), m_line (-1), m_column (-1), m_message ()
+anon_fcn_validator::anon_fcn_validator (tree_parameter_list *, tree_expression *expr)
 {
   expr->accept (*this);
 }
@@ -80,10 +78,9 @@ void
 anon_fcn_validator::error (tree_expression& expr)
 {
   m_ok = false;
-  m_line = expr.line ();
-  m_column = expr.column ();
-  m_message
-    = "invalid use of operator " + expr.oper () + " in anonymous function";
+  m_beg_pos = expr.beg_pos ();
+  m_end_pos = expr.end_pos ();
+  m_message = "invalid use of operator " + expr.oper () + " in anonymous function";
 }
 
 OCTAVE_END_NAMESPACE(octave)

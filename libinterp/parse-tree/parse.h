@@ -366,9 +366,7 @@ public:
 
   // Begin defining a function.
   OCTINTERP_API octave_user_function *
-  start_function (tree_identifier *id, tree_parameter_list *param_list,
-                  tree_statement_list *body, tree_statement *end_function,
-                  const std::string& doc_string);
+  start_function (tree_identifier *id, tree_parameter_list *param_list, tree_statement_list *body, tree_statement *end_function, const std::string& doc_string);
 
   // Create a no-op statement for end_function.
   OCTINTERP_API tree_statement *
@@ -394,11 +392,7 @@ public:
 
   // Make an argument validation.
   OCTINTERP_API tree_arg_validation *
-  make_arg_validation (tree_arg_size_spec *size_spec,
-                       tree_identifier *class_name,
-                       tree_arg_validation_fcns *validation_fcns,
-                       token *eq_tok = nullptr,
-                       tree_expression *default_value = nullptr);
+  make_arg_validation (tree_arg_size_spec *size_spec, tree_identifier *class_name, tree_arg_validation_fcns *validation_fcns, token *eq_tok = nullptr, tree_expression *default_value = nullptr);
 
   // Make an argument validation list.
   OCTINTERP_API tree_args_block_validation_list *
@@ -406,8 +400,7 @@ public:
 
   // Append an argument validation to an existing list.
   OCTINTERP_API tree_args_block_validation_list *
-  append_args_validation_list (tree_args_block_validation_list *list,
-                               tree_arg_validation *arg_validation);
+  append_args_validation_list (tree_args_block_validation_list *list, tree_arg_validation *arg_validation);
 
   // Make an argument size specification object.
   OCTINTERP_API tree_arg_size_spec *
@@ -434,8 +427,7 @@ public:
   make_classdef_property (tree_identifier *id, tree_arg_validation *av);
 
   OCTINTERP_API tree_classdef_property_list *
-  append_classdef_property (tree_classdef_property_list *list,
-                            tree_classdef_property *elt);
+  append_classdef_property (tree_classdef_property_list *list, tree_classdef_property *elt);
 
   OCTINTERP_API tree_classdef_methods_block *
   make_classdef_methods_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_method_list *mlist, token *end_tok);
@@ -450,8 +442,7 @@ public:
   make_classdef_event (tree_identifier *id);
 
   OCTINTERP_API tree_classdef_event_list *
-  append_classdef_event (tree_classdef_event_list *list,
-                         tree_classdef_event *elt);
+  append_classdef_event (tree_classdef_event_list *list, tree_classdef_event *elt);
 
   OCTINTERP_API tree_classdef_enum_block *
   make_classdef_enum_block (token *tok, tree_classdef_attribute_list *a, tree_classdef_enum_list *elist, token *end_tok);
@@ -463,8 +454,7 @@ public:
   make_classdef_enum (tree_identifier *id, token *open_paren, tree_expression *expr, token *close_paren);
 
   OCTINTERP_API tree_classdef_enum_list *
-  append_classdef_enum (tree_classdef_enum_list *list,
-                        tree_classdef_enum *elt);
+  append_classdef_enum (tree_classdef_enum_list *list, tree_classdef_enum *elt);
 
   OCTINTERP_API tree_classdef_superclass_list *
   make_classdef_superclass_list (token *lt_tok, tree_classdef_superclass *sc);
@@ -503,20 +493,16 @@ public:
   make_classdef_body  (tree_classdef_enum_block *enb);
 
   OCTINTERP_API tree_classdef_body *
-  append_classdef_properties_block (tree_classdef_body *body,
-                                    tree_classdef_properties_block *block);
+  append_classdef_properties_block (tree_classdef_body *body, tree_classdef_properties_block *block);
 
   OCTINTERP_API tree_classdef_body *
-  append_classdef_methods_block (tree_classdef_body *body,
-                                 tree_classdef_methods_block *block);
+  append_classdef_methods_block (tree_classdef_body *body, tree_classdef_methods_block *block);
 
   OCTINTERP_API tree_classdef_body *
-  append_classdef_events_block (tree_classdef_body *body,
-                                tree_classdef_events_block *block);
+  append_classdef_events_block (tree_classdef_body *body, tree_classdef_events_block *block);
 
   OCTINTERP_API tree_classdef_body *
-  append_classdef_enum_block (tree_classdef_body *body,
-                              tree_classdef_enum_block *block);
+  append_classdef_enum_block (tree_classdef_body *body, tree_classdef_enum_block *block);
 
   OCTINTERP_API octave_user_function *
   start_classdef_external_method (tree_identifier *id, tree_parameter_list *pl = nullptr);
@@ -528,8 +514,7 @@ public:
   make_classdef_method_list (tree_function_def *fcn_def);
 
   OCTINTERP_API tree_classdef_method_list *
-  append_classdef_method (tree_classdef_method_list *list,
-                          tree_function_def *fcn_def);
+  append_classdef_method (tree_classdef_method_list *list, tree_function_def *fcn_def);
 
   OCTINTERP_API bool
   finish_classdef_file (tree_classdef *cls, tree_statement_list *local_fcns, token *eof_tok);
@@ -554,16 +539,14 @@ public:
   make_decl_init_list (tree_decl_elt *elt);
 
   OCTINTERP_API tree_decl_elt *
-  make_decl_elt (tree_identifier *id, token *eq_op = nullptr,
-                 tree_expression *expr = nullptr);
+  make_decl_elt (tree_identifier *id, token *eq_op = nullptr, tree_expression *expr = nullptr);
 
   OCTINTERP_API tree_decl_init_list *
   append_decl_init_list (tree_decl_init_list *list, tree_decl_elt *elt);
 
   // Validate an function parameter list.
   OCTINTERP_API bool
-  validate_param_list (tree_parameter_list *lst,
-                       tree_parameter_list::in_or_out type);
+  validate_param_list (tree_parameter_list *lst, tree_parameter_list::in_or_out type);
   // Validate matrix or cell
   OCTINTERP_API bool validate_array_list (tree_expression *e);
 
@@ -647,16 +630,11 @@ public:
   // Generic error messages.
   OCTINTERP_API void bison_error (const std::string& s);
   OCTINTERP_API void bison_error (const std::string& s, const filepos& pos);
-  OCTINTERP_API void bison_error (const std::string& s, int line, int column);
   OCTINTERP_API void bison_error (const std::list<parse_exception>& pe);
   OCTINTERP_API void bison_error (const parse_exception& pe);
 
   friend OCTINTERP_API octave_value
-  parse_fcn_file (interpreter& interp, const std::string& full_file,
-                  const std::string& file, const std::string& dir_name,
-                  const std::string& dispatch_type,
-                  const std::string& package_name, bool require_file,
-                  bool force_script, bool autoload, bool relative_lookup);
+  parse_fcn_file (interpreter& interp, const std::string& full_file, const std::string& file, const std::string& dir_name, const std::string& dispatch_type, const std::string& package_name, bool require_file, bool force_script, bool autoload, bool relative_lookup);
 
   // Thih interface allows push or pull parsers to be used
   // equivalently, provided that the push parser also owns its input
@@ -670,8 +648,7 @@ public:
   // semantic errors.
   OCTINTERP_API bool validate_primary_fcn ();
 
-  OCTINTERP_API bool finish_input (tree_statement_list *lst,
-                                   bool at_eof = false);
+  OCTINTERP_API bool finish_input (tree_statement_list *lst, bool at_eof = false);
 
 protected:
 
@@ -760,11 +737,7 @@ private:
 // Publish externally used friend functions.
 
 extern OCTINTERP_API octave_value
-parse_fcn_file (interpreter& interp, const std::string& full_file,
-                const std::string& file, const std::string& dir_name,
-                const std::string& dispatch_type,
-                const std::string& package_name, bool require_file,
-                bool force_script, bool autoload, bool relative_lookup);
+parse_fcn_file (interpreter& interp, const std::string& full_file, const std::string& file, const std::string& dir_name, const std::string& dispatch_type, const std::string& package_name, bool require_file, bool force_script, bool autoload, bool relative_lookup);
 
 class parser : public base_parser
 {
@@ -806,16 +779,14 @@ class push_parser : public base_parser
 public:
 
   push_parser (interpreter& interp)
-    : base_parser (*(new push_lexer (interp))),
-      m_interpreter (interp), m_reader ()
+    : base_parser (*(new push_lexer (interp))), m_interpreter (interp), m_reader ()
   { }
 
   // The parser assumes ownership of READER, which must be created
   // with new.
 
   push_parser (interpreter& interp, input_reader *reader)
-    : base_parser (*(new push_lexer (interp))),
-      m_interpreter (interp), m_reader (reader)
+    : base_parser (*(new push_lexer (interp))), m_interpreter (interp), m_reader (reader)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (push_parser)
@@ -841,44 +812,28 @@ private:
 };
 
 extern OCTINTERP_API std::string
-get_help_from_file (const std::string& nm, bool& symbol_found,
-                    std::string& file);
+get_help_from_file (const std::string& nm, bool& symbol_found, std::string& file);
 
 extern OCTINTERP_API std::string
 get_help_from_file (const std::string& nm, bool& symbol_found);
 
 extern OCTINTERP_API octave_value
-load_fcn_from_file (const std::string& file_name,
-                    const std::string& dir_name = "",
-                    const std::string& dispatch_type = "",
-                    const std::string& package_name = "",
-                    const std::string& fcn_name = "",
-                    bool autoload = false);
+load_fcn_from_file (const std::string& file_name, const std::string& dir_name = "", const std::string& dispatch_type = "", const std::string& package_name = "", const std::string& fcn_name = "", bool autoload = false);
 
 extern OCTINTERP_API void
-source_file (const std::string& file_name,
-             const std::string& context = "",
-             bool verbose = false, bool require_file = true);
+source_file (const std::string& file_name, const std::string& context = "", bool verbose = false, bool require_file = true);
 
 extern OCTINTERP_API octave_value_list
-feval (const char *name,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0);
+feval (const char *name, const octave_value_list& args = octave_value_list (), int nargout = 0);
 
 extern OCTINTERP_API octave_value_list
-feval (const std::string& name,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0);
+feval (const std::string& name, const octave_value_list& args = octave_value_list (), int nargout = 0);
 
 extern OCTINTERP_API octave_value_list
-feval (octave_function *fcn,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0);
+feval (octave_function *fcn, const octave_value_list& args = octave_value_list (), int nargout = 0);
 
 extern OCTINTERP_API octave_value_list
-feval (const octave_value& val,
-       const octave_value_list& args = octave_value_list (),
-       int nargout = 0);
+feval (const octave_value& val, const octave_value_list& args = octave_value_list (), int nargout = 0);
 
 extern OCTINTERP_API octave_value_list
 feval (const octave_value_list& args, int nargout = 0);

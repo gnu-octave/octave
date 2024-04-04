@@ -105,6 +105,19 @@ from Octave 10.
         shift                  | circshift
         sparse_auto_mutate     | none (see below)
 
+- `fminsearch` parameter passing:  A legacy, undocumented, and only partially
+  supported syntax for passing parameters to the minimized function `fcn`
+  called by `fminsearch` by appending them to the input argument list has
+  functioned intermittently since Octave 4.4.0.  Due to conflicts with other
+  compatibility-required input methods the documentation of this syntax was
+  removed in Octave 5.1.0, and the remaining functionality has been completely
+  removed in Octave 10, and attempts to call `fminsearch` with that syntax
+  will result in an error. The preferred, cross-platform compatible method of
+  passing parameters to any of the minimization functions (including
+  `fminsearch`, `fminbnd`, and `fminunc`) is through the use of Anonymous
+  Functions.  Specific examples of this can be found in the @ref{Minimizers}
+  section of the GNU Octave manual.
+
 ### Build system
 
 - Octave now requires a C++ compiler that is compliant with C++17 (preferably

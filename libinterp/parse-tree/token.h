@@ -115,6 +115,8 @@ public:
   void mark_trailing_space () { m_tspc = true; }
   bool space_follows_token () const { return m_tspc; }
 
+  operator bool () const { return m_type_tag != invalid_token; }
+
   int token_id () const { return m_tok_id; }
 
   bool token_is (int id) const { return m_tok_id == id; }

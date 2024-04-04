@@ -393,9 +393,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // already explicitly declared for all types.
 //
 // %destructor {
-//    warning_with_id
-//      ("Octave:parser-destructor",
-//       "possible memory leak in cleanup following parse error");
+//    warning_with_id ("Octave:parser-destructor", "possible memory leak in cleanup following parse error");
 // } <*>
 
 // Where to start.
@@ -2222,13 +2220,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     parse_exception () = delete;
 
-    parse_exception (const std::string& message,
-                     const std::string& fcn_name = "",
-                     const std::string& file_name = "",
-                     const filepos& pos = filepos ())
-      : runtime_error (message), m_message (message),
-        m_fcn_name (fcn_name), m_file_name (file_name),
-        m_pos (pos)
+    parse_exception (const std::string& message, const std::string& fcn_name = "", const std::string& file_name = "", const filepos& pos = filepos ())
+      : runtime_error (message), m_message (message), m_fcn_name (fcn_name), m_file_name (file_name), m_pos (pos)
     { }
 
     OCTAVE_DEFAULT_COPY_MOVE_DELETE (parse_exception)
@@ -2300,8 +2293,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         {
           for (auto& nm_val : subfcns)
             {
-              octave_user_function *subfcn
-                = nm_val.second.user_function_value ();
+              octave_user_function *subfcn = nm_val.second.user_function_value ();
 
               if (subfcn)
                 subfcn->accept (*this);
@@ -2401,9 +2393,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         // function, or nested function.  Otherwise, it is OK to have a
         // duplicate name.
 
-        return ! (m_parser.parsing_subfunctions ()
-                  || m_parser.parsing_local_functions ()
-                  || m_parser.curr_fcn_depth () > 0);
+        return ! (m_parser.parsing_subfunctions () || m_parser.parsing_local_functions () || m_parser.curr_fcn_depth () > 0);
       }
 
     m_all_names.insert (full_name);
@@ -2592,9 +2582,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void
   base_parser::end_token_error (token *tok, token::end_tok_type expected)
   {
-    std::string msg = ("'" + end_token_as_string (expected)
-                       + "' command matched by '"
-                       + end_token_as_string (tok->ettype ()) + "'");
+    std::string msg = ("'" + end_token_as_string (expected) + "' command matched by '" + end_token_as_string (tok->ettype ()) + "'");
 
     bison_error (msg, tok->beg_pos ());
   }
@@ -2621,12 +2609,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     m_lexer.m_symtab_context.push (symbol_scope ("parser:push_fcn_symtab"));
     m_function_scopes.push (m_lexer.m_symtab_context.curr_scope ());
 
-    if (! m_lexer.m_reading_script_file && m_curr_fcn_depth == 0
-        && ! m_parsing_subfunctions)
-        {
-          m_primary_fcn_scope = m_lexer.m_symtab_context.curr_scope ();
-          m_primary_fcn_scope.mark_primary_fcn_scope ();
-        }
+    if (! m_lexer.m_reading_script_file && m_curr_fcn_depth == 0 && ! m_parsing_subfunctions)
+      {
+        m_primary_fcn_scope = m_lexer.m_symtab_context.curr_scope ();
+        m_primary_fcn_scope.mark_primary_fcn_scope ();
+      }
 
     if (m_lexer.m_reading_script_file && m_curr_fcn_depth > 0)
       {
@@ -2737,8 +2724,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     fcn_scope.mark_static ();
 
-    tree_anon_fcn_handle *retval
-      = new tree_anon_fcn_handle (*at_tok, param_list, expr, fcn_scope, parent_scope);
+    tree_anon_fcn_handle *retval = new tree_anon_fcn_handle (*at_tok, param_list, expr, fcn_scope, parent_scope);
 
     std::ostringstream buf;
 
@@ -2792,13 +2778,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     token tmp_colon_2_tok = colon_2_tok ? *colon_2_tok : token ();
 
-    tree_colon_expression *expr
-      = new tree_colon_expression (base, *colon_1_tok, incr, tmp_colon_2_tok, limit);
+    tree_colon_expression *expr = new tree_colon_expression (base, *colon_1_tok, incr, tmp_colon_2_tok, limit);
 
     retval = expr;
 
-    if (base->is_constant () && limit->is_constant ()
-        && (! incr || incr->is_constant ()))
+    if (base->is_constant () && limit->is_constant () && (! incr || incr->is_constant ()))
       {
         interpreter& interp = m_lexer.m_interpreter;
 
@@ -2810,13 +2794,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             error_system& es = interp.get_error_system ();
 
-            unwind_action restore_last_warning_message
-              (&error_system::set_last_warning_message, &es,
-               es.last_warning_message (""));
+            unwind_action restore_last_warning_message (&error_system::set_last_warning_message, &es, es.last_warning_message (""));
 
-            unwind_action restore_discard_warning_messages
-              (&error_system::set_discard_warning_messages, &es,
-               es.discard_warning_messages (true));
+            unwind_action restore_discard_warning_messages (&error_system::set_discard_warning_messages, &es, es.discard_warning_messages (true));
 
             tree_evaluator& tw = interp.get_evaluator ();
 
@@ -2961,8 +2941,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         binexp->rhs (rhs);
 
         octave_value::binary_op op_type = binexp->op_type ();
-        if (op_type == octave_value::op_el_and
-            || op_type == octave_value::op_el_or)
+        if (op_type == octave_value::op_el_and || op_type == octave_value::op_el_or)
           {
             binexp->preserve_operands ();
 
@@ -3390,8 +3369,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_switch_case_list *
-  base_parser::append_switch_case (tree_switch_case_list *list,
-                                   tree_switch_case *elt)
+  base_parser::append_switch_case (tree_switch_case_list *list, tree_switch_case *elt)
   {
     return list_append (list, elt);
   }
@@ -3470,8 +3448,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         delete lhs;
         delete rhs;
 
-        bison_error ("computed multiple assignment not allowed",
-                     eq_tok->beg_pos ());
+        bison_error ("computed multiple assignment not allowed", eq_tok->beg_pos ());
 
         return nullptr;
       }
@@ -3482,8 +3459,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         tree_expression *tmp = lhs->remove_front ();
 
-        if ((tmp->is_identifier () || tmp->is_index_expression ())
-            && iskeyword (tmp->name ()))
+        if ((tmp->is_identifier () || tmp->is_index_expression ()) && iskeyword (tmp->name ()))
           {
             std::string kw = tmp->name ();
 
@@ -3491,8 +3467,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             delete lhs;
             delete rhs;
 
-            bison_error ("invalid assignment to keyword \"" + kw + "\"",
-                         eq_tok->beg_pos ());
+            bison_error ("invalid assignment to keyword \"" + kw + "\"", eq_tok->beg_pos ());
 
             return nullptr;
           }
@@ -3514,8 +3489,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                 delete lhs;
                 delete rhs;
 
-                bison_error ("invalid assignment to keyword \"" + kw + "\"",
-                             eq_tok->beg_pos ());
+                bison_error ("invalid assignment to keyword \"" + kw + "\"", eq_tok->beg_pos ());
 
                 return nullptr;
               }
@@ -3528,8 +3502,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   void
-  base_parser::make_script (tree_statement_list *cmds,
-                            tree_statement *end_script)
+  base_parser::make_script (tree_statement_list *cmds, tree_statement *end_script)
   {
     // Any comments at the beginning of a script file should be
     // attached to the first statement in the file or the END_SCRIPT
@@ -3553,10 +3526,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     std::string doc_string = leading_comments.find_doc_string ();
 
-    octave_user_script *script
-      = new octave_user_script (m_lexer.m_fcn_file_full_name,
-                                m_lexer.m_fcn_file_name, script_scope,
-                                cmds, doc_string);
+    octave_user_script *script = new octave_user_script (m_lexer.m_fcn_file_full_name, m_lexer.m_fcn_file_name, script_scope, cmds, doc_string);
 
     m_lexer.m_symtab_context.pop ();
 
@@ -3675,11 +3645,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Begin defining a function.
 
   octave_user_function *
-  base_parser::start_function (tree_identifier *id,
-                               tree_parameter_list *param_list,
-                               tree_statement_list *body,
-                               tree_statement *end_fcn_stmt,
-                               const std::string& doc_string)
+  base_parser::start_function (tree_identifier *id, tree_parameter_list *param_list, tree_statement_list *body, tree_statement *end_fcn_stmt, const std::string& doc_string)
   {
     // We'll fill in the return list later.
 
@@ -3698,15 +3664,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     body->push_back (end_fcn_stmt);
 
-    octave_user_function *fcn
-      = new octave_user_function (m_lexer.m_symtab_context.curr_scope (), id, param_list, nullptr, body);
+    octave_user_function *fcn = new octave_user_function (m_lexer.m_symtab_context.curr_scope (), id, param_list, nullptr, body);
 
     // If input is coming from a file, issue a warning if the name of
     // the file does not match the name of the function stated in the
     // file.  Matlab doesn't provide a diagnostic (it ignores the stated
     // name).
-    if (! m_autoloading && m_lexer.m_reading_fcn_file
-        && m_curr_fcn_depth == 0 && ! m_parsing_subfunctions)
+    if (! m_autoloading && m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0 && ! m_parsing_subfunctions)
       {
         // FIXME: should m_lexer.m_fcn_file_name already be
         // preprocessed when we get here?  It seems to only be a
@@ -3721,10 +3685,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         if (nm != id_name)
           {
-            warning_with_id
-              ("Octave:function-name-clash",
-               "function name '%s' does not agree with function filename '%s'",
-               id_name.c_str (), m_lexer.m_fcn_file_full_name.c_str ());
+            warning_with_id ("Octave:function-name-clash", "function name '%s' does not agree with function filename '%s'", id_name.c_str (), m_lexer.m_fcn_file_full_name.c_str ());
 
             id_name = nm;
           }
@@ -3769,17 +3730,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         sys::file_stat fs (nm);
 
         if (fs && fs.is_newer (now))
-          warning_with_id ("Octave:future-time-stamp",
-                           "time stamp for '%s' is in the future", nm.c_str ());
+          warning_with_id ("Octave:future-time-stamp", "time stamp for '%s' is in the future", nm.c_str ());
       }
-    else if (! m_lexer.input_from_tmp_history_file ()
-             && ! m_lexer.m_force_script
-             && m_lexer.m_reading_script_file
-             && m_lexer.m_fcn_file_name == id_name)
-      {
-        warning ("function '%s' defined within script file '%s'",
-                 id_name.c_str (), m_lexer.m_fcn_file_full_name.c_str ());
-      }
+    else if (! m_lexer.input_from_tmp_history_file () && ! m_lexer.m_force_script && m_lexer.m_reading_script_file && m_lexer.m_fcn_file_name == id_name)
+      warning ("function '%s' defined within script file '%s'", id_name.c_str (), m_lexer.m_fcn_file_full_name.c_str ());
 
     // Record doc string for functions other than nested functions.
     // We cannot currently record help for nested functions (bug #46008)
@@ -3790,8 +3744,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       fcn->document (doc_string);
 
 
-    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
-        && ! m_parsing_subfunctions)
+    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0 && ! m_parsing_subfunctions)
       m_primary_fcn = octave_value (fcn);
 
     return fcn;
@@ -3896,8 +3849,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_statement_list *
-  base_parser::append_function_body (tree_statement_list *body,
-                                     tree_statement_list *list)
+  base_parser::append_function_body (tree_statement_list *body, tree_statement_list *list)
   {
     if (list)
       {
@@ -3928,11 +3880,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_arg_validation *
-  base_parser::make_arg_validation (tree_arg_size_spec *size_spec,
-                                    tree_identifier *class_name,
-                                    tree_arg_validation_fcns *validation_fcns,
-                                    token *eq_tok,
-                                    tree_expression *default_value)
+  base_parser::make_arg_validation (tree_arg_size_spec *size_spec, tree_identifier *class_name, tree_arg_validation_fcns *validation_fcns, token *eq_tok, tree_expression *default_value)
   {
     // FIXME: Validate arguments and convert to more specific types
     // (std::string for arg_name and class_name, etc).
@@ -3958,8 +3906,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_args_block_validation_list *
-  base_parser::append_args_validation_list (tree_args_block_validation_list *list,
-                                            tree_arg_validation *arg_validation)
+  base_parser::append_args_validation_list (tree_args_block_validation_list *list, tree_arg_validation *arg_validation)
   {
     return list_append (list, arg_validation);
   }
@@ -3985,8 +3932,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     m_lexer.m_symtab_context.pop ();
 
-    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0
-        && ! m_parsing_subfunctions)
+    if (m_lexer.m_reading_fcn_file && m_curr_fcn_depth == 0 && ! m_parsing_subfunctions)
       m_parsing_subfunctions = true;
 
     m_curr_fcn_depth--;
@@ -4016,8 +3962,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     std::string full_name = m_lexer.m_fcn_file_full_name;
     std::string short_name = m_lexer.m_fcn_file_name;
 
-    std::size_t pos
-      = short_name.find_last_of (sys::file_ops::dir_sep_chars ());
+    std::size_t pos = short_name.find_last_of (sys::file_ops::dir_sep_chars ());
 
     if (pos != std::string::npos)
       short_name = short_name.substr (pos+1);
@@ -4268,9 +4213,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_classdef_attribute *
   base_parser::make_classdef_attribute (tree_identifier *id, token *eq_tok, tree_expression *expr)
   {
-    return (expr
-            ? new tree_classdef_attribute (id, *eq_tok, expr)
-            : new tree_classdef_attribute (id));
+    return (expr ? new tree_classdef_attribute (id, *eq_tok, expr) : new tree_classdef_attribute (id));
   }
 
   tree_classdef_attribute *
@@ -4310,29 +4253,25 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_classdef_body *
-  base_parser::append_classdef_properties_block (tree_classdef_body *body,
-                                                 tree_classdef_properties_block *block)
+  base_parser::append_classdef_properties_block (tree_classdef_body *body, tree_classdef_properties_block *block)
   {
     return body->append (block);
   }
 
   tree_classdef_body *
-  base_parser::append_classdef_methods_block (tree_classdef_body *body,
-                                              tree_classdef_methods_block *block)
+  base_parser::append_classdef_methods_block (tree_classdef_body *body, tree_classdef_methods_block *block)
   {
     return body->append (block);
   }
 
   tree_classdef_body *
-  base_parser::append_classdef_events_block (tree_classdef_body *body,
-                                             tree_classdef_events_block *block)
+  base_parser::append_classdef_events_block (tree_classdef_body *body, tree_classdef_events_block *block)
   {
     return body->append (block);
   }
 
   tree_classdef_body *
-  base_parser::append_classdef_enum_block (tree_classdef_body *body,
-                                           tree_classdef_enum_block *block)
+  base_parser::append_classdef_enum_block (tree_classdef_body *body, tree_classdef_enum_block *block)
   {
     return body->append (block);
   }
@@ -4354,9 +4293,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         // - class constructor
         // - 'delete'
 
-        if (mname.find_first_of (".") == std::string::npos
-            && mname != "delete"
-            && mname != m_curr_class_name)
+        if (mname.find_first_of (".") == std::string::npos && mname != "delete" && mname != m_curr_class_name)
           {
             // Create a dummy function that is used until the real method
             // is loaded.
@@ -4366,9 +4303,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             retval->stash_function_name (mname);
           }
         else
-          bison_error ("invalid external method declaration, an external "
-                       "method cannot be the class constructor, 'delete' "
-                       "or have a dot (.) character in its name");
+          bison_error ("invalid external method declaration, an external method cannot be the class constructor, 'delete' or have a dot (.) character in its name");
       }
     else
       bison_error ("external methods are only allowed in @-folders");
@@ -4404,8 +4339,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_classdef_method_list *
-  base_parser::append_classdef_method (tree_classdef_method_list *list,
-                                       tree_function_def *fcn_def)
+  base_parser::append_classdef_method (tree_classdef_method_list *list, tree_function_def *fcn_def)
   {
     octave_value fcn;
 
@@ -4432,8 +4366,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           {
             tree_command *cmd = elt->command ();
 
-            tree_function_def *fcn_def
-              = dynamic_cast<tree_function_def *> (cmd);
+            tree_function_def *fcn_def = dynamic_cast<tree_function_def *> (cmd);
 
             fcn_def->accept (validator);
           }
@@ -4462,8 +4395,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           {
             tree_command *cmd = elt->command ();
 
-            tree_function_def *fcn_def
-              = dynamic_cast<tree_function_def *> (cmd);
+            tree_function_def *fcn_def = dynamic_cast<tree_function_def *> (cmd);
 
             octave_value ov_fcn = fcn_def->function ();
             octave_user_function *fcn = ov_fcn.user_function_value ();
@@ -4625,22 +4557,20 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_decl_init_list *
-  base_parser::append_decl_init_list (tree_decl_init_list *list,
-                                      tree_decl_elt *elt)
+  base_parser::append_decl_init_list (tree_decl_init_list *list, tree_decl_elt *elt)
   {
     return list_append (list, elt);
   }
 
   tree_decl_elt *
-  base_parser::make_decl_elt (tree_identifier *id, token */*eq_op*/,
-                              tree_expression *expr)
+  base_parser::make_decl_elt (tree_identifier *id, token */*eq_op*/, tree_expression *expr)
   {
+    // FIXME XXX! need to capture EQ_OP here.
     return expr ? new tree_decl_elt (id, expr) : new tree_decl_elt (id);
   }
 
   bool
-  base_parser::validate_param_list (tree_parameter_list *lst,
-                                    tree_parameter_list::in_or_out type)
+  base_parser::validate_param_list (tree_parameter_list *lst, tree_parameter_list::in_or_out type)
   {
     std::set<std::string> dict;
 
@@ -4662,14 +4592,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               }
             else if (iskeyword (name))
               {
-                bison_error ("invalid use of keyword '" + name
-                             + "' in parameter list");
+                bison_error ("invalid use of keyword '" + name + "' in parameter list");
                 return false;
               }
             else if (dict.find (name) != dict.end ())
               {
-                bison_error ("'" + name
-                             + "' appears more than once in parameter list");
+                bison_error ("'" + name + "' appears more than once in parameter list");
                 return false;
               }
             else
@@ -4677,8 +4605,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           }
       }
 
-    std::string va_type = (type == tree_parameter_list::in
-                           ? "varargin" : "varargout");
+    std::string va_type = (type == tree_parameter_list::in ? "varargin" : "varargout");
 
     std::size_t len = lst->size ();
 
@@ -4811,13 +4738,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             error_system& es = interp.get_error_system ();
 
-            unwind_action restore_last_warning_message
-              (&error_system::set_last_warning_message, &es,
-               es.last_warning_message (""));
+            unwind_action restore_last_warning_message (&error_system::set_last_warning_message, &es, es.last_warning_message (""));
 
-            unwind_action restore_discard_warning_messages
-              (&error_system::set_discard_warning_messages, &es,
-               es.discard_warning_messages (true));
+            unwind_action restore_discard_warning_messages (&error_system::set_discard_warning_messages, &es, es.discard_warning_messages (true));
 
             tree_evaluator& tw = interp.get_evaluator ();
 
@@ -4941,8 +4864,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_statement_list *
-  base_parser::set_stmt_print_flag (tree_statement_list *list,
-                                    char sep, bool warn_missing_semi)
+  base_parser::set_stmt_print_flag (tree_statement_list *list, char sep, bool warn_missing_semi)
   {
     tree_statement *tmp = list->back ();
 
@@ -4992,9 +4914,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_statement_list *
-  base_parser::append_statement_list (tree_statement_list *list,
-                                      char sep, tree_statement *stmt,
-                                      bool warn_missing_semi)
+  base_parser::append_statement_list (tree_statement_list *list, char sep, tree_statement *stmt, bool warn_missing_semi)
   {
     set_stmt_print_flag (list, sep, warn_missing_semi);
 
@@ -5079,19 +4999,14 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     int err_line = pos.line ();
     int err_col = pos.column ();
 
-    bool in_file = (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
-                    || m_lexer.m_reading_classdef_file);
+    bool in_file = (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file || m_lexer.m_reading_classdef_file);
 
     // Adjust the error column for display because it is 1-based in the
     // lexer for easier reporting.
     err_col--;
 
     if (in_file)
-      {
-        output_buf << str
-                   << " near line " << err_line << ", column " << err_col
-                   << " in file " << m_lexer.m_fcn_file_full_name << "\n";
-      }
+      output_buf << str << " near line " << err_line << ", column " << err_col << " in file " << m_lexer.m_fcn_file_full_name << "\n";
     else
       {
         // On command line, point directly to error
@@ -5267,8 +5182,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     int exit_status = 0;
 
-    std::string prompt
-      = command_editor::decode_prompt_string (m_interpreter.PS1 ());
+    std::string prompt = command_editor::decode_prompt_string (m_interpreter.PS1 ());
 
     do
       {
@@ -5298,11 +5212,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   octave_value
-  parse_fcn_file (interpreter& interp, const std::string& full_file,
-                  const std::string& file, const std::string& dir_name,
-                  const std::string& dispatch_type,
-                  const std::string& package_name, bool require_file,
-                  bool force_script, bool autoload, bool relative_lookup)
+  parse_fcn_file (interpreter& interp, const std::string& full_file, const std::string& file, const std::string& dir_name, const std::string& dispatch_type, const std::string& package_name, bool require_file, bool force_script, bool autoload, bool relative_lookup)
   {
     octave_value retval;
 
@@ -5359,8 +5269,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     octave_value ov_fcn = parser.m_primary_fcn;
 
-    if (parser.m_lexer.m_reading_classdef_file
-        && parser.classdef_object ())
+    if (parser.m_lexer.m_reading_classdef_file && parser.classdef_object ())
       {
         // Convert parse tree for classdef object to
         // meta.class info (and stash it in the symbol
@@ -5371,8 +5280,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         bool is_at_folder = ! dispatch_type.empty ();
 
-        std::shared_ptr<tree_classdef> cdef_obj
-          = parser.classdef_object();
+        std::shared_ptr<tree_classdef> cdef_obj = parser.classdef_object();
 
         return cdef_obj->make_meta_class (interp, is_at_folder);
       }
@@ -5456,14 +5364,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (expr->is_assignment_expression () && expr->delim_count () < 2)
       {
         if (m_lexer.m_fcn_file_full_name.empty ())
-          warning_with_id
-            ("Octave:assign-as-truth-value",
-             "suggest parenthesis around assignment used as truth value");
+          warning_with_id ("Octave:assign-as-truth-value", "suggest parenthesis around assignment used as truth value");
         else
-          warning_with_id
-            ("Octave:assign-as-truth-value",
-             "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'",
-             expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
+          warning_with_id ("Octave:assign-as-truth-value", "suggest parenthesis around assignment used as truth value near line %d, column %d in file '%s'", expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
       }
   }
 
@@ -5475,13 +5378,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (! expr->is_constant ())
       {
         if (m_lexer.m_fcn_file_full_name.empty ())
-          warning_with_id ("Octave:variable-switch-label",
-                           "variable switch label");
+          warning_with_id ("Octave:variable-switch-label", "variable switch label");
         else
-          warning_with_id
-            ("Octave:variable-switch-label",
-             "variable switch label near line %d, column %d in file '%s'",
-             expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
+          warning_with_id ("Octave:variable-switch-label", "variable switch label near line %d, column %d in file '%s'", expr->line (), expr->column (), m_lexer.m_fcn_file_full_name.c_str ());
       }
   }
 
@@ -5493,10 +5392,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         tree_statement *tmp = t->back ();
 
         if (tmp->is_expression ())
-          warning_with_id
-            ("Octave:missing-semicolon",
-             "missing semicolon near line %d, column %d in file '%s'",
-             tmp->line (), tmp->column (), m_lexer.m_fcn_file_full_name.c_str ());
+          warning_with_id ("Octave:missing-semicolon", "missing semicolon near line %d, column %d in file '%s'", tmp->line (), tmp->column (), m_lexer.m_fcn_file_full_name.c_str ());
       }
   }
 
@@ -5530,9 +5426,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         symbol_found = true;
 
-        octave_value ov_fcn
-          = parse_fcn_file (interp, full_file, file, "", "", "", true,
-                            false, false, false);
+        octave_value ov_fcn = parse_fcn_file (interp, full_file, file, "", "", "", true, false, false, false);
 
         if (ov_fcn.is_defined ())
           {
@@ -5554,11 +5448,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   octave_value
-  load_fcn_from_file (const std::string& file_name,
-                      const std::string& dir_name,
-                      const std::string& dispatch_type,
-                      const std::string& package_name,
-                      const std::string& fcn_name, bool autoload)
+  load_fcn_from_file (const std::string& file_name, const std::string& dir_name, const std::string& dispatch_type, const std::string& package_name, const std::string& fcn_name, bool autoload)
   {
     octave_value retval;
 
@@ -5601,8 +5491,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         if (autoload && ! fcn_name.empty ())
           nm = fcn_name;
 
-        octave_function *tmpfcn
-          = dyn_loader.load_oct (nm, file, relative_lookup);
+        octave_function *tmpfcn = dyn_loader.load_oct (nm, file, relative_lookup);
 
         if (tmpfcn)
           {
@@ -5617,10 +5506,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         std::string doc_string;
 
-        octave_value ov_fcn
-          = parse_fcn_file (interp, file.substr (0, len - 2), nm, dir_name,
-                            dispatch_type, package_name, false,
-                            autoload, autoload, relative_lookup);
+        octave_value ov_fcn = parse_fcn_file (interp, file.substr (0, len - 2), nm, dir_name, dispatch_type, package_name, false, autoload, autoload, relative_lookup);
 
         if (ov_fcn.is_defined ())
           {
@@ -5630,8 +5516,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
               doc_string = tmpfcn->doc_string ();
           }
 
-        octave_function *tmpfcn
-          = dyn_loader.load_mex (nm, file, relative_lookup);
+        octave_function *tmpfcn = dyn_loader.load_mex (nm, file, relative_lookup);
 
         if (tmpfcn)
           {
@@ -5642,11 +5527,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           }
       }
     else if (len > 2)
-      {
-        retval = parse_fcn_file (interp, file, nm, dir_name,
-                                 dispatch_type, package_name, true,
-                                 autoload, autoload, relative_lookup);
-      }
+      retval = parse_fcn_file (interp, file, nm, dir_name, dispatch_type, package_name, true, autoload, autoload, relative_lookup);
 
     return retval;
   }
@@ -5709,8 +5590,7 @@ not loaded anymore during the current Octave session.
       else if (nargin == 3)
         {
           if (argv[3] != "remove")
-            error_with_id ("Octave:invalid-input-arg",
-                           "autoload: third argument can only be 'remove'");
+            error_with_id ("Octave:invalid-input-arg", "autoload: third argument can only be 'remove'");
 
           tw.remove_autoload (argv[1], argv[2]);
         }
@@ -5785,8 +5665,7 @@ context of the function that called the present function
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string file_name
-    = args(0).xstring_value ("source: FILE must be a string");
+  std::string file_name = args(0).xstring_value ("source: FILE must be a string");
 
   std::string context;
   if (nargin == 2)
@@ -5991,8 +5870,7 @@ does.
     return interp.eval (try_code, nargout);
   else
     {
-      if (! args(1).is_string () || args(1).rows () > 1
-          || args(1).ndims () != 2)
+      if (! args(1).is_string () || args(1).rows () > 1 || args(1).ndims () != 2)
         error ("eval: CATCH must be a string");
 
       std::string catch_code = args(1).string_value ();
@@ -6064,11 +5942,9 @@ may be either @qcode{"base"} or @qcode{"caller"}.
   if (args.length () != 3)
     print_usage ();
 
-  std::string context
-    = args(0).xstring_value ("assignin: CONTEXT must be a string");
+  std::string context = args(0).xstring_value ("assignin: CONTEXT must be a string");
 
-  std::string varname
-    = args(1).xstring_value ("assignin: VARNAME must be a string");
+  std::string varname = args(1).xstring_value ("assignin: VARNAME must be a string");
 
   interp.assignin (context, varname, args(2));
 
@@ -6095,16 +5971,13 @@ Like @code{eval}, except that the expressions are evaluated in the context
   if (nargin < 2 || nargin > 3)
     print_usage ();
 
-  std::string context
-    = args(0).xstring_value ("evalin: CONTEXT must be a string");
+  std::string context = args(0).xstring_value ("evalin: CONTEXT must be a string");
 
-  std::string try_code
-    = args(1).xstring_value ("evalin: TRY must be a string");
+  std::string try_code = args(1).xstring_value ("evalin: TRY must be a string");
 
   if (nargin == 3)
     {
-      std::string catch_code
-        = args(2).xstring_value ("evalin: CATCH must be a string");
+      std::string catch_code = args(2).xstring_value ("evalin: CATCH must be a string");
 
       return interp.evalin (context, try_code, catch_code, nargout);
     }
@@ -6303,8 +6176,7 @@ Undocumented internal function.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string file
-    = args(0).xstring_value ("__parse_file__: expecting filename as argument");
+  std::string file = args(0).xstring_value ("__parse_file__: expecting filename as argument");
 
   std::string full_file = sys::file_ops::tilde_expand (file);
 
@@ -6332,9 +6204,7 @@ Undocumented internal function.
   if (nargin == 2)
     octave_stdout << "parsing " << full_file << std::endl;
 
-  octave_value ov_fcn
-    = parse_fcn_file (interp, full_file, file, dir_name, "", "", true,
-                      false, false, false);
+  octave_value ov_fcn = parse_fcn_file (interp, full_file, file, dir_name, "", "", true, false, false, false);
 
   return retval;
 }

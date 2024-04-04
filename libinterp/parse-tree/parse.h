@@ -519,6 +519,10 @@ public:
   OCTINTERP_API bool
   finish_classdef_file (tree_classdef *cls, tree_statement_list *local_fcns, token *eof_tok);
 
+  // Make a word list command.
+  OCTINTERP_API tree_index_expression *
+  make_word_list_command (tree_expression *expr, tree_argument_list *args);
+
   // Make an index expression.
   OCTINTERP_API tree_index_expression *
   make_index_expression (tree_expression *expr, token *open_paren, tree_argument_list *args, token *close_paren, char type);

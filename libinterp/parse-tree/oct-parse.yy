@@ -511,13 +511,11 @@ statement       : expression
 
 word_list_cmd   : identifier word_list
                   {
-                    if (! ($$ = parser.make_index_expression ($1, nullptr, $2, nullptr, '(')))
+                    if (! ($$ = parser.make_word_list_command ($1, $2)))
                       {
                         // make_index_expression deleted $1 and $2.
                         YYABORT;
                       }
-
-                    $$->mark_word_list_cmd ();
                   }
                 ;
 
@@ -4416,6 +4414,18 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       m_classdef_object = std::shared_ptr<tree_classdef> (cls);
 
     return true;
+  }
+
+  // Make a word list command.
+  tree_index_expression *
+  base_parser::make_word_list_command (tree_expression *expr, tree_argument_list *args)
+  {
+    tree_index_expression *retval = make_index_expression (expr, nullptr, args, nullptr, '(');
+
+    if (retval)
+      retval->mark_word_list_cmd ();
+
+    return retval;
   }
 
   // Make an index expression.

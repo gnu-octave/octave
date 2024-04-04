@@ -42,7 +42,7 @@
 #include "pager.h"
 
 // TRUE after a call to completion_matches.
-extern bool octave_completion_matches_called;
+extern OCTINTERP_API bool octave_completion_matches_called;
 
 // TRUE if the plotting system has requested a call to drawnow at
 // the next user prompt.

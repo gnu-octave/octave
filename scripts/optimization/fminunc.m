@@ -109,13 +109,22 @@
 ## solution @var{x}, and approximate Hessian (@var{hess}) at the solution
 ## @var{x}.
 ##
-## Application Notes: If the objective function is a single nonlinear equation
+## Application Notes:
+## @enumerate
+## @item
+## If the objective function is a single nonlinear equation
 ## of one variable then using @code{fminbnd} is usually a better choice.
-##
+## @item
 ## The algorithm used by @code{fminunc} is a gradient search which depends
 ## on the objective function being differentiable.  If the function has
 ## discontinuities it may be better to use a derivative-free algorithm such as
 ## @code{fminsearch}.
+## @item
+## Use @ref{Anonymous Functions} to pass additional parameters to @var{fcn}.
+## For specific examples of doing so for @code{fminunc} and other
+## minimization functions see the @ref{Minimizers} section of the GNU Octave
+## manual.
+## @end enumerate
 ## @seealso{fminbnd, fminsearch, optimset}
 ## @end deftypefn
 

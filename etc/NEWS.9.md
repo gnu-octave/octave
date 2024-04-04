@@ -29,7 +29,26 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Describe shape of outputs for `hist` (bug #65471).
 - Simplify programming notes for `patch` objects (bug #65421).
 - `vecnorm.m`: Add missing parenthesis to equation in docstring.
+- Add example to Minimizers section on using anonymous functions to pass
+  examples to functions called by minimizer functions (`fminsearch`,
+  `fminbnd`, `fminunc`).
+- Add application notes in `fminsearch`, `fminbnd`, `fminunc` indicated the
+  preferred way to pass parameters is through anonymous functions.
 - Update remaining copyright statements to 2024.
+
+### Deprecated functions, properties, and operators
+
+- `fminsearch` parameter passing:  A legacy, undocumented, and only partially
+  supported syntax for passing parameters to the minimized function `fcn`
+  called by `fminsearch` by appending them to the input argument list has
+  functioned intermittently since Octave 4.4.0.  Due to conflicts with other
+  compatibility-required input methods the documentation of this syntax was
+  removed in Octave 5.1.0, and the remaining functionality will be completely
+  removed in Octave 10.  The preferred, cross-platform compatible method of
+  passing parameters to any of the minimization functions (including
+  `fminsearch`, `fminbnd`, and `fminunc`) is through the use of Anonymous
+  Functions.  Specific examples of this can be found in the @ref{Minimizers}
+  section of the GNU Octave manual.
 
 
 Summary of important user-visible changes for version 9 (2024-03-12):

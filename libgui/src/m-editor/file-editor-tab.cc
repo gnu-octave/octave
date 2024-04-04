@@ -1802,6 +1802,7 @@ file_editor_tab::show_dialog (QDialog *dlg, bool modal)
     {
       dlg->setWindowModality (Qt::NonModal);
       dlg->show ();
+      dlg->raise ();
     }
 }
 

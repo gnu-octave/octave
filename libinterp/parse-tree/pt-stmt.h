@@ -87,12 +87,15 @@ public:
 
   comment_list leading_comments () const;
 
+  filepos beg_pos () const;
+  filepos end_pos () const;
+
+  virtual void update_end_pos (const filepos& pos);
+
   std::string bp_cond () const;
 
   int line () const;
   int column () const;
-
-  void set_location (int l, int c);
 
   void echo_code (const std::string& prefix);
 
@@ -157,6 +160,24 @@ public:
         delete *p;
         erase (p);
       }
+  }
+
+  filepos beg_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_statement *elt = front ();
+    return elt->beg_pos ();
+  }
+
+  filepos end_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_statement *elt = back ();
+    return elt->end_pos ();
   }
 
   void mark_as_function_body () { m_function_body = true; }

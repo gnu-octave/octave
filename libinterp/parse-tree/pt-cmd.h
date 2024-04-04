@@ -35,6 +35,7 @@
 #include "pt.h"
 #include "pt-bp.h"
 #include "pt-walk.h"
+#include "panic.h"
 #include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -45,12 +46,13 @@ class tree_command : public tree
 {
 public:
 
-  tree_command (int l = -1, int c = -1)
-    : tree (l, c) { }
+  tree_command () = default;
 
   OCTAVE_DISABLE_COPY_MOVE (tree_command)
 
   virtual ~tree_command () = default;
+
+  virtual void update_end_pos (const filepos&) { panic_impossible (); }
 };
 
 // No-op.
@@ -59,12 +61,24 @@ class tree_no_op_command : public tree_command
 {
 public:
 
-  tree_no_op_command (const std::string& cmd, bool eof, const token& tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_eof (eof), m_tok (tok), m_orig_cmd (cmd) { }
+  tree_no_op_command (const std::string& cmd, bool eof, const token& tok)
+    : m_eof (eof), m_tok (tok), m_orig_cmd (cmd)
+  { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_no_op_command)
 
   ~tree_no_op_command () = default;
+
+  filepos beg_pos () const { return m_tok.beg_pos (); }
+  filepos end_pos () const { return m_tok.end_pos (); }
+
+  void update_end_pos (const filepos& pos)
+  {
+    if (is_end_of_fcn_or_script () || is_end_of_file ())
+      m_tok.end_pos (pos);
+    else
+      panic_impossible ();
+  }
 
   comment_list leading_comments () const { return m_tok.leading_comments (); }
 
@@ -108,12 +122,23 @@ class tree_function_def : public tree_command
 {
 public:
 
-  tree_function_def (octave_function *f, int l = -1, int c = -1)
-    : tree_command (l, c), m_fcn (f) { }
+  tree_function_def (octave_function *f) : m_fcn (f) { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_function_def)
 
   ~tree_function_def () = default;
+
+  filepos beg_pos () const
+  {
+    octave_function *f = m_fcn.function_value ();
+    return f->beg_pos ();
+  }
+
+  filepos end_pos () const
+  {
+    octave_function *f = m_fcn.function_value ();
+    return f->end_pos ();
+  }
 
   void accept (tree_walker& tw)
   {
@@ -126,8 +151,7 @@ private:
 
   octave_value m_fcn;
 
-  tree_function_def (const octave_value& v, int l = -1, int c = -1)
-    : tree_command (l, c), m_fcn (v) { }
+  tree_function_def (const octave_value& v) : m_fcn (v) { }
 };
 
 OCTAVE_END_NAMESPACE(octave)

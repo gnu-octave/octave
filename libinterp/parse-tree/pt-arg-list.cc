@@ -143,6 +143,8 @@ tree_argument_list::dup (symbol_scope& scope) const
   tree_argument_list *new_list = new tree_argument_list ();
 
   new_list->m_simple_assign_lhs = m_simple_assign_lhs;
+  new_list->m_list_includes_magic_tilde = m_list_includes_magic_tilde;
+  new_list->m_delims = m_delims;
 
   for (const tree_expression *elt : *this)
     new_list->push_back (elt ? elt->dup (scope) : nullptr);

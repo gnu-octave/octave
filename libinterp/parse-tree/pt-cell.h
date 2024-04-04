@@ -47,8 +47,8 @@ class tree_cell : public tree_array_list
 {
 public:
 
-  tree_cell (tree_argument_list *row = nullptr, int l = -1, int c = -1)
-    : tree_array_list (row, l, c)
+  tree_cell (tree_argument_list *row = nullptr)
+    : tree_array_list (row)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_cell)

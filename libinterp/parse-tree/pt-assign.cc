@@ -40,12 +40,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Simple assignment expressions.
 
-tree_simple_assignment::tree_simple_assignment (tree_expression *le,
-    tree_expression *re,
-    bool plhs, int l, int c,
-    octave_value::assign_op t)
-  : tree_expression (l, c), m_lhs (le), m_rhs (re), m_preserve (plhs),
-    m_ans_assign (), m_etype (t)
+tree_simple_assignment::tree_simple_assignment (tree_expression *le, tree_expression *re, bool plhs, octave_value::assign_op t)
+  : m_lhs (le), m_rhs (re), m_preserve (plhs), m_ans_assign (), m_etype (t)
 { }
 
 tree_simple_assignment::~tree_simple_assignment ()
@@ -153,10 +149,8 @@ tree_simple_assignment::evaluate (tree_evaluator& tw, int)
 
 // Multi-valued assignment expressions.
 
-tree_multi_assignment::tree_multi_assignment (tree_argument_list *lst,
-    tree_expression *r,
-    bool plhs, int l, int c)
-  : tree_expression (l, c), m_lhs (lst), m_rhs (r), m_preserve (plhs)
+tree_multi_assignment::tree_multi_assignment (tree_argument_list *lst, tree_expression *r, bool plhs)
+  : m_lhs (lst), m_rhs (r), m_preserve (plhs)
 { }
 
 tree_multi_assignment::~tree_multi_assignment ()

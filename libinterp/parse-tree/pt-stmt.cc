@@ -114,6 +114,27 @@ tree_statement::leading_comments () const
           : m_expression->leading_comments ());
 }
 
+filepos
+tree_statement::beg_pos () const
+{
+  return (m_command ? m_command->beg_pos () : m_expression->beg_pos ());
+}
+
+filepos
+tree_statement::end_pos () const
+{
+  return (m_command ? m_command->end_pos () : m_expression->end_pos ());
+}
+
+void
+tree_statement::update_end_pos (const filepos& pos)
+{
+  if (m_command)
+    m_command->update_end_pos (pos);
+  else
+    panic_impossible ();
+}
+
 std::string
 tree_statement::bp_cond () const
 {
@@ -136,15 +157,6 @@ tree_statement::column () const
   return (m_command
           ? m_command->column ()
           : (m_expression ? m_expression->column () : -1));
-}
-
-void
-tree_statement::set_location (int l, int c)
-{
-  if (m_command)
-    m_command->set_location (l, c);
-  else if (m_expression)
-    m_expression->set_location (l, c);
 }
 
 void

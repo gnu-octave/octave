@@ -32,6 +32,7 @@
 
 #include "comment-list.h"
 #include "pt-cmd.h"
+#include "pt-stmt.h"
 #include "pt-walk.h"
 #include "token.h"
 
@@ -47,8 +48,8 @@ class tree_if_clause : public tree
 {
 public:
 
-  tree_if_clause (const token& tok, tree_expression *e, tree_statement_list *sl, int l = -1, int c = -1)
-    : tree (l, c), m_tok (tok), m_expr (e), m_list (sl)
+  tree_if_clause (const token& tok, tree_expression *e, tree_statement_list *sl)
+    : m_tok (tok), m_expr (e), m_list (sl)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_if_clause)
@@ -58,6 +59,9 @@ public:
   token if_token () const { return m_tok; }
 
   bool is_else_clause () { return ! m_expr; }
+
+  filepos beg_pos () const { return m_tok.beg_pos (); }
+  filepos end_pos () const { return m_list->end_pos (); }
 
   tree_expression * condition () { return m_expr; }
 
@@ -101,6 +105,24 @@ public:
       }
   }
 
+  filepos beg_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_if_clause *elt = front ();
+    return elt->beg_pos ();
+  }
+
+  filepos end_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_if_clause *elt = back ();
+    return elt->end_pos ();
+  }
+
   token if_token () const
   {
     if (! empty ())
@@ -122,17 +144,20 @@ class tree_if_command : public tree_command
 {
 public:
 
-  tree_if_command (const token& if_tok, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_if_tok (if_tok), m_end_tok (end_tok)
+  tree_if_command (const token& if_tok, const token& end_tok)
+    : m_if_tok (if_tok), m_end_tok (end_tok)
   { }
 
-  tree_if_command (const token& if_tok, tree_if_command_list *lst, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_if_tok (if_tok), m_list (lst), m_end_tok (end_tok)
+  tree_if_command (const token& if_tok, tree_if_command_list *lst, const token& end_tok)
+    : m_if_tok (if_tok), m_list (lst), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_if_command)
 
   ~tree_if_command ();
+
+  filepos beg_pos () const { return m_if_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_if_command_list * cmd_list () { return m_list; }
 
@@ -159,12 +184,12 @@ class tree_switch_case : public tree
 {
 public:
 
-  tree_switch_case (const token& tok, tree_statement_list *sl, int l = -1, int c = -1)
-    : tree (l, c), m_tok (tok), m_list (sl)
+  tree_switch_case (const token& tok, tree_statement_list *sl)
+    : m_tok (tok), m_list (sl)
   { }
 
-  tree_switch_case (const token& tok, tree_expression *e, tree_statement_list *sl, int l = -1, int c = -1)
-    : tree (l, c), m_tok (tok), m_label (e), m_list (sl)
+  tree_switch_case (const token& tok, tree_expression *e, tree_statement_list *sl)
+    : m_tok (tok), m_label (e), m_list (sl)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_switch_case)
@@ -172,6 +197,9 @@ public:
   ~tree_switch_case ();
 
   bool is_default_case () { return ! m_label; }
+
+  filepos beg_pos () const { return m_tok.beg_pos (); }
+  filepos end_pos () const { return m_list->end_pos (); }
 
   tree_expression * case_label () { return m_label; }
 
@@ -215,6 +243,24 @@ public:
       }
   }
 
+  filepos beg_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_switch_case *elt = front ();
+    return elt->beg_pos ();
+  }
+
+  filepos end_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_switch_case *elt = back ();
+    return elt->end_pos ();
+  }
+
   void accept (tree_walker& tw)
   {
     tw.visit_switch_case_list (*this);
@@ -225,13 +271,16 @@ class tree_switch_command : public tree_command
 {
 public:
 
-  tree_switch_command (const token& switch_tok, tree_expression *e, tree_switch_case_list *lst, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_switch_tok (switch_tok), m_expr (e), m_list (lst), m_end_tok (end_tok)
+  tree_switch_command (const token& switch_tok, tree_expression *e, tree_switch_case_list *lst, const token& end_tok)
+    : m_switch_tok (switch_tok), m_expr (e), m_list (lst), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_switch_command)
 
   ~tree_switch_command ();
+
+  filepos beg_pos () const { return m_switch_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_expression * switch_value () { return m_expr; }
 

@@ -36,6 +36,7 @@ class octave_value_list;
 #include "ov.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -47,15 +48,12 @@ class tree_unary_expression : public tree_expression
 {
 protected:
 
-  tree_unary_expression (int l = -1, int c = -1,
-                         octave_value::unary_op t
-                         = octave_value::unknown_unary_op)
-    : tree_expression (l, c), m_op (nullptr), m_etype (t)  { }
+  tree_unary_expression (octave_value::unary_op t = octave_value::unknown_unary_op)
+    : m_op (nullptr), m_etype (t)  { }
 
-  tree_unary_expression (tree_expression *e, int l = -1, int c = -1,
-                         octave_value::unary_op t
-                         = octave_value::unknown_unary_op)
-    : tree_expression (l, c), m_op (e), m_etype (t) { }
+  tree_unary_expression (const token& op_tok, tree_expression *e, octave_value::unary_op t = octave_value::unknown_unary_op)
+    : m_op_tok (op_tok), m_op (e), m_etype (t)
+  { }
 
 public:
 
@@ -73,6 +71,9 @@ public:
 
 protected:
 
+  // The operator token.
+  token m_op_tok;
+
   // The operand for the expression.
   tree_expression *m_op;
 
@@ -86,17 +87,16 @@ class tree_prefix_expression : public tree_unary_expression
 {
 public:
 
-  tree_prefix_expression (int l = -1, int c = -1)
-    : tree_unary_expression (l, c, octave_value::unknown_unary_op) { }
-
-  tree_prefix_expression (tree_expression *e, int l = -1, int c = -1,
-                          octave_value::unary_op t
-                          = octave_value::unknown_unary_op)
-    : tree_unary_expression (e, l, c, t) { }
+  tree_prefix_expression (const token& op_tok, tree_expression *e, octave_value::unary_op t = octave_value::unknown_unary_op)
+    : tree_unary_expression (op_tok, e, t)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_prefix_expression)
 
   ~tree_prefix_expression () = default;
+
+  filepos beg_pos () const { return m_op_tok.beg_pos (); }
+  filepos end_pos () const { return m_op->end_pos (); }
 
   bool rvalue_ok () const { return true; }
 
@@ -123,17 +123,16 @@ class tree_postfix_expression : public tree_unary_expression
 {
 public:
 
-  tree_postfix_expression (int l = -1, int c = -1)
-    : tree_unary_expression (l, c, octave_value::unknown_unary_op) { }
-
-  tree_postfix_expression (tree_expression *e, int l = -1, int c = -1,
-                           octave_value::unary_op t
-                           = octave_value::unknown_unary_op)
-    : tree_unary_expression (e, l, c, t) { }
+  tree_postfix_expression (tree_expression *e, const token& op_tok, octave_value::unary_op t = octave_value::unknown_unary_op)
+    : tree_unary_expression (op_tok, e, t)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_postfix_expression)
 
   ~tree_postfix_expression () = default;
+
+  filepos beg_pos () const { return m_op->beg_pos (); }
+  filepos end_pos () const { return m_op_tok.end_pos (); }
 
   bool rvalue_ok () const { return true; }
 

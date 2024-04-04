@@ -62,6 +62,9 @@ public:
 
   ~tree_decl_elt ();
 
+  filepos beg_pos () const { return m_id->beg_pos (); }
+  filepos end_pos () const { return m_expr ? m_expr->end_pos () : m_id->end_pos (); }
+
   void mark_as_formal_parameter ()
   {
     m_id->mark_as_formal_parameter ();
@@ -124,6 +127,24 @@ public:
       }
   }
 
+  filepos beg_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_decl_elt *elt = front ();
+    return elt->beg_pos ();
+  }
+
+  filepos end_pos () const
+  {
+    if (empty ())
+      return filepos ();
+
+    tree_decl_elt *elt = back ();
+    return elt->end_pos ();
+  }
+
   void mark_global ()
   {
     for (tree_decl_elt *elt : *this)
@@ -163,15 +184,14 @@ class tree_decl_command : public tree_command
 {
 public:
 
-  tree_decl_command (const std::string& n, int l = -1, int c = -1)
-    : tree_command (l, c), m_cmd_name (n), m_init_list (nullptr) { }
-
-  tree_decl_command (const std::string& n, tree_decl_init_list *t,
-                     int l = -1, int c = -1);
+  tree_decl_command (const std::string& n, const token& tok, tree_decl_init_list *t);
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_decl_command)
 
   ~tree_decl_command ();
+
+  filepos beg_pos () const { return m_token.beg_pos (); }
+  filepos end_pos () const { return m_init_list->end_pos (); }
 
   void mark_global ()
   {
@@ -198,6 +218,8 @@ private:
 
   // The name of this command -- global, static, etc.
   std::string m_cmd_name;
+
+  token m_token;
 
   // The list of variables or initializers in this declaration command.
   tree_decl_init_list *m_init_list;

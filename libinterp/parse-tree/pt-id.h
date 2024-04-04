@@ -55,13 +55,10 @@ class tree_identifier : public tree_expression
 
 public:
 
-  tree_identifier (const token& tok)
-    : tree_expression (tok.line (), tok.column ()), m_sym (), m_token (tok)
-  { }
+  tree_identifier (const token& tok) : m_token (tok) { }
 
   tree_identifier (symbol_scope& scope, const token& tok)
-    : tree_expression (tok.line (), tok.column ()),
-      m_sym (scope ? scope.insert (tok.text ()) : symbol_record (tok.text ())),
+    : m_sym (scope ? scope.insert (tok.text ()) : symbol_record (tok.text ())),
       m_token (tok)
   { }
 
@@ -74,6 +71,9 @@ public:
   std::string name () const { return m_sym.name (); }
 
   comment_list leading_comments () const { return m_token.leading_comments (); }
+
+  filepos beg_pos () const { return m_token.beg_pos (); }
+  filepos end_pos () const { return m_token.end_pos (); }
 
   virtual bool is_black_hole () const { return false; }
 
@@ -123,7 +123,7 @@ public:
 protected:
 
   tree_identifier (symbol_record& sym, const token& tok)
-    : tree_expression (tok.line (), tok.column ()), m_sym (sym), m_token (tok)
+    : m_sym (sym), m_token (tok)
   { }
 
   // The symbol record that this identifier references.

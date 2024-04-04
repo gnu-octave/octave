@@ -27,18 +27,17 @@
 #  include "config.h"
 #endif
 
+#include "lo-array-errwarn.h"
 #include "unwind-prot.h"
 
 #include "error.h"
-#include "ovl.h"
-#include "ov-fcn.h"
-#include "pt-eval.h"
-
-#include "error.h"
+#include "filepos.h"
 #include "interpreter-private.h"
-#include "symtab.h"
 #include "interpreter.h"
-#include "lo-array-errwarn.h"
+#include "ov-fcn.h"
+#include "ovl.h"
+#include "pt-eval.h"
+#include "symtab.h"
 
 #include "pt-bytecode-walk.h"
 
@@ -50,6 +49,18 @@ octave_function::clone () const
 
 octave_base_value *
 octave_function::empty_clone () const
+{
+  panic_impossible ();
+}
+
+octave::filepos
+octave_function::beg_pos () const
+{
+  panic_impossible ();
+}
+
+octave::filepos
+octave_function::end_pos () const
 {
   panic_impossible ();
 }

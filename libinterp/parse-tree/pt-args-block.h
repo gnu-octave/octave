@@ -215,8 +215,8 @@ class tree_arguments_block : public tree_command
 {
 public:
 
-  tree_arguments_block (tree_args_block_attribute_list *attr_list, tree_args_block_validation_list *validation_list, int l = -1, int c = -1)
-    : tree_command (l, c), m_attr_list (attr_list), m_validation_list (validation_list)
+  tree_arguments_block (const token& args_tok, tree_args_block_attribute_list *attr_list, tree_args_block_validation_list *validation_list, const token& end_tok)
+    : m_args_tok (args_tok), m_attr_list (attr_list), m_validation_list (validation_list), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_arguments_block)
@@ -226,6 +226,9 @@ public:
     delete m_attr_list;
     delete m_validation_list;
   }
+
+  filepos beg_pos () const { return m_args_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_args_block_attribute_list * attribute_list ()
   {
@@ -244,9 +247,13 @@ public:
 
 private:
 
+  token m_args_tok;
+
   tree_args_block_attribute_list *m_attr_list;
 
   tree_args_block_validation_list *m_validation_list;
+
+  token m_end_tok;
 };
 
 OCTAVE_END_NAMESPACE(octave)

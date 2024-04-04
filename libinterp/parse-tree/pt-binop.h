@@ -47,19 +47,12 @@ class tree_binary_expression : public tree_expression
 {
 public:
 
-  tree_binary_expression (int l = -1, int c = -1,
-                          octave_value::binary_op t
-                          = octave_value::unknown_binary_op)
-    : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr), m_etype (t),
-      m_preserve_operands (false)
+  tree_binary_expression (octave_value::binary_op t = octave_value::unknown_binary_op)
+    : m_lhs (nullptr), m_rhs (nullptr), m_etype (t), m_preserve_operands (false)
   { }
 
-  tree_binary_expression (tree_expression *a, tree_expression *b,
-                          int l = -1, int c = -1,
-                          octave_value::binary_op t
-                          = octave_value::unknown_binary_op)
-    : tree_expression (l, c), m_lhs (a), m_rhs (b), m_etype (t),
-      m_preserve_operands (false)
+  tree_binary_expression (tree_expression *a, const token& op_tok, tree_expression *b, octave_value::binary_op t = octave_value::unknown_binary_op)
+    : m_lhs (a), m_op_tok (op_tok), m_rhs (b), m_etype (t), m_preserve_operands (false)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_binary_expression)
@@ -73,9 +66,14 @@ public:
       }
   }
 
+  token operator_token () const { return m_op_tok; }
+
   void preserve_operands () { m_preserve_operands = true; }
 
   bool is_binary_expression () const { return true; }
+
+  filepos beg_pos () const { return m_lhs->beg_pos (); }
+  filepos end_pos () const { return m_rhs->end_pos (); }
 
   bool rvalue_ok () const { return true; }
 
@@ -108,10 +106,14 @@ public:
   void matlab_style_short_circuit_warning (const char *op);
 
   virtual bool is_braindead () const { return false; }
+
 protected:
 
-  // The operands for the expression.
+  // The operands and operator for the expression.
   tree_expression *m_lhs;
+
+  token m_op_tok;
+
   tree_expression *m_rhs;
 
 private:
@@ -128,11 +130,8 @@ class tree_braindead_shortcircuit_binary_expression
 {
 public:
 
-  tree_braindead_shortcircuit_binary_expression (tree_expression *a,
-                                                 tree_expression *b,
-                                                 int l, int c,
-                                                 octave_value::binary_op t)
-    : tree_binary_expression (a, b, l, c, t)
+  tree_braindead_shortcircuit_binary_expression (tree_expression *a, const token& op_tok, tree_expression *b, octave_value::binary_op t)
+    : tree_binary_expression (a, op_tok, b, t)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_braindead_shortcircuit_binary_expression)
@@ -161,12 +160,11 @@ public:
     bool_or
   };
 
-  tree_boolean_expression (int l = -1, int c = -1, type t = unknown)
-    : tree_binary_expression (l, c), m_etype (t) { }
+  tree_boolean_expression (type t = unknown) : m_etype (t) { }
 
-  tree_boolean_expression (tree_expression *a, tree_expression *b,
-                           int l = -1, int c = -1, type t = unknown)
-    : tree_binary_expression (a, b, l, c), m_etype (t) { }
+  tree_boolean_expression (tree_expression *a, const token& op_tok, tree_expression *b, type t = unknown)
+    : tree_binary_expression (a, op_tok, b), m_etype (t)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_boolean_expression)
 

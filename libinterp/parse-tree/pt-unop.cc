@@ -48,8 +48,7 @@ tree_expression *
 tree_prefix_expression::dup (symbol_scope& scope) const
 {
   tree_prefix_expression *new_pe
-    = new tree_prefix_expression (m_op ? m_op->dup (scope) : nullptr,
-                                  line (), column (), m_etype);
+    = new tree_prefix_expression (m_op_tok, m_op ? m_op->dup (scope) : nullptr, m_etype);
 
   new_pe->copy_base (*this);
 
@@ -110,8 +109,7 @@ tree_expression *
 tree_postfix_expression::dup (symbol_scope& scope) const
 {
   tree_postfix_expression *new_pe
-    = new tree_postfix_expression (m_op ? m_op->dup (scope) : nullptr,
-                                   line (), column (), m_etype);
+    = new tree_postfix_expression (m_op ? m_op->dup (scope) : nullptr, m_op_tok, m_etype);
 
   new_pe->copy_base (*this);
 

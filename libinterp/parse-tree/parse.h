@@ -252,8 +252,7 @@ public:
 
   // Build an anonymous function handle.
   OCTINTERP_API tree_anon_fcn_handle *
-  make_anon_fcn_handle (tree_parameter_list *param_list,
-                        tree_expression *expr, const filepos& at_pos);
+  make_anon_fcn_handle (token *at_tok, tree_parameter_list *param_list, tree_expression *expr);
 
   // Build a colon expression.
   OCTINTERP_API tree_expression *
@@ -373,7 +372,7 @@ public:
 
   // Create a no-op statement for end_function.
   OCTINTERP_API tree_statement *
-  make_end (const std::string& type, bool eof, token *tok, const filepos& beg_pos, const filepos& end_pos);
+  make_end (const std::string& type, bool eof, token *tok);
 
   // Do most of the work for defining a function.
   OCTINTERP_API octave_user_function *
@@ -381,7 +380,7 @@ public:
 
   // Finish defining a function.
   OCTINTERP_API tree_function_def *
-  finish_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, octave_user_function *fcn, int l, int c);
+  finish_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, octave_user_function *fcn);
 
   OCTINTERP_API tree_statement_list *
   append_function_body (tree_statement_list *body, tree_statement_list *list);

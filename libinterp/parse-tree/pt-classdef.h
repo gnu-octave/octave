@@ -49,14 +49,16 @@ class tree_superclass_ref : public tree_expression
 {
 public:
 
-  tree_superclass_ref (const std::string& meth, const std::string& cls,
-                       int l = -1, int c = -1)
-    : tree_expression (l, c), m_method_name (meth), m_class_name (cls)
+  tree_superclass_ref (const std::string& meth, const std::string& cls, const token& tok)
+    : m_method_name (meth), m_class_name (cls), m_token (tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_superclass_ref)
 
   ~tree_superclass_ref () = default;
+
+  filepos beg_pos () const { return m_token.beg_pos (); }
+  filepos end_pos () const { return m_token.end_pos (); }
 
   std::string method_name () const
   {
@@ -90,19 +92,24 @@ private:
   // The name of the superclass.  This is the text after the "@"
   // and may be of the form "object.method".
   std::string m_class_name;
+
+  token m_token;
 };
 
 class tree_metaclass_query : public tree_expression
 {
 public:
 
-  tree_metaclass_query (const std::string& cls, int l = -1, int c = -1)
-    : tree_expression (l, c), m_class_name (cls)
+  tree_metaclass_query (const std::string& cls, const token& tok)
+    : m_class_name (cls), m_token (tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_metaclass_query)
 
   ~tree_metaclass_query () = default;
+
+  filepos beg_pos () const { return m_token.beg_pos (); }
+  filepos end_pos () const { return m_token.end_pos (); }
 
   std::string class_name () const { return m_class_name; }
 
@@ -123,6 +130,8 @@ public:
 private:
 
   std::string m_class_name;
+
+  token m_token;
 };
 
 class tree_classdef_attribute
@@ -148,6 +157,9 @@ public:
     delete m_id;
     delete m_expr;
   }
+
+  filepos beg_pos () const { return m_not_tok ? m_not_tok.beg_pos () : m_id->beg_pos (); }
+  filepos end_pos () const { return m_expr ? m_expr->end_pos () : m_id->end_pos (); }
 
   tree_identifier * ident () { return m_id; }
 
@@ -263,8 +275,8 @@ class tree_base_classdef_block : public tree
 {
 public:
 
-  tree_base_classdef_block (const token& block_tok, tree_classdef_attribute_list *a, const token& end_tok, int l = -1, int c = -1)
-    : tree (l, c), m_block_tok (block_tok), m_attr_list (a), m_end_tok (end_tok)
+  tree_base_classdef_block (const token& block_tok, tree_classdef_attribute_list *a, const token& end_tok)
+    : m_block_tok (block_tok), m_attr_list (a), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_base_classdef_block)
@@ -280,7 +292,7 @@ public:
 
   void accept (tree_walker&) { }
 
-private:
+protected:
 
   token m_block_tok;
 
@@ -295,8 +307,8 @@ class tree_classdef_block : public tree_base_classdef_block
 {
 public:
 
-  tree_classdef_block (const token& block_tok, tree_classdef_attribute_list *a, T *elt_list, const token& end_tok, int l = -1, int c = -1)
-    : tree_base_classdef_block (block_tok, a, end_tok, l, c), m_elt_list (elt_list)
+  tree_classdef_block (const token& block_tok, tree_classdef_attribute_list *a, T *elt_list, const token& end_tok)
+    : tree_base_classdef_block (block_tok, a, end_tok), m_elt_list (elt_list)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_block)
@@ -305,6 +317,9 @@ public:
   {
     delete m_elt_list;
   }
+
+  filepos beg_pos () const { return m_block_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   T * element_list () { return m_elt_list; }
 
@@ -374,8 +389,8 @@ class tree_classdef_properties_block : public tree_classdef_block<tree_classdef_
 {
 public:
 
-  tree_classdef_properties_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_property_list *plist, const token& end_tok, int l = -1, int c = -1)
-    : tree_classdef_block<tree_classdef_property_list> (block_tok, a, plist, end_tok, l, c)
+  tree_classdef_properties_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_property_list *plist, const token& end_tok)
+    : tree_classdef_block<tree_classdef_property_list> (block_tok, a, plist, end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_properties_block)
@@ -415,8 +430,8 @@ class tree_classdef_methods_block : public tree_classdef_block<tree_classdef_met
 {
 public:
 
-  tree_classdef_methods_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_method_list *mlist, const token& end_tok, int l = -1, int c = -1)
-    : tree_classdef_block<tree_classdef_method_list> (block_tok, a, mlist, end_tok, l, c)
+  tree_classdef_methods_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_method_list *mlist, const token& end_tok)
+    : tree_classdef_block<tree_classdef_method_list> (block_tok, a, mlist, end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_methods_block)
@@ -482,8 +497,8 @@ class tree_classdef_events_block : public tree_classdef_block<tree_classdef_even
 {
 public:
 
-  tree_classdef_events_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_event_list *elist, const token& end_tok, int l = -1, int c = -1)
-    : tree_classdef_block<tree_classdef_event_list> (block_tok, a, elist, end_tok, l, c)
+  tree_classdef_events_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_event_list *elist, const token& end_tok)
+    : tree_classdef_block<tree_classdef_event_list> (block_tok, a, elist, end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_events_block)
@@ -559,8 +574,8 @@ class tree_classdef_enum_block : public tree_classdef_block<tree_classdef_enum_l
 {
 public:
 
-  tree_classdef_enum_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_enum_list *elist, const token& end_tok, int l = -1, int c = -1)
-    : tree_classdef_block<tree_classdef_enum_list> (block_tok, a, elist, end_tok, l, c)
+  tree_classdef_enum_block (const token& block_tok, tree_classdef_attribute_list *a, tree_classdef_enum_list *elist, const token& end_tok)
+    : tree_classdef_block<tree_classdef_enum_list> (block_tok, a, elist, end_tok)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_classdef_enum_block)
@@ -681,8 +696,8 @@ class tree_classdef : public tree_command
 {
 public:
 
-  tree_classdef (const symbol_scope& scope, const token& cdef_tok, tree_classdef_attribute_list *a, tree_identifier *i, tree_classdef_superclass_list *sc, tree_classdef_body *b, const token& end_tok, const std::string& pn = "", const std::string& fn = "", int l = -1, int c = -1)
-    : tree_command (l, c), m_scope (scope), m_cdef_tok (cdef_tok), m_attr_list (a), m_id (i), m_supclass_list (sc), m_body (b), m_end_tok (end_tok), m_pack_name (pn), m_file_name (fn)
+  tree_classdef (const symbol_scope& scope, const token& cdef_tok, tree_classdef_attribute_list *a, tree_identifier *i, tree_classdef_superclass_list *sc, tree_classdef_body *b, const token& end_tok, const std::string& pn = "", const std::string& fn = "")
+    : m_scope (scope), m_cdef_tok (cdef_tok), m_attr_list (a), m_id (i), m_supclass_list (sc), m_body (b), m_end_tok (end_tok), m_pack_name (pn), m_file_name (fn)
   {
     cache_doc_string ();
   }
@@ -696,6 +711,9 @@ public:
     delete m_supclass_list;
     delete m_body;
   }
+
+  filepos beg_pos () const { return m_cdef_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   symbol_scope scope () { return m_scope; }
 
@@ -772,3 +790,4 @@ private:
 OCTAVE_END_NAMESPACE(octave)
 
 #endif
+

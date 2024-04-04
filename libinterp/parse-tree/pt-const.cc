@@ -63,8 +63,7 @@ tree_constant::print_raw (std::ostream& os, bool pr_as_read_syntax,
 tree_expression *
 tree_constant::dup (symbol_scope&) const
 {
-  tree_constant *new_tc
-    = new tree_constant (m_value, m_orig_text, line (), column ());
+  tree_constant *new_tc = new tree_constant (m_value, m_orig_text, m_token);
 
   new_tc->copy_base (*this);
 

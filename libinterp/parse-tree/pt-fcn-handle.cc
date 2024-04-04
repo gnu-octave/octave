@@ -53,7 +53,7 @@ tree_fcn_handle::print_raw (std::ostream& os, bool pr_as_read_syntax,
 tree_expression *
 tree_fcn_handle::dup (symbol_scope&) const
 {
-  tree_fcn_handle *new_fh = new tree_fcn_handle (m_name, line (), column ());
+  tree_fcn_handle *new_fh = new tree_fcn_handle (m_token);
 
   new_fh->copy_base (*this);
 
@@ -85,10 +85,10 @@ tree_anon_fcn_handle::dup (symbol_scope&) const
 
   // FIXME: if new scope is nullptr, then we are in big trouble here...
 
-  tree_anon_fcn_handle *new_afh = new
-  tree_anon_fcn_handle (param_list ? param_list->dup (new_scope) : nullptr,
-                        expr ? expr->dup (new_scope) : nullptr,
-                        new_scope, af_parent_scope, line (), column ());
+  tree_anon_fcn_handle *new_afh
+    = new tree_anon_fcn_handle (m_at_tok, param_list ? param_list->dup (new_scope) : nullptr,
+                                expr ? expr->dup (new_scope) : nullptr,
+                                new_scope, af_parent_scope);
 
   new_afh->copy_base (*this);
 

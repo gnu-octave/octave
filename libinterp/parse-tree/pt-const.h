@@ -38,6 +38,7 @@ class octave_value_list;
 #include "pt-bp.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
+#include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -48,17 +49,12 @@ class tree_constant : public tree_expression
 {
 public:
 
-  tree_constant (int l = -1, int c = -1)
-    : tree_expression (l, c), m_value (), m_orig_text ()
+  tree_constant (const octave_value& v, const token& tok)
+    : m_value (v), m_token (tok)
   { }
 
-  tree_constant (const octave_value& v, int l = -1, int c = -1)
-    : tree_expression (l, c), m_value (v), m_orig_text ()
-  { }
-
-  tree_constant (const octave_value& v, const std::string& ot,
-                 int l = -1, int c = -1)
-    : tree_expression (l, c), m_value (v), m_orig_text (ot)
+  tree_constant (const octave_value& v, const std::string& ot, const token& tok)
+    : m_value (v), m_orig_text (ot), m_token (tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_constant)
@@ -68,6 +64,9 @@ public:
   // Type.  It would be nice to eliminate the need for this.
 
   bool is_constant () const { return true; }
+
+  filepos beg_pos () const { return m_token.beg_pos (); }
+  filepos end_pos () const { return m_token.end_pos (); }
 
   void maybe_mutate () { m_value.maybe_mutate (); }
 
@@ -115,6 +114,8 @@ private:
 
   // The original text form of this constant.
   std::string m_orig_text;
+
+  token m_token;
 };
 
 OCTAVE_END_NAMESPACE(octave)

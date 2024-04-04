@@ -210,6 +210,8 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %token <tok> HERMITIAN TRANSPOSE
 %token <tok> PLUS_PLUS MINUS_MINUS POW EPOW
 %token <tok> NUMBER
+// The result of a constant folding operation.
+%token <tok> CONSTANT
 %token <tok> STRUCT_ELT
 %token <tok> NAME
 %token <tok> END
@@ -634,7 +636,7 @@ fcn_handle      : FCN_HANDLE
 
 anon_fcn_handle : '@' param_list anon_fcn_begin expression
                   {
-                    $$ = parser.make_anon_fcn_handle ($2, $4, $1->beg_pos ());
+                    $$ = parser.make_anon_fcn_handle ($1, $2, $4);
                     if (! $$)
                       {
                         // make_anon_fcn_handle deleted $2 and $4.
@@ -1470,8 +1472,7 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                       }
                     else
                       {
-                        octave::tree_statement *end_of_script
-                          = parser.make_end ("endscript", true, $4, $4->beg_pos (), $4->end_pos ());
+                        octave::tree_statement *end_of_script = parser.make_end ("endscript", true, $4);
 
                         parser.make_script ($3, end_of_script);
                       }
@@ -1543,7 +1544,7 @@ function_end    : END
                     parser.endfunction_found (true);
 
                     if (parser.end_token_ok ($1, octave::token::function_end))
-                      $$ = parser.make_end ("endfunction", false, $1, $1->beg_pos (), $1->end_pos ());
+                      $$ = parser.make_end ("endfunction", false, $1);
                     else
                       {
                         parser.end_token_error ($1, octave::token::function_end);
@@ -1580,7 +1581,7 @@ function_end    : END
                         YYABORT;
                       }
 
-                    $$ = parser.make_end ("endfunction", true, $1, $1->beg_pos (), $1->end_pos ());
+                    $$ = parser.make_end ("endfunction", true, $1);
                   }
                 ;
 
@@ -2718,9 +2719,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_constant *
   base_parser::make_constant (token *tok)
   {
-    int l = tok->line ();
-    int c = tok->column ();
-
     int op = tok->token_id ();
 
     tree_constant *retval = nullptr;
@@ -2728,17 +2726,11 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     switch (op)
       {
       case ':':
-        {
-          octave_value tmp (octave_value::magic_colon_t);
-          retval = new tree_constant (tmp);
-        }
+        retval = new tree_constant (octave_value (octave_value::magic_colon_t), *tok);
         break;
 
       case NUMBER:
-        {
-          retval = new tree_constant (tok->number (), l, c);
-          retval->stash_original_text (tok->text_rep ());
-        }
+        retval = new tree_constant (tok->number (), tok->text_rep (), *tok);
         break;
 
       case DQ_STRING:
@@ -2757,14 +2749,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                 tmp = octave_null_sq_str::instance;
             }
 
-          retval = new tree_constant (tmp, l, c);
-
           if (op == DQ_STRING)
             txt = undo_string_escapes (txt);
 
-          // FIXME: maybe this should also be handled by
+          // FIXME: maybe the addition of delims should be handled by
           // tok->text_rep () for character strings?
-          retval->stash_original_text (delim + txt + delim);
+
+          retval = new tree_constant (tmp, delim + txt + delim, *tok);
         }
         break;
 
@@ -2787,10 +2778,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_fcn_handle *
   base_parser::make_fcn_handle (token *tok)
   {
-    int l = tok->line ();
-    int c = tok->column ();
-
-    tree_fcn_handle *retval = new tree_fcn_handle (tok->text (), l, c);
+    tree_fcn_handle *retval = new tree_fcn_handle (*tok);
 
     return retval;
   }
@@ -2798,9 +2786,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   // Make an anonymous function handle.
 
   tree_anon_fcn_handle *
-  base_parser::make_anon_fcn_handle (tree_parameter_list *param_list,
-                                     tree_expression *expr,
-                                     const filepos& at_pos)
+  base_parser::make_anon_fcn_handle (token *at_tok, tree_parameter_list *param_list, tree_expression *expr)
   {
     // FIXME: We need to examine EXPR and issue an error if any
     // sub-expression contains an assignment, compound assignment,
@@ -2813,8 +2799,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         delete param_list;
         delete expr;
 
-        bison_error (validator.message (), validator.line (),
-                     validator.column ());
+        bison_error (validator.message (), validator.line (), validator.column ());
 
         return nullptr;
       }
@@ -2828,12 +2813,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     fcn_scope.mark_static ();
 
-    int at_line = at_pos.line ();
-    int at_column = at_pos.column ();
-
     tree_anon_fcn_handle *retval
-      = new tree_anon_fcn_handle (param_list, expr, fcn_scope,
-                                  parent_scope, at_line, at_column);
+      = new tree_anon_fcn_handle (*at_tok, param_list, expr, fcn_scope, parent_scope);
 
     std::ostringstream buf;
 
@@ -2848,7 +2829,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       buf << ": *terminal input*";
     else if (m_lexer.input_from_eval_string ())
       buf << ": *eval string*";
-    buf << ": line: " << at_line << " column: " << at_column;
+
+    filepos at_pos = at_tok->beg_pos ();
+    buf << ": line: " << at_pos.line () << " column: " << at_pos.column ();
 
     std::string scope_name = buf.str ();
 
@@ -2883,13 +2866,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         return retval;
       }
 
-    int l = base->line ();
-    int c = base->column ();
-
     token tmp_colon_2_tok = colon_2_tok ? *colon_2_tok : token ();
 
     tree_colon_expression *expr
-      = new tree_colon_expression (base, *colon_1_tok, incr, tmp_colon_2_tok, limit, l, c);
+      = new tree_colon_expression (base, *colon_1_tok, incr, tmp_colon_2_tok, limit);
 
     retval = expr;
 
@@ -2922,16 +2902,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             if (msg.empty ())
               {
-                tree_constant *tc_retval
-                  = new tree_constant (tmp, expr->line (), expr->column ());
-
                 std::ostringstream buf;
 
                 tree_print_code tpc (buf);
 
                 expr->accept (tpc);
 
-                tc_retval->stash_original_text (buf.str ());
+                std::string orig_text = buf.str ();
+
+                token tok (CONSTANT, tmp, orig_text, expr->beg_pos (), expr->end_pos ());
+
+                tree_constant *tc_retval = new tree_constant (tmp, orig_text, tok);
 
                 delete expr;
 
@@ -3033,10 +3014,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = op_tok->line ();
-    int c = op_tok->column ();
-
-    return maybe_compound_binary_expression (op1, op2, l, c, t);
+    return maybe_compound_binary_expression (op1, *op_tok, op2, t);
   }
 
   void
@@ -3044,8 +3022,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     if (expr->is_binary_expression ())
       {
-        tree_binary_expression *binexp
-          = dynamic_cast<tree_binary_expression *> (expr);
+        tree_binary_expression *binexp = dynamic_cast<tree_binary_expression *> (expr);
+
+        token op_tok = binexp->operator_token ();
 
         tree_expression *lhs = binexp->lhs ();
         tree_expression *rhs = binexp->rhs ();
@@ -3063,13 +3042,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           {
             binexp->preserve_operands ();
 
-            int line = expr->line ();
-            int column = expr->column ();
-
             delete expr;
 
-            expr = new tree_braindead_shortcircuit_binary_expression
-              (lhs, rhs, line, column, op_type);
+            expr = new tree_braindead_shortcircuit_binary_expression (lhs, op_tok, rhs, op_type);
           }
       }
   }
@@ -3096,10 +3071,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = op_tok->line ();
-    int c = op_tok->column ();
-
-    return new tree_boolean_expression (op1, op2, l, c, t);
+    return new tree_boolean_expression (op1, *op_tok, op2, t);
   }
 
   // Build a prefix expression.
@@ -3137,10 +3109,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = op_tok->line ();
-    int c = op_tok->column ();
-
-    return new tree_prefix_expression (op1, l, c, t);
+    return new tree_prefix_expression (*op_tok, op1, t);
   }
 
   // Build a postfix expression.
@@ -3173,10 +3142,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = op_tok->line ();
-    int c = op_tok->column ();
-
-    return new tree_postfix_expression (op1, l, c, t);
+    return new tree_postfix_expression (op1, *op_tok, t);
   }
 
   // Build an unwind-protect command.
@@ -3188,10 +3154,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::unwind_protect_end))
       {
-        int l = unwind_tok->line ();
-        int c = unwind_tok->column ();
-
-        retval = new tree_unwind_protect_command (*unwind_tok, body, *cleanup_tok, cleanup_stmts, *end_tok, l, c);
+        retval = new tree_unwind_protect_command (*unwind_tok, body, *cleanup_tok, cleanup_stmts, *end_tok);
       }
     else
       {
@@ -3213,9 +3176,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::try_catch_end))
       {
-        int l = try_tok->line ();
-        int c = try_tok->column ();
-
         tree_identifier *id = nullptr;
 
         // Look for exception ID.  Could this be done in the grammar or
@@ -3243,7 +3203,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         token tmp_catch_tok = catch_tok ? *catch_tok : token ();
 
-        retval = new tree_try_catch_command (*try_tok, body, tmp_catch_tok, id, cleanup_stmts, *end_tok, l, c);
+        retval = new tree_try_catch_command (*try_tok, body, tmp_catch_tok, id, cleanup_stmts, *end_tok);
       }
     else
       {
@@ -3269,10 +3229,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         m_lexer.m_looping--;
 
-        int l = while_tok->line ();
-        int c = while_tok->column ();
-
-        retval = new tree_while_command (*while_tok, expr, body, *end_tok, l, c);
+        retval = new tree_while_command (*while_tok, expr, body, *end_tok);
       }
     else
       {
@@ -3294,10 +3251,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     m_lexer.m_looping--;
 
-    int l = until_tok->line ();
-    int c = until_tok->column ();
-
-    return new tree_do_until_command (*do_tok, body, *until_tok, expr, l, c);
+    return new tree_do_until_command (*do_tok, body, *until_tok, expr);
   }
 
   // Build a for command.
@@ -3319,16 +3273,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         m_lexer.m_looping--;
 
-        int l = for_tok->line ();
-        int c = for_tok->column ();
-
         if (lhs->size () == 1)
           {
             tree_expression *tmp = lhs->remove_front ();
 
             m_lexer.mark_as_variable (tmp->name ());
 
-            retval = new tree_simple_for_command (parfor, *for_tok, tmp_open_paren, tmp, *eq_tok, expr, tmp_sep_tok, maxproc, tmp_close_paren, body, *end_tok, l, c);
+            retval = new tree_simple_for_command (parfor, *for_tok, tmp_open_paren, tmp, *eq_tok, expr, tmp_sep_tok, maxproc, tmp_close_paren, body, *end_tok);
 
             delete lhs;
           }
@@ -3345,7 +3296,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
           {
             m_lexer.mark_as_variables (lhs->variable_names ());
 
-            retval = new tree_complex_for_command (*for_tok, lhs, *eq_tok, expr, body, *end_tok, l, c);
+            retval = new tree_complex_for_command (*for_tok, lhs, *eq_tok, expr, body, *end_tok);
           }
       }
     else
@@ -3366,16 +3317,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_command *
   base_parser::make_break_command (token *break_tok)
   {
-    int l = break_tok->line ();
-    int c = break_tok->column ();
-
     if (! m_lexer.m_looping)
       {
         bison_error ("break must appear within a loop");
         return nullptr;
       }
     else
-      return new tree_break_command (l, c);
+      return new tree_break_command (*break_tok);
   }
 
   // Build a continue command.
@@ -3383,16 +3331,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_command *
   base_parser::make_continue_command (token *continue_tok)
   {
-    int l = continue_tok->line ();
-    int c = continue_tok->column ();
-
     if (! m_lexer.m_looping)
       {
         bison_error ("continue must appear within a loop");
         return nullptr;
       }
     else
-      return new tree_continue_command (l, c);
+      return new tree_continue_command (*continue_tok);
   }
 
   // Build a return command.
@@ -3400,10 +3345,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_command *
   base_parser::make_return_command (token *return_tok)
   {
-    int l = return_tok->line ();
-    int c = return_tok->column ();
-
-    return new tree_return_command (l, c);
+    return new tree_return_command (*return_tok);
   }
 
   // Build an spmd command.
@@ -3414,12 +3356,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     tree_spmd_command *retval = nullptr;
 
     if (end_token_ok (end_tok, token::spmd_end))
-      {
-        int l = spmd_tok->line ();
-        int c = spmd_tok->column ();
-
-        retval = new tree_spmd_command (body, l, c);
-      }
+      retval = new tree_spmd_command (*spmd_tok, body, *end_tok);
     else
       {
         delete body;
@@ -3452,18 +3389,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         token if_tok = list->if_token ();
 
-        int l = if_tok.line ();
-        int c = if_tok.column ();
-
-        tree_if_clause *elt = list->front ();
-
-        if (elt)
-          {
-            elt->line (l);
-            elt->column (c);
-          }
-
-        retval = new tree_if_command (if_tok, list, *end_tok, l, c);
+        retval = new tree_if_command (if_tok, list, *end_tok);
       }
     else
       {
@@ -3488,10 +3414,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         maybe_convert_to_braindead_shortcircuit (expr);
       }
 
-    int l = tok->line ();
-    int c = tok->column ();
-
-    return new tree_if_clause (*tok, expr, list, l, c);
+    return new tree_if_clause (*tok, expr, list);
   }
 
   tree_if_command_list *
@@ -3508,23 +3431,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     tree_switch_command *retval = nullptr;
 
     if (end_token_ok (end_tok, token::switch_end))
-      {
-        int l = switch_tok->line ();
-        int c = switch_tok->column ();
-
-        if (list && ! list->empty ())
-          {
-            tree_switch_case *elt = list->front ();
-
-            if (elt)
-              {
-                elt->line (l);
-                elt->column (c);
-              }
-          }
-
-        retval = new tree_switch_command (*switch_tok, expr, list, *end_tok, l, c);
-      }
+      retval = new tree_switch_command (*switch_tok, expr, list, *end_tok);
     else
       {
         delete expr;
@@ -3549,19 +3456,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     maybe_warn_variable_switch_label (expr);
 
-    int l = case_tok->line ();
-    int c = case_tok->column ();
-
-    return new tree_switch_case (*case_tok, expr, list, l, c);
+    return new tree_switch_case (*case_tok, expr, list);
   }
 
   tree_switch_case *
   base_parser::make_default_switch_case (token *default_tok, tree_statement_list *list)
   {
-    int l = default_tok->line ();
-    int c = default_tok->column ();
-
-    return new tree_switch_case (*default_tok, list, l, c);
+    return new tree_switch_case (*default_tok, list);
   }
 
   tree_switch_case_list *
@@ -3637,9 +3538,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         break;
       }
 
-    int l = eq_tok->line ();
-    int c = eq_tok->column ();
-
     if (! lhs->is_simple_assign_lhs () && t != octave_value::op_asn_eq)
       {
         // Multiple assignments like [x,y] OP= rhs are only valid for
@@ -3679,7 +3577,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         m_lexer.mark_as_variable (tmp->name ());
 
-        return new tree_simple_assignment (tmp, rhs, false, l, c, t);
+        return new tree_simple_assignment (tmp, rhs, false, t);
       }
     else
       {
@@ -3701,7 +3599,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         m_lexer.mark_as_variables (names);
 
-        return new tree_multi_assignment (lhs, rhs, false, l, c);
+        return new tree_multi_assignment (lhs, rhs, false);
       }
   }
 
@@ -3836,13 +3734,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     else
       doc_string = leading_doc_comment.text ();
 
-    int l = fcn_tok->line ();
-    int c = fcn_tok->column ();
+    octave_user_function *tmp_fcn = start_function (id, param_list, body, end_fcn_stmt, doc_string);
 
-    octave_user_function *tmp_fcn
-      = start_function (id, param_list, body, end_fcn_stmt, doc_string);
-
-    tree_function_def *retval = finish_function (fcn_tok, ret_list, eq_tok, tmp_fcn, l, c);
+    tree_function_def *retval = finish_function (fcn_tok, ret_list, eq_tok, tmp_fcn);
 
     recover_from_parsing_function ();
 
@@ -3862,8 +3756,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     std::string id_name = id->name ();
 
-    delete id;
-
     if (m_lexer.m_parsing_classdef_get_method)
       id_name.insert (0, "get.");
     else if (m_lexer.m_parsing_classdef_set_method)
@@ -3878,11 +3770,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     body->push_back (end_fcn_stmt);
 
     octave_user_function *fcn
-      = new octave_user_function (m_lexer.m_symtab_context.curr_scope (),
-                                  param_list, nullptr, body);
-
-    fcn->stash_fcn_end_location (end_fcn_stmt->line (),
-                                 end_fcn_stmt->column ());
+      = new octave_user_function (m_lexer.m_symtab_context.curr_scope (), id, param_list, nullptr, body);
 
     // If input is coming from a file, issue a warning if the name of
     // the file does not match the name of the function stated in the
@@ -3981,17 +3869,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   tree_statement *
-  base_parser::make_end (const std::string& type, bool eof, token *end_tok,
-                         const filepos& beg_pos, const filepos& /*end_pos*/)
+  base_parser::make_end (const std::string& type, bool eof, token *end_tok)
   {
-    int l = beg_pos.line ();
-    int c = beg_pos.column ();
-
-    return make_statement (new tree_no_op_command (type, eof, *end_tok, l, c));
+    return make_statement (new tree_no_op_command (type, eof, *end_tok));
   }
 
   tree_function_def *
-  base_parser::finish_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, octave_user_function *fcn, int l, int c)
+  base_parser::finish_function (token *fcn_tok, tree_parameter_list *ret_list, token *eq_tok, octave_user_function *fcn)
   {
     tree_function_def *retval = nullptr;
 
@@ -4024,8 +3908,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
         if (m_curr_fcn_depth > 0 || m_parsing_subfunctions)
           {
-            fcn->stash_fcn_location (l, c);
-
             octave_value ov_fcn (fcn);
 
             if (m_endfunction_found && m_function_scopes.size () > 1)
@@ -4077,7 +3959,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                 m_lexer.m_buffer_function_text = false;
               }
 
-            retval = new tree_function_def (fcn, l, c);
+            retval = new tree_function_def (fcn);
           }
       }
 
@@ -4106,14 +3988,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     tree_arguments_block *retval = nullptr;
 
     if (end_token_ok (end_tok, token::arguments_end))
-      {
-        filepos beg_pos = arguments_tok->beg_pos ();
-
-        int l = beg_pos.line ();
-        int c = beg_pos.column ();
-
-        retval = new tree_arguments_block (attr_list, validation_list, l, c);
-      }
+      retval = new tree_arguments_block (*arguments_tok, attr_list, validation_list, *end_tok);
     else
       {
         delete attr_list;
@@ -4235,13 +4110,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
         if (end_token_ok (end_tok, token::classdef_end))
           {
-            int l = cdef_tok->line ();
-            int c = cdef_tok->column ();
-
             if (! body)
               body = new tree_classdef_body ();
 
-            retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (), *cdef_tok, a, id, sc, body, *end_tok, m_curr_package_name, full_name, l, c);
+            retval = new tree_classdef (m_lexer.m_symtab_context.curr_scope (), *cdef_tok, a, id, sc, body, *end_tok, m_curr_package_name, full_name);
           }
         else
           {
@@ -4264,9 +4136,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::properties_end))
       {
-        int l = tok->line ();
-        int c = tok->column ();
-
         if (plist)
           {
             // If the element at the end of the list doesn't have a doc
@@ -4292,7 +4161,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         else
           plist = new tree_classdef_property_list ();
 
-        retval = new tree_classdef_properties_block (*tok, a, plist, *end_tok, l, c);
+        retval = new tree_classdef_properties_block (*tok, a, plist, *end_tok);
       }
     else
       {
@@ -4329,13 +4198,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::methods_end))
       {
-        int l = tok->line ();
-        int c = tok->column ();
-
         if (! mlist)
           mlist = new tree_classdef_method_list ();
 
-        retval = new tree_classdef_methods_block (*tok, a, mlist, *end_tok, l, c);
+        retval = new tree_classdef_methods_block (*tok, a, mlist, *end_tok);
       }
     else
       {
@@ -4355,13 +4221,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::events_end))
       {
-        int l = tok->line ();
-        int c = tok->column ();
-
         if (! elist)
           elist = new tree_classdef_event_list ();
 
-        retval = new tree_classdef_events_block (*tok, a, elist, *end_tok, l, c);
+        retval = new tree_classdef_events_block (*tok, a, elist, *end_tok);
       }
     else
       {
@@ -4393,13 +4256,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (end_token_ok (end_tok, token::enumeration_end))
       {
-        int l = tok->line ();
-        int c = tok->column ();
-
         if (! elist)
           elist = new tree_classdef_enum_list ();
 
-        retval = new tree_classdef_enum_block (*tok, a, elist, *end_tok, l, c);
+        retval = new tree_classdef_enum_block (*tok, a, elist, *end_tok);
       }
     else
       {
@@ -4552,8 +4412,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   }
 
   octave_user_function*
-  base_parser::start_classdef_external_method (tree_identifier *id,
-                                               tree_parameter_list *pl)
+  base_parser::start_classdef_external_method (tree_identifier *id, tree_parameter_list *pl)
   {
     octave_user_function* retval = nullptr;
 
@@ -4562,7 +4421,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (! m_curr_class_name.empty ())
       {
-
         std::string mname = id->name ();
 
         // Methods that cannot be declared outside the classdef file:
@@ -4577,14 +4435,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             // Create a dummy function that is used until the real method
             // is loaded.
 
-            retval = new octave_user_function (symbol_scope::anonymous (), pl);
+            retval = new octave_user_function (symbol_scope::anonymous (), id, pl);
 
             retval->stash_function_name (mname);
-
-            int l = id->line ();
-            int c = id->column ();
-
-            retval->stash_fcn_location (l, c);
           }
         else
           bison_error ("invalid external method declaration, an external "
@@ -4593,9 +4446,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
     else
       bison_error ("external methods are only allowed in @-folders");
-
-    if (! retval)
-      delete id;
 
     return retval;
   }
@@ -4611,10 +4461,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     if (eq_tok)
       fcn->set_eq_tok (*eq_tok);
 
-    int l = fcn->beginning_line ();
-    int c = fcn->beginning_column ();
-
-    return new tree_function_def (fcn, l, c);
+    return new tree_function_def (fcn);
   }
 
   tree_classdef_method_list *
@@ -4720,7 +4567,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     tree_index_expression *retval = nullptr;
 
-    if (args && args->has_magic_tilde ())
+    if (! args)
+      args = new tree_argument_list ();
+
+    if (args->has_magic_tilde ())
       {
         delete expr;
         delete args;
@@ -4729,9 +4579,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       }
     else
       {
-        int l = expr->line ();
-        int c = expr->column ();
-
         if (! expr->is_postfix_indexed ())
           expr->set_postfix_index (type);
 
@@ -4745,7 +4592,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
             retval->append (tmp_open_delim, args, tmp_close_delim, type);
           }
         else
-          retval = new tree_index_expression (expr, tmp_open_delim, args, tmp_close_delim, l, c, type);
+          retval = new tree_index_expression (expr, tmp_open_delim, args, tmp_close_delim, type);
       }
 
     return retval;
@@ -4758,9 +4605,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     tree_index_expression *retval = nullptr;
 
-    int l = expr->line ();
-    int c = expr->column ();
-
     if (! expr->is_postfix_indexed ())
       expr->set_postfix_index ('.');
 
@@ -4771,7 +4615,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         retval->append (*dot_tok, *struct_elt_tok);
       }
     else
-      retval = new tree_index_expression (expr, *dot_tok, *struct_elt_tok, l, c);
+      retval = new tree_index_expression (expr, *dot_tok, *struct_elt_tok);
 
     m_lexer.m_looking_at_indirect_ref = false;
 
@@ -4785,9 +4629,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     tree_index_expression *retval = nullptr;
 
-    int l = expr->line ();
-    int c = expr->column ();
-
     if (! expr->is_postfix_indexed ())
       expr->set_postfix_index ('.');
 
@@ -4798,7 +4639,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         retval->append (*dot_tok, *open_paren, elt, *close_paren);
       }
     else
-      retval = new tree_index_expression (expr, *dot_tok, *open_paren, elt, *close_paren, l, c);
+      retval = new tree_index_expression (expr, *dot_tok, *open_paren, elt, *close_paren);
 
     m_lexer.m_looking_at_indirect_ref = false;
 
@@ -4812,9 +4653,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     tree_decl_command *retval = nullptr;
 
-    int l = tok->line ();
-    int c = tok->column ();
-
     if (lst)
       m_lexer.mark_as_variables (lst->variable_names ());
 
@@ -4822,7 +4660,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       {
       case GLOBAL:
         {
-          retval = new tree_decl_command ("global", lst, l, c);
+          retval = new tree_decl_command ("global", *tok, lst);
           retval->mark_global ();
         }
         break;
@@ -4830,16 +4668,19 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       case PERSISTENT:
         if (m_curr_fcn_depth >= 0)
           {
-            retval = new tree_decl_command ("persistent", lst, l, c);
+            retval = new tree_decl_command ("persistent", *tok, lst);
             retval->mark_persistent ();
           }
         else
           {
+            filepos pos = tok->beg_pos ();
+            int line = pos.line ();
+
             if (m_lexer.m_reading_script_file)
               warning ("ignoring persistent declaration near line %d of file '%s'",
-                       l, m_lexer.m_fcn_file_full_name.c_str ());
+                       line, m_lexer.m_fcn_file_full_name.c_str ());
             else
-              warning ("ignoring persistent declaration near line %d", l);
+              warning ("ignoring persistent declaration near line %d", line);
           }
         break;
 
@@ -5032,8 +4873,6 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     array_list->mark_in_delims (*open_delim, *close_delim);
 
-    array_list->set_location (close_delim->line (), close_delim->column ());
-
     if (array_list->all_elements_are_constant ())
       {
         interpreter& interp = m_lexer.m_interpreter;
@@ -5062,17 +4901,17 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
             if (msg.empty ())
               {
-                tree_constant *tc_retval
-                  = new tree_constant (tmp, close_delim->line (),
-                                       close_delim->column ());
-
                 std::ostringstream buf;
 
                 tree_print_code tpc (buf);
 
                 array_list->accept (tpc);
 
-                tc_retval->stash_original_text (buf.str ());
+                std::string orig_text = buf.str ();
+
+                token tok (CONSTANT, tmp, orig_text, open_delim->beg_pos (), close_delim->end_pos ());
+
+                tree_constant *tc_retval = new tree_constant (tmp, orig_text, tok);
 
                 delete array_list;
 
@@ -5093,10 +4932,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_expression *
   base_parser::finish_matrix (token *open_delim, tree_matrix *m, token *close_delim)
   {
-    return (m
-            ? finish_array_list (open_delim, m, close_delim)
-            : new tree_constant (octave_null_matrix::instance,
-                                 close_delim->line (), close_delim->column ()));
+    if (m)
+      return finish_array_list (open_delim, m, close_delim);
+
+    octave_value tmp {octave_null_matrix::instance};
+    std::string orig_text {"{}"};
+
+    token tok (CONSTANT, tmp, orig_text, open_delim->beg_pos (), close_delim->end_pos ());
+
+    return new tree_constant (tmp, orig_text, tok);
   }
 
   tree_matrix *
@@ -5119,10 +4963,15 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   tree_expression *
   base_parser::finish_cell (token *open_delim, tree_cell *c, token *close_delim)
   {
-    return (c
-            ? finish_array_list (open_delim, c, close_delim)
-            : new tree_constant (octave_value (Cell ()),
-                                 close_delim->line (), close_delim->column ()));
+    if (c)
+      return finish_array_list (open_delim, c, close_delim);
+
+    octave_value tmp {Cell ()};
+    std::string orig_text {"{}"};
+
+    token tok (CONSTANT, tmp, orig_text, open_delim->beg_pos (), close_delim->end_pos ());
+
+    return new tree_constant (tmp, orig_text, tok);
   }
 
   tree_cell *
@@ -5154,10 +5003,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     std::string meth = superclassref->superclass_method_name ();
     std::string cls = superclassref->superclass_class_name ();
 
-    int l = superclassref->line ();
-    int c = superclassref->column ();
-
-    return new tree_superclass_ref (meth, cls, l, c);
+    return new tree_superclass_ref (meth, cls, *superclassref);
   }
 
   tree_metaclass_query *
@@ -5165,10 +5011,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   {
     std::string cls = metaquery->text ();
 
-    int l = metaquery->line ();
-    int c = metaquery->column ();
-
-    return new tree_metaclass_query (cls, l, c);
+    return new tree_metaclass_query (cls, *metaquery);
   }
 
   tree_statement_list *

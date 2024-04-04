@@ -3462,9 +3462,7 @@ tree_evaluator::evaluate_anon_fcn_handle (tree_anon_fcn_handle& afh)
         local_vars[name] = val;
     }
 
-  octave_user_function *af
-    = new octave_user_function (new_scope, param_list_dup, ret_list,
-                                stmt_list);
+  octave_user_function *af = new octave_user_function (new_scope, nullptr, param_list_dup, ret_list, stmt_list);
 
   octave_function *curr_fcn = m_call_stack.current_function ();
 

@@ -30,6 +30,7 @@
 
 #include <stack>
 
+#include "filepos.h"
 #include "token.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -42,11 +43,31 @@ public:
 
   OCTAVE_DEFAULT_CONSTRUCT_COPY_MOVE_DELETE (tree_delimiter_list)
 
-    size_t count () const { return m_delimiters.size (); }
+  size_t count () const { return m_delimiters.size (); }
+
+  bool empty () const { return m_delimiters.empty (); }
 
   void push (const token& open_delim, const token& close_delim)
   {
     m_delimiters.push (element_type (open_delim, close_delim));
+  }
+
+  filepos beg_pos () const
+  {
+    if (m_delimiters.empty ())
+      return filepos ();
+
+    const element_type& elt = m_delimiters.top ();
+    return elt.first.beg_pos ();
+  }
+
+  filepos end_pos () const
+  {
+    if (m_delimiters.empty ())
+      return filepos ();
+
+    const element_type& elt = m_delimiters.top ();
+    return elt.second.end_pos ();
   }
 
 private:

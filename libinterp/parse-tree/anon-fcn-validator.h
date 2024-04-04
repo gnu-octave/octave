@@ -63,9 +63,6 @@ public:
   filepos beg_pos () const { return m_beg_pos; }
   filepos end_pos () const { return m_end_pos; }
 
-  int line () const { return m_beg_pos.line (); }
-  int column () const { return m_beg_pos.column (); }
-
   std::string message () const { return m_message; }
 
 private:

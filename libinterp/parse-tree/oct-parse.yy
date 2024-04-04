@@ -197,7 +197,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
   octave::tree_classdef_enum_block* tree_classdef_enum_block_type;
 }
 
-// Tokens with line and column information.
+// Tokens with position information.
 %token <tok> '=' ':' '-' '+' '*' '/' '~' '!'
 %token <tok> '(' ')' '[' ']' '{' '}' '.' '@'
 %token <tok> ',' ';' '\n'
@@ -2225,10 +2225,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     parse_exception (const std::string& message,
                      const std::string& fcn_name = "",
                      const std::string& file_name = "",
-                     int line = -1, int column = -1)
+                     const filepos& pos = filepos ())
       : runtime_error (message), m_message (message),
         m_fcn_name (fcn_name), m_file_name (file_name),
-        m_line (line), m_column (column)
+        m_pos (pos)
     { }
 
     OCTAVE_DEFAULT_COPY_MOVE_DELETE (parse_exception)
@@ -2241,8 +2241,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
     std::string fcn_name () const { return m_fcn_name; }
     std::string file_name () const { return m_file_name; }
 
-    int line () const { return m_line; }
-    int column () const { return m_column; }
+    filepos pos () const { return m_pos; }
 
     // virtual void display (std::ostream& os) const;
 
@@ -2252,8 +2251,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     std::string m_fcn_name;
     std::string m_file_name;
-    int m_line;
-    int m_column;
+    filepos m_pos;
   };
 
   class parse_tree_validator : public tree_walker
@@ -2319,11 +2317,8 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
           if (m_scope.is_variable (sym_nm))
             {
-              std::string message
-                = sym_nm + ": invalid use of symbol as both variable and command";
-              parse_exception pe (message, m_scope.fcn_name (),
-                                  m_scope.fcn_file_name (),
-                                  idx_expr.line (), idx_expr.column ());
+              std::string message = sym_nm + ": invalid use of symbol as both variable and command";
+              parse_exception pe (message, m_scope.fcn_name (), m_scope.fcn_file_name (), idx_expr.beg_pos ());
 
               m_error_list.push_back (pe);
             }
@@ -2728,7 +2723,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
         delete param_list;
         delete expr;
 
-        bison_error (validator.message (), validator.line (), validator.column ());
+        bison_error (validator.message (), validator.beg_pos ());
 
         return nullptr;
       }
@@ -3585,8 +3580,13 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (! m_function_scopes.name_current_scope (id_name))
       {
-        bison_error ("duplicate subfunction or nested function name",
-                     id->line (), id->column () + 1);
+        // FIXME: is this correct?  Before using position, the column
+        // was incremented.  Hmm.
+
+        filepos id_pos = id->beg_pos ();
+        id_pos.increment_column ();
+
+        bison_error ("duplicate subfunction or nested function name", id_pos);
 
         delete id;
         return nullptr;
@@ -4024,15 +4024,12 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     if (short_name != cls_name)
       {
-        int l = id->line ();
-        int c = id->column ();
-
         delete a;
         delete id;
         delete sc;
         delete body;
 
-        bison_error ("invalid classdef definition, the class name must match the filename", l, c);
+        bison_error ("invalid classdef definition, the class name must match the filename", id->beg_pos ());
 
       }
     else
@@ -5077,13 +5074,10 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void
   base_parser::bison_error (const std::string& str, const filepos& pos)
   {
-    bison_error (str, pos.line (), pos.column ());
-  }
-
-  void
-  base_parser::bison_error (const std::string& str, int err_line, int err_col)
-  {
     std::ostringstream output_buf;
+
+    int err_line = pos.line ();
+    int err_col = pos.column ();
 
     bool in_file = (m_lexer.m_reading_fcn_file || m_lexer.m_reading_script_file
                     || m_lexer.m_reading_classdef_file);
@@ -5134,7 +5128,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
   void
   base_parser::bison_error (const parse_exception& pe)
   {
-    bison_error (pe.message (), pe.line (), pe.column ());
+    bison_error (pe.message (), pe.pos ());
   }
 
   void
@@ -5145,7 +5139,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
     parse_exception pe = pe_list.front ();
 
-    bison_error (pe.message (), pe.line (), pe.column ());
+    bison_error (pe.message (), pe.pos ());
   }
 
   int

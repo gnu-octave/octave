@@ -647,7 +647,6 @@ public:
   // Generic error messages.
   OCTINTERP_API void bison_error (const std::string& s);
   OCTINTERP_API void bison_error (const std::string& s, const filepos& pos);
-  OCTINTERP_API void bison_error (const std::string& s, int line, int column);
   OCTINTERP_API void bison_error (const std::list<parse_exception>& pe);
   OCTINTERP_API void bison_error (const parse_exception& pe);
 

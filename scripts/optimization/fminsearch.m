@@ -115,8 +115,20 @@
 ## fminsearch (@@(x) (x(1)-5).^2+(x(2)-8).^4, [0;0])
 ## @end example
 ##
-## Note: If you need to find the minimum of a single variable function it is
+## Application Notes:
+## @enumerate
+## @item
+## If you need to find the minimum of a single variable function it is
 ## probably better to use @code{fminbnd}.
+## @item
+## The legacy, undocumented syntax for passing parameters to @var{fcn} by
+## appending them to the input argument list after @var{options} is
+## discouraged and will  be completely removed in Octave 10.  The
+## preferred, cross-platform compatible method of passing parameters to
+## @var{fcn} is through use of @ref{Anonymous Functions}.  For specific
+## examples of doing so for @code{fminsearch} and other minimization
+## functions see the @ref{Minimizers} section of the GNU Octave manual.
+## @end enumerate
 ## @seealso{fminbnd, fminunc, optimset}
 ## @end deftypefn
 

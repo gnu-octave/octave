@@ -1194,6 +1194,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
       msgBox->show ();
+      msgBox->raise ();
 
       return;
     }
@@ -1220,6 +1221,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
       msgBox->setWindowModality (Qt::NonModal);
       msgBox->setAttribute (Qt::WA_DeleteOnClose);
       msgBox->show ();
+      msgBox->raise ();
 
       return;
     }
@@ -1820,6 +1822,7 @@ file_editor::request_open_file (const QString& openFileName,
                           msgBox->setWindowModality (Qt::NonModal);
                           msgBox->setAttribute (Qt::WA_DeleteOnClose);
                           msgBox->show ();
+                          msgBox->raise ();
                         }
                       else
                         {

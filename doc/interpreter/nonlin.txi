@@ -177,7 +177,7 @@ functions use different internal algorithms and some knowledge of the objective
 function is required.  For functions which can be differentiated,
 @code{fminunc} is appropriate.  For functions with discontinuities, or for
 which a gradient search would fail, use @code{fminsearch}.
-@xref{Optimization}, for minimization with the presence of constraint
+@xref{Optimization} for minimization with the presence of constraint
 functions.  Note that searches can be made for maxima by simply inverting the
 objective function
 @tex
@@ -192,6 +192,37 @@ objective function
 @DOCSTRING(fminunc)
 
 @DOCSTRING(fminsearch)
+
+Certain minimization operations require additional parameters be passed to
+the function, @code{F}, being minimized. E.g., @w{@code{F = F(x, C)}}.
+Octave's minimizer functions are designed to only pass one optimization
+variable to @code{F}, but parameter passing can be accomplished by defining
+an @ref{Anonymous Function} that contains the necessargy parameter(s).  See
+the example below:
+
+@group
+@example
+A = 2; B = 3;
+f = @(x) sin (A*x + B);
+fminbnd (f, 0, 2)
+@result 0.8562
+@end example
+@end group
+
+Note that anonymous functions retain the value of parameters at the time they
+are defined.  Changing a parameter value after function definition will not
+affect output of the function until it is redefined:
+
+@group
+@example
+B = 4;
+fminbnd (f, 0, 2)
+@result 0.8562
+f = @(x) sin (A*x + B);
+fminbnd (f, 0, 2)
+@result 0.3562
+@end example
+@end group
 
 The function @code{humps} is a useful function for testing zero and
 extrema finding functions.

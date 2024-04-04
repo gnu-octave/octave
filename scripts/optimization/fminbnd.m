@@ -73,11 +73,20 @@
 ## The algorithm was terminated by a user @code{OutputFcn}.
 ## @end itemize
 ##
-## Programming Notes: The search for a minimum is restricted to be in the
+## Application Notes:
+## @enumerate
+## @item
+## The search for a minimum is restricted to be in the
 ## finite interval bound by @var{a} and @var{b}.  If you have only one initial
 ## point to begin searching from then you will need to use an unconstrained
 ## minimization algorithm such as @code{fminunc} or @code{fminsearch}.
 ## @code{fminbnd} internally uses a Golden Section search strategy.
+## @item
+## Use @ref{Anonymous Functions} to pass additional parameters to @var{fcn}.
+## For specific examples of doing so for @code{fminbnd} and other
+## minimization functions see the @ref{Minimizers} section of the GNU Octave
+## manual.
+## @end enumerate
 ## @seealso{fzero, fminunc, fminsearch, optimset}
 ## @end deftypefn
 

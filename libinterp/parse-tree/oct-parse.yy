@@ -490,15 +490,9 @@ fcn_list        : fcn_list1 opt_sep
                 ;
 
 fcn_list1       : function
-                  {
-                    octave::tree_statement *stmt = parser.make_statement ($1);
-                    $$ = parser.make_statement_list (stmt);
-                  }
+                  { $$ = parser.make_function_def_list ($1); }
                 | fcn_list1 opt_sep function
-                  {
-                    octave::tree_statement *stmt = parser.make_statement ($3);
-                    $$ = parser.append_statement_list ($1, $2, stmt, false);
-                  }
+                  { $$ = parser.append_function_def_list ($1, $2, $3); }
                 ;
 
 statement       : expression
@@ -824,9 +818,7 @@ power_expr      : primary_expr
                   }
                 | power_expr '(' arg_list ')'
                   {
-                    $$ = parser.make_index_expression ($1, $2, $3, $4, '(');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, $3, $4, '(')))
                       {
                         // make_index_expression deleted $1 and $3.
                         YYABORT;
@@ -834,9 +826,7 @@ power_expr      : primary_expr
                   }
                 | power_expr '{' '}'
                   {
-                    $$ = parser.make_index_expression ($1, $2, nullptr, $3, '{');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, nullptr, $3, '{')))
                       {
                         // make_index_expression deleted $1.
                         YYABORT;
@@ -844,9 +834,7 @@ power_expr      : primary_expr
                   }
                 | power_expr '{' arg_list '}'
                   {
-                    $$ = parser.make_index_expression ($1, $2, $3, $4, '{');
-
-                    if (! $$)
+                    if (! ($$ = parser.make_index_expression ($1, $2, $3, $4, '{')))
                       {
                         // make_index_expression deleted $1 and $3.
                         YYABORT;
@@ -872,9 +860,7 @@ power_expr      : primary_expr
 
 colon_expr      : oper_expr ':' oper_expr
                   {
-                    $$ = parser.make_colon_expression ($1, $2, $3);
-
-                    if (! $$)
+                    if (! ($$ = parser.make_colon_expression ($1, $2, $3)))
                       {
                         // make_colon_expression deleted $1 and $3.
                         YYABORT;
@@ -882,9 +868,7 @@ colon_expr      : oper_expr ':' oper_expr
                   }
                 | oper_expr ':' oper_expr ':' oper_expr
                   {
-                    $$ = parser.make_colon_expression ($1, $2, $3, $4, $5);
-
-                    if (! $$)
+                    if (! ($$ = parser.make_colon_expression ($1, $2, $3, $4, $5)))
                       {
                         // make_colon_expression deleted $1, $3, and $5.
                         YYABORT;
@@ -920,15 +904,13 @@ simple_expr     : oper_expr
 
 assign_lhs      : simple_expr
                   {
-                    $$ = parser.validate_matrix_for_assignment ($1);
-
-                    if ($$)
-                      { lexer.m_looking_at_matrix_or_assign_lhs = false; }
-                    else
+                    if (! ($$ = parser.validate_matrix_for_assignment ($1)))
                       {
                         // validate_matrix_for_assignment deleted $1.
                         YYABORT;
                       }
+
+                    lexer.m_looking_at_matrix_or_assign_lhs = false;
                   }
                 ;
 
@@ -1311,7 +1293,6 @@ param_list_end  : ')'
                     lexer.m_looking_at_parameter_list = false;
                     lexer.m_arguments_is_keyword = true;
                     lexer.m_looking_for_object_index = false;
-
                     $$ = $1;
                   }
                 ;
@@ -1362,9 +1343,7 @@ param_list1     : // empty
 param_list2     : param_list_elt
                   { $$ = parser.make_parameter_list (octave::tree_parameter_list::in, $1); }
                 | param_list2 ',' param_list_elt
-                  {
-                    $$ = parser.append_parameter_list ($1, $2, $3);
-                  }
+                  { $$ = parser.append_parameter_list ($1, $2, $3); }
                 ;
 
 param_list_elt  : decl_elt
@@ -1421,13 +1400,9 @@ return_list     : '[' ']'
                 ;
 
 return_list1    : identifier
-                  {
-                    $$ = parser.make_parameter_list (octave::tree_parameter_list::out, $1);
-                  }
+                  { $$ = parser.make_parameter_list (octave::tree_parameter_list::out, $1); }
                 | return_list1 ',' identifier
-                  {
-                    $$ = parser.append_parameter_list ($1, $2, $3);
-                  }
+                  { $$ = parser.append_parameter_list ($1, $2, $3); }
                 ;
 
 // =======================
@@ -1502,10 +1477,10 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
 
 function_beg    : push_fcn_symtab FUNCTION
                   {
-                    $$ = $2;
-                    if (lexer.m_reading_classdef_file
-                        || lexer.m_parsing_classdef)
+                    if (lexer.m_reading_classdef_file || lexer.m_parsing_classdef)
                       lexer.m_maybe_classdef_get_set_method = true;
+
+                    $$ = $2;
                   }
                 ;
 
@@ -1600,9 +1575,7 @@ function        : function_beg fcn_name opt_param_list opt_sep function_body fun
                 ;
 
 function_body   : at_first_executable_stmt opt_list
-                  {
-                    $$ = $2;
-                  }
+                  { $$ = $2; }
                 | function_body1 opt_sep at_first_executable_stmt opt_list
                   {
                     OCTAVE_YYUSE ($2);
@@ -1613,9 +1586,7 @@ function_body   : at_first_executable_stmt opt_list
 
 at_first_executable_stmt
                 : // empty
-                  {
-                    lexer.m_arguments_is_keyword = false;
-                  }
+                  { lexer.m_arguments_is_keyword = false; }
                 ;
 
 function_body1  : arguments_block
@@ -1793,32 +1764,23 @@ attr_list       : // empty
 attr_list1      : attr
                   { $$ = parser.make_classdef_attribute_list ($1); }
                 | attr_list1 ',' attr
-                  {
-                    $$ = parser.append_classdef_attribute ($1, $2, $3);
-                  }
+                  { $$ = parser.append_classdef_attribute ($1, $2, $3); }
                 ;
 
 attr            : identifier
                   { $$ = parser.make_classdef_attribute ($1); }
                 | identifier '=' expression
-                  {
-                    $$ = parser.make_classdef_attribute ($1, $2, $3);
-                  }
+                  { $$ = parser.make_classdef_attribute ($1, $2, $3); }
                 | '~' identifier
-                  {
-                    $$ = parser.make_not_classdef_attribute ($1, $2);
-                  }
+                  { $$ = parser.make_not_classdef_attribute ($1, $2); }
                 | '!' identifier
-                  {
-                    $$ = parser.make_not_classdef_attribute ($1, $2);
-                  }
+                  { $$ = parser.make_not_classdef_attribute ($1, $2); }
                 ;
 
 superclass_list : // empty
                   {
                     lexer.m_parsing_classdef_decl = false;
                     lexer.m_parsing_classdef_superclass = false;
-
                     $$ = nullptr;
                   }
                 | superclass_list1 opt_sep
@@ -1827,20 +1789,15 @@ superclass_list : // empty
 
                     lexer.m_parsing_classdef_decl = false;
                     lexer.m_parsing_classdef_superclass = false;
-
                     $$ = $1;
                   }
                 ;
 
 superclass_list1
                 : EXPR_LT superclass
-                  {
-                    $$ = parser.make_classdef_superclass_list ($1, $2);
-                  }
+                  { $$ = parser.make_classdef_superclass_list ($1, $2); }
                 | superclass_list1 EXPR_AND superclass
-                  {
-                    $$ = parser.append_classdef_superclass ($1, $2, $3);
-                  }
+                  { $$ = parser.append_classdef_superclass ($1, $2, $3); }
                 ;
 
 superclass      : FQ_IDENT
@@ -1999,9 +1956,7 @@ method_decl1    : identifier
                 ;
 
 method_decl     : method_decl1
-                  {
-                    $$ = parser.finish_classdef_external_method ($1);
-                  }
+                  { $$ = parser.finish_classdef_external_method ($1); }
                 | return_list '='
                   {
                     lexer.m_defining_fcn++;
@@ -2137,9 +2092,7 @@ enum_list1      : class_enum
                 ;
 
 class_enum      : identifier '(' expression ')'
-                  {
-                    $$ = parser.make_classdef_enum ($1, $2, $3, $4);
-                  }
+                  { $$ = parser.make_classdef_enum ($1, $2, $3, $4); }
                 ;
 
 // =============
@@ -5071,6 +5024,22 @@ OCTAVE_BEGIN_NAMESPACE(octave)
                                       bool warn_missing_semi)
   {
     set_stmt_print_flag (list, sep, warn_missing_semi);
+
+    return list_append (list, stmt);
+  }
+
+  tree_statement_list *
+  base_parser::make_function_def_list (tree_function_def *fcn_def)
+  {
+    tree_statement *stmt = make_statement (fcn_def);
+
+    return new tree_statement_list (stmt);
+  }
+
+  tree_statement_list *
+  base_parser::append_function_def_list (tree_statement_list *list, char, tree_function_def *fcn_def)
+  {
+    tree_statement *stmt = make_statement (fcn_def);
 
     return list_append (list, stmt);
   }

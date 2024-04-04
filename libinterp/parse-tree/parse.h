@@ -607,8 +607,16 @@ public:
 
   // Append a statement to an existing statement list.
   OCTINTERP_API tree_statement_list *
-  append_statement_list (tree_statement_list *list, char sep,
-                         tree_statement *stmt, bool warn_missing_semi);
+  append_statement_list (tree_statement_list *list, char sep, tree_statement *stmt, bool warn_missing_semi);
+
+  // Create a statement list containing only function_def commands.
+  OCTINTERP_API tree_statement_list *
+  make_function_def_list (tree_function_def *fcn_def);
+
+  // Append a function_def command to an existing statement list (that
+  // should contain only other function_def commands).
+  OCTINTERP_API tree_statement_list *
+  append_function_def_list (tree_statement_list *list, char sep, tree_function_def *fcn_def);
 
   OCTINTERP_API tree_argument_list *
   make_argument_list (tree_expression *expr);

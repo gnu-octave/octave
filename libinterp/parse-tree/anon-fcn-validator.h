@@ -30,6 +30,7 @@
 
 #include <string>
 
+#include "filepos.h"
 #include "pt-walk.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
@@ -59,16 +60,19 @@ public:
 
   bool ok () const { return m_ok; }
 
-  int line () const { return m_line; }
-  int column () const { return m_column; }
+  filepos beg_pos () const { return m_beg_pos; }
+  filepos end_pos () const { return m_end_pos; }
+
+  int line () const { return m_beg_pos.line (); }
+  int column () const { return m_beg_pos.column (); }
 
   std::string message () const { return m_message; }
 
 private:
 
-  bool m_ok;
-  int m_line;
-  int m_column;
+  bool m_ok {true};
+  filepos m_beg_pos;
+  filepos m_end_pos;
   std::string m_message;
 
   void error (tree_expression& expr);

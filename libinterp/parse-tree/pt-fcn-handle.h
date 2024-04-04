@@ -49,15 +49,14 @@ class tree_fcn_handle : public tree_expression
 {
 public:
 
-  tree_fcn_handle (int l = -1, int c = -1)
-    : tree_expression (l, c), m_name () { }
-
-  tree_fcn_handle (const std::string& n, int l = -1, int c = -1)
-    : tree_expression (l, c), m_name (n) { }
+  tree_fcn_handle (const token& tok) : m_token (tok), m_name (m_token.text ()) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_fcn_handle)
 
   ~tree_fcn_handle () = default;
+
+  filepos beg_pos () const { return m_token.beg_pos (); }
+  filepos end_pos () const { return m_token.end_pos (); }
 
   void print (std::ostream& os, bool pr_as_read_syntax = false,
               bool pr_orig_txt = true);
@@ -85,6 +84,8 @@ public:
 
 private:
 
+  token m_token;
+
   // The name of this function handle.
   std::string m_name;
 };
@@ -93,23 +94,16 @@ class tree_anon_fcn_handle : public tree_expression
 {
 public:
 
-  tree_anon_fcn_handle (int l = -1, int c = -1)
-    : tree_expression (l, c), m_parameter_list (nullptr),
-      m_expression (nullptr), m_scope (symbol_scope::anonymous ()),
-      m_parent_scope (symbol_scope::invalid ()), m_file_name ()
-  { }
-
-  tree_anon_fcn_handle (tree_parameter_list *pl, tree_expression *ex,
-                        const symbol_scope& scope,
-                        const symbol_scope& parent_scope,
-                        int l = -1, int c = -1)
-    : tree_expression (l, c), m_parameter_list (pl), m_expression (ex),
-      m_scope (scope), m_parent_scope (parent_scope), m_file_name ()
+  tree_anon_fcn_handle (const token& at_tok, tree_parameter_list *pl, tree_expression *ex, const symbol_scope& scope, const symbol_scope& parent_scope)
+    : m_at_tok (at_tok), m_parameter_list (pl), m_expression (ex), m_scope (scope), m_parent_scope (parent_scope)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_anon_fcn_handle)
 
   ~tree_anon_fcn_handle ();
+
+  filepos beg_pos () const { return m_at_tok.beg_pos (); }
+  filepos end_pos () const { return m_expression->end_pos (); }
 
   bool rvalue_ok () const { return true; }
 
@@ -142,6 +136,8 @@ public:
   std::string file_name () const { return m_file_name; }
 
 private:
+
+  token m_at_tok;
 
   // Inputs parameters.
   tree_parameter_list *m_parameter_list;

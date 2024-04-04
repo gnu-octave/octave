@@ -31,6 +31,7 @@
 #include <string>
 
 #include "comment-list.h"
+#include "filepos.h"
 #include "interpreter.h"
 #include "ov-fcn.h"
 #include "pt.h"
@@ -39,6 +40,18 @@
 #include "unwind-prot.h"
 
 OCTAVE_BEGIN_NAMESPACE(octave)
+
+int
+tree::line () const
+{
+  return beg_pos().line ();
+}
+
+int
+tree::column () const
+{
+  return beg_pos().column ();
+}
 
 comment_list
 tree::leading_comments () const

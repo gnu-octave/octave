@@ -46,12 +46,12 @@ class tree_colon_expression : public tree_expression
 {
 public:
 
-  tree_colon_expression (tree_expression *base, const token& colon_1_tok, tree_expression *limit, int l = -1, int c = -1)
-    : tree_expression (l, c), m_base (base), m_colon_1_tok (colon_1_tok), m_limit (limit)
+  tree_colon_expression (tree_expression *base, const token& colon_1_tok, tree_expression *limit)
+    : m_base (base), m_colon_1_tok (colon_1_tok), m_limit (limit)
   { }
 
-  tree_colon_expression (tree_expression *base, const token& colon_1_tok, tree_expression *increment, const token& colon_2_tok, tree_expression *limit, int l = -1, int c = -1)
-    : tree_expression (l, c), m_base (base), m_colon_1_tok (colon_1_tok), m_increment (increment), m_colon_2_tok (colon_2_tok), m_limit (limit)
+  tree_colon_expression (tree_expression *base, const token& colon_1_tok, tree_expression *increment, const token& colon_2_tok, tree_expression *limit)
+    : m_base (base), m_colon_1_tok (colon_1_tok), m_increment (increment), m_colon_2_tok (colon_2_tok), m_limit (limit)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_colon_expression)
@@ -64,6 +64,9 @@ public:
     delete m_limit;
     delete m_increment;
   }
+
+  filepos beg_pos () const { return m_base->beg_pos (); }
+  filepos end_pos () const { return m_limit->end_pos (); }
 
   void preserve_base () { m_save_base = true; }
 

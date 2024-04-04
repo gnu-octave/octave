@@ -68,9 +68,8 @@ tree_decl_elt::dup (symbol_scope& scope) const
 
 // Declaration commands (global, static).
 
-tree_decl_command::tree_decl_command (const std::string& n,
-                                      tree_decl_init_list *t, int l, int c)
-  : tree_command (l, c), m_cmd_name (n), m_init_list (t)
+tree_decl_command::tree_decl_command (const std::string& n, const token& tok, tree_decl_init_list *t)
+  : m_cmd_name (n), m_token (tok), m_init_list (t)
 {
   if (t)
     {

@@ -33,14 +33,33 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-// Break.
+// Base class for jump commands
 
-class tree_break_command : public tree_command
+class tree_jump_command : public tree_command
 {
 public:
 
-  tree_break_command (int l = -1, int c = -1)
-    : tree_command (l, c) { }
+  tree_jump_command (const token& tok) : m_token (tok) { }
+
+  OCTAVE_DISABLE_COPY_MOVE (tree_jump_command)
+
+  ~tree_jump_command () = default;
+
+  filepos beg_pos () const { return m_token.beg_pos (); }
+  filepos end_pos () const { return m_token.end_pos (); }
+
+protected:
+
+  token m_token;
+};
+
+// Break.
+
+class tree_break_command : public tree_jump_command
+{
+public:
+
+  tree_break_command (const token& tok) : tree_jump_command (tok) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_break_command)
 
@@ -54,12 +73,11 @@ public:
 
 // Continue.
 
-class tree_continue_command : public tree_command
+class tree_continue_command : public tree_jump_command
 {
 public:
 
-  tree_continue_command (int l = -1, int c = -1)
-    : tree_command (l, c) { }
+  tree_continue_command (const token& tok) : tree_jump_command (tok) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_continue_command)
 
@@ -73,12 +91,11 @@ public:
 
 // Return.
 
-class tree_return_command : public tree_command
+class tree_return_command : public tree_jump_command
 {
 public:
 
-  tree_return_command (int l = -1, int c = -1)
-    : tree_command (l, c) { }
+  tree_return_command (const token& tok) : tree_jump_command (tok) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_return_command)
 

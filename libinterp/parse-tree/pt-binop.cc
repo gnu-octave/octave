@@ -58,8 +58,9 @@ tree_binary_expression::dup (symbol_scope& scope) const
 {
   tree_binary_expression *new_be
     = new tree_binary_expression (m_lhs ? m_lhs->dup (scope) : nullptr,
+                                  m_op_tok,
                                   m_rhs ? m_rhs->dup (scope) : nullptr,
-                                  line (), column (), m_etype);
+                                  m_etype);
 
   new_be->copy_base (*this);
 
@@ -108,8 +109,9 @@ tree_braindead_shortcircuit_binary_expression::dup (symbol_scope& scope) const
   tree_braindead_shortcircuit_binary_expression *new_be
     = new tree_braindead_shortcircuit_binary_expression
   (m_lhs ? m_lhs->dup (scope) : nullptr,
+   m_op_tok,
    m_rhs ? m_rhs->dup (scope) : nullptr,
-   line (), column (), op_type ());
+   op_type ());
 
   new_be->copy_base (*this);
 
@@ -117,8 +119,7 @@ tree_braindead_shortcircuit_binary_expression::dup (symbol_scope& scope) const
 }
 
 octave_value
-tree_braindead_shortcircuit_binary_expression::evaluate (tree_evaluator& tw,
-    int)
+tree_braindead_shortcircuit_binary_expression::evaluate (tree_evaluator& tw, int)
 {
   if (m_lhs)
     {
@@ -194,8 +195,9 @@ tree_boolean_expression::dup (symbol_scope& scope) const
 {
   tree_boolean_expression *new_be
     = new tree_boolean_expression (m_lhs ? m_lhs->dup (scope) : nullptr,
+                                   m_op_tok,
                                    m_rhs ? m_rhs->dup (scope) : nullptr,
-                                   line (), column (), m_etype);
+                                   m_etype);
 
   new_be->copy_base (*this);
 

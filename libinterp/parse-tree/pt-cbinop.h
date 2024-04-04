@@ -45,13 +45,9 @@ class tree_compound_binary_expression : public tree_binary_expression
 {
 public:
 
-  tree_compound_binary_expression (tree_expression *a, tree_expression *b,
-                                   int l, int c,
-                                   octave_value::binary_op t,
-                                   tree_expression *ca, tree_expression *cb,
-                                   octave_value::compound_binary_op ct)
-    : tree_binary_expression (a, b, l, c, t), m_lhs (ca), m_rhs (cb),
-      m_etype (ct)
+  tree_compound_binary_expression (tree_expression *a, const token& op_tok, tree_expression *b, octave_value::binary_op t,
+                                   tree_expression *ca, tree_expression *cb, octave_value::compound_binary_op ct)
+    : tree_binary_expression (a, op_tok, b, t), m_lhs (ca), m_rhs (cb), m_etype (ct)
   { }
 
   OCTAVE_DISABLE_CONSTRUCT_COPY_MOVE (tree_compound_binary_expression)
@@ -89,10 +85,7 @@ private:
 // a "virtual constructor"
 
 tree_binary_expression *
-maybe_compound_binary_expression (tree_expression *a, tree_expression *b,
-                                  int l = -1, int c = -1,
-                                  octave_value::binary_op t
-                                  = octave_value::unknown_binary_op);
+maybe_compound_binary_expression (tree_expression *a, const token& op_tok, tree_expression *b, octave_value::binary_op t = octave_value::unknown_binary_op);
 
 OCTAVE_END_NAMESPACE(octave)
 

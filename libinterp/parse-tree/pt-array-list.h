@@ -50,8 +50,7 @@ public:
 
 protected:
 
-  tree_array_list (tree_argument_list *row = nullptr, int l = -1, int c = -1)
-    : tree_expression (l, c), std::list<tree_argument_list *> ()
+  tree_array_list (tree_argument_list *row = nullptr)
   {
     if (row)
       push_back (row);
@@ -62,6 +61,12 @@ public:
   OCTAVE_DISABLE_COPY_MOVE (tree_array_list)
 
   ~tree_array_list ();
+
+  // The delimiter list for a cell array should never be empty.  But
+  // better safe than sorry, I guess.
+
+  filepos beg_pos () const { return m_delims.empty () ? filepos () : m_delims.beg_pos (); }
+  filepos end_pos () const { return m_delims.empty () ? filepos () : m_delims.end_pos (); }
 
   bool all_elements_are_constant () const;
 

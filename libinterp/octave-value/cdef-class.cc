@@ -730,12 +730,15 @@ cdef_class::cdef_class_rep::get_method (int line) const
       if (pfcn == nullptr)
         continue;
 
-      const int e = pfcn->ending_line ();
-      if (line <= e && e <= closest_match_end_line && pfcn->is_defined ()
+      octave::filepos end_pos = pfcn->end_pos ();
+
+      int end_line = end_pos.line ();
+
+      if (line <= end_line && end_line <= closest_match_end_line && pfcn->is_defined ()
           && pfcn->is_user_code ())
         {
           closest_match = fcn;
-          closest_match_end_line = e;
+          closest_match_end_line = end_line;
         }
     }
 

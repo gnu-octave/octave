@@ -31,6 +31,7 @@
 #include <string>
 
 #include "comment-list.h"
+#include "filepos.h"
 #include "ovl.h"
 #include "ov-fcn.h"
 #include "ov-typeinfo.h"
@@ -44,8 +45,10 @@ class octave_value;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+class filepos;
 class file_info;
 class stack_frame;
+class tree_identifier;
 class tree_parameter_list;
 class tree_statement_list;
 class tree_evaluator;
@@ -78,6 +81,9 @@ public:
   ~octave_user_code ();
 
   bool is_user_code () const { return true; }
+
+  octave::filepos beg_pos () const;
+  octave::filepos end_pos () const;
 
   std::string get_code_line (std::size_t line);
 
@@ -202,10 +208,8 @@ class octave_user_function : public octave_user_code
 {
 public:
 
-  octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope::anonymous (),
-                        octave::tree_parameter_list *pl = nullptr,
-                        octave::tree_parameter_list *rl = nullptr,
-                        octave::tree_statement_list *cl = nullptr);
+  octave_user_function (const octave::symbol_scope& scope = octave::symbol_scope::anonymous (), octave::tree_identifier *id = nullptr,
+                        octave::tree_parameter_list *pl = nullptr, octave::tree_parameter_list *rl = nullptr, octave::tree_statement_list *cl = nullptr);
 
   OCTAVE_DISABLE_COPY_MOVE (octave_user_function)
 
@@ -229,23 +233,8 @@ public:
 
   void attach_trailing_comments (const octave::comment_list& lst);
 
-  void stash_fcn_location (int line, int col)
-  {
-    m_location_line = line;
-    m_location_column = col;
-  }
-
-  int beginning_line () const { return m_location_line; }
-  int beginning_column () const { return m_location_column; }
-
-  void stash_fcn_end_location (int line, int col)
-  {
-    m_end_location_line = line;
-    m_end_location_column = col;
-  }
-
-  int ending_line () const { return m_end_location_line; }
-  int ending_column () const { return m_end_location_column; }
+  octave::filepos beg_pos () const { return m_fcn_tok.beg_pos(); }
+  // The end_pos function is defined in the octave_user_code class.
 
   void maybe_relocate_end ();
 
@@ -412,6 +401,9 @@ private:
   std::string ctor_type_str () const;
   std::string method_type_str () const;
 
+  // Name of this function.
+  octave::tree_identifier *m_id;
+
   // List of arguments for this function.  These are local variables.
   octave::tree_parameter_list *m_param_list;
 
@@ -419,42 +411,38 @@ private:
   // this function.
   octave::tree_parameter_list *m_ret_list;
 
-  // FIXME: Should we also be caching the final token (END or EOF) as
-  // m_end_tok?
+  // We don't keep track of an end token separately because functions
+  // may still be defined without an explicit END.  If there is an
+  // explicit END, the final statement will contain it.
+
   octave::token m_fcn_tok;
   octave::token m_eq_tok;
-
-  // Location where this function was defined.
-  int m_location_line;
-  int m_location_column;
-  int m_end_location_line;
-  int m_end_location_column;
 
   // True if this function came from a file that is considered to be a
   // system function.  This affects whether we check the time stamp
   // on the file to see if it has changed.
-  bool m_system_fcn_file;
+  bool m_system_fcn_file {false};
 
   // The number of arguments that have names.
   int m_num_named_args;
 
   // TRUE means this is a m_subfunction of a primary function.
-  bool m_subfunction;
+  bool m_subfunction {false};
 
   // TRUE means this is an inline function.
-  bool m_inline_function;
+  bool m_inline_function {false};
 
   // TRUE means this is an anonymous function.
-  bool m_anonymous_function;
+  bool m_anonymous_function {false};
 
   // TRUE means this is a nested function.
-  bool m_nested_function;
+  bool m_nested_function {false};
 
   // Enum describing whether this function is the constructor for class object.
-  class_method_type m_class_constructor;
+  class_method_type m_class_constructor {none};
 
   // Enum describing whether this function is a method for a class.
-  class_method_type m_class_method;
+  class_method_type m_class_method {none};
 
   void maybe_relocate_end_internal ();
 

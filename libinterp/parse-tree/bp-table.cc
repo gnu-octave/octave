@@ -665,12 +665,10 @@ bp_table::process_id_list (const char *who,
 
 // Return the sub/nested/main function of MAIN_FCN that contains
 // line number LINENO of the source file.
-// If END_LINE != 0, *END_LINE is set to last line of the returned function.
+// If FOUND_ENDING_LINE != 0, *FOUND_ENDING_LINE is set to last line of the returned function.
 
 static octave_user_code *
-find_fcn_by_line (octave_user_code *main_fcn,
-                  int lineno,
-                  int *end_line = nullptr)
+find_fcn_by_line (octave_user_code *main_fcn, int lineno, int *found_end_line = nullptr)
 {
   octave_user_code *retval = nullptr;
   octave_user_code *next_fcn = nullptr;  // 1st function starting after lineno
@@ -686,21 +684,26 @@ find_fcn_by_line (octave_user_code *main_fcn,
           auto *dbg_subfcn = str_val_p.second.user_function_value ();
 
           // Check if lineno is within dbg_subfcn.
-          // FIXME: we could break when beginning_line() > lineno,
+          // FIXME: we could break when the beginning line > lineno,
           // but that makes the code "fragile"
           // if the order of walking subfcns changes,
           // for a minor speed improvement in non-critical code.
-          if (dbg_subfcn->ending_line () < earliest_end
-              && dbg_subfcn->ending_line () >= lineno
-              && dbg_subfcn->beginning_line () <= lineno)
+
+          filepos beg_pos = dbg_subfcn->beg_pos ();
+          filepos end_pos = dbg_subfcn->end_pos ();
+
+          int beginning_line = beg_pos.line ();
+          int ending_line = end_pos.line ();
+
+          if (ending_line < earliest_end && ending_line >= lineno && beginning_line <= lineno)
             {
-              earliest_end = dbg_subfcn->ending_line ();
+              earliest_end = ending_line;
               retval = find_fcn_by_line (dbg_subfcn, lineno, &earliest_end);
             }
 
           // Find the first fcn starting after lineno.
           // This is used if line is not inside any function.
-          if (dbg_subfcn->beginning_line () >= lineno && ! next_fcn)
+          if (beginning_line >= lineno && ! next_fcn)
             next_fcn = dbg_subfcn;
         }
     }
@@ -709,8 +712,11 @@ find_fcn_by_line (octave_user_code *main_fcn,
   // or in the main function, which we check now.
   if (main_fcn->is_user_function ())
     {
-      int e = dynamic_cast<octave_user_function *> (main_fcn)->ending_line ();
-      if (e >= lineno && e < earliest_end)
+      filepos end_pos = dynamic_cast<octave_user_function *> (main_fcn)->end_pos ();
+
+      int ending_line = end_pos.line ();
+
+      if (ending_line >= lineno && ending_line < earliest_end)
         retval = main_fcn;
 
       if (! retval)
@@ -722,8 +728,8 @@ find_fcn_by_line (octave_user_code *main_fcn,
         retval = main_fcn;
     }
 
-  if (end_line && earliest_end < *end_line)
-    *end_line = earliest_end;
+  if (found_end_line && earliest_end < *found_end_line)
+    *found_end_line = earliest_end;
 
   return retval;
 }

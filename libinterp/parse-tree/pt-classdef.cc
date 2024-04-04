@@ -41,9 +41,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 tree_superclass_ref *
 tree_superclass_ref::dup (symbol_scope&) const
 {
-  tree_superclass_ref *new_scr
-    = new tree_superclass_ref (m_method_name, m_class_name,
-                               line (), column ());
+  tree_superclass_ref *new_scr = new tree_superclass_ref (m_method_name, m_class_name, m_token);
 
   new_scr->copy_base (*this);
 
@@ -53,8 +51,7 @@ tree_superclass_ref::dup (symbol_scope&) const
 octave_value_list
 tree_superclass_ref::evaluate_n (tree_evaluator& tw, int nargout)
 {
-  octave_value tmp
-    = octave_classdef::superclass_ref (m_method_name, m_class_name);
+  octave_value tmp = octave_classdef::superclass_ref (m_method_name, m_class_name);
 
   if (! is_postfix_indexed ())
     {
@@ -78,8 +75,7 @@ tree_superclass_ref::evaluate_n (tree_evaluator& tw, int nargout)
 tree_metaclass_query *
 tree_metaclass_query::dup (symbol_scope&) const
 {
-  tree_metaclass_query *new_mcq
-    = new tree_metaclass_query (m_class_name, line (), column ());
+  tree_metaclass_query *new_mcq = new tree_metaclass_query (m_class_name, m_token);
 
   new_mcq->copy_base (*this);
 

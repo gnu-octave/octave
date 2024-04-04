@@ -49,8 +49,9 @@ class tree_expression : public tree
 {
 public:
 
-  tree_expression (int l = -1, int c = -1)
-    : tree (l, c), m_postfix_index_type ('\0'), m_for_cmd_expr (false), m_print_flag (false) { }
+  tree_expression ()
+    : m_postfix_index_type ('\0'), m_for_cmd_expr (false), m_print_flag (false)
+  { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_expression)
 

@@ -37,6 +37,7 @@ class octave_function;
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class comment_list;
+class filepos;
 class tree_evaluator;
 class tree_walker;
 
@@ -46,27 +47,17 @@ class tree
 {
 public:
 
-  tree (int l = -1, int c = -1)
-    : m_line_num (l), m_column_num (c), m_bp_cond (nullptr)
-  { }
+  tree () : m_bp_cond (nullptr) { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree)
 
   virtual ~tree () = default;
 
-  virtual int line () const { return m_line_num; }
+  virtual int line () const;
+  virtual int column () const;
 
-  virtual int column () const { return m_column_num; }
-
-  void line (int l) { m_line_num = l; }
-
-  void column (int c) { m_column_num = c; }
-
-  void set_location (int l, int c)
-  {
-    m_line_num = l;
-    m_column_num = c;
-  }
+  virtual filepos beg_pos () const = 0;
+  virtual filepos end_pos () const = 0;
 
   // FIXME: maybe make this a pure virtual function?
   virtual comment_list leading_comments () const;
@@ -110,11 +101,6 @@ public:
   virtual void accept (tree_walker& tw) = 0;
 
 private:
-
-  // The input line and column where we found the text that was
-  // eventually converted to this tree node.
-  int m_line_num;
-  int m_column_num;
 
   // NULL if no breakpoint, or a breakpoint condition if there is one.
   std::string *m_bp_cond;

@@ -81,6 +81,9 @@ public:
     return this;
   }
 
+  filepos beg_pos () const { return m_open_delim.beg_pos (); }
+  filepos end_pos () const { return m_close_delim.end_pos (); }
+
   void mark_as_formal_parameters ();
 
   void mark_varargs () { m_marked_for_varargs = 1; }

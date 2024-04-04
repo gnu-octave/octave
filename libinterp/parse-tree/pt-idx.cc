@@ -46,35 +46,31 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // Index expressions.
 
-tree_index_expression::tree_index_expression (int l, int c)
-  : tree_expression (l, c)
-{ }
-
-tree_index_expression::tree_index_expression (tree_expression *e, const token& open_delim, tree_argument_list *lst, const token& close_delim, int l, int c, char t)
-  : tree_expression (l, c), m_expr (e), m_args (0), m_type (), m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
+tree_index_expression::tree_index_expression (tree_expression *e, const token& open_delim, tree_argument_list *lst, const token& close_delim, char t)
+  : m_expr (e), m_args (0), m_type (), m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
 {
   append (open_delim, lst, close_delim, t);
 }
 
-tree_index_expression::tree_index_expression (tree_expression *e, const token& dot_tok, const token& struct_elt_tok, int l, int c)
-  : tree_expression (l, c), m_expr (e), m_args (0), m_type (), m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
+tree_index_expression::tree_index_expression (tree_expression *e, const token& dot_tok, const token& struct_elt_tok)
+  : m_expr (e), m_args (0), m_type (), m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
 {
   append (dot_tok, struct_elt_tok);
 }
 
-tree_index_expression::tree_index_expression (tree_expression *e, const token& dot_tok, const token& open_paren, tree_expression *df, const token& close_paren, int l, int c)
-  : tree_expression (l, c), m_expr (e), m_args (0), m_type (), m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
+tree_index_expression::tree_index_expression (tree_expression *e, const token& dot_tok, const token& open_paren, tree_expression *df, const token& close_paren)
+  : m_expr (e), m_args (0), m_type (), m_arg_nm (), m_dyn_field (), m_word_list_cmd (false)
 {
   append (dot_tok, open_paren, df, close_paren);
 }
 
-// FIXME: Need to handle open_delim and close_delim.
-
 tree_index_expression *
-tree_index_expression::append (const token& /*open_delim*/, tree_argument_list *lst, const token& /*close_delim*/, char t)
+tree_index_expression::append (const token& open_delim, tree_argument_list *lst, const token& close_delim, char t)
 {
+  lst->mark_in_delims (open_delim, close_delim);
   m_args.push_back (lst);
   m_type.append (1, t);
+  m_dot_tok.push_back (token ());
   m_arg_nm.push_back (lst ? lst->get_arg_names () : string_vector ());
   m_dyn_field.push_back (static_cast<tree_expression *> (nullptr));
 
@@ -84,27 +80,26 @@ tree_index_expression::append (const token& /*open_delim*/, tree_argument_list *
   return this;
 }
 
-// FIXME: Need to handle dot_tok.
-
 tree_index_expression *
-tree_index_expression::append (const token& /*dot_tok*/, const token& struct_elt_tok)
+tree_index_expression::append (const token& dot_tok, const token& struct_elt_tok)
 {
   m_args.push_back (static_cast<tree_argument_list *> (nullptr));
   m_type += '.';
+  m_dot_tok.push_back (dot_tok);
   m_arg_nm.push_back (struct_elt_tok.text ());
   m_dyn_field.push_back (static_cast<tree_expression *> (nullptr));
 
   return this;
 }
 
-// FIXME: Need to handle dot_tok, open_paren, and close_paren.
-
 tree_index_expression *
-tree_index_expression::append (const token& /*dot_tok*/, const token& /*open_paren*/, tree_expression *df, const token& /*close_paren*/)
+tree_index_expression::append (const token& dot_tok, const token& open_paren, tree_expression *df, const token& close_paren)
 {
   m_args.push_back (static_cast<tree_argument_list *> (nullptr));
   m_type += '.';
+  m_dot_tok.push_back (dot_tok);
   m_arg_nm.push_back ("");
+  df->mark_in_delims (open_paren, close_paren);
   m_dyn_field.push_back (df);
 
   return this;
@@ -136,6 +131,31 @@ std::string
 tree_index_expression::name () const
 {
   return m_expr->name ();
+}
+
+filepos
+tree_index_expression::end_pos () const
+{
+  int n = m_args.size ();
+
+  if (n == 0)
+    return m_expr->end_pos ();
+
+  char idx_type = m_type[n-1];
+
+  if (idx_type == '(' || idx_type == '{')
+    {
+      tree_argument_list *args = m_args.back ();
+      return args->end_pos ();
+    }
+
+  if (idx_type == '.')
+    {
+      tree_expression *dyn_field = m_dyn_field.back ();
+      return dyn_field->end_pos ();
+    }
+
+  panic_impossible ();
 }
 
 std::string
@@ -239,8 +259,7 @@ tree_index_expression::lvalue (tree_evaluator& tw)
 tree_index_expression *
 tree_index_expression::dup (symbol_scope& scope) const
 {
-  tree_index_expression *new_idx_expr
-    = new tree_index_expression (line (), column ());
+  tree_index_expression *new_idx_expr = new tree_index_expression ();
 
   new_idx_expr->m_expr = (m_expr ? m_expr->dup (scope) : nullptr);
 

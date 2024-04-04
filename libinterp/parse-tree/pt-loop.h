@@ -46,13 +46,16 @@ class tree_while_command : public tree_command
 {
 public:
 
-  tree_while_command (const token& while_tok, tree_expression *expr, tree_statement_list *body, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_while_tok (while_tok), m_expr (expr), m_body (body), m_end_tok (end_tok)
+  tree_while_command (const token& while_tok, tree_expression *expr, tree_statement_list *body, const token& end_tok)
+    : m_while_tok (while_tok), m_expr (expr), m_body (body), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_while_command)
 
   ~tree_while_command ();
+
+  filepos beg_pos () const { return m_while_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_expression * condition () { return m_expr; }
 
@@ -82,13 +85,16 @@ class tree_do_until_command : public tree_command
 {
 public:
 
-  tree_do_until_command (const token& do_tok, tree_statement_list *body, const token& until_tok, tree_expression *expr, int l = -1, int c = -1)
-    : tree_command (l, c), m_do_tok (do_tok), m_body (body), m_until_tok (until_tok), m_expr (expr)
+  tree_do_until_command (const token& do_tok, tree_statement_list *body, const token& until_tok, tree_expression *expr)
+    : m_do_tok (do_tok), m_body (body), m_until_tok (until_tok), m_expr (expr)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_do_until_command)
 
   ~tree_do_until_command ();
+
+  filepos beg_pos () const { return m_do_tok.beg_pos (); }
+  filepos end_pos () const { return m_expr->end_pos (); }
 
   tree_statement_list * body () { return m_body; }
 
@@ -120,8 +126,8 @@ public:
 
   tree_simple_for_command (bool parfor, const token& for_tok, const token& open_paren, tree_expression *le, const token& eq_tok,
                            tree_expression *re, const token& sep_tok, tree_expression *maxproc_arg, const token& close_paren,
-                           tree_statement_list *body, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_parfor (parfor), m_for_tok (for_tok), m_open_paren (open_paren), m_lhs (le), m_eq_tok (eq_tok),
+                           tree_statement_list *body, const token& end_tok)
+    : m_parfor (parfor), m_for_tok (for_tok), m_open_paren (open_paren), m_lhs (le), m_eq_tok (eq_tok),
       m_expr (re), m_sep_tok (sep_tok), m_maxproc (maxproc_arg), m_close_paren (close_paren),
       m_body (body), m_end_tok (end_tok)
   { }
@@ -131,6 +137,9 @@ public:
   ~tree_simple_for_command ();
 
   bool in_parallel () { return m_parfor; }
+
+  filepos beg_pos () const { return m_for_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_expression * left_hand_side () { return m_lhs; }
 
@@ -181,14 +190,16 @@ class tree_complex_for_command : public tree_command
 public:
 
   tree_complex_for_command (const token& for_tok, tree_argument_list *le, const token& eq_tok, tree_expression *re,
-                            tree_statement_list *body, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_for_tok (for_tok), m_lhs (le), m_eq_tok (eq_tok), m_expr (re),
-      m_body (body), m_end_tok (end_tok)
+                            tree_statement_list *body, const token& end_tok)
+    : m_for_tok (for_tok), m_lhs (le), m_eq_tok (eq_tok), m_expr (re), m_body (body), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_complex_for_command)
 
   ~tree_complex_for_command ();
+
+  filepos beg_pos () const { return m_for_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_argument_list * left_hand_side () { return m_lhs; }
 

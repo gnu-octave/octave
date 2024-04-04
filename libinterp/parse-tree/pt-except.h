@@ -43,13 +43,16 @@ class tree_try_catch_command : public tree_command
 {
 public:
 
-  tree_try_catch_command (const token try_tok, tree_statement_list *tc, const token catch_tok, tree_identifier *id, tree_statement_list *cc, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_try_tok (try_tok), m_try_code (tc), m_catch_tok (catch_tok), m_expr_id (id), m_catch_code (cc), m_end_tok (end_tok)
+  tree_try_catch_command (const token try_tok, tree_statement_list *tc, const token catch_tok, tree_identifier *id, tree_statement_list *cc, const token& end_tok)
+    : m_try_tok (try_tok), m_try_code (tc), m_catch_tok (catch_tok), m_expr_id (id), m_catch_code (cc), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_try_catch_command)
 
   ~tree_try_catch_command ();
+
+  filepos beg_pos () const { return m_try_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_identifier * identifier () { return m_expr_id; }
 
@@ -86,13 +89,16 @@ class tree_unwind_protect_command : public tree_command
 {
 public:
 
-  tree_unwind_protect_command (const token& unwind_tok, tree_statement_list *tc, const token& cleanup_tok, tree_statement_list *cc, const token& end_tok, int l = -1, int c = -1)
-    : tree_command (l, c), m_unwind_tok (unwind_tok), m_unwind_protect_code (tc), m_cleanup_tok (cleanup_tok), m_cleanup_code (cc), m_end_tok (end_tok)
+  tree_unwind_protect_command (const token& unwind_tok, tree_statement_list *tc, const token& cleanup_tok, tree_statement_list *cc, const token& end_tok)
+    : m_unwind_tok (unwind_tok), m_unwind_protect_code (tc), m_cleanup_tok (cleanup_tok), m_cleanup_code (cc), m_end_tok (end_tok)
   { }
 
   OCTAVE_DISABLE_COPY_MOVE (tree_unwind_protect_command)
 
   ~tree_unwind_protect_command ();
+
+  filepos beg_pos () const { return m_unwind_tok.beg_pos (); }
+  filepos end_pos () const { return m_end_tok.end_pos (); }
 
   tree_statement_list * body () { return m_unwind_protect_code; }
 

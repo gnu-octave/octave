@@ -36,6 +36,7 @@ class octave_value_list;
 
 #include "comment-list.h"
 #include "ov.h"
+#include "pt-arg-list.h"
 #include "pt-exp.h"
 #include "pt-walk.h"
 #include "token.h"
@@ -52,21 +53,16 @@ class tree_simple_assignment : public tree_expression
 {
 public:
 
-  tree_simple_assignment (bool plhs = false, int l = -1, int c = -1,
-                          octave_value::assign_op t = octave_value::op_asn_eq)
-    : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr),
-      m_preserve (plhs), m_ans_assign (), m_etype (t)
-  { }
-
-  tree_simple_assignment (tree_expression *le, tree_expression *re,
-                          bool plhs = false, int l = -1, int c = -1,
-                          octave_value::assign_op t = octave_value::op_asn_eq);
+  tree_simple_assignment (tree_expression *le, tree_expression *re, bool plhs = false, octave_value::assign_op t = octave_value::op_asn_eq);
 
   OCTAVE_DISABLE_COPY_MOVE (tree_simple_assignment)
 
   ~tree_simple_assignment ();
 
   comment_list leading_comments () const { return m_lhs->leading_comments (); }
+
+  filepos beg_pos () const { return m_lhs->beg_pos (); }
+  filepos end_pos () const { return m_rhs->end_pos (); }
 
   bool rvalue_ok () const { return true; }
 
@@ -123,19 +119,20 @@ class tree_multi_assignment : public tree_expression
 {
 public:
 
-  tree_multi_assignment (bool plhs = false, int l = -1, int c = -1)
-    : tree_expression (l, c), m_lhs (nullptr), m_rhs (nullptr),
-      m_preserve (plhs)
+  tree_multi_assignment (bool plhs = false)
+    : m_lhs (nullptr), m_rhs (nullptr), m_preserve (plhs)
   { }
 
-  tree_multi_assignment (tree_argument_list *lst, tree_expression *r,
-                         bool plhs = false, int l = -1, int c = -1);
+  tree_multi_assignment (tree_argument_list *lst, tree_expression *r, bool plhs = false);
 
   OCTAVE_DISABLE_COPY_MOVE (tree_multi_assignment)
 
   ~tree_multi_assignment ();
 
   bool is_assignment_expression () const { return true; }
+
+  filepos beg_pos () const { return m_lhs->beg_pos (); }
+  filepos end_pos () const { return m_rhs->end_pos (); }
 
   bool rvalue_ok () const { return true; }
 

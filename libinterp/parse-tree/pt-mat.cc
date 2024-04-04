@@ -141,7 +141,7 @@ maybe_warn_string_concat (bool all_dq_strings_p, bool all_sq_strings_p)
 tree_expression *
 tree_matrix::dup (symbol_scope& scope) const
 {
-  tree_matrix *new_matrix = new tree_matrix (nullptr, line (), column ());
+  tree_matrix *new_matrix = new tree_matrix (nullptr);
 
   new_matrix->copy_base (*this, scope);
 

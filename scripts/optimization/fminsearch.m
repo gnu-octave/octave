@@ -122,11 +122,10 @@
 ## probably better to use @code{fminbnd}.
 ## @item
 ## The legacy, undocumented syntax for passing parameters to @var{fcn} by
-## appending them to the input argument list after @var{options} is
-## discouraged and will  be completely removed in Octave 10.  The
-## preferred, cross-platform compatible method of passing parameters to
-## @var{fcn} is through use of @ref{Anonymous Functions}.  For specific
-## examples of doing so for @code{fminsearch} and other minimization
+## appending them to the input argument list after @var{options} has been
+## removed in Octave 10.  The cross-platform compatible method of passing
+## parameters to @var{fcn} is through use of @ref{Anonymous Functions}.  For
+## specific examples of doing so for @code{fminsearch} and other minimization
 ## functions see the @ref{Minimizers} section of the GNU Octave manual.
 ## @end enumerate
 ## @seealso{fminbnd, fminunc, optimset}
@@ -139,7 +138,7 @@
 
 function [x, fval, exitflag, output] = fminsearch (varargin)
 
-  if (nargin < 1)
+  if (nargin < 1 || nargin > 3)
     print_usage ();
   endif
 
@@ -188,10 +187,10 @@ function [x, fval, exitflag, output] = fminsearch (varargin)
     options = struct ();
   endif
 
-  [x, exitflag, output] = nmsmax (fcn, x0, options, varargin{:});
+  [x, exitflag, output] = nmsmax (fcn, x0, options);
 
   if (nargout > 1)
-    fval = feval (fcn, x, varargin{:});
+    fval = feval (fcn, x);
   endif
 
 endfunction
@@ -282,16 +281,16 @@ function [stopit, savit, dirn, trace, tol, maxiter, tol_f, outfcn] = ...
 
 endfunction
 
-function [x, exitflag, output] = nmsmax (fcn, x, options, varargin)
+function [x, exitflag, output] = nmsmax (fcn, x, options)
 
   [stopit, savit, dirn, trace, tol, maxiter, tol_f, outfcn] = ...
                                                     parse_options (options, x);
 
   if (strcmpi (optimget (options, "FunValCheck", "off"), "on"))
     ## Replace fcn with a guarded version.
-    fcn = @(x) guarded_eval (fcn, x, varargin{:});
+    fcn = @(x) guarded_eval (fcn, x);
   else
-    fcn = @(x) real (fcn (x, varargin{:}));
+    fcn = @(x) real (fcn (x));
   endif
 
   x0 = x(:);  # Work with column vector internally.
@@ -509,9 +508,9 @@ function [x, exitflag, output] = nmsmax (fcn, x, options, varargin)
 endfunction
 
 ## A helper function that evaluates a function and checks for bad results.
-function y = guarded_eval (fcn, x, varargin)
+function y = guarded_eval (fcn, x)
 
-  y = fcn (x, varargin{:});
+  y = fcn (x);
 
   if (! (isreal (y)))
     error ("fminsearch:notreal", "fminsearch: non-real value encountered");
@@ -559,14 +558,6 @@ endfunction
 %! c = 1.5;
 %! assert (fminsearch (@(x) x(1).^2 + c*x(2).^2, [1;1]), [0;0], 1e-4);
 
-## additional input argument
-%!test
-%! x1 = fminsearch (@(x, c) x(1).^2 + c*x(2).^2, [1;1], [], 1.5);
-%! assert (x1, [0;0], 1e-4);
-%! x1 = fminsearch (@(x, c) c(1)*x(1).^2 + c(2)*x(2).^2, [1;1], ...
-%!                  optimset ("Display", "none"), [1 1.5]);
-%! assert (x1, [0;0], 1e-4);
-
 ## all output arguments
 %!test
 %! options = optimset ("Display", "none", "TolX", 1e-4, "TolFun", 1e-7);
@@ -592,4 +583,15 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> fminsearch ()
-%!error fminsearch (1)
+%!error <Invalid call> fminsearch (1, 2, 3, 4)
+%!error <PROBLEM must be a structure> fminsearch (1)
+%!test <*55742>
+%! problem.objective = @sin;
+%! problem.x0 = 3;
+%! problem.solver = "foo";
+%! fail ("fminsearch (problem)","problem.solver must be set to");
+
+## additional input argument - no longer supported.  nargin > 3 should fail.
+%!test <*55742>
+%! fail ("fminsearch (@(x, c) x(1).^2 + c*x(2).^2, [1;1], [], 1.5)", "Invalid call");
+%! fail ("fminsearch (@(x, c) c(1)*x(1).^2 + c(2)*x(2).^2, [1;1], optimset ('Display', 'none'), [1 1.5])", "Invalid call");

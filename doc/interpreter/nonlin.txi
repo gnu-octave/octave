@@ -197,15 +197,15 @@ Certain minimization operations require additional parameters be passed to
 the function, @code{F}, being minimized. E.g., @w{@code{F = F(x, C)}}.
 Octave's minimizer functions are designed to only pass one optimization
 variable to @code{F}, but parameter passing can be accomplished by defining
-an @ref{Anonymous Functions} that contains the necessary parameter(s).  See
-the example below:
+an @ref{Anonymous Functions,,Anonymous Function} that contains the necessary
+parameter(s).  See the example below:
 
 @example
 @group
 A = 2; B = 3;
 f = @@(x) sin (A*x + B);
 fminbnd (f, 0, 2)
-@result{} 0.8562
+   @result{}   0.8562
 @end group
 @end example
 
@@ -217,10 +217,10 @@ affect output of the function until it is redefined:
 @group
 B = 4;
 fminbnd (f, 0, 2)
-@result{} 0.8562
+   @result{}   0.8562
 f = @@(x) sin (A*x + B);
 fminbnd (f, 0, 2)
-@result{} 0.3562
+   @result{}   0.3562
 @end group
 @end example
 

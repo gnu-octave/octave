@@ -197,32 +197,32 @@ Certain minimization operations require additional parameters be passed to
 the function, @code{F}, being minimized. E.g., @w{@code{F = F(x, C)}}.
 Octave's minimizer functions are designed to only pass one optimization
 variable to @code{F}, but parameter passing can be accomplished by defining
-an @ref{Anonymous Function} that contains the necessargy parameter(s).  See
+an @ref{Anonymous Functions} that contains the necessary parameter(s).  See
 the example below:
 
-@group
 @example
+@group
 A = 2; B = 3;
-f = @(x) sin (A*x + B);
+f = @@(x) sin (A*x + B);
 fminbnd (f, 0, 2)
-@result 0.8562
-@end example
+@result{} 0.8562
 @end group
+@end example
 
 Note that anonymous functions retain the value of parameters at the time they
 are defined.  Changing a parameter value after function definition will not
 affect output of the function until it is redefined:
 
-@group
 @example
+@group
 B = 4;
 fminbnd (f, 0, 2)
-@result 0.8562
-f = @(x) sin (A*x + B);
+@result{} 0.8562
+f = @@(x) sin (A*x + B);
 fminbnd (f, 0, 2)
-@result 0.3562
-@end example
+@result{} 0.3562
 @end group
+@end example
 
 The function @code{humps} is a useful function for testing zero and
 extrema finding functions.

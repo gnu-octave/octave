@@ -123,7 +123,7 @@
 ## @item
 ## The legacy, undocumented syntax for passing parameters to @var{fcn} by
 ## appending them to the input argument list after @var{options} is
-## discouraged and will  be completely removed in Octave 10.  The
+## discouraged and will be completely removed in Octave 10.  The
 ## preferred, cross-platform compatible method of passing parameters to
 ## @var{fcn} is through use of @ref{Anonymous Functions}.  For specific
 ## examples of doing so for @code{fminsearch} and other minimization

@@ -34,8 +34,9 @@
 ## Without an argument, capture the current axes excluding ticklabels, title,
 ## and x/y/zlabels.  The returned structure @var{frame} has a field
 ## @code{cdata}, which contains the actual image data in the form of an
-## @nospell{NxMx3} (RGB) uint8 matrix, and a field @code{colormap} which is
-## provided for @sc{matlab} compatibility but is always empty.
+## @nospell{NxMx3} (RGB) uint8 matrix in physical screen pixels, and a field
+## @code{colormap} which is provided for @sc{matlab} compatibility but is
+## always empty.
 ##
 ## If the first argument @var{hax} is an axes handle, then capture this axes,
 ## rather than the current axes returned by @code{gca}.
@@ -115,10 +116,10 @@ function frame = getframe (h = [], rect = [])
   end_unwind_protect
 
   dpr = get (hf, "__device_pixel_ratio__");
-  i1 = max (floor (pos(1)), 1);
+  i1 = max (floor ((pos(1)-1)*dpr+1), 1);
   i2 = min (ceil ((pos(1)+pos(3)-1)*dpr), columns (cdata));
   idxx = i1:i2;
-  i1 = max (floor (pos(2)), 1);
+  i1 = max (floor ((pos(2)-1)*dpr+1), 1);
   i2 = min (ceil ((pos(2)+pos(4)-1)*dpr), rows (cdata));
   idxy = fliplr (rows (cdata) - (i1:i2) + 1);
 
@@ -173,7 +174,8 @@ endfunction
 %! graphics_toolkit (hf, "qt");
 %! unwind_protect
 %!   pos = get (hf, "position");
-%!   assert (size (getframe (hf).cdata)(1:2), pos(4:-1:3));
+%!   dpr = get (hf, "__device_pixel_ratio__");
+%!   assert (size (getframe (hf).cdata)(1:2), pos(4:-1:3)*dpr);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

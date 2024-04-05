@@ -114,11 +114,12 @@ function frame = getframe (h = [], rect = [])
     set (hf, "units", units)
   end_unwind_protect
 
+  dpr = get (hf, "__device_pixel_ratio__");
   i1 = max (floor (pos(1)), 1);
-  i2 = min (ceil (pos(1)+pos(3)-1), columns (cdata));
+  i2 = min (ceil ((pos(1)+pos(3)-1)*dpr), columns (cdata));
   idxx = i1:i2;
   i1 = max (floor (pos(2)), 1);
-  i2 = min (ceil (pos(2)+pos(4)-1), rows (cdata));
+  i2 = min (ceil ((pos(2)+pos(4)-1)*dpr), rows (cdata));
   idxy = fliplr (rows (cdata) - (i1:i2) + 1);
 
   frame = struct ("cdata", cdata(idxy,idxx,:), "colormap", []);

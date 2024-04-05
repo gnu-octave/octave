@@ -61,7 +61,7 @@ protected:
 
   virtual void setup_opengl_transformation (const axes::properties& props);
 
-  virtual void init_marker (const std::string& m, double m_size, float width);
+  virtual void init_marker (const std::string& m, double size, float width);
 
   virtual Matrix render_text (const std::string& txt,
                               double x, double y, double z,

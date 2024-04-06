@@ -2844,12 +2844,14 @@ looks_like_shebang (const std::string& s)
         }
         break;
 
-      default:
-        panic_impossible ();
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     if (! tok)
-            tok = new token (kw->tok_id, true, m_tok_beg, m_tok_end, get_comment_list ());
+      tok = new token (kw->tok_id, true, m_tok_beg, m_tok_end, get_comment_list ());
 
     return tok;
   }

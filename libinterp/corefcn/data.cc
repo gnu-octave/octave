@@ -656,8 +656,23 @@ periodic, @code{mod} is a better choice.
 
 #undef MAKE_INT_BRANCH
 
-        default:
-          panic_impossible ();
+          case btyp_double:
+          case btyp_float:
+          case btyp_complex:
+          case btyp_float_complex:
+          case btyp_bool:
+          case btyp_char:
+          case btyp_struct:
+          case btyp_cell:
+          case btyp_func_handle:
+          case btyp_unknown:
+            error ("rem: unexpected: found %s instead of integer - please report this bug", btyp_class_name[btyp0].c_str ());
+            break;
+
+          // We should have handled all possible enum values above.
+          // Rely on compiler diagnostics to warn if we haven't.  For
+          // example, GCC's -Wswitch option, enabled by -Wall, will
+          // provide a warning.
         }
     }
   else if (args(0).is_single_type () || args(1).is_single_type ())
@@ -840,8 +855,23 @@ negative numbers or when the values are periodic.
 
 #undef MAKE_INT_BRANCH
 
-        default:
-          panic_impossible ();
+          case btyp_double:
+          case btyp_float:
+          case btyp_complex:
+          case btyp_float_complex:
+          case btyp_bool:
+          case btyp_char:
+          case btyp_struct:
+          case btyp_cell:
+          case btyp_func_handle:
+          case btyp_unknown:
+            error ("mod: unexpected: found %s instead of integer - please report this bug", btyp_class_name[btyp0].c_str ());
+            break;
+
+          // We should have handled all possible enum values above.
+          // Rely on compiler diagnostics to warn if we haven't.  For
+          // example, GCC's -Wswitch option, enabled by -Wall, will
+          // provide a warning.
         }
     }
   else if (args(0).is_single_type () || args(1).is_single_type ())

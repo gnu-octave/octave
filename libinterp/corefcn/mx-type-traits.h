@@ -28,6 +28,8 @@
 
 #include "octave-config.h"
 
+#include <string>
+
 #include "mxtypes.h"
 #include "oct-inttypes-fwd.h"
 

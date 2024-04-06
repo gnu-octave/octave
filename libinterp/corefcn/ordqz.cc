@@ -329,9 +329,14 @@ Note: The keywords are compatible with the ones from @code{qr}.
               else
                 select(k) = false;
               break;
-            default:
-              // default: case just here to suppress compiler warning.
-              panic_impossible ();
+            case NONE:
+              error ("ordqz: invalid select mode NONE");
+              break;
+
+              // We should have handled all possible enum values above.
+              // Rely on compiler diagnostics to warn if we haven't.
+              // For example, GCC's -Wswitch option, enabled by -Wall,
+              // will provide a warning.
             }
         }
 
@@ -450,9 +455,14 @@ Note: The keywords are compatible with the ones from @code{qr}.
               else
                 select(k) = false;
               break;
-            default:
-              // default: case just here to suppress compiler warning.
-              panic_impossible();
+            case NONE:
+              error ("ordqz: invalid select mode NONE");
+              break;
+
+              // We should have handled all possible enum values above.
+              // Rely on compiler diagnostics to warn if we haven't.
+              // For example, GCC's -Wswitch option, enabled by -Wall,
+              // will provide a warning.
             }
         }
 

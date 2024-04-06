@@ -1129,9 +1129,9 @@ public:
 
   mxClassID get_class_id () const { return m_id; }
 
-  const char * get_class_name () const
+  static std::string get_class_name (mxClassID id)
   {
-    switch (m_id)
+    switch (id)
       {
       case mxDOUBLE_CLASS: return "double";
       case mxSINGLE_CLASS: return "single";
@@ -1152,6 +1152,11 @@ public:
       // FIXME: should return the classname of user-defined objects
       default: return "unknown";
       }
+  }
+
+  const char * get_class_name () const
+  {
+    return m_class_name;
   }
 
   void set_class_name (const char *name)
@@ -1621,7 +1626,9 @@ public:
 
     double retval = 0;
 
-    switch (get_class_id ())
+    mxClassID id = get_class_id ();
+
+    switch (id)
       {
       case mxDOUBLE_CLASS:
         retval = *(static_cast<double *> (m_pr));
@@ -1671,8 +1678,21 @@ public:
         retval = *(static_cast<uint64_t *> (m_pr));
         break;
 
-      default:
-        panic_impossible ();
+      case mxCELL_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        {
+          std::string dest_cname = get_class_name (id);
+          error ("invalid conversion from %s mxArray to %s scalar value", get_class_name (), dest_cname.c_str ());
+        }
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -1912,8 +1932,18 @@ public:
       case mxUINT64_CLASS:
         return int_to_ov<uint64_t, uint64NDArray, octave_uint64> (dv);
 
-      default:
-        panic_impossible ();
+      case mxCELL_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from %s%s mxArray to octave_value", (is_complex () ? "complex " : ""), get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -2210,8 +2240,19 @@ public:
       case mxUINT64_CLASS:
         error ("complex integer types are not supported");
 
-      default:
-        panic_impossible ();
+      case mxCELL_CLASS:
+      case mxCHAR_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from complex %s mxArray to octave_value", get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -2374,8 +2415,27 @@ public:
       case mxLOGICAL_CLASS:
         return to_ov<bool> (dv);
 
-      default:
-        panic_impossible ();
+      case mxINT8_CLASS:
+      case mxUINT8_CLASS:
+      case mxINT16_CLASS:
+      case mxUINT16_CLASS:
+      case mxINT32_CLASS:
+      case mxUINT32_CLASS:
+      case mxINT64_CLASS:
+      case mxUINT64_CLASS:
+      case mxCELL_CLASS:
+      case mxCHAR_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from %s%s sparse mxArray to octave_value", (is_complex () ? "complex " : ""), get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -2573,8 +2633,28 @@ public:
       case mxSINGLE_CLASS:
         error ("single precision sparse data type not supported");
 
-      default:
-        panic_impossible ();
+      case mxLOGICAL_CLASS:
+      case mxINT8_CLASS:
+      case mxUINT8_CLASS:
+      case mxINT16_CLASS:
+      case mxUINT16_CLASS:
+      case mxINT32_CLASS:
+      case mxUINT32_CLASS:
+      case mxINT64_CLASS:
+      case mxUINT64_CLASS:
+      case mxCELL_CLASS:
+      case mxCHAR_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from complex %s sparse mxArray to octave_value", get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;

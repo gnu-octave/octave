@@ -130,6 +130,8 @@ Figure::Figure (octave::interpreter& interp,
 
   figure::properties& fp = properties<figure> ();
 
+  fp.set___device_pixel_ratio__ (win->devicePixelRatio ());
+
   // Adjust figure position
   m_innerRect = boundingBoxToRect (fp.get_boundingbox (true));
   m_outerRect = boundingBoxToRect (fp.get_boundingbox (false));

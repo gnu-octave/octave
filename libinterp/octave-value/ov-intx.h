@@ -383,7 +383,7 @@ private:
 
   static octave_hdf5_id s_hdf5_save_type;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_int_scalar<OCTAVE_INT_T>;
@@ -698,5 +698,5 @@ private:
 
   static octave_hdf5_id s_hdf5_save_type;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };

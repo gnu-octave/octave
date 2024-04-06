@@ -179,12 +179,19 @@ DEF_BTYP_TRAITS (btyp_char, char);
 #define OCTAVE_EMPTY_CPP_ARG /* empty */
 
 #define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA                          \
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (OCTAVE_EMPTY_CPP_ARG)
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (OCTAVE_EMPTY_CPP_ARG,        \
+                                         OCTAVE_EMPTY_CPP_ARG)
+
+#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API(API)                 \
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (OCTAVE_EMPTY_CPP_ARG, API)
 
 #define DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA                     \
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(virtual)
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (virtual, OCTAVE_EMPTY_CPP_ARG)
 
-#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(VIRTUAL)                \
+#define DECLARE_OV_BASE_TYPEID_FUNCTIONS_AND_DATA_API(API)            \
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2 (virtual, API)
+
+#define DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA2(VIRTUAL, API)           \
   public:                                                             \
     VIRTUAL int type_id () const { return s_t_id; }                   \
     VIRTUAL std::string type_name () const { return s_t_name; }       \
@@ -192,21 +199,24 @@ DEF_BTYP_TRAITS (btyp_char, char);
     static int static_type_id () { return s_t_id; }                   \
     static std::string static_type_name () { return s_t_name; }       \
     static std::string static_class_name () { return s_c_name; }      \
-    OCTINTERP_API static void register_type ();                       \
-    OCTINTERP_API static void register_type (octave::type_info&);     \
+    API static void register_type ();                                 \
+    API static void register_type (octave::type_info&);               \
                                                                       \
   private:                                                            \
-    static OCTINTERP_API int s_t_id;                                  \
-    static OCTINTERP_API const std::string s_t_name;                  \
-    static OCTINTERP_API const std::string s_c_name;
+    static API int s_t_id;                                            \
+    static API const std::string s_t_name;                            \
+    static API const std::string s_c_name;
 
 #define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS(cls, type)         \
-  template <> OCTINTERP_API void cls<type>::register_type ();         \
-  template <> OCTINTERP_API void                                      \
-  OCTINTERP_API cls<type>::register_type (octave::type_info&);        \
-  template <> OCTINTERP_API int cls<type>::s_t_id;                    \
-  template <> OCTINTERP_API const std::string cls<type>::s_t_name;    \
-  template <> OCTINTERP_API const std::string cls<type>::s_c_name;
+  DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS_API (cls, type,          \
+                                                  OCTAVE_EMPTY_CPP_ARG)
+
+#define DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS_API(cls, type, API) \
+  template <> API void cls<type>::register_type ();                   \
+  template <> API void cls<type>::register_type (octave::type_info&); \
+  template <> API int cls<type>::s_t_id;                              \
+  template <> API const std::string cls<type>::s_t_name;              \
+  template <> API const std::string cls<type>::s_c_name;
 
 // FIXME: The 'new' operator below creates an 8-byte memory leak for every
 // registered data type (of which there are 58 built-in to Octave, plus any

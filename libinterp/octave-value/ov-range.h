@@ -86,7 +86,7 @@ private:
   int m_base = 0;
   int m_increment = 0;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 // For now, we only need ov_range<double> but we don't attempt to
@@ -522,10 +522,10 @@ protected:
 
   static octave_hdf5_id hdf5_save_type;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
-DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS (ov_range, double)
+DECLARE_TEMPLATE_OV_TYPEID_SPECIALIZATIONS_API (ov_range, double, OCTINTERP_API)
 
 // For now, enable only ov_range<double>.
 

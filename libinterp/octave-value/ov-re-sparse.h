@@ -148,7 +148,7 @@ public:
 private:
   octave_value map (double (*fcn) (double)) const;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 #endif

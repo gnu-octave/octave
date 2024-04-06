@@ -97,7 +97,7 @@ private:
 
   OCTINTERP_API bool chk_valid_scalar (const octave_value&, Complex&) const;
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 #endif

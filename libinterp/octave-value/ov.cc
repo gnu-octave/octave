@@ -2570,7 +2570,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
           return octave_scalar_map ();
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in octave_value::empty_conv - please report this bug");
         }
     }
   else

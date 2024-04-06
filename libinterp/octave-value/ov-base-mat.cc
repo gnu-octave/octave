@@ -60,7 +60,7 @@ octave_base_matrix<MT>::simple_subsref (char type, octave_value_list& idx, int)
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_base_matrix<T>::simple_subsref - please report this bug");
     }
 }
 

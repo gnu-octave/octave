@@ -5310,10 +5310,14 @@ axes::properties::set_defaults (base_graphics_object& bgo,
   // Including ones we do don't implement?
 
   // FIXME: This function is probably never called without mode == "reset".
-  //        Verify this is the case with panic_unless() (1/6/2017).
-  //        If there are reports of problems then figure out what code is
-  //        calling it with the mode set to something else.
-  panic_unless (mode == "reset");
+  //        Error if this is not true.  If there are reports of problems
+  //        then figure out what code is calling it with the mode set to
+  //        something else.  It's apparently been this way since
+  //        1/6/2017 without any reports.  Maybe we should eliminate the
+  //        mode argument?
+
+  if (mode != "reset")
+    error (R"(axes::properties::set_defaults: expected mode = "reset", found "%s")", mode.c_str ());
 
   Matrix tlim (1, 2, 0.0);
   tlim(1) = 1;

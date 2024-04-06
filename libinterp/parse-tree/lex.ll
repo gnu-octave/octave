@@ -3104,14 +3104,10 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     *p = '\0';
 
     double value = 0.0;
-    int nread = 0;
+    int nread = sscanf (tmptxt, "%lf", &value);
 
-    nread = sscanf (tmptxt, "%lf", &value);
-
-    // Panic instead of error because if yytext doesn't contain a valid
-    // number, we are in deep doo doo.
-
-    panic_unless (nread == 1);
+    if (nread != 1)
+      error ("unexpected: nread != 1 in base_lexer::handle_number<10> - please report this bug");
 
     octave_value ov_value;
 
@@ -3221,7 +3217,9 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 
     uintmax_t long_int_val;
     int status = sscanf (yytxt.c_str (), "%jx", &long_int_val);
-    panic_unless (status);
+
+    if (status == 0)
+      error ("unexpected: sscanf failed in base_lexer::handle_number<16> - please report this bug");
 
     octave_value ov_value
       = make_integer_value (long_int_val, unsigned_val, bytes);

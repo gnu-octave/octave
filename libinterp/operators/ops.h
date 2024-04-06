@@ -138,34 +138,37 @@ OCTAVE_END_NAMESPACE(octave)
   }
 
 // FIXME: the following currently don't handle index.
-#define DEFNDASSIGNOP_OP(name, t1, t2, f, op)                           \
-  static octave_value                                                   \
-  CONCAT2 (oct_assignop_, name) (octave_base_value& a1,                 \
-                                 const octave_value_list& idx,          \
-                                 const octave_base_value& a2)           \
-  {                                                                     \
-    OCTAVE_CAST_BASE_VALUE (CONCAT2 (octave_, t1)&, v1, a1);            \
-    OCTAVE_CAST_BASE_VALUE (const CONCAT2 (octave_, t2)&, v2, a2);      \
-                                                                        \
-    panic_unless (idx.empty ());                                        \
-    v1.matrix_ref () op v2.CONCAT2 (f, _value) ();                      \
-                                                                        \
-    return octave_value ();                                             \
+
+#define DEFNDASSIGNOP_OP(name, t1, t2, f, op)                                                           \
+  static octave_value                                                                                   \
+  CONCAT2 (oct_assignop_, name) (octave_base_value& a1,                                                 \
+                                 const octave_value_list& idx,                                          \
+                                 const octave_base_value& a2)                                           \
+  {                                                                                                     \
+    OCTAVE_CAST_BASE_VALUE (CONCAT2 (octave_, t1)&, v1, a1);                                            \
+    OCTAVE_CAST_BASE_VALUE (const CONCAT2 (octave_, t2)&, v2, a2);                                      \
+                                                                                                        \
+    if (! idx.empty ())                                                                                 \
+      error ("unexpected: index is not empty in oct_assignop_ " #name " - please report this bug");     \
+    v1.matrix_ref () op v2.CONCAT2 (f, _value) ();                                                      \
+                                                                                                        \
+    return octave_value ();                                                                             \
   }
 
-#define DEFNDASSIGNOP_FNOP(name, t1, t2, f, fnop)                       \
-  static octave_value                                                   \
-  CONCAT2 (oct_assignop_, name) (octave_base_value& a1,                 \
-                                 const octave_value_list& idx,          \
-                                 const octave_base_value& a2)           \
-  {                                                                     \
-    OCTAVE_CAST_BASE_VALUE (CONCAT2 (octave_, t1)&, v1, a1);            \
-    OCTAVE_CAST_BASE_VALUE (const CONCAT2 (octave_, t2)&, v2, a2);      \
-                                                                        \
-    panic_unless (idx.empty ());                                        \
-    fnop (v1.matrix_ref (), v2.CONCAT2 (f, _value) ());                 \
-                                                                        \
-    return octave_value ();                                             \
+#define DEFNDASSIGNOP_FNOP(name, t1, t2, f, fnop)                                                       \
+  static octave_value                                                                                   \
+  CONCAT2 (oct_assignop_, name) (octave_base_value& a1,                                                 \
+                                 const octave_value_list& idx,                                          \
+                                 const octave_base_value& a2)                                           \
+  {                                                                                                     \
+    OCTAVE_CAST_BASE_VALUE (CONCAT2 (octave_, t1)&, v1, a1);                                            \
+    OCTAVE_CAST_BASE_VALUE (const CONCAT2 (octave_, t2)&, v2, a2);                                      \
+                                                                                                        \
+    if (! idx.empty ())                                                                                 \
+      error ("unexpected: index is not empty in oct_assignop_ " #name " - please report this bug");     \
+    fnop (v1.matrix_ref (), v2.CONCAT2 (f, _value) ());                                                 \
+                                                                                                        \
+    return octave_value ();                                                                             \
   }
 
 #define DEFASSIGNANYOP_FN(name, t1, f)                          \

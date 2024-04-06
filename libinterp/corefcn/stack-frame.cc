@@ -1302,7 +1302,7 @@ stack_frame::size () const
   // scope_stack_frame objects.  Anything else indicates an error in
   // the implementation.
 
-  panic_impossible ();
+  error ("unexpected call to stack_frame::size () - please report this bug");
 }
 
 void
@@ -1312,7 +1312,7 @@ stack_frame::resize (std::size_t)
   // scope_stack_frame objects.  Anything else indicates an error in
   // the implementation.
 
-  panic_impossible ();
+  error ("unexpected call to stack_frame::resize () - please report this bug");
 }
 
 stack_frame::scope_flags
@@ -1322,7 +1322,7 @@ stack_frame::get_scope_flag (std::size_t) const
   // scope_stack_frame objects.  Anything else indicates an error in
   // the implementation.
 
-  panic_impossible ();
+  error ("unexpected call to stack_frame::get_scope_flag (std::size_t) - please report this bug");
 }
 
 void
@@ -1332,7 +1332,7 @@ stack_frame::set_scope_flag (std::size_t, scope_flags)
   // scope_stack_frame objects.  Anything else indicates an error in
   // the implementation.
 
-  panic_impossible ();
+  error ("unexpected call to stack_frame::get_scope_flag (std::size_t, scope_flags) - please report this bug");
 }
 
 void
@@ -1389,7 +1389,7 @@ stack_frame::varval (std::size_t) const
   // scope_stack_frame objects.  Anything else indicates an error in
   // the implementation.
 
-  panic_impossible ();
+  error ("unexpected call to stack_frame::varval (std::size_t) - please report this bug");
 }
 
 octave_value&
@@ -1399,7 +1399,7 @@ stack_frame::varref (std::size_t)
   // scope_stack_frame objects.  Anything else indicates an error in
   // the implementation.
 
-  panic_impossible ();
+  error ("unexpected call to stack_frame::varref (std::size_t) - please report this bug");
 }
 
 std::string
@@ -1408,7 +1408,7 @@ stack_frame::inputname (int, bool) const
   // This function should only be called for user_fcn_stack_frame.
   // Anything else indicates an error in the implementation.
 
-  panic_impossible ();
+  error ("unexpected call to stack_frame::inputname (int, bool) - please report this bug");
 }
 
 void
@@ -1705,7 +1705,8 @@ script_stack_frame::resize_and_update_script_offsets (const symbol_record& sym)
   // scope.  If the symbol wasn't present before, it should be outside
   // the range so we need to resize then update offsets.
 
-  panic_unless (data_offset >= size ());
+  if (data_offset < size ())
+    error ("unexpected: data_offset < size () in script_stack_frame::resize_and_update_script_offsets - please report this bug");
 
   resize (data_offset+1);
 
@@ -1758,7 +1759,8 @@ script_stack_frame::lookup_symbol (const std::string& name) const
 
   if (sym)
     {
-      panic_unless (sym.frame_offset () == 0);
+      if (sym.frame_offset () != 0)
+        error ("unexpected: sym.frame_offset () != 0 in script_stack_frame::lookup_symbol - please report this bug");
 
       return sym;
     }
@@ -1788,7 +1790,9 @@ script_stack_frame::insert_symbol (const std::string& name)
       // All symbol records in a script scope should have zero offset,
       // which means we redirect our lookup using
       // lexical_frame_offsets and values_offets.
-      panic_unless (sym.frame_offset () == 0);
+
+      if (sym.frame_offset () != 0)
+        error ("unexpected: sym.frame_offset () != 0 in script_stack_frame::insert_symbol - please report this bug");
 
       return sym;
     }
@@ -1798,7 +1802,8 @@ script_stack_frame::insert_symbol (const std::string& name)
 
   sym = scope.find_symbol (name);
 
-  panic_unless (sym.is_valid ());
+  if (! sym.is_valid ())
+    error ("unexpected: sym is not valid in script_stack_frame::insert_symbol - please report this bug");
 
   resize_and_update_script_offsets (sym);
 
@@ -2342,7 +2347,8 @@ user_fcn_stack_frame::insert_symbol (const std::string& name)
 
   sym = scope.find_symbol (name);
 
-  panic_unless (sym.is_valid ());
+  if (! sym.is_valid ())
+    error ("unexpected: sym is not valid in user_fcn_stack_frame::insert_symbol - please report this bug");
 
   return sym;
 }
@@ -2535,7 +2541,8 @@ scope_stack_frame::insert_symbol (const std::string& name)
 
   sym = m_scope.find_symbol (name);
 
-  panic_unless (sym.is_valid ());
+  if (! sym.is_valid ())
+    error ("unexpected: sym is not valid in scope_stack_frame::insert_symbol - please report this bug");
 
   return sym;
 }

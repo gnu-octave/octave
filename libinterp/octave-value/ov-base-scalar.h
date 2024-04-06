@@ -50,20 +50,22 @@ public:
 
   typedef ST scalar_type;
 
-  OCTINTERP_API octave_base_scalar ()
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_scalar ()
     : octave_base_value (), scalar () { }
 
-  OCTINTERP_API octave_base_scalar (const ST& s)
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_scalar (const ST& s)
     : octave_base_value (), scalar (s) { }
 
-  OCTINTERP_API octave_base_scalar (const octave_base_scalar& s)
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_scalar (const octave_base_scalar& s)
     : octave_base_value (), scalar (s.scalar) { }
 
-  OCTINTERP_API ~octave_base_scalar () = default;
+  OCTINTERP_OVERRIDABLE_FUNC_API ~octave_base_scalar () = default;
 
-  OCTINTERP_API octave_value squeeze () const { return scalar; }
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_value
+  squeeze () const { return scalar; }
 
-  OCTINTERP_API octave_value full_value () const { return scalar; }
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_value
+  full_value () const { return scalar; }
 
   // We don't need to override all three forms of subsref.  The using
   // declaration will avoid warnings about partially-overloaded virtual
@@ -73,7 +75,7 @@ public:
   OCTINTERP_API octave_value
   subsref (const std::string& type, const std::list<octave_value_list>& idx);
 
-  OCTINTERP_API octave_value_list
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_value_list
   subsref (const std::string& type, const std::list<octave_value_list>& idx, int)
   { return subsref (type, idx); }
 
@@ -81,36 +83,41 @@ public:
   subsasgn (const std::string& type, const std::list<octave_value_list>& idx,
             const octave_value& rhs);
 
-  OCTINTERP_API bool is_constant () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool is_constant () const { return true; }
 
-  OCTINTERP_API bool is_defined () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool is_defined () const { return true; }
 
   OCTINTERP_API dim_vector dims () const;
 
-  OCTINTERP_API octave_idx_type numel () const { return 1; }
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_idx_type numel () const { return 1; }
 
-  OCTINTERP_API int ndims () const { return 2; }
+  OCTINTERP_OVERRIDABLE_FUNC_API int ndims () const { return 2; }
 
-  OCTINTERP_API octave_idx_type nnz () const { return (scalar != ST () ? 1 : 0); }
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_idx_type
+  nnz () const { return (scalar != ST () ? 1 : 0); }
 
   OCTINTERP_API octave_value permute (const Array<int>&, bool = false) const;
 
   OCTINTERP_API octave_value reshape (const dim_vector& new_dims) const;
 
-  OCTINTERP_API std::size_t byte_size () const { return sizeof (ST); }
+  OCTINTERP_OVERRIDABLE_FUNC_API std::size_t
+  byte_size () const { return sizeof (ST); }
 
-  OCTINTERP_API octave_value all (int = 0) const { return (scalar != ST ()); }
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_value
+  all (int = 0) const { return (scalar != ST ()); }
 
-  OCTINTERP_API octave_value any (int = 0) const { return (scalar != ST ()); }
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_value
+  any (int = 0) const { return (scalar != ST ()); }
 
   OCTINTERP_API octave_value diag (octave_idx_type k = 0) const;
 
   OCTINTERP_API octave_value diag (octave_idx_type m, octave_idx_type n) const;
 
-  OCTINTERP_API octave_value sort (octave_idx_type, sortmode) const
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_value
+  sort (octave_idx_type, sortmode) const
   { return octave_value (scalar); }
 
-  OCTINTERP_API octave_value
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_value
   sort (Array<octave_idx_type>& sidx, octave_idx_type, sortmode) const
   {
     sidx.resize (dim_vector (1, 1));
@@ -118,29 +125,37 @@ public:
     return octave_value (scalar);
   }
 
-  OCTINTERP_API sortmode issorted (sortmode mode = UNSORTED) const
+  OCTINTERP_OVERRIDABLE_FUNC_API sortmode
+  issorted (sortmode mode = UNSORTED) const
   { return mode == UNSORTED ? ASCENDING : mode; }
 
-  OCTINTERP_API Array<octave_idx_type> sort_rows_idx (sortmode) const
+  OCTINTERP_OVERRIDABLE_FUNC_API Array<octave_idx_type>
+  sort_rows_idx (sortmode) const
   {
     return Array<octave_idx_type> (dim_vector (1, 1),
                                    static_cast<octave_idx_type> (0));
   }
 
-  OCTINTERP_API sortmode is_sorted_rows (sortmode mode = UNSORTED) const
+  OCTINTERP_OVERRIDABLE_FUNC_API sortmode
+  is_sorted_rows (sortmode mode = UNSORTED) const
   { return mode == UNSORTED ? ASCENDING : mode; }
 
-  OCTINTERP_API MatrixType matrix_type () const
+  OCTINTERP_OVERRIDABLE_FUNC_API MatrixType
+  matrix_type () const
   { return MatrixType::Diagonal; }
 
-  OCTINTERP_API MatrixType matrix_type (const MatrixType&) const
+  OCTINTERP_OVERRIDABLE_FUNC_API MatrixType
+  matrix_type (const MatrixType&) const
   { return matrix_type (); }
 
-  OCTINTERP_API bool is_maybe_function () const { return false; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool
+  is_maybe_function () const { return false; }
 
-  OCTINTERP_API bool is_scalar_type () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool
+  is_scalar_type () const { return true; }
 
-  OCTINTERP_API bool isnumeric () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool
+  isnumeric () const { return true; }
 
   OCTINTERP_API bool is_true () const;
 
@@ -162,11 +177,14 @@ public:
 
   // This function exists to support the MEX interface.
   // You should not use it anywhere else.
-  OCTINTERP_API const void * mex_get_data () const { return &scalar; }
+  OCTINTERP_OVERRIDABLE_FUNC_API const void *
+  mex_get_data () const { return &scalar; }
 
-  OCTINTERP_API const ST& scalar_ref () const { return scalar; }
+  OCTINTERP_OVERRIDABLE_FUNC_API const ST& scalar_ref () const
+  { return scalar; }
 
-  OCTINTERP_API ST& scalar_ref () { return scalar; }
+  OCTINTERP_OVERRIDABLE_FUNC_API ST& scalar_ref ()
+  { return scalar; }
 
   OCTINTERP_API octave_value fast_elem_extract (octave_idx_type n) const;
 

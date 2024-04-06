@@ -72,7 +72,7 @@ public:
 
   OCTINTERP_API octave_base_value * try_narrowing_conversion ();
 
-  OCTINTERP_API bool isreal () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool isreal () const { return true; }
 
   //  void increment () { matrix += 1; }
 
@@ -137,25 +137,31 @@ class OCTINTERP_TEMPLATE_API octave_base_int_scalar : public octave_base_scalar<
 {
 public:
 
-  OCTINTERP_API octave_base_int_scalar () : octave_base_scalar<T> () { }
+  OCTINTERP_OVERRIDABLE_FUNC_API
+  octave_base_int_scalar () : octave_base_scalar<T> () { }
 
-  OCTINTERP_API octave_base_int_scalar (const T& s) : octave_base_scalar<T> (s) { }
+  OCTINTERP_OVERRIDABLE_FUNC_API
+  octave_base_int_scalar (const T& s) : octave_base_scalar<T> (s) { }
 
-  OCTINTERP_API ~octave_base_int_scalar () = default;
+  OCTINTERP_OVERRIDABLE_FUNC_API ~octave_base_int_scalar () = default;
 
-  OCTINTERP_API octave_base_value * clone () const
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value * clone () const
   { return new octave_base_int_scalar (*this); }
-  OCTINTERP_API octave_base_value * empty_clone () const
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value * empty_clone () const
   { return new octave_base_int_scalar (); }
 
-  OCTINTERP_API octave_base_value * try_narrowing_conversion ()
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value *
+  try_narrowing_conversion ()
   { return nullptr; }
 
-  OCTINTERP_API bool is_maybe_function () const { return false; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool is_maybe_function () const
+  { return false; }
 
-  OCTINTERP_API bool isreal () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool isreal () const
+  { return true; }
 
-  OCTINTERP_API bool is_real_scalar () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool is_real_scalar () const
+  { return true; }
 
   //  void increment () { scalar += 1; }
 

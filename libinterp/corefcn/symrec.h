@@ -40,9 +40,7 @@ class octave_user_function;
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
-class symbol_scope_rep;
-
-class symbol_record
+class OCTINTERP_API symbol_record
 {
 public:
 

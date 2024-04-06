@@ -337,7 +337,9 @@ all_colon_equiv (const Array<octave::idx_vector>& ra_idx,
 
   int n = frozen_lengths.ndims ();
 
-  liboctave_panic_unless (idx_n == n);
+  if (idx_n != n)
+    (*current_liboctave_error_handler)
+      ("unexpected: idx_n != n in all_colon_equiv - please report this bug");
 
   for (octave_idx_type i = 0; i < n; i++)
     {

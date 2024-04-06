@@ -168,7 +168,7 @@ octave_lvalue::numel () const
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_lvalue::numel - please report this bug");
     }
 }
 

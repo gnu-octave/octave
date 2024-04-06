@@ -44,8 +44,17 @@
 
 // base int matrix values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int8NDArray>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int16NDArray>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int32NDArray>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<int64NDArray>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint8NDArray>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint16NDArray>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint32NDArray>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<uint64NDArray>;
+
 template <typename T>
-class OCTINTERP_API octave_base_int_matrix : public octave_base_matrix<T>
+class OCTINTERP_TEMPLATE_API octave_base_int_matrix : public octave_base_matrix<T>
 {
 public:
 
@@ -63,7 +72,7 @@ public:
 
   OCTINTERP_API octave_base_value * try_narrowing_conversion ();
 
-  bool isreal () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool isreal () const { return true; }
 
   //  void increment () { matrix += 1; }
 
@@ -114,29 +123,45 @@ protected:
 
 // base int scalar values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int8>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int16>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int32>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_int64>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint8>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint16>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint32>;
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<octave_uint64>;
+
 template <typename T>
-class OCTINTERP_API octave_base_int_scalar : public octave_base_scalar<T>
+class OCTINTERP_TEMPLATE_API octave_base_int_scalar : public octave_base_scalar<T>
 {
 public:
 
+  OCTINTERP_OVERRIDABLE_FUNC_API
   octave_base_int_scalar () : octave_base_scalar<T> () { }
 
+  OCTINTERP_OVERRIDABLE_FUNC_API
   octave_base_int_scalar (const T& s) : octave_base_scalar<T> (s) { }
 
-  ~octave_base_int_scalar () = default;
+  OCTINTERP_OVERRIDABLE_FUNC_API ~octave_base_int_scalar () = default;
 
-  octave_base_value * clone () const
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value * clone () const
   { return new octave_base_int_scalar (*this); }
-  octave_base_value * empty_clone () const
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value * empty_clone () const
   { return new octave_base_int_scalar (); }
 
-  octave_base_value * try_narrowing_conversion () { return nullptr; }
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value *
+  try_narrowing_conversion ()
+  { return nullptr; }
 
-  bool is_maybe_function () const { return false; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool is_maybe_function () const
+  { return false; }
 
-  bool isreal () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool isreal () const
+  { return true; }
 
-  bool is_real_scalar () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool is_real_scalar () const
+  { return true; }
 
   //  void increment () { scalar += 1; }
 

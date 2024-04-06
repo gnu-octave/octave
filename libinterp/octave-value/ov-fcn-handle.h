@@ -412,7 +412,7 @@ private:
 
   octave::base_fcn_handle * get_rep () const { return m_rep.get (); }
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 extern bool

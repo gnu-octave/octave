@@ -46,8 +46,6 @@
 #include "ov-scalar.h"
 #include "ov-float.h"
 #include "ov-base.h"
-#include "ov-base-scalar.h"
-#include "ov-base-scalar.cc"
 #include "ov-flt-re-mat.h"
 #include "ov-typeinfo.h"
 #include "pr-output.h"
@@ -58,8 +56,6 @@
 #include "ls-oct-text.h"
 #include "ls-hdf5.h"
 
-
-template class octave_base_scalar<float>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_scalar, "float scalar",
                                      "single");

@@ -275,7 +275,7 @@ private:
   static octave_base_value *
   numeric_conversion_function (const octave_base_value&);
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 #endif

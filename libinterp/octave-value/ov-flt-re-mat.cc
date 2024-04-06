@@ -63,8 +63,6 @@
 #include "oct-stream.h"
 #include "ops.h"
 #include "ov-base.h"
-#include "ov-base-mat.h"
-#include "ov-base-mat.cc"
 #include "ov-scalar.h"
 #include "ov-float.h"
 #include "ov-flt-complex.h"
@@ -83,8 +81,6 @@
 #include "ls-utils.h"
 #include "ls-hdf5.h"
 
-
-template class octave_base_matrix<FloatNDArray>;
 
 DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_float_matrix, "float matrix",
                                      "single");

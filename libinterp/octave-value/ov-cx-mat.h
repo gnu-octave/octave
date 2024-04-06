@@ -48,6 +48,8 @@ class octave_value_list;
 
 // Complex matrix values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<ComplexNDArray>;
+
 class OCTINTERP_API octave_complex_matrix : public octave_base_matrix<ComplexNDArray>
 {
 public:
@@ -179,7 +181,7 @@ public:
 
 private:
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 #endif

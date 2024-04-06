@@ -1058,9 +1058,14 @@ octave_value::octave_value (const octave::idx_vector& idx, bool lazy)
       m_rep = new octave_bool_matrix (mask, idx);
       break;
 
-    default:
-      panic_impossible ();
+    case octave::idx_vector::class_invalid:
+      error ("unexpected: invalid index in conversion to octave_value - please report this bug");
       break;
+
+      // We should have handled all possible enum values above.  Rely
+      // on compiler diagnostics to warn if we haven't.  For example,
+      // GCC's -Wswitch option, enabled by -Wall, will provide a
+      // warning.
     }
 
   // FIXME: needed?
@@ -2584,7 +2589,7 @@ octave_value::empty_conv (const std::string& type, const octave_value& rhs)
           return octave_scalar_map ();
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in octave_value::empty_conv - please report this bug");
         }
     }
   else

@@ -141,21 +141,26 @@ tree_index_expression::end_pos () const
   if (n == 0)
     return m_expr->end_pos ();
 
-  char idx_type = m_type[n-1];
-
-  if (idx_type == '(' || idx_type == '{')
+  switch (m_type[n-1])
     {
-      tree_argument_list *args = m_args.back ();
-      return args->end_pos ();
-    }
+    case '(':
+    case '{':
+      {
+        tree_argument_list *args = m_args.back ();
+        return args->end_pos ();
+      }
+      break;
 
-  if (idx_type == '.')
-    {
-      tree_expression *dyn_field = m_dyn_field.back ();
-      return dyn_field->end_pos ();
-    }
+    case '.':
+      {
+        tree_expression *dyn_field = m_dyn_field.back ();
+        return dyn_field->end_pos ();
+      }
 
-  panic_impossible ();
+    default:
+      error ("unexpected: index not '(', '{', or '.' in tree_index_expression::end_pos - please report this bug");
+      break;
+    }
 }
 
 std::string

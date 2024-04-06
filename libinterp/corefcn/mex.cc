@@ -238,6 +238,12 @@ extern "C"
   extern OCTINTERP_API void mxSetImagData (mxArray *ptr, void *pi);
 }
 
+OCTAVE_NORETURN static void
+error_impossible_call (const char *fcn_name)
+{
+  error ("unexpected call to %s - please report this bug", fcn_name);
+}
+
 static void *
 xmalloc (size_t n)
 {
@@ -952,7 +958,7 @@ public:
   void request_mutation () const
   {
     if (m_mutate_flag)
-      panic_impossible ();
+      error ("unexpected: m_mutate_flag is true in mxArray_octave_value::request_mutation - please report this bug");
 
     m_mutate_flag = true;
   }
@@ -1129,9 +1135,9 @@ public:
 
   mxClassID get_class_id () const { return m_id; }
 
-  const char * get_class_name () const
+  static std::string get_class_name (mxClassID id)
   {
-    switch (m_id)
+    switch (id)
       {
       case mxDOUBLE_CLASS: return "double";
       case mxSINGLE_CLASS: return "single";
@@ -1152,6 +1158,11 @@ public:
       // FIXME: should return the classname of user-defined objects
       default: return "unknown";
       }
+  }
+
+  const char * get_class_name () const
+  {
+    return m_class_name;
   }
 
   void set_class_name (const char *name)
@@ -1621,7 +1632,9 @@ public:
 
     double retval = 0;
 
-    switch (get_class_id ())
+    mxClassID id = get_class_id ();
+
+    switch (id)
       {
       case mxDOUBLE_CLASS:
         retval = *(static_cast<double *> (m_pr));
@@ -1671,8 +1684,21 @@ public:
         retval = *(static_cast<uint64_t *> (m_pr));
         break;
 
-      default:
-        panic_impossible ();
+      case mxCELL_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        {
+          std::string dest_cname = get_class_name (id);
+          error ("invalid conversion from %s mxArray to %s scalar value", get_class_name (), dest_cname.c_str ());
+        }
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -1912,8 +1938,18 @@ public:
       case mxUINT64_CLASS:
         return int_to_ov<uint64_t, uint64NDArray, octave_uint64> (dv);
 
-      default:
-        panic_impossible ();
+      case mxCELL_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from %s%s mxArray to octave_value", (is_complex () ? "complex " : ""), get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -2050,9 +2086,9 @@ public:
 
   ~mxArray_interleaved_full () = default;
 
-  void * get_imag_data () const { panic_impossible (); }
+  void * get_imag_data () const { error_impossible_call ("mxArray_interleaved_full::get_imag_data"); }
 
-  void set_imag_data (void */*pi*/) { panic_impossible (); }
+  void set_imag_data (void */*pi*/) { error_impossible_call ("mxArray_interleaved_full::set_imag_data"); }
 
 protected:
 
@@ -2132,55 +2168,55 @@ public:
     set_complexity (m_pi != nullptr);
   }
 
-  mxDouble * get_doubles () const { panic_impossible (); }
-  mxSingle * get_singles () const { panic_impossible (); }
-  mxInt8 * get_int8s () const { panic_impossible (); }
-  mxInt16 * get_int16s () const { panic_impossible (); }
-  mxInt32 * get_int32s () const { panic_impossible (); }
-  mxInt64 * get_int64s () const { panic_impossible (); }
-  mxUint8 * get_uint8s () const { panic_impossible (); }
-  mxUint16 * get_uint16s () const { panic_impossible (); }
-  mxUint32 * get_uint32s () const { panic_impossible (); }
-  mxUint64 * get_uint64s () const { panic_impossible (); }
+  mxDouble * get_doubles () const { error_impossible_call ("mxArray_separate_full::get_doubles"); }
+  mxSingle * get_singles () const { error_impossible_call ("mxArray_separate_full::get_singles"); }
+  mxInt8 * get_int8s () const { error_impossible_call ("mxArray_separate_full::get_int8s"); }
+  mxInt16 * get_int16s () const { error_impossible_call ("mxArray_separate_full::get_int16s"); }
+  mxInt32 * get_int32s () const { error_impossible_call ("mxArray_separate_full::get_int32s"); }
+  mxInt64 * get_int64s () const { error_impossible_call ("mxArray_separate_full::get_int64s"); }
+  mxUint8 * get_uint8s () const { error_impossible_call ("mxArray_separate_full::get_uint8s"); }
+  mxUint16 * get_uint16s () const { error_impossible_call ("mxArray_separate_full::get_uint16s"); }
+  mxUint32 * get_uint32s () const { error_impossible_call ("mxArray_separate_full::get_uint32s"); }
+  mxUint64 * get_uint64s () const { error_impossible_call ("mxArray_separate_full::get_uint64s"); }
 
-  mxComplexDouble * get_complex_doubles () const { panic_impossible (); }
-  mxComplexSingle * get_complex_singles () const { panic_impossible (); }
-
-  // We don't have complex integer types, but for separate storage they
-  // still would not work.
-  mxComplexInt8 * get_complex_int8s () const { panic_impossible (); }
-  mxComplexInt16 * get_complex_int16s () const { panic_impossible (); }
-  mxComplexInt32 * get_complex_int32s () const { panic_impossible (); }
-  mxComplexInt64 * get_complex_int64s () const { panic_impossible (); }
-  mxComplexUint8 * get_complex_uint8s () const { panic_impossible (); }
-  mxComplexUint16 * get_complex_uint16s () const { panic_impossible (); }
-  mxComplexUint32 * get_complex_uint32s () const { panic_impossible (); }
-  mxComplexUint64 * get_complex_uint64s () const { panic_impossible (); }
-
-  int set_doubles (mxDouble *) { panic_impossible (); }
-  int set_singles (mxSingle *) { panic_impossible (); }
-  int set_int8s (mxInt8 *) { panic_impossible (); }
-  int set_int16s (mxInt16 *) { panic_impossible (); }
-  int set_int32s (mxInt32 *) { panic_impossible (); }
-  int set_int64s (mxInt64 *) { panic_impossible (); }
-  int set_uint8s (mxUint8 *) { panic_impossible (); }
-  int set_uint16s (mxUint16 *) { panic_impossible (); }
-  int set_uint32s (mxUint32 *) { panic_impossible (); }
-  int set_uint64s (mxUint64 *) { panic_impossible (); }
-
-  int set_complex_doubles (mxComplexDouble *) { panic_impossible (); }
-  int set_complex_singles (mxComplexSingle *) { panic_impossible (); }
+  mxComplexDouble * get_complex_doubles () const { error_impossible_call ("mxArray_separate_full::get_complex_doubles"); }
+  mxComplexSingle * get_complex_singles () const { error_impossible_call ("mxArray_separate_full::get_complex_singles"); }
 
   // We don't have complex integer types, but for separate storage they
   // still would not work.
-  int set_complex_int8s (mxComplexInt8 *) { panic_impossible (); }
-  int set_complex_int16s (mxComplexInt16 *) { panic_impossible (); }
-  int set_complex_int32s (mxComplexInt32 *) { panic_impossible (); }
-  int set_complex_int64s (mxComplexInt64 *) { panic_impossible (); }
-  int set_complex_uint8s (mxComplexUint8 *) { panic_impossible (); }
-  int set_complex_uint16s (mxComplexUint16 *) { panic_impossible (); }
-  int set_complex_uint32s (mxComplexUint32 *) { panic_impossible (); }
-  int set_complex_uint64s (mxComplexUint64 *) { panic_impossible (); }
+  mxComplexInt8 * get_complex_int8s () const { error_impossible_call ("mxArray_separate_full::get_complex_int8s"); }
+  mxComplexInt16 * get_complex_int16s () const { error_impossible_call ("mxArray_separate_full::get_complex_int16s"); }
+  mxComplexInt32 * get_complex_int32s () const { error_impossible_call ("mxArray_separate_full::get_complex_int32s"); }
+  mxComplexInt64 * get_complex_int64s () const { error_impossible_call ("mxArray_separate_full::get_complex_int64s"); }
+  mxComplexUint8 * get_complex_uint8s () const { error_impossible_call ("mxArray_separate_full::get_complex_uint8s"); }
+  mxComplexUint16 * get_complex_uint16s () const { error_impossible_call ("mxArray_separate_full::get_complex_uint16s"); }
+  mxComplexUint32 * get_complex_uint32s () const { error_impossible_call ("mxArray_separate_full::get_complex_uint32s"); }
+  mxComplexUint64 * get_complex_uint64s () const { error_impossible_call ("mxArray_separate_full::get_complex_uint64s"); }
+
+  int set_doubles (mxDouble *) { error_impossible_call ("mxArray_separate_full::set_doubles"); }
+  int set_singles (mxSingle *) { error_impossible_call ("mxArray_separate_full::set_singles"); }
+  int set_int8s (mxInt8 *) { error_impossible_call ("mxArray_separate_full::set_int8s"); }
+  int set_int16s (mxInt16 *) { error_impossible_call ("mxArray_separate_full::set_int16s"); }
+  int set_int32s (mxInt32 *) { error_impossible_call ("mxArray_separate_full::set_int32s"); }
+  int set_int64s (mxInt64 *) { error_impossible_call ("mxArray_separate_full::set_int64s"); }
+  int set_uint8s (mxUint8 *) { error_impossible_call ("mxArray_separate_full::set_uint8s"); }
+  int set_uint16s (mxUint16 *) { error_impossible_call ("mxArray_separate_full::set_uint16s"); }
+  int set_uint32s (mxUint32 *) { error_impossible_call ("mxArray_separate_full::set_uint32s"); }
+  int set_uint64s (mxUint64 *) { error_impossible_call ("mxArray_separate_full::set_uint64s"); }
+
+  int set_complex_doubles (mxComplexDouble *) { error_impossible_call ("mxArray_separate_full::set_complex_doubles"); }
+  int set_complex_singles (mxComplexSingle *) { error_impossible_call ("mxArray_separate_full::set_complex_singles"); }
+
+  // We don't have complex integer types, but for separate storage they
+  // still would not work.
+  int set_complex_int8s (mxComplexInt8 *) { error_impossible_call ("mxArray_separate_full::set_complex_int8s"); }
+  int set_complex_int16s (mxComplexInt16 *) { error_impossible_call ("mxArray_separate_full::set_complex_int16s"); }
+  int set_complex_int32s (mxComplexInt32 *) { error_impossible_call ("mxArray_separate_full::set_complex_int32s"); }
+  int set_complex_int64s (mxComplexInt64 *) { error_impossible_call ("mxArray_separate_full::set_complex_int64s"); }
+  int set_complex_uint8s (mxComplexUint8 *) { error_impossible_call ("mxArray_separate_full::set_complex_uint8s"); }
+  int set_complex_uint16s (mxComplexUint16 *) { error_impossible_call ("mxArray_separate_full::set_complex_uint16s"); }
+  int set_complex_uint32s (mxComplexUint32 *) { error_impossible_call ("mxArray_separate_full::set_complex_uint32s"); }
+  int set_complex_uint64s (mxComplexUint64 *) { error_impossible_call ("mxArray_separate_full::set_complex_uint64s"); }
 
   octave_value as_octave_value () const
   {
@@ -2210,8 +2246,19 @@ public:
       case mxUINT64_CLASS:
         error ("complex integer types are not supported");
 
-      default:
-        panic_impossible ();
+      case mxCELL_CLASS:
+      case mxCHAR_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from complex %s mxArray to octave_value", get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -2374,8 +2421,27 @@ public:
       case mxLOGICAL_CLASS:
         return to_ov<bool> (dv);
 
-      default:
-        panic_impossible ();
+      case mxINT8_CLASS:
+      case mxUINT8_CLASS:
+      case mxINT16_CLASS:
+      case mxUINT16_CLASS:
+      case mxINT32_CLASS:
+      case mxUINT32_CLASS:
+      case mxINT64_CLASS:
+      case mxUINT64_CLASS:
+      case mxCELL_CLASS:
+      case mxCHAR_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from %s%s sparse mxArray to octave_value", (is_complex () ? "complex " : ""), get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;
@@ -2476,9 +2542,9 @@ public:
 
   ~mxArray_interleaved_sparse () = default;
 
-  void * get_imag_data () const { panic_impossible (); }
+  void * get_imag_data () const { error_impossible_call ("mxArray_interleaved_sparse::get_imag_data"); }
 
-  void set_imag_data (void */*pi*/) { panic_impossible (); }
+  void set_imag_data (void */*pi*/) { error_impossible_call ("mxArray_interleaved_sparse::set_imag_data"); }
 };
 
 class mxArray_separate_sparse : public mxArray_base_sparse
@@ -2532,11 +2598,11 @@ public:
     set_complexity (m_pi != nullptr);
   }
 
-  mxDouble * get_doubles () const { panic_impossible (); }
-  mxComplexDouble * get_complex_doubles () const { panic_impossible (); }
+  mxDouble * get_doubles () const { error_impossible_call ("mxArray_separate_sparse::get_doubles"); }
+  mxComplexDouble * get_complex_doubles () const { error_impossible_call ("mxArray_separate_sparse::get_complex_doubles"); }
 
-  int set_doubles (mxDouble *) { panic_impossible (); }
-  int set_complex_doubles (mxComplexDouble *) { panic_impossible (); }
+  int set_doubles (mxDouble *) { error_impossible_call ("mxArray_separate_sparse::set_doubles"); }
+  int set_complex_doubles (mxComplexDouble *) { error_impossible_call ("mxArray_separate_sparse::set_complex_doubles"); }
 
   octave_value as_octave_value () const
   {
@@ -2573,8 +2639,28 @@ public:
       case mxSINGLE_CLASS:
         error ("single precision sparse data type not supported");
 
-      default:
-        panic_impossible ();
+      case mxLOGICAL_CLASS:
+      case mxINT8_CLASS:
+      case mxUINT8_CLASS:
+      case mxINT16_CLASS:
+      case mxUINT16_CLASS:
+      case mxINT32_CLASS:
+      case mxUINT32_CLASS:
+      case mxINT64_CLASS:
+      case mxUINT64_CLASS:
+      case mxCELL_CLASS:
+      case mxCHAR_CLASS:
+      case mxFUNCTION_CLASS:
+      case mxSTRUCT_CLASS:
+      case mxUNKNOWN_CLASS:
+      case mxVOID_CLASS:
+        error ("invalid conversion from complex %s sparse mxArray to octave_value", get_class_name ());
+        break;
+
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return retval;

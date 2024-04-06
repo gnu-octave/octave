@@ -99,6 +99,9 @@ OCTAVE_VALUE_SRC = \
   %reldir%/cdef-package.cc \
   %reldir%/cdef-property.cc \
   %reldir%/cdef-utils.cc \
+  %reldir%/ov-base-int-inst.cc \
+  %reldir%/ov-base-mat-inst.cc \
+  %reldir%/ov-base-scalar-inst.cc \
   %reldir%/ov-base.cc \
   %reldir%/ov-bool-mat.cc \
   %reldir%/ov-bool.cc \

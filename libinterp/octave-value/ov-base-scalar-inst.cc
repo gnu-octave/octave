@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////
 //
-// Copyright (C) 2004-2024 The Octave Project Developers
+// Copyright (C) 2024 The Octave Project Developers
 //
 // See the file COPYRIGHT.md in the top-level directory of this
 // distribution or <https://octave.org/copyright/>.
@@ -27,38 +27,20 @@
 #  include "config.h"
 #endif
 
-#include "lo-ieee.h"
-#include "lo-utils.h"
-#include "mx-base.h"
-#include "quit.h"
+#include "ov-base-scalar.cc"
 
-#include "errwarn.h"
-#include "oct-lvalue.h"
-#include "oct-hdf5.h"
-#include "ops.h"
-#include "ov-base.h"
+// instantiate template class with types that need to be exported from library
 
-#if defined (HAVE_HDF5)
-#  define HDF5_SAVE_TYPE H5T_NATIVE_UINT64
-#else
-// This value will not be used.
-#  define HDF5_SAVE_TYPE 0
-#endif
-
-#include "ov-uint64.h"
-#include "pr-output.h"
-#include "variables.h"
-
-#include "byte-swap.h"
-#include "ls-oct-text.h"
-#include "ls-utils.h"
-#include "ls-hdf5.h"
-
-octave_hdf5_id octave_uint64_matrix::s_hdf5_save_type = HDF5_SAVE_TYPE;
-octave_hdf5_id octave_uint64_scalar::s_hdf5_save_type = HDF5_SAVE_TYPE;
-
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint64_matrix,
-                                     "uint64 matrix", "uint64");
-
-DEFINE_OV_TYPEID_FUNCTIONS_AND_DATA (octave_uint64_scalar,
-                                     "uint64 scalar", "uint64");
+template class OCTINTERP_API octave_base_scalar<bool>;
+template class OCTINTERP_API octave_base_scalar<double>;
+template class OCTINTERP_API octave_base_scalar<float>;
+template class OCTINTERP_API octave_base_scalar<Complex>;
+template class OCTINTERP_API octave_base_scalar<FloatComplex>;
+template class OCTINTERP_API octave_base_scalar<octave_int8>;
+template class OCTINTERP_API octave_base_scalar<octave_int16>;
+template class OCTINTERP_API octave_base_scalar<octave_int32>;
+template class OCTINTERP_API octave_base_scalar<octave_int64>;
+template class OCTINTERP_API octave_base_scalar<octave_uint8>;
+template class OCTINTERP_API octave_base_scalar<octave_uint16>;
+template class OCTINTERP_API octave_base_scalar<octave_uint32>;
+template class OCTINTERP_API octave_base_scalar<octave_uint64>;

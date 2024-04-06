@@ -44,25 +44,25 @@
 octave_base_value *
 octave_function::clone () const
 {
-  panic_impossible ();
+  error ("unexpected call to octave_function::clone - please report this bug");
 }
 
 octave_base_value *
 octave_function::empty_clone () const
 {
-  panic_impossible ();
+  error ("unexpected call to octave_function::empty_clone - please report this bug");
 }
 
 octave::filepos
 octave_function::beg_pos () const
 {
-  panic_impossible ();
+  error ("unexpected call to octave_function::beg_pos - please report this bug");
 }
 
 octave::filepos
 octave_function::end_pos () const
 {
-  panic_impossible ();
+  error ("unexpected call to octave_function::end_pos - please report this bug");
 }
 
 octave_value_list

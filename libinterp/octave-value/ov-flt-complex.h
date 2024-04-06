@@ -47,6 +47,8 @@ class octave_value_list;
 
 // Complex scalar values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_scalar<FloatComplex>;
+
 class OCTINTERP_API octave_float_complex : public octave_base_scalar<FloatComplex>
 {
 public:
@@ -194,7 +196,7 @@ public:
 
 private:
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 typedef octave_float_complex octave_float_complex_scalar;

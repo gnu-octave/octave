@@ -48,6 +48,8 @@ class octave_value_list;
 
 // Real matrix values.
 
+extern template class OCTINTERP_EXTERN_TEMPLATE_API octave_base_matrix<NDArray>;
+
 class OCTINTERP_API octave_matrix : public octave_base_matrix<NDArray>
 {
 public:
@@ -244,7 +246,7 @@ public:
 
 private:
 
-  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA
+  DECLARE_OV_TYPEID_FUNCTIONS_AND_DATA_API (OCTINTERP_API)
 };
 
 #endif

@@ -207,6 +207,12 @@ function [hleg, hleg_obj, hplot, labels] = legend (varargin)
   ##        lock once that bug is properly fixed.
   mlock ();
 
+  ## legend() requires root property to be invisible.
+  if (strcmp (get (groot, 'showhiddenhandles'), 'on'))
+    cleanup = onCleanup (@() set (groot, 'showhiddenhandles', 'on'));
+    set (groot, 'showhiddenhandles', 'off');
+  endif
+
   opts = parse_opts (varargin{:});
 
   hl = opts.legend_handle;

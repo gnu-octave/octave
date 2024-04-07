@@ -75,6 +75,12 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+OCTAVE_NORETURN static void
+error_unexpected (const char *name)
+{
+  error ("unexpected call to %s - please report this bug", name);
+}
+
 // Normal evaluator.
 
 class quit_debug_exception
@@ -1258,13 +1264,13 @@ tree_evaluator::evalin (const std::string& context,
 void
 tree_evaluator::visit_anon_fcn_handle (tree_anon_fcn_handle&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_anon_fcn_handle");
 }
 
 void
 tree_evaluator::visit_argument_list (tree_argument_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_argument_list");
 }
 
 void
@@ -1276,49 +1282,49 @@ tree_evaluator::visit_arguments_block (tree_arguments_block&)
 void
 tree_evaluator::visit_args_block_attribute_list (tree_args_block_attribute_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_args_block_attribute_list");
 }
 
 void
 tree_evaluator::visit_args_block_validation_list (tree_args_block_validation_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_args_block_validation_list");
 }
 
 void
 tree_evaluator::visit_arg_validation (tree_arg_validation&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_arg_validation");
 }
 
 void
 tree_evaluator::visit_arg_size_spec (tree_arg_size_spec&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_arg_size_spec");
 }
 
 void
 tree_evaluator::visit_arg_validation_fcns (tree_arg_validation_fcns&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_arg_validation_fcns");
 }
 
 void
 tree_evaluator::visit_binary_expression (tree_binary_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_binary_expression");
 }
 
 void
 tree_evaluator::visit_boolean_expression (tree_boolean_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_boolean_expression");
 }
 
 void
 tree_evaluator::visit_compound_binary_expression (tree_compound_binary_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_compound_binary_expression");
 }
 
 void
@@ -1345,7 +1351,7 @@ tree_evaluator::visit_break_command (tree_break_command& cmd)
 void
 tree_evaluator::visit_colon_expression (tree_colon_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_colon_expression");
 }
 
 void
@@ -3598,7 +3604,7 @@ void
 tree_evaluator::visit_octave_user_script (octave_user_script&)
 {
   // ??
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_octave_user_script");
 }
 
 octave_value_list
@@ -3781,19 +3787,19 @@ void
 tree_evaluator::visit_octave_user_function (octave_user_function&)
 {
   // ??
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_octave_user_function");
 }
 
 void
 tree_evaluator::visit_octave_user_function_header (octave_user_function&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_octave_user_function_header");
 }
 
 void
 tree_evaluator::visit_octave_user_function_trailer (octave_user_function&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_octave_user_function_trailer");
 }
 
 void
@@ -3821,13 +3827,13 @@ tree_evaluator::visit_function_def (tree_function_def& cmd)
 void
 tree_evaluator::visit_identifier (tree_identifier&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_identifier");
 }
 
 void
 tree_evaluator::visit_if_clause (tree_if_clause&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_if_clause");
 }
 
 void
@@ -3880,25 +3886,25 @@ tree_evaluator::visit_if_command_list (tree_if_command_list& lst)
 void
 tree_evaluator::visit_index_expression (tree_index_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_index_expression");
 }
 
 void
 tree_evaluator::visit_matrix (tree_matrix&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_matrix");
 }
 
 void
 tree_evaluator::visit_cell (tree_cell&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_cell");
 }
 
 void
 tree_evaluator::visit_multi_assignment (tree_multi_assignment&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_multi_assignment");
 }
 
 void
@@ -3920,31 +3926,31 @@ tree_evaluator::visit_no_op_command (tree_no_op_command& cmd)
 void
 tree_evaluator::visit_constant (tree_constant&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_constant");
 }
 
 void
 tree_evaluator::visit_fcn_handle (tree_fcn_handle&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_fcn_handle");
 }
 
 void
 tree_evaluator::visit_parameter_list (tree_parameter_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_parameter_list");
 }
 
 void
 tree_evaluator::visit_postfix_expression (tree_postfix_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_postfix_expression");
 }
 
 void
 tree_evaluator::visit_prefix_expression (tree_prefix_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_prefix_expression");
 }
 
 void
@@ -3975,7 +3981,7 @@ tree_evaluator::visit_return_command (tree_return_command& cmd)
 void
 tree_evaluator::visit_simple_assignment (tree_simple_assignment&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_simple_assignment");
 }
 
 void
@@ -4141,13 +4147,13 @@ tree_evaluator::visit_statement_list (tree_statement_list& lst)
 void
 tree_evaluator::visit_switch_case (tree_switch_case&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_switch_case");
 }
 
 void
 tree_evaluator::visit_switch_case_list (tree_switch_case_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_switch_case_list");
 }
 
 void
@@ -4489,13 +4495,13 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
 void
 tree_evaluator::visit_superclass_ref (tree_superclass_ref&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_superclass_ref");
 }
 
 void
 tree_evaluator::visit_metaclass_query (tree_metaclass_query&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_evaluator::visit_metaclass_query");
 }
 
 void

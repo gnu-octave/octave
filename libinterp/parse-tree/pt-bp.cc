@@ -33,6 +33,12 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+OCTAVE_NORETURN static void
+error_unexpected (const char *name)
+{
+  error ("unexpected call to %s - please report this bug", name);
+}
+
 void
 tree_breakpoint::visit_while_command (tree_while_command& cmd)
 {
@@ -69,7 +75,7 @@ tree_breakpoint::visit_do_until_command (tree_do_until_command& cmd)
 void
 tree_breakpoint::visit_argument_list (tree_argument_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_argument_list");
 }
 
 void
@@ -81,37 +87,37 @@ tree_breakpoint::visit_arguments_block (tree_arguments_block&)
 void
 tree_breakpoint::visit_args_block_attribute_list (tree_args_block_attribute_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_args_block_attribute_list");
 }
 
 void
 tree_breakpoint::visit_args_block_validation_list (tree_args_block_validation_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_args_block_validation_list");
 }
 
 void
 tree_breakpoint::visit_arg_validation (tree_arg_validation&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_arg_validation");
 }
 
 void
 tree_breakpoint::visit_arg_size_spec (tree_arg_size_spec&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_arg_size_spec");
 }
 
 void
 tree_breakpoint::visit_arg_validation_fcns (tree_arg_validation_fcns&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_arg_validation_fcns");
 }
 
 void
 tree_breakpoint::visit_binary_expression (tree_binary_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_binary_expression");
 }
 
 void
@@ -124,7 +130,7 @@ tree_breakpoint::visit_break_command (tree_break_command& cmd)
 void
 tree_breakpoint::visit_colon_expression (tree_colon_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_colon_expression");
 }
 
 void
@@ -144,13 +150,13 @@ tree_breakpoint::visit_decl_command (tree_decl_command& cmd)
 void
 tree_breakpoint::visit_decl_init_list (tree_decl_init_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_decl_init_list");
 }
 
 void
 tree_breakpoint::visit_decl_elt (tree_decl_elt&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_decl_elt");
 }
 
 void
@@ -186,25 +192,25 @@ tree_breakpoint::visit_complex_for_command (tree_complex_for_command& cmd)
 void
 tree_breakpoint::visit_octave_user_function_header (octave_user_function&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_octave_user_function_header");
 }
 
 void
 tree_breakpoint::visit_octave_user_function_trailer (octave_user_function&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_octave_user_function_trailer");
 }
 
 void
 tree_breakpoint::visit_identifier (tree_identifier&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_identifier");
 }
 
 void
 tree_breakpoint::visit_if_clause (tree_if_clause&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_if_clause");
 }
 
 void
@@ -231,25 +237,25 @@ tree_breakpoint::visit_if_command_list (tree_if_command_list& lst)
 void
 tree_breakpoint::visit_index_expression (tree_index_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_index_expression");
 }
 
 void
 tree_breakpoint::visit_matrix (tree_matrix&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_matrix");
 }
 
 void
 tree_breakpoint::visit_cell (tree_cell&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_cell");
 }
 
 void
 tree_breakpoint::visit_multi_assignment (tree_multi_assignment&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_multi_assignment");
 }
 
 void
@@ -262,37 +268,37 @@ tree_breakpoint::visit_no_op_command (tree_no_op_command& cmd)
 void
 tree_breakpoint::visit_anon_fcn_handle (tree_anon_fcn_handle&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_anon_fcn_handle");
 }
 
 void
 tree_breakpoint::visit_constant (tree_constant&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_constant");
 }
 
 void
 tree_breakpoint::visit_fcn_handle (tree_fcn_handle&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_fcn_handle");
 }
 
 void
 tree_breakpoint::visit_parameter_list (tree_parameter_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_parameter_list");
 }
 
 void
 tree_breakpoint::visit_postfix_expression (tree_postfix_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_postfix_expression");
 }
 
 void
 tree_breakpoint::visit_prefix_expression (tree_prefix_expression&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_prefix_expression");
 }
 
 void
@@ -305,7 +311,7 @@ tree_breakpoint::visit_return_command (tree_return_command& cmd)
 void
 tree_breakpoint::visit_simple_assignment (tree_simple_assignment&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_simple_assignment");
 }
 
 void
@@ -345,7 +351,7 @@ tree_breakpoint::visit_statement_list (tree_statement_list& lst)
 void
 tree_breakpoint::visit_switch_case (tree_switch_case&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_breakpoint::visit_switch_case");
 }
 
 void
@@ -421,30 +427,34 @@ tree_breakpoint::visit_unwind_protect_command (tree_unwind_protect_command& cmd)
 void
 tree_breakpoint::take_action (tree& tr)
 {
-  if (m_action == set)
+  switch (m_action)
     {
+    case set:
       tr.set_breakpoint (m_condition);
       m_line = tr.line ();
       m_found = true;
-    }
-  else if (m_action == clear)
-    {
+      break;
+
+    case clear:
       if (tr.is_breakpoint ())
         {
           tr.delete_breakpoint ();
           m_found = true;
         }
-    }
-  else if (m_action == list)
-    {
+      break;
+
+    case list:
       if (tr.is_breakpoint ())
         {
           m_bp_list.append (octave_value (tr.line ()));
           m_bp_cond_list.append (octave_value (tr.bp_cond ()));
         }
+      break;
+
+      // We should have handled all possible enum values above.  Rely on
+      // compiler diagnostics to warn if we haven't.  For example, GCC's
+      // -Wswitch option, enabled by -Wall, will provide a warning.
     }
-  else
-    panic_impossible ();
 }
 
 void
@@ -452,30 +462,34 @@ tree_breakpoint::take_action (tree_statement& stmt)
 {
   int lineno = stmt.line ();
 
-  if (m_action == set)
+  switch (m_action)
     {
+    case set:
       stmt.set_breakpoint (m_condition);
       m_line = lineno;
       m_found = true;
-    }
-  else if (m_action == clear)
-    {
+      break;
+
+    case clear:
       if (stmt.is_breakpoint ())
         {
           stmt.delete_breakpoint ();
           m_found = true;
         }
-    }
-  else if (m_action == list)
-    {
+      break;
+
+    case list:
       if (stmt.is_breakpoint ())
         {
           m_bp_list.append (octave_value (lineno));
           m_bp_cond_list.append (octave_value (stmt.bp_cond ()));
         }
+      break;
+
+      // We should have handled all possible enum values above.  Rely on
+      // compiler diagnostics to warn if we haven't.  For example, GCC's
+      // -Wswitch option, enabled by -Wall, will provide a warning.
     }
-  else
-    panic_impossible ();
 }
 
 OCTAVE_END_NAMESPACE(octave)

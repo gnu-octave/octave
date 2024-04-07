@@ -678,6 +678,12 @@ class opengl_renderer::patch_tessellator
   // Dummy class.
 };
 
+OCTAVE_NORETURN static void
+error_unexpected (const char *name)
+{
+  error ("unexpected call to %s when HAVE_OPENGL is not defined - please report this bug", name);
+}
+
 #endif
 
 opengl_renderer::opengl_renderer (opengl_functions& glfcns)
@@ -895,7 +901,7 @@ opengl_renderer::init_gl_context (bool enhanced, const Matrix& c)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::init_gl_context");
 
 #endif
 }
@@ -971,7 +977,7 @@ opengl_renderer::render_grid (const double linewidth,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::render_grid");
 
 #endif
 }
@@ -1053,7 +1059,7 @@ opengl_renderer::render_tickmarks (const Matrix& ticks,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::render_tickmarks");
 
 #endif
 }
@@ -1123,7 +1129,7 @@ opengl_renderer::render_ticktexts (const Matrix& ticks,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::render_ticktexts");
 
 #endif
 }
@@ -1149,7 +1155,7 @@ opengl_renderer::draw_zoom_rect (int x1, int y1, int x2, int y2)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_zoom_rect");
 
 #endif
 }
@@ -1214,7 +1220,7 @@ opengl_renderer::draw_zoom_box (int width, int height,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_zoom_box");
 
 #endif
 }
@@ -1251,7 +1257,7 @@ opengl_renderer::get_pixels (int width, int height)
   octave_unused_parameter (width);
   octave_unused_parameter (height);
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::get_pixels");
 
 #endif
 }
@@ -1268,7 +1274,7 @@ opengl_renderer::finish ()
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::finish");
 
 #endif
 }
@@ -1326,7 +1332,7 @@ opengl_renderer::setup_opengl_transformation (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::setup_opengl_transformation");
 
 #endif
 }
@@ -1386,7 +1392,7 @@ opengl_renderer::draw_axes_planes (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_axes_planes");
 
 #endif
 }
@@ -1546,7 +1552,7 @@ opengl_renderer::draw_axes_boxes (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_axes_boxes");
 
 #endif
 }
@@ -1747,7 +1753,7 @@ opengl_renderer::draw_axes_x_grid (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_axes_x_grid");
 
 #endif
 }
@@ -1949,7 +1955,7 @@ opengl_renderer::draw_axes_y_grid (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_axes_y_grid");
 
 #endif
 }
@@ -2174,7 +2180,7 @@ opengl_renderer::draw_axes_grids (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_axes_grids");
 
 #endif
 }
@@ -2221,7 +2227,7 @@ opengl_renderer::draw_all_lights (const base_properties& props,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_all_lights");
 
 #endif
 }
@@ -2310,7 +2316,7 @@ opengl_renderer::draw_axes_children (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_axes_children");
 
 #endif
 }
@@ -2382,7 +2388,7 @@ opengl_renderer::draw_axes (const axes::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_axes");
 
 #endif
 }
@@ -2528,7 +2534,7 @@ opengl_renderer::draw_line (const line::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_line");
 
 #endif
 }
@@ -3193,7 +3199,7 @@ opengl_renderer::draw_surface (const surface::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_surface");
 
 #endif
 }
@@ -3740,7 +3746,7 @@ opengl_renderer::draw_patch (const patch::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_patch");
 
 #endif
 }
@@ -3849,7 +3855,7 @@ opengl_renderer::draw_scatter (const scatter::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_scatter");
 
 #endif
 }
@@ -3886,7 +3892,7 @@ opengl_renderer::draw_light (const light::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_light");
 
 #endif
 }
@@ -3917,7 +3923,7 @@ opengl_renderer::set_ortho_coordinates ()
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_ortho_coordinates");
 
 #endif
 }
@@ -3938,7 +3944,7 @@ opengl_renderer::restore_previous_coordinates ()
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::restore_previous_coordinates");
 
 #endif
 }
@@ -3976,7 +3982,7 @@ opengl_renderer::draw_text (const text::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_text");
 
 #endif
 }
@@ -4062,7 +4068,7 @@ opengl_renderer::draw_text_background (const text::properties& props,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_text_background");
 
 #endif
 }
@@ -4085,7 +4091,7 @@ opengl_renderer::draw_image (const image::properties& props)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_image");
 
 #endif
 }
@@ -4168,7 +4174,7 @@ opengl_renderer::draw_texture_image (const octave_value cdata, Matrix x,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_texture_image");
 
 #endif
 }
@@ -4204,7 +4210,7 @@ opengl_renderer::set_viewport (int w, int h)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_viewport");
 
 #endif
 }
@@ -4231,7 +4237,7 @@ opengl_renderer::get_viewport_scaled () const
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::get_viewport_scaled");
 
 #endif
 
@@ -4255,7 +4261,7 @@ opengl_renderer::set_color (const Matrix& c)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_color");
 
 #endif
 }
@@ -4297,7 +4303,7 @@ opengl_renderer::set_polygon_offset (bool on, float offset)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_polygon_offset");
 
 #endif
 }
@@ -4316,7 +4322,7 @@ opengl_renderer::set_linewidth (float w)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_linewidth");
 
 #endif
 }
@@ -4377,7 +4383,7 @@ opengl_renderer::set_linestyle (const std::string& s, bool use_stipple,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_linestyle");
 
 #endif
 }
@@ -4427,7 +4433,7 @@ opengl_renderer::set_clipbox (double x1, double x2, double y1, double y2,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_clipbox");
 
 #endif
 }
@@ -4456,7 +4462,7 @@ opengl_renderer::set_clipping (bool enable)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_clipping");
 
 #endif
 }
@@ -4489,7 +4495,7 @@ opengl_renderer::init_marker (const std::string& m, double size, float width)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::init_marker");
 
 #endif
 }
@@ -4510,7 +4516,7 @@ opengl_renderer::change_marker (const std::string& m, double size)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::change_marker");
 
 #endif
 }
@@ -4534,7 +4540,7 @@ opengl_renderer::end_marker ()
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::end_marker");
 
 #endif
 }
@@ -4586,7 +4592,7 @@ opengl_renderer::draw_marker (double x, double y, double z,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::draw_marker");
 
 #endif
 }
@@ -4609,7 +4615,7 @@ opengl_renderer::init_maxlights ()
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::init_maxlights");
 
 #endif
 }
@@ -4636,7 +4642,7 @@ opengl_renderer::get_string (unsigned int id) const
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::get_string");
   return std::string ();
 
 #endif
@@ -4671,7 +4677,7 @@ opengl_renderer::set_normal (int bfl_mode, const NDArray& n, int j, int i)
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::set_normal");
 
 #endif
 }
@@ -4885,7 +4891,7 @@ opengl_renderer::make_marker_list (const std::string& marker, double size,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::make_marker_list");
 
 #endif
 }
@@ -4945,7 +4951,7 @@ opengl_renderer::render_text (const std::string& txt,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::render_text");
 
 #endif
 }
@@ -5001,7 +5007,7 @@ opengl_renderer::render_text (uint8NDArray pixels, Matrix bbox,
   // This shouldn't happen because construction of opengl_renderer
   // objects is supposed to be impossible if OpenGL is not available.
 
-  panic_impossible ();
+  error_unexpected ("opengl_renderer::render_text");
 
 #endif
 }

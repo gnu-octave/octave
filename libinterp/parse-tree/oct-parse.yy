@@ -2480,6 +2480,12 @@ base_parser::reset ()
   m_parser_state = yypstate_new ();
 }
 
+OCTAVE_NORETURN static void
+unexpected_token (int tok_id, const char *where)
+{
+  error ("unexpected token (= %d) in %s - please report this bug", tok_id, where);
+}
+
 // Error messages for mismatched end tokens.
 
 static std::string
@@ -2491,6 +2497,10 @@ end_token_as_string (token::end_tok_type ettype)
     {
     case token::simple_end:
       retval = "end";
+      break;
+
+    case token::arguments_end:
+      retval = "endarguments";
       break;
 
     case token::classdef_end:
@@ -2549,9 +2559,9 @@ end_token_as_string (token::end_tok_type ettype)
       retval = "endwhile";
       break;
 
-    default:
-      panic_impossible ();
-      break;
+      // We should have handled all possible enum values above.  Rely on
+      // compiler diagnostics to warn if we haven't.  For example, GCC's
+      // -Wswitch option, enabled by -Wall, will provide a warning.
     }
 
   return retval;
@@ -2628,11 +2638,11 @@ base_parser::push_fcn_symtab ()
 tree_constant *
 base_parser::make_constant (token *tok)
 {
-  int op = tok->token_id ();
+  int tok_id = tok->token_id ();
 
   tree_constant *retval = nullptr;
 
-  switch (op)
+  switch (tok_id)
     {
     case ':':
       retval = new tree_constant (octave_value (octave_value::magic_colon_t), *tok);
@@ -2647,18 +2657,18 @@ base_parser::make_constant (token *tok)
       {
         std::string txt = tok->text ();
 
-        char delim = op == DQ_STRING ? '"' : '\'';
+        char delim = tok_id == DQ_STRING ? '"' : '\'';
         octave_value tmp (txt, delim);
 
         if (txt.empty ())
           {
-            if (op == DQ_STRING)
+            if (tok_id == DQ_STRING)
               tmp = octave_null_str::instance;
             else
               tmp = octave_null_sq_str::instance;
           }
 
-        if (op == DQ_STRING)
+        if (tok_id == DQ_STRING)
           txt = undo_string_escapes (txt);
 
         // FIXME: maybe the addition of delims should be handled by
@@ -2669,7 +2679,7 @@ base_parser::make_constant (token *tok)
       break;
 
     default:
-      panic_impossible ();
+      unexpected_token (tok_id, "base_parser::make_constant");
       break;
     }
 
@@ -2837,7 +2847,9 @@ base_parser::make_binary_op (tree_expression *op1, token *op_tok, tree_expressio
 {
   octave_value::binary_op t = octave_value::unknown_binary_op;
 
-  switch (op_tok->token_id ())
+  int tok_id = op_tok->token_id ();
+
+  switch (tok_id)
     {
     case POW:
       t = octave_value::op_pow;
@@ -2912,7 +2924,7 @@ base_parser::make_binary_op (tree_expression *op1, token *op_tok, tree_expressio
       break;
 
     default:
-      panic_impossible ();
+      unexpected_token (tok_id, "base_parser::make_binary_op");
       break;
     }
 
@@ -2957,7 +2969,9 @@ base_parser::make_boolean_op (tree_expression *op1, token *op_tok, tree_expressi
 {
   tree_boolean_expression::type t;
 
-  switch (op_tok->token_id ())
+  int tok_id = op_tok->token_id ();
+
+  switch (tok_id)
     {
     case EXPR_AND_AND:
       t = tree_boolean_expression::bool_and;
@@ -2968,7 +2982,7 @@ base_parser::make_boolean_op (tree_expression *op1, token *op_tok, tree_expressi
       break;
 
     default:
-      panic_impossible ();
+      unexpected_token (tok_id, "base_parser::make_boolean_op");
       break;
     }
 
@@ -2982,7 +2996,9 @@ base_parser::make_prefix_op (token *op_tok, tree_expression *op1)
 {
   octave_value::unary_op t = octave_value::unknown_unary_op;
 
-  switch (op_tok->token_id ())
+  int tok_id = op_tok->token_id ();
+
+  switch (tok_id)
     {
     case '~':
     case '!':
@@ -3006,7 +3022,7 @@ base_parser::make_prefix_op (token *op_tok, tree_expression *op1)
       break;
 
     default:
-      panic_impossible ();
+      unexpected_token (tok_id, "base_parser::make_prefix_op");
       break;
     }
 
@@ -3020,7 +3036,9 @@ base_parser::make_postfix_op (tree_expression *op1, token *op_tok)
 {
   octave_value::unary_op t = octave_value::unknown_unary_op;
 
-  switch (op_tok->token_id ())
+  int tok_id = op_tok->token_id ();
+
+  switch (tok_id)
     {
     case HERMITIAN:
       t = octave_value::op_hermitian;
@@ -3039,7 +3057,7 @@ base_parser::make_postfix_op (tree_expression *op1, token *op_tok)
       break;
 
     default:
-      panic_impossible ();
+      unexpected_token (tok_id, "base_parser::make_postfix_op");
       break;
     }
 
@@ -3379,7 +3397,9 @@ base_parser::make_assign_op (tree_argument_list *lhs, token *eq_tok, tree_expres
 {
   octave_value::assign_op t = octave_value::unknown_assign_op;
 
-  switch (eq_tok->token_id ())
+  int tok_id = eq_tok->token_id ();
+
+  switch (tok_id)
     {
     case '=':
       t = octave_value::op_asn_eq;
@@ -3434,7 +3454,7 @@ base_parser::make_assign_op (tree_argument_list *lhs, token *eq_tok, tree_expres
       break;
 
     default:
-      panic_impossible ();
+      unexpected_token (tok_id, "base_parser::make_assign_op");
       break;
     }
 
@@ -4520,6 +4540,8 @@ base_parser::make_decl_command (token *tok, tree_decl_init_list *lst)
   if (lst)
     m_lexer.mark_as_variables (lst->variable_names ());
 
+  int tok_id = tok->token_id ();
+
   switch (tok->token_id ())
     {
     case GLOBAL:
@@ -4548,7 +4570,7 @@ base_parser::make_decl_command (token *tok, tree_decl_init_list *lst)
       break;
 
     default:
-      panic_impossible ();
+      unexpected_token (tok_id, "base_parser::make_decl_command");
       break;
     }
 
@@ -5281,7 +5303,7 @@ parse_fcn_file (interpreter& interp, const std::string& full_file, const std::st
       // table?).  Return pointer to constructor?
 
       if (ov_fcn.is_defined ())
-        panic_impossible ();
+        error ("unexpected: defining classdef object but primary_fcn is already defined - please report this bug");
 
       bool is_at_folder = ! dispatch_type.empty ();
 

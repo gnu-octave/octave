@@ -247,7 +247,7 @@ private slots:
   void disable_menu_shortcuts (bool disable);
   void restore_create_file_setting ();
   void set_file_encoding (const QString& new_encoding);
-  void request_open_files (const QStringList& open_file_names);
+//  void request_open_files (const QStringList& open_file_names);
 
   void warning_function_not_found (const QString& message);
 

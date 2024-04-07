@@ -218,12 +218,6 @@ private slots:
   // When user closes message box for resave question.
   void handle_file_resave_answer (int decision);
 
-  // When user closes QFileDialog box.
-  void handle_save_file_as_answer (const QString& fileName);
-  void handle_save_file_as_answer_close (const QString& fileName);
-  void handle_save_file_as_answer_cancel ();
-  void handle_save_as_filter_selected (const QString& filter);
-
   // When user changes encoding after decoding errors were found
   void handle_current_enc_changed (const QString& enc);
 

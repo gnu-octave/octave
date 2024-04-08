@@ -37,7 +37,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 led_indicator::led_indicator (led_state initial_state, QWidget *p)
   : QLabel (p)
 {
-  setFixedSize(12, 12);
+  setFixedSize (12, 12);
   set_state (initial_state);
 }
 

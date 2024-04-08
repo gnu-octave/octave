@@ -1034,7 +1034,7 @@ octave_qscintilla::contextmenu_run (bool)
                    for (int i = 0; i < rx_list.length (); i++)
                      {
                        rx = QRegularExpression {rx_list.at (i)};
-                       QRegularExpressionMatch match = rx.match(new_msg);
+                       QRegularExpressionMatch match = rx.match (new_msg);
                        if (match.hasMatch ())
                          {
                            err_line = match.captured (1).toInt ();
@@ -1242,20 +1242,20 @@ octave_qscintilla::replace_all (const QString& o_str, const QString& n_str,
 bool
 octave_qscintilla::event (QEvent *e)
 {
-  if (m_debug_mode && e->type() == QEvent::ToolTip)
+  if (m_debug_mode && e->type () == QEvent::ToolTip)
     {
       // FIXME: can we handle display of a tooltip using an
       // interpreter event or a custom signal/slot connection?
 
       QHelpEvent *help_e = static_cast<QHelpEvent *> (e);
-      QString symbol = wordAtPoint (help_e->pos());
+      QString symbol = wordAtPoint (help_e->pos ());
 
       emit show_symbol_tooltip_signal (help_e->globalPos (), symbol);
 
       return true;
     }
 
-  return QsciScintilla::event(e);
+  return QsciScintilla::event (e);
 }
 
 void
@@ -1413,7 +1413,7 @@ octave_qscintilla::dragEnterEvent (QDragEnterEvent *e)
     }
   else
     {
-      e->ignore();
+      e->ignore ();
     }
 }
 

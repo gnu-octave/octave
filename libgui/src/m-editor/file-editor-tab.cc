@@ -130,7 +130,7 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
   m_breakpoint_info.remove_line = -1;
 
   // Initialize last modification date to now
-  m_last_modified = QDateTime::currentDateTimeUtc();
+  m_last_modified = QDateTime::currentDateTimeUtc ();
 
   connect (m_edit_area, SIGNAL (cursorPositionChanged (int, int)),
            this, SLOT (handle_cursor_moved (int, int)));
@@ -708,7 +708,7 @@ file_editor_tab::update_lexer ()
   // If new file, no lexer, or lexer has changed,
   // delete old one and set the newly created as current lexer
   if (! old_lexer || ! valid_file_name ()
-      || QString(old_lexer->lexer ()) != QString(lexer->lexer ()))
+      || QString (old_lexer->lexer ()) != QString (lexer->lexer ()))
     {
       // Delete and set new lexer
       if (old_lexer)
@@ -1911,7 +1911,7 @@ file_editor_tab::load_file (const QString& fileName)
   else
     file_to_load = fileName;
   QFile file (file_to_load);
-  if (!file.open(QIODevice::ReadOnly))
+  if (! file.open (QIODevice::ReadOnly))
     return file.errorString ();
 
   int col = 0, line = 0;
@@ -2586,14 +2586,14 @@ file_editor_tab::save_file_as (bool remove_on_success)
   if (! settings.bool_value (global_use_native_dialogs))
     {
       // Qt file dialogs
-      fileDialog.setOption(QFileDialog::DontUseNativeDialog);
+      fileDialog.setOption (QFileDialog::DontUseNativeDialog);
     }
   else
     {
       // Native file dialogs: Test for already existing files is done manually
       // since native file dialogs might not consider the automatically
       // appended default extension when checking if the file already exists
-      fileDialog.setOption(QFileDialog::DontConfirmOverwrite);
+      fileDialog.setOption (QFileDialog::DontConfirmOverwrite);
     }
 
   // add the possible filters and the default suffix

@@ -132,7 +132,7 @@ set_path_dialog::set_path_dialog (QWidget *parent)
   m_path_list->setSelectionBehavior (QAbstractItemView::SelectRows);
   m_path_list->setSelectionMode (QAbstractItemView::ExtendedSelection);
   m_path_list->setAlternatingRowColors (true);
-  m_path_list->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+  m_path_list->setSizePolicy (QSizePolicy::Expanding, QSizePolicy::Expanding);
 
   // layout everything
   QDialogButtonBox *button_box = new QDialogButtonBox (Qt::Horizontal);
@@ -157,8 +157,8 @@ set_path_dialog::set_path_dialog (QWidget *parent)
 
   // main layout
   QHBoxLayout *main_hboxlayout = new QHBoxLayout;
-  main_hboxlayout->addWidget(path_edit_layout);
-  main_hboxlayout->addWidget(m_path_list);
+  main_hboxlayout->addWidget (path_edit_layout);
+  main_hboxlayout->addWidget (m_path_list);
 
   QGridLayout *main_layout = new QGridLayout;
   main_layout->addWidget (m_info_label, 0, 0);
@@ -169,7 +169,7 @@ set_path_dialog::set_path_dialog (QWidget *parent)
 
   gui_settings settings;
 
-  restoreGeometry (settings.value(pd_geometry.settings_key ()).toByteArray());
+  restoreGeometry (settings.value (pd_geometry.settings_key ()).toByteArray ());
 }
 
 void
@@ -206,7 +206,7 @@ set_path_dialog::add_dir_common (bool subdirs)
 }
 
 void
-set_path_dialog::add_dir()
+set_path_dialog::add_dir ()
 {
   add_dir_common (false);
 }
@@ -222,7 +222,7 @@ set_path_dialog::rm_dir ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
-  QModelIndexList indexlist = selmodel->selectedIndexes();
+  QModelIndexList indexlist = selmodel->selectedIndexes ();
   m->rm_dir (indexlist);
 
   selmodel->clearSelection ();
@@ -233,7 +233,7 @@ set_path_dialog::move_dir_up ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
-  QModelIndexList indexlist = selmodel->selectedIndexes();
+  QModelIndexList indexlist = selmodel->selectedIndexes ();
   m->move_dir_up (indexlist);
 
   // Update selection and view
@@ -254,7 +254,7 @@ set_path_dialog::move_dir_down ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
-  QModelIndexList indexlist = selmodel->selectedIndexes();
+  QModelIndexList indexlist = selmodel->selectedIndexes ();
   m->move_dir_down (indexlist);
 
   // Update selection and view
@@ -275,7 +275,7 @@ set_path_dialog::move_dir_top ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
-  QModelIndexList indexlist = selmodel->selectedIndexes();
+  QModelIndexList indexlist = selmodel->selectedIndexes ();
   m->move_dir_top (indexlist);
 
   // Update selection and view
@@ -291,7 +291,7 @@ set_path_dialog::move_dir_bottom ()
 {
   set_path_model *m = static_cast<set_path_model *> (m_path_list->model ());
   QItemSelectionModel *selmodel = m_path_list->selectionModel ();
-  QModelIndexList indexlist = selmodel->selectedIndexes();
+  QModelIndexList indexlist = selmodel->selectedIndexes ();
   m->move_dir_bottom (indexlist);
 
   // Update selection and view

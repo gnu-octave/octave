@@ -138,7 +138,7 @@ settings_dialog::read_settings (bool first)
   if (first)
     {
       // Global style
-      QStringList styles = QStyleFactory::keys();
+      QStringList styles = QStyleFactory::keys ();
       styles.append (global_extra_styles);
       combo_styles->addItems (styles);
       combo_styles->insertItem (0, global_style.def ().toString ());
@@ -344,10 +344,10 @@ settings_dialog::read_settings (bool first)
                    m_rb_uncomment_strings[i], &QCheckBox::setDisabled);
         }
 
-      m_rb_comment_strings[i]->setText (ed_comment_strings.at(i));
+      m_rb_comment_strings[i]->setText (ed_comment_strings.at (i));
       m_rb_comment_strings[i]->setChecked (i == selected_comment_string);
 
-      m_rb_uncomment_strings[i]->setText (ed_comment_strings.at(i));
+      m_rb_uncomment_strings[i]->setText (ed_comment_strings.at (i));
       m_rb_uncomment_strings[i]->setAutoExclusive (false);
       m_rb_uncomment_strings[i]->setChecked ( 1 << i & selected_uncomment_string);
     }
@@ -560,7 +560,7 @@ settings_dialog::read_settings (bool first)
       current_line_color->setObjectName (ed_highlight_current_line_color.settings_key ());
 
       QLabel *current_line_color_label
-        = new QLabel(tr ("Color of highlighted current line (magenta (255,0,255) for automatic color)"));
+        = new QLabel (tr("Color of highlighted current line (magenta (255,0,255) for automatic color)"));
 
       QHBoxLayout *color_mode = new QHBoxLayout ();
       color_mode->addWidget (cb_color_mode);

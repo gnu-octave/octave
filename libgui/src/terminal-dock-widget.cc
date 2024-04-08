@@ -122,10 +122,10 @@ terminal_dock_widget::terminal_dock_widget (QWidget *p,
   font.setPointSize
     (settings.int_value (cs_font_size));
 
-  QFontMetrics metrics(font);
+  QFontMetrics metrics (font);
 
-  int win_x =  metrics.maxWidth()*80;
-  int win_y =  metrics.height()*25;
+  int win_x =  metrics.maxWidth ()*80;
+  int win_y =  metrics.height ()*25;
 
   int max_x = QGuiApplication::primaryScreen ()->availableGeometry ().width ();
   int max_y = QGuiApplication::primaryScreen ()->availableGeometry ().height ();

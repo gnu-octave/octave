@@ -406,7 +406,7 @@ namespace Utils
 
     // We assume a standard mouse with 15 degree steps and Qt returns
     // 1/8 of a degree.
-    int ydelta = -(event->angleDelta().y ());
+    int ydelta = -(event->angleDelta ().y ());
 
     retval.setfield ("VerticalScrollCount", octave_value (ydelta / 120));
 

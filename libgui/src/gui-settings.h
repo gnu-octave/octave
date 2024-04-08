@@ -138,7 +138,7 @@ public:
     Reading a color from the gui_settings taking possible color modes
     into account. The default value for a second color mode @p mode=1 is
     deterimined from the standard default value @p mode=0 by inverting
-    the lightness (see get_color_value())
+    the lightness (see get_color_value ())
 
     @param pref gui preference (key string, default value); the default
                 value can be given by QColor or QPalette::ColorRole

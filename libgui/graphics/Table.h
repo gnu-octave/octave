@@ -80,7 +80,7 @@ private:
   bool m_blockUpdates;
   bool m_keyPressHandlerDefined;
   bool m_keyReleaseHandlerDefined;
-  QWidget * checkBoxForLogical(octave_value cal, bool enabled);
+  QWidget * checkBoxForLogical (octave_value cal, bool enabled);
   void updateData (int row, int col, octave_value value, std::string format,
                    bool enabled);
   void updateData (int row, int col);

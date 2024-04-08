@@ -1381,7 +1381,7 @@ variable_editor_model::double_click (const QModelIndex& idx)
 {
   if (requires_sub_editor (idx))
     {
-      QString name = QString::fromStdString(m_rep->name ());
+      QString name = QString::fromStdString (m_rep->name ());
       emit edit_variable_signal (name + subscript_expression (idx),
                                  value_at (idx));
     }

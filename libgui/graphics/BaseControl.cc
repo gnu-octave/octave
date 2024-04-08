@@ -74,7 +74,7 @@ updatePalette (const uicontrol::properties& props, QWidget *w)
       QString qss = QString (":enabled { background: %1 none;\n"
                                         "color: %2; }")
                     .arg(bcol.name ()).arg (fcol.name ());
-      w->setStyleSheet(qss);
+      w->setStyleSheet (qss);
       return;
     }
   else if (props.style_is ("radiobutton")
@@ -97,7 +97,7 @@ updatePalette (const uicontrol::properties& props, QWidget *w)
       QString qss = QString (":enabled { background: %1 none;\n"
                                         "color: %2; }")
                     .arg(bcol.name ()).arg (fcol.name ());
-      w->setStyleSheet(qss);
+      w->setStyleSheet (qss);
       return;
     }
   else

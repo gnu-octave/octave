@@ -172,7 +172,7 @@ void
 workspace_view::setModel (workspace_model *model)
 {
   m_filter_model.setSourceModel (model);
-  m_filter_model.setFilterKeyColumn(0);
+  m_filter_model.setFilterKeyColumn (0);
 
   m_view->setModel (&m_filter_model);
 

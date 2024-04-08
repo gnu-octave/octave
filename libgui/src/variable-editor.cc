@@ -75,7 +75,7 @@ make_plot_mapper (QMenu *menu)
 
   QSignalMapper *plot_mapper = new QSignalMapper (menu);
 
-  for (int i = 0; i < list.size(); ++i)
+  for (int i = 0; i < list.size (); ++i)
     plot_mapper->setMapping
       (menu->addAction (list.at (i), plot_mapper, SLOT (map ())), list.at (i));
 
@@ -277,7 +277,7 @@ variable_dock_widget::handle_focus_change (QWidget *old, QWidget *now)
 
       emit variable_focused_signal (objectName ());
     }
-  else if (old == focusWidget())
+  else if (old == focusWidget ())
     {
       if (titleBarWidget () != nullptr)
         {
@@ -602,7 +602,7 @@ variable_editor_view::range_selected ()
 
   QVector<int> vect;
   vect << from_row + 1 << to_row + 1 << from_col + 1 << to_col + 1;
-  QList<int> range = QList<int>::fromVector(vect);
+  QList<int> range = QList<int>::fromVector (vect);
 
   return range;
 }
@@ -1214,7 +1214,7 @@ variable_editor::focusInEvent (QFocusEvent *ev)
                 }
             }
           if (! focus_set)
-            setFocus();
+            setFocus ();
         }
     }
 }
@@ -1677,7 +1677,7 @@ variable_editor::add_tool_bar_button (const QIcon& icon,
                                       const char *member)
 {
   QAction *action = new QAction (icon, text, this);
-  connect(action, SIGNAL (triggered ()), receiver, member);
+  connect (action, SIGNAL (triggered ()), receiver, member);
   QToolButton *button = new ReturnFocusToolButton (m_tool_bar);
   button->setDefaultAction (action);
   button->setText (text);
@@ -1703,7 +1703,7 @@ variable_editor::construct_tool_bar ()
                                        tr ("Save"), this, SLOT (save ()));
   addAction (m_save_action);
   m_save_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
-  m_save_action->setStatusTip(tr("Save variable to a file"));
+  m_save_action->setStatusTip (tr("Save variable to a file"));
 
   QAction *action = new QAction (settings.icon ("document-save-as"),
                                  tr ("Save in format ..."), m_tool_bar);
@@ -1734,15 +1734,15 @@ variable_editor::construct_tool_bar ()
 
   action = add_tool_bar_button (settings.icon ("edit-cut"), tr ("Cut"),
                                 this, SLOT (cutClipboard ()));
-  action->setStatusTip(tr("Cut data to clipboard"));
+  action->setStatusTip (tr("Cut data to clipboard"));
 
   action = add_tool_bar_button (settings.icon ("edit-copy"), tr ("Copy"),
                                 this, SLOT (copyClipboard ()));
-  action->setStatusTip(tr("Copy data to clipboard"));
+  action->setStatusTip (tr("Copy data to clipboard"));
 
   action = add_tool_bar_button (settings.icon ("edit-paste"), tr ("Paste"),
                                 this, SLOT (pasteClipboard ()));
-  action->setStatusTip(tr("Paste clipboard into variable data"));
+  action->setStatusTip (tr("Paste clipboard into variable data"));
 
   m_tool_bar->addSeparator ();
 
@@ -1776,7 +1776,7 @@ variable_editor::construct_tool_bar ()
 
   action = add_tool_bar_button (settings.icon ("go-up"), tr ("Up"), this,
                                 SLOT (levelUp ()));
-  action->setStatusTip(tr("Go one level up in variable hierarchy"));
+  action->setStatusTip (tr("Go one level up in variable hierarchy"));
 
   // The QToolButton mouse-clicks change active window, so connect all
   // HoverToolButton and ReturnFocusToolButton objects to the mechanism
@@ -1812,7 +1812,7 @@ variable_editor::construct_tool_bar ()
                this, &variable_editor::restore_hovered_focus_variable);
     }
 
-  m_tool_bar->setAttribute(Qt::WA_ShowWithoutActivating);
+  m_tool_bar->setAttribute (Qt::WA_ShowWithoutActivating);
   m_tool_bar->setFocusPolicy (Qt::NoFocus);
 
   // Disabled when no tab is present.

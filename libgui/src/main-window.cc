@@ -815,7 +815,7 @@ main_window::modify_path (const QStringList& dir_list,
       // Loop over all directories in order to get all subdirs
       for (octave_idx_type i = 0; i < dir_list.length (); i++)
         {
-          std::string dir = dir_list.at(i).toStdString ();
+          std::string dir = dir_list.at (i).toStdString ();
 
           if (subdirs)
             paths.append (Fgenpath (ovl (dir)));
@@ -928,14 +928,14 @@ main_window::notice_settings (bool update_by_worker)
   if (preferred_style == global_style.def ().toString ())
     preferred_style = m_default_style;
 
-  QApplication *qapp = m_octave_qobj.qapplication();
+  QApplication *qapp = m_octave_qobj.qapplication ();
 
   if (preferred_style == global_extra_styles.at (EXTRA_STYLE_FUSION_DARK))
     {
-      QStyle *new_style = QStyleFactory::create (QStringLiteral("Fusion"));
+      QStyle *new_style = QStyleFactory::create (QStringLiteral ("Fusion"));
       if (new_style)
         qapp->setStyle (new_style);
-      qapp->setPalette (getFusionDarkPalette());
+      qapp->setPalette (getFusionDarkPalette ());
       qapp->setStyleSheet ("QToolTip { color: #ffffff; background-color: #2a82da; border: 1px solid white; }");
     }
   else
@@ -1026,29 +1026,29 @@ main_window::notice_settings (bool update_by_worker)
 }
 
 QPalette
-main_window::getFusionDarkPalette()
+main_window::getFusionDarkPalette ()
 {
   QPalette darkPalette;
-  darkPalette.setColor(QPalette::Window, QColor(53, 53, 53));
-  darkPalette.setColor(QPalette::WindowText, Qt::white);
-  darkPalette.setColor(QPalette::Disabled, QPalette::WindowText, QColor(127, 127, 127));
-  darkPalette.setColor(QPalette::Base, QColor(42, 42, 42));
-  darkPalette.setColor(QPalette::AlternateBase, QColor(66, 66, 66));
-  darkPalette.setColor(QPalette::ToolTipBase, Qt::white);
-  darkPalette.setColor(QPalette::ToolTipText, Qt::white);
-  darkPalette.setColor(QPalette::Text, Qt::white);
-  darkPalette.setColor(QPalette::Disabled, QPalette::Text, QColor(127, 127, 127));
-  darkPalette.setColor(QPalette::Dark, QColor(35, 35, 35));
-  darkPalette.setColor(QPalette::Shadow, QColor(20, 20, 20));
-  darkPalette.setColor(QPalette::Button, QColor(53, 53, 53));
-  darkPalette.setColor(QPalette::ButtonText, Qt::white);
-  darkPalette.setColor(QPalette::Disabled, QPalette::ButtonText, QColor(127, 127, 127));
-  darkPalette.setColor(QPalette::BrightText, Qt::red);
-  darkPalette.setColor(QPalette::Link, QColor(42, 130, 218));
-  darkPalette.setColor(QPalette::Highlight, QColor(42, 130, 218));
-  darkPalette.setColor(QPalette::Disabled, QPalette::Highlight, QColor(80, 80, 80));
-  darkPalette.setColor(QPalette::HighlightedText, Qt::white);
-  darkPalette.setColor(QPalette::Disabled, QPalette::HighlightedText, QColor(127, 127, 127));
+  darkPalette.setColor (QPalette::Window, QColor (53, 53, 53));
+  darkPalette.setColor (QPalette::WindowText, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::WindowText, QColor (127, 127, 127));
+  darkPalette.setColor (QPalette::Base, QColor (42, 42, 42));
+  darkPalette.setColor (QPalette::AlternateBase, QColor (66, 66, 66));
+  darkPalette.setColor (QPalette::ToolTipBase, Qt::white);
+  darkPalette.setColor (QPalette::ToolTipText, Qt::white);
+  darkPalette.setColor (QPalette::Text, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::Text, QColor (127, 127, 127));
+  darkPalette.setColor (QPalette::Dark, QColor (35, 35, 35));
+  darkPalette.setColor (QPalette::Shadow, QColor (20, 20, 20));
+  darkPalette.setColor (QPalette::Button, QColor (53, 53, 53));
+  darkPalette.setColor (QPalette::ButtonText, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::ButtonText, QColor (127, 127, 127));
+  darkPalette.setColor (QPalette::BrightText, Qt::red);
+  darkPalette.setColor (QPalette::Link, QColor (42, 130, 218));
+  darkPalette.setColor (QPalette::Highlight, QColor (42, 130, 218));
+  darkPalette.setColor (QPalette::Disabled, QPalette::Highlight, QColor (80, 80, 80));
+  darkPalette.setColor (QPalette::HighlightedText, Qt::white);
+  darkPalette.setColor (QPalette::Disabled, QPalette::HighlightedText, QColor (127, 127, 127));
 
   return darkPalette;
 }
@@ -1385,7 +1385,7 @@ main_window::request_open_file ()
 
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   if (! settings.bool_value (global_use_native_dialogs))
-    fileDialog.setOption(QFileDialog::DontUseNativeDialog);
+    fileDialog.setOption (QFileDialog::DontUseNativeDialog);
 
   fileDialog.setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
 
@@ -1396,7 +1396,7 @@ main_window::request_open_file ()
 
   if (fileDialog.exec ())
     {
-      QStringList open_file_names = fileDialog.selectedFiles();
+      QStringList open_file_names = fileDialog.selectedFiles ();
       for (int i = 0; i < open_file_names.count (); i++)
         emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
     }
@@ -1636,7 +1636,7 @@ main_window::set_window_layout ()
       return;
     }
 
-  if (isMaximized())
+  if (isMaximized ())
     {
       // If the window state is restored to maximized layout, the
       // horizontal layout is not preserved. This cann be avoided by
@@ -1653,10 +1653,10 @@ main_window::set_window_layout ()
       setGeometry (av_geom);  // Set (correct) available geometry
 
       // Force full title bar
-      setWindowFlags(Qt::WindowTitleHint
-                     | Qt::WindowMinMaxButtonsHint
-                     | Qt::WindowSystemMenuHint
-                     | Qt::WindowCloseButtonHint);
+      setWindowFlags (Qt::WindowTitleHint
+                      | Qt::WindowMinMaxButtonsHint
+                      | Qt::WindowSystemMenuHint
+                      | Qt::WindowCloseButtonHint);
     }
 
   if (! restoreState (settings.byte_array_value (mw_state)))

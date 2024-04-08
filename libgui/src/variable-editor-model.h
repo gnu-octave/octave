@@ -194,16 +194,16 @@ public:
   Qt::ItemFlags flags (const QModelIndex& idx) const;
 
   bool insertRows (int row, int count,
-                   const QModelIndex& parent = QModelIndex());
+                   const QModelIndex& parent = QModelIndex ());
 
   bool removeRows (int row, int count,
-                   const QModelIndex& parent = QModelIndex());
+                   const QModelIndex& parent = QModelIndex ());
 
   bool insertColumns (int column, int count,
-                      const QModelIndex& parent = QModelIndex());
+                      const QModelIndex& parent = QModelIndex ());
 
   bool removeColumns (int column, int count,
-                      const QModelIndex& parent = QModelIndex());
+                      const QModelIndex& parent = QModelIndex ());
 
   // Is cell at idx complex enough to require a sub editor?
 

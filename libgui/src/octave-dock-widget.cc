@@ -185,7 +185,7 @@ qdockwidget_css (const QString& close_icon, const QString& close_tooltip,
                   ).arg (close_icon).arg (float_icon).arg (icon_size)
                    .arg (close_tooltip).arg (float_tooltip)
                    .arg (titlebar_foreground).arg (titlebar_background)
-                   .arg ((icon_size*2)/3).arg((icon_size*7)/3);
+                   .arg ((icon_size*2)/3).arg ((icon_size*7)/3);
 }
 
 octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)

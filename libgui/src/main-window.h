@@ -159,7 +159,7 @@ public slots:
                                         = QString ());
   void show_about_octave ();
   void notice_settings (bool update_by_worker = false);
-  QPalette getFusionDarkPalette();
+  QPalette getFusionDarkPalette ();
   void prepare_to_exit ();
   void go_to_previous_widget ();
   void reset_windows ();

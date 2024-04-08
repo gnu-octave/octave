@@ -904,13 +904,15 @@ thread_jni_env ()
   return env;
 }
 
-#endif
+#else
 
 OCTAVE_NORETURN static void
 error_unexpected (const char *name)
 {
   error ("unexpected call to %s when HAVE_JAVA is not defined - please report this bug", name);
 }
+
+#endif
 
 bool
 octave_java::is_java_string () const

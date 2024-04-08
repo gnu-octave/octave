@@ -1381,25 +1381,25 @@ main_window::request_open_file ()
   if (is_internal)
     p = m_editor_window;
 
-  QFileDialog *fileDialog = new QFileDialog (p);
+  QFileDialog fileDialog (p);
 
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
   if (! settings.bool_value (global_use_native_dialogs))
-    fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+    fileDialog.setOption(QFileDialog::DontUseNativeDialog);
 
-  fileDialog->setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
+  fileDialog.setNameFilter (tr ("Octave Files (*.m);;All Files (*)"));
 
-  fileDialog->setAcceptMode (QFileDialog::AcceptOpen);
-  fileDialog->setViewMode (QFileDialog::Detail);
-  fileDialog->setFileMode (QFileDialog::ExistingFiles);
-  fileDialog->setDirectory (m_current_directory_combo_box->itemText (0));
+  fileDialog.setAcceptMode (QFileDialog::AcceptOpen);
+  fileDialog.setViewMode (QFileDialog::Detail);
+  fileDialog.setFileMode (QFileDialog::ExistingFiles);
+  fileDialog.setDirectory (m_current_directory_combo_box->itemText (0));
 
-  connect (fileDialog, &QFileDialog::filesSelected,
-           this, &main_window::request_open_files);
-
-  fileDialog->setWindowModality (Qt::NonModal);
-  fileDialog->setAttribute (Qt::WA_DeleteOnClose);
-  fileDialog->show ();
+  if (fileDialog.exec ())
+    {
+      QStringList open_file_names = fileDialog.selectedFiles();
+      for (int i = 0; i < open_file_names.count (); i++)
+        emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
+    }
 }
 
 // Create a new script
@@ -2011,16 +2011,6 @@ void
 main_window::set_file_encoding (const QString& new_encoding)
 {
   m_file_encoding = new_encoding;
-}
-
-// The following slot is called after files have been selected in the
-// open file dialog, possibly with a new selected encoding stored in
-// m_file_encoding
-void
-main_window::request_open_files (const QStringList& open_file_names)
-{
-  for (int i = 0; i < open_file_names.count (); i++)
-    emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
 }
 
 void

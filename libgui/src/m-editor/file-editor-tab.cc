@@ -2579,109 +2579,119 @@ file_editor_tab::save_file_as (bool remove_on_success)
   // reset m_new_encoding
   m_new_encoding = m_encoding;
 
-  // If the tab is removed in response to a QFileDialog signal, the tab
-  // can't be a parent.
-  QFileDialog *fileDialog;
-  if (remove_on_success)
-    {
-      // If tab is closed, "this" cannot be parent in which case modality
-      // has no effect.  Disable editing instead.
-      m_edit_area->setReadOnly (true);
-      fileDialog = new QFileDialog ();
-    }
-  else
-    fileDialog = new QFileDialog (this);
+  QFileDialog fileDialog (this);
 
   gui_settings settings;
 
   if (! settings.bool_value (global_use_native_dialogs))
     {
       // Qt file dialogs
-      fileDialog->setOption(QFileDialog::DontUseNativeDialog);
+      fileDialog.setOption(QFileDialog::DontUseNativeDialog);
     }
   else
     {
       // Native file dialogs: Test for already existing files is done manually
       // since native file dialogs might not consider the automatically
       // appended default extension when checking if the file already exists
-      fileDialog->setOption(QFileDialog::DontConfirmOverwrite);
+      fileDialog.setOption(QFileDialog::DontConfirmOverwrite);
     }
 
   // add the possible filters and the default suffix
   QStringList filters;
   filters << tr ("Octave Files (*.m)")
           << tr ("All Files (*)");
-  fileDialog->setNameFilters (filters);
-  fileDialog->setDefaultSuffix ("m");
+  fileDialog.setNameFilters (filters);
 
   if (valid_file_name ())
     {
-      fileDialog->selectFile (m_file_name);
+      fileDialog.selectFile (m_file_name);
       QFileInfo file_info (m_file_name);
       if (file_info.suffix () != "m")
-        {
-          // it is not an octave file
-          fileDialog->selectNameFilter (filters.at (1));  // "All Files"
-          fileDialog->setDefaultSuffix ("");              // no default suffix
-        }
+        fileDialog.selectNameFilter (filters.at (1));  // "All Files"
     }
   else
     {
-      fileDialog->selectFile ("");
-      fileDialog->setDirectory (m_ced);
+      fileDialog.selectFile ("");
+      fileDialog.setDirectory (m_ced);
 
       // propose a name corresponding to the function name
       // if the new file contains a function
       QString fname = get_function_name ();
       if (! fname.isEmpty ())
-        fileDialog->selectFile (fname + ".m");
+        fileDialog.selectFile (fname + ".m");
     }
 
-  fileDialog->setAcceptMode (QFileDialog::AcceptSave);
-  fileDialog->setViewMode (QFileDialog::Detail);
-  fileDialog->setOption (QFileDialog::HideNameFilterDetails, false);
+  fileDialog.setAcceptMode (QFileDialog::AcceptSave);
+  fileDialog.setViewMode (QFileDialog::Detail);
+  fileDialog.setOption (QFileDialog::HideNameFilterDetails, false);
 
-  // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-
-  connect (fileDialog, &QFileDialog::filterSelected,
-           this, &file_editor_tab::handle_save_as_filter_selected);
-
-  if (remove_on_success)
+  if (fileDialog.exec ())     // Modal dialog
     {
-      connect (fileDialog, &QFileDialog::fileSelected,
-               this, &file_editor_tab::handle_save_file_as_answer_close);
+      // Accepted file dialog, no actions required if rejected
 
-      connect (fileDialog, &QFileDialog::rejected,
-               this, &file_editor_tab::handle_save_file_as_answer_cancel);
+      QString save_file_name = fileDialog.selectedFiles ().at (0);
+
+      if (remove_on_success)
+        {
+          // Remove the tab after save
+          if (check_valid_identifier (save_file_name))
+            save_file_as (true);
+          else
+            emit editor_check_conflict_save (save_file_name, true);
+        }
+      else
+        {
+          // Save the file under the selected name
+
+          QFileInfo file (save_file_name);
+
+          // Make sure that the file has the desire suffix
+          QString filter = fileDialog.selectedNameFilter ();
+          QRegularExpression rx {"\\*\\.([^ ^\\)]*)[ \\)]"};    // regexp for suffix in filter
+          QRegularExpressionMatch match = rx.match (filter);
+
+          bool file_name_changed = false;
+          if (match.hasMatch () && file.suffix ().isEmpty ())
+            {
+              save_file_name = save_file_name + "." + match.captured (1);
+              file_name_changed = true;
+            }
+
+          // Use final file name
+          file.setFile (save_file_name);
+
+          // Check if overwrite has to checked again
+          if ((file_name_changed || fileDialog.testOption (QFileDialog::DontConfirmOverwrite))
+              && file.exists ())
+            {
+              int ans = QMessageBox::question (this,
+                                    tr ("Octave Editor"),
+                                    tr ("%1\n already exists\n"
+                                        "Do you want to overwrite it?").arg (save_file_name),
+                                    QMessageBox::Yes | QMessageBox::No);
+              if (ans != QMessageBox::Yes)
+                {
+                  // Try again, if edit area is read only, remove on success
+                  save_file_as (remove_on_success);
+                  return;
+                }
+            }
+
+          if (save_file_name == m_file_name)
+            {
+              save_file (save_file_name);
+            }
+          else
+            {
+              // Have editor check for conflict, do not delete tab after save.
+              if (check_valid_identifier (save_file_name))
+                save_file_as (false);
+              else
+                emit editor_check_conflict_save (save_file_name, false);
+            }
+
+        }
     }
-  else
-    {
-      connect (fileDialog, &QFileDialog::fileSelected,
-               this, &file_editor_tab::handle_save_file_as_answer);
-    }
-
-  show_dialog (fileDialog, ! valid_file_name ());
-}
-
-void
-file_editor_tab::handle_save_as_filter_selected (const QString& filter)
-{
-  // On some systems, the filterSelected signal is emitted without user
-  // action and with  an empty filter string when the file dialog is shown.
-  // Just return in this case and do not remove the current default suffix.
-  if (filter.isEmpty ())
-    return;
-
-  QFileDialog *file_dialog = qobject_cast<QFileDialog *> (sender ());
-
-  // regexp for suffix in filter
-  QRegularExpression rx {"\\*\\.([^ ^\\)]*)[ \\)]"};
-  QRegularExpressionMatch match = rx.match (filter);
-
-  if (match.hasMatch ())
-    file_dialog->setDefaultSuffix (match.captured (1)); // found a suffix, set default
-  else
-    file_dialog->setDefaultSuffix ("");  // not found, clear default
 }
 
 bool
@@ -2766,74 +2776,6 @@ file_editor_tab::check_valid_codec ()
     }
 
   return can_encode;
-}
-
-void
-file_editor_tab::handle_save_file_as_answer (const QString& save_file_name)
-{
-  QString saveFileName = save_file_name;
-  QFileInfo file (saveFileName);
-  QFileDialog *file_dialog = qobject_cast<QFileDialog *> (sender ());
-
-  // Test if the file dialog should have added a default file
-  // suffix, but the selected file still has no suffix (see Qt bug
-  // https://bugreports.qt.io/browse/QTBUG-59401)
-  if ((! file_dialog->defaultSuffix ().isEmpty ()) && file.suffix ().isEmpty ())
-    {
-      saveFileName = saveFileName + "." + file_dialog->defaultSuffix ();
-    }
-
-  file.setFile (saveFileName);
-
-  // If overwrite confirmation was not done by the file dialog (in case
-  // of native file dialogs, see above), do it here
-  if (file_dialog->testOption (QFileDialog::DontConfirmOverwrite) && file.exists ())
-    {
-      int ans = QMessageBox::question (file_dialog,
-                                       tr ("Octave Editor"),
-                                       tr ("%1\n already exists\n"
-                                           "Do you want to overwrite it?").arg (saveFileName),
-                                       QMessageBox::Yes | QMessageBox::No);
-      if (ans != QMessageBox::Yes)
-        {
-          // Try again, if edit area is read only, remove on success
-          save_file_as (m_edit_area->isReadOnly ());
-          return;
-        }
-    }
-
-  if (saveFileName == m_file_name)
-    {
-      save_file (saveFileName);
-    }
-  else
-    {
-      // Have editor check for conflict, do not delete tab after save.
-      if (check_valid_identifier (saveFileName))
-        save_file_as (false);
-      else
-        emit editor_check_conflict_save (saveFileName, false);
-    }
-}
-
-void
-file_editor_tab::handle_save_file_as_answer_close (const QString& saveFileName)
-{
-  // saveFileName == m_file_name can not happen, because we only can get here
-  // when we close a tab and m_file_name is not a valid filename yet
-
-  // Have editor check for conflict, delete tab after save.
-  if (check_valid_identifier (saveFileName))
-    save_file_as (true);
-  else
-    emit editor_check_conflict_save (saveFileName, true);
-}
-
-void
-file_editor_tab::handle_save_file_as_answer_cancel ()
-{
-  // User canceled, allow editing again.
-  m_edit_area->setReadOnly (false);
 }
 
 void

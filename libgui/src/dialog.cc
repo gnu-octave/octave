@@ -612,6 +612,12 @@ FileDialog::FileDialog (const QStringList& name_filters,
                         const QString& dirname, const QString& multimode)
   : QFileDialog ()
 {
+  gui_settings settings;
+
+  // This should be set before any other dialog properties
+  if (! settings.bool_value (global_use_native_dialogs))
+    setOption(QFileDialog::DontUseNativeDialog);
+
   // Create a NonModal message.
   setWindowModality (Qt::NonModal);
 
@@ -619,11 +625,6 @@ FileDialog::FileDialog (const QStringList& name_filters,
   setDirectory (dirname);
 
   // FIXME: Remove, if for all common KDE versions (bug #54607) is resolved.
-
-  gui_settings settings;
-
-  if (! settings.bool_value (global_use_native_dialogs))
-    setOption(QFileDialog::DontUseNativeDialog);
 
   if (multimode == "on")         // uigetfile multiselect=on
     {

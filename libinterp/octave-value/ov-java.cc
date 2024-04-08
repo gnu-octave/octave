@@ -641,6 +641,7 @@ get_jvm_lib_path_from_registry ()
 
   return jvm_lib_path;
 }
+
 #endif
 
 //! Initialize the java virtual machine (jvm) and field #jvm if necessary.
@@ -905,6 +906,12 @@ thread_jni_env ()
 
 #endif
 
+OCTAVE_NORETURN static void
+error_unexpected (const char *name)
+{
+  error ("unexpected call to %s when HAVE_JAVA is not defined - please report this bug", name);
+}
+
 bool
 octave_java::is_java_string () const
 {
@@ -925,7 +932,7 @@ octave_java::is_java_string () const
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::is_java_string");
 
 #endif
 }
@@ -957,7 +964,7 @@ octave_java::is_instance_of (const std::string& cls_name) const
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::is_instance_of");
 
 #endif
 }
@@ -2183,7 +2190,7 @@ octave_java::dims () const
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::dims");
 
 #endif
 }
@@ -2248,7 +2255,7 @@ octave_java::subsref (const std::string& type,
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::subsref");
 
 #endif
 }
@@ -2338,7 +2345,7 @@ octave_java::subsasgn (const std::string& type,
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::subsasgn");
 
 #endif
 }
@@ -2360,7 +2367,7 @@ octave_java::map_keys () const
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::map_keys");
 
 #endif
 }
@@ -2386,7 +2393,7 @@ octave_java::convert_to_str_internal (bool, bool force, char type) const
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::convert_to_str_internal");
 
 #endif
 }
@@ -2496,7 +2503,7 @@ octave_java::do_javaMethod (void *jni_env_arg, const std::string& name,
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_javaMethod");
 
 #endif
 }
@@ -2517,7 +2524,7 @@ octave_java::do_javaMethod (const std::string& name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_javaMethod");
 
 #endif
 }
@@ -2577,7 +2584,7 @@ octave_java::do_javaMethod (void *jni_env_arg,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_javaMethod");
 
 #endif
 }
@@ -2600,7 +2607,7 @@ octave_java::do_javaMethod (const std::string& class_name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_javaMethod");
 
 #endif
 }
@@ -2656,7 +2663,7 @@ octave_java::do_javaObject (void *jni_env_arg, const std::string& name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_javaObject");
 
 #endif
 }
@@ -2677,7 +2684,7 @@ octave_java::do_javaObject (const std::string& name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_javaObject");
 
 #endif
 }
@@ -2723,7 +2730,7 @@ octave_java::do_java_get (void *jni_env_arg, const std::string& name)
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_get");
 
 #endif
 }
@@ -2742,7 +2749,7 @@ octave_java::do_java_get (const std::string& name)
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_get");
 
 #endif
 }
@@ -2790,7 +2797,7 @@ octave_java::do_java_get (void *jni_env_arg, const std::string& class_name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_get");
 
 #endif
 }
@@ -2811,7 +2818,7 @@ octave_java::do_java_get (const std::string& class_name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_get");
 
 #endif
 }
@@ -2858,7 +2865,7 @@ octave_java::do_java_set (void *jni_env_arg, const std::string& name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_set");
 
 #endif
 }
@@ -2878,7 +2885,7 @@ octave_java::do_java_set (const std::string& name, const octave_value& val)
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_set");
 
 #endif
 }
@@ -2929,7 +2936,7 @@ octave_java::do_java_set (void *jni_env_arg, const std::string& class_name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_set");
 
 #endif
 }
@@ -2952,7 +2959,7 @@ octave_java::do_java_set (const std::string& class_name,
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::do_java_set");
 
 #endif
 }
@@ -3002,7 +3009,7 @@ octave_java::init (void *jobj_arg, void *jcls_arg)
   // This shouldn't happen because construction of octave_java
   // objects is supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::init");
 
 #endif
 }
@@ -3031,7 +3038,7 @@ octave_java::release ()
   // This shouldn't happen because construction of octave_java objects is
   // supposed to be impossible if Java is not available.
 
-  panic_impossible ();
+  error_unexpected ("octave_java::release");
 
 #endif
 }

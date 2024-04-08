@@ -2108,7 +2108,7 @@ If @var{name} is omitted, return a list of keywords.
   lexical_feedback::symbol_table_context::pop ()
   {
     if (empty ())
-      panic_impossible ();
+      error ("unexpected: empty stack in lexical_feedback::symbol_table_context::pop - please report this bug");
 
     m_frame_stack.pop_front ();
   }
@@ -2358,7 +2358,9 @@ looks_like_shebang (const std::string& s)
     else
       len = max_size > m_chars_left ? m_chars_left : max_size;
 
-    panic_unless (len > 0);
+    if (len <= 0)
+      error ("unexpected: buffer underflow in base_lexer::input_buffer::copy_chunk - please report this bug");
+
     memcpy (buf, m_buffer.c_str () + m_offset, len);
 
     m_chars_left -= len;
@@ -2912,6 +2914,12 @@ looks_like_hex (const char *s, int len)
   return (len > 2 && s[0] == '0' && (s[1] == 'x' || s[1] == 'X'));
 }
 
+OCTAVE_NORETURN static void
+error_unexpected_bytes (int bytes)
+{
+  error ("unexpected: bytes (= %d) not 1, 2, 4, or 8 in make_integer_value - please report this bug", bytes);
+}
+
 static inline octave_value
 make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
 {
@@ -2932,7 +2940,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
          return octave_value (octave_uint64 (long_int_val));
 
        default:
-         panic_impossible ();
+         error_unexpected_bytes (bytes);
        };
     }
   else
@@ -2955,7 +2963,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         return octave_value (octave_int64 (int64_t (long_int_val)));
 
         default:
-          panic_impossible ();
+          error_unexpected_bytes (bytes);
         };
     }
 
@@ -3025,10 +3033,10 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     else if (sizeof (uintmax_t) == sizeof (unsigned long))
       long_int_val = strtoul (yytxt.c_str (), &end, 2);
     else
-      panic_impossible ();
+      error ("unexpected: size mismatch: uintmax_t vs unsigned long or unsigned long long in base_lexer::handle_number<2> - please report this bug");
 
     if (errno == ERANGE)
-      panic_impossible ();
+      error ("unexpected: ERANGE error in base_lexer::handle_number<2> - please report this bug");
 
     octave_value ov_value
       = make_integer_value (long_int_val, unsigned_val, bytes);
@@ -3130,7 +3138,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         else if (sizeof (uintmax_t) == sizeof (unsigned long))
           long_int_val = strtoul (tmptxt, &end, 10);
         else
-          panic_impossible ();
+          error ("unexpected: size mismatch: uintmax_t vs unsigned long or unsigned long long in base_lexer::handle_number<10> - please report this bug");
 
         if (errno != ERANGE)
           {
@@ -3212,8 +3220,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         return syntax_error (msg);
       }
 
-    // Panic instead of error here because if yytext doesn't contain a
-    // valid number, we are in deep doo doo.
+    // If yytext doesn't contain a valid number, we are in deep doo doo.
 
     uintmax_t long_int_val;
     int status = sscanf (yytxt.c_str (), "%jx", &long_int_val);
@@ -3331,7 +3338,7 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         else if (bracket_type == '}')
           m_braceflag--;
         else
-          panic_impossible ();
+          error ("unexpected: bracket_type not ']' or '}' in base_lexer::handle_close_bracket - please report this bug");
       }
 
     pop_start_state ();
@@ -4053,7 +4060,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         // input_buffer::copy_chunk, simply insert the marker directly
         // in BUF.
 
-        panic_unless (max_size > 0);
+        if (max_size <= 0)
+          error ("unexpected: max_size <= 0 in push_lexer::fill_flex_buffer - please report this bug");
 
         buf[0] = static_cast<char> (1);
         status = 1;

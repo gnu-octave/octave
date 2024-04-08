@@ -344,8 +344,7 @@ octave_char_matrix_str::save_ascii (std::ostream& os)
           os << "# length: " << len << "\n";
           std::string tstr = chm.row_as_string (i);
           const char *tmp = tstr.data ();
-          if (tstr.length () > len)
-            panic_impossible ();
+          panic_if (tstr.length () > len);
           os.write (tmp, len);
           os << "\n";
         }
@@ -463,7 +462,7 @@ octave_char_matrix_str::load_ascii (std::istream& is)
         }
     }
   else
-    panic_impossible ();
+    error ("unexpected dimensions keyword (= '%s') octave_char_matrix::load_ascii - please report this bug", kw.c_str ());
 
   return true;
 }

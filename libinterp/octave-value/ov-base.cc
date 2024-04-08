@@ -340,7 +340,7 @@ octave_base_value::subsasgn (const std::string& type,
           break;
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in octave_base_value::subsasgn - please report this bug");
         }
     }
   else
@@ -1504,7 +1504,7 @@ make_idx_args (const std::string& type,
           break;
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in make_idx_args - please report this bug");
           break;
         }
     }

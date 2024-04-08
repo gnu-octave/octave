@@ -190,7 +190,7 @@ octave_struct::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_struct::subsref - please report this bug");
     }
 
   // FIXME: perhaps there should be an
@@ -259,7 +259,7 @@ octave_struct::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_struct::subsref - please report this bug");
     }
 
   // FIXME: perhaps there should be an
@@ -434,7 +434,7 @@ octave_struct::subsasgn (const std::string& type,
           break;
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in octave_struct::subsasgn - please report this bug");
         }
     }
 
@@ -559,7 +559,7 @@ octave_struct::subsasgn (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_struct::subsasgn - please report this bug");
     }
 
   retval.maybe_mutate ();
@@ -833,7 +833,7 @@ octave_struct::load_ascii (std::istream& is)
   else if (len == 0)
     m_map = octave_map (dv);
   else
-    panic_impossible ();
+    error ("unexpected: len < 0 in octave_struct::load_ascii - please report this bug");
 
   return success;
 }
@@ -1519,7 +1519,7 @@ octave_scalar_struct::load_ascii (std::istream& is)
   else if (len == 0)
     m_map = octave_scalar_map ();
   else
-    panic_impossible ();
+    error ("unexpected: len < 0 in octave_scalar_struct::load_ascii - please report this bug");
 
   return true;
 }

@@ -62,7 +62,7 @@ octave_perm_matrix::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_perm_matrix::subsref - please report this bug");
     }
 
   return retval.next_subsref (type, idx);

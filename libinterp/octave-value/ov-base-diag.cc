@@ -68,7 +68,7 @@ octave_base_diag<DMT, MT>::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_base_diag<DMT,MT>::subsref - please report this bug");
     }
 
   return retval.next_subsref (type, idx);
@@ -254,7 +254,7 @@ octave_base_diag<DMT, MT>::subsasgn (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_base_diag<DMT,MT>::subsasgn - please report this bug");
     }
 
   return retval;

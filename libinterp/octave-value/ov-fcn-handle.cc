@@ -825,7 +825,7 @@ base_fcn_handle::subsref (const std::string& type,
       error ("function handle cannot be indexed with %c", type[0]);
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in base_fcn_handle::subsref - please report this bug");
     }
 
   // FIXME: perhaps there should be an

@@ -709,11 +709,11 @@ octave_user_function::restore_warning_states ()
 
   if (val.is_defined ())
     {
-      // Fail spectacularly if SAVED_WARNING_STATES is not an
-      // octave_map (or octave_scalar_map) object.
+      // Fail if SAVED_WARNING_STATES is not an octave_map (or
+      // octave_scalar_map) object.
 
       if (! val.isstruct ())
-        panic_impossible ();
+        error ("unexpected: SAVED_WARNING_STATES is not a struct in octave_user_function::restore_warning_states - please report this bug");
 
       octave_map m = val.map_value ();
 

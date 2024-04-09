@@ -1237,7 +1237,7 @@ dimensions.
 
         for (int i = 0; i < nargin; i++)
           dims(i) = (args(i).isempty ()
-                     ? 0 : args(i).xidx_type_value ("cell: dimension must be a scalar integer"));
+                     ? 0 : args(i).yidx_type_value ("cell: dimension must be a scalar integer"));
       }
       break;
     }

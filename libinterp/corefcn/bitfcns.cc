@@ -583,7 +583,7 @@ bitshift (10, [-2, -1, 0, 1, 2])
       if (args(2).numel () > 1)
         error ("bitshift: N must be a scalar integer");
 
-      nbits = args(2).xint_value ("bitshift: N must be an integer");
+      nbits = args(2).yint_value ("bitshift: N must be an integer");
 
       if (nbits < 0)
         error ("bitshift: N must be positive");

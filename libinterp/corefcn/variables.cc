@@ -601,7 +601,7 @@ set_internal_variable (bool& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      bool bval = args(0).xbool_value ("%s: argument must be a logical value", nm);
+      bool bval = args(0).ybool_value ("%s: argument must be a logical value", nm);
 
       var = bval;
     }
@@ -675,7 +675,7 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   if (nargin == 1)
     {
-      int ival = args(0).xint_value ("%s: argument must be an integer value", nm);
+      int ival = args(0).yint_value ("%s: argument must be an integer value", nm);
 
       if (ival < minval)
         error ("%s: arg must be greater than %d", nm, minval);

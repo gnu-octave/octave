@@ -58,6 +58,12 @@ through meshgrid and the output is a matrix the same size as the meshgrid.
 - `cross` now produces row vector outputs when the inputs are a mix of row
 and column vectors. (bug #61295)
 
+- Octave functions whose Matlab equivalents give errors when passed non-integer
+values as sizes or dimensions now also give similar errors.
+E.g., `cell (e, pi)` now gives an error in Octave about requiring integer
+sizes for the cell array, matching Matlab behavior.
+Previously, Octave's conversion from non-integers to integers was more lenient.
+
 ### Alphabetical list of new functions added in Octave 10
 
 * `clim`

@@ -39,9 +39,6 @@
 #include "ov-base.h"
 #include "ov-base-mat.h"
 #include "ov-base-scalar.h"
-#if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
-#include "ov-inline.h"
-#endif
 #include "pr-output.h"
 
 template <typename MT>
@@ -626,7 +623,7 @@ octave_base_matrix<MT>::vm_extract_forloop_value (octave_idx_type counter)
 {
   // TODO: Maybe this is slow? Should preferably be done once per loop
   octave_value_list idx;
-  octave_value arg = octave_value_factory::make_copy (this);
+  octave_value arg = octave_value (this, true);
 
   dim_vector dv = arg.dims ().redim (2);
   octave_idx_type nrows = dv(0);

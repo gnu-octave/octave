@@ -89,9 +89,11 @@ public:
 
 #if defined (OCTAVE_ENABLE_BYTECODE_EVALUATOR)
 
-  bool vm_need_storable_call () const { return true; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool
+  vm_need_storable_call () const { return true; }
 
-  bool is_maybe_function () const { return false; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool
+  is_maybe_function () const { return false; }
 
 #endif
 
@@ -246,13 +248,14 @@ public:
   OCTINTERP_API octave_value
   vm_extract_forloop_value (octave_idx_type idx);
 
-  octave_value
+  OCTINTERP_API octave_value
   checked_full_matrix_elem (octave_idx_type i) const;
 
-  octave_value
+  OCTINTERP_API octave_value
   checked_full_matrix_elem (octave_idx_type i, octave_idx_type j) const;
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value::vm_call_dispatch_type
+  vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }

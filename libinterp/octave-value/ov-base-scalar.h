@@ -196,13 +196,17 @@ public:
   OCTINTERP_API octave_value
   vm_extract_forloop_value (octave_idx_type idx);
 
-  bool vm_need_dispatch_assign_rhs () { return false; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool vm_need_dispatch_assign_rhs ()
+  { return false; }
 
-  bool vm_need_dispatch_assign_lhs () { return false; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool vm_need_dispatch_assign_lhs ()
+  { return false; }
 
-  bool vm_need_dispatch_push () { return false; }
+  OCTINTERP_OVERRIDABLE_FUNC_API bool vm_need_dispatch_push ()
+  { return false; }
 
-  octave_base_value::vm_call_dispatch_type vm_dispatch_call ()
+  OCTINTERP_OVERRIDABLE_FUNC_API octave_base_value::vm_call_dispatch_type
+  vm_dispatch_call ()
   {
     return vm_call_dispatch_type::OCT_SUBSREF;
   }

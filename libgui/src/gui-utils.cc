@@ -74,7 +74,7 @@ adjust_to_screen (QRect& actual_geometry, const QRect& default_geometry)
     = actual_geometry.width () * actual_geometry.height ();
   QRect intersection;
 
-  foreach (const QScreen *screen, QGuiApplication::screens())
+  foreach (const QScreen *screen, QGuiApplication::screens ())
     {
       QRect screen_geom = screen->availableGeometry ();
       intersection = screen_geom.intersected (actual_geometry);

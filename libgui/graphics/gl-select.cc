@@ -227,7 +227,7 @@ opengl_selector::draw_image (const image::properties& props)
   octave_idx_type nr = props.get_cdata ().rows ();
   double y_pix_size = (nr == 1 ? 1 : (yd(1) - yd(0)) / (nr - 1));
 
-  ColumnVector p1(3, 0.0), p2(3, 0.0), p3(3, 0.0), p4(3, 0.0);
+  ColumnVector p1 (3, 0.0), p2 (3, 0.0), p3 (3, 0.0), p4 (3, 0.0);
   p1(0) = xd(0) - x_pix_size/2;
   p1(1) = yd(0) - y_pix_size/2;
 

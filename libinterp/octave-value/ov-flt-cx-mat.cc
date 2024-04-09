@@ -384,10 +384,10 @@ octave_float_complex_matrix::load_ascii (std::istream& is)
       else if (nr == 0 || nc == 0)
         m_matrix = FloatComplexMatrix (nr, nc);
       else
-        panic_impossible ();
+        error ("unexpected dimensions in octave_float_complex_matrix::load_ascii - please report this bug");
     }
   else
-    panic_impossible ();
+    error ("unexpected dimensions keyword (= '%s') octave_float_complex_matrix::load_ascii - please report this bug", kw.c_str ());
 
   return true;
 }

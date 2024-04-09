@@ -108,7 +108,7 @@ octave_cell::simple_subsref (char type, octave_value_list& idx, int)
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_cell::simple_subsref - please report this bug");
     }
 
   return retval;
@@ -154,7 +154,7 @@ octave_cell::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_cell::subsref - please report this bug");
     }
 
   // FIXME: perhaps there should be an
@@ -204,7 +204,7 @@ octave_cell::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_cell::subsref - please report this bug");
     }
 
   // FIXME: perhaps there should be an
@@ -311,7 +311,7 @@ octave_cell::subsasgn (const std::string& type,
           break;
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in octave_cell::subsasgn - please report this bug");
         }
     }
 
@@ -385,7 +385,7 @@ octave_cell::subsasgn (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in octave_cell::subsasgn - please report this bug");
     }
 
   return retval;
@@ -849,10 +849,10 @@ octave_cell::load_ascii (std::istream& is)
       else if (nr == 0 || nc == 0)
         m_matrix = Cell (nr, nc);
       else
-        panic_impossible ();
+        error ("unexpected dimensions in octave_cell::load_ascii - please report this bug");
     }
   else
-    panic_impossible ();
+    error ("unexpected dimensions keyword (= '%s') octave_cell::load_ascii - please report this bug", kw.c_str ());
 
   return true;
 }

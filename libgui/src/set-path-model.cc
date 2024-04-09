@@ -145,7 +145,7 @@ set_path_model::add_dir (const QString& p)
 
   beginInsertRows (QModelIndex (), m_dirs.size (), m_dirs.size ());
 
-  QList<QString>::Iterator it = m_dirs.begin();
+  QList<QString>::Iterator it = m_dirs.begin ();
 
   m_dirs.insert (it, p);
 

@@ -45,10 +45,10 @@ public:
   QMenu * createPopupMenu ();
 
 protected:
-  void showEvent(QShowEvent *ev);
+  void showEvent (QShowEvent *ev);
 
 signals:
-  void figureWindowShown();
+  void figureWindowShown ();
 
 };
 

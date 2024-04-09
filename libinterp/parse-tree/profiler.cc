@@ -86,11 +86,6 @@ profiler::tree_node::enter (octave_idx_type fcn)
 profiler::tree_node *
 profiler::tree_node::exit (octave_idx_type /* fcn */)
 {
-  // FIXME: These panic_unless statements don't make sense if profile() is
-  //  called from within a function hierarchy to begin with.  See bug #39587.
-  //  panic_unless (m_parent);
-  //  panic_unless (m_fcn_id == fcn);
-
   return m_parent;
 }
 
@@ -106,7 +101,9 @@ profiler::tree_node::build_flat (flat_profile& data) const
       entry.m_time += m_time;
       entry.m_calls += m_calls;
 
-      panic_unless (m_parent);
+      if (! m_parent)
+        error ("unexpected: m_parent is nullptr in profiler::tree_node::build_flat - please report this bug");
+
       if (m_parent->m_fcn_id != 0)
         {
           entry.m_parents.insert (m_parent->m_fcn_id);
@@ -193,8 +190,11 @@ void
 profiler::enter_function (const std::string& fcn)
 {
   // The enter class will check and only call us if the profiler is active.
-  panic_unless (enabled ());
-  panic_unless (m_call_tree);
+  if (! enabled ())
+    error ("unexpected: profiler not enabled in profiler::enter_function - please report this bug");
+
+  if (! m_call_tree)
+    error ("unexpected: m_call_tree is nullptr in profiler::enter_function - please report this bug");
 
   // If there is already an active function, add to its time before
   // pushing the new one.
@@ -227,11 +227,8 @@ profiler::exit_function (const std::string& fcn)
 {
   if (m_active_fcn)
     {
-      panic_unless (m_call_tree);
-      // FIXME: This panic_unless statements doesn't make sense if profile()
-      //        is called from within a function hierarchy to begin with.
-      //        See bug #39587.
-      // panic_unless (m_active_fcn != m_call_tree);
+      if (! m_call_tree)
+        error ("unexpected: m_call_tree is nullptr in profiler::enter_function - please report this bug");
 
       // Usually, if we are disabled this function is not even called.  But
       // the call disabling the profiler is an exception.  So also check here
@@ -240,10 +237,7 @@ profiler::exit_function (const std::string& fcn)
         add_current_time ();
 
       fcn_index_map::iterator pos = m_fcn_index.find (fcn);
-      // FIXME: This panic_unless statements doesn't make sense if profile()
-      //        is called from within a function hierarchy to begin with.
-      //        See bug #39587.
-      // panic_unless (pos != m_fcn_index.end ());
+
       m_active_fcn = m_active_fcn->exit (pos->second);
 
       // If this was an "inner call", we resume executing the parent function

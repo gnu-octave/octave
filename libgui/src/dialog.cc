@@ -418,7 +418,7 @@ ListDialog::ListDialog (const QStringList& list,
     view->setSelectionMode (QAbstractItemView::NoSelection);
 
   m_selector = view->selectionModel ();
-  for (int i = 0; i < initial.count(); i++)
+  for (int i = 0; i < initial.count (); i++)
     {
       QModelIndex idx = m_model->index (initial.value (i) - 1, 0,
                                         QModelIndex ());

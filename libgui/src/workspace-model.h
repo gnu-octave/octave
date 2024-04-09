@@ -77,7 +77,7 @@ public:
 signals:
 
   void model_changed ();
-  void prompt_variable_editor();
+  void prompt_variable_editor ();
 
 public slots:
 

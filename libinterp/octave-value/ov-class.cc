@@ -438,7 +438,7 @@ octave_class::subsref (const std::string& type,
           break;
 
         default:
-          panic_impossible ();
+          error ("unpexpected: index not '(', '{', or '.' in - octave_class::subsref please report this bug");
         }
 
       // FIXME: perhaps there should be an
@@ -748,7 +748,7 @@ octave_class::subsasgn_common (const octave_value& obj,
           break;
 
         default:
-          panic_impossible ();
+          error ("unpexpected: index not '(', '{', or '.' in - octave_class::subsasgn_common please report this bug");
         }
     }
 
@@ -833,7 +833,7 @@ octave_class::subsasgn_common (const octave_value& obj,
       break;
 
     default:
-      panic_impossible ();
+      error ("unpexpected: index not '(', '{', or '.' in - octave_class::subsref please report this bug");
     }
 
   return retval;
@@ -1285,7 +1285,7 @@ octave_class::load_ascii (std::istream& is)
       m_c_name = classname;
     }
   else
-    panic_impossible ();
+    error ("unexpected: len < 0 in octave_class::load_ascii - please report this bug");
 
   return true;
 }
@@ -1412,7 +1412,7 @@ octave_class::load_binary (std::istream& is, bool swap,
   else if (len == 0)
     m_map = octave_map (dim_vector (1, 1));
   else
-    panic_impossible ();
+    error ("unexpected: len < 0 in octave_class::load_binary - please report this bug");
 
   return success;
 }

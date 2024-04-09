@@ -379,7 +379,7 @@ gui_settings::get_default_font ()
 
   int font_size = font.pointSize ();
   if (font_size == -1)
-    font_size = static_cast <int> (std::floor(font.pointSizeF ()));
+    font_size = static_cast <int> (std::floor (font.pointSizeF ()));
 
   // check for valid font size, otherwise take default 10
   QString default_font_size = "10";
@@ -678,7 +678,7 @@ gui_settings::update_network_settings ()
   QNetworkProxy::setApplicationProxy (proxy);
 
   // Set proxy for curl library if not based on environment variables
-  std::string proxy_url_str = proxy_url.toString().toStdString ();
+  std::string proxy_url_str = proxy_url.toString ().toStdString ();
   sys::env::putenv ("http_proxy", proxy_url_str);
   sys::env::putenv ("HTTP_PROXY", proxy_url_str);
   sys::env::putenv ("https_proxy", proxy_url_str);

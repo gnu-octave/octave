@@ -331,10 +331,10 @@ octave_bool_matrix::load_ascii (std::istream& is)
       else if (nr == 0 || nc == 0)
         m_matrix = boolMatrix (nr, nc);
       else
-        panic_impossible ();
+        error ("unexpected dimensions in octave_bool_matrix::load_ascii - please report this bug");
     }
   else
-    panic_impossible ();
+    error ("unexpected dimensions keyword (= '%s') octave_bool_matrix::load_ascii - please report this bug", kw.c_str ());
 
   return true;
 }

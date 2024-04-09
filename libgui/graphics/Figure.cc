@@ -260,7 +260,7 @@ Figure::set_geometry (QRect r)
   if (! m_resizable)
     {
       win->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
-      win->setFixedSize (QSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+      win->setFixedSize (QSize (QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
     }
 
   // Unlock window if it is maximized or full-screen
@@ -273,7 +273,7 @@ Figure::set_geometry (QRect r)
   if (! m_resizable)
     {
       win->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-      win->setFixedSize(win->size ());
+      win->setFixedSize (win->size ());
     }
 }
 
@@ -420,13 +420,13 @@ Figure::update (int pId)
       if (fp.is_resize ())
         {
           win->setSizePolicy (QSizePolicy::Preferred, QSizePolicy::Preferred);
-          win->setFixedSize (QSize( QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
+          win->setFixedSize (QSize (QWIDGETSIZE_MAX, QWIDGETSIZE_MAX));
           m_resizable = true;
         }
       else
         {
           win->setSizePolicy (QSizePolicy::Fixed, QSizePolicy::Fixed);
-          win->setFixedSize(win->size ());
+          win->setFixedSize (win->size ());
           m_resizable = false;
         }
       break;
@@ -542,7 +542,7 @@ Figure::update (int pId)
         if (canvas)
           canvas->setCursor (mouseMode (), fp.get_pointer (),
                              m_pointer_cdata,
-                             fp.get_pointershapehotspot ().matrix_value());
+                             fp.get_pointershapehotspot ().matrix_value ());
       }
       break;
 
@@ -748,8 +748,7 @@ Figure::eventNotifyAfter (QObject *watched, QEvent *xevent)
               break;
 
             case QEvent::ChildAdded:
-              if (dynamic_cast<QChildEvent *> (xevent)->child
-                  ()->isWidgetType())
+              if (dynamic_cast<QChildEvent *> (xevent)->child ()->isWidgetType())
                 {
                   octave::autolock guard (gh_mgr.graphics_lock ());
                   update (figure::properties::ID_TOOLBAR);
@@ -759,8 +758,7 @@ Figure::eventNotifyAfter (QObject *watched, QEvent *xevent)
               break;
 
             case QEvent::ChildRemoved:
-              if (dynamic_cast<QChildEvent *> (xevent)->child
-                  ()->isWidgetType())
+              if (dynamic_cast<QChildEvent *> (xevent)->child ()->isWidgetType())
                 {
                   octave::autolock guard (gh_mgr.graphics_lock ());
                   update (figure::properties::ID_TOOLBAR);

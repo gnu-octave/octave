@@ -89,7 +89,7 @@ octave_base_matrix<MT>::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unpexpected: index not '(', '{', or '.' in - octave_base_matrix<MT>::subsref please report this bug");
     }
 
   return retval.next_subsref (type, idx);
@@ -148,7 +148,7 @@ octave_base_matrix<MT>::subsasgn (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unpexpected: index not '(', '{', or '.' in - octave_base_matrix<MT>::subsasgn please report this bug");
     }
 
   return retval;
@@ -263,7 +263,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx, const MT& rhs)
       switch (n_idx)
         {
         case 0:
-          panic_impossible ();
+          error ("unexpected: zero indices in octave_base_matrix<MT>::assign - please report this bug");
           break;
 
         case 1:
@@ -337,7 +337,7 @@ octave_base_matrix<MT>::assign (const octave_value_list& idx,
       switch (n_idx)
         {
         case 0:
-          panic_impossible ();
+          error ("unexpected: zero indices in octave_base_matrix<MT>::assign - please report this bug");
           break;
 
         case 1:

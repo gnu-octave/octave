@@ -124,7 +124,7 @@ annotation_dialog::get_gui_props ()
   // set props to the values of the gui
   m_props = octave_value_list ();
 
-  Matrix position(1, 4);
+  Matrix position (1, 4);
   position(0) = m_ui->sb_x->value ();
   position(1) = m_ui->sb_y->value ();
   position(2) = m_ui->sb_width->value ();

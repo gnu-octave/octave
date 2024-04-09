@@ -108,7 +108,7 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
   m_replace_line_edit->completer ()->setCaseSensitivity (Qt::CaseSensitive);
   m_replace_label->setBuddy (m_replace_line_edit);
 
-  int width = QFontMetrics (m_search_line_edit->font ()).averageCharWidth();
+  int width = QFontMetrics (m_search_line_edit->font ()).averageCharWidth ();
   m_search_line_edit->setFixedWidth (20*width);
   m_replace_line_edit->setFixedWidth (20*width);
 
@@ -198,8 +198,8 @@ find_dialog::find_dialog (octave_dock_widget *ed, QWidget *p)
 
   setWindowModality (Qt::NonModal);
 
-  setAttribute(Qt::WA_ShowWithoutActivating);
-  setAttribute(Qt::WA_DeleteOnClose);
+  setAttribute (Qt::WA_ShowWithoutActivating);
+  setAttribute (Qt::WA_DeleteOnClose);
 }
 
 // The edit_area has changed: update relevant data of the file dialog

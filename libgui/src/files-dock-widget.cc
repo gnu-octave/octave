@@ -106,23 +106,23 @@ public:
         return false;
       }
 
-    auto parent_dir = QDir(filePath (parent (idx)));
+    auto parent_dir = QDir (filePath (parent (idx)));
 
-    files_dock_widget *fdw = static_cast<files_dock_widget *>(parent());
+    files_dock_widget *fdw = static_cast<files_dock_widget *>(parent ());
 
-    fdw->file_remove_signal(parent_dir.filePath(old_name), parent_dir.filePath(new_name));
+    fdw->file_remove_signal (parent_dir.filePath (old_name), parent_dir.filePath (new_name));
 
     if (!parent_dir.rename (old_name, new_name))
       {
         display_rename_failed_message (old_name, new_name);
-        fdw->file_renamed_signal(false);
+        fdw->file_renamed_signal (false);
         return false;
       }
 
-    fdw->file_renamed_signal(true);
+    fdw->file_renamed_signal (true);
 
-    emit fileRenamed(parent_dir.absolutePath(), old_name, new_name);
-    revert();
+    emit fileRenamed (parent_dir.absolutePath (), old_name, new_name);
+    revert ();
 
     return true;
   }
@@ -381,7 +381,7 @@ files_dock_widget::files_dock_widget (QWidget *p)
   m_file_tree_view->setToolTip (tr ("Double-click to open file/folder, right click for alternatives"));
 
   // allow renaming directly in the tree view with
-  // m_file_tree_view->edit(index)
+  // m_file_tree_view->edit (index)
   m_file_system_model->setReadOnly (false);
   // delegate to improve rename ergonomy by pre-selecting text up to the
   // extension
@@ -393,10 +393,10 @@ files_dock_widget::files_dock_widget (QWidget *p)
   // and associate to F2 key shortcut
   m_rename_action = new QAction (tr ("Rename..."), this);
   m_rename_action->setShortcut (Qt::Key_F2);
-  m_rename_action->setShortcutContext(Qt::WidgetWithChildrenShortcut);
+  m_rename_action->setShortcutContext (Qt::WidgetWithChildrenShortcut);
   connect (m_rename_action, &QAction::triggered, this,
            &files_dock_widget::contextmenu_rename);
-  addAction(m_rename_action);
+  addAction (m_rename_action);
 
   // get sort column and order as well as column state (order and width)
 
@@ -880,7 +880,7 @@ files_dock_widget::contextmenu_rename (bool)
   if (rows.size () > 0)
     {
       QModelIndex index = rows[0];
-      m_file_tree_view->edit(index);
+      m_file_tree_view->edit (index);
     }
 }
 

@@ -259,7 +259,7 @@ console::accept_command_line ()
   QString input_line = text (lines () - 1);
 
   if (input_line.startsWith (m_command_widget->prompt ()))
-    input_line.remove(0, m_command_widget->prompt ().length ());
+    input_line.remove (0, m_command_widget->prompt ().length ());
 
   input_line = input_line.trimmed ();
 
@@ -348,7 +348,7 @@ console::keyPressEvent (QKeyEvent *e)
     {
       // Otherwise, store text process the expected event
       m_last_key_string = e->text ();
-      QsciScintilla::keyPressEvent(e);
+      QsciScintilla::keyPressEvent (e);
     }
 }
 

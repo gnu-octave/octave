@@ -163,7 +163,7 @@ ov_range<T>::subsref (const std::string& type,
       break;
 
     default:
-      panic_impossible ();
+      error ("unexpected: index not '(', '{', or '.' in ov_range<T>::subsref - please report this bug");
     }
 
   return retval.next_subsref (type, idx);

@@ -55,7 +55,7 @@ void
 FigureWindow::showEvent (QShowEvent *ev)
 {
   QMainWindow::showEvent (ev);
-  emit figureWindowShown();
+  emit figureWindowShown ();
 }
 
 OCTAVE_END_NAMESPACE(octave)

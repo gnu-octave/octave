@@ -145,14 +145,14 @@ tab_bar::tabSizeHint (int idx) const
 {
   QSize s = QTabBar::tabSizeHint (idx);
   if (m_rotated)
-    s.transpose();
+    s.transpose ();
 
   return s;
 }
 
 // Reimplemented paint event allowing rotated tabs
 void
-tab_bar::paintEvent(QPaintEvent *e)
+tab_bar::paintEvent (QPaintEvent *e)
 {
   // Just process the original event if not rotated
   if (! m_rotated)
@@ -162,14 +162,14 @@ tab_bar::paintEvent(QPaintEvent *e)
   QStylePainter painter (this);
   QStyleOptionTab opt;
 
-  for (int idx = 0; idx < count(); idx++)
+  for (int idx = 0; idx < count (); idx++)
     {
       initStyleOption (&opt, idx);
       painter.drawControl (QStyle::CE_TabBarTabShape, opt);
       painter.save ();
 
-      QSize s = opt.rect.size();
-      s.transpose();
+      QSize s = opt.rect.size ();
+      s.transpose ();
       QRect rect (QPoint (), s);
       rect.moveCenter (opt.rect.center ());
       opt.rect = rect;
@@ -209,9 +209,9 @@ tab_bar::mousePressEvent (QMouseEvent *me)
 
       // detect the mouse click
       if ((me->type () == QEvent::MouseButtonDblClick
-           && me->button() == Qt::LeftButton)
+           && me->button () == Qt::LeftButton)
           || (me->type () != QEvent::MouseButtonDblClick
-              && me->button() == Qt::MiddleButton))
+              && me->button () == Qt::MiddleButton))
         {
           // Middle click or double click -> close the tab
           // Make the clicked tab the current one and close it
@@ -225,7 +225,7 @@ tab_bar::mousePressEvent (QMouseEvent *me)
             setCurrentIndex (current_idx);
         }
       else if (me->type () != QEvent::MouseButtonDblClick
-               && me->button() == Qt::RightButton)
+               && me->button () == Qt::RightButton)
         {
           // Right click, show context menu
           setCurrentIndex (clicked_idx);

@@ -144,7 +144,7 @@ documentation::documentation (QWidget *p)
   connect(m_help_engine, SIGNAL(setupFinished ()),
           m_help_engine->searchEngine (), SLOT(reindexDocumentation ()));
 
-  if (! m_help_engine->setupData())
+  if (! m_help_engine->setupData ())
     {
 #if defined (ENABLE_DOCS)
       QMessageBox::warning (this, tr ("Octave Documentation"),
@@ -351,7 +351,7 @@ documentation::~documentation ()
           sys::recursive_rmdir (file_name);
         }
 
-      file.remove();
+      file.remove ();
     }
 }
 
@@ -401,7 +401,7 @@ documentation::construct_tool_bar ()
   popdown_button_prev_pages->setPopupMode (QToolButton::InstantPopup);
   popdown_button_prev_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);
   popdown_button_prev_pages->setCheckable (false);
-  popdown_button_prev_pages->setArrowType(Qt::DownArrow);
+  popdown_button_prev_pages->setArrowType (Qt::DownArrow);
   m_tool_bar->addWidget (popdown_button_prev_pages);
 
   m_action_go_next
@@ -415,7 +415,7 @@ documentation::construct_tool_bar ()
   popdown_button_next_pages->setMenu (m_next_pages_menu);
   popdown_button_next_pages->setPopupMode (QToolButton::InstantPopup);
   popdown_button_next_pages->setToolButtonStyle (Qt::ToolButtonTextOnly);
-  popdown_button_next_pages->setArrowType(Qt::DownArrow);
+  popdown_button_next_pages->setArrowType (Qt::DownArrow);
   m_tool_bar->addWidget (popdown_button_next_pages);
 
   connect (m_doc_browser, &documentation_browser::backwardAvailable,
@@ -512,7 +512,7 @@ documentation::global_search ()
 void
 documentation::global_search_started ()
 {
-  qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
+  qApp->setOverrideCursor (QCursor (Qt::WaitCursor));
 }
 
 void
@@ -586,7 +586,7 @@ documentation::global_search_finished (int)
       m_internal_search = QString ();
     }
 
-  qApp->restoreOverrideCursor();
+  qApp->restoreOverrideCursor ();
 }
 
 void
@@ -693,7 +693,7 @@ documentation::copyClipboard ()
 {
   if (m_doc_browser->hasFocus ())
     {
-      m_doc_browser->copy();
+      m_doc_browser->copy ();
     }
 }
 
@@ -739,19 +739,19 @@ documentation::load_ref (const QString& ref_name)
 
   QTabWidget *navi = static_cast<QTabWidget *> (widget (0));
 
-  if (found_links.count() > 0)
+  if (found_links.count () > 0)
     {
       // First search in the function index
 #if defined (HAVE_QHELPENGINE_DOCUMENTSFORIDENTIFIER)
-      QUrl first_url = found_links.constFirst().url;
+      QUrl first_url = found_links.constFirst ().url;
 #else
-      QUrl first_url = found_links.constBegin().value ();
+      QUrl first_url = found_links.constBegin ().value ();
 #endif
 
       m_doc_browser->setSource (first_url);
 
       // Switch to function index tab
-      m_help_engine->indexWidget()->filterIndices (ref_name);
+      m_help_engine->indexWidget ()->filterIndices (ref_name);
       QWidget *index_tab
         = navi->findChild<QWidget *> ("documentation_tab_index");
       navi->setCurrentWidget (index_tab);
@@ -768,7 +768,7 @@ documentation::load_ref (const QString& ref_name)
 #else
       QList<QHelpSearchQuery> query;
       query << QHelpSearchQuery (QHelpSearchQuery::DEFAULT,
-                                 QStringList (QString("\"") + ref_name + QString("\"")));
+                                 QStringList (QString ("\"") + ref_name + QString ("\"")));
 #endif
       m_internal_search = ref_name;
       search_engine->search (query);
@@ -808,10 +808,10 @@ documentation::filter_update (const QString& expression)
     return;
 
   QString wildcard;
-  if (expression.contains (QLatin1Char('*')))
+  if (expression.contains (QLatin1Char ('*')))
     wildcard = expression;
 
-  m_help_engine->indexWidget ()->filterIndices(expression, wildcard);
+  m_help_engine->indexWidget ()->filterIndices (expression, wildcard);
 }
 
 void
@@ -923,7 +923,7 @@ documentation::registerDoc (const QString& qch)
         }
 
       if (do_setup)
-        m_help_engine->setupData();
+        m_help_engine->setupData ();
     }
 }
 
@@ -1091,7 +1091,7 @@ documentation_browser::documentation_browser (QHelpEngine *he, QWidget *p)
       for (int i = 0; i < default_fonts.size (); ++i)
         {
           QString fontpath =
-            fonts_dir + default_fonts.at(i) + QString (".otf");
+            fonts_dir + default_fonts.at (i) + QString (".otf");
           QFontDatabase::addApplicationFont (fontpath);
         }
     }
@@ -1123,9 +1123,9 @@ QVariant
 documentation_browser::loadResource (int type, const QUrl& url)
 {
   if (m_help_engine && url.scheme () == "qthelp")
-    return QVariant (m_help_engine->fileData(url));
+    return QVariant (m_help_engine->fileData (url));
   else
-    return QTextBrowser::loadResource(type, url);
+    return QTextBrowser::loadResource (type, url);
 }
 
 void
@@ -1170,7 +1170,7 @@ documentation_browser::wheelEvent (QWheelEvent *we)
 {
   if (we->modifiers () == Qt::ControlModifier)
     {
-      if (we->angleDelta().y () > 0)
+      if (we->angleDelta ().y () > 0)
         zoom_in ();
       else
         zoom_out ();

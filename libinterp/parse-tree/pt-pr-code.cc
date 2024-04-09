@@ -37,6 +37,12 @@
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
+OCTAVE_NORETURN static void
+error_unexpected (const char *name)
+{
+  error ("unexpected call to %s - please report this bug", name);
+}
+
 void
 tree_print_code::visit_anon_fcn_handle (tree_anon_fcn_handle& afh)
 {
@@ -87,31 +93,31 @@ tree_print_code::visit_arguments_block (tree_arguments_block&)
 void
 tree_print_code::visit_args_block_attribute_list (tree_args_block_attribute_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_print_code::visit_args_block_attribute_list");
 }
 
 void
 tree_print_code::visit_args_block_validation_list (tree_args_block_validation_list&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_print_code::visit_args_block_validation_list");
 }
 
 void
 tree_print_code::visit_arg_validation (tree_arg_validation&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_print_code::visit_arg_validation");
 }
 
 void
 tree_print_code::visit_arg_size_spec (tree_arg_size_spec&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_print_code::visit_arg_size_spec");
 }
 
 void
 tree_print_code::visit_arg_validation_fcns (tree_arg_validation_fcns&)
 {
-  panic_impossible ();
+  error_unexpected ("tree_print_code::visit_arg_validation_fcns");
 }
 
 void
@@ -615,7 +621,7 @@ tree_print_code::visit_index_expression (tree_index_expression& expr)
           break;
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in tree_print_code::visit_index_expression - please report this bug");
         }
 
       p_arg_lists++;

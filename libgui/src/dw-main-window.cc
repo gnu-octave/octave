@@ -88,7 +88,7 @@ dw_main_window::createPopupMenu ()
   new_actions.append (m_close_all_action);
 
   QMenu *menu = QMainWindow::createPopupMenu ();
-  QList<QAction *> actions = menu->actions();
+  QList<QAction *> actions = menu->actions ();
 
   if (actions.length () > 0)
     {

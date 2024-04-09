@@ -946,7 +946,7 @@ Canvas::canvasWheelEvent (QWheelEvent *event)
           if (childObj.isa ("axes"))
             {
 #if defined (HAVE_QWHEELEVENT_POSITION)
-              QPoint pos = event->position().toPoint ();
+              QPoint pos = event->position ().toPoint ();
 #else
               QPoint pos = event->pos ();
 #endif
@@ -976,7 +976,7 @@ Canvas::canvasWheelEvent (QWheelEvent *event)
 
               if (zoom_enabled (figObj))
                 {
-                  if (event->angleDelta().y () > 0)
+                  if (event->angleDelta ().y () > 0)
                     newMouseMode = ZoomInMode;
                   else
                     newMouseMode = ZoomOutMode;
@@ -1018,7 +1018,7 @@ Canvas::canvasWheelEvent (QWheelEvent *event)
               {
                 axes::properties& ap = Utils::properties<axes> (axesObj);
 
-                double factor = (event->angleDelta().y () > 0 ? 0.1 : -0.1);
+                double factor = (event->angleDelta ().y () > 0 ? 0.1 : -0.1);
 
                 if (event->modifiers () == Qt::NoModifier
                     && mode != "horizontal")

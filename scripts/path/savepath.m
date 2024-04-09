@@ -126,6 +126,11 @@ function status = savepath (file)
                                 [pkg_user, pkg_system],
                                 "uniformoutput", false)]);
 
+    ## If there are packages without binaries (or without .m files), their
+    ## "archprefix" (or "dir") field might be empty.  Remove empty paths before
+    ## trying to match the regular expression in the next step.
+    pkg_path(cellfun (@isempty, pkg_path)) = [];
+
     ## Rely on Octave's initialization to include the pkg path elements.
     for i_pkg = 1:numel (pkg_path)
       ## Remove all paths that are (sub-)folders of a package folder.

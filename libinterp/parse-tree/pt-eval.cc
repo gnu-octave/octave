@@ -5130,13 +5130,13 @@ tree_evaluator::evaluate_end_expression (const octave_value_list& args)
   if (nargin == 3)
     {
       octave_idx_type index_position
-        = args(1).xidx_type_value ("end: K must be integer value");
+        = args(1).yidx_type_value ("end: K must be integer value");
 
       if (index_position < 1)
         error ("end: K must be greater than zero");
 
       octave_idx_type num_indices
-        = args(2).xidx_type_value ("end: N must be integer value");
+        = args(2).yidx_type_value ("end: N must be integer value");
 
       if (num_indices < 1)
         error ("end: N must be greater than zero");
@@ -5671,7 +5671,7 @@ was invoked even when the inputs are complex expressions.
   if (! dims.all_ones ())
     error ("inputname: N must be a scalar index");
 
-  int n = args(0).xint_value ("inputname: N must be a scalar index");
+  int n = args(0).yint_value ("inputname: N must be a scalar index");
 
   if (n < 1)
     error ("inputname: N must be a scalar index");
@@ -5679,7 +5679,7 @@ was invoked even when the inputs are complex expressions.
   bool ids_only = true;
 
   if (nargin == 2)
-    ids_only = args(1).xbool_value ("inputname: IDS_ONLY must be a logical value");
+    ids_only = args(1).ybool_value ("inputname: IDS_ONLY must be a logical value");
 
   // Use zero-based indexing internally.
   return ovl (interp.inputname (n-1, ids_only));

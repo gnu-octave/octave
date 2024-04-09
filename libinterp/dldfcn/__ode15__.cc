@@ -1350,7 +1350,7 @@ Undocumented internal function.
 
   // Provided number of arguments in the ode callback function
   octave_idx_type num_event_args
-    = args(5).xidx_type_value ("__ode15__: NUM_EVENT_ARGS must be an integer");
+    = args(5).yidx_type_value ("__ode15__: NUM_EVENT_ARGS must be an integer");
 
   if (num_event_args != 2 && num_event_args != 3)
     error ("__ode15__: number of input arguments in event callback must be 2 or 3");

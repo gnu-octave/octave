@@ -290,7 +290,7 @@ from the list; if a function was placed in the list multiple times with
   std::string arg = args(0).xstring_value ("atexit: FCN argument must be a string");
 
   bool add_mode = (nargin == 2)
-                  ? args(1).xbool_value ("atexit: FLAG argument must be a logical value")
+                  ? args(1).ybool_value ("atexit: FLAG argument must be a logical value")
                   : true;
 
   octave_value_list retval;

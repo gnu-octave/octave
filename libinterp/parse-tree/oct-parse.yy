@@ -3986,12 +3986,14 @@ base_parser::make_classdef (token *cdef_tok, tree_classdef_attribute_list *a, tr
 
   if (short_name != cls_name)
     {
+      filepos f_pos = id->beg_pos ();
+
       delete a;
       delete id;
       delete sc;
       delete body;
 
-      bison_error ("invalid classdef definition, the class name must match the filename", id->beg_pos ());
+      bison_error ("invalid classdef definition, the class name must match the filename", f_pos);
 
     }
   else

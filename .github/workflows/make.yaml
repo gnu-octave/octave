@@ -1046,6 +1046,7 @@ jobs:
       - name: configure
         # FIXME: Fix building with Java support.  Override JAVA_HOME for now.
         # FIXME: How do we get a working TeX environment in Cygwin?  Disable building the documentation for now.
+        # FIXME: Exporting symbols for instantiated template classes doesn't work currently. Maybe, test again when Cygwin updated to a newer compiler than GCC 11.4.0?
         run: |
           echo $PATH
           which $CC
@@ -1063,6 +1064,7 @@ jobs:
             --enable-shared \
             --disable-java \
             --disable-docs \
+            --disable-lib-visibility-flags \
             JAVA_HOME="" \
             EGREP="grep -E" \
             FLIBS="-lgfortran -lquadmath"

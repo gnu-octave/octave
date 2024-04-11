@@ -144,7 +144,12 @@ main (int argc, char **argv)
 
   octave::sys::env::set_program_name (argv[0]);
 
-  octave::qt_application app ("octave", "octave-gui", OCTAVE_VERSION,
+  std::string app_name ("octave-gui");
+  std::string settings_file = octave::sys::env::getenv ("OCTAVE_GUI_SETTINGS");
+  if (! settings_file.empty ())
+    app_name = settings_file;
+
+  octave::qt_application app ("octave", app_name, OCTAVE_VERSION,
                               argc, argv);
 
   int ret = app.execute ();

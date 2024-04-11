@@ -513,6 +513,7 @@ octave_dock_widget::handle_settings ()
   QRect default_floating_size = QRect (x+16, y+32, w/3, h/2);
 
   QRect default_dock_size;
+  QString key_ext;
   if (m_main_window)
     {
       // We have a main window, dock size depends on size of main window
@@ -523,10 +524,11 @@ octave_dock_widget::handle_settings ()
     {
       // No main window, default dock size should never be used
       default_dock_size = QRect (0, 0, w/10, h/10);
+      key_ext = settings_no_mainwin;
     }
 
   m_recent_float_geom
-    = settings.value (dw_float_geometry.settings_key ().arg (objectName ()),
+    = settings.value (dw_float_geometry.settings_key ().arg (objectName ()) + key_ext,
                       default_floating_size).toRect ();
 
   adjust_to_screen (m_recent_float_geom, default_floating_size);
@@ -535,7 +537,7 @@ octave_dock_widget::handle_settings ()
   // saveGeomety to new QRect setting (see comment for restoring size
   // of docked widgets)
   QVariant dock_geom
-    = settings.value (dw_dock_geometry.settings_key ().arg (objectName ()),
+    = settings.value (dw_dock_geometry.settings_key ().arg (objectName ()) + key_ext,
                       default_dock_size);
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
   if (dock_geom.canConvert (QMetaType (QMetaType::QRect)))
@@ -588,15 +590,19 @@ octave_dock_widget::save_settings ()
 
   store_geometry ();
 
+  QString key_ext;
+  if (! m_main_window)
+    key_ext = settings_no_mainwin;
+
   // conditional needed?
   if (! m_recent_float_geom.isNull ())
-    settings.setValue (dw_float_geometry.settings_key ().arg (name), m_recent_float_geom);
+    settings.setValue (dw_float_geometry.settings_key ().arg (name) + key_ext, m_recent_float_geom);
 
   if (! m_recent_dock_geom.isEmpty ())
-    settings.setValue (dw_dock_geometry.settings_key ().arg (name), m_recent_dock_geom);
-  settings.setValue (dw_is_visible.settings_key ().arg (name), isVisible ()); // store visibility
-  settings.setValue (dw_is_floating.settings_key ().arg (name), isFloating ()); // store floating
-  settings.setValue (dw_is_minimized.settings_key ().arg (name), isMinimized ()); // store minimized
+    settings.setValue (dw_dock_geometry.settings_key ().arg (name) + key_ext, m_recent_dock_geom);
+  settings.setValue (dw_is_visible.settings_key ().arg (name) + key_ext, isVisible ()); // store visibility
+  settings.setValue (dw_is_floating.settings_key ().arg (name) + key_ext, isFloating ()); // store floating
+  settings.setValue (dw_is_minimized.settings_key ().arg (name) + key_ext, isMinimized ()); // store minimized
 
   settings.sync ();
 }

@@ -221,6 +221,9 @@ OCTAVE_END_NAMESPACE(octave)
 // Some constants used in the preferences of several widgets and therefore
 // defined globally here
 
+// Constants for distinguishing between full GUI and dockwidgets initiated
+// from the command line
+const QString settings_no_mainwin ("__no_mainwin");
 // Constants for handling different color schemes
 const QColor settings_color_no_change (255, 0, 255);
 const QStringList settings_color_modes_ext (QStringList () << "" << "_2");

@@ -73,6 +73,7 @@
 #include "parse.h"
 #include "pt-all.h"
 #include "pt-eval.h"
+#include "separator-list.h"
 #include "symtab.h"
 #include "token.h"
 #include "unwind-prot.h"
@@ -141,8 +142,10 @@ static void yyerror (octave::base_parser& parser, const char *s);
   // The type of the basic tokens returned by the lexer.
   octave::token *tok;
 
+  // Lists of separators with optional comment lists attached.
+  octave::separator_list *sep_list_type;
+
   // Types for the nonterminals we generate.
-  char punct_type;
   octave::tree *tree_type;
   octave::tree_matrix *tree_matrix_type;
   octave::tree_cell *tree_cell_type;
@@ -247,7 +250,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tok> param_list_beg param_list_end
 %type <tok> function_beg classdef_beg arguments_beg indirect_ref_op
 %type <tok> properties_beg methods_beg events_beg enumeration_beg
-%type <punct_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
+%type <sep_list_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -444,7 +447,10 @@ input           : simple_list '\n'
 
 simple_list     : opt_sep_no_nl
                   {
-                    OCTAVE_YYUSE ($1);
+                    // FIXME: should we return an empty statement list
+                    // with the separators attached?  For now, delete
+                    // the unused list.
+                    delete $1;
 
                     $$ = nullptr;
                   }
@@ -461,7 +467,8 @@ simple_list1    : statement
 statement_list  : opt_sep opt_list
                   {
                     // FIXME: Need to capture separator list here.
-                    OCTAVE_YYUSE ($1);
+                    // For now, delete the unused list.
+                    delete $1;
 
                     $$ = $2;
                   }
@@ -473,7 +480,13 @@ opt_list        : // empty
                 ;
 
 list            : list1 opt_sep
-                  { $$ = parser.set_stmt_print_flag ($1, $2, true); }
+                  {
+                    $$ = parser.set_stmt_print_flag ($1, $2, true);
+
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
+                  }
                 ;
 
 list1           : statement
@@ -490,7 +503,9 @@ opt_fcn_list    : // empty
 
 fcn_list        : fcn_list1 opt_sep
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = $1;
                   }
@@ -595,6 +610,7 @@ cell_or_matrix_row
                   { $$ = nullptr; }
                 | ','
                   {
+                    // FIXME: Need to capture separator token info here.
                     OCTAVE_YYUSE ($1);
 
                     $$ = nullptr;
@@ -603,18 +619,21 @@ cell_or_matrix_row
                   { $$ = $1; }
                 | arg_list ','
                   {
+                    // FIXME: Need to capture separator token info here.
                     OCTAVE_YYUSE ($2);
 
                     $$ = $1;
                   }
                 | ',' arg_list
                   {
+                    // FIXME: Need to capture separator token info here.
                     OCTAVE_YYUSE ($1);
 
                     $$ = $2;
                   }
                 | ',' arg_list ','
                   {
+                    // FIXME: Need to capture separator token info here.
                     OCTAVE_YYUSE ($1, $3);
 
                     $$ = $2;
@@ -1028,25 +1047,17 @@ if_clause_list  : if_clause
                 ;
 
 if_clause       : IF opt_sep expression stmt_begin statement_list
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.make_if_clause ($1, $3, $5);
-                  }
+                  { $$ = parser.make_if_clause ($1, $2, $3, $5); }
                 ;
 
 elseif_clause   : ELSEIF opt_sep expression stmt_begin statement_list
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.make_if_clause ($1, $3, $5);
-                  }
+                  { $$ = parser.make_if_clause ($1, $2, $3, $5); }
                 ;
 
 else_clause     : // empty
                   { $$ = nullptr; }
                 | ELSE statement_list
-                  { $$ = parser.make_if_clause ($1, nullptr, $2); }
+                  { $$ = parser.make_if_clause ($1, nullptr, nullptr, $2); }
                 ;
 
 // ================
@@ -1055,7 +1066,9 @@ else_clause     : // empty
 
 switch_command  : SWITCH expression opt_sep case_list END
                   {
-                    OCTAVE_YYUSE ($3);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $3;
 
                     if (! ($$ = parser.finish_switch_command ($1, $2, $4, $5)))
                       {
@@ -1083,7 +1096,9 @@ case_list1      : switch_case
 
 switch_case     : CASE opt_sep expression stmt_begin statement_list
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.make_switch_case ($1, $3, $5);
                   }
@@ -1121,6 +1136,7 @@ loop_command    : WHILE expression stmt_begin statement_list END
                   }
                 | FOR '(' assign_lhs '=' expression ')' statement_list END
                   {
+                    // FIXME: Need to capture token info here.
                     OCTAVE_YYUSE ($2, $4, $6);
 
                     if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, nullptr, nullptr, $6, $7, $8)))
@@ -1131,6 +1147,7 @@ loop_command    : WHILE expression stmt_begin statement_list END
                   }
                 | PARFOR assign_lhs '=' expression stmt_begin statement_list END
                   {
+                    // FIXME: Need to capture token info here.
                     OCTAVE_YYUSE ($3);
 
                     if (! ($$ = parser.make_for_command ($1, nullptr, $2, $3, $4, nullptr, nullptr, nullptr, $6, $7)))
@@ -1141,6 +1158,7 @@ loop_command    : WHILE expression stmt_begin statement_list END
                   }
                 | PARFOR '(' assign_lhs '=' expression ',' expression ')' statement_list END
                   {
+                    // FIXME: Need to capture token info here.
                     OCTAVE_YYUSE ($2, $4, $6, $8);
 
                     if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)))
@@ -1199,13 +1217,13 @@ except_command  : UNWIND statement_list CLEANUP statement_list END
                   {
                     if (! ($$ = parser.make_try_command ($1, $2, $3, $4, $5, $6)))
                       {
-                        // make_try_command deleted $2 and $5.
+                        // make_try_command deleted $2, $4, and $5.
                         YYABORT;
                       }
                   }
                 | TRY statement_list END
                   {
-                    if (! ($$ = parser.make_try_command ($1, $2, nullptr, 0, nullptr, $3)))
+                    if (! ($$ = parser.make_try_command ($1, $2, nullptr, nullptr, nullptr, $3)))
                       {
                         // make_try_command deleted $2.
                         YYABORT;
@@ -1389,7 +1407,9 @@ begin_file      : push_script_symtab INPUT_FILE
 
 file            : begin_file opt_nl opt_list END_OF_INPUT
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     if (lexer.m_reading_fcn_file)
                       {
@@ -1418,7 +1438,10 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                   }
                 | begin_file opt_nl classdef parsing_local_fcns opt_sep opt_fcn_list END_OF_INPUT
                   {
-                    OCTAVE_YYUSE ($2, $5);
+                    // FIXME: Need to capture separator lists here.
+                    // For now, delete the unused lists.
+                    delete $2;
+                    delete $5;
 
                     // Unused symbol table context.
                     lexer.m_symtab_context.pop ();
@@ -1521,13 +1544,17 @@ function_end    : END
 
 function        : function_beg fcn_name opt_param_list opt_sep function_body function_end
                   {
-                    OCTAVE_YYUSE ($4);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $4;
 
                     $$ = parser.make_function ($1, nullptr, nullptr, $2, $3, $5, $6);
                   }
                 | function_beg return_list '=' fcn_name opt_param_list opt_sep function_body function_end
                   {
-                    OCTAVE_YYUSE ($6);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $6;
 
                     $$ = parser.make_function ($1, $2, $3, $4, $5, $7, $8);
                   }
@@ -1537,7 +1564,9 @@ function_body   : at_first_executable_stmt opt_list
                   { $$ = $2; }
                 | function_body1 opt_sep at_first_executable_stmt opt_list
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_function_body ($1, $4);
                   }
@@ -1564,7 +1593,10 @@ function_body1  : arguments_block
 
 arguments_block : arguments_beg opt_sep args_attr_list args_validation_list opt_sep END
                   {
-                    OCTAVE_YYUSE ($2, $5);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused lists.
+                    delete $2;
+                    delete $5;
 
                     if (! ($$ = parser.make_arguments_block ($1, $3, $4, $6)))
                       {
@@ -1606,7 +1638,9 @@ args_validation_list
                     }
                   | args_validation_list sep arg_name arg_validation
                     {
-                      OCTAVE_YYUSE ($2);
+                      // FIXME: Need to capture SEP here.
+                      // For now, delete the unused list.
+                      delete $2;
 
                       $4->arg_name ($3);
                       $$ = parser.append_args_validation_list ($1, $4);
@@ -1698,7 +1732,9 @@ classdef_beg    : CLASSDEF
 
 classdef        : classdef_beg attr_list identifier opt_sep superclass_list class_body END
                   {
-                    OCTAVE_YYUSE ($4);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $4;
 
                     lexer.m_parsing_classdef = false;
 
@@ -1714,7 +1750,9 @@ attr_list       : // empty
                   { $$ = nullptr; }
                 | '(' attr_list1 ')' opt_sep
                   {
-                    OCTAVE_YYUSE ($4);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $4;
 
                     $$ = $2->mark_in_delims (*($1), *($3));
                   }
@@ -1744,7 +1782,9 @@ superclass_list : // empty
                   }
                 | superclass_list1 opt_sep
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     lexer.m_parsing_classdef_decl = false;
                     lexer.m_parsing_classdef_superclass = false;
@@ -1770,7 +1810,9 @@ class_body      : // empty
                   }
                 | class_body1 opt_sep
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     lexer.m_classdef_element_names_are_keywords = false;
                     $$ = $1;
@@ -1787,25 +1829,33 @@ class_body1     : properties_block
                   { $$ = parser.make_classdef_body ($1); }
                 | class_body1 opt_sep properties_block
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_classdef_properties_block ($1, $3);
                   }
                 | class_body1 opt_sep methods_block
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_classdef_methods_block ($1, $3);
                   }
                 | class_body1 opt_sep events_block
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_classdef_events_block ($1, $3);
                   }
                 | class_body1 opt_sep enum_block
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_classdef_enum_block ($1, $3);
                   }
@@ -1814,7 +1864,9 @@ class_body1     : properties_block
 properties_block
                 : properties_beg opt_sep attr_list property_list END
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     if (! ($$ = parser.make_classdef_properties_block ($1, $3, $4, $5)))
                       {
@@ -1838,7 +1890,9 @@ property_list   : // empty
                   }
                 | property_list1 opt_sep
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
@@ -1850,7 +1904,9 @@ property_list1
                   { $$ = parser.make_classdef_property_list ($1); }
                 | property_list1 sep class_property
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture SEP here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     // We don't look ahead to grab end-of-line comments.
                     // Instead, they are grabbed when we see the
@@ -1885,7 +1941,9 @@ class_property  : identifier arg_validation
 
 methods_block   : methods_beg opt_sep attr_list method_list END
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     if (! ($$ = parser.make_classdef_methods_block ($1, $3, $4, $5)))
                       {
@@ -1943,7 +2001,9 @@ method_list     : // empty
                   }
                 | method_list1 opt_sep
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
@@ -1954,7 +2014,9 @@ method_list1    : method
                   { $$ = parser.make_classdef_method_list ($1); }
                 | method_list1 opt_sep method
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_classdef_method ($1, $3);
                   }
@@ -1962,7 +2024,9 @@ method_list1    : method
 
 events_block    : events_beg opt_sep attr_list event_list END
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     if (! ($$ = parser.make_classdef_events_block ($1, $3, $4, $5)))
                       {
@@ -1986,7 +2050,9 @@ event_list      : // empty
                   }
                 | event_list1 opt_sep
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
@@ -1997,7 +2063,9 @@ event_list1     : class_event
                   { $$ = parser.make_classdef_event_list ($1); }
                 | event_list1 opt_sep class_event
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_classdef_event ($1, $3);
                   }
@@ -2009,7 +2077,9 @@ class_event     : identifier
 
 enum_block      : enumeration_beg opt_sep attr_list enum_list END
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     if (! ($$ = parser.make_classdef_enum_block ($1, $3, $4, $5)))
                       {
@@ -2033,7 +2103,9 @@ enum_list       : // empty
                   }
                 | enum_list1 opt_sep
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     lexer.m_classdef_element_names_are_keywords = true;
                     $$ = $1;
@@ -2044,7 +2116,9 @@ enum_list1      : class_enum
                   { $$ = parser.make_classdef_enum_list ($1); }
                 | enum_list1 opt_sep class_enum
                   {
-                    OCTAVE_YYUSE ($2);
+                    // FIXME: Need to capture separator list here.
+                    // For now, delete the unused list.
+                    delete $2;
 
                     $$ = parser.append_classdef_enum ($1, $3);
                   }
@@ -2084,33 +2158,17 @@ parse_error     : LEXICAL_ERROR
                 ;
 
 sep_no_nl       : ','
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = ',';
-                  }
+                  { $$ = new octave::separator_list (*($1)); }
                 | ';'
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = ';';
-                  }
+                  { $$ = new octave::separator_list (*($1)); }
                 | sep_no_nl ','
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = $1;
-                  }
+                  { $$ = $1->append (*($2)); }
                 | sep_no_nl ';'
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = $1;
-                  }
+                  { $$ = $1->append (*($2)); }
                 ;
 
 opt_sep_no_nl   : // empty
-                  { $$ = 0; }
+                  { $$ = nullptr; }
                 | sep_no_nl
                   { $$ = $1; }
                 ;
@@ -2122,59 +2180,27 @@ opt_nl          : // empty
                 ;
 
 nl              : '\n'
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = '\n';
-                  }
+                  { $$ = new octave::separator_list (*($1)); }
                 | nl '\n'
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = $1;
-                  }
+                  { $$ = $1->append (*($2)); }
                 ;
 
 sep             : ','
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = ',';
-                  }
+                  { $$ = new octave::separator_list (*($1)); }
                 | ';'
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = ';';
-                  }
+                  { $$ = new octave::separator_list (*($1)); }
                 | '\n'
-                  {
-                    OCTAVE_YYUSE ($1);
-
-                    $$ = '\n';
-                  }
+                  { $$ = new octave::separator_list (*($1)); }
                 | sep ','
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = $1;
-                  }
+                  { $$ = $1->append (*($2)); }
                 | sep ';'
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = $1;
-                  }
+                  { $$ = $1->append (*($2)); }
                 | sep '\n'
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = $1;
-                  }
+                  { $$ = $1->append (*($2)); }
                 ;
 
 opt_sep         : // empty
-                  { $$ = 0; }
+                  { $$ = nullptr; }
                 | sep
                   { $$ = $1; }
                 ;
@@ -2321,7 +2347,7 @@ template <typename LIST_T, typename ELT_T>
 static LIST_T *
 list_append (LIST_T *list, const token& /*sep_tok*/, ELT_T elt)
 {
-  // FIXME XXX! need to capture SEP_TOK here
+  // FIXME: Need to capture SEP_TOK here
   list->push_back (elt);
   return list;
 }
@@ -3076,7 +3102,7 @@ base_parser::make_unwind_command (token *unwind_tok, tree_statement_list *body, 
 // Build a try-catch command.
 
 tree_command *
-base_parser::make_try_command (token *try_tok, tree_statement_list *body, token *catch_tok, char catch_sep, tree_statement_list *cleanup_stmts, token *end_tok)
+base_parser::make_try_command (token *try_tok, tree_statement_list *body, token *catch_tok, separator_list *catch_sep_list, tree_statement_list *cleanup_stmts, token *end_tok)
 {
   tree_command *retval = nullptr;
 
@@ -3084,10 +3110,30 @@ base_parser::make_try_command (token *try_tok, tree_statement_list *body, token 
     {
       tree_identifier *id = nullptr;
 
-      // Look for exception ID.  Could this be done in the grammar or
-      // does that create another shift-reduce conflict?
+      // Look for exception ID.  Note that adding a separate rule to
+      // match
+      //
+      //   try
+      //     try-body
+      //   catch IDENTIFIER
+      //     catch-body
+      //   end
+      //
+      // in the grammar leads to yet another shift-reduce conflict, so
+      // instead we only match
+      //
+      //   try
+      //     try-body
+      //   catch
+      //     catch-body
+      //   end
+      //
+      // and then recognize the first form above by checking that the
+      // first element of CATCH-BODY is an identifier and that there is
+      // is no separator (comma, semicolon, or newline) between the
+      // CATCH token and the identifier.
 
-      if (! catch_sep && cleanup_stmts && ! cleanup_stmts->empty ())
+      if (! catch_sep_list && cleanup_stmts && ! cleanup_stmts->empty ())
         {
           tree_statement *stmt = cleanup_stmts->front ();
 
@@ -3109,11 +3155,16 @@ base_parser::make_try_command (token *try_tok, tree_statement_list *body, token 
 
       token tmp_catch_tok = catch_tok ? *catch_tok : token ();
 
+      // FIXME: Need to capture separator list here.
+      // For now, delete the unused list.
+      delete catch_sep_list;
+
       retval = new tree_try_catch_command (*try_tok, body, tmp_catch_tok, id, cleanup_stmts, *end_tok);
     }
   else
     {
       delete body;
+      delete catch_sep_list;
       delete cleanup_stmts;
 
       end_token_error (end_tok, token::try_catch_end);
@@ -3311,7 +3362,7 @@ base_parser::finish_if_command (tree_if_command_list *list, tree_if_clause *else
 // Build an if, elseif, or else clause.
 
 tree_if_clause *
-base_parser::make_if_clause (token *tok, tree_expression *expr, tree_statement_list *list)
+base_parser::make_if_clause (token *if_tok, separator_list *if_sep_list, tree_expression *expr, tree_statement_list *list)
 {
   if (expr)
     {
@@ -3320,7 +3371,11 @@ base_parser::make_if_clause (token *tok, tree_expression *expr, tree_statement_l
       maybe_convert_to_braindead_shortcircuit (expr);
     }
 
-  return new tree_if_clause (*tok, expr, list);
+  // FIXME: Need to capture separator list here.
+  // For now, delete the unused list.
+  delete if_sep_list;
+
+  return new tree_if_clause (*if_tok, expr, list);
 }
 
 tree_if_command_list *
@@ -4581,7 +4636,7 @@ base_parser::append_decl_init_list (tree_decl_init_list *list, tree_decl_elt *el
 tree_decl_elt *
 base_parser::make_decl_elt (tree_identifier *id, token */*eq_op*/, tree_expression *expr)
 {
-  // FIXME XXX! need to capture EQ_OP here.
+  // FIXME: Need to capture EQ_OP here.
   return expr ? new tree_decl_elt (id, expr) : new tree_decl_elt (id);
 }
 
@@ -4880,17 +4935,17 @@ base_parser::make_metaclass_query (token *metaquery)
 }
 
 tree_statement_list *
-base_parser::set_stmt_print_flag (tree_statement_list *list, char sep, bool warn_missing_semi)
+base_parser::set_stmt_print_flag (tree_statement_list *list, int sep_char, bool warn_missing_semi)
 {
   tree_statement *tmp = list->back ();
 
-  switch (sep)
+  switch (sep_char)
     {
     case ';':
       tmp->set_print_flag (false);
       break;
 
-    case 0:
+    case '\0':
     case ',':
     case '\n':
       tmp->set_print_flag (true);
@@ -4915,6 +4970,20 @@ base_parser::set_stmt_print_flag (tree_statement_list *list, char sep, bool warn
   return list;
 }
 
+tree_statement_list *
+base_parser::set_stmt_print_flag (tree_statement_list *list, const token& sep_tok, bool warn_missing_semi)
+{
+  return set_stmt_print_flag (list, sep_tok.token_id (), warn_missing_semi);
+}
+
+tree_statement_list *
+base_parser::set_stmt_print_flag (tree_statement_list *list, separator_list *sep_list, bool warn_missing_semi)
+{
+  return (sep_list
+          ? set_stmt_print_flag (list, sep_list->front (), warn_missing_semi)
+          : set_stmt_print_flag (list, '\0', warn_missing_semi));
+}
+
 // Finish building a statement.
 template <typename T>
 tree_statement *
@@ -4930,9 +4999,34 @@ base_parser::make_statement_list (tree_statement *stmt)
 }
 
 tree_statement_list *
-base_parser::append_statement_list (tree_statement_list *list, char sep, tree_statement *stmt, bool warn_missing_semi)
+base_parser::append_statement_list (tree_statement_list *list, int sep_char, tree_statement *stmt, bool warn_missing_semi)
 {
-  set_stmt_print_flag (list, sep, warn_missing_semi);
+  set_stmt_print_flag (list, sep_char, warn_missing_semi);
+
+  // FIXME: need to capture SEP_CHAR here.
+  return list_append (list, stmt);
+}
+
+tree_statement_list *
+base_parser::append_statement_list (tree_statement_list *list, token *sep_tok, tree_statement *stmt, bool warn_missing_semi)
+{
+  if (sep_tok)
+    set_stmt_print_flag (list, *sep_tok, warn_missing_semi);
+  else
+    set_stmt_print_flag (list, '\0', warn_missing_semi);
+
+  // FIXME: need to capture SEP_TOK here.
+  return list_append (list, stmt);
+}
+
+tree_statement_list *
+base_parser::append_statement_list (tree_statement_list *list, separator_list *sep_list, tree_statement *stmt, bool warn_missing_semi)
+{
+  set_stmt_print_flag (list, sep_list, warn_missing_semi);
+
+  // FIXME: need to capture separator list here.
+  // For now, delete the unused list.
+  delete sep_list;
 
   return list_append (list, stmt);
 }
@@ -4946,9 +5040,13 @@ base_parser::make_function_def_list (tree_function_def *fcn_def)
 }
 
 tree_statement_list *
-base_parser::append_function_def_list (tree_statement_list *list, char, tree_function_def *fcn_def)
+base_parser::append_function_def_list (tree_statement_list *list, separator_list *sep_list, tree_function_def *fcn_def)
 {
   tree_statement *stmt = make_statement (fcn_def);
+
+  // FIXME: Need to capture separator list here.
+  // For now, delete the unused list.
+  delete sep_list;
 
   return list_append (list, stmt);
 }

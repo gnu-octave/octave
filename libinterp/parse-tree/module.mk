@@ -42,6 +42,7 @@ PARSE_TREE_INC = \
   %reldir%/pt-unop.h \
   %reldir%/pt-walk.h \
   %reldir%/pt.h \
+  %reldir%/separator-list.h \
   %reldir%/token.h
 
 

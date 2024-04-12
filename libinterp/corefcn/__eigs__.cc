@@ -393,7 +393,7 @@ Undocumented internal function.
           if (tmp.numel () != 1)
             error ("eigs: OPTS.cholB must be a scalar value");
 
-          cholB = tmp.xbool_value ("eigs: OPTS.cholB must be a logical value");
+          cholB = tmp.ybool_value ("eigs: OPTS.cholB must be a logical value");
         }
 
       tmp = map.getfield ("permB");

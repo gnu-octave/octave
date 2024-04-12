@@ -768,7 +768,8 @@ set_internal_variable (int& var, const octave_value_list& args,
 
   int nargin = args.length ();
 
-  panic_unless (var < nchoices);
+  if (var >= nchoices)
+    error ("set_internal_variable: VAR too large for CHOICES");
 
   if (nargout > 0 || nargin == 0)
     retval = choices[var];

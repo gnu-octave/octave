@@ -55,8 +55,8 @@ template <typename R, typename T>
 static MArray<T>
 kron (const MArray<R>& a, const MArray<T>& b)
 {
-  panic_unless (a.ndims () == 2);
-  panic_unless (b.ndims () == 2);
+  if (a.ndims () != 2 || b.ndims () != 2)
+    error ("kron: A and B must both be two-dimensional");
 
   octave_idx_type nra = a.rows ();
   octave_idx_type nrb = b.rows ();
@@ -86,7 +86,8 @@ template <typename R, typename T>
 static MArray<T>
 kron (const MDiagArray2<R>& a, const MArray<T>& b)
 {
-  panic_unless (b.ndims () == 2);
+  if (b.ndims () != 2)
+    error ("kron: B must be two-dimensional");
 
   octave_idx_type nra = a.rows ();
   octave_idx_type nrb = b.rows ();

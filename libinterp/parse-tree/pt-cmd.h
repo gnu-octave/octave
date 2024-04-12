@@ -52,7 +52,10 @@ public:
 
   virtual ~tree_command () = default;
 
-  virtual void update_end_pos (const filepos&) { panic_impossible (); }
+  virtual void update_end_pos (const filepos&)
+  {
+    error ("unexpected call to tree_command::update_end_pos - please report this bug");
+  }
 };
 
 // No-op.
@@ -77,7 +80,7 @@ public:
     if (is_end_of_fcn_or_script () || is_end_of_file ())
       m_tok.end_pos (pos);
     else
-      panic_impossible ();
+      error ("unexpected call to tree_no_op_command::update_end_pos - please report this bug");
   }
 
   comment_list leading_comments () const { return m_tok.leading_comments (); }

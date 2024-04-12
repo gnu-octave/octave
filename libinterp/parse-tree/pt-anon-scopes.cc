@@ -90,7 +90,7 @@ tree_anon_scopes::visit_parameter_list (tree_parameter_list&)
   // In visit_anon_fcn_handle we only accept/visit the body of
   // anonymous function definitions, not the parameter list.
 
-  panic_impossible ();
+  error ("unexpected call to tree_anon_scopes::visit_parameter_list - please report this bug");
 }
 
 void
@@ -99,7 +99,7 @@ tree_anon_scopes::visit_statement (tree_statement& stmt)
   tree_command *cmd = stmt.command ();
 
   if (cmd)
-    panic_impossible ();
+    error ("unexpected call to tree_anon_scopes::visit_statement - please report this bug");
   else
     {
       tree_expression *expr = stmt.expression ();

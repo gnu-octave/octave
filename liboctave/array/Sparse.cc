@@ -2754,7 +2754,7 @@ Sparse<T, Alloc>::cat (int dim, octave_idx_type n,
         break;
       }
     default:
-      liboctave_panic_impossible ();
+      (*current_liboctave_error_handler) ("Sparse<T, Alloc>::cat: invalid dimension = %d - please report this bug", dim);
     }
 
   return retval;

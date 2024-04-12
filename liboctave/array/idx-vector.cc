@@ -1042,6 +1042,10 @@ idx_vector::copy_data (octave_idx_type *m_data) const
 
   switch (m_rep->idx_class ())
     {
+    case class_invalid:
+      (*current_liboctave_error_handler) ("unexpected: invalid index");
+      break;
+
     case class_colon:
       (*current_liboctave_error_handler) ("colon not allowed");
       break;
@@ -1087,9 +1091,9 @@ idx_vector::copy_data (octave_idx_type *m_data) const
       }
       break;
 
-    default:
-      liboctave_panic_impossible ();
-      break;
+      // We should have handled all possible enum values above.  Rely on
+      // compiler diagnostics to warn if we haven't.  For example, GCC's
+      // -Wswitch option, enabled by -Wall, will provide a warning.
     }
 }
 
@@ -1220,6 +1224,10 @@ idx_vector::unconvert (idx_class_type& iclass,
   iclass = idx_class ();
   switch (iclass)
     {
+    case class_invalid:
+      (*current_liboctave_error_handler) ("unexpected: invalid index");
+      break;
+
     case class_colon:
       break;
 
@@ -1251,9 +1259,9 @@ idx_vector::unconvert (idx_class_type& iclass,
       }
       break;
 
-    default:
-      liboctave_panic_impossible ();
-      break;
+      // We should have handled all possible enum values above.  Rely on
+      // compiler diagnostics to warn if we haven't.  For example, GCC's
+      // -Wswitch option, enabled by -Wall, will provide a warning.
     }
 }
 

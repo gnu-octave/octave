@@ -1775,7 +1775,7 @@ void
 octave_print_internal (std::ostream&, const float_display_format&,
                        char, bool)
 {
-  panic_impossible ();
+  error ("unexpected call to 'octave_print_internal (std::ostream&, const float_display_format&, char, bool)' - please report this bug");
 }
 
 void
@@ -3186,13 +3186,13 @@ PRINT_INT_ARRAY_INTERNAL (octave_uint64)
 void
 octave_print_internal (std::ostream&, const Cell&, bool, int, bool)
 {
-  panic_impossible ();
+  error ("unexpected call to 'octave_print_internal (std::ostream&, const Cell&, bool, int, bool)' - please report this bug");
 }
 
 void
 octave_print_internal (std::ostream&, const octave_value&, bool)
 {
-  panic_impossible ();
+  error ("unexpected call to 'octave_print_internal (std::ostream&, const octave_value&, bool)' - please report this bug");
 }
 
 OCTAVE_BEGIN_NAMESPACE(octave)

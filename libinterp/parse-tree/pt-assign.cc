@@ -170,7 +170,8 @@ tree_multi_assignment::oper () const
 tree_expression *
 tree_multi_assignment::dup (symbol_scope&) const
 {
-  panic_impossible ();
+  error ("unexpected call to tree_multi_assignment::dup - please report this bug");
+
   return nullptr;
 }
 

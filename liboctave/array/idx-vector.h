@@ -587,6 +587,10 @@ public:
 
     switch (m_rep->idx_class ())
       {
+      case class_invalid:
+        (*current_liboctave_error_handler) ("unexpected: invalid index");
+        break;
+
       case class_colon:
         std::copy_n (src, len, dest);
         break;
@@ -637,9 +641,10 @@ public:
         }
         break;
 
-      default:
-        liboctave_panic_impossible ();
-        break;
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return len;
@@ -661,6 +666,10 @@ public:
 
     switch (m_rep->idx_class ())
       {
+      case class_invalid:
+        (*current_liboctave_error_handler) ("unexpected: invalid index");
+        break;
+
       case class_colon:
         std::copy_n (src, len, dest);
         break;
@@ -709,9 +718,10 @@ public:
         }
         break;
 
-      default:
-        liboctave_panic_impossible ();
-        break;
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return len;
@@ -733,6 +743,10 @@ public:
 
     switch (m_rep->idx_class ())
       {
+      case class_invalid:
+        (*current_liboctave_error_handler) ("unexpected: invalid index");
+        break;
+
       case class_colon:
         std::fill_n (dest, len, val);
         break;
@@ -781,9 +795,10 @@ public:
         }
         break;
 
-      default:
-        liboctave_panic_impossible ();
-        break;
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return len;
@@ -803,6 +818,10 @@ public:
 
     switch (m_rep->idx_class ())
       {
+      case class_invalid:
+        (*current_liboctave_error_handler) ("unexpected: invalid index");
+        break;
+
       case class_colon:
         for (octave_idx_type i = 0; i < len; i++) body (i);
         break;
@@ -847,9 +866,10 @@ public:
         }
         break;
 
-      default:
-        liboctave_panic_impossible ();
-        break;
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
   }
@@ -871,6 +891,10 @@ public:
 
     switch (m_rep->idx_class ())
       {
+      case class_invalid:
+        (*current_liboctave_error_handler) ("unexpected: invalid index");
+        break;
+
       case class_colon:
         {
           octave_idx_type i;
@@ -933,9 +957,10 @@ public:
         }
         break;
 
-      default:
-        liboctave_panic_impossible ();
-        break;
+        // We should have handled all possible enum values above.  Rely
+        // on compiler diagnostics to warn if we haven't.  For example,
+        // GCC's -Wswitch option, enabled by -Wall, will provide a
+        // warning.
       }
 
     return ret;

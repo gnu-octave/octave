@@ -1833,7 +1833,12 @@ extern OCTINTERP_API void install_types (octave::type_info&);
 
 template <typename Value>
 inline Value octave_value_extract (const octave_value&)
-{ panic_impossible (); }
+{
+  // We can't include error.h in ov.h.  Is there anything better than
+  // panic_impossible that we can do here?
+
+  panic_impossible ();
+}
 
 #define DEF_VALUE_EXTRACTOR(VALUE,MPREFIX)                              \
   template <>                                                           \
@@ -1899,6 +1904,9 @@ DEF_VALUE_EXTRACTOR (SparseMatrix, sparse_matrix)
 DEF_VALUE_EXTRACTOR (SparseComplexMatrix, sparse_complex_matrix)
 DEF_VALUE_EXTRACTOR (SparseBoolMatrix, sparse_bool_matrix)
 #undef DEF_VALUE_EXTRACTOR
+
+// We can't include error.h in ov.h.  Is there anything better than
+// panic_impossible that we can do here?
 
 #define DEF_DUMMY_VALUE_EXTRACTOR(VALUE,DEFVAL)                         \
   template <>                                                           \

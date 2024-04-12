@@ -8274,7 +8274,7 @@ do_diff (const octave_value& array, octave_idx_type order,
       else if (array.is_uint64_type ())
         retval = array.uint64_array_value ().diff (order, dim);
       else
-        panic_impossible ();
+        error ("diff: unexpected integer type - please report this bug");
     }
   else if (array.issparse ())
     {
@@ -8544,7 +8544,7 @@ Encode a double matrix or array @var{x} into the base64 format string
 #undef MAKE_INT_BRANCH
 
                     else
-                      panic_impossible ();
+                      error ("base_64_decode: unexpected integer type - please report this bug");
     }
   else if (args(0).is_single_type ())
     {

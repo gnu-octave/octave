@@ -231,7 +231,8 @@ cmdline_options::cmdline_options (int argc, char **argv)
           // return '?', which is handled above.  If we end up here, it is
           // because there was an option but we forgot to handle it.
           // That should be fatal.
-          panic_impossible ();
+
+          error ("unexpected option (= %d) - please reportt this bug", optc);
           break;
         }
     }

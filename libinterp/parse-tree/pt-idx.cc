@@ -182,7 +182,7 @@ tree_index_expression::get_struct_index
           fn = t.xstring_value ("dynamic structure field names must be strings");
         }
       else
-        panic_impossible ();
+        error ("unexpected: DF is nullptr in call to tree_index_expression::get_struct_index - please report this bug");
     }
 
   return fn;
@@ -245,7 +245,7 @@ tree_index_expression::lvalue (tree_evaluator& tw)
           break;
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in tree_index_expression::lvalue - please report this bug");
         }
 
       if (idx.back ().empty ())
@@ -609,7 +609,7 @@ tree_index_expression::evaluate_n (tree_evaluator& tw, int nargout)
             break;
 
           default:
-            panic_impossible ();
+            error ("unexpected: index not '(', '{', or '.' in tree_index_expression::evaluate_n - please report this bug");
           }
 
         p_args++;

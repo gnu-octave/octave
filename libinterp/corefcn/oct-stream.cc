@@ -4421,7 +4421,7 @@ octave_scan<>
       break;
 
     default:
-      panic_impossible ();
+      error ("expecting format type to be one of 'e', 'f', 'g', 'E', or 'G' but found '%c' - please report this bug", fmt.type);
       break;
     }
 
@@ -4682,7 +4682,7 @@ do_scanf_conv (std::istream&, const scanf_format_elt&, double *,
                           else if (nr > 0)                              \
                             mval.resize (nr, max_size / nr, 0.0);       \
                           else                                          \
-                            panic_impossible ();                        \
+                            error ("unexpected size in character conversion - please report this bug"); \
                         }                                               \
                       else if (nr > 0)                                  \
                         mval.resize (nr, max_size / nr, 0.0);           \
@@ -4766,7 +4766,7 @@ base_stream::do_scanf (scanf_format_list& fmt_list,
             }
         }
       else
-        panic_impossible ();
+        error ("unexpected size in character conversion - please report this bug");
     }
   else if (nr > 0)
     {
@@ -4846,7 +4846,7 @@ base_stream::do_scanf (scanf_format_list& fmt_list,
                       else if (nr > 0)
                         mval.resize (nr, max_size / nr, 0.0);
                       else
-                        panic_impossible ();
+                        error ("unexpected size in character conversion - please report this bug");
                     }
                   else if (nr > 0)
                     mval.resize (nr, max_size / nr, 0.0);

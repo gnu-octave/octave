@@ -442,7 +442,7 @@ tree_walker::visit_index_expression (tree_index_expression& expr)
           break;
 
         default:
-          panic_impossible ();
+          error ("unexpected: index not '(', '{', or '.' in tree_walker::visit_index_expression - please report this bug");
         }
 
       p_arg_lists++;

@@ -3676,7 +3676,7 @@ tree_evaluator::execute_user_function (octave_user_function& user_function,
           args = args.slice (1, nargin, true);
         }
       else
-        panic_impossible ();
+        error ("invalid call to classdef constructor in tree_evaluator::execute_user_function - please report this bug");
     }
 
   tree_parameter_list *param_list = user_function.parameter_list ();
@@ -4454,7 +4454,7 @@ tree_evaluator::visit_while_command (tree_while_command& cmd)
   tree_expression *expr = cmd.condition ();
 
   if (! expr)
-    panic_impossible ();
+    error ("unexpected: while condition is nullptr - please report this bug");
 
   for (;;)
     {
@@ -4497,7 +4497,7 @@ tree_evaluator::visit_do_until_command (tree_do_until_command& cmd)
   tree_expression *expr = cmd.condition ();
 
   if (! expr)
-    panic_impossible ();
+    error ("unexpected: do-until condition is nullptr - please report this bug");
 
   for (;;)
     {

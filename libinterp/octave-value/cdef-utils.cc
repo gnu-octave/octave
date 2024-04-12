@@ -349,13 +349,13 @@ check_access (const cdef_class& cls, const octave_value& acc,
                       return false;
                     }
                   else
-                    panic_impossible ();
+                    error ("check_access: expecting private or protected access specifier - please report this bug");
                 }
 
               return false;
             }
           else
-            panic_impossible ();
+            error ("check_access: expecting a method or property name - please report this bug");
         }
     }
   else if (acc.isobject ())

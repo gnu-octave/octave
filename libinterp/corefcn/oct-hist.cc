@@ -393,7 +393,7 @@ history_system::do_history (const octave_value_list& args,
             }
 
           else
-            panic_impossible ();
+            error ("history: invalid option '%s' - please report this bug", option.c_str ());
 
           return hlist;
         }

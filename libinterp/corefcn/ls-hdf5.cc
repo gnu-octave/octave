@@ -84,6 +84,14 @@ check_hdf5_id_value (octave_hdf5_id id, const char *who)
   return static_cast<hid_t> (id);
 }
 
+#else
+
+OCTAVE_NORETURN static void
+error_unexpected (const char *name)
+{
+  error ("unexpected call to %s when HAVE_HDF5 is not defined - please report this bug", name);
+}
+
 #endif
 
 hdf5_fstreambase::hdf5_fstreambase (const char *name, int mode, int /* prot */)
@@ -112,10 +120,9 @@ hdf5_fstreambase::close ()
     }
 
 #else
-  // This shouldn't happen because construction of hdf5_fstreambase
-  // objects is supposed to be impossible if HDF5 is not available.
 
-  panic_impossible ();
+  error_unexpected ("hdf5_fstreambase::close");
+
 #endif
 }
 
@@ -131,10 +138,9 @@ hdf5_fstreambase::open (const char *name, int mode, int)
   current_item = 0;
 
 #else
-  // This shouldn't happen because construction of hdf5_fstreambase
-  // objects is supposed to be impossible if HDF5 is not available.
 
-  panic_impossible ();
+  error_unexpected ("hdf5_fstreambase::open");
+
 #endif
 }
 
@@ -231,10 +237,9 @@ hdf5_fstreambase::open_create (const char *name, int mode)
   return;
 
 #else
-  // This shouldn't happen because construction of hdf5_fstreambase
-  // objects is supposed to be impossible if HDF5 is not available.
 
-  panic_impossible ();
+  error_unexpected ("hdf5_fstreambase::open_create");
+
 #endif
 }
 

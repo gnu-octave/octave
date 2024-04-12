@@ -169,9 +169,9 @@ IndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
       inf = 2;
       break;
 
-    default:
-      liboctave_panic_impossible ();
-      break;
+      // We should have handled all possible enum values above.  Rely on
+      // compiler diagnostics to warn if we haven't.  For example, GCC's
+      // -Wswitch option, enabled by -Wall, will provide a warning.
     }
 
   double abs_tol = absolute_tolerance ();
@@ -286,9 +286,9 @@ FloatIndefQuad::do_integrate (octave_idx_type& ier, octave_idx_type& neval,
       inf = 2;
       break;
 
-    default:
-      liboctave_panic_impossible ();
-      break;
+      // We should have handled all possible enum values above.  Rely on
+      // compiler diagnostics to warn if we haven't.  For example, GCC's
+      // -Wswitch option, enabled by -Wall, will provide a warning.
     }
 
   float abs_tol = single_precision_absolute_tolerance ();

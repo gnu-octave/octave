@@ -484,7 +484,7 @@ b = sparse (i, j, v, sz(1), sz(2));
       DO_INT_BRANCH (uint32)
       DO_INT_BRANCH (uint64)
       else
-        panic_impossible ();
+        error ("find: unexpected integer type - please report this bug");
     }
   else if (arg.issparse ())
     {

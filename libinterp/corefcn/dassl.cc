@@ -67,7 +67,8 @@ dassl_user_function (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  panic_unless (x.numel () == xdot.numel ());
+  if (x.numel () != xdot.numel ())
+    error ("dassl_user_function: X and XDOT must have the same number of elements");
 
   octave_value_list args;
 
@@ -118,7 +119,8 @@ dassl_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  panic_unless (x.numel () == xdot.numel ());
+  if (x.numel () != xdot.numel ())
+    error ("dassl_user_jacobian: X and XDOT must have the same number of elements");
 
   octave_value_list args;
 

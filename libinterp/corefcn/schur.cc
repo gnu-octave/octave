@@ -46,7 +46,9 @@ mark_upper_triangular (const Matrix& a)
   octave_value retval = a;
 
   octave_idx_type n = a.rows ();
-  panic_unless (a.columns () == n);
+
+  if (a.columns () != n)
+    error ("mark_upper_triangular: A must be a square matrix");
 
   const typename Matrix::element_type zero = typename Matrix::element_type ();
 

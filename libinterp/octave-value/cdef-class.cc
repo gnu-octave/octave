@@ -811,7 +811,7 @@ cdef_class::cdef_class_rep::construct_object (const octave_value_list& args)
           obj = empty_package;
         }
       else
-        panic_impossible ();
+        error ("expecting meta class, property, method, or package in cdef_class::cdef_class_rep::construct_object - please report this bug");
 
       return obj;
     }

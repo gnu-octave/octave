@@ -124,6 +124,16 @@ right drag - rectangle zoom\n\
 left double click - autoscale\n\
 ";
 
+#if ! defined (HAVE_OPENGL)
+
+OCTAVE_NORETURN static void
+error_unexpected (const char *name)
+{
+  error ("unexpected call to %s when HAVE_OPENGL is not defined - please report this bug", name);
+}
+
+#endif
+
 class OpenGL_fltk : public Fl_Gl_Window
 {
 public:
@@ -187,10 +197,7 @@ public:
     octave_unused_parameter (ww);
     octave_unused_parameter (hh);
 
-    // This shouldn't happen because construction of Opengl_fltk
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
+    error_unexpected ("OpenGL_fltk::resize");
 
 #endif
   }
@@ -243,7 +250,7 @@ private:
     // This shouldn't happen because construction of Opengl_fltk
     // objects is supposed to be impossible if OpenGL is not available.
 
-    panic_impossible ();
+    error_unexpected ("OpenGL_fltk::draw");
 
 #endif
   }
@@ -287,10 +294,7 @@ private:
 
     octave_unused_parameter (event);
 
-    // This shouldn't happen because construction of Opengl_fltk
-    // objects is supposed to be impossible if OpenGL is not available.
-
-    panic_impossible ();
+    error_unexpected ("OpenGL_fltk::handle");
 
 #endif
   }

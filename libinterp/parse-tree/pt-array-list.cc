@@ -77,14 +77,15 @@ tree_array_list::copy_base (const tree_array_list& array_list,
 tree_expression *
 tree_array_list::dup (symbol_scope&) const
 {
-  panic_impossible ();
+  error ("unexpected call to tree_array_list::dup - please report this bug");
+
   return nullptr;
 }
 
 void
 tree_array_list::accept (tree_walker&)
 {
-  panic_impossible ();
+  error ("unexpected call to tree_array_list::accept - please report this bug");
 }
 
 OCTAVE_END_NAMESPACE(octave)

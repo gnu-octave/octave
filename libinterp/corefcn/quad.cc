@@ -286,7 +286,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           break;
 
         default:
-          panic_impossible ();
+          error ("quad: unexpected nargin = %d - please report this bug", nargin);
           break;
         }
 
@@ -381,7 +381,7 @@ variable by routines @code{dblquad} and @code{triplequad}.
           break;
 
         default:
-          panic_impossible ();
+          error ("quad: unexpected nargin = %d - please report this bug", nargin);
           break;
         }
 

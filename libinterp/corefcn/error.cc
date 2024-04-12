@@ -753,7 +753,7 @@ error_system::display_warning_options (std::ostream& os)
   else if (all_state == "error")
     os << "By default, warnings are treated as errors.";
   else
-    panic_impossible ();
+    error ("unexpected default warning state '%s' - please report this bug", all_state.c_str ());
 
   if (nel > 1)
     {

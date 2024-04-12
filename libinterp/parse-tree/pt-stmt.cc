@@ -132,7 +132,7 @@ tree_statement::update_end_pos (const filepos& pos)
   if (m_command)
     m_command->update_end_pos (pos);
   else
-    panic_impossible ();
+    error ("unexpected call to tree_statement::update_end_pos - please report this bug");
 }
 
 std::string

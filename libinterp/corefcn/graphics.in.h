@@ -2252,7 +2252,7 @@ public:
 
   virtual void init_integerhandle (const octave_value&)
   {
-    panic_impossible ();
+    error ("unexpected call to base_properties::init_integerhandle - please report this bug");
   }
 
   // Look through DEFAULTS for properties with given CLASS_NAME, and
@@ -2291,7 +2291,8 @@ public:
 
   virtual bool has_property (const caseless_str&) const
   {
-    panic_impossible ();
+    error ("unexpected call to base_properties::has_property - please report this bug");
+
     return false;
   }
 

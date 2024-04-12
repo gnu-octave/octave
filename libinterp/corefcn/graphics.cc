@@ -4110,6 +4110,22 @@ figure::properties::set_visible (const octave_value& val)
 Matrix
 figure::properties::get_boundingbox (bool internal, const Matrix&) const
 {
+#if defined (__APPLE__) && defined (__MACH__)
+  // On macOS with Retina display, it looks like we'd need to divide the
+  // "__device_pixel_ratio__" (reported by Qt) by the "backingScaleFactor":
+  // https://developer.apple.com/documentation/appkit/nswindow/1419459-backingscalefactor
+  // It might also be that we'd need to multiply the screensize (in pixels) by
+  // the "backingScaleFactor" instead.
+  // Afaict, that factor is only available via an Objective-C-API.
+  // FIXME: Check how to get that from C++.
+  // As a workaround, assume that we are either on a display prior to Retina
+  // scaling where "__device_pixel_ratio__" and "backingScaleFactor" are both
+  // 1, or we are on a Retina display where both are probably 2. The latter
+  // might not always be the case.
+  double dpr = 1.0;
+#else
+  double dpr = get___device_pixel_ratio__ ();
+#endif
   Matrix screen_size = screen_size_pixels ();
   Matrix pos = (internal ?
                 get_position ().matrix_value () :
@@ -4119,7 +4135,7 @@ figure::properties::get_boundingbox (bool internal, const Matrix&) const
 
   pos(0)--;
   pos(1)--;
-  pos(1) = screen_size(1) - pos(1) - pos(3);
+  pos(1) = screen_size(1) / dpr - pos(1) - pos(3);
 
   return pos;
 }
@@ -4127,10 +4143,16 @@ figure::properties::get_boundingbox (bool internal, const Matrix&) const
 Matrix
 figure::properties::bbox2position (const Matrix& bb) const
 {
+#if defined (__APPLE__) && defined (__MACH__)
+  // FIXME: See comment in figure::properties::get_boundingbox.
+  double dpr = 1.0;
+#else
+  double dpr = get___device_pixel_ratio__ ();
+#endif
   Matrix screen_size = screen_size_pixels ();
   Matrix pos = bb;
 
-  pos(1) = screen_size(1) - pos(1) - pos(3);
+  pos(1) = screen_size(1) - (pos(1) + pos(3)) * dpr;
   pos(1)++;
   pos(0)++;
   pos = convert_position (pos, "pixels", get_units (), screen_size);
@@ -4141,7 +4163,6 @@ void
 figure::properties::set_boundingbox (const Matrix& bb, bool internal,
                                      bool do_notify_toolkit)
 {
-  Matrix screen_size = screen_size_pixels ();
   Matrix pos = bbox2position (bb);
 
   if (internal)

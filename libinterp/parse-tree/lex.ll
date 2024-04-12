@@ -1005,7 +1005,8 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->update_token_positions (yyleng);
 
     unsigned int result;
-    sscanf (yytext+1, "%o", &result);
+    if (sscanf (yytext+1, "%o", &result) != 1)
+      curr_lexer->fatal_error ("scanf failed in lexer rule <DQ_STRING_START>\\\\[0-7]{1,3} - please report this bug");
 
     if (result > 0xff)
       {
@@ -1023,7 +1024,8 @@ ANY_INCLUDING_NL (.|{NL})
     curr_lexer->m_filepos.increment_column (yyleng);
 
     unsigned int result;
-    sscanf (yytext+2, "%x", &result);
+    if (sscanf (yytext+2, "%x", &result) != 1)
+      curr_lexer->fatal_error ("scanf failed in lexer rule <DQ_STRING_START>\\\\x[0-9a-fA-F]+ - please report this bug");
 
     // Truncate the value silently instead of checking the range like
     // we do for octal above.  This is to match C/C++ where any number
@@ -3112,10 +3114,8 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
     *p = '\0';
 
     double value = 0.0;
-    int nread = sscanf (tmptxt, "%lf", &value);
-
-    if (nread != 1)
-      error ("unexpected: nread != 1 in base_lexer::handle_number<10> - please report this bug");
+    if (sscanf (tmptxt, "%lf", &value) != 1)
+      fatal_error ("scanf failed in base_lexer::handle_number<10> - please report this bug");
 
     octave_value ov_value;
 
@@ -3220,16 +3220,11 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
         return syntax_error (msg);
       }
 
-    // If yytext doesn't contain a valid number, we are in deep doo doo.
-
     uintmax_t long_int_val;
-    int status = sscanf (yytxt.c_str (), "%jx", &long_int_val);
+    if (sscanf (yytxt.c_str (), "%jx", &long_int_val) != 1)
+      fatal_error ("sscanf failed in base_lexer::handle_number<16> - please report this bug");
 
-    if (status == 0)
-      error ("unexpected: sscanf failed in base_lexer::handle_number<16> - please report this bug");
-
-    octave_value ov_value
-      = make_integer_value (long_int_val, unsigned_val, bytes);
+    octave_value ov_value = make_integer_value (long_int_val, unsigned_val, bytes);
 
     m_looking_for_object_index = false;
     m_at_beginning_of_statement = false;

@@ -1876,7 +1876,9 @@ fill_exif_ints (octave_scalar_map& map, Magick::Image& img,
       octave_idx_type n = 0;
       while (std::getline (sstream, sub, char (',')))
         {
-          sscanf (sub.c_str (), "%f", &number);
+          if (sscanf (sub.c_str (), "%f", &number) != 1)
+            error ("fill_exif_ints: failed to read EXIF value as float");
+
           values(n++) = number;
         }
       map.setfield (key, octave_value (values));
@@ -1900,7 +1902,9 @@ fill_exif_floats (octave_scalar_map& map, Magick::Image& img,
       octave_idx_type n = 0;
       while (std::getline (sstream, sub, ','))
         {
-          sscanf (sub.c_str (), "%i/%i", &numerator, &denominator);
+          if (sscanf (sub.c_str (), "%i/%i", &numerator, &denominator) != 2)
+            error ("fill_exif_floats: failed to read EXIF numerator/demoninator pair");
+
           values(n++) = double (numerator) / double (denominator);
         }
       map.setfield (key, octave_value (values));

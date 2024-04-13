@@ -69,8 +69,7 @@ dasrt_user_f (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  if (x.numel () != xdot.numel ())
-    error ("dasrt_user_f: X and XDOT must have the same number of elements");
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -160,8 +159,7 @@ dasrt_user_j (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  if (x.numel () != xdot.numel ())
-    error ("dasrt_user_j: X and XDOT must have the same number of elements");
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 

@@ -300,8 +300,7 @@ static inline T
 pr_max_internal (const MArray<T>& m)
 {
   // We expect a 2-d array.
-  if (m.ndims () != 2)
-    error ("pr_max_internal: M must be two-dimensional");
+  panic_unless (m.ndims () == 2);
 
   octave_idx_type nr = m.rows ();
   octave_idx_type nc = m.columns ();
@@ -682,8 +681,7 @@ static inline float_display_format
 make_matrix_format (const MT& m)
 {
   // We expect a 2-d array.
-  if (m.ndims () != 2)
-    error ("make_matrix_format: M must be two-dimensional");
+  panic_unless (m.ndims () == 2);
 
   if (free_format)
     return float_display_format ();
@@ -1572,8 +1570,7 @@ static inline void
 print_empty_matrix (std::ostream& os, octave_idx_type nr, octave_idx_type nc,
                     bool pr_as_read_syntax)
 {
-  if (nr && nc)
-    error ("print_empty_matrix: at least one of NR and NC must be zero");
+  panic_unless (nr == 0 || nc == 0);
 
   if (pr_as_read_syntax)
     {
@@ -1595,8 +1592,7 @@ static inline void
 print_empty_nd_array (std::ostream& os, const dim_vector& dims,
                       bool pr_as_read_syntax)
 {
-  if (! dims.any_zero ())
-    error ("print_empty_nd_array: at least one of DIMS must be zero");
+  panic_unless (dims.any_zero ());
 
   if (pr_as_read_syntax)
     os << "zeros (" << dims.str (',') << ')';

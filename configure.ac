@@ -370,6 +370,8 @@ fi
 
 if test $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR = yes; then
   OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR
+else
+  HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR="no"
 fi
 
 ### Determine which C compiler to use (we expect to find gcc or clang).
@@ -3408,7 +3410,7 @@ Octave is now configured for $canonical_host_type
   Use library visibility flags:         $ENABLE_LIB_VISIBILITY_FLAGS
   64-bit array dims and indexing:       $ENABLE_64
   64-bit BLAS array dims and indexing:  $HAVE_64_BIT_BLAS
-  Use std::pmr::polymorphic_allocator:  $ENABLE_STD_PMR_POLYMORPHIC_ALLOCATOR
+  Use std::pmr::polymorphic_allocator:  $HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR
   OpenMP SMP multithreading:            $ENABLE_OPENMP
   Truncate intermediate FP results:     $ENABLE_FLOAT_TRUNCATE
   Include support for GNU readline:     $USE_READLINE

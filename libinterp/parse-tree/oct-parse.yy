@@ -338,7 +338,6 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // here).
 
 %destructor { } <tok>
-%destructor { } <punct_type>
 %destructor { } <>
 
 %destructor { delete $$; } <tree_type>

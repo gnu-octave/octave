@@ -49,6 +49,7 @@ class octave_user_function;
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class parse_exception;
+class separator_list;
 class tree;
 class tree_anon_fcn_handle;
 class tree_arg_size_spec;
@@ -288,7 +289,7 @@ public:
 
   // Build a try-catch command.
   OCTINTERP_API tree_command *
-  make_try_command (token *try_tok, tree_statement_list *body, token *catch_tok, char catch_sep, tree_statement_list *cleanup, token *end_tok);
+  make_try_command (token *try_tok, tree_statement_list *body, token *catch_tok, separator_list *catch_sep_list, tree_statement_list *cleanup, token *end_tok);
 
   // Build a while command.
   OCTINTERP_API tree_command *
@@ -326,7 +327,7 @@ public:
 
   // Build an elseif clause.
   OCTINTERP_API tree_if_clause *
-  make_if_clause (token *if_tok, tree_expression *expr, tree_statement_list *list);
+  make_if_clause (token *if_tok, separator_list *if_sep_list, tree_expression *expr, tree_statement_list *list);
 
   OCTINTERP_API tree_if_command_list *
   append_if_clause (tree_if_command_list *list, tree_if_clause *clause);
@@ -582,7 +583,15 @@ public:
 
   // Set the print flag for a statement based on the separator type.
   OCTINTERP_API tree_statement_list *
-  set_stmt_print_flag (tree_statement_list *, char, bool);
+  set_stmt_print_flag (tree_statement_list *list, int sep_char, bool warn_missing_semi);
+
+  // Set the print flag for a statement based on the separator type.
+  OCTINTERP_API tree_statement_list *
+  set_stmt_print_flag (tree_statement_list *list, const token& sep_tok, bool warn_missing_semi);
+
+  // Set the print flag for a statement based on the separator type.
+  OCTINTERP_API tree_statement_list *
+  set_stmt_print_flag (tree_statement_list *list, separator_list *sep_list, bool warn_missing_semi);
 
   // Finish building a statement.
   template <typename T>
@@ -594,7 +603,15 @@ public:
 
   // Append a statement to an existing statement list.
   OCTINTERP_API tree_statement_list *
-  append_statement_list (tree_statement_list *list, char sep, tree_statement *stmt, bool warn_missing_semi);
+  append_statement_list (tree_statement_list *list, int sep_char, tree_statement *stmt, bool warn_missing_semi);
+
+  // Append a statement to an existing statement list.
+  OCTINTERP_API tree_statement_list *
+  append_statement_list (tree_statement_list *list, token *sep_tok, tree_statement *stmt, bool warn_missing_semi);
+
+  // Append a statement to an existing statement list.
+  OCTINTERP_API tree_statement_list *
+  append_statement_list (tree_statement_list *list, separator_list *sep_list, tree_statement *stmt, bool warn_missing_semi);
 
   // Create a statement list containing only function_def commands.
   OCTINTERP_API tree_statement_list *
@@ -603,7 +620,7 @@ public:
   // Append a function_def command to an existing statement list (that
   // should contain only other function_def commands).
   OCTINTERP_API tree_statement_list *
-  append_function_def_list (tree_statement_list *list, char sep, tree_function_def *fcn_def);
+  append_function_def_list (tree_statement_list *list, separator_list *sep_list, tree_function_def *fcn_def);
 
   OCTINTERP_API tree_argument_list *
   make_argument_list (tree_expression *expr);

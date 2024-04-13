@@ -246,11 +246,11 @@ static void yyerror (octave::base_parser& parser, const char *s);
 // Nonterminals we construct.
 %type <dummy_type> push_fcn_symtab push_script_symtab begin_file
 %type <dummy_type> stmt_begin anon_fcn_begin
-%type <dummy_type> parsing_local_fcns parse_error at_first_executable_stmt
+%type <dummy_type> parsing_local_fcns parse_error
 %type <tok> param_list_beg param_list_end
 %type <tok> function_beg classdef_beg arguments_beg indirect_ref_op
 %type <tok> properties_beg methods_beg events_beg enumeration_beg
-%type <sep_list_type> sep_no_nl opt_sep_no_nl nl opt_nl sep opt_sep
+%type <sep_list_type> sep_no_nl opt_sep_no_nl sep opt_sep
 %type <tree_type> input
 %type <tree_constant_type> string constant magic_colon
 %type <tree_anon_fcn_handle_type> anon_fcn_handle
@@ -285,9 +285,9 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_decl_init_list_type> decl_init_list
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement function_end
-%type <tree_statement_list_type> statement_list
 %type <tree_statement_list_type> simple_list simple_list1 list list1
-%type <tree_statement_list_type> opt_list function_body function_body1
+%type <tree_statement_list_type> statement_list opt_list
+%type <tree_statement_list_type> arguments_block_list function_body
 %type <tree_statement_list_type> opt_fcn_list fcn_list fcn_list1
 %type <tree_classdef_attribute_type> attr
 %type <tree_classdef_attribute_list_type> attr_list attr_list1
@@ -473,6 +473,7 @@ statement_list  : opt_sep opt_list
                     $$ = $2;
                   }
                 ;
+
 opt_list        : // empty
                   { $$ = nullptr; }
                 | list
@@ -1405,12 +1406,8 @@ begin_file      : push_script_symtab INPUT_FILE
                   { $$ = 0; }
                 ;
 
-file            : begin_file opt_nl opt_list END_OF_INPUT
+file            : begin_file statement_list END_OF_INPUT
                   {
-                    // FIXME: Need to capture separator list here.
-                    // For now, delete the unused list.
-                    delete $2;
-
                     if (lexer.m_reading_fcn_file)
                       {
                         // Delete the dummy statement_list we created
@@ -1422,13 +1419,13 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
                         // Unused symbol table context.
                         lexer.m_symtab_context.pop ();
 
-                        delete $3;
+                        delete $2;
                       }
                     else
                       {
-                        octave::tree_statement *end_of_script = parser.make_end ("endscript", true, $4);
+                        octave::tree_statement *end_of_script = parser.make_end ("endscript", true, $3);
 
-                        parser.make_script ($3, end_of_script);
+                        parser.make_script ($2, end_of_script);
                       }
 
                     if (! parser.validate_primary_fcn ())
@@ -1436,8 +1433,17 @@ file            : begin_file opt_nl opt_list END_OF_INPUT
 
                     $$ = nullptr;
                   }
-                | begin_file opt_nl classdef parsing_local_fcns opt_sep opt_fcn_list END_OF_INPUT
+                | begin_file opt_sep classdef parsing_local_fcns opt_sep opt_fcn_list END_OF_INPUT
                   {
+                    // We need to skip whitespace before the classdef
+                    // keyword.  The opt_sep rule is more liberal than
+                    // we need to be because it accepts ';' and ',' in
+                    // addition to '\n', but we need to use it to avoid
+                    // creating a reduce/reduce conflict with the rule
+                    // above.  Matching the extra ';' and ',' characters
+                    // doesn't cause trouble because the lexer ensures
+                    // that classdef is the first token in the file.
+
                     // FIXME: Need to capture separator lists here.
                     // For now, delete the unused lists.
                     delete $2;
@@ -1542,48 +1548,34 @@ function_end    : END
                   }
                 ;
 
-function        : function_beg fcn_name opt_param_list opt_sep function_body function_end
+function        : function_beg fcn_name opt_param_list function_body function_end
                   {
-                    // FIXME: Need to capture separator list here.
-                    // For now, delete the unused list.
-                    delete $4;
-
-                    $$ = parser.make_function ($1, nullptr, nullptr, $2, $3, $5, $6);
+                    $$ = parser.make_function ($1, nullptr, nullptr, $2, $3, $4, $5);
                   }
-                | function_beg return_list '=' fcn_name opt_param_list opt_sep function_body function_end
+                | function_beg return_list '=' fcn_name opt_param_list function_body function_end
                   {
-                    // FIXME: Need to capture separator list here.
-                    // For now, delete the unused list.
-                    delete $6;
-
-                    $$ = parser.make_function ($1, $2, $3, $4, $5, $7, $8);
+                    $$ = parser.make_function ($1, $2, $3, $4, $5, $6, $7);
                   }
                 ;
 
-function_body   : at_first_executable_stmt opt_list
-                  { $$ = $2; }
-                | function_body1 opt_sep at_first_executable_stmt opt_list
+function_body   : statement_list
                   {
-                    // FIXME: Need to capture separator list here.
-                    // For now, delete the unused list.
-                    delete $2;
-
-                    $$ = parser.append_function_body ($1, $4);
+                    $$ = $1;
+                  }
+                | opt_sep arguments_block_list statement_list
+                  {
+                    $$ = parser.append_function_body ($2, $3);
                   }
                 ;
 
-at_first_executable_stmt
-                : // empty
-                  { lexer.m_arguments_is_keyword = false; }
-                ;
-
-function_body1  : arguments_block
+arguments_block_list
+                : arguments_block
                   {
                     octave::tree_statement *stmt = parser.make_statement ($1);
 
                     $$ = parser.make_statement_list (stmt);
                   }
-                | function_body1 opt_sep arguments_block
+                | arguments_block_list opt_sep arguments_block
                   {
                     octave::tree_statement *stmt = parser.make_statement ($3);
 
@@ -1611,6 +1603,7 @@ arguments_block : arguments_beg opt_sep args_attr_list args_validation_list opt_
 arguments_beg   : ARGUMENTS
                   {
                     $$ = $1;
+
                     lexer.m_arguments_is_keyword = false;
                   }
                 ;
@@ -2171,18 +2164,6 @@ opt_sep_no_nl   : // empty
                   { $$ = nullptr; }
                 | sep_no_nl
                   { $$ = $1; }
-                ;
-
-opt_nl          : // empty
-                  { $$ = 0; }
-                | nl
-                  { $$ = $1; }
-                ;
-
-nl              : '\n'
-                  { $$ = new octave::separator_list (*($1)); }
-                | nl '\n'
-                  { $$ = $1->append (*($2)); }
                 ;
 
 sep             : ','

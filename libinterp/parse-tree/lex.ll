@@ -3944,7 +3944,13 @@ make_integer_value (uintmax_t long_int_val, bool unsigned_val, int bytes)
   {
     push_token (tok);
 
-    return count_token_internal (tok->token_id ());
+    int tok_id = tok->token_id ();
+
+    if (m_arguments_is_keyword
+        && ! (tok_id == ';' || tok_id == ',' || tok_id == '\n'))
+      m_arguments_is_keyword = false;
+
+    return count_token_internal (tok_id);
   }
 
   int

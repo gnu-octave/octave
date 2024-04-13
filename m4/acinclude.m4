@@ -200,6 +200,47 @@ AC_DEFUN([OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR], [
   AC_CACHE_CHECK([whether std::pmr::polymorphic_allocator is available],
     [octave_cv_std_pmr_polymorphic_allocator],
     [AC_LANG_PUSH(C++)
+    AC_RUN_IFELSE([AC_LANG_PROGRAM([[
+      #include <cstdlib>
+      #include <memory_resource>
+      #include <vector>
+      class mx_memory_resource : public std::pmr::memory_resource
+      {
+      private:
+        void * do_allocate (std::size_t bytes, size_t /*alignment*/)
+        {
+          void *ptr = std::malloc (bytes);
+          if (! ptr)
+            throw std::bad_alloc ();
+            return ptr;
+        }
+        void do_deallocate (void* ptr, std::size_t /*bytes*/,
+                            std::size_t /*alignment*/)
+        {
+          std::free (ptr);
+        }
+        bool do_is_equal (const std::pmr::memory_resource& other) const noexcept
+        {
+          return this == dynamic_cast<const mx_memory_resource *> (&other);
+          return true;
+        }
+      };
+      mx_memory_resource the_mx_memory_resource;
+    ]], [[
+      std::pmr::vector<int> my_int_vec { &the_mx_memory_resource };
+    ]])],
+    octave_cv_std_pmr_polymorphic_allocator=yes,
+    octave_cv_std_pmr_polymorphic_allocator=no,
+    [## On macOS, we need to run an executable to check if polymorphic
+    ## allocators are working.
+    ## When cross-compiling to that target, the following test might succeed
+    ## even if polymorphic allocators are not actually implemented. In that
+    ## case, users would need to manually configure with
+    ## `--disable-std-pmr-polymorphic-allocator`.
+    ## When cross-compiling to any other target, the following test should be
+    ## giving accurate results.
+
+    ## FIXME: Is there a way to not repeat the same code from above?
     AC_COMPILE_IFELSE([AC_LANG_PROGRAM([[
       #include <cstdlib>
       #include <memory_resource>
@@ -230,12 +271,15 @@ AC_DEFUN([OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR], [
       std::pmr::vector<int> my_int_vec { &the_mx_memory_resource };
     ]])],
     octave_cv_std_pmr_polymorphic_allocator=yes,
-    octave_cv_std_pmr_polymorphic_allocator=no)
+    octave_cv_std_pmr_polymorphic_allocator=no)])
     AC_LANG_POP(C++)
   ])
   if test $octave_cv_std_pmr_polymorphic_allocator = yes; then
     AC_DEFINE(OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR, 1,
       [Define to 1 if std::pmr::polymorphic_allocator is available.])
+    HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR="yes"
+  else
+    HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR="no"
   fi
 ])
 dnl

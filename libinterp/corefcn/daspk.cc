@@ -68,8 +68,7 @@ daspk_user_function (const ColumnVector& x, const ColumnVector& xdot,
 {
   ColumnVector retval;
 
-  if (x.numel () != xdot.numel ())
-    error ("daspk_user_function: X and XDOT must have the same number of elements");
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 
@@ -120,8 +119,7 @@ daspk_user_jacobian (const ColumnVector& x, const ColumnVector& xdot,
 {
   Matrix retval;
 
-  if (x.numel () != xdot.numel ())
-    error ("daspk_user_jacobian: X and XDOT must have the same number of elements");
+  panic_unless (x.numel () == xdot.numel ());
 
   octave_value_list args;
 

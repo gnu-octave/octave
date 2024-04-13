@@ -236,6 +236,9 @@ AC_DEFUN([OCTAVE_CHECK_STD_PMR_POLYMORPHIC_ALLOCATOR], [
   if test $octave_cv_std_pmr_polymorphic_allocator = yes; then
     AC_DEFINE(OCTAVE_HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR, 1,
       [Define to 1 if std::pmr::polymorphic_allocator is available.])
+    HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR="yes"
+  else
+    HAVE_STD_PMR_POLYMORPHIC_ALLOCATOR="no"
   fi
 ])
 dnl

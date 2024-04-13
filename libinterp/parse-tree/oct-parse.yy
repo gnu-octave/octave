@@ -282,6 +282,7 @@ static void yyerror (octave::base_parser& parser, const char *s);
 %type <tree_decl_init_list_type> decl_init_list
 %type <tree_decl_command_type> declaration
 %type <tree_statement_type> statement function_end
+%type <tree_statement_list_type> statement_list
 %type <tree_statement_list_type> simple_list simple_list1 list list1
 %type <tree_statement_list_type> opt_list function_body function_body1
 %type <tree_statement_list_type> opt_fcn_list fcn_list fcn_list1
@@ -457,6 +458,14 @@ simple_list1    : statement
                   { $$ = parser.append_statement_list ($1, $2, $3, false); }
                 ;
 
+statement_list  : opt_sep opt_list
+                  {
+                    // FIXME: Need to capture separator list here.
+                    OCTAVE_YYUSE ($1);
+
+                    $$ = $2;
+                  }
+                ;
 opt_list        : // empty
                   { $$ = nullptr; }
                 | list
@@ -1018,30 +1027,26 @@ if_clause_list  : if_clause
                   { $$ = parser.append_if_clause ($1, $2); }
                 ;
 
-if_clause       : IF opt_sep expression stmt_begin opt_sep opt_list
+if_clause       : IF opt_sep expression stmt_begin statement_list
                   {
-                    OCTAVE_YYUSE ($2, $5);
+                    OCTAVE_YYUSE ($2);
 
-                    $$ = parser.make_if_clause ($1, $3, $6);
+                    $$ = parser.make_if_clause ($1, $3, $5);
                   }
                 ;
 
-elseif_clause   : ELSEIF opt_sep expression stmt_begin opt_sep opt_list
+elseif_clause   : ELSEIF opt_sep expression stmt_begin statement_list
                   {
-                    OCTAVE_YYUSE ($2, $5);
+                    OCTAVE_YYUSE ($2);
 
-                    $$ = parser.make_if_clause ($1, $3, $6);
+                    $$ = parser.make_if_clause ($1, $3, $5);
                   }
                 ;
 
 else_clause     : // empty
                   { $$ = nullptr; }
-                | ELSE opt_sep opt_list
-                  {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.make_if_clause ($1, nullptr, $3);
-                  }
+                | ELSE statement_list
+                  { $$ = parser.make_if_clause ($1, nullptr, $2); }
                 ;
 
 // ================
@@ -1076,81 +1081,71 @@ case_list1      : switch_case
                   { $$ = parser.append_switch_case ($1, $2); }
                 ;
 
-switch_case     : CASE opt_sep expression stmt_begin opt_sep opt_list
-                  {
-                    OCTAVE_YYUSE ($2, $5);
-
-                    $$ = parser.make_switch_case ($1, $3, $6);
-                  }
-                ;
-
-default_case    : OTHERWISE opt_sep opt_list
+switch_case     : CASE opt_sep expression stmt_begin statement_list
                   {
                     OCTAVE_YYUSE ($2);
 
-                    $$ = parser.make_default_switch_case ($1, $3);
+                    $$ = parser.make_switch_case ($1, $3, $5);
                   }
+                ;
+
+default_case    : OTHERWISE statement_list
+                  { $$ = parser.make_default_switch_case ($1, $2); }
                 ;
 
 // =======
 // Looping
 // =======
 
-loop_command    : WHILE expression stmt_begin opt_sep opt_list END
+loop_command    : WHILE expression stmt_begin statement_list END
                   {
-                    OCTAVE_YYUSE ($4);
-
                     parser.maybe_convert_to_braindead_shortcircuit ($2);
 
-                    if (! ($$ = parser.make_while_command ($1, $2, $5, $6)))
+                    if (! ($$ = parser.make_while_command ($1, $2, $4, $5)))
                       {
-                        // make_while_command deleted $2 and $5.
+                        // make_while_command deleted $2 and $4.
                         YYABORT;
                       }
                   }
-                | DO opt_sep opt_list UNTIL expression
+                | DO statement_list UNTIL expression
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    $$ = parser.make_do_until_command ($1, $3, $4, $5);
+                    $$ = parser.make_do_until_command ($1, $2, $3, $4);
                   }
-                | FOR assign_lhs '=' expression stmt_begin opt_sep opt_list END
+                | FOR assign_lhs '=' expression stmt_begin statement_list END
                   {
-                    OCTAVE_YYUSE ($6);
-
-                    if (! ($$ = parser.make_for_command ($1, nullptr, $2, $3, $4, nullptr, nullptr, nullptr, $7, $8)))
+                    if (! ($$ = parser.make_for_command ($1, nullptr, $2, $3, $4, nullptr, nullptr, nullptr, $6, $7)))
                       {
-                        // make_for_command deleted $2, $4, and $7.
+                        // make_for_command deleted $2, $4, and $6.
                         YYABORT;
                       }
                   }
-                | FOR '(' assign_lhs '=' expression ')' opt_sep opt_list END
+                | FOR '(' assign_lhs '=' expression ')' statement_list END
                   {
-                    OCTAVE_YYUSE ($2, $4, $6, $7);
+                    OCTAVE_YYUSE ($2, $4, $6);
 
-                    if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, nullptr, nullptr, $6, $8, $9)))
+                    if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, nullptr, nullptr, $6, $7, $8)))
                       {
-                        // make_for_command deleted $3, $5, and $8.
+                        // make_for_command deleted $3, $5, and $7.
                         YYABORT;
                       }
                   }
-                | PARFOR assign_lhs '=' expression stmt_begin opt_sep opt_list END
+                | PARFOR assign_lhs '=' expression stmt_begin statement_list END
                   {
-                    OCTAVE_YYUSE ($3, $6);
+                    OCTAVE_YYUSE ($3);
 
-                    if (! ($$ = parser.make_for_command ($1, nullptr, $2, $3, $4, nullptr, nullptr, nullptr, $7, $8)))
+                    if (! ($$ = parser.make_for_command ($1, nullptr, $2, $3, $4, nullptr, nullptr, nullptr, $6, $7)))
                       {
-                        // make_for_command deleted $2, $4, and $7.
+                        // make_for_command deleted $2, $4, and $6.
                         YYABORT;
                       }
                   }
-                | PARFOR '(' assign_lhs '=' expression ',' expression ')' opt_sep opt_list END
+                | PARFOR '(' assign_lhs '=' expression ',' expression ')' statement_list END
                   {
-                    OCTAVE_YYUSE ($2, $4, $6, $8, $9);
+                    OCTAVE_YYUSE ($2, $4, $6, $8);
 
-                    if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, $6, $7, $8, $10, $11)))
+                    if (! ($$ = parser.make_for_command ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)))
                       {
-                        // make_for_command deleted $3, $5, $7, and $10.
+                        // make_for_command deleted $3, $5, $7, and $9.
                         YYABORT;
                       }
                   }
@@ -1178,13 +1173,11 @@ jump_command    : BREAK
 // Parallel execution pool
 // =======================
 
-spmd_command    : SPMD opt_sep opt_list END
+spmd_command    : SPMD statement_list END
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    if (! ($$ = parser.make_spmd_command ($1, $3, $4)))
+                    if (! ($$ = parser.make_spmd_command ($1, $2, $3)))
                       {
-                        // make_spmd_command deleted $3.
+                        // make_spmd_command deleted $2.
                         YYABORT;
                       }
                   }
@@ -1194,33 +1187,27 @@ spmd_command    : SPMD opt_sep opt_list END
 // Exceptions
 // ==========
 
-except_command  : UNWIND opt_sep opt_list CLEANUP opt_sep opt_list END
+except_command  : UNWIND statement_list CLEANUP statement_list END
                   {
-                    OCTAVE_YYUSE ($2, $5);
-
-                    if (! ($$ = parser.make_unwind_command ($1, $3, $4, $6, $7)))
+                    if (! ($$ = parser.make_unwind_command ($1, $2, $3, $4, $5)))
                       {
-                        // make_unwind_command deleted $3 and $6.
+                        // make_unwind_command deleted $2 and $4.
                         YYABORT;
                       }
                   }
-                | TRY opt_sep opt_list CATCH opt_sep opt_list END
+                | TRY statement_list CATCH opt_sep opt_list END
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    if (! ($$ = parser.make_try_command ($1, $3, $4, $5, $6, $7)))
+                    if (! ($$ = parser.make_try_command ($1, $2, $3, $4, $5, $6)))
                       {
-                        // make_try_command deleted $3 and $6.
+                        // make_try_command deleted $2 and $5.
                         YYABORT;
                       }
                   }
-                | TRY opt_sep opt_list END
+                | TRY statement_list END
                   {
-                    OCTAVE_YYUSE ($2);
-
-                    if (! ($$ = parser.make_try_command ($1, $3, nullptr, 0, nullptr, $4)))
+                    if (! ($$ = parser.make_try_command ($1, $2, nullptr, 0, nullptr, $3)))
                       {
-                        // make_try_command deleted $3.
+                        // make_try_command deleted $2.
                         YYABORT;
                       }
                   }

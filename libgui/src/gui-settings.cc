@@ -192,12 +192,18 @@ gui_settings::set_color_value (const gui_pref& pref,
 QString
 gui_settings::sc_value (const sc_pref& scpref) const
 {
-  QKeySequence key_seq = sc_def_value (scpref);
+  QString full_settings_key = sc_group + "/" + scpref.settings_key ();
 
-  // Get the value from the settings where the key sequences are stored
-  // as strings
-  return value (sc_group + "/" + scpref.settings_key (),
-                key_seq.toString ()).toString ();
+  if (contains (full_settings_key))
+    {
+      QKeySequence key_seq = sc_def_value (scpref);
+
+      // Get the value from the settings where the key sequences are stored
+      // as strings
+      return value (full_settings_key, key_seq.toString ()).toString ();
+    }
+  else
+    return scpref.def_text ();
 }
 
 QKeySequence
@@ -216,25 +222,15 @@ gui_settings::set_shortcut (QAction *action, const sc_pref& scpref, bool enable)
       return;
     }
 
-  QString shortcut = sc_value (scpref);
-
-  if (! shortcut.isEmpty ())
+    QString shortcut = sc_value (scpref);
     action->setShortcut (QKeySequence (shortcut));
-  else
-    qDebug () << "Key: " << scpref.settings_key ()
-              << " not found in settings";
 }
 
 void
 gui_settings::shortcut (QShortcut *sc, const sc_pref& scpref)
 {
   QString shortcut = sc_value (scpref);
-
-  if (! shortcut.isEmpty ())
-    sc->setKey (QKeySequence (shortcut));
-  else
-    qDebug () << "Key: " << scpref.settings_key ()
-              << " not found in settings";
+  sc->setKey (QKeySequence (shortcut));
 }
 
 void

@@ -7,7 +7,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 - `hist.m`: Add input validation for `Y` restricting it to 2-D array
   (bug #65478).
-- `cross.m`: Add input validation for 'dim' restricting it to a numeric
+- `cross.m`: Add input validation for `dim` restricting it to a numeric
   integer valued scalar (bug #65544, bug #65527).
 - `getframe.m`: Respect pixel ratio (high DPI) of screen with figure
   (bug #65540).
@@ -22,7 +22,6 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   (bug #65518).
 - Set `DontUseNativeDialog` flag as first property in `QFileDialog`.
 - Explicitly raise non-modal message boxes ensuring visibility.
-- Set `DontUseNativeDialog` before other properties of file dialogs.
 
 ### Build system / Tests
 

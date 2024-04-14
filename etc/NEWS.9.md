@@ -7,15 +7,22 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 
 - `hist.m`: Add input validation for `Y` restricting it to 2-D array
   (bug #65478).
-
 - `cross.m`: Add input validation for 'dim' restricting it to a numeric
-  integer valued scalar.
+  integer valued scalar (bug #65544, bug #65527).
+- `getframe.m`: Respect pixel ratio (high DPI) of screen with figure
+  (bug #65540).
+- `legend.m`: Fix error if root property `"showhiddenhandles"` is `"on"`
+  (bug #65442)
+- `savepath.m`: Correctly handle packages without binaries (bug #65559).
+- Correctly scale figure position on screen with DPI scaling (high DPI).
 
 ### GUI
 
 - Use first word for options in right-click menu of command window widget
   (bug #65518).
 - Set `DontUseNativeDialog` flag as first property in `QFileDialog`.
+- Explicitly raise non-modal message boxes ensuring visibility.
+- Set `DontUseNativeDialog` before other properties of file dialogs.
 
 ### Build system / Tests
 
@@ -23,6 +30,12 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   This fixes an error that might have lead to overlinking of shared libraries
   (e.g., `.oct` files). Consider rebuilding shared libraries that have been
   built with Octave 9.1.0.
+- Add BIST for `is_valid_file_id.m` (bug #65543).
+- Update metainfo.xml with new fields for AppStream 1.0 (bug #65355).
+- Show result of check for `std::pmr::polymorphic_allocator` in configure
+  summary.
+- Run test for polymorphic allocators if possible instead of a simple build
+  check.
 
 ### Documentation
 

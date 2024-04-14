@@ -105,8 +105,6 @@ public slots:
 
   void finished (int result);
 
-  void set_default_shortcut ();
-
 signals:
 
   void set_shortcut (const QString& settings_key,
@@ -132,7 +130,7 @@ public:
 
   void import_shortcuts (gui_settings& settings);
 
-  void export_shortcuts (gui_settings& settings);
+  void export_shortcuts (gui_settings& settings, bool full = true);
 
   void set_default_shortcuts ();
 

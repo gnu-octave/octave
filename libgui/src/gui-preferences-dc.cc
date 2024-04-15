@@ -43,3 +43,7 @@ dc_bookmark_filter_mru ("documentation_widget/bookmark_filter_mru", QVariant ())
 // Zoom level
 gui_pref
 dc_browser_zoom_level ("documentation_widget/browser_zoom_level", QVariant (0));
+
+// Splitter state
+gui_pref
+dc_splitter_state ("documentation_widget/splitter_state", QVariant (0));

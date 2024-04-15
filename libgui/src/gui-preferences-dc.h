@@ -39,6 +39,8 @@ extern gui_pref dc_bookmark_filter_shown;
 
 extern gui_pref dc_bookmark_filter_mru;
 
+extern gui_pref dc_splitter_state;
+
 // Constants for the xbel file format
 const QLatin1String dc_xbel_doctype ("<!DOCTYPE xbel>");
 const QLatin1String dc_xbel_attr_href ("href");

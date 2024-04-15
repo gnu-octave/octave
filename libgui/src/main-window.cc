@@ -1211,6 +1211,13 @@ main_window::run_file_in_terminal (const QFileInfo& info)
 
            load_path& lp = interp.get_load_path ();
 
+           // Rehashing the load path is only needed when executing new files
+           // in the built-in editor for the first time and the command line
+           // prompt hasn't been displayed yet again since this *new* file has
+           // been saved for the first time.
+           // FIXME: Is there a way to detect here that a file is new?
+           lp.rehash ();
+
            std::string path = info.absolutePath ().toStdString ();
 
            if (lp.contains_file_in_dir (file_path, path))

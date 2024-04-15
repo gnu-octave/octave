@@ -333,7 +333,7 @@ documentation::documentation (QWidget *p)
       insertWidget (1, browser_find);
       setStretchFactor (1, 1);
 
-      restoreState (settings.byte_array_value (dc_splitter_sate));
+      restoreState (settings.byte_array_value (dc_splitter_state));
     }
 }
 
@@ -679,7 +679,7 @@ void documentation::save_settings ()
 {
   gui_settings settings;
 
-  settings.setValue (dc_splitter_sate.settings_key (), saveState ());
+  settings.setValue (dc_splitter_state.settings_key (), saveState ());
   m_doc_browser->save_settings ();
   m_bookmarks->save_settings ();
 }

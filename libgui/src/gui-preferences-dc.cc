@@ -46,4 +46,4 @@ dc_browser_zoom_level ("documentation_widget/browser_zoom_level", QVariant (0));
 
 // Splitter state
 gui_pref
-dc_splitter_sate ("documentation_widget/splitter_state", QVariant (0));
+dc_splitter_state ("documentation_widget/splitter_state", QVariant (0));

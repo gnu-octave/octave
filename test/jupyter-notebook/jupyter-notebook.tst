@@ -39,7 +39,7 @@
 %!   endif
 %!   set (0, "defaultfigurevisible", "off");
 %!
-%!   n = jupyter_notebook (fullfile ("octave_kernel.ipynb"));
+%!   n = jupyter_notebook (fullfile ("octave-kernel.ipynb"));
 %!
 %!   ## Test embedding images
 %!   n.run (2);
@@ -73,7 +73,7 @@
 %!   endif
 %!   set (0, "defaultfigurevisible", "off");
 %!
-%!   n = jupyter_notebook (fullfile ("octave_kernel.ipynb"));
+%!   n = jupyter_notebook (fullfile ("octave-kernel.ipynb"));
 %!   n.run_all ();
 %!
 %!   ## Test embedding images
@@ -111,7 +111,7 @@
 %!   endif
 %!   set (0, "defaultfigurevisible", "off");
 %!
-%!   n = jupyter_notebook (fullfile ("plot_magic_and_errors.ipynb"));
+%!   n = jupyter_notebook (fullfile ("plot-magic-and-errors.ipynb"));
 %!
 %!   ## PNG format
 %!   n.run (1);
@@ -154,7 +154,7 @@
 %!   endif
 %!   set (0, "defaultfigurevisible", "off");
 %!
-%!   n = jupyter_notebook (fullfile ("plot_magic_and_errors.ipynb"));
+%!   n = jupyter_notebook (fullfile ("plot-magic-and-errors.ipynb"));
 %!
 %!   ## Wrong resolution
 %!   n.run (4);

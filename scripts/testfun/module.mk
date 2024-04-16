@@ -6,7 +6,7 @@ FCN_FILE_DIRS += \
   %reldir%/private/compare_plot_demos.m \
   %reldir%/private/dump_demos.m \
   %reldir%/private/html_compare_plot_demos.m \
-  %reldir%/private/html_plot_demos_template.html
+  %reldir%/private/html-plot-demos-template.html
 
 %canon_reldir%_FCN_FILES = \
   %reldir%/.oct-config \

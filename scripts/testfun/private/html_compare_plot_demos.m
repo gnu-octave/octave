@@ -37,10 +37,10 @@
 ##   @code{"png"}
 ##
 ##   @item output
-##   @code{"compare_plot_demos.html"}
+##   @code{"compare-plot-demos.html"}
 ##
 ##   @item template
-##   @code{"html_plot_demos_template.html"}
+##   @code{"html-plot-demos-template.html"}
 ##
 ##   @item column_width
 ##   @code{600}
@@ -64,8 +64,8 @@ function html_compare_plot_demos (toolkits, varargin)
   ## Set defaults
   in.fmt = "png";
   in.figfiles = {};
-  in.output_fmt = @(p) sprintf ("compare_plot_demos_%02i.html", p);
-  in.template = "html_plot_demos_template.html";
+  in.output_fmt = @(p) sprintf ("compare-plot-demos-%02i.html", p);
+  in.template = "html-plot-demos-template.html";
   in.column_width = 600;
   in.plots_per_page = 50;
 

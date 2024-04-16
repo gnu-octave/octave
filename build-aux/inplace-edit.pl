@@ -1,8 +1,8 @@
 #!/usr/bin/perl -w
 
 ################################################################################
-## File: inplace_edit.pl
-## Usage: perl inplace_edit.pl 'PERL_CODE' file1 [file2] [...]
+## File: inplace-edit.pl
+## Usage: perl inplace-edit.pl 'PERL_CODE' file1 [file2] [...]
 ## Purpose: Run snippet of PERL_CODE on each line in a file and replace
 ## existing line with the results of running the code.
 ## This replaces perl -i -pe 'PERL_CODE' file1 [file2] ...

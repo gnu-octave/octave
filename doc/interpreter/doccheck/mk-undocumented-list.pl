@@ -26,7 +26,7 @@
 ########################################################################
 
 ################################################################################
-# File: mk_undocumented_list
+# File: mk-undocumented-list.pl
 # Purpose: Create a list of functions present in Octave, but without a
 #          corresponding DOCSTRING entry in one of the *.txi files
 # Usage: make doc/interpreter/undocumented_list

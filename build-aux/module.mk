@@ -6,7 +6,7 @@ EXTRA_DIST += \
   %reldir%/find-defun-files.in.sh \
   %reldir%/find-files-with-tests.in.sh \
   %reldir%/get-source-mtime.sh \
-  %reldir%/inplace_edit.pl \
+  %reldir%/inplace-edit.pl \
   %reldir%/mk-hg-id.sh \
   %reldir%/mk-octave-config-h.sh \
   %reldir%/mk-opts.pl \

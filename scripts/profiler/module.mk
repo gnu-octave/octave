@@ -15,10 +15,10 @@ FCN_FILE_DIRS += %reldir%
 
 %canon_reldir%_html_DATA = \
   %reldir%/html/flat.html \
-  %reldir%/html/flat_entry.html \
+  %reldir%/html/flat-entry.html \
   %reldir%/html/function.html \
   %reldir%/html/hierarchical.html \
-  %reldir%/html/hierarchical_entry.html \
+  %reldir%/html/hierarchical-entry.html \
   %reldir%/html/style.css
 
 FCN_FILES += \

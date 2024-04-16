@@ -84,7 +84,7 @@ BUILT_ICONS = \
 %canon_reldir%_EXTRA_DIST += \
   $(BUILT_ICONS) \
   $(icon_IMAGE_FILES) \
-  %reldir%/icons/octave_branding_samples.svg \
+  %reldir%/icons/octave-branding-samples.svg \
   %reldir%/icons/org.octave.Octave.metainfo.xml \
   %reldir%/icons/org.octave.Octave.desktop.in
 

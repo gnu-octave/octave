@@ -117,11 +117,11 @@ $(BUILT_DOC_IMAGES): | $(OCTAVE_INTERPRETER_TARGETS)
 HTMLDIR_IMAGES = $(patsubst %reldir%/%.png, %reldir%/octave.html/%.png, $(DOC_IMAGES_PNG))
 
 LOGOS = \
-  %reldir%/octave_logo.eps \
-  %reldir%/octave_logo.pdf
+  %reldir%/octave-logo.eps \
+  %reldir%/octave-logo.pdf
 
-DOC_IMAGES_EPS += %reldir%/octave_logo.eps
-DOC_IMAGES_PDF += %reldir%/octave_logo.pdf
+DOC_IMAGES_EPS += %reldir%/octave-logo.eps
+DOC_IMAGES_PDF += %reldir%/octave-logo.pdf
 
 MUNGED_TEXI_SRC = \
   %reldir%/arith.texi \
@@ -320,7 +320,7 @@ $(OCTAVE_HTML_STAMP): %reldir%/octave.texi $(srcdir)/%reldir%/octave-doc-version
 	 --css-ref=octave.css \
 	 -o $(OCTAVE_HTML_TMP_DIR) `test -f '%reldir%/octave.texi' || echo '$(abs_top_srcdir)/'`%reldir%/octave.texi; \
 	then \
-	  $(PERL) $(srcdir)/build-aux/inplace_edit.pl 's|(?<=</a>): ||g' $(OCTAVE_HTML_TMP_DIR)/* && \
+	  $(PERL) $(srcdir)/build-aux/inplace-edit.pl 's|(?<=</a>): ||g' $(OCTAVE_HTML_TMP_DIR)/* && \
 	  rm -rf $(OCTAVE_HTML_DIR) && \
 	  mv $(OCTAVE_HTML_TMP_DIR) $(OCTAVE_HTML_DIR) && \
 	  touch $@; \
@@ -416,7 +416,7 @@ doc_EXTRA_DIST += \
   %reldir%/contributors.in \
   %reldir%/doc-cache \
   %reldir%/genpropdoc.m \
-  %reldir%/graphics_properties.mk \
+  %reldir%/graphics-properties.mk \
   %reldir%/images \
   %reldir%/images.awk \
   %reldir%/images.mk \
@@ -473,7 +473,7 @@ octetc_DATA += \
 
 %reldir%/undocumented_list:
 	rm -f $@-t $@
-	-cd $(srcdir)/%reldir%; $(PERL) ./doccheck/mk_undocumented_list > $(@F)-t
+	-cd $(srcdir)/%reldir%; $(PERL) ./doccheck/mk-undocumented-list.pl > $(@F)-t
 	mv $@-t $@
 	[ -s $@ ] || rm -f $@
 	@cd $(srcdir)/%reldir% ; \

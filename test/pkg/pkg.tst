@@ -56,7 +56,7 @@
 %! rmtmpdir = @onCleanup (@() test_cleanup (prefix));
 %!
 %! ## Create tar.gz file packages of testing directories in prefix directory
-%! mfile_pkg_name = {"mfile_basic_test", "mfile_minimal_test"};
+%! mfile_pkg_name = {"mfile-basic-test", "mfile-minimal-test"};
 %! mfile_pkg_tar = fullfile (prefix, strcat (mfile_pkg_name, ".tar"));
 %! mfile_pkg_tgz = strcat (mfile_pkg_tar, ".gz");
 %! for i = 1:numel (mfile_pkg_name)

@@ -26,10 +26,10 @@
 ########################################################################
 
 ################################################################################
-# File   : add_to_aspell_dict
+# File   : add-to-aspell-dict.pl
 # Purpose: Merges a file of new words into an existing dictionary file.
 #          The resulting file is uniquified and sorted before being written out.
-# Usage  : add_to_aspell_dict <filename_of_new_words>
+# Usage  : add-to-aspell-dict.pl <filename-of-new-words>
 # Documentation: see README in doccheck directory
 ################################################################################
 # Initialize variables
@@ -40,7 +40,7 @@ $octdict_fname = './doccheck/aspell-octave.en.pws';
 # Parse command line arguments
 unless (@ARGV == 1)
 {
-  die "USAGE: add_to_aspell_dict <filename_of_new_words>\n";
+  die "USAGE: add-to-aspell-dict.pl <filename-of-new-words>\n";
 }
 
 $new_words_fname = shift(@ARGV);

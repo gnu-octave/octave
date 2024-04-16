@@ -103,7 +103,7 @@ endfunction
 function __writeFlat (file, name, table)
 
   template = __readTemplate ("flat.html");
-  entryTemplate = __readTemplate ("flat_entry.html");
+  entryTemplate = __readTemplate ("flat-entry.html");
 
   ## Construct the entries string.
   ## This follows the same logic that is used in profshow.
@@ -204,7 +204,7 @@ function [mine, cnt] = __writeHierarchical (dir, name, funcs, ...
                                             parents, children, cnt)
 
   template = __readTemplate ("hierarchical.html");
-  entryTemplate = __readTemplate ("hierarchical_entry.html");
+  entryTemplate = __readTemplate ("hierarchical-entry.html");
 
   ## Fill in basic data and parent breadcrumbs.
   res = template;

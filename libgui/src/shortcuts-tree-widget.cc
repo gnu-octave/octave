@@ -290,6 +290,9 @@ shortcut_edit_dialog::finished (int result)
   // Note that m_settings_key doesn't begin with the sc_group prefix.
 
   QString my_section = get_shortcut_section (m_settings_key);
+  if (my_section.contains ('_'))    // get top level section
+    my_section = my_section.section ('_', 0, 0, QString::SectionSkipEmpty);
+
   QString actual_text = m_edit_actual->text ();
 
   bool conflict = false;
@@ -298,7 +301,7 @@ shortcut_edit_dialog::finished (int result)
   gui_settings settings;
 
   settings.beginGroup (sc_group);
-  const QStringList shortcut_settings_keys = settings.allKeys ();
+  const QStringList shortcut_settings_keys = all_shortcut_preferences::keys ();
   settings.endGroup ();
 
   for (const auto& settings_key : shortcut_settings_keys)
@@ -307,11 +310,16 @@ shortcut_edit_dialog::finished (int result)
         continue;
 
       QString section = get_shortcut_section (settings_key);
+      if (section.contains ('_'))   // get top level section
+        section = section.section ('_', 0, 0, QString::SectionSkipEmpty);
 
-      if (section == my_section || section.startsWith ("main_"))
+      if (section == my_section || section == "main")
         {
-          QString shortcut_text
-            = settings.value (sc_group + "/" + settings_key).toString ();
+          const sc_pref scpref = all_shortcut_preferences::value (settings_key);
+          QString shortcut_text = settings.sc_value (scpref);
+
+          if (shortcut_text.isEmpty ())
+            continue;
 
           if (shortcut_text == actual_text)
             {

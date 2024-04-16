@@ -55,9 +55,9 @@ compile_TEST_FILES = \
   %reldir%/script2.m \
   %reldir%/script3.m \
   %reldir%/shutup_operator_test/@double/display.m \
-  %reldir%/shutup_operator_test/@logical/display.m \
-  %reldir%/shutup_operator_test/bytecode_disp.m \
-  %reldir%/shutup_operator_test/bytecode_disp.tst \
+  %reldir%/shutup-operator-test/@logical/display.m \
+  %reldir%/shutup-operator-test/bytecode_disp.m \
+  %reldir%/shutup-operator-test/bytecode-disp.tst \
   %reldir%/wrongname_fn.m
 
 TEST_FILES += $(compile_TEST_FILES)

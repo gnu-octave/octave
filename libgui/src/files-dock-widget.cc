@@ -484,16 +484,6 @@ files_dock_widget::restore_header_state ()
 }
 
 void
-files_dock_widget::restore_header_state ()
-{
-  gui_settings settings;
-
-  if (settings.contains (fb_column_state.settings_key ()))
-    m_file_tree_view->header ()->restoreState
-      (settings.value (fb_column_state.settings_key ()).toByteArray ());
-}
-
-void
 files_dock_widget::save_settings ()
 {
   gui_settings settings;

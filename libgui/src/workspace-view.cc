@@ -169,6 +169,16 @@ workspace_view::restore_header_state ()
 }
 
 void
+workspace_view::restore_header_state ()
+{
+  gui_settings settings;
+
+  if (settings.contains (ws_column_state.settings_key ()))
+    m_view->horizontalHeader ()->restoreState
+      (settings.value (ws_column_state.settings_key ()).toByteArray ());
+}
+
+void
 workspace_view::setModel (workspace_model *model)
 {
   m_filter_model.setSourceModel (model);

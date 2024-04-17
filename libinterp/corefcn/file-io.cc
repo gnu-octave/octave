@@ -3223,7 +3223,7 @@ for the new object are @code{@var{mode} - @var{mask}}.
   if (args.length () != 1)
     print_usage ();
 
-  int mask = args(0).yint_value ("umask: MASK must be an integer");
+  int mask = args(0).strict_int_value ("umask: MASK must be an integer");
 
   if (mask < 0)
     error ("umask: MASK must be a positive integer value");

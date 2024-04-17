@@ -78,7 +78,7 @@ can have any value real or complex value.  However, for polygamma functions
     print_usage ();
 
   const octave_value oct_z = (nargin == 1) ? args(0) : args(1);
-  const octave_idx_type k = (nargin == 1) ? 0 : args(0).yidx_type_value ("psi: K must be an integer");
+  const octave_idx_type k = (nargin == 1) ? 0 : args(0).strict_idx_type_value ("psi: K must be an integer");
   if (k < 0)
     error ("psi: K must be non-negative");
 

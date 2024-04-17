@@ -465,8 +465,8 @@ message.
   if (fid < 0)
     error ("fcntl: invalid file id FID");
 
-  int req = args(1).yint_value ("fcntl: REQUEST must be an integer");
-  int arg = args(2).yint_value ("fcntl: ARG must be an integer");
+  int req = args(1).strict_int_value ("fcntl: REQUEST must be an integer");
+  int arg = args(2).strict_int_value ("fcntl: ARG must be an integer");
 
   octave_value_list retval;
   std::string msg;
@@ -741,7 +741,7 @@ error message.
 
   std::string name = args(0).xstring_value ("mkfifo: FILE must be a string");
 
-  int octal_mode = args(1).yint_value ("mkfifo: MODE must be an integer");
+  int octal_mode = args(1).strict_int_value ("mkfifo: MODE must be an integer");
 
   if (octal_mode < 0)
     error ("mkfifo: MODE must be a positive integer value");
@@ -1258,12 +1258,12 @@ WIFSTOPPED, WNOHANG, WSTOPSIG, WTERMSIG, WUNTRACED}
   if (nargin != 1 && nargin != 2)
     print_usage ();
 
-  pid_t pid = args(0).yint_value ("waitpid: OPTIONS must be an integer");
+  pid_t pid = args(0).strict_int_value ("waitpid: OPTIONS must be an integer");
 
   int options = 0;
 
   if (nargin == 2)
-    options = args(1).yint_value ("waitpid: PID must be an integer value");
+    options = args(1).strict_int_value ("waitpid: PID must be an integer value");
 
   std::string msg;
   int status;
@@ -1285,7 +1285,7 @@ WSTOPSIG, WIFCONTINUED}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WIFEXITED: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WIFEXITED: STATUS must be an integer");
 
   return ovl (sys::wifexited (status));
 }
@@ -1304,7 +1304,7 @@ WSTOPSIG, WIFCONTINUED}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WEXITSTATUS: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WEXITSTATUS: STATUS must be an integer");
 
   return ovl (sys::wexitstatus (status));
 }
@@ -1321,7 +1321,7 @@ WSTOPSIG, WIFCONTINUED}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WIFSIGNALED: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WIFSIGNALED: STATUS must be an integer");
 
   return ovl (sys::wifsignaled (status));
 }
@@ -1340,7 +1340,7 @@ WSTOPSIG, WIFCONTINUED}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WTERMSIG: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WTERMSIG: STATUS must be an integer");
 
   return ovl (sys::wtermsig (status));
 }
@@ -1361,7 +1361,7 @@ WSTOPSIG, WIFCONTINUED}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WCOREDUMP: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WCOREDUMP: STATUS must be an integer");
 
   return ovl (sys::wcoredump (status));
 }
@@ -1381,7 +1381,7 @@ WSTOPSIG, WIFCONTINUED}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WIFSTOPPED: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WIFSTOPPED: STATUS must be an integer");
 
   return ovl (sys::wifstopped (status));
 }
@@ -1400,7 +1400,7 @@ WIFSTOPPED, WIFCONTINUED}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WSTOPSIG: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WSTOPSIG: STATUS must be an integer");
 
   return ovl (sys::wstopsig (status));
 }
@@ -1417,7 +1417,7 @@ WIFSTOPPED, WSTOPSIG}
   if (args.length () != 1)
     print_usage ();
 
-  int status = args(0).yint_value ("WIFCONTINUED: STATUS must be an integer");
+  int status = args(0).strict_int_value ("WIFCONTINUED: STATUS must be an integer");
 
   return ovl (sys::wifcontinued (status));
 }

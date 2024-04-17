@@ -1113,7 +1113,7 @@ public:
 
   OCTINTERP_API int xint_value (const char *fmt, ...) const;
 
-  OCTINTERP_API int yint_value (const char *fmt, ...) const;
+  OCTINTERP_API int strict_int_value (const char *fmt, ...) const;
 
   OCTINTERP_API unsigned int xuint_value (const char *fmt, ...) const;
 
@@ -1129,7 +1129,7 @@ public:
 
   OCTINTERP_API octave_idx_type xidx_type_value (const char *fmt, ...) const;
 
-  OCTINTERP_API octave_idx_type yidx_type_value (const char *fmt, ...) const;
+  OCTINTERP_API octave_idx_type strict_idx_type_value (const char *fmt, ...) const;
 
   OCTINTERP_API double xdouble_value (const char *fmt, ...) const;
 
@@ -1165,7 +1165,7 @@ public:
 
   OCTINTERP_API bool xbool_value (const char *fmt, ...) const;
 
-  OCTINTERP_API bool ybool_value (const char *fmt, ...) const;
+  OCTINTERP_API bool strict_bool_value (const char *fmt, ...) const;
 
   OCTINTERP_API boolMatrix xbool_matrix_value (const char *fmt, ...) const;
 

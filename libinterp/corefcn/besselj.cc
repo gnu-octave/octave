@@ -598,7 +598,7 @@ Error---no computation, algorithm termination condition not met, return
     }
   else
     {
-      octave_idx_type kind = args(1).yint_value ("besselh: invalid value of K");
+      octave_idx_type kind = args(1).strict_int_value ("besselh: invalid value of K");
 
       octave_value_list tmp_args;
 
@@ -687,13 +687,13 @@ return @code{NaN}.
   int kind = 0;
   if (nargin > 1)
     {
-      kind = args(0).yint_value ("airy: K must be an integer value");
+      kind = args(0).strict_int_value ("airy: K must be an integer value");
 
       if (kind < 0 || kind > 3)
         error ("airy: K must be 0, 1, 2, or 3");
     }
 
-  bool scale = (nargin == 3) && args(2).ybool_value ("airy: scale option must be a logical value");
+  bool scale = (nargin == 3) && args(2).strict_bool_value ("airy: scale option must be a logical value");
 
   int idx = (nargin == 1 ? 0 : 1);
 

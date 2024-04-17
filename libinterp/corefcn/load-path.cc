@@ -2701,7 +2701,7 @@ For each directory that is added, and that was not already in the path,
     }
   else if (option_arg.isnumeric ())
     {
-      int val = option_arg.yint_value ("addpath: OPTION must be '-begin'/0 or '-end'/1");
+      int val = option_arg.strict_int_value ("addpath: OPTION must be '-begin'/0 or '-end'/1");
 
       if (val == 0)
         nargin--;

@@ -601,7 +601,7 @@ jsondecode ('@{"1": "one", "2": "two"@}', 'Prefix', 'm_')
                               "option argument must be a string");
       if (string::strcmpi (parameter, "makeValidName"))
         {
-          use_makeValidName = args(i + 1).ybool_value ("jsondecode: "
+          use_makeValidName = args(i + 1).strict_bool_value ("jsondecode: "
                               "'makeValidName' value must be a bool");
         }
       else

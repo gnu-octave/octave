@@ -2196,11 +2196,11 @@ XVALUE_EXTRACTOR (octave_value_list, xlist_value, list_value)
 // especially for parsing integer arguments that cannot be floating point.
 // See bug #65538.
 
-XVALUE_EXTRACTOR (int, yint_value, strict_int_value)
+XVALUE_EXTRACTOR (int, strict_int_value, strict_int_value)
 
-XVALUE_EXTRACTOR (bool, ybool_value, strict_bool_value)
+XVALUE_EXTRACTOR (bool, strict_bool_value, strict_bool_value)
 
-XVALUE_EXTRACTOR (octave_idx_type, yidx_type_value, strict_idx_type_value)
+XVALUE_EXTRACTOR (octave_idx_type, strict_idx_type_value, strict_idx_type_value)
 
 #undef XVALUE_EXTRACTOR
 

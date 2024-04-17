@@ -1295,7 +1295,7 @@ a recognized error code then -1 is returned.
         }
       else
         {
-          int val = args(0).yint_value ("errno: argument must be string or integer");
+          int val = args(0).strict_int_value ("errno: argument must be string or integer");
 
           retval = octave_errno::set (val);
         }

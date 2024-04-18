@@ -856,9 +856,7 @@ octave_base_value::string_value (bool force) const
 std::string
 octave_base_value::xstring_value () const
 {
-  wrong_type_arg_error ();
-
-  return std::string ();
+  err_wrong_type_arg ("octave_base_value::xstring_value()", type_name ());
 }
 
 Array<std::string>
@@ -1166,12 +1164,6 @@ octave_base_value::warn_save (const char *type) const
   ("Octave:load-save-unavailable",
    "%s: saving %s files not available in this version of Octave",
    s_t_name.c_str (), type);
-}
-
-void
-octave_base_value::wrong_type_arg_error () const
-{
-  err_wrong_type_arg (type_name ());
 }
 
 octave_value

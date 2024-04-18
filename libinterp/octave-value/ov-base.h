@@ -965,8 +965,6 @@ protected:
 
 private:
 
-  OCTINTERP_API void wrong_type_arg_error () const;
-
   //--------
 
   static int s_curr_print_indent_level;

@@ -15,6 +15,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   (bug #65442)
 - `savepath.m`: Correctly handle packages without binaries (bug #65559).
 - Correctly scale figure position on screen with DPI scaling (high DPI).
+- `profile ('on')` now clears any existing profile data as the documentation
+  states (bug #65595).
 
 ### GUI
 

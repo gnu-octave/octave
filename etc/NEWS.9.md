@@ -17,6 +17,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Correctly scale figure position on screen with DPI scaling (high DPI).
 - `profile ('on')` now clears any existing profile data as the documentation
   states (bug #65595).
+- Fix segmentation fault when trying to set breakpoint in non-existent method
+  of `classdef` class (bug #65610).
 
 ### GUI
 

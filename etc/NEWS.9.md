@@ -15,6 +15,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   (bug #65442)
 - `savepath.m`: Correctly handle packages without binaries (bug #65559).
 - Correctly scale figure position on screen with DPI scaling (high DPI).
+- `profile ('on')` now clears any existing profile data as the documentation
+  states (bug #65595).
 
 ### GUI
 
@@ -22,6 +24,11 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   (bug #65518).
 - Set `DontUseNativeDialog` flag as first property in `QFileDialog`.
 - Explicitly raise non-modal message boxes ensuring visibility.
+- Save and restore splitter state of documentation widget.
+- Allow executing new files from built-in editor with F5 (bug #65548).
+- Allow unbinding GUI shortcuts (bug #65580).
+- Fix restoring headers in file browser and workspace view (bug #65030).
+- File dialogs of the built-in editor are now modal.
 
 ### Build system / Tests
 
@@ -33,8 +40,8 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Update metainfo.xml with new fields for AppStream 1.0 (bug #65355).
 - Show result of check for `std::pmr::polymorphic_allocator` in configure
   summary.
-- Run test for polymorphic allocators if possible instead of a simple build
-  check.
+- Run test program for polymorphic allocators if possible instead of a simple
+  build check.
 
 ### Documentation
 
@@ -42,9 +49,9 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Simplify programming notes for `patch` objects (bug #65421).
 - `vecnorm.m`: Add missing parenthesis to equation in docstring.
 - Add example to Minimizers section on using anonymous functions to pass
-  examples to functions called by minimizer functions (`fminsearch`,
-  `fminbnd`, `fminunc`).
-- Add application notes in `fminsearch`, `fminbnd`, `fminunc` indicated the
+  additional arguments to functions called by minimizer functions
+  (`fminsearch`, `fminbnd`, `fminunc`).
+- Add application notes in `fminsearch`, `fminbnd`, `fminunc` indicating the
   preferred way to pass parameters is through anonymous functions.
 - Update remaining copyright statements to 2024.
 
@@ -56,11 +63,10 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   functioned intermittently since Octave 4.4.0.  Due to conflicts with other
   compatibility-required input methods the documentation of this syntax was
   removed in Octave 5.1.0, and the remaining functionality will be completely
-  removed in Octave 10.  The preferred, cross-platform compatible method of
-  passing parameters to any of the minimization functions (including
-  `fminsearch`, `fminbnd`, and `fminunc`) is through the use of Anonymous
-  Functions.  Specific examples of this can be found in the @ref{Minimizers}
-  section of the GNU Octave manual.
+  removed in Octave 10.  The preferred method of passing parameters to any of
+  the minimization functions (including `fminsearch`, `fminbnd`, and `fminunc`)
+  is through the use of anonymous functions.  Specific examples of this can be
+  found in the "Minimizers" section of the GNU Octave manual.
 
 
 Summary of important user-visible changes for version 9 (2024-03-12):

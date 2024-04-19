@@ -65,13 +65,12 @@
 %! end_unwind_protect
 
 ## Try to add breakpoint in non-existent method
-%!test <65610>
+%!test <65610*>
 %! if (isguirunning ())
 %!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
 %!                                                     "false");
 %! endif
 %! unwind_protect
-%!   ## This should error.  But it does not.
 %!   fail ("dbstop @classdef_breakpoints/baz;", "unable to find function");
 %! unwind_protect_cleanup
 %!   dbclear classdef_breakpoints;

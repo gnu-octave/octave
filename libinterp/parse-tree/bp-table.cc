@@ -797,6 +797,9 @@ public:
     if (is_function ())
       return find_fcn_by_line (m_fcn, line);
 
+    if (line < 0)
+      return nullptr;
+
     return m_cls.get_method (line).user_code_value (true);
   }
 
@@ -834,7 +837,7 @@ private:
   {
       if (m_methods_cache.empty ())
         {
-          // Not the most effecient, but reuses code:
+          // Not the most efficient, but reuses code:
           const std::map<std::string, cdef_method>& map
             = m_cls.get_method_map (false, true);
           for (auto iter = map.cbegin (); iter != map.cend (); ++iter)
@@ -872,6 +875,10 @@ bp_table::add_breakpoints_in_function (const std::string& fcn_ident,
     {
       octave_user_code *dbg_fcn = user_code (lineno);
 
+      if (! dbg_fcn)
+        error ("add_breakpoints_in_function: unable to find function '%s'\n",
+               fcn_ident.c_str ());
+
       // We've found the right (sub)function.  Now insert the breakpoint.
       bp_lines line_info;
       line_info.insert (lineno);
@@ -879,14 +886,13 @@ bp_table::add_breakpoints_in_function (const std::string& fcn_ident,
       bp_lines ret_one;
 
       std::string ident = fcn_ident;
-      if (! user_code.is_function () && fcn_ident[0] != '@' && dbg_fcn)
+      if (! user_code.is_function () && fcn_ident[0] != '@')
         {
           // identifier of the form @class_name/method_name
           ident = "@" + fcn_ident + "/" + dbg_fcn->name ();
         }
 
-      if (dbg_fcn && add_breakpoint_1 (dbg_fcn, ident, line_info,
-                                       condition, ret_one))
+      if (add_breakpoint_1 (dbg_fcn, ident, line_info, condition, ret_one))
         {
           if (! ret_one.empty ())
             {

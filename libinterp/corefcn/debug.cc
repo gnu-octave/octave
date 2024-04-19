@@ -185,7 +185,7 @@ debug_on_interrupt}
                                      class_name, lines, condition);
 
       if (lines.size () == 0)
-        lines.insert (1);
+        lines.insert (-1);
 
       if (symbol_name != "")
         {

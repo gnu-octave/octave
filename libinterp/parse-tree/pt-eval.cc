@@ -3063,7 +3063,13 @@ tree_evaluator::get_user_code (const std::string& fname)
 
           cdef_class cls = cdm.find_class (dispatch_type, false);
           if (cls.ok () && cls.get_name () == dispatch_type)
-            fcn = cls.find_method (method).get_function ();
+            {
+              cdef_method meth = cls.find_method (method);
+              if (meth.ok () && meth.get_name () == method)
+                fcn = meth.get_function ();
+              else
+                return nullptr;
+            }
 
           // If there is no classdef method, then try legacy classes.
           if (fcn.is_undefined ())

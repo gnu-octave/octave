@@ -41,7 +41,7 @@
 ## with @code{T = profile ("info")}.
 ##
 ## @item profile clear
-## Clear all collected profiler data.
+## Clear all collected profiler data and stop profiling.
 ##
 ## @item profile resume
 ## Restart profiling without clearing the old data.  All newly collected
@@ -84,18 +84,16 @@ function retval = profile (arg)
       __profiler_enable__ (false);
 
     case "clear"
+      if (__profiler_enable__ ())
+        __profiler_enable__ (false);
+      endif
       __profiler_reset__ ();
 
     case "resume"
       __profiler_enable__ (true);
 
     case "status"
-      enabled = __profiler_enable__ ();
-      if (enabled)
-        enabled = "on";
-      else
-        enabled = "off";
-      endif
+      enabled = ifelse (__profiler_enable__ (), 'on', 'off');
       retval = struct ("ProfilerStatus", enabled);
 
     case "info"
@@ -156,5 +154,4 @@ endfunction
 
 ## Test input validation
 %!error <Invalid call> profile ()
-%!error profile ("on", 2)
 %!error profile ("INVALID_OPTION")

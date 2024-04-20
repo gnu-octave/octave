@@ -721,24 +721,70 @@ cdef_class::cdef_class_rep::get_method (int line) const
       const octave_value& fcn = i->second.get_function ();
       octave_user_code *user_code = fcn.user_code_value ();
 
-      if (user_code == nullptr)
+      if (! user_code)
         continue;
 
-      octave_user_function* pfcn
-        = dynamic_cast<octave_user_function*> (user_code);
+      octave_user_function *pfcn
+        = dynamic_cast<octave_user_function *> (user_code);
 
-      if (pfcn == nullptr)
+      if (! pfcn)
         continue;
 
       octave::filepos end_pos = pfcn->end_pos ();
 
       int end_line = end_pos.line ();
 
-      if (line <= end_line && end_line <= closest_match_end_line && pfcn->is_defined ()
-          && pfcn->is_user_code ())
+      if (line <= end_line && end_line <= closest_match_end_line
+          && pfcn->is_defined () && pfcn->is_user_code ())
         {
           closest_match = fcn;
           closest_match_end_line = end_line;
+        }
+    }
+
+  // repeat the same for set and get methods of properties
+  for (auto i = m_property_map.cbegin (); i != m_property_map.cend (); ++i)
+    {
+      const octave_value& get_meth = i->second.get ("GetMethod");
+      if (get_meth.is_function_handle ())
+        {
+          octave_user_function *pfcn
+            = get_meth.user_function_value ();
+
+          if (! pfcn)
+            continue;
+
+          octave::filepos end_pos = pfcn->end_pos ();
+
+          int end_line = end_pos.line ();
+
+          if (line <= end_line && end_line <= closest_match_end_line
+              && pfcn->is_defined () && pfcn->is_user_code ())
+            {
+              closest_match = get_meth;
+              closest_match_end_line = end_line;
+            }
+        }
+
+      const octave_value& set_meth = i->second.get ("SetMethod");
+      if (set_meth.is_function_handle ())
+        {
+          octave_user_function *pfcn
+            = set_meth.user_function_value ();
+
+          if (! pfcn)
+            continue;
+
+          octave::filepos end_pos = pfcn->end_pos ();
+
+          int end_line = end_pos.line ();
+
+          if (line <= end_line && end_line <= closest_match_end_line
+              && pfcn->is_defined () && pfcn->is_user_code ())
+            {
+              closest_match = set_meth;
+              closest_match_end_line = end_line;
+            }
         }
     }
 

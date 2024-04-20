@@ -3036,11 +3036,42 @@ tree_evaluator::get_user_code (const std::string& fname)
           cdef_class cls = cdm.find_class (dispatch_type, false);
           if (cls.ok () && cls.get_name () == dispatch_type)
             {
-              cdef_method meth = cls.find_method (method);
-              if (meth.ok () && meth.get_name () == method)
-                fcn = meth.get_function ();
+              if (! method.compare (0, 4, "get."))
+                {
+                  // find get method of classdef property
+                  std::string prop_name = method.substr (4);
+                  cdef_property prop = cls.find_property (prop_name);
+                  if (prop.ok () && prop.get_name () == prop_name)
+                    {
+                      const octave_value& get_meth = prop.get ("GetMethod");
+                      if (get_meth.is_function_handle ())
+                        return get_meth.user_function_value ()->user_code_value ();
+                      else
+                        return nullptr;
+                    }
+                }
+              else if (! method.compare (0, 4, "set."))
+                {
+                  // find set method of classdef property
+                  std::string prop_name = method.substr (4);
+                  cdef_property prop = cls.find_property (prop_name);
+                  if (prop.ok () && prop.get_name () == prop_name)
+                    {
+                      const octave_value& set_meth = prop.get ("SetMethod");
+                      if (set_meth.is_function_handle ())
+                        return set_meth.user_function_value ()->user_code_value ();
+                      else
+                        return nullptr;
+                    }
+                }
               else
-                return nullptr;
+                {
+                  cdef_method meth = cls.find_method (method);
+                  if (meth.ok () && meth.get_name () == method)
+                    fcn = meth.get_function ();
+                  else
+                    return nullptr;
+                }
             }
 
           // If there is no classdef method, then try legacy classes.

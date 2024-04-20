@@ -8618,7 +8618,7 @@ dimensions of the decoded array.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string str = args(0).string_value ();
+  std::string str = args(0).xstring_value ("base64_decode: first argument must be a character array");
 
   Array<double> retval = base64_decode (str);
 
@@ -8652,7 +8652,7 @@ dimensions of the decoded array.
 %!error base64_decode ()
 %!error base64_decode (1,2,3)
 %!error base64_decode (1, "this is not a valid set of dimensions")
-%!error <input was not valid base64> base64_decode (1)
+%!error <first argument must be a character array> base64_decode (1)
 %!error <input was not valid base64> base64_decode ("AQ=")
 %!error <incorrect input size> base64_decode ("AQ==")
 */
@@ -8674,7 +8674,7 @@ dimensions of the decoded array.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string str = args(0).string_value ();
+  std::string str = args(0).xstring_value ("__base64_decode_bytes__: first argument must be a character array");
 
   intNDArray<octave_uint8> retval = base64_decode_bytes (str);
 
@@ -8708,7 +8708,7 @@ dimensions of the decoded array.
 %!error __base64_decode_bytes__ ()
 %!error __base64_decode_bytes__ (1,2,3)
 %!error __base64_decode_bytes__ (1, "this is not a valid set of dimensions")
-%!error <input was not valid base64> __base64_decode_bytes__ (1)
+%!error <first argument must be a character array> __base64_decode_bytes__ (1)
 */
 
 OCTAVE_END_NAMESPACE(octave)

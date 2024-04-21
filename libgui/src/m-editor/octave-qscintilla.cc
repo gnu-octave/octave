@@ -888,8 +888,13 @@ octave_qscintilla::contextmenu_run (bool)
   for (int i = 0; i < lines.count (); i++)
     {
       QString line = lines.at (i);
+
       if (line.trimmed ().isEmpty ())
         continue;
+
+      if (! line.contains (QRegularExpression("^%!(demo|test)\\s*")))
+        line.replace (QRegularExpression("^%!\\s"), "");   // allow running tests & demos
+
       QString line_escaped = line;
       line_escaped.replace (QString ("'"), QString ("''"));
       QString line_history = line;

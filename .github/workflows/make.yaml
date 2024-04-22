@@ -785,7 +785,7 @@ jobs:
             ${{ matrix.target-prefix }}-ccache
             ${{ matrix.target-prefix }}-icoutils
             ${{ matrix.target-prefix }}-librsvg
-            texinfo
+            ${{ matrix.target-prefix }}-texinfo
 
             unzip
             zip
@@ -880,15 +880,10 @@ jobs:
         continue-on-error: true
         timeout-minutes: 60
 
-        # Perl scripts cannot be run as executables on Windows (no shebang mechanism).
-        # We need to wrap them by calling the perl executable explicitly.
-
         # mkoctfile seems to have trouble when gcc is called via ccache. So,
         # remove the directory with the ccache wrappers from PATH.
 
         run: |
-          echo "makeinfo_program (sprintf ('%s && cd %s && perl makeinfo', [s=nthargout(2, @system, 'cygpath -w /usr/bin')](1:2), strtrim (s)));" \
-            >> ./scripts/startup/site-rcfile
           export PATH=$(echo "$PATH" | sed -e "s|$MINGW_PREFIX/lib/ccache/bin:||g")
           make -C ./.build check-tree-evaluator RUN_OCTAVE_OPTIONS="--no-gui-libs" | tee ./test-suite.log
 

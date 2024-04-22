@@ -888,8 +888,22 @@ octave_qscintilla::contextmenu_run (bool)
   for (int i = 0; i < lines.count (); i++)
     {
       QString line = lines.at (i);
+
       if (line.trimmed ().isEmpty ())
         continue;
+
+      if (line.startsWith ("%!"))   // Handle tests and demos
+        {
+          // Do not remove %! if keyword is directly following.
+          // Exception: assert
+            {
+              // assert might be used without leading space
+              line.replace (QRegularExpression("^%!assert(\\s*)([^\\s]+)"), "assert\\1\\2");
+              // Remove "%! "
+              line.replace (QRegularExpression("^%!\\s+"), "");
+            }
+        }
+
       QString line_escaped = line;
       line_escaped.replace (QString ("'"), QString ("''"));
       QString line_history = line;

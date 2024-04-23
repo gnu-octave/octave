@@ -332,7 +332,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
       if (tmp.is_defined ())                                            \
         {                                                               \
           if (! tmp.isempty ())                                        \
-            VAL = tmp.yint_value ("glpk: invalid value in PARAM" NAME); \
+            VAL = tmp.strict_int_value ("glpk: invalid value in PARAM" NAME); \
           else                                                          \
             error ("glpk: invalid value in PARAM" NAME);                \
         }                                                               \

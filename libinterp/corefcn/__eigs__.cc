@@ -345,7 +345,7 @@ Undocumented internal function.
           if (tmp.numel () != 1)
             error ("eigs: OPTS.issym must be a scalar value");
 
-          symmetric = tmp.ybool_value ("eigs: OPTS.issym must be a logical value");
+          symmetric = tmp.strict_bool_value ("eigs: OPTS.issym must be a logical value");
           sym_tested = true;
         }
 
@@ -358,7 +358,7 @@ Undocumented internal function.
               if (tmp.numel () != 1)
                 error ("eigs: OPTS.isreal must be a scalar value");
 
-              a_is_complex = ! tmp.ybool_value ("eigs: OPTS.isreal must be a logical value");
+              a_is_complex = ! tmp.strict_bool_value ("eigs: OPTS.isreal must be a logical value");
             }
         }
 
@@ -393,7 +393,7 @@ Undocumented internal function.
           if (tmp.numel () != 1)
             error ("eigs: OPTS.cholB must be a scalar value");
 
-          cholB = tmp.ybool_value ("eigs: OPTS.cholB must be a logical value");
+          cholB = tmp.strict_bool_value ("eigs: OPTS.cholB must be a logical value");
         }
 
       tmp = map.getfield ("permB");

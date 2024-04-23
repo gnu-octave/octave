@@ -199,8 +199,8 @@ sprandsym, spconvert, spfun}
     }
   else if (nargin == 2)
     {
-      octave_idx_type m = args(0).yidx_type_value ("sparse: M must be a non-negative integer");
-      octave_idx_type n = args(1).yidx_type_value ("sparse: N must be a non-negative integer");
+      octave_idx_type m = args(0).strict_idx_type_value ("sparse: M must be a non-negative integer");
+      octave_idx_type n = args(1).strict_idx_type_value ("sparse: N must be a non-negative integer");
 
       if (m < 0 || n < 0)
         error ("sparse: dimensions M and N must be non-negative");
@@ -233,8 +233,8 @@ sprandsym, spconvert, spfun}
 
       if (nargin == 5)
         {
-          m = args(3).yidx_type_value ("sparse: M must be a non-negative integer");
-          n = args(4).yidx_type_value ("sparse: N must be a non-negative integer");
+          m = args(3).strict_idx_type_value ("sparse: M must be a non-negative integer");
+          n = args(4).strict_idx_type_value ("sparse: N must be a non-negative integer");
 
           if (m < 0 || n < 0)
             error ("sparse: dimensions M and N must be non-negative");

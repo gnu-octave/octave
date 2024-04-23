@@ -96,7 +96,7 @@ If the optional argument @var{dim} is supplied, work along dimension @var{dim}.
     print_usage ();
 
   int dim = (nargin == 1 ? -1
-             : args(1).yint_value ("all: DIM must be an integer")-1);
+             : args(1).strict_int_value ("all: DIM must be an integer")-1);
 
   if (dim < -1)
     error ("all: invalid dimension argument = %d", dim + 1);
@@ -161,7 +161,7 @@ any (eye (2, 4), 2)
     print_usage ();
 
   int dim = (nargin == 1 ? -1
-             : args(1).yint_value ("any: DIM must be an integer")-1);
+             : args(1).strict_int_value ("any: DIM must be an integer")-1);
 
   if (dim < -1)
     error ("any: invalid dimension argument = %d", dim + 1);
@@ -1267,7 +1267,7 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
     retval = args(0).diag ();
   else if (nargin == 2)
     {
-      octave_idx_type k = args(1).yidx_type_value ("diag: invalid argument K");
+      octave_idx_type k = args(1).strict_idx_type_value ("diag: invalid argument K");
 
       retval = args(0).diag (k);
     }
@@ -1278,8 +1278,8 @@ Given a matrix argument, instead of a vector, @code{diag} extracts the
       if (arg0.ndims () != 2 || (arg0.rows () != 1 && arg0.columns () != 1))
         error ("diag: V must be a vector");
 
-      octave_idx_type m = args(1).yidx_type_value ("diag: invalid dimension M");
-      octave_idx_type n = args(2).yidx_type_value ("diag: invalid dimension N");
+      octave_idx_type m = args(1).strict_idx_type_value ("diag: invalid dimension M");
+      octave_idx_type n = args(2).strict_idx_type_value ("diag: invalid dimension N");
 
       retval = arg0.diag (m, n);
     }
@@ -2375,7 +2375,7 @@ cat (4, ones (2, 2), zeros (2, 2))
   if (args.length () == 0)
     print_usage ();
 
-  int dim = args(0).yint_value ("cat: DIM must be an integer") - 1;
+  int dim = args(0).strict_int_value ("cat: DIM must be an integer") - 1;
 
   if (dim < 0)
     error ("cat: DIM must be a valid dimension");
@@ -8618,7 +8618,7 @@ dimensions of the decoded array.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string str = args(0).string_value ();
+  std::string str = args(0).xstring_value ("base64_decode: first argument must be a character array");
 
   Array<double> retval = base64_decode (str);
 
@@ -8652,7 +8652,7 @@ dimensions of the decoded array.
 %!error base64_decode ()
 %!error base64_decode (1,2,3)
 %!error base64_decode (1, "this is not a valid set of dimensions")
-%!error <input was not valid base64> base64_decode (1)
+%!error <first argument must be a character array> base64_decode (1)
 %!error <input was not valid base64> base64_decode ("AQ=")
 %!error <incorrect input size> base64_decode ("AQ==")
 */
@@ -8674,7 +8674,7 @@ dimensions of the decoded array.
   if (nargin < 1 || nargin > 2)
     print_usage ();
 
-  std::string str = args(0).string_value ();
+  std::string str = args(0).xstring_value ("__base64_decode_bytes__: first argument must be a character array");
 
   intNDArray<octave_uint8> retval = base64_decode_bytes (str);
 
@@ -8708,7 +8708,7 @@ dimensions of the decoded array.
 %!error __base64_decode_bytes__ ()
 %!error __base64_decode_bytes__ (1,2,3)
 %!error __base64_decode_bytes__ (1, "this is not a valid set of dimensions")
-%!error <input was not valid base64> __base64_decode_bytes__ (1)
+%!error <first argument must be a character array> __base64_decode_bytes__ (1)
 */
 
 OCTAVE_END_NAMESPACE(octave)

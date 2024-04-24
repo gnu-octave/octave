@@ -52,7 +52,23 @@
 ## @result{} d =  113
 ##
 ## n / d - pi
-## @result{} 0.00000026676
+## @result{} 2.6676e-07
+## @end group
+## @end example
+##
+## Complex inputs are similar:
+##
+## @example
+## @group
+## s = rat (0.5 + i * pi)
+## @result{} s = (1 + 1/(-2)) + (3 + 1/(7 + 1/16)) * i
+##
+## [n, d] = rat (0.5 + i * pi)
+## @result{} n =  113 + 710i
+## @result{} d =  226
+##
+## n / d - (0.5 + i * pi)
+## @result{} 0 + 2.6676e-07i
 ## @end group
 ## @end example
 ##
@@ -73,12 +89,6 @@ function [n, d] = rat (x, tol)
     error ("rat: X must be a single or double array");
   endif
 
-  ## FIXME: This test should be removed when complex support is added.
-  ##        See bug #55198.
-  if (iscomplex (x))
-    error ("rat: X must be a real, not complex, array");
-  endif
-
   y = x(:);
 
   ## Replace Inf with 0 while calculating ratios.
@@ -88,10 +98,26 @@ function [n, d] = rat (x, tol)
   if (nargin == 1)
     ## default norm
     tol = 1e-6 * norm (y, 1);
+    ## FIXME: tol becomes 0 if all inputs have Inf in them,
+    ## which breaks rat (complex (0, inf)); see bug #55198.
   else
     if (! (isscalar (tol) && isnumeric (tol) && tol > 0))
       error ("rat: TOL must be a numeric scalar > 0");
     endif
+  endif
+
+  if (iscomplex (x))
+    if (nargout == 2)  # return numerator and denominator
+      [nr, dr] = rat (real (x), tol);
+      [ni, di] = rat (imag (x), tol);
+      d = lcm (dr, di);
+      n = nr .* (d ./ dr) + ni .* (d ./ di) * i;
+    elseif (nargout <= 1)  # string output
+      realstr = rat (real (x), tol);
+      imagstr = rat (imag (x), tol);
+      n = [repmat("(", rows(realstr), 1), realstr, repmat(") + (", rows(realstr), 1), imagstr, repmat(") * i", rows(imagstr), 1)];
+    end
+    return
   endif
 
   ## First step in the approximation is the integer portion
@@ -220,12 +246,37 @@ endfunction
 %! assert (n, [1, 0, -1]);
 %! assert (d, [0, 1, 0]);
 
+## Test complex scalar input
+%!test <*55198>
+%! assert (rat (complex (0.5, pi)), "(1 + 1/(-2)) + (3 + 1/(7 + 1/16)) * i");
+%! [n, d] = rat (complex (0.5, pi));
+%! assert (n, 113 + 710*i);
+%! assert (d, 226);
+
+## Test complex vector input in all four quadrants
+%!test <*55198>
+%! theta = 72 * (1:4);
+%! x = cosd (theta) + i * sind (theta);
+%! [n, d] = rat (x);
+%! assert (n, [274195+843885i, -39955+29029i, -39955-29029i, 274195-843885i]);
+%! assert (d, [887313, 49387, 49387, 887313]);
+%! assert (all (abs (n ./ d - x) <= 2e-6));
+%! str = rat (x);
+%! assert (str(1, :), "(0 + 1/(3 + 1/(4 + 1/(4 + 1/(4 + 1/4))))) + (1 + 1/(-20 + 1/(-2 + 1/(-3 + 1/(-6))))) * i");
+%! assert (str(2, :), "(-1 + 1/(5 + 1/(4 + 1/(4 + 1/4)))       ) + (1 + 1/(-2 + 1/(-2 + 1/(-3 + 1/8)))    ) * i");
+%! assert (str(3, :), "(-1 + 1/(5 + 1/(4 + 1/(4 + 1/4)))       ) + (-1 + 1/(2 + 1/(2 + 1/(3 + 1/(-8))))   ) * i");
+%! assert (str(4, :), "(0 + 1/(3 + 1/(4 + 1/(4 + 1/(4 + 1/4))))) + (-1 + 1/(20 + 1/(2 + 1/(3 + 1/6)))     ) * i");
+
+## Test complex exceptional inputs
+%!test <55198>
+%! assert (rat (complex (inf, 0)), "(Inf) + (0) * i");
+%! assert (rat (complex (0, inf)), "(0) + (Inf) * i");
+
 %!assert <*43374> (eval (rat (0.75)), [0.75])
 
 ## Test input validation
 %!error <Invalid call> rat ()
 %!error <X must be a single or double array> rat (int8 (3))
-%!error <X must be a real, not complex, array> rat (1+1i)
 %!error <TOL must be a numeric scalar> rat (1, "a")
 %!error <TOL must be a numeric scalar> rat (1, [1 2])
 %!error <TOL must be a numeric scalar . 0> rat (1, -1)

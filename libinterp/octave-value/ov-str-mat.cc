@@ -285,9 +285,15 @@ octave_char_matrix_str::short_disp (std::ostream& os) const
       std::string tmp = chm.row_as_string (0);
 
       // FIXME: should this be configurable?
-      std::size_t max_len = 100;
+      std::size_t max_len = 50;
 
-      os << (tmp.length () > max_len ? tmp.substr (0, 100) : tmp);
+      char quote_char = is_sq_string () ? '\'' : '"';
+
+      os << quote_char;
+      if (tmp.length () > max_len)
+        os << tmp.substr (0, 50) << quote_char << " (truncated)";
+      else
+        os << tmp << quote_char;
     }
 }
 

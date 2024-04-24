@@ -699,7 +699,10 @@ octave_cell::print_name_tag (std::ostream& os, const std::string& name) const
 void
 octave_cell::short_disp (std::ostream& os) const
 {
-  os << (m_matrix.isempty () ? "{}" : "...");
+  // octave_base_matrix<octave_value>::short_disp is not appropriate for
+  // cell arrays.
+
+  octave_base_value::short_disp (os);
 }
 
 #define CELL_ELT_TAG "<cell-element>"

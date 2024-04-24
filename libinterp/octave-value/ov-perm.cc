@@ -510,8 +510,6 @@ octave_perm_matrix::short_disp (std::ostream& os) const
       octave_idx_type max_elts = 10;
       octave_idx_type elts = 0;
 
-      octave_idx_type nel = m_matrix.numel ();
-
       octave_idx_type nr = m_matrix.rows ();
       octave_idx_type nc = m_matrix.columns ();
 
@@ -530,25 +528,37 @@ octave_perm_matrix::short_disp (std::ostream& os) const
                 os << tmp.substr (pos);
               else if (! tmp.empty ())
                 os << tmp[0];
-
-              if (++elts >= max_elts)
-                goto done;
+              elts++;
 
               if (j < nc - 1)
-                os << ", ";
+                {
+                  os << ", ";
+
+                  if (elts >= max_elts)
+                    {
+                      os << "...";
+                      goto done;
+                    }
+                }
             }
 
-          if (i < nr - 1 && elts < max_elts)
-            os << "; ";
+          if (i < nr - 1)
+            {
+              os << "; ";
+
+              if (elts >= max_elts)
+                {
+                  os << "...";
+                  goto done;
+                }
+            }
         }
 
     done:
-
-      if (nel <= max_elts)
-        os << ']';
+      os << ']';
     }
   else
-    os << "...";
+    octave_base_value::short_disp (os);
 }
 
 octave_base_value *

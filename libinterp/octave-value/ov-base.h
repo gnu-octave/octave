@@ -758,7 +758,11 @@ public:
   print_with_name (std::ostream& output_buf, const std::string& name,
                    bool print_padding = true);
 
-  virtual void short_disp (std::ostream& os) const { os << "..."; }
+  virtual void short_disp (std::ostream& os) const
+  {
+    dim_vector dv = dims ();
+    os << "[" << dv.str () << " " << class_name () << "]";
+  }
 
   virtual OCTINTERP_API float_display_format get_edit_display_format () const;
 

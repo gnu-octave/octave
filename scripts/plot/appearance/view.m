@@ -58,6 +58,10 @@ function [azimuth, elevation] = view (varargin)
     print_usage ();
   endif
 
+  if (nargout > 0 && nargin > 0)
+    error ("view: cannot simultaneously get and set viewpoint");
+  endif
+
   if (isempty (hax))
     hax = gca ();
   endif
@@ -66,8 +70,6 @@ function [azimuth, elevation] = view (varargin)
     vw = get (hax, "view");
     az = vw(1);
     el = vw(2);
-  elseif (nargout > 0)
-    error ("view: cannot simultaneously get and set viewpoint");
   elseif (numel (varargin) == 1)
     x = varargin{1};
     if (numel (x) == 2)

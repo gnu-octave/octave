@@ -98,11 +98,9 @@ function [n, d] = rat (x, tol)
   if (nargin == 1)
     ## default norm
     tol = 1e-6 * norm (y, 1);
-    ## FIXME: tol becomes 0 if all inputs have Inf in them,
-    ## which breaks rat (complex (0, inf)); see bug #55198.
   else
-    if (! (isscalar (tol) && isnumeric (tol) && tol > 0))
-      error ("rat: TOL must be a numeric scalar > 0");
+    if (! (isscalar (tol) && isnumeric (tol) && tol >= 0))
+      error ("rat: TOL must be a numeric scalar >= 0");
     endif
   endif
 
@@ -115,8 +113,8 @@ function [n, d] = rat (x, tol)
     elseif (nargout <= 1)  # string output
       realstr = rat (real (x), tol);
       imagstr = rat (imag (x), tol);
-      n = [repmat("(", rows(realstr), 1), realstr, repmat(") + (", rows(realstr), 1), imagstr, repmat(") * i", rows(imagstr), 1)];
-    end
+      n = [repmat("(", rows (realstr), 1), realstr, repmat(") + (", rows (realstr), 1), imagstr, repmat(") * i", rows (imagstr), 1)];
+    endif
     return
   endif
 
@@ -268,9 +266,14 @@ endfunction
 %! assert (str(4, :), "(0 + 1/(3 + 1/(4 + 1/(4 + 1/(4 + 1/4))))) + (-1 + 1/(20 + 1/(2 + 1/(3 + 1/6)))     ) * i");
 
 ## Test complex exceptional inputs
-%!test <55198>
+%!test <*55198>
 %! assert (rat (complex (inf, 0)), "(Inf) + (0) * i");
 %! assert (rat (complex (0, inf)), "(0) + (Inf) * i");
+
+## Test eval with complex inputs
+%!test <*55198>
+%! x = complex (0.5, pi);
+%! assert (eval (rat (x)), x, 1e-6 * norm (x, 1))
 
 %!assert <*43374> (eval (rat (0.75)), [0.75])
 
@@ -279,4 +282,4 @@ endfunction
 %!error <X must be a single or double array> rat (int8 (3))
 %!error <TOL must be a numeric scalar> rat (1, "a")
 %!error <TOL must be a numeric scalar> rat (1, [1 2])
-%!error <TOL must be a numeric scalar . 0> rat (1, -1)
+%!error <TOL must be a numeric scalar .* 0> rat (1, -1)

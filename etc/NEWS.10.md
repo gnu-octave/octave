@@ -23,29 +23,28 @@ The function no longer accepts complex inputs and will emit an error for these
 inputs.
 
 - `jsonencode` now outputs integers and floating point integers without ".0"
-  suffix.
-  
+suffix.
+
 - `hist` now accepts N-dimensional array inputs for input `Y` which is
-  processed in columns as if the array was flattened to a 2-dimensional
-  array.
+processed in columns as if the array was flattened to a 2-dimensional array.
 
 ### Graphical User Interface
 
 ### Graphics backend
 
 - `polar` plots now include the center tick mark value, typically 0, in
-the 'rtick' parameter when the plot is created.  Subsequent modifications
-to 'rtick' by the function `rticks` will only include the center tick mark
+the `'rtick'` parameter when the plot is created.  Subsequent modifications
+to `'rtick'` by the function `rticks` will only include the center tick mark
 value if it is specified.
 
-- `view` correctly interprets cartesion viewpoints on main axes. (bug #65641)
+- `view` correctly interprets cartesian viewpoints on main axes (bug #65641).
 
 ### Matlab compatibility
 
 - `height` and `width` are now aliases for the `rows` and `columns` functions.
 
 - All colormaps now default to a size of 256 colors. (The previous default
-size was 64.
+size was 64.)
 
 - `griddata` output size more consistently matches the input interpolation
 points when they are input as vectors.  When they are same-orientation vectors,
@@ -58,7 +57,7 @@ through meshgrid and the output is a matrix the same size as the meshgrid.
 - `iqr` now provides compatible output for empty inputs.
 
 - `cross` now produces row vector outputs when the inputs are a mix of row
-and column vectors. (bug #61295)
+and column vectors (bug #61295).
 
 - `rat` now accepts complex inputs.
 
@@ -116,17 +115,16 @@ from Octave 10.
         sparse_auto_mutate     | none (see below)
 
 - `fminsearch` parameter passing:  A legacy, undocumented, and only partially
-  supported syntax for passing parameters to the minimized function `fcn`
-  called by `fminsearch` by appending them to the input argument list has
-  functioned intermittently since Octave 4.4.0.  Due to conflicts with other
-  compatibility-required input methods the documentation of this syntax was
-  removed in Octave 5.1.0, and the remaining functionality has been completely
-  removed in Octave 10, and attempts to call `fminsearch` with that syntax
-  will result in an error. The preferred, cross-platform compatible method of
-  passing parameters to any of the minimization functions (including
-  `fminsearch`, `fminbnd`, and `fminunc`) is through the use of Anonymous
-  Functions.  Specific examples of this can be found in the @ref{Minimizers}
-  section of the GNU Octave manual.
+supported syntax for passing parameters to the minimized function `fcn` called
+by `fminsearch` by appending them to the input argument list was partly
+implemented since Octave 4.4.0.  Due to conflicts with other input methods,
+the documentation of this syntax was removed in Octave 5.1.0.  The remaining
+functionality has been completely removed in Octave 10.  Attempts to call
+`fminsearch` with that syntax will result in an error.  The preferred method of
+passing parameters to any of the minimization functions (including
+`fminsearch`, `fminbnd`, and `fminunc`) is through the use of anonymous
+functions.  Specific examples of this can be found in the "Minimizers" section
+of the Octave manual.
 
 ### Build system
 

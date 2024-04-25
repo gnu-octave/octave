@@ -74,11 +74,13 @@ function [azimuth, elevation] = view (varargin)
       az = x(1);
       el = x(2);
     elseif (numel (x) == 3)
-      [az, el] = cart2sph (x(1), x(2), x(3));
-      az *= 180/pi;
-      if (az != 0)
-        az += 90;  # Special fix for bug #57800
+      if (x(2) == 0)
+        ## special case for negative 0
+        [az, el] = cart2sph (x(2), x(1), x(3));
+      else
+        [az, el] = cart2sph (-x(2), x(1), x(3));
       endif
+      az *= 180/pi;
       el *= 180/pi;
     elseif (x == 2)
       az = 0;
@@ -141,7 +143,6 @@ endfunction
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
-%!   view (3);
 %!   view ([0, 0, 1]);
 %!   [az, el] = view ();
 %!   assert ([az, el], [0, 90], eps);
@@ -149,22 +150,31 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
-%!test <65641>
+%!test <*65641>
 %! hf = figure ("visible", "off");
 %! unwind_protect
 %!   plot3 ([0,1], [0,1], [0,1]);
-%!   view (3);
-%!   view ([0, -1, 0]);
-%!   [az, el] = view ();
-%!   assert ([az, el], [0, 0], eps);
-%!   view (3);
 %!   view ([1, 0, 0]);
 %!   [az, el] = view ();
 %!   assert ([az, el], [90, 0], eps);
-%!   view (3);
+%!   view ([-1, 0, 0]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [-90, 0], eps);
+%!   view ([0, 1, 0]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [180, 0], eps);
+%!   view ([0, -1, 0]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [0, 0], eps);
+%!   view ([0, 0, 1]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [0, 90], eps);
+%!   view ([0, 0, -1]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [0, -90], eps);
 %!   view ([1, 0.001, 0]);
 %!   [az, el] = view ();
-%!   assert ([az, el], [90 + 0.001*180/pi, 0], eps);
+%!   assert ([az, el], [90 + 0.001*180/pi, 0], eps ("single"));
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

@@ -164,7 +164,7 @@ endfunction
 %!   view (3);
 %!   view ([1, 0.001, 0]);
 %!   [az, el] = view ();
-%!   assert ([az, el], [0, 90 + 0.001*180/pi], eps);
+%!   assert ([az, el], [90 + 0.001*180/pi, 0], eps);
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect

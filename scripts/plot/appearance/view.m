@@ -66,6 +66,8 @@ function [azimuth, elevation] = view (varargin)
     vw = get (hax, "view");
     az = vw(1);
     el = vw(2);
+  elseif (nargout > 0)
+    error ("view: cannot simultaneously get and set viewpoint");
   elseif (numel (varargin) == 1)
     x = varargin{1};
     if (numel (x) == 2)
@@ -135,5 +137,38 @@ endfunction
 %!   close (hf);
 %! end_unwind_protect
 
+%!test <*57800>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   view (3);
+%!   view ([0, 0, 1]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [0, 90], eps);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <65641>
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   view (3);
+%!   view ([0, -1, 0]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [0, 0], eps);
+%!   view (3);
+%!   view ([1, 0, 0]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [90, 0], eps);
+%!   view (3);
+%!   view ([1, 0.001, 0]);
+%!   [az, el] = view ();
+%!   assert ([az, el], [0, 90 + 0.001*180/pi], eps);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 ## Test input validation
 %!error <Invalid call> view (0, 0, 1)
+%!error <cannot simultaneously get and set> [a, b] = view ([1, 1, 1])

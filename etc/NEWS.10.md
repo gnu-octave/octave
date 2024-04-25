@@ -38,6 +38,8 @@ the 'rtick' parameter when the plot is created.  Subsequent modifications
 to 'rtick' by the function `rticks` will only include the center tick mark
 value if it is specified.
 
+- `view` correctly interprets cartesion viewpoints on main axes. (bug #65641)
+
 ### Matlab compatibility
 
 - `height` and `width` are now aliases for the `rows` and `columns` functions.

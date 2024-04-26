@@ -1,8 +1,8 @@
 # A library of shell functions for autopull.sh, autogen.sh, and bootstrap.
 
-scriptlibversion=2023-08-29.21; # UTC
+scriptlibversion=2024-04-13.15; # UTC
 
-# Copyright (C) 2003-2023 Free Software Foundation, Inc.
+# Copyright (C) 2003-2024 Free Software Foundation, Inc.
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -441,10 +441,9 @@ find_tool ()
 # --------------------- Preparing GNULIB_SRCDIR for use. ---------------------
 # This is part of autopull.sh, but bootstrap needs it too, for self-upgrading.
 
+# cleanup_gnulib fails, removing the directory $gnulib_path first.
 cleanup_gnulib() {
   status=$?
-  # XXX It's a bad idea to erase the submodule directory if it contains local
-  #     modifications.
   rm -fr "$gnulib_path"
   exit $status
 }
@@ -462,48 +461,44 @@ prepare_GNULIB_SRCDIR ()
     test -f "$GNULIB_SRCDIR/gnulib-tool" \
       || die "Error: --gnulib-srcdir or \$GNULIB_SRCDIR is specified," \
              "but does not contain gnulib-tool"
-  elif $use_git; then
+    if test -n "$GNULIB_REVISION" && $use_git; then
+      (cd "$GNULIB_SRCDIR" && git checkout "$GNULIB_REVISION") || exit $?
+    fi
+  else
+    if ! $use_git; then
+      die "Error: --no-git is specified," \
+          "but neither --gnulib-srcdir nor \$GNULIB_SRCDIR is specified"
+    fi
+    if git submodule -h | grep -- --reference > /dev/null; then
+      :
+    else
+      die "git version is too old, git >= 1.6.4 is required"
+    fi
     gnulib_path=$(git_modules_config submodule.gnulib.path)
-    test -z "$gnulib_path" && gnulib_path=gnulib
-
-    # Get gnulib files.  Populate $gnulib_path, possibly updating a
-    # submodule, for use in the rest of the script.
-
-    if test -n "$GNULIB_REFDIR" && test -d "$GNULIB_REFDIR"/.git \
-       && git_modules_config submodule.gnulib.url >/dev/null; then
-      # Use GNULIB_REFDIR as a reference.
-      echo "$0: getting gnulib files..."
-      if git submodule -h|grep -- --reference > /dev/null; then
-        # Prefer the one-liner available in git 1.6.4 or newer.
-        git submodule update --init --reference "$GNULIB_REFDIR" \
-          "$gnulib_path" || exit $?
+    if test -n "$gnulib_path"; then
+      # A submodule 'gnulib' is configured.
+      # Get gnulib files.  Populate $gnulib_path, updating the submodule.
+      if test -n "$GNULIB_REFDIR" && test -d "$GNULIB_REFDIR"/.git; then
+        # Use GNULIB_REFDIR as a reference.
+        echo "$0: getting gnulib files..."
+        git submodule update --init --reference "$GNULIB_REFDIR" "$gnulib_path" \
+          || exit $?
       else
-        # This fallback allows at least git 1.5.5.
-        if test -f "$gnulib_path"/gnulib-tool; then
-          # Since file already exists, assume submodule init already complete.
+        # GNULIB_REFDIR is not set or not usable. Ignore it.
+        if git_modules_config submodule.gnulib.url >/dev/null; then
+          echo "$0: getting gnulib files..."
+          git submodule init -- "$gnulib_path" || exit $?
           git submodule update -- "$gnulib_path" || exit $?
         else
-          # Older git can't clone into an empty directory.
-          rmdir "$gnulib_path" 2>/dev/null
-          git clone --reference "$GNULIB_REFDIR" \
-            "$(git_modules_config submodule.gnulib.url)" "$gnulib_path" \
-            && git submodule init -- "$gnulib_path" \
-            && git submodule update -- "$gnulib_path" \
-            || exit $?
+          die "Error: submodule 'gnulib' has no configured url"
         fi
       fi
     else
-      # GNULIB_REFDIR is not set or not usable. Ignore it.
-      if git_modules_config submodule.gnulib.url >/dev/null; then
+      gnulib_path='gnulib'
+      if test ! -d "$gnulib_path"; then
+        # The subdirectory 'gnulib' does not yet exist. Clone into it.
         echo "$0: getting gnulib files..."
-        git submodule init -- "$gnulib_path" || exit $?
-        git submodule update -- "$gnulib_path" || exit $?
-
-      elif [ ! -d "$gnulib_path" ]; then
-        echo "$0: getting gnulib files..."
-
         trap cleanup_gnulib HUP INT PIPE TERM
-
         shallow=
         if test -z "$GNULIB_REVISION"; then
           if git clone -h 2>&1 | grep -- --depth > /dev/null; then
@@ -525,39 +520,32 @@ prepare_GNULIB_SRCDIR ()
           # is without fetching all commits. So fall back to fetching all
           # commits.
           git -C "$gnulib_path" init
-          git -C "$gnulib_path" remote add origin \
-              ${GNULIB_URL:-$default_gnulib_url}
+          git -C "$gnulib_path" remote add origin ${GNULIB_URL:-$default_gnulib_url}
           git -C "$gnulib_path" fetch $shallow origin "$GNULIB_REVISION" \
             || git -C "$gnulib_path" fetch origin \
             || cleanup_gnulib
           git -C "$gnulib_path" reset --hard FETCH_HEAD
+          (cd "$gnulib_path" && git checkout "$GNULIB_REVISION") || cleanup_gnulib
         fi
-
         trap - HUP INT PIPE TERM
-
-      elif test -n "$GNULIB_REVISION" \
-           && ! git --git-dir="$gnulib_path"/.git cat-file \
-                commit "$GNULIB_REVISION"; then
-        git --git-dir="$gnulib_path"/.git fetch
+      else
+        # The subdirectory 'gnulib' already exists.
+        if test -n "$GNULIB_REVISION"; then
+          if test -d "$gnulib_path/.git"; then
+            (cd "$gnulib_path" && git checkout "$GNULIB_REVISION") || exit 1
+          else
+            die "Error: GNULIB_REVISION is specified in bootstrap.conf," \
+                "but '$gnulib_path' contains no git history"
+          fi
+        fi
       fi
     fi
-    GNULIB_SRCDIR=$gnulib_path
-    # Verify that the submodule contains a gnulib checkout.
+    # Verify that $gnulib_path contains a gnulib checkout.
     test -f "$gnulib_path/gnulib-tool" \
-      || die "Error: $gnulib_path is supposed to contain a gnulib checkout," \
+      || die "Error: '$gnulib_path' is supposed to contain a gnulib checkout," \
              "but does not contain gnulib-tool"
+    GNULIB_SRCDIR=$gnulib_path
   fi
-
-  # XXX Should this be done if $use_git is false?
-  if test -d "$GNULIB_SRCDIR"/.git && test -n "$GNULIB_REVISION" \
-     && ! git_modules_config submodule.gnulib.url >/dev/null; then
-    if ! git --git-dir="$GNULIB_SRCDIR"/.git cat-file \
-         commit "$GNULIB_REVISION"; then
-      git --git-dir="$GNULIB_SRCDIR"/.git fetch
-    fi
-    (cd "$GNULIB_SRCDIR" && git checkout "$GNULIB_REVISION") || cleanup_gnulib
-  fi
-
   # $GNULIB_SRCDIR now points to the version of gnulib to use, and
   # we no longer need to use git or $gnulib_path below here.
 }
@@ -619,7 +607,8 @@ fi
 autopull_usage() {
   cat <<EOF
 Usage: $me [OPTION]...
-Bootstrap this package from the checked-out sources.
+Bootstrap this package from the checked-out sources, phase 1:
+Pull files from the network.
 
 Optional environment variables:
   GNULIB_SRCDIR            Specifies the local directory where gnulib
@@ -636,18 +625,19 @@ Optional environment variables:
                            which is Gnulib's upstream repository.
 
 Options:
-  --bootstrap-sync         if this bootstrap script is not identical to
+
+  --bootstrap-sync         If this bootstrap script is not identical to
                            the version in the local gnulib sources,
                            update this script, and then restart it with
-                           /bin/sh or the shell \$CONFIG_SHELL
-  --no-bootstrap-sync      do not check whether bootstrap is out of sync
-  --force                  attempt to bootstrap even if the sources seem
-                           not to have been checked out
-  --no-git                 do not use git to update gnulib.  Requires that
-                           \$GNULIB_SRCDIR or the --gnulib-srcdir option
-                           points to a gnulib repository with the correct
-                           revision
-  --skip-po                do not download po files
+                           /bin/sh or the shell \$CONFIG_SHELL.
+  --no-bootstrap-sync      Do not check whether bootstrap is out of sync.
+
+  --force                  Attempt to bootstrap even if the sources seem
+                           not to have been checked out.
+  --no-git                 Do not use git to update gnulib.  Requires that
+                           \$GNULIB_SRCDIR points to a gnulib repository
+                           with the correct revision.
+  --skip-po                Do not download *.po files.
 EOF
   bootstrap_print_option_usage_hook
   cat <<EOF
@@ -659,17 +649,16 @@ are honored.
 
 Gnulib sources can be fetched in various ways:
 
- * If the environment variable GNULIB_SRCDIR is set (either as an
-   environment variable or via the --gnulib-srcdir option), then sources
-   are fetched from that local directory.  If it is a git repository and
-   the configuration variable GNULIB_REVISION is set in bootstrap.conf,
-   then that revision is checked out.
+ * If the environment variable GNULIB_SRCDIR is set, then sources are
+   fetched from that local directory.  If it is a git repository and the
+   configuration variable GNULIB_REVISION is set in bootstrap.conf, then
+   that revision is checked out.
 
  * Otherwise, if this package is in a git repository with a 'gnulib'
    submodule configured, then that submodule is initialized and updated
-   and sources are fetched from there.  If GNULIB_REFDIR is set (either
-   as an environment variable or via the --gnulib-refdir option) and is
-   a git repository, then it is used as a reference.
+   and sources are fetched from there.  If the environment variable
+   GNULIB_REFDIR is set and is a git repository, then it is used as a
+   reference.
 
  * Otherwise, if the 'gnulib' directory does not exist, Gnulib sources
    are cloned into that directory using git from \$GNULIB_URL, defaulting
@@ -749,7 +738,7 @@ autopull()
   if $use_gnulib || $bootstrap_sync; then
     prepare_GNULIB_SRCDIR
     if $bootstrap_sync; then
-      upgrade_bootstrap
+      upgrade_bootstrap "$@"
     fi
   fi
 
@@ -862,7 +851,8 @@ update_po_files() {
 autogen_usage() {
   cat <<EOF
 Usage: $me [OPTION]...
-Bootstrap this package from the checked-out sources.
+Bootstrap this package from the checked-out sources, phase 2:
+Generate files from local files (no network access).
 
 Optional environment variables:
   GNULIB_SRCDIR            Specifies the local directory where gnulib
@@ -871,9 +861,9 @@ Optional environment variables:
                            you want to use these sources.
 
 Options:
-  --copy                   copy files instead of creating symbolic links
-  --force                  attempt to bootstrap even if the sources seem
-                           not to have been checked out
+  --copy                   Copy files instead of creating symbolic links.
+  --force                  Attempt to bootstrap even if the sources seem
+                           not to have been checked out.
 EOF
   bootstrap_print_option_usage_hook
   cat <<EOF

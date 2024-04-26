@@ -43,6 +43,7 @@ GLWidget::GLWidget (Canvas& parent_canvas, QWidget *parent)
 {
   setFocusPolicy (Qt::ClickFocus);
   setFocus ();
+  setUpdateBehavior (QOpenGLWidget::PartialUpdate);
 }
 
 GLWidget::~GLWidget () { }

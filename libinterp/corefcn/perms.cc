@@ -50,30 +50,6 @@ Factorial (octave_idx_type n)
 // Use C++ template to cater for the different octave array classes.
 //
 
-// FIXME: To allow comparison between all supported template types, we need
-// to use either "if constexpr" (supported in C++17) or template specialisation
-// (supported in C++11).  Currently (2024), Octave stipulates the usage of
-// C++11, so the (slightly more complex) template specialization is used.
-// Once Octave moves to C++17 or beyond, the following code snippet is
-// preferrable and the comparison templates can be removed:
-// bool isequal;
-// if constexpr (std::is_same<T, octave_value>::value)
-//   isequal = Ar[i].is_equal (Ar[j]);
-// else
-//   isequal = (Ar[i] == Ar[j]);
-
-template <typename T>
-bool is_equal_T (T a, T b)
-{
-  return a == b;
-}
-
-template <>
-bool is_equal_T<octave_value> (octave_value a, octave_value b)
-{
-  return a.is_equal (b);
-}
-
 template <typename T>
 static inline Array<T>
 GetPerms (const Array<T>& ar_in, bool uniq_v = false)
@@ -105,7 +81,13 @@ GetPerms (const Array<T>& ar_in, bool uniq_v = false)
         {
           for (octave_idx_type j = i + 1; j < m; j++)
             {
-              bool isequal = is_equal_T<T> (Ar[i], Ar[j]);
+              bool isequal;
+              if constexpr (std::is_same<T, octave_value>::value)
+                // operator '==' is not supported for octave_value objects
+                isequal = Ar[i].is_equal (Ar[j]);
+              else
+                isequal = (Ar[i] == Ar[j]);
+
               if (myvidx[j] > myvidx[i] && isequal)
                 {
                   myvidx[j] = myvidx[i];  // not yet processed...

@@ -532,6 +532,10 @@ prepare_GNULIB_SRCDIR ()
         # The subdirectory 'gnulib' already exists.
         if test -n "$GNULIB_REVISION"; then
           if test -d "$gnulib_path/.git"; then
+            if ! git --git-dir="$gnulib_path"/.git cat-file \
+                 commit "$GNULIB_REVISION"; then
+              git --git-dir="$gnulib_path"/.git fetch
+            fi
             (cd "$gnulib_path" && git checkout "$GNULIB_REVISION") || exit 1
           else
             die "Error: GNULIB_REVISION is specified in bootstrap.conf," \

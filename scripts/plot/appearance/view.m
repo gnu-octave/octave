@@ -79,6 +79,13 @@ function [azimuth, elevation] = view (varargin)
       if (x(2) == 0)
         ## special case for negative 0
         [az, el] = cart2sph (x(2), x(1), x(3));
+
+        if (x(1) == 0)
+          ## Compatability change to force +0 azimuth instead of +/-0 or
+          ## +/-180deg azimuth for z-aligned vector.
+          az = 0;
+        endif
+
       else
         [az, el] = cart2sph (-x(2), x(1), x(3));
       endif
@@ -180,6 +187,30 @@ endfunction
 %! unwind_protect_cleanup
 %!   close (hf);
 %! end_unwind_protect
+
+%!test <*65641> # Verify compatible z-vector viewpoint.
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   ml_out = [0, 90, Inf] .* ones (8, 1);
+%!   ml_out(1:2:end-1, 2) = -90;
+%!   output = NaN (8, 3);
+%!   plot3 ([0,1], [0,1], [0,1]);
+%!   idx = 1;
+%!   for x1 = [-0, 0]
+%!     for x2 = [-0, 0]
+%!       for x3 = [-1, 1]
+%!         view ([x1, x2, x3]);
+%!         [az, el] = view ();
+%!         output(idx, :) = [az, el, 1/az];
+%!         idx++;
+%!       endfor
+%!     endfor
+%!   endfor
+%!   assert (isequaln (output, ml_out));
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 
 ## Test input validation
 %!error <Invalid call> view (0, 0, 1)

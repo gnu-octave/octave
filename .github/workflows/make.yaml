@@ -990,6 +990,7 @@ jobs:
             ccache
             git
             icoutils
+            python
             rsvg
             texinfo
 

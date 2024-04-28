@@ -96,7 +96,7 @@ signals:
   void show_symbol_tooltip_signal (const QPoint&, const QString&);
   void context_menu_break_condition_signal (int);
   void context_menu_break_once (int);
-  void ctx_menu_run_finished_signal (bool, int, QPointer<QTemporaryFile>,
+  void ctx_menu_run_finished_signal (int, QPointer<QTemporaryFile>,
                                      QPointer<QTemporaryFile>, bool, bool);
   void focus_console_after_command_signal ();
 
@@ -110,7 +110,7 @@ public slots:
 
 private slots:
 
-  void ctx_menu_run_finished (bool, int, QPointer<QTemporaryFile>,
+  void ctx_menu_run_finished (int, QPointer<QTemporaryFile>,
                               QPointer<QTemporaryFile>, bool, bool);
 
   void contextmenu_help (bool);

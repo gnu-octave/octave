@@ -1713,6 +1713,10 @@ file_editor::request_open_file (const QString& openFileName,
           if (breakpoint_marker && ! insert)
             return;   // Never open a file when removing breakpoints
 
+          if ((breakpoint_marker  || debug_pointer)
+               && (openFileName == settings.string_value (ed_run_selection_tmp_file)))
+            return;   // Never open tmp file when debugging while running selection
+
           file_editor_tab *fileEditorTab = nullptr;
           // Reuse <unnamed> tab if it hasn't yet been modified.
           bool reusing = false;

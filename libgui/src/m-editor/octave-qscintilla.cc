@@ -908,19 +908,8 @@ octave_qscintilla::contextmenu_run (bool)
       line_escaped.replace (QString ("'"), QString ("''"));
       QString line_history = line;
 
-      // Prevent output of breakpoint in temp. file for keyboard
-      QString next_bp_quiet;
-      QString next_bp_quiet_reset;
-      if (line.contains ("keyboard"))
-        {
-          // Define commands for not showing bp location and for resetting
-          // this in case "keyboard" was within a comment
-          next_bp_quiet = "__db_next_breakpoint_quiet__;\n";
-          next_bp_quiet_reset = "\n__db_next_breakpoint_quiet__(false);";
-        }
-
       // Add codeline
-      code += next_bp_quiet + line + next_bp_quiet_reset + "\n";
+      code += line + "\n";
       hist += line_history + "\n";
     }
 
@@ -937,6 +926,10 @@ octave_qscintilla::contextmenu_run (bool)
       contextmenu_run_temp_error ();
       return;
     }
+
+  // Store file in settings in order to avoid opening it in editor
+  gui_settings settings;
+  settings.setValue (ed_run_selection_tmp_file.settings_key (), tmp_file->fileName ());
 
   // Create tmp file required for adding command to history
   QPointer<QTemporaryFile> tmp_hist = create_tmp_file ("", hist);
@@ -965,12 +958,6 @@ octave_qscintilla::contextmenu_run (bool)
         Fhistory (interp, ovl (opt, path));
       });
 
-  // Disable opening a file at a breakpoint in case keyboard () is used
-  gui_settings settings;
-
-  bool show_dbg_file = settings.bool_value (ed_show_dbg_file);
-  settings.setValue (ed_show_dbg_file.settings_key (), false);
-
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
   // so that the callback can abort if this object is no longer valid.
@@ -979,7 +966,7 @@ octave_qscintilla::contextmenu_run (bool)
 
   // Let the interpreter execute the tmp file
   emit interpreter_event
-    ([this, this_oq, tmp_file, tmp_hist, show_dbg_file] (interpreter& interp)
+    ([this, this_oq, tmp_file, tmp_hist] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1066,7 +1053,7 @@ octave_qscintilla::contextmenu_run (bool)
              stack.pop_back ();
 
            // Clean up before throwing the modified error.
-           emit ctx_menu_run_finished_signal (show_dbg_file, err_line,
+           emit ctx_menu_run_finished_signal (err_line,
                                               tmp_file, tmp_hist,
                                               dbg, auto_repeat);
 
@@ -1080,7 +1067,7 @@ octave_qscintilla::contextmenu_run (bool)
 
        // Clean up
 
-       emit ctx_menu_run_finished_signal (show_dbg_file, err_line,
+       emit ctx_menu_run_finished_signal (err_line,
                                           tmp_file, tmp_hist,
                                           dbg, auto_repeat);
 
@@ -1096,7 +1083,7 @@ octave_qscintilla::contextmenu_run (bool)
 }
 
 void octave_qscintilla::ctx_menu_run_finished
-  (bool show_dbg_file, int, QPointer<QTemporaryFile> tmp_file,
+  (int, QPointer<QTemporaryFile> tmp_file,
    QPointer<QTemporaryFile> tmp_hist, bool dbg, bool auto_repeat)
 {
   emit focus_console_after_command_signal ();
@@ -1106,12 +1093,12 @@ void octave_qscintilla::ctx_menu_run_finished
   //       possible lines from commands at a debug prompt must be
   //       taken into consideration.
 
-  gui_settings settings;
-
-  settings.setValue (ed_show_dbg_file.settings_key (), show_dbg_file);
-
   if (tmp_file && tmp_file->exists ())
-    tmp_file->remove ();
+    {
+      tmp_file->remove ();
+      gui_settings settings;
+      settings.setValue (ed_run_selection_tmp_file.settings_key (), QString ());
+    }
 
   if (tmp_hist && tmp_hist->exists ())
     tmp_hist->remove ();

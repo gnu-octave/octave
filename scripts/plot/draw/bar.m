@@ -113,6 +113,9 @@
 ## @end deftypefn
 
 function varargout = bar (varargin)
+  if (nargin < 1)
+    print_usage;
+  endif
   varargout = cell (nargout, 1);
   [varargout{:}] = __bar__ ("bar", true, varargin{:});
 endfunction
@@ -145,7 +148,7 @@ endfunction
 %! title ("stacked bar() graph including intermingled negative values");
 
 %% Test input validation
-%!error bar ()
+%!error <Invalid call> bar ()
 %!error <Y must be numeric> bar ("foo")
 %!error <X must be a vector> bar ([1 2; 3 4], [1 2 3 4])
 %!error <X vector values must be unique> bar ([1 2 3 3], [1 2 3 4])

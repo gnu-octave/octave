@@ -202,7 +202,7 @@ extern gui_pref ed_hiding_closes_files;
 
 extern gui_pref ed_always_reload_changed_files;
 
-extern gui_pref ed_run_selection_tmp_file ;
+extern gui_pref ed_run_selection_tmp_file;
 
 extern gui_pref ed_mru_file_list;
 

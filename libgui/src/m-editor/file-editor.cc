@@ -1707,14 +1707,14 @@ file_editor::request_open_file (const QString& openFileName,
         }
       else
         {
-          if (! show_dbg_file && (breakpoint_marker  || debug_pointer))
+          if (! show_dbg_file && (breakpoint_marker || debug_pointer))
             return;   // Do not open a file for showing dbg markers
 
           if (breakpoint_marker && ! insert)
             return;   // Never open a file when removing breakpoints
 
-          if ((breakpoint_marker  || debug_pointer)
-               && (openFileName == settings.string_value (ed_run_selection_tmp_file)))
+          if ((breakpoint_marker || debug_pointer)
+              && (openFileName == settings.string_value (ed_run_selection_tmp_file)))
             return;   // Never open tmp file when debugging while running selection
 
           file_editor_tab *fileEditorTab = nullptr;

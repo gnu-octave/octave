@@ -234,6 +234,9 @@ ed_always_reload_changed_files ("editor/always_reload_changed_files",
                                 QVariant (false));
 
 gui_pref
+ed_run_selection_tmp_file ("editor/run_selection_tmp_file", QVariant (QString ()));
+
+gui_pref
 ed_mru_file_list ("editor/mru_file_list", QVariant ());
 
 gui_pref

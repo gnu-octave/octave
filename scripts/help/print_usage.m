@@ -142,9 +142,87 @@ function [retval, status] = get_usage_texinfo (help_text, max_len)
     endif
   endfor
 
-  ## Run makeinfo to generate plain text
-  [retval, status] = __makeinfo__ (buffer, "plain text");
+  ## Generate plain text from the markup.
+  [retval, status] = __makeinfo_restricted__ (buffer);
+  if (status != 0)  # something went wrong in the restricted conversion.
+    ## Use the full conversion.
+    [retval, status] = __makeinfo__ (buffer, "plain text");
+  endif
 
+endfunction
+
+function [retval, status] = __makeinfo_restricted__ (buffer)
+  ## This function converts the very narrow subset of Texinfo commands
+  ## that are actually used by `print_usage` into plain text,
+  ## without requiring a slow call to `system ("makeinfo")`.
+  ##
+  ## As of April 2024, only the following Texinfo commands are being used
+  ## by print_usage strings in Octave core:
+  ##
+  ## @deftypefn, @deftypefnx, @end deftypefn, @var, @qcode, @dots, @, @@
+  ##
+  ## Note: this function is meant only for print_usage (), not for help (),
+  ## which continues to use the full makeinfo.
+
+  retval = "";
+  status = -1;  # assume failure to convert
+
+  ## The simple replacements first.
+  buffer = strrep (buffer, "@deftypefnx", "");
+  buffer = strrep (buffer, "@end deftypefn\n", "");
+  buffer = strrep (buffer, "@deftypefn ", "");
+  buffer = strrep (buffer, "@qcode", "");
+  buffer = strrep (buffer, "@dots", "...");
+
+  ## Capitalize variable names, so "@var{foo}" becomes "@var{FOO}".
+  ## FIXME: Replace this loop with a call to regexprep once transformation
+  ## features are available.
+  for j = strfind (buffer, "@var")  # each instance of @var
+    ## Upper-case the part between the relevant braces.
+    k = find (buffer(j:end) == '}', 1) + j - 1;
+    buffer((j+5):(k-1)) = upper (buffer((j+5):(k-1)));
+  endfor
+
+  ## Don't need @var any more, nor any braces.
+  buffer = strrep (buffer, "@var", "");
+  buffer(buffer == '{' | buffer == '}') = [];
+
+  ## There should not be any Texinfo commands remaining at this point.
+  ## Search for this with the regex "@[a-z]" because other instances of @
+  ## occur next to upper case letters or non-letters by this point.
+  if (any (regexp (buffer, "@[a-z]")))
+    ## There is some Texinfo command in the deftypefn line
+    ## outside the scope of this restricted function,
+    ## so return with status set to failure.
+    return
+  endif
+
+  ## Process any remaining @ signs.
+  ## Context: A line like this:
+  ##    setappdata (H, @NAME1, NAME2, ...@, @VALUE1, VALUE2, ...@)
+  ## should become
+  ##    setappdata (H, {NAME1, NAME2, ...}, {VALUE1, VALUE2, ...})
+  ## But a line like this:
+  ##   A = cellfun (@@FCN, C)
+  ## should become:
+  ##   A = cellfun (@FCN, C)
+  ## and not this:
+  ##   A = cellfun ({}FCN, C)
+  ## Currently the code uses a guard string to protect the @@,
+  ## then replaces @ with { or }, then unprotects the @@ and changes it to @.
+  ## FIXME: Simplify this conversion sequence if possible.
+
+  if (any (buffer == '@'))
+    guardstring = "ZAQWSXCDERFV";  # some improbable sequence
+    buffer = strrep (buffer, "@@", guardstring);
+    ff = find (buffer == '@');  # these show up in pairs, verified with assert
+    buffer(ff(1:2:end)) = '{';  # odd-numbered locations become {
+    buffer(ff(2:2:end)) = '}';  # even-numbered ones become }
+    buffer = strrep (buffer, guardstring, "@");
+  endif
+
+  retval = buffer;
+  status = 0;  # == success
 endfunction
 
 function [retval, status] = get_usage_html (help_text, max_len)

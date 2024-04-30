@@ -25,7 +25,7 @@
 
 ## -*- texinfo -*-
 ## @deftypefn  {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{wlen})
-## @deftypefnx {} {@var{y} =} movfun (@var{fcn}, @var{x}, @var{[@var{nb}, @var{na}}])
+## @deftypefnx {} {@var{y} =} movfun (@var{fcn}, @var{x}, [@var{nb}, @var{na}])
 ## @deftypefnx {} {@var{y} =} movfun (@dots{}, "@var{property}", @var{value})
 ##
 ## Apply function @var{fcn} to a moving window of length @var{wlen} on data

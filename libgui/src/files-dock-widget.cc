@@ -466,13 +466,6 @@ files_dock_widget::files_dock_widget (QWidget *p)
 
   if (! p)
     make_window ();
-
-  // Initialize column order and width of the file browser. From this post,
-  // https://www.qtcentre.org/threads/26675-QTableView-saving-restoring-columns-widths
-  // this might fail if done directly in the constructor. This effect shows
-  // up in the GUI since Qt 6.6.x. As a solution, the following timer ensures
-  // that the header is restored when the event loop is idle.
-  QTimer::singleShot (0, this, SLOT(restore_header_state ()));
 }
 
 void
@@ -1141,7 +1134,12 @@ files_dock_widget::notice_settings ()
   if (m_sync_octave_dir)
     do_sync_browser_directory ();
 
-  // Restore column state in case the setting above somehow changed them
+  // Initialize column order, visibility and width of the file browser. From this post,
+  // https://www.qtcentre.org/threads/26675-QTableView-saving-restoring-columns-widths
+  // this might fail if done directly after other actions. This effect shows
+  // up in the GUI since Qt 6.6.x. As a solution, the following timer ensures
+  // that the header is restored when the event loop is idle.
+
   QTimer::singleShot (0, this, SLOT(restore_header_state ()));
 }
 

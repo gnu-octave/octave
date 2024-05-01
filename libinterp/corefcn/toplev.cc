@@ -262,16 +262,7 @@ Windows systems.
   bool return_output = (nargin == 1 && nargout > 1);
 
   if (nargin > 1)
-    {
-      try
-        {
-          return_output = args(1).is_true ();
-        }
-      catch (execution_exception& ee)
-        {
-          error (ee, "system: RETURN_OUTPUT must be boolean value true or false");
-        }
-    }
+    return_output = args(1).strict_bool_value ("system: RETURN_OUTPUT must be boolean value true or false");
 
   if (return_output && type == et_async)
     error ("system: can't return output from commands run asynchronously");
@@ -322,6 +313,9 @@ Windows systems.
 
 %!error system ()
 %!error system (1, 2, 3)
+%!error <RETURN_OUTPUT must be boolean value> system (ls_command (), "foo")
+%!error <TYPE must be .*sync.* or .*async> system (ls_command (), true, "foo")
+%!warning <converted to logical 1> system (ls_command (), 0.5);
 */
 
 static octave_value

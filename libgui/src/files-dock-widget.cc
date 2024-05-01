@@ -230,7 +230,9 @@ private:
 std::map<QString, QIcon> cache_file_icon_provider::m_icon_cache;
 
 files_dock_widget::files_dock_widget (QWidget *p)
-  : octave_dock_widget ("FilesDockWidget", p)
+  : octave_dock_widget ("FilesDockWidget", p),
+    m_first (true),
+    m_header_settings_only (false)
 {
   set_title (tr ("File Browser"));
   setToolTip (tr ("Browse your files"));
@@ -630,24 +632,25 @@ files_dock_widget::toggle_header (int col)
 {
   gui_settings settings;
 
-  QString key = m_columns_shown_keys.at (col);
-  bool shown = settings.value (key, false).toBool ();
-  settings.setValue (key, ! shown);
-  settings.sync ();
-
-  switch (col)
+  if (col <= 2)
     {
-    case 0:
-    case 1:
-    case 2:
-      // toggle column visibility
-      m_file_tree_view->setColumnHidden (col + 1, shown);
-      break;
-    case 3:
-    case 4:
-      // other actions depending on new settings
+      // Toggle column visibility
+      m_file_tree_view->setColumnHidden (col + 1,
+                                ! m_file_tree_view->isColumnHidden (col +1));
+    }
+  else
+    {
+      // Other actions depending on new settings
+      QString key = m_columns_shown_keys.at (col);
+      bool active = settings.value (key, false).toBool ();
+
+      // Toggle the settings in the settings file
+      settings.setValue (key, ! active);
+      settings.sync ();
+
+      // Reload header related settings only
+      m_header_settings_only = true; 
       notice_settings ();
-      break;
     }
 }
 
@@ -668,9 +671,17 @@ files_dock_widget::headercontextmenu_requested (const QPoint& mpos)
                                         m_sig_mapper, SLOT (map ()));
       m_sig_mapper->setMapping (action, i);
       action->setCheckable (true);
-      action->setChecked
-        (settings.value (m_columns_shown_keys.at (i),
-                         m_columns_shown_defs.at (i)).toBool ());
+      if (i <= 2)
+        {
+          // Column visibility
+          action->setChecked (! m_file_tree_view->isColumnHidden (i +1));
+        }
+      else
+        {
+          // Other actions depending on settings
+          action->setChecked (settings.value (m_columns_shown_keys.at (i),
+                              m_columns_shown_defs.at (i)).toBool ());
+        }
     }
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -1080,19 +1091,15 @@ files_dock_widget::notice_settings ()
 {
   gui_settings settings;
 
-  // QSettings pointer is checked before emitting.
-
-  int size_idx = settings.int_value (global_icon_size);
-  size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
-
-  QStyle *st = style ();
-  int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
-  m_navigation_tool_bar->setIconSize (QSize (icon_size, icon_size));
-
-  // filenames are always shown, other columns can be hidden by settings
-  for (int i = 0; i < 3; i++)
-    m_file_tree_view->setColumnHidden (i + 1,
-                                       ! settings.value (m_columns_shown_keys.at (i), false).toBool ());
+  if (m_first)
+    m_first = false;
+  else
+    {
+      // Save current state in case some settings are messing up the state
+      settings.setValue (fb_column_state.settings_key (),
+                         m_file_tree_view->header ()->saveState ());
+      settings.sync ();
+    }
 
   QDir::Filters current_filter = m_file_system_model->filter ();
   if (settings.value (m_columns_shown_keys.at (3), false).toBool ())
@@ -1103,6 +1110,20 @@ files_dock_widget::notice_settings ()
   m_file_tree_view->setAlternatingRowColors
     (settings.value (m_columns_shown_keys.at (4), true).toBool ());
   m_file_tree_view->setModel (m_file_system_model);
+
+  // Done if only settings changed by toggle:header were requested
+  if (m_header_settings_only)
+    {
+      m_header_settings_only = false;
+      return;
+    }
+
+  int size_idx = settings.int_value (global_icon_size);
+  size_idx = (size_idx > 0) - (size_idx < 0) + 1;  // Make valid index from 0 to 2
+
+  QStyle *st = style ();
+  int icon_size = st->pixelMetric (global_icon_sizes[size_idx]);
+  m_navigation_tool_bar->setIconSize (QSize (icon_size, icon_size));
 
   // enable the buttons to sync octave/browser dir
   // only if this is not done by default
@@ -1119,6 +1140,9 @@ files_dock_widget::notice_settings ()
 
   if (m_sync_octave_dir)
     do_sync_browser_directory ();
+
+  // Restore column state in case the setting above somehow changed them
+  QTimer::singleShot (0, this, SLOT(restore_header_state ()));
 }
 
 void

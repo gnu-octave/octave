@@ -221,6 +221,16 @@ function [retval, status] = __makeinfo_restricted__ (buffer)
     buffer = strrep (buffer, guardstring, "@");
   endif
 
+  ## Optional: Try inserting " --"  after newlines to imitate Texinfo visually.
+  ## This makes `help foo` and plain `foo` look similar.
+  do
+    ## First remove extra spaces; otherwise they interfere.
+    old = numel (buffer);
+    buffer = strrep (buffer, "  ", " ");
+  until (numel (buffer) == old);
+  buffer = [" --", buffer];
+  buffer = strrep (deblank (buffer), "\n", "\n --");
+
   retval = buffer;
   status = 0;  # == success
 endfunction

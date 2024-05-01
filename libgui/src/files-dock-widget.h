@@ -182,6 +182,9 @@ private slots:
 
 private:
 
+  bool m_first;
+  bool m_header_settings_only;
+
   //! Get currently selected QFileInfo object.
 
   QList<QFileInfo> get_selected_items_info (bool);

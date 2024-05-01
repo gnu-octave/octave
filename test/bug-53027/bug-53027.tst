@@ -24,6 +24,7 @@
 %! clear X
 %! assert (exist ("X"), 0);
 %! clear -global X;  # cleanup after test
+%! unlink (fname);  # remove temp file
 
 %!test <*53027>
 %! [a, b] = ntest53027a ();

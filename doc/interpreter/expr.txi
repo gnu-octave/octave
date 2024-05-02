@@ -1430,7 +1430,7 @@ size expansion to accommodate the assignment.
 
 Assignments may be made with fewer specified elements than would be required to
 fill the newly expanded array as long as the assignment is unambiguous.  In
-these cases the array will be automatically padded with @i{null} values:
+these cases the array will be automatically padded with @emph{null} values:
 @example
 @group
 >> a = [1, 2]
@@ -1451,7 +1451,7 @@ a =
 @end group
 @end example
 
-For all built-in types, the @i{null} value will be appropriate to that object
+For all built-in types, the @emph{null} value will be appropriate to that object
 type.
 
 Numeric arrays:

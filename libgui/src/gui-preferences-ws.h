@@ -54,14 +54,6 @@ const QStringList ws_columns_shown =
   QT_TRANSLATE_NOOP ("octave::workspace_view", "Attribute")
 };
 
-const QStringList ws_columns_shown_keys =
-{
-  "workspaceview/show_class",
-  "workspaceview/show_dimension",
-  "workspaceview/show_value",
-  "workspaceview/show_attribute"
-};
-
 extern gui_pref ws_max_filter_history;
 
 extern gui_pref ws_color_mode;

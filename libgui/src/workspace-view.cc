@@ -53,7 +53,8 @@ workspace_view::workspace_view (QWidget *p)
     m_view (new QTableView (this)),
     m_filter_checkbox (new QCheckBox ()),
     m_filter (new QComboBox (this)),
-    m_filter_widget (new QWidget (this))
+    m_filter_widget (new QWidget (this)),
+    m_first (true)
 {
   set_title (tr ("Workspace"));
   setStatusTip (tr ("View the variables in the active workspace."));
@@ -149,13 +150,6 @@ workspace_view::workspace_view (QWidget *p)
 
   if (! p)
     make_window ();
-
-  // Initialize column order and width of the workspace. From this post,
-  // https://www.qtcentre.org/threads/26675-QTableView-saving-restoring-columns-widths
-  // this might fail if done directly in the constructor. This effect shows
-  // up in the GUI since Qt 6.6.x. As a solution, the following timer ensures
-  // that the header is restored when the event loop is idle.
-  QTimer::singleShot (0, this, SLOT(restore_header_state ()));
 }
 
 void
@@ -194,10 +188,17 @@ workspace_view::notice_settings ()
 {
   gui_settings settings;
 
-  m_model->notice_settings (); // update colors of model first
+  if (m_first)
+    m_first = false;
+  else
+    {
+      // Save current state in case some settings are messing up the state
+      settings.setValue (ws_column_state.settings_key (),
+                         m_view->horizontalHeader ()->saveState ());
+      settings.sync ();
+    }
 
-  for (int i = 0; i < ws_columns_shown.length (); i++)
-    m_view->setColumnHidden (i + 1, ! settings.value (ws_columns_shown_keys.at (i), true).toBool ());
+  m_model->notice_settings (); // update colors of model first
 
   QString tool_tip;
 
@@ -219,6 +220,14 @@ workspace_view::notice_settings ()
     }
 
   setToolTip (tool_tip);
+
+  // Initialize column order, visibility and width of the file browser. From this post,
+  // https://www.qtcentre.org/threads/26675-QTableView-saving-restoring-columns-widths
+  // this might fail if done directly after other actions. This effect shows
+  // up in the GUI since Qt 6.6.x. As a solution, the following timer ensures
+  // that the header is restored when the event loop is idle.
+
+  QTimer::singleShot (0, this, SLOT(restore_header_state ()));
 }
 
 void
@@ -311,7 +320,7 @@ workspace_view::header_contextmenu_requested (const QPoint& mpos)
                           &sig_mapper, SLOT (map ()));
       sig_mapper.setMapping (action, i);
       action->setCheckable (true);
-      action->setChecked (settings.value (ws_columns_shown_keys.at (i), true).toBool ());
+      action->setChecked (! m_view->isColumnHidden (i+1));
     }
 
 #if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
@@ -328,17 +337,7 @@ workspace_view::header_contextmenu_requested (const QPoint& mpos)
 void
 workspace_view::toggle_header (int col)
 {
-  gui_settings settings;
-
-  QString key = ws_columns_shown_keys.at (col);
-  bool shown = settings.value (key, true).toBool ();
-
-  m_view->setColumnHidden (col + 1, shown);
-
-  settings.setValue (key, ! shown);
-  settings.sync ();
-
-  octave_dock_widget::save_settings ();
+  m_view->setColumnHidden (col + 1, ! m_view->isColumnHidden (col + 1));
 }
 
 void

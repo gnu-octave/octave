@@ -81,7 +81,7 @@ function [azimuth, elevation] = view (varargin)
         [az, el] = cart2sph (x(2), x(1), x(3));
 
         if (x(1) == 0)
-          ## Compatability change to force +0 azimuth instead of +/-0 or
+          ## Matlab Compatibility: Force +0 azimuth instead of +/-0 or
           ## +/-180deg azimuth for z-aligned vector.
           az = 0;
         endif

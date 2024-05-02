@@ -58,25 +58,21 @@ sqrtm_utri_inplace (T& m)
   const octave_idx_type n = m.rows ();
   real_matrix_type abs_m = m.abs ();
 
-  real_elt_type max_abs_diag = 0;
-  for (octave_idx_type i = 0; i < n; i++)
-    max_abs_diag = std::max (max_abs_diag, abs_m(i,i));
+  real_elt_type max_abs_diag = abs_m.diag ().max ()(0);
 
   const real_elt_type tol = n * max_abs_diag
                             * std::numeric_limits<real_elt_type>::epsilon ();
 
-   for (octave_idx_type j = 0; j < n; j++)
-     {
-       for (octave_idx_type i = j-1; i >= 0; i--)
-         {
+  for (octave_idx_type j = 0; j < n && diagonal; j++)
+    {
+      for (octave_idx_type i = j-1; i >= 0; i--)
+        {
           if (abs_m(i,j) > tol)
             {
               diagonal = false;
               break;
             }
         }
-      if (! diagonal)
-        break;
     }
 
   element_type *mp = m.rwdata ();

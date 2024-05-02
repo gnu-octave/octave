@@ -894,14 +894,13 @@ octave_qscintilla::contextmenu_run (bool)
 
       if (line.startsWith ("%!"))   // Handle tests and demos
         {
-          // Do not remove %! if keyword is directly following.
-          // Exception: assert
-            {
-              // assert might be used without leading space
-              line.replace (QRegularExpression("^%!assert(\\s*)([^\\s]+)"), "assert\\1\\2");
-              // Remove "%! "
-              line.replace (QRegularExpression("^%!\\s+"), "");
-            }
+          // Do not remove "%!" if keyword (e.g., "test", "demo", etc.) is
+          // directly following.  Exception is "assert".
+          // assert might be used without leading space
+          line.replace (QRegularExpression ("^%!assert(\\s*)([^\\s]+)"),
+                        "assert\\1\\2");
+          // Remove "%! " from body of test/demo block
+          line.replace (QRegularExpression ("^%!\\s+"), "");
         }
 
       QString line_escaped = line;

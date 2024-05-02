@@ -571,7 +571,7 @@ function do_edit (editor, file, mode)
   if (isguirunning ())
     __event_manager_edit_file__ (file);
   else
-    system (sprintf (undo_string_escapes (editor), ['"' file '"']), [], mode);
+    system (sprintf (undo_string_escapes (editor), ['"' file '"']), false, mode);
   endif
 
 endfunction

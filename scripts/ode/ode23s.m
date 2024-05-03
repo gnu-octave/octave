@@ -277,9 +277,9 @@ endfunction
 %! ## Demo function: stiff Van Der Pol equation
 %! fcn = @(t,y) [y(2); 10*(1-y(1)^2)*y(2)-y(1)];
 %! ## Calling ode23s method
-%! tmr =  tic ();
+%! tic ()
 %! [vt, vy] = ode23s (fcn, [0 20], [2 0]);
-%! toc (tmr);
+%! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
 
@@ -289,9 +289,9 @@ endfunction
 %! ## Calling ode23s method
 %! odeopts = odeset ("Jacobian", @(t,y) [0 1; -20*y(1)*y(2)-1, 10*(1-y(1)^2)],
 %!                   "InitialStep", 1e-3)
-%! tmr =  tic ();
+%! tic ()
 %! [vt, vy] = ode23s (fcn, [0 20], [2 0], odeopts);
-%! toc (tmr);
+%! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
 
@@ -300,9 +300,9 @@ endfunction
 %! fcn = @(t,y) [y(2); 100*(1-y(1)^2)*y(2)-y(1)];
 %! ## Calling ode23s method
 %! odeopts = odeset ("InitialStep", 1e-4);
-%! tmr =  tic ();
+%! tic ()
 %! [vt, vy] = ode23s (fcn, [0 200], [2 0]);
-%! toc (tmr);
+%! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
 
@@ -312,9 +312,9 @@ endfunction
 %! ## Calling ode23s method
 %! odeopts = odeset ("Jacobian", @(t,y) [0 1; -200*y(1)*y(2)-1, 100*(1-y(1)^2)],
 %!                   "InitialStep", 1e-4);
-%! tmr =  tic ();
+%! tic ()
 %! [vt, vy] = ode23s (fcn, [0 200], [2 0], odeopts);
-%! toc (tmr);
+%! toc ()
 %! ## Plotting the result
 %! plot (vt,vy(:,1),'-o');
 

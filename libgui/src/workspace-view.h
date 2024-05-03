@@ -126,6 +126,7 @@ private:
   QComboBox *m_filter;
   QWidget *m_filter_widget;
   bool m_filter_shown;
+  bool m_first;
 };
 
 OCTAVE_END_NAMESPACE(octave)

@@ -68,11 +68,11 @@ function z = cross (x, y, dim)
   nd = ndims (x);
 
   if (nargin < 3 && nd < 3 && ndims (y) < 3)
-    ## COMPATIBILITY -- mixed row/column vector inputs
+    ## Matlab Compatibility: mixed row/column vector inputs.
     ## Transpose x and y in the assignments below to get row output to match
-    ## matlab behavior (verified version: 2023b).
-    ## Recommend users instead ensure calling code has matched vectors to
-    ## remove any ambiguity in output form.
+    ## Matlab behavior (verified version: 2023b).
+    ## Recommend instead that programmers change calling code to use matched
+    ## vectors to remove any ambiguity in output form.
     if (columns (x) == 1 && rows (y) == 1)
       warning ("cross: cross product of column by row produces row output");
       x = x.';

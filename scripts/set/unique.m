@@ -227,16 +227,13 @@ function [y, i, j] = unique (x, varargin)
     endif
   endif
 
-
   ## Calculate i and j outputs (2nd and 3rd outputs)
   if (nargout > 1)
-
     if (optsorted)
-
       idx = find (match);
 
       if (! optlegacy && optfirst)
-        idx += 1;   # in-place is faster than other forms of increment
+        idx += 1;
       endif
 
       i = j;
@@ -245,9 +242,7 @@ function [y, i, j] = unique (x, varargin)
       if (nargout > 2)
         j(j) = cumsum (! [false; match(:)]);
       endif
-
     else
-
       ## Get inverse of sort index j so that sort(x)(k) = x(j)(k) = x.
       k = j;  # cheap way to copy dimensions
       k(j) = 1:n;
@@ -275,25 +270,23 @@ function [y, i, j] = unique (x, varargin)
 
         ni = numel (i);
 
-        u = find (uniquex); # Linear index of unique elements of sort(x)
-        l = u(cumsum (uniquex)); # Expand u for all elements in sort(x)
+        u = find (uniquex);       # Linear index of unique elements of sort(x)
+        l = u(cumsum (uniquex));  # Expand u for all elements in sort(x)
 
-        p = j; # cheap way to copy dimensions
-        p(i) = 1:ni; # set p to contain the vector positions of i.
+        p = j;  # cheap way to copy dimensions
+        p(i) = 1:ni;  # set p to contain the vector positions of i.
 
-        j = p(j(l(k))); # Replace j with 3rd output mapping y->x.
-
+        j = p(j(l(k)));  # Replace j with 3rd output mapping y->x.
       endif
     endif
 
     if (optlegacy && isrowvec)
       i = i.';
-
       if (nargout > 2)
         j = j.';
       endif
-
     endif
+
   endif
 
 endfunction
@@ -461,4 +454,3 @@ endfunction
 %!error <invalid option> unique ({"a", "b", "c"}, "rows", "UnknownOption2")
 %!error <invalid option> unique ({"a", "b", "c"}, "UnknownOption1", "last")
 %!warning <"rows" is ignored for cell arrays> unique ({"1"}, "rows");
-

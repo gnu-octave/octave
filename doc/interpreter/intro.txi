@@ -52,19 +52,24 @@ This document corresponds to Octave version @value{VERSION}.
 @node Running Octave
 @section Running Octave
 
-On most systems, Octave is started with the shell command @samp{octave}.
-This starts the graphical user interface.  The central window in the GUI
-is the Octave command-line interface.  In this window Octave displays an
-initial message and then a prompt indicating it is ready to accept
-input.  If you have chosen the traditional command-line interface then
-only the command prompt appears in the same window that was running
-a shell.  In either case, you can immediately begin typing Octave
-commands.
+If you installed Octave from an installer program, it will likely have
+created some icons on your desktop for you to start Octave, either with
+the graphical user interface (GUI) or a command line interface (CLI).
+You can also typically find Octave in the "Start Menu" or equivalent
+of your computer. You can also type @code{octave} in a command shell;
+as long as you have Octave in your path, it will start.
+
+If you start Octave with the GUI, the central window is the Octave's
+own command-line interface (also called a REPL by other programming languages
+for Read-Evaluate-Print-Loop). In this window Octave displays an
+initial message and then a prompt like @code{>> } or @code{octave:1> }
+indicating it is ready to accept input.  If you have chosen the traditional
+command-line interface then the command prompt appears in the same window
+that was running a command shell.  In either case, you can immediately begin
+typing Octave commands.
 
 If you get into trouble, you can usually interrupt Octave by typing
-@kbd{Control-C} (written @kbd{C-c} for short).  @kbd{C-c} gets
-its name from the fact that you type it by holding down @key{CTRL} and
-then pressing @key{c}.  Doing this will normally return you to Octave's
+@kbd{Control-C}.  Doing this will normally return you to Octave's
 prompt.
 
 @cindex exiting octave
@@ -72,7 +77,7 @@ prompt.
 To exit Octave, type @kbd{quit} or @kbd{exit} at the Octave prompt.
 
 On systems that support job control, you can suspend Octave by sending
-it a @code{SIGTSTP} signal, usually by typing @kbd{C-z}.
+it a @code{SIGTSTP} signal, usually by typing @kbd{Ctrl-z}.
 
 @node Simple Examples
 @section Simple Examples
@@ -83,8 +88,10 @@ capabilities.
 
 If you are new to Octave, we recommend that you try these examples to
 begin learning Octave by using it.  Lines marked like so,
-@samp{octave:13>}, are lines you type, ending each with a carriage
-return.  Octave will respond with an answer, or by displaying a graph.
+@samp{octave:13>} or @samp{>> }, are lines you type, ending each with a
+carriage return.  (Don't type the text @samp{octave:13>} itself!  That is only
+the Octave prompt, which also looks like @code{>> } in the GUI.
+Octave will respond to your commands with an answer, or by displaying a graph.
 
 @subsection Elementary Calculations
 

@@ -473,7 +473,6 @@ gui_settings::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
     }
   return max_style;
 }
-#endif
 
 /*!
  * Copys the attributes bold, italic and underline from QFont
@@ -494,7 +493,6 @@ copy_font_attributes (const QFont& attr, const QFont& base)
   return dest;
 }
 
-#if defined (HAVE_QSCINTILLA)
 void
 gui_settings::read_lexer_settings (QsciLexer *lexer, int mode, int def)
 {

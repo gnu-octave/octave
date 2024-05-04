@@ -2452,12 +2452,12 @@ file_editor::construct ()
 
   m_run_tests_action
     = add_action (_run_menu,
-                  tr ("Run All &Tests in File"),
+                  tr ("Save File and Run All &Tests"),
                   SLOT (request_run_tests (bool)));
 
   m_run_demos_action
     = add_action (_run_menu,
-                  tr ("Run All &Demos in File"),
+                  tr ("Save File and Run All &Demos"),
                   SLOT (request_run_demos (bool)));
 
   // help menu

@@ -205,6 +205,8 @@ sc_pref sc_edit_debug_remove_breakpoints (QCoreApplication::translate ("shortcut
 // run
 sc_pref sc_edit_run_run_file (QCoreApplication::translate ("shortcuts", "Run File"), sc_edit_run + ":run_file", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F5));
 sc_pref sc_edit_run_run_selection (QCoreApplication::translate ("shortcuts", "Run Selection"), sc_edit_run + ":run_selection", OCTAVE_QT_KEYCOMBINATION (PRE, Qt::Key_F9));
+sc_pref sc_edit_run_run_tests (QCoreApplication::translate ("shortcuts", "Run Tests"), sc_edit_run + ":run_file", OCTAVE_QT_KEYCOMBINATION (CTRL, Qt::Key_F5));
+sc_pref sc_edit_run_run_demos (QCoreApplication::translate ("shortcuts", "Run Demos"), sc_edit_run + ":run_file", OCTAVE_QT_KEYCOMBINATION (CTRL_SHIFT, Qt::Key_F5));
 
 // help
 sc_pref sc_edit_help_help_keyword (QCoreApplication::translate ("shortcuts", "Help on Keyword"), sc_edit_help + ":help_keyword", QKeySequence::HelpContents);

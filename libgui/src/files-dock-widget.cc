@@ -872,7 +872,7 @@ files_dock_widget::contextmenu_run (bool)
       QModelIndex index = rows[0];
 
       QFileInfo info = m_file_system_model->fileInfo (index);
-      emit run_file_signal (info);
+      emit run_file_signal (info, ED_RUN_FILE);
     }
 }
 

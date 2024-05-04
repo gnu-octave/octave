@@ -46,10 +46,10 @@
 #include <QVBoxLayout>
 #include <Qsci/qscicommandset.h>
 
+#include "gui-preferences-global.h"
 #include "file-editor.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-sc.h"
-#include "gui-preferences-global.h"
 #include "gui-settings.h"
 #include "main-window.h"
 
@@ -714,7 +714,7 @@ file_editor::request_save_file_as (bool)
 }
 
 void
-file_editor::request_run_file (bool)
+file_editor::run_file (bool, int opts)
 {
   // The interpreter_event callback function below emits a signal.
   // Because we don't control when that happens, use a guarded pointer
@@ -723,7 +723,7 @@ file_editor::request_run_file (bool)
   QPointer<file_editor> this_fe (this);
 
   emit interpreter_event
-    ([this, this_fe] (interpreter& interp)
+    ([this, this_fe, opts] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -745,14 +745,32 @@ file_editor::request_run_file (bool)
        if (tw.in_debug_repl ())
          emit request_dbcont_signal ();
        else
-         emit fetab_run_file (m_tab_widget->currentWidget ());
+         emit fetab_run_file (m_tab_widget->currentWidget (), opts);
      });
+}
+
+void
+file_editor::request_run_file (bool)
+{
+  run_file (true, ED_RUN_FILE);
+}
+
+void
+file_editor::request_run_tests (bool)
+{
+  run_file (true, ED_RUN_TESTS);
+}
+
+void
+file_editor::request_run_demos (bool)
+{
+  run_file (true, ED_RUN_DEMOS);
 }
 
 void
 file_editor::request_step_into_file ()
 {
-  emit fetab_run_file (m_tab_widget->currentWidget (), true);
+  emit fetab_run_file (m_tab_widget->currentWidget (), ED_STEP_INTO);
 }
 
 void
@@ -1559,6 +1577,8 @@ file_editor::set_shortcuts ()
   // Run menu
   settings.set_shortcut (m_run_action, sc_edit_run_run_file);
   settings.set_shortcut (m_run_selection_action, sc_edit_run_run_selection);
+  settings.set_shortcut (m_run_tests_action, sc_edit_run_run_tests);
+  settings.set_shortcut (m_run_demos_action, sc_edit_run_run_demos);
 
   // Help menu
   settings.set_shortcut (m_context_help_action, sc_edit_help_help_keyword);
@@ -2429,6 +2449,16 @@ file_editor::construct ()
                   tr ("Run &Selection"),
                   SLOT (request_context_run (bool)));
   m_run_selection_action->setEnabled (false);
+
+  m_run_tests_action
+    = add_action (_run_menu,
+                  tr ("Run All &Tests in File"),
+                  SLOT (request_run_tests (bool)));
+
+  m_run_demos_action
+    = add_action (_run_menu,
+                  tr ("Run All &Demos in File"),
+                  SLOT (request_run_demos (bool)));
 
   // help menu
 

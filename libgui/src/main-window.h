@@ -173,7 +173,7 @@ public slots:
   void accept_directory_line_edit ();
 
   void execute_command_in_terminal (const QString& dir);
-  void run_file_in_terminal (const QFileInfo& info);
+  void run_file_in_terminal (const QFileInfo& info, int opts);
 
   void handle_new_figure_request ();
 

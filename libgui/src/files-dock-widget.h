@@ -79,7 +79,7 @@ signals:
 
   //! Emitted, whenever the user requested to run a file.
 
-  void run_file_signal (const QFileInfo& info);
+  void run_file_signal (const QFileInfo& info, int ops);
 
   //! Emitted, whenever wants to search for a file .
 

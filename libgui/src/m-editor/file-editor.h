@@ -140,7 +140,7 @@ signals:
   void fetab_save_file (const QWidget *ID);
   void fetab_save_file_as (const QWidget *ID);
   void fetab_print_file (const QWidget *ID);
-  void fetab_run_file (const QWidget *ID, bool step_into = false);
+  void fetab_run_file (const QWidget *ID, int opts);
   void fetab_context_run (const QWidget *ID);
   void fetab_toggle_bookmark (const QWidget *ID);
   void fetab_next_bookmark (const QWidget *ID);
@@ -188,7 +188,7 @@ signals:
   void update_gui_lexer_signal (bool);
   void execute_command_in_terminal_signal (const QString&);
   void focus_console_after_command_signal ();
-  void run_file_signal (const QFileInfo&);
+  void run_file_signal (const QFileInfo&, int opts);
   void edit_mfile_request (const QString&, const QString&, const QString&, int);
   void debug_quit_signal ();
 
@@ -222,6 +222,8 @@ public slots:
   void request_save_file (bool);
   void request_save_file_as (bool);
   void request_run_file (bool);
+  void request_run_tests (bool);
+  void request_run_demos (bool);
   void request_step_into_file ();
   void request_context_run (bool);
   void request_toggle_bookmark (bool);
@@ -320,6 +322,8 @@ private slots:
                           const QString& bookmarks = QString ());
   void request_preferences (bool);
   void request_styles_preferences (bool);
+
+  void run_file (bool, int opts);
 
   void show_line_numbers (bool);
   void show_white_space (bool);
@@ -441,6 +445,8 @@ private:
   QAction *m_print_action;
   QAction *m_run_action;
   QAction *m_run_selection_action;
+  QAction *m_run_tests_action;
+  QAction *m_run_demos_action;
 
   QAction *m_edit_function_action;
   QAction *m_popdown_mru_action;

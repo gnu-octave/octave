@@ -82,7 +82,7 @@ signals:
   void mru_add_file (const QString& file_name, const QString& encoding);
   void editor_check_conflict_save (const QString& saveFileName,
                                    bool remove_on_success);
-  void run_file_signal (const QFileInfo& info);
+  void run_file_signal (const QFileInfo& info, int opts);
   void request_open_file (const QString&, const QString& = QString ());
   void edit_mfile_request (const QString&, const QString&,
                            const QString&, int);
@@ -150,7 +150,7 @@ public slots:
                   bool remove_on_success);
   void save_file_as (const QWidget *ID);
   void print_file (const QWidget *ID);
-  void run_file (const QWidget *ID, bool step_into = false);
+  void run_file (const QWidget *ID, int opts);
   void context_run (const QWidget *ID);
   void toggle_bookmark (const QWidget *ID);
   void next_bookmark (const QWidget *ID);

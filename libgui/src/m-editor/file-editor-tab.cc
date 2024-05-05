@@ -68,13 +68,14 @@
 #include <Qsci/qscilexerperl.h>
 #include <Qsci/qsciprinter.h>
 
-#include "file-editor-tab.h"
-#include "file-editor.h"
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-global.h"
 #include "gui-settings.h"
 #include "gui-utils.h"
+#include "main-window.h"
+#include "file-editor-tab.h"
+#include "file-editor.h"
 #include "marker.h"
 #include "octave-txt-lexer.h"
 
@@ -1091,7 +1092,7 @@ file_editor_tab::print_file (const QWidget *ID)
 }
 
 void
-file_editor_tab::run_file (const QWidget *ID, bool step_into)
+file_editor_tab::run_file (const QWidget *ID, int opts)
 {
   if (ID != this)
     return;
@@ -1107,7 +1108,9 @@ file_editor_tab::run_file (const QWidget *ID, bool step_into)
         return;
     }
 
-  if (step_into)
+  int actual_opts = opts;
+
+  if (opts == ED_STEP_INTO)
     {
       // Get current first breakpoint and set breakpoint waiting for
       // the returned line number.  Store whether to remove this breakpoint
@@ -1121,10 +1124,11 @@ file_editor_tab::run_file (const QWidget *ID, bool step_into)
 
       // Add breakpoint, storing its line number
       handle_request_add_breakpoint (1, QString ());
+      actual_opts = ED_RUN_FILE;
     }
 
   QFileInfo info (m_file_name);
-  emit run_file_signal (info);
+  emit run_file_signal (info, actual_opts);
 }
 
 void

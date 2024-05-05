@@ -255,6 +255,8 @@ extern sc_pref sc_edit_debug_remove_breakpoints;
 const QString sc_edit_run ("editor_run");
 extern sc_pref sc_edit_run_run_file;
 extern sc_pref sc_edit_run_run_selection;
+extern sc_pref sc_edit_run_run_tests;
+extern sc_pref sc_edit_run_run_demos;
 
 // help
 const QString sc_edit_help ("editor_help");

@@ -134,6 +134,15 @@ global_extra_styles =
   "Fusion-Dark"
 };
 
+// Different modes for running a file from editor
+enum
+{
+  ED_RUN_FILE = 0,
+  ED_STEP_INTO,
+  ED_RUN_TESTS,
+  ED_RUN_DEMOS
+};
+
 #if defined (Q_OS_MAC)
 // prevent native file dialogs on MAC by setting the default "false" and
 // setting the flag for ignoring the pref to "true" (3rd argument)

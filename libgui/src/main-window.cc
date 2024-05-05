@@ -56,10 +56,6 @@
 // QTerminal includes
 #include "QTerminal.h"
 
-#if defined (HAVE_QSCINTILLA)
-#  include "file-editor.h"
-#  include "command-widget.h"
-#endif
 #include "gui-preferences-cs.h"
 #include "gui-preferences-dw.h"
 #include "gui-preferences-ed.h"
@@ -68,6 +64,10 @@
 #include "gui-preferences-nr.h"
 #include "gui-preferences-sc.h"
 #include "gui-settings.h"
+#if defined (HAVE_QSCINTILLA)
+#  include "file-editor.h"
+#  include "command-widget.h"
+#endif
 #include "gui-utils.h"
 #include "interpreter-qobject.h"
 #include "main-window.h"
@@ -1191,10 +1191,10 @@ main_window::execute_command_in_terminal (const QString& command)
 }
 
 void
-main_window::run_file_in_terminal (const QFileInfo& info)
+main_window::run_file_in_terminal (const QFileInfo& info, int opts)
 {
   emit interpreter_event
-    ([info] (interpreter& interp)
+    ([this, opts, info] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1221,22 +1221,39 @@ main_window::run_file_in_terminal (const QFileInfo& info)
            std::string path = info.absolutePath ().toStdString ();
 
            if (lp.contains_file_in_dir (file_path, path))
-             command_editor::replace_line (function_name.toStdString ());
+             {
+               QString cmd;
+               if (opts == ED_RUN_TESTS)
+                 cmd = "test ";
+               else if (opts == ED_RUN_DEMOS)
+                 cmd = "demo ";
+               cmd = cmd + function_name;
+
+               if (m_octave_qobj.experimental_terminal_widget ())
+                 emit execute_command_signal (cmd);
+               else
+                 command_editor::replace_line (cmd.toStdString ());
+             }
          }
        else
          {
            // No valid identifier: use equivalent of Fsource (), no
            // debug possible.
 
-           interp.source_file (file_path);
-
-           command_editor::replace_line ("");
+           if (opts == ED_RUN_FILE)
+             {
+               interp.source_file (file_path);
+               command_editor::replace_line ("");
+             }
          }
 
-       command_editor::set_initial_input (pending_input);
-       command_editor::redisplay ();
-       command_editor::interrupt_event_loop ();
-       command_editor::accept_line ();
+       if (! m_octave_qobj.experimental_terminal_widget ())
+         {
+           command_editor::set_initial_input (pending_input);
+           command_editor::redisplay ();
+           command_editor::interrupt_event_loop ();
+           command_editor::accept_line ();
+         }
      });
 
   focus_console_after_command ();

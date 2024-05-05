@@ -1194,7 +1194,7 @@ void
 main_window::run_file_in_terminal (const QFileInfo& info, int opts)
 {
   emit interpreter_event
-    ([info, opts] (interpreter& interp)
+    ([this, opts, info] (interpreter& interp)
      {
        // INTERPRETER THREAD
 
@@ -1228,7 +1228,11 @@ main_window::run_file_in_terminal (const QFileInfo& info, int opts)
                else if (opts == ED_RUN_DEMOS)
                  cmd = "demo ";
                cmd = cmd + function_name;
-               command_editor::replace_line (cmd.toStdString ());
+
+               if (m_octave_qobj.experimental_terminal_widget ())
+                 emit execute_command_signal (cmd);
+               else
+                 command_editor::replace_line (cmd.toStdString ());
              }
          }
        else
@@ -1243,10 +1247,13 @@ main_window::run_file_in_terminal (const QFileInfo& info, int opts)
              }
          }
 
-       command_editor::set_initial_input (pending_input);
-       command_editor::redisplay ();
-       command_editor::interrupt_event_loop ();
-       command_editor::accept_line ();
+       if (! m_octave_qobj.experimental_terminal_widget ())
+         {
+           command_editor::set_initial_input (pending_input);
+           command_editor::redisplay ();
+           command_editor::interrupt_event_loop ();
+           command_editor::accept_line ();
+         }
      });
 
   focus_console_after_command ();

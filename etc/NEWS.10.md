@@ -61,11 +61,14 @@ and column vectors (bug #61295).
 
 - `rat` now accepts complex inputs.
 
+- The optional second input argument of `system`, denoting whether to return
+the output as a variable, is now required to be a boolean value if used.
+
 - Octave functions whose Matlab equivalents give errors when passed non-integer
-values as sizes or dimensions now also give similar errors.
-E.g., `cell (e, pi)` now gives an error in Octave about requiring integer
-sizes for the cell array, matching Matlab behavior.
-Previously, Octave's conversion from non-integers to integers was more lenient.
+values as sizes or dimensions now also give similar errors. For example,
+`cell (e, pi)` now gives an error in Octave about requiring integer sizes
+for the cell array, matching Matlab behavior.  Previously, Octave's conversion
+from non-integers to integers was more lenient.
 
 ### Alphabetical list of new functions added in Octave 10
 

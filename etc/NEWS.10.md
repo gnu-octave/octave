@@ -138,6 +138,23 @@ with GNU extensions).
 Summary of bugs fixed for version 10.1.0 (yyyy-mm-dd):
 ----------------------------------------------------
 
+- Improve nchoosek.m algorithm to prevent numerical issues (bug #65238)
+- nchoosek error "gcd: all values must be integers" (bug #65495)
+- nextpow2 incorrect for some inputs slightly larger than powers of two (bug #65441)
+- jsonencode does not accept integer values larger than 999999 (bug #65447)
+- hist produces nonconformtant arguments error when input has ndims > 2 (bug #65478)
+- compatibility: colormaps now default to 256 colors in matlab (bug #65010)
+- implement height and width as aliases for rows and columns for matlab compatibility (bug #64995)
+- 'view' produces incorrect viewpoint when given a vector aligned with the primary axes (bug #65641)
+- polar doesn't populate rtick with center tick value (bug #64991)
+- iqr handling of empty inputs is not compatible (bug #65531)
+- griddata: output size inconsistent for vector input interpolation points (bug #65134)
+- unique.m - Enable third output with option 'stable' (bug #65176)
+- Input validation for system() (bug #65665)
+- rat() should support complex numbers (bug #55198)
+- cross() dimensions inconsistent with Matlab when using mismatched input vector dimensions (bug #61295)
+- xint_value does not work the way it is intended (bug #65538)
+
 ### Old release news
 
 - [Octave 9.x](etc/NEWS.9.md)

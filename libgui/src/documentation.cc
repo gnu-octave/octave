@@ -79,9 +79,7 @@ documentation::documentation (QWidget *p)
     m_prev_pages_menu (new QMenu (this)),
     m_next_pages_menu (new QMenu (this)),
     m_prev_pages_count (0),
-    m_next_pages_count (0),
-    m_findnext_shortcut (new QShortcut (this)),
-    m_findprev_shortcut (new QShortcut (this))
+    m_next_pages_count (0)
 {
   // Get original collection
   QString collection = getenv ("OCTAVE_QTHELP_COLLECTION");
@@ -180,52 +178,21 @@ documentation::documentation (QWidget *p)
   construct_tool_bar ();
 
   // Find bar
-  QWidget *find_footer = new QWidget (browser_find);
-  QLabel *find_label = new QLabel (tr ("Find:"), find_footer);
-  m_find_line_edit = new QLineEdit (find_footer);
-  connect (m_find_line_edit, &QLineEdit::returnPressed,
-           this, [this] () { find (); });
-  connect (m_find_line_edit, &QLineEdit::textEdited,
+  m_find_widget = new find_widget (this);
+  connect (m_find_widget, &find_widget::find_signal,
+           this, &documentation::find);
+  connect (m_find_widget, &find_widget::find_incremental_signal,
            this, &documentation::find_forward_from_anchor);
-  QToolButton *forward_button = new QToolButton (find_footer);
-  forward_button->setText (tr ("Search forward"));
-  forward_button->setToolTip (tr ("Search forward"));
-
-  gui_settings settings;
-
-  forward_button->setIcon (settings.icon ("go-down"));
-  connect (forward_button, &QToolButton::pressed,
-           this, [this] () { find (); });
-  QToolButton *backward_button = new QToolButton (find_footer);
-  backward_button->setText (tr ("Search backward"));
-  backward_button->setToolTip (tr ("Search backward"));
-  backward_button->setIcon (settings.icon ("go-up"));
-  connect (backward_button, &QToolButton::pressed,
-           this, &documentation::find_backward);
-  QHBoxLayout *h_box_find_footer = new QHBoxLayout (find_footer);
-  h_box_find_footer->addWidget (find_label);
-  h_box_find_footer->addWidget (m_find_line_edit);
-  h_box_find_footer->addWidget (forward_button);
-  h_box_find_footer->addWidget (backward_button);
-  h_box_find_footer->setContentsMargins (2, 2, 2, 2);
-  find_footer->setLayout (h_box_find_footer);
 
   QVBoxLayout *v_box_browser_find = new QVBoxLayout (browser_find);
   v_box_browser_find->addWidget (m_tool_bar);
   v_box_browser_find->addWidget (m_doc_browser);
-  v_box_browser_find->addWidget (find_footer);
+  v_box_browser_find->addWidget (m_find_widget);
   browser_find->setLayout (v_box_browser_find);
 
   notice_settings ();
 
-  m_findnext_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-  connect (m_findnext_shortcut, &QShortcut::activated,
-           this, [this] () { find (); });
-  m_findprev_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
-  connect (m_findprev_shortcut, &QShortcut::activated,
-           this, &documentation::find_backward);
-
-  find_footer->hide ();
+  m_find_widget->hide ();
   m_search_anchor_position = 0;
 
   if (m_help_engine)
@@ -331,6 +298,7 @@ documentation::documentation (QWidget *p)
       insertWidget (1, browser_find);
       setStretchFactor (1, 1);
 
+      gui_settings settings;
       restoreState (settings.byte_array_value (dc_splitter_state));
     }
 }
@@ -601,11 +569,11 @@ documentation::handle_search_result_clicked (const QUrl& url)
   select_all_occurrences (m_query_string);
 
   // Open search widget with matching text as search string
-  m_find_line_edit->setText (m_query_string);
-  m_find_line_edit->parentWidget ()->show ();
+  m_find_widget->set_text (m_query_string);
+  m_find_widget->show ();
 
   // If no occurrence can be found go to the top of the page
-  if (! m_doc_browser->find (m_find_line_edit->text ()))
+  if (! m_doc_browser->find (m_find_widget->text ()))
     m_doc_browser->moveCursor (QTextCursor::Start);
   else
     {
@@ -613,7 +581,7 @@ documentation::handle_search_result_clicked (const QUrl& url)
       // search backwards until the last occurrence ensures the search text
       // is visible in the first line of the visible part of the text.
       m_doc_browser->moveCursor (QTextCursor::End);
-      while (m_doc_browser->find (m_find_line_edit->text (),
+      while (m_doc_browser->find (m_find_widget->text (),
                                   QTextDocument::FindBackward));
     }
 }
@@ -667,8 +635,6 @@ documentation::notice_settings ()
 
   // Shortcuts
   settings.set_shortcut (m_action_find, sc_edit_edit_find_replace);
-  settings.shortcut (m_findnext_shortcut, sc_edit_edit_find_next);
-  settings.shortcut (m_findprev_shortcut, sc_edit_edit_find_previous);
   settings.set_shortcut (m_action_zoom_in, sc_edit_view_zoom_in);
   settings.set_shortcut (m_action_zoom_out, sc_edit_view_zoom_out);
   settings.set_shortcut (m_action_zoom_original, sc_edit_view_zoom_normal);
@@ -679,6 +645,7 @@ documentation::notice_settings ()
 
   // Settings for the browser
   m_doc_browser->notice_settings ();
+  m_find_widget->notice_settings ();
 }
 
 void
@@ -689,6 +656,7 @@ documentation::save_settings ()
   settings.setValue (dc_splitter_state.settings_key (), saveState ());
   m_doc_browser->save_settings ();
   m_bookmarks->save_settings ();
+  m_find_widget->save_settings ();
 }
 
 void
@@ -791,17 +759,7 @@ documentation::load_ref (const QString& ref_name)
 void
 documentation::activate_find ()
 {
-  if (m_find_line_edit->parentWidget ()->isVisible ())
-    {
-      m_find_line_edit->parentWidget ()->hide ();
-      m_doc_browser->setFocus ();
-    }
-  else
-    {
-      m_find_line_edit->parentWidget ()->show ();
-      m_find_line_edit->selectAll ();
-      m_find_line_edit->setFocus ();
-    }
+  m_find_widget->activate_find ();
 }
 
 void
@@ -831,22 +789,16 @@ documentation::filter_update_history ()
 }
 
 void
-documentation::find_backward ()
-{
-  find (true);
-}
-
-void
-documentation::find (bool backward)
+documentation::find (const QString& text, bool backward)
 {
   if (! m_help_engine)
     return;
 
-  QTextDocument::FindFlags find_flags;
-  if (backward)
-    find_flags = QTextDocument::FindBackward;
+  QTextDocument::FindFlags flags;
+    if (backward)
+      flags = QTextDocument::FindBackward;
 
-  if (! m_doc_browser->find (m_find_line_edit->text (), find_flags))
+  if (! m_doc_browser->find (text, flags))
     {
       // Nothing was found, restart search from the begin or end of text
       QTextCursor textcur = m_doc_browser->textCursor ();
@@ -855,7 +807,7 @@ documentation::find (bool backward)
       else
         textcur.movePosition (QTextCursor::Start);
       m_doc_browser->setTextCursor (textcur);
-      m_doc_browser->find (m_find_line_edit->text (), find_flags);
+      m_doc_browser->find (text, flags);
     }
 
   record_anchor_position ();

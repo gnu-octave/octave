@@ -37,6 +37,8 @@
 #include <QWidget>
 #include <QtHelp/QHelpEngine>
 
+#include "find-widget.h"
+
 OCTAVE_BEGIN_NAMESPACE(octave)
 
 class documentation;
@@ -138,8 +140,7 @@ private slots:
   void global_search_finished (int hits);
   void filter_update (const QString& expression);
   void filter_update_history ();
-  void find (bool backward = false);
-  void find_backward ();
+  void find (const QString&, bool);
   void find_forward_from_anchor (const QString& text);
   void record_anchor_position ();
   void handle_cursor_position_change ();
@@ -163,12 +164,12 @@ private:
   QString m_internal_search;
   documentation_browser *m_doc_browser;
   documentation_bookmarks *m_bookmarks;
-  QLineEdit *m_find_line_edit;
   int m_search_anchor_position;
   QComboBox *m_filter;
   QString m_collection;
 
   QWidget *m_doc_widget;
+  find_widget *m_find_widget;
   QToolBar *m_tool_bar;
   QString m_query_string;
 
@@ -188,10 +189,7 @@ private:
   QAction *m_next_pages_actions[max_history_entries];
 
   QAction *m_action_bookmark;
-
   QAction *m_action_find;
-  QShortcut *m_findnext_shortcut;
-  QShortcut *m_findprev_shortcut;
 
   QAction *m_action_zoom_in;
   QAction *m_action_zoom_out;

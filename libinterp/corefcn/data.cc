@@ -7385,6 +7385,12 @@ ordered lists.
 %! [v, i] = sort (a);
 %! assert (i, [1, 4, 2, 5, 3]);
 
+## Test sort dimension being very large
+%!test <*65712>
+%! A = [1 2; 3 4];
+%! assert (sort (A, 100), A)
+%! assert (sort (A, inf), A)
+
 %!error <Invalid call> sort ()
 %!error <Invalid call> sort (1, 2, 3, 4)
 %!error <MODE must be either "ascend" or "descend"> sort (1, "foobar")

@@ -1806,14 +1806,10 @@ Array<T, Alloc>::sort (int dim, sortmode mode) const
   if (dim < 0)
     (*current_liboctave_error_handler) ("sort: invalid dimension");
 
-  Array<T, Alloc> m (dims ());
+  if (numel () < 1)  // input array is empty,
+    return *this;
 
-  dim_vector dv = m.dims ();
-
-  if (m.numel () < 1)
-    return m;
-
-  if (dim >= dv.ndims ())
+  if (dim >= ndims ())
     {
       // The dimension to sort along exceeds the array's dimensions,
       // ==> array is already trivially sorted in such higher dimensions,
@@ -1821,6 +1817,10 @@ Array<T, Alloc>::sort (int dim, sortmode mode) const
 
       return *this;
     }
+
+  Array<T, Alloc> m (dims ());
+
+  dim_vector dv = m.dims ();
 
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;

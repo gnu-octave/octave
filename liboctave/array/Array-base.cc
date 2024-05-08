@@ -1814,7 +1814,19 @@ Array<T, Alloc>::sort (int dim, sortmode mode) const
     return m;
 
   if (dim >= dv.ndims ())
-    dv.resize (dim+1, 1);
+    {
+      // The dimension to sort along exceeds the array's dimensions,
+      // ==> array is already trivially sorted in such higher dimensions,
+      // ==> copy and return.
+
+      T *v = m.rwdata ();
+      const T *ov = data ();
+
+      for (octave_idx_type i = 0; i < m.numel (); i++)
+        v[i] = ov[i];
+
+      return m;
+    }
 
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;

@@ -7120,9 +7120,13 @@ ordered lists.
         }
       else
         {
+          // Forbid vector or array input
           if (! args(1).is_scalar_type ())
             error ("sort: DIM must be a positive scalar integer");
-          dim = args(1).nint_value () - 1;
+
+          // Forbid fractional value input, also nan input.
+          dim = args(1).strict_int_value ("sort: DIM must be a positive scalar integer") - 1;
+
           if (dim < 0)
             error ("sort: DIM must be a positive scalar integer");
         }
@@ -7395,6 +7399,8 @@ ordered lists.
 %!error <Invalid call> sort (1, 2, 3, 4)
 %!error <MODE must be either "ascend" or "descend"> sort (1, "foobar")
 %!error <DIM must be a positive scalar integer> sort (1, [1 2 3])
+%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 1.234)
+%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], nan)
 %!error <DIM argument must precede MODE argument> sort (1, "ascend", 1)
 %!error <MODE must be a string> sort (1, 1, 1)
 %!error <MODE must be either "ascend" or "descend"> sort (1, 1, "foobar")

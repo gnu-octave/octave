@@ -1922,18 +1922,17 @@ Array<T, Alloc>
 Array<T, Alloc>::sort (Array<octave_idx_type>& sidx, int dim,
                        sortmode mode) const
 {
-  if (dim < 0 || dim >= ndims ())
+  if (dim < 0)
     (*current_liboctave_error_handler) ("sort: invalid dimension");
 
+  const dim_vector& dv = dims ();
+
+  sidx = Array<octave_idx_type> (dv);
+
+  if (numel () < 1 || dim >= ndims ())
+    return *this;
+
   Array<T, Alloc> m (dims ());
-
-  const dim_vector& dv = m.dims ();
-
-  if (m.numel () < 1)
-    {
-      sidx = Array<octave_idx_type> (dv);
-      return m;
-    }
 
   octave_idx_type ns = dv(dim);
   octave_idx_type iter = dv.numel () / ns;
@@ -1947,7 +1946,6 @@ Array<T, Alloc>::sort (Array<octave_idx_type>& sidx, int dim,
 
   octave_sort<T> lsort;
 
-  sidx = Array<octave_idx_type> (dv);
   octave_idx_type *vi = sidx.rwdata ();
 
   if (mode != UNSORTED)

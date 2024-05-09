@@ -7120,15 +7120,13 @@ ordered lists.
         }
       else
         {
-          // Forbid vector or array input
-          if (! args(1).is_scalar_type ())
+          // Require dim to be positive real scalar.
+          if (! args(1).is_scalar_type () || args(1).iscomplex ()
+              || args(1).double_value () <= 0)
             error ("sort: DIM must be a positive scalar integer");
 
           // Forbid fractional value input, also nan input.
           dim = args(1).strict_int_value ("sort: DIM must be a positive scalar integer") - 1;
-
-          if (dim < 0)
-            error ("sort: DIM must be a positive scalar integer");
         }
     }
 
@@ -7162,7 +7160,8 @@ ordered lists.
       // NOTE: Can not change this to ovl() call because arg.sort changes sidx
       //       and objects are declared const in ovl prototype.
       retval(0) = arg.sort (sidx, dim, smode);
-      retval(1) = idx_vector (sidx, dv(dim));  // No checking, extent is known.
+      // Check for index dimension extent. Set to 1 for dimension >= ndims ()
+      retval(1) = idx_vector (sidx, (dim < arg.ndims ()) ? dv(dim) : 1);
     }
   else
     retval = ovl (arg.sort (dim, smode));
@@ -7394,11 +7393,20 @@ ordered lists.
 %! A = [1 2; 3 4];
 %! assert (sort (A, 100), A)
 %! assert (sort (A, inf), A)
+%! [B, idx] = sort (A, 100);
+%! assert (B, A);
+%! assert (idx, ones (2))
+%! [B, idx] = sort (A, inf);
+%! assert (B, A);
+%! assert (idx, ones (2))
 
 %!error <Invalid call> sort ()
 %!error <Invalid call> sort (1, 2, 3, 4)
 %!error <MODE must be either "ascend" or "descend"> sort (1, "foobar")
 %!error <DIM must be a positive scalar integer> sort (1, [1 2 3])
+%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], -inf)
+%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 0)
+%!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 1+i)
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], 1.234)
 %!error <DIM must be a positive scalar integer> sort ([1 2; 3 4], nan)
 %!error <DIM argument must precede MODE argument> sort (1, "ascend", 1)

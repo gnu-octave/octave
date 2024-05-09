@@ -30,6 +30,8 @@
 
 #include <Qsci/qsciscintilla.h>
 
+#include "find-widget.h"
+
 // FIXME: We need the following header for the fcn_callback and
 // meth_callback typedefs.  Maybe it would be better to declare those in
 // a separate file because inclding "event-manager.h" pulls in a lot of
@@ -67,6 +69,10 @@ public slots:
 
   void execute_command (const QString& command);
 
+  void find_incremental (const QString&);
+
+  void find (const QString&, bool);
+
 protected:
 
   void keyPressEvent (QKeyEvent *e);
@@ -82,6 +88,9 @@ private:
   bool m_text_changed;
   command_widget *m_command_widget;
   QString m_last_key_string;
+  bool m_find_result_available;
+  bool m_find_direction;
+  QString m_last_find_inc_result;
 
 };
 
@@ -128,6 +137,8 @@ private:
   bool m_incomplete_parse;
   QString m_prompt;
   console *m_console;
+  find_widget *m_find_widget;
+
 };
 
 OCTAVE_END_NAMESPACE(octave)

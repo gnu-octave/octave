@@ -38,6 +38,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // of the doc dock widget
 find_widget::find_widget (bool x_button, QWidget *p)
   : QWidget (p),
+    m_find_line_edit (new QLineEdit (this)),
     m_findnext_shortcut (new QShortcut (this)),
     m_findprev_shortcut (new QShortcut (this))
 {
@@ -45,7 +46,8 @@ find_widget::find_widget (bool x_button, QWidget *p)
 
   QLabel *find_label = new QLabel (tr ("Find:"), this);
 
-  m_find_line_edit = new QLineEdit (this);
+  m_find_line_edit->setClearButtonEnabled (true);
+
   connect (m_find_line_edit, &QLineEdit::returnPressed,
            this, &find_widget::find);
   connect (m_find_line_edit, &QLineEdit::textEdited,

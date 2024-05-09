@@ -36,8 +36,9 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 
 // The documentation splitter, which is the main widget
 // of the doc dock widget
-find_widget::find_widget (QWidget *p)
+find_widget::find_widget (bool x_button, QWidget *p)
   : QWidget (p),
+    m_find_line_edit (new QLineEdit (this)),
     m_findnext_shortcut (new QShortcut (this)),
     m_findprev_shortcut (new QShortcut (this))
 {
@@ -45,7 +46,8 @@ find_widget::find_widget (QWidget *p)
 
   QLabel *find_label = new QLabel (tr ("Find:"), this);
 
-  m_find_line_edit = new QLineEdit (this);
+  m_find_line_edit->setClearButtonEnabled (true);
+
   connect (m_find_line_edit, &QLineEdit::returnPressed,
            this, &find_widget::find);
   connect (m_find_line_edit, &QLineEdit::textEdited,
@@ -65,19 +67,23 @@ find_widget::find_widget (QWidget *p)
   connect (backward_button, &QToolButton::pressed,
            this, &find_widget::find_backward);
 
-  QToolButton *close_button = new QToolButton (this);
-//  close_button->setText (tr ("Close"));
-  close_button->setToolTip (tr ("Close find dialog"));
-  close_button->setIcon (settings.icon ("window-close"));
-  connect (close_button, &QToolButton::pressed,
-           this, [this] () { close (); });
-
   QHBoxLayout *h_box_this = new QHBoxLayout (this);
   h_box_this->addWidget (find_label);
   h_box_this->addWidget (m_find_line_edit);
   h_box_this->addWidget (forward_button);
   h_box_this->addWidget (backward_button);
-  h_box_this->addWidget (close_button);
+
+  if (x_button)
+    {
+      QToolButton *close_button = new QToolButton (this);
+      close_button->setText (tr ("Close"));
+      close_button->setToolTip (tr ("Close find dialog"));
+      close_button->setIcon (settings.icon ("window-close"));
+      connect (close_button, &QToolButton::pressed,
+               this, [this] () { close (); });
+      h_box_this->addWidget (close_button);
+    }
+
   h_box_this->setContentsMargins (2, 2, 2, 2);
   this->setLayout (h_box_this);
 

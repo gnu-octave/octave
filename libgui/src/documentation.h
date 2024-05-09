@@ -134,7 +134,6 @@ public slots:
 
 private slots:
 
-  void activate_find ();
   void global_search ();
   void global_search_started ();
   void global_search_finished (int hits);

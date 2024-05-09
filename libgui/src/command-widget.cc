@@ -54,22 +54,37 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 command_widget::command_widget (QWidget *p)
   : QWidget (p), m_incomplete_parse (false),
     m_prompt (QString ()),
-    m_console (new console (this))
+    m_console (new console (this)),
+    m_find_widget (new find_widget (false, this))
+
 {
+  gui_settings settings;
+
   QPushButton *pause_button = new QPushButton (tr("Pause"), this);
   QPushButton *stop_button = new QPushButton (tr("Stop"), this);
   QPushButton *resume_button = new QPushButton (tr("Continue"), this);
 
-  QGroupBox *input_group_box = new QGroupBox ();
+  connect (m_find_widget, &find_widget::find_signal,
+           m_console, &console::find);
+  connect (m_find_widget, &find_widget::find_incremental_signal,
+           m_console, &console::find_incremental);
+
+  QWidget *input_widget = new QWidget;
   QHBoxLayout *input_layout = new QHBoxLayout;
   input_layout->addWidget (pause_button);
   input_layout->addWidget (stop_button);
   input_layout->addWidget (resume_button);
-  input_group_box->setLayout (input_layout);
+  input_layout->addStretch ();
+  input_layout->addWidget (m_find_widget);
+  input_layout->setContentsMargins (0, 0, 0, 0);
+  input_widget->setLayout (input_layout);
+  input_widget->setContentsMargins (0, 0, 0, 0);
 
   QVBoxLayout *main_layout = new QVBoxLayout ();
   main_layout->addWidget (m_console);
-  main_layout->addWidget (input_group_box);
+  main_layout->addWidget (input_widget);
+  main_layout->setSpacing (0);
+  main_layout->setContentsMargins (2, 2, 2, 0);
 
   setLayout (main_layout);
 
@@ -97,7 +112,6 @@ command_widget::command_widget (QWidget *p)
            this, qOverload<const meth_callback&> (&command_widget::interpreter_event));
 
   insert_interpreter_output ("\n\n    Welcome to Octave\n\n");
-
 }
 
 void
@@ -208,6 +222,8 @@ command_widget::notice_settings ()
 
   m_console->setStyleSheet (QString ("color: %1; background-color:%2;")
                             .arg (fgc.name ()).arg (bgc.name ()));
+
+  m_find_widget->notice_settings ();
 }
 
 // The console itself using QScintilla.
@@ -221,7 +237,10 @@ console::console (command_widget *p)
     m_cursor_position (0),
     m_text_changed (false),
     m_command_widget (p),
-    m_last_key_string (QString ())
+    m_last_key_string (QString ()),
+    m_find_result_available (false),
+    m_find_direction (false),
+    m_last_find_inc_result (QString ())
 {
   setMargins (0);
   setWrapMode (QsciScintilla::WrapWord);
@@ -335,6 +354,72 @@ void
 console::text_changed ()
 {
   m_text_changed = true;
+}
+
+// find incremental
+void
+console::find_incremental (const QString& text)
+{
+  int line = -1, col = -1;
+
+  // Go the start of last incremental find result avoiding that the next
+  // match is found instead of the current one
+  if (! m_last_find_inc_result.isEmpty ())
+    {
+      getCursorPosition (&line, &col);
+      int currpos = positionFromLineIndex (line, col);
+      currpos = currpos - (m_last_find_inc_result.length ());
+      lineIndexFromPosition (currpos, &line, &col);
+    }
+
+
+  if (findFirst (text, false, false, false, true, true, line, col))
+    m_last_find_inc_result = text;
+  else
+    m_last_find_inc_result.clear ();
+}
+
+// find
+void
+console::find (const QString& text, bool backward)
+{
+  bool direction_changed = m_find_direction != backward;
+
+  int line = -1, col = -1;
+
+  if (direction_changed)
+    {
+      // Direction changed
+      m_find_direction = backward;
+      if (m_find_result_available)
+        {
+          // Something was found but direction changed, go to start/end of selection
+          if (m_find_result_available)
+            {
+              getCursorPosition (&line, &col);
+              int currpos = positionFromLineIndex (line, col);
+              if (backward)
+                currpos = currpos - (text.length ());
+              else
+                currpos = currpos + (text.length ());
+              if (currpos < 0)
+                currpos = 0;
+              lineIndexFromPosition (currpos, &line, &col);
+            }
+        }
+    }
+  else
+    {
+      // Direction not changed
+      if (m_find_result_available)
+        {
+          m_find_result_available = findNext ();
+          return;
+        }
+    }
+
+  m_find_result_available =
+      findFirst (text, false, false, false, true, ! backward, line, col);
 }
 
 // Re-implement key event

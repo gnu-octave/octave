@@ -174,11 +174,8 @@ documentation::documentation (QWidget *p)
   connect (m_doc_browser, &documentation_browser::cursorPositionChanged,
            this, &documentation::handle_cursor_position_change);
 
-  // Tool bar
-  construct_tool_bar ();
-
   // Find bar
-  m_find_widget = new find_widget (this);
+  m_find_widget = new find_widget (true, this);
   connect (m_find_widget, &find_widget::find_signal,
            this, &documentation::find);
   connect (m_find_widget, &find_widget::find_incremental_signal,
@@ -190,10 +187,13 @@ documentation::documentation (QWidget *p)
   v_box_browser_find->addWidget (m_find_widget);
   browser_find->setLayout (v_box_browser_find);
 
-  notice_settings ();
-
   m_find_widget->hide ();
   m_search_anchor_position = 0;
+
+  // Tool bar
+  construct_tool_bar ();
+
+  notice_settings ();
 
   if (m_help_engine)
     {
@@ -419,7 +419,7 @@ documentation::construct_tool_bar ()
   m_tool_bar->addSeparator ();
   m_action_find
     = add_action (settings.icon ("edit-find"), tr ("Find"),
-                  SLOT (activate_find ()), this, m_tool_bar);
+                  SLOT (activate_find ()), m_find_widget, m_tool_bar);
 
   // Zoom
   m_tool_bar->addSeparator ();
@@ -754,12 +754,6 @@ documentation::load_ref (const QString& ref_name)
         = navi->findChild<QWidget *> ("documentation_tab_search");
       navi->setCurrentWidget (search_tab);
     }
-}
-
-void
-documentation::activate_find ()
-{
-  m_find_widget->activate_find ();
 }
 
 void

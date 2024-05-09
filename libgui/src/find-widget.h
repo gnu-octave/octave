@@ -38,7 +38,9 @@
 //    3. Provide suitable actions in the slots of the signals above
 //    4. Call the find widget's methods notice_settings when settings
 //       are updated and save_settings when settings are saved
-//    5. Other methods are
+//    5. Other methods or slots are
+//        - file_widget::activate_find (): slot for hiding/showing
+//                                         find widget
 //        - file_widget::text (): get current search text
 //        - file_widget::set_text (const QString& text): set search text
 //
@@ -63,16 +65,18 @@ class find_widget : public QWidget
 
 public:
 
-  find_widget (QWidget *parent = nullptr);
+  // x_button: provide a close button for the widget or not
+  find_widget (bool x_button = true, QWidget *parent = nullptr);
   ~find_widget () = default;
 
-  void activate_find (void);
   QString text (void);
   void set_text (const QString& text);
   void notice_settings (void);
   void save_settings (void);
 
 public slots:
+
+  void activate_find (void);
 
 private slots:
 

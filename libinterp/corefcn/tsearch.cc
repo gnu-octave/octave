@@ -51,13 +51,10 @@ min (double a, double b, double c)
 
 #define REF(x,k,i) x(static_cast<octave_idx_type> (elem((k), (i))) - 1)
 
-// for large data set the algorithm is very slow
-// one should presort (how?) either the elements of the points of evaluation
-// to cut down the time needed to decide which triangle contains the
-// given point
-
-// e.g., build up a neighbouring triangle structure and use a simplex-like
-// method to traverse it
+// The algorithm is O(M*N) for M points and N triangles.
+// Faster performance (closer to linear) happens if the points form a
+// contiguous path, such as a person on a walk recording their position every
+// few seconds and querying which map sector they are in.
 
 DEFUN (tsearch, args, ,
        doc: /* -*- texinfo -*-
@@ -67,6 +64,13 @@ Search for the enclosing Delaunay convex hull.
 For @code{@var{t} = delaunay (@var{x}, @var{y})}, finds the index in @var{t}
 containing the points @code{(@var{xi}, @var{yi})}.  For points outside the
 convex hull, @var{idx} is NaN.
+
+Programming Note: The algorithm is @qcode{O}(@var{M}*@var{N}) for locating
+@var{M} points in @var{N} triangles.  Performance is typically much faster if
+the points to be located are in a single continuous path; a point is first
+checked against the region its predecessor was found in, speeding up lookups
+for points along a continuous path.
+
 @seealso{delaunay, delaunayn}
 @end deftypefn */)
 {

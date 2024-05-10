@@ -38,6 +38,7 @@ OCTAVE_BEGIN_NAMESPACE(octave)
 // of the doc dock widget
 find_widget::find_widget (bool x_button, QWidget *p)
   : QWidget (p),
+    m_is_closeable (x_button),
     m_find_line_edit (new QLineEdit (this)),
     m_findnext_shortcut (new QShortcut (this)),
     m_findprev_shortcut (new QShortcut (this))
@@ -101,7 +102,7 @@ find_widget::find_widget (bool x_button, QWidget *p)
 void
 find_widget::activate_find ()
 {
-  if (isVisible ())
+  if (m_is_closeable && isVisible ())
     {
       hide ();
     }

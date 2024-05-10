@@ -94,6 +94,8 @@ protected:
 
 private:
 
+  bool m_is_closeable;
+
   QLineEdit *m_find_line_edit;
 
   QShortcut *m_findnext_shortcut;

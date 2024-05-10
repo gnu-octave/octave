@@ -55,11 +55,9 @@ command_widget::command_widget (QWidget *p)
   : QWidget (p), m_incomplete_parse (false),
     m_prompt (QString ()),
     m_console (new console (this)),
-    m_find_widget (new find_widget (false, this))
-
+    m_find_widget (new find_widget (false, this)),
+    m_find_shortcut (new QShortcut (this))
 {
-  gui_settings settings;
-
   QPushButton *pause_button = new QPushButton (tr("Pause"), this);
   QPushButton *stop_button = new QPushButton (tr("Stop"), this);
   QPushButton *resume_button = new QPushButton (tr("Continue"), this);
@@ -110,6 +108,10 @@ command_widget::command_widget (QWidget *p)
 
   connect (m_console, qOverload<const meth_callback&> (&console::interpreter_event),
            this, qOverload<const meth_callback&> (&command_widget::interpreter_event));
+
+  m_find_shortcut->setContext (Qt::WidgetWithChildrenShortcut);
+  connect (m_find_shortcut, &QShortcut::activated,
+           m_find_widget, &find_widget::activate_find);
 
   insert_interpreter_output ("\n\n    Welcome to Octave\n\n");
 }
@@ -222,6 +224,8 @@ command_widget::notice_settings ()
 
   m_console->setStyleSheet (QString ("color: %1; background-color:%2;")
                             .arg (fgc.name ()).arg (bgc.name ()));
+
+  settings.shortcut (m_find_shortcut, sc_edit_edit_find_replace);
 
   m_find_widget->notice_settings ();
 }

@@ -27,10 +27,11 @@
 #define octave_command_widget_h 1
 
 #include <QWidget>
-
 #include <Qsci/qsciscintilla.h>
+#include <QShortcut>
 
 #include "find-widget.h"
+#include "gui-preferences-sc.h"
 
 // FIXME: We need the following header for the fcn_callback and
 // meth_callback typedefs.  Maybe it would be better to declare those in
@@ -138,6 +139,7 @@ private:
   QString m_prompt;
   console *m_console;
   find_widget *m_find_widget;
+  QShortcut *m_find_shortcut;
 
 };
 

@@ -180,7 +180,11 @@ octave_execv_wrapper (const char *file, char *const *argv)
 int
 octave_execvp_wrapper (const char *file, char *const *argv)
 {
+#if defined (OCTAVE_USE_WINDOWS_API)
+  return execvp (file, (const char *const *) argv);
+#else
   return execvp (file, argv);
+#endif
 }
 
 pid_t

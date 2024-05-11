@@ -236,8 +236,6 @@ binmap (const T& x, const Sparse<R>& ys, F fcn)
       for (octave_idx_type i = 0; i < nz; i++)
         {
           octave_quit ();
-          // FIXME: Could keep track of whether fcn call results in a 0.
-          //        If no zeroes are created could skip maybe_compress()
           retval.xdata (i) = fcn (x, ys.data (i));
         }
 
@@ -267,8 +265,6 @@ binmap (const Sparse<T>& xs, const R& y, F fcn)
       for (octave_idx_type i = 0; i < nz; i++)
         {
           octave_quit ();
-          // FIXME: Could keep track of whether fcn call results in a 0.
-          //        If no zeroes are created could skip maybe_compress()
           retval.xdata (i) = fcn (xs.data (i), y);
         }
 

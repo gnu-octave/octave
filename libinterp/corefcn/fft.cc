@@ -79,13 +79,6 @@ do_fft (const octave_value_list& args, const char *fcn, int type)
         dim = math::nint (dval) - 1;
     }
 
-  // FIXME: This seems strange and unnecessary (10/21/16).
-  // How would you ever arrive at an octave_value object without correct dims?
-  // We certainly don't make this check every other place in Octave.
-  for (octave_idx_type i = 0; i < ndims; i++)
-    if (dims(i) < 0)
-      return retval;
-
   if (dim < 0)
     {
       dim = dims.first_non_singleton ();

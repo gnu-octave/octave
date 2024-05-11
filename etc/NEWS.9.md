@@ -19,6 +19,13 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   states (bug #65595).
 - Fix segmentation fault when trying to set breakpoint in non-existent method
   of `classdef` class (bug #65610).
+- Improve default display of `classdef` properties (bug #62432).
+- Avoid crash with Qt6 6.7.0 (bug #65605).
+- `bar.m`: Catch input number validation error.
+- Prevent OOM crash or segmentation fault in `sort ()` when `dim` equals `Inf`
+  (bug #65712).
+- `legend.m`: Avoid setting more colors than coordinates for `patch` objects
+  (bug #65632).
 
 ### GUI
 
@@ -44,6 +51,10 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   summary.
 - Run test program for polymorphic allocators if possible instead of a simple
   build check.
+- Speed up BIST for the central part of `convn` with `'full'` shape.
+- Require Qt Widgets module when building the GUI (bug #65625).
+- `bug-53027.tst`: Delete temporary file after test is done (bug #53027).
+- Avoid build error with GCC 14 when targeting Windows.
 
 ### Documentation
 
@@ -56,6 +67,12 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Add application notes in `fminsearch`, `fminbnd`, `fminunc` indicating the
   preferred way to pass parameters is through anonymous functions.
 - Update remaining copyright statements to 2024.
+- Minor fix for `setappdata.m`.
+- Section "Assignment Expressions": Use `@emph` rather than `@i` macro for
+  better rendering in plaintext formats.
+- Section "Running Octave": Tell new users how to start Octave on their
+  computers.
+- `tsearch`: Add programming note about expected performance.
 
 ### Deprecated functions, properties, and operators
 

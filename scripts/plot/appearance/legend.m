@@ -1072,7 +1072,7 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
   persistent lprops = {"color", "linestyle", "linewidth"};
   persistent mprops = {"color", "marker", "markeredgecolor", ...
                        "markerfacecolor", "markersize"};
-  persistent pprops = {"edgecolor", "facecolor", "cdata", ...
+  persistent pprops = {"edgecolor", "facecolor", ...
                        "linestyle", "linewidth", ...
                        "marker", "markeredgecolor", ...
                        "markerfacecolor", "markersize"};
@@ -1125,11 +1125,16 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
     case {"patch", "surface"}
 
       vals = get (hplt, pprops);
+      cdata = get (hplt, "cdata");
 
-      hicon = __go_patch__ (hl, [pprops; vals]{:});
+      hicon = __go_patch__ (hl, [pprops; vals]{:}, ...
+                            "cdata", median (median (cdata, 1), 2));
 
       ## Listeners
       safe_property_link (hplt(1), hicon, pprops);
+      addlistener (hplt, "cdata", ...
+                   @(h, ~) set (hicon, "cdata", ...
+                                median (median (get (h, "cdata"), 1), 2)));
 
       setappdata (hicon, "__creator__", typ);
 
@@ -1171,7 +1176,9 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
       ## Main patch
 
       vals = get (hplt(1), pprops);
-      hicon = __go_patch__ (hl, [pprops; vals]{:}, ...
+      cdata = get (hplt(1), "cdata");
+      hicon = __go_patch__ (hl, "cdata", cdata, ...
+                            [pprops; vals]{:}, ...
                             "pickableparts", "all", ...
                             "buttondownfcn", ...
                             {@execute_itemhit, hl, hplt, "icon"});
@@ -1181,15 +1188,17 @@ function [htxt, hicon] = create_item (hl, str, txtpval, hplt)
 
       ## Additional patch for the inner contour
       vals = get (hplt(end), pprops);
+      cdata = get (hplt(end), "cdata");
       htmp =  __go_patch__ (hl, "handlevisibility", "off", ...
-                            "xdata", 0, "ydata", 0, [pprops; vals]{:}, ...
+                            "xdata", 0, "ydata", 0, "cdata", cdata, ...
+                            [pprops; vals]{:}, ...
                             "pickableparts", "all", ...
                             "buttondownfcn", ...
                             {@execute_itemhit, hl, hplt, "icon"});
 
       ## Listeners
-      safe_property_link (hplt(1), hicon, pprops);
-      safe_property_link (hplt(end), htmp, pprops);
+      safe_property_link (hplt(1), hicon, [{"cdata"}, pprops]);
+      safe_property_link (hplt(end), htmp, [{"cdata"}, pprops]);
       addlistener (hicon, "ydata", ...
                    @(h, ~) set (htmp, "ydata", get (h, "innerydata")));
       addlistener (hicon, "xdata", ...
@@ -1909,6 +1918,20 @@ endfunction
 %! surf (peaks ());
 %! legend ("peaks()");
 %! title ("legend() works for surface objects too");
+
+%!demo
+%! clf;
+%! [x,y,z] = meshgrid (-.2:0.02:.2, -.2:0.02:.2, -.2:0.02:.2);
+%! val = (x.^2 + y.^2 + z.^2);
+%!
+%! h_axes = axes ();
+%! view (3);
+%! fv = isosurface (x, y, z, val, .039, z);
+%! h_patch = patch (fv, "FaceColor", "flat", "EdgeColor", "none");
+%! view (3);
+%! axis tight
+%! axis equal
+%! legend ({"colored patch"});
 
 %!demo
 %! clf reset;  # needed to undo colormap assignment in previous demo

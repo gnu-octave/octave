@@ -30,6 +30,7 @@
 %!   dbclear classdef_breakpoints;
 %!   assert_dbstatus ([]);
 %! unwind_protect_cleanup
+%!   dbclear classdef_breakpoints;
 %!   if (isguirunning ())
 %!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
 %!   endif
@@ -59,13 +60,14 @@
 %!   dbclear classdef_breakpoints;
 %!   assert_dbstatus ([]);
 %! unwind_protect_cleanup
+%!   dbclear classdef_breakpoints;
 %!   if (isguirunning ())
 %!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
 %!   endif
 %! end_unwind_protect
 
 ## Try to add breakpoint in non-existent method
-%!test <65610*>
+%!test <*65610>
 %! if (isguirunning ())
 %!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
 %!                                                     "false");
@@ -89,7 +91,64 @@
 %!   dbstop classdef_breakpoints 19;
 %!   assert_dbstatus ([20]);
 %! unwind_protect_cleanup
+%!   dbclear classdef_breakpoints;
 %!   if (isguirunning ())
 %!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
 %!   endif
 %! end_unwind_protect
+
+## Set breakpoints in set or get methods by line numbers
+%!test <*65610>
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
+%!                                                     "false");
+%! endif
+%! unwind_protect
+%!   ## Add breakpoints in different member functions using line numbers.
+%!   dbstop classdef_breakpoints2 13 16 10;
+%!   assert_dbstatus ([10, 13, 16]);
+%!
+%!   ## Remove one breakpoint and confirm the others remain.
+%!   dbclear classdef_breakpoints2 16;
+%!   assert_dbstatus ([10, 13]);
+%!
+%!   ## Clear all breakpoints, none should be left.
+%!   dbclear classdef_breakpoints2;
+%!   assert_dbstatus ([]);
+%! unwind_protect_cleanup
+%!   dbclear classdef_breakpoints2;
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
+%!   endif
+%! end_unwind_protect
+
+## Set breakpoints in set or get methods by method name
+%!test
+%! if (isguirunning ())
+%!   orig_show_dbg = __event_manager_gui_preference__ ("editor/show_dbg_file",
+%!                                                     "false");
+%! endif
+%! unwind_protect
+%!   ## Add breakpoint in constructor
+%!   dbstop @classdef_breakpoints2/classdef_breakpoints2;
+%!   assert_dbstatus ([10]);
+%!
+%!   ## Add breakpoints in methods.
+%!   dbstop @classdef_breakpoints2/get.m_prop;
+%!   dbstop @classdef_breakpoints2/set.m_prop;
+%!   assert_dbstatus ([10, 13, 16]);
+%!
+%!   ## Remove breakpoint from one method.
+%!   dbclear @classdef_breakpoints2/get.m_prop;
+%!   assert_dbstatus ([10, 16]);
+%!
+%!   ## Clear all breakpoints, none should be left.
+%!   dbclear classdef_breakpoints2;
+%!   assert_dbstatus ([]);
+%! unwind_protect_cleanup
+%!   dbclear classdef_breakpoints2;
+%!   if (isguirunning ())
+%!     __event_manager_gui_preference__ ("editor/show_dbg_file", orig_show_dbg);
+%!   endif
+%! end_unwind_protect
+

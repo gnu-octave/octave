@@ -31,6 +31,9 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
 - The third output for `unique` is now correct when `stable` sort option is
   used.
 
+- Support setting breakpoints in `set` or `get` methods of `classdef`
+  properties (bug #65610).
+
 ### Graphical User Interface
 
 ### Graphics backend

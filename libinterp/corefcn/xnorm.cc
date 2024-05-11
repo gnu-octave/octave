@@ -51,7 +51,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
     retval = octave_value (0);
   else if (isvector)
     {
-      if (isfloat & iscomplex)
+      if (isfloat && iscomplex)
         retval = octave::xnorm (x.float_complex_column_vector_value (),
                                 p.float_value ());
       else if (isfloat)
@@ -75,7 +75,7 @@ octave_value xnorm (const octave_value& x, const octave_value& p)
     }
   else
     {
-      if (isfloat & iscomplex)
+      if (isfloat && iscomplex)
         retval = octave::xnorm (x.float_complex_matrix_value (),
                                 p.float_value ());
       else if (isfloat)
@@ -115,7 +115,7 @@ xcolnorms (const octave_value& x, const octave_value& p)
     }
   else
     {
-      if (isfloat & iscomplex)
+      if (isfloat && iscomplex)
         retval = octave::xcolnorms (x.float_complex_matrix_value (),
                                     p.float_value ());
       else if (isfloat)
@@ -155,7 +155,7 @@ xrownorms (const octave_value& x, const octave_value& p)
     }
   else
     {
-      if (isfloat & iscomplex)
+      if (isfloat && iscomplex)
         retval = octave::xrownorms (x.float_complex_matrix_value (),
                                     p.float_value ());
       else if (isfloat)
@@ -193,7 +193,7 @@ xfrobnorm (const octave_value& x)
     }
   else
     {
-      if (isfloat & iscomplex)
+      if (isfloat && iscomplex)
         retval = octave::xfrobnorm (x.float_complex_matrix_value ());
       else if (isfloat)
         retval = octave::xfrobnorm (x.float_matrix_value ());

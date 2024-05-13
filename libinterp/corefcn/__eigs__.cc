@@ -238,7 +238,7 @@ Undocumented internal function.
       if (nargin < 2)
         error ("eigs: incorrect number of arguments");
 
-      n = args(1).nint_value ();
+      n = args(1).strict_int_value ();
       arg_offset = 1;
       have_a_fcn = true;
     }
@@ -304,7 +304,7 @@ Undocumented internal function.
     }
 
   if (nargin > (1+arg_offset))
-    k = args(1+arg_offset).nint_value ();
+    k = args(1+arg_offset).strict_int_value ();
 
   if (nargin > (2+arg_offset))
     {
@@ -368,11 +368,11 @@ Undocumented internal function.
 
       tmp = map.getfield ("maxit");
       if (tmp.is_defined ())
-        maxit = tmp.nint_value ();
+        maxit = tmp.strict_int_value ();
 
       tmp = map.getfield ("p");
       if (tmp.is_defined ())
-        p = tmp.nint_value ();
+        p = tmp.strict_int_value ();
 
       tmp = map.getfield ("v0");
       if (tmp.is_defined ())
@@ -385,7 +385,7 @@ Undocumented internal function.
 
       tmp = map.getfield ("disp");
       if (tmp.is_defined ())
-        disp = tmp.nint_value ();
+        disp = tmp.strict_int_value ();
 
       tmp = map.getfield ("cholB");
       if (tmp.is_defined ())

@@ -3251,7 +3251,7 @@ x = str2num (r)
 
   rat_string_len = 13;
   if (nargin == 2)
-    rat_string_len = args(1).nint_value ();
+    rat_string_len = args(1).strict_int_value ();
 
   frame.protect_var (rat_format);
 

@@ -188,7 +188,7 @@ try_cellfun_internal_ops (const octave_value_list& args, int nargin)
       if (nargin != 3)
         error (R"(cellfun: not enough arguments for "size")");
 
-      int d = args(2).nint_value () - 1;
+      int d = args(2).strict_int_value () - 1;
 
       if (d < 0)
         error ("cellfun: K must be a positive integer");

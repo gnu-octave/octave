@@ -373,7 +373,7 @@ H(z) = ---------------------
 
   if (nargin == 5)
     {
-      dim = args(4).nint_value () - 1;
+      dim = args(4).strict_int_value () - 1;
       if (dim < 0 || dim >= x_dims.ndims ())
         error ("filter: DIM must be a valid dimension");
     }

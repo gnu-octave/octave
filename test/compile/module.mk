@@ -54,7 +54,7 @@ compile_TEST_FILES = \
   %reldir%/script11.m \
   %reldir%/script2.m \
   %reldir%/script3.m \
-  %reldir%/shutup_operator_test/@double/display.m \
+  %reldir%/shutup-operator-test/@double/display.m \
   %reldir%/shutup-operator-test/@logical/display.m \
   %reldir%/shutup-operator-test/bytecode_disp.m \
   %reldir%/shutup-operator-test/bytecode-disp.tst \

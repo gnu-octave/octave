@@ -1615,7 +1615,7 @@ file_editor::handle_visibility (bool visible)
 // This slot is a reimplementation of the virtual slot in octave_dock_widget.
 // We need this for updating the parent of the find dialog
 void
-file_editor::toplevel_change (bool)
+file_editor::toplevel_change (bool toplevel)
 {
   if (m_find_dialog)
     {
@@ -1626,6 +1626,8 @@ file_editor::toplevel_change (bool)
       find_create ();
       m_find_dialog->activateWindow ();
     }
+
+  octave_dock_widget::toplevel_change (toplevel);
 }
 
 void

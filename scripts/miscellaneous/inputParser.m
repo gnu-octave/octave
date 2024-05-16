@@ -364,9 +364,10 @@ classdef inputParser < handle
 
       if (iscell (def))
         ## Accept cell default values (bug #64305).
-        this.Parameter(end+1) = struct ("name", name, "def", {def}, "val", val);
+        ## Use builtin() to avoid struct overload in classdef (bug #65667)
+        this.Parameter(end+1) = builtin ("struct", "name", name, "def", {def}, "val", val);
       else
-        this.Parameter(end+1) = struct ("name", name, "def", def, "val", val);
+        this.Parameter(end+1) = builtin ("struct", "name", name, "def", def, "val", val);
       endif
 
     endfunction

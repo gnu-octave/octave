@@ -216,7 +216,7 @@ tab_bar::mousePressEvent (QMouseEvent *me)
           // Middle click or double click -> close the tab
           // Make the clicked tab the current one and close it
           setCurrentIndex (clicked_idx);
-          emit close_current_tab_signal (true);
+          Q_EMIT close_current_tab_signal (true);
           // Was the closed tab before or after the previously current tab?
           // According to the result, use previous index or reduce it by one
           if (current_idx - clicked_idx > 0)

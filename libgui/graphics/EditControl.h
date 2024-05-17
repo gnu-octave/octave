@@ -64,7 +64,7 @@ private:
   bool updateSingleLine (int pId);
   bool updateMultiLine (int pId);
 
-private slots:
+private Q_SLOTS:
   void textChanged ();
   void editingFinished ();
   void returnPressed ();

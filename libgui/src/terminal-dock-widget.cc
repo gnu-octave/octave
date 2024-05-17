@@ -167,7 +167,7 @@ terminal_dock_widget::get_command_widget ()
 void
 terminal_dock_widget::notice_settings ()
 {
-  emit settings_changed ();
+  Q_EMIT settings_changed ();
 }
 
 void

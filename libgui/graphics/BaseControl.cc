@@ -258,19 +258,19 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
         graphics_object fig = go.get_ancestor ("figure");
         if (fig)
           {
-            emit gh_set_event (fig.get_handle (), "currentobject",
+            Q_EMIT gh_set_event (fig.get_handle (), "currentobject",
                                m_handle.value (), false);
 
             if (m->button () != Qt::LeftButton || ! up.enable_is ("on"))
               {
-                emit gh_set_event (fig.get_handle (), "selectiontype",
+                Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
                                    Utils::figureSelectionType (m), false);
-                emit gh_set_event (fig.get_handle (), "currentpoint",
+                Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
                                    Utils::figureCurrentPoint (fig, m),
                                    false);
-                emit gh_callback_event (fig.get_handle (),
+                Q_EMIT gh_callback_event (fig.get_handle (),
                                         "windowbuttondownfcn");
-                emit gh_callback_event (m_handle, "buttondownfcn");
+                Q_EMIT gh_callback_event (m_handle, "buttondownfcn");
 
                 if (m->button () == Qt::RightButton)
                   ContextMenu::executeAt (m_interpreter, up,
@@ -283,11 +283,11 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
             else
               {
                 if (up.style_is ("listbox"))
-                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                  Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
                                      Utils::figureSelectionType (m),
                                      false);
                 else
-                  emit gh_set_event (fig.get_handle (), "selectiontype",
+                  Q_EMIT gh_set_event (fig.get_handle (), "selectiontype",
                                      octave_value ("normal"), false);
               }
           }
@@ -305,9 +305,9 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
 
           if (fig)
             {
-              emit gh_set_event (fig.get_handle (), "currentpoint",
+              Q_EMIT gh_set_event (fig.get_handle (), "currentpoint",
                                  Utils::figureCurrentPoint (fig, m), false);
-              emit gh_callback_event (fig.get_handle (),
+              Q_EMIT gh_callback_event (fig.get_handle (),
                                       "windowbuttonmotionfcn");
             }
         }
@@ -322,18 +322,18 @@ BaseControl::eventFilter (QObject *watched, QEvent *xevent)
             Utils::makeKeyEventStruct (dynamic_cast<QKeyEvent *> (xevent));
           graphics_object fig = object ().get_ancestor ("figure");
 
-          emit gh_set_event (fig.get_handle (), "currentcharacter",
+          Q_EMIT gh_set_event (fig.get_handle (), "currentcharacter",
                              keyData.getfield ("Character"), false);
-          emit gh_callback_event (m_handle, "keypressfcn", keyData);
+          Q_EMIT gh_callback_event (m_handle, "keypressfcn", keyData);
         }
       break;
 
     case QEvent::FocusIn:
-      emit gh_set_event (m_handle, "__focus__", "on", false);
+      Q_EMIT gh_set_event (m_handle, "__focus__", "on", false);
       break;
 
     case QEvent::FocusOut:
-      emit gh_set_event (m_handle, "__focus__", "off", false);
+      Q_EMIT gh_set_event (m_handle, "__focus__", "off", false);
       break;
 
     default:

@@ -95,7 +95,7 @@ PopupMenuControl::update (int pId)
           }
         else
           {
-            emit gh_set_event (m_handle, "value",
+            Q_EMIT gh_set_event (m_handle, "value",
                                octave_value (box->count () > 0 ? 1.0 : 0.0),
                                false);
           }
@@ -140,9 +140,9 @@ PopupMenuControl::currentIndexChanged (int index)
 {
   if (! m_blockUpdate)
     {
-      emit gh_set_event (m_handle, "value", octave_value (double (index + 1)),
+      Q_EMIT gh_set_event (m_handle, "value", octave_value (double (index + 1)),
                          false);
-      emit gh_callback_event (m_handle, "callback");
+      Q_EMIT gh_callback_event (m_handle, "callback");
     }
 }
 

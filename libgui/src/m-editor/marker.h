@@ -74,11 +74,11 @@ public:
 
   void set_cond (const QString& cond) { m_condition = cond; }
 
-signals:
+Q_SIGNALS:
 
   void request_remove (int original_linenr);
 
-public slots:
+public Q_SLOTS:
 
   void handle_remove_via_original_linenr (int original_linenr);
   void handle_request_remove_via_editor_linenr (int editor_linenr);

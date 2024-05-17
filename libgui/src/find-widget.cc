@@ -117,19 +117,19 @@ find_widget::activate_find ()
 void
 find_widget::find ()
 {
-  emit find_signal (m_find_line_edit->text (), false);
+  Q_EMIT find_signal (m_find_line_edit->text (), false);
 }
 
 void
 find_widget::find_backward ()
 {
-  emit find_signal (m_find_line_edit->text (), true);
+  Q_EMIT find_signal (m_find_line_edit->text (), true);
 }
 
 void
 find_widget::find_incremental ()
 {
-  emit find_incremental_signal (m_find_line_edit->text ());
+  Q_EMIT find_incremental_signal (m_find_line_edit->text ());
 }
 
 void

@@ -548,7 +548,7 @@ documentation::global_search_finished (int)
                   connect (this, &documentation::show_single_result,
                            this, &documentation::handle_search_result_clicked);
 
-                  emit show_single_result (url);
+                  Q_EMIT show_single_result (url);
                 }
             }
         }

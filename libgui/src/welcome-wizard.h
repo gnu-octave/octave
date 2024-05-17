@@ -55,7 +55,7 @@ private:
   int m_max_height;
   int m_max_width;
 
-public slots:
+public Q_SLOTS:
 
   void handle_web_connect_option (int state);
 

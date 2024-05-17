@@ -146,7 +146,7 @@ QUnixTerminalImpl::~QUnixTerminalImpl()
     dup2 (fdstdout, STDOUT_FILENO);
     dup2 (fdstderr, STDERR_FILENO);
 
-    emit destroyed();
+    Q_EMIT destroyed();
 }
 
 void QUnixTerminalImpl::setTerminalFont(const QFont &font)

@@ -29,7 +29,7 @@ void SelfListener::run() {
     while(running) {
          while((len = ::read(_a, buf, 4096)) > 0) {
             buf[len] = 0; // Just in case.
-            emit recvData(buf, len);
+            Q_EMIT recvData(buf, len);
             msleep(30);
          }
          if(len < 0)

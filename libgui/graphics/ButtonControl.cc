@@ -137,8 +137,8 @@ ButtonControl::toggled (bool checked)
       double newValue = (checked ? up.get_max () : up.get_min ());
 
       if (oldValue.numel () != 1 || (newValue != oldValue(0)))
-        emit gh_set_event (m_handle, "value", newValue, false);
-      emit gh_callback_event (m_handle, "callback");
+        Q_EMIT gh_set_event (m_handle, "value", newValue, false);
+      Q_EMIT gh_callback_event (m_handle, "callback");
     }
 }
 
@@ -148,7 +148,7 @@ ButtonControl::clicked ()
   QAbstractButton *btn = qWidget<QAbstractButton> ();
 
   if (! btn->isCheckable ())
-    emit gh_callback_event (m_handle, "callback");
+    Q_EMIT gh_callback_event (m_handle, "callback");
 }
 
 OCTAVE_END_NAMESPACE(octave);

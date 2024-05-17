@@ -100,7 +100,7 @@ public:
   //! editor position
   void restore_settings (QPoint def_pos);
 
-public slots:
+public Q_SLOTS:
 
   void find_next ();
   void find_prev ();
@@ -108,7 +108,7 @@ public slots:
   //! Slot for updating the edit area when the active tab has changed
   void update_edit_area (octave_qscintilla *);
 
-private slots:
+private Q_SLOTS:
 
   void handle_sel_search_changed (int);
   void handle_selection_changed (bool has_selected);

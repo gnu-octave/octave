@@ -51,7 +51,7 @@ public:
 
   virtual void keyPressEvent (QKeyEvent *e);
 
-public slots:
+public Q_SLOTS:
 
   void handle_direct_shortcut (int);
   void handle_shift_modifier (int);
@@ -101,11 +101,11 @@ public:
   shortcut_edit_dialog (tree_widget_shortcut_item *shortcut_item,
                         QWidget *parent = nullptr);
 
-public slots:
+public Q_SLOTS:
 
   void finished (int result);
 
-signals:
+Q_SIGNALS:
 
   void set_shortcut (const QString& settings_key,
                      const QString& settings_value);
@@ -136,7 +136,7 @@ public:
 
   void write_settings ();
 
-public slots:
+public Q_SLOTS:
 
   void edit_selection (QTreeWidgetItem *item, int col);
 

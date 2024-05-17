@@ -38,7 +38,7 @@ TextEdit::focusOutEvent (QFocusEvent *xevent)
 {
   QTextEdit::focusOutEvent (xevent);
 
-  emit editingFinished ();
+  Q_EMIT editingFinished ();
 }
 
 void
@@ -49,7 +49,7 @@ TextEdit::keyPressEvent (QKeyEvent *xevent)
   if ((xevent->key () == Qt::Key_Return
        || xevent->key () == Qt::Key_Enter)
       && xevent->modifiers () == Qt::ControlModifier)
-    emit returnPressed ();
+    Q_EMIT returnPressed ();
 }
 
 OCTAVE_END_NAMESPACE(octave)

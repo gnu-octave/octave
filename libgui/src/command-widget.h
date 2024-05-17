@@ -53,12 +53,12 @@ public:
 
   console (command_widget *p);
 
-signals:
+Q_SIGNALS:
 
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   void cursor_position_changed (int line, int col);
 
@@ -109,7 +109,7 @@ public:
 
   QString prompt ();
 
-signals:
+Q_SIGNALS:
 
   void clear_line_edit ();
 
@@ -123,7 +123,7 @@ signals:
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   void process_input_line (const QString& input_line);
 

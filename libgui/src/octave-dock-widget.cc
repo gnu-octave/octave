@@ -259,7 +259,7 @@ octave_dock_widget::octave_dock_widget (const QString& obj_name, QWidget *p)
 void
 octave_dock_widget::init_window_menu_entry ()
 {
-  emit active_changed (isVisible ());  // emit once for init of window menu
+  Q_EMIT active_changed (isVisible ());  // emit once for init of window menu
 }
 
 // make the widget floating
@@ -331,7 +331,7 @@ octave_dock_widget::make_window (bool widget_was_dragged)
       set_style (true);
     }
 
-  emit topLevelChanged (true);  // Be sure signal is emitted
+  Q_EMIT topLevelChanged (true);  // Be sure signal is emitted
 }
 
 // dock the widget
@@ -429,7 +429,7 @@ octave_dock_widget::set_main_window (main_window *mw)
 void
 octave_dock_widget::closeEvent (QCloseEvent *e)
 {
-  emit active_changed (false);
+  Q_EMIT active_changed (false);
   set_focus_predecessor ();
   save_settings ();
 
@@ -458,7 +458,7 @@ octave_dock_widget::event (QEvent *event)
       if (isFloating () && parent () != 0)
         {
           m_waiting_for_mouse_button_release = false;
-          emit queue_make_window (event->type () != QEvent::MouseButtonDblClick);
+          Q_EMIT queue_make_window (event->type () != QEvent::MouseButtonDblClick);
         }
       return retval;
     }
@@ -661,7 +661,7 @@ void
 octave_dock_widget::change_visibility (bool)
 {
   setVisible (false);
-  emit active_changed (false);
+  Q_EMIT active_changed (false);
 }
 
 void
@@ -680,7 +680,7 @@ octave_dock_widget::handle_visibility (bool visible)
 {
   if (visible)
     {
-      emit active_changed (true);
+      Q_EMIT active_changed (true);
       if (! isFloating ())
         setFocus ();
     }
@@ -723,7 +723,7 @@ octave_dock_widget::toplevel_change (bool toplevel)
       // Making into a widget immediately will mangle the double-click
       // status and cause problems on followup button clicks.
       if (parent () == 0)
-        emit queue_make_widget ();
+        Q_EMIT queue_make_widget ();
     }
 }
 

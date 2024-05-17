@@ -89,11 +89,11 @@ public:
 
   static ObjectProxy * toolkitObjectProxy (const graphics_object& go);
 
-signals:
+Q_SIGNALS:
 
   void create_object_signal (double handle);
 
-public slots:
+public Q_SLOTS:
 
   void interpreter_event (const octave::fcn_callback& fcn);
   void interpreter_event (const octave::meth_callback& meth);

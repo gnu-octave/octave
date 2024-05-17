@@ -49,7 +49,7 @@ public:
 protected:
   void update (int pId);
 
-private slots:
+private Q_SLOTS:
   void triggered (bool checked);
 };
 

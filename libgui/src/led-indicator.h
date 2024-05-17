@@ -46,7 +46,7 @@ public:
   led_indicator (led_state initial_state = LED_STATE_INACTIVE,
                  QWidget *parent = 0);
 
-public slots:
+public Q_SLOTS:
 
   void set_state (led_state state);
 

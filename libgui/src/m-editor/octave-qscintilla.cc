@@ -229,14 +229,14 @@ octave_qscintilla::octave_qscintilla (QWidget *p)
   markerDefine (QsciScintilla::Minus, marker::selection);
 
   // init state of undo/redo action for this tab
-  emit status_update (isUndoAvailable (), isRedoAvailable ());
+  Q_EMIT status_update (isUndoAvailable (), isRedoAvailable ());
 }
 
 void
 octave_qscintilla::setCursorPosition (int line, int col)
 {
   QsciScintilla::setCursorPosition (line, col);
-  emit update_rowcol_indicator_signal (line, col);
+  Q_EMIT update_rowcol_indicator_signal (line, col);
 }
 
 void
@@ -286,7 +286,7 @@ octave_qscintilla::contextMenuEvent (QContextMenuEvent *e)
 #  endif
     {
       // fill context menu with editor's standard actions
-      emit create_context_menu_signal (context_menu);
+      Q_EMIT create_context_menu_signal (context_menu);
 
       // additional custom entries of the context menu
       context_menu->addSeparator ();   // separator before custom entries
@@ -343,7 +343,7 @@ octave_qscintilla::contextmenu_help_doc (bool documentation)
     {
       std::string name = m_word_at_cursor.toStdString ();
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([name] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -352,7 +352,7 @@ octave_qscintilla::contextmenu_help_doc (bool documentation)
          });
     }
   else
-    emit execute_command_in_terminal_signal ("help " + m_word_at_cursor);
+    Q_EMIT execute_command_in_terminal_signal ("help " + m_word_at_cursor);
 }
 
 // call edit the function related to the current word
@@ -371,7 +371,7 @@ octave_qscintilla::context_run ()
     {
       contextmenu_run (true);
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([] (interpreter&)
           { command_editor::erase_empty_line (false); });
     }
@@ -857,7 +857,7 @@ octave_qscintilla::context_help_doc (bool documentation)
 void
 octave_qscintilla::contextmenu_edit (bool)
 {
-  emit context_menu_edit_signal (m_word_at_cursor);
+  Q_EMIT context_menu_edit_signal (m_word_at_cursor);
 }
 
 void
@@ -943,7 +943,7 @@ octave_qscintilla::contextmenu_run (bool)
     }
 
   // Add commands to the history
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([tmp_hist] (interpreter& interp)
       {
         // INTERPRETER THREAD
@@ -964,7 +964,7 @@ octave_qscintilla::contextmenu_run (bool)
   QPointer<octave_qscintilla> this_oq (this);
 
   // Let the interpreter execute the tmp file
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_oq, tmp_file, tmp_hist] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1052,7 +1052,7 @@ octave_qscintilla::contextmenu_run (bool)
              stack.pop_back ();
 
            // Clean up before throwing the modified error.
-           emit ctx_menu_run_finished_signal (err_line,
+           Q_EMIT ctx_menu_run_finished_signal (err_line,
                                               tmp_file, tmp_hist,
                                               dbg, auto_repeat);
 
@@ -1066,7 +1066,7 @@ octave_qscintilla::contextmenu_run (bool)
 
        // Clean up
 
-       emit ctx_menu_run_finished_signal (err_line,
+       Q_EMIT ctx_menu_run_finished_signal (err_line,
                                           tmp_file, tmp_hist,
                                           dbg, auto_repeat);
 
@@ -1085,7 +1085,7 @@ void octave_qscintilla::ctx_menu_run_finished
   (int, QPointer<QTemporaryFile> tmp_file,
    QPointer<QTemporaryFile> tmp_hist, bool dbg, bool auto_repeat)
 {
-  emit focus_console_after_command_signal ();
+  Q_EMIT focus_console_after_command_signal ();
 
   // TODO: Use line nr. (int argument) of possible error for removing
   //       lines from history that were never executed. For this,
@@ -1102,7 +1102,7 @@ void octave_qscintilla::ctx_menu_run_finished
   if (tmp_hist && tmp_hist->exists ())
     tmp_hist->remove ();
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([dbg, auto_repeat] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1125,7 +1125,7 @@ octave_qscintilla::contextmenu_break_condition (bool)
   int margins = marginWidth (1) + marginWidth (2) + marginWidth (3);
   local_pos = QPoint (margins + 1, local_pos.y ());
 
-  emit context_menu_break_condition_signal (lineAt (local_pos));
+  Q_EMIT context_menu_break_condition_signal (lineAt (local_pos));
 #endif
 }
 
@@ -1133,7 +1133,7 @@ void
 octave_qscintilla::contextmenu_break_once (const QPoint& local_pos)
 {
 #if defined (HAVE_QSCI_VERSION_2_6_0)
-  emit context_menu_break_once (lineAt (local_pos));
+  Q_EMIT context_menu_break_once (lineAt (local_pos));
 #else
   octave_unused_parameter (local_pos);
 #endif
@@ -1142,7 +1142,7 @@ octave_qscintilla::contextmenu_break_once (const QPoint& local_pos)
 void
 octave_qscintilla::text_changed ()
 {
-  emit status_update (isUndoAvailable (), isRedoAvailable ());
+  Q_EMIT status_update (isUndoAvailable (), isRedoAvailable ());
 }
 
 void
@@ -1162,7 +1162,7 @@ octave_qscintilla::cursor_position_changed (int line, int col)
 void
 octave_qscintilla::focusInEvent (QFocusEvent *focusEvent)
 {
-  emit status_update (isUndoAvailable (), isRedoAvailable ());
+  Q_EMIT status_update (isUndoAvailable (), isRedoAvailable ());
 
   QsciScintilla::focusInEvent (focusEvent);
 }
@@ -1250,7 +1250,7 @@ octave_qscintilla::event (QEvent *e)
       QHelpEvent *help_e = static_cast<QHelpEvent *> (e);
       QString symbol = wordAtPoint (help_e->pos ());
 
-      emit show_symbol_tooltip_signal (help_e->globalPos (), symbol);
+      Q_EMIT show_symbol_tooltip_signal (help_e->globalPos (), symbol);
 
       return true;
     }

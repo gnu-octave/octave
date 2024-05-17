@@ -60,13 +60,13 @@ public:
   void stop ();
   void resume ();
 
-signals:
+Q_SIGNALS:
 
   void ready ();
 
   void shutdown_finished (int);
 
-public slots:
+public Q_SLOTS:
 
   // Programming Note: With the current design of the interpreter,
   // additional signals will not be noticed because the execute

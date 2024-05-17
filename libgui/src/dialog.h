@@ -94,7 +94,7 @@ public:
   void unlock () { m_mutex.unlock (); }
   void wake_all () { m_waitcondition.wakeAll (); }
 
-signals:
+Q_SIGNALS:
 
   void create_dialog (const QString&, const QString&, const QString&,
                       const QStringList&, const QString&, const QStringList&);
@@ -110,7 +110,7 @@ signals:
   void create_filedialog (const QStringList& filters, const QString& title,
                           const QString& filename, const QString& dirname,
                           const QString& multimode);
-public slots:
+public Q_SLOTS:
 
   void handle_create_dialog (const QString& message, const QString& title,
                              const QString& icon, const QStringList& button,
@@ -185,7 +185,7 @@ private:
   {
     // Reroute the close tab to a button click so there is only a single
     // route to waking the wait condition.
-    emit buttonClicked (nullptr);
+    Q_EMIT buttonClicked (nullptr);
   }
 };
 
@@ -203,11 +203,11 @@ public:
 
   ~ListDialog () = default;
 
-signals:
+Q_SIGNALS:
 
   void finish_selection (const QIntList&, int);
 
-public slots:
+public Q_SLOTS:
 
   void buttonOk_clicked ();
 
@@ -235,11 +235,11 @@ public:
 
   ~InputDialog () = default;
 
-signals:
+Q_SIGNALS:
 
   void finish_input (const QStringList&, int);
 
-public slots:
+public Q_SLOTS:
 
   void buttonOk_clicked ();
 
@@ -264,11 +264,11 @@ public:
 
   ~FileDialog () = default;
 
-signals:
+Q_SIGNALS:
 
   void finish_input (const QStringList&, const QString&, int);
 
-private slots:
+private Q_SLOTS:
 
   void acceptSelection ();
 

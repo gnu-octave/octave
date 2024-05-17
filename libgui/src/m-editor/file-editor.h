@@ -126,7 +126,7 @@ public:
   void empty_script (bool startup, bool visible);
   void restore_session (bool visible = true);
 
-signals:
+Q_SIGNALS:
 
   void fetab_settings_changed ();
   void fetab_change_request (const QWidget *ID);
@@ -194,7 +194,7 @@ signals:
 
   void show_symbol_tooltip_signal (const QPoint&, const QString&);
 
-public slots:
+public Q_SLOTS:
 
   void activate ();
   void set_focus (QWidget *fet);
@@ -305,14 +305,14 @@ public slots:
 
   file_editor_tab * reset_focus ();
 
-protected slots:
+protected Q_SLOTS:
 
   void copyClipboard ();
   void pasteClipboard ();
   void selectAll ();
   void do_undo ();
 
-private slots:
+private Q_SLOTS:
 
   void request_open_file (const QString& fileName,
                           const QString& encoding = QString (),

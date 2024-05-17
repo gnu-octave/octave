@@ -242,7 +242,7 @@ public:
      */
     virtual void process();
 
-signals:
+Q_SIGNALS:
 
     void request_edit_mfile_signal (const QString&, int);
     void request_open_file_signal (const QString&, const QString&, int);
@@ -308,7 +308,7 @@ public:
 
     virtual void process();
 
-public slots:
+public Q_SLOTS:
     void request_open_file (const QString&, int);
 
 protected:
@@ -332,10 +332,10 @@ Q_OBJECT
 public:
     FilterObject(Filter::HotSpot* filter) : _filter(filter) {}
     void request_open_file (const QString& file, int line)
-      { emit request_open_file_signal (file, line); }
-signals:
+      { Q_EMIT request_open_file_signal (file, line); }
+Q_SIGNALS:
     void request_open_file_signal (const QString&, int);
-private slots:
+private Q_SLOTS:
     void activated();
 private:
     Filter::HotSpot* _filter;

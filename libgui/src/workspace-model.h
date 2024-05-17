@@ -74,12 +74,12 @@ public:
   QStringList get_symbol_names () const { return m_symbols; }
   QStringList get_symbol_values () const { return m_values; }
 
-signals:
+Q_SIGNALS:
 
   void model_changed ();
   void prompt_variable_editor ();
 
-public slots:
+public Q_SLOTS:
 
   void set_workspace (bool top_level, bool debug,
                       const symbol_info_list& syminfo);

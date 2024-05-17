@@ -180,7 +180,7 @@ main_window::main_window (base_qobject& oct_qobj)
 
   if (connect_to_web
       && (! last_checked.isValid () || one_day_ago > last_checked))
-    emit show_community_news_signal (serial);
+    Q_EMIT show_community_news_signal (serial);
 
   construct_octave_qt_link ();
 
@@ -193,7 +193,7 @@ main_window::main_window (base_qobject& oct_qobj)
 
   init_terminal_size ();
 
-  emit init_window_menu ();
+  Q_EMIT init_window_menu ();
 
   focus_command_window ();
 }
@@ -588,7 +588,7 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
   if ((dock || m_active_dock != edit_dock_widget) && (dock != m_active_dock))
     {
       // signal to all dock widgets for updating the style
-      emit active_dock_changed (m_active_dock, dock);
+      Q_EMIT active_dock_changed (m_active_dock, dock);
 
       if (dock)
         {
@@ -601,12 +601,12 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
       int editor = 0;
       if (edit_dock_widget == dock)
         {
-          emit editor_focus_changed (true);
+          Q_EMIT editor_focus_changed (true);
           editor = 1;
         }
       else if (edit_dock_widget == m_active_dock)
         {
-          emit editor_focus_changed (false);
+          Q_EMIT editor_focus_changed (false);
           editor = -1;
         }
 
@@ -648,7 +648,7 @@ main_window::focus_changed (QWidget *, QWidget *new_widget)
 void
 main_window::request_reload_settings ()
 {
-  emit settings_changed ();
+  Q_EMIT settings_changed ();
 }
 
 void
@@ -674,7 +674,7 @@ main_window::handle_save_workspace_request ()
 
   if (! file.isEmpty ())
     {
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([file] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -703,7 +703,7 @@ main_window::handle_load_workspace_request (const QString& file_arg)
 
   if (! file.isEmpty ())
     {
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([file] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -726,7 +726,7 @@ main_window::handle_open_any_request (const QString& file_arg)
     {
       std::string file = file_arg.toStdString ();
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([file] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -747,7 +747,7 @@ main_window::handle_open_any_request (const QString& file_arg)
 void
 main_window::handle_clear_workspace_request ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -759,7 +759,7 @@ main_window::handle_clear_workspace_request ()
 void
 main_window::handle_clear_command_window_request ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] ()
      {
        // INTERPRETER THREAD
@@ -772,7 +772,7 @@ main_window::handle_clear_command_window_request ()
 void
 main_window::handle_clear_history_request ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -788,7 +788,7 @@ main_window::handle_undo_request ()
 {
   if (command_window_has_focus ())
     {
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([] ()
          {
            // INTERPRETER THREAD
@@ -798,14 +798,14 @@ main_window::handle_undo_request ()
          });
     }
   else
-    emit undo_signal ();
+    Q_EMIT undo_signal ();
 }
 
 void
 main_window::modify_path (const QStringList& dir_list,
                           bool rm, bool subdirs)
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([dir_list, subdirs, rm] (interpreter& interp)
     {
       // INTERPRETER THREAD
@@ -988,7 +988,7 @@ main_window::notice_settings (bool update_by_worker)
 
   settings.update_network_settings ();
 
-  emit active_dock_changed (nullptr, m_active_dock); // update dock widget styles
+  Q_EMIT active_dock_changed (nullptr, m_active_dock); // update dock widget styles
 
   configure_shortcuts ();
 
@@ -1128,7 +1128,7 @@ main_window::set_current_working_directory (const QString& dir)
 
   if (fileInfo.exists () && fileInfo.isDir ())
     {
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([xdir] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -1168,11 +1168,11 @@ main_window::execute_command_in_terminal (const QString& command)
 {
   if (m_octave_qobj.experimental_terminal_widget ())
     {
-      emit execute_command_signal (command);
+      Q_EMIT execute_command_signal (command);
     }
   else
     {
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([command] ()
          {
            // INTERPRETER THREAD
@@ -1193,7 +1193,7 @@ main_window::execute_command_in_terminal (const QString& command)
 void
 main_window::run_file_in_terminal (const QFileInfo& info, int opts)
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, opts, info] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1230,7 +1230,7 @@ main_window::run_file_in_terminal (const QFileInfo& info, int opts)
                cmd = cmd + function_name;
 
                if (m_octave_qobj.experimental_terminal_widget ())
-                 emit execute_command_signal (cmd);
+                 Q_EMIT execute_command_signal (cmd);
                else
                  command_editor::replace_line (cmd.toStdString ());
              }
@@ -1262,7 +1262,7 @@ main_window::run_file_in_terminal (const QFileInfo& info, int opts)
 void
 main_window::handle_new_figure_request ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1299,7 +1299,7 @@ main_window::handle_exit_debugger ()
 void
 main_window::debug_continue ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1314,7 +1314,7 @@ main_window::debug_continue ()
 void
 main_window::debug_step_into ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1333,7 +1333,7 @@ main_window::debug_step_over ()
     {
       // We are in debug mode, just call dbstep.
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([this] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -1348,14 +1348,14 @@ main_window::debug_step_over ()
   else
     {
       // Not in debug mode: "step into" the current editor file
-      emit step_into_file_signal ();
+      Q_EMIT step_into_file_signal ();
     }
 }
 
 void
 main_window::debug_step_out ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1370,7 +1370,7 @@ main_window::debug_step_out ()
 void
 main_window::debug_quit ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1422,7 +1422,7 @@ main_window::request_open_file ()
     {
       QStringList open_file_names = fileDialog.selectedFiles ();
       for (int i = 0; i < open_file_names.count (); i++)
-        emit open_file_signal (open_file_names.at (i), m_file_encoding, -1);
+        Q_EMIT open_file_signal (open_file_names.at (i), m_file_encoding, -1);
     }
 }
 
@@ -1430,7 +1430,7 @@ main_window::request_open_file ()
 void
 main_window::request_new_script (const QString& commands)
 {
-  emit new_file_signal (commands);
+  Q_EMIT new_file_signal (commands);
 }
 
 // Create a new function and open it
@@ -1481,7 +1481,7 @@ main_window::handle_edit_mfile_request (const QString& fname,
 
   QPointer<main_window> this_mw (this);
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_mw, fname, ffile, curr_dir, line] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1559,7 +1559,7 @@ main_window::handle_edit_mfile_request (const QString& fname,
 
        if (! message.isEmpty ())
          {
-           emit warning_function_not_found_signal (message.arg (fname));
+           Q_EMIT warning_function_not_found_signal (message.arg (fname));
            return;
          }
 
@@ -1567,7 +1567,7 @@ main_window::handle_edit_mfile_request (const QString& fname,
          filename.append (".m");
 
        // default encoding
-       emit open_file_signal (filename, QString (), line);
+       Q_EMIT open_file_signal (filename, QString (), line);
      });
 }
 
@@ -1588,7 +1588,7 @@ main_window::handle_insert_debugger_pointer_request (const QString& file,
 {
   bool cmd_focus = command_window_has_focus ();
 
-  emit insert_debugger_pointer_signal (file, line);
+  Q_EMIT insert_debugger_pointer_signal (file, line);
 
   if (cmd_focus)
     focus_command_window ();
@@ -1600,7 +1600,7 @@ main_window::handle_delete_debugger_pointer_request (const QString& file,
 {
   bool cmd_focus = command_window_has_focus ();
 
-  emit delete_debugger_pointer_signal (file, line);
+  Q_EMIT delete_debugger_pointer_signal (file, line);
 
   if (cmd_focus)
     focus_command_window ();
@@ -1614,7 +1614,7 @@ main_window::handle_update_breakpoint_marker_request (bool insert,
 {
   bool cmd_focus = command_window_has_focus ();
 
-  emit update_breakpoint_marker_signal (insert, file, line, cond);
+  Q_EMIT update_breakpoint_marker_signal (insert, file, line, cond);
 
   if (cmd_focus)
     focus_command_window ();
@@ -1634,13 +1634,13 @@ main_window::read_settings ()
       m_current_directory_combo_box->addItem (curr_dirs.at (i));
     }
 
-  emit settings_changed ();
+  Q_EMIT settings_changed ();
 }
 
 void
 main_window::init_terminal_size ()
 {
-  emit init_terminal_size_signal ();
+  Q_EMIT init_terminal_size_signal ();
 }
 
 void
@@ -1771,7 +1771,7 @@ main_window::copyClipboard ()
         }
     }
   else
-    emit copyClipboard_signal ();
+    Q_EMIT copyClipboard_signal ();
 }
 
 void
@@ -1788,7 +1788,7 @@ main_window::pasteClipboard ()
         }
     }
   else
-    emit pasteClipboard_signal ();
+    Q_EMIT pasteClipboard_signal ();
 }
 
 void
@@ -1803,7 +1803,7 @@ main_window::selectAll ()
         }
     }
   else
-    emit selectAll_signal ();
+    Q_EMIT selectAll_signal ();
 }
 
 void
@@ -1881,7 +1881,7 @@ main_window::handle_octave_ready ()
 
       QPointer<main_window> this_mw (this);
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([this, this_mw] (interpreter& interp)
         {
           // INTERPRETER_THREAD
@@ -1898,7 +1898,7 @@ main_window::handle_octave_ready ()
           std::string decoded_prompt
             = command_editor::decode_prompt_string (prompt);
 
-          emit update_prompt_signal (QString::fromStdString (decoded_prompt));
+          Q_EMIT update_prompt_signal (QString::fromStdString (decoded_prompt));
         });
     }
 
@@ -1977,7 +1977,7 @@ main_window::find_files (const QString& start_dir)
 void
 main_window::set_screen_size (int ht, int wd)
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([ht, wd] ()
      {
        // INTERPRETER THREAD
@@ -2040,7 +2040,7 @@ main_window::set_file_encoding (const QString& new_encoding)
 void
 main_window::profiler_session ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
       {
         // INTERPRETER THREAD
@@ -2051,7 +2051,7 @@ main_window::profiler_session ()
 void
 main_window::profiler_session_resume ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
       {
         // INTERPRETER THREAD
@@ -2062,7 +2062,7 @@ main_window::profiler_session_resume ()
 void
 main_window::profiler_stop ()
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
       {
         // INTERPRETER THREAD
@@ -2111,10 +2111,10 @@ main_window::closeEvent (QCloseEvent *e)
 
       if (m_octave_qobj.experimental_terminal_widget ()
           && ! m_octave_qobj.is_gui_app ())
-        emit close_gui_signal ();
+        Q_EMIT close_gui_signal ();
       else
         {
-          emit interpreter_event
+          Q_EMIT interpreter_event
             ([] (interpreter& interp)
              {
                // INTERPRETER THREAD
@@ -2689,13 +2689,13 @@ main_window::construct_news_menu (QMenuBar *p)
 
   m_release_notes_action
     = news_menu->addAction (QIcon (), tr ("Release Notes"),
-                            [this] () { emit show_release_notes_signal (); });
+                            [this] () { Q_EMIT show_release_notes_signal (); });
   addAction (m_release_notes_action);
   m_release_notes_action->setShortcutContext (Qt::ApplicationShortcut);
 
   m_current_news_action
     = news_menu->addAction (QIcon (), tr ("Community News"),
-                            [this] () { emit show_community_news_signal (-1); });
+                            [this] () { Q_EMIT show_community_news_signal (-1); });
   addAction (m_current_news_action);
   m_current_news_action->setShortcutContext (Qt::ApplicationShortcut);
 }
@@ -2875,7 +2875,7 @@ main_window::update_default_encoding (const QString& default_encoding)
   if (m_default_encoding.startsWith ("SYSTEM", Qt::CaseInsensitive))
     mfile_encoding = "SYSTEM";
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([mfile_encoding] (interpreter& interp)
      {
        // INTERPRETER THREAD

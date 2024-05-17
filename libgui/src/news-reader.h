@@ -43,13 +43,13 @@ public:
       m_page (page), m_serial (serial), m_connect_to_web (connect_to_web)
   { }
 
-signals:
+Q_SIGNALS:
 
   void display_news_signal (const QString& news);
 
   void finished ();
 
-public slots:
+public Q_SLOTS:
 
   void process ();
 

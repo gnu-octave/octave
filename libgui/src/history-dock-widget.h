@@ -47,7 +47,7 @@ public:
 
   ~history_dock_widget () = default;
 
-signals:
+Q_SIGNALS:
 
   //! Signal emitted whenever the user double-clicks a command in the
   //! history.
@@ -59,7 +59,7 @@ signals:
 
   void command_create_script (const QString& commands);
 
-public slots:
+public Q_SLOTS:
 
   void set_history (const QStringList& hist);
   void append_history (const QString& hist_entry);
@@ -67,7 +67,7 @@ public slots:
   void save_settings ();
   void notice_settings ();
 
-private slots:
+private Q_SLOTS:
 
   void update_filter_history ();
   void filter_activate (bool enable);

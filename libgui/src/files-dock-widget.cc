@@ -121,7 +121,7 @@ public:
 
     fdw->file_renamed_signal (true);
 
-    emit fileRenamed (parent_dir.absolutePath (), old_name, new_name);
+    Q_EMIT fileRenamed (parent_dir.absolutePath (), old_name, new_name);
     revert ();
 
     return true;
@@ -541,7 +541,7 @@ files_dock_widget::do_sync_octave_directory ()
   QDir dir
     = QDir (m_file_system_model->filePath (m_file_tree_view->rootIndex ()));
 
-  emit displayed_directory_changed (dir.absolutePath ());
+  Q_EMIT displayed_directory_changed (dir.absolutePath ());
 }
 
 void
@@ -601,9 +601,9 @@ files_dock_widget::display_directory (const QString& dir,
           if (QFile::exists (abs_fname))
             {
               if (extensions.contains (suffix))
-                emit open_file (fileInfo.absoluteFilePath ());
+                Q_EMIT open_file (fileInfo.absoluteFilePath ());
               else
-                emit open_any_signal (abs_fname);
+                Q_EMIT open_any_signal (abs_fname);
             }
         }
     }
@@ -812,7 +812,7 @@ files_dock_widget::contextmenu_open_in_editor (bool)
     {
       QFileInfo file = m_file_system_model->fileInfo (it);
       if (file.exists ())
-        emit open_file (file.absoluteFilePath ());
+        Q_EMIT open_file (file.absoluteFilePath ());
     }
 }
 
@@ -857,7 +857,7 @@ files_dock_widget::contextmenu_load (bool)
 
       QFileInfo info = m_file_system_model->fileInfo (index);
 
-      emit load_file_signal (info.fileName ());
+      Q_EMIT load_file_signal (info.fileName ());
     }
 }
 
@@ -872,7 +872,7 @@ files_dock_widget::contextmenu_run (bool)
       QModelIndex index = rows[0];
 
       QFileInfo info = m_file_system_model->fileInfo (index);
-      emit run_file_signal (info, ED_RUN_FILE);
+      Q_EMIT run_file_signal (info, ED_RUN_FILE);
     }
 }
 
@@ -944,7 +944,7 @@ files_dock_widget::contextmenu_delete (bool)
           else
             {
               // Close the file in the editor if open
-              emit file_remove_signal (info.filePath (), QString ());
+              Q_EMIT file_remove_signal (info.filePath (), QString ());
               // Remove the file.
               bool st = m_file_system_model->remove (index);
               if (! st)
@@ -954,7 +954,7 @@ files_dock_widget::contextmenu_delete (bool)
                                         arg (info.filePath ()));
                   // Reload the old file
                 }
-              emit file_renamed_signal (st);
+              Q_EMIT file_renamed_signal (st);
             }
 
           m_file_system_model->revert ();
@@ -1039,7 +1039,7 @@ files_dock_widget::contextmenu_add_to_path (bool, bool rm, bool subdirs)
     dir_list.append (infos.at (i).absoluteFilePath ());
 
   if (infos.length () > 0)
-    emit modify_path_signal (dir_list, rm, subdirs);
+    Q_EMIT modify_path_signal (dir_list, rm, subdirs);
 }
 
 void
@@ -1229,13 +1229,13 @@ files_dock_widget::process_new_dir (const QString& parent_dir)
 void
 files_dock_widget::process_set_current_dir (const QString& dir)
 {
-  emit displayed_directory_changed (dir);
+  Q_EMIT displayed_directory_changed (dir);
 }
 
 void
 files_dock_widget::process_find_files (const QString& dir)
 {
-  emit find_files_signal (dir);
+  Q_EMIT find_files_signal (dir);
 }
 
 void

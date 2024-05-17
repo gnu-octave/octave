@@ -79,7 +79,7 @@ interpreter_qobject::execute ()
 
           m_interpreter = &interp;
 
-          emit ready ();
+          Q_EMIT ready ();
 
           graphics_init (interp);
 
@@ -106,7 +106,7 @@ interpreter_qobject::execute ()
   // deleting it later, when the application object destructor is
   // executed.
 
-  emit shutdown_finished (exit_status);
+  Q_EMIT shutdown_finished (exit_status);
 }
 
 void

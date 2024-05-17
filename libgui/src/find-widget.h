@@ -74,17 +74,17 @@ public:
   void notice_settings (void);
   void save_settings (void);
 
-public slots:
+public Q_SLOTS:
 
   void activate_find (void);
 
-private slots:
+private Q_SLOTS:
 
   void find (void);
   void find_backward (void);
   void find_incremental (void);
 
-signals:
+Q_SIGNALS:
 
   void find_signal (const QString&, bool);
   void find_incremental_signal (const QString&);

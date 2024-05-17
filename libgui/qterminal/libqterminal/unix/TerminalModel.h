@@ -233,7 +233,7 @@ public:
    */
   void refresh();
 
-public slots:
+public Q_SLOTS:
 
   /**
    * Starts the terminal session.
@@ -249,7 +249,7 @@ public slots:
    */
   void close();
 
-signals:
+Q_SIGNALS:
 
   /** Emitted when the terminal process starts. */
   void started();
@@ -314,7 +314,7 @@ signals:
    */
   void profileChangeCommandReceived(const QString& text);
 
-private slots:
+private Q_SLOTS:
   void done(int);
 
   void onReceiveBlock(const char* buffer, int len );

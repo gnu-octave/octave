@@ -138,9 +138,9 @@ void news_reader::process ()
        "</body>\n"
        "</html>\n");
 
-  emit display_news_signal (html_text);
+  Q_EMIT display_news_signal (html_text);
 
-  emit finished ();
+  Q_EMIT finished ();
 }
 
 OCTAVE_END_NAMESPACE(octave)

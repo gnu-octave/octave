@@ -337,15 +337,15 @@ find_files_dialog::item_double_clicked (const QModelIndex& idx)
   if (idx.column () == 1)
     {
       // clicked in directory part
-      emit dir_selected (info.absolutePath ());
+      Q_EMIT dir_selected (info.absolutePath ());
     }
   else
     {
       // clicked in filename part
       if (info.isDir ())
-        emit dir_selected (info.absoluteFilePath ());
+        Q_EMIT dir_selected (info.absoluteFilePath ());
       else
-        emit file_selected (info.absoluteFilePath ());
+        Q_EMIT file_selected (info.absoluteFilePath ());
     }
 }
 

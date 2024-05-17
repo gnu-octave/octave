@@ -27,10 +27,10 @@ class SelfListener : public QThread
 public:
     explicit SelfListener(int a, QObject *parent = nullptr);
 
-signals:
+Q_SIGNALS:
     void recvData(const char* stdOutBuffer, int stdOutlen);
 
-public slots:
+public Q_SLOTS:
 
 protected:
     void run();

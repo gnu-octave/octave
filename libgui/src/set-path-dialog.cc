@@ -194,7 +194,7 @@ set_path_dialog::add_dir_common (bool subdirs)
         {
           // Use existing method mofifying load path and updating dialog
           // instead of adding string and updating load path
-          emit modify_path_signal (QStringList (dir), false, true);
+          Q_EMIT modify_path_signal (QStringList (dir), false, true);
         }
       else
         {

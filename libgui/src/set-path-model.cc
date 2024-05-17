@@ -79,7 +79,7 @@ set_path_model::model_to_path ()
 {
   std::string path_str = to_string ();
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([path_str] (interpreter& interp)
     {
       // INTERPRETER THREAD
@@ -105,7 +105,7 @@ set_path_model::save ()
 {
   model_to_path ();
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([] (interpreter& interp)
     {
       // INTERPRETER THREAD
@@ -304,7 +304,7 @@ set_path_model::path_to_model ()
 
   QPointer<set_path_model> this_spm (this);
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_spm] (interpreter& interp)
     {
       // INTERPRETER THREAD
@@ -324,7 +324,7 @@ set_path_model::path_to_model ()
       for (const auto& dir : dir_list)
         qs_dir_list << QString::fromStdString (dir);
 
-      emit update_data_signal (qs_dir_list);
+      Q_EMIT update_data_signal (qs_dir_list);
     });
 
   m_revertible = false;
@@ -348,7 +348,7 @@ set_path_model::update_data (const QStringList& dirs)
 
   int numel = m_dirs.size ();
 
-  emit dataChanged (QAbstractListModel::index (0, 0),
+  Q_EMIT dataChanged (QAbstractListModel::index (0, 0),
                     QAbstractListModel::index (numel-1, 0));
 }
 

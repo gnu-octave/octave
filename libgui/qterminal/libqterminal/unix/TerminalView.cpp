@@ -190,7 +190,7 @@ void TerminalView::fontChange(const QFont&)
 
   _fontAscent = fm.ascent();
 
-  emit changedFontMetricSignal( _fontHeight, _fontWidth );
+  Q_EMIT changedFontMetricSignal( _fontHeight, _fontWidth );
   //parentWidget()->setFixedWidth(_fontWidth * 80 + _leftMargin);
   propagateSize();
   update();
@@ -1341,7 +1341,7 @@ void TerminalView::updateImageSize()
 #if defined (SIGWINCH)
       ::raise (SIGWINCH);
 #endif
-      emit changedContentSizeSignal(_contentHeight, _contentWidth); // expose resizeEvent
+      Q_EMIT changedContentSizeSignal(_contentHeight, _contentWidth); // expose resizeEvent
     }
   //qDebug("%s %d updateImageSize", __FILE__, __LINE__);
 
@@ -1356,11 +1356,11 @@ void TerminalView::updateImageSize()
 //the same signal as the one for a content size change
 void TerminalView::showEvent(QShowEvent*)
 {
-  emit changedContentSizeSignal(_contentHeight,_contentWidth);
+  Q_EMIT changedContentSizeSignal(_contentHeight,_contentWidth);
 }
 void TerminalView::hideEvent(QHideEvent*)
 {
-  emit changedContentSizeSignal(_contentHeight,_contentWidth);
+  Q_EMIT changedContentSizeSignal(_contentHeight,_contentWidth);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -1459,13 +1459,13 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
       _lineSelectionMode = false;
       _wordSelectionMode = false;
 
-      emit isBusySelecting(true); // Keep it steady...
+      Q_EMIT isBusySelecting(true); // Keep it steady...
       // Drag only when the Control key is hold
       bool selected = false;
 
       // The receiver of the testIsSelected() signal will adjust
       // 'selected' accordingly.
-      //emit testIsSelected(pos.x(), pos.y(), selected);
+      //Q_EMIT testIsSelected(pos.x(), pos.y(), selected);
 
       selected =  _screenWindow->isSelected(pos.x(),pos.y());
 
@@ -1485,7 +1485,7 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
             {
               _screenWindow->clearSelection();
 
-              //emit clearSelectionSignal();
+              //Q_EMIT clearSelectionSignal();
               pos.ry() += _scrollBar->value();
               _iPntSel = _pntSel = pos;
               _actSel = 1; // left mouse button pressed but nothing selected yet.
@@ -1493,7 +1493,7 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
             }
           else
             {
-              emit mouseSignal( 0, charColumn + 1, charLine + 1 +_scrollBar->value() -_scrollBar->maximum() , 0);
+              Q_EMIT mouseSignal( 0, charColumn + 1, charLine + 1 +_scrollBar->value() -_scrollBar->maximum() , 0);
             }
         }
     }
@@ -1502,19 +1502,19 @@ void TerminalView::mousePressEvent(QMouseEvent* ev)
       if ( _mouseMarks || (!_mouseMarks && (ev->modifiers() & Qt::ShiftModifier)) )
         emitSelection(true,ev->modifiers() & Qt::ControlModifier);
       else
-        emit mouseSignal( 1, charColumn +1, charLine +1 +_scrollBar->value() -_scrollBar->maximum() , 0);
+        Q_EMIT mouseSignal( 1, charColumn +1, charLine +1 +_scrollBar->value() -_scrollBar->maximum() , 0);
     }
   else if ( ev->button() == Qt::RightButton )
     {
       if (_mouseMarks || (ev->modifiers() & Qt::ShiftModifier))
         {
-          emit configureRequest( this,
+          Q_EMIT configureRequest( this,
                                  ev->modifiers() & (Qt::ShiftModifier|Qt::ControlModifier),
                                  ev->pos()
                                  );
         }
       else
-        emit mouseSignal( 2, charColumn +1, charLine +1 +_scrollBar->value() -_scrollBar->maximum() , 0);
+        Q_EMIT mouseSignal( 2, charColumn +1, charLine +1 +_scrollBar->value() -_scrollBar->maximum() , 0);
     }
 
   QWidget::mousePressEvent (ev);
@@ -1590,7 +1590,7 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
         button = 2;
 
 
-      emit mouseSignal( button,
+      Q_EMIT mouseSignal( button,
                         charColumn + 1,
                         charLine + 1 +_scrollBar->value() -_scrollBar->maximum(),
                         1 );
@@ -1610,7 +1610,7 @@ void TerminalView::mouseMoveEvent(QMouseEvent* ev)
           || mouse_position.y () < dragInfo.start.y () - distance)
         {
           // we've left the drag square, we can start a real drag operation now
-          emit isBusySelecting(false); // Ok.. we can breath again.
+          Q_EMIT isBusySelecting(false); // Ok.. we can breath again.
 
           _screenWindow->clearSelection();
           doDrag();
@@ -1856,12 +1856,12 @@ void TerminalView::mouseReleaseEvent(QMouseEvent* ev)
 
   if ( ev->button() == Qt::LeftButton)
     {
-      emit isBusySelecting(false);
+      Q_EMIT isBusySelecting(false);
       if(dragInfo.state == diPending)
         {
           // We had a drag event pending but never confirmed.  Kill selection
           _screenWindow->clearSelection();
-          //emit clearSelectionSignal();
+          //Q_EMIT clearSelectionSignal();
         }
       else
         {
@@ -1877,7 +1877,7 @@ void TerminalView::mouseReleaseEvent(QMouseEvent* ev)
           //       applies here, too.
 
           if (!_mouseMarks && !(ev->modifiers() & Qt::ShiftModifier))
-            emit mouseSignal( 3, // release
+            Q_EMIT mouseSignal( 3, // release
                               charColumn + 1,
                               charLine + 1 +_scrollBar->value() -_scrollBar->maximum() , 0);
         }
@@ -1889,7 +1889,7 @@ void TerminalView::mouseReleaseEvent(QMouseEvent* ev)
        ((ev->button() == Qt::RightButton && !(ev->modifiers() & Qt::ShiftModifier))
         || ev->button() == Qt::MiddleButton) )
     {
-      emit mouseSignal( 3,
+      Q_EMIT mouseSignal( 3,
                         charColumn + 1,
                         charLine + 1 +_scrollBar->value() -_scrollBar->maximum() ,
                         0);
@@ -1946,7 +1946,7 @@ void TerminalView::mouseDoubleClickEvent(QMouseEvent* ev)
     {
       // Send just _ONE_ click event, since the first click of the double click
       // was already sent by the click handler
-      emit mouseSignal( 0,
+      Q_EMIT mouseSignal( 0,
                         pos.x()+1,
                         pos.y()+1 +_scrollBar->value() -_scrollBar->maximum(),
                         0 ); // left button
@@ -2039,7 +2039,7 @@ void TerminalView::wheelEvent( QWheelEvent* ev )
 
       int delta = ev->angleDelta().y();
 
-      emit mouseSignal( delta > 0 ? 4 : 5,
+      Q_EMIT mouseSignal( delta > 0 ? 4 : 5,
                         charColumn + 1,
                         charLine + 1 +_scrollBar->value() -_scrollBar->maximum() ,
                         0);
@@ -2066,7 +2066,7 @@ void TerminalView::mouseTripleClickEvent(QMouseEvent* ev)
   _wordSelectionMode = false;
 
   _actSel = 2; // within selection
-  emit isBusySelecting(true); // Keep it steady...
+  Q_EMIT isBusySelecting(true); // Keep it steady...
 
   while (_iPntSel.y()>0 && (_lineProperties[_iPntSel.y()-1] & LINE_WRAPPED) )
     _iPntSel.ry()--;
@@ -2109,7 +2109,7 @@ void TerminalView::mouseTripleClickEvent(QMouseEvent* ev)
 
   _iPntSel.ry() += _scrollBar->value();
 
-  emit tripleClicked( _screenWindow->selectedText( _preserveLineBreaks ) );
+  Q_EMIT tripleClicked( _screenWindow->selectedText( _preserveLineBreaks ) );
 }
 
 
@@ -2188,7 +2188,7 @@ void TerminalView::emitSelection(bool useXselection,bool appendReturn)
           text.replace ("\t", " ");
         }
       QKeyEvent e(QEvent::KeyPress, 0, Qt::NoModifier, text);
-      emit keyPressedSignal(&e); // expose as a big fat keypress event
+      Q_EMIT keyPressedSignal(&e); // expose as a big fat keypress event
 
       _screenWindow->clearSelection();
     }
@@ -2215,7 +2215,7 @@ void TerminalView::copyClipboard(bool extra_interrupt)
   if (text.isEmpty ())
     {
       if (! extra_interrupt)
-        emit interrupt_signal ();
+        Q_EMIT interrupt_signal ();
     }
   else
     QApplication::clipboard()->setText(text);
@@ -2318,7 +2318,7 @@ void TerminalView::keyPressEvent( QKeyEvent* event )
     }
 
   if ( emitKeyPressSignal && !_readonly )
-    emit keyPressedSignal(event);
+    Q_EMIT keyPressedSignal(event);
 
   if (_readonly) {
       event->ignore();
@@ -2331,7 +2331,7 @@ void TerminalView::keyPressEvent( QKeyEvent* event )
 void TerminalView::inputMethodEvent( QInputMethodEvent* event )
 {
   QKeyEvent keyEvent(QEvent::KeyPress,0,Qt::NoModifier,event->commitString());
-  emit keyPressedSignal(&keyEvent);
+  Q_EMIT keyPressedSignal(&keyEvent);
 
   _inputMethodData.preeditString = event->preeditString();
   update(preeditRect() | _inputMethodData.previousPreeditRect);
@@ -2568,7 +2568,7 @@ void TerminalView::dropEvent(QDropEvent* event)
 */
   if(event->mimeData()->hasFormat("text/plain"))
     {
-      emit sendStringToEmu(dropText.toLocal8Bit());
+      Q_EMIT sendStringToEmu(dropText.toLocal8Bit());
     }
 }
 

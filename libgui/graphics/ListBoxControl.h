@@ -54,7 +54,7 @@ protected:
   bool eventFilter (QObject *watched, QEvent *e);
   void sendSelectionChange ();
 
-private slots:
+private Q_SLOTS:
   void itemSelectionChanged ();
   void itemActivated (const QModelIndex&);
   void itemPressed (QListWidgetItem *);

@@ -192,7 +192,7 @@ void TerminalModel::removeView(TerminalView* widget)
 
 void TerminalModel::run()
 {
-    emit started();
+    Q_EMIT started();
 }
 
 void TerminalModel::monitorTimerDone()
@@ -209,11 +209,11 @@ void TerminalModel::monitorTimerDone()
         //    KNotification::event("Silence", ("Silence in session '%1'", _nameTitle), QPixmap(),
         //                    QApplication::activeWindow(),
         //                    KNotification::CloseWhenWidgetActivated);
-        emit stateChanged(NOTIFYSILENCE);
+        Q_EMIT stateChanged(NOTIFYSILENCE);
     }
     else
     {
-        emit stateChanged(NOTIFYNORMAL);
+        Q_EMIT stateChanged(NOTIFYNORMAL);
     }
 
     _notifiedActivity=false;
@@ -223,7 +223,7 @@ void TerminalModel::activityStateSet(int state)
 {
     if (state==NOTIFYBELL)
     {
-        emit bellRequest("");
+        Q_EMIT bellRequest("");
     }
     else if (state==NOTIFYACTIVITY)
     {
@@ -247,7 +247,7 @@ void TerminalModel::activityStateSet(int state)
     if ( state==NOTIFYSILENCE && !_monitorSilence )
         state = NOTIFYNORMAL;
 
-    emit stateChanged(state);
+    Q_EMIT stateChanged(state);
 }
 
 void TerminalModel::onViewSizeChange(int /*height*/, int /*width*/)
@@ -317,13 +317,13 @@ TerminalModel::~TerminalModel()
 void TerminalModel::setProfileKey(const QString& key)
 {
     _profileKey = key;
-    emit profileChanged(key);
+    Q_EMIT profileChanged(key);
 }
 QString TerminalModel::profileKey() const { return _profileKey; }
 
 void TerminalModel::done(int)
 {
-    emit finished();
+    Q_EMIT finished();
 }
 
 Emulation* TerminalModel::emulation() const
@@ -401,7 +401,7 @@ void TerminalModel::setAddToUtmp(bool set)
 void TerminalModel::onReceiveBlock(const char* buf, int len )
 {
     _emulation->receiveData( buf, len );
-    emit receivedData( QString::fromLatin1( buf, len ) );
+    Q_EMIT receivedData( QString::fromLatin1( buf, len ) );
 }
 
 QSize TerminalModel::size()
@@ -414,5 +414,5 @@ void TerminalModel::setSize(const QSize& size)
     if ((size.width() <= 1) || (size.height() <= 1))
         return;
 
-    emit resizeRequest(size);
+    Q_EMIT resizeRequest(size);
 }

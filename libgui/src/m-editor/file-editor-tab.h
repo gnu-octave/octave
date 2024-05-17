@@ -68,7 +68,7 @@ public:
   QString file_name () const { return m_file_name; }
   QString encoding () const { return m_encoding; }
 
-signals:
+Q_SIGNALS:
 
   void tab_ready_to_close ();
   void file_name_changed (const QString& fileName,
@@ -128,7 +128,7 @@ signals:
   //
   // void evaluate_octave_command (const QString& command);
 
-public slots:
+public Q_SLOTS:
 
   void update_window_title (bool modified);
   void handle_copy_available (bool enableCopy);
@@ -207,7 +207,7 @@ public slots:
   void update_rowcol_indicator (int line, int col);
   void update_lexer_settings (bool update_apis_only = false);
 
-private slots:
+private Q_SLOTS:
 
   // When user closes message box for decoding problems
   void handle_decode_warning_answer (QAbstractButton *btn);

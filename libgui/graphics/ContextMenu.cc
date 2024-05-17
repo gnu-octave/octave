@@ -98,14 +98,14 @@ ContextMenu::update (int pId)
 void
 ContextMenu::aboutToShow ()
 {
-  emit gh_callback_event (m_handle, "callback");
-  emit gh_set_event (m_handle, "visible", "on", false);
+  Q_EMIT gh_callback_event (m_handle, "callback");
+  Q_EMIT gh_set_event (m_handle, "visible", "on", false);
 }
 
 void
 ContextMenu::aboutToHide ()
 {
-  emit gh_set_event (m_handle, "visible", "off", false);
+  Q_EMIT gh_set_event (m_handle, "visible", "off", false);
 }
 
 QWidget *

@@ -66,7 +66,7 @@ protected:
   void update (int pId);
   void redraw ();
 
-private slots:
+private Q_SLOTS:
   void buttonToggled (bool toggled);
   void buttonClicked (QAbstractButton *btn);
 

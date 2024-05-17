@@ -422,7 +422,7 @@ workspace_view::handle_contextmenu_copy_value ()
   QModelIndex index = m_view->currentIndex ();
 
   if (index.isValid ())
-    emit copy_variable_value_to_clipboard (get_var_name (index));
+    Q_EMIT copy_variable_value_to_clipboard (get_var_name (index));
 }
 
 void
@@ -445,7 +445,7 @@ workspace_view::handle_contextmenu_rename ()
                                 QLineEdit::Normal, var_name, &ok);
 
       if (ok && ! new_name.isEmpty ())
-        emit rename_variable_signal (var_name, new_name);
+        Q_EMIT rename_variable_signal (var_name, new_name);
     }
 }
 
@@ -455,7 +455,7 @@ workspace_view::handle_contextmenu_edit ()
   QModelIndex index = m_view->currentIndex ();
 
   if (index.isValid ())
-    emit edit_variable_signal (get_var_name (index));
+    Q_EMIT edit_variable_signal (get_var_name (index));
 }
 
 void
@@ -533,7 +533,7 @@ workspace_view::relay_contextmenu_command (const QString& cmdname, bool str)
       else
         var_name = get_var_name (index);
 
-      emit command_requested (cmdname + " (" + var_name + ");");
+      Q_EMIT command_requested (cmdname + " (" + var_name + ");");
     }
 }
 

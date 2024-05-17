@@ -46,7 +46,7 @@ public:
 
   octave_value_list get_properties () const;
 
-private slots:
+private Q_SLOTS:
   // slots for dialog's buttons
   void button_clicked (QAbstractButton *button);
   void edit_string_changed (const QString& str);

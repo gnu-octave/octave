@@ -57,7 +57,7 @@ public:
 protected:
   void update (int pId);
 
-private slots:
+private Q_SLOTS:
   void actionTriggered ();
   void actionHovered ();
 

@@ -143,7 +143,7 @@ qt_graphics_toolkit::initialize (const graphics_object& go)
       OCTAVE_PTR_TYPE tmp (reinterpret_cast<OCTAVE_INTPTR_TYPE> (proxy));
       gObj.get_properties ().set (toolkitObjectProperty (go), tmp);
 
-      emit create_object_signal (go.get_handle ().value ());
+      Q_EMIT create_object_signal (go.get_handle ().value ());
 
       return true;
     }

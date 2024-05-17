@@ -125,7 +125,7 @@ external_editor_interface::external_editor ()
       int button = msgBox->exec ();
 
       if (button == QMessageBox::Yes)
-        emit request_settings_dialog ("editor");
+        Q_EMIT request_settings_dialog ("editor");
     }
 
   return editor;

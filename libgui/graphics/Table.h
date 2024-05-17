@@ -67,7 +67,7 @@ protected:
   void updateRearrangeableColumns ();
   void updateRowname ();
 
-private slots:
+private Q_SLOTS:
   void itemChanged (QTableWidgetItem *item);
   void comboBoxCurrentIndexChanged (const QString& value);
   void cellClicked (int row, int col);

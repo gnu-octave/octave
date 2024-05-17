@@ -67,14 +67,14 @@ public:
 
   void has_extra_interrupt (bool);
 
-public slots:
+public Q_SLOTS:
   void copyClipboard ();
   void pasteClipboard ();
   void selectAll ();
   void blinkCursorEvent ();
   void init_terminal_size ();
 
-signals:
+Q_SIGNALS:
   void terminated ();
   void titleChanged (const QString&);
 
@@ -99,7 +99,7 @@ protected:
   void dragEnterEvent (QDragEnterEvent *event);
   void dropEvent (QDropEvent *event);
 
-private slots:
+private Q_SLOTS:
   void horizontalScrollValueChanged (int value);
   void verticalScrollValueChanged (int value);
   void monitorConsole ();

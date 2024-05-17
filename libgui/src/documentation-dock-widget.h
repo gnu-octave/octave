@@ -41,7 +41,7 @@ public:
 
   ~documentation_dock_widget () = default;
 
-public slots:
+public Q_SLOTS:
 
   void notice_settings ();
   void save_settings ();

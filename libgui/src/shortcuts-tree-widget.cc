@@ -347,7 +347,7 @@ shortcut_edit_dialog::finished (int result)
                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::Yes);
 
       if (ret == QMessageBox::Yes)
-        emit set_shortcut (other_settings_key, "");
+        Q_EMIT set_shortcut (other_settings_key, "");
       else
         return;
     }

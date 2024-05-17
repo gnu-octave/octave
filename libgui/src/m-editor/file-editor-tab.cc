@@ -281,8 +281,8 @@ file_editor_tab::file_editor_tab (const QString& directory_arg)
 file_editor_tab::~file_editor_tab ()
 {
   // Tell all connected markers to self-destruct.
-  emit remove_all_breakpoints_signal ();
-  emit remove_all_positions ();
+  Q_EMIT remove_all_breakpoints_signal ();
+  Q_EMIT remove_all_positions ();
 
   // Destroy lexer attached to m_edit_area, which is not the parent
   // of lexer
@@ -321,7 +321,7 @@ file_editor_tab::closeEvent (QCloseEvent *e)
   else
     {
       e->accept ();
-      emit tab_remove_request ();
+      Q_EMIT tab_remove_request ();
     }
 }
 
@@ -377,7 +377,7 @@ file_editor_tab::handle_context_menu_edit (const QString& word_at_cursor)
       return;
     }
 
-  emit edit_mfile_request (word_at_cursor, m_file_name, m_ced, -1);
+  Q_EMIT edit_mfile_request (word_at_cursor, m_file_name, m_ced, -1);
 }
 
 // If "dbstop if ..." selected from context menu, create a conditional
@@ -396,7 +396,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
   // Search for previous condition.  FIXME: is there a more direct way?
   if (m_edit_area->markersAtLine (linenr) & (1 << marker::cond_break))
     {
-      emit report_marker_linenr (m_bp_lines, m_bp_conditions);
+      Q_EMIT report_marker_linenr (m_bp_lines, m_bp_conditions);
       for (int i = 0; i < m_bp_lines.length (); i++)
         if (m_bp_lines.value (i) == linenr)
           {
@@ -419,7 +419,7 @@ file_editor_tab::handle_context_menu_break_condition (int linenr)
         cond = '(' + cond + ") || (" + m_edit_area->selectedText () + ')';
     }
 
-  emit dbstop_if ("dbstop if", linenr+1, cond);
+  Q_EMIT dbstop_if ("dbstop if", linenr+1, cond);
 }
 
 // Display dialog in GUI thread to get condition, then emit
@@ -448,7 +448,7 @@ file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
 
       QPointer<file_editor_tab> this_fetab (this);
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([this, this_fetab, line, new_cond] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -482,7 +482,7 @@ file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
                // The condition seems OK, so set the conditional
                // breakpoint.
 
-               emit request_add_breakpoint (line, new_cond);
+               Q_EMIT request_add_breakpoint (line, new_cond);
              }
            catch (const execution_exception& ee)
              {
@@ -508,7 +508,7 @@ file_editor_tab::handle_dbstop_if (const QString& prompt, int line,
                                      + QString::fromStdString (msg)
                                      + "\n\ndbstop if");
 
-               emit dbstop_if (new_prompt, line, "");
+               Q_EMIT dbstop_if (new_prompt, line, "");
              }
          });
     }
@@ -538,11 +538,11 @@ file_editor_tab::set_file_name (const QString& fileName)
   update_window_title (m_edit_area->isModified ());
 
   // update the file editor with current editing directory
-  emit editor_state_changed (m_copy_available, m_is_octave_file,
+  Q_EMIT editor_state_changed (m_copy_available, m_is_octave_file,
                              m_edit_area->isModified ());
 
   // add the new file to the most-recently-used list
-  emit mru_add_file (m_file_name, m_encoding);
+  Q_EMIT mru_add_file (m_file_name, m_encoding);
 }
 
 // valid_file_name (file): checks whether "file" names a file.
@@ -853,7 +853,7 @@ file_editor_tab::update_lexer_settings (bool update_apis_only)
 
               QPointer<file_editor_tab> this_fetab (this);
 
-              emit interpreter_event
+              Q_EMIT interpreter_event
                 ([this, this_fetab, octave_builtins, octave_functions] (interpreter& interp)
                  {
                    // INTERPRETER THREAD
@@ -899,7 +899,7 @@ file_editor_tab::update_lexer_settings (bool update_apis_only)
                          api_entries.append (QString::fromStdString (afl[i]));
                      }
 
-                   emit request_add_octave_apis (api_entries);
+                   Q_EMIT request_add_octave_apis (api_entries);
                  });
             }
           else
@@ -917,7 +917,7 @@ file_editor_tab::update_lexer_settings (bool update_apis_only)
                     m_lexer_apis->add (keyword_list.at (j));
                 }
 
-              emit api_entries_added ();
+              Q_EMIT api_entries_added ();
             }
         }
     }
@@ -992,7 +992,7 @@ file_editor_tab::handle_add_octave_apis (const QStringList& api_entries)
   for (int idx = 0; idx < api_entries.size (); idx++)
     m_lexer_apis->add (api_entries.at (idx));
 
-  emit api_entries_added ();
+  Q_EMIT api_entries_added ();
 }
 
 void
@@ -1026,7 +1026,7 @@ file_editor_tab::set_focus (const QWidget *ID)
   if (ID != this)
     return;
   m_edit_area->setFocus ();
-  emit edit_area_changed (m_edit_area); // update the edit area in find dlg
+  Q_EMIT edit_area_changed (m_edit_area); // update the edit area in find dlg
 }
 
 void
@@ -1128,7 +1128,7 @@ file_editor_tab::run_file (const QWidget *ID, int opts)
     }
 
   QFileInfo info (m_file_name);
-  emit run_file_signal (info, actual_opts);
+  Q_EMIT run_file_signal (info, actual_opts);
 }
 
 void
@@ -1243,7 +1243,7 @@ file_editor_tab::handle_request_add_breakpoint (int line,
 void
 file_editor_tab::handle_request_remove_breakpoint (int line)
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, line] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1325,7 +1325,7 @@ file_editor_tab::remove_all_breakpoints (const QWidget *ID)
   if (ID != this)
     return;
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1445,7 +1445,7 @@ file_editor_tab::add_breakpoint_event (int line, const QString& cond)
 
   QPointer<file_editor_tab> this_fetab (this);
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_fetab, line, cond] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -1467,7 +1467,7 @@ file_editor_tab::add_breakpoint_event (int line, const QString& cond)
          return;
 
        if (lineno)
-         emit maybe_remove_next (lineno);
+         Q_EMIT maybe_remove_next (lineno);
      });
 }
 
@@ -1784,14 +1784,14 @@ file_editor_tab::update_window_title (bool modified)
       tooltip = m_file_name;
     }
 
-  emit file_name_changed (title, tooltip, modified);
+  Q_EMIT file_name_changed (title, tooltip, modified);
 }
 
 void
 file_editor_tab::handle_copy_available (bool enableCopy)
 {
   m_copy_available = enableCopy;
-  emit editor_state_changed (m_copy_available, m_is_octave_file,
+  Q_EMIT editor_state_changed (m_copy_available, m_is_octave_file,
                              m_edit_area->isModified ());
 }
 
@@ -1854,11 +1854,11 @@ file_editor_tab::check_file_modified (bool remove)
       else if (decision == QMessageBox::Save)
         save_file (m_file_name, remove, false);
       else
-        emit tab_ready_to_close ();
+        Q_EMIT tab_ready_to_close ();
     }
   else
     {
-      emit tab_ready_to_close ();
+      Q_EMIT tab_ready_to_close ();
     }
 
   return decision;
@@ -2093,7 +2093,7 @@ file_editor_tab::handle_decode_warning_answer (QAbstractButton *btn)
           // Reload the file with new encoding but using the same tab
           QString reload_file_name = m_file_name;  // store file name
           m_file_name = "";  // force reuse of this tab when opening a new file
-          emit request_open_file (reload_file_name, m_new_encoding);
+          Q_EMIT request_open_file (reload_file_name, m_new_encoding);
         }
     }
 
@@ -2177,7 +2177,7 @@ file_editor_tab::update_breakpoints ()
 
   QPointer<file_editor_tab> this_fetab (this);
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_fetab] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -2194,7 +2194,7 @@ file_editor_tab::update_breakpoints ()
                 this, &file_editor_tab::update_breakpoints_handler,
                 Qt::QueuedConnection);
 
-       emit update_breakpoints_signal (argout);
+       Q_EMIT update_breakpoints_signal (argout);
      });
 }
 
@@ -2255,7 +2255,7 @@ file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
 
       QPointer<file_editor_tab> this_fetab (this);
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([this, this_fetab, base_name, file_to_save, remove_on_success, restore_breakpoints] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -2279,7 +2279,7 @@ file_editor_tab::confirm_dbquit_and_save (const QString& file_to_save,
            if (this_fetab.isNull ())
              return;
 
-           emit do_save_file_signal (file_to_save, remove_on_success,
+           Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
                                      restore_breakpoints);
          });
     }
@@ -2307,7 +2307,7 @@ file_editor_tab::save_file (const QString& saveFileName,
   // Get a list of breakpoint line numbers, before exiting debug mode
   // and clearing function in interpreter_event action below.
 
-  emit report_marker_linenr (m_bp_lines, m_bp_conditions);
+  Q_EMIT report_marker_linenr (m_bp_lines, m_bp_conditions);
 
   // get the absolute path (if existing)
   QFileInfo file_info = QFileInfo (saveFileName);
@@ -2324,7 +2324,7 @@ file_editor_tab::save_file (const QString& saveFileName,
 
       QPointer<file_editor_tab> this_fetab (this);
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([this, this_fetab, base_name, file_to_save, remove_on_success, restore_breakpoints] (interpreter& interp)
          {
            // INTERPRETER THREAD
@@ -2366,7 +2366,7 @@ file_editor_tab::save_file (const QString& saveFileName,
                // Return early if this file is not loaded in the symbol table
                if (! sym.is_defined () || ! sym.is_user_code ())
                  {
-                   emit do_save_file_signal (file_to_save, remove_on_success,
+                   Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
                                              restore_breakpoints);
                    return;
                  }
@@ -2378,7 +2378,7 @@ file_editor_tab::save_file (const QString& saveFileName,
                if (sys::canonicalize_file_name (full_name)
                    != sys::canonicalize_file_name (fcn->fcn_file_name ()))
                  {
-                   emit do_save_file_signal (file_to_save, remove_on_success,
+                   Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
                                              restore_breakpoints);
                    return;
                  }
@@ -2397,7 +2397,7 @@ file_editor_tab::save_file (const QString& saveFileName,
                  {
                    if (names(i).string_value () == std_base_name)
                      {
-                       emit confirm_dbquit_and_save_signal
+                       Q_EMIT confirm_dbquit_and_save_signal
                          (file_to_save, base_name, remove_on_success,
                           restore_breakpoints);
                        return;
@@ -2407,12 +2407,12 @@ file_editor_tab::save_file (const QString& saveFileName,
 
            symtab.clear_user_function (std_base_name);
 
-           emit do_save_file_signal (file_to_save, remove_on_success,
+           Q_EMIT do_save_file_signal (file_to_save, remove_on_success,
                                      restore_breakpoints);
          });
     }
   else
-    emit do_save_file_signal (saveFileName, remove_on_success,
+    Q_EMIT do_save_file_signal (saveFileName, remove_on_success,
                               restore_breakpoints);
 }
 
@@ -2549,11 +2549,11 @@ file_editor_tab::do_save_file (const QString& file_to_save,
       // save filename after closing file as set_file_name starts watching again
       set_file_name (full_file_to_save);   // make absolute
 
-      emit tab_ready_to_close ();
+      Q_EMIT tab_ready_to_close ();
 
       if (remove_on_success)
         {
-          emit tab_remove_request ();
+          Q_EMIT tab_remove_request ();
           return;  // Don't touch member variables after removal
         }
 
@@ -2641,7 +2641,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
           if (check_valid_identifier (save_file_name))
             save_file_as (true);
           else
-            emit editor_check_conflict_save (save_file_name, true);
+            Q_EMIT editor_check_conflict_save (save_file_name, true);
         }
       else
         {
@@ -2691,7 +2691,7 @@ file_editor_tab::save_file_as (bool remove_on_success)
               if (check_valid_identifier (save_file_name))
                 save_file_as (false);
               else
-                emit editor_check_conflict_save (save_file_name, false);
+                Q_EMIT editor_check_conflict_save (save_file_name, false);
             }
 
         }
@@ -2817,7 +2817,7 @@ file_editor_tab::file_has_changed (const QString&, bool do_close)
         {
           // give editor and this tab the focus,
           // possibly making the editor visible if it is hidden
-          emit set_focus_editor_signal (this);
+          Q_EMIT set_focus_editor_signal (this);
           m_edit_area->setFocus ();
 
           // Create a WindowModal message that blocks the edit area
@@ -2849,7 +2849,7 @@ file_editor_tab::file_has_changed (const QString&, bool do_close)
 
       // give editor and this tab the focus,
       // possibly making the editor visible if it is hidden
-      emit set_focus_editor_signal (this);
+      Q_EMIT set_focus_editor_signal (this);
       m_edit_area->setFocus ();
 
       QString modified = "";
@@ -3071,7 +3071,7 @@ file_editor_tab::change_editor_state (const QWidget *ID)
   if (ID != this)
     return;
 
-  emit editor_state_changed (m_copy_available, m_is_octave_file,
+  Q_EMIT editor_state_changed (m_copy_available, m_is_octave_file,
                              m_edit_area->isModified ());
 }
 
@@ -3116,7 +3116,7 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
   if (ID != this || ID == nullptr)
     return;
 
-  emit remove_all_positions ();  // debugger_position, unsure_debugger_position
+  Q_EMIT remove_all_positions ();  // debugger_position, unsure_debugger_position
 
   if (line > 0)
     {
@@ -3132,7 +3132,7 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
           // number match.
           int editor_linenr = -1;
           marker *dummy;
-          emit find_translated_line_number (line, editor_linenr, dummy);
+          Q_EMIT find_translated_line_number (line, editor_linenr, dummy);
           if (editor_linenr != -1)
             {
               // Match with an existing breakpoint.
@@ -3143,7 +3143,7 @@ file_editor_tab::insert_debugger_pointer (const QWidget *ID, int line)
             {
               int original_linenr = -1;
               editor_linenr = -1;
-              emit find_linenr_just_before (line, original_linenr, editor_linenr);
+              Q_EMIT find_linenr_just_before (line, original_linenr, editor_linenr);
               if (original_linenr >= 0)
                 {
                   // Make a guess by using an offset from the breakpoint.
@@ -3192,7 +3192,7 @@ file_editor_tab::delete_debugger_pointer (const QWidget *ID, int line)
     return;
 
   if (line > 0)
-    emit remove_position_via_debugger_linenr (line);
+    Q_EMIT remove_position_via_debugger_linenr (line);
 }
 
 void
@@ -3212,13 +3212,13 @@ file_editor_tab::do_breakpoint_marker (bool insert,
 
           // If comes back indicating a nonzero breakpoint marker,
           // reuse it if possible
-          emit find_translated_line_number (line, editor_linenr, bp);
+          Q_EMIT find_translated_line_number (line, editor_linenr, bp);
           if (bp != nullptr)
             {
               if ((cond == "") != (bp->get_cond () == ""))
                 {
                   // can only reuse conditional bp as conditional
-                  emit remove_breakpoint_via_debugger_linenr (line);
+                  Q_EMIT remove_breakpoint_via_debugger_linenr (line);
                   bp = nullptr;
                 }
               else
@@ -3248,7 +3248,7 @@ file_editor_tab::do_breakpoint_marker (bool insert,
             }
         }
       else
-        emit remove_breakpoint_via_debugger_linenr (line);
+        Q_EMIT remove_breakpoint_via_debugger_linenr (line);
     }
 }
 
@@ -3299,7 +3299,7 @@ file_editor_tab::handle_cursor_moved (int line, int col)
   else if (m_autoc_active)
     {
       m_autoc_active = false;
-      emit autoc_closed (); // Tell editor about closed list
+      Q_EMIT autoc_closed (); // Tell editor about closed list
     }
 
   // Lines changed? Take care of indentation!

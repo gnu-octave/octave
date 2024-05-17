@@ -53,7 +53,7 @@ public:
   // the default title bar (with style sheets)
   void set_title (const QString&);
 
-protected slots:
+protected Q_SLOTS:
 
   //! Slots to handle copy & paste.
   //!@{
@@ -96,7 +96,7 @@ public:
   void set_adopted (bool adopted = true) { m_adopted = adopted; }
   bool adopted () const { return m_adopted; }
 
-signals:
+Q_SIGNALS:
 
   //! Custom signal that tells whether a user has clicked away that dock
   //! widget, i.e. the active dock widget has changed.
@@ -115,7 +115,7 @@ protected:
 
   bool event (QEvent *event);
 
-public slots:
+public Q_SLOTS:
 
   virtual void activate ();
 
@@ -141,7 +141,7 @@ public slots:
 
   void default_dock (bool not_used = false);
 
-protected slots:
+protected Q_SLOTS:
 
   virtual void toplevel_change (bool);
 
@@ -149,7 +149,7 @@ protected slots:
 
   bool eventFilter (QObject *obj, QEvent *e);
 
-private slots:
+private Q_SLOTS:
 
   void change_visibility (bool);
 

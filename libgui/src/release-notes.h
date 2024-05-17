@@ -43,7 +43,7 @@ public:
 
   ~release_notes () = default;
 
-public slots:
+public Q_SLOTS:
 
   void display ();
 

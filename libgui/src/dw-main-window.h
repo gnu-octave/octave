@@ -44,17 +44,17 @@ public:
 
   OCTAVE_DISABLE_COPY_MOVE (dw_main_window)
 
-public slots:
+public Q_SLOTS:
 
   void notice_settings ();
 
-protected slots:
+protected Q_SLOTS:
 
   virtual QMenu * createPopupMenu ();
 
   virtual bool event (QEvent *ev);
 
-private slots:
+private Q_SLOTS:
 
   void request_close ();
   void request_close_all ();

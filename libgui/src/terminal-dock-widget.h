@@ -65,7 +65,7 @@ public:
   command_widget * get_command_widget ();
 #endif
 
-signals:
+Q_SIGNALS:
 
   void settings_changed ();
 
@@ -83,7 +83,7 @@ signals:
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   void notice_settings ();
 

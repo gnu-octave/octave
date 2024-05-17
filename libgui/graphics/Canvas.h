@@ -82,7 +82,7 @@ public:
 
   virtual uint8NDArray getPixels () { return do_getPixels (m_handle); };
 
-signals:
+Q_SIGNALS:
 
   void interpreter_event (const octave::fcn_callback& fcn);
   void interpreter_event (const octave::meth_callback& meth);

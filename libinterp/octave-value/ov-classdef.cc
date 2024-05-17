@@ -399,13 +399,7 @@ octave_classdef::print_raw (std::ostream& os, bool) const
 
               octave_value val = prop.get_value (m_object, false);
 
-              if (val.ndims () == 2 && val.rows () == 1 && (val.isnumeric () || val.islogical () || val.is_string ()))
-                val.short_disp (os);
-              else
-                {
-                  dim_vector dims = val.dims ();
-                  os << "[" << dims.str () << " " << val.class_name () << "]";
-                }
+              val.short_disp (os);
             }
 
           newline (os);

@@ -97,7 +97,7 @@ symbol_match::match (const std::string& sym)
   octave_idx_type pat_wildc_idx = -1;
   octave_idx_type sym_len = sym.length ();
   octave_idx_type sym_idx = 0;
-  octave_idx_type sym_wildc_idx;
+  octave_idx_type sym_wildc_idx = 0;
 
   while (sym_idx < sym_len)
     {

@@ -4932,9 +4932,11 @@ figure::reset_default_properties ()
 
   plist.erase ("units");
   plist.erase ("position");
+  plist.erase ("innerposition");
   plist.erase ("outerposition");
   plist.erase ("paperunits");
   plist.erase ("paperposition");
+  plist.erase ("paperpositionmode");
   plist.erase ("windowstyle");
 
   remove_all_listeners ();
@@ -12335,15 +12337,23 @@ each individual object will be reset.
 %!   close (hf);
 %! end_unwind_protect
 
-%!test  # root object
+%!test  # figure object
 %! set (0, "defaultfigurevisible", "off");
-%! hf = figure ("visible", "off", "paperunits", "centimeters",
-%!              "papertype", "a4");
+%! hf = figure ("visible", "off",
+%!              "units", "normalized",
+%!              "position", [0, 0, pi/10, e/10],
+%!              "paperunits", "normalized",
+%!              "paperposition", [0.1, 0.1, 0.9, 0.9],
+%!              "tag", "foobar");
 %! unwind_protect
 %!   reset (hf);
-%!   assert (get (hf, "papertype"), get (0, "defaultfigurepapertype"));
-%!   assert (get (hf, "paperunits"), "centimeters");  # paperunits is unchanged
-%!   assert (get (hf, "visible"), get (0, "defaultfigurevisible"));
+%!   ## Ordinary property is reset
+%!   assert (get (hf, "tag"), "");
+%!   ## Following 4 special properties are not reset
+%!   assert (get (hf, "units"), "normalized");
+%!   assert (get (hf, "position"), [0, 0, pi/10, e/10]);
+%!   assert (get (hf, "paperunits"), "normalized");
+%!   assert (get (hf, "paperposition"), [0.1, 0.1, 0.9, 0.9]);
 %! unwind_protect_cleanup
 %!   close (hf);
 %!   set (0, "defaultfigurevisible", "remove");

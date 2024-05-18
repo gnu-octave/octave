@@ -50,13 +50,13 @@ public:
 
   ~documentation_bookmarks () = default;
 
-public slots:
+public Q_SLOTS:
 
   void add_bookmark ();
   void add_folder (bool);
   void save_settings ();
 
-private slots:
+private Q_SLOTS:
 
   void filter_bookmarks (const QString& pattern);
   void filter_activate (bool state);

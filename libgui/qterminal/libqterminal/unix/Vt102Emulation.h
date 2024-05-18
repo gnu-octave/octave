@@ -91,7 +91,7 @@ public:
   // reimplemented
   virtual char getErase() const;
 
-public slots:
+public Q_SLOTS:
 
   // reimplemented
   virtual void sendString(const char*,int length = -1);
@@ -108,7 +108,7 @@ protected:
   virtual void receiveChar(int cc);
 
 
-private slots:
+private Q_SLOTS:
 		
   //causes changeTitle() to be emitted for each (int,QString) pair in pendingTitleUpdates
   //used to buffer multiple title updates

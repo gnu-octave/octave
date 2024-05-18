@@ -676,7 +676,7 @@ Figure::updateBoundingBox (bool internal, int flags)
 
   figure::properties& fp = properties<figure> ();
 
-  emit gh_set_event (m_handle, prop, fp.bbox2position (bb), false,
+  Q_EMIT gh_set_event (m_handle, prop, fp.bbox2position (bb), false,
                      prop == "position");
 }
 
@@ -722,7 +722,7 @@ Figure::eventNotifyBefore (QObject *obj, QEvent *xevent)
             {
             case QEvent::Close:
               xevent->ignore ();
-              emit gh_callback_event (m_handle, "closerequestfcn");
+              Q_EMIT gh_callback_event (m_handle, "closerequestfcn");
               return true;
 
             default:

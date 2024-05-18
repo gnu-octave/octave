@@ -159,8 +159,8 @@ SliderControl::valueChanged (int ival)
             {
               double dval = dmin + (ival * (dmax - dmin) / RANGE_INT_MAX);
 
-              emit gh_set_event (m_handle, "value", octave_value (dval));
-              emit gh_callback_event (m_handle, "callback");
+              Q_EMIT gh_set_event (m_handle, "value", octave_value (dval));
+              Q_EMIT gh_callback_event (m_handle, "callback");
             }
         }
     }

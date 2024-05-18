@@ -86,7 +86,7 @@ public:
   virtual void do_connections (const QObject *receiver,
                                const QObject *emitter = nullptr);
 
-signals:
+Q_SIGNALS:
 
   void interpreter_event (const octave::fcn_callback& fcn);
   void interpreter_event (const octave::meth_callback& meth);
@@ -106,7 +106,7 @@ signals:
                      const octave_value& value, bool notify_toolkit,
                      bool redraw_figure);
 
-public slots:
+public Q_SLOTS:
   void slotUpdate (int pId);
   void slotFinalize ();
   void slotRedraw ();

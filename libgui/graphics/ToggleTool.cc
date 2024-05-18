@@ -86,9 +86,9 @@ ToggleTool::update (int pId)
 void
 ToggleTool::triggered (bool checked)
 {
-  emit gh_set_event (m_handle, "state", checked, false);
-  emit gh_callback_event (m_handle, checked ? "oncallback" : "offcallback");
-  emit gh_callback_event (m_handle, "clickedcallback");
+  Q_EMIT gh_set_event (m_handle, "state", checked, false);
+  Q_EMIT gh_callback_event (m_handle, checked ? "oncallback" : "offcallback");
+  Q_EMIT gh_callback_event (m_handle, "clickedcallback");
 }
 
 OCTAVE_END_NAMESPACE(octave);

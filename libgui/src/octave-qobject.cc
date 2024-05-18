@@ -151,7 +151,7 @@ octave_qapplication::notify (QObject *receiver, QEvent *ev)
     }
   catch (execution_exception& ee)
     {
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([ee] ()
          {
            // INTERPRETER THREAD
@@ -583,7 +583,7 @@ base_qobject::history_widget (main_window *mw)
       connect (qt_link (), &qt_interpreter_events::clear_history_signal,
                m_history_widget, &history_dock_widget::clear_history);
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([] (interpreter& interp) {
           // INTERPRETER THREAD
 
@@ -623,7 +623,7 @@ base_qobject::workspace_widget (main_window *mw)
       connect (m_workspace_widget,
                &workspace_view::copy_variable_value_to_clipboard,
                [this] (const QString& var_name) {
-                 emit interpreter_event
+                 Q_EMIT interpreter_event
                    ([var_name] (interpreter& interp)
                     {
                       // INTERPRETER THREAD
@@ -646,7 +646,7 @@ base_qobject::workspace_widget (main_window *mw)
 
       connect (m_workspace_widget, &workspace_view::rename_variable_signal,
                [this] (const QString& old_name, const QString& new_name) {
-                 emit interpreter_event
+                 Q_EMIT interpreter_event
                    ([old_name, new_name] (interpreter& interp) {
                      // INTERPRETER THREAD
 
@@ -671,7 +671,7 @@ base_qobject::workspace_widget (main_window *mw)
 
       connect (m_workspace_widget, &workspace_view::edit_variable_signal,
                [this] (const QString& var_name) {
-                 emit interpreter_event
+                 Q_EMIT interpreter_event
                    ([var_name] (interpreter& interp) {
                      // INTERPRETER THREAD
 
@@ -684,7 +684,7 @@ base_qobject::workspace_widget (main_window *mw)
                    });
                });
 
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([] (interpreter& interp) {
           // INTERPRETER THREAD
 
@@ -935,7 +935,7 @@ base_qobject::show_release_notes ()
 void
 base_qobject::execute_command (const QString& command)
 {
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([command] (interpreter& interp)
     {
       // INTERPRETER THREAD

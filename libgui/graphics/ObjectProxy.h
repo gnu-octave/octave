@@ -53,7 +53,7 @@ public:
   Object * object () { return m_object; }
   void setObject (Object *obj);
 
-signals:
+Q_SIGNALS:
   void sendUpdate (int pId);
   void sendRedraw ();
   void sendShow ();

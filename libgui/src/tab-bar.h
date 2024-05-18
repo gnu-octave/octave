@@ -55,11 +55,11 @@ public:
   QMenu * get_context_menu () { return m_context_menu; };
   QSize tabSizeHint (int idx) const;
 
-signals:
+Q_SIGNALS:
 
   void close_current_tab_signal (bool);
 
-public slots:
+public Q_SLOTS:
 
   void switch_left_tab ();
   void switch_right_tab ();
@@ -67,7 +67,7 @@ public slots:
   void move_tab_right ();
   void sort_tabs_alph ();
 
-private slots:
+private Q_SLOTS:
 
   void ctx_menu_activated (QAction *a);
 

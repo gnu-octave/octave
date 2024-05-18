@@ -84,7 +84,7 @@ public:
   void replace_all (const QString& o_str, const QString& n_str,
                     bool re, bool cs, bool wo);
 
-signals:
+Q_SIGNALS:
 
   void update_rowcol_indicator_signal (int line, int col);
   void execute_command_in_terminal_signal (const QString&);
@@ -103,12 +103,12 @@ signals:
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   void handle_enter_debug_mode ();
   void handle_exit_debug_mode ();
 
-private slots:
+private Q_SLOTS:
 
   void ctx_menu_run_finished (int, QPointer<QTemporaryFile>,
                               QPointer<QTemporaryFile>, bool, bool);

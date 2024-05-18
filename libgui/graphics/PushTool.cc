@@ -74,7 +74,7 @@ PushTool::update (int pId)
 void
 PushTool::clicked ()
 {
-  emit gh_callback_event (m_handle, "clickedcallback");
+  Q_EMIT gh_callback_event (m_handle, "clickedcallback");
 }
 
 OCTAVE_END_NAMESPACE(octave);

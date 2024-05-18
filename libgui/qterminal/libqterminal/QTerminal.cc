@@ -169,7 +169,7 @@ QTerminal::run_selection ()
                                                 QString::SkipEmptyParts);
 #endif
   for (int i = 0; i < commands.size (); i++)
-    emit execute_command_in_terminal_signal (commands.at (i));
+    Q_EMIT execute_command_in_terminal_signal (commands.at (i));
 
 }
 
@@ -180,7 +180,7 @@ QTerminal::edit_file ()
   QString file = _edit_action->data ().toStringList ().at (0);
   int line = _edit_action->data ().toStringList ().at (1).toInt ();
 
-  emit edit_mfile_request (file,line);
+  Q_EMIT edit_mfile_request (file,line);
 }
 
 // slot for edit selected function names
@@ -188,7 +188,7 @@ void QTerminal::edit_selected ()
 {
   QString file = m_edit_selected_action->data ().toString ();
 
-  emit edit_mfile_request (file,0);
+  Q_EMIT edit_mfile_request (file,0);
 }
 
 // slot for showing help on selected epxression
@@ -196,7 +196,7 @@ void QTerminal::help_on_expression ()
 {
   QString expr = m_help_selected_action->data ().toString ();
 
-  emit execute_command_in_terminal_signal ("help " + expr);
+  Q_EMIT execute_command_in_terminal_signal ("help " + expr);
 }
 
 // slot for showing documentation on selected epxression
@@ -204,7 +204,7 @@ void QTerminal::doc_on_expression ()
 {
   std::string expr = m_doc_selected_action->data ().toString ().toStdString ();
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([expr] (octave::interpreter& interp)
      {
        // INTERPRETER THREAD

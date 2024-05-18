@@ -348,7 +348,7 @@ GLCanvas::do_print (const QString& file_cmd, const QString& term,
     }
   catch (octave::execution_exception& ee)
     {
-      emit interpreter_event
+      Q_EMIT interpreter_event
         ([ee] ()
         {
           // INTERPRETER THREAD

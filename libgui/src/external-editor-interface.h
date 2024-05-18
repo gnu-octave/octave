@@ -41,11 +41,11 @@ public:
 
   ~external_editor_interface () = default;
 
-signals:
+Q_SIGNALS:
 
   void request_settings_dialog (const QString&);
 
-public slots:
+public Q_SLOTS:
 
   bool call_custom_editor (const QString& file = QString (), int line = -1);
 

@@ -291,13 +291,13 @@ Menu::actionTriggered ()
 
   if (action->isCheckable ())
     action->setChecked (! action->isChecked ());
-  emit gh_callback_event (m_handle, "menuselectedfcn");
+  Q_EMIT gh_callback_event (m_handle, "menuselectedfcn");
 }
 
 void
 Menu::actionHovered ()
 {
-  emit gh_callback_event (m_handle, "menuselectedfcn");
+  Q_EMIT gh_callback_event (m_handle, "menuselectedfcn");
 }
 
 void

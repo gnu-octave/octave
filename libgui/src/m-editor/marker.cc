@@ -80,7 +80,7 @@ marker::handle_request_remove_via_editor_linenr (int linenr)
       // Rather than delete editor marker directly, issue command
       // to Octave core.  Octave core should signal back to remove
       // this breakpoint via debugger line number.
-      emit request_remove (m_original_linenr);
+      Q_EMIT request_remove (m_original_linenr);
     }
 }
 

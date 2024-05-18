@@ -54,7 +54,7 @@ public:
     void has_extra_interrupt (bool extra_interrupt);
     QList<QAction*> get_hotspot_actions (const QPoint& at);
 
-public slots:
+public Q_SLOTS:
     void copyClipboard();
     void pasteClipboard();
     void selectAll();

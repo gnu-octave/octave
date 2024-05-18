@@ -189,8 +189,8 @@ ListBoxControl::sendSelectionChange ()
       for (const auto& idx : l)
         value(i++) = idx.row () + 1;
 
-      emit gh_set_event (m_handle, "value", octave_value (value), false);
-      emit gh_callback_event (m_handle, "callback");
+      Q_EMIT gh_set_event (m_handle, "value", octave_value (value), false);
+      Q_EMIT gh_callback_event (m_handle, "callback");
     }
 
   m_selectionChanged = false;

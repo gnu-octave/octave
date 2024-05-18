@@ -125,7 +125,7 @@ command_widget::init_command_prompt ()
 
   QPointer<command_widget> this_cw (this);
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_cw] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -140,9 +140,9 @@ command_widget::init_command_prompt ()
        std::string decoded_prompt
          = command_editor::decode_prompt_string (prompt);
 
-       emit update_prompt_signal (QString::fromStdString (decoded_prompt));
+       Q_EMIT update_prompt_signal (QString::fromStdString (decoded_prompt));
 
-       emit new_command_line_signal ();
+       Q_EMIT new_command_line_signal ();
      });
 }
 
@@ -173,7 +173,7 @@ command_widget::process_input_line (const QString& input_line)
 
   QPointer<command_widget> this_cw (this);
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_cw, input_line] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -194,9 +194,9 @@ command_widget::process_input_line (const QString& input_line)
        std::string decoded_prompt
          = command_editor::decode_prompt_string (prompt);
 
-       emit update_prompt_signal (QString::fromStdString (decoded_prompt));
+       Q_EMIT update_prompt_signal (QString::fromStdString (decoded_prompt));
 
-       emit new_command_line_signal ();
+       Q_EMIT new_command_line_signal ();
      });
 
 }

@@ -46,7 +46,7 @@ public:
 protected:
   void update (int pId);
 
-private slots:
+private Q_SLOTS:
   void clicked ();
   void toggled (bool checked);
 

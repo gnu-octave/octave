@@ -385,7 +385,7 @@ public:
     void disableBracketedPasteMode(bool disable) { _disabledBracketedPasteMode = disable; }
     bool bracketedPasteModeIsDisabled() const { return _disabledBracketedPasteMode; }
 
-public slots:
+public Q_SLOTS:
 
     /**
      * Updates the filters in the display's filter chain.  This will cause
@@ -464,7 +464,7 @@ public slots:
     void setBracketedPasteMode(bool bracketedPasteMode);
     bool bracketedPasteMode() const;
 
-signals:
+Q_SIGNALS:
 
     void interrupt_signal ();
 
@@ -541,7 +541,7 @@ protected:
     virtual void inputMethodEvent ( QInputMethodEvent* event );
     virtual QVariant inputMethodQuery( Qt::InputMethodQuery query ) const;
 
-protected slots:
+protected Q_SLOTS:
 
     void scrollBarPositionChanged(int value);
     void blinkEvent();
@@ -551,7 +551,7 @@ protected slots:
     //after emitting the first in a sequence of bell events.
     void enableBell();
 
-private slots:
+private Q_SLOTS:
 
     void swapColorTable();
     void tripleClickTimeout();  // resets possibleTripleClick

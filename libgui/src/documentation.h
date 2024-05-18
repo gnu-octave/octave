@@ -57,7 +57,7 @@ public:
 
   virtual QVariant loadResource (int type, const QUrl& url);
 
-public slots:
+public Q_SLOTS:
 
   void handle_index_clicked (const QUrl& url,
                              const QString& keyword = QString ());
@@ -114,11 +114,11 @@ public:
   */
   QString title_and_anchor (const QString& title, const QUrl& url);
 
-signals:
+Q_SIGNALS:
 
   void show_single_result (const QUrl&);
 
-public slots:
+public Q_SLOTS:
 
   void notice_settings ();
   void save_settings ();
@@ -132,7 +132,7 @@ public slots:
   void registerDoc (const QString& name);
   void unregisterDoc (const QString& name);
 
-private slots:
+private Q_SLOTS:
 
   void global_search ();
   void global_search_started ();

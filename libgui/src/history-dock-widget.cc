@@ -180,7 +180,7 @@ history_dock_widget::ctxMenu (const QPoint& xpos)
 void
 history_dock_widget::handle_double_click (QModelIndex modelIndex)
 {
-  emit command_double_clicked (modelIndex.data ().toString ());
+  Q_EMIT command_double_clicked (modelIndex.data ().toString ());
 }
 
 void
@@ -210,7 +210,7 @@ history_dock_widget::handle_contextmenu_evaluate (bool)
   QModelIndexList rows = selectionModel->selectedRows ();
   for (const auto& it : rows)
     if (it.isValid ())
-      emit command_double_clicked (it.data ().toString ());
+      Q_EMIT command_double_clicked (it.data ().toString ());
 }
 
 void
@@ -233,7 +233,7 @@ history_dock_widget::handle_contextmenu_create_script (bool)
     }
 
   if (text.length () > 0)
-    emit command_create_script (text);
+    Q_EMIT command_create_script (text);
 }
 
 void

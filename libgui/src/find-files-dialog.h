@@ -51,16 +51,16 @@ public:
 
   void save_settings ();
 
-signals:
+Q_SIGNALS:
 
   void file_selected (const QString& fileName);
   void dir_selected (const QString& fileName);
 
-public slots:
+public Q_SLOTS:
 
   void set_search_dir (const QString& dir);
 
-private slots:
+private Q_SLOTS:
 
   void start_find ();
   void stop_find ();

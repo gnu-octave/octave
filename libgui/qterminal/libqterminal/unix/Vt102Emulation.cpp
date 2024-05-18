@@ -363,7 +363,7 @@ void Vt102Emulation::XtermHack()
 
   // arg == 1 doesn't change the title. In XTerm it only changes the icon name
   // (btw: arg=0 changes title and icon, arg=1 only icon, arg=2 only title
-//  emit changeTitle(arg,unistr);
+//  Q_EMIT changeTitle(arg,unistr);
   _pendingTitleUpdates[arg] = unistr;
   _titleUpdateTimer->start(20);
 
@@ -375,7 +375,7 @@ void Vt102Emulation::updateTitle()
     QListIterator<int> iter( _pendingTitleUpdates.keys() );
     while (iter.hasNext()) {
         int arg = iter.next();
-        emit titleChanged( arg , _pendingTitleUpdates[arg] );
+        Q_EMIT titleChanged( arg , _pendingTitleUpdates[arg] );
     }
 
     _pendingTitleUpdates.clear();
@@ -415,7 +415,7 @@ void Vt102Emulation::tau( int token, int p, int q )
     case TY_CTL('D'      ) : /* EOT: ignored                      */ break;
     case TY_CTL('E'      ) :      reportAnswerBack     (          ); break; //VT100
     case TY_CTL('F'      ) : /* ACK: ignored                      */ break;
-    case TY_CTL('G'      ) : emit stateSet(NOTIFYBELL);
+    case TY_CTL('G'      ) : Q_EMIT stateSet(NOTIFYBELL);
                                 break; //VT100
     case TY_CTL('H'      ) : _currentScreen->BackSpace            (          ); break; //VT100
     case TY_CTL('I'      ) : _currentScreen->Tabulate             (          ); break; //VT100
@@ -501,7 +501,7 @@ void Vt102Emulation::tau( int token, int p, int q )
     case TY_CSI_PS('t',   8) : setImageSize( q /* colums */, p /* lines */ );    break;
 
 // change tab text color : \e[28;<color>t  color: 0-16,777,215
-    case TY_CSI_PS('t',   28) : emit changeTabTextColorRequest      ( p        );          break;
+    case TY_CSI_PS('t',   28) : Q_EMIT changeTabTextColorRequest      ( p        );          break;
 
     case TY_CSI_PS('K',   0) : _currentScreen->clearToEndOfLine     (          ); break;
     case TY_CSI_PS('K',   1) : _currentScreen->clearToBeginOfLine   (          ); break;
@@ -780,9 +780,9 @@ void Vt102Emulation::clearScreenAndSetColumns(int columnCount)
 void Vt102Emulation::sendString(const char* s , int length)
 {
   if ( length >= 0 )
-    emit sendData(s,length);
+    Q_EMIT sendData(s,length);
   else
-    emit sendData(s,strlen(s));
+    Q_EMIT sendData(s,strlen(s));
 }
 
 // Replies ----------------------------------------------------------------- --
@@ -1127,11 +1127,11 @@ void Vt102Emulation::setMode(int m)
     case MODE_Mouse1001:
     case MODE_Mouse1002:
     case MODE_Mouse1003:
-        emit programUsesMouseChanged(false);
+        Q_EMIT programUsesMouseChanged(false);
     break;
 
     case MODE_BracketedPaste:
-        emit programBracketedPasteModeChanged(true);
+        Q_EMIT programBracketedPasteModeChanged(true);
     break;
 
     case MODE_AppScreen : _screen[1]->clearSelection();
@@ -1154,11 +1154,11 @@ void Vt102Emulation::resetMode(int m)
     case MODE_Mouse1001 :
     case MODE_Mouse1002 :
     case MODE_Mouse1003 :
-        emit programUsesMouseChanged(true);
+        Q_EMIT programUsesMouseChanged(true);
     break;
 
     case MODE_BracketedPaste:
-        emit programBracketedPasteModeChanged(false);
+        Q_EMIT programBracketedPasteModeChanged(false);
     break;
 
     case MODE_AppScreen : _screen[0]->clearSelection();

@@ -66,7 +66,7 @@ public:
 
   ~octave_qapplication () { };
 
-signals:
+Q_SIGNALS:
 
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
@@ -201,7 +201,7 @@ public:
              this, qOverload<const meth_callback&> (&base_qobject::interpreter_event));
   }
 
-public slots:
+public Q_SLOTS:
 
   void execute_command (const QString& command);
 

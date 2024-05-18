@@ -46,7 +46,7 @@ public:
 
   void set_color (QColor new_color);
 
-private slots:
+private Q_SLOTS:
 
   void select_color ();
 

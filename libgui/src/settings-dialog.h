@@ -55,11 +55,11 @@ public:
 
   void show_tab (const QString&);
 
-signals:
+Q_SIGNALS:
 
   void apply_new_settings ();
 
-private slots:
+private Q_SLOTS:
 
   void get_octave_dir ();
   void get_file_browser_dir ();

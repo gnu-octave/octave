@@ -1279,7 +1279,7 @@ void QConsolePrivate::monitorConsole ()
   if (title != m_title)
     {
       q->setWindowTitle (title);
-      emit q->titleChanged (title);
+      Q_EMIT q->titleChanged (title);
     }
 
   if (GetConsoleScreenBufferInfo (hStdOut, &sbi))
@@ -1833,9 +1833,9 @@ void QWinTerminalImpl::setTerminalFont (const QFont& f)
 
 void QWinTerminalImpl::setSize (int columns, int lines)
 {
-  d->log ("emit set_screen_size_signal (%d, %d)\n", columns, lines);
+  d->log ("Q_EMIT set_screen_size_signal (%d, %d)\n", columns, lines);
 
-  emit set_screen_size_signal (columns, lines);
+  Q_EMIT set_screen_size_signal (columns, lines);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1856,7 +1856,7 @@ void QWinTerminalImpl::copyClipboard ()
   else
     {
       clipboard->setText (selection);
-      emit report_status_message (tr ("copied selection to clipboard"));
+      Q_EMIT report_status_message (tr ("copied selection to clipboard"));
     }
 }
 
@@ -1917,7 +1917,7 @@ void QWinTerminalImpl::dropEvent (QDropEvent *event)
 
   if (event->mimeData ()->hasUrls ())
     {
-      foreach (QUrl url, event->mimeData ()->urls ())
+      for (QUrl url : event->mimeData ()->urls ())
         {
           if(dropText.length () > 0)
             dropText += '\n';

@@ -38,7 +38,7 @@ public:
   TextEdit (QWidget *xparent) : QTextEdit (xparent) { }
   ~TextEdit () = default;
 
-signals:
+Q_SIGNALS:
   void editingFinished ();
   void returnPressed ();
 

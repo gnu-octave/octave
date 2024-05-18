@@ -57,7 +57,7 @@ public:
 
   void save_settings ();
 
-signals:
+Q_SIGNALS:
 
   //! Emitted, when the path has to be modified
 
@@ -67,7 +67,7 @@ signals:
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   void update_model ();
 
@@ -75,7 +75,7 @@ protected:
 
   void closeEvent (QCloseEvent *e);
 
-private slots:
+private Q_SLOTS:
 
   void add_dir ();
   void add_dir_subdirs ();

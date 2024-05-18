@@ -61,7 +61,7 @@ public:
 
   ~variable_dock_widget () = default;
 
-signals:
+Q_SIGNALS:
 
   void variable_focused_signal (const QString& name);
 
@@ -71,11 +71,11 @@ protected:
 
   void resizeEvent (QResizeEvent *event);
 
-public slots:
+public Q_SLOTS:
 
   void handle_focus_change (QWidget *old, QWidget *now);
 
-private slots:
+private Q_SLOTS:
 
   void change_floating (bool);
 
@@ -99,13 +99,13 @@ protected:
 
 // See Octave bug #53807 and https://bugreports.qt.io/browse/QTBUG-44813
 #define QTBUG_44813_FIX_VERSION 0x999999
-signals:
+Q_SIGNALS:
 
   void queue_unfloat_float ();
 
   void queue_float ();
 
-protected slots:
+protected Q_SLOTS:
 
   void unfloat_float ();
 
@@ -138,7 +138,7 @@ public:
 
   QTextEdit * disp_view () {return m_disp_view;};
 
-signals:
+Q_SIGNALS:
 
   void edit_variable_signal (const QString& name, const octave_value& val);
 
@@ -147,7 +147,7 @@ signals:
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   void set_editable (bool editable);
 
@@ -178,13 +178,13 @@ public:
 
   void setModel (QAbstractItemModel *model);
 
-signals:
+Q_SIGNALS:
 
   void command_signal (const QString& cmd);
 
   void add_edit_actions_signal (QMenu *menu, const QString& qualifier_string);
 
-public slots:
+public Q_SLOTS:
 
   void createVariable ();
 
@@ -234,7 +234,7 @@ public:
 
   ~HoverToolButton () = default;
 
-signals:
+Q_SIGNALS:
 
   void hovered_signal ();
 
@@ -255,7 +255,7 @@ public:
 
   ~ReturnFocusToolButton () = default;
 
-signals:
+Q_SIGNALS:
 
   void about_to_activate ();
 
@@ -274,7 +274,7 @@ public:
 
   ~ReturnFocusMenu () = default;
 
-signals:
+Q_SIGNALS:
 
   void about_to_activate ();
 
@@ -301,7 +301,7 @@ public:
 
   void tab_to_front ();
 
-signals:
+Q_SIGNALS:
 
   void updated ();
 
@@ -326,7 +326,7 @@ signals:
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   void callUpdate (const QModelIndex&, const QModelIndex&);
 
@@ -342,7 +342,7 @@ public slots:
 
   void restore_hovered_focus_variable ();
 
-protected slots:
+protected Q_SLOTS:
 
   void closeEvent (QCloseEvent *);
 

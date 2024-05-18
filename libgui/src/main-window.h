@@ -90,7 +90,7 @@ public:
 
   bool confirm_shutdown ();
 
-signals:
+Q_SIGNALS:
 
   // Note: CLOSE_GUI_SIGNAL is currently only used by the new
   // experimental terminal widget.
@@ -133,7 +133,7 @@ signals:
 
   void update_prompt_signal (const QString& prompt);
 
-public slots:
+public Q_SLOTS:
 
   void focus_changed (QWidget *w_old, QWidget *w_new);
   void focus_window (const QString& win_name);
@@ -242,7 +242,7 @@ public slots:
     return dock_widget_list ();
   }
 
-private slots:
+private Q_SLOTS:
 
   void disable_menu_shortcuts (bool disable);
   void restore_create_file_setting ();

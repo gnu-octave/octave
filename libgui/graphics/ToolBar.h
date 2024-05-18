@@ -58,7 +58,7 @@ protected:
   void update (int pId);
   void beingDeleted ();
 
-private slots:
+private Q_SLOTS:
   void hideEmpty ();
 
 private:

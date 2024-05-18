@@ -48,7 +48,7 @@ public:
 
   ~community_news () = default;
 
-public slots:
+public Q_SLOTS:
 
   void set_news (const QString& news);
 

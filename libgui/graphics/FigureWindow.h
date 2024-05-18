@@ -47,7 +47,7 @@ public:
 protected:
   void showEvent (QShowEvent *ev);
 
-signals:
+Q_SIGNALS:
   void figureWindowShown ();
 
 };

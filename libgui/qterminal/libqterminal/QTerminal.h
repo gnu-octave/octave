@@ -87,7 +87,7 @@ public:
 
   virtual void setScrollBufferSize(int value=1000) = 0;
 
-signals:
+Q_SIGNALS:
 
   void report_status_message (const QString&);
 
@@ -110,7 +110,7 @@ signals:
   void interpreter_event (const octave::fcn_callback& fcn);
   void interpreter_event (const octave::meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   virtual void copyClipboard () = 0;
 
@@ -124,7 +124,7 @@ public slots:
 
   virtual void init_terminal_size () { }
 
-  void terminal_interrupt () { emit interrupt_signal (); }
+  void terminal_interrupt () { Q_EMIT interrupt_signal (); }
 
   void run_selection ();
 

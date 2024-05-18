@@ -49,7 +49,7 @@ public:
 
   ~workspace_view () = default;
 
-signals:
+Q_SIGNALS:
 
   //! Signal that user had requested a command on a variable.
 
@@ -68,7 +68,7 @@ signals:
 
   void edit_variable_signal (const QString&);
 
-public slots:
+public Q_SLOTS:
 
   void setModel (workspace_model *model);
 
@@ -76,7 +76,7 @@ public slots:
 
   void save_settings ();
 
-protected slots:
+protected Q_SLOTS:
 
   void restore_header_state ();
   void filter_update (const QString& expression);
@@ -99,7 +99,7 @@ protected slots:
   void handle_contextmenu_stem ();
   void handle_contextmenu_filter ();
 
-public slots:
+public Q_SLOTS:
 
   void handle_model_changed ();
 

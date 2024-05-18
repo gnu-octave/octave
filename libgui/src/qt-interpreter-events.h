@@ -209,7 +209,7 @@ public:
 
   void wake_all () { m_waitcondition.wakeAll (); }
 
-public slots:
+public Q_SLOTS:
 
   void confirm_shutdown_octave ();
 
@@ -217,7 +217,7 @@ public slots:
 
   void gui_preference_slot (const QString& key, const QString& value);
 
-signals:
+Q_SIGNALS:
 
   // Note: these signals are not currently used by the old terminal widget.
   void start_gui_signal (bool gui_app);

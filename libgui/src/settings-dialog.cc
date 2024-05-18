@@ -664,7 +664,7 @@ settings_dialog::button_clicked (QAbstractButton *button)
         hide ();  // already hide here, reloading settings takes some time
 
       QMessageBox *info = wait_message_box (tr ("Applying preferences ... "), this);
-      emit apply_new_settings ();
+      Q_EMIT apply_new_settings ();
       close_wait_message_box (info);
     }
 

@@ -97,7 +97,7 @@ QUIWidgetCreator::message_dialog (const QString& message,
   if (xicon.isEmpty ())
     xicon = "none";
 
-  emit create_dialog (message, title, xicon, buttons, defbutton, role);
+  Q_EMIT create_dialog (message, title, xicon, buttons, defbutton, role);
 
   // Wait while the user is responding to message box.
   wait ();
@@ -119,7 +119,7 @@ QUIWidgetCreator::list_dialog (const QStringList& list, const QString& mode,
 
   QMutexLocker autolock (&m_mutex);
 
-  emit create_listview (list, mode, wd, ht, initial, name,
+  Q_EMIT create_listview (list, mode, wd, ht, initial, name,
                         prompt, ok_string, cancel_string);
 
   // Wait while the user is responding to message box.
@@ -144,7 +144,7 @@ QUIWidgetCreator::input_dialog (const QStringList& prompt,
 
   QMutexLocker autolock (&m_mutex);
 
-  emit create_inputlayout (prompt, title, nr, nc, defaults);
+  Q_EMIT create_inputlayout (prompt, title, nr, nc, defaults);
 
   // Wait while the user is responding to message box.
   wait ();
@@ -162,7 +162,7 @@ QUIWidgetCreator::file_dialog (const QStringList& filters,
 {
   QMutexLocker autolock (&m_mutex);
 
-  emit create_filedialog (filters, title, filename, dirname, multimode);
+  Q_EMIT create_filedialog (filters, title, filename, dirname, multimode);
 
   // Wait while the user is responding to dialog.
   wait ();
@@ -499,7 +499,7 @@ ListDialog::buttonOk_clicked ()
   for (int i = 0; i < selected_index.size (); i++)
     selected_int << selected_index.at (i).row () + 1;
 
-  emit finish_selection (selected_int, 1);
+  Q_EMIT finish_selection (selected_int, 1);
 
   done (QDialog::Accepted);
 }
@@ -512,7 +512,7 @@ ListDialog::buttonCancel_clicked ()
 
   QIntList empty;
 
-  emit finish_selection (empty, 0);
+  Q_EMIT finish_selection (empty, 0);
 
   done (QDialog::Rejected);
 }
@@ -605,7 +605,7 @@ InputDialog::buttonOk_clicked ()
   QStringList string_result;
   for (int i = 0; i < m_input_line.size (); i++)
     string_result << m_input_line.at (i)->text ();
-  emit finish_input (string_result, 1);
+  Q_EMIT finish_input (string_result, 1);
   done (QDialog::Accepted);
 }
 
@@ -616,7 +616,7 @@ InputDialog::buttonCancel_clicked ()
   // functions can retrieve.
 
   QStringList empty;
-  emit finish_input (empty, 0);
+  Q_EMIT finish_input (empty, 0);
   done (QDialog::Rejected);
 }
 
@@ -682,7 +682,7 @@ void
 FileDialog::rejectSelection ()
 {
   QStringList empty;
-  emit finish_input (empty, "", 0);
+  Q_EMIT finish_input (empty, "", 0);
 }
 
 void
@@ -716,7 +716,7 @@ FileDialog::acceptSelection ()
   idx = name_filters.indexOf (selectedNameFilter ()) + 1;
 
   // Send the selected info.
-  emit finish_input (string_result, path, idx);
+  Q_EMIT finish_input (string_result, path, idx);
 }
 
 OCTAVE_END_NAMESPACE(octave)

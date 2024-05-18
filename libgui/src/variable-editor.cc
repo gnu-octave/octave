@@ -275,7 +275,7 @@ variable_dock_widget::handle_focus_change (QWidget *old, QWidget *now)
             }
         }
 
-      emit variable_focused_signal (objectName ());
+      Q_EMIT variable_focused_signal (objectName ());
     }
   else if (old == focusWidget ())
     {
@@ -322,7 +322,7 @@ variable_dock_widget::event (QEvent *event)
       m_waiting_for_mouse_button_release = false;
       bool retval = QDockWidget::event (event);
       if (isFloating ())
-        emit queue_unfloat_float ();
+        Q_EMIT queue_unfloat_float ();
       return retval;
     }
 
@@ -335,7 +335,7 @@ variable_dock_widget::unfloat_float ()
   hide ();
   setFloating (false);
   // Avoid a Ubunty Unity issue by queuing this rather than direct.
-  emit queue_float ();
+  Q_EMIT queue_float ();
   m_waiting_for_mouse_move = false;
   m_waiting_for_mouse_button_release = false;
 }
@@ -437,7 +437,7 @@ variable_editor_stack::levelUp ()
   if (name.endsWith (')') || name.endsWith ('}'))
     {
       name.remove (QRegularExpression {"[({][^({]*[)}]$)"});
-      emit edit_variable_signal (name, octave_value ());
+      Q_EMIT edit_variable_signal (name, octave_value ());
     }
 }
 
@@ -464,7 +464,7 @@ variable_editor_stack::save (const QString& format)
   QPointer<variable_editor_stack> this_ves (this);
 
   // No format given, test save default options
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_ves, format_string] (interpreter& interp)
       {
         // INTERPRETER THREAD
@@ -482,7 +482,7 @@ variable_editor_stack::save (const QString& format)
         connect (this, &variable_editor_stack::do_save_signal,
                  this, &variable_editor_stack::do_save);
 
-        emit do_save_signal (format_string, save_opts);
+        Q_EMIT do_save_signal (format_string, save_opts);
       });
 }
 
@@ -519,7 +519,7 @@ variable_editor_stack::do_save (const QString& format, const QString& save_opts)
     return; // No file selected: Just return
 
   // Let the interpreter thread do the saving
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([file, name, format] (interpreter& interp)
       {
         // INTERPRETER THREAD
@@ -643,7 +643,7 @@ variable_editor_view::selected_command_requested (const QString& cmd)
     command = QString ("figure (); %1 (%2); title ('%2');")
                         .arg (cmd).arg (variable);
 
-  emit command_signal (command);
+  Q_EMIT command_signal (command);
 }
 
 void
@@ -842,7 +842,7 @@ variable_editor_view::transposeContent ()
   if (! hasFocus ())
     return;
 
-  emit command_signal (QString ("%1 = %1';").arg (objectName ()));
+  Q_EMIT command_signal (QString ("%1 = %1';").arg (objectName ()));
 }
 
 void
@@ -1068,9 +1068,9 @@ bool
 HoverToolButton::eventFilter (QObject *obj, QEvent *ev)
 {
   if (ev->type () == QEvent::HoverEnter)
-    emit hovered_signal ();
+    Q_EMIT hovered_signal ();
   else if (ev->type () == QEvent::MouseButtonPress)
-    emit popup_shown_signal ();
+    Q_EMIT popup_shown_signal ();
 
   return QToolButton::eventFilter (obj, ev);
 }
@@ -1087,7 +1087,7 @@ ReturnFocusToolButton::eventFilter (QObject *obj, QEvent *ev)
 
   if (ev->type () == QEvent::MouseButtonRelease && isDown ())
     {
-      emit about_to_activate ();
+      Q_EMIT about_to_activate ();
 
       setDown (false);
       QAction *action = defaultAction ();
@@ -1111,7 +1111,7 @@ ReturnFocusMenu::eventFilter (QObject *obj, QEvent *ev)
 {
   if (ev->type () == QEvent::MouseButtonRelease && underMouse ())
     {
-      emit about_to_activate ();
+      Q_EMIT about_to_activate ();
     }
 
   return QMenu::eventFilter (obj, ev);
@@ -1440,13 +1440,13 @@ variable_editor::tab_to_front ()
 void
 variable_editor::refresh ()
 {
-  emit refresh_signal ();
+  Q_EMIT refresh_signal ();
 }
 
 void
 variable_editor::callUpdate (const QModelIndex&, const QModelIndex&)
 {
-  emit updated ();
+  Q_EMIT updated ();
 }
 
 void
@@ -1514,7 +1514,7 @@ variable_editor::notice_settings ()
 void
 variable_editor::closeEvent (QCloseEvent *e)
 {
-  emit finished ();
+  Q_EMIT finished ();
 
   octave_dock_widget::closeEvent (e);
 }
@@ -1592,7 +1592,7 @@ variable_editor::restore_hovered_focus_variable ()
 void
 variable_editor::save ()
 {
-  emit save_signal ();
+  Q_EMIT save_signal ();
 }
 
 void
@@ -1600,27 +1600,27 @@ variable_editor::cutClipboard ()
 {
   copyClipboard ();
 
-  emit clear_content_signal ();
+  Q_EMIT clear_content_signal ();
 }
 
 void
 variable_editor::copyClipboard ()
 {
-  emit copy_clipboard_signal ();
+  Q_EMIT copy_clipboard_signal ();
 }
 
 void
 variable_editor::pasteClipboard ()
 {
-  emit paste_clipboard_signal ();
+  Q_EMIT paste_clipboard_signal ();
 
-  emit updated ();
+  Q_EMIT updated ();
 }
 
 void
 variable_editor::levelUp ()
 {
-  emit level_up_signal ();
+  Q_EMIT level_up_signal ();
 }
 
 // Also updates the font.

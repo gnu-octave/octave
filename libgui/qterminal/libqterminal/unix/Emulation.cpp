@@ -166,7 +166,7 @@ void Emulation::setCodec(const QTextCodec * qtc)
   delete _decoder;
   _decoder = _codec->makeDecoder();
 
-  emit useUtf8Request(utf8());
+  Q_EMIT useUtf8Request(utf8());
 }
 
 void Emulation::setCodec(EmulationCodec codec)
@@ -211,7 +211,7 @@ void Emulation::receiveChar(int c)
     case '\t'      : _currentScreen->Tabulate();                  break;
     case '\n'      : _currentScreen->NewLine();                   break;
     case '\r'      : _currentScreen->Return();                    break;
-    case 0x07      : emit stateSet(NOTIFYBELL);
+    case 0x07      : Q_EMIT stateSet(NOTIFYBELL);
                      break;
     default        : _currentScreen->ShowCharacter(c);            break;
   };
@@ -228,15 +228,15 @@ void Emulation::receiveChar(int c)
 
 void Emulation::sendKeyEvent( QKeyEvent* ev )
 {
-  emit stateSet(NOTIFYNORMAL);
+  Q_EMIT stateSet(NOTIFYNORMAL);
 
   if (!ev->text().isEmpty())
   { // A block of text
     // Note that the text is proper unicode.
     // We should do a conversion here, but since this
     // routine will never be used, we simply emit plain ascii.
-    //emit sendBlock(ev->text().toAscii(),ev->text().length());
-    emit sendData(ev->text().toUtf8(),ev->text().length());
+    //Q_EMIT sendBlock(ev->text().toAscii(),ev->text().length());
+    Q_EMIT sendData(ev->text().toUtf8(),ev->text().length());
   }
 }
 
@@ -259,7 +259,7 @@ TODO: Character composition from the old code.  See #96536
 
 void Emulation::receiveData(const char* text, int length)
 {
-	emit stateSet(NOTIFYACTIVITY);
+	Q_EMIT stateSet(NOTIFYACTIVITY);
 
 	bufferedUpdate();
     	
@@ -299,7 +299,7 @@ void Emulation::showBulk()
     _bulkTimer1.stop();
     _bulkTimer2.stop();
 
-    emit outputChanged();
+    Q_EMIT outputChanged();
 
     _currentScreen->resetScrolledLines();
     _currentScreen->resetDroppedLines();
@@ -330,7 +330,7 @@ void Emulation::setImageSize(int lines, int columns)
   _screen[0]->resizeImage(lines,columns);
   _screen[1]->resizeImage(lines,columns);
 
-  emit imageSizeChanged(lines,columns);
+  Q_EMIT imageSizeChanged(lines,columns);
 
   bufferedUpdate();
 }

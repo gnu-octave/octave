@@ -114,16 +114,16 @@ private:
 
   void enableMouseTracking ();
 
-private slots:
+private Q_SLOTS:
   void updateFigureHeight (int delta_h);
   void updateContainer ();
   void figureWindowShown ();
   void screenChanged (QScreen *);
 
-public slots:
+public Q_SLOTS:
   uint8NDArray slotGetPixels ();
 
-signals:
+Q_SIGNALS:
   void asyncUpdate ();
   void interpreter_event (const octave::fcn_callback& fcn);
   void interpreter_event (const octave::meth_callback& meth);

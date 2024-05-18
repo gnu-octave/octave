@@ -193,7 +193,7 @@ file_editor::handle_enter_debug_mode ()
 
   m_run_action->setToolTip (tr ("Continue"));   // update tool tip
 
-  emit enter_debug_mode_signal ();
+  Q_EMIT enter_debug_mode_signal ();
 }
 
 void
@@ -203,7 +203,7 @@ file_editor::handle_exit_debug_mode ()
   settings.set_shortcut (m_run_action, sc_edit_run_run_file);
   m_run_action->setToolTip (tr ("Save File and Run"));  // update tool tip
 
-  emit exit_debug_mode_signal ();
+  Q_EMIT exit_debug_mode_signal ();
 }
 
 void
@@ -251,7 +251,7 @@ file_editor::check_actions ()
   m_close_others_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
   m_sort_tabs_action->setEnabled (have_tabs && m_tab_widget->count () > 1);
 
-  emit editor_tabs_changed_signal (have_tabs, m_is_octave_file);
+  Q_EMIT editor_tabs_changed_signal (have_tabs, m_is_octave_file);
 }
 
 // empty_script determines whether we have to create an empty script
@@ -535,7 +535,7 @@ file_editor::check_closing ()
 
       if (fe_tab->check_file_modified (false) == QMessageBox::Cancel)
         {
-          emit fetab_recover_from_exit ();
+          Q_EMIT fetab_recover_from_exit ();
 
           m_closing_canceled = true;
 
@@ -666,51 +666,51 @@ file_editor::request_mru_open_file (QAction *action)
 void
 file_editor::request_print_file (bool)
 {
-  emit fetab_print_file (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_print_file (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_redo (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_REDO);
 }
 
 void
 file_editor::request_cut (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_CUT);
 }
 
 void
 file_editor::request_context_help (bool)
 {
-  emit fetab_context_help (m_tab_widget->currentWidget (), false);
+  Q_EMIT fetab_context_help (m_tab_widget->currentWidget (), false);
 }
 
 void
 file_editor::request_context_doc (bool)
 {
-  emit fetab_context_help (m_tab_widget->currentWidget (), true);
+  Q_EMIT fetab_context_help (m_tab_widget->currentWidget (), true);
 }
 
 void
 file_editor::request_context_edit (bool)
 {
-  emit fetab_context_edit (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_context_edit (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_save_file (bool)
 {
-  emit fetab_save_file (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_save_file (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_save_file_as (bool)
 {
-  emit fetab_save_file_as (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_save_file_as (m_tab_widget->currentWidget ());
 }
 
 void
@@ -722,7 +722,7 @@ file_editor::run_file (bool, int opts)
 
   QPointer<file_editor> this_fe (this);
 
-  emit interpreter_event
+  Q_EMIT interpreter_event
     ([this, this_fe, opts] (interpreter& interp)
      {
        // INTERPRETER THREAD
@@ -743,9 +743,9 @@ file_editor::run_file (bool, int opts)
        tree_evaluator& tw = interp.get_evaluator ();
 
        if (tw.in_debug_repl ())
-         emit request_dbcont_signal ();
+         Q_EMIT request_dbcont_signal ();
        else
-         emit fetab_run_file (m_tab_widget->currentWidget (), opts);
+         Q_EMIT fetab_run_file (m_tab_widget->currentWidget (), opts);
      });
 }
 
@@ -770,208 +770,208 @@ file_editor::request_run_demos (bool)
 void
 file_editor::request_step_into_file ()
 {
-  emit fetab_run_file (m_tab_widget->currentWidget (), ED_STEP_INTO);
+  Q_EMIT fetab_run_file (m_tab_widget->currentWidget (), ED_STEP_INTO);
 }
 
 void
 file_editor::request_context_run (bool)
 {
-  emit fetab_context_run (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_context_run (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_toggle_bookmark (bool)
 {
-  emit fetab_toggle_bookmark (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_toggle_bookmark (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_next_bookmark (bool)
 {
-  emit fetab_next_bookmark (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_next_bookmark (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_previous_bookmark (bool)
 {
-  emit fetab_previous_bookmark (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_previous_bookmark (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_remove_bookmark (bool)
 {
-  emit fetab_remove_bookmark (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_remove_bookmark (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_move_match_brace (bool)
 {
-  emit fetab_move_match_brace (m_tab_widget->currentWidget (), false);
+  Q_EMIT fetab_move_match_brace (m_tab_widget->currentWidget (), false);
 }
 
 void
 file_editor::request_sel_match_brace (bool)
 {
-  emit fetab_move_match_brace (m_tab_widget->currentWidget (), true);
+  Q_EMIT fetab_move_match_brace (m_tab_widget->currentWidget (), true);
 }
 
 // FIXME: What should this do with conditional breakpoints?
 void
 file_editor::request_toggle_breakpoint (bool)
 {
-  emit fetab_toggle_breakpoint (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_toggle_breakpoint (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_next_breakpoint (bool)
 {
-  emit fetab_next_breakpoint (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_next_breakpoint (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_previous_breakpoint (bool)
 {
-  emit fetab_previous_breakpoint (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_previous_breakpoint (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_remove_breakpoint (bool)
 {
-  emit fetab_remove_all_breakpoints (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_remove_all_breakpoints (m_tab_widget->currentWidget ());
 }
 
 // slots for Edit->Commands actions
 void
 file_editor::request_delete_start_word (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELWORDLEFT);
 }
 
 void
 file_editor::request_delete_end_word (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELWORDRIGHT);
 }
 
 void
 file_editor::request_delete_start_line (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELLINELEFT);
 }
 
 void
 file_editor::request_delete_end_line (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_DELLINERIGHT);
 }
 
 void
 file_editor::request_delete_line (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINEDELETE);
 }
 
 void
 file_editor::request_copy_line (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINECOPY);
 }
 
 void
 file_editor::request_cut_line (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINECUT);
 }
 
 void
 file_editor::request_duplicate_selection (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_SELECTIONDUPLICATE);
 }
 
 void
 file_editor::request_transpose_line (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LINETRANSPOSE);
 }
 
 void
 file_editor::request_comment_selected_text (bool)
 {
-  emit fetab_comment_selected_text (m_tab_widget->currentWidget (), false);
+  Q_EMIT fetab_comment_selected_text (m_tab_widget->currentWidget (), false);
 }
 
 void
 file_editor::request_uncomment_selected_text (bool)
 {
-  emit fetab_uncomment_selected_text (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_uncomment_selected_text (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_comment_var_selected_text (bool)
 {
-  emit fetab_comment_selected_text (m_tab_widget->currentWidget (), true);
+  Q_EMIT fetab_comment_selected_text (m_tab_widget->currentWidget (), true);
 }
 
 // slots for Edit->Format actions
 void
 file_editor::request_upper_case (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_UPPERCASE);
 }
 
 void
 file_editor::request_lower_case (bool)
 {
-  emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                 QsciScintillaBase::SCI_LOWERCASE);
 }
 
 void
 file_editor::request_indent_selected_text (bool)
 {
-  emit fetab_indent_selected_text (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_indent_selected_text (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_unindent_selected_text (bool)
 {
-  emit fetab_unindent_selected_text (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_unindent_selected_text (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_smart_indent_line_or_selected_text ()
 {
-  emit fetab_smart_indent_line_or_selected_text (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_smart_indent_line_or_selected_text (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_conv_eol_windows (bool)
 {
-  emit fetab_convert_eol (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_convert_eol (m_tab_widget->currentWidget (),
                           QsciScintilla::EolWindows);
 }
 void
 file_editor::request_conv_eol_unix (bool)
 {
-  emit fetab_convert_eol (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_convert_eol (m_tab_widget->currentWidget (),
                           QsciScintilla::EolUnix);
 }
 
 void
 file_editor::request_conv_eol_mac (bool)
 {
-  emit fetab_convert_eol (m_tab_widget->currentWidget (),
+  Q_EMIT fetab_convert_eol (m_tab_widget->currentWidget (),
                           QsciScintilla::EolMac);
 }
 
@@ -1061,13 +1061,13 @@ file_editor::request_find_previous (bool)
 void
 file_editor::request_goto_line (bool)
 {
-  emit fetab_goto_line (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_goto_line (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::request_completion (bool)
 {
-  emit fetab_completion (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_completion (m_tab_widget->currentWidget ());
 }
 
 void
@@ -1136,7 +1136,7 @@ file_editor::handle_tab_remove_request ()
 void
 file_editor::active_tab_changed (int index)
 {
-  emit fetab_change_request (m_tab_widget->widget (index));
+  Q_EMIT fetab_change_request (m_tab_widget->widget (index));
   activate ();
 }
 
@@ -1161,7 +1161,7 @@ file_editor::handle_editor_state_changed (bool copy_available,
       m_run_action->setEnabled (is_octave_file);
       m_is_octave_file = is_octave_file;
 
-      emit editor_tabs_changed_signal (true, m_is_octave_file);
+      Q_EMIT editor_tabs_changed_signal (true, m_is_octave_file);
     }
 
   m_copy_action_enabled = m_copy_action->isEnabled ();
@@ -1245,7 +1245,7 @@ file_editor::check_conflict_save (const QString& saveFileName,
     }
 
   // Can save without conflict, have the file editor tab do so.
-  emit fetab_save_file (saveFileWidget, saveFileName, remove_on_success);
+  Q_EMIT fetab_save_file (saveFileWidget, saveFileName, remove_on_success);
 }
 
 void
@@ -1269,9 +1269,9 @@ file_editor::handle_delete_debugger_pointer_request (const QString& file,
           m_tab_widget->setCurrentWidget (tab);
 
           if (line > 0)
-            emit fetab_delete_debugger_pointer (tab, line);
+            Q_EMIT fetab_delete_debugger_pointer (tab, line);
 
-          emit fetab_set_focus (tab);
+          Q_EMIT fetab_set_focus (tab);
         }
     }
 }
@@ -1494,7 +1494,7 @@ file_editor::notice_settings ()
     m_find_dialog->setWindowIcon (windowIcon ());
 
   // Relay signal to file editor tabs.
-  emit fetab_settings_changed ();
+  Q_EMIT fetab_settings_changed ();
 }
 
 void
@@ -1634,14 +1634,14 @@ void
 file_editor::update_octave_directory (const QString& dir)
 {
   m_ced = dir;
-  emit fetab_set_directory (m_ced);  // for save dialog
+  Q_EMIT fetab_set_directory (m_ced);  // for save dialog
 }
 
 void
 file_editor::copyClipboard ()
 {
   if (editor_tab_has_focus ())
-    emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+    Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_COPY);
 }
 
@@ -1649,7 +1649,7 @@ void
 file_editor::pasteClipboard ()
 {
   if (editor_tab_has_focus ())
-    emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+    Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_PASTE);
 }
 
@@ -1657,7 +1657,7 @@ void
 file_editor::selectAll ()
 {
   if (editor_tab_has_focus ())
-    emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+    Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_SELECTALL);
 }
 
@@ -1665,7 +1665,7 @@ void
 file_editor::do_undo ()
 {
   if (editor_tab_has_focus ())
-    emit fetab_scintilla_command (m_tab_widget->currentWidget (),
+    Q_EMIT fetab_scintilla_command (m_tab_widget->currentWidget (),
                                   QsciScintillaBase::SCI_UNDO);
 }
 
@@ -1711,19 +1711,19 @@ file_editor::request_open_file (const QString& openFileName,
           if (line > 0)
             {
               if (insert)
-                emit fetab_goto_line (tab, line);
+                Q_EMIT fetab_goto_line (tab, line);
 
               if (debug_pointer)
-                emit fetab_insert_debugger_pointer (tab, line);
+                Q_EMIT fetab_insert_debugger_pointer (tab, line);
 
               if (breakpoint_marker)
-                emit fetab_do_breakpoint_marker (insert, tab, line, cond);
+                Q_EMIT fetab_do_breakpoint_marker (insert, tab, line, cond);
             }
 
           if (show_dbg_file && ! ((breakpoint_marker || debug_pointer)
                                   && is_editor_console_tabbed ()))
             {
-              emit fetab_set_focus (tab);
+              Q_EMIT fetab_set_focus (tab);
               activate ();
             }
         }
@@ -1773,13 +1773,13 @@ file_editor::request_open_file (const QString& openFileName,
               if (line > 0)
                 {
                   if (insert)
-                    emit fetab_goto_line (fileEditorTab, line);
+                    Q_EMIT fetab_goto_line (fileEditorTab, line);
 
                   if (debug_pointer)
-                    emit fetab_insert_debugger_pointer (fileEditorTab,
+                    Q_EMIT fetab_insert_debugger_pointer (fileEditorTab,
                                                         line);
                   if (breakpoint_marker)
-                    emit fetab_do_breakpoint_marker (insert, fileEditorTab,
+                    Q_EMIT fetab_do_breakpoint_marker (insert, fileEditorTab,
                                                      line, cond);
                 }
             }
@@ -1877,7 +1877,7 @@ file_editor::request_open_file (const QString& openFileName,
               if (fileEditorTab)
                 fileEditorTab->update_breakpoints ();
               activate ();
-              emit file_loaded_signal ();
+              Q_EMIT file_loaded_signal ();
             }
         }
     }
@@ -1886,13 +1886,13 @@ file_editor::request_open_file (const QString& openFileName,
 void
 file_editor::request_preferences (bool)
 {
-  emit request_settings_dialog ("editor");
+  Q_EMIT request_settings_dialog ("editor");
 }
 
 void
 file_editor::request_styles_preferences (bool)
 {
-  emit request_settings_dialog ("editor_styles");
+  Q_EMIT request_settings_dialog ("editor_styles");
 }
 
 void
@@ -1946,19 +1946,19 @@ file_editor::show_hscrollbar (bool)
 void
 file_editor::zoom_in (bool)
 {
-  emit fetab_zoom_in (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_zoom_in (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::zoom_out (bool)
 {
-  emit fetab_zoom_out (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_zoom_out (m_tab_widget->currentWidget ());
 }
 
 void
 file_editor::zoom_normal (bool)
 {
-  emit fetab_zoom_normal (m_tab_widget->currentWidget ());
+  Q_EMIT fetab_zoom_normal (m_tab_widget->currentWidget ());
 }
 
 void
@@ -2600,7 +2600,7 @@ file_editor::reset_focus ()
   // Reset the focus of the tab and the related edit area
   file_editor_tab *f
     = static_cast<file_editor_tab *> (m_tab_widget->currentWidget ());
-  emit fetab_set_focus (f);
+  Q_EMIT fetab_set_focus (f);
   return f;
 }
 
@@ -2869,7 +2869,7 @@ file_editor::call_custom_editor (const QString& file_name, int line)
                       global_use_custom_editor.def ()).toBool ())
     {
       // use the external editor interface for handling the call
-      emit request_open_file_external (file_name, line);
+      Q_EMIT request_open_file_external (file_name, line);
 
       if (line < 0 && ! file_name.isEmpty ())
         handle_mru_add_file (QFileInfo (file_name).canonicalFilePath (),

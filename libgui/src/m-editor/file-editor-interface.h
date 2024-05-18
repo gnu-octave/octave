@@ -75,12 +75,12 @@ public:
 
   virtual void enable_menu_shortcuts (bool enable) = 0;
 
-signals:
+Q_SIGNALS:
 
   void interpreter_event (const fcn_callback& fcn);
   void interpreter_event (const meth_callback& meth);
 
-public slots:
+public Q_SLOTS:
 
   virtual void toplevel_change (bool) = 0;
 

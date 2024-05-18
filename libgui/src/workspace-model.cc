@@ -283,7 +283,7 @@ workspace_model::update_table ()
 
   endResetModel ();
 
-  emit model_changed ();
+  Q_EMIT model_changed ();
 }
 
 OCTAVE_END_NAMESPACE(octave)

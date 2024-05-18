@@ -1917,7 +1917,7 @@ void QWinTerminalImpl::dropEvent (QDropEvent *event)
 
   if (event->mimeData ()->hasUrls ())
     {
-      foreach (QUrl url, event->mimeData ()->urls ())
+      for (QUrl url : event->mimeData ()->urls ())
         {
           if(dropText.length () > 0)
             dropText += '\n';

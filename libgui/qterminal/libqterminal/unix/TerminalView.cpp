@@ -664,7 +664,7 @@ void TerminalView::scrollImage(int lines , const QRect& screenWindowRegion)
 QRegion TerminalView::hotSpotRegion() const
 {
   QRegion region;
-  foreach( Filter::HotSpot* hotSpot , _filterChain->hotSpots() )
+  for( Filter::HotSpot* hotSpot : _filterChain->hotSpots() )
     {
       QRect rect;
       rect.setLeft(hotSpot->startColumn());
@@ -943,7 +943,7 @@ void TerminalView::paintEvent( QPaintEvent* pe )
 #if defined (HAVE_QREGION_ITERATORS)
   for (QRect rect : (pe->region() & contentsRect()))
 #else
-  foreach (QRect rect, (pe->region() & contentsRect()).rects())
+  Q_FOREACH (QRect rect : (pe->region() & contentsRect()).rects())
 #endif
     {
       drawBackground(paint,rect,palette().window().color());
@@ -2531,7 +2531,7 @@ void TerminalView::dropEvent(QDropEvent* event)
 
   if (event->mimeData ()->hasUrls ())
   {
-    foreach (QUrl url, event->mimeData ()->urls ())
+    for (QUrl url : event->mimeData ()->urls ())
     {
       if(dropText.length () > 0)
         dropText += '\n';

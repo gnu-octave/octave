@@ -127,8 +127,9 @@ function [nn, xx] = hist (varargin)
   if (nargin == 1 || ischar (varargin{iarg}))
     n = 10;
     ## Use integer range values and perform division last to preserve
-    ## accuracy.
-    if (min_val != max_val)
+    ## accuracy.  If max - min is less than 20*eps, treat as if min = max to
+    ## avoid bug #65714 error.
+    if (min_val != max_val && diff ([min_val, max_val]) > 20 * eps)
       x = 1:2:2*n;
       x = ((max_val - min_val) * x + 2*n*min_val) / (2*n);
     else
@@ -153,8 +154,9 @@ function [nn, xx] = hist (varargin)
         error ("hist: number of bins NBINS must be positive");
       endif
       ## Use integer range values and perform division last to preserve
-      ## accuracy.
-      if (min_val != max_val)
+      ## accuracy.  If max - min is less than 20*eps, treat as if min = max
+      ## to avoid bug #65714 error.
+      if (min_val != max_val && diff ([min_val, max_val]) > 20 * eps)
         x = 1:2:2*n;
         x = ((max_val - min_val) * x + 2*n*min_val) / (2*n);
       else
@@ -428,6 +430,31 @@ endfunction
 %! [na, xa] = hist (a, 30);
 %! [nb, xb] = hist (b, 30);
 %! assert ({na, xa}, {nb, xb});
+
+%!test <*65714> # Avoid error if diff(y) is very small.
+%! a = [1, 1+eps, 1+ 15*eps];
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   hist (hax, a);
+%!   hp = get (hax, "children");
+%!   assert (max (get (hp, "ydata")(:)), 3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
+%!test <*65714> # Avoid error if diff(y) is very small, with specified X.
+%! a = [1, 1+eps, 1+ 15*eps];
+%! hf = figure ("visible", "off");
+%! unwind_protect
+%!   hax = axes ("parent", hf);
+%!   hist (hax, a, 5);
+%!   hp = get (hax, "children");
+%!   assert (max (get (hp, "ydata")(:)), 3);
+%! unwind_protect_cleanup
+%!   close (hf);
+%! end_unwind_protect
+
 
 ## Test input validation
 %!error <Invalid call> hist ()

@@ -6,7 +6,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 ### Improvements and fixes
 
 - `hist.m`: Add input validation for `Y` restricting it to 2-D array
-  (bug #65478).
+  (bug #65478).  Avoid error when `Y` value range is very small (bug #65714).
 - `cross.m`: Add input validation for `dim` restricting it to a numeric
   integer valued scalar (bug #65544, bug #65527).
 - `getframe.m`: Respect pixel ratio (high DPI) of screen with figure

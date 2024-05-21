@@ -14,7 +14,7 @@ jobs:
       matrix:
         # For available GitHub-hosted runners, see:
         # https://docs.github.com/en/actions/using-github-hosted-runners/about-github-hosted-runners
-        os: [ubuntu-22.04, ubuntu-20.04]
+        os: [ubuntu-22.04, ubuntu-24.04]
         compiler: [gcc, clang]
         include:
           - compiler: gcc
@@ -27,18 +27,17 @@ jobs:
             cc: "clang"
             cxx: "clang++ -stdlib=libc++"
             extra-config-flags: "--without-spqr --without-magick"
-          # "ccache" on Ubuntu 20.04 doesn't compress the cache.
           # Clang seems to generally require less cache size (smaller object files?).
           - ccache-max: 1.2G
-          - os: ubuntu-20.04
+          - os: ubuntu-24.04
             compiler: gcc
-            ccache-max: 6G
+            ccache-max: 1.2G
           - os: ubuntu-22.04
             compiler: gcc
             ccache-max: 1.2G
-          - os: ubuntu-20.04
+          - os: ubuntu-24.04
             compiler: clang
-            ccache-max: 3G
+            ccache-max: 400M
           - os: ubuntu-22.04
             compiler: clang
             ccache-max: 400M

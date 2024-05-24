@@ -1000,6 +1000,17 @@ case $canonical_host_type in
   ;;
 esac
 
+## Check if C and Fortran compilers support -fexceptions to support unwinding
+## the stack for C++ exceptions through frames in C or Fortran code.
+
+# CFLAGS are used only in the configure script.
+# XTRA_CFLAGS are used only after the configure script.
+OCTAVE_CC_FLAG([-fexceptions], [
+  CFLAGS="$CFLAGS -fexceptions"
+  XTRA_CFLAGS="$XTRA_CFLAGS -fexceptions"
+  AC_MSG_NOTICE([adding -fexceptions to XTRA_CFLAGS])])
+OCTAVE_F77_FLAG([-fexceptions])
+
 AC_SUBST(XTRA_CFLAGS)
 AC_SUBST(XTRA_CXXFLAGS)
 AC_SUBST(XTRA_LDFLAGS)

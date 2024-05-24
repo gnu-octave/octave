@@ -153,13 +153,35 @@ tree_index_expression::end_pos () const
 
     case '.':
       {
-        tree_expression *dyn_field = m_dyn_field.back ();
-        return dyn_field->end_pos ();
+        string_vector arg_names = m_arg_nm.back ();
+
+        if (arg_names.empty ())
+          {
+            tree_expression *dyn_field = m_dyn_field.back ();
+
+            if (dyn_field)
+              return dyn_field->end_pos ();
+            else
+              error ("unexpected: dynamic field is nullptr in call to tree_index_expression::end_pos - please report this bug");
+
+          }
+
+        token dot_tok = m_dot_tok.back ();
+        std::string arg_nm = arg_names(0);
+
+        // FIXME: this might not be correct because we have no way
+        // to account for space between the '.' operator and the
+        // field name.  Maybe we should really be storing an
+        // identifier that contains position information?
+
+        filepos pos = dot_tok.end_pos ();
+        pos.increment_column (arg_nm.size ());
+
+        return pos;
       }
 
     default:
       error ("unexpected: index not '(', '{', or '.' in tree_index_expression::end_pos - please report this bug");
-      break;
     }
 }
 

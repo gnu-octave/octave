@@ -259,6 +259,9 @@ jobs:
             readline-dev
             suitesparse-dev
             texinfo
+            texmf-dist-lang
+            texmf-dist-latexrecommended
+            texmf-dist-plaingeneric
             xvfb-run
             xz-dev
             zlib-dev

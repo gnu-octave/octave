@@ -68,4 +68,9 @@ extern gui_pref cs_focus_cmd;
 
 extern gui_pref cs_dbg_location;
 
+// Some constants for the experimental console widget
+const QColor cs_error_color (Qt::red);
+const double cs_error_interp[2] = {1.0, 0.4};
+const double cs_prompt_interp[2] = {0.8, 0.4};
+
 #endif

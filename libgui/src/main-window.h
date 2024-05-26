@@ -86,8 +86,6 @@ public:
 
   bool command_window_has_focus () const;
 
-  void focus_command_window ();
-
   bool confirm_shutdown ();
 
 Q_SIGNALS:
@@ -135,6 +133,7 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
+  void focus_command_window ();
   void focus_changed (QWidget *w_old, QWidget *w_new);
   void focus_window (const QString& win_name);
   void request_reload_settings ();

@@ -44,7 +44,9 @@
 #include "octave-qobject.h"
 #include "qt-interpreter-events.h"
 #include "qt-utils.h"
-#include "console-lexer.h"
+#if defined (HAVE_QSCINTILLA)
+#  include "console-lexer.h"
+#endif
 
 #include "localcharset-wrapper.h"
 #include "oct-env.h"
@@ -541,7 +543,11 @@ qt_interpreter_events::display_exception (const execution_exception& ee,
       std::ostringstream buf;
       ee.display (buf);
       Q_EMIT interpreter_output_signal (QString::fromStdString (buf.str ()),
+#if defined (HAVE_QSCINTILLA)
                                         console_lexer::Error);
+#else
+                                        100);
+#endif
       // Create w new command line
       Q_EMIT new_command_line_signal ();
     }

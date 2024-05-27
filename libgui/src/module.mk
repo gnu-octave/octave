@@ -316,8 +316,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-set-path-model.cc
 
 octave_gui_MOC += \
-  $(OCTAVE_GUI_SRC_MOC) \
-  $(OCTAVE_GUI_EDITOR_MOC)
+  $(OCTAVE_GUI_SRC_MOC)
 
 octave_gui_RC = %reldir%/qrc-resource.cc
 

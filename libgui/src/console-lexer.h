@@ -23,8 +23,8 @@
 //
 ////////////////////////////////////////////////////////////////////////
 
-#if ! defined (octave_octave_console_lexer_h)
-#define octave_octave_console_lexer_h 1
+#if ! defined (octave_console_lexer_h)
+#define octave_console_lexer_h 1
 
 #include <Qsci/qsciscintilla.h>
 #include <Qsci/qscilexer.h>

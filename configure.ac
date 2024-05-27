@@ -851,7 +851,7 @@ fi
 BUILD_EXTERNAL_LIBXERBLA=
 case $host_os in
   msdosmsvc | mingw*)
-    BUILD_EXTERNAL_LIBXERBLA=ues
+    BUILD_EXTERNAL_LIBXERBLA=yes
   ;;
 esac
 

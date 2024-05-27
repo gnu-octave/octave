@@ -266,6 +266,7 @@ OCTAVE_GUI_SRC_M_EDITOR_MOC = \
 $(OCTAVE_GUI_SRC_M_EDITOR_MOC): | %reldir%/m-editor/$(octave_dirstamp)
 
 OCTAVE_GUI_SRC_COMMAND_WIDGET_MOC = \
+  %reldir%/moc-console-lexer.cc \
   %reldir%/moc-command-widget.cc
 
 $(OCTAVE_GUI_SRC_COMMAND_WIDGET_MOC): | %reldir%/$(octave_dirstamp)
@@ -281,7 +282,6 @@ endif
 
 OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-external-editor-interface.cc \
-  %reldir%/moc-console-lexer.cc \
   %reldir%/moc-community-news.cc \
   %reldir%/moc-dialog.cc \
   %reldir%/moc-documentation-dock-widget.cc \
@@ -336,9 +336,9 @@ $(octave_gui_UI_H): | %reldir%/$(octave_dirstamp)
 BUILT_SOURCES += $(octave_gui_UI_H)
 
 noinst_HEADERS += \
-  %reldir%/console-lexer.h \
   %reldir%/command-widget.h \
   %reldir%/community-news.h \
+  %reldir%/console-lexer.h \
   %reldir%/dialog.h \
   %reldir%/octave-dock-widget.h \
   %reldir%/documentation-dock-widget.h \
@@ -403,9 +403,9 @@ noinst_HEADERS += \
 
 
 %canon_reldir%_%canon_reldir%_la_SOURCES = \
-  %reldir%/console-lexer.cc \
   %reldir%/command-widget.cc \
   %reldir%/community-news.cc \
+  %reldir%/console-lexer.cc \
   %reldir%/dialog.cc \
   %reldir%/documentation-dock-widget.cc \
   %reldir%/documentation.cc \

@@ -74,7 +74,7 @@ Q_SIGNALS:
 
   void update_prompt_signal (const QString&);
 
-  void interpreter_output_signal (const QString&);
+  void interpreter_output_signal (const QString&, int style = 0);
 
   void new_command_line_signal (const QString& = QString ());
 

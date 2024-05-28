@@ -26,12 +26,15 @@
 #if ! defined (octave_command_widget_h)
 #define octave_command_widget_h 1
 
+#include <QFileSystemWatcher>
 #include <QWidget>
 #include <Qsci/qsciscintilla.h>
 #include <QShortcut>
+#include <QTemporaryFile>
 
 #include "find-widget.h"
 #include "gui-preferences-sc.h"
+#include "console-lexer.h"
 
 // FIXME: We need the following header for the fcn_callback and
 // meth_callback typedefs.  Maybe it would be better to declare those in
@@ -52,6 +55,8 @@ class console : public QsciScintilla
 public:
 
   console (command_widget *p);
+
+  void append_string (const QString& string, int style = console_lexer::Default);
 
 Q_SIGNALS:
 
@@ -80,8 +85,6 @@ protected:
 
 private:
 
-  void append_string (const QString& string);
-
   void accept_command_line ();
 
   int m_command_position;
@@ -92,7 +95,6 @@ private:
   bool m_find_result_available;
   bool m_find_direction;
   QString m_last_find_inc_result;
-
 };
 
 class command_widget : public QWidget
@@ -103,11 +105,15 @@ public:
 
   command_widget (QWidget *p);
 
+  ~command_widget (void);
+
   console * get_console ( ) { return m_console; };
 
   void init_command_prompt ();
 
   QString prompt ();
+
+  void print_stream (const QString&);
 
 Q_SIGNALS:
 
@@ -129,7 +135,7 @@ public Q_SLOTS:
 
   void update_prompt (const QString& prompt);
 
-  void insert_interpreter_output (const QString& msg);
+  void insert_interpreter_output (const QString& msg, int style);
 
   void notice_settings ();
 
@@ -140,7 +146,9 @@ private:
   console *m_console;
   find_widget *m_find_widget;
   QShortcut *m_find_shortcut;
-
+  QTemporaryFile *m_stdout_file;
+  QTemporaryFile *m_stderr_file;
+  QFileSystemWatcher m_file_watcher;
 };
 
 OCTAVE_END_NAMESPACE(octave)

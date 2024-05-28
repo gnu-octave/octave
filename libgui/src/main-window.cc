@@ -195,7 +195,8 @@ main_window::main_window (base_qobject& oct_qobj)
 
   Q_EMIT init_window_menu ();
 
-  focus_command_window ();
+  // This only works reliably if the event loop is idle.s
+  QTimer::singleShot (0, this, SLOT (focus_command_window ()));
 }
 
 main_window::~main_window () { }

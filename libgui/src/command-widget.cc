@@ -29,14 +29,20 @@
 
 #if defined (HAVE_QSCINTILLA)
 
+#include <QDir>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 #include <QTextEdit>
 #include <QTextBlock>
 #include <QVBoxLayout>
+
+#include "Qsci/qscistyle.h"
+#include "Qsci/qscistyledtext.h"
+#include <Qsci/qscilexeroctave.h>
 
 #include "command-widget.h"
 
@@ -48,6 +54,9 @@
 #include "gui-utils.h"
 #include "input.h"
 #include "interpreter.h"
+#include "oct-env.h"
+#include "version.h"
+
 
 OCTAVE_BEGIN_NAMESPACE(octave)
 
@@ -113,7 +122,63 @@ command_widget::command_widget (QWidget *p)
   connect (m_find_shortcut, &QShortcut::activated,
            m_find_widget, &find_widget::activate_find);
 
-  insert_interpreter_output ("\n\n    Welcome to Octave\n\n");
+  // Redirecting stdout and stderr
+  QString tmp_dir = QString::fromStdString (sys::env::get_temp_directory ());
+  m_stdout_file = new QTemporaryFile (tmp_dir + QDir::separator() + "octave_XXXXXX_stdout");
+  m_stderr_file = new QTemporaryFile (tmp_dir + QDir::separator() + "octave_XXXXXX_stderr");
+
+  bool stdout_ok = false;
+  bool stderr_ok = false;
+
+  if (m_stdout_file->open ())
+    {
+      QString tmp_name (m_stdout_file->fileName ());
+      m_stdout_file->close ();
+
+      if (freopen (tmp_name.toLocal8Bit().data(), "w", stdout))
+        {
+          m_file_watcher.addPath (tmp_name);
+          connect (&m_file_watcher, &QFileSystemWatcher::fileChanged,
+                   this, &command_widget::print_stream);
+          stdout_ok = true;
+        }
+    }
+
+    if (! stdout_ok)
+      QMessageBox::critical(this,"Setup Console",
+                                 "Can not redirect STDOUT");
+
+  if (m_stderr_file->open ())
+    {
+      QString tmp_name (m_stderr_file->fileName ());
+      m_stderr_file->close ();
+
+      if (freopen (tmp_name.toLocal8Bit().data(), "w", stderr))
+        {
+          m_file_watcher.addPath (tmp_name);
+          connect (&m_file_watcher, &QFileSystemWatcher::fileChanged,
+                   this, &command_widget::print_stream);
+          stderr_ok = true;
+        }
+
+    }
+
+    if (! stderr_ok)
+      QMessageBox::critical(this,"Setup Console",
+                                 "Can not redirect STDERR");
+
+    insert_interpreter_output (
+                  QString::fromStdString (octave_startup_message () + "\n "),
+                  console_lexer::Default);
+}
+
+command_widget::~command_widget ()
+{
+  fclose (stdout);
+  m_stdout_file->remove ();
+
+  fclose (stderr);
+  m_stderr_file->remove ();
 }
 
 void
@@ -159,9 +224,9 @@ command_widget::prompt ()
 }
 
 void
-command_widget::insert_interpreter_output (const QString& msg)
+command_widget::insert_interpreter_output (const QString& msg, int style)
 {
-  m_console->append (msg);
+  m_console->append_string (msg, style);
 }
 
 void
@@ -202,6 +267,38 @@ command_widget::process_input_line (const QString& input_line)
 }
 
 void
+command_widget::print_stream (const QString& file_name)
+{
+  FILE* stream = stdout;
+  if (file_name.right (3) == QString ("err"))
+    stream = stderr;
+
+  m_file_watcher.removePath (file_name);
+
+  QFile f (file_name);
+  if (f.open(QIODevice::ReadWrite))
+    {
+      QByteArray ba = f.readAll ();
+      f.resize (0);
+      fseek (stream, 0, SEEK_SET);
+
+      int line, index;
+      m_console->lineIndexFromPosition (m_console->text ().length (), &line, &index);
+      m_console->setCursorPosition (line, index);
+      m_console->SendScintilla (QsciScintillaBase::SCI_LINEDELETE);
+
+      int style = console_lexer::Default;
+      if (stream == stderr)
+        style = console_lexer::Error;
+
+      m_console->append_string (QString (ba), style);
+      m_console->new_command_line ();
+    }
+
+  m_file_watcher.addPath (file_name);
+}
+
+void
 command_widget::notice_settings ()
 {
   gui_settings settings;
@@ -215,15 +312,24 @@ command_widget::notice_settings ()
   term_font.setPointSize
     (settings.int_value (cs_font_size));
 
-  m_console->setFont (term_font);
+  QsciLexer *lexer = m_console->lexer ();
+  lexer->setFont (term_font);
 
   // Colors
   int mode = settings.int_value (cs_color_mode);
   QColor fgc = settings.color_value (cs_colors[0], mode);
   QColor bgc = settings.color_value (cs_colors[1], mode);
+  QColor caret = settings.color_value (cs_colors[3], mode);
 
-  m_console->setStyleSheet (QString ("color: %1; background-color:%2;")
-                            .arg (fgc.name ()).arg (bgc.name ()));
+  lexer->setColor (fgc, console_lexer::Default);
+  lexer->setColor (interpolate_color (fgc, bgc,
+                                      cs_prompt_interp[0], cs_prompt_interp[1]),
+                   console_lexer::Prompt);
+  lexer->setColor (interpolate_color (cs_error_color, fgc,
+                                      cs_error_interp[0], cs_error_interp[1]),
+                   console_lexer::Error);
+  lexer->setPaper (bgc);
+  m_console->setCaretForegroundColor (caret);
 
   settings.shortcut (m_find_shortcut, sc_edit_edit_find_replace);
 
@@ -257,6 +363,9 @@ console::console (command_widget *p)
 
   connect (this, SIGNAL (modificationAttempted ()),
            this, SLOT (move_cursor_to_end ()));
+
+  console_lexer *lexer = new console_lexer ();
+  setLexer (lexer);
 }
 
 // Prepare a new command line with the current prompt
@@ -266,7 +375,7 @@ console::new_command_line (const QString& command)
   if (! text (lines () -1).isEmpty ())
     append ("\n");
 
-  append_string (m_command_widget->prompt ());
+  append_string (m_command_widget->prompt (), console_lexer::Prompt);
 
   int line, index;
   getCursorPosition (&line, &index);
@@ -307,13 +416,20 @@ console::execute_command (const QString& command)
 
 // Append a string and update the curdor püosition
 void
-console::append_string (const QString& string)
+console::append_string (const QString& string, int style)
 {
+  size_t pos_begin = text ().length ();
+
   setReadOnly (false);
+
   append (string);
 
+  size_t pos_end = text ().length ();
+
+  SendScintilla (QsciScintillaBase::SCI_SETSTYLING, pos_end - pos_begin, style);
+
   int line, index;
-  lineIndexFromPosition (text ().length (), &line, &index);
+  lineIndexFromPosition (pos_end, &line, &index);
 
   setCursorPosition (line, index);
 }

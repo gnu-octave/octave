@@ -52,6 +52,10 @@
 #include <QStringList>
 #include <QTranslator>
 
+#if defined (HAVE_QSCINTILLA)
+#  include <Qsci/qscilexer.h>
+#endif
+
 #include "gui-preferences-cs.h"
 #include "gui-preferences-ed.h"
 #include "gui-preferences-sc.h"
@@ -459,10 +463,10 @@ gui_settings::config_translators (QTranslator *qt_tr,
     }
 }
 
-#if defined (HAVE_QSCINTILLA)
 int
 gui_settings::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
 {
+#if defined (HAVE_QSCINTILLA)
   int max_style = 0;
   int actual_style = 0;
   while (actual_style < ed_max_style_number && max_style < ed_max_lexer_styles)
@@ -471,9 +475,17 @@ gui_settings::get_valid_lexer_styles (QsciLexer *lexer, int *styles)
         styles[max_style++] = actual_style;
       actual_style++;
     }
+
   return max_style;
+#else
+  octave_unused_parameter (lexer);
+  octave_unused_parameter (styles);
+
+  return 0;
+#endif
 }
 
+#if defined (HAVE_QSCINTILLA)
 /*!
  * Copys the attributes bold, italic and underline from QFont
  * @p attr to the font @p base and returns the result without
@@ -492,10 +504,12 @@ copy_font_attributes (const QFont& attr, const QFont& base)
 
   return dest;
 }
+#endif
 
 void
 gui_settings::read_lexer_settings (QsciLexer *lexer, int mode, int def)
 {
+#if defined (HAVE_QSCINTILLA)
   // Test whether the settings for lexer is already contained in the
   // given gui settings file. If yes, load them, if not copy them from the
   // default settings file.
@@ -560,8 +574,14 @@ gui_settings::read_lexer_settings (QsciLexer *lexer, int mode, int def)
       const std::string group_str = group.toStdString ();
       lexer->readSettings (*this, group_str.c_str ());
     }
-}
+#else
+  octave_unused_parameter (lexer);
+  octave_unused_parameter (mode);
+  octave_unused_parameter (dev);
+
+  return;
 #endif
+}
 
 bool
 gui_settings::update_settings_key (const QString& old_key,

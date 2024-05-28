@@ -89,11 +89,9 @@ private:
     OSC_EXPORT
   };
 
-#if defined (HAVE_QSCINTILLA)
   void update_lexer (QsciLexer *lexer, int mode, int def = 0);
   void get_lexer_settings (QsciLexer *lexer);
   void write_lexer_settings (QsciLexer *lexer);
-#endif
 
   void read_settings (bool first);
 

@@ -1,4 +1,4 @@
-Summary of bugs fixed for version 9.2.0 (YYYY-MM-DD):
+Summary of bugs fixed for version 9.2.0 (2024-06-01):
 -----------------------------------------------------
 
 For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX

@@ -1,7 +1,19 @@
-Summary of bugs fixed for version 9.2.0 (2024-06-01):
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+Summary of bugs fixed for version 9.3.0 (tbd):
 -----------------------------------------------------
 
-For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+
+Summary of bugs fixed for version 9.2.0 (2024-06-01):
+-----------------------------------------------------
 
 ### Improvements and fixes
 

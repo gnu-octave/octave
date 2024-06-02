@@ -977,7 +977,7 @@ settings_dialog::update_lexer (QsciLexer *lexer, int mode, int def)
 #else
   octave_unused_parameter (lexer);
   octave_unused_parameter (mode);
-  octave_unused_parameter (dev);
+  octave_unused_parameter (def);
 
   return;
 #endif

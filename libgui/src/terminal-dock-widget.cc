@@ -30,10 +30,9 @@
 #include <QGuiApplication>
 #include <QScreen>
 
-// This header is only needed for the new terminal widget.
-#if defined (HAVE_QSCINTILLA)
-#  include "command-widget.h"
-#endif
+// This header is only needed for the new terminal widget but we can
+// include regardless of whether QScintilla is available.
+#include "command-widget.h"
 
 // This header is only needed for the old terminal widget.
 #include "QTerminal.h"
@@ -155,14 +154,16 @@ terminal_dock_widget::get_qterminal ()
           ? nullptr : dynamic_cast<QTerminal *> (m_terminal));
 }
 
-#if defined (HAVE_QSCINTILLA)
 command_widget *
 terminal_dock_widget::get_command_widget ()
 {
+#if defined (HAVE_QSCINTILLA)
   return (m_experimental_terminal_widget
           ? dynamic_cast<command_widget *> (m_terminal) : nullptr);
-}
+#else
+  return nullptr;
 #endif
+}
 
 void
 terminal_dock_widget::notice_settings ()

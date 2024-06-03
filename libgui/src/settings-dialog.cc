@@ -43,6 +43,8 @@
 #include <QVector>
 
 #if defined (HAVE_QSCINTILLA)
+#  include <Qsci/qscilexer.h>
+
 #  include "octave-qscintilla.h"
 #  include "octave-txt-lexer.h"
 #  include <QScrollArea>
@@ -869,11 +871,11 @@ settings_dialog::update_editor_lexers (int def)
 #endif
 }
 
-#if defined (HAVE_QSCINTILLA)
 
 void
 settings_dialog::update_lexer (QsciLexer *lexer, int mode, int def)
 {
+#if defined (HAVE_QSCINTILLA)
   // Get lexer settings and copy from default settings if not yet
   // available in normal settings file
   gui_settings settings;
@@ -972,11 +974,19 @@ settings_dialog::update_lexer (QsciLexer *lexer, int mode, int def)
         }
     }
 
+#else
+  octave_unused_parameter (lexer);
+  octave_unused_parameter (mode);
+  octave_unused_parameter (def);
+
+  return;
+#endif
 }
 
 void
 settings_dialog::get_lexer_settings (QsciLexer *lexer)
 {
+#if defined (HAVE_QSCINTILLA)
   gui_settings settings;
 
   int styles[ed_max_lexer_styles];  // array for saving valid styles
@@ -1067,11 +1077,18 @@ settings_dialog::get_lexer_settings (QsciLexer *lexer)
   tabs_editor_lexers->addTab (scroll_area, lexer->language ());
 
   tabs_editor_lexers->setCurrentIndex (settings.int_value (sd_last_editor_styles_tab));
+
+#else
+  octave_unused_parameter (lexer);
+
+  return;
+#endif
 }
 
 void
 settings_dialog::write_lexer_settings (QsciLexer *lexer)
 {
+#if defined (HAVE_QSCINTILLA)
   gui_settings settings;
 
   QCheckBox *cb_color_mode
@@ -1172,9 +1189,13 @@ settings_dialog::write_lexer_settings (QsciLexer *lexer)
   settings.setValue (sd_last_editor_styles_tab.settings_key (),
                      tabs_editor_lexers->currentIndex ());
   settings.sync ();
-}
 
+#else
+  octave_unused_parameter (lexer);
+
+  return;
 #endif
+}
 
 void
 settings_dialog::write_changed_settings ()

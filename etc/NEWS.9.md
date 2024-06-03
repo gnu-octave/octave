@@ -26,6 +26,12 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
   (bug #65712).
 - `legend.m`: Avoid setting more colors than coordinates for `patch` objects
   (bug #65632).
+- `inputParser.m`: Allow default classdef objects which overload `struct`
+  (bug #65667).
+- Preserve `"position"` property of figure when object is `reset()`
+  (bug #65750).
+- `hist.m`: Avoid error when `y` value range is very small (bug #65714).
+- `barh`: Add input validation check for `nargin < 1`.
 
 ### GUI
 
@@ -38,6 +44,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Allow unbinding GUI shortcuts (bug #65580).
 - Fix restoring headers in file browser and workspace view (bug #65030).
 - File dialogs of the built-in editor are now modal.
+- Fix dragging editor from main window into floating state (bug #65725).
 
 ### Build system / Tests
 
@@ -55,6 +62,11 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Require Qt Widgets module when building the GUI (bug #65625).
 - `bug-53027.tst`: Delete temporary file after test is done (bug #53027).
 - Avoid build error with GCC 14 when targeting Windows.
+- Try to clean up after BIST also in case test failed (bug #53027).
+- `bar.m`, `barh.m`: Add plotting BISTs (bug #65671).
+- Check if C and Fortran compilers accept `-fexceptions` flag (bug #65767).
+  This affects building Octave itself from sources and also how .mex or .oct
+  files are built by `mex` and `mkoctfile`.
 
 ### Documentation
 

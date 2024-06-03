@@ -60,10 +60,8 @@ public:
   // Only valid if using the old terminal widget.
   QTerminal * get_qterminal ();
 
-#if defined (HAVE_QSCINTILLA)
   // Only valid if using the new terminal widget.
   command_widget * get_command_widget ();
-#endif
 
 Q_SIGNALS:
 

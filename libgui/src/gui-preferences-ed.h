@@ -26,10 +26,6 @@
 #if ! defined (octave_gui_preferences_ed_h)
 #define octave_gui_preferences_ed_h 1
 
-#if defined (HAVE_QSCINTILLA)
-#include <Qsci/qsciscintilla.h>
-#endif
-
 #include "gui-settings.h"
 
 // Editor preferences
@@ -179,16 +175,6 @@ extern gui_pref ed_tabs_max_width;
 extern gui_pref ed_force_newline;
 
 extern gui_pref ed_rm_trailing_spaces;
-
-#if defined (HAVE_QSCINTILLA)
-#if defined (Q_OS_WIN32)
-const int os_eol_mode = QsciScintilla::EolWindows;
-#else
-const int os_eol_mode = QsciScintilla::EolUnix;
-#endif
-#else
-const int os_eol_mode = 2;
-#endif
 
 extern gui_pref ed_default_eol_mode;
 

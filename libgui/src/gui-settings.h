@@ -26,14 +26,9 @@
 #if ! defined (octave_gui_settings_h)
 #define octave_gui_settings_h 1
 
-#include "octave-config.h"
-
 #include <QColor>
 #include <QSettings>
 #include <QString>
-#if defined (HAVE_QSCINTILLA)
-#  include <Qsci/qscilexer.h>
-#endif
 
 class QByteArray;
 class QComboBox;
@@ -41,6 +36,7 @@ class QDateTime;
 class QIcon;
 class QShortcut;
 class QTranslator;
+class QsciLexer;
 
 #include "gui-preferences.h"
 
@@ -194,10 +190,9 @@ public:
   void config_translators (QTranslator *qt_tr, QTranslator *qsci_tr,
                            QTranslator *gui_tr);
 
-#if defined (HAVE_QSCINTILLA)
   int get_valid_lexer_styles (QsciLexer *lexer, int *styles);
+
   void read_lexer_settings (QsciLexer *lexer, int mode = 0, int def = 0);
-#endif
 
   bool update_settings_key (const QString& new_key, const QString& old_key);
 

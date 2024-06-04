@@ -85,7 +85,7 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Section "Running Octave": Tell new users how to start Octave on their
   computers.
 - `tsearch`: Add programming note about expected performance.
-- `load`: Correct documentaion of -v7.3 and -hdf5 options (bug #43530).
+- `load`: Correct documentaion of -v7.3 and -hdf5 options (bug #42530).
 
 ### Deprecated functions, properties, and operators
 

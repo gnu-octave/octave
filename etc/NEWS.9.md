@@ -1,7 +1,20 @@
-Summary of bugs fixed for version 9.2.0 (YYYY-MM-DD):
+For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+
+Summary of bugs fixed for version 9.3.0 (tbd):
 -----------------------------------------------------
 
-For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
+### Improvements and fixes
+
+### GUI
+
+### Build system / Tests
+
+### Documentation
+
+- `load`: Correct documentaion of -v7.3 and -hdf5 options (bug #42530).
+
+Summary of bugs fixed for version 9.2.0 (2024-06-01):
+-----------------------------------------------------
 
 ### Improvements and fixes
 
@@ -85,7 +98,6 @@ For (bug #XXXXX) see https://savannah.gnu.org/bugs/?XXXXX
 - Section "Running Octave": Tell new users how to start Octave on their
   computers.
 - `tsearch`: Add programming note about expected performance.
-- `load`: Correct documentaion of -v7.3 and -hdf5 options (bug #42530).
 
 ### Deprecated functions, properties, and operators
 

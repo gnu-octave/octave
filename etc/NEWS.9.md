@@ -11,6 +11,7 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 
 ### Documentation
 
+- `load`: Correct documentaion of -v7.3 and -hdf5 options (bug #42530).
 
 Summary of bugs fixed for version 9.2.0 (2024-06-01):
 -----------------------------------------------------

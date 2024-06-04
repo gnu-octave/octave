@@ -1644,11 +1644,13 @@ Force Octave to assume the file is in Octave's binary format.
 @item -hdf5
 Force Octave to assume the file is in @sc{hdf5} format.  (@sc{hdf5} is a free,
 portable binary format developed by the National Center for Supercomputing
-Applications at the University of Illinois.)  Note that Octave can only
-read @sc{hdf5} files that were created by itself with @code{save} or with
-@sc{matlab}'s @code{-v7.3} option (which saves in @sc{hdf5} format). This
-format is only available if Octave was built with a link to the @sc{hdf5}
-libraries.
+Applications at the University of Illinois.)  Note that @code{load} is only
+designed to read @sc{hdf5} files that were created by itself with @code{save},
+and attempts to read other @sc{hdf5} files may fail or produce unpredictable
+results. The @code{-hdf5} option also provides a limited ability to read
+files created using @sc{matlab}'s @code{-v7.3} option (which saves in @sc{hdf5}
+format) although many data types are not yet supported. This format is only
+available if Octave was built with a link to the @sc{hdf5} libraries.
 
 @item -import
 This option is accepted for backward compatibility but is ignored.
@@ -1661,10 +1663,11 @@ Force Octave to assume the file is in Octave's text format.
 @item  -v7.3
 @itemx -V7.3
 @itemx -7.3
-Force Octave to assume the file is in @sc{matlab}'s v7.3 binary data format.
-As the v7.3 format is an HDF5 based format, those files often can also be
-opened with the @qcode{"-hdf5"} option.  Note that Octave @strong{can not}
-currently save in this format.
+Octave does @strong{not} yet implement @sc{matlab}'s v7.3 binary data format.
+As the v7.3 format is an @sc{hdf5} based format, the @qcode{"-hdf5"} option
+may be used to attempt to open a v7.3 format file, although most non-numeric
+data types are not yet supported.  Note that Octave @strong{can not} currently
+save in this format.
 
 @item  -v7
 @itemx -V7

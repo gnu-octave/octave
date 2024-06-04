@@ -383,68 +383,67 @@ classdef jupyter_notebook < handle
         newFig = figure ();
       endif
 
-      stream_output = struct ("name", "stdout", "output_type", "stream");
+      unwind_protect
+        stream_output = struct ("name", "stdout", "output_type", "stream");
 
-      output_lines = obj.evalCode (strjoin (nbcell.source));
+        output_lines = obj.evalCode (strjoin (nbcell.source));
 
-      if (! isempty (output_lines))
-        stream_output.text = {output_lines};
-      endif
-
-      if (isfield (stream_output, "text"))
-        obj.notebook.cells{cell_index}.outputs{end+1} = stream_output;
-      endif
-
-      ## If there are existing plots and newFig is empty, delete it.
-      if (exist ("newFig") && isempty (get (newFig, "children")))
-        delete (newFig);
-      endif
-
-      ## Check for newly created figures.
-      fig_ids_new = setdiff (findall (groot, "type", "figure"), fig_ids);
-
-      if (! isempty (fig_ids_new))
-        if (! isempty (obj.tmpdir) && exist (obj.tmpdir, "dir"))
-          ## Delete open figures before raising the error.
-          delete (fig_ids_new);
-          error (["JupyterNotebook: temporary directory %s exists.  ", ...
-                  "Please remove it manually."], obj.tmpdir);
+        if (! isempty (output_lines))
+          stream_output.text = {output_lines};
         endif
 
-        if (isempty (obj.tmpdir))
-          obj.tmpdir = tempname ();
-          clear_tmpdir_property = true;
-        else
-          clear_tmpdir_property = false;
-        endif
-        [status, msg] = mkdir (obj.tmpdir);
-        if (status == 0)
-          ## Delete open figures before raising the error.
-          delete (fig_ids_new);
-          error (["jupyter_notebook: cannot create a temporary directory. ", ...
-                  msg]);
+        if (isfield (stream_output, "text"))
+          obj.notebook.cells{cell_index}.outputs{end+1} = stream_output;
         endif
 
-        ## FIXME: Maybe it would be better for these cleanup actions to
-        ## happen in an onCleanup object or unwind_protect block so that
-        ## they will be executed no matter how we exit this function?
-
-        for i = 1:numel (fig_ids_new)
-          figure (fig_ids_new(i), "visible", "off");
-          obj.embedImage (cell_index, fig_ids_new(i), printOptions);
-          delete (fig_ids_new(i));
-        endfor
-
-        [status, msg] = rmdir (obj.tmpdir);
-        if (status == 0)
-          error (["jupyter_notebook: cannot delete the temporary ", ...
-                  "directory. ", msg]);
+      unwind_protect_cleanup
+        ## If there are existing plots and newFig is empty, delete it.
+        if (exist ("newFig") && ishandle (newFig) && ...
+            isempty (get (newFig, "children")))
+          delete (newFig);
         endif
-        if (clear_tmpdir_property)
-          obj.tmpdir = "";
-        endif
-      endif
 
+        ## Check for newly created figures.
+        fig_ids_new = setdiff (findall (groot, "type", "figure"), fig_ids);
+
+        if (! isempty (fig_ids_new))
+          if (! isempty (obj.tmpdir) && exist (obj.tmpdir, "dir"))
+            ## Delete open figures before raising the error.
+            delete (fig_ids_new);
+            error (["JupyterNotebook: temporary directory %s exists.  ", ...
+                    "Please remove it manually."], obj.tmpdir);
+          endif
+
+          if (isempty (obj.tmpdir))
+            obj.tmpdir = tempname ();
+            clear_tmpdir_property = true;
+          else
+            clear_tmpdir_property = false;
+          endif
+          [status, msg] = mkdir (obj.tmpdir);
+          if (status == 0)
+            ## Delete open figures before raising the error.
+            delete (fig_ids_new);
+            error (["jupyter_notebook: cannot create a temporary directory. ", ...
+                    msg]);
+          endif
+
+          for i = 1:numel (fig_ids_new)
+            figure (fig_ids_new(i), "visible", "off");
+            obj.embedImage (cell_index, fig_ids_new(i), printOptions);
+            delete (fig_ids_new(i));
+          endfor
+
+          [status, msg] = rmdir (obj.tmpdir);
+          if (status == 0)
+            error (["jupyter_notebook: cannot delete the temporary ", ...
+                    "directory. ", msg]);
+          endif
+          if (clear_tmpdir_property)
+            obj.tmpdir = "";
+          endif
+        endif
+      end_unwind_protect
     endfunction
 
 

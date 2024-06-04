@@ -45,6 +45,9 @@ Summary of bugs fixed for version 9.2.0 (2024-06-01):
   (bug #65750).
 - `hist.m`: Avoid error when `y` value range is very small (bug #65714).
 - `barh`: Add input validation check for `nargin < 1`.
+- `jupyter-notebook`: Avoid error if evaluated code closes an existing figure
+  window.  Use unwind_protect block to ensure figure and tempfile cleanup
+  actions occur (bug #65644).
 
 ### GUI
 
@@ -80,6 +83,8 @@ Summary of bugs fixed for version 9.2.0 (2024-06-01):
 - Check if C and Fortran compilers accept `-fexceptions` flag (bug #65767).
   This affects building Octave itself from sources and also how .mex or .oct
   files are built by `mex` and `mkoctfile`.
+- `jupyter-notebook` test no longer fails if a figure window is open
+  (bug #65644).
 
 ### Documentation
 

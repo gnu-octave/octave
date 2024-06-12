@@ -6,7 +6,7 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 ### Improvements and fixes
 
 - `jupyter-notebook`: Avoid error if evaluated code closes an existing figure
-  window.  Use unwind_protect block to ensure figure and tempfile cleanup
+  window.  Use `unwind_protect` block to ensure figure and tempfile cleanup
   actions occur (bug #65644).
 
 ### GUI
@@ -15,10 +15,11 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 
 - `jupyter-notebook` test no longer fails if a figure window is open
   (bug #65644).
-  
+
 ### Documentation
 
-- `load`: Correct documentaion of -v7.3 and -hdf5 options (bug #42530).
+- `load`: Correct documentation of `-v7.3` and `-hdf5` options (bug #42530).
+
 
 Summary of bugs fixed for version 9.2.0 (2024-06-01):
 -----------------------------------------------------

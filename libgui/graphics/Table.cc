@@ -1270,8 +1270,8 @@ Table::updateData (int row, int col, octave_value value,
 
       comboBox->installEventFilter (this);
       m_tableWidget->setCellWidget (row, col, comboBox);
-      connect (comboBox, SIGNAL(currentIndexChanged (const QString&)),
-               this, SLOT(comboBoxCurrentIndexChanged (const QString&)));
+      connect (comboBox, &QComboBox::currentTextChanged,
+               this, &Table::comboBoxCurrentIndexChanged);
     }
   else
     {

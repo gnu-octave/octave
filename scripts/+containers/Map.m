@@ -487,6 +487,10 @@ classdef Map < handle
 
     endfunction
 
+    function n = numArgumentsFromSubscript (this, ~, ~)
+      n = numel (this);
+    endfunction
+
     function newobj = horzcat (varargin)
       warning ("Octave:language-extension",
                "containers.Map: horizontal concatenation is an Octave-only feature");

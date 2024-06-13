@@ -3883,6 +3883,13 @@ assignments.
 %! t.b = "There";
 %! t.c = 163;
 %! assert (s, t);
+
+// Overloaded subsref in classdef class
+%!test
+%! data.x = 1;
+%! cm = containers.Map;
+%! cm('foo') = data;
+%! assert (cm('foo').x, 1);
 */
 
 DEFUN (is_sq_string, args, ,

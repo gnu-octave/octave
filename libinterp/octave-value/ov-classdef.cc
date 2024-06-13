@@ -91,11 +91,28 @@ octave_classdef::subsref (const std::string& type,
           m_count++;
           args(0) = octave_value (this);
 
-          // If the number of output arguments is unknown, attempt to set up
-          // a proper value for nargout at least in the simple case where the
-          // cs-list-type expression - i.e., {} or ().x, is the leading one.
-          if (nargout <= 0)
+          octave::cdef_method meth_nargout
+            = cls.find_method ("numArgumentsFromSubscript");
+          if (meth_nargout.ok ())
             {
+              octave_value_list args_nargout (3);
+
+              args_nargout(0) = args(0);
+              args_nargout(1) = args(1);
+              // FIXME: Third argument should be one of the possible values of
+              //        the matlab.mixin.util.IndexingContext enumeration class.
+              args_nargout(2) = octave_value (Matrix ());
+              retval = meth_nargout.execute (args_nargout, 1, true,
+                                             "numArgumentsFromSubscript");
+              
+              nargout = retval(0).strict_int_value
+                ("subsref: return value of 'numArgumentsFromSubscript' must be integer");
+            }
+          else if (nargout <= 0)
+            {
+              // If the number of output arguments is unknown, attempt to set up
+              // a proper value for nargout at least in the simple case where the
+              // cs-list-type expression - i.e., {} or ().x, is the leading one.
               bool maybe_cs_list_query = (type[0] == '.' || type[0] == '{'
                                           || (type.length () > 1 && type[0] == '('
                                               && type[1] == '.'));
@@ -105,7 +122,9 @@ octave_classdef::subsref (const std::string& type,
                   // Set up a proper nargout for the subsref call by calling numel.
                   octave_value_list tmp;
                   int nout;
-                  if (type[0] != '.') tmp = idx.front ();
+                  if (type[0] != '.')
+                    tmp = idx.front ();
+
                   nout = xnumel (tmp);
                   if (nargout != 0 || nout > 1)
                     nargout = nout;

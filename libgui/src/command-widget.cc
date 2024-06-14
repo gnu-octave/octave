@@ -355,14 +355,14 @@ console::console (command_widget *p)
   setMargins (0);
   setWrapMode (QsciScintilla::WrapWord);
 
-  connect (this, SIGNAL (cursorPositionChanged (int, int)),
-           this, SLOT (cursor_position_changed (int, int)));
+  connect (this, &QsciScintilla::cursorPositionChanged,
+           this, &console::cursor_position_changed);
 
-  connect (this, SIGNAL (textChanged ()),
-           this, SLOT (text_changed ()));
+  connect (this, &QsciScintilla::textChanged,
+           this, &console::text_changed);
 
-  connect (this, SIGNAL (modificationAttempted ()),
-           this, SLOT (move_cursor_to_end ()));
+  connect (this, &QsciScintilla::modificationAttempted,
+           this, &console::move_cursor_to_end);
 
   console_lexer *lexer = new console_lexer ();
   setLexer (lexer);

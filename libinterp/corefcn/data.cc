@@ -7476,10 +7476,10 @@ get_sort_mode_option (const octave_value& arg)
     smode = ASCENDING;
   else if (mode == "descend")
     smode = DESCENDING;
-  else if (mode == "either")
+  else if (mode == "either" || mode == "monotonic")
     smode = UNSORTED;
   else
-    error (R"(issorted: MODE must be "ascend", "descend", or "either")");
+    error (R"(issorted: MODE must be "ascend", "descend", "monotonic", or "either")");
 
   return smode;
 }
@@ -7490,7 +7490,9 @@ DEFUN (issorted, args, ,
 @deftypefnx {} {@var{tf} =} issorted (@var{A}, @var{mode})
 @deftypefnx {} {@var{tf} =} issorted (@var{A}, "rows", @var{mode})
 Return true if the vector @var{A} is sorted according to @var{mode}, which
-may be either @qcode{"ascend"}, @qcode{"descend"}, or @qcode{"either"}.
+may be either @qcode{"ascend"}, @qcode{"descend"}, @qcode{"either"}, or 
+@qcode{"monotonic"} (@qcode{"either"} and @qcode{"monotonic"} are 
+equivalent).
 
 By default, @var{mode} is @qcode{"ascend"}.  NaNs are treated in the same
 manner as @code{sort}.
@@ -7583,6 +7585,12 @@ This function does not support sparse matrices.
 %!assert (issorted (fliplr (sv), "either"))
 %!assert (issorted (sv', "either"))
 %!assert (issorted (fliplr (sv)', "either"))
+%!assert (issorted (sm, "rows", "monotonic"))
+%!assert (issorted (flipud (sm), "rows", "monotonic"))
+%!assert (issorted (sv, "either"))
+%!assert (issorted (fliplr (sv), "monotonic"))
+%!assert (issorted (sv', "either"))
+%!assert (issorted (fliplr (sv)', "monotonic"))
 
 %!assert (issorted ([]))
 %!assert (issorted ([], "rows"))

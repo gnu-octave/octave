@@ -57,7 +57,7 @@ function h = uifigure (varargin)
   strfcn = @(s) any (strcmpi (s, {'AutoResizeChildren', 'Icon', 'Scrollable'}));
   idx = cellfun (strfcn, varargin (1:2:end));
   if (any (idx))
-    idx = repelem (idx, 2); 
+    idx = repelem (idx, 2);
     props = varargin(idx);  # save special props for applying later
     varargin(idx) = [];     # remove special props from varargin
   endif

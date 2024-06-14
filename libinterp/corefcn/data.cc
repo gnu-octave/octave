@@ -7490,8 +7490,8 @@ DEFUN (issorted, args, ,
 @deftypefnx {} {@var{tf} =} issorted (@var{A}, @var{mode})
 @deftypefnx {} {@var{tf} =} issorted (@var{A}, "rows", @var{mode})
 Return true if the vector @var{A} is sorted according to @var{mode}, which
-may be either @qcode{"ascend"}, @qcode{"descend"}, @qcode{"either"}, or 
-@qcode{"monotonic"} (@qcode{"either"} and @qcode{"monotonic"} are 
+may be either @qcode{"ascend"}, @qcode{"descend"}, @qcode{"either"}, or
+@qcode{"monotonic"} (@qcode{"either"} and @qcode{"monotonic"} are
 equivalent).
 
 By default, @var{mode} is @qcode{"ascend"}.  NaNs are treated in the same

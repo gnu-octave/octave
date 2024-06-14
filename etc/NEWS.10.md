@@ -80,7 +80,7 @@ Summary of important user-visible changes for version 10 (yyyy-mm-dd):
   from non-integers to integers was more lenient.
 
 - `issorted` now accepts the MODE option "monotonic", which has the same
-  behavior as the option "either". 
+  behavior as the option "either".
 
 ### Alphabetical list of new functions added in Octave 10
 

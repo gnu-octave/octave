@@ -775,7 +775,7 @@ function cout = ind2tuple (matsize, erridx)
   fmt(end) = [];   # delete final extra comma
   cout = ostrsplit (sprintf (['(' fmt ')', '$'], subs'), '$');
   cout(end) = [];  # delete extra cell from final '$'
-  cout = cout.';   # return column vector 
+  cout = cout.';   # return column vector
 
 endfunction
 

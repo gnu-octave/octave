@@ -998,16 +998,21 @@ file_editor_tab::handle_add_octave_apis (const QStringList& api_entries)
 void
 file_editor_tab::handle_api_entries_added ()
 {
+  // The following signal-slot (dis)connections must use the old syntax or
+  // they would fail on Windows with warnings like this:
+  // qt.core.qobject.connect: QObject::disconnect: signal not found in QsciAPIs
+  // qt.core.qobject.connect: QObject::connect: signal not found in QsciAPIs
+
   // disconnect slot for saving prepared info if already connected
-  disconnect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
+  disconnect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
               nullptr, nullptr);
 
   // check whether path for prepared info exists or can be created
   if (QDir ("/").mkpath (m_prep_apis_path))
     {
       // path exists, apis info can be saved there
-      connect (m_lexer_apis, &QsciAPIs::apiPreparationFinished,
-               this, &file_editor_tab::save_apis_info);
+      connect (m_lexer_apis, SIGNAL (apiPreparationFinished ()),
+               this, SLOT (save_apis_info ()));
     }
 
   m_lexer_apis->prepare ();  // prepare apis info

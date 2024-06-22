@@ -45,6 +45,7 @@
 #include <Qsci/qscilexeroctave.h>
 
 #include "command-widget.h"
+#include "self-listener.h"
 
 #include "cmd-edit.h"
 #include "event-manager.h"
@@ -122,63 +123,50 @@ command_widget::command_widget (QWidget *p)
   connect (m_find_shortcut, &QShortcut::activated,
            m_find_widget, &find_widget::activate_find);
 
-  // Redirecting stdout and stderr
-  QString tmp_dir = QString::fromStdString (sys::env::get_temp_directory ());
-  m_stdout_file = new QTemporaryFile (tmp_dir + QDir::separator() + "octave_XXXXXX_stdout");
-  m_stderr_file = new QTemporaryFile (tmp_dir + QDir::separator() + "octave_XXXXXX_stderr");
+  // The self_listener object executes in a separate thread.  It
+  // captures output and emits a Qt signal to provide access to the
+  // captured output. See TODO comment in self-listener.cc
+  m_listener = new self_listener (std::vector<int> {STDOUT_FILENO, STDERR_FILENO},
+                                  QString (tr ("Command Widget")));
 
-  bool stdout_ok = false;
-  bool stderr_ok = false;
+  // Connect the listener thread to the command widget function that
+  // inserts text into the command widget.
+  connect (m_listener, &self_listener::receive_data,
+           this, &command_widget::process_redirected_streams,
+           Qt::BlockingQueuedConnection);
 
-  if (m_stdout_file->open ())
-    {
-      QString tmp_name (m_stdout_file->fileName ());
-      m_stdout_file->close ();
+  m_listener->start ();
 
-      if (freopen (tmp_name.toLocal8Bit().data(), "w", stdout))
-        {
-          m_file_watcher.addPath (tmp_name);
-          connect (&m_file_watcher, &QFileSystemWatcher::fileChanged,
-                   this, &command_widget::print_stream);
-          stdout_ok = true;
-        }
-    }
-
-    if (! stdout_ok)
-      QMessageBox::critical(this,"Setup Console",
-                                 "Can not redirect STDOUT");
-
-  if (m_stderr_file->open ())
-    {
-      QString tmp_name (m_stderr_file->fileName ());
-      m_stderr_file->close ();
-
-      if (freopen (tmp_name.toLocal8Bit().data(), "w", stderr))
-        {
-          m_file_watcher.addPath (tmp_name);
-          connect (&m_file_watcher, &QFileSystemWatcher::fileChanged,
-                   this, &command_widget::print_stream);
-          stderr_ok = true;
-        }
-
-    }
-
-    if (! stderr_ok)
-      QMessageBox::critical(this,"Setup Console",
-                                 "Can not redirect STDERR");
-
-    insert_interpreter_output (
+  insert_interpreter_output (
                   QString::fromStdString (octave_startup_message () + "\n "),
                   console_lexer::Default);
 }
 
 command_widget::~command_widget ()
 {
-  fclose (stdout);
-  m_stdout_file->remove ();
+  // m_listener is a guarded pointer and therefore null if already destroyed
+  if (m_listener && m_listener->isRunning ())
+    m_listener->terminate ();
+}
 
-  fclose (stderr);
-  m_stderr_file->remove ();
+void
+command_widget::process_redirected_streams (const char *buf, int len, int fd)
+{
+  int style;
+
+  switch (fd)
+    {
+      case STDERR_FILENO:
+        style = console_lexer::Error;
+        break;
+
+      case STDOUT_FILENO:
+      default:
+        style = console_lexer::Default;
+    }
+
+  m_console->append_string (
+        QString::fromStdString (std::string (buf, len)), style);
 }
 
 void
@@ -264,38 +252,6 @@ command_widget::process_input_line (const QString& input_line)
        Q_EMIT new_command_line_signal ();
      });
 
-}
-
-void
-command_widget::print_stream (const QString& file_name)
-{
-  FILE* stream = stdout;
-  if (file_name.right (3) == QString ("err"))
-    stream = stderr;
-
-  m_file_watcher.removePath (file_name);
-
-  QFile f (file_name);
-  if (f.open(QIODevice::ReadWrite))
-    {
-      QByteArray ba = f.readAll ();
-      f.resize (0);
-      fseek (stream, 0, SEEK_SET);
-
-      int line, index;
-      m_console->lineIndexFromPosition (m_console->text ().length (), &line, &index);
-      m_console->setCursorPosition (line, index);
-      m_console->SendScintilla (QsciScintillaBase::SCI_LINEDELETE);
-
-      int style = console_lexer::Default;
-      if (stream == stderr)
-        style = console_lexer::Error;
-
-      m_console->append_string (QString (ba), style);
-      m_console->new_command_line ();
-    }
-
-  m_file_watcher.addPath (file_name);
 }
 
 void

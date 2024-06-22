@@ -298,6 +298,7 @@ OCTAVE_GUI_SRC_MOC = \
   %reldir%/moc-news-reader.cc \
   %reldir%/moc-octave-qobject.cc \
   %reldir%/moc-release-notes.cc \
+  %reldir%/moc-self-listener.cc \
   %reldir%/moc-settings-dialog.cc \
   %reldir%/moc-terminal-dock-widget.cc \
   %reldir%/moc-color-picker.cc \
@@ -384,6 +385,7 @@ noinst_HEADERS += \
   %reldir%/qt-interpreter-events.h \
   %reldir%/qt-utils.h \
   %reldir%/release-notes.h \
+  %reldir%/self-listener.h \
   %reldir%/settings-dialog.h \
   %reldir%/shortcuts-tree-widget.h \
   %reldir%/tab-bar.h \
@@ -448,6 +450,7 @@ noinst_HEADERS += \
   %reldir%/qt-interpreter-events.cc \
   %reldir%/qt-application.cc \
   %reldir%/release-notes.cc \
+  %reldir%/self-listener.cc \
   %reldir%/settings-dialog.cc \
   %reldir%/shortcuts-tree-widget.cc \
   %reldir%/tab-bar.cc \

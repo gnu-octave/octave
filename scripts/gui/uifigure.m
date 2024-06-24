@@ -60,6 +60,8 @@ function h = uifigure (varargin)
     idx = repelem (idx, 2);
     props = varargin(idx);  # save special props for applying later
     varargin(idx) = [];     # remove special props from varargin
+  else
+    props = {};
   endif
 
   h = __go_figure__ (NaN, "handlevisibility", "off",

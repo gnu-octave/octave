@@ -642,7 +642,7 @@ files_dock_widget::toggle_header (int col)
       settings.sync ();
 
       // Reload header related settings only
-      m_header_settings_only = true; 
+      m_header_settings_only = true;
       notice_settings ();
     }
 }

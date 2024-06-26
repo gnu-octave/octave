@@ -107,7 +107,7 @@ function [v, lambda, c] = condeig (a)
     vl ./= repmat (sqrt (sum (abs (vl .^ 2))), rows (vl), 1);
 
     ## Condition numbers
-    ## Definition: cos (angle) = (norm (v1) * norm (v2)) / dot (v1, v2)
+    ## Definition: 1 / cos (angle) = (norm (v1) * norm (v2)) / dot (v1, v2)
     ## Eigenvectors have been normalized so 'norm (v1) * norm (v2)' = 1
     c = abs (1 ./ dot (vl, v)');
   endif

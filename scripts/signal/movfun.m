@@ -294,7 +294,7 @@ function y = movfun (fcn, x, wlen, varargin)
 
   ## Restore shape
   y = reshape (y, [szx(dperm), soutdim]);
-  y = permute (y, [dperm, nd+1]);
+  y = ipermute (y, [dperm, nd+1]);
   y = squeeze (y);
 
 endfunction
@@ -644,6 +644,24 @@ endfunction
 ## Test calculation along empty dimension
 %!assert <*63802> (movfun (@mean, zeros (2,0,3, 'uint8'), 3, 'dim', 2),
 %!                 zeros (2,0,3, 'double'))
+
+## Test for correct output shape for dim > 2 and ndims > 2
+%!test <*65927>
+%! a = reshape (1:30, 5, 3, 2);
+%! b1 = cat (3, [1, 6, 11], [16, 21, 26]) + [0, 0.5, 1.5, 2.5, 3.5]';
+%! b2 = cat (3, [1:5]', [16:20]') + [0, 2.5, 7.5];
+%! b3 = cat (3, [1:5]', [8.5:1:12.5]') + [0, 5, 10];
+%! assert (movfun (@mean, a, 2), b1, eps);
+%! assert (movfun (@mean, a, 2, 'dim', 1), b1, eps);
+%! assert (movfun (@mean, a, 2, 'dim', 2), b2, eps);
+%! assert (movfun (@mean, a, 2, 'dim', 3), b3, eps);
+%!
+%! a2 = cat (4, a, a, a, a);
+%! assert (size (movfun (@mean, a2, 2)), [5, 3, 2, 4]);
+%! assert (size (movfun (@mean, a2, 2, 'dim', 1)), [5, 3, 2, 4])
+%! assert (size (movfun (@mean, a2, 2, 'dim', 2)), [5, 3, 2, 4]);
+%! assert (size (movfun (@mean, a2, 2, 'dim', 3)), [5, 3, 2, 4]);
+%! assert (size (movfun (@mean, a2, 2, 'dim', 4)), [5, 3, 2, 4]);
 
 ## Test input validation
 %!error <Invalid call> movfun ()

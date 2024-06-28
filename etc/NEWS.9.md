@@ -8,6 +8,10 @@ Summary of bugs fixed for version 9.3.0 (tbd):
 - `jupyter-notebook`: Avoid error if evaluated code closes an existing figure
   window.  Use `unwind_protect` block to ensure figure and tempfile cleanup
   actions occur (bug #65644).
+- `movfun`:  Correct output shape of n-D arrays when operating on dimensions
+  higher than 2.  This will affect all moving window functions (`movmad`,
+  `movmax`, `movmean`, `movmedian`, `movmin`, `movprod`, `movstd`, `movsum`,
+  and `movvar`) (bug #65927).
 
 ### GUI
 

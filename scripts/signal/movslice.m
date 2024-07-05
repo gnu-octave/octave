@@ -129,8 +129,36 @@ function [slcidx, C, Cpre, Cpost, win] = movslice (N, wlen)
 
 endfunction
 
+%!assert (double (movslice (10, 2)), [1:9; 2:10])
+%!assert (double (movslice (10, 9)), [1:9; 2:10].')
 
-## FIXME: Need functional BIST tests
+%!test
+%! [sl, c, cpre, cpost, win] = movslice (10, 4);
+%! assert (double (sl), [1:7; 2:8; 3:9; 4:10]);
+%! assert (double (c), 3:9);
+%! assert (cpre, 1:2);
+%! assert (cpost, 10);
+%! assert (win, [-2:1:1].');
+
+%!test
+%! [sl, c, cpre, cpost, win] = movslice (10, 10);
+%! assert (double (sl), [1:10].');
+%! assert (double (c), 6);
+%! assert (cpre, 1:5);
+%! assert (cpost, 7:10);
+%! assert (win, [-5:1:4].');
+
+## Verify uint output.  Don't test uint64 due to excessive memory usage.
+%!test
+%! [sl, c] = movslice (10, 10);
+%! assert (class (sl), "uint8");
+%! assert (class (c), "uint8");
+%! [sl, c] = movslice (1000, 1000);
+%! assert (class (sl), "uint16");
+%! assert (class (c), "uint16");
+%! [sl, c] = movslice (100000, 100000);
+%! assert (class (sl), "uint32");
+%! assert (class (c), "uint32");
 
 ## Test input validation
 %!error <Invalid call> movslice ()
